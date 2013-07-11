@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from f256.mail.ru ([94.100.178.221])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uwo1m-0003fr-LN
- for ath10k@lists.infradead.org; Wed, 10 Jul 2013 06:37:29 +0000
-Received: from mail by f256.mail.ru with local (envelope-from <cybernik@bk.ru>)
- id 1Uwo1J-0003Ja-6o
- for ath10k@lists.infradead.org; Wed, 10 Jul 2013 10:37:04 +0400
-From: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
-Subject: =?UTF-8?B?d21pIHNlcnZpY2UgcmVhZHkgZXZlbnQgbm90IHJlY2VpdmVk?=
-Mime-Version: 1.0
-Date: Wed, 10 Jul 2013 10:36:57 +0400
-Message-ID: <1373438217.73020278@f256.mail.ru>
-Reply-To: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
+ id 1UxC3p-00013I-Ou
+ for ath10k@lists.infradead.org; Thu, 11 Jul 2013 08:17:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: ath10k: mac80211 driver for Qualcomm Atheros 802.11ac CQA98xx
+ devices
+References: <20130710022602.1F6F16609DE@gitolite.kernel.org>
+ <alpine.DEB.2.02.1307101859360.29717@ayla.of.borg>
+Date: Thu, 11 Jul 2013 11:16:34 +0300
+In-Reply-To: <alpine.DEB.2.02.1307101859360.29717@ayla.of.borg> (Geert
+ Uytterhoeven's message of "Wed, 10 Jul 2013 19:12:28 +0200")
+Message-ID: <87sizl7bq5.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?YXRoMTBr?= <ath10k@lists.infradead.org>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Linux Kernel Development <linux-kernel@vger.kernel.org>
 
-Hello!
-
-I try use mini pci-e card (from WDR-7500) with firmware for hw1.0, but i get error "wmi service ready event not received":
-[root@localhost ~]# lspci | grep Atheros
-02:00.0 Network controller: Atheros Communications Inc. AR9300 Wireless LAN adaptor (rev 01)
-03:00.0 Network controller: Atheros Communications Inc. Device 003c
-[root@localhost ~]# dmesg | grep ath10
-[ 34.712886] ath10k_pci 0000:03:00.0: BAR 0: assigned [mem 0xc0600000-0xc07fffff 64bit]
-[ 34.713762] ath10k: MSI-X didn't succeed (1), trying MSI
-[ 34.713820] ath10k_pci 0000:03:00.0: irq 48 for MSI/MSI-X
-[ 34.713896] ath10k: MSI interrupt handling
-[ 34.742881] ath10k: Hardware name qca988x hw1.0 version 0x4000002c
-[ 38.377544] ath10k: UART prints disabled
-[ 38.382971] ath10k: HTC Service HTT Data does not allocate target credits
-[ 38.384918] ath10k: Unknown eventid: 32768
-[ 43.388470] ath10k: wmi service ready event not received
-[ 43.389917] ath10k: could not register driver core (-110)
-[ 43.390241] ath10k_pci: probe of 0000:03:00.0 failed with error -110
-
-I'ts normal situation? I get firmware for hw1.0 from Archer C7 tp-link firmware.
-
-
-wbr,
-Nikolay Dyatchenko 
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+R2VlcnQgVXl0dGVyaG9ldmVuIDxnZWVydEBsaW51eC1tNjhrLm9yZz4gd3JpdGVzOgoKPiBPbiBX
+ZWQsIDEwIEp1bCAyMDEzLCBMaW51eCBLZXJuZWwgTWFpbGluZyBMaXN0IHdyb3RlOgo+PiAtLS0g
+L2Rldi9udWxsCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaAo+
+Cj4+ICsjZGVmaW5lIFNVUFBPUlRFRF9GV19NQUpPUgkxCj4+ICsjZGVmaW5lIFNVUFBPUlRFRF9G
+V19NSU5PUgkwCj4+ICsjZGVmaW5lIFNVUFBPUlRFRF9GV19SRUxFQVNFCTAKPj4gKyNkZWZpbmUg
+U1VQUE9SVEVEX0ZXX0JVSUxECTYyOQo+Cj4+ICtzdGF0aWMgaW50IGF0aDEwa19jaGVja19md192
+ZXJzaW9uKHN0cnVjdCBhdGgxMGsgKmFyKQo+PiArewo+PiArCWNoYXIgdmVyc2lvblszMl07Cj4+
+ICsKPj4gKwlpZiAoYXItPmZ3X3ZlcnNpb25fbWFqb3IgPj0gU1VQUE9SVEVEX0ZXX01BSk9SICYm
+Cj4+ICsJICAgIGFyLT5md192ZXJzaW9uX21pbm9yID49IFNVUFBPUlRFRF9GV19NSU5PUiAmJgo+
+PiArCSAgICBhci0+ZndfdmVyc2lvbl9yZWxlYXNlID49IFNVUFBPUlRFRF9GV19SRUxFQVNFICYm
+Cj4+ICsJICAgIGFyLT5md192ZXJzaW9uX2J1aWxkID49IFNVUFBPUlRFRF9GV19CVUlMRCkKPj4g
+KwkJcmV0dXJuIDA7Cj4KPiBNeSBhdHRlbnRpb24gZ290IHRyaWdnZXJlZCBieToKPgo+IGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jOiBJbiBmdW5jdGlvbiDigJhhdGgxMGtf
+Y2hlY2tfZndfdmVyc2lvbuKAmToKPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2Nv
+cmUuYzo3OTogd2FybmluZzogY29tcGFyaXNvbiBpcyBhbHdheXMgdHJ1ZSBkdWUgdG8gbGltaXRl
+ZCByYW5nZSBvZiBkYXRhIHR5cGUKCkkgaGF2ZW4ndCBzZWVuIHRoaXMgd2FybmluZywgSSBndWVz
+cyBteSBjb21waWxlciBpcyB0b28gb2xkLgoKPiBhcyBhbiB1MTYgaXMgYWx3YXlzIGxhcmdlciBv
+ciBlcXVhbCB0aGFuIHplcm8uIE5vdCBtdWNoIHlvdSBjYW4gZG8gdG8KPiBzaWxlbmNlIHRoYXQg
+d2FybmluZywgdGhvdWdoLgoKVG9vIGJhZCwgSSByZWFsbHkgd291bGQgbGlrZSB0byBrZWVwIGF0
+aDEwayB3YXJuaW5nIGZyZWUuIEVhc2llciB0bwptYWludGFpbiB0aGF0IHdheS4KCkRvZXMgYW55
+b25lIGhhdmUgYW55IG5pY2UgdHJpY2sgaW4gdGhlaXIgc2xlZXZlcyB0byBtYWtlIHRoaXMgd2Fy
+bmluZyBnbwphd2F5PyBJIGd1ZXNzIG9uZSB1Z2x5IG9wdGlvbiBpcyB0byBjaGFuZ2UgdTE2IHRv
+IGludC4KCj4KPiBIb3dldmVyLCBJIGRvbid0IHRoaW5rIHRoZSB2ZXJzaW9uIGNoZWNrIGlzIGNv
+cnJlY3QuCj4gU2hvdWxkbid0IGl0IHN0b3AgY2hlY2tpbmcgbGF0ZXIgZmllbGRzIGlmIGFuIGV4
+YWN0IG1hdGNoIGlzIGZvdW5kIGluIGFuCj4gZWFybGllciBmaWVsZD8KPgo+IEkuZS4KPgo+IAlp
+ZiAoYXItPmZ3X3ZlcnNpb25fbWFqb3IgPiBTVVBQT1JURURfRldfTUFKT1IgfHwKPiAJICAgIChh
+ci0+ZndfdmVyc2lvbl9tYWpvciA9PSBTVVBQT1JURURfRldfTUFKT1IgJiYKPiAJICAgICBhci0+
+ZndfdmVyc2lvbl9taW5vciA+IFNVUFBPUlRFRF9GV19NSU5PUikgfHwKPiAJICAgICAuLi4pIHsg
+Li4uIH0KPgo+IEN1cnJlbnRseSBlLmcuIChtYWpvciwgbWlub3IpID0gKDMsIDApIGlzIGNvbnNp
+ZGVyZWQgb2xkZXIgdGhhbiAoMiwgMSkuCgpEb2gsIHRoYXQgaXMgaW5kZWVkIHdyb25nLiBJJ2xs
+IGZpeCB0aGF0LCB0aGFua3MgZm9yIHNwb3R0aW5nIHRoaXMuCgo+IE9yIHBlcmhhcHMgbWlub3Ig
+aXMgbmV2ZXIgcmVzZXQgdG8gemVybyB3aGVuIG1ham9yIGlzIGluY3JlYXNlZD8gSW4gdGhhdAo+
+IGNhc2UsIHRoZSBjaGVjayBpcyBjb3JyZWN0LCBidXQgSU1ITyBpdCdzIGEgYml0IHNpbGx5IHRv
+IHNwbGl0IHRoZSB2ZXJzaW9uCj4gbnVtYmVyIGluIHNlcGVyYXRlIGZpZWxkcy4KCk5vLCB0aGUg
+ZmlybXdhcmUgZW5naW5lZXJzIGFyZSBzdXBwb3NlZCB0byByZXNldCBtaW5vciB2ZXJzaW9uIHdo
+ZW5ldmVyCm1ham9yIGNoYW5nZXMuCgotLSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
