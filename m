@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxDKX-00033F-Jg
- for ath10k@lists.infradead.org; Thu, 11 Jul 2013 09:38:30 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [ath9k-devel] [PATCH] ath10k: Fix crash when using v1 hardware.
-References: <1372804925-1701-1-git-send-email-greearb@candelatech.com>
- <51D35D58.5090507@candelatech.com>
-Date: Thu, 11 Jul 2013 12:37:55 +0300
-In-Reply-To: <51D35D58.5090507@candelatech.com> (Ben Greear's message of "Tue, 
- 02 Jul 2013 16:08:08 -0700")
-Message-ID: <87txk15te4.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from fallback1.mail.ru ([94.100.176.18])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UxDoB-0003st-Ua
+ for ath10k@lists.infradead.org; Thu, 11 Jul 2013 10:09:09 +0000
+Received: from f142.i.mail.ru (f142.i.mail.ru [128.140.171.238])
+ by fallback1.mail.ru (mPOP.Fallback_MX) with ESMTP id BE3FF21F72D8
+ for <ath10k@lists.infradead.org>; Thu, 11 Jul 2013 14:08:41 +0400 (MSK)
+From: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
+Subject: =?UTF-8?B?UmVbMl06IHdtaSBzZXJ2aWNlIHJlYWR5IGV2ZW50IG5vdCByZWNlaXZlZA==?=
+Mime-Version: 1.0
+Date: Thu, 11 Jul 2013 14:07:22 +0400
+Message-ID: <1373537241.559434664@f142.i.mail.ru>
+In-Reply-To: <877ggx7a2k.fsf@kamboji.qca.qualcomm.com>
+References: <1373438217.73020278@f256.mail.ru>
+ <877ggx7a2k.fsf@kamboji.qca.qualcomm.com>
+Reply-To: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +23,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: =?UTF-8?B?S2FsbGUgVmFsbw==?= <kvalo@qca.qualcomm.com>
+Cc: =?UTF-8?B?YXRoMTBr?= <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> Actually, I have no idea what type of hardware this is.  It was
-> suggested earlier to me that this AP had a v1 hardware in it, but
-> lspci shows this fairly unpromising thing, and the ath10k driver
-> appears to call 003c the V2 hardware....
->
-> 05:00.0 Network controller: Atheros Communications Inc. Device 003c (rev ff) (prog-if ff)
-> 	!!! Unknown header type 7f
-> 	Kernel modules: ath10k_pci
-
-That unknown header type looks scary. I'm starting to suspect even more
-that you have a hw problem of some sort.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBleHRyYWN0IGZpcm13YXJlIGZyb20gVFAtTGluayBBcmNoZXIgQzcgZmlybXdhcmUgKGh0dHA6
+Ly93d3cudHAtbGluay5jb20vbGsvc3VwcG9ydC9kb3dubG9hZC8/bW9kZWw9QXJjaGVyK0M3JnZl
+cnNpb249VjEjdGJsX2opLiBGaXJtd2FyZSBmb3IgaGFyZHdhcmUgdi4xLjAgcGxhY2VkIGluIG1v
+ZHVsZSB1bWFjLmtvICguZGF0YSBzZWN0aW9uKS4KSW4gLnN5bXRhYiBzZWN0aW9uIGluIHRoaXMg
+bW9kdWxlIGkgZm91bmQgbGluayBmb3Igb2JqZWN0czogYXRod2xhbl9iaW49ZmlybXdhcmUuYmlu
+LCByYXdfRGF0YT1ib2FyZC5iaW4gYW5kIG90cF9iaW49b3RwLmJpbi4KUGNpLWUgY2FyZCBpIGdl
+dCBmcm9tIFRQLUxpbmsgV0RSLTc1MDAgYW5kIEFyY2hlciBDNyBoYXZlIHRoZSBzYW1lIGNhcmQu
+CkFuZCAgaSBzZWUgKG1heWJlKSB3cm9uZyBkZWZpbmUgUUNBOTg4WF8xXzBfREVWSUNFX0lEIGlu
+IHBjaS5jICgweGFiY2QpLiBNYXliZSBwcm9ibGVtIHdpdGggdGhpcz8KCtCn0LXRgtCy0LXRgNCz
+LCAxMSDQuNGO0LvRjyAyMDEzLCAxMTo1MiArMDM6MDAg0L7RgiBLYWxsZSBWYWxvIDxrdmFsb0Bx
+Y2EucXVhbGNvbW0uY29tPjoKPiBOaWtvbGF5IER5YXRjaGVua28gPGN5YmVybmlrQGJrLnJ1PiB3
+cml0ZXM6Cj4gCj4gPiBJIHRyeSB1c2UgbWluaSBwY2ktZSBjYXJkIChmcm9tIFdEUi03NTAwKSB3
+aXRoIGZpcm13YXJlIGZvciBodzEuMCwgYnV0IGkgZ2V0IGVycm9yICJ3bWkgc2VydmljZSByZWFk
+eSBldmVudCBub3QgcmVjZWl2ZWQiOgo+ID4gW3Jvb3RAbG9jYWxob3N0IH5dIyBsc3BjaSB8IGdy
+ZXAgQXRoZXJvcwo+ID4gMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IEF0aGVyb3MgQ29tbXVu
+aWNhdGlvbnMgSW5jLiBBUjkzMDAgV2lyZWxlc3MgTEFOIGFkYXB0b3IgKHJldiAwMSkKPiA+IDAz
+OjAwLjAgTmV0d29yayBjb250cm9sbGVyOiBBdGhlcm9zIENvbW11bmljYXRpb25zIEluYy4gRGV2
+aWNlIDAwM2MKPiA+IFtyb290QGxvY2FsaG9zdCB+XSMgZG1lc2cgfCBncmVwIGF0aDEwCj4gPiBb
+IDM0LjcxMjg4Nl0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IEJBUiAwOiBhc3NpZ25lZCBbbWVt
+IDB4YzA2MDAwMDAtMHhjMDdmZmZmZiA2NGJpdF0KPiA+IFsgMzQuNzEzNzYyXSBhdGgxMGs6IE1T
+SS1YIGRpZG4ndCBzdWNjZWVkICgxKSwgdHJ5aW5nIE1TSQo+ID4gWyAzNC43MTM4MjBdIGF0aDEw
+a19wY2kgMDAwMDowMzowMC4wOiBpcnEgNDggZm9yIE1TSS9NU0ktWAo+ID4gWyAzNC43MTM4OTZd
+IGF0aDEwazogTVNJIGludGVycnVwdCBoYW5kbGluZwo+ID4gWyAzNC43NDI4ODFdIGF0aDEwazog
+SGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3MS4wIHZlcnNpb24gMHg0MDAwMDAyYwo+ID4gWyAzOC4z
+Nzc1NDRdIGF0aDEwazogVUFSVCBwcmludHMgZGlzYWJsZWQKPiA+IFsgMzguMzgyOTcxXSBhdGgx
+MGs6IEhUQyBTZXJ2aWNlIEhUVCBEYXRhIGRvZXMgbm90IGFsbG9jYXRlIHRhcmdldCBjcmVkaXRz
+Cj4gPiBbIDM4LjM4NDkxOF0gYXRoMTBrOiBVbmtub3duIGV2ZW50aWQ6IDMyNzY4Cj4gPiBbIDQz
+LjM4ODQ3MF0gYXRoMTBrOiB3bWkgc2VydmljZSByZWFkeSBldmVudCBub3QgcmVjZWl2ZWQKPiA+
+IFsgNDMuMzg5OTE3XSBhdGgxMGs6IGNvdWxkIG5vdCByZWdpc3RlciBkcml2ZXIgY29yZSAoLTEx
+MCkKPiA+IFsgNDMuMzkwMjQxXSBhdGgxMGtfcGNpOiBwcm9iZSBvZiAwMDAwOjAzOjAwLjAgZmFp
+bGVkIHdpdGggZXJyb3IgLTExMAo+ID4KPiA+IEkndHMgbm9ybWFsIHNpdHVhdGlvbj8gSSBnZXQg
+ZmlybXdhcmUgZm9yIGh3MS4wIGZyb20gQXJjaGVyIEM3IHRwLWxpbmsgZmlybXdhcmUuCj4gCj4g
+VGhlIHVua25vd24gZXZlbnQgaWQgMzI3NjggaW1wbGllcyB0aGF0IHlvdSBhcmUgdXNpbmcgd3Jv
+bmcgZmlybXdhcmUKPiB2ZXJzaW9uLiBXaGVyZSBkaWQgeW91IGdldCBpdD8KPiAKPiAtLSAKPiBL
+YWxsZSBWYWxvCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+IAoK
+d2JyLApOaWtvbGF5IER5YXRjaGVua28KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
