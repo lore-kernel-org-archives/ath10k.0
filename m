@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from fallback1.mail.ru ([94.100.176.18])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxDoB-0003st-Ua
- for ath10k@lists.infradead.org; Thu, 11 Jul 2013 10:09:09 +0000
-Received: from f142.i.mail.ru (f142.i.mail.ru [128.140.171.238])
- by fallback1.mail.ru (mPOP.Fallback_MX) with ESMTP id BE3FF21F72D8
- for <ath10k@lists.infradead.org>; Thu, 11 Jul 2013 14:08:41 +0400 (MSK)
-From: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
-Subject: =?UTF-8?B?UmVbMl06IHdtaSBzZXJ2aWNlIHJlYWR5IGV2ZW50IG5vdCByZWNlaXZlZA==?=
-Mime-Version: 1.0
-Date: Thu, 11 Jul 2013 14:07:22 +0400
-Message-ID: <1373537241.559434664@f142.i.mail.ru>
-In-Reply-To: <877ggx7a2k.fsf@kamboji.qca.qualcomm.com>
-References: <1373438217.73020278@f256.mail.ru>
- <877ggx7a2k.fsf@kamboji.qca.qualcomm.com>
-Reply-To: =?UTF-8?B?Tmlrb2xheSBEeWF0Y2hlbmtv?= <cybernik@bk.ru>
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1UxIR5-0002rF-2k
+ for ath10k@lists.infradead.org; Thu, 11 Jul 2013 15:05:35 +0000
+Message-ID: <51DEC9A7.2080207@candelatech.com>
+Date: Thu, 11 Jul 2013 08:05:11 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [ath9k-devel] [PATCH] ath10k:  Fix crash when using v1 hardware.
+References: <1372804925-1701-1-git-send-email-greearb@candelatech.com>
+ <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +19,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?S2FsbGUgVmFsbw==?= <kvalo@qca.qualcomm.com>
-Cc: =?UTF-8?B?YXRoMTBr?= <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SSBleHRyYWN0IGZpcm13YXJlIGZyb20gVFAtTGluayBBcmNoZXIgQzcgZmlybXdhcmUgKGh0dHA6
-Ly93d3cudHAtbGluay5jb20vbGsvc3VwcG9ydC9kb3dubG9hZC8/bW9kZWw9QXJjaGVyK0M3JnZl
-cnNpb249VjEjdGJsX2opLiBGaXJtd2FyZSBmb3IgaGFyZHdhcmUgdi4xLjAgcGxhY2VkIGluIG1v
-ZHVsZSB1bWFjLmtvICguZGF0YSBzZWN0aW9uKS4KSW4gLnN5bXRhYiBzZWN0aW9uIGluIHRoaXMg
-bW9kdWxlIGkgZm91bmQgbGluayBmb3Igb2JqZWN0czogYXRod2xhbl9iaW49ZmlybXdhcmUuYmlu
-LCByYXdfRGF0YT1ib2FyZC5iaW4gYW5kIG90cF9iaW49b3RwLmJpbi4KUGNpLWUgY2FyZCBpIGdl
-dCBmcm9tIFRQLUxpbmsgV0RSLTc1MDAgYW5kIEFyY2hlciBDNyBoYXZlIHRoZSBzYW1lIGNhcmQu
-CkFuZCAgaSBzZWUgKG1heWJlKSB3cm9uZyBkZWZpbmUgUUNBOTg4WF8xXzBfREVWSUNFX0lEIGlu
-IHBjaS5jICgweGFiY2QpLiBNYXliZSBwcm9ibGVtIHdpdGggdGhpcz8KCtCn0LXRgtCy0LXRgNCz
-LCAxMSDQuNGO0LvRjyAyMDEzLCAxMTo1MiArMDM6MDAg0L7RgiBLYWxsZSBWYWxvIDxrdmFsb0Bx
-Y2EucXVhbGNvbW0uY29tPjoKPiBOaWtvbGF5IER5YXRjaGVua28gPGN5YmVybmlrQGJrLnJ1PiB3
-cml0ZXM6Cj4gCj4gPiBJIHRyeSB1c2UgbWluaSBwY2ktZSBjYXJkIChmcm9tIFdEUi03NTAwKSB3
-aXRoIGZpcm13YXJlIGZvciBodzEuMCwgYnV0IGkgZ2V0IGVycm9yICJ3bWkgc2VydmljZSByZWFk
-eSBldmVudCBub3QgcmVjZWl2ZWQiOgo+ID4gW3Jvb3RAbG9jYWxob3N0IH5dIyBsc3BjaSB8IGdy
-ZXAgQXRoZXJvcwo+ID4gMDI6MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IEF0aGVyb3MgQ29tbXVu
-aWNhdGlvbnMgSW5jLiBBUjkzMDAgV2lyZWxlc3MgTEFOIGFkYXB0b3IgKHJldiAwMSkKPiA+IDAz
-OjAwLjAgTmV0d29yayBjb250cm9sbGVyOiBBdGhlcm9zIENvbW11bmljYXRpb25zIEluYy4gRGV2
-aWNlIDAwM2MKPiA+IFtyb290QGxvY2FsaG9zdCB+XSMgZG1lc2cgfCBncmVwIGF0aDEwCj4gPiBb
-IDM0LjcxMjg4Nl0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IEJBUiAwOiBhc3NpZ25lZCBbbWVt
-IDB4YzA2MDAwMDAtMHhjMDdmZmZmZiA2NGJpdF0KPiA+IFsgMzQuNzEzNzYyXSBhdGgxMGs6IE1T
-SS1YIGRpZG4ndCBzdWNjZWVkICgxKSwgdHJ5aW5nIE1TSQo+ID4gWyAzNC43MTM4MjBdIGF0aDEw
-a19wY2kgMDAwMDowMzowMC4wOiBpcnEgNDggZm9yIE1TSS9NU0ktWAo+ID4gWyAzNC43MTM4OTZd
-IGF0aDEwazogTVNJIGludGVycnVwdCBoYW5kbGluZwo+ID4gWyAzNC43NDI4ODFdIGF0aDEwazog
-SGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3MS4wIHZlcnNpb24gMHg0MDAwMDAyYwo+ID4gWyAzOC4z
-Nzc1NDRdIGF0aDEwazogVUFSVCBwcmludHMgZGlzYWJsZWQKPiA+IFsgMzguMzgyOTcxXSBhdGgx
-MGs6IEhUQyBTZXJ2aWNlIEhUVCBEYXRhIGRvZXMgbm90IGFsbG9jYXRlIHRhcmdldCBjcmVkaXRz
-Cj4gPiBbIDM4LjM4NDkxOF0gYXRoMTBrOiBVbmtub3duIGV2ZW50aWQ6IDMyNzY4Cj4gPiBbIDQz
-LjM4ODQ3MF0gYXRoMTBrOiB3bWkgc2VydmljZSByZWFkeSBldmVudCBub3QgcmVjZWl2ZWQKPiA+
-IFsgNDMuMzg5OTE3XSBhdGgxMGs6IGNvdWxkIG5vdCByZWdpc3RlciBkcml2ZXIgY29yZSAoLTEx
-MCkKPiA+IFsgNDMuMzkwMjQxXSBhdGgxMGtfcGNpOiBwcm9iZSBvZiAwMDAwOjAzOjAwLjAgZmFp
-bGVkIHdpdGggZXJyb3IgLTExMAo+ID4KPiA+IEkndHMgbm9ybWFsIHNpdHVhdGlvbj8gSSBnZXQg
-ZmlybXdhcmUgZm9yIGh3MS4wIGZyb20gQXJjaGVyIEM3IHRwLWxpbmsgZmlybXdhcmUuCj4gCj4g
-VGhlIHVua25vd24gZXZlbnQgaWQgMzI3NjggaW1wbGllcyB0aGF0IHlvdSBhcmUgdXNpbmcgd3Jv
-bmcgZmlybXdhcmUKPiB2ZXJzaW9uLiBXaGVyZSBkaWQgeW91IGdldCBpdD8KPiAKPiAtLSAKPiBL
-YWxsZSBWYWxvCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+IAoK
-d2JyLApOaWtvbGF5IER5YXRjaGVua28KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 07/11/2013 02:36 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
+>
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> I put a v1 NIC from an TP-LINK AC 1750 AP in
+>> a 64-bit PC, and the OS crashes on bootup.  I'm not
+>> sure how broken my hardware is (possibly completely non
+>> functional), but at least with this patch it will no longer
+>> crash the OS.  Not sure it ever got far enough to try,
+>> but I also do not have firmware for the NIC.
+>>
+>> With this patch I get this info on module load:
+>>
+>> ath10k_pci 0000:05:00.0: BAR 0: assigned [mem 0xf4400000-0xf45fffff 64bit]
+>> ath10k_pci 0000:05:00.0: BAR 0: error updating (0xf4400004 != 0xffffffff)
+>> ath10k_pci 0000:05:00.0: BAR 0: error updating (high 0x000000 != 0xffffffff)
+>> ath10k_pci 0000:05:00.0: Refused to change power state, currently in D3
+>> ath10k: MSI-X interrupt handling (8 intrs)
+>> ath10k: Unable to wakeup target
+>> ath10k: target takes too long to wake up (awake count 1)
+>> ath10k: src_ring ffff88020c0d0a00:  write_index is out of bounds: 4294967295  nentries_mask: 15.
+>> ath10k: dest_ring ffff88020db2c000:  write_index is out of bounds: 4294967295  nentries_mask: 511.
+>> ath10k: dest_ring ffff880210d56400:  write_index is out of bounds: 4294967295  nentries_mask: 31.
+>> ath10k: src_ring ffff880210d57600:  write_index is out of bounds: 4294967295  nentries_mask: 31.
+>> ath10k: src_ring ffff88020fe70000:  write_index is out of bounds: 4294967295  nentries_mask: 2047.
+>> ath10k: src_ring ffff880212989b40:  write_index is out of bounds: 4294967295  nentries_mask: 1.
+>> ath10k: dest_ring ffff880212989960:  write_index is out of bounds: 4294967295  nentries_mask: 1.
+>> ath10k: Failed to get pcie state addr: -5
+>> ath10k: early firmware event indicated
+>> ------------[ cut here ]------------
+>> WARNING: at /home/greearb/git/linux.wireless-testing/drivers/net/wireless/ath/ath10k/ce.c:771 ath10k_ce_per_engine_service+0x53/0x1b4 [ath10k_pci]()
+>> ....
+>> (it hits the warning case about 5-6 times and then seems to quiesce OK).
+>
+> I haven't seen this myself so it might be a hw problem, but difficult to
+> say.
+>
+>> +	/* On v1 hardware at least, setup can fail, causing ce_id_state to
+>> +	 * be cleaned up, but this method is still called a few times.  Check
+>> +	 * for NULL here so we don't crash.  Probably a better fix is to stop
+>> +	 * the ath10k_pci_ce_tasklet sooner.
+>> +	 */
+>> +	if (WARN_ONCE(!ce_state, "ce_id_to_state[%i] is NULL\n", ce_id))
+>> +		return;
+>> +
+>> +	ctrl_addr = ce_state->ctrl_addr;
+>> +
+>
+> The tests you add look like workarounds. I would prefer to try fix these
+> by going to the source of the problem. Maybe we should add
+> ath10k_pci_wake() and ath10k_do_pci_wake()?
+
+These are work-arounds, but you should not let a bad piece of hardware/firmware crash
+the entire OS just because you don't want to do sanity checking on the
+values you get from the firmware.  Perhaps there is a better fix for the
+code above, but the warning splat should still provide incentive to get
+it right, while not crashing the OS in the meantime.
+
+
+> Can you enable few debug logs, like ATH10K_DBG_PCI, and post them? That
+> would give more hint there things are going wrong.
+
+
+Yes, I can do that.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
