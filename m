@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxISW-0002uM-40
- for ath10k@lists.infradead.org; Thu, 11 Jul 2013 15:07:04 +0000
-Message-ID: <51DECA02.6070706@candelatech.com>
-Date: Thu, 11 Jul 2013 08:06:42 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1UxV9Q-0008GI-4q
+ for ath10k@lists.infradead.org; Fri, 12 Jul 2013 04:40:12 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: ATH10K should depend on HAS_DMA
+References: <1373490216-12437-1-git-send-email-geert@linux-m68k.org>
+ <1373490216-12437-3-git-send-email-geert@linux-m68k.org>
+Date: Fri, 12 Jul 2013 07:39:39 +0300
+In-Reply-To: <1373490216-12437-3-git-send-email-geert@linux-m68k.org> (Geert
+ Uytterhoeven's message of "Wed, 10 Jul 2013 23:03:36 +0200")
+Message-ID: <87txk04cj8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [ath9k-devel] [PATCH] ath10k: Fix crash when using v1 hardware.
-References: <1372804925-1701-1-git-send-email-greearb@candelatech.com>
- <51D35D58.5090507@candelatech.com> <87txk15te4.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87txk15te4.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +20,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
 
-On 07/11/2013 02:37 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
+
+> If NO_DMA=y:
 >
->> Actually, I have no idea what type of hardware this is.  It was
->> suggested earlier to me that this AP had a v1 hardware in it, but
->> lspci shows this fairly unpromising thing, and the ath10k driver
->> appears to call 003c the V2 hardware....
->>
->> 05:00.0 Network controller: Atheros Communications Inc. Device 003c (rev ff) (prog-if ff)
->> 	!!! Unknown header type 7f
->> 	Kernel modules: ath10k_pci
+> drivers/built-in.o: In function `ath10k_skb_unmap':
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
+> drivers/built-in.o: In function `ath10k_skb_map':
+> drivers/net/wireless/ath/ath10k/core.h:83: undefined reference to `dma_map_single'
+> drivers/net/wireless/ath/ath10k/core.h:86: undefined reference to `dma_mapping_error'
+> drivers/built-in.o: In function `ath10k_htt_rx_ring_free':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:113: undefined reference to `dma_unmap_single'
+> drivers/built-in.o: In function `ath10k_htt_rx_amsdu_pop':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:296: undefined reference to `dma_unmap_single'
+> drivers/net/wireless/ath/ath10k/htt_rx.c:389: undefined reference to `dma_unmap_single'
+> drivers/built-in.o: In function `__ath10k_htt_rx_ring_fill_n':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:146: undefined reference to `dma_map_single'
+> drivers/net/wireless/ath/ath10k/htt_rx.c:150: undefined reference to `dma_mapping_error'
+> drivers/built-in.o: In function `ath10k_htt_rx_attach':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:474: undefined reference to `dma_alloc_coherent'
+> drivers/net/wireless/ath/ath10k/htt_rx.c:509: undefined reference to `dma_free_coherent'
+> drivers/net/wireless/ath/ath10k/htt_rx.c:514: undefined reference to `dma_free_coherent'
+> drivers/built-in.o: In function `ath10k_htt_rx_detach':
+> drivers/net/wireless/ath/ath10k/htt_rx.c:220: undefined reference to `dma_unmap_single'
+> drivers/net/wireless/ath/ath10k/htt_rx.c:228: undefined reference to `dma_free_coherent'
+> drivers/built-in.o: In function `ath10k_skb_map':
+> drivers/net/wireless/ath/ath10k/core.h:83: undefined reference to `dma_map_single'
+> drivers/net/wireless/ath/ath10k/core.h:86: undefined reference to `dma_mapping_error'
+> drivers/built-in.o: In function `ath10k_skb_unmap':
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
+> drivers/built-in.o: In function `ath10k_skb_map':
+> drivers/net/wireless/ath/ath10k/core.h:83: undefined reference to `dma_map_single'
+> drivers/net/wireless/ath/ath10k/core.h:86: undefined reference to `dma_mapping_error'
+> drivers/net/wireless/ath/ath10k/core.h:83: undefined reference to `dma_map_single'
+> drivers/net/wireless/ath/ath10k/core.h:86: undefined reference to `dma_mapping_error'
+> drivers/built-in.o: In function `ath10k_skb_unmap':
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
+> drivers/net/wireless/ath/ath10k/core.h:98: undefined reference to `dma_unmap_single'
 >
-> That unknown header type looks scary. I'm starting to suspect even more
-> that you have a hw problem of some sort.
+> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: linux-wireless@vger.kernel.org
 
-I tried two different NICS extracted from two different APs and the behaviour
-is the same, so it is probably not just a manufacturing error.
-
-Please note that I do NOT have v1 firmware, though from what I could tell,
-this NIC was showing up as v2 hardware anyway...
-
-Thanks,
-Ben
+Thanks, I'll take this and send forward.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
