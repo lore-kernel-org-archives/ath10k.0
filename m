@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UxfMm-0002zw-E0
- for ath10k@lists.infradead.org; Fri, 12 Jul 2013 15:34:41 +0000
-Message-ID: <51E021F9.6060605@candelatech.com>
-Date: Fri, 12 Jul 2013 08:34:17 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1Uychp-0004p6-RH
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2013 06:56:22 +0000
+Received: by mail-bk0-f49.google.com with SMTP id mz10so4428832bkb.22
+ for <ath10k@lists.infradead.org>; Sun, 14 Jul 2013 23:55:57 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [ath9k-devel] [PATCH] ath10k:  Fix crash when using v1 hardware.
+In-Reply-To: <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
 References: <1372804925-1701-1-git-send-email-greearb@candelatech.com>
- <87y59d5tgu.fsf@kamboji.qca.qualcomm.com> <51DEC9A7.2080207@candelatech.com>
- <87d2qn4yr9.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87d2qn4yr9.fsf@kamboji.qca.qualcomm.com>
+ <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 15 Jul 2013 08:55:56 +0200
+Message-ID: <CA+BoTQkNmzOjHXyk4q+=W60Dx2B=i9htzNsE0moUzhMopQX=fw@mail.gmail.com>
+Subject: Re: [ath9k-devel] [PATCH] ath10k: Fix crash when using v1 hardware.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,92 +21,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 07/12/2013 07:51 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> On 07/11/2013 02:36 AM, Kalle Valo wrote:
->>> greearb@candelatech.com writes:
->>>
->>>> +	/* On v1 hardware at least, setup can fail, causing ce_id_state to
->>>> +	 * be cleaned up, but this method is still called a few times.  Check
->>>> +	 * for NULL here so we don't crash.  Probably a better fix is to stop
->>>> +	 * the ath10k_pci_ce_tasklet sooner.
->>>> +	 */
->>>> +	if (WARN_ONCE(!ce_state, "ce_id_to_state[%i] is NULL\n", ce_id))
->>>> +		return;
->>>> +
->>>> +	ctrl_addr = ce_state->ctrl_addr;
->>>> +
->>>
->>> The tests you add look like workarounds. I would prefer to try fix these
->>> by going to the source of the problem. Maybe we should add
->>> ath10k_pci_wake() and ath10k_do_pci_wake()?
->
-> Doh, dropped an essential word from a sentence, again. That's what I get
-> when trying to do multiple things at the same time.
->
-> What I was trying to say: Maybe we should add proper error hanling to
-> ath10k_pci_wake() and ath10k_do_pci_wake() and that way avoid this?
-
-Maybe..I haven't spent much time in the driver yet, so not sure
-the best place to fix the null ce_state issue.
-
->> These are work-arounds, but you should not let a bad piece of
->> hardware/firmware crash the entire OS just because you don't want to
->> do sanity checking on the values you get from the firmware. Perhaps
->> there is a better fix for the code above, but the warning splat should
->> still provide incentive to get it right, while not crashing the OS in
->> the meantime.
->
-> Sure, the driver should not crash if HW is not functioning correctly.
-> I'm just saying that adding odd checks at random places is not the
-> "kernel way" to do things, only GTK people do that ;)
->
-> I was thinking that the proper way is to check that wakeup succeeds and
-> not enable interrupts or something like that.
-
-With the array-index crashes, you are asking firmware for some
-value, and not sanity checking the return value to make sure it
-is bounded by the array length.  In my case, it's returning something very
-wrong because PCI isn't talking, or something like that.
-
-But, even with functional PCI, you could get a value that for
-whatever reason doesn't match the expected value (ie, buggy firmware).
-I think you must sanity check those values that can crash the OS
-with stray memory access, at least.
-
->>> Can you enable few debug logs, like ATH10K_DBG_PCI, and post them? That
->>> would give more hint there things are going wrong.
->>
->> Yes, I can do that.
->
-> Thanks.
->
-> Oh, did you mention something that ath10k detect the device as hw2.0?
-> Maybe the PCI ids are wrong? Then you could also force the same
-> workaround for hw2.0 as hw1.0 has:
-
-I tried just changing the #defines so that it was treated as V1,
-but that did not help.  I can try your suggestion when I get
-a chance.  I hope to have some time to do some more
-twiddling on these NICs later today or early next week.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksCgpPbiAxMSBKdWx5IDIwMTMgMTE6MzYsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IGdyZWVhcmJAY2FuZGVsYXRlY2guY29tIHdyaXRlczoKPgo+PiBGcm9t
+OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4KPj4gSSBwdXQgYSB2MSBO
+SUMgZnJvbSBhbiBUUC1MSU5LIEFDIDE3NTAgQVAgaW4KPj4gYSA2NC1iaXQgUEMsIGFuZCB0aGUg
+T1MgY3Jhc2hlcyBvbiBib290dXAuICBJJ20gbm90Cj4+IHN1cmUgaG93IGJyb2tlbiBteSBoYXJk
+d2FyZSBpcyAocG9zc2libHkgY29tcGxldGVseSBub24KPj4gZnVuY3Rpb25hbCksIGJ1dCBhdCBs
+ZWFzdCB3aXRoIHRoaXMgcGF0Y2ggaXQgd2lsbCBubyBsb25nZXIKPj4gY3Jhc2ggdGhlIE9TLiAg
+Tm90IHN1cmUgaXQgZXZlciBnb3QgZmFyIGVub3VnaCB0byB0cnksCj4+IGJ1dCBJIGFsc28gZG8g
+bm90IGhhdmUgZmlybXdhcmUgZm9yIHRoZSBOSUMuCj4+Cj4+IFdpdGggdGhpcyBwYXRjaCBJIGdl
+dCB0aGlzIGluZm8gb24gbW9kdWxlIGxvYWQ6Cj4+Cj4+IGF0aDEwa19wY2kgMDAwMDowNTowMC4w
+OiBCQVIgMDogYXNzaWduZWQgW21lbSAweGY0NDAwMDAwLTB4ZjQ1ZmZmZmYgNjRiaXRdCj4+IGF0
+aDEwa19wY2kgMDAwMDowNTowMC4wOiBCQVIgMDogZXJyb3IgdXBkYXRpbmcgKDB4ZjQ0MDAwMDQg
+IT0gMHhmZmZmZmZmZikKPj4gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IEJBUiAwOiBlcnJvciB1
+cGRhdGluZyAoaGlnaCAweDAwMDAwMCAhPSAweGZmZmZmZmZmKQo+PiBhdGgxMGtfcGNpIDAwMDA6
+MDU6MDAuMDogUmVmdXNlZCB0byBjaGFuZ2UgcG93ZXIgc3RhdGUsIGN1cnJlbnRseSBpbiBEMwo+
+PiBhdGgxMGs6IE1TSS1YIGludGVycnVwdCBoYW5kbGluZyAoOCBpbnRycykKPj4gYXRoMTBrOiBV
+bmFibGUgdG8gd2FrZXVwIHRhcmdldAo+PiBhdGgxMGs6IHRhcmdldCB0YWtlcyB0b28gbG9uZyB0
+byB3YWtlIHVwIChhd2FrZSBjb3VudCAxKQo+PiBhdGgxMGs6IHNyY19yaW5nIGZmZmY4ODAyMGMw
+ZDBhMDA6ICB3cml0ZV9pbmRleCBpcyBvdXQgb2YgYm91bmRzOiA0Mjk0OTY3Mjk1ICBuZW50cmll
+c19tYXNrOiAxNS4KPj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIwZGIyYzAwMDogIHdyaXRl
+X2luZGV4IGlzIG91dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDUxMS4K
+Pj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIxMGQ1NjQwMDogIHdyaXRlX2luZGV4IGlzIG91
+dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDMxLgo+PiBhdGgxMGs6IHNy
+Y19yaW5nIGZmZmY4ODAyMTBkNTc2MDA6ICB3cml0ZV9pbmRleCBpcyBvdXQgb2YgYm91bmRzOiA0
+Mjk0OTY3Mjk1ICBuZW50cmllc19tYXNrOiAzMS4KPj4gYXRoMTBrOiBzcmNfcmluZyBmZmZmODgw
+MjBmZTcwMDAwOiAgd3JpdGVfaW5kZXggaXMgb3V0IG9mIGJvdW5kczogNDI5NDk2NzI5NSAgbmVu
+dHJpZXNfbWFzazogMjA0Ny4KPj4gYXRoMTBrOiBzcmNfcmluZyBmZmZmODgwMjEyOTg5YjQwOiAg
+d3JpdGVfaW5kZXggaXMgb3V0IG9mIGJvdW5kczogNDI5NDk2NzI5NSAgbmVudHJpZXNfbWFzazog
+MS4KPj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIxMjk4OTk2MDogIHdyaXRlX2luZGV4IGlz
+IG91dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDEuCj4+IGF0aDEwazog
+RmFpbGVkIHRvIGdldCBwY2llIHN0YXRlIGFkZHI6IC01Cj4+IGF0aDEwazogZWFybHkgZmlybXdh
+cmUgZXZlbnQgaW5kaWNhdGVkCj4+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0t
+LQo+PiBXQVJOSU5HOiBhdCAvaG9tZS9ncmVlYXJiL2dpdC9saW51eC53aXJlbGVzcy10ZXN0aW5n
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY2UuYzo3NzEgYXRoMTBrX2NlX3Blcl9l
+bmdpbmVfc2VydmljZSsweDUzLzB4MWI0IFthdGgxMGtfcGNpXSgpCj4+IC4uLi4KPj4gKGl0IGhp
+dHMgdGhlIHdhcm5pbmcgY2FzZSBhYm91dCA1LTYgdGltZXMgYW5kIHRoZW4gc2VlbXMgdG8gcXVp
+ZXNjZSBPSykuCj4KPiBJIGhhdmVuJ3Qgc2VlbiB0aGlzIG15c2VsZiBzbyBpdCBtaWdodCBiZSBh
+IGh3IHByb2JsZW0sIGJ1dCBkaWZmaWN1bHQgdG8KPiBzYXkuCj4KPj4gKyAgICAgLyogT24gdjEg
+aGFyZHdhcmUgYXQgbGVhc3QsIHNldHVwIGNhbiBmYWlsLCBjYXVzaW5nIGNlX2lkX3N0YXRlIHRv
+Cj4+ICsgICAgICAqIGJlIGNsZWFuZWQgdXAsIGJ1dCB0aGlzIG1ldGhvZCBpcyBzdGlsbCBjYWxs
+ZWQgYSBmZXcgdGltZXMuICBDaGVjawo+PiArICAgICAgKiBmb3IgTlVMTCBoZXJlIHNvIHdlIGRv
+bid0IGNyYXNoLiAgUHJvYmFibHkgYSBiZXR0ZXIgZml4IGlzIHRvIHN0b3AKPj4gKyAgICAgICog
+dGhlIGF0aDEwa19wY2lfY2VfdGFza2xldCBzb29uZXIuCj4+ICsgICAgICAqLwo+PiArICAgICBp
+ZiAoV0FSTl9PTkNFKCFjZV9zdGF0ZSwgImNlX2lkX3RvX3N0YXRlWyVpXSBpcyBOVUxMXG4iLCBj
+ZV9pZCkpCj4+ICsgICAgICAgICAgICAgcmV0dXJuOwo+PiArCj4+ICsgICAgIGN0cmxfYWRkciA9
+IGNlX3N0YXRlLT5jdHJsX2FkZHI7Cj4+ICsKPgo+IFRoZSB0ZXN0cyB5b3UgYWRkIGxvb2sgbGlr
+ZSB3b3JrYXJvdW5kcy4gSSB3b3VsZCBwcmVmZXIgdG8gdHJ5IGZpeCB0aGVzZQo+IGJ5IGdvaW5n
+IHRvIHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0uIE1heWJlIHdlIHNob3VsZCBhZGQKPiBhdGgx
+MGtfcGNpX3dha2UoKSBhbmQgYXRoMTBrX2RvX3BjaV93YWtlKCk/CgpUaGUgdGVhcmRvd24gc2Vx
+dWVuY2UgaXMgYnJva2VuLiBJbnRlcnJ1cHRzIGFyZW4ndApkaXNhYmxlZC91bnJlZ2lzdGVyZWQg
+c29vbiBlbm91Z2guIEkgaGF2ZSBhIHBlbmRpbmcgcGF0Y2ggdGhhdCBzaG91bGQKZml4IHRoaXMg
+KGFsdGhvdWdoIGl0J3Mgc3RpbGwgbW9yZSBvZiBhIHdvcmthcm91bmQgdGhhbiBhIHJlYWwgZml4
+CnNpbmNlIHdlIG5lZWQgcHJvcGVyIHZhcmlhYmxlIGluaXQgY29kZS8gaHcgaW5pdCBjb2RlIHNl
+cGFyYXRpb24gdG8gYmUKZG9uZSkuIEhvd2V2ZXIgdGhlIHBhdGNoIGRlcGVuZHMgb24gbXkgcmVj
+b3ZlcnkgcGF0Y2hzZXQgc28gSSBoYXZlbid0CnBvc3RlZCBpdCB5ZXQuCgoKUG96ZHJhd2lhbSAv
+IEJlc3QgcmVnYXJkcywKTWljaGHFgiBLYXppb3IuCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCg==
