@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UydkY-0005cS-9G
- for ath10k@lists.infradead.org; Mon, 15 Jul 2013 08:03:14 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 00/16] ath10k: pending patches
-References: <1373030117-18077-1-git-send-email-kvalo@qca.qualcomm.com>
-Date: Mon, 15 Jul 2013 11:02:45 +0300
-In-Reply-To: <1373030117-18077-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
- Valo's message of "Fri, 5 Jul 2013 16:15:01 +0300")
-Message-ID: <87a9lop7x6.fsf@kamboji.qca.qualcomm.com>
+ id 1UyekC-0006eu-LA
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2013 09:06:57 +0000
+Received: by mail-la0-f43.google.com with SMTP id gw10so9259272lab.16
+ for <ath10k@lists.infradead.org>; Mon, 15 Jul 2013 02:06:31 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87mwpop93v.fsf@kamboji.qca.qualcomm.com>
+References: <1373624746-3244-1-git-send-email-janusz.dziedzic@tieto.com>
+ <87mwpop93v.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 15 Jul 2013 11:06:31 +0200
+Message-ID: <CALhHN=pGFRS8CW31vq0gRAmos-yPRVUffVi_QibbNVLq7x-ObA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: pass also QOS Null frames through mgmt tx path
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> here are pending patches which were commited to ath10k.git while
-> ath10k was under review. They were only sent to ath9k-devel, I'm
-> resending them now before I reapply them to my new ath.git tree.
+  On 15 July 2013 09:37, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 >
-> Michal Kazior (16):
->   ath10k: fix teardown ordering
->   ath10k: fix possible deadlock
->   ath10k: setup rts/frag thresholds upon vdev creation
->   ath10k: do not setup rts/frag thresholds for suspended interfaces
->   ath10k: remove ath10k_bus
->   ath10k: fix typo in define name
->   ath10k: silent warning in IBSS mode
->   ath10k: lower print level for a message
->   ath10k: provide errno if bmi read/write fails
->   ath10k: change function to take struct ath10k as arg
->   ath10k: rename hif callback
->   ath10k: embed HTC struct inside ath10k
->   ath10k: embed HTT struct inside ath10k
->   ath10k: improve locking
->   ath10k: abort scan properly if wmi_scan_stop fails
->   ath10k: add missing debug prints
+>> Fw will report wrong tx status for QOS Null frames
+>> sent through data tx path.
+>>
+>> This patch fixes station(s) keep alive detection
+>> triggered from wpa_supplicant/hostapd when work
+>> as AP/GO and WMM enabled.
+>>
+>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+>
+> I think you mentioned privately that this patch should be dropped. Is
+> that still the case?
+>
 
-All 16 applied.
+Yes, please drop this patch
 
--- 
-Kalle Valo
+BR
+Janusz
 
 _______________________________________________
 ath10k mailing list
