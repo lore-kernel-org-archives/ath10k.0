@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uychp-0004p6-RH
- for ath10k@lists.infradead.org; Mon, 15 Jul 2013 06:56:22 +0000
-Received: by mail-bk0-f49.google.com with SMTP id mz10so4428832bkb.22
- for <ath10k@lists.infradead.org>; Sun, 14 Jul 2013 23:55:57 -0700 (PDT)
+ id 1Uyd4V-00052Q-0C
+ for ath10k@lists.infradead.org; Mon, 15 Jul 2013 07:19:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [ath9k-devel] [PATCH v2 1/3] ath10k: implement device recovery
+References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
+ <1372148011-28234-2-git-send-email-michal.kazior@tieto.com>
+ <87bo6hh2hz.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkJLTLRrO41bNJ+x1fAKb39AQ2J4QfinFbE4=BqwPu0VQ@mail.gmail.com>
+Date: Mon, 15 Jul 2013 10:19:16 +0300
+In-Reply-To: <CA+BoTQkJLTLRrO41bNJ+x1fAKb39AQ2J4QfinFbE4=BqwPu0VQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 5 Jul 2013 10:05:36 +0200")
+Message-ID: <87r4f0p9xn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
-References: <1372804925-1701-1-git-send-email-greearb@candelatech.com>
- <87y59d5tgu.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 15 Jul 2013 08:55:56 +0200
-Message-ID: <CA+BoTQkNmzOjHXyk4q+=W60Dx2B=i9htzNsE0moUzhMopQX=fw@mail.gmail.com>
-Subject: Re: [ath9k-devel] [PATCH] ath10k: Fix crash when using v1 hardware.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +22,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath9k-devel@lists.ath9k.org" <ath9k-devel@lists.ath9k.org>, ath10k@lists.infradead.org
 
-SGksCgpPbiAxMSBKdWx5IDIwMTMgMTE6MzYsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
-bS5jb20+IHdyb3RlOgo+IGdyZWVhcmJAY2FuZGVsYXRlY2guY29tIHdyaXRlczoKPgo+PiBGcm9t
-OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4KPj4gSSBwdXQgYSB2MSBO
-SUMgZnJvbSBhbiBUUC1MSU5LIEFDIDE3NTAgQVAgaW4KPj4gYSA2NC1iaXQgUEMsIGFuZCB0aGUg
-T1MgY3Jhc2hlcyBvbiBib290dXAuICBJJ20gbm90Cj4+IHN1cmUgaG93IGJyb2tlbiBteSBoYXJk
-d2FyZSBpcyAocG9zc2libHkgY29tcGxldGVseSBub24KPj4gZnVuY3Rpb25hbCksIGJ1dCBhdCBs
-ZWFzdCB3aXRoIHRoaXMgcGF0Y2ggaXQgd2lsbCBubyBsb25nZXIKPj4gY3Jhc2ggdGhlIE9TLiAg
-Tm90IHN1cmUgaXQgZXZlciBnb3QgZmFyIGVub3VnaCB0byB0cnksCj4+IGJ1dCBJIGFsc28gZG8g
-bm90IGhhdmUgZmlybXdhcmUgZm9yIHRoZSBOSUMuCj4+Cj4+IFdpdGggdGhpcyBwYXRjaCBJIGdl
-dCB0aGlzIGluZm8gb24gbW9kdWxlIGxvYWQ6Cj4+Cj4+IGF0aDEwa19wY2kgMDAwMDowNTowMC4w
-OiBCQVIgMDogYXNzaWduZWQgW21lbSAweGY0NDAwMDAwLTB4ZjQ1ZmZmZmYgNjRiaXRdCj4+IGF0
-aDEwa19wY2kgMDAwMDowNTowMC4wOiBCQVIgMDogZXJyb3IgdXBkYXRpbmcgKDB4ZjQ0MDAwMDQg
-IT0gMHhmZmZmZmZmZikKPj4gYXRoMTBrX3BjaSAwMDAwOjA1OjAwLjA6IEJBUiAwOiBlcnJvciB1
-cGRhdGluZyAoaGlnaCAweDAwMDAwMCAhPSAweGZmZmZmZmZmKQo+PiBhdGgxMGtfcGNpIDAwMDA6
-MDU6MDAuMDogUmVmdXNlZCB0byBjaGFuZ2UgcG93ZXIgc3RhdGUsIGN1cnJlbnRseSBpbiBEMwo+
-PiBhdGgxMGs6IE1TSS1YIGludGVycnVwdCBoYW5kbGluZyAoOCBpbnRycykKPj4gYXRoMTBrOiBV
-bmFibGUgdG8gd2FrZXVwIHRhcmdldAo+PiBhdGgxMGs6IHRhcmdldCB0YWtlcyB0b28gbG9uZyB0
-byB3YWtlIHVwIChhd2FrZSBjb3VudCAxKQo+PiBhdGgxMGs6IHNyY19yaW5nIGZmZmY4ODAyMGMw
-ZDBhMDA6ICB3cml0ZV9pbmRleCBpcyBvdXQgb2YgYm91bmRzOiA0Mjk0OTY3Mjk1ICBuZW50cmll
-c19tYXNrOiAxNS4KPj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIwZGIyYzAwMDogIHdyaXRl
-X2luZGV4IGlzIG91dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDUxMS4K
-Pj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIxMGQ1NjQwMDogIHdyaXRlX2luZGV4IGlzIG91
-dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDMxLgo+PiBhdGgxMGs6IHNy
-Y19yaW5nIGZmZmY4ODAyMTBkNTc2MDA6ICB3cml0ZV9pbmRleCBpcyBvdXQgb2YgYm91bmRzOiA0
-Mjk0OTY3Mjk1ICBuZW50cmllc19tYXNrOiAzMS4KPj4gYXRoMTBrOiBzcmNfcmluZyBmZmZmODgw
-MjBmZTcwMDAwOiAgd3JpdGVfaW5kZXggaXMgb3V0IG9mIGJvdW5kczogNDI5NDk2NzI5NSAgbmVu
-dHJpZXNfbWFzazogMjA0Ny4KPj4gYXRoMTBrOiBzcmNfcmluZyBmZmZmODgwMjEyOTg5YjQwOiAg
-d3JpdGVfaW5kZXggaXMgb3V0IG9mIGJvdW5kczogNDI5NDk2NzI5NSAgbmVudHJpZXNfbWFzazog
-MS4KPj4gYXRoMTBrOiBkZXN0X3JpbmcgZmZmZjg4MDIxMjk4OTk2MDogIHdyaXRlX2luZGV4IGlz
-IG91dCBvZiBib3VuZHM6IDQyOTQ5NjcyOTUgIG5lbnRyaWVzX21hc2s6IDEuCj4+IGF0aDEwazog
-RmFpbGVkIHRvIGdldCBwY2llIHN0YXRlIGFkZHI6IC01Cj4+IGF0aDEwazogZWFybHkgZmlybXdh
-cmUgZXZlbnQgaW5kaWNhdGVkCj4+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0t
-LQo+PiBXQVJOSU5HOiBhdCAvaG9tZS9ncmVlYXJiL2dpdC9saW51eC53aXJlbGVzcy10ZXN0aW5n
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY2UuYzo3NzEgYXRoMTBrX2NlX3Blcl9l
-bmdpbmVfc2VydmljZSsweDUzLzB4MWI0IFthdGgxMGtfcGNpXSgpCj4+IC4uLi4KPj4gKGl0IGhp
-dHMgdGhlIHdhcm5pbmcgY2FzZSBhYm91dCA1LTYgdGltZXMgYW5kIHRoZW4gc2VlbXMgdG8gcXVp
-ZXNjZSBPSykuCj4KPiBJIGhhdmVuJ3Qgc2VlbiB0aGlzIG15c2VsZiBzbyBpdCBtaWdodCBiZSBh
-IGh3IHByb2JsZW0sIGJ1dCBkaWZmaWN1bHQgdG8KPiBzYXkuCj4KPj4gKyAgICAgLyogT24gdjEg
-aGFyZHdhcmUgYXQgbGVhc3QsIHNldHVwIGNhbiBmYWlsLCBjYXVzaW5nIGNlX2lkX3N0YXRlIHRv
-Cj4+ICsgICAgICAqIGJlIGNsZWFuZWQgdXAsIGJ1dCB0aGlzIG1ldGhvZCBpcyBzdGlsbCBjYWxs
-ZWQgYSBmZXcgdGltZXMuICBDaGVjawo+PiArICAgICAgKiBmb3IgTlVMTCBoZXJlIHNvIHdlIGRv
-bid0IGNyYXNoLiAgUHJvYmFibHkgYSBiZXR0ZXIgZml4IGlzIHRvIHN0b3AKPj4gKyAgICAgICog
-dGhlIGF0aDEwa19wY2lfY2VfdGFza2xldCBzb29uZXIuCj4+ICsgICAgICAqLwo+PiArICAgICBp
-ZiAoV0FSTl9PTkNFKCFjZV9zdGF0ZSwgImNlX2lkX3RvX3N0YXRlWyVpXSBpcyBOVUxMXG4iLCBj
-ZV9pZCkpCj4+ICsgICAgICAgICAgICAgcmV0dXJuOwo+PiArCj4+ICsgICAgIGN0cmxfYWRkciA9
-IGNlX3N0YXRlLT5jdHJsX2FkZHI7Cj4+ICsKPgo+IFRoZSB0ZXN0cyB5b3UgYWRkIGxvb2sgbGlr
-ZSB3b3JrYXJvdW5kcy4gSSB3b3VsZCBwcmVmZXIgdG8gdHJ5IGZpeCB0aGVzZQo+IGJ5IGdvaW5n
-IHRvIHRoZSBzb3VyY2Ugb2YgdGhlIHByb2JsZW0uIE1heWJlIHdlIHNob3VsZCBhZGQKPiBhdGgx
-MGtfcGNpX3dha2UoKSBhbmQgYXRoMTBrX2RvX3BjaV93YWtlKCk/CgpUaGUgdGVhcmRvd24gc2Vx
-dWVuY2UgaXMgYnJva2VuLiBJbnRlcnJ1cHRzIGFyZW4ndApkaXNhYmxlZC91bnJlZ2lzdGVyZWQg
-c29vbiBlbm91Z2guIEkgaGF2ZSBhIHBlbmRpbmcgcGF0Y2ggdGhhdCBzaG91bGQKZml4IHRoaXMg
-KGFsdGhvdWdoIGl0J3Mgc3RpbGwgbW9yZSBvZiBhIHdvcmthcm91bmQgdGhhbiBhIHJlYWwgZml4
-CnNpbmNlIHdlIG5lZWQgcHJvcGVyIHZhcmlhYmxlIGluaXQgY29kZS8gaHcgaW5pdCBjb2RlIHNl
-cGFyYXRpb24gdG8gYmUKZG9uZSkuIEhvd2V2ZXIgdGhlIHBhdGNoIGRlcGVuZHMgb24gbXkgcmVj
-b3ZlcnkgcGF0Y2hzZXQgc28gSSBoYXZlbid0CnBvc3RlZCBpdCB5ZXQuCgoKUG96ZHJhd2lhbSAv
-IEJlc3QgcmVnYXJkcywKTWljaGHFgiBLYXppb3IuCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+Hi Michal,
+
+sorry, I forgot to answer this one.
+
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 5 July 2013 09:47, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>
+>> I feel that RESTARTING_OFF and RESTARTING_ON are a bit confusing names,
+>> especially when we have OFF and ON states. Wouldn't RESTARTING and
+>> RESTARTED be simpler?
+>
+> RESTARTING/RESTARTED seems confusing to me too. The whole thing
+> shouldn't be considered restarted until mac80211 calls in
+> restart_complete() - but then again, at that point we should consider
+> the state as STATE_ON (and we do). Having RESTARTING_OFF / _ON gives
+> off more info about the state hw is in.
+>
+> Ideally we should have only one state - RESTARTING and guarantee that
+> the hw is in a workable state before we call in for
+> ieee80211_restart_hw(). We'd need to skip hw startup in ath10k_start()
+> in that case and make some code from ath10k_start() reusable and
+> callable from ath10k_core_start().
+>
+> I can't really remember the reason I went with this particular design
+> now. Perhaps this can be addressed in follow up patches later?
+
+I would prefer that you still rename the states to what I suggested.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
