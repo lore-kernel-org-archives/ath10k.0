@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uyzr8-0003Vb-LV
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:32 +0000
+ id 1Uyzr7-0003VY-Vm
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:31 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 03/10] ath10k: allow deferred regd update
-Date: Tue, 16 Jul 2013 09:38:52 +0200
-Message-ID: <1373960339-8525-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 02/10] ath10k: decouple core start/stop logic
+Date: Tue, 16 Jul 2013 09:38:51 +0200
+Message-ID: <1373960339-8525-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
  <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
@@ -26,110 +26,107 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Regulatory domain notification hook can be called
-regardless of the hw state (i.e. before start
-mac80211 callback).
+Enables code reuse for proper hw reconfiguration
+that is in turn required for proper
+suspend/hibernation/wowlan support.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |    7 +++++++
- drivers/net/wireless/ath/ath10k/mac.c  |   26 +++++++++++++++++++-------
- 2 files changed, 26 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |   44 +++++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/core.h |    2 ++
+ 2 files changed, 34 insertions(+), 12 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index f1312fa..dcddae4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -502,8 +502,7 @@ void ath10k_core_destroy(struct ath10k *ar)
+ }
+ EXPORT_SYMBOL(ath10k_core_destroy);
+ 
+-
+-int ath10k_core_register(struct ath10k *ar)
++int ath10k_core_start(struct ath10k *ar)
+ {
+ 	struct bmi_target_info target_info;
+ 	int status;
+@@ -589,9 +588,36 @@ int ath10k_core_register(struct ath10k *ar)
+ 	if (status)
+ 		goto err_disconnect_htc;
+ 
++	return 0;
++
++err_disconnect_htc:
++	ath10k_htc_stop(&ar->htc);
++err_htt_detach:
++	ath10k_htt_detach(&ar->htt);
++err_wmi_detach:
++	ath10k_wmi_detach(ar);
++err:
++	return status;
++}
++
++void ath10k_core_stop(struct ath10k *ar)
++{
++	ath10k_htc_stop(&ar->htc);
++	ath10k_htt_detach(&ar->htt);
++	ath10k_wmi_detach(ar);
++}
++
++int ath10k_core_register(struct ath10k *ar)
++{
++	int status;
++
++	status = ath10k_core_start(ar);
++	if (status)
++		goto err;
++
+ 	status = ath10k_mac_register(ar);
+ 	if (status)
+-		goto err_disconnect_htc;
++		goto err_core_stop;
+ 
+ 	status = ath10k_debug_create(ar);
+ 	if (status) {
+@@ -603,12 +629,8 @@ int ath10k_core_register(struct ath10k *ar)
+ 
+ err_unregister_mac:
+ 	ath10k_mac_unregister(ar);
+-err_disconnect_htc:
+-	ath10k_htc_stop(&ar->htc);
+-err_htt_detach:
+-	ath10k_htt_detach(&ar->htt);
+-err_wmi_detach:
+-	ath10k_wmi_detach(ar);
++err_core_stop:
++	ath10k_core_stop(ar);
+ err:
+ 	return status;
+ }
+@@ -620,9 +642,7 @@ void ath10k_core_unregister(struct ath10k *ar)
+ 	 * Otherwise we will fail to submit commands to FW and mac80211 will be
+ 	 * unhappy about callback failures. */
+ 	ath10k_mac_unregister(ar);
+-	ath10k_htc_stop(&ar->htc);
+-	ath10k_htt_detach(&ar->htt);
+-	ath10k_wmi_detach(ar);
++	ath10k_core_stop(ar);
+ }
+ EXPORT_SYMBOL(ath10k_core_unregister);
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5a0b2ce..d5b2533 100644
+index 2f7065c..5a0b2ce 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -247,6 +247,11 @@ struct ath10k_debug {
- 	struct completion event_stats_compl;
- };
+@@ -353,6 +353,8 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 				  const struct ath10k_hif_ops *hif_ops);
+ void ath10k_core_destroy(struct ath10k *ar);
  
-+enum ath10k_state {
-+	ATH10K_STATE_OFF = 0,
-+	ATH10K_STATE_ON,
-+};
-+
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-@@ -344,6 +349,8 @@ struct ath10k {
- 	struct completion offchan_tx_completed;
- 	struct sk_buff *offchan_tx_skb;
++int ath10k_core_start(struct ath10k *ar);
++void ath10k_core_stop(struct ath10k *ar);
+ int ath10k_core_register(struct ath10k *ar);
+ void ath10k_core_unregister(struct ath10k *ar);
  
-+	enum ath10k_state state;
-+
- #ifdef CONFIG_ATH10K_DEBUGFS
- 	struct ath10k_debug debug;
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5082503..4627c16 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1310,23 +1310,19 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 	return ret;
- }
- 
--static void ath10k_reg_notifier(struct wiphy *wiphy,
--				struct regulatory_request *request)
-+static void ath10k_regd_update(struct ath10k *ar)
- {
--	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
- 	struct reg_dmn_pair_mapping *regpair;
--	struct ath10k *ar = hw->priv;
- 	int ret;
- 
--	mutex_lock(&ar->conf_mutex);
--
--	ath_reg_notifier_apply(wiphy, request, &ar->ath_common.regulatory);
-+	lockdep_assert_held(&ar->conf_mutex);
- 
- 	ret = ath10k_update_channel_list(ar);
- 	if (ret)
- 		ath10k_warn("could not update channel list (%d)\n", ret);
- 
- 	regpair = ar->ath_common.regulatory.regpair;
-+
- 	/* Target allows setting up per-band regdomain but ath_common provides
- 	 * a combined one only */
- 	ret = ath10k_wmi_pdev_set_regdomain(ar,
-@@ -1337,7 +1333,19 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
- 					    regpair->reg_5ghz_ctl);
- 	if (ret)
- 		ath10k_warn("could not set pdev regdomain (%d)\n", ret);
-+}
- 
-+static void ath10k_reg_notifier(struct wiphy *wiphy,
-+				struct regulatory_request *request)
-+{
-+	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
-+	struct ath10k *ar = hw->priv;
-+
-+	ath_reg_notifier_apply(wiphy, request, &ar->ath_common.regulatory);
-+
-+	mutex_lock(&ar->conf_mutex);
-+	if (ar->state == ATH10K_STATE_ON)
-+		ath10k_regd_update(ar);
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-@@ -1732,6 +1740,9 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		ath10k_warn("could not init WMI_PDEV_PARAM_DYNAMIC_BW (%d)\n",
- 			    ret);
- 
-+	ar->state = ATH10K_STATE_ON;
-+	ath10k_regd_update(ar);
-+
- 	mutex_unlock(&ar->conf_mutex);
- 	return 0;
- }
-@@ -1742,6 +1753,7 @@ static void ath10k_stop(struct ieee80211_hw *hw)
- 
- 	mutex_lock(&ar->conf_mutex);
- 	ath10k_offchan_tx_purge(ar);
-+	ar->state = ATH10K_STATE_OFF;
- 	mutex_unlock(&ar->conf_mutex);
- 
- 	cancel_work_sync(&ar->offchan_tx_work);
 -- 
 1.7.9.5
 
