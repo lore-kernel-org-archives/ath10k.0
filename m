@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UyzrC-0003VY-5W
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:37 +0000
+ id 1UyzrC-0003VZ-1E
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:36 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 09/10] ath10k: store firmware files in memory
-Date: Tue, 16 Jul 2013 09:38:58 +0200
-Message-ID: <1373960339-8525-10-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 08/10] ath10k: defer hw setup to start/stop mac80211 hooks
+Date: Tue, 16 Jul 2013 09:38:57 +0200
+Message-ID: <1373960339-8525-9-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
  <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
@@ -26,297 +26,236 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Different FW versions may provide different
-functions thus mean different hw capabilities
-advertised to mac80211.
+This fixes suspend-to-disk. The hardware is now
+re-initialized upon freeze/thaw properly.
 
-It is safe to swap firmware files on disk during
-driver/device runtime without worries.
+This also makes suspend/resume re-initialize the
+hardware as WoWLAN support is not done yet.
+
+With some little work it should be possible to
+support hw reconfiguration for hw/fw recovery.
+
+HW must be initialized once before registering to
+mac80211 because FW determinates what hw
+capabilities can be advertised.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  157 +++++++++++++++++++++-----------
- drivers/net/wireless/ath/ath10k/core.h |    4 +
- 2 files changed, 109 insertions(+), 52 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |   46 +++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/mac.c  |   56 ++++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/pci.c  |   11 +------
+ 3 files changed, 81 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1d4c245..c37f79f 100644
+index 0e4a704..1d4c245 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -247,19 +247,11 @@ static int ath10k_push_board_ext_data(struct ath10k *ar,
- 
- static int ath10k_download_board_data(struct ath10k *ar)
- {
-+	const struct firmware *fw = ar->board_data;
- 	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
- 	u32 address;
--	const struct firmware *fw;
- 	int ret;
- 
--	fw = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
--				  ar->hw_params.fw.board);
--	if (IS_ERR(fw)) {
--		ath10k_err("could not fetch board data fw file (%ld)\n",
--			   PTR_ERR(fw));
--		return PTR_ERR(fw);
--	}
--
- 	ret = ath10k_push_board_ext_data(ar, fw);
- 	if (ret) {
- 		ath10k_err("could not push board ext data (%d)\n", ret);
-@@ -286,32 +278,20 @@ static int ath10k_download_board_data(struct ath10k *ar)
- 	}
- 
- exit:
--	release_firmware(fw);
- 	return ret;
+@@ -601,6 +601,7 @@ err_wmi_detach:
+ err:
+ 	return status;
  }
++EXPORT_SYMBOL(ath10k_core_start);
  
- static int ath10k_download_and_run_otp(struct ath10k *ar)
+ void ath10k_core_stop(struct ath10k *ar)
  {
--	const struct firmware *fw;
--	u32 address;
-+	const struct firmware *fw = ar->otp;
-+	u32 address = ar->hw_params.patch_load_addr;
- 	u32 exec_param;
- 	int ret;
- 
- 	/* OTP is optional */
- 
--	if (ar->hw_params.fw.otp == NULL) {
--		ath10k_info("otp file not defined\n");
--		return 0;
--	}
--
--	address = ar->hw_params.patch_load_addr;
--
--	fw = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
--				  ar->hw_params.fw.otp);
--	if (IS_ERR(fw)) {
--		ath10k_warn("could not fetch otp (%ld)\n", PTR_ERR(fw));
-+	if (!ar->otp)
- 		return 0;
--	}
- 
- 	ret = ath10k_bmi_fast_download(ar, address, fw->data, fw->size);
- 	if (ret) {
-@@ -327,28 +307,17 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 	}
- 
- exit:
--	release_firmware(fw);
- 	return ret;
+@@ -608,18 +609,49 @@ void ath10k_core_stop(struct ath10k *ar)
+ 	ath10k_htt_detach(&ar->htt);
+ 	ath10k_wmi_detach(ar);
  }
- 
- static int ath10k_download_fw(struct ath10k *ar)
- {
--	const struct firmware *fw;
-+	const struct firmware *fw = ar->firmware;
- 	u32 address;
- 	int ret;
- 
--	if (ar->hw_params.fw.fw == NULL)
--		return -EINVAL;
--
- 	address = ar->hw_params.patch_load_addr;
- 
--	fw = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir,
--				  ar->hw_params.fw.fw);
--	if (IS_ERR(fw)) {
--		ath10k_err("could not fetch fw (%ld)\n", PTR_ERR(fw));
--		return PTR_ERR(fw);
--	}
--
- 	ret = ath10k_bmi_fast_download(ar, address, fw->data, fw->size);
- 	if (ret) {
- 		ath10k_err("could not write fw (%d)\n", ret);
-@@ -356,7 +325,74 @@ static int ath10k_download_fw(struct ath10k *ar)
- 	}
- 
- exit:
--	release_firmware(fw);
-+	return ret;
-+}
++EXPORT_SYMBOL(ath10k_core_stop);
 +
-+static void ath10k_core_free_firmware_files(struct ath10k *ar)
++/* mac80211 manages fw/hw initialization through start/stop hooks. However in
++ * order to know what hw capabilities should be advertised to mac80211 it is
++ * necessary to load the firmware (and tear it down immediately since start
++ * hook will try to init it again) before registering */
++static int ath10k_core_probe_fw(struct ath10k *ar)
 +{
-+	if (ar->board_data && !IS_ERR(ar->board_data))
-+		release_firmware(ar->board_data);
++	int ret;
 +
-+	if (ar->otp && !IS_ERR(ar->otp))
-+		release_firmware(ar->otp);
-+
-+	if (ar->firmware && !IS_ERR(ar->firmware))
-+		release_firmware(ar->firmware);
-+
-+	ar->board_data = NULL;
-+	ar->otp = NULL;
-+	ar->firmware = NULL;
-+}
-+
-+static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
-+{
-+	int ret = 0;
-+
-+	if (ar->hw_params.fw.fw == NULL) {
-+		ath10k_err("firmware file not defined\n");
-+		return -EINVAL;
++	ret = ath10k_hif_power_up(ar);
++	if (ret) {
++		ath10k_err("could not start pci hif (%d)\n", ret);
++		return ret;
 +	}
 +
-+	if (ar->hw_params.fw.board == NULL) {
-+		ath10k_err("board data file not defined");
-+		return -EINVAL;
++	ret = ath10k_core_start(ar);
++	if (ret) {
++		ath10k_err("could not init core (%d)\n", ret);
++		ath10k_hif_power_down(ar);
++		return ret;
 +	}
 +
-+	ar->board_data = ath10k_fetch_fw_file(ar,
-+					      ar->hw_params.fw.dir,
-+					      ar->hw_params.fw.board);
-+	if (IS_ERR(ar->board_data)) {
-+		ret = PTR_ERR(ar->board_data);
-+		ath10k_err("could not fetch board data (%d)\n", ret);
-+		goto err;
-+	}
-+
-+	ar->firmware = ath10k_fetch_fw_file(ar,
-+					    ar->hw_params.fw.dir,
-+					    ar->hw_params.fw.fw);
-+	if (IS_ERR(ar->firmware)) {
-+		ret = PTR_ERR(ar->firmware);
-+		ath10k_err("could not fetch firmware (%d)\n", ret);
-+		goto err;
-+	}
-+
-+	/* OTP may be undefined. If so, don't fetch it at all */
-+	if (ar->hw_params.fw.otp == NULL)
-+		return 0;
-+
-+	ar->otp = ath10k_fetch_fw_file(ar,
-+				       ar->hw_params.fw.dir,
-+				       ar->hw_params.fw.otp);
-+	if (IS_ERR(ar->otp)) {
-+		ret = PTR_ERR(ar->otp);
-+		ath10k_err("could not fetch otp (%d)\n", ret);
-+		goto err;
-+	}
-+
++	ath10k_core_stop(ar);
++	ath10k_hif_power_down(ar);
 +	return 0;
-+
-+err:
-+	ath10k_core_free_firmware_files(ar);
- 	return ret;
- }
++}
  
-@@ -502,23 +538,10 @@ EXPORT_SYMBOL(ath10k_core_destroy);
- 
- int ath10k_core_start(struct ath10k *ar)
+ int ath10k_core_register(struct ath10k *ar)
  {
--	struct bmi_target_info target_info;
  	int status;
  
- 	ath10k_bmi_start(ar);
- 
--	memset(&target_info, 0, sizeof(target_info));
--	status = ath10k_bmi_get_target_info(ar, &target_info);
+-	status = ath10k_core_start(ar);
 -	if (status)
 -		goto err;
--
--	ar->target_version = target_info.version;
--	ar->hw->wiphy->hw_version = target_info.version;
--
--	status = ath10k_init_hw_params(ar);
--	if (status)
--		goto err;
--
- 	if (ath10k_init_configure_target(ar)) {
- 		status = -EINVAL;
- 		goto err;
-@@ -617,7 +640,8 @@ EXPORT_SYMBOL(ath10k_core_stop);
-  * hook will try to init it again) before registering */
- static int ath10k_core_probe_fw(struct ath10k *ar)
- {
--	int ret;
-+	struct bmi_target_info target_info;
-+	int ret = 0;
++	status = ath10k_core_probe_fw(ar);
++	if (status) {
++		ath10k_err("could not probe fw (%d)\n", status);
++		return status;
++	}
  
- 	ret = ath10k_hif_power_up(ar);
- 	if (ret) {
-@@ -625,9 +649,35 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		return ret;
- 	}
- 
-+	memset(&target_info, 0, sizeof(target_info));
-+	ret = ath10k_bmi_get_target_info(ar, &target_info);
-+	if (ret) {
-+		ath10k_err("could not get target info (%d)\n", ret);
-+		ath10k_hif_power_down(ar);
-+		return ret;
-+	}
-+
-+	ar->target_version = target_info.version;
-+	ar->hw->wiphy->hw_version = target_info.version;
-+
-+	ret = ath10k_init_hw_params(ar);
-+	if (ret) {
-+		ath10k_err("could not get hw params (%d)\n", ret);
-+		ath10k_hif_power_down(ar);
-+		return ret;
-+	}
-+
-+	ret = ath10k_core_fetch_firmware_files(ar);
-+	if (ret) {
-+		ath10k_err("could not fetch firmware files (%d)\n", ret);
-+		ath10k_hif_power_down(ar);
-+		return ret;
-+	}
-+
- 	ret = ath10k_core_start(ar);
- 	if (ret) {
- 		ath10k_err("could not init core (%d)\n", ret);
-+		ath10k_core_free_firmware_files(ar);
- 		ath10k_hif_power_down(ar);
- 		return ret;
- 	}
-@@ -650,7 +700,7 @@ int ath10k_core_register(struct ath10k *ar)
  	status = ath10k_mac_register(ar);
- 	if (status) {
- 		ath10k_err("could not register to mac80211 (%d)\n", status);
--		return status;
-+		goto err_release_fw;
- 	}
+-	if (status)
+-		goto err_core_stop;
++	if (status) {
++		ath10k_err("could not register to mac80211 (%d)\n", status);
++		return status;
++	}
  
  	status = ath10k_debug_create(ar);
-@@ -663,6 +713,8 @@ int ath10k_core_register(struct ath10k *ar)
+ 	if (status) {
+@@ -631,9 +663,6 @@ int ath10k_core_register(struct ath10k *ar)
  
  err_unregister_mac:
  	ath10k_mac_unregister(ar);
-+err_release_fw:
-+	ath10k_core_free_firmware_files(ar);
+-err_core_stop:
+-	ath10k_core_stop(ar);
+-err:
  	return status;
  }
  EXPORT_SYMBOL(ath10k_core_register);
-@@ -673,6 +725,7 @@ void ath10k_core_unregister(struct ath10k *ar)
+@@ -644,7 +673,6 @@ void ath10k_core_unregister(struct ath10k *ar)
  	 * Otherwise we will fail to submit commands to FW and mac80211 will be
  	 * unhappy about callback failures. */
  	ath10k_mac_unregister(ar);
-+	ath10k_core_free_firmware_files(ar);
+-	ath10k_core_stop(ar);
  }
  EXPORT_SYMBOL(ath10k_core_unregister);
  
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 5c94ea0..413f1c5 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -300,6 +300,10 @@ struct ath10k {
- 		} fw;
- 	} hw_params;
- 
-+	const struct firmware *board_data;
-+	const struct firmware *otp;
-+	const struct firmware *firmware;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b9663e9..2dfd446 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1738,13 +1738,52 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ /*
+  * Initialize various parameters with default vaules.
+  */
++static void ath10k_halt(struct ath10k *ar)
++{
++	lockdep_assert_held(&ar->conf_mutex);
 +
- 	struct {
- 		struct completion started;
- 		struct completion completed;
++	del_timer_sync(&ar->scan.timeout);
++	ath10k_offchan_tx_purge(ar);
++	ath10k_peer_cleanup_all(ar);
++	ath10k_core_stop(ar);
++	ath10k_hif_power_down(ar);
++
++	spin_lock_bh(&ar->data_lock);
++	if (ar->scan.in_progress) {
++		del_timer(&ar->scan.timeout);
++		ar->scan.in_progress = false;
++		ieee80211_scan_completed(ar->hw, true);
++	}
++	spin_unlock_bh(&ar->data_lock);
++}
++
+ static int ath10k_start(struct ieee80211_hw *hw)
+ {
+ 	struct ath10k *ar = hw->priv;
+-	int ret;
++	int ret = 0;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
++	if (ar->state != ATH10K_STATE_OFF) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	ret = ath10k_hif_power_up(ar);
++	if (ret) {
++		ath10k_err("could not init hif (%d)\n", ret);
++		ar->state = ATH10K_STATE_OFF;
++		goto exit;
++	}
++
++	ret = ath10k_core_start(ar);
++	if (ret) {
++		ath10k_err("could not init core (%d)\n", ret);
++		ath10k_hif_power_down(ar);
++		ar->state = ATH10K_STATE_OFF;
++		goto exit;
++	}
++
+ 	ret = ath10k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_PMF_QOS, 1);
+ 	if (ret)
+ 		ath10k_warn("could not enable WMI_PDEV_PARAM_PMF_QOS (%d)\n",
+@@ -1755,9 +1794,9 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		ath10k_warn("could not init WMI_PDEV_PARAM_DYNAMIC_BW (%d)\n",
+ 			    ret);
+ 
+-	ar->state = ATH10K_STATE_ON;
+ 	ath10k_regd_update(ar);
+ 
++exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return 0;
+ }
+@@ -1767,17 +1806,8 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	del_timer_sync(&ar->scan.timeout);
+-	ath10k_offchan_tx_purge(ar);
+-	ath10k_peer_cleanup_all(ar);
+-
+-	spin_lock_bh(&ar->data_lock);
+-	if (ar->scan.in_progress) {
+-		del_timer(&ar->scan.timeout);
+-		ar->scan.in_progress = false;
+-		ieee80211_scan_completed(ar->hw, true);
+-	}
+-	spin_unlock_bh(&ar->data_lock);
++	if (ar->state == ATH10K_STATE_ON)
++		ath10k_halt(ar);
+ 
+ 	ar->state = ATH10K_STATE_OFF;
+ 	mutex_unlock(&ar->conf_mutex);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 75f5427..bfe8561 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2362,22 +2362,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_iomap;
+ 	}
+ 
+-	ret = ath10k_pci_hif_power_up(ar);
+-	if (ret) {
+-		ath10k_err("could not start pci hif (%d)\n", ret);
+-		goto err_intr;
+-	}
+-
+ 	ret = ath10k_core_register(ar);
+ 	if (ret) {
+ 		ath10k_err("could not register driver core (%d)\n", ret);
+-		goto err_hif;
++		goto err_intr;
+ 	}
+ 
+ 	return 0;
+ 
+-err_hif:
+-	ath10k_pci_hif_power_down(ar);
+ err_intr:
+ 	ath10k_pci_stop_intr(ar);
+ err_iomap:
+@@ -2416,7 +2408,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 	tasklet_kill(&ar_pci->msi_fw_err);
+ 
+ 	ath10k_core_unregister(ar);
+-	ath10k_pci_hif_power_down(ar);
+ 	ath10k_pci_stop_intr(ar);
+ 
+ 	pci_set_drvdata(pdev, NULL);
 -- 
 1.7.9.5
 
