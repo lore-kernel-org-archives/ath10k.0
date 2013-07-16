@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1UyzrC-0003VZ-1E
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:36 +0000
+ id 1Uyzr6-0003Vb-Eq
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:30 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 08/10] ath10k: defer hw setup to start/stop mac80211 hooks
-Date: Tue, 16 Jul 2013 09:38:57 +0200
-Message-ID: <1373960339-8525-9-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 01/10] ath10k: decouple pci start/stop logic
+Date: Tue, 16 Jul 2013 09:38:50 +0200
+Message-ID: <1373960339-8525-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
  <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
@@ -26,233 +26,219 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This fixes suspend-to-disk. The hardware is now
-re-initialized upon freeze/thaw properly.
+Split logic that prepares the device for BMI
+phase/cleans up related resources.
 
-This also makes suspend/resume re-initialize the
-hardware as WoWLAN support is not done yet.
-
-With some little work it should be possible to
-support hw reconfiguration for hw/fw recovery.
-
-HW must be initialized once before registering to
-mac80211 because FW determinates what hw
-capabilities can be advertised.
+This is necessary for ath10k to be able to restart
+hw on the fly without reloading the module.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   46 +++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/mac.c  |   56 ++++++++++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/pci.c  |   11 +------
- 3 files changed, 81 insertions(+), 32 deletions(-)
+ drivers/net/wireless/ath/ath10k/hif.h |   20 ++++++
+ drivers/net/wireless/ath/ath10k/pci.c |  110 +++++++++++++++++++++------------
+ 2 files changed, 91 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 0e4a704..1d4c245 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -601,6 +601,7 @@ err_wmi_detach:
- err:
- 	return status;
- }
-+EXPORT_SYMBOL(ath10k_core_start);
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index 010e265..00d2940 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -46,8 +46,11 @@ struct ath10k_hif_ops {
+ 				void *request, u32 request_len,
+ 				void *response, u32 *response_len);
  
- void ath10k_core_stop(struct ath10k *ar)
- {
-@@ -608,18 +609,49 @@ void ath10k_core_stop(struct ath10k *ar)
- 	ath10k_htt_detach(&ar->htt);
- 	ath10k_wmi_detach(ar);
- }
-+EXPORT_SYMBOL(ath10k_core_stop);
++	/* Post BMI phase, after FW is loaded. Starts regular operation */
+ 	int (*start)(struct ath10k *ar);
+ 
++	/* Clean up what start() did. This does not revert to BMI phase. If
++	 * desired so, call power_down() and power_up() */
+ 	void (*stop)(struct ath10k *ar);
+ 
+ 	int (*map_service_to_pipe)(struct ath10k *ar, u16 service_id,
+@@ -70,6 +73,13 @@ struct ath10k_hif_ops {
+ 			      struct ath10k_hif_cb *callbacks);
+ 
+ 	u16 (*get_free_queue_number)(struct ath10k *ar, u8 pipe_id);
 +
-+/* mac80211 manages fw/hw initialization through start/stop hooks. However in
-+ * order to know what hw capabilities should be advertised to mac80211 it is
-+ * necessary to load the firmware (and tear it down immediately since start
-+ * hook will try to init it again) before registering */
-+static int ath10k_core_probe_fw(struct ath10k *ar)
++	/* Power up the device and enter BMI transfer mode for FW download */
++	int (*power_up)(struct ath10k *ar);
++
++	/* Power down the device and free up resources. stop() must be called
++	 * before this if start() was called earlier */
++	void (*power_down)(struct ath10k *ar);
+ };
+ 
+ 
+@@ -134,4 +144,14 @@ static inline u16 ath10k_hif_get_free_queue_number(struct ath10k *ar,
+ 	return ar->hif.ops->get_free_queue_number(ar, pipe_id);
+ }
+ 
++static inline int ath10k_hif_power_up(struct ath10k *ar)
++{
++	return ar->hif.ops->power_up(ar);
++}
++
++static inline void ath10k_hif_power_down(struct ath10k *ar)
++{
++	ar->hif.ops->power_down(ar);
++}
++
+ #endif /* _HIF_H_ */
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 7da0983..c15b0c5 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -54,6 +54,8 @@ static int ath10k_pci_post_rx_pipe(struct hif_ce_pipe_info *pipe_info,
+ 					     int num);
+ static void ath10k_pci_rx_pipe_cleanup(struct hif_ce_pipe_info *pipe_info);
+ static void ath10k_pci_stop_ce(struct ath10k *ar);
++static void ath10k_pci_device_reset(struct ath10k *ar);
++static int ath10k_pci_reset_target(struct ath10k *ar);
+ 
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* host->target HTC control and raw streams */
+@@ -1734,6 +1736,66 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 	ath10k_pci_sleep(ar);
+ }
+ 
++static int ath10k_pci_hif_power_up(struct ath10k *ar)
 +{
 +	int ret;
 +
-+	ret = ath10k_hif_power_up(ar);
-+	if (ret) {
-+		ath10k_err("could not start pci hif (%d)\n", ret);
-+		return ret;
++	/*
++	 * Bring the target up cleanly.
++	 *
++	 * The target may be in an undefined state with an AUX-powered Target
++	 * and a Host in WoW mode. If the Host crashes, loses power, or is
++	 * restarted (without unloading the driver) then the Target is left
++	 * (aux) powered and running. On a subsequent driver load, the Target
++	 * is in an unexpected state. We try to catch that here in order to
++	 * reset the Target and retry the probe.
++	 */
++	ath10k_pci_device_reset(ar);
++
++	ret = ath10k_pci_reset_target(ar);
++	if (ret)
++		goto err;
++
++	if (ath10k_target_ps) {
++		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save enabled\n");
++	} else {
++		/* Force AWAKE forever */
++		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save disabled\n");
++		ath10k_do_pci_wake(ar);
 +	}
 +
-+	ret = ath10k_core_start(ar);
++	ret = ath10k_pci_ce_init(ar);
++	if (ret)
++		goto err_ps;
++
++	ret = ath10k_pci_init_config(ar);
++	if (ret)
++		goto err_ce;
++
++	ret = ath10k_pci_wake_target_cpu(ar);
 +	if (ret) {
-+		ath10k_err("could not init core (%d)\n", ret);
-+		ath10k_hif_power_down(ar);
-+		return ret;
++		ath10k_err("could not wake up target CPU (%d)\n", ret);
++		goto err_ce;
 +	}
 +
-+	ath10k_core_stop(ar);
-+	ath10k_hif_power_down(ar);
 +	return 0;
++
++err_ce:
++	ath10k_pci_ce_deinit(ar);
++err_ps:
++	if (!ath10k_target_ps)
++		ath10k_do_pci_sleep(ar);
++err:
++	return ret;
 +}
- 
- int ath10k_core_register(struct ath10k *ar)
- {
- 	int status;
- 
--	status = ath10k_core_start(ar);
--	if (status)
--		goto err;
-+	status = ath10k_core_probe_fw(ar);
-+	if (status) {
-+		ath10k_err("could not probe fw (%d)\n", status);
-+		return status;
-+	}
- 
- 	status = ath10k_mac_register(ar);
--	if (status)
--		goto err_core_stop;
-+	if (status) {
-+		ath10k_err("could not register to mac80211 (%d)\n", status);
-+		return status;
-+	}
- 
- 	status = ath10k_debug_create(ar);
- 	if (status) {
-@@ -631,9 +663,6 @@ int ath10k_core_register(struct ath10k *ar)
- 
- err_unregister_mac:
- 	ath10k_mac_unregister(ar);
--err_core_stop:
--	ath10k_core_stop(ar);
--err:
- 	return status;
- }
- EXPORT_SYMBOL(ath10k_core_register);
-@@ -644,7 +673,6 @@ void ath10k_core_unregister(struct ath10k *ar)
- 	 * Otherwise we will fail to submit commands to FW and mac80211 will be
- 	 * unhappy about callback failures. */
- 	ath10k_mac_unregister(ar);
--	ath10k_core_stop(ar);
- }
- EXPORT_SYMBOL(ath10k_core_unregister);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b9663e9..2dfd446 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1738,13 +1738,52 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- /*
-  * Initialize various parameters with default vaules.
-  */
-+static void ath10k_halt(struct ath10k *ar)
++
++static void ath10k_pci_hif_power_down(struct ath10k *ar)
 +{
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	del_timer_sync(&ar->scan.timeout);
-+	ath10k_offchan_tx_purge(ar);
-+	ath10k_peer_cleanup_all(ar);
-+	ath10k_core_stop(ar);
-+	ath10k_hif_power_down(ar);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	if (ar->scan.in_progress) {
-+		del_timer(&ar->scan.timeout);
-+		ar->scan.in_progress = false;
-+		ieee80211_scan_completed(ar->hw, true);
-+	}
-+	spin_unlock_bh(&ar->data_lock);
++	ath10k_pci_ce_deinit(ar);
++	if (!ath10k_target_ps)
++		ath10k_do_pci_sleep(ar);
 +}
 +
- static int ath10k_start(struct ieee80211_hw *hw)
- {
- 	struct ath10k *ar = hw->priv;
--	int ret;
-+	int ret = 0;
+ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.send_head		= ath10k_pci_hif_send_head,
+ 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
+@@ -1744,6 +1806,8 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.send_complete_check	= ath10k_pci_hif_send_complete_check,
+ 	.set_callbacks		= ath10k_pci_hif_set_callbacks,
+ 	.get_free_queue_number	= ath10k_pci_hif_get_free_queue_number,
++	.power_up		= ath10k_pci_hif_power_up,
++	.power_down		= ath10k_pci_hif_power_down,
+ };
  
- 	mutex_lock(&ar->conf_mutex);
- 
-+	if (ar->state != ATH10K_STATE_OFF) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	ret = ath10k_hif_power_up(ar);
-+	if (ret) {
-+		ath10k_err("could not init hif (%d)\n", ret);
-+		ar->state = ATH10K_STATE_OFF;
-+		goto exit;
-+	}
-+
-+	ret = ath10k_core_start(ar);
-+	if (ret) {
-+		ath10k_err("could not init core (%d)\n", ret);
-+		ath10k_hif_power_down(ar);
-+		ar->state = ATH10K_STATE_OFF;
-+		goto exit;
-+	}
-+
- 	ret = ath10k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_PMF_QOS, 1);
- 	if (ret)
- 		ath10k_warn("could not enable WMI_PDEV_PARAM_PMF_QOS (%d)\n",
-@@ -1755,9 +1794,9 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		ath10k_warn("could not init WMI_PDEV_PARAM_DYNAMIC_BW (%d)\n",
- 			    ret);
- 
--	ar->state = ATH10K_STATE_ON;
- 	ath10k_regd_update(ar);
- 
-+exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return 0;
- }
-@@ -1767,17 +1806,8 @@ static void ath10k_stop(struct ieee80211_hw *hw)
- 	struct ath10k *ar = hw->priv;
- 
- 	mutex_lock(&ar->conf_mutex);
--	del_timer_sync(&ar->scan.timeout);
--	ath10k_offchan_tx_purge(ar);
--	ath10k_peer_cleanup_all(ar);
--
--	spin_lock_bh(&ar->data_lock);
--	if (ar->scan.in_progress) {
--		del_timer(&ar->scan.timeout);
--		ar->scan.in_progress = false;
--		ieee80211_scan_completed(ar->hw, true);
--	}
--	spin_unlock_bh(&ar->data_lock);
-+	if (ar->state == ATH10K_STATE_ON)
-+		ath10k_halt(ar);
- 
- 	ar->state = ATH10K_STATE_OFF;
- 	mutex_unlock(&ar->conf_mutex);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 75f5427..bfe8561 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2362,22 +2362,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ static void ath10k_pci_ce_tasklet(unsigned long ptr)
+@@ -2245,54 +2309,22 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
  		goto err_iomap;
  	}
  
--	ret = ath10k_pci_hif_power_up(ar);
--	if (ret) {
--		ath10k_err("could not start pci hif (%d)\n", ret);
+-	/*
+-	 * Bring the target up cleanly.
+-	 *
+-	 * The target may be in an undefined state with an AUX-powered Target
+-	 * and a Host in WoW mode. If the Host crashes, loses power, or is
+-	 * restarted (without unloading the driver) then the Target is left
+-	 * (aux) powered and running. On a subsequent driver load, the Target
+-	 * is in an unexpected state. We try to catch that here in order to
+-	 * reset the Target and retry the probe.
+-	 */
+-	ath10k_pci_device_reset(ar);
+-
+-	ret = ath10k_pci_reset_target(ar);
+-	if (ret)
 -		goto err_intr;
+-
+-	if (ath10k_target_ps) {
+-		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save enabled\n");
+-	} else {
+-		/* Force AWAKE forever */
+-		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save disabled\n");
+-		ath10k_do_pci_wake(ar);
 -	}
 -
+-	ret = ath10k_pci_ce_init(ar);
+-	if (ret)
+-		goto err_intr;
+-
+-	ret = ath10k_pci_init_config(ar);
+-	if (ret)
+-		goto err_ce;
+-
+-	ret = ath10k_pci_wake_target_cpu(ar);
++	ret = ath10k_pci_hif_power_up(ar);
+ 	if (ret) {
+-		ath10k_err("could not wake up target CPU (%d)\n", ret);
+-		goto err_ce;
++		ath10k_err("could not start pci hif (%d)\n", ret);
++		goto err_intr;
+ 	}
+ 
  	ret = ath10k_core_register(ar);
  	if (ret) {
  		ath10k_err("could not register driver core (%d)\n", ret);
--		goto err_hif;
-+		goto err_intr;
+-		goto err_ce;
++		goto err_hif;
  	}
  
  	return 0;
  
--err_hif:
--	ath10k_pci_hif_power_down(ar);
+-err_ce:
+-	ath10k_pci_ce_deinit(ar);
++err_hif:
++	ath10k_pci_hif_power_down(ar);
  err_intr:
  	ath10k_pci_stop_intr(ar);
  err_iomap:
-@@ -2416,7 +2408,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+@@ -2331,7 +2363,7 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
  	tasklet_kill(&ar_pci->msi_fw_err);
  
  	ath10k_core_unregister(ar);
--	ath10k_pci_hif_power_down(ar);
+-	ath10k_pci_ce_deinit(ar);
++	ath10k_pci_hif_power_down(ar);
  	ath10k_pci_stop_intr(ar);
  
  	pci_set_drvdata(pdev, NULL);
