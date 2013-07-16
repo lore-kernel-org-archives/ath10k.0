@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uz07Q-0003wi-OQ
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:56:21 +0000
+ id 1Uz07R-0003wi-SP
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:56:22 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 2/3] ath10k: implement fw crash simulation command
-Date: Tue, 16 Jul 2013 09:54:36 +0200
-Message-ID: <1373961277-14784-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 3/3] ath10k: create debugfs interface to trigger fw crash
+Date: Tue, 16 Jul 2013 09:54:37 +0200
+Message-ID: <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
 References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
  <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
@@ -26,84 +26,89 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This can be useful to test FW crash handling.
+This can be useful for testing. To perform a
+forced firmware crash write 'crash' to
+'simulate_fw_crash' debugfs file. E.g.
+
+  echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   19 +++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h |   19 +++++++++++++++++++
- 2 files changed, 38 insertions(+)
+ drivers/net/wireless/ath/ath10k/debug.c |   54 +++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 0d25cd7..5e42460 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2092,3 +2092,22 @@ int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id)
- 	ath10k_dbg(ATH10K_DBG_WMI, "wmi request stats %d\n", (int)stats_id);
- 	return ath10k_wmi_cmd_send(ar, skb, WMI_REQUEST_STATS_CMDID);
- }
-+
-+int ath10k_wmi_force_fw_hang(struct ath10k *ar,
-+			     enum wmi_force_fw_hang_type type, u32 delay_ms)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 65279f5..4021bea 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -445,6 +445,57 @@ static const struct file_operations fops_fw_stats = {
+ 	.llseek = default_llseek,
+ };
+ 
++static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
++					     char __user *user_buf,
++					     size_t count, loff_t *ppos)
 +{
-+	struct wmi_force_fw_hang_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(sizeof(*cmd));
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	cmd = (struct wmi_force_fw_hang_cmd *)skb->data;
-+	cmd->type = __cpu_to_le32(type);
-+	cmd->delay_ms = __cpu_to_le32(delay_ms);
-+
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi force fw hang %d delay %d\n",
-+		   type, delay_ms);
-+	return ath10k_wmi_cmd_send(ar, skb, WMI_FORCE_FW_HANG_CMDID);
++	const char buf[] = "To simulate firmware crash write the keyword"
++			   " `crash` to this file.\nThis will force firmware"
++			   " to report a crash to the host system.\n";
++	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
 +}
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 9555f5a..da3b2bc 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -416,6 +416,7 @@ enum wmi_cmd_id {
- 	WMI_PDEV_FTM_INTG_CMDID,
- 	WMI_VDEV_SET_KEEPALIVE_CMDID,
- 	WMI_VDEV_GET_KEEPALIVE_CMDID,
-+	WMI_FORCE_FW_HANG_CMDID,
- 
- 	/* GPIO Configuration */
- 	WMI_GPIO_CONFIG_CMDID = WMI_CMD_GRP(WMI_GRP_GPIO),
-@@ -2972,6 +2973,22 @@ struct wmi_sta_keepalive_cmd {
- 	struct wmi_sta_keepalive_arp_resp arp_resp;
- } __packed;
- 
-+enum wmi_force_fw_hang_type {
-+	WMI_FORCE_FW_HANG_ASSERT = 1,
-+	WMI_FORCE_FW_HANG_NO_DETECT,
-+	WMI_FORCE_FW_HANG_CTRL_EP_FULL,
-+	WMI_FORCE_FW_HANG_EMPTY_POINT,
-+	WMI_FORCE_FW_HANG_STACK_OVERFLOW,
-+	WMI_FORCE_FW_HANG_INFINITE_LOOP,
++
++static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
++					      const char __user *user_buf,
++					      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	char buf[32] = {};
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
++		ath10k_warn("write keyword `crash` to simulate firmware crash\n");
++		goto exit;
++	}
++
++	if (ar->state != ATH10K_STATE_ON &&
++	    ar->state != ATH10K_STATE_RESTARTED) {
++		ath10k_warn("firmware isn't loaded yet, nothing to crash\n");
++		goto exit;
++	}
++
++	ath10k_info("simulating firmware crash\n");
++
++	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
++	if (ret)
++		ath10k_warn("failed to force fw hang (%d)\n", ret);
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++	return count;
++}
++
++static const struct file_operations fops_simulate_fw_crash = {
++	.read = ath10k_read_simulate_fw_crash,
++	.write = ath10k_write_simulate_fw_crash,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
 +};
 +
-+#define WMI_FORCE_FW_HANG_RANDOM_TIME 0xFFFFFFFF
-+
-+struct wmi_force_fw_hang_cmd {
-+	__le32 type;
-+	__le32 delay_ms;
-+} __packed;
-+
- #define ATH10K_RTS_MAX		2347
- #define ATH10K_FRAGMT_THRESHOLD_MIN	540
- #define ATH10K_FRAGMT_THRESHOLD_MAX	2346
-@@ -3048,5 +3065,7 @@ int ath10k_wmi_beacon_send(struct ath10k *ar, const struct wmi_bcn_tx_arg *arg);
- int ath10k_wmi_pdev_set_wmm_params(struct ath10k *ar,
- 			const struct wmi_pdev_set_wmm_params_arg *arg);
- int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id);
-+int ath10k_wmi_force_fw_hang(struct ath10k *ar,
-+			     enum wmi_force_fw_hang_type type, u32 delay_ms);
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+ 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
+@@ -461,6 +512,9 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	debugfs_create_file("wmi_services", S_IRUSR, ar->debug.debugfs_phy, ar,
+ 			    &fops_wmi_services);
  
- #endif /* _WMI_H_ */
++	debugfs_create_file("simulate_fw_crash", S_IRUSR, ar->debug.debugfs_phy,
++			    ar, &fops_simulate_fw_crash);
++
+ 	return 0;
+ }
+ #endif /* CONFIG_ATH10K_DEBUGFS */
 -- 
 1.7.9.5
 
