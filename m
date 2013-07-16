@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uz07R-0003wi-SP
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:56:22 +0000
+ id 1Uz07O-0003wi-Ho
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:56:20 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 3/3] ath10k: create debugfs interface to trigger fw crash
-Date: Tue, 16 Jul 2013 09:54:37 +0200
-Message-ID: <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 1/3] ath10k: implement device recovery
+Date: Tue, 16 Jul 2013 09:54:35 +0200
+Message-ID: <1373961277-14784-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
 References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
  <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
@@ -26,89 +26,381 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This can be useful for testing. To perform a
-forced firmware crash write 'crash' to
-'simulate_fw_crash' debugfs file. E.g.
+Restart the hardware if FW crashes.
 
-  echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+If FW crashes during recovery we leave the
+hardware in a "wedged" state to avoid recursive
+recoveries.
+
+When in "wedged" state userspace may bring
+interfaces down (to issue stop()) and then bring
+one interface (to issue start()) to reload
+hardware manually.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c |   54 +++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c |   30 ++++++++++
+ drivers/net/wireless/ath/ath10k/core.h |   19 ++++++
+ drivers/net/wireless/ath/ath10k/htc.c  |    3 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  101 ++++++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/mac.h  |    1 +
+ drivers/net/wireless/ath/ath10k/pci.c  |    2 +
+ drivers/net/wireless/ath/ath10k/wmi.c  |    7 +++
+ 7 files changed, 144 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 65279f5..4021bea 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -445,6 +445,57 @@ static const struct file_operations fops_fw_stats = {
- 	.llseek = default_llseek,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c37f79f..7226c23 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -476,6 +476,34 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	return 0;
+ }
  
-+static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
-+					     char __user *user_buf,
-+					     size_t count, loff_t *ppos)
++static void ath10k_core_restart(struct work_struct *work)
 +{
-+	const char buf[] = "To simulate firmware crash write the keyword"
-+			   " `crash` to this file.\nThis will force firmware"
-+			   " to report a crash to the host system.\n";
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
-+}
-+
-+static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
-+					      const char __user *user_buf,
-+					      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[32] = {};
-+	int ret;
++	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
 +
 +	mutex_lock(&ar->conf_mutex);
 +
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
-+		ath10k_warn("write keyword `crash` to simulate firmware crash\n");
-+		goto exit;
++	switch (ar->state) {
++	case ATH10K_STATE_ON:
++		ath10k_halt(ar);
++		ar->state = ATH10K_STATE_RESTARTING;
++		ieee80211_restart_hw(ar->hw);
++		break;
++	case ATH10K_STATE_OFF:
++		/* this can happen if driver is being unloaded */
++		ath10k_warn("cannot restart a device that hasn't been started\n");
++		break;
++	case ATH10K_STATE_RESTARTING:
++	case ATH10K_STATE_RESTARTED:
++		ar->state = ATH10K_STATE_WEDGED;
++		/* fall through */
++	case ATH10K_STATE_WEDGED:
++		ath10k_warn("device is wedged, will not restart\n");
++		break;
 +	}
 +
-+	if (ar->state != ATH10K_STATE_ON &&
-+	    ar->state != ATH10K_STATE_RESTARTED) {
-+		ath10k_warn("firmware isn't loaded yet, nothing to crash\n");
-+		goto exit;
-+	}
-+
-+	ath10k_info("simulating firmware crash\n");
-+
-+	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-+	if (ret)
-+		ath10k_warn("failed to force fw hang (%d)\n", ret);
-+
-+exit:
 +	mutex_unlock(&ar->conf_mutex);
-+	return count;
 +}
 +
-+static const struct file_operations fops_simulate_fw_crash = {
-+	.read = ath10k_read_simulate_fw_crash,
-+	.write = ath10k_write_simulate_fw_crash,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
+ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 				  const struct ath10k_hif_ops *hif_ops)
  {
- 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
-@@ -461,6 +512,9 @@ int ath10k_debug_create(struct ath10k *ar)
- 	debugfs_create_file("wmi_services", S_IRUSR, ar->debug.debugfs_phy, ar,
- 			    &fops_wmi_services);
+@@ -519,6 +547,8 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
  
-+	debugfs_create_file("simulate_fw_crash", S_IRUSR, ar->debug.debugfs_phy,
-+			    ar, &fops_simulate_fw_crash);
+ 	init_waitqueue_head(&ar->event_queue);
+ 
++	INIT_WORK(&ar->restart_work, ath10k_core_restart);
 +
- 	return 0;
+ 	return ar;
+ 
+ err_wq:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 413f1c5..9f21ecb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -250,6 +250,23 @@ struct ath10k_debug {
+ enum ath10k_state {
+ 	ATH10K_STATE_OFF = 0,
+ 	ATH10K_STATE_ON,
++
++	/* When doing firmware recovery the device is first powered down.
++	 * mac80211 is supposed to call in to start() hook later on. It is
++	 * however possible that driver unloading and firmware crash overlap.
++	 * mac80211 can wait on conf_mutex in stop() while the device is
++	 * stopped in ath10k_core_restart() work holding conf_mutex. The state
++	 * RESTARTED means that the device is up and mac80211 has started hw
++	 * reconfiguration. Once mac80211 is done with the reconfiguration we
++	 * set the state to STATE_ON in restart_complete(). */
++	ATH10K_STATE_RESTARTING,
++	ATH10K_STATE_RESTARTED,
++
++	/* The device has crashed while restarting hw. This state is like ON
++	 * but commands are blocked in HTC and -ECOMM response is given. This
++	 * prevents completion timeouts and makes the driver more responsive to
++	 * userspace commands. This is also prevents recursive recovery. */
++	ATH10K_STATE_WEDGED,
+ };
+ 
+ struct ath10k {
+@@ -355,6 +372,8 @@ struct ath10k {
+ 
+ 	enum ath10k_state state;
+ 
++	struct work_struct restart_work;
++
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 	struct ath10k_debug debug;
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 7d5a366..72e072c 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -246,6 +246,9 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ {
+ 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+ 
++	if (htc->ar->state == ATH10K_STATE_WEDGED)
++		return -ECOMM;
++
+ 	if (eid >= ATH10K_HTC_EP_COUNT) {
+ 		ath10k_warn("Invalid endpoint id: %d\n", eid);
+ 		return -ENOENT;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2dfd446..b1bb318 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1738,7 +1738,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ /*
+  * Initialize various parameters with default vaules.
+  */
+-static void ath10k_halt(struct ath10k *ar)
++void ath10k_halt(struct ath10k *ar)
+ {
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -1764,7 +1764,8 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+-	if (ar->state != ATH10K_STATE_OFF) {
++	if (ar->state != ATH10K_STATE_OFF &&
++	    ar->state != ATH10K_STATE_RESTARTING) {
+ 		ret = -EINVAL;
+ 		goto exit;
+ 	}
+@@ -1784,6 +1785,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto exit;
+ 	}
+ 
++	if (ar->state == ATH10K_STATE_OFF)
++		ar->state = ATH10K_STATE_ON;
++	else if (ar->state == ATH10K_STATE_RESTARTING)
++		ar->state = ATH10K_STATE_RESTARTED;
++
+ 	ret = ath10k_wmi_pdev_set_param(ar, WMI_PDEV_PARAM_PMF_QOS, 1);
+ 	if (ret)
+ 		ath10k_warn("could not enable WMI_PDEV_PARAM_PMF_QOS (%d)\n",
+@@ -1806,22 +1812,47 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	if (ar->state == ATH10K_STATE_ON)
++	if (ar->state == ATH10K_STATE_ON ||
++	    ar->state == ATH10K_STATE_RESTARTED ||
++	    ar->state == ATH10K_STATE_WEDGED)
+ 		ath10k_halt(ar);
+ 
+ 	ar->state = ATH10K_STATE_OFF;
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+ 	cancel_work_sync(&ar->offchan_tx_work);
++	cancel_work_sync(&ar->restart_work);
  }
- #endif /* CONFIG_ATH10K_DEBUGFS */
+ 
+-static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
++static void ath10k_config_ps(struct ath10k *ar)
+ {
+ 	struct ath10k_generic_iter ar_iter;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	/* During HW reconfiguration mac80211 reports all interfaces that were
++	 * running until reconfiguration was started. Since FW doesn't have any
++	 * vdevs at this point we must not iterate over this interface list.
++	 * This setting will be updated upon add_interface(). */
++	if (ar->state == ATH10K_STATE_RESTARTED)
++		return;
++
++	memset(&ar_iter, 0, sizeof(struct ath10k_generic_iter));
++	ar_iter.ar = ar;
++
++	ieee80211_iterate_active_interfaces_atomic(
++		ar->hw, IEEE80211_IFACE_ITER_NORMAL,
++		ath10k_ps_iter, &ar_iter);
++
++	if (ar_iter.ret)
++		ath10k_warn("failed to set ps config (%d)\n", ar_iter.ret);
++}
++
++static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
++{
+ 	struct ath10k *ar = hw->priv;
+ 	struct ieee80211_conf *conf = &hw->conf;
+ 	int ret = 0;
+-	u32 flags;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -1833,18 +1864,8 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 		spin_unlock_bh(&ar->data_lock);
+ 	}
+ 
+-	if (changed & IEEE80211_CONF_CHANGE_PS) {
+-		memset(&ar_iter, 0, sizeof(struct ath10k_generic_iter));
+-		ar_iter.ar = ar;
+-		flags = IEEE80211_IFACE_ITER_RESUME_ALL;
+-
+-		ieee80211_iterate_active_interfaces_atomic(hw,
+-							   flags,
+-							   ath10k_ps_iter,
+-							   &ar_iter);
+-
+-		ret = ar_iter.ret;
+-	}
++	if (changed & IEEE80211_CONF_CHANGE_PS)
++		ath10k_config_ps(ar);
+ 
+ 	if (changed & IEEE80211_CONF_CHANGE_MONITOR) {
+ 		if (conf->flags & IEEE80211_CONF_MONITOR)
+@@ -1853,6 +1874,7 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 			ret = ath10k_monitor_destroy(ar);
+ 	}
+ 
++	ath10k_wmi_flush_tx(ar);
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+ }
+@@ -2695,6 +2717,13 @@ static void ath10k_set_rts_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 
+ 	lockdep_assert_held(&arvif->ar->conf_mutex);
+ 
++	/* During HW reconfiguration mac80211 reports all interfaces that were
++	 * running until reconfiguration was started. Since FW doesn't have any
++	 * vdevs at this point we must not iterate over this interface list.
++	 * This setting will be updated upon add_interface(). */
++	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
++		return;
++
+ 	rts = min_t(u32, rts, ATH10K_RTS_MAX);
+ 
+ 	ar_iter->ret = ath10k_wmi_vdev_set_param(ar_iter->ar, arvif->vdev_id,
+@@ -2735,6 +2764,13 @@ static void ath10k_set_frag_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 
+ 	lockdep_assert_held(&arvif->ar->conf_mutex);
+ 
++	/* During HW reconfiguration mac80211 reports all interfaces that were
++	 * running until reconfiguration was started. Since FW doesn't have any
++	 * vdevs at this point we must not iterate over this interface list.
++	 * This setting will be updated upon add_interface(). */
++	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
++		return;
++
+ 	frag = clamp_t(u32, frag,
+ 		       ATH10K_FRAGMT_THRESHOLD_MIN,
+ 		       ATH10K_FRAGMT_THRESHOLD_MAX);
+@@ -2773,6 +2809,7 @@ static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
+ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+ {
+ 	struct ath10k *ar = hw->priv;
++	bool skip;
+ 	int ret;
+ 
+ 	/* mac80211 doesn't care if we really xmit queued frames or not
+@@ -2782,17 +2819,26 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
++	if (ar->state == ATH10K_STATE_WEDGED)
++		goto skip;
++
+ 	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
+ 			bool empty;
++
+ 			spin_lock_bh(&ar->htt.tx_lock);
+ 			empty = bitmap_empty(ar->htt.used_msdu_ids,
+ 					     ar->htt.max_num_pending_tx);
+ 			spin_unlock_bh(&ar->htt.tx_lock);
+-			(empty);
++
++			skip = (ar->state == ATH10K_STATE_WEDGED);
++
++			(empty || skip);
+ 		}), ATH10K_FLUSH_TIMEOUT_HZ);
+-	if (ret <= 0)
++
++	if (ret <= 0 || skip)
+ 		ath10k_warn("tx not flushed\n");
+ 
++skip:
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+@@ -2866,6 +2912,22 @@ static int ath10k_resume(struct ieee80211_hw *hw)
+ }
+ #endif
+ 
++static void ath10k_restart_complete(struct ieee80211_hw *hw)
++{
++	struct ath10k *ar = hw->priv;
++
++	mutex_lock(&ar->conf_mutex);
++
++	/* If device failed to restart it will be in a different state, e.g.
++	 * ATH10K_STATE_WEDGED */
++	if (ar->state == ATH10K_STATE_RESTARTED) {
++		ath10k_info("device successfully recovered\n");
++		ar->state = ATH10K_STATE_ON;
++	}
++
++	mutex_unlock(&ar->conf_mutex);
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_tx,
+ 	.start				= ath10k_start,
+@@ -2886,6 +2948,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_frag_threshold		= ath10k_set_frag_threshold,
+ 	.flush				= ath10k_flush,
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
++	.restart_complete		= ath10k_restart_complete,
+ #ifdef CONFIG_PM
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 27fc92e..6fce9bf 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -34,6 +34,7 @@ struct ath10k_vif *ath10k_get_arvif(struct ath10k *ar, u32 vdev_id);
+ void ath10k_reset_scan(unsigned long ptr);
+ void ath10k_offchan_tx_purge(struct ath10k *ar);
+ void ath10k_offchan_tx_work(struct work_struct *work);
++void ath10k_halt(struct ath10k *ar);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index bfe8561..c71b488 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -720,6 +720,8 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 			   reg_dump_values[i + 1],
+ 			   reg_dump_values[i + 2],
+ 			   reg_dump_values[i + 3]);
++
++	ieee80211_queue_work(ar->hw, &ar->restart_work);
+ }
+ 
+ static void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index b7e7e45..0d25cd7 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -27,6 +27,13 @@ void ath10k_wmi_flush_tx(struct ath10k *ar)
+ {
+ 	int ret;
+ 
++	lockdep_assert_held(&ar->conf_mutex);
++
++	if (ar->state == ATH10K_STATE_WEDGED) {
++		ath10k_warn("wmi flush skipped - device is wedged anyway\n");
++		return;
++	}
++
+ 	ret = wait_event_timeout(ar->wmi.wq,
+ 				 atomic_read(&ar->wmi.pending_tx_count) == 0,
+ 				 5*HZ);
 -- 
 1.7.9.5
 
