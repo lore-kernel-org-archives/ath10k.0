@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uz0hu-0004rb-AJ
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 08:34:02 +0000
-Received: by mail-bk0-f52.google.com with SMTP id d7so133510bkh.11
- for <ath10k@lists.infradead.org>; Tue, 16 Jul 2013 01:33:39 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAMQ0DfRO8q-S+45n2HGt3ya8nfzR5O-Nq82day26cZ1khRRdWQ@mail.gmail.com>
-References: <CAMQ0DfRO8q-S+45n2HGt3ya8nfzR5O-Nq82day26cZ1khRRdWQ@mail.gmail.com>
-Date: Tue, 16 Jul 2013 10:33:38 +0200
-Message-ID: <CA+BoTQkzxJ3YPQOkcnbLKO1mfzQiZgv-9zvOtgeqdHcpX9nWPg@mail.gmail.com>
-Subject: Re: I just try to use QCA9880 mini pcie card with ath10k drivers in
- git source tree.
+ id 1Uz1Ce-0005ej-Kw
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 09:05:49 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix NULL dereference for injected packets
+Date: Tue, 16 Jul 2013 11:04:54 +0200
+Message-ID: <1373965494-17726-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <CAMQ0DfRpqk6ufb4rAifjy651oM9-GZyDpMLL+mGVzzVSVjVyJA@mail.gmail.com>
+References: <CAMQ0DfRpqk6ufb4rAifjy651oM9-GZyDpMLL+mGVzzVSVjVyJA@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +18,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Hwan Jin Ko <ymir.kr@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ymir.kr@gmail.com
 
-T24gMTYgSnVseSAyMDEzIDA5OjMzLCBId2FuIEppbiBLbyA8eW1pci5rckBnbWFpbC5jb20+IHdy
-b3RlOgo+IEhlbGxvIQo+Cj4gSSBqdXN0IHRyeSB0byB1c2UgUUNBOTg4MCBtaW5pIHBjaWUgY2Fy
-ZCB3aXRoIGF0aDEwayBkcml2ZXJzIGluIGdpdCBzb3VyY2UgdHJlZS4KPiBXaGVuIEkgdHlwZSBp
-d2xpc3QgY29tbWFuZCB3aXRoIHNjYW5uaW5nIG9wdGlvbiwga2VybmVsIHNob3dzIGZpcm13YXJl
-Cj4gY3Jhc2hlZCBtZXNzYWdlIGFuZCBub3Qgd29ya2VkLgo+Cj4gRmlybXdhcmUgaXMgZnJvbSBo
-dHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlCj4KPiA8c25pcD4KPiB+ICMg
-aXdsaXN0IHdsYW4yIHNjYW5uaW5nCj4gWyAxMDAuMTAwMDY3XSBhdGgxMGs6IGZpcm13YXJlIGNy
-YXNoZWQhCj4gWyAxMDAuMTAzOTYwXSBhdGgxMGs6IGhhcmR3YXJlIG5hbWUgcWNhOTg4eCBodzIu
-MCB2ZXJzaW9uIDB4NDEwMDAxNmMKPiBbIDEwMC4xMTA2NzRdIGF0aDEwazogZmlybXdhcmUgdmVy
-c2lvbjogMS4wLjAuNjM2Cj4gWyAxMDAuMTE2NjkyXSBhdGgxMGs6IHRhcmdldCByZWdpc3RlciBE
-dW1wIExvY2F0aW9uOiAweDAwNDAxOTMwCj4gWyAxMDAuMTIzOTI4XSBhdGgxMGs6IHRhcmdldCBS
-ZWdpc3RlciBEdW1wCj4gWyAxMDAuMTI4Mjg1XSBhdGgxMGs6IFswMF06IDB4NDEwMDAxNkMgMHgw
-MDAwMDAwMCAweDAwOUI1OEYyIDB4MDAwMDAwMDAKPiBbIDEwMC4xMzUzMDldIGF0aDEwazogWzA0
-XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgMTAwLjE0
-MjI4OF0gYXRoMTBrOiBbMDhdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAw
-MDAwMDAwCj4gWyAxMDAuMTQ5MjU2XSBhdGgxMGs6IFsxMl06IDB4MDAwMDAwMDAgMHgwMDAwMDAw
-MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbIDEwMC4xNTYwNDhdIGF0aDEwazogWzE2XTogMHgw
-MDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDlCNThGMgo+IFsgMTAwLjE2MzAxOF0g
-YXRoMTBrOiBbMjBdOiAweDAwMDAwMDAwIDB4MDA0MDE5MzAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
-Cj4gWyAxMDAuMTcwMDQ4XSBhdGgxMGs6IFsyNF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAKPiBbIDEwMC4xNzY5NjldIGF0aDEwazogWzI4XTogMHgwMDAwMDAw
-MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgMTAwLjE4Mzk1N10gYXRoMTBr
-OiBbMzJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAx
-MDAuMTkwOTUwXSBhdGgxMGs6IFszNl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAKPiBbIDEwMC4xOTc4NTldIGF0aDEwazogWzQwXTogMHgwMDAwMDAwMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgMTAwLjIwNDgzNF0gYXRoMTBrOiBbNDRd
-OiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAxMDAuMjEx
-NzU5XSBhdGgxMGs6IFs0OF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
-MDAwMDAKPiBbIDEwMC4yMTg3OThdIGF0aDEwazogWzUyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgMTAwLjIyNTc1N10gYXRoMTBrOiBbNTZdOiAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCgpIaSBId2FuLAoKRmlyc3Qg
-b2YgYWxsIC0gYXJlIHlvdSB1c2luZyBhIHZhbmlsbGEga2VybmVsIG9yIGRvIHlvdSBoYXZlIHNv
-bWUKY3VzdG9tIHBhdGNoZXMgYXBwbGllZD8KClRoaXMgZHVtcCBsb29rcyBmYW1pbGlhciB0byBt
-ZSAoY29uc2lkZXJpbmcgdGhlIGNpcmN1bXN0YW5jZXMpIGFzIGlmCnRoZSBzY2FuIGNoYW5uZWwg
-bGlzdCBoYXNuJ3QgYmVlbiBzZW50IHRvIHRoZSBmaXJtd2FyZS4gVGhpcyBjYW4KaGFwcGVuIGlm
-IHRoZXJlJ3MgYXRoIHJlZ3VsYXRvcnkgZG9tYWluIGhhY2sgZnJvbSBPcGVuV1JUIGFwcGxpZWQu
-CgpJZiB0aGF0IGlzIG5vdCB0aGUgY2FzZSB0aGVuIEknbGQgbGlrZSB0byBhc2sgeW91IHRvIGdh
-dGhlciBzb21lIG1vcmUgbG9ncy4KCllvdSBjYW4gZWl0aGVyIGdhdGhlciBwcmludGsgbG9ncywg
-YnkgbWFraW5nIHN1cmUgeW91IGxvYWQgdGhlCmF0aDEwa19jb3JlIHdpdGggYG1vZHByb2JlIGF0
-aDEwa19jb3JlIGRlYnVnX21hc2s9MHhGRkZGRkZGRmAsIG9yIHlvdQpjYW4gZ2F0aGVyIHRyYWNl
-cyB3aXRoIGB0cmFjZS1jbWQgcmVjb3JkIC1lIGF0aDEwa2AgKHRyYWNlcyBuZWVkIHRvIGJlCmVu
-YWJsZWQgaW4gdGhlIGtlcm5lbCBhbmQgYXRoMTBrKS4KCgpQb3pkcmF3aWFtIC8gQmVzdCByZWdh
-cmRzLApNaWNoYcWCIEthemlvci4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Tx processing functions dereference vif and caused
+NULL to be dereferenced for injected frames.
+
+Don't call these functions at all for injected
+frames. It doesn't make much sense to do so
+anyway.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5082503..cdc08a0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1687,10 +1687,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+ 	}
+ 
+-	ath10k_tx_h_qos_workaround(hw, control, skb);
+-	ath10k_tx_h_update_wep_key(skb);
+-	ath10k_tx_h_add_p2p_noa_ie(ar, skb);
+-	ath10k_tx_h_seq_no(skb);
++	/* it makes no sense to process injected frames like that */
++	if (info->control.vif &&
++	    info->control.vif->type != NL80211_IFTYPE_MONITOR) {
++		ath10k_tx_h_qos_workaround(hw, control, skb);
++		ath10k_tx_h_update_wep_key(skb);
++		ath10k_tx_h_add_p2p_noa_ie(ar, skb);
++		ath10k_tx_h_seq_no(skb);
++	}
+ 
+ 	memset(ATH10K_SKB_CB(skb), 0, sizeof(*ATH10K_SKB_CB(skb)));
+ 	ATH10K_SKB_CB(skb)->htt.vdev_id = vdev_id;
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
