@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uyzr6-0003VY-72
+ id 1Uyzr6-0003VZ-EQ
  for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:29 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 00/10] ath10k: device setup refactor
-Date: Tue, 16 Jul 2013 09:38:49 +0200
-Message-ID: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 04/10] ath10k: reset BMI state upon init
+Date: Tue, 16 Jul 2013 09:38:53 +0200
+Message-ID: <1373960339-8525-5-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
+ <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,39 +26,58 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This is a respin of my patchset that addresses
-hibernation issues.
+This is necessary if we want to be able to restart
+hw on-the-fly.
 
-This is also groundwork for proper hw recovery
-that I'm going to post too.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/bmi.c  |    6 ++++++
+ drivers/net/wireless/ath/ath10k/bmi.h  |    1 +
+ drivers/net/wireless/ath/ath10k/core.c |    2 ++
+ 3 files changed, 9 insertions(+)
 
-v4:
- * update comments in pci logic decoupling
- * add missing commit message for one of the patches
- * update commit message for free_vdev_map patch
-
-Michal Kazior (10):
-  ath10k: decouple pci start/stop logic
-  ath10k: decouple core start/stop logic
-  ath10k: allow deferred regd update
-  ath10k: reset BMI state upon init
-  ath10k: decouple suspend code
-  ath10k: move free_vdev_map initialization
-  ath10k: make sure all resources are freed upon ath10k_stop()
-  ath10k: defer hw setup to start/stop mac80211 hooks
-  ath10k: store firmware files in memory
-  ath10k: skip fw stats debugfs interface if device is down
-
- drivers/net/wireless/ath/ath10k/bmi.c   |    6 +
- drivers/net/wireless/ath/ath10k/bmi.h   |    1 +
- drivers/net/wireless/ath/ath10k/core.c  |  249 +++++++++++++++++----------
- drivers/net/wireless/ath/ath10k/core.h  |   16 +-
- drivers/net/wireless/ath/ath10k/debug.c |   30 ++--
- drivers/net/wireless/ath/ath10k/hif.h   |   39 +++++
- drivers/net/wireless/ath/ath10k/mac.c   |  151 ++++++++++++++++-
- drivers/net/wireless/ath/ath10k/pci.c   |  283 +++++++++++++------------------
- 8 files changed, 497 insertions(+), 278 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.c b/drivers/net/wireless/ath/ath10k/bmi.c
+index aeae029..744da6d 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.c
++++ b/drivers/net/wireless/ath/ath10k/bmi.c
+@@ -20,6 +20,12 @@
+ #include "debug.h"
+ #include "htc.h"
+ 
++void ath10k_bmi_start(struct ath10k *ar)
++{
++	ath10k_dbg(ATH10K_DBG_CORE, "BMI started\n");
++	ar->bmi.done_sent = false;
++}
++
+ int ath10k_bmi_done(struct ath10k *ar)
+ {
+ 	struct bmi_cmd cmd;
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index 32c56aa..8d81ce1 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -184,6 +184,7 @@ struct bmi_target_info {
+ #define BMI_CE_NUM_TO_TARG 0
+ #define BMI_CE_NUM_TO_HOST 1
+ 
++void ath10k_bmi_start(struct ath10k *ar);
+ int ath10k_bmi_done(struct ath10k *ar);
+ int ath10k_bmi_get_target_info(struct ath10k *ar,
+ 			       struct bmi_target_info *target_info);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index dcddae4..3d75c6a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -507,6 +507,8 @@ int ath10k_core_start(struct ath10k *ar)
+ 	struct bmi_target_info target_info;
+ 	int status;
+ 
++	ath10k_bmi_start(ar);
++
+ 	memset(&target_info, 0, sizeof(target_info));
+ 	status = ath10k_bmi_get_target_info(ar, &target_info);
+ 	if (status)
 -- 
 1.7.9.5
 
