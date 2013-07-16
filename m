@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uyzr7-0003VY-Vm
- for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:31 +0000
+ id 1Uyzr9-0003VY-FY
+ for ath10k@lists.infradead.org; Tue, 16 Jul 2013 07:39:33 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 02/10] ath10k: decouple core start/stop logic
-Date: Tue, 16 Jul 2013 09:38:51 +0200
-Message-ID: <1373960339-8525-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 06/10] ath10k: move free_vdev_map initialization
+Date: Tue, 16 Jul 2013 09:38:55 +0200
+Message-ID: <1373960339-8525-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
 References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
  <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
@@ -26,107 +26,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Enables code reuse for proper hw reconfiguration
-that is in turn required for proper
-suspend/hibernation/wowlan support.
+This is necessary for hw reconfiguration to work.
+Since mac80211 is not calling remove_interface()
+is such case we must reset free_vdev_map.
+
+Also use a define instead of a hardcoded value for
+vdev map initialization.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   44 +++++++++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/core.h |    2 ++
- 2 files changed, 34 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f1312fa..dcddae4 100644
+index 01c1d82..0e4a704 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -502,8 +502,7 @@ void ath10k_core_destroy(struct ath10k *ar)
- }
- EXPORT_SYMBOL(ath10k_core_destroy);
+@@ -458,8 +458,6 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 	ar->hif.priv = hif_priv;
+ 	ar->hif.ops = hif_ops;
  
+-	ar->free_vdev_map = 0xFF; /* 8 vdevs */
 -
--int ath10k_core_register(struct ath10k *ar)
-+int ath10k_core_start(struct ath10k *ar)
- {
- 	struct bmi_target_info target_info;
- 	int status;
-@@ -589,9 +588,36 @@ int ath10k_core_register(struct ath10k *ar)
+ 	init_completion(&ar->scan.started);
+ 	init_completion(&ar->scan.completed);
+ 	init_completion(&ar->scan.on_channel);
+@@ -590,6 +588,8 @@ int ath10k_core_start(struct ath10k *ar)
  	if (status)
  		goto err_disconnect_htc;
  
-+	return 0;
++	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
 +
-+err_disconnect_htc:
-+	ath10k_htc_stop(&ar->htc);
-+err_htt_detach:
-+	ath10k_htt_detach(&ar->htt);
-+err_wmi_detach:
-+	ath10k_wmi_detach(ar);
-+err:
-+	return status;
-+}
-+
-+void ath10k_core_stop(struct ath10k *ar)
-+{
-+	ath10k_htc_stop(&ar->htc);
-+	ath10k_htt_detach(&ar->htt);
-+	ath10k_wmi_detach(ar);
-+}
-+
-+int ath10k_core_register(struct ath10k *ar)
-+{
-+	int status;
-+
-+	status = ath10k_core_start(ar);
-+	if (status)
-+		goto err;
-+
- 	status = ath10k_mac_register(ar);
- 	if (status)
--		goto err_disconnect_htc;
-+		goto err_core_stop;
+ 	return 0;
  
- 	status = ath10k_debug_create(ar);
- 	if (status) {
-@@ -603,12 +629,8 @@ int ath10k_core_register(struct ath10k *ar)
- 
- err_unregister_mac:
- 	ath10k_mac_unregister(ar);
--err_disconnect_htc:
--	ath10k_htc_stop(&ar->htc);
--err_htt_detach:
--	ath10k_htt_detach(&ar->htt);
--err_wmi_detach:
--	ath10k_wmi_detach(ar);
-+err_core_stop:
-+	ath10k_core_stop(ar);
- err:
- 	return status;
- }
-@@ -620,9 +642,7 @@ void ath10k_core_unregister(struct ath10k *ar)
- 	 * Otherwise we will fail to submit commands to FW and mac80211 will be
- 	 * unhappy about callback failures. */
- 	ath10k_mac_unregister(ar);
--	ath10k_htc_stop(&ar->htc);
--	ath10k_htt_detach(&ar->htt);
--	ath10k_wmi_detach(ar);
-+	ath10k_core_stop(ar);
- }
- EXPORT_SYMBOL(ath10k_core_unregister);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2f7065c..5a0b2ce 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -353,6 +353,8 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
- 				  const struct ath10k_hif_ops *hif_ops);
- void ath10k_core_destroy(struct ath10k *ar);
- 
-+int ath10k_core_start(struct ath10k *ar);
-+void ath10k_core_stop(struct ath10k *ar);
- int ath10k_core_register(struct ath10k *ar);
- void ath10k_core_unregister(struct ath10k *ar);
- 
+ err_disconnect_htc:
 -- 
 1.7.9.5
 
