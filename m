@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzhmh-0001Lc-24
- for ath10k@lists.infradead.org; Thu, 18 Jul 2013 06:33:51 +0000
+ id 1Uzhsc-0001SI-O6
+ for ath10k@lists.infradead.org; Thu, 18 Jul 2013 06:39:59 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: fix rts/fragmentation threshold setup
-Date: Thu, 18 Jul 2013 08:33:13 +0200
-Message-ID: <1374129193-3533-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
-References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: move irq setup
+Date: Thu, 18 Jul 2013 08:39:32 +0200
+Message-ID: <1374129572-6079-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,118 +23,182 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-If RTS and fragmentation threshold values are
-0xFFFFFFFF they should be considered disabled and
-no min/max limits must be applied.
+There was a slight race during PCI shutdown. Since
+interrupts weren't really stopped (only Copy
+Engine interrupts were disabled through device hw
+registers) it was possible for a firmware
+indication (crash) interrupt to come in after
+tasklets were synced/killed. This would cause
+memory corruption and a panic in most cases. It
+was also possible for interrupt to come before CE
+was initialized during device probing.
 
-This fixes some issues with throughput issues,
-especially with VHT.
+Interrupts are required for BMI phase so they are
+enabled as soon as power_up() is called but are
+freed upon both power_down() and stop() so there's
+asymmetry here. As by design stop() cannot be
+followed by start() it is okay. Both power_down()
+and stop() should be merged later on to avoid
+confusion.
+
+Before this can be really properly fixed var/hw
+init code split is necessary.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   54 +++++++++++++++++----------------
- 1 file changed, 28 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3d0f876..019c6b8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -331,6 +331,29 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 	return 0;
- }
+Please note: this is based on my (still under
+review at the time of posting) previous patchests:
+device setup refactor and recovery.
+
+I'm posting this before those patchsets are merged
+so anyone interested in testing this fix (I can't
+reproduce the problem on my setup) can give it a
+try.
+
+ drivers/net/wireless/ath/ath10k/pci.c |   36 +++++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/pci.h |    1 +
+ 2 files changed, 26 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index c71b488..e814151 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -56,6 +56,8 @@ static void ath10k_pci_rx_pipe_cleanup(struct hif_ce_pipe_info *pipe_info);
+ static void ath10k_pci_stop_ce(struct ath10k *ar);
+ static void ath10k_pci_device_reset(struct ath10k *ar);
+ static int ath10k_pci_reset_target(struct ath10k *ar);
++static int ath10k_pci_start_intr(struct ath10k *ar);
++static void ath10k_pci_stop_intr(struct ath10k *ar);
  
-+static int  ath10k_mac_set_rts(struct ath10k_vif *arvif, u32 value)
-+{
-+	if (value != 0xFFFFFFFF)
-+		value = min_t(u32, arvif->ar->hw->wiphy->rts_threshold,
-+			      ATH10K_RTS_MAX);
-+
-+	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
-+					 WMI_VDEV_PARAM_RTS_THRESHOLD,
-+					 value);
-+}
-+
-+static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
-+{
-+	if (value != 0xFFFFFFFF)
-+		value = clamp_t(u32, arvif->ar->hw->wiphy->frag_threshold,
-+				ATH10K_FRAGMT_THRESHOLD_MIN,
-+				ATH10K_FRAGMT_THRESHOLD_MAX);
-+
-+	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
-+					 WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
-+					 value);
-+}
-+
- static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* host->target HTC control and raw streams */
+@@ -827,6 +829,7 @@ static void ath10k_pci_stop_ce(struct ath10k *ar)
+ 	int i;
+ 
+ 	ath10k_ce_disable_interrupts(ar);
++	ath10k_pci_stop_intr(ar);
+ 
+ 	/* Cancel the pending tasklet */
+ 	tasklet_kill(&ar_pci->intr_tq);
+@@ -1742,6 +1745,12 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
  {
  	int ret;
-@@ -1803,7 +1826,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
- 	enum wmi_sta_powersave_param param;
- 	int ret = 0;
--	u32 value, rts, frag;
-+	u32 value;
- 	int bit;
  
- 	mutex_lock(&ar->conf_mutex);
-@@ -1906,20 +1929,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 			ath10k_warn("Failed to set PSPOLL count: %d\n", ret);
++	ret = ath10k_pci_start_intr(ar);
++	if (ret) {
++		ath10k_err("could not start interrupt handling (%d)\n", ret);
++		goto err;
++	}
++
+ 	/*
+ 	 * Bring the target up cleanly.
+ 	 *
+@@ -1756,7 +1765,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 
+ 	ret = ath10k_pci_reset_target(ar);
+ 	if (ret)
+-		goto err;
++		goto err_intr;
+ 
+ 	if (ath10k_target_ps) {
+ 		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save enabled\n");
+@@ -1783,16 +1792,24 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	return 0;
+ 
+ err_ce:
++	/* XXX: Until var/hw init is split it's impossible to fix the ordering
++	 * here so we must call stop_intr() here too to prevent interrupts after
++	 * CE is teared down. It's okay to double call the stop_intr() */
++	ath10k_pci_stop_intr(ar);
+ 	ath10k_pci_ce_deinit(ar);
+ err_ps:
+ 	if (!ath10k_target_ps)
+ 		ath10k_do_pci_sleep(ar);
++err_intr:
++	ath10k_pci_stop_intr(ar);
+ err:
+ 	return ret;
+ }
+ 
+ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ {
++	ath10k_pci_stop_intr(ar);
++
+ 	ath10k_pci_ce_deinit(ar);
+ 	if (!ath10k_target_ps)
+ 		ath10k_do_pci_sleep(ar);
+@@ -2119,6 +2136,7 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
+ 	ret = ath10k_pci_start_intr_legacy(ar);
+ 
+ exit:
++	ar_pci->intr_started = ret == 0;
+ 	ar_pci->num_msi_intrs = num;
+ 	ar_pci->ce_count = CE_COUNT;
+ 	return ret;
+@@ -2129,6 +2147,9 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int i;
+ 
++	if (ar_pci->intr_started == false)
++		return;
++
+ 	/* There's at least one interrupt irregardless whether its legacy INTR
+ 	 * or MSI or MSI-X */
+ 	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
+@@ -2136,6 +2157,8 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
+ 
+ 	if (ar_pci->num_msi_intrs > 0)
+ 		pci_disable_msi(ar_pci->pdev);
++
++	ar_pci->intr_started = false;
+ }
+ 
+ static int ath10k_pci_reset_target(struct ath10k *ar)
+@@ -2358,22 +2381,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	ar_pci->cacheline_sz = dma_get_cache_alignment();
+ 
+-	ret = ath10k_pci_start_intr(ar);
+-	if (ret) {
+-		ath10k_err("could not start interrupt handling (%d)\n", ret);
+-		goto err_iomap;
+-	}
+-
+ 	ret = ath10k_core_register(ar);
+ 	if (ret) {
+ 		ath10k_err("could not register driver core (%d)\n", ret);
+-		goto err_intr;
++		goto err_iomap;
  	}
  
--	rts = min_t(u32, ar->hw->wiphy->rts_threshold, ATH10K_RTS_MAX);
--	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
--					 WMI_VDEV_PARAM_RTS_THRESHOLD,
--					 rts);
-+	ret = ath10k_mac_set_rts(arvif, ar->hw->wiphy->rts_threshold);
- 	if (ret)
- 		ath10k_warn("failed to set rts threshold for vdev %d (%d)\n",
- 			    arvif->vdev_id, ret);
+ 	return 0;
  
--	frag = clamp_t(u32, ar->hw->wiphy->frag_threshold,
--		       ATH10K_FRAGMT_THRESHOLD_MIN,
--		       ATH10K_FRAGMT_THRESHOLD_MAX);
--	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
--					WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
--					frag);
-+	ret = ath10k_mac_set_frag(arvif, ar->hw->wiphy->frag_threshold);
- 	if (ret)
- 		ath10k_warn("failed to set frag threshold for vdev %d (%d)\n",
- 			    arvif->vdev_id, ret);
-@@ -2627,11 +2642,7 @@ static void ath10k_set_rts_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+-err_intr:
+-	ath10k_pci_stop_intr(ar);
+ err_iomap:
+ 	pci_iounmap(pdev, mem);
+ err_master:
+@@ -2410,7 +2425,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 	tasklet_kill(&ar_pci->msi_fw_err);
  
- 	lockdep_assert_held(&arvif->ar->conf_mutex);
+ 	ath10k_core_unregister(ar);
+-	ath10k_pci_stop_intr(ar);
  
--	rts = min_t(u32, rts, ATH10K_RTS_MAX);
--
--	ar_iter->ret = ath10k_wmi_vdev_set_param(ar_iter->ar, arvif->vdev_id,
--						 WMI_VDEV_PARAM_RTS_THRESHOLD,
--						 rts);
-+	ar_iter->ret = ath10k_mac_set_rts(arvif, rts);
- 	if (ar_iter->ret)
- 		ath10k_warn("Failed to set RTS threshold for VDEV: %d\n",
- 			    arvif->vdev_id);
-@@ -2663,19 +2674,10 @@ static void ath10k_set_frag_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
- 	struct ath10k_generic_iter *ar_iter = data;
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
- 	u32 frag = ar_iter->ar->hw->wiphy->frag_threshold;
--	int ret;
+ 	pci_set_drvdata(pdev, NULL);
+ 	pci_iounmap(pdev, ar_pci->mem);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index d3a2e6c..5eb628f 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -198,6 +198,7 @@ struct ath10k_pci {
+ 	 * interrupts.
+ 	 */
+ 	int num_msi_intrs;
++	bool intr_started;
  
- 	lockdep_assert_held(&arvif->ar->conf_mutex);
- 
--	frag = clamp_t(u32, frag,
--		       ATH10K_FRAGMT_THRESHOLD_MIN,
--		       ATH10K_FRAGMT_THRESHOLD_MAX);
--
--	ret = ath10k_wmi_vdev_set_param(ar_iter->ar, arvif->vdev_id,
--					WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
--					frag);
--
--	ar_iter->ret = ret;
-+	ar_iter->ret = ath10k_mac_set_frag(arvif, frag);
- 	if (ar_iter->ret)
- 		ath10k_warn("Failed to set frag threshold for VDEV: %d\n",
- 			    arvif->vdev_id);
+ 	struct tasklet_struct intr_tq;
+ 	struct tasklet_struct msi_fw_err;
 -- 
 1.7.9.5
 
