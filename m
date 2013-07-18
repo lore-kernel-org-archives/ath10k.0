@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from mail-oa0-x231.google.com ([2607:f8b0:4003:c02::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzhsc-0001SI-O6
- for ath10k@lists.infradead.org; Thu, 18 Jul 2013 06:39:59 +0000
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: move irq setup
-Date: Thu, 18 Jul 2013 08:39:32 +0200
-Message-ID: <1374129572-6079-1-git-send-email-michal.kazior@tieto.com>
+ id 1UzcqP-0005Y7-20
+ for ath10k@lists.infradead.org; Thu, 18 Jul 2013 01:17:22 +0000
+Received: by mail-oa0-f49.google.com with SMTP id n9so531461oag.22
+ for <ath10k@lists.infradead.org>; Wed, 17 Jul 2013 18:16:58 -0700 (PDT)
 MIME-Version: 1.0
+Date: Thu, 18 Jul 2013 10:10:19 +0900
+Message-ID: <CAMQ0DfQUNLe3yw7gntyCNUZTfZdpf4PAjiD_BCrfRPtMnG4mxg@mail.gmail.com>
+Subject: Re: update firmware crash issue ..
+From: "H.Jin Ko" <ymir.kr@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,194 +18,162 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-There was a slight race during PCI shutdown. Since
-interrupts weren't really stopped (only Copy
-Engine interrupts were disabled through device hw
-registers) it was possible for a firmware
-indication (crash) interrupt to come in after
-tasklets were synced/killed. This would cause
-memory corruption and a panic in most cases. It
-was also possible for interrupt to come before CE
-was initialized during device probing.
-
-Interrupts are required for BMI phase so they are
-enabled as soon as power_up() is called but are
-freed upon both power_down() and stop() so there's
-asymmetry here. As by design stop() cannot be
-followed by start() it is okay. Both power_down()
-and stop() should be merged later on to avoid
-confusion.
-
-Before this can be really properly fixed var/hw
-init code split is necessary.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-
-Please note: this is based on my (still under
-review at the time of posting) previous patchests:
-device setup refactor and recovery.
-
-I'm posting this before those patchsets are merged
-so anyone interested in testing this fix (I can't
-reproduce the problem on my setup) can give it a
-try.
-
- drivers/net/wireless/ath/ath10k/pci.c |   36 +++++++++++++++++++++++----------
- drivers/net/wireless/ath/ath10k/pci.h |    1 +
- 2 files changed, 26 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index c71b488..e814151 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -56,6 +56,8 @@ static void ath10k_pci_rx_pipe_cleanup(struct hif_ce_pipe_info *pipe_info);
- static void ath10k_pci_stop_ce(struct ath10k *ar);
- static void ath10k_pci_device_reset(struct ath10k *ar);
- static int ath10k_pci_reset_target(struct ath10k *ar);
-+static int ath10k_pci_start_intr(struct ath10k *ar);
-+static void ath10k_pci_stop_intr(struct ath10k *ar);
- 
- static const struct ce_attr host_ce_config_wlan[] = {
- 	/* host->target HTC control and raw streams */
-@@ -827,6 +829,7 @@ static void ath10k_pci_stop_ce(struct ath10k *ar)
- 	int i;
- 
- 	ath10k_ce_disable_interrupts(ar);
-+	ath10k_pci_stop_intr(ar);
- 
- 	/* Cancel the pending tasklet */
- 	tasklet_kill(&ar_pci->intr_tq);
-@@ -1742,6 +1745,12 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- {
- 	int ret;
- 
-+	ret = ath10k_pci_start_intr(ar);
-+	if (ret) {
-+		ath10k_err("could not start interrupt handling (%d)\n", ret);
-+		goto err;
-+	}
-+
- 	/*
- 	 * Bring the target up cleanly.
- 	 *
-@@ -1756,7 +1765,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 
- 	ret = ath10k_pci_reset_target(ar);
- 	if (ret)
--		goto err;
-+		goto err_intr;
- 
- 	if (ath10k_target_ps) {
- 		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save enabled\n");
-@@ -1783,16 +1792,24 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 	return 0;
- 
- err_ce:
-+	/* XXX: Until var/hw init is split it's impossible to fix the ordering
-+	 * here so we must call stop_intr() here too to prevent interrupts after
-+	 * CE is teared down. It's okay to double call the stop_intr() */
-+	ath10k_pci_stop_intr(ar);
- 	ath10k_pci_ce_deinit(ar);
- err_ps:
- 	if (!ath10k_target_ps)
- 		ath10k_do_pci_sleep(ar);
-+err_intr:
-+	ath10k_pci_stop_intr(ar);
- err:
- 	return ret;
- }
- 
- static void ath10k_pci_hif_power_down(struct ath10k *ar)
- {
-+	ath10k_pci_stop_intr(ar);
-+
- 	ath10k_pci_ce_deinit(ar);
- 	if (!ath10k_target_ps)
- 		ath10k_do_pci_sleep(ar);
-@@ -2119,6 +2136,7 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
- 	ret = ath10k_pci_start_intr_legacy(ar);
- 
- exit:
-+	ar_pci->intr_started = ret == 0;
- 	ar_pci->num_msi_intrs = num;
- 	ar_pci->ce_count = CE_COUNT;
- 	return ret;
-@@ -2129,6 +2147,9 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int i;
- 
-+	if (ar_pci->intr_started == false)
-+		return;
-+
- 	/* There's at least one interrupt irregardless whether its legacy INTR
- 	 * or MSI or MSI-X */
- 	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
-@@ -2136,6 +2157,8 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
- 
- 	if (ar_pci->num_msi_intrs > 0)
- 		pci_disable_msi(ar_pci->pdev);
-+
-+	ar_pci->intr_started = false;
- }
- 
- static int ath10k_pci_reset_target(struct ath10k *ar)
-@@ -2358,22 +2381,14 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 
- 	ar_pci->cacheline_sz = dma_get_cache_alignment();
- 
--	ret = ath10k_pci_start_intr(ar);
--	if (ret) {
--		ath10k_err("could not start interrupt handling (%d)\n", ret);
--		goto err_iomap;
--	}
--
- 	ret = ath10k_core_register(ar);
- 	if (ret) {
- 		ath10k_err("could not register driver core (%d)\n", ret);
--		goto err_intr;
-+		goto err_iomap;
- 	}
- 
- 	return 0;
- 
--err_intr:
--	ath10k_pci_stop_intr(ar);
- err_iomap:
- 	pci_iounmap(pdev, mem);
- err_master:
-@@ -2410,7 +2425,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
- 	tasklet_kill(&ar_pci->msi_fw_err);
- 
- 	ath10k_core_unregister(ar);
--	ath10k_pci_stop_intr(ar);
- 
- 	pci_set_drvdata(pdev, NULL);
- 	pci_iounmap(pdev, ar_pci->mem);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index d3a2e6c..5eb628f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -198,6 +198,7 @@ struct ath10k_pci {
- 	 * interrupts.
- 	 */
- 	int num_msi_intrs;
-+	bool intr_started;
- 
- 	struct tasklet_struct intr_tq;
- 	struct tasklet_struct msi_fw_err;
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+MjAxMy83LzE2IEguSmluIEtvIDx5bWlyLmtyQGdtYWlsLmNvbT46Cj4gMjAxMy83LzE2IE1pY2hh
+bCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPjoKPj4gT24gMTYgSnVseSAyMDEzIDA5
+OjMzLCBId2FuIEppbiBLbyA8eW1pci5rckBnbWFpbC5jb20+IHdyb3RlOgo+Pj4gSGVsbG8hCj4+
+Pgo+Pj4gSSBqdXN0IHRyeSB0byB1c2UgUUNBOTg4MCBtaW5pIHBjaWUgY2FyZCB3aXRoIGF0aDEw
+ayBkcml2ZXJzIGluIGdpdCBzb3VyY2UgdHJlZS4KPj4+IFdoZW4gSSB0eXBlIGl3bGlzdCBjb21t
+YW5kIHdpdGggc2Nhbm5pbmcgb3B0aW9uLCBrZXJuZWwgc2hvd3MgZmlybXdhcmUKPj4+IGNyYXNo
+ZWQgbWVzc2FnZSBhbmQgbm90IHdvcmtlZC4KPj4+Cj4+PiBGaXJtd2FyZSBpcyBmcm9tIGh0dHBz
+Oi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGstZmlybXdhcmUKPj4+Cj4+PiA8c25pcD4KPj4+IH4g
+IyBpd2xpc3Qgd2xhbjIgc2Nhbm5pbmcKPj4+IFsgMTAwLjEwMDA2N10gYXRoMTBrOiBmaXJtd2Fy
+ZSBjcmFzaGVkIQo+Pj4gWyAxMDAuMTAzOTYwXSBhdGgxMGs6IGhhcmR3YXJlIG5hbWUgcWNhOTg4
+eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPj4+IFsgMTAwLjExMDY3NF0gYXRoMTBrOiBmaXJt
+d2FyZSB2ZXJzaW9uOiAxLjAuMC42MzYKPj4+IFsgMTAwLjExNjY5Ml0gYXRoMTBrOiB0YXJnZXQg
+cmVnaXN0ZXIgRHVtcCBMb2NhdGlvbjogMHgwMDQwMTkzMAo+Pj4gWyAxMDAuMTIzOTI4XSBhdGgx
+MGs6IHRhcmdldCBSZWdpc3RlciBEdW1wCj4+PiBbIDEwMC4xMjgyODVdIGF0aDEwazogWzAwXTog
+MHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5QjU4RjIgMHgwMDAwMDAwMAo+Pj4gWyAxMDAuMTM1
+MzA5XSBhdGgxMGs6IFswNF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAKPj4+IFsgMTAwLjE0MjI4OF0gYXRoMTBrOiBbMDhdOiAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBbIDEwMC4xNDkyNTZdIGF0aDEwazogWzEyXTog
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gWyAxMDAuMTU2
+MDQ4XSBhdGgxMGs6IFsxNl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDA5
+QjU4RjIKPj4+IFsgMTAwLjE2MzAxOF0gYXRoMTBrOiBbMjBdOiAweDAwMDAwMDAwIDB4MDA0MDE5
+MzAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBbIDEwMC4xNzAwNDhdIGF0aDEwazogWzI0XTog
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gWyAxMDAuMTc2
+OTY5XSBhdGgxMGs6IFsyOF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAKPj4+IFsgMTAwLjE4Mzk1N10gYXRoMTBrOiBbMzJdOiAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBbIDEwMC4xOTA5NTBdIGF0aDEwazogWzM2XTog
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gWyAxMDAuMTk3
+ODU5XSBhdGgxMGs6IFs0MF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAKPj4+IFsgMTAwLjIwNDgzNF0gYXRoMTBrOiBbNDRdOiAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBbIDEwMC4yMTE3NTldIGF0aDEwazogWzQ4XTog
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gWyAxMDAuMjE4
+Nzk4XSBhdGgxMGs6IFs1Ml06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAKPj4+IFsgMTAwLjIyNTc1N10gYXRoMTBrOiBbNTZdOiAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+Cj4+IEhpIEh3YW4sCj4+Cj4+IEZpcnN0IG9mIGFs
+bCAtIGFyZSB5b3UgdXNpbmcgYSB2YW5pbGxhIGtlcm5lbCBvciBkbyB5b3UgaGF2ZSBzb21lCj4+
+IGN1c3RvbSBwYXRjaGVzIGFwcGxpZWQ/Cj4+Cj4+IFRoaXMgZHVtcCBsb29rcyBmYW1pbGlhciB0
+byBtZSAoY29uc2lkZXJpbmcgdGhlIGNpcmN1bXN0YW5jZXMpIGFzIGlmCj4+IHRoZSBzY2FuIGNo
+YW5uZWwgbGlzdCBoYXNuJ3QgYmVlbiBzZW50IHRvIHRoZSBmaXJtd2FyZS4gVGhpcyBjYW4KPj4g
+aGFwcGVuIGlmIHRoZXJlJ3MgYXRoIHJlZ3VsYXRvcnkgZG9tYWluIGhhY2sgZnJvbSBPcGVuV1JU
+IGFwcGxpZWQuCj4+Cj4+IElmIHRoYXQgaXMgbm90IHRoZSBjYXNlIHRoZW4gSSdsZCBsaWtlIHRv
+IGFzayB5b3UgdG8gZ2F0aGVyIHNvbWUgbW9yZSBsb2dzLgo+Pgo+PiBZb3UgY2FuIGVpdGhlciBn
+YXRoZXIgcHJpbnRrIGxvZ3MsIGJ5IG1ha2luZyBzdXJlIHlvdSBsb2FkIHRoZQo+PiBhdGgxMGtf
+Y29yZSB3aXRoIGBtb2Rwcm9iZSBhdGgxMGtfY29yZSBkZWJ1Z19tYXNrPTB4RkZGRkZGRkZgLCBv
+ciB5b3UKPj4gY2FuIGdhdGhlciB0cmFjZXMgd2l0aCBgdHJhY2UtY21kIHJlY29yZCAtZSBhdGgx
+MGtgICh0cmFjZXMgbmVlZCB0byBiZQo+PiBlbmFibGVkIGluIHRoZSBrZXJuZWwgYW5kIGF0aDEw
+aykuCj4+Cj4+Cj4+IFBvemRyYXdpYW0gLyBCZXN0IHJlZ2FyZHMsCj4+IE1pY2hhxYIgS2F6aW9y
+Lgo+Cj4KPiBIaX4hCj4KPiBBaCwgeW91J3JlIHJpZ2h0Li4KPiBJJ20gc29ycnkgdGhhdCBJIHF1
+aXRlIGZvcmdvdCB0byBtZW50aW9uIGFib3V0IGl0IGZpcnN0Lgo+IEkgYWRkZWQgbW9yZSA1R0h6
+IGNoYW5uZWxzIHRvIGF0aDlrXzVnaHpfY2hhbnRhYmxlW10KPiBhbmQgYXRoMTBrXzVnaHpfY2hh
+bnRhYmxlW10gYW5kIG92ZXJyaWRlZCByZWdkb21haW4uCj4KPiBJIHJlLXRyaWVkIHNjYW5uaW5n
+IHdpdGggdmFuaWxsYSBrZXJuZWwgYW5kIGZvdW5kIGl0IHdvcmtlZC4KPiBNYXliZSBJIG5lZWQg
+dG8gZmluZCBhbm90aGVyIHdheSB0byBleHBhbmQgY2hhbm5lbCB0YWJsZXMuCj4gSSB0aGluayB0
+cmFjZSBsb2cgaXMgbm90IGhlbHBmdWwgaW4gdGhpcyBjYXNlLCBidXQgYXR0YWNoZWQgZm9yIGZ1
+dHVyZQo+IHJlZmVyZW5jZS4KPgo+IFRoeCBmb3IgeW91ciBhbnN3ZXIuCgptb3JlIHVwZGF0ZSwK
+Ckp1c3QgZXhwYW5kaW5nIGNoYW5uZWwgdGFibGUgZG9lcyBub3QgYWZmZWN0IGYvdyBjcmFzaCwK
+YnV0IG92ZXJyaWRpbmcgcmVndWxhdG9yeSBkb21haW4gY2F1c2VzIGYvdyBjcmFzaC4KSW50ZXJl
+c3RpbmcgdGhpbmcgaXMgdGhhdCBzb21lIGZsYWdzIG9mIGNoYW5uZWxzIGFyZSBjaGFuZ2VkIGFm
+dGVyIEFQCnNjYW4uICh3aXRoIHZhbmlsbGEga2VybmVsKQoKPHNuaXA+Cn4gIyBkbWVzZyB8IGdy
+ZXAgLWkgYXRoClsgICAgMC4wMDAwMDBdIExpbnV4IHZlcnNpb24gMy4xMC4wLXdsLWF0aCsgKHlt
+aXJAeWdnZHJhc2lsKSAoZ2NjCnZlcnNpb24gNC42LjQgKGNyb3NzdG9vbC1ORyAxLjE4LjAgLSBi
+dWlsZHJvb3QgMjAxMy4wNSkgKSAjNCBTTVAgV2VkCkp1bCAxNyAxNDoyMzoxMiBLU1QgMjAxMwpb
+ICAgIDIuOTc3ODYwXSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MApbICAgIDIuOTgxNzYzXSBh
+dGg6IEVFUFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxkIGJlIHVzZWQK
+WyAgICAyLjk4ODM1NF0gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1uIG1hcCBzZWFy
+Y2gKWyAgICAyLjk5MzgxN10gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNvZGU6IDB4M2EK
+WyAgICAyLjk5ODc1OV0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBVUwpbICAgIDMu
+MDAzMzU0XSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQpbICAgIDMuMDE3MzcxXSBpZWVlODAyMTEg
+cGh5MDogQXRoZXJvcyBBUjkzMDAgUmV2OjMgbWVtPTB4ZjgwODAwMDAsIGlycT0xOApbICAgIDMu
+MDMzNzM4XSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MApbICAgIDMuMDM3NjQ0XSBhdGg6IEVF
+UFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxkIGJlIHVzZWQKWyAgICAz
+LjA0NDIzM10gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1uIG1hcCBzZWFyY2gKWyAg
+ICAzLjA0OTY5NV0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNvZGU6IDB4M2EKWyAgICAz
+LjA1NDYyOV0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBVUwpbICAgIDMuMDU5MjE3
+XSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQpbICAgIDMuMDczOTI2XSBpZWVlODAyMTEgcGh5MTog
+QXRoZXJvcyBBUjkzMDAgUmV2OjMgbWVtPTB4ZjgxMDAwMDAsIGlycT0xOQpbICAgIDMuMTQ3NzE2
+XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogQkFSIDA6IGFzc2lnbmVkIFttZW0KMHg4MDAwMDAw
+MC0weDgwMWZmZmZmIDY0Yml0XQpbICAgIDMuMTU2NDI5XSBhdGgxMGs6IE1TSS1YIGRpZG4ndCBz
+dWNjZWVkICgxKSwgdHJ5aW5nIE1TSQpbICAgIDMuMTYxOTQwXSBhdGgxMGtfcGNpIDAwMDA6MDI6
+MDAuMDogaXJxIDQ0IGZvciBNU0kvTVNJLVgKWyAgICAzLjE2NzU1NF0gYXRoMTBrOiBNU0kgaW50
+ZXJydXB0IGhhbmRsaW5nClsgICAgMy4xOTg3ODhdIGF0aDEwazogSGFyZHdhcmUgbmFtZSBxY2E5
+ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAwMDE2YwpbICAgIDQuMzY0MTk3XSBhdGgxMGs6IFVBUlQg
+cHJpbnRzIGRpc2FibGVkClsgICAgNC4zNzE4NThdIGF0aDEwazogZmlybXdhcmUgMS4wLjAuNjM2
+IGJvb3RlZApbICAgIDQuMzg5NjEyXSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MApbICAgIDQu
+MzkzNTI1XSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxk
+IGJlIHVzZWQKWyAgICA0LjQwMDEwOV0gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1u
+IG1hcCBzZWFyY2gKWyAgICA0LjQwNTU2MV0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNv
+ZGU6IDB4M2EKWyAgICA0LjQxMDQ5N10gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBV
+UwpbICAgIDQuNDE1MDgyXSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQp+ICMgaXcgbGlzdApXaXBo
+eSBwaHkyCiAgICAgICAgbWF4ICMgc2NhbiBTU0lEczogMTYKICAgICAgICAuLi4uLi4uLi4uLi4u
+CiAgICAgICAgICAgICAgICBGcmVxdWVuY2llczoKICAgICAgICAgICAgICAgICAgICAgICAgKiA1
+MTgwIE1IeiBbMzZdICgyMC4wIGRCbSkgKHBhc3NpdmUgc2Nhbm5pbmcsIG5vIElCU1MpCiAgICAg
+ICAgICAgICAgICAgICAgICAgICogNTIwMCBNSHogWzQwXSAoMjAuMCBkQm0pIChwYXNzaXZlIHNj
+YW5uaW5nLCBubyBJQlNTKQogICAgICAgICAgICAgICAgICAgICAgICAqIDUyMjAgTUh6IFs0NF0g
+KDIwLjAgZEJtKSAocGFzc2l2ZSBzY2FubmluZywgbm8gSUJTUykKICAgICAgICAgICAgICAgICAg
+ICAgICAgKiA1MjQwIE1IeiBbNDhdICgyMC4wIGRCbSkgKHBhc3NpdmUgc2Nhbm5pbmcsIG5vIElC
+U1MpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTI2MCBNSHogWzUyXSAoZGlzYWJsZWQpCiAg
+ICAgICAgICAgICAgICAgICAgICAgICogNTI4MCBNSHogWzU2XSAoZGlzYWJsZWQpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICogNTMwMCBNSHogWzYwXSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICogNTMyMCBNSHogWzY0XSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAgICAgICAg
+ICAgICogNTUwMCBNSHogWzEwMF0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAq
+IDU1MjAgTUh6IFsxMDRdIChkaXNhYmxlZCkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1NTQw
+IE1IeiBbMTA4XSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTU2MCBNSHog
+WzExMl0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU1ODAgTUh6IFsxMTZd
+IChkaXNhYmxlZCkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1NjAwIE1IeiBbMTIwXSAoZGlz
+YWJsZWQpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTYyMCBNSHogWzEyNF0gKGRpc2FibGVk
+KQogICAgICAgICAgICAgICAgICAgICAgICAqIDU2NDAgTUh6IFsxMjhdIChkaXNhYmxlZCkKICAg
+ICAgICAgICAgICAgICAgICAgICAgKiA1NjYwIE1IeiBbMTMyXSAoZGlzYWJsZWQpCiAgICAgICAg
+ICAgICAgICAgICAgICAgICogNTY4MCBNSHogWzEzNl0gKGRpc2FibGVkKQogICAgICAgICAgICAg
+ICAgICAgICAgICAqIDU3MDAgTUh6IFsxNDBdIChkaXNhYmxlZCkKICAgICAgICAgICAgICAgICAg
+ICAgICAgKiA1NzQ1IE1IeiBbMTQ5XSAoMjAuMCBkQm0pIChwYXNzaXZlIHNjYW5uaW5nLCBubyBJ
+QlNTKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU3NjUgTUh6IFsxNTNdICgyMC4wIGRCbSkg
+KHBhc3NpdmUgc2Nhbm5pbmcsIG5vIElCU1MpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTc4
+NSBNSHogWzE1N10gKDIwLjAgZEJtKSAocGFzc2l2ZSBzY2FubmluZywgbm8gSUJTUykKICAgICAg
+ICAgICAgICAgICAgICAgICAgKiA1ODA1IE1IeiBbMTYxXSAoMjAuMCBkQm0pIChwYXNzaXZlIHNj
+YW5uaW5nLCBubyBJQlNTKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU4MjUgTUh6IFsxNjVd
+ICgyMC4wIGRCbSkgKHBhc3NpdmUgc2Nhbm5pbmcsIG5vIElCU1MpCiAgICAgICAgLi4uLi4uLi4u
+Li4uCn4gIyBpd2xpc3Qgd2xhbjIgc2Nhbm5pbmcKd2xhbjIgICAgIFNjYW4gY29tcGxldGVkIDoK
+ICAgICAgICAgIENlbGwgMDEgLSBBZGRyZXNzOiAyMDpFNToyQTowNjpEMjo3NAogICAgICAgICAg
+ICAgICAgICAgIENoYW5uZWw6MQogICAgICAgICAgICAgICAgICAgIEZyZXF1ZW5jeToyLjQxMiBH
+SHogKENoYW5uZWwgMSkKICAgICAgICAgICAgICAgICAgICBRdWFsaXR5PTIxLzcwICBTaWduYWwg
+bGV2ZWw9LTg5IGRCbQouLi4uCiAgICAgICAgICBDZWxsIDEzIC0gQWRkcmVzczogMDA6MDg6OUY6
+REQ6OTc6QzAKICAgICAgICAgICAgICAgICAgICBDaGFubmVsOjE2MQogICAgICAgICAgICAgICAg
+ICAgIEZyZXF1ZW5jeTo1LjgwNSBHSHogKENoYW5uZWwgMTYxKQogICAgICAgICAgICAgICAgICAg
+IFF1YWxpdHk9NTcvNzAgIFNpZ25hbCBsZXZlbD0tNTMgZEJtCi4uLi4KfiAjCn4gIyBpdyBsaXN0
+CldpcGh5IHBoeTIKICAgICAgICBtYXggIyBzY2FuIFNTSURzOiAxNgogICAgICAgIC4uLi4uLi4u
+LgogICAgICAgICAgICAgICAgRnJlcXVlbmNpZXM6CiAgICAgICAgICAgICAgICAgICAgICAgICog
+NTE4MCBNSHogWzM2XSAoMjAuMCBkQm0pCiAgICAgICAgICAgICAgICAgICAgICAgICogNTIwMCBN
+SHogWzQwXSAoMjAuMCBkQm0pCiAgICAgICAgICAgICAgICAgICAgICAgICogNTIyMCBNSHogWzQ0
+XSAoMjAuMCBkQm0pCiAgICAgICAgICAgICAgICAgICAgICAgICogNTI0MCBNSHogWzQ4XSAoMjAu
+MCBkQm0pIChwYXNzaXZlIHNjYW5uaW5nLCBubyBJQlNTKQogICAgICAgICAgICAgICAgICAgICAg
+ICAqIDUyNjAgTUh6IFs1Ml0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDUy
+ODAgTUh6IFs1Nl0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDUzMDAgTUh6
+IFs2MF0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDUzMjAgTUh6IFs2NF0g
+KGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU1MDAgTUh6IFsxMDBdIChkaXNh
+YmxlZCkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1NTIwIE1IeiBbMTA0XSAoZGlzYWJsZWQp
+CiAgICAgICAgICAgICAgICAgICAgICAgICogNTU0MCBNSHogWzEwOF0gKGRpc2FibGVkKQogICAg
+ICAgICAgICAgICAgICAgICAgICAqIDU1NjAgTUh6IFsxMTJdIChkaXNhYmxlZCkKICAgICAgICAg
+ICAgICAgICAgICAgICAgKiA1NTgwIE1IeiBbMTE2XSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAg
+ICAgICAgICAgICogNTYwMCBNSHogWzEyMF0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAg
+ICAgICAqIDU2MjAgTUh6IFsxMjRdIChkaXNhYmxlZCkKICAgICAgICAgICAgICAgICAgICAgICAg
+KiA1NjQwIE1IeiBbMTI4XSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTY2
+MCBNSHogWzEzMl0gKGRpc2FibGVkKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU2ODAgTUh6
+IFsxMzZdIChkaXNhYmxlZCkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1NzAwIE1IeiBbMTQw
+XSAoZGlzYWJsZWQpCiAgICAgICAgICAgICAgICAgICAgICAgICogNTc0NSBNSHogWzE0OV0gKDIw
+LjAgZEJtKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU3NjUgTUh6IFsxNTNdICgyMC4wIGRC
+bSkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1Nzg1IE1IeiBbMTU3XSAoMjAuMCBkQm0pIChw
+YXNzaXZlIHNjYW5uaW5nLCBubyBJQlNTKQogICAgICAgICAgICAgICAgICAgICAgICAqIDU4MDUg
+TUh6IFsxNjFdICgyMC4wIGRCbSkKICAgICAgICAgICAgICAgICAgICAgICAgKiA1ODI1IE1IeiBb
+MTY1XSAoMjAuMCBkQm0pIChwYXNzaXZlIHNjYW5uaW5nLCBubyBJQlNTKQogICAgICAgICAuLi4u
+Li4uLi4uCjwvc25pcD4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
