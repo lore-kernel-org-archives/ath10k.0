@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22e.google.com ([2a00:1450:4008:c01::22e])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzgut-0000Z8-J8
- for ath10k@lists.infradead.org; Thu, 18 Jul 2013 05:38:16 +0000
-Received: by mail-bk0-f46.google.com with SMTP id na10so1019407bkb.19
- for <ath10k@lists.infradead.org>; Wed, 17 Jul 2013 22:37:53 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <51E77B48.9040005@candelatech.com>
-References: <51E70AB4.7080307@candelatech.com>
- <CA+BoTQk5GtWzmZA=TJqk4dWnMmEqC5fQJGkGguYsuLpTCca0mw@mail.gmail.com>
- <51E77B48.9040005@candelatech.com>
-Date: Thu, 18 Jul 2013 07:37:53 +0200
-Message-ID: <CA+BoTQkuy3dwf_GZTO7x_P9po7uHQmcB02bV-TOuJ4euXf=wUA@mail.gmail.com>
-Subject: Re: ath10k: Firmware crash after removing VAP
+ id 1Uzhmf-0001Lb-Gn
+ for ath10k@lists.infradead.org; Thu, 18 Jul 2013 06:33:50 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 0/3] ath10k: fixes
+Date: Thu, 18 Jul 2013 08:33:10 +0200
+Message-ID: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,59 +16,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTggSnVseSAyMDEzIDA3OjIxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDcvMTcvMjAxMyAxMDoxMiBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
-Pj4KPj4gSGkgQmVuLAo+Pgo+PiBPbiAxNyBKdWx5IDIwMTMgMjM6MjAsIEJlbiBHcmVlYXIgPGdy
-ZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Cj4+PiBJIGhhZCB2YXAxIG9uIGFuIGF0
-aDEwayBOSUMsIGFuZCB3bGFuMiBhbHNvIGV4aXN0ZWQuICBJIGRlbGV0ZWQKPj4+IHRoZSB2YXAx
-LCBhbmQgdmVyeSBzaG9ydGx5IGFmdGVyd29yZHMsIHRoZSBmaXJtd2FyZSBjcmFzaGVkOgo+Pj4K
-Pj4+IGF0aDEwazogZmlybXdhcmUgY3Jhc2hlZCEKPj4+IGF0aDEwazogaGFyZHdhcmUgbmFtZSBx
-Y2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAwMDE2Ywo+Pj4gYXRoMTBrOiBmaXJtd2FyZSB2ZXJz
-aW9uOiAxLjAuMC42MzYKPj4+IGF0aDEwazogdGFyZ2V0IHJlZ2lzdGVyIER1bXAgTG9jYXRpb246
-IDB4MDA0MDE5MzAKPj4+IGF0aDEwazogdGFyZ2V0IFJlZ2lzdGVyIER1bXAKPj4+IGF0aDEwazog
-WzAwXTogMHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5OEVFRjAgMHgwMDAwMDAwMAo+Pj4gYXRo
-MTBrOiBbMDRdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+
-PiBhdGgxMGs6IFswOF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAw
-MDAKPj4+IGF0aDEwazogWzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgw
-MDAwMDAwMAo+Pj4gYXRoMTBrOiBbMTZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAw
-MCAweDAwOThFRUYwCj4+PiBhdGgxMGs6IFsyMF06IDB4MDAwMDAwMDAgMHgwMDQwMTkzMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAKPj4+IGF0aDEwazogWzI0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gYXRoMTBrOiBbMjhdOiAweDAwMDAwMDAwIDB4MDAw
-MDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBhdGgxMGs6IFszMl06IDB4MDAwMDAwMDAg
-MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPj4+IGF0aDEwazogWzM2XTogMHgwMDAw
-MDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4gYXRoMTBrOiBbNDBdOiAw
-eDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+PiBhdGgxMGs6IFs0
-NF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPj4+IGF0aDEw
-azogWzQ4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+Pj4g
-YXRoMTBrOiBbNTJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAw
-Cj4+PiBhdGgxMGs6IFs1Nl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAw
-MDAwMDAKPj4KPj4KPj4gVGhpcyBkdW1wIGxvb2tzIHN1c3BpY2lvdXMuIEFyZSB5b3UgdXNpbmcg
-dmFuaWxsYSBrZXJuZWwgb3IgZG8geW91Cj4+IGhhdmUgYSBhdGggcmVndWxhdG9yeSBoYWNrIHBh
-dGNoIGZyb20gT3BlbldSVCBhcHBsaWVkPyBJZiBzbyB0aGUKPj4gY2hhbm5lbCBzY2FuIGxpc3Qg
-aXMgbm90IHNlbnQgdG8gdGhlIGZpcm13YXJlIGFuZCB0aGlzIHdpbGwgY2F1c2UKPj4gZmlybXdh
-cmUgdG8gY3Jhc2guCj4KPgo+IEkgaGFkIHNvbWUgb2YgbXkgb3duIHBhdGNoZXMgaW4gdGhlIDMu
-MTEga2VybmVsLiAgSSB0cmllZCB0aGUgdmFuaWxsYSBhdGgKPiBrZXJuZWwgZnJvbSBnaXRodWIg
-YW5kIGl0IGNyYXNoZXMgd2hlbiBhZGRpbmcgYSBzZWNvbmQgc3RhdGlvbi4KPgo+IENhbiB5b3Ug
-KG9yIHdob2V2ZXIgaGFzIGZpcm13YXJlIGFjY2VzcykgZ2V0IHNvbWV0aGluZyByZXNlbWJsaW5n
-IGEKPiBzdGFjayB0cmFjZSBmcm9tIHRoZSBmaXJtd2FyZSBkdW1wIHRvIHNlZSB3aGVyZSBpdCdz
-IGNyYXNoaW5nPwoKSSBkb24ndCBoYXZlIGFjY2VzcyB0byB0aGUgZmlybXdhcmUgdG8gZG8gc3Vj
-aCBhIHRoaW5nLgoKCj4gSGFzIGFueW9uZSBiZWVuIGFibGUgdG8gc3VjY2Vzc2Z1bGx5IHVzZSBt
-b3JlIHRoYW4gb25lIHN0YXRpb24gd2l0aAo+IGF0aDEwayBzbyBmYXI/CgpXZWxsLCBpdCB3b3Jr
-cyBmb3IgbWUgb24gYXRoIGJyYW5jaC4KCkknbSBhYmxlIHRvIHN1Y2Nlc3NmdWxseSBhc3NvY2lh
-dGUgMiBTVEEgaW50ZXJmYWNlcyBvciBhIGNvdXBsZSBvZiBBUAppbnRlcmZhY2VzIHRocm91Z2gg
-aG9zdGFwZCdzIG11bHRpIGJzc2lkIHN1cHBvcnQuCgpPbmUgdGhpbmcgeW91IHNob3VsZCBrbm93
-IC0gaXQncyBpbXBvc3NpYmxlIHRvIGFzc29jaWF0ZSB3aXRoIHR3bwphdGgxMGsgU1RBIGludGVy
-ZmFjZXMgdG8gdGhlIHNhbWUgQVAuIFRoaXMgaXMgYSBmaXJtd2FyZSBsaW1pdGF0aW9uCmFuZCBJ
-J20gZ3Vlc3NpbmcgeW91J3JlIHRyeWluZyB0byBkbyB0aGF0IGJlY2F1c2UgJ0ZhaWxlZCB0byBh
-ZGQgcGVlcicKaXMgdmlzaWJsZSBpbiB5b3VyIG90aGVyIGxvZ3MuCgoKUG96ZHJhd2lhbSAvIEJl
-c3QgcmVnYXJkcywKTWljaGHFgiBLYXppb3IuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+Hi,
+
+Here are some fixes for ath10k. The rts threshold
+patch addresses my mistake in commit
+9aeb6fe53d1f0d6e58658484ce9ad7b59f0ef16b which
+caused rts to be always enabled causing throughput
+issues in some cases.
+
+
+Michal Kazior (3):
+  ath10k: prevent HTC from being used after stopping
+  ath10k: fix memleak in mac setup
+  ath10k: fix rts/fragmentation threshold setup
+
+ drivers/net/wireless/ath/ath10k/htc.c |   28 ++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |    4 +-
+ drivers/net/wireless/ath/ath10k/mac.c |   80 ++++++++++++++++++---------------
+ 3 files changed, 58 insertions(+), 54 deletions(-)
+
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
