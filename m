@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Uzgel-0000LX-U4
- for ath10k@lists.infradead.org; Thu, 18 Jul 2013 05:21:37 +0000
-Message-ID: <51E77B48.9040005@candelatech.com>
-Date: Wed, 17 Jul 2013 22:21:12 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1UzgpP-0000TW-7K
+ for ath10k@lists.infradead.org; Thu, 18 Jul 2013 05:32:35 +0000
+Received: by mail-bk0-f44.google.com with SMTP id 6so1038025bkj.31
+ for <ath10k@lists.infradead.org>; Wed, 17 Jul 2013 22:32:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: ath10k: Firmware crash after removing VAP
-References: <51E70AB4.7080307@candelatech.com>
- <CA+BoTQk5GtWzmZA=TJqk4dWnMmEqC5fQJGkGguYsuLpTCca0mw@mail.gmail.com>
-In-Reply-To: <CA+BoTQk5GtWzmZA=TJqk4dWnMmEqC5fQJGkGguYsuLpTCca0mw@mail.gmail.com>
+In-Reply-To: <51E6FECE.40401@candelatech.com>
+References: <51E6FECE.40401@candelatech.com>
+Date: Thu, 18 Jul 2013 07:25:42 +0200
+Message-ID: <CA+BoTQ=xdE47uRB7-aBoXfczNss6uW_CDOC9aFmYq+Er+PPbpQ@mail.gmail.com>
+Subject: Re: 3.11.0-rc1: Crash on rmmod of ath10k_pci
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,64 +20,85 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: ath10k@lists.infradead.org
 
-On 07/17/2013 10:12 PM, Michal Kazior wrote:
-> Hi Ben,
->
-> On 17 July 2013 23:20, Ben Greear <greearb@candelatech.com> wrote:
->> I had vap1 on an ath10k NIC, and wlan2 also existed.  I deleted
->> the vap1, and very shortly afterwords, the firmware crashed:
->>
->> ath10k: firmware crashed!
->> ath10k: hardware name qca988x hw2.0 version 0x4100016c
->> ath10k: firmware version: 1.0.0.636
->> ath10k: target register Dump Location: 0x00401930
->> ath10k: target Register Dump
->> ath10k: [00]: 0x4100016C 0x00000000 0x0098EEF0 0x00000000
->> ath10k: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [08]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [12]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [16]: 0x00000000 0x00000000 0x00000000 0x0098EEF0
->> ath10k: [20]: 0x00000000 0x00401930 0x00000000 0x00000000
->> ath10k: [24]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [28]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [32]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [36]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [40]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [44]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [48]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [52]: 0x00000000 0x00000000 0x00000000 0x00000000
->> ath10k: [56]: 0x00000000 0x00000000 0x00000000 0x00000000
->
-> This dump looks suspicious. Are you using vanilla kernel or do you
-> have a ath regulatory hack patch from OpenWRT applied? If so the
-> channel scan list is not sent to the firmware and this will cause
-> firmware to crash.
-
-I had some of my own patches in the 3.11 kernel.  I tried the vanilla ath
-kernel from github and it crashes when adding a second station.
-
-Can you (or whoever has firmware access) get something resembling a
-stack trace from the firmware dump to see where it's crashing?
-
-Has anyone been able to successfully use more than one station with
-ath10k so far?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQmVuLAoKCk9uIDE3IEp1bHkgMjAxMyAyMjozMCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5k
+ZWxhdGVjaC5jb20+IHdyb3RlOgo+IFNvLCBzdGFydGVkIHRlc3Rpbmcgb24gYSB2MiBhdGgxMGsg
+Ym9hcmQgdG9kYXkuICB3bGFuWCBzaG93ZWQgdXAKPiBvbmNlIEkgdXBkYXRlZCB0byAzLjExLjAt
+cmMxIChkaWRuJ3Qgd29yayBvbiBhIDMuMTAgLXdsIGtlcm5lbCBJCj4gaGFkIGxheWluZyBhcm91
+bmQpLgo+Cj4gcm1tb2Qgb2YgYXRoMTBrX3BjaSBibG93cyB1cCBwcmV0dHkgc3BlY3RhY3VsYXJs
+eSBob3dldmVyLi4uCj4KPiBJJ2xsIGdvIGxvb2tpbmcgZm9yIGEgZGlmZmVyZW50IHRyZWUgdG8g
+dGVzdCB1cG9uLi4uCj4KPiBbcm9vdEBMRUMyMjcwLTEgfl0jIEJVRzogdW5hYmxlIHRvIGhhbmRs
+ZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0Cj4gMDAwMDAwMDAwMDAwMDAxMAo+
+IElQOiBbPGZmZmZmZmZmYTA1NGM2YmQ+XSBhdGgxMGtfY2VfcGVyX2VuZ2luZV9zZXJ2aWNlKzB4
+MmMvMHgxN2EKPiBbYXRoMTBrX3BjaV0KPiBQR0QgMWYxMmQ5MDY3IFBVRCAxZjEyOTkwNjcgUE1E
+IDAKPiBPb3BzOiAwMDAwIFsjMV0gUFJFRU1QVCBTTVAKPiBNb2R1bGVzIGxpbmtlZCBpbjogbmZf
+bmF0X2lwdjQgbmZfbmF0IDgwMjFxIGdhcnAgc3RwIG1ycCBsbGMgZnVzZSBtYWN2bGFuCj4gd2Fu
+bGluayhPKSBwa3RnZW4gbG9ja2Qgc3VucnBjIGY3MTg4MmZnIGNvcmV0ZW1wIGh3bW9uIHNuZF9o
+ZGFfY29kZWNfaGRtaQo+IHNuZF9oZGFfY29kZWNfcmVhXQo+IENQVTogMSBQSUQ6IDUwODUgQ29t
+bTogcm1tb2QgVGFpbnRlZDogRyAgICAgICAgIEMgTyAzLjExLjAtcmMxKyAjMgo+IEhhcmR3YXJl
+IG5hbWU6IFRvIGJlIGZpbGxlZCBieSBPLkUuTS4gVG8gYmUgZmlsbGVkIGJ5IE8uRS5NLi9IVVJP
+TlJJVkVSLAo+IEJJT1MgNC42LjUgMDUvMDIvMjAxMgo+IHRhc2s6IGZmZmY4ODAxZWNiN2FlODAg
+dGk6IGZmZmY4ODAxZTg5MzQwMDAgdGFzay50aTogZmZmZjg4MDFlODkzNDAwMAo+IFJJUDogMDAx
+MDpbPGZmZmZmZmZmYTA1NGM2YmQ+XSAgWzxmZmZmZmZmZmEwNTRjNmJkPl0KPiBhdGgxMGtfY2Vf
+cGVyX2VuZ2luZV9zZXJ2aWNlKzB4MmMvMHgxN2EgW2F0aDEwa19wY2ldCj4gUlNQOiAwMDE4OmZm
+ZmY4ODAyMWZhODNlNzggIEVGTEFHUzogMDAwMTAyODYKPiBSQVg6IGZmZmY4ODAyMTU5OGMwMDAg
+UkJYOiAwMDAwMDAwMDAwMDAwMDAwIFJDWDogZmZmZjg4MDIxZmE4M2VjOAo+IFJEWDogZmZmZjg4
+MDIxNTk4YzBmOCBSU0k6IDAwMDAwMDAwMDAwMDAwMDAgUkRJOiBmZmZmODgwMjBkMDE1ZjIwCj4g
+UkJQOiBmZmZmODgwMjFmYTgzZWQ4IFIwODogZmZmZjg4MDIxZmE4M2Y4OCBSMDk6IGZmZmY4ODAy
+MWZhOGU2NDAKPiBSMTA6IGZmZmY4ODAyMWZhOTMwYTAgUjExOiBmZmZmODgwMjFmYTgzZWU4IFIx
+MjogZmZmZjg4MDIwZDAxNWYyMAo+IFIxMzogZmZmZjg4MDIxNTk4YzQ1MCBSMTQ6IDAwMDAwMDAw
+MDAwMDAwMDkgUjE1OiAwMDAwMDAwMDAwMDAwMDMwCj4gRlM6ICAwMDAwN2YzZmU3OWY2NzQwKDAw
+MDApIEdTOmZmZmY4ODAyMWZhODAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMAo+IENT
+OiAgMDAxMCBEUzogMDAwMCBFUzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKPiBDUjI6IDAw
+MDAwMDAwMDAwMDAwMTAgQ1IzOiAwMDAwMDAwMWYxMjIzMDAwIENSNDogMDAwMDAwMDAwMDA0MDdl
+MAo+IFN0YWNrOgo+ICBmZmZmODgwMjFmYTgzZTg4IGZmZmZmZmZmODE1NzkxNTIgZmZmZjg4MDIx
+ZmE4M2YwOCBmZmZmZmZmZjgxMGFiN2JlCj4gIGZmZmZmZmZmODEwMzA1ZDQgZmZmZjg4MDIxZmE4
+ZGI0MCBmZmZmODgwMjFmYTgzZWQ4IGZmZmY4ODAyMTU5OGMxNjgKPiAgZmZmZjg4MDIxNTk4YzEw
+MCAwMDAwMDAwMDAwMDAwMTAxIDAwMDAwMDAwMDAwMDAwMDkgMDAwMDAwMDAwMDAwMDAzMAo+IENh
+bGwgVHJhY2U6Cj4gIDxJUlE+Cj4gIFs8ZmZmZmZmZmY4MTU3OTE1Mj5dID8gX3Jhd19zcGluX3Vu
+bG9ja19pcnErMHgyNi8weDMxCj4gIFs8ZmZmZmZmZmY4MTBhYjdiZT5dID8gcnVuX3RpbWVyX3Nv
+ZnRpcnErMHgxZGQvMHgxZWMKPiAgWzxmZmZmZmZmZjgxMDMwNWQ0Pl0gPyBsYXBpY19uZXh0X2Rl
+YWRsaW5lKzB4MmYvMHgzNgo+ICBbPGZmZmZmZmZmYTA1NDk2YmI+XSBhdGgxMGtfcGNpX2NlX3Rh
+c2tsZXQrMHgxNS8weDE3IFthdGgxMGtfcGNpXQo+ICBbPGZmZmZmZmZmODEwYTU4NzI+XSB0YXNr
+bGV0X2FjdGlvbisweDc4LzB4YzYKPiAgWzxmZmZmZmZmZjgxMGE2MDZjPl0gX19kb19zb2Z0aXJx
+KzB4YzQvMHgxOWQKPiAgWzxmZmZmZmZmZjgxMGE2MWNkPl0gaXJxX2V4aXQrMHg0Ni8weGEzCj4g
+IFs8ZmZmZmZmZmY4MTAzMTdkZT5dIHNtcF9hcGljX3RpbWVyX2ludGVycnVwdCsweDJhLzB4MzcK
+PiAgWzxmZmZmZmZmZjgxNTdlZGRkPl0gYXBpY190aW1lcl9pbnRlcnJ1cHQrMHg2ZC8weDgwCj4g
+IDxFT0k+Cj4gIFs8ZmZmZmZmZmY4MTU3OTEwND5dID8gX3Jhd19zcGluX3VubG9ja19pcnFyZXN0
+b3JlKzB4Zi8weDM3Cj4gIFs8ZmZmZmZmZmY4MTEwODg3MT5dIF9fZnJlZV9pcnErMHgxMTYvMHgx
+YTQKPiAgWzxmZmZmZmZmZjgxMTA4OTcxPl0gZnJlZV9pcnErMHg3Mi8weDhiCj4gIFs8ZmZmZmZm
+ZmZhMDU0OTQ3OT5dIGF0aDEwa19wY2lfc3RvcF9pbnRyKzB4MzUvMHg1YyBbYXRoMTBrX3BjaV0K
+PiAgWzxmZmZmZmZmZmEwNTQ5NTA0Pl0gYXRoMTBrX3BjaV9yZW1vdmUrMHg2NC8weGFkIFthdGgx
+MGtfcGNpXQo+ICBbPGZmZmZmZmZmODEyZDQyYzg+XSBwY2lfZGV2aWNlX3JlbW92ZSsweDNhLzB4
+OTEKPiAgWzxmZmZmZmZmZjgxMzkyMjdmPl0gX19kZXZpY2VfcmVsZWFzZV9kcml2ZXIrMHg4NC8w
+eGRhCj4gIFs8ZmZmZmZmZmY4MTM5MjM1Zj5dIGRyaXZlcl9kZXRhY2grMHg4YS8weGIwCj4gIFs8
+ZmZmZmZmZmY4MTM5MTM1Nj5dIGJ1c19yZW1vdmVfZHJpdmVyKzB4YjQvMHhkNwo+ICBbPGZmZmZm
+ZmZmODEzOTJkZGE+XSBkcml2ZXJfdW5yZWdpc3RlcisweDY3LzB4NmYKPiAgWzxmZmZmZmZmZjgx
+MmQ0NDRiPl0gcGNpX3VucmVnaXN0ZXJfZHJpdmVyKzB4MjAvMHg4NQo+ICBbPGZmZmZmZmZmYTA1
+NGQyMzg+XSBhdGgxMGtfcGNpX2V4aXQrMHgxMC8weDEyIFthdGgxMGtfcGNpXQo+ICBbPGZmZmZm
+ZmZmODEwZWQwNjg+XSBTeVNfZGVsZXRlX21vZHVsZSsweDFmNy8weDI1Ygo+ICBbPGZmZmZmZmZm
+ODEwMGI2YTI+XSA/IGRvX25vdGlmeV9yZXN1bWUrMHg1OC8weDY5Cj4gIFs8ZmZmZmZmZmY4MTU3
+ZTFlOT5dIHN5c3RlbV9jYWxsX2Zhc3RwYXRoKzB4MTYvMHgxYgo+IENvZGU6IDg5IGY2IDQ4IDg5
+IGU1IDQxIDU3IDQxIDU2IDQxIDU1IDQxIDU0IDQ5IDg5IGZjIDUzIDQ4IDgzIGVjIDM4IDRjIDhi
+Cj4gYWYgOTAgMDEgMDAgMDAgNDkgOGIgOWMgZjUgNTggMDQgMDAgMDAgNDkgODEgYzUgNTAgMDQg
+MDAgMDAgPDQ0PiA4YiA3MyAxMCBlOAo+IGMzIGZjIGZmIGZmIDQKPiBSSVAgIFs8ZmZmZmZmZmZh
+MDU0YzZiZD5dIGF0aDEwa19jZV9wZXJfZW5naW5lX3NlcnZpY2UrMHgyYy8weDE3YQo+IFthdGgx
+MGtfcGNpXQo+ICBSU1AgPGZmZmY4ODAyMWZhODNlNzg+Cj4gQ1IyOiAwMDAwMDAwMDAwMDAwMDEw
+Cj4gLS0tWyBlbmQgdHJhY2UgY2E5YmQ2Mzc4YTQyYTFhNyBdLS0tCgpZb3Ugc2VlbSB0byBoYXZl
+IGJlZW4gbHVja3kgdG8gdHJpZ2dlciBhIHJhY2UuIENFIGlzIHRlYXJlZCBkb3duCmJlZm9yZSB3
+ZSByZWFsbHkgc3RvcCBpbnRlcnJ1cHRzIGFuZCB0aGVyZSdzIHZlcnkgc21hbGwgY2hhbmNlIGZv
+ciBhbgppbnRlcnJ1cHQgdG8gY29tZSBpbi4gVGhpcyBpcyBzdHJhbmdlLCBzaW5jZSBDRSBpbnRl
+cnJ1cHRzIGFyZQpkaXNhYmxlZCBhbmQgb25seSBmaXJtd2FyZSAoaS5lLiBjcmFzaCkgaW50ZXJy
+dXB0IG1heSBjb21lIGluLiBJJ3ZlCm5ldmVyIHNlZW4gZmlybXdhcmUgY3Jhc2ggZHVyaW5nIG1v
+ZHVsZSB1bmxvYWRpbmcuIEkgaGF2ZSBhIHBhdGNoIGZvcgp0aGlzIGJ1dCBpdCdzIGJhc2VkIHVw
+b24gbXkgcmVjb3ZlcnkgcGF0Y2hzZXQgYW5kIGl0J3Mgbm90IHRyaXZpYWwgdG8KcmViYXNlIHRo
+ZSBmaXguCgoKUG96ZHJhd2lhbSAvIEJlc3QgcmVnYXJkcywKTWljaGHFgiBLYXppb3IuCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
