@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V083B-0003uD-88
- for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:36:38 +0000
+ id 1V088G-000411-6U
+ for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:41:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix NULL dereference for injected packets
-References: <CAMQ0DfRpqk6ufb4rAifjy651oM9-GZyDpMLL+mGVzzVSVjVyJA@mail.gmail.com>
- <1373965494-17726-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 19 Jul 2013 13:36:05 +0300
-In-Reply-To: <1373965494-17726-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 16 Jul 2013 11:04:54 +0200")
-Message-ID: <87r4eu4z1m.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: 3.11.0-rc1: Crash on rmmod of ath10k_pci
+References: <51E6FECE.40401@candelatech.com>
+ <CA+BoTQ=xdE47uRB7-aBoXfczNss6uW_CDOC9aFmYq+Er+PPbpQ@mail.gmail.com>
+ <51E7FBF7.2070102@candelatech.com>
+Date: Fri, 19 Jul 2013 13:41:22 +0300
+In-Reply-To: <51E7FBF7.2070102@candelatech.com> (Ben Greear's message of "Thu, 
+ 18 Jul 2013 07:30:15 -0700")
+Message-ID: <87mwpi4yst.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,21 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ymir.kr@gmail.com, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> Tx processing functions dereference vif and caused
-> NULL to be dereferenced for injected frames.
+>> You seem to have been lucky to trigger a race. CE is teared down
+>> before we really stop interrupts and there's very small chance for an
+>> interrupt to come in. This is strange, since CE interrupts are
+>> disabled and only firmware (i.e. crash) interrupt may come in. I've
+>> never seen firmware crash during module unloading. I have a patch for
+>> this but it's based upon my recovery patchset and it's not trivial to
+>> rebase the fix.
 >
-> Don't call these functions at all for injected
-> frames. It doesn't make much sense to do so
-> anyway.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> I plan to do further testing on the 'ath' repository, so hopefully
+> no need for porting patches around.  If/when that is stable, can see
+> about testing mainline.
 
-Thanks, applied.
+Yes, please base your work on the ath.git repository instead of mainline
+(=Linus' releases). At this stage when we don't have that many users we
+would not want to use time on the mainline, the time is much better
+spent on improving the driver itself.
 
 -- 
 Kalle Valo
