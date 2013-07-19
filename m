@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V07mG-0003U0-OH
- for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:19:09 +0000
+ id 1V07x3-0003kF-6N
+ for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:30:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 00/10] ath10k: device setup refactor
-References: <1371041642-20273-1-git-send-email-michal.kazior@tieto.com>
- <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 19 Jul 2013 13:18:39 +0300
-In-Reply-To: <1373960339-8525-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 16 Jul 2013 09:38:49 +0200")
-Message-ID: <874nbq6ef4.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 3/3] ath10k: create debugfs interface to trigger fw
+ crash
+References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
+ <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
+ <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 19 Jul 2013 13:29:46 +0300
+In-Reply-To: <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 16 Jul 2013 09:54:37 +0200")
+Message-ID: <87zjti4zc5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,30 +31,41 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This is a respin of my patchset that addresses
-> hibernation issues.
+> This can be useful for testing. To perform a
+> forced firmware crash write 'crash' to
+> 'simulate_fw_crash' debugfs file. E.g.
 >
-> This is also groundwork for proper hw recovery
-> that I'm going to post too.
+>   echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
 >
-> v4:
->  * update comments in pci logic decoupling
->  * add missing commit message for one of the patches
->  * update commit message for free_vdev_map patch
->
-> Michal Kazior (10):
->   ath10k: decouple pci start/stop logic
->   ath10k: decouple core start/stop logic
->   ath10k: allow deferred regd update
->   ath10k: reset BMI state upon init
->   ath10k: decouple suspend code
->   ath10k: move free_vdev_map initialization
->   ath10k: make sure all resources are freed upon ath10k_stop()
->   ath10k: defer hw setup to start/stop mac80211 hooks
->   ath10k: store firmware files in memory
->   ath10k: skip fw stats debugfs interface if device is down
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, all 10 applied.
+[...]
+
+> +static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+> +					      const char __user *user_buf,
+> +					      size_t count, loff_t *ppos)
+> +{
+> +	struct ath10k *ar = file->private_data;
+> +	char buf[32] = {};
+> +	int ret;
+> +
+> +	mutex_lock(&ar->conf_mutex);
+> +
+> +	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+> +	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
+> +		ath10k_warn("write keyword `crash` to simulate firmware crash\n");
+> +		goto exit;
+> +	}
+
+Better to just return an error here.
+
+> +	if (ar->state != ATH10K_STATE_ON &&
+> +	    ar->state != ATH10K_STATE_RESTARTED) {
+> +		ath10k_warn("firmware isn't loaded yet, nothing to crash\n");
+> +		goto exit;
+> +	}
+
+Ditto.
 
 -- 
 Kalle Valo
