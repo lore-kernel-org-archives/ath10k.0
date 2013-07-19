@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-x22b.google.com ([2a00:1450:4008:c01::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V097v-0005Zx-4u
- for ath10k@lists.infradead.org; Fri, 19 Jul 2013 11:45:35 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: prevent HTC from being used after stopping
-References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
- <1374129193-3533-2-git-send-email-michal.kazior@tieto.com>
- <8761w64xr0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkD7U4KY5xq7YhTWz-qFP2f3NuQ=nHDZ2LgYaq+5M3pjg@mail.gmail.com>
-Date: Fri, 19 Jul 2013 14:44:55 +0300
-In-Reply-To: <CA+BoTQkD7U4KY5xq7YhTWz-qFP2f3NuQ=nHDZ2LgYaq+5M3pjg@mail.gmail.com>
- (Michal Kazior's message of "Fri, 19 Jul 2013 13:08:12 +0200")
-Message-ID: <87siza3hag.fsf@kamboji.qca.qualcomm.com>
+ id 1V08ao-0004nV-CU
+ for ath10k@lists.infradead.org; Fri, 19 Jul 2013 11:11:29 +0000
+Received: by mail-bk0-f43.google.com with SMTP id jm2so1579948bkc.30
+ for <ath10k@lists.infradead.org>; Fri, 19 Jul 2013 04:10:52 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <871u6u4xkk.fsf@kamboji.qca.qualcomm.com>
+References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
+ <871u6u4xkk.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 19 Jul 2013 13:10:52 +0200
+Message-ID: <CA+BoTQna=a66_g+_WG8mnENEDEiUcAysa-joeP-xmTM+mYfY=Q@mail.gmail.com>
+Subject: Re: [PATCH 0/3] ath10k: fixes
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 19 July 2013 13:04, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> It was possible to submit new HTC commands
->>> after/while HTC stopped. This led to memory
->>> corruption in some rare cases.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> [...]
->>
->>> @@ -957,7 +955,6 @@ void ath10k_htc_stop(struct ath10k_htc *htc)
->>>       }
->>>
->>>       ath10k_hif_stop(htc->ar);
->>> -     ath10k_htc_reset_endpoint_states(htc);
->>>  }
->>
->> Is this on purpose? I can't fit it to the description.
+On 19 July 2013 13:07, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
 >
-> You're right. I should've mentioned that in the commit message.
+>> Hi,
+>>
+>> Here are some fixes for ath10k. The rts threshold
+>> patch addresses my mistake in commit
+>> 9aeb6fe53d1f0d6e58658484ce9ad7b59f0ef16b which
+>> caused rts to be always enabled causing throughput
+>> issues in some cases.
+>>
+>>
+>> Michal Kazior (3):
+>>   ath10k: prevent HTC from being used after stopping
+>>   ath10k: fix memleak in mac setup
+>>   ath10k: fix rts/fragmentation threshold setup
 >
-> This line is simply unnecessary. Do you prefer fixing the commit
-> message accordingly or should I post it as a separate patch?
+> Doesn't apply:
+>
+> Applying: ath10k: prevent HTC from being used after stopping
+> Applying: ath10k: fix memleak in mac setup
+> Applying: ath10k: fix rts/fragmentation threshold setup
+> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/a=
+th10k/mac.c).
+> Repository lacks necessary blobs to fall back on 3-way merge.
+> Cannot fall back to three-way merge.
+> Patch failed at 0003 ath10k: fix rts/fragmentation threshold setup
 
-A separate patch, please. Makes it easier to bisect issues later on.
+Eww. Sorry about that (I did warn you though). Perhaps that's because
+you skipped one of the recovery patches that git is confused now.
 
--- 
-Kalle Valo
+I'll resend the whole patchset rebased and with the HTC patch fixed.
+
+
+Pozdrawiam / Best regards,
+Micha=B3 Kazior.
 
 _______________________________________________
 ath10k mailing list
