@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V07zy-0003pB-G4
- for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:33:19 +0000
+ id 1V083B-0003uD-88
+ for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:36:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 0/3] ath10k: hardware recovery
-References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
- <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 19 Jul 2013 13:32:48 +0300
-In-Reply-To: <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 16 Jul 2013 09:54:34 +0200")
-Message-ID: <87vc464z73.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix NULL dereference for injected packets
+References: <CAMQ0DfRpqk6ufb4rAifjy651oM9-GZyDpMLL+mGVzzVSVjVyJA@mail.gmail.com>
+ <1373965494-17726-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 19 Jul 2013 13:36:05 +0300
+In-Reply-To: <1373965494-17726-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 16 Jul 2013 11:04:54 +0200")
+Message-ID: <87r4eu4z1m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,26 +25,20 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ymir.kr@gmail.com, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Respin of hw recovery. This implements recovery
-> from a firmware crash.
+> Tx processing functions dereference vif and caused
+> NULL to be dereferenced for injected frames.
 >
-> Note: this is based on my
->       "ath10k: device setup refactor" patchset.
+> Don't call these functions at all for injected
+> frames. It doesn't make much sense to do so
+> anyway.
 >
-> v3:
->  * rename RESTARTING_ON/OFF to RESTARTING/RESTARTED
->  * update commit message for 'create debufs..'
->
-> Michal Kazior (3):
->   ath10k: implement device recovery
->   ath10k: implement fw crash simulation command
->   ath10k: create debugfs interface to trigger fw crash
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied patches 1-2 and dropped patch 3.
+Thanks, applied.
 
 -- 
 Kalle Valo
