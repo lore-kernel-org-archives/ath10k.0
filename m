@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V07x3-0003kF-6N
- for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:30:17 +0000
+ id 1V07zy-0003pB-G4
+ for ath10k@lists.infradead.org; Fri, 19 Jul 2013 10:33:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 3/3] ath10k: create debugfs interface to trigger fw
- crash
+Subject: Re: [PATCH v3 0/3] ath10k: hardware recovery
 References: <1372148011-28234-1-git-send-email-michal.kazior@tieto.com>
  <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
- <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 19 Jul 2013 13:29:46 +0300
-In-Reply-To: <1373961277-14784-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 16 Jul 2013 09:54:37 +0200")
-Message-ID: <87zjti4zc5.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 19 Jul 2013 13:32:48 +0300
+In-Reply-To: <1373961277-14784-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 16 Jul 2013 09:54:34 +0200")
+Message-ID: <87vc464z73.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,41 +29,22 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This can be useful for testing. To perform a
-> forced firmware crash write 'crash' to
-> 'simulate_fw_crash' debugfs file. E.g.
+> Respin of hw recovery. This implements recovery
+> from a firmware crash.
 >
->   echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+> Note: this is based on my
+>       "ath10k: device setup refactor" patchset.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> v3:
+>  * rename RESTARTING_ON/OFF to RESTARTING/RESTARTED
+>  * update commit message for 'create debufs..'
+>
+> Michal Kazior (3):
+>   ath10k: implement device recovery
+>   ath10k: implement fw crash simulation command
+>   ath10k: create debugfs interface to trigger fw crash
 
-[...]
-
-> +static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
-> +					      const char __user *user_buf,
-> +					      size_t count, loff_t *ppos)
-> +{
-> +	struct ath10k *ar = file->private_data;
-> +	char buf[32] = {};
-> +	int ret;
-> +
-> +	mutex_lock(&ar->conf_mutex);
-> +
-> +	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-> +	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
-> +		ath10k_warn("write keyword `crash` to simulate firmware crash\n");
-> +		goto exit;
-> +	}
-
-Better to just return an error here.
-
-> +	if (ar->state != ATH10K_STATE_ON &&
-> +	    ar->state != ATH10K_STATE_RESTARTED) {
-> +		ath10k_warn("firmware isn't loaded yet, nothing to crash\n");
-> +		goto exit;
-> +	}
-
-Ditto.
+Thanks, applied patches 1-2 and dropped patch 3.
 
 -- 
 Kalle Valo
