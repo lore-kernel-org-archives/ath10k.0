@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1F0C-0007vz-Cs
- for ath10k@lists.infradead.org; Mon, 22 Jul 2013 12:14:09 +0000
+ id 1V1F0G-0007vw-LZ
+ for ath10k@lists.infradead.org; Mon, 22 Jul 2013 12:14:13 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 3/4] ath10k: fix memleak in mac setup
-Date: Mon, 22 Jul 2013 14:13:30 +0200
-Message-ID: <1374495211-20353-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/4] ath10k: fix rts/fragmentation threshold setup
+Date: Mon, 22 Jul 2013 14:13:31 +0200
+Message-ID: <1374495211-20353-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1374495211-20353-1-git-send-email-michal.kazior@tieto.com>
 References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
  <1374495211-20353-1-git-send-email-michal.kazior@tieto.com>
@@ -26,82 +26,122 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-In some cases channel arrays were never freed.
+If RTS and fragmentation threshold values are
+0xFFFFFFFF they should be considered disabled and
+no min/max limits must be applied.
 
-The patch also unifies error handling in the mac
-setup function.
+This fixes some issues with throughput issues,
+especially with VHT.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   26 +++++++++++++++-----------
- 1 file changed, 15 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   54 +++++++++++++++++----------------
+ 1 file changed, 28 insertions(+), 26 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 07e5f7d..6144b3b 100644
+index 6144b3b..d0a7761 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3225,8 +3225,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 		channels = kmemdup(ath10k_2ghz_channels,
- 				   sizeof(ath10k_2ghz_channels),
- 				   GFP_KERNEL);
--		if (!channels)
--			return -ENOMEM;
-+		if (!channels) {
-+			ret = -ENOMEM;
-+			goto err_free;
-+		}
- 
- 		band = &ar->mac.sbands[IEEE80211_BAND_2GHZ];
- 		band->n_channels = ARRAY_SIZE(ath10k_2ghz_channels);
-@@ -3245,11 +3247,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 				   sizeof(ath10k_5ghz_channels),
- 				   GFP_KERNEL);
- 		if (!channels) {
--			if (ar->phy_capability & WHAL_WLAN_11G_CAPABILITY) {
--				band = &ar->mac.sbands[IEEE80211_BAND_2GHZ];
--				kfree(band->channels);
--			}
--			return -ENOMEM;
-+			ret = -ENOMEM;
-+			goto err_free;
- 		}
- 
- 		band = &ar->mac.sbands[IEEE80211_BAND_5GHZ];
-@@ -3313,25 +3312,30 @@ int ath10k_mac_register(struct ath10k *ar)
- 			    ath10k_reg_notifier);
- 	if (ret) {
- 		ath10k_err("Regulatory initialization failed\n");
--		return ret;
-+		goto err_free;
- 	}
- 
- 	ret = ieee80211_register_hw(ar->hw);
- 	if (ret) {
- 		ath10k_err("ieee80211 registration failed: %d\n", ret);
--		return ret;
-+		goto err_free;
- 	}
- 
- 	if (!ath_is_world_regd(&ar->ath_common.regulatory)) {
- 		ret = regulatory_hint(ar->hw->wiphy,
- 				      ar->ath_common.regulatory.alpha2);
- 		if (ret)
--			goto exit;
-+			goto err_unregister;
- 	}
- 
+@@ -332,6 +332,29 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
  	return 0;
--exit:
-+
-+err_unregister:
- 	ieee80211_unregister_hw(ar->hw);
-+err_free:
-+	kfree(ar->mac.sbands[IEEE80211_BAND_2GHZ].channels);
-+	kfree(ar->mac.sbands[IEEE80211_BAND_5GHZ].channels);
-+
- 	return ret;
  }
  
++static int  ath10k_mac_set_rts(struct ath10k_vif *arvif, u32 value)
++{
++	if (value != 0xFFFFFFFF)
++		value = min_t(u32, arvif->ar->hw->wiphy->rts_threshold,
++			      ATH10K_RTS_MAX);
++
++	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
++					 WMI_VDEV_PARAM_RTS_THRESHOLD,
++					 value);
++}
++
++static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
++{
++	if (value != 0xFFFFFFFF)
++		value = clamp_t(u32, arvif->ar->hw->wiphy->frag_threshold,
++				ATH10K_FRAGMT_THRESHOLD_MIN,
++				ATH10K_FRAGMT_THRESHOLD_MAX);
++
++	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
++					 WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
++					 value);
++}
++
+ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ {
+ 	int ret;
+@@ -1897,7 +1920,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	enum wmi_sta_powersave_param param;
+ 	int ret = 0;
+-	u32 value, rts, frag;
++	u32 value;
+ 	int bit;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+@@ -2000,20 +2023,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 			ath10k_warn("Failed to set PSPOLL count: %d\n", ret);
+ 	}
+ 
+-	rts = min_t(u32, ar->hw->wiphy->rts_threshold, ATH10K_RTS_MAX);
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-					 WMI_VDEV_PARAM_RTS_THRESHOLD,
+-					 rts);
++	ret = ath10k_mac_set_rts(arvif, ar->hw->wiphy->rts_threshold);
+ 	if (ret)
+ 		ath10k_warn("failed to set rts threshold for vdev %d (%d)\n",
+ 			    arvif->vdev_id, ret);
+ 
+-	frag = clamp_t(u32, ar->hw->wiphy->frag_threshold,
+-		       ATH10K_FRAGMT_THRESHOLD_MIN,
+-		       ATH10K_FRAGMT_THRESHOLD_MAX);
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-					WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
+-					frag);
++	ret = ath10k_mac_set_frag(arvif, ar->hw->wiphy->frag_threshold);
+ 	if (ret)
+ 		ath10k_warn("failed to set frag threshold for vdev %d (%d)\n",
+ 			    arvif->vdev_id, ret);
+@@ -2728,11 +2743,7 @@ static void ath10k_set_rts_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
+ 		return;
+ 
+-	rts = min_t(u32, rts, ATH10K_RTS_MAX);
+-
+-	ar_iter->ret = ath10k_wmi_vdev_set_param(ar_iter->ar, arvif->vdev_id,
+-						 WMI_VDEV_PARAM_RTS_THRESHOLD,
+-						 rts);
++	ar_iter->ret = ath10k_mac_set_rts(arvif, rts);
+ 	if (ar_iter->ret)
+ 		ath10k_warn("Failed to set RTS threshold for VDEV: %d\n",
+ 			    arvif->vdev_id);
+@@ -2764,7 +2775,6 @@ static void ath10k_set_frag_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 	struct ath10k_generic_iter *ar_iter = data;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	u32 frag = ar_iter->ar->hw->wiphy->frag_threshold;
+-	int ret;
+ 
+ 	lockdep_assert_held(&arvif->ar->conf_mutex);
+ 
+@@ -2775,15 +2785,7 @@ static void ath10k_set_frag_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
+ 		return;
+ 
+-	frag = clamp_t(u32, frag,
+-		       ATH10K_FRAGMT_THRESHOLD_MIN,
+-		       ATH10K_FRAGMT_THRESHOLD_MAX);
+-
+-	ret = ath10k_wmi_vdev_set_param(ar_iter->ar, arvif->vdev_id,
+-					WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
+-					frag);
+-
+-	ar_iter->ret = ret;
++	ar_iter->ret = ath10k_mac_set_frag(arvif, frag);
+ 	if (ar_iter->ret)
+ 		ath10k_warn("Failed to set frag threshold for VDEV: %d\n",
+ 			    arvif->vdev_id);
 -- 
 1.7.9.5
 
