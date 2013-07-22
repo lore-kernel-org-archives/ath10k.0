@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1Evg-0007r0-TV
- for ath10k@lists.infradead.org; Mon, 22 Jul 2013 12:09:30 +0000
+ id 1V1F0A-0007vw-Vr
+ for ath10k@lists.infradead.org; Mon, 22 Jul 2013 12:14:07 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4] ath10k: create debugfs interface to trigger fw crash
-Date: Mon, 22 Jul 2013 14:08:51 +0200
-Message-ID: <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <878v1122id.fsf@kamboji.qca.qualcomm.com>
-References: <878v1122id.fsf@kamboji.qca.qualcomm.com>
+Subject: [PATCH v2 0/4] ath10k: fixes
+Date: Mon, 22 Jul 2013 14:13:27 +0200
+Message-ID: <1374495211-20353-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
+References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,94 +25,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This can be useful for testing. To perform a
-forced firmware crash write 'crash' to
-'simulate_fw_crash' debugfs file. E.g.
+Hi,
 
-  echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+Here are some fixes for ath10k. The rts threshold
+patch addresses my mistake in commit
+9aeb6fe53d1f0d6e58658484ce9ad7b59f0ef16b which
+caused rts to be always enabled causing throughput
+issues in some cases.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-v3: return an appropriate errno instead of using ath10k_warn()
+v2: first patch is split now into two as requested
+    rebased on top of latest github master branch
 
- drivers/net/wireless/ath/ath10k/debug.c |   57 +++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 65279f5..3d65594 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -445,6 +445,60 @@ static const struct file_operations fops_fw_stats = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
-+					     char __user *user_buf,
-+					     size_t count, loff_t *ppos)
-+{
-+	const char buf[] = "To simulate firmware crash write the keyword"
-+			   " `crash` to this file.\nThis will force firmware"
-+			   " to report a crash to the host system.\n";
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
-+}
-+
-+static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
-+					      const char __user *user_buf,
-+					      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[32] = {};
-+	int ret;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	if (ar->state != ATH10K_STATE_ON &&
-+	    ar->state != ATH10K_STATE_RESTARTED) {
-+		ret = -ENETDOWN;
-+		goto exit;
-+	}
-+
-+	ath10k_info("simulating firmware crash\n");
-+
-+	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-+	if (ret)
-+		ath10k_warn("failed to force fw hang (%d)\n", ret);
-+
-+	if (ret == 0)
-+		ret = count;
-+
-+exit:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+static const struct file_operations fops_simulate_fw_crash = {
-+	.read = ath10k_read_simulate_fw_crash,
-+	.write = ath10k_write_simulate_fw_crash,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
-@@ -461,6 +515,9 @@ int ath10k_debug_create(struct ath10k *ar)
- 	debugfs_create_file("wmi_services", S_IRUSR, ar->debug.debugfs_phy, ar,
- 			    &fops_wmi_services);
- 
-+	debugfs_create_file("simulate_fw_crash", S_IRUSR, ar->debug.debugfs_phy,
-+			    ar, &fops_simulate_fw_crash);
-+
- 	return 0;
- }
- #endif /* CONFIG_ATH10K_DEBUGFS */
+Michal Kazior (4):
+  ath10k: prevent HTC from being used after stopping
+  ath10k: don't reset HTC endpoints unnecessarily
+  ath10k: fix memleak in mac setup
+  ath10k: fix rts/fragmentation threshold setup
+
+ drivers/net/wireless/ath/ath10k/htc.c |   28 ++++++------
+ drivers/net/wireless/ath/ath10k/htc.h |    4 +-
+ drivers/net/wireless/ath/ath10k/mac.c |   80 ++++++++++++++++++---------------
+ 3 files changed, 58 insertions(+), 54 deletions(-)
+
 -- 
 1.7.9.5
 
