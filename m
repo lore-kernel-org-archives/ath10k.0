@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1CU5-0002km-P4
- for ath10k@lists.infradead.org; Mon, 22 Jul 2013 09:32:50 +0000
-Subject: [PATCH 2/2] MAINTAINERS: update ath6kl git location
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 22 Jul 2013 12:32:27 +0300
-Message-ID: <20130722093227.26562.41254.stgit@localhost6.localdomain6>
-In-Reply-To: <20130722093113.26562.11543.stgit@localhost6.localdomain6>
-References: <20130722093113.26562.11543.stgit@localhost6.localdomain6>
+ id 1V1Evg-0007r0-TV
+ for ath10k@lists.infradead.org; Mon, 22 Jul 2013 12:09:30 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v4] ath10k: create debugfs interface to trigger fw crash
+Date: Mon, 22 Jul 2013 14:08:51 +0200
+Message-ID: <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <878v1122id.fsf@kamboji.qca.qualcomm.com>
+References: <878v1122id.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,29 +22,99 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The git tree is in github.com nowadays.
+This can be useful for testing. To perform a
+forced firmware crash write 'crash' to
+'simulate_fw_crash' debugfs file. E.g.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+  echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- MAINTAINERS |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v3: return an appropriate errno instead of using ath10k_warn()
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 44626b8..7a403ba 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1406,7 +1406,7 @@ ATHEROS ATH6KL WIRELESS DRIVER
- M:	Kalle Valo <kvalo@qca.qualcomm.com>
- L:	linux-wireless@vger.kernel.org
- W:	http://wireless.kernel.org/en/users/Drivers/ath6kl
--T:	git git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/ath6kl.git
-+T:	git git://github.com/kvalo/ath.git
- S:	Supported
- F:	drivers/net/wireless/ath/ath6kl/
+ drivers/net/wireless/ath/ath10k/debug.c |   57 +++++++++++++++++++++++++++++++
+ 1 file changed, 57 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 65279f5..3d65594 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -445,6 +445,60 @@ static const struct file_operations fops_fw_stats = {
+ 	.llseek = default_llseek,
+ };
  
++static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
++					     char __user *user_buf,
++					     size_t count, loff_t *ppos)
++{
++	const char buf[] = "To simulate firmware crash write the keyword"
++			   " `crash` to this file.\nThis will force firmware"
++			   " to report a crash to the host system.\n";
++	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
++}
++
++static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
++					      const char __user *user_buf,
++					      size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	char buf[32] = {};
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	if (ar->state != ATH10K_STATE_ON &&
++	    ar->state != ATH10K_STATE_RESTARTED) {
++		ret = -ENETDOWN;
++		goto exit;
++	}
++
++	ath10k_info("simulating firmware crash\n");
++
++	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
++	if (ret)
++		ath10k_warn("failed to force fw hang (%d)\n", ret);
++
++	if (ret == 0)
++		ret = count;
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++static const struct file_operations fops_simulate_fw_crash = {
++	.read = ath10k_read_simulate_fw_crash,
++	.write = ath10k_write_simulate_fw_crash,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+ 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
+@@ -461,6 +515,9 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	debugfs_create_file("wmi_services", S_IRUSR, ar->debug.debugfs_phy, ar,
+ 			    &fops_wmi_services);
+ 
++	debugfs_create_file("simulate_fw_crash", S_IRUSR, ar->debug.debugfs_phy,
++			    ar, &fops_simulate_fw_crash);
++
+ 	return 0;
+ }
+ #endif /* CONFIG_ATH10K_DEBUGFS */
+-- 
+1.7.9.5
 
 
 _______________________________________________
