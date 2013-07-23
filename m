@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from perches-mx.perches.com ([206.117.179.246] helo=labridge.com)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1JXj-0000uZ-Fz
- for ath10k@lists.infradead.org; Mon, 22 Jul 2013 17:05:07 +0000
-Message-ID: <1374512681.2061.53.camel@joe-AO722>
-Subject: Re: [PATCH 1/2] MAINTAINERS: add ath10k
-From: Joe Perches <joe@perches.com>
-Date: Mon, 22 Jul 2013 10:04:41 -0700
-In-Reply-To: <87zjtewmzg.fsf@kamboji.qca.qualcomm.com>
-References: <20130722093113.26562.11543.stgit@localhost6.localdomain6>
- <20130722093220.26562.14270.stgit@localhost6.localdomain6>
- <1374504278.2061.35.camel@joe-AO722>
- <87zjtewmzg.fsf@kamboji.qca.qualcomm.com>
-Mime-Version: 1.0
+ id 1V1XYz-000219-Jo
+ for ath10k@lists.infradead.org; Tue, 23 Jul 2013 08:03:18 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v4] ath10k: create debugfs interface to trigger fw crash
+References: <878v1122id.fsf@kamboji.qca.qualcomm.com>
+ <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 23 Jul 2013 11:02:25 +0300
+In-Reply-To: <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 22 Jul 2013 14:08:51 +0200")
+Message-ID: <87vc41wvou.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Mon, 2013-07-22 at 19:58 +0300, Kalle Valo wrote:
-> Joe Perches <joe@perches.com> writes:
-> 
-> > On Mon, 2013-07-22 at 12:32 +0300, Kalle Valo wrote:
-> >> I forgot to add an entry to MAINTAINERS when submitting the driver.
-> > []
-> >> diff --git a/MAINTAINERS b/MAINTAINERS
-> > []
-> >> +QUALCOMM ATHEROS ATH10K WIRELESS DRIVER
-> >
-> > It's odd to not find ATH6KL next to ATH10K.
-> 
-> I was wondering the same, but decided to put the entries in alphabetical
-> order still.
-> 
-> > Maybe it's time to rename all the ATH sections
-> > to make them QUALCOMM?
-> 
-> Maybe, but does it really matter?
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Only to those that actually read the MAINTAINERS
-file instead of using tools to search it.
+> This can be useful for testing. To perform a
+> forced firmware crash write 'crash' to
+> 'simulate_fw_crash' debugfs file. E.g.
+>
+>   echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+> v3: return an appropriate errno instead of using ath10k_warn()
 
-> Changing the MAINTAINERS file just
-> creates unnecessary conficts for git merges.
+Thanks, applied.
 
-Those are always trivially resolved if they
-ever really occur.
-
-It's not a big deal, just wanted to note it.
-
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
