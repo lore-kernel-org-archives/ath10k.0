@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V1XYz-000219-Jo
- for ath10k@lists.infradead.org; Tue, 23 Jul 2013 08:03:18 +0000
+ id 1V1YFJ-0003Eb-OI
+ for ath10k@lists.infradead.org; Tue, 23 Jul 2013 08:47:02 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4] ath10k: create debugfs interface to trigger fw crash
-References: <878v1122id.fsf@kamboji.qca.qualcomm.com>
- <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 23 Jul 2013 11:02:25 +0300
-In-Reply-To: <1374494931-18913-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 22 Jul 2013 14:08:51 +0200")
-Message-ID: <87vc41wvou.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 2/4] ath10k: don't reset HTC endpoints unnecessarily
+References: <1374129193-3533-1-git-send-email-michal.kazior@tieto.com>
+ <1374495211-20353-1-git-send-email-michal.kazior@tieto.com>
+ <1374495211-20353-3-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 23 Jul 2013 11:46:30 +0300
+In-Reply-To: <1374495211-20353-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 22 Jul 2013 14:13:29 +0200")
+Message-ID: <87r4epwtnd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,17 +30,14 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This can be useful for testing. To perform a
-> forced firmware crash write 'crash' to
-> 'simulate_fw_crash' debugfs file. E.g.
->
->   echo crash > /sys/kernel/debug/ieee80211/phy1/ath10k/simulate_fw_crash
+> Endpoints are re-initialized upon HTC start anyway
+> so there's no need to do that twice in case of
+> restarting HTC (i.e. in case of hardware
+> recovery).
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> v3: return an appropriate errno instead of using ath10k_warn()
 
-Thanks, applied.
+This is much better, thanks.
 
 -- 
 Kalle Valo
