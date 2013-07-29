@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V2JOF-00060U-R5
- for ath10k@lists.infradead.org; Thu, 25 Jul 2013 11:07:25 +0000
+ id 1V3hZr-0001tV-Hl
+ for ath10k@lists.infradead.org; Mon, 29 Jul 2013 07:09:09 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: implement get_survey()
-Date: Thu, 25 Jul 2013 13:06:52 +0200
-Message-ID: <1374750412-5513-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2] ath10k: implement get_survey()
+Date: Mon, 29 Jul 2013 09:08:32 +0200
+Message-ID: <1375081712-9697-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1374750412-5513-1-git-send-email-michal.kazior@tieto.com>
+References: <1374750412-5513-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,6 +33,12 @@ load, e.g. for automatic channel selection.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
+
+v2: Do not sum up channel time. Each time a
+    channel is visited stats for that channel are
+    overwritten. This makes the behaviour
+    more consistent with ath9k.
+
  drivers/net/wireless/ath/ath10k/core.h |    6 +++
  drivers/net/wireless/ath/ath10k/mac.c  |   36 +++++++++++++++++
  drivers/net/wireless/ath/ath10k/wmi.c  |   68 +++++++++++++++++++++++++++++++-
@@ -116,7 +124,7 @@ index d0a7761..5d4ce96 100644
  	.suspend			= ath10k_suspend,
  	.resume				= ath10k_resume,
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 5e42460..cb59235 100644
+index 5e42460..2150dc84 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
 @@ -390,9 +390,75 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
@@ -175,10 +183,10 @@ index 5e42460..cb59235 100644
 +			 * visited channel. The reported cycle count is global
 +			 * and per-channel cycle count must be calculated */
 +
-+			ar->survey[idx].channel_time += WMI_CHAN_INFO_MSEC(
++			ar->survey[idx].channel_time = WMI_CHAN_INFO_MSEC(
 +					__le32_to_cpu(ev->cycle_count) -
 +					ar->survey_last_cycle_count);
-+			ar->survey[idx].channel_time_rx += WMI_CHAN_INFO_MSEC(
++			ar->survey[idx].channel_time_rx = WMI_CHAN_INFO_MSEC(
 +					__le32_to_cpu(ev->rx_clear_count) -
 +					ar->survey_last_rx_clear_count);
 +			ar->survey[idx].noise = __le32_to_cpu(ev->noise_floor);
