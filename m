@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x232.google.com ([2a00:1450:4008:c01::232])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4PJP-0003TO-Q7
- for ath10k@lists.infradead.org; Wed, 31 Jul 2013 05:51:04 +0000
-Received: by mail-bk0-f50.google.com with SMTP id ik8so86681bkc.37
- for <ath10k@lists.infradead.org>; Tue, 30 Jul 2013 22:50:37 -0700 (PDT)
+ id 1V4PYY-0003kr-Ds
+ for ath10k@lists.infradead.org; Wed, 31 Jul 2013 06:06:42 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: improve tx throughput on slow machines
+References: <1374495928-29514-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 31 Jul 2013 09:06:10 +0300
+In-Reply-To: <1374495928-29514-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 22 Jul 2013 14:25:28 +0200")
+Message-ID: <87ehafs1pp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87d2pzuc90.fsf@kamboji.qca.qualcomm.com>
-References: <1374129572-6079-1-git-send-email-michal.kazior@tieto.com>
- <87d2pzuc90.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 31 Jul 2013 07:50:37 +0200
-Message-ID: <CA+BoTQn-VF-Ehio4Az6GenGb5cBTm2t2a9bQFAuALFhx+MQ+cw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: move irq setup
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +19,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMzAgSnVseSAyMDEzIDIwOjM1LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29t
-PiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JpdGVz
-Ogo+Cj4+IFRoZXJlIHdhcyBhIHNsaWdodCByYWNlIGR1cmluZyBQQ0kgc2h1dGRvd24uIFNpbmNl
-Cj4+IGludGVycnVwdHMgd2VyZW4ndCByZWFsbHkgc3RvcHBlZCAob25seSBDb3B5Cj4+IEVuZ2lu
-ZSBpbnRlcnJ1cHRzIHdlcmUgZGlzYWJsZWQgdGhyb3VnaCBkZXZpY2UgaHcKPj4gcmVnaXN0ZXJz
-KSBpdCB3YXMgcG9zc2libGUgZm9yIGEgZmlybXdhcmUKPj4gaW5kaWNhdGlvbiAoY3Jhc2gpIGlu
-dGVycnVwdCB0byBjb21lIGluIGFmdGVyCj4+IHRhc2tsZXRzIHdlcmUgc3luY2VkL2tpbGxlZC4g
-VGhpcyB3b3VsZCBjYXVzZQo+PiBtZW1vcnkgY29ycnVwdGlvbiBhbmQgYSBwYW5pYyBpbiBtb3N0
-IGNhc2VzLiBJdAo+PiB3YXMgYWxzbyBwb3NzaWJsZSBmb3IgaW50ZXJydXB0IHRvIGNvbWUgYmVm
-b3JlIENFCj4+IHdhcyBpbml0aWFsaXplZCBkdXJpbmcgZGV2aWNlIHByb2JpbmcuCj4+Cj4+IElu
-dGVycnVwdHMgYXJlIHJlcXVpcmVkIGZvciBCTUkgcGhhc2Ugc28gdGhleSBhcmUgZW5hYmxlZCBh
-cyBzb29uIGFzCj4+IHBvd2VyX3VwKCkgaXMgY2FsbGVkIGJ1dCBhcmUgZnJlZWQgdXBvbiBib3Ro
-IHBvd2VyX2Rvd24oKSBhbmQgc3RvcCgpCj4+IHNvIHRoZXJlJ3MgYXN5bW1ldHJ5IGhlcmUuIEFz
-IGJ5IGRlc2lnbiBzdG9wKCkgY2Fubm90IGJlIGZvbGxvd2VkIGJ5Cj4+IHN0YXJ0KCkgaXQgaXMg
-b2theS4gQm90aCBwb3dlcl9kb3duKCkgYW5kIHN0b3AoKSBzaG91bGQgYmUgbWVyZ2VkCj4+IGxh
-dGVyIG9uIHRvIGF2b2lkIGNvbmZ1c2lvbi4KPgo+IFdoeSBhcmUgdGhlIGludGVycnVwdHMgZnJl
-ZWQgYm90aCBpbiBwb3dlcl9kb3duKCkgYW5kIHN0b3AoKT8gSSBkb24ndAo+IGdldCB0aGF0Lgo+
-Cj4gV2hhdCBpZiB3ZSBjYWxsIGRpc2FibGVfaXJxKCkgaW4gcG93ZXJfZG93bigpIGluc3RlYWQ/
-Cgpwb3dlcl9kb3duKCkgbXVzdCBjYWxsIGZyZWVfaXJxKCksIGJlY2F1c2UgcG93ZXJfdXAoKSBj
-YWxscwpyZXF1ZXN0X2lycSgpIChpZiB5b3Ugd2FudCB0aGUgc3ltbWV0cnkpLiBJZiBhbnl0aGlu
-ZywgdGhlIHN0b3AoKQpzaG91bGQgY2FsbCBkaXNhYmxlX2lycSgpLCBidXQgd291bGRuJ3QgdGhh
-dCBtZWFuIHN0YXJ0KCkgc2hvdWxkIGNhbGwKZW5hYmxlX2lycSgpPyBCdXQgdGhhbiwgaXJxcyBh
-cmUgbmVlZGVkIGJlZm9yZSBzdGFydCgpLi4KCkkgZGlkIHRoaW5rIGFib3V0IGRpc2FibGVfaXJx
-KCkgYnV0IEFGQUlSIHlvdSBuZWVkIHRvIGVuYWJsZV9pcnEoKQpsYXRlciBvbiAoc28gZWl0aGVy
-IHdheSB5b3UgbmVlZCB0byBrZWVwIHRyYWNrIG9mIHRoZSBpcnEgc3RhdGUgb3IKeW91J2xsIGdl
-dCBhIHRvbiBvZiBXQVJOX09OcyBmcm9tIHRoZSBzeXN0ZW0pLiBJJ2xsIGRvdWJsZSBjaGVjayB0
-aGF0CmFuZCByZXBvcnQgYmFjayBsYXRlcgoKCj4+IEJlZm9yZSB0aGlzIGNhbiBiZSByZWFsbHkg
-cHJvcGVybHkgZml4ZWQgdmFyL2h3Cj4+IGluaXQgY29kZSBzcGxpdCBpcyBuZWNlc3NhcnkuCj4+
-Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29t
-Pgo+PiAtLS0KPj4KPj4gUGxlYXNlIG5vdGU6IHRoaXMgaXMgYmFzZWQgb24gbXkgKHN0aWxsIHVu
-ZGVyCj4+IHJldmlldyBhdCB0aGUgdGltZSBvZiBwb3N0aW5nKSBwcmV2aW91cyBwYXRjaGVzdHM6
-Cj4+IGRldmljZSBzZXR1cCByZWZhY3RvciBhbmQgcmVjb3ZlcnkuCj4+Cj4+IEknbSBwb3N0aW5n
-IHRoaXMgYmVmb3JlIHRob3NlIHBhdGNoc2V0cyBhcmUgbWVyZ2VkCj4+IHNvIGFueW9uZSBpbnRl
-cmVzdGVkIGluIHRlc3RpbmcgdGhpcyBmaXggKEkgY2FuJ3QKPj4gcmVwcm9kdWNlIHRoZSBwcm9i
-bGVtIG9uIG15IHNldHVwKSBjYW4gZ2l2ZSBpdCBhCj4+IHRyeS4KPgo+IFRoaXMgd2FzIHJlcG9y
-dGVkIGJ5IEJlbiwgcmlnaHQ/IFNvIHRoaXMgc291bGQgaGF2ZSBhIFJlcG9ydGVkLWJ5IGxpbmUK
-PiBhdHRyaWJ1dGluZyBoaW0uCgpZZXMuIEknbGwgZml4IHRoYXQsIHByb3ZpZGVkIHdlIGdldCB0
-aHJvdWdoIHRoZSByZXZpZXcgd2l0aCB0aGUgcGF0Y2ggOikKCgo+PiBAQCAtMTc4MywxNiArMTc5
-MiwyNCBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfaGlmX3Bvd2VyX3VwKHN0cnVjdCBhdGgxMGsg
-KmFyKQo+PiAgICAgICByZXR1cm4gMDsKPj4KPj4gIGVycl9jZToKPj4gKyAgICAgLyogWFhYOiBV
-bnRpbCB2YXIvaHcgaW5pdCBpcyBzcGxpdCBpdCdzIGltcG9zc2libGUgdG8gZml4IHRoZSBvcmRl
-cmluZwo+PiArICAgICAgKiBoZXJlIHNvIHdlIG11c3QgY2FsbCBzdG9wX2ludHIoKSBoZXJlIHRv
-byB0byBwcmV2ZW50IGludGVycnVwdHMgYWZ0ZXIKPj4gKyAgICAgICogQ0UgaXMgdGVhcmVkIGRv
-d24uIEl0J3Mgb2theSB0byBkb3VibGUgY2FsbCB0aGUgc3RvcF9pbnRyKCkKPj4gKi8KPgo+ICJG
-SVhNRToiCgpPay4KCgoKPj4gIGV4aXQ6Cj4+ICsgICAgIGFyX3BjaS0+aW50cl9zdGFydGVkID0g
-cmV0ID09IDA7Cj4KPiBBIGJpdCB0b28gY2xldmVyIGZvciB0aGUgc2FrZSBvZiByZWFkaWJpbGl0
-eSBmb3IgbXkgdGFzdGUsIGJ1dCBJIGd1ZXNzCj4gaXQncyBvay4KPgo+PiAtLS0gYS9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5oCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvcGNpLmgKPj4gQEAgLTE5OCw2ICsxOTgsNyBAQCBzdHJ1Y3QgYXRoMTBr
-X3BjaSB7Cj4+ICAgICAgICAqIGludGVycnVwdHMuCj4+ICAgICAgICAqLwo+PiAgICAgICBpbnQg
-bnVtX21zaV9pbnRyczsKPj4gKyAgICAgYm9vbCBpbnRyX3N0YXJ0ZWQ7Cj4KPiBBZGRpbmcgYSBu
-ZXcgc3RhdGUgdmFyaWFibGUgbWFrZXMgbWUgd29ycmllZC4gSSByZWFsbHkgd291bGQgcHJlZmVy
-IGEKPiBzb2x1dGlvbiB3aGljaCB3b3VsZCBub3QgcmVxdWlyZSB0aGF0LgoKSSBrbm93IHRoYXQu
-IFRoYXQncyB3aHkgSSBtZW50aW9uZWQgaW4gdGhlIGNvbW1pdCBsb2cgdGhhdCBpdCBpcyBtb3Jl
-Cm9mIGEgd29ya2Fyb3VuZCB0aGFuIGEgcmVhbCBmaXguIE1lLCBJIGRvbid0IGxpa2UgdGhpcyBl
-aXRoZXIgYnV0IGEKcmVhbCBmaXggcmVxdWlyZXMgYSBsb3Qgb2YgcmV3b3JrIGZyb20gd2hhdCBJ
-IGNhbiB0ZWxsLgoKVGhpcyBidWcgY2FuIGJlIHRyaWdnZXJlZCBtb3JlIGVhc2lseSBub3cgYXBw
-YXJlbnRseSBhZnRlciByZWNvdmVyeQpwYXRjaGVzIHdlbnQgaW4uIEknbSBub3QgZXhwZXJpZW5j
-aW5nIGl0IGJ1dCBJIGdldCByZXBvcnRzIG9mIHJhcmUKcGFuaWNzIHdoZW4gYSBtYWNoaW5lIGlz
-IGxlZnQgaWRsZSBmb3IgYSB2ZXJ5IGxvbmcgdGltZSB3aXRoCmludGVyZmFjZXMgYnJvdWdodCBk
-b3duLgoKCj4gQWxzbyBpZiB3ZSBjYWxsIHJlcXVlc3RfaXJxKCkgaW4gYXRoMTBrX3BjaV9wcm9i
-ZSgpIHdlIHNob3VsZCBhbHNvIGNhbGwKPiBmcmVlX2lycSgpIGluIGF0aDEwa19wY2lfcmVtb3Zl
-KCkgZm9yIHN5bW1ldHJ5LiBKdXN0IGRvaW5nIGEgdGVtcG9yYXJ5Cj4gaGFjayB3aWxsIG1vc3Qg
-bGlrZWx5IHN0YXkgZm9yZXZlciA6KQoKV2l0aCB0aGUgcGF0Y2ggaW50ZXJydXB0cyBhcmUgdGVt
-cG9yYXJpbHkgZW5hYmxlZCZkaXNhYmxlZCBmb3IKcHJvYmVfZncoKSBkdXJpbmcgcGNpX3Byb2Jl
-KCkgYW5kIGFyZSB0aGVuIG5vdCByZXF1ZXN0ZWQgdW50aWwKbWFjODAyMTEgc3RhcnQoKS4KCgpQ
-b3pkcmF3aWFtIC8gQmVzdCByZWdhcmRzLApNaWNoYcWCIEthemlvci4KCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> It is more efficient to move just the 802.11
+> header instead of the whole payload in most cases.
+>
+> This has no measurable effect on modern hardware.
+> It should improve performance by a few percent on
+> hardware such as an Access Point that have a slow
+> CPU compared to a typical desktop CPU.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+Applied, thanks.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
