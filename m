@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V4nVX-0000MM-RS
- for ath10k@lists.infradead.org; Thu, 01 Aug 2013 07:41:12 +0000
-Message-ID: <1375342845.8608.8.camel@jlt4.sipsolutions.net>
-Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Thu, 01 Aug 2013 09:40:45 +0200
-In-Reply-To: <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
-References: <1375087158-22077-1-git-send-email-michal.kazior@tieto.com>
- <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
-Mime-Version: 1.0
+ id 1V4otp-0001A5-Im
+ for ath10k@lists.infradead.org; Thu, 01 Aug 2013 09:10:23 +0000
+Received: by mail-ea0-f169.google.com with SMTP id z7so876852eaf.28
+ for <ath10k@lists.infradead.org>; Thu, 01 Aug 2013 02:09:57 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: add SoC power save option to PCI features map
+Date: Thu,  1 Aug 2013 11:09:47 +0200
+Message-Id: <1375348187-18216-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +17,148 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-On Mon, 2013-07-29 at 10:39 +0200, Michal Kazior wrote:
+Unify the PCI options location.
 
-> + * @NL80211_ATTR_SCAN_CHAN_TIME: Specifies how many msec should a driver spend
-> + *	on each channel during scanning. This is optional and the default is
-> + *	leave the decision up to the driver. This setting may, but preferrably
+By default the SoC PS option is disabled to boost the
+performance and due to poor stability on early HW revisions.
+In future we can remove the module parameter and turn on/off
+the PS for given hardware.
 
-typo: preferably :)
+This change also makes the pci module parameter for SoC PS static.
 
-> + *	shouldn't, be ignored by driver.
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |   24 ++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/pci.h |   11 +++++++----
+ 2 files changed, 21 insertions(+), 14 deletions(-)
 
-This seems a bit iffy - you don't differentiate between active/passive
-scans?
-
-Also maybe there should be a bit saying "I support scan timing" or even
-the min/max times?
-
-This also interferes a bit with some other scan optimisations that could
-be done at a low firmware level, so I think we should be careful and
-actually say that this is really more intended for measurement use cases
-and not for normal scans?
-
-Or maybe we should have a separate measurement command with similar
-semantics? This all doesn't seem very clear to me yet :)
-
-johannes
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index c71b488..287098e 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -32,7 +32,7 @@
+ #include "ce.h"
+ #include "pci.h"
+ 
+-unsigned int ath10k_target_ps;
++static unsigned int ath10k_target_ps;
+ module_param(ath10k_target_ps, uint, 0644);
+ MODULE_PARM_DESC(ath10k_target_ps, "Enable ath10k Target (SoC) PS option");
+ 
+@@ -1740,6 +1740,7 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ {
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+ 
+ 	/*
+@@ -1758,13 +1759,8 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	if (ret)
+ 		goto err;
+ 
+-	if (ath10k_target_ps) {
+-		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save enabled\n");
+-	} else {
+-		/* Force AWAKE forever */
+-		ath10k_dbg(ATH10K_DBG_PCI, "on-chip power save disabled\n");
+-		ath10k_do_pci_wake(ar);
+-	}
++	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
++		ath10k_do_pci_wake(ar); /* Force AWAKE forever */
+ 
+ 	ret = ath10k_pci_ce_init(ar);
+ 	if (ret)
+@@ -1785,7 +1781,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ err_ce:
+ 	ath10k_pci_ce_deinit(ar);
+ err_ps:
+-	if (!ath10k_target_ps)
++	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_sleep(ar);
+ err:
+ 	return ret;
+@@ -1793,8 +1789,10 @@ err:
+ 
+ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ {
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
+ 	ath10k_pci_ce_deinit(ar);
+-	if (!ath10k_target_ps)
++	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_sleep(ar);
+ }
+ 
+@@ -2239,6 +2237,9 @@ static void ath10k_pci_dump_features(struct ath10k_pci *ar_pci)
+ 		case ATH10K_PCI_FEATURE_HW_1_0_WORKAROUND:
+ 			ath10k_dbg(ATH10K_DBG_PCI, "QCA988X_1.0 workaround enabled\n");
+ 			break;
++		case ATH10K_PCI_FEATURE_SOC_POWER_SAVE:
++			ath10k_dbg(ATH10K_DBG_PCI, "QCA98XX SoC power save enabled\n");
++			break;
+ 		}
+ 	}
+ }
+@@ -2274,6 +2275,9 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_ar_pci;
+ 	}
+ 
++	if (ath10k_target_ps)
++		set_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features);
++
+ 	ath10k_pci_dump_features(ar_pci);
+ 
+ 	ar = ath10k_core_create(ar_pci, ar_pci->dev, &ath10k_pci_hif_ops);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index d3a2e6c..871bb33 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -153,6 +153,7 @@ struct service_to_pipe {
+ enum ath10k_pci_features {
+ 	ATH10K_PCI_FEATURE_MSI_X		= 0,
+ 	ATH10K_PCI_FEATURE_HW_1_0_WORKAROUND	= 1,
++	ATH10K_PCI_FEATURE_SOC_POWER_SAVE	= 2,
+ 
+ 	/* keep last */
+ 	ATH10K_PCI_FEATURE_COUNT
+@@ -335,20 +336,22 @@ static inline u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
+ 	return ioread32(ar_pci->mem + offset);
+ }
+ 
+-extern unsigned int ath10k_target_ps;
+-
+ void ath10k_do_pci_wake(struct ath10k *ar);
+ void ath10k_do_pci_sleep(struct ath10k *ar);
+ 
+ static inline void ath10k_pci_wake(struct ath10k *ar)
+ {
+-	if (ath10k_target_ps)
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	if (test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_wake(ar);
+ }
+ 
+ static inline void ath10k_pci_sleep(struct ath10k *ar)
+ {
+-	if (ath10k_target_ps)
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	if (test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_sleep(ar);
+ }
+ 
+-- 
+1.7.9.5
 
 
 _______________________________________________
