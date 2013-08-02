@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5A0K-0000Iw-Nn
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 07:42:29 +0000
+ id 1V5A5t-0000Tv-4s
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 07:48:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: fix device teardown
-References: <1374129572-6079-1-git-send-email-michal.kazior@tieto.com>
- <1375427747-9539-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 2 Aug 2013 10:41:56 +0300
-In-Reply-To: <1375427747-9539-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 2 Aug 2013 09:15:47 +0200")
-Message-ID: <87bo5gpmij.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add SoC power save option to PCI features map
+References: <1375348187-18216-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Fri, 2 Aug 2013 10:47:44 +0300
+In-Reply-To: <1375348187-18216-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Thu, 1 Aug 2013 11:09:47 +0200")
+Message-ID: <877gg4pm8v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,62 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> This fixes interrupt-related issue when no
-> interfaces were running thus the device was
-> considered powered down.
+> Unify the PCI options location.
 >
-> The power_down() function isn't really powering
-> down the device. It simply assumed it won't
-> interrupt. This wasn't true in some cases and
-> could lead to paging failures upon FW indication
-> interrupt (i.e. FW crash) because some structures
-> aren't allocated in that device state.
+> By default the SoC PS option is disabled to boost the
+> performance and due to poor stability on early HW revisions.
+> In future we can remove the module parameter and turn on/off
+> the PS for given hardware.
 >
-> One reason for that was that ar_pci->started
-> wasn't reset. The other is interrupts should've
-> been masked when teardown starts.
+> This change also makes the pci module parameter for SoC PS static.
 >
-> The patch reorganized interrupt setup and makes
-> sure ar_pci->started is reset accordingly.
->
-> Reported-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> v2:
->  * updated commit message
->  * added Reported-By: Ben
->  * added disable_irq() in hif_stop()
->  * added ar_pci->started resetting
->  * removed ar_pci->intr_started
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, this looks much better now.
+A minor nitpick:
 
-But I still have one question:
+> +	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+> +		ath10k_do_pci_wake(ar); /* Force AWAKE forever */
 
-> @@ -1742,6 +1761,12 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->  {
->  	int ret;
->  
-> +	ret = ath10k_pci_start_intr(ar);
-> +	if (ret) {
-> +		ath10k_err("could not start interrupt handling (%d)\n", ret);
-> +		goto err;
-> +	}
-
-So now we call start_intr() during power_up(), which means that we do
-the request_irq() calls during every interface up event. Does that cause
-any meaningful overhead?
-
-For me it looks better to do all resource allocation in
-ath10k_pci_probe(), like request_irq(), and free the resources in
-ath10k_pci_remove(). But then we would need to immeadiately call
-disable_irq() and then enable_irq() from power_up() so I'm not sure if
-that's any better.
+if (foo)
+        /* comment */
+        function_call();
 
 -- 
 Kalle Valo
