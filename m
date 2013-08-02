@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from mail-bk0-f54.google.com ([209.85.214.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5DV1-0007qI-R6
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 11:26:24 +0000
-Message-ID: <1375442751.18144.7.camel@jlt4.sipsolutions.net>
-Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 02 Aug 2013 13:25:51 +0200
-In-Reply-To: <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
- (sfid-20130801_111410_156661_E1ABADDA)
+ id 1V5Duh-0000CV-Ry
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 11:52:57 +0000
+Received: by mail-bk0-f54.google.com with SMTP id it19so169970bkc.27
+ for <ath10k@lists.infradead.org>; Fri, 02 Aug 2013 04:52:28 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1375442751.18144.7.camel@jlt4.sipsolutions.net>
 References: <1375087158-22077-1-git-send-email-michal.kazior@tieto.com>
  <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
  <1375342845.8608.8.camel@jlt4.sipsolutions.net>
  <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
- (sfid-20130801_111410_156661_E1ABADDA)
-Mime-Version: 1.0
+ <1375442751.18144.7.camel@jlt4.sipsolutions.net>
+Date: Fri, 2 Aug 2013 13:52:28 +0200
+Message-ID: <CA+BoTQ=XNeYL1KLGQ4gRCZ03a9XsAWde4O7_T-dqKndLLKeX_g@mail.gmail.com>
+Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +24,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, 2013-08-01 at 11:14 +0200, Michal Kazior wrote:
-
-> > This seems a bit iffy - you don't differentiate between active/passive
-> > scans?
-> 
-> Is there a reason this should be differentiated?
-
-Well they don't usually have the same timing, passive channel dwell time
-usually needs to be longer than on active channels.
-
-> > This also interferes a bit with some other scan optimisations that could
-> > be done at a low firmware level, so I think we should be careful and
-> > actually say that this is really more intended for measurement use cases
-> > and not for normal scans?
-> >
-> > Or maybe we should have a separate measurement command with similar
-> > semantics? This all doesn't seem very clear to me yet :)
-> 
-> Motivation behind this patchset is to simplify ACS implementation and
-> depend on scan. This also allows easier fallback from survey-based ACS
-> to BSS-based one.
-
-Sure, I understand.
-
-> Other use cases are a side-effect so perhaps clarifying the intent in
-> the docs is enough.
-
-I'm just saying that this is a fundamentally different usage than actual
-scanning. Let's say for the sake of the argument I find a way to scan
-channels quicker and implement that in my device (hw_scan). I don't
-think this is too far-fetched, imagine I have an 80MHz capable device
-and can send probe request 4x transmissions on all the subchannels, if
-somehow I manage to separate the receive then I could scan 4x as
-quickly. I don't think this particular thing is possible but I could
-imagine scan optimisations like it.
-
-Now this comes along - and suddenly the API requires that you stay on
-each specified channel for the given period of time. Any such
-"non-traditional" scan optimisations would have to be given up, so in a
-sense this fundamentally alters the semantics of the scan primitive,
-where before it was "give me the list of networks (with these SSIDs) on
-these channels" it now becomes "go to each channel, stay there for this
-amount of time and ..."
-
-That's what I'm worried about - the implicit semantic change here.
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBBdWd1c3QgMjAxMyAxMzoyNSwgSm9oYW5uZXMgQmVyZyA8am9oYW5uZXNAc2lwc29sdXRp
+b25zLm5ldD4gd3JvdGU6Cj4gT24gVGh1LCAyMDEzLTA4LTAxIGF0IDExOjE0ICswMjAwLCBNaWNo
+YWwgS2F6aW9yIHdyb3RlOgo+Cj4+ID4gVGhpcyBzZWVtcyBhIGJpdCBpZmZ5IC0geW91IGRvbid0
+IGRpZmZlcmVudGlhdGUgYmV0d2VlbiBhY3RpdmUvcGFzc2l2ZQo+PiA+IHNjYW5zPwo+Pgo+PiBJ
+cyB0aGVyZSBhIHJlYXNvbiB0aGlzIHNob3VsZCBiZSBkaWZmZXJlbnRpYXRlZD8KPgo+IFdlbGwg
+dGhleSBkb24ndCB1c3VhbGx5IGhhdmUgdGhlIHNhbWUgdGltaW5nLCBwYXNzaXZlIGNoYW5uZWwg
+ZHdlbGwgdGltZQo+IHVzdWFsbHkgbmVlZHMgdG8gYmUgbG9uZ2VyIHRoYW4gb24gYWN0aXZlIGNo
+YW5uZWxzLgo+Cj4+ID4gVGhpcyBhbHNvIGludGVyZmVyZXMgYSBiaXQgd2l0aCBzb21lIG90aGVy
+IHNjYW4gb3B0aW1pc2F0aW9ucyB0aGF0IGNvdWxkCj4+ID4gYmUgZG9uZSBhdCBhIGxvdyBmaXJt
+d2FyZSBsZXZlbCwgc28gSSB0aGluayB3ZSBzaG91bGQgYmUgY2FyZWZ1bCBhbmQKPj4gPiBhY3R1
+YWxseSBzYXkgdGhhdCB0aGlzIGlzIHJlYWxseSBtb3JlIGludGVuZGVkIGZvciBtZWFzdXJlbWVu
+dCB1c2UgY2FzZXMKPj4gPiBhbmQgbm90IGZvciBub3JtYWwgc2NhbnM/Cj4+ID4KPj4gPiBPciBt
+YXliZSB3ZSBzaG91bGQgaGF2ZSBhIHNlcGFyYXRlIG1lYXN1cmVtZW50IGNvbW1hbmQgd2l0aCBz
+aW1pbGFyCj4+ID4gc2VtYW50aWNzPyBUaGlzIGFsbCBkb2Vzbid0IHNlZW0gdmVyeSBjbGVhciB0
+byBtZSB5ZXQgOikKPj4KPj4gTW90aXZhdGlvbiBiZWhpbmQgdGhpcyBwYXRjaHNldCBpcyB0byBz
+aW1wbGlmeSBBQ1MgaW1wbGVtZW50YXRpb24gYW5kCj4+IGRlcGVuZCBvbiBzY2FuLiBUaGlzIGFs
+c28gYWxsb3dzIGVhc2llciBmYWxsYmFjayBmcm9tIHN1cnZleS1iYXNlZCBBQ1MKPj4gdG8gQlNT
+LWJhc2VkIG9uZS4KPgo+IFN1cmUsIEkgdW5kZXJzdGFuZC4KPgo+PiBPdGhlciB1c2UgY2FzZXMg
+YXJlIGEgc2lkZS1lZmZlY3Qgc28gcGVyaGFwcyBjbGFyaWZ5aW5nIHRoZSBpbnRlbnQgaW4KPj4g
+dGhlIGRvY3MgaXMgZW5vdWdoLgo+Cj4gSSdtIGp1c3Qgc2F5aW5nIHRoYXQgdGhpcyBpcyBhIGZ1
+bmRhbWVudGFsbHkgZGlmZmVyZW50IHVzYWdlIHRoYW4gYWN0dWFsCj4gc2Nhbm5pbmcuIExldCdz
+IHNheSBmb3IgdGhlIHNha2Ugb2YgdGhlIGFyZ3VtZW50IEkgZmluZCBhIHdheSB0byBzY2FuCj4g
+Y2hhbm5lbHMgcXVpY2tlciBhbmQgaW1wbGVtZW50IHRoYXQgaW4gbXkgZGV2aWNlIChod19zY2Fu
+KS4gSSBkb24ndAo+IHRoaW5rIHRoaXMgaXMgdG9vIGZhci1mZXRjaGVkLCBpbWFnaW5lIEkgaGF2
+ZSBhbiA4ME1IeiBjYXBhYmxlIGRldmljZQo+IGFuZCBjYW4gc2VuZCBwcm9iZSByZXF1ZXN0IDR4
+IHRyYW5zbWlzc2lvbnMgb24gYWxsIHRoZSBzdWJjaGFubmVscywgaWYKPiBzb21laG93IEkgbWFu
+YWdlIHRvIHNlcGFyYXRlIHRoZSByZWNlaXZlIHRoZW4gSSBjb3VsZCBzY2FuIDR4IGFzCj4gcXVp
+Y2tseS4gSSBkb24ndCB0aGluayB0aGlzIHBhcnRpY3VsYXIgdGhpbmcgaXMgcG9zc2libGUgYnV0
+IEkgY291bGQKPiBpbWFnaW5lIHNjYW4gb3B0aW1pc2F0aW9ucyBsaWtlIGl0Lgo+Cj4gTm93IHRo
+aXMgY29tZXMgYWxvbmcgLSBhbmQgc3VkZGVubHkgdGhlIEFQSSByZXF1aXJlcyB0aGF0IHlvdSBz
+dGF5IG9uCj4gZWFjaCBzcGVjaWZpZWQgY2hhbm5lbCBmb3IgdGhlIGdpdmVuIHBlcmlvZCBvZiB0
+aW1lLiBBbnkgc3VjaAo+ICJub24tdHJhZGl0aW9uYWwiIHNjYW4gb3B0aW1pc2F0aW9ucyB3b3Vs
+ZCBoYXZlIHRvIGJlIGdpdmVuIHVwLCBzbyBpbiBhCj4gc2Vuc2UgdGhpcyBmdW5kYW1lbnRhbGx5
+IGFsdGVycyB0aGUgc2VtYW50aWNzIG9mIHRoZSBzY2FuIHByaW1pdGl2ZSwKPiB3aGVyZSBiZWZv
+cmUgaXQgd2FzICJnaXZlIG1lIHRoZSBsaXN0IG9mIG5ldHdvcmtzICh3aXRoIHRoZXNlIFNTSURz
+KSBvbgo+IHRoZXNlIGNoYW5uZWxzIiBpdCBub3cgYmVjb21lcyAiZ28gdG8gZWFjaCBjaGFubmVs
+LCBzdGF5IHRoZXJlIGZvciB0aGlzCj4gYW1vdW50IG9mIHRpbWUgYW5kIC4uLiIKPgo+IFRoYXQn
+cyB3aGF0IEknbSB3b3JyaWVkIGFib3V0IC0gdGhlIGltcGxpY2l0IHNlbWFudGljIGNoYW5nZSBo
+ZXJlLgoKSSB0aGluayBJIHVuZGVyc3RhbmQgeW91ciBwb2ludCBub3cuCgpJJ20gdGhpbmtpbmcg
+b2YgdXNpbmcgc2VyaWVzIG9mIHBhc3NpdmUgc2NhbnMgZm9yIEFDUyBub3csIHNvIHBlcmhhcHMK
+dGhlIHdob2xlIGNoYW5fdGltZSBzdHVmZiBpcyB1bm5lY2Vzc2FyeS4gV2hhdCBhcmUgeW91ciB0
+aG91Z2h0cyBhYm91dAppdD8KCgpQb3pkcmF3aWFtIC8gQmVzdCByZWdhcmRzLApNaWNoYcWCIEth
+emlvci4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
