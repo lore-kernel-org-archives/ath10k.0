@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5AIE-0000po-Rs
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 08:00:59 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: fix device teardown
-References: <1374129572-6079-1-git-send-email-michal.kazior@tieto.com>
- <1375427747-9539-1-git-send-email-michal.kazior@tieto.com>
- <87bo5gpmij.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQktaDtp=fc3C_u4geA6vK72B1X4QnsD_GqrzU9NXEmBrA@mail.gmail.com>
-Date: Fri, 2 Aug 2013 11:00:08 +0300
-In-Reply-To: <CA+BoTQktaDtp=fc3C_u4geA6vK72B1X4QnsD_GqrzU9NXEmBrA@mail.gmail.com>
- (Michal Kazior's message of "Fri, 2 Aug 2013 09:51:28 +0200")
-Message-ID: <8738qsplo7.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1V5DV1-0007qI-R6
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 11:26:24 +0000
+Message-ID: <1375442751.18144.7.camel@jlt4.sipsolutions.net>
+Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 02 Aug 2013 13:25:51 +0200
+In-Reply-To: <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
+ (sfid-20130801_111410_156661_E1ABADDA)
+References: <1375087158-22077-1-git-send-email-michal.kazior@tieto.com>
+ <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
+ <1375342845.8608.8.camel@jlt4.sipsolutions.net>
+ <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
+ (sfid-20130801_111410_156661_E1ABADDA)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,51 +30,54 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+On Thu, 2013-08-01 at 11:14 +0200, Michal Kazior wrote:
 
-> On 2 August 2013 09:41, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> @@ -1742,6 +1761,12 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->>>  {
->>>       int ret;
->>>
->>> +     ret = ath10k_pci_start_intr(ar);
->>> +     if (ret) {
->>> +             ath10k_err("could not start interrupt handling (%d)\n", ret);
->>> +             goto err;
->>> +     }
->>
->> So now we call start_intr() during power_up(), which means that we do
->> the request_irq() calls during every interface up event. Does that cause
->> any meaningful overhead?
->
-> I don't think so.
+> > This seems a bit iffy - you don't differentiate between active/passive
+> > scans?
+> 
+> Is there a reason this should be differentiated?
 
-Good.
+Well they don't usually have the same timing, passive channel dwell time
+usually needs to be longer than on active channels.
 
->> For me it looks better to do all resource allocation in
->> ath10k_pci_probe(), like request_irq(), and free the resources in
->> ath10k_pci_remove(). But then we would need to immeadiately call
->> disable_irq() and then enable_irq() from power_up() so I'm not sure if
->> that's any better.
->
-> Not only that. Since disable/enable_irq must be balanced we'd need
-> some way to track whether we have irqs enabled/disabled - either with
-> an extra bool variable, additional ath10k_states or new pci-specific
-> states.
->
-> The patch assumes disable_irq is followed by free_irq (which it is)
-> and possibly request_irq later on.
+> > This also interferes a bit with some other scan optimisations that could
+> > be done at a low firmware level, so I think we should be careful and
+> > actually say that this is really more intended for measurement use cases
+> > and not for normal scans?
+> >
+> > Or maybe we should have a separate measurement command with similar
+> > semantics? This all doesn't seem very clear to me yet :)
+> 
+> Motivation behind this patchset is to simplify ACS implementation and
+> depend on scan. This also allows easier fallback from survey-based ACS
+> to BSS-based one.
 
-Yeah, your v2 sounds much better. And if there's overhead or something
-else we can always change this later.
+Sure, I understand.
 
-I'll wait for comments from others and if I don't get any, I'll apply
-this.
+> Other use cases are a side-effect so perhaps clarifying the intent in
+> the docs is enough.
 
--- 
-Kalle Valo
+I'm just saying that this is a fundamentally different usage than actual
+scanning. Let's say for the sake of the argument I find a way to scan
+channels quicker and implement that in my device (hw_scan). I don't
+think this is too far-fetched, imagine I have an 80MHz capable device
+and can send probe request 4x transmissions on all the subchannels, if
+somehow I manage to separate the receive then I could scan 4x as
+quickly. I don't think this particular thing is possible but I could
+imagine scan optimisations like it.
+
+Now this comes along - and suddenly the API requires that you stay on
+each specified channel for the given period of time. Any such
+"non-traditional" scan optimisations would have to be given up, so in a
+sense this fundamentally alters the semantics of the scan primitive,
+where before it was "give me the list of networks (with these SSIDs) on
+these channels" it now becomes "go to each channel, stay there for this
+amount of time and ..."
+
+That's what I'm worried about - the implicit semantic change here.
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
