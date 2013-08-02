@@ -1,22 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5EuZ-0001sX-D7
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 12:56:52 +0000
-Received: by mail-wi0-f169.google.com with SMTP id f14so522259wiw.4
- for <ath10k@lists.infradead.org>; Fri, 02 Aug 2013 05:56:26 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACA4iOrZSARKFVFx1E2QPyH=xZzQp+VoyPu_tuFWgBR3tQwOmw@mail.gmail.com>
+ id 1V5EzB-000208-KH
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 13:01:38 +0000
+Message-ID: <1375448470.18144.10.camel@jlt4.sipsolutions.net>
+Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 02 Aug 2013 15:01:10 +0200
+In-Reply-To: <CA+BoTQ=XNeYL1KLGQ4gRCZ03a9XsAWde4O7_T-dqKndLLKeX_g@mail.gmail.com>
+ (sfid-20130802_135231_798451_6ACEA72F)
 References: <1375087158-22077-1-git-send-email-michal.kazior@tieto.com>
  <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
  <1375342845.8608.8.camel@jlt4.sipsolutions.net>
  <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
  <1375442751.18144.7.camel@jlt4.sipsolutions.net>
- <CACA4iOrZSARKFVFx1E2QPyH=xZzQp+VoyPu_tuFWgBR3tQwOmw@mail.gmail.com>
-Date: Fri, 2 Aug 2013 18:26:26 +0530
-Message-ID: <CACA4iOrGGoZVneOgZvY2jf=SvcC3ta5gYVLThG7qUbzNbS+Zkw@mail.gmail.com>
-Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
-From: Sunil Dutt <usdutt@gmail.com>
+ <CA+BoTQ=XNeYL1KLGQ4gRCZ03a9XsAWde4O7_T-dqKndLLKeX_g@mail.gmail.com>
+ (sfid-20130802_135231_798451_6ACEA72F)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,106 +29,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Johannes and Michal ,
-In this context I would also like to mention that there are also some
-use cases ( Ex WiFi Positioning) ,  where good performance shall
-result from using signals from as many Access Points as possible, a
-fixed dwell / chan time in the host driver shall result in the poor
-discovery efficiency of the Access Points,negatively impacting WiFi
-positioning performance.
 
-I would say such applications shall benefit by configuring a chan (dwell)_time.
-Also,an attribute corresponding to the mode of the scan ( active /
-passive ) , along with chan_time would benefit such applications with
-more configurable options. Isn't it ?
-Please correct me .
+> > That's what I'm worried about - the implicit semantic change here.
+> 
+> I think I understand your point now.
+> 
+> I'm thinking of using series of passive scans for ACS now, so perhaps
+> the whole chan_time stuff is unnecessary. What are your thoughts about
+> it?
 
-Regards,
-Sunil
+Well, still then you're relying on the fact that passive channels scans
+will stick to each channel for ~110ms or so. This is true today, but
+it's not really specified.
 
-On Fri, Aug 2, 2013 at 6:00 PM, Sunil Dutt <usdutt@gmail.com> wrote:
-> Hi Johannes and Michal ,
-> In this context I would also like to mention that there are also some use
-> cases ( Ex WiFi Positioning) ,  where good performance shall result from
-> using signals from as many Access Points as possible, a fixed dwell / chan
-> time in the host driver shall result in the poor discovery efficiency of the
-> Access Points,negatively impacting WiFi positioning performance.
->
-> I would say such applications shall benefit by configuring a chan
-> (dwell)_time.
-> Also,an attribute corresponding to the mode of the scan ( active / passive )
-> , along with chan_time would benefit such applications with more
-> configurable options. Isn't it ?
-> Please correct me .
->
-> Regards,
-> Sunil
->
->
->
->
-> On Fri, Aug 2, 2013 at 4:55 PM, Johannes Berg <johannes@sipsolutions.net>
-> wrote:
->>
->> On Thu, 2013-08-01 at 11:14 +0200, Michal Kazior wrote:
->>
->> > > This seems a bit iffy - you don't differentiate between active/passive
->> > > scans?
->> >
->> > Is there a reason this should be differentiated?
->>
->> Well they don't usually have the same timing, passive channel dwell time
->> usually needs to be longer than on active channels.
->>
->> > > This also interferes a bit with some other scan optimisations that
->> > > could
->> > > be done at a low firmware level, so I think we should be careful and
->> > > actually say that this is really more intended for measurement use
->> > > cases
->> > > and not for normal scans?
->> > >
->> > > Or maybe we should have a separate measurement command with similar
->> > > semantics? This all doesn't seem very clear to me yet :)
->> >
->> > Motivation behind this patchset is to simplify ACS implementation and
->> > depend on scan. This also allows easier fallback from survey-based ACS
->> > to BSS-based one.
->>
->> Sure, I understand.
->>
->> > Other use cases are a side-effect so perhaps clarifying the intent in
->> > the docs is enough.
->>
->> I'm just saying that this is a fundamentally different usage than actual
->> scanning. Let's say for the sake of the argument I find a way to scan
->> channels quicker and implement that in my device (hw_scan). I don't
->> think this is too far-fetched, imagine I have an 80MHz capable device
->> and can send probe request 4x transmissions on all the subchannels, if
->> somehow I manage to separate the receive then I could scan 4x as
->> quickly. I don't think this particular thing is possible but I could
->> imagine scan optimisations like it.
->>
->> Now this comes along - and suddenly the API requires that you stay on
->> each specified channel for the given period of time. Any such
->> "non-traditional" scan optimisations would have to be given up, so in a
->> sense this fundamentally alters the semantics of the scan primitive,
->> where before it was "give me the list of networks (with these SSIDs) on
->> these channels" it now becomes "go to each channel, stay there for this
->> amount of time and ..."
->>
->> That's what I'm worried about - the implicit semantic change here.
->>
->> johannes
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-wireless"
->> in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+I don't think that using the scan command would be a big deal, but maybe
+this 'measurement' behaviour should be explicitly enabled? Maybe other
+devices even have to do something special to collect the data.
+
+johannes
+
 
 _______________________________________________
 ath10k mailing list
