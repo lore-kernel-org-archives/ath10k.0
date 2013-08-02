@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V58uG-0007DZ-1O
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 06:32:09 +0000
+ id 1V58yD-0007KB-78
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 06:36:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: implement checksum offloading
-References: <1375260477-17030-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 2 Aug 2013 09:31:33 +0300
-In-Reply-To: <1375260477-17030-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 31 Jul 2013 10:47:55 +0200")
-Message-ID: <87vc3oppru.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: implement get_survey()
+References: <1375081712-9697-1-git-send-email-michal.kazior@tieto.com>
+ <1375259560-8784-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 2 Aug 2013 09:35:41 +0300
+In-Reply-To: <1375259560-8784-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 31 Jul 2013 10:32:40 +0200")
+Message-ID: <87ob9gppky.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,21 +29,15 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Hi,
+> This implements a limited subset of what can be
+> reported in the survey dump.
 >
-> This patchset adds tx and rx checksum offloading
-> to ath10k driver.
+> This can be used for assessing approximate channel
+> load, e.g. for automatic channel selection.
 >
-> I don't have any hard numbers but I did observe a
-> consistently sligthly better performance on AP135
-> + ath10k. Nothing ground breaking though.
->
->
-> Michal Kazior (2):
->   ath10k: implement rx checksum offloading
->   ath10k: implement tx checksum offloading
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Applied, thanks.
+Thanks, applied.
 
 -- 
 Kalle Valo
