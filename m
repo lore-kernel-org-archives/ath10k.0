@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V58yD-0007KB-78
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 06:36:13 +0000
+ id 1V591J-0007NU-0o
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 06:39:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: implement get_survey()
-References: <1375081712-9697-1-git-send-email-michal.kazior@tieto.com>
- <1375259560-8784-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 2 Aug 2013 09:35:41 +0300
-In-Reply-To: <1375259560-8784-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 31 Jul 2013 10:32:40 +0200")
-Message-ID: <87ob9gppky.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/5] ath10k: fixes
+References: <1375260915-22500-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 2 Aug 2013 09:38:57 +0300
+In-Reply-To: <1375260915-22500-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 31 Jul 2013 10:55:10 +0200")
+Message-ID: <87k3k4ppfi.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,15 +28,20 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This implements a limited subset of what can be
-> reported in the survey dump.
+> Hi,
 >
-> This can be used for assessing approximate channel
-> load, e.g. for automatic channel selection.
+> This is a batch up of a few fixes for ath10k
+> driver I had in my queue for some time now.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>
+> Michal Kazior (5):
+>   ath10k: prevent using invalid ringbuffer indexes
+>   ath10k: make sure to use passive scan when n_ssids is 0
+>   ath10k: advertise more conservative intf combinations
+>   ath10k: zero arvif memory on add_interface()
+>   ath10k: fix failpath in MSI-X setup
 
-Thanks, applied.
+All applied, thanks.
 
 -- 
 Kalle Valo
