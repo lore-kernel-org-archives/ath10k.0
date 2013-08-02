@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
+ ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V5EzB-000208-KH
- for ath10k@lists.infradead.org; Fri, 02 Aug 2013 13:01:38 +0000
-Message-ID: <1375448470.18144.10.camel@jlt4.sipsolutions.net>
-Subject: Re: [RFC 1/3] nl/cfg80211: add chan_time for scan request
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 02 Aug 2013 15:01:10 +0200
-In-Reply-To: <CA+BoTQ=XNeYL1KLGQ4gRCZ03a9XsAWde4O7_T-dqKndLLKeX_g@mail.gmail.com>
- (sfid-20130802_135231_798451_6ACEA72F)
-References: <1375087158-22077-1-git-send-email-michal.kazior@tieto.com>
- <1375087158-22077-2-git-send-email-michal.kazior@tieto.com>
- <1375342845.8608.8.camel@jlt4.sipsolutions.net>
- <CA+BoTQm+rWRRpp6XQ_-YHMBfH0Q4ecZ3z-6TV3cvFZ=8uXWsQA@mail.gmail.com>
- <1375442751.18144.7.camel@jlt4.sipsolutions.net>
- <CA+BoTQ=XNeYL1KLGQ4gRCZ03a9XsAWde4O7_T-dqKndLLKeX_g@mail.gmail.com>
- (sfid-20130802_135231_798451_6ACEA72F)
-Mime-Version: 1.0
+ id 1V5LIO-00057v-Qe
+ for ath10k@lists.infradead.org; Fri, 02 Aug 2013 19:45:53 +0000
+Date: Fri, 2 Aug 2013 15:40:35 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: Pull request: ath 20130730
+Message-ID: <20130802194034.GE10800@tuxdriver.com>
+References: <87txjct6pf.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87txjct6pf.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,28 +24,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-
-> > That's what I'm worried about - the implicit semantic change here.
+On Tue, Jul 30, 2013 at 06:20:44PM +0300, Kalle Valo wrote:
+> Hi John,
 > 
-> I think I understand your point now.
+> here's a new pull request containing just ath10k patches from Michal.
 > 
-> I'm thinking of using series of passive scans for ACS now, so perhaps
-> the whole chan_time stuff is unnecessary. What are your thoughts about
-> it?
+> A major new feature is that we can now restart the firmware when it
+> crashes. For this Michal needed quite a few preparation patches. It's
+> now possible to to crash the firmware from debugfs, which makes it
+> easier to test the restart feature.
+> 
+> Michal also sent fixes and cleanup to various parts in the driver. Most
+> visible to users are RTS and fragmentation related fixes.
+> 
+> Please pull and do let me know if there are any problems.
+> 
+> Kalle
+> 
+> The following changes since commit 2cdf359a521bb72286b6714478dfdbcd2691f3fe:
+> 
+>   mwifiex: code rearrangement in sdio.c (2013-07-26 16:57:45 -0400)
+> 
+> are available in the git repository at:
+> 
+>   git://github.com/kvalo/ath6kl.git tags/for-linville-20130730
+> 
+> for you to fetch changes up to 424121c365aed6ec93bbc8b515548df79c5af61c:
+> 
+>   ath10k: fix rts/fragmentation threshold setup (2013-07-30 18:01:21 +0300)
 
-Well, still then you're relying on the fact that passive channels scans
-will stick to each channel for ~110ms or so. This is true today, but
-it's not really specified.
+Pulling now...
 
-I don't think that using the scan command would be a big deal, but maybe
-this 'measurement' behaviour should be explicitly enabled? Maybe other
-devices even have to do something special to collect the data.
-
-johannes
-
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
