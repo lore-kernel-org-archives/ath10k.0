@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
+Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V70ip-0002x4-Cb
- for ath10k@lists.infradead.org; Wed, 07 Aug 2013 10:12:04 +0000
-Received: by mail-ea0-f182.google.com with SMTP id o10so746684eaj.27
- for <ath10k@lists.infradead.org>; Wed, 07 Aug 2013 03:11:40 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH v2] ath10k: setup peer UAPSD flag correctly
-Date: Wed,  7 Aug 2013 12:10:49 +0200
-Message-Id: <1375870249-29316-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1V73dD-0007xi-SD
+ for ath10k@lists.infradead.org; Wed, 07 Aug 2013 13:18:28 +0000
+Received: by mail-ea0-f169.google.com with SMTP id z7so855285eaf.28
+ for <ath10k@lists.infradead.org>; Wed, 07 Aug 2013 06:18:05 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH 2/2] ath10k: update supported FW build version
+Date: Wed,  7 Aug 2013 15:17:46 +0200
+Message-Id: <1375881466-30090-2-git-send-email-bartosz.markowski@tieto.com>
+In-Reply-To: <1375881466-30090-1-git-send-email-bartosz.markowski@tieto.com>
+References: <1375881466-30090-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +25,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Setup UAPSD peer/peer rate flags correctly.
-WMI_RC_UAPSD_FLAG is a peer rate capabilities flag
-and should not be set as a peer flag.
-Found during code review, doesn't fix a known
-issues.
+The latest supported and available FW build is 1.0.0.636.
+Reflect this in ath10k code.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ drivers/net/wireless/ath/ath10k/hw.h |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index cf2ba4d..505be82 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -973,7 +973,7 @@ static void ath10k_peer_assoc_h_qos_ap(struct ath10k *ar,
- 			   sta->uapsd_queues, sta->max_sp);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 373c2ef..9868705 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -24,7 +24,7 @@
+ #define SUPPORTED_FW_MAJOR	1
+ #define SUPPORTED_FW_MINOR	0
+ #define SUPPORTED_FW_RELEASE	0
+-#define SUPPORTED_FW_BUILD	629
++#define SUPPORTED_FW_BUILD	636
  
- 		arg->peer_flags |= WMI_PEER_APSD;
--		arg->peer_flags |= WMI_RC_UAPSD_FLAG;
-+		arg->peer_rate_caps |= WMI_RC_UAPSD_FLAG;
- 
- 		if (sta->uapsd_queues & IEEE80211_WMM_IE_STA_QOSINFO_AC_VO)
- 			uapsd |= WMI_AP_PS_UAPSD_AC3_DELIVERY_EN |
+ /* QCA988X 2.0 definitions */
+ #define QCA988X_HW_2_0_VERSION		0x4100016c
 -- 
 1.7.9.5
 
