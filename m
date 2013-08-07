@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6bJ5-0003LX-QT
- for ath10k@lists.infradead.org; Tue, 06 Aug 2013 07:03:48 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: add SoC power save option to PCI features map
-References: <1375430329-23352-1-git-send-email-bartosz.markowski@tieto.com>
- <CA+BoTQkD5grL_5dJDgkwo40ET1zax56oN=ZGFxnyGqboQShbgQ@mail.gmail.com>
- <87iozkf5w0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkCQMZaicJpcrJGk+vz7kwMgcQcLS6PUn_4c65PJ4gRTA@mail.gmail.com>
-Date: Tue, 6 Aug 2013 10:03:17 +0300
-In-Reply-To: <CA+BoTQkCQMZaicJpcrJGk+vz7kwMgcQcLS6PUn_4c65PJ4gRTA@mail.gmail.com>
- (Michal Kazior's message of "Tue, 6 Aug 2013 08:57:40 +0200")
-Message-ID: <87iozjcnd6.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1V6wFI-0003rm-1A
+ for ath10k@lists.infradead.org; Wed, 07 Aug 2013 05:25:17 +0000
+Received: by mail-ea0-f169.google.com with SMTP id z7so598279eaf.14
+ for <ath10k@lists.infradead.org>; Tue, 06 Aug 2013 22:24:51 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: setup peer UAPSD flag correctly
+Date: Wed,  7 Aug 2013 07:23:56 +0200
+Message-Id: <1375853036-2418-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +17,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Setup UAPSD peer rate control (FW flag)
+correctly.
 
-> On 5 August 2013 18:40, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->
->> But this doesn't prevent taking this patch as the race has existed since
->> the beginning, right?
->
-> I don't have anything against it.
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's what I assumed as well, just wanted to be sure before I commit
-the patch.
-
-> I just noticed the race and thought it's good to point out the issue.
-
-Yes, that was a very good find. Please continue finding more races in
-the code :)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index cf2ba4d..505be82 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -973,7 +973,7 @@ static void ath10k_peer_assoc_h_qos_ap(struct ath10k *ar,
+ 			   sta->uapsd_queues, sta->max_sp);
+ 
+ 		arg->peer_flags |= WMI_PEER_APSD;
+-		arg->peer_flags |= WMI_RC_UAPSD_FLAG;
++		arg->peer_rate_caps |= WMI_RC_UAPSD_FLAG;
+ 
+ 		if (sta->uapsd_queues & IEEE80211_WMM_IE_STA_QOSINFO_AC_VO)
+ 			uapsd |= WMI_AP_PS_UAPSD_AC3_DELIVERY_EN |
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
