@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V6yjj-0007YP-J0
- for ath10k@lists.infradead.org; Wed, 07 Aug 2013 08:04:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: setup peer UAPSD flag correctly
-References: <1375853036-2418-1-git-send-email-janusz.dziedzic@tieto.com>
- <87li4e6l67.fsf@kamboji.qca.qualcomm.com>
- <CALhHN=pP32Vw6UMvS93cReWr6WHz3p_3d8mn0FNJtSQGvuGJ9w@mail.gmail.com>
-Date: Wed, 7 Aug 2013 11:04:19 +0300
-In-Reply-To: <CALhHN=pP32Vw6UMvS93cReWr6WHz3p_3d8mn0FNJtSQGvuGJ9w@mail.gmail.com>
- (Janusz Dziedzic's message of "Wed, 7 Aug 2013 09:42:22 +0200")
-Message-ID: <87siym53lo.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1V70ip-0002x4-Cb
+ for ath10k@lists.infradead.org; Wed, 07 Aug 2013 10:12:04 +0000
+Received: by mail-ea0-f182.google.com with SMTP id o10so746684eaj.27
+ for <ath10k@lists.infradead.org>; Wed, 07 Aug 2013 03:11:40 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH v2] ath10k: setup peer UAPSD flag correctly
+Date: Wed,  7 Aug 2013 12:10:49 +0200
+Message-Id: <1375870249-29316-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +17,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Setup UAPSD peer/peer rate flags correctly.
+WMI_RC_UAPSD_FLAG is a peer rate capabilities flag
+and should not be set as a peer flag.
+Found during code review, doesn't fix a known
+issues.
 
-> Setup UAPSD peer/peer rate flags correctly.
-> WMI_RC_UAPSD_FLAG is a peer rate capabilities flag
-> and should not be set as a peer flag.
->
-> BTW this don't fix any known bug yet, just found during UAPSD check.
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-OK. If a bug has been during a code review and doesn't fix a known
-issue, please mention that in the commit log as well.
-
-I added this also to the wiki.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index cf2ba4d..505be82 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -973,7 +973,7 @@ static void ath10k_peer_assoc_h_qos_ap(struct ath10k *ar,
+ 			   sta->uapsd_queues, sta->max_sp);
+ 
+ 		arg->peer_flags |= WMI_PEER_APSD;
+-		arg->peer_flags |= WMI_RC_UAPSD_FLAG;
++		arg->peer_rate_caps |= WMI_RC_UAPSD_FLAG;
+ 
+ 		if (sta->uapsd_queues & IEEE80211_WMM_IE_STA_QOSINFO_AC_VO)
+ 			uapsd |= WMI_AP_PS_UAPSD_AC3_DELIVERY_EN |
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
