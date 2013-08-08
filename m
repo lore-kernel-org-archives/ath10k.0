@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7LH5-0001eF-W1
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:08:49 +0000
+ id 1V7LH8-0001eF-OL
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:08:52 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC 1/3] ath10k: add support for firmware newer than 636
-Date: Thu, 8 Aug 2013 10:08:16 +0200
-Message-ID: <1375949298-7159-2-git-send-email-michal.kazior@tieto.com>
+Subject: [RFC 3/3] ath10k: add support for HTT 3.0
+Date: Thu, 8 Aug 2013 10:08:18 +0200
+Message-ID: <1375949298-7159-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,107 +25,232 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The mgmt_rx event structure has been expanded.
-Since the structure header is expanded the payload
-(i.e. mgmt frame) is shifted by a few bytes. This
-needs to be taken into account in order to support
-both old and new firmware.
+New firmware comes with new HTT protocol version.
+In 3.0 the separate mgmt tx command has been
+removed. All traffic is to be pushed through data
+tx (tx_frm) command with a twist - FW seems to not
+be able (yet?) to access tx fragment table so for
+manamgement frames frame pointer is passed
+directly.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   29 +++++++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/wmi.h |   16 +++++++++++++---
- 2 files changed, 34 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.c    |   16 +++----
+ drivers/net/wireless/ath/ath10k/htt.h    |    6 +--
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   70 ++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/hw.h     |    3 ++
+ drivers/net/wireless/ath/ath10k/mac.c    |   11 ++++-
+ 5 files changed, 69 insertions(+), 37 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 55f90c7..fc33713 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -315,7 +315,9 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 39342c5..44facc1 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -104,21 +104,15 @@ err_htc_attach:
  
- static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ static int ath10k_htt_verify_version(struct ath10k_htt *htt)
  {
--	struct wmi_mgmt_rx_event *event = (struct wmi_mgmt_rx_event *)skb->data;
-+	struct wmi_mgmt_rx_event_abi1 *ev_abi1;
-+	struct wmi_mgmt_rx_event_abi2 *ev_abi2;
-+	struct wmi_mgmt_rx_hdr_abi1 *ev_hdr;
- 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
- 	struct ieee80211_hdr *hdr;
- 	u32 rx_status;
-@@ -325,13 +327,24 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	u32 rate;
- 	u32 buf_len;
- 	u16 fc;
-+	int pull_len;
+-	ath10k_dbg(ATH10K_DBG_HTT,
+-		   "htt target version %d.%d; host version %d.%d\n",
+-		    htt->target_version_major,
+-		    htt->target_version_minor,
+-		    HTT_CURRENT_VERSION_MAJOR,
+-		    HTT_CURRENT_VERSION_MINOR);
+-
+-	if (htt->target_version_major != HTT_CURRENT_VERSION_MAJOR) {
++	ath10k_dbg(ATH10K_DBG_HTT, "htt target version %d.%d\n",
++		   htt->target_version_major, htt->target_version_minor);
 +
-+	if (ar->fw_version_build > 636) {
-+		ev_abi2 = (struct wmi_mgmt_rx_event_abi2 *)skb->data;
-+		ev_hdr = &ev_abi2->hdr.abi1;
-+		pull_len = sizeof(*ev_abi2);
-+	} else {
-+		ev_abi1 = (struct wmi_mgmt_rx_event_abi1 *)skb->data;
-+		ev_hdr = &ev_abi1->hdr;
-+		pull_len = sizeof(*ev_abi1);
++	if (htt->target_version_major != 2 &&
++	    htt->target_version_major != 3) {
+ 		ath10k_err("htt major versions are incompatible!\n");
+ 		return -ENOTSUPP;
+ 	}
+ 
+-	if (htt->target_version_minor != HTT_CURRENT_VERSION_MINOR)
+-		ath10k_warn("htt minor version differ but still compatible\n");
+-
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index de45d02..2488623 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -23,9 +23,6 @@
+ #include "htc.h"
+ #include "rx_desc.h"
+ 
+-#define HTT_CURRENT_VERSION_MAJOR	2
+-#define HTT_CURRENT_VERSION_MINOR	1
+-
+ enum htt_dbg_stats_type {
+ 	HTT_DBG_STATS_WAL_PDEV_TXRX = 1 << 0,
+ 	HTT_DBG_STATS_RX_REORDER    = 1 << 1,
+@@ -45,6 +42,9 @@ enum htt_h2t_msg_type { /* host-to-target */
+ 	HTT_H2T_MSG_TYPE_SYNC               = 4,
+ 	HTT_H2T_MSG_TYPE_AGGR_CFG           = 5,
+ 	HTT_H2T_MSG_TYPE_FRAG_DESC_BANK_CFG = 6,
++
++	/* This command is used for sending management frames in HTT < 3.0.
++	 * HTT >= 3.0 uses TX_FRM for everything. */
+ 	HTT_H2T_MSG_TYPE_MGMT_TX            = 7,
+ 
+ 	HTT_H2T_NUM_MSGS /* keep this last */
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 656c254..dce128a 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -401,10 +401,15 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 		goto err;
+ 	}
+ 
+-	txfrag = dev_alloc_skb(frag_len);
+-	if (!txfrag) {
+-		res = -ENOMEM;
+-		goto err;
++	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
++	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
++	 * fragment list host driver specifies directly frame pointer. */
++	if (!(htt->target_version_major >= 3 && ieee80211_is_mgmt(hdr->frame_control))) {
++		txfrag = dev_alloc_skb(frag_len);
++		if (!txfrag) {
++			res = -ENOMEM;
++			goto err;
++		}
+ 	}
+ 
+ 	if (!IS_ALIGNED((unsigned long)txdesc->data, 4)) {
+@@ -427,23 +432,30 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	if (res)
+ 		goto err;
+ 
+-	/* tx fragment list must be terminated with zero-entry */
+-	skb_put(txfrag, frag_len);
+-	tx_frags = (struct htt_data_tx_desc_frag *)txfrag->data;
+-	tx_frags[0].paddr = __cpu_to_le32(ATH10K_SKB_CB(msdu)->paddr);
+-	tx_frags[0].len   = __cpu_to_le32(msdu->len);
+-	tx_frags[1].paddr = __cpu_to_le32(0);
+-	tx_frags[1].len   = __cpu_to_le32(0);
+-
+-	res = ath10k_skb_map(dev, txfrag);
+-	if (res)
+-		goto err;
++	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
++	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
++	 * fragment list host driver specifies directly frame pointer. */
++	if (!(htt->target_version_major >= 3 && ieee80211_is_mgmt(hdr->frame_control))) {
++		/* tx fragment list must be terminated with zero-entry */
++		skb_put(txfrag, frag_len);
++		tx_frags = (struct htt_data_tx_desc_frag *)txfrag->data;
++		tx_frags[0].paddr = __cpu_to_le32(ATH10K_SKB_CB(msdu)->paddr);
++		tx_frags[0].len   = __cpu_to_le32(msdu->len);
++		tx_frags[1].paddr = __cpu_to_le32(0);
++		tx_frags[1].len   = __cpu_to_le32(0);
++
++		res = ath10k_skb_map(dev, txfrag);
++		if (res)
++			goto err;
++
++		ath10k_dbg(ATH10K_DBG_HTT, "txfrag 0x%llx\n",
++			   (unsigned long long) ATH10K_SKB_CB(txfrag)->paddr);
++		ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "txfrag: ",
++				txfrag->data, frag_len);
 +	}
  
--	channel   = __le32_to_cpu(event->hdr.channel);
--	buf_len   = __le32_to_cpu(event->hdr.buf_len);
--	rx_status = __le32_to_cpu(event->hdr.status);
--	snr       = __le32_to_cpu(event->hdr.snr);
--	phy_mode  = __le32_to_cpu(event->hdr.phy_mode);
--	rate	  = __le32_to_cpu(event->hdr.rate);
-+	channel   = __le32_to_cpu(ev_hdr->channel);
-+	buf_len   = __le32_to_cpu(ev_hdr->buf_len);
-+	rx_status = __le32_to_cpu(ev_hdr->status);
-+	snr       = __le32_to_cpu(ev_hdr->snr);
-+	phy_mode  = __le32_to_cpu(ev_hdr->phy_mode);
-+	rate	  = __le32_to_cpu(ev_hdr->rate);
+-	ath10k_dbg(ATH10K_DBG_HTT, "txfrag 0x%llx msdu 0x%llx\n",
+-		   (unsigned long long) ATH10K_SKB_CB(txfrag)->paddr,
++	ath10k_dbg(ATH10K_DBG_HTT, "msdu 0x%llx\n",
+ 		   (unsigned long long) ATH10K_SKB_CB(msdu)->paddr);
+-	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "txfrag: ",
+-			txfrag->data, frag_len);
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "msdu: ",
+ 			msdu->data, msdu->len);
  
- 	memset(status, 0, sizeof(*status));
- 
-@@ -358,7 +371,7 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
- 	status->rate_idx = get_rate_idx(rate, status->band);
- 
--	skb_pull(skb, sizeof(event->hdr));
-+	skb_pull(skb, pull_len);
- 
- 	hdr = (struct ieee80211_hdr *)skb->data;
- 	fc = le16_to_cpu(hdr->frame_control);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 2c5a4f8..0dd0e10 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1268,7 +1268,7 @@ struct wmi_scan_event {
-  * good idea to pass all the fields in the RX status
-  * descriptor up to the host.
-  */
--struct wmi_mgmt_rx_hdr {
-+struct wmi_mgmt_rx_hdr_abi1 {
- 	__le32 channel;
- 	__le32 snr;
- 	__le32 rate;
-@@ -1277,8 +1277,18 @@ struct wmi_mgmt_rx_hdr {
- 	__le32 status; /* %WMI_RX_STATUS_ */
- } __packed;
- 
--struct wmi_mgmt_rx_event {
--	struct wmi_mgmt_rx_hdr hdr;
-+struct wmi_mgmt_rx_hdr_abi2 {
-+	struct wmi_mgmt_rx_hdr_abi1 abi1;
-+	__le32 rssi_ctl[4];
-+} __packed;
+@@ -459,8 +471,16 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	if (!ieee80211_has_protected(hdr->frame_control))
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
+ 	flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
+-	flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
+-		     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
 +
-+struct wmi_mgmt_rx_event_abi1 {
-+	struct wmi_mgmt_rx_hdr_abi1 hdr;
-+	u8 buf[0];
-+} __packed;
-+
-+struct wmi_mgmt_rx_event_abi2 {
-+	struct wmi_mgmt_rx_hdr_abi2 hdr;
- 	u8 buf[0];
- } __packed;
++	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
++	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
++	 * fragment list host driver specifies directly frame pointer. */
++	if (htt->target_version_major >= 3 && ieee80211_is_mgmt(hdr->frame_control))
++		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
++			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
++	else
++		flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
++			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
  
+ 	flags1  = 0;
+ 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
+@@ -468,7 +488,13 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
+ 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
+ 
+-	frags_paddr = ATH10K_SKB_CB(txfrag)->paddr;
++	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
++	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
++	 * fragment list host driver specifies directly frame pointer. */
++	if (htt->target_version_major >= 3 && ieee80211_is_mgmt(hdr->frame_control))
++		frags_paddr = ATH10K_SKB_CB(msdu)->paddr;
++	else
++		frags_paddr = ATH10K_SKB_CB(txfrag)->paddr;
+ 
+ 	cmd->hdr.msg_type        = HTT_H2T_MSG_TYPE_TX_FRM;
+ 	cmd->data_tx.flags0      = flags0;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 44ed5af..9c5d6fc 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -53,6 +53,9 @@ enum ath10k_hw_txrx_mode {
+ 	ATH10K_HW_TXRX_RAW = 0,
+ 	ATH10K_HW_TXRX_NATIVE_WIFI = 1,
+ 	ATH10K_HW_TXRX_ETHERNET = 2,
++
++	/* Valid for HTT >= 3.0. Used for management frames in TX_FRM. */
++	ATH10K_HW_TXRX_MGMT = 3,
+ };
+ 
+ enum ath10k_mcast2ucast_mode {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index fb1f24f..aca423c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1480,6 +1480,12 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+ 	int ret;
+ 
++	if (ar->htt.target_version_major >= 3) {
++		/* Since HTT 3.0 there is no separate mgmt tx command */
++		ret = ath10k_htt_tx(&ar->htt, skb);
++		goto exit;
++	}
++
+ 	if (ieee80211_is_mgmt(hdr->frame_control))
+ 		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
+ 	else if (ieee80211_is_nullfunc(hdr->frame_control))
+@@ -1491,6 +1497,7 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ 	else
+ 		ret = ath10k_htt_tx(&ar->htt, skb);
+ 
++exit:
+ 	if (ret) {
+ 		ath10k_warn("tx failed (%d). dropping packet.\n", ret);
+ 		ieee80211_free_txskb(ar->hw, skb);
+@@ -1726,7 +1733,9 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 
+ 	/* we must calculate tid before we apply qos workaround
+ 	 * as we'd lose the qos control field */
+-	if (ieee80211_is_data_qos(hdr->frame_control) &&
++	if (ieee80211_is_mgmt(hdr->frame_control))
++		tid = HTT_DATA_TX_EXT_TID_MGMT;
++	else if (ieee80211_is_data_qos(hdr->frame_control) &&
+ 	    is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
+ 		u8 *qc = ieee80211_get_qos_ctl(hdr);
+ 		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
 -- 
 1.7.9.5
 
