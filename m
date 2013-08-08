@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7LPN-0001tW-2k
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:17:21 +0000
+ id 1V7LPL-0001tW-L7
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:17:20 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/4] ath10k: implement 802.3 SNAP rx decap type A-MSDU handling
-Date: Thu, 8 Aug 2013 10:16:52 +0200
-Message-ID: <1375949813-10969-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/4] ath10k: fix HTT service setup
+Date: Thu, 8 Aug 2013 10:16:50 +0200
+Message-ID: <1375949813-10969-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,48 +25,44 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This enables driver to rx another decapped a-msdu
-frames. It should possibly help with throughputs
-in some cases and reduce (or eliminate) number of
-messages like this:
+The "disable credit flow" flag was set too late
+and it never was in the HTC service request
+message.
 
-  ath10k: error processing msdus -524
+This patch prevents firmware from reporting
+(useless) HTC credits for HTT service. HTT service
+doesn't use nor need credits.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e784c40..9b93aed 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -610,8 +610,7 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 			RX_MPDU_START_INFO0_ENCRYPT_TYPE);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index ef3329e..7d445d3 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -772,16 +772,16 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
  
- 	/* FIXME: No idea what assumptions are safe here. Need logs */
--	if ((fmt == RX_MSDU_DECAP_RAW && skb->next) ||
--	    (fmt == RX_MSDU_DECAP_8023_SNAP_LLC)) {
-+	if ((fmt == RX_MSDU_DECAP_RAW && skb->next)) {
- 		ath10k_htt_rx_free_msdu_chain(skb->next);
- 		skb->next = NULL;
- 		return -ENOTSUPP;
-@@ -659,6 +658,15 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 			decap_hdr += roundup(crypto_len, 4);
- 		}
+ 	flags |= SM(tx_alloc, ATH10K_HTC_CONN_FLAGS_RECV_ALLOC);
  
-+		if (fmt == RX_MSDU_DECAP_8023_SNAP_LLC) {
-+			/* SNAP 802.3 consists of:
-+			 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
-+			 * [data][fcs:4].
-+			 *
-+			 * Since this overlaps with A-MSDU header (da, sa, len)
-+			 * there's nothing extra to do. */
-+		}
+-	req_msg = &msg->connect_service;
+-	req_msg->flags = __cpu_to_le16(flags);
+-	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
+-
+ 	/* Only enable credit flow control for WMI ctrl service */
+ 	if (conn_req->service_id != ATH10K_HTC_SVC_ID_WMI_CONTROL) {
+ 		flags |= ATH10K_HTC_CONN_FLAGS_DISABLE_CREDIT_FLOW_CTRL;
+ 		disable_credit_flow_ctrl = true;
+ 	}
+ 
++	req_msg = &msg->connect_service;
++	req_msg->flags = __cpu_to_le16(flags);
++	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
 +
- 		if (fmt == RX_MSDU_DECAP_ETHERNET2_DIX) {
- 			/* Ethernet2 decap inserts ethernet header in place of
- 			 * A-MSDU subframe header. */
+ 	INIT_COMPLETION(htc->ctl_resp);
+ 
+ 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
 -- 
 1.7.9.5
 
