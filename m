@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7LPL-0001tW-L7
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:17:20 +0000
+ id 1V7LPO-0001tW-5O
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:17:22 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/4] ath10k: fix HTT service setup
-Date: Thu, 8 Aug 2013 10:16:50 +0200
-Message-ID: <1375949813-10969-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 4/4] ath10k: plug possible memory leak in WMI
+Date: Thu, 8 Aug 2013 10:16:53 +0200
+Message-ID: <1375949813-10969-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,44 +25,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The "disable credit flow" flag was set too late
-and it never was in the HTC service request
-message.
-
-This patch prevents firmware from reporting
-(useless) HTC credits for HTT service. HTT service
-doesn't use nor need credits.
+There was a possible memory leak when WMI command
+queue reached it's limit. Command buffers were not
+freed.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index ef3329e..7d445d3 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -772,16 +772,16 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 
- 	flags |= SM(tx_alloc, ATH10K_HTC_CONN_FLAGS_RECV_ALLOC);
- 
--	req_msg = &msg->connect_service;
--	req_msg->flags = __cpu_to_le16(flags);
--	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
--
- 	/* Only enable credit flow control for WMI ctrl service */
- 	if (conn_req->service_id != ATH10K_HTC_SVC_ID_WMI_CONTROL) {
- 		flags |= ATH10K_HTC_CONN_FLAGS_DISABLE_CREDIT_FLOW_CTRL;
- 		disable_credit_flow_ctrl = true;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 55f90c7..775fedf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -110,6 +110,7 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	if (atomic_add_return(1, &ar->wmi.pending_tx_count) >
+ 	    WMI_MAX_PENDING_TX_COUNT) {
+ 		/* avoid using up memory when FW hangs */
++		dev_kfree_skb(skb);
+ 		atomic_dec(&ar->wmi.pending_tx_count);
+ 		return -EBUSY;
  	}
- 
-+	req_msg = &msg->connect_service;
-+	req_msg->flags = __cpu_to_le16(flags);
-+	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
-+
- 	INIT_COMPLETION(htc->ctl_resp);
- 
- 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
 -- 
 1.7.9.5
 
