@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7MCd-00041x-5M
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 09:08:15 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 0/3] ath10k: firmware-related updates
-References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 8 Aug 2013 12:07:46 +0300
-In-Reply-To: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 8 Aug 2013 10:08:15 +0200")
-Message-ID: <87a9ks35zx.fsf@kamboji.qca.qualcomm.com>
+ id 1V7MHb-00047I-Q3
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2013 09:13:24 +0000
+Received: by mail-bk0-f53.google.com with SMTP id d7so899800bkh.12
+ for <ath10k@lists.infradead.org>; Thu, 08 Aug 2013 02:12:59 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87eha4363n.fsf@kamboji.qca.qualcomm.com>
+References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
+ <1375949298-7159-4-git-send-email-michal.kazior@tieto.com>
+ <87eha4363n.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 8 Aug 2013 11:12:58 +0200
+Message-ID: <CA+BoTQnoVmQcMnajTx3vsKwct5PLCNOt6w2qo17fyigm=gO5-w@mail.gmail.com>
+Subject: Re: [RFC 3/3] ath10k: add support for HTT 3.0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +22,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> This patchset contains 2 firmware-related upgrades
-> and 1 fix (that I though is a good pick to include
-> here, since it's related with HTT tx).
->
-> This keeps backward compatbility with old
-> firmware.
-
-Thanks, looks very good! I just had more or less cosmetic comments.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBBdWd1c3QgMjAxMyAxMTowNSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
+czoKPgo+PiBOZXcgZmlybXdhcmUgY29tZXMgd2l0aCBuZXcgSFRUIHByb3RvY29sIHZlcnNpb24u
+Cj4+IEluIDMuMCB0aGUgc2VwYXJhdGUgbWdtdCB0eCBjb21tYW5kIGhhcyBiZWVuCj4+IHJlbW92
+ZWQuIEFsbCB0cmFmZmljIGlzIHRvIGJlIHB1c2hlZCB0aHJvdWdoIGRhdGEKPj4gdHggKHR4X2Zy
+bSkgY29tbWFuZCB3aXRoIGEgdHdpc3QgLSBGVyBzZWVtcyB0byBub3QKPj4gYmUgYWJsZSAoeWV0
+PykgdG8gYWNjZXNzIHR4IGZyYWdtZW50IHRhYmxlIHNvIGZvcgo+PiBtYW5hbWdlbWVudCBmcmFt
+ZXMgZnJhbWUgcG9pbnRlciBpcyBwYXNzZWQKPj4gZGlyZWN0bHkuCj4+Cj4+IFNpZ25lZC1vZmYt
+Ynk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Cj4gWy4uLl0KPgo+
+PiAgc3RhdGljIGludCBhdGgxMGtfaHR0X3ZlcmlmeV92ZXJzaW9uKHN0cnVjdCBhdGgxMGtfaHR0
+ICpodHQpCj4+ICB7Cj4+IC0gICAgIGF0aDEwa19kYmcoQVRIMTBLX0RCR19IVFQsCj4+IC0gICAg
+ICAgICAgICAgICAgImh0dCB0YXJnZXQgdmVyc2lvbiAlZC4lZDsgaG9zdCB2ZXJzaW9uICVkLiVk
+XG4iLAo+PiAtICAgICAgICAgICAgICAgICBodHQtPnRhcmdldF92ZXJzaW9uX21ham9yLAo+PiAt
+ICAgICAgICAgICAgICAgICBodHQtPnRhcmdldF92ZXJzaW9uX21pbm9yLAo+PiAtICAgICAgICAg
+ICAgICAgICBIVFRfQ1VSUkVOVF9WRVJTSU9OX01BSk9SLAo+PiAtICAgICAgICAgICAgICAgICBI
+VFRfQ1VSUkVOVF9WRVJTSU9OX01JTk9SKTsKPj4gLQo+PiAtICAgICBpZiAoaHR0LT50YXJnZXRf
+dmVyc2lvbl9tYWpvciAhPSBIVFRfQ1VSUkVOVF9WRVJTSU9OX01BSk9SKSB7Cj4+ICsgICAgIGF0
+aDEwa19kYmcoQVRIMTBLX0RCR19IVFQsICJodHQgdGFyZ2V0IHZlcnNpb24gJWQuJWRcbiIsCj4+
+ICsgICAgICAgICAgICAgICAgaHR0LT50YXJnZXRfdmVyc2lvbl9tYWpvciwgaHR0LT50YXJnZXRf
+dmVyc2lvbl9taW5vcik7Cj4KPiBUaGlzIGRlYnVnIHByaW50IGlzIGdvb2QgdG8gaGF2ZSwgYnV0
+IHdpdGggdGhlIG5ldyBodHQgdmVyc2lvbiBpdCB3b3VsZAo+IGJlIGdvb2QgdG8gcHJpbnQgaXQg
+YWx3YXlzIHVzaW5nIHRoZSBpbmZvIGxldmVsLiBGb3IgZXhhbXBsZSwgY2FuIHdlIGFkZAo+IGl0
+IHRvIHRoZSBzYW1lIGxpbmUgd2l0aCAiZmlybXdhcmUgJXMgYm9vdGVkIiBzdHJpbmc/CgpIVFQg
+dGFyZ2V0IHZlcnNpb24gaXMgbm90IGtub3duIHdoZW4gZmlybXdhcmUgYm9vdHMgdXAuIEl0J3Mg
+bm90IGtub3duCnVudGlsIGV2ZXJ5dGhpbmcgb3RoZXIgKEhUQywgV01JKSBpcyBzZXQgdXAuIFdl
+IHRoZW4gc2VuZCBhIHZlcnNpb24KcmVxdWVzdCBjb21tYW5kIGFuZCB3ZSBnZXQgYSByZXNwb25z
+ZS4KCldlIG5lZWQgdG8gcHJpbnQgaXQgaW4gYSBzZXBhcmF0ZSBsaW5lLgoKCj4gKFBsZWFzZSB0
+YWtlIGludG8gYWNjb3VudCB0aGF0IHRoZSBpbmZvIG1lc3NhZ2VzIHN0aWxsIG5lZWQgdG8gYmUK
+PiBjb21wYWN0LCBieSBkZWZhdWx0IHRoZXkgc2hvdWxkIG5vdCBiZSBsb25nZXIgdGhhbiBmaXZl
+IGxpbmVzIG9yIHNvLikKPgo+PiArICAgICBpZiAoaHR0LT50YXJnZXRfdmVyc2lvbl9tYWpvciAh
+PSAyICYmCj4+ICsgICAgICAgICBodHQtPnRhcmdldF92ZXJzaW9uX21ham9yICE9IDMpIHsKPj4g
+ICAgICAgICAgICAgICBhdGgxMGtfZXJyKCJodHQgbWFqb3IgdmVyc2lvbnMgYXJlIGluY29tcGF0
+aWJsZSFcbiIpOwo+PiAgICAgICAgICAgICAgIHJldHVybiAtRU5PVFNVUFA7Cj4+ICAgICAgIH0K
+Pgo+IFByaW50IHRoZSBodHQgdmVyc2lvbiBpbiB0aGUgZXJyb3IgbWVzc2FnZSBhcyB3ZWxsPwoK
+VGFyZ2V0IHZlcnNpb24gaXMgcHJpbnRlZCBpbiBhdGgxMGtfZGJnKCkgbm93LiBJZiB3ZSBjaGFu
+Z2UgdGhhdCB0bwphdGgxMGtfaW5mbygpIEkgZG9uJ3Qgc2VlIGFueSByZWFzb24gdG8gcHJpbnQg
+dGhlIHZlcnNpb24gYWdhaW4gb24KZXJyb3IuIFdlIG1heSB3YW50IHRvIHByaW50IHRoZSBsaXN0
+IG9mIHN1cHBvcnRlZCBIVFQgbWFqb3IgdmVyc2lvbgpudW1iZXJzIHRob3VnaD8KCgo+PiBAQCAt
+NDAxLDEwICs0MDEsMTUgQEAgaW50IGF0aDEwa19odHRfdHgoc3RydWN0IGF0aDEwa19odHQgKmh0
+dCwgc3RydWN0IHNrX2J1ZmYgKm1zZHUpCj4+ICAgICAgICAgICAgICAgZ290byBlcnI7Cj4+ICAg
+ICAgIH0KPj4KPj4gLSAgICAgdHhmcmFnID0gZGV2X2FsbG9jX3NrYihmcmFnX2xlbik7Cj4+IC0g
+ICAgIGlmICghdHhmcmFnKSB7Cj4+IC0gICAgICAgICAgICAgcmVzID0gLUVOT01FTTsKPj4gLSAg
+ICAgICAgICAgICBnb3RvIGVycjsKPj4gKyAgICAgLyogU2luY2UgSFRUIDMuMCB0aGVyZSBpcyBu
+byBzZXBhcmF0ZSBtZ210IHR4IGNvbW1hbmQuIEhvd2V2ZXIgaW4gY2FzZQo+PiArICAgICAgKiBv
+ZiBtZ210IHR4IHVzaW5nIFRYX0ZSTSB0aGVyZSBpcyBub3QgdHggZnJhZ21lbnQgbGlzdC4gSW5z
+dGVhZCBvZiB0eAo+PiArICAgICAgKiBmcmFnbWVudCBsaXN0IGhvc3QgZHJpdmVyIHNwZWNpZmll
+cyBkaXJlY3RseSBmcmFtZSBwb2ludGVyLiAqLwo+PiArICAgICBpZiAoIShodHQtPnRhcmdldF92
+ZXJzaW9uX21ham9yID49IDMgJiYgaWVlZTgwMjExX2lzX21nbXQoaGRyLT5mcmFtZV9jb250cm9s
+KSkpIHsKPgo+IEkgdGhpbmsgdXNpbmcgIjwgMyIgaXMgbW9yZSByZWFkYWJsZToKPgo+IGlmICho
+dHQtPnRhcmdldF92ZXJzaW9uX21ham9yIDwgMyAmJgo+ICAgICFpZWVlODAyMTFfaXNfbWdtdCho
+ZHItPmZyYW1lX2NvbnRyb2wpKSB7Cj4gICAgICAgICAuLi4KPiB9CgpJIGRvbid0IGhhdmUgYSBw
+cm9ibGVtIHdpdGggY2hhbmdpbmcgdGhhdC4KCgo+IEFuZCBpcyB0aGUgc2luZ2xlIGxpbmUgdG9v
+IGxvbmc/IERpZG4ndCBjb3VudCBpdCwgdGhvdWdoLgoKQWgsIEkgZGlkbid0IGNoZWNrIHRoYXQu
+IFNvcnJ5LiBHb29kIGNhdGNoLgoKCgpQb3pkcmF3aWFtIC8gQmVzdCByZWdhcmRzLApNaWNoYcWC
+IEthemlvci4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
