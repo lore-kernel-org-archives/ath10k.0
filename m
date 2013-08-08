@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7KJu-0008RK-JL
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 07:07:39 +0000
-Received: by mail-la0-f42.google.com with SMTP id mf11so1877000lab.15
- for <ath10k@lists.infradead.org>; Thu, 08 Aug 2013 00:07:12 -0700 (PDT)
+ id 1V7LH5-0001eH-W1
+ for ath10k@lists.infradead.org; Thu, 08 Aug 2013 08:08:49 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC 0/3] ath10k: firmware-related updates
+Date: Thu, 8 Aug 2013 10:08:15 +0200
+Message-ID: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFr7H3WU3djGrj_bGZBWnbA23=CapO85zRgAJH_QUEX+nWHjXA@mail.gmail.com>
-References: <1375881466-30090-1-git-send-email-bartosz.markowski@tieto.com>
- <CAFr7H3WU3djGrj_bGZBWnbA23=CapO85zRgAJH_QUEX+nWHjXA@mail.gmail.com>
-Date: Thu, 8 Aug 2013 09:07:12 +0200
-Message-ID: <CACKGw+E=v=JGD5Swakq0rrSiqN73NZPKh5ccUSPC1VDvcd6b0A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ath10k: Remove qca98xx hw1.0 support
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +16,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?5p2o5p6t?= <m3yangxiao@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gNyBBdWd1c3QgMjAxMyAxNTozNCwg5p2o5p6tIDxtM3lhbmd4aWFvQGdtYWlsLmNvbT4gd3Jv
-dGU6Cj4gSGksSSB3YW50IHRvIGtub3cgd2hpY2gga2VybmVsIGRvZXMgdGhlIGF0aDEwayBzdXBw
-b3J0PwpJdCBoYXMgYmVlbiBwdWxsIHRvIDMuMTEtcmMgdHJhY2suCgo+IENhbiBJIGluc3RhbGwg
-aXQgb24gdGhlIGtlcm5lbC0yLjY/Cj4gSWYgbm90LHdoYXQncyB0aGUgb2xkZXN0IGtlcm5lbCBj
-YW4gdGhlIGF0aDEwayBzdXBwb3J0PwpZb3UgbWF5IHVzZSBhIGNvbXBhdC1kcml2ZXJzIGJhY2tw
-b3J0IHRvIGNvbXBpbGUgaXQuCi0tCkJhcnRvc3oKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+Hi,
+
+This patchset contains 2 firmware-related upgrades
+and 1 fix (that I though is a good pick to include
+here, since it's related with HTT tx).
+
+This keeps backward compatbility with old
+firmware.
+
+
+Pozdrawiam / Best regards,
+Michal Kazior.
+
+
+Michal Kazior (3):
+  ath10k: add support for firmware newer than 636
+  ath10k: clean up HTT tx tid handling
+  ath10k: add support for HTT 3.0
+
+ drivers/net/wireless/ath/ath10k/htt.c    |   16 +++----
+ drivers/net/wireless/ath/ath10k/htt.h    |   12 ++---
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   70 ++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/hw.h     |    3 ++
+ drivers/net/wireless/ath/ath10k/mac.c    |   17 ++++++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |   29 +++++++++----
+ drivers/net/wireless/ath/ath10k/wmi.h    |   16 +++++--
+ 7 files changed, 111 insertions(+), 52 deletions(-)
+
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
