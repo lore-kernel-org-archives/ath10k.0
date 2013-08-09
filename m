@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7hpm-0005e2-TW
- for ath10k@lists.infradead.org; Fri, 09 Aug 2013 08:14:07 +0000
+ id 1V7hpl-0005e1-DG
+ for ath10k@lists.infradead.org; Fri, 09 Aug 2013 08:14:06 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: clean up HTT tx tid handling
-Date: Fri, 9 Aug 2013 10:13:32 +0200
-Message-ID: <1376036014-29707-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/3] ath10k: firmware-related updates
+Date: Fri, 9 Aug 2013 10:13:31 +0200
+Message-ID: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
- <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,56 +25,38 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The tids weren't mapped really properly. This
-doesn't fix any known bug but seems the right
-thing to do.
+Hi,
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-patch:
- * use brackets {}
+This patchset contains 2 firmware-related upgrades
+and 1 fix (that I though is a good pick to include
+here, since it's related with HTT tx).
 
- drivers/net/wireless/ath/ath10k/htt.h |    6 ++++--
- drivers/net/wireless/ath/ath10k/mac.c |    5 ++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
+This keeps backward compatbility with old
+firmware.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 318be46..de45d02 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -106,8 +106,10 @@ enum htt_data_tx_desc_flags1 {
- };
- 
- enum htt_data_tx_ext_tid {
--	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 16,
--	HTT_DATA_TX_EXT_TID_MGMT                = 17,
-+	HTT_DATA_TX_EXT_TID_NON_QOS_UNICAST     = 16,
-+	HTT_DATA_TX_EXT_TID_UNUSED              = 17,
-+	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 18,
-+	HTT_DATA_TX_EXT_TID_MGMT                = 19,
- 	HTT_DATA_TX_EXT_TID_INVALID             = 31
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index cf2ba4d..cc6ad7a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1726,11 +1726,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 
- 	/* we must calculate tid before we apply qos workaround
- 	 * as we'd lose the qos control field */
--	tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
- 	if (ieee80211_is_data_qos(hdr->frame_control) &&
- 	    is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
- 		u8 *qc = ieee80211_get_qos_ctl(hdr);
- 		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
-+	} else if (is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
-+		tid = HTT_DATA_TX_EXT_TID_NON_QOS_UNICAST;
-+	} else {
-+		tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
- 	}
- 
- 	/* it makes no sense to process injected frames like that */
+This includes fixes for issues pointed out during
+RFC review.
+
+
+Pozdrawiam / Best regards,
+Michal Kazior.
+
+
+Michal Kazior (3):
+  ath10k: clean up HTT tx tid handling
+  ath10k: add support for firmware newer than 636
+  ath10k: add support for HTT 3.0
+
+ drivers/net/wireless/ath/ath10k/core.h   |   10 ++++
+ drivers/net/wireless/ath/ath10k/htt.c    |   19 +++-----
+ drivers/net/wireless/ath/ath10k/htt.h    |   12 +++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   74 +++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/hw.h     |    3 ++
+ drivers/net/wireless/ath/ath10k/mac.c    |   18 ++++++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |   32 +++++++++----
+ drivers/net/wireless/ath/ath10k/wmi.h    |   16 +++++--
+ 8 files changed, 131 insertions(+), 53 deletions(-)
+
 -- 
 1.7.9.5
 
