@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-f178.google.com ([209.85.215.178])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7gNn-0003pN-7V
- for ath10k@lists.infradead.org; Fri, 09 Aug 2013 06:41:09 +0000
-Received: by mail-ea0-f178.google.com with SMTP id a15so1825215eae.37
- for <ath10k@lists.infradead.org>; Thu, 08 Aug 2013 23:40:38 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: check allocation errors in CE
-Date: Fri,  9 Aug 2013 08:39:13 +0200
-Message-Id: <1376030353-32421-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1V7hpm-0005e1-TI
+ for ath10k@lists.infradead.org; Fri, 09 Aug 2013 08:14:07 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/3] ath10k: add support for firmware newer than 636
+Date: Fri, 9 Aug 2013 10:13:33 +0200
+Message-ID: <1376036014-29707-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
+ <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,70 +19,161 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Handle pci_alloc_consistent(), kmalloc()
-errors in copy engine module.
-Found during code review.
+The mgmt_rx event structure has been expanded.
+Since the structure header is expanded the payload
+(i.e. mgmt frame) is shifted by a few bytes. This
+needs to be taken into account in order to support
+both old and new firmware.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+This introduces a fw_features to keep track of any
+FW-related ABI/behaviour changes.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c |   22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+patch:
+ * add/use fw_features instead of direct build
+   version probing (Kalle)
+ * use _v1/_v2 instead of _abi1/_abi2 (Kalle)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index f8b969f..4e266bf 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -970,6 +970,12 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 				     (nentries * sizeof(struct ce_desc) +
- 				      CE_DESC_RING_ALIGN),
- 				     &base_addr);
-+	if (!src_ring->base_addr_owner_space_unaligned) {
-+		kfree(ce_state->src_ring);
-+		ce_state->src_ring = NULL;
-+		return -ENOMEM;
-+	}
+ drivers/net/wireless/ath/ath10k/core.h |   10 ++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |   32 ++++++++++++++++++++++++--------
+ drivers/net/wireless/ath/ath10k/wmi.h  |   16 +++++++++++++---
+ 3 files changed, 47 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index e4bba56..ab05c4c 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -270,6 +270,14 @@ enum ath10k_state {
+ 	ATH10K_STATE_WEDGED,
+ };
+ 
++enum ath10k_fw_features {
++	/* wmi_mgmt_rx_hdr contains extra RSSI information */
++	ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX = 0,
 +
- 	src_ring->base_addr_ce_space_unaligned = base_addr;
- 
- 	src_ring->base_addr_owner_space = PTR_ALIGN(
-@@ -986,6 +992,16 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 	src_ring->shadow_base_unaligned =
- 		kmalloc((nentries * sizeof(struct ce_desc) +
- 			 CE_DESC_RING_ALIGN), GFP_KERNEL);
-+	if (!src_ring->shadow_base_unaligned) {
-+		pci_free_consistent(ar_pci->pdev,
-+				    (nentries * sizeof(struct ce_desc) +
-+				     CE_DESC_RING_ALIGN),
-+				    src_ring->base_addr_owner_space,
-+				    src_ring->base_addr_ce_space);
-+		kfree(ce_state->src_ring);
-+		ce_state->src_ring = NULL;
-+		return -ENOMEM;
-+	}
- 
- 	src_ring->shadow_base = PTR_ALIGN(
- 			src_ring->shadow_base_unaligned,
-@@ -1055,6 +1071,12 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 				     (nentries * sizeof(struct ce_desc) +
- 				      CE_DESC_RING_ALIGN),
- 				     &base_addr);
-+	if (!dest_ring->base_addr_owner_space_unaligned) {
-+		kfree(ce_state->dest_ring);
-+		ce_state->dest_ring = NULL;
-+		return -ENOMEM;
-+	}
++	/* keep last */
++	ATH10K_FW_FEATURE_COUNT,
++};
 +
- 	dest_ring->base_addr_ce_space_unaligned = base_addr;
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -288,6 +296,8 @@ struct ath10k {
+ 	u32 vht_cap_info;
+ 	u32 num_rf_chains;
  
- 	/*
++	DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
++
+ 	struct targetdef *targetdef;
+ 	struct hostdef *hostdef;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 55f90c7..d606fef 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -315,7 +315,9 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
+ 
+ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	struct wmi_mgmt_rx_event *event = (struct wmi_mgmt_rx_event *)skb->data;
++	struct wmi_mgmt_rx_event_v1 *ev_v1;
++	struct wmi_mgmt_rx_event_v2 *ev_v2;
++	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
+ 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
+ 	struct ieee80211_hdr *hdr;
+ 	u32 rx_status;
+@@ -325,13 +327,24 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	u32 rate;
+ 	u32 buf_len;
+ 	u16 fc;
++	int pull_len;
++
++	if (test_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features)) {
++		ev_v2 = (struct wmi_mgmt_rx_event_v2 *)skb->data;
++		ev_hdr = &ev_v2->hdr.v1;
++		pull_len = sizeof(*ev_v2);
++	} else {
++		ev_v1 = (struct wmi_mgmt_rx_event_v1 *)skb->data;
++		ev_hdr = &ev_v1->hdr;
++		pull_len = sizeof(*ev_v1);
++	}
+ 
+-	channel   = __le32_to_cpu(event->hdr.channel);
+-	buf_len   = __le32_to_cpu(event->hdr.buf_len);
+-	rx_status = __le32_to_cpu(event->hdr.status);
+-	snr       = __le32_to_cpu(event->hdr.snr);
+-	phy_mode  = __le32_to_cpu(event->hdr.phy_mode);
+-	rate	  = __le32_to_cpu(event->hdr.rate);
++	channel   = __le32_to_cpu(ev_hdr->channel);
++	buf_len   = __le32_to_cpu(ev_hdr->buf_len);
++	rx_status = __le32_to_cpu(ev_hdr->status);
++	snr       = __le32_to_cpu(ev_hdr->snr);
++	phy_mode  = __le32_to_cpu(ev_hdr->phy_mode);
++	rate	  = __le32_to_cpu(ev_hdr->rate);
+ 
+ 	memset(status, 0, sizeof(*status));
+ 
+@@ -358,7 +371,7 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
+ 	status->rate_idx = get_rate_idx(rate, status->band);
+ 
+-	skb_pull(skb, sizeof(event->hdr));
++	skb_pull(skb, pull_len);
+ 
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	fc = le16_to_cpu(hdr->frame_control);
+@@ -943,6 +956,9 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
+ 	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
+ 
++	if (ar->fw_version_build > 636)
++		set_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features);
++
+ 	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
+ 		ath10k_warn("hardware advertises support for more spatial streams than it should (%d > %d)\n",
+ 			    ar->num_rf_chains, WMI_MAX_SPATIAL_STREAM);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 2c5a4f8..08860c4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1268,7 +1268,7 @@ struct wmi_scan_event {
+  * good idea to pass all the fields in the RX status
+  * descriptor up to the host.
+  */
+-struct wmi_mgmt_rx_hdr {
++struct wmi_mgmt_rx_hdr_v1 {
+ 	__le32 channel;
+ 	__le32 snr;
+ 	__le32 rate;
+@@ -1277,8 +1277,18 @@ struct wmi_mgmt_rx_hdr {
+ 	__le32 status; /* %WMI_RX_STATUS_ */
+ } __packed;
+ 
+-struct wmi_mgmt_rx_event {
+-	struct wmi_mgmt_rx_hdr hdr;
++struct wmi_mgmt_rx_hdr_v2 {
++	struct wmi_mgmt_rx_hdr_v1 v1;
++	__le32 rssi_ctl[4];
++} __packed;
++
++struct wmi_mgmt_rx_event_v1 {
++	struct wmi_mgmt_rx_hdr_v1 hdr;
++	u8 buf[0];
++} __packed;
++
++struct wmi_mgmt_rx_event_v2 {
++	struct wmi_mgmt_rx_hdr_v2 hdr;
+ 	u8 buf[0];
+ } __packed;
+ 
 -- 
 1.7.9.5
 
