@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7hpm-0005e1-TI
+ id 1V7hpm-0005e2-TW
  for ath10k@lists.infradead.org; Fri, 09 Aug 2013 08:14:07 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: add support for firmware newer than 636
-Date: Fri, 9 Aug 2013 10:13:33 +0200
-Message-ID: <1376036014-29707-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/3] ath10k: clean up HTT tx tid handling
+Date: Fri, 9 Aug 2013 10:13:32 +0200
+Message-ID: <1376036014-29707-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
  <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
@@ -26,154 +26,56 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The mgmt_rx event structure has been expanded.
-Since the structure header is expanded the payload
-(i.e. mgmt frame) is shifted by a few bytes. This
-needs to be taken into account in order to support
-both old and new firmware.
-
-This introduces a fw_features to keep track of any
-FW-related ABI/behaviour changes.
+The tids weren't mapped really properly. This
+doesn't fix any known bug but seems the right
+thing to do.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 patch:
- * add/use fw_features instead of direct build
-   version probing (Kalle)
- * use _v1/_v2 instead of _abi1/_abi2 (Kalle)
+ * use brackets {}
 
- drivers/net/wireless/ath/ath10k/core.h |   10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c  |   32 ++++++++++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/wmi.h  |   16 +++++++++++++---
- 3 files changed, 47 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h |    6 ++++--
+ drivers/net/wireless/ath/ath10k/mac.c |    5 ++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index e4bba56..ab05c4c 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -270,6 +270,14 @@ enum ath10k_state {
- 	ATH10K_STATE_WEDGED,
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 318be46..de45d02 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -106,8 +106,10 @@ enum htt_data_tx_desc_flags1 {
  };
  
-+enum ath10k_fw_features {
-+	/* wmi_mgmt_rx_hdr contains extra RSSI information */
-+	ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX = 0,
-+
-+	/* keep last */
-+	ATH10K_FW_FEATURE_COUNT,
-+};
-+
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-@@ -288,6 +296,8 @@ struct ath10k {
- 	u32 vht_cap_info;
- 	u32 num_rf_chains;
+ enum htt_data_tx_ext_tid {
+-	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 16,
+-	HTT_DATA_TX_EXT_TID_MGMT                = 17,
++	HTT_DATA_TX_EXT_TID_NON_QOS_UNICAST     = 16,
++	HTT_DATA_TX_EXT_TID_UNUSED              = 17,
++	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 18,
++	HTT_DATA_TX_EXT_TID_MGMT                = 19,
+ 	HTT_DATA_TX_EXT_TID_INVALID             = 31
+ };
  
-+	DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
-+
- 	struct targetdef *targetdef;
- 	struct hostdef *hostdef;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index cf2ba4d..cc6ad7a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1726,11 +1726,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 55f90c7..d606fef 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -315,7 +315,9 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
- 
- static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_mgmt_rx_event *event = (struct wmi_mgmt_rx_event *)skb->data;
-+	struct wmi_mgmt_rx_event_v1 *ev_v1;
-+	struct wmi_mgmt_rx_event_v2 *ev_v2;
-+	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
- 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
- 	struct ieee80211_hdr *hdr;
- 	u32 rx_status;
-@@ -325,13 +327,24 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	u32 rate;
- 	u32 buf_len;
- 	u16 fc;
-+	int pull_len;
-+
-+	if (test_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features)) {
-+		ev_v2 = (struct wmi_mgmt_rx_event_v2 *)skb->data;
-+		ev_hdr = &ev_v2->hdr.v1;
-+		pull_len = sizeof(*ev_v2);
+ 	/* we must calculate tid before we apply qos workaround
+ 	 * as we'd lose the qos control field */
+-	tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+ 	if (ieee80211_is_data_qos(hdr->frame_control) &&
+ 	    is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
+ 		u8 *qc = ieee80211_get_qos_ctl(hdr);
+ 		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
++	} else if (is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
++		tid = HTT_DATA_TX_EXT_TID_NON_QOS_UNICAST;
 +	} else {
-+		ev_v1 = (struct wmi_mgmt_rx_event_v1 *)skb->data;
-+		ev_hdr = &ev_v1->hdr;
-+		pull_len = sizeof(*ev_v1);
-+	}
++		tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
+ 	}
  
--	channel   = __le32_to_cpu(event->hdr.channel);
--	buf_len   = __le32_to_cpu(event->hdr.buf_len);
--	rx_status = __le32_to_cpu(event->hdr.status);
--	snr       = __le32_to_cpu(event->hdr.snr);
--	phy_mode  = __le32_to_cpu(event->hdr.phy_mode);
--	rate	  = __le32_to_cpu(event->hdr.rate);
-+	channel   = __le32_to_cpu(ev_hdr->channel);
-+	buf_len   = __le32_to_cpu(ev_hdr->buf_len);
-+	rx_status = __le32_to_cpu(ev_hdr->status);
-+	snr       = __le32_to_cpu(ev_hdr->snr);
-+	phy_mode  = __le32_to_cpu(ev_hdr->phy_mode);
-+	rate	  = __le32_to_cpu(ev_hdr->rate);
- 
- 	memset(status, 0, sizeof(*status));
- 
-@@ -358,7 +371,7 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
- 	status->rate_idx = get_rate_idx(rate, status->band);
- 
--	skb_pull(skb, sizeof(event->hdr));
-+	skb_pull(skb, pull_len);
- 
- 	hdr = (struct ieee80211_hdr *)skb->data;
- 	fc = le16_to_cpu(hdr->frame_control);
-@@ -943,6 +956,9 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
- 	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
- 
-+	if (ar->fw_version_build > 636)
-+		set_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features);
-+
- 	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
- 		ath10k_warn("hardware advertises support for more spatial streams than it should (%d > %d)\n",
- 			    ar->num_rf_chains, WMI_MAX_SPATIAL_STREAM);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 2c5a4f8..08860c4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1268,7 +1268,7 @@ struct wmi_scan_event {
-  * good idea to pass all the fields in the RX status
-  * descriptor up to the host.
-  */
--struct wmi_mgmt_rx_hdr {
-+struct wmi_mgmt_rx_hdr_v1 {
- 	__le32 channel;
- 	__le32 snr;
- 	__le32 rate;
-@@ -1277,8 +1277,18 @@ struct wmi_mgmt_rx_hdr {
- 	__le32 status; /* %WMI_RX_STATUS_ */
- } __packed;
- 
--struct wmi_mgmt_rx_event {
--	struct wmi_mgmt_rx_hdr hdr;
-+struct wmi_mgmt_rx_hdr_v2 {
-+	struct wmi_mgmt_rx_hdr_v1 v1;
-+	__le32 rssi_ctl[4];
-+} __packed;
-+
-+struct wmi_mgmt_rx_event_v1 {
-+	struct wmi_mgmt_rx_hdr_v1 hdr;
-+	u8 buf[0];
-+} __packed;
-+
-+struct wmi_mgmt_rx_event_v2 {
-+	struct wmi_mgmt_rx_hdr_v2 hdr;
- 	u8 buf[0];
- } __packed;
- 
+ 	/* it makes no sense to process injected frames like that */
 -- 
 1.7.9.5
 
