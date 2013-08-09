@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from mail-ea0-f178.google.com ([209.85.215.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7NCj-00067J-Am
- for ath10k@lists.infradead.org; Thu, 08 Aug 2013 10:12:25 +0000
-Received: by mail-bk0-f49.google.com with SMTP id r7so922655bkg.22
- for <ath10k@lists.infradead.org>; Thu, 08 Aug 2013 03:12:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1375949813-10969-3-git-send-email-michal.kazior@tieto.com>
-References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
- <1375949813-10969-3-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 8 Aug 2013 12:12:03 +0200
-Message-ID: <CA+BoTQk4n=kiWhwvzieuvXp5Wou_QpkY=8iU474XPwG7P4KSiQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ath10k: fix HTC endpoint worker starvation
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1V7gNn-0003pN-7V
+ for ath10k@lists.infradead.org; Fri, 09 Aug 2013 06:41:09 +0000
+Received: by mail-ea0-f178.google.com with SMTP id a15so1825215eae.37
+ for <ath10k@lists.infradead.org>; Thu, 08 Aug 2013 23:40:38 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: check allocation errors in CE
+Date: Fri,  9 Aug 2013 08:39:13 +0200
+Message-Id: <1376030353-32421-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +17,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-On 8 August 2013 10:16, Michal Kazior <michal.kazior@tieto.com> wrote:
-> HTC used a worker for each endpoint. This worked
-> until a slow host machine was flooded with massive
-> number of TX requests. HTT related worker would
-> remain active while WMI worker was starved. This
-> ended up with "could not send beacon" in AP mode.
-> It was even possible to see userspace being
-> starved.
->
-> The patch switches from using workers to using
-> tasklets for processing and submitting HTC frames
-> to HIF.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->
-> (...)
->
-> @@ -602,7 +602,8 @@ static void ath10k_htc_reset_endpoint_states(struct a=
-th10k_htc *htc)
->                 skb_queue_head_init(&ep->tx_queue);
->                 ep->htc =3D htc;
->                 ep->tx_credit_flow_enabled =3D true;
-> -               INIT_WORK(&ep->send_work, ath10k_htc_send_work);
-> +               tasklet_init(&ep->send_task, ath10k_htc_send_task,
-> +                             (unsigned long)ep);
->         }
->  }
->
+Handle pci_alloc_consistent(), kmalloc()
+errors in copy engine module.
+Found during code review.
 
-Indentation is off by one here. Is it okay if I just resend this
-single patch or is it easier for applying if I resend the whole
-patchset?
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c |   22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index f8b969f..4e266bf 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -970,6 +970,12 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 				     (nentries * sizeof(struct ce_desc) +
+ 				      CE_DESC_RING_ALIGN),
+ 				     &base_addr);
++	if (!src_ring->base_addr_owner_space_unaligned) {
++		kfree(ce_state->src_ring);
++		ce_state->src_ring = NULL;
++		return -ENOMEM;
++	}
++
+ 	src_ring->base_addr_ce_space_unaligned = base_addr;
+ 
+ 	src_ring->base_addr_owner_space = PTR_ALIGN(
+@@ -986,6 +992,16 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 	src_ring->shadow_base_unaligned =
+ 		kmalloc((nentries * sizeof(struct ce_desc) +
+ 			 CE_DESC_RING_ALIGN), GFP_KERNEL);
++	if (!src_ring->shadow_base_unaligned) {
++		pci_free_consistent(ar_pci->pdev,
++				    (nentries * sizeof(struct ce_desc) +
++				     CE_DESC_RING_ALIGN),
++				    src_ring->base_addr_owner_space,
++				    src_ring->base_addr_ce_space);
++		kfree(ce_state->src_ring);
++		ce_state->src_ring = NULL;
++		return -ENOMEM;
++	}
+ 
+ 	src_ring->shadow_base = PTR_ALIGN(
+ 			src_ring->shadow_base_unaligned,
+@@ -1055,6 +1071,12 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 				     (nentries * sizeof(struct ce_desc) +
+ 				      CE_DESC_RING_ALIGN),
+ 				     &base_addr);
++	if (!dest_ring->base_addr_owner_space_unaligned) {
++		kfree(ce_state->dest_ring);
++		ce_state->dest_ring = NULL;
++		return -ENOMEM;
++	}
++
+ 	dest_ring->base_addr_ce_space_unaligned = base_addr;
+ 
+ 	/*
+-- 
+1.7.9.5
 
-Pozdrawiam / Best regards,
-Micha=B3 Kazior.
 
 _______________________________________________
 ath10k mailing list
