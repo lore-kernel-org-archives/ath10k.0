@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V7hpo-0005e1-8d
- for ath10k@lists.infradead.org; Fri, 09 Aug 2013 08:14:09 +0000
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: add support for HTT 3.0
-Date: Fri, 9 Aug 2013 10:13:34 +0200
-Message-ID: <1376036014-29707-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
-References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
- <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+ id 1V8stn-0002jX-JZ
+ for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:15:08 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Pull request: ath 20130812
+Date: Mon, 12 Aug 2013 17:14:37 +0300
+Message-ID: <871u5zuhbm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,252 +20,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-New firmware comes with new HTT protocol version.
-In 3.0 the separate mgmt tx command has been
-removed. All traffic is to be pushed through data
-tx (tx_frm) command with a twist - FW seems to not
-be able (yet?) to access tx fragment table so for
-manamgement frames frame pointer is passed
-directly.
+Hi John,
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-patch:
- * use ath10k_info for htt version prompt (Kalle)
- * more verbose error message on htt failure (Kalle)
- * conditions tweaked and broken on 80 column (Kalle)
- * use brackets {}
+here's a small pull request for ath10k and ath6kl. The changes are:
 
- drivers/net/wireless/ath/ath10k/htt.c    |   19 +++-----
- drivers/net/wireless/ath/ath10k/htt.h    |    6 +--
- drivers/net/wireless/ath/ath10k/htt_tx.c |   74 +++++++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/hw.h     |    3 ++
- drivers/net/wireless/ath/ath10k/mac.c    |   13 +++++-
- 5 files changed, 76 insertions(+), 39 deletions(-)
+New features in ath10k are rx/tx checsumming in hw and survey scan
+implemented by Michal. Also he made fixes to different areas of the
+driver, most notable being fixing the case when using two streams and
+reducing the number of interface combinations to avoid firmware crashes.
+Bartosz did a clean related to how we handle SoC power save in PCI
+layer.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 39342c5..5f7eeeb 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -104,21 +104,16 @@ err_htc_attach:
- 
- static int ath10k_htt_verify_version(struct ath10k_htt *htt)
- {
--	ath10k_dbg(ATH10K_DBG_HTT,
--		   "htt target version %d.%d; host version %d.%d\n",
--		    htt->target_version_major,
--		    htt->target_version_minor,
--		    HTT_CURRENT_VERSION_MAJOR,
--		    HTT_CURRENT_VERSION_MINOR);
--
--	if (htt->target_version_major != HTT_CURRENT_VERSION_MAJOR) {
--		ath10k_err("htt major versions are incompatible!\n");
-+	ath10k_info("htt target version %d.%d\n",
-+		    htt->target_version_major, htt->target_version_minor);
-+
-+	if (htt->target_version_major != 2 &&
-+	    htt->target_version_major != 3) {
-+		ath10k_err("unsupported htt major version %d. supported versions are 2 and 3\n",
-+			   htt->target_version_major);
- 		return -ENOTSUPP;
- 	}
- 
--	if (htt->target_version_minor != HTT_CURRENT_VERSION_MINOR)
--		ath10k_warn("htt minor version differ but still compatible\n");
--
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index de45d02..2488623 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -23,9 +23,6 @@
- #include "htc.h"
- #include "rx_desc.h"
- 
--#define HTT_CURRENT_VERSION_MAJOR	2
--#define HTT_CURRENT_VERSION_MINOR	1
--
- enum htt_dbg_stats_type {
- 	HTT_DBG_STATS_WAL_PDEV_TXRX = 1 << 0,
- 	HTT_DBG_STATS_RX_REORDER    = 1 << 1,
-@@ -45,6 +42,9 @@ enum htt_h2t_msg_type { /* host-to-target */
- 	HTT_H2T_MSG_TYPE_SYNC               = 4,
- 	HTT_H2T_MSG_TYPE_AGGR_CFG           = 5,
- 	HTT_H2T_MSG_TYPE_FRAG_DESC_BANK_CFG = 6,
-+
-+	/* This command is used for sending management frames in HTT < 3.0.
-+	 * HTT >= 3.0 uses TX_FRM for everything. */
- 	HTT_H2T_MSG_TYPE_MGMT_TX            = 7,
- 
- 	HTT_H2T_NUM_MSGS /* keep this last */
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 656c254..d4fb387 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -401,10 +401,16 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		goto err;
- 	}
- 
--	txfrag = dev_alloc_skb(frag_len);
--	if (!txfrag) {
--		res = -ENOMEM;
--		goto err;
-+	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
-+	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
-+	 * fragment list host driver specifies directly frame pointer. */
-+	if (htt->target_version_major < 3 ||
-+	    !ieee80211_is_mgmt(hdr->frame_control)) {
-+		txfrag = dev_alloc_skb(frag_len);
-+		if (!txfrag) {
-+			res = -ENOMEM;
-+			goto err;
-+		}
- 	}
- 
- 	if (!IS_ALIGNED((unsigned long)txdesc->data, 4)) {
-@@ -427,23 +433,31 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	if (res)
- 		goto err;
- 
--	/* tx fragment list must be terminated with zero-entry */
--	skb_put(txfrag, frag_len);
--	tx_frags = (struct htt_data_tx_desc_frag *)txfrag->data;
--	tx_frags[0].paddr = __cpu_to_le32(ATH10K_SKB_CB(msdu)->paddr);
--	tx_frags[0].len   = __cpu_to_le32(msdu->len);
--	tx_frags[1].paddr = __cpu_to_le32(0);
--	tx_frags[1].len   = __cpu_to_le32(0);
--
--	res = ath10k_skb_map(dev, txfrag);
--	if (res)
--		goto err;
-+	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
-+	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
-+	 * fragment list host driver specifies directly frame pointer. */
-+	if (htt->target_version_major < 3 ||
-+	    !ieee80211_is_mgmt(hdr->frame_control)) {
-+		/* tx fragment list must be terminated with zero-entry */
-+		skb_put(txfrag, frag_len);
-+		tx_frags = (struct htt_data_tx_desc_frag *)txfrag->data;
-+		tx_frags[0].paddr = __cpu_to_le32(ATH10K_SKB_CB(msdu)->paddr);
-+		tx_frags[0].len   = __cpu_to_le32(msdu->len);
-+		tx_frags[1].paddr = __cpu_to_le32(0);
-+		tx_frags[1].len   = __cpu_to_le32(0);
-+
-+		res = ath10k_skb_map(dev, txfrag);
-+		if (res)
-+			goto err;
-+
-+		ath10k_dbg(ATH10K_DBG_HTT, "txfrag 0x%llx\n",
-+			   (unsigned long long) ATH10K_SKB_CB(txfrag)->paddr);
-+		ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "txfrag: ",
-+				txfrag->data, frag_len);
-+	}
- 
--	ath10k_dbg(ATH10K_DBG_HTT, "txfrag 0x%llx msdu 0x%llx\n",
--		   (unsigned long long) ATH10K_SKB_CB(txfrag)->paddr,
-+	ath10k_dbg(ATH10K_DBG_HTT, "msdu 0x%llx\n",
- 		   (unsigned long long) ATH10K_SKB_CB(msdu)->paddr);
--	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "txfrag: ",
--			txfrag->data, frag_len);
- 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "msdu: ",
- 			msdu->data, msdu->len);
- 
-@@ -459,8 +473,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	if (!ieee80211_has_protected(hdr->frame_control))
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
- 	flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
--	flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
--		     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+
-+	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
-+	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
-+	 * fragment list host driver specifies directly frame pointer. */
-+	if (htt->target_version_major >= 3 &&
-+	    ieee80211_is_mgmt(hdr->frame_control))
-+		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
-+			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+	else
-+		flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
-+			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 
- 	flags1  = 0;
- 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
-@@ -468,7 +491,14 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
- 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
- 
--	frags_paddr = ATH10K_SKB_CB(txfrag)->paddr;
-+	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
-+	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
-+	 * fragment list host driver specifies directly frame pointer. */
-+	if (htt->target_version_major >= 3 &&
-+	    ieee80211_is_mgmt(hdr->frame_control))
-+		frags_paddr = ATH10K_SKB_CB(msdu)->paddr;
-+	else
-+		frags_paddr = ATH10K_SKB_CB(txfrag)->paddr;
- 
- 	cmd->hdr.msg_type        = HTT_H2T_MSG_TYPE_TX_FRM;
- 	cmd->data_tx.flags0      = flags0;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 44ed5af..9c5d6fc 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -53,6 +53,9 @@ enum ath10k_hw_txrx_mode {
- 	ATH10K_HW_TXRX_RAW = 0,
- 	ATH10K_HW_TXRX_NATIVE_WIFI = 1,
- 	ATH10K_HW_TXRX_ETHERNET = 2,
-+
-+	/* Valid for HTT >= 3.0. Used for management frames in TX_FRM. */
-+	ATH10K_HW_TXRX_MGMT = 3,
- };
- 
- enum ath10k_mcast2ucast_mode {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index cc6ad7a..3598b48 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1480,6 +1480,12 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
- 	int ret;
- 
-+	if (ar->htt.target_version_major >= 3) {
-+		/* Since HTT 3.0 there is no separate mgmt tx command */
-+		ret = ath10k_htt_tx(&ar->htt, skb);
-+		goto exit;
-+	}
-+
- 	if (ieee80211_is_mgmt(hdr->frame_control))
- 		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
- 	else if (ieee80211_is_nullfunc(hdr->frame_control))
-@@ -1491,6 +1497,7 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
- 	else
- 		ret = ath10k_htt_tx(&ar->htt, skb);
- 
-+exit:
- 	if (ret) {
- 		ath10k_warn("tx failed (%d). dropping packet.\n", ret);
- 		ieee80211_free_txskb(ar->hw, skb);
-@@ -1726,8 +1733,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 
- 	/* we must calculate tid before we apply qos workaround
- 	 * as we'd lose the qos control field */
--	if (ieee80211_is_data_qos(hdr->frame_control) &&
--	    is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
-+	if (ieee80211_is_mgmt(hdr->frame_control)) {
-+		tid = HTT_DATA_TX_EXT_TID_MGMT;
-+	} else if (ieee80211_is_data_qos(hdr->frame_control) &&
-+		   is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
- 		u8 *qc = ieee80211_get_qos_ctl(hdr);
- 		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
- 	} else if (is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
--- 
-1.7.9.5
+For ath6kl Mohammed and Vasanth sent each a patch to fix two infrequent
+crashes.
 
+The following changes since commit 424121c365aed6ec93bbc8b515548df79c5af61c:
+
+  ath10k: fix rts/fragmentation threshold setup (2013-07-30 18:01:21 +0300)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git for-linville
+
+for you to fetch changes up to 9d0e2f0772d394060bf3b17cd1f3a35574365103:
+
+  ath6kl: Fix invalid pointer access on fuzz testing with AP mode (2013-08-07 10:58:59 +0300)
+
+----------------------------------------------------------------
+Bartosz Markowski (1):
+      ath10k: add SoC power save option to PCI features map
+
+Michal Kazior (11):
+      ath10k: improve tx throughput on slow machines
+      ath10k: detect the number of spatial streams supported by hw
+      ath10k: implement rx checksum offloading
+      ath10k: implement tx checksum offloading
+      ath10k: implement get_survey()
+      ath10k: prevent using invalid ringbuffer indexes
+      ath10k: make sure to use passive scan when n_ssids is 0
+      ath10k: advertise more conservative intf combinations
+      ath10k: zero arvif memory on add_interface()
+      ath10k: fix failpath in MSI-X setup
+      ath10k: fix device teardown
+
+Mohammed Shafi Shajakhan (1):
+      ath6kl: Fix invalid pointer access on fuzz testing with AP mode
+
+Vasanthakumar Thiagarajan (1):
+      ath6kl: Fix race in heart beat polling
+
+ drivers/net/wireless/ath/ath10k/ce.c     |    5 ++
+ drivers/net/wireless/ath/ath10k/core.h   |    8 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   40 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    2 +
+ drivers/net/wireless/ath/ath10k/mac.c    |   79 +++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/pci.c    |   70 +++++++++++++++++-------
+ drivers/net/wireless/ath/ath10k/pci.h    |   11 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |   87 ++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h    |    5 ++
+ drivers/net/wireless/ath/ath6kl/init.c   |    3 ++
+ drivers/net/wireless/ath/ath6kl/main.c   |    3 ++
+ 11 files changed, 270 insertions(+), 43 deletions(-)
 
 _______________________________________________
 ath10k mailing list
