@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8tXo-0003bN-C0
- for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:56:29 +0000
+ id 1V8tYi-0003d4-AK
+ for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:57:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/4] ath10k: implement 802.3 SNAP rx decap type A-MSDU
- handling
+Subject: Re: [PATCH 2/4] ath10k: fix HTC endpoint worker starvation
 References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
- <1375949813-10969-4-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 12 Aug 2013 17:55:42 +0300
-In-Reply-To: <1375949813-10969-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 8 Aug 2013 10:16:52 +0200")
-Message-ID: <878v07t0up.fsf@kamboji.qca.qualcomm.com>
+ <1375949813-10969-3-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQk4n=kiWhwvzieuvXp5Wou_QpkY=8iU474XPwG7P4KSiQ@mail.gmail.com>
+Date: Mon, 12 Aug 2013 17:56:58 +0300
+In-Reply-To: <CA+BoTQk4n=kiWhwvzieuvXp5Wou_QpkY=8iU474XPwG7P4KSiQ@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 8 Aug 2013 12:12:03 +0200")
+Message-ID: <874navt0sl.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,44 +30,24 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This enables driver to rx another decapped a-msdu
-> frames. It should possibly help with throughputs
-> in some cases and reduce (or eliminate) number of
-> messages like this:
+>> @@ -602,7 +602,8 @@ static void ath10k_htc_reset_endpoint_states(struct ath10k_htc *htc)
+>>                 skb_queue_head_init(&ep->tx_queue);
+>>                 ep->htc = htc;
+>>                 ep->tx_credit_flow_enabled = true;
+>> -               INIT_WORK(&ep->send_work, ath10k_htc_send_work);
+>> +               tasklet_init(&ep->send_task, ath10k_htc_send_task,
+>> +                             (unsigned long)ep);
+>>         }
+>>  }
+>>
 >
->   ath10k: error processing msdus -524
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Indentation is off by one here. Is it okay if I just resend this
+> single patch or is it easier for applying if I resend the whole
+> patchset?
 
-[...]
-
-> @@ -659,6 +658,15 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
->  			decap_hdr += roundup(crypto_len, 4);
->  		}
->  
-> +		if (fmt == RX_MSDU_DECAP_8023_SNAP_LLC) {
-> +			/* SNAP 802.3 consists of:
-> +			 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
-> +			 * [data][fcs:4].
-> +			 *
-> +			 * Since this overlaps with A-MSDU header (da, sa, len)
-> +			 * there's nothing extra to do. */
-> +		}
-
-This block doesn't have any code, is that on purpose? Most likely a
-static checker finds this later and we need to remove it.
-
-If your idea is to document the LLC case (which is very good!) it's
-better to do everything inside a comment, for example like this:
-
-	/* When fmt == RX_MSDU_DECAP_8023_SNAP_LLC:
-         *
-         * SNAP 802.3 consists of:
-	 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
-	 * [data][fcs:4].
-	 *
-	 * Since this overlaps with A-MSDU header (da, sa, len)
-	 * there's nothing extra to do. */
+It's errorprone if I start to pick patches from different sets. So
+please resend the whole series. But take a look at my other comment
+first.
 
 -- 
 Kalle Valo
