@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8tPc-0003RW-Ml
- for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:48:01 +0000
+ id 1V8tXo-0003bN-C0
+ for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:56:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/4] ath10k: cleanups
-References: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
- <87haevt20x.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 12 Aug 2013 17:47:33 +0300
-In-Reply-To: <87haevt20x.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 12 Aug 2013 17:30:22 +0300")
-Message-ID: <87d2pjt18a.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/4] ath10k: implement 802.3 SNAP rx decap type A-MSDU
+ handling
+References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
+ <1375949813-10969-4-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 12 Aug 2013 17:55:42 +0300
+In-Reply-To: <1375949813-10969-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 8 Aug 2013 10:16:52 +0200")
+Message-ID: <878v07t0up.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,27 +28,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Michal Kazior <michal.kazior@tieto.com> writes:
+> This enables driver to rx another decapped a-msdu
+> frames. It should possibly help with throughputs
+> in some cases and reduce (or eliminate) number of
+> messages like this:
 >
->> This patchset contains a few non-functional clean
->> ups.
->>
->> Michal Kazior (4):
->>   ath10k: clean up monitor start code
->>   ath10k: use sizeof(*var) in kmalloc
->>   ath10k: clean up PCI completion states
->>   ath10k: print errcode when CE ring setup fails
+>   ath10k: error processing msdus -524
 >
-> Thanks, all four applied.
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Sorry, I was too fast and need to take that back. I now see this
-warning:
+[...]
 
-drivers/net/wireless/ath/ath10k/pci.c:951: WARNING: line over 80 characters
+> @@ -659,6 +658,15 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+>  			decap_hdr += roundup(crypto_len, 4);
+>  		}
+>  
+> +		if (fmt == RX_MSDU_DECAP_8023_SNAP_LLC) {
+> +			/* SNAP 802.3 consists of:
+> +			 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
+> +			 * [data][fcs:4].
+> +			 *
+> +			 * Since this overlaps with A-MSDU header (da, sa, len)
+> +			 * there's nothing extra to do. */
+> +		}
 
-I dropped the patches, please send v2.
+This block doesn't have any code, is that on purpose? Most likely a
+static checker finds this later and we need to remove it.
+
+If your idea is to document the LLC case (which is very good!) it's
+better to do everything inside a comment, for example like this:
+
+	/* When fmt == RX_MSDU_DECAP_8023_SNAP_LLC:
+         *
+         * SNAP 802.3 consists of:
+	 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
+	 * [data][fcs:4].
+	 *
+	 * Since this overlaps with A-MSDU header (da, sa, len)
+	 * there's nothing extra to do. */
 
 -- 
 Kalle Valo
