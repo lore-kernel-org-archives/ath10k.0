@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V97eG-0006KB-Tf
- for ath10k@lists.infradead.org; Tue, 13 Aug 2013 06:00:05 +0000
+ id 1V97eI-0006KB-7f
+ for ath10k@lists.infradead.org; Tue, 13 Aug 2013 06:00:07 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/4] ath10k: fix HTT service setup
-Date: Tue, 13 Aug 2013 07:59:35 +0200
-Message-ID: <1376373578-2180-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/4] ath10k: implement 802.3 SNAP rx decap type A-MSDU
+ handling
+Date: Tue, 13 Aug 2013 07:59:37 +0200
+Message-ID: <1376373578-2180-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
  <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
@@ -26,44 +27,51 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The "disable credit flow" flag was set too late
-and it never was in the HTC service request
-message.
+This enables driver to rx another decapped a-msdu
+frames. It should possibly help with throughputs
+in some cases and reduce (or eliminate) number of
+messages like this:
 
-This patch prevents firmware from reporting
-(useless) HTC credits for HTT service. HTT service
-doesn't use nor need credits.
+  ath10k: error processing msdus -524
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+v2:
+ * use a comment instead of a no-op if clause
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index ef3329e..7d445d3 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -772,16 +772,16 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index e784c40..9bb0ae89 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -610,8 +610,7 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+ 			RX_MPDU_START_INFO0_ENCRYPT_TYPE);
  
- 	flags |= SM(tx_alloc, ATH10K_HTC_CONN_FLAGS_RECV_ALLOC);
+ 	/* FIXME: No idea what assumptions are safe here. Need logs */
+-	if ((fmt == RX_MSDU_DECAP_RAW && skb->next) ||
+-	    (fmt == RX_MSDU_DECAP_8023_SNAP_LLC)) {
++	if ((fmt == RX_MSDU_DECAP_RAW && skb->next)) {
+ 		ath10k_htt_rx_free_msdu_chain(skb->next);
+ 		skb->next = NULL;
+ 		return -ENOTSUPP;
+@@ -659,6 +658,15 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+ 			decap_hdr += roundup(crypto_len, 4);
+ 		}
  
--	req_msg = &msg->connect_service;
--	req_msg->flags = __cpu_to_le16(flags);
--	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
--
- 	/* Only enable credit flow control for WMI ctrl service */
- 	if (conn_req->service_id != ATH10K_HTC_SVC_ID_WMI_CONTROL) {
- 		flags |= ATH10K_HTC_CONN_FLAGS_DISABLE_CREDIT_FLOW_CTRL;
- 		disable_credit_flow_ctrl = true;
- 	}
- 
-+	req_msg = &msg->connect_service;
-+	req_msg->flags = __cpu_to_le16(flags);
-+	req_msg->service_id = __cpu_to_le16(conn_req->service_id);
++		/* When fmt == RX_MSDU_DECAP_8023_SNAP_LLC:
++		 *
++		 * SNAP 802.3 consists of:
++		 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
++		 * [data][fcs:4].
++		 *
++		 * Since this overlaps with A-MSDU header (da, sa, len)
++		 * there's nothing extra to do. */
 +
- 	INIT_COMPLETION(htc->ctl_resp);
- 
- 	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
+ 		if (fmt == RX_MSDU_DECAP_ETHERNET2_DIX) {
+ 			/* Ethernet2 decap inserts ethernet header in place of
+ 			 * A-MSDU subframe header. */
 -- 
 1.7.9.5
 
