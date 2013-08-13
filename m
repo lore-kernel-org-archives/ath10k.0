@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V97Zm-0006D7-8W
- for ath10k@lists.infradead.org; Tue, 13 Aug 2013 05:55:27 +0000
+ id 1V97Zm-0006D8-GK
+ for ath10k@lists.infradead.org; Tue, 13 Aug 2013 05:55:28 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/4] ath10k: cleanups
-Date: Tue, 13 Aug 2013 07:54:53 +0200
-Message-ID: <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 1/4] ath10k: clean up monitor start code
+Date: Tue, 13 Aug 2013 07:54:54 +0200
+Message-ID: <1376373297-32369-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
+ <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,27 +26,36 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+Remove useless code that was causing WARN_ON when
+a 80MHz+ vif entered promiscuous mode or monitor
+interface was started.
 
-This patchset contains a few non-functional clean
-ups.
+The channel mode is already computed by
+chan_to_phymode().
 
-v2:
- * fix line over 80 chars
-
-
-Michal Kazior (4):
-  ath10k: clean up monitor start code
-  ath10k: use sizeof(*var) in kmalloc
-  ath10k: clean up PCI completion states
-  ath10k: print errcode when CE ring setup fails
-
- drivers/net/wireless/ath/ath10k/ce.c  |   15 +++++++++------
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
  drivers/net/wireless/ath/ath10k/mac.c |    3 ---
- drivers/net/wireless/ath/ath10k/pci.c |   25 +++++++++++++++++--------
- drivers/net/wireless/ath/ath10k/pci.h |   13 +++++++------
- 4 files changed, 33 insertions(+), 23 deletions(-)
+ 1 file changed, 3 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index cf2ba4d..05f5f76 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -503,13 +503,10 @@ static int ath10k_monitor_start(struct ath10k *ar, int vdev_id)
+ {
+ 	struct ieee80211_channel *channel = ar->hw->conf.chandef.chan;
+ 	struct wmi_vdev_start_request_arg arg = {};
+-	enum nl80211_channel_type type;
+ 	int ret = 0;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-	type = cfg80211_get_chandef_type(&ar->hw->conf.chandef);
+-
+ 	arg.vdev_id = vdev_id;
+ 	arg.channel.freq = channel->center_freq;
+ 	arg.channel.band_center_freq1 = ar->hw->conf.chandef.center_freq1;
 -- 
 1.7.9.5
 
