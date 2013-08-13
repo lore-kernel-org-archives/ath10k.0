@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V97Zm-0006D8-GK
+ id 1V97Zn-0006D7-M9
  for ath10k@lists.infradead.org; Tue, 13 Aug 2013 05:55:28 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/4] ath10k: clean up monitor start code
-Date: Tue, 13 Aug 2013 07:54:54 +0200
-Message-ID: <1376373297-32369-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 2/4] ath10k: use sizeof(*var) in kmalloc
+Date: Tue, 13 Aug 2013 07:54:55 +0200
+Message-ID: <1376373297-32369-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
  <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
@@ -26,36 +26,28 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Remove useless code that was causing WARN_ON when
-a 80MHz+ vif entered promiscuous mode or monitor
-interface was started.
-
-The channel mode is already computed by
-chan_to_phymode().
+This fixes checkpatch warning from the latest
+3.11-rc kernel tree.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index cf2ba4d..05f5f76 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -503,13 +503,10 @@ static int ath10k_monitor_start(struct ath10k *ar, int vdev_id)
- {
- 	struct ieee80211_channel *channel = ar->hw->conf.chandef.chan;
- 	struct wmi_vdev_start_request_arg arg = {};
--	enum nl80211_channel_type type;
- 	int ret = 0;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e2f9ef5..98edb31 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -805,8 +805,7 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
+ 			continue;
  
- 	lockdep_assert_held(&ar->conf_mutex);
- 
--	type = cfg80211_get_chandef_type(&ar->hw->conf.chandef);
--
- 	arg.vdev_id = vdev_id;
- 	arg.channel.freq = channel->center_freq;
- 	arg.channel.band_center_freq1 = ar->hw->conf.chandef.center_freq1;
+ 		for (i = 0; i < completions; i++) {
+-			compl = kmalloc(sizeof(struct ath10k_pci_compl),
+-					GFP_KERNEL);
++			compl = kmalloc(sizeof(*compl), GFP_KERNEL);
+ 			if (!compl) {
+ 				ath10k_warn("No memory for completion state\n");
+ 				ath10k_pci_stop_ce(ar);
 -- 
 1.7.9.5
 
