@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V8tYi-0003d4-AK
- for ath10k@lists.infradead.org; Mon, 12 Aug 2013 14:57:24 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/4] ath10k: fix HTC endpoint worker starvation
-References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
- <1375949813-10969-3-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQk4n=kiWhwvzieuvXp5Wou_QpkY=8iU474XPwG7P4KSiQ@mail.gmail.com>
-Date: Mon, 12 Aug 2013 17:56:58 +0300
-In-Reply-To: <CA+BoTQk4n=kiWhwvzieuvXp5Wou_QpkY=8iU474XPwG7P4KSiQ@mail.gmail.com>
- (Michal Kazior's message of "Thu, 8 Aug 2013 12:12:03 +0200")
-Message-ID: <874navt0sl.fsf@kamboji.qca.qualcomm.com>
+ id 1V96v4-0005Vm-B6
+ for ath10k@lists.infradead.org; Tue, 13 Aug 2013 05:13:23 +0000
+Received: by mail-bk0-f42.google.com with SMTP id my10so2182820bkb.29
+ for <ath10k@lists.infradead.org>; Mon, 12 Aug 2013 22:12:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87li47t276.fsf@kamboji.qca.qualcomm.com>
+References: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
+ <1375949650-9699-3-git-send-email-michal.kazior@tieto.com>
+ <87li47t276.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 13 Aug 2013 07:12:57 +0200
+Message-ID: <CA+BoTQkj_4RFsjGkEbwgP26wQSYTX05SrtQ3CwwFLKKvH0ik6w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] ath10k: use sizeof(*var) in kmalloc
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +22,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
->> @@ -602,7 +602,8 @@ static void ath10k_htc_reset_endpoint_states(struct ath10k_htc *htc)
->>                 skb_queue_head_init(&ep->tx_queue);
->>                 ep->htc = htc;
->>                 ep->tx_credit_flow_enabled = true;
->> -               INIT_WORK(&ep->send_work, ath10k_htc_send_work);
->> +               tasklet_init(&ep->send_task, ath10k_htc_send_task,
->> +                             (unsigned long)ep);
->>         }
->>  }
->>
+On 12 August 2013 16:26, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
 >
-> Indentation is off by one here. Is it okay if I just resend this
-> single patch or is it easier for applying if I resend the whole
-> patchset?
+>> This fixes checkpatch warning from the latest
+>> 3.11-rc kernel tree.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/pci.c |    3 +--
+>>  1 file changed, 1 insertion(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireles=
+s/ath/ath10k/pci.c
+>> index d95439b..1814af1 100644
+>> --- a/drivers/net/wireless/ath/ath10k/pci.c
+>> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+>> @@ -803,8 +803,7 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
+>>                       continue;
+>>
+>>               for (i =3D 0; i < completions; i++) {
+>> -                     compl =3D kmalloc(sizeof(struct ath10k_pci_compl),
+>> -                                     GFP_KERNEL);
+>> +                     compl =3D kmalloc(sizeof(*compl), GFP_KERNEL);
+>>                       if (!compl) {
+>>                               ath10k_warn("No memory for completion stat=
+e\n");
+>>                               ath10k_pci_stop_ce(ar);
+>
+> Just out of curiosity, what's the warning? kmalloc() should be called
+> with sizeof(*foo) style?
 
-It's errorprone if I start to pick patches from different sets. So
-please resend the whole series. But take a look at my other comment
-first.
+Checkpatch prints:
 
--- 
-Kalle Valo
+  CHECK: Prefer kmalloc(sizeof(*compl)...) over kmalloc(sizeof(struct
+ath10k_pci_compl)...)
+
+
+Pozdrawiam / Best regards,
+Micha=B3 Kazior.
 
 _______________________________________________
 ath10k mailing list
