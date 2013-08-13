@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V97eI-0006KB-7f
- for ath10k@lists.infradead.org; Tue, 13 Aug 2013 06:00:07 +0000
+ id 1V97eK-0006KC-DY
+ for ath10k@lists.infradead.org; Tue, 13 Aug 2013 06:00:08 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 3/4] ath10k: implement 802.3 SNAP rx decap type A-MSDU
- handling
-Date: Tue, 13 Aug 2013 07:59:37 +0200
-Message-ID: <1376373578-2180-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/4] ath10k: plug possible memory leak in WMI
+Date: Tue, 13 Aug 2013 07:59:38 +0200
+Message-ID: <1376373578-2180-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
 References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
  <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
@@ -27,51 +26,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This enables driver to rx another decapped a-msdu
-frames. It should possibly help with throughputs
-in some cases and reduce (or eliminate) number of
-messages like this:
-
-  ath10k: error processing msdus -524
+There was a possible memory leak when WMI command
+queue reached it's limit. Command buffers were not
+freed.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-v2:
- * use a comment instead of a no-op if clause
+ drivers/net/wireless/ath/ath10k/wmi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
- drivers/net/wireless/ath/ath10k/htt_rx.c |   12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e784c40..9bb0ae89 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -610,8 +610,7 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 			RX_MPDU_START_INFO0_ENCRYPT_TYPE);
- 
- 	/* FIXME: No idea what assumptions are safe here. Need logs */
--	if ((fmt == RX_MSDU_DECAP_RAW && skb->next) ||
--	    (fmt == RX_MSDU_DECAP_8023_SNAP_LLC)) {
-+	if ((fmt == RX_MSDU_DECAP_RAW && skb->next)) {
- 		ath10k_htt_rx_free_msdu_chain(skb->next);
- 		skb->next = NULL;
- 		return -ENOTSUPP;
-@@ -659,6 +658,15 @@ static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 			decap_hdr += roundup(crypto_len, 4);
- 		}
- 
-+		/* When fmt == RX_MSDU_DECAP_8023_SNAP_LLC:
-+		 *
-+		 * SNAP 802.3 consists of:
-+		 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
-+		 * [data][fcs:4].
-+		 *
-+		 * Since this overlaps with A-MSDU header (da, sa, len)
-+		 * there's nothing extra to do. */
-+
- 		if (fmt == RX_MSDU_DECAP_ETHERNET2_DIX) {
- 			/* Ethernet2 decap inserts ethernet header in place of
- 			 * A-MSDU subframe header. */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 55f90c7..775fedf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -110,6 +110,7 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	if (atomic_add_return(1, &ar->wmi.pending_tx_count) >
+ 	    WMI_MAX_PENDING_TX_COUNT) {
+ 		/* avoid using up memory when FW hangs */
++		dev_kfree_skb(skb);
+ 		atomic_dec(&ar->wmi.pending_tx_count);
+ 		return -EBUSY;
+ 	}
 -- 
 1.7.9.5
 
