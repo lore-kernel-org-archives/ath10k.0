@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9cbE-0003cK-A4
- for ath10k@lists.infradead.org; Wed, 14 Aug 2013 15:03:03 +0000
+ id 1V9cev-0003jy-L9
+ for ath10k@lists.infradead.org; Wed, 14 Aug 2013 15:06:50 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/4] ath10k: fixes
-References: <1375949813-10969-1-git-send-email-michal.kazior@tieto.com>
- <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 14 Aug 2013 18:02:30 +0300
-In-Reply-To: <1376373578-2180-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 13 Aug 2013 07:59:34 +0200")
-Message-ID: <87a9kk48op.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix WEP in AP and IBSS mode
+References: <1376387122-18075-1-git-send-email-marek.puzyniak@tieto.com>
+Date: Wed, 14 Aug 2013 18:06:11 +0300
+In-Reply-To: <1376387122-18075-1-git-send-email-marek.puzyniak@tieto.com>
+ (Marek Puzyniak's message of "Tue, 13 Aug 2013 11:45:22 +0200")
+Message-ID: <8761v848ij.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,30 +23,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Marek Puzyniak <marek.puzyniak@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Marek Puzyniak <marek.puzyniak@tieto.com> writes:
 
-> Hi,
+> WEP encoding was not working properly for AP and IBSS mode.
+> TX frames were encrypted with default WEP tx key index set
+> always to zero, what sometimes was wrong when different
+> key index should be used. This patch allows to update
+> WEP key index also for AP and IBSS mode.
+> Problem detected during automated WEP tests.
 >
-> This patchset contains some bugfixes and
-> improvements.
->
-> v2:
->  * fix indentation
->  * use a comment instead of a no-op if clause
->
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 
-Thanks, these three patches applied:
-
->   ath10k: fix HTT service setup
->   ath10k: implement 802.3 SNAP rx decap type A-MSDU handling
->   ath10k: plug possible memory leak in WMI
-
-This patch dropped per your request:
-
->   ath10k: fix HTC endpoint worker starvation
+Thanks, applied.
 
 -- 
 Kalle Valo
