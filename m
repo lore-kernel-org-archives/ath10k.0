@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9Fsj-0001kb-Cm
- for ath10k@lists.infradead.org; Tue, 13 Aug 2013 14:47:34 +0000
+ id 1V9cZs-0003YG-4e
+ for ath10k@lists.infradead.org; Wed, 14 Aug 2013 15:01:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: check allocation errors in CE
-References: <1376030353-32421-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 13 Aug 2013 17:47:05 +0300
-In-Reply-To: <1376030353-32421-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 9 Aug 2013 08:39:13 +0200")
-Message-ID: <87ppth8x7a.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/4] ath10k: cleanups
+References: <1375949650-9699-1-git-send-email-michal.kazior@tieto.com>
+ <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 14 Aug 2013 18:00:38 +0300
+In-Reply-To: <1376373297-32369-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 13 Aug 2013 07:54:53 +0200")
+Message-ID: <87eh9w48rt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Handle pci_alloc_consistent(), kmalloc()
-> errors in copy engine module.
-> Found during code review.
+> Hi,
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> This patchset contains a few non-functional clean
+> ups.
+>
+> v2:
+>  * fix line over 80 chars
+>
+>
+> Michal Kazior (4):
+>   ath10k: clean up monitor start code
+>   ath10k: use sizeof(*var) in kmalloc
+>   ath10k: clean up PCI completion states
+>   ath10k: print errcode when CE ring setup fails
 
-Thanks, applied.
+Thanks, all four applied.
 
 -- 
 Kalle Valo
