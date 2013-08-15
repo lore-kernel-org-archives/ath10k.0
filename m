@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9wGJ-0006dK-J3
- for ath10k@lists.infradead.org; Thu, 15 Aug 2013 12:02:45 +0000
+ id 1V9xKB-0005RE-96
+ for ath10k@lists.infradead.org; Thu, 15 Aug 2013 13:10:47 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Did ath9k/ath10k support AR9388?
-References: <2013081513111459004272@gmail.com>
-Date: Thu, 15 Aug 2013 15:02:14 +0300
-In-Reply-To: <2013081513111459004272@gmail.com> (Ryane Luo's message of "Thu, 
- 15 Aug 2013 13:11:16 +0800")
-Message-ID: <87li4317sp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: add support for HTT 3.0
+References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
+ <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+ <1376036014-29707-4-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 15 Aug 2013 16:10:04 +0300
+In-Reply-To: <1376036014-29707-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 9 Aug 2013 10:13:34 +0200")
+Message-ID: <878v0314nn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,44 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: luoqiwen1984 <luoqiwen1984@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"Ryane Luo" <luoqiwen1984@gmail.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> I got an Apple original WIFI module which chip is AR9388. Plug it to
-> my latop, it doesn't recognize by Ubuntu 12.04 .
+> New firmware comes with new HTT protocol version.
+> In 3.0 the separate mgmt tx command has been
+> removed. All traffic is to be pushed through data
+> tx (tx_frm) command with a twist - FW seems to not
+> be able (yet?) to access tx fragment table so for
+> manamgement frames frame pointer is passed
+> directly.
 >
-> And try to plug it to my router(base on Linux--DD-WRT ). ath9k doesn't work for it.
->
-> Module works fine on Win7 PC, so HW is ok.
->
-> AR9388 module is cheap and with 450M performance, very familar at AR9380.
->
-> Anyone know howto support it by ath9k and ath10k ?
->
-> Try lspci at the router, got this:
-> #lspci
-> 00:00.0 Class 0200:168c:abcd
-> When manual add Device Id to the src code, it failure again.
->
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-[...]
-
-> [ 12.953229] ath: phy0: Couldn't reset chip
-> [ 12.957311] ath: phy0: Unable to initialize hardware; initialization status: -5
-> [ 12.964574] ath9k 0000:00:00.0: Failed to initialize device
-> [ 12.970146] ath9k: probe of 0000:00:00.0 failed with error -5
-> [ 12.981140] ath: phy1: Unable to initialize hardware; initialization status: -5
-> [ 12.988414] ath9k 0000:01:00.0: Failed to initialize device
-> [ 12.993971] ath9k: probe of 0000:01:00.0 failed with error -5
-
-You should send ath9k questions to ath9k-devel:
-
-ath9k-devel@lists.ath9k.org
-
-AFAIK AR9388 belongs to the family of chips which is supported by ath9k.
-ath10k will not support it.
+Because I dropped patch 1 this patch had conflicts. I tried to be extra
+careful, but please double check my conflict resolution.
 
 -- 
 Kalle Valo
