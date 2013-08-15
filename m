@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1V9xK8-0005RE-7O
- for ath10k@lists.infradead.org; Thu, 15 Aug 2013 13:10:47 +0000
+ id 1V9xKB-0005RE-V3
+ for ath10k@lists.infradead.org; Thu, 15 Aug 2013 13:10:48 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: clean up HTT tx tid handling
+Subject: Re: [PATCH 0/3] ath10k: firmware-related updates
 References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
  <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
- <1376036014-29707-2-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 15 Aug 2013 16:07:28 +0300
-In-Reply-To: <1376036014-29707-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 9 Aug 2013 10:13:32 +0200")
-Message-ID: <87haer14rz.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 15 Aug 2013 16:09:01 +0300
+In-Reply-To: <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 9 Aug 2013 10:13:31 +0200")
+Message-ID: <87d2pf14pe.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,26 +29,29 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The tids weren't mapped really properly. This
-> doesn't fix any known bug but seems the right
-> thing to do.
+> Hi,
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> This patchset contains 2 firmware-related upgrades
+> and 1 fix (that I though is a good pick to include
+> here, since it's related with HTT tx).
+>
+> This keeps backward compatbility with old
+> firmware.
+>
+> This includes fixes for issues pointed out during
+> RFC review.
 
 [...]
 
->  enum htt_data_tx_ext_tid {
-> -	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 16,
-> -	HTT_DATA_TX_EXT_TID_MGMT                = 17,
-> +	HTT_DATA_TX_EXT_TID_NON_QOS_UNICAST     = 16,
-> +	HTT_DATA_TX_EXT_TID_UNUSED              = 17,
-> +	HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST = 18,
-> +	HTT_DATA_TX_EXT_TID_MGMT                = 19,
->  	HTT_DATA_TX_EXT_TID_INVALID             = 31
->  };
+> Michal Kazior (3):
+>   ath10k: clean up HTT tx tid handling
 
-This doesn't seem to match what firmware uses. We need to investigate
-more about this so I drop the patch for now.
+I dropped this patch.
+
+>   ath10k: add support for firmware newer than 636
+>   ath10k: add support for HTT 3.0
+
+These two are applied.
 
 -- 
 Kalle Valo
