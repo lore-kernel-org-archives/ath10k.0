@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22d.google.com ([2a00:1450:4008:c01::22d])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VBHxJ-00047E-7J
- for ath10k@lists.infradead.org; Mon, 19 Aug 2013 05:24:42 +0000
-Received: by mail-bk0-f45.google.com with SMTP id mx11so1225241bkb.4
- for <ath10k@lists.infradead.org>; Sun, 18 Aug 2013 22:24:14 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <878v0314nn.fsf@kamboji.qca.qualcomm.com>
-References: <1375949298-7159-1-git-send-email-michal.kazior@tieto.com>
- <1376036014-29707-1-git-send-email-michal.kazior@tieto.com>
- <1376036014-29707-4-git-send-email-michal.kazior@tieto.com>
- <878v0314nn.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 19 Aug 2013 07:24:13 +0200
-Message-ID: <CA+BoTQmpcm65-5WDkih3oi-+MHDAy7gCzUrmmPzgmgCrVAKj8A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath10k: add support for HTT 3.0
+ id 1VC20I-0000DL-H2
+ for ath10k@lists.infradead.org; Wed, 21 Aug 2013 06:34:51 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 1/3] ath10k: make the workqueue multithreaded
+Date: Wed, 21 Aug 2013 08:34:12 +0200
+Message-ID: <1377066854-13981-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
+References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +18,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTUgQXVndXN0IDIwMTMgMTU6MTAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gTmV3IGZpcm13YXJlIGNvbWVzIHdpdGggbmV3IEhUVCBwcm90b2NvbCB2ZXJzaW9u
-Lgo+PiBJbiAzLjAgdGhlIHNlcGFyYXRlIG1nbXQgdHggY29tbWFuZCBoYXMgYmVlbgo+PiByZW1v
-dmVkLiBBbGwgdHJhZmZpYyBpcyB0byBiZSBwdXNoZWQgdGhyb3VnaCBkYXRhCj4+IHR4ICh0eF9m
-cm0pIGNvbW1hbmQgd2l0aCBhIHR3aXN0IC0gRlcgc2VlbXMgdG8gbm90Cj4+IGJlIGFibGUgKHll
-dD8pIHRvIGFjY2VzcyB0eCBmcmFnbWVudCB0YWJsZSBzbyBmb3IKPj4gbWFuYW1nZW1lbnQgZnJh
-bWVzIGZyYW1lIHBvaW50ZXIgaXMgcGFzc2VkCj4+IGRpcmVjdGx5Lgo+Pgo+PiBTaWduZWQtb2Zm
-LWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPgo+IEJlY2F1c2Ug
-SSBkcm9wcGVkIHBhdGNoIDEgdGhpcyBwYXRjaCBoYWQgY29uZmxpY3RzLiBJIHRyaWVkIHRvIGJl
-IGV4dHJhCj4gY2FyZWZ1bCwgYnV0IHBsZWFzZSBkb3VibGUgY2hlY2sgbXkgY29uZmxpY3QgcmVz
-b2x1dGlvbi4KCkxvb2tzIGdvb2QsIHRoYW5rcyEKCgpQb3pkcmF3aWFtIC8gQmVzdCByZWdhcmRz
-LApNaWNoYcWCIEthemlvci4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+TX work for a HTC endpoint can run for long
+periods of time, especially on slower host
+machines when under heavy load.
+
+This patch prevents one endpoint starving another
+one by allowing each endpoint worker to be
+processed in parallel.
+
+This is safe since none of ar->workqueue users
+depend on sequential execution.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c |    4 +++-
+ drivers/net/wireless/ath/ath10k/core.h |    5 +++++
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 04c132e..a828584 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -520,7 +520,9 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 
+ 	setup_timer(&ar->scan.timeout, ath10k_reset_scan, (unsigned long)ar);
+ 
+-	ar->workqueue = create_singlethread_workqueue("ath10k_wq");
++	ar->workqueue = alloc_workqueue("ath10k_wq",
++					WQ_UNBOUND | WQ_MEM_RECLAIM,
++					ATH10K_MAX_NUM_PARALLEL_WORKERS);
+ 	if (!ar->workqueue)
+ 		goto err_wq;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index ab05c4c..e196833 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -40,6 +40,11 @@
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
+ #define ATH10K_NUM_CHANS 38
+ 
++#define ATH10K_NUM_HTC_TX_WORKERS ATH10K_HTC_EP_COUNT
++#define ATH10K_NUM_WMI_RX_WORKERS 1
++#define ATH10K_MAX_NUM_PARALLEL_WORKERS (ATH10K_NUM_HTC_TX_WORKERS + \
++					 ATH10K_NUM_WMI_RX_WORKERS)
++
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
+ 
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
