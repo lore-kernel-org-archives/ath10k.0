@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VC20J-0000DL-PI
- for ath10k@lists.infradead.org; Wed, 21 Aug 2013 06:34:53 +0000
+ id 1VC2Md-0000jI-KJ
+ for ath10k@lists.infradead.org; Wed, 21 Aug 2013 06:57:56 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: fix issues on non-preemptible systems
-Date: Wed, 21 Aug 2013 08:34:14 +0200
-Message-ID: <1377066854-13981-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
-References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/6] ath10k: CE cleanups
+Date: Wed, 21 Aug 2013 08:57:23 +0200
+Message-ID: <1377068249-26025-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,69 +23,35 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Workers may not call into a sleepable function
-(e.g. mutex_lock). Since ath10k workers can run
-for a very long time it is necessary to explicitly
-allow process rescheduling in case there's no
-preemption.
+Hi,
 
-This fixes some issues with system freezes, hangs,
-watchdogs being triggered, userspace being
-unresponsive on slow host machines under heavy
-load.
+This patchset contains non-functional changes
+except patch #1 which changes memory allocation
+from dynamic to static.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htc.c    |    4 ++++
- drivers/net/wireless/ath/ath10k/htt_rx.c |    4 ++++
- drivers/net/wireless/ath/ath10k/wmi.c    |    4 ++++
- 3 files changed, 12 insertions(+)
+There is still some more to clean up in PCI/CE
+but it's probably better to keep patchsets compact
+and more frequent.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 7d445d3..99f1dbd 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -237,6 +237,10 @@ static void ath10k_htc_send_work(struct work_struct *work)
- 		ret = ath10k_htc_issue_skb(htc, ep, skb, credits);
- 		if (ret == -ENOSR)
- 			break;
-+
-+#ifndef CONFIG_PREEMPT
-+		cond_resched();
-+#endif
- 	}
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6cf4d95..80ea398 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1229,6 +1229,10 @@ static void ath10k_htt_rx_work(struct work_struct *work)
- 			break;
- 
- 		ath10k_htt_rx_process_skb(htt->ar, skb);
-+
-+#ifndef CONFIG_PREEMPT
-+		cond_resched();
-+#endif
- 	}
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 32fd5e7..f36f0be 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1155,6 +1155,10 @@ static void ath10k_wmi_event_work(struct work_struct *work)
- 			break;
- 
- 		ath10k_wmi_event_process(ar, skb);
-+
-+#ifndef CONFIG_PREEMPT
-+		cond_resched();
-+#endif
- 	}
- }
- 
+
+Pozdrawiam / Best regards,
+Michal Kazior.
+
+
+Michal Kazior (6):
+  ath10k: use inline ce_state structure
+  ath10k: remove ce_op_state
+  ath10k: remove unused ce_attr parameters
+  ath10k: rename hif_ce_pipe_info to ath10k_pci_pipe
+  ath10k: rename ce_state to ath10k_ce_pipe
+  ath10k: rename ce_ring_state to ath10k_ce_ring
+
+ drivers/net/wireless/ath/ath10k/ce.c  |  107 +++++++++++++++------------------
+ drivers/net/wireless/ath/ath10k/ce.h  |   56 ++++++-----------
+ drivers/net/wireless/ath/ath10k/pci.c |   78 ++++++++++++------------
+ drivers/net/wireless/ath/ath10k/pci.h |   17 +++---
+ 4 files changed, 116 insertions(+), 142 deletions(-)
+
 -- 
 1.7.9.5
 
