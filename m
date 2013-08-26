@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VDsYo-0000Tq-3G
- for ath10k@lists.infradead.org; Mon, 26 Aug 2013 08:54:07 +0000
+ id 1VDsYo-0000Tr-Tq
+ for ath10k@lists.infradead.org; Mon, 26 Aug 2013 08:54:08 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/4] ath10k: make the workqueue multithreaded
-Date: Mon, 26 Aug 2013 10:53:23 +0200
-Message-ID: <1377507205-5386-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/4] ath10k: move htt rx processing to worker
+Date: Mon, 26 Aug 2013 10:53:24 +0200
+Message-ID: <1377507205-5386-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
 References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
  <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
@@ -26,53 +26,160 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-TX work for a HTC endpoint can run for long
-periods of time, especially on slower host
-machines when under heavy load.
+This improves rx performance by a significant
+value (280mbps -> 350mbps UDP) on AP135.
 
-This patch prevents one endpoint starving another
-one by allowing each endpoint worker to be
-processed in parallel.
-
-This is safe since none of ar->workqueue users
-depend on sequential execution.
+Note: it is not safe to move HTT tx completion
+handling to a worker yet as it must be serialized
+against HTC tx completions.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    4 +++-
- drivers/net/wireless/ath/ath10k/core.h |    5 +++++
- 2 files changed, 8 insertions(+), 1 deletion(-)
+v2:
+ * use ieee80211_rx_ni()
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index b43e8ad..348a0fd 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -520,7 +520,9 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
- 
- 	setup_timer(&ar->scan.timeout, ath10k_reset_scan, (unsigned long)ar);
- 
--	ar->workqueue = create_singlethread_workqueue("ath10k_wq");
-+	ar->workqueue = alloc_workqueue("ath10k_wq",
-+					WQ_UNBOUND | WQ_MEM_RECLAIM,
-+					ATH10K_MAX_NUM_PARALLEL_WORKERS);
- 	if (!ar->workqueue)
- 		goto err_wq;
- 
+ drivers/net/wireless/ath/ath10k/core.h   |    4 ++-
+ drivers/net/wireless/ath/ath10k/htt.h    |    3 ++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   54 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/txrx.c   |    2 +-
+ 4 files changed, 54 insertions(+), 9 deletions(-)
+
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 0469a2e..17694ec 100644
+index 17694ec..b5f8df0 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -40,6 +40,11 @@
- #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
- #define ATH10K_NUM_CHANS 38
+@@ -42,8 +42,10 @@
  
-+#define ATH10K_NUM_HTC_TX_WORKERS ATH10K_HTC_EP_COUNT
-+#define ATH10K_NUM_WMI_RX_WORKERS 1
-+#define ATH10K_MAX_NUM_PARALLEL_WORKERS (ATH10K_NUM_HTC_TX_WORKERS + \
-+					 ATH10K_NUM_WMI_RX_WORKERS)
-+
+ #define ATH10K_NUM_HTC_TX_WORKERS ATH10K_HTC_EP_COUNT
+ #define ATH10K_NUM_WMI_RX_WORKERS 1
++#define ATH10K_NUM_HTT_RX_WORKERS 1
+ #define ATH10K_MAX_NUM_PARALLEL_WORKERS (ATH10K_NUM_HTC_TX_WORKERS + \
+-					 ATH10K_NUM_WMI_RX_WORKERS)
++					 ATH10K_NUM_WMI_RX_WORKERS + \
++					 ATH10K_NUM_HTT_RX_WORKERS)
+ 
  /* Antenna noise floor */
  #define ATH10K_DEFAULT_NOISE_FLOOR -95
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 26c78a9..8abbf2c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1268,6 +1268,9 @@ struct ath10k_htt {
+ 	/* set if host-fw communication goes haywire
+ 	 * used to avoid further failures */
+ 	bool rx_confused;
++
++	struct work_struct rx_work;
++	struct sk_buff_head rx_queue;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 9bb0ae89..6cf4d95 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -40,6 +40,10 @@
+ /* when under memory pressure rx ring refill may fail and needs a retry */
+ #define HTT_RX_RING_REFILL_RETRY_MS 50
+ 
++
++static void ath10k_htt_rx_work(struct work_struct *work);
++
++
+ static int ath10k_htt_rx_ring_size(struct ath10k_htt *htt)
+ {
+ 	int size;
+@@ -211,6 +215,8 @@ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
+ {
+ 	int sw_rd_idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 
++	skb_queue_purge(&htt->rx_queue);
++	cancel_work_sync(&htt->rx_work);
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
+ 
+ 	while (sw_rd_idx != __le32_to_cpu(*(htt->rx_ring.alloc_idx.vaddr))) {
+@@ -501,6 +507,9 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ 	if (__ath10k_htt_rx_ring_fill_n(htt, htt->rx_ring.fill_level))
+ 		goto err_fill_ring;
+ 
++	INIT_WORK(&htt->rx_work, ath10k_htt_rx_work);
++	skb_queue_head_init(&htt->rx_queue);
++
+ 	ath10k_dbg(ATH10K_DBG_HTT, "HTT RX ring size: %d, fill_level: %d\n",
+ 		   htt->rx_ring.size, htt->rx_ring.fill_level);
+ 	return 0;
+@@ -1083,17 +1092,11 @@ end:
+ 	}
+ }
+ 
+-void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
++static void ath10k_htt_rx_process_skb(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_resp *resp = (struct htt_resp *)skb->data;
+ 
+-	/* confirm alignment */
+-	if (!IS_ALIGNED((unsigned long)skb->data, 4))
+-		ath10k_warn("unaligned htt message, expect trouble\n");
+-
+-	ath10k_dbg(ATH10K_DBG_HTT, "HTT RX, msg_type: 0x%0X\n",
+-		   resp->hdr.msg_type);
+ 	switch (resp->hdr.msg_type) {
+ 	case HTT_T2H_MSG_TYPE_VERSION_CONF: {
+ 		htt->target_version_major = resp->ver_resp.major;
+@@ -1214,3 +1217,40 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	/* Free the indication buffer */
+ 	dev_kfree_skb_any(skb);
+ }
++
++static void ath10k_htt_rx_work(struct work_struct *work)
++{
++	struct ath10k_htt *htt = container_of(work, struct ath10k_htt, rx_work);
++	struct sk_buff *skb;
++
++	for (;;) {
++		skb = skb_dequeue(&htt->rx_queue);
++		if (!skb)
++			break;
++
++		ath10k_htt_rx_process_skb(htt->ar, skb);
++	}
++}
++
++void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct ath10k_htt *htt = &ar->htt;
++	struct htt_resp *resp = (struct htt_resp *)skb->data;
++
++	/* confirm alignment */
++	if (!IS_ALIGNED((unsigned long)skb->data, 4))
++		ath10k_warn("unaligned htt message, expect trouble\n");
++
++	ath10k_dbg(ATH10K_DBG_HTT, "HTT RX, msg_type: 0x%0X\n",
++		   resp->hdr.msg_type);
++	switch (resp->hdr.msg_type) {
++	case HTT_T2H_MSG_TYPE_RX_FRAG_IND:
++	case HTT_T2H_MSG_TYPE_RX_IND:
++		skb_queue_tail(&htt->rx_queue, skb);
++		queue_work(ar->workqueue, &htt->rx_work);
++		break;
++	default:
++		ath10k_htt_rx_process_skb(ar, skb);
++		break;
++	}
++}
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index ce7e304..dd87e6f 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -297,7 +297,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		   status->band);
+ 
+ 	spin_lock_bh(&ar->txrx_lock);
+-	ieee80211_rx(ar->hw, info->skb);
++	ieee80211_rx_ni(ar->hw, info->skb);
+ 	spin_unlock_bh(&ar->txrx_lock);
+ }
  
 -- 
 1.7.9.5
