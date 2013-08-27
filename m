@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x233.google.com ([2a00:1450:4008:c01::233])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEDjr-0002bU-1I
- for ath10k@lists.infradead.org; Tue, 27 Aug 2013 07:30:55 +0000
-Received: by mail-bk0-f51.google.com with SMTP id mx10so1496233bkb.10
- for <ath10k@lists.infradead.org>; Tue, 27 Aug 2013 00:30:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87ioyrmx3u.fsf@kamboji.qca.qualcomm.com>
+ id 1VEECg-0003UC-EK
+ for ath10k@lists.infradead.org; Tue, 27 Aug 2013 08:00:43 +0000
+Date: Tue, 27 Aug 2013 00:59:56 -0700
+From: "Luis R. Rodriguez" <rodrigue@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/4] ath10k: fixes
+Message-ID: <20130827075438.GA29102@pogo>
 References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
  <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-5-git-send-email-michal.kazior@tieto.com>
- <87ioyrmx3u.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 27 Aug 2013 09:30:29 +0200
-Message-ID: <CA+BoTQ=ycKd0Z60wHTWHoq7hBz1W2iW+ahjVmc_nFLQmU7-1Bg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] ath10k: fix issues on non-preemptible systems
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CAB=NE6X=P2hTnOC8xqFwb=-32-hBgx=ndq3KHoUG83KptKv0vA@mail.gmail.com>
+ <CA+BoTQ=zVAab8KV2TwYJ=+wG0N7M4-oo-TgaE2qpxJO33d3oZQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQ=zVAab8KV2TwYJ=+wG0N7M4-oo-TgaE2qpxJO33d3oZQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
 
-T24gMjcgQXVndXN0IDIwMTMgMDk6MDYsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gV29ya2VycyBtYXkgbm90IGNhbGwgaW50byBhIHNsZWVwYWJsZSBmdW5jdGlvbgo+
-PiAoZS5nLiBtdXRleF9sb2NrKS4gU2luY2UgYXRoMTBrIHdvcmtlcnMgY2FuIHJ1bgo+PiBmb3Ig
-YSB2ZXJ5IGxvbmcgdGltZSBpdCBpcyBuZWNlc3NhcnkgdG8gZXhwbGljaXRseQo+PiBhbGxvdyBw
-cm9jZXNzIHJlc2NoZWR1bGluZyBpbiBjYXNlIHRoZXJlJ3Mgbm8KPj4gcHJlZW1wdGlvbi4KPj4K
-Pj4gVGhpcyBmaXhlcyBzb21lIGlzc3VlcyB3aXRoIHN5c3RlbSBmcmVlemVzLCBoYW5ncywKPj4g
-d2F0Y2hkb2dzIGJlaW5nIHRyaWdnZXJlZCwgdXNlcnNwYWNlIGJlaW5nCj4+IHVucmVzcG9uc2l2
-ZSBvbiBzbG93IGhvc3QgbWFjaGluZXMgdW5kZXIgaGVhdnkKPj4gbG9hZC4KPgo+IEkgY29uc2lk
-ZXIgdGhpcyBtb3JlIGFzIGEgd29ya2Fyb3VuZCBhcyBhIHJlYWwgZml4LiBXb3VsZCBOQVBJIGJl
-IGEKPiBwcm9wZXIgZml4IGZvciBpc3N1ZXMgbGlrZSB0aGlzPwo+Cj4gTkFQSSBzdXBwb3J0IHdh
-cyByZW1vdmVkIGZyb20gbWFjODAyMTEgc2l4IG1vbnRocyBhZ28sIGJ1dCBJIGd1ZXNzIHdlCj4g
-Y291bGQgdHJ5IHRvIGdldCBpdCBiYWNrIGlmIHdlIGhhdmUgYSBnb29kIHJlYXNvbjoKPgo+IGh0
-dHA6Ly9tYXJjLmluZm8vP2w9bGludXgtd2lyZWxlc3MmbT0xMzYyMDQxMzU5MDc0OTEKCkhtbS4g
-RnJvbSB3aGF0IEkgdW5kZXJzdGFuZCBOQVBJIGlzIHVzZWQgZm9yIFJYIHBvbGxpbmcuIE15IHBh
-dGNoCmFkZHJlc3NlcyBtYWlubHkgV01JL0hUVCBUWCBzdGFydmF0aW9uLgoKVGhlcmUncyBhbm90
-aGVyIHNvbHV0aW9uIHRoYXQgSSBoYWQgaW4gbWluZC4gSW5zdGVhZCBvZjoKCiAgZm9yICg7Oykg
-eyBkZXF1ZXVlKHopOyBwcm9jZXNzOyB9CgpJIGRpZDoKCiAgcSA9IGRlcXVldWVfYWxsKHopOyBm
-b3IgKDs7KSB7IGRlcXVldWUocSk7IHByb2Nlc3M7IH0KCkkuZS4gbW92ZSBhbGwgcXVldWVkIHN0
-dWZmIGF0IHRoZSB3b3JrZXIgZW50cnkgYW5kIG1vdmUgaXQgb3V0IG9mIHRoZQpnbG9iYWwgcXVl
-dWUsIHRoYXQgY2FuLCBhbmQgd2lsbCBiZSwgaGF2aW5nIG1vcmUgc3R1ZmYgcXVldWVkIHdoaWxl
-CnRoZSB3b3JrZXIgZG9lcyBpdHMgam9iKS4KClRoaXMgd2F5IHdvcmtlcnMgd291bGQgZXhpdC9y
-ZXN0YXJ0IG1vcmUgb2Z0ZW4sIGJ1dCBmcm9tIHdoYXQgSSB0ZXN0ZWQKaXQgZGlkbid0IHJlYWxs
-eSBzb2x2ZSB0aGUgcHJvYmxlbS4gR2l2ZW4gZW5vdWdoIHRyYWZmaWMgSFRDIHdvcmtlcgpyZXNw
-b25zaWJsZSBmb3IgSFRUIFRYIGdldHMgb3ZlcndoZWxtZWQgZXZlbnR1YWxseS4gWW91IGNvdWxk
-IHRyeQpsaW1pdCBob3cgbWFueSBmcmFtZXMgYSB3b3JrZXIgY2FuIHByb2Nlc3MgZHVyaW5nIG9u
-ZSBleGVjdXRpb24sIGJ1dApob3cgZG8geW91IGd1ZXNzIHRoYXQ/IFRoaXMgc3RhcnZhdGlvbiBk
-ZXBlbmRzIG9uIGhvdyBmYXN0IHlvdXIgQ1BVCmlzLgoKVGh1cyBJIG9wdGVkIGZvciBzb2xlIGNv
-bmRfcmVzY2hlZCgpLgoKCj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-aHR0X3J4LmMKPj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcngu
-Ywo+PiBAQCAtMTIyOSw2ICsxMjI5LDEwIEBAIHN0YXRpYyB2b2lkIGF0aDEwa19odHRfcnhfd29y
-ayhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4+ICAgICAgICAgICAgICAgICAgICAgICBicmVh
-azsKPj4KPj4gICAgICAgICAgICAgICBhdGgxMGtfaHR0X3J4X3Byb2Nlc3Nfc2tiKGh0dC0+YXIs
-IHNrYik7Cj4+ICsKPj4gKyNpZm5kZWYgQ09ORklHX1BSRUVNUFQKPj4gKyAgICAgICAgICAgICBj
-b25kX3Jlc2NoZWQoKTsKPj4gKyNlbmRpZgo+Cj4gV2h5IHRoZSAjaWZuZGVmPyBXaHkgc2hvdWxk
-IHdlIG5vdCBjYWxsIGNvbmRfcmVzY2hlZCgpIHdoZW4gUFJFRU1QVCBpcwo+IGVuYWJsZWQ/IERv
-ZXMgc29tZXRoaW5nIG5lZ2F0aXZlIGhhcHBlbiB0aGVuPwoKSSB0aGluayBpdCBzaG91bGQgYmUg
-b2theS4gSSBzYXcgdGhlICNpZm5kZWYgdGhpbmcgaW4gYjQzbGVnYWN5IGFuZAp0aG91Z2h0IGl0
-IHNpbXBseSBtYWtlcyBzZW5zZSAoYWx0aG91Z2ggaXQncyB1bnNpZ2h0bHkpLgoKCk1pY2hhxYIu
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Tue, Aug 27, 2013 at 07:42:39AM +0200, Michal Kazior wrote:
+> On 26 August 2013 22:20, Luis R. Rodriguez <mcgrof@do-not-panic.com> wrote:
+> > On Mon, Aug 26, 2013 at 1:53 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> >>   ath10k: fix issues on non-preemptible systems
+> >
+> > This patch looks like a stable candidate fix. Please annotate as such
+> > if you confirm. Also, I reviewed other ath10k "fixes" and I see no
+> > practice of propagating any patches to stable yet. Can you please
+> > start doing that? If there were patches which are already merged
+> > upstream that should be propagated to stable then they can be
+> > submitted as stable candidate patches.
+> 
+> Good point.
+> 
+> If this patch is to be propagated to stable the patch(set) needs some
+> adjustments to avoid conflicts. Right now the patch touches a place
+> that was introduced with "ath10k: move htt rx processing to worker" so
+> the offending patch hunk should be moved to that patch.
+> 
+> Actually the "ath10k: make the workqueue multithreaded" could also be
+> a candidate for stable as it fixes AP beaconing during heavy TX
+> traffic. I should've mentioned that in the commit log.
+> 
+> I'll resend an updated patchset later today.
+
+That one doesn't seem like a stable fix, it does quite a big change.
+
+  Luis
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
