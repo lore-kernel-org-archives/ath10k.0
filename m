@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x231.google.com ([2607:f8b0:400e:c03::231])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEZQn-0000en-Ce
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 06:40:42 +0000
-Received: by mail-pa0-f49.google.com with SMTP id ld10so5842446pab.36
- for <ath10k@lists.infradead.org>; Tue, 27 Aug 2013 23:40:19 -0700 (PDT)
+ id 1VEZi5-00018I-VS
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 06:58:34 +0000
+Received: by mail-we0-f174.google.com with SMTP id q54so4739365wes.5
+ for <ath10k@lists.infradead.org>; Tue, 27 Aug 2013 23:58:10 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <87ppsyiavy.fsf@kamboji.qca.qualcomm.com>
 References: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
  <87fvtujrtg.fsf@kamboji.qca.qualcomm.com>
  <CABQkniBk-BUJW5Prjzw4J7jh=km15AZkNim523QZ+eU72=oJeQ@mail.gmail.com>
  <87ppsyiavy.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 28 Aug 2013 14:40:19 +0800
-Message-ID: <CABQkniA3tooYNtLtN_-Wbpj72cJGhUa_fGaOCX9nzHfhV56wdw@mail.gmail.com>
+Date: Wed, 28 Aug 2013 08:58:10 +0200
+Message-ID: <CACKGw+FoWx-yr1kpDpv6w=YnYiKopwnfVtWVrh+obaR6ztsmZw@mail.gmail.com>
 Subject: Re: Crash when loading module
-From: Zaki <zaki.bm@gmail.com>
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +28,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+Cc: ath10k@lists.infradead.org, Zaki <zaki.bm@gmail.com>
 
-Apologize. I should have pressed the Reply All button just now.
+Hi,
 
-On Wed, Aug 28, 2013 at 2:32 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+Here's a topic worth looking at:
+https://forum.openwrt.org/viewtopic.php?pid=210840#p210840
+I'm not sure about the source and if the information is confirmed, but
+please check your Archer 7 revision and compare.
+
+On 28 August 2013 08:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 > Hi Zaki,
 >
 > please CC the mailing list when replying. I do not have time to give
@@ -58,6 +63,16 @@ On Wed, Aug 28, 2013 at 2:32 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 >
 > --
 > Kalle Valo
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+
+
+-- 
+Bartosz
 
 _______________________________________________
 ath10k mailing list
