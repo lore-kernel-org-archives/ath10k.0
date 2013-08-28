@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEdY4-0008Kx-Co
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 11:04:29 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/4] ath10k: synchronize tx/rx reporting to mac80211
-References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-2-git-send-email-michal.kazior@tieto.com>
- <87txiajveo.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmW8F+e3YqLSoCWbYRSzZAM=Wy2GvGfbbW7iwVHtaesOQ@mail.gmail.com>
-Date: Wed, 28 Aug 2013 14:04:01 +0300
-In-Reply-To: <CA+BoTQmW8F+e3YqLSoCWbYRSzZAM=Wy2GvGfbbW7iwVHtaesOQ@mail.gmail.com>
- (Michal Kazior's message of "Wed, 28 Aug 2013 12:54:46 +0200")
-Message-ID: <87bo4igjq6.fsf@kamboji.qca.qualcomm.com>
+ id 1VEe8F-0001DQ-Fd
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 11:41:52 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH v2 0/2] add per-VDEV FW statistics
+Date: Wed, 28 Aug 2013 13:41:17 +0200
+Message-ID: <1377690079-18645-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,42 +20,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+FW 1.0.0.716 brings per-VDEV statistics. This patch-set implements
+debugfs mechanism to fetch those. There's still few more fileds we
+can read from the FW stats event, which are not covered here.
 
-> On 28 August 2013 06:23, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> According to mac80211 docs tx and rx reporting
->>> routines must not run concurrently unless they are
->>> _irqsafe variants.
->>>
->>> This doesn't fix any visible bug but is apparently
->>> the right thing to do as per the documentation.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> I had a quick chat with Johannes and Sujith about this. The concurrency
->> requirements are for the STA PS race in AP mode (see
->> ieee80211_handle_filtered_frame()).
->>
->> I think we should drop this frame, revisit later and properly analyse
+Changes:
 
-"drop this frame". Heh, of course I was trying to say "drop this
-patch" :)
+V2:
+* introduce wmi_peer_stats_common struct
+* fetch and print peer RX rates
+* break up wmi_peer_stats_common update into separate patch
 
->> how to fix the race. But it would be good add this to the todo list:
->>
->> http://wireless.kernel.org/en/users/Drivers/ath10k#TODO
->
-> I've added this to the TODO list.
+Bartosz Markowski (2):
+  ath10k: update wal_dbg_tx_stats structure with missing parameter.
+  ath10k: implement per-VDEV FW statistics
 
-Thanks!
+ drivers/net/wireless/ath/ath10k/core.h  |   22 ++++++++
+ drivers/net/wireless/ath/ath10k/debug.c |   81 +++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi.c   |    4 +-
+ drivers/net/wireless/ath/ath10k/wmi.h   |   90 ++++++++++++++++++++++++++-----
+ 4 files changed, 170 insertions(+), 27 deletions(-)
 
 -- 
-Kalle Valo
+1.7.10
+
 
 _______________________________________________
 ath10k mailing list
