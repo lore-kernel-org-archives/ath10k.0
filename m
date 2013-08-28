@@ -1,15 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEe8H-0001DS-JK
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 11:41:55 +0000
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v2 2/2] ath10k: implement per-VDEV FW statistics
-Date: Wed, 28 Aug 2013 13:41:19 +0200
-Message-ID: <1377690079-18645-3-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1377690079-18645-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1377690079-18645-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1VEfcD-00055y-Nv
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 13:16:54 +0000
+Received: by mail-bk0-f53.google.com with SMTP id d7so2125286bkh.40
+ for <ath10k@lists.infradead.org>; Wed, 28 Aug 2013 06:16:29 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <877gf6lay7.fsf@kamboji.qca.qualcomm.com>
+References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
+ <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
+ <1377507205-5386-5-git-send-email-michal.kazior@tieto.com>
+ <87ioyrmx3u.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=ycKd0Z60wHTWHoq7hBz1W2iW+ahjVmc_nFLQmU7-1Bg@mail.gmail.com>
+ <877gf6lay7.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 28 Aug 2013 15:16:29 +0200
+Message-ID: <CA+BoTQnkMqL+wOm2R_NjPSFFyb8Y0BdA0hUF6KdGgBiBt9hpfQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] ath10k: fix issues on non-preemptible systems
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,363 +25,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-The WMI_REQUEST_PEER_STAT command with latst (1.0.0.716) FW
-can return per-VDEV statistics. Using debugfs we can fetch this info now.
-
-This is a backward compatible change. In case of older FW the VDEV
-statistics are simply not returned.
-
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h  |   22 ++++++++
- drivers/net/wireless/ath/ath10k/debug.c |   81 +++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c   |    4 +-
- drivers/net/wireless/ath/ath10k/wmi.h   |   87 ++++++++++++++++++++++++++-----
- 4 files changed, 167 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index ab05c4c..f94482b 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -119,10 +119,27 @@ struct ath10k_wmi {
- 	struct work_struct wmi_event_work;
- };
- 
-+struct ath10k_vdev_stat {
-+	u32 vdev_id;
-+	struct wmi_snr_info vdev_snr;
-+	u32 tx_frames_count[MAX_AC];
-+	u32 rx_frames_count;
-+	u32 multiple_retry_cnt[MAX_AC];
-+	u32 fail_count[MAX_AC];
-+	u32 rts_fail_count;
-+	u32 rts_success_count;
-+	u32 rts_err_count;
-+	u32 rx_discard_count;
-+	u32 ack_fail_count;
-+	u32 tx_rate_history[MAX_TX_RATE_VALUES];
-+	u32 bcn_rssi_history[MAX_RSSI_VALUES];
-+};
-+
- struct ath10k_peer_stat {
- 	u8 peer_macaddr[ETH_ALEN];
- 	u32 peer_rssi;
- 	u32 peer_tx_rate;
-+	u32 peer_rx_rate;
- };
- 
- struct ath10k_target_stats {
-@@ -176,6 +193,8 @@ struct ath10k_target_stats {
- 	s32 mpdu_errs;
- 
- 	/* VDEV STATS */
-+	struct ath10k_vdev_stat vdev_stat[TARGET_NUM_VDEVS];
-+	u8 vdevs;
- 
- 	/* PEER STATS */
- 	u8 peers;
-@@ -274,6 +293,9 @@ enum ath10k_fw_features {
- 	/* wmi_mgmt_rx_hdr contains extra RSSI information */
- 	ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX = 0,
- 
-+	/* firmware support per-VEDV statistics */
-+	ATH10K_FW_FEATURE_VDEV_STATS = 1,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3d65594..026e55d 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -228,34 +228,59 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 		tmp += sizeof(struct wmi_pdev_stats);
- 	}
- 
--	/* 0 or max vdevs */
--	/* Currently firmware does not support VDEV stats */
- 	if (num_vdev_stats) {
- 		struct wmi_vdev_stats *vdev_stats;
-+		struct ath10k_vdev_stat *s;
-+
-+		stats->vdevs = num_vdev_stats;
- 
- 		for (i = 0; i < num_vdev_stats; i++) {
- 			vdev_stats = (struct wmi_vdev_stats *)tmp;
-+			s = &stats->vdev_stat[i];
-+
-+			s->vdev_id = __le32_to_cpu(vdev_stats->vdev_id);
-+			s->vdev_snr.beacon_snr =
-+				__le32_to_cpu(vdev_stats->vdev_snr.beacon_snr);
-+			s->vdev_snr.data_snr =
-+				__le32_to_cpu(vdev_stats->vdev_snr.data_snr);
-+
-+			/* TODO:read remaining vdev stats */
-+
- 			tmp += sizeof(struct wmi_vdev_stats);
- 		}
- 	}
- 
- 	if (num_peer_stats) {
--		struct wmi_peer_stats *peer_stats;
- 		struct ath10k_peer_stat *s;
-+		struct wmi_peer_stats_1 *peer_stats_1;
-+		struct wmi_peer_stats_2 *peer_stats_2;
- 
- 		stats->peers = num_peer_stats;
- 
- 		for (i = 0; i < num_peer_stats; i++) {
--			peer_stats = (struct wmi_peer_stats *)tmp;
--			s = &stats->peer_stat[i];
-+			peer_stats_1 = (struct wmi_peer_stats_1 *)tmp;
- 
--			WMI_MAC_ADDR_TO_CHAR_ARRAY(&peer_stats->peer_macaddr,
--						   s->peer_macaddr);
--			s->peer_rssi = __le32_to_cpu(peer_stats->peer_rssi);
--			s->peer_tx_rate =
--				__le32_to_cpu(peer_stats->peer_tx_rate);
-+			s = &stats->peer_stat[i];
- 
--			tmp += sizeof(struct wmi_peer_stats);
-+			WMI_MAC_ADDR_TO_CHAR_ARRAY(
-+				&peer_stats_1->common.peer_macaddr,
-+				s->peer_macaddr);
-+			s->peer_rssi = __le32_to_cpu(peer_stats_1->
-+						     common.peer_rssi);
-+			s->peer_tx_rate = __le32_to_cpu(peer_stats_1->
-+							common.peer_tx_rate);
-+
-+			if (test_bit(ATH10K_FW_FEATURE_VDEV_STATS,
-+				     ar->fw_features)) {
-+				peer_stats_2 = (struct wmi_peer_stats_2 *)tmp;
-+
-+				s->peer_rx_rate =
-+				    __le32_to_cpu(peer_stats_2->peer_rx_rate);
-+
-+				tmp += sizeof(struct wmi_peer_stats_2);
-+			} else {
-+				tmp += sizeof(struct wmi_peer_stats_1);
-+			}
- 		}
- 	}
- 
-@@ -270,7 +295,7 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	struct ath10k *ar = file->private_data;
- 	struct ath10k_target_stats *fw_stats;
- 	char *buf = NULL;
--	unsigned int len = 0, buf_len = 2500;
-+	unsigned int len = 0, buf_len = 3000;
- 	ssize_t ret_cnt = 0;
- 	long left;
- 	int i;
-@@ -408,6 +433,27 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "MPDU errors (FCS, MIC, ENC)", fw_stats->mpdu_errs);
- 
-+	if (fw_stats->vdevs) {
-+		len += scnprintf(buf + len, buf_len - len, "\n");
-+		len += scnprintf(buf + len, buf_len - len, "%30s\n",
-+				 "ath10k VDEV stats");
-+		len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
-+				 "=================");
-+	}
-+
-+	for (i = 0; i < fw_stats->vdevs; i++) {
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "VDEV ID", fw_stats->vdev_stat[i].vdev_id);
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "Beacon SNR",
-+				 fw_stats->vdev_stat[i].vdev_snr.beacon_snr);
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "Data SNR",
-+				 fw_stats->vdev_stat[i].vdev_snr.data_snr);
-+		len += scnprintf(buf + len, buf_len - len, "\n");
-+	}
-+
-+
- 	len += scnprintf(buf + len, buf_len - len, "\n");
- 	len += scnprintf(buf + len, buf_len - len, "%30s\n",
- 			 "ath10k PEER stats");
-@@ -418,11 +464,18 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 		len += scnprintf(buf + len, buf_len - len, "%30s %pM\n",
- 				 "Peer MAC address",
- 				 fw_stats->peer_stat[i].peer_macaddr);
--		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
- 				 "Peer RSSI", fw_stats->peer_stat[i].peer_rssi);
--		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
- 				 "Peer TX rate",
- 				 fw_stats->peer_stat[i].peer_tx_rate);
-+
-+		if (test_bit(ATH10K_FW_FEATURE_VDEV_STATS, ar->fw_features))
-+			len += scnprintf(buf + len, buf_len - len,
-+					 "%30s %10u\n",
-+					 "Peer RX rate",
-+					 fw_stats->peer_stat[i].peer_rx_rate);
-+
- 		len += scnprintf(buf + len, buf_len - len, "\n");
- 	}
- 	spin_unlock_bh(&ar->data_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 32fd5e7..3ebab3d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -957,8 +957,10 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
- 	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
- 
--	if (ar->fw_version_build > 636)
-+	if (ar->fw_version_build > 636) {
- 		set_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features);
-+		set_bit(ATH10K_FW_FEATURE_VDEV_STATS, ar->fw_features);
-+	}
- 
- 	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
- 		ath10k_warn("hardware advertises support for more spatial streams than it should (%d > %d)\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 5b94707..99c7ba1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -60,6 +60,11 @@
-  *
-  */
- 
-+#define MAX_AC 4 /* Maximum value of access category */
-+
-+#define MAX_TX_RATE_VALUES      10 /* Max Tx rates */
-+#define MAX_RSSI_VALUES         10 /* Max RSSI values */
-+
- /* Control Path */
- struct wmi_cmd_hdr {
- 	__le32 cmd_id;
-@@ -1828,11 +1833,10 @@ enum wmi_stats_id {
- 
- struct wmi_request_stats_cmd {
- 	__le32 stats_id;
--
--	/*
--	 * Space to add parameters like
--	 * peer mac addr
--	 */
-+	/* unique id identifying the VDEV, generated by the caller */
-+	__le32 vdev_id;
-+	/* peer MAC address */
-+	struct wmi_mac_addr peer_macaddr;
- } __packed;
- 
- /* Suspend option */
-@@ -1881,7 +1885,6 @@ struct wmi_stats_event {
- 
- /*
-  * PDEV statistics
-- * TODO: add all PDEV stats here
-  */
- struct wmi_pdev_stats {
- 	__le32 chan_nf;        /* Channel noise floor */
-@@ -1894,24 +1897,84 @@ struct wmi_pdev_stats {
- 	struct wal_dbg_stats wal; /* WAL dbg stats */
- } __packed;
- 
--/*
-- * VDEV statistics
-- * TODO: add all VDEV stats here
-- */
-+struct wmi_snr_info {
-+	__le32 beacon_snr;
-+	__le32 data_snr;
-+} __packed;
-+
- struct wmi_vdev_stats {
-+	/* unique id identifying the VDEV, generated by the caller */
- 	__le32 vdev_id;
-+	struct wmi_snr_info vdev_snr;
-+	/*
-+	 * Total number of packets(per AC) that were successfully transmitted
-+	 * (with and without retries, including multi-cast, broadcast)
-+	 */
-+	__le32 tx_frm_cnt[MAX_AC];
-+	/*
-+	 * Total number of packets that were successfully received
-+	 * (after appropriate filter rules including multi-cast, broadcast)
-+	 */
-+	__le32 rx_frm_cnt;
-+	/*
-+	 * The number of MSDU packets and MMPDU frames per AC that the 802.11
-+	 * station successfully transmitted after more than one retransmission
-+	 * attempt
-+	 */
-+	__le32 multiple_retry_cnt[MAX_AC];
-+	/* Total number packets(per AC) failed to transmit */
-+	__le32 fail_cnt[MAX_AC];
-+	/*
-+	 * Total number of RTS/CTS sequence failures for transmission of a
-+	 * packet
-+	 */
-+	__le32 rts_fail_cnt;
-+	/*
-+	 * Total number of RTS/CTS sequence success for transmission of a
-+	 * packet
-+	 */
-+	__le32 rts_succ_cnt;
-+	/*
-+	 * The receive error count.
-+	 * HAL will provide the RxP FCS error global
-+	 */
-+	__le32 rx_err_cnt;
-+	/*
-+	 * The sum of the receive error count and dropped-receive-buffer
-+	 * error count. (FCS error)
-+	 */
-+	__le32 rx_discard_cnt;
-+	/*
-+	 * Total number packets failed transmit because of no ACK
-+	 * from the remote entity
-+	 */
-+	__le32 ack_fail_cnt;
-+	/* History of last ten transmit rate, in units of 500 kbit/sec */
-+	__le32 tx_rate_history[MAX_TX_RATE_VALUES];
-+	/* History of last ten Beacon rssi of the connected Bss */
-+	__le32 bcn_rssi_history[MAX_RSSI_VALUES];
- } __packed;
- 
- /*
-  * peer statistics.
-- * TODO: add more stats
-  */
--struct wmi_peer_stats {
-+struct wmi_peer_stats_common {
- 	struct wmi_mac_addr peer_macaddr;
- 	__le32 peer_rssi;
- 	__le32 peer_tx_rate;
- } __packed;
- 
-+struct wmi_peer_stats_1 {
-+	struct wmi_peer_stats_common common;
-+} __packed;
-+
-+
-+struct wmi_peer_stats_2 {
-+	struct wmi_peer_stats_common common;
-+	__le32 peer_rx_rate;
-+} __packed;
-+
-+
- struct wmi_vdev_create_cmd {
- 	__le32 vdev_id;
- 	__le32 vdev_type;
--- 
-1.7.10
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggQXVndXN0IDIwMTMgMDY6MDIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
+b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
+ZXM6Cj4+IFRoZXJlJ3MgYW5vdGhlciBzb2x1dGlvbiB0aGF0IEkgaGFkIGluIG1pbmQuIEluc3Rl
+YWQgb2Y6Cj4+Cj4+ICAgZm9yICg7OykgeyBkZXF1ZXVlKHopOyBwcm9jZXNzOyB9Cj4+Cj4+IEkg
+ZGlkOgo+Pgo+PiAgIHEgPSBkZXF1ZXVlX2FsbCh6KTsgZm9yICg7OykgeyBkZXF1ZXVlKHEpOyBw
+cm9jZXNzOyB9Cj4+Cj4+IEkuZS4gbW92ZSBhbGwgcXVldWVkIHN0dWZmIGF0IHRoZSB3b3JrZXIg
+ZW50cnkgYW5kIG1vdmUgaXQgb3V0IG9mIHRoZQo+PiBnbG9iYWwgcXVldWUsIHRoYXQgY2FuLCBh
+bmQgd2lsbCBiZSwgaGF2aW5nIG1vcmUgc3R1ZmYgcXVldWVkIHdoaWxlCj4+IHRoZSB3b3JrZXIg
+ZG9lcyBpdHMgam9iKS4KPj4KPj4gVGhpcyB3YXkgd29ya2VycyB3b3VsZCBleGl0L3Jlc3RhcnQg
+bW9yZSBvZnRlbiwgYnV0IGZyb20gd2hhdCBJIHRlc3RlZAo+PiBpdCBkaWRuJ3QgcmVhbGx5IHNv
+bHZlIHRoZSBwcm9ibGVtLiBHaXZlbiBlbm91Z2ggdHJhZmZpYyBIVEMgd29ya2VyCj4+IHJlc3Bv
+bnNpYmxlIGZvciBIVFQgVFggZ2V0cyBvdmVyd2hlbG1lZCBldmVudHVhbGx5LiBZb3UgY291bGQg
+dHJ5Cj4+IGxpbWl0IGhvdyBtYW55IGZyYW1lcyBhIHdvcmtlciBjYW4gcHJvY2VzcyBkdXJpbmcg
+b25lIGV4ZWN1dGlvbiwgYnV0Cj4+IGhvdyBkbyB5b3UgZ3Vlc3MgdGhhdD8gVGhpcyBzdGFydmF0
+aW9uIGRlcGVuZHMgb24gaG93IGZhc3QgeW91ciBDUFUKPj4gaXMuCj4KPiBJIHRoaW5rIHdlIHNo
+b3VsZCBjb21lIHVwIHdpdGggYmV0dGVyIHdheXMgdG8gaGFuZGxlIHRoaXMuIFRvIGhhdmUgYQo+
+IHF1b3RhIChsaWtlIHlvdSBtZW50aW9uIGFib3ZlKSB3b3VsZCBiZSBvbmUgb3B0aW9uLiBPdGhl
+ciBvcHRpb24gd291bGQKPiBiZSB0byBoYXZlIG11bHRpcGxlIHF1ZXVlcyBhbmQgc29tZSBzb3J0
+IG9mIHByaW9yaXNhdGlvbiBvciBmYWlyCj4gcXVldWVpbmcuCgpIYXZpbmcgcXVvdGEgd2lsbCBu
+b3QgaGVscCBoZXJlIGluIGFueSB3YXkuIFlvdSBjYW4gcmUtcXVldWUgYSB3b3JrZXIKYWZ0ZXIg
+ZWFjaCBzaW5nbGUgZnJhbWUgYW5kIGF2b2lkIFdNSSBzdGFydmF0aW9uLCBob3dldmVyIHlvdSBj
+YW4Kc3RpbGwgc3RhcnZlIHRoZSByZXN0IG9mIHRoZSBzeXN0ZW0gKGFuZCB0aGF0IGNhbiBsZWFk
+IHRvIHN5c3RlbSByZXNldAp2aWEgd2F0Y2hkb2cpLiBJJ20gYWxzbyB1bnN1cmUgYWJvdXQgdGhl
+IG92ZXJoZWFkIHF1ZXVlaW5nIGEgd29yayBtYXkKaGF2ZSAob24gYSB1UCBzeXN0ZW0gd2l0aG91
+dCBwcmVlbXB0aW9uIGluIG1pZ2h0IGJlIG5lZ2xpZ2libGUsIGJ1dAp3aGF0IGFib3V0IG90aGVy
+IHN5c3RlbXM/KSwgc28geW91J2QgaGF2ZSB0byBndWVzcyB0aGUgcXVvdGEgc2l6ZSBvcgplbHNl
+IHlvdSdkIGdldCBpbmNyZWFzZWQgbGF0ZW5jeS9vdmVyaGVhZCBhbmQgcGVyaGFwcyBzbG93ZXIK
+cGVyZm9ybWFuY2UuCgpJIGJlbGlldmUgY29uZF9yZXNjaGVkIGlzIGEgc29sdXRpb24sIG5vdCBh
+IHdvcmthcm91bmQuIFNsb3cgc3lzdGVtcwp3aXRob3V0IHByZWVtcHRpb24gbmVlZCB0aGlzLiBJ
+IHdvbmRlciBob3cgb3RoZXIgZHJpdmVycyBnb3QgYXJvdW5kCml0PyBPciBwZXJoYXBzIG5vbmUg
+b2YgdGhlIG90aGVyIGRyaXZlcnMgaGFkIHRvIGRlYWwgd2l0aCByZWFsbHkKaW5zdWZmaWNpZW50
+IG51bWJlciBvZiBDUFUgY3ljbGVzIHZlcnN1cyBsb3RzIG9mIHdvcmsuCgpXZSBjb3VsZCBwZXJo
+YXBzIG1vdmUgd29ya2VycyBvdXQgb2YgSFRDIGFuZCBoYXZlIGEgc2luZ2xlIFRYIHdvcmtlcgpp
+biBjb3JlLmMgZm9yIGJvdGggV01JIGFuZCBIVFQgdGhhdCB3b3VsZCBwcmlvcml0aXplIFdNSSwg
+YmVmb3JlCnRyeWluZyBIVFQuIFRoaXMgY291bGQgaGVscCBndWFyYW50ZWUgdGhhdCBhbGwgYmVh
+Y29ucyAod2hpY2ggZ28KdGhyb3VnaCBXTUkpIGFyZSBzZW50IGluIGEgdGltZWx5IGZhc2hpb24g
+aW4gcmVzcG9uc2UgdG8gU1dCQSBldmVudC4KQnV0IHRoYXQgd29uJ3QgZml4IHRoZSBvdmVyYWxs
+IHN5c3RlbSBzdGFydmF0aW9uLgoKCj4gQW5kIG1vc3QgaW1wb3J0YW50bHkgb2YgYWxsLCB3ZSBz
+aG91bGQgbWluaW1pc2UgdGhlIGxlbmdodCBvZiBxdWV1ZSB3ZQo+IGhhdmUgaW5zaWRlIGF0aDEw
+ay4gSSdtIHdvcnJpZWQgdGhhdCB3ZSBxdWV1ZSB3YXkgdG9vIG1hbnkgcGFja2V0cwo+IHdpdGhp
+biBhdGgxMGsgcmlnaHQgbm93LgoKRmVsaXggcG9pbnRlZCB0aGF0IG91dCBxdWl0ZSBzb21lIHRp
+bWUgYWdvLiBJIHdvdWxkIGFncmVlIGJ1dCBJJ20KYWZmcmFpZCB5b3UnbGwgaHVydCBwZXJmb3Jt
+YW5jZSBpZiB5b3UgZGVjcmVhc2UgdGhlIHF1ZXVlIGRlcHRoLiBUaGVyZQpzZWVtcyB0byBiZSBz
+b21lIGtpbmQgb2YgbGF0ZW5jeSB0aGluZyBnb2luZyBvbiAoZWl0aGVyIG9uIGhvc3QsIG9yIG9u
+CmZpcm13YXJlL2hhcmR3YXJlLCBvciBib3RoIGNvbWJpbmVkKS4gSSB0cmllZCBkZWNyZWFzaW5n
+IEhUVCBUWCByaW5nCmJ1ZmZlciBmcm9tIDIwNDggdG8gMjU2LiBJbiByZXN1bHQgb24gQVAxMzUg
+VURQIFRYIGdvdCB0cmltbWVkIGF0Cn4zMzBtYnBzIG1heC4gU3R1ZmZpbmcgbW9yZSB0aHJvdWdo
+cHV0IGV2ZW4gbGVmdCBzb21lIGlkbGUgQ1BVIGN5Y2xlcy4KSWYgeW91IGNvbnNpZGVyIDN4MyBk
+ZXZpY2VzIHRoYXQgYXJlIHN1cHBvc2VkIHRvIGdldCB5b3UgMS4zZ2JwcywgdGhlbgp5b3UgYXBw
+YXJlbnRseSBuZWVkIHRoYXQgMjA0OCBkZXB0aC4KCgpNaWNoYcWCLgoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
