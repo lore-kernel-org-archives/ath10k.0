@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEYsq-0008IT-Te
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 06:05:37 +0000
+ id 1VEZIq-0000Ua-0A
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 06:32:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: What chipsets does ath10k cover?
-References: <CANMvdA-GhFH3TE6YU1745cOnM_1jJpi_2Sh7phpWWLWUXB_Pjw@mail.gmail.com>
-Date: Wed, 28 Aug 2013 09:05:07 +0300
-In-Reply-To: <CANMvdA-GhFH3TE6YU1745cOnM_1jJpi_2Sh7phpWWLWUXB_Pjw@mail.gmail.com>
- (Francisco Cuesta's message of "Wed, 21 Aug 2013 20:11:14 +0200")
-Message-ID: <877gf6jqp8.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Crash when loading module
+References: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
+ <87fvtujrtg.fsf@kamboji.qca.qualcomm.com>
+ <CABQkniBk-BUJW5Prjzw4J7jh=km15AZkNim523QZ+eU72=oJeQ@mail.gmail.com>
+Date: Wed, 28 Aug 2013 09:32:01 +0300
+In-Reply-To: <CABQkniBk-BUJW5Prjzw4J7jh=km15AZkNim523QZ+eU72=oJeQ@mail.gmail.com>
+ (Zaki's message of "Wed, 28 Aug 2013 14:12:06 +0800")
+Message-ID: <87ppsyiavy.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Francisco Cuesta <ndarkness@gmail.com>
+To: Zaki <zaki.bm@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-Francisco Cuesta <ndarkness@gmail.com> writes:
+Hi Zaki,
 
->  I've started to use a new version of compat-wireless,of 2013-06-27,
-> and I can see that includes the new atheros10k driver. Thus, I was
-> wondering the chipsets that it embraces, is it just ment for QCA988x
-> family of chips?
+please CC the mailing list when replying. I do not have time to give
+private support.
 
-Yes, currently it supports only QCA9880 and other chips based on the
-same design. But ath10k doesn not support QCA9880 v1, only v2 boards.
+Zaki <zaki.bm@gmail.com> writes:
 
-> Or can it embrace Atheros AR9580 5GHz 802.11an 3x3 MIMO for 5GHz
-> 802.11a/n/ac as well?
+> The PCIe module is taken from Archer C7 V1 product's board.  I am not
+> so sure if it is V2 hardware, though. I just depends on the debugging
+> msg that says it is V2 device.
+>
+> The way i force it to use legacy interrupt is by modifying the code to
+> skip MSI-X and MSI.  The ath10k code is taken from ath.git master
+> branch.
+>
+> Thanks a lot for the link.  If someone can verify that the module on
+> Archer C7 V1 is actually a V1 hardware, then it will be very helpful
+> also.
 
-AFAIK AR9580 is a 802.11n design and should be supported by ath9k.
-ath10k does not support it.
+To my knowledge Archer C7 has QCA9880 v1. Because the PCI ids are the
+same I'm not currently aware of any way to detect from ath10k if QCA9880
+v1 or v2 :(
 
 -- 
 Kalle Valo
