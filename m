@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEX4d-0006Rx-3Q
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:09:40 +0000
+ id 1VEX7r-0006Vz-UF
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:13:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix mutex unlock balance
-References: <1377102404-14742-1-git-send-email-mohammed@qca.qualcomm.com>
-Date: Wed, 28 Aug 2013 07:09:12 +0300
-In-Reply-To: <1377102404-14742-1-git-send-email-mohammed@qca.qualcomm.com>
- (Mohammed Shafi Shajakhan's message of "Wed, 21 Aug 2013 21:56:44
- +0530")
-Message-ID: <8738pulamv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/6] ath10k: use inline ce_state structure
+References: <1377068249-26025-1-git-send-email-michal.kazior@tieto.com>
+ <1377601683-12072-1-git-send-email-michal.kazior@tieto.com>
+ <1377601683-12072-2-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 28 Aug 2013 07:12:33 +0300
+In-Reply-To: <1377601683-12072-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 27 Aug 2013 13:07:58 +0200")
+Message-ID: <87y57mjvwu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,23 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Mohammed Shafi Shajakhan <mohammed@qca.qualcomm.com>
+> Simplifies memory managament of ce_state.
 >
-> ath10k_debug_read_target_stats is properly
-> protected by data_lock (spinlock). Remove
-> the unwanted mutex_unlock(&ar->conf_mutex)
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-[...]
+Sorry, I noticed this only in my second review round:
 
->
-> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qca.qualcomm.com>
+> --- a/drivers/net/wireless/ath/ath10k/pci.h
+> +++ b/drivers/net/wireless/ath/ath10k/pci.h
+> @@ -233,7 +233,10 @@ struct ath10k_pci {
+>  	spinlock_t ce_lock;
+>  
+>  	/* Map CE id to ce_state */
+> -	struct ce_state *ce_id_to_state[CE_COUNT_MAX];
+> +	struct ce_state ce_states[CE_COUNT_MAX];
+> +
+> +	/* makes sure that dummy reads are atomic */
+> +	spinlock_t hw_v1_workaround_lock;
+>  };
 
-Thanks, applied.
+That lock doesn't look right. Is it a leftover from a rebase?
 
 -- 
 Kalle Valo
