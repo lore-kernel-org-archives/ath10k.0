@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEX7r-0006Vz-UF
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:13:00 +0000
+ id 1VEXIP-0006d1-QQ
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:23:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/6] ath10k: use inline ce_state structure
-References: <1377068249-26025-1-git-send-email-michal.kazior@tieto.com>
- <1377601683-12072-1-git-send-email-michal.kazior@tieto.com>
- <1377601683-12072-2-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 28 Aug 2013 07:12:33 +0300
-In-Reply-To: <1377601683-12072-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 27 Aug 2013 13:07:58 +0200")
-Message-ID: <87y57mjvwu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/4] ath10k: synchronize tx/rx reporting to mac80211
+References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
+ <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
+ <1377507205-5386-2-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 28 Aug 2013 07:23:27 +0300
+In-Reply-To: <1377507205-5386-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 26 Aug 2013 10:53:22 +0200")
+Message-ID: <87txiajveo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,26 +30,23 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Simplifies memory managament of ce_state.
+> According to mac80211 docs tx and rx reporting
+> routines must not run concurrently unless they are
+> _irqsafe variants.
+>
+> This doesn't fix any visible bug but is apparently
+> the right thing to do as per the documentation.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Sorry, I noticed this only in my second review round:
+I had a quick chat with Johannes and Sujith about this. The concurrency
+requirements are for the STA PS race in AP mode (see
+ieee80211_handle_filtered_frame()).
 
-> --- a/drivers/net/wireless/ath/ath10k/pci.h
-> +++ b/drivers/net/wireless/ath/ath10k/pci.h
-> @@ -233,7 +233,10 @@ struct ath10k_pci {
->  	spinlock_t ce_lock;
->  
->  	/* Map CE id to ce_state */
-> -	struct ce_state *ce_id_to_state[CE_COUNT_MAX];
-> +	struct ce_state ce_states[CE_COUNT_MAX];
-> +
-> +	/* makes sure that dummy reads are atomic */
-> +	spinlock_t hw_v1_workaround_lock;
->  };
+I think we should drop this frame, revisit later and properly analyse
+how to fix the race. But it would be good add this to the todo list:
 
-That lock doesn't look right. Is it a leftover from a rebase?
+http://wireless.kernel.org/en/users/Drivers/ath10k#TODO
 
 -- 
 Kalle Valo
