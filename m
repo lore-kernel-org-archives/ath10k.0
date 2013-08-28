@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEYNY-0007hb-Lm
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 05:33:18 +0000
-Received: by mail-bk0-f49.google.com with SMTP id r7so1922652bkg.8
- for <ath10k@lists.infradead.org>; Tue, 27 Aug 2013 22:32:50 -0700 (PDT)
+ id 1VEYVT-0007pU-FH
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 05:41:28 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Crash when loading module
+References: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
+Date: Wed, 28 Aug 2013 08:40:59 +0300
+In-Reply-To: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
+ (Zaki's message of "Fri, 16 Aug 2013 17:46:31 +0800")
+Message-ID: <87fvtujrtg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87y57mjvwu.fsf@kamboji.qca.qualcomm.com>
-References: <1377068249-26025-1-git-send-email-michal.kazior@tieto.com>
- <1377601683-12072-1-git-send-email-michal.kazior@tieto.com>
- <1377601683-12072-2-git-send-email-michal.kazior@tieto.com>
- <87y57mjvwu.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 28 Aug 2013 07:32:50 +0200
-Message-ID: <CA+BoTQ=mBeWQLvaLUL4gnTENRbGUK_fTkj9bP3HP-OSzBwG0Dg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] ath10k: use inline ce_state structure
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +19,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Zaki <zaki.bm@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-T24gMjggQXVndXN0IDIwMTMgMDY6MTIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gU2ltcGxpZmllcyBtZW1vcnkgbWFuYWdhbWVudCBvZiBjZV9zdGF0ZS4KPj4KPj4g
-U2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4K
-PiBTb3JyeSwgSSBub3RpY2VkIHRoaXMgb25seSBpbiBteSBzZWNvbmQgcmV2aWV3IHJvdW5kOgo+
-Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmgKPj4gKysrIGIv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuaAo+PiBAQCAtMjMzLDcgKzIzMywx
-MCBAQCBzdHJ1Y3QgYXRoMTBrX3BjaSB7Cj4+ICAgICAgIHNwaW5sb2NrX3QgY2VfbG9jazsKPj4K
-Pj4gICAgICAgLyogTWFwIENFIGlkIHRvIGNlX3N0YXRlICovCj4+IC0gICAgIHN0cnVjdCBjZV9z
-dGF0ZSAqY2VfaWRfdG9fc3RhdGVbQ0VfQ09VTlRfTUFYXTsKPj4gKyAgICAgc3RydWN0IGNlX3N0
-YXRlIGNlX3N0YXRlc1tDRV9DT1VOVF9NQVhdOwo+PiArCj4+ICsgICAgIC8qIG1ha2VzIHN1cmUg
-dGhhdCBkdW1teSByZWFkcyBhcmUgYXRvbWljICovCj4+ICsgICAgIHNwaW5sb2NrX3QgaHdfdjFf
-d29ya2Fyb3VuZF9sb2NrOwo+PiAgfTsKPgo+IFRoYXQgbG9jayBkb2Vzbid0IGxvb2sgcmlnaHQu
-IElzIGl0IGEgbGVmdG92ZXIgZnJvbSBhIHJlYmFzZT8KCk9oLCBnb29kIGNhdGNoLiBJIHdvbmRl
-ciBob3cgaXQgZ290IHRoZXJlLi4KCgpNaWNoYcWCLgoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+Zaki <zaki.bm@gmail.com> writes:
+
+> Hi,
+>
+> I am new to ath10k.  Used to have ath9k-based module last time.  I am
+> using Freescale MPC8315ERDB board to host the QCA988X_2_0_DEVICE_ID
+> device.
+
+Are you sure it's QCA9880 v2? For some reason v1 has same PCI id as v2.
+
+> I am forcing the module to use legacy interrupt handler because my BSP
+> doesn't support MSI or MSI-X just yet.
+
+How did you force the legacy interrupt handler?
+
+What version of ath10k are you using? Are you using ath.git master
+branch or something else?
+
+> During the module loading, the system crash. Looks like it failed at
+> some reset device or reset target function, but i am not too sure
+> which one causing it. Below are the logs i collected. I would
+> apopreciate any help. Thanks a lot in advance.
+>
+> # modprobe ath10k_pci.ko
+> [   42.465296] cfg80211: Calling CRDA to update world regulatory domain
+> [   42.744607] ath10k_pci 0001:02:00.0: BAR 0: assigned [mem 0xa0000000-0xa01ff]
+> [   42.752698] ath10k_pci 0001:02:00.0: enabling device (0000 -> 0002)
+> [   42.759300] ath10k: MSI-X didn't succeed (1), trying MSI
+> [   42.785492] ath10k: legacy interrupt handling
+> [   42.850072] Oops: Machine check, sig: 7 [#1]
+> [   42.854333] DEBUG_PAGEALLOC MPC831x RDB
+
+According to the link below this error might indicate that the PCI
+device is not responding. I wonder if you are using v1 board?
+
+https://lkml.org/lkml/2007/8/23/41
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
