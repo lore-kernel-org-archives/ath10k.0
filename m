@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEWy4-0006Oi-L3
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:02:53 +0000
+ id 1VEX4d-0006Rx-3Q
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 04:09:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 4/4] ath10k: fix issues on non-preemptible systems
-References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-5-git-send-email-michal.kazior@tieto.com>
- <87ioyrmx3u.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=ycKd0Z60wHTWHoq7hBz1W2iW+ahjVmc_nFLQmU7-1Bg@mail.gmail.com>
-Date: Wed, 28 Aug 2013 07:02:24 +0300
-In-Reply-To: <CA+BoTQ=ycKd0Z60wHTWHoq7hBz1W2iW+ahjVmc_nFLQmU7-1Bg@mail.gmail.com>
- (Michal Kazior's message of "Tue, 27 Aug 2013 09:30:29 +0200")
-Message-ID: <877gf6lay7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix mutex unlock balance
+References: <1377102404-14742-1-git-send-email-mohammed@qca.qualcomm.com>
+Date: Wed, 28 Aug 2013 07:09:12 +0300
+In-Reply-To: <1377102404-14742-1-git-send-email-mohammed@qca.qualcomm.com>
+ (Mohammed Shafi Shajakhan's message of "Wed, 21 Aug 2013 21:56:44
+ +0530")
+Message-ID: <8738pulamv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,72 +24,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Mohammed Shafi Shajakhan <mohammed@qti.qualcomm.com> writes:
 
-> On 27 August 2013 09:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> From: Mohammed Shafi Shajakhan <mohammed@qca.qualcomm.com>
 >
->> I consider this more as a workaround as a real fix. Would NAPI be a
->> proper fix for issues like this?
->>
->> NAPI support was removed from mac80211 six months ago, but I guess we
->> could try to get it back if we have a good reason:
->>
->> http://marc.info/?l=linux-wireless&m=136204135907491
+> ath10k_debug_read_target_stats is properly
+> protected by data_lock (spinlock). Remove
+> the unwanted mutex_unlock(&ar->conf_mutex)
+
+[...]
+
 >
-> Hmm. From what I understand NAPI is used for RX polling. My patch
-> addresses mainly WMI/HTT TX starvation.
+> Signed-off-by: Mohammed Shafi Shajakhan <mohammed@qca.qualcomm.com>
 
-I thought I saw something related to NAPI on TX as well, but I can't
-find it anymore.
-
-> There's another solution that I had in mind. Instead of:
->
->   for (;;) { dequeue(z); process; }
->
-> I did:
->
->   q = dequeue_all(z); for (;;) { dequeue(q); process; }
->
-> I.e. move all queued stuff at the worker entry and move it out of the
-> global queue, that can, and will be, having more stuff queued while
-> the worker does its job).
->
-> This way workers would exit/restart more often, but from what I tested
-> it didn't really solve the problem. Given enough traffic HTC worker
-> responsible for HTT TX gets overwhelmed eventually. You could try
-> limit how many frames a worker can process during one execution, but
-> how do you guess that? This starvation depends on how fast your CPU
-> is.
-
-I think we should come up with better ways to handle this. To have a
-quota (like you mention above) would be one option. Other option would
-be to have multiple queues and some sort of priorisation or fair
-queueing.
-
-And most importantly of all, we should minimise the lenght of queue we
-have inside ath10k. I'm worried that we queue way too many packets
-within ath10k right now.
-
-> Thus I opted for sole cond_resched().
-
-Yeah, this is a good workaround for the problem. But it would be good to
-get bottom of this as well.
-
->>> +#ifndef CONFIG_PREEMPT
->>> +             cond_resched();
->>> +#endif
->>
->> Why the #ifndef? Why should we not call cond_resched() when PREEMPT is
->> enabled? Does something negative happen then?
->
-> I think it should be okay. I saw the #ifndef thing in b43legacy and
-> thought it simply makes sense (although it's unsightly).
-
-For various reasons I would prefer to have cond_resched() without the
-#ifndef, if possible.
+Thanks, applied.
 
 -- 
 Kalle Valo
