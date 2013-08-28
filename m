@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEYVT-0007pU-FH
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 05:41:28 +0000
+ id 1VEYsq-0008IT-Te
+ for ath10k@lists.infradead.org; Wed, 28 Aug 2013 06:05:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Crash when loading module
-References: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
-Date: Wed, 28 Aug 2013 08:40:59 +0300
-In-Reply-To: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
- (Zaki's message of "Fri, 16 Aug 2013 17:46:31 +0800")
-Message-ID: <87fvtujrtg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: What chipsets does ath10k cover?
+References: <CANMvdA-GhFH3TE6YU1745cOnM_1jJpi_2Sh7phpWWLWUXB_Pjw@mail.gmail.com>
+Date: Wed, 28 Aug 2013 09:05:07 +0300
+In-Reply-To: <CANMvdA-GhFH3TE6YU1745cOnM_1jJpi_2Sh7phpWWLWUXB_Pjw@mail.gmail.com>
+ (Francisco Cuesta's message of "Wed, 21 Aug 2013 20:11:14 +0200")
+Message-ID: <877gf6jqp8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,45 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zaki <zaki.bm@gmail.com>
+To: Francisco Cuesta <ndarkness@gmail.com>
 Cc: ath10k@lists.infradead.org
 
-Zaki <zaki.bm@gmail.com> writes:
+Francisco Cuesta <ndarkness@gmail.com> writes:
 
-> Hi,
->
-> I am new to ath10k.  Used to have ath9k-based module last time.  I am
-> using Freescale MPC8315ERDB board to host the QCA988X_2_0_DEVICE_ID
-> device.
+>  I've started to use a new version of compat-wireless,of 2013-06-27,
+> and I can see that includes the new atheros10k driver. Thus, I was
+> wondering the chipsets that it embraces, is it just ment for QCA988x
+> family of chips?
 
-Are you sure it's QCA9880 v2? For some reason v1 has same PCI id as v2.
+Yes, currently it supports only QCA9880 and other chips based on the
+same design. But ath10k doesn not support QCA9880 v1, only v2 boards.
 
-> I am forcing the module to use legacy interrupt handler because my BSP
-> doesn't support MSI or MSI-X just yet.
+> Or can it embrace Atheros AR9580 5GHz 802.11an 3x3 MIMO for 5GHz
+> 802.11a/n/ac as well?
 
-How did you force the legacy interrupt handler?
-
-What version of ath10k are you using? Are you using ath.git master
-branch or something else?
-
-> During the module loading, the system crash. Looks like it failed at
-> some reset device or reset target function, but i am not too sure
-> which one causing it. Below are the logs i collected. I would
-> apopreciate any help. Thanks a lot in advance.
->
-> # modprobe ath10k_pci.ko
-> [   42.465296] cfg80211: Calling CRDA to update world regulatory domain
-> [   42.744607] ath10k_pci 0001:02:00.0: BAR 0: assigned [mem 0xa0000000-0xa01ff]
-> [   42.752698] ath10k_pci 0001:02:00.0: enabling device (0000 -> 0002)
-> [   42.759300] ath10k: MSI-X didn't succeed (1), trying MSI
-> [   42.785492] ath10k: legacy interrupt handling
-> [   42.850072] Oops: Machine check, sig: 7 [#1]
-> [   42.854333] DEBUG_PAGEALLOC MPC831x RDB
-
-According to the link below this error might indicate that the PCI
-device is not responding. I wonder if you are using v1 board?
-
-https://lkml.org/lkml/2007/8/23/41
+AFAIK AR9580 is a 802.11n design and should be supported by ath9k.
+ath10k does not support it.
 
 -- 
 Kalle Valo
