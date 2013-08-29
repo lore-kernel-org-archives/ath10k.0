@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VEfcD-00055y-Nv
- for ath10k@lists.infradead.org; Wed, 28 Aug 2013 13:16:54 +0000
-Received: by mail-bk0-f53.google.com with SMTP id d7so2125286bkh.40
- for <ath10k@lists.infradead.org>; Wed, 28 Aug 2013 06:16:29 -0700 (PDT)
+ id 1VF11U-00017M-8j
+ for ath10k@lists.infradead.org; Thu, 29 Aug 2013 12:08:25 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH v3 1/2] ath10k: update wal_dbg_tx_stats structure with missing
+ parameter.
+Date: Thu, 29 Aug 2013 14:07:39 +0200
+Message-ID: <1377778061-22331-2-git-send-email-bartosz.markowski@tieto.com>
+In-Reply-To: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
+References: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
-In-Reply-To: <877gf6lay7.fsf@kamboji.qca.qualcomm.com>
-References: <1377066854-13981-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-1-git-send-email-michal.kazior@tieto.com>
- <1377507205-5386-5-git-send-email-michal.kazior@tieto.com>
- <87ioyrmx3u.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=ycKd0Z60wHTWHoq7hBz1W2iW+ahjVmc_nFLQmU7-1Bg@mail.gmail.com>
- <877gf6lay7.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 28 Aug 2013 15:16:29 +0200
-Message-ID: <CA+BoTQnkMqL+wOm2R_NjPSFFyb8Y0BdA0hUF6KdGgBiBt9hpfQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] ath10k: fix issues on non-preemptible systems
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gMjggQXVndXN0IDIwMTMgMDY6MDIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4+IFRoZXJlJ3MgYW5vdGhlciBzb2x1dGlvbiB0aGF0IEkgaGFkIGluIG1pbmQuIEluc3Rl
-YWQgb2Y6Cj4+Cj4+ICAgZm9yICg7OykgeyBkZXF1ZXVlKHopOyBwcm9jZXNzOyB9Cj4+Cj4+IEkg
-ZGlkOgo+Pgo+PiAgIHEgPSBkZXF1ZXVlX2FsbCh6KTsgZm9yICg7OykgeyBkZXF1ZXVlKHEpOyBw
-cm9jZXNzOyB9Cj4+Cj4+IEkuZS4gbW92ZSBhbGwgcXVldWVkIHN0dWZmIGF0IHRoZSB3b3JrZXIg
-ZW50cnkgYW5kIG1vdmUgaXQgb3V0IG9mIHRoZQo+PiBnbG9iYWwgcXVldWUsIHRoYXQgY2FuLCBh
-bmQgd2lsbCBiZSwgaGF2aW5nIG1vcmUgc3R1ZmYgcXVldWVkIHdoaWxlCj4+IHRoZSB3b3JrZXIg
-ZG9lcyBpdHMgam9iKS4KPj4KPj4gVGhpcyB3YXkgd29ya2VycyB3b3VsZCBleGl0L3Jlc3RhcnQg
-bW9yZSBvZnRlbiwgYnV0IGZyb20gd2hhdCBJIHRlc3RlZAo+PiBpdCBkaWRuJ3QgcmVhbGx5IHNv
-bHZlIHRoZSBwcm9ibGVtLiBHaXZlbiBlbm91Z2ggdHJhZmZpYyBIVEMgd29ya2VyCj4+IHJlc3Bv
-bnNpYmxlIGZvciBIVFQgVFggZ2V0cyBvdmVyd2hlbG1lZCBldmVudHVhbGx5LiBZb3UgY291bGQg
-dHJ5Cj4+IGxpbWl0IGhvdyBtYW55IGZyYW1lcyBhIHdvcmtlciBjYW4gcHJvY2VzcyBkdXJpbmcg
-b25lIGV4ZWN1dGlvbiwgYnV0Cj4+IGhvdyBkbyB5b3UgZ3Vlc3MgdGhhdD8gVGhpcyBzdGFydmF0
-aW9uIGRlcGVuZHMgb24gaG93IGZhc3QgeW91ciBDUFUKPj4gaXMuCj4KPiBJIHRoaW5rIHdlIHNo
-b3VsZCBjb21lIHVwIHdpdGggYmV0dGVyIHdheXMgdG8gaGFuZGxlIHRoaXMuIFRvIGhhdmUgYQo+
-IHF1b3RhIChsaWtlIHlvdSBtZW50aW9uIGFib3ZlKSB3b3VsZCBiZSBvbmUgb3B0aW9uLiBPdGhl
-ciBvcHRpb24gd291bGQKPiBiZSB0byBoYXZlIG11bHRpcGxlIHF1ZXVlcyBhbmQgc29tZSBzb3J0
-IG9mIHByaW9yaXNhdGlvbiBvciBmYWlyCj4gcXVldWVpbmcuCgpIYXZpbmcgcXVvdGEgd2lsbCBu
-b3QgaGVscCBoZXJlIGluIGFueSB3YXkuIFlvdSBjYW4gcmUtcXVldWUgYSB3b3JrZXIKYWZ0ZXIg
-ZWFjaCBzaW5nbGUgZnJhbWUgYW5kIGF2b2lkIFdNSSBzdGFydmF0aW9uLCBob3dldmVyIHlvdSBj
-YW4Kc3RpbGwgc3RhcnZlIHRoZSByZXN0IG9mIHRoZSBzeXN0ZW0gKGFuZCB0aGF0IGNhbiBsZWFk
-IHRvIHN5c3RlbSByZXNldAp2aWEgd2F0Y2hkb2cpLiBJJ20gYWxzbyB1bnN1cmUgYWJvdXQgdGhl
-IG92ZXJoZWFkIHF1ZXVlaW5nIGEgd29yayBtYXkKaGF2ZSAob24gYSB1UCBzeXN0ZW0gd2l0aG91
-dCBwcmVlbXB0aW9uIGluIG1pZ2h0IGJlIG5lZ2xpZ2libGUsIGJ1dAp3aGF0IGFib3V0IG90aGVy
-IHN5c3RlbXM/KSwgc28geW91J2QgaGF2ZSB0byBndWVzcyB0aGUgcXVvdGEgc2l6ZSBvcgplbHNl
-IHlvdSdkIGdldCBpbmNyZWFzZWQgbGF0ZW5jeS9vdmVyaGVhZCBhbmQgcGVyaGFwcyBzbG93ZXIK
-cGVyZm9ybWFuY2UuCgpJIGJlbGlldmUgY29uZF9yZXNjaGVkIGlzIGEgc29sdXRpb24sIG5vdCBh
-IHdvcmthcm91bmQuIFNsb3cgc3lzdGVtcwp3aXRob3V0IHByZWVtcHRpb24gbmVlZCB0aGlzLiBJ
-IHdvbmRlciBob3cgb3RoZXIgZHJpdmVycyBnb3QgYXJvdW5kCml0PyBPciBwZXJoYXBzIG5vbmUg
-b2YgdGhlIG90aGVyIGRyaXZlcnMgaGFkIHRvIGRlYWwgd2l0aCByZWFsbHkKaW5zdWZmaWNpZW50
-IG51bWJlciBvZiBDUFUgY3ljbGVzIHZlcnN1cyBsb3RzIG9mIHdvcmsuCgpXZSBjb3VsZCBwZXJo
-YXBzIG1vdmUgd29ya2VycyBvdXQgb2YgSFRDIGFuZCBoYXZlIGEgc2luZ2xlIFRYIHdvcmtlcgpp
-biBjb3JlLmMgZm9yIGJvdGggV01JIGFuZCBIVFQgdGhhdCB3b3VsZCBwcmlvcml0aXplIFdNSSwg
-YmVmb3JlCnRyeWluZyBIVFQuIFRoaXMgY291bGQgaGVscCBndWFyYW50ZWUgdGhhdCBhbGwgYmVh
-Y29ucyAod2hpY2ggZ28KdGhyb3VnaCBXTUkpIGFyZSBzZW50IGluIGEgdGltZWx5IGZhc2hpb24g
-aW4gcmVzcG9uc2UgdG8gU1dCQSBldmVudC4KQnV0IHRoYXQgd29uJ3QgZml4IHRoZSBvdmVyYWxs
-IHN5c3RlbSBzdGFydmF0aW9uLgoKCj4gQW5kIG1vc3QgaW1wb3J0YW50bHkgb2YgYWxsLCB3ZSBz
-aG91bGQgbWluaW1pc2UgdGhlIGxlbmdodCBvZiBxdWV1ZSB3ZQo+IGhhdmUgaW5zaWRlIGF0aDEw
-ay4gSSdtIHdvcnJpZWQgdGhhdCB3ZSBxdWV1ZSB3YXkgdG9vIG1hbnkgcGFja2V0cwo+IHdpdGhp
-biBhdGgxMGsgcmlnaHQgbm93LgoKRmVsaXggcG9pbnRlZCB0aGF0IG91dCBxdWl0ZSBzb21lIHRp
-bWUgYWdvLiBJIHdvdWxkIGFncmVlIGJ1dCBJJ20KYWZmcmFpZCB5b3UnbGwgaHVydCBwZXJmb3Jt
-YW5jZSBpZiB5b3UgZGVjcmVhc2UgdGhlIHF1ZXVlIGRlcHRoLiBUaGVyZQpzZWVtcyB0byBiZSBz
-b21lIGtpbmQgb2YgbGF0ZW5jeSB0aGluZyBnb2luZyBvbiAoZWl0aGVyIG9uIGhvc3QsIG9yIG9u
-CmZpcm13YXJlL2hhcmR3YXJlLCBvciBib3RoIGNvbWJpbmVkKS4gSSB0cmllZCBkZWNyZWFzaW5n
-IEhUVCBUWCByaW5nCmJ1ZmZlciBmcm9tIDIwNDggdG8gMjU2LiBJbiByZXN1bHQgb24gQVAxMzUg
-VURQIFRYIGdvdCB0cmltbWVkIGF0Cn4zMzBtYnBzIG1heC4gU3R1ZmZpbmcgbW9yZSB0aHJvdWdo
-cHV0IGV2ZW4gbGVmdCBzb21lIGlkbGUgQ1BVIGN5Y2xlcy4KSWYgeW91IGNvbnNpZGVyIDN4MyBk
-ZXZpY2VzIHRoYXQgYXJlIHN1cHBvc2VkIHRvIGdldCB5b3UgMS4zZ2JwcywgdGhlbgp5b3UgYXBw
-YXJlbnRseSBuZWVkIHRoYXQgMjA0OCBkZXB0aC4KCgpNaWNoYcWCLgoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+It's very imporatant to keep these structs up to date with FW abi,
+due to the arithmetic we use while read the fw_stats.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 08860c4..5b94707 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1767,6 +1767,9 @@ struct wal_dbg_tx_stats {
+ 	/* wal pdev resets  */
+ 	__le32 pdev_resets;
+ 
++	/* frames dropped due to non-availability of stateless TIDs */
++	__le32 stateless_tid_alloc_failure;
++
+ 	__le32 phy_underrun;
+ 
+ 	/* MPDU is more than txop limit */
+-- 
+1.7.10
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
