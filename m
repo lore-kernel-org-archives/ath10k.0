@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VF11U-00017M-8j
+ id 1VF11U-00017N-8M
  for ath10k@lists.infradead.org; Thu, 29 Aug 2013 12:08:25 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v3 1/2] ath10k: update wal_dbg_tx_stats structure with missing
- parameter.
-Date: Thu, 29 Aug 2013 14:07:39 +0200
-Message-ID: <1377778061-22331-2-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v3 0/2] add per-VDEV FW statistics
+Date: Thu, 29 Aug 2013 14:07:38 +0200
+Message-ID: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,28 +23,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-It's very imporatant to keep these structs up to date with FW abi,
-due to the arithmetic we use while read the fw_stats.
+FW 1.0.0.716 brings per-VDEV statistics. This patch-set implements
+debugfs mechanism to fetch those. There's still few more fileds we
+can read from the FW stats event, which are not covered here.
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
- 1 file changed, 3 insertions(+)
+Changes:
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 08860c4..5b94707 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1767,6 +1767,9 @@ struct wal_dbg_tx_stats {
- 	/* wal pdev resets  */
- 	__le32 pdev_resets;
- 
-+	/* frames dropped due to non-availability of stateless TIDs */
-+	__le32 stateless_tid_alloc_failure;
-+
- 	__le32 phy_underrun;
- 
- 	/* MPDU is more than txop limit */
+V2:
+* introduce wmi_peer_stats_common struct
+* fetch and print peer RX rates
+* break up wmi_peer_stats_common update into separate patch
+
+V3:
+* rebase
+* fix sparse endianness warnings
+
+Bartosz Markowski (2):
+  ath10k: update wal_dbg_tx_stats structure with missing parameter.
+  ath10k: implement per-VDEV FW statistics
+
+ drivers/net/wireless/ath/ath10k/core.h  |   27 ++++++++++
+ drivers/net/wireless/ath/ath10k/debug.c |   78 ++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi.c   |    4 +-
+ drivers/net/wireless/ath/ath10k/wmi.h   |   90 ++++++++++++++++++++++++++-----
+ 4 files changed, 173 insertions(+), 26 deletions(-)
+
 -- 
 1.7.10
 
