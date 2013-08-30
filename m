@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VF11V-00017M-U7
- for ath10k@lists.infradead.org; Thu, 29 Aug 2013 12:08:27 +0000
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v3 2/2] ath10k: implement per-VDEV FW statistics
-Date: Thu, 29 Aug 2013 14:07:40 +0200
-Message-ID: <1377778061-22331-3-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1VFIxW-00066z-W0
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2013 07:17:33 +0000
+Subject: [PATCH] ath10k: check chip id from the soc register during probe
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Fri, 30 Aug 2013 10:17:03 +0300
+Message-ID: <20130830071703.14206.21974.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,358 +21,93 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org
 
-The WMI_REQUEST_PEER_STAT command with latst (1.0.0.716) FW
-can return per-VDEV statistics. Using debugfs we can fetch this info now.
+ath10k doesn't support qca988x hw1.0 boards anymore. Unfortunately
+the PCI id is the same in hw1.0 and hw2.0 so ath10k tries to use
+hw1.0 boards anyway. But without hw1.0 workarounds in place
+ath10k just crashes horribly.
 
-This is a backward compatible change. In case of older FW the VDEV
-statistics are simply not returned.
+To avoid using hw1.0 boards at all add a chip id detection
+to ath10k_pci_probe() and fail the probe if hw1.0 id is found.
+Also add a warning if there's an unknown chip id but continue
+the boot process normally anyway.
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  |   27 ++++++++++
- drivers/net/wireless/ath/ath10k/debug.c |   78 ++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c   |    4 +-
- drivers/net/wireless/ath/ath10k/wmi.h   |   87 ++++++++++++++++++++++++++-----
- 4 files changed, 170 insertions(+), 26 deletions(-)
+ drivers/net/wireless/ath/ath10k/hw.h  |    5 +++++
+ drivers/net/wireless/ath/ath10k/pci.c |   26 +++++++++++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index ab05c4c..523c79d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -119,10 +119,32 @@ struct ath10k_wmi {
- 	struct work_struct wmi_event_work;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5708888..933d05d 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -26,8 +26,12 @@
+ #define SUPPORTED_FW_RELEASE	0
+ #define SUPPORTED_FW_BUILD	636
  
-+struct ath10k_snr_info {
-+	s32 beacon_snr;
-+	s32 data_snr;
-+};
++/* QCA988X 1.0 definitions (unsupported) */
++#define QCA988X_HW_1_0_CHIP_ID		0x043000ff
 +
-+struct ath10k_vdev_stat {
-+	u32 vdev_id;
-+	struct ath10k_snr_info vdev_snr;
-+	u32 tx_frames_count[MAX_AC];
-+	u32 rx_frames_count;
-+	u32 multiple_retry_cnt[MAX_AC];
-+	u32 fail_count[MAX_AC];
-+	u32 rts_fail_count;
-+	u32 rts_success_count;
-+	u32 rts_err_count;
-+	u32 rx_discard_count;
-+	u32 ack_fail_count;
-+	u32 tx_rate_history[MAX_TX_RATE_VALUES];
-+	u32 bcn_rssi_history[MAX_RSSI_VALUES];
-+};
+ /* QCA988X 2.0 definitions */
+ #define QCA988X_HW_2_0_VERSION		0x4100016c
++#define QCA988X_HW_2_0_CHIP_ID		0x043002ff
+ #define QCA988X_HW_2_0_FW_DIR		"ath10k/QCA988X/hw2.0"
+ #define QCA988X_HW_2_0_FW_FILE		"firmware.bin"
+ #define QCA988X_HW_2_0_OTP_FILE		"otp.bin"
+@@ -163,6 +167,7 @@ enum ath10k_mcast2ucast_mode {
+ #define SOC_LPO_CAL_OFFSET			0x000000e0
+ #define SOC_LPO_CAL_ENABLE_LSB			20
+ #define SOC_LPO_CAL_ENABLE_MASK			0x00100000
++#define SOC_CHIP_ID_ADDRESS			0x000000ec
+ 
+ #define WLAN_RESET_CONTROL_COLD_RST_MASK	0x00000008
+ #define WLAN_RESET_CONTROL_WARM_RST_MASK	0x00000004
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 996efdd..c9e5741a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2290,7 +2290,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	int ret = 0;
+ 	struct ath10k *ar;
+ 	struct ath10k_pci *ar_pci;
+-	u32 lcr_val;
++	u32 lcr_val, chip_id;
+ 
+ 	ath10k_dbg(ATH10K_DBG_PCI, "%s\n", __func__);
+ 
+@@ -2394,6 +2394,30 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	ar_pci->cacheline_sz = dma_get_cache_alignment();
+ 
++	ath10k_do_pci_wake(ar);
++	chip_id = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS + SOC_CHIP_ID_ADDRESS);
++	ath10k_do_pci_sleep(ar);
 +
- struct ath10k_peer_stat {
- 	u8 peer_macaddr[ETH_ALEN];
- 	u32 peer_rssi;
- 	u32 peer_tx_rate;
-+	u32 peer_rx_rate;
- };
- 
- struct ath10k_target_stats {
-@@ -176,6 +198,8 @@ struct ath10k_target_stats {
- 	s32 mpdu_errs;
- 
- 	/* VDEV STATS */
-+	struct ath10k_vdev_stat vdev_stat[TARGET_NUM_VDEVS];
-+	u8 vdevs;
- 
- 	/* PEER STATS */
- 	u8 peers;
-@@ -274,6 +298,9 @@ enum ath10k_fw_features {
- 	/* wmi_mgmt_rx_hdr contains extra RSSI information */
- 	ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX = 0,
- 
-+	/* firmware support per-VEDV statistics */
-+	ATH10K_FW_FEATURE_VDEV_STATS = 1,
++	/* Check that we are not using hw1.0 (some of them have same pci id
++	 * as hw2.0) before doing anything else as ath10k crashes horribly
++	 * due to missing hw1.0 workarounds. */
++	switch (chip_id) {
++	case QCA988X_HW_1_0_CHIP_ID:
++		ath10k_err("ERROR: qca988x hw1.0 (0x%08x) is not supported\n",
++			   chip_id);
++		ret = -EOPNOTSUPP;
++		goto err_iomap;
 +
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index fcb40cc..0f2b169 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -228,34 +228,59 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 		tmp += sizeof(struct wmi_pdev_stats);
- 	}
- 
--	/* 0 or max vdevs */
--	/* Currently firmware does not support VDEV stats */
- 	if (num_vdev_stats) {
- 		struct wmi_vdev_stats *vdev_stats;
-+		struct ath10k_vdev_stat *s;
++	case QCA988X_HW_2_0_CHIP_ID:
++		/* known chip id, continue normally */
++		break;
 +
-+		stats->vdevs = num_vdev_stats;
- 
- 		for (i = 0; i < num_vdev_stats; i++) {
- 			vdev_stats = (struct wmi_vdev_stats *)tmp;
-+			s = &stats->vdev_stat[i];
-+
-+			s->vdev_id = __le32_to_cpu(vdev_stats->vdev_id);
-+			s->vdev_snr.beacon_snr =
-+				__le32_to_cpu(vdev_stats->vdev_snr.beacon_snr);
-+			s->vdev_snr.data_snr =
-+				__le32_to_cpu(vdev_stats->vdev_snr.data_snr);
-+
-+			/* TODO:read remaining vdev stats */
-+
- 			tmp += sizeof(struct wmi_vdev_stats);
- 		}
- 	}
- 
- 	if (num_peer_stats) {
--		struct wmi_peer_stats *peer_stats;
- 		struct ath10k_peer_stat *s;
-+		struct wmi_peer_stats_1 *peer_stats_1;
-+		struct wmi_peer_stats_2 *peer_stats_2;
- 
- 		stats->peers = num_peer_stats;
- 
- 		for (i = 0; i < num_peer_stats; i++) {
--			peer_stats = (struct wmi_peer_stats *)tmp;
-+			peer_stats_1 = (struct wmi_peer_stats_1 *)tmp;
-+
- 			s = &stats->peer_stat[i];
- 
--			WMI_MAC_ADDR_TO_CHAR_ARRAY(&peer_stats->peer_macaddr,
--						   s->peer_macaddr);
--			s->peer_rssi = __le32_to_cpu(peer_stats->peer_rssi);
-+			WMI_MAC_ADDR_TO_CHAR_ARRAY(
-+				&peer_stats_1->common.peer_macaddr,
-+				s->peer_macaddr);
-+			s->peer_rssi =
-+				__le32_to_cpu(peer_stats_1->common.peer_rssi);
- 			s->peer_tx_rate =
--				__le32_to_cpu(peer_stats->peer_tx_rate);
--
--			tmp += sizeof(struct wmi_peer_stats);
-+				__le32_to_cpu(peer_stats_1->common.peer_tx_rate);
-+
-+			if (test_bit(ATH10K_FW_FEATURE_VDEV_STATS,
-+				     ar->fw_features)) {
-+				peer_stats_2 = (struct wmi_peer_stats_2 *)tmp;
-+				s->peer_rx_rate =
-+				    __le32_to_cpu(peer_stats_2->peer_rx_rate);
-+
-+				tmp += sizeof(struct wmi_peer_stats_2);
-+			}
-+			else {
-+				tmp += sizeof(struct wmi_peer_stats_1);
-+			}
- 		}
- 	}
- 
-@@ -269,7 +294,7 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	struct ath10k *ar = file->private_data;
- 	struct ath10k_target_stats *fw_stats;
- 	char *buf = NULL;
--	unsigned int len = 0, buf_len = 2500;
-+	unsigned int len = 0, buf_len = 3000;
- 	ssize_t ret_cnt = 0;
- 	long left;
- 	int i;
-@@ -407,6 +432,27 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	len += scnprintf(buf + len, buf_len - len, "%30s %10d\n",
- 			 "MPDU errors (FCS, MIC, ENC)", fw_stats->mpdu_errs);
- 
-+	if (fw_stats->vdevs) {
-+		len += scnprintf(buf + len, buf_len - len, "\n");
-+		len += scnprintf(buf + len, buf_len - len, "%30s\n",
-+				 "ath10k VDEV stats");
-+		len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
-+				 "=================");
++	default:
++		ath10k_warn("Warning: chip id 0x%08x is not known, expect problems\n",
++			   chip_id);
++		break;
 +	}
-+
-+	for (i = 0; i < fw_stats->vdevs; i++) {
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "VDEV ID", fw_stats->vdev_stat[i].vdev_id);
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "Beacon SNR",
-+				 fw_stats->vdev_stat[i].vdev_snr.beacon_snr);
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+				 "Data SNR",
-+				 fw_stats->vdev_stat[i].vdev_snr.data_snr);
-+		len += scnprintf(buf + len, buf_len - len, "\n");
-+	}
-+
-+
- 	len += scnprintf(buf + len, buf_len - len, "\n");
- 	len += scnprintf(buf + len, buf_len - len, "%30s\n",
- 			 "ath10k PEER stats");
-@@ -417,11 +463,17 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 		len += scnprintf(buf + len, buf_len - len, "%30s %pM\n",
- 				 "Peer MAC address",
- 				 fw_stats->peer_stat[i].peer_macaddr);
--		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
- 				 "Peer RSSI", fw_stats->peer_stat[i].peer_rssi);
--		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
-+		len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
- 				 "Peer TX rate",
- 				 fw_stats->peer_stat[i].peer_tx_rate);
-+
-+		if (test_bit(ATH10K_FW_FEATURE_VDEV_STATS, ar->fw_features))
-+			len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
-+					 "Peer RX rate",
-+					 fw_stats->peer_stat[i].peer_rx_rate);
-+
- 		len += scnprintf(buf + len, buf_len - len, "\n");
- 	}
- 	spin_unlock_bh(&ar->data_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 32fd5e7..3ebab3d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -957,8 +957,10 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
- 	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
- 
--	if (ar->fw_version_build > 636)
-+	if (ar->fw_version_build > 636) {
- 		set_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features);
-+		set_bit(ATH10K_FW_FEATURE_VDEV_STATS, ar->fw_features);
-+	}
- 
- 	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
- 		ath10k_warn("hardware advertises support for more spatial streams than it should (%d > %d)\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 5b94707..99c7ba1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -60,6 +60,11 @@
-  *
-  */
- 
-+#define MAX_AC 4 /* Maximum value of access category */
-+
-+#define MAX_TX_RATE_VALUES      10 /* Max Tx rates */
-+#define MAX_RSSI_VALUES         10 /* Max RSSI values */
-+
- /* Control Path */
- struct wmi_cmd_hdr {
- 	__le32 cmd_id;
-@@ -1828,11 +1833,10 @@ enum wmi_stats_id {
- 
- struct wmi_request_stats_cmd {
- 	__le32 stats_id;
--
--	/*
--	 * Space to add parameters like
--	 * peer mac addr
--	 */
-+	/* unique id identifying the VDEV, generated by the caller */
-+	__le32 vdev_id;
-+	/* peer MAC address */
-+	struct wmi_mac_addr peer_macaddr;
- } __packed;
- 
- /* Suspend option */
-@@ -1881,7 +1885,6 @@ struct wmi_stats_event {
- 
- /*
-  * PDEV statistics
-- * TODO: add all PDEV stats here
-  */
- struct wmi_pdev_stats {
- 	__le32 chan_nf;        /* Channel noise floor */
-@@ -1894,24 +1897,84 @@ struct wmi_pdev_stats {
- 	struct wal_dbg_stats wal; /* WAL dbg stats */
- } __packed;
- 
--/*
-- * VDEV statistics
-- * TODO: add all VDEV stats here
-- */
-+struct wmi_snr_info {
-+	__le32 beacon_snr;
-+	__le32 data_snr;
-+} __packed;
-+
- struct wmi_vdev_stats {
-+	/* unique id identifying the VDEV, generated by the caller */
- 	__le32 vdev_id;
-+	struct wmi_snr_info vdev_snr;
-+	/*
-+	 * Total number of packets(per AC) that were successfully transmitted
-+	 * (with and without retries, including multi-cast, broadcast)
-+	 */
-+	__le32 tx_frm_cnt[MAX_AC];
-+	/*
-+	 * Total number of packets that were successfully received
-+	 * (after appropriate filter rules including multi-cast, broadcast)
-+	 */
-+	__le32 rx_frm_cnt;
-+	/*
-+	 * The number of MSDU packets and MMPDU frames per AC that the 802.11
-+	 * station successfully transmitted after more than one retransmission
-+	 * attempt
-+	 */
-+	__le32 multiple_retry_cnt[MAX_AC];
-+	/* Total number packets(per AC) failed to transmit */
-+	__le32 fail_cnt[MAX_AC];
-+	/*
-+	 * Total number of RTS/CTS sequence failures for transmission of a
-+	 * packet
-+	 */
-+	__le32 rts_fail_cnt;
-+	/*
-+	 * Total number of RTS/CTS sequence success for transmission of a
-+	 * packet
-+	 */
-+	__le32 rts_succ_cnt;
-+	/*
-+	 * The receive error count.
-+	 * HAL will provide the RxP FCS error global
-+	 */
-+	__le32 rx_err_cnt;
-+	/*
-+	 * The sum of the receive error count and dropped-receive-buffer
-+	 * error count. (FCS error)
-+	 */
-+	__le32 rx_discard_cnt;
-+	/*
-+	 * Total number packets failed transmit because of no ACK
-+	 * from the remote entity
-+	 */
-+	__le32 ack_fail_cnt;
-+	/* History of last ten transmit rate, in units of 500 kbit/sec */
-+	__le32 tx_rate_history[MAX_TX_RATE_VALUES];
-+	/* History of last ten Beacon rssi of the connected Bss */
-+	__le32 bcn_rssi_history[MAX_RSSI_VALUES];
- } __packed;
- 
- /*
-  * peer statistics.
-- * TODO: add more stats
-  */
--struct wmi_peer_stats {
-+struct wmi_peer_stats_common {
- 	struct wmi_mac_addr peer_macaddr;
- 	__le32 peer_rssi;
- 	__le32 peer_tx_rate;
- } __packed;
- 
-+struct wmi_peer_stats_1 {
-+	struct wmi_peer_stats_common common;
-+} __packed;
-+
-+
-+struct wmi_peer_stats_2 {
-+	struct wmi_peer_stats_common common;
-+	__le32 peer_rx_rate;
-+} __packed;
-+
-+
- struct wmi_vdev_create_cmd {
- 	__le32 vdev_id;
- 	__le32 vdev_type;
--- 
-1.7.10
++	
+ 	ret = ath10k_core_register(ar);
+ 	if (ret) {
+ 		ath10k_err("could not register driver core (%d)\n", ret);
 
 
 _______________________________________________
