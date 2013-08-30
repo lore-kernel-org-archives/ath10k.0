@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFNqz-0005Ag-9m
- for ath10k@lists.infradead.org; Fri, 30 Aug 2013 12:31:06 +0000
-Subject: [PATCH 6/7] ath10k: convert ath10k_pci_wake() to return
+ id 1VFNr4-0005Ao-9c
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2013 12:31:10 +0000
+Subject: [PATCH 7/7] ath10k: simplify ath10k_ce_init() wake up handling
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 30 Aug 2013 15:30:43 +0300
-Message-ID: <20130830123043.31164.98926.stgit@localhost6.localdomain6>
+Date: Fri, 30 Aug 2013 15:30:50 +0300
+Message-ID: <20130830123050.31164.87942.stgit@localhost6.localdomain6>
 In-Reply-To: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
 References: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -25,197 +25,102 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-We should not try to access hw if wakeup fails so add
-proper error checking for that. Also add the timeout lenght
-to the warning message.
+ath10k_ce_init() and the functions it calls wakeup
+the chip multiple times. Simplify that to call
+ath10k_pci_wake() only once. This also makes it
+easier to add error handling when wakeup fails.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  |   43 ++++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/pci.c |   11 +++++---
- drivers/net/wireless/ath/ath10k/pci.h |    8 ++++--
- 3 files changed, 45 insertions(+), 17 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c |   14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 496baa2..0f6735a 100644
+index 0f6735a..96c62a2 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.c
 +++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -277,7 +277,9 @@ static int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
- 		ath10k_warn("%s: send more we can (nbytes: %d, max: %d)\n",
- 			    __func__, nbytes, ce_state->src_sz_max);
+@@ -946,7 +946,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 	src_ring->nentries = nentries;
+ 	src_ring->nentries_mask = nentries - 1;
  
 -	ath10k_pci_wake(ar);
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return ret;
+ 	src_ring->sw_index = ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
+ 	src_ring->sw_index &= src_ring->nentries_mask;
+ 	src_ring->hw_index = src_ring->sw_index;
+@@ -954,7 +953,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 	src_ring->write_index =
+ 		ath10k_ce_src_ring_write_index_get(ar, ctrl_addr);
+ 	src_ring->write_index &= src_ring->nentries_mask;
+-	ath10k_pci_sleep(ar);
  
- 	if (unlikely(CE_RING_DELTA(nentries_mask,
- 				   write_index, sw_index - 1) <= 0)) {
-@@ -419,7 +421,9 @@ int ath10k_ce_recv_buf_enqueue(struct ath10k_ce_pipe *ce_state,
- 	write_index = dest_ring->write_index;
- 	sw_index = dest_ring->sw_index;
+ 	src_ring->per_transfer_context = (void **)ptr;
+ 
+@@ -1004,7 +1002,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 			src_ring->shadow_base_unaligned,
+ 			CE_DESC_RING_ALIGN);
  
 -	ath10k_pci_wake(ar);
+ 	ath10k_ce_src_ring_base_addr_set(ar, ctrl_addr,
+ 					 src_ring->base_addr_ce_space);
+ 	ath10k_ce_src_ring_size_set(ar, ctrl_addr, nentries);
+@@ -1012,7 +1009,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 	ath10k_ce_src_ring_byte_swap_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_src_ring_lowmark_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_src_ring_highmark_set(ar, ctrl_addr, nentries);
+-	ath10k_pci_sleep(ar);
+ 
+ 	return 0;
+ }
+@@ -1049,13 +1045,11 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 	dest_ring->nentries = nentries;
+ 	dest_ring->nentries_mask = nentries - 1;
+ 
+-	ath10k_pci_wake(ar);
+ 	dest_ring->sw_index = ath10k_ce_dest_ring_read_index_get(ar, ctrl_addr);
+ 	dest_ring->sw_index &= dest_ring->nentries_mask;
+ 	dest_ring->write_index =
+ 		ath10k_ce_dest_ring_write_index_get(ar, ctrl_addr);
+ 	dest_ring->write_index &= dest_ring->nentries_mask;
+-	ath10k_pci_sleep(ar);
+ 
+ 	dest_ring->per_transfer_context = (void **)ptr;
+ 
+@@ -1090,14 +1084,12 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 			dest_ring->base_addr_ce_space_unaligned,
+ 			CE_DESC_RING_ALIGN);
+ 
+-	ath10k_pci_wake(ar);
+ 	ath10k_ce_dest_ring_base_addr_set(ar, ctrl_addr,
+ 					  dest_ring->base_addr_ce_space);
+ 	ath10k_ce_dest_ring_size_set(ar, ctrl_addr, nentries);
+ 	ath10k_ce_dest_ring_byte_swap_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_dest_ring_lowmark_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_dest_ring_highmark_set(ar, ctrl_addr, nentries);
+-	ath10k_pci_sleep(ar);
+ 
+ 	return 0;
+ }
+@@ -1138,6 +1130,10 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
+ 	u32 ctrl_addr = ath10k_ce_base_address(ce_id);
+ 	int ret;
+ 
 +	ret = ath10k_pci_wake(ar);
 +	if (ret)
-+		goto out;
- 
- 	if (CE_RING_DELTA(nentries_mask, write_index, sw_index - 1) > 0) {
- 		struct ce_desc *base = dest_ring->base_addr_owner_space;
-@@ -441,6 +445,8 @@ int ath10k_ce_recv_buf_enqueue(struct ath10k_ce_pipe *ce_state,
- 		ret = -EIO;
++		return NULL;
++
+ 	ce_state = ath10k_ce_init_state(ar, ce_id, attr);
+ 	if (!ce_state) {
+ 		ath10k_err("Failed to initialize CE state for ID: %d\n", ce_id);
+@@ -1165,8 +1161,8 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
  	}
+ 
+ 	/* Enable CE error interrupts */
+-	ath10k_pci_wake(ar);
+ 	ath10k_ce_error_intr_enable(ar, ctrl_addr);
++
  	ath10k_pci_sleep(ar);
-+
-+out:
- 	spin_unlock_bh(&ar_pci->ce_lock);
  
- 	return ret;
-@@ -596,6 +602,7 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
- 	unsigned int sw_index = src_ring->sw_index;
- 	struct ce_desc *sdesc, *sbase;
- 	unsigned int read_index;
-+	int ret;
- 
- 	if (src_ring->hw_index == sw_index) {
- 		/*
-@@ -605,10 +612,15 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
- 		 * the SW has really caught up to the HW, or if the cached
- 		 * value of the HW index has become stale.
- 		 */
--		ath10k_pci_wake(ar);
-+
-+		ret = ath10k_pci_wake(ar);
-+		if (ret)
-+			return ret;
-+
- 		src_ring->hw_index =
- 			ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
- 		src_ring->hw_index &= nentries_mask;
-+
- 		ath10k_pci_sleep(ar);
- 	}
- 
-@@ -735,8 +747,12 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
- 	unsigned int nbytes;
- 	unsigned int id;
- 	unsigned int flags;
-+	int ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return;
- 
--	ath10k_pci_wake(ar);
- 	spin_lock_bh(&ar_pci->ce_lock);
- 
- 	/* Clear the copy-complete interrupts that will be handled here. */
-@@ -795,10 +811,13 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
- void ath10k_ce_per_engine_service_any(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int ce_id;
-+	int ce_id, ret;
- 	u32 intr_summary;
- 
--	ath10k_pci_wake(ar);
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return;
-+
- 	intr_summary = CE_INTERRUPT_SUMMARY(ar);
- 
- 	for (ce_id = 0; intr_summary && (ce_id < ar_pci->ce_count); ce_id++) {
-@@ -826,8 +845,11 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
- {
- 	u32 ctrl_addr = ce_state->ctrl_addr;
- 	struct ath10k *ar = ce_state->ar;
-+	int ret;
- 
--	ath10k_pci_wake(ar);
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return;
- 
- 	if ((!disable_copy_compl_intr) &&
- 	    (ce_state->send_cb || ce_state->recv_cb))
-@@ -843,9 +865,12 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
- void ath10k_ce_disable_interrupts(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	int ce_id;
-+	int ce_id, ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return;
- 
--	ath10k_pci_wake(ar);
- 	for (ce_id = 0; ce_id < ar_pci->ce_count; ce_id++) {
- 		struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
- 		u32 ctrl_addr = ce_state->ctrl_addr;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 61f4086..66ca652 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -537,7 +537,7 @@ static void ath10k_pci_wait(struct ath10k *ar)
- 		ath10k_warn("Unable to wakeup target\n");
- }
- 
--void ath10k_do_pci_wake(struct ath10k *ar)
-+int ath10k_do_pci_wake(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	void __iomem *pci_addr = ar_pci->mem;
-@@ -553,18 +553,19 @@ void ath10k_do_pci_wake(struct ath10k *ar)
- 	atomic_inc(&ar_pci->keep_awake_count);
- 
- 	if (ar_pci->verified_awake)
--		return;
-+		return 0;
- 
- 	for (;;) {
- 		if (ath10k_pci_target_is_awake(ar)) {
- 			ar_pci->verified_awake = true;
--			break;
-+			return 0;
- 		}
- 
- 		if (tot_delay > PCIE_WAKE_TIMEOUT) {
--			ath10k_warn("target takes too long to wake up (awake count %d)\n",
-+			ath10k_warn("target took longer %d us to wake up (awake count %d)\n",
-+				    PCIE_WAKE_TIMEOUT,
- 				    atomic_read(&ar_pci->keep_awake_count));
--			break;
-+			return -ETIMEDOUT;
- 		}
- 
- 		udelay(curr_delay);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index 5c0f9aa..49aff20 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -325,15 +325,17 @@ static inline u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
- 	return ioread32(ar_pci->mem + offset);
- }
- 
--void ath10k_do_pci_wake(struct ath10k *ar);
-+int ath10k_do_pci_wake(struct ath10k *ar);
- void ath10k_do_pci_sleep(struct ath10k *ar);
- 
--static inline void ath10k_pci_wake(struct ath10k *ar)
-+static inline int ath10k_pci_wake(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
- 	if (test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
--		ath10k_do_pci_wake(ar);
-+		return ath10k_do_pci_wake(ar);
-+
-+	return 0;
- }
- 
- static inline void ath10k_pci_sleep(struct ath10k *ar)
+ 	return ce_state;
 
 
 _______________________________________________
