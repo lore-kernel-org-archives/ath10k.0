@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFJ9K-0006Kq-C9
- for ath10k@lists.infradead.org; Fri, 30 Aug 2013 07:29:42 +0000
+ id 1VFNqL-00057E-10
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2013 12:30:26 +0000
+Subject: [PATCH 0/7] ath10k: pci cleanup
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Crash when loading module
-References: <CABQkniCRG=UhP2TtKRxC5tquoCoMfuVsuGPPz=zGVKzUcakGxw@mail.gmail.com>
- <87fvtujrtg.fsf@kamboji.qca.qualcomm.com>
- <CABQkniBk-BUJW5Prjzw4J7jh=km15AZkNim523QZ+eU72=oJeQ@mail.gmail.com>
- <87ppsyiavy.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 30 Aug 2013 10:29:14 +0300
-In-Reply-To: <87ppsyiavy.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 28 Aug 2013 09:32:01 +0300")
-Message-ID: <877gf3ab79.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 30 Aug 2013 15:29:59 +0300
+Message-ID: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,39 +20,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Zaki <zaki.bm@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Small PCI related code cleanup. Depends on Michal's CE
+clean patchset.
 
-> Zaki <zaki.bm@gmail.com> writes:
->
->> The PCIe module is taken from Archer C7 V1 product's board.  I am not
->> so sure if it is V2 hardware, though. I just depends on the debugging
->> msg that says it is V2 device.
->>
->> The way i force it to use legacy interrupt is by modifying the code to
->> skip MSI-X and MSI.  The ath10k code is taken from ath.git master
->> branch.
->>
->> Thanks a lot for the link.  If someone can verify that the module on
->> Archer C7 V1 is actually a V1 hardware, then it will be very helpful
->> also.
->
-> To my knowledge Archer C7 has QCA9880 v1. Because the PCI ids are the
-> same I'm not currently aware of any way to detect from ath10k if QCA9880
-> v1 or v2 :(
+---
 
-Found a way now:
+Kalle Valo (7):
+      ath10k: pci: make host_ce_config_wlan[] more readable
+      ath10k: make target_ce_config_wlan more readable
+      ath10k: remove void pointer from struct ath10k_pci_compl
+      ath10k: convert ath10k_pci_reg_read/write32() to take struct ath10k
+      ath10k: clean up ath10k_ce_completed_send_next_nolock()
+      ath10k: convert ath10k_pci_wake() to return
+      ath10k: simplify ath10k_ce_init() wake up handling
 
-http://lists.infradead.org/pipermail/ath10k/2013-August/000279.html
 
-Zaki, I would appreciate if you could test that patch and see if ath10k
-still crashes (it shouldn't). And if you want to provide your full name
-I can add your name to the Reported-by tag.
+ drivers/net/wireless/ath/ath10k/ce.c  |   98 ++++++++++------
+ drivers/net/wireless/ath/ath10k/pci.c |  208 ++++++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/pci.h |   22 ++-
+ 3 files changed, 227 insertions(+), 101 deletions(-)
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
