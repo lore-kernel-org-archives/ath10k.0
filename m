@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFNqY-00057h-On
- for ath10k@lists.infradead.org; Fri, 30 Aug 2013 12:30:39 +0000
-Subject: [PATCH 2/7] ath10k: make target_ce_config_wlan more readable
+ id 1VFNqb-00058P-QJ
+ for ath10k@lists.infradead.org; Fri, 30 Aug 2013 12:30:42 +0000
+Subject: [PATCH 3/7] ath10k: remove void pointer from struct ath10k_pci_compl
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 30 Aug 2013 15:30:14 +0300
-Message-ID: <20130830123014.31164.32755.stgit@localhost6.localdomain6>
+Date: Fri, 30 Aug 2013 15:30:21 +0300
+Message-ID: <20130830123021.31164.8374.stgit@localhost6.localdomain6>
 In-Reply-To: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
 References: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -25,110 +25,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-It's easier to read t if the field names are visible.
+Void pointers are bad, mmkay.
+
+No functional changes.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |   85 ++++++++++++++++++++++++++++-----
- 1 file changed, 71 insertions(+), 14 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c |   12 ++++++------
+ drivers/net/wireless/ath/ath10k/pci.h |    2 +-
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index cf7a3e4..304bd4f 100644
+index 304bd4f..76426bf 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -125,21 +125,78 @@ static const struct ce_attr host_ce_config_wlan[] = {
+@@ -643,7 +643,7 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state,
+ 		compl->state = ATH10K_PCI_COMPL_SEND;
+ 		compl->ce_state = ce_state;
+ 		compl->pipe_info = pipe_info;
+-		compl->transfer_context = transfer_context;
++		compl->skb = transfer_context;
+ 		compl->nbytes = nbytes;
+ 		compl->transfer_id = transfer_id;
+ 		compl->flags = 0;
+@@ -693,7 +693,7 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state,
+ 		compl->state = ATH10K_PCI_COMPL_RECV;
+ 		compl->ce_state = ce_state;
+ 		compl->pipe_info = pipe_info;
+-		compl->transfer_context = transfer_context;
++		compl->skb = transfer_context;
+ 		compl->nbytes = nbytes;
+ 		compl->transfer_id = transfer_id;
+ 		compl->flags = flags;
+@@ -939,7 +939,7 @@ static void ath10k_pci_stop_ce(struct ath10k *ar)
+ 	 * their associated resources */
+ 	spin_lock_bh(&ar_pci->compl_lock);
+ 	list_for_each_entry(compl, &ar_pci->compl_process, list) {
+-		skb = (struct sk_buff *)compl->transfer_context;
++		skb = compl->skb;
+ 		ATH10K_SKB_CB(skb)->is_aborted = true;
+ 	}
+ 	spin_unlock_bh(&ar_pci->compl_lock);
+@@ -960,7 +960,7 @@ static void ath10k_pci_cleanup_ce(struct ath10k *ar)
  
- /* Target firmware's Copy Engine configuration. */
- static const struct ce_pipe_config target_ce_config_wlan[] = {
--	/* host->target HTC control and raw streams */
--	{ /* CE0 */ 0, PIPEDIR_OUT, 32, 256, CE_ATTR_FLAGS, 0,},
--	/* target->host HTT + HTC control */
--	{ /* CE1 */ 1, PIPEDIR_IN, 32, 512, CE_ATTR_FLAGS, 0,},
--	/* target->host WMI */
--	{ /* CE2 */ 2, PIPEDIR_IN, 32, 2048, CE_ATTR_FLAGS, 0,},
--	/* host->target WMI */
--	{ /* CE3 */ 3, PIPEDIR_OUT, 32, 2048, CE_ATTR_FLAGS, 0,},
--	/* host->target HTT */
--	{ /* CE4 */ 4, PIPEDIR_OUT, 256, 256, CE_ATTR_FLAGS, 0,},
-+	/* CE0: host->target HTC control and raw streams */
-+	{
-+		.pipenum = 0,
-+		.pipedir = PIPEDIR_OUT,
-+		.nentries = 32,
-+		.nbytes_max = 256,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
-+	/* CE1: target->host HTT + HTC control */
-+	{
-+		.pipenum = 1,
-+		.pipedir = PIPEDIR_IN,
-+		.nentries = 32,
-+		.nbytes_max = 512,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
-+	/* CE2: target->host WMI */
-+	{
-+		.pipenum = 2,
-+		.pipedir = PIPEDIR_IN,
-+		.nentries = 32,
-+		.nbytes_max = 2048,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
-+	/* CE3: host->target WMI */
-+	{
-+		.pipenum = 3,
-+		.pipedir = PIPEDIR_OUT,
-+		.nentries = 32,
-+		.nbytes_max = 2048,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
-+	/* CE4: host->target HTT */
-+	{
-+		.pipenum = 4,
-+		.pipedir = PIPEDIR_OUT,
-+		.nentries = 256,
-+		.nbytes_max = 256,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
- 	/* NB: 50% of src nentries, since tx has 2 frags */
--	/* unused */
--	{ /* CE5 */ 5, PIPEDIR_OUT, 32, 2048, CE_ATTR_FLAGS, 0,},
--	/* Reserved for target autonomous hif_memcpy */
--	{ /* CE6 */ 6, PIPEDIR_INOUT, 32, 4096, CE_ATTR_FLAGS, 0,},
-+
-+	/* CE5: unused */
-+	{
-+		.pipenum = 5,
-+		.pipedir = PIPEDIR_OUT,
-+		.nentries = 32,
-+		.nbytes_max = 2048,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
-+	/* CE6: Reserved for target autonomous hif_memcpy */
-+	{
-+		.pipenum = 6,
-+		.pipedir = PIPEDIR_INOUT,
-+		.nentries = 32,
-+		.nbytes_max = 4096,
-+		.flags = CE_ATTR_FLAGS,
-+		.reserved = 0,
-+	},
-+
- 	/* CE7 used only by Host */
- };
+ 	list_for_each_entry_safe(compl, tmp, &ar_pci->compl_process, list) {
+ 		list_del(&compl->list);
+-		netbuf = (struct sk_buff *)compl->transfer_context;
++		netbuf = compl->skb;
+ 		dev_kfree_skb_any(netbuf);
+ 		kfree(compl);
+ 	}
+@@ -1014,7 +1014,7 @@ static void ath10k_pci_process_ce(struct ath10k *ar)
+ 		switch (compl->state) {
+ 		case ATH10K_PCI_COMPL_SEND:
+ 			cb->tx_completion(ar,
+-					  compl->transfer_context,
++					  compl->skb,
+ 					  compl->transfer_id);
+ 			send_done = 1;
+ 			break;
+@@ -1026,7 +1026,7 @@ static void ath10k_pci_process_ce(struct ath10k *ar)
+ 				break;
+ 			}
  
+-			skb = (struct sk_buff *)compl->transfer_context;
++			skb = (struct sk_buff *)compl->skb;
+ 			nbytes = compl->nbytes;
+ 
+ 			ath10k_dbg(ATH10K_DBG_PCI,
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index c65fe1b..2e1f422 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -54,7 +54,7 @@ struct ath10k_pci_compl {
+ 	enum ath10k_pci_compl_state state;
+ 	struct ath10k_ce_pipe *ce_state;
+ 	struct ath10k_pci_pipe *pipe_info;
+-	void *transfer_context;
++	struct sk_buff *skb;
+ 	unsigned int nbytes;
+ 	unsigned int transfer_id;
+ 	unsigned int flags;
 
 
 _______________________________________________
