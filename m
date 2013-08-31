@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from phoenix3.szarvasnet.hu ([87.101.127.16] helo=mail.szarvasnet.hu)
+Received: from mail-ea0-f178.google.com ([209.85.215.178])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VFViq-00021W-NF
- for ath10k@lists.infradead.org; Fri, 30 Aug 2013 20:55:14 +0000
-Message-ID: <522104B1.2070004@openwrt.org>
-Date: Fri, 30 Aug 2013 22:46:41 +0200
-From: Gabor Juhos <juhosg@openwrt.org>
+ id 1VFnHX-0007C7-Qq
+ for ath10k@lists.infradead.org; Sat, 31 Aug 2013 15:40:12 +0000
+Received: by mail-ea0-f178.google.com with SMTP id a15so1476944eae.37
+ for <ath10k@lists.infradead.org>; Sat, 31 Aug 2013 08:39:46 -0700 (PDT)
+From: Christian Lamparter <chunkeey@googlemail.com>
+Subject: Re: Re: Crash when loading module
+Date: Sat, 31 Aug 2013 17:31:25 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/7] ath10k: remove void pointer from struct
- ath10k_pci_compl
-References: <20130830122905.31164.50662.stgit@localhost6.localdomain6>
- <20130830123021.31164.8374.stgit@localhost6.localdomain6>
-In-Reply-To: <20130830123021.31164.8374.stgit@localhost6.localdomain6>
+Message-Id: <201308311731.26207.chunkeey@googlemail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +18,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org, kvalo@qca.qualcomm.com
 
-2013.08.30. 14:30 keltez=E9ssel, Kalle Valo =EDrta:
-> Void pointers are bad, mmkay.
-> =
+> Found a way now:
+>
+> http://lists.infradead.org/pipermail/ath10k/2013-August/000279.html
+>
+> Zaki, I would appreciate if you could test that patch and see if ath10k
+> still crashes (it shouldn't). And if you want to provide your full name
+> I can add your name to the Reported-by tag.
 
-> No functional changes.
-> =
+I get this before it crashes now. (This is a QCA-9880-AR1A from TP-Link Archer C7)
 
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/pci.c |   12 ++++++------
->  drivers/net/wireless/ath/ath10k/pci.h |    2 +-
->  2 files changed, 7 insertions(+), 7 deletions(-)
-> =
+[  271.140000] ath10k: Warning: chip id 0x043200ff is not known, expect problems
 
+Could it be, that this is just a typo, or are there several v1.0 chip_ids?
 
-<snip>
+#define QCA988X_HW_1_0_CHIP_ID         0x043000ff
 
-> @@ -1026,7 +1026,7 @@ static void ath10k_pci_process_ce(struct ath10k *ar)
->  				break;
->  			}
->  =
+vs
 
-> -			skb =3D (struct sk_buff *)compl->transfer_context;
-> +			skb =3D (struct sk_buff *)compl->skb;
+#define QCA988X_HW_1_0_CHIP_ID         0x043200ff
 
-The cast can be removed from here as well.
-
->  			nbytes =3D compl->nbytes;
->  =
-
->  			ath10k_dbg(ATH10K_DBG_PCI,
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless=
-/ath/ath10k/pci.h
-> index c65fe1b..2e1f422 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.h
-> +++ b/drivers/net/wireless/ath/ath10k/pci.h
-> @@ -54,7 +54,7 @@ struct ath10k_pci_compl {
->  	enum ath10k_pci_compl_state state;
->  	struct ath10k_ce_pipe *ce_state;
->  	struct ath10k_pci_pipe *pipe_info;
-> -	void *transfer_context;
-> +	struct sk_buff *skb;
->  	unsigned int nbytes;
->  	unsigned int transfer_id;
->  	unsigned int flags;
-> =
-
-> =
-
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> =
-
-
+Regards,
+	Chr
 
 _______________________________________________
 ath10k mailing list
