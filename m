@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VG1PP-0007SB-Sb
- for ath10k@lists.infradead.org; Sun, 01 Sep 2013 06:45:16 +0000
+ id 1VG1fS-0007dE-9c
+ for ath10k@lists.infradead.org; Sun, 01 Sep 2013 07:01:51 +0000
+Subject: [PATCH v2 0/7] ath10k: pci cleanup
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove un ar_pci->cacheline_sz field
-References: <20130802075601.11114.11607.stgit@localhost6.localdomain6>
-Date: Sun, 1 Sep 2013 09:44:49 +0300
-In-Reply-To: <20130802075601.11114.11607.stgit@localhost6.localdomain6> (Kalle
- Valo's message of "Fri, 02 Aug 2013 10:56:01 +0300")
-Message-ID: <87sixp6nxa.fsf@kamboji.qca.qualcomm.com>
+Date: Sun, 01 Sep 2013 10:01:24 +0300
+Message-ID: <20130901070020.14695.16694.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,17 +23,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Small PCI related code cleanup. Depends on Michal's CE
+clean patchset.
 
-> cacheline_sz is not used anywhere and can be removed.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+v2:
 
-I had sent this patch a month ago, but forgot to apply it. It's applied
-now (after fixing a simple conflict).
+o remove unnecessary cast in patch 3 (from Gabor)
 
--- 
-Kalle Valo
+---
+
+Kalle Valo (7):
+      ath10k: pci: make host_ce_config_wlan[] more readable
+      ath10k: make target_ce_config_wlan more readable
+      ath10k: remove void pointer from struct ath10k_pci_compl
+      ath10k: convert ath10k_pci_reg_read/write32() to take struct ath10k
+      ath10k: clean up ath10k_ce_completed_send_next_nolock()
+      ath10k: convert ath10k_pci_wake() to return
+      ath10k: simplify ath10k_ce_init() wake up handling
+
+
+ drivers/net/wireless/ath/ath10k/ce.c  |   98 ++++++++++------
+ drivers/net/wireless/ath/ath10k/pci.c |  208 ++++++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/pci.h |   22 ++-
+ 3 files changed, 227 insertions(+), 101 deletions(-)
+
 
 _______________________________________________
 ath10k mailing list
