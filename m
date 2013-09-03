@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VGmDe-0001Kv-08
- for ath10k@lists.infradead.org; Tue, 03 Sep 2013 08:44:15 +0000
-Subject: [PATCH 0/3] ath10k: HTT stats
+ id 1VGmDi-0001LM-Ob
+ for ath10k@lists.infradead.org; Tue, 03 Sep 2013 08:44:19 +0000
+Subject: [PATCH 1/3] ath10k: add trace event ath10k_htt_stats
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 03 Sep 2013 11:43:48 +0300
-Message-ID: <20130903084302.26199.3538.stgit@localhost6.localdomain6>
+Date: Tue, 03 Sep 2013 11:43:55 +0300
+Message-ID: <20130903084355.26199.33730.stgit@localhost6.localdomain6>
+In-Reply-To: <20130903084302.26199.3538.stgit@localhost6.localdomain6>
+References: <20130903084302.26199.3538.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,26 +25,70 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Adds trace events and a debugfs interface to enable HTT stats
-from firmware.
+For analysing various data path statistics in user space.
 
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    5 ++++-
+ drivers/net/wireless/ath/ath10k/trace.h  |   21 +++++++++++++++++++++
+ 2 files changed, 25 insertions(+), 1 deletion(-)
 
-Kalle Valo (3):
-      ath10k: add trace event ath10k_htt_stats
-      ath10k: implement ath10k_debug_start/stop()
-      ath10k: add htt_stats_enable debugfs file
-
-
- drivers/net/wireless/ath/ath10k/core.c   |    6 +
- drivers/net/wireless/ath/ath10k/core.h   |    3 +
- drivers/net/wireless/ath/ath10k/debug.c  |  121 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h  |   11 +++
- drivers/net/wireless/ath/ath10k/htt.h    |    1 
- drivers/net/wireless/ath/ath10k/htt_rx.c |    5 +
- drivers/net/wireless/ath/ath10k/htt_tx.c |   42 ++++++++++
- drivers/net/wireless/ath/ath10k/trace.h  |   21 +++++
- 8 files changed, 209 insertions(+), 1 deletion(-)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 9bb0ae89..af31d2f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -20,6 +20,7 @@
+ #include "htt.h"
+ #include "txrx.h"
+ #include "debug.h"
++#include "trace.h"
+ 
+ #include <linux/log2.h>
+ 
+@@ -1198,8 +1199,10 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_TEST:
+ 		/* FIX THIS */
+ 		break;
+-	case HTT_T2H_MSG_TYPE_TX_INSPECT_IND:
+ 	case HTT_T2H_MSG_TYPE_STATS_CONF:
++		trace_ath10k_htt_stats(skb->data, skb->len);
++		break;
++	case HTT_T2H_MSG_TYPE_TX_INSPECT_IND:
+ 	case HTT_T2H_MSG_TYPE_RX_ADDBA:
+ 	case HTT_T2H_MSG_TYPE_RX_DELBA:
+ 	case HTT_T2H_MSG_TYPE_RX_FLUSH:
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index 85e806b..bf1ceb8 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -158,6 +158,27 @@ TRACE_EVENT(ath10k_wmi_event,
+ 	)
+ );
+ 
++TRACE_EVENT(ath10k_htt_stats,
++	TP_PROTO(void *buf, size_t buf_len),
++
++	TP_ARGS(buf, buf_len),
++
++	TP_STRUCT__entry(
++		__field(size_t, buf_len)
++		__dynamic_array(u8, buf, buf_len)
++	),
++
++	TP_fast_assign(
++		__entry->buf_len = buf_len;
++		memcpy(__get_dynamic_array(buf), buf, buf_len);
++	),
++
++	TP_printk(
++		"len %zu",
++		__entry->buf_len
++	)
++);
++
+ #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
+ 
+ /* we don't want to use include/trace/events */
 
 
 _______________________________________________
