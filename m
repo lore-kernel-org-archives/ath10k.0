@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VGkog-0007w7-Ci
- for ath10k@lists.infradead.org; Tue, 03 Sep 2013 07:14:23 +0000
+ id 1VGllD-0000oU-8g
+ for ath10k@lists.infradead.org; Tue, 03 Sep 2013 08:14:51 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 2/2] ath10k: implement per-VDEV FW statistics
-References: <1377778061-22331-1-git-send-email-bartosz.markowski@tieto.com>
- <1377778061-22331-3-git-send-email-bartosz.markowski@tieto.com>
-Date: Tue, 3 Sep 2013 10:13:55 +0300
-In-Reply-To: <1377778061-22331-3-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Thu, 29 Aug 2013 14:07:40 +0200")
-Message-ID: <87a9ju1ioc.fsf@kamboji.qca.qualcomm.com>
+Subject: Pull request: ath 20130930
+Date: Tue, 3 Sep 2013 11:14:22 +0300
+Message-ID: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +20,92 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Hi John,
 
-> The WMI_REQUEST_PEER_STAT command with latst (1.0.0.716) FW
-> can return per-VDEV statistics. Using debugfs we can fetch this info now.
->
-> This is a backward compatible change. In case of older FW the VDEV
-> statistics are simply not returned.
->
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+here are latest ath10k changes, I hope it's still time to get these to
+3.12. The changelog for the pull request:
 
-[...]
+Bartosz dropped support for qca98xx hw1.0 hardware from ath10k, it's
+just too much to support it. Michal added support for the new firmware
+interface. Marek fixed WEP in AP and IBSS mode. Rest of the changes are
+minor fixes or cleanups.
 
->  	if (num_peer_stats) {
-> -		struct wmi_peer_stats *peer_stats;
->  		struct ath10k_peer_stat *s;
-> +		struct wmi_peer_stats_1 *peer_stats_1;
-> +		struct wmi_peer_stats_2 *peer_stats_2;
->  
->  		stats->peers = num_peer_stats;
->  
->  		for (i = 0; i < num_peer_stats; i++) {
-> -			peer_stats = (struct wmi_peer_stats *)tmp;
-> +			peer_stats_1 = (struct wmi_peer_stats_1 *)tmp;
+The following changes since commit 9d0e2f0772d394060bf3b17cd1f3a35574365103:
 
-You still have this evil cast here which assumes struct wmi_peer_stats_1
-starts with the same content as _2. It's better to spell that out in the
-code, for example like this:
+  ath6kl: Fix invalid pointer access on fuzz testing with AP mode (2013-08-07 10:58:59 +0300)
 
-if (test_bit(ATH10K_FW_FEATURE_VDEV_STATS, ar->fw_features)) {
-             peer_v2 = (struct wmi_peer_stats_v2 *)tmp;
-             peer_stats = &peer_v2->common;
-             tmp += sizeof(*peer_v2);
-} else {
-             peer_v1 = (struct wmi_peer_stats_v1 *)tmp;
-             peer_stats = &peer_v1->common;
-             tmp += sizeof(*peer_v1);
-}
+are available in the git repository at:
 
-> +struct wmi_peer_stats_1 {
+  git://github.com/kvalo/ath.git for-linville
 
-struct wmi_peer_stats_v1
+for you to fetch changes up to 763b8cd31493f452094fd0eaeedb8cad37c756a2:
 
-> +struct wmi_peer_stats_2 {
+  ath10k: add chip_id file to debugfs (2013-09-03 09:59:53 +0300)
 
-struct wmi_peer_stats_v2
+----------------------------------------------------------------
+Bartosz Markowski (2):
+      ath10k: Remove qca98xx hw1.0 support
+      ath10k: update supported FW build version
+
+Janusz Dziedzic (2):
+      ath10k: setup peer UAPSD flag correctly
+      ath10k: check allocation errors in CE
+
+Kalle Valo (10):
+      ath10k: remove un ar_pci->cacheline_sz field
+      ath10k: pci: make host_ce_config_wlan[] more readable
+      ath10k: make target_ce_config_wlan more readable
+      ath10k: remove void pointer from struct ath10k_pci_compl
+      ath10k: convert ath10k_pci_reg_read/write32() to take struct ath10k
+      ath10k: clean up ath10k_ce_completed_send_next_nolock()
+      ath10k: convert ath10k_pci_wake() to return
+      ath10k: simplify ath10k_ce_init() wake up handling
+      ath10k: check chip id from the soc register during probe
+      ath10k: add chip_id file to debugfs
+
+Marek Puzyniak (1):
+      ath10k: fix WEP in AP and IBSS mode
+
+Michal Kazior (15):
+      ath10k: clean up monitor start code
+      ath10k: use sizeof(*var) in kmalloc
+      ath10k: clean up PCI completion states
+      ath10k: print errcode when CE ring setup fails
+      ath10k: fix HTT service setup
+      ath10k: implement 802.3 SNAP rx decap type A-MSDU handling
+      ath10k: plug possible memory leak in WMI
+      ath10k: add support for firmware newer than 636
+      ath10k: add support for HTT 3.0
+      ath10k: use inline ce_state structure
+      ath10k: remove ce_op_state
+      ath10k: remove unused ce_attr parameters
+      ath10k: rename hif_ce_pipe_info to ath10k_pci_pipe
+      ath10k: rename ce_state to ath10k_ce_pipe
+      ath10k: rename ce_ring_state to ath10k_ce_ring
+
+Mohammed Shafi Shajakhan (1):
+      ath10k: Fix mutex unlock balance
+
+ drivers/net/wireless/ath/ath10k/ce.c     |  291 +++++++++++++-------------
+ drivers/net/wireless/ath/ath10k/ce.h     |   74 +++----
+ drivers/net/wireless/ath/ath10k/core.c   |   46 +++--
+ drivers/net/wireless/ath/ath10k/core.h   |   13 +-
+ drivers/net/wireless/ath/ath10k/debug.c  |   23 ++-
+ drivers/net/wireless/ath/ath10k/htc.c    |    8 +-
+ drivers/net/wireless/ath/ath10k/htt.c    |   19 +-
+ drivers/net/wireless/ath/ath10k/htt.h    |    6 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   12 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   74 +++++--
+ drivers/net/wireless/ath/ath10k/hw.h     |   19 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |   22 +-
+ drivers/net/wireless/ath/ath10k/pci.c    |  325 ++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/pci.h    |   73 +++----
+ drivers/net/wireless/ath/ath10k/wmi.c    |   33 ++-
+ drivers/net/wireless/ath/ath10k/wmi.h    |   16 +-
+ 16 files changed, 626 insertions(+), 428 deletions(-)
 
 -- 
 Kalle Valo
