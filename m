@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHsPl-0003AP-GS
- for ath10k@lists.infradead.org; Fri, 06 Sep 2013 09:33:18 +0000
+ id 1VHsZw-0003KS-E2
+ for ath10k@lists.infradead.org; Fri, 06 Sep 2013 09:43:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] Add missing braces to ath10k_pci_tx_pipe_cleanup
-References: <20130905035128.GA15824@redhat.com>
-Date: Fri, 6 Sep 2013 12:32:43 +0300
-In-Reply-To: <20130905035128.GA15824@redhat.com> (Dave Jones's message of
- "Wed, 4 Sep 2013 23:51:28 -0400")
-Message-ID: <87mwnqi9c4.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] ath10k: HTT stats
+References: <20130903084302.26199.3538.stgit@localhost6.localdomain6>
+Date: Fri, 6 Sep 2013 12:43:17 +0300
+In-Reply-To: <20130903084302.26199.3538.stgit@localhost6.localdomain6> (Kalle
+ Valo's message of "Tue, 03 Sep 2013 11:43:48 +0300")
+Message-ID: <87ioyei8ui.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,19 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Jones <davej@redhat.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linville@tuxdriver.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Dave Jones <davej@redhat.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> The indentation here implies this was meant to be a multi-statement
-> if, but it lacks the braces.
+> Adds trace events and a debugfs interface to enable HTT stats
+> from firmware.
 >
-> Signed-off-by: Dave Jones <davej@fedoraproject.org>
+> ---
+>
+> Kalle Valo (3):
+>       ath10k: add trace event ath10k_htt_stats
+>       ath10k: implement ath10k_debug_start/stop()
+>       ath10k: add htt_stats_enable debugfs file
 
-Thanks, applied.
-
-I added "ath10k:" to the patch title.
+All three applied.
 
 -- 
 Kalle Valo
