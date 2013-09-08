@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VIgPF-0003XB-P4
- for ath10k@lists.infradead.org; Sun, 08 Sep 2013 14:56:06 +0000
-Subject: [PATCH 3/8] ath10k: cleanup debug messages in core.c
+ id 1VIgPK-0003XR-Ot
+ for ath10k@lists.infradead.org; Sun, 08 Sep 2013 14:56:11 +0000
+Subject: [PATCH 4/8] ath10k: add boot debug messages to pci.c and ce.c
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Sun, 08 Sep 2013 17:55:44 +0300
-Message-ID: <20130908145544.3136.77144.stgit@localhost6.localdomain6>
+Date: Sun, 08 Sep 2013 17:55:50 +0300
+Message-ID: <20130908145550.3136.92297.stgit@localhost6.localdomain6>
 In-Reply-To: <20130908145435.3136.49168.stgit@localhost6.localdomain6>
 References: <20130908145435.3136.49168.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -25,56 +25,67 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Fix them to follow the general logging style in ath10k.
-
-While at it, add print id chip_id to the debug log.
+To unify all boot related debug messages into one debug
+level.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |    8 ++++++++
+ drivers/net/wireless/ath/ath10k/pci.c |    6 ++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 0ed60fd..76906d5 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -53,7 +53,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index afe5df4..38c2571 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -1010,6 +1010,10 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 	ath10k_ce_src_ring_lowmark_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_src_ring_highmark_set(ar, ctrl_addr, nentries);
  
- static void ath10k_send_suspend_complete(struct ath10k *ar)
- {
--	ath10k_dbg(ATH10K_DBG_BOOT, "%s\n", __func__);
-+	ath10k_dbg(ATH10K_DBG_BOOT, "boot suspend complete\n");
- 
- 	ar->is_target_paused = true;
- 	wake_up(&ar->event_queue);
-@@ -101,7 +101,7 @@ static int ath10k_init_connect_htc(struct ath10k *ar)
- 		goto timeout;
- 	}
- 
--	ath10k_dbg(ATH10K_DBG_BOOT, "core wmi ready\n");
-+	ath10k_dbg(ATH10K_DBG_BOOT, "boot wmi ready\n");
- 	return 0;
- 
- timeout:
-@@ -204,7 +204,7 @@ static int ath10k_push_board_ext_data(struct ath10k *ar,
- 	}
- 
- 	ath10k_dbg(ATH10K_DBG_BOOT,
--		   "ath10k: Board extended Data download addr: 0x%x\n",
-+		   "boot push board extended data addr 0x%x\n",
- 		   board_ext_data_addr);
- 
- 	if (board_ext_data_addr == 0)
-@@ -722,6 +722,9 @@ static int ath10k_core_check_chip_id(struct ath10k *ar)
- {
- 	u32 hw_revision = MS(ar->chip_id, SOC_CHIP_ID_REV);
- 
-+	ath10k_dbg(ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
-+		   ar->chip_id, hw_revision);
++	ath10k_dbg(ATH10K_DBG_BOOT,
++		   "boot ce src ring id %d entries %d base_addr %p\n",
++		   ce_id, nentries, src_ring->base_addr_owner_space);
 +
- 	/* Check that we are not using hw1.0 (some of them have same pci id
- 	 * as hw2.0) before doing anything else as ath10k crashes horribly
- 	 * due to missing hw1.0 workarounds. */
+ 	return 0;
+ }
+ 
+@@ -1091,6 +1095,10 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 	ath10k_ce_dest_ring_lowmark_set(ar, ctrl_addr, 0);
+ 	ath10k_ce_dest_ring_highmark_set(ar, ctrl_addr, nentries);
+ 
++	ath10k_dbg(ATH10K_DBG_BOOT,
++		   "boot ce dest ring id %d entries %d base_addr %p\n",
++		   ce_id, nentries, dest_ring->base_addr_owner_space);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 880fcd0d..503a8c170 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2375,10 +2375,10 @@ static void ath10k_pci_dump_features(struct ath10k_pci *ar_pci)
+ 
+ 		switch (i) {
+ 		case ATH10K_PCI_FEATURE_MSI_X:
+-			ath10k_dbg(ATH10K_DBG_PCI, "device supports MSI-X\n");
++			ath10k_dbg(ATH10K_DBG_BOOT, "device supports MSI-X\n");
+ 			break;
+ 		case ATH10K_PCI_FEATURE_SOC_POWER_SAVE:
+-			ath10k_dbg(ATH10K_DBG_PCI, "QCA98XX SoC power save enabled\n");
++			ath10k_dbg(ATH10K_DBG_BOOT, "QCA98XX SoC power save enabled\n");
+ 			break;
+ 		}
+ 	}
+@@ -2504,6 +2504,8 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	ath10k_do_pci_sleep(ar);
+ 
++	ath10k_dbg(ATH10K_DBG_BOOT, "boot pci_mem 0x%p\n", ar_pci->mem);
++
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err("could not register driver core (%d)\n", ret);
 
 
 _______________________________________________
