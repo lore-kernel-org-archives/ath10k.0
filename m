@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VHsil-0003Se-DI
- for ath10k@lists.infradead.org; Fri, 06 Sep 2013 09:52:56 +0000
+ id 1VIgP1-0003Wo-CB
+ for ath10k@lists.infradead.org; Sun, 08 Sep 2013 14:55:53 +0000
+Subject: [PATCH 0/8] ath10k: boot, bmi and mac debug message cleanup
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: set the UART baud rate to 19200
-References: <1378211043-20299-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Fri, 6 Sep 2013 12:52:26 +0300
-In-Reply-To: <1378211043-20299-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Tue, 3 Sep 2013 14:24:02 +0200")
-Message-ID: <87a9jqi8f9.fsf@kamboji.qca.qualcomm.com>
+Date: Sun, 08 Sep 2013 17:55:25 +0300
+Message-ID: <20130908145435.3136.49168.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,25 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Simple message log cleanup. Please review.
 
-> When configuring the host_interests over BMI, set the UART
-> baud rate to 19200. This is valid for QCA988X_2.0 devices.
->
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
 
-Thanks, both patches applied.
+Kalle Valo (8):
+      ath10k: add BMI log level
+      ath10k: rename ATH10K_DBG_CORE to BOOT
+      ath10k: cleanup debug messages in core.c
+      ath10k: add boot debug messages to pci.c and ce.c
+      ath10k: add boot debug messages to htc.c
+      ath10k: add boot messages to htt.c
+      ath10k: clean mac.c debug messages
+      ath10k: print phymode as a string
 
-To first patch I added this:
 
-    kvalo: found during code review, there should not be any functionality
-    changes
+ drivers/net/wireless/ath/ath10k/bmi.c    |   42 ++++---
+ drivers/net/wireless/ath/ath10k/ce.c     |    8 +
+ drivers/net/wireless/ath/ath10k/core.c   |   11 +-
+ drivers/net/wireless/ath/ath10k/debug.h  |    3 
+ drivers/net/wireless/ath/ath10k/htc.c    |   16 +--
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    2 
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    2 
+ drivers/net/wireless/ath/ath10k/mac.c    |  185 ++++++++++++++++--------------
+ drivers/net/wireless/ath/ath10k/pci.c    |    6 +
+ drivers/net/wireless/ath/ath10k/wmi.h    |   42 +++++++
+ 10 files changed, 197 insertions(+), 120 deletions(-)
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
