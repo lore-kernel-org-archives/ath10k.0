@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VIgPT-0003Y5-HM
+ id 1VIgPT-0003Ya-HL
  for ath10k@lists.infradead.org; Sun, 08 Sep 2013 14:56:20 +0000
-Subject: [PATCH 5/8] ath10k: add boot debug messages to htc.c
+Subject: [PATCH 6/8] ath10k: add boot messages to htt.c
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Sun, 08 Sep 2013 17:55:56 +0300
-Message-ID: <20130908145556.3136.94506.stgit@localhost6.localdomain6>
+Date: Sun, 08 Sep 2013 17:56:02 +0300
+Message-ID: <20130908145602.3136.1295.stgit@localhost6.localdomain6>
 In-Reply-To: <20130908145435.3136.49168.stgit@localhost6.localdomain6>
 References: <20130908145435.3136.49168.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -29,50 +29,36 @@ To unify the boot debug level.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 7d445d3..f03fd8d 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -752,8 +752,8 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 	tx_alloc = ath10k_htc_get_credit_allocation(htc,
- 						    conn_req->service_id);
- 	if (!tx_alloc)
--		ath10k_dbg(ATH10K_DBG_HTC,
--			   "HTC Service %s does not allocate target credits\n",
-+		ath10k_dbg(ATH10K_DBG_BOOT,
-+			   "boot htc service %s does not allocate target credits\n",
- 			   htc_service_name(conn_req->service_id));
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index af31d2f..a39fbf4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -502,7 +502,7 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ 	if (__ath10k_htt_rx_ring_fill_n(htt, htt->rx_ring.fill_level))
+ 		goto err_fill_ring;
  
- 	skb = ath10k_htc_build_tx_ctrl_skb(htc->ar);
-@@ -873,19 +873,19 @@ setup:
- 	if (status)
- 		return status;
+-	ath10k_dbg(ATH10K_DBG_HTT, "HTT RX ring size: %d, fill_level: %d\n",
++	ath10k_dbg(ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
+ 		   htt->rx_ring.size, htt->rx_ring.fill_level);
+ 	return 0;
  
--	ath10k_dbg(ATH10K_DBG_HTC,
--		   "HTC service: %s UL pipe: %d DL pipe: %d eid: %d ready\n",
-+	ath10k_dbg(ATH10K_DBG_BOOT,
-+		   "boot htc service '%s' ul pipe %d dl pipe %d eid %d ready\n",
- 		   htc_service_name(ep->service_id), ep->ul_pipe_id,
- 		   ep->dl_pipe_id, ep->eid);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index b6b1420..4548128 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -96,7 +96,7 @@ int ath10k_htt_tx_attach(struct ath10k_htt *htt)
+ 	htt->max_num_pending_tx = ath10k_hif_get_free_queue_number(htt->ar,
+ 								   pipe);
  
--	ath10k_dbg(ATH10K_DBG_HTC,
--		   "EP %d UL polled: %d, DL polled: %d\n",
-+	ath10k_dbg(ATH10K_DBG_BOOT,
-+		   "boot htc ep %d ul polled %d dl polled %d\n",
- 		   ep->eid, ep->ul_is_polled, ep->dl_is_polled);
+-	ath10k_dbg(ATH10K_DBG_HTT, "htt tx max num pending tx %d\n",
++	ath10k_dbg(ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
+ 		   htt->max_num_pending_tx);
  
- 	if (disable_credit_flow_ctrl && ep->tx_credit_flow_enabled) {
- 		ep->tx_credit_flow_enabled = false;
--		ath10k_dbg(ATH10K_DBG_HTC,
--			   "HTC service: %s eid: %d TX flow control disabled\n",
-+		ath10k_dbg(ATH10K_DBG_BOOT,
-+			   "boot htc service '%s' eid %d TX flow control disabled\n",
- 			   htc_service_name(ep->service_id), assigned_eid);
- 	}
- 
+ 	htt->pending_tx = kzalloc(sizeof(*htt->pending_tx) *
 
 
 _______________________________________________
