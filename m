@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VIwOy-00071W-NG
- for ath10k@lists.infradead.org; Mon, 09 Sep 2013 08:00:54 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: prevent CE from looping indefinitely
-References: <1378213798-24769-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 9 Sep 2013 11:00:11 +0300
-In-Reply-To: <1378213798-24769-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 3 Sep 2013 15:09:58 +0200")
-Message-ID: <87txhuctmc.fsf@kamboji.qca.qualcomm.com>
+ id 1VJ3kR-00020A-6n
+ for ath10k@lists.infradead.org; Mon, 09 Sep 2013 15:51:32 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: define ath10k_debug_start/_stop as static inline
+Date: Mon, 9 Sep 2013 17:50:45 +0200
+Message-ID: <1378741845-30080-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,29 +20,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Otherwise if CONFIG_ATH10K_DEBUGFS won't be set we will
+end up with multiple definitions and compilation failure
+in each place the header is included.
 
-> The double while() could end up running forever.
-> Inner while() would complete very fast. However
-> the completion processing could take enough time
-> for more completions to flow in. In that case the
-> outer while() would not terminate and run again,
-> and again. This could happen especially on a slow
-> host system.
->
-> This could lead to a system freeze during heavy
-> traffic. Note: this doesn't solve all known
-> starvation issues yet.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Applied, thanks.
-
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 9c442a8..376a56b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -52,12 +52,12 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 				    struct wmi_stats_event *ev);
+ 
+ #else
+-int ath10k_debug_start(struct ath10k *ar)
++static inline int ath10k_debug_start(struct ath10k *ar)
+ {
+ 	return 0;
+ }
+ 
+-void ath10k_debug_stop(struct ath10k *ar)
++static inline void ath10k_debug_stop(struct ath10k *ar)
+ {
+ }
+ 
 -- 
-Kalle Valo
+1.7.10
+
 
 _______________________________________________
 ath10k mailing list
