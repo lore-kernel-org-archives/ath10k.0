@@ -1,16 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJA3G-0003Wn-Ry
- for ath10k@lists.infradead.org; Mon, 09 Sep 2013 22:35:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: define ath10k_debug_start/_stop as static inline
-References: <1378741845-30080-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Tue, 10 Sep 2013 01:34:39 +0300
-In-Reply-To: <1378741845-30080-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Mon, 9 Sep 2013 17:50:45 +0200")
-Message-ID: <87mwnl7hfk.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from mailout1.samsung.com ([203.254.224.24])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VJM4k-0000le-Qu
+ for ath10k@lists.infradead.org; Tue, 10 Sep 2013 11:25:44 +0000
+Received: from epcpsbgr1.samsung.com
+ (u141.gpu120.samsung.co.kr [203.254.230.141])
+ by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
+ (7.0.4.24.0) 64bit (built Nov 17 2011))
+ with ESMTP id <0MSW004KIQE07GJ0@mailout1.samsung.com> for
+ ath10k@lists.infradead.org; Tue, 10 Sep 2013 20:25:12 +0900 (KST)
+From: Jingoo Han <jg1.han@samsung.com>
+References: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
+In-reply-to: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
+Subject: [PATCH 06/12] wireless: ath10k: remove unnecessary pci_set_drvdata()
+Date: Tue, 10 Sep 2013 20:25:11 +0900
+Message-id: <00b701ceae18$69cd1860$3d674920$%han@samsung.com>
+MIME-version: 1.0
+Content-language: ko
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +29,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "'John W. Linville'" <linville@tuxdriver.com>
+Cc: 'Kalle Valo' <kvalo@qca.qualcomm.com>, 'Jingoo Han' <jg1.han@samsung.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+The driver core clears the driver data to NULL after device_release
+or on probe failure. Thus, it is not needed to manually clear the
+device driver data to NULL.
 
-> Otherwise if CONFIG_ATH10K_DEBUGFS won't be set we will
-> end up with multiple definitions and compilation failure
-> in each place the header is included.
->
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |    2 --
+ 1 file changed, 2 deletions(-)
 
-Doh, I broke this. Sorry about that. Path applied, thanks for fixing
-this.
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e2f9ef5..5ef0422 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2414,7 +2414,6 @@ err_region:
+ err_device:
+ 	pci_disable_device(pdev);
+ err_ar:
+-	pci_set_drvdata(pdev, NULL);
+ 	ath10k_core_destroy(ar);
+ err_ar_pci:
+ 	/* call HIF PCI free here */
+@@ -2442,7 +2441,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 
+ 	ath10k_core_unregister(ar);
+ 
+-	pci_set_drvdata(pdev, NULL);
+ 	pci_iounmap(pdev, ar_pci->mem);
+ 	pci_release_region(pdev, BAR_NUM);
+ 	pci_clear_master(pdev);
 -- 
-Kalle Valo
+1.7.10.4
+
+
 
 _______________________________________________
 ath10k mailing list
