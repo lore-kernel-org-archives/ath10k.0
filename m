@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJOKv-0005XT-Ld
- for ath10k@lists.infradead.org; Tue, 10 Sep 2013 13:50:35 +0000
+ id 1VJOKv-0005XX-Pm
+ for ath10k@lists.infradead.org; Tue, 10 Sep 2013 13:50:36 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/7] ath10k: make WMI commands block by design
-Date: Tue, 10 Sep 2013 15:49:59 +0200
-Message-ID: <1378821003-22925-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/7] ath10k: improve beacon submission latency
+Date: Tue, 10 Sep 2013 15:50:01 +0200
+Message-ID: <1378821003-22925-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
 References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,174 +25,195 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This will be necessary for further changes in
-command submission scheme.
+The patch prevents beacon misses in some case of
+heavy load on a system.
 
-Once HTC is cleaned up WMI commands will finally
-block.
-
-This requires for SWBA to be processed in a
-non-atomic context for now. Once other necessary
-changes are in this will be reverted.
+If a beacon can't be transmitted directly from an
+SWBA event it will be left in arvif->beacon and
+transmission will be retried once TX credits
+become available.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  |    1 +
- drivers/net/wireless/ath/ath10k/trace.h |   11 ++++---
- drivers/net/wireless/ath/ath10k/wmi.c   |   54 +++++++++++++++++++------------
- 3 files changed, 42 insertions(+), 24 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |    1 +
+ drivers/net/wireless/ath/ath10k/mac.c  |    7 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |   70 ++++++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/wmi.h  |    3 +-
+ 4 files changed, 67 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 22b17d6..c953a33 100644
+index c953a33..14b7d3d 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -114,6 +114,7 @@ struct ath10k_wmi {
- 	struct completion unified_ready;
- 	atomic_t pending_tx_count;
- 	wait_queue_head_t wq;
-+	wait_queue_head_t tx_credits_wq;
+@@ -204,6 +204,7 @@ struct ath10k_vif {
+ 	enum wmi_vdev_subtype vdev_subtype;
+ 	u32 beacon_interval;
+ 	u32 dtim_period;
++	struct sk_buff *beacon;
  
- 	struct sk_buff_head wmi_event_list;
- 	struct work_struct wmi_event_work;
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index bf1ceb8..fd53130 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -111,26 +111,29 @@ TRACE_EVENT(ath10k_log_dbg_dump,
- );
+ 	struct ath10k *ar;
+ 	struct ieee80211_vif *vif;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 248248b..439d0c3 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2056,6 +2056,13 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
  
- TRACE_EVENT(ath10k_wmi_cmd,
--	TP_PROTO(int id, void *buf, size_t buf_len),
-+	TP_PROTO(int id, void *buf, size_t buf_len, int ret),
+ 	ath10k_dbg(ATH10K_DBG_MAC, "Remove interface: id %d\n", arvif->vdev_id);
  
--	TP_ARGS(id, buf, buf_len),
-+	TP_ARGS(id, buf, buf_len, ret),
++	spin_lock_bh(&ar->data_lock);
++	if (arvif->beacon) {
++		dev_kfree_skb_any(arvif->beacon);
++		arvif->beacon = NULL;
++	}
++	spin_unlock_bh(&ar->data_lock);
++
+ 	ar->free_vdev_map |= 1 << (arvif->vdev_id);
  
- 	TP_STRUCT__entry(
- 		__field(unsigned int, id)
- 		__field(size_t, buf_len)
- 		__dynamic_array(u8, buf, buf_len)
-+		__field(int ret)
- 	),
- 
- 	TP_fast_assign(
- 		__entry->id = id;
- 		__entry->buf_len = buf_len;
-+		__entry->ret = ret;
- 		memcpy(__get_dynamic_array(buf), buf, buf_len);
- 	),
- 
- 	TP_printk(
--		"id %d len %zu",
-+		"id %d len %zu ret %d",
- 		__entry->id,
--		__entry->buf_len
-+		__entry->buf_len,
-+		__entry->ret
- 	)
- );
- 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 32fd5e7..66cd892 100644
+index ff407c2..c13e434 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -90,13 +90,12 @@ static void ath10k_wmi_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
- 		wake_up(&ar->wmi.wq);
+@@ -120,8 +120,51 @@ err_pull:
+ 	return ret;
  }
  
--/* WMI command API */
--static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
--			       enum wmi_cmd_id cmd_id)
-+static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
-+				      enum wmi_cmd_id cmd_id)
- {
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
- 	struct wmi_cmd_hdr *cmd_hdr;
--	int status;
++static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
++{
++	struct wmi_bcn_tx_arg arg = {0};
 +	int ret;
- 	u32 cmd = 0;
- 
- 	if (skb_push(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-@@ -107,26 +106,40 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
- 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
- 	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
- 
--	if (atomic_add_return(1, &ar->wmi.pending_tx_count) >
--	    WMI_MAX_PENDING_TX_COUNT) {
--		/* avoid using up memory when FW hangs */
--		dev_kfree_skb(skb);
--		atomic_dec(&ar->wmi.pending_tx_count);
--		return -EBUSY;
--	}
--
- 	memset(skb_cb, 0, sizeof(*skb_cb));
-+	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
-+	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
- 
--	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len);
-+	if (ret)
-+		goto err_pull;
- 
--	status = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
--	if (status) {
-+	return 0;
 +
-+err_pull:
-+	skb_pull(skb, sizeof(struct wmi_cmd_hdr));
-+	return ret;
++	lockdep_assert_held(&arvif->ar->data_lock);
++
++	if (arvif->beacon == NULL)
++		return;
++
++	arg.vdev_id = arvif->vdev_id;
++	arg.tx_rate = 0;
++	arg.tx_power = 0;
++	arg.bcn = arvif->beacon->data;
++	arg.bcn_len = arvif->beacon->len;
++
++	ret = ath10k_wmi_beacon_send_nowait(arvif->ar, &arg);
++	if (ret)
++		return;
++
++	dev_kfree_skb_any(arvif->beacon);
++	arvif->beacon = NULL;
 +}
 +
-+static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar,
-+					enum ath10k_htc_ep_id eid)
++static void ath10k_wmi_tx_beacons_iter(void *data, u8 *mac,
++				       struct ieee80211_vif *vif)
 +{
-+	wake_up(&ar->wmi.tx_credits_wq);
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++
++	ath10k_wmi_tx_beacon_nowait(arvif);
 +}
 +
-+static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
-+			       enum wmi_cmd_id cmd_id)
++static void ath10k_wmi_tx_beacons_nowait(struct ath10k *ar)
 +{
-+	int ret = -EINVAL;
++	spin_lock_bh(&ar->data_lock);
++	ieee80211_iterate_active_interfaces_atomic(ar->hw,
++						   IEEE80211_IFACE_ITER_NORMAL,
++						   ath10k_wmi_tx_beacons_iter,
++						   NULL);
++	spin_unlock_bh(&ar->data_lock);
++}
 +
-+	wait_event_timeout(ar->wmi.tx_credits_wq, ({
-+		ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
-+		(ret != -EAGAIN);
-+	}), 3*HZ);
-+
-+	if (ret)
- 		dev_kfree_skb_any(skb);
--		atomic_dec(&ar->wmi.pending_tx_count);
--		return status;
--	}
- 
--	return 0;
-+	return ret;
+ static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar)
+ {
++	ath10k_wmi_tx_beacons_nowait(ar);
+ 	wake_up(&ar->wmi.tx_credits_wq);
  }
  
- static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
-@@ -1168,7 +1181,6 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 	/* some events require to be handled ASAP
+@@ -131,6 +174,7 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	int ret = -EINVAL;
+ 
+ 	wait_event_timeout(ar->wmi.tx_credits_wq, ({
++		ath10k_wmi_tx_beacons_nowait(ar);
+ 		ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
+ 		(ret != -EAGAIN);
+ 	}), 3*HZ);
+@@ -760,10 +804,8 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 	int i = -1;
+ 	struct wmi_bcn_info *bcn_info;
+ 	struct ath10k_vif *arvif;
+-	struct wmi_bcn_tx_arg arg;
+ 	struct sk_buff *bcn;
+ 	int vdev_id = 0;
+-	int ret;
+ 
+ 	ath10k_dbg(ATH10K_DBG_MGMT, "WMI_HOST_SWBA_EVENTID\n");
+ 
+@@ -820,17 +862,17 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_update_tim(ar, arvif, bcn, bcn_info);
+ 		ath10k_wmi_update_noa(ar, arvif, bcn, bcn_info);
+ 
+-		arg.vdev_id = arvif->vdev_id;
+-		arg.tx_rate = 0;
+-		arg.tx_power = 0;
+-		arg.bcn = bcn->data;
+-		arg.bcn_len = bcn->len;
++		spin_lock_bh(&ar->data_lock);
++		if (arvif->beacon) {
++			ath10k_warn("SWBA overrun on vdev %d\n",
++				    arvif->vdev_id);
++			dev_kfree_skb_any(arvif->beacon);
++		}
+ 
+-		ret = ath10k_wmi_beacon_send(ar, &arg);
+-		if (ret)
+-			ath10k_warn("could not send beacon (%d)\n", ret);
++		arvif->beacon = bcn;
+ 
+-		dev_kfree_skb_any(bcn);
++		ath10k_wmi_tx_beacon_nowait(arvif);
++		spin_unlock_bh(&ar->data_lock);
+ 	}
+ }
+ 
+@@ -1181,6 +1223,7 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
  	 * thus can't be defered to a worker thread */
  	switch (event_id) {
--	case WMI_HOST_SWBA_EVENTID:
  	case WMI_MGMT_RX_EVENTID:
++	case WMI_HOST_SWBA_EVENTID:
  		ath10k_wmi_event_process(ar, skb);
  		return;
-@@ -1186,6 +1198,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 	init_completion(&ar->wmi.service_ready);
- 	init_completion(&ar->wmi.unified_ready);
- 	init_waitqueue_head(&ar->wmi.wq);
-+	init_waitqueue_head(&ar->wmi.tx_credits_wq);
+ 	default:
+@@ -2138,7 +2181,8 @@ int ath10k_wmi_peer_assoc(struct ath10k *ar,
+ 	return ath10k_wmi_cmd_send(ar, skb, WMI_PEER_ASSOC_CMDID);
+ }
  
- 	skb_queue_head_init(&ar->wmi.wmi_event_list);
- 	INIT_WORK(&ar->wmi.wmi_event_work, ath10k_wmi_event_work);
-@@ -1215,6 +1228,7 @@ int ath10k_wmi_connect_htc_service(struct ath10k *ar)
- 	/* these fields are the same for all service endpoints */
- 	conn_req.ep_ops.ep_tx_complete = ath10k_wmi_htc_tx_complete;
- 	conn_req.ep_ops.ep_rx_complete = ath10k_wmi_process_rx;
-+	conn_req.ep_ops.ep_tx_credits = ath10k_wmi_op_ep_tx_credits;
+-int ath10k_wmi_beacon_send(struct ath10k *ar, const struct wmi_bcn_tx_arg *arg)
++int ath10k_wmi_beacon_send_nowait(struct ath10k *ar,
++				  const struct wmi_bcn_tx_arg *arg)
+ {
+ 	struct wmi_bcn_tx_cmd *cmd;
+ 	struct sk_buff *skb;
+@@ -2154,7 +2198,7 @@ int ath10k_wmi_beacon_send(struct ath10k *ar, const struct wmi_bcn_tx_arg *arg)
+ 	cmd->hdr.bcn_len  = __cpu_to_le32(arg->bcn_len);
+ 	memcpy(cmd->bcn, arg->bcn, arg->bcn_len);
  
- 	/* connect to control service */
- 	conn_req.service_id = ATH10K_HTC_SVC_ID_WMI_CONTROL;
+-	return ath10k_wmi_cmd_send(ar, skb, WMI_BCN_TX_CMDID);
++	return ath10k_wmi_cmd_send_nowait(ar, skb, WMI_BCN_TX_CMDID);
+ }
+ 
+ static void ath10k_wmi_pdev_set_wmm_param(struct wmi_wmm_params *params,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 40fcf05..482461a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3068,7 +3068,8 @@ int ath10k_wmi_set_ap_ps_param(struct ath10k *ar, u32 vdev_id, const u8 *mac,
+ 			       enum wmi_ap_ps_peer_param param_id, u32 value);
+ int ath10k_wmi_scan_chan_list(struct ath10k *ar,
+ 			      const struct wmi_scan_chan_list_arg *arg);
+-int ath10k_wmi_beacon_send(struct ath10k *ar, const struct wmi_bcn_tx_arg *arg);
++int ath10k_wmi_beacon_send_nowait(struct ath10k *ar,
++				  const struct wmi_bcn_tx_arg *arg);
+ int ath10k_wmi_pdev_set_wmm_params(struct ath10k *ar,
+ 			const struct wmi_pdev_set_wmm_params_arg *arg);
+ int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id);
 -- 
 1.7.9.5
 
