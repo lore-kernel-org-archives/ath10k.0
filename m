@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJOKx-0005XT-HB
+ id 1VJOKx-0005XU-3H
  for ath10k@lists.infradead.org; Tue, 10 Sep 2013 13:50:37 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 7/7] ath10k: remove wmi event worker thread
-Date: Tue, 10 Sep 2013 15:50:03 +0200
-Message-ID: <1378821003-22925-8-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 4/7] ath10k: simplify HTC command submitting
+Date: Tue, 10 Sep 2013 15:50:00 +0200
+Message-ID: <1378821003-22925-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
 References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,104 +25,308 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It's not really necessary to have this processed
-in a worker. There are no sleepable calls (and
-actually shouldn't be).
+The patch removes HTC endpoint tx workers in
+favour of direct command submission. This makes a
+lot more sense for data path.
+
+mac80211 queues are effectively stopped/woken up
+in a more timely fashion preventing build up of
+frames. It's possible to push more traffic than
+the device/system is able to handle and have no
+hiccups or performance degradation with UDP
+traffic.
+
+WMI commands will now report errors properly and
+possibly block as they actively can wait for tx
+credits to become available.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |    3 ---
- drivers/net/wireless/ath/ath10k/wmi.c  |   44 +-------------------------------
- 2 files changed, 1 insertion(+), 46 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c |  177 ++++++++-------------------------
+ drivers/net/wireless/ath/ath10k/htc.h |    4 -
+ drivers/net/wireless/ath/ath10k/wmi.c |    3 +-
+ 3 files changed, 43 insertions(+), 141 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c2b6a76..fcf94ee 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -113,9 +113,6 @@ struct ath10k_wmi {
- 	struct completion service_ready;
- 	struct completion unified_ready;
- 	wait_queue_head_t tx_credits_wq;
--
--	struct sk_buff_head wmi_event_list;
--	struct work_struct wmi_event_work;
- };
- 
- struct ath10k_peer_stat {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index aa7093a..3831694 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1051,7 +1051,7 @@ static int ath10k_wmi_ready_event_rx(struct ath10k *ar, struct sk_buff *skb)
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 030748e..79f17aa 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -117,100 +117,13 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 	spin_unlock_bh(&ep->htc->tx_lock);
  }
  
--static void ath10k_wmi_event_process(struct ath10k *ar, struct sk_buff *skb)
-+static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
- 	enum wmi_event_id id;
-@@ -1170,43 +1170,6 @@ static void ath10k_wmi_event_process(struct ath10k *ar, struct sk_buff *skb)
- 	dev_kfree_skb(skb);
- }
- 
--static void ath10k_wmi_event_work(struct work_struct *work)
+-static int ath10k_htc_issue_skb(struct ath10k_htc *htc,
+-				struct ath10k_htc_ep *ep,
+-				struct sk_buff *skb,
+-				u8 credits)
 -{
--	struct ath10k *ar = container_of(work, struct ath10k,
--					 wmi.wmi_event_work);
--	struct sk_buff *skb;
+-	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+-	int ret;
 -
--	for (;;) {
--		skb = skb_dequeue(&ar->wmi.wmi_event_list);
+-	ath10k_dbg(ATH10K_DBG_HTC, "%s: ep %d skb %p\n", __func__,
+-		   ep->eid, skb);
+-
+-	ath10k_htc_prepare_tx_skb(ep, skb);
+-
+-	ret = ath10k_skb_map(htc->ar->dev, skb);
+-	if (ret)
+-		goto err;
+-
+-	ret = ath10k_hif_send_head(htc->ar,
+-				   ep->ul_pipe_id,
+-				   ep->eid,
+-				   skb->len,
+-				   skb);
+-	if (unlikely(ret))
+-		goto err;
+-
+-	return 0;
+-err:
+-	ath10k_warn("HTC issue failed: %d\n", ret);
+-
+-	spin_lock_bh(&htc->tx_lock);
+-	ep->tx_credits += credits;
+-	spin_unlock_bh(&htc->tx_lock);
+-
+-	if (ep->ep_ops.ep_tx_credits)
+-		ep->ep_ops.ep_tx_credits(htc->ar);
+-
+-	/* this is the simplest way to handle out-of-resources for non-credit
+-	 * based endpoints. credit based endpoints can still get -ENOSR, but
+-	 * this is highly unlikely as credit reservation should prevent that */
+-	if (ret == -ENOSR) {
+-		spin_lock_bh(&htc->tx_lock);
+-		__skb_queue_head(&ep->tx_queue, skb);
+-		spin_unlock_bh(&htc->tx_lock);
+-
+-		return ret;
+-	}
+-
+-	skb_cb->is_aborted = true;
+-	ath10k_htc_notify_tx_completion(ep, skb);
+-
+-	return ret;
+-}
+-
+-static void ath10k_htc_send_work(struct work_struct *work)
+-{
+-	struct ath10k_htc_ep *ep = container_of(work,
+-					struct ath10k_htc_ep, send_work);
+-	struct ath10k_htc *htc = ep->htc;
+-	struct sk_buff *skb;
+-	u8 credits = 0;
+-	int ret;
+-
+-	while (true) {
+-		if (ep->ul_is_polled)
+-			ath10k_htc_send_complete_check(ep, 0);
+-
+-		spin_lock_bh(&htc->tx_lock);
+-		skb = __skb_dequeue(&ep->tx_queue);
+-
+-		if (ep->tx_credit_flow_enabled) {
+-			/* integer division w/ round-up */
+-			credits = (skb->len + htc->target_credit_size - 1) /
+-				  htc->target_credit_size;
+-			if (ep->tx_credits < credits) {
+-				__skb_queue_head(&ep->tx_queue, skb);
+-				skb = NULL;
+-			}
+-		}
+-		spin_unlock_bh(&htc->tx_lock);
+-
 -		if (!skb)
 -			break;
 -
--		ath10k_wmi_event_process(ar, skb);
+-		ret = ath10k_htc_issue_skb(htc, ep, skb, credits);
+-		if (ret == -ENOSR)
+-			break;
 -	}
 -}
 -
--static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
--{
--	struct wmi_cmd_hdr *cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
--	enum wmi_event_id event_id;
--
--	event_id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
--
--	/* some events require to be handled ASAP
--	 * thus can't be defered to a worker thread */
--	switch (event_id) {
--	case WMI_MGMT_RX_EVENTID:
--	case WMI_HOST_SWBA_EVENTID:
--		ath10k_wmi_event_process(ar, skb);
--		return;
--	default:
--		break;
--	}
--
--	skb_queue_tail(&ar->wmi.wmi_event_list, skb);
--	queue_work(ar->workqueue, &ar->wmi.wmi_event_work);
--}
--
- /* WMI Initialization functions */
- int ath10k_wmi_attach(struct ath10k *ar)
+ int ath10k_htc_send(struct ath10k_htc *htc,
+ 		    enum ath10k_htc_ep_id eid,
+ 		    struct sk_buff *skb)
  {
-@@ -1214,16 +1177,11 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 	init_completion(&ar->wmi.unified_ready);
- 	init_waitqueue_head(&ar->wmi.tx_credits_wq);
+ 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
++	int credits = 0;
++	int ret;
  
--	skb_queue_head_init(&ar->wmi.wmi_event_list);
--	INIT_WORK(&ar->wmi.wmi_event_work, ath10k_wmi_event_work);
+ 	if (htc->ar->state == ATH10K_STATE_WEDGED)
+ 		return -ECOMM;
+@@ -220,18 +133,55 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 		return -ENOENT;
+ 	}
+ 
++	/* FIXME: This looks ugly, can we fix it? */
+ 	spin_lock_bh(&htc->tx_lock);
+ 	if (htc->stopped) {
+ 		spin_unlock_bh(&htc->tx_lock);
+ 		return -ESHUTDOWN;
+ 	}
++	spin_unlock_bh(&htc->tx_lock);
+ 
+-	__skb_queue_tail(&ep->tx_queue, skb);
+ 	skb_push(skb, sizeof(struct ath10k_htc_hdr));
+-	spin_unlock_bh(&htc->tx_lock);
+ 
+-	queue_work(htc->ar->workqueue, &ep->send_work);
++	if (ep->tx_credit_flow_enabled) {
++		/* integer division w/ round-up */
++		credits = (skb->len + htc->target_credit_size - 1) /
++			  htc->target_credit_size;
++		spin_lock_bh(&htc->tx_lock);
++		if (ep->tx_credits < credits) {
++			spin_unlock_bh(&htc->tx_lock);
++			ret = -EAGAIN;
++			goto err_pull;
++		}
++		ep->tx_credits -= credits;
++		spin_unlock_bh(&htc->tx_lock);
++	}
++
++	ath10k_htc_prepare_tx_skb(ep, skb);
++
++	ret = ath10k_skb_map(htc->ar->dev, skb);
++	if (ret)
++		goto err_credits;
++
++	ret = ath10k_hif_send_head(htc->ar, ep->ul_pipe_id, ep->eid,
++				   skb->len, skb);
++	if (ret)
++		goto err_unmap;
++
+ 	return 0;
++
++err_unmap:
++	ath10k_skb_unmap(htc->ar->dev, skb);
++err_credits:
++	spin_lock_bh(&htc->tx_lock);
++	ep->tx_credits += credits;
++	spin_unlock_bh(&htc->tx_lock);
++
++	if (ep->ep_ops.ep_tx_credits)
++		ep->ep_ops.ep_tx_credits(htc->ar);
++err_pull:
++	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
++	return ret;
+ }
+ 
+ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
+@@ -244,39 +194,9 @@ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
+ 	ath10k_htc_notify_tx_completion(ep, skb);
+ 	/* the skb now belongs to the completion handler */
+ 
+-	/* note: when using TX credit flow, the re-checking of queues happens
+-	 * when credits flow back from the target.  in the non-TX credit case,
+-	 * we recheck after the packet completes */
+-	spin_lock_bh(&htc->tx_lock);
+-	if (!ep->tx_credit_flow_enabled && !htc->stopped)
+-		queue_work(ar->workqueue, &ep->send_work);
+-	spin_unlock_bh(&htc->tx_lock);
 -
  	return 0;
  }
  
- void ath10k_wmi_detach(struct ath10k *ar)
- {
--	cancel_work_sync(&ar->wmi.wmi_event_work);
--	skb_queue_purge(&ar->wmi.wmi_event_list);
+-/* flush endpoint TX queue */
+-static void ath10k_htc_flush_endpoint_tx(struct ath10k_htc *htc,
+-					 struct ath10k_htc_ep *ep)
+-{
+-	struct sk_buff *skb;
+-	struct ath10k_skb_cb *skb_cb;
+-
+-	spin_lock_bh(&htc->tx_lock);
+-	for (;;) {
+-		skb = __skb_dequeue(&ep->tx_queue);
+-		if (!skb)
+-			break;
+-
+-		skb_cb = ATH10K_SKB_CB(skb);
+-		skb_cb->is_aborted = true;
+-		ath10k_htc_notify_tx_completion(ep, skb);
+-	}
+-	spin_unlock_bh(&htc->tx_lock);
+-
+-	cancel_work_sync(&ep->send_work);
+-}
+-
+ /***********/
+ /* Receive */
+ /***********/
+@@ -311,9 +231,6 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 			ep->ep_ops.ep_tx_credits(htc->ar);
+ 			spin_lock_bh(&htc->tx_lock);
+ 		}
+-
+-		if (ep->tx_credits && !skb_queue_empty(&ep->tx_queue))
+-			queue_work(htc->ar->workqueue, &ep->send_work);
+ 	}
+ 	spin_unlock_bh(&htc->tx_lock);
+ }
+@@ -571,10 +488,8 @@ static void ath10k_htc_reset_endpoint_states(struct ath10k_htc *htc)
+ 		ep->max_ep_message_len = 0;
+ 		ep->max_tx_queue_depth = 0;
+ 		ep->eid = i;
+-		skb_queue_head_init(&ep->tx_queue);
+ 		ep->htc = htc;
+ 		ep->tx_credit_flow_enabled = true;
+-		INIT_WORK(&ep->send_work, ath10k_htc_send_work);
+ 	}
  }
  
- int ath10k_wmi_connect_htc_service(struct ath10k *ar)
+@@ -917,18 +832,10 @@ int ath10k_htc_start(struct ath10k_htc *htc)
+  */
+ void ath10k_htc_stop(struct ath10k_htc *htc)
+ {
+-	int i;
+-	struct ath10k_htc_ep *ep;
+-
+ 	spin_lock_bh(&htc->tx_lock);
+ 	htc->stopped = true;
+ 	spin_unlock_bh(&htc->tx_lock);
+ 
+-	for (i = ATH10K_HTC_EP_0; i < ATH10K_HTC_EP_COUNT; i++) {
+-		ep = &htc->endpoint[i];
+-		ath10k_htc_flush_endpoint_tx(htc, ep);
+-	}
+-
+ 	ath10k_hif_stop(htc->ar);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 92ca29b..4716d33 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -316,15 +316,11 @@ struct ath10k_htc_ep {
+ 	int ul_is_polled; /* call HIF to get tx completions */
+ 	int dl_is_polled; /* call HIF to fetch rx (not implemented) */
+ 
+-	struct sk_buff_head tx_queue;
+-
+ 	u8 seq_no; /* for debugging */
+ 	int tx_credits;
+ 	int tx_credit_size;
+ 	int tx_credits_per_max_message;
+ 	bool tx_credit_flow_enabled;
+-
+-	struct work_struct send_work;
+ };
+ 
+ struct ath10k_htc_svc_tx_credits {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 66cd892..ff407c2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -120,8 +120,7 @@ err_pull:
+ 	return ret;
+ }
+ 
+-static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar,
+-					enum ath10k_htc_ep_id eid)
++static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar)
+ {
+ 	wake_up(&ar->wmi.tx_credits_wq);
+ }
 -- 
 1.7.9.5
 
