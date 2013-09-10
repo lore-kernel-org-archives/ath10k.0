@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-f170.google.com ([209.85.223.170])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJOjW-0006Ue-1J
- for ath10k@lists.infradead.org; Tue, 10 Sep 2013 14:15:58 +0000
-Received: by mail-ie0-f170.google.com with SMTP id 17so7340926iea.15
- for <ath10k@lists.infradead.org>; Tue, 10 Sep 2013 07:15:31 -0700 (PDT)
-Date: Tue, 10 Sep 2013 10:14:13 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: [PATCH 1/7] ath10k: simplify HTC credits calculation
-Message-ID: <20130910141413.GE29385@localhost>
-References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
- <1378821003-22925-2-git-send-email-michal.kazior@tieto.com>
+ id 1VJVvo-0002qH-AT
+ for ath10k@lists.infradead.org; Tue, 10 Sep 2013 21:57:09 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 06/12] wireless: ath10k: remove unnecessary
+ pci_set_drvdata()
+References: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
+ <00b701ceae18$69cd1860$3d674920$%han@samsung.com>
+Date: Wed, 11 Sep 2013 00:56:35 +0300
+In-Reply-To: <00b701ceae18$69cd1860$3d674920$%han@samsung.com> (Jingoo Han's
+ message of "Tue, 10 Sep 2013 20:25:11 +0900")
+Message-ID: <87zjrkibn0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1378821003-22925-2-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +25,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Jingoo Han <jg1.han@samsung.com>
+Cc: linux-wireless@vger.kernel.org, "'John W. Linville'" <linville@tuxdriver.com>, ath10k@lists.infradead.org
 
-On Tue, Sep 10, 2013 at 03:49:57PM +0200, Michal Kazior wrote:
-> +		skb = __skb_dequeue(&ep->tx_queue);
-> +
-> +		if (ep->tx_credit_flow_enabled) {
-> +			/* integer division w/ round-up */
-> +			credits = (skb->len + htc->target_credit_size - 1) /
-> +				  htc->target_credit_size;
+Jingoo Han <jg1.han@samsung.com> writes:
 
-There's a macro for that...
+> The driver core clears the driver data to NULL after device_release
+> or on probe failure. Thus, it is not needed to manually clear the
+> device driver data to NULL.
+>
+> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
 
-            credits = DIV_ROUND_UP(skb->len, htc->target_credit_size);
+Thanks, look good. Do you want me to apply this to my ath.git tree or
+are you planning to send this via some other route?
 
 -- 
-Bob Copeland %% www.bobcopeland.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
