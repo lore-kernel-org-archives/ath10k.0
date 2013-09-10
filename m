@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailout1.samsung.com ([203.254.224.24])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VJM4k-0000le-Qu
- for ath10k@lists.infradead.org; Tue, 10 Sep 2013 11:25:44 +0000
-Received: from epcpsbgr1.samsung.com
- (u141.gpu120.samsung.co.kr [203.254.230.141])
- by mailout1.samsung.com (Oracle Communications Messaging Server 7u4-24.01
- (7.0.4.24.0) 64bit (built Nov 17 2011))
- with ESMTP id <0MSW004KIQE07GJ0@mailout1.samsung.com> for
- ath10k@lists.infradead.org; Tue, 10 Sep 2013 20:25:12 +0900 (KST)
-From: Jingoo Han <jg1.han@samsung.com>
-References: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
-In-reply-to: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
-Subject: [PATCH 06/12] wireless: ath10k: remove unnecessary pci_set_drvdata()
-Date: Tue, 10 Sep 2013 20:25:11 +0900
-Message-id: <00b701ceae18$69cd1860$3d674920$%han@samsung.com>
-MIME-version: 1.0
-Content-language: ko
+Received: from ebb05.tieto.com ([131.207.168.36])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VJOKu-0005XT-Ab
+ for ath10k@lists.infradead.org; Tue, 10 Sep 2013 13:50:33 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 0/7] ath10k: improve TX path
+Date: Tue, 10 Sep 2013 15:49:56 +0200
+Message-ID: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +20,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "'John W. Linville'" <linville@tuxdriver.com>
-Cc: 'Kalle Valo' <kvalo@qca.qualcomm.com>, 'Jingoo Han' <jg1.han@samsung.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The driver core clears the driver data to NULL after device_release
-or on probe failure. Thus, it is not needed to manually clear the
-device driver data to NULL.
+Hi,
 
-Signed-off-by: Jingoo Han <jg1.han@samsung.com>
----
- drivers/net/wireless/ath/ath10k/pci.c |    2 --
- 1 file changed, 2 deletions(-)
+This patchset addresses two issues:
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e2f9ef5..5ef0422 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2414,7 +2414,6 @@ err_region:
- err_device:
- 	pci_disable_device(pdev);
- err_ar:
--	pci_set_drvdata(pdev, NULL);
- 	ath10k_core_destroy(ar);
- err_ar_pci:
- 	/* call HIF PCI free here */
-@@ -2442,7 +2441,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
- 
- 	ath10k_core_unregister(ar);
- 
--	pci_set_drvdata(pdev, NULL);
- 	pci_iounmap(pdev, ar_pci->mem);
- 	pci_release_region(pdev, BAR_NUM);
- 	pci_clear_master(pdev);
+ * system/userspace starvation on heavy briding
+   UDP TX
+ * unstable/inconsistent UDP TX throughput
+
+In short the patchset simplifies TX path by
+removing HTC TX workers, makes WMI commands block
+and makes ath10k more responsive to queues
+becoming full. This contributes to both improved
+throughput and makes the system more responsive
+under heavy UDP TX load.
+
+Max stable briding TX (ath10k as TX):
+ UDP w/o patchset: 520mbps
+ UDP w/  patchset: 570mbps
+
+ TCP w/o patchset: 350mbps
+ TCP w/  patchset: 400mbps
+
+Measured with two 2x2 cards, one acting as an AP
+on AP135 board, the other as a STA on a core i5
+laptop. The AP135 was passing traffic from a
+station on LAN/eth1, to the STA/wlan0.
+
+
+Michal Kazior (7):
+  ath10k: simplify HTC credits calculation
+  ath10k: add HTC TX credits replenishing notification
+  ath10k: make WMI commands block by design
+  ath10k: simplify HTC command submitting
+  ath10k: improve beacon submission latency
+  ath10k: remove wmi pending count limit
+  ath10k: remove wmi event worker thread
+
+ drivers/net/wireless/ath/ath10k/core.h  |    7 +-
+ drivers/net/wireless/ath/ath10k/htc.c   |  215 +++++++------------------------
+ drivers/net/wireless/ath/ath10k/htc.h   |    5 +-
+ drivers/net/wireless/ath/ath10k/mac.c   |   16 +--
+ drivers/net/wireless/ath/ath10k/trace.h |   11 +-
+ drivers/net/wireless/ath/ath10k/wmi.c   |  197 +++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/wmi.h   |    5 +-
+ 7 files changed, 156 insertions(+), 300 deletions(-)
+
 -- 
-1.7.10.4
-
+1.7.9.5
 
 
 _______________________________________________
