@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VK9X4-0006BO-Sw
- for ath10k@lists.infradead.org; Thu, 12 Sep 2013 16:14:15 +0000
+ id 1VK9eg-0006ZH-52
+ for ath10k@lists.infradead.org; Thu, 12 Sep 2013 16:22:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Calculate correct peer PHY mode for VHT
-References: <20130908151955.9228.15022.stgit@localhost6.localdomain6>
-Date: Thu, 12 Sep 2013 19:13:49 +0300
-In-Reply-To: <20130908151955.9228.15022.stgit@localhost6.localdomain6> (Kalle
- Valo's message of "Sun, 08 Sep 2013 18:19:55 +0300")
-Message-ID: <8761u6f26a.fsf@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: delete struct ce_sendlist
+References: <20130908153611.4572.43965.stgit@localhost6.localdomain6>
+Date: Thu, 12 Sep 2013 19:21:43 +0300
+In-Reply-To: <20130908153611.4572.43965.stgit@localhost6.localdomain6> (Kalle
+ Valo's message of "Sun, 08 Sep 2013 18:36:11 +0300")
+Message-ID: <871u4uf1t4.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,21 +28,12 @@ Cc: linux-wireless@vger.kernel.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+> struct ce_sendlist is useless as we always add just one buffer onto it.
+> And most importantly, it's ugly as it doesn't use skb properly.
 >
-> The peer PHY mode for 11ac operation needs to be determined
-> properly based on the channel bandwidth being used. Fix
-> this so that the proper mode is given to the firmware.
->
-> kvalo: earlier we used 11na-ht20 in STA mode for 11ac AP peer, this
-> patch changes that to 11ac-vht80. I didn't notice any change in
-> throughput in my tests, but nevertheless it's the right thing
-> to do.
->
-> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Applied. Thanks Sujith.
+Applied.
 
 -- 
 Kalle Valo
