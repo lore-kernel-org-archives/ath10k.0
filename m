@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VK9g6-0006dF-7K
- for ath10k@lists.infradead.org; Thu, 12 Sep 2013 16:23:35 +0000
+ id 1VKA5M-0007bf-Q3
+ for ath10k@lists.infradead.org; Thu, 12 Sep 2013 16:49:41 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 06/12] wireless: ath10k: remove unnecessary
- pci_set_drvdata()
-References: <00b101ceae16$ecb87c30$c6297490$%han@samsung.com>
- <00b701ceae18$69cd1860$3d674920$%han@samsung.com>
-Date: Thu, 12 Sep 2013 19:23:07 +0300
-In-Reply-To: <00b701ceae18$69cd1860$3d674920$%han@samsung.com> (Jingoo Han's
- message of "Tue, 10 Sep 2013 20:25:11 +0900")
-Message-ID: <87wqmmdn6c.fsf@qca.qualcomm.com>
+Subject: Re: [PATCH 0/7] ath10k: improve TX path
+References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 12 Sep 2013 19:48:59 +0300
+In-Reply-To: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 10 Sep 2013 15:49:56 +0200")
+Message-ID: <87ob7ydlz8.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,18 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jingoo Han <jg1.han@samsung.com>
-Cc: linux-wireless@vger.kernel.org, "'John W. Linville'" <linville@tuxdriver.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Jingoo Han <jg1.han@samsung.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The driver core clears the driver data to NULL after device_release
-> or on probe failure. Thus, it is not needed to manually clear the
-> device driver data to NULL.
+> Hi,
 >
-> Signed-off-by: Jingoo Han <jg1.han@samsung.com>
+> This patchset addresses two issues:
+>
+>  * system/userspace starvation on heavy briding
+>    UDP TX
+>  * unstable/inconsistent UDP TX throughput
+>
+> In short the patchset simplifies TX path by
+> removing HTC TX workers, makes WMI commands block
+> and makes ath10k more responsive to queues
+> becoming full. This contributes to both improved
+> throughput and makes the system more responsive
+> under heavy UDP TX load.
 
-Thanks, applied.
+This looks very good, it's great that we can get rid of the TX workers.
+Please submit v2 and I'll apply these.
 
 -- 
 Kalle Valo
