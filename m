@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VKSJa-0003sH-33
+ id 1VKSJY-0003sI-5M
  for ath10k@lists.infradead.org; Fri, 13 Sep 2013 12:17:36 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 6/7] ath10k: remove wmi pending count limit
-Date: Fri, 13 Sep 2013 14:16:57 +0200
-Message-ID: <1379074618-30534-7-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCHv2 3/7] ath10k: make WMI commands block by design
+Date: Fri, 13 Sep 2013 14:16:54 +0200
+Message-ID: <1379074618-30534-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1379074618-30534-1-git-send-email-michal.kazior@tieto.com>
 References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
  <1379074618-30534-1-git-send-email-michal.kazior@tieto.com>
@@ -26,155 +26,174 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It is no longer used nor necessary since WMI
-commands can block.
+This will be necessary for further changes in
+command submission scheme.
+
+Once HTC is cleaned up WMI commands will finally
+block.
+
+This requires for SWBA to be processed in a
+non-atomic context for now. Once other necessary
+changes are in this will be reverted.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |    2 --
- drivers/net/wireless/ath/ath10k/mac.c  |    9 ---------
- drivers/net/wireless/ath/ath10k/wmi.c  |   32 --------------------------------
- drivers/net/wireless/ath/ath10k/wmi.h  |    2 --
- 4 files changed, 45 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  |    1 +
+ drivers/net/wireless/ath/ath10k/trace.h |   11 ++++---
+ drivers/net/wireless/ath/ath10k/wmi.c   |   54 +++++++++++++++++++------------
+ 3 files changed, 42 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 14b7d3d..c2b6a76 100644
+index 22b17d6..c953a33 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -112,8 +112,6 @@ struct ath10k_wmi {
- 	enum ath10k_htc_ep_id eid;
- 	struct completion service_ready;
+@@ -114,6 +114,7 @@ struct ath10k_wmi {
  	struct completion unified_ready;
--	atomic_t pending_tx_count;
--	wait_queue_head_t wq;
- 	wait_queue_head_t tx_credits_wq;
+ 	atomic_t pending_tx_count;
+ 	wait_queue_head_t wq;
++	wait_queue_head_t tx_credits_wq;
  
  	struct sk_buff_head wmi_event_list;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6c3e9d1..11aa13e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1224,8 +1224,6 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
- 	/* FIXME: why don't we print error if wmi call fails? */
- 	ret = ath10k_wmi_vdev_down(ar, arvif->vdev_id);
+ 	struct work_struct wmi_event_work;
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index bf1ceb8..fd53130 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -111,26 +111,29 @@ TRACE_EVENT(ath10k_log_dbg_dump,
+ );
  
--	ath10k_wmi_flush_tx(ar);
--
- 	arvif->def_wep_key_index = 0;
- }
+ TRACE_EVENT(ath10k_wmi_cmd,
+-	TP_PROTO(int id, void *buf, size_t buf_len),
++	TP_PROTO(int id, void *buf, size_t buf_len, int ret),
  
-@@ -1664,8 +1662,6 @@ static int ath10k_abort_scan(struct ath10k *ar)
- 		return -EIO;
- 	}
+-	TP_ARGS(id, buf, buf_len),
++	TP_ARGS(id, buf, buf_len, ret),
  
--	ath10k_wmi_flush_tx(ar);
--
- 	ret = wait_for_completion_timeout(&ar->scan.completed, 3*HZ);
- 	if (ret == 0)
- 		ath10k_warn("timed out while waiting for scan to stop\n");
-@@ -1699,10 +1695,6 @@ static int ath10k_start_scan(struct ath10k *ar,
- 	if (ret)
- 		return ret;
+ 	TP_STRUCT__entry(
+ 		__field(unsigned int, id)
+ 		__field(size_t, buf_len)
+ 		__dynamic_array(u8, buf, buf_len)
++		__field(int ret)
+ 	),
  
--	/* make sure we submit the command so the completion
--	* timeout makes sense */
--	ath10k_wmi_flush_tx(ar);
--
- 	ret = wait_for_completion_timeout(&ar->scan.started, 1*HZ);
- 	if (ret == 0) {
- 		ath10k_abort_scan(ar);
-@@ -1924,7 +1916,6 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
- 			ret = ath10k_monitor_destroy(ar);
- 	}
+ 	TP_fast_assign(
+ 		__entry->id = id;
+ 		__entry->buf_len = buf_len;
++		__entry->ret = ret;
+ 		memcpy(__get_dynamic_array(buf), buf, buf_len);
+ 	),
  
--	ath10k_wmi_flush_tx(ar);
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
- }
+ 	TP_printk(
+-		"id %d len %zu",
++		"id %d len %zu ret %d",
+ 		__entry->id,
+-		__entry->buf_len
++		__entry->buf_len,
++		__entry->ret
+ 	)
+ );
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 9152dae..b29d2b9 100644
+index 32fd5e7..66cd892 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -23,30 +23,6 @@
- #include "wmi.h"
- #include "mac.h"
+@@ -90,13 +90,12 @@ static void ath10k_wmi_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
+ 		wake_up(&ar->wmi.wq);
+ }
  
--void ath10k_wmi_flush_tx(struct ath10k *ar)
--{
--	int ret;
--
--	lockdep_assert_held(&ar->conf_mutex);
--
--	if (ar->state == ATH10K_STATE_WEDGED) {
--		ath10k_warn("wmi flush skipped - device is wedged anyway\n");
--		return;
+-/* WMI command API */
+-static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+-			       enum wmi_cmd_id cmd_id)
++static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
++				      enum wmi_cmd_id cmd_id)
+ {
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+ 	struct wmi_cmd_hdr *cmd_hdr;
+-	int status;
++	int ret;
+ 	u32 cmd = 0;
+ 
+ 	if (skb_push(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+@@ -107,26 +106,40 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
+ 	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+ 
+-	if (atomic_add_return(1, &ar->wmi.pending_tx_count) >
+-	    WMI_MAX_PENDING_TX_COUNT) {
+-		/* avoid using up memory when FW hangs */
+-		dev_kfree_skb(skb);
+-		atomic_dec(&ar->wmi.pending_tx_count);
+-		return -EBUSY;
 -	}
 -
--	ret = wait_event_timeout(ar->wmi.wq,
--				 atomic_read(&ar->wmi.pending_tx_count) == 0,
--				 5*HZ);
--	if (atomic_read(&ar->wmi.pending_tx_count) == 0)
--		return;
--
--	if (ret == 0)
--		ret = -ETIMEDOUT;
--
--	if (ret < 0)
--		ath10k_warn("wmi flush failed (%d)\n", ret);
--}
--
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
- {
- 	int ret;
-@@ -85,9 +61,6 @@ static struct sk_buff *ath10k_wmi_alloc_skb(u32 len)
- static void ath10k_wmi_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
- {
- 	dev_kfree_skb(skb);
--
--	if (atomic_sub_return(1, &ar->wmi.pending_tx_count) == 0)
--		wake_up(&ar->wmi.wq);
+ 	memset(skb_cb, 0, sizeof(*skb_cb));
++	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
++	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
+ 
+-	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len);
++	if (ret)
++		goto err_pull;
+ 
+-	status = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
+-	if (status) {
++	return 0;
++
++err_pull:
++	skb_pull(skb, sizeof(struct wmi_cmd_hdr));
++	return ret;
++}
++
++static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar,
++					enum ath10k_htc_ep_id eid)
++{
++	wake_up(&ar->wmi.tx_credits_wq);
++}
++
++static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
++			       enum wmi_cmd_id cmd_id)
++{
++	int ret = -EINVAL;
++
++	wait_event_timeout(ar->wmi.tx_credits_wq, ({
++		ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
++		(ret != -EAGAIN);
++	}), 3*HZ);
++
++	if (ret)
+ 		dev_kfree_skb_any(skb);
+-		atomic_dec(&ar->wmi.pending_tx_count);
+-		return status;
+-	}
+ 
+-	return 0;
++	return ret;
  }
  
- static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
-@@ -1243,7 +1216,6 @@ int ath10k_wmi_attach(struct ath10k *ar)
- {
+ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+@@ -1168,7 +1181,6 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	/* some events require to be handled ASAP
+ 	 * thus can't be defered to a worker thread */
+ 	switch (event_id) {
+-	case WMI_HOST_SWBA_EVENTID:
+ 	case WMI_MGMT_RX_EVENTID:
+ 		ath10k_wmi_event_process(ar, skb);
+ 		return;
+@@ -1186,6 +1198,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
  	init_completion(&ar->wmi.service_ready);
  	init_completion(&ar->wmi.unified_ready);
--	init_waitqueue_head(&ar->wmi.wq);
- 	init_waitqueue_head(&ar->wmi.tx_credits_wq);
+ 	init_waitqueue_head(&ar->wmi.wq);
++	init_waitqueue_head(&ar->wmi.tx_credits_wq);
  
  	skb_queue_head_init(&ar->wmi.wmi_event_list);
-@@ -1254,10 +1226,6 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ 	INIT_WORK(&ar->wmi.wmi_event_work, ath10k_wmi_event_work);
+@@ -1215,6 +1228,7 @@ int ath10k_wmi_connect_htc_service(struct ath10k *ar)
+ 	/* these fields are the same for all service endpoints */
+ 	conn_req.ep_ops.ep_tx_complete = ath10k_wmi_htc_tx_complete;
+ 	conn_req.ep_ops.ep_rx_complete = ath10k_wmi_process_rx;
++	conn_req.ep_ops.ep_tx_credits = ath10k_wmi_op_ep_tx_credits;
  
- void ath10k_wmi_detach(struct ath10k *ar)
- {
--	/* HTC should've drained the packets already */
--	if (WARN_ON(atomic_read(&ar->wmi.pending_tx_count) > 0))
--		ath10k_warn("there are still pending packets\n");
--
- 	cancel_work_sync(&ar->wmi.wmi_event_work);
- 	skb_queue_purge(&ar->wmi.wmi_event_list);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index b100431..2c52c23 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3044,7 +3044,6 @@ struct wmi_force_fw_hang_cmd {
- 
- #define WMI_MAX_EVENT 0x1000
- /* Maximum number of pending TXed WMI packets */
--#define WMI_MAX_PENDING_TX_COUNT 128
- #define WMI_SKB_HEADROOM sizeof(struct wmi_cmd_hdr)
- 
- /* By default disable power save for IBSS */
-@@ -3057,7 +3056,6 @@ int ath10k_wmi_attach(struct ath10k *ar);
- void ath10k_wmi_detach(struct ath10k *ar);
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar);
- int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar);
--void ath10k_wmi_flush_tx(struct ath10k *ar);
- 
- int ath10k_wmi_connect_htc_service(struct ath10k *ar);
- int ath10k_wmi_pdev_set_channel(struct ath10k *ar,
+ 	/* connect to control service */
+ 	conn_req.service_id = ATH10K_HTC_SVC_ID_WMI_CONTROL;
 -- 
 1.7.9.5
 
