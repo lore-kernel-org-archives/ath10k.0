@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VKA5w-0007dR-P4
- for ath10k@lists.infradead.org; Thu, 12 Sep 2013 16:50:17 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 5/7] ath10k: improve beacon submission latency
+ id 1VKSJY-0003sG-6K
+ for ath10k@lists.infradead.org; Fri, 13 Sep 2013 12:17:33 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCHv2 0/7] ath10k: improve TX path
+Date: Fri, 13 Sep 2013 14:16:51 +0200
+Message-ID: <1379074618-30534-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
 References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
- <1378821003-22925-6-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 12 Sep 2013 19:47:36 +0300
-In-Reply-To: <1378821003-22925-6-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 10 Sep 2013 15:50:01 +0200")
-Message-ID: <87sixadm1j.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,43 +22,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi,
 
-> The patch prevents beacon misses in some case of
-> heavy load on a system.
->
-> If a beacon can't be transmitted directly from an
-> SWBA event it will be left in arvif->beacon and
-> transmission will be retried once TX credits
-> become available.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+This patchset addresses two issues:
 
-[...]
+ * system/userspace starvation on heavy briding
+   UDP TX
+ * unstable/inconsistent UDP TX throughput
 
->  static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar)
->  {
-> +	ath10k_wmi_tx_beacons_nowait(ar);
->  	wake_up(&ar->wmi.tx_credits_wq);
->  }
->  
-> @@ -131,6 +174,7 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
->  	int ret = -EINVAL;
->  
->  	wait_event_timeout(ar->wmi.tx_credits_wq, ({
-> +		ath10k_wmi_tx_beacons_nowait(ar);
->  		ret = ath10k_wmi_cmd_send_nowait(ar, skb, cmd_id);
->  		(ret != -EAGAIN);
+In short the patchset simplifies TX path by
+removing HTC TX workers, makes WMI commands block
+and makes ath10k more responsive to queues
+becoming full. This contributes to both improved
+throughput and makes the system more responsive
+under heavy UDP TX load.
 
-Please add a short comment to both calls of
-ath10k_wmi_tx_beacons_nowait(). Something like "first transmit all
-pending beacons" or similar.
+Max stable briding TX (ath10k as TX):
+ UDP w/o patchset: 520mbps
+ UDP w/  patchset: 570mbps
+
+ TCP w/o patchset: 350mbps
+ TCP w/  patchset: 400mbps
+
+Measured with two 2x2 cards, one acting as an AP
+on AP135 board, the other as a STA on a core i5
+laptop. The AP135 was passing traffic from a
+station on LAN/eth1 to the STA/wlan0.
+
+v2:
+ * use DIV_ROUND_UP
+ * comment usage of ath10k_wmi_tx_beacons_nowait
+ * additional check for tx_credits_flow_enabled
+
+
+Michal Kazior (7):
+  ath10k: simplify HTC credits calculation
+  ath10k: add HTC TX credits replenishing notification
+  ath10k: make WMI commands block by design
+  ath10k: simplify HTC command submitting
+  ath10k: improve beacon submission latency
+  ath10k: remove wmi pending count limit
+  ath10k: remove wmi event worker thread
+
+ drivers/net/wireless/ath/ath10k/core.h  |    7 +-
+ drivers/net/wireless/ath/ath10k/htc.c   |  215 +++++++------------------------
+ drivers/net/wireless/ath/ath10k/htc.h   |    5 +-
+ drivers/net/wireless/ath/ath10k/mac.c   |   16 +--
+ drivers/net/wireless/ath/ath10k/trace.h |   11 +-
+ drivers/net/wireless/ath/ath10k/wmi.c   |  201 ++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/wmi.h   |    5 +-
+ 7 files changed, 160 insertions(+), 300 deletions(-)
 
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
