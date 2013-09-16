@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLcEx-0003Mn-4q
- for ath10k@lists.infradead.org; Mon, 16 Sep 2013 17:05:36 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv2 0/7] ath10k: improve TX path
-References: <1378821003-22925-1-git-send-email-michal.kazior@tieto.com>
- <1379074618-30534-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 16 Sep 2013 20:05:11 +0300
-In-Reply-To: <1379074618-30534-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 13 Sep 2013 14:16:51 +0200")
-Message-ID: <871u4on1dk.fsf@qca.qualcomm.com>
+ id 1VLYFh-0003Sa-Tl
+ for ath10k@lists.infradead.org; Mon, 16 Sep 2013 12:50:06 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC 4/4] ath10k: align RX frames properly
+Date: Mon, 16 Sep 2013 14:49:17 +0200
+Message-ID: <1379335757-15180-5-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
+References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,57 +22,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Ethernet-like decapping mode leaves IP protocol
+frame not aligned to 4-byte boundaries. This leads
+to re-aligning in mac80211 which in turn leads to
+CPU cache thrashing on lower end host machines and
+very poor performance.
 
-> Hi,
->
-> This patchset addresses two issues:
->
->  * system/userspace starvation on heavy briding
->    UDP TX
->  * unstable/inconsistent UDP TX throughput
->
-> In short the patchset simplifies TX path by
-> removing HTC TX workers, makes WMI commands block
-> and makes ath10k more responsive to queues
-> becoming full. This contributes to both improved
-> throughput and makes the system more responsive
-> under heavy UDP TX load.
->
-> Max stable briding TX (ath10k as TX):
->  UDP w/o patchset: 520mbps
->  UDP w/  patchset: 570mbps
->
->  TCP w/o patchset: 350mbps
->  TCP w/  patchset: 400mbps
->
-> Measured with two 2x2 cards, one acting as an AP
-> on AP135 board, the other as a STA on a core i5
-> laptop. The AP135 was passing traffic from a
-> station on LAN/eth1 to the STA/wlan0.
->
-> v2:
->  * use DIV_ROUND_UP
->  * comment usage of ath10k_wmi_tx_beacons_nowait
->  * additional check for tx_credits_flow_enabled
->
->
-> Michal Kazior (7):
->   ath10k: simplify HTC credits calculation
->   ath10k: add HTC TX credits replenishing notification
->   ath10k: make WMI commands block by design
->   ath10k: simplify HTC command submitting
->   ath10k: improve beacon submission latency
->   ath10k: remove wmi pending count limit
->   ath10k: remove wmi event worker thread
+Since HW doesn't allow to change payload offset
+properly the solution is to force HW to decap in
+Native Wifi mode which always has 24-bytes long
+802.11 header (even for QoS frames). This means IP
+frame is properly aligned in this decap mode.
 
-Thanks, applied.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.h |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 643f0c9..8c1be768 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -74,7 +74,11 @@ enum ath10k_mcast2ucast_mode {
+ #define TARGET_RX_CHAIN_MASK			(BIT(0) | BIT(1) | BIT(2))
+ #define TARGET_RX_TIMEOUT_LO_PRI		100
+ #define TARGET_RX_TIMEOUT_HI_PRI		40
+-#define TARGET_RX_DECAP_MODE			ATH10K_HW_TXRX_ETHERNET
++
++/* Native Wifi decap mode is used to align IP frames to 4-byte boundaries and
++ * avoid a very expensive re-alignment in mac80211. */
++#define TARGET_RX_DECAP_MODE			ATH10K_HW_TXRX_NATIVE_WIFI
++
+ #define TARGET_SCAN_MAX_PENDING_REQS		4
+ #define TARGET_BMISS_OFFLOAD_MAX_VDEV		3
+ #define TARGET_ROAM_OFFLOAD_MAX_VDEV		3
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
