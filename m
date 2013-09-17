@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLgO1-0000Uh-UZ
- for ath10k@lists.infradead.org; Mon, 16 Sep 2013 21:31:15 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 3/4] ath10k: cleanup RX decap handling
+ id 1VLnhj-0003dw-9y
+ for ath10k@lists.infradead.org; Tue, 17 Sep 2013 05:20:04 +0000
+Received: by mail-bk0-f52.google.com with SMTP id e11so1940903bkh.11
+ for <ath10k@lists.infradead.org>; Mon, 16 Sep 2013 22:19:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <8738p4laid.fsf@qca.qualcomm.com>
 References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
  <1379335757-15180-4-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 17 Sep 2013 00:30:50 +0300
-In-Reply-To: <1379335757-15180-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 16 Sep 2013 14:49:16 +0200")
-Message-ID: <8738p4laid.fsf@qca.qualcomm.com>
-MIME-Version: 1.0
+ <8738p4laid.fsf@qca.qualcomm.com>
+Date: Tue, 17 Sep 2013 07:19:35 +0200
+Message-ID: <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
+Subject: Re: [RFC 3/4] ath10k: cleanup RX decap handling
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,105 +22,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> Native Wifi frames are always decapped as non-QoS
-> data frames meaning mac80211 couldn't set sk_buff
-> priority properly. The patch fixes this by using
-> the original 802.11 header.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-The patch title doesn't seem to match with the content. Unless I'm
-mistaken it looks like you are adding native wifi frame format support
-and doing some cleanup at the same time. They should be in separate
-patches.
-
-> @@ -652,6 +652,19 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
->  			skb_trim(skb, skb->len - FCS_LEN);
->  			break;
->  		case RX_MSDU_DECAP_NATIVE_WIFI:
-> +			hdr = (struct ieee80211_hdr *)skb->data;
-> +			hdr_len = ieee80211_hdrlen(hdr->frame_control);
-> +			memcpy(addr, ieee80211_get_DA(hdr), ETH_ALEN);
-> +			skb_pull(skb, hdr_len);
-> +
-> +			hdr = (struct ieee80211_hdr *)hdr_buf;
-> +			hdr_len = ieee80211_hdrlen(hdr->frame_control);
-> +			memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
-> +
-> +			hdr = (struct ieee80211_hdr *)skb->data;
-> +			qos = ieee80211_get_qos_ctl(hdr);
-> +			qos[0] &= ~IEEE80211_QOS_CTL_A_MSDU_PRESENT;
-> +			memcpy(ieee80211_get_DA(hdr), addr, ETH_ALEN);
->  			break;
-
-It would be good to have small comments what each part is doing("remove
-the native wifi header", "copy the real 802.11 header", "copy correct
-destination address" etc), makes it a lot faster to skim the code. Also
-document why IEEE80211_QOS_CTL_A_MSDU_PRESENT needs to be cleared.
-
->  	case RX_MSDU_DECAP_RAW:
-> -		/* remove trailing FCS */
-> -		skb_trim(skb, skb->len - 4);
-> +		skb_trim(skb, skb->len - FCS_LEN);
->  		break;
-
-Please keep the comment still
-
->  	case RX_MSDU_DECAP_NATIVE_WIFI:
-> -		/* nothing to do here */
-> +		hdr = (struct ieee80211_hdr *)skb->data;
-> +		hdr_len = ieee80211_hdrlen(hdr->frame_control);
-> +		memcpy(addr, ieee80211_get_DA(hdr), ETH_ALEN);
-> +		skb_pull(skb, hdr_len);
-> +
-> +		hdr = (struct ieee80211_hdr *)rxd->rx_hdr_status;
-> +		hdr_len = ieee80211_hdrlen(hdr->frame_control);
-> +		memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
-> +
-> +		hdr = (struct ieee80211_hdr *)skb->data;
-> +		memcpy(ieee80211_get_DA(hdr), addr, ETH_ALEN);
->  		break;
-
-Again add small comments describing how we are modifying the headers.
-
->  	case RX_MSDU_DECAP_ETHERNET2_DIX:
-> -		/* macaddr[6] + macaddr[6] + ethertype[2] */
-> -		skb_pull(skb, 6 + 6 + 2);
-> +		rfc1042 = hdr;
-> +		rfc1042 += roundup(hdr_len, 4);
-> +		rfc1042 += roundup(ath10k_htt_rx_crypto_param_len(enctype), 4);
-> +
-> +		skb_pull(skb, sizeof(struct ethhdr));
-> +		memcpy(skb_push(skb, sizeof(struct rfc1042_hdr)),
-> +		       rfc1042, sizeof(struct rfc1042_hdr));
-> +		memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
->  		break;
-
-Ditto.
-
->  	case RX_MSDU_DECAP_8023_SNAP_LLC:
-> -		/* macaddr[6] + macaddr[6] + len[2] */
-> -		/* we don't need this for non-A-MSDU */
-> -		skb_pull(skb, 6 + 6 + 2);
-> +		skb_pull(skb, sizeof(struct amsdu_subframe_hdr));
-> +		memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
->  		break;
-
-And here.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgU2VwdGVtYmVyIDIwMTMgMjM6MzAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gTmF0aXZlIFdpZmkgZnJhbWVzIGFyZSBhbHdheXMgZGVjYXBwZWQgYXMgbm9u
+LVFvUwo+PiBkYXRhIGZyYW1lcyBtZWFuaW5nIG1hYzgwMjExIGNvdWxkbid0IHNldCBza19idWZm
+Cj4+IHByaW9yaXR5IHByb3Blcmx5LiBUaGUgcGF0Y2ggZml4ZXMgdGhpcyBieSB1c2luZwo+PiB0
+aGUgb3JpZ2luYWwgODAyLjExIGhlYWRlci4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEth
+emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUaGUgcGF0Y2ggdGl0bGUgZG9lc24n
+dCBzZWVtIHRvIG1hdGNoIHdpdGggdGhlIGNvbnRlbnQuIFVubGVzcyBJJ20KPiBtaXN0YWtlbiBp
+dCBsb29rcyBsaWtlIHlvdSBhcmUgYWRkaW5nIG5hdGl2ZSB3aWZpIGZyYW1lIGZvcm1hdCBzdXBw
+b3J0Cj4gYW5kIGRvaW5nIHNvbWUgY2xlYW51cCBhdCB0aGUgc2FtZSB0aW1lLiBUaGV5IHNob3Vs
+ZCBiZSBpbiBzZXBhcmF0ZQo+IHBhdGNoZXMuCgpZb3UncmUgcmlnaHQuIEknbGwgc3BsaXQgaXQg
+dXAuCgpOd2lmaSB3YXMgc3VwcG9ydGVkLCBob3dldmVyIFFvUyBEYXRhIGZyYW1lcyB3ZXJlIHJl
+cG9ydGVkIGFzIERhdGEKZnJhbWVzIHRob3VnaC4KCgo+PiBAQCAtNjUyLDYgKzY1MiwxOSBAQCBz
+dGF0aWMgdm9pZCBhdGgxMGtfaHR0X3J4X2Ftc2R1KHN0cnVjdCBhdGgxMGtfaHR0ICpodHQsCj4+
+ICAgICAgICAgICAgICAgICAgICAgICBza2JfdHJpbShza2IsIHNrYi0+bGVuIC0gRkNTX0xFTik7
+Cj4+ICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKPj4gICAgICAgICAgICAgICBjYXNlIFJY
+X01TRFVfREVDQVBfTkFUSVZFX1dJRkk6Cj4+ICsgICAgICAgICAgICAgICAgICAgICBoZHIgPSAo
+c3RydWN0IGllZWU4MDIxMV9oZHIgKilza2ItPmRhdGE7Cj4+ICsgICAgICAgICAgICAgICAgICAg
+ICBoZHJfbGVuID0gaWVlZTgwMjExX2hkcmxlbihoZHItPmZyYW1lX2NvbnRyb2wpOwo+PiArICAg
+ICAgICAgICAgICAgICAgICAgbWVtY3B5KGFkZHIsIGllZWU4MDIxMV9nZXRfREEoaGRyKSwgRVRI
+X0FMRU4pOwo+PiArICAgICAgICAgICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCBoZHJfbGVuKTsK
+Pj4gKwo+PiArICAgICAgICAgICAgICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRy
+ICopaGRyX2J1ZjsKPj4gKyAgICAgICAgICAgICAgICAgICAgIGhkcl9sZW4gPSBpZWVlODAyMTFf
+aGRybGVuKGhkci0+ZnJhbWVfY29udHJvbCk7Cj4+ICsgICAgICAgICAgICAgICAgICAgICBtZW1j
+cHkoc2tiX3B1c2goc2tiLCBoZHJfbGVuKSwgaGRyLCBoZHJfbGVuKTsKPj4gKwo+PiArICAgICAg
+ICAgICAgICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopc2tiLT5kYXRhOwo+
+PiArICAgICAgICAgICAgICAgICAgICAgcW9zID0gaWVlZTgwMjExX2dldF9xb3NfY3RsKGhkcik7
+Cj4+ICsgICAgICAgICAgICAgICAgICAgICBxb3NbMF0gJj0gfklFRUU4MDIxMV9RT1NfQ1RMX0Ff
+TVNEVV9QUkVTRU5UOwo+PiArICAgICAgICAgICAgICAgICAgICAgbWVtY3B5KGllZWU4MDIxMV9n
+ZXRfREEoaGRyKSwgYWRkciwgRVRIX0FMRU4pOwo+PiAgICAgICAgICAgICAgICAgICAgICAgYnJl
+YWs7Cj4KPiBJdCB3b3VsZCBiZSBnb29kIHRvIGhhdmUgc21hbGwgY29tbWVudHMgd2hhdCBlYWNo
+IHBhcnQgaXMgZG9pbmcoInJlbW92ZQo+IHRoZSBuYXRpdmUgd2lmaSBoZWFkZXIiLCAiY29weSB0
+aGUgcmVhbCA4MDIuMTEgaGVhZGVyIiwgImNvcHkgY29ycmVjdAo+IGRlc3RpbmF0aW9uIGFkZHJl
+c3MiIGV0YyksIG1ha2VzIGl0IGEgbG90IGZhc3RlciB0byBza2ltIHRoZSBjb2RlLiBBbHNvCj4g
+ZG9jdW1lbnQgd2h5IElFRUU4MDIxMV9RT1NfQ1RMX0FfTVNEVV9QUkVTRU5UIG5lZWRzIHRvIGJl
+IGNsZWFyZWQuCgpPa2F5LgoKCj4+ICAgICAgIGNhc2UgUlhfTVNEVV9ERUNBUF9SQVc6Cj4+IC0g
+ICAgICAgICAgICAgLyogcmVtb3ZlIHRyYWlsaW5nIEZDUyAqLwo+PiAtICAgICAgICAgICAgIHNr
+Yl90cmltKHNrYiwgc2tiLT5sZW4gLSA0KTsKPj4gKyAgICAgICAgICAgICBza2JfdHJpbShza2Is
+IHNrYi0+bGVuIC0gRkNTX0xFTik7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4KPiBQbGVhc2Ug
+a2VlcCB0aGUgY29tbWVudCBzdGlsbAoKV2h5PyBUaGUgcG9pbnQgb2YgdGhlIGNvbW1lbnQgd2Fz
+IHRvIGV4cGxhaW4gdGhlIGxpdGVyYWwgIjQiLiBVc2luZwpkZWZpbmUgbWFrZXMgdGhlIGNvbW1l
+bnQgcmVkdW5kYW50LgoKCj4KPj4gICAgICAgY2FzZSBSWF9NU0RVX0RFQ0FQX05BVElWRV9XSUZJ
+Ogo+PiAtICAgICAgICAgICAgIC8qIG5vdGhpbmcgdG8gZG8gaGVyZSAqLwo+PiArICAgICAgICAg
+ICAgIGhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKXNrYi0+ZGF0YTsKPj4gKyAgICAgICAg
+ICAgICBoZHJfbGVuID0gaWVlZTgwMjExX2hkcmxlbihoZHItPmZyYW1lX2NvbnRyb2wpOwo+PiAr
+ICAgICAgICAgICAgIG1lbWNweShhZGRyLCBpZWVlODAyMTFfZ2V0X0RBKGhkciksIEVUSF9BTEVO
+KTsKPj4gKyAgICAgICAgICAgICBza2JfcHVsbChza2IsIGhkcl9sZW4pOwo+PiArCj4+ICsgICAg
+ICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopcnhkLT5yeF9oZHJfc3RhdHVz
+Owo+PiArICAgICAgICAgICAgIGhkcl9sZW4gPSBpZWVlODAyMTFfaGRybGVuKGhkci0+ZnJhbWVf
+Y29udHJvbCk7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KHNrYl9wdXNoKHNrYiwgaGRyX2xlbiks
+IGhkciwgaGRyX2xlbik7Cj4+ICsKPj4gKyAgICAgICAgICAgICBoZHIgPSAoc3RydWN0IGllZWU4
+MDIxMV9oZHIgKilza2ItPmRhdGE7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KGllZWU4MDIxMV9n
+ZXRfREEoaGRyKSwgYWRkciwgRVRIX0FMRU4pOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+Cj4g
+QWdhaW4gYWRkIHNtYWxsIGNvbW1lbnRzIGRlc2NyaWJpbmcgaG93IHdlIGFyZSBtb2RpZnlpbmcg
+dGhlIGhlYWRlcnMuCgpPa2F5LgoKCj4+ICAgICAgIGNhc2UgUlhfTVNEVV9ERUNBUF9FVEhFUk5F
+VDJfRElYOgo+PiAtICAgICAgICAgICAgIC8qIG1hY2FkZHJbNl0gKyBtYWNhZGRyWzZdICsgZXRo
+ZXJ0eXBlWzJdICovCj4+IC0gICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCA2ICsgNiArIDIpOwo+
+PiArICAgICAgICAgICAgIHJmYzEwNDIgPSBoZHI7Cj4+ICsgICAgICAgICAgICAgcmZjMTA0MiAr
+PSByb3VuZHVwKGhkcl9sZW4sIDQpOwo+PiArICAgICAgICAgICAgIHJmYzEwNDIgKz0gcm91bmR1
+cChhdGgxMGtfaHR0X3J4X2NyeXB0b19wYXJhbV9sZW4oZW5jdHlwZSksIDQpOwo+PiArCj4+ICsg
+ICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCBzaXplb2Yoc3RydWN0IGV0aGhkcikpOwo+PiArICAg
+ICAgICAgICAgIG1lbWNweShza2JfcHVzaChza2IsIHNpemVvZihzdHJ1Y3QgcmZjMTA0Ml9oZHIp
+KSwKPj4gKyAgICAgICAgICAgICAgICAgICAgcmZjMTA0Miwgc2l6ZW9mKHN0cnVjdCByZmMxMDQy
+X2hkcikpOwo+PiArICAgICAgICAgICAgIG1lbWNweShza2JfcHVzaChza2IsIGhkcl9sZW4pLCBo
+ZHIsIGhkcl9sZW4pOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+Cj4gRGl0dG8uCgpDb21tZW50
+IHdhcyBzdXBwb3NlZCB0byBleHBsYWluIHdoZXJlIHRob3NlIG51bWJlcnMgY29tZSBmcm9tLiBV
+c2luZwpzdHJ1Y3R1cmVzIGV4cGxhaW5zIGl0IG5vdy4KCgo+PiAgICAgICBjYXNlIFJYX01TRFVf
+REVDQVBfODAyM19TTkFQX0xMQzoKPj4gLSAgICAgICAgICAgICAvKiBtYWNhZGRyWzZdICsgbWFj
+YWRkcls2XSArIGxlblsyXSAqLwo+PiAtICAgICAgICAgICAgIC8qIHdlIGRvbid0IG5lZWQgdGhp
+cyBmb3Igbm9uLUEtTVNEVSAqLwo+PiAtICAgICAgICAgICAgIHNrYl9wdWxsKHNrYiwgNiArIDYg
+KyAyKTsKPj4gKyAgICAgICAgICAgICBza2JfcHVsbChza2IsIHNpemVvZihzdHJ1Y3QgYW1zZHVf
+c3ViZnJhbWVfaGRyKSk7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KHNrYl9wdXNoKHNrYiwgaGRy
+X2xlbiksIGhkciwgaGRyX2xlbik7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4KPiBBbmQgaGVy
+ZS4KCkRpdHRvLgoKCk1pY2hhxYIuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
