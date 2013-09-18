@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VLnhj-0003dw-9y
- for ath10k@lists.infradead.org; Tue, 17 Sep 2013 05:20:04 +0000
-Received: by mail-bk0-f52.google.com with SMTP id e11so1940903bkh.11
- for <ath10k@lists.infradead.org>; Mon, 16 Sep 2013 22:19:36 -0700 (PDT)
+ id 1VMEMc-0004Kb-Ty
+ for ath10k@lists.infradead.org; Wed, 18 Sep 2013 09:48:04 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: implement host memory chunks feature
+Date: Wed, 18 Sep 2013 11:47:31 +0200
+Message-ID: <1379497651-29933-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
-In-Reply-To: <8738p4laid.fsf@qca.qualcomm.com>
-References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
- <1379335757-15180-4-git-send-email-michal.kazior@tieto.com>
- <8738p4laid.fsf@qca.qualcomm.com>
-Date: Tue, 17 Sep 2013 07:19:35 +0200
-Message-ID: <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
-Subject: Re: [RFC 3/4] ath10k: cleanup RX decap handling
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,86 +16,372 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gMTYgU2VwdGVtYmVyIDIwMTMgMjM6MzAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
-bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
-cml0ZXM6Cj4KPj4gTmF0aXZlIFdpZmkgZnJhbWVzIGFyZSBhbHdheXMgZGVjYXBwZWQgYXMgbm9u
-LVFvUwo+PiBkYXRhIGZyYW1lcyBtZWFuaW5nIG1hYzgwMjExIGNvdWxkbid0IHNldCBza19idWZm
-Cj4+IHByaW9yaXR5IHByb3Blcmx5LiBUaGUgcGF0Y2ggZml4ZXMgdGhpcyBieSB1c2luZwo+PiB0
-aGUgb3JpZ2luYWwgODAyLjExIGhlYWRlci4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEth
-emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUaGUgcGF0Y2ggdGl0bGUgZG9lc24n
-dCBzZWVtIHRvIG1hdGNoIHdpdGggdGhlIGNvbnRlbnQuIFVubGVzcyBJJ20KPiBtaXN0YWtlbiBp
-dCBsb29rcyBsaWtlIHlvdSBhcmUgYWRkaW5nIG5hdGl2ZSB3aWZpIGZyYW1lIGZvcm1hdCBzdXBw
-b3J0Cj4gYW5kIGRvaW5nIHNvbWUgY2xlYW51cCBhdCB0aGUgc2FtZSB0aW1lLiBUaGV5IHNob3Vs
-ZCBiZSBpbiBzZXBhcmF0ZQo+IHBhdGNoZXMuCgpZb3UncmUgcmlnaHQuIEknbGwgc3BsaXQgaXQg
-dXAuCgpOd2lmaSB3YXMgc3VwcG9ydGVkLCBob3dldmVyIFFvUyBEYXRhIGZyYW1lcyB3ZXJlIHJl
-cG9ydGVkIGFzIERhdGEKZnJhbWVzIHRob3VnaC4KCgo+PiBAQCAtNjUyLDYgKzY1MiwxOSBAQCBz
-dGF0aWMgdm9pZCBhdGgxMGtfaHR0X3J4X2Ftc2R1KHN0cnVjdCBhdGgxMGtfaHR0ICpodHQsCj4+
-ICAgICAgICAgICAgICAgICAgICAgICBza2JfdHJpbShza2IsIHNrYi0+bGVuIC0gRkNTX0xFTik7
-Cj4+ICAgICAgICAgICAgICAgICAgICAgICBicmVhazsKPj4gICAgICAgICAgICAgICBjYXNlIFJY
-X01TRFVfREVDQVBfTkFUSVZFX1dJRkk6Cj4+ICsgICAgICAgICAgICAgICAgICAgICBoZHIgPSAo
-c3RydWN0IGllZWU4MDIxMV9oZHIgKilza2ItPmRhdGE7Cj4+ICsgICAgICAgICAgICAgICAgICAg
-ICBoZHJfbGVuID0gaWVlZTgwMjExX2hkcmxlbihoZHItPmZyYW1lX2NvbnRyb2wpOwo+PiArICAg
-ICAgICAgICAgICAgICAgICAgbWVtY3B5KGFkZHIsIGllZWU4MDIxMV9nZXRfREEoaGRyKSwgRVRI
-X0FMRU4pOwo+PiArICAgICAgICAgICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCBoZHJfbGVuKTsK
-Pj4gKwo+PiArICAgICAgICAgICAgICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRy
-ICopaGRyX2J1ZjsKPj4gKyAgICAgICAgICAgICAgICAgICAgIGhkcl9sZW4gPSBpZWVlODAyMTFf
-aGRybGVuKGhkci0+ZnJhbWVfY29udHJvbCk7Cj4+ICsgICAgICAgICAgICAgICAgICAgICBtZW1j
-cHkoc2tiX3B1c2goc2tiLCBoZHJfbGVuKSwgaGRyLCBoZHJfbGVuKTsKPj4gKwo+PiArICAgICAg
-ICAgICAgICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopc2tiLT5kYXRhOwo+
-PiArICAgICAgICAgICAgICAgICAgICAgcW9zID0gaWVlZTgwMjExX2dldF9xb3NfY3RsKGhkcik7
-Cj4+ICsgICAgICAgICAgICAgICAgICAgICBxb3NbMF0gJj0gfklFRUU4MDIxMV9RT1NfQ1RMX0Ff
-TVNEVV9QUkVTRU5UOwo+PiArICAgICAgICAgICAgICAgICAgICAgbWVtY3B5KGllZWU4MDIxMV9n
-ZXRfREEoaGRyKSwgYWRkciwgRVRIX0FMRU4pOwo+PiAgICAgICAgICAgICAgICAgICAgICAgYnJl
-YWs7Cj4KPiBJdCB3b3VsZCBiZSBnb29kIHRvIGhhdmUgc21hbGwgY29tbWVudHMgd2hhdCBlYWNo
-IHBhcnQgaXMgZG9pbmcoInJlbW92ZQo+IHRoZSBuYXRpdmUgd2lmaSBoZWFkZXIiLCAiY29weSB0
-aGUgcmVhbCA4MDIuMTEgaGVhZGVyIiwgImNvcHkgY29ycmVjdAo+IGRlc3RpbmF0aW9uIGFkZHJl
-c3MiIGV0YyksIG1ha2VzIGl0IGEgbG90IGZhc3RlciB0byBza2ltIHRoZSBjb2RlLiBBbHNvCj4g
-ZG9jdW1lbnQgd2h5IElFRUU4MDIxMV9RT1NfQ1RMX0FfTVNEVV9QUkVTRU5UIG5lZWRzIHRvIGJl
-IGNsZWFyZWQuCgpPa2F5LgoKCj4+ICAgICAgIGNhc2UgUlhfTVNEVV9ERUNBUF9SQVc6Cj4+IC0g
-ICAgICAgICAgICAgLyogcmVtb3ZlIHRyYWlsaW5nIEZDUyAqLwo+PiAtICAgICAgICAgICAgIHNr
-Yl90cmltKHNrYiwgc2tiLT5sZW4gLSA0KTsKPj4gKyAgICAgICAgICAgICBza2JfdHJpbShza2Is
-IHNrYi0+bGVuIC0gRkNTX0xFTik7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4KPiBQbGVhc2Ug
-a2VlcCB0aGUgY29tbWVudCBzdGlsbAoKV2h5PyBUaGUgcG9pbnQgb2YgdGhlIGNvbW1lbnQgd2Fz
-IHRvIGV4cGxhaW4gdGhlIGxpdGVyYWwgIjQiLiBVc2luZwpkZWZpbmUgbWFrZXMgdGhlIGNvbW1l
-bnQgcmVkdW5kYW50LgoKCj4KPj4gICAgICAgY2FzZSBSWF9NU0RVX0RFQ0FQX05BVElWRV9XSUZJ
-Ogo+PiAtICAgICAgICAgICAgIC8qIG5vdGhpbmcgdG8gZG8gaGVyZSAqLwo+PiArICAgICAgICAg
-ICAgIGhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKXNrYi0+ZGF0YTsKPj4gKyAgICAgICAg
-ICAgICBoZHJfbGVuID0gaWVlZTgwMjExX2hkcmxlbihoZHItPmZyYW1lX2NvbnRyb2wpOwo+PiAr
-ICAgICAgICAgICAgIG1lbWNweShhZGRyLCBpZWVlODAyMTFfZ2V0X0RBKGhkciksIEVUSF9BTEVO
-KTsKPj4gKyAgICAgICAgICAgICBza2JfcHVsbChza2IsIGhkcl9sZW4pOwo+PiArCj4+ICsgICAg
-ICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopcnhkLT5yeF9oZHJfc3RhdHVz
-Owo+PiArICAgICAgICAgICAgIGhkcl9sZW4gPSBpZWVlODAyMTFfaGRybGVuKGhkci0+ZnJhbWVf
-Y29udHJvbCk7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KHNrYl9wdXNoKHNrYiwgaGRyX2xlbiks
-IGhkciwgaGRyX2xlbik7Cj4+ICsKPj4gKyAgICAgICAgICAgICBoZHIgPSAoc3RydWN0IGllZWU4
-MDIxMV9oZHIgKilza2ItPmRhdGE7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KGllZWU4MDIxMV9n
-ZXRfREEoaGRyKSwgYWRkciwgRVRIX0FMRU4pOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+Cj4g
-QWdhaW4gYWRkIHNtYWxsIGNvbW1lbnRzIGRlc2NyaWJpbmcgaG93IHdlIGFyZSBtb2RpZnlpbmcg
-dGhlIGhlYWRlcnMuCgpPa2F5LgoKCj4+ICAgICAgIGNhc2UgUlhfTVNEVV9ERUNBUF9FVEhFUk5F
-VDJfRElYOgo+PiAtICAgICAgICAgICAgIC8qIG1hY2FkZHJbNl0gKyBtYWNhZGRyWzZdICsgZXRo
-ZXJ0eXBlWzJdICovCj4+IC0gICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCA2ICsgNiArIDIpOwo+
-PiArICAgICAgICAgICAgIHJmYzEwNDIgPSBoZHI7Cj4+ICsgICAgICAgICAgICAgcmZjMTA0MiAr
-PSByb3VuZHVwKGhkcl9sZW4sIDQpOwo+PiArICAgICAgICAgICAgIHJmYzEwNDIgKz0gcm91bmR1
-cChhdGgxMGtfaHR0X3J4X2NyeXB0b19wYXJhbV9sZW4oZW5jdHlwZSksIDQpOwo+PiArCj4+ICsg
-ICAgICAgICAgICAgc2tiX3B1bGwoc2tiLCBzaXplb2Yoc3RydWN0IGV0aGhkcikpOwo+PiArICAg
-ICAgICAgICAgIG1lbWNweShza2JfcHVzaChza2IsIHNpemVvZihzdHJ1Y3QgcmZjMTA0Ml9oZHIp
-KSwKPj4gKyAgICAgICAgICAgICAgICAgICAgcmZjMTA0Miwgc2l6ZW9mKHN0cnVjdCByZmMxMDQy
-X2hkcikpOwo+PiArICAgICAgICAgICAgIG1lbWNweShza2JfcHVzaChza2IsIGhkcl9sZW4pLCBo
-ZHIsIGhkcl9sZW4pOwo+PiAgICAgICAgICAgICAgIGJyZWFrOwo+Cj4gRGl0dG8uCgpDb21tZW50
-IHdhcyBzdXBwb3NlZCB0byBleHBsYWluIHdoZXJlIHRob3NlIG51bWJlcnMgY29tZSBmcm9tLiBV
-c2luZwpzdHJ1Y3R1cmVzIGV4cGxhaW5zIGl0IG5vdy4KCgo+PiAgICAgICBjYXNlIFJYX01TRFVf
-REVDQVBfODAyM19TTkFQX0xMQzoKPj4gLSAgICAgICAgICAgICAvKiBtYWNhZGRyWzZdICsgbWFj
-YWRkcls2XSArIGxlblsyXSAqLwo+PiAtICAgICAgICAgICAgIC8qIHdlIGRvbid0IG5lZWQgdGhp
-cyBmb3Igbm9uLUEtTVNEVSAqLwo+PiAtICAgICAgICAgICAgIHNrYl9wdWxsKHNrYiwgNiArIDYg
-KyAyKTsKPj4gKyAgICAgICAgICAgICBza2JfcHVsbChza2IsIHNpemVvZihzdHJ1Y3QgYW1zZHVf
-c3ViZnJhbWVfaGRyKSk7Cj4+ICsgICAgICAgICAgICAgbWVtY3B5KHNrYl9wdXNoKHNrYiwgaGRy
-X2xlbiksIGhkciwgaGRyX2xlbik7Cj4+ICAgICAgICAgICAgICAgYnJlYWs7Cj4KPiBBbmQgaGVy
-ZS4KCkRpdHRvLgoKCk1pY2hhxYIuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Firmware can request a memory pool from host to offload
+it's own resources. This is a feature designed especially
+for AP mode where the target has to deal with large number
+of peers.
+
+So we allocate and map a consistent DMA memory which FW can
+use to store e.g. peer rate contol maps.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |   12 +++
+ drivers/net/wireless/ath/ath10k/hif.h  |   23 ++++++
+ drivers/net/wireless/ath/ath10k/pci.c  |   45 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  129 ++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h  |   12 ++-
+ 5 files changed, 209 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index fcf94ee..c194f61 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -278,6 +278,15 @@ enum ath10k_fw_features {
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+ 
++#define MAX_MEM_CHUNKS 32
++
++struct ath10k_mem_chunk {
++	void *vaddr;
++	dma_addr_t paddr;
++	u32 len;
++	u32 req_id;
++};
++
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -297,6 +306,9 @@ struct ath10k {
+ 	u32 vht_cap_info;
+ 	u32 num_rf_chains;
+ 
++	u32 num_mem_chunks;
++	struct ath10k_mem_chunk mem_chunks[MAX_MEM_CHUNKS];
++
+ 	DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
+ 
+ 	struct targetdef *targetdef;
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index dcdea68..4af6a66 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -83,6 +83,12 @@ struct ath10k_hif_ops {
+ 
+ 	int (*suspend)(struct ath10k *ar);
+ 	int (*resume)(struct ath10k *ar);
++
++	/* Allocate/Free the host memory for firmware use */
++	int (*chunk_alloc)(struct ath10k *ar, u32 req_id, u32 index,
++			   u32 num_units, u32 unit_len);
++
++	void (*chunk_free)(struct ath10k *ar, int idx);
+ };
+ 
+ 
+@@ -173,4 +179,21 @@ static inline int ath10k_hif_resume(struct ath10k *ar)
+ 	return ar->hif.ops->resume(ar);
+ }
+ 
++static inline int ath10k_hif_chunk_alloc(struct ath10k *ar,
++					 u32 req_id,
++					 u32 idx,
++					 u32 num_units,
++					 u32 unit_len)
++{
++	if (!ar->hif.ops->chunk_alloc)
++		return -EOPNOTSUPP;
++
++	return ar->hif.ops->chunk_alloc(ar, req_id, idx, num_units, unit_len);
++}
++
++static inline void ath10k_hif_chunk_free(struct ath10k *ar, int idx)
++{
++	ar->hif.ops->chunk_free(ar, idx);
++}
++
+ #endif /* _HIF_H_ */
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index f1faf46..547d67d 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1966,6 +1966,49 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ }
+ #endif
+ 
++static int ath10k_pci_hif_chunk_alloc(struct ath10k *ar,
++				      u32 req_id,
++				      u32 idx,
++				      u32 num_units,
++				      u32 unit_len)
++{
++	dma_addr_t paddr;
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	if (!num_units  || !unit_len)
++		return 0;
++
++	/*
++	 * TODO: allocate a chunk of memory at the index indicated and
++	 * if allocation fail allocate smallest size possible and
++	 * return number of units allocated.
++	 */
++	ar->mem_chunks[idx].vaddr = pci_alloc_consistent(ar_pci->pdev,
++							 num_units * unit_len,
++							 &paddr);
++	if(!ar->mem_chunks[idx].vaddr)
++		return 0;
++
++	memset(ar->mem_chunks[idx].vaddr, 0, num_units * unit_len);
++
++	ar->mem_chunks[idx].paddr = paddr;
++	ar->mem_chunks[idx].len = num_units * unit_len;
++	ar->mem_chunks[idx].req_id = req_id;
++
++	return num_units;
++
++}
++
++static void ath10k_pci_hif_chunk_free(struct ath10k *ar, int idx)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++
++	pci_free_consistent(ar_pci->pdev,
++			    ar->mem_chunks[idx].len,
++			    ar->mem_chunks[idx].vaddr,
++			    ar->mem_chunks[idx].paddr);
++}
++
+ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.send_head		= ath10k_pci_hif_send_head,
+ 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
+@@ -1982,6 +2025,8 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.suspend		= ath10k_pci_hif_suspend,
+ 	.resume			= ath10k_pci_hif_resume,
+ #endif
++	.chunk_alloc		= ath10k_pci_hif_chunk_alloc,
++	.chunk_free		= ath10k_pci_hif_chunk_free,
+ };
+ 
+ static void ath10k_pci_ce_tasklet(unsigned long ptr)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6803ead..89de893 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -22,6 +22,7 @@
+ #include "debug.h"
+ #include "wmi.h"
+ #include "mac.h"
++#include "hif.h"
+ 
+ int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
+ {
+@@ -964,6 +965,46 @@ static void ath10k_wmi_event_vdev_install_key_complete(struct ath10k *ar,
+ 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_INSTALL_KEY_COMPLETE_EVENTID\n");
+ }
+ 
++#define HOST_MEM_SIZE_UNIT 4
++
++static void ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
++				      u32 num_units, u32 unit_len)
++{
++	u32 remaining_units, allocated_units, idx;
++
++	/* adjust the length to nearest multiple of unit size */
++	unit_len = (unit_len + (HOST_MEM_SIZE_UNIT - 1)) &
++		   (~(HOST_MEM_SIZE_UNIT - 1));
++
++	idx = ar->num_mem_chunks;
++	remaining_units = num_units;
++	while (remaining_units) {
++		allocated_units = ath10k_hif_chunk_alloc(ar, req_id, idx,
++							 remaining_units,
++							 unit_len);
++		if (allocated_units == 0) {
++			ath10k_warn("Memory allocation has failed (unit len %d units requested %d units allocated %d)\n",
++				    unit_len, num_units,
++				    (num_units - remaining_units));
++			ar->num_mem_chunks = idx;
++			break;
++		}
++
++		remaining_units -= allocated_units;
++		++idx;
++		if (idx == MAX_MEM_CHUNKS ) {
++			ath10k_warn("Maximum chunk limit has been reached (for memory units %d unit len %d requested by FW, allocated only %d\n",
++				    num_units,unit_len,
++				    (num_units - remaining_units));
++			ar->num_mem_chunks = idx;
++			break;
++		}
++	}
++	ar->num_mem_chunks = idx;
++
++}
++
++
+ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 					      struct sk_buff *skb)
+ {
+@@ -1013,12 +1054,44 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 			 ar->fw_version_build);
+ 	}
+ 
+-	/* FIXME: it probably should be better to support this */
+-	if (__le32_to_cpu(ev->num_mem_reqs) > 0) {
+-		ath10k_warn("target requested %d memory chunks; ignoring\n",
++	WARN_ON(__le32_to_cpu(ev->num_mem_reqs) > WMI_MAX_MEM_REQS);
++
++	if (__le32_to_cpu(ev->num_mem_reqs)) {
++		u32 num_units, i;
++
++		ath10k_warn("target requested %d memory chunks\n",
+ 			    __le32_to_cpu(ev->num_mem_reqs));
++
++		for (i = 0; i < __le32_to_cpu(ev->num_mem_reqs); ++i) {
++			num_units = __le32_to_cpu(ev->mem_reqs[i].num_units);
++			if (__le32_to_cpu(ev->mem_reqs[i].n_unit_info)) {
++				if (__le32_to_cpu(ev->mem_reqs[i].n_unit_info)
++				    & NUM_UNITS_IS_NUM_PEERS) {
++					/* number of units to allocate is
++					 * number of peers, 1 extra for self
++					 * peer on target
++					 * this needs to be tied, host and
++					 * target can get out of sync */
++					num_units = TARGET_NUM_PEERS + 1;
++				}
++			}
++
++			ath10k_dbg(ATH10K_DBG_WMI, "i %d req %d  num_units %d n_unit_info %d unit size %d actual units %d \n",
++				   i,
++				   __le32_to_cpu(ev->mem_reqs[i].req_id),
++				   __le32_to_cpu(ev->mem_reqs[i].num_units),
++				   __le32_to_cpu(ev->mem_reqs[i].n_unit_info),
++				   __le32_to_cpu(ev->mem_reqs[i].unit_size),
++				   num_units);
++
++			ath10k_wmi_alloc_host_mem(ar,
++				__le32_to_cpu(ev->mem_reqs[i].req_id),
++				num_units,
++				__le32_to_cpu(ev->mem_reqs[i].unit_size));
++		}
+ 	}
+ 
++
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+ 		   "wmi event service ready sw_ver 0x%08x sw_ver1 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
+ 		   __le32_to_cpu(ev->sw_version),
+@@ -1186,6 +1259,18 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ 
+ void ath10k_wmi_detach(struct ath10k *ar)
+ {
++	int i;
++
++	for (i = 0;  i < ar->num_mem_chunks; i++) {
++		ath10k_dbg(ATH10K_DBG_WMI, "free chunk %d len %d vaddr 0x%p paddr 0x%08llx\n",
++			   ar->num_mem_chunks,
++			   ar->mem_chunks[i].len,
++			   ar->mem_chunks[i].vaddr,
++			   ar->mem_chunks[i].paddr);
++
++		ar->hif.ops->chunk_free(ar, i);
++	}
++	ar->num_mem_chunks = 0;
+ }
+ 
+ int ath10k_wmi_connect_htc_service(struct ath10k *ar)
+@@ -1373,12 +1458,40 @@ int ath10k_wmi_cmd_init(struct ath10k *ar)
+ 	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
+ 	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
+ 
+-	buf = ath10k_wmi_alloc_skb(sizeof(*cmd));
+-	if (!buf)
+-		return -ENOMEM;
++	if (ar->num_mem_chunks) {
++		int i;
++
++		buf = ath10k_wmi_alloc_skb(sizeof(*cmd) +
++			(sizeof(struct host_memory_chunk) * MAX_MEM_CHUNKS));
++		if (!buf)
++			return -ENOMEM;
++
++		cmd = (struct wmi_init_cmd *)buf->data;
++
++		ath10k_dbg(ATH10K_DBG_WMI, "Sending memory chunks info.\n");
++		cmd->num_host_mem_chunks = __cpu_to_le32(ar->num_mem_chunks);
++
++		for (i = 0; i < ar->num_mem_chunks; i++) {
++			cmd->host_mem_chunks[i].ptr =
++				__cpu_to_le32(ar->mem_chunks[i].paddr);
++			cmd->host_mem_chunks[i].size =
++				__cpu_to_le32(ar->mem_chunks[i].len);
++			cmd->host_mem_chunks[i].req_id =
++				__cpu_to_le32(ar->mem_chunks[i].req_id);
++
++			ath10k_dbg(ATH10K_DBG_WMI, "chunk %d len %d requested, addr 0x%x\n",
++				   i,
++				   cmd->host_mem_chunks[i].size,
++				   cmd->host_mem_chunks[i].ptr);
++		}
++	} else {
++		buf = ath10k_wmi_alloc_skb(sizeof(*cmd));
++		if (!buf)
++			return -ENOMEM;
++		cmd = (struct wmi_init_cmd *)buf->data;
++		cmd->num_host_mem_chunks = 0;
++	}
+ 
+-	cmd = (struct wmi_init_cmd *)buf->data;
+-	cmd->num_host_mem_chunks = 0;
+ 	memcpy(&cmd->resource_config, &config, sizeof(config));
+ 
+ 	ath10k_dbg(ATH10K_DBG_WMI, "wmi init\n");
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 2c52c23..f586fb6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -744,13 +744,12 @@ struct wlan_host_mem_req {
+ 	__le32 req_id;
+ 	/* size of the  of each unit */
+ 	__le32 unit_size;
+-	/* flags to  indicate that
+-	 * the number units is dependent
++	/* flags to  indicate that the number units is dependent
+ 	 * on number of resources(num vdevs num peers .. etc)
+ 	 */
+-	__le32 num_unit_info;
++	__le32 n_unit_info;
+ 	/*
+-	 * actual number of units to allocate . if flags in the num_unit_info
++	 * actual number of units to allocate . if flags in the n_unit_info
+ 	 * indicate that number of units is tied to number of a particular
+ 	 * resource to allocate then  num_units filed is set to 0 and host
+ 	 * will derive the number units from number of the resources it is
+@@ -1012,6 +1011,11 @@ struct wmi_resource_config {
+ 	__le32 max_frag_entries;
+ } __packed;
+ 
++#define WMI_MAX_MEM_REQS 16
++
++#define NUM_UNITS_IS_NUM_VDEVS   0x1
++#define NUM_UNITS_IS_NUM_PEERS   0x2
++
+ /* strucutre describing host memory chunk. */
+ struct host_memory_chunk {
+ 	/* id of the request that is passed up in service ready */
+-- 
+1.7.10
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
