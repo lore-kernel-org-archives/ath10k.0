@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-f46.google.com ([209.85.214.46])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMHUA-0001ll-Ok
- for ath10k@lists.infradead.org; Wed, 18 Sep 2013 13:08:03 +0000
-Received: by mail-bk0-f46.google.com with SMTP id 6so2760841bkj.19
- for <ath10k@lists.infradead.org>; Wed, 18 Sep 2013 06:07:25 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CACKGw+HgRbZU4DV5ZFHZA-X-78nEUd87hDeabMr1r1fRc-yOvw@mail.gmail.com>
-References: <1379497651-29933-1-git-send-email-bartosz.markowski@tieto.com>
- <CA+BoTQ=fRoVXNaeiiWUwc_tLiW4GJZnCKJKYO55+JHqOSasAkA@mail.gmail.com>
- <CACKGw+HgRbZU4DV5ZFHZA-X-78nEUd87hDeabMr1r1fRc-yOvw@mail.gmail.com>
-Date: Wed, 18 Sep 2013 15:07:24 +0200
-Message-ID: <CA+BoTQ=hxXkkFhTJSikoAbCa1CLZE+P7n0dWjYStany6bs9vGA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: implement host memory chunks feature
+ id 1VMHUk-0001n4-VE
+ for ath10k@lists.infradead.org; Wed, 18 Sep 2013 13:08:39 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC] ath10k: replenish HTT RX buffers in a tasklet
+Date: Wed, 18 Sep 2013 15:08:10 +0200
+Message-ID: <1379509691-19904-1-git-send-email-michal.kazior@tieto.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +16,149 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 18 September 2013 14:36, Bartosz Markowski
-<bartosz.markowski@tieto.com> wrote:
-> On 18 September 2013 12:51, Michal Kazior <michal.kazior@tieto.com> wrote:
->> On 18 September 2013 11:47, Bartosz Markowski
->>> +       ar->hif.ops->chunk_free(ar, idx);
->>> +}
->>> +
->>>  #endif /* _HIF_H_ */
->>> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wirele=
-ss/ath/ath10k/pci.c
->>> index f1faf46..547d67d 100644
->>> --- a/drivers/net/wireless/ath/ath10k/pci.c
->>> +++ b/drivers/net/wireless/ath/ath10k/pci.c
->>> @@ -1966,6 +1966,49 @@ static int ath10k_pci_hif_resume(struct ath10k *=
-ar)
->>>  }
->>>  #endif
->>>
->>> +static int ath10k_pci_hif_chunk_alloc(struct ath10k *ar,
->>> +                                     u32 req_id,
->>> +                                     u32 idx,
->>> +                                     u32 num_units,
->>> +                                     u32 unit_len)
->>> +{
->>> +       dma_addr_t paddr;
->>> +       struct ath10k_pci *ar_pci =3D ath10k_pci_priv(ar);
->>> +
->>> +       if (!num_units  || !unit_len)
->>> +               return 0;
->>> +
->>
->> I'm not seeing any checks against buffer overflow of mem_chunks[req_id].
->
-> if (idx =3D=3D ATH10K_MAX_MEM_CHUNKS) in ath10k_wmi_alloc_host_mem ?
+This fixes system starvation when under heavy RX
+traffic. This problem could be observed on AP135
+and led to watchdog resetting the platform.
 
-Oh, but the check is _after_ call to chunk_alloc(). What if
-ath10k_wmi_alloc_host_mem() were to be called while idx =3D=3D MAX?
+Patch starves FW RX ring buffer by progressively
+replenishing buffers to auto-balance the RX
+handled to the host system.
 
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.h    |    8 +++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   36 +++++++++++++++++++++++++++---
+ 2 files changed, 41 insertions(+), 3 deletions(-)
 
-Micha=B3.
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index e090902..8dcf808 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -19,6 +19,7 @@
+ #define _HTT_H_
+ 
+ #include <linux/bug.h>
++#include <linux/interrupt.h>
+ 
+ #include "htc.h"
+ #include "rx_desc.h"
+@@ -1268,6 +1269,7 @@ struct ath10k_htt {
+ 	/* set if host-fw communication goes haywire
+ 	 * used to avoid further failures */
+ 	bool rx_confused;
++	struct tasklet_struct rx_replenish_task;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
+@@ -1308,6 +1310,12 @@ struct htt_rx_desc {
+ #define HTT_RX_BUF_SIZE 1920
+ #define HTT_RX_MSDU_SIZE (HTT_RX_BUF_SIZE - (int)sizeof(struct htt_rx_desc))
+ 
++/* Refill a bunch of RX buffers for each refill round so that FW/HW can handle
++ * aggregated traffic more nicely. Picked empirically.
++ * FIXME: Can this value be calculated sanely? */
++#define ATH10K_HTT_MAX_NUM_REFILL 16
++
++
+ /*
+  * DMA_MAP expects the buffer to be an integral number of cache lines.
+  * Rather than checking the actual cache line size, this code makes a
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index a39fbf4..66e9ecd 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -178,10 +178,27 @@ static int ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ 
+ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
+ {
+-	int ret, num_to_fill;
++	int ret, num_deficit, num_to_fill;
+ 
++	/* Refilling the whole RX ring buffer proves to be a bad idea. The
++	 * reason is RX may take very long periods of time and starve other
++	 * tasks on a system.
++	 *
++	 * By limiting the number of refills the replenishing occurs
++	 * progressively. This in turns makes use of the fact tasklets are
++	 * processed in FIFO order. This means actual RX processing can starve
++	 * out refilling if there's not enough free processing power. If
++	 * there's not enough buffers on RX ring FW will not report RX until it
++	 * is refilled with enough buffers. This automatically balances load
++	 * wrt to CPU power.
++	 *
++	 * This probably comes at a cost of lower maximum theoretical
++	 * throughput but stabilizes the real throughput and prevents
++	 * starvation (which can lead to poor performance itself) */
+ 	spin_lock_bh(&htt->rx_ring.lock);
+-	num_to_fill = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
++	num_deficit = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
++	num_to_fill = min(ATH10K_HTT_MAX_NUM_REFILL, num_deficit);
++	num_deficit -= num_to_fill;
+ 	ret = ath10k_htt_rx_ring_fill_n(htt, num_to_fill);
+ 	if (ret == -ENOMEM) {
+ 		/*
+@@ -192,8 +209,11 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
+ 		 */
+ 		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
+ 			  msecs_to_jiffies(HTT_RX_RING_REFILL_RETRY_MS));
++	} else if (num_deficit > 0) {
++		tasklet_schedule(&htt->rx_replenish_task);
+ 	}
+ 	spin_unlock_bh(&htt->rx_ring.lock);
++
+ }
+ 
+ static void ath10k_htt_rx_ring_refill_retry(unsigned long arg)
+@@ -212,6 +232,7 @@ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
+ {
+ 	int sw_rd_idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 
++	tasklet_kill(&htt->rx_replenish_task);
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
+ 
+ 	while (sw_rd_idx != __le32_to_cpu(*(htt->rx_ring.alloc_idx.vaddr))) {
+@@ -442,6 +463,12 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 	return msdu_chaining;
+ }
+ 
++static void ath10k_htt_rx_replenish_task(unsigned long ptr)
++{
++	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
++	ath10k_htt_rx_msdu_buff_replenish(htt);
++}
++
+ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ {
+ 	dma_addr_t paddr;
+@@ -502,6 +529,9 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ 	if (__ath10k_htt_rx_ring_fill_n(htt, htt->rx_ring.fill_level))
+ 		goto err_fill_ring;
+ 
++	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
++		     (unsigned long)htt);
++
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
+ 		   htt->rx_ring.size, htt->rx_ring.fill_level);
+ 	return 0;
+@@ -968,7 +998,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 		}
+ 	}
+ 
+-	ath10k_htt_rx_msdu_buff_replenish(htt);
++	tasklet_schedule(&htt->rx_replenish_task);
+ }
+ 
+ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
