@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMsqn-0007py-FX
- for ath10k@lists.infradead.org; Fri, 20 Sep 2013 05:01:54 +0000
+ id 1VMsw0-0007t5-NG
+ for ath10k@lists.infradead.org; Fri, 20 Sep 2013 05:07:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix tracing of ath10k_wmi_cmd
-References: <1379576649-3947-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 20 Sep 2013 08:01:23 +0300
-In-Reply-To: <1379576649-3947-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 19 Sep 2013 09:44:09 +0200")
-Message-ID: <874n9ghysc.fsf@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix num_sends_allowed replenishing
+References: <1379510537-8731-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 20 Sep 2013 08:06:50 +0300
+In-Reply-To: <1379510537-8731-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 18 Sep 2013 15:22:17 +0200")
+Message-ID: <87zjr8gjyt.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,24 +28,45 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> One of my recent patches broke tracing. kbuild
-> test robot reported this issue.
+> Recent ce_sendlist removal patch has broken
+> num_sends_allowed incrementing. num_sends_allowed
+> exceeded initial values and could overflow.
+>
+> This code was supposed to replenish
+> num_sends_allowed for partial sendlist items (i.e.
+> before final sendlist item from a sendlist was
+> completed and could be processed by completion
+> handlers).
+>
+> Fortunately it seems it cause any major breakage,
+> yet.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Bad luck as I had accidentally tracing disabled on my test build. Patch
-applied, but changed the commit log to:
+Doh, I broke this. Sorry about that.
 
-commit 9e84f653ac16b718dd2305abe64a29bb3428621e
+Applied, but I changed the commit log. Especially notice the changes in
+the last sentence:
+
+commit 1073ab2e9b0d45f318052a3f3690405fc04eda75
 Author: Michal Kazior <michal.kazior@tieto.com>
-Date:   Thu Sep 19 09:44:09 2013 +0200
+Date:   Wed Sep 18 15:22:17 2013 +0200
 
-    ath10k: fix tracing build for ath10k_wmi_cmd
+    ath10k: fix num_sends_allowed replenishing
     
-    Commit be8b394390 ("ath10k: make WMI commands block by design") broke
-    the build if CONFIG_ATH10K_TRACING was enabled.
+    Commit e9bb0aa39 ("ath10k: delete struct ce_sendlist") broke
+    num_sends_allowed incrementing. num_sends_allowed
+    exceeded initial values and could overflow.
     
-    Reported-by: kbuild test robot <fengguang.wu@intel.com>
+    This code was supposed to replenish
+    num_sends_allowed for partial sendlist items (i.e.
+    before final sendlist item from a sendlist was
+    completed and could be processed by completion
+    handlers).
+    
+    Fortunately it seems it did not cause any major breakage,
+    yet.
+    
     Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
