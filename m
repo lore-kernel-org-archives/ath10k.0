@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VMsw0-0007t5-NG
- for ath10k@lists.infradead.org; Fri, 20 Sep 2013 05:07:17 +0000
+ id 1VMt7a-000812-Kf
+ for ath10k@lists.infradead.org; Fri, 20 Sep 2013 05:19:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix num_sends_allowed replenishing
-References: <1379510537-8731-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 20 Sep 2013 08:06:50 +0300
-In-Reply-To: <1379510537-8731-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 18 Sep 2013 15:22:17 +0200")
-Message-ID: <87zjr8gjyt.fsf@qca.qualcomm.com>
+Subject: Re: [PATCH 0/5] ath10k: tx performance patches
+References: <1379508202-9660-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 20 Sep 2013 08:18:40 +0300
+In-Reply-To: <1379508202-9660-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 18 Sep 2013 14:43:17 +0200")
+Message-ID: <87vc1wgjf3.fsf@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,47 +28,22 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Recent ce_sendlist removal patch has broken
-> num_sends_allowed incrementing. num_sends_allowed
-> exceeded initial values and could overflow.
+> Hi,
 >
-> This code was supposed to replenish
-> num_sends_allowed for partial sendlist items (i.e.
-> before final sendlist item from a sendlist was
-> completed and could be processed by completion
-> handlers).
+> This patchset reduces CPU load and improves
+> improves TX performance on AP135 by additional
+> 30mbps (give or take; 560mbps -> 590mbps), at
+> least on my testbed.
 >
-> Fortunately it seems it cause any major breakage,
-> yet.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Michal Kazior (5):
+>   ath10k: use num_pending_tx instead of msdu id bitmap
+>   ath10k: avoid needless memset on TX path
+>   ath10k: decouple HTT TX completions
+>   ath10k: cleanup HTT TX functions
+>   ath10k: use msdu headroom to store txfrag
 
-Doh, I broke this. Sorry about that.
-
-Applied, but I changed the commit log. Especially notice the changes in
-the last sentence:
-
-commit 1073ab2e9b0d45f318052a3f3690405fc04eda75
-Author: Michal Kazior <michal.kazior@tieto.com>
-Date:   Wed Sep 18 15:22:17 2013 +0200
-
-    ath10k: fix num_sends_allowed replenishing
-    
-    Commit e9bb0aa39 ("ath10k: delete struct ce_sendlist") broke
-    num_sends_allowed incrementing. num_sends_allowed
-    exceeded initial values and could overflow.
-    
-    This code was supposed to replenish
-    num_sends_allowed for partial sendlist items (i.e.
-    before final sendlist item from a sendlist was
-    completed and could be processed by completion
-    handlers).
-    
-    Fortunately it seems it did not cause any major breakage,
-    yet.
-    
-    Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Thanks, all five applied.
 
 -- 
 Kalle Valo
