@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOMQF-0004cU-1J
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:48:35 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 3/4] ath10k: cleanup RX decap handling
-References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
- <1379335757-15180-4-git-send-email-michal.kazior@tieto.com>
- <8738p4laid.fsf@qca.qualcomm.com>
- <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
-Date: Tue, 24 Sep 2013 09:47:39 +0300
-In-Reply-To: <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
- (Michal Kazior's message of "Tue, 17 Sep 2013 07:19:35 +0200")
-Message-ID: <87ioxqbtro.fsf@kamboji.qca.qualcomm.com>
+ id 1VOMTw-0004hB-P9
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:52:25 +0000
+Received: by mail-bk0-f53.google.com with SMTP id d7so1523880bkh.40
+ for <ath10k@lists.infradead.org>; Mon, 23 Sep 2013 23:51:59 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87r4cebuxm.fsf@kamboji.qca.qualcomm.com>
+References: <1379509691-19904-1-git-send-email-michal.kazior@tieto.com>
+ <87r4cebuxm.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 24 Sep 2013 08:51:59 +0200
+Message-ID: <CA+BoTQ=Tg1Qv8qXqw8++hXiDsBXyeQKDjYesWdNg25ORMQJGRg@mail.gmail.com>
+Subject: Re: [RFC] ath10k: replenish HTT RX buffers in a tasklet
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,90 +21,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 16 September 2013 23:30, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> Native Wifi frames are always decapped as non-QoS
->>> data frames meaning mac80211 couldn't set sk_buff
->>> priority properly. The patch fixes this by using
->>> the original 802.11 header.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> The patch title doesn't seem to match with the content. Unless I'm
->> mistaken it looks like you are adding native wifi frame format support
->> and doing some cleanup at the same time. They should be in separate
->> patches.
->
-> You're right. I'll split it up.
->
-> Nwifi was supported, however QoS Data frames were reported as Data
-> frames though.
-
-Oh, ok. It would be good to document that in the commit log as well.
-
->>>       case RX_MSDU_DECAP_RAW:
->>> -             /* remove trailing FCS */
->>> -             skb_trim(skb, skb->len - 4);
->>> +             skb_trim(skb, skb->len - FCS_LEN);
->>>               break;
->>
->> Please keep the comment still
->
-> Why? The point of the comment was to explain the literal "4". Using
-> define makes the comment redundant.
-
-I know it's redundant, but this is just to improve readability.
-
->>>       case RX_MSDU_DECAP_ETHERNET2_DIX:
->>> -             /* macaddr[6] + macaddr[6] + ethertype[2] */
->>> -             skb_pull(skb, 6 + 6 + 2);
->>> +             rfc1042 = hdr;
->>> +             rfc1042 += roundup(hdr_len, 4);
->>> +             rfc1042 += roundup(ath10k_htt_rx_crypto_param_len(enctype), 4);
->>> +
->>> +             skb_pull(skb, sizeof(struct ethhdr));
->>> +             memcpy(skb_push(skb, sizeof(struct rfc1042_hdr)),
->>> +                    rfc1042, sizeof(struct rfc1042_hdr));
->>> +             memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
->>>               break;
->>
->> Ditto.
->
-> Comment was supposed to explain where those numbers come from. Using
-> structures explains it now.
-
-Sure, the structures are very good here. But like above, having small
-comments improve readability. Think of it as a "title" or something like
-that.
-
->>>       case RX_MSDU_DECAP_8023_SNAP_LLC:
->>> -             /* macaddr[6] + macaddr[6] + len[2] */
->>> -             /* we don't need this for non-A-MSDU */
->>> -             skb_pull(skb, 6 + 6 + 2);
->>> +             skb_pull(skb, sizeof(struct amsdu_subframe_hdr));
->>> +             memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
->>>               break;
->>
->> And here.
->
-> Ditto.
-
-Same here :)
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgU2VwdGVtYmVyIDIwMTMgMDg6MjIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gVGhpcyBmaXhlcyBzeXN0ZW0gc3RhcnZhdGlvbiB3aGVuIHVuZGVyIGhlYXZ5
+IFJYCj4+IHRyYWZmaWMuIFRoaXMgcHJvYmxlbSBjb3VsZCBiZSBvYnNlcnZlZCBvbiBBUDEzNQo+
+PiBhbmQgbGVkIHRvIHdhdGNoZG9nIHJlc2V0dGluZyB0aGUgcGxhdGZvcm0uCj4+Cj4+IFBhdGNo
+IHN0YXJ2ZXMgRlcgUlggcmluZyBidWZmZXIgYnkgcHJvZ3Jlc3NpdmVseQo+PiByZXBsZW5pc2hp
+bmcgYnVmZmVycyB0byBhdXRvLWJhbGFuY2UgdGhlIFJYCj4+IGhhbmRsZWQgdG8gdGhlIGhvc3Qg
+c3lzdGVtLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4KPgo+IExvb2tzIGdvb2QgdG8gbWUuIEkgc3VzcGVjdCB0aGVyZSBpcyBhIGJl
+dHRlciB3YXkgdG8gZG8gdGhpcyBpbiBsb25nCj4gdGVybSwgYnV0IHRoaXMgbG9va3MgbGlrZSBh
+IHZpYWJsZSBzaG9ydCB0ZXJtIHNvbHV0aW9uLgo+Cj4gRG9lcyBpdCBkZWNyZWFzZSB0aHJvdWdo
+cHV0IGluIGEgbm90aWNlYWJsZSB3YXk/CgpJIGhhdmUgeWV0IHRvIG9ic2VydmUgYW55IHJlZ3Jl
+c3Npb25zLgoKCk1pY2hhxYIuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
