@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOM1U-0004GM-Vq
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:23:01 +0000
+ id 1VOMKh-0004Wu-Mj
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:42:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC] ath10k: replenish HTT RX buffers in a tasklet
-References: <1379509691-19904-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 24 Sep 2013 09:22:29 +0300
-In-Reply-To: <1379509691-19904-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 18 Sep 2013 15:08:10 +0200")
-Message-ID: <87r4cebuxm.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC 0/4] ath10k: improve RX performance
+References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 24 Sep 2013 09:42:21 +0300
+In-Reply-To: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 16 Sep 2013 14:49:13 +0200")
+Message-ID: <87mwn2bu0i.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,20 +28,18 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This fixes system starvation when under heavy RX
-> traffic. This problem could be observed on AP135
-> and led to watchdog resetting the platform.
+> This patchset gives clear RX performance
+> improvement on AP135. Throughput is at least
+> doubled (300mbps -> 600mbps, UDP RX, 2x2).
 >
-> Patch starves FW RX ring buffer by progressively
-> replenishing buffers to auto-balance the RX
-> handled to the host system.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Patches depend on my RFC patch "mac80211: support
+> reporting A-MSDU subframes individually".
 
-Looks good to me. I suspect there is a better way to do this in long
-term, but this looks like a viable short term solution.
-
-Does it decrease throughput in a noticeable way?
+Preferably I can apply these changes only after the mac80211 patch goes
+to net-next (to avoid unnecessary rebasing). Is there a way to
+workaround the need for the mac80211 patch in ath10k so that we could
+apply these patches ASAP? And once the mac80211 patch is commited we
+could just remove the workaround in ath10k.
 
 -- 
 Kalle Valo
