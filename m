@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOMKh-0004Wu-Mj
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:42:52 +0000
+ id 1VOMQF-0004cU-1J
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 06:48:35 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 0/4] ath10k: improve RX performance
+Subject: Re: [RFC 3/4] ath10k: cleanup RX decap handling
 References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 24 Sep 2013 09:42:21 +0300
-In-Reply-To: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 16 Sep 2013 14:49:13 +0200")
-Message-ID: <87mwn2bu0i.fsf@kamboji.qca.qualcomm.com>
+ <1379335757-15180-4-git-send-email-michal.kazior@tieto.com>
+ <8738p4laid.fsf@qca.qualcomm.com>
+ <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
+Date: Tue, 24 Sep 2013 09:47:39 +0300
+In-Reply-To: <CA+BoTQ=q9ojX4bp61rExY7b9Pk+=Zpg_qNxfXYvt8eXscdC=bA@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 17 Sep 2013 07:19:35 +0200")
+Message-ID: <87ioxqbtro.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,22 +27,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This patchset gives clear RX performance
-> improvement on AP135. Throughput is at least
-> doubled (300mbps -> 600mbps, UDP RX, 2x2).
+> On 16 September 2013 23:30, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> Native Wifi frames are always decapped as non-QoS
+>>> data frames meaning mac80211 couldn't set sk_buff
+>>> priority properly. The patch fixes this by using
+>>> the original 802.11 header.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>
+>> The patch title doesn't seem to match with the content. Unless I'm
+>> mistaken it looks like you are adding native wifi frame format support
+>> and doing some cleanup at the same time. They should be in separate
+>> patches.
 >
-> Patches depend on my RFC patch "mac80211: support
-> reporting A-MSDU subframes individually".
+> You're right. I'll split it up.
+>
+> Nwifi was supported, however QoS Data frames were reported as Data
+> frames though.
 
-Preferably I can apply these changes only after the mac80211 patch goes
-to net-next (to avoid unnecessary rebasing). Is there a way to
-workaround the need for the mac80211 patch in ath10k so that we could
-apply these patches ASAP? And once the mac80211 patch is commited we
-could just remove the workaround in ath10k.
+Oh, ok. It would be good to document that in the commit log as well.
+
+>>>       case RX_MSDU_DECAP_RAW:
+>>> -             /* remove trailing FCS */
+>>> -             skb_trim(skb, skb->len - 4);
+>>> +             skb_trim(skb, skb->len - FCS_LEN);
+>>>               break;
+>>
+>> Please keep the comment still
+>
+> Why? The point of the comment was to explain the literal "4". Using
+> define makes the comment redundant.
+
+I know it's redundant, but this is just to improve readability.
+
+>>>       case RX_MSDU_DECAP_ETHERNET2_DIX:
+>>> -             /* macaddr[6] + macaddr[6] + ethertype[2] */
+>>> -             skb_pull(skb, 6 + 6 + 2);
+>>> +             rfc1042 = hdr;
+>>> +             rfc1042 += roundup(hdr_len, 4);
+>>> +             rfc1042 += roundup(ath10k_htt_rx_crypto_param_len(enctype), 4);
+>>> +
+>>> +             skb_pull(skb, sizeof(struct ethhdr));
+>>> +             memcpy(skb_push(skb, sizeof(struct rfc1042_hdr)),
+>>> +                    rfc1042, sizeof(struct rfc1042_hdr));
+>>> +             memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
+>>>               break;
+>>
+>> Ditto.
+>
+> Comment was supposed to explain where those numbers come from. Using
+> structures explains it now.
+
+Sure, the structures are very good here. But like above, having small
+comments improve readability. Think of it as a "title" or something like
+that.
+
+>>>       case RX_MSDU_DECAP_8023_SNAP_LLC:
+>>> -             /* macaddr[6] + macaddr[6] + len[2] */
+>>> -             /* we don't need this for non-A-MSDU */
+>>> -             skb_pull(skb, 6 + 6 + 2);
+>>> +             skb_pull(skb, sizeof(struct amsdu_subframe_hdr));
+>>> +             memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
+>>>               break;
+>>
+>> And here.
+>
+> Ditto.
+
+Same here :)
 
 -- 
 Kalle Valo
