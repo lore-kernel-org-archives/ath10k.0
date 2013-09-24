@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOMbR-0004nm-Kw
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 07:00:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC] ath10k: replenish HTT RX buffers in a tasklet
-References: <1379509691-19904-1-git-send-email-michal.kazior@tieto.com>
- <87r4cebuxm.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=Tg1Qv8qXqw8++hXiDsBXyeQKDjYesWdNg25ORMQJGRg@mail.gmail.com>
-Date: Tue, 24 Sep 2013 09:59:38 +0300
-In-Reply-To: <CA+BoTQ=Tg1Qv8qXqw8++hXiDsBXyeQKDjYesWdNg25ORMQJGRg@mail.gmail.com>
- (Michal Kazior's message of "Tue, 24 Sep 2013 08:51:59 +0200")
-Message-ID: <87eh8ebt7p.fsf@kamboji.qca.qualcomm.com>
+ id 1VOMur-0005Kw-1e
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 07:20:13 +0000
+Received: by mail-bk0-f44.google.com with SMTP id mz10so1598791bkb.3
+ for <ath10k@lists.infradead.org>; Tue, 24 Sep 2013 00:19:50 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87mwn2bu0i.fsf@kamboji.qca.qualcomm.com>
+References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
+ <87mwn2bu0i.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 24 Sep 2013 09:19:50 +0200
+Message-ID: <CA+BoTQnxqgz_90+Q8_FhM6PZh8CEW12dOA+ZGqHeYjK=Bbu9wA@mail.gmail.com>
+Subject: Re: [RFC 0/4] ath10k: improve RX performance
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 24 September 2013 08:22, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> This fixes system starvation when under heavy RX
->>> traffic. This problem could be observed on AP135
->>> and led to watchdog resetting the platform.
->>>
->>> Patch starves FW RX ring buffer by progressively
->>> replenishing buffers to auto-balance the RX
->>> handled to the host system.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> Looks good to me. I suspect there is a better way to do this in long
->> term, but this looks like a viable short term solution.
->>
->> Does it decrease throughput in a noticeable way?
->
-> I have yet to observe any regressions.
-
-Good. If you think the patch should be applied please resend it as
-"[PATCH]" so that I can apply it.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgU2VwdGVtYmVyIDIwMTMgMDg6NDIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gVGhpcyBwYXRjaHNldCBnaXZlcyBjbGVhciBSWCBwZXJmb3JtYW5jZQo+PiBp
+bXByb3ZlbWVudCBvbiBBUDEzNS4gVGhyb3VnaHB1dCBpcyBhdCBsZWFzdAo+PiBkb3VibGVkICgz
+MDBtYnBzIC0+IDYwMG1icHMsIFVEUCBSWCwgMngyKS4KPj4KPj4gUGF0Y2hlcyBkZXBlbmQgb24g
+bXkgUkZDIHBhdGNoICJtYWM4MDIxMTogc3VwcG9ydAo+PiByZXBvcnRpbmcgQS1NU0RVIHN1YmZy
+YW1lcyBpbmRpdmlkdWFsbHkiLgo+Cj4gUHJlZmVyYWJseSBJIGNhbiBhcHBseSB0aGVzZSBjaGFu
+Z2VzIG9ubHkgYWZ0ZXIgdGhlIG1hYzgwMjExIHBhdGNoIGdvZXMKPiB0byBuZXQtbmV4dCAodG8g
+YXZvaWQgdW5uZWNlc3NhcnkgcmViYXNpbmcpLiBJcyB0aGVyZSBhIHdheSB0bwo+IHdvcmthcm91
+bmQgdGhlIG5lZWQgZm9yIHRoZSBtYWM4MDIxMSBwYXRjaCBpbiBhdGgxMGsgc28gdGhhdCB3ZSBj
+b3VsZAo+IGFwcGx5IHRoZXNlIHBhdGNoZXMgQVNBUD8gQW5kIG9uY2UgdGhlIG1hYzgwMjExIHBh
+dGNoIGlzIGNvbW1pdGVkIHdlCj4gY291bGQganVzdCByZW1vdmUgdGhlIHdvcmthcm91bmQgaW4g
+YXRoMTBrLgoKVGhlIHdvcmthcm91bmQgY291bGQgYmUgdG8gY2xlYXIgdGhlIHJldHJhbnNtaXNz
+aW9uIGZsYWcgd2hlbgpyZXBvcnRpbmcgQS1NU0RVIGZyYW1lcyBpbmRpdmlkdWFsbHkuCgoKTWlj
+aGHFgi4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
