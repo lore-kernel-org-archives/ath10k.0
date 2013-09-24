@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOSNU-000744-LH
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 13:10:09 +0000
+ id 1VOSNV-000746-Om
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 13:10:12 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/5] ath10k: align RX frames properly
-Date: Tue, 24 Sep 2013 15:09:18 +0200
-Message-ID: <1380028158-861-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/5] ath10k: report A-MSDU subframes individually
+Date: Tue, 24 Sep 2013 15:09:14 +0200
+Message-ID: <1380028158-861-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1380028158-861-1-git-send-email-michal.kazior@tieto.com>
 References: <1380028158-861-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
@@ -25,39 +25,324 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Ethernet-like decapping mode leaves IP protocol
-frame not aligned to 4-byte boundaries. This leads
-to re-aligning in mac80211 which in turn leads to
-poor CPU cache behaviour on some machines.
+HW reports each A-MSDU subframe as a separate
+sk_buff. It is impossible to configure it to
+behave differently.
 
-Since HW doesn't allow to change payload offset
-properly the solution is to force HW to decap in
-Native Wifi mode which always has 24-bytes long
-802.11 header (even for QoS frames). This means IP
-frame is properly aligned in this decap mode.
+Until now ath10k was reconstructing A-MSDUs from
+subframes which involved a lot of memory
+operations. This proved to be a significant
+contributor to degraded RX performance.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h |    6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  204 ++++++++++++------------------
+ drivers/net/wireless/ath/ath10k/txrx.c   |    2 +
+ 2 files changed, 83 insertions(+), 123 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 643f0c9..8c1be768 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -74,7 +74,11 @@ enum ath10k_mcast2ucast_mode {
- #define TARGET_RX_CHAIN_MASK			(BIT(0) | BIT(1) | BIT(2))
- #define TARGET_RX_TIMEOUT_LO_PRI		100
- #define TARGET_RX_TIMEOUT_HI_PRI		40
--#define TARGET_RX_DECAP_MODE			ATH10K_HW_TXRX_ETHERNET
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 62ea9c8..f79f815 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -41,6 +41,10 @@
+ /* when under memory pressure rx ring refill may fail and needs a retry */
+ #define HTT_RX_RING_REFILL_RETRY_MS 50
+ 
 +
-+/* Native Wifi decap mode is used to align IP frames to 4-byte boundaries and
-+ * avoid a very expensive re-alignment in mac80211. */
-+#define TARGET_RX_DECAP_MODE			ATH10K_HW_TXRX_NATIVE_WIFI
++static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
 +
- #define TARGET_SCAN_MAX_PENDING_REQS		4
- #define TARGET_BMISS_OFFLOAD_MAX_VDEV		3
- #define TARGET_ROAM_OFFLOAD_MAX_VDEV		3
++
+ static int ath10k_htt_rx_ring_size(struct ath10k_htt *htt)
+ {
+ 	int size;
+@@ -591,136 +595,109 @@ static bool ath10k_htt_rx_hdr_is_amsdu(struct ieee80211_hdr *hdr)
+ 	return false;
+ }
+ 
+-static int ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+-			struct htt_rx_info *info)
++struct rfc1042_hdr {
++	u8 llc_dsap;
++	u8 llc_ssap;
++	u8 llc_ctrl;
++	u8 snap_oui[3];
++	__be16 snap_type;
++} __packed;
++
++struct amsdu_subframe_hdr {
++	u8 dst[ETH_ALEN];
++	u8 src[ETH_ALEN];
++	__be16 len;
++} __packed;
++
++static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
++				struct htt_rx_info *info)
+ {
+ 	struct htt_rx_desc *rxd;
+-	struct sk_buff *amsdu;
+ 	struct sk_buff *first;
+-	struct ieee80211_hdr *hdr;
+ 	struct sk_buff *skb = info->skb;
+ 	enum rx_msdu_decap_format fmt;
+ 	enum htt_rx_mpdu_encrypt_type enctype;
++	struct ieee80211_hdr *hdr;
++	u8 hdr_buf[64];
+ 	unsigned int hdr_len;
+-	int crypto_len;
+ 
+ 	rxd = (void *)skb->data - sizeof(*rxd);
+-	fmt = MS(__le32_to_cpu(rxd->msdu_start.info1),
+-			RX_MSDU_START_INFO1_DECAP_FORMAT);
+ 	enctype = MS(__le32_to_cpu(rxd->mpdu_start.info0),
+ 			RX_MPDU_START_INFO0_ENCRYPT_TYPE);
+ 
+-	/* FIXME: No idea what assumptions are safe here. Need logs */
+-	if ((fmt == RX_MSDU_DECAP_RAW && skb->next)) {
+-		ath10k_htt_rx_free_msdu_chain(skb->next);
+-		skb->next = NULL;
+-		return -ENOTSUPP;
+-	}
++	hdr = (struct ieee80211_hdr *)rxd->rx_hdr_status;
++	hdr_len = ieee80211_hdrlen(hdr->frame_control);
++	memcpy(hdr_buf, hdr, hdr_len);
++	hdr = (struct ieee80211_hdr *)hdr_buf;
+ 
+-	/* A-MSDU max is a little less than 8K */
+-	amsdu = dev_alloc_skb(8*1024);
+-	if (!amsdu) {
+-		ath10k_warn("A-MSDU allocation failed\n");
+-		ath10k_htt_rx_free_msdu_chain(skb->next);
+-		skb->next = NULL;
+-		return -ENOMEM;
+-	}
+-
+-	if (fmt >= RX_MSDU_DECAP_NATIVE_WIFI) {
+-		int hdrlen;
+-
+-		hdr = (void *)rxd->rx_hdr_status;
+-		hdrlen = ieee80211_hdrlen(hdr->frame_control);
+-		memcpy(skb_put(amsdu, hdrlen), hdr, hdrlen);
+-	}
++	/* FIXME: Hopefully this is a temporary measure.
++	 *
++	 * Reporting individual A-MSDU subframes means each reported frame
++	 * shares the same sequence number.
++	 *
++	 * mac80211 drops frames it recognizes as duplicates, i.e.
++	 * retransmission flag is set and sequence number matches sequence
++	 * number from a previous frame (as per IEEE 802.11-2012: 9.3.2.10
++	 * "Duplicate detection and recovery")
++	 *
++	 * To avoid frames being dropped clear retransmission flag for all
++	 * received A-MSDUs.
++	 *
++	 * Worst case: actual duplicate frames will be reported but this should
++	 * still be handled gracefully by other OSI/ISO layers. */
++	hdr->frame_control &= cpu_to_le16(~IEEE80211_FCTL_RETRY);
+ 
+ 	first = skb;
+ 	while (skb) {
+ 		void *decap_hdr;
+-		int decap_len = 0;
++		int decap_len;
+ 
+ 		rxd = (void *)skb->data - sizeof(*rxd);
+ 		fmt = MS(__le32_to_cpu(rxd->msdu_start.info1),
+-				RX_MSDU_START_INFO1_DECAP_FORMAT);
++			 RX_MSDU_START_INFO1_DECAP_FORMAT);
+ 		decap_hdr = (void *)rxd->rx_hdr_status;
+ 
+-		if (skb == first) {
+-			/* We receive linked A-MSDU subframe skbuffs. The
+-			 * first one contains the original 802.11 header (and
+-			 * possible crypto param) in the RX descriptor. The
+-			 * A-MSDU subframe header follows that. Each part is
+-			 * aligned to 4 byte boundary. */
+-
+-			hdr = (void *)amsdu->data;
+-			hdr_len = ieee80211_hdrlen(hdr->frame_control);
+-			crypto_len = ath10k_htt_rx_crypto_param_len(enctype);
+-
+-			decap_hdr += roundup(hdr_len, 4);
+-			decap_hdr += roundup(crypto_len, 4);
+-		}
+-
+-		/* When fmt == RX_MSDU_DECAP_8023_SNAP_LLC:
+-		 *
+-		 * SNAP 802.3 consists of:
+-		 * [dst:6][src:6][len:2][dsap:1][ssap:1][ctl:1][snap:5]
+-		 * [data][fcs:4].
+-		 *
+-		 * Since this overlaps with A-MSDU header (da, sa, len)
+-		 * there's nothing extra to do. */
+-
+-		if (fmt == RX_MSDU_DECAP_ETHERNET2_DIX) {
+-			/* Ethernet2 decap inserts ethernet header in place of
+-			 * A-MSDU subframe header. */
+-			skb_pull(skb, 6 + 6 + 2);
+-
+-			/* A-MSDU subframe header length */
+-			decap_len += 6 + 6 + 2;
+-
+-			/* Ethernet2 decap also strips the LLC/SNAP so we need
+-			 * to re-insert it. The LLC/SNAP follows A-MSDU
+-			 * subframe header. */
+-			/* FIXME: Not all LLCs are 8 bytes long */
+-			decap_len += 8;
+-
+-			memcpy(skb_put(amsdu, decap_len), decap_hdr, decap_len);
+-		}
++		skb->ip_summed = ath10k_htt_rx_get_csum_state(skb);
+ 
+-		if (fmt == RX_MSDU_DECAP_NATIVE_WIFI) {
+-			/* Native Wifi decap inserts regular 802.11 header
+-			 * in place of A-MSDU subframe header. */
+-			hdr = (struct ieee80211_hdr *)skb->data;
+-			skb_pull(skb, ieee80211_hdrlen(hdr->frame_control));
+-
+-			/* A-MSDU subframe header length */
+-			decap_len += 6 + 6 + 2;
+-
+-			memcpy(skb_put(amsdu, decap_len), decap_hdr, decap_len);
++		/* First frame in an A-MSDU chain has more decapped data. */
++		if (skb == first) {
++			decap_hdr += round_up(ieee80211_hdrlen(hdr->frame_control), 4);
++			decap_hdr += round_up(ath10k_htt_rx_crypto_param_len(enctype), 4);
+ 		}
+ 
+-		if (fmt == RX_MSDU_DECAP_RAW)
+-			skb_trim(skb, skb->len - 4); /* remove FCS */
+-
+-		memcpy(skb_put(amsdu, skb->len), skb->data, skb->len);
+-
+-		/* A-MSDU subframes are padded to 4bytes
+-		 * but relative to first subframe, not the whole MPDU */
+-		if (skb->next && ((decap_len + skb->len) & 3)) {
+-			int padlen = 4 - ((decap_len + skb->len) & 3);
+-			memset(skb_put(amsdu, padlen), 0, padlen);
++		switch (fmt) {
++		case RX_MSDU_DECAP_RAW:
++			skb_trim(skb, skb->len - FCS_LEN);
++			break;
++		case RX_MSDU_DECAP_NATIVE_WIFI:
++			break;
++		case RX_MSDU_DECAP_ETHERNET2_DIX:
++			decap_len = 0;
++			decap_len += sizeof(struct rfc1042_hdr);
++			decap_len += sizeof(struct amsdu_subframe_hdr);
++
++			skb_pull(skb, sizeof(struct ethhdr));
++			memcpy(skb_push(skb, decap_len), decap_hdr, decap_len);
++			memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
++			break;
++		case RX_MSDU_DECAP_8023_SNAP_LLC:
++			memcpy(skb_push(skb, hdr_len), hdr, hdr_len);
++			break;
+ 		}
+ 
++		info->skb = skb;
++		info->encrypt_type = enctype;
+ 		skb = skb->next;
+-	}
+-
+-	info->skb = amsdu;
+-	info->encrypt_type = enctype;
++		info->skb->next = NULL;
+ 
+-	ath10k_htt_rx_free_msdu_chain(first);
++		ath10k_process_rx(htt->ar, info);
++	}
+ 
+-	return 0;
++	/* FIXME: It might be nice to re-assemble the A-MSDU when there's a
++	 * monitor interface active for sniffing purposes. */
+ }
+ 
+-static int ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
++static void ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
+ {
+ 	struct sk_buff *skb = info->skb;
+ 	struct htt_rx_desc *rxd;
+@@ -742,6 +719,8 @@ static int ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
+ 			RX_MPDU_START_INFO0_ENCRYPT_TYPE);
+ 	hdr = (void *)skb->data - RX_HTT_HDR_STATUS_LEN;
+ 
++	skb->ip_summed = ath10k_htt_rx_get_csum_state(skb);
++
+ 	switch (fmt) {
+ 	case RX_MSDU_DECAP_RAW:
+ 		/* remove trailing FCS */
+@@ -782,7 +761,8 @@ static int ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
+ 
+ 	info->skb = skb;
+ 	info->encrypt_type = enctype;
+-	return 0;
++
++	ath10k_process_rx(htt->ar, info);
+ }
+ 
+ static bool ath10k_htt_rx_has_decrypt_err(struct sk_buff *skb)
+@@ -854,8 +834,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	int fw_desc_len;
+ 	u8 *fw_desc;
+ 	int i, j;
+-	int ret;
+-	int ip_summed;
+ 
+ 	memset(&info, 0, sizeof(info));
+ 
+@@ -930,11 +908,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
+ 
+-			/* The skb is not yet processed and it may be
+-			 * reallocated. Since the offload is in the original
+-			 * skb extract the checksum now and assign it later */
+-			ip_summed = ath10k_htt_rx_get_csum_state(msdu_head);
+-
+ 			info.skb     = msdu_head;
+ 			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
+ 			info.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+@@ -947,24 +920,9 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
+ 
+ 			if (ath10k_htt_rx_hdr_is_amsdu(hdr))
+-				ret = ath10k_htt_rx_amsdu(htt, &info);
++				ath10k_htt_rx_amsdu(htt, &info);
+ 			else
+-				ret = ath10k_htt_rx_msdu(htt, &info);
+-
+-			if (ret && !info.fcs_err) {
+-				ath10k_warn("error processing msdus %d\n", ret);
+-				dev_kfree_skb_any(info.skb);
+-				continue;
+-			}
+-
+-			if (ath10k_htt_rx_hdr_is_amsdu((void *)info.skb->data))
+-				ath10k_dbg(ATH10K_DBG_HTT, "htt mpdu is amsdu\n");
+-
+-			info.skb->ip_summed = ip_summed;
+-
+-			ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "htt mpdu: ",
+-					info.skb->data, info.skb->len);
+-			ath10k_process_rx(htt->ar, &info);
++				ath10k_htt_rx_msdu(htt, &info);
+ 		}
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 57931d0..5ae373a 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -268,6 +268,8 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		   status->vht_nss,
+ 		   status->freq,
+ 		   status->band);
++	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
++			info->skb->data, info->skb->len);
+ 
+ 	ieee80211_rx(ar->hw, info->skb);
+ }
 -- 
 1.7.9.5
 
