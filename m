@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VON44-0005Vw-Q1
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 07:29:46 +0000
+ id 1VON8N-0005hY-VZ
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 07:34:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 0/4] ath10k: improve RX performance
-References: <1379335757-15180-1-git-send-email-michal.kazior@tieto.com>
- <87mwn2bu0i.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnxqgz_90+Q8_FhM6PZh8CEW12dOA+ZGqHeYjK=Bbu9wA@mail.gmail.com>
-Date: Tue, 24 Sep 2013 10:29:10 +0300
-In-Reply-To: <CA+BoTQnxqgz_90+Q8_FhM6PZh8CEW12dOA+ZGqHeYjK=Bbu9wA@mail.gmail.com>
- (Michal Kazior's message of "Tue, 24 Sep 2013 09:19:50 +0200")
-Message-ID: <8761tqbruh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Pull request: ath 20130930
+References: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 24 Sep 2013 10:33:40 +0300
+In-Reply-To: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Tue, 03 Sep 2013 11:14:22 +0300")
+Message-ID: <871u4ebrmz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,31 +23,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi John,
 
-> On 24 September 2013 08:42, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> This patchset gives clear RX performance
->>> improvement on AP135. Throughput is at least
->>> doubled (300mbps -> 600mbps, UDP RX, 2x2).
->>>
->>> Patches depend on my RFC patch "mac80211: support
->>> reporting A-MSDU subframes individually".
->>
->> Preferably I can apply these changes only after the mac80211 patch goes
->> to net-next (to avoid unnecessary rebasing). Is there a way to
->> workaround the need for the mac80211 patch in ath10k so that we could
->> apply these patches ASAP? And once the mac80211 patch is commited we
->> could just remove the workaround in ath10k.
+when you start merging again please consider taking this pull request
+which I sent too late last time. It should be still valid.
+
+I have more patches queued up during the merge window, but I'm planning
+to send them after you have pulled this. But if you prefer to have
+everything in one go, I can do that as well.
+
+Kalle
+
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> Hi John,
 >
-> The workaround could be to clear the retransmission flag when
-> reporting A-MSDU frames individually.
-
-That sounds very good. Can you do that and resend the patchset, please?
+> here are latest ath10k changes, I hope it's still time to get these to
+> 3.12. The changelog for the pull request:
+>
+> Bartosz dropped support for qca98xx hw1.0 hardware from ath10k, it's
+> just too much to support it. Michal added support for the new firmware
+> interface. Marek fixed WEP in AP and IBSS mode. Rest of the changes are
+> minor fixes or cleanups.
+>
+> The following changes since commit 9d0e2f0772d394060bf3b17cd1f3a35574365103:
+>
+>   ath6kl: Fix invalid pointer access on fuzz testing with AP mode (2013-08-07 10:58:59 +0300)
+>
+> are available in the git repository at:
+>
+>   git://github.com/kvalo/ath.git for-linville
+>
+> for you to fetch changes up to 763b8cd31493f452094fd0eaeedb8cad37c756a2:
+>
+>   ath10k: add chip_id file to debugfs (2013-09-03 09:59:53 +0300)
+>
+> ----------------------------------------------------------------
+> Bartosz Markowski (2):
+>       ath10k: Remove qca98xx hw1.0 support
+>       ath10k: update supported FW build version
+>
+> Janusz Dziedzic (2):
+>       ath10k: setup peer UAPSD flag correctly
+>       ath10k: check allocation errors in CE
+>
+> Kalle Valo (10):
+>       ath10k: remove un ar_pci->cacheline_sz field
+>       ath10k: pci: make host_ce_config_wlan[] more readable
+>       ath10k: make target_ce_config_wlan more readable
+>       ath10k: remove void pointer from struct ath10k_pci_compl
+>       ath10k: convert ath10k_pci_reg_read/write32() to take struct ath10k
+>       ath10k: clean up ath10k_ce_completed_send_next_nolock()
+>       ath10k: convert ath10k_pci_wake() to return
+>       ath10k: simplify ath10k_ce_init() wake up handling
+>       ath10k: check chip id from the soc register during probe
+>       ath10k: add chip_id file to debugfs
+>
+> Marek Puzyniak (1):
+>       ath10k: fix WEP in AP and IBSS mode
+>
+> Michal Kazior (15):
+>       ath10k: clean up monitor start code
+>       ath10k: use sizeof(*var) in kmalloc
+>       ath10k: clean up PCI completion states
+>       ath10k: print errcode when CE ring setup fails
+>       ath10k: fix HTT service setup
+>       ath10k: implement 802.3 SNAP rx decap type A-MSDU handling
+>       ath10k: plug possible memory leak in WMI
+>       ath10k: add support for firmware newer than 636
+>       ath10k: add support for HTT 3.0
+>       ath10k: use inline ce_state structure
+>       ath10k: remove ce_op_state
+>       ath10k: remove unused ce_attr parameters
+>       ath10k: rename hif_ce_pipe_info to ath10k_pci_pipe
+>       ath10k: rename ce_state to ath10k_ce_pipe
+>       ath10k: rename ce_ring_state to ath10k_ce_ring
+>
+> Mohammed Shafi Shajakhan (1):
+>       ath10k: Fix mutex unlock balance
+>
+>  drivers/net/wireless/ath/ath10k/ce.c     |  291 +++++++++++++-------------
+>  drivers/net/wireless/ath/ath10k/ce.h     |   74 +++----
+>  drivers/net/wireless/ath/ath10k/core.c   |   46 +++--
+>  drivers/net/wireless/ath/ath10k/core.h   |   13 +-
+>  drivers/net/wireless/ath/ath10k/debug.c  |   23 ++-
+>  drivers/net/wireless/ath/ath10k/htc.c    |    8 +-
+>  drivers/net/wireless/ath/ath10k/htt.c    |   19 +-
+>  drivers/net/wireless/ath/ath10k/htt.h    |    6 +-
+>  drivers/net/wireless/ath/ath10k/htt_rx.c |   12 +-
+>  drivers/net/wireless/ath/ath10k/htt_tx.c |   74 +++++--
+>  drivers/net/wireless/ath/ath10k/hw.h     |   19 +-
+>  drivers/net/wireless/ath/ath10k/mac.c    |   22 +-
+>  drivers/net/wireless/ath/ath10k/pci.c    |  325 ++++++++++++++++++++----------
+>  drivers/net/wireless/ath/ath10k/pci.h    |   73 +++----
+>  drivers/net/wireless/ath/ath10k/wmi.c    |   33 ++-
+>  drivers/net/wireless/ath/ath10k/wmi.h    |   16 +-
+>  16 files changed, 626 insertions(+), 428 deletions(-)
 
 -- 
 Kalle Valo
