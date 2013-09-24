@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VON8N-0005hY-VZ
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 07:34:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Pull request: ath 20130930
-References: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 24 Sep 2013 10:33:40 +0300
-In-Reply-To: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Tue, 03 Sep 2013 11:14:22 +0300")
-Message-ID: <871u4ebrmz.fsf@kamboji.qca.qualcomm.com>
+ id 1VONq0-0006tS-6O
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 08:19:17 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: replenish HTT RX buffers in a tasklet
+Date: Tue, 24 Sep 2013 10:18:36 +0200
+Message-ID: <1380010716-27151-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,108 +20,146 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi John,
+This starves FW RX ring buffer in case of
+excessive RX. This prevents from CPU being
+overwhelmed by RX indications/completions by
+naturally forbiddin FW to submit more RX.
 
-when you start merging again please consider taking this pull request
-which I sent too late last time. It should be still valid.
+This fixes RX starvation on slow machines when
+under heavy RX traffic.
 
-I have more patches queued up during the merge window, but I'm planning
-to send them after you have pulled this. But if you prefer to have
-everything in one go, I can do that as well.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+PATCHv1 (since RFC) changes:
+ * fix comment
+ * remove empty line addition
+ * re-order tasklet_kill() / del_timer_sync()
 
-Kalle
+ drivers/net/wireless/ath/ath10k/htt.h    |    7 ++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   35 +++++++++++++++++++++++++++---
+ 2 files changed, 39 insertions(+), 3 deletions(-)
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> Hi John,
->
-> here are latest ath10k changes, I hope it's still time to get these to
-> 3.12. The changelog for the pull request:
->
-> Bartosz dropped support for qca98xx hw1.0 hardware from ath10k, it's
-> just too much to support it. Michal added support for the new firmware
-> interface. Marek fixed WEP in AP and IBSS mode. Rest of the changes are
-> minor fixes or cleanups.
->
-> The following changes since commit 9d0e2f0772d394060bf3b17cd1f3a35574365103:
->
->   ath6kl: Fix invalid pointer access on fuzz testing with AP mode (2013-08-07 10:58:59 +0300)
->
-> are available in the git repository at:
->
->   git://github.com/kvalo/ath.git for-linville
->
-> for you to fetch changes up to 763b8cd31493f452094fd0eaeedb8cad37c756a2:
->
->   ath10k: add chip_id file to debugfs (2013-09-03 09:59:53 +0300)
->
-> ----------------------------------------------------------------
-> Bartosz Markowski (2):
->       ath10k: Remove qca98xx hw1.0 support
->       ath10k: update supported FW build version
->
-> Janusz Dziedzic (2):
->       ath10k: setup peer UAPSD flag correctly
->       ath10k: check allocation errors in CE
->
-> Kalle Valo (10):
->       ath10k: remove un ar_pci->cacheline_sz field
->       ath10k: pci: make host_ce_config_wlan[] more readable
->       ath10k: make target_ce_config_wlan more readable
->       ath10k: remove void pointer from struct ath10k_pci_compl
->       ath10k: convert ath10k_pci_reg_read/write32() to take struct ath10k
->       ath10k: clean up ath10k_ce_completed_send_next_nolock()
->       ath10k: convert ath10k_pci_wake() to return
->       ath10k: simplify ath10k_ce_init() wake up handling
->       ath10k: check chip id from the soc register during probe
->       ath10k: add chip_id file to debugfs
->
-> Marek Puzyniak (1):
->       ath10k: fix WEP in AP and IBSS mode
->
-> Michal Kazior (15):
->       ath10k: clean up monitor start code
->       ath10k: use sizeof(*var) in kmalloc
->       ath10k: clean up PCI completion states
->       ath10k: print errcode when CE ring setup fails
->       ath10k: fix HTT service setup
->       ath10k: implement 802.3 SNAP rx decap type A-MSDU handling
->       ath10k: plug possible memory leak in WMI
->       ath10k: add support for firmware newer than 636
->       ath10k: add support for HTT 3.0
->       ath10k: use inline ce_state structure
->       ath10k: remove ce_op_state
->       ath10k: remove unused ce_attr parameters
->       ath10k: rename hif_ce_pipe_info to ath10k_pci_pipe
->       ath10k: rename ce_state to ath10k_ce_pipe
->       ath10k: rename ce_ring_state to ath10k_ce_ring
->
-> Mohammed Shafi Shajakhan (1):
->       ath10k: Fix mutex unlock balance
->
->  drivers/net/wireless/ath/ath10k/ce.c     |  291 +++++++++++++-------------
->  drivers/net/wireless/ath/ath10k/ce.h     |   74 +++----
->  drivers/net/wireless/ath/ath10k/core.c   |   46 +++--
->  drivers/net/wireless/ath/ath10k/core.h   |   13 +-
->  drivers/net/wireless/ath/ath10k/debug.c  |   23 ++-
->  drivers/net/wireless/ath/ath10k/htc.c    |    8 +-
->  drivers/net/wireless/ath/ath10k/htt.c    |   19 +-
->  drivers/net/wireless/ath/ath10k/htt.h    |    6 +-
->  drivers/net/wireless/ath/ath10k/htt_rx.c |   12 +-
->  drivers/net/wireless/ath/ath10k/htt_tx.c |   74 +++++--
->  drivers/net/wireless/ath/ath10k/hw.h     |   19 +-
->  drivers/net/wireless/ath/ath10k/mac.c    |   22 +-
->  drivers/net/wireless/ath/ath10k/pci.c    |  325 ++++++++++++++++++++----------
->  drivers/net/wireless/ath/ath10k/pci.h    |   73 +++----
->  drivers/net/wireless/ath/ath10k/wmi.c    |   33 ++-
->  drivers/net/wireless/ath/ath10k/wmi.h    |   16 +-
->  16 files changed, 626 insertions(+), 428 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index e090902..3d71041 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -19,6 +19,7 @@
+ #define _HTT_H_
+ 
+ #include <linux/bug.h>
++#include <linux/interrupt.h>
+ 
+ #include "htc.h"
+ #include "rx_desc.h"
+@@ -1268,6 +1269,7 @@ struct ath10k_htt {
+ 	/* set if host-fw communication goes haywire
+ 	 * used to avoid further failures */
+ 	bool rx_confused;
++	struct tasklet_struct rx_replenish_task;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
+@@ -1308,6 +1310,11 @@ struct htt_rx_desc {
+ #define HTT_RX_BUF_SIZE 1920
+ #define HTT_RX_MSDU_SIZE (HTT_RX_BUF_SIZE - (int)sizeof(struct htt_rx_desc))
+ 
++/* Refill a bunch of RX buffers for each refill round so that FW/HW can handle
++ * aggregated traffic more nicely. */
++#define ATH10K_HTT_MAX_NUM_REFILL 16
++
++
+ /*
+  * DMA_MAP expects the buffer to be an integral number of cache lines.
+  * Rather than checking the actual cache line size, this code makes a
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 62ea9c8..02028c6 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -178,10 +178,27 @@ static int ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
+ 
+ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
+ {
+-	int ret, num_to_fill;
++	int ret, num_deficit, num_to_fill;
+ 
++	/* Refilling the whole RX ring buffer proves to be a bad idea. The
++	 * reason is RX may take up significant amount of CPU cycles and starve
++	 * other tasks, e.g. TX on an ethernet device while acting as a bridge
++	 * with ath10k wlan interface. This ended up with very poor performance
++	 * once CPU the host system was overwhelmed with RX on ath10k.
++	 *
++	 * By limiting the number of refills the replenishing occurs
++	 * progressively. This in turns makes use of the fact tasklets are
++	 * processed in FIFO order. This means actual RX processing can starve
++	 * out refilling. If there's not enough buffers on RX ring FW will not
++	 * report RX until it is refilled with enough buffers. This
++	 * automatically balances load wrt to CPU power.
++	 *
++	 * This probably comes at a cost of lower maximum throughput but
++	 * improves the avarage and stability. */
+ 	spin_lock_bh(&htt->rx_ring.lock);
+-	num_to_fill = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
++	num_deficit = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
++	num_to_fill = min(ATH10K_HTT_MAX_NUM_REFILL, num_deficit);
++	num_deficit -= num_to_fill;
+ 	ret = ath10k_htt_rx_ring_fill_n(htt, num_to_fill);
+ 	if (ret == -ENOMEM) {
+ 		/*
+@@ -192,6 +209,8 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
+ 		 */
+ 		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
+ 			  msecs_to_jiffies(HTT_RX_RING_REFILL_RETRY_MS));
++	} else if (num_deficit > 0) {
++		tasklet_schedule(&htt->rx_replenish_task);
+ 	}
+ 	spin_unlock_bh(&htt->rx_ring.lock);
+ }
+@@ -213,6 +232,7 @@ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
+ 	int sw_rd_idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 
+ 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
++	tasklet_kill(&htt->rx_replenish_task);
+ 
+ 	while (sw_rd_idx != __le32_to_cpu(*(htt->rx_ring.alloc_idx.vaddr))) {
+ 		struct sk_buff *skb =
+@@ -442,6 +462,12 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 	return msdu_chaining;
+ }
+ 
++static void ath10k_htt_rx_replenish_task(unsigned long ptr)
++{
++	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
++	ath10k_htt_rx_msdu_buff_replenish(htt);
++}
++
+ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ {
+ 	dma_addr_t paddr;
+@@ -502,6 +528,9 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
+ 	if (__ath10k_htt_rx_ring_fill_n(htt, htt->rx_ring.fill_level))
+ 		goto err_fill_ring;
+ 
++	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
++		     (unsigned long)htt);
++
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
+ 		   htt->rx_ring.size, htt->rx_ring.fill_level);
+ 	return 0;
+@@ -968,7 +997,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 		}
+ 	}
+ 
+-	ath10k_htt_rx_msdu_buff_replenish(htt);
++	tasklet_schedule(&htt->rx_replenish_task);
+ }
+ 
+ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
