@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from mail-ea0-x232.google.com ([2a00:1450:4013:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VONq0-0006tS-6O
- for ath10k@lists.infradead.org; Tue, 24 Sep 2013 08:19:17 +0000
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: replenish HTT RX buffers in a tasklet
-Date: Tue, 24 Sep 2013 10:18:36 +0200
-Message-ID: <1380010716-27151-1-git-send-email-michal.kazior@tieto.com>
-MIME-Version: 1.0
+ id 1VOROW-00054j-7z
+ for ath10k@lists.infradead.org; Tue, 24 Sep 2013 12:07:09 +0000
+Received: by mail-ea0-f178.google.com with SMTP id a15so2444547eae.9
+ for <ath10k@lists.infradead.org>; Tue, 24 Sep 2013 05:06:43 -0700 (PDT)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH] ath10k: make monitor vdev down before stoping it
+Date: Tue, 24 Sep 2013 14:06:24 +0200
+Message-Id: <1380024384-30512-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,149 +17,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
 
-This starves FW RX ring buffer in case of
-excessive RX. This prevents from CPU being
-overwhelmed by RX indications/completions by
-naturally forbiddin FW to submit more RX.
+Following sequence causes FW crash:
+-monitor vdev up,
+-monitor vdev stop,
+-monitor vdev delete.
+Making monitor vdev down before stoping it works ok:
+-monitor vdev up,
+-monitor vdev down,
+-monitor vdev stop,
+-monitor vdev delete.
 
-This fixes RX starvation on slow machines when
-under heavy RX traffic.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 ---
-PATCHv1 (since RFC) changes:
- * fix comment
- * remove empty line addition
- * re-order tasklet_kill() / del_timer_sync()
+ drivers/net/wireless/ath/ath10k/mac.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
- drivers/net/wireless/ath/ath10k/htt.h    |    7 ++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c |   35 +++++++++++++++++++++++++++---
- 2 files changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index e090902..3d71041 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -19,6 +19,7 @@
- #define _HTT_H_
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 51988d9..24b94c8 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -567,12 +567,9 @@ static int ath10k_monitor_stop(struct ath10k *ar)
  
- #include <linux/bug.h>
-+#include <linux/interrupt.h>
+ 	lockdep_assert_held(&ar->conf_mutex);
  
- #include "htc.h"
- #include "rx_desc.h"
-@@ -1268,6 +1269,7 @@ struct ath10k_htt {
- 	/* set if host-fw communication goes haywire
- 	 * used to avoid further failures */
- 	bool rx_confused;
-+	struct tasklet_struct rx_replenish_task;
- };
+-	/* For some reasons, ath10k_wmi_vdev_down() here couse
+-	 * often ath10k_wmi_vdev_stop() to fail. Next we could
+-	 * not run monitor vdev and driver reload
+-	 * required. Don't see such problems we skip
+-	 * ath10k_wmi_vdev_down() here.
+-	 */
++	ret = ath10k_wmi_vdev_down(ar, ar->monitor_vdev_id);
++	if (ret)
++		ath10k_warn("Monitor vdev down failed: %d\n", ret);
  
- #define RX_HTT_HDR_STATUS_LEN 64
-@@ -1308,6 +1310,11 @@ struct htt_rx_desc {
- #define HTT_RX_BUF_SIZE 1920
- #define HTT_RX_MSDU_SIZE (HTT_RX_BUF_SIZE - (int)sizeof(struct htt_rx_desc))
- 
-+/* Refill a bunch of RX buffers for each refill round so that FW/HW can handle
-+ * aggregated traffic more nicely. */
-+#define ATH10K_HTT_MAX_NUM_REFILL 16
-+
-+
- /*
-  * DMA_MAP expects the buffer to be an integral number of cache lines.
-  * Rather than checking the actual cache line size, this code makes a
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 62ea9c8..02028c6 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -178,10 +178,27 @@ static int ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
- 
- static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
- {
--	int ret, num_to_fill;
-+	int ret, num_deficit, num_to_fill;
- 
-+	/* Refilling the whole RX ring buffer proves to be a bad idea. The
-+	 * reason is RX may take up significant amount of CPU cycles and starve
-+	 * other tasks, e.g. TX on an ethernet device while acting as a bridge
-+	 * with ath10k wlan interface. This ended up with very poor performance
-+	 * once CPU the host system was overwhelmed with RX on ath10k.
-+	 *
-+	 * By limiting the number of refills the replenishing occurs
-+	 * progressively. This in turns makes use of the fact tasklets are
-+	 * processed in FIFO order. This means actual RX processing can starve
-+	 * out refilling. If there's not enough buffers on RX ring FW will not
-+	 * report RX until it is refilled with enough buffers. This
-+	 * automatically balances load wrt to CPU power.
-+	 *
-+	 * This probably comes at a cost of lower maximum throughput but
-+	 * improves the avarage and stability. */
- 	spin_lock_bh(&htt->rx_ring.lock);
--	num_to_fill = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
-+	num_deficit = htt->rx_ring.fill_level - htt->rx_ring.fill_cnt;
-+	num_to_fill = min(ATH10K_HTT_MAX_NUM_REFILL, num_deficit);
-+	num_deficit -= num_to_fill;
- 	ret = ath10k_htt_rx_ring_fill_n(htt, num_to_fill);
- 	if (ret == -ENOMEM) {
- 		/*
-@@ -192,6 +209,8 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
- 		 */
- 		mod_timer(&htt->rx_ring.refill_retry_timer, jiffies +
- 			  msecs_to_jiffies(HTT_RX_RING_REFILL_RETRY_MS));
-+	} else if (num_deficit > 0) {
-+		tasklet_schedule(&htt->rx_replenish_task);
- 	}
- 	spin_unlock_bh(&htt->rx_ring.lock);
- }
-@@ -213,6 +232,7 @@ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
- 	int sw_rd_idx = htt->rx_ring.sw_rd_idx.msdu_payld;
- 
- 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
-+	tasklet_kill(&htt->rx_replenish_task);
- 
- 	while (sw_rd_idx != __le32_to_cpu(*(htt->rx_ring.alloc_idx.vaddr))) {
- 		struct sk_buff *skb =
-@@ -442,6 +462,12 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 	return msdu_chaining;
- }
- 
-+static void ath10k_htt_rx_replenish_task(unsigned long ptr)
-+{
-+	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
-+	ath10k_htt_rx_msdu_buff_replenish(htt);
-+}
-+
- int ath10k_htt_rx_attach(struct ath10k_htt *htt)
- {
- 	dma_addr_t paddr;
-@@ -502,6 +528,9 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
- 	if (__ath10k_htt_rx_ring_fill_n(htt, htt->rx_ring.fill_level))
- 		goto err_fill_ring;
- 
-+	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
-+		     (unsigned long)htt);
-+
- 	ath10k_dbg(ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
- 		   htt->rx_ring.size, htt->rx_ring.fill_level);
- 	return 0;
-@@ -968,7 +997,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 		}
- 	}
- 
--	ath10k_htt_rx_msdu_buff_replenish(htt);
-+	tasklet_schedule(&htt->rx_replenish_task);
- }
- 
- static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	ret = ath10k_wmi_vdev_stop(ar, ar->monitor_vdev_id);
+ 	if (ret)
 -- 
-1.7.9.5
+1.8.1.2
 
 
 _______________________________________________
