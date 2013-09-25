@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOlYe-0002Rh-AY
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:39:03 +0000
+ id 1VOlYj-0002Rg-LV
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:39:04 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 09/13] ath10k: split wmi_cmd_init path
-Date: Wed, 25 Sep 2013 11:38:07 +0200
-Message-ID: <1380101891-18312-10-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 07/13] ath10k: implement host memory chunks
+Date: Wed, 25 Sep 2013 11:38:05 +0200
+Message-ID: <1380101891-18312-8-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,104 +25,201 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Due to API differences in initialization structures for
-main and 10.x firmwares we need to split the wmi_init_cmd
-and wmi_resource_config  structures.
+10.X firmware can request a memory pool from host to offload
+it's own resources. This is a feature designed especially
+for AP mode where the target has to deal with large number
+of peers.
 
-This will be usefull also when setting the correct TARGET values,
-like: number of peers, vdevs, pdevs etc.
+So we allocate and map a consistent DMA memory which FW can
+use to store e.g. peer rate contol maps.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    6 +-
- drivers/net/wireless/ath/ath10k/wmi.c  |   91 +++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h  |  196 ++++++++++++++++++++++++++++++++
- 3 files changed, 292 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.h |   12 +++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  128 ++++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h  |    3 +
+ 3 files changed, 135 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 31860a6..3a56715 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -595,7 +595,11 @@ int ath10k_core_start(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 0db08ea..0c9e6f3 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -102,12 +102,24 @@ struct ath10k_bmi {
+ 	bool done_sent;
+ };
  
- 	ath10k_info("firmware %s booted\n", ar->hw->wiphy->fw_version);
- 
--	status = ath10k_wmi_cmd_init(ar);
-+	if (test_bit(ATH10K_FW_FEATURE_10X, ar->fw_features))
-+		status = ath10k_wmi_10x_cmd_init(ar);
-+	else
-+		status = ath10k_wmi_cmd_init(ar);
++#define ATH10K_MAX_MEM_REQS 16
 +
- 	if (status) {
- 		ath10k_err("could not send WMI init command (%d)\n", status);
- 		goto err_disconnect_htc;
++struct ath10k_mem_chunk {
++	void *vaddr;
++	dma_addr_t paddr;
++	u32 len;
++	u32 req_id;
++};
++
+ struct ath10k_wmi {
+ 	enum ath10k_htc_ep_id eid;
+ 	struct completion service_ready;
+ 	struct completion unified_ready;
+ 	wait_queue_head_t tx_credits_wq;
+ 	struct wmi_cmd_map *cmd;
++
++	u32 num_mem_chunks;
++	struct ath10k_mem_chunk mem_chunks[ATH10K_MAX_MEM_REQS];
+ };
+ 
+ struct ath10k_peer_stat {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 4992ad1..f88a1d3 100644
+index f87e79a..3b1ae88 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2019,6 +2019,97 @@ out:
- 	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->wmi_init_cmdid);
+@@ -1238,6 +1238,37 @@ static void ath10k_wmi_event_vdev_resume_req(struct ath10k *ar,
+ 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_RESUME_REQ_EVENTID\n");
  }
  
-+int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
++static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
++				      u32 num_units, u32 unit_len)
 +{
-+	struct wmi_init_cmd_10x *cmd;
-+	struct sk_buff *buf;
-+	struct wmi_resource_config_10x config = {};
-+	u32 len, val;
++	dma_addr_t paddr;
++	u32 pool_size;
++	int idx = ar->wmi.num_mem_chunks;
++
++	pool_size = num_units * round_up(unit_len, 4);
++
++	if (!pool_size)
++		return -EINVAL;
++
++	ar->wmi.mem_chunks[idx].vaddr = dma_alloc_coherent(ar->dev,
++							   pool_size,
++							   &paddr,
++							   GFP_ATOMIC);
++	if (!ar->wmi.mem_chunks[idx].vaddr) {
++		ath10k_warn("failed to allocate memory chunk\n");
++		return -ENOMEM;
++	}
++
++	memset(ar->wmi.mem_chunks[idx].vaddr, 0, pool_size);
++
++	ar->wmi.mem_chunks[idx].paddr = paddr;
++	ar->wmi.mem_chunks[idx].len = pool_size;
++	ar->wmi.mem_chunks[idx].req_id = req_id;
++	ar->wmi.num_mem_chunks++;
++
++	return 0;
++}
++
+ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 					      struct sk_buff *skb)
+ {
+@@ -1312,6 +1343,8 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 						  struct sk_buff *skb)
+ {
++	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
++	int ret;
+ 	struct wmi_service_ready_event_10x *ev = (void *)skb->data;
+ 
+ 	if (skb->len < sizeof(*ev)) {
+@@ -1350,13 +1383,52 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 			 ar->fw_version_minor);
+ 	}
+ 
+-	/* FIXME: it probably should be better to support this.
+-	   TODO: Next patch introduce memory chunks. It's a must for 10.x FW */
+-	if (__le32_to_cpu(ev->num_mem_reqs) > 0) {
+-		ath10k_warn("target requested %d memory chunks; ignoring\n",
+-			    __le32_to_cpu(ev->num_mem_reqs));
++	num_mem_reqs = __le32_to_cpu(ev->num_mem_reqs);
++
++	if (num_mem_reqs > ATH10K_MAX_MEM_REQS) {
++		ath10k_warn("requested memory chunks number (%d) exceeds the limit\n",
++			    num_mem_reqs);
++		return;
++	}
++
++	if (!num_mem_reqs)
++		goto exit;
++
++	ath10k_dbg(ATH10K_DBG_WMI, "firmware has requested %d memory chunks\n",
++		   num_mem_reqs);
++
++	for (i = 0; i < num_mem_reqs; ++i) {
++		req_id = __le32_to_cpu(ev->mem_reqs[i].req_id);
++		num_units = __le32_to_cpu(ev->mem_reqs[i].num_units);
++		unit_size = __le32_to_cpu(ev->mem_reqs[i].unit_size);
++		num_unit_info = __le32_to_cpu(ev->mem_reqs[i].num_unit_info);
++
++		if (num_unit_info) {
++			if (num_unit_info & NUM_UNITS_IS_NUM_PEERS)
++				/* number of units to allocate is number of
++				 * peers, 1 extra for self peer on target */
++				/* this needs to be tied, host and target
++				 * can get out of sync */
++				num_units = TARGET_NUM_PEERS + 1;
++			if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS)
++				num_units = TARGET_NUM_VDEVS + 1;
++		}
++
++		ath10k_dbg(ATH10K_DBG_WMI,
++			   "wmi mem_req_id %d num_units %d num_unit_info %d unit size %d actual units %d\n",
++			   req_id,
++			   __le32_to_cpu(ev->mem_reqs[i].num_units),
++			   num_unit_info,
++			   unit_size,
++			   num_units);
++
++		ret = ath10k_wmi_alloc_host_mem(ar, req_id, num_units,
++						unit_size);
++		if (ret)
++			return;
+ 	}
+ 
++exit:
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+ 		   "wmi event service ready sw_ver 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
+ 		   __le32_to_cpu(ev->sw_version),
+@@ -1654,6 +1726,17 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ 
+ void ath10k_wmi_detach(struct ath10k *ar)
+ {
 +	int i;
 +
-+	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
-+	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
-+	config.num_peer_keys = __cpu_to_le32(TARGET_NUM_PEER_KEYS);
-+	config.num_tids = __cpu_to_le32(TARGET_NUM_TIDS);
-+	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
-+	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
-+	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
-+	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_bk = __cpu_to_le32(TARGET_RX_TIMEOUT_HI_PRI);
-+	config.rx_decap_mode = __cpu_to_le32(TARGET_RX_DECAP_MODE);
++	/* free the host memory chunks requested by firmware */
++	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
++		dma_free_coherent(ar->dev,
++				  ar->wmi.mem_chunks[i].len,
++				  ar->wmi.mem_chunks[i].vaddr,
++				  ar->wmi.mem_chunks[i].paddr);
++	}
 +
-+	config.scan_max_pending_reqs =
-+		__cpu_to_le32(TARGET_SCAN_MAX_PENDING_REQS);
-+
-+	config.bmiss_offload_max_vdev =
-+		__cpu_to_le32(TARGET_BMISS_OFFLOAD_MAX_VDEV);
-+
-+	config.roam_offload_max_vdev =
-+		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_VDEV);
-+
-+	config.roam_offload_max_ap_profiles =
-+		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_AP_PROFILES);
-+
-+	config.num_mcast_groups = __cpu_to_le32(TARGET_NUM_MCAST_GROUPS);
-+	config.num_mcast_table_elems =
-+		__cpu_to_le32(TARGET_NUM_MCAST_TABLE_ELEMS);
-+
-+	config.mcast2ucast_mode = __cpu_to_le32(TARGET_MCAST2UCAST_MODE);
-+	config.tx_dbg_log_size = __cpu_to_le32(TARGET_TX_DBG_LOG_SIZE);
-+	config.num_wds_entries = __cpu_to_le32(TARGET_NUM_WDS_ENTRIES);
-+	config.dma_burst_size = __cpu_to_le32(TARGET_DMA_BURST_SIZE);
-+	config.mac_aggr_delim = __cpu_to_le32(TARGET_MAC_AGGR_DELIM);
-+
-+	val = TARGET_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK;
-+	config.rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(val);
-+
-+	config.vow_config = __cpu_to_le32(TARGET_VOW_CONFIG);
-+
-+	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
-+	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
-+
++	ar->wmi.num_mem_chunks = 0;
+ }
+ 
+ int ath10k_wmi_connect_htc_service(struct ath10k *ar)
+@@ -1793,7 +1876,8 @@ int ath10k_wmi_cmd_init(struct ath10k *ar)
+ 	struct wmi_init_cmd *cmd;
+ 	struct sk_buff *buf;
+ 	struct wmi_resource_config config = {};
+-	u32 val;
++	u32 len, val;
++	int i;
+ 
+ 	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
+ 	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
+@@ -1846,12 +1930,40 @@ int ath10k_wmi_cmd_init(struct ath10k *ar)
+ 	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
+ 	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
+ 
+-	buf = ath10k_wmi_alloc_skb(sizeof(*cmd));
 +	len = sizeof(*cmd) +
 +	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
 +
 +	buf = ath10k_wmi_alloc_skb(len);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	cmd = (struct wmi_init_cmd_10x *)buf->data;
+ 	if (!buf)
+ 		return -ENOMEM;
+ 
+ 	cmd = (struct wmi_init_cmd *)buf->data;
+-	cmd->num_host_mem_chunks = 0;
 +
 +	if (ar->wmi.num_mem_chunks == 0) {
 +		cmd->num_host_mem_chunks = 0;
@@ -149,236 +246,23 @@ index 4992ad1..f88a1d3 100644
 +			   cmd->host_mem_chunks[i].ptr);
 +	}
 +out:
-+	memcpy(&cmd->resource_config, &config, sizeof(config));
-+
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi init 10x\n");
-+	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->wmi_init_cmdid);
-+}
-+
- static int ath10k_wmi_start_scan_calc_len(const struct wmi_start_scan_arg *arg)
- {
- 	int len;
+ 	memcpy(&cmd->resource_config, &config, sizeof(config));
+ 
+ 	ath10k_dbg(ATH10K_DBG_WMI, "wmi init\n");
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 8c67fb4..2f18349 100644
+index d309b8b..3825937 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1377,6 +1377,189 @@ struct wmi_resource_config {
+@@ -1377,6 +1377,9 @@ struct wmi_resource_config {
  	__le32 max_frag_entries;
  } __packed;
  
-+struct wmi_resource_config_10x {
-+	/* number of virtual devices (VAPs) to support */
-+	__le32 num_vdevs;
++#define NUM_UNITS_IS_NUM_VDEVS   0x1
++#define NUM_UNITS_IS_NUM_PEERS   0x2
 +
-+	/* number of peer nodes to support */
-+	__le32 num_peers;
-+
-+	/* number of keys per peer */
-+	__le32 num_peer_keys;
-+
-+	/* total number of TX/RX data TIDs */
-+	__le32 num_tids;
-+
-+	/*
-+	 * max skid for resolving hash collisions
-+	 *
-+	 *   The address search table is sparse, so that if two MAC addresses
-+	 *   result in the same hash value, the second of these conflicting
-+	 *   entries can slide to the next index in the address search table,
-+	 *   and use it, if it is unoccupied.  This ast_skid_limit parameter
-+	 *   specifies the upper bound on how many subsequent indices to search
-+	 *   over to find an unoccupied space.
-+	 */
-+	__le32 ast_skid_limit;
-+
-+	/*
-+	 * the nominal chain mask for transmit
-+	 *
-+	 *   The chain mask may be modified dynamically, e.g. to operate AP
-+	 *   tx with a reduced number of chains if no clients are associated.
-+	 *   This configuration parameter specifies the nominal chain-mask that
-+	 *   should be used when not operating with a reduced set of tx chains.
-+	 */
-+	__le32 tx_chain_mask;
-+
-+	/*
-+	 * the nominal chain mask for receive
-+	 *
-+	 *   The chain mask may be modified dynamically, e.g. for a client
-+	 *   to use a reduced number of chains for receive if the traffic to
-+	 *   the client is low enough that it doesn't require downlink MIMO
-+	 *   or antenna diversity.
-+	 *   This configuration parameter specifies the nominal chain-mask that
-+	 *   should be used when not operating with a reduced set of rx chains.
-+	 */
-+	__le32 rx_chain_mask;
-+
-+	/*
-+	 * what rx reorder timeout (ms) to use for the AC
-+	 *
-+	 *   Each WMM access class (voice, video, best-effort, background) will
-+	 *   have its own timeout value to dictate how long to wait for missing
-+	 *   rx MPDUs to arrive before flushing subsequent MPDUs that have
-+	 *   already been received.
-+	 *   This parameter specifies the timeout in milliseconds for each
-+	 *   class.
-+	 */
-+	__le32 rx_timeout_pri_vi;
-+	__le32 rx_timeout_pri_vo;
-+	__le32 rx_timeout_pri_be;
-+	__le32 rx_timeout_pri_bk;
-+
-+	/*
-+	 * what mode the rx should decap packets to
-+	 *
-+	 *   MAC can decap to RAW (no decap), native wifi or Ethernet types
-+	 *   THis setting also determines the default TX behavior, however TX
-+	 *   behavior can be modified on a per VAP basis during VAP init
-+	 */
-+	__le32 rx_decap_mode;
-+
-+	/* what is the maximum scan requests than can be queued */
-+	__le32 scan_max_pending_reqs;
-+
-+	/* maximum VDEV that could use BMISS offload */
-+	__le32 bmiss_offload_max_vdev;
-+
-+	/* maximum VDEV that could use offload roaming */
-+	__le32 roam_offload_max_vdev;
-+
-+	/* maximum AP profiles that would push to offload roaming */
-+	__le32 roam_offload_max_ap_profiles;
-+
-+	/*
-+	 * how many groups to use for mcast->ucast conversion
-+	 *
-+	 *   The target's WAL maintains a table to hold information regarding
-+	 *   which peers belong to a given multicast group, so that if
-+	 *   multicast->unicast conversion is enabled, the target can convert
-+	 *   multicast tx frames to a series of unicast tx frames, to each
-+	 *   peer within the multicast group.
-+	     This num_mcast_groups configuration parameter tells the target how
-+	 *   many multicast groups to provide storage for within its multicast
-+	 *   group membership table.
-+	 */
-+	__le32 num_mcast_groups;
-+
-+	/*
-+	 * size to alloc for the mcast membership table
-+	 *
-+	 *   This num_mcast_table_elems configuration parameter tells the
-+	 *   target how many peer elements it needs to provide storage for in
-+	 *   its multicast group membership table.
-+	 *   These multicast group membership table elements are shared by the
-+	 *   multicast groups stored within the table.
-+	 */
-+	__le32 num_mcast_table_elems;
-+
-+	/*
-+	 * whether/how to do multicast->unicast conversion
-+	 *
-+	 *   This configuration parameter specifies whether the target should
-+	 *   perform multicast --> unicast conversion on transmit, and if so,
-+	 *   what to do if it finds no entries in its multicast group
-+	 *   membership table for the multicast IP address in the tx frame.
-+	 *   Configuration value:
-+	 *   0 -> Do not perform multicast to unicast conversion.
-+	 *   1 -> Convert multicast frames to unicast, if the IP multicast
-+	 *        address from the tx frame is found in the multicast group
-+	 *        membership table.  If the IP multicast address is not found,
-+	 *        drop the frame.
-+	 *   2 -> Convert multicast frames to unicast, if the IP multicast
-+	 *        address from the tx frame is found in the multicast group
-+	 *        membership table.  If the IP multicast address is not found,
-+	 *        transmit the frame as multicast.
-+	 */
-+	__le32 mcast2ucast_mode;
-+
-+	/*
-+	 * how much memory to allocate for a tx PPDU dbg log
-+	 *
-+	 *   This parameter controls how much memory the target will allocate
-+	 *   to store a log of tx PPDU meta-information (how large the PPDU
-+	 *   was, when it was sent, whether it was successful, etc.)
-+	 */
-+	__le32 tx_dbg_log_size;
-+
-+	/* how many AST entries to be allocated for WDS */
-+	__le32 num_wds_entries;
-+
-+	/*
-+	 * MAC DMA burst size, e.g., For target PCI limit can be
-+	 * 0 -default, 1 256B
-+	 */
-+	__le32 dma_burst_size;
-+
-+	/*
-+	 * Fixed delimiters to be inserted after every MPDU to
-+	 * account for interface latency to avoid underrun.
-+	 */
-+	__le32 mac_aggr_delim;
-+
-+	/*
-+	 *   determine whether target is responsible for detecting duplicate
-+	 *   non-aggregate MPDU and timing out stale fragments.
-+	 *
-+	 *   A-MPDU reordering is always performed on the target.
-+	 *
-+	 *   0: target responsible for frag timeout and dup checking
-+	 *   1: host responsible for frag timeout and dup checking
-+	 */
-+	__le32 rx_skip_defrag_timeout_dup_detection_check;
-+
-+	/*
-+	 * Configuration for VoW :
-+	 * No of Video Nodes to be supported
-+	 * and Max no of descriptors for each Video link (node).
-+	 */
-+	__le32 vow_config;
-+
-+	/* Number of msdu descriptors target should use */
-+	__le32 num_msdu_desc;
-+
-+	/*
-+	 * Max. number of Tx fragments per MSDU
-+	 *  This parameter controls the max number of Tx fragments per MSDU.
-+	 *  This is sent by the target as part of the WMI_SERVICE_READY event
-+	 *  and is overriden by the OS shim as required.
-+	 */
-+	__le32 max_frag_entries;
-+} __packed;
-+
-+
- #define NUM_UNITS_IS_NUM_VDEVS   0x1
- #define NUM_UNITS_IS_NUM_PEERS   0x2
- 
-@@ -1401,6 +1584,18 @@ struct wmi_init_cmd {
- 	struct host_memory_chunk host_mem_chunks[1];
- } __packed;
- 
-+/* _10x stucture is from 10.X FW API */
-+struct wmi_init_cmd_10x {
-+	struct wmi_resource_config_10x resource_config;
-+	__le32 num_host_mem_chunks;
-+
-+	/*
-+	 * variable number of host memory chunks.
-+	 * This should be the last element in the structure
-+	 */
-+	struct host_memory_chunk host_mem_chunks[1];
-+} __packed;
-+
- /* TLV for channel list */
- struct wmi_chan_list {
- 	__le32 tag; /* WMI_CHAN_LIST_TAG */
-@@ -3435,6 +3630,7 @@ int ath10k_wmi_pdev_set_regdomain(struct ath10k *ar, u16 rd, u16 rd2g,
- int ath10k_wmi_pdev_set_param(struct ath10k *ar, enum wmi_pdev_param id,
- 			      u32 value);
- int ath10k_wmi_cmd_init(struct ath10k *ar);
-+int ath10k_wmi_10x_cmd_init(struct ath10k *ar);
- int ath10k_wmi_start_scan(struct ath10k *ar, const struct wmi_start_scan_arg *);
- void ath10k_wmi_start_scan_init(struct ath10k *ar, struct wmi_start_scan_arg *);
- int ath10k_wmi_stop_scan(struct ath10k *ar,
+ /* strucutre describing host memory chunk. */
+ struct host_memory_chunk {
+ 	/* id of the request that is passed up in service ready */
 -- 
 1.7.10
 
