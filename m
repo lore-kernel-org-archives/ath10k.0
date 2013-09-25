@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOlYZ-0002Rf-TQ
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:38:55 +0000
+ id 1VOlYd-0002Rm-A0
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:38:57 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 05/13] ath10k: split ath10k_wmi_service_ready_event_rx
-Date: Wed, 25 Sep 2013 11:38:03 +0200
-Message-ID: <1380101891-18312-6-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 06/13] ath10k: drop the fw versioning sanity check
+Date: Wed, 25 Sep 2013 11:38:04 +0200
+Message-ID: <1380101891-18312-7-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,153 +25,80 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Since the both firmwares we are going to support,
-have significantly different APIs (WMI and shared
-structures), it's easier to actually split the whole
-event handling functions, instead cutting them inside.
+It was corrupted and leading to compilation warning
+core.c: In function 'ath10k_check_fw_version':
+core.c:79: warning: comparison is always true due to limited range of data type
 
-The fork starts now on ath10k_wmi_process_rx().
+Since we are going to support new FW track in the driver,
+the sanity check for fw version number would be an overkill
+then. This is just for information purposes anyway.
 
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   66 ++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |   40 ++++++++++++++++++++
- 2 files changed, 105 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c |   25 -------------------------
+ drivers/net/wireless/ath/ath10k/hw.h   |    6 ------
+ 2 files changed, 31 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 7bbe51f..f87e79a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1309,6 +1309,70 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 	complete(&ar->wmi.service_ready);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 76906d5..31860a6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -59,27 +59,6 @@ static void ath10k_send_suspend_complete(struct ath10k *ar)
+ 	wake_up(&ar->event_queue);
  }
  
-+static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
-+						  struct sk_buff *skb)
-+{
-+	struct wmi_service_ready_event_10x *ev = (void *)skb->data;
-+
-+	if (skb->len < sizeof(*ev)) {
-+		ath10k_warn("Service ready event was %d B but expected %zu B. Wrong firmware version?\n",
-+			    skb->len, sizeof(*ev));
-+		return;
-+	}
-+
-+	ar->hw_min_tx_power = __le32_to_cpu(ev->hw_min_tx_power);
-+	ar->hw_max_tx_power = __le32_to_cpu(ev->hw_max_tx_power);
-+	ar->ht_cap_info = __le32_to_cpu(ev->ht_cap_info);
-+	ar->vht_cap_info = __le32_to_cpu(ev->vht_cap_info);
-+	ar->fw_version_major =
-+		(__le32_to_cpu(ev->sw_version) & 0xff000000) >> 24;
-+	ar->fw_version_minor = (__le32_to_cpu(ev->sw_version) & 0x00ffffff);
-+	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
-+	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
-+
-+	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
-+		ath10k_warn("hardware advertises support for more spatial streams than it should (%d > %d)\n",
-+			    ar->num_rf_chains, WMI_MAX_SPATIAL_STREAM);
-+		ar->num_rf_chains = WMI_MAX_SPATIAL_STREAM;
-+	}
-+
-+	ar->ath_common.regulatory.current_rd =
-+		__le32_to_cpu(ev->hal_reg_capabilities.eeprom_rd);
-+
-+	ath10k_debug_read_service_map(ar, ev->wmi_service_bitmap,
-+				      sizeof(ev->wmi_service_bitmap));
-+
-+	if (strlen(ar->hw->wiphy->fw_version) == 0) {
-+		snprintf(ar->hw->wiphy->fw_version,
-+			 sizeof(ar->hw->wiphy->fw_version),
-+			 "%u.%u",
-+			 ar->fw_version_major,
-+			 ar->fw_version_minor);
-+	}
-+
-+	/* FIXME: it probably should be better to support this.
-+	   TODO: Next patch introduce memory chunks. It's a must for 10.x FW */
-+	if (__le32_to_cpu(ev->num_mem_reqs) > 0) {
-+		ath10k_warn("target requested %d memory chunks; ignoring\n",
-+			    __le32_to_cpu(ev->num_mem_reqs));
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_WMI,
-+		   "wmi event service ready sw_ver 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
-+		   __le32_to_cpu(ev->sw_version),
-+		   __le32_to_cpu(ev->abi_version),
-+		   __le32_to_cpu(ev->phy_capability),
-+		   __le32_to_cpu(ev->ht_cap_info),
-+		   __le32_to_cpu(ev->vht_cap_info),
-+		   __le32_to_cpu(ev->vht_supp_mcs),
-+		   __le32_to_cpu(ev->sys_cap_info),
-+		   __le32_to_cpu(ev->num_mem_reqs),
-+		   __le32_to_cpu(ev->num_rf_chains));
-+
-+	complete(&ar->wmi.service_ready);
-+}
-+
-+
- static int ath10k_wmi_ready_event_rx(struct ath10k *ar, struct sk_buff *skb)
+-static int ath10k_check_fw_version(struct ath10k *ar)
+-{
+-	char version[32];
+-
+-	if (ar->fw_version_major >= SUPPORTED_FW_MAJOR &&
+-	    ar->fw_version_minor >= SUPPORTED_FW_MINOR &&
+-	    ar->fw_version_release >= SUPPORTED_FW_RELEASE &&
+-	    ar->fw_version_build >= SUPPORTED_FW_BUILD)
+-		return 0;
+-
+-	snprintf(version, sizeof(version), "%u.%u.%u.%u",
+-		 SUPPORTED_FW_MAJOR, SUPPORTED_FW_MINOR,
+-		 SUPPORTED_FW_RELEASE, SUPPORTED_FW_BUILD);
+-
+-	ath10k_warn("WARNING: Firmware version %s is not officially supported.\n",
+-		    ar->hw->wiphy->fw_version);
+-	ath10k_warn("Please upgrade to version %s (or newer)\n", version);
+-
+-	return 0;
+-}
+-
+ static int ath10k_init_connect_htc(struct ath10k *ar)
  {
- 	struct wmi_ready_event *ev = (struct wmi_ready_event *)skb->data;
-@@ -1545,7 +1609,7 @@ static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_wmi_event_vdev_resume_req(ar, skb);
- 		break;
- 	case WMI_10X_SERVICE_READY_EVENTID:
--		ath10k_wmi_service_ready_event_rx(ar, skb);
-+		ath10k_wmi_10x_service_ready_event_rx(ar, skb);
- 		break;
- 	case WMI_10X_READY_EVENTID:
- 		ath10k_wmi_ready_event_rx(ar, skb);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index c23d070..d309b8b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1130,6 +1130,46 @@ struct wmi_service_ready_event {
- 	struct wlan_host_mem_req mem_reqs[1];
- } __packed;
+ 	int status;
+@@ -616,10 +595,6 @@ int ath10k_core_start(struct ath10k *ar)
  
-+/* This is the definition from 10.X firmware branch */
-+struct wmi_service_ready_event_10x {
-+	__le32 sw_version;
-+	__le32 abi_version;
-+
-+	/* WMI_PHY_CAPABILITY */
-+	__le32 phy_capability;
-+
-+	/* Maximum number of frag table entries that SW will populate less 1 */
-+	__le32 max_frag_entry;
-+	__le32 wmi_service_bitmap[WMI_SERVICE_BM_SIZE];
-+	__le32 num_rf_chains;
-+
-+	/*
-+	 * The following field is only valid for service type
-+	 * WMI_SERVICE_11AC
-+	 */
-+	__le32 ht_cap_info; /* WMI HT Capability */
-+	__le32 vht_cap_info; /* VHT capability info field of 802.11ac */
-+	__le32 vht_supp_mcs; /* VHT Supported MCS Set field Rx/Tx same */
-+	__le32 hw_min_tx_power;
-+	__le32 hw_max_tx_power;
-+
-+	struct hal_reg_capabilities hal_reg_capabilities;
-+
-+	__le32 sys_cap_info;
-+	__le32 min_pkt_size_enable; /* Enterprise mode short pkt enable */
-+
-+	/*
-+	 * request to host to allocate a chuck of memory and pss it down to FW
-+	 * via WM_INIT. FW uses this as FW extesnsion memory for saving its
-+	 * data structures. Only valid for low latency interfaces like PCIE
-+	 * where FW can access this memory directly (or) by DMA.
-+	 */
-+	__le32 num_mem_reqs;
-+
-+	struct wlan_host_mem_req mem_reqs[1];
-+} __packed;
-+
-+
- #define WMI_SERVICE_READY_TIMEOUT_HZ (5*HZ)
- #define WMI_UNIFIED_READY_TIMEOUT_HZ (5*HZ)
+ 	ath10k_info("firmware %s booted\n", ar->hw->wiphy->fw_version);
+ 
+-	status = ath10k_check_fw_version(ar);
+-	if (status)
+-		goto err_disconnect_htc;
+-
+ 	status = ath10k_wmi_cmd_init(ar);
+ 	if (status) {
+ 		ath10k_err("could not send WMI init command (%d)\n", status);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 643f0c9..1b3cf01 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -20,12 +20,6 @@
+ 
+ #include "targaddrs.h"
+ 
+-/* Supported FW version */
+-#define SUPPORTED_FW_MAJOR	1
+-#define SUPPORTED_FW_MINOR	0
+-#define SUPPORTED_FW_RELEASE	0
+-#define SUPPORTED_FW_BUILD	636
+-
+ /* QCA988X 1.0 definitions (unsupported) */
+ #define QCA988X_HW_1_0_CHIP_ID_REV	0x0
  
 -- 
 1.7.10
