@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOmcq-0004W9-N7
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 10:47:21 +0000
-Received: by mail-bk0-f49.google.com with SMTP id r7so2162844bkg.8
- for <ath10k@lists.infradead.org>; Wed, 25 Sep 2013 03:46:58 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1380101891-18312-9-git-send-email-bartosz.markowski@tieto.com>
-References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
- <1380101891-18312-9-git-send-email-bartosz.markowski@tieto.com>
-Date: Wed, 25 Sep 2013 12:46:58 +0200
-Message-ID: <CA+BoTQ=p5_V7CDJsv3xZPAPM0y-rc_Ck7LAjX8=Wf1QXujC2JQ@mail.gmail.com>
-Subject: Re: [PATCH 08/13] ath10k: bring back the WMI path for mgmt frames
-From: Michal Kazior <michal.kazior@tieto.com>
+Received: from smtprelay0240.hostedemail.com ([216.40.44.240]
+ helo=smtprelay.hostedemail.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VOuug-0004F1-5P
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 19:38:19 +0000
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/11 - GIT PULL] drivers: net: Last block of Remove extern
+ from function prototypes
+Date: Wed, 25 Sep 2013 12:37:18 -0700
+Message-Id: <cover.1380137609.git.joe@perches.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +17,98 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: netdev@vger.kernel.org
+Cc: wimax@linuxwimax.org, brcm80211-dev-list@broadcom.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, ath9k-devel@lists.ath9k.org, "David S. Miller" <davem@davemloft.net>
 
-T24gMjUgU2VwdGVtYmVyIDIwMTMgMTE6MzgsIEJhcnRvc3ogTWFya293c2tpCjxiYXJ0b3N6Lm1h
-cmtvd3NraUB0aWV0by5jb20+IHdyb3RlOgo+IEBAIC0xNDk3LDE2ICsxNDk3LDIzIEBAIHN0YXRp
-YyB2b2lkIGF0aDEwa190eF9odHQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpz
-a2IpCj4gICAgICAgICAgICAgICAgIGdvdG8gZXhpdDsKPiAgICAgICAgIH0KPgo+IC0gICAgICAg
-aWYgKGllZWU4MDIxMV9pc19tZ210KGhkci0+ZnJhbWVfY29udHJvbCkpCj4gLSAgICAgICAgICAg
-ICAgIHJldCA9IGF0aDEwa19odHRfbWdtdF90eCgmYXItPmh0dCwgc2tiKTsKPiAtICAgICAgIGVs
-c2UgaWYgKGllZWU4MDIxMV9pc19udWxsZnVuYyhoZHItPmZyYW1lX2NvbnRyb2wpKQo+ICsgICAg
-ICAgaWYgKGllZWU4MDIxMV9pc19tZ210KGhkci0+ZnJhbWVfY29udHJvbCkpIHsKPiArICAgICAg
-ICAgICAgICAgaWYgKHRlc3RfYml0KEFUSDEwS19GV19GRUFUVVJFX0hBU19XTUlfTUdNVF9UWCwK
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFyLT5md19mZWF0dXJlcykpCj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX3dtaV9tZ210X3R4KGFyLCBza2IpOwoKRHVl
-IHRvIHJlY2VudCBjaGFuZ2VzIChXTUkgY29tbWFuZHMgY2FuIGJsb2NrL3NsZWVwKSB0aGlzIGNh
-bm5vdCBiZQpzby4gYXRoMTBrX3R4X2h0dCgpIGlzIGNhbGxlZCBmcm9tIGFuIGF0b21pYyBjb250
-ZXh0LgoKSSdtIHNlZWluZyAyIGFwcm9hY2hlcyBoZXJlOgogYSkgbWFuYWdlbWVudCBmcmFtZSBx
-dWV1ZSwKIGIpIHVzZSBpZWVlODAyMTFfe3N0b3Asd2FrZX1fcXVldWVzKCkKCkknbSB3b3JyaWVk
-IChiKSBjb3VsZCBkZWdyYWRlIHRocm91Z2hwdXQuIFdNSSBlbmRwb2ludCBoYXMgb25seSAyIEhU
-QwpjcmVkaXRzIG1lYW5pbmcgbWFuYWdlbWVudCBmcmFtZSBidXJzdHMgd2lsbCBsb2NrIG91dCBk
-YXRhIGZyYW1lIHR4LgoKCk1pY2hhxYIuCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+The following changes since commit 294da3abaa73a0b69fd54e442b0b5bd9455b7be6:
+
+  irda: Remove extern from function prototypes (2013-09-24 12:54:17 -0700)
+
+are available in the git repository at:
+
+  git://repo.or.cz/linux-2.6/trivial-mods.git 20130925_dn_externs_3
+
+for you to fetch changes up to a958df5dc3065ce517726dc54087639e13ffee8f:
+
+  rtlwifi: Remove extern from function prototypes (2013-09-24 18:06:51 -0700)
+
+----------------------------------------------------------------
+Joe Perches (11):
+  vmxnet3: Remove extern from function prototypes
+  wan: Remove extern from function prototypes
+  wimax: Remove extern from function prototypes
+  ath: Remove extern from function prototypes
+  brcm80211: Remove extern from function prototypes
+  ipw2x00: Remove extern from function prototypes
+  iwlegacy: Remove extern from function prototypes
+  iwlwifi: Remove extern from function prototypes
+  mwifiex: Remove extern from function prototypes
+  orinoco: Remove extern from function prototypes
+  rtlwifi: Remove extern from function prototypes
+
+ drivers/net/vmxnet3/vmxnet3_int.h                  |   4 +-
+ drivers/net/wan/x25_asy.h                          |   2 +-
+ drivers/net/wan/z85230.h                           |  27 +-
+ drivers/net/wimax/i2400m/i2400m-usb.h              |  27 +-
+ drivers/net/wimax/i2400m/i2400m.h                  | 117 ++++---
+ drivers/net/wireless/ath/ath10k/debug.h            |   8 +-
+ drivers/net/wireless/ath/ath6kl/common.h           |   3 +-
+ drivers/net/wireless/ath/ath6kl/debug.h            |   9 +-
+ drivers/net/wireless/ath/ath9k/ath9k.h             |   2 +-
+ drivers/net/wireless/brcm80211/brcmfmac/dhd.h      |  30 +-
+ drivers/net/wireless/brcm80211/brcmfmac/dhd_bus.h  |  27 +-
+ .../net/wireless/brcm80211/brcmfmac/dhd_proto.h    |  12 +-
+ .../net/wireless/brcm80211/brcmfmac/sdio_chip.h    |  23 +-
+ .../net/wireless/brcm80211/brcmfmac/sdio_host.h    |  92 +++--
+ drivers/net/wireless/brcm80211/brcmsmac/aiutils.h  |  18 +-
+ drivers/net/wireless/brcm80211/brcmsmac/ampdu.h    |  22 +-
+ drivers/net/wireless/brcm80211/brcmsmac/antsel.h   |  14 +-
+ drivers/net/wireless/brcm80211/brcmsmac/channel.h  |  20 +-
+ .../net/wireless/brcm80211/brcmsmac/mac80211_if.h  |  38 +--
+ drivers/net/wireless/brcm80211/brcmsmac/main.h     | 110 +++---
+ .../net/wireless/brcm80211/brcmsmac/phy/phy_hal.h  | 219 ++++++------
+ .../net/wireless/brcm80211/brcmsmac/phy/phy_int.h  | 371 ++++++++++-----------
+ drivers/net/wireless/brcm80211/brcmsmac/phy_shim.h |  91 +++--
+ drivers/net/wireless/brcm80211/brcmsmac/pmu.h      |   4 +-
+ drivers/net/wireless/brcm80211/brcmsmac/pub.h      | 145 ++++----
+ drivers/net/wireless/brcm80211/brcmsmac/rate.h     |  48 ++-
+ drivers/net/wireless/brcm80211/brcmsmac/stf.h      |  31 +-
+ .../net/wireless/brcm80211/brcmsmac/ucode_loader.h |  16 +-
+ drivers/net/wireless/brcm80211/include/brcmu_d11.h |   2 +-
+ .../net/wireless/brcm80211/include/brcmu_utils.h   |  44 ++-
+ drivers/net/wireless/ipw2x00/libipw.h              |  87 +++--
+ drivers/net/wireless/iwlegacy/3945.h               |  82 +++--
+ drivers/net/wireless/iwlegacy/4965.h               |   2 +-
+ drivers/net/wireless/iwlegacy/common.h             |  66 ++--
+ drivers/net/wireless/iwlwifi/dvm/agn.h             |   2 +-
+ drivers/net/wireless/iwlwifi/dvm/dev.h             |   2 +-
+ drivers/net/wireless/iwlwifi/dvm/rs.h              |   8 +-
+ drivers/net/wireless/iwlwifi/mvm/rs.h              |   9 +-
+ drivers/net/wireless/mwifiex/wmm.h                 |  24 +-
+ drivers/net/wireless/orinoco/orinoco.h             |  31 +-
+ drivers/net/wireless/rtlwifi/cam.h                 |  10 +-
+ drivers/net/wireless/rtlwifi/efuse.h               |  29 +-
+ drivers/net/wireless/rtlwifi/rtl8188ee/phy.h       |  49 ++-
+ drivers/net/wireless/rtlwifi/rtl8192ce/phy.h       |  54 ++-
+ drivers/net/wireless/rtlwifi/rtl8192ce/rf.h        |  13 +-
+ drivers/net/wireless/rtlwifi/rtl8192cu/rf.h        |  13 +-
+ drivers/net/wireless/rtlwifi/rtl8192de/hw.h        |   7 +-
+ drivers/net/wireless/rtlwifi/rtl8192de/phy.h       |  44 ++-
+ drivers/net/wireless/rtlwifi/rtl8192de/rf.h        |  18 +-
+ drivers/net/wireless/rtlwifi/rtl8723ae/phy.h       |  61 ++--
+ drivers/net/wireless/rtlwifi/rtl8723ae/rf.h        |  13 +-
+ 51 files changed, 1026 insertions(+), 1174 deletions(-)
+
+-- 
+1.8.1.2.459.gbcd45b4.dirty
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
