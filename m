@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0240.hostedemail.com ([216.40.44.240]
+Received: from smtprelay0235.hostedemail.com ([216.40.44.235]
  helo=smtprelay.hostedemail.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOuug-0004F1-5P
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 19:38:19 +0000
+ id 1VOuup-0004FZ-M3
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 19:38:28 +0000
 From: Joe Perches <joe@perches.com>
-Subject: [PATCH 00/11 - GIT PULL] drivers: net: Last block of Remove extern
- from function prototypes
-Date: Wed, 25 Sep 2013 12:37:18 -0700
-Message-Id: <cover.1380137609.git.joe@perches.com>
+Subject: [PATCH 04/11] ath: Remove extern from function prototypes
+Date: Wed, 25 Sep 2013 12:37:22 -0700
+Message-Id: <a3dabaf02d36dbb4051188b706a3e66e6465c56b.1380137609.git.joe@perches.com>
+In-Reply-To: <cover.1380137609.git.joe@perches.com>
+References: <cover.1380137609.git.joe@perches.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +24,97 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: netdev@vger.kernel.org
-Cc: wimax@linuxwimax.org, brcm80211-dev-list@broadcom.com, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, ath9k-devel@lists.ath9k.org, "David S. Miller" <davem@davemloft.net>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Jouni Malinen <jouni@qca.qualcomm.com>, "Luis R. Rodriguez" <mcgrof@qca.qualcomm.com>, ath10k@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, Kalle Valo <kvalo@qca.qualcomm.com>, ath9k-devel@lists.ath9k.org, Senthil Balasubramanian <senthilb@qca.qualcomm.com>, "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org
 
-The following changes since commit 294da3abaa73a0b69fd54e442b0b5bd9455b7be6:
+There are a mix of function prototypes with and without extern
+in the kernel sources.  Standardize on not using extern for
+function prototypes.
 
-  irda: Remove extern from function prototypes (2013-09-24 12:54:17 -0700)
+Function prototypes don't need to be written with extern.
+extern is assumed by the compiler.  Its use is as unnecessary as
+using auto to declare automatic/local variables in a block.
 
-are available in the git repository at:
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.h  | 8 ++++----
+ drivers/net/wireless/ath/ath6kl/common.h | 3 +--
+ drivers/net/wireless/ath/ath6kl/debug.h  | 9 ++++-----
+ drivers/net/wireless/ath/ath9k/ath9k.h   | 2 +-
+ 4 files changed, 10 insertions(+), 12 deletions(-)
 
-  git://repo.or.cz/linux-2.6/trivial-mods.git 20130925_dn_externs_3
-
-for you to fetch changes up to a958df5dc3065ce517726dc54087639e13ffee8f:
-
-  rtlwifi: Remove extern from function prototypes (2013-09-24 18:06:51 -0700)
-
-----------------------------------------------------------------
-Joe Perches (11):
-  vmxnet3: Remove extern from function prototypes
-  wan: Remove extern from function prototypes
-  wimax: Remove extern from function prototypes
-  ath: Remove extern from function prototypes
-  brcm80211: Remove extern from function prototypes
-  ipw2x00: Remove extern from function prototypes
-  iwlegacy: Remove extern from function prototypes
-  iwlwifi: Remove extern from function prototypes
-  mwifiex: Remove extern from function prototypes
-  orinoco: Remove extern from function prototypes
-  rtlwifi: Remove extern from function prototypes
-
- drivers/net/vmxnet3/vmxnet3_int.h                  |   4 +-
- drivers/net/wan/x25_asy.h                          |   2 +-
- drivers/net/wan/z85230.h                           |  27 +-
- drivers/net/wimax/i2400m/i2400m-usb.h              |  27 +-
- drivers/net/wimax/i2400m/i2400m.h                  | 117 ++++---
- drivers/net/wireless/ath/ath10k/debug.h            |   8 +-
- drivers/net/wireless/ath/ath6kl/common.h           |   3 +-
- drivers/net/wireless/ath/ath6kl/debug.h            |   9 +-
- drivers/net/wireless/ath/ath9k/ath9k.h             |   2 +-
- drivers/net/wireless/brcm80211/brcmfmac/dhd.h      |  30 +-
- drivers/net/wireless/brcm80211/brcmfmac/dhd_bus.h  |  27 +-
- .../net/wireless/brcm80211/brcmfmac/dhd_proto.h    |  12 +-
- .../net/wireless/brcm80211/brcmfmac/sdio_chip.h    |  23 +-
- .../net/wireless/brcm80211/brcmfmac/sdio_host.h    |  92 +++--
- drivers/net/wireless/brcm80211/brcmsmac/aiutils.h  |  18 +-
- drivers/net/wireless/brcm80211/brcmsmac/ampdu.h    |  22 +-
- drivers/net/wireless/brcm80211/brcmsmac/antsel.h   |  14 +-
- drivers/net/wireless/brcm80211/brcmsmac/channel.h  |  20 +-
- .../net/wireless/brcm80211/brcmsmac/mac80211_if.h  |  38 +--
- drivers/net/wireless/brcm80211/brcmsmac/main.h     | 110 +++---
- .../net/wireless/brcm80211/brcmsmac/phy/phy_hal.h  | 219 ++++++------
- .../net/wireless/brcm80211/brcmsmac/phy/phy_int.h  | 371 ++++++++++-----------
- drivers/net/wireless/brcm80211/brcmsmac/phy_shim.h |  91 +++--
- drivers/net/wireless/brcm80211/brcmsmac/pmu.h      |   4 +-
- drivers/net/wireless/brcm80211/brcmsmac/pub.h      | 145 ++++----
- drivers/net/wireless/brcm80211/brcmsmac/rate.h     |  48 ++-
- drivers/net/wireless/brcm80211/brcmsmac/stf.h      |  31 +-
- .../net/wireless/brcm80211/brcmsmac/ucode_loader.h |  16 +-
- drivers/net/wireless/brcm80211/include/brcmu_d11.h |   2 +-
- .../net/wireless/brcm80211/include/brcmu_utils.h   |  44 ++-
- drivers/net/wireless/ipw2x00/libipw.h              |  87 +++--
- drivers/net/wireless/iwlegacy/3945.h               |  82 +++--
- drivers/net/wireless/iwlegacy/4965.h               |   2 +-
- drivers/net/wireless/iwlegacy/common.h             |  66 ++--
- drivers/net/wireless/iwlwifi/dvm/agn.h             |   2 +-
- drivers/net/wireless/iwlwifi/dvm/dev.h             |   2 +-
- drivers/net/wireless/iwlwifi/dvm/rs.h              |   8 +-
- drivers/net/wireless/iwlwifi/mvm/rs.h              |   9 +-
- drivers/net/wireless/mwifiex/wmm.h                 |  24 +-
- drivers/net/wireless/orinoco/orinoco.h             |  31 +-
- drivers/net/wireless/rtlwifi/cam.h                 |  10 +-
- drivers/net/wireless/rtlwifi/efuse.h               |  29 +-
- drivers/net/wireless/rtlwifi/rtl8188ee/phy.h       |  49 ++-
- drivers/net/wireless/rtlwifi/rtl8192ce/phy.h       |  54 ++-
- drivers/net/wireless/rtlwifi/rtl8192ce/rf.h        |  13 +-
- drivers/net/wireless/rtlwifi/rtl8192cu/rf.h        |  13 +-
- drivers/net/wireless/rtlwifi/rtl8192de/hw.h        |   7 +-
- drivers/net/wireless/rtlwifi/rtl8192de/phy.h       |  44 ++-
- drivers/net/wireless/rtlwifi/rtl8192de/rf.h        |  18 +-
- drivers/net/wireless/rtlwifi/rtl8723ae/phy.h       |  61 ++--
- drivers/net/wireless/rtlwifi/rtl8723ae/rf.h        |  13 +-
- 51 files changed, 1026 insertions(+), 1174 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 168140c..bb00633 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -37,9 +37,9 @@ enum ath10k_debug_mask {
+ 
+ extern unsigned int ath10k_debug_mask;
+ 
+-extern __printf(1, 2) int ath10k_info(const char *fmt, ...);
+-extern __printf(1, 2) int ath10k_err(const char *fmt, ...);
+-extern __printf(1, 2) int ath10k_warn(const char *fmt, ...);
++__printf(1, 2) int ath10k_info(const char *fmt, ...);
++__printf(1, 2) int ath10k_err(const char *fmt, ...);
++__printf(1, 2) int ath10k_warn(const char *fmt, ...);
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ int ath10k_debug_create(struct ath10k *ar);
+@@ -68,7 +68,7 @@ static inline void ath10k_debug_read_target_stats(struct ath10k *ar,
+ #endif /* CONFIG_ATH10K_DEBUGFS */
+ 
+ #ifdef CONFIG_ATH10K_DEBUG
+-extern __printf(2, 3) void ath10k_dbg(enum ath10k_debug_mask mask,
++__printf(2, 3) void ath10k_dbg(enum ath10k_debug_mask mask,
+ 				      const char *fmt, ...);
+ void ath10k_dbg_dump(enum ath10k_debug_mask mask,
+ 		     const char *msg, const char *prefix,
+diff --git a/drivers/net/wireless/ath/ath6kl/common.h b/drivers/net/wireless/ath/ath6kl/common.h
+index 98a8861..05debf7 100644
+--- a/drivers/net/wireless/ath/ath6kl/common.h
++++ b/drivers/net/wireless/ath/ath6kl/common.h
+@@ -22,8 +22,7 @@
+ 
+ #define ATH6KL_MAX_IE			256
+ 
+-extern __printf(2, 3)
+-int ath6kl_printk(const char *level, const char *fmt, ...);
++__printf(2, 3) int ath6kl_printk(const char *level, const char *fmt, ...);
+ 
+ /*
+  * Reflects the version of binary interface exposed by ATH6KL target
+diff --git a/drivers/net/wireless/ath/ath6kl/debug.h b/drivers/net/wireless/ath/ath6kl/debug.h
+index 74369de..ca9ba00 100644
+--- a/drivers/net/wireless/ath/ath6kl/debug.h
++++ b/drivers/net/wireless/ath/ath6kl/debug.h
+@@ -50,11 +50,10 @@ enum ATH6K_DEBUG_MASK {
+ };
+ 
+ extern unsigned int debug_mask;
+-extern __printf(2, 3)
+-int ath6kl_printk(const char *level, const char *fmt, ...);
+-extern __printf(1, 2) int ath6kl_info(const char *fmt, ...);
+-extern __printf(1, 2) int ath6kl_err(const char *fmt, ...);
+-extern __printf(1, 2) int ath6kl_warn(const char *fmt, ...);
++__printf(2, 3) int ath6kl_printk(const char *level, const char *fmt, ...);
++__printf(1, 2) int ath6kl_info(const char *fmt, ...);
++__printf(1, 2) int ath6kl_err(const char *fmt, ...);
++__printf(1, 2) int ath6kl_warn(const char *fmt, ...);
+ 
+ enum ath6kl_war {
+ 	ATH6KL_WAR_INVALID_RATE,
+diff --git a/drivers/net/wireless/ath/ath9k/ath9k.h b/drivers/net/wireless/ath/ath9k/ath9k.h
+index 2ee35f6..da24ba2 100644
+--- a/drivers/net/wireless/ath/ath9k/ath9k.h
++++ b/drivers/net/wireless/ath/ath9k/ath9k.h
+@@ -952,7 +952,7 @@ void ath9k_ps_restore(struct ath_softc *sc);
+ u8 ath_txchainmask_reduction(struct ath_softc *sc, u8 chainmask, u32 rate);
+ 
+ void ath_start_rfkill_poll(struct ath_softc *sc);
+-extern void ath9k_rfkill_poll_state(struct ieee80211_hw *hw);
++void ath9k_rfkill_poll_state(struct ieee80211_hw *hw);
+ void ath9k_calculate_iter_data(struct ieee80211_hw *hw,
+ 			       struct ieee80211_vif *vif,
+ 			       struct ath9k_vif_iter_data *iter_data);
 -- 
 1.8.1.2.459.gbcd45b4.dirty
 
