@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOwKL-0006pY-13
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 21:08:54 +0000
-Subject: [PATCH 1/3] ath10k: rename board_data in struct ath10k
+ id 1VOwKX-0006qG-EI
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 21:09:06 +0000
+Subject: [PATCH 2/3] ath10k: store separate pointers for firmware data
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 26 Sep 2013 00:08:30 +0300
-Message-ID: <20130925210830.2596.24836.stgit@localhost6.localdomain6>
+Date: Thu, 26 Sep 2013 00:08:39 +0300
+Message-ID: <20130925210839.2596.33661.stgit@localhost6.localdomain6>
 In-Reply-To: <20130925210455.2596.36889.stgit@localhost6.localdomain6>
 References: <20130925210455.2596.36889.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -25,78 +25,176 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-I will use board_data for something else in the following patch
-so I need to rename it.
+Needed for firmware IE formatted images.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   18 +++++++++---------
- drivers/net/wireless/ath/ath10k/core.h |    2 +-
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |   43 ++++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/core.h |    8 ++++++
+ 2 files changed, 37 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 76906d5..e07c487 100644
+index e07c487..6a354f7 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -236,7 +236,7 @@ static int ath10k_push_board_ext_data(struct ath10k *ar,
- 
- static int ath10k_download_board_data(struct ath10k *ar)
- {
--	const struct firmware *fw = ar->board_data;
-+	const struct firmware *fw = ar->board;
- 	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
- 	u32 address;
- 	int ret;
-@@ -319,8 +319,8 @@ exit:
- 
- static void ath10k_core_free_firmware_files(struct ath10k *ar)
- {
--	if (ar->board_data && !IS_ERR(ar->board_data))
--		release_firmware(ar->board_data);
-+	if (ar->board && !IS_ERR(ar->board))
-+		release_firmware(ar->board);
- 
- 	if (ar->otp && !IS_ERR(ar->otp))
- 		release_firmware(ar->otp);
-@@ -328,7 +328,7 @@ static void ath10k_core_free_firmware_files(struct ath10k *ar)
- 	if (ar->firmware && !IS_ERR(ar->firmware))
- 		release_firmware(ar->firmware);
- 
--	ar->board_data = NULL;
-+	ar->board = NULL;
- 	ar->otp = NULL;
- 	ar->firmware = NULL;
+@@ -189,8 +189,7 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
+ 	return fw;
  }
-@@ -347,11 +347,11 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+ 
+-static int ath10k_push_board_ext_data(struct ath10k *ar,
+-				      const struct firmware *fw)
++static int ath10k_push_board_ext_data(struct ath10k *ar)
+ {
+ 	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
+ 	u32 board_ext_data_size = QCA988X_BOARD_EXT_DATA_SZ;
+@@ -210,14 +209,14 @@ static int ath10k_push_board_ext_data(struct ath10k *ar,
+ 	if (board_ext_data_addr == 0)
+ 		return 0;
+ 
+-	if (fw->size != (board_data_size + board_ext_data_size)) {
++	if (ar->board_len != (board_data_size + board_ext_data_size)) {
+ 		ath10k_err("invalid board (ext) data sizes %zu != %d+%d\n",
+-			   fw->size, board_data_size, board_ext_data_size);
++			   ar->board_len, board_data_size, board_ext_data_size);
  		return -EINVAL;
  	}
  
--	ar->board_data = ath10k_fetch_fw_file(ar,
--					      ar->hw_params.fw.dir,
--					      ar->hw_params.fw.board);
--	if (IS_ERR(ar->board_data)) {
--		ret = PTR_ERR(ar->board_data);
-+	ar->board = ath10k_fetch_fw_file(ar,
-+					 ar->hw_params.fw.dir,
-+					 ar->hw_params.fw.board);
-+	if (IS_ERR(ar->board)) {
-+		ret = PTR_ERR(ar->board);
- 		ath10k_err("could not fetch board data (%d)\n", ret);
+ 	ret = ath10k_bmi_write_memory(ar, board_ext_data_addr,
+-				      fw->data + board_data_size,
++				      ar->board_data + board_data_size,
+ 				      board_ext_data_size);
+ 	if (ret) {
+ 		ath10k_err("could not write board ext data (%d)\n", ret);
+@@ -236,12 +235,11 @@ static int ath10k_push_board_ext_data(struct ath10k *ar,
+ 
+ static int ath10k_download_board_data(struct ath10k *ar)
+ {
+-	const struct firmware *fw = ar->board;
+ 	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
+ 	u32 address;
+ 	int ret;
+ 
+-	ret = ath10k_push_board_ext_data(ar, fw);
++	ret = ath10k_push_board_ext_data(ar);
+ 	if (ret) {
+ 		ath10k_err("could not push board ext data (%d)\n", ret);
+ 		goto exit;
+@@ -253,8 +251,9 @@ static int ath10k_download_board_data(struct ath10k *ar)
+ 		goto exit;
+ 	}
+ 
+-	ret = ath10k_bmi_write_memory(ar, address, fw->data,
+-				      min_t(u32, board_data_size, fw->size));
++	ret = ath10k_bmi_write_memory(ar, address, ar->board_data,
++				      min_t(u32, board_data_size,
++					    ar->board_len));
+ 	if (ret) {
+ 		ath10k_err("could not write board data (%d)\n", ret);
+ 		goto exit;
+@@ -272,17 +271,16 @@ exit:
+ 
+ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ {
+-	const struct firmware *fw = ar->otp;
+ 	u32 address = ar->hw_params.patch_load_addr;
+ 	u32 exec_param;
+ 	int ret;
+ 
+ 	/* OTP is optional */
+ 
+-	if (!ar->otp)
++	if (!ar->otp_data || !ar->otp_len)
+ 		return 0;
+ 
+-	ret = ath10k_bmi_fast_download(ar, address, fw->data, fw->size);
++	ret = ath10k_bmi_fast_download(ar, address, ar->otp_data, ar->otp_len);
+ 	if (ret) {
+ 		ath10k_err("could not write otp (%d)\n", ret);
+ 		goto exit;
+@@ -301,13 +299,13 @@ exit:
+ 
+ static int ath10k_download_fw(struct ath10k *ar)
+ {
+-	const struct firmware *fw = ar->firmware;
+ 	u32 address;
+ 	int ret;
+ 
+ 	address = ar->hw_params.patch_load_addr;
+ 
+-	ret = ath10k_bmi_fast_download(ar, address, fw->data, fw->size);
++	ret = ath10k_bmi_fast_download(ar, address, ar->firmware_data,
++				       ar->firmware_len);
+ 	if (ret) {
+ 		ath10k_err("could not write fw (%d)\n", ret);
+ 		goto exit;
+@@ -329,8 +327,16 @@ static void ath10k_core_free_firmware_files(struct ath10k *ar)
+ 		release_firmware(ar->firmware);
+ 
+ 	ar->board = NULL;
++	ar->board_data = NULL;
++	ar->board_len = 0;
++
+ 	ar->otp = NULL;
++	ar->otp_data = NULL;
++	ar->otp_len = 0;
++
+ 	ar->firmware = NULL;
++	ar->firmware_data = NULL;
++	ar->firmware_len = 0;
+ }
+ 
+ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+@@ -356,6 +362,9 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
  		goto err;
  	}
+ 
++	ar->board_data = ar->board->data;
++	ar->board_len = ar->board->size;
++
+ 	ar->firmware = ath10k_fetch_fw_file(ar,
+ 					    ar->hw_params.fw.dir,
+ 					    ar->hw_params.fw.fw);
+@@ -365,6 +374,9 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+ 		goto err;
+ 	}
+ 
++	ar->firmware_data = ar->firmware->data;
++	ar->firmware_len = ar->firmware->size;
++
+ 	/* OTP may be undefined. If so, don't fetch it at all */
+ 	if (ar->hw_params.fw.otp == NULL)
+ 		return 0;
+@@ -378,6 +390,9 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+ 		goto err;
+ 	}
+ 
++	ar->otp_data = ar->otp->data;
++	ar->otp_len = ar->otp->size;
++
+ 	return 0;
+ 
+ err:
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 292ad45..12b03b6 100644
+index 12b03b6..511b20d 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -324,7 +324,7 @@ struct ath10k {
- 		} fw;
+@@ -325,8 +325,16 @@ struct ath10k {
  	} hw_params;
  
--	const struct firmware *board_data;
-+	const struct firmware *board;
+ 	const struct firmware *board;
++	const void *board_data;
++	size_t board_len;
++
  	const struct firmware *otp;
++	const void *otp_data;
++	size_t otp_len;
++
  	const struct firmware *firmware;
++	const void *firmware_data;
++	size_t firmware_len;
  
+ 	struct {
+ 		struct completion started;
 
 
 _______________________________________________
