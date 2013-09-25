@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOlYY-0002Rh-0Y
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:38:55 +0000
+ id 1VOlYd-0002Rf-OT
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:39:00 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 02/13] ath10k: add wmi_10x_<cmd/event> definitions
-Date: Wed, 25 Sep 2013 11:38:00 +0200
-Message-ID: <1380101891-18312-3-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 08/13] ath10k: bring back the WMI path for mgmt frames
+Date: Wed, 25 Sep 2013 11:38:06 +0200
+Message-ID: <1380101891-18312-9-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,405 +25,204 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Introduce the cmd and events definitions for 10.X FW API
-and make up the wmi_10x_cmd_map. This is the core of
-host-firmware WMI interface for 10.X FW branch.
+This is still used by the 10.X firmware.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |  132 +++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |  215 ++++++++++++++++++++++++++++++++-
- 2 files changed, 344 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h   |    5 ++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +--
+ drivers/net/wireless/ath/ath10k/mac.c    |   27 ++++++++++------
+ drivers/net/wireless/ath/ath10k/wmi.c    |   49 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
+ 5 files changed, 73 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 9cf426f..dd490b4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -146,7 +146,133 @@ static struct wmi_cmd_map wmi_cmd_map = {
- 	.wmi_gpio_output_cmdid = WMI_GPIO_OUTPUT_CMDID,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 0c9e6f3..377560d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -49,9 +49,9 @@ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
+ 	bool is_mapped;
+ 	bool is_aborted;
++	u8 vdev_id;
+ 
+ 	struct {
+-		u8 vdev_id;
+ 		u8 tid;
+ 		bool is_offchan;
+ 
+@@ -284,6 +284,9 @@ enum ath10k_fw_features {
+ 	/* firmware from 10X branch */
+ 	ATH10K_FW_FEATURE_10X = 1,
+ 
++	/* firmware support tx frame management over WMI, otherwise it's HTT */
++	ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX = 2,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
  };
- 
--/* TODO: 10.X WMI cmd track */
-+/* 10.X WMI cmd track */
-+static struct wmi_cmd_map wmi_10x_cmd_map = {
-+	.wmi_init_cmdid = WMI_10X_INIT_CMDID,
-+	.wmi_start_scan_cmdid = WMI_10X_START_SCAN_CMDID,
-+	.wmi_stop_scan_cmdid = WMI_10X_STOP_SCAN_CMDID,
-+	.wmi_scan_chan_list_cmdid = WMI_10X_SCAN_CHAN_LIST_CMDID,
-+	.wmi_scan_sch_prio_tbl_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_pdev_set_regdomain_cmdid = WMI_10X_PDEV_SET_REGDOMAIN_CMDID,
-+	.wmi_pdev_set_channel_cmdid = WMI_10X_PDEV_SET_CHANNEL_CMDID,
-+	.wmi_pdev_set_param_cmdid = WMI_10X_PDEV_SET_PARAM_CMDID,
-+	.wmi_pdev_pktlog_enable_cmdid = WMI_10X_PDEV_PKTLOG_ENABLE_CMDID,
-+	.wmi_pdev_pktlog_disable_cmdid = WMI_10X_PDEV_PKTLOG_DISABLE_CMDID,
-+	.wmi_pdev_set_wmm_params_cmdid = WMI_10X_PDEV_SET_WMM_PARAMS_CMDID,
-+	.wmi_pdev_set_ht_cap_ie_cmdid = WMI_10X_PDEV_SET_HT_CAP_IE_CMDID,
-+	.wmi_pdev_set_vht_cap_ie_cmdid = WMI_10X_PDEV_SET_VHT_CAP_IE_CMDID,
-+	.wmi_pdev_set_dscp_tid_map_cmdid =
-+				WMI_10X_PDEV_SET_DSCP_TID_MAP_CMDID,
-+	.wmi_pdev_set_quiet_mode_cmdid = WMI_10X_PDEV_SET_QUIET_MODE_CMDID,
-+	.wmi_pdev_green_ap_ps_enable_cmdid =
-+				WMI_10X_PDEV_GREEN_AP_PS_ENABLE_CMDID,
-+	.wmi_pdev_get_tpc_config_cmdid = WMI_10X_PDEV_GET_TPC_CONFIG_CMDID,
-+	.wmi_pdev_set_base_macaddr_cmdid =
-+				WMI_10X_PDEV_SET_BASE_MACADDR_CMDID,
-+	.wmi_vdev_create_cmdid = WMI_10X_VDEV_CREATE_CMDID,
-+	.wmi_vdev_delete_cmdid = WMI_10X_VDEV_DELETE_CMDID,
-+	.wmi_vdev_start_request_cmdid = WMI_10X_VDEV_START_REQUEST_CMDID,
-+	.wmi_vdev_restart_request_cmdid = WMI_10X_VDEV_RESTART_REQUEST_CMDID,
-+	.wmi_vdev_up_cmdid = WMI_10X_VDEV_UP_CMDID,
-+	.wmi_vdev_stop_cmdid = WMI_10X_VDEV_STOP_CMDID,
-+	.wmi_vdev_down_cmdid = WMI_10X_VDEV_DOWN_CMDID,
-+	.wmi_vdev_set_param_cmdid = WMI_10X_VDEV_SET_PARAM_CMDID,
-+	.wmi_vdev_install_key_cmdid = WMI_10X_VDEV_INSTALL_KEY_CMDID,
-+	.wmi_peer_create_cmdid = WMI_10X_PEER_CREATE_CMDID,
-+	.wmi_peer_delete_cmdid = WMI_10X_PEER_DELETE_CMDID,
-+	.wmi_peer_flush_tids_cmdid = WMI_10X_PEER_FLUSH_TIDS_CMDID,
-+	.wmi_peer_set_param_cmdid = WMI_10X_PEER_SET_PARAM_CMDID,
-+	.wmi_peer_assoc_cmdid = WMI_10X_PEER_ASSOC_CMDID,
-+	.wmi_peer_add_wds_entry_cmdid = WMI_10X_PEER_ADD_WDS_ENTRY_CMDID,
-+	.wmi_peer_remove_wds_entry_cmdid =
-+				WMI_10X_PEER_REMOVE_WDS_ENTRY_CMDID,
-+	.wmi_peer_mcast_group_cmdid = WMI_10X_PEER_MCAST_GROUP_CMDID,
-+	.wmi_bcn_tx_cmdid = WMI_10X_BCN_TX_CMDID,
-+	.wmi_pdev_send_bcn_cmdid = WMI_10X_PDEV_SEND_BCN_CMDID,
-+	.wmi_bcn_tmpl_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_bcn_filter_rx_cmdid = WMI_10X_BCN_FILTER_RX_CMDID,
-+	.wmi_prb_req_filter_rx_cmdid = WMI_10X_PRB_REQ_FILTER_RX_CMDID,
-+	.wmi_mgmt_tx_cmdid = WMI_10X_MGMT_TX_CMDID,
-+	.wmi_prb_tmpl_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_addba_clear_resp_cmdid = WMI_10X_ADDBA_CLEAR_RESP_CMDID,
-+	.wmi_addba_send_cmdid = WMI_10X_ADDBA_SEND_CMDID,
-+	.wmi_addba_status_cmdid = WMI_10X_ADDBA_STATUS_CMDID,
-+	.wmi_delba_send_cmdid = WMI_10X_DELBA_SEND_CMDID,
-+	.wmi_addba_set_resp_cmdid = WMI_10X_ADDBA_SET_RESP_CMDID,
-+	.wmi_send_singleamsdu_cmdid = WMI_10X_SEND_SINGLEAMSDU_CMDID,
-+	.wmi_sta_powersave_mode_cmdid = WMI_10X_STA_POWERSAVE_MODE_CMDID,
-+	.wmi_sta_powersave_param_cmdid = WMI_10X_STA_POWERSAVE_PARAM_CMDID,
-+	.wmi_sta_mimo_ps_mode_cmdid = WMI_10X_STA_MIMO_PS_MODE_CMDID,
-+	.wmi_pdev_dfs_enable_cmdid = WMI_10X_PDEV_DFS_ENABLE_CMDID,
-+	.wmi_pdev_dfs_disable_cmdid = WMI_10X_PDEV_DFS_DISABLE_CMDID,
-+	.wmi_roam_scan_mode = WMI_10X_ROAM_SCAN_MODE,
-+	.wmi_roam_scan_rssi_threshold = WMI_10X_ROAM_SCAN_RSSI_THRESHOLD,
-+	.wmi_roam_scan_period = WMI_10X_ROAM_SCAN_PERIOD,
-+	.wmi_roam_scan_rssi_change_threshold
-+				= WMI_10X_ROAM_SCAN_RSSI_CHANGE_THRESHOLD,
-+	.wmi_roam_ap_profile = WMI_10X_ROAM_AP_PROFILE,
-+	.wmi_ofl_scan_add_ap_profile = WMI_10X_OFL_SCAN_ADD_AP_PROFILE,
-+	.wmi_ofl_scan_remove_ap_profile = WMI_10X_OFL_SCAN_REMOVE_AP_PROFILE,
-+	.wmi_ofl_scan_period = WMI_10X_OFL_SCAN_PERIOD,
-+	.wmi_p2p_dev_set_device_info = WMI_10X_P2P_DEV_SET_DEVICE_INFO,
-+	.wmi_p2p_dev_set_discoverability =
-+					WMI_10X_P2P_DEV_SET_DISCOVERABILITY,
-+	.wmi_p2p_go_set_beacon_ie = WMI_10X_P2P_GO_SET_BEACON_IE,
-+	.wmi_p2p_go_set_probe_resp_ie = WMI_10X_P2P_GO_SET_PROBE_RESP_IE,
-+	.wmi_p2p_set_vendor_ie_data_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_ap_ps_peer_param_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_ap_ps_peer_uapsd_coex_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_peer_rate_retry_sched_cmdid =
-+					WMI_10X_PEER_RATE_RETRY_SCHED_CMDID,
-+	.wmi_wlan_profile_trigger_cmdid = WMI_10X_WLAN_PROFILE_TRIGGER_CMDID,
-+	.wmi_wlan_profile_set_hist_intvl_cmdid =
-+				WMI_10X_WLAN_PROFILE_SET_HIST_INTVL_CMDID,
-+	.wmi_wlan_profile_get_profile_data_cmdid =
-+				WMI_10X_WLAN_PROFILE_GET_PROFILE_DATA_CMDID,
-+	.wmi_wlan_profile_enable_profile_id_cmdid =
-+				WMI_10X_WLAN_PROFILE_ENABLE_PROFILE_ID_CMDID,
-+	.wmi_wlan_profile_list_profile_id_cmdid =
-+				WMI_10X_WLAN_PROFILE_LIST_PROFILE_ID_CMDID,
-+	.wmi_pdev_suspend_cmdid = WMI_10X_PDEV_SUSPEND_CMDID,
-+	.wmi_pdev_resume_cmdid = WMI_10X_PDEV_RESUME_CMDID,
-+	.wmi_add_bcn_filter_cmdid = WMI_10X_ADD_BCN_FILTER_CMDID,
-+	.wmi_rmv_bcn_filter_cmdid = WMI_10X_RMV_BCN_FILTER_CMDID,
-+	.wmi_wow_add_wake_pattern_cmdid = WMI_10X_WOW_ADD_WAKE_PATTERN_CMDID,
-+	.wmi_wow_del_wake_pattern_cmdid = WMI_10X_WOW_DEL_WAKE_PATTERN_CMDID,
-+	.wmi_wow_enable_disable_wake_event_cmdid =
-+				WMI_10X_WOW_ENABLE_DISABLE_WAKE_EVENT_CMDID,
-+	.wmi_wow_enable_cmdid = WMI_10X_WOW_ENABLE_CMDID,
-+	.wmi_wow_hostwakeup_from_sleep_cmdid =
-+				WMI_10X_WOW_HOSTWAKEUP_FROM_SLEEP_CMDID,
-+	.wmi_rtt_measreq_cmdid = WMI_10X_RTT_MEASREQ_CMDID,
-+	.wmi_rtt_tsf_cmdid = WMI_10X_RTT_TSF_CMDID,
-+	.wmi_vdev_spectral_scan_configure_cmdid =
-+				WMI_10X_VDEV_SPECTRAL_SCAN_CONFIGURE_CMDID,
-+	.wmi_vdev_spectral_scan_enable_cmdid =
-+				WMI_10X_VDEV_SPECTRAL_SCAN_ENABLE_CMDID,
-+	.wmi_request_stats_cmdid = WMI_10X_REQUEST_STATS_CMDID,
-+	.wmi_set_arp_ns_offload_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_network_list_offload_config_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_gtk_offload_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_csa_offload_enable_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_csa_offload_chanswitch_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_chatter_set_mode_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_peer_tid_addba_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_peer_tid_delba_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_sta_dtim_ps_method_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_sta_uapsd_auto_trig_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_sta_keepalive_cmd = WMI_CMD_UNDEFINED,
-+	.wmi_echo_cmdid = WMI_10X_ECHO_CMDID,
-+	.wmi_pdev_utf_cmdid = WMI_10X_PDEV_UTF_CMDID,
-+	.wmi_dbglog_cfg_cmdid = WMI_10X_DBGLOG_CFG_CMDID,
-+	.wmi_pdev_qvit_cmdid = WMI_10X_PDEV_QVIT_CMDID,
-+	.wmi_pdev_ftm_intg_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_vdev_set_keepalive_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_vdev_get_keepalive_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_force_fw_hang_cmdid = WMI_CMD_UNDEFINED,
-+	.wmi_gpio_config_cmdid = WMI_10X_GPIO_CONFIG_CMDID,
-+	.wmi_gpio_output_cmdid = WMI_10X_GPIO_OUTPUT_CMDID,
-+};
- 
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 3b93c6a..d9335e9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -308,7 +308,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct sk_buff *txdesc = NULL;
+ 	struct htt_cmd *cmd;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+-	u8 vdev_id = skb_cb->htt.vdev_id;
++	u8 vdev_id = skb_cb->vdev_id;
+ 	int len = 0;
+ 	int msdu_id = -1;
+ 	int res;
+@@ -384,7 +384,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct sk_buff *txdesc = NULL;
+ 	bool use_frags;
+-	u8 vdev_id = ATH10K_SKB_CB(msdu)->htt.vdev_id;
++	u8 vdev_id = ATH10K_SKB_CB(msdu)->vdev_id;
+ 	u8 tid;
+ 	int prefetch_len, desc_len;
+ 	int msdu_id = -1;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 99a9bad..18fae5e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1489,7 +1489,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar, struct sk_buff *skb)
+ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
  {
-@@ -1310,13 +1436,15 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
- /* WMI Initialization functions */
- int ath10k_wmi_attach(struct ath10k *ar)
- {
--	int ret = 0;
-+	int ret;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	int ret;
++	int ret = 0;
  
- 	if (test_bit(ATH10K_FW_FEATURE_10X, ar->fw_features)) {
- 		ath10k_warn("Firmware 10.X is not yet supported\n");
-+		ar->wmi.cmd = &wmi_10x_cmd_map;
- 		ret = -ENOTSUPP;
- 	} else {
- 		ar->wmi.cmd = &wmi_cmd_map;
-+		ret = 0;
+ 	if (ar->htt.target_version_major >= 3) {
+ 		/* Since HTT 3.0 there is no separate mgmt tx command */
+@@ -1497,16 +1497,23 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ 		goto exit;
  	}
  
- 	init_completion(&ar->wmi.service_ready);
+-	if (ieee80211_is_mgmt(hdr->frame_control))
+-		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
+-	else if (ieee80211_is_nullfunc(hdr->frame_control))
++	if (ieee80211_is_mgmt(hdr->frame_control)) {
++		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
++			     ar->fw_features))
++			ret = ath10k_wmi_mgmt_tx(ar, skb);
++		else
++			ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
++	} else if (!test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
++			     ar->fw_features) &&
++		   ieee80211_is_nullfunc(hdr->frame_control)) {
+ 		/* FW does not report tx status properly for NullFunc frames
+ 		 * unless they are sent through mgmt tx path. mac80211 sends
+-		 * those frames when it detects link/beacon loss and depends on
+-		 * the tx status to be correct. */
++		 * those frames when it detects link/beacon loss and depends
++		 * on the tx status to be correct. */
+ 		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
+-	else
++	} else {
+ 		ret = ath10k_htt_tx(&ar->htt, skb);
++	}
+ 
+ exit:
+ 	if (ret) {
+@@ -1557,7 +1564,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 
+ 		hdr = (struct ieee80211_hdr *)skb->data;
+ 		peer_addr = ieee80211_get_DA(hdr);
+-		vdev_id = ATH10K_SKB_CB(skb)->htt.vdev_id;
++		vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
+@@ -1757,14 +1764,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		ath10k_tx_h_seq_no(skb);
+ 	}
+ 
++	ATH10K_SKB_CB(skb)->vdev_id = vdev_id;
+ 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
+-	ATH10K_SKB_CB(skb)->htt.vdev_id = vdev_id;
+ 	ATH10K_SKB_CB(skb)->htt.tid = tid;
+ 
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+ 		spin_lock_bh(&ar->data_lock);
+ 		ATH10K_SKB_CB(skb)->htt.is_offchan = true;
+-		ATH10K_SKB_CB(skb)->htt.vdev_id = ar->scan.vdev_id;
++		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+ 		ath10k_dbg(ATH10K_DBG_MAC, "queued offchannel skb %p\n", skb);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 3b1ae88..4992ad1 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -418,6 +418,55 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	return ret;
+ }
+ 
++int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
++{
++	int ret = 0;
++	struct wmi_mgmt_tx_cmd *cmd;
++	struct ieee80211_hdr *hdr;
++	struct sk_buff *wmi_skb;
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	int len;
++	u16 fc;
++
++	hdr = (struct ieee80211_hdr *)skb->data;
++	fc = le16_to_cpu(hdr->frame_control);
++
++	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
++		return -EINVAL;
++
++	len = sizeof(cmd->hdr) + skb->len;
++	len = round_up(len, 4);
++
++	wmi_skb = ath10k_wmi_alloc_skb(len);
++	if (!wmi_skb)
++		return -ENOMEM;
++
++	cmd = (struct wmi_mgmt_tx_cmd *)wmi_skb->data;
++
++	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(skb)->vdev_id);
++	cmd->hdr.tx_rate = 0;
++	cmd->hdr.tx_power = 0;
++	cmd->hdr.buf_len = __cpu_to_le32((u32)(skb->len));
++
++	memcpy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr), ETH_ALEN);
++	memcpy(cmd->buf, skb->data, skb->len);
++
++	ath10k_dbg(ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
++		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
++		   fc & IEEE80211_FCTL_STYPE);
++
++	/* Send the management frame buffer to the target */
++	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->wmi_mgmt_tx_cmdid);
++	if (ret)
++		return ret;
++
++	/* TODO: report tx status to mac80211 - temporary just ACK */
++	info->flags |= IEEE80211_TX_STAT_ACK;
++	ieee80211_tx_status_irqsafe(ar->hw, skb);
++
++	return ret;
++}
++
+ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_scan_event *event = (struct wmi_scan_event *)skb->data;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 94fc008..c23d070 100644
+index 3825937..8c67fb4 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -359,7 +359,9 @@ enum wmi_cmd_group {
- #define WMI_CMD_GRP(grp_id) (((grp_id) << 12) | 0x1)
- #define WMI_EVT_GRP_START_ID(grp_id) (((grp_id) << 12) | 0x1)
+@@ -3483,5 +3483,6 @@ int ath10k_wmi_pdev_set_wmm_params(struct ath10k *ar,
+ int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id);
+ int ath10k_wmi_force_fw_hang(struct ath10k *ar,
+ 			     enum wmi_force_fw_hang_type type, u32 delay_ms);
++int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb);
  
--/* Command IDs and commande events. */
-+#define WMI_CMD_UNDEFINED 0
-+
-+/* Command IDs and command events for MAIN FW. */
- enum wmi_cmd_id {
- 	WMI_INIT_CMDID = 0x1,
- 
-@@ -600,6 +602,217 @@ enum wmi_event_id {
- 	WMI_GPIO_INPUT_EVENTID = WMI_EVT_GRP_START_ID(WMI_GRP_GPIO),
- };
- 
-+/* Command IDs and command events for 10.X firmware */
-+enum wmi_10x_cmd_id {
-+	WMI_10X_START_CMDID = 0x9000,
-+	WMI_10X_END_CMDID = 0x9FFF,
-+
-+	/* initialize the wlan sub system */
-+	WMI_10X_INIT_CMDID,
-+
-+	/* Scan specific commands */
-+
-+	WMI_10X_START_SCAN_CMDID = WMI_10X_START_CMDID,
-+	WMI_10X_STOP_SCAN_CMDID,
-+	WMI_10X_SCAN_CHAN_LIST_CMDID,
-+	WMI_10X_ECHO_CMDID,
-+
-+	/* PDEV(physical device) specific commands */
-+	WMI_10X_PDEV_SET_REGDOMAIN_CMDID,
-+	WMI_10X_PDEV_SET_CHANNEL_CMDID,
-+	WMI_10X_PDEV_SET_PARAM_CMDID,
-+	WMI_10X_PDEV_PKTLOG_ENABLE_CMDID,
-+	WMI_10X_PDEV_PKTLOG_DISABLE_CMDID,
-+	WMI_10X_PDEV_SET_WMM_PARAMS_CMDID,
-+	WMI_10X_PDEV_SET_HT_CAP_IE_CMDID,
-+	WMI_10X_PDEV_SET_VHT_CAP_IE_CMDID,
-+	WMI_10X_PDEV_SET_BASE_MACADDR_CMDID,
-+	WMI_10X_PDEV_SET_DSCP_TID_MAP_CMDID,
-+	WMI_10X_PDEV_SET_QUIET_MODE_CMDID,
-+	WMI_10X_PDEV_GREEN_AP_PS_ENABLE_CMDID,
-+	WMI_10X_PDEV_GET_TPC_CONFIG_CMDID,
-+
-+	/* VDEV(virtual device) specific commands */
-+	WMI_10X_VDEV_CREATE_CMDID,
-+	WMI_10X_VDEV_DELETE_CMDID,
-+	WMI_10X_VDEV_START_REQUEST_CMDID,
-+	WMI_10X_VDEV_RESTART_REQUEST_CMDID,
-+	WMI_10X_VDEV_UP_CMDID,
-+	WMI_10X_VDEV_STOP_CMDID,
-+	WMI_10X_VDEV_DOWN_CMDID,
-+	WMI_10X_VDEV_STANDBY_RESPONSE_CMDID,
-+	WMI_10X_VDEV_RESUME_RESPONSE_CMDID,
-+	WMI_10X_VDEV_SET_PARAM_CMDID,
-+	WMI_10X_VDEV_INSTALL_KEY_CMDID,
-+
-+	/* peer specific commands */
-+	WMI_10X_PEER_CREATE_CMDID,
-+	WMI_10X_PEER_DELETE_CMDID,
-+	WMI_10X_PEER_FLUSH_TIDS_CMDID,
-+	WMI_10X_PEER_SET_PARAM_CMDID,
-+	WMI_10X_PEER_ASSOC_CMDID,
-+	WMI_10X_PEER_ADD_WDS_ENTRY_CMDID,
-+	WMI_10X_PEER_REMOVE_WDS_ENTRY_CMDID,
-+	WMI_10X_PEER_MCAST_GROUP_CMDID,
-+
-+	/* beacon/management specific commands */
-+
-+	WMI_10X_BCN_TX_CMDID,
-+	WMI_10X_BCN_PRB_TMPL_CMDID,
-+	WMI_10X_BCN_FILTER_RX_CMDID,
-+	WMI_10X_PRB_REQ_FILTER_RX_CMDID,
-+	WMI_10X_MGMT_TX_CMDID,
-+
-+	/* commands to directly control ba negotiation directly from host. */
-+	WMI_10X_ADDBA_CLEAR_RESP_CMDID,
-+	WMI_10X_ADDBA_SEND_CMDID,
-+	WMI_10X_ADDBA_STATUS_CMDID,
-+	WMI_10X_DELBA_SEND_CMDID,
-+	WMI_10X_ADDBA_SET_RESP_CMDID,
-+	WMI_10X_SEND_SINGLEAMSDU_CMDID,
-+
-+	/* Station power save specific config */
-+	WMI_10X_STA_POWERSAVE_MODE_CMDID,
-+	WMI_10X_STA_POWERSAVE_PARAM_CMDID,
-+	WMI_10X_STA_MIMO_PS_MODE_CMDID,
-+
-+	/* set debug log config */
-+	WMI_10X_DBGLOG_CFG_CMDID,
-+
-+	/* DFS-specific commands */
-+	WMI_10X_PDEV_DFS_ENABLE_CMDID,
-+	WMI_10X_PDEV_DFS_DISABLE_CMDID,
-+
-+	/* QVIT specific command id */
-+	WMI_10X_PDEV_QVIT_CMDID,
-+
-+	/* Offload Scan and Roaming related  commands */
-+	WMI_10X_ROAM_SCAN_MODE,
-+	WMI_10X_ROAM_SCAN_RSSI_THRESHOLD,
-+	WMI_10X_ROAM_SCAN_PERIOD,
-+	WMI_10X_ROAM_SCAN_RSSI_CHANGE_THRESHOLD,
-+	WMI_10X_ROAM_AP_PROFILE,
-+	WMI_10X_OFL_SCAN_ADD_AP_PROFILE,
-+	WMI_10X_OFL_SCAN_REMOVE_AP_PROFILE,
-+	WMI_10X_OFL_SCAN_PERIOD,
-+
-+	/* P2P specific commands */
-+	WMI_10X_P2P_DEV_SET_DEVICE_INFO,
-+	WMI_10X_P2P_DEV_SET_DISCOVERABILITY,
-+	WMI_10X_P2P_GO_SET_BEACON_IE,
-+	WMI_10X_P2P_GO_SET_PROBE_RESP_IE,
-+
-+	/* AP power save specific config */
-+	WMI_10X_AP_PS_PEER_PARAM_CMDID,
-+	WMI_10X_AP_PS_PEER_UAPSD_COEX_CMDID,
-+
-+	/* Rate-control specific commands */
-+	WMI_10X_PEER_RATE_RETRY_SCHED_CMDID,
-+
-+	/* WLAN Profiling commands. */
-+	WMI_10X_WLAN_PROFILE_TRIGGER_CMDID,
-+	WMI_10X_WLAN_PROFILE_SET_HIST_INTVL_CMDID,
-+	WMI_10X_WLAN_PROFILE_GET_PROFILE_DATA_CMDID,
-+	WMI_10X_WLAN_PROFILE_ENABLE_PROFILE_ID_CMDID,
-+	WMI_10X_WLAN_PROFILE_LIST_PROFILE_ID_CMDID,
-+
-+	/* Suspend resume command Ids */
-+	WMI_10X_PDEV_SUSPEND_CMDID,
-+	WMI_10X_PDEV_RESUME_CMDID,
-+
-+	/* Beacon filter commands */
-+	WMI_10X_ADD_BCN_FILTER_CMDID,
-+	WMI_10X_RMV_BCN_FILTER_CMDID,
-+
-+	/* WOW Specific WMI commands*/
-+	WMI_10X_WOW_ADD_WAKE_PATTERN_CMDID,
-+	WMI_10X_WOW_DEL_WAKE_PATTERN_CMDID,
-+	WMI_10X_WOW_ENABLE_DISABLE_WAKE_EVENT_CMDID,
-+	WMI_10X_WOW_ENABLE_CMDID,
-+	WMI_10X_WOW_HOSTWAKEUP_FROM_SLEEP_CMDID,
-+
-+	/* RTT measurement related cmd */
-+	WMI_10X_RTT_MEASREQ_CMDID,
-+	WMI_10X_RTT_TSF_CMDID,
-+
-+	/* transmit beacon by value */
-+	WMI_10X_PDEV_SEND_BCN_CMDID,
-+
-+	/* F/W stats */
-+	WMI_10X_VDEV_SPECTRAL_SCAN_CONFIGURE_CMDID,
-+	WMI_10X_VDEV_SPECTRAL_SCAN_ENABLE_CMDID,
-+	WMI_10X_REQUEST_STATS_CMDID,
-+
-+	/* GPIO Configuration */
-+	WMI_10X_GPIO_CONFIG_CMDID,
-+	WMI_10X_GPIO_OUTPUT_CMDID,
-+
-+	WMI_10X_PDEV_UTF_CMDID = WMI_10X_END_CMDID - 1,
-+};
-+
-+enum wmi_10x_event_id {
-+	WMI_10X_SERVICE_READY_EVENTID = 0x8000,
-+	WMI_10X_READY_EVENTID,
-+	WMI_10X_START_EVENTID = 0x9000,
-+	WMI_10X_END_EVENTID = 0x9FFF,
-+
-+	/* Scan specific events */
-+	WMI_10X_SCAN_EVENTID = WMI_10X_START_EVENTID,
-+	WMI_10X_ECHO_EVENTID,
-+	WMI_10X_DEBUG_MESG_EVENTID,
-+	WMI_10X_UPDATE_STATS_EVENTID,
-+
-+	/* Instantaneous RSSI event */
-+	WMI_10X_INST_RSSI_STATS_EVENTID,
-+
-+	/* VDEV specific events */
-+	WMI_10X_VDEV_START_RESP_EVENTID,
-+	WMI_10X_VDEV_STANDBY_REQ_EVENTID,
-+	WMI_10X_VDEV_RESUME_REQ_EVENTID,
-+	WMI_10X_VDEV_STOPPED_EVENTID,
-+
-+	/* peer  specific events */
-+	WMI_10X_PEER_STA_KICKOUT_EVENTID,
-+
-+	/* beacon/mgmt specific events */
-+	WMI_10X_HOST_SWBA_EVENTID,
-+	WMI_10X_TBTTOFFSET_UPDATE_EVENTID,
-+	WMI_10X_MGMT_RX_EVENTID,
-+
-+	/* Channel stats event */
-+	WMI_10X_CHAN_INFO_EVENTID,
-+
-+	/* PHY Error specific WMI event */
-+	WMI_10X_PHYERR_EVENTID,
-+
-+	/* Roam event to trigger roaming on host */
-+	WMI_10X_ROAM_EVENTID,
-+
-+	/* matching AP found from list of profiles */
-+	WMI_10X_PROFILE_MATCH,
-+
-+	/* debug print message used for tracing FW code while debugging */
-+	WMI_10X_DEBUG_PRINT_EVENTID,
-+	/* VI spoecific event */
-+	WMI_10X_PDEV_QVIT_EVENTID,
-+	/* FW code profile data in response to profile request */
-+	WMI_10X_WLAN_PROFILE_DATA_EVENTID,
-+
-+	/*RTT related event ID*/
-+	WMI_10X_RTT_MEASUREMENT_REPORT_EVENTID,
-+	WMI_10X_TSF_MEASUREMENT_REPORT_EVENTID,
-+	WMI_10X_RTT_ERROR_REPORT_EVENTID,
-+
-+	WMI_10X_WOW_WAKEUP_HOST_EVENTID,
-+	WMI_10X_DCS_INTERFERENCE_EVENTID,
-+
-+	/* TPC config for the current operating channel */
-+	WMI_10X_PDEV_TPC_CONFIG_EVENTID,
-+
-+	WMI_10X_GPIO_INPUT_EVENTID,
-+	WMI_10X_PDEV_UTF_EVENTID = WMI_10X_END_EVENTID-1,
-+};
-+
- enum wmi_phy_mode {
- 	MODE_11A        = 0,   /* 11a Mode */
- 	MODE_11G        = 1,   /* 11b/g Mode */
+ #endif /* _WMI_H_ */
 -- 
 1.7.10
 
