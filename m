@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VOlYd-0002Rf-OT
- for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:39:00 +0000
+ id 1VOlYg-0002Rm-1N
+ for ath10k@lists.infradead.org; Wed, 25 Sep 2013 09:39:01 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 08/13] ath10k: bring back the WMI path for mgmt frames
-Date: Wed, 25 Sep 2013 11:38:06 +0200
-Message-ID: <1380101891-18312-9-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 10/13] ath10k: add TARGET values for 10.x firmware
+Date: Wed, 25 Sep 2013 11:38:08 +0200
+Message-ID: <1380101891-18312-11-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,204 +25,157 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-This is still used by the 10.X firmware.
+Introduce all TARGET specific values for 10.x firmware.
+Some of them are common for both firmwares we will support,
+but to avoid confusion, define everything with prefix 10X_.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |    5 ++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +--
- drivers/net/wireless/ath/ath10k/mac.c    |   27 ++++++++++------
- drivers/net/wireless/ath/ath10k/wmi.c    |   49 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
- 5 files changed, 73 insertions(+), 13 deletions(-)
+ drivers/net/wireless/ath/ath10k/hw.h  |   31 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c |   58 ++++++++++++++++-----------------
+ 2 files changed, 60 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 0c9e6f3..377560d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -49,9 +49,9 @@ struct ath10k_skb_cb {
- 	dma_addr_t paddr;
- 	bool is_mapped;
- 	bool is_aborted;
-+	u8 vdev_id;
- 
- 	struct {
--		u8 vdev_id;
- 		u8 tid;
- 		bool is_offchan;
- 
-@@ -284,6 +284,9 @@ enum ath10k_fw_features {
- 	/* firmware from 10X branch */
- 	ATH10K_FW_FEATURE_10X = 1,
- 
-+	/* firmware support tx frame management over WMI, otherwise it's HTT */
-+	ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX = 2,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 1b3cf01..6cc3453 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -53,6 +53,7 @@ enum ath10k_mcast2ucast_mode {
+ 	ATH10K_MCAST2UCAST_ENABLED = 1,
  };
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 3b93c6a..d9335e9 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -308,7 +308,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	struct sk_buff *txdesc = NULL;
- 	struct htt_cmd *cmd;
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
--	u8 vdev_id = skb_cb->htt.vdev_id;
-+	u8 vdev_id = skb_cb->vdev_id;
- 	int len = 0;
- 	int msdu_id = -1;
- 	int res;
-@@ -384,7 +384,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
- 	struct sk_buff *txdesc = NULL;
- 	bool use_frags;
--	u8 vdev_id = ATH10K_SKB_CB(msdu)->htt.vdev_id;
-+	u8 vdev_id = ATH10K_SKB_CB(msdu)->vdev_id;
- 	u8 tid;
- 	int prefetch_len, desc_len;
- 	int msdu_id = -1;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 99a9bad..18fae5e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1489,7 +1489,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar, struct sk_buff *skb)
- static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
--	int ret;
-+	int ret = 0;
  
- 	if (ar->htt.target_version_major >= 3) {
- 		/* Since HTT 3.0 there is no separate mgmt tx command */
-@@ -1497,16 +1497,23 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
- 		goto exit;
- 	}
++/* Target specific defines for MAIN firmware */
+ #define TARGET_NUM_VDEVS			8
+ #define TARGET_NUM_PEER_AST			2
+ #define TARGET_NUM_WDS_ENTRIES			32
+@@ -83,6 +84,36 @@ enum ath10k_mcast2ucast_mode {
+ #define TARGET_NUM_MSDU_DESC			(1024 + 400)
+ #define TARGET_MAX_FRAG_ENTRIES			0
  
--	if (ieee80211_is_mgmt(hdr->frame_control))
--		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--	else if (ieee80211_is_nullfunc(hdr->frame_control))
-+	if (ieee80211_is_mgmt(hdr->frame_control)) {
-+		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
-+			     ar->fw_features))
-+			ret = ath10k_wmi_mgmt_tx(ar, skb);
-+		else
-+			ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
-+	} else if (!test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
-+			     ar->fw_features) &&
-+		   ieee80211_is_nullfunc(hdr->frame_control)) {
- 		/* FW does not report tx status properly for NullFunc frames
- 		 * unless they are sent through mgmt tx path. mac80211 sends
--		 * those frames when it detects link/beacon loss and depends on
--		 * the tx status to be correct. */
-+		 * those frames when it detects link/beacon loss and depends
-+		 * on the tx status to be correct. */
- 		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--	else
-+	} else {
- 		ret = ath10k_htt_tx(&ar->htt, skb);
-+	}
++/* Target specific defines for 10.X firmware */
++#define TARGET_10X_NUM_VDEVS			16
++#define TARGET_10X_NUM_PEER_AST			2
++#define TARGET_10X_NUM_WDS_ENTRIES		32
++#define TARGET_10X_DMA_BURST_SIZE		0
++#define TARGET_10X_MAC_AGGR_DELIM		0
++#define TARGET_10X_AST_SKID_LIMIT		16
++#define TARGET_10X_NUM_PEERS			(128 + (TARGET_10X_NUM_VDEVS))
++#define TARGET_10X_NUM_OFFLOAD_PEERS		0
++#define TARGET_10X_NUM_OFFLOAD_REORDER_BUFS	0
++#define TARGET_10X_NUM_PEER_KEYS		2
++#define TARGET_10X_NUM_TIDS			256
++#define TARGET_10X_TX_CHAIN_MASK		(BIT(0) | BIT(1) | BIT(2))
++#define TARGET_10X_RX_CHAIN_MASK		(BIT(0) | BIT(1) | BIT(2))
++#define TARGET_10X_RX_TIMEOUT_LO_PRI		100
++#define TARGET_10X_RX_TIMEOUT_HI_PRI		40
++#define TARGET_10X_RX_DECAP_MODE		ATH10K_HW_TXRX_ETHERNET
++#define TARGET_10X_SCAN_MAX_PENDING_REQS	4
++#define TARGET_10X_BMISS_OFFLOAD_MAX_VDEV	2
++#define TARGET_10X_ROAM_OFFLOAD_MAX_VDEV	2
++#define TARGET_10X_ROAM_OFFLOAD_MAX_AP_PROFILES	8
++#define TARGET_10X_GTK_OFFLOAD_MAX_VDEV		3
++#define TARGET_10X_NUM_MCAST_GROUPS		0
++#define TARGET_10X_NUM_MCAST_TABLE_ELEMS	0
++#define TARGET_10X_MCAST2UCAST_MODE		ATH10K_MCAST2UCAST_DISABLED
++#define TARGET_10X_TX_DBG_LOG_SIZE		1024
++#define TARGET_10X_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK 1
++#define TARGET_10X_VOW_CONFIG			0
++#define TARGET_10X_NUM_MSDU_DESC		(1024 + 400)
++#define TARGET_10X_MAX_FRAG_ENTRIES		0
  
- exit:
- 	if (ret) {
-@@ -1557,7 +1564,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 
- 		hdr = (struct ieee80211_hdr *)skb->data;
- 		peer_addr = ieee80211_get_DA(hdr);
--		vdev_id = ATH10K_SKB_CB(skb)->htt.vdev_id;
-+		vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
- 
- 		spin_lock_bh(&ar->data_lock);
- 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
-@@ -1757,14 +1764,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 		ath10k_tx_h_seq_no(skb);
- 	}
- 
-+	ATH10K_SKB_CB(skb)->vdev_id = vdev_id;
- 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
--	ATH10K_SKB_CB(skb)->htt.vdev_id = vdev_id;
- 	ATH10K_SKB_CB(skb)->htt.tid = tid;
- 
- 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
- 		spin_lock_bh(&ar->data_lock);
- 		ATH10K_SKB_CB(skb)->htt.is_offchan = true;
--		ATH10K_SKB_CB(skb)->htt.vdev_id = ar->scan.vdev_id;
-+		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
- 		spin_unlock_bh(&ar->data_lock);
- 
- 		ath10k_dbg(ATH10K_DBG_MAC, "queued offchannel skb %p\n", skb);
+ /* Number of Copy Engines supported */
+ #define CE_COUNT 8
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 3b1ae88..4992ad1 100644
+index f88a1d3..f0e1ea9 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -418,6 +418,55 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
- 	return ret;
- }
+@@ -1458,9 +1458,9 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 				 * peers, 1 extra for self peer on target */
+ 				/* this needs to be tied, host and target
+ 				 * can get out of sync */
+-				num_units = TARGET_NUM_PEERS + 1;
++				num_units = TARGET_10X_NUM_PEERS + 1;
+ 			if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS)
+-				num_units = TARGET_NUM_VDEVS + 1;
++				num_units = TARGET_10X_NUM_VDEVS + 1;
+ 		}
  
-+int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	int ret = 0;
-+	struct wmi_mgmt_tx_cmd *cmd;
-+	struct ieee80211_hdr *hdr;
-+	struct sk_buff *wmi_skb;
-+	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-+	int len;
-+	u16 fc;
-+
-+	hdr = (struct ieee80211_hdr *)skb->data;
-+	fc = le16_to_cpu(hdr->frame_control);
-+
-+	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
-+		return -EINVAL;
-+
-+	len = sizeof(cmd->hdr) + skb->len;
-+	len = round_up(len, 4);
-+
-+	wmi_skb = ath10k_wmi_alloc_skb(len);
-+	if (!wmi_skb)
-+		return -ENOMEM;
-+
-+	cmd = (struct wmi_mgmt_tx_cmd *)wmi_skb->data;
-+
-+	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(skb)->vdev_id);
-+	cmd->hdr.tx_rate = 0;
-+	cmd->hdr.tx_power = 0;
-+	cmd->hdr.buf_len = __cpu_to_le32((u32)(skb->len));
-+
-+	memcpy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr), ETH_ALEN);
-+	memcpy(cmd->buf, skb->data, skb->len);
-+
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
-+		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
-+		   fc & IEEE80211_FCTL_STYPE);
-+
-+	/* Send the management frame buffer to the target */
-+	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->wmi_mgmt_tx_cmdid);
-+	if (ret)
-+		return ret;
-+
-+	/* TODO: report tx status to mac80211 - temporary just ACK */
-+	info->flags |= IEEE80211_TX_STAT_ACK;
-+	ieee80211_tx_status_irqsafe(ar->hw, skb);
-+
-+	return ret;
-+}
-+
- static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_scan_event *event = (struct wmi_scan_event *)skb->data;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 3825937..8c67fb4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3483,5 +3483,6 @@ int ath10k_wmi_pdev_set_wmm_params(struct ath10k *ar,
- int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id);
- int ath10k_wmi_force_fw_hang(struct ath10k *ar,
- 			     enum wmi_force_fw_hang_type type, u32 delay_ms);
-+int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb);
+ 		ath10k_dbg(ATH10K_DBG_WMI,
+@@ -2027,48 +2027,48 @@ int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 	u32 len, val;
+ 	int i;
  
- #endif /* _WMI_H_ */
+-	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
+-	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
+-	config.num_peer_keys = __cpu_to_le32(TARGET_NUM_PEER_KEYS);
+-	config.num_tids = __cpu_to_le32(TARGET_NUM_TIDS);
+-	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
+-	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
+-	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
+-	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+-	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+-	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+-	config.rx_timeout_pri_bk = __cpu_to_le32(TARGET_RX_TIMEOUT_HI_PRI);
+-	config.rx_decap_mode = __cpu_to_le32(TARGET_RX_DECAP_MODE);
++	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
++	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
++	config.num_peer_keys = __cpu_to_le32(TARGET_10X_NUM_PEER_KEYS);
++	config.num_tids = __cpu_to_le32(TARGET_10X_NUM_TIDS);
++	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
++	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
++	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
++	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
++	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
++	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
++	config.rx_timeout_pri_bk = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_HI_PRI);
++	config.rx_decap_mode = __cpu_to_le32(TARGET_10X_RX_DECAP_MODE);
+ 
+ 	config.scan_max_pending_reqs =
+-		__cpu_to_le32(TARGET_SCAN_MAX_PENDING_REQS);
++		__cpu_to_le32(TARGET_10X_SCAN_MAX_PENDING_REQS);
+ 
+ 	config.bmiss_offload_max_vdev =
+-		__cpu_to_le32(TARGET_BMISS_OFFLOAD_MAX_VDEV);
++		__cpu_to_le32(TARGET_10X_BMISS_OFFLOAD_MAX_VDEV);
+ 
+ 	config.roam_offload_max_vdev =
+-		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_VDEV);
++		__cpu_to_le32(TARGET_10X_ROAM_OFFLOAD_MAX_VDEV);
+ 
+ 	config.roam_offload_max_ap_profiles =
+-		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_AP_PROFILES);
++		__cpu_to_le32(TARGET_10X_ROAM_OFFLOAD_MAX_AP_PROFILES);
+ 
+-	config.num_mcast_groups = __cpu_to_le32(TARGET_NUM_MCAST_GROUPS);
++	config.num_mcast_groups = __cpu_to_le32(TARGET_10X_NUM_MCAST_GROUPS);
+ 	config.num_mcast_table_elems =
+-		__cpu_to_le32(TARGET_NUM_MCAST_TABLE_ELEMS);
++		__cpu_to_le32(TARGET_10X_NUM_MCAST_TABLE_ELEMS);
+ 
+-	config.mcast2ucast_mode = __cpu_to_le32(TARGET_MCAST2UCAST_MODE);
+-	config.tx_dbg_log_size = __cpu_to_le32(TARGET_TX_DBG_LOG_SIZE);
+-	config.num_wds_entries = __cpu_to_le32(TARGET_NUM_WDS_ENTRIES);
+-	config.dma_burst_size = __cpu_to_le32(TARGET_DMA_BURST_SIZE);
+-	config.mac_aggr_delim = __cpu_to_le32(TARGET_MAC_AGGR_DELIM);
++	config.mcast2ucast_mode = __cpu_to_le32(TARGET_10X_MCAST2UCAST_MODE);
++	config.tx_dbg_log_size = __cpu_to_le32(TARGET_10X_TX_DBG_LOG_SIZE);
++	config.num_wds_entries = __cpu_to_le32(TARGET_10X_NUM_WDS_ENTRIES);
++	config.dma_burst_size = __cpu_to_le32(TARGET_10X_DMA_BURST_SIZE);
++	config.mac_aggr_delim = __cpu_to_le32(TARGET_10X_MAC_AGGR_DELIM);
+ 
+-	val = TARGET_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK;
++	val = TARGET_10X_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK;
+ 	config.rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(val);
+ 
+-	config.vow_config = __cpu_to_le32(TARGET_VOW_CONFIG);
++	config.vow_config = __cpu_to_le32(TARGET_10X_VOW_CONFIG);
+ 
+-	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
+-	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
++	config.num_msdu_desc = __cpu_to_le32(TARGET_10X_NUM_MSDU_DESC);
++	config.max_frag_entries = __cpu_to_le32(TARGET_10X_MAX_FRAG_ENTRIES);
+ 
+ 	len = sizeof(*cmd) +
+ 	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
 -- 
 1.7.10
 
