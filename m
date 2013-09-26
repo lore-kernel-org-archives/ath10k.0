@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPDnM-0002bI-V8
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 15:48:04 +0000
+ id 1VPDnR-0002bI-4C
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 15:48:06 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v3 04/13] ath10k: implement WMI events handling frame for both
- firmwares
-Date: Thu, 26 Sep 2013 17:47:08 +0200
-Message-ID: <1380210437-4391-5-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v3 06/13] ath10k: drop the fw versioning sanity check
+Date: Thu, 26 Sep 2013 17:47:10 +0200
+Message-ID: <1380210437-4391-7-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380210437-4391-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380210437-4391-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -26,166 +25,81 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-We still use the same function handlers for both main and 10.X
-paths. Next step is to track down and make the split needed.
+It was corrupted and leading to compilation warning
+core.c: In function 'ath10k_check_fw_version':
+core.c:79: warning: comparison is always true due to limited range of data type
 
+Since we are going to support new FW track in the driver,
+the sanity check for fw version number would be an overkill
+then. This is just for information purposes anyway.
+
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |  131 ++++++++++++++++++++++++++++++++-
- 1 file changed, 130 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c |   25 -------------------------
+ drivers/net/wireless/ath/ath10k/hw.h   |    6 ------
+ 2 files changed, 31 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 8386050..ef80291 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1212,6 +1212,24 @@ static void ath10k_wmi_event_vdev_install_key_complete(struct ath10k *ar,
- 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_INSTALL_KEY_COMPLETE_EVENTID\n");
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 76906d5..31860a6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -59,27 +59,6 @@ static void ath10k_send_suspend_complete(struct ath10k *ar)
+ 	wake_up(&ar->event_queue);
  }
  
-+static void ath10k_wmi_event_inst_rssi_stats(struct ath10k *ar,
-+					     struct sk_buff *skb)
-+{
-+	ath10k_dbg(ATH10K_DBG_WMI, "WMI_INST_RSSI_STATS_EVENTID\n");
-+}
-+
-+static void ath10k_wmi_event_vdev_standby_req(struct ath10k *ar,
-+					      struct sk_buff *skb)
-+{
-+	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_STANDBY_REQ_EVENTID\n");
-+}
-+
-+static void ath10k_wmi_event_vdev_resume_req(struct ath10k *ar,
-+					     struct sk_buff *skb)
-+{
-+	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_RESUME_REQ_EVENTID\n");
-+}
-+
- static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 					      struct sk_buff *skb)
+-static int ath10k_check_fw_version(struct ath10k *ar)
+-{
+-	char version[32];
+-
+-	if (ar->fw_version_major >= SUPPORTED_FW_MAJOR &&
+-	    ar->fw_version_minor >= SUPPORTED_FW_MINOR &&
+-	    ar->fw_version_release >= SUPPORTED_FW_RELEASE &&
+-	    ar->fw_version_build >= SUPPORTED_FW_BUILD)
+-		return 0;
+-
+-	snprintf(version, sizeof(version), "%u.%u.%u.%u",
+-		 SUPPORTED_FW_MAJOR, SUPPORTED_FW_MINOR,
+-		 SUPPORTED_FW_RELEASE, SUPPORTED_FW_BUILD);
+-
+-	ath10k_warn("WARNING: Firmware version %s is not officially supported.\n",
+-		    ar->hw->wiphy->fw_version);
+-	ath10k_warn("Please upgrade to version %s (or newer)\n", version);
+-
+-	return 0;
+-}
+-
+ static int ath10k_init_connect_htc(struct ath10k *ar)
  {
-@@ -1422,10 +1440,121 @@ static void ath10k_wmi_main_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 	dev_kfree_skb(skb);
- }
+ 	int status;
+@@ -616,10 +595,6 @@ int ath10k_core_start(struct ath10k *ar)
  
-+static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	struct wmi_cmd_hdr *cmd_hdr;
-+	enum wmi_10x_event_id id;
-+	u16 len;
-+
-+	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
-+	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-+
-+	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-+		return;
-+
-+	len = skb->len;
-+
-+	trace_ath10k_wmi_event(id, skb->data, skb->len);
-+
-+	switch (id) {
-+	case WMI_10X_MGMT_RX_EVENTID:
-+		ath10k_wmi_event_mgmt_rx(ar, skb);
-+		/* mgmt_rx() owns the skb now! */
-+		return;
-+	case WMI_10X_SCAN_EVENTID:
-+		ath10k_wmi_event_scan(ar, skb);
-+		break;
-+	case WMI_10X_CHAN_INFO_EVENTID:
-+		ath10k_wmi_event_chan_info(ar, skb);
-+		break;
-+	case WMI_10X_ECHO_EVENTID:
-+		ath10k_wmi_event_echo(ar, skb);
-+		break;
-+	case WMI_10X_DEBUG_MESG_EVENTID:
-+		ath10k_wmi_event_debug_mesg(ar, skb);
-+		break;
-+	case WMI_10X_UPDATE_STATS_EVENTID:
-+		ath10k_wmi_event_update_stats(ar, skb);
-+		break;
-+	case WMI_10X_VDEV_START_RESP_EVENTID:
-+		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		break;
-+	case WMI_10X_VDEV_STOPPED_EVENTID:
-+		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		break;
-+	case WMI_10X_PEER_STA_KICKOUT_EVENTID:
-+		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-+		break;
-+	case WMI_10X_HOST_SWBA_EVENTID:
-+		ath10k_wmi_event_host_swba(ar, skb);
-+		break;
-+	case WMI_10X_TBTTOFFSET_UPDATE_EVENTID:
-+		ath10k_wmi_event_tbttoffset_update(ar, skb);
-+		break;
-+	case WMI_10X_PHYERR_EVENTID:
-+		ath10k_wmi_event_phyerr(ar, skb);
-+		break;
-+	case WMI_10X_ROAM_EVENTID:
-+		ath10k_wmi_event_roam(ar, skb);
-+		break;
-+	case WMI_10X_PROFILE_MATCH:
-+		ath10k_wmi_event_profile_match(ar, skb);
-+		break;
-+	case WMI_10X_DEBUG_PRINT_EVENTID:
-+		ath10k_wmi_event_debug_print(ar, skb);
-+		break;
-+	case WMI_10X_PDEV_QVIT_EVENTID:
-+		ath10k_wmi_event_pdev_qvit(ar, skb);
-+		break;
-+	case WMI_10X_WLAN_PROFILE_DATA_EVENTID:
-+		ath10k_wmi_event_wlan_profile_data(ar, skb);
-+		break;
-+	case WMI_10X_RTT_MEASUREMENT_REPORT_EVENTID:
-+		ath10k_wmi_event_rtt_measurement_report(ar, skb);
-+		break;
-+	case WMI_10X_TSF_MEASUREMENT_REPORT_EVENTID:
-+		ath10k_wmi_event_tsf_measurement_report(ar, skb);
-+		break;
-+	case WMI_10X_RTT_ERROR_REPORT_EVENTID:
-+		ath10k_wmi_event_rtt_error_report(ar, skb);
-+		break;
-+	case WMI_10X_WOW_WAKEUP_HOST_EVENTID:
-+		ath10k_wmi_event_wow_wakeup_host(ar, skb);
-+		break;
-+	case WMI_10X_DCS_INTERFERENCE_EVENTID:
-+		ath10k_wmi_event_dcs_interference(ar, skb);
-+		break;
-+	case WMI_10X_PDEV_TPC_CONFIG_EVENTID:
-+		ath10k_wmi_event_pdev_tpc_config(ar, skb);
-+		break;
-+	case WMI_10X_INST_RSSI_STATS_EVENTID:
-+		ath10k_wmi_event_inst_rssi_stats(ar, skb);
-+		break;
-+	case WMI_10X_VDEV_STANDBY_REQ_EVENTID:
-+		ath10k_wmi_event_vdev_standby_req(ar, skb);
-+		break;
-+	case WMI_10X_VDEV_RESUME_REQ_EVENTID:
-+		ath10k_wmi_event_vdev_resume_req(ar, skb);
-+		break;
-+	case WMI_10X_SERVICE_READY_EVENTID:
-+		ath10k_wmi_service_ready_event_rx(ar, skb);
-+		break;
-+	case WMI_10X_READY_EVENTID:
-+		ath10k_wmi_ready_event_rx(ar, skb);
-+		break;
-+	default:
-+		ath10k_warn("Unknown eventid: %d\n", id);
-+		break;
-+	}
-+
-+	dev_kfree_skb(skb);
-+}
-+
-+
- static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
--		ath10k_warn("Firmware 10.X is not yet supported\n");
-+		ath10k_wmi_10x_process_rx(ar, skb);
- 	else
- 		ath10k_wmi_main_process_rx(ar, skb);
- }
+ 	ath10k_info("firmware %s booted\n", ar->hw->wiphy->fw_version);
+ 
+-	status = ath10k_check_fw_version(ar);
+-	if (status)
+-		goto err_disconnect_htc;
+-
+ 	status = ath10k_wmi_cmd_init(ar);
+ 	if (status) {
+ 		ath10k_err("could not send WMI init command (%d)\n", status);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 8c1be768..66e721a 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -20,12 +20,6 @@
+ 
+ #include "targaddrs.h"
+ 
+-/* Supported FW version */
+-#define SUPPORTED_FW_MAJOR	1
+-#define SUPPORTED_FW_MINOR	0
+-#define SUPPORTED_FW_RELEASE	0
+-#define SUPPORTED_FW_BUILD	636
+-
+ /* QCA988X 1.0 definitions (unsupported) */
+ #define QCA988X_HW_1_0_CHIP_ID_REV	0x0
+ 
 -- 
 1.7.10
 
