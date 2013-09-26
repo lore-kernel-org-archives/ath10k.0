@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPDnW-0002bL-LZ
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 15:48:15 +0000
+ id 1VPDnX-0002bK-5R
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 15:48:18 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v3 09/13] ath10k: split wmi_cmd_init path
-Date: Thu, 26 Sep 2013 17:47:13 +0200
-Message-ID: <1380210437-4391-10-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v3 11/13] ath10k: introduce dynamic vdev parameters
+Date: Thu, 26 Sep 2013 17:47:15 +0200
+Message-ID: <1380210437-4391-12-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380210437-4391-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380210437-4391-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,355 +25,558 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Due to API differences in initialization structures for
-main and 10.x firmwares we need to split the wmi_init_cmd
-and wmi_resource_config  structures.
+Both firmwares (main and 10.x) have different set of vdev
+parameters. To stay in sync with FW API, this patch introduces
+a dynamic registering method.
 
-This will be usefull also when setting the correct TARGET values,
-like: number of peers, vdevs, pdevs etc.
+ath10k_wmi_vdev_set_param() takes now indirect u32 value
+to identify the Vdev parameter it want's to set.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |  105 +++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |  195 +++++++++++++++++++++++++++++++++
- 2 files changed, 299 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.h |    1 +
+ drivers/net/wireless/ath/ath10k/mac.c  |   55 +++++-----
+ drivers/net/wireless/ath/ath10k/wmi.c  |  129 +++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h  |  172 +++++++++++++++++++++++++++++++-
+ 4 files changed, 332 insertions(+), 25 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 984db11..124e724 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -119,6 +119,7 @@ struct ath10k_wmi {
+ 	struct completion unified_ready;
+ 	wait_queue_head_t tx_credits_wq;
+ 	struct wmi_cmd_map *cmd;
++	struct wmi_vdev_param_map *vdev_param;
+ 
+ 	u32 num_mem_chunks;
+ 	struct ath10k_mem_chunk mem_chunks[ATH10K_MAX_MEM_REQS];
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f0bc707..b5ae01d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -334,25 +334,29 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 
+ static int  ath10k_mac_set_rts(struct ath10k_vif *arvif, u32 value)
+ {
++	struct ath10k *ar = arvif->ar;
++	u32 vdev_param;
++
+ 	if (value != 0xFFFFFFFF)
+ 		value = min_t(u32, arvif->ar->hw->wiphy->rts_threshold,
+ 			      ATH10K_RTS_MAX);
+ 
+-	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
+-					 WMI_VDEV_PARAM_RTS_THRESHOLD,
+-					 value);
++	vdev_param = ar->wmi.vdev_param->rts_threshold;
++	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param, value);
+ }
+ 
+ static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
+ {
++	struct ath10k *ar = arvif->ar;
++	u32 vdev_param;
++
+ 	if (value != 0xFFFFFFFF)
+ 		value = clamp_t(u32, arvif->ar->hw->wiphy->frag_threshold,
+ 				ATH10K_FRAGMT_THRESHOLD_MIN,
+ 				ATH10K_FRAGMT_THRESHOLD_MAX);
+ 
+-	return ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
+-					 WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
+-					 value);
++	vdev_param = ar->wmi.vdev_param->fragmentation_threshold;
++	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param, value);
+ }
+ 
+ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+@@ -674,6 +678,7 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
+ 				struct ieee80211_bss_conf *info,
+ 				const u8 self_peer[ETH_ALEN])
+ {
++	u32 vdev_param;
+ 	int ret = 0;
+ 
+ 	lockdep_assert_held(&arvif->ar->conf_mutex);
+@@ -707,8 +712,8 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
+ 		return;
+ 	}
+ 
+-	ret = ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id,
+-					WMI_VDEV_PARAM_ATIM_WINDOW,
++	vdev_param = arvif->ar->wmi.vdev_param->atim_window;
++	ret = ath10k_wmi_vdev_set_param(arvif->ar, arvif->vdev_id, vdev_param,
+ 					ATH10K_DEFAULT_ATIM);
+ 	if (ret)
+ 		ath10k_warn("Failed to set IBSS ATIM for VDEV:%d ret:%d\n",
+@@ -1430,6 +1435,7 @@ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	struct ath10k *ar = arvif->ar;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
++	u32 vdev_param;
+ 	int ret;
+ 
+ 	if (!ieee80211_has_protected(hdr->frame_control))
+@@ -1448,8 +1454,8 @@ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d keyidx %d\n",
+ 		   arvif->vdev_id, key->keyidx);
+ 
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-					WMI_VDEV_PARAM_DEF_KEYID,
++	vdev_param = ar->wmi.vdev_param->def_keyid;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 					key->keyidx);
+ 	if (ret) {
+ 		ath10k_warn("could not update wep keyidx (%d)\n", ret);
+@@ -1983,6 +1989,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	int ret = 0;
+ 	u32 value;
+ 	int bit;
++	u32 vdev_param;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -2044,13 +2051,14 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto exit;
+ 	}
+ 
+-	ret = ath10k_wmi_vdev_set_param(ar, 0, WMI_VDEV_PARAM_DEF_KEYID,
++	vdev_param = ar->wmi.vdev_param->def_keyid;
++	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
+ 					arvif->def_wep_key_index);
+ 	if (ret)
+ 		ath10k_warn("Failed to set default keyid: %d\n", ret);
+ 
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-					WMI_VDEV_PARAM_TX_ENCAP_TYPE,
++	vdev_param = ar->wmi.vdev_param->tx_encap_type;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 					ATH10K_HW_TXRX_NATIVE_WIFI);
+ 	if (ret)
+ 		ath10k_warn("Failed to set TX encap: %d\n", ret);
+@@ -2201,6 +2209,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	struct ath10k *ar = hw->priv;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	int ret = 0;
++	u32 vdev_param;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -2209,8 +2218,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 
+ 	if (changed & BSS_CHANGED_BEACON_INT) {
+ 		arvif->beacon_interval = info->beacon_int;
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-						WMI_VDEV_PARAM_BEACON_INTERVAL,
++		vdev_param = ar->wmi.vdev_param->beacon_interval;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						arvif->beacon_interval);
+ 		ath10k_dbg(ATH10K_DBG_MAC,
+ 			   "mac vdev %d beacon_interval %d\n",
+@@ -2241,8 +2250,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			   "mac vdev %d dtim_period %d\n",
+ 			   arvif->vdev_id, arvif->dtim_period);
+ 
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-						WMI_VDEV_PARAM_DTIM_PERIOD,
++		vdev_param = ar->wmi.vdev_param->dtim_period;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						arvif->dtim_period);
+ 		if (ret)
+ 			ath10k_warn("Failed to set dtim period for VDEV: %d\n",
+@@ -2309,8 +2318,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d cts_prot %d\n",
+ 			   arvif->vdev_id, cts_prot);
+ 
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-						WMI_VDEV_PARAM_ENABLE_RTSCTS,
++		vdev_param = ar->wmi.vdev_param->enable_rtscts;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						cts_prot);
+ 		if (ret)
+ 			ath10k_warn("Failed to set CTS prot for VDEV: %d\n",
+@@ -2328,8 +2337,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d slot_time %d\n",
+ 			   arvif->vdev_id, slottime);
+ 
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-						WMI_VDEV_PARAM_SLOT_TIME,
++		vdev_param = ar->wmi.vdev_param->slot_time;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						slottime);
+ 		if (ret)
+ 			ath10k_warn("Failed to set erp slot for VDEV: %d\n",
+@@ -2347,8 +2356,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			   "mac vdev %d preamble %dn",
+ 			   arvif->vdev_id, preamble);
+ 
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+-						WMI_VDEV_PARAM_PREAMBLE,
++		vdev_param = ar->wmi.vdev_param->preamble;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						preamble);
+ 		if (ret)
+ 			ath10k_warn("Failed to set preamble for VDEV: %d\n",
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 8c22367..71ad1b8 100644
+index 637f8d0..89a8cb8 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1908,7 +1908,7 @@ int ath10k_wmi_pdev_set_param(struct ath10k *ar, enum wmi_pdev_param id,
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->pdev_set_param_cmdid);
- }
+@@ -265,6 +265,124 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
+ 	.gpio_output_cmdid = WMI_10X_GPIO_OUTPUT_CMDID,
+ };
  
--int ath10k_wmi_cmd_init(struct ath10k *ar)
-+static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
++/* MAIN WMI VDEV param map */
++static struct wmi_vdev_param_map wmi_vdev_param_map = {
++	.rts_threshold = WMI_VDEV_PARAM_RTS_THRESHOLD,
++	.fragmentation_threshold = WMI_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
++	.beacon_interval = WMI_VDEV_PARAM_BEACON_INTERVAL,
++	.listen_interval = WMI_VDEV_PARAM_LISTEN_INTERVAL,
++	.multicast_rate = WMI_VDEV_PARAM_MULTICAST_RATE,
++	.mgmt_tx_rate = WMI_VDEV_PARAM_MGMT_TX_RATE,
++	.slot_time = WMI_VDEV_PARAM_SLOT_TIME,
++	.preamble = WMI_VDEV_PARAM_PREAMBLE,
++	.swba_time = WMI_VDEV_PARAM_SWBA_TIME,
++	.wmi_vdev_stats_update_period = WMI_VDEV_STATS_UPDATE_PERIOD,
++	.wmi_vdev_pwrsave_ageout_time = WMI_VDEV_PWRSAVE_AGEOUT_TIME,
++	.wmi_vdev_host_swba_interval = WMI_VDEV_HOST_SWBA_INTERVAL,
++	.dtim_period = WMI_VDEV_PARAM_DTIM_PERIOD,
++	.wmi_vdev_oc_scheduler_air_time_limit =
++					WMI_VDEV_OC_SCHEDULER_AIR_TIME_LIMIT,
++	.wds = WMI_VDEV_PARAM_WDS,
++	.atim_window = WMI_VDEV_PARAM_ATIM_WINDOW,
++	.bmiss_count_max = WMI_VDEV_PARAM_BMISS_COUNT_MAX,
++	.bmiss_first_bcnt = WMI_VDEV_PARAM_BMISS_FIRST_BCNT,
++	.bmiss_final_bcnt = WMI_VDEV_PARAM_BMISS_FINAL_BCNT,
++	.feature_wmm = WMI_VDEV_PARAM_FEATURE_WMM,
++	.chwidth = WMI_VDEV_PARAM_CHWIDTH,
++	.chextoffset = WMI_VDEV_PARAM_CHEXTOFFSET,
++	.disable_htprotection =	WMI_VDEV_PARAM_DISABLE_HTPROTECTION,
++	.sta_quickkickout = WMI_VDEV_PARAM_STA_QUICKKICKOUT,
++	.mgmt_rate = WMI_VDEV_PARAM_MGMT_RATE,
++	.protection_mode = WMI_VDEV_PARAM_PROTECTION_MODE,
++	.fixed_rate = WMI_VDEV_PARAM_FIXED_RATE,
++	.sgi = WMI_VDEV_PARAM_SGI,
++	.ldpc = WMI_VDEV_PARAM_LDPC,
++	.tx_stbc = WMI_VDEV_PARAM_TX_STBC,
++	.rx_stbc = WMI_VDEV_PARAM_RX_STBC,
++	.intra_bss_fwd = WMI_VDEV_PARAM_INTRA_BSS_FWD,
++	.def_keyid = WMI_VDEV_PARAM_DEF_KEYID,
++	.nss = WMI_VDEV_PARAM_NSS,
++	.bcast_data_rate = WMI_VDEV_PARAM_BCAST_DATA_RATE,
++	.mcast_data_rate = WMI_VDEV_PARAM_MCAST_DATA_RATE,
++	.mcast_indicate = WMI_VDEV_PARAM_MCAST_INDICATE,
++	.dhcp_indicate = WMI_VDEV_PARAM_DHCP_INDICATE,
++	.unknown_dest_indicate = WMI_VDEV_PARAM_UNKNOWN_DEST_INDICATE,
++	.ap_keepalive_min_idle_inactive_time_secs =
++			WMI_VDEV_PARAM_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS,
++	.ap_keepalive_max_idle_inactive_time_secs =
++			WMI_VDEV_PARAM_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS,
++	.ap_keepalive_max_unresponsive_time_secs =
++			WMI_VDEV_PARAM_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS,
++	.ap_enable_nawds = WMI_VDEV_PARAM_AP_ENABLE_NAWDS,
++	.mcast2ucast_set = WMI_VDEV_PARAM_UNSUPPORTED,
++	.enable_rtscts = WMI_VDEV_PARAM_ENABLE_RTSCTS,
++	.txbf = WMI_VDEV_PARAM_TXBF,
++	.packet_powersave = WMI_VDEV_PARAM_PACKET_POWERSAVE,
++	.drop_unencry = WMI_VDEV_PARAM_DROP_UNENCRY,
++	.tx_encap_type = WMI_VDEV_PARAM_TX_ENCAP_TYPE,
++	.ap_detect_out_of_sync_sleeping_sta_time_secs =
++					WMI_VDEV_PARAM_UNSUPPORTED,
++};
++
++/* 10.X WMI VDEV param map */
++static struct wmi_vdev_param_map wmi_10x_vdev_param_map = {
++	.rts_threshold = WMI_10X_VDEV_PARAM_RTS_THRESHOLD,
++	.fragmentation_threshold = WMI_10X_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
++	.beacon_interval = WMI_10X_VDEV_PARAM_BEACON_INTERVAL,
++	.listen_interval = WMI_10X_VDEV_PARAM_LISTEN_INTERVAL,
++	.multicast_rate = WMI_10X_VDEV_PARAM_MULTICAST_RATE,
++	.mgmt_tx_rate = WMI_10X_VDEV_PARAM_MGMT_TX_RATE,
++	.slot_time = WMI_10X_VDEV_PARAM_SLOT_TIME,
++	.preamble = WMI_10X_VDEV_PARAM_PREAMBLE,
++	.swba_time = WMI_10X_VDEV_PARAM_SWBA_TIME,
++	.wmi_vdev_stats_update_period = WMI_10X_VDEV_STATS_UPDATE_PERIOD,
++	.wmi_vdev_pwrsave_ageout_time = WMI_10X_VDEV_PWRSAVE_AGEOUT_TIME,
++	.wmi_vdev_host_swba_interval = WMI_10X_VDEV_HOST_SWBA_INTERVAL,
++	.dtim_period = WMI_10X_VDEV_PARAM_DTIM_PERIOD,
++	.wmi_vdev_oc_scheduler_air_time_limit =
++				WMI_10X_VDEV_OC_SCHEDULER_AIR_TIME_LIMIT,
++	.wds = WMI_10X_VDEV_PARAM_WDS,
++	.atim_window = WMI_10X_VDEV_PARAM_ATIM_WINDOW,
++	.bmiss_count_max = WMI_10X_VDEV_PARAM_BMISS_COUNT_MAX,
++	.bmiss_first_bcnt = WMI_VDEV_PARAM_UNSUPPORTED,
++	.bmiss_final_bcnt = WMI_VDEV_PARAM_UNSUPPORTED,
++	.feature_wmm = WMI_10X_VDEV_PARAM_FEATURE_WMM,
++	.chwidth = WMI_10X_VDEV_PARAM_CHWIDTH,
++	.chextoffset = WMI_10X_VDEV_PARAM_CHEXTOFFSET,
++	.disable_htprotection = WMI_10X_VDEV_PARAM_DISABLE_HTPROTECTION,
++	.sta_quickkickout = WMI_10X_VDEV_PARAM_STA_QUICKKICKOUT,
++	.mgmt_rate = WMI_10X_VDEV_PARAM_MGMT_RATE,
++	.protection_mode = WMI_10X_VDEV_PARAM_PROTECTION_MODE,
++	.fixed_rate = WMI_10X_VDEV_PARAM_FIXED_RATE,
++	.sgi = WMI_10X_VDEV_PARAM_SGI,
++	.ldpc = WMI_10X_VDEV_PARAM_LDPC,
++	.tx_stbc = WMI_10X_VDEV_PARAM_TX_STBC,
++	.rx_stbc = WMI_10X_VDEV_PARAM_RX_STBC,
++	.intra_bss_fwd = WMI_10X_VDEV_PARAM_INTRA_BSS_FWD,
++	.def_keyid = WMI_10X_VDEV_PARAM_DEF_KEYID,
++	.nss = WMI_10X_VDEV_PARAM_NSS,
++	.bcast_data_rate = WMI_10X_VDEV_PARAM_BCAST_DATA_RATE,
++	.mcast_data_rate = WMI_10X_VDEV_PARAM_MCAST_DATA_RATE,
++	.mcast_indicate = WMI_10X_VDEV_PARAM_MCAST_INDICATE,
++	.dhcp_indicate = WMI_10X_VDEV_PARAM_DHCP_INDICATE,
++	.unknown_dest_indicate = WMI_10X_VDEV_PARAM_UNKNOWN_DEST_INDICATE,
++	.ap_keepalive_min_idle_inactive_time_secs =
++		WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS,
++	.ap_keepalive_max_idle_inactive_time_secs =
++		WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS,
++	.ap_keepalive_max_unresponsive_time_secs =
++		WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS,
++	.ap_enable_nawds = WMI_10X_VDEV_PARAM_AP_ENABLE_NAWDS,
++	.mcast2ucast_set = WMI_10X_VDEV_PARAM_MCAST2UCAST_SET,
++	.enable_rtscts = WMI_10X_VDEV_PARAM_ENABLE_RTSCTS,
++	.txbf = WMI_VDEV_PARAM_UNSUPPORTED,
++	.packet_powersave = WMI_VDEV_PARAM_UNSUPPORTED,
++	.drop_unencry = WMI_VDEV_PARAM_UNSUPPORTED,
++	.tx_encap_type = WMI_VDEV_PARAM_UNSUPPORTED,
++	.ap_detect_out_of_sync_sleeping_sta_time_secs =
++		WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
++};
++
+ int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
  {
- 	struct wmi_init_cmd *cmd;
- 	struct sk_buff *buf;
-@@ -2007,6 +2007,109 @@ out:
- 	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->init_cmdid);
+ 	int ret;
+@@ -1751,9 +1869,11 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+ 		ath10k_warn("Firmware 10.X is not yet supported\n");
+ 		ar->wmi.cmd = &wmi_10x_cmd_map;
++		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
+ 		ret = -ENOTSUPP;
+ 	} else {
+ 		ar->wmi.cmd = &wmi_cmd_map;
++		ar->wmi.vdev_param = &wmi_vdev_param_map;
+ 		ret = 0;
+ 	}
+ 
+@@ -2516,11 +2636,18 @@ int ath10k_wmi_vdev_down(struct ath10k *ar, u32 vdev_id)
  }
  
-+static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
-+{
-+	struct wmi_init_cmd_10x *cmd;
-+	struct sk_buff *buf;
-+	struct wmi_resource_config_10x config = {};
-+	u32 len, val;
-+	int i;
-+
-+	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
-+	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
-+	config.num_peer_keys = __cpu_to_le32(TARGET_NUM_PEER_KEYS);
-+	config.num_tids = __cpu_to_le32(TARGET_NUM_TIDS);
-+	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
-+	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
-+	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
-+	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-+	config.rx_timeout_pri_bk = __cpu_to_le32(TARGET_RX_TIMEOUT_HI_PRI);
-+	config.rx_decap_mode = __cpu_to_le32(TARGET_RX_DECAP_MODE);
-+
-+	config.scan_max_pending_reqs =
-+		__cpu_to_le32(TARGET_SCAN_MAX_PENDING_REQS);
-+
-+	config.bmiss_offload_max_vdev =
-+		__cpu_to_le32(TARGET_BMISS_OFFLOAD_MAX_VDEV);
-+
-+	config.roam_offload_max_vdev =
-+		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_VDEV);
-+
-+	config.roam_offload_max_ap_profiles =
-+		__cpu_to_le32(TARGET_ROAM_OFFLOAD_MAX_AP_PROFILES);
-+
-+	config.num_mcast_groups = __cpu_to_le32(TARGET_NUM_MCAST_GROUPS);
-+	config.num_mcast_table_elems =
-+		__cpu_to_le32(TARGET_NUM_MCAST_TABLE_ELEMS);
-+
-+	config.mcast2ucast_mode = __cpu_to_le32(TARGET_MCAST2UCAST_MODE);
-+	config.tx_dbg_log_size = __cpu_to_le32(TARGET_TX_DBG_LOG_SIZE);
-+	config.num_wds_entries = __cpu_to_le32(TARGET_NUM_WDS_ENTRIES);
-+	config.dma_burst_size = __cpu_to_le32(TARGET_DMA_BURST_SIZE);
-+	config.mac_aggr_delim = __cpu_to_le32(TARGET_MAC_AGGR_DELIM);
-+
-+	val = TARGET_RX_SKIP_DEFRAG_TIMEOUT_DUP_DETECTION_CHECK;
-+	config.rx_skip_defrag_timeout_dup_detection_check = __cpu_to_le32(val);
-+
-+	config.vow_config = __cpu_to_le32(TARGET_VOW_CONFIG);
-+
-+	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
-+	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
-+
-+	len = sizeof(*cmd) +
-+	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
-+
-+	buf = ath10k_wmi_alloc_skb(len);
-+	if (!buf)
-+		return -ENOMEM;
-+
-+	cmd = (struct wmi_init_cmd_10x *)buf->data;
-+
-+	if (ar->wmi.num_mem_chunks == 0) {
-+		cmd->num_host_mem_chunks = 0;
-+		goto out;
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
-+		   __cpu_to_le32(ar->wmi.num_mem_chunks));
-+
-+	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
-+
-+	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-+		cmd->host_mem_chunks[i].ptr =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
-+		cmd->host_mem_chunks[i].size =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].len);
-+		cmd->host_mem_chunks[i].req_id =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
-+
+ int ath10k_wmi_vdev_set_param(struct ath10k *ar, u32 vdev_id,
+-			      enum wmi_vdev_param param_id, u32 param_value)
++			      u32 param_id, u32 param_value)
+ {
+ 	struct wmi_vdev_set_param_cmd *cmd;
+ 	struct sk_buff *skb;
+ 
++	if (param_id == WMI_VDEV_PARAM_UNSUPPORTED) {
 +		ath10k_dbg(ATH10K_DBG_WMI,
-+			   "wmi chunk %d len %d requested, addr 0x%x\n",
-+			   i,
-+			   cmd->host_mem_chunks[i].size,
-+			   cmd->host_mem_chunks[i].ptr);
++			   "vdev param %d not supported by firmware\n",
++			    param_id);
++		return -EINVAL;
 +	}
-+out:
-+	memcpy(&cmd->resource_config, &config, sizeof(config));
 +
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi init 10x\n");
-+	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->init_cmdid);
-+}
-+
-+int ath10k_wmi_cmd_init(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
-+		ret = ath10k_wmi_10x_cmd_init(ar);
-+	else
-+		ret = ath10k_wmi_main_cmd_init(ar);
-+
-+	return ret;
-+}
-+
- static int ath10k_wmi_start_scan_calc_len(const struct wmi_start_scan_arg *arg)
- {
- 	int len;
+ 	skb = ath10k_wmi_alloc_skb(sizeof(*cmd));
+ 	if (!skb)
+ 		return -ENOMEM;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 1c515d6..5383f7e 100644
+index 5383f7e..1518586 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1377,6 +1377,189 @@ struct wmi_resource_config {
- 	__le32 max_frag_entries;
- } __packed;
+@@ -2695,6 +2695,61 @@ enum wmi_rate_preamble {
+ /* Value to disable fixed rate setting */
+ #define WMI_FIXED_RATE_NONE    (0xff)
  
-+struct wmi_resource_config_10x {
-+	/* number of virtual devices (VAPs) to support */
-+	__le32 num_vdevs;
++struct wmi_vdev_param_map {
++	u32 rts_threshold;
++	u32 fragmentation_threshold;
++	u32 beacon_interval;
++	u32 listen_interval;
++	u32 multicast_rate;
++	u32 mgmt_tx_rate;
++	u32 slot_time;
++	u32 preamble;
++	u32 swba_time;
++	u32 wmi_vdev_stats_update_period;
++	u32 wmi_vdev_pwrsave_ageout_time;
++	u32 wmi_vdev_host_swba_interval;
++	u32 dtim_period;
++	u32 wmi_vdev_oc_scheduler_air_time_limit;
++	u32 wds;
++	u32 atim_window;
++	u32 bmiss_count_max;
++	u32 bmiss_first_bcnt;
++	u32 bmiss_final_bcnt;
++	u32 feature_wmm;
++	u32 chwidth;
++	u32 chextoffset;
++	u32 disable_htprotection;
++	u32 sta_quickkickout;
++	u32 mgmt_rate;
++	u32 protection_mode;
++	u32 fixed_rate;
++	u32 sgi;
++	u32 ldpc;
++	u32 tx_stbc;
++	u32 rx_stbc;
++	u32 intra_bss_fwd;
++	u32 def_keyid;
++	u32 nss;
++	u32 bcast_data_rate;
++	u32 mcast_data_rate;
++	u32 mcast_indicate;
++	u32 dhcp_indicate;
++	u32 unknown_dest_indicate;
++	u32 ap_keepalive_min_idle_inactive_time_secs;
++	u32 ap_keepalive_max_idle_inactive_time_secs;
++	u32 ap_keepalive_max_unresponsive_time_secs;
++	u32 ap_enable_nawds;
++	u32 mcast2ucast_set;
++	u32 enable_rtscts;
++	u32 txbf;
++	u32 packet_powersave;
++	u32 drop_unencry;
++	u32 tx_encap_type;
++	u32 ap_detect_out_of_sync_sleeping_sta_time_secs;
++};
 +
-+	/* number of peer nodes to support */
-+	__le32 num_peers;
++#define WMI_VDEV_PARAM_UNSUPPORTED 0
 +
-+	/* number of keys per peer */
-+	__le32 num_peer_keys;
-+
-+	/* total number of TX/RX data TIDs */
-+	__le32 num_tids;
-+
-+	/*
-+	 * max skid for resolving hash collisions
-+	 *
-+	 *   The address search table is sparse, so that if two MAC addresses
-+	 *   result in the same hash value, the second of these conflicting
-+	 *   entries can slide to the next index in the address search table,
-+	 *   and use it, if it is unoccupied.  This ast_skid_limit parameter
-+	 *   specifies the upper bound on how many subsequent indices to search
-+	 *   over to find an unoccupied space.
-+	 */
-+	__le32 ast_skid_limit;
-+
-+	/*
-+	 * the nominal chain mask for transmit
-+	 *
-+	 *   The chain mask may be modified dynamically, e.g. to operate AP
-+	 *   tx with a reduced number of chains if no clients are associated.
-+	 *   This configuration parameter specifies the nominal chain-mask that
-+	 *   should be used when not operating with a reduced set of tx chains.
-+	 */
-+	__le32 tx_chain_mask;
-+
-+	/*
-+	 * the nominal chain mask for receive
-+	 *
-+	 *   The chain mask may be modified dynamically, e.g. for a client
-+	 *   to use a reduced number of chains for receive if the traffic to
-+	 *   the client is low enough that it doesn't require downlink MIMO
-+	 *   or antenna diversity.
-+	 *   This configuration parameter specifies the nominal chain-mask that
-+	 *   should be used when not operating with a reduced set of rx chains.
-+	 */
-+	__le32 rx_chain_mask;
-+
-+	/*
-+	 * what rx reorder timeout (ms) to use for the AC
-+	 *
-+	 *   Each WMM access class (voice, video, best-effort, background) will
-+	 *   have its own timeout value to dictate how long to wait for missing
-+	 *   rx MPDUs to arrive before flushing subsequent MPDUs that have
-+	 *   already been received.
-+	 *   This parameter specifies the timeout in milliseconds for each
-+	 *   class.
-+	 */
-+	__le32 rx_timeout_pri_vi;
-+	__le32 rx_timeout_pri_vo;
-+	__le32 rx_timeout_pri_be;
-+	__le32 rx_timeout_pri_bk;
-+
-+	/*
-+	 * what mode the rx should decap packets to
-+	 *
-+	 *   MAC can decap to RAW (no decap), native wifi or Ethernet types
-+	 *   THis setting also determines the default TX behavior, however TX
-+	 *   behavior can be modified on a per VAP basis during VAP init
-+	 */
-+	__le32 rx_decap_mode;
-+
-+	/* what is the maximum scan requests than can be queued */
-+	__le32 scan_max_pending_reqs;
-+
-+	/* maximum VDEV that could use BMISS offload */
-+	__le32 bmiss_offload_max_vdev;
-+
-+	/* maximum VDEV that could use offload roaming */
-+	__le32 roam_offload_max_vdev;
-+
-+	/* maximum AP profiles that would push to offload roaming */
-+	__le32 roam_offload_max_ap_profiles;
-+
-+	/*
-+	 * how many groups to use for mcast->ucast conversion
-+	 *
-+	 *   The target's WAL maintains a table to hold information regarding
-+	 *   which peers belong to a given multicast group, so that if
-+	 *   multicast->unicast conversion is enabled, the target can convert
-+	 *   multicast tx frames to a series of unicast tx frames, to each
-+	 *   peer within the multicast group.
-+	     This num_mcast_groups configuration parameter tells the target how
-+	 *   many multicast groups to provide storage for within its multicast
-+	 *   group membership table.
-+	 */
-+	__le32 num_mcast_groups;
-+
-+	/*
-+	 * size to alloc for the mcast membership table
-+	 *
-+	 *   This num_mcast_table_elems configuration parameter tells the
-+	 *   target how many peer elements it needs to provide storage for in
-+	 *   its multicast group membership table.
-+	 *   These multicast group membership table elements are shared by the
-+	 *   multicast groups stored within the table.
-+	 */
-+	__le32 num_mcast_table_elems;
-+
-+	/*
-+	 * whether/how to do multicast->unicast conversion
-+	 *
-+	 *   This configuration parameter specifies whether the target should
-+	 *   perform multicast --> unicast conversion on transmit, and if so,
-+	 *   what to do if it finds no entries in its multicast group
-+	 *   membership table for the multicast IP address in the tx frame.
-+	 *   Configuration value:
-+	 *   0 -> Do not perform multicast to unicast conversion.
-+	 *   1 -> Convert multicast frames to unicast, if the IP multicast
-+	 *        address from the tx frame is found in the multicast group
-+	 *        membership table.  If the IP multicast address is not found,
-+	 *        drop the frame.
-+	 *   2 -> Convert multicast frames to unicast, if the IP multicast
-+	 *        address from the tx frame is found in the multicast group
-+	 *        membership table.  If the IP multicast address is not found,
-+	 *        transmit the frame as multicast.
-+	 */
-+	__le32 mcast2ucast_mode;
-+
-+	/*
-+	 * how much memory to allocate for a tx PPDU dbg log
-+	 *
-+	 *   This parameter controls how much memory the target will allocate
-+	 *   to store a log of tx PPDU meta-information (how large the PPDU
-+	 *   was, when it was sent, whether it was successful, etc.)
-+	 */
-+	__le32 tx_dbg_log_size;
-+
-+	/* how many AST entries to be allocated for WDS */
-+	__le32 num_wds_entries;
-+
-+	/*
-+	 * MAC DMA burst size, e.g., For target PCI limit can be
-+	 * 0 -default, 1 256B
-+	 */
-+	__le32 dma_burst_size;
-+
-+	/*
-+	 * Fixed delimiters to be inserted after every MPDU to
-+	 * account for interface latency to avoid underrun.
-+	 */
-+	__le32 mac_aggr_delim;
-+
-+	/*
-+	 *   determine whether target is responsible for detecting duplicate
-+	 *   non-aggregate MPDU and timing out stale fragments.
-+	 *
-+	 *   A-MPDU reordering is always performed on the target.
-+	 *
-+	 *   0: target responsible for frag timeout and dup checking
-+	 *   1: host responsible for frag timeout and dup checking
-+	 */
-+	__le32 rx_skip_defrag_timeout_dup_detection_check;
-+
-+	/*
-+	 * Configuration for VoW :
-+	 * No of Video Nodes to be supported
-+	 * and Max no of descriptors for each Video link (node).
-+	 */
-+	__le32 vow_config;
-+
-+	/* Number of msdu descriptors target should use */
-+	__le32 num_msdu_desc;
-+
-+	/*
-+	 * Max. number of Tx fragments per MSDU
-+	 *  This parameter controls the max number of Tx fragments per MSDU.
-+	 *  This is sent by the target as part of the WMI_SERVICE_READY event
-+	 *  and is overriden by the OS shim as required.
-+	 */
-+	__le32 max_frag_entries;
-+} __packed;
-+
-+
- #define NUM_UNITS_IS_NUM_VDEVS   0x1
- #define NUM_UNITS_IS_NUM_PEERS   0x2
+ /* the definition of different VDEV parameters */
+ enum wmi_vdev_param {
+ 	/* RTS Threshold */
+@@ -2826,6 +2881,121 @@ enum wmi_vdev_param {
+ 	WMI_VDEV_PARAM_TX_ENCAP_TYPE,
+ };
  
-@@ -1401,6 +1584,18 @@ struct wmi_init_cmd {
- 	struct host_memory_chunk host_mem_chunks[1];
- } __packed;
- 
-+/* _10x stucture is from 10.X FW API */
-+struct wmi_init_cmd_10x {
-+	struct wmi_resource_config_10x resource_config;
-+	__le32 num_host_mem_chunks;
++/* the definition of different VDEV parameters */
++enum wmi_10x_vdev_param {
++	/* RTS Threshold */
++	WMI_10X_VDEV_PARAM_RTS_THRESHOLD = 0x1,
++	/* Fragmentation threshold */
++	WMI_10X_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
++	/* beacon interval in TUs */
++	WMI_10X_VDEV_PARAM_BEACON_INTERVAL,
++	/* Listen interval in TUs */
++	WMI_10X_VDEV_PARAM_LISTEN_INTERVAL,
++	/* muticast rate in Mbps */
++	WMI_10X_VDEV_PARAM_MULTICAST_RATE,
++	/* management frame rate in Mbps */
++	WMI_10X_VDEV_PARAM_MGMT_TX_RATE,
++	/* slot time (long vs short) */
++	WMI_10X_VDEV_PARAM_SLOT_TIME,
++	/* preamble (long vs short) */
++	WMI_10X_VDEV_PARAM_PREAMBLE,
++	/* SWBA time (time before tbtt in msec) */
++	WMI_10X_VDEV_PARAM_SWBA_TIME,
++	/* time period for updating VDEV stats */
++	WMI_10X_VDEV_STATS_UPDATE_PERIOD,
++	/* age out time in msec for frames queued for station in power save */
++	WMI_10X_VDEV_PWRSAVE_AGEOUT_TIME,
++	/*
++	 * Host SWBA interval (time in msec before tbtt for SWBA event
++	 * generation).
++	 */
++	WMI_10X_VDEV_HOST_SWBA_INTERVAL,
++	/* DTIM period (specified in units of num beacon intervals) */
++	WMI_10X_VDEV_PARAM_DTIM_PERIOD,
++	/*
++	 * scheduler air time limit for this VDEV. used by off chan
++	 * scheduler.
++	 */
++	WMI_10X_VDEV_OC_SCHEDULER_AIR_TIME_LIMIT,
++	/* enable/dsiable WDS for this VDEV  */
++	WMI_10X_VDEV_PARAM_WDS,
++	/* ATIM Window */
++	WMI_10X_VDEV_PARAM_ATIM_WINDOW,
++	/* BMISS max */
++	WMI_10X_VDEV_PARAM_BMISS_COUNT_MAX,
++	/* WMM enables/disabled */
++	WMI_10X_VDEV_PARAM_FEATURE_WMM,
++	/* Channel width */
++	WMI_10X_VDEV_PARAM_CHWIDTH,
++	/* Channel Offset */
++	WMI_10X_VDEV_PARAM_CHEXTOFFSET,
++	/* Disable HT Protection */
++	WMI_10X_VDEV_PARAM_DISABLE_HTPROTECTION,
++	/* Quick STA Kickout */
++	WMI_10X_VDEV_PARAM_STA_QUICKKICKOUT,
++	/* Rate to be used with Management frames */
++	WMI_10X_VDEV_PARAM_MGMT_RATE,
++	/* Protection Mode */
++	WMI_10X_VDEV_PARAM_PROTECTION_MODE,
++	/* Fixed rate setting */
++	WMI_10X_VDEV_PARAM_FIXED_RATE,
++	/* Short GI Enable/Disable */
++	WMI_10X_VDEV_PARAM_SGI,
++	/* Enable LDPC */
++	WMI_10X_VDEV_PARAM_LDPC,
++	/* Enable Tx STBC */
++	WMI_10X_VDEV_PARAM_TX_STBC,
++	/* Enable Rx STBC */
++	WMI_10X_VDEV_PARAM_RX_STBC,
++	/* Intra BSS forwarding  */
++	WMI_10X_VDEV_PARAM_INTRA_BSS_FWD,
++	/* Setting Default xmit key for Vdev */
++	WMI_10X_VDEV_PARAM_DEF_KEYID,
++	/* NSS width */
++	WMI_10X_VDEV_PARAM_NSS,
++	/* Set the custom rate for the broadcast data frames */
++	WMI_10X_VDEV_PARAM_BCAST_DATA_RATE,
++	/* Set the custom rate (rate-code) for multicast data frames */
++	WMI_10X_VDEV_PARAM_MCAST_DATA_RATE,
++	/* Tx multicast packet indicate Enable/Disable */
++	WMI_10X_VDEV_PARAM_MCAST_INDICATE,
++	/* Tx DHCP packet indicate Enable/Disable */
++	WMI_10X_VDEV_PARAM_DHCP_INDICATE,
++	/* Enable host inspection of Tx unicast packet to unknown destination */
++	WMI_10X_VDEV_PARAM_UNKNOWN_DEST_INDICATE,
++
++	/* The minimum amount of time AP begins to consider STA inactive */
++	WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS,
 +
 +	/*
-+	 * variable number of host memory chunks.
-+	 * This should be the last element in the structure
++	 * An associated STA is considered inactive when there is no recent
++	 * TX/RX activity and no downlink frames are buffered for it. Once a
++	 * STA exceeds the maximum idle inactive time, the AP will send an
++	 * 802.11 data-null as a keep alive to verify the STA is still
++	 * associated. If the STA does ACK the data-null, or if the data-null
++	 * is buffered and the STA does not retrieve it, the STA will be
++	 * considered unresponsive
++	 * (see WMI_10X_VDEV_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS).
 +	 */
-+	struct host_memory_chunk host_mem_chunks[1];
-+} __packed;
++	WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS,
 +
- /* TLV for channel list */
- struct wmi_chan_list {
- 	__le32 tag; /* WMI_CHAN_LIST_TAG */
++	/*
++	 * An associated STA is considered unresponsive if there is no recent
++	 * TX/RX activity and downlink frames are buffered for it. Once a STA
++	 * exceeds the maximum unresponsive time, the AP will send a
++	 * WMI_10X_STA_KICKOUT event to the host so the STA can be deleted. */
++	WMI_10X_VDEV_PARAM_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS,
++
++	/* Enable NAWDS : MCAST INSPECT Enable, NAWDS Flag set */
++	WMI_10X_VDEV_PARAM_AP_ENABLE_NAWDS,
++
++	WMI_10X_VDEV_PARAM_MCAST2UCAST_SET,
++	/* Enable/Disable RTS-CTS */
++	WMI_10X_VDEV_PARAM_ENABLE_RTSCTS,
++
++	WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
++};
++
+ /* slot time long */
+ #define WMI_VDEV_SLOT_TIME_LONG		0x1
+ /* slot time short */
+@@ -3648,7 +3818,7 @@ int ath10k_wmi_vdev_up(struct ath10k *ar, u32 vdev_id, u32 aid,
+ 		       const u8 *bssid);
+ int ath10k_wmi_vdev_down(struct ath10k *ar, u32 vdev_id);
+ int ath10k_wmi_vdev_set_param(struct ath10k *ar, u32 vdev_id,
+-			      enum wmi_vdev_param param_id, u32 param_value);
++			      u32 param_id, u32 param_value);
+ int ath10k_wmi_vdev_install_key(struct ath10k *ar,
+ 				const struct wmi_vdev_install_key_arg *arg);
+ int ath10k_wmi_peer_create(struct ath10k *ar, u32 vdev_id,
 -- 
 1.7.10
 
