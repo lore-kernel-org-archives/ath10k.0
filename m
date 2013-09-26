@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPCb8-000070-PD
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 14:31:19 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: make monitor vdev down before stoping it
-References: <1380024384-30512-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Thu, 26 Sep 2013 17:30:46 +0300
-In-Reply-To: <1380024384-30512-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Tue, 24 Sep 2013 14:06:24 +0200")
-Message-ID: <871u4bpsdl.fsf@kamboji.qca.qualcomm.com>
+ id 1VPDnL-0002bI-9g
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 15:48:00 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH v3 00/13] ath10k: dual-firmware support (MAIN and 10.X)
+Date: Thu, 26 Sep 2013 17:47:04 +0200
+Message-ID: <1380210437-4391-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,27 +20,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+The major changes covered by this work:
+* dynamic WMI structures
+* WMI cmd/event definitions from 10.x FW track
+* memory host chunks feature
+* management frames path over WMI for 10.x
+* WMI RX events handling for MAIN and 10.X split
+* target config split (LARGE AP feature for 10.x)
+* scan start sctructure split
+* dynamic VDEV and PDEV parameters structures
 
-> Following sequence causes FW crash:
-> -monitor vdev up,
-> -monitor vdev stop,
-> -monitor vdev delete.
-> Making monitor vdev down before stoping it works ok:
-> -monitor vdev up,
-> -monitor vdev down,
-> -monitor vdev stop,
-> -monitor vdev delete.
->
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Changes in v2:
+(review comments from Kalle and Michal):
+* WMI cmd, pdev and vdev params names trimmed
+* ath10k_wmi_cmd_init() exposed only
+* few 'if' statements simplifications
+* 10.x mgmt frames over WMI - 'BUG: scheduling while atomic' fixed
 
-Thanks, applied.
+Changes in v3:
+* print cmd_id when warning about unsupported WMI command
+* remove excessive empty line
+
+Bartosz Markowski (13):
+  ath10k: introduce dynamic WMI structures
+  ath10k: add wmi_10x_<cmd/event> definitions
+  ath10k: warn if give WMI command is not supported
+  ath10k: implement WMI events handling frame for both firmwares
+  ath10k: split ath10k_wmi_service_ready_event_rx
+  ath10k: drop the fw versioning sanity check
+  ath10k: implement host memory chunks
+  ath10k: bring back the WMI path for mgmt frames
+  ath10k: split wmi_cmd_init path
+  ath10k: add TARGET values for 10.x firmware
+  ath10k: introduce dynamic vdev parameters
+  ath10k: introduce dynamic pdev parameters
+  ath10k: handle FW API differences for scan structures
+
+ drivers/net/wireless/ath/ath10k/core.c   |   28 +-
+ drivers/net/wireless/ath/ath10k/core.h   |   28 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
+ drivers/net/wireless/ath/ath10k/hw.h     |   37 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |  133 +++-
+ drivers/net/wireless/ath/ath10k/mac.h    |    2 +
+ drivers/net/wireless/ath/ath10k/wmi.c    | 1085 ++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h    |  968 +++++++++++++++++++++++++-
+ 8 files changed, 2158 insertions(+), 127 deletions(-)
 
 -- 
-Kalle Valo
+1.7.10
+
 
 _______________________________________________
 ath10k mailing list
