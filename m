@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPAqh-0005kq-BQ
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 12:39:15 +0000
+ id 1VPBGp-0006WC-Uh
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 13:06:16 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 05/13] ath10k: split ath10k_wmi_service_ready_event_rx
+Subject: Re: [PATCH v2 00/13] ath10k: dual-firmware support (MAIN and 10.X)
 References: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
- <1380187792-25626-6-git-send-email-bartosz.markowski@tieto.com>
-Date: Thu, 26 Sep 2013 15:38:39 +0300
-In-Reply-To: <1380187792-25626-6-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Thu, 26 Sep 2013 11:29:44 +0200")
-Message-ID: <8761tnrc4w.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 26 Sep 2013 16:05:41 +0300
+In-Reply-To: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Thu, 26 Sep 2013 11:29:39 +0200")
+Message-ID: <87y56jpwbe.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,24 +28,27 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> Since the both firmwares we are going to support,
-> have significantly different APIs (WMI and shared
-> structures), it's easier to actually split the whole
-> event handling functions, instead cutting them inside.
+> This patch-set adds framework for dynamic support of 10.X FW branch.
 >
-> The fork starts now on ath10k_wmi_process_rx().
+> The major changes covered by this work:
+> * dynamic WMI structures
+> * WMI cmd/event definitions from 10.x FW track
+> * memory host chunks feature
+> * management frames path over WMI for 10.x
+> * WMI RX events handling for MAIN and 10.X split
+> * target config split (LARGE AP feature for 10.x)
+> * scan start sctructure split
+> * dynamic VDEV and PDEV parameters structures
 >
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> Changes in v2 
+> (review comments from Kalle and Michal):
+> * WMI cmd, pdev and vdev params names trimmed
+> * ath10k_wmi_cmd_init() exposed only
+> * few 'if' statements simplifications
+> * 10.x mgmt frames over WMI - 'BUG: scheduling while atomic' fixed
 
-[...]
-
-> +	complete(&ar->wmi.service_ready);
-> +}
-> +
-> +
->  static int ath10k_wmi_ready_event_rx(struct ath10k *ar, struct sk_buff *skb)
-
-Only one empty line between functions.
+This is looking very good now, I had only had few nitpicks which I found
+while reviewing this.
 
 -- 
 Kalle Valo
