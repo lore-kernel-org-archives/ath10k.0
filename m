@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
+Received: from smtprelay0079.hostedemail.com ([216.40.44.79]
+ helo=smtprelay.hostedemail.com)
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPFcA-0006JY-U7
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 17:44:39 +0000
-Date: Thu, 26 Sep 2013 13:44:08 -0400 (EDT)
-Message-Id: <20130926.134408.91633054642517467.davem@redhat.com>
+ id 1VPFuV-0006ru-8b
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 18:03:35 +0000
+Message-ID: <1380218576.17366.76.camel@joe-AO722>
 Subject: Re: [PATCH 00/11 - GIT PULL] drivers: net: Last block of Remove
  extern from function prototypes
-From: David Miller <davem@redhat.com>
-In-Reply-To: <cover.1380137609.git.joe@perches.com>
+From: Joe Perches <joe@perches.com>
+Date: Thu, 26 Sep 2013 11:02:56 -0700
+In-Reply-To: <20130926.134408.91633054642517467.davem@redhat.com>
 References: <cover.1380137609.git.joe@perches.com>
+ <20130926.134408.91633054642517467.davem@redhat.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,27 +25,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: joe@perches.com
+To: David Miller <davem@redhat.com>
 Cc: brcm80211-dev-list@broadcom.com, ath9k-devel@venema.h4ckr.net, wimax@linuxwimax.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Joe Perches <joe@perches.com>
-Date: Wed, 25 Sep 2013 12:37:18 -0700
+On Thu, 2013-09-26 at 13:44 -0400, David Miller wrote:
+> From: Joe Perches <joe@perches.com>
+> Date: Wed, 25 Sep 2013 12:37:18 -0700
+[]
+> Pulled, thanks Joe.
+> That should be about it for networking right?
 
-> The following changes since commit 294da3abaa73a0b69fd54e442b0b5bd9455b7be6:
-> 
->   irda: Remove extern from function prototypes (2013-09-24 12:54:17 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://repo.or.cz/linux-2.6/trivial-mods.git 20130925_dn_externs_3
-> 
-> for you to fetch changes up to a958df5dc3065ce517726dc54087639e13ffee8f:
-> 
->   rtlwifi: Remove extern from function prototypes (2013-09-24 18:06:51 -0700)
+Yes for drivers/net/...
 
-Pulled, thanks Joe.
+There are some more files like:
 
-That should be about it for networking right?
+include/linux/etherdevice.h
+include/linux/inetdevice.h
+include/linux/net.h
+include/linux/netdevice.h
+include/linux/skbuff.h
+
+and some netfilter ones:
+
+include/linux/netfilter*.h
+include/linux/netfilter/...
+
+and maybe a few others like:
+
+include/linux/atmdev.h
+include/linux/fddidevice.h
+
+that I was planning on converting then submitting.
+
+Want those in one more pull request or
+maybe individually?
+
 
 _______________________________________________
 ath10k mailing list
