@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VP7u7-0008Ks-SZ
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 09:30:39 +0000
+ id 1VP7u8-0008L2-EB
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 09:30:41 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v2 07/13] ath10k: implement host memory chunks
-Date: Thu, 26 Sep 2013 11:29:46 +0200
-Message-ID: <1380187792-25626-8-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v2 08/13] ath10k: bring back the WMI path for mgmt frames
+Date: Thu, 26 Sep 2013 11:29:47 +0200
+Message-ID: <1380187792-25626-9-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
@@ -25,242 +25,325 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-10.X firmware can request a memory pool from host to offload
-it's own resources. This is a feature designed especially
-for AP mode where the target has to deal with large number
-of peers.
+This is still the only way to submit mgmt frames in case
+of 10.X firmware.
 
-So we allocate and map a consistent DMA memory which FW can
-use to store e.g. peer rate contol maps.
+This patch introduces wmi_mgmt_tx queue, because of the
+fact WMI command can block. This is a problem for
+ath10k_tx_htt(), since it's called from atomic context.
+The skb queue and worker are introduced to move the mgmt
+frame handling out of .tx callback context and not block.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |   12 +++
- drivers/net/wireless/ath/ath10k/wmi.c  |  126 ++++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h  |    3 +
- 3 files changed, 133 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c   |    3 ++
+ drivers/net/wireless/ath/ath10k/core.h   |   10 ++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |   70 +++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/mac.h    |    2 +
+ drivers/net/wireless/ath/ath10k/wmi.c    |   51 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h    |    1 +
+ 7 files changed, 128 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 31860a6..bd74dac 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -520,6 +520,9 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 	INIT_WORK(&ar->offchan_tx_work, ath10k_offchan_tx_work);
+ 	skb_queue_head_init(&ar->offchan_tx_queue);
+ 
++	INIT_WORK(&ar->wmi_mgmt_tx_work, ath10k_mgmt_over_wmi_tx_work);
++	skb_queue_head_init(&ar->wmi_mgmt_tx_queue);
++
+ 	init_waitqueue_head(&ar->event_queue);
+ 
+ 	INIT_WORK(&ar->restart_work, ath10k_core_restart);
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index acfee7c..e2a2658 100644
+index e2a2658..984db11 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -102,12 +102,24 @@ struct ath10k_bmi {
- 	bool done_sent;
- };
+@@ -43,15 +43,17 @@
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
  
-+#define ATH10K_MAX_MEM_REQS 16
++#define ATH10K_MAX_NUM_MGMT_PENDING 16
 +
-+struct ath10k_mem_chunk {
-+	void *vaddr;
-+	dma_addr_t paddr;
-+	u32 len;
-+	u32 req_id;
-+};
-+
- struct ath10k_wmi {
- 	enum ath10k_htc_ep_id eid;
- 	struct completion service_ready;
- 	struct completion unified_ready;
- 	wait_queue_head_t tx_credits_wq;
- 	struct wmi_cmd_map *cmd;
-+
-+	u32 num_mem_chunks;
-+	struct ath10k_mem_chunk mem_chunks[ATH10K_MAX_MEM_REQS];
- };
+ struct ath10k;
  
- struct ath10k_peer_stat {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 8f4d0f6..b57dfb8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1229,6 +1229,37 @@ static void ath10k_wmi_event_vdev_resume_req(struct ath10k *ar,
- 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_VDEV_RESUME_REQ_EVENTID\n");
+ struct ath10k_skb_cb {
+ 	dma_addr_t paddr;
+ 	bool is_mapped;
+ 	bool is_aborted;
++	u8 vdev_id;
+ 
+ 	struct {
+-		u8 vdev_id;
+ 		u8 tid;
+ 		bool is_offchan;
+ 
+@@ -284,6 +286,9 @@ enum ath10k_fw_features {
+ 	/* firmware from 10X branch */
+ 	ATH10K_FW_FEATURE_WMI_10X = 1,
+ 
++	/* firmware support tx frame management over WMI, otherwise it's HTT */
++	ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX = 2,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+@@ -393,6 +398,9 @@ struct ath10k {
+ 	struct completion offchan_tx_completed;
+ 	struct sk_buff *offchan_tx_skb;
+ 
++	struct work_struct wmi_mgmt_tx_work;
++	struct sk_buff_head wmi_mgmt_tx_queue;
++
+ 	enum ath10k_state state;
+ 
+ 	struct work_struct restart_work;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 3b93c6a..d9335e9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -308,7 +308,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct sk_buff *txdesc = NULL;
+ 	struct htt_cmd *cmd;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+-	u8 vdev_id = skb_cb->htt.vdev_id;
++	u8 vdev_id = skb_cb->vdev_id;
+ 	int len = 0;
+ 	int msdu_id = -1;
+ 	int res;
+@@ -384,7 +384,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(msdu);
+ 	struct sk_buff *txdesc = NULL;
+ 	bool use_frags;
+-	u8 vdev_id = ATH10K_SKB_CB(msdu)->htt.vdev_id;
++	u8 vdev_id = ATH10K_SKB_CB(msdu)->vdev_id;
+ 	u8 tid;
+ 	int prefetch_len, desc_len;
+ 	int msdu_id = -1;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 99a9bad..cadf90d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1489,7 +1489,7 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar, struct sk_buff *skb)
+ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	int ret;
++	int ret = 0;
+ 
+ 	if (ar->htt.target_version_major >= 3) {
+ 		/* Since HTT 3.0 there is no separate mgmt tx command */
+@@ -1497,16 +1497,32 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ 		goto exit;
+ 	}
+ 
+-	if (ieee80211_is_mgmt(hdr->frame_control))
+-		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
+-	else if (ieee80211_is_nullfunc(hdr->frame_control))
++	if (ieee80211_is_mgmt(hdr->frame_control)) {
++		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
++			     ar->fw_features)) {
++			if (skb_queue_len(&ar->wmi_mgmt_tx_queue) >=
++			    ATH10K_MAX_NUM_MGMT_PENDING) {
++				ath10k_warn("wmi mgmt_tx queue limit reached\n");
++				ret = -EBUSY;
++				goto exit;
++			}
++
++			skb_queue_tail(&ar->wmi_mgmt_tx_queue, skb);
++			ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
++		} else {
++			ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
++		}
++	} else if (!test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
++			     ar->fw_features) &&
++		   ieee80211_is_nullfunc(hdr->frame_control)) {
+ 		/* FW does not report tx status properly for NullFunc frames
+ 		 * unless they are sent through mgmt tx path. mac80211 sends
+-		 * those frames when it detects link/beacon loss and depends on
+-		 * the tx status to be correct. */
++		 * those frames when it detects link/beacon loss and depends
++		 * on the tx status to be correct. */
+ 		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
+-	else
++	} else {
+ 		ret = ath10k_htt_tx(&ar->htt, skb);
++	}
+ 
+ exit:
+ 	if (ret) {
+@@ -1557,7 +1573,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 
+ 		hdr = (struct ieee80211_hdr *)skb->data;
+ 		peer_addr = ieee80211_get_DA(hdr);
+-		vdev_id = ATH10K_SKB_CB(skb)->htt.vdev_id;
++		vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 		peer = ath10k_peer_find(ar, vdev_id, peer_addr);
+@@ -1599,6 +1615,36 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 	}
  }
  
-+static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
-+				      u32 num_units, u32 unit_len)
++void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar)
 +{
-+	dma_addr_t paddr;
-+	u32 pool_size;
-+	int idx = ar->wmi.num_mem_chunks;
++	struct sk_buff *skb;
 +
-+	pool_size = num_units * round_up(unit_len, 4);
++	for (;;) {
++		skb = skb_dequeue(&ar->wmi_mgmt_tx_queue);
++		if (!skb)
++			break;
 +
-+	if (!pool_size)
-+		return -EINVAL;
-+
-+	ar->wmi.mem_chunks[idx].vaddr = dma_alloc_coherent(ar->dev,
-+							   pool_size,
-+							   &paddr,
-+							   GFP_ATOMIC);
-+	if (!ar->wmi.mem_chunks[idx].vaddr) {
-+		ath10k_warn("failed to allocate memory chunk\n");
-+		return -ENOMEM;
++		ieee80211_free_txskb(ar->hw, skb);
 +	}
-+
-+	memset(ar->wmi.mem_chunks[idx].vaddr, 0, pool_size);
-+
-+	ar->wmi.mem_chunks[idx].paddr = paddr;
-+	ar->wmi.mem_chunks[idx].len = pool_size;
-+	ar->wmi.mem_chunks[idx].req_id = req_id;
-+	ar->wmi.num_mem_chunks++;
-+
-+	return 0;
 +}
 +
- static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 					      struct sk_buff *skb)
- {
-@@ -1303,6 +1334,8 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
- 						  struct sk_buff *skb)
- {
-+	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
++void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
++{
++	struct ath10k *ar = container_of(work, struct ath10k, wmi_mgmt_tx_work);
++	struct sk_buff *skb;
 +	int ret;
- 	struct wmi_service_ready_event_10x *ev = (void *)skb->data;
- 
- 	if (skb->len < sizeof(*ev)) {
-@@ -1341,13 +1374,50 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
- 			 ar->fw_version_minor);
- 	}
- 
--	/* FIXME: it probably should be better to support this.
--	   TODO: Next patch introduce memory chunks. It's a must for 10.x FW */
--	if (__le32_to_cpu(ev->num_mem_reqs) > 0) {
--		ath10k_warn("target requested %d memory chunks; ignoring\n",
--			    __le32_to_cpu(ev->num_mem_reqs));
-+	num_mem_reqs = __le32_to_cpu(ev->num_mem_reqs);
 +
-+	if (num_mem_reqs > ATH10K_MAX_MEM_REQS) {
-+		ath10k_warn("requested memory chunks number (%d) exceeds the limit\n",
-+			    num_mem_reqs);
-+		return;
- 	}
- 
-+	if (!num_mem_reqs)
-+		goto exit;
++	for (;;) {
++		skb = skb_dequeue(&ar->wmi_mgmt_tx_queue);
++		if (!skb)
++			break;
 +
-+	ath10k_dbg(ATH10K_DBG_WMI, "firmware has requested %d memory chunks\n",
-+		   num_mem_reqs);
-+
-+	for (i = 0; i < num_mem_reqs; ++i) {
-+		req_id = __le32_to_cpu(ev->mem_reqs[i].req_id);
-+		num_units = __le32_to_cpu(ev->mem_reqs[i].num_units);
-+		unit_size = __le32_to_cpu(ev->mem_reqs[i].unit_size);
-+		num_unit_info = __le32_to_cpu(ev->mem_reqs[i].num_unit_info);
-+
-+		if (num_unit_info & NUM_UNITS_IS_NUM_PEERS)
-+			/* number of units to allocate is number of
-+			 * peers, 1 extra for self peer on target */
-+			/* this needs to be tied, host and target
-+			 * can get out of sync */
-+			num_units = TARGET_NUM_PEERS + 1;
-+		else if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS)
-+			num_units = TARGET_NUM_VDEVS + 1;
-+
-+		ath10k_dbg(ATH10K_DBG_WMI,
-+			   "wmi mem_req_id %d num_units %d num_unit_info %d unit size %d actual units %d\n",
-+			   req_id,
-+			   __le32_to_cpu(ev->mem_reqs[i].num_units),
-+			   num_unit_info,
-+			   unit_size,
-+			   num_units);
-+
-+		ret = ath10k_wmi_alloc_host_mem(ar, req_id, num_units,
-+						unit_size);
++		ret = ath10k_wmi_mgmt_tx(ar, skb);
 +		if (ret)
-+			return;
++			ath10k_warn("wmi mgmt_tx failed (%d)\n", ret);
 +	}
++}
 +
-+exit:
- 	ath10k_dbg(ATH10K_DBG_WMI,
- 		   "wmi event service ready sw_ver 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
- 		   __le32_to_cpu(ev->sw_version),
-@@ -1645,6 +1715,17 @@ int ath10k_wmi_attach(struct ath10k *ar)
+ /************/
+ /* Scanning */
+ /************/
+@@ -1757,14 +1803,14 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		ath10k_tx_h_seq_no(skb);
+ 	}
  
- void ath10k_wmi_detach(struct ath10k *ar)
- {
-+	int i;
++	ATH10K_SKB_CB(skb)->vdev_id = vdev_id;
+ 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
+-	ATH10K_SKB_CB(skb)->htt.vdev_id = vdev_id;
+ 	ATH10K_SKB_CB(skb)->htt.tid = tid;
+ 
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+ 		spin_lock_bh(&ar->data_lock);
+ 		ATH10K_SKB_CB(skb)->htt.is_offchan = true;
+-		ATH10K_SKB_CB(skb)->htt.vdev_id = ar->scan.vdev_id;
++		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+ 		ath10k_dbg(ATH10K_DBG_MAC, "queued offchannel skb %p\n", skb);
+@@ -1786,6 +1832,7 @@ void ath10k_halt(struct ath10k *ar)
+ 
+ 	del_timer_sync(&ar->scan.timeout);
+ 	ath10k_offchan_tx_purge(ar);
++	ath10k_mgmt_over_wmi_tx_purge(ar);
+ 	ath10k_peer_cleanup_all(ar);
+ 	ath10k_core_stop(ar);
+ 	ath10k_hif_power_down(ar);
+@@ -1862,7 +1909,10 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	ar->state = ATH10K_STATE_OFF;
+ 	mutex_unlock(&ar->conf_mutex);
+ 
++	ath10k_mgmt_over_wmi_tx_purge(ar);
 +
-+	/* free the host memory chunks requested by firmware */
-+	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-+		dma_free_coherent(ar->dev,
-+				  ar->wmi.mem_chunks[i].len,
-+				  ar->wmi.mem_chunks[i].vaddr,
-+				  ar->wmi.mem_chunks[i].paddr);
-+	}
-+
-+	ar->wmi.num_mem_chunks = 0;
+ 	cancel_work_sync(&ar->offchan_tx_work);
++	cancel_work_sync(&ar->wmi_mgmt_tx_work);
+ 	cancel_work_sync(&ar->restart_work);
  }
  
- int ath10k_wmi_connect_htc_service(struct ath10k *ar)
-@@ -1781,7 +1862,8 @@ int ath10k_wmi_cmd_init(struct ath10k *ar)
- 	struct wmi_init_cmd *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config config = {};
--	u32 val;
-+	u32 len, val;
-+	int i;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 6fce9bf..ba10219 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -34,6 +34,8 @@ struct ath10k_vif *ath10k_get_arvif(struct ath10k *ar, u32 vdev_id);
+ void ath10k_reset_scan(unsigned long ptr);
+ void ath10k_offchan_tx_purge(struct ath10k *ar);
+ void ath10k_offchan_tx_work(struct work_struct *work);
++void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar);
++void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work);
+ void ath10k_halt(struct ath10k *ar);
  
- 	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
- 	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
-@@ -1834,12 +1916,40 @@ int ath10k_wmi_cmd_init(struct ath10k *ar)
- 	config.num_msdu_desc = __cpu_to_le32(TARGET_NUM_MSDU_DESC);
- 	config.max_frag_entries = __cpu_to_le32(TARGET_MAX_FRAG_ENTRIES);
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index b57dfb8..422033a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -409,6 +409,57 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ 	return ret;
+ }
  
--	buf = ath10k_wmi_alloc_skb(sizeof(*cmd));
-+	len = sizeof(*cmd) +
-+	      (sizeof(struct host_memory_chunk) * ar->wmi.num_mem_chunks);
++int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
++{
++	int ret = 0;
++	struct wmi_mgmt_tx_cmd *cmd;
++	struct ieee80211_hdr *hdr;
++	struct sk_buff *wmi_skb;
++	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	int len;
++	u16 fc;
 +
-+	buf = ath10k_wmi_alloc_skb(len);
- 	if (!buf)
- 		return -ENOMEM;
- 
- 	cmd = (struct wmi_init_cmd *)buf->data;
--	cmd->num_host_mem_chunks = 0;
++	hdr = (struct ieee80211_hdr *)skb->data;
++	fc = le16_to_cpu(hdr->frame_control);
 +
-+	if (ar->wmi.num_mem_chunks == 0) {
-+		cmd->num_host_mem_chunks = 0;
-+		goto out;
++	if (WARN_ON_ONCE(!ieee80211_is_mgmt(hdr->frame_control)))
++		return -EINVAL;
++
++	len = sizeof(cmd->hdr) + skb->len;
++	len = round_up(len, 4);
++
++	wmi_skb = ath10k_wmi_alloc_skb(len);
++	if (!wmi_skb)
++		return -ENOMEM;
++
++	cmd = (struct wmi_mgmt_tx_cmd *)wmi_skb->data;
++
++	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(skb)->vdev_id);
++	cmd->hdr.tx_rate = 0;
++	cmd->hdr.tx_power = 0;
++	cmd->hdr.buf_len = __cpu_to_le32((u32)(skb->len));
++
++	memcpy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr), ETH_ALEN);
++	memcpy(cmd->buf, skb->data, skb->len);
++
++	ath10k_dbg(ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
++		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
++		   fc & IEEE80211_FCTL_STYPE);
++
++	/* Send the management frame buffer to the target */
++	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->mgmt_tx_cmdid);
++	if (ret) {
++		dev_kfree_skb_any(skb);
++		return ret;
 +	}
 +
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
-+		   __cpu_to_le32(ar->wmi.num_mem_chunks));
++	/* TODO: report tx status to mac80211 - temporary just ACK */
++	info->flags |= IEEE80211_TX_STAT_ACK;
++	ieee80211_tx_status_irqsafe(ar->hw, skb);
 +
-+	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
++	return ret;
++}
 +
-+	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-+		cmd->host_mem_chunks[i].ptr =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
-+		cmd->host_mem_chunks[i].size =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].len);
-+		cmd->host_mem_chunks[i].req_id =
-+			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
-+
-+		ath10k_dbg(ATH10K_DBG_WMI,
-+			   "wmi chunk %d len %d requested, addr 0x%x\n",
-+			   i,
-+			   cmd->host_mem_chunks[i].size,
-+			   cmd->host_mem_chunks[i].ptr);
-+	}
-+out:
- 	memcpy(&cmd->resource_config, &config, sizeof(config));
- 
- 	ath10k_dbg(ATH10K_DBG_WMI, "wmi init\n");
+ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_scan_event *event = (struct wmi_scan_event *)skb->data;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a0cfdfd..56339d2 100644
+index 56339d2..1c515d6 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1377,6 +1377,9 @@ struct wmi_resource_config {
- 	__le32 max_frag_entries;
- } __packed;
+@@ -3483,5 +3483,6 @@ int ath10k_wmi_pdev_set_wmm_params(struct ath10k *ar,
+ int ath10k_wmi_request_stats(struct ath10k *ar, enum wmi_stats_id stats_id);
+ int ath10k_wmi_force_fw_hang(struct ath10k *ar,
+ 			     enum wmi_force_fw_hang_type type, u32 delay_ms);
++int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb);
  
-+#define NUM_UNITS_IS_NUM_VDEVS   0x1
-+#define NUM_UNITS_IS_NUM_PEERS   0x2
-+
- /* strucutre describing host memory chunk. */
- struct host_memory_chunk {
- 	/* id of the request that is passed up in service ready */
+ #endif /* _WMI_H_ */
 -- 
 1.7.10
 
