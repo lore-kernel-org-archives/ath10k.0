@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0079.hostedemail.com ([216.40.44.79]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VPFuV-0006ru-8b
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 18:03:35 +0000
-Message-ID: <1380218576.17366.76.camel@joe-AO722>
-Subject: Re: [PATCH 00/11 - GIT PULL] drivers: net: Last block of Remove
- extern from function prototypes
-From: Joe Perches <joe@perches.com>
-Date: Thu, 26 Sep 2013 11:02:56 -0700
-In-Reply-To: <20130926.134408.91633054642517467.davem@redhat.com>
-References: <cover.1380137609.git.joe@perches.com>
- <20130926.134408.91633054642517467.davem@redhat.com>
-Mime-Version: 1.0
+Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
+ ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VPGnu-0008V9-UY
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 19:00:47 +0000
+Date: Thu, 26 Sep 2013 14:57:43 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: Pull request: ath 20130930
+Message-ID: <20130926185742.GC1931@tuxdriver.com>
+References: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87wqmyz5i9.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +24,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Miller <davem@redhat.com>
-Cc: brcm80211-dev-list@broadcom.com, ath9k-devel@venema.h4ckr.net, wimax@linuxwimax.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, 2013-09-26 at 13:44 -0400, David Miller wrote:
-> From: Joe Perches <joe@perches.com>
-> Date: Wed, 25 Sep 2013 12:37:18 -0700
-[]
-> Pulled, thanks Joe.
-> That should be about it for networking right?
+On Tue, Sep 03, 2013 at 11:14:22AM +0300, Kalle Valo wrote:
+> Hi John,
+> 
+> here are latest ath10k changes, I hope it's still time to get these to
+> 3.12. The changelog for the pull request:
+> 
+> Bartosz dropped support for qca98xx hw1.0 hardware from ath10k, it's
+> just too much to support it. Michal added support for the new firmware
+> interface. Marek fixed WEP in AP and IBSS mode. Rest of the changes are
+> minor fixes or cleanups.
+> 
+> The following changes since commit 9d0e2f0772d394060bf3b17cd1f3a35574365103:
+> 
+>   ath6kl: Fix invalid pointer access on fuzz testing with AP mode (2013-08-07 10:58:59 +0300)
+> 
+> are available in the git repository at:
+> 
+>   git://github.com/kvalo/ath.git for-linville
+> 
+> for you to fetch changes up to 763b8cd31493f452094fd0eaeedb8cad37c756a2:
+> 
+>   ath10k: add chip_id file to debugfs (2013-09-03 09:59:53 +0300)
 
-Yes for drivers/net/...
+Pulling now...
 
-There are some more files like:
-
-include/linux/etherdevice.h
-include/linux/inetdevice.h
-include/linux/net.h
-include/linux/netdevice.h
-include/linux/skbuff.h
-
-and some netfilter ones:
-
-include/linux/netfilter*.h
-include/linux/netfilter/...
-
-and maybe a few others like:
-
-include/linux/atmdev.h
-include/linux/fddidevice.h
-
-that I was planning on converting then submitting.
-
-Want those in one more pull request or
-maybe individually?
-
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
