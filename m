@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VP7Xo-0007qj-GE
- for ath10k@lists.infradead.org; Thu, 26 Sep 2013 09:07:33 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 01/13] ath10k: introduce dynamic WMI structures
-References: <1380101891-18312-1-git-send-email-bartosz.markowski@tieto.com>
- <1380101891-18312-2-git-send-email-bartosz.markowski@tieto.com>
- <87ob7grmhv.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQk98WwdqyVtyHy9A1Z5kWgmkC6sHVjgaQNbrRLfm8YSiA@mail.gmail.com>
-Date: Thu, 26 Sep 2013 12:07:01 +0300
-In-Reply-To: <CA+BoTQk98WwdqyVtyHy9A1Z5kWgmkC6sHVjgaQNbrRLfm8YSiA@mail.gmail.com>
- (Michal Kazior's message of "Thu, 26 Sep 2013 11:03:17 +0200")
-Message-ID: <87fvssrlxm.fsf@kamboji.qca.qualcomm.com>
+ id 1VP7tz-0008Ks-TQ
+ for ath10k@lists.infradead.org; Thu, 26 Sep 2013 09:30:30 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH v2 03/13] ath10k: warn if give WMI command is not supported
+Date: Thu, 26 Sep 2013 11:29:42 +0200
+Message-ID: <1380187792-25626-4-git-send-email-bartosz.markowski@tieto.com>
+In-Reply-To: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
+References: <1380187792-25626-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,35 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+This will show and make it easier to track the API
+differences in the new AP firmware.
 
-> On 26 September 2013 10:54, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Bartosz Markowski <bartosz.markowski@tieto.com> writes:
->>
->>> @@ -1293,7 +1438,8 @@ int ath10k_wmi_pdev_resume_target(struct ath10k *ar)
->>>       if (skb == NULL)
->>>               return -ENOMEM;
->>>
->>> -     return ath10k_wmi_cmd_send(ar, skb, WMI_PDEV_RESUME_CMDID);
->>> +     return ath10k_wmi_cmd_send(ar, skb,
->>> +                                ar->wmi.cmd->wmi_pdev_resume_cmdid);
->>>  }
->>
->> I was thinking of adding a macro WMI_PDEV_RESUME_CMDID(ar) for all
->> dynamic wmi ids, that way it would look as closely as possible with the
->> original code. But I'm not sure if that makes sense anymore. Thoughts?
->
-> Seems like an unnecessary indirection to me. You still need to have
-> the mapping structure, unless you want to use macro concatenation (##)
-> instead.
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-Yeah, there's no real benefit from the macro.
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index cfb2082..fe55360 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -390,6 +390,11 @@ static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
+ {
+ 	int ret = -EINVAL;
+ 
++	if (cmd_id == WMI_CMD_UNDEFINED) {
++		ath10k_warn("command not supported by given firmware\n");
++		return ret;
++	}
++
+ 	wait_event_timeout(ar->wmi.tx_credits_wq, ({
+ 		/* try to send pending beacons first. they take priority */
+ 		ath10k_wmi_tx_beacons_nowait(ar);
 -- 
-Kalle Valo
+1.7.10
+
 
 _______________________________________________
 ath10k mailing list
