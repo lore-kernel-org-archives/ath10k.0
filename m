@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRIM1-0001JX-7Z
- for ath10k@lists.infradead.org; Wed, 02 Oct 2013 09:04:21 +0000
+ id 1VRIM2-0001JX-Kb
+ for ath10k@lists.infradead.org; Wed, 02 Oct 2013 09:04:24 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/4] ath10k: split vdev_id calculation from tx function
-Date: Wed, 2 Oct 2013 11:03:39 +0200
-Message-ID: <1380704621-4670-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/4] ath10k: remove num_sends_allowed
+Date: Wed, 2 Oct 2013 11:03:41 +0200
+Message-ID: <1380704621-4670-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1380704621-4670-1-git-send-email-michal.kazior@tieto.com>
 References: <1380292706-3609-1-git-send-email-michal.kazior@tieto.com>
  <1380704621-4670-1-git-send-email-michal.kazior@tieto.com>
@@ -26,63 +26,131 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Tidy up ath10k_tx().
+The value provided by num_sends_allowed is now
+derived from CE source ringbuffer state.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |   17 ++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/ce.h  |    1 +
+ drivers/net/wireless/ath/ath10k/pci.c |   21 +--------------------
+ drivers/net/wireless/ath/ath10k/pci.h |    3 ---
+ 4 files changed, 18 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7415a60..4b7c949 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1421,6 +1421,19 @@ static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
- 	return ieee80211_get_qos_ctl(hdr)[0] & IEEE80211_QOS_CTL_TID_MASK;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 9e6daa9..e46951b 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -283,7 +283,7 @@ static int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+ 
+ 	if (unlikely(CE_RING_DELTA(nentries_mask,
+ 				   write_index, sw_index - 1) <= 0)) {
+-		ret = -EIO;
++		ret = -ENOSR;
+ 		goto exit;
+ 	}
+ 
+@@ -338,6 +338,21 @@ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 	return ret;
  }
  
-+static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar,
-+				  struct ieee80211_tx_info *info)
++int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe)
 +{
-+	if (info->control.vif)
-+		return ath10k_vif_to_arvif(info->control.vif)->vdev_id;
++	struct ath10k *ar = pipe->ar;
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	int delta;
 +
-+	if (ar->monitor_enabled)
-+		return ar->monitor_vdev_id;
++	spin_lock_bh(&ar_pci->ce_lock);
++	delta = CE_RING_DELTA(pipe->src_ring->nentries_mask,
++			      pipe->src_ring->write_index,
++			      pipe->src_ring->sw_index - 1);
++	spin_unlock_bh(&ar_pci->ce_lock);
 +
-+	ath10k_warn("could not resolve vdev id\n");
-+	return 0;
++	return delta;
 +}
 +
- /*
-  * Frames sent to the FW have to be in "Native Wifi" format.
-  * Strip the QoS field from the 802.11 header.
-@@ -1785,16 +1798,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
- 	struct ath10k *ar = hw->priv;
--	struct ath10k_vif *arvif = NULL;
--	u32 vdev_id = 0;
--	u8 tid;
--
--	if (info->control.vif) {
--		arvif = ath10k_vif_to_arvif(info->control.vif);
--		vdev_id = arvif->vdev_id;
--	} else if (ar->monitor_enabled) {
--		vdev_id = ar->monitor_vdev_id;
+ int ath10k_ce_recv_buf_enqueue(struct ath10k_ce_pipe *ce_state,
+ 			       void *per_recv_context,
+ 			       u32 buffer)
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 949b174..15d45b5 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -156,6 +156,7 @@ void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
+ 				void (*send_cb)(struct ath10k_ce_pipe *),
+ 				int disable_interrupts);
+ 
++int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe);
+ 
+ /*==================Recv=======================*/
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 4f6a978..f8d59c7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -720,16 +720,6 @@ static int ath10k_pci_hif_send_head(struct ath10k *ar, u8 pipe_id,
+ 			"ath10k tx: data: ",
+ 			nbuf->data, nbuf->len);
+ 
+-	/* Make sure we have resources to handle this request */
+-	spin_lock_bh(&pipe_info->pipe_lock);
+-	if (!pipe_info->num_sends_allowed) {
+-		ath10k_warn("Pipe: %d is full\n", pipe_id);
+-		spin_unlock_bh(&pipe_info->pipe_lock);
+-		return -ENOSR;
 -	}
-+	u8 tid, vdev_id;
+-	pipe_info->num_sends_allowed--;
+-	spin_unlock_bh(&pipe_info->pipe_lock);
+-
+ 	ret = ath10k_ce_send(ce_hdl, nbuf, skb_cb->paddr, len, transfer_id,
+ 			     flags);
+ 	if (ret)
+@@ -741,14 +731,7 @@ static int ath10k_pci_hif_send_head(struct ath10k *ar, u8 pipe_id,
+ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_pipe *pipe_info = &(ar_pci->pipe_info[pipe]);
+-	int ret;
+-
+-	spin_lock_bh(&pipe_info->pipe_lock);
+-	ret = pipe_info->num_sends_allowed;
+-	spin_unlock_bh(&pipe_info->pipe_lock);
+-
+-	return ret;
++	return ath10k_ce_num_free_src_entries(ar_pci->pipe_info[pipe].ce_hdl);
+ }
  
- 	/* We should disable CCK RATE due to P2P */
- 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
-@@ -1803,6 +1807,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	/* we must calculate tid before we apply qos workaround
- 	 * as we'd lose the qos control field */
- 	tid = ath10k_tx_h_get_tid(hdr);
-+	vdev_id = ath10k_tx_h_get_vdev_id(ar, info);
+ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+@@ -863,7 +846,6 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
+ 						   ath10k_pci_ce_send_done,
+ 						   disable_interrupts);
+ 			completions += attr->src_nentries;
+-			pipe_info->num_sends_allowed = attr->src_nentries - 1;
+ 		}
  
- 	/* it makes no sense to process injected frames like that */
- 	if (info->control.vif &&
+ 		if (attr->dest_nentries) {
+@@ -1033,7 +1015,6 @@ static void ath10k_pci_process_ce(struct ath10k *ar)
+ 		 */
+ 		spin_lock_bh(&compl->pipe_info->pipe_lock);
+ 		list_add_tail(&compl->list, &compl->pipe_info->compl_free);
+-		compl->pipe_info->num_sends_allowed += send_done;
+ 		spin_unlock_bh(&compl->pipe_info->pipe_lock);
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 7c49f6f..52fb7b9 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -178,9 +178,6 @@ struct ath10k_pci_pipe {
+ 	/* List of free CE completion slots */
+ 	struct list_head compl_free;
+ 
+-	/* Limit the number of outstanding send requests. */
+-	int num_sends_allowed;
+-
+ 	struct ath10k_pci *ar_pci;
+ 	struct tasklet_struct intr;
+ };
 -- 
 1.7.9.5
 
