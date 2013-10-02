@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRFE1-00064q-F4
- for ath10k@lists.infradead.org; Wed, 02 Oct 2013 05:43:54 +0000
-Received: by mail-bk0-f44.google.com with SMTP id mz10so118222bkb.31
- for <ath10k@lists.infradead.org>; Tue, 01 Oct 2013 22:43:31 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87eh846eu2.fsf@kamboji.qca.qualcomm.com>
-References: <87eh846eu2.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 2 Oct 2013 07:43:31 +0200
-Message-ID: <CA+BoTQkk9m4zej9nW2E7YPc5VUcXPis9W_FacBQ2QSSAEncQnQ@mail.gmail.com>
-Subject: Re: Scheduling while atomic while setting the PS mode
-From: Michal Kazior <michal.kazior@tieto.com>
+Received: from smtprelay0225.hostedemail.com ([216.40.44.225]
+ helo=smtprelay.hostedemail.com)
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRG7l-0006sk-8g
+ for ath10k@lists.infradead.org; Wed, 02 Oct 2013 06:41:29 +0000
+Message-ID: <1380696054.2081.35.camel@joe-AO722>
+Subject: Re: [PATCH net-next] net:drivers/net: Miscellaneous conversions to
+ ETH_ALEN
+From: Joe Perches <joe@perches.com>
+Date: Tue, 01 Oct 2013 23:40:54 -0700
+In-Reply-To: <87k3hw469z.fsf@kamboji.qca.qualcomm.com>
+References: <1380679480.2081.24.camel@joe-AO722>
+ <87k3hw469z.fsf@kamboji.qca.qualcomm.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +21,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, netdev <netdev@vger.kernel.org>
 Cc: ath10k@lists.infradead.org
 
-T24gMSBPY3RvYmVyIDIwMTMgMjA6MTEsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IEhpLAo+Cj4gSSBoYXZlbid0IGJlZW4gdGVzdGluZyB3aXRoIGFsbCBkZWJ1
-ZyB0ZXN0cyBlbmFibGVkIGZvciBmZXcgZGF5cy4KPiBFbmFibGVkIHRoZW0gbm93IGFuZCBzZWUg
-dGhlIEJVRyBiZWxvdy4gVGhpcyBpcyB3aXRoIGNvbW1pdCA3MWJjY2ExZmY3Zi4KPgo+IEthbGxl
-Cj4KPiBbIDI1MC4xMjU4NTJdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBpcnEgNDkgZm9yIE1T
-SS9NU0ktWAo+IFsgMjUwLjEyNjk1OV0gYXRoMTBrOiBNU0kgaW50ZXJydXB0IGhhbmRsaW5nCj4g
-WyAyNTEuMzU3NTYxXSBhdGgxMGs6IFVBUlQgcHJpbnRzIGRpc2FibGVkCj4gWyAgMjUxLjQzMjQ3
-NV0gYXRoMTBrOiBmaXJtd2FyZSA5OTkuOTk5LjAuNzE2IGJvb3RlZAo+IFsgIDI1MS40NDM0NDBd
-IGF0aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDMuMAo+IFsgIDI1MS40NDc0ODhdIEJVRzogc2No
-ZWR1bGluZyB3aGlsZSBhdG9taWM6IGlwLzI2OTUvMHgwMDAwMDAwMgo+IFsgIDI1MS40NDc2MDRd
-IElORk86IGxvY2tkZXAgaXMgdHVybmVkIG9mZi4KPiBbICAyNTEuNDQ3NzE0XSBNb2R1bGVzIGxp
-bmtlZCBpbjogYXRoMTBrX3BjaSBhdGgxMGtfY29yZSBhdGggbWFjODAyMTEgY2ZnODAyMTEgW2xh
-c3QgdW5sb2FkZWQ6IGNmZzgwMjExXQo+IFsgIDI1MS40NDk1MTRdIENQVTogMSBQSUQ6IDI2OTUg
-Q29tbTogaXAgVGFpbnRlZDogRyAgICAgICAgVyAgICAzLjExLjAtd2wtYXRoKyAjNzcKPiBbICAy
-NTEuNDQ5NjMxXSBIYXJkd2FyZSBuYW1lOiBIZXdsZXR0LVBhY2thcmQgSFAgUHJvQm9vayA2NTQw
-Yi8xNzIyLCBCSU9TIDY4Q0REIFZlci4gRi4wNCAwMS8yNy8yMDEwCj4gWyAgMjUxLjQ0OTc0M10g
-IDAwMDAwMDAwIDAwMDAwMDAwIGVlYTQzN2U4IGMxNzg1OWM5IGVkZjc1NjgwIGVlYTQzODA0IGMx
-NzgxZjMxIGMxOWE1ZTE4Cj4gWyAgMjUxLjQ1MTU5MV0gIGVkZjc1OTYwIDAwMDAwYTg3IDAwMDAw
-MDAyIGY0NjIwMDAwIGVlYTQzODk0IGMxNzhjNTMzIDAwMDAwMDAwIDAwMDAwMDAyCj4gWyAgMjUx
-LjQ1MzQ3OV0gIDAwMDAwMDAxIDAwMDAwMDAwIGMxMmY4MTJmIDAwMDAwMDAwIGVkZjc1NjgwIGMx
-YmJlMDAwIGMxYTlhZWM4IGVlYTQzODUwCj4gWyAgMjUxLjQ1NDQ5OV0gQ2FsbCBUcmFjZToKPiBb
-ICAyNTEuNDU1NDY5XSAgWzxjMTc4NTljOT5dIGR1bXBfc3RhY2srMHg0Yi8weDY2Cj4gWyAgMjUx
-LjQ1NTU5N10gIFs8YzE3ODFmMzE+XSBfX3NjaGVkdWxlX2J1ZysweDY0LzB4NzYKPiBbICAyNTEu
-NDU1NzIwXSAgWzxjMTc4YzUzMz5dIF9fc2NoZWR1bGUrMHg5NDMvMHhiMzAKPiBbICAyNTEuNDU1
-ODQ0XSAgWzxjMTJmODEyZj5dID8gZGVidWdfb2JqZWN0X2FjdGl2YXRlKzB4NmYvMHgxNTAKPiBb
-ICAyNTEuNDU1OTcwXSAgWzxjMTBhZDhlYj5dID8gdHJhY2VfaGFyZGlycXNfb2ZmKzB4Yi8weDEw
-Cj4gWyAgMjUxLjQ1NjA5MV0gIFs8YzE3OGU2OTY+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJxcmVz
-dG9yZSsweDM2LzB4NjAKPiBbICAyNTEuNDU2MjExXSAgWzxjMTBiMzYzOD5dID8gdHJhY2VfaGFy
-ZGlycXNfb25fY2FsbGVyKzB4MTgvMHgxYzAKPiBbICAyNTEuNDU2MzUyXSAgWzxjMTc4YzlkMz5d
-IHNjaGVkdWxlKzB4MjMvMHg2MAo+IFsgIDI1MS40NTY1MjVdICBbPGMxNzg5MDAzPl0gc2NoZWR1
-bGVfdGltZW91dCsweDEwMy8weDI4MAo+IFsgIDI1MS40NTc0ODBdICBbPGY5MmU2ZWUwPl0gPyBp
-ZWVlODAyMTFfaXRlcmF0ZV9hY3RpdmVfaW50ZXJmYWNlcysweDEzMC8weDEzMCBbbWFjODAyMTFd
-Cj4gWyAgMjUxLjQ1NzYxMF0gIFs8YzEwNTMxNDA+XSA/IGNhbGxfdGltZXJfZm4rMHgyYzAvMHgy
-YzAKPiBbICAyNTEuNDU3NzM4XSAgWzxmOTM5YTM4Zj5dIGF0aDEwa193bWlfY21kX3NlbmQrMHhh
-Zi8weDExMCBbYXRoMTBrX2NvcmVdCj4gWyAgMjUxLjQ1Nzg2MV0gIFs8YzEwNmJkYjA+XSA/IF9f
-aW5pdF93YWl0cXVldWVfaGVhZCsweDYwLzB4NjAKPiBbICAyNTEuNDU3OTg2XSAgWzxmOTM5YzU3
-YT5dIGF0aDEwa193bWlfc2V0X3BzbW9kZSsweDZhLzB4ODAgW2F0aDEwa19jb3JlXQo+IFsgIDI1
-MS40NTgxMTBdICBbPGY5MzhlNTU3Pl0gYXRoMTBrX3BzX2l0ZXIrMHg4Ny8weDE0MCBbYXRoMTBr
-X2NvcmVdCj4gWyAgMjUxLjQ1ODI1OF0gIFs8ZjkyZTcwMWE+XSBpZWVlODAyMTFfaXRlcmF0ZV9h
-Y3RpdmVfaW50ZXJmYWNlc19hdG9taWMrMHgxM2EvMHgyYzAgW21hYzgwMjExXQo+IFsgIDI1MS40
-NTg0MzVdICBbPGY5MmU2ZWUwPl0gPyBpZWVlODAyMTFfaXRlcmF0ZV9hY3RpdmVfaW50ZXJmYWNl
-cysweDEzMC8weDEzMCBbbWFjODAyMTFdCgpBaCwgdGhpcyBpcyBhbm90aGVyIHRoaW5nIEkndmUg
-bWlzc2VkIHdpdGggdGhlIFdNSS9IVEMgY2hhbmdlcyAoYWxvbmcKd2l0aCB0aGUgd2VwIGtleSBp
-bmRleGVzKSA6LS8KCkkgd29uZGVyIGlmIGl0J3MgYWJvdXQgdGltZSB0byBoYXZlIGEgcGVyLWFy
-dmlmIGNvbmZpZyB3b3JrZXIuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+On Wed, 2013-10-02 at 07:59 +0300, Kalle Valo wrote:
+> (Cutting the CC smaller)
+
+Please include netdev.  (cc'd)
+
+> Joe Perches <joe@perches.com> writes:
+> 
+> > Convert the memset/memcpy uses of 6 to ETH_ALEN
+> > where appropriate.
+[]
+> > Signed-off-by: Joe Perches <joe@perches.com>
+[]
+> Acked-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
