@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRILy-0001JX-JC
- for ath10k@lists.infradead.org; Wed, 02 Oct 2013 09:04:20 +0000
+ id 1VRIM1-0001JW-7a
+ for ath10k@lists.infradead.org; Wed, 02 Oct 2013 09:04:22 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/4] ath10k: split tid calculation from tx function
-Date: Wed, 2 Oct 2013 11:03:38 +0200
-Message-ID: <1380704621-4670-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/4] ath10k: remove ce_sendlist_send
+Date: Wed, 2 Oct 2013 11:03:40 +0200
+Message-ID: <1380704621-4670-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1380704621-4670-1-git-send-email-michal.kazior@tieto.com>
 References: <1380292706-3609-1-git-send-email-michal.kazior@tieto.com>
  <1380704621-4670-1-git-send-email-michal.kazior@tieto.com>
@@ -26,54 +26,103 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Tidy up ath10k_tx().
+It is completely pointless to keep this function
+around. It doesn't do anything different than
+ce_send except it introduces more overhead.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |   34 ---------------------------------
+ drivers/net/wireless/ath/ath10k/ce.h  |   15 ---------------
+ drivers/net/wireless/ath/ath10k/pci.c |    4 ++--
+ 3 files changed, 2 insertions(+), 51 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 8684e03..7415a60 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1407,6 +1407,20 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
- /* TX handlers */
- /***************/
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 834e29e..9e6daa9 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -338,40 +338,6 @@ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 	return ret;
+ }
  
-+static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
-+{
-+	if (ieee80211_is_mgmt(hdr->frame_control))
-+		return HTT_DATA_TX_EXT_TID_MGMT;
-+
-+	if (!ieee80211_is_data_qos(hdr->frame_control))
-+		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
-+
-+	if (!is_unicast_ether_addr(ieee80211_get_DA(hdr)))
-+		return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
-+
-+	return ieee80211_get_qos_ctl(hdr)[0] & IEEE80211_QOS_CTL_TID_MASK;
-+}
-+
- /*
-  * Frames sent to the FW have to be in "Native Wifi" format.
-  * Strip the QoS field from the 802.11 header.
-@@ -1788,14 +1802,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 
- 	/* we must calculate tid before we apply qos workaround
- 	 * as we'd lose the qos control field */
--	tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
--	if (ieee80211_is_mgmt(hdr->frame_control)) {
--		tid = HTT_DATA_TX_EXT_TID_MGMT;
--	} else if (ieee80211_is_data_qos(hdr->frame_control) &&
--		   is_unicast_ether_addr(ieee80211_get_DA(hdr))) {
--		u8 *qc = ieee80211_get_qos_ctl(hdr);
--		tid = qc[0] & IEEE80211_QOS_CTL_TID_MASK;
+-int ath10k_ce_sendlist_send(struct ath10k_ce_pipe *ce_state,
+-			    void *per_transfer_context,
+-			    unsigned int transfer_id,
+-			    u32 paddr, unsigned int nbytes,
+-			    u32 flags)
+-{
+-	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+-	struct ath10k *ar = ce_state->ar;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	unsigned int nentries_mask = src_ring->nentries_mask;
+-	unsigned int sw_index;
+-	unsigned int write_index;
+-	int delta, ret = -ENOMEM;
+-
+-	spin_lock_bh(&ar_pci->ce_lock);
+-
+-	sw_index = src_ring->sw_index;
+-	write_index = src_ring->write_index;
+-
+-	delta = CE_RING_DELTA(nentries_mask, write_index, sw_index - 1);
+-
+-	if (delta >= 1) {
+-		ret = ath10k_ce_send_nolock(ce_state, per_transfer_context,
+-					    paddr, nbytes,
+-					    transfer_id, flags);
+-		if (ret)
+-			ath10k_warn("CE send failed: %d\n", ret);
 -	}
-+	tid = ath10k_tx_h_get_tid(hdr);
+-
+-	spin_unlock_bh(&ar_pci->ce_lock);
+-
+-	return ret;
+-}
+-
+ int ath10k_ce_recv_buf_enqueue(struct ath10k_ce_pipe *ce_state,
+ 			       void *per_recv_context,
+ 			       u32 buffer)
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index aec8028..949b174 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -156,21 +156,6 @@ void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
+ 				void (*send_cb)(struct ath10k_ce_pipe *),
+ 				int disable_interrupts);
  
- 	/* it makes no sense to process injected frames like that */
- 	if (info->control.vif &&
+-/*
+- * Queue a "sendlist" of buffers to be sent using gather to a single
+- * anonymous destination buffer
+- *   ce         - which copy engine to use
+- *   sendlist        - list of simple buffers to send using gather
+- *   transfer_id     - arbitrary ID; reflected to destination
+- * Returns 0 on success; otherwise an error status.
+- *
+- * Implemenation note: Pushes multiple buffers with Gather to Source ring.
+- */
+-int ath10k_ce_sendlist_send(struct ath10k_ce_pipe *ce_state,
+-			    void *per_transfer_context,
+-			    unsigned int transfer_id,
+-			    u32 paddr, unsigned int nbytes,
+-			    u32 flags);
+ 
+ /*==================Recv=======================*/
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index dff23d9..4f6a978 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -730,8 +730,8 @@ static int ath10k_pci_hif_send_head(struct ath10k *ar, u8 pipe_id,
+ 	pipe_info->num_sends_allowed--;
+ 	spin_unlock_bh(&pipe_info->pipe_lock);
+ 
+-	ret = ath10k_ce_sendlist_send(ce_hdl, nbuf, transfer_id,
+-				      skb_cb->paddr, len, flags);
++	ret = ath10k_ce_send(ce_hdl, nbuf, skb_cb->paddr, len, transfer_id,
++			     flags);
+ 	if (ret)
+ 		ath10k_warn("CE send failed: %p\n", nbuf);
+ 
 -- 
 1.7.9.5
 
