@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRiiC-0002Ns-73
- for ath10k@lists.infradead.org; Thu, 03 Oct 2013 13:13:02 +0000
+ id 1VRiiF-0002Ns-IX
+ for ath10k@lists.infradead.org; Thu, 03 Oct 2013 13:13:04 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT 0/3] ath10k: fixes
-Date: Thu, 3 Oct 2013 15:09:22 +0200
-Message-ID: <1380805765-31521-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH/RFT 2/3] ath10k: track vif list internally
+Date: Thu, 3 Oct 2013 15:09:24 +0200
+Message-ID: <1380805765-31521-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1380805765-31521-1-git-send-email-michal.kazior@tieto.com>
+References: <1380805765-31521-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +25,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+mac80211 interface interations functions have
+peculiar locking issues. This patch introduces
+internal (to ath10k) vif list that will be used
+for vif iteration purposes.
 
-This patchset addresses recently spotted issue
-with (yet another) scheduling while atomic bug
-(the other being WEP key index setting). This one
-is related to hw_config() and powersave settings.
-This comes from recent changes I've do to HTC/WMI.
-WMI commands can now block so it's illegal to call
-them in an atomic context anymore.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c |    2 ++
+ drivers/net/wireless/ath/ath10k/core.h |    3 +++
+ drivers/net/wireless/ath/ath10k/mac.c  |    3 +++
+ 3 files changed, 8 insertions(+)
 
-ath10k needs to setup some settings per-vdev (i.e.
-per-interface) such as powersave, rts, fragmentation.
-Until now mac80211 iteration functions were used.
-However using non-atomic iteration function variant
-doesn't solve the problem as it introduces an
-issue with iflist_mtx deadlock in some cases.
-
-I briefly tried to reproduce the issue Kalle
-reported but was unsuccessful thus the "/RFT".
-
-
-
-Michal Kazior (3):
-  ath10k: fix add_interface failure handling
-  ath10k: track vif list internally
-  ath10k: fix scheduling while atomic config bug
-
- drivers/net/wireless/ath/ath10k/core.c |    2 +
- drivers/net/wireless/ath/ath10k/core.h |    3 +
- drivers/net/wireless/ath/ath10k/mac.c  |  199 ++++++++++++++++----------------
- 3 files changed, 107 insertions(+), 97 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7b5dd09..4d04dc8 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -710,6 +710,7 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 	mutex_init(&ar->conf_mutex);
+ 	spin_lock_init(&ar->data_lock);
+ 
++	INIT_LIST_HEAD(&ar->arvifs);
+ 	INIT_LIST_HEAD(&ar->peers);
+ 	init_waitqueue_head(&ar->peer_mapping_wq);
+ 
+@@ -817,6 +818,7 @@ int ath10k_core_start(struct ath10k *ar)
+ 		goto err_disconnect_htc;
+ 
+ 	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
++	INIT_LIST_HEAD(&ar->arvifs);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index ce36daa..de20ac0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -205,6 +205,8 @@ struct ath10k_peer {
+ #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
+ 
+ struct ath10k_vif {
++	struct list_head list;
++
+ 	u32 vdev_id;
+ 	enum wmi_vdev_type vdev_type;
+ 	enum wmi_vdev_subtype vdev_subtype;
+@@ -402,6 +404,7 @@ struct ath10k {
+ 	/* protects shared structure data */
+ 	spinlock_t data_lock;
+ 
++	struct list_head arvifs;
+ 	struct list_head peers;
+ 	wait_queue_head_t peer_mapping_wq;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7f8b258..292e5cd 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2051,6 +2051,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	list_add(&arvif->list, &ar->arvifs);
+ 
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+ 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
+@@ -2131,6 +2132,7 @@ err_peer_delete:
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+ 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	list_del(&arvif->list);
+ err:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+@@ -2153,6 +2155,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+ 	ar->free_vdev_map |= 1 << (arvif->vdev_id);
++	list_del(&arvif->list);
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
 -- 
 1.7.9.5
 
