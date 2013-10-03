@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0079.hostedemail.com ([216.40.44.79]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRc4o-0000u5-5n
- for ath10k@lists.infradead.org; Thu, 03 Oct 2013 06:07:55 +0000
-Message-ID: <1380780437.2081.106.camel@joe-AO722>
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VRcSg-0001QO-73
+ for ath10k@lists.infradead.org; Thu, 03 Oct 2013 06:32:34 +0000
+Date: Thu, 3 Oct 2013 08:32:11 +0200 (CEST)
+From: Julia Lawall <julia.lawall@lip6.fr>
 Subject: Re: [PATCH net-next] ath10k: wmi: Convert use of 6 to ETH_ALEN
-From: Joe Perches <joe@perches.com>
-Date: Wed, 02 Oct 2013 23:07:17 -0700
-In-Reply-To: <1380780021.19002.164.camel@edumazet-glaptop.roam.corp.google.com>
+In-Reply-To: <1380778451.2081.103.camel@joe-AO722>
+Message-ID: <alpine.DEB.2.02.1310030824570.2006@localhost6.localdomain6>
 References: <1380679480.2081.24.camel@joe-AO722>
  <87k3hw469z.fsf@kamboji.qca.qualcomm.com>
  <1380696054.2081.35.camel@joe-AO722>
  <CAB=NE6V3b4+B06hzPjhww52wp1FHho3329cP25=5Cy833bysvg@mail.gmail.com>
- <1380736969.2081.72.camel@joe-AO722>
+ <1380736969.2081.72.camel@joe-AO722> 
  <alpine.DEB.2.02.1310030034030.2162@localhost6.localdomain6>
  <1380758954.2081.79.camel@joe-AO722> <1380760114.2081.81.camel@joe-AO722>
  <1380771110.2081.89.camel@joe-AO722> <1380771551.2081.93.camel@joe-AO722>
@@ -23,8 +22,7 @@ References: <1380679480.2081.24.camel@joe-AO722>
  <1380776994.2081.101.camel@joe-AO722>
  <1380777884.19002.155.camel@edumazet-glaptop.roam.corp.google.com>
  <1380778451.2081.103.camel@joe-AO722>
- <1380780021.19002.164.camel@edumazet-glaptop.roam.corp.google.com>
-Mime-Version: 1.0
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,28 +35,71 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, netdev <netdev@vger.kernel.org>, "John W.
- Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Joe Perches <joe@perches.com>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, netdev <netdev@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-On Wed, 2013-10-02 at 23:00 -0700, Eric Dumazet wrote:
-> On Wed, 2013-10-02 at 22:34 -0700, Joe Perches wrote:
-> > https://lkml.org/lkml/2013/10/1/517
-> I had no problem with this one.
-> Did I say something (funny or not) about it ?
+The following semantic patch fixes the type declarations.  It should be 
+run with the argument --recursive-includes for best (but slowest) results.
 
-Nope, you didn't say anything publicly or
-even privately to me.
+julia
 
-> Apparently you mix things and you do not like me commenting or giving a
-> feedback on a _particular_ patch.
+@@
+identifier x;
+expression e1;
+type T;
+@@
 
-Feedback like expecting 500 individual patches
-when you apparently saw one that modified 57 files
-with multiple maintainers _is_ pretty funny.
+T x[
+- 6
++ ETH_ALEN
+];
+... when any
+(
+memcpy(x,e1,ETH_ALEN)
+|
+memcpy(e1,x,ETH_ALEN)
+|
+memset(x,e1,ETH_ALEN)
+)
 
-cheers, Joe
+@r@
+type T,T1;
+identifier x;
+@@
 
+T {
+...
+T1 x[6];
+...
+};
+
+@s@
+r.T *e;
+identifier r.x;
+expression e1;
+@@
+
+(
+memcpy(e->x,e1,ETH_ALEN)
+|
+memcpy(e1,e->x,ETH_ALEN)
+|
+memset(e->x,e1,ETH_ALEN)
+)
+
+@depends on s@
+type r.T,r.T1;
+identifier r.x;
+@@
+
+T {
+...
+T1 x[
+-6
++ ETH_ALEN
+ ];
+...
+};
 
 _______________________________________________
 ath10k mailing list
