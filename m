@@ -1,27 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRcSg-0001QO-73
- for ath10k@lists.infradead.org; Thu, 03 Oct 2013 06:32:34 +0000
-Date: Thu, 3 Oct 2013 08:32:11 +0200 (CEST)
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH net-next] ath10k: wmi: Convert use of 6 to ETH_ALEN
-In-Reply-To: <1380778451.2081.103.camel@joe-AO722>
-Message-ID: <alpine.DEB.2.02.1310030824570.2006@localhost6.localdomain6>
-References: <1380679480.2081.24.camel@joe-AO722>
- <87k3hw469z.fsf@kamboji.qca.qualcomm.com>
- <1380696054.2081.35.camel@joe-AO722>
- <CAB=NE6V3b4+B06hzPjhww52wp1FHho3329cP25=5Cy833bysvg@mail.gmail.com>
- <1380736969.2081.72.camel@joe-AO722> 
- <alpine.DEB.2.02.1310030034030.2162@localhost6.localdomain6>
- <1380758954.2081.79.camel@joe-AO722> <1380760114.2081.81.camel@joe-AO722>
- <1380771110.2081.89.camel@joe-AO722> <1380771551.2081.93.camel@joe-AO722>
- <1380773924.19002.131.camel@edumazet-glaptop.roam.corp.google.com>
- <87fvsjynuk.fsf@kamboji.qca.qualcomm.com>
- <1380775478.19002.139.camel@edumazet-glaptop.roam.corp.google.com>
- <1380776994.2081.101.camel@joe-AO722>
- <1380777884.19002.155.camel@edumazet-glaptop.roam.corp.google.com>
- <1380778451.2081.103.camel@joe-AO722>
+ id 1VRiiC-0002Ns-73
+ for ath10k@lists.infradead.org; Thu, 03 Oct 2013 13:13:02 +0000
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH/RFT 0/3] ath10k: fixes
+Date: Thu, 3 Oct 2013 15:09:22 +0200
+Message-ID: <1380805765-31521-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,71 +20,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, "Luis R. Rodriguez" <mcgrof@do-not-panic.com>, netdev <netdev@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The following semantic patch fixes the type declarations.  It should be 
-run with the argument --recursive-includes for best (but slowest) results.
+Hi,
 
-julia
+This patchset addresses recently spotted issue
+with (yet another) scheduling while atomic bug
+(the other being WEP key index setting). This one
+is related to hw_config() and powersave settings.
+This comes from recent changes I've do to HTC/WMI.
+WMI commands can now block so it's illegal to call
+them in an atomic context anymore.
 
-@@
-identifier x;
-expression e1;
-type T;
-@@
+ath10k needs to setup some settings per-vdev (i.e.
+per-interface) such as powersave, rts, fragmentation.
+Until now mac80211 iteration functions were used.
+However using non-atomic iteration function variant
+doesn't solve the problem as it introduces an
+issue with iflist_mtx deadlock in some cases.
 
-T x[
-- 6
-+ ETH_ALEN
-];
-... when any
-(
-memcpy(x,e1,ETH_ALEN)
-|
-memcpy(e1,x,ETH_ALEN)
-|
-memset(x,e1,ETH_ALEN)
-)
+I briefly tried to reproduce the issue Kalle
+reported but was unsuccessful thus the "/RFT".
 
-@r@
-type T,T1;
-identifier x;
-@@
 
-T {
-...
-T1 x[6];
-...
-};
 
-@s@
-r.T *e;
-identifier r.x;
-expression e1;
-@@
+Michal Kazior (3):
+  ath10k: fix add_interface failure handling
+  ath10k: track vif list internally
+  ath10k: fix scheduling while atomic config bug
 
-(
-memcpy(e->x,e1,ETH_ALEN)
-|
-memcpy(e1,e->x,ETH_ALEN)
-|
-memset(e->x,e1,ETH_ALEN)
-)
+ drivers/net/wireless/ath/ath10k/core.c |    2 +
+ drivers/net/wireless/ath/ath10k/core.h |    3 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  199 ++++++++++++++++----------------
+ 3 files changed, 107 insertions(+), 97 deletions(-)
 
-@depends on s@
-type r.T,r.T1;
-identifier r.x;
-@@
+-- 
+1.7.9.5
 
-T {
-...
-T1 x[
--6
-+ ETH_ALEN
- ];
-...
-};
 
 _______________________________________________
 ath10k mailing list
