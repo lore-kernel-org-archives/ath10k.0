@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb06.tieto.com ([131.207.168.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VS0aU-0004Dd-2Q
- for ath10k@lists.infradead.org; Fri, 04 Oct 2013 08:18:16 +0000
+ id 1VS0nR-0004Zo-VQ
+ for ath10k@lists.infradead.org; Fri, 04 Oct 2013 08:31:38 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/2] ath10k: Fix bug in max. VHT A-MPDU size
-Date: Fri, 4 Oct 2013 10:17:09 +0200
-Message-ID: <1380874630-14280-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1380874630-14280-1-git-send-email-michal.kazior@tieto.com>
-References: <to=1380292567-2363-1-git-send-email-michal.kazior@tieto.com>
- <1380874630-14280-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix station authorization
+Date: Fri, 4 Oct 2013 10:30:28 +0200
+Message-ID: <1380875428-20899-1-git-send-email-michal.kazior@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,56 +21,74 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Sujith Manoharan <c_manoha@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+Peer authorization should be delayed until
+mac80211 says given station has transitioned into
+authorized state.
 
-For VHT peers, the maximum A-MPDU size has to be calculated
-from the VHT capabilities element and not the HT-cap. The formula
-is the same, but a higher value is used in VHT, allowing larger
-aggregates to be transmitted.
+The state is propagated from mac80211 for both
+open and protected networks.
 
-The patch contains a workaround for some Netgear/Linksys APs that
-report Rx A-MPDU factor incorrectly.
+This should prevent data traffic to/from given
+station until authorization completes. Until now
+it was probably possible for unauthorized traffic
+to pass leading to possible security issues.
 
-Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+I've been keeping this patch in my closet apparently.
+
+Tested briefly and seems there are no regressions.
+
+ drivers/net/wireless/ath/ath10k/mac.c |   27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 8684e03..7e06e75 100644
+index 8684e03..0175d22 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1033,14 +1033,26 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
- 				    struct wmi_peer_assoc_complete_arg *arg)
- {
- 	const struct ieee80211_sta_vht_cap *vht_cap = &sta->vht_cap;
-+	u8 ampdu_factor;
+@@ -781,7 +781,6 @@ static void ath10k_peer_assoc_h_basic(struct ath10k *ar,
+ 	memcpy(arg->addr, sta->addr, ETH_ALEN);
+ 	arg->vdev_id = arvif->vdev_id;
+ 	arg->peer_aid = sta->aid;
+-	arg->peer_flags |= WMI_PEER_AUTH;
  
- 	if (!vht_cap->vht_supported)
- 		return;
- 
- 	arg->peer_flags |= WMI_PEER_VHT;
--
- 	arg->peer_vht_caps = vht_cap->cap;
- 
-+	ampdu_factor =
-+		(vht_cap->cap & IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK) >>
-+		IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_SHIFT;
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
+ 		/*
+@@ -2603,6 +2602,32 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		if (ret)
+ 			ath10k_warn("Failed to disassociate station: %pM\n",
+ 				    sta->addr);
++	} else if (old_state == IEEE80211_STA_ASSOC &&
++		   new_state == IEEE80211_STA_AUTHORIZED) {
++		/*
++		 * Authorization
++		 */
++		ath10k_dbg(ATH10K_DBG_MAC, "mac sta %pM authorized\n",
++			   sta->addr);
 +
-+	/* Workaround: Some Netgear/Linksys 11ac APs set Rx A-MPDU factor to
-+	 * zero in VHT IE. Using it would result in degraded throughput.
-+	 * arg->peer_max_mpdu at this point contains HT max_mpdu so keep
-+	 * it if VHT max_mpdu is smaller. */
-+	arg->peer_max_mpdu = max(arg->peer_max_mpdu,
-+				 (1 << (IEEE80211_HT_MAX_AMPDU_FACTOR +
-+					ampdu_factor)) - 1);
++		ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++						WMI_PEER_AUTHORIZE, 1);
++		if (ret)
++			ath10k_warn("Failed to authorize station: %pM\n",
++				    sta->addr);
++	} else if (old_state == IEEE80211_STA_AUTHORIZED &&
++		   new_state == IEEE80211_STA_ASSOC) {
++		/*
++		 * De-Authorization
++		 */
++		ath10k_dbg(ATH10K_DBG_MAC, "mac sta %pM de-authorized\n",
++			   sta->addr);
 +
- 	if (sta->bandwidth == IEEE80211_STA_RX_BW_80)
- 		arg->peer_flags |= WMI_PEER_80MHZ;
++		ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++						WMI_PEER_AUTHORIZE, 0);
++		if (ret)
++			ath10k_warn("Failed to de-authorize station: %pM\n",
++				    sta->addr);
+ 	}
  
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
 1.7.9.5
 
