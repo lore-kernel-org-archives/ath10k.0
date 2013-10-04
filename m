@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb06.tieto.com ([131.207.168.38])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VRyBV-0001NT-Ht
- for ath10k@lists.infradead.org; Fri, 04 Oct 2013 05:44:18 +0000
+ id 1VRyBW-0001NU-3p
+ for ath10k@lists.infradead.org; Fri, 04 Oct 2013 05:44:19 +0000
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT v2 4/4] ath10k: remove unnecessary checks
-Date: Fri, 4 Oct 2013 07:43:45 +0200
-Message-ID: <1380865425-3791-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH/RFT v2 2/4] ath10k: track vif list internally
+Date: Fri, 4 Oct 2013 07:43:43 +0200
+Message-ID: <1380865425-3791-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1380865425-3791-1-git-send-email-michal.kazior@tieto.com>
 References: <1380805765-31521-1-git-send-email-michal.kazior@tieto.com>
  <1380865425-3791-1-git-send-email-michal.kazior@tieto.com>
@@ -26,67 +26,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-mac80211 interface iteration functions that were
-used originally iterated over interfaces that
-weren't re-added to the driver during recovery.
-
-Since internal vif list is now used it's safe to
-remove the safe-guard as internal vif list is
-based on add/remove_interface function which
-guarantees that vdev is created in FW before it is
-iterated over.
+mac80211 interface interations functions have
+peculiar locking issues. This patch introduces
+internal (to ath10k) vif list that will be used
+for vif iteration purposes.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   21 ---------------------
- 1 file changed, 21 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |    2 ++
+ drivers/net/wireless/ath/ath10k/core.h |    3 +++
+ drivers/net/wireless/ath/ath10k/mac.c  |    3 +++
+ 3 files changed, 8 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7b5dd09..4d04dc8 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -710,6 +710,7 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 	mutex_init(&ar->conf_mutex);
+ 	spin_lock_init(&ar->data_lock);
+ 
++	INIT_LIST_HEAD(&ar->arvifs);
+ 	INIT_LIST_HEAD(&ar->peers);
+ 	init_waitqueue_head(&ar->peer_mapping_wq);
+ 
+@@ -817,6 +818,7 @@ int ath10k_core_start(struct ath10k *ar)
+ 		goto err_disconnect_htc;
+ 
+ 	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
++	INIT_LIST_HEAD(&ar->arvifs);
+ 
+ 	return 0;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index ce36daa..de20ac0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -205,6 +205,8 @@ struct ath10k_peer {
+ #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
+ 
+ struct ath10k_vif {
++	struct list_head list;
++
+ 	u32 vdev_id;
+ 	enum wmi_vdev_type vdev_type;
+ 	enum wmi_vdev_subtype vdev_subtype;
+@@ -402,6 +404,7 @@ struct ath10k {
+ 	/* protects shared structure data */
+ 	spinlock_t data_lock;
+ 
++	struct list_head arvifs;
+ 	struct list_head peers;
+ 	wait_queue_head_t peer_mapping_wq;
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 583f065..7567db0 100644
+index 7f8b258..292e5cd 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1924,13 +1924,6 @@ static int ath10k_config_ps(struct ath10k *ar)
+@@ -2051,6 +2051,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	}
  
- 	lockdep_assert_held(&ar->conf_mutex);
+ 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	list_add(&arvif->list, &ar->arvifs);
  
--	/* During HW reconfiguration mac80211 reports all interfaces that were
--	 * running until reconfiguration was started. Since FW doesn't have any
--	 * vdevs at this point we must not iterate over this interface list.
--	 * This setting will be updated upon add_interface(). */
--	if (ar->state == ATH10K_STATE_RESTARTED)
--		return 0;
--
- 	list_for_each_entry(arvif, &ar->arvifs, list) {
- 		ret = ath10k_mac_vif_setup_ps(arvif);
- 		if (ret) {
-@@ -2840,13 +2833,6 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
- 	struct ath10k_vif *arvif;
- 	int ret = 0;
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+ 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
+@@ -2131,6 +2132,7 @@ err_peer_delete:
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+ 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	list_del(&arvif->list);
+ err:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+@@ -2153,6 +2155,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 	spin_unlock_bh(&ar->data_lock);
  
--	/* During HW reconfiguration mac80211 reports all interfaces that were
--	 * running until reconfiguration was started. Since FW doesn't have any
--	 * vdevs at this point we must not iterate over this interface list.
--	 * This setting will be updated upon add_interface(). */
--	if (ar->state == ATH10K_STATE_RESTARTED)
--		return 0;
--
- 	mutex_lock(&ar->conf_mutex);
- 	list_for_each_entry(arvif, &ar->arvifs, list) {
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d rts threshold %d\n",
-@@ -2870,13 +2856,6 @@ static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
- 	struct ath10k_vif *arvif;
- 	int ret = 0;
+ 	ar->free_vdev_map |= 1 << (arvif->vdev_id);
++	list_del(&arvif->list);
  
--	/* During HW reconfiguration mac80211 reports all interfaces that were
--	 * running until reconfiguration was started. Since FW doesn't have any
--	 * vdevs at this point we must not iterate over this interface list.
--	 * This setting will be updated upon add_interface(). */
--	if (ar->state == ATH10K_STATE_RESTARTED)
--		return 0;
--
- 	mutex_lock(&ar->conf_mutex);
- 	list_for_each_entry(arvif, &ar->arvifs, list) {
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d fragmentation threshold %d\n",
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
 -- 
 1.7.9.5
 
