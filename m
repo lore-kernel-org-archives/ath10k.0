@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTDnI-0001i2-KS
- for ath10k@lists.infradead.org; Mon, 07 Oct 2013 16:36:29 +0000
+ id 1VTDkv-0001b6-On
+ for ath10k@lists.infradead.org; Mon, 07 Oct 2013 16:34:02 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 2/2] ath10k: fix scheduling while atomic bug
+Subject: Re: [PATCH v2 1/2] ath10k: Fix bug in max. VHT A-MPDU size
 References: <to=1380292567-2363-1-git-send-email-michal.kazior@tieto.com>
  <1380874630-14280-1-git-send-email-michal.kazior@tieto.com>
- <1380874630-14280-3-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 7 Oct 2013 19:35:57 +0300
-In-Reply-To: <1380874630-14280-3-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 4 Oct 2013 10:17:10 +0200")
-Message-ID: <87li25t4wi.fsf@kamboji.qca.qualcomm.com>
+ <1380874630-14280-2-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 7 Oct 2013 19:33:35 +0300
+In-Reply-To: <1380874630-14280-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 4 Oct 2013 10:17:09 +0200")
+Message-ID: <87pprht50g.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,27 +26,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Sujith Manoharan <c_manoha@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Recent WMI/HTC changes made it possible for WMI
-> commands to sleep (if there's not enough HTC TX
-> credits to submit a command). TX path is in an
-> atomic context so calling WMI commands in it is
-> wrong.
+> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 >
-> This simply moves WEP key index update to a worker
-> and fixes the 'scheduling while atomic' bug.
+> For VHT peers, the maximum A-MPDU size has to be calculated
+> from the VHT capabilities element and not the HT-cap. The formula
+> is the same, but a higher value is used in VHT, allowing larger
+> aggregates to be transmitted.
 >
-> This still leaves multiple WEP key handling laggy,
-> i.e. some frames may be TXed with an old/different
-> key (although recipient should still be able to RX
-> them).
+> The patch contains a workaround for some Netgear/Linksys APs that
+> report Rx A-MPDU factor incorrectly.
 >
+> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I see conflicts with this patch. Can you rebase, please?
+I see warnings with this patch:
+
+drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_peer_assoc_h_vht':
+drivers/net/wireless/ath/ath10k/mac.c:1049:179: warning: comparison of distinct pointer types lacks a cast [enabled by default]
+drivers/net/wireless/ath/ath10k/mac.c:1049:30: error: incompatible types in comparison expression (different signedness)
+drivers/net/wireless/ath/ath10k/mac.c:1042: WARNING: line over 80 characters
 
 -- 
 Kalle Valo
