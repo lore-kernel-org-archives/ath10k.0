@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTWKf-0006BZ-Iq
- for ath10k@lists.infradead.org; Tue, 08 Oct 2013 12:24:11 +0000
+ id 1VTWLO-0006De-P6
+ for ath10k@lists.infradead.org; Tue, 08 Oct 2013 12:24:55 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: minor fixes
-References: <1380867200-19714-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 8 Oct 2013 15:23:39 +0300
-In-Reply-To: <1380867200-19714-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 4 Oct 2013 08:13:18 +0200")
-Message-ID: <87vc18rlx0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix RX performance when using AP 10.X FW
+References: <1381201236-17035-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 8 Oct 2013 15:24:09 +0300
+In-Reply-To: <1381201236-17035-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 7 Oct 2013 20:00:36 -0700")
+Message-ID: <87r4bwrlw6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,14 +28,17 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The patchset fixes a compilation warning and a
-> memory leak in FW loading code.
+> Due to oversight AP 10.X support was merged with
+> Ethernet RX decap mode.
 >
-> Michal Kazior (2):
->   ath10k: fix printf format string
->   ath10k: fix possible memory leak in new FW loading
+> Only Native Wifi RX decap mode guarantees IP
+> header is properly aligned and avoids sk_buff data
+> realignment (which is very expensive
+> performance-wise) in mac80211.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Both appplied, thanks for fixing my bugs :)
+Thanks, applied.
 
 -- 
 Kalle Valo
