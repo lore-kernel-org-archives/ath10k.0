@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTQIR-0002X6-B2
- for ath10k@lists.infradead.org; Tue, 08 Oct 2013 05:57:28 +0000
+ id 1VTWKf-0006BZ-Iq
+ for ath10k@lists.infradead.org; Tue, 08 Oct 2013 12:24:11 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: ath10k: ath-next-test branch for testing patches
-Date: Tue, 8 Oct 2013 08:56:59 +0300
-Message-ID: <87hacstidw.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: minor fixes
+References: <1380867200-19714-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 8 Oct 2013 15:23:39 +0300
+In-Reply-To: <1380867200-19714-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 4 Oct 2013 08:13:18 +0200")
+Message-ID: <87vc18rlx0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,30 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-I have noticed that Fengguan's build tests are really helpful, his build
-bot has found quite a few issues. To make more use of the buildbot I
-have been experimenting with ath-next-test branch for running various
-tests. So I'm planning to change the ath10k patch flow to this:
+> The patchset fixes a compilation warning and a
+> memory leak in FW loading code.
+>
+> Michal Kazior (2):
+>   ath10k: fix printf format string
+>   ath10k: fix possible memory leak in new FW loading
 
-1. patch gets posted to the mailing lists
-
-2. patch is immediately applied to ath-next-test
-
-3. waiting two business days for patch being under review (unless the patch
-   is urgent)
-
-4. if no comments or warnings, the patch is applied to ath-next branch
-
-5. ath-next is merged to master branch
-
-6. ath-next pull requests are sent once a week (or so)
-
-Thoughts?
+Both appplied, thanks for fixing my bugs :)
 
 -- 
 Kalle Valo
