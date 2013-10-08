@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VTcSA-0002BA-KF
- for ath10k@lists.infradead.org; Tue, 08 Oct 2013 18:56:19 +0000
+ id 1VTcUZ-0002Fb-4y
+ for ath10k@lists.infradead.org; Tue, 08 Oct 2013 18:58:47 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix station authorization
-References: <1380875428-20899-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 8 Oct 2013 21:55:52 +0300
-In-Reply-To: <1380875428-20899-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 4 Oct 2013 10:30:28 +0200")
-Message-ID: <8761t7sibr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 0/2] ath10k: wep & ampdu fix
+References: <1380874630-14280-1-git-send-email-michal.kazior@tieto.com>
+ <1381200718-16271-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 8 Oct 2013 21:58:19 +0300
+In-Reply-To: <1381200718-16271-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 7 Oct 2013 19:51:56 -0700")
+Message-ID: <871u3vsi7o.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,21 +29,38 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Peer authorization should be delayed until
-> mac80211 says given station has transitioned into
-> authorized state.
+> Hi,
 >
-> The state is propagated from mac80211 for both
-> open and protected networks.
+> One throughput fix and one bug fix.
 >
-> This should prevent data traffic to/from given
-> station until authorization completes. Until now
-> it was probably possible for unauthorized traffic
-> to pass leading to possible security issues.
+> The bug fix addresses my oversight when reworking
+> HTC/WMI. I haven't seen the error yet but I'm
+> quite certain this should be fixed.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> v2:
+>  * A-MPDU patch contains a workaround for
+>    Netgear/Linksys 11ac APs
+>  * patchset cover mail title changed to avoid
+>    confusion (too many patchsets named the same
+>    way..)
+>
+> v3:
+>  * fix lines over 80 chars (Kalle)
+>  * fix max() cast warning (Kalle)
+>  * rebase (Kalle)
+>  * add Tested-by (thanks Kalle!)
+>
+>
+> Michal Kazior (1):
+>   ath10k: fix scheduling while atomic bug
 
-Thanks, applied.
+I dropped this patch for now, need to think more about how to handle
+this.
+
+> Sujith Manoharan (1):
+>   ath10k: Fix bug in max. VHT A-MPDU size
+
+This is applied, thanks.
 
 -- 
 Kalle Valo
