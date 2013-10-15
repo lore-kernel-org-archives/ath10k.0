@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-f45.google.com ([209.85.214.45])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW9n1-0001a2-NM
- for ath10k@lists.infradead.org; Tue, 15 Oct 2013 18:56:20 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/7] ath10k: fixes 2013-10-15
-References: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 15 Oct 2013 21:55:53 +0300
-In-Reply-To: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 15 Oct 2013 10:29:49 -0700")
-Message-ID: <8761sybbye.fsf@kamboji.qca.qualcomm.com>
+ id 1VWARU-0002um-J8
+ for ath10k@lists.infradead.org; Tue, 15 Oct 2013 19:38:11 +0000
+Received: by mail-bk0-f45.google.com with SMTP id mx11so3313327bkb.4
+ for <ath10k@lists.infradead.org>; Tue, 15 Oct 2013 12:37:42 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87a9iabc9c.fsf@kamboji.qca.qualcomm.com>
+References: <20131015184548.14123.56949.stgit@localhost6.localdomain6>
+ <20131015184656.14123.70575.stgit@localhost6.localdomain6>
+ <87a9iabc9c.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 15 Oct 2013 12:37:42 -0700
+Message-ID: <CA+BoTQ=CqXN24Y-tb=r_ruUUNR_imcztULnoTScAvScvbPDbdA@mail.gmail.com>
+Subject: Re: [PATCH 3/7] ath10k: track vif list internally
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +22,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> This is a bunch of fixes I've had queued up for
-> some time now. I was reluctant to send them
-> without some additional checks and because some of
-> the fixes are not ideal. At least we can get a
-> discussion going if anything raises any serious
-> concern.
->
->
-> Michal Kazior (7):
->   ath10k: prevent starting monitor without a vdev
->   ath10k: add sanity checks for monitor management
->   ath10k: fix endianess in prints
->   ath10k: fix NSS reporting in RX
->   ath10k: fix NULL deref upon early FW crash
->   ath10k: fix device initialization routine
->   ath10k: fix FW crashes on heavy TX on 10.1.389 AP FW
-
-I get few long line warnings:
-
-drivers/net/wireless/ath/ath10k/pci.c:1842: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1844: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1847: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1848: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1856: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1875: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1877: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/pci.c:1883: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/mac.c:2284: WARNING: line over 80 characters
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgT2N0b2JlciAyMDEzIDExOjQ5LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0ZXM6
+Cj4KPj4gRnJvbTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4+Cj4+
+IG1hYzgwMjExIGludGVyZmFjZSBpbnRlcmF0aW9ucyBmdW5jdGlvbnMgaGF2ZQo+PiBwZWN1bGlh
+ciBsb2NraW5nIGlzc3Vlcy4gVGhpcyBwYXRjaCBpbnRyb2R1Y2VzCj4+IGludGVybmFsICh0byBh
+dGgxMGspIHZpZiBsaXN0IHRoYXQgd2lsbCBiZSB1c2VkCj4+IGZvciB2aWYgaXRlcmF0aW9uIHB1
+cnBvc2VzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
+b21tLmNvbT4KPgo+IFsuLi5dCj4KPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9jb3JlLmMKPj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3Jl
+LmMKPj4gQEAgLTcxMyw2ICs3MTMsNyBAQCBzdHJ1Y3QgYXRoMTBrICphdGgxMGtfY29yZV9jcmVh
+dGUodm9pZCAqaGlmX3ByaXYsIHN0cnVjdCBkZXZpY2UgKmRldiwKPj4gICAgICAgbXV0ZXhfaW5p
+dCgmYXItPmNvbmZfbXV0ZXgpOwo+PiAgICAgICBzcGluX2xvY2tfaW5pdCgmYXItPmRhdGFfbG9j
+ayk7Cj4+Cj4+ICsgICAgIElOSVRfTElTVF9IRUFEKCZhci0+YXJ2aWZzKTsKPj4gICAgICAgSU5J
+VF9MSVNUX0hFQUQoJmFyLT5wZWVycyk7Cj4+ICAgICAgIGluaXRfd2FpdHF1ZXVlX2hlYWQoJmFy
+LT5wZWVyX21hcHBpbmdfd3EpOwo+Pgo+PiBAQCAtODI0LDYgKzgyNSw3IEBAIGludCBhdGgxMGtf
+Y29yZV9zdGFydChzdHJ1Y3QgYXRoMTBrICphcikKPj4gICAgICAgICAgICAgICBnb3RvIGVycl9k
+aXNjb25uZWN0X2h0YzsKPj4KPj4gICAgICAgYXItPmZyZWVfdmRldl9tYXAgPSAoMSA8PCBUQVJH
+RVRfTlVNX1ZERVZTKSAtIDE7Cj4+ICsgICAgIElOSVRfTElTVF9IRUFEKCZhci0+YXJ2aWZzKTsK
+Pj4KPj4gICAgICAgcmV0dXJuIDA7Cj4KPiBNaWNoYWwsIHdoeSBkbyB0aGUgSU5JVF9MSVNUX0hF
+QUQoKSB0d2ljZT8gSXNuJ3QgaXQgZW5vdWdoIHRvIGRvIGl0Cj4gY29yZV9zdGFydCgpPwoKQWgs
+IGdvb2QgcG9pbnQuIEl0J3MgbW9zdCBsaWtlbHkgb2theSB0byBqdXN0IGRvIGl0IGluCmF0aDEw
+a19jb3JlX3N0YXJ0KCkuIFRoZSBvbmUgaW4gYXRoMTBrX2NvcmVfY3JlYXRlKCkgaXNuJ3QgcmVx
+dWlyZWQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
