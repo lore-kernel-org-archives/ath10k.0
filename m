@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-pa0-x229.google.com ([2607:f8b0:400e:c03::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW7IW-0005Vz-3u
- for ath10k@lists.infradead.org; Tue, 15 Oct 2013 16:16:40 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/7] ath10k: fix scheduling while atomic bug
-References: <20131015161434.21869.51150.stgit@localhost6.localdomain6>
-Date: Tue, 15 Oct 2013 19:16:11 +0300
-In-Reply-To: <20131015161434.21869.51150.stgit@localhost6.localdomain6> (Kalle
- Valo's message of "Tue, 15 Oct 2013 19:14:34 +0300")
-Message-ID: <87zjqabjck.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1VW8UE-0007Rf-H5
+ for ath10k@lists.infradead.org; Tue, 15 Oct 2013 17:32:51 +0000
+Received: by mail-pa0-f41.google.com with SMTP id bj1so9410141pad.14
+ for <ath10k@lists.infradead.org>; Tue, 15 Oct 2013 10:32:26 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 0/7] ath10k: fixes 2013-10-15
+Date: Tue, 15 Oct 2013 10:29:49 -0700
+Message-Id: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +17,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Hi,
 
-> From: Michal Kazior <michal.kazior@tieto.com>
->
-> Recent WMI/HTC changes made it possible for WMI
-> commands to sleep (if there's not enough HTC TX
-> credits to submit a command). TX path is in an
-> atomic context so calling WMI commands in it is
-> wrong.
->
-> This simply moves WEP key index update to a worker
-> and fixes the 'scheduling while atomic' bug.
->
-> This still leaves multiple WEP key handling laggy,
-> i.e. some frames may be TXed with an old/different
-> key (although recipient should still be able to RX
-> them).
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+This is a bunch of fixes I've had queued up for
+some time now. I was reluctant to send them
+without some additional checks and because some of
+the fixes are not ideal. At least we can get a
+discussion going if anything raises any serious
+concern.
 
-Please ignore, I sent this accidentally too early.
+
+Michal Kazior (7):
+  ath10k: prevent starting monitor without a vdev
+  ath10k: add sanity checks for monitor management
+  ath10k: fix endianess in prints
+  ath10k: fix NSS reporting in RX
+  ath10k: fix NULL deref upon early FW crash
+  ath10k: fix device initialization routine
+  ath10k: fix FW crashes on heavy TX on 10.1.389 AP FW
+
+ drivers/net/wireless/ath/ath10k/ce.c     |  11 +++
+ drivers/net/wireless/ath/ath10k/core.c   |   3 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  11 +--
+ drivers/net/wireless/ath/ath10k/hw.h     |   7 ++
+ drivers/net/wireless/ath/ath10k/mac.c    |  24 +++++-
+ drivers/net/wireless/ath/ath10k/pci.c    | 130 +++++++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/txrx.c   |   2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  16 ++--
+ 8 files changed, 134 insertions(+), 70 deletions(-)
 
 -- 
-Kalle Valo
+1.8.4.rc3
+
 
 _______________________________________________
 ath10k mailing list
