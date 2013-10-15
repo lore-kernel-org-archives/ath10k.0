@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VW9eL-0001I6-1Z
- for ath10k@lists.infradead.org; Tue, 15 Oct 2013 18:47:22 +0000
-Subject: [PATCH 3/7] ath10k: track vif list internally
+ id 1VW9eQ-0001Ih-0W
+ for ath10k@lists.infradead.org; Tue, 15 Oct 2013 18:47:27 +0000
+Subject: [PATCH 4/7] ath10k: fix scheduling while atomic config bug
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 15 Oct 2013 21:46:56 +0300
-Message-ID: <20131015184656.14123.70575.stgit@localhost6.localdomain6>
+Date: Tue, 15 Oct 2013 21:47:02 +0300
+Message-ID: <20131015184702.14123.63521.stgit@localhost6.localdomain6>
 In-Reply-To: <20131015184548.14123.56949.stgit@localhost6.localdomain6>
 References: <20131015184548.14123.56949.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -27,88 +27,255 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Michal Kazior <michal.kazior@tieto.com>
 
-mac80211 interface interations functions have
-peculiar locking issues. This patch introduces
-internal (to ath10k) vif list that will be used
-for vif iteration purposes.
+Recent HTC/WMI changes introduced the bug. ath10k
+was using _atomic iteration function with
+sleepable functions.
 
+mac80211 provides another iteration function but
+it cannot be safely called in hw_config() callback
+due to local->iflist_mtx being possibly acquired
+already.
+
+The patch uses internal vif list for iteration
+purposes and removes/refactors no longer necessary
+_iter functions.
+
+Reported-By: Kalle Valo <kvalo@qca.qualcomm.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    2 ++
- drivers/net/wireless/ath/ath10k/core.h |    3 +++
- drivers/net/wireless/ath/ath10k/mac.c  |    3 +++
- 3 files changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c |  146 ++++++++++++++-------------------
+ 1 file changed, 62 insertions(+), 84 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c5561a9..ed51b51 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -713,6 +713,7 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
- 	mutex_init(&ar->conf_mutex);
- 	spin_lock_init(&ar->data_lock);
- 
-+	INIT_LIST_HEAD(&ar->arvifs);
- 	INIT_LIST_HEAD(&ar->peers);
- 	init_waitqueue_head(&ar->peer_mapping_wq);
- 
-@@ -824,6 +825,7 @@ int ath10k_core_start(struct ath10k *ar)
- 		goto err_disconnect_htc;
- 
- 	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
-+	INIT_LIST_HEAD(&ar->arvifs);
- 
- 	return 0;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index cef5455..0934f76 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -205,6 +205,8 @@ struct ath10k_peer {
- #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
- 
- struct ath10k_vif {
-+	struct list_head list;
-+
- 	u32 vdev_id;
- 	enum wmi_vdev_type vdev_type;
- 	enum wmi_vdev_subtype vdev_subtype;
-@@ -404,6 +406,7 @@ struct ath10k {
- 	/* protects shared structure data */
- 	spinlock_t data_lock;
- 
-+	struct list_head arvifs;
- 	struct list_head peers;
- 	wait_queue_head_t peer_mapping_wq;
- 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 16e55bd..c8e4180 100644
+index c8e4180..bd42a14 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2093,6 +2093,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -723,35 +723,30 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
+ /*
+  * Review this when mac80211 gains per-interface powersave support.
+  */
+-static void ath10k_ps_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
++static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+ {
+-	struct ath10k_generic_iter *ar_iter = data;
+-	struct ieee80211_conf *conf = &ar_iter->ar->hw->conf;
+-	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	struct ath10k *ar = arvif->ar;
++	struct ieee80211_conf *conf = &ar->hw->conf;
+ 	enum wmi_sta_powersave_param param;
+ 	enum wmi_sta_ps_mode psmode;
+ 	int ret;
+ 
+ 	lockdep_assert_held(&arvif->ar->conf_mutex);
+ 
+-	if (vif->type != NL80211_IFTYPE_STATION)
+-		return;
++	if (arvif->vif->type != NL80211_IFTYPE_STATION)
++		return 0;
+ 
+ 	if (conf->flags & IEEE80211_CONF_PS) {
+ 		psmode = WMI_STA_PS_MODE_ENABLED;
+ 		param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
+ 
+-		ret = ath10k_wmi_set_sta_ps_param(ar_iter->ar,
+-						  arvif->vdev_id,
+-						  param,
++		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id, param,
+ 						  conf->dynamic_ps_timeout);
+ 		if (ret) {
+ 			ath10k_warn("Failed to set inactivity time for VDEV: %d\n",
+ 				    arvif->vdev_id);
+-			return;
++			return ret;
+ 		}
+-
+-		ar_iter->ret = ret;
+ 	} else {
+ 		psmode = WMI_STA_PS_MODE_DISABLED;
  	}
+@@ -759,11 +754,14 @@ static void ath10k_ps_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d psmode %s\n",
+ 		   arvif->vdev_id, psmode ? "enable" : "disable");
  
- 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
-+	list_add(&arvif->list, &ar->arvifs);
+-	ar_iter->ret = ath10k_wmi_set_psmode(ar_iter->ar, arvif->vdev_id,
+-					     psmode);
+-	if (ar_iter->ret)
++	ret = ath10k_wmi_set_psmode(ar, arvif->vdev_id, psmode);
++	if (ret) {
+ 		ath10k_warn("Failed to set PS Mode: %d for VDEV: %d\n",
+ 			    psmode, arvif->vdev_id);
++		return ret;
++	}
++
++	return 0;
+ }
  
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
- 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
-@@ -2175,6 +2176,7 @@ err_peer_delete:
- err_vdev_delete:
- 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
- 	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
-+	list_del(&arvif->list);
+ /**********************/
+@@ -1959,9 +1957,10 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	cancel_work_sync(&ar->restart_work);
+ }
  
- err:
+-static void ath10k_config_ps(struct ath10k *ar)
++static int ath10k_config_ps(struct ath10k *ar)
+ {
+-	struct ath10k_generic_iter ar_iter;
++	struct ath10k_vif *arvif;
++	int ret = 0;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+@@ -1970,17 +1969,17 @@ static void ath10k_config_ps(struct ath10k *ar)
+ 	 * vdevs at this point we must not iterate over this interface list.
+ 	 * This setting will be updated upon add_interface(). */
+ 	if (ar->state == ATH10K_STATE_RESTARTED)
+-		return;
+-
+-	memset(&ar_iter, 0, sizeof(struct ath10k_generic_iter));
+-	ar_iter.ar = ar;
++		return 0;
+ 
+-	ieee80211_iterate_active_interfaces_atomic(
+-		ar->hw, IEEE80211_IFACE_ITER_NORMAL,
+-		ath10k_ps_iter, &ar_iter);
++	list_for_each_entry(arvif, &ar->arvifs, list) {
++		ret = ath10k_mac_vif_setup_ps(arvif);
++		if (ret) {
++			ath10k_warn("could not setup powersave (%d)\n", ret);
++			break;
++		}
++	}
+ 
+-	if (ar_iter.ret)
+-		ath10k_warn("failed to set ps config (%d)\n", ar_iter.ret);
++	return ret;
+ }
+ 
+ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+@@ -2882,86 +2881,65 @@ static int ath10k_cancel_remain_on_channel(struct ieee80211_hw *hw)
+  * Both RTS and Fragmentation threshold are interface-specific
+  * in ath10k, but device-specific in mac80211.
+  */
+-static void ath10k_set_rts_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
+-{
+-	struct ath10k_generic_iter *ar_iter = data;
+-	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+-	u32 rts = ar_iter->ar->hw->wiphy->rts_threshold;
+ 
+-	lockdep_assert_held(&arvif->ar->conf_mutex);
++static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif;
++	int ret = 0;
+ 
+ 	/* During HW reconfiguration mac80211 reports all interfaces that were
+ 	 * running until reconfiguration was started. Since FW doesn't have any
+ 	 * vdevs at this point we must not iterate over this interface list.
+ 	 * This setting will be updated upon add_interface(). */
+-	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
+-		return;
+-
+-	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d rts_threshold %d\n",
+-		   arvif->vdev_id, rts);
+-
+-	ar_iter->ret = ath10k_mac_set_rts(arvif, rts);
+-	if (ar_iter->ret)
+-		ath10k_warn("Failed to set RTS threshold for VDEV: %d\n",
+-			    arvif->vdev_id);
+-}
+-
+-static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
+-{
+-	struct ath10k_generic_iter ar_iter;
+-	struct ath10k *ar = hw->priv;
+-
+-	memset(&ar_iter, 0, sizeof(struct ath10k_generic_iter));
+-	ar_iter.ar = ar;
++	if (ar->state == ATH10K_STATE_RESTARTED)
++		return 0;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	ieee80211_iterate_active_interfaces_atomic(
+-		hw, IEEE80211_IFACE_ITER_NORMAL,
+-		ath10k_set_rts_iter, &ar_iter);
++	list_for_each_entry(arvif, &ar->arvifs, list) {
++		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d rts threshold %d\n",
++			   arvif->vdev_id, value);
++
++		ret = ath10k_mac_set_rts(arvif, value);
++		if (ret) {
++			ath10k_warn("could not set rts threshold for vdev %d (%d)\n",
++				    arvif->vdev_id, ret);
++			break;
++		}
++	}
  	mutex_unlock(&ar->conf_mutex);
-@@ -2201,6 +2203,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	spin_unlock_bh(&ar->data_lock);
  
- 	ar->free_vdev_map |= 1 << (arvif->vdev_id);
-+	list_del(&arvif->list);
+-	return ar_iter.ret;
++	return ret;
+ }
  
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
+-static void ath10k_set_frag_iter(void *data, u8 *mac, struct ieee80211_vif *vif)
++static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
+ {
+-	struct ath10k_generic_iter *ar_iter = data;
+-	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+-	u32 frag = ar_iter->ar->hw->wiphy->frag_threshold;
+-
+-	lockdep_assert_held(&arvif->ar->conf_mutex);
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif;
++	int ret = 0;
+ 
+ 	/* During HW reconfiguration mac80211 reports all interfaces that were
+ 	 * running until reconfiguration was started. Since FW doesn't have any
+ 	 * vdevs at this point we must not iterate over this interface list.
+ 	 * This setting will be updated upon add_interface(). */
+-	if (ar_iter->ar->state == ATH10K_STATE_RESTARTED)
+-		return;
+-
+-	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d fragmentation_threshold %d\n",
+-		   arvif->vdev_id, frag);
+-
+-	ar_iter->ret = ath10k_mac_set_frag(arvif, frag);
+-	if (ar_iter->ret)
+-		ath10k_warn("Failed to set frag threshold for VDEV: %d\n",
+-			    arvif->vdev_id);
+-}
+-
+-static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
+-{
+-	struct ath10k_generic_iter ar_iter;
+-	struct ath10k *ar = hw->priv;
+-
+-	memset(&ar_iter, 0, sizeof(struct ath10k_generic_iter));
+-	ar_iter.ar = ar;
++	if (ar->state == ATH10K_STATE_RESTARTED)
++		return 0;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	ieee80211_iterate_active_interfaces_atomic(
+-		hw, IEEE80211_IFACE_ITER_NORMAL,
+-		ath10k_set_frag_iter, &ar_iter);
++	list_for_each_entry(arvif, &ar->arvifs, list) {
++		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d fragmentation threshold %d\n",
++			   arvif->vdev_id, value);
++
++		ret = ath10k_mac_set_rts(arvif, value);
++		if (ret) {
++			ath10k_warn("could not set fragmentation threshold for vdev %d (%d)\n",
++				    arvif->vdev_id, ret);
++			break;
++		}
++	}
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+-	return ar_iter.ret;
++	return ret;
+ }
+ 
+ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
 
 
 _______________________________________________
