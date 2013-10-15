@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ebb05.tieto.com ([131.207.168.36])
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VVzU8-0008KY-CZ
- for ath10k@lists.infradead.org; Tue, 15 Oct 2013 07:56:09 +0000
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 1/2] ath10k: rename WMI_CMD_UNDEFINED
-Date: Tue, 15 Oct 2013 09:55:31 +0200
-Message-ID: <1381823732-10128-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1VW7Gt-0005TV-Ft
+ for ath10k@lists.infradead.org; Tue, 15 Oct 2013 16:15:01 +0000
+Subject: [PATCH 1/7] ath10k: fix scheduling while atomic bug
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Tue, 15 Oct 2013 19:14:34 +0300
+Message-ID: <20131015161434.21869.51150.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,126 +21,155 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org
 
-Rename WMI_CMD_UNDEFINED to WMI_CMD_UNSUPPORTED. This is more
-accurate here. Also return -EOPNOTSUPP instead of -EINVAL in
-wmi_cmd_send().
+From: Michal Kazior <michal.kazior@tieto.com>
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Recent WMI/HTC changes made it possible for WMI
+commands to sleep (if there's not enough HTC TX
+credits to submit a command). TX path is in an
+atomic context so calling WMI commands in it is
+wrong.
+
+This simply moves WEP key index update to a worker
+and fixes the 'scheduling while atomic' bug.
+
+This still leaves multiple WEP key handling laggy,
+i.e. some frames may be TXed with an old/different
+key (although recipient should still be able to RX
+them).
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   46 ++++++++++++++++-----------------
- drivers/net/wireless/ath/ath10k/wmi.h |    2 +-
- 2 files changed, 24 insertions(+), 24 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |    4 ++
+ drivers/net/wireless/ath/ath10k/mac.c  |   53 ++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index f9766fa..ea2669b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -149,7 +149,7 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
- 	.start_scan_cmdid = WMI_10X_START_SCAN_CMDID,
- 	.stop_scan_cmdid = WMI_10X_STOP_SCAN_CMDID,
- 	.scan_chan_list_cmdid = WMI_10X_SCAN_CHAN_LIST_CMDID,
--	.scan_sch_prio_tbl_cmdid = WMI_CMD_UNDEFINED,
-+	.scan_sch_prio_tbl_cmdid = WMI_CMD_UNSUPPORTED,
- 	.pdev_set_regdomain_cmdid = WMI_10X_PDEV_SET_REGDOMAIN_CMDID,
- 	.pdev_set_channel_cmdid = WMI_10X_PDEV_SET_CHANNEL_CMDID,
- 	.pdev_set_param_cmdid = WMI_10X_PDEV_SET_PARAM_CMDID,
-@@ -182,11 +182,11 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
- 	.peer_mcast_group_cmdid = WMI_10X_PEER_MCAST_GROUP_CMDID,
- 	.bcn_tx_cmdid = WMI_10X_BCN_TX_CMDID,
- 	.pdev_send_bcn_cmdid = WMI_10X_PDEV_SEND_BCN_CMDID,
--	.bcn_tmpl_cmdid = WMI_CMD_UNDEFINED,
-+	.bcn_tmpl_cmdid = WMI_CMD_UNSUPPORTED,
- 	.bcn_filter_rx_cmdid = WMI_10X_BCN_FILTER_RX_CMDID,
- 	.prb_req_filter_rx_cmdid = WMI_10X_PRB_REQ_FILTER_RX_CMDID,
- 	.mgmt_tx_cmdid = WMI_10X_MGMT_TX_CMDID,
--	.prb_tmpl_cmdid = WMI_CMD_UNDEFINED,
-+	.prb_tmpl_cmdid = WMI_CMD_UNSUPPORTED,
- 	.addba_clear_resp_cmdid = WMI_10X_ADDBA_CLEAR_RESP_CMDID,
- 	.addba_send_cmdid = WMI_10X_ADDBA_SEND_CMDID,
- 	.addba_status_cmdid = WMI_10X_ADDBA_STATUS_CMDID,
-@@ -211,9 +211,9 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
- 	.p2p_dev_set_discoverability = WMI_10X_P2P_DEV_SET_DISCOVERABILITY,
- 	.p2p_go_set_beacon_ie = WMI_10X_P2P_GO_SET_BEACON_IE,
- 	.p2p_go_set_probe_resp_ie = WMI_10X_P2P_GO_SET_PROBE_RESP_IE,
--	.p2p_set_vendor_ie_data_cmdid = WMI_CMD_UNDEFINED,
--	.ap_ps_peer_param_cmdid = WMI_CMD_UNDEFINED,
--	.ap_ps_peer_uapsd_coex_cmdid = WMI_CMD_UNDEFINED,
-+	.p2p_set_vendor_ie_data_cmdid = WMI_CMD_UNSUPPORTED,
-+	.ap_ps_peer_param_cmdid = WMI_CMD_UNSUPPORTED,
-+	.ap_ps_peer_uapsd_coex_cmdid = WMI_CMD_UNSUPPORTED,
- 	.peer_rate_retry_sched_cmdid = WMI_10X_PEER_RATE_RETRY_SCHED_CMDID,
- 	.wlan_profile_trigger_cmdid = WMI_10X_WLAN_PROFILE_TRIGGER_CMDID,
- 	.wlan_profile_set_hist_intvl_cmdid =
-@@ -242,25 +242,25 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
- 	.vdev_spectral_scan_enable_cmdid =
- 				WMI_10X_VDEV_SPECTRAL_SCAN_ENABLE_CMDID,
- 	.request_stats_cmdid = WMI_10X_REQUEST_STATS_CMDID,
--	.set_arp_ns_offload_cmdid = WMI_CMD_UNDEFINED,
--	.network_list_offload_config_cmdid = WMI_CMD_UNDEFINED,
--	.gtk_offload_cmdid = WMI_CMD_UNDEFINED,
--	.csa_offload_enable_cmdid = WMI_CMD_UNDEFINED,
--	.csa_offload_chanswitch_cmdid = WMI_CMD_UNDEFINED,
--	.chatter_set_mode_cmdid = WMI_CMD_UNDEFINED,
--	.peer_tid_addba_cmdid = WMI_CMD_UNDEFINED,
--	.peer_tid_delba_cmdid = WMI_CMD_UNDEFINED,
--	.sta_dtim_ps_method_cmdid = WMI_CMD_UNDEFINED,
--	.sta_uapsd_auto_trig_cmdid = WMI_CMD_UNDEFINED,
--	.sta_keepalive_cmd = WMI_CMD_UNDEFINED,
-+	.set_arp_ns_offload_cmdid = WMI_CMD_UNSUPPORTED,
-+	.network_list_offload_config_cmdid = WMI_CMD_UNSUPPORTED,
-+	.gtk_offload_cmdid = WMI_CMD_UNSUPPORTED,
-+	.csa_offload_enable_cmdid = WMI_CMD_UNSUPPORTED,
-+	.csa_offload_chanswitch_cmdid = WMI_CMD_UNSUPPORTED,
-+	.chatter_set_mode_cmdid = WMI_CMD_UNSUPPORTED,
-+	.peer_tid_addba_cmdid = WMI_CMD_UNSUPPORTED,
-+	.peer_tid_delba_cmdid = WMI_CMD_UNSUPPORTED,
-+	.sta_dtim_ps_method_cmdid = WMI_CMD_UNSUPPORTED,
-+	.sta_uapsd_auto_trig_cmdid = WMI_CMD_UNSUPPORTED,
-+	.sta_keepalive_cmd = WMI_CMD_UNSUPPORTED,
- 	.echo_cmdid = WMI_10X_ECHO_CMDID,
- 	.pdev_utf_cmdid = WMI_10X_PDEV_UTF_CMDID,
- 	.dbglog_cfg_cmdid = WMI_10X_DBGLOG_CFG_CMDID,
- 	.pdev_qvit_cmdid = WMI_10X_PDEV_QVIT_CMDID,
--	.pdev_ftm_intg_cmdid = WMI_CMD_UNDEFINED,
--	.vdev_set_keepalive_cmdid = WMI_CMD_UNDEFINED,
--	.vdev_get_keepalive_cmdid = WMI_CMD_UNDEFINED,
--	.force_fw_hang_cmdid = WMI_CMD_UNDEFINED,
-+	.pdev_ftm_intg_cmdid = WMI_CMD_UNSUPPORTED,
-+	.vdev_set_keepalive_cmdid = WMI_CMD_UNSUPPORTED,
-+	.vdev_get_keepalive_cmdid = WMI_CMD_UNSUPPORTED,
-+	.force_fw_hang_cmdid = WMI_CMD_UNSUPPORTED,
- 	.gpio_config_cmdid = WMI_10X_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_10X_GPIO_OUTPUT_CMDID,
- };
-@@ -611,9 +611,9 @@ static void ath10k_wmi_op_ep_tx_credits(struct ath10k *ar)
- static int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb,
- 			       u32 cmd_id)
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index ce36daa..cef5455 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -215,8 +215,10 @@ struct ath10k_vif {
+ 	struct ath10k *ar;
+ 	struct ieee80211_vif *vif;
+ 
++	struct work_struct wep_key_work;
+ 	struct ieee80211_key_conf *wep_keys[WMI_MAX_KEY_INDEX + 1];
+-	u8 def_wep_key_index;
++	u8 def_wep_key_idx;
++	u8 def_wep_key_newidx;
+ 
+ 	u16 tx_seq_no;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 97d7111..bc0e17b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1239,7 +1239,7 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
+ 	/* FIXME: why don't we print error if wmi call fails? */
+ 	ret = ath10k_wmi_vdev_down(ar, arvif->vdev_id);
+ 
+-	arvif->def_wep_key_index = 0;
++	arvif->def_wep_key_idx = 0;
+ }
+ 
+ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+@@ -1467,6 +1467,30 @@ static void ath10k_tx_h_qos_workaround(struct ieee80211_hw *hw,
+ 	skb_pull(skb, IEEE80211_QOS_CTL_LEN);
+ }
+ 
++static void ath10k_tx_wep_key_work(struct work_struct *work)
++{
++	struct ath10k_vif *arvif = container_of(work, struct ath10k_vif,
++						wep_key_work);
++	int ret, keyidx = arvif->def_wep_key_newidx;
++
++	if (arvif->def_wep_key_idx == keyidx)
++		return;
++
++	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d set keyidx %d\n",
++		   arvif->vdev_id, keyidx);
++
++	ret = ath10k_wmi_vdev_set_param(arvif->ar,
++					arvif->vdev_id,
++					arvif->ar->wmi.vdev_param->def_keyid,
++					keyidx);
++	if (ret) {
++		ath10k_warn("could not update wep keyidx (%d)\n", ret);
++		return;
++	}
++
++	arvif->def_wep_key_idx = keyidx;
++}
++
+ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
  {
--	int ret = -EINVAL;
-+	int ret = -EOPNOTSUPP;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+@@ -1475,8 +1499,6 @@ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	struct ath10k *ar = arvif->ar;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
+-	u32 vdev_param;
+-	int ret;
  
--	if (cmd_id == WMI_CMD_UNDEFINED) {
-+	if (cmd_id == WMI_CMD_UNSUPPORTED) {
- 		ath10k_warn("wmi command %d is not supported by firmware\n",
- 			    cmd_id);
- 		return ret;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 7692c14..78c991a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -359,7 +359,7 @@ enum wmi_cmd_group {
- #define WMI_CMD_GRP(grp_id) (((grp_id) << 12) | 0x1)
- #define WMI_EVT_GRP_START_ID(grp_id) (((grp_id) << 12) | 0x1)
+ 	if (!ieee80211_has_protected(hdr->frame_control))
+ 		return;
+@@ -1488,21 +1510,14 @@ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	    key->cipher != WLAN_CIPHER_SUITE_WEP104)
+ 		return;
  
--#define WMI_CMD_UNDEFINED 0
-+#define WMI_CMD_UNSUPPORTED 0
+-	if (key->keyidx == arvif->def_wep_key_index)
+-		return;
+-
+-	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d keyidx %d\n",
+-		   arvif->vdev_id, key->keyidx);
+-
+-	vdev_param = ar->wmi.vdev_param->def_keyid;
+-	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-					key->keyidx);
+-	if (ret) {
+-		ath10k_warn("could not update wep keyidx (%d)\n", ret);
++	if (key->keyidx == arvif->def_wep_key_idx)
+ 		return;
+-	}
  
- /* Command IDs and command events for MAIN FW. */
- enum wmi_cmd_id {
--- 
-1.7.10
+-	arvif->def_wep_key_index = key->keyidx;
++	/* FIXME: Most likely a few frames will be TXed with an old key. Simply
++	 * queueing frames until key index is updated is not an option because
++	 * sk_buff may need more processing to be done, e.g. offchannel */
++	arvif->def_wep_key_newidx = key->keyidx;
++	ieee80211_queue_work(ar->hw, &arvif->wep_key_work);
+ }
+ 
+ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar, struct sk_buff *skb)
+@@ -2023,6 +2038,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	arvif->ar = ar;
+ 	arvif->vif = vif;
+ 
++	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
++
+ 	if ((vif->type == NL80211_IFTYPE_MONITOR) && ar->monitor_present) {
+ 		ath10k_warn("Only one monitor interface allowed\n");
+ 		ret = -EBUSY;
+@@ -2078,7 +2095,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+ 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
+-					arvif->def_wep_key_index);
++					arvif->def_wep_key_idx);
+ 	if (ret)
+ 		ath10k_warn("Failed to set default keyid: %d\n", ret);
+ 
+@@ -2147,6 +2164,8 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
++	cancel_work_sync(&arvif->wep_key_work);
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	if (arvif->beacon) {
+ 		dev_kfree_skb_any(arvif->beacon);
 
 
 _______________________________________________
