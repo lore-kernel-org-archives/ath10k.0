@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWTSM-0004jK-Lu
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 15:56:19 +0000
+ id 1VWTTt-0004oF-TY
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 15:57:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 6/8] ath10k: implement ath10k_pci_soc_read/write32()
+Subject: Re: [PATCH v2 7/8] ath10k: fix device initialization routine
 References: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
- <20131016134611.25095.80204.stgit@localhost6.localdomain6>
- <CA+BoTQmP14xuXP=D4mEsJiWOXvtg0iJ4=BmUb=89QgA_AX5edA@mail.gmail.com>
-Date: Wed, 16 Oct 2013 18:55:50 +0300
-In-Reply-To: <CA+BoTQmP14xuXP=D4mEsJiWOXvtg0iJ4=BmUb=89QgA_AX5edA@mail.gmail.com>
- (Michal Kazior's message of "Wed, 16 Oct 2013 08:38:43 -0700")
-Message-ID: <87txgh5hx5.fsf@kamboji.qca.qualcomm.com>
+ <20131016134617.25095.10581.stgit@localhost6.localdomain6>
+ <CA+BoTQkqkuf-=a4giyJHeYdXZ2T3deU7nmuQOxpFcKSzWjGb3Q@mail.gmail.com>
+Date: Wed, 16 Oct 2013 18:57:20 +0300
+In-Reply-To: <CA+BoTQkqkuf-=a4giyJHeYdXZ2T3deU7nmuQOxpFcKSzWjGb3Q@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 16 Oct 2013 08:44:32 -0700")
+Message-ID: <87ppr55hun.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,68 +30,23 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 16 October 2013 06:46, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> To make it easier to access SOC registers. No functional
->> changes.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/pci.c |    3 +--
->>  drivers/net/wireless/ath/ath10k/pci.h |   10 ++++++++++
->>  2 files changed, 11 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
->> index d09f8a2..5c78383 100644
->> --- a/drivers/net/wireless/ath/ath10k/pci.c
->> +++ b/drivers/net/wireless/ath/ath10k/pci.c
->> @@ -2454,8 +2454,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
->>                 return ret;
->>         }
->>
->> -       chip_id = ath10k_pci_read32(ar,
->> -                                   RTC_SOC_BASE_ADDRESS + SOC_CHIP_ID_ADDRESS);
->> +       chip_id = ath10k_pci_soc_read32(ar, SOC_CHIP_ID_ADDRESS);
->>
->>         ath10k_do_pci_sleep(ar);
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
->> index 52fb7b9..a304c33 100644
->> --- a/drivers/net/wireless/ath/ath10k/pci.h
->> +++ b/drivers/net/wireless/ath/ath10k/pci.h
->> @@ -318,6 +318,16 @@ static inline u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
->>         return ioread32(ar_pci->mem + offset);
->>  }
->>
->> +static inline u32 ath10k_pci_soc_read32(struct ath10k *ar, u32 addr)
->> +{
->> +       return ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS + addr);
->> +}
->> +
->> +static inline void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val)
->> +{
->> +       ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + addr, val);
->> +}
->> +
+>> +       /* disable pending irqs */
+>> +       ath10k_pci_core_write32(ar, PCIE_INTR_ENABLE_ADDRESS, 0);
+>> +       ath10k_pci_core_write32(ar, PCIE_INTR_CLR_ADDRESS, ~0);
 >
-> I'm not entirely sure about this. There are a couple of soc address
-> groups (RTC_SOC, RTC_WMAC, SOC_PCIE, SOC_CORE, ..).
+> These use SOC_CORE_BASE_ADDRESS as the suffix, not the RTC_SOC_BASE_ADDRESS.
 
-And then we can have different functions for each group.
+But I am using SOC_CORE_BASE_ADDRESS, right?
 
-> I'd rather use just raw ioread/iowrite than have all those wrappers.
+static inline u32 ath10k_pci_core_read32(struct ath10k *ar, u32 addr)
+{
+	return ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + addr);
+}
 
-Well, I again would prefer to have clean interfaces instead of doing
-address arithmetic in every call :)
-
-> I think the reason for having ath10k_pci_{read,write}32 was the HW v1
-> workaround.
-
-No, it was also to make the code simple.
-
-> Do we really need to keep it?
-
-In my opinion yes. What is the negative side of keeping them? Why don't
-you like these wrappers?
+static inline void ath10k_pci_core_write32(struct ath10k *ar, u32 addr, u32 val)
+{
+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + addr, val);
+}
 
 -- 
 Kalle Valo
