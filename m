@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWRvx-0001il-BL
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 14:18:45 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/7] ath10k: fixes 2013-10-15
-References: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
- <8761sybbye.fsf@kamboji.qca.qualcomm.com>
- <87bo2p74sp.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=wpEWF3sWavKSfKy4s6qW097amCt_VqbapZg-ECWOE=g@mail.gmail.com>
-Date: Wed, 16 Oct 2013 17:18:15 +0300
-In-Reply-To: <CA+BoTQ=wpEWF3sWavKSfKy4s6qW097amCt_VqbapZg-ECWOE=g@mail.gmail.com>
- (Michal Kazior's message of "Wed, 16 Oct 2013 07:05:56 -0700")
-Message-ID: <8738o17108.fsf@kamboji.qca.qualcomm.com>
+ id 1VWTBh-0003ux-J6
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 15:39:06 +0000
+Received: by mail-bk0-f52.google.com with SMTP id e11so336192bkh.39
+ for <ath10k@lists.infradead.org>; Wed, 16 Oct 2013 08:38:43 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20131016134611.25095.80204.stgit@localhost6.localdomain6>
+References: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
+ <20131016134611.25095.80204.stgit@localhost6.localdomain6>
+Date: Wed, 16 Oct 2013 08:38:43 -0700
+Message-ID: <CA+BoTQmP14xuXP=D4mEsJiWOXvtg0iJ4=BmUb=89QgA_AX5edA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/8] ath10k: implement ath10k_pci_soc_read/write32()
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 16 October 2013 05:56, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>
->> Michal, if it's ok for you I'll submit v2 of this patchset. I'll fix the
->> long line warnings and also I do small cleanup to the warm reset code.
->
-> I am totally okay with this. Thank you for your trouble.
-
-As you can see, I changed the warm reset code quite a lot. If you have
-time, please review that carefully.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgT2N0b2JlciAyMDEzIDA2OjQ2LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBUbyBtYWtlIGl0IGVhc2llciB0byBhY2Nlc3MgU09DIHJlZ2lzdGVycy4g
+Tm8gZnVuY3Rpb25hbAo+IGNoYW5nZXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxr
+dmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3BjaS5jIHwgICAgMyArLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9wY2kuaCB8ICAgMTAgKysrKysrKysrKwo+ICAyIGZpbGVzIGNoYW5nZWQsIDExIGluc2VydGlv
+bnMoKyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxl
+c3MvYXRoL2F0aDEway9wY2kuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNp
+LmMKPiBpbmRleCBkMDlmOGEyLi41Yzc4MzgzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3BjaS5jCj4gQEAgLTI0NTQsOCArMjQ1NCw3IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3Bj
+aV9wcm9iZShzdHJ1Y3QgcGNpX2RldiAqcGRldiwKPiAgICAgICAgICAgICAgICAgcmV0dXJuIHJl
+dDsKPiAgICAgICAgIH0KPgo+IC0gICAgICAgY2hpcF9pZCA9IGF0aDEwa19wY2lfcmVhZDMyKGFy
+LAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFJUQ19TT0NfQkFTRV9BRERS
+RVNTICsgU09DX0NISVBfSURfQUREUkVTUyk7Cj4gKyAgICAgICBjaGlwX2lkID0gYXRoMTBrX3Bj
+aV9zb2NfcmVhZDMyKGFyLCBTT0NfQ0hJUF9JRF9BRERSRVNTKTsKPgo+ICAgICAgICAgYXRoMTBr
+X2RvX3BjaV9zbGVlcChhcik7Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9wY2kuaCBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmgK
+PiBpbmRleCA1MmZiN2I5Li5hMzA0YzMzIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvcGNpLmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
+MTBrL3BjaS5oCj4gQEAgLTMxOCw2ICszMTgsMTYgQEAgc3RhdGljIGlubGluZSB1MzIgYXRoMTBr
+X3BjaV9yZWFkMzIoc3RydWN0IGF0aDEwayAqYXIsIHUzMiBvZmZzZXQpCj4gICAgICAgICByZXR1
+cm4gaW9yZWFkMzIoYXJfcGNpLT5tZW0gKyBvZmZzZXQpOwo+ICB9Cj4KPiArc3RhdGljIGlubGlu
+ZSB1MzIgYXRoMTBrX3BjaV9zb2NfcmVhZDMyKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgYWRkcikK
+PiArewo+ICsgICAgICAgcmV0dXJuIGF0aDEwa19wY2lfcmVhZDMyKGFyLCBSVENfU09DX0JBU0Vf
+QUREUkVTUyArIGFkZHIpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgaW5saW5lIHZvaWQgYXRoMTBrX3Bj
+aV9zb2Nfd3JpdGUzMihzdHJ1Y3QgYXRoMTBrICphciwgdTMyIGFkZHIsIHUzMiB2YWwpCj4gK3sK
+PiArICAgICAgIGF0aDEwa19wY2lfd3JpdGUzMihhciwgUlRDX1NPQ19CQVNFX0FERFJFU1MgKyBh
+ZGRyLCB2YWwpOwo+ICt9Cj4gKwoKSSdtIG5vdCBlbnRpcmVseSBzdXJlIGFib3V0IHRoaXMuIFRo
+ZXJlIGFyZSBhIGNvdXBsZSBvZiBzb2MgYWRkcmVzcwpncm91cHMgKFJUQ19TT0MsIFJUQ19XTUFD
+LCBTT0NfUENJRSwgU09DX0NPUkUsIC4uKS4KCkknZCByYXRoZXIgdXNlIGp1c3QgcmF3IGlvcmVh
+ZC9pb3dyaXRlIHRoYW4gaGF2ZSBhbGwgdGhvc2Ugd3JhcHBlcnMuIEkKdGhpbmsgdGhlIHJlYXNv
+biBmb3IgaGF2aW5nIGF0aDEwa19wY2lfe3JlYWQsd3JpdGV9MzIgd2FzIHRoZSBIVyB2MQp3b3Jr
+YXJvdW5kLiBEbyB3ZSByZWFsbHkgbmVlZCB0byBrZWVwIGl0PwoKCk1pY2hhxYIKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
