@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWRR6-0000a0-K9
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 13:46:53 +0000
-Subject: [PATCH v2 8/8] ath10k: fix FW crashes on heavy TX on 10.1.389 AP FW
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 16 Oct 2013 16:46:24 +0300
-Message-ID: <20131016134624.25095.63772.stgit@localhost6.localdomain6>
-In-Reply-To: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
-References: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
+ id 1VWRpj-0001QC-3D
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 14:12:20 +0000
+Received: by mail-bk0-f42.google.com with SMTP id my10so297916bkb.1
+ for <ath10k@lists.infradead.org>; Wed, 16 Oct 2013 07:11:55 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87bo2p74sp.fsf@kamboji.qca.qualcomm.com>
+References: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
+ <8761sybbye.fsf@kamboji.qca.qualcomm.com>
+ <87bo2p74sp.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 16 Oct 2013 07:05:56 -0700
+Message-ID: <CA+BoTQ=wpEWF3sWavKSfKy4s6qW097amCt_VqbapZg-ECWOE=g@mail.gmail.com>
+Subject: Re: [PATCH 0/7] ath10k: fixes 2013-10-15
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,80 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-From: Michal Kazior <michal.kazior@tieto.com>
-
-10.1.389 firmware has some differences in
-calculation of number of outstanding HTT TX
-completions. This led to FW crashes of 10.1.389
-while main firmware branch was unnaffected.
-
-The patch makes sure ath10k doesn't queue up more
-MSDUs than it should.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/ce.c     |   11 +++++++++++
- drivers/net/wireless/ath/ath10k/htt_tx.c |   11 ++++-------
- 2 files changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index e46951b..d243f28 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -1050,6 +1050,17 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
- 	u32 ctrl_addr = ath10k_ce_base_address(ce_id);
- 	int ret;
- 
-+	/*
-+	 * Make sure there's enough CE ringbuffer entries for HTT TX to avoid
-+	 * additional TX locking checks.
-+	 *
-+	 * For the lack of a better place do the check here.
-+	 */
-+	BUILD_BUG_ON(TARGET_NUM_MSDU_DESC >
-+		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
-+	BUILD_BUG_ON(TARGET_10X_NUM_MSDU_DESC >
-+		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
-+
- 	ret = ath10k_pci_wake(ar);
- 	if (ret)
- 		return NULL;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index d9335e9..f1d36d2 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -85,16 +85,13 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
- 
- int ath10k_htt_tx_attach(struct ath10k_htt *htt)
- {
--	u8 pipe;
--
- 	spin_lock_init(&htt->tx_lock);
- 	init_waitqueue_head(&htt->empty_tx_wq);
- 
--	/* At the beginning free queue number should hint us the maximum
--	 * queue length */
--	pipe = htt->ar->htc.endpoint[htt->eid].ul_pipe_id;
--	htt->max_num_pending_tx = ath10k_hif_get_free_queue_number(htt->ar,
--								   pipe);
-+	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, htt->ar->fw_features))
-+		htt->max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
-+	else
-+		htt->max_num_pending_tx = TARGET_NUM_MSDU_DESC;
- 
- 	ath10k_dbg(ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
- 		   htt->max_num_pending_tx);
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgT2N0b2JlciAyMDEzIDA1OjU2LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0ZXM6
+Cj4KPj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKPj4K
+Pj4+IFRoaXMgaXMgYSBidW5jaCBvZiBmaXhlcyBJJ3ZlIGhhZCBxdWV1ZWQgdXAgZm9yCj4+PiBz
+b21lIHRpbWUgbm93LiBJIHdhcyByZWx1Y3RhbnQgdG8gc2VuZCB0aGVtCj4+PiB3aXRob3V0IHNv
+bWUgYWRkaXRpb25hbCBjaGVja3MgYW5kIGJlY2F1c2Ugc29tZSBvZgo+Pj4gdGhlIGZpeGVzIGFy
+ZSBub3QgaWRlYWwuIEF0IGxlYXN0IHdlIGNhbiBnZXQgYQo+Pj4gZGlzY3Vzc2lvbiBnb2luZyBp
+ZiBhbnl0aGluZyByYWlzZXMgYW55IHNlcmlvdXMKPj4+IGNvbmNlcm4uCj4+Pgo+Pj4KPj4+IE1p
+Y2hhbCBLYXppb3IgKDcpOgo+Pj4gICBhdGgxMGs6IHByZXZlbnQgc3RhcnRpbmcgbW9uaXRvciB3
+aXRob3V0IGEgdmRldgo+Pj4gICBhdGgxMGs6IGFkZCBzYW5pdHkgY2hlY2tzIGZvciBtb25pdG9y
+IG1hbmFnZW1lbnQKPj4+ICAgYXRoMTBrOiBmaXggZW5kaWFuZXNzIGluIHByaW50cwo+Pj4gICBh
+dGgxMGs6IGZpeCBOU1MgcmVwb3J0aW5nIGluIFJYCj4+PiAgIGF0aDEwazogZml4IE5VTEwgZGVy
+ZWYgdXBvbiBlYXJseSBGVyBjcmFzaAo+Pj4gICBhdGgxMGs6IGZpeCBkZXZpY2UgaW5pdGlhbGl6
+YXRpb24gcm91dGluZQo+Pj4gICBhdGgxMGs6IGZpeCBGVyBjcmFzaGVzIG9uIGhlYXZ5IFRYIG9u
+IDEwLjEuMzg5IEFQIEZXCj4+Cj4+IEkgZ2V0IGZldyBsb25nIGxpbmUgd2FybmluZ3M6Cj4+Cj4+
+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmM6MTg0MjogV0FSTklORzogbGlu
+ZSBvdmVyIDgwIGNoYXJhY3RlcnMKPj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
+Y2kuYzoxODQ0OiBXQVJOSU5HOiBsaW5lIG92ZXIgODAgY2hhcmFjdGVycwo+PiBkcml2ZXJzL25l
+dC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jOjE4NDc6IFdBUk5JTkc6IGxpbmUgb3ZlciA4MCBj
+aGFyYWN0ZXJzCj4+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmM6MTg0ODog
+V0FSTklORzogbGluZSBvdmVyIDgwIGNoYXJhY3RlcnMKPj4gZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9wY2kuYzoxODU2OiBXQVJOSU5HOiBsaW5lIG92ZXIgODAgY2hhcmFjdGVycwo+
+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jOjE4NzU6IFdBUk5JTkc6IGxp
+bmUgb3ZlciA4MCBjaGFyYWN0ZXJzCj4+IGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+cGNpLmM6MTg3NzogV0FSTklORzogbGluZSBvdmVyIDgwIGNoYXJhY3RlcnMKPj4gZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYzoxODgzOiBXQVJOSU5HOiBsaW5lIG92ZXIgODAg
+Y2hhcmFjdGVycwo+PiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjIyODQ6
+IFdBUk5JTkc6IGxpbmUgb3ZlciA4MCBjaGFyYWN0ZXJzCj4KPiBNaWNoYWwsIGlmIGl0J3Mgb2sg
+Zm9yIHlvdSBJJ2xsIHN1Ym1pdCB2MiBvZiB0aGlzIHBhdGNoc2V0LiBJJ2xsIGZpeCB0aGUKPiBs
+b25nIGxpbmUgd2FybmluZ3MgYW5kIGFsc28gSSBkbyBzbWFsbCBjbGVhbnVwIHRvIHRoZSB3YXJt
+IHJlc2V0IGNvZGUuCgpJIGFtIHRvdGFsbHkgb2theSB3aXRoIHRoaXMuIFRoYW5rIHlvdSBmb3Ig
+eW91ciB0cm91YmxlLgoKCk1pY2HFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
