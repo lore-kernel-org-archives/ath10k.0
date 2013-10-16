@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWRQX-0000WP-4o
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 13:46:18 +0000
-Subject: [PATCH v2 3/8] ath10k: fix endianess in prints
+ id 1VWRQa-0000Wh-7K
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 13:46:20 +0000
+Subject: [PATCH v2 4/8] ath10k: fix NSS reporting in RX
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 16 Oct 2013 16:45:53 +0300
-Message-ID: <20131016134553.25095.84407.stgit@localhost6.localdomain6>
+Date: Wed, 16 Oct 2013 16:45:59 +0300
+Message-ID: <20131016134559.25095.62038.stgit@localhost6.localdomain6>
 In-Reply-To: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
 References: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
@@ -27,65 +27,31 @@ Cc: linux-wireless@vger.kernel.org
 
 From: Michal Kazior <michal.kazior@tieto.com>
 
-This fixes incorrect values being printed on
-big-endian hosts.
+NSTS values reported in the VHT-SIG-A1 are 0
+through 7 but they actually describe number of
+streams 1 through 8.
+
+1SS frames were dropped. This patch fixes this.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/txrx.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 77238af..a796d0b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2211,7 +2211,7 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 5ae373a..c511f91 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -183,7 +183,7 @@ static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
+ 		/* VHT-SIG-A1 in info 1, VHT-SIG-A2 in info2
+ 		   TODO check this */
+ 		mcs = (info2 >> 4) & 0x0F;
+-		nss = (info1 >> 10) & 0x07;
++		nss = ((info1 >> 10) & 0x07) + 1;
+ 		bw = info1 & 3;
+ 		sgi = info2 & 1;
  
- 	ath10k_dbg(ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
--		   __cpu_to_le32(ar->wmi.num_mem_chunks));
-+		   ar->wmi.num_mem_chunks);
- 
- 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
- 
-@@ -2224,10 +2224,10 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
- 			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
- 
- 		ath10k_dbg(ATH10K_DBG_WMI,
--			   "wmi chunk %d len %d requested, addr 0x%x\n",
-+			   "wmi chunk %d len %d requested, addr 0x%llx\n",
- 			   i,
--			   cmd->host_mem_chunks[i].size,
--			   cmd->host_mem_chunks[i].ptr);
-+			   ar->wmi.mem_chunks[i].len,
-+			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
- 	}
- out:
- 	memcpy(&cmd->resource_config, &config, sizeof(config));
-@@ -2302,7 +2302,7 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
- 	}
- 
- 	ath10k_dbg(ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
--		   __cpu_to_le32(ar->wmi.num_mem_chunks));
-+		   ar->wmi.num_mem_chunks);
- 
- 	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
- 
-@@ -2315,10 +2315,10 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
- 			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
- 
- 		ath10k_dbg(ATH10K_DBG_WMI,
--			   "wmi chunk %d len %d requested, addr 0x%x\n",
-+			   "wmi chunk %d len %d requested, addr 0x%llx\n",
- 			   i,
--			   cmd->host_mem_chunks[i].size,
--			   cmd->host_mem_chunks[i].ptr);
-+			   ar->wmi.mem_chunks[i].len,
-+			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
- 	}
- out:
- 	memcpy(&cmd->resource_config, &config, sizeof(config));
 
 
 _______________________________________________
