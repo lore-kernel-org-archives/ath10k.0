@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWQVq-0007KR-Lh
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 12:47:43 +0000
+ id 1VWQXF-0007O5-FZ
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 12:49:09 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/7] ath10k: track vif list internally
+Subject: Re: [PATCH 0/7] ath10k: fix WMI atomic usage
 References: <20131015184548.14123.56949.stgit@localhost6.localdomain6>
- <20131015184656.14123.70575.stgit@localhost6.localdomain6>
- <87a9iabc9c.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=CqXN24Y-tb=r_ruUUNR_imcztULnoTScAvScvbPDbdA@mail.gmail.com>
-Date: Wed, 16 Oct 2013 15:47:15 +0300
-In-Reply-To: <CA+BoTQ=CqXN24Y-tb=r_ruUUNR_imcztULnoTScAvScvbPDbdA@mail.gmail.com>
- (Michal Kazior's message of "Tue, 15 Oct 2013 12:37:42 -0700")
-Message-ID: <87k3hd757w.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 16 Oct 2013 15:48:42 +0300
+In-Reply-To: <20131015184548.14123.56949.stgit@localhost6.localdomain6> (Kalle
+ Valo's message of "Tue, 15 Oct 2013 21:46:37 +0300")
+Message-ID: <87fvs1755h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,33 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> On 15 October 2013 11:49, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>
->>> From: Michal Kazior <michal.kazior@tieto.com>
->>>
->>> mac80211 interface interations functions have
->>> peculiar locking issues. This patch introduces
->>> internal (to ath10k) vif list that will be used
->>> for vif iteration purposes.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->>
->> [...]
->>
->> Michal, why do the INIT_LIST_HEAD() twice? Isn't it enough to do it
->> core_start()?
+> Some WMI calls were made in atomic contex, these patches fix
+> those. Please review.
 >
-> Ah, good point. It's most likely okay to just do it in
-> ath10k_core_start(). The one in ath10k_core_create() isn't required.
+> ---
+>
+> Kalle Valo (2):
+>       ath10k: fix ath10k_bss_assoc() to not sleep in atomic context
+>       ath10k: add might_sleep() to ath10k_wmi_cmd_send()
+>
+> Michal Kazior (5):
+>       ath10k: use workqueue to set WEP TX key
+>       ath10k: fix add_interface failure handling
+>       ath10k: track vif list internally
+>       ath10k: fix scheduling while atomic config bug
+>       ath10k: remove unnecessary checks
 
-Ok, I removed the one from ath10k_core_create() before I commited this.
+All patches applied.
 
 -- 
 Kalle Valo
