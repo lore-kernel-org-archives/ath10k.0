@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWMqc-00026R-JL
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 08:52:55 +0000
+ id 1VWNGX-0002ff-NN
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 09:19:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: rename WMI_CMD_UNDEFINED
-References: <1381823732-10128-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Wed, 16 Oct 2013 11:52:25 +0300
-In-Reply-To: <1381823732-10128-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Tue, 15 Oct 2013 09:55:31 +0200")
-Message-ID: <871u3l8unq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/7] ath10k: add sanity checks for monitor management
+References: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
+ <1381858196-17000-3-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 16 Oct 2013 12:19:09 +0300
+In-Reply-To: <1381858196-17000-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 15 Oct 2013 10:29:51 -0700")
+Message-ID: <87siw17euq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Rename WMI_CMD_UNDEFINED to WMI_CMD_UNSUPPORTED. This is more
-> accurate here. Also return -EOPNOTSUPP instead of -EINVAL in
-> wmi_cmd_send().
+> Add a few checks and warnings to make it easier to
+> track any kind of monitor vdev mismanagement.
 >
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, both patches applied.
+[...]
+
+> +	if (!ar->monitor_present) {
+> +		ath10k_warn("mac montor stop -- monitor is not present\n");
+> +		return -EINVAL;
+> +	}
+
+[...]
+
+> +	if (!ar->monitor_present) {
+> +		ath10k_warn("mac montor stop -- monitor is not present\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!ar->monitor_enabled) {
+> +		ath10k_warn("mac montor stop -- monitor is not enabled\n");
+> +		return -EINVAL;
+> +	}
+
+s/montor/monitor/
 
 -- 
 Kalle Valo
