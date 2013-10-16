@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWMox-00022d-7M
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 08:51:11 +0000
+ id 1VWMqc-00026R-JL
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 08:52:55 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: do not warn about unsupported vdev param
-References: <1381821980-7966-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Wed, 16 Oct 2013 11:50:42 +0300
-In-Reply-To: <1381821980-7966-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Tue, 15 Oct 2013 09:26:20 +0200")
-Message-ID: <8761sx8uql.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: rename WMI_CMD_UNDEFINED
+References: <1381823732-10128-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Wed, 16 Oct 2013 11:52:25 +0300
+In-Reply-To: <1381823732-10128-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Tue, 15 Oct 2013 09:55:31 +0200")
+Message-ID: <871u3l8unq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,12 +28,13 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> 10.X firmware does not support WMI_VDEV_PARAM_TX_ENCAP_TYPE.
-> It's a known limitation and we should not warn about this.
+> Rename WMI_CMD_UNDEFINED to WMI_CMD_UNSUPPORTED. This is more
+> accurate here. Also return -EOPNOTSUPP instead of -EINVAL in
+> wmi_cmd_send().
 >
 > Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, applied.
+Thanks, both patches applied.
 
 -- 
 Kalle Valo
