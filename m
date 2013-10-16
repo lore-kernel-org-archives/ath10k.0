@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWQXF-0007O5-FZ
- for ath10k@lists.infradead.org; Wed, 16 Oct 2013 12:49:09 +0000
+ id 1VWQee-0007fe-TT
+ for ath10k@lists.infradead.org; Wed, 16 Oct 2013 12:56:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/7] ath10k: fix WMI atomic usage
-References: <20131015184548.14123.56949.stgit@localhost6.localdomain6>
-Date: Wed, 16 Oct 2013 15:48:42 +0300
-In-Reply-To: <20131015184548.14123.56949.stgit@localhost6.localdomain6> (Kalle
- Valo's message of "Tue, 15 Oct 2013 21:46:37 +0300")
-Message-ID: <87fvs1755h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/7] ath10k: fixes 2013-10-15
+References: <1381858196-17000-1-git-send-email-michal.kazior@tieto.com>
+ <8761sybbye.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 16 Oct 2013 15:56:22 +0300
+In-Reply-To: <8761sybbye.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Tue, 15 Oct 2013 21:55:53 +0300")
+Message-ID: <87bo2p74sp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,28 +24,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> Some WMI calls were made in atomic contex, these patches fix
-> those. Please review.
+> Michal Kazior <michal.kazior@tieto.com> writes:
 >
-> ---
+>> This is a bunch of fixes I've had queued up for
+>> some time now. I was reluctant to send them
+>> without some additional checks and because some of
+>> the fixes are not ideal. At least we can get a
+>> discussion going if anything raises any serious
+>> concern.
+>>
+>>
+>> Michal Kazior (7):
+>>   ath10k: prevent starting monitor without a vdev
+>>   ath10k: add sanity checks for monitor management
+>>   ath10k: fix endianess in prints
+>>   ath10k: fix NSS reporting in RX
+>>   ath10k: fix NULL deref upon early FW crash
+>>   ath10k: fix device initialization routine
+>>   ath10k: fix FW crashes on heavy TX on 10.1.389 AP FW
 >
-> Kalle Valo (2):
->       ath10k: fix ath10k_bss_assoc() to not sleep in atomic context
->       ath10k: add might_sleep() to ath10k_wmi_cmd_send()
+> I get few long line warnings:
 >
-> Michal Kazior (5):
->       ath10k: use workqueue to set WEP TX key
->       ath10k: fix add_interface failure handling
->       ath10k: track vif list internally
->       ath10k: fix scheduling while atomic config bug
->       ath10k: remove unnecessary checks
+> drivers/net/wireless/ath/ath10k/pci.c:1842: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1844: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1847: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1848: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1856: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1875: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1877: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/pci.c:1883: WARNING: line over 80 characters
+> drivers/net/wireless/ath/ath10k/mac.c:2284: WARNING: line over 80 characters
 
-All patches applied.
+Michal, if it's ok for you I'll submit v2 of this patchset. I'll fix the
+long line warnings and also I do small cleanup to the warm reset code.
 
 -- 
 Kalle Valo
