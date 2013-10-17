@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWoV6-0006ts-BR
- for ath10k@lists.infradead.org; Thu, 17 Oct 2013 14:24:33 +0000
-Received: by mail-bk0-f53.google.com with SMTP id d7so877241bkh.12
- for <ath10k@lists.infradead.org>; Thu, 17 Oct 2013 07:24:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
-References: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
-Date: Thu, 17 Oct 2013 07:24:07 -0700
-Message-ID: <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
+ id 1VWoYK-0006yp-4C
+ for ath10k@lists.infradead.org; Thu, 17 Oct 2013 14:27:52 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: add error handling to ath10k_pci_wait()
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
+ <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
+Date: Thu, 17 Oct 2013 17:27:22 +0300
+In-Reply-To: <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 17 Oct 2013 07:24:07 -0700")
+Message-ID: <87a9i82cs5.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,66 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-T24gMTcgT2N0b2JlciAyMDEzIDAxOjM2LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
-Y29tPiB3cm90ZToKPiBhdGgxMGtfcGNpX3dhaXQoKSBkaWRuJ3Qgbm90aWZ5IGFueSBlcnJvcnMg
-dG8gY2FsbGVycywgaXQKPiBqdXN0IHByaW50ZWQgYSB3YXJuaW5nIHNvIGFkZCBwcm9wZXIgZXJy
-b3IgaGFuZGxpbmcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVh
-bGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5j
-IHwgICAyOCArKysrKysrKysrKysrKysrKysrKysrKystLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAy
-NCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL3BjaS5jCj4gaW5kZXggMWU5Y2ZjYzkuLjkyNzU5Y2QgMTAwNjQ0Cj4gLS0tIGEvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBAQCAtNTI1LDE1ICs1MjUsMTkgQEAgc3RhdGljIGJv
-b2wgYXRoMTBrX3BjaV90YXJnZXRfaXNfYXdha2Uoc3RydWN0IGF0aDEwayAqYXIpCj4gICAgICAg
-ICByZXR1cm4gKFJUQ19TVEFURV9WX0dFVCh2YWwpID09IFJUQ19TVEFURV9WX09OKTsKPiAgfQo+
-Cj4gLXN0YXRpYyB2b2lkIGF0aDEwa19wY2lfd2FpdChzdHJ1Y3QgYXRoMTBrICphcikKPiArc3Rh
-dGljIGludCBhdGgxMGtfcGNpX3dhaXQoc3RydWN0IGF0aDEwayAqYXIpCj4gIHsKPiAgICAgICAg
-IGludCBuID0gMTAwOwo+Cj4gICAgICAgICB3aGlsZSAobi0tICYmICFhdGgxMGtfcGNpX3Rhcmdl
-dF9pc19hd2FrZShhcikpCj4gICAgICAgICAgICAgICAgIG1zbGVlcCgxMCk7Cj4KPiAtICAgICAg
-IGlmIChuIDwgMCkKPiArICAgICAgIGlmIChuIDwgMCkgewo+ICAgICAgICAgICAgICAgICBhdGgx
-MGtfd2FybigiVW5hYmxlIHRvIHdha2V1cCB0YXJnZXRcbiIpOwo+ICsgICAgICAgICAgICAgICBy
-ZXR1cm4gLUVUSU1FRE9VVDsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICByZXR1cm4gMDsKPiAg
-fQo+Cj4gIGludCBhdGgxMGtfZG9fcGNpX3dha2Uoc3RydWN0IGF0aDEwayAqYXIpCj4gQEAgLTIy
-MjcsNyArMjIzMSwxMyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfc3RhcnRfaW50cl9sZWdhY3ko
-c3RydWN0IGF0aDEwayAqYXIpCj4gICAgICAgICAgICAgICAgICAgYXJfcGNpLT5tZW0gKyBQQ0lF
-X0xPQ0FMX0JBU0VfQUREUkVTUyArCj4gICAgICAgICAgICAgICAgICAgUENJRV9TT0NfV0FLRV9B
-RERSRVNTKTsKPgo+IC0gICAgICAgYXRoMTBrX3BjaV93YWl0KGFyKTsKPiArICAgICAgIHJldCA9
-IGF0aDEwa19wY2lfd2FpdChhcik7Cj4gKyAgICAgICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAg
-ICAgIGF0aDEwa193YXJuKCJGYWlsZWQgdG8gZW5hYmxlIGxlZ2FjeSBpbnRlcnJ1cHQsIHRhcmdl
-dCBkaWQgbm90IHdha2UgdXA6ICVkXG4iLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBy
-ZXQpOwo+ICsgICAgICAgICAgICAgICBmcmVlX2lycShhcl9wY2ktPnBkZXYtPmlycSwgYXIpOwo+
-ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ICsgICAgICAgfQoKSSB0aGluayB3ZSBjb3Vs
-ZCBhY3R1YWxseSB1c2UgYXRoMTBrX2RvX3BjaV93YWtlL3NsZWVwKCkgaGVyZSAoc2VlCmFib3Zl
-IGlvd3JpdGUpLiBJdCBkb2VzIGJhc2ljYWxseSB0aGUgc2FtZSB0aGluZyAtIHNldHMgdGhlIHdh
-a2UKcmVnaXN0ZXIgYW5kIHdhaXRzIHVudGlsIEhXIHdha2VzIHVwLiBJIHRoaW5rIGF0aDEwa19w
-Y2lfd2FpdCgpIGNvdWxkCmV2ZW4gZ28gYXdheS4KCgo+Cj4gICAgICAgICAvKgo+ICAgICAgICAg
-ICogQSBwb3RlbnRpYWwgcmFjZSBvY2N1cnMgaGVyZTogVGhlIENPUkVfQkFTRSB3cml0ZQo+IEBA
-IC0yMjkwLDYgKzIzMDAsMTAgQEAgc3RhdGljIGludCBhdGgxMGtfcGNpX3N0YXJ0X2ludHIoc3Ry
-dWN0IGF0aDEwayAqYXIpCj4gICAgICAgICB9Cj4KPiAgICAgICAgIHJldCA9IGF0aDEwa19wY2lf
-c3RhcnRfaW50cl9sZWdhY3koYXIpOwo+ICsgICAgICAgaWYgKHJldCkgewo+ICsgICAgICAgICAg
-ICAgICBhdGgxMGtfd2FybigiRmFpbGVkIHRvIHN0YXJ0IGxlZ2FjeSBpbnRlcnJ1cHRzOiAlZFxu
-IiwgcmV0KTsKPiArICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiArICAgICAgIH0KPgo+ICBl
-eGl0Ogo+ICAgICAgICAgYXJfcGNpLT5udW1fbXNpX2ludHJzID0gbnVtOwo+IEBAIC0yMzE1LDEz
-ICsyMzI5LDE5IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3BjaV9yZXNldF90YXJnZXQoc3RydWN0IGF0
-aDEwayAqYXIpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBhdGgxMGtfcGNpICphcl9wY2kgPSBhdGgx
-MGtfcGNpX3ByaXYoYXIpOwo+ICAgICAgICAgaW50IHdhaXRfbGltaXQgPSAzMDA7IC8qIDMgc2Vj
-ICovCj4gKyAgICAgICBpbnQgcmV0Owo+Cj4gICAgICAgICAvKiBXYWl0IGZvciBUYXJnZXQgdG8g
-ZmluaXNoIGluaXRpYWxpemF0aW9uIGJlZm9yZSB3ZSBwcm9jZWVkLiAqLwo+ICAgICAgICAgaW93
-cml0ZTMyKFBDSUVfU09DX1dBS0VfVl9NQVNLLAo+ICAgICAgICAgICAgICAgICAgIGFyX3BjaS0+
-bWVtICsgUENJRV9MT0NBTF9CQVNFX0FERFJFU1MgKwo+ICAgICAgICAgICAgICAgICAgIFBDSUVf
-U09DX1dBS0VfQUREUkVTUyk7Cj4KPiAtICAgICAgIGF0aDEwa19wY2lfd2FpdChhcik7Cj4gKyAg
-ICAgICByZXQgPSBhdGgxMGtfcGNpX3dhaXQoYXIpOwo+ICsgICAgICAgaWYgKHJldCkgewo+ICsg
-ICAgICAgICAgICAgICBhdGgxMGtfd2FybigiRmFpbGVkIHRvIHJlc2V0IHRhcmdldCwgdGFyZ2V0
-IGRpZCBub3Qgd2FrZSB1cDogJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
-dCk7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gKyAgICAgICB9CgpEaXR0by4KCgpN
-aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 17 October 2013 01:36, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> ath10k_pci_wait() didn't notify any errors to callers, it
+>> just printed a warning so add proper error handling.
+>>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+[...]
+
+>> @@ -2227,7 +2231,13 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
+>>                   ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
+>>                   PCIE_SOC_WAKE_ADDRESS);
+>>
+>> -       ath10k_pci_wait(ar);
+>> +       ret = ath10k_pci_wait(ar);
+>> +       if (ret) {
+>> +               ath10k_warn("Failed to enable legacy interrupt, target did not wake up: %d\n",
+>> +                           ret);
+>> +               free_irq(ar_pci->pdev->irq, ar);
+>> +               return ret;
+>> +       }
+>
+> I think we could actually use ath10k_do_pci_wake/sleep() here (see
+> above iowrite). It does basically the same thing - sets the wake
+> register and waits until HW wakes up. I think ath10k_pci_wait() could
+> even go away.
+
+That would be nice, I'll take a look. Thanks for the review.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
