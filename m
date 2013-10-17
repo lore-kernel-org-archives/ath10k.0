@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWjBE-00051Q-Vx
- for ath10k@lists.infradead.org; Thu, 17 Oct 2013 08:43:41 +0000
+ id 1VWjXr-0005Pa-LM
+ for ath10k@lists.infradead.org; Thu, 17 Oct 2013 09:07:04 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Fwd: ath10k related kernel crash in wireless-testing
- (3.12.0-rc3-wl+)
-References: <52588F0C.3000009@candelatech.com>
- <525EB81E.5060305@candelatech.com>
- <87li1t5gmi.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 17 Oct 2013 11:43:13 +0300
-In-Reply-To: <87li1t5gmi.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 16 Oct 2013 19:23:49 +0300")
-Message-ID: <87r4bk2spq.fsf@kamboji.qca.qualcomm.com>
+Subject: Pull request: ath 20131017
+Date: Thu, 17 Oct 2013 12:06:33 +0300
+Message-ID: <87mwm82rmu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,48 +20,110 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Hi John,
 
-> Ben Greear <greearb@candelatech.com> writes:
->
->> I sent this to the wrong list the first time.
->>
->> Do you know if this is already addressed?  If not, I'll see if I can
->> find a fix.
->
-> [...]
->
->> ath10k: MSI-X interrupt handling (8 intrs)
->> ath10k: Unable to wakeup target
->> ath10k: target took longer 5000 us to wake up (awake count 1)
->> ath10k: Failed to get pcie state addr: -16
->> ath10k: early firmware event indicated
->> BUG: unable to handle kernel NULL pointer dereference at 0000000000000004
->> IP: [<ffffffffa06ae46c>] ath10k_ce_completed_send_next+0x47/0x122
->> [ath10k_pci]
->
-> I think there are two bugs here:
->
-> 1) Cold reset doesn't always work, Michal has a patch for that. That's
->    why the wakeup fails:
->
-> http://lists.infradead.org/pipermail/ath10k/2013-October/000638.html
->
-> 2) We enable interrupts too early and if wakeup fails and we get a
->    spurious interrupt ath10k crashes. We don't have a fix for this yet.
+here's a pull request for ath6kl and ath10k. Notable changes:
 
-I tried to look how to enable interrupts only after everything is
-properly initialised in ath10k, but didn't find any quick way to do
-that. I guess one ugly way to workaround this race is to add a state
-variable which is checked in the interrupt handler.
+Bartosz added support to ath10k for our 10.x AP firmware branch, which
+gives us AP specific features and fixes. We still support the main
+firmware branch as well just like before, ath10k detects runtime what
+firmware is used. Unfortunately the firmware interface in 10.x branch is
+somewhat different so there was quite a lot of changes in ath10k for
+this.
 
-Does anyone else have any other ideas?
+Michal and Sujith did some performance improvements in ath10k. Vladimir
+fixed a compiler warning and Fengguang removed an extra semicolon.
 
--- 
-Kalle Valo
+Please let me know if there are any problems.
+
+Kalle
+
+The following changes since commit 6e712d427cb0542afdd5220edb6e4f4f8a5b952d:
+
+  ath10k: replenish HTT RX buffers in a tasklet (2013-09-26 17:22:54 +0300)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git for-linville
+
+for you to fetch changes up to 56b84287d14aa74823a9c290d0c5839d38365110:
+
+  ath10k: add might_sleep() to ath10k_wmi_cmd_send() (2013-10-16 15:44:47 +0300)
+
+----------------------------------------------------------------
+Bartosz Markowski (18):
+      ath10k: introduce dynamic WMI structures
+      ath10k: add wmi_10x_<cmd/event> definitions
+      ath10k: warn if give WMI command is not supported
+      ath10k: implement WMI events handling frame for both firmwares
+      ath10k: split ath10k_wmi_service_ready_event_rx
+      ath10k: drop the fw versioning sanity check
+      ath10k: implement host memory chunks
+      ath10k: bring back the WMI path for mgmt frames
+      ath10k: split wmi_cmd_init path
+      ath10k: add TARGET values for 10.x firmware
+      ath10k: introduce dynamic vdev parameters
+      ath10k: introduce dynamic pdev parameters
+      ath10k: handle FW API differences for scan structures
+      ath10k: enable 10.x firmware branch support
+      ath10k: extend the max_scan time
+      ath10k: do not warn about unsupported vdev param
+      ath10k: rename WMI_CMD_UNDEFINED
+      ath10k: return better errno for unsupported pdev params
+
+Fengguang Wu (1):
+      ath10k: remove unneded semicolon from ath10k_core_fetch_firmware_api_n()
+
+Kalle Valo (6):
+      ath10k: rename board_data in struct ath10k
+      ath10k: store separate pointers for firmware data
+      ath10k: implement firmware IE container support
+      ath10k: fix ath10k_debug_start() locking
+      ath10k: fix ath10k_bss_assoc() to not sleep in atomic context
+      ath10k: add might_sleep() to ath10k_wmi_cmd_send()
+
+Marek Puzyniak (1):
+      ath10k: make monitor vdev down before stoping it
+
+Michal Kazior (12):
+      ath10k: split tid calculation from tx function
+      ath10k: split vdev_id calculation from tx function
+      ath10k: remove ce_sendlist_send
+      ath10k: remove num_sends_allowed
+      ath10k: fix printf format string
+      ath10k: fix possible memory leak in new FW loading
+      ath10k: fix RX performance when using AP 10.X FW
+      ath10k: use workqueue to set WEP TX key
+      ath10k: fix add_interface failure handling
+      ath10k: track vif list internally
+      ath10k: fix scheduling while atomic config bug
+      ath10k: remove unnecessary checks
+
+Sujith Manoharan (1):
+      ath10k: Fix bug in max. VHT A-MPDU size
+
+Vladimir Murzin (1):
+      ath6kl: fix compilation warning in ath6kl_htc_pipe_conn_service
+
+ drivers/net/wireless/ath/ath10k/ce.c     |   35 +-
+ drivers/net/wireless/ath/ath10k/ce.h     |   16 +-
+ drivers/net/wireless/ath/ath10k/core.c   |  285 ++++++--
+ drivers/net/wireless/ath/ath10k/core.h   |   47 +-
+ drivers/net/wireless/ath/ath10k/debug.c  |   15 +-
+ drivers/net/wireless/ath/ath10k/debug.h  |    5 +
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
+ drivers/net/wireless/ath/ath10k/hw.h     |   56 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |  512 ++++++++------
+ drivers/net/wireless/ath/ath10k/mac.h    |    2 +
+ drivers/net/wireless/ath/ath10k/pci.c    |   25 +-
+ drivers/net/wireless/ath/ath10k/pci.h    |    3 -
+ drivers/net/wireless/ath/ath10k/wmi.c    | 1087 ++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h    |  968 +++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath6kl/htc.h    |    2 +-
+ 15 files changed, 2674 insertions(+), 388 deletions(-)
 
 _______________________________________________
 ath10k mailing list
