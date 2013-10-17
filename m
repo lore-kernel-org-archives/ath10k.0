@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWjXr-0005Pa-LM
- for ath10k@lists.infradead.org; Thu, 17 Oct 2013 09:07:04 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20131017
-Date: Thu, 17 Oct 2013 12:06:33 +0300
-Message-ID: <87mwm82rmu.fsf@kamboji.qca.qualcomm.com>
+ id 1VWoV6-0006ts-BR
+ for ath10k@lists.infradead.org; Thu, 17 Oct 2013 14:24:33 +0000
+Received: by mail-bk0-f53.google.com with SMTP id d7so877241bkh.12
+ for <ath10k@lists.infradead.org>; Thu, 17 Oct 2013 07:24:07 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
+References: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
+Date: Thu, 17 Oct 2013 07:24:07 -0700
+Message-ID: <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add error handling to ath10k_pci_wait()
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,116 +20,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Hi John,
-
-here's a pull request for ath6kl and ath10k. Notable changes:
-
-Bartosz added support to ath10k for our 10.x AP firmware branch, which
-gives us AP specific features and fixes. We still support the main
-firmware branch as well just like before, ath10k detects runtime what
-firmware is used. Unfortunately the firmware interface in 10.x branch is
-somewhat different so there was quite a lot of changes in ath10k for
-this.
-
-Michal and Sujith did some performance improvements in ath10k. Vladimir
-fixed a compiler warning and Fengguang removed an extra semicolon.
-
-Please let me know if there are any problems.
-
-Kalle
-
-The following changes since commit 6e712d427cb0542afdd5220edb6e4f4f8a5b952d:
-
-  ath10k: replenish HTT RX buffers in a tasklet (2013-09-26 17:22:54 +0300)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git for-linville
-
-for you to fetch changes up to 56b84287d14aa74823a9c290d0c5839d38365110:
-
-  ath10k: add might_sleep() to ath10k_wmi_cmd_send() (2013-10-16 15:44:47 +0300)
-
-----------------------------------------------------------------
-Bartosz Markowski (18):
-      ath10k: introduce dynamic WMI structures
-      ath10k: add wmi_10x_<cmd/event> definitions
-      ath10k: warn if give WMI command is not supported
-      ath10k: implement WMI events handling frame for both firmwares
-      ath10k: split ath10k_wmi_service_ready_event_rx
-      ath10k: drop the fw versioning sanity check
-      ath10k: implement host memory chunks
-      ath10k: bring back the WMI path for mgmt frames
-      ath10k: split wmi_cmd_init path
-      ath10k: add TARGET values for 10.x firmware
-      ath10k: introduce dynamic vdev parameters
-      ath10k: introduce dynamic pdev parameters
-      ath10k: handle FW API differences for scan structures
-      ath10k: enable 10.x firmware branch support
-      ath10k: extend the max_scan time
-      ath10k: do not warn about unsupported vdev param
-      ath10k: rename WMI_CMD_UNDEFINED
-      ath10k: return better errno for unsupported pdev params
-
-Fengguang Wu (1):
-      ath10k: remove unneded semicolon from ath10k_core_fetch_firmware_api_n()
-
-Kalle Valo (6):
-      ath10k: rename board_data in struct ath10k
-      ath10k: store separate pointers for firmware data
-      ath10k: implement firmware IE container support
-      ath10k: fix ath10k_debug_start() locking
-      ath10k: fix ath10k_bss_assoc() to not sleep in atomic context
-      ath10k: add might_sleep() to ath10k_wmi_cmd_send()
-
-Marek Puzyniak (1):
-      ath10k: make monitor vdev down before stoping it
-
-Michal Kazior (12):
-      ath10k: split tid calculation from tx function
-      ath10k: split vdev_id calculation from tx function
-      ath10k: remove ce_sendlist_send
-      ath10k: remove num_sends_allowed
-      ath10k: fix printf format string
-      ath10k: fix possible memory leak in new FW loading
-      ath10k: fix RX performance when using AP 10.X FW
-      ath10k: use workqueue to set WEP TX key
-      ath10k: fix add_interface failure handling
-      ath10k: track vif list internally
-      ath10k: fix scheduling while atomic config bug
-      ath10k: remove unnecessary checks
-
-Sujith Manoharan (1):
-      ath10k: Fix bug in max. VHT A-MPDU size
-
-Vladimir Murzin (1):
-      ath6kl: fix compilation warning in ath6kl_htc_pipe_conn_service
-
- drivers/net/wireless/ath/ath10k/ce.c     |   35 +-
- drivers/net/wireless/ath/ath10k/ce.h     |   16 +-
- drivers/net/wireless/ath/ath10k/core.c   |  285 ++++++--
- drivers/net/wireless/ath/ath10k/core.h   |   47 +-
- drivers/net/wireless/ath/ath10k/debug.c  |   15 +-
- drivers/net/wireless/ath/ath10k/debug.h  |    5 +
- drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
- drivers/net/wireless/ath/ath10k/hw.h     |   56 +-
- drivers/net/wireless/ath/ath10k/mac.c    |  512 ++++++++------
- drivers/net/wireless/ath/ath10k/mac.h    |    2 +
- drivers/net/wireless/ath/ath10k/pci.c    |   25 +-
- drivers/net/wireless/ath/ath10k/pci.h    |    3 -
- drivers/net/wireless/ath/ath10k/wmi.c    | 1087 ++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h    |  968 +++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath6kl/htc.h    |    2 +-
- 15 files changed, 2674 insertions(+), 388 deletions(-)
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgT2N0b2JlciAyMDEzIDAxOjM2LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBhdGgxMGtfcGNpX3dhaXQoKSBkaWRuJ3Qgbm90aWZ5IGFueSBlcnJvcnMg
+dG8gY2FsbGVycywgaXQKPiBqdXN0IHByaW50ZWQgYSB3YXJuaW5nIHNvIGFkZCBwcm9wZXIgZXJy
+b3IgaGFuZGxpbmcuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVh
+bGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5j
+IHwgICAyOCArKysrKysrKysrKysrKysrKysrKysrKystLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAy
+NCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3BjaS5jCj4gaW5kZXggMWU5Y2ZjYzkuLjkyNzU5Y2QgMTAwNjQ0Cj4gLS0tIGEvZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBAQCAtNTI1LDE1ICs1MjUsMTkgQEAgc3RhdGljIGJv
+b2wgYXRoMTBrX3BjaV90YXJnZXRfaXNfYXdha2Uoc3RydWN0IGF0aDEwayAqYXIpCj4gICAgICAg
+ICByZXR1cm4gKFJUQ19TVEFURV9WX0dFVCh2YWwpID09IFJUQ19TVEFURV9WX09OKTsKPiAgfQo+
+Cj4gLXN0YXRpYyB2b2lkIGF0aDEwa19wY2lfd2FpdChzdHJ1Y3QgYXRoMTBrICphcikKPiArc3Rh
+dGljIGludCBhdGgxMGtfcGNpX3dhaXQoc3RydWN0IGF0aDEwayAqYXIpCj4gIHsKPiAgICAgICAg
+IGludCBuID0gMTAwOwo+Cj4gICAgICAgICB3aGlsZSAobi0tICYmICFhdGgxMGtfcGNpX3Rhcmdl
+dF9pc19hd2FrZShhcikpCj4gICAgICAgICAgICAgICAgIG1zbGVlcCgxMCk7Cj4KPiAtICAgICAg
+IGlmIChuIDwgMCkKPiArICAgICAgIGlmIChuIDwgMCkgewo+ICAgICAgICAgICAgICAgICBhdGgx
+MGtfd2FybigiVW5hYmxlIHRvIHdha2V1cCB0YXJnZXRcbiIpOwo+ICsgICAgICAgICAgICAgICBy
+ZXR1cm4gLUVUSU1FRE9VVDsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICByZXR1cm4gMDsKPiAg
+fQo+Cj4gIGludCBhdGgxMGtfZG9fcGNpX3dha2Uoc3RydWN0IGF0aDEwayAqYXIpCj4gQEAgLTIy
+MjcsNyArMjIzMSwxMyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfc3RhcnRfaW50cl9sZWdhY3ko
+c3RydWN0IGF0aDEwayAqYXIpCj4gICAgICAgICAgICAgICAgICAgYXJfcGNpLT5tZW0gKyBQQ0lF
+X0xPQ0FMX0JBU0VfQUREUkVTUyArCj4gICAgICAgICAgICAgICAgICAgUENJRV9TT0NfV0FLRV9B
+RERSRVNTKTsKPgo+IC0gICAgICAgYXRoMTBrX3BjaV93YWl0KGFyKTsKPiArICAgICAgIHJldCA9
+IGF0aDEwa19wY2lfd2FpdChhcik7Cj4gKyAgICAgICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAg
+ICAgIGF0aDEwa193YXJuKCJGYWlsZWQgdG8gZW5hYmxlIGxlZ2FjeSBpbnRlcnJ1cHQsIHRhcmdl
+dCBkaWQgbm90IHdha2UgdXA6ICVkXG4iLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBy
+ZXQpOwo+ICsgICAgICAgICAgICAgICBmcmVlX2lycShhcl9wY2ktPnBkZXYtPmlycSwgYXIpOwo+
+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ICsgICAgICAgfQoKSSB0aGluayB3ZSBjb3Vs
+ZCBhY3R1YWxseSB1c2UgYXRoMTBrX2RvX3BjaV93YWtlL3NsZWVwKCkgaGVyZSAoc2VlCmFib3Zl
+IGlvd3JpdGUpLiBJdCBkb2VzIGJhc2ljYWxseSB0aGUgc2FtZSB0aGluZyAtIHNldHMgdGhlIHdh
+a2UKcmVnaXN0ZXIgYW5kIHdhaXRzIHVudGlsIEhXIHdha2VzIHVwLiBJIHRoaW5rIGF0aDEwa19w
+Y2lfd2FpdCgpIGNvdWxkCmV2ZW4gZ28gYXdheS4KCgo+Cj4gICAgICAgICAvKgo+ICAgICAgICAg
+ICogQSBwb3RlbnRpYWwgcmFjZSBvY2N1cnMgaGVyZTogVGhlIENPUkVfQkFTRSB3cml0ZQo+IEBA
+IC0yMjkwLDYgKzIzMDAsMTAgQEAgc3RhdGljIGludCBhdGgxMGtfcGNpX3N0YXJ0X2ludHIoc3Ry
+dWN0IGF0aDEwayAqYXIpCj4gICAgICAgICB9Cj4KPiAgICAgICAgIHJldCA9IGF0aDEwa19wY2lf
+c3RhcnRfaW50cl9sZWdhY3koYXIpOwo+ICsgICAgICAgaWYgKHJldCkgewo+ICsgICAgICAgICAg
+ICAgICBhdGgxMGtfd2FybigiRmFpbGVkIHRvIHN0YXJ0IGxlZ2FjeSBpbnRlcnJ1cHRzOiAlZFxu
+IiwgcmV0KTsKPiArICAgICAgICAgICAgICAgcmV0dXJuIHJldDsKPiArICAgICAgIH0KPgo+ICBl
+eGl0Ogo+ICAgICAgICAgYXJfcGNpLT5udW1fbXNpX2ludHJzID0gbnVtOwo+IEBAIC0yMzE1LDEz
+ICsyMzI5LDE5IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3BjaV9yZXNldF90YXJnZXQoc3RydWN0IGF0
+aDEwayAqYXIpCj4gIHsKPiAgICAgICAgIHN0cnVjdCBhdGgxMGtfcGNpICphcl9wY2kgPSBhdGgx
+MGtfcGNpX3ByaXYoYXIpOwo+ICAgICAgICAgaW50IHdhaXRfbGltaXQgPSAzMDA7IC8qIDMgc2Vj
+ICovCj4gKyAgICAgICBpbnQgcmV0Owo+Cj4gICAgICAgICAvKiBXYWl0IGZvciBUYXJnZXQgdG8g
+ZmluaXNoIGluaXRpYWxpemF0aW9uIGJlZm9yZSB3ZSBwcm9jZWVkLiAqLwo+ICAgICAgICAgaW93
+cml0ZTMyKFBDSUVfU09DX1dBS0VfVl9NQVNLLAo+ICAgICAgICAgICAgICAgICAgIGFyX3BjaS0+
+bWVtICsgUENJRV9MT0NBTF9CQVNFX0FERFJFU1MgKwo+ICAgICAgICAgICAgICAgICAgIFBDSUVf
+U09DX1dBS0VfQUREUkVTUyk7Cj4KPiAtICAgICAgIGF0aDEwa19wY2lfd2FpdChhcik7Cj4gKyAg
+ICAgICByZXQgPSBhdGgxMGtfcGNpX3dhaXQoYXIpOwo+ICsgICAgICAgaWYgKHJldCkgewo+ICsg
+ICAgICAgICAgICAgICBhdGgxMGtfd2FybigiRmFpbGVkIHRvIHJlc2V0IHRhcmdldCwgdGFyZ2V0
+IGRpZCBub3Qgd2FrZSB1cDogJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
+dCk7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gKyAgICAgICB9CgpEaXR0by4KCgpN
+aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
