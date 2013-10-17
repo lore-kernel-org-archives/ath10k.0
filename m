@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VWoYK-0006yp-4C
- for ath10k@lists.infradead.org; Thu, 17 Oct 2013 14:27:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add error handling to ath10k_pci_wait()
-References: <20131017083615.31028.25088.stgit@localhost6.localdomain6>
- <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
-Date: Thu, 17 Oct 2013 17:27:22 +0300
-In-Reply-To: <CA+BoTQ=x+KJxXtcdMYKEGGjfF3oryTXgA2N+4OAa+6fcSAK4uw@mail.gmail.com>
- (Michal Kazior's message of "Thu, 17 Oct 2013 07:24:07 -0700")
-Message-ID: <87a9i82cs5.fsf@kamboji.qca.qualcomm.com>
+ id 1VWwWV-0004M5-7X
+ for ath10k@lists.infradead.org; Thu, 17 Oct 2013 22:58:32 +0000
+Received: by mail-wg0-f41.google.com with SMTP id b13so1393574wgh.0
+ for <ath10k@lists.infradead.org>; Thu, 17 Oct 2013 15:58:05 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87r4bk2spq.fsf@kamboji.qca.qualcomm.com>
+References: <52588F0C.3000009@candelatech.com>
+ <525EB81E.5060305@candelatech.com>
+ <87li1t5gmi.fsf@kamboji.qca.qualcomm.com>
+ <87r4bk2spq.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 17 Oct 2013 15:58:04 -0700
+Message-ID: <CA+BoTQkbqvrcEQSkkHyYi0J1_Pa4yTC5Pk=CtKbd4_uOO3pBDg@mail.gmail.com>
+Subject: Re: Fwd: ath10k related kernel crash in wireless-testing
+ (3.12.0-rc3-wl+)
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +24,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 17 October 2013 01:36, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> ath10k_pci_wait() didn't notify any errors to callers, it
->> just printed a warning so add proper error handling.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-[...]
-
->> @@ -2227,7 +2231,13 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
->>                   ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
->>                   PCIE_SOC_WAKE_ADDRESS);
->>
->> -       ath10k_pci_wait(ar);
->> +       ret = ath10k_pci_wait(ar);
->> +       if (ret) {
->> +               ath10k_warn("Failed to enable legacy interrupt, target did not wake up: %d\n",
->> +                           ret);
->> +               free_irq(ar_pci->pdev->irq, ar);
->> +               return ret;
->> +       }
->
-> I think we could actually use ath10k_do_pci_wake/sleep() here (see
-> above iowrite). It does basically the same thing - sets the wake
-> register and waits until HW wakes up. I think ath10k_pci_wait() could
-> even go away.
-
-That would be nice, I'll take a look. Thanks for the review.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgT2N0b2JlciAyMDEzIDAxOjQzLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0ZXM6
+Cj4KPj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyaXRlczoKPj4KPj4+
+IEkgc2VudCB0aGlzIHRvIHRoZSB3cm9uZyBsaXN0IHRoZSBmaXJzdCB0aW1lLgo+Pj4KPj4+IERv
+IHlvdSBrbm93IGlmIHRoaXMgaXMgYWxyZWFkeSBhZGRyZXNzZWQ/ICBJZiBub3QsIEknbGwgc2Vl
+IGlmIEkgY2FuCj4+PiBmaW5kIGEgZml4Lgo+Pgo+PiBbLi4uXQo+Pgo+Pj4gYXRoMTBrOiBNU0kt
+WCBpbnRlcnJ1cHQgaGFuZGxpbmcgKDggaW50cnMpCj4+PiBhdGgxMGs6IFVuYWJsZSB0byB3YWtl
+dXAgdGFyZ2V0Cj4+PiBhdGgxMGs6IHRhcmdldCB0b29rIGxvbmdlciA1MDAwIHVzIHRvIHdha2Ug
+dXAgKGF3YWtlIGNvdW50IDEpCj4+PiBhdGgxMGs6IEZhaWxlZCB0byBnZXQgcGNpZSBzdGF0ZSBh
+ZGRyOiAtMTYKPj4+IGF0aDEwazogZWFybHkgZmlybXdhcmUgZXZlbnQgaW5kaWNhdGVkCj4+PiBC
+VUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5jZSBhdCAw
+MDAwMDAwMDAwMDAwMDA0Cj4+PiBJUDogWzxmZmZmZmZmZmEwNmFlNDZjPl0gYXRoMTBrX2NlX2Nv
+bXBsZXRlZF9zZW5kX25leHQrMHg0Ny8weDEyMgo+Pj4gW2F0aDEwa19wY2ldCgpIbW0uLiBpZiBC
+TUkgaGFuZGxlcnMgYXJlIHNldCB0aGVuIG11c3QndmUgYmVlbiBDRSBpcyBhbGxvY2F0ZWQKZWFy
+bGllci4gSSdtIHN1c3BlY3RpbmcgdGhpcyBpcyBiZWNhdXNlIGF0aDEwa19wY2lfY2VfZGVpbml0
+KCkgZ2V0cwpjYWxsZWQgb24gYXRoMTBrX3BjaV9wb3dlcl91cCgpIGZhaWxwYXRoIGJlZm9yZSBp
+bnRlcnJ1cHRzIGFyZQpkaXNhYmxlZC9oYW5sZGVycyB1bnJlZ2lzdGVyZWQuCgpJbiB0aGF0IGNh
+c2UgdGhlIHNvbHV0aW9uIGlzIHRvIGZpeCB0aGUgZmFpbHBhdGggaW4KYXRoMTBrX3BjaV9wb3dl
+cl91cCgpLiBEaXNhYmxpbmcgaW50ZXJydXB0cyBvciBtb3ZpbmcKYXRoMTBrX3BjaV9jZV9kZWlu
+aXQoKSBiZWZvcmUgdGhlIHZlcnkgcmV0dXJuIHN0YXRlbWVudCBpbgphdGgxMGtfcGNpX2hpZl9w
+b3dlcl91cCgpJ3MgZmFpbHBhdGggc2hvdWxkIHN1ZmZpY2UuIEl0IHNob3VsZCBiZSBzYWZlCnRv
+IGNhbGwgYXRoMTBrX3BjaV9jZV9kZWluaXQoKSB3aXRob3V0IGNhbGxpbmcgdG8KYXRoMTBrX3Bj
+aV9jZV9pbml0KCkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
