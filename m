@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VX6yu-0006Gb-BI
- for ath10k@lists.infradead.org; Fri, 18 Oct 2013 10:08:32 +0000
+ id 1VX6ys-0006Gb-Na
+ for ath10k@lists.infradead.org; Fri, 18 Oct 2013 10:08:31 +0000
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 2/2] ath10k: extend number of AP interfaces for 10.X firmware
-Date: Fri, 18 Oct 2013 12:07:58 +0200
-Message-ID: <1382090878-22216-2-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1382090878-22216-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1382090878-22216-1-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 1/2] ath10k: remove P2P from supported interface modes for
+ 10.X FW
+Date: Fri, 18 Oct 2013 12:07:57 +0200
+Message-ID: <1382090878-22216-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,26 +24,89 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-This firmware can support up to 8 AP interfaces.
+FW 10.X does not support P2P, stop advertising it to mac80211.
 
 Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   44 +++++++++++++++++++++++++++------
+ 1 file changed, 37 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index af046c4..dc65dcd 100644
+index 0b1cc51..af046c4 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3255,7 +3255,7 @@ static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
- 	.types	= BIT(NL80211_IFTYPE_STATION)
- 	},
- 	{
--	.max	= 7,
-+	.max	= 8,
- 	.types	= BIT(NL80211_IFTYPE_AP)
+@@ -3249,6 +3249,17 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
  	},
  };
+ 
++static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
++	{
++	.max	= 8,
++	.types	= BIT(NL80211_IFTYPE_STATION)
++	},
++	{
++	.max	= 7,
++	.types	= BIT(NL80211_IFTYPE_AP)
++	},
++};
++
+ static const struct ieee80211_iface_combination ath10k_if_comb = {
+ 	.limits = ath10k_if_limits,
+ 	.n_limits = ARRAY_SIZE(ath10k_if_limits),
+@@ -3257,6 +3268,14 @@ static const struct ieee80211_iface_combination ath10k_if_comb = {
+ 	.beacon_int_infra_match = true,
+ };
+ 
++static const struct ieee80211_iface_combination ath10k_10x_if_comb = {
++	.limits = ath10k_10x_if_limits,
++	.n_limits = ARRAY_SIZE(ath10k_10x_if_limits),
++	.max_interfaces = 8,
++	.num_different_channels = 1,
++	.beacon_int_infra_match = true,
++};
++
+ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ {
+ 	struct ieee80211_sta_vht_cap vht_cap = {0};
+@@ -3430,12 +3449,19 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->bands[IEEE80211_BAND_5GHZ] = band;
+ 	}
+ 
+-	ar->hw->wiphy->interface_modes =
+-		BIT(NL80211_IFTYPE_STATION) |
+-		BIT(NL80211_IFTYPE_ADHOC) |
+-		BIT(NL80211_IFTYPE_AP) |
+-		BIT(NL80211_IFTYPE_P2P_CLIENT) |
+-		BIT(NL80211_IFTYPE_P2P_GO);
++	/* 10.x firmware does not support P2P */
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
++		ar->hw->wiphy->interface_modes =
++			BIT(NL80211_IFTYPE_STATION) |
++			BIT(NL80211_IFTYPE_ADHOC) |
++			BIT(NL80211_IFTYPE_AP);
++	else
++		ar->hw->wiphy->interface_modes =
++			BIT(NL80211_IFTYPE_STATION) |
++			BIT(NL80211_IFTYPE_ADHOC) |
++			BIT(NL80211_IFTYPE_AP) |
++			BIT(NL80211_IFTYPE_P2P_CLIENT) |
++			BIT(NL80211_IFTYPE_P2P_GO);
+ 
+ 	ar->hw->flags = IEEE80211_HW_SIGNAL_DBM |
+ 			IEEE80211_HW_SUPPORTS_PS |
+@@ -3478,7 +3504,11 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	 */
+ 	ar->hw->queues = 4;
+ 
+-	ar->hw->wiphy->iface_combinations = &ath10k_if_comb;
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
++		ar->hw->wiphy->iface_combinations = &ath10k_10x_if_comb;
++	else
++		ar->hw->wiphy->iface_combinations = &ath10k_if_comb;
++
+ 	ar->hw->wiphy->n_iface_combinations = 1;
+ 
+ 	ar->hw->netdev_features = NETIF_F_HW_CSUM;
 -- 
 1.7.10
 
