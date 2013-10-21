@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYG2a-00042G-DR
- for ath10k@lists.infradead.org; Mon, 21 Oct 2013 14:01:05 +0000
+ id 1VYGH1-0004P3-Mv
+ for ath10k@lists.infradead.org; Mon, 21 Oct 2013 14:16:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Fwd: ath10k related kernel crash in wireless-testing
- (3.12.0-rc3-wl+)
-References: <52588F0C.3000009@candelatech.com>
- <525EB81E.5060305@candelatech.com>
- <87li1t5gmi.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 21 Oct 2013 17:00:32 +0300
-In-Reply-To: <87li1t5gmi.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 16 Oct 2013 19:23:49 +0300")
-Message-ID: <87fvruu3jz.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/8] ath10k: fixes 2013-10-15
+References: <20131016134503.25095.8044.stgit@localhost6.localdomain6>
+Date: Mon, 21 Oct 2013 17:15:27 +0300
+In-Reply-To: <20131016134503.25095.8044.stgit@localhost6.localdomain6> (Kalle
+ Valo's message of "Wed, 16 Oct 2013 16:45:35 +0300")
+Message-ID: <8738nuu2v4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,60 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> Ben Greear <greearb@candelatech.com> writes:
+> This is Michal's patchset which he said:
 >
->> I sent this to the wrong list the first time.
->>
->> Do you know if this is already addressed?  If not, I'll see if I can
->> find a fix.
+>   This is a bunch of fixes I've had queued up for
+>   some time now. I was reluctant to send them without some additional checks
+>   and because some of the fixes are not ideal. At least we can get a discussion
+>   going if anything raises any serious concern.
 >
-> [...]
+> For v2 I added one patch myself, modified "ath10k: fix device initialization
+> routine" to use ath10k_pci_write32() style of wrappers and fixed long line warnings
+> from checkpatch.
 >
->> ath10k: MSI-X interrupt handling (8 intrs)
->> ath10k: Unable to wakeup target
->> ath10k: target took longer 5000 us to wake up (awake count 1)
->> ath10k: Failed to get pcie state addr: -16
->> ath10k: early firmware event indicated
->> BUG: unable to handle kernel NULL pointer dereference at 0000000000000004
->> IP: [<ffffffffa06ae46c>] ath10k_ce_completed_send_next+0x47/0x122
->> [ath10k_pci]
+> ---
 >
-> I think there are two bugs here:
+> Kalle Valo (1):
+>       ath10k: implement ath10k_pci_soc_read/write32()
 >
-> 1) Cold reset doesn't always work, Michal has a patch for that. That's
->    why the wakeup fails:
->
-> http://lists.infradead.org/pipermail/ath10k/2013-October/000638.html
->
-> 2) We enable interrupts too early and if wakeup fails and we get a
->    spurious interrupt ath10k crashes. We don't have a fix for this yet.
+> Michal Kazior (7):
+>       ath10k: prevent starting monitor without a vdev
+>       ath10k: add sanity checks for monitor management
+>       ath10k: fix endianess in prints
+>       ath10k: fix NSS reporting in RX
+>       ath10k: fix NULL deref upon early FW crash
+>       ath10k: fix FW crashes on heavy TX on 10.1.389 AP FW
 
-I was able to reproduce your crash and it seems that my patch "ath10k:
-add error handling to ath10k_pci_wait()" fixes the crash. But it's not
-an ultimate solution, it's just bandaid for the issue:
+These patches applied.
 
-[ 3200.447601] ath10k: MSI-X didn't succeed (1), trying MSI
-[ 3200.447898] ath10k_pci 0000:02:00.0: irq 49 for MSI/MSI-X
-[ 3200.449101] ath10k: MSI interrupt handling
-[ 3201.620679] ath10k: Unable to wakeup target
-[ 3201.620754] ath10k: Failed to reset target, target did not wake up: -110
-[ 3201.621111] ath10k: early firmware event indicated
-[ 3201.621624] ath10k: could not start pci hif (-110)
-[ 3201.621691] ath10k: could not probe fw (-110)
-[ 3201.621750] ath10k: could not register driver core (-110)
+>       ath10k: fix device initialization routine
 
-We are working on fixing the wakeup issue, doing just warm reset helps
-but there are other problems with that. Need to investigate more.
-
-And we need to fix the interrupt race properly at some point, I added a
-todo entry for this:
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/todo
+I dropped this patch for now, because of some of the warm reset issues.
+We need to investigate more.
 
 -- 
 Kalle Valo
