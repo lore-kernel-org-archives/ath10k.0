@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
- ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VXEM4-0003yi-Q0
- for ath10k@lists.infradead.org; Fri, 18 Oct 2013 18:00:57 +0000
-Date: Fri, 18 Oct 2013 13:57:33 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20131017
-Message-ID: <20131018175732.GD28130@tuxdriver.com>
-References: <87mwm82rmu.fsf@kamboji.qca.qualcomm.com>
+ id 1VY90c-0002ib-6p
+ for ath10k@lists.infradead.org; Mon, 21 Oct 2013 06:30:35 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: remove P2P from supported interface modes for
+ 10.X FW
+References: <1382090878-22216-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Mon, 21 Oct 2013 09:30:06 +0300
+In-Reply-To: <1382090878-22216-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Fri, 18 Oct 2013 12:07:57 +0200")
+Message-ID: <87mwm3uoep.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87mwm82rmu.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thu, Oct 17, 2013 at 12:06:33PM +0300, Kalle Valo wrote:
-> Hi John,
-> 
-> here's a pull request for ath6kl and ath10k. Notable changes:
-> 
-> Bartosz added support to ath10k for our 10.x AP firmware branch, which
-> gives us AP specific features and fixes. We still support the main
-> firmware branch as well just like before, ath10k detects runtime what
-> firmware is used. Unfortunately the firmware interface in 10.x branch is
-> somewhat different so there was quite a lot of changes in ath10k for
-> this.
-> 
-> Michal and Sujith did some performance improvements in ath10k. Vladimir
-> fixed a compiler warning and Fengguang removed an extra semicolon.
-> 
-> Please let me know if there are any problems.
-> 
-> Kalle
-> 
-> The following changes since commit 6e712d427cb0542afdd5220edb6e4f4f8a5b952d:
-> 
->   ath10k: replenish HTT RX buffers in a tasklet (2013-09-26 17:22:54 +0300)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to 56b84287d14aa74823a9c290d0c5839d38365110:
-> 
->   ath10k: add might_sleep() to ath10k_wmi_cmd_send() (2013-10-16 15:44:47 +0300)
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-Pulling now...
+> FW 10.X does not support P2P, stop advertising it to mac80211.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+
+[...]
+
+> @@ -3478,7 +3504,11 @@ int ath10k_mac_register(struct ath10k *ar)
+>  	 */
+>  	ar->hw->queues = 4;
+>  
+> -	ar->hw->wiphy->iface_combinations = &ath10k_if_comb;
+> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
+> +		ar->hw->wiphy->iface_combinations = &ath10k_10x_if_comb;
+> +	else
+> +		ar->hw->wiphy->iface_combinations = &ath10k_if_comb;
+
+I think it would be better to have a separate feature flag for this,
+like NO_P2P or something like that. Just in case we want to disable P2P
+in other firmware branches.
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
