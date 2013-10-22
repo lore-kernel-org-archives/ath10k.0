@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYjui-0006OM-KM
- for ath10k@lists.infradead.org; Tue, 22 Oct 2013 21:54:57 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Initialize list-head on vif creation.
-Date: Tue, 22 Oct 2013 14:54:14 -0700
-Message-Id: <1382478854-5233-1-git-send-email-greearb@candelatech.com>
+ id 1VYkLr-0006sf-G4
+ for ath10k@lists.infradead.org; Tue, 22 Oct 2013 22:23:00 +0000
+Message-ID: <5266FAAD.3010800@candelatech.com>
+Date: Tue, 22 Oct 2013 15:22:37 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: ath10k hits warning in sta_info.c:839.
+References: <5266C321.7000103@candelatech.com>
+In-Reply-To: <5266C321.7000103@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,38 +18,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
+To: ath10k@lists.infradead.org, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Ben Greear <greearb@candelatech.com>
+On 10/22/2013 11:25 AM, Ben Greear wrote:
+> Kernel is stock 'ath' tree, with small printk to debug an ath10k
+> crash.
+> 
+> This is FYI for now...will be looking at other ath10k crash bugs
+> before digging into this tone.
+> 
+> Setup is 2 stations trying to associate to same AP, which causes
+> endless failures and firmware crashes.  Good for chasing bugs :)
+> 
+> 
+> DMAR:[fault reason 05] PTE Write access is not set
+> dmar: DRHD: handling fault status reg 3
+> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
+> DMAR:[fault reason 05] PTE Write access is not set
+> dmar: DRHD: handling fault status reg 3
+> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
+> DMAR:[fault reason 05] PTE Write access is not set
+> 
+> sta300: authentication with 00:03:83:3d:30:aa timed out
+> [root@ct523-9292 ~]# ath10k: Failed to delete peer: 00:03:83:3d:30:aa for VDEV: 1
+> ath10k: WMI vdev stop failed: ret -108
 
-If the creation fails, this keeps us from crashing later when
-trying to do a list_del(arvif->list).
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 6 at /mnt/sda/home/greearb/git/ath/net/mac80211/sta_info.c:839 __sta_info_destroy+0x12)
+> Modules linked in: nf_nat_ipv4 nf_nat veth 8021q garp stp mrp llc macvlan pktgen lockd f71882fg coretemp hw]
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+I think this may be a result of whatever bug or limitation
+caused the firmware to error and/or crash when adding a second
+station VIF and trying to associate it to the same AP.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index da23c3f..908e90d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2064,6 +2064,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	arvif->vif = vif;
- 
- 	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
-+	INIT_LIST_HEAD(&arvif->list);
- 
- 	if ((vif->type == NL80211_IFTYPE_MONITOR) && ar->monitor_present) {
- 		ath10k_warn("Only one monitor interface allowed\n");
+Probably not a problem with the rest of the wifi stacks.
+
+Thanks,
+Ben
+
+
 -- 
-1.7.11.7
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
