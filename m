@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x235.google.com ([2a00:1450:4013:c00::235])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYwG1-0003L2-0u
- for ath10k@lists.infradead.org; Wed, 23 Oct 2013 11:05:45 +0000
-Received: by mail-ee0-f53.google.com with SMTP id c13so301186eek.12
- for <ath10k@lists.infradead.org>; Wed, 23 Oct 2013 04:05:23 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: use proper tx power unit
-Date: Wed, 23 Oct 2013 04:02:14 -0700
-Message-Id: <1382526135-3215-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1382526135-3215-1-git-send-email-michal.kazior@tieto.com>
-References: <1382526135-3215-1-git-send-email-michal.kazior@tieto.com>
+ id 1VZ6yi-00017C-Ku
+ for ath10k@lists.infradead.org; Wed, 23 Oct 2013 22:32:37 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Log firmware debug prints and dbg logs.
+Date: Wed, 23 Oct 2013 15:31:47 -0700
+Message-Id: <1382567507-19154-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,83 +21,65 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
-It was previously thought that FW expects tx power
-in quarters of dBm.
+From: Ben Greear <greearb@candelatech.com>
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+This should aid in debugging firmware issues on standard
+NIC hardware that does not have a serial port.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 18 +++++++++---------
- drivers/net/wireless/ath/ath10k/wmi.h |  3 ++-
- 2 files changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 35d5d3a..1d91201 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -451,9 +451,9 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
- 	arg.channel.mode = chan_to_phymode(&conf->chandef);
+NOTE:  This requires a previous patch sent privately to kvalo.
+
+ drivers/net/wireless/ath/ath10k/debug.h |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c   | 10 +++++++++-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 845c661..807bf03 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -33,6 +33,7 @@ enum ath10k_debug_mask {
+ 	ATH10K_DBG_MGMT		= 0x00000100,
+ 	ATH10K_DBG_DATA		= 0x00000200,
+ 	ATH10K_DBG_BMI		= 0x00000400,
++	ATH10K_DBG_FIRMWARE	= 0x00000800,
+ 	ATH10K_DBG_ANY		= 0xffffffff,
+ };
  
- 	arg.channel.min_power = 0;
--	arg.channel.max_power = channel->max_power * 4;
--	arg.channel.max_reg_power = channel->max_reg_power * 4;
--	arg.channel.max_antenna_gain = channel->max_antenna_gain;
-+	arg.channel.max_power = channel->max_power * 2;
-+	arg.channel.max_reg_power = channel->max_reg_power * 2;
-+	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index a796d0b..34cff8b 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1046,7 +1046,12 @@ static void ath10k_wmi_event_echo(struct ath10k *ar, struct sk_buff *skb)
  
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		arg.ssid = arvif->u.ap.ssid;
-@@ -530,9 +530,9 @@ static int ath10k_monitor_start(struct ath10k *ar, int vdev_id)
- 	arg.channel.mode = chan_to_phymode(&ar->hw->conf.chandef);
+ static void ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_MESG_EVENTID\n");
++	u32 *m = (u32 *)(skb->data);
++	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_MESG_EVENTID, dropped: %i\n",
++		   m[0]);
++	/* Format is dropped-count(u32) [message buffer]. */
++	if (ath10k_debug_mask & ATH10K_DBG_FIRMWARE)
++		ath10k_dbg_print_fw_dbg_buffer((u8 *)(&(m[1])), skb->len - 4);
+ }
  
- 	arg.channel.min_power = 0;
--	arg.channel.max_power = channel->max_power * 4;
--	arg.channel.max_reg_power = channel->max_reg_power * 4;
--	arg.channel.max_antenna_gain = channel->max_antenna_gain;
-+	arg.channel.max_power = channel->max_power * 2;
-+	arg.channel.max_reg_power = channel->max_reg_power * 2;
-+	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
+ static void ath10k_wmi_event_update_stats(struct ath10k *ar,
+@@ -1402,7 +1407,10 @@ static void ath10k_wmi_event_profile_match(struct ath10k *ar,
+ static void ath10k_wmi_event_debug_print(struct ath10k *ar,
+ 				  struct sk_buff *skb)
+ {
++	struct wmi_debug_mesg_event *ev;
++	ev = (struct wmi_debug_mesg_event *)(skb->data);
+ 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_PRINT_EVENTID\n");
++	ath10k_dbg(ATH10K_DBG_FIRMWARE, "%s\n", ev->bufp);
+ }
  
- 	ret = ath10k_wmi_vdev_start(ar, &arg);
- 	if (ret) {
-@@ -1376,9 +1376,9 @@ static int ath10k_update_channel_list(struct ath10k *ar)
- 
- 			ch->freq = channel->center_freq;
- 			ch->min_power = 0;
--			ch->max_power = channel->max_power * 4;
--			ch->max_reg_power = channel->max_reg_power * 4;
--			ch->max_antenna_gain = channel->max_antenna_gain;
-+			ch->max_power = channel->max_power * 2;
-+			ch->max_reg_power = channel->max_reg_power * 2;
-+			ch->max_antenna_gain = channel->max_antenna_gain * 2;
- 			ch->reg_class_id = 0; /* FIXME */
- 
- 			/* FIXME: why use only legacy modes, why not any
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 78c991a..81e33a7 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -893,6 +893,7 @@ struct wmi_channel {
- 	union {
- 		__le32 reginfo0;
- 		struct {
-+			/* note: power unit is 0.5 dBm */
- 			u8 min_power;
- 			u8 max_power;
- 			u8 reg_power;
-@@ -915,7 +916,7 @@ struct wmi_channel_arg {
- 	bool allow_ht;
- 	bool allow_vht;
- 	bool ht40plus;
--	/* note: power unit is 1/4th of dBm */
-+	/* note: power unit is 0.5 dBm */
- 	u32 min_power;
- 	u32 max_power;
- 	u32 max_reg_power;
+ static void ath10k_wmi_event_pdev_qvit(struct ath10k *ar, struct sk_buff *skb)
 -- 
-1.8.4.rc3
+1.7.11.7
 
 
 _______________________________________________
