@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VZ6yi-00017C-Ku
- for ath10k@lists.infradead.org; Wed, 23 Oct 2013 22:32:37 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Log firmware debug prints and dbg logs.
-Date: Wed, 23 Oct 2013 15:31:47 -0700
-Message-Id: <1382567507-19154-1-git-send-email-greearb@candelatech.com>
+ id 1VZ7rP-0001mY-Mq
+ for ath10k@lists.infradead.org; Wed, 23 Oct 2013 23:29:08 +0000
+Message-ID: <52685BA1.5020801@candelatech.com>
+Date: Wed, 23 Oct 2013 16:28:33 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: ath10k hits warning in sta_info.c:839.
+References: <5266C321.7000103@candelatech.com>
+ <5266FAAD.3010800@candelatech.com>
+ <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,71 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-From: Ben Greear <greearb@candelatech.com>
+On 10/23/2013 12:42 AM, Michal Kazior wrote:
 
-This should aid in debugging firmware issues on standard
-NIC hardware that does not have a serial port.
+> Yup. This originates from the firmware limitation. It's unable to
+> handle two peer nodes with same mac addr on different vdevs. That's
+> why it's impossible to associate 2 (or more) station interfaces to the
+> same BSS.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
+I'm hoping to fix that soon.  From what I can tell, the firmware is actually
+crashing, not just asserting.  I can find the 'program counter' in the firmware
+crash dump, but I am still working on how to get some sort of stack trace
+or source code location out of that.
 
-NOTE:  This requires a previous patch sent privately to kvalo.
+In case it helps someone else, I believe the register dump lines:
 
- drivers/net/wireless/ath/ath10k/debug.h |  1 +
- drivers/net/wireless/ath/ath10k/wmi.c   | 10 +++++++++-
- 2 files changed, 10 insertions(+), 1 deletion(-)
+ath10k: target Register Dump
+ath10k: [00]: 0x4100016C 0x00000000 0x0098B7DA 0x00000000
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 845c661..807bf03 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -33,6 +33,7 @@ enum ath10k_debug_mask {
- 	ATH10K_DBG_MGMT		= 0x00000100,
- 	ATH10K_DBG_DATA		= 0x00000200,
- 	ATH10K_DBG_BMI		= 0x00000400,
-+	ATH10K_DBG_FIRMWARE	= 0x00000800,
- 	ATH10K_DBG_ANY		= 0xffffffff,
- };
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a796d0b..34cff8b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1046,7 +1046,12 @@ static void ath10k_wmi_event_echo(struct ath10k *ar, struct sk_buff *skb)
- 
- static void ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
- {
--	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_MESG_EVENTID\n");
-+	u32 *m = (u32 *)(skb->data);
-+	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_MESG_EVENTID, dropped: %i\n",
-+		   m[0]);
-+	/* Format is dropped-count(u32) [message buffer]. */
-+	if (ath10k_debug_mask & ATH10K_DBG_FIRMWARE)
-+		ath10k_dbg_print_fw_dbg_buffer((u8 *)(&(m[1])), skb->len - 4);
- }
- 
- static void ath10k_wmi_event_update_stats(struct ath10k *ar,
-@@ -1402,7 +1407,10 @@ static void ath10k_wmi_event_profile_match(struct ath10k *ar,
- static void ath10k_wmi_event_debug_print(struct ath10k *ar,
- 				  struct sk_buff *skb)
- {
-+	struct wmi_debug_mesg_event *ev;
-+	ev = (struct wmi_debug_mesg_event *)(skb->data);
- 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_PRINT_EVENTID\n");
-+	ath10k_dbg(ATH10K_DBG_FIRMWARE, "%s\n", ev->bufp);
- }
- 
- static void ath10k_wmi_event_pdev_qvit(struct ath10k *ar, struct sk_buff *skb)
+decode as:  Target, Line (if assert), ProgramCounter(PC), bad-virtual-addr
+
+
+Thanks,
+Ben
+
+
 -- 
-1.7.11.7
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
