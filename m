@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x232.google.com ([2a00:1450:4008:c01::232])
+Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VYt5a-0006VW-2x
- for ath10k@lists.infradead.org; Wed, 23 Oct 2013 07:42:47 +0000
-Received: by mail-bk0-f50.google.com with SMTP id mz11so135201bkb.37
- for <ath10k@lists.infradead.org>; Wed, 23 Oct 2013 00:42:18 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5266FAAD.3010800@candelatech.com>
-References: <5266C321.7000103@candelatech.com>
- <5266FAAD.3010800@candelatech.com>
-Date: Wed, 23 Oct 2013 09:42:16 +0200
-Message-ID: <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
-Subject: Re: ath10k hits warning in sta_info.c:839.
+ id 1VYwFz-0003L0-GC
+ for ath10k@lists.infradead.org; Wed, 23 Oct 2013 11:05:45 +0000
+Received: by mail-ea0-f182.google.com with SMTP id o10so338003eaj.13
+ for <ath10k@lists.infradead.org>; Wed, 23 Oct 2013 04:05:20 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 0/3] ath10k: tx power fixes
+Date: Wed, 23 Oct 2013 04:02:12 -0700
+Message-Id: <1382526135-3215-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +17,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjMgT2N0b2JlciAyMDEzIDAwOjIyLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4gT24gMTAvMjIvMjAxMyAxMToyNSBBTSwgQmVuIEdyZWVhciB3cm90ZToK
-Pj4gS2VybmVsIGlzIHN0b2NrICdhdGgnIHRyZWUsIHdpdGggc21hbGwgcHJpbnRrIHRvIGRlYnVn
-IGFuIGF0aDEwawo+PiBjcmFzaC4KPj4KPj4gVGhpcyBpcyBGWUkgZm9yIG5vdy4uLndpbGwgYmUg
-bG9va2luZyBhdCBvdGhlciBhdGgxMGsgY3Jhc2ggYnVncwo+PiBiZWZvcmUgZGlnZ2luZyBpbnRv
-IHRoaXMgdG9uZS4KPj4KPj4gU2V0dXAgaXMgMiBzdGF0aW9ucyB0cnlpbmcgdG8gYXNzb2NpYXRl
-IHRvIHNhbWUgQVAsIHdoaWNoIGNhdXNlcwo+PiBlbmRsZXNzIGZhaWx1cmVzIGFuZCBmaXJtd2Fy
-ZSBjcmFzaGVzLiAgR29vZCBmb3IgY2hhc2luZyBidWdzIDopCj4+Cj4+Cj4+IERNQVI6W2ZhdWx0
-IHJlYXNvbiAwNV0gUFRFIFdyaXRlIGFjY2VzcyBpcyBub3Qgc2V0Cj4+IGRtYXI6IERSSEQ6IGhh
-bmRsaW5nIGZhdWx0IHN0YXR1cyByZWcgMwo+PiBkbWFyOiBETUFSOltETUEgV3JpdGVdIFJlcXVl
-c3QgZGV2aWNlIFswNTowMC4wXSBmYXVsdCBhZGRyIGZmZDUyMDAwCj4+IERNQVI6W2ZhdWx0IHJl
-YXNvbiAwNV0gUFRFIFdyaXRlIGFjY2VzcyBpcyBub3Qgc2V0Cj4+IGRtYXI6IERSSEQ6IGhhbmRs
-aW5nIGZhdWx0IHN0YXR1cyByZWcgMwo+PiBkbWFyOiBETUFSOltETUEgV3JpdGVdIFJlcXVlc3Qg
-ZGV2aWNlIFswNTowMC4wXSBmYXVsdCBhZGRyIGZmZDUyMDAwCj4+IERNQVI6W2ZhdWx0IHJlYXNv
-biAwNV0gUFRFIFdyaXRlIGFjY2VzcyBpcyBub3Qgc2V0Cj4+Cj4+IHN0YTMwMDogYXV0aGVudGlj
-YXRpb24gd2l0aCAwMDowMzo4MzozZDozMDphYSB0aW1lZCBvdXQKPj4gW3Jvb3RAY3Q1MjMtOTI5
-MiB+XSMgYXRoMTBrOiBGYWlsZWQgdG8gZGVsZXRlIHBlZXI6IDAwOjAzOjgzOjNkOjMwOmFhIGZv
-ciBWREVWOiAxCj4+IGF0aDEwazogV01JIHZkZXYgc3RvcCBmYWlsZWQ6IHJldCAtMTA4Cj4KPj4g
-LS0tLS0tLS0tLS0tWyBjdXQgaGVyZSBdLS0tLS0tLS0tLS0tCj4+IFdBUk5JTkc6IENQVTogMSBQ
-SUQ6IDYgYXQgL21udC9zZGEvaG9tZS9ncmVlYXJiL2dpdC9hdGgvbmV0L21hYzgwMjExL3N0YV9p
-bmZvLmM6ODM5IF9fc3RhX2luZm9fZGVzdHJveSsweDEyKQo+PiBNb2R1bGVzIGxpbmtlZCBpbjog
-bmZfbmF0X2lwdjQgbmZfbmF0IHZldGggODAyMXEgZ2FycCBzdHAgbXJwIGxsYyBtYWN2bGFuIHBr
-dGdlbiBsb2NrZCBmNzE4ODJmZyBjb3JldGVtcCBod10KPgo+IEkgdGhpbmsgdGhpcyBtYXkgYmUg
-YSByZXN1bHQgb2Ygd2hhdGV2ZXIgYnVnIG9yIGxpbWl0YXRpb24KPiBjYXVzZWQgdGhlIGZpcm13
-YXJlIHRvIGVycm9yIGFuZC9vciBjcmFzaCB3aGVuIGFkZGluZyBhIHNlY29uZAo+IHN0YXRpb24g
-VklGIGFuZCB0cnlpbmcgdG8gYXNzb2NpYXRlIGl0IHRvIHRoZSBzYW1lIEFQLgo+Cj4gUHJvYmFi
-bHkgbm90IGEgcHJvYmxlbSB3aXRoIHRoZSByZXN0IG9mIHRoZSB3aWZpIHN0YWNrcy4KCll1cC4g
-VGhpcyBvcmlnaW5hdGVzIGZyb20gdGhlIGZpcm13YXJlIGxpbWl0YXRpb24uIEl0J3MgdW5hYmxl
-IHRvCmhhbmRsZSB0d28gcGVlciBub2RlcyB3aXRoIHNhbWUgbWFjIGFkZHIgb24gZGlmZmVyZW50
-IHZkZXZzLiBUaGF0J3MKd2h5IGl0J3MgaW1wb3NzaWJsZSB0byBhc3NvY2lhdGUgMiAob3IgbW9y
-ZSkgc3RhdGlvbiBpbnRlcmZhY2VzIHRvIHRoZQpzYW1lIEJTUy4KCgpNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi,
+
+This patchset fixes power units used in ath10k and
+also make it respect (user) configurable tx power.
+
+
+Michal Kazior (3):
+  ath10k: setup min channel power to a reasonable value
+  ath10k: use proper tx power unit
+  ath10k: respect power_level values
+
+ drivers/net/wireless/ath/ath10k/mac.c | 44 +++++++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/wmi.h |  3 ++-
+ 2 files changed, 34 insertions(+), 13 deletions(-)
+
+-- 
+1.8.4.rc3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
