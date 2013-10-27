@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VaJ7i-0002iJ-VY
- for ath10k@lists.infradead.org; Sun, 27 Oct 2013 05:42:51 +0000
-Received: by mail-wg0-f43.google.com with SMTP id b13so5405354wgh.22
- for <ath10k@lists.infradead.org>; Sat, 26 Oct 2013 22:42:28 -0700 (PDT)
+ id 1VaKuC-0003dG-65
+ for ath10k@lists.infradead.org; Sun, 27 Oct 2013 07:37:01 +0000
+Received: by mail-wg0-f45.google.com with SMTP id z12so5489093wgg.24
+ for <ath10k@lists.infradead.org>; Sun, 27 Oct 2013 00:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Date: Sat, 26 Oct 2013 22:42:28 -0700
-Message-ID: <CAPqRyK90OeJi_UVGV6V2SLFK0KZvc3Y9GkFgrOaNQYRNWeOMGA@mail.gmail.com>
-Subject: 80 MHz support
-From: Phil Moora <phil.moora@gmail.com>
+In-Reply-To: <CAPqRyK90OeJi_UVGV6V2SLFK0KZvc3Y9GkFgrOaNQYRNWeOMGA@mail.gmail.com>
+References: <CAPqRyK90OeJi_UVGV6V2SLFK0KZvc3Y9GkFgrOaNQYRNWeOMGA@mail.gmail.com>
+Date: Sun, 27 Oct 2013 08:36:34 +0100
+Message-ID: <CACKGw+FE7YnqaxuSQY=GLm7chYHcEn+L5Lr_jv6uGUSRReYBbg@mail.gmail.com>
+Subject: Re: 80 MHz support
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Phil Moora <phil.moora@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hello all,
+On 27 October 2013 06:42, Phil Moora <phil.moora@gmail.com> wrote:
+> Hello all,
+>
+> Does ath10k provide 80 MHz channel support? I am using Compex
+> WLE900N5-18 miniPCIe (hw2) on latest ath10k-master branch. Everything
+> works fine but I can not make the card work on 80 MHz channel width.
 
-Does ath10k provide 80 MHz channel support? I am using Compex
-WLE900N5-18 miniPCIe (hw2) on latest ath10k-master branch. Everything
-works fine but I can not make the card work on 80 MHz channel width.
+Yes, it does.
 
-I am trying to connect to a 80 MHz AP, but my card remains in 40 MHz.
-Throughput tests reveal that it is indeed in 40 MHz.
+> I am trying to connect to a 80 MHz AP, but my card remains in 40 MHz.
+> Throughput tests reveal that it is indeed in 40 MHz.
+>
+> Any suggestions? Any changes required to unlock 80 MHz?
 
-Any suggestions? Any changes required to unlock 80 MHz?
+Please check your regulatory domain settings.
+An option may be to use custom db.txt (CONFIG_CFG80211_INTERNAL_REGDB)
+
+--Bartosz
 
 _______________________________________________
 ath10k mailing list
