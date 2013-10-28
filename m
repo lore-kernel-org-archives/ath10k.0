@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vajni-0000Yu-5x
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 10:11:59 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  Fix un-initialized debug objects.
-References: <1382639166-25698-1-git-send-email-greearb@candelatech.com>
- <871u39iydt.fsf@kamboji.qca.qualcomm.com>
- <526A8762.9050009@candelatech.com>
- <877gd0fzti.fsf@kamboji.qca.qualcomm.com>
- <526B467E.1060607@candelatech.com>
-Date: Mon, 28 Oct 2013 12:10:50 +0200
-In-Reply-To: <526B467E.1060607@candelatech.com> (Ben Greear's message of "Fri, 
- 25 Oct 2013 21:35:10 -0700")
-Message-ID: <87hac1d7th.fsf@kamboji.qca.qualcomm.com>
+ id 1Vao8o-0007Cq-Ko
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 14:50:04 +0000
+Message-ID: <526E7979.8040202@candelatech.com>
+Date: Mon, 28 Oct 2013 07:49:29 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: DMAR faults?
+References: <5266B204.8030901@candelatech.com>
+ <8761sheoom.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <8761sheoom.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +19,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> On 10/25/2013 08:58 PM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->>
->>> On 10/25/2013 12:49 AM, Kalle Valo wrote:
->>>> greearb@candelatech.com writes:
->>>
->>>>>    	INIT_WORK(&ar->restart_work, ath10k_core_restart);
->>>>>
->>>>> +	ath10k_debug_init(ar);
->>>>
->>>> For symmetry would it make more sense to move ath10k_debug_destroy() to
->>>> ath10k_core_unregister()? That way we could avoid adding a new function.
->>>>
->>>
->>> In my opinion, you should initialize such things as early as possible
->>> so you don't have to worry so much about the various error cases leaving
->>> things un-initialized.  I believe my patch accomplished that.
->>
->> Well, I again like symmetry and simplicity.
->>
->>> What new function are you planning to avoid?
->>
->> I would prefer not to create ath10k_debug_init().
->>
->> What I was trying to suggest is this, I think it should fix the bug you
->> are seeing:
+On 10/28/2013 02:21 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
-> I don't think so.  The problem is that the init logic can fail before
-> the debug logic is ever initialized, so any cleanup that attempts to
-> access the debug logic can blow up.
+>> Any idea what this means?  The 05:00.0 is the ath10k device...
+>>
+>> ath10k_pci 0000:05:00.0: BAR 0: assigned [mem 0xf4400000-0xf45fffff 64bit]
+>> ath10k: MSI-X interrupt handling (8 intrs)
+>> dmar: DRHD: handling fault status reg 3
+>> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffe46000
+>> DMAR:[fault reason 02] Present bit in context entry is clear
+>
+> I guess you have iommu enabled? I think that means ath10k device tried
+> to write to a memory area which was not mapped by the driver.
+>
+>> ath10k: Hardware name qca988x hw2.0 version 0x4100016c
+>> ath10k: UART prints disabled
+>> ath10k: firmware 999.999.0.636 booted
+>> ath10k: htt target version 2.1
+>> ath10k: Completion buffers are full
+>
+> Timestamps would be really useful. How fast did you get that completion
+> buffers are full message?
 
-Please look again. My idea was to fix the logic so that
-ath10k_debug_destroy() is called only if ath10k_debug_create() succeeds.
+These mostly happen after I crash firmware if I remember corectly.
+I haven't looked closely yet.
 
-> All my patch does is ensure the debug related members are always initialized,
-> and so can be cleaned up later without problem.
+I'm using a normal-ish Intel core-i7 system with 64-bit Fedora 19
+OS.  Probably iommu is enabled.
 
-It adds an unnecessary function which is not needed AFAICS.
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
