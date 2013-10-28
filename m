@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-bk0-x22f.google.com ([2a00:1450:4008:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vaj3K-0007q6-6D
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:24:02 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k hits warning in sta_info.c:839.
-References: <5266C321.7000103@candelatech.com>
- <5266FAAD.3010800@candelatech.com>
- <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
-Date: Mon, 28 Oct 2013 11:23:31 +0200
-In-Reply-To: <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
- (Michal Kazior's message of "Wed, 23 Oct 2013 09:42:16 +0200")
-Message-ID: <871u35eoks.fsf@kamboji.qca.qualcomm.com>
+ id 1VajBH-000831-KP
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:32:16 +0000
+Received: by mail-bk0-f47.google.com with SMTP id mx12so1656725bkb.20
+ for <ath10k@lists.infradead.org>; Mon, 28 Oct 2013 02:31:52 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <8761sheoom.fsf@kamboji.qca.qualcomm.com>
+References: <5266B204.8030901@candelatech.com>
+ <8761sheoom.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 28 Oct 2013 10:24:59 +0100
+Message-ID: <CA+BoTQ=pzpP1vYnDSnaMndrwQE6TFo8jQ2=pHG-1-=PcVmqpUQ@mail.gmail.com>
+Subject: Re: DMAR faults?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +21,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 23 October 2013 00:22, Ben Greear <greearb@candelatech.com> wrote:
->> On 10/22/2013 11:25 AM, Ben Greear wrote:
->>> Kernel is stock 'ath' tree, with small printk to debug an ath10k
->>> crash.
->>>
->>> This is FYI for now...will be looking at other ath10k crash bugs
->>> before digging into this tone.
->>>
->>> Setup is 2 stations trying to associate to same AP, which causes
->>> endless failures and firmware crashes.  Good for chasing bugs :)
->>>
->>>
->>> DMAR:[fault reason 05] PTE Write access is not set
->>> dmar: DRHD: handling fault status reg 3
->>> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
->>> DMAR:[fault reason 05] PTE Write access is not set
->>> dmar: DRHD: handling fault status reg 3
->>> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
->>> DMAR:[fault reason 05] PTE Write access is not set
->>>
->>> sta300: authentication with 00:03:83:3d:30:aa timed out
->>> [root@ct523-9292 ~]# ath10k: Failed to delete peer: 00:03:83:3d:30:aa for VDEV: 1
->>> ath10k: WMI vdev stop failed: ret -108
->>
->>> ------------[ cut here ]------------
->>> WARNING: CPU: 1 PID: 6 at /mnt/sda/home/greearb/git/ath/net/mac80211/sta_info.c:839 __sta_info_destroy+0x12)
->>> Modules linked in: nf_nat_ipv4 nf_nat veth 8021q garp stp mrp llc macvlan pktgen lockd f71882fg coretemp hw]
->>
->> I think this may be a result of whatever bug or limitation
->> caused the firmware to error and/or crash when adding a second
->> station VIF and trying to associate it to the same AP.
->>
->> Probably not a problem with the rest of the wifi stacks.
->
-> Yup. This originates from the firmware limitation. It's unable to
-> handle two peer nodes with same mac addr on different vdevs. That's
-> why it's impossible to associate 2 (or more) station interfaces to the
-> same BSS.
-
-I think we should add some sort of check to ath10k to detect that and
-not crash firmware.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggT2N0b2JlciAyMDEzIDEwOjIxLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JpdGVz
+Ogo+Cj4+IEFueSBpZGVhIHdoYXQgdGhpcyBtZWFucz8gIFRoZSAwNTowMC4wIGlzIHRoZSBhdGgx
+MGsgZGV2aWNlLi4uCj4+Cj4+IGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBCQVIgMDogYXNzaWdu
+ZWQgW21lbSAweGY0NDAwMDAwLTB4ZjQ1ZmZmZmYgNjRiaXRdCj4+IGF0aDEwazogTVNJLVggaW50
+ZXJydXB0IGhhbmRsaW5nICg4IGludHJzKQo+PiBkbWFyOiBEUkhEOiBoYW5kbGluZyBmYXVsdCBz
+dGF0dXMgcmVnIDMKPj4gZG1hcjogRE1BUjpbRE1BIFdyaXRlXSBSZXF1ZXN0IGRldmljZSBbMDU6
+MDAuMF0gZmF1bHQgYWRkciBmZmU0NjAwMAo+PiBETUFSOltmYXVsdCByZWFzb24gMDJdIFByZXNl
+bnQgYml0IGluIGNvbnRleHQgZW50cnkgaXMgY2xlYXIKPgo+IEkgZ3Vlc3MgeW91IGhhdmUgaW9t
+bXUgZW5hYmxlZD8gSSB0aGluayB0aGF0IG1lYW5zIGF0aDEwayBkZXZpY2UgdHJpZWQKPiB0byB3
+cml0ZSB0byBhIG1lbW9yeSBhcmVhIHdoaWNoIHdhcyBub3QgbWFwcGVkIGJ5IHRoZSBkcml2ZXIu
+CgpGcm9tIHdoYXQgSSB1bmRlcnN0YW5kIHRoaXMgaXMgd2hhdCBzdXBwb3NlZGx5IGNhbiBoYXBw
+ZW4gd2hlbiBjb2xkCmJvb3RpbmcgdGhlIGh3IDIuMC4KCgo+PiBhdGgxMGs6IEhhcmR3YXJlIG5h
+bWUgcWNhOTg4eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPj4gYXRoMTBrOiBVQVJUIHByaW50
+cyBkaXNhYmxlZAo+PiBhdGgxMGs6IGZpcm13YXJlIDk5OS45OTkuMC42MzYgYm9vdGVkCj4+IGF0
+aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+PiBhdGgxMGs6IENvbXBsZXRpb24gYnVmZmVy
+cyBhcmUgZnVsbAo+Cj4gVGltZXN0YW1wcyB3b3VsZCBiZSByZWFsbHkgdXNlZnVsLiBIb3cgZmFz
+dCBkaWQgeW91IGdldCB0aGF0IGNvbXBsZXRpb24KPiBidWZmZXJzIGFyZSBmdWxsIG1lc3NhZ2U/
+CgpJJ20gd29uZGVyaW5nIHdoYXQgQ0UgcmluZyBidWZmZXIgdGhpcyBpcyByZXBvcnRlZCBmb3Iu
+IEp1ZGdpbmcgZnJvbQpCZW4ncyByZWNlbnQgcmVwb3J0cyBJJ2QgZ3Vlc3MgdGhpcyBjYW4gYmUg
+YW4gdW5zb2xpY2l0ZWQgaW50ZXJydXB0CmZvciBhbiB1bnVzZWQgQ0Ugd2hpY2ggZG9lc24ndCBo
+YXZlIGNvbXBsZXRpb25zIGFsbG9jYXRlZCBhdCBhbGwgLS0KdGh1cyB0aGlzIG1lc3NhZ2UgaXMg
+cHJpbnRlZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
