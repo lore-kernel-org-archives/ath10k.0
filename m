@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VapvC-0002Rb-VE
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 16:44:07 +0000
-Message-ID: <526E9437.9020705@candelatech.com>
-Date: Mon, 28 Oct 2013 09:43:35 -0700
+ id 1Vaq2O-0002oT-Of
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 16:51:33 +0000
+Message-ID: <526E95F4.1010904@candelatech.com>
+Date: Mon, 28 Oct 2013 09:51:00 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k:  Fix un-initialized debug objects.
-References: <1382639166-25698-1-git-send-email-greearb@candelatech.com>
- <871u39iydt.fsf@kamboji.qca.qualcomm.com> <526A8762.9050009@candelatech.com>
- <877gd0fzti.fsf@kamboji.qca.qualcomm.com> <526B467E.1060607@candelatech.com>
- <87hac1d7th.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87hac1d7th.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: README for the ath10k firmware repository?
+References: <5265A58B.8000403@candelatech.com>
+ <87a9htephy.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87a9htephy.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,46 +26,34 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k@lists.infradead.org
 
-On 10/28/2013 03:10 AM, Kalle Valo wrote:
+On 10/28/2013 02:03 AM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 > 
->> On 10/25/2013 08:58 PM, Kalle Valo wrote:
->>> Ben Greear <greearb@candelatech.com> writes:
->>>
->>>> On 10/25/2013 12:49 AM, Kalle Valo wrote:
->>>>> greearb@candelatech.com writes:
->>>>
->>>>>>    	INIT_WORK(&ar->restart_work, ath10k_core_restart);
->>>>>>
->>>>>> +	ath10k_debug_init(ar);
->>>>>
->>>>> For symmetry would it make more sense to move ath10k_debug_destroy() to
->>>>> ath10k_core_unregister()? That way we could avoid adding a new function.
->>>>>
->>>>
->>>> In my opinion, you should initialize such things as early as possible
->>>> so you don't have to worry so much about the various error cases leaving
->>>> things un-initialized.  I believe my patch accomplished that.
->>>
->>> Well, I again like symmetry and simplicity.
->>>
->>>> What new function are you planning to avoid?
->>>
->>> I would prefer not to create ath10k_debug_init().
->>>
->>> What I was trying to suggest is this, I think it should fix the bug you
->>> are seeing:
+>> I noticed some new firmware images were added to the ath10k firmware
+>> repository ( https://github.com/kvalo/ath10k-firmware.git).
 >>
->> I don't think so.  The problem is that the init logic can fail before
->> the debug logic is ever initialized, so any cleanup that attempts to
->> access the debug logic can blow up.
+>> Could someone that knows add a small README that describes what firmware
+>> does what?
 > 
-> Please look again. My idea was to fix the logic so that
-> ath10k_debug_destroy() is called only if ath10k_debug_create() succeeds.
+> I added a small readme and wrote a bit more information to the wiki:
+> 
+> https://github.com/kvalo/ath10k-firmware
+> http://wireless.kernel.org/en/users/Drivers/ath10k/firmware
+> 
+> Do those help?
+> 
+>> For instance, I was thinking that maybe I should rename firmware-2.bin
+>> to firmware.bin on the host machine in order to use it..but that makes
+>> my system not boot.
+> 
+> You should not rename the files, except firmware-2.bin-10.1.389 ->
+> firmware-2.bin.
 
-Ok, I think your patch will work.  I'll back mine out when you push
-yours and will let you know if I find any more problems in this
-area.
+Yes, that does help.
+
+It is correct to say that if firmware-2.bin exists then the
+firmware.bin and otp.bin will always be ignored for recent
+ath10k drivers?
 
 Thanks,
 Ben
