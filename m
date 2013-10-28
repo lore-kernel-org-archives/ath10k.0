@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22f.google.com ([2a00:1450:4008:c01::22f])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VajBH-000831-KP
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:32:16 +0000
-Received: by mail-bk0-f47.google.com with SMTP id mx12so1656725bkb.20
- for <ath10k@lists.infradead.org>; Mon, 28 Oct 2013 02:31:52 -0700 (PDT)
+ id 1Vajni-0000Yu-5x
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 10:11:59 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  Fix un-initialized debug objects.
+References: <1382639166-25698-1-git-send-email-greearb@candelatech.com>
+ <871u39iydt.fsf@kamboji.qca.qualcomm.com>
+ <526A8762.9050009@candelatech.com>
+ <877gd0fzti.fsf@kamboji.qca.qualcomm.com>
+ <526B467E.1060607@candelatech.com>
+Date: Mon, 28 Oct 2013 12:10:50 +0200
+In-Reply-To: <526B467E.1060607@candelatech.com> (Ben Greear's message of "Fri, 
+ 25 Oct 2013 21:35:10 -0700")
+Message-ID: <87hac1d7th.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <8761sheoom.fsf@kamboji.qca.qualcomm.com>
-References: <5266B204.8030901@candelatech.com>
- <8761sheoom.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 28 Oct 2013 10:24:59 +0100
-Message-ID: <CA+BoTQ=pzpP1vYnDSnaMndrwQE6TFo8jQ2=pHG-1-=PcVmqpUQ@mail.gmail.com>
-Subject: Re: DMAR faults?
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +23,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-T24gMjggT2N0b2JlciAyMDEzIDEwOjIxLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
-Y29tPiB3cm90ZToKPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JpdGVz
-Ogo+Cj4+IEFueSBpZGVhIHdoYXQgdGhpcyBtZWFucz8gIFRoZSAwNTowMC4wIGlzIHRoZSBhdGgx
-MGsgZGV2aWNlLi4uCj4+Cj4+IGF0aDEwa19wY2kgMDAwMDowNTowMC4wOiBCQVIgMDogYXNzaWdu
-ZWQgW21lbSAweGY0NDAwMDAwLTB4ZjQ1ZmZmZmYgNjRiaXRdCj4+IGF0aDEwazogTVNJLVggaW50
-ZXJydXB0IGhhbmRsaW5nICg4IGludHJzKQo+PiBkbWFyOiBEUkhEOiBoYW5kbGluZyBmYXVsdCBz
-dGF0dXMgcmVnIDMKPj4gZG1hcjogRE1BUjpbRE1BIFdyaXRlXSBSZXF1ZXN0IGRldmljZSBbMDU6
-MDAuMF0gZmF1bHQgYWRkciBmZmU0NjAwMAo+PiBETUFSOltmYXVsdCByZWFzb24gMDJdIFByZXNl
-bnQgYml0IGluIGNvbnRleHQgZW50cnkgaXMgY2xlYXIKPgo+IEkgZ3Vlc3MgeW91IGhhdmUgaW9t
-bXUgZW5hYmxlZD8gSSB0aGluayB0aGF0IG1lYW5zIGF0aDEwayBkZXZpY2UgdHJpZWQKPiB0byB3
-cml0ZSB0byBhIG1lbW9yeSBhcmVhIHdoaWNoIHdhcyBub3QgbWFwcGVkIGJ5IHRoZSBkcml2ZXIu
-CgpGcm9tIHdoYXQgSSB1bmRlcnN0YW5kIHRoaXMgaXMgd2hhdCBzdXBwb3NlZGx5IGNhbiBoYXBw
-ZW4gd2hlbiBjb2xkCmJvb3RpbmcgdGhlIGh3IDIuMC4KCgo+PiBhdGgxMGs6IEhhcmR3YXJlIG5h
-bWUgcWNhOTg4eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPj4gYXRoMTBrOiBVQVJUIHByaW50
-cyBkaXNhYmxlZAo+PiBhdGgxMGs6IGZpcm13YXJlIDk5OS45OTkuMC42MzYgYm9vdGVkCj4+IGF0
-aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+PiBhdGgxMGs6IENvbXBsZXRpb24gYnVmZmVy
-cyBhcmUgZnVsbAo+Cj4gVGltZXN0YW1wcyB3b3VsZCBiZSByZWFsbHkgdXNlZnVsLiBIb3cgZmFz
-dCBkaWQgeW91IGdldCB0aGF0IGNvbXBsZXRpb24KPiBidWZmZXJzIGFyZSBmdWxsIG1lc3NhZ2U/
-CgpJJ20gd29uZGVyaW5nIHdoYXQgQ0UgcmluZyBidWZmZXIgdGhpcyBpcyByZXBvcnRlZCBmb3Iu
-IEp1ZGdpbmcgZnJvbQpCZW4ncyByZWNlbnQgcmVwb3J0cyBJJ2QgZ3Vlc3MgdGhpcyBjYW4gYmUg
-YW4gdW5zb2xpY2l0ZWQgaW50ZXJydXB0CmZvciBhbiB1bnVzZWQgQ0Ugd2hpY2ggZG9lc24ndCBo
-YXZlIGNvbXBsZXRpb25zIGFsbG9jYXRlZCBhdCBhbGwgLS0KdGh1cyB0aGlzIG1lc3NhZ2UgaXMg
-cHJpbnRlZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Ben Greear <greearb@candelatech.com> writes:
+
+> On 10/25/2013 08:58 PM, Kalle Valo wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>> On 10/25/2013 12:49 AM, Kalle Valo wrote:
+>>>> greearb@candelatech.com writes:
+>>>
+>>>>>    	INIT_WORK(&ar->restart_work, ath10k_core_restart);
+>>>>>
+>>>>> +	ath10k_debug_init(ar);
+>>>>
+>>>> For symmetry would it make more sense to move ath10k_debug_destroy() to
+>>>> ath10k_core_unregister()? That way we could avoid adding a new function.
+>>>>
+>>>
+>>> In my opinion, you should initialize such things as early as possible
+>>> so you don't have to worry so much about the various error cases leaving
+>>> things un-initialized.  I believe my patch accomplished that.
+>>
+>> Well, I again like symmetry and simplicity.
+>>
+>>> What new function are you planning to avoid?
+>>
+>> I would prefer not to create ath10k_debug_init().
+>>
+>> What I was trying to suggest is this, I think it should fix the bug you
+>> are seeing:
+>
+> I don't think so.  The problem is that the init logic can fail before
+> the debug logic is ever initialized, so any cleanup that attempts to
+> access the debug logic can blow up.
+
+Please look again. My idea was to fix the logic so that
+ath10k_debug_destroy() is called only if ath10k_debug_create() succeeds.
+
+> All my patch does is ensure the debug related members are always initialized,
+> and so can be cleaned up later without problem.
+
+It adds an unnecessary function which is not needed AFAICS.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
