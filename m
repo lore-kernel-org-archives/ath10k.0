@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vaj1I-0007lH-NC
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:21:57 +0000
+ id 1Vaj3K-0007q6-6D
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:24:02 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: DMAR faults?
-References: <5266B204.8030901@candelatech.com>
-Date: Mon, 28 Oct 2013 11:21:13 +0200
-In-Reply-To: <5266B204.8030901@candelatech.com> (Ben Greear's message of "Tue, 
- 22 Oct 2013 10:12:36 -0700")
-Message-ID: <8761sheoom.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k hits warning in sta_info.c:839.
+References: <5266C321.7000103@candelatech.com>
+ <5266FAAD.3010800@candelatech.com>
+ <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
+Date: Mon, 28 Oct 2013 11:23:31 +0200
+In-Reply-To: <CA+BoTQmomxywSjUB9nrniMT+HeZeBD=L3m2K8c=m6ehGcSp7eQ@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 23 Oct 2013 09:42:16 +0200")
+Message-ID: <871u35eoks.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +25,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Any idea what this means?  The 05:00.0 is the ath10k device...
+> On 23 October 2013 00:22, Ben Greear <greearb@candelatech.com> wrote:
+>> On 10/22/2013 11:25 AM, Ben Greear wrote:
+>>> Kernel is stock 'ath' tree, with small printk to debug an ath10k
+>>> crash.
+>>>
+>>> This is FYI for now...will be looking at other ath10k crash bugs
+>>> before digging into this tone.
+>>>
+>>> Setup is 2 stations trying to associate to same AP, which causes
+>>> endless failures and firmware crashes.  Good for chasing bugs :)
+>>>
+>>>
+>>> DMAR:[fault reason 05] PTE Write access is not set
+>>> dmar: DRHD: handling fault status reg 3
+>>> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
+>>> DMAR:[fault reason 05] PTE Write access is not set
+>>> dmar: DRHD: handling fault status reg 3
+>>> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffd52000
+>>> DMAR:[fault reason 05] PTE Write access is not set
+>>>
+>>> sta300: authentication with 00:03:83:3d:30:aa timed out
+>>> [root@ct523-9292 ~]# ath10k: Failed to delete peer: 00:03:83:3d:30:aa for VDEV: 1
+>>> ath10k: WMI vdev stop failed: ret -108
+>>
+>>> ------------[ cut here ]------------
+>>> WARNING: CPU: 1 PID: 6 at /mnt/sda/home/greearb/git/ath/net/mac80211/sta_info.c:839 __sta_info_destroy+0x12)
+>>> Modules linked in: nf_nat_ipv4 nf_nat veth 8021q garp stp mrp llc macvlan pktgen lockd f71882fg coretemp hw]
+>>
+>> I think this may be a result of whatever bug or limitation
+>> caused the firmware to error and/or crash when adding a second
+>> station VIF and trying to associate it to the same AP.
+>>
+>> Probably not a problem with the rest of the wifi stacks.
 >
-> ath10k_pci 0000:05:00.0: BAR 0: assigned [mem 0xf4400000-0xf45fffff 64bit]
-> ath10k: MSI-X interrupt handling (8 intrs)
-> dmar: DRHD: handling fault status reg 3
-> dmar: DMAR:[DMA Write] Request device [05:00.0] fault addr ffe46000
-> DMAR:[fault reason 02] Present bit in context entry is clear
+> Yup. This originates from the firmware limitation. It's unable to
+> handle two peer nodes with same mac addr on different vdevs. That's
+> why it's impossible to associate 2 (or more) station interfaces to the
+> same BSS.
 
-I guess you have iommu enabled? I think that means ath10k device tried
-to write to a memory area which was not mapped by the driver.
-
-> ath10k: Hardware name qca988x hw2.0 version 0x4100016c
-> ath10k: UART prints disabled
-> ath10k: firmware 999.999.0.636 booted
-> ath10k: htt target version 2.1
-> ath10k: Completion buffers are full
-
-Timestamps would be really useful. How fast did you get that completion
-buffers are full message?
+I think we should add some sort of check to ath10k to detect that and
+not crash firmware.
 
 -- 
 Kalle Valo
