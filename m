@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x230.google.com ([2a00:1450:4013:c00::230])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VagCc-0004Fn-1Q
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 06:21:27 +0000
-Received: by mail-ee0-f48.google.com with SMTP id e50so3160940eek.35
- for <ath10k@lists.infradead.org>; Sun, 27 Oct 2013 23:21:03 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: plug memory leak in wmi mgmt tx worker
-Date: Mon, 28 Oct 2013 07:18:13 +0100
-Message-Id: <1382941094-3291-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1382941094-3291-1-git-send-email-michal.kazior@tieto.com>
-References: <1382941094-3291-1-git-send-email-michal.kazior@tieto.com>
+ id 1VaiqT-0007TF-4X
+ for ath10k@lists.infradead.org; Mon, 28 Oct 2013 09:10:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: README for the ath10k firmware repository?
+References: <5265A58B.8000403@candelatech.com>
+Date: Mon, 28 Oct 2013 11:03:37 +0200
+In-Reply-To: <5265A58B.8000403@candelatech.com> (Ben Greear's message of "Mon, 
+ 21 Oct 2013 15:07:07 -0700")
+Message-ID: <87a9htephy.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,58 +19,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-sk_buff was not freed in some cases. The patch
-unifies the msdu freeing.
+Ben Greear <greearb@candelatech.com> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
- drivers/net/wireless/ath/ath10k/wmi.c | 4 +---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+> I noticed some new firmware images were added to the ath10k firmware
+> repository ( https://github.com/kvalo/ath10k-firmware.git).
+>
+> Could someone that knows add a small README that describes what firmware
+> does what?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bbb0efa..f45eca0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1729,8 +1729,10 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			break;
- 
- 		ret = ath10k_wmi_mgmt_tx(ar, skb);
--		if (ret)
-+		if (ret) {
- 			ath10k_warn("wmi mgmt_tx failed (%d)\n", ret);
-+			ieee80211_free_txskb(ar->hw, skb);
-+		}
- 	}
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index a796d0b..8db9db2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -674,10 +674,8 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 
- 	/* Send the management frame buffer to the target */
- 	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->mgmt_tx_cmdid);
--	if (ret) {
--		dev_kfree_skb_any(skb);
-+	if (ret)
- 		return ret;
--	}
- 
- 	/* TODO: report tx status to mac80211 - temporary just ACK */
- 	info->flags |= IEEE80211_TX_STAT_ACK;
+I added a small readme and wrote a bit more information to the wiki:
+
+https://github.com/kvalo/ath10k-firmware
+http://wireless.kernel.org/en/users/Drivers/ath10k/firmware
+
+Do those help?
+
+> For instance, I was thinking that maybe I should rename firmware-2.bin
+> to firmware.bin on the host machine in order to use it..but that makes
+> my system not boot.
+
+You should not rename the files, except firmware-2.bin-10.1.389 ->
+firmware-2.bin.
+
 -- 
-1.8.4.rc3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
