@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vaq5l-0003Px-MT
- for ath10k@lists.infradead.org; Mon, 28 Oct 2013 16:55:02 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: README for the ath10k firmware repository?
-References: <5265A58B.8000403@candelatech.com>
- <87a9htephy.fsf@kamboji.qca.qualcomm.com>
- <526E95F4.1010904@candelatech.com>
-Date: Mon, 28 Oct 2013 18:54:34 +0200
-In-Reply-To: <526E95F4.1010904@candelatech.com> (Ben Greear's message of "Mon, 
- 28 Oct 2013 09:51:00 -0700")
-Message-ID: <87li1d9vzp.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Vb84t-0002hR-LC
+ for ath10k@lists.infradead.org; Tue, 29 Oct 2013 12:07:20 +0000
+Received: by mail-ee0-f43.google.com with SMTP id b47so2604765eek.30
+ for <ath10k@lists.infradead.org>; Tue, 29 Oct 2013 05:06:56 -0700 (PDT)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH 3/3] ath10k: add debugfs file to control radar events blocking
+Date: Tue, 29 Oct 2013 13:06:34 +0100
+Message-Id: <1383048394-15256-3-git-send-email-marek.puzyniak@tieto.com>
+In-Reply-To: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
+References: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +19,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Ben Greear <greearb@candelatech.com> writes:
+Sometimes for DFS testing is required to stay on current channel even after
+radar detected. This patch allows to enable/disable radar detected event to be
+passed to mac80211.
 
-> On 10/28/2013 02:03 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->> 
->>> I noticed some new firmware images were added to the ath10k firmware
->>> repository ( https://github.com/kvalo/ath10k-firmware.git).
->>>
->>> Could someone that knows add a small README that describes what firmware
->>> does what?
->> 
->> I added a small readme and wrote a bit more information to the wiki:
->> 
->> https://github.com/kvalo/ath10k-firmware
->> http://wireless.kernel.org/en/users/Drivers/ath10k/firmware
->> 
->> Do those help?
->> 
->>> For instance, I was thinking that maybe I should rename firmware-2.bin
->>> to firmware.bin on the host machine in order to use it..but that makes
->>> my system not boot.
->> 
->> You should not rename the files, except firmware-2.bin-10.1.389 ->
->> firmware-2.bin.
->
-> Yes, that does help.
->
-> It is correct to say that if firmware-2.bin exists then the
-> firmware.bin and otp.bin will always be ignored for recent
-> ath10k drivers?
+By default radar detected event in not blocked.
 
-That's correct, firmware.bin and otp.bin are only to support old
-versions of ath10k. Consider them obsolete now.
+To block it:
+echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/dfs_block_radar_events
 
+To unblock again:
+echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/dfs_block_radar_events
+
+Inform about blocking radar detected event even when logs are disabled
+for throughput/performance reasons.
+
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  | 1 +
+ drivers/net/wireless/ath/ath10k/debug.c | 4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c   | 8 ++++++++
+ 3 files changed, 13 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d5fd74b..cdedcbf 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -409,6 +409,7 @@ struct ath10k {
+ 	bool monitor_present;
+ 	unsigned int filter_flags;
+ 	unsigned long dev_flags;
++	u32 dfs_block_radar_events;
+ 
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index d4d0cdd..2cfe96b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -749,6 +749,10 @@ int ath10k_debug_create(struct ath10k *ar)
+ 				    ar->debug.debugfs_phy, ar,
+ 				    &fops_simulate_radar);
+ 
++		debugfs_create_bool("dfs_block_radar_events", S_IWUSR,
++				    ar->debug.debugfs_phy,
++				    &ar->dfs_block_radar_events);
++
+ 		debugfs_create_file("dfs_stats", S_IRUSR,
+ 				    ar->debug.debugfs_phy, ar,
+ 				    &fops_dfs_stats);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 8a7ebcc..8600465 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1456,6 +1456,14 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
+ 
+ 	ath10k_dbg(ATH10K_DBG_REGULATORY, "dfs radar detected\n");
+ 	ATH10K_DFS_STAT_INC(ar, radar_detected);
++
++	/* Control radar events reporting in debugfs file
++	   dfs_block_radar_events */
++	if (ar->dfs_block_radar_events) {
++		ath10k_info("DFS Radar detected, but ignored as requested\n");
++		return;
++	}
++
+ 	ieee80211_radar_detected(ar->hw);
+ }
+ 
 -- 
-Kalle Valo
+1.8.1.2
+
 
 _______________________________________________
 ath10k mailing list
