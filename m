@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0078.hostedemail.com ([216.40.44.78]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbD2v-0002Z6-5d
- for ath10k@lists.infradead.org; Tue, 29 Oct 2013 17:25:37 +0000
-Message-ID: <1383067501.12439.5.camel@joe-AO722>
-Subject: Re: [PATCH 1/3] ath10k: add phyerr/dfs handling
-From: Joe Perches <joe@perches.com>
-Date: Tue, 29 Oct 2013 10:25:01 -0700
-In-Reply-To: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
-References: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
-Mime-Version: 1.0
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbH17-0007za-Jz
+ for ath10k@lists.infradead.org; Tue, 29 Oct 2013 21:40:02 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Fix crash due to tasklet race.
+Date: Tue, 29 Oct 2013 14:38:57 -0700
+Message-Id: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,60 +15,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
-On Tue, 2013-10-29 at 13:06 +0100, Marek Puzyniak wrote:
-> Handle phyerr, dfs event, radar_report and fft_report.
-> Add also debugfs dfs_simulate_radar and dfs_stats files.
-> Use ath dfs pattern detector.
+From: Ben Greear <greearb@candelatech.com>
 
-Just some simple notes:
+The tasklet can run after the rings have been cleaned up,
+so check for NULL before de-referencing the ring.
 
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-[]
-> +#define ATH10K_DFS_STAT(s, p) (\
-> +	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
-> +			 ar->debug.dfs_stats.p))
-> +
-> +#define ATH10K_DFS_POOL_STAT(s, p) (\
-> +	len += scnprintf(buf + len, size - len, "%28s : %10u\n", s, \
-> +			 ar->debug.dfs_pool_stats.p))
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-You've already got sizes for the description field
-might as well use %-28s
-
-> +static ssize_t ath10k_read_file_dfs(struct file *file, char __user *user_buf,
-> +				    size_t count, loff_t *ppos)
-> +{
-> +	int retval = 0, size = 8000, len = 0;
-
-size should either be a #define or a const
-
-[]
-
-> +	len += scnprintf(buf + len, size - len, "Pulse detector statistics:\n");
-> +	ATH10K_DFS_STAT("reported phy errors     ", phy_errors);
-> +	ATH10K_DFS_STAT("pulse events reported   ", pulses_total);
-> +	ATH10K_DFS_STAT("DFS pulses detected     ", pulses_detected);
-> +	ATH10K_DFS_STAT("DFS pulses discarded    ", pulses_discarded);
-> +	ATH10K_DFS_STAT("Radars detected         ", radar_detected);
-> +
-> +	len += scnprintf(buf + len, size - len, "Global Pool statistics:\n");
-> +	ATH10K_DFS_POOL_STAT("Pool references         ", pool_reference);
-> +	ATH10K_DFS_POOL_STAT("Pulses allocated        ", pulse_allocated);
-> +	ATH10K_DFS_POOL_STAT("Pulses alloc error      ", pulse_alloc_error);
-> +	ATH10K_DFS_POOL_STAT("Pulses in use           ", pulse_used);
-> +	ATH10K_DFS_POOL_STAT("Seqs. allocated         ", pseq_allocated);
-> +	ATH10K_DFS_POOL_STAT("Seqs. alloc error       ", pseq_alloc_error);
-> +	ATH10K_DFS_POOL_STAT("Seqs. in use            ", pseq_used);
-
-If using %-28s, the trailing quoted spaces can be removed.
-
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index d243f28..dfcfda9 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -547,12 +547,18 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+ 	u32 ctrl_addr = ce_state->ctrl_addr;
+ 	struct ath10k *ar = ce_state->ar;
+-	unsigned int nentries_mask = src_ring->nentries_mask;
+-	unsigned int sw_index = src_ring->sw_index;
++	unsigned int nentries_mask;
++	unsigned int sw_index;
+ 	struct ce_desc *sdesc, *sbase;
+ 	unsigned int read_index;
+ 	int ret;
+ 
++	if (!src_ring)
++		return -EIO;
++
++	nentries_mask = src_ring->nentries_mask;
++	sw_index = src_ring->sw_index;
++
+ 	if (src_ring->hw_index == sw_index) {
+ 		/*
+ 		 * The SW completion index has caught up with the cached
+-- 
+1.7.11.7
 
 
 _______________________________________________
