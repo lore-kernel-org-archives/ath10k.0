@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbOH7-0006DX-Eo
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 05:25:02 +0000
-Received: by mail-bk0-f42.google.com with SMTP id my10so334384bkb.29
- for <ath10k@lists.infradead.org>; Tue, 29 Oct 2013 22:24:39 -0700 (PDT)
+ id 1VbRhJ-000133-Gp
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 09:04:18 +0000
+Received: by mail-bk0-f42.google.com with SMTP id my10so407555bkb.15
+ for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 02:03:48 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 30 Oct 2013 13:24:39 +0800
-Message-ID: <CAPgLHd9o1oGjjM=9B2H0tB41t8Kinp_1Djp6aA=sW5Eo5M7jfA@mail.gmail.com>
-Subject: [PATCH -next] ath10k: fix possible memory leak in ath10k_pci_probe()
-From: Wei Yongjun <weiyj.lk@gmail.com>
+In-Reply-To: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
+References: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
+Date: Wed, 30 Oct 2013 10:03:48 +0100
+Message-ID: <CA+BoTQ=qUgR4TEcUMjV88RD+fFreCkkEtHfu5hB2_BguirfNHg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix crash due to tasklet race.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,40 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, linville@tuxdriver.com
-Cc: yongjun_wei@trendmicro.com.cn, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-
-memory is malloced in ath10k_pci_probe() and should be freed before
-leaving from the error handling cases, otherwise it will cause
-memory leak.
-
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
----
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index dff23d9..af01631 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2470,7 +2470,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ret = ath10k_do_pci_wake(ar);
- 	if (ret) {
- 		ath10k_err("Failed to get chip id: %d\n", ret);
--		return ret;
-+		goto err_iomap;
- 	}
- 
- 	chip_id = ath10k_pci_read32(ar,
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjkgT2N0b2JlciAyMDEzIDIyOjM4LCAgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90
+ZToKPiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPgo+IFRoZSB0
+YXNrbGV0IGNhbiBydW4gYWZ0ZXIgdGhlIHJpbmdzIGhhdmUgYmVlbiBjbGVhbmVkIHVwLAo+IHNv
+IGNoZWNrIGZvciBOVUxMIGJlZm9yZSBkZS1yZWZlcmVuY2luZyB0aGUgcmluZy4KPgo+IFNpZ25l
+ZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+ICBk
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMgfCAxMCArKysrKysrKy0tCj4gIDEg
+ZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jZS5jIGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9jZS5jCj4gaW5kZXggZDI0M2YyOC4uZGZjZmRhOSAxMDA2NDQK
+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPiArKysgYi9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPiBAQCAtNTQ3LDEyICs1NDcsMTggQEAg
+c3RhdGljIGludCBhdGgxMGtfY2VfY29tcGxldGVkX3NlbmRfbmV4dF9ub2xvY2soc3RydWN0IGF0
+aDEwa19jZV9waXBlICpjZV9zdGF0ZSwKPiAgICAgICAgIHN0cnVjdCBhdGgxMGtfY2VfcmluZyAq
+c3JjX3JpbmcgPSBjZV9zdGF0ZS0+c3JjX3Jpbmc7Cj4gICAgICAgICB1MzIgY3RybF9hZGRyID0g
+Y2Vfc3RhdGUtPmN0cmxfYWRkcjsKPiAgICAgICAgIHN0cnVjdCBhdGgxMGsgKmFyID0gY2Vfc3Rh
+dGUtPmFyOwo+IC0gICAgICAgdW5zaWduZWQgaW50IG5lbnRyaWVzX21hc2sgPSBzcmNfcmluZy0+
+bmVudHJpZXNfbWFzazsKPiAtICAgICAgIHVuc2lnbmVkIGludCBzd19pbmRleCA9IHNyY19yaW5n
+LT5zd19pbmRleDsKPiArICAgICAgIHVuc2lnbmVkIGludCBuZW50cmllc19tYXNrOwo+ICsgICAg
+ICAgdW5zaWduZWQgaW50IHN3X2luZGV4Owo+ICAgICAgICAgc3RydWN0IGNlX2Rlc2MgKnNkZXNj
+LCAqc2Jhc2U7Cj4gICAgICAgICB1bnNpZ25lZCBpbnQgcmVhZF9pbmRleDsKPiAgICAgICAgIGlu
+dCByZXQ7Cj4KPiArICAgICAgIGlmICghc3JjX3JpbmcpCj4gKyAgICAgICAgICAgICAgIHJldHVy
+biAtRUlPOwo+ICsKPiArICAgICAgIG5lbnRyaWVzX21hc2sgPSBzcmNfcmluZy0+bmVudHJpZXNf
+bWFzazsKPiArICAgICAgIHN3X2luZGV4ID0gc3JjX3JpbmctPnN3X2luZGV4Owo+ICsKPiAgICAg
+ICAgIGlmIChzcmNfcmluZy0+aHdfaW5kZXggPT0gc3dfaW5kZXgpIHsKPiAgICAgICAgICAgICAg
+ICAgLyoKPiAgICAgICAgICAgICAgICAgICogVGhlIFNXIGNvbXBsZXRpb24gaW5kZXggaGFzIGNh
+dWdodCB1cCB3aXRoIHRoZSBjYWNoZWQKCkkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBhIHByb3BlciB3
+YXkgdG8gZml4IHRoZSBwcm9ibGVtLiBXaGF0IHNob3VsZCBiZQpkb25lIGlzIGluaXRpYWxpemF0
+aW9uIGNsZWFuIHVwIGFuZCBzb21lIHJlb3JkZXJpbmcgdG8gcHJldmVudCB0aGlzCmZyb20gaGFw
+cGVuaW5nIGluIHRoZSBmaXJzdCBwbGFjZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
