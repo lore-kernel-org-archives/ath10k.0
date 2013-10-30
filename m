@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
+Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbUDN-0000Cj-KN
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:34 +0000
-Received: by mail-ea0-f169.google.com with SMTP id k11so594733eaj.28
- for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:11 -0700 (PDT)
+ id 1VbUDO-0000Ck-MI
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:35 +0000
+Received: by mail-ea0-f182.google.com with SMTP id o10so581573eaj.41
+ for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:12 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT 03/12] ath10k: split tasklet killing function
-Date: Wed, 30 Oct 2013 12:42:17 +0100
-Message-Id: <1383133346-8135-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH/RFT 04/12] ath10k: rename function to match it's role
+Date: Wed, 30 Oct 2013 12:42:18 +0100
+Message-Id: <1383133346-8135-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,51 +27,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The function will soon be called from more than 1
-place.
+What the function does is to actually wait for the
+firmware indication bit to be set. Prerequisite
+for this is having interrupts registered.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index aa43466..d9467e5 100644
+index d9467e5..1e430d0 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -877,21 +877,26 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
- 	return 0;
+@@ -53,7 +53,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
+ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info);
+ static void ath10k_pci_stop_ce(struct ath10k *ar);
+ static void ath10k_pci_device_reset(struct ath10k *ar);
+-static int ath10k_pci_reset_target(struct ath10k *ar);
++static int ath10k_pci_wait_for_target_init(struct ath10k *ar);
+ static int ath10k_pci_start_intr(struct ath10k *ar);
+ static void ath10k_pci_stop_intr(struct ath10k *ar);
+ 
+@@ -1857,7 +1857,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	 */
+ 	ath10k_pci_device_reset(ar);
+ 
+-	ret = ath10k_pci_reset_target(ar);
++	ret = ath10k_pci_wait_for_target_init(ar);
+ 	if (ret)
+ 		goto err_irq;
+ 
+@@ -2257,7 +2257,7 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
+ 		pci_disable_msi(ar_pci->pdev);
  }
  
--static void ath10k_pci_stop_ce(struct ath10k *ar)
-+static void ath10k_pci_kill_tasklet(struct ath10k *ar)
+-static int ath10k_pci_reset_target(struct ath10k *ar)
++static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
  {
  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	struct ath10k_pci_compl *compl;
--	struct sk_buff *skb;
- 	int i;
- 
--	ath10k_ce_disable_interrupts(ar);
--
--	/* Cancel the pending tasklet */
- 	tasklet_kill(&ar_pci->intr_tq);
- 	tasklet_kill(&ar_pci->msi_fw_err);
- 
- 	for (i = 0; i < CE_COUNT; i++)
- 		tasklet_kill(&ar_pci->pipe_info[i].intr);
-+}
-+
-+static void ath10k_pci_stop_ce(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	struct ath10k_pci_compl *compl;
-+	struct sk_buff *skb;
-+
-+	ath10k_ce_disable_interrupts(ar);
-+	ath10k_pci_kill_tasklet(ar);
- 
- 	/* Mark pending completions as aborted, so that upper layers free up
- 	 * their associated resources */
+ 	int wait_limit = 300; /* 3 sec */
 -- 
 1.8.4.rc3
 
