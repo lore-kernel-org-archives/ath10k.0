@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0205.hostedemail.com ([216.40.44.205]
- helo=smtprelay.hostedemail.com)
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbZOF-0001Da-R3
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 17:17:08 +0000
-Message-ID: <1383153399.9435.33.camel@joe-AO722>
-Subject: Re: [PATCH/RFT 12/12] ath10k: add some debug prints
-From: Joe Perches <joe@perches.com>
-Date: Wed, 30 Oct 2013 10:16:39 -0700
-In-Reply-To: <1383133346-8135-13-git-send-email-michal.kazior@tieto.com>
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1VbfOw-0002Pt-Ry
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 23:42:15 +0000
+Message-ID: <5271993E.5010103@candelatech.com>
+Date: Wed, 30 Oct 2013 16:41:50 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH/RFT 00/12] ath10k: pci fixes 2013-10-30
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
- <1383133346-8135-13-git-send-email-michal.kazior@tieto.com>
-Mime-Version: 1.0
+In-Reply-To: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +23,40 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, 2013-10-30 at 12:42 +0100, Michal Kazior wrote:
-> Some errors were handled too silently.
+On 10/30/2013 04:42 AM, Michal Kazior wrote:
+> Hi,
+> 
+> This patchset contains a slew of PCI/CE cleanups
+> and fixes. The aim of the patchset is to deal with
+> CE null dereference bugs Ben has been reporting on
+> the mailing list for some time now.
+> 
+> I've done some brief testing and don't see any
+> major regressions. I wasn't able to reproduce the
+> reported bugs though. @Ben: Could you perhaps test
+> this, please?
 
-These aren't really debug prints.
+I have done a bit of testing on this.  First, I did see
+a total machine lockup, but I have been seeing those fairly
+often on module reloads, so probably that was nothing new
+in your patches.
 
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-[]
-> @@ -1860,8 +1862,10 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->  		ath10k_do_pci_wake(ar);
->  
->  	ret = ath10k_pci_ce_init(ar);
-> -	if (ret)
-> +	if (ret) {
-> +		ath10k_err("could not initialize CE (%d)\n", ret);
+I am also still running the crash avoidance patches I posted
+recently.
 
-Rather than try to reinterpret the function name,
-perhaps it's better to simply emit the function name
-as is done most other places like:
+And good news for me at least...with some modified firmware,
+I am getting two stations to associate to the same AP and
+pass traffic to each other (no encryption..that probably
+doesn't work yet) :)
 
-		ath10k_err("ath10k_pci_ce_init failed: (%d)\n", ret);
+Thanks,
+Ben
 
-
-> @@ -1876,16 +1880,22 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
->  	}
->  
->  	ret = ath10k_pci_wait_for_target_init(ar);
-> -	if (ret)
-> +	if (ret) {
-> +		ath10k_err("failed to wait for target to init (%d)\n", ret);
->  		goto err_irq;
-> +	}
-
-Like this one, because the function did wait,
-but the init was unsuccessful.
-
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
