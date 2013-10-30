@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbUDM-0000Cg-BC
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:33 +0000
-Received: by mail-ea0-f175.google.com with SMTP id l15so485443eak.20
- for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:08 -0700 (PDT)
+ id 1VbUDN-0000Cj-KN
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:34 +0000
+Received: by mail-ea0-f169.google.com with SMTP id k11so594733eaj.28
+ for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:11 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT 00/12] ath10k: pci fixes 2013-10-30
-Date: Wed, 30 Oct 2013 12:42:14 +0100
-Message-Id: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH/RFT 03/12] ath10k: split tasklet killing function
+Date: Wed, 30 Oct 2013 12:42:17 +0100
+Message-Id: <1383133346-8135-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +27,51 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+The function will soon be called from more than 1
+place.
 
-This patchset contains a slew of PCI/CE cleanups
-and fixes. The aim of the patchset is to deal with
-CE null dereference bugs Ben has been reporting on
-the mailing list for some time now.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-I've done some brief testing and don't see any
-major regressions. I wasn't able to reproduce the
-reported bugs though. @Ben: Could you perhaps test
-this, please?
-
-
-Michal Kazior (12):
-  ath10k: remove ar_pci->ce_count
-  ath10k: don't forget to kill fw error tasklet
-  ath10k: split tasklet killing function
-  ath10k: rename function to match it's role
-  ath10k: make sure to mask all CE irqs
-  ath10k: fix ath10k_ce_init() failpath
-  ath10k: remove meaningless check
-  ath10k: use ath10k_do_pci_wake/sleep
-  ath10k: propagate ath10k_ce_disable_interrupts() errors
-  ath10k: guard against CE corruption from firmware
-  ath10k: re-arrange PCI init code
-  ath10k: add some debug prints
-
- drivers/net/wireless/ath/ath10k/ce.c  |  56 ++++++---
- drivers/net/wireless/ath/ath10k/ce.h  |   3 +-
- drivers/net/wireless/ath/ath10k/htc.c |   5 +
- drivers/net/wireless/ath/ath10k/pci.c | 221 ++++++++++++++++++----------------
- drivers/net/wireless/ath/ath10k/pci.h |   3 -
- 5 files changed, 161 insertions(+), 127 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index aa43466..d9467e5 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -877,21 +877,26 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static void ath10k_pci_stop_ce(struct ath10k *ar)
++static void ath10k_pci_kill_tasklet(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_compl *compl;
+-	struct sk_buff *skb;
+ 	int i;
+ 
+-	ath10k_ce_disable_interrupts(ar);
+-
+-	/* Cancel the pending tasklet */
+ 	tasklet_kill(&ar_pci->intr_tq);
+ 	tasklet_kill(&ar_pci->msi_fw_err);
+ 
+ 	for (i = 0; i < CE_COUNT; i++)
+ 		tasklet_kill(&ar_pci->pipe_info[i].intr);
++}
++
++static void ath10k_pci_stop_ce(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	struct ath10k_pci_compl *compl;
++	struct sk_buff *skb;
++
++	ath10k_ce_disable_interrupts(ar);
++	ath10k_pci_kill_tasklet(ar);
+ 
+ 	/* Mark pending completions as aborted, so that upper layers free up
+ 	 * their associated resources */
 -- 
 1.8.4.rc3
 
