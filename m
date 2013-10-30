@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbRhJ-000133-Gp
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 09:04:18 +0000
-Received: by mail-bk0-f42.google.com with SMTP id my10so407555bkb.15
- for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 02:03:48 -0700 (PDT)
+ id 1VbSTL-00042G-Iw
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 09:53:56 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: memory leak fixes
+References: <1382941094-3291-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 30 Oct 2013 11:53:24 +0200
+In-Reply-To: <1382941094-3291-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 28 Oct 2013 07:18:12 +0100")
+Message-ID: <87ppqn6q5n.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
-References: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
-Date: Wed, 30 Oct 2013 10:03:48 +0100
-Message-ID: <CA+BoTQ=qUgR4TEcUMjV88RD+fFreCkkEtHfu5hB2_BguirfNHg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix crash due to tasklet race.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +19,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjkgT2N0b2JlciAyMDEzIDIyOjM4LCAgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90
-ZToKPiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPgo+IFRoZSB0
-YXNrbGV0IGNhbiBydW4gYWZ0ZXIgdGhlIHJpbmdzIGhhdmUgYmVlbiBjbGVhbmVkIHVwLAo+IHNv
-IGNoZWNrIGZvciBOVUxMIGJlZm9yZSBkZS1yZWZlcmVuY2luZyB0aGUgcmluZy4KPgo+IFNpZ25l
-ZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+ICBk
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMgfCAxMCArKysrKysrKy0tCj4gIDEg
-ZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jZS5jIGIvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9jZS5jCj4gaW5kZXggZDI0M2YyOC4uZGZjZmRhOSAxMDA2NDQK
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPiArKysgYi9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPiBAQCAtNTQ3LDEyICs1NDcsMTggQEAg
-c3RhdGljIGludCBhdGgxMGtfY2VfY29tcGxldGVkX3NlbmRfbmV4dF9ub2xvY2soc3RydWN0IGF0
-aDEwa19jZV9waXBlICpjZV9zdGF0ZSwKPiAgICAgICAgIHN0cnVjdCBhdGgxMGtfY2VfcmluZyAq
-c3JjX3JpbmcgPSBjZV9zdGF0ZS0+c3JjX3Jpbmc7Cj4gICAgICAgICB1MzIgY3RybF9hZGRyID0g
-Y2Vfc3RhdGUtPmN0cmxfYWRkcjsKPiAgICAgICAgIHN0cnVjdCBhdGgxMGsgKmFyID0gY2Vfc3Rh
-dGUtPmFyOwo+IC0gICAgICAgdW5zaWduZWQgaW50IG5lbnRyaWVzX21hc2sgPSBzcmNfcmluZy0+
-bmVudHJpZXNfbWFzazsKPiAtICAgICAgIHVuc2lnbmVkIGludCBzd19pbmRleCA9IHNyY19yaW5n
-LT5zd19pbmRleDsKPiArICAgICAgIHVuc2lnbmVkIGludCBuZW50cmllc19tYXNrOwo+ICsgICAg
-ICAgdW5zaWduZWQgaW50IHN3X2luZGV4Owo+ICAgICAgICAgc3RydWN0IGNlX2Rlc2MgKnNkZXNj
-LCAqc2Jhc2U7Cj4gICAgICAgICB1bnNpZ25lZCBpbnQgcmVhZF9pbmRleDsKPiAgICAgICAgIGlu
-dCByZXQ7Cj4KPiArICAgICAgIGlmICghc3JjX3JpbmcpCj4gKyAgICAgICAgICAgICAgIHJldHVy
-biAtRUlPOwo+ICsKPiArICAgICAgIG5lbnRyaWVzX21hc2sgPSBzcmNfcmluZy0+bmVudHJpZXNf
-bWFzazsKPiArICAgICAgIHN3X2luZGV4ID0gc3JjX3JpbmctPnN3X2luZGV4Owo+ICsKPiAgICAg
-ICAgIGlmIChzcmNfcmluZy0+aHdfaW5kZXggPT0gc3dfaW5kZXgpIHsKPiAgICAgICAgICAgICAg
-ICAgLyoKPiAgICAgICAgICAgICAgICAgICogVGhlIFNXIGNvbXBsZXRpb24gaW5kZXggaGFzIGNh
-dWdodCB1cCB3aXRoIHRoZSBjYWNoZWQKCkkgZG9uJ3QgdGhpbmsgdGhpcyBpcyBhIHByb3BlciB3
-YXkgdG8gZml4IHRoZSBwcm9ibGVtLiBXaGF0IHNob3VsZCBiZQpkb25lIGlzIGluaXRpYWxpemF0
-aW9uIGNsZWFuIHVwIGFuZCBzb21lIHJlb3JkZXJpbmcgdG8gcHJldmVudCB0aGlzCmZyb20gaGFw
-cGVuaW5nIGluIHRoZSBmaXJzdCBwbGFjZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> Michal Kazior (2):
+>   ath10k: plug memory leak in wmi mgmt tx worker
+>   ath10k: plug memory leak on beacon tx
+
+Thanks, both patches applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
