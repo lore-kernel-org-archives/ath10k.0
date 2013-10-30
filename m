@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x236.google.com ([2a00:1450:4013:c01::236])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VbUDO-0000Ck-MI
- for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:35 +0000
-Received: by mail-ea0-f182.google.com with SMTP id o10so581573eaj.41
- for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:12 -0700 (PDT)
+ id 1VbUDN-0000Ci-2M
+ for ath10k@lists.infradead.org; Wed, 30 Oct 2013 11:45:34 +0000
+Received: by mail-ee0-f43.google.com with SMTP id b47so571116eek.30
+ for <ath10k@lists.infradead.org>; Wed, 30 Oct 2013 04:45:11 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT 04/12] ath10k: rename function to match it's role
-Date: Wed, 30 Oct 2013 12:42:18 +0100
-Message-Id: <1383133346-8135-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH/RFT 02/12] ath10k: don't forget to kill fw error tasklet
+Date: Wed, 30 Oct 2013 12:42:16 +0100
+Message-Id: <1383133346-8135-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,46 +27,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-What the function does is to actually wait for the
-firmware indication bit to be set. Prerequisite
-for this is having interrupts registered.
+It was possible for FW error tasklet to be
+executed during teardown. This could lead to
+system crashes and/or memory corruption.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d9467e5..1e430d0 100644
+index 05cdbf0..aa43466 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -53,7 +53,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
- static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info);
- static void ath10k_pci_stop_ce(struct ath10k *ar);
- static void ath10k_pci_device_reset(struct ath10k *ar);
--static int ath10k_pci_reset_target(struct ath10k *ar);
-+static int ath10k_pci_wait_for_target_init(struct ath10k *ar);
- static int ath10k_pci_start_intr(struct ath10k *ar);
- static void ath10k_pci_stop_intr(struct ath10k *ar);
+@@ -888,6 +888,7 @@ static void ath10k_pci_stop_ce(struct ath10k *ar)
  
-@@ -1857,7 +1857,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 	 */
- 	ath10k_pci_device_reset(ar);
+ 	/* Cancel the pending tasklet */
+ 	tasklet_kill(&ar_pci->intr_tq);
++	tasklet_kill(&ar_pci->msi_fw_err);
  
--	ret = ath10k_pci_reset_target(ar);
-+	ret = ath10k_pci_wait_for_target_init(ar);
- 	if (ret)
- 		goto err_irq;
- 
-@@ -2257,7 +2257,7 @@ static void ath10k_pci_stop_intr(struct ath10k *ar)
- 		pci_disable_msi(ar_pci->pdev);
- }
- 
--static int ath10k_pci_reset_target(struct ath10k *ar)
-+static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int wait_limit = 300; /* 3 sec */
+ 	for (i = 0; i < CE_COUNT; i++)
+ 		tasklet_kill(&ar_pci->pipe_info[i].intr);
 -- 
 1.8.4.rc3
 
