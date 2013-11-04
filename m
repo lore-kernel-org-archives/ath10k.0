@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdNnd-0000yH-FD
- for ath10k@lists.infradead.org; Mon, 04 Nov 2013 17:18:50 +0000
+ id 1VdNoq-00012M-2u
+ for ath10k@lists.infradead.org; Mon, 04 Nov 2013 17:20:04 +0000
 From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  Fix un-initialized debug objects.
-Date: Mon,  4 Nov 2013 09:18:16 -0800
-Message-Id: <1383585496-17580-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH] ath10k: Add logging to better determine some VIF/STA creation
+ failures.
+Date: Mon,  4 Nov 2013 09:19:34 -0800
+Message-Id: <1383585574-17779-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +26,55 @@ Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
 From: Ben Greear <greearb@candelatech.com>
 
-If the 'ar' registration fails early, the debug
-objects were not initialized, and trouble ensued when
-the object was later destroyed and the un-initialized
-objects were accessed.
-
-Per Kalle's suggestion, move the debug_destroy to the
-core_unregister method.
-
-Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2a360ca..7d86876 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -738,8 +738,6 @@ EXPORT_SYMBOL(ath10k_core_create);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f45eca0..93e52c5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -322,12 +322,16 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 	lockdep_assert_held(&ar->conf_mutex);
  
- void ath10k_core_destroy(struct ath10k *ar)
- {
--	ath10k_debug_destroy(ar);
--
- 	flush_workqueue(ar->workqueue);
- 	destroy_workqueue(ar->workqueue);
+ 	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
+-	if (ret)
++	if (ret) {
++		ath10k_dbg(ATH10K_DBG_WMI, "wmi_peer_create failed: %i\n", ret);
+ 		return ret;
++	}
  
-@@ -986,6 +984,8 @@ void ath10k_core_unregister(struct ath10k *ar)
- 	ath10k_mac_unregister(ar);
+ 	ret = ath10k_wait_for_peer_created(ar, vdev_id, addr);
+-	if (ret)
++	if (ret) {
++		ath10k_dbg(ATH10K_DBG_WMI, "wmi_wait_for_peer_created failed: %i\n", ret);
+ 		return ret;
++	}
  
- 	ath10k_core_free_firmware_files(ar);
-+
-+	ath10k_debug_destroy(ar);
+ 	return 0;
  }
- EXPORT_SYMBOL(ath10k_core_unregister);
+@@ -2404,8 +2408,8 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			ret = ath10k_peer_create(ar, arvif->vdev_id,
+ 						 info->bssid);
+ 			if (ret)
+-				ath10k_warn("Failed to add peer: %pM for VDEV: %d\n",
+-					    info->bssid, arvif->vdev_id);
++				ath10k_warn("Failed to add peer: %pM for VDEV: %d ret: %i\n",
++					    info->bssid, arvif->vdev_id, ret);
  
+ 			if (vif->type == NL80211_IFTYPE_STATION) {
+ 				/*
+@@ -2687,8 +2691,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 
+ 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
+ 		if (ret)
+-			ath10k_warn("Failed to add peer: %pM for VDEV: %d\n",
+-				    sta->addr, arvif->vdev_id);
++			ath10k_warn("Failed to add peer: %pM for VDEV: %d, ret: %i\n",
++				    sta->addr, arvif->vdev_id, ret);
+ 	} else if ((old_state == IEEE80211_STA_NONE &&
+ 		    new_state == IEEE80211_STA_NOTEXIST)) {
+ 		/*
 -- 
 1.7.11.7
 
