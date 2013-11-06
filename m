@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdxpH-0006T9-KQ
- for ath10k@lists.infradead.org; Wed, 06 Nov 2013 07:46:56 +0000
+ id 1Vdyp9-00083K-Is
+ for ath10k@lists.infradead.org; Wed, 06 Nov 2013 08:50:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: What to do about hung firmware?
-References: <52793E4B.20302@candelatech.com>
- <CA+BoTQk2EZddNywAMRLF2qpWafpD4OvyDrtvg+iTM4atcm44ig@mail.gmail.com>
-Date: Wed, 6 Nov 2013 09:46:14 +0200
-In-Reply-To: <CA+BoTQk2EZddNywAMRLF2qpWafpD4OvyDrtvg+iTM4atcm44ig@mail.gmail.com>
- (Michal Kazior's message of "Wed, 6 Nov 2013 08:07:15 +0100")
-Message-ID: <87ob5yt1kp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH -next] ath10k: fix possible memory leak in
+ ath10k_pci_probe()
+References: <CAPgLHd9o1oGjjM=9B2H0tB41t8Kinp_1Djp6aA=sW5Eo5M7jfA@mail.gmail.com>
+Date: Wed, 6 Nov 2013 10:50:19 +0200
+In-Reply-To: <CAPgLHd9o1oGjjM=9B2H0tB41t8Kinp_1Djp6aA=sW5Eo5M7jfA@mail.gmail.com>
+ (Wei Yongjun's message of "Wed, 30 Oct 2013 13:24:39 +0800")
+Message-ID: <87fvr9ud6c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,17 +24,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Wei Yongjun <weiyj.lk@gmail.com>
+Cc: yongjun_wei@trendmicro.com.cn, linux-wireless@vger.kernel.org, linville@tuxdriver.com, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Wei Yongjun <weiyj.lk@gmail.com> writes:
 
-> You probably could try WMI_ECHO_CMDID to implement a keep alive when
-> idling (i.e. not sending WMI commands for a few seconds at least).
+> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+>
+> memory is malloced in ath10k_pci_probe() and should be freed before
+> leaving from the error handling cases, otherwise it will cause
+> memory leak.
+>
+> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-Sending something periodically would be bad from power consumption point
-of view. We would need to either disable it by default, only send it if
-there's a problem or something like that.
+Thanks, applied.
 
 -- 
 Kalle Valo
