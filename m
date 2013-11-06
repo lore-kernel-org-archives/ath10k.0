@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ve2pI-0007l6-T6
- for ath10k@lists.infradead.org; Wed, 06 Nov 2013 13:07:17 +0000
+ id 1Ve2rH-0007om-0G
+ for ath10k@lists.infradead.org; Wed, 06 Nov 2013 13:09:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  Fix crash due to tasklet race.
-References: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
-Date: Wed, 6 Nov 2013 15:06:49 +0200
-In-Reply-To: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Tue, 29 Oct 2013 14:38:57
- -0700")
-Message-ID: <871u2tsmqe.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH/RFT 04/12] ath10k: rename function to match it's role
+References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+ <1383133346-8135-5-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 6 Nov 2013 15:08:49 +0200
+In-Reply-To: <1383133346-8135-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 30 Oct 2013 12:42:18 +0100")
+Message-ID: <87wqklr82m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,19 +24,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> What the function does is to actually wait for the
+> firmware indication bit to be set. Prerequisite
+> for this is having interrupts registered.
 >
-> The tasklet can run after the rings have been cleaned up,
-> so check for NULL before de-referencing the ring.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I'll drop this as Michal's patch has a proper fix for this issue.
+I think the title could be a bit more specific, like "ath10k: rename
+ath10k_pci_reset_target()" or something like that.
 
 -- 
 Kalle Valo
