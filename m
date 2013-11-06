@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VdzqV-0001QY-5o
- for ath10k@lists.infradead.org; Wed, 06 Nov 2013 09:56:19 +0000
+ id 1Ve1dn-0005J9-1F
+ for ath10k@lists.infradead.org; Wed, 06 Nov 2013 11:51:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: add phyerr/dfs handling
-References: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Wed, 6 Nov 2013 11:55:48 +0200
-In-Reply-To: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Tue, 29 Oct 2013 13:06:32 +0100")
-Message-ID: <8738n9ua57.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix crash due to tasklet race.
+References: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQ=qUgR4TEcUMjV88RD+fFreCkkEtHfu5hB2_BguirfNHg@mail.gmail.com>
+Date: Wed, 6 Nov 2013 13:50:51 +0200
+In-Reply-To: <CA+BoTQ=qUgR4TEcUMjV88RD+fFreCkkEtHfu5hB2_BguirfNHg@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 30 Oct 2013 10:03:48 +0100")
+Message-ID: <87r4atsq90.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +24,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> On 29 October 2013 22:38,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> The tasklet can run after the rings have been cleaned up,
+>> so check for NULL before de-referencing the ring.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/ce.c | 10 ++++++++--
+>>  1 file changed, 8 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+>> index d243f28..dfcfda9 100644
+>> --- a/drivers/net/wireless/ath/ath10k/ce.c
+>> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+>> @@ -547,12 +547,18 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+>>         struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+>>         u32 ctrl_addr = ce_state->ctrl_addr;
+>>         struct ath10k *ar = ce_state->ar;
+>> -       unsigned int nentries_mask = src_ring->nentries_mask;
+>> -       unsigned int sw_index = src_ring->sw_index;
+>> +       unsigned int nentries_mask;
+>> +       unsigned int sw_index;
+>>         struct ce_desc *sdesc, *sbase;
+>>         unsigned int read_index;
+>>         int ret;
+>>
+>> +       if (!src_ring)
+>> +               return -EIO;
 >
-> Handle phyerr, dfs event, radar_report and fft_report.
-> Add also debugfs dfs_simulate_radar and dfs_stats files.
-> Use ath dfs pattern detector.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> I don't think this is a proper way to fix the problem. What should be
+> done is initialization clean up and some reordering to prevent this
+> from happening in the first place.
 
-Forgot to mention that after I applied these three patches I saw two new
-checkpatch warnings:
-
-drivers/net/wireless/ath/ath10k/debug.c:684: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/wmi.c:1544: WARNING: line over 80 characters
+I agree with Michal, but as we don't have any better fix for this issue
+I'm inclined to take the patch anyway. Maybe there just should be a
+comment stating that it's an ugly workaround and a WARN_ON() to make
+sure that we properly fix the interrupt initialisation.
 
 -- 
 Kalle Valo
