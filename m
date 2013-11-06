@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x230.google.com ([2a00:1450:4008:c01::230])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ve1hg-0005Ra-2I
- for ath10k@lists.infradead.org; Wed, 06 Nov 2013 11:55:21 +0000
-Received: by mail-bk0-f48.google.com with SMTP id u10so793702bkz.21
- for <ath10k@lists.infradead.org>; Wed, 06 Nov 2013 03:54:52 -0800 (PST)
+ id 1Ve2K4-0006jm-LI
+ for ath10k@lists.infradead.org; Wed, 06 Nov 2013 12:35:01 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH/RFT 09/12] ath10k: propagate
+ ath10k_ce_disable_interrupts() errors
+References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+ <1383133346-8135-10-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 6 Nov 2013 14:34:24 +0200
+In-Reply-To: <1383133346-8135-10-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 30 Oct 2013 12:42:23 +0100")
+Message-ID: <87iow5so8f.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87r4atsq90.fsf@kamboji.qca.qualcomm.com>
-References: <1383082737-20728-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQ=qUgR4TEcUMjV88RD+fFreCkkEtHfu5hB2_BguirfNHg@mail.gmail.com>
- <87r4atsq90.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 6 Nov 2013 12:54:49 +0100
-Message-ID: <CA+BoTQnZTAERWVmwzd_nssQ9t4DwvX7YFQ4V2GXqutQTEpEqWQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Fix crash due to tasklet race.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +21,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gNiBOb3ZlbWJlciAyMDEzIDEyOjUwLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
-Y29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3Jp
-dGVzOgo+Cj4+IE9uIDI5IE9jdG9iZXIgMjAxMyAyMjozOCwgIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4+PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPj4+Cj4+PiBUaGUgdGFza2xldCBjYW4gcnVuIGFmdGVyIHRoZSByaW5ncyBoYXZlIGJlZW4g
-Y2xlYW5lZCB1cCwKPj4+IHNvIGNoZWNrIGZvciBOVUxMIGJlZm9yZSBkZS1yZWZlcmVuY2luZyB0
-aGUgcmluZy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
-bGF0ZWNoLmNvbT4KPj4+IC0tLQo+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-Y2UuYyB8IDEwICsrKysrKysrLS0KPj4+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2NlLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMK
-Pj4+IGluZGV4IGQyNDNmMjguLmRmY2ZkYTkgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvY2UuYwo+Pj4gQEAgLTU0NywxMiArNTQ3LDE4IEBAIHN0YXRpYyBpbnQgYXRoMTBr
-X2NlX2NvbXBsZXRlZF9zZW5kX25leHRfbm9sb2NrKHN0cnVjdCBhdGgxMGtfY2VfcGlwZSAqY2Vf
-c3RhdGUsCj4+PiAgICAgICAgIHN0cnVjdCBhdGgxMGtfY2VfcmluZyAqc3JjX3JpbmcgPSBjZV9z
-dGF0ZS0+c3JjX3Jpbmc7Cj4+PiAgICAgICAgIHUzMiBjdHJsX2FkZHIgPSBjZV9zdGF0ZS0+Y3Ry
-bF9hZGRyOwo+Pj4gICAgICAgICBzdHJ1Y3QgYXRoMTBrICphciA9IGNlX3N0YXRlLT5hcjsKPj4+
-IC0gICAgICAgdW5zaWduZWQgaW50IG5lbnRyaWVzX21hc2sgPSBzcmNfcmluZy0+bmVudHJpZXNf
-bWFzazsKPj4+IC0gICAgICAgdW5zaWduZWQgaW50IHN3X2luZGV4ID0gc3JjX3JpbmctPnN3X2lu
-ZGV4Owo+Pj4gKyAgICAgICB1bnNpZ25lZCBpbnQgbmVudHJpZXNfbWFzazsKPj4+ICsgICAgICAg
-dW5zaWduZWQgaW50IHN3X2luZGV4Owo+Pj4gICAgICAgICBzdHJ1Y3QgY2VfZGVzYyAqc2Rlc2Ms
-ICpzYmFzZTsKPj4+ICAgICAgICAgdW5zaWduZWQgaW50IHJlYWRfaW5kZXg7Cj4+PiAgICAgICAg
-IGludCByZXQ7Cj4+Pgo+Pj4gKyAgICAgICBpZiAoIXNyY19yaW5nKQo+Pj4gKyAgICAgICAgICAg
-ICAgIHJldHVybiAtRUlPOwo+Pgo+PiBJIGRvbid0IHRoaW5rIHRoaXMgaXMgYSBwcm9wZXIgd2F5
-IHRvIGZpeCB0aGUgcHJvYmxlbS4gV2hhdCBzaG91bGQgYmUKPj4gZG9uZSBpcyBpbml0aWFsaXph
-dGlvbiBjbGVhbiB1cCBhbmQgc29tZSByZW9yZGVyaW5nIHRvIHByZXZlbnQgdGhpcwo+PiBmcm9t
-IGhhcHBlbmluZyBpbiB0aGUgZmlyc3QgcGxhY2UuCj4KPiBJIGFncmVlIHdpdGggTWljaGFsLCBi
-dXQgYXMgd2UgZG9uJ3QgaGF2ZSBhbnkgYmV0dGVyIGZpeCBmb3IgdGhpcyBpc3N1ZQo+IEknbSBp
-bmNsaW5lZCB0byB0YWtlIHRoZSBwYXRjaCBhbnl3YXkuIE1heWJlIHRoZXJlIGp1c3Qgc2hvdWxk
-IGJlIGEKPiBjb21tZW50IHN0YXRpbmcgdGhhdCBpdCdzIGFuIHVnbHkgd29ya2Fyb3VuZCBhbmQg
-YSBXQVJOX09OKCkgdG8gbWFrZQo+IHN1cmUgdGhhdCB3ZSBwcm9wZXJseSBmaXggdGhlIGludGVy
-cnVwdCBpbml0aWFsaXNhdGlvbi4KClRoaXMgaXNzdWUgYWxvbmUgc2hvdWxkIGFjdHVhbGx5IGJl
-IGZpeGVkIGluIG15IHBjaSBmaXhlcyBSRlQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> This shouldn't be silenced. This will be necessary
+> for PCI init code reordering.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+[...]
+
+> -void ath10k_ce_disable_interrupts(struct ath10k *ar)
+> +int ath10k_ce_disable_interrupts(struct ath10k *ar)
+>  {
+>  	int ce_id, ret;
+>  
+>  	ret = ath10k_pci_wake(ar);
+>  	if (ret)
+> -		return;
+> +		return ret;
+>  
+>  	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
+>  		u32 ctrl_addr = ath10k_ce_base_address(ce_id);
+> @@ -807,7 +807,9 @@ void ath10k_ce_disable_interrupts(struct ath10k *ar)
+>  		ath10k_ce_error_intr_disable(ar, ctrl_addr);
+>  		ath10k_ce_watermark_intr_disable(ar, ctrl_addr);
+>  	}
+> +
+>  	ath10k_pci_sleep(ar);
+> +	return ret;
+
+Empty line before the return. And I think 'return 0' is more clear here.
+
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -879,8 +879,12 @@ static void ath10k_pci_stop_ce(struct ath10k *ar)
+>  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+>  	struct ath10k_pci_compl *compl;
+>  	struct sk_buff *skb;
+> +	int ret;
+> +
+> +	ret = ath10k_ce_disable_interrupts(ar);
+> +	if (ret)
+> +		ath10k_warn("failed to disable CE interrupts (%d)\n", ret);
+
+"failed to disable CE interrupts: %d\n"
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
