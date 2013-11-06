@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-bk0-x236.google.com ([2a00:1450:4008:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vdljg-0002WF-Qu
- for ath10k@lists.infradead.org; Tue, 05 Nov 2013 18:52:21 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id rA5Ipuhx026045
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Tue, 5 Nov 2013 10:51:56 -0800
-Message-ID: <52793E4B.20302@candelatech.com>
-Date: Tue, 05 Nov 2013 10:51:55 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1VdxDK-0005zq-AH
+ for ath10k@lists.infradead.org; Wed, 06 Nov 2013 07:07:43 +0000
+Received: by mail-bk0-f54.google.com with SMTP id 6so3354832bkj.27
+ for <ath10k@lists.infradead.org>; Tue, 05 Nov 2013 23:07:15 -0800 (PST)
 MIME-Version: 1.0
-Subject: What to do about hung firmware?
+In-Reply-To: <52793E4B.20302@candelatech.com>
+References: <52793E4B.20302@candelatech.com>
+Date: Wed, 6 Nov 2013 08:07:15 +0100
+Message-ID: <CA+BoTQk2EZddNywAMRLF2qpWafpD4OvyDrtvg+iTM4atcm44ig@mail.gmail.com>
+Subject: Re: What to do about hung firmware?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-I'm seeing cases where it appears the firmware just gets
-stuck and will not answer any WMI requests.
-
-ath10k just patiently keeps timing out WMI commands,
-(while holding locks, and making the whole system run slow).
-
-Should we maybe keep a last-msg-from firmware time stamp
-and just whack the firmware if we detect it hung?  In addition
-to this, we could add some 'ping' message that will get sent
-periodically to the firmware to make sure it is alive.
-We should be able to do this with existing WMI API, just
-need to pick a message to send that expects some response.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBOb3ZlbWJlciAyMDEzIDE5OjUxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
+LmNvbT4gd3JvdGU6Cj4gSSdtIHNlZWluZyBjYXNlcyB3aGVyZSBpdCBhcHBlYXJzIHRoZSBmaXJt
+d2FyZSBqdXN0IGdldHMKPiBzdHVjayBhbmQgd2lsbCBub3QgYW5zd2VyIGFueSBXTUkgcmVxdWVz
+dHMuCgpZb3UgcHJvYmFibHkgbWVhbiBGVyBkb2Vzbid0IHJlcGxlbmlzaCBIVFQgVFggY3JlZGl0
+cyBmb3IgV01JLgoKCj4gYXRoMTBrIGp1c3QgcGF0aWVudGx5IGtlZXBzIHRpbWluZyBvdXQgV01J
+IGNvbW1hbmRzLAo+ICh3aGlsZSBob2xkaW5nIGxvY2tzLCBhbmQgbWFraW5nIHRoZSB3aG9sZSBz
+eXN0ZW0gcnVuIHNsb3cpLgo+Cj4gU2hvdWxkIHdlIG1heWJlIGtlZXAgYSBsYXN0LW1zZy1mcm9t
+IGZpcm13YXJlIHRpbWUgc3RhbXAKPiBhbmQganVzdCB3aGFjayB0aGUgZmlybXdhcmUgaWYgd2Ug
+ZGV0ZWN0IGl0IGh1bmc/ICBJbiBhZGRpdGlvbgo+IHRvIHRoaXMsIHdlIGNvdWxkIGFkZCBzb21l
+ICdwaW5nJyBtZXNzYWdlIHRoYXQgd2lsbCBnZXQgc2VudAo+IHBlcmlvZGljYWxseSB0byB0aGUg
+ZmlybXdhcmUgdG8gbWFrZSBzdXJlIGl0IGlzIGFsaXZlLgo+IFdlIHNob3VsZCBiZSBhYmxlIHRv
+IGRvIHRoaXMgd2l0aCBleGlzdGluZyBXTUkgQVBJLCBqdXN0Cj4gbmVlZCB0byBwaWNrIGEgbWVz
+c2FnZSB0byBzZW5kIHRoYXQgZXhwZWN0cyBzb21lIHJlc3BvbnNlLgoKUHJvYmFibHkgdGhlIGVh
+c2llc3Qvc2hvcnRlc3Qgd2F5IHRvIGRvIHRoaXMgaXMgdG8gc3RvcmUgYSB0aW1lc3RhbXAKaW4g
+YXRoMTBrX3dtaV9vcF9lcF90eF9jcmVkaXRzKCkgYW5kIGNoZWNrIGFnYWluc3QgaXQgaW4KYXRo
+MTBrX3dtaV9jbWRfc2VuZCgpLiBPbmNlIHlvdSBkZWVtIEZXIHN0b3BwZWQgcmVzcG9uZGluZyB5
+b3UgY291bGQKcXVldWUgYXItPnJlc3RhdF93b3JrLgoKWW91IHByb2JhYmx5IGNvdWxkIHRyeSBX
+TUlfRUNIT19DTURJRCB0byBpbXBsZW1lbnQgYSBrZWVwIGFsaXZlIHdoZW4KaWRsaW5nIChpLmUu
+IG5vdCBzZW5kaW5nIFdNSSBjb21tYW5kcyBmb3IgYSBmZXcgc2Vjb25kcyBhdCBsZWFzdCkuCgoK
+TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
