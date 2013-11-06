@@ -1,19 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ve76X-0007Hd-1D
- for ath10k@lists.infradead.org; Wed, 06 Nov 2013 17:41:21 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: What to do about hung firmware?
-References: <52793E4B.20302@candelatech.com>
- <CA+BoTQk2EZddNywAMRLF2qpWafpD4OvyDrtvg+iTM4atcm44ig@mail.gmail.com>
- <87ob5yt1kp.fsf@kamboji.qca.qualcomm.com>
- <527A739C.4060807@candelatech.com>
-Date: Wed, 6 Nov 2013 19:40:39 +0200
-In-Reply-To: <527A739C.4060807@candelatech.com> (Ben Greear's message of "Wed, 
- 6 Nov 2013 08:51:40 -0800")
-Message-ID: <87li11e8dk.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Message-ID: <1383760556.7940.28.camel@joe-AO722>
+Subject: Re: [PATCH] wcn36xx: Fix logging macro with unnecessary semicolon
+From: Joe Perches <joe@perches.com>
+Date: Wed, 06 Nov 2013 09:55:56 -0800
+In-Reply-To: <CAFSJ42YQy96Sko8CuG9BGjHzTV7TkRp2=NVt036APxSKpPB=Ag@mail.gmail.com>
+References: <1383684000.4387.42.camel@joe-AO722>
+ <CAFSJ42YQy96Sko8CuG9BGjHzTV7TkRp2=NVt036APxSKpPB=Ag@mail.gmail.com>
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +19,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: Eugene Krasnikov <k.eugene.e@gmail.com>, "Luis R. Rodriguez" <mcgrof@qca.qualcomm.com>
+Cc: netdev@vger.kernel.org, ath5k-devel@lists.ath5k.org, linux-wireless <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath9k-devel <ath9k-devel@lists.ath9k.org>, wcn36xx <wcn36xx@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+On Wed, 2013-11-06 at 07:49 +0000, Eugene Krasnikov wrote:
+> Hm... when it comes to semicolon the patch seems to be good. When it
+> comes to dynamic debugging i think we should have a separate
+> discussion about that.
+> I personally like the whole idea about dynamic debug but if you want
+> to change it i would suggest to have some kind of framework for all
+> ath drivers(or maybe all wireless drivers). Because obviously you can
+> find common code in every driver that defines it's own debug
+> functions/debug levels and so on. Why not to make a framework with
+> standard API/levels?
 
-> On 11/05/2013 11:46 PM, Kalle Valo wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->> 
->>> You probably could try WMI_ECHO_CMDID to implement a keep alive when
->>> idling (i.e. not sending WMI commands for a few seconds at least).
->> 
->> Sending something periodically would be bad from power consumption point
->> of view. We would need to either disable it by default, only send it if
->> there's a problem or something like that.
->
-> Ok, how about this:
->
-> If we hit the 3*HZ timeout, then we send a ping to the firmware
-> even if we are out of tickets.
->
-> If we get no response to that in 3*HZ or so, then consider firmware
-> hung and reset it.
+You need to bring that up with the Atheros folk.
+I've tried.  The view seemed to be it was more
+trouble than it was worth.
 
-Sounds good to me.
 
--- 
-Kalle Valo
+
 
 _______________________________________________
 ath10k mailing list
