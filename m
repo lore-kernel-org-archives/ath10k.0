@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Veg81-0004JB-3x
- for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:17 +0000
-Received: by mail-ee0-f47.google.com with SMTP id c13so776980eek.6
- for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:49 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 01/13] ath10k: remove ar_pci->ce_count
-Date: Fri,  8 Nov 2013 08:01:23 +0100
-Message-Id: <1383894095-27998-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
-References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
- <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] wcn36xx: Fix logging macro with unnecessary semicolon
+References: <1383684000.4387.42.camel@joe-AO722>
+ <CAFSJ42YQy96Sko8CuG9BGjHzTV7TkRp2=NVt036APxSKpPB=Ag@mail.gmail.com>
+ <1383760556.7940.28.camel@joe-AO722>
+ <CAFSJ42Y-3BZqj+JRNa8wdxjnm1fguD8ToH5Oj0m56yT5NexdVQ@mail.gmail.com>
+ <1383853221.9263.14.camel@joe-AO722>
+Date: Fri, 8 Nov 2013 09:06:19 +0200
+In-Reply-To: <1383853221.9263.14.camel@joe-AO722> (Joe Perches's message of
+ "Thu, 7 Nov 2013 11:40:21 -0800")
+Message-ID: <87bo1vcqz8.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,165 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Joe Perches <joe@perches.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, wil6210@qca.qualcomm.com, netdev@vger.kernel.org, ath5k-devel@lists.ath5k.org, linux-wireless <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, "Luis R. Rodriguez" <rodrigue@qca.qualcomm.com>, ath9k-devel <ath9k-devel@lists.ath9k.org>, wcn36xx <wcn36xx@lists.infradead.org>, Eugene Krasnikov <k.eugene.e@gmail.com>
 
-It wasn't really useful to have it to begin with.
-This makes it a little simpler to re-arrange PCI
-init code as some function depended on
-ar_pci->ce_count being set.
+Joe Perches <joe@perches.com> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/ce.c  |  9 +++------
- drivers/net/wireless/ath/ath10k/pci.c | 18 ++++++++----------
- drivers/net/wireless/ath/ath10k/pci.h |  3 ---
- 3 files changed, 11 insertions(+), 19 deletions(-)
+>> have a
+>> second round of convincing ath guys to change printing code. How does
+>> that sound?
+>
+> Luis?  Kalle?  Other Qualcomm/Atheros folk?
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index d243f28..2b99bd4 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -731,7 +731,6 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
- 
- void ath10k_ce_per_engine_service_any(struct ath10k *ar)
- {
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ce_id, ret;
- 	u32 intr_summary;
- 
-@@ -741,7 +740,7 @@ void ath10k_ce_per_engine_service_any(struct ath10k *ar)
- 
- 	intr_summary = CE_INTERRUPT_SUMMARY(ar);
- 
--	for (ce_id = 0; intr_summary && (ce_id < ar_pci->ce_count); ce_id++) {
-+	for (ce_id = 0; intr_summary && (ce_id < CE_COUNT); ce_id++) {
- 		if (intr_summary & (1 << ce_id))
- 			intr_summary &= ~(1 << ce_id);
- 		else
-@@ -785,16 +784,14 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
- 
- void ath10k_ce_disable_interrupts(struct ath10k *ar)
- {
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ce_id, ret;
- 
- 	ret = ath10k_pci_wake(ar);
- 	if (ret)
- 		return;
- 
--	for (ce_id = 0; ce_id < ar_pci->ce_count; ce_id++) {
--		struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
--		u32 ctrl_addr = ce_state->ctrl_addr;
-+	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
-+		u32 ctrl_addr = ath10k_ce_base_address(ce_id);
- 
- 		ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 25ed07b..f054d4c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -831,7 +831,7 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
- 	spin_lock_init(&ar_pci->compl_lock);
- 	INIT_LIST_HEAD(&ar_pci->compl_process);
- 
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
- 
- 		spin_lock_init(&pipe_info->pipe_lock);
-@@ -924,7 +924,7 @@ static void ath10k_pci_cleanup_ce(struct ath10k *ar)
- 	spin_unlock_bh(&ar_pci->compl_lock);
- 
- 	/* Free unused completions for each pipe. */
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
- 
- 		spin_lock_bh(&pipe_info->pipe_lock);
-@@ -1166,7 +1166,7 @@ static int ath10k_pci_post_rx(struct ath10k *ar)
- 	const struct ce_attr *attr;
- 	int pipe_num, ret = 0;
- 
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
- 		attr = &host_ce_config_wlan[pipe_num];
- 
-@@ -1295,7 +1295,7 @@ static void ath10k_pci_buffer_cleanup(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int pipe_num;
- 
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		struct ath10k_pci_pipe *pipe_info;
- 
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
-@@ -1310,7 +1310,7 @@ static void ath10k_pci_ce_deinit(struct ath10k *ar)
- 	struct ath10k_pci_pipe *pipe_info;
- 	int pipe_num;
- 
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
- 		if (pipe_info->ce_hdl) {
- 			ath10k_ce_deinit(pipe_info->ce_hdl);
-@@ -1755,7 +1755,7 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
- 	const struct ce_attr *attr;
- 	int pipe_num;
- 
--	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
- 		pipe_info = &ar_pci->pipe_info[pipe_num];
- 		pipe_info->pipe_num = pipe_num;
- 		pipe_info->hif_ce_state = ar;
-@@ -1772,13 +1772,12 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
- 			return -1;
- 		}
- 
--		if (pipe_num == ar_pci->ce_count - 1) {
-+		if (pipe_num == CE_COUNT - 1) {
- 			/*
- 			 * Reserve the ultimate CE for
- 			 * diagnostic Window support
- 			 */
--			ar_pci->ce_diag =
--			ar_pci->pipe_info[ar_pci->ce_count - 1].ce_hdl;
-+			ar_pci->ce_diag = pipe_info->ce_hdl;
- 			continue;
- 		}
- 
-@@ -2235,7 +2234,6 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
- 
- exit:
- 	ar_pci->num_msi_intrs = num;
--	ar_pci->ce_count = CE_COUNT;
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index a304c33..73a3d4e 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -199,9 +199,6 @@ struct ath10k_pci {
- 	struct tasklet_struct intr_tq;
- 	struct tasklet_struct msi_fw_err;
- 
--	/* Number of Copy Engines supported */
--	unsigned int ce_count;
--
- 	int started;
- 
- 	atomic_t keep_awake_count;
+I didn't quite get what you are asking from me. But for me most
+important is that the current debugging facilities from user's point of
+view don't change. I don't care if the code is in ath10k.ko or ath.ko,
+we are talking about ~100 lines of code anyway.
+
+> One of the nominal benefits of separating the ath_<level>
+> macros by subsystem was perf/tracing.
+
+Nominal?
+
 -- 
-1.8.4.rc3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
