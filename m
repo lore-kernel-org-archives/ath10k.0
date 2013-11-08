@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-f45.google.com ([74.125.83.45])
+Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Veg81-0004JN-2V
- for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:18 +0000
-Received: by mail-ee0-f45.google.com with SMTP id l10so150218eei.18
- for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:50 -0800 (PST)
+ id 1Veg81-0004JB-3x
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:17 +0000
+Received: by mail-ee0-f47.google.com with SMTP id c13so776980eek.6
+ for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:49 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 08/13] ath10k: use ath10k_do_pci_wake/sleep
-Date: Fri,  8 Nov 2013 08:01:30 +0100
-Message-Id: <1383894095-27998-9-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCHv2 01/13] ath10k: remove ar_pci->ce_count
+Date: Fri,  8 Nov 2013 08:01:23 +0100
+Message-Id: <1383894095-27998-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
  <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
@@ -28,171 +28,154 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This removes some remaining direct use of the wake
-register which could interfere with power state
-tracking of the target device. This will allow
-initialization code reordering.
+It wasn't really useful to have it to begin with.
+This makes it a little simpler to re-arrange PCI
+init code as some function depended on
+ar_pci->ce_count being set.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 84 +++++++++++------------------------
- 1 file changed, 26 insertions(+), 58 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |  9 +++------
+ drivers/net/wireless/ath/ath10k/pci.c | 18 ++++++++----------
+ drivers/net/wireless/ath/ath10k/pci.h |  3 ---
+ 3 files changed, 11 insertions(+), 19 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index d243f28..2b99bd4 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -731,7 +731,6 @@ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id)
+ 
+ void ath10k_ce_per_engine_service_any(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ce_id, ret;
+ 	u32 intr_summary;
+ 
+@@ -741,7 +740,7 @@ void ath10k_ce_per_engine_service_any(struct ath10k *ar)
+ 
+ 	intr_summary = CE_INTERRUPT_SUMMARY(ar);
+ 
+-	for (ce_id = 0; intr_summary && (ce_id < ar_pci->ce_count); ce_id++) {
++	for (ce_id = 0; intr_summary && (ce_id < CE_COUNT); ce_id++) {
+ 		if (intr_summary & (1 << ce_id))
+ 			intr_summary &= ~(1 << ce_id);
+ 		else
+@@ -785,16 +784,14 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
+ 
+ void ath10k_ce_disable_interrupts(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ce_id, ret;
+ 
+ 	ret = ath10k_pci_wake(ar);
+ 	if (ret)
+ 		return;
+ 
+-	for (ce_id = 0; ce_id < ar_pci->ce_count; ce_id++) {
+-		struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
+-		u32 ctrl_addr = ce_state->ctrl_addr;
++	for (ce_id = 0; ce_id < CE_COUNT; ce_id++) {
++		u32 ctrl_addr = ath10k_ce_base_address(ce_id);
+ 
+ 		ath10k_ce_copy_complete_intr_disable(ar, ctrl_addr);
+ 	}
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 62df0dd..2b4f7d3 100644
+index 25ed07b..f054d4c 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -52,7 +52,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
- 					     int num);
- static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info);
- static void ath10k_pci_stop_ce(struct ath10k *ar);
--static void ath10k_pci_device_reset(struct ath10k *ar);
-+static int ath10k_pci_device_reset(struct ath10k *ar);
- static int ath10k_pci_wait_for_target_init(struct ath10k *ar);
- static int ath10k_pci_start_intr(struct ath10k *ar);
- static void ath10k_pci_stop_intr(struct ath10k *ar);
-@@ -526,21 +526,6 @@ static bool ath10k_pci_target_is_awake(struct ath10k *ar)
- 	return (RTC_STATE_V_GET(val) == RTC_STATE_V_ON);
- }
+@@ -831,7 +831,7 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
+ 	spin_lock_init(&ar_pci->compl_lock);
+ 	INIT_LIST_HEAD(&ar_pci->compl_process);
  
--static int ath10k_pci_wait(struct ath10k *ar)
--{
--	int n = 100;
--
--	while (n-- && !ath10k_pci_target_is_awake(ar))
--		msleep(10);
--
--	if (n < 0) {
--		ath10k_warn("Unable to wakeup target\n");
--		return -ETIMEDOUT;
--	}
--
--	return 0;
--}
--
- int ath10k_do_pci_wake(struct ath10k *ar)
- {
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+ 
+ 		spin_lock_init(&pipe_info->pipe_lock);
+@@ -924,7 +924,7 @@ static void ath10k_pci_cleanup_ce(struct ath10k *ar)
+ 	spin_unlock_bh(&ar_pci->compl_lock);
+ 
+ 	/* Free unused completions for each pipe. */
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+ 
+ 		spin_lock_bh(&pipe_info->pipe_lock);
+@@ -1166,7 +1166,7 @@ static int ath10k_pci_post_rx(struct ath10k *ar)
+ 	const struct ce_attr *attr;
+ 	int pipe_num, ret = 0;
+ 
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+ 		attr = &host_ce_config_wlan[pipe_num];
+ 
+@@ -1295,7 +1295,7 @@ static void ath10k_pci_buffer_cleanup(struct ath10k *ar)
  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1855,7 +1840,11 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 	 * is in an unexpected state. We try to catch that here in order to
- 	 * reset the Target and retry the probe.
- 	 */
--	ath10k_pci_device_reset(ar);
-+	ret = ath10k_pci_device_reset(ar);
-+	if (ret) {
-+		ath10k_err("failed to reset target: %d\n", ret);
-+		goto err_irq;
-+	}
+ 	int pipe_num;
  
- 	ret = ath10k_pci_wait_for_target_init(ar);
- 	if (ret)
-@@ -2156,19 +2145,10 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
- 	if (ret < 0)
- 		return ret;
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		struct ath10k_pci_pipe *pipe_info;
  
--	/*
--	 * Make sure to wake the Target before enabling Legacy
--	 * Interrupt.
--	 */
--	iowrite32(PCIE_SOC_WAKE_V_MASK,
--		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
--		  PCIE_SOC_WAKE_ADDRESS);
--
--	ret = ath10k_pci_wait(ar);
-+	ret = ath10k_do_pci_wake(ar);
- 	if (ret) {
--		ath10k_warn("Failed to enable legacy interrupt, target did not wake up: %d\n",
--			    ret);
- 		free_irq(ar_pci->pdev->irq, ar);
-+		ath10k_err("failed to wake up target: %d\n", ret);
- 		return ret;
- 	}
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+@@ -1310,7 +1310,7 @@ static void ath10k_pci_ce_deinit(struct ath10k *ar)
+ 	struct ath10k_pci_pipe *pipe_info;
+ 	int pipe_num;
  
-@@ -2184,10 +2164,8 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
- 		  PCIE_INTR_CE_MASK_ALL,
- 		  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
- 				 PCIE_INTR_ENABLE_ADDRESS));
--	iowrite32(PCIE_SOC_WAKE_RESET,
--		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
--		  PCIE_SOC_WAKE_ADDRESS);
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+ 		if (pipe_info->ce_hdl) {
+ 			ath10k_ce_deinit(pipe_info->ce_hdl);
+@@ -1755,7 +1755,7 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
+ 	const struct ce_attr *attr;
+ 	int pipe_num;
  
-+	ath10k_do_pci_sleep(ar);
- 	ath10k_info("legacy interrupt handling\n");
- 	return 0;
- }
-@@ -2263,15 +2241,9 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 	int wait_limit = 300; /* 3 sec */
- 	int ret;
+-	for (pipe_num = 0; pipe_num < ar_pci->ce_count; pipe_num++) {
++	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+ 		pipe_info = &ar_pci->pipe_info[pipe_num];
+ 		pipe_info->pipe_num = pipe_num;
+ 		pipe_info->hif_ce_state = ar;
+@@ -1772,13 +1772,12 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
+ 			return -1;
+ 		}
  
--	/* Wait for Target to finish initialization before we proceed. */
--	iowrite32(PCIE_SOC_WAKE_V_MASK,
--		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
--		  PCIE_SOC_WAKE_ADDRESS);
--
--	ret = ath10k_pci_wait(ar);
-+	ret = ath10k_do_pci_wake(ar);
- 	if (ret) {
--		ath10k_warn("Failed to reset target, target did not wake up: %d\n",
--			    ret);
-+		ath10k_err("failed to wake up target: %d\n", ret);
- 		return ret;
- 	}
+-		if (pipe_num == ar_pci->ce_count - 1) {
++		if (pipe_num == CE_COUNT - 1) {
+ 			/*
+ 			 * Reserve the ultimate CE for
+ 			 * diagnostic Window support
+ 			 */
+-			ar_pci->ce_diag =
+-			ar_pci->pipe_info[ar_pci->ce_count - 1].ce_hdl;
++			ar_pci->ce_diag = pipe_info->ce_hdl;
+ 			continue;
+ 		}
  
-@@ -2288,31 +2260,26 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 	}
+@@ -2235,7 +2234,6 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
  
- 	if (wait_limit < 0) {
--		ath10k_err("Target stalled\n");
--		iowrite32(PCIE_SOC_WAKE_RESET,
--			  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
--			  PCIE_SOC_WAKE_ADDRESS);
--		return -EIO;
-+		ath10k_err("target stalled\n");
-+		ret = -EIO;
-+		goto out;
- 	}
- 
--	iowrite32(PCIE_SOC_WAKE_RESET,
--		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
--		  PCIE_SOC_WAKE_ADDRESS);
--
--	return 0;
-+out:
-+	ath10k_do_pci_sleep(ar);
-+	return ret;
+ exit:
+ 	ar_pci->num_msi_intrs = num;
+-	ar_pci->ce_count = CE_COUNT;
+ 	return ret;
  }
  
--static void ath10k_pci_device_reset(struct ath10k *ar)
-+static int ath10k_pci_device_reset(struct ath10k *ar)
- {
--	int i;
-+	int i, ret;
- 	u32 val;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index a304c33..73a3d4e 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -199,9 +199,6 @@ struct ath10k_pci {
+ 	struct tasklet_struct intr_tq;
+ 	struct tasklet_struct msi_fw_err;
  
--	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
--			       PCIE_SOC_WAKE_V_MASK);
--	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
--		if (ath10k_pci_target_is_awake(ar))
--			break;
--		msleep(1);
-+	ret = ath10k_do_pci_wake(ar);
-+	if (ret) {
-+		ath10k_err("failed to wake up target: %d\n",
-+			   ret);
-+		return ret;
- 	}
+-	/* Number of Copy Engines supported */
+-	unsigned int ce_count;
+-
+ 	int started;
  
- 	/* Put Target, including PCIe, into RESET. */
-@@ -2338,7 +2305,8 @@ static void ath10k_pci_device_reset(struct ath10k *ar)
- 		msleep(1);
- 	}
- 
--	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS, PCIE_SOC_WAKE_RESET);
-+	ath10k_do_pci_sleep(ar);
-+	return 0;
- }
- 
- static void ath10k_pci_dump_features(struct ath10k_pci *ar_pci)
+ 	atomic_t keep_awake_count;
 -- 
 1.8.4.rc3
 
