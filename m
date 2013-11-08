@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Message-ID: <1383853221.9263.14.camel@joe-AO722>
-Subject: Re: [PATCH] wcn36xx: Fix logging macro with unnecessary semicolon
-From: Joe Perches <joe@perches.com>
-Date: Thu, 07 Nov 2013 11:40:21 -0800
-In-Reply-To: <CAFSJ42Y-3BZqj+JRNa8wdxjnm1fguD8ToH5Oj0m56yT5NexdVQ@mail.gmail.com>
-References: <1383684000.4387.42.camel@joe-AO722>
- <CAFSJ42YQy96Sko8CuG9BGjHzTV7TkRp2=NVt036APxSKpPB=Ag@mail.gmail.com>
- <1383760556.7940.28.camel@joe-AO722>
- <CAFSJ42Y-3BZqj+JRNa8wdxjnm1fguD8ToH5Oj0m56yT5NexdVQ@mail.gmail.com>
-Mime-Version: 1.0
+Received: from mail-ee0-x235.google.com ([2a00:1450:4013:c00::235])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Veg81-0004JF-3L
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:15 +0000
+Received: by mail-ee0-f53.google.com with SMTP id e51so782179eek.40
+ for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:49 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCHv2 07/13] ath10k: remove meaningless check
+Date: Fri,  8 Nov 2013 08:01:29 +0100
+Message-Id: <1383894095-27998-8-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
+References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+ <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,67 +20,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Eugene Krasnikov <k.eugene.e@gmail.com>
-Cc: wil6210@qca.qualcomm.com, netdev@vger.kernel.org, ath5k-devel@lists.ath5k.org, linux-wireless <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Luis R. Rodriguez" <mcgrof@qca.qualcomm.com>, ath9k-devel <ath9k-devel@lists.ath9k.org>, Kalle Valo <kvalo@qca.qualcomm.com>, wcn36xx <wcn36xx@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On Thu, 2013-11-07 at 07:32 +0000, Eugene Krasnikov wrote:
-> Hi Joe,
+The check doesn't make much sense. If the address
+were to be 0x0000 the check would fail. In this
+case a 0 address isn't wrong.
 
-Hi Eugene.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-> I personally like the idea of making some kind of framework on top of
-> printing because all ath drivers are using the same printing approach
-> and combining all that code in one place will reduce amount of code in
-> each particular driver. As a true engineer i like when it's less code
-> = less work to do = less bugs:)
-> 
-> Suggestion is to send a patch with semicolon fix only
-
-It's a one line fix, and pretty trivial to do yourself if you
-want it.
-
-I do think though the slightly odd wcn36xx_<level> uses of:
-
--#define wcn36xx_err(fmt, arg...)                               \
--       printk(KERN_ERR pr_fmt("ERROR " fmt), ##arg);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 4aa7992..62df0dd 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2307,9 +2307,6 @@ static void ath10k_pci_device_reset(struct ath10k *ar)
+ 	int i;
+ 	u32 val;
+ 
+-	if (!SOC_GLOBAL_RESET_ADDRESS)
+-		return;
 -
--#define wcn36xx_warn(fmt, arg...)                              \
--       printk(KERN_WARNING pr_fmt("WARNING " fmt), ##arg)
--
--#define wcn36xx_info(fmt, arg...)              \
--       printk(KERN_INFO pr_fmt(fmt), ##arg)
--
-[]
-+#define wcn36xx_err(fmt, ...)                                  \
-+       pr_err("ERROR " fmt, ##__VA_ARGS__)
-+#define wcn36xx_warn(fmt, ...)                                 \
-+       pr_warn("WARNING " fmt, ##__VA_ARGS__)
-+#define wcn36xx_info(fmt, ...)                                 \
-+       pr_info(fmt, ##__VA_ARGS__)
-
-should still be converted to more normal pr_<level> like I did.
-
-I don't believe that prefixing of "ERROR " and "WARNING " to
-pr_err and pr_warn actually gain anything as the same level
-information can be got already with dmesg -r via the "<3>" and
-"<4>" prefixes or dmesg -l3 -l4
-
-> have a
-> second round of convincing ath guys to change printing code. How does
-> that sound?
-
-Luis?  Kalle?  Other Qualcomm/Atheros folk?
-
-One of the nominal benefits of separating the ath_<level>
-macros by subsystem was perf/tracing.  I believe some of the
-ath subsystems have integrated the dmesg and tracing code.
-
-I'm not sure how separable those may be here or if it's even
-desirable to separate them.  I'd guess not.
+ 	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
+ 			       PCIE_SOC_WAKE_V_MASK);
+ 	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
+-- 
+1.8.4.rc3
 
 
 _______________________________________________
