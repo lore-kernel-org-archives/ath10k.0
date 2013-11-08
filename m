@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VegEk-0004VH-0N
- for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:12:10 +0000
-Received: by mail-ea0-f175.google.com with SMTP id k10so811802eaj.20
- for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:11:48 -0800 (PST)
+Received: from mail-ee0-x22c.google.com ([2a00:1450:4013:c00::22c])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Veg82-0001QE-PL
+ for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:18 +0000
+Received: by mail-ee0-f44.google.com with SMTP id d41so789846eek.3
+ for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:52 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 10/13] ath10k: guard against CE corruption from firmware
-Date: Fri,  8 Nov 2013 08:01:32 +0100
-Message-Id: <1383894095-27998-11-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCHv2 11/13] ath10k: re-arrange PCI init code
+Date: Fri,  8 Nov 2013 08:01:33 +0100
+Message-Id: <1383894095-27998-12-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
  <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
@@ -28,51 +28,243 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-In case firmware crashes it may report CE
-completions for entries that were never
-submitted/filled with meaningful data. This in
-turn led to NULL dereferences.
+This patch moves irq registering after necessary
+structures have been allocated and initialized.
+This should prevent interrupts from causing
+tasklet access invalid memory pointers.
 
+Reported-By: Ben Greear <greearb@candelatech.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htc.c | 5 +++++
- drivers/net/wireless/ath/ath10k/pci.c | 7 +++++++
- 2 files changed, 12 insertions(+)
+ drivers/net/wireless/ath/ath10k/ce.c  | 19 ++++++--
+ drivers/net/wireless/ath/ath10k/ce.h  |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c | 87 ++++++++++++++++++++++-------------
+ 3 files changed, 71 insertions(+), 36 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 3118d75..6d7a72e 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -191,6 +191,11 @@ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
- 	struct ath10k_htc *htc = &ar->htc;
- 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index ab22d14..476928f 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -792,6 +792,21 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
+ 	ath10k_pci_sleep(ar);
+ }
  
-+	if (!skb) {
-+		ath10k_warn("invalid sk_buff completion - NULL pointer. firmware crashed?\n");
-+		return 0;
-+	}
++int ath10k_ce_enable_err_irq(struct ath10k *ar)
++{
++	int i, ret;
 +
- 	ath10k_htc_notify_tx_completion(ep, skb);
- 	/* the skb now belongs to the completion handler */
++	ret = ath10k_pci_wake(ar);
++	if (ret)
++		return ret;
++
++	for (i = 0; i < CE_COUNT; i++)
++		ath10k_ce_error_intr_enable(ar, ath10k_ce_base_address(i));
++
++	ath10k_pci_sleep(ar);
++	return 0;
++}
++
+ int ath10k_ce_disable_interrupts(struct ath10k *ar)
+ {
+ 	int ce_id, ret;
+@@ -1059,7 +1074,6 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
+ 				const struct ce_attr *attr)
+ {
+ 	struct ath10k_ce_pipe *ce_state;
+-	u32 ctrl_addr = ath10k_ce_base_address(ce_id);
+ 	int ret;
  
+ 	/*
+@@ -1105,9 +1119,6 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
+ 		}
+ 	}
+ 
+-	/* Enable CE error interrupts */
+-	ath10k_ce_error_intr_enable(ar, ctrl_addr);
+-
+ out:
+ 	ath10k_pci_sleep(ar);
+ 	return ce_state;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 67dbde6..8a58bac 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -235,6 +235,7 @@ void ath10k_ce_deinit(struct ath10k_ce_pipe *ce_state);
+ void ath10k_ce_per_engine_service_any(struct ath10k *ar);
+ void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
+ int ath10k_ce_disable_interrupts(struct ath10k *ar);
++int ath10k_ce_enable_err_irq(struct ath10k *ar);
+ 
+ /* ce_attr.flags values */
+ /* Use NonSnooping PCIe accesses? */
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e41665f..0b89726 100644
+index 0b89726..e552770 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1270,6 +1270,13 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 		 * Indicate the completion to higer layer to free
- 		 * the buffer
- 		 */
+@@ -1786,18 +1786,6 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
+ 		pipe_info->buf_sz = (size_t) (attr->src_sz_max);
+ 	}
+ 
+-	/*
+-	 * Initially, establish CE completion handlers for use with BMI.
+-	 * These are overwritten with generic handlers after we exit BMI phase.
+-	 */
+-	pipe_info = &ar_pci->pipe_info[BMI_CE_NUM_TO_TARG];
+-	ath10k_ce_send_cb_register(pipe_info->ce_hdl,
+-				   ath10k_pci_bmi_send_done, 0);
+-
+-	pipe_info = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
+-	ath10k_ce_recv_cb_register(pipe_info->ce_hdl,
+-				   ath10k_pci_bmi_recv_data);
+-
+ 	return 0;
+ }
+ 
+@@ -1830,17 +1818,27 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 	ath10k_pci_sleep(ar);
+ }
+ 
++static void ath10k_pci_start_bmi(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	struct ath10k_pci_pipe *pipe;
 +
-+		if (!netbuf) {
-+			ath10k_warn("invalid sk_buff on CE %d - NULL pointer. firmware crashed?\n",
-+				    ce_hdl->id);
-+			continue;
-+		}
++	/*
++	 * Initially, establish CE completion handlers for use with BMI.
++	 * These are overwritten with generic handlers after we exit BMI phase.
++	 */
++	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_TARG];
++	ath10k_ce_send_cb_register(pipe->ce_hdl, ath10k_pci_bmi_send_done, 0);
 +
- 		ATH10K_SKB_CB(netbuf)->is_aborted = true;
- 		ar_pci->msg_callbacks_current.tx_completion(ar,
- 							    netbuf,
++	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
++	ath10k_ce_recv_cb_register(pipe->ce_hdl, ath10k_pci_bmi_recv_data);
++}
++
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+ 
+-	ret = ath10k_pci_start_intr(ar);
+-	if (ret) {
+-		ath10k_err("could not start interrupt handling (%d)\n", ret);
+-		goto err;
+-	}
+-
+ 	/*
+ 	 * Bring the target up cleanly.
+ 	 *
+@@ -1854,13 +1852,9 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	ret = ath10k_pci_device_reset(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to reset target: %d\n", ret);
+-		goto err_irq;
++		goto err;
+ 	}
+ 
+-	ret = ath10k_pci_wait_for_target_init(ar);
+-	if (ret)
+-		goto err_irq;
+-
+ 	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		/* Force AWAKE forever */
+ 		ath10k_do_pci_wake(ar);
+@@ -1869,25 +1863,54 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	if (ret)
+ 		goto err_ps;
+ 
+-	ret = ath10k_pci_init_config(ar);
+-	if (ret)
++	ret = ath10k_ce_disable_interrupts(ar);
++	if (ret) {
++		ath10k_err("failed to disable CE interrupts: %d\n", ret);
++		goto err_ce;
++	}
++
++	ret = ath10k_pci_start_intr(ar);
++	if (ret) {
++		ath10k_err("failed to start interrupt handling: %d\n", ret);
+ 		goto err_ce;
++	}
++
++	ret = ath10k_pci_wait_for_target_init(ar);
++	if (ret) {
++		ath10k_err("failed to wait for target to init: %d\n", ret);
++		goto err_irq;
++	}
++
++	ret = ath10k_ce_enable_err_irq(ar);
++	if (ret) {
++		ath10k_err("failed to enable CE error irq: %d\n", ret);
++		goto err_irq;
++	}
++
++	ret = ath10k_pci_init_config(ar);
++	if (ret) {
++		ath10k_err("failed to setup init config: %d\n", ret);
++		goto err_irq;
++	}
+ 
+ 	ret = ath10k_pci_wake_target_cpu(ar);
+ 	if (ret) {
+ 		ath10k_err("could not wake up target CPU (%d)\n", ret);
+-		goto err_ce;
++		goto err_irq;
+ 	}
+ 
++	ath10k_pci_start_bmi(ar);
+ 	return 0;
+ 
++err_irq:
++	ath10k_ce_disable_interrupts(ar);
++	ath10k_pci_stop_intr(ar);
++	ath10k_pci_kill_tasklet(ar);
+ err_ce:
+ 	ath10k_pci_ce_deinit(ar);
+ err_ps:
+ 	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_sleep(ar);
+-err_irq:
+-	ath10k_pci_stop_intr(ar);
+ err:
+ 	return ret;
+ }
+@@ -2156,7 +2179,7 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = ath10k_do_pci_wake(ar);
++	ret = ath10k_pci_wake(ar);
+ 	if (ret) {
+ 		free_irq(ar_pci->pdev->irq, ar);
+ 		ath10k_err("failed to wake up target: %d\n", ret);
+@@ -2176,7 +2199,7 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
+ 		  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
+ 				 PCIE_INTR_ENABLE_ADDRESS));
+ 
+-	ath10k_do_pci_sleep(ar);
++	ath10k_pci_sleep(ar);
+ 	ath10k_info("legacy interrupt handling\n");
+ 	return 0;
+ }
+@@ -2252,7 +2275,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 	int wait_limit = 300; /* 3 sec */
+ 	int ret;
+ 
+-	ret = ath10k_do_pci_wake(ar);
++	ret = ath10k_pci_wake(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to wake up target: %d\n", ret);
+ 		return ret;
+@@ -2277,7 +2300,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 	}
+ 
+ out:
+-	ath10k_do_pci_sleep(ar);
++	ath10k_pci_sleep(ar);
+ 	return ret;
+ }
+ 
 -- 
 1.8.4.rc3
 
