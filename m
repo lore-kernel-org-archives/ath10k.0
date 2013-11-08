@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22c.google.com ([2a00:1450:4013:c00::22c])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Veg82-0001QE-PL
+ id 1Veg83-0001QI-FI
  for ath10k@lists.infradead.org; Fri, 08 Nov 2013 07:05:18 +0000
-Received: by mail-ee0-f44.google.com with SMTP id d41so789846eek.3
- for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:52 -0800 (PST)
+Received: by mail-ee0-f43.google.com with SMTP id b47so792961eek.30
+ for <ath10k@lists.infradead.org>; Thu, 07 Nov 2013 23:04:53 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 11/13] ath10k: re-arrange PCI init code
-Date: Fri,  8 Nov 2013 08:01:33 +0100
-Message-Id: <1383894095-27998-12-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCHv2 12/13] ath10k: add and fix some PCI prints
+Date: Fri,  8 Nov 2013 08:01:34 +0100
+Message-Id: <1383894095-27998-13-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
 References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
  <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
@@ -28,243 +28,258 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This patch moves irq registering after necessary
-structures have been allocated and initialized.
-This should prevent interrupts from causing
-tasklet access invalid memory pointers.
+Add missing error reporting and adjust other
+prints to make everything more consistent.
 
-Reported-By: Ben Greear <greearb@candelatech.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 19 ++++++--
- drivers/net/wireless/ath/ath10k/ce.h  |  1 +
- drivers/net/wireless/ath/ath10k/pci.c | 87 ++++++++++++++++++++++-------------
- 3 files changed, 71 insertions(+), 36 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 69 ++++++++++++++++++++---------------
+ 1 file changed, 39 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index ab22d14..476928f 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -792,6 +792,21 @@ static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
- 	ath10k_pci_sleep(ar);
- }
- 
-+int ath10k_ce_enable_err_irq(struct ath10k *ar)
-+{
-+	int i, ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret)
-+		return ret;
-+
-+	for (i = 0; i < CE_COUNT; i++)
-+		ath10k_ce_error_intr_enable(ar, ath10k_ce_base_address(i));
-+
-+	ath10k_pci_sleep(ar);
-+	return 0;
-+}
-+
- int ath10k_ce_disable_interrupts(struct ath10k *ar)
- {
- 	int ce_id, ret;
-@@ -1059,7 +1074,6 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
- 				const struct ce_attr *attr)
- {
- 	struct ath10k_ce_pipe *ce_state;
--	u32 ctrl_addr = ath10k_ce_base_address(ce_id);
- 	int ret;
- 
- 	/*
-@@ -1105,9 +1119,6 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
- 		}
- 	}
- 
--	/* Enable CE error interrupts */
--	ath10k_ce_error_intr_enable(ar, ctrl_addr);
--
- out:
- 	ath10k_pci_sleep(ar);
- 	return ce_state;
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 67dbde6..8a58bac 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -235,6 +235,7 @@ void ath10k_ce_deinit(struct ath10k_ce_pipe *ce_state);
- void ath10k_ce_per_engine_service_any(struct ath10k *ar);
- void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
- int ath10k_ce_disable_interrupts(struct ath10k *ar);
-+int ath10k_ce_enable_err_irq(struct ath10k *ar);
- 
- /* ce_attr.flags values */
- /* Use NonSnooping PCIe accesses? */
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 0b89726..e552770 100644
+index e552770..eaa9956 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1786,18 +1786,6 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
- 		pipe_info->buf_sz = (size_t) (attr->src_sz_max);
- 	}
- 
--	/*
--	 * Initially, establish CE completion handlers for use with BMI.
--	 * These are overwritten with generic handlers after we exit BMI phase.
--	 */
--	pipe_info = &ar_pci->pipe_info[BMI_CE_NUM_TO_TARG];
--	ath10k_ce_send_cb_register(pipe_info->ce_hdl,
--				   ath10k_pci_bmi_send_done, 0);
--
--	pipe_info = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
--	ath10k_ce_recv_cb_register(pipe_info->ce_hdl,
--				   ath10k_pci_bmi_recv_data);
--
- 	return 0;
- }
- 
-@@ -1830,17 +1818,27 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
- 	ath10k_pci_sleep(ar);
- }
- 
-+static void ath10k_pci_start_bmi(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	struct ath10k_pci_pipe *pipe;
-+
-+	/*
-+	 * Initially, establish CE completion handlers for use with BMI.
-+	 * These are overwritten with generic handlers after we exit BMI phase.
-+	 */
-+	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_TARG];
-+	ath10k_ce_send_cb_register(pipe->ce_hdl, ath10k_pci_bmi_send_done, 0);
-+
-+	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
-+	ath10k_ce_recv_cb_register(pipe->ce_hdl, ath10k_pci_bmi_recv_data);
-+}
-+
- static int ath10k_pci_hif_power_up(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret;
- 
--	ret = ath10k_pci_start_intr(ar);
--	if (ret) {
--		ath10k_err("could not start interrupt handling (%d)\n", ret);
--		goto err;
--	}
--
- 	/*
- 	 * Bring the target up cleanly.
- 	 *
-@@ -1854,13 +1852,9 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 	ret = ath10k_pci_device_reset(ar);
- 	if (ret) {
- 		ath10k_err("failed to reset target: %d\n", ret);
--		goto err_irq;
-+		goto err;
- 	}
- 
--	ret = ath10k_pci_wait_for_target_init(ar);
--	if (ret)
--		goto err_irq;
--
- 	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
- 		/* Force AWAKE forever */
- 		ath10k_do_pci_wake(ar);
-@@ -1869,25 +1863,54 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+@@ -712,7 +712,7 @@ static int ath10k_pci_hif_send_head(struct ath10k *ar, u8 pipe_id,
+ 	ret = ath10k_ce_send(ce_hdl, nbuf, skb_cb->paddr, len, transfer_id,
+ 			     flags);
  	if (ret)
- 		goto err_ps;
+-		ath10k_warn("CE send failed: %p\n", nbuf);
++		ath10k_warn("failed to send sk_buff to CE: %p\n", nbuf);
  
--	ret = ath10k_pci_init_config(ar);
+ 	return ret;
+ }
+@@ -739,9 +739,10 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 		   ar->fw_version_build);
+ 
+ 	host_addr = host_interest_item_address(HI_ITEM(hi_failure_state));
+-	if (ath10k_pci_diag_read_mem(ar, host_addr,
+-				     &reg_dump_area, sizeof(u32)) != 0) {
+-		ath10k_warn("could not read hi_failure_state\n");
++	ret = ath10k_pci_diag_read_mem(ar, host_addr,
++				       &reg_dump_area, sizeof(u32));
++	if (ret) {
++		ath10k_err("failed to read FW dump area address: %d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -751,7 +752,7 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 				       &reg_dump_values[0],
+ 				       REG_DUMP_COUNT_QCA988X * sizeof(u32));
+ 	if (ret != 0) {
+-		ath10k_err("could not dump FW Dump Area\n");
++		ath10k_err("failed to read FW dump area: %d\n", ret);
+ 		return;
+ 	}
+ 
+@@ -973,8 +974,8 @@ static void ath10k_pci_process_ce(struct ath10k *ar)
+ 		case ATH10K_PCI_COMPL_RECV:
+ 			ret = ath10k_pci_post_rx_pipe(compl->pipe_info, 1);
+ 			if (ret) {
+-				ath10k_warn("Unable to post recv buffer for pipe: %d\n",
+-					    compl->pipe_info->pipe_num);
++				ath10k_warn("failed to post RX buffer for pipe %d: %d\n",
++					    compl->pipe_info->pipe_num, ret);
+ 				break;
+ 			}
+ 
+@@ -1113,7 +1114,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
+ 	for (i = 0; i < num; i++) {
+ 		skb = dev_alloc_skb(pipe_info->buf_sz);
+ 		if (!skb) {
+-			ath10k_warn("could not allocate skbuff for pipe %d\n",
++			ath10k_warn("failed to allocate skbuff for pipe %d\n",
+ 				    num);
+ 			ret = -ENOMEM;
+ 			goto err;
+@@ -1126,7 +1127,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
+ 					 DMA_FROM_DEVICE);
+ 
+ 		if (unlikely(dma_mapping_error(ar->dev, ce_data))) {
+-			ath10k_warn("could not dma map skbuff\n");
++			ath10k_warn("failed to DMA map sk_buff\n");
+ 			dev_kfree_skb_any(skb);
+ 			ret = -EIO;
+ 			goto err;
+@@ -1141,7 +1142,7 @@ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
+ 		ret = ath10k_ce_recv_buf_enqueue(ce_state, (void *)skb,
+ 						 ce_data);
+ 		if (ret) {
+-			ath10k_warn("could not enqueue to pipe %d (%d)\n",
++			ath10k_warn("failed to enqueue to pipe %d: %d\n",
+ 				    num, ret);
+ 			goto err;
+ 		}
+@@ -1171,8 +1172,8 @@ static int ath10k_pci_post_rx(struct ath10k *ar)
+ 		ret = ath10k_pci_post_rx_pipe(pipe_info,
+ 					      attr->dest_nentries - 1);
+ 		if (ret) {
+-			ath10k_warn("Unable to replenish recv buffers for pipe: %d\n",
+-				    pipe_num);
++			ath10k_warn("failed to post RX buffer for pipe %d: %d\n",
++				    pipe_num, ret);
+ 
+ 			for (; pipe_num >= 0; pipe_num--) {
+ 				pipe_info = &ar_pci->pipe_info[pipe_num];
+@@ -1192,14 +1193,15 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 
+ 	ret = ath10k_pci_start_ce(ar);
+ 	if (ret) {
+-		ath10k_warn("could not start CE (%d)\n", ret);
++		ath10k_warn("failed to start CE: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	/* Post buffers once to start things off. */
+ 	ret = ath10k_pci_post_rx(ar);
+ 	if (ret) {
+-		ath10k_warn("could not post rx pipes (%d)\n", ret);
++		ath10k_warn("failed to post RX buffers for all pipes: %d\n",
++			    ret);
+ 		return ret;
+ 	}
+ 
+@@ -1593,7 +1595,7 @@ static int ath10k_pci_wake_target_cpu(struct ath10k *ar)
+ 					      CORE_CTRL_ADDRESS,
+ 					  &core_ctrl);
+ 	if (ret) {
+-		ath10k_warn("Unable to read core ctrl\n");
++		ath10k_warn("failed to read core_ctrl: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -1603,10 +1605,13 @@ static int ath10k_pci_wake_target_cpu(struct ath10k *ar)
+ 	ret = ath10k_pci_diag_write_access(ar, SOC_CORE_BASE_ADDRESS |
+ 					       CORE_CTRL_ADDRESS,
+ 					   core_ctrl);
 -	if (ret)
-+	ret = ath10k_ce_disable_interrupts(ar);
+-		ath10k_warn("Unable to set interrupt mask\n");
 +	if (ret) {
-+		ath10k_err("failed to disable CE interrupts: %d\n", ret);
-+		goto err_ce;
++		ath10k_warn("failed to set target CPU interrupt mask: %d\n",
++			    ret);
++		return ret;
 +	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int ath10k_pci_init_config(struct ath10k *ar)
+@@ -1765,7 +1770,7 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
+ 
+ 		pipe_info->ce_hdl = ath10k_ce_init(ar, pipe_num, attr);
+ 		if (pipe_info->ce_hdl == NULL) {
+-			ath10k_err("Unable to initialize CE for pipe: %d\n",
++			ath10k_err("failed to initialize CE for pipe: %d\n",
+ 				   pipe_num);
+ 
+ 			/* It is safe to call it here. It checks if ce_hdl is
+@@ -1832,6 +1837,8 @@ static void ath10k_pci_start_bmi(struct ath10k *ar)
+ 
+ 	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
+ 	ath10k_ce_recv_cb_register(pipe->ce_hdl, ath10k_pci_bmi_recv_data);
 +
-+	ret = ath10k_pci_start_intr(ar);
++	ath10k_dbg(ATH10K_DBG_BOOT, "boot start bmi\n");
+ }
+ 
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+@@ -1860,8 +1867,10 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 		ath10k_do_pci_wake(ar);
+ 
+ 	ret = ath10k_pci_ce_init(ar);
+-	if (ret)
 +	if (ret) {
-+		ath10k_err("failed to start interrupt handling: %d\n", ret);
- 		goto err_ce;
++		ath10k_err("failed to initialize CE: %d\n", ret);
+ 		goto err_ps;
 +	}
-+
-+	ret = ath10k_pci_wait_for_target_init(ar);
-+	if (ret) {
-+		ath10k_err("failed to wait for target to init: %d\n", ret);
-+		goto err_irq;
-+	}
-+
-+	ret = ath10k_ce_enable_err_irq(ar);
-+	if (ret) {
-+		ath10k_err("failed to enable CE error irq: %d\n", ret);
-+		goto err_irq;
-+	}
-+
-+	ret = ath10k_pci_init_config(ar);
-+	if (ret) {
-+		ath10k_err("failed to setup init config: %d\n", ret);
-+		goto err_irq;
-+	}
+ 
+ 	ret = ath10k_ce_disable_interrupts(ar);
+ 	if (ret) {
+@@ -1895,7 +1904,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
  
  	ret = ath10k_pci_wake_target_cpu(ar);
  	if (ret) {
- 		ath10k_err("could not wake up target CPU (%d)\n", ret);
--		goto err_ce;
-+		goto err_irq;
+-		ath10k_err("could not wake up target CPU (%d)\n", ret);
++		ath10k_err("could not wake up target CPU: %d\n", ret);
+ 		goto err_irq;
  	}
  
-+	ath10k_pci_start_bmi(ar);
- 	return 0;
+@@ -2397,7 +2406,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
  
-+err_irq:
-+	ath10k_ce_disable_interrupts(ar);
-+	ath10k_pci_stop_intr(ar);
-+	ath10k_pci_kill_tasklet(ar);
- err_ce:
- 	ath10k_pci_ce_deinit(ar);
- err_ps:
- 	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
- 		ath10k_do_pci_sleep(ar);
--err_irq:
--	ath10k_pci_stop_intr(ar);
- err:
- 	return ret;
- }
-@@ -2156,7 +2179,7 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = ath10k_do_pci_wake(ar);
-+	ret = ath10k_pci_wake(ar);
+ 	ar = ath10k_core_create(ar_pci, ar_pci->dev, &ath10k_pci_hif_ops);
+ 	if (!ar) {
+-		ath10k_err("ath10k_core_create failed!\n");
++		ath10k_err("failed to create driver core\n");
+ 		ret = -EINVAL;
+ 		goto err_ar_pci;
+ 	}
+@@ -2416,20 +2425,20 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	 */
+ 	ret = pci_assign_resource(pdev, BAR_NUM);
  	if (ret) {
- 		free_irq(ar_pci->pdev->irq, ar);
- 		ath10k_err("failed to wake up target: %d\n", ret);
-@@ -2176,7 +2199,7 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
- 		  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
- 				 PCIE_INTR_ENABLE_ADDRESS));
- 
--	ath10k_do_pci_sleep(ar);
-+	ath10k_pci_sleep(ar);
- 	ath10k_info("legacy interrupt handling\n");
- 	return 0;
- }
-@@ -2252,7 +2275,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 	int wait_limit = 300; /* 3 sec */
- 	int ret;
- 
--	ret = ath10k_do_pci_wake(ar);
-+	ret = ath10k_pci_wake(ar);
- 	if (ret) {
- 		ath10k_err("failed to wake up target: %d\n", ret);
- 		return ret;
-@@ -2277,7 +2300,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+-		ath10k_err("cannot assign PCI space: %d\n", ret);
++		ath10k_err("failed to assign PCI space: %d\n", ret);
+ 		goto err_ar;
  	}
  
- out:
--	ath10k_do_pci_sleep(ar);
-+	ath10k_pci_sleep(ar);
+ 	ret = pci_enable_device(pdev);
+ 	if (ret) {
+-		ath10k_err("cannot enable PCI device: %d\n", ret);
++		ath10k_err("failed to enable PCI device: %d\n", ret);
+ 		goto err_ar;
+ 	}
+ 
+ 	/* Request MMIO resources */
+ 	ret = pci_request_region(pdev, BAR_NUM, "ath");
+ 	if (ret) {
+-		ath10k_err("PCI MMIO reservation error: %d\n", ret);
++		ath10k_err("failed to request MMIO region: %d\n", ret);
+ 		goto err_device;
+ 	}
+ 
+@@ -2439,13 +2448,13 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	 */
+ 	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
+ 	if (ret) {
+-		ath10k_err("32-bit DMA not available: %d\n", ret);
++		ath10k_err("failed to set DMA mask to 32-bit: %d\n", ret);
+ 		goto err_region;
+ 	}
+ 
+ 	ret = pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(32));
+ 	if (ret) {
+-		ath10k_err("cannot enable 32-bit consistent DMA\n");
++		ath10k_err("failed to set consistent DMA mask to 32-bit\n");
+ 		goto err_region;
+ 	}
+ 
+@@ -2462,7 +2471,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	/* Arrange for access to Target SoC registers. */
+ 	mem = pci_iomap(pdev, BAR_NUM, 0);
+ 	if (!mem) {
+-		ath10k_err("PCI iomap error\n");
++		ath10k_err("failed to perform IOMAP for BAR%d\n", BAR_NUM);
+ 		ret = -EIO;
+ 		goto err_master;
+ 	}
+@@ -2485,7 +2494,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+-		ath10k_err("could not register driver core (%d)\n", ret);
++		ath10k_err("failed to register driver core: %d\n", ret);
+ 		goto err_iomap;
+ 	}
+ 
+@@ -2551,7 +2560,7 @@ static int __init ath10k_pci_init(void)
+ 
+ 	ret = pci_register_driver(&ath10k_pci_driver);
+ 	if (ret)
+-		ath10k_err("pci_register_driver failed [%d]\n", ret);
++		ath10k_err("failed to register PCI driver: %d\n", ret);
+ 
  	return ret;
  }
- 
 -- 
 1.8.4.rc3
 
