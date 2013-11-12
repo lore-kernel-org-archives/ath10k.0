@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vfumk-00065C-K3
- for ath10k@lists.infradead.org; Mon, 11 Nov 2013 16:56:23 +0000
-Message-ID: <52810C1F.3060600@candelatech.com>
-Date: Mon, 11 Nov 2013 08:55:59 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
+ id 1VgI0V-000694-Cf
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2013 17:44:08 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: Add logging to better determine some VIF/STA
  creation failures.
 References: <1383585574-17779-1-git-send-email-greearb@candelatech.com>
- <87ppqbb4g0.fsf@kamboji.qca.qualcomm.com> <527D1704.2000508@candelatech.com>
- <87d2m7b8qj.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87d2m7b8qj.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 12 Nov 2013 19:43:40 +0200
+In-Reply-To: <1383585574-17779-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 4 Nov 2013 09:19:34
+ -0800")
+Message-ID: <87bo1pa52r.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +21,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: greearb@candelatech.com
 Cc: ath10k@lists.infradead.org
 
-On 11/11/2013 01:14 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> On 11/08/2013 01:58 AM, Kalle Valo wrote:
->>> greearb@candelatech.com writes:
->>>
->>>> From: Ben Greear <greearb@candelatech.com>
->>>>
->>>
->>> I did some changes to this patch:
->>>
->>> https://github.com/kvalo/ath/commit/20c062b93a1addc863d15334dd1eb5892a759f78
->>>
->>> The patch is still on ath-next-test branch. Please take a look and if
->>> it's ok for you, send you S-o-b tag so that I can apply it (it was
->>> missing).
->>
->> This part has some grammar issues, it seems to say that the failure
->> is due to changed bssid.  Maybe make it instead:
->>
->> Failed to add peer %pM for vdev %d when changing bssid, error: %i
->>
->> -        ath10k_warn("Failed to add peer: %pM for VDEV: %d\n",
->> -              info->bssid, arvif->vdev_id);
->> +        ath10k_warn("Failed to add peer %pM for vdev %d due to changed bssid: %i\n",
->> +              info->bssid, arvif->vdev_id, ret);
->>
->> Either way, it's better than what was there before, so:
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->
-> Good point, thanks. I just didn't use the word error as I thought that
-> wasn't necessary. New version which I'll apply soon:
->
-> https://github.com/kvalo/ath/commit/ee309046323f2af1d2cd6f5c1361a6ce8dae5f87
->
+Thanks, applied with these changes:
 
-Looks good.
+commit 479398b07048342c7fdca89fd3a6cdb739e48a86
+Author: Ben Greear <greearb@candelatech.com>
+Date:   Mon Nov 4 09:19:34 2013 -0800
 
-Thanks,
-Ben
-
+    ath10k: add logging to better determine some VIF/STA creation failures
+    
+    Not all errors were properly notified, fix that.
+    
+    kvalo: use ath10k_warn() for all messages, cosmetic changes to some of the messages
+    
+    Signed-off-by: Ben Greear <greearb@candelatech.com>
+    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
