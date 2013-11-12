@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgI0V-000694-Cf
- for ath10k@lists.infradead.org; Tue, 12 Nov 2013 17:44:08 +0000
+ id 1VgINp-0006eK-LG
+ for ath10k@lists.infradead.org; Tue, 12 Nov 2013 18:08:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Add logging to better determine some VIF/STA
- creation failures.
-References: <1383585574-17779-1-git-send-email-greearb@candelatech.com>
-Date: Tue, 12 Nov 2013 19:43:40 +0200
-In-Reply-To: <1383585574-17779-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 4 Nov 2013 09:19:34
- -0800")
-Message-ID: <87bo1pa52r.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCHv2 00/13] ath10k: pci fixes 2013-10-30
+References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
+ <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 12 Nov 2013 20:07:45 +0200
+In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 8 Nov 2013 08:01:22 +0100")
+Message-ID: <877gcda3ym.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +24,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Thanks, applied with these changes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-commit 479398b07048342c7fdca89fd3a6cdb739e48a86
-Author: Ben Greear <greearb@candelatech.com>
-Date:   Mon Nov 4 09:19:34 2013 -0800
+> Hi,
+>
+> This patchset contains a slew of PCI/CE cleanups
+> and fixes. The aim of the patchset is to deal with
+> CE null dereference bugs Ben has been reporting on
+> the mailing list for some time now.
+>
+> v2:
+>  * fix prints
+>  * fix commit messages
+>  * add additional patch
+>    (ath10k: reset device upon stopping/power down)
+>
+>
+> Michal Kazior (13):
+>   ath10k: remove ar_pci->ce_count
+>   ath10k: don't forget to kill fw error tasklet
+>   ath10k: split tasklet killing function
+>   ath10k: rename ath10k_pci_reset_target()
+>   ath10k: make sure to mask all CE irqs
+>   ath10k: fix ath10k_ce_init() failpath
+>   ath10k: remove meaningless check
+>   ath10k: use ath10k_do_pci_wake/sleep
+>   ath10k: propagate ath10k_ce_disable_interrupts() errors
+>   ath10k: guard against CE corruption from firmware
+>   ath10k: re-arrange PCI init code
+>   ath10k: add and fix some PCI prints
+>   ath10k: reset device upon stopping/power down
 
-    ath10k: add logging to better determine some VIF/STA creation failures
-    
-    Not all errors were properly notified, fix that.
-    
-    kvalo: use ath10k_warn() for all messages, cosmetic changes to some of the messages
-    
-    Signed-off-by: Ben Greear <greearb@candelatech.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Thanks, all 13 applied.
 
 -- 
 Kalle Valo
