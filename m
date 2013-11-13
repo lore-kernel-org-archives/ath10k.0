@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x233.google.com ([2a00:1450:4008:c01::233])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgYmB-0005j3-Ib
- for ath10k@lists.infradead.org; Wed, 13 Nov 2013 11:38:28 +0000
-Received: by mail-bk0-f51.google.com with SMTP id my12so263970bkb.38
- for <ath10k@lists.infradead.org>; Wed, 13 Nov 2013 03:38:05 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20131113112810.5221.69685.stgit@localhost6.localdomain6>
-References: <20131113112810.5221.69685.stgit@localhost6.localdomain6>
-Date: Wed, 13 Nov 2013 12:38:04 +0100
-Message-ID: <CA+BoTQkLsbwEAX6RomC_ZA-rtL6q1Q871=9n-Mgry=AZgrKs6Q@mail.gmail.com>
+ id 1VgaQ5-00085C-LM
+ for ath10k@lists.infradead.org; Wed, 13 Nov 2013 13:23:46 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: remove htt rx amsdu clear retry bit hack
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <20131113112810.5221.69685.stgit@localhost6.localdomain6>
+ <CA+BoTQkLsbwEAX6RomC_ZA-rtL6q1Q871=9n-Mgry=AZgrKs6Q@mail.gmail.com>
+Date: Wed, 13 Nov 2013 15:23:18 +0200
+In-Reply-To: <CA+BoTQkLsbwEAX6RomC_ZA-rtL6q1Q871=9n-Mgry=AZgrKs6Q@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 13 Nov 2013 12:38:04 +0100")
+Message-ID: <87bo1o77w9.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-T24gMTMgTm92ZW1iZXIgMjAxMyAxMjoyOCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gV2l0aCBjb21taXQgMGNmY2VmZWYxICgibWFjODAyMTE6IHN1cHBvcnQg
-cmVwb3J0aW5nIEEtTVNEVSBzdWJmcmFtZXMKPiBpbmRpdmlkdWFsbHkiKSB0aGVyZSdzIG5vIG5l
-ZWQgdG8gaGF2ZSB0aGUgaGFjayB0byBjbGVhciB0aGUgcmV0cnkgYml0IGluCj4gYXRoMTBrX2h0
-dF9yeF9hbXNkdSgpLCBtYWM4MDIxMSBjYW4gaGFuZGxlIHRoaXMgcHJvcGVybHkgbm93Lgo+Cj4g
-U2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4KPiAtLS0K
-PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYyB8ICAgMTcgLS0tLS0t
-LS0tLS0tLS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE3IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAt
-LWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4gaW5kZXggOTBkNGY3NC4uNzZjMTUy
-YiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5j
-Cj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwo+IEBAIC02
-NTksMjMgKzY1OSw2IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19odHRfcnhfYW1zZHUoc3RydWN0IGF0
-aDEwa19odHQgKmh0dCwKPiAgICAgICAgIG1lbWNweShoZHJfYnVmLCBoZHIsIGhkcl9sZW4pOwo+
-ICAgICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopaGRyX2J1ZjsKPgo+IC0gICAg
-ICAgLyogRklYTUU6IEhvcGVmdWxseSB0aGlzIGlzIGEgdGVtcG9yYXJ5IG1lYXN1cmUuCj4gLSAg
-ICAgICAgKgo+IC0gICAgICAgICogUmVwb3J0aW5nIGluZGl2aWR1YWwgQS1NU0RVIHN1YmZyYW1l
-cyBtZWFucyBlYWNoIHJlcG9ydGVkIGZyYW1lCj4gLSAgICAgICAgKiBzaGFyZXMgdGhlIHNhbWUg
-c2VxdWVuY2UgbnVtYmVyLgo+IC0gICAgICAgICoKPiAtICAgICAgICAqIG1hYzgwMjExIGRyb3Bz
-IGZyYW1lcyBpdCByZWNvZ25pemVzIGFzIGR1cGxpY2F0ZXMsIGkuZS4KPiAtICAgICAgICAqIHJl
-dHJhbnNtaXNzaW9uIGZsYWcgaXMgc2V0IGFuZCBzZXF1ZW5jZSBudW1iZXIgbWF0Y2hlcyBzZXF1
-ZW5jZQo+IC0gICAgICAgICogbnVtYmVyIGZyb20gYSBwcmV2aW91cyBmcmFtZSAoYXMgcGVyIElF
-RUUgODAyLjExLTIwMTI6IDkuMy4yLjEwCj4gLSAgICAgICAgKiAiRHVwbGljYXRlIGRldGVjdGlv
-biBhbmQgcmVjb3ZlcnkiKQo+IC0gICAgICAgICoKPiAtICAgICAgICAqIFRvIGF2b2lkIGZyYW1l
-cyBiZWluZyBkcm9wcGVkIGNsZWFyIHJldHJhbnNtaXNzaW9uIGZsYWcgZm9yIGFsbAo+IC0gICAg
-ICAgICogcmVjZWl2ZWQgQS1NU0RVcy4KPiAtICAgICAgICAqCj4gLSAgICAgICAgKiBXb3JzdCBj
-YXNlOiBhY3R1YWwgZHVwbGljYXRlIGZyYW1lcyB3aWxsIGJlIHJlcG9ydGVkIGJ1dCB0aGlzIHNo
-b3VsZAo+IC0gICAgICAgICogc3RpbGwgYmUgaGFuZGxlZCBncmFjZWZ1bGx5IGJ5IG90aGVyIE9T
-SS9JU08gbGF5ZXJzLiAqLwo+IC0gICAgICAgaGRyLT5mcmFtZV9jb250cm9sICY9IGNwdV90b19s
-ZTE2KH5JRUVFODAyMTFfRkNUTF9SRVRSWSk7Cj4gLQo+ICAgICAgICAgZmlyc3QgPSBza2I7Cj4g
-ICAgICAgICB3aGlsZSAoc2tiKSB7Cj4gICAgICAgICAgICAgICAgIHZvaWQgKmRlY2FwX2hkcjsK
-PgoKWW91J3JlIG1pc3NpbmcgUlhfRkxBR19BTVNEVV9NT1JFLiBBbGwgc3ViZnJhbWVzIChleGNl
-cHQgdGhlIGxhc3Qgb25lKQpmcm9tIGFuIEEtTVNEVSB0aGF0IGFyZSByZXBvcnRlZCBzZXBhcmF0
-ZWx5IG11c3QgaGF2ZSB0aGUgYml0IHNldCBpbgpzdGF0dXMtPmZsYWcuIE9ubHkgdGhlbiBtYWM4
-MDIxMSBjYW4gYXBwbHkgcmV0cmFuc21pc3Npb24vZHVwbGljYXRpb24KY2hlY2sgcHJvcGVybHku
-CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+>> -       /* FIXME: Hopefully this is a temporary measure.
+>> -        *
+>> -        * Reporting individual A-MSDU subframes means each reported frame
+>> -        * shares the same sequence number.
+>> -        *
+>> -        * mac80211 drops frames it recognizes as duplicates, i.e.
+>> -        * retransmission flag is set and sequence number matches sequence
+>> -        * number from a previous frame (as per IEEE 802.11-2012: 9.3.2.10
+>> -        * "Duplicate detection and recovery")
+>> -        *
+>> -        * To avoid frames being dropped clear retransmission flag for all
+>> -        * received A-MSDUs.
+>> -        *
+>> -        * Worst case: actual duplicate frames will be reported but this should
+>> -        * still be handled gracefully by other OSI/ISO layers. */
+>> -       hdr->frame_control &= cpu_to_le16(~IEEE80211_FCTL_RETRY);
+>> -
+>>         first = skb;
+>>         while (skb) {
+>>                 void *decap_hdr;
+>>
+>
+> You're missing RX_FLAG_AMSDU_MORE. All subframes (except the last one)
+> from an A-MSDU that are reported separately must have the bit set in
+> status->flag. Only then mac80211 can apply retransmission/duplication
+> check properly.
+
+I'll send v2, thanks for the review.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
