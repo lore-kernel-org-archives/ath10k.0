@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgINp-0006eK-LG
- for ath10k@lists.infradead.org; Tue, 12 Nov 2013 18:08:15 +0000
+ id 1VgWIm-0001Ln-Gm
+ for ath10k@lists.infradead.org; Wed, 13 Nov 2013 08:59:57 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv2 00/13] ath10k: pci fixes 2013-10-30
-References: <1383133346-8135-1-git-send-email-michal.kazior@tieto.com>
- <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 12 Nov 2013 20:07:45 +0200
-In-Reply-To: <1383894095-27998-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 8 Nov 2013 08:01:22 +0100")
-Message-ID: <877gcda3ym.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: add phyerr/dfs handling
+References: <1383048394-15256-1-git-send-email-marek.puzyniak@tieto.com>
+ <87bo1xuajk.fsf@kamboji.qca.qualcomm.com>
+ <CALhHN=oj2hg6zRf5rKyDBexWOdR08=aRXRJtD9gQQs7i_tjjMQ@mail.gmail.com>
+ <87habnau4d.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 13 Nov 2013 10:59:27 +0200
+In-Reply-To: <87habnau4d.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Fri, 8 Nov 2013 15:41:22 +0200")
+Message-ID: <87r4ak8yog.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,41 +26,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> Hi,
+>> I think we can use here spin_lock_bh(&ar->data_lock) when setting
+>> ar->debug.dfs_stats and when reading this from debugfs.
+>> But, is that really needed (in worst case we will get older values via debugfs)?
 >
-> This patchset contains a slew of PCI/CE cleanups
-> and fixes. The aim of the patchset is to deal with
-> CE null dereference bugs Ben has been reporting on
-> the mailing list for some time now.
->
-> v2:
->  * fix prints
->  * fix commit messages
->  * add additional patch
->    (ath10k: reset device upon stopping/power down)
->
->
-> Michal Kazior (13):
->   ath10k: remove ar_pci->ce_count
->   ath10k: don't forget to kill fw error tasklet
->   ath10k: split tasklet killing function
->   ath10k: rename ath10k_pci_reset_target()
->   ath10k: make sure to mask all CE irqs
->   ath10k: fix ath10k_ce_init() failpath
->   ath10k: remove meaningless check
->   ath10k: use ath10k_do_pci_wake/sleep
->   ath10k: propagate ath10k_ce_disable_interrupts() errors
->   ath10k: guard against CE corruption from firmware
->   ath10k: re-arrange PCI init code
->   ath10k: add and fix some PCI prints
->   ath10k: reset device upon stopping/power down
+> I would prefer not to have any race conditions in the driver, even if
+> it's just statistics. If there's only a race with statistics atomic
+> variables are also one option.
 
-Thanks, all 13 applied.
+I took a new look at these statistics and I think you are right. It
+feels a bit overkill to use locking or atomic variables here.
 
 -- 
 Kalle Valo
