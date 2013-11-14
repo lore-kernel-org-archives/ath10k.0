@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgsOh-0001FX-1j
- for ath10k@lists.infradead.org; Thu, 14 Nov 2013 08:35:32 +0000
-Received: by mail-wi0-f171.google.com with SMTP id hn6so3625501wib.16
- for <ath10k@lists.infradead.org>; Thu, 14 Nov 2013 00:35:05 -0800 (PST)
+ id 1VgsOq-0001Fi-D0
+ for ath10k@lists.infradead.org; Thu, 14 Nov 2013 08:35:41 +0000
+Received: by mail-wg0-f46.google.com with SMTP id x12so1512418wgg.13
+ for <ath10k@lists.infradead.org>; Thu, 14 Nov 2013 00:35:17 -0800 (PST)
 From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [PATCH v2 1/3] ath10k: add phyerr/dfs handling
-Date: Thu, 14 Nov 2013 09:33:36 +0100
-Message-Id: <1384418018-4973-1-git-send-email-marek.puzyniak@tieto.com>
+Subject: [PATCH v2 2/3] ath10k: introduce DFS implementation
+Date: Thu, 14 Nov 2013 09:33:37 +0100
+Message-Id: <1384418018-4973-2-git-send-email-marek.puzyniak@tieto.com>
+In-Reply-To: <1384418018-4973-1-git-send-email-marek.puzyniak@tieto.com>
+References: <1384418018-4973-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,620 +25,403 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Configure interface combination for AP running on channels
+where radar detection is required. It allows only one type
+of interface - AP on DFS channel and limits number of AP
+interfaces to 8. Setup WMI channel flags accordingly to mac
+channel configuration. CAC based on additional monitor vdev
+is started if required for current channel.
 
-Handle phyerr, dfs event, radar_report and fft_report.
-Add also debugfs dfs_simulate_radar and dfs_stats files.
-Use ath dfs pattern detector.
-
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  |  13 ++
- drivers/net/wireless/ath/ath10k/debug.c |  90 ++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h |   6 +
- drivers/net/wireless/ath/ath10k/mac.c   |  24 ++++
- drivers/net/wireless/ath/ath10k/wmi.c   | 244 +++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h   |  85 +++++++++++
- 6 files changed, 461 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/Kconfig  |   7 ++
+ drivers/net/wireless/ath/ath10k/core.h   |   6 ++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   5 +
+ drivers/net/wireless/ath/ath10k/mac.c    | 160 +++++++++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |  23 ++++-
+ drivers/net/wireless/ath/ath10k/wmi.h    |   1 +
+ 6 files changed, 189 insertions(+), 13 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index 82e8088..f51b8e9 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -37,3 +37,10 @@ config ATH10K_TRACING
+ 	---help---
+ 	  Select this to ath10k use tracing infrastructure.
+ 
++config ATH10K_DFS_CERTIFIED
++	bool "Atheros DFS support for certified platforms"
++	depends on ATH10K && CFG80211_CERTIFICATION_ONUS
++	default n
++	---help---
++	  This option enables DFS support for initiating radiation on
++	  ath10k.
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 0934f76..671dbe3 100644
+index 671dbe3..d5fd74b 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -30,6 +30,7 @@
- #include "wmi.h"
- #include "../ath.h"
- #include "../regd.h"
-+#include "../dfs_pattern_detector.h"
- 
- #define MS(_v, _f) (((_v) & _f##_MASK) >> _f##_LSB)
- #define SM(_v, _f) (((_v) << _f##_LSB) & _f##_MASK)
-@@ -192,6 +193,14 @@ struct ath10k_target_stats {
- 
+@@ -310,6 +310,11 @@ enum ath10k_fw_features {
+ 	ATH10K_FW_FEATURE_COUNT,
  };
  
-+struct ath10k_dfs_stats {
-+	u32 phy_errors;
-+	u32 pulses_total;
-+	u32 pulses_detected;
-+	u32 pulses_discarded;
-+	u32 radar_detected;
++enum ath10k_dev_flags {
++	/* Indicates that ath10k device is during CAC phase of DFS */
++	ATH10K_CAC_RUNNING,
 +};
 +
- #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -403,6 +408,7 @@ struct ath10k {
+ 	bool monitor_enabled;
+ 	bool monitor_present;
+ 	unsigned int filter_flags;
++	unsigned long dev_flags;
  
- struct ath10k_peer {
-@@ -261,6 +270,8 @@ struct ath10k_debug {
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 90d4f74..d619291 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -959,6 +959,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
  
- 	unsigned long htt_stats_mask;
- 	struct delayed_work htt_stats_dwork;
-+	struct ath10k_dfs_stats dfs_stats;
-+	struct ath_dfs_pool_stats dfs_pool_stats;
- };
- 
- enum ath10k_state {
-@@ -428,6 +439,8 @@ struct ath10k {
- 	u32 survey_last_cycle_count;
- 	struct survey_info survey[ATH10K_NUM_CHANS];
- 
-+	struct dfs_pattern_detector *dfs_detector;
++			if (test_bit(ATH10K_CAC_RUNNING, &htt->ar->dev_flags)) {
++				ath10k_htt_rx_free_msdu_chain(msdu_head);
++				continue;
++			}
 +
- #ifdef CONFIG_ATH10K_DEBUGFS
- 	struct ath10k_debug debug;
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 760ff22..13705d4 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -639,6 +639,86 @@ void ath10k_debug_stop(struct ath10k *ar)
- 		cancel_delayed_work(&ar->debug.htt_stats_dwork);
- }
- 
-+static ssize_t ath10k_write_simulate_radar(struct file *file,
-+					   const char __user *user_buf,
-+					   size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+
-+	ieee80211_radar_detected(ar->hw);
-+
-+	return count;
-+}
-+
-+static const struct file_operations fops_simulate_radar = {
-+	.write = ath10k_write_simulate_radar,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
-+#define ATH10K_DFS_STAT(s, p) (\
-+	len += scnprintf(buf + len, size - len, "%-28s : %10u\n", s, \
-+			 ar->debug.dfs_stats.p))
-+
-+#define ATH10K_DFS_POOL_STAT(s, p) (\
-+	len += scnprintf(buf + len, size - len, "%-28s : %10u\n", s, \
-+			 ar->debug.dfs_pool_stats.p))
-+
-+static ssize_t ath10k_read_dfs_stats(struct file *file, char __user *user_buf,
-+				     size_t count, loff_t *ppos)
-+{
-+	int retval = 0, len = 0;
-+	const int size = 8000;
-+	struct ath10k *ar = file->private_data;
-+	char *buf;
-+
-+	buf = kzalloc(size, GFP_KERNEL);
-+	if (buf == NULL)
-+		return -ENOMEM;
-+
-+	if (!ar->dfs_detector) {
-+		len += scnprintf(buf + len, size - len, "DFS not enabled\n");
-+		goto exit;
-+	}
-+
-+	ar->debug.dfs_pool_stats =
-+			ar->dfs_detector->get_stats(ar->dfs_detector);
-+
-+	len += scnprintf(buf + len, size - len, "Pulse detector statistics:\n");
-+
-+	ATH10K_DFS_STAT("reported phy errors", phy_errors);
-+	ATH10K_DFS_STAT("pulse events reported", pulses_total);
-+	ATH10K_DFS_STAT("DFS pulses detected", pulses_detected);
-+	ATH10K_DFS_STAT("DFS pulses discarded", pulses_discarded);
-+	ATH10K_DFS_STAT("Radars detected", radar_detected);
-+
-+	len += scnprintf(buf + len, size - len, "Global Pool statistics:\n");
-+	ATH10K_DFS_POOL_STAT("Pool references", pool_reference);
-+	ATH10K_DFS_POOL_STAT("Pulses allocated", pulse_allocated);
-+	ATH10K_DFS_POOL_STAT("Pulses alloc error", pulse_alloc_error);
-+	ATH10K_DFS_POOL_STAT("Pulses in use", pulse_used);
-+	ATH10K_DFS_POOL_STAT("Seqs. allocated", pseq_allocated);
-+	ATH10K_DFS_POOL_STAT("Seqs. alloc error", pseq_alloc_error);
-+	ATH10K_DFS_POOL_STAT("Seqs. in use", pseq_used);
-+
-+exit:
-+	if (len > size)
-+		len = size;
-+
-+	retval = simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+	kfree(buf);
-+
-+	return retval;
-+}
-+
-+static const struct file_operations fops_dfs_stats = {
-+	.read = ath10k_read_dfs_stats,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
-@@ -667,6 +747,16 @@ int ath10k_debug_create(struct ath10k *ar)
- 	debugfs_create_file("htt_stats_mask", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_htt_stats_mask);
- 
-+	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED)) {
-+		debugfs_create_file("dfs_simulate_radar", S_IWUSR,
-+				    ar->debug.debugfs_phy, ar,
-+				    &fops_simulate_radar);
-+
-+		debugfs_create_file("dfs_stats", S_IRUSR,
-+				    ar->debug.debugfs_phy, ar,
-+				    &fops_dfs_stats);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 46e640a..92f1a5e 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -33,6 +33,7 @@ enum ath10k_debug_mask {
- 	ATH10K_DBG_MGMT		= 0x00000100,
- 	ATH10K_DBG_DATA		= 0x00000200,
- 	ATH10K_DBG_BMI		= 0x00000400,
-+	ATH10K_DBG_REGULATORY	= 0x00000800,
- 	ATH10K_DBG_ANY		= 0xffffffff,
- };
- 
-@@ -53,6 +54,8 @@ void ath10k_debug_read_service_map(struct ath10k *ar,
- void ath10k_debug_read_target_stats(struct ath10k *ar,
- 				    struct wmi_stats_event *ev);
- 
-+#define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
-+
- #else
- static inline int ath10k_debug_start(struct ath10k *ar)
- {
-@@ -82,6 +85,9 @@ static inline void ath10k_debug_read_target_stats(struct ath10k *ar,
- 						  struct wmi_stats_event *ev)
- {
- }
-+
-+#define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
-+
- #endif /* CONFIG_ATH10K_DEBUGFS */
- 
- #ifdef CONFIG_ATH10K_DEBUG
+ 			/* FIXME: we do not support chaining yet.
+ 			 * this needs investigation */
+ 			if (msdu_chaining) {
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 56f030e..1a70d0c 100644
+index 1a70d0c..a1bc8a8 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1442,9 +1442,20 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
- {
- 	struct ieee80211_hw *hw = wiphy_to_ieee80211_hw(wiphy);
- 	struct ath10k *ar = hw->priv;
-+	bool result;
- 
- 	ath_reg_notifier_apply(wiphy, request, &ar->ath_common.regulatory);
- 
-+	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED) && ar->dfs_detector) {
-+		ath10k_dbg(ATH10K_DBG_REGULATORY, "dfs region 0x%x\n",
-+			   request->dfs_region);
-+		result = ar->dfs_detector->set_dfs_domain(ar->dfs_detector,
-+							  request->dfs_region);
-+		if (!result)
-+			ath10k_warn("dfs region 0x%X not supported, will trigger radar for every pulse\n",
-+				    request->dfs_region);
-+	}
+@@ -463,6 +463,10 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ 		arg.ssid = arvif->u.ap.ssid;
+ 		arg.ssid_len = arvif->u.ap.ssid_len;
+ 		arg.hidden_ssid = arvif->u.ap.hidden_ssid;
 +
- 	mutex_lock(&ar->conf_mutex);
- 	if (ar->state == ATH10K_STATE_ON)
- 		ath10k_regd_update(ar);
-@@ -3531,6 +3542,16 @@ int ath10k_mac_register(struct ath10k *ar)
++		/* For now allow DFS for AP mode */
++		arg.channel.chan_radar =
++			!!(channel->flags & IEEE80211_CHAN_RADAR);
+ 	} else if (arvif->vdev_type == WMI_VDEV_TYPE_IBSS) {
+ 		arg.ssid = arvif->vif->bss_conf.ssid;
+ 		arg.ssid_len = arvif->vif->bss_conf.ssid_len;
+@@ -532,6 +536,8 @@ static int ath10k_monitor_start(struct ath10k *ar, int vdev_id)
+ 	/* TODO setup this dynamically, what in case we
+ 	   don't have any vifs? */
+ 	arg.channel.mode = chan_to_phymode(&ar->hw->conf.chandef);
++	arg.channel.chan_radar =
++			!!(channel->flags & IEEE80211_CHAN_RADAR);
  
- 	ar->hw->netdev_features = NETIF_F_HW_CSUM;
- 
-+	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED)) {
-+		/* Init ath dfs pattern detector */
-+		ar->ath_common.debug_mask = ATH_DBG_DFS;
-+		ar->dfs_detector = dfs_pattern_detector_init(&ar->ath_common,
-+							     NL80211_DFS_UNSET);
-+
-+		if (!ar->dfs_detector)
-+			ath10k_warn("dfs pattern detector init failed\n");
-+	}
-+
- 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
- 			    ath10k_reg_notifier);
- 	if (ret) {
-@@ -3566,6 +3587,9 @@ void ath10k_mac_unregister(struct ath10k *ar)
- {
- 	ieee80211_unregister_hw(ar->hw);
- 
-+	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED) && ar->dfs_detector)
-+		ar->dfs_detector->exit(ar->dfs_detector);
-+
- 	kfree(ar->mac.sbands[IEEE80211_BAND_2GHZ].channels);
- 	kfree(ar->mac.sbands[IEEE80211_BAND_5GHZ].channels);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index f79f17c..f0bc94a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1381,9 +1381,251 @@ static void ath10k_wmi_event_tbttoffset_update(struct ath10k *ar,
- 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_TBTTOFFSET_UPDATE_EVENTID\n");
+ 	arg.channel.min_power = 0;
+ 	arg.channel.max_power = channel->max_power * 2;
+@@ -666,6 +672,107 @@ static int ath10k_monitor_destroy(struct ath10k *ar)
+ 	return ret;
  }
  
-+static void ath10k_dfs_radar_report(struct ath10k *ar,
-+				    struct wmi_single_phyerr_rx_event *event,
-+				    struct phyerr_radar_report *rr,
-+				    u64 tsf)
++static int ath10k_start_cac(struct ath10k *ar)
 +{
-+	u32 reg0, reg1, tsf32l;
-+	struct pulse_event pe;
-+	u64 tsf64;
-+	u8 rssi, width;
++	int ret;
 +
-+	reg0 = __le32_to_cpu(rr->reg0);
-+	reg1 = __le32_to_cpu(rr->reg1);
++	lockdep_assert_held(&ar->conf_mutex);
 +
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi phyerr radar report chirp %d max_width %d agc_total_gain %d pulse_delta_diff %d\n",
-+		   MS(reg0, RADAR_REPORT_REG0_PULSE_IS_CHIRP),
-+		   MS(reg0, RADAR_REPORT_REG0_PULSE_IS_MAX_WIDTH),
-+		   MS(reg0, RADAR_REPORT_REG0_AGC_TOTAL_GAIN),
-+		   MS(reg0, RADAR_REPORT_REG0_PULSE_DELTA_DIFF));
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi phyerr radar report pulse_delta_pean %d pulse_sidx %d fft_valid %d agc_mb_gain %d subchan_mask %d\n",
-+		   MS(reg0, RADAR_REPORT_REG0_PULSE_DELTA_PEAK),
-+		   MS(reg0, RADAR_REPORT_REG0_PULSE_SIDX),
-+		   MS(reg1, RADAR_REPORT_REG1_PULSE_SRCH_FFT_VALID),
-+		   MS(reg1, RADAR_REPORT_REG1_PULSE_AGC_MB_GAIN),
-+		   MS(reg1, RADAR_REPORT_REG1_PULSE_SUBCHAN_MASK));
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi phyerr radar report pulse_tsf_offset 0x%X pulse_dur: %d\n",
-+		   MS(reg1, RADAR_REPORT_REG1_PULSE_TSF_OFFSET),
-+		   MS(reg1, RADAR_REPORT_REG1_PULSE_DUR));
++	set_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
 +
-+	if (!ar->dfs_detector)
-+		return;
-+
-+	/* report event to DFS pattern detector */
-+	tsf32l = __le32_to_cpu(event->hdr.tsf_timestamp);
-+	tsf64 = tsf & (~0xFFFFFFFFULL);
-+	tsf64 |= tsf32l;
-+
-+	width = MS(reg1, RADAR_REPORT_REG1_PULSE_DUR);
-+	rssi = event->hdr.rssi_combined;
-+
-+	/* hardware store this as 8 bit signed value,
-+	 * set to zero if negative number
-+	 */
-+	if (rssi & 0x80)
-+		rssi = 0;
-+
-+	pe.ts = tsf64;
-+	pe.freq = ar->hw->conf.chandef.chan->center_freq;
-+	pe.width = width;
-+	pe.rssi = rssi;
-+
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "dfs add pulse freq: %d, width: %d, rssi %d, tsf: %llX\n",
-+		   pe.freq, pe.width, pe.rssi, pe.ts);
-+
-+	ATH10K_DFS_STAT_INC(ar, pulses_detected);
-+
-+	if (!ar->dfs_detector->add_pulse(ar->dfs_detector, &pe)) {
-+		ath10k_dbg(ATH10K_DBG_REGULATORY,
-+			   "dfs no pulse pattern detected, yet\n");
-+		return;
++	ret = ath10k_monitor_create(ar);
++	if (ret) {
++		clear_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
++		return ret;
 +	}
 +
-+	ath10k_dbg(ATH10K_DBG_REGULATORY, "dfs radar detected\n");
-+	ATH10K_DFS_STAT_INC(ar, radar_detected);
-+	ieee80211_radar_detected(ar->hw);
-+}
-+
-+static int ath10k_dfs_fft_report(struct ath10k *ar,
-+				 struct wmi_single_phyerr_rx_event *event,
-+				 struct phyerr_fft_report *fftr,
-+				 u64 tsf)
-+{
-+	u32 reg0, reg1;
-+	u8 rssi, peak_mag;
-+
-+	reg0 = __le32_to_cpu(fftr->reg0);
-+	reg1 = __le32_to_cpu(fftr->reg1);
-+	rssi = event->hdr.rssi_combined;
-+
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi phyerr fft report total_gain_db %d base_pwr_db %d fft_chn_idx %d peak_sidx %d\n",
-+		   MS(reg0, SEARCH_FFT_REPORT_REG0_TOTAL_GAIN_DB),
-+		   MS(reg0, SEARCH_FFT_REPORT_REG0_BASE_PWR_DB),
-+		   MS(reg0, SEARCH_FFT_REPORT_REG0_FFT_CHN_IDX),
-+		   MS(reg0, SEARCH_FFT_REPORT_REG0_PEAK_SIDX));
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi phyerr fft report rel_pwr_db %d avgpwr_db %d peak_mag %d num_store_bin %d\n",
-+		   MS(reg1, SEARCH_FFT_REPORT_REG1_RELPWR_DB),
-+		   MS(reg1, SEARCH_FFT_REPORT_REG1_AVGPWR_DB),
-+		   MS(reg1, SEARCH_FFT_REPORT_REG1_PEAK_MAG),
-+		   MS(reg1, SEARCH_FFT_REPORT_REG1_NUM_STR_BINS_IB));
-+
-+	peak_mag = MS(reg1, SEARCH_FFT_REPORT_REG1_PEAK_MAG);
-+
-+	/* false event detection */
-+	if (rssi == DFS_RSSI_POSSIBLY_FALSE &&
-+	    peak_mag < 2 * DFS_PEAK_MAG_THOLD_POSSIBLY_FALSE) {
-+		ath10k_dbg(ATH10K_DBG_REGULATORY, "dfs false pulse detected\n");
-+		ATH10K_DFS_STAT_INC(ar, pulses_discarded);
-+		return -EINVAL;
++	ret = ath10k_monitor_start(ar, ar->monitor_vdev_id);
++	if (ret) {
++		clear_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
++		ath10k_monitor_destroy(ar);
++		return ret;
 +	}
++
++	ath10k_dbg(ATH10K_DBG_MAC, "mac cac start monitor vdev %d\n",
++		   ar->monitor_vdev_id);
 +
 +	return 0;
 +}
 +
-+static void ath10k_wmi_event_dfs(struct ath10k *ar,
-+				 struct wmi_single_phyerr_rx_event *event,
-+				 u64 tsf)
++static int ath10k_stop_cac(struct ath10k *ar)
 +{
-+	int buf_len, tlv_len, res, i = 0;
-+	struct phyerr_tlv *tlv;
-+	struct phyerr_radar_report *rr;
-+	struct phyerr_fft_report *fftr;
-+	u8 *tlv_buf;
++	lockdep_assert_held(&ar->conf_mutex);
 +
-+	buf_len = __le32_to_cpu(event->hdr.buf_len);
-+	ath10k_dbg(ATH10K_DBG_REGULATORY,
-+		   "wmi event dfs err_code %d rssi %d tsfl 0x%X tsf64 0x%llX len %d\n",
-+		   event->hdr.phy_err_code, event->hdr.rssi_combined,
-+		   __le32_to_cpu(event->hdr.tsf_timestamp), tsf, buf_len);
++	/* CAC is not running - do nothing */
++	if (!test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags))
++		return 0;
 +
-+	/* Skip event if DFS disabled */
-+	if (!config_enabled(CONFIG_ATH10K_DFS_CERTIFIED))
-+		return;
++	ath10k_monitor_stop(ar);
++	ath10k_monitor_destroy(ar);
++	clear_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
 +
-+	ATH10K_DFS_STAT_INC(ar, pulses_total);
++	ath10k_dbg(ATH10K_DBG_MAC, "mac cac finished\n");
 +
-+	while (i < buf_len) {
-+		if (i + sizeof(*tlv) > buf_len) {
-+			ath10k_warn("too short buf for tlv header (%d)\n", i);
-+			return;
-+		}
++	return 0;
++}
 +
-+		tlv = (struct phyerr_tlv *)&event->bufp[i];
-+		tlv_len = __le16_to_cpu(tlv->len);
-+		tlv_buf = &event->bufp[i + sizeof(*tlv)];
-+		ath10k_dbg(ATH10K_DBG_REGULATORY,
-+			   "wmi event dfs tlv_len %d tlv_tag 0x%02X tlv_sig 0x%02X\n",
-+			   tlv_len, tlv->tag, tlv->sig);
-+
-+		switch (tlv->tag) {
-+		case PHYERR_TLV_TAG_RADAR_PULSE_SUMMARY:
-+			if (i + sizeof(*tlv) + sizeof(*rr) > buf_len) {
-+				ath10k_warn("too short radar pulse summary (%d)\n",
-+					    i);
-+				return;
-+			}
-+
-+			rr = (struct phyerr_radar_report *)tlv_buf;
-+			ath10k_dfs_radar_report(ar, event, rr, tsf);
-+			break;
-+		case PHYERR_TLV_TAG_SEARCH_FFT_REPORT:
-+			if (i + sizeof(*tlv) + sizeof(*fftr) > buf_len) {
-+				ath10k_warn("too short fft report (%d)\n", i);
-+				return;
-+			}
-+
-+			fftr = (struct phyerr_fft_report *)tlv_buf;
-+			res = ath10k_dfs_fft_report(ar, event, fftr, tsf);
-+			if (res)
-+				return;
-+			break;
-+		}
-+
-+		i += sizeof(*tlv) + tlv_len;
++static const char *ath10k_dfs_state(enum nl80211_dfs_state dfs_state)
++{
++	switch (dfs_state) {
++	case NL80211_DFS_USABLE:
++		return "USABLE";
++	case NL80211_DFS_UNAVAILABLE:
++		return "UNAVAILABLE";
++	case NL80211_DFS_AVAILABLE:
++		return "AVAILABLE";
++	default:
++		WARN_ON(1);
++		return "bug";
 +	}
 +}
 +
-+static void ath10k_wmi_event_spectral_scan(struct ath10k *ar,
-+				struct wmi_single_phyerr_rx_event *event,
-+				u64 tsf)
++static void ath10k_config_radar_detection(struct ath10k *ar)
 +{
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi event spectral scan\n");
++	struct ieee80211_channel *chan = ar->hw->conf.chandef.chan;
++	bool radar = ar->hw->conf.radar_enabled;
++	bool chan_radar = !!(chan->flags & IEEE80211_CHAN_RADAR);
++	enum nl80211_dfs_state dfs_state = chan->dfs_state;
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	ath10k_dbg(ATH10K_DBG_MAC,
++		   "mac radar config update: chan %dMHz radar %d chan radar %d chan state %s\n",
++		   chan->center_freq, radar, chan_radar,
++		   ath10k_dfs_state(dfs_state));
++
++	/*
++	 * It's safe to call it even if CAC is not started.
++	 * This call here guarantees changing channel, etc. will stop CAC.
++	 */
++	ath10k_stop_cac(ar);
++
++	if (!radar)
++		return;
++
++	if (!chan_radar)
++		return;
++
++	if (dfs_state != NL80211_DFS_USABLE)
++		return;
++
++	ret = ath10k_start_cac(ar);
++	if (ret) {
++		/*
++		 * Not possible to start CAC on current channel so starting
++		 * radiation is not allowed, make this channel DFS_UNAVAILABLE
++		 * by indicating that radar was detected.
++		 */
++		ath10k_warn("failed to start CAC (%d)\n", ret);
++		ieee80211_radar_detected(ar->hw);
++	}
 +}
 +
- static void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
+ static void ath10k_control_beaconing(struct ath10k_vif *arvif,
+ 				struct ieee80211_bss_conf *info)
  {
--	ath10k_dbg(ATH10K_DBG_WMI, "WMI_PHYERR_EVENTID\n");
-+	struct wmi_comb_phyerr_rx_event *comb_event;
-+	struct wmi_single_phyerr_rx_event *event;
-+	u32 count, i, buf_len, phy_err_code;
-+	u64 tsf;
-+	int left_len = skb->len;
-+
-+	ATH10K_DFS_STAT_INC(ar, phy_errors);
-+
-+	/* Check if combined event available */
-+	if (left_len < sizeof(*comb_event)) {
-+		ath10k_warn("wmi phyerr combined event wrong len\n");
-+		return;
-+	}
-+
-+	left_len -= sizeof(*comb_event);
-+
-+	/* Check number of included events */
-+	comb_event = (struct wmi_comb_phyerr_rx_event *)skb->data;
-+	count = __le32_to_cpu(comb_event->hdr.num_phyerr_events);
-+
-+	tsf = __le32_to_cpu(comb_event->hdr.tsf_u32);
-+	tsf <<= 32;
-+	tsf |= __le32_to_cpu(comb_event->hdr.tsf_l32);
-+
-+	ath10k_dbg(ATH10K_DBG_WMI,
-+		   "wmi event phyerr count %d tsf64 0x%llX\n",
-+		   count, tsf);
-+
-+	event = (struct wmi_single_phyerr_rx_event *)comb_event->bufp;
-+	for (i = 0; i < count; i++) {
-+		/* Check if we can read event header */
-+		if (left_len < sizeof(*event)) {
-+			ath10k_warn("single event (%d) wrong head len\n", i);
-+			return;
-+		}
-+
-+		left_len -= sizeof(*event);
-+
-+		buf_len = __le32_to_cpu(event->hdr.buf_len);
-+		phy_err_code = event->hdr.phy_err_code;
-+
-+		if (left_len < buf_len) {
-+			ath10k_warn("single event (%d) wrong buf len\n", i);
-+			return;
-+		}
-+
-+		left_len -= buf_len;
-+
-+		switch (phy_err_code) {
-+		case PHY_ERROR_RADAR:
-+			ath10k_wmi_event_dfs(ar, event, tsf);
-+			break;
-+		case PHY_ERROR_SPECTRAL_SCAN:
-+			ath10k_wmi_event_spectral_scan(ar, event, tsf);
-+			break;
-+		case PHY_ERROR_FALSE_RADAR_EXT:
-+			ath10k_wmi_event_dfs(ar, event, tsf);
-+			ath10k_wmi_event_spectral_scan(ar, event, tsf);
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		event += sizeof(*event) + buf_len;
-+	}
- }
+@@ -1375,6 +1482,9 @@ static int ath10k_update_channel_list(struct ath10k *ar)
+ 			ch->ht40plus =
+ 				!(channel->flags & IEEE80211_CHAN_NO_HT40PLUS);
  
- static void ath10k_wmi_event_roam(struct ath10k *ar, struct sk_buff *skb)
++			ch->chan_radar =
++				!!(channel->flags & IEEE80211_CHAN_RADAR);
++
+ 			passive = channel->flags & IEEE80211_CHAN_PASSIVE_SCAN;
+ 			ch->passive = passive;
+ 
+@@ -1921,6 +2031,7 @@ void ath10k_halt(struct ath10k *ar)
+ {
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	ath10k_stop_cac(ar);
+ 	del_timer_sync(&ar->scan.timeout);
+ 	ath10k_offchan_tx_purge(ar);
+ 	ath10k_mgmt_over_wmi_tx_purge(ar);
+@@ -2035,11 +2146,16 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 	mutex_lock(&ar->conf_mutex);
+ 
+ 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+-		ath10k_dbg(ATH10K_DBG_MAC, "mac config channel %d mhz\n",
+-			   conf->chandef.chan->center_freq);
++		ath10k_dbg(ATH10K_DBG_MAC,
++			   "mac config channel %d mhz flags 0x%x\n",
++			   conf->chandef.chan->center_freq,
++			   conf->chandef.chan->flags);
++
+ 		spin_lock_bh(&ar->data_lock);
+ 		ar->rx_channel = conf->chandef.chan;
+ 		spin_unlock_bh(&ar->data_lock);
++
++		ath10k_config_radar_detection(ar);
+ 	}
+ 
+ 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
+@@ -3308,12 +3424,36 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
+ 	},
+ };
+ 
+-static const struct ieee80211_iface_combination ath10k_if_comb = {
+-	.limits = ath10k_if_limits,
+-	.n_limits = ARRAY_SIZE(ath10k_if_limits),
+-	.max_interfaces = 8,
+-	.num_different_channels = 1,
+-	.beacon_int_infra_match = true,
++#ifdef CONFIG_ATH10K_DFS_CERTIFIED
++static const struct ieee80211_iface_limit ath10k_if_dfs_limits[] = {
++	{
++	.max	= 8,
++	.types	= BIT(NL80211_IFTYPE_AP)
++	},
++};
++#endif
++
++static const struct ieee80211_iface_combination ath10k_if_comb[] = {
++	{
++		.limits = ath10k_if_limits,
++		.n_limits = ARRAY_SIZE(ath10k_if_limits),
++		.max_interfaces = 8,
++		.num_different_channels = 1,
++		.beacon_int_infra_match = true,
++	},
++#ifdef CONFIG_ATH10K_DFS_CERTIFIED
++	{
++		.limits = ath10k_if_dfs_limits,
++		.n_limits = ARRAY_SIZE(ath10k_if_dfs_limits),
++		.max_interfaces = 8,
++		.num_different_channels = 1,
++		.beacon_int_infra_match = true,
++		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
++					BIT(NL80211_CHAN_WIDTH_20) |
++					BIT(NL80211_CHAN_WIDTH_40) |
++					BIT(NL80211_CHAN_WIDTH_80),
++	}
++#endif
+ };
+ 
+ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+@@ -3537,8 +3677,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	 */
+ 	ar->hw->queues = 4;
+ 
+-	ar->hw->wiphy->iface_combinations = &ath10k_if_comb;
+-	ar->hw->wiphy->n_iface_combinations = 1;
++	ar->hw->wiphy->iface_combinations = ath10k_if_comb;
++	ar->hw->wiphy->n_iface_combinations = ARRAY_SIZE(ath10k_if_comb);
+ 
+ 	ar->hw->netdev_features = NETIF_F_HW_CSUM;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index f0bc94a..aea81d9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -907,6 +907,11 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	ath10k_dbg(ATH10K_DBG_MGMT,
+ 		   "event mgmt rx status %08x\n", rx_status);
+ 
++	if (test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags)) {
++		dev_kfree_skb(skb);
++		return 0;
++	}
++
+ 	if (rx_status & WMI_RX_STATUS_ERR_DECRYPT) {
+ 		dev_kfree_skb(skb);
+ 		return 0;
+@@ -2302,6 +2307,7 @@ int ath10k_wmi_pdev_set_channel(struct ath10k *ar,
+ {
+ 	struct wmi_set_channel_cmd *cmd;
+ 	struct sk_buff *skb;
++	u32 ch_flags = 0;
+ 
+ 	if (arg->passive)
+ 		return -EINVAL;
+@@ -2310,10 +2316,14 @@ int ath10k_wmi_pdev_set_channel(struct ath10k *ar,
+ 	if (!skb)
+ 		return -ENOMEM;
+ 
++	if (arg->chan_radar)
++		ch_flags |= WMI_CHAN_FLAG_DFS;
++
+ 	cmd = (struct wmi_set_channel_cmd *)skb->data;
+ 	cmd->chan.mhz               = __cpu_to_le32(arg->freq);
+ 	cmd->chan.band_center_freq1 = __cpu_to_le32(arg->freq);
+ 	cmd->chan.mode              = arg->mode;
++	cmd->chan.flags		   |= __cpu_to_le32(ch_flags);
+ 	cmd->chan.min_power         = arg->min_power;
+ 	cmd->chan.max_power         = arg->max_power;
+ 	cmd->chan.reg_power         = arg->max_reg_power;
+@@ -2862,6 +2872,7 @@ static int ath10k_wmi_vdev_start_restart(struct ath10k *ar,
+ 	struct sk_buff *skb;
+ 	const char *cmdname;
+ 	u32 flags = 0;
++	u32 ch_flags = 0;
+ 
+ 	if (cmd_id != ar->wmi.cmd->vdev_start_request_cmdid &&
+ 	    cmd_id != ar->wmi.cmd->vdev_restart_request_cmdid)
+@@ -2888,6 +2899,8 @@ static int ath10k_wmi_vdev_start_restart(struct ath10k *ar,
+ 		flags |= WMI_VDEV_START_HIDDEN_SSID;
+ 	if (arg->pmf_enabled)
+ 		flags |= WMI_VDEV_START_PMF_ENABLED;
++	if (arg->channel.chan_radar)
++		ch_flags |= WMI_CHAN_FLAG_DFS;
+ 
+ 	cmd = (struct wmi_vdev_start_request_cmd *)skb->data;
+ 	cmd->vdev_id         = __cpu_to_le32(arg->vdev_id);
+@@ -2909,6 +2922,7 @@ static int ath10k_wmi_vdev_start_restart(struct ath10k *ar,
+ 		__cpu_to_le32(arg->channel.band_center_freq1);
+ 
+ 	cmd->chan.mode = arg->channel.mode;
++	cmd->chan.flags |= __cpu_to_le32(ch_flags);
+ 	cmd->chan.min_power = arg->channel.min_power;
+ 	cmd->chan.max_power = arg->channel.max_power;
+ 	cmd->chan.reg_power = arg->channel.max_reg_power;
+@@ -2916,9 +2930,10 @@ static int ath10k_wmi_vdev_start_restart(struct ath10k *ar,
+ 	cmd->chan.antenna_max = arg->channel.max_antenna_gain;
+ 
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+-		   "wmi vdev %s id 0x%x freq %d, mode %d, ch_flags: 0x%0X,"
+-		   "max_power: %d\n", cmdname, arg->vdev_id, arg->channel.freq,
+-		   arg->channel.mode, flags, arg->channel.max_power);
++		   "wmi vdev %s id 0x%x flags: 0x%0X, freq %d, mode %d, "
++		   "ch_flags: 0x%0X, max_power: %d\n", cmdname, arg->vdev_id,
++		   flags, arg->channel.freq, arg->channel.mode,
++		   cmd->chan.flags, arg->channel.max_power);
+ 
+ 	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
+ }
+@@ -3252,6 +3267,8 @@ int ath10k_wmi_scan_chan_list(struct ath10k *ar,
+ 			flags |= WMI_CHAN_FLAG_ALLOW_VHT;
+ 		if (ch->ht40plus)
+ 			flags |= WMI_CHAN_FLAG_HT40_PLUS;
++		if (ch->chan_radar)
++			flags |= WMI_CHAN_FLAG_DFS;
+ 
+ 		ci->mhz               = __cpu_to_le32(ch->freq);
+ 		ci->band_center_freq1 = __cpu_to_le32(ch->freq);
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 81e33a7..ad53333 100644
+index ad53333..b47a301 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1978,6 +1978,10 @@ struct wmi_mgmt_rx_event_v2 {
- #define WMI_RX_STATUS_ERR_MIC			0x10
- #define WMI_RX_STATUS_ERR_KEY_CACHE_MISS	0x20
- 
-+#define PHY_ERROR_SPECTRAL_SCAN		0x26
-+#define PHY_ERROR_FALSE_RADAR_EXT		0x24
-+#define PHY_ERROR_RADAR				0x05
-+
- struct wmi_single_phyerr_rx_hdr {
- 	/* TSF timestamp */
- 	__le32 tsf_timestamp;
-@@ -2069,6 +2073,87 @@ struct wmi_comb_phyerr_rx_event {
- 	u8 bufp[0];
- } __packed;
- 
-+#define PHYERR_TLV_SIG				0xBB
-+#define PHYERR_TLV_TAG_SEARCH_FFT_REPORT	0xFB
-+#define PHYERR_TLV_TAG_RADAR_PULSE_SUMMARY	0xF8
-+
-+struct phyerr_radar_report {
-+	__le32 reg0; /* RADAR_REPORT_REG0_* */
-+	__le32 reg1; /* REDAR_REPORT_REG1_* */
-+} __packed;
-+
-+#define RADAR_REPORT_REG0_PULSE_IS_CHIRP_MASK		0x80000000
-+#define RADAR_REPORT_REG0_PULSE_IS_CHIRP_LSB		31
-+
-+#define RADAR_REPORT_REG0_PULSE_IS_MAX_WIDTH_MASK	0x40000000
-+#define RADAR_REPORT_REG0_PULSE_IS_MAX_WIDTH_LSB	30
-+
-+#define RADAR_REPORT_REG0_AGC_TOTAL_GAIN_MASK		0x3FF00000
-+#define RADAR_REPORT_REG0_AGC_TOTAL_GAIN_LSB		20
-+
-+#define RADAR_REPORT_REG0_PULSE_DELTA_DIFF_MASK		0x000F0000
-+#define RADAR_REPORT_REG0_PULSE_DELTA_DIFF_LSB		16
-+
-+#define RADAR_REPORT_REG0_PULSE_DELTA_PEAK_MASK		0x0000FC00
-+#define RADAR_REPORT_REG0_PULSE_DELTA_PEAK_LSB		10
-+
-+#define RADAR_REPORT_REG0_PULSE_SIDX_MASK		0x000003FF
-+#define RADAR_REPORT_REG0_PULSE_SIDX_LSB		0
-+
-+#define RADAR_REPORT_REG1_PULSE_SRCH_FFT_VALID_MASK	0x80000000
-+#define RADAR_REPORT_REG1_PULSE_SRCH_FFT_VALID_LSB	31
-+
-+#define RADAR_REPORT_REG1_PULSE_AGC_MB_GAIN_MASK	0x7F000000
-+#define RADAR_REPORT_REG1_PULSE_AGC_MB_GAIN_LSB		24
-+
-+#define RADAR_REPORT_REG1_PULSE_SUBCHAN_MASK_MASK	0x00FF0000
-+#define RADAR_REPORT_REG1_PULSE_SUBCHAN_MASK_LSB	16
-+
-+#define RADAR_REPORT_REG1_PULSE_TSF_OFFSET_MASK		0x0000FF00
-+#define RADAR_REPORT_REG1_PULSE_TSF_OFFSET_LSB		8
-+
-+#define RADAR_REPORT_REG1_PULSE_DUR_MASK		0x000000FF
-+#define RADAR_REPORT_REG1_PULSE_DUR_LSB			0
-+
-+struct phyerr_fft_report {
-+	__le32 reg0; /* SEARCH_FFT_REPORT_REG0_ * */
-+	__le32 reg1; /* SEARCH_FFT_REPORT_REG1_ * */
-+} __packed;
-+
-+#define SEARCH_FFT_REPORT_REG0_TOTAL_GAIN_DB_MASK	0xFF800000
-+#define SEARCH_FFT_REPORT_REG0_TOTAL_GAIN_DB_LSB	23
-+
-+#define SEARCH_FFT_REPORT_REG0_BASE_PWR_DB_MASK		0x007FC000
-+#define SEARCH_FFT_REPORT_REG0_BASE_PWR_DB_LSB		14
-+
-+#define SEARCH_FFT_REPORT_REG0_FFT_CHN_IDX_MASK		0x00003000
-+#define SEARCH_FFT_REPORT_REG0_FFT_CHN_IDX_LSB		12
-+
-+#define SEARCH_FFT_REPORT_REG0_PEAK_SIDX_MASK		0x00000FFF
-+#define SEARCH_FFT_REPORT_REG0_PEAK_SIDX_LSB		0
-+
-+#define SEARCH_FFT_REPORT_REG1_RELPWR_DB_MASK		0xFC000000
-+#define SEARCH_FFT_REPORT_REG1_RELPWR_DB_LSB		26
-+
-+#define SEARCH_FFT_REPORT_REG1_AVGPWR_DB_MASK		0x03FC0000
-+#define SEARCH_FFT_REPORT_REG1_AVGPWR_DB_LSB		18
-+
-+#define SEARCH_FFT_REPORT_REG1_PEAK_MAG_MASK		0x0003FF00
-+#define SEARCH_FFT_REPORT_REG1_PEAK_MAG_LSB		8
-+
-+#define SEARCH_FFT_REPORT_REG1_NUM_STR_BINS_IB_MASK	0x000000FF
-+#define SEARCH_FFT_REPORT_REG1_NUM_STR_BINS_IB_LSB	0
-+
-+
-+struct phyerr_tlv {
-+	__le16 len;
-+	u8 tag;
-+	u8 sig;
-+} __packed;
-+
-+#define DFS_RSSI_POSSIBLY_FALSE			50
-+#define DFS_PEAK_MAG_THOLD_POSSIBLY_FALSE	40
-+
- struct wmi_mgmt_tx_hdr {
- 	__le32 vdev_id;
- 	struct wmi_mac_addr peer_macaddr;
+@@ -916,6 +916,7 @@ struct wmi_channel_arg {
+ 	bool allow_ht;
+ 	bool allow_vht;
+ 	bool ht40plus;
++	bool chan_radar;
+ 	/* note: power unit is 0.5 dBm */
+ 	u32 min_power;
+ 	u32 max_power;
 -- 
 1.8.1.2
 
