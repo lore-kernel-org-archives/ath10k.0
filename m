@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
+Received: from ebb05.tieto.com ([131.207.168.36])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VgaQG-00085T-Jq
- for ath10k@lists.infradead.org; Wed, 13 Nov 2013 13:23:57 +0000
-Subject: [PATCH v2] ath10k: remove htt rx amsdu clear retry bit hack
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 13 Nov 2013 15:23:30 +0200
-Message-ID: <20131113132330.25272.11354.stgit@localhost6.localdomain6>
+ id 1VgrsJ-0000Vg-Ad
+ for ath10k@lists.infradead.org; Thu, 14 Nov 2013 08:02:04 +0000
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: expand the wmi mgmt queue limit to 128
+Date: Thu, 14 Nov 2013 09:01:15 +0100
+Message-ID: <1384416075-13751-1-git-send-email-bartosz.markowski@tieto.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,83 +21,41 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-With commit 0cfcefef1 ("mac80211: support reporting A-MSDU subframes
-individually") there's no need to have the hack to clear the retry bit in
-ath10k_htt_rx_amsdu(), mac80211 can handle this properly now.
+It was obseverd many times the short queue limit can be
+easily exceeded in case of AP multiple BSSID scenarios.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+"ath10k: wmi mgmt_tx queue limit reached."
+
+This was leading to TX packets drops.
+
+This patch expands the queue limit to 128. After many stress
+experiments (high traffic and lot of management frames in
+the air) the new value seems to fix the problem on platforms
+with limited resources.
+
+Reported-By: Tomasz Skapski <tomasz.skapski@tieto.com>
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   20 +++-----------------
- drivers/net/wireless/ath/ath10k/txrx.c   |    3 +++
- 3 files changed, 7 insertions(+), 17 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 1a337e9..7fc7919 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1182,6 +1182,7 @@ struct htt_rx_info {
- 		u32 info2;
- 	} rate;
- 	bool fcs_err;
-+	bool amsdu_more;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 0934f76..be35df2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -43,7 +43,7 @@
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
  
- struct ath10k_htt {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 90d4f74..0335218 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -659,23 +659,6 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 	memcpy(hdr_buf, hdr, hdr_len);
- 	hdr = (struct ieee80211_hdr *)hdr_buf;
+-#define ATH10K_MAX_NUM_MGMT_PENDING 16
++#define ATH10K_MAX_NUM_MGMT_PENDING 128
  
--	/* FIXME: Hopefully this is a temporary measure.
--	 *
--	 * Reporting individual A-MSDU subframes means each reported frame
--	 * shares the same sequence number.
--	 *
--	 * mac80211 drops frames it recognizes as duplicates, i.e.
--	 * retransmission flag is set and sequence number matches sequence
--	 * number from a previous frame (as per IEEE 802.11-2012: 9.3.2.10
--	 * "Duplicate detection and recovery")
--	 *
--	 * To avoid frames being dropped clear retransmission flag for all
--	 * received A-MSDUs.
--	 *
--	 * Worst case: actual duplicate frames will be reported but this should
--	 * still be handled gracefully by other OSI/ISO layers. */
--	hdr->frame_control &= cpu_to_le16(~IEEE80211_FCTL_RETRY);
--
- 	first = skb;
- 	while (skb) {
- 		void *decap_hdr;
-@@ -746,6 +729,9 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
- 		skb = skb->next;
- 		info->skb->next = NULL;
+ struct ath10k;
  
-+		if (skb)
-+			info->amsdu_more = true;
-+
- 		ath10k_process_rx(htt->ar, info);
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index c511f91..df279a3 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -236,6 +236,9 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 	if (info->fcs_err)
- 		status->flag |= RX_FLAG_FAILED_FCS_CRC;
- 
-+	if (info->amsdu_more)
-+		status->flag |= RX_FLAG_AMSDU_MORE;
-+
- 	status->signal = info->signal;
- 
- 	spin_lock_bh(&ar->data_lock);
+-- 
+1.7.10
 
 
 _______________________________________________
