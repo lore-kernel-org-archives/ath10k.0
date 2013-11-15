@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhFQ0-0002A7-Dk
- for ath10k@lists.infradead.org; Fri, 15 Nov 2013 09:10:25 +0000
+ id 1VhN9V-0002iE-S9
+ for ath10k@lists.infradead.org; Fri, 15 Nov 2013 17:25:55 +0000
+Subject: [PATCH 1/3] ath10k: don't show MSI registration warnings
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: allow dynamic bandwidth in hw rate control
-References: <1384337110-9417-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 15 Nov 2013 10:59:57 +0200
-In-Reply-To: <1384337110-9417-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 13 Nov 2013 11:05:10 +0100")
-Message-ID: <87r4ai3ur6.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 15 Nov 2013 19:25:26 +0200
+Message-ID: <20131115172526.10646.35233.stgit@localhost6.localdomain6>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,28 +20,98 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Convert the MSI failure warnings to a debug message to make them less spammy.
+Also convert the irq mode printout to a single print to make it easier to
+show it only once.
 
-> Frames were never retransmitted with
-> different/lower bandwidths, e.g. only 80MHz
-> bandwidth was used when dealing with a VHT80
-> peer.
->
-> Allow HW rate control to try out different
-> bandwidths when retransmitting. This increases
-> robustness.
->
-> Also, document the parameter properly.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |   26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-Thanks, applied.
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 46c94ce..a3cdd72 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1851,6 +1851,7 @@ static void ath10k_pci_start_bmi(struct ath10k *ar)
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	const char *irq_mode;
+ 	int ret;
+ 
+ 	/*
+@@ -1916,6 +1917,16 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 	}
+ 
+ 	ath10k_pci_start_bmi(ar);
++
++	if (ar_pci->num_msi_intrs > 1)
++		irq_mode = "MSI-X";
++	else if (ar_pci->num_msi_intrs == 1)
++		irq_mode = "MSI";
++	else
++		irq_mode = "legacy";
++
++	ath10k_info("pci irq %s\n", irq_mode);
++
+ 	return 0;
+ 
+ err_irq:
+@@ -2161,7 +2172,8 @@ static int ath10k_pci_start_intr_msix(struct ath10k *ar, int num)
+ 		}
+ 	}
+ 
+-	ath10k_info("MSI-X interrupt handling (%d intrs)\n", num);
++	ath10k_dbg(ATH10K_DBG_BOOT,
++		   "MSI-X interrupt handling (%d intrs)\n", num);
+ 	return 0;
+ }
+ 
+@@ -2182,7 +2194,7 @@ static int ath10k_pci_start_intr_msi(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	ath10k_info("MSI interrupt handling\n");
++	ath10k_dbg(ATH10K_DBG_BOOT, "MSI interrupt handling\n");
+ 	return 0;
+ }
+ 
+@@ -2218,7 +2230,7 @@ static int ath10k_pci_start_intr_legacy(struct ath10k *ar)
+ 				 PCIE_INTR_ENABLE_ADDRESS));
+ 
+ 	ath10k_pci_sleep(ar);
+-	ath10k_info("legacy interrupt handling\n");
++	ath10k_dbg(ATH10K_DBG_BOOT, "legacy interrupt handling\n");
+ 	return 0;
+ }
+ 
+@@ -2248,7 +2260,8 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
+ 		if (ret == 0)
+ 			goto exit;
+ 
+-		ath10k_warn("MSI-X didn't succeed (%d), trying MSI\n", ret);
++		ath10k_dbg(ATH10K_DBG_BOOT,
++			   "MSI-X didn't succeed (%d), trying MSI\n", ret);
+ 		num = 1;
+ 	}
+ 
+@@ -2257,8 +2270,9 @@ static int ath10k_pci_start_intr(struct ath10k *ar)
+ 		if (ret == 0)
+ 			goto exit;
+ 
+-		ath10k_warn("MSI didn't succeed (%d), trying legacy INTR\n",
+-			    ret);
++		ath10k_dbg(ATH10K_DBG_BOOT,
++			   "MSI didn't succeed (%d), trying legacy INTR\n",
++			   ret);
+ 		num = 0;
+ 	}
+ 
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
