@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhFID-0001y0-Ii
- for ath10k@lists.infradead.org; Fri, 15 Nov 2013 09:02:22 +0000
+ id 1VhFN7-00026S-1W
+ for ath10k@lists.infradead.org; Fri, 15 Nov 2013 09:07:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: remove htt rx amsdu clear retry bit hack
-References: <20131113132330.25272.11354.stgit@localhost6.localdomain6>
-Date: Fri, 15 Nov 2013 11:01:03 +0200
-In-Reply-To: <20131113132330.25272.11354.stgit@localhost6.localdomain6> (Kalle
- Valo's message of "Wed, 13 Nov 2013 15:23:30 +0200")
-Message-ID: <87mwl63upc.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: expand the wmi mgmt queue limit to 128
+References: <1384416075-13751-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Fri, 15 Nov 2013 11:01:50 +0200
+In-Reply-To: <1384416075-13751-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Thu, 14 Nov 2013 09:01:15 +0100")
+Message-ID: <87iovu3uo1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> With commit 0cfcefef1 ("mac80211: support reporting A-MSDU subframes
-> individually") there's no need to have the hack to clear the retry bit in
-> ath10k_htt_rx_amsdu(), mac80211 can handle this properly now.
+> It was obseverd many times the short queue limit can be
+> easily exceeded in case of AP multiple BSSID scenarios.
 >
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> "ath10k: wmi mgmt_tx queue limit reached."
+>
+> This was leading to TX packets drops.
+>
+> This patch expands the queue limit to 128. After many stress
+> experiments (high traffic and lot of management frames in
+> the air) the new value seems to fix the problem on platforms
+> with limited resources.
+>
+> Reported-By: Tomasz Skapski <tomasz.skapski@tieto.com>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
