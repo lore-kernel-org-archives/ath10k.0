@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VhFN8-00026S-7U
- for ath10k@lists.infradead.org; Fri, 15 Nov 2013 09:07:26 +0000
+ id 1VhFQ0-0002A7-Dk
+ for ath10k@lists.infradead.org; Fri, 15 Nov 2013 09:10:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: clear tx status before submitting to mac80211
-References: <1384421658-7295-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 15 Nov 2013 11:06:55 +0200
-In-Reply-To: <1384421658-7295-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 14 Nov 2013 10:34:18 +0100")
-Message-ID: <87eh6i3ufk.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: allow dynamic bandwidth in hw rate control
+References: <1384337110-9417-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 15 Nov 2013 10:59:57 +0200
+In-Reply-To: <1384337110-9417-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 13 Nov 2013 11:05:10 +0100")
+Message-ID: <87r4ai3ur6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,13 +28,17 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Garbage was reported in ieee80211_tx_info. This
-> led to a WARN_ON in cfg80211_calculate_bitrate().
+> Frames were never retransmitted with
+> different/lower bandwidths, e.g. only 80MHz
+> bandwidth was used when dealing with a VHT80
+> peer.
 >
-> This also fixes some random tx bitrate values
-> reported through `iw` command.
+> Allow HW rate control to try out different
+> bandwidths when retransmitting. This increases
+> robustness.
 >
-> Reported-By: Kalle Valo <kvalo@qca.qualcomm.com>
+> Also, document the parameter properly.
+>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
