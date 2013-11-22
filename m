@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjgC0-0003tj-Ao
- for ath10k@lists.infradead.org; Fri, 22 Nov 2013 02:10:00 +0000
-Received: by mail-wi0-f182.google.com with SMTP id en1so1966857wid.3
- for <ath10k@lists.infradead.org>; Thu, 21 Nov 2013 18:09:36 -0800 (PST)
+Received: from nm15-vm0.bullet.mail.ne1.yahoo.com ([98.138.91.70])
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vjivx-0007F6-Um
+ for ath10k@lists.infradead.org; Fri, 22 Nov 2013 05:05:39 +0000
+References: 
+Message-ID: <1385096714.41414.YahooMailNeo@web122305.mail.ne1.yahoo.com>
+Date: Thu, 21 Nov 2013 21:05:14 -0800 (PST)
+From: Anand Moon <moon.linux@yahoo.com>
+Subject: Ath10k router
 MIME-Version: 1.0
-Date: Thu, 21 Nov 2013 18:09:36 -0800
-Message-ID: <CAPqRyK8aiF4cnz+V9bDyPKPakjZ5ee3e+OFxmsnTaTMhh8An5g@mail.gmail.com>
-Subject: active/idle time from ath10k
-From: Phil Moora <phil.moora@gmail.com>
+Reply-To: Anand Moon <moon.linux@yahoo.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +22,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Hi all,
+Hi All,
 
-Is there a way to get radio active time or idle time from ath10k? By
-active time, I mean that the radio was transmitting or receiving
-something.
+I am looking to work on development router with support Ath10k, my guess is that compex.sg provide development routers.
+Are there any other free development router which can be use for development as well as testing.
 
-I looked at ath10k_get_survey function but
-(1) I don't want/need to hop across channels, just need the statistics
-for my radio's current channel,
-(2) I want the statistics periodically, as opposed to survey dump
-which is only available at request.
-
-Any pointers?
+Please share the details and please guide me.
+-Anand Moon
 
 _______________________________________________
 ath10k mailing list
