@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22a.google.com ([2a00:1450:4013:c01::22a])
+Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VjqTs-0005xG-L5
+ id 1VjqTr-0005xC-A0
  for ath10k@lists.infradead.org; Fri, 22 Nov 2013 13:09:16 +0000
-Received: by mail-ea0-f170.google.com with SMTP id k10so511132eaj.15
- for <ath10k@lists.infradead.org>; Fri, 22 Nov 2013 05:08:46 -0800 (PST)
+Received: by mail-ea0-f175.google.com with SMTP id z10so502042ead.34
+ for <ath10k@lists.infradead.org>; Fri, 22 Nov 2013 05:08:45 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 8/8] ath10k: allow explicit MSI/MSI-X disabling
-Date: Fri, 22 Nov 2013 14:05:18 +0100
-Message-Id: <1385125518-13461-9-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 6/8] ath10k: extract functions for legacy irq handling
+Date: Fri, 22 Nov 2013 14:05:16 +0100
+Message-Id: <1385125518-13461-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
 References: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,89 +27,107 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This can be useful for testing and debugging.
-
-Two new ath10k_pci module options are now available:
-
- disable_msix - disable just MSI-X
- disable_msi - disable MSI (along with MSI-X)
+Preparation for code re-use. Also use ioread/write
+wrappers.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 43 +++++++++++++++++++++++------------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 68 +++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 35 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 47d9b6e..b89fd7b 100644
+index fa1162e..a9bc290 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -34,9 +34,18 @@
- #include "pci.h"
+@@ -2096,6 +2096,34 @@ static bool ath10k_pci_irq_pending(struct ath10k *ar)
+ 	return false;
+ }
  
- static unsigned int ath10k_target_ps;
-+static bool ath10k_disable_msix;
-+static bool ath10k_disable_msi;
++static void ath10k_pci_disable_and_clear_legacy_irq(struct ath10k *ar)
++{
++	/* IMPORTANT: INTR_CLR register has to be set after
++	 * INTR_ENABLE is set to 0, otherwise interrupt can not be
++	 * really cleared. */
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_ENABLE_ADDRESS,
++			   0);
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_CLR_ADDRESS,
++			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
 +
- module_param(ath10k_target_ps, uint, 0644);
- MODULE_PARM_DESC(ath10k_target_ps, "Enable ath10k Target (SoC) PS option");
- 
-+module_param_named(disable_msix, ath10k_disable_msix, bool, 0644);
-+MODULE_PARM_DESC(disable_msix, "Disable MSI-X support");
++	/* IMPORTANT: this extra read transaction is required to
++	 * flush the posted write buffer. */
++	(void) ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
++				 PCIE_INTR_ENABLE_ADDRESS);
++}
 +
-+module_param_named(disable_msi, ath10k_disable_msi, bool, 0644);
-+MODULE_PARM_DESC(disable_msi, "Disable MSI support");
++static void ath10k_pci_enable_legacy_irq(struct ath10k *ar)
++{
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
++			   PCIE_INTR_ENABLE_ADDRESS,
++			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
 +
- #define QCA988X_2_0_DEVICE_ID	(0x003c)
- 
- static DEFINE_PCI_DEVICE_TABLE(ath10k_pci_id_table) = {
-@@ -2367,27 +2376,33 @@ static void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
- static int ath10k_pci_init_irq(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	bool msix_supported = test_bit(ATH10K_PCI_FEATURE_MSI_X,
-+				       ar_pci->features);
- 	int ret;
- 
- 	ath10k_pci_init_irq_tasklets(ar);
- 
--	if (!test_bit(ATH10K_PCI_FEATURE_MSI_X, ar_pci->features))
--		goto msi;
--
- 	/* Try MSI-X */
--	ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
--	ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
--	if (ret == 0)
--		return 0;
--	if (ret > 0)
--		pci_disable_msi(ar_pci->pdev);
-+	if (msix_supported && !ath10k_disable_msix && !ath10k_disable_msi) {
-+		ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
-+		ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
-+		if (ret == 0)
-+			return 0;
-+		if (ret > 0)
-+			pci_disable_msi(ar_pci->pdev);
++	/* IMPORTANT: this extra read transaction is required to
++	 * flush the posted write buffer. */
++	(void) ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
++				 PCIE_INTR_ENABLE_ADDRESS);
++}
 +
-+		/* fall-through */
-+	}
+ /*
+  * Top-level interrupt handler for all PCI interrupts from a Target.
+  * When a block of MSI interrupts is allocated, this top-level handler
+@@ -2109,27 +2137,8 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ 	if (!ath10k_pci_irq_pending(ar))
+ 		return IRQ_NONE;
  
--msi:
- 	/* Try MSI */
--	ar_pci->num_msi_intrs = 1;
--	ret = pci_enable_msi(ar_pci->pdev);
--	if (ret == 0)
--		return 0;
-+	if (!ath10k_disable_msi) {
-+		ar_pci->num_msi_intrs = 1;
-+		ret = pci_enable_msi(ar_pci->pdev);
-+		if (ret == 0)
-+			return 0;
-+
-+		/* fall-through */
-+	}
+-	if (ar_pci->num_msi_intrs == 0) {
+-		/*
+-		 * IMPORTANT: INTR_CLR regiser has to be set after
+-		 * INTR_ENABLE is set to 0, otherwise interrupt can not be
+-		 * really cleared.
+-		 */
+-		iowrite32(0, ar_pci->mem +
+-			  (SOC_CORE_BASE_ADDRESS |
+-			   PCIE_INTR_ENABLE_ADDRESS));
+-		iowrite32(PCIE_INTR_FIRMWARE_MASK |
+-			  PCIE_INTR_CE_MASK_ALL,
+-			  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
+-					 PCIE_INTR_CLR_ADDRESS));
+-		/*
+-		 * IMPORTANT: this extra read transaction is required to
+-		 * flush the posted write buffer.
+-		 */
+-		(void) ioread32(ar_pci->mem +
+-				(SOC_CORE_BASE_ADDRESS |
+-				 PCIE_INTR_ENABLE_ADDRESS));
+-	}
++	if (ar_pci->num_msi_intrs == 0)
++		ath10k_pci_disable_and_clear_legacy_irq(ar);
  
- 	/* Try legacy irq
- 	 *
+ 	tasklet_schedule(&ar_pci->intr_tq);
+ 
+@@ -2144,20 +2153,9 @@ static void ath10k_pci_tasklet(unsigned long data)
+ 	ath10k_pci_fw_interrupt_handler(ar); /* FIXME: Handle FW error */
+ 	ath10k_ce_per_engine_service_any(ar);
+ 
+-	if (ar_pci->num_msi_intrs == 0) {
+-		/* Enable Legacy PCI line interrupts */
+-		iowrite32(PCIE_INTR_FIRMWARE_MASK |
+-			  PCIE_INTR_CE_MASK_ALL,
+-			  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
+-					 PCIE_INTR_ENABLE_ADDRESS));
+-		/*
+-		 * IMPORTANT: this extra read transaction is required to
+-		 * flush the posted write buffer
+-		 */
+-		(void) ioread32(ar_pci->mem +
+-				(SOC_CORE_BASE_ADDRESS |
+-				 PCIE_INTR_ENABLE_ADDRESS));
+-	}
++	/* Re-enable legacy irq that was disabled in the irq handler */
++	if (ar_pci->num_msi_intrs == 0)
++		ath10k_pci_enable_legacy_irq(ar);
+ }
+ 
+ static int ath10k_pci_request_irq_msix(struct ath10k *ar)
 -- 
 1.8.4.rc3
 
