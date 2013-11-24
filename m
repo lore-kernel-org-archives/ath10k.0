@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vka56-0003Yp-8E
- for ath10k@lists.infradead.org; Sun, 24 Nov 2013 13:50:37 +0000
+ id 1Vka6r-0003aT-OG
+ for ath10k@lists.infradead.org; Sun, 24 Nov 2013 13:52:26 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: use nss provided by mac80211
+Subject: Re: [PATCH 3/3] ath10k: fix Tx status clearing
 References: <1385126819-15311-1-git-send-email-michal.kazior@tieto.com>
- <1385126819-15311-2-git-send-email-michal.kazior@tieto.com>
-Date: Sun, 24 Nov 2013 15:50:07 +0200
-In-Reply-To: <1385126819-15311-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 22 Nov 2013 14:26:57 +0100")
-Message-ID: <87k3fxsycw.fsf@kamboji.qca.qualcomm.com>
+ <1385126819-15311-4-git-send-email-michal.kazior@tieto.com>
+Date: Sun, 24 Nov 2013 15:51:58 +0200
+In-Reply-To: <1385126819-15311-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 22 Nov 2013 14:26:59 +0100")
+Message-ID: <87fvqlsy9t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,14 +29,15 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Calculating STA NSS just from the rateset is not
-> the greatest idea. The NSS could be possibly
-> influenced by other things that only mac80211
-> knows about.
+> Too much of tx info was being cleared. This caused
+> issues in some setups.
 >
+> Reported-By: Matti Laakso <malaakso@elisanet.fi>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Is there a bug which this patch fixes or what motivated you to do this?
+Please describe the issues (or at least some of them) in the commit log.
+The idea is that an advanced ath10k user will understand what kind of
+bug (from user's point of view) this patch is fixing.
 
 -- 
 Kalle Valo
