@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-ea0-x231.google.com ([2a00:1450:4013:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkvw2-0006CD-Ai
+ id 1Vkvw2-0006CE-Af
  for ath10k@lists.infradead.org; Mon, 25 Nov 2013 13:10:43 +0000
-Received: by mail-ea0-f177.google.com with SMTP id n15so2325428ead.22
- for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:18 -0800 (PST)
+Received: by mail-ea0-f177.google.com with SMTP id n15so2354022ead.36
+ for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:19 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/8] ath10k: pci fixes 2013-11-22
-Date: Mon, 25 Nov 2013 14:06:19 +0100
-Message-Id: <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 1/8] ath10k: don't consume other's shared interrupts
+Date: Mon, 25 Nov 2013 14:06:20 +0100
+Message-Id: <1385384787-12470-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
 References: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
+ <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +28,73 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+ath10k assumed all interrupts were directed to it.
+This isn't the case for legacy shared interrupts.
+ath10k consumed interrupts for other devices.
 
-ath10k didn't play well with other devices on a
-shared irq line. This patchset fixes support for
-shared legacy interrupts. 
+Check device irq status and return IRQ_NONE when
+appropriate.
 
-Some rework was necessary because ath10k was using
-disable_irq and CE irq masking (which is not
-sufficient for shared interrupts).
-
-Since main irq handlers are now registered after
-boot, BMI is now polling for CE updates. I haven't
-observed any differences in boot speed.
-
-Also this plugs a leak I spotted during rework and
-adds an option for testing different irq modes.
-
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
 v2:
- * simplify ath10k_pci_irq_pending()
- * combine memory leak fix patch with a
-   functionality decoupling (it's very closely
-   related)
- * fix 'irq: nobody cared'
- * change MSI/MSI-X disabling parameters
- * some minor fixes & code shuffling to avoid
-   forward declarations
+ * move function definition up to avoid forward
+   declaration in subsequent patches
+ * remove check for legacy interrupts inside the
+   irq_pending() by guaranteeing it is called
+   only for legacy interrupts
 
 
-Michal Kazior (8):
-  ath10k: don't consume other's shared interrupts
-  ath10k: split up pci irq code
-  ath10k: don't use interrupts for BMI
-  ath10k: decouple ath10k_pci_start_ce()
-  ath10k: defer irq registration until hif start()
-  ath10k: extract functions for legacy irq handling
-  ath10k: re-add support for early fw indication
-  ath10k: allow explicit MSI/MSI-X disabling
+ drivers/net/wireless/ath/ath10k/hw.h  |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c | 16 ++++++++++++++++
+ 2 files changed, 17 insertions(+)
 
- drivers/net/wireless/ath/ath10k/ce.c  |  15 -
- drivers/net/wireless/ath/ath10k/ce.h  |   1 -
- drivers/net/wireless/ath/ath10k/hw.h  |   1 +
- drivers/net/wireless/ath/ath10k/pci.c | 577 ++++++++++++++++++++++------------
- drivers/net/wireless/ath/ath10k/pci.h |   1 +
- 5 files changed, 383 insertions(+), 212 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 8aeb46d..9535eaa 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -269,6 +269,7 @@ enum ath10k_mcast2ucast_mode {
+ #define CORE_CTRL_CPU_INTR_MASK			0x00002000
+ #define CORE_CTRL_ADDRESS			0x0000
+ #define PCIE_INTR_ENABLE_ADDRESS		0x0008
++#define PCIE_INTR_CAUSE_ADDRESS			0x000c
+ #define PCIE_INTR_CLR_ADDRESS			0x0014
+ #define SCRATCH_3_ADDRESS			0x0030
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 2457c8b..12fb12e 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -201,6 +201,19 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+ 	/* CE7 used only by Host */
+ };
+ 
++static bool ath10k_pci_irq_pending(struct ath10k *ar)
++{
++	u32 cause;
++
++	/* Check if the shared legacy irq is for us */
++	cause = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
++				  PCIE_INTR_CAUSE_ADDRESS);
++	if (cause & (PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL))
++		return true;
++
++	return false;
++}
++
+ /*
+  * Diagnostic read/write access is provided for startup/config/debug usage.
+  * Caller must guarantee proper alignment, when applicable, and single user
+@@ -2086,6 +2099,9 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 
+ 	if (ar_pci->num_msi_intrs == 0) {
++		if (!ath10k_pci_irq_pending(ar))
++			return IRQ_NONE;
++
+ 		/*
+ 		 * IMPORTANT: INTR_CLR regiser has to be set after
+ 		 * INTR_ENABLE is set to 0, otherwise interrupt can not be
 -- 
 1.8.4.rc3
 
