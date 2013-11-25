@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+Received: from mail-ea0-x234.google.com ([2a00:1450:4013:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkvw7-0006CI-2M
+ id 1Vkvw9-0006CX-0x
  for ath10k@lists.infradead.org; Mon, 25 Nov 2013 13:10:53 +0000
-Received: by mail-ea0-f175.google.com with SMTP id z10so2367455ead.34
- for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:23 -0800 (PST)
+Received: by mail-ea0-f180.google.com with SMTP id f15so2385089eak.11
+ for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:27 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/8] ath10k: decouple ath10k_pci_start_ce()
-Date: Mon, 25 Nov 2013 14:06:23 +0100
-Message-Id: <1385384787-12470-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 8/8] ath10k: allow explicit MSI/MSI-X disabling
+Date: Mon, 25 Nov 2013 14:06:27 +0100
+Message-Id: <1385384787-12470-9-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
 References: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
  <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
@@ -28,170 +28,100 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The function did a couple of things: it allocated
-CE completions, registered CE callbacks and
-enabled CE interrupts through HW registers.
+This can be useful for testing and debugging.
 
-This cannot be so. Split the function into one
-that allocates CE completions and the other one
-that starts off CE operation.
-
-This is required for future legacy shared
-interrupt handling.
-
-This also fixes possible memory leak if post rx
-failed.
+This introduces new ath10k_pci module parameter
+`irq_mode`. By default it is 0, meaning automatic
+irq mode (MSI-X as long as both target HW and host
+platform supports it). The parameter works on a
+best effort basis.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 75 +++++++++++++++++++++++++----------
- 1 file changed, 54 insertions(+), 21 deletions(-)
+v2:
+ * merge 2 parameters into 1
+ * add info print if the mode is != auto
+
+ drivers/net/wireless/ath/ath10k/pci.c | 47 +++++++++++++++++++++++++----------
+ 1 file changed, 34 insertions(+), 13 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 327afbc..05e6f8b 100644
+index 0a2d1c2..9606b9b 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -62,6 +62,7 @@ static void ath10k_pci_free_irq(struct ath10k *ar);
- static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
- 			       struct ath10k_ce_pipe *rx_pipe,
- 			       struct bmi_xfer *xfer);
-+static void ath10k_pci_cleanup_ce(struct ath10k *ar);
+@@ -33,10 +33,21 @@
+ #include "ce.h"
+ #include "pci.h"
  
- static const struct ce_attr host_ce_config_wlan[] = {
- 	/* CE0: host->target HTC control and raw streams */
-@@ -824,14 +825,13 @@ static void ath10k_pci_hif_set_callbacks(struct ath10k *ar,
- 	       sizeof(ar_pci->msg_callbacks_current));
- }
++enum ath10k_pci_irq_mode {
++	ATH10K_PCI_IRQ_AUTO = 0,
++	ATH10K_PCI_IRQ_LEGACY = 1,
++	ATH10K_PCI_IRQ_MSI = 2,
++};
++
+ static unsigned int ath10k_target_ps;
++static unsigned int ath10k_pci_irq_mode = ATH10K_PCI_IRQ_AUTO;
++
+ module_param(ath10k_target_ps, uint, 0644);
+ MODULE_PARM_DESC(ath10k_target_ps, "Enable ath10k Target (SoC) PS option");
  
--static int ath10k_pci_start_ce(struct ath10k *ar)
-+static int ath10k_pci_alloc_compl(struct ath10k *ar)
++module_param_named(irq_mode, ath10k_pci_irq_mode, uint, 0644);
++MODULE_PARM_DESC(irq_mode, "0: ayto, 1: legacy, 2: msi (default: 0)");
++
+ #define QCA988X_2_0_DEVICE_ID	(0x003c)
+ 
+ static DEFINE_PCI_DEVICE_TABLE(ath10k_pci_id_table) = {
+@@ -2387,27 +2398,37 @@ static void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
+ static int ath10k_pci_init_irq(struct ath10k *ar)
  {
  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	struct ath10k_ce_pipe *ce_diag = ar_pci->ce_diag;
- 	const struct ce_attr *attr;
- 	struct ath10k_pci_pipe *pipe_info;
- 	struct ath10k_pci_compl *compl;
--	int i, pipe_num, completions, disable_interrupts;
-+	int i, pipe_num, completions;
- 
- 	spin_lock_init(&ar_pci->compl_lock);
- 	INIT_LIST_HEAD(&ar_pci->compl_process);
-@@ -843,34 +843,23 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
- 		INIT_LIST_HEAD(&pipe_info->compl_free);
- 
- 		/* Handle Diagnostic CE specially */
--		if (pipe_info->ce_hdl == ce_diag)
-+		if (pipe_info->ce_hdl == ar_pci->ce_diag)
- 			continue;
- 
- 		attr = &host_ce_config_wlan[pipe_num];
- 		completions = 0;
- 
--		if (attr->src_nentries) {
--			disable_interrupts = attr->flags & CE_ATTR_DIS_INTR;
--			ath10k_ce_send_cb_register(pipe_info->ce_hdl,
--						   ath10k_pci_ce_send_done,
--						   disable_interrupts);
-+		if (attr->src_nentries)
- 			completions += attr->src_nentries;
--		}
- 
--		if (attr->dest_nentries) {
--			ath10k_ce_recv_cb_register(pipe_info->ce_hdl,
--						   ath10k_pci_ce_recv_data);
-+		if (attr->dest_nentries)
- 			completions += attr->dest_nentries;
--		}
--
--		if (completions == 0)
--			continue;
- 
- 		for (i = 0; i < completions; i++) {
- 			compl = kmalloc(sizeof(*compl), GFP_KERNEL);
- 			if (!compl) {
- 				ath10k_warn("No memory for completion state\n");
--				ath10k_pci_stop_ce(ar);
-+				ath10k_pci_cleanup_ce(ar);
- 				return -ENOMEM;
- 			}
- 
-@@ -882,6 +871,37 @@ static int ath10k_pci_start_ce(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_pci_setup_ce_irq(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	const struct ce_attr *attr;
-+	struct ath10k_pci_pipe *pipe_info;
-+	int pipe_num, disable_interrupts;
-+
-+	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
-+		pipe_info = &ar_pci->pipe_info[pipe_num];
-+
-+		/* Handle Diagnostic CE specially */
-+		if (pipe_info->ce_hdl == ar_pci->ce_diag)
-+			continue;
-+
-+		attr = &host_ce_config_wlan[pipe_num];
-+
-+		if (attr->src_nentries) {
-+			disable_interrupts = attr->flags & CE_ATTR_DIS_INTR;
-+			ath10k_ce_send_cb_register(pipe_info->ce_hdl,
-+						   ath10k_pci_ce_send_done,
-+						   disable_interrupts);
-+		}
-+
-+		if (attr->dest_nentries)
-+			ath10k_ce_recv_cb_register(pipe_info->ce_hdl,
-+						   ath10k_pci_ce_recv_data);
-+	}
-+
-+	return 0;
-+}
-+
- static void ath10k_pci_kill_tasklet(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1210,22 +1230,35 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	bool msix_supported = test_bit(ATH10K_PCI_FEATURE_MSI_X,
++				       ar_pci->features);
  	int ret;
  
--	ret = ath10k_pci_start_ce(ar);
-+	ret = ath10k_pci_alloc_compl(ar);
- 	if (ret) {
--		ath10k_warn("failed to start CE: %d\n", ret);
-+		ath10k_warn("failed to allocate CE completions: %d\n", ret);
- 		return ret;
- 	}
+ 	ath10k_pci_init_irq_tasklets(ar);
  
-+	ret = ath10k_pci_setup_ce_irq(ar);
-+	if (ret) {
-+		ath10k_warn("failed to setup CE interrupts: %d\n", ret);
-+		goto err_free_compl;
+-	if (!test_bit(ATH10K_PCI_FEATURE_MSI_X, ar_pci->features))
+-		goto msi;
++	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_AUTO &&
++	    !test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
++		ath10k_info("limiting irq mode to: %d\n", ath10k_pci_irq_mode);
+ 
+ 	/* Try MSI-X */
+-	ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
+-	ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
+-	if (ret == 0)
+-		return 0;
+-	if (ret > 0)
+-		pci_disable_msi(ar_pci->pdev);
++	if (ath10k_pci_irq_mode == ATH10K_PCI_IRQ_AUTO && msix_supported) {
++		ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
++		ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
++		if (ret == 0)
++			return 0;
++		if (ret > 0)
++			pci_disable_msi(ar_pci->pdev);
++
++		/* fall-through */
 +	}
-+
- 	/* Post buffers once to start things off. */
- 	ret = ath10k_pci_post_rx(ar);
- 	if (ret) {
- 		ath10k_warn("failed to post RX buffers for all pipes: %d\n",
- 			    ret);
--		return ret;
-+		goto err_stop_ce;
- 	}
  
- 	ar_pci->started = 1;
- 	return 0;
+-msi:
+ 	/* Try MSI */
+-	ar_pci->num_msi_intrs = 1;
+-	ret = pci_enable_msi(ar_pci->pdev);
+-	if (ret == 0)
+-		return 0;
++	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_LEGACY) {
++		ar_pci->num_msi_intrs = 1;
++		ret = pci_enable_msi(ar_pci->pdev);
++		if (ret == 0)
++			return 0;
 +
-+err_stop_ce:
-+	ath10k_pci_stop_ce(ar);
-+	ath10k_pci_process_ce(ar);
-+err_free_compl:
-+	ath10k_pci_cleanup_ce(ar);
-+	return ret;
- }
++		/* fall-through */
++	}
  
- static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
+ 	/* Try legacy irq
+ 	 *
 -- 
 1.8.4.rc3
 
