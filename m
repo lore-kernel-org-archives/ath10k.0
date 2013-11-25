@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22c.google.com ([2a00:1450:4013:c01::22c])
+Received: from mail-ea0-x233.google.com ([2a00:1450:4013:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vkvw2-0006CN-Ue
- for ath10k@lists.infradead.org; Mon, 25 Nov 2013 13:10:44 +0000
-Received: by mail-ea0-f172.google.com with SMTP id q10so2337551ead.17
- for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:25 -0800 (PST)
+ id 1Vkvw3-0006CG-QO
+ for ath10k@lists.infradead.org; Mon, 25 Nov 2013 13:10:45 +0000
+Received: by mail-ea0-f179.google.com with SMTP id r15so2356528ead.38
+ for <ath10k@lists.infradead.org>; Mon, 25 Nov 2013 05:10:22 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 6/8] ath10k: extract functions for legacy irq handling
-Date: Mon, 25 Nov 2013 14:06:25 +0100
-Message-Id: <1385384787-12470-7-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/8] ath10k: don't use interrupts for BMI
+Date: Mon, 25 Nov 2013 14:06:22 +0100
+Message-Id: <1385384787-12470-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
 References: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
  <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
@@ -28,108 +28,119 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Preparation for code re-use. Also use ioread/write
-wrappers.
+It's not really necessary for interrupts to be
+used for BMI. BMI already assumes there's only one
+caller at a time and it works directly with CE.
+
+Make BMI poll for CE completions instead of
+waiting for interrupts. This makes disabling
+interrupts during early boot possible.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-v2:
- * move function definitions up to avoid forward
-   declarations in subsequent patches
-
- drivers/net/wireless/ath/ath10k/pci.c | 65 +++++++++++++++++------------------
- 1 file changed, 32 insertions(+), 33 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 50 ++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index bd67311..1d2939c 100644
+index 957fc59..327afbc 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -220,6 +220,34 @@ static bool ath10k_pci_irq_pending(struct ath10k *ar)
- 	return false;
+@@ -59,6 +59,9 @@ static int ath10k_pci_init_irq(struct ath10k *ar);
+ static int ath10k_pci_deinit_irq(struct ath10k *ar);
+ static int ath10k_pci_request_irq(struct ath10k *ar);
+ static void ath10k_pci_free_irq(struct ath10k *ar);
++static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
++			       struct ath10k_ce_pipe *rx_pipe,
++			       struct bmi_xfer *xfer);
+ 
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* CE0: host->target HTC control and raw streams */
+@@ -1394,6 +1397,8 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 	void *treq, *tresp = NULL;
+ 	int ret = 0;
+ 
++	might_sleep();
++
+ 	if (resp && !resp_len)
+ 		return -EINVAL;
+ 
+@@ -1434,14 +1439,12 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 	if (ret)
+ 		goto err_resp;
+ 
+-	ret = wait_for_completion_timeout(&xfer.done,
+-					  BMI_COMMUNICATION_TIMEOUT_HZ);
+-	if (ret <= 0) {
++	ret = ath10k_pci_bmi_wait(ce_tx, ce_rx, &xfer);
++	if (ret) {
+ 		u32 unused_buffer;
+ 		unsigned int unused_nbytes;
+ 		unsigned int unused_id;
+ 
+-		ret = -ETIMEDOUT;
+ 		ath10k_ce_cancel_send_next(ce_tx, NULL, &unused_buffer,
+ 					   &unused_nbytes, &unused_id);
+ 	} else {
+@@ -1509,6 +1512,25 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	complete(&xfer->done);
  }
  
-+static void ath10k_pci_disable_and_clear_legacy_irq(struct ath10k *ar)
++static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
++			       struct ath10k_ce_pipe *rx_pipe,
++			       struct bmi_xfer *xfer)
 +{
-+	/* IMPORTANT: INTR_CLR register has to be set after
-+	 * INTR_ENABLE is set to 0, otherwise interrupt can not be
-+	 * really cleared. */
-+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_ENABLE_ADDRESS,
-+			   0);
-+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_CLR_ADDRESS,
-+			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
++	unsigned long timeout = jiffies + BMI_COMMUNICATION_TIMEOUT_HZ;
 +
-+	/* IMPORTANT: this extra read transaction is required to
-+	 * flush the posted write buffer. */
-+	(void) ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-+				 PCIE_INTR_ENABLE_ADDRESS);
-+}
++	while (time_before_eq(jiffies, timeout)) {
++		ath10k_pci_bmi_send_done(tx_pipe);
++		ath10k_pci_bmi_recv_data(rx_pipe);
 +
-+static void ath10k_pci_enable_legacy_irq(struct ath10k *ar)
-+{
-+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
-+			   PCIE_INTR_ENABLE_ADDRESS,
-+			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
++		if (completion_done(&xfer->done))
++			return 0;
 +
-+	/* IMPORTANT: this extra read transaction is required to
-+	 * flush the posted write buffer. */
-+	(void) ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-+				 PCIE_INTR_ENABLE_ADDRESS);
++		schedule();
++	}
++
++	return -ETIMEDOUT;
 +}
 +
  /*
-  * Diagnostic read/write access is provided for startup/config/debug usage.
-  * Caller must guarantee proper alignment, when applicable, and single user
-@@ -2128,25 +2156,7 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
- 		if (!ath10k_pci_irq_pending(ar))
- 			return IRQ_NONE;
- 
--		/*
--		 * IMPORTANT: INTR_CLR regiser has to be set after
--		 * INTR_ENABLE is set to 0, otherwise interrupt can not be
--		 * really cleared.
--		 */
--		iowrite32(0, ar_pci->mem +
--			  (SOC_CORE_BASE_ADDRESS |
--			   PCIE_INTR_ENABLE_ADDRESS));
--		iowrite32(PCIE_INTR_FIRMWARE_MASK |
--			  PCIE_INTR_CE_MASK_ALL,
--			  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
--					 PCIE_INTR_CLR_ADDRESS));
--		/*
--		 * IMPORTANT: this extra read transaction is required to
--		 * flush the posted write buffer.
--		 */
--		(void) ioread32(ar_pci->mem +
--				(SOC_CORE_BASE_ADDRESS |
--				 PCIE_INTR_ENABLE_ADDRESS));
-+		ath10k_pci_disable_and_clear_legacy_irq(ar);
- 	}
- 
- 	tasklet_schedule(&ar_pci->intr_tq);
-@@ -2162,20 +2172,9 @@ static void ath10k_pci_tasklet(unsigned long data)
- 	ath10k_pci_fw_interrupt_handler(ar); /* FIXME: Handle FW error */
- 	ath10k_ce_per_engine_service_any(ar);
- 
--	if (ar_pci->num_msi_intrs == 0) {
--		/* Enable Legacy PCI line interrupts */
--		iowrite32(PCIE_INTR_FIRMWARE_MASK |
--			  PCIE_INTR_CE_MASK_ALL,
--			  ar_pci->mem + (SOC_CORE_BASE_ADDRESS |
--					 PCIE_INTR_ENABLE_ADDRESS));
--		/*
--		 * IMPORTANT: this extra read transaction is required to
--		 * flush the posted write buffer
--		 */
--		(void) ioread32(ar_pci->mem +
--				(SOC_CORE_BASE_ADDRESS |
--				 PCIE_INTR_ENABLE_ADDRESS));
--	}
-+	/* Re-enable legacy irq that was disabled in the irq handler */
-+	if (ar_pci->num_msi_intrs == 0)
-+		ath10k_pci_enable_legacy_irq(ar);
+  * Map from service/endpoint to Copy Engine.
+  * This table is derived from the CE_PCI TABLE, above.
+@@ -1846,24 +1868,6 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 	ath10k_pci_sleep(ar);
  }
  
- static int ath10k_pci_request_irq_msix(struct ath10k *ar)
+-static void ath10k_pci_start_bmi(struct ath10k *ar)
+-{
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_pipe *pipe;
+-
+-	/*
+-	 * Initially, establish CE completion handlers for use with BMI.
+-	 * These are overwritten with generic handlers after we exit BMI phase.
+-	 */
+-	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_TARG];
+-	ath10k_ce_send_cb_register(pipe->ce_hdl, ath10k_pci_bmi_send_done, 0);
+-
+-	pipe = &ar_pci->pipe_info[BMI_CE_NUM_TO_HOST];
+-	ath10k_ce_recv_cb_register(pipe->ce_hdl, ath10k_pci_bmi_recv_data);
+-
+-	ath10k_dbg(ATH10K_DBG_BOOT, "boot start bmi\n");
+-}
+-
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -1938,8 +1942,6 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 		goto err_free_irq;
+ 	}
+ 
+-	ath10k_pci_start_bmi(ar);
+-
+ 	if (ar_pci->num_msi_intrs > 1)
+ 		irq_mode = "MSI-X";
+ 	else if (ar_pci->num_msi_intrs == 1)
 -- 
 1.8.4.rc3
 
