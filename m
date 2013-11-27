@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlgQ1-0005k6-C7
- for ath10k@lists.infradead.org; Wed, 27 Nov 2013 14:48:46 +0000
+ id 1VlgX0-00062w-Vl
+ for ath10k@lists.infradead.org; Wed, 27 Nov 2013 14:55:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 8/8] ath10k: allow explicit MSI/MSI-X disabling
-References: <1385125518-13461-1-git-send-email-michal.kazior@tieto.com>
- <1385384787-12470-1-git-send-email-michal.kazior@tieto.com>
- <1385384787-12470-9-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 27 Nov 2013 16:47:49 +0200
-In-Reply-To: <1385384787-12470-9-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 25 Nov 2013 14:06:27 +0100")
-Message-ID: <87y549gaui.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/3] ath10k: use nss provided by mac80211
+References: <1385126819-15311-1-git-send-email-michal.kazior@tieto.com>
+ <1385474260-22385-1-git-send-email-michal.kazior@tieto.com>
+ <1385474260-22385-2-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQmtkBGpktbLRfmiLuLDKP9TnUeWu4OMeGUsVcq7m05u4Q@mail.gmail.com>
+Date: Wed, 27 Nov 2013 16:55:32 +0200
+In-Reply-To: <CA+BoTQmtkBGpktbLRfmiLuLDKP9TnUeWu4OMeGUsVcq7m05u4Q@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 27 Nov 2013 11:25:45 +0100")
+Message-ID: <87ppplgahm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +27,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This can be useful for testing and debugging.
+> On 26 November 2013 14:57, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Calculating STA NSS just from the mcs rateset is
+>> not the greatest idea.
+>>
+>> This should prevent connectivity issues if
+>> mac80211 is ever to set rx_nss to something other
+>> rather than base on max mcs map. As an example
+>> operation mode change notification in assoc
+>> request may change rx_nss initial values in the
+>> future.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> ---
 >
-> This introduces new ath10k_pci module parameter
-> `irq_mode`. By default it is 0, meaning automatic
-> irq mode (MSI-X as long as both target HW and host
-> platform supports it). The parameter works on a
-> best effort basis.
+> Drop this single patch, please.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> I just noticed rx_nss doesn't seem to have correct value when associating..
 
-[...]
-
-> +MODULE_PARM_DESC(irq_mode, "0: ayto, 1: legacy, 2: msi (default: 0)");
-
-I fixed this typo ("ayto").
+Ok, I'm dropping this.
 
 -- 
 Kalle Valo
