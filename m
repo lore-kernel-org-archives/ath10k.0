@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VlgX0-00062w-Vl
- for ath10k@lists.infradead.org; Wed, 27 Nov 2013 14:55:59 +0000
+ id 1Vlgex-0006Lk-Iu
+ for ath10k@lists.infradead.org; Wed, 27 Nov 2013 15:04:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/3] ath10k: use nss provided by mac80211
+Subject: Re: [PATCH v2 2/3] ath10k: implement sta_rc_update()
 References: <1385126819-15311-1-git-send-email-michal.kazior@tieto.com>
  <1385474260-22385-1-git-send-email-michal.kazior@tieto.com>
- <1385474260-22385-2-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQmtkBGpktbLRfmiLuLDKP9TnUeWu4OMeGUsVcq7m05u4Q@mail.gmail.com>
-Date: Wed, 27 Nov 2013 16:55:32 +0200
-In-Reply-To: <CA+BoTQmtkBGpktbLRfmiLuLDKP9TnUeWu4OMeGUsVcq7m05u4Q@mail.gmail.com>
- (Michal Kazior's message of "Wed, 27 Nov 2013 11:25:45 +0100")
-Message-ID: <87ppplgahm.fsf@kamboji.qca.qualcomm.com>
+ <1385474260-22385-3-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 27 Nov 2013 17:03:41 +0200
+In-Reply-To: <1385474260-22385-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 26 Nov 2013 14:57:39 +0100")
+Message-ID: <87li09ga42.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,29 +26,62 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 26 November 2013 14:57, Michal Kazior <michal.kazior@tieto.com> wrote:
->> Calculating STA NSS just from the mcs rateset is
->> not the greatest idea.
->>
->> This should prevent connectivity issues if
->> mac80211 is ever to set rx_nss to something other
->> rather than base on max mcs map. As an example
->> operation mode change notification in assoc
->> request may change rx_nss initial values in the
->> future.
->>
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->> ---
+> This should fix possible connectivity issues upon
+> changes of channel width, number of streams or
+> SMPS on connected stations.
 >
-> Drop this single patch, please.
+> An example trigger would be an action frame with
+> operation mode change notification.
 >
-> I just noticed rx_nss doesn't seem to have correct value when associating..
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Ok, I'm dropping this.
+Sorry, somehow missed these on my previous review:
+
+> +	if (changed & IEEE80211_RC_BW_CHANGED) {
+> +		switch (sta->bandwidth) {
+> +		default:
+> +			ath10k_warn("unsupported STA BW: %d\n", sta->bandwidth);
+> +		case IEEE80211_STA_RX_BW_20:
+> +			chwidth = WMI_PEER_CHWIDTH_20MHZ;
+> +			break;
+> +		case IEEE80211_STA_RX_BW_40:
+> +			chwidth = WMI_PEER_CHWIDTH_40MHZ;
+> +			break;
+> +		case IEEE80211_STA_RX_BW_80:
+> +			chwidth = WMI_PEER_CHWIDTH_80MHZ;
+> +			break;
+> +		}
+
+I assume that the idea here is to use WMI_PEER_CHWIDTH_20MHZ for the
+default case. Actually I would prefer to avoid using default case
+altogether, that way the compiler will warn if there's an enum value we
+don't check. So for example you could add "case IEEE80211_STA_RX_BW_160"
+which prints a warning and uses 20 MHz.
+
+> +	if (changed & IEEE80211_RC_SMPS_CHANGED) {
+> +		smps = WMI_PEER_SMPS_PS_NONE;
+> +
+> +		switch (sta->smps_mode) {
+> +		case IEEE80211_SMPS_NUM_MODES:
+> +			ath10k_warn("invalid smps mode: %d\n", sta->smps_mode);
+> +		case IEEE80211_SMPS_AUTOMATIC:
+> +		case IEEE80211_SMPS_OFF:
+> +			smps = WMI_PEER_SMPS_PS_NONE;
+> +			break;
+> +		case IEEE80211_SMPS_STATIC:
+> +			smps = WMI_PEER_SMPS_STATIC;
+> +			break;
+> +		case IEEE80211_SMPS_DYNAMIC:
+> +			smps = WMI_PEER_SMPS_DYNAMIC;
+> +			break;
+> +		}
+
+This is better, but I think it would be clearer to have
+IEEE80211_SMPS_NUM_MODES last and not "fall through" the cases.
 
 -- 
 Kalle Valo
