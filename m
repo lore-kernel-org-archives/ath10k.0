@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VnUiF-0007Ib-LT
- for ath10k@lists.infradead.org; Mon, 02 Dec 2013 14:43:04 +0000
-Message-ID: <1385995357.20277.2.camel@jlt4.sipsolutions.net>
-Subject: Re: [RFC] mac80211: fix rx_nss calculation for drivers with hw rc
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Mon, 02 Dec 2013 15:42:37 +0100
-In-Reply-To: <1385981647-4147-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20131202_115744_274098_9362F537)
-References: <1385739434.8656.0.camel@jlt4.sipsolutions.net>
- <1385981647-4147-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20131202_115744_274098_9362F537)
-Mime-Version: 1.0
+ id 1VnWsq-00026o-94
+ for ath10k@lists.infradead.org; Mon, 02 Dec 2013 17:02:09 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fix multi BSSID with WPA on FW 10.1
+References: <1385971596-3575-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Mon, 2 Dec 2013 19:01:39 +0200
+In-Reply-To: <1385971596-3575-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Mon, 2 Dec 2013 09:06:36 +0100")
+Message-ID: <87haarb30s.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-On Mon, 2013-12-02 at 11:54 +0100, Michal Kazior wrote:
-> Drivers with hardware rate control were given
-> sta->rx_nss set to 0. This was because rx_nss
-> calculation procedure was protected by hw/sw rate
-> control check.
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-Applied.
+> From: Michal Kazior <michal.kazior@tieto.com>
+>
+> FW 10.1 seems to require the default key index to
+> be updated to point to group key after it is
+> installed. Otherwise Txed frames are corrupted.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-johannes
+Thanks, applied.
 
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
