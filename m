@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp3.dhosting.pl ([195.88.50.61])
+Received: from smtp4.dhosting.pl ([195.88.50.41])
  by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vpz1z-00034w-L2
- for ath10k@lists.infradead.org; Mon, 09 Dec 2013 11:29:46 +0000
-Message-ID: <52A5A98A.3000102@elnovel.com>
-Date: Mon, 09 Dec 2013 12:29:14 +0100
+ id 1Vpzg3-0003vI-Br
+ for ath10k@lists.infradead.org; Mon, 09 Dec 2013 12:11:09 +0000
+Message-ID: <52A5B33D.7010006@elnovel.com>
+Date: Mon, 09 Dec 2013 13:10:37 +0100
 From: Tomasz Tajmajer <tt@elnovel.com>
 MIME-Version: 1.0
 Subject: Re: [BUG] QWLE900V5-18 - cannot achievie 3 spatial streams link
 References: <52A1FC69.7080901@elnovel.com>	<CALhHN=qPRgc-FaKbazdAmmxvi+YXxoFOp2Ax=x0iDp0LXknjHA@mail.gmail.com>	<874n6i1jk7.fsf@kamboji.qca.qualcomm.com>	<52A5955E.2060106@elnovel.com>
  <CA+BoTQk95VmU=e1cLOtzcX8Y_j6YjFFw1STOT=r7NSHTd2vuJA@mail.gmail.com>
-In-Reply-To: <CA+BoTQk95VmU=e1cLOtzcX8Y_j6YjFFw1STOT=r7NSHTd2vuJA@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------000201030504030504080100"
+ <52A5A98A.3000102@elnovel.com>
+In-Reply-To: <52A5A98A.3000102@elnovel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,279 +20,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k@lists.infradead.org
 
-This is a multi-part message in MIME format.
---------------000201030504030504080100
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
-
-
-On 09.12.2013 11:13, Michal Kazior wrote:
-> On 9 December 2013 11:03, Tomasz Tajmajer <tt@elnovel.com> wrote:
->> On 09.12.2013 10:04, Kalle Valo wrote:
->>> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->>>
->>>> On 6 December 2013 17:33, Tomasz Tajmajer <tt@elnovel.com> wrote:
->>>>> Hi,
->>>>>
->>>>> Recently, I've been making quite a lot of tests with two QWLE900V5-18
->>>>> cards.
->>>>> I had some issues with the drivers (e.g. regarding the regulatory
->>>>> domain),
->>>>> but I've managed to fix them on my own. However, there is one issue that
->>>>> I
->>>>> cannot deal with.
->>>>> I'm trying to get the highest throughput possible using 3x3 MIMO. The
->>>>> problem is that the wifi card does not set higher rates than 2x433.3Mbps
->>>>> (MCS 9, VHT-NSS 2). The specification says that it should be possible to
->>>>> have 3 spatial streams.
->>>>> First, I thought it is a problem with some options of hostapd, but
->>>>> hostapd
->>>>> even does not allows me to set the [RX-STBC-12] or [RX-STBC-123]
->>>>> options.
->>>>> Only [RX-STBC-1] may be set in the configuration (what in fact, does not
->>>>> disallows the 2x433.3Mbps link, which is another issue).
->>>>> Driver info shows that the driver should support 3 spatial streams.
->>>>> I am not sure where is the problem, is it some bug in hostapd, which
->>>>> forces
->>>>> the card to use 2 spatial streams only or is it the driver, which does
->>>>> not
->>>>> enable 3 streams when it is possible. The physical connectivity
->>>>> (antennas
->>>>> etc.) is not the problem AFAIK.
->>>>>
->>>> When sta assoc to ap you will get dbg mesg (you can enable this eg.
->>>> when loading ath10k_core module with param - debug_mask).
->>>> "mac ht peer %pM mcs cnt %d nss %d\n" - nss is interesting here
->>> This debug message is enabled with ATH10K_DBG_MAC. More info here:
->>>
->>> http://wireless.kernel.org/en/users/Drivers/ath10k/debug
->>>
->>>> Also rx_mcs_set for STA from ath10k_peer_assoc_h_vht() could be
->>>> interesting - unfortunetly we don't print this. But you can print
->>>> this.
->>> Indeed, we should include that to the message as well.
->>>
->> I've enabled dbg messages and added rx_mcs_set and tx_mcs_set as you
->> suggested.
->> Here is the output for STA:
->>
->> [ 2278.320312] ath10k: htt target version 2.1
->> [ 2278.320455] ath10k: mac vdev create 0 (add interface) type 2 subtype 0
->> [ 2278.320741] ath10k: mac vdev 0 cts_prot 0
->> [ 2278.320765] ath10k: mac vdev 0 slot_time 1
->> [ 2278.320801] ath10k: mac vdev 0 preamble 1n
->> [ 2278.321320] ath10k: mac config channel 5180 mhz
->> [ 2278.321353] ath10k: mac vdev 0 psmode disable
->> [ 2278.321448] IPv6: ADDRCONF(NETDEV_UP): wlan1: link is not ready
->> [ 2278.321458] ath10k: mac vdev 0 psmode disable
->> [ 2282.499925] wlan1: authenticate with 04:f0:21:0c:a2:3a
->> [ 2282.499946] ath10k: mac config channel 5180 mhz
->> [ 2282.499962] ath10k: mac vdev 0 beacon_interval 100
->> [ 2282.499968] ath10k: mac vdev 0 create peer 04:f0:21:0c:a2:3a
->> [ 2282.500109] ath10k: mac vdev 0 start 04:f0:21:0c:a2:3a
->> [ 2282.500115] ath10k: mac vdev 0 start center_freq 5180 phymode 11ac-vht80
->> [ 2282.506711] wlan1: direct probe to 04:f0:21:0c:a2:3a (try 1/3)
->> [ 2282.708052] wlan1: send auth to 04:f0:21:0c:a2:3a (try 2/3)
->> [ 2282.709096] wlan1: authenticated
->> [ 2282.712122] wlan1: associate with 04:f0:21:0c:a2:3a (try 1/3)
->> [ 2282.713907] wlan1: RX AssocResp from 04:f0:21:0c:a2:3a (capab=0x1
->> status=0 aid=1)
->> [ 2282.714331] ath10k: mac vdev 0 dtim_period 2
->> [ 2282.714367] ath10k: mac vdev 0 slot_time 2
->> [ 2282.714415] ath10k: mac ht peer 04:f0:21:0c:a2:3a mcs cnt 24 nss 3
->> [ 2282.714421] ath10k: mac vht peer 04:f0:21:0c:a2:3a max_mpdu 65535 flags
->> 0x601b001 rx_mcs_set 0000ffea tx_mcs_set 0000ffea
->> [ 2282.714427] ath10k: mac peer 04:f0:21:0c:a2:3a phymode 11ac-vht80
->> [ 2282.714435] ath10k: mac vdev 0 up (associated) bssid 04:f0:21:0c:a2:3a
->> aid 1
->> [ 2282.714822] ath10k: mac vdev 0 psmode enable
->> [ 2282.714869] wlan1: associated
->>
->> And for AP:
->> [ 9460.458700] ath10k: htt target version 2.1
->> [ 9460.458874] ath10k: mac vdev create 0 (add interface) type 1 subtype 0
->> [ 9460.459120] ath10k: mac vdev 0 cts_prot 0
->> [ 9460.459155] ath10k: mac vdev 0 slot_time 1
->> [ 9460.459156] ath10k: mac vdev 0 preamble 1n
->> [ 9460.459385] ath10k: mac config channel 5180 mhz
->> [ 9460.459434] IPv6: ADDRCONF(NETDEV_UP): wlan2: link is not ready
->> [ 9461.562262] ath10k: mac vdev 0 rts threshold -1
->> [ 9461.562292] ath10k: mac vdev 0 fragmentation threshold -1
->> [ 9461.564900] ath10k: mac config channel 5180 mhz
->> [ 9461.564919] ath10k: mac vdev 0 beacon_interval 100
->> [ 9461.564923] ath10k: vdev 0 set beacon tx mode to staggered
->> [ 9461.564931] ath10k: mac vdev 0 start center_freq 5180 phymode 11ac-vht80
->> [ 9461.571970] ath10k: mac vdev 0 up
->> [ 9461.572108] ath10k: mac vdev 0 cts_prot 0
->> [ 9461.572117] ath10k: mac vdev 0 slot_time 2
->> [ 9461.572241] IPv6: ADDRCONF(NETDEV_CHANGE): wlan2: link becomes ready
->> [ 9461.572192] ath10k: mac vdev 0 preamble 1n
->> [ 9549.331556] ath10k: vdev 0 set beacon tx mode to staggered
->> [ 9549.331637] ath10k: mac vdev 0 cts_prot 0
->> [ 9549.331644] ath10k: mac vdev 0 preamble 1n
->> [ 9549.332425] ath10k: mac vdev 0 peer create 04:f0:21:0c:a2:3b (new sta)
->> [ 9549.332628] ath10k: mac sta 04:f0:21:0c:a2:3b associated
->> [ 9549.332637] ath10k: mac ht peer 04:f0:21:0c:a2:3b mcs cnt 24 nss 3
->> [ 9549.332643] ath10k: mac vht peer 04:f0:21:0c:a2:3b max_mpdu 1048575 flags
->> 0x601b001 rx_mcs_set 0000ffea tx_mcs_set 0000ffea
->> [ 9549.332648] ath10k: mac peer 04:f0:21:0c:a2:3b phymode 11ac-vht80
->>
->>
->> As you can see, the "nss" value is set to 3, but I've never observed VHT-NSS
->> 3 reported by "iw DEV station dump". Also the maximum throughput for UDP
->> measured by iperf was ~630Mbps, which seems to be the netto value for 2x433
->> Mbps PHY throughput.
-> I wouldn't rely on station dump Tx/Rx stats (especially Tx stats which
-> are broken due to FW limitation).
->
-> You can create a monitor interface on the receiver side and run
-> wireshark in non-promiscuous mode and check radiotap headers to
-> confirm whether 3 spatial streams are used or not.
->
->
-> Michał
->
-I've attached the output from wireshark.
-
-  Bandwidth: 80 MHz (4)
-         User 0: MCS 9
-             1001 .... = MCS index 0: 9 (256-QAM 5/6)
-             .... 0010 = Spatial streams 0: 2
-             Space-time streams 0: 2
-             Coding 0: BCC (0)
-             [Data Rate: 866,6 Mb/s]
-
-Unfortunately, it confirms that only 2 spatial streams are used.
-
-
-TomaszT
-
-
---------------000201030504030504080100
-Content-Type: text/plain; charset=UTF-8;
- name="80211ac_packet_dump.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="80211ac_packet_dump.txt"
-
-Tm8uICAgICBUaW1lICAgICAgICAgICBTb3VyY2UgICAgICAgICAgICAgICAgRGVzdGluYXRp
-b24gICAgICAgICAgIFByb3RvY29sIExlbmd0aCBJbmZvCiAxODUzOTYgNC4xNjk3MzcwMDAg
-ICAgMTAuMC4xMC4yICAgICAgICAgICAgIDEwLjAuMTAuMSAgICAgICAgICAgICBVRFAgICAg
-ICAxNTYyICAgU291cmNlIHBvcnQ6IGNvbW1wbGV4LWxpbmsgIERlc3RpbmF0aW9uIHBvcnQ6
-IGNvbW1wbGV4LWxpbmsKCkZyYW1lIDE4NTM5NjogMTU2MiBieXRlcyBvbiB3aXJlICgxMjQ5
-NiBiaXRzKSwgMTU2MiBieXRlcyBjYXB0dXJlZCAoMTI0OTYgYml0cykgb24gaW50ZXJmYWNl
-IDAKUmFkaW90YXAgSGVhZGVyIHYwLCBMZW5ndGggMzAKICAgIEhlYWRlciByZXZpc2lvbjog
-MAogICAgSGVhZGVyIHBhZDogMAogICAgSGVhZGVyIGxlbmd0aDogMzAKICAgIFByZXNlbnQg
-ZmxhZ3MKICAgICAgICAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLjAg
-PSBUU0ZUOiBGYWxzZQogICAgICAgIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4u
-Li4gLi4xLiA9IEZsYWdzOiBUcnVlCiAgICAgICAgLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4u
-IC4uLi4gLi4uLiAuMC4uID0gUmF0ZTogRmFsc2UKICAgICAgICAuLi4uIC4uLi4gLi4uLiAu
-Li4uIC4uLi4gLi4uLiAuLi4uIDEuLi4gPSBDaGFubmVsOiBUcnVlCiAgICAgICAgLi4uLiAu
-Li4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uMCAuLi4uID0gRkhTUzogRmFsc2UKICAgICAg
-ICAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAuLjEuIC4uLi4gPSBkQm0gQW50ZW5u
-YSBTaWduYWw6IFRydWUKICAgICAgICAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAu
-MC4uIC4uLi4gPSBkQm0gQW50ZW5uYSBOb2lzZTogRmFsc2UKICAgICAgICAuLi4uIC4uLi4g
-Li4uLiAuLi4uIC4uLi4gLi4uLiAwLi4uIC4uLi4gPSBMb2NrIFF1YWxpdHk6IEZhbHNlCiAg
-ICAgICAgLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLjAgLi4uLiAuLi4uID0gVFggQXR0
-ZW51YXRpb246IEZhbHNlCiAgICAgICAgLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uMC4g
-Li4uLiAuLi4uID0gZEIgVFggQXR0ZW51YXRpb246IEZhbHNlCiAgICAgICAgLi4uLiAuLi4u
-IC4uLi4gLi4uLiAuLi4uIC4wLi4gLi4uLiAuLi4uID0gZEJtIFRYIFBvd2VyOiBGYWxzZQog
-ICAgICAgIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAxLi4uIC4uLi4gLi4uLiA9IEFudGVu
-bmE6IFRydWUKICAgICAgICAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLjAgLi4uLiAuLi4uIC4u
-Li4gPSBkQiBBbnRlbm5hIFNpZ25hbDogRmFsc2UKICAgICAgICAuLi4uIC4uLi4gLi4uLiAu
-Li4uIC4uMC4gLi4uLiAuLi4uIC4uLi4gPSBkQiBBbnRlbm5hIE5vaXNlOiBGYWxzZQogICAg
-ICAgIC4uLi4gLi4uLiAuLi4uIC4uLi4gLjEuLiAuLi4uIC4uLi4gLi4uLiA9IFJYIGZsYWdz
-OiBUcnVlCiAgICAgICAgLi4uLiAuLi4uIC4uLi4gLjAuLiAuLi4uIC4uLi4gLi4uLiAuLi4u
-ID0gQ2hhbm5lbCs6IEZhbHNlCiAgICAgICAgLi4uLiAuLi4uIC4uLi4gMC4uLiAuLi4uIC4u
-Li4gLi4uLiAuLi4uID0gSFQgaW5mb3JtYXRpb246IEZhbHNlCiAgICAgICAgLi4uLiAuLi4u
-IC4uLjAgLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uID0gQS1NUERVIFN0YXR1czogRmFsc2UK
-ICAgICAgICAuLi4uIC4uLi4gLi4xLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gPSBWSFQg
-aW5mb3JtYXRpb246IFRydWUKICAgICAgICAuLi4wIDAwMDAgMDAuLiAuLi4uIC4uLi4gLi4u
-LiAuLi4uIC4uLi4gPSBSZXNlcnZlZDogMHgwMDAwMDAwMAogICAgICAgIC4uMC4gLi4uLiAu
-Li4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiA9IFJhZGlvdGFwIE5TIG5leHQ6IEZhbHNl
-CiAgICAgICAgLjAuLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uID0gVmVu
-ZG9yIE5TIG5leHQ6IEZhbHNlCiAgICAgICAgMC4uLiAuLi4uIC4uLi4gLi4uLiAuLi4uIC4u
-Li4gLi4uLiAuLi4uID0gRXh0OiBGYWxzZQogICAgRmxhZ3M6IDB4MDAKICAgICAgICAuLi4u
-IC4uLjAgPSBDRlA6IEZhbHNlCiAgICAgICAgLi4uLiAuLjAuID0gUHJlYW1ibGU6IExvbmcK
-ICAgICAgICAuLi4uIC4wLi4gPSBXRVA6IEZhbHNlCiAgICAgICAgLi4uLiAwLi4uID0gRnJh
-Z21lbnRhdGlvbjogRmFsc2UKICAgICAgICAuLi4wIC4uLi4gPSBGQ1MgYXQgZW5kOiBGYWxz
-ZQogICAgICAgIC4uMC4gLi4uLiA9IERhdGEgUGFkOiBGYWxzZQogICAgICAgIC4wLi4gLi4u
-LiA9IEJhZCBGQ1M6IEZhbHNlCiAgICAgICAgMC4uLiAuLi4uID0gU2hvcnQgR0k6IEZhbHNl
-CiAgICBDaGFubmVsIGZyZXF1ZW5jeTogNTE4MCBbQSAzNl0KICAgIENoYW5uZWwgdHlwZTog
-ODAyLjExYSAoMHgwMTQwKQogICAgICAgIC4uLi4gLi4uLiAuLi4wIC4uLi4gPSBUdXJibzog
-RmFsc2UKICAgICAgICAuLi4uIC4uLi4gLi4wLiAuLi4uID0gQ29tcGxlbWVudGFyeSBDb2Rl
-IEtleWluZyAoQ0NLKTogRmFsc2UKICAgICAgICAuLi4uIC4uLi4gLjEuLiAuLi4uID0gT3J0
-aG9nb25hbCBGcmVxdWVuY3ktRGl2aXNpb24gTXVsdGlwbGV4aW5nIChPRkRNKTogVHJ1ZQog
-ICAgICAgIC4uLi4gLi4uLiAwLi4uIC4uLi4gPSAyIEdIeiBzcGVjdHJ1bTogRmFsc2UKICAg
-ICAgICAuLi4uIC4uLjEgLi4uLiAuLi4uID0gNSBHSHogc3BlY3RydW06IFRydWUKICAgICAg
-ICAuLi4uIC4uMC4gLi4uLiAuLi4uID0gUGFzc2l2ZTogRmFsc2UKICAgICAgICAuLi4uIC4w
-Li4gLi4uLiAuLi4uID0gRHluYW1pYyBDQ0stT0ZETTogRmFsc2UKICAgICAgICAuLi4uIDAu
-Li4gLi4uLiAuLi4uID0gR2F1c3NpYW4gRnJlcXVlbmN5IFNoaWZ0IEtleWluZyAoR0ZTSyk6
-IEZhbHNlCiAgICAgICAgLi4uMCAuLi4uIC4uLi4gLi4uLiA9IEdTTSAoOTAwTUh6KTogRmFs
-c2UKICAgICAgICAuLjAuIC4uLi4gLi4uLiAuLi4uID0gU3RhdGljIFR1cmJvOiBGYWxzZQog
-ICAgICAgIC4wLi4gLi4uLiAuLi4uIC4uLi4gPSBIYWxmIFJhdGUgQ2hhbm5lbCAoMTBNSHog
-Q2hhbm5lbCBXaWR0aCk6IEZhbHNlCiAgICAgICAgMC4uLiAuLi4uIC4uLi4gLi4uLiA9IFF1
-YXJ0ZXIgUmF0ZSBDaGFubmVsICg1TUh6IENoYW5uZWwgV2lkdGgpOiBGYWxzZQogICAgU1NJ
-IFNpZ25hbDogLTMyIGRCbQogICAgQW50ZW5uYTogMAogICAgUlggZmxhZ3M6IDB4MDAwMAog
-ICAgICAgIC4uLi4gLi4uLiAuLi4uIC4uLi4gLi4uLiAuLjAuID0gQmFkIFBMQ1A6IEZhbHNl
-CiAgICBWSFQgaW5mb3JtYXRpb24KICAgICAgICBLbm93biBWSFQgaW5mb3JtYXRpb246IDB4
-NDQKICAgICAgICAgICAgLi4uLiAuLi4uIC4uLi4gLi4uMCA9IFNUQkM6IEZhbHNlCiAgICAg
-ICAgICAgIC4uLi4gLi4uLiAuLi4uIC4uMC4gPSBUWE9QX1BTX05PVF9BTExPV0VEOiBGYWxz
-ZQogICAgICAgICAgICAuLi4uIC4uLi4gLi4uLiAuMS4uID0gR3VhcmQgaW50ZXJ2YWw6IFRy
-dWUKICAgICAgICAgICAgLi4uLiAuLi4uIC4uLi4gMC4uLiA9IFNHSSBOc3ltIGRpc2FtYmln
-dWF0aW9uOiBGYWxzZQogICAgICAgICAgICAuLi4uIC4uLi4gLi4uMCAuLi4uID0gTERQQyBl
-eHRyYSBPRkRNIHN5bWJvbDogRmFsc2UKICAgICAgICAgICAgLi4uLiAuLi4uIC4uMC4gLi4u
-LiA9IEJlYW1mb3JtZWQ6IEZhbHNlCiAgICAgICAgICAgIC4uLi4gLi4uLiAuMS4uIC4uLi4g
-PSBCYW5kd2lkdGg6IFRydWUKICAgICAgICAgICAgLi4uLiAuLi4uIDAuLi4gLi4uLiA9IEdy
-b3VwIElEOiBGYWxzZQogICAgICAgICAgICAuLi4uIC4uLjAgLi4uLiAuLi4uID0gUGFydGlh
-bCBBSUQ6IEZhbHNlCiAgICAgICAgLi4uLiAuMS4uID0gR3VhcmQgaW50ZXJ2YWw6IHNob3J0
-ICgxKQogICAgICAgIEJhbmR3aWR0aDogODAgTUh6ICg0KQogICAgICAgIFVzZXIgMDogTUNT
-IDkKICAgICAgICAgICAgMTAwMSAuLi4uID0gTUNTIGluZGV4IDA6IDkgKDI1Ni1RQU0gNS82
-KQogICAgICAgICAgICAuLi4uIDAwMTAgPSBTcGF0aWFsIHN0cmVhbXMgMDogMgogICAgICAg
-ICAgICBTcGFjZS10aW1lIHN0cmVhbXMgMDogMgogICAgICAgICAgICBDb2RpbmcgMDogQkND
-ICgwKQogICAgICAgICAgICBbRGF0YSBSYXRlOiA4NjYsNiBNYi9zXQpJRUVFIDgwMi4xMSBR
-b1MgRGF0YSwgRmxhZ3M6IC4uLi4uLi5UCiAgICBUeXBlL1N1YnR5cGU6IFFvUyBEYXRhICgw
-eDI4KQogICAgRnJhbWUgQ29udHJvbCBGaWVsZDogMHg4ODAxCiAgICAgICAgLi4uLiAuLjAw
-ID0gVmVyc2lvbjogMAogICAgICAgIC4uLi4gMTAuLiA9IFR5cGU6IERhdGEgZnJhbWUgKDIp
-CiAgICAgICAgMTAwMCAuLi4uID0gU3VidHlwZTogOAogICAgICAgIEZsYWdzOiAweDAxCiAg
-ICAgICAgICAgIC4uLi4gLi4wMSA9IERTIHN0YXR1czogRnJhbWUgZnJvbSBTVEEgdG8gRFMg
-dmlhIGFuIEFQIChUbyBEUzogMSBGcm9tIERTOiAwKSAoMHgwMSkKICAgICAgICAgICAgLi4u
-LiAuMC4uID0gTW9yZSBGcmFnbWVudHM6IFRoaXMgaXMgdGhlIGxhc3QgZnJhZ21lbnQKICAg
-ICAgICAgICAgLi4uLiAwLi4uID0gUmV0cnk6IEZyYW1lIGlzIG5vdCBiZWluZyByZXRyYW5z
-bWl0dGVkCiAgICAgICAgICAgIC4uLjAgLi4uLiA9IFBXUiBNR1Q6IFNUQSB3aWxsIHN0YXkg
-dXAKICAgICAgICAgICAgLi4wLiAuLi4uID0gTW9yZSBEYXRhOiBObyBkYXRhIGJ1ZmZlcmVk
-CiAgICAgICAgICAgIC4wLi4gLi4uLiA9IFByb3RlY3RlZCBmbGFnOiBEYXRhIGlzIG5vdCBw
-cm90ZWN0ZWQKICAgICAgICAgICAgMC4uLiAuLi4uID0gT3JkZXIgZmxhZzogTm90IHN0cmlj
-dGx5IG9yZGVyZWQKICAgIC4wMDAgMDAwMCAwMDExIDAwMDAgPSBEdXJhdGlvbjogNDggbWlj
-cm9zZWNvbmRzCiAgICBSZWNlaXZlciBhZGRyZXNzOiBDb21wZXhQdF8wYzphMjozYSAoMDQ6
-ZjA6MjE6MGM6YTI6M2EpCiAgICBCU1MgSWQ6IENvbXBleFB0XzBjOmEyOjNhICgwNDpmMDoy
-MTowYzphMjozYSkKICAgIFRyYW5zbWl0dGVyIGFkZHJlc3M6IENvbXBleFB0XzBjOmEyOjNi
-ICgwNDpmMDoyMTowYzphMjozYikKICAgIFNvdXJjZSBhZGRyZXNzOiBDb21wZXhQdF8wYzph
-MjozYiAoMDQ6ZjA6MjE6MGM6YTI6M2IpCiAgICBEZXN0aW5hdGlvbiBhZGRyZXNzOiBDb21w
-ZXhQdF8wYzphMjozYSAoMDQ6ZjA6MjE6MGM6YTI6M2EpCiAgICBGcmFnbWVudCBudW1iZXI6
-IDAKICAgIFNlcXVlbmNlIG51bWJlcjogOTMxCiAgICBRb3MgQ29udHJvbDogMHgwMDAwCiAg
-ICAgICAgLi4uLiAuLi4uIC4uLi4gMDAwMCA9IFRJRDogMAogICAgICAgIFsuLi4uIC4uLi4g
-Li4uLiAuMDAwID0gUHJpb3JpdHk6IEJlc3QgRWZmb3J0IChCZXN0IEVmZm9ydCkgKDApXQog
-ICAgICAgIC4uLi4gLi4uLiAuLi4wIC4uLi4gPSBRb1MgYml0IDQ6IEJpdHMgOC0xNSBvZiBR
-b1MgQ29udHJvbCBmaWVsZCBhcmUgVFhPUCBEdXJhdGlvbiBSZXF1ZXN0ZWQKICAgICAgICAu
-Li4uIC4uLi4gLjAwLiAuLi4uID0gQWNrIFBvbGljeTogTm9ybWFsIEFjayAoMHgwMDAwKQog
-ICAgICAgIC4uLi4gLi4uLiAwLi4uIC4uLi4gPSBQYXlsb2FkIFR5cGU6IE1TRFUKICAgICAg
-ICAwMDAwIDAwMDAgLi4uLiAuLi4uID0gVFhPUCBEdXJhdGlvbiBSZXF1ZXN0ZWQ6IDAgKG5v
-IFRYT1AgcmVxdWVzdGVkKQoKCg==
---------------000201030504030504080100
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---------------000201030504030504080100--
+Ck9uIDA5LjEyLjIwMTMgMTI6MjksIFRvbWFzeiBUYWptYWplciB3cm90ZToKPgo+IE9uIDA5LjEy
+LjIwMTMgMTE6MTMsIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+IE9uIDkgRGVjZW1iZXIgMjAxMyAx
+MTowMywgVG9tYXN6IFRham1hamVyIDx0dEBlbG5vdmVsLmNvbT4gd3JvdGU6Cj4+PiBPbiAwOS4x
+Mi4yMDEzIDEwOjA0LCBLYWxsZSBWYWxvIHdyb3RlOgo+Pj4+IEphbnVzeiBEemllZHppYyA8amFu
+dXN6LmR6aWVkemljQHRpZXRvLmNvbT4gd3JpdGVzOgo+Pj4+Cj4+Pj4+IE9uIDYgRGVjZW1iZXIg
+MjAxMyAxNzozMywgVG9tYXN6IFRham1hamVyIDx0dEBlbG5vdmVsLmNvbT4gd3JvdGU6Cj4+Pj4+
+PiBIaSwKPj4+Pj4+Cj4+Pj4+PiBSZWNlbnRseSwgSSd2ZSBiZWVuIG1ha2luZyBxdWl0ZSBhIGxv
+dCBvZiB0ZXN0cyB3aXRoIHR3byAKPj4+Pj4+IFFXTEU5MDBWNS0xOAo+Pj4+Pj4gY2FyZHMuCj4+
+Pj4+PiBJIGhhZCBzb21lIGlzc3VlcyB3aXRoIHRoZSBkcml2ZXJzIChlLmcuIHJlZ2FyZGluZyB0
+aGUgcmVndWxhdG9yeQo+Pj4+Pj4gZG9tYWluKSwKPj4+Pj4+IGJ1dCBJJ3ZlIG1hbmFnZWQgdG8g
+Zml4IHRoZW0gb24gbXkgb3duLiBIb3dldmVyLCB0aGVyZSBpcyBvbmUgCj4+Pj4+PiBpc3N1ZSB0
+aGF0Cj4+Pj4+PiBJCj4+Pj4+PiBjYW5ub3QgZGVhbCB3aXRoLgo+Pj4+Pj4gSSdtIHRyeWluZyB0
+byBnZXQgdGhlIGhpZ2hlc3QgdGhyb3VnaHB1dCBwb3NzaWJsZSB1c2luZyAzeDMgTUlNTy4gCj4+
+Pj4+PiBUaGUKPj4+Pj4+IHByb2JsZW0gaXMgdGhhdCB0aGUgd2lmaSBjYXJkIGRvZXMgbm90IHNl
+dCBoaWdoZXIgcmF0ZXMgdGhhbiAKPj4+Pj4+IDJ4NDMzLjNNYnBzCj4+Pj4+PiAoTUNTIDksIFZI
+VC1OU1MgMikuIFRoZSBzcGVjaWZpY2F0aW9uIHNheXMgdGhhdCBpdCBzaG91bGQgYmUgCj4+Pj4+
+PiBwb3NzaWJsZSB0bwo+Pj4+Pj4gaGF2ZSAzIHNwYXRpYWwgc3RyZWFtcy4KPj4+Pj4+IEZpcnN0
+LCBJIHRob3VnaHQgaXQgaXMgYSBwcm9ibGVtIHdpdGggc29tZSBvcHRpb25zIG9mIGhvc3RhcGQs
+IGJ1dAo+Pj4+Pj4gaG9zdGFwZAo+Pj4+Pj4gZXZlbiBkb2VzIG5vdCBhbGxvd3MgbWUgdG8gc2V0
+IHRoZSBbUlgtU1RCQy0xMl0gb3IgW1JYLVNUQkMtMTIzXQo+Pj4+Pj4gb3B0aW9ucy4KPj4+Pj4+
+IE9ubHkgW1JYLVNUQkMtMV0gbWF5IGJlIHNldCBpbiB0aGUgY29uZmlndXJhdGlvbiAod2hhdCBp
+biBmYWN0LCAKPj4+Pj4+IGRvZXMgbm90Cj4+Pj4+PiBkaXNhbGxvd3MgdGhlIDJ4NDMzLjNNYnBz
+IGxpbmssIHdoaWNoIGlzIGFub3RoZXIgaXNzdWUpLgo+Pj4+Pj4gRHJpdmVyIGluZm8gc2hvd3Mg
+dGhhdCB0aGUgZHJpdmVyIHNob3VsZCBzdXBwb3J0IDMgc3BhdGlhbCBzdHJlYW1zLgo+Pj4+Pj4g
+SSBhbSBub3Qgc3VyZSB3aGVyZSBpcyB0aGUgcHJvYmxlbSwgaXMgaXQgc29tZSBidWcgaW4gaG9z
+dGFwZCwgd2hpY2gKPj4+Pj4+IGZvcmNlcwo+Pj4+Pj4gdGhlIGNhcmQgdG8gdXNlIDIgc3BhdGlh
+bCBzdHJlYW1zIG9ubHkgb3IgaXMgaXQgdGhlIGRyaXZlciwgd2hpY2ggCj4+Pj4+PiBkb2VzCj4+
+Pj4+PiBub3QKPj4+Pj4+IGVuYWJsZSAzIHN0cmVhbXMgd2hlbiBpdCBpcyBwb3NzaWJsZS4gVGhl
+IHBoeXNpY2FsIGNvbm5lY3Rpdml0eQo+Pj4+Pj4gKGFudGVubmFzCj4+Pj4+PiBldGMuKSBpcyBu
+b3QgdGhlIHByb2JsZW0gQUZBSUsuCj4+Pj4+Pgo+Pj4+PiBXaGVuIHN0YSBhc3NvYyB0byBhcCB5
+b3Ugd2lsbCBnZXQgZGJnIG1lc2cgKHlvdSBjYW4gZW5hYmxlIHRoaXMgZWcuCj4+Pj4+IHdoZW4g
+bG9hZGluZyBhdGgxMGtfY29yZSBtb2R1bGUgd2l0aCBwYXJhbSAtIGRlYnVnX21hc2spLgo+Pj4+
+PiAibWFjIGh0IHBlZXIgJXBNIG1jcyBjbnQgJWQgbnNzICVkXG4iIC0gbnNzIGlzIGludGVyZXN0
+aW5nIGhlcmUKPj4+PiBUaGlzIGRlYnVnIG1lc3NhZ2UgaXMgZW5hYmxlZCB3aXRoIEFUSDEwS19E
+QkdfTUFDLiBNb3JlIGluZm8gaGVyZToKPj4+Pgo+Pj4+IGh0dHA6Ly93aXJlbGVzcy5rZXJuZWwu
+b3JnL2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Pj4KPj4+Pj4gQWxzbyByeF9tY3Nf
+c2V0IGZvciBTVEEgZnJvbSBhdGgxMGtfcGVlcl9hc3NvY19oX3ZodCgpIGNvdWxkIGJlCj4+Pj4+
+IGludGVyZXN0aW5nIC0gdW5mb3J0dW5ldGx5IHdlIGRvbid0IHByaW50IHRoaXMuIEJ1dCB5b3Ug
+Y2FuIHByaW50Cj4+Pj4+IHRoaXMuCj4+Pj4gSW5kZWVkLCB3ZSBzaG91bGQgaW5jbHVkZSB0aGF0
+IHRvIHRoZSBtZXNzYWdlIGFzIHdlbGwuCj4+Pj4KPj4+IEkndmUgZW5hYmxlZCBkYmcgbWVzc2Fn
+ZXMgYW5kIGFkZGVkIHJ4X21jc19zZXQgYW5kIHR4X21jc19zZXQgYXMgeW91Cj4+PiBzdWdnZXN0
+ZWQuCj4+PiBIZXJlIGlzIHRoZSBvdXRwdXQgZm9yIFNUQToKPj4+Cj4+PiBbIDIyNzguMzIwMzEy
+XSBhdGgxMGs6IGh0dCB0YXJnZXQgdmVyc2lvbiAyLjEKPj4+IFsgMjI3OC4zMjA0NTVdIGF0aDEw
+azogbWFjIHZkZXYgY3JlYXRlIDAgKGFkZCBpbnRlcmZhY2UpIHR5cGUgMiAKPj4+IHN1YnR5cGUg
+MAo+Pj4gWyAyMjc4LjMyMDc0MV0gYXRoMTBrOiBtYWMgdmRldiAwIGN0c19wcm90IDAKPj4+IFsg
+MjI3OC4zMjA3NjVdIGF0aDEwazogbWFjIHZkZXYgMCBzbG90X3RpbWUgMQo+Pj4gWyAyMjc4LjMy
+MDgwMV0gYXRoMTBrOiBtYWMgdmRldiAwIHByZWFtYmxlIDFuCj4+PiBbIDIyNzguMzIxMzIwXSBh
+dGgxMGs6IG1hYyBjb25maWcgY2hhbm5lbCA1MTgwIG1oego+Pj4gWyAyMjc4LjMyMTM1M10gYXRo
+MTBrOiBtYWMgdmRldiAwIHBzbW9kZSBkaXNhYmxlCj4+PiBbIDIyNzguMzIxNDQ4XSBJUHY2OiBB
+RERSQ09ORihORVRERVZfVVApOiB3bGFuMTogbGluayBpcyBub3QgcmVhZHkKPj4+IFsgMjI3OC4z
+MjE0NThdIGF0aDEwazogbWFjIHZkZXYgMCBwc21vZGUgZGlzYWJsZQo+Pj4gWyAyMjgyLjQ5OTky
+NV0gd2xhbjE6IGF1dGhlbnRpY2F0ZSB3aXRoIDA0OmYwOjIxOjBjOmEyOjNhCj4+PiBbIDIyODIu
+NDk5OTQ2XSBhdGgxMGs6IG1hYyBjb25maWcgY2hhbm5lbCA1MTgwIG1oego+Pj4gWyAyMjgyLjQ5
+OTk2Ml0gYXRoMTBrOiBtYWMgdmRldiAwIGJlYWNvbl9pbnRlcnZhbCAxMDAKPj4+IFsgMjI4Mi40
+OTk5NjhdIGF0aDEwazogbWFjIHZkZXYgMCBjcmVhdGUgcGVlciAwNDpmMDoyMTowYzphMjozYQo+
+Pj4gWyAyMjgyLjUwMDEwOV0gYXRoMTBrOiBtYWMgdmRldiAwIHN0YXJ0IDA0OmYwOjIxOjBjOmEy
+OjNhCj4+PiBbIDIyODIuNTAwMTE1XSBhdGgxMGs6IG1hYyB2ZGV2IDAgc3RhcnQgY2VudGVyX2Zy
+ZXEgNTE4MCBwaHltb2RlIAo+Pj4gMTFhYy12aHQ4MAo+Pj4gWyAyMjgyLjUwNjcxMV0gd2xhbjE6
+IGRpcmVjdCBwcm9iZSB0byAwNDpmMDoyMTowYzphMjozYSAodHJ5IDEvMykKPj4+IFsgMjI4Mi43
+MDgwNTJdIHdsYW4xOiBzZW5kIGF1dGggdG8gMDQ6ZjA6MjE6MGM6YTI6M2EgKHRyeSAyLzMpCj4+
+PiBbIDIyODIuNzA5MDk2XSB3bGFuMTogYXV0aGVudGljYXRlZAo+Pj4gWyAyMjgyLjcxMjEyMl0g
+d2xhbjE6IGFzc29jaWF0ZSB3aXRoIDA0OmYwOjIxOjBjOmEyOjNhICh0cnkgMS8zKQo+Pj4gWyAy
+MjgyLjcxMzkwN10gd2xhbjE6IFJYIEFzc29jUmVzcCBmcm9tIDA0OmYwOjIxOjBjOmEyOjNhIChj
+YXBhYj0weDEKPj4+IHN0YXR1cz0wIGFpZD0xKQo+Pj4gWyAyMjgyLjcxNDMzMV0gYXRoMTBrOiBt
+YWMgdmRldiAwIGR0aW1fcGVyaW9kIDIKPj4+IFsgMjI4Mi43MTQzNjddIGF0aDEwazogbWFjIHZk
+ZXYgMCBzbG90X3RpbWUgMgo+Pj4gWyAyMjgyLjcxNDQxNV0gYXRoMTBrOiBtYWMgaHQgcGVlciAw
+NDpmMDoyMTowYzphMjozYSBtY3MgY250IDI0IG5zcyAzCj4+PiBbIDIyODIuNzE0NDIxXSBhdGgx
+MGs6IG1hYyB2aHQgcGVlciAwNDpmMDoyMTowYzphMjozYSBtYXhfbXBkdSA2NTUzNSAKPj4+IGZs
+YWdzCj4+PiAweDYwMWIwMDEgcnhfbWNzX3NldCAwMDAwZmZlYSB0eF9tY3Nfc2V0IDAwMDBmZmVh
+Cj4+PiBbIDIyODIuNzE0NDI3XSBhdGgxMGs6IG1hYyBwZWVyIDA0OmYwOjIxOjBjOmEyOjNhIHBo
+eW1vZGUgMTFhYy12aHQ4MAo+Pj4gWyAyMjgyLjcxNDQzNV0gYXRoMTBrOiBtYWMgdmRldiAwIHVw
+IChhc3NvY2lhdGVkKSBic3NpZCAKPj4+IDA0OmYwOjIxOjBjOmEyOjNhCj4+PiBhaWQgMQo+Pj4g
+WyAyMjgyLjcxNDgyMl0gYXRoMTBrOiBtYWMgdmRldiAwIHBzbW9kZSBlbmFibGUKPj4+IFsgMjI4
+Mi43MTQ4NjldIHdsYW4xOiBhc3NvY2lhdGVkCj4+Pgo+Pj4gQW5kIGZvciBBUDoKPj4+IFsgOTQ2
+MC40NTg3MDBdIGF0aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+Pj4gWyA5NDYwLjQ1ODg3
+NF0gYXRoMTBrOiBtYWMgdmRldiBjcmVhdGUgMCAoYWRkIGludGVyZmFjZSkgdHlwZSAxIAo+Pj4g
+c3VidHlwZSAwCj4+PiBbIDk0NjAuNDU5MTIwXSBhdGgxMGs6IG1hYyB2ZGV2IDAgY3RzX3Byb3Qg
+MAo+Pj4gWyA5NDYwLjQ1OTE1NV0gYXRoMTBrOiBtYWMgdmRldiAwIHNsb3RfdGltZSAxCj4+PiBb
+IDk0NjAuNDU5MTU2XSBhdGgxMGs6IG1hYyB2ZGV2IDAgcHJlYW1ibGUgMW4KPj4+IFsgOTQ2MC40
+NTkzODVdIGF0aDEwazogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAgbWh6Cj4+PiBbIDk0NjAuNDU5
+NDM0XSBJUHY2OiBBRERSQ09ORihORVRERVZfVVApOiB3bGFuMjogbGluayBpcyBub3QgcmVhZHkK
+Pj4+IFsgOTQ2MS41NjIyNjJdIGF0aDEwazogbWFjIHZkZXYgMCBydHMgdGhyZXNob2xkIC0xCj4+
+PiBbIDk0NjEuNTYyMjkyXSBhdGgxMGs6IG1hYyB2ZGV2IDAgZnJhZ21lbnRhdGlvbiB0aHJlc2hv
+bGQgLTEKPj4+IFsgOTQ2MS41NjQ5MDBdIGF0aDEwazogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAg
+bWh6Cj4+PiBbIDk0NjEuNTY0OTE5XSBhdGgxMGs6IG1hYyB2ZGV2IDAgYmVhY29uX2ludGVydmFs
+IDEwMAo+Pj4gWyA5NDYxLjU2NDkyM10gYXRoMTBrOiB2ZGV2IDAgc2V0IGJlYWNvbiB0eCBtb2Rl
+IHRvIHN0YWdnZXJlZAo+Pj4gWyA5NDYxLjU2NDkzMV0gYXRoMTBrOiBtYWMgdmRldiAwIHN0YXJ0
+IGNlbnRlcl9mcmVxIDUxODAgcGh5bW9kZSAKPj4+IDExYWMtdmh0ODAKPj4+IFsgOTQ2MS41NzE5
+NzBdIGF0aDEwazogbWFjIHZkZXYgMCB1cAo+Pj4gWyA5NDYxLjU3MjEwOF0gYXRoMTBrOiBtYWMg
+dmRldiAwIGN0c19wcm90IDAKPj4+IFsgOTQ2MS41NzIxMTddIGF0aDEwazogbWFjIHZkZXYgMCBz
+bG90X3RpbWUgMgo+Pj4gWyA5NDYxLjU3MjI0MV0gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5H
+RSk6IHdsYW4yOiBsaW5rIGJlY29tZXMgcmVhZHkKPj4+IFsgOTQ2MS41NzIxOTJdIGF0aDEwazog
+bWFjIHZkZXYgMCBwcmVhbWJsZSAxbgo+Pj4gWyA5NTQ5LjMzMTU1Nl0gYXRoMTBrOiB2ZGV2IDAg
+c2V0IGJlYWNvbiB0eCBtb2RlIHRvIHN0YWdnZXJlZAo+Pj4gWyA5NTQ5LjMzMTYzN10gYXRoMTBr
+OiBtYWMgdmRldiAwIGN0c19wcm90IDAKPj4+IFsgOTU0OS4zMzE2NDRdIGF0aDEwazogbWFjIHZk
+ZXYgMCBwcmVhbWJsZSAxbgo+Pj4gWyA5NTQ5LjMzMjQyNV0gYXRoMTBrOiBtYWMgdmRldiAwIHBl
+ZXIgY3JlYXRlIDA0OmYwOjIxOjBjOmEyOjNiIChuZXcgCj4+PiBzdGEpCj4+PiBbIDk1NDkuMzMy
+NjI4XSBhdGgxMGs6IG1hYyBzdGEgMDQ6ZjA6MjE6MGM6YTI6M2IgYXNzb2NpYXRlZAo+Pj4gWyA5
+NTQ5LjMzMjYzN10gYXRoMTBrOiBtYWMgaHQgcGVlciAwNDpmMDoyMTowYzphMjozYiBtY3MgY250
+IDI0IG5zcyAzCj4+PiBbIDk1NDkuMzMyNjQzXSBhdGgxMGs6IG1hYyB2aHQgcGVlciAwNDpmMDoy
+MTowYzphMjozYiBtYXhfbXBkdSAKPj4+IDEwNDg1NzUgZmxhZ3MKPj4+IDB4NjAxYjAwMSByeF9t
+Y3Nfc2V0IDAwMDBmZmVhIHR4X21jc19zZXQgMDAwMGZmZWEKPj4+IFsgOTU0OS4zMzI2NDhdIGF0
+aDEwazogbWFjIHBlZXIgMDQ6ZjA6MjE6MGM6YTI6M2IgcGh5bW9kZSAxMWFjLXZodDgwCj4+Pgo+
+Pj4KPj4+IEFzIHlvdSBjYW4gc2VlLCB0aGUgIm5zcyIgdmFsdWUgaXMgc2V0IHRvIDMsIGJ1dCBJ
+J3ZlIG5ldmVyIG9ic2VydmVkIAo+Pj4gVkhULU5TUwo+Pj4gMyByZXBvcnRlZCBieSAiaXcgREVW
+IHN0YXRpb24gZHVtcCIuIEFsc28gdGhlIG1heGltdW0gdGhyb3VnaHB1dCBmb3IgCj4+PiBVRFAK
+Pj4+IG1lYXN1cmVkIGJ5IGlwZXJmIHdhcyB+NjMwTWJwcywgd2hpY2ggc2VlbXMgdG8gYmUgdGhl
+IG5ldHRvIHZhbHVlIAo+Pj4gZm9yIDJ4NDMzCj4+PiBNYnBzIFBIWSB0aHJvdWdocHV0Lgo+PiBJ
+IHdvdWxkbid0IHJlbHkgb24gc3RhdGlvbiBkdW1wIFR4L1J4IHN0YXRzIChlc3BlY2lhbGx5IFR4
+IHN0YXRzIHdoaWNoCj4+IGFyZSBicm9rZW4gZHVlIHRvIEZXIGxpbWl0YXRpb24pLgo+Pgo+PiBZ
+b3UgY2FuIGNyZWF0ZSBhIG1vbml0b3IgaW50ZXJmYWNlIG9uIHRoZSByZWNlaXZlciBzaWRlIGFu
+ZCBydW4KPj4gd2lyZXNoYXJrIGluIG5vbi1wcm9taXNjdW91cyBtb2RlIGFuZCBjaGVjayByYWRp
+b3RhcCBoZWFkZXJzIHRvCj4+IGNvbmZpcm0gd2hldGhlciAzIHNwYXRpYWwgc3RyZWFtcyBhcmUg
+dXNlZCBvciBub3QuCj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPiBJJ3ZlIGF0dGFjaGVkIHRoZSBvdXRw
+dXQgZnJvbSB3aXJlc2hhcmsuCj4KPiAgQmFuZHdpZHRoOiA4MCBNSHogKDQpCj4gICAgICAgICBV
+c2VyIDA6IE1DUyA5Cj4gICAgICAgICAgICAgMTAwMSAuLi4uID0gTUNTIGluZGV4IDA6IDkgKDI1
+Ni1RQU0gNS82KQo+ICAgICAgICAgICAgIC4uLi4gMDAxMCA9IFNwYXRpYWwgc3RyZWFtcyAwOiAy
+Cj4gICAgICAgICAgICAgU3BhY2UtdGltZSBzdHJlYW1zIDA6IDIKPiAgICAgICAgICAgICBDb2Rp
+bmcgMDogQkNDICgwKQo+ICAgICAgICAgICAgIFtEYXRhIFJhdGU6IDg2Niw2IE1iL3NdCj4KPiBV
+bmZvcnR1bmF0ZWx5LCBpdCBjb25maXJtcyB0aGF0IG9ubHkgMiBzcGF0aWFsIHN0cmVhbXMgYXJl
+IHVzZWQuCj4KPgo+IFRvbWFzelQKPgpJIHRob3VnaHQgdGhhdCBtYXliZSBvbmUgb2YgdGhlIGNh
+cmQgaXMgcGh5c2ljYWxseSBkYW1hZ2VkIGFuZCB0aGUgdGhpcmQgCnNwYXRpYWwgbGluayBjYW5u
+b3QgYmUgZXN0YWJsaXNoZWQuIEkndmUgY2hlY2tlZCB0aGF0IHVzaW5nIGEgODAyLjExYWMgCnJv
+dXRlciwgd2hpY2ggSSBhbHNvIGhhdmUgKGFuZCBpdCBzdXBwb3J0cyAzIHN0cmVhbXMpLiBCb3Ro
+IGNhcmRzIApjb25uZWN0ZWQgd2l0aCBpdCB1c2luZyBvbmx5IDIgc3BhdGlhbCBzdHJlYW1zLiBJ
+dHMgdW5saWtlbHkgdGhhdCBib3RoIApjYXJkcyBoYXZlIGEgbWFsZnVuY3Rpb24sIHNvIGl0cyBy
+YXRoZXIgYSBzb2Z0d2FyZSBwcm9ibGVtLgoKVG9tYXN6VAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
