@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp4.dhosting.pl ([195.88.50.41])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vpzg3-0003vI-Br
- for ath10k@lists.infradead.org; Mon, 09 Dec 2013 12:11:09 +0000
-Message-ID: <52A5B33D.7010006@elnovel.com>
-Date: Mon, 09 Dec 2013 13:10:37 +0100
-From: Tomasz Tajmajer <tt@elnovel.com>
+Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
+ ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vq7iA-0001VH-Fa
+ for ath10k@lists.infradead.org; Mon, 09 Dec 2013 20:45:51 +0000
+Date: Mon, 9 Dec 2013 15:30:57 -0500
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: Pull request: ath 20131203
+Message-ID: <20131209203057.GC3359@tuxdriver.com>
+References: <87txep52hf.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [BUG] QWLE900V5-18 - cannot achievie 3 spatial streams link
-References: <52A1FC69.7080901@elnovel.com>	<CALhHN=qPRgc-FaKbazdAmmxvi+YXxoFOp2Ax=x0iDp0LXknjHA@mail.gmail.com>	<874n6i1jk7.fsf@kamboji.qca.qualcomm.com>	<52A5955E.2060106@elnovel.com>
- <CA+BoTQk95VmU=e1cLOtzcX8Y_j6YjFFw1STOT=r7NSHTd2vuJA@mail.gmail.com>
- <52A5A98A.3000102@elnovel.com>
-In-Reply-To: <52A5A98A.3000102@elnovel.com>
+Content-Disposition: inline
+In-Reply-To: <87txep52hf.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,140 +20,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ck9uIDA5LjEyLjIwMTMgMTI6MjksIFRvbWFzeiBUYWptYWplciB3cm90ZToKPgo+IE9uIDA5LjEy
-LjIwMTMgMTE6MTMsIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+IE9uIDkgRGVjZW1iZXIgMjAxMyAx
-MTowMywgVG9tYXN6IFRham1hamVyIDx0dEBlbG5vdmVsLmNvbT4gd3JvdGU6Cj4+PiBPbiAwOS4x
-Mi4yMDEzIDEwOjA0LCBLYWxsZSBWYWxvIHdyb3RlOgo+Pj4+IEphbnVzeiBEemllZHppYyA8amFu
-dXN6LmR6aWVkemljQHRpZXRvLmNvbT4gd3JpdGVzOgo+Pj4+Cj4+Pj4+IE9uIDYgRGVjZW1iZXIg
-MjAxMyAxNzozMywgVG9tYXN6IFRham1hamVyIDx0dEBlbG5vdmVsLmNvbT4gd3JvdGU6Cj4+Pj4+
-PiBIaSwKPj4+Pj4+Cj4+Pj4+PiBSZWNlbnRseSwgSSd2ZSBiZWVuIG1ha2luZyBxdWl0ZSBhIGxv
-dCBvZiB0ZXN0cyB3aXRoIHR3byAKPj4+Pj4+IFFXTEU5MDBWNS0xOAo+Pj4+Pj4gY2FyZHMuCj4+
-Pj4+PiBJIGhhZCBzb21lIGlzc3VlcyB3aXRoIHRoZSBkcml2ZXJzIChlLmcuIHJlZ2FyZGluZyB0
-aGUgcmVndWxhdG9yeQo+Pj4+Pj4gZG9tYWluKSwKPj4+Pj4+IGJ1dCBJJ3ZlIG1hbmFnZWQgdG8g
-Zml4IHRoZW0gb24gbXkgb3duLiBIb3dldmVyLCB0aGVyZSBpcyBvbmUgCj4+Pj4+PiBpc3N1ZSB0
-aGF0Cj4+Pj4+PiBJCj4+Pj4+PiBjYW5ub3QgZGVhbCB3aXRoLgo+Pj4+Pj4gSSdtIHRyeWluZyB0
-byBnZXQgdGhlIGhpZ2hlc3QgdGhyb3VnaHB1dCBwb3NzaWJsZSB1c2luZyAzeDMgTUlNTy4gCj4+
-Pj4+PiBUaGUKPj4+Pj4+IHByb2JsZW0gaXMgdGhhdCB0aGUgd2lmaSBjYXJkIGRvZXMgbm90IHNl
-dCBoaWdoZXIgcmF0ZXMgdGhhbiAKPj4+Pj4+IDJ4NDMzLjNNYnBzCj4+Pj4+PiAoTUNTIDksIFZI
-VC1OU1MgMikuIFRoZSBzcGVjaWZpY2F0aW9uIHNheXMgdGhhdCBpdCBzaG91bGQgYmUgCj4+Pj4+
-PiBwb3NzaWJsZSB0bwo+Pj4+Pj4gaGF2ZSAzIHNwYXRpYWwgc3RyZWFtcy4KPj4+Pj4+IEZpcnN0
-LCBJIHRob3VnaHQgaXQgaXMgYSBwcm9ibGVtIHdpdGggc29tZSBvcHRpb25zIG9mIGhvc3RhcGQs
-IGJ1dAo+Pj4+Pj4gaG9zdGFwZAo+Pj4+Pj4gZXZlbiBkb2VzIG5vdCBhbGxvd3MgbWUgdG8gc2V0
-IHRoZSBbUlgtU1RCQy0xMl0gb3IgW1JYLVNUQkMtMTIzXQo+Pj4+Pj4gb3B0aW9ucy4KPj4+Pj4+
-IE9ubHkgW1JYLVNUQkMtMV0gbWF5IGJlIHNldCBpbiB0aGUgY29uZmlndXJhdGlvbiAod2hhdCBp
-biBmYWN0LCAKPj4+Pj4+IGRvZXMgbm90Cj4+Pj4+PiBkaXNhbGxvd3MgdGhlIDJ4NDMzLjNNYnBz
-IGxpbmssIHdoaWNoIGlzIGFub3RoZXIgaXNzdWUpLgo+Pj4+Pj4gRHJpdmVyIGluZm8gc2hvd3Mg
-dGhhdCB0aGUgZHJpdmVyIHNob3VsZCBzdXBwb3J0IDMgc3BhdGlhbCBzdHJlYW1zLgo+Pj4+Pj4g
-SSBhbSBub3Qgc3VyZSB3aGVyZSBpcyB0aGUgcHJvYmxlbSwgaXMgaXQgc29tZSBidWcgaW4gaG9z
-dGFwZCwgd2hpY2gKPj4+Pj4+IGZvcmNlcwo+Pj4+Pj4gdGhlIGNhcmQgdG8gdXNlIDIgc3BhdGlh
-bCBzdHJlYW1zIG9ubHkgb3IgaXMgaXQgdGhlIGRyaXZlciwgd2hpY2ggCj4+Pj4+PiBkb2VzCj4+
-Pj4+PiBub3QKPj4+Pj4+IGVuYWJsZSAzIHN0cmVhbXMgd2hlbiBpdCBpcyBwb3NzaWJsZS4gVGhl
-IHBoeXNpY2FsIGNvbm5lY3Rpdml0eQo+Pj4+Pj4gKGFudGVubmFzCj4+Pj4+PiBldGMuKSBpcyBu
-b3QgdGhlIHByb2JsZW0gQUZBSUsuCj4+Pj4+Pgo+Pj4+PiBXaGVuIHN0YSBhc3NvYyB0byBhcCB5
-b3Ugd2lsbCBnZXQgZGJnIG1lc2cgKHlvdSBjYW4gZW5hYmxlIHRoaXMgZWcuCj4+Pj4+IHdoZW4g
-bG9hZGluZyBhdGgxMGtfY29yZSBtb2R1bGUgd2l0aCBwYXJhbSAtIGRlYnVnX21hc2spLgo+Pj4+
-PiAibWFjIGh0IHBlZXIgJXBNIG1jcyBjbnQgJWQgbnNzICVkXG4iIC0gbnNzIGlzIGludGVyZXN0
-aW5nIGhlcmUKPj4+PiBUaGlzIGRlYnVnIG1lc3NhZ2UgaXMgZW5hYmxlZCB3aXRoIEFUSDEwS19E
-QkdfTUFDLiBNb3JlIGluZm8gaGVyZToKPj4+Pgo+Pj4+IGh0dHA6Ly93aXJlbGVzcy5rZXJuZWwu
-b3JnL2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Pj4KPj4+Pj4gQWxzbyByeF9tY3Nf
-c2V0IGZvciBTVEEgZnJvbSBhdGgxMGtfcGVlcl9hc3NvY19oX3ZodCgpIGNvdWxkIGJlCj4+Pj4+
-IGludGVyZXN0aW5nIC0gdW5mb3J0dW5ldGx5IHdlIGRvbid0IHByaW50IHRoaXMuIEJ1dCB5b3Ug
-Y2FuIHByaW50Cj4+Pj4+IHRoaXMuCj4+Pj4gSW5kZWVkLCB3ZSBzaG91bGQgaW5jbHVkZSB0aGF0
-IHRvIHRoZSBtZXNzYWdlIGFzIHdlbGwuCj4+Pj4KPj4+IEkndmUgZW5hYmxlZCBkYmcgbWVzc2Fn
-ZXMgYW5kIGFkZGVkIHJ4X21jc19zZXQgYW5kIHR4X21jc19zZXQgYXMgeW91Cj4+PiBzdWdnZXN0
-ZWQuCj4+PiBIZXJlIGlzIHRoZSBvdXRwdXQgZm9yIFNUQToKPj4+Cj4+PiBbIDIyNzguMzIwMzEy
-XSBhdGgxMGs6IGh0dCB0YXJnZXQgdmVyc2lvbiAyLjEKPj4+IFsgMjI3OC4zMjA0NTVdIGF0aDEw
-azogbWFjIHZkZXYgY3JlYXRlIDAgKGFkZCBpbnRlcmZhY2UpIHR5cGUgMiAKPj4+IHN1YnR5cGUg
-MAo+Pj4gWyAyMjc4LjMyMDc0MV0gYXRoMTBrOiBtYWMgdmRldiAwIGN0c19wcm90IDAKPj4+IFsg
-MjI3OC4zMjA3NjVdIGF0aDEwazogbWFjIHZkZXYgMCBzbG90X3RpbWUgMQo+Pj4gWyAyMjc4LjMy
-MDgwMV0gYXRoMTBrOiBtYWMgdmRldiAwIHByZWFtYmxlIDFuCj4+PiBbIDIyNzguMzIxMzIwXSBh
-dGgxMGs6IG1hYyBjb25maWcgY2hhbm5lbCA1MTgwIG1oego+Pj4gWyAyMjc4LjMyMTM1M10gYXRo
-MTBrOiBtYWMgdmRldiAwIHBzbW9kZSBkaXNhYmxlCj4+PiBbIDIyNzguMzIxNDQ4XSBJUHY2OiBB
-RERSQ09ORihORVRERVZfVVApOiB3bGFuMTogbGluayBpcyBub3QgcmVhZHkKPj4+IFsgMjI3OC4z
-MjE0NThdIGF0aDEwazogbWFjIHZkZXYgMCBwc21vZGUgZGlzYWJsZQo+Pj4gWyAyMjgyLjQ5OTky
-NV0gd2xhbjE6IGF1dGhlbnRpY2F0ZSB3aXRoIDA0OmYwOjIxOjBjOmEyOjNhCj4+PiBbIDIyODIu
-NDk5OTQ2XSBhdGgxMGs6IG1hYyBjb25maWcgY2hhbm5lbCA1MTgwIG1oego+Pj4gWyAyMjgyLjQ5
-OTk2Ml0gYXRoMTBrOiBtYWMgdmRldiAwIGJlYWNvbl9pbnRlcnZhbCAxMDAKPj4+IFsgMjI4Mi40
-OTk5NjhdIGF0aDEwazogbWFjIHZkZXYgMCBjcmVhdGUgcGVlciAwNDpmMDoyMTowYzphMjozYQo+
-Pj4gWyAyMjgyLjUwMDEwOV0gYXRoMTBrOiBtYWMgdmRldiAwIHN0YXJ0IDA0OmYwOjIxOjBjOmEy
-OjNhCj4+PiBbIDIyODIuNTAwMTE1XSBhdGgxMGs6IG1hYyB2ZGV2IDAgc3RhcnQgY2VudGVyX2Zy
-ZXEgNTE4MCBwaHltb2RlIAo+Pj4gMTFhYy12aHQ4MAo+Pj4gWyAyMjgyLjUwNjcxMV0gd2xhbjE6
-IGRpcmVjdCBwcm9iZSB0byAwNDpmMDoyMTowYzphMjozYSAodHJ5IDEvMykKPj4+IFsgMjI4Mi43
-MDgwNTJdIHdsYW4xOiBzZW5kIGF1dGggdG8gMDQ6ZjA6MjE6MGM6YTI6M2EgKHRyeSAyLzMpCj4+
-PiBbIDIyODIuNzA5MDk2XSB3bGFuMTogYXV0aGVudGljYXRlZAo+Pj4gWyAyMjgyLjcxMjEyMl0g
-d2xhbjE6IGFzc29jaWF0ZSB3aXRoIDA0OmYwOjIxOjBjOmEyOjNhICh0cnkgMS8zKQo+Pj4gWyAy
-MjgyLjcxMzkwN10gd2xhbjE6IFJYIEFzc29jUmVzcCBmcm9tIDA0OmYwOjIxOjBjOmEyOjNhIChj
-YXBhYj0weDEKPj4+IHN0YXR1cz0wIGFpZD0xKQo+Pj4gWyAyMjgyLjcxNDMzMV0gYXRoMTBrOiBt
-YWMgdmRldiAwIGR0aW1fcGVyaW9kIDIKPj4+IFsgMjI4Mi43MTQzNjddIGF0aDEwazogbWFjIHZk
-ZXYgMCBzbG90X3RpbWUgMgo+Pj4gWyAyMjgyLjcxNDQxNV0gYXRoMTBrOiBtYWMgaHQgcGVlciAw
-NDpmMDoyMTowYzphMjozYSBtY3MgY250IDI0IG5zcyAzCj4+PiBbIDIyODIuNzE0NDIxXSBhdGgx
-MGs6IG1hYyB2aHQgcGVlciAwNDpmMDoyMTowYzphMjozYSBtYXhfbXBkdSA2NTUzNSAKPj4+IGZs
-YWdzCj4+PiAweDYwMWIwMDEgcnhfbWNzX3NldCAwMDAwZmZlYSB0eF9tY3Nfc2V0IDAwMDBmZmVh
-Cj4+PiBbIDIyODIuNzE0NDI3XSBhdGgxMGs6IG1hYyBwZWVyIDA0OmYwOjIxOjBjOmEyOjNhIHBo
-eW1vZGUgMTFhYy12aHQ4MAo+Pj4gWyAyMjgyLjcxNDQzNV0gYXRoMTBrOiBtYWMgdmRldiAwIHVw
-IChhc3NvY2lhdGVkKSBic3NpZCAKPj4+IDA0OmYwOjIxOjBjOmEyOjNhCj4+PiBhaWQgMQo+Pj4g
-WyAyMjgyLjcxNDgyMl0gYXRoMTBrOiBtYWMgdmRldiAwIHBzbW9kZSBlbmFibGUKPj4+IFsgMjI4
-Mi43MTQ4NjldIHdsYW4xOiBhc3NvY2lhdGVkCj4+Pgo+Pj4gQW5kIGZvciBBUDoKPj4+IFsgOTQ2
-MC40NTg3MDBdIGF0aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+Pj4gWyA5NDYwLjQ1ODg3
-NF0gYXRoMTBrOiBtYWMgdmRldiBjcmVhdGUgMCAoYWRkIGludGVyZmFjZSkgdHlwZSAxIAo+Pj4g
-c3VidHlwZSAwCj4+PiBbIDk0NjAuNDU5MTIwXSBhdGgxMGs6IG1hYyB2ZGV2IDAgY3RzX3Byb3Qg
-MAo+Pj4gWyA5NDYwLjQ1OTE1NV0gYXRoMTBrOiBtYWMgdmRldiAwIHNsb3RfdGltZSAxCj4+PiBb
-IDk0NjAuNDU5MTU2XSBhdGgxMGs6IG1hYyB2ZGV2IDAgcHJlYW1ibGUgMW4KPj4+IFsgOTQ2MC40
-NTkzODVdIGF0aDEwazogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAgbWh6Cj4+PiBbIDk0NjAuNDU5
-NDM0XSBJUHY2OiBBRERSQ09ORihORVRERVZfVVApOiB3bGFuMjogbGluayBpcyBub3QgcmVhZHkK
-Pj4+IFsgOTQ2MS41NjIyNjJdIGF0aDEwazogbWFjIHZkZXYgMCBydHMgdGhyZXNob2xkIC0xCj4+
-PiBbIDk0NjEuNTYyMjkyXSBhdGgxMGs6IG1hYyB2ZGV2IDAgZnJhZ21lbnRhdGlvbiB0aHJlc2hv
-bGQgLTEKPj4+IFsgOTQ2MS41NjQ5MDBdIGF0aDEwazogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAg
-bWh6Cj4+PiBbIDk0NjEuNTY0OTE5XSBhdGgxMGs6IG1hYyB2ZGV2IDAgYmVhY29uX2ludGVydmFs
-IDEwMAo+Pj4gWyA5NDYxLjU2NDkyM10gYXRoMTBrOiB2ZGV2IDAgc2V0IGJlYWNvbiB0eCBtb2Rl
-IHRvIHN0YWdnZXJlZAo+Pj4gWyA5NDYxLjU2NDkzMV0gYXRoMTBrOiBtYWMgdmRldiAwIHN0YXJ0
-IGNlbnRlcl9mcmVxIDUxODAgcGh5bW9kZSAKPj4+IDExYWMtdmh0ODAKPj4+IFsgOTQ2MS41NzE5
-NzBdIGF0aDEwazogbWFjIHZkZXYgMCB1cAo+Pj4gWyA5NDYxLjU3MjEwOF0gYXRoMTBrOiBtYWMg
-dmRldiAwIGN0c19wcm90IDAKPj4+IFsgOTQ2MS41NzIxMTddIGF0aDEwazogbWFjIHZkZXYgMCBz
-bG90X3RpbWUgMgo+Pj4gWyA5NDYxLjU3MjI0MV0gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5H
-RSk6IHdsYW4yOiBsaW5rIGJlY29tZXMgcmVhZHkKPj4+IFsgOTQ2MS41NzIxOTJdIGF0aDEwazog
-bWFjIHZkZXYgMCBwcmVhbWJsZSAxbgo+Pj4gWyA5NTQ5LjMzMTU1Nl0gYXRoMTBrOiB2ZGV2IDAg
-c2V0IGJlYWNvbiB0eCBtb2RlIHRvIHN0YWdnZXJlZAo+Pj4gWyA5NTQ5LjMzMTYzN10gYXRoMTBr
-OiBtYWMgdmRldiAwIGN0c19wcm90IDAKPj4+IFsgOTU0OS4zMzE2NDRdIGF0aDEwazogbWFjIHZk
-ZXYgMCBwcmVhbWJsZSAxbgo+Pj4gWyA5NTQ5LjMzMjQyNV0gYXRoMTBrOiBtYWMgdmRldiAwIHBl
-ZXIgY3JlYXRlIDA0OmYwOjIxOjBjOmEyOjNiIChuZXcgCj4+PiBzdGEpCj4+PiBbIDk1NDkuMzMy
-NjI4XSBhdGgxMGs6IG1hYyBzdGEgMDQ6ZjA6MjE6MGM6YTI6M2IgYXNzb2NpYXRlZAo+Pj4gWyA5
-NTQ5LjMzMjYzN10gYXRoMTBrOiBtYWMgaHQgcGVlciAwNDpmMDoyMTowYzphMjozYiBtY3MgY250
-IDI0IG5zcyAzCj4+PiBbIDk1NDkuMzMyNjQzXSBhdGgxMGs6IG1hYyB2aHQgcGVlciAwNDpmMDoy
-MTowYzphMjozYiBtYXhfbXBkdSAKPj4+IDEwNDg1NzUgZmxhZ3MKPj4+IDB4NjAxYjAwMSByeF9t
-Y3Nfc2V0IDAwMDBmZmVhIHR4X21jc19zZXQgMDAwMGZmZWEKPj4+IFsgOTU0OS4zMzI2NDhdIGF0
-aDEwazogbWFjIHBlZXIgMDQ6ZjA6MjE6MGM6YTI6M2IgcGh5bW9kZSAxMWFjLXZodDgwCj4+Pgo+
-Pj4KPj4+IEFzIHlvdSBjYW4gc2VlLCB0aGUgIm5zcyIgdmFsdWUgaXMgc2V0IHRvIDMsIGJ1dCBJ
-J3ZlIG5ldmVyIG9ic2VydmVkIAo+Pj4gVkhULU5TUwo+Pj4gMyByZXBvcnRlZCBieSAiaXcgREVW
-IHN0YXRpb24gZHVtcCIuIEFsc28gdGhlIG1heGltdW0gdGhyb3VnaHB1dCBmb3IgCj4+PiBVRFAK
-Pj4+IG1lYXN1cmVkIGJ5IGlwZXJmIHdhcyB+NjMwTWJwcywgd2hpY2ggc2VlbXMgdG8gYmUgdGhl
-IG5ldHRvIHZhbHVlIAo+Pj4gZm9yIDJ4NDMzCj4+PiBNYnBzIFBIWSB0aHJvdWdocHV0Lgo+PiBJ
-IHdvdWxkbid0IHJlbHkgb24gc3RhdGlvbiBkdW1wIFR4L1J4IHN0YXRzIChlc3BlY2lhbGx5IFR4
-IHN0YXRzIHdoaWNoCj4+IGFyZSBicm9rZW4gZHVlIHRvIEZXIGxpbWl0YXRpb24pLgo+Pgo+PiBZ
-b3UgY2FuIGNyZWF0ZSBhIG1vbml0b3IgaW50ZXJmYWNlIG9uIHRoZSByZWNlaXZlciBzaWRlIGFu
-ZCBydW4KPj4gd2lyZXNoYXJrIGluIG5vbi1wcm9taXNjdW91cyBtb2RlIGFuZCBjaGVjayByYWRp
-b3RhcCBoZWFkZXJzIHRvCj4+IGNvbmZpcm0gd2hldGhlciAzIHNwYXRpYWwgc3RyZWFtcyBhcmUg
-dXNlZCBvciBub3QuCj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPiBJJ3ZlIGF0dGFjaGVkIHRoZSBvdXRw
-dXQgZnJvbSB3aXJlc2hhcmsuCj4KPiAgQmFuZHdpZHRoOiA4MCBNSHogKDQpCj4gICAgICAgICBV
-c2VyIDA6IE1DUyA5Cj4gICAgICAgICAgICAgMTAwMSAuLi4uID0gTUNTIGluZGV4IDA6IDkgKDI1
-Ni1RQU0gNS82KQo+ICAgICAgICAgICAgIC4uLi4gMDAxMCA9IFNwYXRpYWwgc3RyZWFtcyAwOiAy
-Cj4gICAgICAgICAgICAgU3BhY2UtdGltZSBzdHJlYW1zIDA6IDIKPiAgICAgICAgICAgICBDb2Rp
-bmcgMDogQkNDICgwKQo+ICAgICAgICAgICAgIFtEYXRhIFJhdGU6IDg2Niw2IE1iL3NdCj4KPiBV
-bmZvcnR1bmF0ZWx5LCBpdCBjb25maXJtcyB0aGF0IG9ubHkgMiBzcGF0aWFsIHN0cmVhbXMgYXJl
-IHVzZWQuCj4KPgo+IFRvbWFzelQKPgpJIHRob3VnaHQgdGhhdCBtYXliZSBvbmUgb2YgdGhlIGNh
-cmQgaXMgcGh5c2ljYWxseSBkYW1hZ2VkIGFuZCB0aGUgdGhpcmQgCnNwYXRpYWwgbGluayBjYW5u
-b3QgYmUgZXN0YWJsaXNoZWQuIEkndmUgY2hlY2tlZCB0aGF0IHVzaW5nIGEgODAyLjExYWMgCnJv
-dXRlciwgd2hpY2ggSSBhbHNvIGhhdmUgKGFuZCBpdCBzdXBwb3J0cyAzIHN0cmVhbXMpLiBCb3Ro
-IGNhcmRzIApjb25uZWN0ZWQgd2l0aCBpdCB1c2luZyBvbmx5IDIgc3BhdGlhbCBzdHJlYW1zLiBJ
-dHMgdW5saWtlbHkgdGhhdCBib3RoIApjYXJkcyBoYXZlIGEgbWFsZnVuY3Rpb24sIHNvIGl0cyBy
-YXRoZXIgYSBzb2Z0d2FyZSBwcm9ibGVtLgoKVG9tYXN6VAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+On Tue, Dec 03, 2013 at 06:22:04PM +0200, Kalle Valo wrote:
+> Hi John,
+> 
+> here are ath10k patches which accumulated during the merge window.
+> 
+> Janusz and Marek implemented DFS support to ath10k, but the code is not
+> enabled yet due to missing cfg80211/mac80211 patches (it will be enabled
+> in the next pull request). Michal did some device reset fixes and made
+> it possible for ath10k to share an interrupt with another device. And
+> lots of smaller fixes from different people.
+> 
+> This time there are two conflicts, one in htc.c and other in mac.c. For
+> the htc change just delete the hunk. For the mac.c conflict take the
+> hunk from cfb27d29b61 (the bigger one) and rename
+> IEEE80211_CHAN_PASSIVE_SCAN to IEEE80211_CHAN_NO_IR. After you have
+> fixed the conflicts 'git diff' should show you this:
+> 
+> diff --cc drivers/net/wireless/ath/ath10k/htc.c
+> index edae50b,b068ae0..0000000
+> --- a/drivers/net/wireless/ath/ath10k/htc.c
+> +++ b/drivers/net/wireless/ath/ath10k/htc.c
+> diff --cc drivers/net/wireless/ath/ath10k/mac.c
+> index 06fe2b8,7d3d3ac..0000000
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@@ -1356,7 -1482,10 +1482,10 @@@ static int ath10k_update_channel_list(s
+>                         ch->ht40plus =
+>                                 !(channel->flags & IEEE80211_CHAN_NO_HT40PLUS);
+>   
+> +                       ch->chan_radar =
+> +                               !!(channel->flags & IEEE80211_CHAN_RADAR);
+> + 
+>  -                      passive = channel->flags & IEEE80211_CHAN_PASSIVE_SCAN;
+>  +                      passive = channel->flags & IEEE80211_CHAN_NO_IR;
+>                         ch->passive = passive;
+>   
+>                         ch->freq = channel->center_freq;
+> 
+> Please let me know if you prefer me to handle the conflict differently
+> or if there are any other problems with the pull request.
+> 
+> The following changes since commit a1b13b9ad3759dca24c6b721ee026c540a4e6564:
+> 
+>   rt2x00: rt2800pci: use module_pci_driver macro (2013-10-18 14:07:00 -0400)
+> 
+> are available in the git repository at:
+> 
+>   git://github.com/kvalo/ath.git tags/for-linville-20131203
+> 
+> for you to fetch changes up to cfb27d29b61cc32c0bb75f741aeabb9c6e6af742:
+> 
+>   ath10k: fix multi BSSID with WPA on FW 10.1 (2013-12-02 18:51:13 +0200)
+
+Pulling now -- thanks for the advice on the merge fixup!
+
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
