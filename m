@@ -1,23 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqphS-0006WP-Le
- for ath10k@lists.infradead.org; Wed, 11 Dec 2013 19:44:04 +0000
-Received: by mail-la0-f43.google.com with SMTP id n7so4215998lam.30
- for <ath10k@lists.infradead.org>; Wed, 11 Dec 2013 11:43:38 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <52A85844.3080009@elnovel.com>
-References: <52A1FC69.7080901@elnovel.com>
- <CALhHN=qPRgc-FaKbazdAmmxvi+YXxoFOp2Ax=x0iDp0LXknjHA@mail.gmail.com>
- <874n6i1jk7.fsf@kamboji.qca.qualcomm.com>
- <52A5955E.2060106@elnovel.com>
- <CA+BoTQk95VmU=e1cLOtzcX8Y_j6YjFFw1STOT=r7NSHTd2vuJA@mail.gmail.com>
- <52A5A98A.3000102@elnovel.com> <52A5B33D.7010006@elnovel.com>
- <52A85844.3080009@elnovel.com>
-Date: Wed, 11 Dec 2013 20:43:37 +0100
-Message-ID: <CALhHN=oBnJG61UPQ9PYHAJd9cRAOBabYwVs=nKUTRCLaEy9YfA@mail.gmail.com>
-Subject: Re: [BUG] QWLE900V5-18 - cannot achievie 3 spatial streams link
+ id 1Vqpk2-0006ab-4R
+ for ath10k@lists.infradead.org; Wed, 11 Dec 2013 19:46:42 +0000
+Received: by mail-ee0-f41.google.com with SMTP id t10so3160471eei.28
+ for <ath10k@lists.infradead.org>; Wed, 11 Dec 2013 11:46:20 -0800 (PST)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFC] ath10k: add set_bitrate_mask callback
+Date: Wed, 11 Dec 2013 20:46:06 +0100
+Message-Id: <1386791166-3483-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,231 +17,264 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tomasz Tajmajer <tt@elnovel.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, tt@elnovel.com
 
-On 11 December 2013 13:19, Tomasz Tajmajer <tt@elnovel.com> wrote:
->
-> On 09.12.2013 13:10, Tomasz Tajmajer wrote:
->>
->>
->> On 09.12.2013 12:29, Tomasz Tajmajer wrote:
->>>
->>>
->>> On 09.12.2013 11:13, Michal Kazior wrote:
->>>>
->>>> On 9 December 2013 11:03, Tomasz Tajmajer <tt@elnovel.com> wrote:
->>>>>
->>>>> On 09.12.2013 10:04, Kalle Valo wrote:
->>>>>>
->>>>>> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->>>>>>
->>>>>>> On 6 December 2013 17:33, Tomasz Tajmajer <tt@elnovel.com> wrote:
->>>>>>>>
->>>>>>>> Hi,
->>>>>>>>
->>>>>>>> Recently, I've been making quite a lot of tests with two
->>>>>>>> QWLE900V5-18
->>>>>>>> cards.
->>>>>>>> I had some issues with the drivers (e.g. regarding the regulatory
->>>>>>>> domain),
->>>>>>>> but I've managed to fix them on my own. However, there is one issue
->>>>>>>> that
->>>>>>>> I
->>>>>>>> cannot deal with.
->>>>>>>> I'm trying to get the highest throughput possible using 3x3 MIMO.
->>>>>>>> The
->>>>>>>> problem is that the wifi card does not set higher rates than
->>>>>>>> 2x433.3Mbps
->>>>>>>> (MCS 9, VHT-NSS 2). The specification says that it should be
->>>>>>>> possible to
->>>>>>>> have 3 spatial streams.
->>>>>>>> First, I thought it is a problem with some options of hostapd, but
->>>>>>>> hostapd
->>>>>>>> even does not allows me to set the [RX-STBC-12] or [RX-STBC-123]
->>>>>>>> options.
->>>>>>>> Only [RX-STBC-1] may be set in the configuration (what in fact, do=
-es
->>>>>>>> not
->>>>>>>> disallows the 2x433.3Mbps link, which is another issue).
->>>>>>>> Driver info shows that the driver should support 3 spatial streams.
->>>>>>>> I am not sure where is the problem, is it some bug in hostapd, whi=
-ch
->>>>>>>> forces
->>>>>>>> the card to use 2 spatial streams only or is it the driver, which
->>>>>>>> does
->>>>>>>> not
->>>>>>>> enable 3 streams when it is possible. The physical connectivity
->>>>>>>> (antennas
->>>>>>>> etc.) is not the problem AFAIK.
->>>>>>>>
->>>>>>> When sta assoc to ap you will get dbg mesg (you can enable this eg.
->>>>>>> when loading ath10k_core module with param - debug_mask).
->>>>>>> "mac ht peer %pM mcs cnt %d nss %d\n" - nss is interesting here
->>>>>>
->>>>>> This debug message is enabled with ATH10K_DBG_MAC. More info here:
->>>>>>
->>>>>> http://wireless.kernel.org/en/users/Drivers/ath10k/debug
->>>>>>
->>>>>>> Also rx_mcs_set for STA from ath10k_peer_assoc_h_vht() could be
->>>>>>> interesting - unfortunetly we don't print this. But you can print
->>>>>>> this.
->>>>>>
->>>>>> Indeed, we should include that to the message as well.
->>>>>>
->>>>> I've enabled dbg messages and added rx_mcs_set and tx_mcs_set as you
->>>>> suggested.
->>>>> Here is the output for STA:
->>>>>
->>>>> [ 2278.320312] ath10k: htt target version 2.1
->>>>> [ 2278.320455] ath10k: mac vdev create 0 (add interface) type 2 subty=
-pe
->>>>> 0
->>>>> [ 2278.320741] ath10k: mac vdev 0 cts_prot 0
->>>>> [ 2278.320765] ath10k: mac vdev 0 slot_time 1
->>>>> [ 2278.320801] ath10k: mac vdev 0 preamble 1n
->>>>> [ 2278.321320] ath10k: mac config channel 5180 mhz
->>>>> [ 2278.321353] ath10k: mac vdev 0 psmode disable
->>>>> [ 2278.321448] IPv6: ADDRCONF(NETDEV_UP): wlan1: link is not ready
->>>>> [ 2278.321458] ath10k: mac vdev 0 psmode disable
->>>>> [ 2282.499925] wlan1: authenticate with 04:f0:21:0c:a2:3a
->>>>> [ 2282.499946] ath10k: mac config channel 5180 mhz
->>>>> [ 2282.499962] ath10k: mac vdev 0 beacon_interval 100
->>>>> [ 2282.499968] ath10k: mac vdev 0 create peer 04:f0:21:0c:a2:3a
->>>>> [ 2282.500109] ath10k: mac vdev 0 start 04:f0:21:0c:a2:3a
->>>>> [ 2282.500115] ath10k: mac vdev 0 start center_freq 5180 phymode
->>>>> 11ac-vht80
->>>>> [ 2282.506711] wlan1: direct probe to 04:f0:21:0c:a2:3a (try 1/3)
->>>>> [ 2282.708052] wlan1: send auth to 04:f0:21:0c:a2:3a (try 2/3)
->>>>> [ 2282.709096] wlan1: authenticated
->>>>> [ 2282.712122] wlan1: associate with 04:f0:21:0c:a2:3a (try 1/3)
->>>>> [ 2282.713907] wlan1: RX AssocResp from 04:f0:21:0c:a2:3a (capab=3D0x1
->>>>> status=3D0 aid=3D1)
->>>>> [ 2282.714331] ath10k: mac vdev 0 dtim_period 2
->>>>> [ 2282.714367] ath10k: mac vdev 0 slot_time 2
->>>>> [ 2282.714415] ath10k: mac ht peer 04:f0:21:0c:a2:3a mcs cnt 24 nss 3
->>>>> [ 2282.714421] ath10k: mac vht peer 04:f0:21:0c:a2:3a max_mpdu 65535
->>>>> flags
->>>>> 0x601b001 rx_mcs_set 0000ffea tx_mcs_set 0000ffea
->>>>> [ 2282.714427] ath10k: mac peer 04:f0:21:0c:a2:3a phymode 11ac-vht80
->>>>> [ 2282.714435] ath10k: mac vdev 0 up (associated) bssid
->>>>> 04:f0:21:0c:a2:3a
->>>>> aid 1
->>>>> [ 2282.714822] ath10k: mac vdev 0 psmode enable
->>>>> [ 2282.714869] wlan1: associated
->>>>>
->>>>> And for AP:
->>>>> [ 9460.458700] ath10k: htt target version 2.1
->>>>> [ 9460.458874] ath10k: mac vdev create 0 (add interface) type 1 subty=
-pe
->>>>> 0
->>>>> [ 9460.459120] ath10k: mac vdev 0 cts_prot 0
->>>>> [ 9460.459155] ath10k: mac vdev 0 slot_time 1
->>>>> [ 9460.459156] ath10k: mac vdev 0 preamble 1n
->>>>> [ 9460.459385] ath10k: mac config channel 5180 mhz
->>>>> [ 9460.459434] IPv6: ADDRCONF(NETDEV_UP): wlan2: link is not ready
->>>>> [ 9461.562262] ath10k: mac vdev 0 rts threshold -1
->>>>> [ 9461.562292] ath10k: mac vdev 0 fragmentation threshold -1
->>>>> [ 9461.564900] ath10k: mac config channel 5180 mhz
->>>>> [ 9461.564919] ath10k: mac vdev 0 beacon_interval 100
->>>>> [ 9461.564923] ath10k: vdev 0 set beacon tx mode to staggered
->>>>> [ 9461.564931] ath10k: mac vdev 0 start center_freq 5180 phymode
->>>>> 11ac-vht80
->>>>> [ 9461.571970] ath10k: mac vdev 0 up
->>>>> [ 9461.572108] ath10k: mac vdev 0 cts_prot 0
->>>>> [ 9461.572117] ath10k: mac vdev 0 slot_time 2
->>>>> [ 9461.572241] IPv6: ADDRCONF(NETDEV_CHANGE): wlan2: link becomes rea=
-dy
->>>>> [ 9461.572192] ath10k: mac vdev 0 preamble 1n
->>>>> [ 9549.331556] ath10k: vdev 0 set beacon tx mode to staggered
->>>>> [ 9549.331637] ath10k: mac vdev 0 cts_prot 0
->>>>> [ 9549.331644] ath10k: mac vdev 0 preamble 1n
->>>>> [ 9549.332425] ath10k: mac vdev 0 peer create 04:f0:21:0c:a2:3b (new
->>>>> sta)
->>>>> [ 9549.332628] ath10k: mac sta 04:f0:21:0c:a2:3b associated
->>>>> [ 9549.332637] ath10k: mac ht peer 04:f0:21:0c:a2:3b mcs cnt 24 nss 3
->>>>> [ 9549.332643] ath10k: mac vht peer 04:f0:21:0c:a2:3b max_mpdu 1048575
->>>>> flags
->>>>> 0x601b001 rx_mcs_set 0000ffea tx_mcs_set 0000ffea
->>>>> [ 9549.332648] ath10k: mac peer 04:f0:21:0c:a2:3b phymode 11ac-vht80
->>>>>
->>>>>
->>>>> As you can see, the "nss" value is set to 3, but I've never observed
->>>>> VHT-NSS
->>>>> 3 reported by "iw DEV station dump". Also the maximum throughput for
->>>>> UDP
->>>>> measured by iperf was ~630Mbps, which seems to be the netto value for
->>>>> 2x433
->>>>> Mbps PHY throughput.
->>>>
->>>> I wouldn't rely on station dump Tx/Rx stats (especially Tx stats which
->>>> are broken due to FW limitation).
->>>>
->>>> You can create a monitor interface on the receiver side and run
->>>> wireshark in non-promiscuous mode and check radiotap headers to
->>>> confirm whether 3 spatial streams are used or not.
->>>>
->>>>
->>>> Micha=B3
->>>>
->>> I've attached the output from wireshark.
->>>
->>>  Bandwidth: 80 MHz (4)
->>>         User 0: MCS 9
->>>             1001 .... =3D MCS index 0: 9 (256-QAM 5/6)
->>>             .... 0010 =3D Spatial streams 0: 2
->>>             Space-time streams 0: 2
->>>             Coding 0: BCC (0)
->>>             [Data Rate: 866,6 Mb/s]
->>>
->>> Unfortunately, it confirms that only 2 spatial streams are used.
->>>
->>>
->>> TomaszT
->>>
->> I thought that maybe one of the card is physically damaged and the third
->> spatial link cannot be established. I've checked that using a 802.11ac
->> router, which I also have (and it supports 3 streams). Both cards connec=
-ted
->> with it using only 2 spatial streams. Its unlikely that both cards have a
->> malfunction, so its rather a software problem.
->>
->> TomaszT
->
-> Hi,
->
-> Are there any chances, that this issue would be investigated and hopefully
-> fixed before the end of the year ?
->
-Seems from driver we configure everything correctly. Rate Control is
-in FW - so FW will decide what NSS/MCS to use. Here we see our devices
-works fine with 3x3.
+Add set_bitrate_mask callback. Currently
+ath10k HW is limited to handle only single
+fixed rate setting.
 
-BTW.
-You can try to use fixed_rate setting. You will have to apply some
-patches from mac80211-next/group:
+Example:
+iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 2:9
+will setup VHT, nss=2, mcs=9
 
-Kernel:
-1) nl80211: don't clear bitrate_mask twice
-2) nl80211: back to default bitrate_mask correctly
-3) nl80211/cfg80211: bitrate_mask, rename mcs to ht_mcs
-4) nl80211: add VHT support for set_bitrate_mask
-5) ath10k: add set_bitrate_mask callback - this I will send in few minutes
+iw wlanX set bitrates legacy-5 18 ht-mcs-5 vht-mcs-5
+will setup legacy, 18Mbps
 
-iw:
-1) iw: add VHT MCS/NSS set support to set bitrates
+iw wlanX set bitrates legacy-5 ht-mcs-5 3 vht-mcs-5
+will setup HT, nss=1, mcs=3
 
-After that just run ap and: iw wlanX set bitrates legacy-5 ht-mcs-5
-vht-mcs-5 3:0
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |    2 +
+ drivers/net/wireless/ath/ath10k/mac.c  |  196 ++++++++++++++++++++++++++++++++
+ 2 files changed, 198 insertions(+)
 
-You should send frames from AP with NSS=3D3, MCS=3D0
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 79726e0..4bb54fb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -253,6 +253,8 @@ struct ath10k_vif {
+ 			u8 bssid[ETH_ALEN];
+ 		} ibss;
+ 	} u;
++
++	u8 fixed_rate;
+ };
+ 
+ struct ath10k_vif_iter {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ce9ef349..a234262 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3310,6 +3310,201 @@ exit:
+ 	return ret;
+ }
+ 
++static const u8 cck_ofdm_rate[] = {
++	/* CCK */
++	3, /* 1Mbps */
++	2, /* 2Mbps */
++	1, /* 5.5Mbps */
++	0, /* 11Mbps */
++	/* OFDM */
++	3, /* 6Mbps */
++	7, /* 9Mbps */
++	2, /* 12Mbps */
++	6, /* 18Mbps */
++	1, /* 24Mbps */
++	5, /* 36Mbps */
++	0, /* 48Mbps */
++	4, /* 54Mbps */
++};
++
++static int ath10k_check_single_mask(u32 mask)
++{
++	int bit;
++
++	bit = ffs(mask);
++	if (!bit)
++		return 0;
++
++	mask &= ~BIT(bit - 1);
++	if (mask)
++		return 2;
++
++	return 1;
++}
++
++static bool ath10k_default_bitrate_mask(
++				struct ath10k *ar,
++				enum ieee80211_band band,
++				const struct cfg80211_bitrate_mask *mask)
++{
++	u32 legacy = 0x00FF;
++	u8 ht = 0xFF, i;
++	u16 vht = 0x3FF;
++
++	switch (band) {
++	case IEEE80211_BAND_2GHZ:
++		legacy= 0x00FFF;
++		vht = 0;
++		break;
++	case IEEE80211_BAND_5GHZ:
++		break;
++	default:
++		return false;
++	}
++
++	if (mask->control[band].legacy != legacy)
++		return false;
++
++	for (i = 0; i < ar->num_rf_chains; i++)
++		if (mask->control[band].ht_mcs[i] != ht)
++			return false;
++
++	for (i = 0; i < ar->num_rf_chains; i++)
++		if (mask->control[band].vht_mcs[i] != vht)
++			return false;
++
++	return true;
++}
++
++static bool ath10k_bitrate_mask_correct(
++			const struct cfg80211_bitrate_mask *mask,
++			enum ieee80211_band band,
++			enum wmi_rate_preamble *preamble)
++{
++	int legacy = 0, ht = 0, vht = 0, i;
++
++	*preamble = WMI_RATE_PREAMBLE_OFDM;
++
++	/* check legacy */
++	legacy = ath10k_check_single_mask(mask->control[band].legacy);
++	if (legacy > 1)
++		return false;
++
++	/* check HT */
++	for (i = 0; i < IEEE80211_HT_MCS_MASK_LEN; i++)
++		ht += ath10k_check_single_mask(mask->control[band].ht_mcs[i]);
++	if (ht > 1)
++		return false;
++
++	/* check VHT */
++	for (i = 0; i < NL80211_VHT_NSS_MAX; i++)
++		vht += ath10k_check_single_mask(mask->control[band].vht_mcs[i]);
++	if (vht > 1)
++		return false;
++
++	/* Currently we support only one fixed_rate */
++	if ((legacy + ht + vht) != 1)
++		return false;
++
++	if (ht)
++		*preamble = WMI_RATE_PREAMBLE_HT;
++	else if (vht)
++		*preamble = WMI_RATE_PREAMBLE_VHT;
++
++	return true;
++}
++
++static u8 ath10k_get_fixed_rate(const struct cfg80211_bitrate_mask *mask,
++				enum ieee80211_band band)
++{
++	u8 fixed_rate = 0, fixed_pream = 0, fixed_nss = 0, i;
++	enum wmi_rate_preamble preamble;
++
++	if (!ath10k_bitrate_mask_correct(mask, band, &preamble))
++		return WMI_FIXED_RATE_NONE;
++
++	fixed_pream = preamble;
++
++	switch (preamble) {
++	case WMI_RATE_PREAMBLE_CCK:
++	case WMI_RATE_PREAMBLE_OFDM:
++		i = ffs(mask->control[band].legacy) - 1;
++		if (band == IEEE80211_BAND_2GHZ && i < 4)
++			fixed_pream = WMI_RATE_PREAMBLE_CCK;
++		if (band == IEEE80211_BAND_5GHZ)
++			i += 4;
++		WARN_ON(i >= ARRAY_SIZE(cck_ofdm_rate));
++		fixed_rate = cck_ofdm_rate[i];
++		break;
++	case WMI_RATE_PREAMBLE_HT:
++		for (i = 0; i < IEEE80211_HT_MCS_MASK_LEN; i++)
++			if (mask->control[band].ht_mcs[i])
++				break;
++		fixed_rate = ffs(mask->control[band].ht_mcs[i]) - 1;
++		fixed_nss = i;
++		break;
++	case WMI_RATE_PREAMBLE_VHT:
++		for (i = 0; i < NL80211_VHT_NSS_MAX; i++)
++			if (mask->control[band].vht_mcs[i])
++				break;
++		fixed_rate = ffs(mask->control[band].vht_mcs[i]) - 1;
++		fixed_nss = i;
++		break;
++	}
++
++	fixed_nss <<= 4;
++	fixed_pream <<= 6;
++
++	ath10k_dbg(ATH10K_DBG_MAC, "fixed rate pream 0x%02x nss 0x%02x rate 0x%02x\n",
++		   fixed_pream, fixed_nss, fixed_rate);
++
++	return fixed_pream | fixed_nss | fixed_rate;
++}
++
++static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
++				   struct ieee80211_vif *vif,
++				   const struct cfg80211_bitrate_mask *mask)
++{
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	struct ath10k *ar = arvif->ar;
++	enum ieee80211_band band = ar->hw->conf.chandef.chan->band;
++	u8 fixed_rate = WMI_FIXED_RATE_NONE;
++	u32 vdev_param;
++	int ret = 0;
++
++	if (!ath10k_default_bitrate_mask(ar, band, mask)) {
++		fixed_rate = ath10k_get_fixed_rate(mask, band);
++		/* Someone request unsuported mask set */
++		if (fixed_rate == WMI_FIXED_RATE_NONE)
++			return -EINVAL;
++	}
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (arvif->fixed_rate == fixed_rate)
++		goto exit;
++
++	if (fixed_rate == WMI_FIXED_RATE_NONE)
++		ath10k_dbg(ATH10K_DBG_MAC, "set bitrate mask, disable fixed rate settings\n");
++
++
++	vdev_param = ar->wmi.vdev_param->fixed_rate;
++	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
++					vdev_param, fixed_rate);
++	if (ret) {
++		ath10k_warn("Could not set fixed_rate param 0x%02x\n",
++			    fixed_rate);
++		ret = -EINVAL;
++		goto exit;
++	}
++
++	arvif->fixed_rate = fixed_rate;
++
++exit:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_tx,
+ 	.start				= ath10k_start,
+@@ -3332,6 +3527,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
+ 	.restart_complete		= ath10k_restart_complete,
+ 	.get_survey			= ath10k_get_survey,
++	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+ #ifdef CONFIG_PM
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+-- 
+1.7.9.5
 
-BR
-Janusz
 
 _______________________________________________
 ath10k mailing list
