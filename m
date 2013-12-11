@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqPMC-0003QJ-1B
- for ath10k@lists.infradead.org; Tue, 10 Dec 2013 15:36:20 +0000
-Message-ID: <52A734D9.3000506@candelatech.com>
-Date: Tue, 10 Dec 2013 07:35:53 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1Vqcp8-0000T0-9u
+ for ath10k@lists.infradead.org; Wed, 11 Dec 2013 05:59:07 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix WEP Shared authentication
+References: <1386222821-3062-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 11 Dec 2013 07:58:37 +0200
+In-Reply-To: <1386222821-3062-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 5 Dec 2013 06:53:41 +0100")
+Message-ID: <87fvq0rks2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k: split the if_limits and if_comb
-References: <1386688840-12181-1-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1386688840-12181-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +19,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 12/10/2013 07:20 AM, Bartosz Markowski wrote:
-> Split the interface limits and inteface combination,
-> to reflect the 10.X capabilites (no P2P, no STA and 8 VAP).
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-My 10.X firmware works just fine with stations..I just tested up
-to 32 of them.
+> Frames received from FW were treated incorrectly.
+> This led to stations being unable to associate to
+> WEP Shared ath10k AP. This was indicated by a
+> bizarre hostapd message:
+>
+>   Unsupported authentication algorithm (36088)
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Maybe add firmware IEs to explicitly advertise how many it can
-support instead of setting one flag and making assumptions?
-
-Thanks,
-Ben
-
+Thanks, applied.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
