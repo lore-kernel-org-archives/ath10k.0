@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp4.dhosting.pl ([195.88.50.41])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VqilV-0001rf-K0
- for ath10k@lists.infradead.org; Wed, 11 Dec 2013 12:19:47 +0000
-Message-ID: <52A85844.3080009@elnovel.com>
-Date: Wed, 11 Dec 2013 13:19:16 +0100
-From: Tomasz Tajmajer <tt@elnovel.com>
+Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Vql0u-0006WM-Uz
+ for ath10k@lists.infradead.org; Wed, 11 Dec 2013 14:43:49 +0000
+Received: from prime.localnet (drsd-4dbd9d5e.pool.mediaWays.net
+ [77.189.157.94])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.mail.packetmixer.de (Postfix) with ESMTPSA id 4F64E7107C
+ for <ath10k@lists.infradead.org>; Wed, 11 Dec 2013 14:33:36 +0000 (UTC)
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Firmware Questions
+Date: Wed, 11 Dec 2013 15:32:47 +0100
 MIME-Version: 1.0
-Subject: Re: [BUG] QWLE900V5-18 - cannot achievie 3 spatial streams link
-References: <52A1FC69.7080901@elnovel.com>	<CALhHN=qPRgc-FaKbazdAmmxvi+YXxoFOp2Ax=x0iDp0LXknjHA@mail.gmail.com>	<874n6i1jk7.fsf@kamboji.qca.qualcomm.com>	<52A5955E.2060106@elnovel.com>
- <CA+BoTQk95VmU=e1cLOtzcX8Y_j6YjFFw1STOT=r7NSHTd2vuJA@mail.gmail.com>
- <52A5A98A.3000102@elnovel.com> <52A5B33D.7010006@elnovel.com>
-In-Reply-To: <52A5B33D.7010006@elnovel.com>
+Message-Id: <201312111532.47679.sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,146 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Ck9uIDA5LjEyLjIwMTMgMTM6MTAsIFRvbWFzeiBUYWptYWplciB3cm90ZToKPgo+IE9uIDA5LjEy
-LjIwMTMgMTI6MjksIFRvbWFzeiBUYWptYWplciB3cm90ZToKPj4KPj4gT24gMDkuMTIuMjAxMyAx
-MToxMywgTWljaGFsIEthemlvciB3cm90ZToKPj4+IE9uIDkgRGVjZW1iZXIgMjAxMyAxMTowMywg
-VG9tYXN6IFRham1hamVyIDx0dEBlbG5vdmVsLmNvbT4gd3JvdGU6Cj4+Pj4gT24gMDkuMTIuMjAx
-MyAxMDowNCwgS2FsbGUgVmFsbyB3cm90ZToKPj4+Pj4gSmFudXN6IER6aWVkemljIDxqYW51c3ou
-ZHppZWR6aWNAdGlldG8uY29tPiB3cml0ZXM6Cj4+Pj4+Cj4+Pj4+PiBPbiA2IERlY2VtYmVyIDIw
-MTMgMTc6MzMsIFRvbWFzeiBUYWptYWplciA8dHRAZWxub3ZlbC5jb20+IHdyb3RlOgo+Pj4+Pj4+
-IEhpLAo+Pj4+Pj4+Cj4+Pj4+Pj4gUmVjZW50bHksIEkndmUgYmVlbiBtYWtpbmcgcXVpdGUgYSBs
-b3Qgb2YgdGVzdHMgd2l0aCB0d28gCj4+Pj4+Pj4gUVdMRTkwMFY1LTE4Cj4+Pj4+Pj4gY2FyZHMu
-Cj4+Pj4+Pj4gSSBoYWQgc29tZSBpc3N1ZXMgd2l0aCB0aGUgZHJpdmVycyAoZS5nLiByZWdhcmRp
-bmcgdGhlIHJlZ3VsYXRvcnkKPj4+Pj4+PiBkb21haW4pLAo+Pj4+Pj4+IGJ1dCBJJ3ZlIG1hbmFn
-ZWQgdG8gZml4IHRoZW0gb24gbXkgb3duLiBIb3dldmVyLCB0aGVyZSBpcyBvbmUgCj4+Pj4+Pj4g
-aXNzdWUgdGhhdAo+Pj4+Pj4+IEkKPj4+Pj4+PiBjYW5ub3QgZGVhbCB3aXRoLgo+Pj4+Pj4+IEkn
-bSB0cnlpbmcgdG8gZ2V0IHRoZSBoaWdoZXN0IHRocm91Z2hwdXQgcG9zc2libGUgdXNpbmcgM3gz
-IAo+Pj4+Pj4+IE1JTU8uIFRoZQo+Pj4+Pj4+IHByb2JsZW0gaXMgdGhhdCB0aGUgd2lmaSBjYXJk
-IGRvZXMgbm90IHNldCBoaWdoZXIgcmF0ZXMgdGhhbiAKPj4+Pj4+PiAyeDQzMy4zTWJwcwo+Pj4+
-Pj4+IChNQ1MgOSwgVkhULU5TUyAyKS4gVGhlIHNwZWNpZmljYXRpb24gc2F5cyB0aGF0IGl0IHNo
-b3VsZCBiZSAKPj4+Pj4+PiBwb3NzaWJsZSB0bwo+Pj4+Pj4+IGhhdmUgMyBzcGF0aWFsIHN0cmVh
-bXMuCj4+Pj4+Pj4gRmlyc3QsIEkgdGhvdWdodCBpdCBpcyBhIHByb2JsZW0gd2l0aCBzb21lIG9w
-dGlvbnMgb2YgaG9zdGFwZCwgYnV0Cj4+Pj4+Pj4gaG9zdGFwZAo+Pj4+Pj4+IGV2ZW4gZG9lcyBu
-b3QgYWxsb3dzIG1lIHRvIHNldCB0aGUgW1JYLVNUQkMtMTJdIG9yIFtSWC1TVEJDLTEyM10KPj4+
-Pj4+PiBvcHRpb25zLgo+Pj4+Pj4+IE9ubHkgW1JYLVNUQkMtMV0gbWF5IGJlIHNldCBpbiB0aGUg
-Y29uZmlndXJhdGlvbiAod2hhdCBpbiBmYWN0LCAKPj4+Pj4+PiBkb2VzIG5vdAo+Pj4+Pj4+IGRp
-c2FsbG93cyB0aGUgMng0MzMuM01icHMgbGluaywgd2hpY2ggaXMgYW5vdGhlciBpc3N1ZSkuCj4+
-Pj4+Pj4gRHJpdmVyIGluZm8gc2hvd3MgdGhhdCB0aGUgZHJpdmVyIHNob3VsZCBzdXBwb3J0IDMg
-c3BhdGlhbCBzdHJlYW1zLgo+Pj4+Pj4+IEkgYW0gbm90IHN1cmUgd2hlcmUgaXMgdGhlIHByb2Js
-ZW0sIGlzIGl0IHNvbWUgYnVnIGluIGhvc3RhcGQsIAo+Pj4+Pj4+IHdoaWNoCj4+Pj4+Pj4gZm9y
-Y2VzCj4+Pj4+Pj4gdGhlIGNhcmQgdG8gdXNlIDIgc3BhdGlhbCBzdHJlYW1zIG9ubHkgb3IgaXMg
-aXQgdGhlIGRyaXZlciwgCj4+Pj4+Pj4gd2hpY2ggZG9lcwo+Pj4+Pj4+IG5vdAo+Pj4+Pj4+IGVu
-YWJsZSAzIHN0cmVhbXMgd2hlbiBpdCBpcyBwb3NzaWJsZS4gVGhlIHBoeXNpY2FsIGNvbm5lY3Rp
-dml0eQo+Pj4+Pj4+IChhbnRlbm5hcwo+Pj4+Pj4+IGV0Yy4pIGlzIG5vdCB0aGUgcHJvYmxlbSBB
-RkFJSy4KPj4+Pj4+Pgo+Pj4+Pj4gV2hlbiBzdGEgYXNzb2MgdG8gYXAgeW91IHdpbGwgZ2V0IGRi
-ZyBtZXNnICh5b3UgY2FuIGVuYWJsZSB0aGlzIGVnLgo+Pj4+Pj4gd2hlbiBsb2FkaW5nIGF0aDEw
-a19jb3JlIG1vZHVsZSB3aXRoIHBhcmFtIC0gZGVidWdfbWFzaykuCj4+Pj4+PiAibWFjIGh0IHBl
-ZXIgJXBNIG1jcyBjbnQgJWQgbnNzICVkXG4iIC0gbnNzIGlzIGludGVyZXN0aW5nIGhlcmUKPj4+
-Pj4gVGhpcyBkZWJ1ZyBtZXNzYWdlIGlzIGVuYWJsZWQgd2l0aCBBVEgxMEtfREJHX01BQy4gTW9y
-ZSBpbmZvIGhlcmU6Cj4+Pj4+Cj4+Pj4+IGh0dHA6Ly93aXJlbGVzcy5rZXJuZWwub3JnL2VuL3Vz
-ZXJzL0RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Pj4+Cj4+Pj4+PiBBbHNvIHJ4X21jc19zZXQgZm9y
-IFNUQSBmcm9tIGF0aDEwa19wZWVyX2Fzc29jX2hfdmh0KCkgY291bGQgYmUKPj4+Pj4+IGludGVy
-ZXN0aW5nIC0gdW5mb3J0dW5ldGx5IHdlIGRvbid0IHByaW50IHRoaXMuIEJ1dCB5b3UgY2FuIHBy
-aW50Cj4+Pj4+PiB0aGlzLgo+Pj4+PiBJbmRlZWQsIHdlIHNob3VsZCBpbmNsdWRlIHRoYXQgdG8g
-dGhlIG1lc3NhZ2UgYXMgd2VsbC4KPj4+Pj4KPj4+PiBJJ3ZlIGVuYWJsZWQgZGJnIG1lc3NhZ2Vz
-IGFuZCBhZGRlZCByeF9tY3Nfc2V0IGFuZCB0eF9tY3Nfc2V0IGFzIHlvdQo+Pj4+IHN1Z2dlc3Rl
-ZC4KPj4+PiBIZXJlIGlzIHRoZSBvdXRwdXQgZm9yIFNUQToKPj4+Pgo+Pj4+IFsgMjI3OC4zMjAz
-MTJdIGF0aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+Pj4+IFsgMjI3OC4zMjA0NTVdIGF0
-aDEwazogbWFjIHZkZXYgY3JlYXRlIDAgKGFkZCBpbnRlcmZhY2UpIHR5cGUgMiAKPj4+PiBzdWJ0
-eXBlIDAKPj4+PiBbIDIyNzguMzIwNzQxXSBhdGgxMGs6IG1hYyB2ZGV2IDAgY3RzX3Byb3QgMAo+
-Pj4+IFsgMjI3OC4zMjA3NjVdIGF0aDEwazogbWFjIHZkZXYgMCBzbG90X3RpbWUgMQo+Pj4+IFsg
-MjI3OC4zMjA4MDFdIGF0aDEwazogbWFjIHZkZXYgMCBwcmVhbWJsZSAxbgo+Pj4+IFsgMjI3OC4z
-MjEzMjBdIGF0aDEwazogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAgbWh6Cj4+Pj4gWyAyMjc4LjMy
-MTM1M10gYXRoMTBrOiBtYWMgdmRldiAwIHBzbW9kZSBkaXNhYmxlCj4+Pj4gWyAyMjc4LjMyMTQ0
-OF0gSVB2NjogQUREUkNPTkYoTkVUREVWX1VQKTogd2xhbjE6IGxpbmsgaXMgbm90IHJlYWR5Cj4+
-Pj4gWyAyMjc4LjMyMTQ1OF0gYXRoMTBrOiBtYWMgdmRldiAwIHBzbW9kZSBkaXNhYmxlCj4+Pj4g
-WyAyMjgyLjQ5OTkyNV0gd2xhbjE6IGF1dGhlbnRpY2F0ZSB3aXRoIDA0OmYwOjIxOjBjOmEyOjNh
-Cj4+Pj4gWyAyMjgyLjQ5OTk0Nl0gYXRoMTBrOiBtYWMgY29uZmlnIGNoYW5uZWwgNTE4MCBtaHoK
-Pj4+PiBbIDIyODIuNDk5OTYyXSBhdGgxMGs6IG1hYyB2ZGV2IDAgYmVhY29uX2ludGVydmFsIDEw
-MAo+Pj4+IFsgMjI4Mi40OTk5NjhdIGF0aDEwazogbWFjIHZkZXYgMCBjcmVhdGUgcGVlciAwNDpm
-MDoyMTowYzphMjozYQo+Pj4+IFsgMjI4Mi41MDAxMDldIGF0aDEwazogbWFjIHZkZXYgMCBzdGFy
-dCAwNDpmMDoyMTowYzphMjozYQo+Pj4+IFsgMjI4Mi41MDAxMTVdIGF0aDEwazogbWFjIHZkZXYg
-MCBzdGFydCBjZW50ZXJfZnJlcSA1MTgwIHBoeW1vZGUgCj4+Pj4gMTFhYy12aHQ4MAo+Pj4+IFsg
-MjI4Mi41MDY3MTFdIHdsYW4xOiBkaXJlY3QgcHJvYmUgdG8gMDQ6ZjA6MjE6MGM6YTI6M2EgKHRy
-eSAxLzMpCj4+Pj4gWyAyMjgyLjcwODA1Ml0gd2xhbjE6IHNlbmQgYXV0aCB0byAwNDpmMDoyMTow
-YzphMjozYSAodHJ5IDIvMykKPj4+PiBbIDIyODIuNzA5MDk2XSB3bGFuMTogYXV0aGVudGljYXRl
-ZAo+Pj4+IFsgMjI4Mi43MTIxMjJdIHdsYW4xOiBhc3NvY2lhdGUgd2l0aCAwNDpmMDoyMTowYzph
-MjozYSAodHJ5IDEvMykKPj4+PiBbIDIyODIuNzEzOTA3XSB3bGFuMTogUlggQXNzb2NSZXNwIGZy
-b20gMDQ6ZjA6MjE6MGM6YTI6M2EgKGNhcGFiPTB4MQo+Pj4+IHN0YXR1cz0wIGFpZD0xKQo+Pj4+
-IFsgMjI4Mi43MTQzMzFdIGF0aDEwazogbWFjIHZkZXYgMCBkdGltX3BlcmlvZCAyCj4+Pj4gWyAy
-MjgyLjcxNDM2N10gYXRoMTBrOiBtYWMgdmRldiAwIHNsb3RfdGltZSAyCj4+Pj4gWyAyMjgyLjcx
-NDQxNV0gYXRoMTBrOiBtYWMgaHQgcGVlciAwNDpmMDoyMTowYzphMjozYSBtY3MgY250IDI0IG5z
-cyAzCj4+Pj4gWyAyMjgyLjcxNDQyMV0gYXRoMTBrOiBtYWMgdmh0IHBlZXIgMDQ6ZjA6MjE6MGM6
-YTI6M2EgbWF4X21wZHUgCj4+Pj4gNjU1MzUgZmxhZ3MKPj4+PiAweDYwMWIwMDEgcnhfbWNzX3Nl
-dCAwMDAwZmZlYSB0eF9tY3Nfc2V0IDAwMDBmZmVhCj4+Pj4gWyAyMjgyLjcxNDQyN10gYXRoMTBr
-OiBtYWMgcGVlciAwNDpmMDoyMTowYzphMjozYSBwaHltb2RlIDExYWMtdmh0ODAKPj4+PiBbIDIy
-ODIuNzE0NDM1XSBhdGgxMGs6IG1hYyB2ZGV2IDAgdXAgKGFzc29jaWF0ZWQpIGJzc2lkIAo+Pj4+
-IDA0OmYwOjIxOjBjOmEyOjNhCj4+Pj4gYWlkIDEKPj4+PiBbIDIyODIuNzE0ODIyXSBhdGgxMGs6
-IG1hYyB2ZGV2IDAgcHNtb2RlIGVuYWJsZQo+Pj4+IFsgMjI4Mi43MTQ4NjldIHdsYW4xOiBhc3Nv
-Y2lhdGVkCj4+Pj4KPj4+PiBBbmQgZm9yIEFQOgo+Pj4+IFsgOTQ2MC40NTg3MDBdIGF0aDEwazog
-aHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+Pj4+IFsgOTQ2MC40NTg4NzRdIGF0aDEwazogbWFjIHZk
-ZXYgY3JlYXRlIDAgKGFkZCBpbnRlcmZhY2UpIHR5cGUgMSAKPj4+PiBzdWJ0eXBlIDAKPj4+PiBb
-IDk0NjAuNDU5MTIwXSBhdGgxMGs6IG1hYyB2ZGV2IDAgY3RzX3Byb3QgMAo+Pj4+IFsgOTQ2MC40
-NTkxNTVdIGF0aDEwazogbWFjIHZkZXYgMCBzbG90X3RpbWUgMQo+Pj4+IFsgOTQ2MC40NTkxNTZd
-IGF0aDEwazogbWFjIHZkZXYgMCBwcmVhbWJsZSAxbgo+Pj4+IFsgOTQ2MC40NTkzODVdIGF0aDEw
-azogbWFjIGNvbmZpZyBjaGFubmVsIDUxODAgbWh6Cj4+Pj4gWyA5NDYwLjQ1OTQzNF0gSVB2Njog
-QUREUkNPTkYoTkVUREVWX1VQKTogd2xhbjI6IGxpbmsgaXMgbm90IHJlYWR5Cj4+Pj4gWyA5NDYx
-LjU2MjI2Ml0gYXRoMTBrOiBtYWMgdmRldiAwIHJ0cyB0aHJlc2hvbGQgLTEKPj4+PiBbIDk0NjEu
-NTYyMjkyXSBhdGgxMGs6IG1hYyB2ZGV2IDAgZnJhZ21lbnRhdGlvbiB0aHJlc2hvbGQgLTEKPj4+
-PiBbIDk0NjEuNTY0OTAwXSBhdGgxMGs6IG1hYyBjb25maWcgY2hhbm5lbCA1MTgwIG1oego+Pj4+
-IFsgOTQ2MS41NjQ5MTldIGF0aDEwazogbWFjIHZkZXYgMCBiZWFjb25faW50ZXJ2YWwgMTAwCj4+
-Pj4gWyA5NDYxLjU2NDkyM10gYXRoMTBrOiB2ZGV2IDAgc2V0IGJlYWNvbiB0eCBtb2RlIHRvIHN0
-YWdnZXJlZAo+Pj4+IFsgOTQ2MS41NjQ5MzFdIGF0aDEwazogbWFjIHZkZXYgMCBzdGFydCBjZW50
-ZXJfZnJlcSA1MTgwIHBoeW1vZGUgCj4+Pj4gMTFhYy12aHQ4MAo+Pj4+IFsgOTQ2MS41NzE5NzBd
-IGF0aDEwazogbWFjIHZkZXYgMCB1cAo+Pj4+IFsgOTQ2MS41NzIxMDhdIGF0aDEwazogbWFjIHZk
-ZXYgMCBjdHNfcHJvdCAwCj4+Pj4gWyA5NDYxLjU3MjExN10gYXRoMTBrOiBtYWMgdmRldiAwIHNs
-b3RfdGltZSAyCj4+Pj4gWyA5NDYxLjU3MjI0MV0gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5H
-RSk6IHdsYW4yOiBsaW5rIGJlY29tZXMgCj4+Pj4gcmVhZHkKPj4+PiBbIDk0NjEuNTcyMTkyXSBh
-dGgxMGs6IG1hYyB2ZGV2IDAgcHJlYW1ibGUgMW4KPj4+PiBbIDk1NDkuMzMxNTU2XSBhdGgxMGs6
-IHZkZXYgMCBzZXQgYmVhY29uIHR4IG1vZGUgdG8gc3RhZ2dlcmVkCj4+Pj4gWyA5NTQ5LjMzMTYz
-N10gYXRoMTBrOiBtYWMgdmRldiAwIGN0c19wcm90IDAKPj4+PiBbIDk1NDkuMzMxNjQ0XSBhdGgx
-MGs6IG1hYyB2ZGV2IDAgcHJlYW1ibGUgMW4KPj4+PiBbIDk1NDkuMzMyNDI1XSBhdGgxMGs6IG1h
-YyB2ZGV2IDAgcGVlciBjcmVhdGUgMDQ6ZjA6MjE6MGM6YTI6M2IgCj4+Pj4gKG5ldyBzdGEpCj4+
-Pj4gWyA5NTQ5LjMzMjYyOF0gYXRoMTBrOiBtYWMgc3RhIDA0OmYwOjIxOjBjOmEyOjNiIGFzc29j
-aWF0ZWQKPj4+PiBbIDk1NDkuMzMyNjM3XSBhdGgxMGs6IG1hYyBodCBwZWVyIDA0OmYwOjIxOjBj
-OmEyOjNiIG1jcyBjbnQgMjQgbnNzIDMKPj4+PiBbIDk1NDkuMzMyNjQzXSBhdGgxMGs6IG1hYyB2
-aHQgcGVlciAwNDpmMDoyMTowYzphMjozYiBtYXhfbXBkdSAKPj4+PiAxMDQ4NTc1IGZsYWdzCj4+
-Pj4gMHg2MDFiMDAxIHJ4X21jc19zZXQgMDAwMGZmZWEgdHhfbWNzX3NldCAwMDAwZmZlYQo+Pj4+
-IFsgOTU0OS4zMzI2NDhdIGF0aDEwazogbWFjIHBlZXIgMDQ6ZjA6MjE6MGM6YTI6M2IgcGh5bW9k
-ZSAxMWFjLXZodDgwCj4+Pj4KPj4+Pgo+Pj4+IEFzIHlvdSBjYW4gc2VlLCB0aGUgIm5zcyIgdmFs
-dWUgaXMgc2V0IHRvIDMsIGJ1dCBJJ3ZlIG5ldmVyIAo+Pj4+IG9ic2VydmVkIFZIVC1OU1MKPj4+
-PiAzIHJlcG9ydGVkIGJ5ICJpdyBERVYgc3RhdGlvbiBkdW1wIi4gQWxzbyB0aGUgbWF4aW11bSB0
-aHJvdWdocHV0IAo+Pj4+IGZvciBVRFAKPj4+PiBtZWFzdXJlZCBieSBpcGVyZiB3YXMgfjYzME1i
-cHMsIHdoaWNoIHNlZW1zIHRvIGJlIHRoZSBuZXR0byB2YWx1ZSAKPj4+PiBmb3IgMng0MzMKPj4+
-PiBNYnBzIFBIWSB0aHJvdWdocHV0Lgo+Pj4gSSB3b3VsZG4ndCByZWx5IG9uIHN0YXRpb24gZHVt
-cCBUeC9SeCBzdGF0cyAoZXNwZWNpYWxseSBUeCBzdGF0cyB3aGljaAo+Pj4gYXJlIGJyb2tlbiBk
-dWUgdG8gRlcgbGltaXRhdGlvbikuCj4+Pgo+Pj4gWW91IGNhbiBjcmVhdGUgYSBtb25pdG9yIGlu
-dGVyZmFjZSBvbiB0aGUgcmVjZWl2ZXIgc2lkZSBhbmQgcnVuCj4+PiB3aXJlc2hhcmsgaW4gbm9u
-LXByb21pc2N1b3VzIG1vZGUgYW5kIGNoZWNrIHJhZGlvdGFwIGhlYWRlcnMgdG8KPj4+IGNvbmZp
-cm0gd2hldGhlciAzIHNwYXRpYWwgc3RyZWFtcyBhcmUgdXNlZCBvciBub3QuCj4+Pgo+Pj4KPj4+
-IE1pY2hhxYIKPj4+Cj4+IEkndmUgYXR0YWNoZWQgdGhlIG91dHB1dCBmcm9tIHdpcmVzaGFyay4K
-Pj4KPj4gIEJhbmR3aWR0aDogODAgTUh6ICg0KQo+PiAgICAgICAgIFVzZXIgMDogTUNTIDkKPj4g
-ICAgICAgICAgICAgMTAwMSAuLi4uID0gTUNTIGluZGV4IDA6IDkgKDI1Ni1RQU0gNS82KQo+PiAg
-ICAgICAgICAgICAuLi4uIDAwMTAgPSBTcGF0aWFsIHN0cmVhbXMgMDogMgo+PiAgICAgICAgICAg
-ICBTcGFjZS10aW1lIHN0cmVhbXMgMDogMgo+PiAgICAgICAgICAgICBDb2RpbmcgMDogQkNDICgw
-KQo+PiAgICAgICAgICAgICBbRGF0YSBSYXRlOiA4NjYsNiBNYi9zXQo+Pgo+PiBVbmZvcnR1bmF0
-ZWx5LCBpdCBjb25maXJtcyB0aGF0IG9ubHkgMiBzcGF0aWFsIHN0cmVhbXMgYXJlIHVzZWQuCj4+
-Cj4+Cj4+IFRvbWFzelQKPj4KPiBJIHRob3VnaHQgdGhhdCBtYXliZSBvbmUgb2YgdGhlIGNhcmQg
-aXMgcGh5c2ljYWxseSBkYW1hZ2VkIGFuZCB0aGUgCj4gdGhpcmQgc3BhdGlhbCBsaW5rIGNhbm5v
-dCBiZSBlc3RhYmxpc2hlZC4gSSd2ZSBjaGVja2VkIHRoYXQgdXNpbmcgYSAKPiA4MDIuMTFhYyBy
-b3V0ZXIsIHdoaWNoIEkgYWxzbyBoYXZlIChhbmQgaXQgc3VwcG9ydHMgMyBzdHJlYW1zKS4gQm90
-aCAKPiBjYXJkcyBjb25uZWN0ZWQgd2l0aCBpdCB1c2luZyBvbmx5IDIgc3BhdGlhbCBzdHJlYW1z
-LiBJdHMgdW5saWtlbHkgCj4gdGhhdCBib3RoIGNhcmRzIGhhdmUgYSBtYWxmdW5jdGlvbiwgc28g
-aXRzIHJhdGhlciBhIHNvZnR3YXJlIHByb2JsZW0uCj4KPiBUb21hc3pUCkhpLAoKQXJlIHRoZXJl
-IGFueSBjaGFuY2VzLCB0aGF0IHRoaXMgaXNzdWUgd291bGQgYmUgaW52ZXN0aWdhdGVkIGFuZCAK
-aG9wZWZ1bGx5IGZpeGVkIGJlZm9yZSB0aGUgZW5kIG9mIHRoZSB5ZWFyID8KCkJSLApUb21hc3pU
-CgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hey ath10k-devs,
+
+since there are many firmwares uploaded now, I'd like to ask some questions 
+about them. ;)
+
+The ath10k-firmware repository[1] has two folders which are appearently from 
+different branches. The ath10k (currently shipped default in OpenWRT) is 
+supposed to support all modes, while the "ap" firmware appears to be optimzed 
+for AP mode. I've tried both firmwares in OpenWRT with my QCA9882-based card in 
+AP mode, and with the "ath10k" firmware there were some throughput problems 
+while the "ap" showed some very good results (up to 250 mbit/s for my single 
+stream cell phone in iperf).
+
+As the firmware wiki page [2] appears to be a little outdated (it doesn't 
+mention the "ap" firmware branch), my questions are:
+
+ * are both firmwares still developed, or is one of them deprecated?
+ * Is it possible to use IBSS mode with one or both of them? Since the AP 
+branch worked better (for me), from what we have now I'd prefer this one. :)
+ * if yes, is it possible to use AP and IBSS mode at the same time?
+ * since there are different firmwares in the "ap" folder (389, 467 and 
+untested/436), is there a changelog for them?
+ * Are the limitations and capabilities of these firmwares documented 
+somewhere?
+
+Thanks,
+    Simon
+
+[1] https://github.com/kvalo/ath10k-firmware
+[2] http://wireless.kernel.org/en/users/Drivers/ath10k/firmware
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
