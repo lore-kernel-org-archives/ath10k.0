@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vql0u-0006WM-Uz
- for ath10k@lists.infradead.org; Wed, 11 Dec 2013 14:43:49 +0000
-Received: from prime.localnet (drsd-4dbd9d5e.pool.mediaWays.net
- [77.189.157.94])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.mail.packetmixer.de (Postfix) with ESMTPSA id 4F64E7107C
- for <ath10k@lists.infradead.org>; Wed, 11 Dec 2013 14:33:36 +0000 (UTC)
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Firmware Questions
-Date: Wed, 11 Dec 2013 15:32:47 +0100
+ id 1VqlOO-0007HJ-22
+ for ath10k@lists.infradead.org; Wed, 11 Dec 2013 15:08:04 +0000
+Message-ID: <52A87FBD.4000901@candelatech.com>
+Date: Wed, 11 Dec 2013 07:07:41 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Message-Id: <201312111532.47679.sw@simonwunderlich.de>
+Subject: Question on software-crypt mode.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +16,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hey ath10k-devs,
+Hello!
 
-since there are many firmwares uploaded now, I'd like to ask some questions 
-about them. ;)
+I am trying to implement software-crypt for ath10k so that it can do crypt
+with multiple stations connected to same AP.
 
-The ath10k-firmware repository[1] has two folders which are appearently from 
-different branches. The ath10k (currently shipped default in OpenWRT) is 
-supposed to support all modes, while the "ap" firmware appears to be optimzed 
-for AP mode. I've tried both firmwares in OpenWRT with my QCA9882-based card in 
-AP mode, and with the "ath10k" firmware there were some throughput problems 
-while the "ap" showed some very good results (up to 250 mbit/s for my single 
-stream cell phone in iperf).
+I tried using ath9k's approach and just not setting keys, but that does not work at all
+(no stations can communicate).
 
-As the firmware wiki page [2] appears to be a little outdated (it doesn't 
-mention the "ap" firmware branch), my questions are:
+If I basically leave code as is, then secondary stations can associate but never
+get DHCP.  I see FCS and hw-crypt errored packets being received from the
+ath10k firmware/chip.  This is probably because the chip/firmware decodes the
+secondary station's packets with the first station's keys.
+Transmitted packets (as sniffed from the AP) do appear fine.
 
- * are both firmwares still developed, or is one of them deprecated?
- * Is it possible to use IBSS mode with one or both of them? Since the AP 
-branch worked better (for me), from what we have now I'd prefer this one. :)
- * if yes, is it possible to use AP and IBSS mode at the same time?
- * since there are different firmwares in the "ap" folder (389, 467 and 
-untested/436), is there a changelog for them?
- * Are the limitations and capabilities of these firmwares documented 
-somewhere?
+I was thinking to just take all fcs and/or crypt-errored packets in
+the receive path and somehow send them up the stack for the software-crypt
+layer to (re)decrypt.  I think I have managed to get ath10k to send them
+up, but still DHCP does not complete.
+
+Does anyone have any suggestions for things to try or code to look at in
+detail?
 
 Thanks,
-    Simon
+Ben
 
-[1] https://github.com/kvalo/ath10k-firmware
-[2] http://wireless.kernel.org/en/users/Drivers/ath10k/firmware
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
