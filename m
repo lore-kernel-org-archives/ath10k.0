@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrS6t-000575-U6
- for ath10k@lists.infradead.org; Fri, 13 Dec 2013 12:44:52 +0000
-Received: by mail-ee0-f51.google.com with SMTP id b15so852476eek.38
- for <ath10k@lists.infradead.org>; Fri, 13 Dec 2013 04:44:26 -0800 (PST)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: handle TKIP MIC error correctly
-Date: Fri, 13 Dec 2013 13:44:16 +0100
-Message-Id: <1386938656-5280-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1VrTcl-0007gI-0a
+ for ath10k@lists.infradead.org; Fri, 13 Dec 2013 14:21:51 +0000
+Message-ID: <52AB17E7.9080807@candelatech.com>
+Date: Fri, 13 Dec 2013 06:21:27 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: Question on software-crypt mode.
+References: <52A87FBD.4000901@candelatech.com>
+ <CA+BoTQkO+FyuAnLfo473QH=QK1FKtS7bQ8ZTXdOj67xSqUxWOw@mail.gmail.com>
+In-Reply-To: <CA+BoTQkO+FyuAnLfo473QH=QK1FKtS7bQ8ZTXdOj67xSqUxWOw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,85 +19,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-We should check MIC error flag base on
-rx_attention, to have consistent status
-of MIC failure and FCS error.
+On 12/13/2013 02:53 AM, Michal Kazior wrote:
+> On 11 December 2013 16:07, Ben Greear <greearb@candelatech.com> wrote:
+>> Hello!
+>>
+>> I am trying to implement software-crypt for ath10k so that it can do crypt
+>> with multiple stations connected to same AP.
+>>
+>> I tried using ath9k's approach and just not setting keys, but that does not
+>> work at all
+>> (no stations can communicate).
+>>
+>> If I basically leave code as is, then secondary stations can associate but
+>> never
+>> get DHCP.  I see FCS and hw-crypt errored packets being received from the
+>> ath10k firmware/chip.  This is probably because the chip/firmware decodes
+>> the
+>> secondary station's packets with the first station's keys.
+>> Transmitted packets (as sniffed from the AP) do appear fine.
+>
+> This sounds a lot like a multi-BSS issues that were discovered
+> recently on AP branch firmware.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htt.h    |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   15 +++++++++++++++
- drivers/net/wireless/ath/ath10k/txrx.c   |    2 +-
- 3 files changed, 17 insertions(+), 1 deletion(-)
+I think that it may be mostly impossible to
+get hardware to do crypt with multiple STA associated to same AP
+because hardware/firmware wants to hash on peer's MAC, and in this case,
+I have multiple peers with same MAC.  I wanted to just ignore the RX crypt
+errors and have the software RX path handle it up in mac80211, but
+I did not make much progress when trying that.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 7fc7919..b93ae35 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1183,6 +1183,7 @@ struct htt_rx_info {
- 	} rate;
- 	bool fcs_err;
- 	bool amsdu_more;
-+	bool mic_err;
- };
- 
- struct ath10k_htt {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fcb534f..fe8bd1b 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -838,6 +838,20 @@ static bool ath10k_htt_rx_has_fcs_err(struct sk_buff *skb)
- 	return false;
- }
- 
-+static bool ath10k_htt_rx_has_mic_err(struct sk_buff *skb)
-+{
-+	struct htt_rx_desc *rxd;
-+	u32 flags;
-+
-+	rxd = (void *)skb->data - sizeof(*rxd);
-+	flags = __le32_to_cpu(rxd->attention.flags);
-+
-+	if (flags & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
-+		return true;
-+
-+	return false;
-+}
-+
- static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb)
- {
- 	struct htt_rx_desc *rxd;
-@@ -960,6 +974,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 
- 			info.skb     = msdu_head;
- 			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
-+			info.mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
- 			info.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
- 			info.signal += rx->ppdu.combined_rssi;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 2282980..74f45fa6 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -231,7 +231,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 				~IEEE80211_FCTL_PROTECTED);
- 	}
- 
--	if (info->status == HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR)
-+	if (info->mic_err)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
- 
- 	if (info->fcs_err)
+I made some progress with software-only crypt, but I had to modify
+firmware because it will not transmit the 4/4 handshake message until
+key has been configured, and with sw-crypt, the key will never be
+set.
+
+With this change to the firmware, I can authenticate/connect to the AP, but DHCP will not work,
+and the AP shows no received data packets.  I suspect the firmware is expecting the
+tx packets to be un-encrypted and is either trying to crypt them again or is getting
+confused when it cannot find packet headers where it expects them.
+
+When I find time I will dig back into the firmware to work on this some more.
+
+> See commit:
+>
+>    ath10k: fix multi BSSID with WPA on FW 10.1
+>
+> You could try applying the commit and remove the following code from it:
+>
+>    if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
+>      return;
+>
+> The commit was originally only tested against AP interfaces but I was
+> suspecting the same thing (i.e. corrupted Tx) could be happening on
+> multi-STA.
+
+I will look at that as well.
+
+Thanks,
+Ben
+
+
 -- 
-1.7.9.5
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
