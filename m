@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsYvu-0003zl-WB
- for ath10k@lists.infradead.org; Mon, 16 Dec 2013 14:14:08 +0000
+ id 1VsaKX-0006SQ-C2
+ for ath10k@lists.infradead.org; Mon, 16 Dec 2013 15:43:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: split the if_limits and if_comb
-References: <1386688840-12181-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Mon, 16 Dec 2013 16:13:36 +0200
-In-Reply-To: <1386688840-12181-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Tue, 10 Dec 2013 16:20:39 +0100")
-Message-ID: <87k3f4g9yn.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] ath10k: fix host corruption
+References: <1386858261-16037-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 16 Dec 2013 17:43:10 +0200
+In-Reply-To: <1386858261-16037-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 12 Dec 2013 15:24:18 +0100")
+Message-ID: <874n68g5td.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,37 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Split the interface limits and inteface combination,
-> to reflect the 10.X capabilites (no P2P, no STA and 8 VAP).
+> This patchset aims at fixing (or at least
+> reducing) the frequency of a (apparently) strange
+> HW bug.
 >
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> The bug happens in some workloads with different
+> frequency with different hardware spinoffs. It is
+> triggered by a cold reset after HW/FW has been
+> excercised with some work.
+>
+> On x86 this could be a hang, on AP135 it is a data
+> bus error.
+>
+>
+> Michal Kazior (3):
+>   ath10k: fix device initialization routine
+>   ath10k: zero device DRAM to avoid host hangs
+>   ath10k: zero CE config upon deinit
 
-Both patches applied. I did minor changes in patch 1, please double
-check:
-
-> @@ -3717,8 +3718,15 @@ int ath10k_mac_register(struct ath10k *ar)
->  	 */
->  	ar->hw->queues = 4;
->  
-> -	ar->hw->wiphy->iface_combinations = ath10k_if_comb;
-> -	ar->hw->wiphy->n_iface_combinations = ARRAY_SIZE(ath10k_if_comb);
-> +	if (!test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
-> +
-> +		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
-> +		ar->hw->wiphy->n_iface_combinations = ARRAY_SIZE(ath10k_if_comb);
-> +
-> +	} else {
-> +		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
-> +		ar->hw->wiphy->n_iface_combinations = ARRAY_SIZE(ath10k_10x_if_comb);
-> +	}
-
-I fixed checkpatch warnings here and reversed the test to get rid
-unnecessary negation operator.
+Let's put these patches on hold for now while we investigate more about
+this problem.
 
 -- 
 Kalle Valo
