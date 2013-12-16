@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsY5F-0002sn-BU
- for ath10k@lists.infradead.org; Mon, 16 Dec 2013 13:19:41 +0000
+ id 1VsYe4-0003cE-U7
+ for ath10k@lists.infradead.org; Mon, 16 Dec 2013 13:55:41 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix band reporting for mgmt CCK frames on 5GHz
-References: <1386927883-14028-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 16 Dec 2013 15:19:12 +0200
-In-Reply-To: <1386927883-14028-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 13 Dec 2013 10:44:43 +0100")
-Message-ID: <87wqj5exwv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: split the if_limits and if_comb
+References: <1386688840-12181-1-git-send-email-bartosz.markowski@tieto.com>
+ <52A734D9.3000506@candelatech.com>
+Date: Mon, 16 Dec 2013 15:55:14 +0200
+In-Reply-To: <52A734D9.3000506@candelatech.com> (Ben Greear's message of "Tue, 
+ 10 Dec 2013 07:35:53 -0800")
+Message-ID: <87ob4ggat9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,27 +24,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> Although CCK modulation isn't expected for 11a if
-> it happened it made ath10k report wrong band
-> (2GHz) for a mgmt frame that were actually
-> received on 5Ghz band. Frequency would also
-> decoded incorrectly too.
+> On 12/10/2013 07:20 AM, Bartosz Markowski wrote:
+>> Split the interface limits and inteface combination,
+>> to reflect the 10.X capabilites (no P2P, no STA and 8 VAP).
 >
-> In case of 5GHz-only devices this triggered
-> mac80211 WARN_ON because there was no according
-> sband pointer to be found.
+> My 10.X firmware works just fine with stations..I just tested up
+> to 32 of them.
 >
-> The patch should fix delivery of such frames by
-> using different means to acquire band parameter.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Maybe add firmware IEs to explicitly advertise how many it can
+> support instead of setting one flag and making assumptions?
 
-Thanks, applied.
+That can be done in a separate patch.
 
 -- 
 Kalle Valo
