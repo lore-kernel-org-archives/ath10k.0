@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VrTcl-0007gI-0a
- for ath10k@lists.infradead.org; Fri, 13 Dec 2013 14:21:51 +0000
-Message-ID: <52AB17E7.9080807@candelatech.com>
-Date: Fri, 13 Dec 2013 06:21:27 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1VsXMZ-0001mX-Js
+ for ath10k@lists.infradead.org; Mon, 16 Dec 2013 12:33:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC] ath10k: add set_bitrate_mask callback
+References: <1386791166-3483-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Mon, 16 Dec 2013 14:33:04 +0200
+In-Reply-To: <1386791166-3483-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Wed, 11 Dec 2013 20:46:06 +0100")
+Message-ID: <87a9g1gem7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Question on software-crypt mode.
-References: <52A87FBD.4000901@candelatech.com>
- <CA+BoTQkO+FyuAnLfo473QH=QK1FKtS7bQ8ZTXdOj67xSqUxWOw@mail.gmail.com>
-In-Reply-To: <CA+BoTQkO+FyuAnLfo473QH=QK1FKtS7bQ8ZTXdOj67xSqUxWOw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,77 +19,249 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-On 12/13/2013 02:53 AM, Michal Kazior wrote:
-> On 11 December 2013 16:07, Ben Greear <greearb@candelatech.com> wrote:
->> Hello!
->>
->> I am trying to implement software-crypt for ath10k so that it can do crypt
->> with multiple stations connected to same AP.
->>
->> I tried using ath9k's approach and just not setting keys, but that does not
->> work at all
->> (no stations can communicate).
->>
->> If I basically leave code as is, then secondary stations can associate but
->> never
->> get DHCP.  I see FCS and hw-crypt errored packets being received from the
->> ath10k firmware/chip.  This is probably because the chip/firmware decodes
->> the
->> secondary station's packets with the first station's keys.
->> Transmitted packets (as sniffed from the AP) do appear fine.
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+
+> Add set_bitrate_mask callback. Currently
+> ath10k HW is limited to handle only single
+> fixed rate setting.
 >
-> This sounds a lot like a multi-BSS issues that were discovered
-> recently on AP branch firmware.
-
-I think that it may be mostly impossible to
-get hardware to do crypt with multiple STA associated to same AP
-because hardware/firmware wants to hash on peer's MAC, and in this case,
-I have multiple peers with same MAC.  I wanted to just ignore the RX crypt
-errors and have the software RX path handle it up in mac80211, but
-I did not make much progress when trying that.
-
-I made some progress with software-only crypt, but I had to modify
-firmware because it will not transmit the 4/4 handshake message until
-key has been configured, and with sw-crypt, the key will never be
-set.
-
-With this change to the firmware, I can authenticate/connect to the AP, but DHCP will not work,
-and the AP shows no received data packets.  I suspect the firmware is expecting the
-tx packets to be un-encrypted and is either trying to crypt them again or is getting
-confused when it cannot find packet headers where it expects them.
-
-When I find time I will dig back into the firmware to work on this some more.
-
-> See commit:
+> Example:
+> iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 2:9
+> will setup VHT, nss=2, mcs=9
 >
->    ath10k: fix multi BSSID with WPA on FW 10.1
+> iw wlanX set bitrates legacy-5 18 ht-mcs-5 vht-mcs-5
+> will setup legacy, 18Mbps
 >
-> You could try applying the commit and remove the following code from it:
+> iw wlanX set bitrates legacy-5 ht-mcs-5 3 vht-mcs-5
+> will setup HT, nss=1, mcs=3
 >
->    if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
->      return;
->
-> The commit was originally only tested against AP interfaces but I was
-> suspecting the same thing (i.e. corrupted Tx) could be happening on
-> multi-STA.
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-I will look at that as well.
+It would be good to document the nl80211 patch this depends to. Makes my
+life easier.
 
-Thanks,
-Ben
+> +static int ath10k_check_single_mask(u32 mask)
+> +{
+> +	int bit;
+> +
+> +	bit = ffs(mask);
+> +	if (!bit)
+> +		return 0;
+> +
+> +	mask &= ~BIT(bit - 1);
+> +	if (mask)
+> +		return 2;
+> +
+> +	return 1;
+> +}
 
+This fuction needs documentation what does and what meaning the return
+values have.
+
+> +static bool ath10k_default_bitrate_mask(
+> +				struct ath10k *ar,
+> +				enum ieee80211_band band,
+> +				const struct cfg80211_bitrate_mask *mask)
+> +{
+
+If you can't fit it properly, you can do this:
+
+static bool
+ath10k_default_bitrate_mask(struct ath10k *ar,
+			    enum ieee80211_band band,
+			    const struct cfg80211_bitrate_mask *mask)
+
+> +	u32 legacy = 0x00FF;
+> +	u8 ht = 0xFF, i;
+> +	u16 vht = 0x3FF;
+
+Lowe case hex, please.
+
+> +
+> +	switch (band) {
+> +	case IEEE80211_BAND_2GHZ:
+> +		legacy= 0x00FFF;
+> +		vht = 0;
+> +		break;
+> +	case IEEE80211_BAND_5GHZ:
+> +		break;
+> +	default:
+> +		return false;
+> +	}
+> +
+> +	if (mask->control[band].legacy != legacy)
+> +		return false;
+> +
+> +	for (i = 0; i < ar->num_rf_chains; i++)
+> +		if (mask->control[band].ht_mcs[i] != ht)
+> +			return false;
+> +
+> +	for (i = 0; i < ar->num_rf_chains; i++)
+> +		if (mask->control[band].vht_mcs[i] != vht)
+> +			return false;
+> +
+> +	return true;
+> +}
+> +
+> +static bool ath10k_bitrate_mask_correct(
+> +			const struct cfg80211_bitrate_mask *mask,
+> +			enum ieee80211_band band,
+> +			enum wmi_rate_preamble *preamble)
+> +{
+
+Same here.
+
+> +	int legacy = 0, ht = 0, vht = 0, i;
+> +
+> +	*preamble = WMI_RATE_PREAMBLE_OFDM;
+> +
+> +	/* check legacy */
+> +	legacy = ath10k_check_single_mask(mask->control[band].legacy);
+> +	if (legacy > 1)
+> +		return false;
+> +
+> +	/* check HT */
+> +	for (i = 0; i < IEEE80211_HT_MCS_MASK_LEN; i++)
+> +		ht += ath10k_check_single_mask(mask->control[band].ht_mcs[i]);
+> +	if (ht > 1)
+> +		return false;
+> +
+> +	/* check VHT */
+> +	for (i = 0; i < NL80211_VHT_NSS_MAX; i++)
+> +		vht += ath10k_check_single_mask(mask->control[band].vht_mcs[i]);
+> +	if (vht > 1)
+> +		return false;
+> +
+> +	/* Currently we support only one fixed_rate */
+> +	if ((legacy + ht + vht) != 1)
+> +		return false;
+> +
+> +	if (ht)
+> +		*preamble = WMI_RATE_PREAMBLE_HT;
+> +	else if (vht)
+> +		*preamble = WMI_RATE_PREAMBLE_VHT;
+> +
+> +	return true;
+> +}
+> +
+> +static u8 ath10k_get_fixed_rate(const struct cfg80211_bitrate_mask *mask,
+> +				enum ieee80211_band band)
+> +{
+> +	u8 fixed_rate = 0, fixed_pream = 0, fixed_nss = 0, i;
+> +	enum wmi_rate_preamble preamble;
+> +
+> +	if (!ath10k_bitrate_mask_correct(mask, band, &preamble))
+> +		return WMI_FIXED_RATE_NONE;
+> +
+> +	fixed_pream = preamble;
+> +
+> +	switch (preamble) {
+> +	case WMI_RATE_PREAMBLE_CCK:
+> +	case WMI_RATE_PREAMBLE_OFDM:
+> +		i = ffs(mask->control[band].legacy) - 1;
+
+Empty line here.
+
+> +		if (band == IEEE80211_BAND_2GHZ && i < 4)
+> +			fixed_pream = WMI_RATE_PREAMBLE_CCK;
+
+Empty line here.
+
+> +		if (band == IEEE80211_BAND_5GHZ)
+> +			i += 4;
+
+Empty line here.
+
+> +		WARN_ON(i >= ARRAY_SIZE(cck_ofdm_rate));
+> +		fixed_rate = cck_ofdm_rate[i];
+> +		break;
+> +	case WMI_RATE_PREAMBLE_HT:
+> +		for (i = 0; i < IEEE80211_HT_MCS_MASK_LEN; i++)
+> +			if (mask->control[band].ht_mcs[i])
+> +				break;
+
+Empty line here.
+
+> +		fixed_rate = ffs(mask->control[band].ht_mcs[i]) - 1;
+> +		fixed_nss = i;
+> +		break;
+> +	case WMI_RATE_PREAMBLE_VHT:
+> +		for (i = 0; i < NL80211_VHT_NSS_MAX; i++)
+> +			if (mask->control[band].vht_mcs[i])
+> +				break;
+
+And here as well.
+
+> +		fixed_rate = ffs(mask->control[band].vht_mcs[i]) - 1;
+> +		fixed_nss = i;
+> +		break;
+> +	}
+> +
+> +	fixed_nss <<= 4;
+> +	fixed_pream <<= 6;
+> +
+> +	ath10k_dbg(ATH10K_DBG_MAC, "fixed rate pream 0x%02x nss 0x%02x rate 0x%02x\n",
+> +		   fixed_pream, fixed_nss, fixed_rate);
+
+"mac fixed rate pream 0x%02x nss 0x%02x rate 0x%02x\n"
+
+> +
+> +	return fixed_pream | fixed_nss | fixed_rate;
+> +}
+> +
+> +static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
+> +				   struct ieee80211_vif *vif,
+> +				   const struct cfg80211_bitrate_mask *mask)
+> +{
+> +	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+> +	struct ath10k *ar = arvif->ar;
+> +	enum ieee80211_band band = ar->hw->conf.chandef.chan->band;
+> +	u8 fixed_rate = WMI_FIXED_RATE_NONE;
+> +	u32 vdev_param;
+> +	int ret = 0;
+> +
+> +	if (!ath10k_default_bitrate_mask(ar, band, mask)) {
+> +		fixed_rate = ath10k_get_fixed_rate(mask, band);
+> +		/* Someone request unsuported mask set */
+> +		if (fixed_rate == WMI_FIXED_RATE_NONE)
+> +			return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&ar->conf_mutex);
+> +
+> +	if (arvif->fixed_rate == fixed_rate)
+> +		goto exit;
+> +
+> +	if (fixed_rate == WMI_FIXED_RATE_NONE)
+> +		ath10k_dbg(ATH10K_DBG_MAC, "set bitrate mask, disable fixed rate settings\n");
+
+"mac disable fixed bitrate mask" or something like that.
+
+> +
+> +
+> +	vdev_param = ar->wmi.vdev_param->fixed_rate;
+> +	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
+> +					vdev_param, fixed_rate);
+
+It would be good to document the format for fixed_rate in wmi.h.
+
+> +	if (ret) {
+> +		ath10k_warn("Could not set fixed_rate param 0x%02x\n",
+> +			    fixed_rate);
+
+Print error code as well:
+
+"Could not set fixed_rate param 0x%02x: %d\n"
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
