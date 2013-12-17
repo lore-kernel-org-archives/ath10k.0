@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-ee0-f54.google.com ([74.125.83.54])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VsaKX-0006SQ-C2
- for ath10k@lists.infradead.org; Mon, 16 Dec 2013 15:43:38 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] ath10k: fix host corruption
-References: <1386858261-16037-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 16 Dec 2013 17:43:10 +0200
-In-Reply-To: <1386858261-16037-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 12 Dec 2013 15:24:18 +0100")
-Message-ID: <874n68g5td.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Vsxbq-0003FO-71
+ for ath10k@lists.infradead.org; Tue, 17 Dec 2013 16:35:04 +0000
+Received: by mail-ee0-f54.google.com with SMTP id e51so2522545eek.41
+ for <ath10k@lists.infradead.org>; Tue, 17 Dec 2013 08:34:00 -0800 (PST)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: add DFS_CERTIFIED option
+Date: Tue, 17 Dec 2013 17:33:45 +0100
+Message-Id: <1387298026-2599-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +17,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Add Kconfig option that allow DFS functionality.
 
-> This patchset aims at fixing (or at least
-> reducing) the frequency of a (apparently) strange
-> HW bug.
->
-> The bug happens in some workloads with different
-> frequency with different hardware spinoffs. It is
-> triggered by a cold reset after HW/FW has been
-> excercised with some work.
->
-> On x86 this could be a hang, on AP135 it is a data
-> bus error.
->
->
-> Michal Kazior (3):
->   ath10k: fix device initialization routine
->   ath10k: zero device DRAM to avoid host hangs
->   ath10k: zero CE config upon deinit
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/Kconfig |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Let's put these patches on hold for now while we investigate more about
-this problem.
-
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index 82e8088..a6f5285 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -37,3 +37,10 @@ config ATH10K_TRACING
+ 	---help---
+ 	  Select this to ath10k use tracing infrastructure.
+ 
++config ATH10K_DFS_CERTIFIED
++	bool "Atheros DFS support for certified platforms"
++	depends on ATH10K && CFG80211_CERTIFICATION_ONUS
++	default n
++	---help---
++	This option enables DFS support for initiating radiation on
++	ath10k.
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
