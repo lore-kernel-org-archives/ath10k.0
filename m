@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vtx9R-00065l-PF
- for ath10k@lists.infradead.org; Fri, 20 Dec 2013 10:17:50 +0000
+ id 1VtxD8-0006Az-Kr
+ for ath10k@lists.infradead.org; Fri, 20 Dec 2013 10:21:39 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Unable to receive beacon in IBSS mode
-References: <CAEFj986wMdEPuh=hRxL=6_CmWGp7eawB82+dq6M+c2EPVj9wNQ@mail.gmail.com>
-Date: Fri, 20 Dec 2013 12:17:07 +0200
-In-Reply-To: <CAEFj986wMdEPuh=hRxL=6_CmWGp7eawB82+dq6M+c2EPVj9wNQ@mail.gmail.com>
- (Yeoh Chun-Yeow's message of "Thu, 19 Dec 2013 21:28:47 +0800")
-Message-ID: <87a9fv3jz0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: implement sta_rc_update()
+References: <87li09ga42.fsf@kamboji.qca.qualcomm.com>
+ <1387361479-21289-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 20 Dec 2013 12:21:11 +0200
+In-Reply-To: <1387361479-21289-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 18 Dec 2013 11:11:19 +0100")
+Message-ID: <8761qj3js8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,23 +24,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> I have observed if you create the interface in the ath10k as IBSS mode
-> (WMI_VDEV_TYPE_IBSS). The ath10k_wmi_event_mgmt_rx is not able to
-> receive the beacon frame. This maybe the reason when the STA up as
-> adhoc mode not able to join the network.
+> This should fix possible connectivity issues upon
+> changes of channel width, number of streams or
+> SMPS on connected stations.
 >
-> But if you put the ath10k as AP mode (WMI_VDEV_TYPE_AP), you are able
-> to receive the beacon.
+> An example trigger would be an action frame with
+> operation mode change notification.
 >
-> Is this the correct behavior?
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I haven't done any IBSS tests myself, but what firmware version are you
-using?
+[...]
+
+> +static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+> +				 struct ieee80211_vif *vif,
+> +				 struct ieee80211_sta *sta,
+> +				 u32 changed)
+> +{
+> +	struct ath10k *ar = hw->priv;
+> +	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+> +	u32 chwidth, smps;
+> +	int ret;
+> +
+
+[...]
+
+> +		ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
+> +						WMI_PEER_CHAN_WIDTH, chwidth);
+
+Johannes pointed out (danke!) that sta_rc_update() must be atomic, but
+all these WMI calls can sleep.
 
 -- 
 Kalle Valo
