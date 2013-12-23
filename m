@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-f42.google.com ([74.125.83.42])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VuSJJ-0006iX-VT
- for ath10k@lists.infradead.org; Sat, 21 Dec 2013 19:34:07 +0000
-Received: by mail-ee0-f42.google.com with SMTP id e53so1662478eek.1
- for <ath10k@lists.infradead.org>; Sat, 21 Dec 2013 11:33:41 -0800 (PST)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC] ath10k: bitrate_mask add force_sgi support
-Date: Sat, 21 Dec 2013 20:33:15 +0100
-Message-Id: <1387654395-3326-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1VuzWI-00028V-BJ
+ for ath10k@lists.infradead.org; Mon, 23 Dec 2013 07:01:43 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add set_bitrate_mask callback
+References: <1387653946-2988-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Mon, 23 Dec 2013 09:01:13 +0200
+In-Reply-To: <1387653946-2988-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Sat, 21 Dec 2013 20:25:46 +0100")
+Message-ID: <87d2koxd8m.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,120 +19,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Add force SGI support.
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
-Depends on, nl80211: add Guard Interval support for set_bitrate_mask
-Depends on, ath10k: add set_bitrate_mask callback
-iw iface, iw: add sgi/lgi support to set bitrates
+> Add set_bitrate_mask callback. Currently
+> ath10k HW is limited to handle only single
+> fixed rate setting or limit number of used
+> spatial streams.
+>
+> Example:
+> iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 2:9
+> will setup VHT, nss=2, mcs=9
+>
+> iw wlanX set bitrates legacy-5 18 ht-mcs-5 vht-mcs-5
+> will setup legacy, 18Mbps
+>
+> iw wlanX set bitrates legacy-5 ht-mcs-5 3 vht-mcs-5
+> will setup HT, nss=1, mcs=3
+>
+> iw wlanX set bitrate legacy-5 ht-mcs-5 vht-mcs-5 1:0-9
+> will setup nss=1
+>
+> iw wlanX set bitrate legacy-5 ht-mcs-5 vht-mcs-5 1:0-9 2:0-9
+> will setup nss=2
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
- drivers/net/wireless/ath/ath10k/core.h |    1 +
- drivers/net/wireless/ath/ath10k/mac.c  |   35 +++++++++++++++++++++++++++++---
- 2 files changed, 33 insertions(+), 3 deletions(-)
+I see a new warning with this patch:
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 3817e32..2813dcd 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -256,6 +256,7 @@ struct ath10k_vif {
- 
- 	u8 fixed_rate;
- 	u8 fixed_nss;
-+	u8 force_sgi;
- };
- 
- struct ath10k_vif_iter {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5d289d4..1bcfde7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3538,7 +3538,8 @@ static bool ath10k_get_fixed_rate_nss(const struct cfg80211_bitrate_mask *mask,
- 
- static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
- 				       u8 fixed_rate,
--				       u8 fixed_nss)
-+				       u8 fixed_nss,
-+				       u8 force_sgi)
- {
- 	struct ath10k *ar = arvif->ar;
- 	u32 vdev_param;
-@@ -3547,12 +3548,16 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	if (arvif->fixed_rate == fixed_rate &&
--	    arvif->fixed_nss == fixed_nss)
-+	    arvif->fixed_nss == fixed_nss &&
-+	    arvif->force_sgi == force_sgi)
- 		goto exit;
- 
- 	if (fixed_rate == WMI_FIXED_RATE_NONE)
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac disable fixed bitrate mask\n");
- 
-+	if (force_sgi)
-+		ath10k_dbg(ATH10K_DBG_MAC, "mac force sgi\n");
-+
- 	vdev_param = ar->wmi.vdev_param->fixed_rate;
- 	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
- 					vdev_param, fixed_rate);
-@@ -3578,6 +3583,19 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
- 
- 	arvif->fixed_nss = fixed_nss;
- 
-+	vdev_param = ar->wmi.vdev_param->sgi;
-+	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					force_sgi);
-+
-+	if (ret) {
-+		ath10k_warn("Could not set sgi param %d: %d\n",
-+			    force_sgi, ret);
-+		ret = -EINVAL;
-+		goto exit;
-+	}
-+
-+	arvif->force_sgi = force_sgi;
-+
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
-@@ -3592,6 +3610,11 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
- 	enum ieee80211_band band = ar->hw->conf.chandef.chan->band;
- 	struct wmi_vdev_fixed_rate fixed_rate = { .rate = WMI_FIXED_RATE_NONE };
- 	u8 fixed_nss = ar->num_rf_chains;
-+	u8 force_sgi;
-+
-+	force_sgi = mask->control[band].gi;
-+	if (force_sgi == NL80211_TXRATE_FORCE_LGI)
-+		return -EINVAL;
- 
- 	if (!ath10k_default_bitrate_mask(ar, band, mask)) {
- 		if (!ath10k_get_fixed_rate_nss(mask, band,
-@@ -3600,7 +3623,13 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
- 			return -EINVAL;
- 	}
- 
--	return ath10k_set_fixed_rate_param(arvif, fixed_rate.rate, fixed_nss);
-+	if (fixed_rate.rate == WMI_FIXED_RATE_NONE && force_sgi) {
-+		ath10k_warn("Could not force SGI usage for default rate settings\n");
-+		return -EINVAL;
-+	}
-+
-+	return ath10k_set_fixed_rate_param(arvif, fixed_rate.rate,
-+					   fixed_nss, force_sgi);
- }
- 
- static const struct ieee80211_ops ath10k_ops = {
+ath10k/mac.c:3593:52: error: unknown field name in initializer
+
+> Depends on, nl80211: add VHT support for set_bitrate_mask
+
+Good, I need to always know this. I now merged wireless-next to ath-next
+to get the dependency included.
+
+> --- a/drivers/net/wireless/ath/ath10k/wmi.h
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
+> @@ -3003,6 +3003,24 @@ struct wmi_vdev_install_key_arg {
+>  	const void *key_data;
+>  };
+>  
+> +/*
+> + * CCK:  0 - 11Mbps, 1 - 5,5Mbps, 2 - 2Mbps, 3 - 1Mbps,
+> + *       4 - 11Mbps (s), 5 - 5,5Mbps (s), 6 - 2Mbps (s)
+> + * OFDM: 0 - 48Mbps, 1 - 24Mbps, 2 - 12Mbps, 3 - 6Mbps,
+> + *       4 - 54Mbps, 5 - 36Mbps, 6 - 18Mbps, 7 - 9Mbps
+> + * HT/VHT: MCS index
+> + */
+> +struct wmi_vdev_fixed_rate {
+> +	union {
+> +		u8 rate;
+> +		struct {
+> +			u8 preamble:2, /* %WMI_RATE_PREAMBLE_ */
+> +			   nss:2,
+> +			   rate_mcs:4; /* see above */
+> +		} __packed;
+> +	} __packed;
+> +} __packed;
+
+Bitfields are frowned upon in kernel, better to use SM() and MS().
+
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
