@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Vz2Th-0004Iv-0h
- for ath10k@lists.infradead.org; Fri, 03 Jan 2014 10:59:45 +0000
-Subject: [PATCH 1/3] ath10k: handle WMI debug print events
+ id 1Vz2Tj-0004Iw-Rq
+ for ath10k@lists.infradead.org; Fri, 03 Jan 2014 10:59:48 +0000
+Subject: [PATCH 2/3] ath10k: add trace event for WMI_DEBUG_MESG_EVENTID
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 03 Jan 2014 12:59:20 +0200
-Message-ID: <20140103105920.13474.65657.stgit@potku.adurom.net>
+Date: Fri, 03 Jan 2014 12:59:26 +0200
+Message-ID: <20140103105926.13474.5152.stgit@potku.adurom.net>
 In-Reply-To: <20140103105718.13474.70922.stgit@potku.adurom.net>
 References: <20140103105718.13474.70922.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,66 +25,67 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Firmware can send simple ascii strings as debug messages using
-WMI_DEBUG_PRINT_EVENTID, print those with ATH10K_DBG_WMI log level.
+Send firmware WMI debug logs to user space for further processing.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   33 +++++++++++++++++++++++++++++++--
- 1 file changed, 31 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/trace.h |   21 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c   |    9 +++++++--
+ 2 files changed, 28 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index 90817dd..4eb2ecb 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -182,6 +182,27 @@ TRACE_EVENT(ath10k_htt_stats,
+ 	)
+ );
+ 
++TRACE_EVENT(ath10k_wmi_dbglog,
++	TP_PROTO(void *buf, size_t buf_len),
++
++	TP_ARGS(buf, buf_len),
++
++	TP_STRUCT__entry(
++		__field(size_t, buf_len)
++		__dynamic_array(u8, buf, buf_len)
++	),
++
++	TP_fast_assign(
++		__entry->buf_len = buf_len;
++		memcpy(__get_dynamic_array(buf), buf, buf_len);
++	),
++
++	TP_printk(
++		"len %zu",
++		__entry->buf_len
++	)
++);
++
+ #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
+ 
+ /* we don't want to use include/trace/events */
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 3ec6c9a..f992570 100644
+index f992570..4e043bb 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -16,6 +16,7 @@
-  */
- 
- #include <linux/skbuff.h>
-+#include <linux/ctype.h>
- 
- #include "core.h"
- #include "htc.h"
-@@ -1676,9 +1677,37 @@ static void ath10k_wmi_event_profile_match(struct ath10k *ar,
+@@ -1071,9 +1071,14 @@ static void ath10k_wmi_event_echo(struct ath10k *ar, struct sk_buff *skb)
+ 	ath10k_dbg(ATH10K_DBG_WMI, "WMI_ECHO_EVENTID\n");
  }
  
- static void ath10k_wmi_event_debug_print(struct ath10k *ar,
--				  struct sk_buff *skb)
-+					 struct sk_buff *skb)
+-static void ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
++static int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
  {
--	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_PRINT_EVENTID\n");
-+	char buf[101], c;
-+	int i;
+-	ath10k_dbg(ATH10K_DBG_WMI, "WMI_DEBUG_MESG_EVENTID\n");
++	ath10k_dbg(ATH10K_DBG_WMI, "wmi event debug mesg len %d\n",
++		   skb->len);
 +
-+	for (i = 0; i < sizeof(buf) - 1; i++) {
-+		if (i >= skb->len)
-+			break;
++	trace_ath10k_wmi_dbglog(skb->data, skb->len);
 +
-+		c = skb->data[i];
-+
-+		if (c == '\0')
-+			break;
-+
-+		if (isascii(c) && isprint(c))
-+			buf[i] = c;
-+		else
-+			buf[i] = '.';
-+	}
-+
-+	if (i == sizeof(buf) - 1)
-+		ath10k_warn("wmi debug print truncated: %d\n", skb->len);
-+
-+	/* for some reason the debug prints end with \n, remove that */
-+	if (skb->data[i - 1] == '\n')
-+		i--;
-+
-+	/* the last byte is always reserved for the null character */
-+	buf[i] = '\0';
-+
-+	ath10k_dbg(ATH10K_DBG_WMI, "wmi event debug print '%s'\n", buf);
++	return 0;
  }
  
- static void ath10k_wmi_event_pdev_qvit(struct ath10k *ar, struct sk_buff *skb)
+ static void ath10k_wmi_event_update_stats(struct ath10k *ar,
 
 
 _______________________________________________
