@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-f47.google.com ([74.125.83.47])
+Received: from mail-pb0-x234.google.com ([2607:f8b0:400e:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1VyiV9-0003Dq-FF
- for ath10k@lists.infradead.org; Thu, 02 Jan 2014 13:39:57 +0000
-Received: by mail-ee0-f47.google.com with SMTP id e51so5311405eek.6
- for <ath10k@lists.infradead.org>; Thu, 02 Jan 2014 05:38:52 -0800 (PST)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: track number of existing peers
-Date: Thu,  2 Jan 2014 14:38:33 +0100
-Message-Id: <1388669913-29031-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1Vz1IO-0002cv-B1
+ for ath10k@lists.infradead.org; Fri, 03 Jan 2014 09:44:00 +0000
+Received: by mail-pb0-f52.google.com with SMTP id uo5so15426595pbc.25
+ for <ath10k@lists.infradead.org>; Fri, 03 Jan 2014 01:43:39 -0800 (PST)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: fix the MAC address of peer statistic
+Date: Fri,  3 Jan 2014 17:43:27 +0800
+Message-Id: <1388742207-15694-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,130 +23,68 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-To not exceed number of allowed clients (AP mode), make sure to
-check how many of them are already on the peers list.
+Fix the MAC address of wmi_peer_stats so that it is
+printed correctly. This is tested and verified using
+firmware version 999.999.0.636.
 
-10.X firmware support up to 127 peers, non-AP centric firmwares 16.
-
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |    3 +++
- drivers/net/wireless/ath/ath10k/hw.h   |    1 +
- drivers/net/wireless/ath/ath10k/mac.c  |   28 +++++++++++++++++++++++++---
- 3 files changed, 29 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c |    3 +++
+ drivers/net/wireless/ath/ath10k/wmi.h   |   14 +++++++-------
+ 2 files changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 035cbf6..9d8fc29 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -432,6 +432,9 @@ struct ath10k {
- 	struct list_head peers;
- 	wait_queue_head_t peer_mapping_wq;
- 
-+	/* number of created peers; protected by data_lock */
-+	int num_peers;
-+
- 	struct work_struct offchan_tx_work;
- 	struct sk_buff_head offchan_tx_queue;
- 	struct completion offchan_tx_completed;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 9535eaa..f1505a2 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -115,6 +115,7 @@ enum ath10k_mcast2ucast_mode {
- #define TARGET_10X_MAC_AGGR_DELIM		0
- #define TARGET_10X_AST_SKID_LIMIT		16
- #define TARGET_10X_NUM_PEERS			(128 + (TARGET_10X_NUM_VDEVS))
-+#define TARGET_10X_NUM_PEERS_MAX		128
- #define TARGET_10X_NUM_OFFLOAD_PEERS		0
- #define TARGET_10X_NUM_OFFLOAD_REORDER_BUFS	0
- #define TARGET_10X_NUM_PEER_KEYS		2
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5b45f3a..9ef3230 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -332,6 +332,9 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 		ath10k_warn("Failed to wait for created wmi peer: %i\n", ret);
- 		return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 6bdfad3..eec3439 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -242,6 +242,9 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 		}
  	}
-+	spin_lock_bh(&ar->data_lock);
-+	ar->num_peers++;
-+	spin_unlock_bh(&ar->data_lock);
  
- 	return 0;
- }
-@@ -377,6 +380,10 @@ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 	if (ret)
- 		return ret;
- 
-+	spin_lock_bh(&ar->data_lock);
-+	ar->num_peers--;
-+	spin_unlock_bh(&ar->data_lock);
++	/* The first peer is self MAC address, ignore this */
++	num_peer_stats--;
 +
- 	return 0;
- }
+ 	if (num_peer_stats) {
+ 		struct wmi_peer_stats *peer_stats;
+ 		struct ath10k_peer_stat *s;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 0087d69..106a23e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -200,12 +200,12 @@ struct wmi_mac_addr {
  
-@@ -396,6 +403,7 @@ static void ath10k_peer_cleanup(struct ath10k *ar, u32 vdev_id)
+ /* macro to convert MAC address from WMI word format to char array */
+ #define WMI_MAC_ADDR_TO_CHAR_ARRAY(pwmi_mac_addr, c_macaddr) do { \
+-	(c_macaddr)[0] =  ((pwmi_mac_addr)->word0) & 0xff; \
+-	(c_macaddr)[1] = (((pwmi_mac_addr)->word0) >> 8) & 0xff; \
+-	(c_macaddr)[2] = (((pwmi_mac_addr)->word0) >> 16) & 0xff; \
+-	(c_macaddr)[3] = (((pwmi_mac_addr)->word0) >> 24) & 0xff; \
+-	(c_macaddr)[4] =  ((pwmi_mac_addr)->word1) & 0xff; \
+-	(c_macaddr)[5] = (((pwmi_mac_addr)->word1) >> 8) & 0xff; \
++	(c_macaddr)[0] = (((pwmi_mac_addr)->word0) >> 24) & 0xff; \
++	(c_macaddr)[1] = (((pwmi_mac_addr)->word0) >> 16) & 0xff; \
++	(c_macaddr)[2] = (((pwmi_mac_addr)->word0) >> 8) & 0xff; \
++	(c_macaddr)[3] =  ((pwmi_mac_addr)->word0) & 0xff; \
++	(c_macaddr)[4] = (((pwmi_mac_addr)->word1) >> 24) & 0xff; \
++	(c_macaddr)[5] = (((pwmi_mac_addr)->word1) >> 16) & 0xff; \
+ 	} while (0)
  
- 		list_del(&peer->list);
- 		kfree(peer);
-+		ar->num_peers--;
- 	}
- 	spin_unlock_bh(&ar->data_lock);
- }
-@@ -411,6 +419,7 @@ static void ath10k_peer_cleanup_all(struct ath10k *ar)
- 		list_del(&peer->list);
- 		kfree(peer);
- 	}
-+	ar->num_peers = 0;
- 	spin_unlock_bh(&ar->data_lock);
- }
+ struct wmi_cmd_map {
+@@ -2820,9 +2820,9 @@ struct wmi_vdev_stats {
+  * TODO: add more stats
+  */
+ struct wmi_peer_stats {
++	__le32 peer_tx_rate;	/* TBA */
+ 	struct wmi_mac_addr peer_macaddr;
+ 	__le32 peer_rssi;
+-	__le32 peer_tx_rate;
+ } __packed;
  
-@@ -2842,6 +2851,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- {
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+	int max_num_peers;
- 	int ret = 0;
- 
- 	mutex_lock(&ar->conf_mutex);
-@@ -2852,9 +2862,21 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 		/*
- 		 * New station addition.
- 		 */
-+		if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
-+			max_num_peers = TARGET_10X_NUM_PEERS_MAX - 1;
-+		else
-+			max_num_peers = TARGET_NUM_PEERS;
-+
-+		if (ar->num_peers >= max_num_peers) {
-+			ath10k_warn("Number of peers exceeded: peers number %d (max peers %d)\n",
-+				    ar->num_peers, max_num_peers);
-+			ret = -ENOBUFS;
-+			goto exit;
-+		}
-+
- 		ath10k_dbg(ATH10K_DBG_MAC,
--			   "mac vdev %d peer create %pM (new sta)\n",
--			   arvif->vdev_id, sta->addr);
-+			   "mac vdev %d peer create %pM (new sta) num_peers %d\n",
-+			   arvif->vdev_id, sta->addr, ar->num_peers);
- 
- 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
- 		if (ret)
-@@ -2904,7 +2926,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			ath10k_warn("Failed to disassociate station: %pM\n",
- 				    sta->addr);
- 	}
--
-+exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
- }
+ struct wmi_vdev_create_cmd {
 -- 
-1.7.10
+1.7.9.5
 
 
 _______________________________________________
