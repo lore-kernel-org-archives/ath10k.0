@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22e.google.com ([2a00:1450:4008:c01::22e])
+Received: from nm30-vm6.bullet.mail.ne1.yahoo.com ([98.138.91.123])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W060L-00044z-U4
- for ath10k@lists.infradead.org; Mon, 06 Jan 2014 08:57:50 +0000
-Received: by mail-bk0-f46.google.com with SMTP id u15so5638421bkz.33
- for <ath10k@lists.infradead.org>; Mon, 06 Jan 2014 00:57:27 -0800 (PST)
+ id 1W0U0x-0002wt-NO
+ for ath10k@lists.infradead.org; Tue, 07 Jan 2014 10:36:04 +0000
+Message-ID: <1389090941.99903.YahooMailNeo@web122306.mail.ne1.yahoo.com>
+Date: Tue, 7 Jan 2014 02:35:41 -0800 (PST)
+From: Anand Moon <moon.linux@yahoo.com>
+Subject: 5gz 802.11n and 5ghz 802.11ac packet caputure.
 MIME-Version: 1.0
-Date: Mon, 6 Jan 2014 16:57:27 +0800
-Message-ID: <CAEFj987vWzG3SfDmpoURq_XDpMxAKeik3ogT8snsnThWrf37-g@mail.gmail.com>
-Subject: WMI Parameters
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Reply-To: Anand Moon <moon.linux@yahoo.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +17,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi, all
+=A0
+Hi All,
 
-I would like to change the beacon Tx Rate. Is this possible?
+Could some one share the basic packet capture for 5gz 802.11n and 5ghz 802.=
+11ac.
+I just want to understand the difference in packet structure and packet det=
+ails.
 
-I have tried to change multicast_rate, mgmt_tx_rate, bcast_data_rate
-or mcast_data_rate in struct wmi_vdev_param_map. But no luck, it won't
-work.
+This is just for study purpose. =
 
-Can someone advice.
 
-Thanks
+-Anand Moon
 
-Regards,
-Chun-Yeow
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+jA0EAwMCYq3dHqTzwcVgyRxC1j+oLxS8Yw92EIeKln+x3eAWzd7mM/pUluRo
+=3D0RYk
+-----END PGP MESSAGE-----
+
 
 _______________________________________________
 ath10k mailing list
