@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0sVj-0002yX-Fi
- for ath10k@lists.infradead.org; Wed, 08 Jan 2014 12:45:28 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 6/7] ath10k: Use new interfaces for MSI enablement
-References: <cover.1389103215.git.agordeev@redhat.com>
- <dc640013c28e6e24b4f7293a8adbd2b60a8f48c4.1389103215.git.agordeev@redhat.com>
- <87txdehog9.fsf@kamboji.qca.qualcomm.com>
- <20140108090449.GC20157@dhcp-26-207.brq.redhat.com>
-Date: Wed, 8 Jan 2014 14:44:55 +0200
-In-Reply-To: <20140108090449.GC20157@dhcp-26-207.brq.redhat.com> (Alexander
- Gordeev's message of "Wed, 8 Jan 2014 10:04:50 +0100")
-Message-ID: <87ob3mfxrs.fsf@kamboji.qca.qualcomm.com>
+ id 1W0xzq-0005mz-Fl
+ for ath10k@lists.infradead.org; Wed, 08 Jan 2014 18:36:55 +0000
+Message-ID: <52CD9AAF.1040407@candelatech.com>
+Date: Wed, 08 Jan 2014 10:36:31 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: How to make software re-calc received frames with bad FCS?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +20,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexander Gordeev <agordeev@redhat.com>
-Cc: linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Cc: ath10k@lists.infradead.org
 
-Alexander Gordeev <agordeev@redhat.com> writes:
+I'm back to trying to get multiple stations working to same AP
+with WPA2 on ath10k.
 
-> On Wed, Jan 08, 2014 at 10:23:18AM +0200, Kalle Valo wrote:
->
->> Do you want me to take this patch to my ath.git tree or how were you
->> planning to handle it?
->
-> I see no option other than pushing it thru pci.git tree at this stage.
+I tried  doing 'nohwcrypt', but I had no luck with that.  I think
+the firmware would require a fair bit of changes to make that happen.
 
-Thanks, I'll then just drop it from my queue.
+So, a second plan is to just tell the firmware to use hardware crypt
+for the VIFs.  This would have a good benefit of offloading the tx
+path, at least.
+
+This seems to work for transmit, but on receive, the hardware hash
+collides since 2+ stations have same peer (ie, the AP).
+
+I do receive packets, but they are flagged with FCS errors (and I think
+there is no re-assembly of ampdu, but I'm not sure how much that matters).
+
+My thought is to somehow flag these packets as needing to be decrypted
+by software instead, similar to how the normal nohwcrypt logic works.
+
+Any suggestions for how to go about attempting this?   Maybe
+just force remove the CRC failure bit from the status before
+passing up the stack?
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
