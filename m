@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W0p2a-00070O-Gu
- for ath10k@lists.infradead.org; Wed, 08 Jan 2014 09:03:09 +0000
-Date: Wed, 8 Jan 2014 10:04:50 +0100
-From: Alexander Gordeev <agordeev@redhat.com>
-Subject: Re: [PATCH 6/7] ath10k: Use new interfaces for MSI enablement
-Message-ID: <20140108090449.GC20157@dhcp-26-207.brq.redhat.com>
-References: <cover.1389103215.git.agordeev@redhat.com>
- <dc640013c28e6e24b4f7293a8adbd2b60a8f48c4.1389103215.git.agordeev@redhat.com>
- <87txdehog9.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W0qYs-0000XR-8c
+ for ath10k@lists.infradead.org; Wed, 08 Jan 2014 10:40:35 +0000
+Received: by mail-lb0-f170.google.com with SMTP id c11so1161636lbj.15
+ for <ath10k@lists.infradead.org>; Wed, 08 Jan 2014 02:40:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87txdehog9.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <CAEFj987Rxv9azS4EmW47a5guhVT-JijXsxSOgcGfvgwLkB9tEg@mail.gmail.com>
+References: <1388390871-3932-1-git-send-email-marek.puzyniak@tieto.com>
+ <CAEFj987Rxv9azS4EmW47a5guhVT-JijXsxSOgcGfvgwLkB9tEg@mail.gmail.com>
+Date: Wed, 8 Jan 2014 11:40:09 +0100
+Message-ID: <CADnKcViXui6jCsBxgbYh5A2R4ra+p3YxBP-Om1cT5GaYjjAFPw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: disable STA KICKOUT in FW
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +25,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, Jan 08, 2014 at 10:23:18AM +0200, Kalle Valo wrote:
-> Looks good to me.
-> 
-> Acked-by: Kalle Valo <kvalo@qca.qualcomm.com>
+On 2 January 2014 13:41, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+>
+> On Dec 30, 2013 4:08 PM, "Marek Puzyniak" <marek.puzyniak@tieto.com> wrote:
+>>
+>> Currently ath10k is not using STA KICKOUT firmware functionality.
+>> In order to avoid unwanted FW events this functionality should be
+>> disabled when not used.
+>
+> What are unwanted FW events?
 
-Thanks, Kalle.
+WMI_PEER_STA_KICKOUT_EVENT which indicates lack of activity from
+associated STA for specified period of time.
 
-> Do you want me to take this patch to my ath.git tree or how were you
-> planning to handle it?
-
-I see no option other than pushing it thru pci.git tree at this stage.
-
-> -- 
-> Kalle Valo
-
--- 
-Regards,
-Alexander Gordeev
-agordeev@redhat.com
+>
+> ----
+> Chun-Yeow
+Marek
+>
+>> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/mac.c | 9 +++++++++
+>>  1 file changed, 9 insertions(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
+>> b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 5b45f3a..93416ab 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -2292,11 +2292,20 @@ static int ath10k_add_interface(struct
+>> ieee80211_hw *hw,
+>>         }
+>>
+>>         if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+>> +               u32 param_id;
+>> +
+>>                 ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
+>>                 if (ret) {
+>>                         ath10k_warn("Failed to create peer for AP: %d\n",
+>> ret);
+>>                         goto err_vdev_delete;
+>>                 }
+>> +
+>> +               param_id = ar->wmi.pdev_param->sta_kickout_th;
+>> +
+>> +               /* Disable STA KICKOUT functionality in FW */
+>> +               ret = ath10k_wmi_pdev_set_param(ar, param_id, 0);
+>> +               if (ret)
+>> +                       ath10k_warn("Failed to disable STA KICKOUT\n");
+>>         }
+>>
+>>         if (arvif->vdev_type == WMI_VDEV_TYPE_STA) {
+>> --
+>> 1.8.1.2
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
