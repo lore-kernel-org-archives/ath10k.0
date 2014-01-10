@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
+Received: from mail-ea0-f172.google.com ([209.85.215.172])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1YG8-00042N-KY
- for ath10k@lists.infradead.org; Fri, 10 Jan 2014 09:20:09 +0000
-Received: by mail-pa0-f48.google.com with SMTP id lf10so2192657pab.21
- for <ath10k@lists.infradead.org>; Fri, 10 Jan 2014 01:19:45 -0800 (PST)
-From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Subject: [PATCH v2] ath10k: fix the MAC address of peer statistic
-Date: Fri, 10 Jan 2014 17:19:24 +0800
-Message-Id: <1389345564-21042-1-git-send-email-yeohchunyeow@gmail.com>
+ id 1W1YKz-0004Di-5B
+ for ath10k@lists.infradead.org; Fri, 10 Jan 2014 09:25:11 +0000
+Received: by mail-ea0-f172.google.com with SMTP id q10so1601229ead.17
+ for <ath10k@lists.infradead.org>; Fri, 10 Jan 2014 01:24:10 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add support for AP CSA
+Date: Fri, 10 Jan 2014 10:19:23 +0100
+Message-Id: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +23,219 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Fix the MAC address of wmi_peer_stats so that it is
-printed correctly. This is tested and verified using
-firmware version 999.999.0.636.
+This patch implements Channel Switch Announcement
+for AP mode. This allows for a smooth channel
+switch for connected stations that support CSA
+when radar is detected.
 
-Based on the verification, maximum only 3 peer statistics including 
-self STA able to be printed out.
-
-Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-v2: offset the stats to ignore the first peer (Chun-Yeow)
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 80 +++++++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi.c  | 18 ++++++++
+ 3 files changed, 88 insertions(+), 11 deletions(-)
 
- drivers/net/wireless/ath/ath10k/debug.c |    4 ++++
- drivers/net/wireless/ath/ath10k/wmi.h   |   14 +++++++-------
- 2 files changed, 11 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 6bdfad3..b39bad8 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -242,6 +242,10 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 		}
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 035cbf6..2554161 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -414,6 +414,7 @@ struct ath10k {
+ 	unsigned int filter_flags;
+ 	unsigned long dev_flags;
+ 	u32 dfs_block_radar_events;
++	struct ath10k_vif *csa_arvif;
+ 
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5b45f3a..5c26766 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -435,8 +435,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ {
+ 	struct ath10k *ar = arvif->ar;
+-	struct ieee80211_conf *conf = &ar->hw->conf;
+-	struct ieee80211_channel *channel = conf->chandef.chan;
++	struct cfg80211_chan_def *chandef = &ar->hw->conf.chandef;
+ 	struct wmi_vdev_start_request_arg arg = {};
+ 	int ret = 0;
+ 
+@@ -448,16 +447,14 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ 	arg.dtim_period = arvif->dtim_period;
+ 	arg.bcn_intval = arvif->beacon_interval;
+ 
+-	arg.channel.freq = channel->center_freq;
+-
+-	arg.channel.band_center_freq1 = conf->chandef.center_freq1;
+-
+-	arg.channel.mode = chan_to_phymode(&conf->chandef);
++	arg.channel.freq = chandef->chan->center_freq;
++	arg.channel.band_center_freq1 = chandef->center_freq1;
++	arg.channel.mode = chan_to_phymode(chandef);
+ 
+ 	arg.channel.min_power = 0;
+-	arg.channel.max_power = channel->max_power * 2;
+-	arg.channel.max_reg_power = channel->max_reg_power * 2;
+-	arg.channel.max_antenna_gain = channel->max_antenna_gain * 2;
++	arg.channel.max_power = chandef->chan->max_power * 2;
++	arg.channel.max_reg_power = chandef->chan->max_reg_power * 2;
++	arg.channel.max_antenna_gain = chandef->chan->max_antenna_gain * 2;
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		arg.ssid = arvif->u.ap.ssid;
+@@ -466,7 +463,7 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ 
+ 		/* For now allow DFS for AP mode */
+ 		arg.channel.chan_radar =
+-			!!(channel->flags & IEEE80211_CHAN_RADAR);
++			!!(chandef->chan->flags & IEEE80211_CHAN_RADAR);
+ 	} else if (arvif->vdev_type == WMI_VDEV_TYPE_IBSS) {
+ 		arg.ssid = arvif->vif->bss_conf.ssid;
+ 		arg.ssid_len = arvif->vif->bss_conf.ssid_len;
+@@ -2136,6 +2133,38 @@ static int ath10k_config_ps(struct ath10k *ar)
+ 	return ret;
+ }
+ 
++static void ath10k_mac_update_ap_channel(struct ath10k_vif *arvif)
++{
++	const u8 *bssid = arvif->vif->bss_conf.bssid;
++	int ret;
++
++	ath10k_dbg(ATH10K_DBG_MAC, "mac AP channel update %dMHz\n",
++		   arvif->ar->hw->conf.chandef.chan->center_freq);
++
++	ret = ath10k_vdev_stop(arvif);
++	if (ret) {
++		ath10k_warn("could not stop vdev %d (%d)\n",
++			    arvif->vdev_id, ret);
++		return;
++	}
++
++	ret = ath10k_vdev_start(arvif);
++	if (ret) {
++		ath10k_warn("could not start vdev %d (%d)\n",
++			    arvif->vdev_id, ret);
++		return;
++	}
++
++	ret = ath10k_wmi_vdev_up(arvif->ar, arvif->vdev_id, 0, bssid);
++	if (ret) {
++		ath10k_warn("could not bring vdev up %d (%d)\n",
++			    arvif->vdev_id, ret);
++		return;
++	}
++
++	ath10k_dbg(ATH10K_DBG_MAC, "mac AP channel update complete\n");
++}
++
+ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ {
+ 	struct ath10k *ar = hw->priv;
+@@ -2156,6 +2185,9 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+ 		ath10k_config_radar_detection(ar);
++
++		if (ar->csa_arvif && ar->csa_arvif->vif->csa_active)
++			ath10k_mac_update_ap_channel(ar->csa_arvif);
  	}
  
-+	/* The first peer is self MAC address, ignore this */
-+	num_peer_stats--;
-+	tmp += sizeof(struct wmi_peer_stats);
+ 	if (changed & IEEE80211_CONF_CHANGE_POWER) {
+@@ -2495,6 +2527,12 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			   "vdev %d set beacon tx mode to staggered\n",
+ 			   arvif->vdev_id);
+ 
++		if (ar->csa_arvif) {
++			ath10k_dbg(ATH10K_DBG_MAC, "mac CSA completed for vdev_id %d\n",
++				   arvif->vdev_id);
++			ar->csa_arvif = NULL;
++		}
 +
- 	if (num_peer_stats) {
- 		struct wmi_peer_stats *peer_stats;
- 		struct ath10k_peer_stat *s;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 0087d69..106a23e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -200,12 +200,12 @@ struct wmi_mac_addr {
+ 		pdev_param = ar->wmi.pdev_param->beacon_tx_mode;
+ 		ret = ath10k_wmi_pdev_set_param(ar, pdev_param,
+ 						WMI_BEACON_STAGGERED_MODE);
+@@ -3310,6 +3348,24 @@ exit:
+ 	return ret;
+ }
  
- /* macro to convert MAC address from WMI word format to char array */
- #define WMI_MAC_ADDR_TO_CHAR_ARRAY(pwmi_mac_addr, c_macaddr) do { \
--	(c_macaddr)[0] =  ((pwmi_mac_addr)->word0) & 0xff; \
--	(c_macaddr)[1] = (((pwmi_mac_addr)->word0) >> 8) & 0xff; \
--	(c_macaddr)[2] = (((pwmi_mac_addr)->word0) >> 16) & 0xff; \
--	(c_macaddr)[3] = (((pwmi_mac_addr)->word0) >> 24) & 0xff; \
--	(c_macaddr)[4] =  ((pwmi_mac_addr)->word1) & 0xff; \
--	(c_macaddr)[5] = (((pwmi_mac_addr)->word1) >> 8) & 0xff; \
-+	(c_macaddr)[0] = (((pwmi_mac_addr)->word0) >> 24) & 0xff; \
-+	(c_macaddr)[1] = (((pwmi_mac_addr)->word0) >> 16) & 0xff; \
-+	(c_macaddr)[2] = (((pwmi_mac_addr)->word0) >> 8) & 0xff; \
-+	(c_macaddr)[3] =  ((pwmi_mac_addr)->word0) & 0xff; \
-+	(c_macaddr)[4] = (((pwmi_mac_addr)->word1) >> 24) & 0xff; \
-+	(c_macaddr)[5] = (((pwmi_mac_addr)->word1) >> 16) & 0xff; \
- 	} while (0)
++static void ath10k_channel_switch_beacon(struct ieee80211_hw *hw,
++					 struct ieee80211_vif *vif,
++					 struct cfg80211_chan_def *chandef)
++{
++	struct ath10k *ar = hw->priv;
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++
++	/* FIXME: Multi-VIF not supported */
++
++	if (ar->csa_arvif != NULL) {
++		ath10k_warn("CSA is already active for this device, ignoring!\n");
++		return;
++	}
++
++	ar->csa_arvif = arvif;
++	return;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_tx,
+ 	.start				= ath10k_start,
+@@ -3332,6 +3388,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
+ 	.restart_complete		= ath10k_restart_complete,
+ 	.get_survey			= ath10k_get_survey,
++	.channel_switch_beacon		= ath10k_channel_switch_beacon,
+ #ifdef CONFIG_PM
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+@@ -3712,6 +3769,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ar->hw->max_listen_interval = ATH10K_MAX_HW_LISTEN_INTERVAL;
  
- struct wmi_cmd_map {
-@@ -2820,9 +2820,9 @@ struct wmi_vdev_stats {
-  * TODO: add more stats
-  */
- struct wmi_peer_stats {
-+	__le32 peer_tx_rate;	/* TBA */
- 	struct wmi_mac_addr peer_macaddr;
- 	__le32 peer_rssi;
--	__le32 peer_tx_rate;
- } __packed;
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
++	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
  
- struct wmi_vdev_create_cmd {
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 3ec6c9a..5985197 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -558,6 +558,22 @@ err_pull:
+ 	return ret;
+ }
+ 
++static void ath10k_update_csa(struct ath10k_vif *arvif)
++{
++	lockdep_assert_held(&arvif->ar->data_lock);
++
++	if (arvif->ar->csa_arvif != arvif)
++		return;
++
++	if (!arvif->vif->csa_active)
++		return;
++
++	if (!ieee80211_csa_is_complete(arvif->vif))
++		return;
++
++	ieee80211_csa_finish(arvif->vif);
++}
++
+ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ {
+ 	struct wmi_bcn_tx_arg arg = {0};
+@@ -580,6 +596,8 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+ 
+ 	dev_kfree_skb_any(arvif->beacon);
+ 	arvif->beacon = NULL;
++
++	ath10k_update_csa(arvif);
+ }
+ 
+ static void ath10k_wmi_tx_beacons_iter(void *data, u8 *mac,
 -- 
-1.7.9.5
+1.8.4.rc3
 
 
 _______________________________________________
