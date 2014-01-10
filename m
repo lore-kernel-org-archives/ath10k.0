@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1YxT-00058k-87
- for ath10k@lists.infradead.org; Fri, 10 Jan 2014 10:04:55 +0000
+ id 1W1ZEf-0005Za-Vl
+ for ath10k@lists.infradead.org; Fri, 10 Jan 2014 10:22:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: add set_bitrate_mask callback
-References: <1389168513-5606-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Fri, 10 Jan 2014 12:04:11 +0200
-In-Reply-To: <1389168513-5606-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Wed, 8 Jan 2014 09:08:33 +0100")
-Message-ID: <87k3e89mqs.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add support for AP CSA
+References: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 10 Jan 2014 12:22:14 +0200
+In-Reply-To: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Jan 2014 10:19:23 +0100")
+Message-ID: <87d2k09lwp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,35 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Add set_bitrate_mask callback. Currently
-> ath10k HW is limited to handle only single
-> fixed rate setting or limit number of used
-> spatial streams.
+> This patch implements Channel Switch Announcement
+> for AP mode. This allows for a smooth channel
+> switch for connected stations that support CSA
+> when radar is detected.
 >
-> Example:
-> iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 2:9
-> will setup VHT, nss=2, mcs=9
->
-> iw wlanX set bitrates legacy-5 18 ht-mcs-5 vht-mcs-5
-> will setup legacy, 18Mbps
->
-> iw wlanX set bitrates legacy-5 ht-mcs-5 3 vht-mcs-5
-> will setup HT, nss=1, mcs=3
->
-> iw wlanX set bitrate legacy-5 ht-mcs-5 vht-mcs-5 1:0-9
-> will setup nss=1
->
-> iw wlanX set bitrate legacy-5 ht-mcs-5 vht-mcs-5 1:0-9 2:0-9
-> will setup nss=2
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+I had few conflicts while applying to ath-next-test (the branch for
+pending patches). Please double check my changes:
+
+https://github.com/kvalo/ath/commit/c7bb77f4bf9986e6be4b522ba1e01cd78ebb66af
 
 -- 
 Kalle Valo
