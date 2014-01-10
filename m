@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W1ZEf-0005Za-Vl
- for ath10k@lists.infradead.org; Fri, 10 Jan 2014 10:22:42 +0000
+ id 1W1ZFQ-0005b4-Ay
+ for ath10k@lists.infradead.org; Fri, 10 Jan 2014 10:23:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add support for AP CSA
-References: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 10 Jan 2014 12:22:14 +0200
-In-Reply-To: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Jan 2014 10:19:23 +0100")
-Message-ID: <87d2k09lwp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: implement and use new beacon method
+References: <1389287073-10939-1-git-send-email-marek.puzyniak@tieto.com>
+Date: Fri, 10 Jan 2014 12:23:01 +0200
+In-Reply-To: <1389287073-10939-1-git-send-email-marek.puzyniak@tieto.com>
+ (Marek Puzyniak's message of "Thu, 9 Jan 2014 18:04:33 +0100")
+Message-ID: <878uuo9lve.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Marek Puzyniak <marek.puzyniak@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Marek Puzyniak <marek.puzyniak@tieto.com> writes:
 
-> This patch implements Channel Switch Announcement
-> for AP mode. This allows for a smooth channel
-> switch for connected stations that support CSA
-> when radar is detected.
+> From: Michal Kazior <michal.kazior@tieto.com>
+>
+> Until now ath10k used a copy-by-value beacon
+> submission.
+>
+> The new method passes a DMA address via WMI
+> command only. This command contains additional
+> metadata that fixes AP behaviour with regard
+> to powersave buffering.
+>
+> This also fixes strange bug when multicast traffic
+> would freeze TX indefinitely.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 
-I had few conflicts while applying to ath-next-test (the branch for
-pending patches). Please double check my changes:
+Same here, also so few conflicts. Please check:
 
-https://github.com/kvalo/ath/commit/c7bb77f4bf9986e6be4b522ba1e01cd78ebb66af
+https://github.com/kvalo/ath/commit/b700fa4a953b3f01ee5ff167fb94943de13d6b34
 
 -- 
 Kalle Valo
