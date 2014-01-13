@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2gCP-00050j-Oq
- for ath10k@lists.infradead.org; Mon, 13 Jan 2014 12:00:58 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20140113
-Date: Mon, 13 Jan 2014 14:00:28 +0200
-Message-ID: <87fvos3xcz.fsf@kamboji.qca.qualcomm.com>
+ id 1W2nJI-0002vQ-Bb
+ for ath10k@lists.infradead.org; Mon, 13 Jan 2014 19:36:33 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s0DJa85R013139
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Mon, 13 Jan 2014 11:36:09 -0800
+Message-ID: <52D44028.8020204@candelatech.com>
+Date: Mon, 13 Jan 2014 11:36:08 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Anyone had any luck with 'raw' packet mode?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +25,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Hi John,
+I managed to get raw mode working for receiving packets,
+but on transmit, I cannot get any packets actually transmitted
+on the air (per my sniffer).
 
-here's another ath10k pull request. Major changes are:
+Anyone know what might be needed to get this working?
 
-Janusz added Kconfig option for DFS. The DFS code was there already, but
-after fixes to mac80211 we can now enable it.
+For instance, should we be sending raw frames with frags,
+or more like we currently send management frames?
 
-Bartosz added a runtime firmware feature flag to disable P2P. Our 10.1
-firmware branch doesn't support P2P and ath10k can now disable that. He
-also added a limit for how many clients can connect to ath10k AP.
-
-Michal fixed WEP shared authentication, in case someone still uses it.
-And I added firmware debug log to help the firmware engineers.
-
-Please let me know if there any problems.
-
-The following changes since commit 39731b78b4afebb7501c05b68e2443a1b250b41c:
-
-  ath9k: simplify/fix tx packet TID handling (2013-12-19 14:41:57 -0500)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git for-linville
-
-for you to fetch changes up to 51ab1a0a09a894442e8b091d57222c5425b6d700:
-
-  ath10k: add set_bitrate_mask callback (2014-01-10 11:54:49 +0200)
-
-----------------------------------------------------------------
-Bartosz Markowski (3):
-      ath10k: split the if_limits and if_comb
-      ath10k: introduce NO_P2P fw feature flag
-      ath10k: track number of existing peers
-
-Janusz Dziedzic (3):
-      ath10k: handle TKIP MIC error correctly
-      ath10k: add DFS_CERTIFIED option
-      ath10k: add set_bitrate_mask callback
-
-Kalle Valo (4):
-      Merge remote-tracking branch 'wireless-next/master' into ath-next
-      ath10k: handle WMI debug print events
-      ath10k: add trace event for WMI_DEBUG_MESG_EVENTID
-      ath10k: add debugfs file to control firmware dbglog
-
-Marek Puzyniak (1):
-      ath10k: disable STA kickout in FW
-
-Michal Kazior (2):
-      ath10k: fix WEP Shared authentication
-      ath10k: fix band reporting for mgmt CCK frames on 5GHz
-
- drivers/net/wireless/ath/ath10k/Kconfig  |    7 +
- drivers/net/wireless/ath/ath10k/core.h   |   11 +
- drivers/net/wireless/ath/ath10k/debug.c  |   66 ++++++
- drivers/net/wireless/ath/ath10k/htt.h    |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   15 ++
- drivers/net/wireless/ath/ath10k/hw.h     |    1 +
- drivers/net/wireless/ath/ath10k/mac.c    |  374 ++++++++++++++++++++++++++++--
- drivers/net/wireless/ath/ath10k/trace.h  |   21 ++
- drivers/net/wireless/ath/ath10k/txrx.c   |    2 +-
- drivers/net/wireless/ath/ath10k/wmi.c    |  106 ++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h    |   61 +++++
- 11 files changed, 642 insertions(+), 23 deletions(-)
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
