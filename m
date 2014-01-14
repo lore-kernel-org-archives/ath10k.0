@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W2vxQ-0000F8-A2
- for ath10k@lists.infradead.org; Tue, 14 Jan 2014 04:50:33 +0000
-Message-ID: <52D4C1FF.4060909@candelatech.com>
-Date: Mon, 13 Jan 2014 20:50:07 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: Anyone had any luck with 'raw' packet mode?
-References: <52D44028.8020204@candelatech.com>
- <CAEFj9848W9i+n=ys=LMd7TPXPtP0LOPmmOiqQscJC2ZuuT2Hsw@mail.gmail.com>
-In-Reply-To: <CAEFj9848W9i+n=ys=LMd7TPXPtP0LOPmmOiqQscJC2ZuuT2Hsw@mail.gmail.com>
+ id 1W2xeH-00025E-Ct
+ for ath10k@lists.infradead.org; Tue, 14 Jan 2014 06:38:54 +0000
+Received: by mail-pa0-f47.google.com with SMTP id kp14so2500199pab.34
+ for <ath10k@lists.infradead.org>; Mon, 13 Jan 2014 22:38:29 -0800 (PST)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: use VHT phymodes for 20/40MHz channels
+Date: Tue, 14 Jan 2014 12:08:17 +0530
+Message-Id: <1389681497-18267-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,56 +17,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-On 01/13/2014 06:03 PM, Yeoh Chun-Yeow wrote:
-> Is your packet sniffer capture frame on 20MHz, 40MHz or 80MHz? Anyone manage to do on 80MHz?
+chandef does not provide 11n / 11ac split. Use the highest
+phymodes for 20/40MHz channels, firmware can operate on.
 
-Just HT40, and I'm only trying to use ath10k as stations in /n mode currently.
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-As soon as I can get that working, I'll start on more interesting /ac features.
-
-Thanks,
-Ben
-
->
-> -----
-> Chun-Yeow
->
-> On Jan 14, 2014 3:36 AM, "Ben Greear" <greearb@candelatech.com <mailto:greearb@candelatech.com>> wrote:
->
->     I managed to get raw mode working for receiving packets,
->     but on transmit, I cannot get any packets actually transmitted
->     on the air (per my sniffer).
->
->     Anyone know what might be needed to get this working?
->
->     For instance, should we be sending raw frames with frags,
->     or more like we currently send management frames?
->
->     Thanks,
->     Ben
->
->     --
->     Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>
->     Candela Technologies Inc http://www.candelatech.com
->
->
->     _______________________________________________
->     ath10k mailing list
->     ath10k@lists.infradead.org <mailto:ath10k@lists.infradead.org>
->     http://lists.infradead.org/mailman/listinfo/ath10k
->
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 7aa6c4d..e0b1a2a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -256,10 +256,10 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
+ 			phymode = MODE_11A;
+ 			break;
+ 		case NL80211_CHAN_WIDTH_20:
+-			phymode = MODE_11NA_HT20;
++			phymode = MODE_11AC_VHT20;
+ 			break;
+ 		case NL80211_CHAN_WIDTH_40:
+-			phymode = MODE_11NA_HT40;
++			phymode = MODE_11AC_VHT40;
+ 			break;
+ 		case NL80211_CHAN_WIDTH_80:
+ 			phymode = MODE_11AC_VHT80;
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.9.5
 
 
 _______________________________________________
