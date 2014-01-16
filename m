@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
+Received: from mail-pb0-x231.google.com ([2607:f8b0:400e:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W3Jta-00040S-AA
- for ath10k@lists.infradead.org; Wed, 15 Jan 2014 06:24:11 +0000
-Received: by mail-la0-f49.google.com with SMTP id y1so1051570lam.22
- for <ath10k@lists.infradead.org>; Tue, 14 Jan 2014 22:23:45 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAEFj985LQAdQiBf4mQ6Ka54y-A_JitpHWeXXZMNj0AEtnX89Vw@mail.gmail.com>
-References: <1388390871-3932-1-git-send-email-marek.puzyniak@tieto.com>
- <CAEFj987Rxv9azS4EmW47a5guhVT-JijXsxSOgcGfvgwLkB9tEg@mail.gmail.com>
- <CADnKcViXui6jCsBxgbYh5A2R4ra+p3YxBP-Om1cT5GaYjjAFPw@mail.gmail.com>
- <CAEFj985kz+5DWx=hvDu=w=BEud0fJGbYMpUT939xVPbvFbXFPw@mail.gmail.com>
- <CADnKcViYW_iXJYokjiDnC+MjR4xw-gn0ZPOcf-CVgROsXxtm5A@mail.gmail.com>
- <CAEFj985LQAdQiBf4mQ6Ka54y-A_JitpHWeXXZMNj0AEtnX89Vw@mail.gmail.com>
-Date: Wed, 15 Jan 2014 07:23:44 +0100
-Message-ID: <CADnKcVjYyVfyjzJgoOTTLFWrOj3drok32B6ZgBBWAa1N5kzAKQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: disable STA KICKOUT in FW
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
+ id 1W3j6L-0000C1-0w
+ for ath10k@lists.infradead.org; Thu, 16 Jan 2014 09:19:01 +0000
+Received: by mail-pb0-f49.google.com with SMTP id up15so1861429pbc.8
+ for <ath10k@lists.infradead.org>; Thu, 16 Jan 2014 01:18:36 -0800 (PST)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: set the AP keepalive timer
+Date: Thu, 16 Jan 2014 17:18:24 +0800
+Message-Id: <1389863904-7159-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,158 +17,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-On 13 January 2014 10:51, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
-> Unfortunately, I have tried your mentioned firmware, but I am still
-> getting the WMI_PEER_STA_KICKOUT_EVENTID.
->
-> [  159.020000] ath10k: wmi pdev set param 13 value 0
-> .....
-> [  181.380000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
-> [  182.000000] ath10k: wmi event debug mesg len 44
-> [  182.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  183.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  184.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  185.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  185.580000] ath10k: wmi mgmt tx skb 86845f00 len 176 ftype 00 stype 50
-> [  185.580000] ath10k: wmi mgmt tx skb 86846180 len 176 ftype 00 stype 50
-> [  186.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  187.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  188.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  189.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  190.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  191.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  192.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  193.040000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  194.050000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
-> [  195.050000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
->
-> # ethtool -i wlan0
-> driver: ath10k_pci
-> version: 3.3.8
-> firmware-version: 10.1.467-1
->
-> Am I miss out something?
+Set the AP keepalive timer as following:
+ap_keepalive_min_idle_inactive_time_secs to 60 seconds
+ap_keepalive_max_idle_inactive_time_secs to 120 seconds
+ap_keepalive_max_unresponsive_time_secs to 300 seconds
 
-You are right there are still too much WMI_PEER_STA_KICKOUT_EVENTID events.
-Soon there will followup patch which will handle all cases. It looks
-like the first one covers only one situation when STA_KICKOUT event
-can be generated.
+This ensure that the WMI_PEER_STA_KICKOUT_EVENTID is triggered
+by the FW only once the unresponsive timer is expired.
 
->
-> ----
-> Chun-Yeow
-Marek
->
->
-> On Mon, Jan 13, 2014 at 4:40 PM, Marek Puzyniak
-> <marek.puzyniak@tieto.com> wrote:
->> On 9 January 2014 10:09, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->>> Hi, Marek
->> Hi,
->>>
->>> Do you mind to share which firmware that you are using?
->>
->> I am using FW from:
->> https://github.com/kvalo/ath10k-firmware/blob/master/ap/firmware-2.bin_10.1.467-1
->>
->>> I have tried your patch and this is set accordingly in an the AP (set
->>> param 13). But once the associated STA is leaving,
->>> WMI_PEER_STA_KICKOUT_EVENTID is still received.
->>>
->>> [  145.060000] ath10k: wmi pdev set param 13 value 0
->>> .......
->>> [  148.560000] ath10k: wmi vdev id 0x0 set param 8 value 1
->>> [  148.560000] ath10k: wmi peer create vdev_id 0 peer_addr 04:f0:21:0c:a5:44
->>> [  148.560000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
->>> [  149.040000] ath10k: wmi event debug mesg len 44
->>> [  209.090000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
->>> [  210.090000] ath10k: WMI_PEER_STA_KICKOUT_EVENTID
->>>
->>> FYI, I am using firmware version 999.999.0.636
->>>
->>> ethtool -i wlan0
->>> driver: ath10k_pci
->>> firmware-version: 999.999.0.636
->>>
->>> Thanks
->>>
->>> Regards,
->>> Chun-Yeow
->> Marek
->>>
->>>
->>> On Wed, Jan 8, 2014 at 6:40 PM, Marek Puzyniak <marek.puzyniak@tieto.com> wrote:
->>>> On 2 January 2014 13:41, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->>>>>
->>>>> On Dec 30, 2013 4:08 PM, "Marek Puzyniak" <marek.puzyniak@tieto.com> wrote:
->>>>>>
->>>>>> Currently ath10k is not using STA KICKOUT firmware functionality.
->>>>>> In order to avoid unwanted FW events this functionality should be
->>>>>> disabled when not used.
->>>>>
->>>>> What are unwanted FW events?
->>>>
->>>> WMI_PEER_STA_KICKOUT_EVENT which indicates lack of activity from
->>>> associated STA for specified period of time.
->>>>
->>>>>
->>>>> ----
->>>>> Chun-Yeow
->>>> Marek
->>>>>
->>>>>> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
->>>>>> ---
->>>>>>  drivers/net/wireless/ath/ath10k/mac.c | 9 +++++++++
->>>>>>  1 file changed, 9 insertions(+)
->>>>>>
->>>>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c
->>>>>> b/drivers/net/wireless/ath/ath10k/mac.c
->>>>>> index 5b45f3a..93416ab 100644
->>>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>>>>> @@ -2292,11 +2292,20 @@ static int ath10k_add_interface(struct
->>>>>> ieee80211_hw *hw,
->>>>>>         }
->>>>>>
->>>>>>         if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
->>>>>> +               u32 param_id;
->>>>>> +
->>>>>>                 ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
->>>>>>                 if (ret) {
->>>>>>                         ath10k_warn("Failed to create peer for AP: %d\n",
->>>>>> ret);
->>>>>>                         goto err_vdev_delete;
->>>>>>                 }
->>>>>> +
->>>>>> +               param_id = ar->wmi.pdev_param->sta_kickout_th;
->>>>>> +
->>>>>> +               /* Disable STA KICKOUT functionality in FW */
->>>>>> +               ret = ath10k_wmi_pdev_set_param(ar, param_id, 0);
->>>>>> +               if (ret)
->>>>>> +                       ath10k_warn("Failed to disable STA KICKOUT\n");
->>>>>>         }
->>>>>>
->>>>>>         if (arvif->vdev_type == WMI_VDEV_TYPE_STA) {
->>>>>> --
->>>>>> 1.8.1.2
->>>>>>
->>>>>>
->>>>>> _______________________________________________
->>>>>> ath10k mailing list
->>>>>> ath10k@lists.infradead.org
->>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+Tested with firmware version 999.999.0.636 but the timer
+is still default to 100 seconds. Tested with firmware 
+version 10.1.467-1, the timer is set according to 
+ap_keepalive_max_unresponsive_time_secs.
+
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |   22 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
+ 2 files changed, 25 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 776e364..2141034 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2313,6 +2313,28 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_pdev_set_param(ar, param_id, 0);
+ 		if (ret)
+ 			ath10k_warn("Failed to disable STA KICKOUT\n");
++
++		/* Set the AP keepalive timer */
++		vdev_param =
++			ar->wmi.vdev_param->ap_keepalive_min_idle_inactive_time_secs;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++			WMI_VDEV_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS);
++		if (ret)
++			ath10k_warn("Failed to set keepalive min idle timer\n");
++
++		vdev_param =
++			ar->wmi.vdev_param->ap_keepalive_max_idle_inactive_time_secs;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++			WMI_VDEV_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS);
++		if (ret)
++			ath10k_warn("Failed to set keepalive max idle timer\n");
++
++		vdev_param =
++			ar->wmi.vdev_param->ap_keepalive_max_unresponsive_time_secs;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++			WMI_VDEV_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS);
++		if (ret)
++			ath10k_warn("Failed to set keepalive unresponsive timer\n");
+ 	}
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_STA) {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 4b5e7d3..7ce002a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3080,6 +3080,9 @@ struct wmi_vdev_param_map {
+ };
+ 
+ #define WMI_VDEV_PARAM_UNSUPPORTED 0
++#define WMI_VDEV_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS 60
++#define WMI_VDEV_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS 120
++#define WMI_VDEV_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS 300
+ 
+ /* the definition of different VDEV parameters */
+ enum wmi_vdev_param {
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
