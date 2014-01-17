@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W49lF-0000tv-Ki
- for ath10k@lists.infradead.org; Fri, 17 Jan 2014 13:47:02 +0000
-Received: by mail-bk0-f49.google.com with SMTP id 6so1639468bkj.22
- for <ath10k@lists.infradead.org>; Fri, 17 Jan 2014 05:46:39 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <87lhyercjd.fsf@kamboji.qca.qualcomm.com>
+ id 1W4B8t-0003vK-LN
+ for ath10k@lists.infradead.org; Fri, 17 Jan 2014 15:15:32 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add support for AP CSA
 References: <1389345563-3445-1-git-send-email-michal.kazior@tieto.com>
  <87lhyercjd.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 17 Jan 2014 14:46:39 +0100
-Message-ID: <CA+BoTQktbmjYJA91mJ_EU=iTtCOFiPNPjjxRm=yxiwxposS-rA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add support for AP CSA
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQktbmjYJA91mJ_EU=iTtCOFiPNPjjxRm=yxiwxposS-rA@mail.gmail.com>
+Date: Fri, 17 Jan 2014 17:15:03 +0200
+In-Reply-To: <CA+BoTQktbmjYJA91mJ_EU=iTtCOFiPNPjjxRm=yxiwxposS-rA@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 17 Jan 2014 14:46:39 +0100")
+Message-ID: <878uuer66g.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +21,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTcgSmFudWFyeSAyMDE0IDEzOjU3LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
-Y29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3Jp
-dGVzOgo+Cj4+IFRoaXMgcGF0Y2ggaW1wbGVtZW50cyBDaGFubmVsIFN3aXRjaCBBbm5vdW5jZW1l
-bnQKPj4gZm9yIEFQIG1vZGUuIFRoaXMgYWxsb3dzIGZvciBhIHNtb290aCBjaGFubmVsCj4+IHN3
-aXRjaCBmb3IgY29ubmVjdGVkIHN0YXRpb25zIHRoYXQgc3VwcG9ydCBDU0EKPj4gd2hlbiByYWRh
-ciBpcyBkZXRlY3RlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFs
-LmthemlvckB0aWV0by5jb20+Cj4KPiBbLi4uXQo+Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvY29yZS5oCj4+IEBAIC00MTQsNiArNDE0LDcgQEAgc3RydWN0IGF0aDEwayB7Cj4+ICAg
-ICAgIHVuc2lnbmVkIGludCBmaWx0ZXJfZmxhZ3M7Cj4+ICAgICAgIHVuc2lnbmVkIGxvbmcgZGV2
-X2ZsYWdzOwo+PiAgICAgICB1MzIgZGZzX2Jsb2NrX3JhZGFyX2V2ZW50czsKPj4gKyAgICAgc3Ry
-dWN0IGF0aDEwa192aWYgKmNzYV9hcnZpZjsKPgo+IFBsZWFzZSBkb2N1bWVudCBob3cgdGhpcyBp
-cyBzZXJpYWxpc2VkLgoKWy4uLl0KCkkgaGF2ZSBhIGxvY2FsIHBhdGNoIGNhcGFibGUgb2YgbXVs
-dGktaW50ZXJmYWNlIENTQSB3aGljaCBiYXNpY2FsbHkKcmV3cml0ZXMgdGhpcyBwYXRjaCBlbnRp
-cmVseS4gVW5sZXNzIHlvdSB3YW50IG1lIHNlbmQgdGhhdCBhcyBhIGZvbGxvdwp1cCBwYXRjaCBs
-YXRlciBJJ2QgbGlrZSB0byBkcm9wIHRoaXMgcGF0Y2ggYW5kIHNlbmQgYSBjb21wbGV0ZWx5IG5l
-dwpvbmUgbGF0ZXIuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 17 January 2014 13:57, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> This patch implements Channel Switch Announcement
+>>> for AP mode. This allows for a smooth channel
+>>> switch for connected stations that support CSA
+>>> when radar is detected.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>
+>> [...]
+>>
+>>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>>> @@ -414,6 +414,7 @@ struct ath10k {
+>>>       unsigned int filter_flags;
+>>>       unsigned long dev_flags;
+>>>       u32 dfs_block_radar_events;
+>>> +     struct ath10k_vif *csa_arvif;
+>>
+>> Please document how this is serialised.
+>
+> [...]
+>
+> I have a local patch capable of multi-interface CSA which basically
+> rewrites this patch entirely. Unless you want me send that as a follow
+> up patch later I'd like to drop this patch and send a completely new
+> one later.
+
+Yeah, let's then just drop this patch.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
