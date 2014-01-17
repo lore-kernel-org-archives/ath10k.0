@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22b.google.com ([2a00:1450:4008:c01::22b])
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W49DC-00005F-Nm
- for ath10k@lists.infradead.org; Fri, 17 Jan 2014 13:11:51 +0000
-Received: by mail-bk0-f43.google.com with SMTP id mx11so118236bkb.2
- for <ath10k@lists.infradead.org>; Fri, 17 Jan 2014 05:11:27 -0800 (PST)
+ id 1W49KI-0000Bz-Fc
+ for ath10k@lists.infradead.org; Fri, 17 Jan 2014 13:19:11 +0000
+Received: by mail-bk0-f44.google.com with SMTP id ej10so1642619bkb.3
+ for <ath10k@lists.infradead.org>; Fri, 17 Jan 2014 05:18:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87txd2re1z.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <1389345564-21042-1-git-send-email-yeohchunyeow@gmail.com>
 References: <1389345564-21042-1-git-send-email-yeohchunyeow@gmail.com>
- <87txd2re1z.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 17 Jan 2014 21:11:24 +0800
-Message-ID: <CAEFj987bofbcHJh2=pvxujxZgLwFjgV+1UeLC5kfKZYqiQHyyg@mail.gmail.com>
+Date: Fri, 17 Jan 2014 14:18:43 +0100
+Message-ID: <CA+BoTQncY0esFNgo2MGzbrmu=xoXMCb1OMY0Uci0o-=4ATG=6Q@mail.gmail.com>
 Subject: Re: [PATCH v2] ath10k: fix the MAC address of peer statistic
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,48 +20,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-> Any ideas what's happening here?
-
-My one is MIPS32 (Compex WPJ344) and the following PEER stats are
-printed correctly:
-
-# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_stats
-
-   MPDU errors (FCS, MIC, ENC)          0
-
-             ath10k PEER stats
-             =================
-
-              Peer MAC address 04:f0:21:0c:a5:44
-                     Peer RSSI 68
-                  Peer TX rate 0
-
-Could this be the Endianness problem? How about if you remain the
-struct wmi_peer_stats? Also, just to point out the TxRate is not
-working (always 0).
-
-
->> +     /* The first peer is self MAC address, ignore this */
->> +     num_peer_stats--;
->> +     tmp += sizeof(struct wmi_peer_stats);
->
-> Should we show "self peer" separately? Does it provide any useful
-> information?
-
-So far, we only have RSSI and Tx Rate. Both are not really useful for
-"self peer".
-
-----
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgSmFudWFyeSAyMDE0IDEwOjE5LCBDaHVuLVllb3cgWWVvaCA8eWVvaGNodW55ZW93QGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gRml4IHRoZSBNQUMgYWRkcmVzcyBvZiB3bWlfcGVlcl9zdGF0cyBz
+byB0aGF0IGl0IGlzCj4gcHJpbnRlZCBjb3JyZWN0bHkuIFRoaXMgaXMgdGVzdGVkIGFuZCB2ZXJp
+ZmllZCB1c2luZwo+IGZpcm13YXJlIHZlcnNpb24gOTk5Ljk5OS4wLjYzNi4KPgo+IEJhc2VkIG9u
+IHRoZSB2ZXJpZmljYXRpb24sIG1heGltdW0gb25seSAzIHBlZXIgc3RhdGlzdGljcyBpbmNsdWRp
+bmcKPiBzZWxmIFNUQSBhYmxlIHRvIGJlIHByaW50ZWQgb3V0Lgo+Cj4gU2lnbmVkLW9mZi1ieTog
+Q2h1bi1ZZW93IFllb2ggPHllb2hjaHVueWVvd0BnbWFpbC5jb20+Cj4gLS0tCj4gdjI6IG9mZnNl
+dCB0aGUgc3RhdHMgdG8gaWdub3JlIHRoZSBmaXJzdCBwZWVyIChDaHVuLVllb3cpCj4KPiAgZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jIHwgICAgNCArKysrCj4gIGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggICB8ICAgMTQgKysrKysrKy0tLS0tLS0K
+PiAgMiBmaWxlcyBjaGFuZ2VkLCAxMSBpbnNlcnRpb25zKCspLCA3IGRlbGV0aW9ucygtKQo+Cj4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYyBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+IGluZGV4IDZiZGZhZDMuLmIz
+OWJhZDggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1
+Zy5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCj4gQEAg
+LTI0Miw2ICsyNDIsMTAgQEAgdm9pZCBhdGgxMGtfZGVidWdfcmVhZF90YXJnZXRfc3RhdHMoc3Ry
+dWN0IGF0aDEwayAqYXIsCj4gICAgICAgICAgICAgICAgIH0KPiAgICAgICAgIH0KPgo+ICsgICAg
+ICAgLyogVGhlIGZpcnN0IHBlZXIgaXMgc2VsZiBNQUMgYWRkcmVzcywgaWdub3JlIHRoaXMgKi8K
+PiArICAgICAgIG51bV9wZWVyX3N0YXRzLS07Cj4gKyAgICAgICB0bXAgKz0gc2l6ZW9mKHN0cnVj
+dCB3bWlfcGVlcl9zdGF0cyk7Cj4gKwo+ICAgICAgICAgaWYgKG51bV9wZWVyX3N0YXRzKSB7Cj4g
+ICAgICAgICAgICAgICAgIHN0cnVjdCB3bWlfcGVlcl9zdGF0cyAqcGVlcl9zdGF0czsKPiAgICAg
+ICAgICAgICAgICAgc3RydWN0IGF0aDEwa19wZWVyX3N0YXQgKnM7Cj4gZGlmZiAtLWdpdCBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggYi9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL3dtaS5oCj4gaW5kZXggMDA4N2Q2OS4uMTA2YTIzZSAxMDA2NDQKPiAtLS0g
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4gKysrIGIvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAo+IEBAIC0yMDAsMTIgKzIwMCwxMiBAQCBzdHJ1
+Y3Qgd21pX21hY19hZGRyIHsKPgo+ICAvKiBtYWNybyB0byBjb252ZXJ0IE1BQyBhZGRyZXNzIGZy
+b20gV01JIHdvcmQgZm9ybWF0IHRvIGNoYXIgYXJyYXkgKi8KPiAgI2RlZmluZSBXTUlfTUFDX0FE
+RFJfVE9fQ0hBUl9BUlJBWShwd21pX21hY19hZGRyLCBjX21hY2FkZHIpIGRvIHsgXAo+IC0gICAg
+ICAgKGNfbWFjYWRkcilbMF0gPSAgKChwd21pX21hY19hZGRyKS0+d29yZDApICYgMHhmZjsgXAo+
+IC0gICAgICAgKGNfbWFjYWRkcilbMV0gPSAoKChwd21pX21hY19hZGRyKS0+d29yZDApID4+IDgp
+ICYgMHhmZjsgXAo+IC0gICAgICAgKGNfbWFjYWRkcilbMl0gPSAoKChwd21pX21hY19hZGRyKS0+
+d29yZDApID4+IDE2KSAmIDB4ZmY7IFwKPiAtICAgICAgIChjX21hY2FkZHIpWzNdID0gKCgocHdt
+aV9tYWNfYWRkciktPndvcmQwKSA+PiAyNCkgJiAweGZmOyBcCj4gLSAgICAgICAoY19tYWNhZGRy
+KVs0XSA9ICAoKHB3bWlfbWFjX2FkZHIpLT53b3JkMSkgJiAweGZmOyBcCj4gLSAgICAgICAoY19t
+YWNhZGRyKVs1XSA9ICgoKHB3bWlfbWFjX2FkZHIpLT53b3JkMSkgPj4gOCkgJiAweGZmOyBcCj4g
+KyAgICAgICAoY19tYWNhZGRyKVswXSA9ICgoKHB3bWlfbWFjX2FkZHIpLT53b3JkMCkgPj4gMjQp
+ICYgMHhmZjsgXAo+ICsgICAgICAgKGNfbWFjYWRkcilbMV0gPSAoKChwd21pX21hY19hZGRyKS0+
+d29yZDApID4+IDE2KSAmIDB4ZmY7IFwKPiArICAgICAgIChjX21hY2FkZHIpWzJdID0gKCgocHdt
+aV9tYWNfYWRkciktPndvcmQwKSA+PiA4KSAmIDB4ZmY7IFwKPiArICAgICAgIChjX21hY2FkZHIp
+WzNdID0gICgocHdtaV9tYWNfYWRkciktPndvcmQwKSAmIDB4ZmY7IFwKPiArICAgICAgIChjX21h
+Y2FkZHIpWzRdID0gKCgocHdtaV9tYWNfYWRkciktPndvcmQxKSA+PiAyNCkgJiAweGZmOyBcCj4g
+KyAgICAgICAoY19tYWNhZGRyKVs1XSA9ICgoKHB3bWlfbWFjX2FkZHIpLT53b3JkMSkgPj4gMTYp
+ICYgMHhmZjsgXAo+ICAgICAgICAgfSB3aGlsZSAoMCkKClRoaXMgaXMgdG90YWxseSB3cm9uZy4g
+VGhpcyBtYWNybyBzaG91bGRuJ3QgYmUgdXNlZCBhbnltb3JlLiBJdApzaG91bGRuJ3QgZXZlbiBi
+ZSBoZXJlLiBUaGVyZSdzIG5vIGhhcmR3YXJlIGJ5dGUtc3dhcHBpbmcgYW55bW9yZS4KVGhpcyBt
+ZWFucyBtYWMgYWRkcmVzc2VzIHJlY2VpdmVkIGZyb20gZmlybXdhcmUgc2hvdWxkIGJlIHRyZWF0
+ZWQKYXMtaXMsIGUuZy4gd2l0aCBtZW1jcHkoKS4gU2VlIHdtaV9tYWNfYWRkciBkZWZpbml0aW9u
+IC0gaXQgaGFzCmBhZGRyWzZdYCBmaWVsZCB3aGljaCBzaG91bGQgYmUgdXNlZC4KCgpNaWNoYcWC
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
