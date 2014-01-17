@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W45eX-0003ao-2h
- for ath10k@lists.infradead.org; Fri, 17 Jan 2014 09:23:50 +0000
+ id 1W48UM-00074B-Up
+ for ath10k@lists.infradead.org; Fri, 17 Jan 2014 12:25:32 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: enable firmware STA quick kickout
-References: <20140116123336.24551.2629.stgit@potku.adurom.net>
- <CAOiHx=n77=CiFYfB3Y=jxOjVtmr06zvFhUe5R96Kq0HUgSLv5Q@mail.gmail.com>
-Date: Fri, 17 Jan 2014 11:23:22 +0200
-In-Reply-To: <CAOiHx=n77=CiFYfB3Y=jxOjVtmr06zvFhUe5R96Kq0HUgSLv5Q@mail.gmail.com>
- (Jonas Gorski's message of "Fri, 17 Jan 2014 10:01:06 +0100")
-Message-ID: <871u07rmgl.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fix the MAC address of peer statistic
+References: <1389345564-21042-1-git-send-email-yeohchunyeow@gmail.com>
+Date: Fri, 17 Jan 2014 14:24:56 +0200
+In-Reply-To: <1389345564-21042-1-git-send-email-yeohchunyeow@gmail.com>
+ (Chun-Yeow Yeoh's message of "Fri, 10 Jan 2014 17:19:24 +0800")
+Message-ID: <87txd2re1z.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,66 +23,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jonas Gorski <jogo@openwrt.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Jonas Gorski <jogo@openwrt.org> writes:
+Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
 
-> On Thu, Jan 16, 2014 at 1:33 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Firmware has a feature to track if the associated STA is not acking the frames.
->> When that happens, the firmware sends WMI_PEER_STA_KICKOUT_EVENTID event to the
->> host. Enable that to faster detect when a STA has left BSS without sending a
->> deauth frame.
->>
->> Also set huge keepalive timeouts to avoid using the keepalive functionality in
->> the firmware.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-[...]
-
->> +       param = ar->wmi.pdev_param->sta_kickout_th;
->> +       ret = ath10k_wmi_pdev_set_param(ar, param,
->> +                                       ATH10K_KICKOUT_THRESHOLD);
->> +       if (ret) {
->> +               ath10k_warn("Failed to enable sta kickout: %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       param = ar->wmi.vdev_param->ap_keepalive_min_idle_inactive_time_secs;
->> +       ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, param,
->> +                                       ATH10K_KEEPALIVE_MIN_IDLE);
->> +       if (ret) {
->> +               ath10k_warn("Failed to enable sta kickout: %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       param = ar->wmi.vdev_param->ap_keepalive_max_idle_inactive_time_secs;
->> +       ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, param,
->> +                                       ATH10K_KEEPALIVE_MAX_IDLE);
->> +       if (ret) {
->> +               ath10k_warn("Failed to enable sta kickout: %d\n", ret);
->> +               return ret;
->> +       }
->> +
->> +       param = ar->wmi.vdev_param->ap_keepalive_max_unresponsive_time_secs;
->> +       ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, param,
->> +                                       ATH10K_KEEPALIVE_MAX_UNRESPONSIVE);
->> +       if (ret) {
->> +               ath10k_warn("Failed to enable sta kickout: %d\n", ret);
->> +               return ret;
->> +       }
+> Fix the MAC address of wmi_peer_stats so that it is
+> printed correctly. This is tested and verified using
+> firmware version 999.999.0.636.
 >
-> Did you intend to have differing warnings here? Currently it will be
-> hard to tell which of these calls have failed based on the warning
-> (assuming ath10k_warn does not print the source code line it was
-> invoked from).
+> Based on the verification, maximum only 3 peer statistics including 
+> self STA able to be printed out.
+>
+> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+> ---
+> v2: offset the stats to ignore the first peer (Chun-Yeow)
 
-You are right, all warning/error messages in ath10k should be unique so
-that the location can be easily found. I was actually supposed to fix
-this before I send it for review, but apparently I forgot. I'll send v2.
+I think something is wrong still. I tested this with 999.999.0.636 on
+x86 32 bit laptop in AP mode, connected STA 00:24:d7:9b:0b:7c to it and
+still MAC address is wrong:
 
-Thanks!
+              PHY errors drops          0
+   MPDU errors (FCS, MIC, ENC)          0
+
+             ath10k PEER stats
+             =================
+
+              Peer MAC address 9b:d7:24:00:00:00
+                     Peer RSSI 36
+                  Peer TX rate 0
+
+Without your patch it's also wrong:
+
+             ath10k PEER stats
+             =================
+
+              Peer MAC address 00:00:00:00:02:00
+                     Peer RSSI 3
+                  Peer TX rate 0
+
+              Peer MAC address 00:00:00:00:00:24
+                     Peer RSSI 31755
+                  Peer TX rate 0
+
+Any ideas what's happening here?
+
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -242,6 +242,10 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+>  		}
+>  	}
+>  
+> +	/* The first peer is self MAC address, ignore this */
+> +	num_peer_stats--;
+> +	tmp += sizeof(struct wmi_peer_stats);
+
+Should we show "self peer" separately? Does it provide any useful
+information?
 
 -- 
 Kalle Valo
