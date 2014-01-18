@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Sat, 18 Jan 2014 08:15:38 +0100
-From: Alexander Gordeev <agordeev@redhat.com>
-Subject: Re: [PATCH v2 0/9] Phase out pci_enable_msi_block()
-Message-ID: <20140118071538.GA32535@dhcp-26-207.brq.redhat.com>
-References: <cover.1389904166.git.agordeev@redhat.com>
- <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W4RVm-0001ns-LS
+ for ath10k@lists.infradead.org; Sat, 18 Jan 2014 08:44:15 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: bitrate_mask add force_sgi support
+References: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Sat, 18 Jan 2014 10:43:48 +0200
+In-Reply-To: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Fri, 17 Jan 2014 20:04:14 +0100")
+Message-ID: <87r485ptmj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, wil6210@qca.qualcomm.com, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, Alex Williamson <alex.williamson@redhat.com>, Brian King <brking@us.ibm.com>, linux-nvme@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Tejun Heo <tj@kernel.org>, Matthew Wilcox <willy@linux.intel.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, Jan 17, 2014 at 02:00:32PM -0700, Bjorn Helgaas wrote:
-> > As the release is supposedly this weekend, do you prefer
-> > the patches to go to your tree or to individual trees after
-> > the release?
-> 
-> I'd be happy to merge them, except for the fact that they probably
-> wouldn't have any time in -next before I ask Linus to pull them.  So
-> how about if we wait until after the release, ask the area maintainers
-> to take them, and if they don't take them, I'll put them in my tree
-> for v3.15?
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-Patch 11 depends on patches 1-10, so I am not sure how to better handle it.
-Whatever works for you ;)
+> Add force SGI support.
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-I am only concerned with a regression fix "ahci: Fix broken fallback to
-single MSI mode" which would be nice to have in 3.14. But it seems pretty
-much too late.
+Thanks, the patch looks good.
 
-> Bjorn
+> depends on, nl80211: add Guard Interval support for set_bitrate_mask
 
-Thanks!
+But I can only apply this only once the dependency patch goes to
+wireless-next, so I'll keep this in my pending queue until that happens.
+Most likely we need to wait for the merge window to close.
 
 -- 
-Regards,
-Alexander Gordeev
-agordeev@redhat.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
