@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W4RVm-0001ns-LS
- for ath10k@lists.infradead.org; Sat, 18 Jan 2014 08:44:15 +0000
+ id 1W4Rqe-00025t-Hl
+ for ath10k@lists.infradead.org; Sat, 18 Jan 2014 09:05:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: bitrate_mask add force_sgi support
-References: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Sat, 18 Jan 2014 10:43:48 +0200
-In-Reply-To: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 17 Jan 2014 20:04:14 +0100")
-Message-ID: <87r485ptmj.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] Initial 11ac support using ath10k
+References: <1513091.zjVOOQ7NvD@bentobox>
+Date: Sat, 18 Jan 2014 11:05:20 +0200
+In-Reply-To: <1513091.zjVOOQ7NvD@bentobox> (Sven Eckelmann's message of "Thu, 
+ 16 Jan 2014 11:47:06 +0100")
+Message-ID: <87mwitpsmn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sven Eckelmann <sven@open-mesh.com>
+Cc: simon@open-mesh.com, openwrt-devel@lists.openwrt.org, ath10k@lists.infradead.org, Matti Laakso <malaakso@elisanet.fi>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Hi Sven,
 
-> Add force SGI support.
+adding ath10k@lists.infradead.org.
+
+Sven Eckelmann <sven@open-mesh.com> writes:
+
+> Hi,
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> support for ath10k cards was added a while ago to OpenWrt. Unfortunately, the 
+> actual 802.11ac support was never added (patches on the mailing lists were 
+> just ignored). This is a rather unpleasant situation when trying to get some 
+> 11ac test hardware working.
 
-Thanks, the patch looks good.
+Yeah, it would be great to get proper ath10k support to OpenWrt. Thanks
+for working on this!
 
-> depends on, nl80211: add Guard Interval support for set_bitrate_mask
+> I've picked up the patches and rebased them on top of the current master 
+> branch/trunk.
 
-But I can only apply this only once the dependency patch goes to
-wireless-next, so I'll keep this in my pending queue until that happens.
-Most likely we need to wait for the merge window to close.
+Where did you take the ath10k patches? ath10k is under heavy
+development, so I strongly recommend taking patches directly from
+ath-next branch of my ath.git. That way you would be using the latest
+and greatest.
+
+> Just as general information to the state of ath10k, my current test showed 
+> some problems with it:
+>
+>  * Samsung GT-I9300 only got horrible slow connections to an QCA9880 but
+>    an Intel N6205 (using iwlwifi from v3.12) or Samsung S4 worked
+>    "fine"
+
+Could you report the I9300 issue to the ath10k list with more details,
+please? We can try to investigate it.
+
+>  * Adhoc mode doesn't work at all
+
+That was with 10.1 firmware? AFAIK it doesn't support adhoc at all. I
+think we need to add a firmware feature flag to disable adhoc with that
+firmware.
+
+>  * TX bitrate information is bogus (iw XXX station dump)
+
+Yeah, this is annoying. But firmware doesn't report this to the host at
+all so there is not much ath10k can do right now. But I'll send a query
+to the firmware team if they could provide that information to ath10k.
+
+>  * Crashed relative often on reconfiguration:
+>    Data bus error, epc 87b7a864, ra 87b7a864
+
+On some QCA988x boards cold reset seems to cause problems on the PCI
+bus. We are investigating this.
+
+>  * Sometimes adding of station seems to fail:
+>    ath10k: Failed to add peer 5c:0a:5b:4e:6a:c4 for vdev 1 when adding a new
+>    sta: -145
+
+This is new to me. Can you report this to the ath10k list, please?
+
+>  * Adhoc interface +  "iw dev wlan0 scan trigger" just crashes the firmware:
+>    [ 296.160000] ath10k: firmware crashed!
+>    [ 296.170000] ath10k: hardware name qca988x hw2.0 version 0x4100016c
+>    [ 296.170000] ath10k: firmware version: 65.467.0.0
+
+What firmware version was this? The version printed here seems to be
+corrupted.
 
 -- 
 Kalle Valo
