@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5AqX-00070k-2h
- for ath10k@lists.infradead.org; Mon, 20 Jan 2014 09:08:41 +0000
+ id 1W5B2G-0007JH-9A
+ for ath10k@lists.infradead.org; Mon, 20 Jan 2014 09:20:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: enable firmware STA quick kickout
-References: <20140120090146.5500.12995.stgit@potku.adurom.net>
-Date: Mon, 20 Jan 2014 11:08:12 +0200
-In-Reply-To: <20140120090146.5500.12995.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 20 Jan 2014 11:01:46 +0200")
-Message-ID: <87sisjkolf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: enable wmi ps peer param command for 10.x FW
+References: <1389964088-4458-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Mon, 20 Jan 2014 11:20:11 +0200
+In-Reply-To: <1389964088-4458-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Fri, 17 Jan 2014 14:08:08 +0100")
+Message-ID: <87k3dvko1g.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Firmware has a feature to track if the associated STA is not acking the frames.
-> When that happens, the firmware sends WMI_PEER_STA_KICKOUT_EVENTID event to the
-> host. Enable that to faster detect when a STA has left BSS without sending a
-> deauth frame.
+> Enable ap_ps_peer_param_cmdid for 10.x FW.
+> This is used mainly for AP UAPSD.
 >
-> Also set huge keepalive timeouts to avoid using the keepalive functionality in
-> the firmware.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-In this v2 I fixed the warning messages.
+Thanks, applied.
 
 -- 
 Kalle Valo
