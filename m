@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5UUq-0003C0-PI
- for ath10k@lists.infradead.org; Tue, 21 Jan 2014 06:07:38 +0000
-Received: by mail-ee0-f43.google.com with SMTP id c41so3830109eek.30
- for <ath10k@lists.infradead.org>; Mon, 20 Jan 2014 22:07:13 -0800 (PST)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH v2] ath10k: AP mode, set UAPSD params correctly
-Date: Tue, 21 Jan 2014 07:06:53 +0100
-Message-Id: <1390284413-2703-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1W5XX0-0006R6-16
+ for ath10k@lists.infradead.org; Tue, 21 Jan 2014 09:22:02 +0000
+Received: by mail-pa0-f47.google.com with SMTP id kp14so8107206pab.6
+ for <ath10k@lists.infradead.org>; Tue, 21 Jan 2014 01:21:39 -0800 (PST)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: fix the printing of 10.x FW version when FW crashed
+Date: Tue, 21 Jan 2014 17:21:21 +0800
+Message-Id: <1390296081-22788-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,155 +23,33 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-ath10k handles UAPSD completly in the firmware.
-When works in AP mode we have to configure
-UAPSD params for each station. Without this
-patch we configure UAPSD params before we
-send peer assoc command to the FW, which was
-wrong. Next FW didn't know what should be trigger
-frame, couse UAPSD didn't work correctly in AP mode.
-To configure UAPSD params correctly we have to
-send them after peer assoc command.
+10.x FW has no structure member sw_version_1. Thus,
+both fw_version_release and fw_version_build are not
+available. The provided fw_version_major is also wrong.
+Fix this by using the fw_version from struct wiphy.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   80 +++++++++++++++++++--------------
- 1 file changed, 46 insertions(+), 34 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 70fe386..fda146b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1092,27 +1092,20 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
- 		   arg->peer_num_spatial_streams);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 29fd197..9179c88 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -833,9 +833,7 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 	ath10k_err("firmware crashed!\n");
+ 	ath10k_err("hardware name %s version 0x%x\n",
+ 		   ar->hw_params.name, ar->target_version);
+-	ath10k_err("firmware version: %u.%u.%u.%u\n", ar->fw_version_major,
+-		   ar->fw_version_minor, ar->fw_version_release,
+-		   ar->fw_version_build);
++	ath10k_err("firmware version: %s\n", ar->hw->wiphy->fw_version);
  
--static void ath10k_peer_assoc_h_qos_ap(struct ath10k *ar,
--				       struct ath10k_vif *arvif,
--				       struct ieee80211_sta *sta,
--				       struct ieee80211_bss_conf *bss_conf,
--				       struct wmi_peer_assoc_complete_arg *arg)
-+static int ath10k_peer_assoc_qos_ap(struct ath10k *ar,
-+				    struct ath10k_vif *arvif,
-+				    struct ieee80211_sta *sta)
- {
- 	u32 uapsd = 0;
- 	u32 max_sp = 0;
-+	int ret = 0;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
--	if (sta->wme)
--		arg->peer_flags |= WMI_PEER_QOS;
--
- 	if (sta->wme && sta->uapsd_queues) {
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac uapsd_queues 0x%x max_sp %d\n",
- 			   sta->uapsd_queues, sta->max_sp);
- 
--		arg->peer_flags |= WMI_PEER_APSD;
--		arg->peer_rate_caps |= WMI_RC_UAPSD_FLAG;
--
- 		if (sta->uapsd_queues & IEEE80211_WMM_IE_STA_QOSINFO_AC_VO)
- 			uapsd |= WMI_AP_PS_UAPSD_AC3_DELIVERY_EN |
- 				 WMI_AP_PS_UAPSD_AC3_TRIGGER_EN;
-@@ -1130,35 +1123,40 @@ static void ath10k_peer_assoc_h_qos_ap(struct ath10k *ar,
- 		if (sta->max_sp < MAX_WMI_AP_PS_PEER_PARAM_MAX_SP)
- 			max_sp = sta->max_sp;
- 
--		ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id,
--					   sta->addr,
--					   WMI_AP_PS_PEER_PARAM_UAPSD,
--					   uapsd);
-+		ret = ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id,
-+						 sta->addr,
-+						 WMI_AP_PS_PEER_PARAM_UAPSD,
-+						 uapsd);
-+		if (ret) {
-+			ath10k_warn("failed to set ap ps peer param uapsd: %d\n",
-+				    ret);
-+			return ret;
-+		}
- 
--		ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id,
--					   sta->addr,
--					   WMI_AP_PS_PEER_PARAM_MAX_SP,
--					   max_sp);
-+		ret = ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id,
-+						 sta->addr,
-+						 WMI_AP_PS_PEER_PARAM_MAX_SP,
-+						 max_sp);
-+		if (ret) {
-+			ath10k_warn("failed to set ap ps peer param max sp: %d\n",
-+				    ret);
-+			return ret;
-+		}
- 
- 		/* TODO setup this based on STA listen interval and
- 		   beacon interval. Currently we don't know
- 		   sta->listen_interval - mac80211 patch required.
- 		   Currently use 10 seconds */
--		ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id,
--					   sta->addr,
--					   WMI_AP_PS_PEER_PARAM_AGEOUT_TIME,
--					   10);
-+		ret = ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id, sta->addr,
-+					WMI_AP_PS_PEER_PARAM_AGEOUT_TIME, 10);
-+		if (ret) {
-+			ath10k_warn("failed to set ap ps peer param ageout time: %d\n",
-+				    ret);
-+			return ret;
-+		}
- 	}
--}
- 
--static void ath10k_peer_assoc_h_qos_sta(struct ath10k *ar,
--					struct ath10k_vif *arvif,
--					struct ieee80211_sta *sta,
--					struct ieee80211_bss_conf *bss_conf,
--					struct wmi_peer_assoc_complete_arg *arg)
--{
--	if (bss_conf->qos)
--		arg->peer_flags |= WMI_PEER_QOS;
-+	return 0;
- }
- 
- static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
-@@ -1211,10 +1209,17 @@ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
- {
- 	switch (arvif->vdev_type) {
- 	case WMI_VDEV_TYPE_AP:
--		ath10k_peer_assoc_h_qos_ap(ar, arvif, sta, bss_conf, arg);
-+		if (sta->wme)
-+			arg->peer_flags |= WMI_PEER_QOS;
-+
-+		if (sta->wme && sta->uapsd_queues) {
-+			arg->peer_flags |= WMI_PEER_APSD;
-+			arg->peer_rate_caps |= WMI_RC_UAPSD_FLAG;
-+		}
- 		break;
- 	case WMI_VDEV_TYPE_STA:
--		ath10k_peer_assoc_h_qos_sta(ar, arvif, sta, bss_conf, arg);
-+		if (bss_conf->qos)
-+			arg->peer_flags |= WMI_PEER_QOS;
- 		break;
- 	default:
- 		break;
-@@ -1412,6 +1417,13 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
- 		return ret;
- 	}
- 
-+	ret = ath10k_peer_assoc_qos_ap(ar, arvif, sta);
-+	if (ret) {
-+		ath10k_warn("could not set qos params for STA %pM, %d\n",
-+			    sta->addr, ret);
-+		return ret;
-+	}
-+
- 	return ret;
- }
- 
+ 	host_addr = host_interest_item_address(HI_ITEM(hi_failure_state));
+ 	ret = ath10k_pci_diag_read_mem(ar, host_addr,
 -- 
 1.7.9.5
 
