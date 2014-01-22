@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W5aQz-0003yS-Kj
- for ath10k@lists.infradead.org; Tue, 21 Jan 2014 12:28:02 +0000
-Received: by mail-la0-f45.google.com with SMTP id b8so6510376lan.18
- for <ath10k@lists.infradead.org>; Tue, 21 Jan 2014 04:27:36 -0800 (PST)
+ id 1W64Ux-0003tT-32
+ for ath10k@lists.infradead.org; Wed, 22 Jan 2014 20:34:07 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s0MKXiD0028093
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Wed, 22 Jan 2014 12:33:44 -0800
+Message-ID: <52E02B28.6020503@candelatech.com>
+Date: Wed, 22 Jan 2014 12:33:44 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <874n68g5td.fsf@kamboji.qca.qualcomm.com>
-References: <1386858261-16037-1-git-send-email-michal.kazior@tieto.com>
- <874n68g5td.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 21 Jan 2014 13:27:35 +0100
-Message-ID: <CADnKcVhYqO-0+_9rN07YZyinjsfdnNnn8ix8FgX457vUw_TWRQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] ath10k: fix host corruption
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: BAR error, failed to get chip id.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +25,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On 16 December 2013 16:43, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
->
->> This patchset aims at fixing (or at least
->> reducing) the frequency of a (apparently) strange
->> HW bug.
->>
->> The bug happens in some workloads with different
->> frequency with different hardware spinoffs. It is
->> triggered by a cold reset after HW/FW has been
->> excercised with some work.
->>
->> On x86 this could be a hang, on AP135 it is a data
->> bus error.
->>
->>
->> Michal Kazior (3):
->>   ath10k: fix device initialization routine
->>   ath10k: zero device DRAM to avoid host hangs
->>   ath10k: zero CE config upon deinit
->
-> Let's put these patches on hold for now while we investigate more about
-> this problem.
->
-> --
-> Kalle Valo
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
 
-Kalle, please drop these patches. There will be new version of this patch-set.
+I see this fairly often on module reload.  Firmware is modified
+by me, based on 10.1.389, so if there are firmware fixes since then
+that address this problem I would not know of it.  Kernel is ath-testing,
+with some local changes, but nothing pertaining to the pci code.
 
-Marek
+
+Kernel 3.13.0-rc8-wl-ath+ on an x86_64 (ttyS0)
+
+ct523-9292 login: ath10k_pci 0000:05:00.0: BAR 0: error updating (0xf4400004 != 0xffffffff)
+ath10k_pci 0000:05:00.0: BAR 0: error updating (high 0x000000 != 0xffffffff)
+ath10k: Failed to get chip id: -110
+
+
+After this, it takes a power cycle to get the system working again.
+
+Anyone seen similar?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
