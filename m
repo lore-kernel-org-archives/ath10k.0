@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W65lG-0005x4-PM
- for ath10k@lists.infradead.org; Wed, 22 Jan 2014 21:55:03 +0000
-Message-ID: <52E03E1F.8000102@candelatech.com>
-Date: Wed, 22 Jan 2014 13:54:39 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: BAR error, failed to get chip id.
-References: <52E02B28.6020503@candelatech.com>
- <CAA93jw7GShkaY_w5gmbyHpO_rEP_j3hfFRbGZhCB6JBqK0VVzw@mail.gmail.com>
-In-Reply-To: <CAA93jw7GShkaY_w5gmbyHpO_rEP_j3hfFRbGZhCB6JBqK0VVzw@mail.gmail.com>
+ id 1W67oc-0000xe-JA
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2014 00:06:39 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 1/4] ath10k:  Print out firmware feature bits from IE.
+Date: Wed, 22 Jan 2014 16:05:59 -0800
+Message-Id: <1390435562-15473-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +15,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
-On 01/22/2014 01:49 PM, Dave Taht wrote:
-> On Wed, Jan 22, 2014 at 3:33 PM, Ben Greear <greearb@candelatech.com> wrote:
->>
->> I see this fairly often on module reload.  Firmware is modified
->> by me, based on 10.1.389, so if there are firmware fixes since then
->> that address this problem I would not know of it.  Kernel is ath-testing,
->> with some local changes, but nothing pertaining to the pci code.
-> 
-> I have had pci issues on an older atom box, not on a newer nuc.
-> 
-> Can try that box again to see what happens.
+From: Ben Greear <greearb@candelatech.com>
 
-I'm using a core-i7 low-power system...has been rock solid for ath9k for
-a long time, for what that is worth.
+Aids in understanding excactly what a firmware is
+offering.
 
-Thanks,
-Ben
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 3b59af3..56048b1 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -470,8 +470,12 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+ 				if (index == ie_len)
+ 					break;
+ 
+-				if (data[index] & (1 << bit))
++				if (data[index] & (1 << bit)) {
++					ath10k_dbg(ATH10K_DBG_BOOT,
++						   "Enabling feature bit: %i\n",
++						   i);
+ 					__set_bit(i, ar->fw_features);
++				}
+ 			}
+ 
+ 			ath10k_dbg_dump(ATH10K_DBG_BOOT, "features", "",
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.11.7
 
 
 _______________________________________________
