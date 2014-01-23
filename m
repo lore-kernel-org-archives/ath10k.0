@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W68Uh-00027c-SI
- for ath10k@lists.infradead.org; Thu, 23 Jan 2014 00:50:08 +0000
-Message-ID: <52E06729.1020300@candelatech.com>
-Date: Wed, 22 Jan 2014 16:49:45 -0800
+ id 1W69IH-0002f2-AK
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2014 01:41:21 +0000
+Message-ID: <52E0732A.8030203@candelatech.com>
+Date: Wed, 22 Jan 2014 17:40:58 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: BAR error, failed to get chip id.
-References: <52E02B28.6020503@candelatech.com>
- <CAJ-VmokveU-WxqboRhdagLwp2E2o-Bic7Pd4LvHaj7TX+rBnYA@mail.gmail.com>
- <52E06430.5060408@candelatech.com>
- <CAJ-VmomSpAyESOnBdUHUf__=HC1wp-=otH9-v2PNJbmzLQ6mxg@mail.gmail.com>
-In-Reply-To: <CAJ-VmomSpAyESOnBdUHUf__=HC1wp-=otH9-v2PNJbmzLQ6mxg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k:  Support rx-software-crypt mode.
+References: <1390437676-19906-1-git-send-email-greearb@candelatech.com>
+ <1390437676-19906-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1390437676-19906-2-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,92 +19,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian.chadd@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com
 
-On 01/22/2014 04:41 PM, Adrian Chadd wrote:
-> We need a pcie analyzer. Can you query its port to see what errors have shown up? Maybe we can toss some delay calls in the driver path when its detaching and
-> attaching..
+On 01/22/2014 04:41 PM, greearb@candelatech.com wrote:
+> From: Ben Greear <greearb@candelatech.com>
+>
+> With appropriate firmware (probably only CT firmware at this time)
+> this allows enabling rx-software-crypt mode.  This tells the
+> firmware to not decrypt any packets received, but do encrypt
+> (as needed) any packets on transmit.  This is implemented to get
+> around hardware issues that preclude using two stations to
+> connect to the same AP while using encryption.
+>
 
-Do you have any suggestions for a pcie analyzer?  I'd certainly consider
-buying one...and maybe sending it to someone who could actually use it :)
-
-Next time I see the BAR thing I'll see if I can find any info about
-PCIe errors.
+I should mention:  This depends on a mac80211 patch I sent to
+the linux-wireless mailing list.  It defines and uses the key flag
+used below...
 
 Thanks,
 Ben
 
-> 
-> Adrian
-> 
-> On Jan 22, 2014 7:37 PM, "Ben Greear" <greearb@candelatech.com <mailto:greearb@candelatech.com>> wrote:
-> 
->     On 01/22/2014 04:10 PM, Adrian Chadd wrote:
->     > Tgis is rev 2.0 right? I recall reset bugs in 1.0 that had the pcie bits not setup right by the firmware after a cold reset.
-> 
->     I'm using a rev 2 development NIC (CUS223, I think..haven't cracked the
->     machine open in a while).
-> 
->     I usually get about 1-3 module reloads before the system either totally
->     freezes or prints out the info below (and fails to load the driver),
->     requiring reboot of the system.
-> 
->     I have been working on other features and bugs and have been ignoring
->     these lockups, but now I'm a bit more interested in trying to resolve
->     them...
-> 
->     Thanks,
->     Ben
-> 
-> 
->     >
->     > Adrian
->     >
->     > On Jan 22, 2014 3:34 PM, "Ben Greear" <greearb@candelatech.com <mailto:greearb@candelatech.com> <mailto:greearb@candelatech.com
->     <mailto:greearb@candelatech.com>>> wrote:
->     >
->     >
->     >     I see this fairly often on module reload.  Firmware is modified
->     >     by me, based on 10.1.389, so if there are firmware fixes since then
->     >     that address this problem I would not know of it.  Kernel is ath-testing,
->     >     with some local changes, but nothing pertaining to the pci code.
->     >
->     >
->     >     Kernel 3.13.0-rc8-wl-ath+ on an x86_64 (ttyS0)
->     >
->     >     ct523-9292 login: ath10k_pci 0000:05:00.0: BAR 0: error updating (0xf4400004 != 0xffffffff)
->     >     ath10k_pci 0000:05:00.0: BAR 0: error updating (high 0x000000 != 0xffffffff)
->     >     ath10k: Failed to get chip id: -110
->     >
->     >
->     >     After this, it takes a power cycle to get the system working again.
->     >
->     >     Anyone seen similar?
->     >
->     >     Thanks,
->     >     Ben
->     >
->     >     --
->     >     Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com> <mailto:greearb@candelatech.com <mailto:greearb@candelatech.com>>>
->     >     Candela Technologies Inc  http://www.candelatech.com
->     >
->     >
->     >     _______________________________________________
->     >     ath10k mailing list
->     >     ath10k@lists.infradead.org <mailto:ath10k@lists.infradead.org> <mailto:ath10k@lists.infradead.org <mailto:ath10k@lists.infradead.org>>
->     >     http://lists.infradead.org/mailman/listinfo/ath10k
->     >
-> 
-> 
->     --
->     Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>
->     Candela Technologies Inc  http://www.candelatech.com
-> 
+>   /**********/
+>   /* Crypto */
+>   /**********/
+> @@ -77,6 +85,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
+>   	if (cmd == DISABLE_KEY) {
+>   		arg.key_cipher = WMI_CIPHER_NONE;
+>   		arg.key_data = NULL;
+> +	} else if (ath10k_modparam_nohwcrypt) {
+> +		key->flags |= IEEE80211_KEY_FLAG_SW_RX_CRYPT;
+>   	}
+>
+>   	return ath10k_wmi_vdev_install_key(arvif->ar, &arg);
+> @@ -2792,6 +2802,8 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+>
+>   	mutex_lock(&ar->conf_mutex);
+>
+> +	key->flags &= ~IEEE80211_KEY_FLAG_SW_RX_CRYPT;
+> +
+>   	if (sta)
+>   		peer_addr = sta->addr;
+>   	else if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
 
 
 -- 
