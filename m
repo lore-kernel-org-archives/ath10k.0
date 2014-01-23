@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W69IH-0002f2-AK
- for ath10k@lists.infradead.org; Thu, 23 Jan 2014 01:41:21 +0000
-Message-ID: <52E0732A.8030203@candelatech.com>
-Date: Wed, 22 Jan 2014 17:40:58 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1W6DQQ-0006Wr-I9
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2014 06:06:03 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: BAR error, failed to get chip id.
+References: <52E02B28.6020503@candelatech.com>
+ <CAJ-VmokveU-WxqboRhdagLwp2E2o-Bic7Pd4LvHaj7TX+rBnYA@mail.gmail.com>
+ <52E06430.5060408@candelatech.com>
+Date: Thu, 23 Jan 2014 08:05:22 +0200
+In-Reply-To: <52E06430.5060408@candelatech.com> (Ben Greear's message of "Wed, 
+ 22 Jan 2014 16:37:04 -0800")
+Message-ID: <87iotb9qsd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k:  Support rx-software-crypt mode.
-References: <1390437676-19906-1-git-send-email-greearb@candelatech.com>
- <1390437676-19906-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1390437676-19906-2-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,58 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com
+To: Ben Greear <greearb@candelatech.com>
+Cc: Adrian Chadd <adrian.chadd@gmail.com>, ath10k@lists.infradead.org
 
-On 01/22/2014 04:41 PM, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
->
-> With appropriate firmware (probably only CT firmware at this time)
-> this allows enabling rx-software-crypt mode.  This tells the
-> firmware to not decrypt any packets received, but do encrypt
-> (as needed) any packets on transmit.  This is implemented to get
-> around hardware issues that preclude using two stations to
-> connect to the same AP while using encryption.
->
+Ben Greear <greearb@candelatech.com> writes:
 
-I should mention:  This depends on a mac80211 patch I sent to
-the linux-wireless mailing list.  It defines and uses the key flag
-used below...
-
-Thanks,
-Ben
-
->   /**********/
->   /* Crypto */
->   /**********/
-> @@ -77,6 +85,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
->   	if (cmd == DISABLE_KEY) {
->   		arg.key_cipher = WMI_CIPHER_NONE;
->   		arg.key_data = NULL;
-> +	} else if (ath10k_modparam_nohwcrypt) {
-> +		key->flags |= IEEE80211_KEY_FLAG_SW_RX_CRYPT;
->   	}
+> On 01/22/2014 04:10 PM, Adrian Chadd wrote:
+>> Tgis is rev 2.0 right? I recall reset bugs in 1.0 that had the pcie bits not setup right by the firmware after a cold reset.
 >
->   	return ath10k_wmi_vdev_install_key(arvif->ar, &arg);
-> @@ -2792,6 +2802,8 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+> I'm using a rev 2 development NIC (CUS223, I think..haven't cracked the
+> machine open in a while).
 >
->   	mutex_lock(&ar->conf_mutex);
+> I usually get about 1-3 module reloads before the system either totally
+> freezes or prints out the info below (and fails to load the driver),
+> requiring reboot of the system.
 >
-> +	key->flags &= ~IEEE80211_KEY_FLAG_SW_RX_CRYPT;
-> +
->   	if (sta)
->   		peer_addr = sta->addr;
->   	else if (arvif->vdev_type == WMI_VDEV_TYPE_STA)
+> I have been working on other features and bugs and have been ignoring
+> these lockups, but now I'm a bit more interested in trying to resolve
+> them...
 
+I was told that CUS223 has a problem with cold resets. Whenever the host
+issues a cold reset occasionally voltage in one of the board component's
+goes too down and causes PCI errors. I think that's what you are seeing.
+
+The workaround is to use warm resets, but we are still having some
+problems with that after firmware crashes. Hopefully we can send patches
+next week.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
