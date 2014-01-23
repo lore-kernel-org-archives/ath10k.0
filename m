@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6NQt-0006Jx-WA
- for ath10k@lists.infradead.org; Thu, 23 Jan 2014 16:47:12 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s0NGknc2025421
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Thu, 23 Jan 2014 08:46:49 -0800
-Message-ID: <52E14779.3010307@candelatech.com>
-Date: Thu, 23 Jan 2014 08:46:49 -0800
+ id 1W6PXw-0001Wt-UC
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2014 19:02:41 +0000
+Message-ID: <52E16732.4090908@candelatech.com>
+Date: Thu, 23 Jan 2014 11:02:10 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Anyone know of APs using the CUS223 NICs?
+Subject: Re: Anyone know of APs using the CUS223 NICs?
+References: <01a201cf185b$f60f6b90$e22e42b0$@innovelec.co.uk>
+In-Reply-To: <01a201cf185b$f60f6b90$e22e42b0$@innovelec.co.uk>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +22,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Trevor Cullen <tcc@innovelec.co.uk>
+Cc: ath10k@lists.infradead.org
 
-If anyone knows of a source of the CUS223 (or similar?) NICs,
-even if that means buying and junking APs for the NIC, please
-let me know.
+On 01/23/2014 08:55 AM, Trevor Cullen wrote:
+> Ben
+> 
+> Compex have them.
+> 
+> http://www.compex.com.sg/productinfo.asp?item=miniPCIe&acc1Panel=1&acc2Panel
+> =0 
+
+Thanks for the suggestion.
+
+I contacted them.  It seems they are not ready too ship yet, but maybe
+in a few weeks....
 
 Thanks,
 Ben
