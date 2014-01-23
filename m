@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6JoE-00008f-9A
- for ath10k@lists.infradead.org; Thu, 23 Jan 2014 12:55:02 +0000
+ id 1W6Jq1-0000De-5v
+ for ath10k@lists.infradead.org; Thu, 23 Jan 2014 12:56:53 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: enable firmware STA quick kickout
-References: <20140120090146.5500.12995.stgit@potku.adurom.net>
-Date: Thu, 23 Jan 2014 14:54:33 +0200
-In-Reply-To: <20140120090146.5500.12995.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 20 Jan 2014 11:01:46 +0200")
-Message-ID: <87ob325052.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: AP mode, set UAPSD params correctly
+References: <1390284413-2703-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Thu, 23 Jan 2014 14:56:26 +0200
+In-Reply-To: <1390284413-2703-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 21 Jan 2014 07:06:53 +0100")
+Message-ID: <87k3dq501x.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Firmware has a feature to track if the associated STA is not acking the frames.
-> When that happens, the firmware sends WMI_PEER_STA_KICKOUT_EVENTID event to the
-> host. Enable that to faster detect when a STA has left BSS without sending a
-> deauth frame.
+> ath10k handles UAPSD completly in the firmware.
+> When works in AP mode we have to configure
+> UAPSD params for each station. Without this
+> patch we configure UAPSD params before we
+> send peer assoc command to the FW, which was
+> wrong. Next FW didn't know what should be trigger
+> frame, couse UAPSD didn't work correctly in AP mode.
+> To configure UAPSD params correctly we have to
+> send them after peer assoc command.
 >
-> Also set huge keepalive timeouts to avoid using the keepalive functionality in
-> the firmware.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-Applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
