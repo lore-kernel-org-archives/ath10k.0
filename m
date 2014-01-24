@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.smtp.dk ([93.90.117.178] helo=smtp.dk)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6NX3-0006Tp-4d
- for ath10k@lists.infradead.org; Thu, 23 Jan 2014 16:53:34 +0000
-From: "Trevor Cullen" <tcc@innovelec.co.uk>
-Subject: RE: Anyone know of APs using the CUS223 NICs?
-Date: Thu, 23 Jan 2014 16:55:45 -0000
-Message-ID: <01a201cf185b$f60f6b90$e22e42b0$@innovelec.co.uk>
+ id 1W6c0d-0000Ph-Hy
+ for ath10k@lists.infradead.org; Fri, 24 Jan 2014 08:21:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: implement channel switching
+References: <1390473506-15677-1-git-send-email-michal.kazior@tieto.com>
+ <1390473506-15677-2-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 24 Jan 2014 10:20:34 +0200
+In-Reply-To: <1390473506-15677-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 23 Jan 2014 11:38:25 +0100")
+Message-ID: <87ob314wq5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Language: en-gb
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,85 +20,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Ben Greear' <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ben
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Compex have them.
+> Until now channel change wasn't propagating to FW
+> directly because operational channel is abstracted
+> by VDEVs and it wasn't really necessary since
+> ath10k implements hwscan and hwroc.
+>
+> This effectively fixes STA CSA and allows for
+> future AP-like CSA as well.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-http://www.compex.com.sg/productinfo.asp?item=3DminiPCIe&acc1Panel=3D1&acc2=
-Panel
-=3D0 =
+[...]
 
+> @@ -2559,15 +2676,18 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+>  				 * this is never erased as we it for crypto key
+>  				 * clearing; this is FW requirement
+>  				 */
+> -				memcpy(arvif->u.sta.bssid, info->bssid,
+> -				       ETH_ALEN);
+> +				memcpy(arvif->bssid, info->bssid, ETH_ALEN);
+>  
+>  				ath10k_dbg(ATH10K_DBG_MAC,
+>  					   "mac vdev %d start %pM\n",
+>  					   arvif->vdev_id, info->bssid);
+>  
+> -				/* FIXME: check return value */
+>  				ret = ath10k_vdev_start(arvif);
+> +				if (ret)
+> +					ath10k_warn("failed to start vdev: %d\n",
+> +						    ret);
+> +				else
+> +					arvif->is_started = true;
+>  			}
 
-Trevor
-=A0
-Trevor Cullen BSc (Hons) MIoD
-Managing Director
-tcc@innovelec.co.uk
-www.innovelec.co.uk
+I really don't like that if-else construct and I think it's just better
+to bail out if an error happens, so I changed this to:
 
-Innovelec Solutions Limited =
+				ret = ath10k_vdev_start(arvif);
+				if (ret) {
+					ath10k_warn("failed to start vdev: %d\n",
+						    ret);
+					return;
+				}
 
-Maylands Business Centre, Redbourn Rd,
-Hemel Hempstead, Herts, HP2 7ES.
-Tel: +44 (0) 1442 573035
-DDI: +44 (0) 1442 573039
-Mobile: +44 (0) 7785 575840 =
+				arvif->is_started = true;
 
-Registration No. 06879179
-VAT Registration No. GB 973 2106 29
-
-
-This e-mail transmission is intended solely for the person or organisation
-to whom it is addressed. It may contain confidential and privileged
-information.
-If you are not the intended recipient, you must not copy, distribute or
-disseminate the information, or take any action in reliance of it.
-If you have received this message in error, do not open any attachment but
-please notify the sender deleting this message from your system.
-
-This e-mail may contain personal views which are not those of Innovelec
-Solutions Limited unless specifically stated.
-
-Internet e-mails are not necessarily secure, Innovelec Solutions Limited
-does not accept responsibility for any changes made to this message after it
-was sent.
-
-Whilst all reasonable care has been taken to ensure that this e-mail and any
-attachments are virus free, no responsibility is accepted by Innovelec
-Solutions Limited in this regard.
-We advise that in keeping with good computing practice the recipient should
-ensure they are actually virus free.
-
-
------Original Message-----
-From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of Ben
-Greear
-Sent: 23 January 2014 16:47
-To: ath10k@lists.infradead.org
-Subject: Anyone know of APs using the CUS223 NICs?
-
-If anyone knows of a source of the CUS223 (or similar?) NICs, even if that
-means buying and junking APs for the NIC, please let me know.
-
-Thanks,
-Ben
-
---
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
