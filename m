@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6c5H-0000X8-4r
- for ath10k@lists.infradead.org; Fri, 24 Jan 2014 08:25:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: implement and use new beacon method
-References: <1390477701-16843-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Fri, 24 Jan 2014 10:25:23 +0200
-In-Reply-To: <1390477701-16843-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Thu, 23 Jan 2014 12:48:21 +0100")
-Message-ID: <87fvod4wi4.fsf@kamboji.qca.qualcomm.com>
+ id 1W6dsw-0002aH-LT
+ for ath10k@lists.infradead.org; Fri, 24 Jan 2014 10:21:15 +0000
+Received: by mail-bk0-f42.google.com with SMTP id 6so1052510bkj.29
+ for <ath10k@lists.infradead.org>; Fri, 24 Jan 2014 02:20:51 -0800 (PST)
 MIME-Version: 1.0
+Date: Fri, 24 Jan 2014 18:20:50 +0800
+Message-ID: <CAEFj985_s1Q=S-9EVLySzXkCorQkLn6jNBcVCeDUBqWzCw+A6Q@mail.gmail.com>
+Subject: fw_stats available in 10.x FW
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +22,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Hi, all
 
-> From: Michal Kazior <michal.kazior@tieto.com>
->
-> Until now ath10k used a copy-by-value beacon
-> submission.
->
-> The new method passes a DMA address via WMI
-> command only. This command contains additional
-> metadata that fixes AP behaviour with regard
-> to powersave buffering.
->
-> This also fixes strange bug when multicast traffic
-> would freeze TX indefinitely.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Try to retrieve the fw_stats on 10.x FW but no information.
 
-Thanks, applied.
+Is this supported by the firmware?
 
--- 
-Kalle Valo
+-----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
