@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W6mHP-0004s4-Q9
- for ath10k@lists.infradead.org; Fri, 24 Jan 2014 19:19:04 +0000
+ id 1W7n2G-0007EX-Kb
+ for ath10k@lists.infradead.org; Mon, 27 Jan 2014 14:19:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Anyone done long term testing?
-References: <52E29ABF.9040403@candelatech.com>
- <87eh3x2oec.fsf@kamboji.qca.qualcomm.com>
- <52E2BB17.1010309@candelatech.com>
-Date: Fri, 24 Jan 2014 21:18:34 +0200
-In-Reply-To: <52E2BB17.1010309@candelatech.com> (Ben Greear's message of "Fri, 
- 24 Jan 2014 11:12:23 -0800")
-Message-ID: <874n4t2np1.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] Initial 11ac support using ath10k
+References: <1513091.zjVOOQ7NvD@bentobox>
+ <87mwitpsmn.fsf@kamboji.qca.qualcomm.com>
+ <878uudps7f.fsf@kamboji.qca.qualcomm.com>
+ <2241060.ARHWKI05xP@bentobox>
+Date: Mon, 27 Jan 2014 16:19:07 +0200
+In-Reply-To: <2241060.ARHWKI05xP@bentobox> (Sven Eckelmann's message of "Mon, 
+ 20 Jan 2014 11:29:26 +0100")
+Message-ID: <874n4pld7o.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,38 +26,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Sven Eckelmann <sven@open-mesh.com>
+Cc: Simon Wunderlich <simon@open-mesh.com>, "openwrt-devel@lists.openwrt.org" <openwrt-devel@lists.openwrt.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
-Ben Greear <greearb@candelatech.com> writes:
+Sven Eckelmann <sven@open-mesh.com> writes:
 
-> On 01/24/2014 11:03 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->> 
->>> I left an ath10k system up overnight, running 128kbps traffic on each
->>> of 32 stations, and by morning, the machine was OOM.
->> 
->> Did you see SWBA overrun warnings before the OOM? I saw one report of
->> such issue. This patch should help with that:
->> 
->> 748afc4 ath10k: implement and use new beacon method
->> 
->>> Just curious if anyone had done overnight traffic runs with any luck?
->> 
->> I'm running our AP135 board with ath9k+ath10k as my main AP and have
->> seen SWBA overruns few times, otherwise it has been pretty stable. But I
->> haven't yet tested with the patch above to see if the SWBA overruns are
->> really gone.
+> On Saturday 18 January 2014 01:14:28 Kalle Valo wrote:
 >
-> I didn't notice any SWBA warnings, but perhaps they were there.
-> I'll keep a look out for them if it happens again.
+>> > Just as general information to the state of ath10k, my current test showed
+>> > 
+>> > some problems with it:
+>> >  * Samsung GT-I9300 only got horrible slow connections to an QCA9880 but
+>> >  
+>> >    an Intel N6205 (using iwlwifi from v3.12) or Samsung S4 worked
+>> >    "fine"
+>> 
+>> Could you report the I9300 issue to the ath10k list with more details,
+>> please? We can try to investigate it.
 >
-> I'm also running in station mode, with lots of station vifs, so might be
-> hitting some issue specific to that.  I guess in station mode I shouldn't
-> be sending any beacons anyway, so probably not the beacon issue.
+> This is a little bit problematic. I could reproduce this problem quite well on 
+> a specific date and when I tried some other day it worked fine. So it is hard 
+> to report anything. The only thing I could report would be the "Failed to add 
+> peer" problem which seemed to happen at the same time.
+>
+> Maybe I find a way to reproduce it reliable but I don't know how at the 
+> moment.
 
-Heh, I didn't realise that you were using station mode. Then most likely
-you are seeing something else.
+The bug report doesn't need to be perfect, not all bugs are easily
+reproducable, but just knowing about a bug would even help. That's why
+ask people to send bug reports to ath10k@lists.infradead.org.
+
+>> >  * Adhoc mode doesn't work at all
+>> 
+>> That was with 10.1 firmware? AFAIK it doesn't support adhoc at all. I
+>> think we need to add a firmware feature flag to disable adhoc with that
+>> firmware.
+>
+> It used the latest and greatest, stable(?) version of the firmware when the 
+> patchset was generated: ap/firmware-2.bin_10.1.467-1
+>
+> The statement "doesn't support adhoc at all" makes me a little bit nervous. 
+> Would you say that it is better to completely ignore the "ap" directory of the 
+> firmware repo [2]? Which benefits does the ap firmware has over the ath10k 
+> firmware?
+
+So we have two firmware branches right now, "main" and "10.1". 10.1 is
+solely focused on AP mode, nothing else. The main branch again has more
+features, like P2P, but doesn't support AP mode as well as 10.1 does.
 
 -- 
 Kalle Valo
