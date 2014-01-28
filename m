@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-vb0-f47.google.com ([209.85.212.47])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W85vC-0000yP-CY
- for ath10k@lists.infradead.org; Tue, 28 Jan 2014 10:29:34 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Unable to receive beacon in IBSS mode
-References: <CAEFj986wMdEPuh=hRxL=6_CmWGp7eawB82+dq6M+c2EPVj9wNQ@mail.gmail.com>
- <87a9fv3jz0.fsf@kamboji.qca.qualcomm.com>
- <CAEFj984cDmJOuAov_=2vR_4h3TwZY0LMs=pWG7TFAcv_u1=HJA@mail.gmail.com>
- <87wqiz24my.fsf@kamboji.qca.qualcomm.com>
- <CAEFj985MVPA_e2tKqsnUMqdsGsiaEE49x9sk+hGkZev8fHMX4A@mail.gmail.com>
-Date: Tue, 28 Jan 2014 12:28:59 +0200
-In-Reply-To: <CAEFj985MVPA_e2tKqsnUMqdsGsiaEE49x9sk+hGkZev8fHMX4A@mail.gmail.com>
- (Yeoh Chun-Yeow's message of "Mon, 23 Dec 2013 15:47:20 +0800")
-Message-ID: <8761p4iems.fsf@kamboji.qca.qualcomm.com>
+ id 1W8CJF-0002UH-FT
+ for ath10k@lists.infradead.org; Tue, 28 Jan 2014 17:18:50 +0000
+Received: by mail-vb0-f47.google.com with SMTP id p6so420498vbe.20
+ for <ath10k@lists.infradead.org>; Tue, 28 Jan 2014 09:18:25 -0800 (PST)
 MIME-Version: 1.0
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Tue, 28 Jan 2014 12:18:05 -0500
+Message-ID: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
+Subject: ath10k driver crashes whenever firmware crashes on ARM SoC
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +22,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Hi,
+Hi all,
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+When the ath10k firmware crashes on my device (let's not worry about
+why the firmware crashes right now; one problem at a time), my host
+CPU (ARMv7 based) can't recover.  I get some variant of this error:
 
-> It seems that the problem of adhoc mode is due to the get_tsf is not
-> implemented in the driver.
->
-> Can you point out which WMI command that we can use to fetch the TSF timestamp.
+[  780.116977] Unhandled fault: imprecise external abort (0x1406) at 0x2ac3706c
+[  780.124336] Internal error: : 1406 [#1] SMP
 
-I took a quick look at firmware and I didn't find a way to do that. But
-I'm no firmware engineer so I might have just missed it.
+I've narrowed this down to this code in ath10k/pci.c, ath10k_pci_device_reset:
 
-Can you describe in more detail how adhoc is failing?
+        /* Put Target, including PCIe, into RESET. */
+        val = ath10k_pci_reg_read32(ar, SOC_GLOBAL_RESET_ADDRESS);
+        val |= 1;
+        ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
+        for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
+                if (ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
+                                          RTC_STATE_COLD_RESET_MASK)
+                        break;
+                msleep(1);
+       }
 
--- 
-Kalle Valo
+Specifically, the pci_reg_read32().  I can insert as much time as I
+want between the write32 and the read32; it always performs the read,
+then crashes with the PC pointing a few instructions later, inside the
+msleep(), with the imprecise external abort.  I think this means the
+PCI read operation has encountered a PCI target abort, which suggests
+that the SOC_GLOBAL_RESET_ADDRESS line has not successfully reset the
+device.  From what I understand, on x86 processors PCI target aborts
+are not fatal, so you might not notice this problem on those
+platforms, but it's bad on ARM.
+
+I'm using the ath10k driver from linux-next 20140117, but I had the
+same problem with 3.13-rc2 so I don't think this has changed.
+
+Are other people seeing this?  Is there something I can try to resolve it?
+
+Thanks,
+
+Avery
 
 _______________________________________________
 ath10k mailing list
