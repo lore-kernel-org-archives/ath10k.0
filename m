@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Wed, 29 Jan 2014 14:59:06 +0100
-From: Alexander Gordeev <agordeev@redhat.com>
-Subject: Re: [PATCH v2 0/9] Phase out pci_enable_msi_block()
-Message-ID: <20140129135906.GA3495@dhcp-26-207.brq.redhat.com>
-References: <cover.1389904166.git.agordeev@redhat.com>
- <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W8Y1I-0000kA-LP
+ for ath10k@lists.infradead.org; Wed, 29 Jan 2014 16:29:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: fw_stats available in 10.x FW
+References: <CAEFj985_s1Q=S-9EVLySzXkCorQkLn6jNBcVCeDUBqWzCw+A6Q@mail.gmail.com>
+Date: Wed, 29 Jan 2014 18:29:17 +0200
+In-Reply-To: <CAEFj985_s1Q=S-9EVLySzXkCorQkLn6jNBcVCeDUBqWzCw+A6Q@mail.gmail.com>
+ (Yeoh Chun-Yeow's message of "Fri, 24 Jan 2014 18:20:50 +0800")
+Message-ID: <8761p221lu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +23,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alex Williamson <alex.williamson@redhat.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
-Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, wil6210@qca.qualcomm.com, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, Brian King <brking@us.ibm.com>, linux-nvme@lists.infradead.org, Tejun Heo <tj@kernel.org>, Matthew Wilcox <willy@linux.intel.com>, Bjorn Helgaas <bhelgaas@google.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, Jan 17, 2014 at 02:00:32PM -0700, Bjorn Helgaas wrote:
-> > Bjorn,
-> >
-> > As the release is supposedly this weekend, do you prefer
-> > the patches to go to your tree or to individual trees after
-> > the release?
-> 
-> I'd be happy to merge them, except for the fact that they probably
-> wouldn't have any time in -next before I ask Linus to pull them.  So
-> how about if we wait until after the release, ask the area maintainers
-> to take them, and if they don't take them, I'll put them in my tree
-> for v3.15?
+Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
 
-Hi Gentleman,
+> Try to retrieve the fw_stats on 10.x FW but no information.
+>
+> Is this supported by the firmware?
 
-As the prerequisite commit 302a252 ("PCI/MSI: Add pci_enable_msi_range()
-and pci_enable_msix_range()") is in mainline now, could you please take
-the ACKed patches to your trees?
+Yes, but IIRC you need Bartosz' patches which are not applied yet:
 
-Thanks!
-
-> Bjorn
+http://lists.infradead.org/pipermail/ath10k/2013-September/000317.html
 
 -- 
-Regards,
-Alexander Gordeev
-agordeev@redhat.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
