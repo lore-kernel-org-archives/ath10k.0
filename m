@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8GS6-0000ip-LD
- for ath10k@lists.infradead.org; Tue, 28 Jan 2014 21:44:15 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s0SLhhTi007919
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Tue, 28 Jan 2014 13:43:44 -0800
-Message-ID: <52E8248F.8090601@candelatech.com>
-Date: Tue, 28 Jan 2014 13:43:43 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: ath10k crash on firmware crash.
+ id 1W8Ogl-0000CT-Kf
+ for ath10k@lists.infradead.org; Wed, 29 Jan 2014 06:31:57 +0000
+Received: by mail-ee0-f54.google.com with SMTP id e53so649786eek.13
+ for <ath10k@lists.infradead.org>; Tue, 28 Jan 2014 22:31:29 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: properly return err from start()
+Date: Wed, 29 Jan 2014 07:26:31 +0100
+Message-Id: <1390976791-9223-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <52E8248F.8090601@candelatech.com>
+References: <52E8248F.8090601@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,19 +19,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-I don't think I've seen this one (or at least not recently).
-...
+If recovery failed ath10k returned 0 (success) and
+mac80211 continued to call other driver callbacks.
+This caused null dereference.
 
-Firmware had just crashed, then OS crashed:
+This is how the failure looked like:
 
-ATH10K_DBG_BUFFER:
-ath10k: [1] next: 0x4127f4 buf: 0x4106e4 sz: 1500 len: 0 count: 0 free: 0
 ath10k: ctl_resp never came in (-110)
 ath10k: failed to connect to HTC: -110
 ath10k: could not init core (-110)
@@ -85,11 +84,35 @@ Code: df ff d0 48 83 c4 18 5b 41 5c 41 5d 5d c3 55 48 89 e5 41 57 41 56 45 89 c6
 RIP  [<ffffffffa0b355c1>] ath10k_ce_send+0x1d/0x15d [ath10k_pci]
  RSP <ffff880215e19af8>
 CR2: 0000000000000000
----[ end trace 0ff0538694d604c2 ]---
 
+Reported-By: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+
+Thanks for reporting, Ben!
+
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 776e364..e3223fd 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2101,10 +2101,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 			    ret);
+ 
+ 	ath10k_regd_update(ar);
++	ret = 0;
+ 
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
+-	return 0;
++	return ret;
+ }
+ 
+ static void ath10k_stop(struct ieee80211_hw *hw)
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.8.5.3
 
 
 _______________________________________________
