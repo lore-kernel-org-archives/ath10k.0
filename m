@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8V4O-0002MN-1v
- for ath10k@lists.infradead.org; Wed, 29 Jan 2014 13:20:44 +0000
-Received: by mail-la0-f43.google.com with SMTP id pv20so1455399lab.16
- for <ath10k@lists.infradead.org>; Wed, 29 Jan 2014 05:20:21 -0800 (PST)
+Date: Wed, 29 Jan 2014 14:59:06 +0100
+From: Alexander Gordeev <agordeev@redhat.com>
+Subject: Re: [PATCH v2 0/9] Phase out pci_enable_msi_block()
+Message-ID: <20140129135906.GA3495@dhcp-26-207.brq.redhat.com>
+References: <cover.1389904166.git.agordeev@redhat.com>
+ <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87ppnbdj6j.fsf@kamboji.qca.qualcomm.com>
-References: <1390999696-8895-1-git-send-email-marek.puzyniak@tieto.com>
- <87ppnbdj6j.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 29 Jan 2014 14:20:13 +0100
-Message-ID: <CADnKcVg7i1r0X6_QSA-K2666QsaHDqZ=fJqFo2OM3bs-Mz6n3g@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: configure access category for arp
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <CAErSpo5ztnyyceeN38XzLasLV6eJqdbqEV0viPp3Af8U=ts23w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,43 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Alex Williamson <alex.williamson@redhat.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, wil6210@qca.qualcomm.com, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, Brian King <brking@us.ibm.com>, linux-nvme@lists.infradead.org, Tejun Heo <tj@kernel.org>, Matthew Wilcox <willy@linux.intel.com>, Bjorn Helgaas <bhelgaas@google.com>
 
-On 29 January 2014 14:14, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Marek Puzyniak <marek.puzyniak@tieto.com> writes:
->
->> ARP frames exchange does not work properly for UAPSD enabled AP.
->> ARP requests which arrives with access category 0 are processed
->> by network stack and send back with access category 0. FW changes
->> access category to 6. This is causing problems when UAPSD associated
->> STA is sleeping after has sent ARP request. Configure ARP access
->> category in FW to best effort (0) solves this problem. ARP frames
->> will be send with access category 0.
->>
->> Simplify arp ac override functionality by removing redundant entry in
->> pdev param maping table. There should be only one entry in pdev param
->> map but enum has different name for different FW.
->>
->> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
->
-> I had a conflict when I applied this to ath-next-test. Please check that
-> I didn't break anything:
->
-> https://github.com/kvalo/ath/commit/2e006642b3aad6a5fb91f9e560a2bbcdf74aa049
-It looks ok.
->
->> +     ret = ath10k_wmi_pdev_set_param(ar,
->> +                                     ar->wmi.pdev_param->arp_ac_override, 0);
->> +     if (ret) {
->> +             ath10k_warn("could not init WMI_PDEV_PARAM_ARP_AC_OVERRIDE (%d)\n",
->> +                         ret);
->
-> I also modified this warning message to follow the style used elsewhere
-> in the driver.
->
-> --
-> Kalle Valo
+On Fri, Jan 17, 2014 at 02:00:32PM -0700, Bjorn Helgaas wrote:
+> > Bjorn,
+> >
+> > As the release is supposedly this weekend, do you prefer
+> > the patches to go to your tree or to individual trees after
+> > the release?
+> 
+> I'd be happy to merge them, except for the fact that they probably
+> wouldn't have any time in -next before I ask Linus to pull them.  So
+> how about if we wait until after the release, ask the area maintainers
+> to take them, and if they don't take them, I'll put them in my tree
+> for v3.15?
+
+Hi Gentleman,
+
+As the prerequisite commit 302a252 ("PCI/MSI: Add pci_enable_msi_range()
+and pci_enable_msix_range()") is in mainline now, could you please take
+the ACKed patches to your trees?
+
+Thanks!
+
+> Bjorn
+
+-- 
+Regards,
+Alexander Gordeev
+agordeev@redhat.com
 
 _______________________________________________
 ath10k mailing list
