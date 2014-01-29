@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8YDO-0001CV-VJ
- for ath10k@lists.infradead.org; Wed, 29 Jan 2014 16:42:15 +0000
+ id 1W8YFb-0001Gk-K5
+ for ath10k@lists.infradead.org; Wed, 29 Jan 2014 16:44:32 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: ath10k driver crashes whenever firmware crashes on ARM SoC
 References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
-Date: Wed, 29 Jan 2014 18:41:48 +0200
-In-Reply-To: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
- (Avery Pennarun's message of "Tue, 28 Jan 2014 12:18:05 -0500")
-Message-ID: <871tzq210z.fsf@kamboji.qca.qualcomm.com>
+ <52E7F4F2.2030001@candelatech.com>
+ <CAHqTa-2JvvRA2v3y5YF8ku02zwxzpotGDQqOUU2FkxzkQgeBAg@mail.gmail.com>
+Date: Wed, 29 Jan 2014 18:44:02 +0200
+In-Reply-To: <CAHqTa-2JvvRA2v3y5YF8ku02zwxzpotGDQqOUU2FkxzkQgeBAg@mail.gmail.com>
+ (Avery Pennarun's message of "Tue, 28 Jan 2014 13:34:59 -0500")
+Message-ID: <87wqhizqjx.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,58 +26,29 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k@lists.infradead.org
-
-Hi,
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
 Avery Pennarun <apenwarr@gmail.com> writes:
 
-> When the ath10k firmware crashes on my device (let's not worry about
-> why the firmware crashes right now; one problem at a time), my host
-> CPU (ARMv7 based) can't recover.  I get some variant of this error:
+> On Tue, Jan 28, 2014 at 1:20 PM, Ben Greear <greearb@candelatech.com> wrote:
+>> On 01/28/2014 09:18 AM, Avery Pennarun wrote:
+>>> When the ath10k firmware crashes on my device (let's not worry about
+>>> why the firmware crashes right now; one problem at a time), my host
+>>> CPU (ARMv7 based) can't recover.  I get some variant of this error:
+>>
+>> I don't know about your pci bus problem, but I'm interested in knowing
+>> about firmware crashes (if you are at liberty to share the details).
 >
-> [  780.116977] Unhandled fault: imprecise external abort (0x1406) at 0x2ac3706c
-> [  780.124336] Internal error: : 1406 [#1] SMP
+> Well, since you asked... :)
 >
-> I've narrowed this down to this code in ath10k/pci.c, ath10k_pci_device_reset:
->
->         /* Put Target, including PCIe, into RESET. */
->         val = ath10k_pci_reg_read32(ar, SOC_GLOBAL_RESET_ADDRESS);
->         val |= 1;
->         ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
->         for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
->                 if (ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
->                                           RTC_STATE_COLD_RESET_MASK)
->                         break;
->                 msleep(1);
->        }
+> I'm trying to build an especially robust system here, so when I
+> noticed that the driver will bring the entire system crashing down
+> upon a firmware crash, I've actually gone out of my way to make more
+> firmware crashes.
 
-Are you using CUS223 board? I was told that it has a problem with the
-cold reset. When you issue the cold reset, some voltage in the board
-goes too low and there's a chance that it breaks PCI communication.
-
-> Specifically, the pci_reg_read32().  I can insert as much time as I
-> want between the write32 and the read32; it always performs the read,
-> then crashes with the PC pointing a few instructions later, inside the
-> msleep(), with the imprecise external abort.  I think this means the
-> PCI read operation has encountered a PCI target abort, which suggests
-> that the SOC_GLOBAL_RESET_ADDRESS line has not successfully reset the
-> device.  From what I understand, on x86 processors PCI target aborts
-> are not fatal, so you might not notice this problem on those
-> platforms, but it's bad on ARM.
-
-FWIW the same problem also happens on MIPS.
-
-> I'm using the ath10k driver from linux-next 20140117, but I had the
-> same problem with 3.13-rc2 so I don't think this has changed.
->
-> Are other people seeing this?  Is there something I can try to resolve it?
-
-Yes, we see it as well. And we see it also on when doing interface down,
-for example when shutting down hostapd. Soon we will post patches to
-workaround the interface down issue, but for firmware crashes we haven't
-yet found a reliable solution. I hope there's a way to fix warm reset to
-properly recover from a firmware crash.
+Do you know that we have simulate_fw_crash debugfs file just for testing
+this? Of course it's good to test various firmware crashing scenarious,
+but in some cases this debugfs file helps a lot.
 
 -- 
 Kalle Valo
