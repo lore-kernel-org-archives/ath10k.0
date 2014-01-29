@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
+Received: from mail-ea0-x234.google.com ([2a00:1450:4013:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8Ogl-0000CT-Kf
- for ath10k@lists.infradead.org; Wed, 29 Jan 2014 06:31:57 +0000
-Received: by mail-ee0-f54.google.com with SMTP id e53so649786eek.13
- for <ath10k@lists.infradead.org>; Tue, 28 Jan 2014 22:31:29 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: properly return err from start()
-Date: Wed, 29 Jan 2014 07:26:31 +0100
-Message-Id: <1390976791-9223-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <52E8248F.8090601@candelatech.com>
-References: <52E8248F.8090601@candelatech.com>
+ id 1W8UZk-0001MM-W8
+ for ath10k@lists.infradead.org; Wed, 29 Jan 2014 12:49:05 +0000
+Received: by mail-ea0-f180.google.com with SMTP id o10so881840eaj.25
+ for <ath10k@lists.infradead.org>; Wed, 29 Jan 2014 04:48:32 -0800 (PST)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH] ath10k: configure access category for arp
+Date: Wed, 29 Jan 2014 13:48:16 +0100
+Message-Id: <1390999696-8895-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +23,91 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
 
-If recovery failed ath10k returned 0 (success) and
-mac80211 continued to call other driver callbacks.
-This caused null dereference.
+ARP frames exchange does not work properly for UAPSD enabled AP.
+ARP requests which arrives with access category 0 are processed
+by network stack and send back with access category 0. FW changes
+access category to 6. This is causing problems when UAPSD associated
+STA is sleeping after has sent ARP request. Configure ARP access
+category in FW to best effort (0) solves this problem. ARP frames
+will be send with access category 0.
 
-This is how the failure looked like:
+Simplify arp ac override functionality by removing redundant entry in
+pdev param maping table. There should be only one entry in pdev param
+map but enum has different name for different FW.
 
-ath10k: ctl_resp never came in (-110)
-ath10k: failed to connect to HTC: -110
-ath10k: could not init core (-110)
-BUG: unable to handle kernel NULL pointer dereference at           (null)
-IP: [<ffffffffa0b355c1>] ath10k_ce_send+0x1d/0x15d [ath10k_pci]
-PGD 0
-Oops: 0000 [#1] PREEMPT SMP
-Modules linked in: ath10k_pci ath10k_core ath5k ath9k ath9k_common ath9k_hw ath mac80211 cfg80211 nf_nat_ipv4 ]
-CPU: 1 PID: 36 Comm: kworker/1:1 Tainted: G        WC   3.13.0-rc8-wl-ath+ #8
-Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
-Workqueue: events ieee80211_restart_work [mac80211]
-task: ffff880215b521c0 ti: ffff880215e18000 task.ti: ffff880215e18000
-RIP: 0010:[<ffffffffa0b355c1>]  [<ffffffffa0b355c1>] ath10k_ce_send+0x1d/0x15d [ath10k_pci]
-RSP: 0018:ffff880215e19af8  EFLAGS: 00010292
-RAX: ffff880215e19b10 RBX: 0000000000000000 RCX: 0000000000000018
-RDX: 00000000d9ccf800 RSI: ffff8800c965ad00 RDI: 0000000000000000
-RBP: ffff880215e19b58 R08: 0000000000000002 R09: 0000000000000000
-R10: ffffffff812e1a23 R11: 0000000000000292 R12: 0000000000000018
-R13: 0000000000000000 R14: 0000000000000002 R15: ffff88021562d700
-FS:  0000000000000000(0000) GS:ffff88021fa80000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 0000000001a0d000 CR4: 00000000000407e0
-Stack:
- d9ccf8000d47df40 ffffffffa0b367a0 ffff880215e19b10 0000000000000010
- ffff880215e19b68 ffff880215e19b28 0000000000000018 ffff8800c965ad00
- 0000000000000018 0000000000000000 0000000000000002 ffff88021562d700
-Call Trace:
- [<ffffffffa0b3251d>] ath10k_pci_hif_send_head+0xa7/0xcb [ath10k_pci]
- [<ffffffffa0b16cbe>] ath10k_htc_send+0x23d/0x2d0 [ath10k_core]
- [<ffffffffa0b1a169>] ath10k_wmi_cmd_send_nowait+0x5d/0x85 [ath10k_core]
- [<ffffffffa0b1aaef>] ath10k_wmi_cmd_send+0x62/0x115 [ath10k_core]
- [<ffffffff814e8abd>] ? __netdev_alloc_skb+0x4b/0x9b
- [<ffffffffa0b1c438>] ath10k_wmi_vdev_set_param+0x91/0xa3 [ath10k_core]
- [<ffffffffa0b0e0d5>] ath10k_mac_set_rts+0x3e/0x40 [ath10k_core]
- [<ffffffffa0b0e1d0>] ath10k_set_frag_threshold+0x5e/0x9c [ath10k_core]
- [<ffffffffa09d60eb>] ieee80211_reconfig+0x12a/0x7b3 [mac80211]
- [<ffffffff815a8069>] ? mutex_unlock+0x9/0xb
- [<ffffffffa09b3a40>] ieee80211_restart_work+0x5e/0x68 [mac80211]
- [<ffffffff810c01d0>] process_one_work+0x1d7/0x2fc
- [<ffffffff810c0166>] ? process_one_work+0x16d/0x2fc
- [<ffffffff810c06c8>] worker_thread+0x12e/0x1fb
- [<ffffffff810c059a>] ? rescuer_thread+0x27b/0x27b
- [<ffffffff810c5aee>] kthread+0xb5/0xbd
- [<ffffffff815a9220>] ? _raw_spin_unlock_irq+0x28/0x42
- [<ffffffff810c5a39>] ? __kthread_parkme+0x5c/0x5c
- [<ffffffff815ae04c>] ret_from_fork+0x7c/0xb0
- [<ffffffff810c5a39>] ? __kthread_parkme+0x5c/0x5c
-Code: df ff d0 48 83 c4 18 5b 41 5c 41 5d 5d c3 55 48 89 e5 41 57 41 56 45 89 c6 41 55 41 54 41 89 cc 53 48 89
-RIP  [<ffffffffa0b355c1>] ath10k_ce_send+0x1d/0x15d [ath10k_pci]
- RSP <ffff880215e19af8>
-CR2: 0000000000000000
-
-Reported-By: Ben Greear <greearb@candelatech.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 ---
-
-Thanks for reporting, Ben!
-
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 17 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c |  4 +---
+ drivers/net/wireless/ath/ath10k/wmi.h |  1 -
+ 3 files changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 776e364..e3223fd 100644
+index 776e364..7fd33da 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2101,10 +2101,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
+@@ -2100,6 +2100,23 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		ath10k_warn("could not init WMI_PDEV_PARAM_DYNAMIC_BW (%d)\n",
  			    ret);
  
++	/*
++	 * By default FW set ARP frames ac to voice (6). In that case ARP
++	 * exchange is not working properly for UAPSD enabled AP. ARP requests
++	 * which arrives with access category 0 are processed by network stack
++	 * and send back with access category 0, but FW changes access category
++	 * to 6. Set ARP frames access category to best effort (0) solves
++	 * this problem.
++	 */
++
++	ret = ath10k_wmi_pdev_set_param(ar,
++					ar->wmi.pdev_param->arp_ac_override, 0);
++	if (ret) {
++		ath10k_warn("could not init WMI_PDEV_PARAM_ARP_AC_OVERRIDE (%d)\n",
++			    ret);
++		goto exit;
++	}
++
  	ath10k_regd_update(ar);
-+	ret = 0;
  
  exit:
- 	mutex_unlock(&ar->conf_mutex);
--	return 0;
-+	return ret;
- }
- 
- static void ath10k_stop(struct ieee80211_hw *hw)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 712a606..ebcc698 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -420,7 +420,6 @@ static struct wmi_pdev_param_map wmi_pdev_param_map = {
+ 	.bcnflt_stats_update_period = WMI_PDEV_PARAM_BCNFLT_STATS_UPDATE_PERIOD,
+ 	.pmf_qos = WMI_PDEV_PARAM_PMF_QOS,
+ 	.arp_ac_override = WMI_PDEV_PARAM_ARP_AC_OVERRIDE,
+-	.arpdhcp_ac_override = WMI_PDEV_PARAM_UNSUPPORTED,
+ 	.dcs = WMI_PDEV_PARAM_DCS,
+ 	.ani_enable = WMI_PDEV_PARAM_ANI_ENABLE,
+ 	.ani_poll_period = WMI_PDEV_PARAM_ANI_POLL_PERIOD,
+@@ -472,8 +471,7 @@ static struct wmi_pdev_param_map wmi_10x_pdev_param_map = {
+ 	.bcnflt_stats_update_period =
+ 				WMI_10X_PDEV_PARAM_BCNFLT_STATS_UPDATE_PERIOD,
+ 	.pmf_qos = WMI_10X_PDEV_PARAM_PMF_QOS,
+-	.arp_ac_override = WMI_PDEV_PARAM_UNSUPPORTED,
+-	.arpdhcp_ac_override = WMI_10X_PDEV_PARAM_ARPDHCP_AC_OVERRIDE,
++	.arp_ac_override = WMI_10X_PDEV_PARAM_ARPDHCP_AC_OVERRIDE,
+ 	.dcs = WMI_10X_PDEV_PARAM_DCS,
+ 	.ani_enable = WMI_10X_PDEV_PARAM_ANI_ENABLE,
+ 	.ani_poll_period = WMI_10X_PDEV_PARAM_ANI_POLL_PERIOD,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 4b5e7d3..b776bc4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2277,7 +2277,6 @@ struct wmi_pdev_param_map {
+ 	u32 bcnflt_stats_update_period;
+ 	u32 pmf_qos;
+ 	u32 arp_ac_override;
+-	u32 arpdhcp_ac_override;
+ 	u32 dcs;
+ 	u32 ani_enable;
+ 	u32 ani_poll_period;
 -- 
-1.8.5.3
+1.8.1.2
 
 
 _______________________________________________
