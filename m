@@ -1,17 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8rxt-0006vo-Nl
- for ath10k@lists.infradead.org; Thu, 30 Jan 2014 13:47:34 +0000
-Date: Thu, 30 Jan 2014 14:49:09 +0100
-From: Alexander Gordeev <agordeev@redhat.com>
-Subject: [PATCH v3 3/3] ath10k: Use pci_enable_msi_range()
-Message-ID: <20140130134908.GC31909@dhcp-26-207.brq.redhat.com>
-References: <cover.1389904166.git.agordeev@redhat.com>
- <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
+Received: from mail-bk0-x236.google.com ([2a00:1450:4008:c01::236])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W8sRw-000869-V3
+ for ath10k@lists.infradead.org; Thu, 30 Jan 2014 14:18:38 +0000
+Received: by mail-bk0-f54.google.com with SMTP id u14so1416838bkz.41
+ for <ath10k@lists.infradead.org>; Thu, 30 Jan 2014 06:18:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
+In-Reply-To: <CAEFj986-Ovb5pd7kHO2U=LxA_P73rohvgq6vW5x=+GUamH77hA@mail.gmail.com>
+References: <CAEFj986wMdEPuh=hRxL=6_CmWGp7eawB82+dq6M+c2EPVj9wNQ@mail.gmail.com>
+ <87a9fv3jz0.fsf@kamboji.qca.qualcomm.com>
+ <CAEFj984cDmJOuAov_=2vR_4h3TwZY0LMs=pWG7TFAcv_u1=HJA@mail.gmail.com>
+ <87wqiz24my.fsf@kamboji.qca.qualcomm.com>
+ <CAEFj985MVPA_e2tKqsnUMqdsGsiaEE49x9sk+hGkZev8fHMX4A@mail.gmail.com>
+ <8761p4iems.fsf@kamboji.qca.qualcomm.com>
+ <CAEFj986-Ovb5pd7kHO2U=LxA_P73rohvgq6vW5x=+GUamH77hA@mail.gmail.com>
+Date: Thu, 30 Jan 2014 22:18:14 +0800
+Message-ID: <CAEFj986F=Xs3+uH4Gw_mkqB-gobvCRn-9P3z4hmhyh+rtHLURQ@mail.gmail.com>
+Subject: Re: Unable to receive beacon in IBSS mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +30,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: linux-pci@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-As result deprecation of MSI-X/MSI enablement functions
-pci_enable_msix() and pci_enable_msi_block() all drivers
-using these two interfaces need to be updated to use the
-new pci_enable_msi_range() and pci_enable_msix_range()
-interfaces.
+When bringing up the adhoc interface, all of them will do the
+beaconing. mac80211 triggers the call to the driver for getting the
+latest TSF and tryto merge or join the IBSS with same SSID.
 
-Signed-off-by: Alexander Gordeev <agordeev@redhat.com>
+Here in net/mac80211/ibss.c
+
+                 /*
+                  * second best option: get current TSF
+                  * (will return -1 if not supported)
+                  */
+                 rx_timestamp = drv_get_tsf(local, sdata);
+
+In example, ath9k_htc has ath9k_htc_get_tsf, but not ath10k. So I am
+wondering whether we have get tsf support in firmware.
+
 ---
- drivers/net/wireless/ath/ath10k/pci.c |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+Chun-Yeow
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 563ce77..ad2a6cf 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2411,8 +2411,9 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
- 	/* Try MSI-X */
- 	if (ath10k_pci_irq_mode == ATH10K_PCI_IRQ_AUTO && msix_supported) {
- 		ar_pci->num_msi_intrs = MSI_NUM_REQUEST;
--		ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
--		if (ret == 0)
-+		ret = pci_enable_msi_range(ar_pci->pdev, ar_pci->num_msi_intrs,
-+							 ar_pci->num_msi_intrs);
-+		if (ret > 0)
- 			return 0;
- 
- 		/* fall-through */
--- 
-1.7.7.6
-
--- 
-Regards,
-Alexander Gordeev
-agordeev@redhat.com
+> On Jan 28, 2014 6:29 PM, "Kalle Valo" <kvalo@qca.qualcomm.com> wrote:
+>>
+>> Hi,
+>>
+>> Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+>>
+>> > It seems that the problem of adhoc mode is due to the get_tsf is not
+>> > implemented in the driver.
+>> >
+>> > Can you point out which WMI command that we can use to fetch the TSF
+>> > timestamp.
+>>
+>> I took a quick look at firmware and I didn't find a way to do that. But
+>> I'm no firmware engineer so I might have just missed it.
+>>
+>> Can you describe in more detail how adhoc is failing?
+>>
+>> --
+>> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
