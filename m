@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x236.google.com ([2a00:1450:4008:c01::236])
+Received: from mail-bk0-x22a.google.com ([2a00:1450:4008:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8sRw-000869-V3
- for ath10k@lists.infradead.org; Thu, 30 Jan 2014 14:18:38 +0000
-Received: by mail-bk0-f54.google.com with SMTP id u14so1416838bkz.41
- for <ath10k@lists.infradead.org>; Thu, 30 Jan 2014 06:18:14 -0800 (PST)
+ id 1W8tkn-0002rM-2m
+ for ath10k@lists.infradead.org; Thu, 30 Jan 2014 15:42:10 +0000
+Received: by mail-bk0-f42.google.com with SMTP id 6so1515494bkj.29
+ for <ath10k@lists.infradead.org>; Thu, 30 Jan 2014 07:41:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEFj986-Ovb5pd7kHO2U=LxA_P73rohvgq6vW5x=+GUamH77hA@mail.gmail.com>
-References: <CAEFj986wMdEPuh=hRxL=6_CmWGp7eawB82+dq6M+c2EPVj9wNQ@mail.gmail.com>
- <87a9fv3jz0.fsf@kamboji.qca.qualcomm.com>
- <CAEFj984cDmJOuAov_=2vR_4h3TwZY0LMs=pWG7TFAcv_u1=HJA@mail.gmail.com>
- <87wqiz24my.fsf@kamboji.qca.qualcomm.com>
- <CAEFj985MVPA_e2tKqsnUMqdsGsiaEE49x9sk+hGkZev8fHMX4A@mail.gmail.com>
- <8761p4iems.fsf@kamboji.qca.qualcomm.com>
- <CAEFj986-Ovb5pd7kHO2U=LxA_P73rohvgq6vW5x=+GUamH77hA@mail.gmail.com>
-Date: Thu, 30 Jan 2014 22:18:14 +0800
-Message-ID: <CAEFj986F=Xs3+uH4Gw_mkqB-gobvCRn-9P3z4hmhyh+rtHLURQ@mail.gmail.com>
-Subject: Re: Unable to receive beacon in IBSS mode
+In-Reply-To: <8761p221lu.fsf@kamboji.qca.qualcomm.com>
+References: <CAEFj985_s1Q=S-9EVLySzXkCorQkLn6jNBcVCeDUBqWzCw+A6Q@mail.gmail.com>
+ <8761p221lu.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 30 Jan 2014 23:41:46 +0800
+Message-ID: <CAEFj985utGukLe2J+WXRTz+DDu7o3urUENCMJE--BXv8HjvhFg@mail.gmail.com>
+Subject: Re: fw_stats available in 10.x FW
 From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -33,43 +28,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-When bringing up the adhoc interface, all of them will do the
-beaconing. mac80211 triggers the call to the driver for getting the
-latest TSF and tryto merge or join the IBSS with same SSID.
+Try to apply the patches mentioned here for 10.x FW, but did not work as well.
+http://lists.infradead.org/pipermail/ath10k/2013-September/000317.html
 
-Here in net/mac80211/ibss.c
+The debug always complaints "ath10k: device successfully recovered" in
+AP mode.... STA is not able to associate with the AP.
 
-                 /*
-                  * second best option: get current TSF
-                  * (will return -1 if not supported)
-                  */
-                 rx_timestamp = drv_get_tsf(local, sdata);
+The FW tested is version 1.0.0.716, is this going to be available?
 
-In example, ath9k_htc has ath9k_htc_get_tsf, but not ath10k. So I am
-wondering whether we have get tsf support in firmware.
-
----
+----
 Chun-Yeow
 
-> On Jan 28, 2014 6:29 PM, "Kalle Valo" <kvalo@qca.qualcomm.com> wrote:
+On Thu, Jan 30, 2014 at 12:29 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+>
+>> Try to retrieve the fw_stats on 10.x FW but no information.
 >>
->> Hi,
->>
->> Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
->>
->> > It seems that the problem of adhoc mode is due to the get_tsf is not
->> > implemented in the driver.
->> >
->> > Can you point out which WMI command that we can use to fetch the TSF
->> > timestamp.
->>
->> I took a quick look at firmware and I didn't find a way to do that. But
->> I'm no firmware engineer so I might have just missed it.
->>
->> Can you describe in more detail how adhoc is failing?
->>
->> --
->> Kalle Valo
+>> Is this supported by the firmware?
+>
+> Yes, but IIRC you need Bartosz' patches which are not applied yet:
+>
+> http://lists.infradead.org/pipermail/ath10k/2013-September/000317.html
+>
+> --
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
