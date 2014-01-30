@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1W8mlc-0005BZ-BX
- for ath10k@lists.infradead.org; Thu, 30 Jan 2014 08:14:32 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: configure access category for arp
-References: <1390999696-8895-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Thu, 30 Jan 2014 10:14:06 +0200
-In-Reply-To: <1390999696-8895-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Wed, 29 Jan 2014 13:48:16 +0100")
-Message-ID: <87mwidyjht.fsf@kamboji.qca.qualcomm.com>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1W8rx9-0006rl-9C
+ for ath10k@lists.infradead.org; Thu, 30 Jan 2014 13:46:48 +0000
+Date: Thu, 30 Jan 2014 14:48:20 +0100
+From: Alexander Gordeev <agordeev@redhat.com>
+Subject: [PATCH 1/3] ath10k: Get rid of superfluous call to pci_disable_msi()
+Message-ID: <20140130134819.GA31909@dhcp-26-207.brq.redhat.com>
+References: <cover.1389904166.git.agordeev@redhat.com>
+ <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +24,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-pci@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Signed-off-by: Alexander Gordeev <agordeev@redhat.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |    2 --
+ 1 files changed, 0 insertions(+), 2 deletions(-)
 
-> ARP frames exchange does not work properly for UAPSD enabled AP.
-> ARP requests which arrives with access category 0 are processed
-> by network stack and send back with access category 0. FW changes
-> access category to 6. This is causing problems when UAPSD associated
-> STA is sleeping after has sent ARP request. Configure ARP access
-> category in FW to best effort (0) solves this problem. ARP frames
-> will be send with access category 0.
->
-> Simplify arp ac override functionality by removing redundant entry in
-> pdev param maping table. There should be only one entry in pdev param
-> map but enum has different name for different FW.
->
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-
-Thanks, applied.
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 29fd197..6525e1f 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2414,8 +2414,6 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
+ 		ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
+ 		if (ret == 0)
+ 			return 0;
+-		if (ret > 0)
+-			pci_disable_msi(ar_pci->pdev);
+ 
+ 		/* fall-through */
+ 	}
+-- 
+1.7.7.6
 
 -- 
-Kalle Valo
+Regards,
+Alexander Gordeev
+agordeev@redhat.com
 
 _______________________________________________
 ath10k mailing list
