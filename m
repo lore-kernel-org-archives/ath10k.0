@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.redhat.com ([209.132.183.28])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WAlLo-0005gx-86
- for ath10k@lists.infradead.org; Tue, 04 Feb 2014 19:08:05 +0000
-Date: Tue, 4 Feb 2014 20:09:36 +0100
-From: Alexander Gordeev <agordeev@redhat.com>
-Subject: Re: [PATCH 1/3] ath10k: Get rid of superfluous call to
- pci_disable_msi()
-Message-ID: <20140204190935.GA1430@dhcp-26-207.brq.redhat.com>
-References: <cover.1389904166.git.agordeev@redhat.com>
- <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
- <20140130134819.GA31909@dhcp-26-207.brq.redhat.com>
- <87y51qohjn.fsf@kamboji.qca.qualcomm.com>
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WAlmU-0006ua-2S
+ for ath10k@lists.infradead.org; Tue, 04 Feb 2014 19:35:38 +0000
+Message-ID: <52F140F3.3000707@candelatech.com>
+Date: Tue, 04 Feb 2014 11:35:15 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87y51qohjn.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/4] ath10k:  Add more debugging for receive errors.
+References: <1390435562-15473-1-git-send-email-greearb@candelatech.com>
+ <1390435562-15473-3-git-send-email-greearb@candelatech.com>
+ <87ppn2ognc.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87ppn2ognc.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +25,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-pci@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+Cc: ath10k@lists.infradead.org
 
-On Tue, Feb 04, 2014 at 08:32:12PM +0200, Kalle Valo wrote:
-> Alexander Gordeev <agordeev@redhat.com> writes:
+On 02/04/2014 10:51 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
 > 
-> > Signed-off-by: Alexander Gordeev <agordeev@redhat.com>
-> > ---
-> >  drivers/net/wireless/ath/ath10k/pci.c |    2 --
-> >  1 files changed, 0 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-> > index 29fd197..6525e1f 100644
-> > --- a/drivers/net/wireless/ath/ath10k/pci.c
-> > +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> > @@ -2414,8 +2414,6 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
-> >  		ret = pci_enable_msi_block(ar_pci->pdev, ar_pci->num_msi_intrs);
-> >  		if (ret == 0)
-> >  			return 0;
-> > -		if (ret > 0)
-> > -			pci_disable_msi(ar_pci->pdev);
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
 > 
-> I don't understand how this is superfluous. When I read the
-> documentation for pci_enable_msi_block() it states that if it can't
-> allocate all requests, it will return the number requests it could
-> allocate. And in that case we want to fall back other modes.
+> [...]
 > 
-> Am I missing something?
+>> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> @@ -937,6 +937,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>  			}
+>>  
+>>  			if (ath10k_htt_rx_has_decrypt_err(msdu_head)) {
+>> +				ath10k_warn("htt rx dropping due to decrypt-err\n");
+>>  				ath10k_htt_rx_free_msdu_chain(msdu_head);
+>>  				continue;
+>>  			}
+>> @@ -975,6 +976,13 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>  			info.skb     = msdu_head;
+>>  			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
+>>  			info.mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
+>> +
+>> +			if (info.fcs_err)
+>> +				ath10k_warn("htt rx has FCS err\n");
+>> +
+>> +			if (info.mic_err)
+>> +				ath10k_warn("htt rx has MIC err\n");
+>> +
+> 
+> Do we really want to print warning messages to the user when these
+> happen? I would consider these as "business as usual" in 802.11 world,
+> not a problem in driver.
 
-Yep. The documentation states 'could have been allocated', not 'could
-allocate'. IOW, MSIs are *not* enabled if a positive value returned.
-The code I changed tries to disable MSIs in such case, although it is
-not necessary, nor required. Just superfluous.
+Maybe I should make them a debug message instead of warning message?  That
+way they are only shown if the user enables debugging?
 
-HTH.
+>> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+>> @@ -259,7 +259,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+>>  	status->freq = ch->center_freq;
+>>  
+>>  	ath10k_dbg(ATH10K_DBG_DATA,
+>> -		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u\n",
+>> +		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag: 0x%x fcs-err: %i\n",
+>>  		   info->skb,
+>>  		   info->skb->len,
+>>  		   status->flag == 0 ? "legacy" : "",
+>> @@ -271,7 +271,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+>>  		   status->rate_idx,
+>>  		   status->vht_nss,
+>>  		   status->freq,
+>> -		   status->band);
+>> +		   status->band, status->flag, info->fcs_err);
+> 
+> This makes sense, but please use the style used in ath10k debug messages:
+> 
+> "... band %u flag 0x%x fcs-err %i\n"
+> 
+> And as status->flag is u32, maybe 0x%08x makes it easier to read and
+> compare?
+
+Sure, can do that.
+
+Thanks,
+Ben
 
 -- 
-Regards,
-Alexander Gordeev
-agordeev@redhat.com
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
