@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WBAUy-0003V7-7w
- for ath10k@lists.infradead.org; Wed, 05 Feb 2014 21:59:12 +0000
+ id 1WBAVG-0003Vj-Ge
+ for ath10k@lists.infradead.org; Wed, 05 Feb 2014 21:59:31 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 1/4] ath10k:  Add more details to some debug messages.
-Date: Wed,  5 Feb 2014 13:58:31 -0800
-Message-Id: <1391637514-17140-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 3/4] ath10k:  Add more debugging for receive errors.
+Date: Wed,  5 Feb 2014 13:58:33 -0800
+Message-Id: <1391637514-17140-3-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1391637514-17140-1-git-send-email-greearb@candelatech.com>
+References: <1391637514-17140-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +27,62 @@ Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
 From: Ben Greear <greearb@candelatech.com>
 
+Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c  | 3 ++-
- drivers/net/wireless/ath/ath10k/txrx.c | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 11 +++++++++++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  4 ++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 144b4d6..2c4618d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3418,7 +3418,8 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
- 		}), ATH10K_FLUSH_TIMEOUT_HZ);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index fe8bd1b..6a548a2 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -937,6 +937,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			}
  
- 	if (ret <= 0 || skip)
--		ath10k_warn("tx not flushed\n");
-+		ath10k_warn("tx not flushed, ret: %i  skip: %i  ar-state: %i\n",
-+			    ret, skip, ar->state);
+ 			if (ath10k_htt_rx_has_decrypt_err(msdu_head)) {
++				ath10k_dbg(ATH10K_DBG_HTT,
++					   "htt rx dropping due to decrypt-err\n");
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
+@@ -975,6 +977,15 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			info.skb     = msdu_head;
+ 			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
+ 			info.mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
++
++			if (info.fcs_err)
++				ath10k_dbg(ATH10K_DBG_HTT,
++					   "htt rx has FCS err\n");
++
++			if (info.mic_err)
++				ath10k_dbg(ATH10K_DBG_HTT,
++					   "htt rx has MIC err\n");
++
+ 			info.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+ 			info.signal += rx->ppdu.combined_rssi;
  
- skip:
- 	mutex_unlock(&ar->conf_mutex);
 diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 74f45fa6..e404124 100644
+index e404124..d52883a 100644
 --- a/drivers/net/wireless/ath/ath10k/txrx.c
 +++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -378,7 +378,8 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find_by_id(ar, ev->peer_id);
- 	if (!peer) {
--		ath10k_warn("unknown peer id %d\n", ev->peer_id);
-+		ath10k_warn("peer-unmap-event: unknown peer id %d\n",
-+			    ev->peer_id);
- 		goto exit;
- 	}
+@@ -259,7 +259,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 	status->freq = ch->center_freq;
+ 
+ 	ath10k_dbg(ATH10K_DBG_DATA,
+-		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u\n",
++		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
+ 		   info->skb,
+ 		   info->skb->len,
+ 		   status->flag == 0 ? "legacy" : "",
+@@ -271,7 +271,7 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		   status->rate_idx,
+ 		   status->vht_nss,
+ 		   status->freq,
+-		   status->band);
++		   status->band, status->flag, info->fcs_err);
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
+ 			info->skb->data, info->skb->len);
  
 -- 
 1.7.11.7
