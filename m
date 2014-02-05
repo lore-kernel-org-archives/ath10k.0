@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WB5h2-0001Al-EO
- for ath10k@lists.infradead.org; Wed, 05 Feb 2014 16:51:21 +0000
-Message-ID: <52F26BF1.7030105@candelatech.com>
-Date: Wed, 05 Feb 2014 08:50:57 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] ath10k: Better tx/rx debugging.
-References: <1390435562-15473-1-git-send-email-greearb@candelatech.com>
- <1390435562-15473-4-git-send-email-greearb@candelatech.com>
- <87lhxqoghd.fsf@kamboji.qca.qualcomm.com>
- <CADnKcViuR401=cmsMSAVGL04pQ5U5+Kwn5-iUjQ5HfEbbhWcxA@mail.gmail.com>
- <874n4enkbs.fsf@kamboji.qca.qualcomm.com>
- <CADnKcVi5YEgVMtpmMNWOwwqv18ayjp5oiLfOSZxQ-1QJPHzhhA@mail.gmail.com>
-In-Reply-To: <CADnKcVi5YEgVMtpmMNWOwwqv18ayjp5oiLfOSZxQ-1QJPHzhhA@mail.gmail.com>
+ id 1WBAV1-0003VW-Gk
+ for ath10k@lists.infradead.org; Wed, 05 Feb 2014 21:59:15 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2 2/4] ath10k:  Print out size of wmi-ready-event message.
+Date: Wed,  5 Feb 2014 13:58:32 -0800
+Message-Id: <1391637514-17140-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1391637514-17140-1-git-send-email-greearb@candelatech.com>
+References: <1391637514-17140-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +17,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, Ben Greear <greearb@candelatech.com>
 
-On 02/05/2014 01:10 AM, Marek Puzyniak wrote:
+From: Ben Greear <greearb@candelatech.com>
 
->>> So probably it would be better to have choice to enable this log print
->>> when someone need this information otherwise by default it should be
->>> disabled.
->>
->> Maybe a debug message is better?
-> Yes, for example with flag ATH10K_DBG_HTT.
+Show message length and expected length.  Helps debug
+firmware mismatch issues.
 
-That one is pretty spammy already..maybe I can create a new flag
-ATH10K_DBG_RX or something like that that is specifically for RX logic
-debugging?
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 7298c06..b3c5a1f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2071,11 +2071,11 @@ static int ath10k_wmi_ready_event_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	memcpy(ar->mac_addr, ev->mac_addr.addr, ETH_ALEN);
+ 
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+-		   "wmi event ready sw_version %u abi_version %u mac_addr %pM status %d\n",
++		   "wmi event ready sw_version %u abi_version %u mac_addr %pM status %d skb->len %i ev-sz %zu\n",
+ 		   __le32_to_cpu(ev->sw_version),
+ 		   __le32_to_cpu(ev->abi_version),
+ 		   ev->mac_addr.addr,
+-		   __le32_to_cpu(ev->status));
++		   __le32_to_cpu(ev->status), skb->len, sizeof(*ev));
+ 
+ 	complete(&ar->wmi.unified_ready);
+ 	return 0;
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.11.7
 
 
 _______________________________________________
