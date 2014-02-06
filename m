@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WBQlR-0002J3-J6
- for ath10k@lists.infradead.org; Thu, 06 Feb 2014 15:21:18 +0000
-Message-ID: <52F3A856.6010002@candelatech.com>
-Date: Thu, 06 Feb 2014 07:20:54 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WBTOa-0007Up-B5
+ for ath10k@lists.infradead.org; Thu, 06 Feb 2014 18:09:52 +0000
+Received: by mail-vc0-f181.google.com with SMTP id ie18so1703459vcb.26
+ for <ath10k@lists.infradead.org>; Thu, 06 Feb 2014 10:09:31 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] ath10k: Better tx/rx debugging.
-References: <1390435562-15473-1-git-send-email-greearb@candelatech.com>
- <1390435562-15473-4-git-send-email-greearb@candelatech.com>
- <87lhxqoghd.fsf@kamboji.qca.qualcomm.com>
- <CADnKcViuR401=cmsMSAVGL04pQ5U5+Kwn5-iUjQ5HfEbbhWcxA@mail.gmail.com>
- <874n4enkbs.fsf@kamboji.qca.qualcomm.com>
- <CADnKcVi5YEgVMtpmMNWOwwqv18ayjp5oiLfOSZxQ-1QJPHzhhA@mail.gmail.com>
- <52F26BF1.7030105@candelatech.com> <874n4ckbns.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <874n4ckbns.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <1391676841-11107-1-git-send-email-michal.kazior@tieto.com>
+References: <1391676841-11107-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 7 Feb 2014 02:09:30 +0800
+Message-ID: <CAEFj984TssetDfG=3FnvZhJVxsoYKba+ppoV4nV=R9psfs5B8g@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: implement sta_rc_update()
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +20,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Marek Puzyniak <marek.puzyniak@tieto.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/05/2014 10:17 PM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
+> @@ -3091,6 +3160,10 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+>                            "mac vdev %d peer create %pM (new sta) num_peers %d\n",
+>                            arvif->vdev_id, sta->addr, ar->num_peers);
 >
->> On 02/05/2014 01:10 AM, Marek Puzyniak wrote:
->>
->>>>> So probably it would be better to have choice to enable this log print
->>>>> when someone need this information otherwise by default it should be
->>>>> disabled.
->>>>
->>>> Maybe a debug message is better?
->>> Yes, for example with flag ATH10K_DBG_HTT.
->>
->> That one is pretty spammy already..maybe I can create a new flag
->> ATH10K_DBG_RX or something like that that is specifically for RX logic
->> debugging?
->
-> Yeah, that would be good. And then we can later add _TX for transmit
-> side.
+> +               memset(&arsta, 0, sizeof(*arsta));
 
-Patches I sent did not have this new bit...but I can add that next time
-I work on this code.
+Should be memset(arsta, 0, sizeof(*arsta)), right?
 
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+---
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
