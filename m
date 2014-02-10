@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x235.google.com ([2a00:1450:4013:c00::235])
+Received: from mail-ea0-x235.google.com ([2a00:1450:4013:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WCo4a-0006Y2-3q
- for ath10k@lists.infradead.org; Mon, 10 Feb 2014 10:26:45 +0000
-Received: by mail-ee0-f53.google.com with SMTP id t10so2832812eei.12
- for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 02:26:18 -0800 (PST)
-From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-Subject: [PATCH] ath10k: Set proper nss value for the peer
-Date: Mon, 10 Feb 2014 11:25:25 +0100
-Message-Id: <1392027925-8321-1-git-send-email-marek.kwaczynski@tieto.com>
+ id 1WCpkC-0001Ot-M6
+ for ath10k@lists.infradead.org; Mon, 10 Feb 2014 12:13:49 +0000
+Received: by mail-ea0-f181.google.com with SMTP id k10so737548eaj.12
+ for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 04:13:25 -0800 (PST)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: AP: handle HT station which does not have HT RX MCS
+Date: Mon, 10 Feb 2014 13:12:55 +0100
+Message-Id: <1392034375-13532-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +23,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-It was found during testing the nss calculation does not
-cover all corner cases. Station could request eq. only MCS8
-and MCS9 (nss=2 specific). Next num_rates=2 so the driver
-sets nss=(max((2+7)/8, 1))=1. Which is wrong. The in-driver
-calculation was introduced prior (commit ddcc347b70
-mac80211: fix rx_nss calculation for drivers with hw rc).
-Since it's fixed, use mac80211 provided value from now.
-End user will experience lower throuhputs than expected
-if the nss is wrongly calculated.
+This is a workaround for HT-enabled STAs which break the spec
+and have no HT capabilities RX mask (no HT RX MCS map).
 
-Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
+As per spec, in section 20.3.5 Modulation and coding scheme (MCS),
+MCS 0 through 7 are mandatory in 20MHz with 800 ns GI at all STAs.
+
+Firmware asserts if such situation occurs.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 144b4d6..e6bf2e8 100644
+index 144b4d6..162920a 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1149,7 +1149,7 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+@@ -1148,8 +1148,23 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+ 		if (ht_cap->mcs.rx_mask[i/8] & (1 << i%8))
  			arg->peer_ht_rates.rates[n++] = i;
  
- 	arg->peer_ht_rates.num_rates = n;
+-	arg->peer_ht_rates.num_rates = n;
 -	arg->peer_num_spatial_streams = max((n+7) / 8, 1);
-+	arg->peer_num_spatial_streams = sta->rx_nss;
++	/*
++	 * This is a workaround for HT-enabled STAs which break the spec
++	 * and have no HT capabilities RX mask (no HT RX MCS map).
++	 *
++	 * As per spec, in section 20.3.5 Modulation and coding scheme (MCS),
++	 * MCS 0 through 7 are mandatory in 20MHz with 800 ns GI at all STAs.
++	 *
++	 * Firmware asserts if such situation occurs.
++	 */
++	if (n == 0) {
++		arg->peer_ht_rates.num_rates = 8;
++		for (i = 0; i < arg->peer_ht_rates.num_rates; i++)
++			arg->peer_ht_rates.rates[i] = i;
++	} else {
++		arg->peer_ht_rates.num_rates = n;
++		arg->peer_num_spatial_streams = max((n+7) / 8, 1);
++	}
  
  	ath10k_dbg(ATH10K_DBG_MAC, "mac ht peer %pM mcs cnt %d nss %d\n",
  		   arg->addr,
