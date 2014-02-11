@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD8mm-0002db-Ok
- for ath10k@lists.infradead.org; Tue, 11 Feb 2014 08:33:45 +0000
-Received: by mail-ee0-f52.google.com with SMTP id e53so3440856eek.39
- for <ath10k@lists.infradead.org>; Tue, 11 Feb 2014 00:33:20 -0800 (PST)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: pass frames with invalid peer status to upper layer
-Date: Tue, 11 Feb 2014 09:32:59 +0100
-Message-Id: <1392107579-4289-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WD8vP-0002rD-Oq
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2014 08:42:40 +0000
+Received: by mail-bk0-f44.google.com with SMTP id mz12so2129883bkb.31
+ for <ath10k@lists.infradead.org>; Tue, 11 Feb 2014 00:42:16 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAEFj98554jYSL2mC4WC5jLjfdw0tjrqSD2w2=p=6pUCGzoSXEQ@mail.gmail.com>
+References: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
+ <CA+BoTQkgeByQfvNmwhwd6VH-VmvMV3jHLoh9ABuSk59A_ntfsA@mail.gmail.com>
+ <CAEFj98554jYSL2mC4WC5jLjfdw0tjrqSD2w2=p=6pUCGzoSXEQ@mail.gmail.com>
+Date: Tue, 11 Feb 2014 09:42:13 +0100
+Message-ID: <CA+BoTQkToJRyyABYFKk=JbRrLP86J_m2n9+7N2gorxCV_QUH9g@mail.gmail.com>
+Subject: Re: No Beacon Received in IBSS mode or adhoc mode
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,42 +22,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Pass frames with invalid peer status to upper layer.
-Next mac80211 will validate frames and drop if required.
-This is required to detect spurious frames and pass
-this info to user mode (detect CLASS2 CLASS3 frames from
-nonauthenticated/nonassociated stations).
-
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |    1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fe8bd1b..c7a5822 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -951,6 +951,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 
- 			if (status != HTT_RX_IND_MPDU_STATUS_OK &&
- 			    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
-+			    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
- 			    !htt->ar->monitor_enabled) {
- 				ath10k_dbg(ATH10K_DBG_HTT,
- 					   "htt rx ignoring frame w/ status %d\n",
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTEgRmVicnVhcnkgMjAxNCAwOTozMCwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0Bn
+bWFpbC5jb20+IHdyb3RlOgo+Pgo+PiBJZiB5b3UgbmVlZCBhIHF1aWNrIGhhY2sgSSBzdXNwZWN0
+IHN0YXJ0aW5nIGEgbW9uaXRvciB2ZGV2IHdvdWxkIGRvCj4+IHRoZSB0cmljay4gSSdtIG5vdCBy
+ZWFsbHkgc3VyZSBob3cgc3RhYmxlIHRoYXQgaXMgZ29pbmcgdG8gYmUgdGhvdWdoLi4KPj4KPgo+
+IEkgZGlkIGEgcXVpY2sgaGFjayBicmluZ2luZyB1cCB0aGUgbW9uaXRvciBpbnRlcmZhY2UgdXNp
+bmcKPiBhdGgxMGtfbW9uaXRvcl9jcmVhdGUgYW5kIGF0aDEwa19tb25pdG9yX3NjYW4gYnV0IG5v
+IGx1Y2sgdGhlIEZXCj4gY3Jhc2hlZC4KPgo+IFsgIDI3Ni4wNjAwMDBdIGF0aDEwazogZmlybXdh
+cmUgY3Jhc2hlZCEKPiBbICAyNzYuMDYwMDAwXSBhdGgxMGs6IGhhcmR3YXJlIG5hbWUgcWNhOTg4
+eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPiBbICAyNzYuMDcwMDAwXSBhdGgxMGs6IGZpcm13
+YXJlIHZlcnNpb246IDk5OS45OTkuMC42MzYKPiBbICAyNzYuMDgwMDAwXSBhdGgxMGs6IHRhcmdl
+dCByZWdpc3RlciBEdW1wIExvY2F0aW9uOiAweDAwNDBBQzE0Cj4gWyAgMjc2LjA4MDAwMF0gYXRo
+MTBrOiB0YXJnZXQgUmVnaXN0ZXIgRHVtcAo+IFsgIDI3Ni4wOTAwMDBdIGF0aDEwazogWzAwXTog
+MHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5QzQ1MjEgMHgwMDAwMDAwMAo+IFsgIDI3Ni4wOTAw
+MDBdIGF0aDEwazogWzA0XTogMHgwMDlDNDUyMSAweDAwMDYwNTMwIDB4MDAwMDAwMTkgMHgwMDk1
+NUEwMAo+IFsgIDI3Ni4xMDAwMDBdIGF0aDEwazogWzA4XTogMHgwMDAwMjg5OCAweDAwMDAwMDAw
+IDB4MDA0MENDOTQgMHgwMDAwMDAyMAo+IFsgIDI3Ni4xMTAwMDBdIGF0aDEwazogWzEyXTogMHgw
+MDAwMDAwMCAweDAwMDAwMDAwIDB4MDA5NTgzNjAgMHgwMDk1ODM2Qgo+IFsgIDI3Ni4xMTAwMDBd
+IGF0aDEwazogWzE2XTogMHg4MDk5MTA5MSAweDAwNDBBRDk0IDB4MDA0MzA4NTQgMHgwMDAwMDAw
+MAo+IFsgIDI3Ni4xMjAwMDBdIGF0aDEwazogWzIwXTogMHgwMDAwRkZGRiAweDAwMDAwMDAwIDB4
+MDAwMDAwNDUgMHgwMDAwMDAwMAo+IFsgIDI3Ni4xMzAwMDBdIGF0aDEwazogWzI0XTogMHg4MDlB
+MDk3OCAweDAwNDBBRDk0IDB4MDA0MzkzMDQgMHgwMEEyNjAwOQo+IFsgIDI3Ni4xMzAwMDBdIGF0
+aDEwazogWzI4XTogMHg4MDlBRDFBMiAweDAwNDBBREU0IDB4MDA0MzkzMDQgMHgwMDQzRjhCQwo+
+IFsgIDI3Ni4xNDAwMDBdIGF0aDEwazogWzMyXTogMHgwMDAwMDAwMSAweDAwMDAwMDA1IDB4MDAw
+MDAwMDAgMHgwMDQzMjVDQwo+IFsgIDI3Ni4xNTAwMDBdIGF0aDEwazogWzM2XTogMHgwMDAwMDAw
+MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgIDI3Ni4xNTAwMDBdIGF0aDEw
+azogWzQwXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMEUgMHgwMDAwMDAwMAo+IFsg
+IDI3Ni4xNjAwMDBdIGF0aDEwazogWzQ0XTogMHgwMDQzOUMwMCAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDQwMDAwMAo+IFsgIDI3Ni4xNjAwMDBdIGF0aDEwazogWzQ4XTogMHg4MDlBRTBCNCAw
+eDAwNDBBRTA0IDB4MDA0MDAwMDAgMHgwMDQzRjhCQwo+IFsgIDI3Ni4xNzAwMDBdIGF0aDEwazog
+WzUyXTogMHgwMDAwMDAwMSAweDAwMDAwMDAwIDB4MDA0MjMxRjAgMHgwMDQwMDAwMAo+IFsgIDI3
+Ni4xODAwMDBdIGF0aDEwazogWzU2XTogMHg4MDlBRTE3RSAweDAwNDBBRTQ0IDB4MDA0MEZFNkMg
+MHgwMDQwRDMxMAo+IFsgIDI3Ni4yNzAwMDBdIGllZWU4MDIxMSBwaHkwOiBIYXJkd2FyZSByZXN0
+YXJ0IHdhcyByZXF1ZXN0ZWQKCkJlIGF3YXJlIHRoYXQgbW9uaXRvciB2ZGV2IGlzIHVuc3RhYmxl
+IGluIDYzNiBhbmQgaXQgY2Fubm90IHJ1bgpzdGFuZGFsb25lLiBNb25pdG9yIHZkZXYgbXVzdCBi
+ZSBydW4gYWxvbmdzaWRlIG90aGVyIHZkZXYuCgoKPiBBbHNvLCBtb25pdG9yIG1vZGUgaXMgbm90
+IGEgZ29vZCBpZGVhLCBjYXVzZSB3aGF0IHdlIG5lZWQgaXMgYmVhY29uCj4gZnJhbWUgZ2VuZXJh
+dGVkIGJ5IG90aGVycy4KCldlbGwsIHRoZW9yZXRpY2FsbHkgaXQgc2hvdWxkIHdvcmsgYXMgbW9u
+aXRvciB2ZGV2IGRpc2FibGVzIHJ4IGZpbHRlcnMuCgoKPiBUaGUgb25seSB3YXkgdGhhdCBJIGNh
+biBnZXQgdGhlIElCU1MgYmVhY29uIGdlbmVyYXRlZCBieSBhbm90aGVyIG5vZGUKPiBpcyBieSB0
+cmlnZ2VyaW5nIHRoZSAiaXcgd2xhbjAgc2NhbiIuIEJ1dCB0aGVuLCBpdCBtYWtlcyBubyBzZW5z
+ZQo+IHNpbmNlIHdlIG5lZWQgdG8gdGhhdCB3aGVuZXZlciBhIHN0YXRpb24gam9pbiB0aGUgSUJT
+Uy4KCkhtbSwgdGhlbiB5b3UgY291bGQgcHJvYmFibHkgdHJ5IHRvIGhhY2sgYXJvdW5kIGFuZCBj
+cmVhdGUgYSBzb3J0IG9mIGEKYmFja2dyb3VuZCBzY2FuIHRoYXQgbGFzdHMgZm9yZXZlci4gRmly
+bXdhcmUgaXMgc3VwcG9zZWRseSBhYmxlIHRvCmhhbmRsZSBjb25jdXJyZW50IHNjYW5zLiBZb3Un
+bGwgcHJvYmFibHkgbmVlZCB0byB0d2VhawphdGgxMGtfd21pX2V2ZW50X3NjYW4oKSBmb3IgdGhh
+dC4gYXRoMTBrIHVzZXMgc2NhbiBmb3Igcm9jIHNvIGl0IG1pZ2h0CmFjdHVhbGx5IHdvcmsuCgoK
+PiBTbywgaXMgdGhlcmUgYW55IHdheSB0byB0dXJuIG9mIHRoZSBiZWFjb24gZmlsdGVyaW5nIGlu
+IElCU1MgbW9kZSBmb3IgdGhlIEZXPwoKVW5mb3J0dW5hdGVseSBJIGRvbid0IGtub3cgYW55IGV4
+Y2VwdCB0aGUgaGFja3MgSSd2ZSBtZW50aW9uZWQgYWxyZWFkeS4KCgpNaWNoYcWCCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
