@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
+Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD8kK-0002Yd-NA
- for ath10k@lists.infradead.org; Tue, 11 Feb 2014 08:31:13 +0000
-Received: by mail-vc0-f176.google.com with SMTP id la4so5652935vcb.35
- for <ath10k@lists.infradead.org>; Tue, 11 Feb 2014 00:30:49 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkgeByQfvNmwhwd6VH-VmvMV3jHLoh9ABuSk59A_ntfsA@mail.gmail.com>
-References: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
- <CA+BoTQkgeByQfvNmwhwd6VH-VmvMV3jHLoh9ABuSk59A_ntfsA@mail.gmail.com>
-Date: Tue, 11 Feb 2014 16:30:49 +0800
-Message-ID: <CAEFj98554jYSL2mC4WC5jLjfdw0tjrqSD2w2=p=6pUCGzoSXEQ@mail.gmail.com>
-Subject: Re: No Beacon Received in IBSS mode or adhoc mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ id 1WD8mm-0002db-Ok
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2014 08:33:45 +0000
+Received: by mail-ee0-f52.google.com with SMTP id e53so3440856eek.39
+ for <ath10k@lists.infradead.org>; Tue, 11 Feb 2014 00:33:20 -0800 (PST)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: pass frames with invalid peer status to upper layer
+Date: Tue, 11 Feb 2014 09:32:59 +0100
+Message-Id: <1392107579-4289-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +17,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
->
-> If you need a quick hack I suspect starting a monitor vdev would do
-> the trick. I'm not really sure how stable that is going to be though..
->
+Pass frames with invalid peer status to upper layer.
+Next mac80211 will validate frames and drop if required.
+This is required to detect spurious frames and pass
+this info to user mode (detect CLASS2 CLASS3 frames from
+nonauthenticated/nonassociated stations).
 
-I did a quick hack bringing up the monitor interface using
-ath10k_monitor_create and ath10k_monitor_scan but no luck the FW
-crashed.
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-[  276.060000] ath10k: firmware crashed!
-[  276.060000] ath10k: hardware name qca988x hw2.0 version 0x4100016c
-[  276.070000] ath10k: firmware version: 999.999.0.636
-[  276.080000] ath10k: target register Dump Location: 0x0040AC14
-[  276.080000] ath10k: target Register Dump
-[  276.090000] ath10k: [00]: 0x4100016C 0x00000000 0x009C4521 0x00000000
-[  276.090000] ath10k: [04]: 0x009C4521 0x00060530 0x00000019 0x00955A00
-[  276.100000] ath10k: [08]: 0x00002898 0x00000000 0x0040CC94 0x00000020
-[  276.110000] ath10k: [12]: 0x00000000 0x00000000 0x00958360 0x0095836B
-[  276.110000] ath10k: [16]: 0x80991091 0x0040AD94 0x00430854 0x00000000
-[  276.120000] ath10k: [20]: 0x0000FFFF 0x00000000 0x00000045 0x00000000
-[  276.130000] ath10k: [24]: 0x809A0978 0x0040AD94 0x00439304 0x00A26009
-[  276.130000] ath10k: [28]: 0x809AD1A2 0x0040ADE4 0x00439304 0x0043F8BC
-[  276.140000] ath10k: [32]: 0x00000001 0x00000005 0x00000000 0x004325CC
-[  276.150000] ath10k: [36]: 0x00000000 0x00000000 0x00000000 0x00000000
-[  276.150000] ath10k: [40]: 0x00000000 0x00000000 0x0000000E 0x00000000
-[  276.160000] ath10k: [44]: 0x00439C00 0x00000000 0x00000000 0x00400000
-[  276.160000] ath10k: [48]: 0x809AE0B4 0x0040AE04 0x00400000 0x0043F8BC
-[  276.170000] ath10k: [52]: 0x00000001 0x00000000 0x004231F0 0x00400000
-[  276.180000] ath10k: [56]: 0x809AE17E 0x0040AE44 0x0040FE6C 0x0040D310
-[  276.270000] ieee80211 phy0: Hardware restart was requested
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index fe8bd1b..c7a5822 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -951,6 +951,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 
+ 			if (status != HTT_RX_IND_MPDU_STATUS_OK &&
+ 			    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
++			    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
+ 			    !htt->ar->monitor_enabled) {
+ 				ath10k_dbg(ATH10K_DBG_HTT,
+ 					   "htt rx ignoring frame w/ status %d\n",
+-- 
+1.7.9.5
 
-Also, monitor mode is not a good idea, cause what we need is beacon
-frame generated by others.
-
-The only way that I can get the IBSS beacon generated by another node
-is by triggering the "iw wlan0 scan". But then, it makes no sense
-since we need to that whenever a station join the IBSS.
-
-So, is there any way to turn of the beacon filtering in IBSS mode for the FW?
-
-----
-Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
