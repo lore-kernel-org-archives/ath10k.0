@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22d.google.com ([2a00:1450:4008:c01::22d])
+Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD6vS-0008HP-V0
- for ath10k@lists.infradead.org; Tue, 11 Feb 2014 06:34:35 +0000
-Received: by mail-bk0-f45.google.com with SMTP id mz11so1681410bkb.32
- for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 22:34:10 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
-References: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
-Date: Tue, 11 Feb 2014 07:34:10 +0100
-Message-ID: <CA+BoTQkgeByQfvNmwhwd6VH-VmvMV3jHLoh9ABuSk59A_ntfsA@mail.gmail.com>
-Subject: Re: No Beacon Received in IBSS mode or adhoc mode
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WD80i-0001Wk-Bi
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2014 07:44:04 +0000
+Received: by mail-ee0-f46.google.com with SMTP id c13so3385846eek.19
+ for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 23:43:42 -0800 (PST)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: remove excessive rx msdu len check
+Date: Tue, 11 Feb 2014 08:37:06 +0100
+Message-Id: <1392104226-12096-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +17,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gMTEgRmVicnVhcnkgMjAxNCAwNzowOSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0Bn
-bWFpbC5jb20+IHdyb3RlOgo+IEhpLCBLYWxsZQo+Cj4gSSBoYXZlIHRvb2sgYW5vdGhlciBsb29r
-IG9uIHRoZSBJQlNTIG9yIGFkaG9jIG1vZGUgaW4gYXRoMTBrLgo+Cj4gSW4gSUJTUyBvciBhZGhv
-YyBtb2RlLCB0aGUgYmVhY29uIGdlbmVyYXRlZCBieSBvdGhlcnMgaXMgZmlsdGVyZWQgYnkKPiB0
-aGUgRlcgKDk5OS45OTkuMC42MzYpIGFuZCB0aHVzIG5vdCBwdXNoZWQgdXAgdG8gbWFjODAyMTEu
-IEhvd2V2ZXIsIGluCj4gQVAgbW9kZSwgdGhlIGJlYWNvbiBpcyBub3QgZmlsdGVyZWQgYW5kIGNh
-biByZWFjaCBtYWM4MDIxMS4KPgo+IElzIHRoYXQgcG9zc2libGUgdG8gYWxsb3cgYmVhY29uIHRv
-IGJlIGFibGUgdG8gcHVzaCB1cCB0byBtYWM4MDIxMQo+IHdpdGhvdXQgRlcgZmlsdGVyaW5nIGlu
-IElCU1MgbW9kZT8KCklmIHlvdSBuZWVkIGEgcXVpY2sgaGFjayBJIHN1c3BlY3Qgc3RhcnRpbmcg
-YSBtb25pdG9yIHZkZXYgd291bGQgZG8KdGhlIHRyaWNrLiBJJ20gbm90IHJlYWxseSBzdXJlIGhv
-dyBzdGFibGUgdGhhdCBpcyBnb2luZyB0byBiZSB0aG91Z2guLgoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+This throw a lot of pointless warnings in case of DFS (radar
+detection) and PHYERR events from firmware, when firmware may
+actually insert more data, than we assume.
+
+Besides of being noisy this debug does not protect or check
+anything usefull currently. It was introduced long time ago
+while debugging aggregations. So just removing it.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index fe8bd1b..f57f5cf 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -430,12 +430,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 			msdu_chaining = 1;
+ 		}
+ 
+-		if (msdu_len > 0) {
+-			/* This may suggest FW bug? */
+-			ath10k_warn("htt rx msdu len not consumed (%d)\n",
+-				    msdu_len);
+-		}
+-
+ 		last_msdu = __le32_to_cpu(rx_desc->msdu_end.info0) &
+ 				RX_MSDU_END_INFO0_LAST_MSDU;
+ 
+-- 
+1.7.10
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
