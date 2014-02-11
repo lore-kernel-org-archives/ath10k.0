@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x22b.google.com ([2a00:1450:4008:c01::22b])
+Received: from mail-bk0-x22d.google.com ([2a00:1450:4008:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WD6fb-0007qW-BD
- for ath10k@lists.infradead.org; Tue, 11 Feb 2014 06:18:12 +0000
-Received: by mail-bk0-f43.google.com with SMTP id mx11so2094103bkb.16
- for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 22:17:47 -0800 (PST)
+ id 1WD6vS-0008HP-V0
+ for ath10k@lists.infradead.org; Tue, 11 Feb 2014 06:34:35 +0000
+Received: by mail-bk0-f45.google.com with SMTP id mz11so1681410bkb.32
+ for <ath10k@lists.infradead.org>; Mon, 10 Feb 2014 22:34:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1392052405-15337-1-git-send-email-marek.puzyniak@tieto.com>
-References: <1392052405-15337-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Tue, 11 Feb 2014 07:17:45 +0100
-Message-ID: <CA+BoTQ=q-940AsMfneU5SP8Ke1RxEZE12rrm4Z+KBaTBjrW64w@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: change simulate_fw_crash to work with 10.1
- firmware
+In-Reply-To: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
+References: <CAEFj984-eD0e8Uy+XGPPo-USp+N6=4-JMiWy9hkNuumhhjPpcQ@mail.gmail.com>
+Date: Tue, 11 Feb 2014 07:34:10 +0100
+Message-ID: <CA+BoTQkgeByQfvNmwhwd6VH-VmvMV3jHLoh9ABuSk59A_ntfsA@mail.gmail.com>
+Subject: Re: No Beacon Received in IBSS mode or adhoc mode
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +24,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAgRmVicnVhcnkgMjAxNCAxODoxMywgTWFyZWsgUHV6eW5pYWsgPG1hcmVrLnB1enluaWFr
-QHRpZXRvLmNvbT4gd3JvdGU6Cj4gV21pIGNvbW1hbmQgV01JX0ZPUkNFX0ZXX0hBTkdfQ01ESUQg
-aXMgbm90IHN1cHBvcnRlZAo+IGluIGZpcm13YXJlIDEwLjEuIEluIG9yZGVyIHRvIGhhdmUgZmly
-bXdhcmUgY3Jhc2ggc2ltdWxhdGlvbgo+IGZ1bmN0aW9uYWxpdHkgYWxzbyBpbiBmaXJtd2FyZSAx
-MC4xIGRyaXZlciBjYW4gZm9yY2UgZmlybXdhcmUKPiBjcmFzaCBieSBwZXJmb3JtaW5nIG5vdCBh
-bGxvd2VkIG9wZXJhdGlvbi4gRHJpdmVyIGNhbiBkZWxpYmVyYXRlbHkKPiBjcmFzaCBmaXJtd2Fy
-ZSB3aGVuIHNldHRpbmcgdmRldiBwYXJhbSBmb3IgdmRldiBpZCBvdXQgb2YgcmFuZ2UuCj4KPiBD
-b21tYW5kIHRvIHRyaWdnZXIgZmlybXdhcmUgY3Jhc2g6Cj4gZWNobyAiY3Jhc2giID4gL3N5cy9r
-ZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeVgvYXRoMTBrL3NpbXVsYXRlX2Z3X2NyYXNoCj4KPiBT
-aWduZWQtb2ZmLWJ5OiBNYXJlayBQdXp5bmlhayA8bWFyZWsucHV6eW5pYWtAdGlldG8uY29tPgo+
-IC0tLQoKVGhlICdmdyBoYW5nIGFzc2VydCcgY3Jhc2ggY2FuIGJlIHJlY292ZXJlZCB3aXRoIGEg
-d2FybSByZXNldCBidXQgYQpyZWFsIGNyYXNoIGNhbid0LiBUaHVzLCBJIHRoaW5rIHRoZSB0d28g
-Y3Jhc2ggbWV0aG9kcyBzaG91bGQgYmUKZGlzdGluZ3Vpc2hhYmxlIGJ5IGhhdmluZyBlaXRoZXIg
-dHdvIHNlcGFyYXRlIGRlYnVnZnMgZmlsZXMgb3IgdHdvCnNlcGFyYXRlIHRyaWdnZXIga2V5d29y
-ZHMuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+T24gMTEgRmVicnVhcnkgMjAxNCAwNzowOSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0Bn
+bWFpbC5jb20+IHdyb3RlOgo+IEhpLCBLYWxsZQo+Cj4gSSBoYXZlIHRvb2sgYW5vdGhlciBsb29r
+IG9uIHRoZSBJQlNTIG9yIGFkaG9jIG1vZGUgaW4gYXRoMTBrLgo+Cj4gSW4gSUJTUyBvciBhZGhv
+YyBtb2RlLCB0aGUgYmVhY29uIGdlbmVyYXRlZCBieSBvdGhlcnMgaXMgZmlsdGVyZWQgYnkKPiB0
+aGUgRlcgKDk5OS45OTkuMC42MzYpIGFuZCB0aHVzIG5vdCBwdXNoZWQgdXAgdG8gbWFjODAyMTEu
+IEhvd2V2ZXIsIGluCj4gQVAgbW9kZSwgdGhlIGJlYWNvbiBpcyBub3QgZmlsdGVyZWQgYW5kIGNh
+biByZWFjaCBtYWM4MDIxMS4KPgo+IElzIHRoYXQgcG9zc2libGUgdG8gYWxsb3cgYmVhY29uIHRv
+IGJlIGFibGUgdG8gcHVzaCB1cCB0byBtYWM4MDIxMQo+IHdpdGhvdXQgRlcgZmlsdGVyaW5nIGlu
+IElCU1MgbW9kZT8KCklmIHlvdSBuZWVkIGEgcXVpY2sgaGFjayBJIHN1c3BlY3Qgc3RhcnRpbmcg
+YSBtb25pdG9yIHZkZXYgd291bGQgZG8KdGhlIHRyaWNrLiBJJ20gbm90IHJlYWxseSBzdXJlIGhv
+dyBzdGFibGUgdGhhdCBpcyBnb2luZyB0byBiZSB0aG91Z2guLgoKCk1pY2hhxYIKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
