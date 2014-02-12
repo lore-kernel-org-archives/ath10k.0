@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pb0-x230.google.com ([2607:f8b0:400e:c01::230])
+Received: from mail-pb0-x235.google.com ([2607:f8b0:400e:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDWGV-0002tx-CE
- for ath10k@lists.infradead.org; Wed, 12 Feb 2014 09:38:00 +0000
-Received: by mail-pb0-f48.google.com with SMTP id rr13so8977576pbb.21
- for <ath10k@lists.infradead.org>; Wed, 12 Feb 2014 01:37:37 -0800 (PST)
+ id 1WDWGs-0002uo-Qr
+ for ath10k@lists.infradead.org; Wed, 12 Feb 2014 09:38:24 +0000
+Received: by mail-pb0-f53.google.com with SMTP id md12so8948365pbc.26
+ for <ath10k@lists.infradead.org>; Wed, 12 Feb 2014 01:37:59 -0800 (PST)
 From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Subject: [PATCH] ath10k: implement drv_get_tsf for ibss merging
-Date: Wed, 12 Feb 2014 17:37:24 +0800
-Message-Id: <1392197844-1223-1-git-send-email-yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: set the mactime of ieee80211_rx_status
+Date: Wed, 12 Feb 2014 17:37:46 +0800
+Message-Id: <1392197866-1261-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +25,58 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org
 Cc: kvalo@qca.qualcomm.com, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, ath10k@lists.infradead.org
 
-Implement the get TSF by simply returning 0 so that IBSS
-merging is happening. Otherwise, IBSS nodes that have similar
-SSID naming won't merge. This is simply fooling the mac80211
-that the TSF in the received beacon is higher than the local TSF.
+Retrieve the mactime of ieee80211_rx_status based on received
+data frame. The value is obtained from the htt_rx_indication_ppdu
+structure and only available in 32-bit.
 
 Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt.h    |    1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    1 +
+ drivers/net/wireless/ath/ath10k/txrx.c   |    6 ++++++
+ 3 files changed, 8 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index afa1226..d62d39e 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4049,6 +4049,21 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
- 	ieee80211_queue_work(hw, &arsta->update_wk);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index b93ae35..bf6b415 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1181,6 +1181,7 @@ struct htt_rx_info {
+ 		u32 info1;
+ 		u32 info2;
+ 	} rate;
++	u32 tsf;
+ 	bool fcs_err;
+ 	bool amsdu_more;
+ 	bool mic_err;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 820c8ba..4ec2b5d 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -989,6 +989,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			info.rate.info0 = rx->ppdu.info0;
+ 			info.rate.info1 = __le32_to_cpu(rx->ppdu.info1);
+ 			info.rate.info2 = __le32_to_cpu(rx->ppdu.info2);
++			info.tsf = __le32_to_cpu(rx->ppdu.tsf);
  
-+static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
-+{
-+	struct ath10k *ar = hw->priv;
-+	u64 tsf;
+ 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index b11e478..4713bdb 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -258,6 +258,12 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 	status->band = ch->band;
+ 	status->freq = ch->center_freq;
+ 
++	if (info->rate.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
++		/* TSF available only in 32-bit */
++		status->mactime = info->tsf & 0xffffffff;
++		status->flag |= RX_FLAG_MACTIME_END;
++	}
 +
-+	mutex_lock(&ar->conf_mutex);
-+	/* FIXME: Return 0 for time being. Need to figure out whether FW has
-+	 * the API to fetch 64-bit TSF
-+	 */
-+	tsf = 0;
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return tsf;
-+}
-+
- static const struct ieee80211_ops ath10k_ops = {
- 	.tx				= ath10k_tx,
- 	.start				= ath10k_start,
-@@ -4074,6 +4089,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
- 	.channel_switch_beacon		= ath10k_channel_switch_beacon,
- 	.sta_rc_update			= ath10k_sta_rc_update,
-+	.get_tsf			= ath10k_get_tsf,
- #ifdef CONFIG_PM
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
+ 	ath10k_dbg(ATH10K_DBG_DATA,
+ 		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
+ 		   info->skb,
 -- 
 1.7.9.5
 
