@@ -1,14 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pb0-x235.google.com ([2607:f8b0:400e:c01::235])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDWGs-0002uo-Qr
- for ath10k@lists.infradead.org; Wed, 12 Feb 2014 09:38:24 +0000
-Received: by mail-pb0-f53.google.com with SMTP id md12so8948365pbc.26
- for <ath10k@lists.infradead.org>; Wed, 12 Feb 2014 01:37:59 -0800 (PST)
-From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Subject: [PATCH] ath10k: set the mactime of ieee80211_rx_status
-Date: Wed, 12 Feb 2014 17:37:46 +0800
-Message-Id: <1392197866-1261-1-git-send-email-yeohchunyeow@gmail.com>
+Received: from mx1.redhat.com ([209.132.183.28])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WDZzU-0003EG-Ck
+ for ath10k@lists.infradead.org; Wed, 12 Feb 2014 13:36:41 +0000
+Date: Wed, 12 Feb 2014 14:38:17 +0100
+From: Alexander Gordeev <agordeev@redhat.com>
+Subject: Re: [PATCH 1/3] ath10k: Get rid of superfluous call to
+ pci_disable_msi()
+Message-ID: <20140212133816.GB3147@dhcp-26-207.brq.redhat.com>
+References: <cover.1389904166.git.agordeev@redhat.com>
+ <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
+ <20140130134819.GA31909@dhcp-26-207.brq.redhat.com>
+ <87y51qohjn.fsf@kamboji.qca.qualcomm.com>
+ <20140204190935.GA1430@dhcp-26-207.brq.redhat.com>
+ <8761oum0l3.fsf@kamboji.qca.qualcomm.com>
+ <20140205085047.GA27820@dhcp-26-207.brq.redhat.com>
+ <871tzilz1u.fsf@kamboji.qca.qualcomm.com>
+ <20140212003143.GD21057@google.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20140212003143.GD21057@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,69 +28,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: kvalo@qca.qualcomm.com, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, ath10k@lists.infradead.org
+To: Bjorn Helgaas <bhelgaas@google.com>
+Cc: linux-pci@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Retrieve the mactime of ieee80211_rx_status based on received
-data frame. The value is obtained from the htt_rx_indication_ppdu
-structure and only available in 32-bit.
+On Tue, Feb 11, 2014 at 05:31:43PM -0700, Bjorn Helgaas wrote:
+> I haven't put these in my branch, so you can take them.
+> 
+> Alexander has a whole batch of network driver updates that I think David
+> Miller is going to apply; would it make sense to include these in that
+> batch?
+> 
+> There's also the wil6210 patch for
+> drivers/net/wireless/ath/wil6210/pcie_bus.c, which seems like it maybe
+> could be in that batch, too.
 
-Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
----
- drivers/net/wireless/ath/ath10k/htt.h    |    1 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |    1 +
- drivers/net/wireless/ath/ath10k/txrx.c   |    6 ++++++
- 3 files changed, 8 insertions(+)
+Well, as this series is small I thought it could quickly go thru your
+tree. But since ipr had conflicts, there is no point routing all patches
+altogether, so up to you guys. The wil6210 patch is already in your pci/msi
+branch though.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index b93ae35..bf6b415 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1181,6 +1181,7 @@ struct htt_rx_info {
- 		u32 info1;
- 		u32 info2;
- 	} rate;
-+	u32 tsf;
- 	bool fcs_err;
- 	bool amsdu_more;
- 	bool mic_err;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 820c8ba..4ec2b5d 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -989,6 +989,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 			info.rate.info0 = rx->ppdu.info0;
- 			info.rate.info1 = __le32_to_cpu(rx->ppdu.info1);
- 			info.rate.info2 = __le32_to_cpu(rx->ppdu.info2);
-+			info.tsf = __le32_to_cpu(rx->ppdu.tsf);
- 
- 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index b11e478..4713bdb 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -258,6 +258,12 @@ void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 	status->band = ch->band;
- 	status->freq = ch->center_freq;
- 
-+	if (info->rate.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
-+		/* TSF available only in 32-bit */
-+		status->mactime = info->tsf & 0xffffffff;
-+		status->flag |= RX_FLAG_MACTIME_END;
-+	}
-+
- 	ath10k_dbg(ATH10K_DBG_DATA,
- 		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
- 		   info->skb,
+> Bjorn
+
 -- 
-1.7.9.5
-
+Regards,
+Alexander Gordeev
+agordeev@redhat.com
 
 _______________________________________________
 ath10k mailing list
