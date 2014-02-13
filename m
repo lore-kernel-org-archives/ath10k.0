@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDt2v-0000MZ-O2
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 09:57:30 +0000
-Subject: [PATCH 3/3] ath10k: release conf_mutex if vdev_start() fails
+ id 1WDtFN-0000vB-0M
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2014 10:10:21 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 13 Feb 2014 11:57:05 +0200
-Message-ID: <20140213095704.13999.57028.stgit@potku.adurom.net>
-In-Reply-To: <20140213095652.13999.63855.stgit@potku.adurom.net>
-References: <20140213095652.13999.63855.stgit@potku.adurom.net>
+Subject: Re: ath10k crash on startup, related to ath10k_ce_completed_recv_next?
+References: <52FC2ABF.5010300@candelatech.com>
+Date: Thu, 13 Feb 2014 12:09:54 +0200
+In-Reply-To: <52FC2ABF.5010300@candelatech.com> (Ben Greear's message of "Wed, 
+ 12 Feb 2014 18:15:27 -0800")
+Message-ID: <87r4779vd9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,43 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-I modified Michal's commit c930f744bdb0 ("ath10k: implement channel switching") to return
-when vdev_start() fails, but forgot to release conf_mutex.
+Ben Greear <greearb@candelatech.com> writes:
 
-Found by coccinelle:
+> I saw the crash below on startup.  My firmware is put back together
+> again and mostly working, so not sure it is related to overly
+> broken firmware.
+>
+> I have a few patches to ath10k, but mostly debugging code
+> that should not affect the logic below.
 
->> drivers/net/wireless/ath/ath10k/mac.c:2745:5-11: preceding lock on line 2663
+When you have your own changes it pretty difficult to start debugging
+crashes like this, as your private changes can break something. Can you
+see these crashes with the upstream version?
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a57dc20..5d3c758 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2770,7 +2770,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 				if (ret) {
- 					ath10k_warn("failed to start vdev: %d\n",
- 						    ret);
--					return;
-+					goto exit;
- 				}
- 
- 				arvif->is_started = true;
-@@ -2851,6 +2851,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 			ath10k_bss_assoc(hw, vif, info);
- 	}
- 
-+exit:
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
