@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-bk0-x232.google.com ([2a00:1450:4008:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDxZV-0001JP-Cw
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 14:47:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: implement sta_rc_update()
-References: <1391676841-11107-1-git-send-email-michal.kazior@tieto.com>
- <1392042915-11648-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 13 Feb 2014 16:46:46 +0200
-In-Reply-To: <1392042915-11648-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 10 Feb 2014 15:35:15 +0100")
-Message-ID: <8738jn9ijt.fsf@kamboji.qca.qualcomm.com>
+ id 1WDxZt-0001Ku-7J
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2014 14:47:50 +0000
+Received: by mail-bk0-f50.google.com with SMTP id w16so3150160bkz.9
+ for <ath10k@lists.infradead.org>; Thu, 13 Feb 2014 06:47:21 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <87eh379jcm.fsf@kamboji.qca.qualcomm.com>
+References: <1391673591-8907-1-git-send-email-michal.kazior@tieto.com>
+ <87eh379jcm.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 13 Feb 2014 15:47:21 +0100
+Message-ID: <CA+BoTQnC3uVQguO8U+nP9Q7mLypZ77hVBaiS-tqxSMBh6Ph4xQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix SMPS support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,99 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> This allows dynamic changes of bandwidth/nss/smps,
-> e.g. via ht/vht operation mode change
-> notification.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-[...]
-
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -228,6 +228,17 @@ struct ath10k_peer {
->  	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
->  };
->  
-> +struct ath10k_sta {
-> +	struct ath10k_vif *arvif;
-> +
-> +	u32 changed; /* IEEE80211_RC_* */
-> +	u32 bw;
-> +	u32 nss;
-> +	u32 smps;
-> +
-> +	struct work_struct update_wk;
-> +};
-
-Apparently this structure is protected with data_lock, but it would be
-good to document that in the code to make it clear.
-
-> +static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
-> +				 struct ieee80211_vif *vif,
-> +				 struct ieee80211_sta *sta,
-> +				 u32 changed)
-> +{
-> +	struct ath10k *ar = hw->priv;
-> +	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-> +	u32 bw, smps;
-> +
-> +	spin_lock_bh(&ar->data_lock);
-> +
-> +	if (changed & IEEE80211_RC_BW_CHANGED) {
-> +		bw = WMI_PEER_CHWIDTH_20MHZ;
-> +
-> +		switch (sta->bandwidth) {
-> +		case IEEE80211_STA_RX_BW_20:
-> +			bw = WMI_PEER_CHWIDTH_20MHZ;
-> +			break;
-> +		case IEEE80211_STA_RX_BW_40:
-> +			bw = WMI_PEER_CHWIDTH_40MHZ;
-> +			break;
-> +		case IEEE80211_STA_RX_BW_80:
-> +			bw = WMI_PEER_CHWIDTH_80MHZ;
-> +			break;
-> +		case IEEE80211_STA_RX_BW_160:
-> +			ath10k_warn("unsupported STA BW: %d\n", sta->bandwidth);
-> +			bw = WMI_PEER_CHWIDTH_20MHZ;
-> +			break;
-
-I think it would be also useful to print STA's address in the warning.
-
-> +	if (changed & IEEE80211_RC_SMPS_CHANGED) {
-> +		smps = WMI_PEER_SMPS_PS_NONE;
-> +
-> +		switch (sta->smps_mode) {
-> +		case IEEE80211_SMPS_AUTOMATIC:
-> +		case IEEE80211_SMPS_OFF:
-> +			smps = WMI_PEER_SMPS_PS_NONE;
-> +			break;
-> +		case IEEE80211_SMPS_STATIC:
-> +			smps = WMI_PEER_SMPS_STATIC;
-> +			break;
-> +		case IEEE80211_SMPS_DYNAMIC:
-> +			smps = WMI_PEER_SMPS_DYNAMIC;
-> +			break;
-> +		case IEEE80211_SMPS_NUM_MODES:
-> +			ath10k_warn("invalid smps mode: %d\n", sta->smps_mode);
-> +			smps = WMI_PEER_SMPS_PS_NONE;
-> +			break;
-
-Maybe here as well?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgRmVicnVhcnkgMjAxNCAxNToyOSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPgo+PiBGaXJtd2FyZSBpZ25vcmVzIFNNUFMgZmxhZ3MgaW4gcGVlciBhc3NvYyBjb21t
+YW5kLgo+Pgo+PiBGb3IgU01QUyB0byB3b3JrIGl0IGlzIG5lY2Vzc2FyeSB0byBzZXQgcGVlcgo+
+PiBwYXJhbWV0ZXIgYWZ0ZXIgcGVlciBhc3NvYyBjb21tYW5kIHNvIHRoYXQgdHgKPj4gY2hhaW5t
+YXNrIGlzIHNldHVwIHByb3Blcmx5Lgo+Pgo+PiBUaGlzIHNob3VsZCBmaXggcGFja2V0IGxvc3Mg
+YW5kIGltcHJvdmUgdGhyb3VnaHB1dAo+PiB3aXRoIHN0YXRpb25zIHRoYXQgaGF2ZSBTTVBTIGVu
+YWJsZWQgdXBvbgo+PiBhc3NvY2lhdGlvbi4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEth
+emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBbLi4uXQo+Cj4+ICtzdGF0aWMgY29u
+c3QgdTMyIGF0aDEwa19zbXBzX21hcFtdID0gewo+PiArICAgICBbV0xBTl9IVF9DQVBfU01fUFNf
+U1RBVElDXSA9IFdNSV9QRUVSX1NNUFNfU1RBVElDLAo+PiArICAgICBbV0xBTl9IVF9DQVBfU01f
+UFNfRFlOQU1JQ10gPSBXTUlfUEVFUl9TTVBTX0RZTkFNSUMsCj4+ICsgICAgIFtXTEFOX0hUX0NB
+UF9TTV9QU19JTlZBTElEXSA9IFdNSV9QRUVSX1NNUFNfUFNfTk9ORSwKPj4gKyAgICAgW1dMQU5f
+SFRfQ0FQX1NNX1BTX0RJU0FCTEVEXSA9IFdNSV9QRUVSX1NNUFNfUFNfTk9ORSwKPj4gK307Cj4+
+ICsKPj4gK3N0YXRpYyBpbnQgYXRoMTBrX3NldHVwX3BlZXJfc21wcyhzdHJ1Y3QgYXRoMTBrICph
+ciwgc3RydWN0IGF0aDEwa192aWYgKmFydmlmLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIGNvbnN0IHU4ICphZGRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGNvbnN0IHN0cnVjdCBpZWVlODAyMTFfc3RhX2h0X2NhcCAqaHRfY2FwKQo+PiArewo+PiArICAg
+ICBpbnQgc21wczsKPj4gKwo+PiArICAgICBpZiAoIWh0X2NhcC0+aHRfc3VwcG9ydGVkKQo+PiAr
+ICAgICAgICAgICAgIHJldHVybiAwOwo+PiArCj4+ICsgICAgIHNtcHMgPSBodF9jYXAtPmNhcCAm
+IElFRUU4MDIxMV9IVF9DQVBfU01fUFM7Cj4+ICsgICAgIHNtcHMgPj49IElFRUU4MDIxMV9IVF9D
+QVBfU01fUFNfU0hJRlQ7Cj4+ICsKPj4gKyAgICAgaWYgKHNtcHMgPj0gQVJSQVlfU0laRShhdGgx
+MGtfc21wc19tYXApKQo+PiArICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+PiArCj4+ICsg
+ICAgIHJldHVybiBhdGgxMGtfd21pX3BlZXJfc2V0X3BhcmFtKGFyLCBhcnZpZi0+dmRldl9pZCwg
+YWRkciwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgV01JX1BFRVJf
+U01QU19TVEFURSwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXRo
+MTBrX3NtcHNfbWFwW3NtcHNdKTsKPj4gK30KPgo+IGF0aDEwa19zbXBzX21hcCBsb29rcyBvdmVy
+a2lsbCAoYW5kIGZyYWdpbGUpLCB3b3VsZG4ndCBhIHN3aXRjaAo+IHN0YXRlbWVudCBiZSBzaW1w
+bGVyPwoKVGhlIG1hcCBzaG91bGRuJ3QgcmVhbGx5IGV2ZXIgY2hhbmdlIHNpbmNlIGl0IGRlcGVu
+ZHMgb24gdGhlIDExbiBzcGVjLgpJIGp1c3QgcHJlZmVyIGl0IHRoaXMgd2F5IGFzIGl0J3Mgc2hv
+cnRlciBhbmQgZWFzaWVyIHRvIGdyYXNwLiBJIGNhbgpjaGFuZ2UgaXQgdG8gYSBzd2l0Y2goKSBp
+ZiB5b3UgaW5zaXN0LgoKCj4+IEBAIC0xMzcwLDYgKzEzODUsNyBAQCBzdGF0aWMgdm9pZCBhdGgx
+MGtfYnNzX2Fzc29jKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+PiAgewo+PiAgICAgICBzdHJ1
+Y3QgYXRoMTBrICphciA9IGh3LT5wcml2Owo+PiAgICAgICBzdHJ1Y3QgYXRoMTBrX3ZpZiAqYXJ2
+aWYgPSBhdGgxMGtfdmlmX3RvX2FydmlmKHZpZik7Cj4+ICsgICAgIHN0cnVjdCBpZWVlODAyMTFf
+c3RhX2h0X2NhcCBodF9jYXA7Cj4+ICAgICAgIHN0cnVjdCB3bWlfcGVlcl9hc3NvY19jb21wbGV0
+ZV9hcmcgcGVlcl9hcmc7Cj4+ICAgICAgIHN0cnVjdCBpZWVlODAyMTFfc3RhICphcF9zdGE7Cj4+
+ICAgICAgIGludCByZXQ7Cj4+IEBAIC0xMzg2LDYgKzE0MDIsOCBAQCBzdGF0aWMgdm9pZCBhdGgx
+MGtfYnNzX2Fzc29jKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LAo+PiAgICAgICAgICAgICAgIHJl
+dHVybjsKPj4gICAgICAgfQo+Pgo+PiArICAgICBodF9jYXAgPSBhcF9zdGEtPmh0X2NhcDsKPgo+
+IFdoeSBkbyB5b3UgY29weSBodF9jYXA/IEkgY2FuJ3QgZmlndXJlIG91dCB0aGUgcmVhc29uLgoK
+SXQgaXMgdXNlZCBieSBhdGgxMGtfc2V0dXBfcGVlcl9zbXBzKCkgd2hpY2ggbWlnaHQgc2xlZXAg
+YXMgaXQgc2VuZHMKd21pIGNvbW1hbmQuIFRoaXMgbWVhbnMgd2UgaGF2ZSB0byBsZWF2ZSByY3Ug
+c2VjdGlvbiBhbmQgbXVzdCBub3QKdG91Y2ggYXBfc3RhIHBvaW50ZXIgYW55bW9yZS4KCgpNaWNo
+YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
