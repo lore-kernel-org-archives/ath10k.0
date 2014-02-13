@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WE1hR-0001c3-KT
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 19:11:54 +0000
-Message-ID: <52FD18E4.9060304@candelatech.com>
-Date: Thu, 13 Feb 2014 11:11:32 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WE1jY-0001eq-N5
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2014 19:14:05 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: implement drv_get_tsf for ibss merging
+References: <1392197844-1223-1-git-send-email-yeohchunyeow@gmail.com>
+Date: Thu, 13 Feb 2014 21:13:35 +0200
+In-Reply-To: <1392197844-1223-1-git-send-email-yeohchunyeow@gmail.com>
+ (Chun-Yeow Yeoh's message of "Wed, 12 Feb 2014 17:37:24 +0800")
+Message-ID: <87r4767rmo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3] ath10k:  add more details to some debug messages
-References: <1392318519-32315-1-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1392318519-32315-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: ath10k@lists.infradead.org
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 02/13/2014 11:08 AM, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
+Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
 
-Ahh, crap...I forgot to add a summary as you had previously suggested...I'll
-re-send v4 in a bit...yell if there are other issues as well.
+> Implement the get TSF by simply returning 0 so that IBSS
+> merging is happening. Otherwise, IBSS nodes that have similar
+> SSID naming won't merge. This is simply fooling the mac80211
+> that the TSF in the received beacon is higher than the local TSF.
+>
+> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-Thanks,
-Ben
+Yeah, this extremely ugly but don't really know any better way to handle
+this now.
+
+> +static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+> +{
+> +	struct ath10k *ar = hw->priv;
+> +	u64 tsf;
+> +
+> +	mutex_lock(&ar->conf_mutex);
+> +	/* FIXME: Return 0 for time being. Need to figure out whether FW has
+> +	 * the API to fetch 64-bit TSF
+> +	 */
+> +	tsf = 0;
+> +	mutex_unlock(&ar->conf_mutex);
+> +
+> +	return tsf;
+> +}
+
+But why do you need to take conf_mutex? Isn't this enough:
+
++static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
++{
++       /*
++        * FIXME: Return 0 for time being. Need to figure out whether FW
++        * has the API to fetch 64-bit TSF
++        */
++
++       return 0;
++}
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
