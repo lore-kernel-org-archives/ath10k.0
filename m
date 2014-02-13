@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDyAT-0002Te-6q
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 15:25:37 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] ath10k: reduce number of host corruptions
-References: <1392048864-13352-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Thu, 13 Feb 2014 17:25:10 +0200
-In-Reply-To: <1392048864-13352-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Mon, 10 Feb 2014 17:14:21 +0100")
-Message-ID: <87d2ir827d.fsf@kamboji.qca.qualcomm.com>
+ id 1WDyI1-0002eg-3s
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2014 15:33:25 +0000
+Message-ID: <52FCE5AD.3080606@candelatech.com>
+Date: Thu, 13 Feb 2014 07:33:01 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: ath10k crash on startup, related to ath10k_ce_completed_recv_next?
+References: <52FC2ABF.5010300@candelatech.com>
+ <87r4779vd9.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87r4779vd9.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +19,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+On 02/13/2014 02:09 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+>
+>> I saw the crash below on startup.  My firmware is put back together
+>> again and mostly working, so not sure it is related to overly
+>> broken firmware.
+>>
+>> I have a few patches to ath10k, but mostly debugging code
+>> that should not affect the logic below.
+>
+> When you have your own changes it pretty difficult to start debugging
+> crashes like this, as your private changes can break something. Can you
+> see these crashes with the upstream version?
 
-> This patchset reduces frequency of a strange HW bug
-> in CUS232 boards.
->
-> The bug happens in some workloads with different
-> frequency with different hardware spinoffs. It is
-> triggered by a cold reset after HW/FW has been
-> excercised with some work. On x86 this could be a hang,
-> on AP135 it is a data bus error. Frequency of problem
-> is reduced in driver by calling first warm reset
-> instead of cold reset. When warm reset fails then
-> driver will call cold reset. 
->
-> Marek Puzyniak (2):
->   ath10k: refactor suspend/resume functions
->   ath10k: suspend hardware before reset
->
-> Michal Kazior (1):
->   ath10k: fix device initialization routine
+I am unlikely to test with pure upstream code anytime soon..I need the
+features I added to take advantage of my customized CT firmware, and I need my
+firmware in order to run any of my more interesting test cases.
 
-Thanks, all three patches applied.
+If the problem is not obvious, then please just consider my crash reports
+as FYI and I'll work on them when I have time.
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
