@@ -1,28 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WDtXz-0001XK-Td
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 10:29:36 +0000
+ id 1WDxIa-0000YW-TH
+ for ath10k@lists.infradead.org; Thu, 13 Feb 2014 14:29:57 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: Get rid of superfluous call to
- pci_disable_msi()
-References: <cover.1389904166.git.agordeev@redhat.com>
- <ad5cc6d6bdf4c8f5ce4681ec27674d07fbda089e.1389904167.git.agordeev@redhat.com>
- <20140130134819.GA31909@dhcp-26-207.brq.redhat.com>
- <87y51qohjn.fsf@kamboji.qca.qualcomm.com>
- <20140204190935.GA1430@dhcp-26-207.brq.redhat.com>
- <8761oum0l3.fsf@kamboji.qca.qualcomm.com>
- <20140205085047.GA27820@dhcp-26-207.brq.redhat.com>
- <871tzilz1u.fsf@kamboji.qca.qualcomm.com>
- <20140212003143.GD21057@google.com>
- <20140212133816.GB3147@dhcp-26-207.brq.redhat.com>
- <CAErSpo6c_EPc5c8aaTeD9=eXWw4OowcKhWHG6YZgTOkZRMtZHQ@mail.gmail.com>
- <87ppmsauij.fsf@kamboji.qca.qualcomm.com>
- <CAErSpo47k8WuHded1TnHoRedHHLe-Sk7kKsXcR4XjKmQPb0Ggg@mail.gmail.com>
-Date: Thu, 13 Feb 2014 12:29:04 +0200
-In-Reply-To: <CAErSpo47k8WuHded1TnHoRedHHLe-Sk7kKsXcR4XjKmQPb0Ggg@mail.gmail.com>
- (Bjorn Helgaas's message of "Wed, 12 Feb 2014 14:40:26 -0700")
-Message-ID: <87mwhv9uha.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix SMPS support
+References: <1391673591-8907-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 13 Feb 2014 16:29:29 +0200
+In-Reply-To: <1391673591-8907-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 6 Feb 2014 08:59:51 +0100")
+Message-ID: <87eh379jcm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -36,34 +23,70 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bjorn Helgaas <bhelgaas@google.com>
-Cc: "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, Alexander Gordeev <agordeev@redhat.com>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bjorn Helgaas <bhelgaas@google.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On Wed, Feb 12, 2014 at 2:30 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Bjorn Helgaas <bhelgaas@google.com> writes:
->>
->>>> Well, as this series is small I thought it could quickly go thru your
->>>> tree. But since ipr had conflicts, there is no point routing all patches
->>>> altogether, so up to you guys. The wil6210 patch is already in your pci/msi
->>>> branch though.
->>>
->>> It's in pci/msi, but that's not in my -next branch yet, so I can
->>> easily drop it.  Do drivers/net/wireless patches normally follow a
->>> different path than the other drivers/net patches?  The wil6210 and
->>> ath10k patches look just like the others in the 34-patch series (bnx2,
->>> bnx2x, tg3, bna, cxgb3, etc.), so I thought it would make more sense
->>> to include them there.
->>
->> ath10k patches normally go through my ath.git tree to Linville and then
->> to David Miller. To avoid conflicts I would prefer to take ath10k
->> patches to my tree whenever possible.
+> Firmware ignores SMPS flags in peer assoc command.
 >
-> OK, I won't do anything with ath10k (I haven't applied it anywhere).
+> For SMPS to work it is necessary to set peer
+> parameter after peer assoc command so that tx
+> chainmask is setup properly.
+>
+> This should fix packet loss and improve throughput
+> with stations that have SMPS enabled upon
+> association.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I have now taken the ath10k patches to my pending branch, will apply
-them soon.
+[...]
+
+> +static const u32 ath10k_smps_map[] = {
+> +	[WLAN_HT_CAP_SM_PS_STATIC] = WMI_PEER_SMPS_STATIC,
+> +	[WLAN_HT_CAP_SM_PS_DYNAMIC] = WMI_PEER_SMPS_DYNAMIC,
+> +	[WLAN_HT_CAP_SM_PS_INVALID] = WMI_PEER_SMPS_PS_NONE,
+> +	[WLAN_HT_CAP_SM_PS_DISABLED] = WMI_PEER_SMPS_PS_NONE,
+> +};
+> +
+> +static int ath10k_setup_peer_smps(struct ath10k *ar, struct ath10k_vif *arvif,
+> +				  const u8 *addr,
+> +				  const struct ieee80211_sta_ht_cap *ht_cap)
+> +{
+> +	int smps;
+> +
+> +	if (!ht_cap->ht_supported)
+> +		return 0;
+> +
+> +	smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
+> +	smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
+> +
+> +	if (smps >= ARRAY_SIZE(ath10k_smps_map))
+> +		return -EINVAL;
+> +
+> +	return ath10k_wmi_peer_set_param(ar, arvif->vdev_id, addr,
+> +					 WMI_PEER_SMPS_STATE,
+> +					 ath10k_smps_map[smps]);
+> +}
+
+ath10k_smps_map looks overkill (and fragile), wouldn't a switch
+statement be simpler?
+
+> @@ -1370,6 +1385,7 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+>  {
+>  	struct ath10k *ar = hw->priv;
+>  	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+> +	struct ieee80211_sta_ht_cap ht_cap;
+>  	struct wmi_peer_assoc_complete_arg peer_arg;
+>  	struct ieee80211_sta *ap_sta;
+>  	int ret;
+> @@ -1386,6 +1402,8 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+>  		return;
+>  	}
+>  
+> +	ht_cap = ap_sta->ht_cap;
+
+Why do you copy ht_cap? I can't figure out the reason.
 
 -- 
 Kalle Valo
