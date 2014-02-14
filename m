@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x22d.google.com ([2607:f8b0:400e:c03::22d])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEALC-0005ZX-Vm
- for ath10k@lists.infradead.org; Fri, 14 Feb 2014 04:25:31 +0000
-Received: by mail-pa0-f45.google.com with SMTP id lf10so11733213pab.4
- for <ath10k@lists.infradead.org>; Thu, 13 Feb 2014 20:25:09 -0800 (PST)
-From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Subject: [PATCH v2] ath10k: implement drv_get_tsf for ibss merging
-Date: Fri, 14 Feb 2014 12:24:55 +0800
-Message-Id: <1392351895-20495-1-git-send-email-yeohchunyeow@gmail.com>
+ id 1WEBvF-0006uO-Px
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2014 06:06:50 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k:  add vdev-id, return code to error codes
+References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
+Date: Fri, 14 Feb 2014 08:06:13 +0200
+In-Reply-To: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Thu, 13 Feb 2014 11:09:21
+ -0800")
+Message-ID: <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,57 +20,213 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: kvalo@qca.qualcomm.com, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, ath10k@lists.infradead.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Implement the get TSF by simply returning 0 so that IBSS
-merging is happening. Otherwise, IBSS nodes that have similar
-SSID naming won't merge. This is simply fooling the mac80211
-that the TSF in the received beacon is higher than the local TSF.
+greearb@candelatech.com writes:
 
-Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
----
-v2: simplify without mutex (Kalle Valo)
+> From: Ben Greear <greearb@candelatech.com>
+>
+> When using multiple vdevs (stations, aps, etc), it is
+> nice to be able to associate log messages with specific
+> interfaces.  So, add vdev-id to most logging messages.
+> Add return code as well, where it was missing.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
- drivers/net/wireless/ath/ath10k/mac.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+I did some changes just to have consistent style for warning messages,
+see my incremental diff patch below. Let me know if you agree with my
+changes, the full patch is in ath-next-test branch.
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index afa1226..f39d1b0 100644
+index 7a593e0..ead6f4d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4049,6 +4049,15 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
- 	ieee80211_queue_work(hw, &arsta->update_wk);
- }
+@@ -878,7 +878,7 @@ static void ath10k_control_beaconing(struct ath10k_vif *arvif,
+ 	ret = ath10k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
+ 				 arvif->bssid);
+ 	if (ret) {
+-		ath10k_warn("Failed to bring up VDEV: %d ret %i\n",
++		ath10k_warn("Failed to bring up vdev %d: %i\n",
+ 			    arvif->vdev_id, ret);
+ 		ath10k_vdev_stop(arvif);
+ 		return;
+@@ -959,7 +959,7 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+ 		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id, param,
+ 						  conf->dynamic_ps_timeout);
+ 		if (ret) {
+-			ath10k_warn("Failed to set inactivity time for VDEV: %d ret %i\n",
++			ath10k_warn("Failed to set inactivity time for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 			return ret;
+ 		}
+@@ -1212,7 +1212,7 @@ static int ath10k_peer_assoc_qos_ap(struct ath10k *ar,
+ 						 WMI_AP_PS_PEER_PARAM_UAPSD,
+ 						 uapsd);
+ 		if (ret) {
+-			ath10k_warn("failed to set ap ps peer param uapsd, vdev %i: %d\n",
++			ath10k_warn("failed to set ap ps peer param uapsd for vdev %i: %d\n",
+ 				    arvif->vdev_id, ret);
+ 			return ret;
+ 		}
+@@ -1222,7 +1222,7 @@ static int ath10k_peer_assoc_qos_ap(struct ath10k *ar,
+ 						 WMI_AP_PS_PEER_PARAM_MAX_SP,
+ 						 max_sp);
+ 		if (ret) {
+-			ath10k_warn("failed to set ap ps peer param max sp, vdev %i: %d\n",
++			ath10k_warn("failed to set ap ps peer param max sp for vdev %i: %d\n",
+ 				    arvif->vdev_id, ret);
+ 			return ret;
+ 		}
+@@ -1234,7 +1234,7 @@ static int ath10k_peer_assoc_qos_ap(struct ath10k *ar,
+ 		ret = ath10k_wmi_set_ap_ps_param(ar, arvif->vdev_id, sta->addr,
+ 					WMI_AP_PS_PEER_PARAM_AGEOUT_TIME, 10);
+ 		if (ret) {
+-			ath10k_warn("failed to set ap ps peer param ageout time, vdev %i: %d\n",
++			ath10k_warn("failed to set ap ps peer param ageout time for vdev %i: %d\n",
+ 				    arvif->vdev_id, ret);
+ 			return ret;
+ 		}
+@@ -1542,20 +1542,20 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
  
-+static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
-+{
-+	/* FIXME: Return 0 for time being. Need to figure out whether FW has
-+	 * the API to fetch 64-bit local TSF
-+	 */
-+
-+	return 0;
-+}
-+
- static const struct ieee80211_ops ath10k_ops = {
- 	.tx				= ath10k_tx,
- 	.start				= ath10k_start,
-@@ -4074,6 +4083,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
- 	.channel_switch_beacon		= ath10k_channel_switch_beacon,
- 	.sta_rc_update			= ath10k_sta_rc_update,
-+	.get_tsf			= ath10k_get_tsf,
- #ifdef CONFIG_PM
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
--- 
-1.7.9.5
+ 	ret = ath10k_setup_peer_smps(ar, arvif, sta->addr, &sta->ht_cap);
+ 	if (ret) {
+-		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
++		ath10k_warn("failed to setup peer SMPS for vdev: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
+ 	if (ret) {
+-		ath10k_warn("could not install peer wep keys, vdev %i (%d)\n",
++		ath10k_warn("could not install peer wep keys for vdev %i: %d\n",
+ 			    arvif->vdev_id, ret);
+ 		return ret;
+ 	}
+ 
+ 	ret = ath10k_peer_assoc_qos_ap(ar, arvif, sta);
+ 	if (ret) {
+-		ath10k_warn("could not set qos params for STA %pM, vdev %i %d\n",
++		ath10k_warn("could not set qos params for STA %pM for vdev %i: %d\n",
+ 			    sta->addr, arvif->vdev_id, ret);
+ 		return ret;
+ 	}
+@@ -1572,7 +1572,7 @@ static int ath10k_station_disassoc(struct ath10k *ar, struct ath10k_vif *arvif,
+ 
+ 	ret = ath10k_clear_peer_keys(arvif, sta->addr);
+ 	if (ret) {
+-		ath10k_warn("could not clear all peer wep keys, vdev %i (%d)\n",
++		ath10k_warn("could not clear all peer wep keys for vdev %i: %d\n",
+ 			    arvif->vdev_id, ret);
+ 		return ret;
+ 	}
+@@ -2775,7 +2775,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 			   arvif->vdev_id, arvif->beacon_interval);
+ 
+ 		if (ret)
+-			ath10k_warn("Failed to set beacon interval for VDEV %d: %i\n",
++			ath10k_warn("Failed to set beacon interval for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -2788,7 +2788,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_pdev_set_param(ar, pdev_param,
+ 						WMI_BEACON_STAGGERED_MODE);
+ 		if (ret)
+-			ath10k_warn("Failed to set beacon mode for VDEV %d: %i\n",
++			ath10k_warn("Failed to set beacon mode for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -2803,7 +2803,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						arvif->dtim_period);
+ 		if (ret)
+-			ath10k_warn("Failed to set dtim period for VDEV %d: %i\n",
++			ath10k_warn("Failed to set dtim period for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -2876,7 +2876,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						cts_prot);
+ 		if (ret)
+-			ath10k_warn("Failed to set CTS prot for VDEV: %d ret %i\n",
++			ath10k_warn("Failed to set CTS prot for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -2895,7 +2895,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						slottime);
+ 		if (ret)
+-			ath10k_warn("Failed to set erp slot for VDEV: %d ret %i\n",
++			ath10k_warn("Failed to set erp slot for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -2914,7 +2914,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+ 						preamble);
+ 		if (ret)
+-			ath10k_warn("Failed to set preamble for VDEV: %d ret %i\n",
++			ath10k_warn("Failed to set preamble for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+ 	}
+ 
+@@ -3107,7 +3107,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 
+ 	ret = ath10k_install_key(arvif, key, cmd, peer_addr);
+ 	if (ret) {
+-		ath10k_warn("ath10k_install_key failed for vdev %i peer %pM (%d)\n",
++		ath10k_warn("key installation failed for vdev %i peer %pM: %d\n",
+ 			    arvif->vdev_id, peer_addr, ret);
+ 		goto exit;
+ 	}
+@@ -3252,7 +3252,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			   arvif->vdev_id, sta->addr);
+ 		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
+ 		if (ret)
+-			ath10k_warn("Failed to delete peer: %pM for VDEV: %d ret %i\n",
++			ath10k_warn("Failed to delete peer %pM for vdev %d: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
+ 
+ 		if (vif->type == NL80211_IFTYPE_STATION)
+@@ -3269,7 +3269,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 
+ 		ret = ath10k_station_assoc(ar, arvif, sta);
+ 		if (ret)
+-			ath10k_warn("Failed to associate station: %pM vdev %i ret %i\n",
++			ath10k_warn("Failed to associate station %pM for vdev %i: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
+ 	} else if (old_state == IEEE80211_STA_ASSOC &&
+ 		   new_state == IEEE80211_STA_AUTH &&
+@@ -4390,7 +4390,7 @@ struct ath10k_vif *ath10k_get_arvif(struct ath10k *ar, u32 vdev_id)
+ 						   ath10k_get_arvif_iter,
+ 						   &arvif_iter);
+ 	if (!arvif_iter.arvif) {
+-		ath10k_warn("No VIF found for VDEV: %d\n", vdev_id);
++		ath10k_warn("No VIF found for vdev %d\n", vdev_id);
+ 		return NULL;
+ 	}
+ 
+@@ -4529,7 +4529,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ret = ath_regd_init(&ar->ath_common.regulatory, ar->hw->wiphy,
+ 			    ath10k_reg_notifier);
+ 	if (ret) {
+-		ath10k_err("Regulatory initialization failed, ret %i\n", ret);
++		ath10k_err("Regulatory initialization failed: %i\n", ret);
+ 		goto err_free;
+ 	}
+ 
 
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
