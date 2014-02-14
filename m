@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEC26-0006y6-FY
- for ath10k@lists.infradead.org; Fri, 14 Feb 2014 06:13:55 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC] wmi:  Handle failure to start scan.
-References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 14 Feb 2014 08:13:25 +0200
-In-Reply-To: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Thu, 13 Feb 2014 11:09:54
- -0800")
-Message-ID: <877g8y6x2y.fsf@kamboji.qca.qualcomm.com>
+ id 1WECZR-0007Po-QZ
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2014 06:48:22 +0000
+Received: by mail-bk0-f44.google.com with SMTP id r7so106008bkg.3
+ for <ath10k@lists.infradead.org>; Thu, 13 Feb 2014 22:47:58 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
+References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
+Date: Fri, 14 Feb 2014 07:47:58 +0100
+Message-ID: <CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>
+Subject: Re: [RFC] wmi: Handle failure to start scan.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
-
-> From: Ben Greear <greearb@candelatech.com>
->
-> Properly clean up driver state in case firmware fails
-> to start scan for some reason.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-
-Why just RFC?
-
-And "ath10k:" prefix missing.
-
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -770,7 +770,25 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
->  		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_PREEMPTED\n");
->  		break;
->  	case WMI_SCAN_EVENT_START_FAILED:
-> -		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_START_FAILED\n");
-> +		ath10k_warn("WMI_SCAN_EVENT_START_FAILED, reason: %i\n", reason);
-
-"scan failed to start: %i\n"
-
-> +		ar->scan_channel = NULL;
-> +		if (!ar->scan.in_progress) {
-> +			ath10k_warn("scan-start-failed: no scan requested, ignoring\n");
-
-"scan failed to start but no scan requested, ignoring\n"
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgRmVicnVhcnkgMjAxNCAyMDowOSwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3Jv
+dGU6Cj4gRnJvbTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4KPiBQcm9w
+ZXJseSBjbGVhbiB1cCBkcml2ZXIgc3RhdGUgaW4gY2FzZSBmaXJtd2FyZSBmYWlscwo+IHRvIHN0
+YXJ0IHNjYW4gZm9yIHNvbWUgcmVhc29uLgo+Cj4gU2lnbmVkLW9mZi1ieTogQmVuIEdyZWVhciA8
+Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvd21pLmMgfCAyMCArKysrKysrKysrKysrKysrKysrLQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgMTkgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL3dtaS5jCj4gaW5kZXggMjBmN2M3OS4uYTViZTBkMyAxMDA2NDQKPiAtLS0gYS9k
+cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4gKysrIGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+IEBAIC03NzAsNyArNzcwLDI1IEBAIHN0YXRpYyBp
+bnQgYXRoMTBrX3dtaV9ldmVudF9zY2FuKHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVm
+ZiAqc2tiKQo+ICAgICAgICAgICAgICAgICBhdGgxMGtfZGJnKEFUSDEwS19EQkdfV01JLCAiV01J
+X1NDQU5fRVZFTlRfUFJFRU1QVEVEXG4iKTsKPiAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gICAg
+ICAgICBjYXNlIFdNSV9TQ0FOX0VWRU5UX1NUQVJUX0ZBSUxFRDoKPiAtICAgICAgICAgICAgICAg
+YXRoMTBrX2RiZyhBVEgxMEtfREJHX1dNSSwgIldNSV9TQ0FOX0VWRU5UX1NUQVJUX0ZBSUxFRFxu
+Iik7Cj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJXTUlfU0NBTl9FVkVOVF9TVEFSVF9G
+QUlMRUQsIHJlYXNvbjogJWlcbiIsIHJlYXNvbik7Cj4gKwo+ICsgICAgICAgICAgICAgICBhci0+
+c2Nhbl9jaGFubmVsID0gTlVMTDsKPiArICAgICAgICAgICAgICAgaWYgKCFhci0+c2Nhbi5pbl9w
+cm9ncmVzcykgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJzY2FuLXN0
+YXJ0LWZhaWxlZDogbm8gc2NhbiByZXF1ZXN0ZWQsIGlnbm9yaW5nXG4iKTsKPiArICAgICAgICAg
+ICAgICAgICAgICAgICBicmVhazsKPiArICAgICAgICAgICAgICAgfQo+ICsKPiArICAgICAgICAg
+ICAgICAgaWYgKGFyLT5zY2FuLmlzX3JvYykgewo+ICsgICAgICAgICAgICAgICAgICAgICAgIGF0
+aDEwa19vZmZjaGFuX3R4X3B1cmdlKGFyKTsKPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+aWYgKCFhci0+c2Nhbi5hYm9ydGluZykKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGllZWU4MDIxMV9yZW1haW5fb25fY2hhbm5lbF9leHBpcmVkKGFyLT5odyk7Cj4gKyAgICAgICAg
+ICAgICAgIH0gZWxzZSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgaWVlZTgwMjExX3NjYW5f
+Y29tcGxldGVkKGFyLT5odywgYXItPnNjYW4uYWJvcnRpbmcpOwo+ICsgICAgICAgICAgICAgICB9
+Cj4gKwo+ICsgICAgICAgICAgICAgICBkZWxfdGltZXIoJmFyLT5zY2FuLnRpbWVvdXQpOwo+ICsg
+ICAgICAgICAgICAgICBhci0+c2Nhbi5pbl9wcm9ncmVzcyA9IGZhbHNlOwo+ICAgICAgICAgICAg
+ICAgICBicmVhazsKPiAgICAgICAgIGRlZmF1bHQ6Cj4gICAgICAgICAgICAgICAgIGJyZWFrOwoK
+V2UgYWxyZWFkeSB3YWl0IGZvciBFVkVOVF9TVEFSVEVEIGluIG1hYy5jIChzZWUgYXRoMTBrX3N0
+YXJ0X3NjYW4pIGFuZApjbGVhbiB1cCBzdHVmZiAoYXRoMTBrX2Fib3J0X3NjYW4pLiBXaHkgbm90
+IGFkZCB0aGUgbWlzc2luZyBiaXRzIGluCnRoZXJlPyBPciBpcyBpdCBwb3NzaWJsZSB0byBnZXQg
+RVZFTlRfU1RBUlRfRkFJTEVEICphZnRlcioKRVZFTlRfU1RBUlRFRD8gT3IgYW0gSSBtaXNzaW5n
+IHNvbWV0aGluZyBlbHNlIGhlcmU/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
