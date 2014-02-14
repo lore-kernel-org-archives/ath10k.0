@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ve0-x236.google.com ([2607:f8b0:400c:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WE2xs-00040F-Jl
- for ath10k@lists.infradead.org; Thu, 13 Feb 2014 20:32:57 +0000
-Message-ID: <52FD2BE2.50706@candelatech.com>
-Date: Thu, 13 Feb 2014 12:32:34 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WE806-0003eM-53
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2014 01:55:34 +0000
+Received: by mail-ve0-f182.google.com with SMTP id jy13so9141391veb.41
+ for <ath10k@lists.infradead.org>; Thu, 13 Feb 2014 17:55:12 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k:  do not ratelimit ath10k_warn messages
-References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
- <1392318562-32440-2-git-send-email-greearb@candelatech.com>
- <87fvnm7pml.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87fvnm7pml.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87r4767rmo.fsf@kamboji.qca.qualcomm.com>
+References: <1392197844-1223-1-git-send-email-yeohchunyeow@gmail.com>
+ <87r4767rmo.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 14 Feb 2014 09:55:11 +0800
+Message-ID: <CAEFj986=ABAqRYXcL9_Ov8MkHVfjOnc=y9nx65hFXbBcH61WyQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: implement drv_get_tsf for ibss merging
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +26,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/13/2014 11:56 AM, Kalle Valo wrote:
-> greearb@candelatech.com writes:
-> 
->> These are too important to miss, and if we ever do have some
->> that are overly verbose
-> 
-> The thing is that in some platforms excessive amount log messages will
-> cause watchdog to forcefully reboot the device. So I'm hesitant to
-> remove this.
-> 
-> First of all, the goal is that ath10k will never issue even a single
-> warning message. So even if you see just one, it means something is
-> wrong. And just seeing the first few warnings should give you a pretty
-> good hint what's going on.
+> Yeah, this extremely ugly but don't really know any better way to handle
+> this now.
 
-I see lots of EAGAIN (-11) warnings sometime, and they come in bunches
-in my scenario (with lots of vifs).
+I have observed that we have ath10k_wmi_event_tsf_measurement_report,
+but no so sure how to trigger this event.
 
-> Secondly, it's not like net_ratelimit() will hide all the warning
-> messages. It will still show some of the messages even if it starts to
-> throttle them.
+> But why do you need to take conf_mutex? Isn't this enough:
+>
+> +static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+> +{
+> +       /*
+> +        * FIXME: Return 0 for time being. Need to figure out whether FW
+> +        * has the API to fetch 64-bit TSF
+> +        */
+> +
+> +       return 0;
+> +}
 
-In my case, it hid exactly the messages I needed to see in a hard
-to reproduce bug, so I was a bit peeved :P
+Ya, I think this is enough for time being. I will submit v2 on this.
 
->> could ratelimit the call to ath10k_warn instead of doing the ratelimit
->> inside of ath10k_warn.
-> 
-> Not sure if I got this idea. Only to ratelimit some of the warnings or
-> what do you mean by ratelimiting it outside ath10k_warn()?
-
-If there are warnings that are likely to spam continuously,
-then ratelimit only those, so something like:
-
-if (netratelimit()) {
-  ath10k_warn(...)
-}
-
-
-But, this is an easy patch for me to carry, so no worries if it
-doesn't go upstream.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+-----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
