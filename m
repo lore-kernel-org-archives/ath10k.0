@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEKmU-0004OD-KK
- for ath10k@lists.infradead.org; Fri, 14 Feb 2014 15:34:23 +0000
-Message-ID: <52FE3766.1080509@candelatech.com>
-Date: Fri, 14 Feb 2014 07:33:58 -0800
+ id 1WELIj-0005KQ-1w
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2014 16:07:41 +0000
+Message-ID: <52FE3F35.4080308@candelatech.com>
+Date: Fri, 14 Feb 2014 08:07:17 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k:  add vdev-id, return code to error codes
-References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
- <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC] wmi: Handle failure to start scan.
+References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>
+In-Reply-To: <CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +23,67 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/13/2014 10:06 PM, Kalle Valo wrote:
-
-> @@ -1542,20 +1542,20 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+On 02/13/2014 10:47 PM, Michal Kazior wrote:
+> On 13 February 2014 20:09,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Properly clean up driver state in case firmware fails
+>> to start scan for some reason.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/wmi.c | 20 +++++++++++++++++++-
+>>   1 file changed, 19 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+>> index 20f7c79..a5be0d3 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+>> @@ -770,7 +770,25 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+>>                  ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_PREEMPTED\n");
+>>                  break;
+>>          case WMI_SCAN_EVENT_START_FAILED:
+>> -               ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_START_FAILED\n");
+>> +               ath10k_warn("WMI_SCAN_EVENT_START_FAILED, reason: %i\n", reason);
+>> +
+>> +               ar->scan_channel = NULL;
+>> +               if (!ar->scan.in_progress) {
+>> +                       ath10k_warn("scan-start-failed: no scan requested, ignoring\n");
+>> +                       break;
+>> +               }
+>> +
+>> +               if (ar->scan.is_roc) {
+>> +                       ath10k_offchan_tx_purge(ar);
+>> +
+>> +                       if (!ar->scan.aborting)
+>> +                               ieee80211_remain_on_channel_expired(ar->hw);
+>> +               } else {
+>> +                       ieee80211_scan_completed(ar->hw, ar->scan.aborting);
+>> +               }
+>> +
+>> +               del_timer(&ar->scan.timeout);
+>> +               ar->scan.in_progress = false;
+>>                  break;
+>>          default:
+>>                  break;
 >
->   	ret = ath10k_setup_peer_smps(ar, arvif, sta->addr, &sta->ht_cap);
->   	if (ret) {
-> -		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
-> +		ath10k_warn("failed to setup peer SMPS for vdev: %d\n", ret);
->   		return ret;
->   	}
+> We already wait for EVENT_STARTED in mac.c (see ath10k_start_scan) and
+> clean up stuff (ath10k_abort_scan). Why not add the missing bits in
+> there? Or is it possible to get EVENT_START_FAILED *after*
+> EVENT_STARTED? Or am I missing something else here?
 
-Looks like that could use the vdev id in it...I must have missed it on my first attempt.
+I think a lot of this would be firmware dependent, and might change between
+various versions of the firmware.
 
-> @@ -3252,7 +3252,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
->   			   arvif->vdev_id, sta->addr);
->   		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
->   		if (ret)
-> -			ath10k_warn("Failed to delete peer: %pM for VDEV: %d ret %i\n",
-> +			ath10k_warn("Failed to delete peer %pM for vdev %d: %i\n",
->   				    sta->addr, arvif->vdev_id, ret);
-
-
-While you are harmonizing the messages...maybe change all instances of "failed to "Failed ?
-
-I wasn't sure what was preferred so I left that alone when doing my patch.
-
-
-The rest of the changes look fine to me.
+It seems to me we should handle this case and do cleanup just to be safe,
+but maybe cleanup is needed in failure case of ath10k_start_scan as well?
 
 Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
