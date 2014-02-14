@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEJEY-0001cw-UM
- for ath10k@lists.infradead.org; Fri, 14 Feb 2014 13:55:17 +0000
-Received: by mail-ee0-f51.google.com with SMTP id b57so5714024eek.10
- for <ath10k@lists.infradead.org>; Fri, 14 Feb 2014 05:54:53 -0800 (PST)
+ id 1WEJAm-0001V7-TV
+ for ath10k@lists.infradead.org; Fri, 14 Feb 2014 13:51:21 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b15so5707443eek.1
+ for <ath10k@lists.infradead.org>; Fri, 14 Feb 2014 05:50:57 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3] ath10k: implement sta_rc_update()
-Date: Fri, 14 Feb 2014 14:49:48 +0100
-Message-Id: <1392385788-3983-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1392042915-11648-1-git-send-email-michal.kazior@tieto.com>
-References: <1392042915-11648-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2] ath10k: fix SMPS support
+Date: Fri, 14 Feb 2014 14:45:51 +0100
+Message-Id: <1392385551-3590-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1391673591-8907-1-git-send-email-michal.kazior@tieto.com>
+References: <1391673591-8907-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,271 +27,134 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This allows dynamic changes of bandwidth/nss/smps,
-e.g. via ht/vht operation mode change
-notification.
+Firmware ignores SMPS flags in peer assoc command.
+
+For SMPS to work it is necessary to set peer
+parameter after peer assoc command so that tx
+chainmask is setup properly.
+
+This should fix packet loss and improve throughput
+with stations that have SMPS enabled upon
+association.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 v2:
- * fix memset(&arsta, ...) -> memset(arsta, ...)
+ * add comment why ap_sta->ht_cap needs to be copied
 
-v3:
- * document ath10k_sta locking
- * include peer address in warnings
- * add a debug message for sta_rc_update() itself
 
- drivers/net/wireless/ath/ath10k/core.h |  12 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 157 +++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h  |   6 ++
- 3 files changed, 175 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 56 +++++++++++++++++++++++++++--------
+ 1 file changed, 44 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c0b00e1..5ff6428 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -228,6 +228,18 @@ struct ath10k_peer {
- 	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
- };
- 
-+struct ath10k_sta {
-+	struct ath10k_vif *arvif;
-+
-+	/* the following are protected by ar->data_lock */
-+	u32 changed; /* IEEE80211_RC_* */
-+	u32 bw;
-+	u32 nss;
-+	u32 smps;
-+
-+	struct work_struct update_wk;
-+};
-+
- #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
- 
- struct ath10k_vif {
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 144b4d6..88751f5 100644
+index 144b4d6..0f9e59c 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3056,6 +3056,69 @@ exit:
- 	return ret;
+@@ -1082,7 +1082,6 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+ 				   struct wmi_peer_assoc_complete_arg *arg)
+ {
+ 	const struct ieee80211_sta_ht_cap *ht_cap = &sta->ht_cap;
+-	int smps;
+ 	int i, n;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+@@ -1128,17 +1127,6 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+ 		arg->peer_flags |= WMI_PEER_STBC;
+ 	}
+ 
+-	smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
+-	smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
+-
+-	if (smps == WLAN_HT_CAP_SM_PS_STATIC) {
+-		arg->peer_flags |= WMI_PEER_SPATIAL_MUX;
+-		arg->peer_flags |= WMI_PEER_STATIC_MIMOPS;
+-	} else if (smps == WLAN_HT_CAP_SM_PS_DYNAMIC) {
+-		arg->peer_flags |= WMI_PEER_SPATIAL_MUX;
+-		arg->peer_flags |= WMI_PEER_DYN_MIMOPS;
+-	}
+-
+ 	if (ht_cap->mcs.rx_mask[1] && ht_cap->mcs.rx_mask[2])
+ 		arg->peer_rate_caps |= WMI_RC_TS_FLAG;
+ 	else if (ht_cap->mcs.rx_mask[1])
+@@ -1363,6 +1351,33 @@ static int ath10k_peer_assoc_prepare(struct ath10k *ar,
+ 	return 0;
  }
  
-+static void ath10k_sta_rc_update_wk(struct work_struct *wk)
++static const u32 ath10k_smps_map[] = {
++	[WLAN_HT_CAP_SM_PS_STATIC] = WMI_PEER_SMPS_STATIC,
++	[WLAN_HT_CAP_SM_PS_DYNAMIC] = WMI_PEER_SMPS_DYNAMIC,
++	[WLAN_HT_CAP_SM_PS_INVALID] = WMI_PEER_SMPS_PS_NONE,
++	[WLAN_HT_CAP_SM_PS_DISABLED] = WMI_PEER_SMPS_PS_NONE,
++};
++
++static int ath10k_setup_peer_smps(struct ath10k *ar, struct ath10k_vif *arvif,
++				  const u8 *addr,
++				  const struct ieee80211_sta_ht_cap *ht_cap)
 +{
-+	struct ath10k *ar;
-+	struct ath10k_vif *arvif;
-+	struct ath10k_sta *arsta;
-+	struct ieee80211_sta *sta;
-+	u32 changed, bw, nss, smps;
-+	int err;
++	int smps;
 +
-+	arsta = container_of(wk, struct ath10k_sta, update_wk);
-+	sta = container_of((void *)arsta, struct ieee80211_sta, drv_priv);
-+	arvif = arsta->arvif;
-+	ar = arvif->ar;
++	if (!ht_cap->ht_supported)
++		return 0;
 +
-+	spin_lock_bh(&ar->data_lock);
++	smps = ht_cap->cap & IEEE80211_HT_CAP_SM_PS;
++	smps >>= IEEE80211_HT_CAP_SM_PS_SHIFT;
 +
-+	changed = arsta->changed;
-+	arsta->changed = 0;
++	if (smps >= ARRAY_SIZE(ath10k_smps_map))
++		return -EINVAL;
 +
-+	bw = arsta->bw;
-+	nss = arsta->nss;
-+	smps = arsta->smps;
-+
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (changed & IEEE80211_RC_BW_CHANGED) {
-+		ath10k_dbg(ATH10K_DBG_MAC, "mac update sta %pM peer bw %d\n",
-+			   sta->addr, bw);
-+
-+		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+						WMI_PEER_CHAN_WIDTH, bw);
-+		if (err)
-+			ath10k_warn("failed to update STA %pM peer bw %d: %d\n",
-+				    sta->addr, bw, err);
-+	}
-+
-+	if (changed & IEEE80211_RC_NSS_CHANGED) {
-+		ath10k_dbg(ATH10K_DBG_MAC, "mac update sta %pM nss %d\n",
-+			   sta->addr, nss);
-+
-+		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+						WMI_PEER_NSS, nss);
-+		if (err)
-+			ath10k_warn("failed to update STA %pM nss %d: %d\n",
-+				    sta->addr, nss, err);
-+	}
-+
-+	if (changed & IEEE80211_RC_SMPS_CHANGED) {
-+		ath10k_dbg(ATH10K_DBG_MAC, "mac update sta %pM smps %d\n",
-+			   sta->addr, smps);
-+
-+		err = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
-+						WMI_PEER_SMPS_STATE, smps);
-+		if (err)
-+			ath10k_warn("failed to update STA %pM smps %d: %d\n",
-+				    sta->addr, smps, err);
-+	}
-+
-+	mutex_unlock(&ar->conf_mutex);
++	return ath10k_wmi_peer_set_param(ar, arvif->vdev_id, addr,
++					 WMI_PEER_SMPS_STATE,
++					 ath10k_smps_map[smps]);
 +}
 +
- static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			    struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta,
-@@ -3064,9 +3127,15 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ /* can be called only in mac80211 callbacks due to `key_count` usage */
+ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+ 			     struct ieee80211_vif *vif,
+@@ -1370,6 +1385,7 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
  {
  	struct ath10k *ar = hw->priv;
  	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
- 	int max_num_peers;
- 	int ret = 0;
++	struct ieee80211_sta_ht_cap ht_cap;
+ 	struct wmi_peer_assoc_complete_arg peer_arg;
+ 	struct ieee80211_sta *ap_sta;
+ 	int ret;
+@@ -1386,6 +1402,10 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+ 		return;
+ 	}
  
-+	/* cancel must be done outside the mutex to avoid deadlock */
-+	if ((old_state == IEEE80211_STA_NONE &&
-+	     new_state == IEEE80211_STA_NOTEXIST))
-+		cancel_work_sync(&arsta->update_wk);
++	/* ap_sta must be accessed only within rcu section which must be left
++	 * before calling ath10k_setup_peer_smps() which might sleep. */
++	ht_cap = ap_sta->ht_cap;
 +
- 	mutex_lock(&ar->conf_mutex);
+ 	ret = ath10k_peer_assoc_prepare(ar, arvif, ap_sta,
+ 					bss_conf, &peer_arg);
+ 	if (ret) {
+@@ -1404,6 +1424,12 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
+ 		return;
+ 	}
  
- 	if (old_state == IEEE80211_STA_NOTEXIST &&
-@@ -3091,6 +3160,10 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   "mac vdev %d peer create %pM (new sta) num_peers %d\n",
- 			   arvif->vdev_id, sta->addr, ar->num_peers);
- 
-+		memset(arsta, 0, sizeof(*arsta));
-+		arsta->arvif = arvif;
-+		INIT_WORK(&arsta->update_wk, ath10k_sta_rc_update_wk);
-+
- 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
- 		if (ret)
- 			ath10k_warn("Failed to add peer %pM for vdev %d when adding a new sta: %i\n",
-@@ -3854,6 +3927,88 @@ static void ath10k_channel_switch_beacon(struct ieee80211_hw *hw,
- 	return;
- }
- 
-+static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
-+				 struct ieee80211_vif *vif,
-+				 struct ieee80211_sta *sta,
-+				 u32 changed)
-+{
-+	struct ath10k *ar = hw->priv;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	u32 bw, smps;
-+
-+	spin_lock_bh(&ar->data_lock);
-+
-+	ath10k_dbg(ATH10K_DBG_MAC,
-+		   "mac sta rc update for %pM changed %08x bw %d nss %d smps %d\n",
-+		   sta->addr, changed, sta->bandwidth, sta->rx_nss,
-+		   sta->smps_mode);
-+
-+	if (changed & IEEE80211_RC_BW_CHANGED) {
-+		bw = WMI_PEER_CHWIDTH_20MHZ;
-+
-+		switch (sta->bandwidth) {
-+		case IEEE80211_STA_RX_BW_20:
-+			bw = WMI_PEER_CHWIDTH_20MHZ;
-+			break;
-+		case IEEE80211_STA_RX_BW_40:
-+			bw = WMI_PEER_CHWIDTH_40MHZ;
-+			break;
-+		case IEEE80211_STA_RX_BW_80:
-+			bw = WMI_PEER_CHWIDTH_80MHZ;
-+			break;
-+		case IEEE80211_STA_RX_BW_160:
-+			ath10k_warn("mac sta rc update for %pM: invalid bw %d\n",
-+				    sta->addr, sta->bandwidth);
-+			bw = WMI_PEER_CHWIDTH_20MHZ;
-+			break;
-+		}
-+
-+		arsta->bw = bw;
++	ret = ath10k_setup_peer_smps(ar, arvif, bss_conf->bssid, &ht_cap);
++	if (ret) {
++		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
++		return;
 +	}
 +
-+	if (changed & IEEE80211_RC_NSS_CHANGED)
-+		arsta->nss = sta->rx_nss;
-+
-+	if (changed & IEEE80211_RC_SMPS_CHANGED) {
-+		smps = WMI_PEER_SMPS_PS_NONE;
-+
-+		switch (sta->smps_mode) {
-+		case IEEE80211_SMPS_AUTOMATIC:
-+		case IEEE80211_SMPS_OFF:
-+			smps = WMI_PEER_SMPS_PS_NONE;
-+			break;
-+		case IEEE80211_SMPS_STATIC:
-+			smps = WMI_PEER_SMPS_STATIC;
-+			break;
-+		case IEEE80211_SMPS_DYNAMIC:
-+			smps = WMI_PEER_SMPS_DYNAMIC;
-+			break;
-+		case IEEE80211_SMPS_NUM_MODES:
-+			ath10k_warn("mac sta rc update for %pM: invalid smps: %d\n",
-+				    sta->addr, sta->smps_mode);
-+			smps = WMI_PEER_SMPS_PS_NONE;
-+			break;
-+		}
-+
-+		arsta->smps = smps;
+ 	ath10k_dbg(ATH10K_DBG_MAC,
+ 		   "mac vdev %d up (associated) bssid %pM aid %d\n",
+ 		   arvif->vdev_id, bss_conf->bssid, bss_conf->aid);
+@@ -1485,6 +1511,12 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+ 		return ret;
+ 	}
+ 
++	ret = ath10k_setup_peer_smps(ar, arvif, sta->addr, &sta->ht_cap);
++	if (ret) {
++		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
++		return ret;
 +	}
 +
-+	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED) {
-+		/* FIXME: Not implemented. Probably the only way to do it would
-+		 * be to re-assoc the peer. */
-+		changed &= ~IEEE80211_RC_SUPP_RATES_CHANGED;
-+		ath10k_dbg(ATH10K_DBG_MAC,
-+			   "mac sta rc update for %pM: changing supported rates not implemented\n",
-+			   sta->addr);
-+	}
-+
-+	arsta->changed |= changed;
-+
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	ieee80211_queue_work(hw, &arsta->update_wk);
-+}
-+
- static const struct ieee80211_ops ath10k_ops = {
- 	.tx				= ath10k_tx,
- 	.start				= ath10k_start,
-@@ -3878,6 +4033,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.get_survey			= ath10k_get_survey,
- 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
- 	.channel_switch_beacon		= ath10k_channel_switch_beacon,
-+	.sta_rc_update			= ath10k_sta_rc_update,
- #ifdef CONFIG_PM
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
-@@ -4253,6 +4409,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ar->hw->wiphy->max_scan_ie_len = WLAN_SCAN_PARAMS_MAX_IE_LEN;
- 
- 	ar->hw->vif_data_size = sizeof(struct ath10k_vif);
-+	ar->hw->sta_data_size = sizeof(struct ath10k_sta);
- 
- 	ar->hw->max_listen_interval = ATH10K_MAX_HW_LISTEN_INTERVAL;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 083079f..6df4f95 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3876,6 +3876,12 @@ enum wmi_peer_smps_state {
- 	WMI_PEER_SMPS_DYNAMIC = 0x2
- };
- 
-+enum wmi_peer_chwidth {
-+	WMI_PEER_CHWIDTH_20MHZ = 0,
-+	WMI_PEER_CHWIDTH_40MHZ = 1,
-+	WMI_PEER_CHWIDTH_80MHZ = 2,
-+};
-+
- enum wmi_peer_param {
- 	WMI_PEER_SMPS_STATE = 0x1, /* see %wmi_peer_smps_state */
- 	WMI_PEER_AMPDU      = 0x2,
+ 	ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
+ 	if (ret) {
+ 		ath10k_warn("could not install peer wep keys (%d)\n", ret);
 -- 
 1.8.5.3
 
