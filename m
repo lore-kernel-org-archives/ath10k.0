@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WEZCm-0005qg-2P
- for ath10k@lists.infradead.org; Sat, 15 Feb 2014 06:58:28 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: implement sta_rc_update()
-References: <1392042915-11648-1-git-send-email-michal.kazior@tieto.com>
- <1392385788-3983-1-git-send-email-michal.kazior@tieto.com>
-Date: Sat, 15 Feb 2014 08:57:58 +0200
-In-Reply-To: <1392385788-3983-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 14 Feb 2014 14:49:48 +0100")
-Message-ID: <87ppmo50cp.fsf@kamboji.qca.qualcomm.com>
+ id 1WFIqk-0002UA-9B
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 07:42:47 +0000
+Received: by mail-bk0-f52.google.com with SMTP id e11so3985523bkh.25
+ for <ath10k@lists.infradead.org>; Sun, 16 Feb 2014 23:42:21 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <52FE3F35.4080308@candelatech.com>
+References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>
+ <52FE3F35.4080308@candelatech.com>
+Date: Mon, 17 Feb 2014 08:42:21 +0100
+Message-ID: <CA+BoTQ=cojyffQrTGmq7zgpfUNSBB9nrZEPpy5hsngnBW2j3pA@mail.gmail.com>
+Subject: Re: [RFC] wmi: Handle failure to start scan.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +22,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> This allows dynamic changes of bandwidth/nss/smps,
-> e.g. via ht/vht operation mode change
-> notification.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-Thanks, applied.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgRmVicnVhcnkgMjAxNCAxNzowNywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IE9uIDAyLzEzLzIwMTQgMTA6NDcgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
+dGU6Cj4+Cj4+IE9uIDEzIEZlYnJ1YXJ5IDIwMTQgMjA6MDksICA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+Pj4KPj4+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPgo+Pj4KPj4+IFByb3Blcmx5IGNsZWFuIHVwIGRyaXZlciBzdGF0ZSBpbiBjYXNlIGZp
+cm13YXJlIGZhaWxzCj4+PiB0byBzdGFydCBzY2FuIGZvciBzb21lIHJlYXNvbi4KPj4+Cj4+PiBT
+aWduZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+IC0t
+LQo+Pj4gICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jIHwgMjAgKysrKysr
+KysrKysrKysrKysrKy0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDEg
+ZGVsZXRpb24oLSkKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway93bWkuYwo+Pj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5j
+Cj4+PiBpbmRleCAyMGY3Yzc5Li5hNWJlMGQzIDEwMDY0NAo+Pj4gLS0tIGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+Pj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway93bWkuYwo+Pj4gQEAgLTc3MCw3ICs3NzAsMjUgQEAgc3RhdGljIGludCBhdGgx
+MGtfd21pX2V2ZW50X3NjYW4oc3RydWN0IGF0aDEwayAqYXIsCj4+PiBzdHJ1Y3Qgc2tfYnVmZiAq
+c2tiKQo+Pj4gICAgICAgICAgICAgICAgICBhdGgxMGtfZGJnKEFUSDEwS19EQkdfV01JLAo+Pj4g
+IldNSV9TQ0FOX0VWRU5UX1BSRUVNUFRFRFxuIik7Cj4+PiAgICAgICAgICAgICAgICAgIGJyZWFr
+Owo+Pj4gICAgICAgICAgY2FzZSBXTUlfU0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQ6Cj4+PiAtICAg
+ICAgICAgICAgICAgYXRoMTBrX2RiZyhBVEgxMEtfREJHX1dNSSwKPj4+ICJXTUlfU0NBTl9FVkVO
+VF9TVEFSVF9GQUlMRURcbiIpOwo+Pj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJXTUlf
+U0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQsIHJlYXNvbjogJWlcbiIsCj4+PiByZWFzb24pOwo+Pj4g
+Kwo+Pj4gKyAgICAgICAgICAgICAgIGFyLT5zY2FuX2NoYW5uZWwgPSBOVUxMOwo+Pj4gKyAgICAg
+ICAgICAgICAgIGlmICghYXItPnNjYW4uaW5fcHJvZ3Jlc3MpIHsKPj4+ICsgICAgICAgICAgICAg
+ICAgICAgICAgIGF0aDEwa193YXJuKCJzY2FuLXN0YXJ0LWZhaWxlZDogbm8gc2Nhbgo+Pj4gcmVx
+dWVzdGVkLCBpZ25vcmluZ1xuIik7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsK
+Pj4+ICsgICAgICAgICAgICAgICB9Cj4+PiArCj4+PiArICAgICAgICAgICAgICAgaWYgKGFyLT5z
+Y2FuLmlzX3JvYykgewo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX29mZmNoYW5f
+dHhfcHVyZ2UoYXIpOwo+Pj4gKwo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFhci0+
+c2Nhbi5hYm9ydGluZykKPj4+ICsKPj4+IGllZWU4MDIxMV9yZW1haW5fb25fY2hhbm5lbF9leHBp
+cmVkKGFyLT5odyk7Cj4+PiArICAgICAgICAgICAgICAgfSBlbHNlIHsKPj4+ICsgICAgICAgICAg
+ICAgICAgICAgICAgIGllZWU4MDIxMV9zY2FuX2NvbXBsZXRlZChhci0+aHcsCj4+PiBhci0+c2Nh
+bi5hYm9ydGluZyk7Cj4+PiArICAgICAgICAgICAgICAgfQo+Pj4gKwo+Pj4gKyAgICAgICAgICAg
+ICAgIGRlbF90aW1lcigmYXItPnNjYW4udGltZW91dCk7Cj4+PiArICAgICAgICAgICAgICAgYXIt
+PnNjYW4uaW5fcHJvZ3Jlc3MgPSBmYWxzZTsKPj4+ICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4+
+PiAgICAgICAgICBkZWZhdWx0Ogo+Pj4gICAgICAgICAgICAgICAgICBicmVhazsKPj4KPj4KPj4g
+V2UgYWxyZWFkeSB3YWl0IGZvciBFVkVOVF9TVEFSVEVEIGluIG1hYy5jIChzZWUgYXRoMTBrX3N0
+YXJ0X3NjYW4pIGFuZAo+PiBjbGVhbiB1cCBzdHVmZiAoYXRoMTBrX2Fib3J0X3NjYW4pLiBXaHkg
+bm90IGFkZCB0aGUgbWlzc2luZyBiaXRzIGluCj4+IHRoZXJlPyBPciBpcyBpdCBwb3NzaWJsZSB0
+byBnZXQgRVZFTlRfU1RBUlRfRkFJTEVEICphZnRlcioKPj4gRVZFTlRfU1RBUlRFRD8gT3IgYW0g
+SSBtaXNzaW5nIHNvbWV0aGluZyBlbHNlIGhlcmU/Cj4KPgo+IEkgdGhpbmsgYSBsb3Qgb2YgdGhp
+cyB3b3VsZCBiZSBmaXJtd2FyZSBkZXBlbmRlbnQsIGFuZCBtaWdodCBjaGFuZ2UgYmV0d2Vlbgo+
+IHZhcmlvdXMgdmVyc2lvbnMgb2YgdGhlIGZpcm13YXJlLgoKSXQgZG9lc24ndCBtYWtlIGFueSBz
+ZW5zZS4gVGhhdCB3b3VsZCBzdWdnZXN0IGEgcmVhbGx5IHVnbHkgZmlybXdhcmUKYnVnLiBEaWQg
+eW91IHNlZSB0aGlzIChpLmUuIFNUQVJUX0ZBSUxFRCBhZnRlciBTVEFSVEVEKSBvbiA2MzYgb3IK
+MTAuMS40Njc/CgoKPiBJdCBzZWVtcyB0byBtZSB3ZSBzaG91bGQgaGFuZGxlIHRoaXMgY2FzZSBh
+bmQgZG8gY2xlYW51cCBqdXN0IHRvIGJlIHNhZmUsCj4gYnV0IG1heWJlIGNsZWFudXAgaXMgbmVl
+ZGVkIGluIGZhaWx1cmUgY2FzZSBvZiBhdGgxMGtfc3RhcnRfc2NhbiBhcyB3ZWxsPwoKSWYgeW91
+IHJlYWxseSBnZXQgU1RBUlRfRkFJTEVEIHRoZW4geW91IHNob3VsZG4ndCBoYXZlIHJlY2VpdmVk
+ClNUQVJURUQgYmVmb3JlIHRoYXQuIGF0aDEwa19zdGFydF9zY2FuKCkgYWxyZWFkeSB3YWl0cyBm
+b3IgdGhlIFNUQVJURUQKZXZlbnQgd2l0aCBhIHRpbWVvdXQgYW5kIGlmIGl0IGZhaWxzIGl0IHRy
+aWdnZXJzIGEgY2xlYW51cC4gSWYgaXQKZG9lc24ndCB3b3JrIGZvciB5b3UgdGhlbiB3aGF0IHBl
+cmhhcHMgbmVlZHMgdG8gYmUgZml4ZWQgaXMgdGhlCmN1cnJlbnQgY2xlYW51cCBjb2RlPwoKCk1p
+Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
