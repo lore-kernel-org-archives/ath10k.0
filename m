@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFQhF-00034I-PW
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 16:05:30 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20140217
-Date: Mon, 17 Feb 2014 18:05:01 +0200
-Message-ID: <87txbx3etu.fsf@kamboji.qca.qualcomm.com>
+ id 1WFQmo-0003Ai-19
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 16:11:14 +0000
+Message-ID: <5302348A.9090700@candelatech.com>
+Date: Mon, 17 Feb 2014 08:10:50 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [RFC] wmi: Handle failure to start scan.
+References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>	<CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>	<52FE3F35.4080308@candelatech.com>
+ <CA+BoTQ=cojyffQrTGmq7zgpfUNSBB9nrZEPpy5hsngnBW2j3pA@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=cojyffQrTGmq7zgpfUNSBB9nrZEPpy5hsngnBW2j3pA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,111 +19,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi John,
+On 02/16/2014 11:42 PM, Michal Kazior wrote:
+> On 14 February 2014 17:07, Ben Greear <greearb@candelatech.com> wrote:
 
-here's a new pull request for ath6kl and ath10k. 
+>>> We already wait for EVENT_STARTED in mac.c (see ath10k_start_scan) and
+>>> clean up stuff (ath10k_abort_scan). Why not add the missing bits in
+>>> there? Or is it possible to get EVENT_START_FAILED *after*
+>>> EVENT_STARTED? Or am I missing something else here?
+>>
+>>
+>> I think a lot of this would be firmware dependent, and might change between
+>> various versions of the firmware.
+>
+> It doesn't make any sense. That would suggest a really ugly firmware
+> bug. Did you see this (i.e. START_FAILED after STARTED) on 636 or
+> 10.1.467?
 
-For ath10k Alexander did some cleanup to PCI error cases and switched
-ath10k to use pci_enable_msi_range(). Michal implemented AP CSA support
-and sta_rc_update() operation. I enabled firmware "STA quick kickout"
-functionality for faster detection of disappeared clients.
+I am working on a 10.1.389 release currently...will move forward when
+I can get access to newer source code.
 
-Also there are lots of small fixes to everywhere from various people.
 
-For ath6kl Julien did two small USB related fixes.
+>> It seems to me we should handle this case and do cleanup just to be safe,
+>> but maybe cleanup is needed in failure case of ath10k_start_scan as well?
+>
+> If you really get START_FAILED then you shouldn't have received
+> STARTED before that. ath10k_start_scan() already waits for the STARTED
+> event with a timeout and if it fails it triggers a cleanup. If it
+> doesn't work for you then what perhaps needs to be fixed is the
+> current cleanup code?
 
-Please let me know if there are any problmes
+I am not certain the patch is needed.  I was looking at my firmware and it
+appeared that I could hit the START_FAILED case, but perhaps it was not
+really possible, and maybe newer firmware keeps it from happening entirely.
 
-The following changes since commit 38dbfb59d1175ef458d006556061adeaa8751b72:
-
-  Linus 3.14-rc1 (2014-02-02 16:42:13 -0800)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git for-linville
-
-for you to fetch changes up to 9797febc4cc112869b19a110f70e0dedb1bb63d6:
-
-  ath10k: implement sta_rc_update() (2014-02-15 08:49:02 +0200)
-
-----------------------------------------------------------------
-Alexander Gordeev (3):
-      ath10k: Get rid of superfluous call to pci_disable_msi()
-      ath10k: Disable MSI in case IRQ configuration is unknown
-      ath10k: Use pci_enable_msi_range()
-
-Bartosz Markowski (2):
-      ath10k: remove excessive rx msdu len check
-      ath10k: AP: handle HT station which does not have HT RX MCS
-
-Ben Greear (4):
-      ath10k:  Print out firmware feature bits from IE.
-      ath10k: print out size of wmi-ready-event message
-      ath10k: add more debugging for receive errors
-      ath10k: better tx/rx debugging
-
-Chun-Yeow Yeoh (1):
-      ath10k: fix the printing of 10.x FW version when FW crashed
-
-Janusz Dziedzic (3):
-      ath10k: enable wmi ps peer param command for 10.x FW
-      ath10k: AP mode, set UAPSD params correctly
-      ath10k: pass frames with invalid peer status to upper layer
-
-Julien Massot (2):
-      ath6kl: increase usb rx buffer size to 4096
-      ath6kl: set rx urb count threshold to 1
-
-Kalle Valo (5):
-      ath10k: enable firmware STA quick kickout
-      Merge remote-tracking branch 'wireless-next/master' into ath-next
-      ath10k: fix alignment in ath10k_dbg()
-      ath: remove camel case from struct reg_dmn_pair_mapping
-      ath10k: release conf_mutex if vdev_start() fails
-
-Marek Kwaczynski (1):
-      ath10k: Set proper nss value for the peer
-
-Marek Puzyniak (3):
-      ath10k: configure access category for arp
-      ath10k: refactor suspend/resume functions
-      ath10k: suspend hardware before reset
-
-Michal Kazior (7):
-      ath10k: implement channel switching
-      ath10k: implement AP CSA
-      ath10k: implement and use new beacon method
-      ath10k: properly return err from start()
-      ath10k: fix device initialization routine
-      ath10k: fix SMPS support
-      ath10k: implement sta_rc_update()
-
- drivers/net/wireless/ath/ath.h           |    2 +-
- drivers/net/wireless/ath/ath10k/core.c   |   36 +-
- drivers/net/wireless/ath/ath10k/core.h   |   47 ++-
- drivers/net/wireless/ath/ath10k/debug.h  |    2 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c |   35 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
- drivers/net/wireless/ath/ath10k/hw.h     |    6 +
- drivers/net/wireless/ath/ath10k/mac.c    |  634 +++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/pci.c    |  147 ++++++-
- drivers/net/wireless/ath/ath10k/txrx.c   |    4 +-
- drivers/net/wireless/ath/ath10k/wmi.c    |  118 ++++--
- drivers/net/wireless/ath/ath10k/wmi.h    |   34 +-
- drivers/net/wireless/ath/ath6kl/usb.c    |    6 +-
- drivers/net/wireless/ath/ath6kl/wmi.c    |    4 +-
- drivers/net/wireless/ath/regd.c          |   10 +-
- 15 files changed, 895 insertions(+), 194 deletions(-)
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
