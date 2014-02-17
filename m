@@ -1,13 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFY4T-0001TX-By
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 23:57:58 +0000
-Message-ID: <5302A1EF.6060600@candelatech.com>
-Date: Mon, 17 Feb 2014 15:57:35 -0800
+ id 1WFU89-00020V-Ns
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 19:45:34 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1HJj4A1027004
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 11:45:04 -0800
+Message-ID: <530266C0.6000104@candelatech.com>
+Date: Mon, 17 Feb 2014 11:45:04 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: lockdep warning (needs annotation)
+Subject: Fwd: Question on how encryption keys are supposed to be handled.
+References: <53026685.7040303@candelatech.com>
+In-Reply-To: <53026685.7040303@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +27,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-I started seeing this today after synch-ing with upstream
-ath10k tree.
-
-Firmware is modified, and there are some patches to ath10k in my
-tree, but probably nothing that affects this.
+Just in case someone has investigated similar issues....
 
 
-INFO: trying to register non-static key.
-the code is fine but needs lockdep annotation.
-turning off the locking correctness validator.
-CPU: 1 PID: 213 Comm: kworker/u8:2 Tainted: G         C   3.14.0-rc2-wl-ath+ #11
-Hardware name: To be filled by O.E.M. To be filled by O.E.M./HURONRIVER, BIOS 4.6.5 05/02/2012
-Workqueue: phy0 ieee80211_iface_work [mac80211]
- 0000000000000000 ffff88020fd777e8 ffffffff815d0007 0000000000000006
- 0000000000000000 ffff88020fd77868 ffffffff810fb81e ffff88020fd77818
- ffffffff00000000 ffff880200000001 0000000000000002 0000000000000000
-Call Trace:
- [<ffffffff815d0007>] dump_stack+0x4e/0x71
- [<ffffffff810fb81e>] register_lock_class+0x11a/0x2f0
- [<ffffffff810fcc2b>] __lock_acquire+0xe0/0xe48
- [<ffffffff815d7592>] ? _raw_spin_unlock_irq+0x28/0x42
- [<ffffffff810fc966>] ? mark_lock+0x2d/0x212
- [<ffffffff810fc966>] ? mark_lock+0x2d/0x212
- [<ffffffff810fdd9f>] lock_acquire+0x82/0x9d
- [<ffffffff810d6abe>] ? queue_delayed_work_on+0x85/0x85
- [<ffffffff810d6b07>] flush_work+0x49/0x289
- [<ffffffff810d6abe>] ? queue_delayed_work_on+0x85/0x85
- [<ffffffff810fc966>] ? mark_lock+0x2d/0x212
- [<ffffffff810fe0a8>] ? mark_held_locks+0x71/0x99
- [<ffffffff810d8758>] ? __cancel_work_timer+0x89/0xbf
- [<ffffffff810d8769>] __cancel_work_timer+0x9a/0xbf
- [<ffffffff810d87a9>] cancel_work_sync+0xb/0xd
- [<ffffffffa0515b4b>] ath10k_sta_state+0x4b/0x48e [ath10k_core]
- [<ffffffffa030dbaa>] drv_sta_state+0x87/0x17b [mac80211]
- [<ffffffffa030f632>] __sta_info_destroy_part2+0xca/0x2a0 [mac80211]
- [<ffffffffa030f9b5>] __sta_info_destroy+0x25/0x2f [mac80211]
- [<ffffffffa030fb19>] sta_info_destroy_addr+0x39/0x59 [mac80211]
- [<ffffffffa0331eb0>] ieee80211_destroy_auth_data+0x31/0xbc [mac80211]
- [<ffffffffa0335382>] ieee80211_sta_work+0x16b/0xbe6 [mac80211]
- [<ffffffff810fe0a8>] ? mark_held_locks+0x71/0x99
- [<ffffffff815d75ec>] ? _raw_spin_unlock_irqrestore+0x40/0x5e
- [<ffffffff810fe215>] ? trace_hardirqs_on_caller+0x145/0x1a1
- [<ffffffff815d75f4>] ? _raw_spin_unlock_irqrestore+0x48/0x5e
- [<ffffffffa0319c4a>] ieee80211_iface_work+0x2a3/0x2c6 [mac80211]
- [<ffffffff810d7eb9>] process_one_work+0x1d7/0x2fc
- [<ffffffff810d7e4f>] ? process_one_work+0x16d/0x2fc
- [<ffffffff810d518c>] ? spin_lock_irq+0x9/0xb
- [<ffffffff810d83b1>] worker_thread+0x12e/0x1fb
- [<ffffffff810d8283>] ? rescuer_thread+0x27b/0x27b
- [<ffffffff810dd70d>] kthread+0xc4/0xcc
- [<ffffffff810dd649>] ? __kthread_parkme+0x5c/0x5c
- [<ffffffff815dc40c>] ret_from_fork+0x7c/0xb0
- [<ffffffff810dd649>] ? __kthread_parkme+0x5c/0x5c
+-------- Original Message --------
+Subject: Question on how encryption keys are supposed to be handled.
+Date: Mon, 17 Feb 2014 11:44:05 -0800
+From: Ben Greear <greearb@candelatech.com>
+Organization: Candela Technologies
+To: linux-wireless@vger.kernel.org <linux-wireless@vger.kernel.org>,        hostap@lists.shmoo.com <hostap@lists.shmoo.com>
+
+
+I've been debugging an issue where my ath10k firmware is running out of key
+objects to allocate.  This could be a simple issue in the firmware, but first I
+wanted to try to figure out how things are supposed to work.
+
+What I see in my firmware is that near time of association it allocates
+4 keys.  Two of them are multicast, and one of the multicast is index 0,
+the second is index 1.
+
+Then, some time later (probably on rekey), another multicast is added at index 2.
+
+After that, key space is exhausted so I see errors in the kernel logs about adding
+broadcast keys failing.
+
+TCP and UDP traffic continues to flow, but I am not testing multicast traffic,
+so maybe that would be failing.
+
+So, question is:  Is it expected that the mcast keys keep being added at increasing
+key indexes?  If so, what is the maximum index allowed?
+
+Is this something primarily controlled at the supplicant level?
 
 Thanks,
 Ben
@@ -82,6 +67,12 @@ Ben
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+HostAP mailing list
+HostAP@lists.shmoo.com
+http://lists.shmoo.com/mailman/listinfo/hostap
+
 
 
 _______________________________________________
