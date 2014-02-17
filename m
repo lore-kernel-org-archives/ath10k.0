@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFPi6-0000aI-LA
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 15:02:19 +0000
+ id 1WFQhF-00034I-PW
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 16:05:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 0/7] ath10k: performance improvements
-References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 17 Feb 2014 17:01:49 +0200
-In-Reply-To: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:36 +0100")
-Message-ID: <87y5193hr6.fsf@kamboji.qca.qualcomm.com>
+Subject: Pull request: ath 20140217
+Date: Mon, 17 Feb 2014 18:05:01 +0200
+Message-ID: <87txbx3etu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,40 +20,104 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi John,
 
-> These patches aim at reducing host CPU load and
-> thus improve performance on low-end systems.
->
-> In my setup I get a relative improvement of
-> 100mbps for both UDP Tx and Rx.
+here's a new pull request for ath6kl and ath10k. 
 
-Nice!
+For ath10k Alexander did some cleanup to PCI error cases and switched
+ath10k to use pci_enable_msi_range(). Michal implemented AP CSA support
+and sta_rc_update() operation. I enabled firmware "STA quick kickout"
+functionality for faster detection of disappeared clients.
 
->                Tx ----->
-> laptop:eth---eth:AP135:ath10k---ath10k:laptop
->                <----- Rx
->
->
-> Michal Kazior (7):
->   ath10k: remove DMA mapping wrappers
->   ath10k: remove is_aborted from skb_cb
->   ath10k: replace send_head() with tx_sg()
->   ath10k: bypass htc for htt tx path
->   ath10k: batch htt tx/rx completions
->   ath10k: remove pci completion list
->   ath10k: minimize coherent dma accesses
+Also there are lots of small fixes to everywhere from various people.
 
-I know this is RFC still, but I did some compilation tests and saw
-these:
+For ath6kl Julien did two small USB related fixes.
 
-drivers/net/wireless/ath/ath10k/htt_rx.c:274:17: warning: context imbalance in 'ath10k_htt_rx_amsdu_pop' - unexpected unlock
-drivers/net/wireless/ath/ath10k/htt_tx.c:436: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/htt_tx.c:493: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/htt_rx.c:1214: WARNING: line over 80 characters
+Please let me know if there are any problmes
+
+The following changes since commit 38dbfb59d1175ef458d006556061adeaa8751b72:
+
+  Linus 3.14-rc1 (2014-02-02 16:42:13 -0800)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git for-linville
+
+for you to fetch changes up to 9797febc4cc112869b19a110f70e0dedb1bb63d6:
+
+  ath10k: implement sta_rc_update() (2014-02-15 08:49:02 +0200)
+
+----------------------------------------------------------------
+Alexander Gordeev (3):
+      ath10k: Get rid of superfluous call to pci_disable_msi()
+      ath10k: Disable MSI in case IRQ configuration is unknown
+      ath10k: Use pci_enable_msi_range()
+
+Bartosz Markowski (2):
+      ath10k: remove excessive rx msdu len check
+      ath10k: AP: handle HT station which does not have HT RX MCS
+
+Ben Greear (4):
+      ath10k:  Print out firmware feature bits from IE.
+      ath10k: print out size of wmi-ready-event message
+      ath10k: add more debugging for receive errors
+      ath10k: better tx/rx debugging
+
+Chun-Yeow Yeoh (1):
+      ath10k: fix the printing of 10.x FW version when FW crashed
+
+Janusz Dziedzic (3):
+      ath10k: enable wmi ps peer param command for 10.x FW
+      ath10k: AP mode, set UAPSD params correctly
+      ath10k: pass frames with invalid peer status to upper layer
+
+Julien Massot (2):
+      ath6kl: increase usb rx buffer size to 4096
+      ath6kl: set rx urb count threshold to 1
+
+Kalle Valo (5):
+      ath10k: enable firmware STA quick kickout
+      Merge remote-tracking branch 'wireless-next/master' into ath-next
+      ath10k: fix alignment in ath10k_dbg()
+      ath: remove camel case from struct reg_dmn_pair_mapping
+      ath10k: release conf_mutex if vdev_start() fails
+
+Marek Kwaczynski (1):
+      ath10k: Set proper nss value for the peer
+
+Marek Puzyniak (3):
+      ath10k: configure access category for arp
+      ath10k: refactor suspend/resume functions
+      ath10k: suspend hardware before reset
+
+Michal Kazior (7):
+      ath10k: implement channel switching
+      ath10k: implement AP CSA
+      ath10k: implement and use new beacon method
+      ath10k: properly return err from start()
+      ath10k: fix device initialization routine
+      ath10k: fix SMPS support
+      ath10k: implement sta_rc_update()
+
+ drivers/net/wireless/ath/ath.h           |    2 +-
+ drivers/net/wireless/ath/ath10k/core.c   |   36 +-
+ drivers/net/wireless/ath/ath10k/core.h   |   47 ++-
+ drivers/net/wireless/ath/ath10k/debug.h  |    2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   35 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
+ drivers/net/wireless/ath/ath10k/hw.h     |    6 +
+ drivers/net/wireless/ath/ath10k/mac.c    |  634 +++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/pci.c    |  147 ++++++-
+ drivers/net/wireless/ath/ath10k/txrx.c   |    4 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  118 ++++--
+ drivers/net/wireless/ath/ath10k/wmi.h    |   34 +-
+ drivers/net/wireless/ath/ath6kl/usb.c    |    6 +-
+ drivers/net/wireless/ath/ath6kl/wmi.c    |    4 +-
+ drivers/net/wireless/ath/regd.c          |   10 +-
+ 15 files changed, 895 insertions(+), 194 deletions(-)
 
 -- 
 Kalle Valo
