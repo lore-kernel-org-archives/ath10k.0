@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x234.google.com ([2a00:1450:4008:c01::234])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFIqk-0002UA-9B
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 07:42:47 +0000
-Received: by mail-bk0-f52.google.com with SMTP id e11so3985523bkh.25
- for <ath10k@lists.infradead.org>; Sun, 16 Feb 2014 23:42:21 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <52FE3F35.4080308@candelatech.com>
-References: <1392318594-32540-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQmDCrmkB3FErCN-XDX6M_Vzk3BuAK3AXcNK00qePje7XA@mail.gmail.com>
- <52FE3F35.4080308@candelatech.com>
-Date: Mon, 17 Feb 2014 08:42:21 +0100
-Message-ID: <CA+BoTQ=cojyffQrTGmq7zgpfUNSBB9nrZEPpy5hsngnBW2j3pA@mail.gmail.com>
-Subject: Re: [RFC] wmi: Handle failure to start scan.
+ id 1WFKeT-0006pS-BO
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 09:38:14 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b15so6966456eek.1
+ for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 01:37:51 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC/RFT 0/7] ath10k: performance improvements
+Date: Mon, 17 Feb 2014 10:32:36 +0100
+Message-Id: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +17,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTQgRmVicnVhcnkgMjAxNCAxNzowNywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IE9uIDAyLzEzLzIwMTQgMTA6NDcgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
-dGU6Cj4+Cj4+IE9uIDEzIEZlYnJ1YXJ5IDIwMTQgMjA6MDksICA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+Pj4KPj4+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPgo+Pj4KPj4+IFByb3Blcmx5IGNsZWFuIHVwIGRyaXZlciBzdGF0ZSBpbiBjYXNlIGZp
-cm13YXJlIGZhaWxzCj4+PiB0byBzdGFydCBzY2FuIGZvciBzb21lIHJlYXNvbi4KPj4+Cj4+PiBT
-aWduZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+IC0t
-LQo+Pj4gICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jIHwgMjAgKysrKysr
-KysrKysrKysrKysrKy0KPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDE5IGluc2VydGlvbnMoKyksIDEg
-ZGVsZXRpb24oLSkKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway93bWkuYwo+Pj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5j
-Cj4+PiBpbmRleCAyMGY3Yzc5Li5hNWJlMGQzIDEwMDY0NAo+Pj4gLS0tIGEvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+Pj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway93bWkuYwo+Pj4gQEAgLTc3MCw3ICs3NzAsMjUgQEAgc3RhdGljIGludCBhdGgx
-MGtfd21pX2V2ZW50X3NjYW4oc3RydWN0IGF0aDEwayAqYXIsCj4+PiBzdHJ1Y3Qgc2tfYnVmZiAq
-c2tiKQo+Pj4gICAgICAgICAgICAgICAgICBhdGgxMGtfZGJnKEFUSDEwS19EQkdfV01JLAo+Pj4g
-IldNSV9TQ0FOX0VWRU5UX1BSRUVNUFRFRFxuIik7Cj4+PiAgICAgICAgICAgICAgICAgIGJyZWFr
-Owo+Pj4gICAgICAgICAgY2FzZSBXTUlfU0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQ6Cj4+PiAtICAg
-ICAgICAgICAgICAgYXRoMTBrX2RiZyhBVEgxMEtfREJHX1dNSSwKPj4+ICJXTUlfU0NBTl9FVkVO
-VF9TVEFSVF9GQUlMRURcbiIpOwo+Pj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJXTUlf
-U0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQsIHJlYXNvbjogJWlcbiIsCj4+PiByZWFzb24pOwo+Pj4g
-Kwo+Pj4gKyAgICAgICAgICAgICAgIGFyLT5zY2FuX2NoYW5uZWwgPSBOVUxMOwo+Pj4gKyAgICAg
-ICAgICAgICAgIGlmICghYXItPnNjYW4uaW5fcHJvZ3Jlc3MpIHsKPj4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgIGF0aDEwa193YXJuKCJzY2FuLXN0YXJ0LWZhaWxlZDogbm8gc2Nhbgo+Pj4gcmVx
-dWVzdGVkLCBpZ25vcmluZ1xuIik7Cj4+PiArICAgICAgICAgICAgICAgICAgICAgICBicmVhazsK
-Pj4+ICsgICAgICAgICAgICAgICB9Cj4+PiArCj4+PiArICAgICAgICAgICAgICAgaWYgKGFyLT5z
-Y2FuLmlzX3JvYykgewo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX29mZmNoYW5f
-dHhfcHVyZ2UoYXIpOwo+Pj4gKwo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgaWYgKCFhci0+
-c2Nhbi5hYm9ydGluZykKPj4+ICsKPj4+IGllZWU4MDIxMV9yZW1haW5fb25fY2hhbm5lbF9leHBp
-cmVkKGFyLT5odyk7Cj4+PiArICAgICAgICAgICAgICAgfSBlbHNlIHsKPj4+ICsgICAgICAgICAg
-ICAgICAgICAgICAgIGllZWU4MDIxMV9zY2FuX2NvbXBsZXRlZChhci0+aHcsCj4+PiBhci0+c2Nh
-bi5hYm9ydGluZyk7Cj4+PiArICAgICAgICAgICAgICAgfQo+Pj4gKwo+Pj4gKyAgICAgICAgICAg
-ICAgIGRlbF90aW1lcigmYXItPnNjYW4udGltZW91dCk7Cj4+PiArICAgICAgICAgICAgICAgYXIt
-PnNjYW4uaW5fcHJvZ3Jlc3MgPSBmYWxzZTsKPj4+ICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4+
-PiAgICAgICAgICBkZWZhdWx0Ogo+Pj4gICAgICAgICAgICAgICAgICBicmVhazsKPj4KPj4KPj4g
-V2UgYWxyZWFkeSB3YWl0IGZvciBFVkVOVF9TVEFSVEVEIGluIG1hYy5jIChzZWUgYXRoMTBrX3N0
-YXJ0X3NjYW4pIGFuZAo+PiBjbGVhbiB1cCBzdHVmZiAoYXRoMTBrX2Fib3J0X3NjYW4pLiBXaHkg
-bm90IGFkZCB0aGUgbWlzc2luZyBiaXRzIGluCj4+IHRoZXJlPyBPciBpcyBpdCBwb3NzaWJsZSB0
-byBnZXQgRVZFTlRfU1RBUlRfRkFJTEVEICphZnRlcioKPj4gRVZFTlRfU1RBUlRFRD8gT3IgYW0g
-SSBtaXNzaW5nIHNvbWV0aGluZyBlbHNlIGhlcmU/Cj4KPgo+IEkgdGhpbmsgYSBsb3Qgb2YgdGhp
-cyB3b3VsZCBiZSBmaXJtd2FyZSBkZXBlbmRlbnQsIGFuZCBtaWdodCBjaGFuZ2UgYmV0d2Vlbgo+
-IHZhcmlvdXMgdmVyc2lvbnMgb2YgdGhlIGZpcm13YXJlLgoKSXQgZG9lc24ndCBtYWtlIGFueSBz
-ZW5zZS4gVGhhdCB3b3VsZCBzdWdnZXN0IGEgcmVhbGx5IHVnbHkgZmlybXdhcmUKYnVnLiBEaWQg
-eW91IHNlZSB0aGlzIChpLmUuIFNUQVJUX0ZBSUxFRCBhZnRlciBTVEFSVEVEKSBvbiA2MzYgb3IK
-MTAuMS40Njc/CgoKPiBJdCBzZWVtcyB0byBtZSB3ZSBzaG91bGQgaGFuZGxlIHRoaXMgY2FzZSBh
-bmQgZG8gY2xlYW51cCBqdXN0IHRvIGJlIHNhZmUsCj4gYnV0IG1heWJlIGNsZWFudXAgaXMgbmVl
-ZGVkIGluIGZhaWx1cmUgY2FzZSBvZiBhdGgxMGtfc3RhcnRfc2NhbiBhcyB3ZWxsPwoKSWYgeW91
-IHJlYWxseSBnZXQgU1RBUlRfRkFJTEVEIHRoZW4geW91IHNob3VsZG4ndCBoYXZlIHJlY2VpdmVk
-ClNUQVJURUQgYmVmb3JlIHRoYXQuIGF0aDEwa19zdGFydF9zY2FuKCkgYWxyZWFkeSB3YWl0cyBm
-b3IgdGhlIFNUQVJURUQKZXZlbnQgd2l0aCBhIHRpbWVvdXQgYW5kIGlmIGl0IGZhaWxzIGl0IHRy
-aWdnZXJzIGEgY2xlYW51cC4gSWYgaXQKZG9lc24ndCB3b3JrIGZvciB5b3UgdGhlbiB3aGF0IHBl
-cmhhcHMgbmVlZHMgdG8gYmUgZml4ZWQgaXMgdGhlCmN1cnJlbnQgY2xlYW51cCBjb2RlPwoKCk1p
-Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi,
+
+These patches aim at reducing host CPU load and
+thus improve performance on low-end systems.
+
+In my setup I get a relative improvement of
+100mbps for both UDP Tx and Rx.
+
+               Tx ----->
+laptop:eth---eth:AP135:ath10k---ath10k:laptop
+               <----- Rx
+
+
+Michal Kazior (7):
+  ath10k: remove DMA mapping wrappers
+  ath10k: remove is_aborted from skb_cb
+  ath10k: replace send_head() with tx_sg()
+  ath10k: bypass htc for htt tx path
+  ath10k: batch htt tx/rx completions
+  ath10k: remove pci completion list
+  ath10k: minimize coherent dma accesses
+
+ drivers/net/wireless/ath/ath10k/ce.c     |  16 +-
+ drivers/net/wireless/ath/ath10k/ce.h     |   9 +-
+ drivers/net/wireless/ath/ath10k/core.h   |  33 +--
+ drivers/net/wireless/ath/ath10k/hif.h    |  25 +-
+ drivers/net/wireless/ath/ath10k/htc.c    |  25 +-
+ drivers/net/wireless/ath/ath10k/htt.h    |  16 ++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 152 +++++++-----
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 207 ++++++++--------
+ drivers/net/wireless/ath/ath10k/mac.c    |   4 +-
+ drivers/net/wireless/ath/ath10k/pci.c    | 389 +++++++------------------------
+ drivers/net/wireless/ath/ath10k/pci.h    |  28 ---
+ drivers/net/wireless/ath/ath10k/txrx.c   |  15 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  17 +-
+ 13 files changed, 382 insertions(+), 554 deletions(-)
+
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
