@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFKed-0006q0-NW
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 09:38:24 +0000
-Received: by mail-ea0-f169.google.com with SMTP id h10so7131943eak.0
- for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 01:38:01 -0800 (PST)
+ id 1WFKlq-0007A9-T5
+ for ath10k@lists.infradead.org; Mon, 17 Feb 2014 09:45:52 +0000
+Received: by mail-ee0-f54.google.com with SMTP id e53so6970499eek.27
+ for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 01:45:29 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC/RFT 5/7] ath10k: batch htt tx/rx completions
-Date: Mon, 17 Feb 2014 10:32:41 +0100
-Message-Id: <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
+Subject: [RFC/RFT 6/7] ath10k: remove pci completion list
+Date: Mon, 17 Feb 2014 10:32:42 +0100
+Message-Id: <1392629563-31046-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,327 +27,453 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-HTT Rx endpoint processes both frame rx
-indications and frame tx completion indications.
+One of the premises was to guarantee serialized
+completion handling for upper layers
+(HTC/WMI/HTT). Since quite some time now it is no
+longer necessary.
 
-Those completions typically come in batches and
-may be mixed so it makes sense to defer processing
-hoping to get a bunch of them and take advantage
-of hot caches.
+The other premise was to batch up tx/rx
+completions to take advantage of hot caches.
+However frame tx/rx completion indications come in
+on a single pipe already so they are already
+batched up. More meaningful batching is done in
+HTT itself.
+
+This means PCI completion is no longer necessary
+to keep around. It just wastes memory, cycles and
+SLOC.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |   8 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 138 +++++++++++++++++++++----------
- drivers/net/wireless/ath/ath10k/htt_tx.c |   5 +-
- drivers/net/wireless/ath/ath10k/txrx.c   |   4 +-
- 4 files changed, 107 insertions(+), 48 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 275 +++-------------------------------
+ drivers/net/wireless/ath/ath10k/pci.h |  28 ----
+ 2 files changed, 24 insertions(+), 279 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 782a449..c36151c 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1282,6 +1282,12 @@ struct ath10k_htt {
- 	 * used to avoid further failures */
- 	bool rx_confused;
- 	struct tasklet_struct rx_replenish_task;
-+
-+	/* This is used to group tx/rx completions separately and process them
-+	 * in batches to reduce cache stalls */
-+	struct tasklet_struct txrx_compl_task;
-+	struct sk_buff_head tx_compl_q;
-+	struct sk_buff_head rx_compl_q;
- };
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 2305d58..9d242d8 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -58,7 +58,6 @@ static DEFINE_PCI_DEVICE_TABLE(ath10k_pci_id_table) = {
+ static int ath10k_pci_diag_read_access(struct ath10k *ar, u32 address,
+ 				       u32 *data);
  
- #define RX_HTT_HDR_STATUS_LEN 64
-@@ -1353,4 +1359,6 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
- int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
-+void ath10k_htt_txrx_compl_task(unsigned long ptr);
-+
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 371bed6..d3051e3 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -237,6 +237,10 @@ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
+-static void ath10k_pci_process_ce(struct ath10k *ar);
+ static int ath10k_pci_post_rx(struct ath10k *ar);
+ static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
+ 					     int num);
+@@ -73,7 +72,6 @@ static void ath10k_pci_free_irq(struct ath10k *ar);
+ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+ 			       struct ath10k_ce_pipe *rx_pipe,
+ 			       struct bmi_xfer *xfer);
+-static void ath10k_pci_cleanup_ce(struct ath10k *ar);
  
- 	del_timer_sync(&htt->rx_ring.refill_retry_timer);
- 	tasklet_kill(&htt->rx_replenish_task);
-+	tasklet_kill(&htt->txrx_compl_task);
-+
-+	skb_queue_purge(&htt->tx_compl_q);
-+	skb_queue_purge(&htt->rx_compl_q);
- 
- 	while (sw_rd_idx != __le32_to_cpu(*(htt->rx_ring.alloc_idx.vaddr))) {
- 		struct sk_buff *skb =
-@@ -270,7 +274,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	int idx;
- 	struct sk_buff *msdu;
- 
--	spin_lock_bh(&htt->rx_ring.lock);
-+	lockdep_assert_held(&htt->rx_ring.lock);
- 
- 	if (ath10k_htt_rx_ring_elems(htt) == 0)
- 		ath10k_warn("htt rx ring is empty!\n");
-@@ -283,7 +287,6 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
- 	htt->rx_ring.fill_cnt--;
- 
--	spin_unlock_bh(&htt->rx_ring.lock);
- 	return msdu;
- }
- 
-@@ -307,6 +310,8 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 	struct sk_buff *msdu;
- 	struct htt_rx_desc *rx_desc;
- 
-+	lockdep_assert_held(&htt->rx_ring.lock);
-+
- 	if (ath10k_htt_rx_ring_elems(htt) == 0)
- 		ath10k_warn("htt rx ring is empty!\n");
- 
-@@ -529,6 +534,12 @@ int ath10k_htt_rx_attach(struct ath10k_htt *htt)
- 	tasklet_init(&htt->rx_replenish_task, ath10k_htt_rx_replenish_task,
- 		     (unsigned long)htt);
- 
-+	skb_queue_head_init(&htt->tx_compl_q);
-+	skb_queue_head_init(&htt->rx_compl_q);
-+
-+	tasklet_init(&htt->txrx_compl_task, ath10k_htt_txrx_compl_task,
-+		     (unsigned long)htt);
-+
- 	ath10k_dbg(ATH10K_DBG_BOOT, "htt rx ring size %d fill_level %d\n",
- 		   htt->rx_ring.size, htt->rx_ring.fill_level);
- 	return 0;
-@@ -888,6 +899,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 	u8 *fw_desc;
- 	int i, j;
- 
-+	lockdep_assert_held(&htt->rx_ring.lock);
-+
- 	memset(&info, 0, sizeof(info));
- 
- 	fw_desc_len = __le16_to_cpu(rx->prefix.fw_rx_desc_bytes);
-@@ -1024,8 +1037,11 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 
- 	msdu_head = NULL;
- 	msdu_tail = NULL;
-+
-+	spin_lock_bh(&htt->rx_ring.lock);
- 	msdu_chaining = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
- 						&msdu_head, &msdu_tail);
-+	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	ath10k_dbg(ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
- 
-@@ -1117,6 +1133,45 @@ end:
+ static const struct ce_attr host_ce_config_wlan[] = {
+ 	/* CE0: host->target HTC control and raw streams */
+@@ -678,34 +676,12 @@ void ath10k_do_pci_sleep(struct ath10k *ar)
  	}
  }
  
-+static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
-+				       struct sk_buff *skb)
-+{
-+	struct ath10k_htt *htt = &ar->htt;
-+	struct htt_resp *resp = (struct htt_resp *)skb->data;
-+	struct htt_tx_done tx_done = {};
-+	int status = MS(resp->data_tx_completion.flags, HTT_DATA_TX_STATUS);
-+	__le16 msdu_id;
-+	int i;
-+
-+	lockdep_assert_held(&htt->tx_lock);
-+
-+	switch (status) {
-+	case HTT_DATA_TX_STATUS_NO_ACK:
-+		tx_done.no_ack = true;
-+		break;
-+	case HTT_DATA_TX_STATUS_OK:
-+		break;
-+	case HTT_DATA_TX_STATUS_DISCARD:
-+	case HTT_DATA_TX_STATUS_POSTPONE:
-+	case HTT_DATA_TX_STATUS_DOWNLOAD_FAIL:
-+		tx_done.discard = true;
-+		break;
-+	default:
-+		ath10k_warn("unhandled tx completion status %d\n", status);
-+		tx_done.discard = true;
-+		break;
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_HTT, "htt tx completion num_msdus %d\n",
-+		   resp->data_tx_completion.num_msdus);
-+
-+	for (i = 0; i < resp->data_tx_completion.num_msdus; i++) {
-+		msdu_id = resp->data_tx_completion.msdus[i];
-+		tx_done.msdu_id = __le16_to_cpu(msdu_id);
-+		ath10k_txrx_tx_unref(htt, &tx_done);
-+	}
-+}
-+
- void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
-@@ -1135,10 +1190,12 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		complete(&htt->target_version_received);
- 		break;
- 	}
--	case HTT_T2H_MSG_TYPE_RX_IND: {
--		ath10k_htt_rx_handler(htt, &resp->rx_ind);
--		break;
--	}
-+	case HTT_T2H_MSG_TYPE_RX_IND:
-+		spin_lock_bh(&htt->rx_ring.lock);
-+		__skb_queue_tail(&htt->rx_compl_q, skb);
-+		spin_unlock_bh(&htt->rx_ring.lock);
-+		tasklet_schedule(&htt->txrx_compl_task);
-+		return;
- 	case HTT_T2H_MSG_TYPE_PEER_MAP: {
- 		struct htt_peer_map_event ev = {
- 			.vdev_id = resp->peer_map.vdev_id,
-@@ -1156,11 +1213,11 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION: {
-+		struct htt_resp *resp = (struct htt_resp *)skb->data;
- 		struct htt_tx_done tx_done = {};
- 		int status = __le32_to_cpu(resp->mgmt_tx_completion.status);
- 
--		tx_done.msdu_id =
--			__le32_to_cpu(resp->mgmt_tx_completion.desc_id);
-+		tx_done.msdu_id = __le32_to_cpu(resp->mgmt_tx_completion.desc_id);
- 
- 		switch (status) {
- 		case HTT_MGMT_TX_STATUS_OK:
-@@ -1173,44 +1230,17 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 			break;
- 		}
- 
-+		spin_lock_bh(&htt->tx_lock);
- 		ath10k_txrx_tx_unref(htt, &tx_done);
-+		spin_unlock_bh(&htt->tx_lock);
- 		break;
- 	}
--	case HTT_T2H_MSG_TYPE_TX_COMPL_IND: {
--		struct htt_tx_done tx_done = {};
--		int status = MS(resp->data_tx_completion.flags,
--				HTT_DATA_TX_STATUS);
--		__le16 msdu_id;
--		int i;
+-/*
+- * FIXME: Handle OOM properly.
+- */
+-static inline
+-struct ath10k_pci_compl *get_free_compl(struct ath10k_pci_pipe *pipe_info)
+-{
+-	struct ath10k_pci_compl *compl = NULL;
 -
--		switch (status) {
--		case HTT_DATA_TX_STATUS_NO_ACK:
--			tx_done.no_ack = true;
+-	spin_lock_bh(&pipe_info->pipe_lock);
+-	if (list_empty(&pipe_info->compl_free)) {
+-		ath10k_warn("Completion buffers are full\n");
+-		goto exit;
+-	}
+-	compl = list_first_entry(&pipe_info->compl_free,
+-				 struct ath10k_pci_compl, list);
+-	list_del(&compl->list);
+-exit:
+-	spin_unlock_bh(&pipe_info->pipe_lock);
+-	return compl;
+-}
+-
+ /* Called by lower (CE) layer when a send to Target completes. */
+ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_pipe *pipe_info =  &ar_pci->pipe_info[ce_state->id];
+-	struct ath10k_pci_compl *compl;
++	struct ath10k_hif_cb *cb = &ar_pci->msg_callbacks_current;
+ 	void *transfer_context;
+ 	u32 ce_data;
+ 	unsigned int nbytes;
+@@ -718,27 +694,8 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
+ 		if (transfer_context == NULL)
+ 			continue;
+ 
+-		compl = get_free_compl(pipe_info);
+-		if (!compl)
 -			break;
--		case HTT_DATA_TX_STATUS_OK:
+-
+-		compl->state = ATH10K_PCI_COMPL_SEND;
+-		compl->ce_state = ce_state;
+-		compl->pipe_info = pipe_info;
+-		compl->skb = transfer_context;
+-		compl->nbytes = nbytes;
+-		compl->transfer_id = transfer_id;
+-		compl->flags = 0;
+-
+-		/*
+-		 * Add the completion to the processing queue.
+-		 */
+-		spin_lock_bh(&ar_pci->compl_lock);
+-		list_add_tail(&compl->list, &ar_pci->compl_process);
+-		spin_unlock_bh(&ar_pci->compl_lock);
++		cb->tx_completion(ar, transfer_context, transfer_id);
+ 	}
+-
+-	ath10k_pci_process_ce(ar);
+ }
+ 
+ /* Called by lower (CE) layer when data is received from the Target. */
+@@ -747,42 +704,40 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	struct ath10k_pci_pipe *pipe_info =  &ar_pci->pipe_info[ce_state->id];
+-	struct ath10k_pci_compl *compl;
++	struct ath10k_hif_cb *cb = &ar_pci->msg_callbacks_current;
+ 	struct sk_buff *skb;
+ 	void *transfer_context;
+ 	u32 ce_data;
+-	unsigned int nbytes;
++	unsigned int nbytes, max_nbytes;
+ 	unsigned int transfer_id;
+ 	unsigned int flags;
++	int err;
+ 
+ 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
+ 					     &ce_data, &nbytes, &transfer_id,
+ 					     &flags) == 0) {
+-		compl = get_free_compl(pipe_info);
+-		if (!compl)
 -			break;
--		case HTT_DATA_TX_STATUS_DISCARD:
--		case HTT_DATA_TX_STATUS_POSTPONE:
--		case HTT_DATA_TX_STATUS_DOWNLOAD_FAIL:
--			tx_done.discard = true;
+-
+-		compl->state = ATH10K_PCI_COMPL_RECV;
+-		compl->ce_state = ce_state;
+-		compl->pipe_info = pipe_info;
+-		compl->skb = transfer_context;
+-		compl->nbytes = nbytes;
+-		compl->transfer_id = transfer_id;
+-		compl->flags = flags;
++		err = ath10k_pci_post_rx_pipe(pipe_info, 1);
++		if (unlikely(err)) {
++			/* FIXME: retry */
++			ath10k_warn("failed to replenish CE rx ring %d: %d\n",
++				    pipe_info->pipe_num, err);
++		}
+ 
+ 		skb = transfer_context;
++		max_nbytes = skb->len + skb_tailroom(skb);
+ 		dma_unmap_single(ar->dev, ATH10K_SKB_CB(skb)->paddr,
+-				 skb->len + skb_tailroom(skb),
+-				 DMA_FROM_DEVICE);
+-		/*
+-		 * Add the completion to the processing queue.
+-		 */
+-		spin_lock_bh(&ar_pci->compl_lock);
+-		list_add_tail(&compl->list, &ar_pci->compl_process);
+-		spin_unlock_bh(&ar_pci->compl_lock);
+-	}
++				 max_nbytes, DMA_FROM_DEVICE);
+ 
+-	ath10k_pci_process_ce(ar);
++		if (unlikely(max_nbytes < nbytes)) {
++			ath10k_warn("rxed more than expected (nbytes %d, max %d)",
++				    nbytes, max_nbytes);
++			dev_kfree_skb_any(skb);
++			continue;
++		}
++
++		skb_put(skb, nbytes);
++		cb->rx_completion(ar, skb, pipe_info->pipe_num);
++	}
+ }
+ 
+ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+@@ -931,52 +886,6 @@ static void ath10k_pci_hif_set_callbacks(struct ath10k *ar,
+ 	       sizeof(ar_pci->msg_callbacks_current));
+ }
+ 
+-static int ath10k_pci_alloc_compl(struct ath10k *ar)
+-{
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	const struct ce_attr *attr;
+-	struct ath10k_pci_pipe *pipe_info;
+-	struct ath10k_pci_compl *compl;
+-	int i, pipe_num, completions;
+-
+-	spin_lock_init(&ar_pci->compl_lock);
+-	INIT_LIST_HEAD(&ar_pci->compl_process);
+-
+-	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+-		pipe_info = &ar_pci->pipe_info[pipe_num];
+-
+-		spin_lock_init(&pipe_info->pipe_lock);
+-		INIT_LIST_HEAD(&pipe_info->compl_free);
+-
+-		/* Handle Diagnostic CE specially */
+-		if (pipe_info->ce_hdl == ar_pci->ce_diag)
+-			continue;
+-
+-		attr = &host_ce_config_wlan[pipe_num];
+-		completions = 0;
+-
+-		if (attr->src_nentries)
+-			completions += attr->src_nentries;
+-
+-		if (attr->dest_nentries)
+-			completions += attr->dest_nentries;
+-
+-		for (i = 0; i < completions; i++) {
+-			compl = kmalloc(sizeof(*compl), GFP_KERNEL);
+-			if (!compl) {
+-				ath10k_warn("No memory for completion state\n");
+-				ath10k_pci_cleanup_ce(ar);
+-				return -ENOMEM;
+-			}
+-
+-			compl->state = ATH10K_PCI_COMPL_FREE;
+-			list_add_tail(&compl->list, &pipe_info->compl_free);
+-		}
+-	}
+-
+-	return 0;
+-}
+-
+ static int ath10k_pci_setup_ce_irq(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -1021,131 +930,6 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
+ 		tasklet_kill(&ar_pci->pipe_info[i].intr);
+ }
+ 
+-static void ath10k_pci_cleanup_ce(struct ath10k *ar)
+-{
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_compl *compl, *tmp;
+-	struct ath10k_pci_pipe *pipe_info;
+-	struct sk_buff *netbuf;
+-	int pipe_num;
+-
+-	/* Free pending completions. */
+-	spin_lock_bh(&ar_pci->compl_lock);
+-	if (!list_empty(&ar_pci->compl_process))
+-		ath10k_warn("pending completions still present! possible memory leaks.\n");
+-
+-	list_for_each_entry_safe(compl, tmp, &ar_pci->compl_process, list) {
+-		list_del(&compl->list);
+-		netbuf = compl->skb;
+-		dev_kfree_skb_any(netbuf);
+-		kfree(compl);
+-	}
+-	spin_unlock_bh(&ar_pci->compl_lock);
+-
+-	/* Free unused completions for each pipe. */
+-	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
+-		pipe_info = &ar_pci->pipe_info[pipe_num];
+-
+-		spin_lock_bh(&pipe_info->pipe_lock);
+-		list_for_each_entry_safe(compl, tmp,
+-					 &pipe_info->compl_free, list) {
+-			list_del(&compl->list);
+-			kfree(compl);
+-		}
+-		spin_unlock_bh(&pipe_info->pipe_lock);
+-	}
+-}
+-
+-static void ath10k_pci_process_ce(struct ath10k *ar)
+-{
+-	struct ath10k_pci *ar_pci = ar->hif.priv;
+-	struct ath10k_hif_cb *cb = &ar_pci->msg_callbacks_current;
+-	struct ath10k_pci_compl *compl;
+-	struct sk_buff *skb;
+-	unsigned int nbytes;
+-	int ret, send_done = 0;
+-
+-	/* Upper layers aren't ready to handle tx/rx completions in parallel so
+-	 * we must serialize all completion processing. */
+-
+-	spin_lock_bh(&ar_pci->compl_lock);
+-	if (ar_pci->compl_processing) {
+-		spin_unlock_bh(&ar_pci->compl_lock);
+-		return;
+-	}
+-	ar_pci->compl_processing = true;
+-	spin_unlock_bh(&ar_pci->compl_lock);
+-
+-	for (;;) {
+-		spin_lock_bh(&ar_pci->compl_lock);
+-		if (list_empty(&ar_pci->compl_process)) {
+-			spin_unlock_bh(&ar_pci->compl_lock);
+-			break;
+-		}
+-		compl = list_first_entry(&ar_pci->compl_process,
+-					 struct ath10k_pci_compl, list);
+-		list_del(&compl->list);
+-		spin_unlock_bh(&ar_pci->compl_lock);
+-
+-		switch (compl->state) {
+-		case ATH10K_PCI_COMPL_SEND:
+-			cb->tx_completion(ar,
+-					  compl->skb,
+-					  compl->transfer_id);
+-			send_done = 1;
+-			break;
+-		case ATH10K_PCI_COMPL_RECV:
+-			ret = ath10k_pci_post_rx_pipe(compl->pipe_info, 1);
+-			if (ret) {
+-				ath10k_warn("failed to post RX buffer for pipe %d: %d\n",
+-					    compl->pipe_info->pipe_num, ret);
+-				break;
+-			}
+-
+-			skb = compl->skb;
+-			nbytes = compl->nbytes;
+-
+-			ath10k_dbg(ATH10K_DBG_PCI,
+-				   "ath10k_pci_ce_recv_data netbuf=%p  nbytes=%d\n",
+-				   skb, nbytes);
+-			ath10k_dbg_dump(ATH10K_DBG_PCI_DUMP, NULL,
+-					"ath10k rx: ", skb->data, nbytes);
+-
+-			if (skb->len + skb_tailroom(skb) >= nbytes) {
+-				skb_trim(skb, 0);
+-				skb_put(skb, nbytes);
+-				cb->rx_completion(ar, skb,
+-						  compl->pipe_info->pipe_num);
+-			} else {
+-				ath10k_warn("rxed more than expected (nbytes %d, max %d)",
+-					    nbytes,
+-					    skb->len + skb_tailroom(skb));
+-			}
+-			break;
+-		case ATH10K_PCI_COMPL_FREE:
+-			ath10k_warn("free completion cannot be processed\n");
 -			break;
 -		default:
--			ath10k_warn("unhandled tx completion status %d\n",
--				    status);
--			tx_done.discard = true;
+-			ath10k_warn("invalid completion state (%d)\n",
+-				    compl->state);
 -			break;
 -		}
 -
--		ath10k_dbg(ATH10K_DBG_HTT, "htt tx completion num_msdus %d\n",
--			   resp->data_tx_completion.num_msdus);
+-		compl->state = ATH10K_PCI_COMPL_FREE;
 -
--		for (i = 0; i < resp->data_tx_completion.num_msdus; i++) {
--			msdu_id = resp->data_tx_completion.msdus[i];
--			tx_done.msdu_id = __le16_to_cpu(msdu_id);
--			ath10k_txrx_tx_unref(htt, &tx_done);
--		}
--		break;
+-		/*
+-		 * Add completion back to the pipe's free list.
+-		 */
+-		spin_lock_bh(&compl->pipe_info->pipe_lock);
+-		list_add_tail(&compl->list, &compl->pipe_info->compl_free);
+-		spin_unlock_bh(&compl->pipe_info->pipe_lock);
 -	}
-+	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
-+		spin_lock_bh(&htt->tx_lock);
-+		__skb_queue_tail(&htt->tx_compl_q, skb);
-+		spin_unlock_bh(&htt->tx_lock);
-+		tasklet_schedule(&htt->txrx_compl_task);
-+		return;
- 	case HTT_T2H_MSG_TYPE_SEC_IND: {
- 		struct ath10k *ar = htt->ar;
- 		struct htt_security_indication *ev = &resp->security_indication;
-@@ -1250,3 +1280,25 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	/* Free the indication buffer */
- 	dev_kfree_skb_any(skb);
- }
-+
-+void ath10k_htt_txrx_compl_task(unsigned long ptr)
-+{
-+	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
-+	struct htt_resp *resp;
-+	struct sk_buff *skb;
-+
-+	spin_lock_bh(&htt->tx_lock);
-+	while ((skb = __skb_dequeue(&htt->tx_compl_q))) {
-+		ath10k_htt_rx_frm_tx_compl(htt->ar, skb);
-+		dev_kfree_skb_any(skb);
-+	}
-+	spin_unlock_bh(&htt->tx_lock);
-+
-+	spin_lock_bh(&htt->rx_ring.lock);
-+	while ((skb = __skb_dequeue(&htt->rx_compl_q))) {
-+		resp = (struct htt_resp *)skb->data;
-+		ath10k_htt_rx_handler(htt, &resp->rx_ind);
-+		dev_kfree_skb_any(skb);
-+	}
-+	spin_unlock_bh(&htt->rx_ring.lock);
-+}
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 0e24f51..2d10ab1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -125,9 +125,7 @@ static void ath10k_htt_tx_cleanup_pending(struct ath10k_htt *htt)
- 	struct htt_tx_done tx_done = {0};
- 	int msdu_id;
- 
--	/* No locks needed. Called after communication with the device has
--	 * been stopped. */
 -
-+	spin_lock_bh(&htt->tx_lock);
- 	for (msdu_id = 0; msdu_id < htt->max_num_pending_tx; msdu_id++) {
- 		if (!test_bit(msdu_id, htt->used_msdu_ids))
- 			continue;
-@@ -140,6 +138,7 @@ static void ath10k_htt_tx_cleanup_pending(struct ath10k_htt *htt)
+-	spin_lock_bh(&ar_pci->compl_lock);
+-	ar_pci->compl_processing = false;
+-	spin_unlock_bh(&ar_pci->compl_lock);
+-}
+-
+ /* TODO - temporary mapping while we have too few CE's */
+ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
+ 					      u16 service_id, u8 *ul_pipe,
+@@ -1317,17 +1101,11 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 	ath10k_pci_free_early_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
  
- 		ath10k_txrx_tx_unref(htt, &tx_done);
+-	ret = ath10k_pci_alloc_compl(ar);
+-	if (ret) {
+-		ath10k_warn("failed to allocate CE completions: %d\n", ret);
+-		goto err_early_irq;
+-	}
+-
+ 	ret = ath10k_pci_request_irq(ar);
+ 	if (ret) {
+ 		ath10k_warn("failed to post RX buffers for all pipes: %d\n",
+ 			    ret);
+-		goto err_free_compl;
++		goto err_early_irq;
  	}
-+	spin_unlock_bh(&htt->tx_lock);
- }
  
- void ath10k_htt_tx_detach(struct ath10k_htt *htt)
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 0158ce0..aecc46c 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -52,6 +52,8 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	struct ath10k_skb_cb *skb_cb;
- 	struct sk_buff *msdu;
+ 	ret = ath10k_pci_setup_ce_irq(ar);
+@@ -1351,9 +1129,6 @@ err_stop:
+ 	ath10k_ce_disable_interrupts(ar);
+ 	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
+-	ath10k_pci_process_ce(ar);
+-err_free_compl:
+-	ath10k_pci_cleanup_ce(ar);
+ err_early_irq:
+ 	/* Though there should be no interrupts (device was reset)
+ 	 * power_down() expects the early IRQ to be installed as per the
+@@ -1494,8 +1269,6 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 	 * not DMA nor interrupt. We process the leftovers and then free
+ 	 * everything else up. */
  
-+	lockdep_assert_held(&htt->tx_lock);
-+
- 	ath10k_dbg(ATH10K_DBG_HTT, "htt tx completion msdu_id %u discard %d no_ack %d\n",
- 		   tx_done->msdu_id, !!tx_done->discard, !!tx_done->no_ack);
+-	ath10k_pci_process_ce(ar);
+-	ath10k_pci_cleanup_ce(ar);
+ 	ath10k_pci_buffer_cleanup(ar);
  
-@@ -91,13 +93,11 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	/* we do not own the msdu anymore */
+ 	/* Make the sure the device won't access any structures on the host by
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index a4f3203..b43fdb4 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -43,23 +43,6 @@ struct bmi_xfer {
+ 	u32 resp_len;
+ };
  
- exit:
--	spin_lock_bh(&htt->tx_lock);
- 	htt->pending_tx[tx_done->msdu_id] = NULL;
- 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
- 	__ath10k_htt_tx_dec_pending(htt);
- 	if (htt->num_pending_tx == 0)
- 		wake_up(&htt->empty_tx_wq);
--	spin_unlock_bh(&htt->tx_lock);
- }
+-enum ath10k_pci_compl_state {
+-	ATH10K_PCI_COMPL_FREE = 0,
+-	ATH10K_PCI_COMPL_SEND,
+-	ATH10K_PCI_COMPL_RECV,
+-};
+-
+-struct ath10k_pci_compl {
+-	struct list_head list;
+-	enum ath10k_pci_compl_state state;
+-	struct ath10k_ce_pipe *ce_state;
+-	struct ath10k_pci_pipe *pipe_info;
+-	struct sk_buff *skb;
+-	unsigned int nbytes;
+-	unsigned int transfer_id;
+-	unsigned int flags;
+-};
+-
+ /*
+  * PCI-specific Target state
+  *
+@@ -175,9 +158,6 @@ struct ath10k_pci_pipe {
+ 	/* protects compl_free and num_send_allowed */
+ 	spinlock_t pipe_lock;
  
- static const u8 rx_legacy_rate_idx[] = {
+-	/* List of free CE completion slots */
+-	struct list_head compl_free;
+-
+ 	struct ath10k_pci *ar_pci;
+ 	struct tasklet_struct intr;
+ };
+@@ -205,14 +185,6 @@ struct ath10k_pci {
+ 	atomic_t keep_awake_count;
+ 	bool verified_awake;
+ 
+-	/* List of CE completions to be processed */
+-	struct list_head compl_process;
+-
+-	/* protects compl_processing and compl_process */
+-	spinlock_t compl_lock;
+-
+-	bool compl_processing;
+-
+ 	struct ath10k_pci_pipe pipe_info[CE_COUNT_MAX];
+ 
+ 	struct ath10k_hif_cb msg_callbacks_current;
 -- 
 1.8.5.3
 
