@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFevJ-0000fS-HV
- for ath10k@lists.infradead.org; Tue, 18 Feb 2014 07:16:58 +0000
-Received: by mail-bk0-f53.google.com with SMTP id my13so4375198bkb.40
- for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 23:16:33 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <5302A1EF.6060600@candelatech.com>
-References: <5302A1EF.6060600@candelatech.com>
-Date: Tue, 18 Feb 2014 08:16:30 +0100
-Message-ID: <CA+BoTQmNdn3ELFRyiMwRE=nq5XukvSy2m7BNoqXnoz95JuDYOw@mail.gmail.com>
-Subject: Re: lockdep warning (needs annotation)
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WFnyK-0005mC-DM
+ for ath10k@lists.infradead.org; Tue, 18 Feb 2014 16:56:41 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  make TARGET_NUM_PEERS match WMI_MAX_KEY_INDEX.
+Date: Tue, 18 Feb 2014 08:56:07 -0800
+Message-Id: <1392742567-6134-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +15,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-T24gMTggRmVicnVhcnkgMjAxNCAwMDo1NywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IEkgc3RhcnRlZCBzZWVpbmcgdGhpcyB0b2RheSBhZnRlciBzeW5jaC1p
-bmcgd2l0aCB1cHN0cmVhbQo+IGF0aDEwayB0cmVlLgo+Cj4gRmlybXdhcmUgaXMgbW9kaWZpZWQs
-IGFuZCB0aGVyZSBhcmUgc29tZSBwYXRjaGVzIHRvIGF0aDEwayBpbiBteQo+IHRyZWUsIGJ1dCBw
-cm9iYWJseSBub3RoaW5nIHRoYXQgYWZmZWN0cyB0aGlzLgo+Cj4KPiBJTkZPOiB0cnlpbmcgdG8g
-cmVnaXN0ZXIgbm9uLXN0YXRpYyBrZXkuCj4gdGhlIGNvZGUgaXMgZmluZSBidXQgbmVlZHMgbG9j
-a2RlcCBhbm5vdGF0aW9uLgo+IHR1cm5pbmcgb2ZmIHRoZSBsb2NraW5nIGNvcnJlY3RuZXNzIHZh
-bGlkYXRvci4KPiBDUFU6IDEgUElEOiAyMTMgQ29tbToga3dvcmtlci91ODoyIFRhaW50ZWQ6IEcg
-ICAgICAgICBDICAgMy4xNC4wLXJjMi13bC1hdGgrICMxMQo+IEhhcmR3YXJlIG5hbWU6IFRvIGJl
-IGZpbGxlZCBieSBPLkUuTS4gVG8gYmUgZmlsbGVkIGJ5IE8uRS5NLi9IVVJPTlJJVkVSLCBCSU9T
-IDQuNi41IDA1LzAyLzIwMTIKPiBXb3JrcXVldWU6IHBoeTAgaWVlZTgwMjExX2lmYWNlX3dvcmsg
-W21hYzgwMjExXQo+ICAwMDAwMDAwMDAwMDAwMDAwIGZmZmY4ODAyMGZkNzc3ZTggZmZmZmZmZmY4
-MTVkMDAwNyAwMDAwMDAwMDAwMDAwMDA2Cj4gIDAwMDAwMDAwMDAwMDAwMDAgZmZmZjg4MDIwZmQ3
-Nzg2OCBmZmZmZmZmZjgxMGZiODFlIGZmZmY4ODAyMGZkNzc4MTgKPiAgZmZmZmZmZmYwMDAwMDAw
-MCBmZmZmODgwMjAwMDAwMDAxIDAwMDAwMDAwMDAwMDAwMDIgMDAwMDAwMDAwMDAwMDAwMAo+IENh
-bGwgVHJhY2U6Cj4gIFs8ZmZmZmZmZmY4MTVkMDAwNz5dIGR1bXBfc3RhY2srMHg0ZS8weDcxCj4g
-IFs8ZmZmZmZmZmY4MTBmYjgxZT5dIHJlZ2lzdGVyX2xvY2tfY2xhc3MrMHgxMWEvMHgyZjAKPiAg
-WzxmZmZmZmZmZjgxMGZjYzJiPl0gX19sb2NrX2FjcXVpcmUrMHhlMC8weGU0OAo+ICBbPGZmZmZm
-ZmZmODE1ZDc1OTI+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJxKzB4MjgvMHg0Mgo+ICBbPGZmZmZm
-ZmZmODEwZmM5NjY+XSA/IG1hcmtfbG9jaysweDJkLzB4MjEyCj4gIFs8ZmZmZmZmZmY4MTBmYzk2
-Nj5dID8gbWFya19sb2NrKzB4MmQvMHgyMTIKPiAgWzxmZmZmZmZmZjgxMGZkZDlmPl0gbG9ja19h
-Y3F1aXJlKzB4ODIvMHg5ZAo+ICBbPGZmZmZmZmZmODEwZDZhYmU+XSA/IHF1ZXVlX2RlbGF5ZWRf
-d29ya19vbisweDg1LzB4ODUKPiAgWzxmZmZmZmZmZjgxMGQ2YjA3Pl0gZmx1c2hfd29yaysweDQ5
-LzB4Mjg5Cj4gIFs8ZmZmZmZmZmY4MTBkNmFiZT5dID8gcXVldWVfZGVsYXllZF93b3JrX29uKzB4
-ODUvMHg4NQo+ICBbPGZmZmZmZmZmODEwZmM5NjY+XSA/IG1hcmtfbG9jaysweDJkLzB4MjEyCj4g
-IFs8ZmZmZmZmZmY4MTBmZTBhOD5dID8gbWFya19oZWxkX2xvY2tzKzB4NzEvMHg5OQo+ICBbPGZm
-ZmZmZmZmODEwZDg3NTg+XSA/IF9fY2FuY2VsX3dvcmtfdGltZXIrMHg4OS8weGJmCj4gIFs8ZmZm
-ZmZmZmY4MTBkODc2OT5dIF9fY2FuY2VsX3dvcmtfdGltZXIrMHg5YS8weGJmCj4gIFs8ZmZmZmZm
-ZmY4MTBkODdhOT5dIGNhbmNlbF93b3JrX3N5bmMrMHhiLzB4ZAo+ICBbPGZmZmZmZmZmYTA1MTVi
-NGI+XSBhdGgxMGtfc3RhX3N0YXRlKzB4NGIvMHg0OGUgW2F0aDEwa19jb3JlXQo+ICBbPGZmZmZm
-ZmZmYTAzMGRiYWE+XSBkcnZfc3RhX3N0YXRlKzB4ODcvMHgxN2IgW21hYzgwMjExXQo+ICBbPGZm
-ZmZmZmZmYTAzMGY2MzI+XSBfX3N0YV9pbmZvX2Rlc3Ryb3lfcGFydDIrMHhjYS8weDJhMCBbbWFj
-ODAyMTFdCj4gIFs8ZmZmZmZmZmZhMDMwZjliNT5dIF9fc3RhX2luZm9fZGVzdHJveSsweDI1LzB4
-MmYgW21hYzgwMjExXQo+ICBbPGZmZmZmZmZmYTAzMGZiMTk+XSBzdGFfaW5mb19kZXN0cm95X2Fk
-ZHIrMHgzOS8weDU5IFttYWM4MDIxMV0KPiAgWzxmZmZmZmZmZmEwMzMxZWIwPl0gaWVlZTgwMjEx
-X2Rlc3Ryb3lfYXV0aF9kYXRhKzB4MzEvMHhiYyBbbWFjODAyMTFdCj4gIFs8ZmZmZmZmZmZhMDMz
-NTM4Mj5dIGllZWU4MDIxMV9zdGFfd29yaysweDE2Yi8weGJlNiBbbWFjODAyMTFdCj4gIFs8ZmZm
-ZmZmZmY4MTBmZTBhOD5dID8gbWFya19oZWxkX2xvY2tzKzB4NzEvMHg5OQo+ICBbPGZmZmZmZmZm
-ODE1ZDc1ZWM+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSsweDQwLzB4NWUKPiAgWzxm
-ZmZmZmZmZjgxMGZlMjE1Pl0gPyB0cmFjZV9oYXJkaXJxc19vbl9jYWxsZXIrMHgxNDUvMHgxYTEK
-PiAgWzxmZmZmZmZmZjgxNWQ3NWY0Pl0gPyBfcmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUrMHg0
-OC8weDVlCj4gIFs8ZmZmZmZmZmZhMDMxOWM0YT5dIGllZWU4MDIxMV9pZmFjZV93b3JrKzB4MmEz
-LzB4MmM2IFttYWM4MDIxMV0KPiAgWzxmZmZmZmZmZjgxMGQ3ZWI5Pl0gcHJvY2Vzc19vbmVfd29y
-aysweDFkNy8weDJmYwo+ICBbPGZmZmZmZmZmODEwZDdlNGY+XSA/IHByb2Nlc3Nfb25lX3dvcmsr
-MHgxNmQvMHgyZmMKPiAgWzxmZmZmZmZmZjgxMGQ1MThjPl0gPyBzcGluX2xvY2tfaXJxKzB4OS8w
-eGIKPiAgWzxmZmZmZmZmZjgxMGQ4M2IxPl0gd29ya2VyX3RocmVhZCsweDEyZS8weDFmYgo+ICBb
-PGZmZmZmZmZmODEwZDgyODM+XSA/IHJlc2N1ZXJfdGhyZWFkKzB4MjdiLzB4MjdiCj4gIFs8ZmZm
-ZmZmZmY4MTBkZDcwZD5dIGt0aHJlYWQrMHhjNC8weGNjCj4gIFs8ZmZmZmZmZmY4MTBkZDY0OT5d
-ID8gX19rdGhyZWFkX3BhcmttZSsweDVjLzB4NWMKPiAgWzxmZmZmZmZmZjgxNWRjNDBjPl0gcmV0
-X2Zyb21fZm9yaysweDdjLzB4YjAKPiAgWzxmZmZmZmZmZjgxMGRkNjQ5Pl0gPyBfX2t0aHJlYWRf
-cGFya21lKzB4NWMvMHg1YwoKT29wcyEgSSB0aGluayB0aGlzIGlzIG15IGZhdWx0Li4gSSdsbCBs
-b29rIGludG8gdGhpcy4gVGhhbmtzIQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+From: Ben Greear <greearb@candelatech.com>
+
+This appears to fix the problem of running out of keys
+in the firmware.  Possibly it only hides the problem,
+however.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 89167d5..dede8e0 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -83,7 +83,7 @@ enum ath10k_mcast2ucast_mode {
+ #define TARGET_NUM_PEERS			16
+ #define TARGET_NUM_OFFLOAD_PEERS		0
+ #define TARGET_NUM_OFFLOAD_REORDER_BUFS         0
+-#define TARGET_NUM_PEER_KEYS			2
++#define TARGET_NUM_PEER_KEYS			(WMI_MAX_KEY_INDEX + 1) /* 4 */
+ #define TARGET_NUM_TIDS		(2 * ((TARGET_NUM_PEERS) + (TARGET_NUM_VDEVS)))
+ #define TARGET_TX_CHAIN_MASK			(BIT(0) | BIT(1) | BIT(2))
+ #define TARGET_RX_CHAIN_MASK			(BIT(0) | BIT(1) | BIT(2))
+@@ -125,7 +125,7 @@ enum ath10k_mcast2ucast_mode {
+ 
+ #define TARGET_10X_NUM_OFFLOAD_PEERS		0
+ #define TARGET_10X_NUM_OFFLOAD_REORDER_BUFS	0
+-#define TARGET_10X_NUM_PEER_KEYS		2
++#define TARGET_10X_NUM_PEER_KEYS		(WMI_MAX_KEY_INDEX + 1) /* 4 */
+ #define TARGET_10X_NUM_TIDS			256
+ #define TARGET_10X_TX_CHAIN_MASK		(BIT(0) | BIT(1) | BIT(2))
+ #define TARGET_10X_RX_CHAIN_MASK		(BIT(0) | BIT(1) | BIT(2))
+-- 
+1.7.11.7
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
