@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WFU89-00020V-Ns
- for ath10k@lists.infradead.org; Mon, 17 Feb 2014 19:45:34 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1HJj4A1027004
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 11:45:04 -0800
-Message-ID: <530266C0.6000104@candelatech.com>
-Date: Mon, 17 Feb 2014 11:45:04 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WFevJ-0000fS-HV
+ for ath10k@lists.infradead.org; Tue, 18 Feb 2014 07:16:58 +0000
+Received: by mail-bk0-f53.google.com with SMTP id my13so4375198bkb.40
+ for <ath10k@lists.infradead.org>; Mon, 17 Feb 2014 23:16:33 -0800 (PST)
 MIME-Version: 1.0
-Subject: Fwd: Question on how encryption keys are supposed to be handled.
-References: <53026685.7040303@candelatech.com>
-In-Reply-To: <53026685.7040303@candelatech.com>
+In-Reply-To: <5302A1EF.6060600@candelatech.com>
+References: <5302A1EF.6060600@candelatech.com>
+Date: Tue, 18 Feb 2014 08:16:30 +0100
+Message-ID: <CA+BoTQmNdn3ELFRyiMwRE=nq5XukvSy2m7BNoqXnoz95JuDYOw@mail.gmail.com>
+Subject: Re: lockdep warning (needs annotation)
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +20,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Just in case someone has investigated similar issues....
-
-
--------- Original Message --------
-Subject: Question on how encryption keys are supposed to be handled.
-Date: Mon, 17 Feb 2014 11:44:05 -0800
-From: Ben Greear <greearb@candelatech.com>
-Organization: Candela Technologies
-To: linux-wireless@vger.kernel.org <linux-wireless@vger.kernel.org>,        hostap@lists.shmoo.com <hostap@lists.shmoo.com>
-
-
-I've been debugging an issue where my ath10k firmware is running out of key
-objects to allocate.  This could be a simple issue in the firmware, but first I
-wanted to try to figure out how things are supposed to work.
-
-What I see in my firmware is that near time of association it allocates
-4 keys.  Two of them are multicast, and one of the multicast is index 0,
-the second is index 1.
-
-Then, some time later (probably on rekey), another multicast is added at index 2.
-
-After that, key space is exhausted so I see errors in the kernel logs about adding
-broadcast keys failing.
-
-TCP and UDP traffic continues to flow, but I am not testing multicast traffic,
-so maybe that would be failing.
-
-So, question is:  Is it expected that the mcast keys keep being added at increasing
-key indexes?  If so, what is the maximum index allowed?
-
-Is this something primarily controlled at the supplicant level?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-HostAP mailing list
-HostAP@lists.shmoo.com
-http://lists.shmoo.com/mailman/listinfo/hostap
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTggRmVicnVhcnkgMjAxNCAwMDo1NywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IEkgc3RhcnRlZCBzZWVpbmcgdGhpcyB0b2RheSBhZnRlciBzeW5jaC1p
+bmcgd2l0aCB1cHN0cmVhbQo+IGF0aDEwayB0cmVlLgo+Cj4gRmlybXdhcmUgaXMgbW9kaWZpZWQs
+IGFuZCB0aGVyZSBhcmUgc29tZSBwYXRjaGVzIHRvIGF0aDEwayBpbiBteQo+IHRyZWUsIGJ1dCBw
+cm9iYWJseSBub3RoaW5nIHRoYXQgYWZmZWN0cyB0aGlzLgo+Cj4KPiBJTkZPOiB0cnlpbmcgdG8g
+cmVnaXN0ZXIgbm9uLXN0YXRpYyBrZXkuCj4gdGhlIGNvZGUgaXMgZmluZSBidXQgbmVlZHMgbG9j
+a2RlcCBhbm5vdGF0aW9uLgo+IHR1cm5pbmcgb2ZmIHRoZSBsb2NraW5nIGNvcnJlY3RuZXNzIHZh
+bGlkYXRvci4KPiBDUFU6IDEgUElEOiAyMTMgQ29tbToga3dvcmtlci91ODoyIFRhaW50ZWQ6IEcg
+ICAgICAgICBDICAgMy4xNC4wLXJjMi13bC1hdGgrICMxMQo+IEhhcmR3YXJlIG5hbWU6IFRvIGJl
+IGZpbGxlZCBieSBPLkUuTS4gVG8gYmUgZmlsbGVkIGJ5IE8uRS5NLi9IVVJPTlJJVkVSLCBCSU9T
+IDQuNi41IDA1LzAyLzIwMTIKPiBXb3JrcXVldWU6IHBoeTAgaWVlZTgwMjExX2lmYWNlX3dvcmsg
+W21hYzgwMjExXQo+ICAwMDAwMDAwMDAwMDAwMDAwIGZmZmY4ODAyMGZkNzc3ZTggZmZmZmZmZmY4
+MTVkMDAwNyAwMDAwMDAwMDAwMDAwMDA2Cj4gIDAwMDAwMDAwMDAwMDAwMDAgZmZmZjg4MDIwZmQ3
+Nzg2OCBmZmZmZmZmZjgxMGZiODFlIGZmZmY4ODAyMGZkNzc4MTgKPiAgZmZmZmZmZmYwMDAwMDAw
+MCBmZmZmODgwMjAwMDAwMDAxIDAwMDAwMDAwMDAwMDAwMDIgMDAwMDAwMDAwMDAwMDAwMAo+IENh
+bGwgVHJhY2U6Cj4gIFs8ZmZmZmZmZmY4MTVkMDAwNz5dIGR1bXBfc3RhY2srMHg0ZS8weDcxCj4g
+IFs8ZmZmZmZmZmY4MTBmYjgxZT5dIHJlZ2lzdGVyX2xvY2tfY2xhc3MrMHgxMWEvMHgyZjAKPiAg
+WzxmZmZmZmZmZjgxMGZjYzJiPl0gX19sb2NrX2FjcXVpcmUrMHhlMC8weGU0OAo+ICBbPGZmZmZm
+ZmZmODE1ZDc1OTI+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJxKzB4MjgvMHg0Mgo+ICBbPGZmZmZm
+ZmZmODEwZmM5NjY+XSA/IG1hcmtfbG9jaysweDJkLzB4MjEyCj4gIFs8ZmZmZmZmZmY4MTBmYzk2
+Nj5dID8gbWFya19sb2NrKzB4MmQvMHgyMTIKPiAgWzxmZmZmZmZmZjgxMGZkZDlmPl0gbG9ja19h
+Y3F1aXJlKzB4ODIvMHg5ZAo+ICBbPGZmZmZmZmZmODEwZDZhYmU+XSA/IHF1ZXVlX2RlbGF5ZWRf
+d29ya19vbisweDg1LzB4ODUKPiAgWzxmZmZmZmZmZjgxMGQ2YjA3Pl0gZmx1c2hfd29yaysweDQ5
+LzB4Mjg5Cj4gIFs8ZmZmZmZmZmY4MTBkNmFiZT5dID8gcXVldWVfZGVsYXllZF93b3JrX29uKzB4
+ODUvMHg4NQo+ICBbPGZmZmZmZmZmODEwZmM5NjY+XSA/IG1hcmtfbG9jaysweDJkLzB4MjEyCj4g
+IFs8ZmZmZmZmZmY4MTBmZTBhOD5dID8gbWFya19oZWxkX2xvY2tzKzB4NzEvMHg5OQo+ICBbPGZm
+ZmZmZmZmODEwZDg3NTg+XSA/IF9fY2FuY2VsX3dvcmtfdGltZXIrMHg4OS8weGJmCj4gIFs8ZmZm
+ZmZmZmY4MTBkODc2OT5dIF9fY2FuY2VsX3dvcmtfdGltZXIrMHg5YS8weGJmCj4gIFs8ZmZmZmZm
+ZmY4MTBkODdhOT5dIGNhbmNlbF93b3JrX3N5bmMrMHhiLzB4ZAo+ICBbPGZmZmZmZmZmYTA1MTVi
+NGI+XSBhdGgxMGtfc3RhX3N0YXRlKzB4NGIvMHg0OGUgW2F0aDEwa19jb3JlXQo+ICBbPGZmZmZm
+ZmZmYTAzMGRiYWE+XSBkcnZfc3RhX3N0YXRlKzB4ODcvMHgxN2IgW21hYzgwMjExXQo+ICBbPGZm
+ZmZmZmZmYTAzMGY2MzI+XSBfX3N0YV9pbmZvX2Rlc3Ryb3lfcGFydDIrMHhjYS8weDJhMCBbbWFj
+ODAyMTFdCj4gIFs8ZmZmZmZmZmZhMDMwZjliNT5dIF9fc3RhX2luZm9fZGVzdHJveSsweDI1LzB4
+MmYgW21hYzgwMjExXQo+ICBbPGZmZmZmZmZmYTAzMGZiMTk+XSBzdGFfaW5mb19kZXN0cm95X2Fk
+ZHIrMHgzOS8weDU5IFttYWM4MDIxMV0KPiAgWzxmZmZmZmZmZmEwMzMxZWIwPl0gaWVlZTgwMjEx
+X2Rlc3Ryb3lfYXV0aF9kYXRhKzB4MzEvMHhiYyBbbWFjODAyMTFdCj4gIFs8ZmZmZmZmZmZhMDMz
+NTM4Mj5dIGllZWU4MDIxMV9zdGFfd29yaysweDE2Yi8weGJlNiBbbWFjODAyMTFdCj4gIFs8ZmZm
+ZmZmZmY4MTBmZTBhOD5dID8gbWFya19oZWxkX2xvY2tzKzB4NzEvMHg5OQo+ICBbPGZmZmZmZmZm
+ODE1ZDc1ZWM+XSA/IF9yYXdfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSsweDQwLzB4NWUKPiAgWzxm
+ZmZmZmZmZjgxMGZlMjE1Pl0gPyB0cmFjZV9oYXJkaXJxc19vbl9jYWxsZXIrMHgxNDUvMHgxYTEK
+PiAgWzxmZmZmZmZmZjgxNWQ3NWY0Pl0gPyBfcmF3X3NwaW5fdW5sb2NrX2lycXJlc3RvcmUrMHg0
+OC8weDVlCj4gIFs8ZmZmZmZmZmZhMDMxOWM0YT5dIGllZWU4MDIxMV9pZmFjZV93b3JrKzB4MmEz
+LzB4MmM2IFttYWM4MDIxMV0KPiAgWzxmZmZmZmZmZjgxMGQ3ZWI5Pl0gcHJvY2Vzc19vbmVfd29y
+aysweDFkNy8weDJmYwo+ICBbPGZmZmZmZmZmODEwZDdlNGY+XSA/IHByb2Nlc3Nfb25lX3dvcmsr
+MHgxNmQvMHgyZmMKPiAgWzxmZmZmZmZmZjgxMGQ1MThjPl0gPyBzcGluX2xvY2tfaXJxKzB4OS8w
+eGIKPiAgWzxmZmZmZmZmZjgxMGQ4M2IxPl0gd29ya2VyX3RocmVhZCsweDEyZS8weDFmYgo+ICBb
+PGZmZmZmZmZmODEwZDgyODM+XSA/IHJlc2N1ZXJfdGhyZWFkKzB4MjdiLzB4MjdiCj4gIFs8ZmZm
+ZmZmZmY4MTBkZDcwZD5dIGt0aHJlYWQrMHhjNC8weGNjCj4gIFs8ZmZmZmZmZmY4MTBkZDY0OT5d
+ID8gX19rdGhyZWFkX3BhcmttZSsweDVjLzB4NWMKPiAgWzxmZmZmZmZmZjgxNWRjNDBjPl0gcmV0
+X2Zyb21fZm9yaysweDdjLzB4YjAKPiAgWzxmZmZmZmZmZjgxMGRkNjQ5Pl0gPyBfX2t0aHJlYWRf
+cGFya21lKzB4NWMvMHg1YwoKT29wcyEgSSB0aGluayB0aGlzIGlzIG15IGZhdWx0Li4gSSdsbCBs
+b29rIGludG8gdGhpcy4gVGhhbmtzIQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
