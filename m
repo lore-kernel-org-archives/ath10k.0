@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22e.google.com ([2a00:1450:4013:c01::22e])
+Received: from mail-bk0-x229.google.com ([2a00:1450:4008:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG1kr-0006OI-4g
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 07:39:42 +0000
-Received: by mail-ea0-f174.google.com with SMTP id z10so141340ead.5
- for <ath10k@lists.infradead.org>; Tue, 18 Feb 2014 23:39:12 -0800 (PST)
+ id 1WG1sD-0006UE-D8
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 07:47:17 +0000
+Received: by mail-bk0-f41.google.com with SMTP id na10so97867bkb.28
+ for <ath10k@lists.infradead.org>; Tue, 18 Feb 2014 23:46:55 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <CAEFj984MeGN=tfBb69rvCm0EvK4txH+vgPyGO7w57v-V1ATHDw@mail.gmail.com>
+References: <CAEFj984MeGN=tfBb69rvCm0EvK4txH+vgPyGO7w57v-V1ATHDw@mail.gmail.com>
+Date: Wed, 19 Feb 2014 08:46:54 +0100
+Message-ID: <CA+BoTQmbp2XRRa6gW83RoeWyDhKUzbNcGNV0EjRBZ-Gdz+Khbg@mail.gmail.com>
+Subject: Re: QoS Control Field Stripped Off
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix sta_rc_update for non-ap iftype
-Date: Wed, 19 Feb 2014 08:33:07 +0100
-Message-Id: <1392795187-2870-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <CA+BoTQmNdn3ELFRyiMwRE=nq5XukvSy2m7BNoqXnoz95JuDYOw@mail.gmail.com>
-References: <CA+BoTQmNdn3ELFRyiMwRE=nq5XukvSy2m7BNoqXnoz95JuDYOw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +20,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The arsta structure wasn't initialized for
-non-ap interfaces. This should fix related
-warnings/crashes.
-
-Reported-By: Ben Greear <greearb@candelatech.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-Ben, does this fix the lockdep splat for you?
-
-
- drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 94a70a9..9cb3eae 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3207,6 +3207,13 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 	int max_num_peers;
- 	int ret = 0;
- 
-+	if (old_state == IEEE80211_STA_NOTEXIST &&
-+	    new_state == IEEE80211_STA_NONE) {
-+		memset(arsta, 0, sizeof(*arsta));
-+		arsta->arvif = arvif;
-+		INIT_WORK(&arsta->update_wk, ath10k_sta_rc_update_wk);
-+	}
-+
- 	/* cancel must be done outside the mutex to avoid deadlock */
- 	if ((old_state == IEEE80211_STA_NONE &&
- 	     new_state == IEEE80211_STA_NOTEXIST))
-@@ -3236,10 +3243,6 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   "mac vdev %d peer create %pM (new sta) num_peers %d\n",
- 			   arvif->vdev_id, sta->addr, ar->num_peers);
- 
--		memset(arsta, 0, sizeof(*arsta));
--		arsta->arvif = arvif;
--		INIT_WORK(&arsta->update_wk, ath10k_sta_rc_update_wk);
--
- 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
- 		if (ret)
- 			ath10k_warn("Failed to add peer %pM for vdev %d when adding a new sta: %i\n",
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgRmVicnVhcnkgMjAxNCAwNToxMSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0Bn
+bWFpbC5jb20+IHdyb3RlOgo+IEhpLCBhbGwKPgo+IEFueW9uZSBrbm93cyB3aGV0aGVyIGl0IGlz
+IHBvc3NpYmxlIHRvIG1vZGlmeSB0aGUgUW9TIENvbnRyb2wgZmllbGQgaW4KPiB0aGUgVHggRnJh
+bWUuCj4KPiBDdXJyZW50bHksIHRoZSBRb1MgY29udHJvbCBmaWVsZCBpcyBzdHJpcHBlZCBvZmYg
+YmVmb3JlIHBhc3NpbmcgdG8gRlcuCj4gSSB3b3VsZCBsaWtlIHRvIHNldCB0aGUgYml0LTggb2Yg
+UW9TIGNvbnRyb2wgZmllbGQgdG8gaW5kaWNhdGUgdGhlCj4gcHJlc2VuY2Ugb2YgbWVzaCBjb250
+cm9sIGZpZWxkLgoKRnJvbSB3aGF0IEkga25vdyBIVyBnZW5lcmF0ZXMgUW9TIENvbnRyb2wgRmll
+bGQgZm9yIG53aWZpIHR4IGZvcm1hdAphbmQgSSBkb24ndCB0aGluayB0aGVyZSdzIGEgd2F5IGFy
+b3VuZCB0aGF0LgoKWW91ciBiZXN0IGJldCBpcyB0byBnZXQgcmF3IHR4IGZvcm1hdCB3b3JraW5n
+IGFsdGhvdWdoIGxhc3QgdGltZSBJCmNoZWNrZWQgaXQgY3Jhc2hlZCBGVy4KCgpNaWNoYcWCCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
