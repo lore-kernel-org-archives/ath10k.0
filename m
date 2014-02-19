@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from 0.mx.nanl.de ([2a00:1328:e101:1200::12] helo=mail.nanl.de)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG5En-0004YD-Ui
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 11:22:51 +0000
-Received: from mail-qc0-f175.google.com (mail-qc0-f175.google.com
- [209.85.216.175])
- by mail.nanl.de (Postfix) with ESMTPSA id 8B84D45EB8
- for <ath10k@lists.infradead.org>; Wed, 19 Feb 2014 11:22:23 +0000 (UTC)
-Received: by mail-qc0-f175.google.com with SMTP id x13so224496qcv.20
- for <ath10k@lists.infradead.org>; Wed, 19 Feb 2014 03:22:22 -0800 (PST)
+ id 1WG6Pz-0006tP-Rc
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 12:38:28 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC/RFT 1/7] ath10k: remove DMA mapping wrappers
+References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
+ <1392629563-31046-2-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 19 Feb 2014 14:37:57 +0200
+In-Reply-To: <1392629563-31046-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:37 +0100")
+Message-ID: <8738jfz3a2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87fvnfzbg0.fsf@kamboji.qca.qualcomm.com>
-References: <1391185897-29339-1-git-send-email-sven@open-mesh.com>
- <87bny5lu4a.fsf@purkki.adurom.net> <2862175.0bPvy6dDPg@bentobox>
- <87fvnfzbg0.fsf@kamboji.qca.qualcomm.com>
-From: Jonas Gorski <jogo@openwrt.org>
-Date: Wed, 19 Feb 2014 12:22:02 +0100
-Message-ID: <CAOiHx=noWhgc5W90O1pWgjbmcVZJGwCKqvmrSUf7kAhOMRbwhQ@mail.gmail.com>
-Subject: Re: [OpenWrt-Devel] [PATCHv3] wifi: Introduce 802.11ac support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +24,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Simon Wunderlich <simon@open-mesh.com>, Sven Eckelmann <sven@open-mesh.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, ath10k@lists.infradead.org, Matti Laakso <malaakso@elisanet.fi>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Wed, Feb 19, 2014 at 10:41 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> (...)
-> But we should try ways to mitigate the problem of having two firmware
-> branches. For example, should we have a module parameter in ath10k to
-> choose which firmware to use? Or is there even a way to do that
-> automatically based on what interfaces are used?
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-I don't know if this is a good way to do it, but this is exactly what
-mwl8k does. They have dedicated AP and STA firmwares, and reload if
-needed when adding the apprpriate interfaces. See
-<http://lxr.free-electrons.com/source/drivers/net/wireless/mwl8k.c#L4663>
-for the code.
+> There's no real benefit from using them. DMA-API
+> already provides debugging. Some skbuffs are
+> already mapped directly with DMA-API since wrapper
+> arguments were insufficient and extending them
+> would be pointless.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
+[...]
 
-Regards
-Jonas
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1360,7 +1360,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+>  	struct wmi_bcn_info *bcn_info;
+>  	struct ath10k_vif *arvif;
+>  	struct sk_buff *bcn;
+> -	int vdev_id = 0;
+> +	int err, vdev_id = 0;
+
+We use ret, res and err as names for the status variable. We should try
+to unify this and use ret everywhere.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
