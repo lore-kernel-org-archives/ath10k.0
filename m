@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG3fH-0001IY-JQ
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 09:42:05 +0000
+ id 1WG3kj-0001UA-Py
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 09:47:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [OpenWrt-Devel] [PATCHv3] wifi: Introduce 802.11ac support
 References: <1391185897-29339-1-git-send-email-sven@open-mesh.com>
  <87bny5lu4a.fsf@purkki.adurom.net> <2862175.0bPvy6dDPg@bentobox>
-Date: Wed, 19 Feb 2014 11:41:35 +0200
-In-Reply-To: <2862175.0bPvy6dDPg@bentobox> (Sven Eckelmann's message of "Mon, 
- 17 Feb 2014 15:22:53 +0100")
-Message-ID: <87fvnfzbg0.fsf@kamboji.qca.qualcomm.com>
+ <DUB122-W428FBB95DD2338614F9EB5CB990@phx.gbl>
+Date: Wed, 19 Feb 2014 11:47:14 +0200
+In-Reply-To: <DUB122-W428FBB95DD2338614F9EB5CB990@phx.gbl> (Matti Laakso's
+ message of "Mon, 17 Feb 2014 21:13:48 +0100")
+Message-ID: <87bny3zb6l.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,42 +25,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@open-mesh.com>
-Cc: Kalle Valo <kvalo@adurom.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, Simon Wunderlich <simon@open-mesh.com>, ath10k@lists.infradead.org, Matti Laakso <malaakso@elisanet.fi>
+To: Matti Laakso <malaakso@elisanet.fi>
+Cc: Simon Wunderlich <simon@open-mesh.com>, Sven Eckelmann <sven@open-mesh.com>, OpenWrt Development List <openwrt-devel@lists.openwrt.org>, ath10k@lists.infradead.org
 
 (Adding ath10k@lists.infradead.org)
 
-Sven Eckelmann <sven@open-mesh.com> writes:
+> I think AP is by far the most common use case for OpenWrt, and DFS support for
+> example is only for the AP-branch firmware (as I found out after some intense
+> study of the ath10k/cfg80211/mac80211 source
 
-> On Monday 17 February 2014 05:57:25 Kalle Valo wrote:
->> Sven Eckelmann <sven@open-mesh.com> writes:
->> > The ath10k patch wasn't resent because the driver patches are now
->> > integrated in the OpenWrt mac80211 package. The answer in
->> > 
->> >  http://article.gmane.org/gmane.comp.embedded.openwrt.devel/22422 also
->> >  wasn't> 
->> > quite promising.
->> 
->> What do you mean? What was wrong with my answer?
->
-> Nothing is "wrong" but you said that there are two branches. One is "AP mode, 
-> nothing else" and the other one is "main branch again has more
-> features, like P2P, ...". So I don't see a good reason why a multi-purpose 
-> system like openwrt should accept my patch to change it to the "AP-only" 
-> ath10k firmware.
+Oh, I didn't know that. But that's not suprising as almost all of AP
+mode testing happens with 10.1 firmware.
 
-AP mode in 10.1 firmware is extensively tested and that's why I strongly
-recommend to use 10.1 firmware as the default in openwrt. I don't think
-it's wise to knowingle cripple ath10k AP mode in openwrt just because
-lack of P2P support. Like Matti also said, AP mode is most important in
-openwrt, we should have that properly supported first.
+> -- maybe the firmware features should be better documented...)
 
-But we should try ways to mitigate the problem of having two firmware
-branches. For example, should we have a module parameter in ath10k to
-choose which firmware to use? Or is there even a way to do that
-automatically based on what interfaces are used?
+Sure, it's just lack of time on my part. Any help with documentation
+would be appreciated.
 
-I'm happy to hear any ideas how to improve this.
+> Does AP firmware support plain STA operation?
+
+Yes, but not that well tested.
+
+> If it does, AP firmware should no doubt be the default in OpenWrt.
+
+I fully agree. This should be the first stage.
+
+> If not, then we should maybe think of a way to support both.
+
+For the second stage I think we should try improve how to make it easier
+to switch between firmwares (see my previous email).
 
 -- 
 Kalle Valo
