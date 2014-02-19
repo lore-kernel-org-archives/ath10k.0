@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG8Zj-0003Vm-OI
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 14:56:40 +0000
+ id 1WG8nQ-0004BO-JY
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 15:10:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 4/7] ath10k: bypass htc for htt tx path
+Subject: Re: [RFC/RFT 5/7] ath10k: batch htt tx/rx completions
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- <1392629563-31046-5-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 19 Feb 2014 16:56:12 +0200
-In-Reply-To: <1392629563-31046-5-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:40 +0100")
-Message-ID: <87ppmjxib7.fsf@kamboji.qca.qualcomm.com>
+ <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 19 Feb 2014 17:10:19 +0200
+In-Reply-To: <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:41 +0100")
+Message-ID: <87lhx7xhno.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,41 +29,39 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Going through full HTC tx path for HTT tx is a
-> waste of resources. By skipping it it's possible
-> to easily submit scatter-gather to the PCI HIF for
-> reduced host CPU load and improved performance.
+> HTT Rx endpoint processes both frame rx
+> indications and frame tx completion indications.
+>
+> Those completions typically come in batches and
+> may be mixed so it makes sense to defer processing
+> hoping to get a bunch of them and take advantage
+> of hot caches.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-For a change like this the commit log needs to be more descriptive.
-There's no mention about dma pools, nothing about the basic principle
-how this works now etc.
+[...]
 
-> @@ -1067,9 +1067,9 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
->  	 *
->  	 * For the lack of a better place do the check here.
->  	 */
-> -	BUILD_BUG_ON(TARGET_NUM_MSDU_DESC >
-> +	BUILD_BUG_ON(2*TARGET_NUM_MSDU_DESC >
->  		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
-> -	BUILD_BUG_ON(TARGET_10X_NUM_MSDU_DESC >
-> +	BUILD_BUG_ON(2*TARGET_10X_NUM_MSDU_DESC >
->  		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+> @@ -270,7 +274,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+>  	int idx;
+>  	struct sk_buff *msdu;
 >  
->  	ret = ath10k_pci_wake(ar);
-> diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-> index 322e929..8eb7f99 100644
-> --- a/drivers/net/wireless/ath/ath10k/ce.h
-> +++ b/drivers/net/wireless/ath/ath10k/ce.h
-> @@ -23,7 +23,7 @@
->  
->  /* Maximum number of Copy Engine's supported */
->  #define CE_COUNT_MAX 8
-> -#define CE_HTT_H2T_MSG_SRC_NENTRIES 2048
-> +#define CE_HTT_H2T_MSG_SRC_NENTRIES 4096
+> -	spin_lock_bh(&htt->rx_ring.lock);
+> +	lockdep_assert_held(&htt->rx_ring.lock);
 
-Also document why you do these changes.
+There are some locking changes which I think would be better to have in
+a separate patch.
+
+
+>  	case HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION: {
+> +		struct htt_resp *resp = (struct htt_resp *)skb->data;
+>  		struct htt_tx_done tx_done = {};
+>  		int status = __le32_to_cpu(resp->mgmt_tx_completion.status);
+>  
+> -		tx_done.msdu_id =
+> -			__le32_to_cpu(resp->mgmt_tx_completion.desc_id);
+> +		tx_done.msdu_id = __le32_to_cpu(resp->mgmt_tx_completion.desc_id);
+
+I don't see any changes here.
 
 -- 
 Kalle Valo
