@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG8nQ-0004BO-JY
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 15:10:49 +0000
+ id 1WG8tg-0004RA-QS
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 15:17:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 5/7] ath10k: batch htt tx/rx completions
+Subject: Re: [RFC/RFT 0/7] ath10k: performance improvements
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 19 Feb 2014 17:10:19 +0200
-In-Reply-To: <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:41 +0100")
-Message-ID: <87lhx7xhno.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 19 Feb 2014 17:16:49 +0200
+In-Reply-To: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:36 +0100")
+Message-ID: <87eh2zxhcu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,39 +28,39 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> HTT Rx endpoint processes both frame rx
-> indications and frame tx completion indications.
+> Hi,
 >
-> Those completions typically come in batches and
-> may be mixed so it makes sense to defer processing
-> hoping to get a bunch of them and take advantage
-> of hot caches.
+> These patches aim at reducing host CPU load and
+> thus improve performance on low-end systems.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> In my setup I get a relative improvement of
+> 100mbps for both UDP Tx and Rx.
+>
+>                Tx ----->
+> laptop:eth---eth:AP135:ath10k---ath10k:laptop
+>                <----- Rx
+>
+>
+> Michal Kazior (7):
+>   ath10k: remove DMA mapping wrappers
+>   ath10k: remove is_aborted from skb_cb
+>   ath10k: replace send_head() with tx_sg()
+>   ath10k: bypass htc for htt tx path
+>   ath10k: batch htt tx/rx completions
+>   ath10k: remove pci completion list
+>   ath10k: minimize coherent dma accesses
 
-[...]
+Ok, now I reviewed the patches and sent some comments. But I didn't run
+any tests yet. I assume you also saw these warnings from the build bot:
 
-> @@ -270,7 +274,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
->  	int idx;
->  	struct sk_buff *msdu;
->  
-> -	spin_lock_bh(&htt->rx_ring.lock);
-> +	lockdep_assert_held(&htt->rx_ring.lock);
-
-There are some locking changes which I think would be better to have in
-a separate patch.
-
-
->  	case HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION: {
-> +		struct htt_resp *resp = (struct htt_resp *)skb->data;
->  		struct htt_tx_done tx_done = {};
->  		int status = __le32_to_cpu(resp->mgmt_tx_completion.status);
->  
-> -		tx_done.msdu_id =
-> -			__le32_to_cpu(resp->mgmt_tx_completion.desc_id);
-> +		tx_done.msdu_id = __le32_to_cpu(resp->mgmt_tx_completion.desc_id);
-
-I don't see any changes here.
+drivers/net/wireless/ath/ath10k/htt_rx.c:274:17: sparse: context imbalance in 'ath10k_htt_rx_amsdu_pop' - unexpected unlock
+drivers/net/wireless/ath/ath10k/htt_tx.c:505 ath10k_htt_tx() warn: potential pointer math issue ('skb_cb->htt.txbuf' is a 352 bit pointer)
+drivers/net/wireless/ath/ath10k/htt_tx.c:423:2: error: implicit declaration of function 'dma_pool_alloc' [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/htt_tx.c:112:2: error: implicit declaration of function 'dma_pool_create' [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/htt_tx.c:149:2: error: implicit declaration of function 'dma_pool_destroy' [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/htt_tx.c:529:2: error: implicit declaration of function 'dma_pool_free' [-Werror=implicit-function-declaration]
+drivers/net/wireless/ath/ath10k/htt_tx.c:423:20: warning: assignment makes pointer from integer without a cast [enabled by default]
+drivers/net/wireless/ath/ath10k/txrx.c:72:3: error: implicit declaration of function 'dma_pool_free' [-Werror=implicit-function-declaration]
 
 -- 
 Kalle Valo
