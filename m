@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WG88M-0002Tr-Fm
- for ath10k@lists.infradead.org; Wed, 19 Feb 2014 14:28:23 +0000
+ id 1WG8Zj-0003Vm-OI
+ for ath10k@lists.infradead.org; Wed, 19 Feb 2014 14:56:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 3/7] ath10k: replace send_head() with tx_sg()
+Subject: Re: [RFC/RFT 4/7] ath10k: bypass htc for htt tx path
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- <1392629563-31046-4-git-send-email-michal.kazior@tieto.com>
- <87y517xo7j.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQm3werwtNrWVLBFxN5QOvLxucu0crDXdAJJj4X0gSnXrw@mail.gmail.com>
-Date: Wed, 19 Feb 2014 16:18:38 +0200
-In-Reply-To: <CA+BoTQm3werwtNrWVLBFxN5QOvLxucu0crDXdAJJj4X0gSnXrw@mail.gmail.com>
- (Michal Kazior's message of "Wed, 19 Feb 2014 14:25:59 +0100")
-Message-ID: <87txbvxk1t.fsf@kamboji.qca.qualcomm.com>
+ <1392629563-31046-5-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 19 Feb 2014 16:56:12 +0200
+In-Reply-To: <1392629563-31046-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 17 Feb 2014 10:32:40 +0100")
+Message-ID: <87ppmjxib7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,44 +25,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 19 February 2014 13:48, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> +struct ath10k_hif_sg_item {
->>> +     u16 transfer_id;
->>> +     void *transfer_context;
->>> +     void *vaddr; /* for debugging mostly */
->>> +     u32 paddr;
->>> +     u16 len;
->>> +};
->>
->> This is the part I don't like. Instead of adding our own structs we
->> instead should have everything in skb->cb and pass the skbs around. The
->> sad part was that last fall I was working on cleaning up that but never
->> found the time to finish it :(
+> Going through full HTC tx path for HTT tx is a
+> waste of resources. By skipping it it's possible
+> to easily submit scatter-gather to the PCI HIF for
+> reduced host CPU load and improved performance.
 >
-> There's simply not enough room to keep it all in ath10k_skb_cb
-> directly.
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-After my cleanups transfer_context was not used and when using sk_buffs
-properly vaddr and len would be useless. So we would have only transfer
-id and paddr left. And when I was working on this they did fit to cb.
+For a change like this the commit log needs to be more descriptive.
+There's no mention about dma pools, nothing about the basic principle
+how this works now etc.
 
-> It doesn't really make any sense to keep it there anyway because
-> sg_item is used as means to pass a complex function argument to
-> sg_tx(). 
+> @@ -1067,9 +1067,9 @@ struct ath10k_ce_pipe *ath10k_ce_init(struct ath10k *ar,
+>  	 *
+>  	 * For the lack of a better place do the check here.
+>  	 */
+> -	BUILD_BUG_ON(TARGET_NUM_MSDU_DESC >
+> +	BUILD_BUG_ON(2*TARGET_NUM_MSDU_DESC >
+>  		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+> -	BUILD_BUG_ON(TARGET_10X_NUM_MSDU_DESC >
+> +	BUILD_BUG_ON(2*TARGET_10X_NUM_MSDU_DESC >
+>  		     (CE_HTT_H2T_MSG_SRC_NENTRIES - 1));
+>  
+>  	ret = ath10k_pci_wake(ar);
+> diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+> index 322e929..8eb7f99 100644
+> --- a/drivers/net/wireless/ath/ath10k/ce.h
+> +++ b/drivers/net/wireless/ath/ath10k/ce.h
+> @@ -23,7 +23,7 @@
+>  
+>  /* Maximum number of Copy Engine's supported */
+>  #define CE_COUNT_MAX 8
+> -#define CE_HTT_H2T_MSG_SRC_NENTRIES 2048
+> +#define CE_HTT_H2T_MSG_SRC_NENTRIES 4096
 
-If we used skbs we would just give a list/queue of them and no need to
-have any extra structs.
-
-> The sg_item list is never used again.
-
-Ok, that's better. At least then it's later easier to convert to proper
-skbs.
+Also document why you do these changes.
 
 -- 
 Kalle Valo
