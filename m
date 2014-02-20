@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGSEg-0003xb-Lh
- for ath10k@lists.infradead.org; Thu, 20 Feb 2014 11:56:15 +0000
-Received: by mail-ee0-f42.google.com with SMTP id b15so889578eek.15
- for <ath10k@lists.infradead.org>; Thu, 20 Feb 2014 03:55:50 -0800 (PST)
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [PATCH] ath10k: add soft/hard firmware crash option to
- simulate_fw_crash
-Date: Thu, 20 Feb 2014 12:55:30 +0100
-Message-Id: <1392897330-4678-1-git-send-email-marek.puzyniak@tieto.com>
+ id 1WGX90-00064j-3i
+ for ath10k@lists.infradead.org; Thu, 20 Feb 2014 17:10:43 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1KHAG7Z000420
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Thu, 20 Feb 2014 09:10:17 -0800
+Message-ID: <530636F8.1070201@candelatech.com>
+Date: Thu, 20 Feb 2014 09:10:16 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Anyone seeing problem with running out of credits?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,120 +21,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
-In order to have firmware crash simulation functionality also
-in firmware 10.1 driver can force firmware crash by performing
-not allowed operation. Driver can deliberately crash firmware
-when setting vdev param for vdev id out of range.
-This patch introduces two keywords to simulate_fw_crash:
-'soft' which will cause firmware crash that is recoverable
-       by warm firmware reset but supported only in main firmware.
-'hard' which will cause firmware crash recoverable by cold
-       firmware reset, this option works for both firmwares.
+Next on my bug list is a problem where the driver claims that
+it has no more tx credits, and the firmware never releases any
+more credits.
 
-Commands to trigger firmware soft/hard crash:
-echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
-echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+I generally see this after 'resetting' a bunch of station VIFs
+several times.
 
-Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
----
+The firmware does not crash, but perhaps it hangs.  I am using
+a modified 10.1.389 firmware.
 
-This was patch: ath10k:change simulate_fw_crash to work with 10.1 firmware
-but after review updates I changed commit message.
+I have double checked the firmware and it appears it should
+properly release the credits in all cases, but of course it
+could still have issues.
 
-Previous patch was updated to support two keywords 'soft','hard' in order to
-distinguish different kind of firmware crashes.
+The last command that received a credit and so was sent is 0x9011,
+which appears to be vdev-create.
 
- drivers/net/wireless/ath/ath10k/debug.c | 43 ++++++++++++++++++++++-----------
- 1 file changed, 29 insertions(+), 14 deletions(-)
+I am curious if anyone else has seen such problems in testing?
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 6debd28..20f4c4b 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -451,12 +451,23 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
- 					     char __user *user_buf,
- 					     size_t count, loff_t *ppos)
- {
--	const char buf[] = "To simulate firmware crash write the keyword"
--			   " `crash` to this file.\nThis will force firmware"
--			   " to report a crash to the host system.\n";
-+	const char buf[] = "To simulate firmware crash write one of the"
-+			   " keywords to this file:\n `soft` - this will send"
-+			   " WMI_FORCE_FW_HANG_ASSERT to firmware if FW"
-+			   " supports that command.\n `hard` - this will send"
-+			   " to firmware command with illegal parameters"
-+			   " causing firmware crash.\n";
-+
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
- }
- 
-+/* Simulate firmware crash:
-+ * 'soft': Call wmi command causing firmware hang. This firmware hang is
-+ * recoverable by warm firmware reset.
-+ * 'hard': Force firmware crash by setting any vdev parameter for not allowed
-+ * vdev id. This is hard firmware crash because it is recoverable only by cold
-+ * firmware reset.
-+ */
- static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
- 					      const char __user *user_buf,
- 					      size_t count, loff_t *ppos)
-@@ -464,14 +475,11 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
- 	struct ath10k *ar = file->private_data;
- 	char buf[32] = {};
- 	int ret;
-+	const char *mode;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
- 	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
--	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
--		ret = -EINVAL;
--		goto exit;
--	}
- 
- 	if (ar->state != ATH10K_STATE_ON &&
- 	    ar->state != ATH10K_STATE_RESTARTED) {
-@@ -479,15 +487,22 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
- 		goto exit;
- 	}
- 
--	ath10k_info("simulating firmware crash\n");
--
--	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
--	if (ret)
--		ath10k_warn("failed to force fw hang (%d)\n", ret);
-+	if (!strcmp(buf, "soft") || !strcmp(buf, "soft\n")) {
-+		mode = "soft";
-+		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-+	} else if (!strcmp(buf, "hard") || !strcmp(buf, "hard\n")) {
-+		mode = "hard";
-+		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
-+					ar->wmi.vdev_param->rts_threshold, 0);
-+	} else {
-+		ret = -EINVAL;
-+		goto exit;
-+	}
- 
--	if (ret == 0)
-+	if (ret == 0) {
- 		ret = count;
--
-+		ath10k_info("simulating firmware %s crash\n", mode);
-+	}
- exit:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
+Thanks,
+Ben
+
 -- 
-1.8.1.2
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
