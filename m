@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x235.google.com ([2a00:1450:4008:c01::235])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGRjA-0002Ls-OC
- for ath10k@lists.infradead.org; Thu, 20 Feb 2014 11:23:41 +0000
-Received: by mail-bk0-f53.google.com with SMTP id my13so585120bkb.12
- for <ath10k@lists.infradead.org>; Thu, 20 Feb 2014 03:23:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <87lhx7xhno.fsf@kamboji.qca.qualcomm.com>
-References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
- <87lhx7xhno.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 20 Feb 2014 12:23:10 +0100
-Message-ID: <CA+BoTQ=yRjvA9ZN6Dizp-Vf8_GRJE79uMfsVXNaNaidUchukfQ@mail.gmail.com>
-Subject: Re: [RFC/RFT 5/7] ath10k: batch htt tx/rx completions
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WGSEg-0003xb-Lh
+ for ath10k@lists.infradead.org; Thu, 20 Feb 2014 11:56:15 +0000
+Received: by mail-ee0-f42.google.com with SMTP id b15so889578eek.15
+ for <ath10k@lists.infradead.org>; Thu, 20 Feb 2014 03:55:50 -0800 (PST)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH] ath10k: add soft/hard firmware crash option to
+ simulate_fw_crash
+Date: Thu, 20 Feb 2014 12:55:30 +0100
+Message-Id: <1392897330-4678-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +18,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
 
-T24gMTkgRmVicnVhcnkgMjAxNCAxNjoxMCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
-aXRlczoKPgo+PiBIVFQgUnggZW5kcG9pbnQgcHJvY2Vzc2VzIGJvdGggZnJhbWUgcngKPj4gaW5k
-aWNhdGlvbnMgYW5kIGZyYW1lIHR4IGNvbXBsZXRpb24gaW5kaWNhdGlvbnMuCj4+Cj4+IFRob3Nl
-IGNvbXBsZXRpb25zIHR5cGljYWxseSBjb21lIGluIGJhdGNoZXMgYW5kCj4+IG1heSBiZSBtaXhl
-ZCBzbyBpdCBtYWtlcyBzZW5zZSB0byBkZWZlciBwcm9jZXNzaW5nCj4+IGhvcGluZyB0byBnZXQg
-YSBidW5jaCBvZiB0aGVtIGFuZCB0YWtlIGFkdmFudGFnZQo+PiBvZiBob3QgY2FjaGVzLgo+Pgo+
-PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4K
-Pgo+IFsuLi5dCj4KPj4gQEAgLTI3MCw3ICsyNzQsNyBAQCBzdGF0aWMgaW5saW5lIHN0cnVjdCBz
-a19idWZmICphdGgxMGtfaHR0X3J4X25ldGJ1Zl9wb3Aoc3RydWN0IGF0aDEwa19odHQgKmh0dCkK
-Pj4gICAgICAgaW50IGlkeDsKPj4gICAgICAgc3RydWN0IHNrX2J1ZmYgKm1zZHU7Cj4+Cj4+IC0g
-ICAgIHNwaW5fbG9ja19iaCgmaHR0LT5yeF9yaW5nLmxvY2spOwo+PiArICAgICBsb2NrZGVwX2Fz
-c2VydF9oZWxkKCZodHQtPnJ4X3JpbmcubG9jayk7Cj4KPiBUaGVyZSBhcmUgc29tZSBsb2NraW5n
-IGNoYW5nZXMgd2hpY2ggSSB0aGluayB3b3VsZCBiZSBiZXR0ZXIgdG8gaGF2ZSBpbgo+IGEgc2Vw
-YXJhdGUgcGF0Y2guCgpJIGRvbid0IHRoaW5rIGl0IG1ha2VzIG11Y2ggc2Vuc2UuIEl0IHNlZW1z
-IHNpbGx5IHRvIG1vdmUgYSBmZXcgbGluZXMKaW4gb25lIHBhdGNoIHRvIG1vdmUgc29tZSBvZiB0
-aG9zZSBsaW5lcyBhZ2FpbiBpbiBhbm90aGVyIG9uZS4KCgo+PiAgICAgICBjYXNlIEhUVF9UMkhf
-TVNHX1RZUEVfTUdNVF9UWF9DT01QTEVUSU9OOiB7Cj4+ICsgICAgICAgICAgICAgc3RydWN0IGh0
-dF9yZXNwICpyZXNwID0gKHN0cnVjdCBodHRfcmVzcCAqKXNrYi0+ZGF0YTsKPj4gICAgICAgICAg
-ICAgICBzdHJ1Y3QgaHR0X3R4X2RvbmUgdHhfZG9uZSA9IHt9Owo+PiAgICAgICAgICAgICAgIGlu
-dCBzdGF0dXMgPSBfX2xlMzJfdG9fY3B1KHJlc3AtPm1nbXRfdHhfY29tcGxldGlvbi5zdGF0dXMp
-Owo+Pgo+PiAtICAgICAgICAgICAgIHR4X2RvbmUubXNkdV9pZCA9Cj4+IC0gICAgICAgICAgICAg
-ICAgICAgICBfX2xlMzJfdG9fY3B1KHJlc3AtPm1nbXRfdHhfY29tcGxldGlvbi5kZXNjX2lkKTsK
-Pj4gKyAgICAgICAgICAgICB0eF9kb25lLm1zZHVfaWQgPSBfX2xlMzJfdG9fY3B1KHJlc3AtPm1n
-bXRfdHhfY29tcGxldGlvbi5kZXNjX2lkKTsKPgo+IEkgZG9uJ3Qgc2VlIGFueSBjaGFuZ2VzIGhl
-cmUuCgpSaWdodC4gSSdsbCBjdXQgdGhpcyBodW5rIG91dC4KCgpNaWNoYcWCCgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
-CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
-aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
+In order to have firmware crash simulation functionality also
+in firmware 10.1 driver can force firmware crash by performing
+not allowed operation. Driver can deliberately crash firmware
+when setting vdev param for vdev id out of range.
+This patch introduces two keywords to simulate_fw_crash:
+'soft' which will cause firmware crash that is recoverable
+       by warm firmware reset but supported only in main firmware.
+'hard' which will cause firmware crash recoverable by cold
+       firmware reset, this option works for both firmwares.
+
+Commands to trigger firmware soft/hard crash:
+echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+---
+
+This was patch: ath10k:change simulate_fw_crash to work with 10.1 firmware
+but after review updates I changed commit message.
+
+Previous patch was updated to support two keywords 'soft','hard' in order to
+distinguish different kind of firmware crashes.
+
+ drivers/net/wireless/ath/ath10k/debug.c | 43 ++++++++++++++++++++++-----------
+ 1 file changed, 29 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 6debd28..20f4c4b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -451,12 +451,23 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
+ 					     char __user *user_buf,
+ 					     size_t count, loff_t *ppos)
+ {
+-	const char buf[] = "To simulate firmware crash write the keyword"
+-			   " `crash` to this file.\nThis will force firmware"
+-			   " to report a crash to the host system.\n";
++	const char buf[] = "To simulate firmware crash write one of the"
++			   " keywords to this file:\n `soft` - this will send"
++			   " WMI_FORCE_FW_HANG_ASSERT to firmware if FW"
++			   " supports that command.\n `hard` - this will send"
++			   " to firmware command with illegal parameters"
++			   " causing firmware crash.\n";
++
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
+ }
+ 
++/* Simulate firmware crash:
++ * 'soft': Call wmi command causing firmware hang. This firmware hang is
++ * recoverable by warm firmware reset.
++ * 'hard': Force firmware crash by setting any vdev parameter for not allowed
++ * vdev id. This is hard firmware crash because it is recoverable only by cold
++ * firmware reset.
++ */
+ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 					      const char __user *user_buf,
+ 					      size_t count, loff_t *ppos)
+@@ -464,14 +475,11 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 	struct ath10k *ar = file->private_data;
+ 	char buf[32] = {};
+ 	int ret;
++	const char *mode;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+ 	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
+-	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
+-		ret = -EINVAL;
+-		goto exit;
+-	}
+ 
+ 	if (ar->state != ATH10K_STATE_ON &&
+ 	    ar->state != ATH10K_STATE_RESTARTED) {
+@@ -479,15 +487,22 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 		goto exit;
+ 	}
+ 
+-	ath10k_info("simulating firmware crash\n");
+-
+-	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
+-	if (ret)
+-		ath10k_warn("failed to force fw hang (%d)\n", ret);
++	if (!strcmp(buf, "soft") || !strcmp(buf, "soft\n")) {
++		mode = "soft";
++		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
++	} else if (!strcmp(buf, "hard") || !strcmp(buf, "hard\n")) {
++		mode = "hard";
++		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
++					ar->wmi.vdev_param->rts_threshold, 0);
++	} else {
++		ret = -EINVAL;
++		goto exit;
++	}
+ 
+-	if (ret == 0)
++	if (ret == 0) {
+ 		ret = count;
+-
++		ath10k_info("simulating firmware %s crash\n", mode);
++	}
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+-- 
+1.8.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
