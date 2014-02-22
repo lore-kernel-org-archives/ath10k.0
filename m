@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WGX90-00064j-3i
- for ath10k@lists.infradead.org; Thu, 20 Feb 2014 17:10:43 +0000
+ id 1WH12J-0006GY-0W
+ for ath10k@lists.infradead.org; Sat, 22 Feb 2014 01:05:47 +0000
 Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
  (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1KHAG7Z000420
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1M15NCP005614
  (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Thu, 20 Feb 2014 09:10:17 -0800
-Message-ID: <530636F8.1070201@candelatech.com>
-Date: Thu, 20 Feb 2014 09:10:16 -0800
+ for <ath10k@lists.infradead.org>; Fri, 21 Feb 2014 17:05:23 -0800
+Message-ID: <5307F7D3.1030703@candelatech.com>
+Date: Fri, 21 Feb 2014 17:05:23 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Anyone seeing problem with running out of credits?
+Subject: Anyone have luck with WLE900VX?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,27 +27,36 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k <ath10k@lists.infradead.org>
 
-Next on my bug list is a problem where the driver claims that
-it has no more tx credits, and the firmware never releases any
-more credits.
+I managed to get a few WLE900VX, and I've seen some funny things so far.
 
-I generally see this after 'resetting' a bunch of station VIFs
-several times.
+First, with the official firmware 10.1.467.1-1 it immediately crashes on startup.
+I don't have that firmware source, so I don't know why it crashes.
+I wasn't even trying to create more than the default wlanX station.
 
-The firmware does not crash, but perhaps it hangs.  I am using
-a modified 10.1.389 firmware.
+With my firmware (based on 10.1.389), it boots up OK and I can create
+and associate 32 station vifs.
 
-I have double checked the firmware and it appears it should
-properly release the credits in all cases, but of course it
-could still have issues.
+Both NICs that I have tried so far report the same mostly bogus
+MAC:  00:03:07:12:34:56
 
-The last command that received a credit and so was sent is 0x9011,
-which appears to be vdev-create.
+The NIC's spec sheet claims it is 3x3, but 'iw phy phyX info' shows only
+2 streams supported for both the 2.4Ghz n band and the 5Ghz /ac band.
 
-I am curious if anyone else has seen such problems in testing?
+When stations associate (with ath9k AP in this case), throughput is
+very bad..tx rate-control rate is stuck at 6Mbps, and rx rate is normally around
+300Mbps.  (Rates are as reported by OS/driver, I did not try sniffing
+the air..but total goodput throughput was in line with that bad tx rate.)
+
+RX signal is all over the place, even though AP and STA are close by.
+
+This is using over-the-air connection.
+
+If anyone else has any experience with these NICs I'm interested to
+hear about it...
 
 Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
