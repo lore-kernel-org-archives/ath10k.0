@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHzpg-0006Au-Dq
- for ath10k@lists.infradead.org; Mon, 24 Feb 2014 18:00:49 +0000
-Message-ID: <530B88BA.1020602@candelatech.com>
-Date: Mon, 24 Feb 2014 10:00:26 -0800
+ id 1WI0Nu-0007e6-RX
+ for ath10k@lists.infradead.org; Mon, 24 Feb 2014 18:36:11 +0000
+Message-ID: <530B90E0.8080101@candelatech.com>
+Date: Mon, 24 Feb 2014 10:35:12 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: Anyone have luck with WLE900VX?
 References: <5307F7D3.1030703@candelatech.com>
- <87fvn8trh2.fsf@kamboji.qca.qualcomm.com> <530B74E1.8040908@candelatech.com>
- <87txbosakq.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87txbosakq.fsf@kamboji.qca.qualcomm.com>
+ <87fvn8trh2.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87fvn8trh2.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +26,28 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 02/24/2014 09:08 AM, Kalle Valo wrote:
+On 02/24/2014 08:17 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 
-> I was actually referring to the internal chip id, not PCI id, which is a
-> good way to check what chip it really is:
+>> Both NICs that I have tried so far report the same mostly bogus
+>> MAC:  00:03:07:12:34:56
+>>
+>> The NIC's spec sheet claims it is 3x3, but 'iw phy phyX info' shows only
+>> 2 streams supported for both the 2.4Ghz n band and the 5Ghz /ac band.
 > 
-> static int ath10k_core_check_chip_id(struct ath10k *ar)
-> {
-> 	u32 hw_revision = MS(ar->chip_id, SOC_CHIP_ID_REV);
+> Hmm, I wonder if otp.bin fails. Can you check what result code you get
+> from otp.bin? Add something like this to ath10k_download_and_run_otp():
 > 
-> 	ath10k_dbg(ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
-> 		   ar->chip_id, hw_revision);
-> 
+> 	ret = ath10k_bmi_execute(ar, address, &exec_param);
+>         ath10k_dbg(ATH10K_DBG_BOOT, "boot otp execute result %d\n", exec_param);
 
-Ahh, like this?
+I tried the standard .389 firmware that mine is based on, and I see similar non-working
+behaviour, so it does not appear to be a bug I added to my firmware.
 
-ath10k: boot chip_id 0x043202ff hw_revision 0x2
+I also notice that the otp binary in the .467.1-1 firmware is a fair bit bigger
+than what is included in the .389 firmware.
 
-
-I do not see any OTP errors when loading my firmware, at least not
-as seen from the ath10k driver.
+So, probably I need fixes to otp (at least).
 
 Thanks,
 Ben
