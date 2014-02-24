@@ -1,17 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
- ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WI1wO-000216-0s
- for ath10k@lists.infradead.org; Mon, 24 Feb 2014 20:15:52 +0000
-Date: Mon, 24 Feb 2014 15:03:06 -0500
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20140217
-Message-ID: <20140224200305.GF24810@tuxdriver.com>
-References: <87txbx3etu.fsf@kamboji.qca.qualcomm.com>
+Received: from smtp3.ugent.be ([157.193.49.127])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WI2hv-0003Bh-7c
+ for ath10k@lists.infradead.org; Mon, 24 Feb 2014 21:05:00 +0000
+Received: from localhost (mcheck3.ugent.be [157.193.71.89])
+ by smtp3.ugent.be (Postfix) with ESMTP id 57163C712
+ for <ath10k@lists.infradead.org>; Mon, 24 Feb 2014 22:04:35 +0100 (CET)
+Received: from smtp3.ugent.be ([IPv6:::ffff:157.193.49.127])
+ by localhost (mcheck3.UGent.be [::ffff:157.193.43.11]) (amavisd-new,
+ port 10024)
+ with ESMTP id wf40mth7u-Il for <ath10k@lists.infradead.org>;
+ Mon, 24 Feb 2014 22:04:35 +0100 (CET)
+Received: from [192.168.1.51] (178-116-9-163.access.telenet.be [178.116.9.163])
+ (Authenticated sender: bjooris)
+ by smtp3.ugent.be (Postfix) with ESMTPSA id E0888C711
+ for <ath10k@lists.infradead.org>; Mon, 24 Feb 2014 22:04:34 +0100 (CET)
+Message-ID: <530BB3E2.8000705@intec.ugent.be>
+Date: Mon, 24 Feb 2014 22:04:34 +0100
+From: Bart Jooris <Bart.Jooris@intec.ugent.be>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87txbx3etu.fsf@kamboji.qca.qualcomm.com>
+Subject: Compiling custom ath10k: step 5 minor issue
+Reply-To: Bart.Jooris@intec.ugent.be
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +29,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath6kl-devel@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On Mon, Feb 17, 2014 at 06:05:01PM +0200, Kalle Valo wrote:
-> Hi John,
-> 
-> here's a new pull request for ath6kl and ath10k. 
-> 
-> For ath10k Alexander did some cleanup to PCI error cases and switched
-> ath10k to use pci_enable_msi_range(). Michal implemented AP CSA support
-> and sta_rc_update() operation. I enabled firmware "STA quick kickout"
-> functionality for faster detection of disappeared clients.
-> 
-> Also there are lots of small fixes to everywhere from various people.
-> 
-> For ath6kl Julien did two small USB related fixes.
-> 
-> Please let me know if there are any problmes
-> 
-> The following changes since commit 38dbfb59d1175ef458d006556061adeaa8751b72:
-> 
->   Linus 3.14-rc1 (2014-02-02 16:42:13 -0800)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to 9797febc4cc112869b19a110f70e0dedb1bb63d6:
-> 
->   ath10k: implement sta_rc_update() (2014-02-15 08:49:02 +0200)
+../ath/net/core/flow_dissector.c seems to be changed?
 
-Pulling now...
+./gentree.py --verbose --clean --git-revision master --copy-list 
+copy-list.ath ../ath ../backports-output
+Get original source files from git ...
+Apply patches ...
+Not applying backport-adjustments/dma-buf.patch, not needed
+Applying patch backport-adjustments/flow_dissector.patch
+ > patching file compat/net-core-flow_dissector.c
+ > Hunk #1 FAILED at 177.
+ > 1 out of 1 hunk FAILED -- saving rejects to file 
+compat/net-core-flow_dissector.c.rej
+
+Kind regards,
+
+Bart
+
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Bart Jooris
+Department of Information Technology
+Internet Based Communication Networks and Services (IBCN)
+Ghent University - iMinds
+Gaston Crommenlaan 8 (Bus 201), B-9050 Gent, Belgium
+E-mail: bart.jooris@intec.UGent.be
+M: +32 474 59 53 42
+Tel. +32 9 33 14900
+Fax +32 9 33 14899
+
 
 _______________________________________________
 ath10k mailing list
