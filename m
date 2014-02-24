@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-bk0-x22f.google.com ([2a00:1450:4008:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHIEt-0003f7-Vv
- for ath10k@lists.infradead.org; Sat, 22 Feb 2014 19:27:56 +0000
-Message-ID: <5308FA24.5050005@candelatech.com>
-Date: Sat, 22 Feb 2014 11:27:32 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WHop3-0000NW-TB
+ for ath10k@lists.infradead.org; Mon, 24 Feb 2014 06:15:27 +0000
+Received: by mail-bk0-f47.google.com with SMTP id w10so75340bkz.34
+ for <ath10k@lists.infradead.org>; Sun, 23 Feb 2014 22:15:01 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <5307F7D3.1030703@candelatech.com>
+References: <5307F7D3.1030703@candelatech.com>
+Date: Mon, 24 Feb 2014 07:15:00 +0100
+Message-ID: <CA+BoTQn3xkuy1O-0P6avwe8OvkwQ3TkBqgq+zkfEd-QGv0Ve0A@mail.gmail.com>
 Subject: Re: Anyone have luck with WLE900VX?
-References: <5307F7D3.1030703@candelatech.com>	<CAEFj984-_Des27n3-wvCScXMX1tntcZXNKZQ8FU_13nNOW2GqA@mail.gmail.com>	<5308F894.7030608@candelatech.com>
- <CAJ-VmonDNU3V7-WdNe4B1+shz35HXsxhgLGgQeDp470c_VmP=Q@mail.gmail.com>
-In-Reply-To: <CAJ-VmonDNU3V7-WdNe4B1+shz35HXsxhgLGgQeDp470c_VmP=Q@mail.gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +20,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 02/22/2014 11:24 AM, Adrian Chadd wrote:
-> Check the firmware source; the MAC is read out of caldata and I
-> believe the default is (random three digits) + 12:34:56
->
-> So maybe the board didn't reset fully and the OTP or EEPROM didn't
-> load? You should be able to read the OTP data via the memory mapped
-> registers exposed to the host, as long as you know how to read OTP.
-> :-P
-
-Thanks, I'll go poking at that on Monday.  I have never messed with
-OTP before, but perhaps I'll get lucky :)
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjIgRmVicnVhcnkgMjAxNCAwMjowNSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IEkgbWFuYWdlZCB0byBnZXQgYSBmZXcgV0xFOTAwVlgsIGFuZCBJJ3Zl
+IHNlZW4gc29tZSBmdW5ueSB0aGluZ3Mgc28gZmFyLgoKWy4uLl0KCj4gV2hlbiBzdGF0aW9ucyBh
+c3NvY2lhdGUgKHdpdGggYXRoOWsgQVAgaW4gdGhpcyBjYXNlKSwgdGhyb3VnaHB1dCBpcwo+IHZl
+cnkgYmFkLi50eCByYXRlLWNvbnRyb2wgcmF0ZSBpcyBzdHVjayBhdCA2TWJwcywgYW5kIHJ4IHJh
+dGUgaXMgbm9ybWFsbHkgYXJvdW5kCj4gMzAwTWJwcy4gIChSYXRlcyBhcmUgYXMgcmVwb3J0ZWQg
+YnkgT1MvZHJpdmVyLCBJIGRpZCBub3QgdHJ5IHNuaWZmaW5nCj4gdGhlIGFpci4uYnV0IHRvdGFs
+IGdvb2RwdXQgdGhyb3VnaHB1dCB3YXMgaW4gbGluZSB3aXRoIHRoYXQgYmFkIHR4IHJhdGUuKQoK
+VW5mb3J0dW5hdGVseSBmaXJtd2FyZSBkb2Vzbid0IHByb3ZpZGUgYSBzYW5lIHdheSB0byBnZXQg
+dHggcmF0ZSBmb3IKdHggc3RhdHVzIHJlcG9ydGluZyBzbyBhdGgxMGsgcmVwb3J0cyB3aGF0ZXZl
+ciBhIGJ1bmNoIG9mIHplcm9lcyBtZWFucwpmb3IgZ2l2ZW4gbW9kZS9iYW5kLgoKCk1pY2hhxYIK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
