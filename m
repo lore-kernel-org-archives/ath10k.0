@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WHtzm-0001Ih-KF
- for ath10k@lists.infradead.org; Mon, 24 Feb 2014 11:46:51 +0000
+ id 1WHu2h-0001LH-LD
+ for ath10k@lists.infradead.org; Mon, 24 Feb 2014 11:49:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 3/7] ath10k: replace send_head() with tx_sg()
+Subject: Re: [RFC/RFT 5/7] ath10k: batch htt tx/rx completions
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
- <1392629563-31046-4-git-send-email-michal.kazior@tieto.com>
- <87y517xo7j.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQm3werwtNrWVLBFxN5QOvLxucu0crDXdAJJj4X0gSnXrw@mail.gmail.com>
- <87txbvxk1t.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQn+8RUbmASLrrFwZqSRgWkLpy1Z3icy3Mp9VMPGHtQrEg@mail.gmail.com>
-Date: Mon, 24 Feb 2014 13:46:20 +0200
-In-Reply-To: <CA+BoTQn+8RUbmASLrrFwZqSRgWkLpy1Z3icy3Mp9VMPGHtQrEg@mail.gmail.com>
- (Michal Kazior's message of "Thu, 20 Feb 2014 07:43:00 +0100")
-Message-ID: <87wqgku41f.fsf@kamboji.qca.qualcomm.com>
+ <1392629563-31046-6-git-send-email-michal.kazior@tieto.com>
+ <87lhx7xhno.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=yRjvA9ZN6Dizp-Vf8_GRJE79uMfsVXNaNaidUchukfQ@mail.gmail.com>
+Date: Mon, 24 Feb 2014 13:49:23 +0200
+In-Reply-To: <CA+BoTQ=yRjvA9ZN6Dizp-Vf8_GRJE79uMfsVXNaNaidUchukfQ@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 20 Feb 2014 12:23:10 +0100")
+Message-ID: <87sir8u3wc.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -33,35 +31,41 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 19 February 2014 15:18, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> On 19 February 2014 16:10, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 >> Michal Kazior <michal.kazior@tieto.com> writes:
 >>
->>> It doesn't really make any sense to keep it there anyway because
->>> sg_item is used as means to pass a complex function argument to
->>> sg_tx().
+>>> HTT Rx endpoint processes both frame rx
+>>> indications and frame tx completion indications.
+>>>
+>>> Those completions typically come in batches and
+>>> may be mixed so it makes sense to defer processing
+>>> hoping to get a bunch of them and take advantage
+>>> of hot caches.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 >>
->> If we used skbs we would just give a list/queue of them and no need to
->> have any extra structs.
+>> [...]
+>>
+>>> @@ -270,7 +274,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+>>>       int idx;
+>>>       struct sk_buff *msdu;
+>>>
+>>> -     spin_lock_bh(&htt->rx_ring.lock);
+>>> +     lockdep_assert_held(&htt->rx_ring.lock);
+>>
+>> There are some locking changes which I think would be better to have in
+>> a separate patch.
 >
-> Managing skbs would incur extra overhead. Skbs are also less flexible
-> and probably unnecessary (at least at this point).
+> I don't think it makes much sense. It seems silly to move a few lines
+> in one patch to move some of those lines again in another one.
 
-As a rule of thumb we should avoid reinventing things on our own and use
-Linux infrastructure as much possible. There are a lot of benefits from
-using sk_buffs.
+I'm not really getting your point here. Moving things back and forth
+would not make any sense, but that's not what I was asking either.
 
-> Think about the qos workaround removal - you have to submit htt tx
-> descriptor frame prefetch in 2 parts instead of 1 (to make it appear
-> to FW as there's no QoS field). With skbs you have to allocate another
-> skb, copy part of MSDU into it... aaand you've just traded a single
-> memmove() for dev_alloc_skb(), skb_put() and a memcpy().
-
-I'm missing a lot of details here (and I can't check from code right
-now), but are you saying that skb allocation is too slow? In that case
-we should fix the skb allocation instead of working it around in ath10k.
-
-But this is all hand waving for the future, not really something I see a
-problem with this patchset.
+I noticed that you were taking locks in a larger scope (and earlier)
+than before. I was just thinking would it be possible to make that
+locking changes in a separate patch, that way it would be easier to
+bisect regressions if/when they show up.
 
 -- 
 Kalle Valo
