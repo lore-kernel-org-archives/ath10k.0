@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x232.google.com ([2a00:1450:4008:c01::232])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WICO9-0006Lf-J9
- for ath10k@lists.infradead.org; Tue, 25 Feb 2014 07:25:14 +0000
-Received: by mail-bk0-f50.google.com with SMTP id w10so100274bkz.9
- for <ath10k@lists.infradead.org>; Mon, 24 Feb 2014 23:24:50 -0800 (PST)
+ id 1WIQ3m-0000UD-Vm
+ for ath10k@lists.infradead.org; Tue, 25 Feb 2014 22:01:07 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1PM0h3K027579
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Tue, 25 Feb 2014 14:00:44 -0800
+Message-ID: <530D128B.3030509@candelatech.com>
+Date: Tue, 25 Feb 2014 14:00:43 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <1393312414-9404-1-git-send-email-janusz.dziedzic@tieto.com>
-References: <1393312414-9404-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 25 Feb 2014 08:24:49 +0100
-Message-ID: <CA+BoTQkgFVgWGJTTLOJ2tiqqaJ=0O7JvGAMDWc8JHt0rJP92UA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: improve rx path when play with attention flags
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Anyone have a working hostapd conf file for AC?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +21,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-T24gMjUgRmVicnVhcnkgMjAxNCAwODoxMywgSmFudXN6IER6aWVkemljIDxqYW51c3ouZHppZWR6
-aWNAdGlldG8uY29tPiB3cm90ZToKPiBDdXJyZW50bHkgd2hlbiB3ZSBjaGVjayBhdHRlbnRpb24g
-ZmxhZ3Mgd2UgZG8gX19sZTMyX3RvX2NwdSgpCj4gZm91ciB0aW1lcyBmb3IgZWFjaCBwYWNrZXQu
-IFRoaXMgY291bGQgaGF2ZSBwZXJmb3JtYW5jZQo+IGltcGFjdCBmb3IgQklHIGVuZGlhbiBwbGF0
-Zm9ybXMuIFRoaXMgcGF0Y2ggaW1wcm92ZSB0aGlzCj4gbGl0dGxlIGJpdC4KPgo+IFNpZ25lZC1v
-ZmYtYnk6IEphbnVzeiBEemllZHppYyA8amFudXN6LmR6aWVkemljQHRpZXRvLmNvbT4KPiAtLS0K
-PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYyB8ICAgNzEgKysrKyst
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNlcnRpb25z
-KCspLCA2MCBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2h0dF9yeC5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9o
-dHRfcnguYwo+IGluZGV4IDMxNjQzM2YuLjk3ZTRjZDUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMKPiBAQCAtODEwLDYyICs4MTAsNiBAQCBzdGF0aWMgdm9p
-ZCBhdGgxMGtfaHR0X3J4X21zZHUoc3RydWN0IGF0aDEwa19odHQgKmh0dCwgc3RydWN0IGh0dF9y
-eF9pbmZvICppbmZvKQo+ICAgICAgICAgYXRoMTBrX3Byb2Nlc3NfcngoaHR0LT5hciwgaW5mbyk7
-Cj4gIH0KPgo+IC1zdGF0aWMgYm9vbCBhdGgxMGtfaHR0X3J4X2hhc19kZWNyeXB0X2VycihzdHJ1
-Y3Qgc2tfYnVmZiAqc2tiKQo+IC17Cj4gLSAgICAgICBzdHJ1Y3QgaHR0X3J4X2Rlc2MgKnJ4ZDsK
-PiAtICAgICAgIHUzMiBmbGFnczsKPiAtCj4gLSAgICAgICByeGQgPSAodm9pZCAqKXNrYi0+ZGF0
-YSAtIHNpemVvZigqcnhkKTsKPiAtICAgICAgIGZsYWdzID0gX19sZTMyX3RvX2NwdShyeGQtPmF0
-dGVudGlvbi5mbGFncyk7Cj4gLQo+IC0gICAgICAgaWYgKGZsYWdzICYgUlhfQVRURU5USU9OX0ZM
-QUdTX0RFQ1JZUFRfRVJSKQo+IC0gICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsKPiAtCj4gLSAg
-ICAgICByZXR1cm4gZmFsc2U7Cj4gLX0KPiAtCj4gLXN0YXRpYyBib29sIGF0aDEwa19odHRfcnhf
-aGFzX2Zjc19lcnIoc3RydWN0IHNrX2J1ZmYgKnNrYikKPiAtewo+IC0gICAgICAgc3RydWN0IGh0
-dF9yeF9kZXNjICpyeGQ7Cj4gLSAgICAgICB1MzIgZmxhZ3M7Cj4gLQo+IC0gICAgICAgcnhkID0g
-KHZvaWQgKilza2ItPmRhdGEgLSBzaXplb2YoKnJ4ZCk7Cj4gLSAgICAgICBmbGFncyA9IF9fbGUz
-Ml90b19jcHUocnhkLT5hdHRlbnRpb24uZmxhZ3MpOwo+IC0KPiAtICAgICAgIGlmIChmbGFncyAm
-IFJYX0FUVEVOVElPTl9GTEFHU19GQ1NfRVJSKQo+IC0gICAgICAgICAgICAgICByZXR1cm4gdHJ1
-ZTsKPiAtCj4gLSAgICAgICByZXR1cm4gZmFsc2U7Cj4gLX0KPiAtCj4gLXN0YXRpYyBib29sIGF0
-aDEwa19odHRfcnhfaGFzX21pY19lcnIoc3RydWN0IHNrX2J1ZmYgKnNrYikKPiAtewo+IC0gICAg
-ICAgc3RydWN0IGh0dF9yeF9kZXNjICpyeGQ7Cj4gLSAgICAgICB1MzIgZmxhZ3M7Cj4gLQo+IC0g
-ICAgICAgcnhkID0gKHZvaWQgKilza2ItPmRhdGEgLSBzaXplb2YoKnJ4ZCk7Cj4gLSAgICAgICBm
-bGFncyA9IF9fbGUzMl90b19jcHUocnhkLT5hdHRlbnRpb24uZmxhZ3MpOwo+IC0KPiAtICAgICAg
-IGlmIChmbGFncyAmIFJYX0FUVEVOVElPTl9GTEFHU19US0lQX01JQ19FUlIpCj4gLSAgICAgICAg
-ICAgICAgIHJldHVybiB0cnVlOwo+IC0KPiAtICAgICAgIHJldHVybiBmYWxzZTsKPiAtfQo+IC0K
-PiAtc3RhdGljIGJvb2wgYXRoMTBrX2h0dF9yeF9pc19tZ210KHN0cnVjdCBza19idWZmICpza2Ip
-Cj4gLXsKPiAtICAgICAgIHN0cnVjdCBodHRfcnhfZGVzYyAqcnhkOwo+IC0gICAgICAgdTMyIGZs
-YWdzOwo+IC0KPiAtICAgICAgIHJ4ZCA9ICh2b2lkICopc2tiLT5kYXRhIC0gc2l6ZW9mKCpyeGQp
-Owo+IC0gICAgICAgZmxhZ3MgPSBfX2xlMzJfdG9fY3B1KHJ4ZC0+YXR0ZW50aW9uLmZsYWdzKTsK
-PiAtCj4gLSAgICAgICBpZiAoZmxhZ3MgJiBSWF9BVFRFTlRJT05fRkxBR1NfTUdNVF9UWVBFKQo+
-IC0gICAgICAgICAgICAgICByZXR1cm4gdHJ1ZTsKPiAtCj4gLSAgICAgICByZXR1cm4gZmFsc2U7
-Cj4gLX0KPiAtCj4gIHN0YXRpYyBpbnQgYXRoMTBrX2h0dF9yeF9nZXRfY3N1bV9zdGF0ZShzdHJ1
-Y3Qgc2tfYnVmZiAqc2tiKQo+ICB7Cj4gICAgICAgICBzdHJ1Y3QgaHR0X3J4X2Rlc2MgKnJ4ZDsK
-PiBAQCAtOTI5LDYgKzg3Myw5IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19odHRfcnhfaGFuZGxlcihz
-dHJ1Y3QgYXRoMTBrX2h0dCAqaHR0LAo+ICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBz
-a19idWZmICptc2R1X2hlYWQsICptc2R1X3RhaWw7Cj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ZW51bSBodHRfcnhfbXBkdV9zdGF0dXMgc3RhdHVzOwo+ICAgICAgICAgICAgICAgICAgICAgICAg
-IGludCBtc2R1X2NoYWluaW5nOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBodHRf
-cnhfZGVzYyAqcnhkOwo+ICsgICAgICAgICAgICAgICAgICAgICAgIHUzMiBhdHRfZmxhZ3M7Cj4g
-KwoKTm8gbmVlZCBmb3IgYW4gZW1wdHkgbGluZSBJIHN1cHBvc2U/IEkgd291bGQgYWxzbyBwcmVm
-ZXIgYGF0dGVudGlvbmAKaW5zdGVhZCBvZiBgYXR0X2ZsYWdzYCwgYnV0IG5vIGJpZyBkZWFsLgoK
-Cj4gICAgICAgICAgICAgICAgICAgICAgICAgbXNkdV9oZWFkID0gTlVMTDsKPiAgICAgICAgICAg
-ICAgICAgICAgICAgICBtc2R1X3RhaWwgPSBOVUxMOwo+IEBAIC05NTAsNyArODk3LDExIEBAIHN0
-YXRpYyB2b2lkIGF0aDEwa19odHRfcnhfaGFuZGxlcihzdHJ1Y3QgYXRoMTBrX2h0dCAqaHR0LAo+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7Cj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgfQo+Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgaWYgKGF0aDEwa19odHRf
-cnhfaGFzX2RlY3J5cHRfZXJyKG1zZHVfaGVhZCkpIHsKPiArICAgICAgICAgICAgICAgICAgICAg
-ICByeGQgPSAodm9pZCAqKW1zZHVfaGVhZC0+ZGF0YSAtIHNpemVvZigqcnhkKTsKCkkgdGhpbmsg
-Y29udGFpbmVyX29mKG1zZHVfaGVhZC0+ZGF0YSwgaHR0X3R4X2Rlc2MsIG1zZHVfcGF5bG9hZCkg
-aXMgYQpiZXR0ZXIgZml0IGhlcmUgOi0pCgoKPiArICAgICAgICAgICAgICAgICAgICAgICBhdHRf
-ZmxhZ3MgPSBfX2xlMzJfdG9fY3B1KHJ4ZC0+YXR0ZW50aW9uLmZsYWdzKTsKCkF0dGVudGlvbiBm
-bGFncyBkb24ndCBjb250YWluIGJpdG1hc2tlZCB2YWx1ZXMgc28gd2UgY2FuIHNraXAgdGhlCmNv
-bnZlcnNpb24gYWx0b2dldGhlciBoZXJlIGFuZCBkbyBfX2NwdV90b19sZTMyKCkgb24gdGhlIGNv
-bnN0YW50CnZhbHVlcy4KCgo+ICsKPiArCgpNb3JlIGVtcHR5IGxpbmVzPwoKCgpNaWNoYcWCCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I'm working on making a WLE900VX into an AP to do some
+additional testing.  Not having the best of luck yet, but
+maybe it's my config file....
+
+Does anyone have a working hostapd config file for
+ath10k?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
