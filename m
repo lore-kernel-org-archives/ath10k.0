@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIhX2-0006QQ-Fm
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 16:40:29 +0000
+ id 1WIhfO-0006i8-BD
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 16:49:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix sta_rc_update for non-ap iftype
-References: <CA+BoTQmNdn3ELFRyiMwRE=nq5XukvSy2m7BNoqXnoz95JuDYOw@mail.gmail.com>
- <1392795187-2870-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 26 Feb 2014 18:40:02 +0200
-In-Reply-To: <1392795187-2870-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 19 Feb 2014 08:33:07 +0100")
-Message-ID: <87vbw1ltel.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  make TARGET_NUM_PEERS match WMI_MAX_KEY_INDEX.
+References: <1392742567-6134-1-git-send-email-greearb@candelatech.com>
+Date: Wed, 26 Feb 2014 18:48:40 +0200
+In-Reply-To: <1392742567-6134-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 18 Feb 2014 08:56:07
+ -0800")
+Message-ID: <87r46plt07.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,19 +24,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+greearb@candelatech.com writes:
 
-> The arsta structure wasn't initialized for
-> non-ap interfaces. This should fix related
-> warnings/crashes.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Reported-By: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> This appears to fix the problem of running out of keys
+> in the firmware.  Possibly it only hides the problem,
+> however.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-Thanks, applied.
+IIRC you asked me to drop this patch in other thread. I have now done
+that.
 
 -- 
 Kalle Valo
