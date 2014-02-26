@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIi5s-0007zz-NP
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:16:29 +0000
+ id 1WIiJc-00009T-0M
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:30:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: skip management frames in HTT path
-References: <1393311399-8070-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Wed, 26 Feb 2014 19:16:01 +0200
-In-Reply-To: <1393311399-8070-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 25 Feb 2014 07:56:39 +0100")
-Message-ID: <87a9ddlrqm.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: improve rx path when play with attention flags
+References: <1393312414-9404-1-git-send-email-janusz.dziedzic@tieto.com>
+ <CA+BoTQkgFVgWGJTTLOJ2tiqqaJ=0O7JvGAMDWc8JHt0rJP92UA@mail.gmail.com>
+Date: Wed, 26 Feb 2014 19:29:57 +0200
+In-Reply-To: <CA+BoTQkgFVgWGJTTLOJ2tiqqaJ=0O7JvGAMDWc8JHt0rJP92UA@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 25 Feb 2014 08:24:49 +0100")
+Message-ID: <871typlr3e.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,25 +24,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> After we pass frames with INV_PEER to upper layer in patch:
+> On 25 February 2014 08:13, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
+>> Currently when we check attention flags we do __le32_to_cpu()
+>> four times for each packet. This could have performance
+>> impact for BIG endian platforms. This patch improve this
+>> little bit.
+>>
+>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+
+[...]
+
+>> @@ -929,6 +873,9 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>                         struct sk_buff *msdu_head, *msdu_tail;
+>>                         enum htt_rx_mpdu_status status;
+>>                         int msdu_chaining;
+>> +                       struct htt_rx_desc *rxd;
+>> +                       u32 att_flags;
+>> +
 >
-> ath10k: pass frames with invalid peer status to upper layer
->
-> we could pass some management frames (in case INVALID_PEER
-> and MGMT_CTRL) twice to upper layer, once via WMI and once
-> via HTT. Next we could handle assoc request twice. This
-> patch remove such regression.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> No need for an empty line I suppose? I would also prefer `attention`
+> instead of `att_flags`, but no big deal.
 
-I saw a conflict and also did some commit log cleanup. Please check:
+Yeah, attention is better.
 
-https://github.com/kvalo/ath/commit/dd0063fba4434d22fb8a6e6d79bf23cc36f6916a
+And also the variable declarations should be in the beginning of
+function. Apparently I have been sloppy missed that here.
 
 -- 
 Kalle Valo
