@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIjEF-0002Pq-7l
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 18:29:11 +0000
-Message-ID: <530E325E.4060503@candelatech.com>
-Date: Wed, 26 Feb 2014 10:28:46 -0800
+ id 1WIjYv-00037K-Mo
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 18:50:34 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1QIoAcB013252
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Wed, 26 Feb 2014 10:50:10 -0800
+Message-ID: <530E3762.4030000@candelatech.com>
+Date: Wed, 26 Feb 2014 10:50:10 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k:  add vdev-id, return code to error codes
-References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
- <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
+Subject: Build failure in latest ath10k tree.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +25,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On 02/13/2014 10:06 PM, Kalle Valo wrote:
-> greearb@candelatech.com writes:
-> 
->> From: Ben Greear <greearb@candelatech.com>
->>
->> When using multiple vdevs (stations, aps, etc), it is
->> nice to be able to associate log messages with specific
->> interfaces.  So, add vdev-id to most logging messages.
->> Add return code as well, where it was missing.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> 
-> I did some changes just to have consistent style for warning messages,
-> see my incremental diff patch below. Let me know if you agree with my
-> changes, the full patch is in ath-next-test branch.
+Looks non-related to ath10k itself...maybe bad merge or
+upstream error?
 
-Hello!
+I'll dig into it in a bit if no one beats me to it.
 
-Are you wanting me to send in a revised version of this patch, or
-is it fine as previously posted?
+[greearb@ben-dt2 linux-ath.x64]$ make  bzImage modules
+make[3]: Nothing to be done for `all'.
+make[3]: Nothing to be done for `relocs'.
+  CHK     include/config/kernel.release
+  Using /mnt/sda/home/greearb/git/linux.ath as source for kernel
+  GEN     /home/greearb/kernel/2.6/linux-ath.x64/Makefile
+  CHK     include/generated/uapi/linux/version.h
+  CHK     include/generated/utsrelease.h
+  CALL    /mnt/sda/home/greearb/git/linux.ath/scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      arch/x86/kernel/cpu/capflags.o
+  CC      arch/x86/kernel/cpu/common.o
+fixdep: error opening config file: /mnt/sda/home/greearb/git/linux.ath/include/linux/spinlokk_types.h: No such file or directory
+make[5]: *** [arch/x86/kernel/cpu/common.o] Error 2
+make[4]: *** [arch/x86/kernel/cpu] Error 2
+make[3]: *** [arch/x86/kernel] Error 2
+make[2]: *** [arch/x86] Error 2
+make[1]: *** [sub-make] Error 2
+make: *** [all] Error 2
+
 
 Thanks,
 Ben
