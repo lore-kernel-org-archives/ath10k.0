@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIiJc-00009T-0M
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:30:40 +0000
+ id 1WIiOq-0000IA-Ug
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:36:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: improve rx path when play with attention flags
-References: <1393312414-9404-1-git-send-email-janusz.dziedzic@tieto.com>
- <CA+BoTQkgFVgWGJTTLOJ2tiqqaJ=0O7JvGAMDWc8JHt0rJP92UA@mail.gmail.com>
-Date: Wed, 26 Feb 2014 19:29:57 +0200
-In-Reply-To: <CA+BoTQkgFVgWGJTTLOJ2tiqqaJ=0O7JvGAMDWc8JHt0rJP92UA@mail.gmail.com>
- (Michal Kazior's message of "Tue, 25 Feb 2014 08:24:49 +0100")
-Message-ID: <871typlr3e.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Compiling custom ath10k: step 5 minor issue
+References: <530BB3E2.8000705@intec.ugent.be>
+Date: Wed, 26 Feb 2014 19:35:38 +0200
+In-Reply-To: <530BB3E2.8000705@intec.ugent.be> (Bart Jooris's message of "Mon, 
+ 24 Feb 2014 22:04:34 +0100")
+Message-ID: <87wqghkc9h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,36 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Bart.Jooris@intec.ugent.be
+Cc: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Bart Jooris <Bart.Jooris@intec.ugent.be> writes:
 
-> On 25 February 2014 08:13, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
->> Currently when we check attention flags we do __le32_to_cpu()
->> four times for each packet. This could have performance
->> impact for BIG endian platforms. This patch improve this
->> little bit.
->>
->> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-
-[...]
-
->> @@ -929,6 +873,9 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
->>                         struct sk_buff *msdu_head, *msdu_tail;
->>                         enum htt_rx_mpdu_status status;
->>                         int msdu_chaining;
->> +                       struct htt_rx_desc *rxd;
->> +                       u32 att_flags;
->> +
+> ../ath/net/core/flow_dissector.c seems to be changed?
 >
-> No need for an empty line I suppose? I would also prefer `attention`
-> instead of `att_flags`, but no big deal.
+> ./gentree.py --verbose --clean --git-revision master --copy-list
+> copy-list.ath ../ath ../backports-output
+> Get original source files from git ...
+> Apply patches ...
+> Not applying backport-adjustments/dma-buf.patch, not needed
+> Applying patch backport-adjustments/flow_dissector.patch
+>> patching file compat/net-core-flow_dissector.c
+>> Hunk #1 FAILED at 177.
+>> 1 out of 1 hunk FAILED -- saving rejects to file 
+> compat/net-core-flow_dissector.c.rej
 
-Yeah, attention is better.
+backports is always a moving target and you might get errors like these
+when you create it on your own. There really isn't a reliable to avoid
+it, you just have to fix the errors as you see them. 
 
-And also the variable declarations should be in the beginning of
-function. Apparently I have been sloppy missed that here.
+Another option is that you use official backports releases, but then
+ath10k will be few weeks old.
 
 -- 
 Kalle Valo
