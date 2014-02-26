@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIiOq-0000IA-Ug
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:36:06 +0000
+ id 1WIiR1-0000NJ-1X
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:38:20 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Compiling custom ath10k: step 5 minor issue
-References: <530BB3E2.8000705@intec.ugent.be>
-Date: Wed, 26 Feb 2014 19:35:38 +0200
-In-Reply-To: <530BB3E2.8000705@intec.ugent.be> (Bart Jooris's message of "Mon, 
- 24 Feb 2014 22:04:34 +0100")
-Message-ID: <87wqghkc9h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Anyone have a working hostapd conf file for AC?
+References: <530D128B.3030509@candelatech.com>
+Date: Wed, 26 Feb 2014 19:37:50 +0200
+In-Reply-To: <530D128B.3030509@candelatech.com> (Ben Greear's message of "Tue, 
+ 25 Feb 2014 14:00:43 -0800")
+Message-ID: <87sir5kc5t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bart.Jooris@intec.ugent.be
-Cc: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Bart Jooris <Bart.Jooris@intec.ugent.be> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> ../ath/net/core/flow_dissector.c seems to be changed?
+> I'm working on making a WLE900VX into an AP to do some
+> additional testing.  Not having the best of luck yet, but
+> maybe it's my config file....
 >
-> ./gentree.py --verbose --clean --git-revision master --copy-list
-> copy-list.ath ../ath ../backports-output
-> Get original source files from git ...
-> Apply patches ...
-> Not applying backport-adjustments/dma-buf.patch, not needed
-> Applying patch backport-adjustments/flow_dissector.patch
->> patching file compat/net-core-flow_dissector.c
->> Hunk #1 FAILED at 177.
->> 1 out of 1 hunk FAILED -- saving rejects to file 
-> compat/net-core-flow_dissector.c.rej
+> Does anyone have a working hostapd config file for
+> ath10k?
 
-backports is always a moving target and you might get errors like these
-when you create it on your own. There really isn't a reliable to avoid
-it, you just have to fix the errors as you see them. 
+There's a simple configuration file in the wiki:
 
-Another option is that you use official backports releases, but then
-ath10k will be few weeks old.
+http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Configuring_hostapd
+
+But we should also add a full configuration with all bells and whistles.
 
 -- 
 Kalle Valo
