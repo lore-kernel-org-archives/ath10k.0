@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIhfO-0006i8-BD
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 16:49:07 +0000
+ id 1WIi5s-0007zz-NP
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:16:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  make TARGET_NUM_PEERS match WMI_MAX_KEY_INDEX.
-References: <1392742567-6134-1-git-send-email-greearb@candelatech.com>
-Date: Wed, 26 Feb 2014 18:48:40 +0200
-In-Reply-To: <1392742567-6134-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Tue, 18 Feb 2014 08:56:07
- -0800")
-Message-ID: <87r46plt07.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: skip management frames in HTT path
+References: <1393311399-8070-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Wed, 26 Feb 2014 19:16:01 +0200
+In-Reply-To: <1393311399-8070-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 25 Feb 2014 07:56:39 +0100")
+Message-ID: <87a9ddlrqm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,21 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> After we pass frames with INV_PEER to upper layer in patch:
 >
-> This appears to fix the problem of running out of keys
-> in the firmware.  Possibly it only hides the problem,
-> however.
+> ath10k: pass frames with invalid peer status to upper layer
 >
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> we could pass some management frames (in case INVALID_PEER
+> and MGMT_CTRL) twice to upper layer, once via WMI and once
+> via HTT. Next we could handle assoc request twice. This
+> patch remove such regression.
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-IIRC you asked me to drop this patch in other thread. I have now done
-that.
+I saw a conflict and also did some commit log cleanup. Please check:
+
+https://github.com/kvalo/ath/commit/dd0063fba4434d22fb8a6e6d79bf23cc36f6916a
 
 -- 
 Kalle Valo
