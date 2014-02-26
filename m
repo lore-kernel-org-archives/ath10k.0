@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIiR1-0000NJ-1X
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:38:20 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1WIiZJ-0000bM-6D
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 17:46:53 +0000
+Message-ID: <530E2873.8000506@candelatech.com>
+Date: Wed, 26 Feb 2014 09:46:27 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
 Subject: Re: Anyone have a working hostapd conf file for AC?
 References: <530D128B.3030509@candelatech.com>
-Date: Wed, 26 Feb 2014 19:37:50 +0200
-In-Reply-To: <530D128B.3030509@candelatech.com> (Ben Greear's message of "Tue, 
- 25 Feb 2014 14:00:43 -0800")
-Message-ID: <87sir5kc5t.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87sir5kc5t.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87sir5kc5t.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +23,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+On 02/26/2014 09:37 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+> 
+>> I'm working on making a WLE900VX into an AP to do some
+>> additional testing.  Not having the best of luck yet, but
+>> maybe it's my config file....
+>>
+>> Does anyone have a working hostapd config file for
+>> ath10k?
+> 
+> There's a simple configuration file in the wiki:
+> 
+> http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Configuring_hostapd
+> 
+> But we should also add a full configuration with all bells and whistles.
 
-> I'm working on making a WLE900VX into an AP to do some
-> additional testing.  Not having the best of luck yet, but
-> maybe it's my config file....
->
-> Does anyone have a working hostapd config file for
-> ath10k?
+That would be nice.
 
-There's a simple configuration file in the wiki:
+Also, might be nice to document which channel & center frequency index
+combinations are supposed to work...the first few I tried did not work,
+but perhaps it was other issues.
 
-http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Configuring_hostapd
-
-But we should also add a full configuration with all bells and whistles.
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
