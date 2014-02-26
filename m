@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIhQs-00067L-4Z
- for ath10k@lists.infradead.org; Wed, 26 Feb 2014 16:34:06 +0000
+ id 1WIhTm-0006FI-61
+ for ath10k@lists.infradead.org; Wed, 26 Feb 2014 16:37:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: implement drv_get_tsf for ibss merging
-References: <1392351895-20495-1-git-send-email-yeohchunyeow@gmail.com>
-Date: Wed, 26 Feb 2014 18:33:38 +0200
-In-Reply-To: <1392351895-20495-1-git-send-email-yeohchunyeow@gmail.com>
- (Chun-Yeow Yeoh's message of "Fri, 14 Feb 2014 12:24:55 +0800")
-Message-ID: <878usxn89p.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v4] ath10k:  add more details to some debug messages
+References: <1392665495-17011-1-git-send-email-greearb@candelatech.com>
+Date: Wed, 26 Feb 2014 18:36:38 +0200
+In-Reply-To: <1392665495-17011-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 17 Feb 2014 11:31:35
+ -0800")
+Message-ID: <874n3ln84p.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +24,17 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+To: greearb@candelatech.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
+greearb@candelatech.com writes:
 
-> Implement the get TSF by simply returning 0 so that IBSS
-> merging is happening. Otherwise, IBSS nodes that have similar
-> SSID naming won't merge. This is simply fooling the mac80211
-> that the TSF in the received beacon is higher than the local TSF.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+> Makes it easier to determine why some failures
+> happened.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
 Thanks, applied.
 
