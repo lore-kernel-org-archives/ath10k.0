@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJ40Q-0004Jr-7j
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 16:40:18 +0000
+ id 1WJ41r-0004Lv-Ow
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 16:41:48 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: enable spectrum management support
-References: <1393311554-8131-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Thu, 27 Feb 2014 18:39:50 +0200
-In-Reply-To: <1393311554-8131-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 25 Feb 2014 07:59:14 +0100")
-Message-ID: <87lhwwech5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: bitrate_mask add force_sgi support
+References: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Thu, 27 Feb 2014 18:41:18 +0200
+In-Reply-To: <1389985454-3997-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Fri, 17 Jan 2014 20:04:14 +0100")
+Message-ID: <87ha7kecep.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,14 +28,14 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Indicate spectrum management support in hardware
-> flags, while we already handle power set
-> (IEEE80211_CONF_CHANGE_POWER) in the ath10k driver.
-> This enable 802.11h support for station mode.
+> Add force SGI support.
 >
 > Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> ---
+> depends on, nl80211: add Guard Interval support for set_bitrate_mask
 
-Thanks, applied.
+Thanks. The dependency patch is now in ath-next and I have applied this
+patch.
 
 -- 
 Kalle Valo
