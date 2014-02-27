@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+Received: from mail-ea0-x229.google.com ([2a00:1450:4013:c01::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIvLR-0003FL-7P
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 07:25:28 +0000
-Received: by mail-ea0-f175.google.com with SMTP id z10so1532418ead.20
- for <ath10k@lists.infradead.org>; Wed, 26 Feb 2014 23:25:03 -0800 (PST)
+ id 1WIvLV-0003FP-E9
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 07:25:32 +0000
+Received: by mail-ea0-f169.google.com with SMTP id d10so1572877eaj.0
+ for <ath10k@lists.infradead.org>; Wed, 26 Feb 2014 23:25:07 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 2/8] ath10k: remove is_aborted from skb_cb
-Date: Thu, 27 Feb 2014 08:19:41 +0100
-Message-Id: <1393485587-16879-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 8/8] ath10k: minimize coherent dma accesses
+Date: Thu, 27 Feb 2014 08:19:47 +0100
+Message-Id: <1393485587-16879-9-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
@@ -28,85 +28,58 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The flag wasn't used anymore. No need to keep it.
+It doesn't make much sense to calculate the ring
+size fill count because it already is memoized in
+a separate variable.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  1 -
- drivers/net/wireless/ath/ath10k/pci.c  | 20 --------------------
- 2 files changed, 21 deletions(-)
+v2:
+ * fix unbalanced locking
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 082fa77..7cf022d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -62,7 +62,6 @@ struct ath10k;
- 
- struct ath10k_skb_cb {
- 	dma_addr_t paddr;
--	bool is_aborted;
- 	u8 vdev_id;
- 
- 	struct {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 34f0910..d973975 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -63,7 +63,6 @@ static int ath10k_pci_post_rx(struct ath10k *ar);
- static int ath10k_pci_post_rx_pipe(struct ath10k_pci_pipe *pipe_info,
- 					     int num);
- static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info);
--static void ath10k_pci_stop_ce(struct ath10k *ar);
- static int ath10k_pci_cold_reset(struct ath10k *ar);
- static int ath10k_pci_warm_reset(struct ath10k *ar);
- static int ath10k_pci_wait_for_target_init(struct ath10k *ar);
-@@ -993,22 +992,6 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
- 		tasklet_kill(&ar_pci->pipe_info[i].intr);
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 1cb88bf..2fe47d8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -225,12 +225,6 @@ static void ath10k_htt_rx_ring_refill_retry(unsigned long arg)
+ 	ath10k_htt_rx_msdu_buff_replenish(htt);
  }
  
--static void ath10k_pci_stop_ce(struct ath10k *ar)
+-static unsigned ath10k_htt_rx_ring_elems(struct ath10k_htt *htt)
 -{
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	struct ath10k_pci_compl *compl;
--	struct sk_buff *skb;
--
--	/* Mark pending completions as aborted, so that upper layers free up
--	 * their associated resources */
--	spin_lock_bh(&ar_pci->compl_lock);
--	list_for_each_entry(compl, &ar_pci->compl_process, list) {
--		skb = compl->skb;
--		ATH10K_SKB_CB(skb)->is_aborted = true;
--	}
--	spin_unlock_bh(&ar_pci->compl_lock);
+-	return (__le32_to_cpu(*htt->rx_ring.alloc_idx.vaddr) -
+-		htt->rx_ring.sw_rd_idx.msdu_payld) & htt->rx_ring.size_mask;
 -}
 -
- static void ath10k_pci_cleanup_ce(struct ath10k *ar)
+ void ath10k_htt_rx_detach(struct ath10k_htt *htt)
  {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1339,7 +1322,6 @@ err_stop:
- 	ath10k_ce_disable_interrupts(ar);
- 	ath10k_pci_free_irq(ar);
- 	ath10k_pci_kill_tasklet(ar);
--	ath10k_pci_stop_ce(ar);
- 	ath10k_pci_process_ce(ar);
- err_free_compl:
- 	ath10k_pci_cleanup_ce(ar);
-@@ -1424,7 +1406,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 			continue;
- 		}
+ 	int sw_rd_idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+@@ -276,8 +270,10 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
  
--		ATH10K_SKB_CB(netbuf)->is_aborted = true;
- 		ar_pci->msg_callbacks_current.tx_completion(ar,
- 							    netbuf,
- 							    id);
-@@ -1482,7 +1463,6 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 	lockdep_assert_held(&htt->rx_ring.lock);
  
- 	ath10k_pci_free_irq(ar);
- 	ath10k_pci_kill_tasklet(ar);
--	ath10k_pci_stop_ce(ar);
+-	if (ath10k_htt_rx_ring_elems(htt) == 0)
+-		ath10k_warn("htt rx ring is empty!\n");
++	if (htt->rx_ring.fill_cnt == 0) {
++		ath10k_warn("tried to pop sk_buff from an empty rx ring\n");
++		return NULL;
++	}
  
- 	ret = ath10k_pci_request_early_irq(ar);
- 	if (ret)
+ 	idx = htt->rx_ring.sw_rd_idx.msdu_payld;
+ 	msdu = htt->rx_ring.netbufs_ring[idx];
+@@ -312,9 +308,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+-	if (ath10k_htt_rx_ring_elems(htt) == 0)
+-		ath10k_warn("htt rx ring is empty!\n");
+-
+ 	if (htt->rx_confused) {
+ 		ath10k_warn("htt is confused. refusing rx\n");
+ 		return 0;
 -- 
 1.8.5.3
 
