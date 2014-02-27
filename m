@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJ7JP-0001rm-9S
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 20:12:08 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  support msdu chaining.
-Date: Thu, 27 Feb 2014 12:11:19 -0800
-Message-Id: <1393531879-3115-1-git-send-email-greearb@candelatech.com>
+ id 1WJ7QP-0001xp-Fc
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 20:19:22 +0000
+Message-ID: <530F9DB1.5080205@candelatech.com>
+Date: Thu, 27 Feb 2014 12:18:57 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Ath10k throughput report with up to 32 stations.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,102 +16,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-From: Ben Greear <greearb@candelatech.com>
+With the msdu chaining patch I just posted, I am finally getting
+decent throughput when using up to 32 station vifs.
 
-Consolidate the list of msdu skbs into the msdu-head skb, delete the
-rest of the skbs, pass the msdu-head skb on up the stack as normal.
+I'm hoping I can optimize things better, and I need to get things like tx/rx
+train rate reporting working for the station vifs, but I figure these graphs
+might be interesting to people.
 
-Tested with high-speed TCP traffic on modified firmware that
-supports raw-rx.
+Basically, the AP is stock firmware and kernel, clients are my modified
+firmware and ath10k is patched a bit as well.  All 32 stations are running
+on a single NIC in the station machine.  NICs are WLE900VX.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 43 +++++++++++++++++++++++++++++---
- 1 file changed, 39 insertions(+), 4 deletions(-)
+Single station throughput is not on this graph, but it is around 375-400Mbps.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e83e81f..3d2eb41 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -401,6 +401,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 		msdu_len = MS(__le32_to_cpu(rx_desc->msdu_start.info0),
- 			      RX_MSDU_START_INFO0_MSDU_LENGTH);
- 		msdu_chained = rx_desc->frag_info.ring2_more_count;
-+		msdu_chaining = msdu_chained;
- 
- 		if (msdu_len_invalid)
- 			msdu_len = 0;
-@@ -428,7 +429,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 
- 			msdu->next = next;
- 			msdu = next;
--			msdu_chaining = 1;
- 		}
- 
- 		last_msdu = __le32_to_cpu(rx_desc->msdu_end.info0) &
-@@ -993,14 +993,49 @@ continue_on:
- 				continue;
- 			}
- 
--			/* FIXME: we do not support chaining yet.
--			 * this needs investigation */
- 			if (msdu_chaining) {
--				ath10k_warn("htt rx msdu_chaining is true\n");
-+				struct sk_buff *next = msdu_head->next;
-+				struct sk_buff *to_free = next;
-+				int space;
-+				static int do_once = 1;
-+				msdu_head->next = NULL;
-+
-+				if (unlikely(do_once)) {
-+					ath10k_warn("htt rx msdu_chaining detected %d\n",
-+						    msdu_chaining);
-+					do_once = 0;
-+				}
-+
-+				while (next) {
-+					space = next->len - skb_tailroom(msdu_head);
-+
-+					if ((space > 0) &&
-+					    (pskb_expand_head(msdu_head, 0, space, GFP_ATOMIC) < 0)) {
-+						/* TODO:  bump some rx-oom error stat */
-+						goto outside_continue;
-+					}
-+					skb_copy_from_linear_data(next, skb_put(msdu_head, next->len),
-+								  next->len);
-+					next = next->next;
-+				}
-+
-+				/* If here, we have consolidated skb.  Free the
-+				 * fragments and pass the main skb on up the
-+				 * stack.
-+				 */
-+				ath10k_htt_rx_free_msdu_chain(to_free);
-+				goto have_good_msdu;
-+
-+			outside_continue:
-+				/* put it back together so we can free the
-+				 * whole list at once.
-+				 */
-+				msdu_head->next = to_free;
- 				ath10k_htt_rx_free_msdu_chain(msdu_head);
- 				continue;
- 			}
- 
-+		have_good_msdu:
- 			info.skb     = msdu_head;
- 			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
- 			info.mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
+http://www.candelatech.com/examples/wifi-capacity-32-ath10k-tcp-open-ota/
+
+Thanks,
+Ben
+
 -- 
-1.7.11.7
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
