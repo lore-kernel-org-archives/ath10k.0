@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIyHd-00087S-2f
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 10:33:41 +0000
+ id 1WIzIV-0001dC-IR
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 11:38:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add soft/hard firmware crash option to
- simulate_fw_crash
-References: <1392897330-4678-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Thu, 27 Feb 2014 12:33:00 +0200
-In-Reply-To: <1392897330-4678-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Thu, 20 Feb 2014 12:55:30 +0100")
-Message-ID: <874n3khmlf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: set the mactime of ieee80211_rx_status
+References: <1392197866-1261-1-git-send-email-yeohchunyeow@gmail.com>
+ <877g8rxgyf.fsf@kamboji.qca.qualcomm.com>
+ <CAEFj9870+z+2yxjO7F69bGv3XzKNmi+ddyF41WSnv2aR98kjrw@mail.gmail.com>
+Date: Thu, 27 Feb 2014 13:38:11 +0200
+In-Reply-To: <CAEFj9870+z+2yxjO7F69bGv3XzKNmi+ddyF41WSnv2aR98kjrw@mail.gmail.com>
+ (Yeoh Chun-Yeow's message of "Thu, 20 Feb 2014 10:47:45 +0800")
+Message-ID: <87ob1sg50c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,103 +25,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
 
-> Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
-> In order to have firmware crash simulation functionality also
-> in firmware 10.1 driver can force firmware crash by performing
-> not allowed operation. Driver can deliberately crash firmware
-> when setting vdev param for vdev id out of range.
-> This patch introduces two keywords to simulate_fw_crash:
-> 'soft' which will cause firmware crash that is recoverable
->        by warm firmware reset but supported only in main firmware.
-> 'hard' which will cause firmware crash recoverable by cold
->        firmware reset, this option works for both firmwares.
+>> Why? Where do you need tsf exactly? And what bug are you actually fixing
+>> here?
 >
-> Commands to trigger firmware soft/hard crash:
-> echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
-> echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+> There are two type of configuration modes that require local TSF, IBSS
+> and mesh for operation and also monitor mode.
 >
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> For IBSS, it is use for merging of BSSID (mac address) with same SSID
+> name, but currently this is taking care by the following "ugly" patch.
+> http://lists.infradead.org/pipermail/ath10k/2014-February/001159.html
+>
+> Mesh mode needs this for more accurate synchronization purpose.
+>
+> Besides, the monitor mode requires this to add extra piece of
+> information in radiotap header for local TSF.
+>
+>> Do we get some regressions because of proving only a 32 bit TSF? Which
+>> one is better, provide a 32-bit TSF or not at all?
+>
+> 32-bit is not good. It could cause problem when inter-operate with
+> other non-ath10k drivers with 64-bit local TSF.
 
-[...]
+Yeah, I understand that. But my question is will we create regressions
+if I apply this patch which provides only 32-bit TSF? I guess not as we
+haven't provided TSF at all before, but I would like to be sure.
 
-> +/* Simulate firmware crash:
-> + * 'soft': Call wmi command causing firmware hang. This firmware hang is
-> + * recoverable by warm firmware reset.
-> + * 'hard': Force firmware crash by setting any vdev parameter for not allowed
-> + * vdev id. This is hard firmware crash because it is recoverable only by cold
-> + * firmware reset.
-> + */
->  static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
->  					      const char __user *user_buf,
->  					      size_t count, loff_t *ppos)
-> @@ -464,14 +475,11 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
->  	struct ath10k *ar = file->private_data;
->  	char buf[32] = {};
->  	int ret;
-> +	const char *mode;
->  
->  	mutex_lock(&ar->conf_mutex);
->  
->  	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-> -	if (strcmp(buf, "crash") && strcmp(buf, "crash\n")) {
-> -		ret = -EINVAL;
-> -		goto exit;
-> -	}
+> The better is that we can get the 64-bit local TSF. providing high TSF
+> and low TSF as found in "struct wmi_comb_phyerr_rx_hd". Is this
+> possible with current FW?
 
-Ouch, how did I miss use of strcmp() here. Is it guaranteed that buf is
-properly null terminated? I don't see that. And even if it would be,
-strncmp() would be much safer anyway.
-
-> @@ -479,15 +487,22 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
->  		goto exit;
->  	}
->  
-> -	ath10k_info("simulating firmware crash\n");
-> -
-> -	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-> -	if (ret)
-> -		ath10k_warn("failed to force fw hang (%d)\n", ret);
-> +	if (!strcmp(buf, "soft") || !strcmp(buf, "soft\n")) {
-> +		mode = "soft";
-> +		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-> +	} else if (!strcmp(buf, "hard") || !strcmp(buf, "hard\n")) {
-
-It's pretty ugly to check for both "foo" and "foo\n". This
-would be cleaner:
-
-if (buf[count - 1] == '\n') {
-        buf[count - 1] = 0;
-        count--;
-}
-
-That way you can also get rid of the mode variable.
-
-> +		mode = "hard";
-> +		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
-> +					ar->wmi.vdev_param->rts_threshold, 0);
-
-Add a small comment here explaining that you are using too large vdev id
-or something like that.
-
-> +	} else {
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
->  
-> -	if (ret == 0)
-> +	if (ret == 0) {
->  		ret = count;
-> -
-> +		ath10k_info("simulating firmware %s crash\n", mode);
-> +	}
-
-The info message is too late now, it should before the we crash the
-firmware.
+I'm not familiar with the firmware so I sent a question to the firmware
+team about this.
 
 -- 
 Kalle Valo
