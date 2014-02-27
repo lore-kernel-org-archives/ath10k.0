@@ -1,35 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJ3NY-0002aC-H5
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 16:00:09 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Running throughput tests
-References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
- <006301cef71c$d850ec10$88f2c430$@sparklan.com>
- <52A98706.7080907@intec.ugent.be>
- <008d01cef722$2a9c05e0$7fd411a0$@sparklan.com>
- <52A9DEF9.8080305@intec.ugent.be>
- <012e01cef7e0$99017e70$cb047b50$@sparklan.com>
- <52AACFB9.8080901@intec.ugent.be>
- <006301cefa3c$44c07b50$ce4171f0$@sparklan.com>
- <52AEC26B.2060400@intec.ugent.be>
- <007f01cefa41$8a940de0$9fbc29a0$@sparklan.com>
- <52AEE61F.5030505@intec.ugent.be>
- <006b01cefacb$6c0b2d60$44218820$@sparklan.com>
- <52B00B10.3050300@intec.ugent.be>
- <004b01cefb9d$04a543e0$0defcba0$@sparklan.com>
- <52B2AE75.9050206@intec.ugent.be>
- <00df01cf0090$05944f10$10bced30$@sparklan.com>
- <52B9672E.9000701@intec.ugent.be>
- <008c01cf012e$e59563d0$b0c02b70$@sparklan.com>
- <530A64E5.2040401@intec.ugent.be> <530B0670.1010009@stackframe.org>
- <530E5EF2.8070800@intec.ugent.be>
-Date: Thu, 27 Feb 2014 17:59:32 +0200
-In-Reply-To: <530E5EF2.8070800@intec.ugent.be> (Bart Jooris's message of "Wed, 
- 26 Feb 2014 22:38:58 +0100")
-Message-ID: <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
+ id 1WJ3W5-00037O-CP
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 16:08:58 +0000
+Message-ID: <530F62FD.9060701@candelatech.com>
+Date: Thu, 27 Feb 2014 08:08:29 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Need to get msdu-chaining working.
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+In-Reply-To: <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,45 +19,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bart.Jooris@intec.ugent.be
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Changing subject.
-
-Bart Jooris <Bart.Jooris@intec.ugent.be> writes:
-
-> I have a new install with:
-> -Ubuntu 12.04 LTS (no support for ath10k yet)
-> -got firmware via https://github.com/kvalo/ath10k-firmware/
-> -builded linux-3.13.5 to have the ath10k modules (nog atk10k from
-> source see my mail of 24 Feb)
-> -builded hostapd, wireless-regdb and crda from source
+On 02/26/2014 10:51 PM, Michal Kazior wrote:
+> On 27 February 2014 00:38, Ben Greear <greearb@candelatech.com> wrote:
+>>
+>> I'm using raw-rx mode in my firmware, and it's throughput is
+>> extremely poor at higher speeds.  I see large numbers of warnings
+>> about msdu_chaining, so I suspect this may be the reason.
 >
-> and I have 80MHz wide channels now :-)
+> I assume this requires your custom FW?
+
+Yes.  I am not sure you can use raw tx with standard firmware (yet)?
+
+Or at least, you cannot have tx cooked and rx raw.
+
+>> Does anyone have any suggestions for what needs to be done
+>> to handle these sorts of frames properly?
+>>
+>>                          /* FIXME: we do not support chaining yet.
+>>                           * this needs investigation */
+>>                          if (msdu_chaining) {
+>>                                  ath10k_warn("htt rx msdu_chaining is true\n");
+>>                                  ath10k_htt_rx_free_msdu_chain(msdu_head);
+>>                                  continue;
+>>                          }
 >
-> Just got a stable 160Mbps (iperf udp, tweeking the distance and ended
-> up around 50cm) on a Ubuntu 13.10 client (regulatory.bin still not
-> ok).
-> Not yet the 300Mbps as I read earlier on the thread.
-> What could be the next steps to speed up the link?
+>>From what I understand chained msdu is a msdu that hasn't fit into the
+> rx buffer and is split across the popped amsdu list. I suspect only
+> the first msdu in chain has the htt_rx_desc and all other have not
+> (this is what the current code does, but you'll need to verify that).
+>
+> I would try to concatenate all msdus into one (lots of memcpy :( ) or
+> increase the HTT_RX_BUF_SIZE so that A-MSDU frames can fit into a
+> single buffer (hopefully FW/HW is capable of doing that).
 
-First I would use the full hostapd configuration which I just added to
-the wiki:
+I think in raw mode the hardware/firmware may not try to re-assemble the skb,
+or also when no peer object can be found.  This might be an issue in monitor
+mode as well, but I'm not certain about that.
 
-http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Full_hostapd_configuration
+I think there is a way to chain skb data chunks w/out doing the copying,
+but I am not certain how that would be done properly.
 
-Next I would disable all possible debug features from kernel and make
-sure that they are not included in the build. And last try to find a
-free channel with little interference as possible.
+Thanks,
+Ben
 
-I'm sure others have better ideas.
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
