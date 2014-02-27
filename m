@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJ1PQ-0006SL-BB
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 13:53:57 +0000
+ id 1WJ3D0-00024w-HP
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 15:49:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Anyone have a working hostapd conf file for AC?
-References: <530D128B.3030509@candelatech.com>
- <87sir5kc5t.fsf@kamboji.qca.qualcomm.com>
- <530E2873.8000506@candelatech.com> <530E6DBF.4060407@candelatech.com>
- <CAEFj985joW0f6EnOriFoY6cLSQVSBEj7jc5JQMjG0wXPt54NKg@mail.gmail.com>
-Date: Thu, 27 Feb 2014 15:53:28 +0200
-In-Reply-To: <CAEFj985joW0f6EnOriFoY6cLSQVSBEj7jc5JQMjG0wXPt54NKg@mail.gmail.com>
- (Yeoh Chun-Yeow's message of "Thu, 27 Feb 2014 21:42:32 +0800")
-Message-ID: <87k3cgfyqv.fsf@kamboji.qca.qualcomm.com>
+Subject: Missing memory barriers
+References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
+ <871tzq210z.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-VmomkfvaTm+=Du8FqCC=b=UG2d=8ixUK2tUsFj4_dsRL4Pg@mail.gmail.com>
+ <CAHqTa-3O0_5OcTKNi0KLa--63ZYO4o7qK=VsN7Bsyi0nX+rF7g@mail.gmail.com>
+ <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
+Date: Thu, 27 Feb 2014 17:48:46 +0200
+In-Reply-To: <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
+ (Avery Pennarun's message of "Sun, 9 Feb 2014 03:00:45 -0500")
+Message-ID: <8738j4ftep.fsf_-_@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,27 +27,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+Hi Avery,
 
->> With this I can get around 380Mbps TCP throughput downloading,
->> over the air, using the .467 firmware.  I have not yet tried to
->> do any significant tuning to improve this throughput.
+starting a new thread about memory barriers:
+
+Avery Pennarun <apenwarr@gmail.com> writes:
+
+> On Wed, Jan 29, 2014 at 9:41 PM, Avery Pennarun <apenwarr@gmail.com> wrote:
 >
-> Quite impressive. Is this tested using iperf? I saw that even though
-> the rx rate is MCS9 NSS 3 SGI 80MHz. I only get about 98Mbps TCP
-> throughput using IPerf.
+> - there are definitely some missing memory barriers in here; in a few
+> cases you can clearly see a write getting done before the read that
+> came before it.  Looking at the definitions for iowrite32 and
+> ioread32, and for rmb() and wmb(), we can see that the use of rmb()
+> and wmb() do not work properly (at least on ARM) when you care about
+> the ordering between reads and writes.  However, I don't think this
+> actually causes the problem.
 
-Huh, that's really bad. I haven't done any throughput tests for months,
-but when I did I was able to easily get over 500 Mbps with iperf TCP OTA
-tests (can't remember if TX or RX was better). This was on an x86
-laptop.
-
-When running throughput tests make sure to disable all possible kernel
-debugging you have. Starting from CONFIG_ATH10K_DEBUG all the way to
-slub debugging etc.
+Can you tell more about this, please? Did you find out where we are
+actually doing it wrong?
 
 -- 
 Kalle Valo
