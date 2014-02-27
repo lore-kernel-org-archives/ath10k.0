@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22c.google.com ([2a00:1450:4013:c01::22c])
+Received: from mail-ee0-x235.google.com ([2a00:1450:4013:c00::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WIvLN-0003FE-CT
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 07:25:22 +0000
-Received: by mail-ea0-f172.google.com with SMTP id l9so1559610eaj.31
- for <ath10k@lists.infradead.org>; Wed, 26 Feb 2014 23:24:59 -0800 (PST)
+ id 1WIvLQ-0003FJ-7z
+ for ath10k@lists.infradead.org; Thu, 27 Feb 2014 07:25:26 +0000
+Received: by mail-ee0-f53.google.com with SMTP id e51so48036eek.40
+ for <ath10k@lists.infradead.org>; Wed, 26 Feb 2014 23:25:01 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 1/8] ath10k: remove DMA mapping wrappers
-Date: Thu, 27 Feb 2014 08:19:40 +0100
-Message-Id: <1393485587-16879-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 3/8] ath10k: replace send_head() with tx_sg()
+Date: Thu, 27 Feb 2014 08:19:42 +0100
+Message-Id: <1393485587-16879-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
@@ -28,238 +28,259 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-There's no real benefit from using them. DMA-API
-already provides debugging. Some skbuffs are
-already mapped directly with DMA-API since wrapper
-arguments were insufficient and extending them
-would be pointless.
+PCI is capable of handling scatter-gather lists.
+This can be used to avoid copying memory.
+
+Change the name of the callback while at to
+reflect its purpose.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 v2:
- * var naming fix: s/ret/err/
+ * add comment for NULL transfer_context behavior 
 
- drivers/net/wireless/ath/ath10k/core.h   | 27 ---------------------------
- drivers/net/wireless/ath/ath10k/htc.c    | 11 ++++++++---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 12 ++++++++----
- drivers/net/wireless/ath/ath10k/mac.c    |  4 +++-
- drivers/net/wireless/ath/ath10k/txrx.c   |  5 +----
- drivers/net/wireless/ath/ath10k/wmi.c    | 17 ++++++++++++++---
- 6 files changed, 34 insertions(+), 42 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  | 12 ++---
+ drivers/net/wireless/ath/ath10k/ce.h  |  7 +++
+ drivers/net/wireless/ath/ath10k/hif.h | 25 ++++++-----
+ drivers/net/wireless/ath/ath10k/htc.c | 10 ++++-
+ drivers/net/wireless/ath/ath10k/pci.c | 84 +++++++++++++++++++++++------------
+ 5 files changed, 92 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1fc26fe..082fa77 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -62,7 +62,6 @@ struct ath10k;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index d44d618..a0b1a8c 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -266,12 +266,12 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+  * ath10k_ce_sendlist_send.
+  * The caller takes responsibility for any needed locking.
+  */
+-static int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
+-				 void *per_transfer_context,
+-				 u32 buffer,
+-				 unsigned int nbytes,
+-				 unsigned int transfer_id,
+-				 unsigned int flags)
++int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
++			  void *per_transfer_context,
++			  u32 buffer,
++			  unsigned int nbytes,
++			  unsigned int transfer_id,
++			  unsigned int flags)
+ {
+ 	struct ath10k *ar = ce_state->ar;
+ 	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 67dbde6..322e929 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -152,6 +152,13 @@ int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
+ 		   unsigned int transfer_id,
+ 		   unsigned int flags);
  
- struct ath10k_skb_cb {
- 	dma_addr_t paddr;
--	bool is_mapped;
- 	bool is_aborted;
- 	u8 vdev_id;
++int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
++			  void *per_transfer_context,
++			  u32 buffer,
++			  unsigned int nbytes,
++			  unsigned int transfer_id,
++			  unsigned int flags);
++
+ void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
+ 				void (*send_cb)(struct ath10k_ce_pipe *),
+ 				int disable_interrupts);
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index dcdea68..2ac7bea 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -21,6 +21,14 @@
+ #include <linux/kernel.h>
+ #include "core.h"
  
-@@ -87,32 +86,6 @@ static inline struct ath10k_skb_cb *ATH10K_SKB_CB(struct sk_buff *skb)
- 	return (struct ath10k_skb_cb *)&IEEE80211_SKB_CB(skb)->driver_data;
++struct ath10k_hif_sg_item {
++	u16 transfer_id;
++	void *transfer_context; /* NULL = tx completion callback not called */
++	void *vaddr; /* for debugging mostly */
++	u32 paddr;
++	u16 len;
++};
++
+ struct ath10k_hif_cb {
+ 	int (*tx_completion)(struct ath10k *ar,
+ 			     struct sk_buff *wbuf,
+@@ -31,11 +39,9 @@ struct ath10k_hif_cb {
+ };
+ 
+ struct ath10k_hif_ops {
+-	/* Send the head of a buffer to HIF for transmission to the target. */
+-	int (*send_head)(struct ath10k *ar, u8 pipe_id,
+-			 unsigned int transfer_id,
+-			 unsigned int nbytes,
+-			 struct sk_buff *buf);
++	/* send a scatter-gather list to the target */
++	int (*tx_sg)(struct ath10k *ar, u8 pipe_id,
++		     struct ath10k_hif_sg_item *items, int n_items);
+ 
+ 	/*
+ 	 * API to handle HIF-specific BMI message exchanges, this API is
+@@ -86,12 +92,11 @@ struct ath10k_hif_ops {
+ };
+ 
+ 
+-static inline int ath10k_hif_send_head(struct ath10k *ar, u8 pipe_id,
+-				       unsigned int transfer_id,
+-				       unsigned int nbytes,
+-				       struct sk_buff *buf)
++static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
++				   struct ath10k_hif_sg_item *items,
++				   int n_items)
+ {
+-	return ar->hif.ops->send_head(ar, pipe_id, transfer_id, nbytes, buf);
++	return ar->hif.ops->tx_sg(ar, pipe_id, items, n_items);
  }
  
--static inline int ath10k_skb_map(struct device *dev, struct sk_buff *skb)
--{
--	if (ATH10K_SKB_CB(skb)->is_mapped)
--		return -EINVAL;
--
--	ATH10K_SKB_CB(skb)->paddr = dma_map_single(dev, skb->data, skb->len,
--						   DMA_TO_DEVICE);
--
--	if (unlikely(dma_mapping_error(dev, ATH10K_SKB_CB(skb)->paddr)))
--		return -EIO;
--
--	ATH10K_SKB_CB(skb)->is_mapped = true;
--	return 0;
--}
--
--static inline int ath10k_skb_unmap(struct device *dev, struct sk_buff *skb)
--{
--	if (!ATH10K_SKB_CB(skb)->is_mapped)
--		return -EINVAL;
--
--	dma_unmap_single(dev, ATH10K_SKB_CB(skb)->paddr, skb->len,
--			 DMA_TO_DEVICE);
--	ATH10K_SKB_CB(skb)->is_mapped = false;
--	return 0;
--}
--
- static inline u32 host_interest_item_address(u32 item_offset)
- {
- 	return QCA988X_HOST_INTEREST_ADDRESS + item_offset;
+ static inline int ath10k_hif_exchange_bmi_msg(struct ath10k *ar,
 diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index edc57ab..69f1f46 100644
+index 69f1f46..64ab8d6 100644
 --- a/drivers/net/wireless/ath/ath10k/htc.c
 +++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -63,7 +63,9 @@ static struct sk_buff *ath10k_htc_build_tx_ctrl_skb(void *ar)
- static inline void ath10k_htc_restore_tx_skb(struct ath10k_htc *htc,
- 					     struct sk_buff *skb)
- {
--	ath10k_skb_unmap(htc->ar->dev, skb);
-+	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
-+
-+	dma_unmap_single(htc->ar->dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
- 	skb_pull(skb, sizeof(struct ath10k_htc_hdr));
- }
- 
-@@ -122,6 +124,8 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 		    struct sk_buff *skb)
+@@ -125,6 +125,7 @@ int ath10k_htc_send(struct ath10k_htc *htc,
  {
  	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
-+	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
-+	struct device *dev = htc->ar->dev;
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
++	struct ath10k_hif_sg_item sg_item;
+ 	struct device *dev = htc->ar->dev;
  	int credits = 0;
  	int ret;
- 
-@@ -157,7 +161,8 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 
- 	ath10k_htc_prepare_tx_skb(ep, skb);
- 
--	ret = ath10k_skb_map(htc->ar->dev, skb);
-+	skb_cb->paddr = dma_map_single(dev, skb->data, skb->len, DMA_TO_DEVICE);
-+	ret = dma_mapping_error(dev, skb_cb->paddr);
+@@ -166,8 +167,13 @@ int ath10k_htc_send(struct ath10k_htc *htc,
  	if (ret)
  		goto err_credits;
  
-@@ -169,7 +174,7 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 	return 0;
+-	ret = ath10k_hif_send_head(htc->ar, ep->ul_pipe_id, ep->eid,
+-				   skb->len, skb);
++	sg_item.transfer_id = ep->eid;
++	sg_item.transfer_context = skb;
++	sg_item.vaddr = skb->data;
++	sg_item.paddr = skb_cb->paddr;
++	sg_item.len = skb->len;
++
++	ret = ath10k_hif_tx_sg(htc->ar, ep->ul_pipe_id, &sg_item, 1);
+ 	if (ret)
+ 		goto err_unmap;
  
- err_unmap:
--	ath10k_skb_unmap(htc->ar->dev, skb);
-+	dma_unmap_single(dev, skb_cb->paddr, skb->len, DMA_TO_DEVICE);
- err_credits:
- 	if (ep->tx_credit_flow_enabled) {
- 		spin_lock_bh(&htc->tx_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index acaa046..f5960c5 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -334,7 +334,9 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		goto err_free_msdu_id;
- 	}
- 
--	res = ath10k_skb_map(dev, msdu);
-+	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
-+				       DMA_TO_DEVICE);
-+	res = dma_mapping_error(dev, skb_cb->paddr);
- 	if (res)
- 		goto err_free_txdesc;
- 
-@@ -358,7 +360,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	return 0;
- 
- err_unmap_msdu:
--	ath10k_skb_unmap(dev, msdu);
-+	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
- err_free_txdesc:
- 	dev_kfree_skb_any(txdesc);
- err_free_msdu_id:
-@@ -437,7 +439,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		skb_cb->htt.pad_len = 0;
- 	}
- 
--	res = ath10k_skb_map(dev, msdu);
-+	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
-+				       DMA_TO_DEVICE);
-+	res = dma_mapping_error(dev, skb_cb->paddr);
- 	if (res)
- 		goto err_pull_txfrag;
- 
-@@ -509,7 +513,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	return 0;
- 
- err_unmap_msdu:
--	ath10k_skb_unmap(dev, msdu);
-+	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
- err_pull_txfrag:
- 	skb_pull(msdu, skb_cb->htt.frag_len + skb_cb->htt.pad_len);
- err_free_txdesc:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0321da0..9d682ed 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -855,7 +855,9 @@ static void ath10k_control_beaconing(struct ath10k_vif *arvif,
- 
- 		spin_lock_bh(&arvif->ar->data_lock);
- 		if (arvif->beacon) {
--			ath10k_skb_unmap(arvif->ar->dev, arvif->beacon);
-+			dma_unmap_single(arvif->ar->dev,
-+					 ATH10K_SKB_CB(arvif->beacon)->paddr,
-+					 arvif->beacon->len, DMA_TO_DEVICE);
- 			dev_kfree_skb_any(arvif->beacon);
- 
- 			arvif->beacon = NULL;
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index dcf7efd..fe69899 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -51,7 +51,6 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	struct ieee80211_tx_info *info;
- 	struct ath10k_skb_cb *skb_cb;
- 	struct sk_buff *msdu;
--	int ret;
- 
- 	ath10k_dbg(ATH10K_DBG_HTT, "htt tx completion msdu_id %u discard %d no_ack %d\n",
- 		   tx_done->msdu_id, !!tx_done->discard, !!tx_done->no_ack);
-@@ -65,9 +64,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	msdu = htt->pending_tx[tx_done->msdu_id];
- 	skb_cb = ATH10K_SKB_CB(msdu);
- 
--	ret = ath10k_skb_unmap(dev, msdu);
--	if (ret)
--		ath10k_warn("data skb unmap failed (%d)\n", ret);
-+	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
- 
- 	if (skb_cb->htt.frag_len)
- 		skb_pull(msdu, skb_cb->htt.frag_len + skb_cb->htt.pad_len);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 91e501b..478e7f6 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1360,7 +1360,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 	struct wmi_bcn_info *bcn_info;
- 	struct ath10k_vif *arvif;
- 	struct sk_buff *bcn;
--	int vdev_id = 0;
-+	int ret, vdev_id = 0;
- 
- 	ath10k_dbg(ATH10K_DBG_MGMT, "WMI_HOST_SWBA_EVENTID\n");
- 
-@@ -1435,16 +1435,27 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 				ath10k_warn("SWBA overrun on vdev %d\n",
- 					    arvif->vdev_id);
- 
--			ath10k_skb_unmap(ar->dev, arvif->beacon);
-+			dma_unmap_single(arvif->ar->dev,
-+					 ATH10K_SKB_CB(arvif->beacon)->paddr,
-+					 arvif->beacon->len, DMA_TO_DEVICE);
- 			dev_kfree_skb_any(arvif->beacon);
- 		}
- 
--		ath10k_skb_map(ar->dev, bcn);
-+		ATH10K_SKB_CB(bcn)->paddr = dma_map_single(arvif->ar->dev,
-+							   bcn->data, bcn->len,
-+							   DMA_TO_DEVICE);
-+		ret = dma_mapping_error(arvif->ar->dev,
-+					ATH10K_SKB_CB(bcn)->paddr);
-+		if (ret) {
-+			ath10k_warn("failed to map beacon: %d\n", ret);
-+			goto skip;
-+		}
- 
- 		arvif->beacon = bcn;
- 		arvif->beacon_sent = false;
- 
- 		ath10k_wmi_tx_beacon_nowait(arvif);
-+skip:
- 		spin_unlock_bh(&ar->data_lock);
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index d973975..713c18e 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -714,6 +714,9 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
+ 	while (ath10k_ce_completed_send_next(ce_state, &transfer_context,
+ 					     &ce_data, &nbytes,
+ 					     &transfer_id) == 0) {
++		if (transfer_context == NULL)
++			continue;
++
+ 		compl = get_free_compl(pipe_info);
+ 		if (!compl)
+ 			break;
+@@ -781,39 +784,64 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	ath10k_pci_process_ce(ar);
  }
+ 
+-/* Send the first nbytes bytes of the buffer */
+-static int ath10k_pci_hif_send_head(struct ath10k *ar, u8 pipe_id,
+-				    unsigned int transfer_id,
+-				    unsigned int bytes, struct sk_buff *nbuf)
++static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
++				struct ath10k_hif_sg_item *items, int n_items)
+ {
+-	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(nbuf);
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct ath10k_pci_pipe *pipe_info = &(ar_pci->pipe_info[pipe_id]);
+-	struct ath10k_ce_pipe *ce_hdl = pipe_info->ce_hdl;
+-	unsigned int len;
+-	u32 flags = 0;
+-	int ret;
++	struct ath10k_pci_pipe *pci_pipe = &ar_pci->pipe_info[pipe_id];
++	struct ath10k_ce_pipe *ce_pipe = pci_pipe->ce_hdl;
++	struct ath10k_ce_ring *src_ring = ce_pipe->src_ring;
++	unsigned int nentries_mask = src_ring->nentries_mask;
++	unsigned int sw_index = src_ring->sw_index;
++	unsigned int write_index = src_ring->write_index;
++	int err, i;
+ 
+-	len = min(bytes, nbuf->len);
+-	bytes -= len;
++	spin_lock_bh(&ar_pci->ce_lock);
+ 
+-	if (len & 3)
+-		ath10k_warn("skb not aligned to 4-byte boundary (%d)\n", len);
++	if (unlikely(CE_RING_DELTA(nentries_mask,
++				   write_index, sw_index - 1) < n_items)) {
++		err = -ENOBUFS;
++		goto unlock;
++	}
+ 
+-	ath10k_dbg(ATH10K_DBG_PCI,
+-		   "pci send data vaddr %p paddr 0x%llx len %d as %d bytes\n",
+-		   nbuf->data, (unsigned long long) skb_cb->paddr,
+-		   nbuf->len, len);
+-	ath10k_dbg_dump(ATH10K_DBG_PCI_DUMP, NULL,
+-			"ath10k tx: data: ",
+-			nbuf->data, nbuf->len);
+-
+-	ret = ath10k_ce_send(ce_hdl, nbuf, skb_cb->paddr, len, transfer_id,
+-			     flags);
+-	if (ret)
+-		ath10k_warn("failed to send sk_buff to CE: %p\n", nbuf);
++	for (i = 0; i < n_items - 1; i++) {
++		ath10k_dbg(ATH10K_DBG_PCI,
++			   "pci tx item %d paddr 0x%08x len %d n_items %d\n",
++			   i, items[i].paddr, items[i].len, n_items);
++		ath10k_dbg_dump(ATH10K_DBG_PCI_DUMP, NULL, "item data: ",
++				items[i].vaddr, items[i].len);
+ 
+-	return ret;
++		err = ath10k_ce_send_nolock(ce_pipe,
++					    items[i].transfer_context,
++					    items[i].paddr,
++					    items[i].len,
++					    items[i].transfer_id,
++					    CE_SEND_FLAG_GATHER);
++		if (err)
++			goto unlock;
++	}
++
++	/* `i` is equal to `n_items -1` after for() */
++
++	ath10k_dbg(ATH10K_DBG_PCI,
++		   "pci tx item %d paddr 0x%08x len %d n_items %d\n",
++		   i, items[i].paddr, items[i].len, n_items);
++	ath10k_dbg_dump(ATH10K_DBG_PCI_DUMP, NULL, "item data: ",
++			items[i].vaddr, items[i].len);
++
++	err = ath10k_ce_send_nolock(ce_pipe,
++				    items[i].transfer_context,
++				    items[i].paddr,
++				    items[i].len,
++				    items[i].transfer_id,
++				    0);
++	if (err)
++		goto unlock;
++
++	err = 0;
++unlock:
++	spin_unlock_bh(&ar_pci->ce_lock);
++	return err;
+ }
+ 
+ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+@@ -2249,7 +2277,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ #endif
+ 
+ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+-	.send_head		= ath10k_pci_hif_send_head,
++	.tx_sg			= ath10k_pci_hif_tx_sg,
+ 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
+ 	.start			= ath10k_pci_hif_start,
+ 	.stop			= ath10k_pci_hif_stop,
 -- 
 1.8.5.3
 
