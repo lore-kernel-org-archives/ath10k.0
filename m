@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJHzv-0001N3-IF
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:36:44 +0000
-Received: by mail-ea0-f175.google.com with SMTP id z10so2419755ead.34
- for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:36:20 -0800 (PST)
+ id 1WJI2H-0001Rc-A8
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:39:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k:  support msdu chaining.
+References: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
+Date: Fri, 28 Feb 2014 09:38:41 +0200
+In-Reply-To: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Thu, 27 Feb 2014 17:20:52
+ -0800")
+Message-ID: <87fvn3d6v2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <530F62FD.9060701@candelatech.com>
-References: <530E7AF2.1080908@candelatech.com>
- <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
- <530F62FD.9060701@candelatech.com>
-Date: Fri, 28 Feb 2014 08:36:20 +0100
-Message-ID: <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
-Subject: Re: Need to get msdu-chaining working.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjcgRmVicnVhcnkgMjAxNCAxNzowOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IE9uIDAyLzI2LzIwMTQgMTA6NTEgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
-dGU6Cj4+Cj4+IE9uIDI3IEZlYnJ1YXJ5IDIwMTQgMDA6MzgsIEJlbiBHcmVlYXIgPGdyZWVhcmJA
-Y2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Cj4+Pgo+Pj4gSSdtIHVzaW5nIHJhdy1yeCBtb2Rl
-IGluIG15IGZpcm13YXJlLCBhbmQgaXQncyB0aHJvdWdocHV0IGlzCj4+PiBleHRyZW1lbHkgcG9v
-ciBhdCBoaWdoZXIgc3BlZWRzLiAgSSBzZWUgbGFyZ2UgbnVtYmVycyBvZiB3YXJuaW5ncwo+Pj4g
-YWJvdXQgbXNkdV9jaGFpbmluZywgc28gSSBzdXNwZWN0IHRoaXMgbWF5IGJlIHRoZSByZWFzb24u
-Cj4+Cj4+Cj4+IEkgYXNzdW1lIHRoaXMgcmVxdWlyZXMgeW91ciBjdXN0b20gRlc/Cj4KPgo+IFll
-cy4gIEkgYW0gbm90IHN1cmUgeW91IGNhbiB1c2UgcmF3IHR4IHdpdGggc3RhbmRhcmQgZmlybXdh
-cmUgKHlldCk/Cj4KPiBPciBhdCBsZWFzdCwgeW91IGNhbm5vdCBoYXZlIHR4IGNvb2tlZCBhbmQg
-cnggcmF3LgoKSSByZWNhbGwgdGhlcmUgd2VyZSBpc3N1ZXMgd2l0aCBkaWZmZXJlbnQgdHgvcngg
-bW9kZXMuIEkgdGhpbmsgdGhlCjEwLnggYnJhbmNoIHN1ZmZlcnMgZnJvbSB0aGlzLCBidXQgdGhl
-IEZXIDYzNiBkb2VzIG5vdCBhcyBpdCBoYXMKdHhfZW5jYXBfdHlwZSB2ZGV2IHBhcmFtZXRlci4K
-Cgo+Pj4gRG9lcyBhbnlvbmUgaGF2ZSBhbnkgc3VnZ2VzdGlvbnMgZm9yIHdoYXQgbmVlZHMgdG8g
-YmUgZG9uZQo+Pj4gdG8gaGFuZGxlIHRoZXNlIHNvcnRzIG9mIGZyYW1lcyBwcm9wZXJseT8KPj4+
-Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgLyogRklYTUU6IHdlIGRvIG5vdCBzdXBwb3J0
-IGNoYWluaW5nIHlldC4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKiB0aGlzIG5lZWRz
-IGludmVzdGlnYXRpb24gKi8KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobXNkdV9j
-aGFpbmluZykgewo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dh
-cm4oImh0dCByeCBtc2R1X2NoYWluaW5nIGlzCj4+PiB0cnVlXG4iKTsKPj4+Cj4+PiBhdGgxMGtf
-aHR0X3J4X2ZyZWVfbXNkdV9jaGFpbihtc2R1X2hlYWQpOwo+Pj4gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgY29udGludWU7Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgfQo+
-Pgo+Pgo+Pj4gRnJvbSB3aGF0IEkgdW5kZXJzdGFuZCBjaGFpbmVkIG1zZHUgaXMgYSBtc2R1IHRo
-YXQgaGFzbid0IGZpdCBpbnRvIHRoZQo+Pgo+PiByeCBidWZmZXIgYW5kIGlzIHNwbGl0IGFjcm9z
-cyB0aGUgcG9wcGVkIGFtc2R1IGxpc3QuIEkgc3VzcGVjdCBvbmx5Cj4+IHRoZSBmaXJzdCBtc2R1
-IGluIGNoYWluIGhhcyB0aGUgaHR0X3J4X2Rlc2MgYW5kIGFsbCBvdGhlciBoYXZlIG5vdAo+PiAo
-dGhpcyBpcyB3aGF0IHRoZSBjdXJyZW50IGNvZGUgZG9lcywgYnV0IHlvdSdsbCBuZWVkIHRvIHZl
-cmlmeSB0aGF0KS4KPj4KPj4gSSB3b3VsZCB0cnkgdG8gY29uY2F0ZW5hdGUgYWxsIG1zZHVzIGlu
-dG8gb25lIChsb3RzIG9mIG1lbWNweSA6KCApIG9yCj4+IGluY3JlYXNlIHRoZSBIVFRfUlhfQlVG
-X1NJWkUgc28gdGhhdCBBLU1TRFUgZnJhbWVzIGNhbiBmaXQgaW50byBhCj4+IHNpbmdsZSBidWZm
-ZXIgKGhvcGVmdWxseSBGVy9IVyBpcyBjYXBhYmxlIG9mIGRvaW5nIHRoYXQpLgo+Cj4KPiBJIHRo
-aW5rIGluIHJhdyBtb2RlIHRoZSBoYXJkd2FyZS9maXJtd2FyZSBtYXkgbm90IHRyeSB0byByZS1h
-c3NlbWJsZSB0aGUKPiBza2IsCj4gb3IgYWxzbyB3aGVuIG5vIHBlZXIgb2JqZWN0IGNhbiBiZSBm
-b3VuZC4gIFRoaXMgbWlnaHQgYmUgYW4gaXNzdWUgaW4gbW9uaXRvcgo+IG1vZGUgYXMgd2VsbCwg
-YnV0IEknbSBub3QgY2VydGFpbiBhYm91dCB0aGF0Lgo+Cj4gSSB0aGluayB0aGVyZSBpcyBhIHdh
-eSB0byBjaGFpbiBza2IgZGF0YSBjaHVua3Mgdy9vdXQgZG9pbmcgdGhlIGNvcHlpbmcsCj4gYnV0
-IEkgYW0gbm90IGNlcnRhaW4gaG93IHRoYXQgd291bGQgYmUgZG9uZSBwcm9wZXJseS4KCkRpZCB5
-b3UgdHJ5IGluY3JlYXNpbmcgdGhlIEhUVF9SWF9CVUZfU0laRSBhbmQgc2VlIGlmIHlvdSBnZXQg
-Y29tcGxldGUKZnJhbWVzIGluc3RlYWQgb2YgY2hhaW5lZCBvbmVzPwoKCk1pY2hhxYIKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+greearb@candelatech.com writes:
+
+> From: Ben Greear <greearb@candelatech.com>
+>
+> Consolidate the list of msdu skbs into the msdu-head skb, delete the
+> rest of the skbs, pass the msdu-head skb on up the stack as normal.
+>
+> Tested with high-speed TCP and UDP traffic on modified firmware that
+> supports raw-rx.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>
+> v2:  Add note about skb_try_coalesce, though I am not sure it will
+>      work or not.
+>      Only grow skb once, which should save on some memory (re)allocation
+>      and copying when we have more than one chained skb.
+
+I didn't look at the patch itself yet, but I see checkpatch warnings:
+
+drivers/net/wireless/ath/ath10k/htt_rx.c:1022: WARNING: line over 80 characters
+drivers/net/wireless/ath/ath10k/htt_rx.c:1032: WARNING: line over 80 characters
+drivers/net/wireless/ath/ath10k/htt_rx.c:1044: WARNING: labels should not be indented
+drivers/net/wireless/ath/ath10k/htt_rx.c:1053: WARNING: labels should not be indented
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
