@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJGfY-0008Aw-KS
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 06:11:37 +0000
-Received: by mail-ve0-f171.google.com with SMTP id cz12so283796veb.16
- for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 22:10:52 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <8738j4ftep.fsf_-_@kamboji.qca.qualcomm.com>
-References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
- <871tzq210z.fsf@kamboji.qca.qualcomm.com>
- <CAJ-VmomkfvaTm+=Du8FqCC=b=UG2d=8ixUK2tUsFj4_dsRL4Pg@mail.gmail.com>
- <CAHqTa-3O0_5OcTKNi0KLa--63ZYO4o7qK=VsN7Bsyi0nX+rF7g@mail.gmail.com>
- <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
- <8738j4ftep.fsf_-_@kamboji.qca.qualcomm.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Thu, 27 Feb 2014 22:10:31 -0800
-Message-ID: <CAHqTa-0L5oJKSuJ9XEsprKJciMsEa5aFfLpaBLZ4Jsxw59XAmQ@mail.gmail.com>
-Subject: Re: Missing memory barriers
+ id 1WJHoS-00014Z-SG
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:24:54 +0000
+Received: by mail-ee0-f42.google.com with SMTP id d17so1991260eek.15
+ for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:24:27 -0800 (PST)
+From: bartosz.markowski@tieto.com
+Subject: [PATCH] ath10k: add recalc RTS/CTS protection method
+Date: Fri, 28 Feb 2014 08:18:28 +0100
+Message-Id: <1393571908-23734-1-git-send-email-marek.kwaczynski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,102 +17,162 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless@vger.kernel.org
 
-On Thu, Feb 27, 2014 at 7:48 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Avery Pennarun <apenwarr@gmail.com> writes:
->> - there are definitely some missing memory barriers in here; in a few
->> cases you can clearly see a write getting done before the read that
->> came before it.  Looking at the definitions for iowrite32 and
->> ioread32, and for rmb() and wmb(), we can see that the use of rmb()
->> and wmb() do not work properly (at least on ARM) when you care about
->> the ordering between reads and writes.  However, I don't think this
->> actually causes the problem.
->
-> Can you tell more about this, please? Did you find out where we are
-> actually doing it wrong?
+From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 
-Sure.  It's been a while since I wrote the above and it was with an
-older version of the ath10k driver, but basically what happens is as
-follows.
+Add recalculation of RTS/CTS protection when one or more legacy
+stations are connected to ath10k. In this case enable RTS/CTS
+protection and set sw retry profile are needed in the FW.
+Without this change legacy station is starved and has very low
+throughput.
 
-First look in arch/arm/include/asm/system.h.  Note that in various
-situations, rmb() and wmb() may be defined identically or may do
-slightly different things.  On the architecture I'm using, I'm fairly
-sure they are defined identically.  Results may be slightly different
-if they are not.
+Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |    3 ++
+ drivers/net/wireless/ath/ath10k/mac.c  |   57 +++++++++++++++++++++++++-------
+ drivers/net/wireless/ath/ath10k/wmi.h  |   13 ++++++++
+ 3 files changed, 61 insertions(+), 12 deletions(-)
 
-Next look at arch/arm/include/asm/io.h at the definitions for
-iowrite32 and ioread32.  In pseudocode they are roughly like this:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d1c5e7a..c0e4fae 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -289,6 +289,9 @@ struct ath10k_vif {
+ 	u8 fixed_rate;
+ 	u8 fixed_nss;
+ 	u8 force_sgi;
++
++	bool use_cts_prot;
++	int num_legacy_stations;
+ };
+ 
+ struct ath10k_vif_iter {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 239357f..96b0f59 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -723,6 +723,26 @@ static int ath10k_monitor_destroy(struct ath10k *ar)
+ 	return ret;
+ }
+ 
++static int ath10k_recalc_rtscts_prot(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++	u32 vdev_param, rts_cts = 0;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	vdev_param = ar->wmi.vdev_param->enable_rtscts;
++
++	if (arvif->use_cts_prot || arvif->num_legacy_stations > 0)
++		rts_cts |= SM(WMI_RTSCTS_ENABLED, WMI_RTSCTS_SET);
++
++	if (arvif->num_legacy_stations > 0)
++		rts_cts |= SM(WMI_RTSCTS_ACROSS_SW_RETRIES,
++			      WMI_RTSCTS_PROFILE);
++
++	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++					 rts_cts);
++}
++
+ static int ath10k_start_cac(struct ath10k *ar)
+ {
+ 	int ret;
+@@ -1532,6 +1552,16 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+ 		return ret;
+ 	}
+ 
++	if (!sta->wme) {
++		arvif->num_legacy_stations++;
++		ret = ath10k_recalc_rtscts_prot(arvif);
++		if (ret) {
++			ath10k_warn("Failed to recalculate RTS/CTS: %d\n",
++				    ret);
++			return ret;
++		}
++	}
++
+ 	ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
+ 	if (ret) {
+ 		ath10k_warn("could not install peer wep keys (%d)\n", ret);
+@@ -1555,6 +1585,16 @@ static int ath10k_station_disassoc(struct ath10k *ar, struct ath10k_vif *arvif,
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	if (!sta->wme) {
++		arvif->num_legacy_stations--;
++		ret = ath10k_recalc_rtscts_prot(arvif);
++		if (ret) {
++			ath10k_warn("failed to recalc RTS/CTS %d\n",
++				    ret);
++			return ret;
++		}
++	}
++
+ 	ret = ath10k_clear_peer_keys(arvif, sta->addr);
+ 	if (ret) {
+ 		ath10k_warn("could not clear all peer wep keys (%d)\n", ret);
+@@ -2838,21 +2878,14 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		ath10k_control_beaconing(arvif, info);
+ 
+ 	if (changed & BSS_CHANGED_ERP_CTS_PROT) {
+-		u32 cts_prot;
+-		if (info->use_cts_prot)
+-			cts_prot = 1;
+-		else
+-			cts_prot = 0;
+-
++		arvif->use_cts_prot = info->use_cts_prot;
+ 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d cts_prot %d\n",
+-			   arvif->vdev_id, cts_prot);
++			   arvif->vdev_id, info->use_cts_prot);
+ 
+-		vdev_param = ar->wmi.vdev_param->enable_rtscts;
+-		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+-						cts_prot);
++		ret = ath10k_recalc_rtscts_prot(arvif);
+ 		if (ret)
+-			ath10k_warn("Failed to set CTS prot for VDEV: %d\n",
+-				    arvif->vdev_id);
++			ath10k_warn("failed to recalc RTS/CTS prot %d\n",
++				    ret);
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_ERP_SLOT) {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 4fcc96a..e78a7ad 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2210,6 +2210,19 @@ enum ath10k_protmode {
+ 	ATH10K_PROT_RTSCTS   = 2,    /* RTS-CTS */
+ };
+ 
++enum wmi_rtscts_profile {
++	WMI_RTSCTS_FOR_NO_RATESERIES = 0,
++	WMI_RTSCTS_FOR_SECOND_RATESERIES,
++	WMI_RTSCTS_ACROSS_SW_RETRIES
++};
++
++#define WMI_RTSCTS_ENABLED		1
++#define WMI_RTSCTS_SET_MASK		0x0f
++#define WMI_RTSCTS_SET_LSB		0
++
++#define WMI_RTSCTS_PROFILE_MASK		0xf0
++#define WMI_RTSCTS_PROFILE_LSB		4
++
+ enum wmi_beacon_gen_mode {
+ 	WMI_BEACON_STAGGERED_MODE = 0,
+ 	WMI_BEACON_BURST_MODE = 1
+-- 
+1.7.10
 
-iowrite32:
-   wmb();
-   write();
-ioread32:
-   read();
-   rmb();
-
-So for example in ath10k_pci_device_reset (or ath10k_pci_cold_reset if
-you have that set of patches), there is a code sequence that looks
-something like this:
-
-- write the reset register
-- loop:
-  - read the status
-
-I noticed that when the device crashes the PCIe bus due to voltage
-problems, writing the reset register is not what causes the PCIe host
-to notice an abort - it's reading the status afterward.  While
-investigating this, I hooked up a PCIe bus analyzer and found that it
-was reading the status *before* writing the reset.  That's because the
-above expands out to:
-
-   wmb()
-   write(reset)
-   read(status)
-   rmb()
-
-which the CPU or compiler is free to reorder as:
-
-  wmb()
-  read(status)
-  write(reset)
-  rmb()
-
-And in fact, it *wants* to do this reordering because there is a
-conditional that depends on the result of read(status), so with the
-reordering, the CPU pipeline can think about that conditional while
-executing write(reset) in parallel.  And this is indeed what happens,
-according to my PCIe bus trace.
-
-The way the ARM iowrite/ioread barriers are set up, it works as
-expected when you read before writing, but the first read after a
-write can be reordered.  If you want to be careful about this, I think
-you'd have to insert an extra barrier by hand.
-
-The bad news is that, while inserting the extra barrier did clean up
-my bus trace, it didn't fix the underlying problem.  When the chip
-dies due to this cold reset operation, the inability to read the
-status register is only a symptom, not the cause.  In the end it's
-harmless that we end up doing the first read before the write
-operation finishes.  What happens isn't what the code says, but I
-don't think that matters in this case.
-
-(I think my main line of investigation at the time was in the first
-read after the command was sent to take the chip *out* of reset.  I
-thought maybe reading while it was in reset was the underlying cause
-of the abort.  No such luck.)
-
-Hope this helps.
-
-Have fun,
-
-Avery
 
 _______________________________________________
 ath10k mailing list
