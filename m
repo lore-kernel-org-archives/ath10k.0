@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
+Received: from mail-ea0-x22f.google.com ([2a00:1450:4013:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJHoS-00014Z-SG
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:24:54 +0000
-Received: by mail-ee0-f42.google.com with SMTP id d17so1991260eek.15
- for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:24:27 -0800 (PST)
-From: bartosz.markowski@tieto.com
-Subject: [PATCH] ath10k: add recalc RTS/CTS protection method
-Date: Fri, 28 Feb 2014 08:18:28 +0100
-Message-Id: <1393571908-23734-1-git-send-email-marek.kwaczynski@tieto.com>
+ id 1WJHzv-0001N3-IF
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:36:44 +0000
+Received: by mail-ea0-f175.google.com with SMTP id z10so2419755ead.34
+ for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:36:20 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <530F62FD.9060701@candelatech.com>
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+ <530F62FD.9060701@candelatech.com>
+Date: Fri, 28 Feb 2014 08:36:20 +0100
+Message-ID: <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
+Subject: Re: Need to get msdu-chaining working.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,164 +22,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-
-Add recalculation of RTS/CTS protection when one or more legacy
-stations are connected to ath10k. In this case enable RTS/CTS
-protection and set sw retry profile are needed in the FW.
-Without this change legacy station is starved and has very low
-throughput.
-
-Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h |    3 ++
- drivers/net/wireless/ath/ath10k/mac.c  |   57 +++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/wmi.h  |   13 ++++++++
- 3 files changed, 61 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d1c5e7a..c0e4fae 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -289,6 +289,9 @@ struct ath10k_vif {
- 	u8 fixed_rate;
- 	u8 fixed_nss;
- 	u8 force_sgi;
-+
-+	bool use_cts_prot;
-+	int num_legacy_stations;
- };
- 
- struct ath10k_vif_iter {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 239357f..96b0f59 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -723,6 +723,26 @@ static int ath10k_monitor_destroy(struct ath10k *ar)
- 	return ret;
- }
- 
-+static int ath10k_recalc_rtscts_prot(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	u32 vdev_param, rts_cts = 0;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	vdev_param = ar->wmi.vdev_param->enable_rtscts;
-+
-+	if (arvif->use_cts_prot || arvif->num_legacy_stations > 0)
-+		rts_cts |= SM(WMI_RTSCTS_ENABLED, WMI_RTSCTS_SET);
-+
-+	if (arvif->num_legacy_stations > 0)
-+		rts_cts |= SM(WMI_RTSCTS_ACROSS_SW_RETRIES,
-+			      WMI_RTSCTS_PROFILE);
-+
-+	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					 rts_cts);
-+}
-+
- static int ath10k_start_cac(struct ath10k *ar)
- {
- 	int ret;
-@@ -1532,6 +1552,16 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
- 		return ret;
- 	}
- 
-+	if (!sta->wme) {
-+		arvif->num_legacy_stations++;
-+		ret = ath10k_recalc_rtscts_prot(arvif);
-+		if (ret) {
-+			ath10k_warn("Failed to recalculate RTS/CTS: %d\n",
-+				    ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
- 	if (ret) {
- 		ath10k_warn("could not install peer wep keys (%d)\n", ret);
-@@ -1555,6 +1585,16 @@ static int ath10k_station_disassoc(struct ath10k *ar, struct ath10k_vif *arvif,
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	if (!sta->wme) {
-+		arvif->num_legacy_stations--;
-+		ret = ath10k_recalc_rtscts_prot(arvif);
-+		if (ret) {
-+			ath10k_warn("failed to recalc RTS/CTS %d\n",
-+				    ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = ath10k_clear_peer_keys(arvif, sta->addr);
- 	if (ret) {
- 		ath10k_warn("could not clear all peer wep keys (%d)\n", ret);
-@@ -2838,21 +2878,14 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 		ath10k_control_beaconing(arvif, info);
- 
- 	if (changed & BSS_CHANGED_ERP_CTS_PROT) {
--		u32 cts_prot;
--		if (info->use_cts_prot)
--			cts_prot = 1;
--		else
--			cts_prot = 0;
--
-+		arvif->use_cts_prot = info->use_cts_prot;
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d cts_prot %d\n",
--			   arvif->vdev_id, cts_prot);
-+			   arvif->vdev_id, info->use_cts_prot);
- 
--		vdev_param = ar->wmi.vdev_param->enable_rtscts;
--		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
--						cts_prot);
-+		ret = ath10k_recalc_rtscts_prot(arvif);
- 		if (ret)
--			ath10k_warn("Failed to set CTS prot for VDEV: %d\n",
--				    arvif->vdev_id);
-+			ath10k_warn("failed to recalc RTS/CTS prot %d\n",
-+				    ret);
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_SLOT) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4fcc96a..e78a7ad 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2210,6 +2210,19 @@ enum ath10k_protmode {
- 	ATH10K_PROT_RTSCTS   = 2,    /* RTS-CTS */
- };
- 
-+enum wmi_rtscts_profile {
-+	WMI_RTSCTS_FOR_NO_RATESERIES = 0,
-+	WMI_RTSCTS_FOR_SECOND_RATESERIES,
-+	WMI_RTSCTS_ACROSS_SW_RETRIES
-+};
-+
-+#define WMI_RTSCTS_ENABLED		1
-+#define WMI_RTSCTS_SET_MASK		0x0f
-+#define WMI_RTSCTS_SET_LSB		0
-+
-+#define WMI_RTSCTS_PROFILE_MASK		0xf0
-+#define WMI_RTSCTS_PROFILE_LSB		4
-+
- enum wmi_beacon_gen_mode {
- 	WMI_BEACON_STAGGERED_MODE = 0,
- 	WMI_BEACON_BURST_MODE = 1
--- 
-1.7.10
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgRmVicnVhcnkgMjAxNCAxNzowOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IE9uIDAyLzI2LzIwMTQgMTA6NTEgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
+dGU6Cj4+Cj4+IE9uIDI3IEZlYnJ1YXJ5IDIwMTQgMDA6MzgsIEJlbiBHcmVlYXIgPGdyZWVhcmJA
+Y2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Cj4+Pgo+Pj4gSSdtIHVzaW5nIHJhdy1yeCBtb2Rl
+IGluIG15IGZpcm13YXJlLCBhbmQgaXQncyB0aHJvdWdocHV0IGlzCj4+PiBleHRyZW1lbHkgcG9v
+ciBhdCBoaWdoZXIgc3BlZWRzLiAgSSBzZWUgbGFyZ2UgbnVtYmVycyBvZiB3YXJuaW5ncwo+Pj4g
+YWJvdXQgbXNkdV9jaGFpbmluZywgc28gSSBzdXNwZWN0IHRoaXMgbWF5IGJlIHRoZSByZWFzb24u
+Cj4+Cj4+Cj4+IEkgYXNzdW1lIHRoaXMgcmVxdWlyZXMgeW91ciBjdXN0b20gRlc/Cj4KPgo+IFll
+cy4gIEkgYW0gbm90IHN1cmUgeW91IGNhbiB1c2UgcmF3IHR4IHdpdGggc3RhbmRhcmQgZmlybXdh
+cmUgKHlldCk/Cj4KPiBPciBhdCBsZWFzdCwgeW91IGNhbm5vdCBoYXZlIHR4IGNvb2tlZCBhbmQg
+cnggcmF3LgoKSSByZWNhbGwgdGhlcmUgd2VyZSBpc3N1ZXMgd2l0aCBkaWZmZXJlbnQgdHgvcngg
+bW9kZXMuIEkgdGhpbmsgdGhlCjEwLnggYnJhbmNoIHN1ZmZlcnMgZnJvbSB0aGlzLCBidXQgdGhl
+IEZXIDYzNiBkb2VzIG5vdCBhcyBpdCBoYXMKdHhfZW5jYXBfdHlwZSB2ZGV2IHBhcmFtZXRlci4K
+Cgo+Pj4gRG9lcyBhbnlvbmUgaGF2ZSBhbnkgc3VnZ2VzdGlvbnMgZm9yIHdoYXQgbmVlZHMgdG8g
+YmUgZG9uZQo+Pj4gdG8gaGFuZGxlIHRoZXNlIHNvcnRzIG9mIGZyYW1lcyBwcm9wZXJseT8KPj4+
+Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgLyogRklYTUU6IHdlIGRvIG5vdCBzdXBwb3J0
+IGNoYWluaW5nIHlldC4KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgKiB0aGlzIG5lZWRz
+IGludmVzdGlnYXRpb24gKi8KPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICBpZiAobXNkdV9j
+aGFpbmluZykgewo+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dh
+cm4oImh0dCByeCBtc2R1X2NoYWluaW5nIGlzCj4+PiB0cnVlXG4iKTsKPj4+Cj4+PiBhdGgxMGtf
+aHR0X3J4X2ZyZWVfbXNkdV9jaGFpbihtc2R1X2hlYWQpOwo+Pj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgY29udGludWU7Cj4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgfQo+
+Pgo+Pgo+Pj4gRnJvbSB3aGF0IEkgdW5kZXJzdGFuZCBjaGFpbmVkIG1zZHUgaXMgYSBtc2R1IHRo
+YXQgaGFzbid0IGZpdCBpbnRvIHRoZQo+Pgo+PiByeCBidWZmZXIgYW5kIGlzIHNwbGl0IGFjcm9z
+cyB0aGUgcG9wcGVkIGFtc2R1IGxpc3QuIEkgc3VzcGVjdCBvbmx5Cj4+IHRoZSBmaXJzdCBtc2R1
+IGluIGNoYWluIGhhcyB0aGUgaHR0X3J4X2Rlc2MgYW5kIGFsbCBvdGhlciBoYXZlIG5vdAo+PiAo
+dGhpcyBpcyB3aGF0IHRoZSBjdXJyZW50IGNvZGUgZG9lcywgYnV0IHlvdSdsbCBuZWVkIHRvIHZl
+cmlmeSB0aGF0KS4KPj4KPj4gSSB3b3VsZCB0cnkgdG8gY29uY2F0ZW5hdGUgYWxsIG1zZHVzIGlu
+dG8gb25lIChsb3RzIG9mIG1lbWNweSA6KCApIG9yCj4+IGluY3JlYXNlIHRoZSBIVFRfUlhfQlVG
+X1NJWkUgc28gdGhhdCBBLU1TRFUgZnJhbWVzIGNhbiBmaXQgaW50byBhCj4+IHNpbmdsZSBidWZm
+ZXIgKGhvcGVmdWxseSBGVy9IVyBpcyBjYXBhYmxlIG9mIGRvaW5nIHRoYXQpLgo+Cj4KPiBJIHRo
+aW5rIGluIHJhdyBtb2RlIHRoZSBoYXJkd2FyZS9maXJtd2FyZSBtYXkgbm90IHRyeSB0byByZS1h
+c3NlbWJsZSB0aGUKPiBza2IsCj4gb3IgYWxzbyB3aGVuIG5vIHBlZXIgb2JqZWN0IGNhbiBiZSBm
+b3VuZC4gIFRoaXMgbWlnaHQgYmUgYW4gaXNzdWUgaW4gbW9uaXRvcgo+IG1vZGUgYXMgd2VsbCwg
+YnV0IEknbSBub3QgY2VydGFpbiBhYm91dCB0aGF0Lgo+Cj4gSSB0aGluayB0aGVyZSBpcyBhIHdh
+eSB0byBjaGFpbiBza2IgZGF0YSBjaHVua3Mgdy9vdXQgZG9pbmcgdGhlIGNvcHlpbmcsCj4gYnV0
+IEkgYW0gbm90IGNlcnRhaW4gaG93IHRoYXQgd291bGQgYmUgZG9uZSBwcm9wZXJseS4KCkRpZCB5
+b3UgdHJ5IGluY3JlYXNpbmcgdGhlIEhUVF9SWF9CVUZfU0laRSBhbmQgc2VlIGlmIHlvdSBnZXQg
+Y29tcGxldGUKZnJhbWVzIGluc3RlYWQgb2YgY2hhaW5lZCBvbmVzPwoKCk1pY2hhxYIKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
