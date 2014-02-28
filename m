@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22c.google.com ([2a00:1450:4013:c01::22c])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJJXk-0003Uw-Q6
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:15:45 +0000
-Received: by mail-ea0-f172.google.com with SMTP id l9so2516072eaj.3
- for <ath10k@lists.infradead.org>; Fri, 28 Feb 2014 01:15:20 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <8738j3d2t2.fsf@kamboji.qca.qualcomm.com>
+ id 1WJJkU-00045Z-9A
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:28:55 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3 4/8] ath10k: bypass htc for htt tx path
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-5-git-send-email-michal.kazior@tieto.com>
  <8738j3d2t2.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 28 Feb 2014 10:15:20 +0100
-Message-ID: <CA+BoTQn8GTu3A4LdRGtpJeVr0SnaApTwnNZAoZ8=3Vj5qF+W=g@mail.gmail.com>
-Subject: Re: [PATCH v3 4/8] ath10k: bypass htc for htt tx path
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQn8GTu3A4LdRGtpJeVr0SnaApTwnNZAoZ8=3Vj5qF+W=g@mail.gmail.com>
+Date: Fri, 28 Feb 2014 11:28:23 +0200
+In-Reply-To: <CA+BoTQn8GTu3A4LdRGtpJeVr0SnaApTwnNZAoZ8=3Vj5qF+W=g@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 28 Feb 2014 10:15:20 +0100")
+Message-ID: <87txbjbn7s.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +23,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjggRmVicnVhcnkgMjAxNCAxMDowNiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
-aXRlczoKPgo+PiBHb2luZyB0aHJvdWdoIGZ1bGwgaHRjIHR4IHBhdGggZm9yIGh0dCB0eCBpcyBh
-Cj4+IHdhc3RlIG9mIHJlc291cmNlcy4gQnkgc2tpcHBpbmcgaXQgaXQncyBwb3NzaWJsZQo+PiB0
-byBlYXNpbHkgc3VibWl0IHNjYXR0ZXItZ2F0aGVyIHRvIHRoZSBwY2kgaGlmIGZvcgo+PiByZWR1
-Y2VkIGhvc3QgY3B1IGxvYWQgYW5kIGltcHJvdmVkIHBlcmZvcm1hbmNlLgo+Pgo+PiBUaGUgbmV3
-IGFwcHJvYWNoIHVzZXMgZG1hIHBvb2wgdG8gc3RvcmUgdGhlCj4+IGZvbGxvd2luZyBtZXRhZGF0
-YSBmb3IgZWFjaCB0eCByZXF1ZXN0Ogo+PiAgKiBtc2R1IGZyYWdtZW50IGxpc3QKPj4gICogaHRj
-IGhlYWRlcgo+PiAgKiBodHQgdHggY29tbWFuZAo+Pgo+PiBUaGUgaHR0IHR4IGNvbW1hbmQgY29u
-dGFpbnMgYSBtc2R1IHByZWZldGNoLgo+PiBJbnN0ZWFkIG9mIGNvcHlpbmcgaXQgb3JpZ2luYWwg
-bWFwcGVkIG1zZHUgYWRkcmVzcwo+PiBpcyB1c2VkIHRvIHN1Ym1pdCBhIHNlY29uZCBzY2F0dGVy
-LWdhdGhlciBpdGVtIHRvCj4+IGhpZiB0byBtYWtlIGEgY29tcGxldGUgaHR0IHR4IGNvbW1hbmQu
-Cj4+Cj4+IFRoZSBodHQgdHggY29tbWFuZCBpdHNlbGYgaGFuZHMgb3ZlciBkbWEgbWFwcGVkCj4+
-IHBvaW50ZXJzIHRvIG1zZHVzIGFuZCBjb21wbGV0aW9uIG9mIHRoZSBjb21tYW5kCj4+IGl0c2Vs
-ZiBkb2Vzbid0IG1lYW4gdGhlIGZyYW1lIGhhcyBiZWVuIHNlbnQgYW5kCj4+IGNhbiBiZSB1bm1h
-cHBlZC9mcmVlZC4gVGhpcyBpcyB3aHkgaHRjIHR4Cj4+IGNvbXBsZXRpb24gaXMgc2tpcHBlZCBm
-b3IgaHR0IHR4IGFzIGFsbCB0eCByZWxhdGVkCj4+IHJlc291cmNlcyBhcmUgZnJlZWQgdXBvbiBo
-dHQgdHggY29tcGxldGlvbgo+PiBpbmRpY2F0aW9uIGV2ZW50ICh3aGljaCBhbHNvIGltcGxpY2l0
-bHkgbWVhbnMgaHR0Cj4+IHR4IGNvbW1hbmQgaXRzZWxmIHdhcyBjb21wbGV0ZWQpLgo+Pgo+PiBT
-aW5jZSBub3cgZWFjaCBodHQgdHggcmVxdWVzdCBlZmZlY3RpdmVseSBjb25zaXN0cwo+PiBvZiAy
-IGNvcHkgZW5naW5lIGl0ZW1zIENFX0hUVF9IMlRfTVNHX1NSQ19ORU5UUklFUwo+PiBpcyB1cGRh
-dGVkIHRvIGFsbG93IG1heGltdW0gb2YKPj4gVEFSR0VUXzEwWF9OVU1fTVNEVV9ERVNDIG1zZHVz
-IGJlaW5nIHF1ZXVlZC4gVGhpcwo+PiBrZWVwcyB0aGUgdHggcGF0aCByZXNvdXJjZSBtYW5hZ2Vt
-ZW50IHNpbXBsZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmth
-emlvckB0aWV0by5jb20+Cj4+IC0tLQo+PiB2MjoKPj4gICogaW1wcm92ZSBjb21taXQgbG9nCj4+
-ICAqIGltcHJvdmUgY29tbWVudCBpbiBjb2RlCj4+ICAqIGZpeCBzcGFyc2UvY2hlY2twYXRjaC9i
-dWlsZGJvdCB3YXJuaW5ncwo+Cj4gWy4uLl0KPgo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrL2h0Yy5jCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvaHRjLmMKPj4gQEAgLTIwMiwxMCArMjAyLDggQEAgc3RhdGljIGludCBhdGgxMGtfaHRjX3R4
-X2NvbXBsZXRpb25faGFuZGxlcihzdHJ1Y3QgYXRoMTBrICphciwKPj4gICAgICAgc3RydWN0IGF0
-aDEwa19odGMgKmh0YyA9ICZhci0+aHRjOwo+PiAgICAgICBzdHJ1Y3QgYXRoMTBrX2h0Y19lcCAq
-ZXAgPSAmaHRjLT5lbmRwb2ludFtlaWRdOwo+Pgo+PiAtICAgICBpZiAoIXNrYikgewo+PiAtICAg
-ICAgICAgICAgIGF0aDEwa193YXJuKCJpbnZhbGlkIHNrX2J1ZmYgY29tcGxldGlvbiAtIE5VTEwg
-cG9pbnRlci4gZmlybXdhcmUgY3Jhc2hlZD9cbiIpOwo+PiArICAgICBpZiAoV0FSTl9PTighc2ti
-KSkKPj4gICAgICAgICAgICAgICByZXR1cm4gMDsKPj4gLSAgICAgfQo+Cj4gV0FSTl9PTigpIGlz
-IGEgYml0IGRhbmdlcm91cyBoZXJlIGFzIGl0IG1pZ2h0IGNhdXNlIGV4Y2Vzc2l2ZSBzcGFtbWlu
-Zy4KPiBXaHkgZGlkIHlvdSB3YW50IHRvIGNoYW5nZSB0aGlzPyBJIHRoaW5rIGVpdGhlciBhdGgx
-MGtfd2FybigpIG9yCj4gV0FSTl9PTl9PTkNFKCkgd291bGQgYmUgc2FmZXIsIGJ1dCBub3Qgc3Vy
-ZSB3aGljaCBvbmUgdG8gdXNlLgoKQWZ0ZXIgdGhlIHNjYXR0ZXItZ2F0aGVyIHBhdGNoIG5vIE5V
-TEwgc2tiIHNob3VsZCBiZSBldmVyIHBhc3NlZCB0byB0eApjb21wbGV0aW9uIGhhbmRsZXIgYXMg
-dGhvc2UgYXJlIGlnbm9yZWQgYnkgaGlmL3BjaS4gUGVyaGFwcyB0aGUgaHVuawpzaG91bGQgYmUg
-bW92ZWQgZnJvbSB0aGlzIHBhdGNoIHRvIHRoZSBzY2F0dGVyLWdhdGhlciBvbmUuCgpQZXJoYXBz
-IFdBUk5fT04oKSBpcyBhIGJpdCBvdmVyIHRoZSB0b3AgaGVyZSwgYnV0IHNpbmNlIHRoaXMgaXMg
-bm93Cm1vcmUgb2YgYSBsb2dpYyBpc3N1ZSByYXRoZXIgdGhhbiBydW50aW1lIGlzc3VlIEkgZGVj
-aWRlZCB0byBjaGFuZ2UgaXQKZnJvbSBhdGgxMGtfd2FybiB0byBXQVJOX09OKCkuIEl0J3MgcHJv
-YmFibHkgc3RpbGwgYSBnb29kIGlkZWEgdG8gbWFrZQppdCBfT05DRSBnZW5lcmFsbHksIGFsdGhv
-dWdoIGlmIHlvdSBhY3R1YWxseSBnZXQgc2tidWZmIGl0J3MgYWxyZWFkeQp0b28gbGF0ZSBvciBp
-dCBzaG91bGQgYmUgc2NyZWFtaW5nIGxvdWRseSBiZWNhdXNlIHNvbWVvbmUgbXVzdCd2ZQpjaGFu
-Z2VkIHRoZSBjb2RlIGluIGFuIGluY29ycmVjdC9pbmNvbXBsZXRlIHdheS4KCgpNaWNoYcWCCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 28 February 2014 10:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> --- a/drivers/net/wireless/ath/ath10k/htc.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/htc.c
+>>> @@ -202,10 +202,8 @@ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
+>>>       struct ath10k_htc *htc = &ar->htc;
+>>>       struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+>>>
+>>> -     if (!skb) {
+>>> -             ath10k_warn("invalid sk_buff completion - NULL pointer. firmware crashed?\n");
+>>> +     if (WARN_ON(!skb))
+>>>               return 0;
+>>> -     }
+>>
+>> WARN_ON() is a bit dangerous here as it might cause excessive spamming.
+>> Why did you want to change this? I think either ath10k_warn() or
+>> WARN_ON_ONCE() would be safer, but not sure which one to use.
+>
+> After the scatter-gather patch no NULL skb should be ever passed to tx
+> completion handler as those are ignored by hif/pci.
+
+Sure. But that's just theory, in practise all sorts bugs can always
+happen :)
+
+> Perhaps the hunk should be moved from this patch to the scatter-gather
+> one.
+
+Nah, I don't think that's necessary.
+
+> Perhaps WARN_ON() is a bit over the top here, but since this is now
+> more of a logic issue rather than runtime issue I decided to change it
+> from ath10k_warn to WARN_ON(). It's probably still a good idea to make
+> it _ONCE generally, although if you actually get skbuff it's already
+> too late or it should be screaming loudly because someone must've
+> changed the code in an incorrect/incomplete way.
+
+So I change it to WARN_ON_ONCE(), ok?
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
