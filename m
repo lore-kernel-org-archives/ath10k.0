@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22a.google.com ([2a00:1450:4013:c01::22a])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJIEG-0001hM-1u
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:51:32 +0000
-Received: by mail-ea0-f170.google.com with SMTP id g15so2454993eak.1
- for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:51:10 -0800 (PST)
+ id 1WJJJh-0003Bb-Nb
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:01:14 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3 5/8] ath10k: batch htt tx/rx completions
+References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
+ <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
+ <1393485587-16879-6-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 28 Feb 2014 11:00:43 +0200
+In-Reply-To: <1393485587-16879-6-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 27 Feb 2014 08:19:44 +0100")
+Message-ID: <877g8fd32c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
-References: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 28 Feb 2014 08:51:10 +0100
-Message-ID: <CA+BoTQnCjkgr3V4bzXW8GHJDmGRHqg6x8An__vFW5bxdub=uyw@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: support msdu chaining.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,119 +21,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjggRmVicnVhcnkgMjAxNCAwMjoyMCwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3Jv
-dGU6Cj4gRnJvbTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4KPiBDb25z
-b2xpZGF0ZSB0aGUgbGlzdCBvZiBtc2R1IHNrYnMgaW50byB0aGUgbXNkdS1oZWFkIHNrYiwgZGVs
-ZXRlIHRoZQo+IHJlc3Qgb2YgdGhlIHNrYnMsIHBhc3MgdGhlIG1zZHUtaGVhZCBza2Igb24gdXAg
-dGhlIHN0YWNrIGFzIG5vcm1hbC4KPgo+IFRlc3RlZCB3aXRoIGhpZ2gtc3BlZWQgVENQIGFuZCBV
-RFAgdHJhZmZpYyBvbiBtb2RpZmllZCBmaXJtd2FyZSB0aGF0Cj4gc3VwcG9ydHMgcmF3LXJ4LgoK
-QXMgZm9yIGFuIHVtb2RpZmllZCBmaXJtd2FyZSBJIGV4cGVjdCBhdGgxMGsgd2lsbCBqdXN0IHJl
-LWFzc2VtYmxlCmNvcnJ1cHRlZCBmcmFtZXMganVzdCB0byBoYXZlIHRoZW0gZHJvcHBlZCBieSBt
-YWM4MDIxMS4gSXQgbWlnaHQgYmUKd29ydGggY2hlY2tpbmc6CgogaWYgKGNoYWluaW5nICYmIGZj
-c19lcnJvcikKICAgIGRyb3AoKTsKCi4udG8gYXZvaWQgcHJvY2Vzc2luZyBqdW5rIGFuZCBmbHVz
-aGluZyBkLWNhY2hlICh0aGlzIG1hdHRlcnMgZm9yIGxlc3MKcG93ZXJmdWwgaG9zdCBzeXN0ZW1z
-KS4KCgo+Cj4gU2lnbmVkLW9mZi1ieTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+Cj4gLS0tCj4KPiB2MjogIEFkZCBub3RlIGFib3V0IHNrYl90cnlfY29hbGVzY2UsIHRob3Vn
-aCBJIGFtIG5vdCBzdXJlIGl0IHdpbGwKPiAgICAgIHdvcmsgb3Igbm90Lgo+ICAgICAgT25seSBn
-cm93IHNrYiBvbmNlLCB3aGljaCBzaG91bGQgc2F2ZSBvbiBzb21lIG1lbW9yeSAocmUpYWxsb2Nh
-dGlvbgo+ICAgICAgYW5kIGNvcHlpbmcgd2hlbiB3ZSBoYXZlIG1vcmUgdGhhbiBvbmUgY2hhaW5l
-ZCBza2IuCj4KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYyB8IDYw
-ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA1NiBp
-bnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0
-L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHR0X3J4LmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2h0dF9yeC5jCj4gaW5kZXggOWYzZGVmNy4uYTUwNzBhOSAxMDA2NDQKPiAtLS0gYS9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h0dF9yeC5jCj4gKysrIGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9odHRfcnguYwo+IEBAIC00MDEsNiArNDAxLDcgQEAgc3Rh
-dGljIGludCBhdGgxMGtfaHR0X3J4X2Ftc2R1X3BvcChzdHJ1Y3QgYXRoMTBrX2h0dCAqaHR0LAo+
-ICAgICAgICAgICAgICAgICBtc2R1X2xlbiA9IE1TKF9fbGUzMl90b19jcHUocnhfZGVzYy0+bXNk
-dV9zdGFydC5pbmZvMCksCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUlhfTVNEVV9T
-VEFSVF9JTkZPMF9NU0RVX0xFTkdUSCk7Cj4gICAgICAgICAgICAgICAgIG1zZHVfY2hhaW5lZCA9
-IHJ4X2Rlc2MtPmZyYWdfaW5mby5yaW5nMl9tb3JlX2NvdW50Owo+ICsgICAgICAgICAgICAgICBt
-c2R1X2NoYWluaW5nID0gbXNkdV9jaGFpbmVkOwo+Cj4gICAgICAgICAgICAgICAgIGlmIChtc2R1
-X2xlbl9pbnZhbGlkKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIG1zZHVfbGVuID0gMDsKPiBA
-QCAtNDI4LDcgKzQyOSw2IEBAIHN0YXRpYyBpbnQgYXRoMTBrX2h0dF9yeF9hbXNkdV9wb3Aoc3Ry
-dWN0IGF0aDEwa19odHQgKmh0dCwKPgo+ICAgICAgICAgICAgICAgICAgICAgICAgIG1zZHUtPm5l
-eHQgPSBuZXh0Owo+ICAgICAgICAgICAgICAgICAgICAgICAgIG1zZHUgPSBuZXh0Owo+IC0gICAg
-ICAgICAgICAgICAgICAgICAgIG1zZHVfY2hhaW5pbmcgPSAxOwo+ICAgICAgICAgICAgICAgICB9
-Cj4KPiAgICAgICAgICAgICAgICAgbGFzdF9tc2R1ID0gX19sZTMyX3RvX2NwdShyeF9kZXNjLT5t
-c2R1X2VuZC5pbmZvMCkgJgo+IEBAIC0xMDA4LDE0ICsxMDA4LDY2IEBAIGNvbnRpbnVlX29uOgo+
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7Cj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgfQo+Cj4gLSAgICAgICAgICAgICAgICAgICAgICAgLyogRklYTUU6IHdlIGRv
-IG5vdCBzdXBwb3J0IGNoYWluaW5nIHlldC4KPiAtICAgICAgICAgICAgICAgICAgICAgICAgKiB0
-aGlzIG5lZWRzIGludmVzdGlnYXRpb24gKi8KPiAgICAgICAgICAgICAgICAgICAgICAgICBpZiAo
-bXNkdV9jaGFpbmluZykgewo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBr
-X3dhcm4oImh0dCByeCBtc2R1X2NoYWluaW5nIGlzIHRydWVcbiIpOwo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgc3RydWN0IHNrX2J1ZmYgKm5leHQgPSBtc2R1X2hlYWQtPm5leHQ7
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqdG9fZnJl
-ZSA9IG5leHQ7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGF0aWMgaW50IGRv
-X29uY2UgPSAxOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHNwYWNlOwo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHRvdGFsX2xlbiA9IDA7Cj4gKwo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLyogVE9ETzogIE1pZ2h0IGNvdWxkIG9w
-dGltaXplIHRoaXMgYnkgdXNpbmcKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAq
-IHNrYl90cnlfY29hbGVzY2Ugb3Igc2ltaWxhciBtZXRob2QgdG9dCj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgKiBkZWNyZWFzZSBjb3B5aW5nLgo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICovCgpJdCdkIGJlIGdyZWF0IGlmIHdlIGNvdWxkIHVzZSBrZXJuZWwt
-cHJvdmlkZWQgZnVuY3Rpb24gdG8gbWVyZ2Ugc2ticwppbnN0ZWFkIG9mIHJvbGxpbmcgb3V0IG91
-ciBvd24gOy0pCgoKPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtc2R1X2hl
-YWQtPm5leHQgPSBOVUxMOwo+ICsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlm
-ICh1bmxpa2VseShkb19vbmNlKSkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBhdGgxMGtfd2FybigiaHR0IHJ4IG1zZHVfY2hhaW5pbmcgZGV0ZWN0ZWQgJWRcbiIs
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG1z
-ZHVfY2hhaW5pbmcpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBk
-b19vbmNlID0gMDsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KCkkgZG9uJ3Qg
-cmVhbGx5IGxpa2UgdGhpcyBkb19vbmNlIHRoaW5nLiBJIHdvdWxkbid0IGV2ZW4gYm90aGVyIHdp
-dGggYQp3YXJuaW5nLCBzaW5jZSwgd2VsbCwgY2hhaW5pbmcgcGFyc2luZyBpcyBpbXBsZW1lbnRl
-ZC4gVGhpcyBzaG91bGQgYmUKYSBzaW1wbGUgZGVidWcgcHJpbnQgaWYgYW55dGhpbmcuCgoKPiAr
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBBbGxvY2F0ZSB0b3RhbCBsZW5n
-dGggYWxsIGF0IG9uY2UuICovCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3aGls
-ZSAobmV4dCkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0b3Rh
-bF9sZW4gKz0gbmV4dC0+bGVuOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBuZXh0ID0gbmV4dC0+bmV4dDsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IH0KPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzcGFjZSA9IHRvdGFsX2xl
-biAtIHNrYl90YWlscm9vbShtc2R1X2hlYWQpOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgaWYgKChzcGFjZSA+IDApICYmCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKHBza2JfZXhwYW5kX2hlYWQobXNkdV9oZWFkLCAwLCBzcGFjZSwgR0ZQX0FUT01JQykg
-PCAwKSkgewo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBUT0RP
-OiAgYnVtcCBzb21lIHJ4LW9vbSBlcnJvciBzdGF0ICovCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGdvdG8gb3V0c2lkZV9jb250aW51ZTsKPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIH0KPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAvKiBXYWxrIGxpc3QgYWdhaW4sIGNvcHlpbmcgY29udGVudHMgaW50bwo+ICsgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICogbXNkdV9oZWFkCj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgKi8KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG5leHQgPSB0
-b19mcmVlOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2hpbGUgKG5leHQpIHsK
-PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2tiX2NvcHlfZnJvbV9s
-aW5lYXJfZGF0YShuZXh0LCBza2JfcHV0KG1zZHVfaGVhZCwgbmV4dC0+bGVuKSwKPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBuZXh0LT5sZW4pOwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBu
-ZXh0ID0gbmV4dC0+bmV4dDsKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KPiAr
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAvKiBJZiBoZXJlLCB3ZSBoYXZlIGNv
-bnNvbGlkYXRlZCBza2IuICBGcmVlIHRoZQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICogZnJhZ21lbnRzIGFuZCBwYXNzIHRoZSBtYWluIHNrYiBvbiB1cCB0aGUKPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAqIHN0YWNrLgo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICovCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtf
-aHR0X3J4X2ZyZWVfbXNkdV9jaGFpbih0b19mcmVlKTsKPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGdvdG8gaGF2ZV9nb29kX21zZHU7Cj4gKwo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIG91dHNpZGVfY29udGludWU6Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAv
-KiBwdXQgaXQgYmFjayB0b2dldGhlciBzbyB3ZSBjYW4gZnJlZSB0aGUKPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAqIHdob2xlIGxpc3QgYXQgb25jZS4KPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-bXNkdV9oZWFkLT5uZXh0ID0gdG9fZnJlZTsKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIGF0aDEwa19odHRfcnhfZnJlZV9tc2R1X2NoYWluKG1zZHVfaGVhZCk7Cj4gICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsKPiAgICAgICAgICAgICAgICAgICAgICAg
-ICB9Cj4KPiArICAgICAgICAgICAgICAgaGF2ZV9nb29kX21zZHU6Cj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgaW5mby5za2IgICAgID0gbXNkdV9oZWFkOwo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgIGluZm8uZmNzX2VyciA9IGF0aDEwa19odHRfcnhfaGFzX2Zjc19lcnIobXNkdV9oZWFkKTsK
-PiAgICAgICAgICAgICAgICAgICAgICAgICBpbmZvLm1pY19lcnIgPSBhdGgxMGtfaHR0X3J4X2hh
-c19taWNfZXJyKG1zZHVfaGVhZCk7CgpJZiBhbnl0aGluZywgcGxlYXNlLCBtYWtlIGl0IGludG8g
-YSBzZXBhcmF0ZSBmdW5jdGlvbi4gVGhlIHJ4IGhhbmRsZXIKaXMgYWxyZWFkeSBodWdlIGFuZCBp
-dCBuZWVkcyBzaHJpbmtpbmcgZG93biwgbm90IGV4cGFuZGluZyBpdCBtb3JlLgoKCk1pY2hhxYIK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> HTT Rx endpoint processes both frame rx
+> indications and frame tx completion indications.
+>
+> Those completions typically come in batches and
+> may be mixed so it makes sense to defer processing
+> hoping to get a bunch of them and take advantage
+> of hot caches.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+[...]
+
+> +void ath10k_htt_txrx_compl_task(unsigned long ptr)
+> +{
+> +	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
+> +	struct htt_resp *resp;
+> +	struct sk_buff *skb;
+
+I think this can be a static function. Is it ok if I change this patch
+with the diff below?
+
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1360,6 +1360,5 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
+ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
+-void ath10k_htt_txrx_compl_task(unsigned long ptr);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index e362358240e8..3a02e654d871 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -43,7 +43,7 @@
+ 
+ 
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
+-
++static void ath10k_htt_txrx_compl_task(unsigned long ptr);
+ 
+ static int ath10k_htt_rx_ring_size(struct ath10k_htt *htt)
+ {
+@@ -1347,7 +1347,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	dev_kfree_skb_any(skb);
+ }
+ 
+-void ath10k_htt_txrx_compl_task(unsigned long ptr)
++static void ath10k_htt_txrx_compl_task(unsigned long ptr)
+ {
+ 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
+ 	struct htt_resp *resp;
+
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
