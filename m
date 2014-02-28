@@ -1,12 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJC8i-0002Cn-Lv
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 01:21:25 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2] ath10k:  support msdu chaining.
-Date: Thu, 27 Feb 2014 17:20:52 -0800
-Message-Id: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
+ id 1WJGfY-0008Aw-KS
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 06:11:37 +0000
+Received: by mail-ve0-f171.google.com with SMTP id cz12so283796veb.16
+ for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 22:10:52 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <8738j4ftep.fsf_-_@kamboji.qca.qualcomm.com>
+References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
+ <871tzq210z.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-VmomkfvaTm+=Du8FqCC=b=UG2d=8ixUK2tUsFj4_dsRL4Pg@mail.gmail.com>
+ <CAHqTa-3O0_5OcTKNi0KLa--63ZYO4o7qK=VsN7Bsyi0nX+rF7g@mail.gmail.com>
+ <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
+ <8738j4ftep.fsf_-_@kamboji.qca.qualcomm.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Thu, 27 Feb 2014 22:10:31 -0800
+Message-ID: <CAHqTa-0L5oJKSuJ9XEsprKJciMsEa5aFfLpaBLZ4Jsxw59XAmQ@mail.gmail.com>
+Subject: Re: Missing memory barriers
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,126 +25,102 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Ben Greear <greearb@candelatech.com>
+On Thu, Feb 27, 2014 at 7:48 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Avery Pennarun <apenwarr@gmail.com> writes:
+>> - there are definitely some missing memory barriers in here; in a few
+>> cases you can clearly see a write getting done before the read that
+>> came before it.  Looking at the definitions for iowrite32 and
+>> ioread32, and for rmb() and wmb(), we can see that the use of rmb()
+>> and wmb() do not work properly (at least on ARM) when you care about
+>> the ordering between reads and writes.  However, I don't think this
+>> actually causes the problem.
+>
+> Can you tell more about this, please? Did you find out where we are
+> actually doing it wrong?
 
-Consolidate the list of msdu skbs into the msdu-head skb, delete the
-rest of the skbs, pass the msdu-head skb on up the stack as normal.
+Sure.  It's been a while since I wrote the above and it was with an
+older version of the ath10k driver, but basically what happens is as
+follows.
 
-Tested with high-speed TCP and UDP traffic on modified firmware that
-supports raw-rx.
+First look in arch/arm/include/asm/system.h.  Note that in various
+situations, rmb() and wmb() may be defined identically or may do
+slightly different things.  On the architecture I'm using, I'm fairly
+sure they are defined identically.  Results may be slightly different
+if they are not.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
+Next look at arch/arm/include/asm/io.h at the definitions for
+iowrite32 and ioread32.  In pseudocode they are roughly like this:
 
-v2:  Add note about skb_try_coalesce, though I am not sure it will
-     work or not.
-     Only grow skb once, which should save on some memory (re)allocation
-     and copying when we have more than one chained skb.
+iowrite32:
+   wmb();
+   write();
+ioread32:
+   read();
+   rmb();
 
- drivers/net/wireless/ath/ath10k/htt_rx.c | 60 +++++++++++++++++++++++++++++---
- 1 file changed, 56 insertions(+), 4 deletions(-)
+So for example in ath10k_pci_device_reset (or ath10k_pci_cold_reset if
+you have that set of patches), there is a code sequence that looks
+something like this:
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 9f3def7..a5070a9 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -401,6 +401,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 		msdu_len = MS(__le32_to_cpu(rx_desc->msdu_start.info0),
- 			      RX_MSDU_START_INFO0_MSDU_LENGTH);
- 		msdu_chained = rx_desc->frag_info.ring2_more_count;
-+		msdu_chaining = msdu_chained;
- 
- 		if (msdu_len_invalid)
- 			msdu_len = 0;
-@@ -428,7 +429,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 
- 			msdu->next = next;
- 			msdu = next;
--			msdu_chaining = 1;
- 		}
- 
- 		last_msdu = __le32_to_cpu(rx_desc->msdu_end.info0) &
-@@ -1008,14 +1008,66 @@ continue_on:
- 				continue;
- 			}
- 
--			/* FIXME: we do not support chaining yet.
--			 * this needs investigation */
- 			if (msdu_chaining) {
--				ath10k_warn("htt rx msdu_chaining is true\n");
-+				struct sk_buff *next = msdu_head->next;
-+				struct sk_buff *to_free = next;
-+				static int do_once = 1;
-+				int space;
-+				int total_len = 0;
-+
-+				/* TODO:  Might could optimize this by using
-+				 * skb_try_coalesce or similar method to]
-+				 * decrease copying.
-+				 */
-+
-+				msdu_head->next = NULL;
-+
-+				if (unlikely(do_once)) {
-+					ath10k_warn("htt rx msdu_chaining detected %d\n",
-+						    msdu_chaining);
-+					do_once = 0;
-+				}
-+
-+				/* Allocate total length all at once. */
-+				while (next) {
-+					total_len += next->len;
-+					next = next->next;
-+				}
-+
-+				space = total_len - skb_tailroom(msdu_head);
-+				if ((space > 0) &&
-+				    (pskb_expand_head(msdu_head, 0, space, GFP_ATOMIC) < 0)) {
-+					/* TODO:  bump some rx-oom error stat */
-+					goto outside_continue;
-+				}
-+
-+				/* Walk list again, copying contents into
-+				 * msdu_head
-+				 */
-+				next = to_free;
-+				while (next) {
-+					skb_copy_from_linear_data(next, skb_put(msdu_head, next->len),
-+								  next->len);
-+					next = next->next;
-+				}
-+
-+				/* If here, we have consolidated skb.  Free the
-+				 * fragments and pass the main skb on up the
-+				 * stack.
-+				 */
-+				ath10k_htt_rx_free_msdu_chain(to_free);
-+				goto have_good_msdu;
-+
-+			outside_continue:
-+				/* put it back together so we can free the
-+				 * whole list at once.
-+				 */
-+				msdu_head->next = to_free;
- 				ath10k_htt_rx_free_msdu_chain(msdu_head);
- 				continue;
- 			}
- 
-+		have_good_msdu:
- 			info.skb     = msdu_head;
- 			info.fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
- 			info.mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
--- 
-1.7.11.7
+- write the reset register
+- loop:
+  - read the status
 
+I noticed that when the device crashes the PCIe bus due to voltage
+problems, writing the reset register is not what causes the PCIe host
+to notice an abort - it's reading the status afterward.  While
+investigating this, I hooked up a PCIe bus analyzer and found that it
+was reading the status *before* writing the reset.  That's because the
+above expands out to:
+
+   wmb()
+   write(reset)
+   read(status)
+   rmb()
+
+which the CPU or compiler is free to reorder as:
+
+  wmb()
+  read(status)
+  write(reset)
+  rmb()
+
+And in fact, it *wants* to do this reordering because there is a
+conditional that depends on the result of read(status), so with the
+reordering, the CPU pipeline can think about that conditional while
+executing write(reset) in parallel.  And this is indeed what happens,
+according to my PCIe bus trace.
+
+The way the ARM iowrite/ioread barriers are set up, it works as
+expected when you read before writing, but the first read after a
+write can be reordered.  If you want to be careful about this, I think
+you'd have to insert an extra barrier by hand.
+
+The bad news is that, while inserting the extra barrier did clean up
+my bus trace, it didn't fix the underlying problem.  When the chip
+dies due to this cold reset operation, the inability to read the
+status register is only a symptom, not the cause.  In the end it's
+harmless that we end up doing the first read before the write
+operation finishes.  What happens isn't what the code says, but I
+don't think that matters in this case.
+
+(I think my main line of investigation at the time was in the first
+read after the command was sent to take the chip *out* of reset.  I
+thought maybe reading while it was in reset was the underlying cause
+of the abort.  No such luck.)
+
+Hope this helps.
+
+Have fun,
+
+Avery
 
 _______________________________________________
 ath10k mailing list
