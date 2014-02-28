@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJJJh-0003Bb-Nb
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:01:14 +0000
+ id 1WJJP4-0003L3-6v
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:06:47 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 5/8] ath10k: batch htt tx/rx completions
+Subject: Re: [PATCH v3 4/8] ath10k: bypass htc for htt tx path
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
- <1393485587-16879-6-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 28 Feb 2014 11:00:43 +0200
-In-Reply-To: <1393485587-16879-6-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 27 Feb 2014 08:19:44 +0100")
-Message-ID: <877g8fd32c.fsf@kamboji.qca.qualcomm.com>
+ <1393485587-16879-5-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 28 Feb 2014 11:06:17 +0200
+In-Reply-To: <1393485587-16879-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 27 Feb 2014 08:19:43 +0100")
+Message-ID: <8738j3d2t2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,59 +30,61 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> HTT Rx endpoint processes both frame rx
-> indications and frame tx completion indications.
+> Going through full htc tx path for htt tx is a
+> waste of resources. By skipping it it's possible
+> to easily submit scatter-gather to the pci hif for
+> reduced host cpu load and improved performance.
 >
-> Those completions typically come in batches and
-> may be mixed so it makes sense to defer processing
-> hoping to get a bunch of them and take advantage
-> of hot caches.
+> The new approach uses dma pool to store the
+> following metadata for each tx request:
+>  * msdu fragment list
+>  * htc header
+>  * htt tx command
+>
+> The htt tx command contains a msdu prefetch.
+> Instead of copying it original mapped msdu address
+> is used to submit a second scatter-gather item to
+> hif to make a complete htt tx command.
+>
+> The htt tx command itself hands over dma mapped
+> pointers to msdus and completion of the command
+> itself doesn't mean the frame has been sent and
+> can be unmapped/freed. This is why htc tx
+> completion is skipped for htt tx as all tx related
+> resources are freed upon htt tx completion
+> indication event (which also implicitly means htt
+> tx command itself was completed).
+>
+> Since now each htt tx request effectively consists
+> of 2 copy engine items CE_HTT_H2T_MSG_SRC_NENTRIES
+> is updated to allow maximum of
+> TARGET_10X_NUM_MSDU_DESC msdus being queued. This
+> keeps the tx path resource management simple.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+> v2:
+>  * improve commit log
+>  * improve comment in code
+>  * fix sparse/checkpatch/buildbot warnings
 
 [...]
 
-> +void ath10k_htt_txrx_compl_task(unsigned long ptr)
-> +{
-> +	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
-> +	struct htt_resp *resp;
-> +	struct sk_buff *skb;
+> --- a/drivers/net/wireless/ath/ath10k/htc.c
+> +++ b/drivers/net/wireless/ath/ath10k/htc.c
+> @@ -202,10 +202,8 @@ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
+>  	struct ath10k_htc *htc = &ar->htc;
+>  	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+>  
+> -	if (!skb) {
+> -		ath10k_warn("invalid sk_buff completion - NULL pointer. firmware crashed?\n");
+> +	if (WARN_ON(!skb))
+>  		return 0;
+> -	}
 
-I think this can be a static function. Is it ok if I change this patch
-with the diff below?
-
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1360,6 +1360,5 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
- void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
- int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
--void ath10k_htt_txrx_compl_task(unsigned long ptr);
- 
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e362358240e8..3a02e654d871 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -43,7 +43,7 @@
- 
- 
- static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
--
-+static void ath10k_htt_txrx_compl_task(unsigned long ptr);
- 
- static int ath10k_htt_rx_ring_size(struct ath10k_htt *htt)
- {
-@@ -1347,7 +1347,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	dev_kfree_skb_any(skb);
- }
- 
--void ath10k_htt_txrx_compl_task(unsigned long ptr)
-+static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- {
- 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
- 	struct htt_resp *resp;
-
+WARN_ON() is a bit dangerous here as it might cause excessive spamming.
+Why did you want to change this? I think either ath10k_warn() or
+WARN_ON_ONCE() would be safer, but not sure which one to use.
 
 -- 
 Kalle Valo
