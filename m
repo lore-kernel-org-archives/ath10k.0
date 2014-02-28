@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJI2H-0001Rc-A8
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:39:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k:  support msdu chaining.
-References: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 28 Feb 2014 09:38:41 +0200
-In-Reply-To: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Thu, 27 Feb 2014 17:20:52
- -0800")
-Message-ID: <87fvn3d6v2.fsf@kamboji.qca.qualcomm.com>
+ id 1WJI4j-0001Ty-Cx
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 07:41:41 +0000
+Received: by mail-ee0-f46.google.com with SMTP id d49so1977774eek.19
+ for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 23:41:19 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <530FE3EA.4040602@candelatech.com>
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+ <530FE3EA.4040602@candelatech.com>
+Date: Fri, 28 Feb 2014 08:41:19 +0100
+Message-ID: <CA+BoTQm7fE5w7XYao8NmYrwj7qR-EasjQCAMGC0MS==y29aaHw@mail.gmail.com>
+Subject: Re: Need to get msdu-chaining working.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +22,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
-
-> From: Ben Greear <greearb@candelatech.com>
->
-> Consolidate the list of msdu skbs into the msdu-head skb, delete the
-> rest of the skbs, pass the msdu-head skb on up the stack as normal.
->
-> Tested with high-speed TCP and UDP traffic on modified firmware that
-> supports raw-rx.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->
-> v2:  Add note about skb_try_coalesce, though I am not sure it will
->      work or not.
->      Only grow skb once, which should save on some memory (re)allocation
->      and copying when we have more than one chained skb.
-
-I didn't look at the patch itself yet, but I see checkpatch warnings:
-
-drivers/net/wireless/ath/ath10k/htt_rx.c:1022: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/htt_rx.c:1032: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/htt_rx.c:1044: WARNING: labels should not be indented
-drivers/net/wireless/ath/ath10k/htt_rx.c:1053: WARNING: labels should not be indented
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggRmVicnVhcnkgMjAxNCAwMjoxOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IE9uIDAyLzI2LzIwMTQgMTA6NTEgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
+dGU6Cj4KPj4+RnJvbSB3aGF0IEkgdW5kZXJzdGFuZCBjaGFpbmVkIG1zZHUgaXMgYSBtc2R1IHRo
+YXQgaGFzbid0IGZpdCBpbnRvIHRoZQo+PiByeCBidWZmZXIgYW5kIGlzIHNwbGl0IGFjcm9zcyB0
+aGUgcG9wcGVkIGFtc2R1IGxpc3QuIEkgc3VzcGVjdCBvbmx5Cj4+IHRoZSBmaXJzdCBtc2R1IGlu
+IGNoYWluIGhhcyB0aGUgaHR0X3J4X2Rlc2MgYW5kIGFsbCBvdGhlciBoYXZlIG5vdAo+PiAodGhp
+cyBpcyB3aGF0IHRoZSBjdXJyZW50IGNvZGUgZG9lcywgYnV0IHlvdSdsbCBuZWVkIHRvIHZlcmlm
+eSB0aGF0KS4KPj4KPj4gSSB3b3VsZCB0cnkgdG8gY29uY2F0ZW5hdGUgYWxsIG1zZHVzIGludG8g
+b25lIChsb3RzIG9mIG1lbWNweSA6KCApIG9yCj4+IGluY3JlYXNlIHRoZSBIVFRfUlhfQlVGX1NJ
+WkUgc28gdGhhdCBBLU1TRFUgZnJhbWVzIGNhbiBmaXQgaW50byBhCj4+IHNpbmdsZSBidWZmZXIg
+KGhvcGVmdWxseSBGVy9IVyBpcyBjYXBhYmxlIG9mIGRvaW5nIHRoYXQpLgo+Cj4gSSBnb3QgdGhp
+cyB3b3JraW5nLCBiYXNpY2FsbHkgdXNpbmcgbWVtY3B5IGFwcHJvYWNoLgo+Cj4gVGhyb3VnaHB1
+dCBpcyBjb21wYXJhYmxlIHdoYXQgSSB3YXMgc2VlaW5nIG9uIHN0b2NrIGZpcm13YXJlLAo+IGJ1
+dCBJIGRvIG5vdGljZSBhbiBpc3N1ZToKCkRvaW5nIG1lbWNweSgpIGlzIHByZXR0eSBiYWQsIHRo
+b3VnaC4gSXQnbGwgaHVydCB5b3UsIHNvb25lciBvciBsYXRlciwKb3IgaHVydCBvdGhlciB3aXRo
+IGxlc3MgcG93ZXJmdWwgaG9zdCBzeXN0ZW1zLgoKVGhlIHByb2JsZW0gaXMgY2hhaW5lZCBtc2R1
+cyBzdWdnZXN0IEEtTVNEVSByeC4gVGhpcyBtZWFucyB5b3UKcmUtYXNzZW1ibGUgdGhlIGFnZ3Jl
+Z2F0ZSwganVzdCB0byBwYXNzIGl0IHRvIG1hYzgwMjExIHdoaWNoIHNwbGl0cwp0aGUgZnJhbWUg
+aW50byA4MDIuMyBmcmFtZXMgKGFnYWluLCBtZW1jcHkpLiBUaGlzIGNhbiBlYXNpbHkgZmx1c2gg
+eW91CmQtY2FjaGUuCgoKPiBUaGUgcmVwb3J0ZWQgcnggc3BlZWQgaXMgYWxtb3N0IGFsd2F5cyA2
+TWJwcyB3aGVuIEkgZHJpdmUgYXQgaGlnaCBzcGVlZHMuCj4KPiAoQXQgbG93IHNwZWVkcyBJIHNl
+ZSByeCByYXRlIHJlcG9ydGVkIGF0IDEuM0dicHMgbW9zdCBvZiB0aGUgdGltZS4pCj4KPiBJIGFt
+IHByZXR0eSBzdXJlIHRoaXMgaXMgcmVsYXRlZCB0byB0aGUgbXNkdS1jaGFpbmluZyBzb21laG93
+Lgo+Cj4gVGhlcmUgYXJlIGxvdHMgb2YgRklYTUUncyBpbiB0aGUgYXRoMTBrX2h0dF9yeF9hbXNk
+dV9wb3AgbWV0aG9kLgo+Cj4gQW55IGlkZWEgd2hlcmUgdGhlIHJ4IHJhdGUgcHJvYmxlbSBtaWdo
+dCBsaWU/CgpJbnRlcmVzdGluZy4gUnggcmF0ZXMgYXJlIGNvbXB1dGVkIGZyb20gdGhlIGh0dF9y
+eF9pbmRpY2F0aW9uCnN0cnVjdHVyZSwgbm90IHBvcHBlZCBmcmFtZXMgZnJvbSByeCByaW5nLiBJ
+J20gZ3Vlc3NpbmcgRlcvSFcgZG9lc24ndApmaWxsIGluIHNvbWUgc3R1ZmYgZm9yIHJhdyByeCBh
+dCBhbGwuIFlvdSBwcm9iYWJseSBjYW4ndCBkbyBtdWNoIGFib3V0Cml0IGlmIGl0J3MgSFcuIFlv
+dSBjYW4gcHJvYmFibHkgaGFjayB5b3VyIHdheSBhcm91bmQgaWYgaXQncyBqdXN0IEZXCm5vdCBj
+b3B5aW5nIHNvbWUgcmVnaXN0ZXIgdmFsdWVzLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
