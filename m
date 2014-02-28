@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-ea0-x22c.google.com ([2a00:1450:4013:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJJP4-0003L3-6v
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:06:47 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 4/8] ath10k: bypass htc for htt tx path
+ id 1WJJPm-0003N6-BF
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 09:07:30 +0000
+Received: by mail-ea0-f172.google.com with SMTP id l9so2444752eaj.17
+ for <ath10k@lists.infradead.org>; Fri, 28 Feb 2014 01:07:08 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <877g8fd32c.fsf@kamboji.qca.qualcomm.com>
 References: <1392629563-31046-1-git-send-email-michal.kazior@tieto.com>
  <1393485587-16879-1-git-send-email-michal.kazior@tieto.com>
- <1393485587-16879-5-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 28 Feb 2014 11:06:17 +0200
-In-Reply-To: <1393485587-16879-5-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 27 Feb 2014 08:19:43 +0100")
-Message-ID: <8738j3d2t2.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <1393485587-16879-6-git-send-email-michal.kazior@tieto.com>
+ <877g8fd32c.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 28 Feb 2014 10:07:08 +0100
+Message-ID: <CA+BoTQk9z+Qp3+2QV0iBCaUkNzX=qkY_JKnzvinwyAKd6V6GdQ@mail.gmail.com>
+Subject: Re: [PATCH v3 5/8] ath10k: batch htt tx/rx completions
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,75 +23,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> Going through full htc tx path for htt tx is a
-> waste of resources. By skipping it it's possible
-> to easily submit scatter-gather to the pci hif for
-> reduced host cpu load and improved performance.
->
-> The new approach uses dma pool to store the
-> following metadata for each tx request:
->  * msdu fragment list
->  * htc header
->  * htt tx command
->
-> The htt tx command contains a msdu prefetch.
-> Instead of copying it original mapped msdu address
-> is used to submit a second scatter-gather item to
-> hif to make a complete htt tx command.
->
-> The htt tx command itself hands over dma mapped
-> pointers to msdus and completion of the command
-> itself doesn't mean the frame has been sent and
-> can be unmapped/freed. This is why htc tx
-> completion is skipped for htt tx as all tx related
-> resources are freed upon htt tx completion
-> indication event (which also implicitly means htt
-> tx command itself was completed).
->
-> Since now each htt tx request effectively consists
-> of 2 copy engine items CE_HTT_H2T_MSG_SRC_NENTRIES
-> is updated to allow maximum of
-> TARGET_10X_NUM_MSDU_DESC msdus being queued. This
-> keeps the tx path resource management simple.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> v2:
->  * improve commit log
->  * improve comment in code
->  * fix sparse/checkpatch/buildbot warnings
-
-[...]
-
-> --- a/drivers/net/wireless/ath/ath10k/htc.c
-> +++ b/drivers/net/wireless/ath/ath10k/htc.c
-> @@ -202,10 +202,8 @@ static int ath10k_htc_tx_completion_handler(struct ath10k *ar,
->  	struct ath10k_htc *htc = &ar->htc;
->  	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
->  
-> -	if (!skb) {
-> -		ath10k_warn("invalid sk_buff completion - NULL pointer. firmware crashed?\n");
-> +	if (WARN_ON(!skb))
->  		return 0;
-> -	}
-
-WARN_ON() is a bit dangerous here as it might cause excessive spamming.
-Why did you want to change this? I think either ath10k_warn() or
-WARN_ON_ONCE() would be safer, but not sure which one to use.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggRmVicnVhcnkgMjAxNCAxMDowMCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPgo+PiBIVFQgUnggZW5kcG9pbnQgcHJvY2Vzc2VzIGJvdGggZnJhbWUgcngKPj4gaW5k
+aWNhdGlvbnMgYW5kIGZyYW1lIHR4IGNvbXBsZXRpb24gaW5kaWNhdGlvbnMuCj4+Cj4+IFRob3Nl
+IGNvbXBsZXRpb25zIHR5cGljYWxseSBjb21lIGluIGJhdGNoZXMgYW5kCj4+IG1heSBiZSBtaXhl
+ZCBzbyBpdCBtYWtlcyBzZW5zZSB0byBkZWZlciBwcm9jZXNzaW5nCj4+IGhvcGluZyB0byBnZXQg
+YSBidW5jaCBvZiB0aGVtIGFuZCB0YWtlIGFkdmFudGFnZQo+PiBvZiBob3QgY2FjaGVzLgo+Pgo+
+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4K
+Pgo+IFsuLi5dCj4KPj4gK3ZvaWQgYXRoMTBrX2h0dF90eHJ4X2NvbXBsX3Rhc2sodW5zaWduZWQg
+bG9uZyBwdHIpCj4+ICt7Cj4+ICsgICAgIHN0cnVjdCBhdGgxMGtfaHR0ICpodHQgPSAoc3RydWN0
+IGF0aDEwa19odHQgKilwdHI7Cj4+ICsgICAgIHN0cnVjdCBodHRfcmVzcCAqcmVzcDsKPj4gKyAg
+ICAgc3RydWN0IHNrX2J1ZmYgKnNrYjsKPgo+IEkgdGhpbmsgdGhpcyBjYW4gYmUgYSBzdGF0aWMg
+ZnVuY3Rpb24uIElzIGl0IG9rIGlmIEkgY2hhbmdlIHRoaXMgcGF0Y2gKPiB3aXRoIHRoZSBkaWZm
+IGJlbG93PwoKSSBkb24ndCByZWFsbHkgbWluZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
