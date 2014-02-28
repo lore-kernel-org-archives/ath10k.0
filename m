@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJ9gH-0007YU-5s
- for ath10k@lists.infradead.org; Thu, 27 Feb 2014 22:43:59 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s1RMhUum013762
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Thu, 27 Feb 2014 14:43:31 -0800
-Message-ID: <530FBF92.1050301@candelatech.com>
-Date: Thu, 27 Feb 2014 14:43:30 -0800
+ id 1WJC6b-00028t-Ae
+ for ath10k@lists.infradead.org; Fri, 28 Feb 2014 01:19:14 +0000
+Message-ID: <530FE3EA.4040602@candelatech.com>
+Date: Thu, 27 Feb 2014 17:18:34 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Anyone see 'tx not flushed' problems?
+Subject: Re: Need to get msdu-chaining working.
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+In-Reply-To: <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-I'm seeing lots of such issues, but this is when using lots of station vifs on
-my modified firmware.  From some extra debug prints I put in, it appears
-pending_tx just never goes to zero (I've seen values in hundreds.)
+On 02/26/2014 10:51 PM, Michal Kazior wrote:
 
-If anyone else sees these errors in their logs I'm very interested to
-know.
+>>From what I understand chained msdu is a msdu that hasn't fit into the
+> rx buffer and is split across the popped amsdu list. I suspect only
+> the first msdu in chain has the htt_rx_desc and all other have not
+> (this is what the current code does, but you'll need to verify that).
+> 
+> I would try to concatenate all msdus into one (lots of memcpy :( ) or
+> increase the HTT_RX_BUF_SIZE so that A-MSDU frames can fit into a
+> single buffer (hopefully FW/HW is capable of doing that).
+
+I got this working, basically using memcpy approach.
+
+Throughput is comparable what I was seeing on stock firmware,
+but I do notice an issue:
+
+The reported rx speed is almost always 6Mbps when I drive at high speeds.
+
+(At low speeds I see rx rate reported at 1.3Gbps most of the time.)
+
+I am pretty sure this is related to the msdu-chaining somehow.
+
+There are lots of FIXME's in the ath10k_htt_rx_amsdu_pop method.
+
+Any idea where the rx rate problem might lie?
 
 Thanks,
 Ben
