@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x22b.google.com ([2a00:1450:4013:c01::22b])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKOrq-0007kP-6e
- for ath10k@lists.infradead.org; Mon, 03 Mar 2014 09:08:59 +0000
-Received: by mail-ea0-f171.google.com with SMTP id n15so2780809ead.16
- for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 01:08:34 -0800 (PST)
-From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-Subject: [PATCH V2] ath10k: add recalc RTS/CTS protection method
-Date: Mon,  3 Mar 2014 10:07:41 +0100
-Message-Id: <1393837661-15235-1-git-send-email-marek.kwaczynski@tieto.com>
+ id 1WKUrX-00030J-HS
+ for ath10k@lists.infradead.org; Mon, 03 Mar 2014 15:33:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k:  add vdev-id, return code to error codes
+References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
+ <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
+ <52FE3766.1080509@candelatech.com>
+Date: Mon, 3 Mar 2014 17:32:35 +0200
+In-Reply-To: <52FE3766.1080509@candelatech.com> (Ben Greear's message of "Fri, 
+ 14 Feb 2014 07:33:58 -0800")
+Message-ID: <87zjl747sc.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,159 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Add recalculation of RTS/CTS protection when one or more legacy
-stations are connected to ath10k. In this case enable RTS/CTS
-protection and set sw retry profile are needed in the FW.
-Without this change legacy station is starved and has very low
-throughput.
+Ben Greear <greearb@candelatech.com> writes:
 
-Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h |    2 ++
- drivers/net/wireless/ath/ath10k/mac.c  |   57 +++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/wmi.h  |   13 ++++++++
- 3 files changed, 60 insertions(+), 12 deletions(-)
+> On 02/13/2014 10:06 PM, Kalle Valo wrote:
+>
+>> @@ -1542,20 +1542,20 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+>>
+>>   	ret = ath10k_setup_peer_smps(ar, arvif, sta->addr, &sta->ht_cap);
+>>   	if (ret) {
+>> -		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
+>> +		ath10k_warn("failed to setup peer SMPS for vdev: %d\n", ret);
+>>   		return ret;
+>>   	}
+>
+> Looks like that could use the vdev id in it...I must have missed it on
+> my first attempt.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 0e71979..ad209a6 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -260,6 +260,8 @@ struct ath10k_vif {
- 	u8 fixed_rate;
- 	u8 fixed_nss;
- 	u8 force_sgi;
-+	bool use_cts_prot;
-+	int num_legacy_stations;
- };
- 
- struct ath10k_vif_iter {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9230ad5..2a5c8c2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -723,6 +723,26 @@ static int ath10k_monitor_destroy(struct ath10k *ar)
- 	return ret;
- }
- 
-+static int ath10k_recalc_rtscts_prot(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	u32 vdev_param, rts_cts = 0;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	vdev_param = ar->wmi.vdev_param->enable_rtscts;
-+
-+	if (arvif->use_cts_prot || arvif->num_legacy_stations > 0)
-+		rts_cts |= SM(WMI_RTSCTS_ENABLED, WMI_RTSCTS_SET);
-+
-+	if (arvif->num_legacy_stations > 0)
-+		rts_cts |= SM(WMI_RTSCTS_ACROSS_SW_RETRIES,
-+			      WMI_RTSCTS_PROFILE);
-+
-+	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
-+					 rts_cts);
-+}
-+
- static int ath10k_start_cac(struct ath10k *ar)
- {
- 	int ret;
-@@ -1534,6 +1554,16 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
- 		return ret;
- 	}
- 
-+	if (!sta->wme) {
-+		arvif->num_legacy_stations++;
-+		ret  = ath10k_recalc_rtscts_prot(arvif);
-+		if (ret) {
-+			ath10k_warn("failed to recalculate rts/cts prot for vdev %d: %d\n",
-+				    arvif->vdev_id, ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = ath10k_install_peer_wep_keys(arvif, sta->addr);
- 	if (ret) {
- 		ath10k_warn("could not install peer wep keys (%d)\n", ret);
-@@ -1557,6 +1587,16 @@ static int ath10k_station_disassoc(struct ath10k *ar, struct ath10k_vif *arvif,
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	if (!sta->wme) {
-+		arvif->num_legacy_stations--;
-+		ret = ath10k_recalc_rtscts_prot(arvif);
-+		if (ret) {
-+			ath10k_warn("failed to recalculate rts/cts prot for vdev %d: %d\n",
-+				    arvif->vdev_id, ret);
-+			return ret;
-+		}
-+	}
-+
- 	ret = ath10k_clear_peer_keys(arvif, sta->addr);
- 	if (ret) {
- 		ath10k_warn("could not clear all peer wep keys (%d)\n", ret);
-@@ -2840,21 +2880,14 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 		ath10k_control_beaconing(arvif, info);
- 
- 	if (changed & BSS_CHANGED_ERP_CTS_PROT) {
--		u32 cts_prot;
--		if (info->use_cts_prot)
--			cts_prot = 1;
--		else
--			cts_prot = 0;
--
-+		arvif->use_cts_prot = info->use_cts_prot;
- 		ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d cts_prot %d\n",
--			   arvif->vdev_id, cts_prot);
-+			   arvif->vdev_id, info->use_cts_prot);
- 
--		vdev_param = ar->wmi.vdev_param->enable_rtscts;
--		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
--						cts_prot);
-+		ret = ath10k_recalc_rtscts_prot(arvif);
- 		if (ret)
--			ath10k_warn("Failed to set CTS prot for VDEV: %d\n",
--				    arvif->vdev_id);
-+			ath10k_warn("failed to recalculate rts/cts prot for vdev %d: %d\n",
-+				    arvif->vdev_id, ret);
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_SLOT) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4fcc96a..e78a7ad 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2210,6 +2210,19 @@ enum ath10k_protmode {
- 	ATH10K_PROT_RTSCTS   = 2,    /* RTS-CTS */
- };
- 
-+enum wmi_rtscts_profile {
-+	WMI_RTSCTS_FOR_NO_RATESERIES = 0,
-+	WMI_RTSCTS_FOR_SECOND_RATESERIES,
-+	WMI_RTSCTS_ACROSS_SW_RETRIES
-+};
-+
-+#define WMI_RTSCTS_ENABLED		1
-+#define WMI_RTSCTS_SET_MASK		0x0f
-+#define WMI_RTSCTS_SET_LSB		0
-+
-+#define WMI_RTSCTS_PROFILE_MASK		0xf0
-+#define WMI_RTSCTS_PROFILE_LSB		4
-+
- enum wmi_beacon_gen_mode {
- 	WMI_BEACON_STAGGERED_MODE = 0,
- 	WMI_BEACON_BURST_MODE = 1
+I fix this before I apply the patch.
+
+>> @@ -3252,7 +3252,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+>>   			   arvif->vdev_id, sta->addr);
+>>   		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
+>>   		if (ret)
+>> -			ath10k_warn("Failed to delete peer: %pM for VDEV: %d ret %i\n",
+>> +			ath10k_warn("Failed to delete peer %pM for vdev %d: %i\n",
+>>   				    sta->addr, arvif->vdev_id, ret);
+>
+>
+> While you are harmonizing the messages...maybe change all instances of
+> "failed to "Failed ?
+>
+> I wasn't sure what was preferred so I left that alone when doing my patch.
+
+Actually, I'll send a separate patch for this. Easier that way.
+
+> The rest of the changes look fine to me.
+
+Thanks for the review.
+
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
