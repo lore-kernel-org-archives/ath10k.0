@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WJXCO-0001cq-Pi
- for ath10k@lists.infradead.org; Fri, 28 Feb 2014 23:50:37 +0000
-Message-ID: <531120B6.7010107@candelatech.com>
-Date: Fri, 28 Feb 2014 15:50:14 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WKNQ8-0005Ry-Ap
+ for ath10k@lists.infradead.org; Mon, 03 Mar 2014 07:36:17 +0000
+Received: by mail-wg0-f41.google.com with SMTP id l18so2687872wgh.0
+ for <ath10k@lists.infradead.org>; Sun, 02 Mar 2014 23:35:49 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: RX rate mis-reported?
-References: <53111667.7010909@candelatech.com>
- <CAEFj9842Pxs_cGU1b9Q49FFA9bkD4-ks0bX_Lz04n4ff3nuLVA@mail.gmail.com>
-In-Reply-To: <CAEFj9842Pxs_cGU1b9Q49FFA9bkD4-ks0bX_Lz04n4ff3nuLVA@mail.gmail.com>
+In-Reply-To: <5310CB75.9030706@candelatech.com>
+References: <1393571908-23734-1-git-send-email-marek.kwaczynski@tieto.com>
+ <5310CB75.9030706@candelatech.com>
+Date: Mon, 3 Mar 2014 08:35:49 +0100
+Message-ID: <CACKGw+EQ4xS6DTbM_FjMitvyQs9=uL5OFzPkc6HNuzu8tSdeUQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add recalc RTS/CTS protection method
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +25,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 02/28/2014 03:45 PM, Yeoh Chun-Yeow wrote:
-> Hi, Ben
-> 
-> I did have a submitted patch to correct the last_rx_rate due to the
-> missing of VHT flag:
-> http://www.spinics.net/lists/linux-wireless/msg119429.html
-> 
-> Maybe you can take a look on this.
+On 28 February 2014 18:46, Ben Greear <greearb@candelatech.com> wrote:
+> On 02/27/2014 11:18 PM, bartosz.markowski@tieto.com wrote:
+>> From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
+>>
+>> Add recalculation of RTS/CTS protection when one or more legacy
+>> stations are connected to ath10k. In this case enable RTS/CTS
+>> protection and set sw retry profile are needed in the FW.
+>> Without this change legacy station is starved and has very low
+>> throughput.
+>
+>> -                     ath10k_warn("Failed to set CTS prot for VDEV: %d\n",
+>> -                                 arvif->vdev_id);
+>> +                     ath10k_warn("failed to recalc RTS/CTS prot %d\n",
+>> +                                 ret);
+>
+> Did you remove the vdev ID from the logging message on purpose?
+>
+> I find having vdev ID in logging messages helps, especially when
+> trying to compare firmware logs with the driver logs...
 
-I did see this, and I'm running it on my station machine, but
-I have not updated the AP machine yet...I'll do that and see if
-it fixes the problem.
-
-Thanks,
-Ben
+Not on purpose. Thanks for pointing it out.
+Kalle, please ignore this patch, there'll be v2.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Bartosz
 
 _______________________________________________
 ath10k mailing list
