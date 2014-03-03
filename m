@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKUrX-00030J-HS
- for ath10k@lists.infradead.org; Mon, 03 Mar 2014 15:33:04 +0000
+ id 1WKUyX-0003EE-He
+ for ath10k@lists.infradead.org; Mon, 03 Mar 2014 15:40:18 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH 1/2] ath10k:  add vdev-id, return code to error codes
 References: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
- <87bnya6xey.fsf@kamboji.qca.qualcomm.com>
- <52FE3766.1080509@candelatech.com>
-Date: Mon, 3 Mar 2014 17:32:35 +0200
-In-Reply-To: <52FE3766.1080509@candelatech.com> (Ben Greear's message of "Fri, 
- 14 Feb 2014 07:33:58 -0800")
-Message-ID: <87zjl747sc.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 3 Mar 2014 17:39:48 +0200
+In-Reply-To: <1392318562-32440-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Thu, 13 Feb 2014 11:09:21
+ -0800")
+Message-ID: <87r46j47gb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,46 +24,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: greearb@candelatech.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> writes:
+greearb@candelatech.com writes:
 
-> On 02/13/2014 10:06 PM, Kalle Valo wrote:
+> From: Ben Greear <greearb@candelatech.com>
 >
->> @@ -1542,20 +1542,20 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
->>
->>   	ret = ath10k_setup_peer_smps(ar, arvif, sta->addr, &sta->ht_cap);
->>   	if (ret) {
->> -		ath10k_warn("failed to setup peer SMPS: %d\n", ret);
->> +		ath10k_warn("failed to setup peer SMPS for vdev: %d\n", ret);
->>   		return ret;
->>   	}
+> When using multiple vdevs (stations, aps, etc), it is
+> nice to be able to associate log messages with specific
+> interfaces.  So, add vdev-id to most logging messages.
+> Add return code as well, where it was missing.
 >
-> Looks like that could use the vdev id in it...I must have missed it on
-> my first attempt.
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-I fix this before I apply the patch.
-
->> @@ -3252,7 +3252,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
->>   			   arvif->vdev_id, sta->addr);
->>   		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
->>   		if (ret)
->> -			ath10k_warn("Failed to delete peer: %pM for VDEV: %d ret %i\n",
->> +			ath10k_warn("Failed to delete peer %pM for vdev %d: %i\n",
->>   				    sta->addr, arvif->vdev_id, ret);
->
->
-> While you are harmonizing the messages...maybe change all instances of
-> "failed to "Failed ?
->
-> I wasn't sure what was preferred so I left that alone when doing my patch.
-
-Actually, I'll send a separate patch for this. Easier that way.
-
-> The rest of the changes look fine to me.
-
-Thanks for the review.
+Thanks, applied with the changes we discussed.
 
 -- 
 Kalle Valo
