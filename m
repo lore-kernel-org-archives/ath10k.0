@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKVk0-0004pN-VF
- for ath10k@lists.infradead.org; Mon, 03 Mar 2014 16:29:21 +0000
-Received: by mail-ee0-f41.google.com with SMTP id t10so1750791eei.28
- for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 08:28:56 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20140303154327.1290.67278.stgit@potku.adurom.net>
-References: <20140303154327.1290.67278.stgit@potku.adurom.net>
-Date: Mon, 3 Mar 2014 17:23:24 +0100
-Message-ID: <CA+BoTQmQndikH5uPDwBpstp9KmcD3tmHSGP5NpEreYEOtRm0sw@mail.gmail.com>
+ id 1WKVvF-0005Cj-Jt
+ for ath10k@lists.infradead.org; Mon, 03 Mar 2014 16:40:59 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: unify warning messages in mac.c
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <20140303154327.1290.67278.stgit@potku.adurom.net>
+ <CA+BoTQmQndikH5uPDwBpstp9KmcD3tmHSGP5NpEreYEOtRm0sw@mail.gmail.com>
+Date: Mon, 3 Mar 2014 18:40:22 +0200
+In-Reply-To: <CA+BoTQmQndikH5uPDwBpstp9KmcD3tmHSGP5NpEreYEOtRm0sw@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 3 Mar 2014 17:23:24 +0100")
+Message-ID: <8761nv44nd.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,30 +20,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMyBNYXJjaCAyMDE0IDE2OjQzLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29t
-PiB3cm90ZToKPiBDdXJyZW50bHkgdGhlcmUgYXJlIGRpZmZlcmVudCBzdHlsZXMgdXNlZCBmb3Ig
-d2FybmluZyBtZXNzYWdlcywgdW5pZnkgdGhlbSB0bwo+IGxvb2sgc2ltaWxhci4KPgo+IFNpZ25l
-ZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cj4gLS0tCgpbLi4u
-XQoKVGhpcyBzdGlsbCBzZWVtcyBpbmNvbnNpc3RlbnQuIEkgYWxzbyBkb24ndCBsaWtlIHRoZSBj
-YXBpdGFsIGxldHRlcnMKKGV2ZW4gZm9yIGFiYnJldmlhdGlvbnMpIGluIHRoZXNlIGtpbmQgb2Yg
-bWVzc2FnZXMsIGJ1dCB0aGF0J3MganVzdCBteQpPQ0QuLgoKSSB0aGluayB3ZSBzaG91bGQgYWdy
-ZWUgb24gb25lIG9mIHRoZSB0d28gYXBwcm9hY2hlczoKCmEpIHN0YXJ0IHdpdGggYSB2ZXJiOgoK
-ImZhaWxlZCB0byBhZGQgcGVlciAlcE0gb24gdmRldiAlaTogJWQiCiJmYWlsZWQgdG8gaW5pdGlh
-bGl6ZSBkZnMgcGF0dGVybiBkZXRlY3RvciIKInRpbWVkIG91dCB3aGlsZSB3YWl0aW5nIGZvciBz
-Y2FuIGNvbXBsZXRpb24iCgpiKSBzdGFydCB3aXRoIGEgbm91bjoKCiJwZWVyICVwTSBvbiB2ZGV2
-ICVpIGNvdWxkIG5vdCBiZSBhZGRlZDogJWQiCiJkZnMgcGF0dGVybiBkZXRlY3RvciBjb3VsZCBu
-b3QgaW5pdGlhbGl6ZSIKInNjYW4gdGltZWQgb3V0IgoKVGhlc2UgYXJlIHN0aWxsIG1peGVkLgoK
-V2UgY291bGQgcHJvYmFibHkgYWxzbyBsaW1pdCB0aGUgc2V0IG9mIHZlcmJzLCBlLmcuIHJlcGxh
-Y2UgImNvdWxkCm5vdCIgd2l0aCAiZmFpbGVkIHRvIiBhcyBpdCdzIHByYWN0aWNhbGx5IHRoZSBz
-YW1lIHRoaW5nIChhc3N1bWluZyB3ZQpwaWNrIChhKSkuCgpCdXQgdGhlbiBhZ2FpbiwgZmVlbCBm
-cmVlIHRvIGlnbm9yZSBteSBPQ0QgOi0pCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 3 March 2014 16:43, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Currently there are different styles used for warning messages, unify them to
+>> look similar.
+>>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> ---
+>
+> [...]
+>
+> This still seems inconsistent.
+
+Sure. What I did here was that I just capitalised them messages and made
+sure that return code is printed in format ": %d\n".
+
+> I also don't like the capital letters (even for abbreviations) in
+> these kind of messages, but that's just my OCD..
+
+I'm fine with starting a lower case letter. For me most important is
+that the messages follow the same style.
+
+> I think we should agree on one of the two approaches:
+>
+> a) start with a verb:
+>
+> "failed to add peer %pM on vdev %i: %d"
+> "failed to initialize dfs pattern detector"
+> "timed out while waiting for scan completion"
+>
+> b) start with a noun:
+>
+> "peer %pM on vdev %i could not be added: %d"
+> "dfs pattern detector could not initialize"
+> "scan timed out"
+>
+> These are still mixed.
+>
+> We could probably also limit the set of verbs, e.g. replace "could
+> not" with "failed to" as it's practically the same thing (assuming we
+> pick (a)).
+
+That's true. I would vote for option (a).
+
+> But then again, feel free to ignore my OCD :-)
+
+Hehe, I had to even google that :)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
