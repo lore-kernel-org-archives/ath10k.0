@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
+Received: from mail-bk0-x22c.google.com ([2a00:1450:4008:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKjni-0001Os-0c
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 07:30:06 +0000
-Received: by mail-ve0-f169.google.com with SMTP id pa12so5177173veb.14
- for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 23:29:44 -0800 (PST)
+ id 1WKjuL-0001YK-8G
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 07:36:58 +0000
+Received: by mail-bk0-f44.google.com with SMTP id mz13so91909bkb.3
+ for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 23:36:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
-References: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
- <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
-Date: Tue, 4 Mar 2014 15:29:42 +0800
-Message-ID: <CAEFj986yq_K3iu6K8mzvfPjYmuULEZEPuRDOua2iLFTRimkuFA@mail.gmail.com>
-Subject: Re: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+In-Reply-To: <5314FE92.1090405@candelatech.com>
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+ <530F62FD.9060701@candelatech.com>
+ <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
+ <5314FE92.1090405@candelatech.com>
+Date: Tue, 4 Mar 2014 08:36:35 +0100
+Message-ID: <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
+Subject: Re: Need to get msdu-chaining working.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +24,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-> If you refer to what driver reports (via nl80211 to userspace) then
-> this is expected. Current FW/HW isn't capable of reporting tx rate for
-> each sent frame so ath10k always reports 6mbps.
->
-> Or do you refer to what you see on a sniffer?
->
-
-Nope. This is the rate captured by wireshark and also confirm with the
-following:
-
-[ 3807.810000] ath10k: rx skb 86c77480 len 116  rate_idx 0 vht_nss 0
-freq 5180 band 1 flag 0x200000 fcs-err 0
-[ 3808.810000] ath10k: rx skb 8735fc00 len 116  rate_idx 0 vht_nss 0
-freq 5180 band 1 flag 0x200000 fcs-err 0
-[ 3809.810000] ath10k: rx skb 8738b9c0 len 116  rate_idx 0 vht_nss 0
-freq 5180 band 1 flag 0x200000 fcs-err 0
-
-It seems that it always stuck at 6Mbps legacy rate. Any idea why?
-
------
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBNYXJjaCAyMDE0IDIzOjEzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gT24gMDIvMjcvMjAxNCAxMTozNiBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
+Pgo+Pj4+IHJ4IGJ1ZmZlciBhbmQgaXMgc3BsaXQgYWNyb3NzIHRoZSBwb3BwZWQgYW1zZHUgbGlz
+dC4gSSBzdXNwZWN0IG9ubHkKPj4+PiB0aGUgZmlyc3QgbXNkdSBpbiBjaGFpbiBoYXMgdGhlIGh0
+dF9yeF9kZXNjIGFuZCBhbGwgb3RoZXIgaGF2ZSBub3QKPj4+PiAodGhpcyBpcyB3aGF0IHRoZSBj
+dXJyZW50IGNvZGUgZG9lcywgYnV0IHlvdSdsbCBuZWVkIHRvIHZlcmlmeSB0aGF0KS4KPj4+Pgo+
+Pj4+IEkgd291bGQgdHJ5IHRvIGNvbmNhdGVuYXRlIGFsbCBtc2R1cyBpbnRvIG9uZSAobG90cyBv
+ZiBtZW1jcHkgOiggKSBvcgo+Pj4+IGluY3JlYXNlIHRoZSBIVFRfUlhfQlVGX1NJWkUgc28gdGhh
+dCBBLU1TRFUgZnJhbWVzIGNhbiBmaXQgaW50byBhCj4+Pj4gc2luZ2xlIGJ1ZmZlciAoaG9wZWZ1
+bGx5IEZXL0hXIGlzIGNhcGFibGUgb2YgZG9pbmcgdGhhdCkuCj4KPiBKdXN0IEZZSTogIEF0IGxl
+YXN0IG9uIG15IGZpcm13YXJlIGluIHJhdyByeCBtb2RlLCBpbmNyZWFzaW5nIHRoZQo+IEhUVF9S
+WF9CVUZfU0laRSAodG8gNCAqIDE5MjApIGFuZCBhdCBsZWFzdCBzb21lIGNoYWluaW5nIHJlbWFp
+bnMuCj4gUGVyZm9ybWFuY2UgZGlkIG5vdCBjaGFuZ2Ugbm90aWNlYWJseS4gIEknbSB1c2luZyBm
+YWlybHkgcG93ZXJmdWwKPiBjb3JlIGk3IHByb2Nlc3NvciBzeXN0ZW1zLCBzbyBtYXliZSB0aGUg
+bWVtY3B5IGRvZXNuJ3QKPiBtYWtlIGVub3VnaCBkaWZmZXJlbmNlIHRvIG5vdGljZSBpbiBteSB0
+ZXN0cy4KPgo+IEkgZGlkIG5vdCBwdXQgYW55IGVmZm9ydCBpbnRvIGZpZ3VyaW5nIG91dCB3aHku
+CgpHZXR0aW5nIHJpZCBvZiBtZW1jcHkoKSB3YXMgYSBodWdlIHBlcmZvcm1hbmNlIHdpbiBmb3Ig
+QVAxMzUgYW5kIGl0cwpNSVBTIHByb2Nlc3Nvci4KCgo+IEknbSBjdXJyZW50bHkgZ2V0dGluZyBh
+Ym91dCA1NDBNYnBzIHVwbG9hZCBUQ1AgZ29vZHB1dCwKPiBhbmQgb25seSA0MjBNYnBzIGRvd25s
+b2FkIFRDUCBnb29kcHV0LiAgTm90IHN1cmUgd2h5Cj4gdGhlIGRpc2NyZXBhbmN5LCBidXQgcGVy
+aGFwcyB0aGUgcnggcmF3IHBlcmZvcm1hbmNlCj4gaXMgd29yc2UgZm9yIGEgdmFyaWV0eSBvZiBy
+ZWFzb25zLiAgTXkgZmlybXdhcmUgY2hhbmdlcwo+IHRvIHN1cHBvcnQgbXVsdGlwbGUgc3RhdGlv
+bnMgdG8gc2FtZSBBUCBtYXkgYWxzbyBiZSBzbG93aW5nCj4gdGhpbmdzIGRvd24sIHRob3VnaCB0
+aGVzZSBudW1iZXJzIGFyZSBmcm9tICBhIHNpbmdsZSBzdGF0aW9uCj4gdGVzdC4uLgoKSG1tLCBJ
+IGFzc3VtZSB5b3UgdGVzdCB0aGlzIHdpdGhvdXQgYW55IGJyaWRnaW5nLiBJdCdzIHByb2JhYmx5
+IGdvaW5nCnRvIGJlIGEgbGl0dGxlIHNsb3dlciBkdWUgdG8gdHggdGltaW5ncyBiZWluZyBkaXJl
+Y3RseSB2aXNpYmxlIHRvIHRoZQpUQ1Agc3Vic3lzdGVtIGJlY2F1c2UgYm90aCBUQ1AgYW5kIGF0
+aDEwayBhcmUgbG9jYWxseSBvbiB0aGUgc2FtZQptYWNoaW5lLiBZb3UgY291bGQgdHJ5IG1vdmlu
+ZyB0aGUgYWN0dWFsIFRDUCBlbmRwb2ludHMgYmVoaW5kIGJyaWRnZXMuCgpPciB5b3UncmUgYWN0
+dWFsbHkgc2VlaW5nIHRoZSBtZW1jcHkoKSBhdCB3b3JrLi4uCgpEaWQgeW91IHRyeSB0byB0ZXN0
+IHBlcmZvcm1hbmNlIG9uIHZhbmlsbGEgZHJpdmVyL2Zpcm13YXJlPwoKCk1pY2hhxYIKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
