@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x230.google.com ([2a00:1450:4013:c01::230])
+Received: from mail-ea0-x231.google.com ([2a00:1450:4013:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKow2-0003Sg-6T
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 12:59:02 +0000
-Received: by mail-ea0-f176.google.com with SMTP id o10so331166eaj.21
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 04:58:40 -0800 (PST)
+ id 1WKoqO-0003Ar-NB
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 12:53:14 +0000
+Received: by mail-ea0-f177.google.com with SMTP id h10so333687eak.8
+ for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 04:52:50 -0800 (PST)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC 14/14] ath10k: improve way we play with attention flags
-Date: Tue,  4 Mar 2014 13:52:27 +0100
-Message-Id: <1393937548-7482-15-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [RFC 05/14] ath10k: introduce ieee80211_rx_status to htt_rx_info
+Date: Tue,  4 Mar 2014 13:52:18 +0100
+Message-Id: <1393937548-7482-6-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,154 +27,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Remove almost the same code, and do only once
-__le32_to_cpu() conversion.
+Will be used as a template, and final storage for
+rx_status.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   77 ++++++------------------------
- 1 file changed, 15 insertions(+), 62 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |    2 ++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 654867f..e80f033 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -21,6 +21,7 @@
+ #include <linux/bug.h>
+ #include <linux/interrupt.h>
+ #include <linux/dmapool.h>
++#include <net/mac80211.h>
+ 
+ #include "htc.h"
+ #include "rx_desc.h"
+@@ -1174,6 +1175,7 @@ struct htt_peer_unmap_event {
+ 
+ struct htt_rx_info {
+ 	struct sk_buff *skb;
++	struct ieee80211_rx_status rx_status;
+ 	enum htt_rx_mpdu_status status;
+ 	enum htt_rx_mpdu_encrypt_type encrypt_type;
+ 	s8 signal;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index e300a74..a70e38e 100644
+index 3008a1d..2fca1fa 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -999,62 +999,6 @@ static void ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
- 	ath10k_process_rx(htt->ar, info);
- }
+@@ -756,7 +756,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
  
--static bool ath10k_htt_rx_has_decrypt_err(struct sk_buff *skb)
--{
--	struct htt_rx_desc *rxd;
--	u32 flags;
--
--	rxd = (void *)skb->data - sizeof(*rxd);
--	flags = __le32_to_cpu(rxd->attention.flags);
--
--	if (flags & RX_ATTENTION_FLAGS_DECRYPT_ERR)
--		return true;
--
--	return false;
--}
--
--static bool ath10k_htt_rx_has_fcs_err(struct sk_buff *skb)
--{
--	struct htt_rx_desc *rxd;
--	u32 flags;
--
--	rxd = (void *)skb->data - sizeof(*rxd);
--	flags = __le32_to_cpu(rxd->attention.flags);
--
--	if (flags & RX_ATTENTION_FLAGS_FCS_ERR)
--		return true;
--
--	return false;
--}
--
--static bool ath10k_htt_rx_has_mic_err(struct sk_buff *skb)
--{
--	struct htt_rx_desc *rxd;
--	u32 flags;
--
--	rxd = (void *)skb->data - sizeof(*rxd);
--	flags = __le32_to_cpu(rxd->attention.flags);
--
--	if (flags & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
--		return true;
--
--	return false;
--}
--
--static bool ath10k_htt_rx_is_mgmt(struct sk_buff *skb)
--{
--	struct htt_rx_desc *rxd;
--	u32 flags;
--
--	rxd = (void *)skb->data - sizeof(*rxd);
--	flags = __le32_to_cpu(rxd->attention.flags);
--
--	if (flags & RX_ATTENTION_FLAGS_MGMT_TYPE)
--		return true;
--
--	return false;
--}
--
- static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb)
- {
- 	struct htt_rx_desc *rxd;
-@@ -1090,7 +1034,8 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
- 					struct sk_buff *head,
- 					bool msdu_chaining,
- 					enum htt_rx_mpdu_status status,
--					bool channel_set)
-+					bool channel_set,
-+					u32 attention)
- {
- 	if (head->len == 0) {
- 		ath10k_dbg(ATH10K_DBG_HTT,
-@@ -1098,7 +1043,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
- 		return false;
- 	}
+ 	status = IEEE80211_SKB_RXCB(info->skb);
+-	memset(status, 0, sizeof(*status));
++	memcpy(status, &info->rx_status, sizeof(*status));
  
--	if (ath10k_htt_rx_has_decrypt_err(head)) {
-+	if (attention & RX_ATTENTION_FLAGS_DECRYPT_ERR) {
- 		ath10k_dbg(ATH10K_DBG_HTT,
- 			   "htt rx dropping due to decrypt-err\n");
- 		return false;
-@@ -1111,7 +1056,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
- 
- 	/* Skip mgmt frames while we handle this in WMI */
- 	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
--	    ath10k_htt_rx_is_mgmt(head)) {
-+	    attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
- 		ath10k_dbg(ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
- 		return false;
- 	}
-@@ -1147,9 +1092,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- {
- 	struct htt_rx_info info;
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
-+	struct htt_rx_desc *rxd;
- 	enum htt_rx_mpdu_status status;
- 	struct ieee80211_hdr *hdr;
- 	int num_mpdu_ranges;
-+	u32 attention;
- 	int fw_desc_len;
- 	u8 *fw_desc;
- 	bool channel_set, fcs_err, mic_err;
-@@ -1213,23 +1160,29 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 				continue;
- 			}
- 
-+			rxd = container_of((void *) msdu_head->data,
-+					   struct htt_rx_desc,
-+					   msdu_payload);
-+			attention = __le32_to_cpu(rxd->attention.flags);
-+
- 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
- 							 msdu_chaining > 0,
- 							 status,
--							 channel_set)) {
-+							 channel_set,
-+							 attention)) {
- 				ath10k_htt_rx_free_msdu_chain(msdu_head);
- 				continue;
- 			}
- 
- 			info.skb     = msdu_head;
- 
--			fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
-+			fcs_err = !!(attention & RX_ATTENTION_FLAGS_FCS_ERR);
- 			if (fcs_err)
- 				info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
- 			else
- 				info.rx_status.flag &= ~RX_FLAG_FAILED_FCS_CRC;
- 
--			mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
-+			mic_err = !!(attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
- 			if (mic_err)
- 				info.rx_status.flag |= RX_FLAG_MMIC_ERROR;
- 			else
+ 	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
+ 		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
 -- 
 1.7.9.5
 
