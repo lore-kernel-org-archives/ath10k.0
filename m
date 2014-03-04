@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-f47.google.com ([209.85.214.47])
+Received: from mail-bk0-x231.google.com ([2a00:1450:4008:c01::231])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKjZW-00016t-Tl
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 07:15:29 +0000
-Received: by mail-bk0-f47.google.com with SMTP id w10so86488bkz.34
- for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 23:14:59 -0800 (PST)
+ id 1WKjhd-0001Hg-AI
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 07:23:49 +0000
+Received: by mail-bk0-f49.google.com with SMTP id my13so86246bkb.22
+ for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 23:23:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <5314FD54.7070202@candelatech.com>
-References: <1393550452-1302-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQnCjkgr3V4bzXW8GHJDmGRHqg6x8An__vFW5bxdub=uyw@mail.gmail.com>
- <5314FD54.7070202@candelatech.com>
-Date: Tue, 4 Mar 2014 08:14:59 +0100
-Message-ID: <CA+BoTQk1QJfOPORL54kUR+gxBO97BZhHnm_+KV4KgpAruKW0JQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: support msdu chaining.
+In-Reply-To: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
+References: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
+Date: Tue, 4 Mar 2014 08:23:27 +0100
+Message-ID: <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
+Subject: Re: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,24 +24,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMyBNYXJjaCAyMDE0IDIzOjA4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDIvMjcvMjAxNCAxMTo1MSBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
-Pj4gT24gMjggRmVicnVhcnkgMjAxNCAwMjoyMCwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4g
-d3JvdGU6Cj4+PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+
-Cj4+PiBDb25zb2xpZGF0ZSB0aGUgbGlzdCBvZiBtc2R1IHNrYnMgaW50byB0aGUgbXNkdS1oZWFk
-IHNrYiwgZGVsZXRlIHRoZQo+Pj4gcmVzdCBvZiB0aGUgc2ticywgcGFzcyB0aGUgbXNkdS1oZWFk
-IHNrYiBvbiB1cCB0aGUgc3RhY2sgYXMgbm9ybWFsLgo+Pj4KPj4+IFRlc3RlZCB3aXRoIGhpZ2gt
-c3BlZWQgVENQIGFuZCBVRFAgdHJhZmZpYyBvbiBtb2RpZmllZCBmaXJtd2FyZSB0aGF0Cj4+PiBz
-dXBwb3J0cyByYXctcnguCj4+Cj4+IEFzIGZvciBhbiB1bW9kaWZpZWQgZmlybXdhcmUgSSBleHBl
-Y3QgYXRoMTBrIHdpbGwganVzdCByZS1hc3NlbWJsZQo+PiBjb3JydXB0ZWQgZnJhbWVzIGp1c3Qg
-dG8gaGF2ZSB0aGVtIGRyb3BwZWQgYnkgbWFjODAyMTEuIEl0IG1pZ2h0IGJlCj4+IHdvcnRoIGNo
-ZWNraW5nOgo+Pgo+PiAgaWYgKGNoYWluaW5nICYmIGZjc19lcnJvcikKPj4gICAgIGRyb3AoKTsK
-Pgo+IEFzIGZhciBhcyBJIGNhbiB0ZWxsLCBwYWNrZXRzIHdpdGggYmFkIEZDUyBhcmUgZHJvcHBl
-ZCBlYXJsaWVyIGluIHRoYXQKPiByeCBtZXRob2Q/CgpBaCwgZ29vZCBwb2ludC4gV2UncmUgZHJv
-cHBpbmcgc29tZSBmcmFtZXMgYmFzZWQgb24gYHN0YXR1c2AgdmFsdWUgYWxyZWFkeS4KCgpNaWNo
-YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gNCBNYXJjaCAyMDE0IDA3OjMzLCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93QGdtYWls
+LmNvbT4gd3JvdGU6Cj4gSGksIGFsbAo+Cj4gSSBoYXZlIG9ic2VydmVkIHRoYXQgb25seSBtaW5p
+bXVtIGxlZ2FjeSByYXRlIDZNYnBzIHVzZWQgYnkgdHdvIG5vZGVzCj4gc2V0dGluZyB1cCBpbiBh
+ZGhvYyBtb2RlLgo+Cj4gQ3VycmVudGx5LCB0aGVyZSBpcyBubyBpbXBsZW1lbnRhdGlvbiBvbgo+
+IElFRUU4MDIxMV9SQ19TVVBQX1JBVEVTX0NIQU5HRUQuIFNvIEkganVzdCBkaXNhc3NvY2lhdGUs
+IGRlbGV0ZSwKPiBjcmVhdGUgYW5kIGFzc29jaWF0ZSBub2RlIGJhY2sgaW4gSFQgbW9kZSBhcyBw
+cmludGVkIGJlbG93LCBidXQgbm8KPiBsdWNrIHRoZSBUeFJhdGUgaXMgc3R1Y2sgYXQgNk1icHMK
+CklmIHlvdSByZWZlciB0byB3aGF0IGRyaXZlciByZXBvcnRzICh2aWEgbmw4MDIxMSB0byB1c2Vy
+c3BhY2UpIHRoZW4KdGhpcyBpcyBleHBlY3RlZC4gQ3VycmVudCBGVy9IVyBpc24ndCBjYXBhYmxl
+IG9mIHJlcG9ydGluZyB0eCByYXRlIGZvcgplYWNoIHNlbnQgZnJhbWUgc28gYXRoMTBrIGFsd2F5
+cyByZXBvcnRzIDZtYnBzLgoKT3IgZG8geW91IHJlZmVyIHRvIHdoYXQgeW91IHNlZSBvbiBhIHNu
+aWZmZXI/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
