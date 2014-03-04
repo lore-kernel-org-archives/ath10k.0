@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bk0-x229.google.com ([2a00:1450:4008:c01::229])
+Received: from mail-ve0-x232.google.com ([2607:f8b0:400c:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKlnk-0005H1-Ek
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 09:38:17 +0000
-Received: by mail-bk0-f41.google.com with SMTP id d7so128798bkh.14
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 01:37:53 -0800 (PST)
+ id 1WKm0x-0005d9-6V
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 09:51:55 +0000
+Received: by mail-ve0-f178.google.com with SMTP id jw12so2657072veb.37
+ for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 01:51:34 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAEFj984xXPrLQu+pjt6jSyuYT-hn3uM8fLj1UmhhJfF7K_=taA@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
 References: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
  <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
  <CAEFj986yq_K3iu6K8mzvfPjYmuULEZEPuRDOua2iLFTRimkuFA@mail.gmail.com>
  <CALhHN=p+dyQsnbc4+sDjqoHysnak4Uq3KYEkyCT-BDXvHPszCw@mail.gmail.com>
  <CAEFj984xXPrLQu+pjt6jSyuYT-hn3uM8fLj1UmhhJfF7K_=taA@mail.gmail.com>
-Date: Tue, 4 Mar 2014 10:31:14 +0100
-Message-ID: <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
+ <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
+Date: Tue, 4 Mar 2014 17:51:33 +0800
+Message-ID: <CAEFj9844cE+XcS4zTVD8hf4eVrk_v=8xisc7vUBzwsnzm-ARwg@mail.gmail.com>
 Subject: Re: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gNCBNYXJjaCAyMDE0IDEwOjE4LCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93QGdtYWls
-LmNvbT4gd3JvdGU6Cj4+IFlvdSBjYW4gdHJ5IHRvIHNldC9mb3JjZSB0eCByYXRlIHVzaW5nIGl3
-Ogo+Pgo+PiBFZy4gc2V0dXAgbGVnYWN5IDE4TWJwcwo+PiBpdyB3bGFuWCBzZXQgYml0cmF0ZXMg
-bGVnYWN5LTUgMTggaHQtbWNzLTUgdmh0LW1jcy01Cj4+Cj4+IFNldCBuc3M9MQo+PiBpdyB3bGFu
-WCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQtbWNzLTUgdmh0LW1jcy01IDE6MC05Cj4+Cj4+IEFu
-ZCBjaGVjayB1c2luZyBzbmlmZmVyIGlmIHRoYXQgd2lsbCB3b3JrIC0gSSBkaWRuJ3QgY2hlY2sg
-YWRob2MuCj4+Cj4KPiBZZXMsIHRoaXMgd29yay4gSSBjYW4gZXZlbiBmb3JjZSB0aGUgSFQgcmF0
-ZS4KPiBbIDU1OS40MTAwMDBdIGF0aDEwazogcnggc2tiIDg2ZmVlYzAwIGxlbiAxMTYgaHQgcmF0
-ZV9pZHggNyB2aHRfbnNzIDAKPiBmcmVxIDUxODAgYmFuZCAxIGZsYWcgMHgyMDAyMDAgZmNzLWVy
-ciAwCj4gWyAgNTYwLjQxMDAwMF0gYXRoMTBrOiByeCBza2IgODY4ODQ5MDAgbGVuIDExNiBodCBy
-YXRlX2lkeCA3IHZodF9uc3MgMAo+IGZyZXEgNTE4MCBiYW5kIDEgZmxhZyAweDIwMDIwMCBmY3Mt
-ZXJyIDAKPgo+IEhtbSwgaXQgc2VlbXMgdGhhdCByYXRlIGNvbnRyb2wgaXMgbm90IHdvcmtpbmcg
-Zm9yIGFkaG9jLiBXaGVyZSB0bwo+IGxvb2sgZm9yIGEgZml4PwoKSG1tLi4gaWYgSSBhc3N1bWUg
-YXRoMTBrX3N0YV9zdGF0ZSgpIGlzbid0IGNhbGxlZCBmb3IgQVVUSC0+QVNTT0MKKHdoaWNoIHBy
-b2JhYmx5IGlzbid0IHVucmVhc29uYWJsZSB0byBjb25zaWRlciBzaW5jZSBJQlNTIGRvZXNuJ3Qg
-aGF2ZQphbiBhc3NvY2lhdGlvbiBzZXF1ZW5jZSwgZG9lcyBpdD8pIHRoZW4gYXRoMTBrX3N0YXRp
-b25fYXNzb2MoKSBpc24ndApjYWxsZWQgYW5kIG5laXRoZXIgaXMgYXRoMTBrX3dtaV9wZWVyX2Fz
-c29jKCkgd2hpY2ggSSBzdXNwZWN0IHNldHVwcwpIVyByYXRlIGNvbnRyb2wuCgpDYW4geW91IGNo
-ZWNrIGlmIHRoZSBhdGgxMGtfd21pX3BlZXJfYXNzb2MoKSBpcyBjYWxsZWQgb3Igbm90IGFuZCB3
-aGF0CmFyZSB0aGUgc3RhdGlvbiBzdGF0ZSB0cmFuc2l0aW9ucyAoSSB0aGluayBtYWM4MDIxMSB0
-cmFjZXMgcHJvdmlkZSB0aGUKdHJhbnNpdGlvbiBkZWJ1Zyk/CgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+> Hmm.. if I assume ath10k_sta_state() isn't called for AUTH->ASSOC
+> (which probably isn't unreasonable to consider since IBSS doesn't have
+> an association sequence, does it?) then ath10k_station_assoc() isn't
+> called and neither is ath10k_wmi_peer_assoc() which I suspect setups
+> HW rate control.
+
+Nope, the mac80211 will move the STA state to AUTH and ASSOC when the
+STA is added but as legacy STA. So ath10k_station_assoc is called as
+shown below:
+
+[  445.080000] ath10k: mac vdev 0 peer create 04:f0:21:0c:a5:44 (new
+sta) num_peers 2
+[  445.080000] ath10k: wmi peer create vdev_id 0 peer_addr 04:f0:21:0c:a5:44
+[  445.080000] ath10k: mac sta 04:f0:21:0c:a5:44 associated
+[  445.080000] ath10k: mac peer 04:f0:21:0c:a5:44 phymode 11a
+--------> [first association with legacy]
+[  445.080000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
+[  445.160000] ath10k: mac sta rc update for 04:f0:21:0c:a5:44 changed
+00000004 bw 0 nss 1 smps 2
+[  445.160000] ath10k: mac sta rc update for 04:f0:21:0c:a5:44:
+changing supported rates not implemented [upgrade the rate]
+[  445.170000] ath10k: wmi peer delete vdev_id 0 peer_addr
+04:f0:21:0c:a5:44 -----------> [delete peer]
+[  445.170000] ath10k: wmi peer create vdev_id 0 peer_addr
+04:f0:21:0c:a5:44 -----------> [create peer]
+[  445.170000] ath10k: mac ht peer 04:f0:21:0c:a5:44 mcs cnt 24 nss 1
+[  445.170000] ath10k: mac peer 04:f0:21:0c:a5:44 phymode 11na-ht20
+[  445.170000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
+------------> [associate peer again with HT]
+[  445.170000] ath10k: wmi vdev 0 peer 0x04:f0:21:0c:a5:44 set param 1 value 1
+
+My further investigation shows that the rate control is working when
+you added and associated the STA at first.
+
+Later on, mac80211 found out that the adhoc node can support HT or VHT
+and try to call drv_sta_rc_update. But since the
+IEEE80211_RC_SUPP_RATES_CHANGED is not implemented, I try to add the
+code to disassoc -> delete -> create -> assoc the STA again. But the
+rate control is no longer working (but you can fix the HT rate as
+suggested by Janusz Dziedzic). So what went wrong?
+
+----
+Chun-Yeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
