@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x232.google.com ([2a00:1450:4013:c00::232])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKo0E-0001RE-C8
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 11:59:19 +0000
-Received: by mail-ee0-f50.google.com with SMTP id c13so2731102eek.23
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 03:58:52 -0800 (PST)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: do not overwrite max_antenna_gain
-Date: Tue,  4 Mar 2014 12:58:31 +0100
-Message-Id: <1393934311-26154-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1WKoKN-0002BN-BR
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 12:20:07 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: ath10k-firmware.git change
+Date: Tue, 4 Mar 2014 14:19:40 +0200
+Message-ID: <87vbvuxijn.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,43 +16,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Hi,
 
-Seems like there's an old bug where we overwrite the
-antenna_gain with zero value.
+I did some changes in ath10k-firmware.git:
 
-This patch removes the excessive assignment of max_antenna_gain,
-which should be provided by regulatory domain settings.
+* I changed 10.1.467.2-1 as the default firmware as that's the firmware
+  which is most tested. This is the version I'm also planning to submit
+  to linux-firmware.git.
 
-Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c |    1 -
- 1 file changed, 1 deletion(-)
+* I created main and 10.1 directories to hold images from respective
+  firmware branches.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 478e7f6..cb1f7b5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3393,7 +3393,6 @@ int ath10k_wmi_scan_chan_list(struct ath10k *ar,
- 		ci->max_power         = ch->max_power;
- 		ci->reg_power         = ch->max_reg_power;
- 		ci->antenna_max       = ch->max_antenna_gain;
--		ci->antenna_max       = 0;
- 
- 		/* mode & flags share storage */
- 		ci->mode              = ch->mode;
+* I removed FW API 1 images firmware.bin and otp.bin altogether, we
+  really do not want to support those anymore. Use FW API 2 files
+  (=firmware-2.bin) instead.
+
+https://github.com/kvalo/ath10k-firmware
+
 -- 
-1.7.10
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
