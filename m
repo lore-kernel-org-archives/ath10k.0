@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ve0-x22c.google.com ([2607:f8b0:400c:c01::22c])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKb7X-00070C-Ng
- for ath10k@lists.infradead.org; Mon, 03 Mar 2014 22:14:00 +0000
-Message-ID: <5314FE92.1090405@candelatech.com>
-Date: Mon, 03 Mar 2014 14:13:38 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WKiv3-0000N3-0A
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 06:33:37 +0000
+Received: by mail-ve0-f172.google.com with SMTP id jx11so5169079veb.3
+ for <ath10k@lists.infradead.org>; Mon, 03 Mar 2014 22:33:15 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Need to get msdu-chaining working.
-References: <530E7AF2.1080908@candelatech.com>
- <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
- <530F62FD.9060701@candelatech.com>
- <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
-In-Reply-To: <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
+Date: Tue, 4 Mar 2014 14:33:14 +0800
+Message-ID: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
+Subject: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +22,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 02/27/2014 11:36 PM, Michal Kazior wrote:
+Hi, all
 
->>> rx buffer and is split across the popped amsdu list. I suspect only
->>> the first msdu in chain has the htt_rx_desc and all other have not
->>> (this is what the current code does, but you'll need to verify that).
->>>
->>> I would try to concatenate all msdus into one (lots of memcpy :( ) or
->>> increase the HTT_RX_BUF_SIZE so that A-MSDU frames can fit into a
->>> single buffer (hopefully FW/HW is capable of doing that).
+I have observed that only minimum legacy rate 6Mbps used by two nodes
+setting up in adhoc mode.
 
-Just FYI:  At least on my firmware in raw rx mode, increasing the
-HTT_RX_BUF_SIZE (to 4 * 1920) and at least some chaining remains.
-Performance did not change noticeably.  I'm using fairly powerful
-core i7 processor systems, so maybe the memcpy doesn't
-make enough difference to notice in my tests.
+Currently, there is no implementation on
+IEEE80211_RC_SUPP_RATES_CHANGED. So I just disassociate, delete,
+create and associate node back in HT mode as printed below, but no
+luck the TxRate is stuck at 6Mbps
 
-I did not put any effort into figuring out why.
+[  339.550000] ath10k: mac vdev 0 peer create 04:f0:21:0c:a5:1c (new
+sta) num_peers 2
+[  339.550000] ath10k: wmi peer create vdev_id 0 peer_addr 04:f0:21:0c:a5:1c
+[  339.550000] ath10k: mac sta 04:f0:21:0c:a5:1c associated
+[  339.550000] ath10k: mac peer 04:f0:21:0c:a5:1c phymode 11a
+[  339.550000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:1c
+[  339.550000] ath10k: mac sta rc update for 04:f0:21:0c:a5:1c changed
+00000004 bw 0 nss 1 smps 2
+[  339.550000] ath10k: mac sta rc update for 04:f0:21:0c:a5:1c:
+changing supported rates not implemented
+[  339.550000] ath10k: wmi peer delete vdev_id 0 peer_addr 04:f0:21:0c:a5:1c
+[  339.550000] ath10k: wmi peer create vdev_id 0 peer_addr 04:f0:21:0c:a5:1c
+[  339.550000] ath10k: mac ht peer 04:f0:21:0c:a5:1c mcs cnt 24 nss 1
+[  339.550000] ath10k: mac peer 04:f0:21:0c:a5:1c phymode 11na-ht20
+[  339.550000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:1c
+[  339.550000] ath10k: wmi vdev 0 peer 0x04:f0:21:0c:a5:1c set param 1 value 1
+[  339.850000] ath10k: wmi event debug mesg len 84
 
-I'm currently getting about 540Mbps upload TCP goodput,
-and only 420Mbps download TCP goodput.  Not sure why
-the discrepancy, but perhaps the rx raw performance
-is worse for a variety of reasons.  My firmware changes
-to support multiple stations to same AP may also be slowing
-things down, though these numbers are from  a single station
-test...
+Try to re-associate by simply tweaking the peer_new_assoc bit also the same.
 
-Thanks,
-Ben
+Anyone has any ideas?
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+-----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
