@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ea0-x231.google.com ([2a00:1450:4013:c01::231])
+Received: from mail-ea0-x232.google.com ([2a00:1450:4013:c01::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKoqO-0003Az-N9
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 12:53:14 +0000
-Received: by mail-ea0-f177.google.com with SMTP id h10so329169eak.22
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 04:52:52 -0800 (PST)
+ id 1WKoqN-0003Al-G5
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 12:53:12 +0000
+Received: by mail-ea0-f178.google.com with SMTP id a15so330018eae.23
+ for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 04:52:49 -0800 (PST)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC 06/14] ath10k: kill signal field in htt_rx_info
-Date: Tue,  4 Mar 2014 13:52:19 +0100
-Message-Id: <1393937548-7482-7-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [RFC 04/14] ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
+Date: Tue,  4 Mar 2014 13:52:17 +0100
+Message-Id: <1393937548-7482-5-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,50 +27,37 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Setup signal field directly in ieee80211_rx_status.
-
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |    1 -
- drivers/net/wireless/ath/ath10k/htt_rx.c |    6 ++----
- 2 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index e80f033..9f5da2b 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1178,7 +1178,6 @@ struct htt_rx_info {
- 	struct ieee80211_rx_status rx_status;
- 	enum htt_rx_mpdu_status status;
- 	enum htt_rx_mpdu_encrypt_type encrypt_type;
--	s8 signal;
- 	struct {
- 		u8 info0;
- 		u32 info1;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 2fca1fa..fa6540b 100644
+index ad3918c..3008a1d 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -775,8 +775,6 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 	if (info->amsdu_more)
- 		status->flag |= RX_FLAG_AMSDU_MORE;
+@@ -655,9 +655,9 @@ static const u8 rx_legacy_rate_idx[] = {
+ 	5,	/* 0x0F  - 9Mbps   */
+ };
  
--	status->signal = info->signal;
--
- 	spin_lock_bh(&ar->data_lock);
- 	ch = ar->scan_channel;
- 	if (!ch)
-@@ -1164,8 +1162,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 	mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
+-static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
+-			     enum ieee80211_band band,
+-			     struct ieee80211_rx_status *status)
++static void ath10k_htt_rx_h_rates(struct ath10k *ar, struct htt_rx_info *info,
++				  enum ieee80211_band band,
++				  struct ieee80211_rx_status *status)
+ {
+ 	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
+ 	u8 info0 = info->rate.info0;
+@@ -789,7 +789,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		return;
+ 	}
  
- 	/* Fill this once, while this is per-ppdu */
--	info.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
--	info.signal += rx->ppdu.combined_rssi;
-+	info.rx_status.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
-+	info.rx_status.signal += rx->ppdu.combined_rssi;
+-	process_rx_rates(ar, info, ch->band, status);
++	ath10k_htt_rx_h_rates(ar, info, ch->band, status);
+ 	status->band = ch->band;
+ 	status->freq = ch->center_freq;
  
- 	info.rate.info0 = rx->ppdu.info0;
- 	info.rate.info1 = __le32_to_cpu(rx->ppdu.info1);
 -- 
 1.7.9.5
 
