@@ -1,22 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x232.google.com ([2607:f8b0:400c:c01::232])
+Received: from mail-bk0-x236.google.com ([2a00:1450:4008:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WKm0x-0005d9-6V
- for ath10k@lists.infradead.org; Tue, 04 Mar 2014 09:51:55 +0000
-Received: by mail-ve0-f178.google.com with SMTP id jw12so2657072veb.37
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 01:51:34 -0800 (PST)
+ id 1WKm5J-0005iq-Hc
+ for ath10k@lists.infradead.org; Tue, 04 Mar 2014 09:56:26 +0000
+Received: by mail-bk0-f54.google.com with SMTP id 6so133484bkj.41
+ for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 01:56:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
+In-Reply-To: <CAEFj9844cE+XcS4zTVD8hf4eVrk_v=8xisc7vUBzwsnzm-ARwg@mail.gmail.com>
 References: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
  <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
  <CAEFj986yq_K3iu6K8mzvfPjYmuULEZEPuRDOua2iLFTRimkuFA@mail.gmail.com>
  <CALhHN=p+dyQsnbc4+sDjqoHysnak4Uq3KYEkyCT-BDXvHPszCw@mail.gmail.com>
  <CAEFj984xXPrLQu+pjt6jSyuYT-hn3uM8fLj1UmhhJfF7K_=taA@mail.gmail.com>
  <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
-Date: Tue, 4 Mar 2014 17:51:33 +0800
-Message-ID: <CAEFj9844cE+XcS4zTVD8hf4eVrk_v=8xisc7vUBzwsnzm-ARwg@mail.gmail.com>
+ <CAEFj9844cE+XcS4zTVD8hf4eVrk_v=8xisc7vUBzwsnzm-ARwg@mail.gmail.com>
+Date: Tue, 4 Mar 2014 10:56:02 +0100
+Message-ID: <CA+BoTQm6CROYAY6nH6_bJo=1McTG8_7Q7byg-Yf8Ci0Q4v6jMw@mail.gmail.com>
 Subject: Re: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +26,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-> Hmm.. if I assume ath10k_sta_state() isn't called for AUTH->ASSOC
-> (which probably isn't unreasonable to consider since IBSS doesn't have
-> an association sequence, does it?) then ath10k_station_assoc() isn't
-> called and neither is ath10k_wmi_peer_assoc() which I suspect setups
-> HW rate control.
-
-Nope, the mac80211 will move the STA state to AUTH and ASSOC when the
-STA is added but as legacy STA. So ath10k_station_assoc is called as
-shown below:
-
-[  445.080000] ath10k: mac vdev 0 peer create 04:f0:21:0c:a5:44 (new
-sta) num_peers 2
-[  445.080000] ath10k: wmi peer create vdev_id 0 peer_addr 04:f0:21:0c:a5:44
-[  445.080000] ath10k: mac sta 04:f0:21:0c:a5:44 associated
-[  445.080000] ath10k: mac peer 04:f0:21:0c:a5:44 phymode 11a
---------> [first association with legacy]
-[  445.080000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
-[  445.160000] ath10k: mac sta rc update for 04:f0:21:0c:a5:44 changed
-00000004 bw 0 nss 1 smps 2
-[  445.160000] ath10k: mac sta rc update for 04:f0:21:0c:a5:44:
-changing supported rates not implemented [upgrade the rate]
-[  445.170000] ath10k: wmi peer delete vdev_id 0 peer_addr
-04:f0:21:0c:a5:44 -----------> [delete peer]
-[  445.170000] ath10k: wmi peer create vdev_id 0 peer_addr
-04:f0:21:0c:a5:44 -----------> [create peer]
-[  445.170000] ath10k: mac ht peer 04:f0:21:0c:a5:44 mcs cnt 24 nss 1
-[  445.170000] ath10k: mac peer 04:f0:21:0c:a5:44 phymode 11na-ht20
-[  445.170000] ath10k: wmi peer assoc vdev 0 addr 04:f0:21:0c:a5:44
-------------> [associate peer again with HT]
-[  445.170000] ath10k: wmi vdev 0 peer 0x04:f0:21:0c:a5:44 set param 1 value 1
-
-My further investigation shows that the rate control is working when
-you added and associated the STA at first.
-
-Later on, mac80211 found out that the adhoc node can support HT or VHT
-and try to call drv_sta_rc_update. But since the
-IEEE80211_RC_SUPP_RATES_CHANGED is not implemented, I try to add the
-code to disassoc -> delete -> create -> assoc the STA again. But the
-rate control is no longer working (but you can fix the HT rate as
-suggested by Janusz Dziedzic). So what went wrong?
-
-----
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBNYXJjaCAyMDE0IDEwOjUxLCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93QGdtYWls
+LmNvbT4gd3JvdGU6Cj4+IEhtbS4uIGlmIEkgYXNzdW1lIGF0aDEwa19zdGFfc3RhdGUoKSBpc24n
+dCBjYWxsZWQgZm9yIEFVVEgtPkFTU09DCj4+ICh3aGljaCBwcm9iYWJseSBpc24ndCB1bnJlYXNv
+bmFibGUgdG8gY29uc2lkZXIgc2luY2UgSUJTUyBkb2Vzbid0IGhhdmUKPj4gYW4gYXNzb2NpYXRp
+b24gc2VxdWVuY2UsIGRvZXMgaXQ/KSB0aGVuIGF0aDEwa19zdGF0aW9uX2Fzc29jKCkgaXNuJ3QK
+Pj4gY2FsbGVkIGFuZCBuZWl0aGVyIGlzIGF0aDEwa193bWlfcGVlcl9hc3NvYygpIHdoaWNoIEkg
+c3VzcGVjdCBzZXR1cHMKPj4gSFcgcmF0ZSBjb250cm9sLgo+Cj4gTm9wZSwgdGhlIG1hYzgwMjEx
+IHdpbGwgbW92ZSB0aGUgU1RBIHN0YXRlIHRvIEFVVEggYW5kIEFTU09DIHdoZW4gdGhlCj4gU1RB
+IGlzIGFkZGVkIGJ1dCBhcyBsZWdhY3kgU1RBLiBTbyBhdGgxMGtfc3RhdGlvbl9hc3NvYyBpcyBj
+YWxsZWQgYXMKPiBzaG93biBiZWxvdzoKPgo+IFsgNDQ1LjA4MDAwMF0gYXRoMTBrOiBtYWMgdmRl
+diAwIHBlZXIgY3JlYXRlIDA0OmYwOjIxOjBjOmE1OjQ0IChuZXcKPiBzdGEpIG51bV9wZWVycyAy
+Cj4gWyAgNDQ1LjA4MDAwMF0gYXRoMTBrOiB3bWkgcGVlciBjcmVhdGUgdmRldl9pZCAwIHBlZXJf
+YWRkciAwNDpmMDoyMTowYzphNTo0NAo+IFsgIDQ0NS4wODAwMDBdIGF0aDEwazogbWFjIHN0YSAw
+NDpmMDoyMTowYzphNTo0NCBhc3NvY2lhdGVkCj4gWyAgNDQ1LjA4MDAwMF0gYXRoMTBrOiBtYWMg
+cGVlciAwNDpmMDoyMTowYzphNTo0NCBwaHltb2RlIDExYQo+IC0tLS0tLS0tPiBbZmlyc3QgYXNz
+b2NpYXRpb24gd2l0aCBsZWdhY3ldCj4gWyAgNDQ1LjA4MDAwMF0gYXRoMTBrOiB3bWkgcGVlciBh
+c3NvYyB2ZGV2IDAgYWRkciAwNDpmMDoyMTowYzphNTo0NAo+IFsgIDQ0NS4xNjAwMDBdIGF0aDEw
+azogbWFjIHN0YSByYyB1cGRhdGUgZm9yIDA0OmYwOjIxOjBjOmE1OjQ0IGNoYW5nZWQKPiAwMDAw
+MDAwNCBidyAwIG5zcyAxIHNtcHMgMgo+IFsgNDQ1LjE2MDAwMF0gYXRoMTBrOiBtYWMgc3RhIHJj
+IHVwZGF0ZSBmb3IgMDQ6ZjA6MjE6MGM6YTU6NDQ6Cj4gY2hhbmdpbmcgc3VwcG9ydGVkIHJhdGVz
+IG5vdCBpbXBsZW1lbnRlZCBbdXBncmFkZSB0aGUgcmF0ZV0KPiBbIDQ0NS4xNzAwMDBdIGF0aDEw
+azogd21pIHBlZXIgZGVsZXRlIHZkZXZfaWQgMCBwZWVyX2FkZHIKPiAwNDpmMDoyMTowYzphNTo0
+NCAtLS0tLS0tLS0tLT4gW2RlbGV0ZSBwZWVyXQo+IFsgIDQ0NS4xNzAwMDBdIGF0aDEwazogd21p
+IHBlZXIgY3JlYXRlIHZkZXZfaWQgMCBwZWVyX2FkZHIKPiAwNDpmMDoyMTowYzphNTo0NCAtLS0t
+LS0tLS0tLT4gW2NyZWF0ZSBwZWVyXQo+IFsgIDQ0NS4xNzAwMDBdIGF0aDEwazogbWFjIGh0IHBl
+ZXIgMDQ6ZjA6MjE6MGM6YTU6NDQgbWNzIGNudCAyNCBuc3MgMQo+IFsgIDQ0NS4xNzAwMDBdIGF0
+aDEwazogbWFjIHBlZXIgMDQ6ZjA6MjE6MGM6YTU6NDQgcGh5bW9kZSAxMW5hLWh0MjAKPiBbICA0
+NDUuMTcwMDAwXSBhdGgxMGs6IHdtaSBwZWVyIGFzc29jIHZkZXYgMCBhZGRyIDA0OmYwOjIxOjBj
+OmE1OjQ0Cj4gLS0tLS0tLS0tLS0tPiBbYXNzb2NpYXRlIHBlZXIgYWdhaW4gd2l0aCBIVF0KPiBb
+ICA0NDUuMTcwMDAwXSBhdGgxMGs6IHdtaSB2ZGV2IDAgcGVlciAweDA0OmYwOjIxOjBjOmE1OjQ0
+IHNldCBwYXJhbSAxIHZhbHVlIDEKPgo+IE15IGZ1cnRoZXIgaW52ZXN0aWdhdGlvbiBzaG93cyB0
+aGF0IHRoZSByYXRlIGNvbnRyb2wgaXMgd29ya2luZyB3aGVuCj4geW91IGFkZGVkIGFuZCBhc3Nv
+Y2lhdGVkIHRoZSBTVEEgYXQgZmlyc3QuCj4KPiBMYXRlciBvbiwgbWFjODAyMTEgZm91bmQgb3V0
+IHRoYXQgdGhlIGFkaG9jIG5vZGUgY2FuIHN1cHBvcnQgSFQgb3IgVkhUCj4gYW5kIHRyeSB0byBj
+YWxsIGRydl9zdGFfcmNfdXBkYXRlLiBCdXQgc2luY2UgdGhlCj4gSUVFRTgwMjExX1JDX1NVUFBf
+UkFURVNfQ0hBTkdFRCBpcyBub3QgaW1wbGVtZW50ZWQsIEkgdHJ5IHRvIGFkZCB0aGUKPiBjb2Rl
+IHRvIGRpc2Fzc29jIC0+IGRlbGV0ZSAtPiBjcmVhdGUgLT4gYXNzb2MgdGhlIFNUQSBhZ2Fpbi4g
+QnV0IHRoZQo+IHJhdGUgY29udHJvbCBpcyBubyBsb25nZXIgd29ya2luZyAoYnV0IHlvdSBjYW4g
+Zml4IHRoZSBIVCByYXRlIGFzCj4gc3VnZ2VzdGVkIGJ5IEphbnVzeiBEemllZHppYykuIFNvIHdo
+YXQgd2VudCB3cm9uZz8KClBlcmhhcHMgRlcgZG9lc24ndCBzdXBwb3J0IEhUIHdpdGggSUJTUyBh
+dCBhbGw/CgpDYW4geW91IGdldCBwZWVyIGFzc29jIGNvbW1hbmQgZHVtcCAoYWZ0ZXIgbm9ybWFs
+IGFzc29jIGFuZCBhZnRlciByYwp1cGRhdGUpLCBwbGVhc2U/IEknbSBjdXJpb3VzIHdoYXQgYWN0
+dWFsbHkgZ2V0cyBzZW50IHRvIGZpcm13YXJlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
