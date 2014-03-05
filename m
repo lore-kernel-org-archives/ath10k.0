@@ -1,23 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x234.google.com ([2607:f8b0:4003:c02::234])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WL6tX-0006xY-Bw
- for ath10k@lists.infradead.org; Wed, 05 Mar 2014 08:09:42 +0000
-Received: by mail-oa0-f52.google.com with SMTP id l6so682254oag.39
- for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 00:09:16 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <53160673.9000901@candelatech.com>
-References: <530E7AF2.1080908@candelatech.com>
- <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
- <530F62FD.9060701@candelatech.com>
- <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
- <5314FE92.1090405@candelatech.com>
- <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
- <53160673.9000901@candelatech.com>
-Date: Wed, 5 Mar 2014 09:09:14 +0100
-Message-ID: <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
-Subject: Re: Need to get msdu-chaining working.
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WL8Ta-00020v-OG
+ for ath10k@lists.infradead.org; Wed, 05 Mar 2014 09:50:59 +0000
+Received: by mail-pa0-f50.google.com with SMTP id kq14so882066pab.9
+ for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 01:50:37 -0800 (PST)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: allow the supported rate change by reassociate peer
+Date: Wed,  5 Mar 2014 17:50:26 +0800
+Message-Id: <1394013026-8426-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,89 +17,110 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org
+Cc: kvalo@qca.qualcomm.com, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, ath10k@lists.infradead.org
 
-T24gNCBNYXJjaCAyMDE0IDE3OjU5LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDMvMDMvMjAxNCAxMTozNiBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
-Pj4gT24gMyBNYXJjaCAyMDE0IDIzOjEzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4+PiBPbiAwMi8yNy8yMDE0IDExOjM2IFBNLCBNaWNoYWwgS2F6aW9yIHdy
-b3RlOgo+Pj4KPj4+Pj4+IHJ4IGJ1ZmZlciBhbmQgaXMgc3BsaXQgYWNyb3NzIHRoZSBwb3BwZWQg
-YW1zZHUgbGlzdC4gSSBzdXNwZWN0IG9ubHkKPj4+Pj4+IHRoZSBmaXJzdCBtc2R1IGluIGNoYWlu
-IGhhcyB0aGUgaHR0X3J4X2Rlc2MgYW5kIGFsbCBvdGhlciBoYXZlIG5vdAo+Pj4+Pj4gKHRoaXMg
-aXMgd2hhdCB0aGUgY3VycmVudCBjb2RlIGRvZXMsIGJ1dCB5b3UnbGwgbmVlZCB0byB2ZXJpZnkg
-dGhhdCkuCj4+Pj4+Pgo+Pj4+Pj4gSSB3b3VsZCB0cnkgdG8gY29uY2F0ZW5hdGUgYWxsIG1zZHVz
-IGludG8gb25lIChsb3RzIG9mIG1lbWNweSA6KCApIG9yCj4+Pj4+PiBpbmNyZWFzZSB0aGUgSFRU
-X1JYX0JVRl9TSVpFIHNvIHRoYXQgQS1NU0RVIGZyYW1lcyBjYW4gZml0IGludG8gYQo+Pj4+Pj4g
-c2luZ2xlIGJ1ZmZlciAoaG9wZWZ1bGx5IEZXL0hXIGlzIGNhcGFibGUgb2YgZG9pbmcgdGhhdCku
-Cj4+Pgo+Pj4gSnVzdCBGWUk6ICBBdCBsZWFzdCBvbiBteSBmaXJtd2FyZSBpbiByYXcgcnggbW9k
-ZSwgaW5jcmVhc2luZyB0aGUKPj4+IEhUVF9SWF9CVUZfU0laRSAodG8gNCAqIDE5MjApIGFuZCBh
-dCBsZWFzdCBzb21lIGNoYWluaW5nIHJlbWFpbnMuCj4+PiBQZXJmb3JtYW5jZSBkaWQgbm90IGNo
-YW5nZSBub3RpY2VhYmx5LiAgSSdtIHVzaW5nIGZhaXJseSBwb3dlcmZ1bAo+Pj4gY29yZSBpNyBw
-cm9jZXNzb3Igc3lzdGVtcywgc28gbWF5YmUgdGhlIG1lbWNweSBkb2Vzbid0Cj4+PiBtYWtlIGVu
-b3VnaCBkaWZmZXJlbmNlIHRvIG5vdGljZSBpbiBteSB0ZXN0cy4KPj4+Cj4+PiBJIGRpZCBub3Qg
-cHV0IGFueSBlZmZvcnQgaW50byBmaWd1cmluZyBvdXQgd2h5Lgo+Pgo+PiBHZXR0aW5nIHJpZCBv
-ZiBtZW1jcHkoKSB3YXMgYSBodWdlIHBlcmZvcm1hbmNlIHdpbiBmb3IgQVAxMzUgYW5kIGl0cwo+
-PiBNSVBTIHByb2Nlc3Nvci4KPgo+IE5vIGRvdWJ0LCBidXQgYXQgdGhpcyBwb2ludCwgbXkgcHJv
-YmxlbXMgYXBwZWFyIHRvIGxpZSBlbHNld2hlcmUuCj4KPj4+IEknbSBjdXJyZW50bHkgZ2V0dGlu
-ZyBhYm91dCA1NDBNYnBzIHVwbG9hZCBUQ1AgZ29vZHB1dCwKPj4+IGFuZCBvbmx5IDQyME1icHMg
-ZG93bmxvYWQgVENQIGdvb2RwdXQuICBOb3Qgc3VyZSB3aHkKPj4+IHRoZSBkaXNjcmVwYW5jeSwg
-YnV0IHBlcmhhcHMgdGhlIHJ4IHJhdyBwZXJmb3JtYW5jZQo+Pj4gaXMgd29yc2UgZm9yIGEgdmFy
-aWV0eSBvZiByZWFzb25zLiAgTXkgZmlybXdhcmUgY2hhbmdlcwo+Pj4gdG8gc3VwcG9ydCBtdWx0
-aXBsZSBzdGF0aW9ucyB0byBzYW1lIEFQIG1heSBhbHNvIGJlIHNsb3dpbmcKPj4+IHRoaW5ncyBk
-b3duLCB0aG91Z2ggdGhlc2UgbnVtYmVycyBhcmUgZnJvbSAgYSBzaW5nbGUgc3RhdGlvbgo+Pj4g
-dGVzdC4uLgo+Pgo+PiBIbW0sIEkgYXNzdW1lIHlvdSB0ZXN0IHRoaXMgd2l0aG91dCBhbnkgYnJp
-ZGdpbmcuIEl0J3MgcHJvYmFibHkgZ29pbmcKPj4gdG8gYmUgYSBsaXR0bGUgc2xvd2VyIGR1ZSB0
-byB0eCB0aW1pbmdzIGJlaW5nIGRpcmVjdGx5IHZpc2libGUgdG8gdGhlCj4+IFRDUCBzdWJzeXN0
-ZW0gYmVjYXVzZSBib3RoIFRDUCBhbmQgYXRoMTBrIGFyZSBsb2NhbGx5IG9uIHRoZSBzYW1lCj4+
-IG1hY2hpbmUuIFlvdSBjb3VsZCB0cnkgbW92aW5nIHRoZSBhY3R1YWwgVENQIGVuZHBvaW50cyBi
-ZWhpbmQgYnJpZGdlcy4KPj4KPj4gT3IgeW91J3JlIGFjdHVhbGx5IHNlZWluZyB0aGUgbWVtY3B5
-KCkgYXQgd29yay4uLgo+Pgo+PiBEaWQgeW91IHRyeSB0byB0ZXN0IHBlcmZvcm1hbmNlIG9uIHZh
-bmlsbGEgZHJpdmVyL2Zpcm13YXJlPwo+Cj4gSSBoYXZlIHVzZWQgdmFuaWxsYSBmaXJtd2FyZSBv
-biBBUCBmb3IgYWxsIHRlc3RzLCBiZWNhdXNlIG15IGZpcm13YXJlCj4gd2lsbCBub3QgZG8gQVAg
-bW9kZSBvbiBXTEU5MDBWWCBmb3Igc29tZSByZWFzb24uICBVc2luZyBteSBzbGlnaHRseSBtb2Rp
-ZmllZAo+IGRyaXZlciBoYXMgbm8gbm90aWNlYWJsZSBkaWZmZXJlbmNlIChhbmQgaXQgbm93IHdv
-cmtzIHZpcnR1YWxseSBpZGVudGljYWwKPiB0byB1cHN0cmVhbSBjb2RlIHdoZW4gbm90IHVzaW5n
-IG15IG1vZGlmaWVkIGZpcm13YXJlKS4KPgo+IEZvciBzdGF0aW9uIG1hY2hpbmUsIHZhbmlsbGEg
-ZmlybXdhcmUgcGVyZm9ybXMgbm8gYmV0dGVyIHRoYW4gbXkgZmlybXdhcmUsCj4gYW5kIEkgc2Vl
-IHRoZSBzYW1lIGlzc3VlIHdoZXJlIHVwbG9hZCBpcyAxNTBNYnBzIG9yIHNvIGZhc3RlciB0aGFu
-Cj4gZG93bmxvYWQuCj4KPiBJIHRyaWVkIHB1dHRpbmcgVENQL1VEUCBlbmRwb2ludHMgb24gQVAs
-IGFuZCB1c2luZyBBUCBhcyBicmlkZ2UsIGFuZCBib3RoCj4gY2FzZXMgaGF2ZSBzaW1pbGFyIHRo
-cm91Z2hwdXQuICBJbnRlcmVzdGluZ2x5IHRvIG1lLCBVRFAgYW5kIFRDUCBoYXZlIHNpbWlsYXIK
-PiB0aG91Z2hwdXQsIHNvIGl0IGlzIHVubGlrZWx5IHRoYXQgd2UgYXJlIGFjdHVhbGx5IGhpdHRp
-bmcgbGltaXRzIG9uCj4gdGhlIHNwZWN0cnVtIChvdGhlcndpc2UsIFVEUCB3b3VsZCBkbyBiZXR0
-ZXIgYmVjYXVzZSBpdCBoYXMgbm8gQUNLIHBhY2tldHMKPiBhbmQgZ2VuZXJhbGx5IHJ1bnMgbXVj
-aCBmYXN0ZXIgdG90YWwgdGhyb3VnaHB1dCBvbiB3aWZpIGluIG15IGV4cGVyaWVuY2UKPiB3aXRo
-IC9hL2IvZy9uIE5JQ3MpLgo+Cj4gV2l0aCB2YW5pbGxhIGZpcm13YXJlLCB0aGVyZSBzaG91bGQg
-YmUgbGl0dGxlIHRvIG5vIGFtc2R1IHBhY2tldHMKPiAoSSBhc3N1bWUpLCBzbyBpdCBpcyB1bmxp
-a2VseSB0byBiZSByZWxhdGVkIHRvIG1lbWNweS4gIHBlcmYgdG9wCgpJbmNvcnJlY3QuIFRoZXJl
-J3MgYWN0dWFsbHkgcXVpdGUgYSBsb3Qgb2YgYW1zZHUgd2l0aCB2YW5pbGxhIGZpcm13YXJlCihr
-ZWVwIGluIG1pbmQgSSByZWZlciB0byBud2lmaSByeCkuIEluIHRoZSBlYXJseSBkYXlzIGF0aDEw
-ayB3YXMKc3RpY2hpbmcgbXNkdXMgYmFjayBqdXN0IHRvIGJlIHRlYXJlZCBkb3duIGFnYWluIGlu
-IG1hYzgwMjExIGFuZCB0aGlzCndhcyBoaXR0aW5nIHBlcmZvcm1hbmNlLgoKCj4gc2hvd3Mgbm8g
-b2J2aW91cyBob3Qgc3BvdHMgaW4gZG93bmxvYWQgdGVzdCAocnVubmluZyBhYm91dCAzODBNYnBz
-Cj4gaW4gdGhpcyBjYXNlKToKPgo+ICAgMi4yNCUgIFtrZXJuZWxdICAgICAgICAgICAgICAgICAg
-ICAgIFtrXSBzd2lvdGxiX3RibF91bm1hcF9zaW5nbGUKPiAgIDEuODglICBba2VybmVsXSAgICAg
-ICAgICAgICAgICAgICAgICBba10gZG9fcmF3X3NwaW5fbG9jawo+ICAgMS44OCUgIFtrZXJuZWxd
-ICAgICAgICAgICAgICAgICAgICAgIFtrXSBpb3JlYWQzMgo+ICAgMS44NCUgIFtrZXJuZWxdICAg
-ICAgICAgICAgICAgICAgICAgIFtrXSB0Y3BfcGFja2V0Cj4gICAxLjUzJSAgW21hYzgwMjExXSAg
-ICAgICAgICAgICAgICAgICAgW2tdIGllZWU4MDIxMV9yeF9oYW5kbGVycwo+ICAgMS4zMSUgIFtr
-ZXJuZWxdICAgICAgICAgICAgICAgICAgICAgIFtrXSBjb3B5X3VzZXJfZ2VuZXJpY19zdHJpbmcK
-PiAgIDEuMTklICBbYXRoMTBrX2NvcmVdICAgICAgICAgICAgICAgICBba10gYXRoMTBrX2h0dF9y
-eF9hbXNkdS5pc3JhLjI5Cj4gICAxLjE0JSAgYnRzZXJ2ZXIgICAgICAgICAgICAgICAgICAgICAg
-Wy5dIGRvX2JpZ193aGlsZSgpCj4gICAxLjA5JSAgW2tlcm5lbF0gICAgICAgICAgICAgICAgICAg
-ICAgW2tdIF9yYXdfc3Bpbl9sb2NrX2lycXNhdmUKPgo+IFdoYXQgdGhyb3VnaHB1dHMgYXJlIHlv
-dSBzZWVpbmcsIGFuZCB3aGF0IE5JQ3MgYXJlIHlvdSB1c2luZyBmb3IgQVAKPiBhbmQgc3RhdGlv
-bnM/CgpXaXRoIGN1cnJlbnQgbWFzdGVyIGJyYW5jaCBDVVMyMjMtQ1VTMjIzIHNob3VsZCBnZXQg
-b3ZlciA4MDBtYnBzIGluCnVkcCB0eC9yeCBhbmQgNzAwbWJwcyBpbiB0Y3AgdHgvcnggd2l0aCBj
-YWJsZWQgc2V0dXAgb24gYSBwb29yIEFQMTM1LgpTaW5jZSBBUDEzNSdzIENQVSBkb2Vzbid0IGhh
-dmUgYW55IHRpbWUgdG8gaWRsZSBhcm91bmQgSSBleHBlY3QgeDg2IHRvCnBlcmZvcm0gYmV0dGVy
-IGFuZCBJIGRvbid0IHRoaW5rIE9UQSBzaG91bGQgYmUgdGVycmlibHkgc2xvd2VyIGluIGEKcmVh
-c29uYWJseSBjbGVhbiBlbnZpcm9ubWVudC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+IBSS mode requires the changing of supported rate. Do this
+by reassociate the peer. The investigation shows that if move
+from legacy to HT, the rate control won't work after changing
+the supported rate. But once changing the supported rate to HT,
+user can assign the TxRate in HT mode.
+
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |   24 +++++++++++++-----------
+ drivers/net/wireless/ath/ath10k/wmi.c |    5 +++--
+ 2 files changed, 16 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 511a2f8..9ad1869 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1524,7 +1524,7 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
+ }
+ 
+ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+-				struct ieee80211_sta *sta)
++				struct ieee80211_sta *sta, bool reassoc)
+ {
+ 	struct wmi_peer_assoc_complete_arg peer_arg;
+ 	int ret = 0;
+@@ -1538,6 +1538,7 @@ static int ath10k_station_assoc(struct ath10k *ar, struct ath10k_vif *arvif,
+ 		return ret;
+ 	}
+ 
++	peer_arg.peer_reassoc = reassoc;
+ 	ret = ath10k_wmi_peer_assoc(ar, &peer_arg);
+ 	if (ret) {
+ 		ath10k_warn("Peer assoc failed for STA %pM vdev %i: %d\n",
+@@ -3195,6 +3196,16 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+ 				    sta->addr, smps, err);
+ 	}
+ 
++	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED) {
++		ath10k_dbg(ATH10K_DBG_MAC, "mac update sta %pM supp rates\n",
++			   sta->addr);
++
++		err = ath10k_station_assoc(ar, arvif, sta, true);
++		if (err)
++			ath10k_warn("Failed to reassociate station: %pM\n",
++				    sta->addr);
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+@@ -3275,7 +3286,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 		ath10k_dbg(ATH10K_DBG_MAC, "mac sta %pM associated\n",
+ 			   sta->addr);
+ 
+-		ret = ath10k_station_assoc(ar, arvif, sta);
++		ret = ath10k_station_assoc(ar, arvif, sta, false);
+ 		if (ret)
+ 			ath10k_warn("Failed to associate station %pM for vdev %i: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
+@@ -4108,15 +4119,6 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+ 		arsta->smps = smps;
+ 	}
+ 
+-	if (changed & IEEE80211_RC_SUPP_RATES_CHANGED) {
+-		/* FIXME: Not implemented. Probably the only way to do it would
+-		 * be to re-assoc the peer. */
+-		changed &= ~IEEE80211_RC_SUPP_RATES_CHANGED;
+-		ath10k_dbg(ATH10K_DBG_MAC,
+-			   "mac sta rc update for %pM: changing supported rates not implemented\n",
+-			   sta->addr);
+-	}
+-
+ 	arsta->changed |= changed;
+ 
+ 	spin_unlock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 478e7f6..efb0cf2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3457,8 +3457,9 @@ int ath10k_wmi_peer_assoc(struct ath10k *ar,
+ 		__cpu_to_le32(arg->peer_vht_rates.tx_mcs_set);
+ 
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+-		   "wmi peer assoc vdev %d addr %pM\n",
+-		   arg->vdev_id, arg->addr);
++		   "wmi peer assoc vdev %d addr %pM (%s)\n",
++		   arg->vdev_id, arg->addr,
++		   arg->peer_reassoc ? "reassociate" : "new");
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->peer_assoc_cmdid);
+ }
+ 
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
