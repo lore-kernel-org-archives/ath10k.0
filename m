@@ -1,14 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLAg7-0007Xj-DO
- for ath10k@lists.infradead.org; Wed, 05 Mar 2014 12:12:03 +0000
-Received: by mail-ee0-f41.google.com with SMTP id t10so409923eei.14
- for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 04:11:20 -0800 (PST)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH v2] ath10k: do not overwrite max_antenna_gain
-Date: Wed,  5 Mar 2014 13:10:33 +0100
-Message-Id: <1394021433-19376-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1WLImX-000807-PN
+ for ath10k@lists.infradead.org; Wed, 05 Mar 2014 20:51:16 +0000
+Message-ID: <53178E29.2000304@candelatech.com>
+Date: Wed, 05 Mar 2014 12:50:49 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: Need to get msdu-chaining working.
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+ <530F62FD.9060701@candelatech.com>
+ <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
+ <5314FE92.1090405@candelatech.com>
+ <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
+ <53160673.9000901@candelatech.com>
+ <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,45 +25,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
+On 03/05/2014 12:09 AM, Michal Kazior wrote:
 
-Seems like we have an old bug, where we incidently overwrites
-the max_antenna_gain we pass to firmware, with zero value.
+> Incorrect. There's actually quite a lot of amsdu with vanilla firmware
+> (keep in mind I refer to nwifi rx). In the early days ath10k was
+> stiching msdus back just to be teared down again in mac80211 and this
+> was hitting performance.
 
-End of all we are artifically reducing the output power.
+I guess with native wifi you do not see any chained amsdu
+frames at ath10k now?  Out of curiosity, how do amsdu frames appear
+in ath10k?  Does the firmware take care of everything
+before it ever gets to the host for native wifi?
 
-This patch removes the excessive assignment on max_antenna_gain,
-which is being provided by regulatory domain, and consequently
-improves the tx power.
+>> What throughputs are you seeing, and what NICs are you using for AP
+>> and stations?
+> 
+> With current master branch CUS223-CUS223 should get over 800mbps in
+> udp tx/rx and 700mbps in tcp tx/rx with cabled setup on a poor AP135.
+> Since AP135's CPU doesn't have any time to idle around I expect x86 to
+> perform better and I don't think OTA should be terribly slower in a
+> reasonably clean environment.
 
-Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c |    1 -
- 1 file changed, 1 deletion(-)
+Over-the-air, CUS223 wasn't any better than WLE900VX, so probably not
+an issue with the NICs.  Arranging the antennas a bit gave me a bit of
+a boost, but still only around 600Mbps TCP upload, and download was
+still in the 400Mbps range.  There are no APs in scan range in the
+lower end of 5Ghz where I am running, so it should be pretty clean.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 478e7f6..cb1f7b5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3393,7 +3393,6 @@ int ath10k_wmi_scan_chan_list(struct ath10k *ar,
- 		ci->max_power         = ch->max_power;
- 		ci->reg_power         = ch->max_reg_power;
- 		ci->antenna_max       = ch->max_antenna_gain;
--		ci->antenna_max       = 0;
- 
- 		/* mode & flags share storage */
- 		ci->mode              = ch->mode;
+I cabled WLE900VX NICs up with 30dB attenuation, and I do see about 800Mbps
+UDP upload, 700Mbps TCP upload, and 460Mbps TCP download.  Download still
+sucks compared to upload for me.
+
+I switched functions:  AP logic moved to STA machine, vice-versa.
+The mis-match between upload follows the stations/APs, not the hardware.
+
+(In this test, both machines are using stock 467.1-1 firmware.)
+
+Maybe something with how I am configuring APs interfaces is the problem.
+
+Can you verify that you see similar upload and download speeds for your
+test scenario?
+
+Also, at 800Mbps UDP, perf top main offender is a 17% raw spin lock,
+but in general my system was not working too hard as far as I can tell.
+
+Thanks,
+Ben
+
 -- 
-1.7.10
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
