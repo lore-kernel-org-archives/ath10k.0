@@ -1,26 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x233.google.com ([2607:f8b0:400c:c01::233])
+Received: from mail-oa0-x234.google.com ([2607:f8b0:4003:c02::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WL3Tt-0001CC-60
- for ath10k@lists.infradead.org; Wed, 05 Mar 2014 04:30:57 +0000
-Received: by mail-ve0-f179.google.com with SMTP id db12so502260veb.38
- for <ath10k@lists.infradead.org>; Tue, 04 Mar 2014 20:30:32 -0800 (PST)
+ id 1WL6tX-0006xY-Bw
+ for ath10k@lists.infradead.org; Wed, 05 Mar 2014 08:09:42 +0000
+Received: by mail-oa0-f52.google.com with SMTP id l6so682254oag.39
+ for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 00:09:16 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=StPP+7-uEcHFVrVur4cTmZf8Nrvv4dBVsL1_yfZLtVQ@mail.gmail.com>
-References: <CAEFj9874KjsRfC1rK5X1wWpQ-1hCt44tOLj5q+adWWLUbuyE0g@mail.gmail.com>
- <CA+BoTQnS1veOHepWtAsM2HfdKAAgtAoHganHHKo1VyBEowyJ6A@mail.gmail.com>
- <CAEFj986yq_K3iu6K8mzvfPjYmuULEZEPuRDOua2iLFTRimkuFA@mail.gmail.com>
- <CALhHN=p+dyQsnbc4+sDjqoHysnak4Uq3KYEkyCT-BDXvHPszCw@mail.gmail.com>
- <CAEFj984xXPrLQu+pjt6jSyuYT-hn3uM8fLj1UmhhJfF7K_=taA@mail.gmail.com>
- <CA+BoTQ=Q86r4E-CaHCmmxrkQJcHH_ZeaB2-e534KOQvSOgMcjA@mail.gmail.com>
- <CAEFj9844cE+XcS4zTVD8hf4eVrk_v=8xisc7vUBzwsnzm-ARwg@mail.gmail.com>
- <CA+BoTQm6CROYAY6nH6_bJo=1McTG8_7Q7byg-Yf8Ci0Q4v6jMw@mail.gmail.com>
- <CAEFj9850K2V9jOV0D_tQHb57DJRZ7ZMD0_GovY+B_VPNxP=maQ@mail.gmail.com>
- <CA+BoTQ=StPP+7-uEcHFVrVur4cTmZf8Nrvv4dBVsL1_yfZLtVQ@mail.gmail.com>
-Date: Wed, 5 Mar 2014 12:30:32 +0800
-Message-ID: <CAEFj984amedSqr6E8JVuzgU2vMLkHbd9Gz7o1fN4iA3A5OnANQ@mail.gmail.com>
-Subject: Re: Only Lowest Legacy Rate 6Mbps used by Adhoc Mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+In-Reply-To: <53160673.9000901@candelatech.com>
+References: <530E7AF2.1080908@candelatech.com>
+ <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
+ <530F62FD.9060701@candelatech.com>
+ <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
+ <5314FE92.1090405@candelatech.com>
+ <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
+ <53160673.9000901@candelatech.com>
+Date: Wed, 5 Mar 2014 09:09:14 +0100
+Message-ID: <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
+Subject: Re: Need to get msdu-chaining working.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,43 +26,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-> Let me get one thing clear -- calling to sta_rc_update *without* your
-> supp_rates implementation doesn't yield 6mbps tx rate drop?
-Yes.
-
-I investigate the issue a bit further by modifying the ibss.c and also mac.c
-
-Case 1:
-Create, Associate (Legacy Rate), Disassociate, Delete, Create,
-Associate (HT Rate)
---- TxRate always stuck at 6Mbps
-
-Case 2:
-Create, Associate (Legacy Rate), Disassociate, Delete, Create,
-Associate (Legacy Rate)
---- Rate control works with TxRate going out to 54Mbps even after
-delete and associate back the STA.
-
-Case 3:
-Create, Associate (HT Rate)
---- TxRate always stuck at 6Mbps
-
-So it seems that the rate control is not working in the FW whenever
-you configure the HT mode for the adhoc mode.
-
-Any idea how to solve this?
-
-----
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBNYXJjaCAyMDE0IDE3OjU5LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gT24gMDMvMDMvMjAxNCAxMTozNiBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
+Pj4gT24gMyBNYXJjaCAyMDE0IDIzOjEzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
+LmNvbT4gd3JvdGU6Cj4+PiBPbiAwMi8yNy8yMDE0IDExOjM2IFBNLCBNaWNoYWwgS2F6aW9yIHdy
+b3RlOgo+Pj4KPj4+Pj4+IHJ4IGJ1ZmZlciBhbmQgaXMgc3BsaXQgYWNyb3NzIHRoZSBwb3BwZWQg
+YW1zZHUgbGlzdC4gSSBzdXNwZWN0IG9ubHkKPj4+Pj4+IHRoZSBmaXJzdCBtc2R1IGluIGNoYWlu
+IGhhcyB0aGUgaHR0X3J4X2Rlc2MgYW5kIGFsbCBvdGhlciBoYXZlIG5vdAo+Pj4+Pj4gKHRoaXMg
+aXMgd2hhdCB0aGUgY3VycmVudCBjb2RlIGRvZXMsIGJ1dCB5b3UnbGwgbmVlZCB0byB2ZXJpZnkg
+dGhhdCkuCj4+Pj4+Pgo+Pj4+Pj4gSSB3b3VsZCB0cnkgdG8gY29uY2F0ZW5hdGUgYWxsIG1zZHVz
+IGludG8gb25lIChsb3RzIG9mIG1lbWNweSA6KCApIG9yCj4+Pj4+PiBpbmNyZWFzZSB0aGUgSFRU
+X1JYX0JVRl9TSVpFIHNvIHRoYXQgQS1NU0RVIGZyYW1lcyBjYW4gZml0IGludG8gYQo+Pj4+Pj4g
+c2luZ2xlIGJ1ZmZlciAoaG9wZWZ1bGx5IEZXL0hXIGlzIGNhcGFibGUgb2YgZG9pbmcgdGhhdCku
+Cj4+Pgo+Pj4gSnVzdCBGWUk6ICBBdCBsZWFzdCBvbiBteSBmaXJtd2FyZSBpbiByYXcgcnggbW9k
+ZSwgaW5jcmVhc2luZyB0aGUKPj4+IEhUVF9SWF9CVUZfU0laRSAodG8gNCAqIDE5MjApIGFuZCBh
+dCBsZWFzdCBzb21lIGNoYWluaW5nIHJlbWFpbnMuCj4+PiBQZXJmb3JtYW5jZSBkaWQgbm90IGNo
+YW5nZSBub3RpY2VhYmx5LiAgSSdtIHVzaW5nIGZhaXJseSBwb3dlcmZ1bAo+Pj4gY29yZSBpNyBw
+cm9jZXNzb3Igc3lzdGVtcywgc28gbWF5YmUgdGhlIG1lbWNweSBkb2Vzbid0Cj4+PiBtYWtlIGVu
+b3VnaCBkaWZmZXJlbmNlIHRvIG5vdGljZSBpbiBteSB0ZXN0cy4KPj4+Cj4+PiBJIGRpZCBub3Qg
+cHV0IGFueSBlZmZvcnQgaW50byBmaWd1cmluZyBvdXQgd2h5Lgo+Pgo+PiBHZXR0aW5nIHJpZCBv
+ZiBtZW1jcHkoKSB3YXMgYSBodWdlIHBlcmZvcm1hbmNlIHdpbiBmb3IgQVAxMzUgYW5kIGl0cwo+
+PiBNSVBTIHByb2Nlc3Nvci4KPgo+IE5vIGRvdWJ0LCBidXQgYXQgdGhpcyBwb2ludCwgbXkgcHJv
+YmxlbXMgYXBwZWFyIHRvIGxpZSBlbHNld2hlcmUuCj4KPj4+IEknbSBjdXJyZW50bHkgZ2V0dGlu
+ZyBhYm91dCA1NDBNYnBzIHVwbG9hZCBUQ1AgZ29vZHB1dCwKPj4+IGFuZCBvbmx5IDQyME1icHMg
+ZG93bmxvYWQgVENQIGdvb2RwdXQuICBOb3Qgc3VyZSB3aHkKPj4+IHRoZSBkaXNjcmVwYW5jeSwg
+YnV0IHBlcmhhcHMgdGhlIHJ4IHJhdyBwZXJmb3JtYW5jZQo+Pj4gaXMgd29yc2UgZm9yIGEgdmFy
+aWV0eSBvZiByZWFzb25zLiAgTXkgZmlybXdhcmUgY2hhbmdlcwo+Pj4gdG8gc3VwcG9ydCBtdWx0
+aXBsZSBzdGF0aW9ucyB0byBzYW1lIEFQIG1heSBhbHNvIGJlIHNsb3dpbmcKPj4+IHRoaW5ncyBk
+b3duLCB0aG91Z2ggdGhlc2UgbnVtYmVycyBhcmUgZnJvbSAgYSBzaW5nbGUgc3RhdGlvbgo+Pj4g
+dGVzdC4uLgo+Pgo+PiBIbW0sIEkgYXNzdW1lIHlvdSB0ZXN0IHRoaXMgd2l0aG91dCBhbnkgYnJp
+ZGdpbmcuIEl0J3MgcHJvYmFibHkgZ29pbmcKPj4gdG8gYmUgYSBsaXR0bGUgc2xvd2VyIGR1ZSB0
+byB0eCB0aW1pbmdzIGJlaW5nIGRpcmVjdGx5IHZpc2libGUgdG8gdGhlCj4+IFRDUCBzdWJzeXN0
+ZW0gYmVjYXVzZSBib3RoIFRDUCBhbmQgYXRoMTBrIGFyZSBsb2NhbGx5IG9uIHRoZSBzYW1lCj4+
+IG1hY2hpbmUuIFlvdSBjb3VsZCB0cnkgbW92aW5nIHRoZSBhY3R1YWwgVENQIGVuZHBvaW50cyBi
+ZWhpbmQgYnJpZGdlcy4KPj4KPj4gT3IgeW91J3JlIGFjdHVhbGx5IHNlZWluZyB0aGUgbWVtY3B5
+KCkgYXQgd29yay4uLgo+Pgo+PiBEaWQgeW91IHRyeSB0byB0ZXN0IHBlcmZvcm1hbmNlIG9uIHZh
+bmlsbGEgZHJpdmVyL2Zpcm13YXJlPwo+Cj4gSSBoYXZlIHVzZWQgdmFuaWxsYSBmaXJtd2FyZSBv
+biBBUCBmb3IgYWxsIHRlc3RzLCBiZWNhdXNlIG15IGZpcm13YXJlCj4gd2lsbCBub3QgZG8gQVAg
+bW9kZSBvbiBXTEU5MDBWWCBmb3Igc29tZSByZWFzb24uICBVc2luZyBteSBzbGlnaHRseSBtb2Rp
+ZmllZAo+IGRyaXZlciBoYXMgbm8gbm90aWNlYWJsZSBkaWZmZXJlbmNlIChhbmQgaXQgbm93IHdv
+cmtzIHZpcnR1YWxseSBpZGVudGljYWwKPiB0byB1cHN0cmVhbSBjb2RlIHdoZW4gbm90IHVzaW5n
+IG15IG1vZGlmaWVkIGZpcm13YXJlKS4KPgo+IEZvciBzdGF0aW9uIG1hY2hpbmUsIHZhbmlsbGEg
+ZmlybXdhcmUgcGVyZm9ybXMgbm8gYmV0dGVyIHRoYW4gbXkgZmlybXdhcmUsCj4gYW5kIEkgc2Vl
+IHRoZSBzYW1lIGlzc3VlIHdoZXJlIHVwbG9hZCBpcyAxNTBNYnBzIG9yIHNvIGZhc3RlciB0aGFu
+Cj4gZG93bmxvYWQuCj4KPiBJIHRyaWVkIHB1dHRpbmcgVENQL1VEUCBlbmRwb2ludHMgb24gQVAs
+IGFuZCB1c2luZyBBUCBhcyBicmlkZ2UsIGFuZCBib3RoCj4gY2FzZXMgaGF2ZSBzaW1pbGFyIHRo
+cm91Z2hwdXQuICBJbnRlcmVzdGluZ2x5IHRvIG1lLCBVRFAgYW5kIFRDUCBoYXZlIHNpbWlsYXIK
+PiB0aG91Z2hwdXQsIHNvIGl0IGlzIHVubGlrZWx5IHRoYXQgd2UgYXJlIGFjdHVhbGx5IGhpdHRp
+bmcgbGltaXRzIG9uCj4gdGhlIHNwZWN0cnVtIChvdGhlcndpc2UsIFVEUCB3b3VsZCBkbyBiZXR0
+ZXIgYmVjYXVzZSBpdCBoYXMgbm8gQUNLIHBhY2tldHMKPiBhbmQgZ2VuZXJhbGx5IHJ1bnMgbXVj
+aCBmYXN0ZXIgdG90YWwgdGhyb3VnaHB1dCBvbiB3aWZpIGluIG15IGV4cGVyaWVuY2UKPiB3aXRo
+IC9hL2IvZy9uIE5JQ3MpLgo+Cj4gV2l0aCB2YW5pbGxhIGZpcm13YXJlLCB0aGVyZSBzaG91bGQg
+YmUgbGl0dGxlIHRvIG5vIGFtc2R1IHBhY2tldHMKPiAoSSBhc3N1bWUpLCBzbyBpdCBpcyB1bmxp
+a2VseSB0byBiZSByZWxhdGVkIHRvIG1lbWNweS4gIHBlcmYgdG9wCgpJbmNvcnJlY3QuIFRoZXJl
+J3MgYWN0dWFsbHkgcXVpdGUgYSBsb3Qgb2YgYW1zZHUgd2l0aCB2YW5pbGxhIGZpcm13YXJlCihr
+ZWVwIGluIG1pbmQgSSByZWZlciB0byBud2lmaSByeCkuIEluIHRoZSBlYXJseSBkYXlzIGF0aDEw
+ayB3YXMKc3RpY2hpbmcgbXNkdXMgYmFjayBqdXN0IHRvIGJlIHRlYXJlZCBkb3duIGFnYWluIGlu
+IG1hYzgwMjExIGFuZCB0aGlzCndhcyBoaXR0aW5nIHBlcmZvcm1hbmNlLgoKCj4gc2hvd3Mgbm8g
+b2J2aW91cyBob3Qgc3BvdHMgaW4gZG93bmxvYWQgdGVzdCAocnVubmluZyBhYm91dCAzODBNYnBz
+Cj4gaW4gdGhpcyBjYXNlKToKPgo+ICAgMi4yNCUgIFtrZXJuZWxdICAgICAgICAgICAgICAgICAg
+ICAgIFtrXSBzd2lvdGxiX3RibF91bm1hcF9zaW5nbGUKPiAgIDEuODglICBba2VybmVsXSAgICAg
+ICAgICAgICAgICAgICAgICBba10gZG9fcmF3X3NwaW5fbG9jawo+ICAgMS44OCUgIFtrZXJuZWxd
+ICAgICAgICAgICAgICAgICAgICAgIFtrXSBpb3JlYWQzMgo+ICAgMS44NCUgIFtrZXJuZWxdICAg
+ICAgICAgICAgICAgICAgICAgIFtrXSB0Y3BfcGFja2V0Cj4gICAxLjUzJSAgW21hYzgwMjExXSAg
+ICAgICAgICAgICAgICAgICAgW2tdIGllZWU4MDIxMV9yeF9oYW5kbGVycwo+ICAgMS4zMSUgIFtr
+ZXJuZWxdICAgICAgICAgICAgICAgICAgICAgIFtrXSBjb3B5X3VzZXJfZ2VuZXJpY19zdHJpbmcK
+PiAgIDEuMTklICBbYXRoMTBrX2NvcmVdICAgICAgICAgICAgICAgICBba10gYXRoMTBrX2h0dF9y
+eF9hbXNkdS5pc3JhLjI5Cj4gICAxLjE0JSAgYnRzZXJ2ZXIgICAgICAgICAgICAgICAgICAgICAg
+Wy5dIGRvX2JpZ193aGlsZSgpCj4gICAxLjA5JSAgW2tlcm5lbF0gICAgICAgICAgICAgICAgICAg
+ICAgW2tdIF9yYXdfc3Bpbl9sb2NrX2lycXNhdmUKPgo+IFdoYXQgdGhyb3VnaHB1dHMgYXJlIHlv
+dSBzZWVpbmcsIGFuZCB3aGF0IE5JQ3MgYXJlIHlvdSB1c2luZyBmb3IgQVAKPiBhbmQgc3RhdGlv
+bnM/CgpXaXRoIGN1cnJlbnQgbWFzdGVyIGJyYW5jaCBDVVMyMjMtQ1VTMjIzIHNob3VsZCBnZXQg
+b3ZlciA4MDBtYnBzIGluCnVkcCB0eC9yeCBhbmQgNzAwbWJwcyBpbiB0Y3AgdHgvcnggd2l0aCBj
+YWJsZWQgc2V0dXAgb24gYSBwb29yIEFQMTM1LgpTaW5jZSBBUDEzNSdzIENQVSBkb2Vzbid0IGhh
+dmUgYW55IHRpbWUgdG8gaWRsZSBhcm91bmQgSSBleHBlY3QgeDg2IHRvCnBlcmZvcm0gYmV0dGVy
+IGFuZCBJIGRvbid0IHRoaW5rIE9UQSBzaG91bGQgYmUgdGVycmlibHkgc2xvd2VyIGluIGEKcmVh
+c29uYWJseSBjbGVhbiBlbnZpcm9ubWVudC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
