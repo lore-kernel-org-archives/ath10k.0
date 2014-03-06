@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ob0-f179.google.com ([209.85.214.179])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLImX-000807-PN
- for ath10k@lists.infradead.org; Wed, 05 Mar 2014 20:51:16 +0000
-Message-ID: <53178E29.2000304@candelatech.com>
-Date: Wed, 05 Mar 2014 12:50:49 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1WLSrr-0006Gs-SE
+ for ath10k@lists.infradead.org; Thu, 06 Mar 2014 07:37:26 +0000
+Received: by mail-ob0-f179.google.com with SMTP id va2so2181057obc.24
+ for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 23:36:58 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Need to get msdu-chaining working.
+In-Reply-To: <53178E29.2000304@candelatech.com>
 References: <530E7AF2.1080908@candelatech.com>
  <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
  <530F62FD.9060701@candelatech.com>
@@ -16,7 +15,11 @@ References: <530E7AF2.1080908@candelatech.com>
  <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
  <53160673.9000901@candelatech.com>
  <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
+ <53178E29.2000304@candelatech.com>
+Date: Thu, 6 Mar 2014 08:36:58 +0100
+Message-ID: <CA+BoTQk3bHgCdTvyxe-+W4hbLu1c8W8t=WeGm2Jk40MeY9z7eQ@mail.gmail.com>
+Subject: Re: Need to get msdu-chaining working.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +28,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 03/05/2014 12:09 AM, Michal Kazior wrote:
-
-> Incorrect. There's actually quite a lot of amsdu with vanilla firmware
-> (keep in mind I refer to nwifi rx). In the early days ath10k was
-> stiching msdus back just to be teared down again in mac80211 and this
-> was hitting performance.
-
-I guess with native wifi you do not see any chained amsdu
-frames at ath10k now?  Out of curiosity, how do amsdu frames appear
-in ath10k?  Does the firmware take care of everything
-before it ever gets to the host for native wifi?
-
->> What throughputs are you seeing, and what NICs are you using for AP
->> and stations?
-> 
-> With current master branch CUS223-CUS223 should get over 800mbps in
-> udp tx/rx and 700mbps in tcp tx/rx with cabled setup on a poor AP135.
-> Since AP135's CPU doesn't have any time to idle around I expect x86 to
-> perform better and I don't think OTA should be terribly slower in a
-> reasonably clean environment.
-
-Over-the-air, CUS223 wasn't any better than WLE900VX, so probably not
-an issue with the NICs.  Arranging the antennas a bit gave me a bit of
-a boost, but still only around 600Mbps TCP upload, and download was
-still in the 400Mbps range.  There are no APs in scan range in the
-lower end of 5Ghz where I am running, so it should be pretty clean.
-
-I cabled WLE900VX NICs up with 30dB attenuation, and I do see about 800Mbps
-UDP upload, 700Mbps TCP upload, and 460Mbps TCP download.  Download still
-sucks compared to upload for me.
-
-I switched functions:  AP logic moved to STA machine, vice-versa.
-The mis-match between upload follows the stations/APs, not the hardware.
-
-(In this test, both machines are using stock 467.1-1 firmware.)
-
-Maybe something with how I am configuring APs interfaces is the problem.
-
-Can you verify that you see similar upload and download speeds for your
-test scenario?
-
-Also, at 800Mbps UDP, perf top main offender is a 17% raw spin lock,
-but in general my system was not working too hard as far as I can tell.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBNYXJjaCAyMDE0IDIxOjUwLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gT24gMDMvMDUvMjAxNCAxMjowOSBBTSwgTWljaGFsIEthemlvciB3cm90ZToK
+Pgo+PiBJbmNvcnJlY3QuIFRoZXJlJ3MgYWN0dWFsbHkgcXVpdGUgYSBsb3Qgb2YgYW1zZHUgd2l0
+aCB2YW5pbGxhIGZpcm13YXJlCj4+IChrZWVwIGluIG1pbmQgSSByZWZlciB0byBud2lmaSByeCku
+IEluIHRoZSBlYXJseSBkYXlzIGF0aDEwayB3YXMKPj4gc3RpY2hpbmcgbXNkdXMgYmFjayBqdXN0
+IHRvIGJlIHRlYXJlZCBkb3duIGFnYWluIGluIG1hYzgwMjExIGFuZCB0aGlzCj4+IHdhcyBoaXR0
+aW5nIHBlcmZvcm1hbmNlLgo+Cj4gSSBndWVzcyB3aXRoIG5hdGl2ZSB3aWZpIHlvdSBkbyBub3Qg
+c2VlIGFueSBjaGFpbmVkIGFtc2R1Cj4gZnJhbWVzIGF0IGF0aDEwayBub3c/ICBPdXQgb2YgY3Vy
+aW9zaXR5LCBob3cgZG8gYW1zZHUgZnJhbWVzIGFwcGVhcgo+IGluIGF0aDEwaz8gIERvZXMgdGhl
+IGZpcm13YXJlIHRha2UgY2FyZSBvZiBldmVyeXRoaW5nCj4gYmVmb3JlIGl0IGV2ZXIgZ2V0cyB0
+byB0aGUgaG9zdCBmb3IgbmF0aXZlIHdpZmk/CgpGb3IgbndpZmkgYW1zZHUgeW91IGdldCBsaW5r
+ZWQgc2tidWZmcy4gRWFjaCBza2J1ZmYgaXMgYSA4MDIuMTEKbm9uLXFvcyBkYXRhIGZyYW1lLiBh
+dGgxMGsgZml4ZXMgdGhlIGhlYWRlciAodXNpbmcgZGVjYXBwZWQgaGVhZGVyIGluCnJ4X2hkcl9z
+dGF0dXMpIGFuZCBzdWJtaXRzIGVhY2ggc3ViZnJhbWUgc2VwYXJhdGVseSBhcyBhbiBpbmRlcGVu
+ZGVudAo4MDIuMTEgZnJhbWUuIFRoaXMgcmVxdWlyZWQgYSBzbWFsbCBjaGFuZ2UgdG8gYmUgZG9u
+ZSBpbiBtYWM4MDIxMQooUlhfRkxBR19BTVNEVV9NT1JFKSBiZWNhdXNlIGFsbCBzdWJmcmFtZXMg
+c2hhcmUgdGhlIHNhbWUgc2VxdWVuY2UKbnVtYmVyIGFuZCBpdCBjb25mbGljdGVkIHdpdGggcmV0
+cmFuc21pc3Npb24vZGVkdXBsaWNhdGlvbgpjb3VudGVybWVhc3VyZXMuCgoKPj4+IFdoYXQgdGhy
+b3VnaHB1dHMgYXJlIHlvdSBzZWVpbmcsIGFuZCB3aGF0IE5JQ3MgYXJlIHlvdSB1c2luZyBmb3Ig
+QVAKPj4+IGFuZCBzdGF0aW9ucz8KPj4KPj4gV2l0aCBjdXJyZW50IG1hc3RlciBicmFuY2ggQ1VT
+MjIzLUNVUzIyMyBzaG91bGQgZ2V0IG92ZXIgODAwbWJwcyBpbgo+PiB1ZHAgdHgvcnggYW5kIDcw
+MG1icHMgaW4gdGNwIHR4L3J4IHdpdGggY2FibGVkIHNldHVwIG9uIGEgcG9vciBBUDEzNS4KPj4g
+U2luY2UgQVAxMzUncyBDUFUgZG9lc24ndCBoYXZlIGFueSB0aW1lIHRvIGlkbGUgYXJvdW5kIEkg
+ZXhwZWN0IHg4NiB0bwo+PiBwZXJmb3JtIGJldHRlciBhbmQgSSBkb24ndCB0aGluayBPVEEgc2hv
+dWxkIGJlIHRlcnJpYmx5IHNsb3dlciBpbiBhCj4+IHJlYXNvbmFibHkgY2xlYW4gZW52aXJvbm1l
+bnQuCj4KPiBPdmVyLXRoZS1haXIsIENVUzIyMyB3YXNuJ3QgYW55IGJldHRlciB0aGFuIFdMRTkw
+MFZYLCBzbyBwcm9iYWJseSBub3QKPiBhbiBpc3N1ZSB3aXRoIHRoZSBOSUNzLiAgQXJyYW5naW5n
+IHRoZSBhbnRlbm5hcyBhIGJpdCBnYXZlIG1lIGEgYml0IG9mCj4gYSBib29zdCwgYnV0IHN0aWxs
+IG9ubHkgYXJvdW5kIDYwME1icHMgVENQIHVwbG9hZCwgYW5kIGRvd25sb2FkIHdhcwo+IHN0aWxs
+IGluIHRoZSA0MDBNYnBzIHJhbmdlLiAgVGhlcmUgYXJlIG5vIEFQcyBpbiBzY2FuIHJhbmdlIGlu
+IHRoZQo+IGxvd2VyIGVuZCBvZiA1R2h6IHdoZXJlIEkgYW0gcnVubmluZywgc28gaXQgc2hvdWxk
+IGJlIHByZXR0eSBjbGVhbi4KPgo+IEkgY2FibGVkIFdMRTkwMFZYIE5JQ3MgdXAgd2l0aCAzMGRC
+IGF0dGVudWF0aW9uLCBhbmQgSSBkbyBzZWUgYWJvdXQgODAwTWJwcwo+IFVEUCB1cGxvYWQsIDcw
+ME1icHMgVENQIHVwbG9hZCwgYW5kIDQ2ME1icHMgVENQIGRvd25sb2FkLiAgRG93bmxvYWQgc3Rp
+bGwKPiBzdWNrcyBjb21wYXJlZCB0byB1cGxvYWQgZm9yIG1lLgo+Cj4gSSBzd2l0Y2hlZCBmdW5j
+dGlvbnM6ICBBUCBsb2dpYyBtb3ZlZCB0byBTVEEgbWFjaGluZSwgdmljZS12ZXJzYS4KPiBUaGUg
+bWlzLW1hdGNoIGJldHdlZW4gdXBsb2FkIGZvbGxvd3MgdGhlIHN0YXRpb25zL0FQcywgbm90IHRo
+ZSBoYXJkd2FyZS4KPgo+IChJbiB0aGlzIHRlc3QsIGJvdGggbWFjaGluZXMgYXJlIHVzaW5nIHN0
+b2NrIDQ2Ny4xLTEgZmlybXdhcmUuKQo+Cj4gTWF5YmUgc29tZXRoaW5nIHdpdGggaG93IEkgYW0g
+Y29uZmlndXJpbmcgQVBzIGludGVyZmFjZXMgaXMgdGhlIHByb2JsZW0uCj4KPiBDYW4geW91IHZl
+cmlmeSB0aGF0IHlvdSBzZWUgc2ltaWxhciB1cGxvYWQgYW5kIGRvd25sb2FkIHNwZWVkcyBmb3Ig
+eW91cgo+IHRlc3Qgc2NlbmFyaW8/CgpJJ20gYnVzeSBzbyBJIGNhbid0IGludmVzdGlnYXRlIHRo
+aXMgbXVjaCwgc29ycnkuCgpMaWtlIEkgbWVudGlvbmVkIGluIG15IG90aGVyIG1haWwgLSBvbiBB
+UDEzNSBVRFAgaXMgODAwbWJwcywgVENQIGlzCjcwMG1icHMsIGJvdGggd2F5cywgYW5kIHRoZSBi
+b3R0bGVuZWNrIGlzIEFQMTM1J3MgQ1BVIChNSVBTIDc0S2MgQAo3MjBNSHopLgoKWW91IG1pZ2h0
+IHRyeSB0byBjaGFuZ2UgeW91ciBxZGlzY3MgdG8gcGZpZm8gYW5kIGNoZWNrIGlmIGl0IG1ha2Vz
+IGFueQpkaWZmZXJlbmNlIGZvciB5b3UuCgoKPiBBbHNvLCBhdCA4MDBNYnBzIFVEUCwgcGVyZiB0
+b3AgbWFpbiBvZmZlbmRlciBpcyBhIDE3JSByYXcgc3BpbiBsb2NrLAo+IGJ1dCBpbiBnZW5lcmFs
+IG15IHN5c3RlbSB3YXMgbm90IHdvcmtpbmcgdG9vIGhhcmQgYXMgZmFyIGFzIEkgY2FuIHRlbGwu
+CgpUbyBiZSBob25lc3QgSSBoYXZlbid0IHRlc3RlZCB4ODYteDg2IHBlcmZvcm1hbmNlIGZvciBz
+b21lIHRpbWUgbm93LgpJJ3ZlIGJlZW4gbWFpbmx5IGZvY3VzZWQgb24gQVAxMzUuIEl0IGJvdHRs
+ZW5lY2tzIGVsc2V3aGVyZSAoaXQgaXMKbm9uLXByZWVtcHRpdmUgc28gc3BpbmxvY2tzIHdvcmsg
+Y29tcGxldGVseSBkaWZmZXJlbnQpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
