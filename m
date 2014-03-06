@@ -1,25 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-f179.google.com ([209.85.214.179])
+Received: from mail-ea0-x22a.google.com ([2a00:1450:4013:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLSrr-0006Gs-SE
- for ath10k@lists.infradead.org; Thu, 06 Mar 2014 07:37:26 +0000
-Received: by mail-ob0-f179.google.com with SMTP id va2so2181057obc.24
- for <ath10k@lists.infradead.org>; Wed, 05 Mar 2014 23:36:58 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <53178E29.2000304@candelatech.com>
-References: <530E7AF2.1080908@candelatech.com>
- <CA+BoTQmr6+9wJ87pOmzPEBwPCMG5emfkfcUmzxXpH6gVPW+zFw@mail.gmail.com>
- <530F62FD.9060701@candelatech.com>
- <CA+BoTQmE8LjpW3xhwkWoXHLB8M1B1kQMQwBBtcgSw9fJEGv4+A@mail.gmail.com>
- <5314FE92.1090405@candelatech.com>
- <CA+BoTQkTyo_2rLhVOsqDHG+iRo3qrpDHGTO+M=JSj7nN5tuJNA@mail.gmail.com>
- <53160673.9000901@candelatech.com>
- <CA+BoTQmx9iaSKxG6rO4bbrbkAY2d4VkZEPwE+b1vMdR=mPB0nQ@mail.gmail.com>
- <53178E29.2000304@candelatech.com>
-Date: Thu, 6 Mar 2014 08:36:58 +0100
-Message-ID: <CA+BoTQk3bHgCdTvyxe-+W4hbLu1c8W8t=WeGm2Jk40MeY9z7eQ@mail.gmail.com>
-Subject: Re: Need to get msdu-chaining working.
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WLVIH-0001zG-Kc
+ for ath10k@lists.infradead.org; Thu, 06 Mar 2014 10:12:50 +0000
+Received: by mail-ea0-f170.google.com with SMTP id g15so1596246eak.29
+ for <ath10k@lists.infradead.org>; Thu, 06 Mar 2014 02:12:24 -0800 (PST)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFC v2 14/14] ath10k: improve way we play with attention flags
+Date: Thu,  6 Mar 2014 11:11:46 +0100
+Message-Id: <1394100706-7820-2-git-send-email-janusz.dziedzic@tieto.com>
+In-Reply-To: <1394100706-7820-1-git-send-email-janusz.dziedzic@tieto.com>
+References: <1394100706-7820-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +19,167 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-T24gNSBNYXJjaCAyMDE0IDIxOjUwLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDMvMDUvMjAxNCAxMjowOSBBTSwgTWljaGFsIEthemlvciB3cm90ZToK
-Pgo+PiBJbmNvcnJlY3QuIFRoZXJlJ3MgYWN0dWFsbHkgcXVpdGUgYSBsb3Qgb2YgYW1zZHUgd2l0
-aCB2YW5pbGxhIGZpcm13YXJlCj4+IChrZWVwIGluIG1pbmQgSSByZWZlciB0byBud2lmaSByeCku
-IEluIHRoZSBlYXJseSBkYXlzIGF0aDEwayB3YXMKPj4gc3RpY2hpbmcgbXNkdXMgYmFjayBqdXN0
-IHRvIGJlIHRlYXJlZCBkb3duIGFnYWluIGluIG1hYzgwMjExIGFuZCB0aGlzCj4+IHdhcyBoaXR0
-aW5nIHBlcmZvcm1hbmNlLgo+Cj4gSSBndWVzcyB3aXRoIG5hdGl2ZSB3aWZpIHlvdSBkbyBub3Qg
-c2VlIGFueSBjaGFpbmVkIGFtc2R1Cj4gZnJhbWVzIGF0IGF0aDEwayBub3c/ICBPdXQgb2YgY3Vy
-aW9zaXR5LCBob3cgZG8gYW1zZHUgZnJhbWVzIGFwcGVhcgo+IGluIGF0aDEwaz8gIERvZXMgdGhl
-IGZpcm13YXJlIHRha2UgY2FyZSBvZiBldmVyeXRoaW5nCj4gYmVmb3JlIGl0IGV2ZXIgZ2V0cyB0
-byB0aGUgaG9zdCBmb3IgbmF0aXZlIHdpZmk/CgpGb3IgbndpZmkgYW1zZHUgeW91IGdldCBsaW5r
-ZWQgc2tidWZmcy4gRWFjaCBza2J1ZmYgaXMgYSA4MDIuMTEKbm9uLXFvcyBkYXRhIGZyYW1lLiBh
-dGgxMGsgZml4ZXMgdGhlIGhlYWRlciAodXNpbmcgZGVjYXBwZWQgaGVhZGVyIGluCnJ4X2hkcl9z
-dGF0dXMpIGFuZCBzdWJtaXRzIGVhY2ggc3ViZnJhbWUgc2VwYXJhdGVseSBhcyBhbiBpbmRlcGVu
-ZGVudAo4MDIuMTEgZnJhbWUuIFRoaXMgcmVxdWlyZWQgYSBzbWFsbCBjaGFuZ2UgdG8gYmUgZG9u
-ZSBpbiBtYWM4MDIxMQooUlhfRkxBR19BTVNEVV9NT1JFKSBiZWNhdXNlIGFsbCBzdWJmcmFtZXMg
-c2hhcmUgdGhlIHNhbWUgc2VxdWVuY2UKbnVtYmVyIGFuZCBpdCBjb25mbGljdGVkIHdpdGggcmV0
-cmFuc21pc3Npb24vZGVkdXBsaWNhdGlvbgpjb3VudGVybWVhc3VyZXMuCgoKPj4+IFdoYXQgdGhy
-b3VnaHB1dHMgYXJlIHlvdSBzZWVpbmcsIGFuZCB3aGF0IE5JQ3MgYXJlIHlvdSB1c2luZyBmb3Ig
-QVAKPj4+IGFuZCBzdGF0aW9ucz8KPj4KPj4gV2l0aCBjdXJyZW50IG1hc3RlciBicmFuY2ggQ1VT
-MjIzLUNVUzIyMyBzaG91bGQgZ2V0IG92ZXIgODAwbWJwcyBpbgo+PiB1ZHAgdHgvcnggYW5kIDcw
-MG1icHMgaW4gdGNwIHR4L3J4IHdpdGggY2FibGVkIHNldHVwIG9uIGEgcG9vciBBUDEzNS4KPj4g
-U2luY2UgQVAxMzUncyBDUFUgZG9lc24ndCBoYXZlIGFueSB0aW1lIHRvIGlkbGUgYXJvdW5kIEkg
-ZXhwZWN0IHg4NiB0bwo+PiBwZXJmb3JtIGJldHRlciBhbmQgSSBkb24ndCB0aGluayBPVEEgc2hv
-dWxkIGJlIHRlcnJpYmx5IHNsb3dlciBpbiBhCj4+IHJlYXNvbmFibHkgY2xlYW4gZW52aXJvbm1l
-bnQuCj4KPiBPdmVyLXRoZS1haXIsIENVUzIyMyB3YXNuJ3QgYW55IGJldHRlciB0aGFuIFdMRTkw
-MFZYLCBzbyBwcm9iYWJseSBub3QKPiBhbiBpc3N1ZSB3aXRoIHRoZSBOSUNzLiAgQXJyYW5naW5n
-IHRoZSBhbnRlbm5hcyBhIGJpdCBnYXZlIG1lIGEgYml0IG9mCj4gYSBib29zdCwgYnV0IHN0aWxs
-IG9ubHkgYXJvdW5kIDYwME1icHMgVENQIHVwbG9hZCwgYW5kIGRvd25sb2FkIHdhcwo+IHN0aWxs
-IGluIHRoZSA0MDBNYnBzIHJhbmdlLiAgVGhlcmUgYXJlIG5vIEFQcyBpbiBzY2FuIHJhbmdlIGlu
-IHRoZQo+IGxvd2VyIGVuZCBvZiA1R2h6IHdoZXJlIEkgYW0gcnVubmluZywgc28gaXQgc2hvdWxk
-IGJlIHByZXR0eSBjbGVhbi4KPgo+IEkgY2FibGVkIFdMRTkwMFZYIE5JQ3MgdXAgd2l0aCAzMGRC
-IGF0dGVudWF0aW9uLCBhbmQgSSBkbyBzZWUgYWJvdXQgODAwTWJwcwo+IFVEUCB1cGxvYWQsIDcw
-ME1icHMgVENQIHVwbG9hZCwgYW5kIDQ2ME1icHMgVENQIGRvd25sb2FkLiAgRG93bmxvYWQgc3Rp
-bGwKPiBzdWNrcyBjb21wYXJlZCB0byB1cGxvYWQgZm9yIG1lLgo+Cj4gSSBzd2l0Y2hlZCBmdW5j
-dGlvbnM6ICBBUCBsb2dpYyBtb3ZlZCB0byBTVEEgbWFjaGluZSwgdmljZS12ZXJzYS4KPiBUaGUg
-bWlzLW1hdGNoIGJldHdlZW4gdXBsb2FkIGZvbGxvd3MgdGhlIHN0YXRpb25zL0FQcywgbm90IHRo
-ZSBoYXJkd2FyZS4KPgo+IChJbiB0aGlzIHRlc3QsIGJvdGggbWFjaGluZXMgYXJlIHVzaW5nIHN0
-b2NrIDQ2Ny4xLTEgZmlybXdhcmUuKQo+Cj4gTWF5YmUgc29tZXRoaW5nIHdpdGggaG93IEkgYW0g
-Y29uZmlndXJpbmcgQVBzIGludGVyZmFjZXMgaXMgdGhlIHByb2JsZW0uCj4KPiBDYW4geW91IHZl
-cmlmeSB0aGF0IHlvdSBzZWUgc2ltaWxhciB1cGxvYWQgYW5kIGRvd25sb2FkIHNwZWVkcyBmb3Ig
-eW91cgo+IHRlc3Qgc2NlbmFyaW8/CgpJJ20gYnVzeSBzbyBJIGNhbid0IGludmVzdGlnYXRlIHRo
-aXMgbXVjaCwgc29ycnkuCgpMaWtlIEkgbWVudGlvbmVkIGluIG15IG90aGVyIG1haWwgLSBvbiBB
-UDEzNSBVRFAgaXMgODAwbWJwcywgVENQIGlzCjcwMG1icHMsIGJvdGggd2F5cywgYW5kIHRoZSBi
-b3R0bGVuZWNrIGlzIEFQMTM1J3MgQ1BVIChNSVBTIDc0S2MgQAo3MjBNSHopLgoKWW91IG1pZ2h0
-IHRyeSB0byBjaGFuZ2UgeW91ciBxZGlzY3MgdG8gcGZpZm8gYW5kIGNoZWNrIGlmIGl0IG1ha2Vz
-IGFueQpkaWZmZXJlbmNlIGZvciB5b3UuCgoKPiBBbHNvLCBhdCA4MDBNYnBzIFVEUCwgcGVyZiB0
-b3AgbWFpbiBvZmZlbmRlciBpcyBhIDE3JSByYXcgc3BpbiBsb2NrLAo+IGJ1dCBpbiBnZW5lcmFs
-IG15IHN5c3RlbSB3YXMgbm90IHdvcmtpbmcgdG9vIGhhcmQgYXMgZmFyIGFzIEkgY2FuIHRlbGwu
-CgpUbyBiZSBob25lc3QgSSBoYXZlbid0IHRlc3RlZCB4ODYteDg2IHBlcmZvcm1hbmNlIGZvciBz
-b21lIHRpbWUgbm93LgpJJ3ZlIGJlZW4gbWFpbmx5IGZvY3VzZWQgb24gQVAxMzUuIEl0IGJvdHRs
-ZW5lY2tzIGVsc2V3aGVyZSAoaXQgaXMKbm9uLXByZWVtcHRpdmUgc28gc3BpbmxvY2tzIHdvcmsg
-Y29tcGxldGVseSBkaWZmZXJlbnQpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Remove almost the same code, and do only once
+__le32_to_cpu() conversion.
+
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   77 ++++++------------------------
+ 1 file changed, 15 insertions(+), 62 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index c03d2ec..64f73f0 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1000,62 +1000,6 @@ static void ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
+ 	ath10k_process_rx(htt->ar, info);
+ }
+ 
+-static bool ath10k_htt_rx_has_decrypt_err(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_DECRYPT_ERR)
+-		return true;
+-
+-	return false;
+-}
+-
+-static bool ath10k_htt_rx_has_fcs_err(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_FCS_ERR)
+-		return true;
+-
+-	return false;
+-}
+-
+-static bool ath10k_htt_rx_has_mic_err(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
+-		return true;
+-
+-	return false;
+-}
+-
+-static bool ath10k_htt_rx_is_mgmt(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_MGMT_TYPE)
+-		return true;
+-
+-	return false;
+-}
+-
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb)
+ {
+ 	struct htt_rx_desc *rxd;
+@@ -1091,7 +1035,8 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 					struct sk_buff *head,
+ 					bool msdu_chaining,
+ 					enum htt_rx_mpdu_status status,
+-					bool channel_set)
++					bool channel_set,
++					u32 attention)
+ {
+ 	if (head->len == 0) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+@@ -1099,7 +1044,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 		return false;
+ 	}
+ 
+-	if (ath10k_htt_rx_has_decrypt_err(head)) {
++	if (attention & RX_ATTENTION_FLAGS_DECRYPT_ERR) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+ 			   "htt rx dropping due to decrypt-err\n");
+ 		return false;
+@@ -1112,7 +1057,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 
+ 	/* Skip mgmt frames while we handle this in WMI */
+ 	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
+-	    ath10k_htt_rx_is_mgmt(head)) {
++	    attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
+ 		ath10k_dbg(ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
+ 		return false;
+ 	}
+@@ -1148,9 +1093,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ {
+ 	struct htt_rx_info info;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
++	struct htt_rx_desc *rxd;
+ 	enum htt_rx_mpdu_status status;
+ 	struct ieee80211_hdr *hdr;
+ 	int num_mpdu_ranges;
++	u32 attention;
+ 	int fw_desc_len;
+ 	u8 *fw_desc;
+ 	bool channel_set, fcs_err, mic_err;
+@@ -1215,23 +1162,29 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
+ 
++			rxd = container_of((void *) msdu_head->data,
++					   struct htt_rx_desc,
++					   msdu_payload);
++			attention = __le32_to_cpu(rxd->attention.flags);
++
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+ 							 ret > 0,
+ 							 status,
+-							 channel_set)) {
++							 channel_set,
++							 attention)) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
+ 
+ 			info.skb     = msdu_head;
+ 
+-			fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
++			fcs_err = !!(attention & RX_ATTENTION_FLAGS_FCS_ERR);
+ 			if (fcs_err)
+ 				info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
+ 			else
+ 				info.rx_status.flag &= ~RX_FLAG_FAILED_FCS_CRC;
+ 
+-			mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
++			mic_err = !!(attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
+ 			if (mic_err)
+ 				info.rx_status.flag |= RX_FLAG_MMIC_ERROR;
+ 			else
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
