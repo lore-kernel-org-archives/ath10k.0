@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WLpu9-0006Dp-Mx
- for ath10k@lists.infradead.org; Fri, 07 Mar 2014 08:13:18 +0000
+ id 1WLpyo-0006c2-F7
+ for ath10k@lists.infradead.org; Fri, 07 Mar 2014 08:18:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k:  support msdu chaining.
-References: <1393884429-8426-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 7 Mar 2014 10:12:50 +0200
-In-Reply-To: <1393884429-8426-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 3 Mar 2014 14:07:09
- -0800")
-Message-ID: <87ha7apgu5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: do not overwrite max_antenna_gain
+References: <1394021433-19376-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Fri, 7 Mar 2014 10:17:39 +0200
+In-Reply-To: <1394021433-19376-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Wed, 5 Mar 2014 13:10:33 +0100")
+Message-ID: <878usmpgm4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,20 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> From: Marek Puzyniak <marek.puzyniak@tieto.com>
 >
-> Consolidate the list of msdu skbs into the msdu-head skb, delete the
-> rest of the skbs, pass the msdu-head skb on up the stack as normal.
+> Seems like we have an old bug, where we incidently overwrites
+> the max_antenna_gain we pass to firmware, with zero value.
 >
-> Tested with high-speed TCP and UDP traffic on modified firmware that
-> supports raw-rx.
+> End of all we are artifically reducing the output power.
 >
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> This patch removes the excessive assignment on max_antenna_gain,
+> which is being provided by regulatory domain, and consequently
+> improves the tx power.
+>
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
 Thanks, applied.
 
