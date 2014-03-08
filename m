@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22c.google.com ([2607:f8b0:400c:c01::22c])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WM5xf-0003S1-VN
- for ath10k@lists.infradead.org; Sat, 08 Mar 2014 01:22:00 +0000
-Received: by mail-ve0-f172.google.com with SMTP id jx11so4984149veb.17
- for <ath10k@lists.infradead.org>; Fri, 07 Mar 2014 17:21:37 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <531A6D9B.4060605@candelatech.com>
-References: <CAHqTa-2NASvnpURqH=LbPMOi8GKHB23Xc3pxwULqnsXMrKHpow@mail.gmail.com>
- <5319EB80.4010608@candelatech.com>
- <CAHqTa-2Be3Whehq4tG1vSxBikLGuTeFMQmbYT5K3D1ui4hRumw@mail.gmail.com>
- <531A6D9B.4060605@candelatech.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Fri, 7 Mar 2014 19:21:17 -0600
-Message-ID: <CAHqTa-0_uFvupy0-+YvGSHPs0tbxMdth5=jYM925NHxyp-=+Aw@mail.gmail.com>
+ id 1WMCEg-0007g7-0l
+ for ath10k@lists.infradead.org; Sat, 08 Mar 2014 08:03:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Firmware crash when sending large numbers of forwarded packets
+References: <CAHqTa-2NASvnpURqH=LbPMOi8GKHB23Xc3pxwULqnsXMrKHpow@mail.gmail.com>
+Date: Sat, 8 Mar 2014 10:03:31 +0200
+In-Reply-To: <CAHqTa-2NASvnpURqH=LbPMOi8GKHB23Xc3pxwULqnsXMrKHpow@mail.gmail.com>
+ (Avery Pennarun's message of "Fri, 7 Mar 2014 05:38:07 -0500")
+Message-ID: <87iorpnmlo.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +23,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Avery Pennarun <apenwarr@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Fri, Mar 7, 2014 at 7:08 PM, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/07/2014 04:54 PM, Avery Pennarun wrote:
->> On Fri, Mar 7, 2014 at 10:53 AM, Ben Greear <greearb@candelatech.com> wrote:
->>> That is interesting, sending from LAN will often burst higher
->>> and cause more packet loss (and perhaps higher periodic packet
->>> loads) but sending locally will typically allow the local stack to back
->>> off more gracefully.
->>
->> That theory sounds right.  Do you think there's a way to simulate the
->> burstiness while avoiding the extra machine?  That would make testing
->> easier.  Some way to write a lot of packets to a socket and then
->> release it all at once?  I'm guessing UDP would work better for this
->> than TCP.
+Hi Avery,
+
+Avery Pennarun <apenwarr@gmail.com> writes:
+
+> I'm having a problem where if I transmit too fast out the ath10k
+> interface in AP mode, I get a near-immediate firmware crash.
+
+[...]
+
+> Versions:
+> - kernel is based on current kvalo/for-linville branch (should I try
+> something else?) but seems to be the same in linux-next-20140114 so I
+> don't think this behaviour has changed lately.
+
+I do not recommend using for-linville branch for anything. As the name
+implies, it's only for John Linville to pull ath10k and ath6kl changes
+to his tree.
+
+What I recommend is to use the master branch of my ath.git tree. That's
+fairly recent wireless-testing (max 2 weeks old) plus latest ath10k +
+ath6kl patches I have (ie. merge of wireless-testing and my ath-next
+branch).
+
+But if you prefer to have clean history (which wireless-testing doesn't
+have), you can also use ath-next branch directly. That contains the
+patches which I'm planning to send Linville next.
+
+I wrote some documentation about branches here:
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/sources#Git_branches
+
+But in a nutshell, use the master branch if you can. That way you are
+best aligned with the ath10k developers and also spot any regressions
+early on.
+
+> - firmware version 10.1.467.2-1, but also tested with 10.1.467.1-1
+> with no difference.
 >
-> UDP has some local backpressure as well, but maybe it would be more
-> likely to hit it than TCP I guess.
->
-> It could also be something else related to forwarding that is not just
-> rate specific (maybe frames come in with LRO and something special
-> about transmitting those, or something of that nature?).
+> I assume other people are not experiencing this or they would have
+> mentioned it by now.  What can I do to help debug this?
 
-Yes, that's possible...
+We have reported the issue to the firmware team and got some feedback
+already. Hopefully we know more early next week.
 
-> Are you using bridging or routing on your AP?  Bridging might
-> be fundamentally different than routing as far as this bug
-> is concerned.  Sending from local AP would likely emulate
-> routing type behaviour.
-
-The wlan1 interface is in a bridge, but the packets were coming from a
-wired ethernet interface (WAN port) that is not in the bridge.  I'll
-try without bridging and see if that affects anything.  Thanks for the
-suggestion.
-
->>> This appears to be an assert in firmware, not just random crash.
->>>
->>> Someone with .467 firmware source and a bit of skill with the tool-chain
->>> should be able to figure out where it is asserting.
->>>
->>> I do not know anyone with both of those things, however :P
->>
->> Maybe I should try harder to get access to the firmware source :)
->
-> Good luck..if you do get it and the toolchain, I can point
-> you towards how to decode (ie, get stack trace) that crash, or at least I can send
-> QCA email they could forward you (to satisfy any NDA isues).
-
-Thanks.  I'll contact them again and see what happens.
-
-Meanwhile, any suggestions anyone can provide on "what to trace" (and
-how to trace) right now given that I don't have firmware access, would
-be helpful.
-
-Have fun,
-
-Avery
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
