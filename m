@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
+Received: from mail-ve0-x235.google.com ([2607:f8b0:400c:c01::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WMxGk-0000PC-Do
- for ath10k@lists.infradead.org; Mon, 10 Mar 2014 10:17:15 +0000
-Received: by mail-oa0-f51.google.com with SMTP id i4so6684088oah.24
- for <ath10k@lists.infradead.org>; Mon, 10 Mar 2014 03:16:53 -0700 (PDT)
+ id 1WN5qr-0001QI-Co
+ for ath10k@lists.infradead.org; Mon, 10 Mar 2014 19:27:06 +0000
+Received: by mail-ve0-f181.google.com with SMTP id oy12so7426726veb.26
+ for <ath10k@lists.infradead.org>; Mon, 10 Mar 2014 12:26:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnW0kFV-h1i5kU7=mC_uXWz6L5DA46wyEnPNrTs=M8nFg@mail.gmail.com>
+In-Reply-To: <87pplwmxwf.fsf@kamboji.qca.qualcomm.com>
 References: <CAHqTa-2NASvnpURqH=LbPMOi8GKHB23Xc3pxwULqnsXMrKHpow@mail.gmail.com>
  <87iorpnmlo.fsf@kamboji.qca.qualcomm.com>
  <CAHqTa-1BjUQH_zQp=8NEHt7LQ1JQAG5ftzx+u4i4OqEqaG7teg@mail.gmail.com>
- <CA+BoTQnW0kFV-h1i5kU7=mC_uXWz6L5DA46wyEnPNrTs=M8nFg@mail.gmail.com>
-Date: Mon, 10 Mar 2014 11:16:53 +0100
-Message-ID: <CA+BoTQnCBn9Vp+=V4k_PoUOKVOOkkvNY_8Uottjssu=cv8KjMQ@mail.gmail.com>
+ <87pplwmxwf.fsf@kamboji.qca.qualcomm.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Mon, 10 Mar 2014 14:26:23 -0500
+Message-ID: <CAHqTa-1G4abtgdVQSdtP0yLd-fXg047vi+9P3Yc8Vp=pVdS1yg@mail.gmail.com>
 Subject: Re: Firmware crash when sending large numbers of forwarded packets
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,100 +23,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMTAgTWFyY2ggMjAxNCAxMToxMCwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0
-by5jb20+IHdyb3RlOgo+IE9uIDggTWFyY2ggMjAxNCAwOToyMCwgQXZlcnkgUGVubmFydW4gPGFw
-ZW53YXJyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE9uIFNhdCwgTWFyIDgsIDIwMTQgYXQgMjowMyBB
-TSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+PiBBdmVyeSBQ
-ZW5uYXJ1biA8YXBlbndhcnJAZ21haWwuY29tPiB3cml0ZXM6Cj4+Pj4gSSdtIGhhdmluZyBhIHBy
-b2JsZW0gd2hlcmUgaWYgSSB0cmFuc21pdCB0b28gZmFzdCBvdXQgdGhlIGF0aDEwawo+Pj4+IGlu
-dGVyZmFjZSBpbiBBUCBtb2RlLCBJIGdldCBhIG5lYXItaW1tZWRpYXRlIGZpcm13YXJlIGNyYXNo
-Lgo+Pj4KPj4+IFsuLi5dCj4+Pgo+Pj4+IFZlcnNpb25zOgo+Pj4+IC0ga2VybmVsIGlzIGJhc2Vk
-IG9uIGN1cnJlbnQga3ZhbG8vZm9yLWxpbnZpbGxlIGJyYW5jaCAoc2hvdWxkIEkgdHJ5Cj4+Pj4g
-c29tZXRoaW5nIGVsc2U/KSBidXQgc2VlbXMgdG8gYmUgdGhlIHNhbWUgaW4gbGludXgtbmV4dC0y
-MDE0MDExNCBzbyBJCj4+Pj4gZG9uJ3QgdGhpbmsgdGhpcyBiZWhhdmlvdXIgaGFzIGNoYW5nZWQg
-bGF0ZWx5Lgo+Pj4KPj4+IEkgZG8gbm90IHJlY29tbWVuZCB1c2luZyBmb3ItbGludmlsbGUgYnJh
-bmNoIGZvciBhbnl0aGluZy4gQXMgdGhlIG5hbWUKPj4+IGltcGxpZXMsIGl0J3Mgb25seSBmb3Ig
-Sm9obiBMaW52aWxsZSB0byBwdWxsIGF0aDEwayBhbmQgYXRoNmtsIGNoYW5nZXMKPj4+IHRvIGhp
-cyB0cmVlLgo+Pj4KPj4+IFdoYXQgSSByZWNvbW1lbmQgaXMgdG8gdXNlIHRoZSBtYXN0ZXIgYnJh
-bmNoIG9mIG15IGF0aC5naXQgdHJlZS4gVGhhdCdzCj4+PiBmYWlybHkgcmVjZW50IHdpcmVsZXNz
-LXRlc3RpbmcgKG1heCAyIHdlZWtzIG9sZCkgcGx1cyBsYXRlc3QgYXRoMTBrICsKPj4+IGF0aDZr
-bCBwYXRjaGVzIEkgaGF2ZSAoaWUuIG1lcmdlIG9mIHdpcmVsZXNzLXRlc3RpbmcgYW5kIG15IGF0
-aC1uZXh0Cj4+PiBicmFuY2gpLgo+Pgo+PiBPaywgdGhhbmtzLiAgV2UncmUgdXNpbmcgYSBmYWly
-bHkgb2xkIGtlcm5lbCBvbiBvdXIgZGV2aWNlIHJpZ2h0IG5vdwo+PiAoMy4yLjI2KSBzbyB3ZSdy
-ZSB1c2luZyB0aGUgYXRoMTBrIGRyaXZlciBmcm9tIGxpbnV4LWJhY2twb3J0cy4gIFRoaXMKPj4g
-bWVhbnMgaXQncyBhIGxpdHRsZSB0cmlja3kgdG8gcGljayBhbiBhcmJpdHJhcnkgdmVyc2lvbiBp
-ZiBpdCBoYXMKPj4gZGl2ZXJnZWQgdG8gZmFyIGZyb20gbGludXgvbWFzdGVyIG9yIGxpbnV4LW5l
-eHQuICBJIGRpZCB0cnkgYSBmZXcKPj4gZGlmZmVyZW50IHZlcnNpb25zIHRob3VnaCBhbmQgdGhl
-eSBkaWQgdGhlIHNhbWUgdGhpbmcuCj4+Cj4+Pj4gLSBmaXJtd2FyZSB2ZXJzaW9uIDEwLjEuNDY3
-LjItMSwgYnV0IGFsc28gdGVzdGVkIHdpdGggMTAuMS40NjcuMS0xCj4+Pj4gd2l0aCBubyBkaWZm
-ZXJlbmNlLgo+Pj4+Cj4+Pj4gSSBhc3N1bWUgb3RoZXIgcGVvcGxlIGFyZSBub3QgZXhwZXJpZW5j
-aW5nIHRoaXMgb3IgdGhleSB3b3VsZCBoYXZlCj4+Pj4gbWVudGlvbmVkIGl0IGJ5IG5vdy4gIFdo
-YXQgY2FuIEkgZG8gdG8gaGVscCBkZWJ1ZyB0aGlzPwo+Pj4KPj4+IFdlIGhhdmUgcmVwb3J0ZWQg
-dGhlIGlzc3VlIHRvIHRoZSBmaXJtd2FyZSB0ZWFtIGFuZCBnb3Qgc29tZSBmZWVkYmFjawo+Pj4g
-YWxyZWFkeS4gSG9wZWZ1bGx5IHdlIGtub3cgbW9yZSBlYXJseSBuZXh0IHdlZWsuCj4+Cj4+IFRo
-YW5rcyEKPj4KPj4gQW5vdGhlciB1cGRhdGUuICBPbiBhIHdoaW0sIGJhc2VkIG9uIHRoZSBlYXJs
-aWVyIG1lbnRpb24gdGhhdCBwcm9ibGVtcwo+PiBtaWdodCBiZSByZWxhdGVkIHRvIGV4dHJhIGJ1
-cnN0aW5lc3Mgb2YgZm9yd2FyZGluZyB2cy4gbG9jYWwgdHJhZmZpYwo+PiBnZW5lcmF0aW9uLCBJ
-IGRlY2lkZWQgdG8gYWRkIGEgdWRlbGF5KCkgYmVmb3JlIHRyYW5zbWl0dGluZyBlYWNoCj4+IHBh
-Y2tldC4gIEkgc3RhcnRlZCB3aXRoIHVkZWxheSgxMDAwKSBhbmQgdGhlIHByb2JsZW0gd2VudCBh
-d2F5Cj4+IChhbHRob3VnaCBvZiBjb3Vyc2UgcGVyZm9ybWFuY2Ugd2FzIHRlcnJpYmxlKS4gIEkg
-c2xvd2x5IHJlZHVjZWQgdGhlCj4+IGRlbGF5IHVudGlsIEkgcmVhY2hlZCBuZGVsYXkoMSksIGFu
-ZCB0aGUgcHJvYmxlbSBzdGF5ZWQgZ29uZS4gIFNvIEkKPj4gdHJpZWQgYSBtYigpIGluc3RlYWQ6
-Cj4+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMK
-Pj4gYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmMKPj4gaW5kZXggYTc5NDk5
-Yy4uYTgwOGQ4MiAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9jZS5jCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY2UuYwo+PiBA
-QCAtMjkxLDYgKzI5MSw3IEBAIGludCBhdGgxMGtfY2Vfc2VuZF9ub2xvY2soc3RydWN0IGF0aDEw
-a19jZV9waXBlICpjZV9zdGF0ZSwKPj4gICBpZiAocmV0KQo+PiAgIHJldHVybiByZXQ7Cj4+Cj4+
-ICsgbWIoKTsKPj4gICBpZiAodW5saWtlbHkoQ0VfUklOR19ERUxUQShuZW50cmllc19tYXNrLAo+
-PiAgICAgd3JpdGVfaW5kZXgsIHN3X2luZGV4IC0gMSkgPD0gMCkpIHsKPj4gICByZXQgPSAtRU5P
-U1I7Cj4+IC0tCj4+IDEuOS4wLjI3OS5nZGM5ZTNlYgo+Pgo+Pgo+PiBTb21laG93IHRoaXMgZWxp
-bWluYXRlcyBteSBmaXJtd2FyZSBjcmFzaGVzLiAgSXQncyBleHRyZW1lbHkgcmVsaWFibGU7Cj4+
-IGFkZCB0aGlzIGxpbmUgYW5kIG15IGNyYXNoZXMgZ28gYXdheS4gIFJlbW92ZSB0aGlzIGxpbmUg
-YW5kIG15IFVEUAo+PiBpcGVyZiBjYW4gY3Jhc2ggdGhlIGZpcm13YXJlIGluIGEgY291cGxlIG9m
-IHNlY29uZHMuCj4+Cj4+IEZvciB0aGlzIHBhcnRpY3VsYXIgdGVzdCBJIHdhcyB1c2luZyBhIGJh
-Y2twb3J0cyBidWlsdCBmcm9tIGxpbnV4Cj4+IHYzLjExLjggbWVyZ2VkIHdpdGggeW91ciBhdGgx
-MGstc3RhYmxlLTMuMTEtOCB0YWcuCj4+Cj4+IEFueSBpZGVhIHdoeSB0aGlzIHdvdWxkIG1ha2Ug
-YW55IGRpZmZlcmVuY2U/Cj4KPiBUaGUgRlcgZHVtcCBpcyBzdXBwb3NlZGx5IHJlbGF0ZWQgdG8g
-aXQgc2VlaW5nIGEgZHVwbGljYXRlIG1zZHVfaWQgdHggcmVxdWVzdC4KPgo+IGF0aDEwayBmaWxs
-cyBpbiBhIHR4IGRlc2NyaXB0b3IuIFRoZSBkZXNjcmlwdG9yIGNvbnRhaW5zIGFuIGlkIHdoaWNo
-Cj4gaXMgdXNlZCBmb3IgY29tcGxldGlvbiBoYW5kbGluZyAoRlcgc2lnbmFscyB3aGljaCBpZCBj
-b21wbGV0ZWQpLgo+IGF0aDEwayB1c2VzIGEgc3BpbmxvY2sgcHJvdGVjdGVkIGJpdG1hcCB0byBt
-YW5hZ2UgdGhpcyBtZXRhZGF0YS4KPiBEZXNjcmlwdG9ycyBhcmUgYWxsb2NlZCB2aWEgZG1hIHBv
-b2wgKGNvbnNpc3RlbnQgZG1hIG1lbW9yeSkuCj4KPiBJdCBpcyBoaWdobHkgdW5saWtlbHkgZm9y
-IGF0aDEwayB0byBwaWNrIGR1cGxpY2F0ZSBtc2R1X2lkIGluIHRoZQo+IGZpcnN0IHBsYWNlIC0g
-eW91J2QgaGF2ZSB0byBhc3N1bWUgc3BpbmxvY2sgZmFpbCB3aGljaCB3b3VsZCBzdWdnZXN0Cj4g
-eW91ciBzeXN0ZW0gd291bGQgYmUgcHJldHR5IGZ1bi4gVGhpcyBsZWF2ZXMgZWl0aGVyIGxvdyBs
-ZXZlbCBjaHVuawo+IHN1Ym1pc3Npb24gaXMgYXQgcGxheSBvciBETUEgZ29lcyBjcmF6eS4KPgo+
-IFRoZSBkZXNjcmlwdG9yIGlzIHRyYW5zZmVyZWQgaW4gdHdvIGNodW5rcyBvdmVyIENFIHJpbmcu
-IFRoZQo+IGNlX3NlbmRfbm9sb2NrIGlzIHVzZWQgdG8gc3VibWl0IGVhY2ggc2VwYXJhdGVseSAo
-dmlhIHBjaV90eF9zZykuIFRoZQo+IGZpcnN0IGNvbnRhaW5zIG1zZHUgaWQsIHRoZSBvdGhlciBv
-bmUgaXMgdGhlIG1zZHUgcGFydGlhbCBhcyBmcmFtZQo+IHByZWZldGNoIGZvciBGVyBjbGFzc2lm
-aWNhdGlvbiBlbmdpbmUuIE9uY2UgdGhlIHNlY29uZCBjaHVuayBpcwo+IHN1Ym1pdHRlZCBDRSBy
-aW5nYnVmZmVyIGluZGV4IGlzIHdyaXR0ZW4gdG8gaW9tYXAuCj4KPiBJZiBJIGFzc3VtZSB0aGlz
-IGlzIERNQSBjb2hlcmVuY3kgaXNzdWUsIHRoZW4gbXNkdV9pZCB0aGUgZGV2aWNlIHNlZXMKPiBp
-cyB0aGUgb2xkIG9uZSAodGhhdCBoYXMgYmVlbiBvdmVyd3JpdHRlbiBidXQgaGFzbid0IGJlZW4g
-Zmx1c2hlZCBmcm9tCj4gQ1BVIGNhY2hlcyB5ZXQpLiBUaGVuIHRoaXMgaXMgYSBwbGF0Zm9ybSBi
-dWcsIG5vdCBhdGgxMGsgb25lLgo+Cj4gSWYgSSBhc3N1bWUgdGhpcyBpcyBjaHVuayBzdWJtaXNz
-aW9uIG9yZGVyaW5nIGlzc3VlIChDRSByaW5nIGl0ZW0gaXMKPiB1cGRhdGVkIF9hZnRlcl8gcmlu
-ZyBpbmRleCBpbiBpb21hcCBpcyB1cGRhdGVkKSB0aGVuIHRoZSBkZXZpY2UgdXNlcwo+IGFuIG9s
-ZCB0eCBkZXNjcmlwdG9yIHBvaW50ZXIgYW5kIGFuIG9sZCAob3IgcmUtdXNlZCBhbmQgY3VycmVu
-dGx5IHVzZWQKPiBtc2R1X2lkIC0tIHJlbWVtYmVyIGFsbCBkZXNjcmlwdG9ycyBjb21lIGZyb20g
-ZG1hIHBvb2wgd2hpY2ggSSBhc3N1bWUKPiByZS11c2VzIG1lbW9yeSBjaHVua3MpLiBUaGVuIHRo
-aXMgaXMgYXRoMTBrIGJ1Zy4KPgo+IFRoZSBsYXR0ZXIgaXMgYSBsaXR0bGUgbW9yZSBwbGF1c2li
-bGUgYmVjYXVzZSBtYigpIGZpeGVzLiB1ZGVsYXkoKQo+IG1pZ2h0IGltcGxpY2l0bHkgZG8gdGhl
-IHNhbWUgdGhpbmcuCgpOb3cgdGhhdCBJIHRoaW5rIHlvdSBjYW4gcHJvYmFibHkgdHJ5IHBsYWNp
-bmcgdGhlIG1iKCkgYWZ0ZXIgYCpkZXNjID0KKmRlc2NgLCBvciBiZXR0ZXIsIHJpZ2h0IGJlZm9y
-ZSBhdGgxMGtfY2Vfc3JjX3Jpbmdfd3JpdGVfaW5kZXhfc2V0KCkKKGluc2lkZSB0aGUgY29uZGl0
-aW9uYWwpLiBUaGlzIGlzIHdpbGwgbWFrZSBzdXJlIGFsbCBwcmlvciBDRSBpdGVtcwphcmUgcmVh
-ZHkgYW5kIHNldCBiZWZvcmUgQ0UgcmluZyBpbmRleCBpcyB1cGRhdGVkLgoKCk1pY2hhxYIKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Sat, Mar 8, 2014 at 10:57 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Avery Pennarun <apenwarr@gmail.com> writes:
+>> On Sat, Mar 8, 2014 at 2:03 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>>> What I recommend is to use the master branch of my ath.git tree. That's
+>>> fairly recent wireless-testing (max 2 weeks old) plus latest ath10k +
+>>> ath6kl patches I have (ie. merge of wireless-testing and my ath-next
+>>> branch).
+>>
+>> Ok, thanks.  We're using a fairly old kernel on our device right now
+>> (3.2.26) so we're using the ath10k driver from linux-backports.  This
+>> means it's a little tricky to pick an arbitrary version if it has
+>> diverged too far from linux/master or linux-next.
+>
+> Yeah, you are not the only one using ath10k with linux-backports.
+> Ideally we should have our own "backports-ath10k" which contains latest
+> and greatest ath10k from my master tree. This would be really handy for
+> debugging problems and verifying bug fixes, but I don't see any way to
+> find time for that right now :/
+
+For what it's worth, linux-backports seems to get updated to match
+linux-next fairly frequently.  They have one for next-20140305 for
+example.  It's pretty easy for me to test against one of those.  It
+seems to be not so important to rebase on top of linux-backports as to
+rebase on top of (close to) same version linux-backports is using as
+input.
+
+When I looked at the 20140305 release though, it appears that the
+ath10k development has gotten quite far ahead of linux-next and some
+of the patches not yet in linux-next (eg. reset fixes) are pretty
+important.
+
+Have fun,
+
+Avery
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
