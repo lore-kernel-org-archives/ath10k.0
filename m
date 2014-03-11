@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNQDP-0005gv-8Z
- for ath10k@lists.infradead.org; Tue, 11 Mar 2014 17:11:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2] ath10k: check otp.bin result
-References: <20140311153318.7148.47415.stgit@potku.adurom.net>
- <20140311153328.7148.50188.stgit@potku.adurom.net>
-Date: Tue, 11 Mar 2014 19:10:54 +0200
-In-Reply-To: <20140311153328.7148.50188.stgit@potku.adurom.net> (Kalle Valo's
- message of "Tue, 11 Mar 2014 17:33:28 +0200")
-Message-ID: <877g80hd9d.fsf@kamboji.qca.qualcomm.com>
+ id 1WNQdC-0006M7-2O
+ for ath10k@lists.infradead.org; Tue, 11 Mar 2014 17:38:22 +0000
+Message-ID: <531F49F2.3030408@candelatech.com>
+Date: Tue, 11 Mar 2014 10:37:54 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: unify warning messages in mac.c
+References: <20140303154327.1290.67278.stgit@potku.adurom.net>
+ <CA+BoTQmQndikH5uPDwBpstp9KmcD3tmHSGP5NpEreYEOtRm0sw@mail.gmail.com>
+ <8761nv44nd.fsf@kamboji.qca.qualcomm.com>
+ <87k3c1gf35.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87k3c1gf35.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +25,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+On 03/11/2014 04:16 AM, Kalle Valo wrote:
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+> 
+>>> I think we should agree on one of the two approaches:
+>>>
+>>> a) start with a verb:
+>>>
+>>> "failed to add peer %pM on vdev %i: %d"
+>>> "failed to initialize dfs pattern detector"
+>>> "timed out while waiting for scan completion"
+>>>
+>>> b) start with a noun:
+>>>
+>>> "peer %pM on vdev %i could not be added: %d"
+>>> "dfs pattern detector could not initialize"
+>>> "scan timed out"
+>>>
+>>> These are still mixed.
+>>>
+>>> We could probably also limit the set of verbs, e.g. replace "could
+>>> not" with "failed to" as it's practically the same thing (assuming we
+>>> pick (a)).
+>>
+>> That's true. I would vote for option (a).
+> 
+> I didn't get any comments about Michal's proposal. Can I conclude from
+> this that (a) above is ok for everyone?
 
-> When we execute otp.bin in the target check that the result it returns doesn't
-> contain an error. This is to make sure that we don't accidentally use invalid
-> calibration data.
->
-> While at it, remove the useless label in the function and add few debug messages.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.c |   21 ++++++++++++++++-----
->  1 file changed, 16 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 602fb9644cbf..e8f419144db6 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -254,23 +254,34 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
->  
->  	/* OTP is optional */
->  
-> -	if (!ar->otp_data || !ar->otp_len)
-> +	if (!ar->otp_data || !ar->otp_len) {
-> +		ath10k_warn("Not running otp, calibration will be incorrect!\n");
->  		return 0;
-> +	}
-> +
-> +	ath10k_dbg(ATH10K_DBG_BOOT, "boot upload otp to 0x%x len %d\n",
-> +		   address, ar->otp_len);
 
-This one introduces a warning:
+I like (a), but I would also suggest giving user a clue as to the
+severity.  Something starting with 'failed' or 'warning' is pretty obvious.
 
->> drivers/net/wireless/ath/ath10k/core.c:263:6: warning: format '%d' expects argument of type 'int', but argument 4 has type 'size_t' [-Wformat=]
-         address, ar->otp_len);
+A timeout is less so..ie, how much of a problem is the timeout?
 
-I fixed it to this:
-
-	ath10k_dbg(ATH10K_DBG_BOOT, "boot upload otp to 0x%x len %zd\n",
-		   address, ar->otp_len);
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
