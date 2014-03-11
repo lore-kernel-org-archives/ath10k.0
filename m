@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNH9v-0002Ne-LJ
- for ath10k@lists.infradead.org; Tue, 11 Mar 2014 07:31:32 +0000
+ id 1WNHCe-0002Rc-LA
+ for ath10k@lists.infradead.org; Tue, 11 Mar 2014 07:34:21 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Firmware crash when sending large numbers of forwarded packets
-References: <CAHqTa-2NASvnpURqH=LbPMOi8GKHB23Xc3pxwULqnsXMrKHpow@mail.gmail.com>
- <87iorpnmlo.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1BjUQH_zQp=8NEHt7LQ1JQAG5ftzx+u4i4OqEqaG7teg@mail.gmail.com>
- <87pplwmxwf.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1G4abtgdVQSdtP0yLd-fXg047vi+9P3Yc8Vp=pVdS1yg@mail.gmail.com>
-Date: Tue, 11 Mar 2014 09:31:00 +0200
-In-Reply-To: <CAHqTa-1G4abtgdVQSdtP0yLd-fXg047vi+9P3Yc8Vp=pVdS1yg@mail.gmail.com>
- (Avery Pennarun's message of "Mon, 10 Mar 2014 14:26:23 -0500")
-Message-ID: <8761nljiob.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k driver crashes whenever firmware crashes on ARM SoC
+References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
+ <871tzq210z.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-VmomkfvaTm+=Du8FqCC=b=UG2d=8ixUK2tUsFj4_dsRL4Pg@mail.gmail.com>
+ <CAHqTa-3O0_5OcTKNi0KLa--63ZYO4o7qK=VsN7Bsyi0nX+rF7g@mail.gmail.com>
+ <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
+Date: Tue, 11 Mar 2014 09:33:46 +0200
+In-Reply-To: <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
+ (Avery Pennarun's message of "Sun, 9 Feb 2014 03:00:45 -0500")
+Message-ID: <871ty9jijp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,44 +28,46 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Avery Pennarun <apenwarr@gmail.com> writes:
 
-> On Sat, Mar 8, 2014 at 10:57 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Avery Pennarun <apenwarr@gmail.com> writes:
->>> On Sat, Mar 8, 2014 at 2:03 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->>>> What I recommend is to use the master branch of my ath.git tree. That's
->>>> fairly recent wireless-testing (max 2 weeks old) plus latest ath10k +
->>>> ath6kl patches I have (ie. merge of wireless-testing and my ath-next
->>>> branch).
->>>
->>> Ok, thanks.  We're using a fairly old kernel on our device right now
->>> (3.2.26) so we're using the ath10k driver from linux-backports.  This
->>> means it's a little tricky to pick an arbitrary version if it has
->>> diverged too far from linux/master or linux-next.
->>
->> Yeah, you are not the only one using ath10k with linux-backports.
->> Ideally we should have our own "backports-ath10k" which contains latest
->> and greatest ath10k from my master tree. This would be really handy for
->> debugging problems and verifying bug fixes, but I don't see any way to
->> find time for that right now :/
+> On Wed, Jan 29, 2014 at 9:41 PM, Avery Pennarun <apenwarr@gmail.com> wrote:
+>> Still chasing around some people to get a PCIe bus analyzer set up.
 >
-> For what it's worth, linux-backports seems to get updated to match
-> linux-next fairly frequently.  They have one for next-20140305 for
-> example.  It's pretty easy for me to test against one of those.  It
-> seems to be not so important to rebase on top of linux-backports as to
-> rebase on top of (close to) same version linux-backports is using as
-> input.
+> Okay, I finally managed to get enough parts put together to look at
+> the PCIe bus.  To make things a little more clear, I added a macro
+> that does essentially:
 >
-> When I looked at the 20140305 release though, it appears that the
-> ath10k development has gotten quite far ahead of linux-next and some
-> of the patches not yet in linux-next (eg. reset fixes) are pretty
-> important.
+>    pci_write_config_dword(0, 0x80000000 | __LINE__)
+>    mdelay(1);
+>    pci_write_config_dword(0, __LINE__)
+>
+> ...at various points in the code.  This way I can see precisely what
+> was the most recent PCIe transaction before the crash.
+>
+> I'm not super familiar with PCIe, but what I think I'm seeing is:
+>
+> - the firmware does not need to be loaded yet; sometimes I can crash
+> it just by doing a cold reset right at driver load time.  So the good
+> news is, the firmware code is not related.
+>
+> - the crash is always in ath10k_pci_device_reset
 
-I haven't looked very closely, but I suspect it will take several weeks
-for patches to flow from my ath-next branch to backports. For important
-fixes, like the cold reset workarounds, it's too long.
+[...]
+
+> Does this ring a bell for anyone?  I think I can also export the
+> traces as csv in case someone wants to look at them.
+
+I showed your analysis to an HW engineer and the response I got was
+"don't do that" (= don't use the cold reset). As you know, we now have a
+workaround using the warm reset:
+
+00f5482bcd94 ath10k: suspend hardware before reset
+9042e17df834 ath10k: refactor suspend/resume functions
+fc36e3ffcdd0 ath10k: fix device initialization routine
+
+Have you tested these? Did they help at all?
 
 -- 
 Kalle Valo
