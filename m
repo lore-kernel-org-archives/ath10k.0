@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WNJUY-0006Pq-Et
- for ath10k@lists.infradead.org; Tue, 11 Mar 2014 10:00:59 +0000
+ id 1WNJYn-0006YS-T4
+ for ath10k@lists.infradead.org; Tue, 11 Mar 2014 10:05:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 05/14] ath10k: introduce ieee80211_rx_status to htt_rx_info
+Subject: Re: [RFC 00/14] ath10k: Refactor rx path little bit
 References: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
- <1393937548-7482-6-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 11 Mar 2014 11:59:55 +0200
-In-Reply-To: <1393937548-7482-6-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 4 Mar 2014 13:52:18 +0100")
-Message-ID: <87eh29hx7o.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 11 Mar 2014 12:04:50 +0200
+In-Reply-To: <1393937548-7482-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 4 Mar 2014 13:52:13 +0100")
+Message-ID: <87a9cxhwzh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,53 +28,41 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Will be used as a template, and final storage for
-> rx_status.
+> Refactor rx path, mainly split/reduce calculation we
+> did before. Now we caculate variable/flags only once
+> per-ppdu, while before we did some calculations for
+> each mpdu. Kill some not needed code and fill directly
+> ieee80211_rx_status structure.
+> TP veryfication required.
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Janusz Dziedzic (14):
+>   ath10k: add ath10k_htt_rx_amsdu_allowed function
+>   ath10k: Fill per-ppdu info in rx_info only once
+>   ath10k: move rx related functions to htt_rx.c
+>   ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
+>   ath10k: introduce ieee80211_rx_status to htt_rx_info
+>   ath10k: kill signal field in htt_rx_info
+>   ath10k: setup rx channel per ppdu
+>   ath10k: kill rate substruct and tsf from htt_rx_info
+>   ath10k: kill fcs_err from htt_rx_info
+>   ath10k: kill mic_err/amsdu_more from htt_rx_info
+>   ath10k: kill status from htt_rx_info
+>   ath10k: kill encrypt_type from htt_rx_info
+>   ath10k: return error when ath10k_htt_rx_amsdu_pop() fail
+>   ath10k: improve way we play with attention flags
 
-I think this patch is too small. It's good to have small atomic commits
-but I think goes overboard.
+I did now a quick review:
 
-> @@ -1174,6 +1175,7 @@ struct htt_peer_unmap_event {
->  
->  struct htt_rx_info {
->  	struct sk_buff *skb;
-> +	struct ieee80211_rx_status rx_status;
->  	enum htt_rx_mpdu_status status;
->  	enum htt_rx_mpdu_encrypt_type encrypt_type;
->  	s8 signal;
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> index 3008a1d..2fca1fa 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -756,7 +756,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
->  	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
->  
->  	status = IEEE80211_SKB_RXCB(info->skb);
-> -	memset(status, 0, sizeof(*status));
-> +	memcpy(status, &info->rx_status, sizeof(*status));
+I didn't fully understand your idea with rx status template.
 
-So you are idea with the status template is that instead clearing
-status, you copy it from the previous frame and reuse it? Why do you
-want to do it? Performance reasons?
+I think the patchset is too long, it will be easier if you split these
+into two. First set with all the easy and obvious stuff and a second one
+for the rx status template.
 
-I didn't fully understand your idea here, but I assume patch 9 is
-related as I see that you change the CRC flag handling from this:
+Some of the patches are missing commit logs. Even if the patch is
+obvious, please write a small commit log. Just oneliner would be enough.
 
--	if (info->fcs_err)
--		status->flag |= RX_FLAG_FAILED_FCS_CRC;
-
-to this:
-
-+			fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
-+			if (fcs_err)
-+				info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
-+			else
-+				info.rx_status.flag &= ~RX_FLAG_FAILED_FCS_CRC;
-
-I don't really like that clearing the flag part. Can you describe what
-is your plan behind this template?
+I would prefer the commit logs to answer more why the change is needed.
 
 -- 
 Kalle Valo
