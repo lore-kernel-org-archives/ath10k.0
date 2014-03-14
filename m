@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOPSb-0007RM-VW
- for ath10k@lists.infradead.org; Fri, 14 Mar 2014 10:35:31 +0000
+ id 1WOPWu-0007aL-5J
+ for ath10k@lists.infradead.org; Fri, 14 Mar 2014 10:39:56 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Performance of ath10k
-References: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk>
-Date: Fri, 14 Mar 2014 12:34:56 +0200
-In-Reply-To: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk> (Trevor
- Cullen's message of "Fri, 14 Mar 2014 09:54:41 +0000")
-Message-ID: <87fvml83vz.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
+ simulate_fw_crash
+References: <20140313082431.10798.10888.stgit@potku.adurom.net>
+Date: Fri, 14 Mar 2014 12:39:26 +0200
+In-Reply-To: <20140313082431.10798.10888.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 13 Mar 2014 10:24:31 +0200")
+Message-ID: <87bnx983oh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,27 +24,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Trevor Cullen <tcc@innovelec.co.uk>
-Cc: 'Vu Hai NGUYEN' <vh.nguyen@actiasodielec.fr>, ath10k@lists.infradead.org
+To: marek.puzyniak@tieto.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Trevor Cullen <tcc@innovelec.co.uk> writes:
+Hi Marek,
 
-> There's much debate going on in my circles about this card. It's based on
-> the QCA XB140 reference design which supposedly supports 11a,b,g,n, ac at
-> 2.4G or 5G (not concurrent).
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> From: Marek Puzyniak <marek.puzyniak@tieto.com>
 >
-> So does ath10k support this card fully?
+> Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
+> In order to have firmware crash simulation functionality also
+> in firmware 10.1 driver can force firmware crash by performing not allowed
+> operation. Driver can deliberately crash firmware when setting vdev param for
+> vdev id out of range.  This patch introduces two keywords to simulate_fw_crash:
+>
+> 'soft' which will cause firmware crash that is recoverable
+>        by warm firmware reset but supported only in main firmware.
+> 'hard' which will cause firmware crash recoverable by cold
+>        firmware reset, this option works for both firmwares.
+>
+> Commands to trigger firmware soft/hard crash:
+>
+> echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+> echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+>
+> kvalo: use strncmp(), remove '\n' before checking the command and
+> document how buf is null terminated
+>
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Fully? You do understand that there are a LOT of features in 802.11 :)
-
-Few things which come to my mind:
-
-* XB140 needs 10.1.467.2-1 firmware and Ad-Hoc is not supported in that
-  firmware
-
-* DFS works only on ETSI region
-
-* mac80211 doesn't support VHT on 2.4 G
+can you please review my changes and check if they are ok?
 
 -- 
 Kalle Valo
