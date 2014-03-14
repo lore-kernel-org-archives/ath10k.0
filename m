@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOWxf-00052y-Nk
- for ath10k@lists.infradead.org; Fri, 14 Mar 2014 18:36:04 +0000
-Date: Fri, 14 Mar 2014 14:28:34 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20140311
-Message-ID: <20140314182749.GB20339@tuxdriver.com>
-References: <87y50hgghr.fsf@kamboji.qca.qualcomm.com>
+ id 1WOZlS-0001gu-Tf
+ for ath10k@lists.infradead.org; Fri, 14 Mar 2014 21:35:39 +0000
+Message-ID: <53237602.2080404@candelatech.com>
+Date: Fri, 14 Mar 2014 14:34:58 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87y50hgghr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Performance of ath10k
+References: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk>
+In-Reply-To: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Trevor Cullen <tcc@innovelec.co.uk>
+Cc: 'Vu Hai NGUYEN' <vh.nguyen@actiasodielec.fr>, 'Kalle Valo' <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
 
-On Tue, Mar 11, 2014 at 12:46:24PM +0200, Kalle Valo wrote:
-> Hi John,
+On 03/14/2014 02:54 AM, Trevor Cullen wrote:
+> There's much debate going on in my circles about this card. It's based on
+> the QCA XB140 reference design which supposedly supports 11a,b,g,n, ac at
+> 2.4G or 5G (not concurrent).
 > 
-> here's a new pull request from me, but just ath10k patches this time.
-> Summary of the changes:
-> 
-> Michal now did some optimisations and was able to improve throughput by
-> 100 Mbps on our MIPS based AP135 platform. Chun-Yeow added some
-> workarounds to be able to better use ad-hoc mode. Ben improved log
-> messages and added support for MSDU chaining. And, as usual, also some
-> smaller fixes.
-> 
-> Please let me know if there are any problems.
-> 
-> Kalle
-> 
-> The following changes since commit ef1b4141d0430583743a6045901e4d1a73557a33:
-> 
->   ath5k: set SURVEY_INFO_IN_USE on get_survey (2014-02-24 15:38:39 -0500)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to 70dd77b4c50da518b57b8b9b125a8c9aabe9bc1a:
-> 
->   ath10k: do not overwrite max_antenna_gain (2014-03-07 10:14:10 +0200)
+> So does ath10k support this card fully?
 
-Pulling now...
+The WLE900VX appears to work as well as the CUS223, at least.
+
+I have not tried any other ath10k NICs yet..but will order some
+when vendors start making them available...
+
+Thanks,
+Ben
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
