@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOZlS-0001gu-Tf
- for ath10k@lists.infradead.org; Fri, 14 Mar 2014 21:35:39 +0000
-Message-ID: <53237602.2080404@candelatech.com>
-Date: Fri, 14 Mar 2014 14:34:58 -0700
+ id 1WOaEC-0002Fc-RB
+ for ath10k@lists.infradead.org; Fri, 14 Mar 2014 22:05:21 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s2EM4wTS029543
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Fri, 14 Mar 2014 15:04:59 -0700
+Message-ID: <53237D0A.1030008@candelatech.com>
+Date: Fri, 14 Mar 2014 15:04:58 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Performance of ath10k
-References: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk>
-In-Reply-To: <005b01cf3f6b$6c6c4840$4544d8c0$@innovelec.co.uk>
+Subject: Proper way to do warm-reset from the driver?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Trevor Cullen <tcc@innovelec.co.uk>
-Cc: 'Vu Hai NGUYEN' <vh.nguyen@actiasodielec.fr>, 'Kalle Valo' <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On 03/14/2014 02:54 AM, Trevor Cullen wrote:
-> There's much debate going on in my circles about this card. It's based on
-> the QCA XB140 reference design which supposedly supports 11a,b,g,n, ac at
-> 2.4G or 5G (not concurrent).
-> 
-> So does ath10k support this card fully?
 
-The WLE900VX appears to work as well as the CUS223, at least.
+On my firmware, I am often seeing 'tx not flushed' errors after bouncing
+32 stations a few times.
 
-I have not tried any other ath10k NICs yet..but will order some
-when vendors start making them available...
+It does not seem this error can ever be recovered because the
+reference counting is messed up.
+
+I am planning to attempt a warm reset in this case, in hopes it
+will clear things up.
+
+Is the preferred way to restart the nic just:
+
+queue_work(ar->workqueue, &ar->restart_work);
+
+?
 
 Thanks,
 Ben
