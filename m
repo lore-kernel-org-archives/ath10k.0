@@ -1,27 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WOLa7-0001rT-FU
- for ath10k@lists.infradead.org; Fri, 14 Mar 2014 06:27:00 +0000
+ id 1WONf4-000468-MI
+ for ath10k@lists.infradead.org; Fri, 14 Mar 2014 08:40:16 +0000
+Subject: [PATCH 1/3] Rename LICENSE.atheros_firmware to LICENCE.old_qca
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k driver crashes whenever firmware crashes on ARM SoC
-References: <CAHqTa-3o40ROJQ1=698CVMS=+nxNGT+i98nTU+sNBBG1fSHUzA@mail.gmail.com>
- <871tzq210z.fsf@kamboji.qca.qualcomm.com>
- <CAJ-VmomkfvaTm+=Du8FqCC=b=UG2d=8ixUK2tUsFj4_dsRL4Pg@mail.gmail.com>
- <CAHqTa-3O0_5OcTKNi0KLa--63ZYO4o7qK=VsN7Bsyi0nX+rF7g@mail.gmail.com>
- <CAHqTa-2kUJ1hrc8c2Kqy+cGexPJdisTMuUTH8WQ5KqV9qURwMw@mail.gmail.com>
- <871ty9jijp.fsf@kamboji.qca.qualcomm.com>
- <531F5D6F.6060801@candelatech.com>
- <87pplrg71t.fsf@kamboji.qca.qualcomm.com>
- <532084C3.8060904@candelatech.com>
- <CAHqTa-01MAbTh4ekq8+u-uG_cH=o9SCkpC-fWuMfsPDmfAMCow@mail.gmail.com>
- <87y50ed6rl.fsf@kamboji.qca.qualcomm.com>
- <CAJ-VmonGzsdw7WT79jYNU-CtUodza3xpQXsiheC9WyTTRxfsFg@mail.gmail.com>
- <5321EDF9.6040706@candelatech.com>
-Date: Fri, 14 Mar 2014 08:26:29 +0200
-In-Reply-To: <5321EDF9.6040706@candelatech.com> (Ben Greear's message of "Thu, 
- 13 Mar 2014 10:42:17 -0700")
-Message-ID: <87a9ct9tyi.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 14 Mar 2014 10:45:01 +0200
+Message-ID: <20140314084501.23100.13103.stgit@x230>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,27 +20,194 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Avery Pennarun <apenwarr@gmail.com>
+To: ben@decadent.org.uk
+Cc: linux-wireless@vger.kernel.org, dwmw2@infradead.org, ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> writes:
+In preparation for the new QCA license.
 
->>>> Another question: is there perhaps anything the firmware can do to eg.
->>>> set a watchdog timer, so that the internal CPU will restart (go back
->>>> to "waiting for firmware" mode) if it doesn't answer for a while?  The
->>>> idea would be for the device to un-wedge itself even if there's
->>>> nothing we can do to fix it from outside.
->>>
->>> That's something a firmware engineer should comment on, which I'm not.
->
-> Kalle:  Can you feed that question to your firmware contacts
-> at QCA?
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ LICENCE.atheros_firmware |   38 --------------------------------------
+ LICENCE.old_qca          |   38 ++++++++++++++++++++++++++++++++++++++
+ WHENCE                   |   18 +++++++++---------
+ 3 files changed, 47 insertions(+), 47 deletions(-)
+ delete mode 100644 LICENCE.atheros_firmware
+ create mode 100644 LICENCE.old_qca
 
-Sure, I'm trying to solve this warm reset problem and talking with them
-anyway. All ideas very welcome how to solve this.
+diff --git a/LICENCE.atheros_firmware b/LICENCE.atheros_firmware
+deleted file mode 100644
+index e0ebdac..0000000
+--- a/LICENCE.atheros_firmware
++++ /dev/null
+@@ -1,38 +0,0 @@
+-Copyright (c) 2008-2010, Atheros Communications, Inc.
+-All rights reserved.
+-
+-Redistribution.  Redistribution and use in binary form, without
+-modification, are permitted provided that the following conditions are
+-met:
+-
+-* Redistributions must reproduce the above copyright notice and the
+-  following disclaimer in the documentation and/or other materials
+-  provided with the distribution.
+-
+-* Neither the name of Atheros Communications, Inc. nor the names of
+-  its suppliers may be used to endorse or promote products derived
+-  from this software without specific prior written permission.
+-
+-* No reverse engineering, decompilation, or disassembly of this
+-  software is permitted.
+-
+-Limited patent license.  Atheros Communications, Inc. grants a
+-world-wide, royalty-free, non-exclusive license under patents it
+-now or hereafter owns or controls to make, have made, use, import,
+-offer to sell and sell ("Utilize") this software, but solely to
+-the extent that any such patent is necessary to Utilize the software
+-in conjunction with an Atheros Chipset. The patent license shall not
+-apply to any other combinations which include this software. No
+-hardware per se is licensed hereunder.
+-
+-DISCLAIMER.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+-CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+-THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+-INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+-BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
+-OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+-USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+diff --git a/LICENCE.old_qca b/LICENCE.old_qca
+new file mode 100644
+index 0000000..e0ebdac
+--- /dev/null
++++ b/LICENCE.old_qca
+@@ -0,0 +1,38 @@
++Copyright (c) 2008-2010, Atheros Communications, Inc.
++All rights reserved.
++
++Redistribution.  Redistribution and use in binary form, without
++modification, are permitted provided that the following conditions are
++met:
++
++* Redistributions must reproduce the above copyright notice and the
++  following disclaimer in the documentation and/or other materials
++  provided with the distribution.
++
++* Neither the name of Atheros Communications, Inc. nor the names of
++  its suppliers may be used to endorse or promote products derived
++  from this software without specific prior written permission.
++
++* No reverse engineering, decompilation, or disassembly of this
++  software is permitted.
++
++Limited patent license.  Atheros Communications, Inc. grants a
++world-wide, royalty-free, non-exclusive license under patents it
++now or hereafter owns or controls to make, have made, use, import,
++offer to sell and sell ("Utilize") this software, but solely to
++the extent that any such patent is necessary to Utilize the software
++in conjunction with an Atheros Chipset. The patent license shall not
++apply to any other combinations which include this software. No
++hardware per se is licensed hereunder.
++
++DISCLAIMER.  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
++CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
++BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
++FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
++THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
++INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
++BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS
++OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
++ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
++TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
++USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+diff --git a/WHENCE b/WHENCE
+index 4bcb3b5..2054239 100644
+--- a/WHENCE
++++ b/WHENCE
+@@ -455,7 +455,7 @@ Driver: ar9170 - Atheros 802.11n "otus" USB
+ File: ar9170-1.fw
+ File: ar9170-2.fw
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -469,7 +469,7 @@ Version: 1.3
+ File: htc_7010.fw
+ Version: 1.3
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -1328,7 +1328,7 @@ Version: 1.0
+ 
+ Fix EEPROM radio table issue and change PID to 3005
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2060,7 +2060,7 @@ File: ar3k/ramps_0x01020201_40.dfu
+ File: ar3k/AthrBT_0x41020000.dfu
+ File: ar3k/ramps_0x41020000_40.dfu
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2078,7 +2078,7 @@ File: ar3k/30000/ar3kbdaddr.pst
+ File: ar3k/30000/PS_ASIC.pst
+ File: ar3k/30000/RamPatch.txt
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2114,7 +2114,7 @@ File: ath6k/AR6002/eeprom.bin
+ File: ath6k/AR6002/athwlan.bin.z77
+ File: ath6k/AR6002/data.patch.hw2_0.bin
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2144,7 +2144,7 @@ File: ath6k/AR6003.1/hw2.1.1/data.patch.bin
+ File: ath6k/AR6003.1/hw2.1.1/endpointping.bin
+ File: ath6k/AR6003.1/hw2.1.1/otp.bin
+ 
+-License: Redistributable. See LICENCE.atheros_firmware for details
++License: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2156,7 +2156,7 @@ File: ar3k/30101coex/PS_ASIC_aclHighPri.pst
+ File: ar3k/30101coex/PS_ASIC.pst
+ File: ar3k/30101coex/RamPatch.txt
+ 
+-License: Redistributable. See LICENCE.atheros_firmware for details
++License: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
+@@ -2205,7 +2205,7 @@ Driver: ar5523 -- Atheros AR5523 based USB Wifi dongles
+ 
+ File: ar5523.bin
+ 
+-Licence: Redistributable. See LICENCE.atheros_firmware for details
++Licence: Redistributable. See LICENCE.old_qca for details
+ 
+ --------------------------------------------------------------------------
+ 
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
