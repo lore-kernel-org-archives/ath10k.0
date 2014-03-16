@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from shadbolt.e.decadent.org.uk ([88.96.1.126])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPFl7-0006cb-3m
- for ath10k@lists.infradead.org; Sun, 16 Mar 2014 18:26:05 +0000
-Message-ID: <1394994345.15764.96.camel@deadeye.wl.decadent.org.uk>
+ id 1WPGFi-00071k-5g
+ for ath10k@lists.infradead.org; Sun, 16 Mar 2014 18:57:43 +0000
+Message-ID: <1394996230.15764.113.camel@deadeye.wl.decadent.org.uk>
 Subject: Re: [PATCH 3/3] ath10k: add firmware files
 From: Ben Hutchings <ben@decadent.org.uk>
-Date: Sun, 16 Mar 2014 18:25:45 +0000
-In-Reply-To: <87wqfx8856.fsf@kamboji.qca.qualcomm.com>
+Date: Sun, 16 Mar 2014 18:57:10 +0000
+In-Reply-To: <CAB=NE6WW8yX4kdy02j2fT4g0JvYj4a_XkiqYtXKZSMB7FHuwNg@mail.gmail.com>
 References: <20140314084501.23100.13103.stgit@x230>
  <20140314084514.23100.72654.stgit@x230>
- <87wqfx8856.fsf@kamboji.qca.qualcomm.com>
+ <CAB=NE6WW8yX4kdy02j2fT4g0JvYj4a_XkiqYtXKZSMB7FHuwNg@mail.gmail.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,41 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5024845376612932244=="
+Content-Type: multipart/mixed; boundary="===============0140364600160897620=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: dwmw2@infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Woodhouse <dwmw2@infradead.org>
 
 
---===============5024845376612932244==
+--===============0140364600160897620==
 Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-gD6QHAYxaeLJSqe81JyY"
+	protocol="application/pgp-signature"; boundary="=-ANVEt/7OdFBiJ+ufZy8u"
 
 
---=-gD6QHAYxaeLJSqe81JyY
+--=-ANVEt/7OdFBiJ+ufZy8u
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2014-03-14 at 11:03 +0200, Kalle Valo wrote:
-> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+On Fri, 2014-03-14 at 05:36 -0700, Luis R. Rodriguez wrote:
+> On Fri, Mar 14, 2014 at 1:45 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrot=
+e:
+[...]
+> > + NO LICENSES OR OTHER RIGHTS,
+> > +WHETHER EXPRESS, IMPLIED, BASED ON ESTOPPEL OR OTHERWISE, ARE GRANTED
+> > +TO ANY PARTY'S PATENTS, PATENT APPLICATIONS, OR PATENTABLE INVENTIONS
+> > +BY VIRTUE OF THIS LICENSE OR THE DELIVERY OR PROVISION BY QUALCOMM
+> > +ATHEROS, INC. OF THE SOFTWARE.
 >=20
-> > Add firmware files for ath10k wireless driver with the new QCA license.
-> >
-> > Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> > ---
-> >  LICENCE.qca                         |   44 +++++++++++++++++++++++++++=
-++++++++
-> >  WHENCE                              |    9 +++++++
-> >  ath10k/QCA988X/hw2.0/board.bin      |  Bin
-> >  ath10k/QCA988X/hw2.0/firmware-2.bin |  Bin
-> >  4 files changed, 53 insertions(+)
->=20
-> I forgot to mention in the commit log that the version of this firmware
-> is 10.1.467.2-1.
+> This -- however is new to linux-firmware -- and I hereby raise a big
+> red fucking flag. All other licenses on linux-firmware provide at the
+> very least a limited patent grant. What makes Qualcomm special ?
+[...]
 
-Please put this in a Version field to the WHENCE file under each File
-field.
+There are several licence texts that don't mention patents at all.  I'm
+assuming that the companies submitting firmware for inclusion in Linux
+or linux-firmware do intend to grant whatever licences are required to
+distribute it to end users.
+
+Several licence texts explicitly exclude patent licences relating to any
+*other* products of the same company, but that's quite redundant.
+
+However this language seems to explicitly exclude *any* patent licence.
+You're right to raise a red flag because, assuming Qualcomm does have
+patents that cover the firmware alone, this seems to disallow
+redistribution in whatever jurisdictions those patents apply.
 
 Ben.
 
@@ -62,32 +70,32 @@ Ben.
 Ben Hutchings
 Computers are not intelligent.	They only think they are.
 
---=-gD6QHAYxaeLJSqe81JyY
+--=-ANVEt/7OdFBiJ+ufZy8u
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1
 
-iQIVAwUAUyXsqee/yOyVhhEJAQrEnBAAzJxWHh3O1N4Wa8JEFs51p4T+29wnJNFa
-xLn5Y0xpplFWJqKId0EoDd/YQtSdlDTPCJ0DukGbNhxJRf/vBQBYuVF+UGePdWWK
-1hizTWjMg1qrro5975yBv3/Z+f2w8Rc817oh3fdIEnQrR53qLX0UnHwi89xCn0jQ
-xVxxiiDwBsohnZpPUonOaWhDpb3K1Lo1R4nF8nnQqKaKi5bPNUc1zr0J/ZdNWueC
-oyrPz+8da0uwhKOg9tCLwVMp6KP1lWEjLWUcR1EOEDbe0mE0CUqsSbkz/VBABeOX
-bxJTpPYAdXqh7Z111vpAWpniAHi9+8uib19KYLmbun+TLDd7DeHb9vJ7afRwQA10
-xxHo7bhg6HhvfSVO6EchaemAhEfGT2C/ZPG0OKnkNZmbjqk6ywj2NGxCz8ppGlYk
-X1HMK/NEJ4WWN5nGa3Xdqaoa27VLTZxF6pM1rKbJSpzpniHd49uglIVIaiCuVHCo
-9tBhUYUkRCHJ5nsobWlMr9Wu6y8BfHzRYZyC2kXvQmzMguPJpU5aEHPf1NZyxh9/
-pQa+VUYus68YrbvTvKzamrSxX+ksSApZ5bWnaz+UWicMUvYWRvQLR8zYzTh9Hmcy
-IZonX5MKHcTIMQCt90Z2xMaUNc5CZFJG6kmgEqiABHF2oHtA6OOljLRS4QLiSJOm
-LzCdul6yxDg=
-=R8su
+iQIVAwUAUyX0Bue/yOyVhhEJAQpPeQ/8D6Z1UqLY4JPQsVWUWUMd/9CMVO3pBIK8
+m8+yo0qgC8WL7CWHe8kPDkL05gNPdj5ef7qc+AzqYTKEvaa4pTbQ6BS8Y14FhTVS
+cUo4fDjhJfT9R7uP7XBtCGagcaOUzFoDvYgMlH+pN2qeoV+v+IkxXTadTRsfpY5x
+oLHklcoFTrwf02VLba77eNsEzKHciOG9go3rJVXn/wgwCYdBCCNhzwpmfZJQzPZm
+AwNFshs2ndQI7yVlU+zT/hSdEgpOj2Q20rZxFVVTQSxRd2J5NKvaqXu1vkSlDkGh
+m0uUCsluIHSt1VUK0RSBaJ/pIG/NatimdSCpH1V4ohREGAO5u3K7N/FUFcJk0apO
+3keexu3nJ40hkxyArPzL8mYNJb0mJ63cvAkkCyf6a5xECXJV24byG/5pvdSrLTkf
+M1pI9nQvQYRMN8YQTocNBiw3L8oQF/jEpabZKluHqy3Cayvnj+EluDhXOsbtcg/x
+ufhcViPr5xsyyTimkhcEVPPNKyPNdzXccRO7w5Ee6uN8mPrxlSHEShV4mnOdSGWH
+T2r4Y3ms2uTmmTDk2JNrDtengTg1qM8+B6dODOB7wR02j2bO7O2D8yei8dVm7SMG
+IVT4iJ0M9rv8jKrC/lTXG+EmfLaFKr4fOTe5jqTM2Gn8racr/hjvT2ywbV4wwdYq
+BYuxxRlkn6w=
+=r1Jd
 -----END PGP SIGNATURE-----
 
---=-gD6QHAYxaeLJSqe81JyY--
+--=-ANVEt/7OdFBiJ+ufZy8u--
 
 
---===============5024845376612932244==
+--===============0140364600160897620==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -98,4 +106,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============5024845376612932244==--
+--===============0140364600160897620==--
