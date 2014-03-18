@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from [219.149.12.116] (helo=edge-a.dhc.com.cn)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPsNQ-0007JX-GD
- for ath10k@lists.infradead.org; Tue, 18 Mar 2014 11:40:16 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1WPtYt-0000t7-Cc
+ for ath10k@lists.infradead.org; Tue, 18 Mar 2014 12:56:19 +0000
+Message-ID: <5328418A.5080205@dhc.com.cn>
+Date: Tue, 18 Mar 2014 20:52:26 +0800
+From: wangdc <wangdc@dhc.com.cn>
+MIME-Version: 1.0
 Subject: Re: [For Help]Wrong mac address when i used ath10k driver
 References: <53280D21.9080008@dhc.com.cn>
-Date: Tue, 18 Mar 2014 13:39:43 +0200
-In-Reply-To: <53280D21.9080008@dhc.com.cn> (wangdc@dhc.com.cn's message of
- "Tue, 18 Mar 2014 17:08:49 +0800")
-Message-ID: <8761nbka68.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <8761nbka68.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <8761nbka68.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +19,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: wangdc <wangdc@dhc.com.cn>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-wangdc <wangdc@dhc.com.cn> writes:
-
-> When i used the driver of the ath10k(backports-3.13.2-1) to drive the
-> 11ac mini-pcie WIFI card(9880)
-
-What board is this? Something based on XB140 design?
-
-> on the ubuntu 12.04(based x86), the card seems to be working but i got
-> a wrong mac address when
-> i used the following command. Though i changed the other mini-pcie
-> card, i got the same mac address.
-> ---------------
-> root@ubuntu:~$ cat /sys/class/ieee80211/phy0/addresses
-> 00:03:07:12:34:56
-> ---------------
->
-> If anybody get the same this problem, could you please tell me how to
-> fix it.
->
-> Any suggestions would be helpful.
->
-> ps:
-> start log when i grep ath as following:
-> root@ubuntu:~$ dmesg | grep ath
-> [   25.240895] ath10k_pci 0000:04:00.0: BAR 0: assigned [mem
-> 0xf0400000-0xf05fffff 64bit]
-> [   25.240918] ath10k_pci 0000:04:00.0: BAR 0: set to [mem
-> 0xf0400000-0xf05fffff 64bit] (PCI address [0xf0400000-0xf05fffff])
-> [   25.240932] ath10k_pci 0000:04:00.0: enabling device (0000 -> 0002)
-> [   25.240943] ath10k_pci 0000:04:00.0: PCI INT A -> GSI 18 (level,
-> low) -> IRQ 18
-> [   25.241008] ath10k_pci 0000:04:00.0: setting latency timer to 64
-> [   25.241481] ath10k: MSI-X didn't succeed (1), trying MSI
-> [   25.241549] ath10k_pci 0000:04:00.0: irq 45 for MSI/MSI-X
-> [   25.241582] ath10k: MSI interrupt handling
-> [   25.274432] ath10k: Hardware name qca988x hw2.0 version 0x4100016c
-> [   26.645636] ath10k: UART prints disabled
-> [   26.649723] ath10k: firmware 999.999.0.636 booted
-> [   26.659427] ath10k: htt target version 2.1
-> [   26.659951] ath: EEPROM regdomain: 0x0
-> [   26.659953] ath: EEPROM indicates default country code should be used
-> [   26.659954] ath: doing EEPROM country->regdmn map search
-> [   26.659956] ath: country maps to regdmn code: 0x3a
-> [   26.659958] ath: Country alpha2 being used: US
-> [   26.659960] ath: Regpair used: 0x3a
-> [   62.880138] type=1400 audit(1395133013.810:12): apparmor="STATUS"
-> operation="profile_load" name="/usr/lib/telepathy/mission-control-5"
-> pid=1117 comm="apparmor_parser"
-> [   62.880710] type=1400 audit(1395133013.810:13): apparmor="STATUS"
-> operation="profile_load" name="/usr/lib/telepathy/telepathy-*"
-> pid=1117 comm="apparmor_parser"
-> [   63.953074] ath10k: MSI-X didn't succeed (1), trying MSI
-> [   63.953152] ath10k_pci 0000:04:00.0: irq 45 for MSI/MSI-X
-> [   63.953190] ath10k: MSI interrupt handling
-> [   65.135257] ath10k: UART prints disabled
-> [   65.139331] ath10k: firmware 999.999.0.636 booted
-
-I'm guessing otp.bin fails and use the default board file. Can you try
-firmware 10.1.467.2-1? Just get the firmware here:
-
-https://github.com/kvalo/ath10k-firmware/tree/master/10.1
-
-And rename it to firmware-2.bin:
-
-cp firmware-2.bin_10.1.467.2-1 /lib/firmware/ath10k/QCA988X/hw2.0/firmware-2.bin
-
-And reload ath10k.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBLYWxsZSBWYWxvCgpOb3cgSSBjYW4gZ2V0IHRoZSBtYWMgYWRkcmVzcyBjb3JyZWN0bHkg
+dXNpbmcgdGhlIGZvbGxvd2luZyBtZXRob2QuIApUaGFuayB5b3UgdmVyeSBtdWNoLgoKUmV4IHdh
+bmcKCk9uIDIwMTTlubQwM+aciDE45pelIDE5OjM5LCBLYWxsZSBWYWxvIHdyb3RlOgo+IHdhbmdk
+YyA8d2FuZ2RjQGRoYy5jb20uY24+IHdyaXRlczoKPgo+PiBXaGVuIGkgdXNlZCB0aGUgZHJpdmVy
+IG9mIHRoZSBhdGgxMGsoYmFja3BvcnRzLTMuMTMuMi0xKSB0byBkcml2ZSB0aGUKPj4gMTFhYyBt
+aW5pLXBjaWUgV0lGSSBjYXJkKDk4ODApCj4gV2hhdCBib2FyZCBpcyB0aGlzPyBTb21ldGhpbmcg
+YmFzZWQgb24gWEIxNDAgZGVzaWduPwo+Cj4+IG9uIHRoZSB1YnVudHUgMTIuMDQoYmFzZWQgeDg2
+KSwgdGhlIGNhcmQgc2VlbXMgdG8gYmUgd29ya2luZyBidXQgaSBnb3QKPj4gYSB3cm9uZyBtYWMg
+YWRkcmVzcyB3aGVuCj4+IGkgdXNlZCB0aGUgZm9sbG93aW5nIGNvbW1hbmQuIFRob3VnaCBpIGNo
+YW5nZWQgdGhlIG90aGVyIG1pbmktcGNpZQo+PiBjYXJkLCBpIGdvdCB0aGUgc2FtZSBtYWMgYWRk
+cmVzcy4KPj4gLS0tLS0tLS0tLS0tLS0tCj4+IHJvb3RAdWJ1bnR1On4kIGNhdCAvc3lzL2NsYXNz
+L2llZWU4MDIxMS9waHkwL2FkZHJlc3Nlcwo+PiAwMDowMzowNzoxMjozNDo1Ngo+PiAtLS0tLS0t
+LS0tLS0tLS0KPj4KPj4gSWYgYW55Ym9keSBnZXQgdGhlIHNhbWUgdGhpcyBwcm9ibGVtLCBjb3Vs
+ZCB5b3UgcGxlYXNlIHRlbGwgbWUgaG93IHRvCj4+IGZpeCBpdC4KPj4KPj4gQW55IHN1Z2dlc3Rp
+b25zIHdvdWxkIGJlIGhlbHBmdWwuCj4+Cj4+IHBzOgo+PiBzdGFydCBsb2cgd2hlbiBpIGdyZXAg
+YXRoIGFzIGZvbGxvd2luZzoKPj4gcm9vdEB1YnVudHU6fiQgZG1lc2cgfCBncmVwIGF0aAo+PiBb
+ICAgMjUuMjQwODk1XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogQkFSIDA6IGFzc2lnbmVkIFtt
+ZW0KPj4gMHhmMDQwMDAwMC0weGYwNWZmZmZmIDY0Yml0XQo+PiBbICAgMjUuMjQwOTE4XSBhdGgx
+MGtfcGNpIDAwMDA6MDQ6MDAuMDogQkFSIDA6IHNldCB0byBbbWVtCj4+IDB4ZjA0MDAwMDAtMHhm
+MDVmZmZmZiA2NGJpdF0gKFBDSSBhZGRyZXNzIFsweGYwNDAwMDAwLTB4ZjA1ZmZmZmZdKQo+PiBb
+ICAgMjUuMjQwOTMyXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgw
+MDAwIC0+IDAwMDIpCj4+IFsgICAyNS4yNDA5NDNdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBQ
+Q0kgSU5UIEEgLT4gR1NJIDE4IChsZXZlbCwKPj4gbG93KSAtPiBJUlEgMTgKPj4gWyAgIDI1LjI0
+MTAwOF0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0byA2
+NAo+PiBbICAgMjUuMjQxNDgxXSBhdGgxMGs6IE1TSS1YIGRpZG4ndCBzdWNjZWVkICgxKSwgdHJ5
+aW5nIE1TSQo+PiBbICAgMjUuMjQxNTQ5XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogaXJxIDQ1
+IGZvciBNU0kvTVNJLVgKPj4gWyAgIDI1LjI0MTU4Ml0gYXRoMTBrOiBNU0kgaW50ZXJydXB0IGhh
+bmRsaW5nCj4+IFsgICAyNS4yNzQ0MzJdIGF0aDEwazogSGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3
+Mi4wIHZlcnNpb24gMHg0MTAwMDE2Ywo+PiBbICAgMjYuNjQ1NjM2XSBhdGgxMGs6IFVBUlQgcHJp
+bnRzIGRpc2FibGVkCj4+IFsgICAyNi42NDk3MjNdIGF0aDEwazogZmlybXdhcmUgOTk5Ljk5OS4w
+LjYzNiBib290ZWQKPj4gWyAgIDI2LjY1OTQyN10gYXRoMTBrOiBodHQgdGFyZ2V0IHZlcnNpb24g
+Mi4xCj4+IFsgICAyNi42NTk5NTFdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHgwCj4+IFsgICAy
+Ni42NTk5NTNdIGF0aDogRUVQUk9NIGluZGljYXRlcyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91
+bGQgYmUgdXNlZAo+PiBbICAgMjYuNjU5OTU0XSBhdGg6IGRvaW5nIEVFUFJPTSBjb3VudHJ5LT5y
+ZWdkbW4gbWFwIHNlYXJjaAo+PiBbICAgMjYuNjU5OTU2XSBhdGg6IGNvdW50cnkgbWFwcyB0byBy
+ZWdkbW4gY29kZTogMHgzYQo+PiBbICAgMjYuNjU5OTU4XSBhdGg6IENvdW50cnkgYWxwaGEyIGJl
+aW5nIHVzZWQ6IFVTCj4+IFsgICAyNi42NTk5NjBdIGF0aDogUmVncGFpciB1c2VkOiAweDNhCj4+
+IFsgICA2Mi44ODAxMzhdIHR5cGU9MTQwMCBhdWRpdCgxMzk1MTMzMDEzLjgxMDoxMik6IGFwcGFy
+bW9yPSJTVEFUVVMiCj4+IG9wZXJhdGlvbj0icHJvZmlsZV9sb2FkIiBuYW1lPSIvdXNyL2xpYi90
+ZWxlcGF0aHkvbWlzc2lvbi1jb250cm9sLTUiCj4+IHBpZD0xMTE3IGNvbW09ImFwcGFybW9yX3Bh
+cnNlciIKPj4gWyAgIDYyLjg4MDcxMF0gdHlwZT0xNDAwIGF1ZGl0KDEzOTUxMzMwMTMuODEwOjEz
+KTogYXBwYXJtb3I9IlNUQVRVUyIKPj4gb3BlcmF0aW9uPSJwcm9maWxlX2xvYWQiIG5hbWU9Ii91
+c3IvbGliL3RlbGVwYXRoeS90ZWxlcGF0aHktKiIKPj4gcGlkPTExMTcgY29tbT0iYXBwYXJtb3Jf
+cGFyc2VyIgo+PiBbICAgNjMuOTUzMDc0XSBhdGgxMGs6IE1TSS1YIGRpZG4ndCBzdWNjZWVkICgx
+KSwgdHJ5aW5nIE1TSQo+PiBbICAgNjMuOTUzMTUyXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDog
+aXJxIDQ1IGZvciBNU0kvTVNJLVgKPj4gWyAgIDYzLjk1MzE5MF0gYXRoMTBrOiBNU0kgaW50ZXJy
+dXB0IGhhbmRsaW5nCj4+IFsgICA2NS4xMzUyNTddIGF0aDEwazogVUFSVCBwcmludHMgZGlzYWJs
+ZWQKPj4gWyAgIDY1LjEzOTMzMV0gYXRoMTBrOiBmaXJtd2FyZSA5OTkuOTk5LjAuNjM2IGJvb3Rl
+ZAo+IEknbSBndWVzc2luZyBvdHAuYmluIGZhaWxzIGFuZCB1c2UgdGhlIGRlZmF1bHQgYm9hcmQg
+ZmlsZS4gQ2FuIHlvdSB0cnkKPiBmaXJtd2FyZSAxMC4xLjQ2Ny4yLTE/IEp1c3QgZ2V0IHRoZSBm
+aXJtd2FyZSBoZXJlOgo+Cj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2Fy
+ZS90cmVlL21hc3Rlci8xMC4xCj4KPiBBbmQgcmVuYW1lIGl0IHRvIGZpcm13YXJlLTIuYmluOgo+
+Cj4gY3AgZmlybXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xIC9saWIvZmlybXdhcmUvYXRoMTBrL1FD
+QTk4OFgvaHcyLjAvZmlybXdhcmUtMi5iaW4KPgo+IEFuZCByZWxvYWQgYXRoMTBrLgo+CgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
