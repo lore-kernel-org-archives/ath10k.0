@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from [219.149.12.116] (helo=edge-a.dhc.com.cn)
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPtYt-0000t7-Cc
- for ath10k@lists.infradead.org; Tue, 18 Mar 2014 12:56:19 +0000
-Message-ID: <5328418A.5080205@dhc.com.cn>
-Date: Tue, 18 Mar 2014 20:52:26 +0800
-From: wangdc <wangdc@dhc.com.cn>
+ id 1WQ2NO-0000Qf-1h
+ for ath10k@lists.infradead.org; Tue, 18 Mar 2014 22:20:50 +0000
+Message-ID: <5328C6A8.5000002@candelatech.com>
+Date: Tue, 18 Mar 2014 15:20:24 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [For Help]Wrong mac address when i used ath10k driver
-References: <53280D21.9080008@dhc.com.cn>
- <8761nbka68.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8761nbka68.fsf@kamboji.qca.qualcomm.com>
+Subject: Stuck packet in ath10k
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,67 +16,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-RGVhciBLYWxsZSBWYWxvCgpOb3cgSSBjYW4gZ2V0IHRoZSBtYWMgYWRkcmVzcyBjb3JyZWN0bHkg
-dXNpbmcgdGhlIGZvbGxvd2luZyBtZXRob2QuIApUaGFuayB5b3UgdmVyeSBtdWNoLgoKUmV4IHdh
-bmcKCk9uIDIwMTTlubQwM+aciDE45pelIDE5OjM5LCBLYWxsZSBWYWxvIHdyb3RlOgo+IHdhbmdk
-YyA8d2FuZ2RjQGRoYy5jb20uY24+IHdyaXRlczoKPgo+PiBXaGVuIGkgdXNlZCB0aGUgZHJpdmVy
-IG9mIHRoZSBhdGgxMGsoYmFja3BvcnRzLTMuMTMuMi0xKSB0byBkcml2ZSB0aGUKPj4gMTFhYyBt
-aW5pLXBjaWUgV0lGSSBjYXJkKDk4ODApCj4gV2hhdCBib2FyZCBpcyB0aGlzPyBTb21ldGhpbmcg
-YmFzZWQgb24gWEIxNDAgZGVzaWduPwo+Cj4+IG9uIHRoZSB1YnVudHUgMTIuMDQoYmFzZWQgeDg2
-KSwgdGhlIGNhcmQgc2VlbXMgdG8gYmUgd29ya2luZyBidXQgaSBnb3QKPj4gYSB3cm9uZyBtYWMg
-YWRkcmVzcyB3aGVuCj4+IGkgdXNlZCB0aGUgZm9sbG93aW5nIGNvbW1hbmQuIFRob3VnaCBpIGNo
-YW5nZWQgdGhlIG90aGVyIG1pbmktcGNpZQo+PiBjYXJkLCBpIGdvdCB0aGUgc2FtZSBtYWMgYWRk
-cmVzcy4KPj4gLS0tLS0tLS0tLS0tLS0tCj4+IHJvb3RAdWJ1bnR1On4kIGNhdCAvc3lzL2NsYXNz
-L2llZWU4MDIxMS9waHkwL2FkZHJlc3Nlcwo+PiAwMDowMzowNzoxMjozNDo1Ngo+PiAtLS0tLS0t
-LS0tLS0tLS0KPj4KPj4gSWYgYW55Ym9keSBnZXQgdGhlIHNhbWUgdGhpcyBwcm9ibGVtLCBjb3Vs
-ZCB5b3UgcGxlYXNlIHRlbGwgbWUgaG93IHRvCj4+IGZpeCBpdC4KPj4KPj4gQW55IHN1Z2dlc3Rp
-b25zIHdvdWxkIGJlIGhlbHBmdWwuCj4+Cj4+IHBzOgo+PiBzdGFydCBsb2cgd2hlbiBpIGdyZXAg
-YXRoIGFzIGZvbGxvd2luZzoKPj4gcm9vdEB1YnVudHU6fiQgZG1lc2cgfCBncmVwIGF0aAo+PiBb
-ICAgMjUuMjQwODk1XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogQkFSIDA6IGFzc2lnbmVkIFtt
-ZW0KPj4gMHhmMDQwMDAwMC0weGYwNWZmZmZmIDY0Yml0XQo+PiBbICAgMjUuMjQwOTE4XSBhdGgx
-MGtfcGNpIDAwMDA6MDQ6MDAuMDogQkFSIDA6IHNldCB0byBbbWVtCj4+IDB4ZjA0MDAwMDAtMHhm
-MDVmZmZmZiA2NGJpdF0gKFBDSSBhZGRyZXNzIFsweGYwNDAwMDAwLTB4ZjA1ZmZmZmZdKQo+PiBb
-ICAgMjUuMjQwOTMyXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgw
-MDAwIC0+IDAwMDIpCj4+IFsgICAyNS4yNDA5NDNdIGF0aDEwa19wY2kgMDAwMDowNDowMC4wOiBQ
-Q0kgSU5UIEEgLT4gR1NJIDE4IChsZXZlbCwKPj4gbG93KSAtPiBJUlEgMTgKPj4gWyAgIDI1LjI0
-MTAwOF0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IHNldHRpbmcgbGF0ZW5jeSB0aW1lciB0byA2
-NAo+PiBbICAgMjUuMjQxNDgxXSBhdGgxMGs6IE1TSS1YIGRpZG4ndCBzdWNjZWVkICgxKSwgdHJ5
-aW5nIE1TSQo+PiBbICAgMjUuMjQxNTQ5XSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogaXJxIDQ1
-IGZvciBNU0kvTVNJLVgKPj4gWyAgIDI1LjI0MTU4Ml0gYXRoMTBrOiBNU0kgaW50ZXJydXB0IGhh
-bmRsaW5nCj4+IFsgICAyNS4yNzQ0MzJdIGF0aDEwazogSGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3
-Mi4wIHZlcnNpb24gMHg0MTAwMDE2Ywo+PiBbICAgMjYuNjQ1NjM2XSBhdGgxMGs6IFVBUlQgcHJp
-bnRzIGRpc2FibGVkCj4+IFsgICAyNi42NDk3MjNdIGF0aDEwazogZmlybXdhcmUgOTk5Ljk5OS4w
-LjYzNiBib290ZWQKPj4gWyAgIDI2LjY1OTQyN10gYXRoMTBrOiBodHQgdGFyZ2V0IHZlcnNpb24g
-Mi4xCj4+IFsgICAyNi42NTk5NTFdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHgwCj4+IFsgICAy
-Ni42NTk5NTNdIGF0aDogRUVQUk9NIGluZGljYXRlcyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91
-bGQgYmUgdXNlZAo+PiBbICAgMjYuNjU5OTU0XSBhdGg6IGRvaW5nIEVFUFJPTSBjb3VudHJ5LT5y
-ZWdkbW4gbWFwIHNlYXJjaAo+PiBbICAgMjYuNjU5OTU2XSBhdGg6IGNvdW50cnkgbWFwcyB0byBy
-ZWdkbW4gY29kZTogMHgzYQo+PiBbICAgMjYuNjU5OTU4XSBhdGg6IENvdW50cnkgYWxwaGEyIGJl
-aW5nIHVzZWQ6IFVTCj4+IFsgICAyNi42NTk5NjBdIGF0aDogUmVncGFpciB1c2VkOiAweDNhCj4+
-IFsgICA2Mi44ODAxMzhdIHR5cGU9MTQwMCBhdWRpdCgxMzk1MTMzMDEzLjgxMDoxMik6IGFwcGFy
-bW9yPSJTVEFUVVMiCj4+IG9wZXJhdGlvbj0icHJvZmlsZV9sb2FkIiBuYW1lPSIvdXNyL2xpYi90
-ZWxlcGF0aHkvbWlzc2lvbi1jb250cm9sLTUiCj4+IHBpZD0xMTE3IGNvbW09ImFwcGFybW9yX3Bh
-cnNlciIKPj4gWyAgIDYyLjg4MDcxMF0gdHlwZT0xNDAwIGF1ZGl0KDEzOTUxMzMwMTMuODEwOjEz
-KTogYXBwYXJtb3I9IlNUQVRVUyIKPj4gb3BlcmF0aW9uPSJwcm9maWxlX2xvYWQiIG5hbWU9Ii91
-c3IvbGliL3RlbGVwYXRoeS90ZWxlcGF0aHktKiIKPj4gcGlkPTExMTcgY29tbT0iYXBwYXJtb3Jf
-cGFyc2VyIgo+PiBbICAgNjMuOTUzMDc0XSBhdGgxMGs6IE1TSS1YIGRpZG4ndCBzdWNjZWVkICgx
-KSwgdHJ5aW5nIE1TSQo+PiBbICAgNjMuOTUzMTUyXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDog
-aXJxIDQ1IGZvciBNU0kvTVNJLVgKPj4gWyAgIDYzLjk1MzE5MF0gYXRoMTBrOiBNU0kgaW50ZXJy
-dXB0IGhhbmRsaW5nCj4+IFsgICA2NS4xMzUyNTddIGF0aDEwazogVUFSVCBwcmludHMgZGlzYWJs
-ZWQKPj4gWyAgIDY1LjEzOTMzMV0gYXRoMTBrOiBmaXJtd2FyZSA5OTkuOTk5LjAuNjM2IGJvb3Rl
-ZAo+IEknbSBndWVzc2luZyBvdHAuYmluIGZhaWxzIGFuZCB1c2UgdGhlIGRlZmF1bHQgYm9hcmQg
-ZmlsZS4gQ2FuIHlvdSB0cnkKPiBmaXJtd2FyZSAxMC4xLjQ2Ny4yLTE/IEp1c3QgZ2V0IHRoZSBm
-aXJtd2FyZSBoZXJlOgo+Cj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2Fy
-ZS90cmVlL21hc3Rlci8xMC4xCj4KPiBBbmQgcmVuYW1lIGl0IHRvIGZpcm13YXJlLTIuYmluOgo+
-Cj4gY3AgZmlybXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xIC9saWIvZmlybXdhcmUvYXRoMTBrL1FD
-QTk4OFgvaHcyLjAvZmlybXdhcmUtMi5iaW4KPgo+IEFuZCByZWxvYWQgYXRoMTBrLgo+CgoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+I've been debugging tx flush issues in ath10k.  It seems that
+quite often a packet is not flushed within the 3-second timeout,
+but sometimes it may be flushed later if one is patient.
+
+I printed out one of the packets in hex, but it does not appear to
+have any data, and I'm getting confused trying to decode it by hand.
+(Would be lovely if wireshark would let one type in a packet in hex
+and then decode it!)
+
+48 01 00 00        # ??
+04 f0 21 03 38 99  # Addr of AP
+00 f0 21 0e 02 fe  # Addr of sending station
+04 f0 21 03 38 99  # Addr of AP
+00 11              # Seq number?
+
+
+Anyone know what this packet is and/or have an idea why it would take
+a long time to be dealt with by the firmware?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
