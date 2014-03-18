@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22a.google.com ([2607:f8b0:400c:c01::22a])
+Received: from [219.149.12.116] (helo=edge-a.dhc.com.cn)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WPqFj-0003bR-AC
- for ath10k@lists.infradead.org; Tue, 18 Mar 2014 09:24:08 +0000
-Received: by mail-ve0-f170.google.com with SMTP id pa12so6736392veb.15
- for <ath10k@lists.infradead.org>; Tue, 18 Mar 2014 02:23:45 -0700 (PDT)
+ id 1WPqRX-0003xx-UO
+ for ath10k@lists.infradead.org; Tue, 18 Mar 2014 09:36:20 +0000
+Message-ID: <53281371.9050303@dhc.com.cn>
+Date: Tue, 18 Mar 2014 17:35:45 +0800
+From: wangdc <wangdc@dhc.com.cn>
 MIME-Version: 1.0
-In-Reply-To: <53280D21.9080008@dhc.com.cn>
-References: <53280D21.9080008@dhc.com.cn>
-Date: Tue, 18 Mar 2014 17:23:45 +0800
-Message-ID: <CAEFj985UzgYe_ZcCausp5+N5iqDQ+d4gnwK_OBxaTTMWA9skPw@mail.gmail.com>
 Subject: Re: [For Help]Wrong mac address when i used ath10k driver
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+References: <53280D21.9080008@dhc.com.cn>
+ <CAEFj985UzgYe_ZcCausp5+N5iqDQ+d4gnwK_OBxaTTMWA9skPw@mail.gmail.com>
+In-Reply-To: <CAEFj985UzgYe_ZcCausp5+N5iqDQ+d4gnwK_OBxaTTMWA9skPw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,91 +19,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: wangdc <wangdc@dhc.com.cn>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Can you confirm that it is phy0 and not any others (phyX)?
-
-----
-Chun-Yeow
-
-On Tue, Mar 18, 2014 at 5:08 PM, wangdc <wangdc@dhc.com.cn> wrote:
-> Hi all,
->
-> When i used the driver of the ath10k(backports-3.13.2-1) to drive the 11ac
-> mini-pcie WIFI card(9880)
-> on the ubuntu 12.04(based x86), the card seems to be working but i got a
-> wrong mac address when
-> i used the following command. Though i changed the other mini-pcie card, i
-> got the same mac address.
-> ---------------
-> root@ubuntu:~$ cat /sys/class/ieee80211/phy0/addresses
-> 00:03:07:12:34:56
-> ---------------
->
-> If anybody get the same this problem, could you please tell me how to fix
-> it.
->
-> Any suggestions would be helpful.
->
-> ps:
-> start log when i grep ath as following:
-> root@ubuntu:~$ dmesg | grep ath
-> [   25.240895] ath10k_pci 0000:04:00.0: BAR 0: assigned [mem
-> 0xf0400000-0xf05fffff 64bit]
-> [   25.240918] ath10k_pci 0000:04:00.0: BAR 0: set to [mem
-> 0xf0400000-0xf05fffff 64bit] (PCI address [0xf0400000-0xf05fffff])
-> [   25.240932] ath10k_pci 0000:04:00.0: enabling device (0000 -> 0002)
-> [   25.240943] ath10k_pci 0000:04:00.0: PCI INT A -> GSI 18 (level, low) ->
-> IRQ 18
-> [   25.241008] ath10k_pci 0000:04:00.0: setting latency timer to 64
-> [   25.241481] ath10k: MSI-X didn't succeed (1), trying MSI
-> [   25.241549] ath10k_pci 0000:04:00.0: irq 45 for MSI/MSI-X
-> [   25.241582] ath10k: MSI interrupt handling
-> [   25.274432] ath10k: Hardware name qca988x hw2.0 version 0x4100016c
-> [   26.645636] ath10k: UART prints disabled
-> [   26.649723] ath10k: firmware 999.999.0.636 booted
-> [   26.659427] ath10k: htt target version 2.1
-> [   26.659951] ath: EEPROM regdomain: 0x0
-> [   26.659953] ath: EEPROM indicates default country code should be used
-> [   26.659954] ath: doing EEPROM country->regdmn map search
-> [   26.659956] ath: country maps to regdmn code: 0x3a
-> [   26.659958] ath: Country alpha2 being used: US
-> [   26.659960] ath: Regpair used: 0x3a
-> [   62.880138] type=1400 audit(1395133013.810:12): apparmor="STATUS"
-> operation="profile_load" name="/usr/lib/telepathy/mission-control-5"
-> pid=1117 comm="apparmor_parser"
-> [   62.880710] type=1400 audit(1395133013.810:13): apparmor="STATUS"
-> operation="profile_load" name="/usr/lib/telepathy/telepathy-*" pid=1117
-> comm="apparmor_parser"
-> [   63.953074] ath10k: MSI-X didn't succeed (1), trying MSI
-> [   63.953152] ath10k_pci 0000:04:00.0: irq 45 for MSI/MSI-X
-> [   63.953190] ath10k: MSI interrupt handling
-> [   65.135257] ath10k: UART prints disabled
-> [   65.139331] ath10k: firmware 999.999.0.636 booted
-> [   65.149084] ath10k: htt target version 2.1
-> [   89.023995] ath10k: timed out while waiting for scan to stop
-> [   89.023998] ath10k: could not stop scan. its still in progress
-> [   91.068213] type=1400 audit(1395133042.038:25): apparmor="DENIED"
-> operation="open" parent=2372 profile="/usr/lib/telepathy/mission-control-5"
-> name="/usr/local/lib/libsqlite3.so.0.8.6" pid=2373 comm="mission-control"
-> requested_mask="r" denied_mask="r" fsuid=1000 ouid=0
->
-> Thanks.
->
-> Rex wang
-> 2014-03-07
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBDaHVuIFllb3cKClRoYW5rIHlvdSBmb3IgeW91ciByZXBseS4gSSBjb25maXJtIHRoYXQg
+aXQgaXMgcGh5MC4KClJleCB3YW5nCgpPbiAyMDE05bm0MDPmnIgxOOaXpSAxNzoyMywgWWVvaCBD
+aHVuLVllb3cgd3JvdGU6Cj4gQ2FuIHlvdSBjb25maXJtIHRoYXQgaXQgaXMgcGh5MCBhbmQgbm90
+IGFueSBvdGhlcnMgKHBoeVgpPwo+Cj4gLS0tLQo+IENodW4tWWVvdwo+Cj4gT24gVHVlLCBNYXIg
+MTgsIDIwMTQgYXQgNTowOCBQTSwgd2FuZ2RjIDx3YW5nZGNAZGhjLmNvbS5jbj4gd3JvdGU6Cj4+
+IEhpIGFsbCwKPj4KPj4gV2hlbiBpIHVzZWQgdGhlIGRyaXZlciBvZiB0aGUgYXRoMTBrKGJhY2tw
+b3J0cy0zLjEzLjItMSkgdG8gZHJpdmUgdGhlIDExYWMKPj4gbWluaS1wY2llIFdJRkkgY2FyZCg5
+ODgwKQo+PiBvbiB0aGUgdWJ1bnR1IDEyLjA0KGJhc2VkIHg4NiksIHRoZSBjYXJkIHNlZW1zIHRv
+IGJlIHdvcmtpbmcgYnV0IGkgZ290IGEKPj4gd3JvbmcgbWFjIGFkZHJlc3Mgd2hlbgo+PiBpIHVz
+ZWQgdGhlIGZvbGxvd2luZyBjb21tYW5kLiBUaG91Z2ggaSBjaGFuZ2VkIHRoZSBvdGhlciBtaW5p
+LXBjaWUgY2FyZCwgaQo+PiBnb3QgdGhlIHNhbWUgbWFjIGFkZHJlc3MuCj4+IC0tLS0tLS0tLS0t
+LS0tLQo+PiByb290QHVidW50dTp+JCBjYXQgL3N5cy9jbGFzcy9pZWVlODAyMTEvcGh5MC9hZGRy
+ZXNzZXMKPj4gMDA6MDM6MDc6MTI6MzQ6NTYKPj4gLS0tLS0tLS0tLS0tLS0tCj4+Cj4+IElmIGFu
+eWJvZHkgZ2V0IHRoZSBzYW1lIHRoaXMgcHJvYmxlbSwgY291bGQgeW91IHBsZWFzZSB0ZWxsIG1l
+IGhvdyB0byBmaXgKPj4gaXQuCj4+Cj4+IEFueSBzdWdnZXN0aW9ucyB3b3VsZCBiZSBoZWxwZnVs
+Lgo+Pgo+PiBwczoKPj4gc3RhcnQgbG9nIHdoZW4gaSBncmVwIGF0aCBhcyBmb2xsb3dpbmc6Cj4+
+IHJvb3RAdWJ1bnR1On4kIGRtZXNnIHwgZ3JlcCBhdGgKPj4gWyAgIDI1LjI0MDg5NV0gYXRoMTBr
+X3BjaSAwMDAwOjA0OjAwLjA6IEJBUiAwOiBhc3NpZ25lZCBbbWVtCj4+IDB4ZjA0MDAwMDAtMHhm
+MDVmZmZmZiA2NGJpdF0KPj4gWyAgIDI1LjI0MDkxOF0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6
+IEJBUiAwOiBzZXQgdG8gW21lbQo+PiAweGYwNDAwMDAwLTB4ZjA1ZmZmZmYgNjRiaXRdIChQQ0kg
+YWRkcmVzcyBbMHhmMDQwMDAwMC0weGYwNWZmZmZmXSkKPj4gWyAgIDI1LjI0MDkzMl0gYXRoMTBr
+X3BjaSAwMDAwOjA0OjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+PiBbICAg
+MjUuMjQwOTQzXSBhdGgxMGtfcGNpIDAwMDA6MDQ6MDAuMDogUENJIElOVCBBIC0+IEdTSSAxOCAo
+bGV2ZWwsIGxvdykgLT4KPj4gSVJRIDE4Cj4+IFsgICAyNS4yNDEwMDhdIGF0aDEwa19wY2kgMDAw
+MDowNDowMC4wOiBzZXR0aW5nIGxhdGVuY3kgdGltZXIgdG8gNjQKPj4gWyAgIDI1LjI0MTQ4MV0g
+YXRoMTBrOiBNU0ktWCBkaWRuJ3Qgc3VjY2VlZCAoMSksIHRyeWluZyBNU0kKPj4gWyAgIDI1LjI0
+MTU0OV0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGlycSA0NSBmb3IgTVNJL01TSS1YCj4+IFsg
+ICAyNS4yNDE1ODJdIGF0aDEwazogTVNJIGludGVycnVwdCBoYW5kbGluZwo+PiBbICAgMjUuMjc0
+NDMyXSBhdGgxMGs6IEhhcmR3YXJlIG5hbWUgcWNhOTg4eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAx
+NmMKPj4gWyAgIDI2LjY0NTYzNl0gYXRoMTBrOiBVQVJUIHByaW50cyBkaXNhYmxlZAo+PiBbICAg
+MjYuNjQ5NzIzXSBhdGgxMGs6IGZpcm13YXJlIDk5OS45OTkuMC42MzYgYm9vdGVkCj4+IFsgICAy
+Ni42NTk0MjddIGF0aDEwazogaHR0IHRhcmdldCB2ZXJzaW9uIDIuMQo+PiBbICAgMjYuNjU5OTUx
+XSBhdGg6IEVFUFJPTSByZWdkb21haW46IDB4MAo+PiBbICAgMjYuNjU5OTUzXSBhdGg6IEVFUFJP
+TSBpbmRpY2F0ZXMgZGVmYXVsdCBjb3VudHJ5IGNvZGUgc2hvdWxkIGJlIHVzZWQKPj4gWyAgIDI2
+LjY1OTk1NF0gYXRoOiBkb2luZyBFRVBST00gY291bnRyeS0+cmVnZG1uIG1hcCBzZWFyY2gKPj4g
+WyAgIDI2LjY1OTk1Nl0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNvZGU6IDB4M2EKPj4g
+WyAgIDI2LjY1OTk1OF0gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWluZyB1c2VkOiBVUwo+PiBbICAg
+MjYuNjU5OTYwXSBhdGg6IFJlZ3BhaXIgdXNlZDogMHgzYQo+PiBbICAgNjIuODgwMTM4XSB0eXBl
+PTE0MDAgYXVkaXQoMTM5NTEzMzAxMy44MTA6MTIpOiBhcHBhcm1vcj0iU1RBVFVTIgo+PiBvcGVy
+YXRpb249InByb2ZpbGVfbG9hZCIgbmFtZT0iL3Vzci9saWIvdGVsZXBhdGh5L21pc3Npb24tY29u
+dHJvbC01Igo+PiBwaWQ9MTExNyBjb21tPSJhcHBhcm1vcl9wYXJzZXIiCj4+IFsgICA2Mi44ODA3
+MTBdIHR5cGU9MTQwMCBhdWRpdCgxMzk1MTMzMDEzLjgxMDoxMyk6IGFwcGFybW9yPSJTVEFUVVMi
+Cj4+IG9wZXJhdGlvbj0icHJvZmlsZV9sb2FkIiBuYW1lPSIvdXNyL2xpYi90ZWxlcGF0aHkvdGVs
+ZXBhdGh5LSoiIHBpZD0xMTE3Cj4+IGNvbW09ImFwcGFybW9yX3BhcnNlciIKPj4gWyAgIDYzLjk1
+MzA3NF0gYXRoMTBrOiBNU0ktWCBkaWRuJ3Qgc3VjY2VlZCAoMSksIHRyeWluZyBNU0kKPj4gWyAg
+IDYzLjk1MzE1Ml0gYXRoMTBrX3BjaSAwMDAwOjA0OjAwLjA6IGlycSA0NSBmb3IgTVNJL01TSS1Y
+Cj4+IFsgICA2My45NTMxOTBdIGF0aDEwazogTVNJIGludGVycnVwdCBoYW5kbGluZwo+PiBbICAg
+NjUuMTM1MjU3XSBhdGgxMGs6IFVBUlQgcHJpbnRzIGRpc2FibGVkCj4+IFsgICA2NS4xMzkzMzFd
+IGF0aDEwazogZmlybXdhcmUgOTk5Ljk5OS4wLjYzNiBib290ZWQKPj4gWyAgIDY1LjE0OTA4NF0g
+YXRoMTBrOiBodHQgdGFyZ2V0IHZlcnNpb24gMi4xCj4+IFsgICA4OS4wMjM5OTVdIGF0aDEwazog
+dGltZWQgb3V0IHdoaWxlIHdhaXRpbmcgZm9yIHNjYW4gdG8gc3RvcAo+PiBbICAgODkuMDIzOTk4
+XSBhdGgxMGs6IGNvdWxkIG5vdCBzdG9wIHNjYW4uIGl0cyBzdGlsbCBpbiBwcm9ncmVzcwo+PiBb
+ICAgOTEuMDY4MjEzXSB0eXBlPTE0MDAgYXVkaXQoMTM5NTEzMzA0Mi4wMzg6MjUpOiBhcHBhcm1v
+cj0iREVOSUVEIgo+PiBvcGVyYXRpb249Im9wZW4iIHBhcmVudD0yMzcyIHByb2ZpbGU9Ii91c3Iv
+bGliL3RlbGVwYXRoeS9taXNzaW9uLWNvbnRyb2wtNSIKPj4gbmFtZT0iL3Vzci9sb2NhbC9saWIv
+bGlic3FsaXRlMy5zby4wLjguNiIgcGlkPTIzNzMgY29tbT0ibWlzc2lvbi1jb250cm9sIgo+PiBy
+ZXF1ZXN0ZWRfbWFzaz0iciIgZGVuaWVkX21hc2s9InIiIGZzdWlkPTEwMDAgb3VpZD0wCj4+Cj4+
+IFRoYW5rcy4KPj4KPj4gUmV4IHdhbmcKPj4gMjAxNC0wMy0wNwo+Pgo+PiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0
+Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4gLgo+CgoKLS0gCj09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PQrnjovnmbvmiJAK5aSn6L+e5Y2O5L+h6K6h566X
+5py65oqA5pyv6IKh5Lu95pyJ6ZmQ5YWs5Y+4CuS4reWbveWkp+i/numrmOaWsOaKgOacr+S6p+S4
+muWbreWMuum7hOa1pui3rzk3N+WPtyDljY7kv6Eo5Zu96ZmFKei9r+S7tuWbrQrpgq7nvJbvvJox
+MTYwMjMK55S16K+d77yaKzg2LTQxMS04NTk5Njg2OSAo5bey5Y+Y5pu0KQrkvKDnnJ/vvJorODYt
+NDExLTg1OTk2OTc2CuaJiyDmnLrvvJorODYtMTM4LTg5NTIzMzIwCkUtbWFpbO+8mndhbmdkY0Bk
+aGMuY29tLmNuCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQro
+r7fms6jmhI/vvJrov5nmmK/kuIDlsIHkv53lr4bpgq7ku7bvvIzlpoLmnpzmgqgg5LiN5piv6YKu
+5Lu25Lit55qE5pS25L+h5Lq677yMCuivt+WwveW/q+WPkemCruS7tumAmuefpeaIke+8jOW5tuWw
+humCruS7tuWIoOmZpOOAgue7meaCqOW3peS9nOW4puadpeS4jeS+v++8jOWNgeWIhuaKseatieOA
+ggoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
