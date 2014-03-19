@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQ2NO-0000Qf-1h
- for ath10k@lists.infradead.org; Tue, 18 Mar 2014 22:20:50 +0000
-Message-ID: <5328C6A8.5000002@candelatech.com>
-Date: Tue, 18 Mar 2014 15:20:24 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Stuck packet in ath10k
+ id 1WQ9hz-0008US-O2
+ for ath10k@lists.infradead.org; Wed, 19 Mar 2014 06:10:37 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d17so6177373eek.4
+ for <ath10k@lists.infradead.org>; Tue, 18 Mar 2014 23:10:10 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH 1/2] ath10k: add ath10k_htt_rx_amsdu_allowed function
+Date: Wed, 19 Mar 2014 07:09:40 +0100
+Message-Id: <1395209381-26782-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,37 +17,144 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-I've been debugging tx flush issues in ath10k.  It seems that
-quite often a packet is not flushed within the 3-second timeout,
-but sometimes it may be flushed later if one is patient.
+Introduce ath10k_htt_rx_amsdu_allowed() function, that
+group code for checking if skip amsdu packets.
 
-I printed out one of the packets in hex, but it does not appear to
-have any data, and I'm getting confused trying to decode it by hand.
-(Would be lovely if wireshark would let one type in a packet in hex
-and then decode it!)
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   95 ++++++++++++++++--------------
+ 1 file changed, 51 insertions(+), 44 deletions(-)
 
-48 01 00 00        # ??
-04 f0 21 03 38 99  # Addr of AP
-00 f0 21 0e 02 fe  # Addr of sending station
-04 f0 21 03 38 99  # Addr of AP
-00 11              # Seq number?
-
-
-Anyone know what this packet is and/or have an idea why it would take
-a long time to be dealt with by the firmware?
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index cdcbe2d..9cd54a9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -952,6 +952,55 @@ static int ath10k_unchain_msdu(struct sk_buff *msdu_head)
+ 	return 0;
+ }
+ 
++static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
++					struct sk_buff *head,
++					struct htt_rx_info *info)
++{
++	enum htt_rx_mpdu_status status = info->status;
++
++	if (!head) {
++		ath10k_warn("htt rx no data!\n");
++		return false;
++	}
++
++	if (head->len == 0) {
++		ath10k_dbg(ATH10K_DBG_HTT,
++			   "htt rx dropping due to zero-len\n");
++		return false;
++	}
++
++	if (ath10k_htt_rx_has_decrypt_err(head)) {
++		ath10k_dbg(ATH10K_DBG_HTT,
++			   "htt rx dropping due to decrypt-err\n");
++		return false;
++	}
++
++	/* Skip mgmt frames while we handle this in WMI */
++	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
++	    ath10k_htt_rx_is_mgmt(head)) {
++		ath10k_dbg(ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
++		return false;
++	}
++
++	if (status != HTT_RX_IND_MPDU_STATUS_OK &&
++	    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
++	    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
++	    !htt->ar->monitor_enabled) {
++		ath10k_dbg(ATH10K_DBG_HTT,
++			   "htt rx ignoring frame w/ status %d\n",
++			   status);
++		return false;
++	}
++
++	if (test_bit(ATH10K_CAC_RUNNING, &htt->ar->dev_flags)) {
++		ath10k_dbg(ATH10K_DBG_HTT,
++			   "htt rx CAC running\n");
++		return false;
++	}
++
++	return true;
++}
++
+ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				  struct htt_rx_indication *rx)
+ {
+@@ -984,7 +1033,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 
+ 		for (j = 0; j < mpdu_ranges[i].mpdu_count; j++) {
+ 			struct sk_buff *msdu_head, *msdu_tail;
+-			enum htt_rx_mpdu_status status;
+ 			int msdu_chaining;
+ 
+ 			msdu_head = NULL;
+@@ -995,49 +1043,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 							 &msdu_head,
+ 							 &msdu_tail);
+ 
+-			if (!msdu_head) {
+-				ath10k_warn("htt rx no data!\n");
+-				continue;
+-			}
+-
+-			if (msdu_head->len == 0) {
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx dropping due to zero-len\n");
+-				ath10k_htt_rx_free_msdu_chain(msdu_head);
+-				continue;
+-			}
+-
+-			if (ath10k_htt_rx_has_decrypt_err(msdu_head)) {
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx dropping due to decrypt-err\n");
+-				ath10k_htt_rx_free_msdu_chain(msdu_head);
+-				continue;
+-			}
+-
+-			status = info.status;
+-
+-			/* Skip mgmt frames while we handle this in WMI */
+-			if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
+-			    ath10k_htt_rx_is_mgmt(msdu_head)) {
+-				ath10k_dbg(ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
+-				ath10k_htt_rx_free_msdu_chain(msdu_head);
+-				continue;
+-			}
+-
+-			if (status != HTT_RX_IND_MPDU_STATUS_OK &&
+-			    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
+-			    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
+-			    !htt->ar->monitor_enabled) {
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx ignoring frame w/ status %d\n",
+-					   status);
+-				ath10k_htt_rx_free_msdu_chain(msdu_head);
+-				continue;
+-			}
+-
+-			if (test_bit(ATH10K_CAC_RUNNING, &htt->ar->dev_flags)) {
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx CAC running\n");
++			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
++							 &info)) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.9.5
 
 
 _______________________________________________
