@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQCI6-0003Gm-66
- for ath10k@lists.infradead.org; Wed, 19 Mar 2014 08:56:02 +0000
-Received: by mail-ee0-f41.google.com with SMTP id t10so6408033eei.28
- for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 01:55:40 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC v2 2/8] ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
-Date: Wed, 19 Mar 2014 09:48:57 +0100
-Message-Id: <1395218943-31704-2-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1395218943-31704-1-git-send-email-janusz.dziedzic@tieto.com>
-References: <1395218943-31704-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WQCSe-0003ZI-GY
+ for ath10k@lists.infradead.org; Wed, 19 Mar 2014 09:06:57 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
+ simulate_fw_crash
+References: <20140313082431.10798.10888.stgit@potku.adurom.net>
+Date: Wed, 19 Mar 2014 11:06:19 +0200
+In-Reply-To: <20140313082431.10798.10888.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 13 Mar 2014 10:24:31 +0200")
+Message-ID: <87pplih81g.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +20,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-No functional changes.
+Hi Dan,
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index c07fc8f..fd14c3a 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -655,9 +655,9 @@ static const u8 rx_legacy_rate_idx[] = {
- 	5,	/* 0x0F  - 9Mbps   */
- };
- 
--static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
--			     enum ieee80211_band band,
--			     struct ieee80211_rx_status *status)
-+static void ath10k_htt_rx_h_rates(struct ath10k *ar, struct htt_rx_info *info,
-+				  enum ieee80211_band band,
-+				  struct ieee80211_rx_status *status)
- {
- 	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
- 	u8 info0 = info->rate.info0;
-@@ -789,7 +789,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 		return;
- 	}
- 
--	process_rx_rates(ar, info, ch->band, status);
-+	ath10k_htt_rx_h_rates(ar, info, ch->band, status);
- 	status->band = ch->band;
- 	status->freq = ch->center_freq;
- 
+> From: Marek Puzyniak <marek.puzyniak@tieto.com>
+>
+> Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
+> In order to have firmware crash simulation functionality also
+> in firmware 10.1 driver can force firmware crash by performing not allowed
+> operation. Driver can deliberately crash firmware when setting vdev param for
+> vdev id out of range.  This patch introduces two keywords to simulate_fw_crash:
+>
+> 'soft' which will cause firmware crash that is recoverable
+>        by warm firmware reset but supported only in main firmware.
+> 'hard' which will cause firmware crash recoverable by cold
+>        firmware reset, this option works for both firmwares.
+>
+> Commands to trigger firmware soft/hard crash:
+>
+> echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+> echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+>
+> kvalo: use strncmp(), remove '\n' before checking the command and
+> document how buf is null terminated
+>
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+[...]
+
+> @@ -479,14 +488,30 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+>  		goto exit;
+>  	}
+>  
+> -	ath10k_info("simulating firmware crash\n");
+> +	/* drop the possible '\n' from the end */
+> +	if (buf[count - 1] == '\n') {
+> +		buf[count - 1] = 0;
+> +		count--;
+> +	}
+>  
+> -	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
+> -	if (ret)
+> -		ath10k_warn("failed to force fw hang (%d)\n", ret);
+> +	if (!strncmp(buf, "soft", sizeof(buf))) {
+> +		ath10k_info("simulating soft firmware crash\n");
+> +		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
+> +	} else if (!strncmp(buf, "hard", sizeof(buf))) {
+> +		ath10k_info("simulating hard firmware crash\n");
+> +		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
+> +					ar->wmi.vdev_param->rts_threshold, 0);
+> +	} else {
+> +		ret = -EINVAL;
+> +		goto exit;
+> +	}
+
+Fengguan's buildbot got warnings here and I assume they are coming from
+smatch:
+
+drivers/net/wireless/ath/ath10k/debug.c:500 ath10k_write_simulate_fw_crash() error: strncmp() '"hard"' too small (5 vs 32)
+drivers/net/wireless/ath/ath10k/debug.c:497 ath10k_write_simulate_fw_crash() error: strncmp() '"soft"' too small (5 vs 32)
+
+I wanted to use strncmp() instead of strcmp(), but I'm not sure what to
+do here. In my opinion it's guaranteed that the string "hard" is null
+terminated, so it shouldn't matter even if strlen("soft") (5) is less
+than sizeof(buf) (32), right? Or am I missing something here?
+
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
