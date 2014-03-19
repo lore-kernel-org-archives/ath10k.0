@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yh0-f52.google.com ([209.85.213.52])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQFoO-0000uV-0Z
- for ath10k@lists.infradead.org; Wed, 19 Mar 2014 12:41:37 +0000
-Received: by mail-yh0-f52.google.com with SMTP id c41so8371177yho.11
- for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 05:41:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmaxQj+Bv_dQz-+UmrG+7rmz_pTAZAGLY9_Mi_k7JP6HA@mail.gmail.com>
-References: <20140313082431.10798.10888.stgit@potku.adurom.net>
- <87pplih81g.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmaxQj+Bv_dQz-+UmrG+7rmz_pTAZAGLY9_Mi_k7JP6HA@mail.gmail.com>
-Date: Wed, 19 Mar 2014 14:41:11 +0200
-Message-ID: <CANe27jJgu7QP9r7GGvnDnDp=7aVmMaJLGPqJVPRyo-E8epYACA@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
- simulate_fw_crash
-From: Jouni Malinen <jkmalinen@gmail.com>
+ id 1WQGvM-0003xy-Bw
+ for ath10k@lists.infradead.org; Wed, 19 Mar 2014 13:52:53 +0000
+Received: by mail-ee0-f42.google.com with SMTP id d17so6622154eek.15
+ for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 06:52:29 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFC] ath10k: fix rssi and rate reporting
+Date: Wed, 19 Mar 2014 14:52:15 +0100
+Message-Id: <1395237135-18159-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +17,144 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Dan Carpenter <dan.carpenter@oracle.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-On Wed, Mar 19, 2014 at 11:16 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
->
-> On 19 March 2014 10:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> > Fengguan's buildbot got warnings here and I assume they are coming from
-> > smatch:
-> >
-> > drivers/net/wireless/ath/ath10k/debug.c:500 ath10k_write_simulate_fw_crash() error: strncmp() '"hard"' too small (5 vs 32)
-> > drivers/net/wireless/ath/ath10k/debug.c:497 ath10k_write_simulate_fw_crash() error: strncmp() '"soft"' too small (5 vs 32)
-> >
-> > I wanted to use strncmp() instead of strcmp(), but I'm not sure what to
-> > do here. In my opinion it's guaranteed that the string "hard" is null
-> > terminated, so it shouldn't matter even if strlen("soft") (5) is less
-> > than sizeof(buf) (32), right? Or am I missing something here?
->
-> Hmm.. strncmp() compares *at most* n chars. The above means you can
-> overflow the const char[] "hard" and "soft" if `buf` is longer than
-> those. strncmp() must be passed the smallest length of either
-> argument.
+RSSI and RATE fields are valid only when
+START_VALID bit is set.
+So, in current implementation we have to remember
+rssi and rates we have when START_VALID and report
+the same also when END_VALID bit is set.
 
-No you cannot. strncmp() will stop at '\0' from either buffer. If buf
-is nul terminated, I see no point in using strncmp here (i.e., strcmp
-should be used instead). If buf is not nul terminated, the length to
-strncmp() must be the correct length of data in that buf, not
-sizeof(buf). In either case, the current version here is incorrect
-(even if it could not result in a buffer read overflow in practice).
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.h    |    3 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   41 +++++++++++++++---------------
+ 2 files changed, 24 insertions(+), 20 deletions(-)
 
-- Jouni
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 870f807..bd3e537 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1278,6 +1278,9 @@ struct ath10k_htt {
+ 	struct tasklet_struct txrx_compl_task;
+ 	struct sk_buff_head tx_compl_q;
+ 	struct sk_buff_head rx_compl_q;
++
++	/* rx_info template */
++	struct htt_rx_info rx_info;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 665a256..6e33475 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1128,7 +1128,6 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				  struct htt_rx_indication *rx)
+ {
+-	struct htt_rx_info info;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
+ 	struct htt_rx_desc *rxd;
+ 	enum htt_rx_mpdu_status status;
+@@ -1143,7 +1142,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+-	memset(&info, 0, sizeof(info));
+ 
+ 	fw_desc_len = __le16_to_cpu(rx->prefix.fw_rx_desc_bytes);
+ 	fw_desc = (u8 *)&rx->fw_desc;
+@@ -1153,24 +1151,27 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
+ 
+ 	/* Fill this once, while this is per-ppdu */
+-	info.rx_status.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+-	info.rx_status.signal += rx->ppdu.combined_rssi;
++	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
++		memset(&htt->rx_info, 0, sizeof(htt->rx_info));
++		htt->rx_info.rx_status.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
++		htt->rx_info.rx_status.signal += rx->ppdu.combined_rssi;
++	}
+ 
+ 	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
+ 		/* TSF available only in 32-bit */
+-		info.rx_status.mactime =
++		htt->rx_info.rx_status.mactime =
+ 				__le32_to_cpu(rx->ppdu.tsf) & 0xffffffff;
+-		info.rx_status.flag |= RX_FLAG_MACTIME_END;
++		htt->rx_info.rx_status.flag |= RX_FLAG_MACTIME_END;
+ 	}
+ 
+-	channel_set = ath10k_htt_rx_h_channel(htt->ar, &info.rx_status);
++	channel_set = ath10k_htt_rx_h_channel(htt->ar, &htt->rx_info.rx_status);
+ 
+ 	if (channel_set) {
+-		ath10k_htt_rx_h_rates(htt->ar, info.rx_status.band,
++		ath10k_htt_rx_h_rates(htt->ar, htt->rx_info.rx_status.band,
+ 				      rx->ppdu.info0,
+ 				      __le32_to_cpu(rx->ppdu.info1),
+ 				      __le32_to_cpu(rx->ppdu.info2),
+-				      &info.rx_status);
++				      &htt->rx_info.rx_status);
+ 	}
+ 
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "htt rx ind: ",
+@@ -1218,24 +1219,24 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
+ 
+-			info.skb     = msdu_head;
++			htt->rx_info.skb     = msdu_head;
+ 
+ 			/* Clean per-mpdu specyfic flags */
+-			info.rx_status.flag &= ~(RX_FLAG_AMSDU_MORE |
+-						 RX_FLAG_FAILED_FCS_CRC |
+-						 RX_FLAG_MMIC_ERROR |
+-						 RX_FLAG_DECRYPTED |
+-						 RX_FLAG_IV_STRIPPED |
+-						 RX_FLAG_MMIC_STRIPPED);
++			htt->rx_info.rx_status.flag &= ~(RX_FLAG_AMSDU_MORE |
++							 RX_FLAG_FAILED_FCS_CRC |
++							 RX_FLAG_MMIC_ERROR |
++							 RX_FLAG_DECRYPTED |
++							 RX_FLAG_IV_STRIPPED |
++							 RX_FLAG_MMIC_STRIPPED);
+ 
+ 			if (attention & RX_ATTENTION_FLAGS_FCS_ERR) {
+-				info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
++				htt->rx_info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
+ 				ath10k_dbg(ATH10K_DBG_HTT,
+ 					   "htt rx has FCS err\n");
+ 			}
+ 
+ 			if (attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR) {
+-				info.rx_status.flag |= RX_FLAG_MMIC_ERROR;
++				htt->rx_info.rx_status.flag |= RX_FLAG_MMIC_ERROR;
+ 				ath10k_dbg(ATH10K_DBG_HTT,
+ 					   "htt rx has MIC err\n");
+ 			}
+@@ -1243,9 +1244,9 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
+ 
+ 			if (ath10k_htt_rx_hdr_is_amsdu(hdr))
+-				ath10k_htt_rx_amsdu(htt, &info);
++				ath10k_htt_rx_amsdu(htt, &htt->rx_info);
+ 			else
+-				ath10k_htt_rx_msdu(htt, &info);
++				ath10k_htt_rx_msdu(htt, &htt->rx_info);
+ 		}
+ 	}
+ 
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
