@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQCCE-00037C-BV
- for ath10k@lists.infradead.org; Wed, 19 Mar 2014 08:49:59 +0000
-Received: by mail-ee0-f52.google.com with SMTP id e49so6283815eek.39
- for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 01:49:35 -0700 (PDT)
+ id 1WQCCE-00037E-OC
+ for ath10k@lists.infradead.org; Wed, 19 Mar 2014 08:50:00 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d17so6346046eek.32
+ for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 01:49:37 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC v2 3/8] ath10k: introduce ieee80211_rx_status to htt_rx_info
-Date: Wed, 19 Mar 2014 09:48:58 +0100
-Message-Id: <1395218943-31704-3-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [RFC v2 5/8] ath10k: setup rx channel per ppdu
+Date: Wed, 19 Mar 2014 09:49:00 +0100
+Message-Id: <1395218943-31704-5-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1395218943-31704-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1395218943-31704-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,48 +27,121 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Will be used as a template, and final storage for
-rx_status.
+Setup band and frequency in ieee80211_rx_status
+only once - for ppdu.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |    2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   51 +++++++++++++++++++-----------
+ 1 file changed, 33 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 654867f..e80f033 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -21,6 +21,7 @@
- #include <linux/bug.h>
- #include <linux/interrupt.h>
- #include <linux/dmapool.h>
-+#include <net/mac80211.h>
- 
- #include "htc.h"
- #include "rx_desc.h"
-@@ -1174,6 +1175,7 @@ struct htt_peer_unmap_event {
- 
- struct htt_rx_info {
- 	struct sk_buff *skb;
-+	struct ieee80211_rx_status rx_status;
- 	enum htt_rx_mpdu_status status;
- 	enum htt_rx_mpdu_encrypt_type encrypt_type;
- 	s8 signal;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fd14c3a..f18e41c 100644
+index 415ef1c..4797b59 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -756,7 +756,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+@@ -749,10 +749,29 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar, struct htt_rx_info *info,
+ 	}
+ }
+ 
++static bool ath10k_htt_rx_h_channel(struct ath10k *ar,
++				    struct ieee80211_rx_status *status)
++{
++	struct ieee80211_channel *ch;
++
++	spin_lock_bh(&ar->data_lock);
++	ch = ar->scan_channel;
++	if (!ch)
++		ch = ar->rx_channel;
++	spin_unlock_bh(&ar->data_lock);
++
++	if (!ch)
++		return false;
++
++	status->band = ch->band;
++	status->freq = ch->center_freq;
++
++	return true;
++}
++
+ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ {
+ 	struct ieee80211_rx_status *status;
+-	struct ieee80211_channel *ch;
  	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
  
  	status = IEEE80211_SKB_RXCB(info->skb);
--	memset(status, 0, sizeof(*status));
-+	memcpy(status, &info->rx_status, sizeof(*status));
+@@ -775,21 +794,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 	if (info->amsdu_more)
+ 		status->flag |= RX_FLAG_AMSDU_MORE;
  
- 	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
- 		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
+-	spin_lock_bh(&ar->data_lock);
+-	ch = ar->scan_channel;
+-	if (!ch)
+-		ch = ar->rx_channel;
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	if (!ch) {
+-		ath10k_warn("no channel configured; ignoring frame!\n");
+-		dev_kfree_skb_any(info->skb);
+-		return;
+-	}
+-
+-	ath10k_htt_rx_h_rates(ar, info, ch->band, status);
+-	status->band = ch->band;
+-	status->freq = ch->center_freq;
++	ath10k_htt_rx_h_rates(ar, info, status->band, status);
+ 
+ 	if (info->rate.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
+ 		/* TSF available only in 32-bit */
+@@ -1135,7 +1140,8 @@ static int ath10k_unchain_msdu(struct sk_buff *msdu_head)
+ 
+ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 					struct sk_buff *head,
+-					struct htt_rx_info *info)
++					struct htt_rx_info *info,
++					bool channel_set)
+ {
+ 	enum htt_rx_mpdu_status status = info->status;
+ 
+@@ -1156,6 +1162,11 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 		return false;
+ 	}
+ 
++	if (!channel_set) {
++		ath10k_warn("no channel configured; ignoring frame!\n");
++		return false;
++	}
++
+ 	/* Skip mgmt frames while we handle this in WMI */
+ 	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
+ 	    ath10k_htt_rx_is_mgmt(head)) {
+@@ -1191,6 +1202,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	int num_mpdu_ranges;
+ 	int fw_desc_len;
+ 	u8 *fw_desc;
++	bool channel_set;
+ 	int i, j;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+@@ -1208,6 +1220,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	info.rx_status.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+ 	info.rx_status.signal += rx->ppdu.combined_rssi;
+ 
++	channel_set = ath10k_htt_rx_h_channel(htt->ar, &info.rx_status);
++
+ 	info.rate.info0 = rx->ppdu.info0;
+ 	info.rate.info1 = __le32_to_cpu(rx->ppdu.info1);
+ 	info.rate.info2 = __le32_to_cpu(rx->ppdu.info2);
+@@ -1234,7 +1248,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 							 &msdu_tail);
+ 
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+-							 &info)) {
++							 &info,
++							 channel_set)) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
 -- 
 1.7.9.5
 
