@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQCSe-0003ZI-GY
- for ath10k@lists.infradead.org; Wed, 19 Mar 2014 09:06:57 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1WQCc8-0003qU-Nv
+ for ath10k@lists.infradead.org; Wed, 19 Mar 2014 09:16:48 +0000
+Received: by mail-ob0-f175.google.com with SMTP id uy5so7839632obc.6
+ for <ath10k@lists.infradead.org>; Wed, 19 Mar 2014 02:16:20 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87pplih81g.fsf@kamboji.qca.qualcomm.com>
+References: <20140313082431.10798.10888.stgit@potku.adurom.net>
+ <87pplih81g.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 19 Mar 2014 10:16:20 +0100
+Message-ID: <CA+BoTQmaxQj+Bv_dQz-+UmrG+7rmz_pTAZAGLY9_Mi_k7JP6HA@mail.gmail.com>
 Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
  simulate_fw_crash
-References: <20140313082431.10798.10888.stgit@potku.adurom.net>
-Date: Wed, 19 Mar 2014 11:06:19 +0200
-In-Reply-To: <20140313082431.10798.10888.stgit@potku.adurom.net> (Kalle Valo's
- message of "Thu, 13 Mar 2014 10:24:31 +0200")
-Message-ID: <87pplih81g.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,84 +22,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Dan Carpenter <dan.carpenter@oracle.com>
 
-Hi Dan,
-
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> From: Marek Puzyniak <marek.puzyniak@tieto.com>
->
-> Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
-> In order to have firmware crash simulation functionality also
-> in firmware 10.1 driver can force firmware crash by performing not allowed
-> operation. Driver can deliberately crash firmware when setting vdev param for
-> vdev id out of range.  This patch introduces two keywords to simulate_fw_crash:
->
-> 'soft' which will cause firmware crash that is recoverable
->        by warm firmware reset but supported only in main firmware.
-> 'hard' which will cause firmware crash recoverable by cold
->        firmware reset, this option works for both firmwares.
->
-> Commands to trigger firmware soft/hard crash:
->
-> echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
-> echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
->
-> kvalo: use strncmp(), remove '\n' before checking the command and
-> document how buf is null terminated
->
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-[...]
-
-> @@ -479,14 +488,30 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
->  		goto exit;
->  	}
->  
-> -	ath10k_info("simulating firmware crash\n");
-> +	/* drop the possible '\n' from the end */
-> +	if (buf[count - 1] == '\n') {
-> +		buf[count - 1] = 0;
-> +		count--;
-> +	}
->  
-> -	ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-> -	if (ret)
-> -		ath10k_warn("failed to force fw hang (%d)\n", ret);
-> +	if (!strncmp(buf, "soft", sizeof(buf))) {
-> +		ath10k_info("simulating soft firmware crash\n");
-> +		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
-> +	} else if (!strncmp(buf, "hard", sizeof(buf))) {
-> +		ath10k_info("simulating hard firmware crash\n");
-> +		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
-> +					ar->wmi.vdev_param->rts_threshold, 0);
-> +	} else {
-> +		ret = -EINVAL;
-> +		goto exit;
-> +	}
-
-Fengguan's buildbot got warnings here and I assume they are coming from
-smatch:
-
-drivers/net/wireless/ath/ath10k/debug.c:500 ath10k_write_simulate_fw_crash() error: strncmp() '"hard"' too small (5 vs 32)
-drivers/net/wireless/ath/ath10k/debug.c:497 ath10k_write_simulate_fw_crash() error: strncmp() '"soft"' too small (5 vs 32)
-
-I wanted to use strncmp() instead of strcmp(), but I'm not sure what to
-do here. In my opinion it's guaranteed that the string "hard" is null
-terminated, so it shouldn't matter even if strlen("soft") (5) is less
-than sizeof(buf) (32), right? Or am I missing something here?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgTWFyY2ggMjAxNCAxMDowNiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gSGkgRGFuLAo+Cj4gS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JpdGVzOgo+Cj4+IEZyb206IE1hcmVrIFB1enluaWFrIDxtYXJlay5wdXp5bmlha0B0aWV0
+by5jb20+Cj4+Cj4+IENvbW1hbmQgV01JX0ZPUkNFX0ZXX0hBTkdfQ01ESUQgaXMgbm90IHN1cHBv
+cnRlZCBpbiBmaXJtd2FyZSAxMC4xLgo+PiBJbiBvcmRlciB0byBoYXZlIGZpcm13YXJlIGNyYXNo
+IHNpbXVsYXRpb24gZnVuY3Rpb25hbGl0eSBhbHNvCj4+IGluIGZpcm13YXJlIDEwLjEgZHJpdmVy
+IGNhbiBmb3JjZSBmaXJtd2FyZSBjcmFzaCBieSBwZXJmb3JtaW5nIG5vdCBhbGxvd2VkCj4+IG9w
+ZXJhdGlvbi4gRHJpdmVyIGNhbiBkZWxpYmVyYXRlbHkgY3Jhc2ggZmlybXdhcmUgd2hlbiBzZXR0
+aW5nIHZkZXYgcGFyYW0gZm9yCj4+IHZkZXYgaWQgb3V0IG9mIHJhbmdlLiAgVGhpcyBwYXRjaCBp
+bnRyb2R1Y2VzIHR3byBrZXl3b3JkcyB0byBzaW11bGF0ZV9md19jcmFzaDoKPj4KPj4gJ3NvZnQn
+IHdoaWNoIHdpbGwgY2F1c2UgZmlybXdhcmUgY3Jhc2ggdGhhdCBpcyByZWNvdmVyYWJsZQo+PiAg
+ICAgICAgYnkgd2FybSBmaXJtd2FyZSByZXNldCBidXQgc3VwcG9ydGVkIG9ubHkgaW4gbWFpbiBm
+aXJtd2FyZS4KPj4gJ2hhcmQnIHdoaWNoIHdpbGwgY2F1c2UgZmlybXdhcmUgY3Jhc2ggcmVjb3Zl
+cmFibGUgYnkgY29sZAo+PiAgICAgICAgZmlybXdhcmUgcmVzZXQsIHRoaXMgb3B0aW9uIHdvcmtz
+IGZvciBib3RoIGZpcm13YXJlcy4KPj4KPj4gQ29tbWFuZHMgdG8gdHJpZ2dlciBmaXJtd2FyZSBz
+b2Z0L2hhcmQgY3Jhc2g6Cj4+Cj4+IGVjaG8gJ3NvZnQnID4gL3N5cy9rZXJuZWwvZGVidWcvaWVl
+ZTgwMjExL3BoeVgvYXRoMTBrL3NpbXVsYXRlX2Z3X2NyYXNoCj4+IGVjaG8gJ2hhcmQnID4gL3N5
+cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeVgvYXRoMTBrL3NpbXVsYXRlX2Z3X2NyYXNoCj4+
+Cj4+IGt2YWxvOiB1c2Ugc3RybmNtcCgpLCByZW1vdmUgJ1xuJyBiZWZvcmUgY2hlY2tpbmcgdGhl
+IGNvbW1hbmQgYW5kCj4+IGRvY3VtZW50IGhvdyBidWYgaXMgbnVsbCB0ZXJtaW5hdGVkCj4+Cj4+
+IFNpZ25lZC1vZmYtYnk6IE1hcmVrIFB1enluaWFrIDxtYXJlay5wdXp5bmlha0B0aWV0by5jb20+
+Cj4+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cj4K
+PiBbLi4uXQo+Cj4+IEBAIC00NzksMTQgKzQ4OCwzMCBAQCBzdGF0aWMgc3NpemVfdCBhdGgxMGtf
+d3JpdGVfc2ltdWxhdGVfZndfY3Jhc2goc3RydWN0IGZpbGUgKmZpbGUsCj4+ICAgICAgICAgICAg
+ICAgZ290byBleGl0Owo+PiAgICAgICB9Cj4+Cj4+IC0gICAgIGF0aDEwa19pbmZvKCJzaW11bGF0
+aW5nIGZpcm13YXJlIGNyYXNoXG4iKTsKPj4gKyAgICAgLyogZHJvcCB0aGUgcG9zc2libGUgJ1xu
+JyBmcm9tIHRoZSBlbmQgKi8KPj4gKyAgICAgaWYgKGJ1Zltjb3VudCAtIDFdID09ICdcbicpIHsK
+Pj4gKyAgICAgICAgICAgICBidWZbY291bnQgLSAxXSA9IDA7Cj4+ICsgICAgICAgICAgICAgY291
+bnQtLTsKPj4gKyAgICAgfQo+Pgo+PiAtICAgICByZXQgPSBhdGgxMGtfd21pX2ZvcmNlX2Z3X2hh
+bmcoYXIsIFdNSV9GT1JDRV9GV19IQU5HX0FTU0VSVCwgMCk7Cj4+IC0gICAgIGlmIChyZXQpCj4+
+IC0gICAgICAgICAgICAgYXRoMTBrX3dhcm4oImZhaWxlZCB0byBmb3JjZSBmdyBoYW5nICglZClc
+biIsIHJldCk7Cj4+ICsgICAgIGlmICghc3RybmNtcChidWYsICJzb2Z0Iiwgc2l6ZW9mKGJ1Zikp
+KSB7Cj4+ICsgICAgICAgICAgICAgYXRoMTBrX2luZm8oInNpbXVsYXRpbmcgc29mdCBmaXJtd2Fy
+ZSBjcmFzaFxuIik7Cj4+ICsgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX3dtaV9mb3JjZV9md19o
+YW5nKGFyLCBXTUlfRk9SQ0VfRldfSEFOR19BU1NFUlQsIDApOwo+PiArICAgICB9IGVsc2UgaWYg
+KCFzdHJuY21wKGJ1ZiwgImhhcmQiLCBzaXplb2YoYnVmKSkpIHsKPj4gKyAgICAgICAgICAgICBh
+dGgxMGtfaW5mbygic2ltdWxhdGluZyBoYXJkIGZpcm13YXJlIGNyYXNoXG4iKTsKPj4gKyAgICAg
+ICAgICAgICByZXQgPSBhdGgxMGtfd21pX3ZkZXZfc2V0X3BhcmFtKGFyLCBUQVJHRVRfTlVNX1ZE
+RVZTICsgMSwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhci0+d21p
+LnZkZXZfcGFyYW0tPnJ0c190aHJlc2hvbGQsIDApOwo+PiArICAgICB9IGVsc2Ugewo+PiArICAg
+ICAgICAgICAgIHJldCA9IC1FSU5WQUw7Cj4+ICsgICAgICAgICAgICAgZ290byBleGl0Owo+PiAr
+ICAgICB9Cj4KPiBGZW5nZ3VhbidzIGJ1aWxkYm90IGdvdCB3YXJuaW5ncyBoZXJlIGFuZCBJIGFz
+c3VtZSB0aGV5IGFyZSBjb21pbmcgZnJvbQo+IHNtYXRjaDoKPgo+IGRyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvZGVidWcuYzo1MDAgYXRoMTBrX3dyaXRlX3NpbXVsYXRlX2Z3X2NyYXNo
+KCkgZXJyb3I6IHN0cm5jbXAoKSAnImhhcmQiJyB0b28gc21hbGwgKDUgdnMgMzIpCj4gZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jOjQ5NyBhdGgxMGtfd3JpdGVfc2ltdWxh
+dGVfZndfY3Jhc2goKSBlcnJvcjogc3RybmNtcCgpICcic29mdCInIHRvbyBzbWFsbCAoNSB2cyAz
+MikKPgo+IEkgd2FudGVkIHRvIHVzZSBzdHJuY21wKCkgaW5zdGVhZCBvZiBzdHJjbXAoKSwgYnV0
+IEknbSBub3Qgc3VyZSB3aGF0IHRvCj4gZG8gaGVyZS4gSW4gbXkgb3BpbmlvbiBpdCdzIGd1YXJh
+bnRlZWQgdGhhdCB0aGUgc3RyaW5nICJoYXJkIiBpcyBudWxsCj4gdGVybWluYXRlZCwgc28gaXQg
+c2hvdWxkbid0IG1hdHRlciBldmVuIGlmIHN0cmxlbigic29mdCIpICg1KSBpcyBsZXNzCj4gdGhh
+biBzaXplb2YoYnVmKSAoMzIpLCByaWdodD8gT3IgYW0gSSBtaXNzaW5nIHNvbWV0aGluZyBoZXJl
+PwoKSG1tLi4gc3RybmNtcCgpIGNvbXBhcmVzICphdCBtb3N0KiBuIGNoYXJzLiBUaGUgYWJvdmUg
+bWVhbnMgeW91IGNhbgpvdmVyZmxvdyB0aGUgY29uc3QgY2hhcltdICJoYXJkIiBhbmQgInNvZnQi
+IGlmIGBidWZgIGlzIGxvbmdlciB0aGFuCnRob3NlLiBzdHJuY21wKCkgbXVzdCBiZSBwYXNzZWQg
+dGhlIHNtYWxsZXN0IGxlbmd0aCBvZiBlaXRoZXIKYXJndW1lbnQuCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
