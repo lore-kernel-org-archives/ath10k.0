@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ve0-x236.google.com ([2607:f8b0:400c:c01::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQYpX-000728-Tw
- for ath10k@lists.infradead.org; Thu, 20 Mar 2014 09:00:04 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Documenting firmware branches
-Date: Thu, 20 Mar 2014 10:59:36 +0200
-Message-ID: <87zjkldz47.fsf@kamboji.qca.qualcomm.com>
+ id 1WQaMe-0002fR-BW
+ for ath10k@lists.infradead.org; Thu, 20 Mar 2014 10:38:20 +0000
+Received: by mail-ve0-f182.google.com with SMTP id jw12so676638veb.41
+ for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 03:37:59 -0700 (PDT)
 MIME-Version: 1.0
+Date: Thu, 20 Mar 2014 18:37:58 +0800
+Message-ID: <CAEFj984L2PiS9isotB1VA=yz3H+tR9kqnWfF9HLXRm5jdTLd=w@mail.gmail.com>
+Subject: FW Rate Control is not working for Adhoc Mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Hi,
+Hi, all
 
-I started a section about firmware branches in the wiki:
+FW rate control only works on legacy rate and not HT rate for adhoc
+mode. So I am wonder where should I look into to solve this problem.
 
-----------------------------------------------------------------------
-Firmware branches
+I have try to play around with WMI_PEER_RATE_RETRY_SCHED_CMDID by
+calling the command with vdev_id and peer mac addr. But no luck, it
+won't work.
 
-ath10k firmware has different branches, they are described below.
+Anyone has any clue on this?
 
-main branch
-
-Firmware versions 999.999.0.x.
-
-Supports AP mode, STA mode, Ad-Hoc and P2P. But AP mode is not that well
-tested, especially problems with DFS.
-
-10.1 branch
-
-Firmware versions 10.1.x.
-
-Branch focusing on AP mode. Supports DFS. STA mode works but not well
-tested. No Ad-Hoc or P2P support.
-----------------------------------------------------------------------
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/firmware#Firmware_branches
-
-If I missed something, please improve the wiki.
-
--- 
-Kalle Valo
+Regards,
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
