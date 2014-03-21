@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQvE6-00053Y-FW
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 08:54:55 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Failure to allocate large memory blocks upon firmware crash
-References: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
-Date: Fri, 21 Mar 2014 10:54:28 +0200
-In-Reply-To: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
- (Avery Pennarun's message of "Wed, 19 Mar 2014 22:42:06 -0400")
-Message-ID: <87pplgaq4b.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1WQvp2-00066C-Fl
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:33:05 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d17so1563436eek.18
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:32:41 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH 0/8] ath10k: refactor htt_rx path
+Date: Fri, 21 Mar 2014 10:32:13 +0100
+Message-Id: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +17,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Hi Avery,
+This patchset remove htt_rx_info and intoduce usage
+of ieee80211_rx_status template. Introduce calculation
+split for per-ppdu and per-mpdu. Remove not needed
+calculation we did before for each mpdu. Before we
+did calculation for each mpdu and in case of heavy
+traffic we could have eg. 15mpdus in one ppdu.
 
-thanks again for the excellent analysis!
+This ieee80211_rx_status template will be also required
+to fix rates, rssi we will report to mac80211. I will
+send this patches soon.
 
-Avery Pennarun <apenwarr@gmail.com> writes:
+First two patches - no functional changes.
 
-> However, when the firmware crashes, I'm sometimes seeing a followup
-> memory allocation failure like this:
->
-> ath10k: could not suspend target (-11)
-> <6>[30094.735100] : ieee80211 phy1: Hardware restart was requested
-> <4>[30094.995413] : kworker/0:1: page allocation failure: order:4, mode:0x20
-> <4>[30094.995427] : Backtrace:
+Tested on AP135, didn't notice any TP drop with this patchset.
 
-[...]
+Base on:
+[PATCH 1/2] ath10k: add ath10k_htt_rx_amsdu_allowed function
+[PATCH 2/2] ath10k: Fill per-ppdu info in rx_info only once
+I send before.
 
-> <3>[30095.077634] : ath10k: Failed to initialize CE src ring for ID: 4 (-12)
-> <3>[30095.077646] : ath10k: failed to initialize CE for pipe: 4
-> <3>[30095.077678] : ath10k: failed to initialize CE: -1
-> <4>[30095.077692] : ath10k: failed to power up target using warm reset
-> (-1), trying cold reset
-> <7>[30095.165692] z: 03/19/14 09:18:24.116 cap(1):Warning-Unexpected
-> packet[297]-pld:{843f6a2191e10147 aa294ff5363573ea 86e610a162a190b4
-> 13c096a8349fe599}
-> <1>[30095.305945] : Unable to handle kernel NULL pointer dereference
-> at virtual address 00000139
-> <1>[30095.312742] : pgd = 84004000
-> <1>[30095.312755] : [00000139] *pgd=00000000
+Please review.
 
-Ouch!
+Janusz Dziedzic (8):
+  ath10k: move rx related functions to htt_rx.c
+  ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
+  ath10k: introduce ieee80211_rx_status to htt_rx_info
+  ath10k: setup rx channel per ppdu
+  ath10k: kill not needed fields from htt_rx_info
+  ath10k: return error when ath10k_htt_rx_amsdu_pop() fail
+  ath10k: improve way we play with attention flags
+  ath10k: finally kill htt_rx_info
 
-> Someone at work helpfully diagnosed it as follows.  Is there a plan to
-> update to the new DMA API
-
-Does this refer to using dma_alloc_coherent() & co? Yes, we should do
-that.
-
-> and/or use smaller block allocations
-
-For this I'm not that sure. I guess it would be nice to have, but not so
-important? Maybe for hotplugging this would be important?
-
-> and/or allocate the memory areas at startup time and never free them?
-
-Well, we should free them during remove ;) But yeah, we really should do
-that as well.
-
-> The secondary issue here (and what is causing the kernel panic)
-> is that a tasklet is still running & referencing memory that
-> was torn down when the reset failed.  My sources don't match
-> yours, so I can't see what is exactly happening.
-
-This is also a problem we need to investigate. Do you have any more info
-where the null pointer dereference happened?
+ drivers/net/wireless/ath/ath10k/htt.h    |   18 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  440 ++++++++++++++++++++----------
+ drivers/net/wireless/ath/ath10k/txrx.c   |  183 -------------
+ drivers/net/wireless/ath/ath10k/txrx.h   |    1 -
+ 4 files changed, 299 insertions(+), 343 deletions(-)
 
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
