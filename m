@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR0GX-0007Fr-7g
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 14:17:45 +0000
-Message-ID: <1395411440.4164.15.camel@jlt4.sipsolutions.net>
-Subject: Re: [PATCH] ath10k: dont call csa_finish more than once
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 21 Mar 2014 15:17:20 +0100
-In-Reply-To: <1395410520-26939-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20140321_150948_706832_25F8B34B)
-References: <1395410520-26939-1-git-send-email-michal.kazior@tieto.com>
- (sfid-20140321_150948_706832_25F8B34B)
-Mime-Version: 1.0
+ id 1WR0Re-0007Ve-Qt
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 14:29:15 +0000
+Received: by mail-ve0-f174.google.com with SMTP id oz11so2571249veb.5
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 07:28:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
+References: <1395396014-24631-1-git-send-email-yeohchunyeow@gmail.com>
+ <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
+Date: Fri, 21 Mar 2014 22:22:59 +0800
+Message-ID: <CAEFj987cTdr_7bhMajp2fRK5y1WAy0icyUJcTWSahW5sGFAFWQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: add the Rx rate in FW stats
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +26,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, 2014-03-21 at 15:02 +0100, Michal Kazior wrote:
-> Driver is supposed to call it only once for each
-> scheduled channel_switch_beacon().
-> 
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> This is required for multi-vif csa but since that
-> isn't merged yet I'm not including any specifics
-> in the commit log itself.
-> 
-> Preventing multiple ieee80211_csa_finish() calls
-> sounds like a good idea in general to me.
+> Unfortunately this isn't as simple as it seems.
+>
+> Stats are received via wmi_stats_event. This structure contains fields
+> describing number of pdev/vdev/beer/bcn stat entries. All entries
+> (structures) are appended in certain order after this header. This
+> means if you change length of structure type you skew the calculation
+> of all succeeding entries.
+>
+> IOW this means this patch breaks peer stats for 999.999.0.636.
+>
+> I'm quite positive wmi_pdev_stats is also broken. This implies vdev
+> stats and peer stats position calculation is skewed in the first place
+> and you get garbage.
+>
+> The main problem here is there are subtle yet crazy binary
+> incompatibilities between these firmwares.
+>
+> The best way would probably be to implement wmi as an abstraction
+> layer with completely different backends for different firmware
+> branches/revisions. Otherwise you sign up for some pain..
 
-Didn't we have this discussion on the hwsim patch before?
+Thanks for your explanation. I will definitely take a look on this if
+I am able to figure out.
 
-I'd argue that if all drivers must track this, then the mac80211 API is
-defective.
+This patch seems work well with patch from Ben Greear on latest AP firmware.
 
-johannes
-
+----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
