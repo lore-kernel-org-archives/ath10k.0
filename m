@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-f170.google.com ([209.85.217.170])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQtYK-0002VF-JJ
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 07:07:41 +0000
-Received: by mail-lb0-f170.google.com with SMTP id s7so1375591lbd.15
- for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 00:07:14 -0700 (PDT)
+ id 1WQuzw-0004ae-No
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 08:40:17 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Failure to allocate large memory blocks upon firmware crash
+References: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
+Date: Fri, 21 Mar 2014 10:39:48 +0200
+In-Reply-To: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
+ (Avery Pennarun's message of "Wed, 19 Mar 2014 22:42:06 -0400")
+Message-ID: <87y504aqsr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
-References: <5329CD60.6080609@candelatech.com>
- <87txatfkad.fsf@kamboji.qca.qualcomm.com>
- <532B104A.7060302@candelatech.com>
- <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
- <532B4017.7060803@candelatech.com>
- <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
-Date: Fri, 21 Mar 2014 08:07:14 +0100
-Message-ID: <CALhHN=qYuOY8v__HX3=Y7CeZseC7GA5-epfj+zQXcruG6R2BAA@mail.gmail.com>
-Subject: Re: Trouble connecting to broadcom AC APs?
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,109 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 21 March 2014 07:01, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
-> On 20 March 2014 20:23, Ben Greear <greearb@candelatech.com> wrote:
->> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
->>> Did the per-rate transmit statistics ever make it into the firmware / driver?
->>>
->>> I'd start by looking at what rate(s) it's trying and what the transmit
->>> completion statistics say. It could be doing something exceedingly
->>> dumb like transmitting on an invalid rate or stream setup.
->>>
->>> Same deal with STBC/LDPC. Try disabling those; see what happens.
->>
->> It appears the packets get to the AP, and AP at least tries to
->> respond.
->>
->> If we bring up stations one at a time instead of multiple at once
->> it works better, and using ddwrt works better than stock firmware
->> on the AP too.
->>
->> Anyone know how well monitor mode works on ath10k?  Would be nice
->> to see what is actually on the air.
->>
-> With AP firmware, works fine. Could you send airlogs?
->
-BTW, I have same problem with WRT54G and orginal linksys SW - my home router.
-Problem disappears when will use FW 636 :)
-So, seems AP (389, 467) FW is not the best choice for STA mode.
-I suspect PS problem here - but didn't check this yet ...
+Hi Avery,
 
-BR
-Janusz
+replying in smaller parts, easier to discuss that way.
 
->> Truth is, my main concern now is some issue with tx flush hanging,
->> so it may be a bit until I can dig closely into the issues
->> with the BCM APs.
->>
->> Thanks,
->> Ben
->>
->>>
->>>
->>>
->>> -a
->>>
->>>
->>> On 20 March 2014 08:59, Ben Greear <greearb@candelatech.com> wrote:
->>>> On 03/19/2014 11:36 PM, Kalle Valo wrote:
->>>>> Ben Greear <greearb@candelatech.com> writes:
->>>>>
->>>>>> We are seeing various funny things when trying to connect
->>>>>> ath10k stations to commercial APs with broadcom AC NICs.
->>>>>>
->>>>>> It sort of works sometimes, but we often see failure to
->>>>>> acquire DHCP lease in a timely manner, etc.
->>>>>
->>>>> So it's a problem with broadcast frames? With or without encryption? Did
->>>>> you try disabling power save?
->>>>
->>>> With and without encryption we see issues.  I am disabling power-save,
->>>> but from poking around in firmware, I'm not sure how much affect that
->>>> has.
->>>>
->>>> I'm using commands like this to disable it:
->>>> ./local/sbin/iw dev sta219 set power_save off
->>>>
->>>>>> Similar testing on APs using QCA AC NICs appears to work
->>>>>> much better.
->>>>>>
->>>>>> Our problems could be most anything, including the fact that this
->>>>>> testing is done on our modified firmware, but I am curious if anyone
->>>>>> else seems any similar issues?
->>>>>
->>>>> Occasionally I test connecting to D-Link DIR-865L in STA mode. But I
->>>>> just do just simple ping tests and with manual IPs.
->>>>
->>>> We'll keep poking at things and see if we can find any
->>>> pattern or work around.
->>>>
->>>> Thanks,
->>>> Ben
->>>>
->>>> --
->>>> Ben Greear <greearb@candelatech.com>
->>>> Candela Technologies Inc  http://www.candelatech.com
->>>>
->>>>
->>>> _______________________________________________
->>>> ath10k mailing list
->>>> ath10k@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
+Avery Pennarun <apenwarr@gmail.com> writes:
+
+> We are still getting firmware crashes occasionally, but I haven't
+> narrowed down the cause nor tried the very latest driver, so I won't
+> bother you with those just yet.
+
+Even if you are not using the latest and greatest ath10k I think you
+should still post the firmware crashes. Then we can try to analyse
+what's causing them.
+
+What I'm wondering is that why you seem to have firmware crashes so
+often. For example, I'm not seeing anything like that on our MIPS based
+AP135 platform. Maybe there are more memory barrier issues like you
+reported earlier?
+
+What kind of platform are you using? Does it have any special
+characteristics related to cache coherency, PCI access or similar?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
