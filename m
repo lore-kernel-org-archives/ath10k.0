@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR3Gs-00052N-7y
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 17:30:18 +0000
-Message-ID: <532C7710.1050102@candelatech.com>
-Date: Fri, 21 Mar 2014 10:29:52 -0700
+ id 1WR3SO-0005dF-8E
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 17:42:12 +0000
+Message-ID: <532C79DB.7010505@candelatech.com>
+Date: Fri, 21 Mar 2014 10:41:47 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix getting stats from firmware.
-References: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQn1B6g19Ks41kzcoVyhYbHAcJGTNAyucmPMupbRAy1SNg@mail.gmail.com>
- <CAEFj98541uEFjHxjzUeim4nrjELToYrnbJTGuR5WgzwRvF9gkw@mail.gmail.com>
- <532C62DE.6060309@candelatech.com> <87eh1va5um.fsf@kamboji.qca.qualcomm.com>
- <CAEFj985WKAOp9vewgZW8LYB9KdUxh2GJG5uhAjRdCSiAd-y1sQ@mail.gmail.com>
-In-Reply-To: <CAEFj985WKAOp9vewgZW8LYB9KdUxh2GJG5uhAjRdCSiAd-y1sQ@mail.gmail.com>
+Subject: Re: Trouble connecting to broadcom AC APs?
+References: <5329CD60.6080609@candelatech.com>
+ <87txatfkad.fsf@kamboji.qca.qualcomm.com> <532B104A.7060302@candelatech.com>
+ <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
+ <532B4017.7060803@candelatech.com>
+ <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
+ <CALhHN=qYuOY8v__HX3=Y7CeZseC7GA5-epfj+zQXcruG6R2BAA@mail.gmail.com>
+In-Reply-To: <CALhHN=qYuOY8v__HX3=Y7CeZseC7GA5-epfj+zQXcruG6R2BAA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +27,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
 
-On 03/21/2014 09:42 AM, Yeoh Chun-Yeow wrote:
-> Hi, Ben
-> 
-> I did a quick check again on STA mode. With or without your patch, the
-> printed peer stats are both identical but both wrong. See below:
+On 03/21/2014 12:07 AM, Janusz Dziedzic wrote:
+> On 21 March 2014 07:01, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
+>> On 20 March 2014 20:23, Ben Greear <greearb@candelatech.com> wrote:
+>>> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
+>>>> Did the per-rate transmit statistics ever make it into the firmware / driver?
+>>>>
+>>>> I'd start by looking at what rate(s) it's trying and what the transmit
+>>>> completion statistics say. It could be doing something exceedingly
+>>>> dumb like transmitting on an invalid rate or stream setup.
+>>>>
+>>>> Same deal with STBC/LDPC. Try disabling those; see what happens.
+>>>
+>>> It appears the packets get to the AP, and AP at least tries to
+>>> respond.
+>>>
+>>> If we bring up stations one at a time instead of multiple at once
+>>> it works better, and using ddwrt works better than stock firmware
+>>> on the AP too.
+>>>
+>>> Anyone know how well monitor mode works on ath10k?  Would be nice
+>>> to see what is actually on the air.
+>>>
+>> With AP firmware, works fine. Could you send airlogs?
+>>
+> BTW, I have same problem with WRT54G and orginal linksys SW - my home router.
+> Problem disappears when will use FW 636 :)
+> So, seems AP (389, 467) FW is not the best choice for STA mode.
+> I suspect PS problem here - but didn't check this yet ...
 
-Ok, it's unlikely my patch would have changed it one way or another.
+Here is another data point...if we make br0 on the AP promisc,
+then suddenly it works fine.
 
-I'll leave my patch mostly as it was (ie, no special handling for
-older v/s newer firmware).
+(we noticed this because starting tcpdump on br0 also
+'fixes' the problem).
 
-I am just starting to look at stats, and since 10.x was completely
-broken and has been for some time, probably no one else has paid
-much attention to it yet either.
-
-Thanks for testing.
-
+Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
