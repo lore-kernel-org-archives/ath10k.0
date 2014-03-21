@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ve0-x233.google.com ([2607:f8b0:400c:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR2LJ-0003GG-6P
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 16:30:49 +0000
-Message-ID: <532C6921.5080803@candelatech.com>
-Date: Fri, 21 Mar 2014 09:30:25 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WR2XL-0003YR-NJ
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 16:43:16 +0000
+Received: by mail-ve0-f179.google.com with SMTP id db12so2835184veb.38
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 09:42:54 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add the Rx rate in FW stats
-References: <1395396014-24631-1-git-send-email-yeohchunyeow@gmail.com>
- <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
- <87a9cja596.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87a9cja596.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87eh1va5um.fsf@kamboji.qca.qualcomm.com>
+References: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQn1B6g19Ks41kzcoVyhYbHAcJGTNAyucmPMupbRAy1SNg@mail.gmail.com>
+ <CAEFj98541uEFjHxjzUeim4nrjELToYrnbJTGuR5WgzwRvF9gkw@mail.gmail.com>
+ <532C62DE.6060309@candelatech.com>
+ <87eh1va5um.fsf@kamboji.qca.qualcomm.com>
+Date: Sat, 22 Mar 2014 00:42:54 +0800
+Message-ID: <CAEFj985WKAOp9vewgZW8LYB9KdUxh2GJG5uhAjRdCSiAd-y1sQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix getting stats from firmware.
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +29,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 03/21/2014 09:25 AM, Kalle Valo wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
-> 
->> The main problem here is there are subtle yet crazy binary
->> incompatibilities between these firmwares.
+Hi, Ben
+
+I did a quick check again on STA mode. With or without your patch, the
+printed peer stats are both identical but both wrong. See below:
+
+             ath10k PEER stats
+             =================
+
+              Peer MAC address 00:00:00:00:00:00
+                     Peer RSSI 256
+                  Peer TX rate 0
+
+              Peer MAC address 00:00:00:00:04:f0
+                     Peer RSSI 17317
+                  Peer TX rate 73
+
+So I think that your patch makes no difference but do indeed providing
+"correct" peer stats on latest AP firmware.
+
+After applying the "ath10k: add the Rx rate in FW stats", I am able to
+get the Tx and Rx Rate for all connected STAs to my AP.
+
+---
+Chun-Yeow
+
+On Sat, Mar 22, 2014 at 12:12 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+>
+>> On 03/20/2014 11:41 PM, Yeoh Chun-Yeow wrote:
+>>>>
+>>>> Did you test 636 as well? 636 doesn't seem to support more than just `stats_id`.
+>>>>
+>>> Nope. Tested with 636 not working.
 >>
->> The best way would probably be to implement wmi as an abstraction
->> layer with completely different backends for different firmware
->> branches/revisions. Otherwise you sign up for some pain..
-> 
-> Yeah, I'm starting to believe that we will need something like that.
-> Other option is just to duplicate wmi.c and wmi.h for each interface
-> version. More code, but we get to keep more hair ;)
-> 
-> But we need to talk a lot more about this. For this patch in question we
-> should be able to manage with the current method of handling
-> differences.
-
-Lets not duplicate any more code than we have to.  Hopefully we can
-get a solid firmware built that everyone can use and let the old firmware
-support eventually go away.  In the meantime, we can add hacks as needed
-to deal with firmware differences.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+>> Does the existing code work with 636?  If so, we can add two different cmd
+>> structs and use the smaller one with 636, and the one I modified with
+>> 10.x firmware?
+>
+> For this issue that would be the best approach. See Marek P's patch
+> "ath10k: update regulatory domain settings for 10.x firmware" (not yet
+> applied, still in ath-next-test branch) as an example how this can be
+> done.
+>
+> --
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
