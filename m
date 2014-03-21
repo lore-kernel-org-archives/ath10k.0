@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQvp5-00066E-0j
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:33:08 +0000
-Received: by mail-ee0-f46.google.com with SMTP id t10so1572717eei.19
+ id 1WQvp6-00066F-Eo
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:33:09 +0000
+Received: by mail-ee0-f54.google.com with SMTP id d49so1595509eek.27
  for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:32:45 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH 3/8] ath10k: introduce ieee80211_rx_status to htt_rx_info
-Date: Fri, 21 Mar 2014 10:32:16 +0100
-Message-Id: <1395394341-3958-4-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [PATCH 2/8] ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
+Date: Fri, 21 Mar 2014 10:32:15 +0100
+Message-Id: <1395394341-3958-3-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,48 +27,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Will be used as a template, and final storage for
-rx_status.
+No functional changes.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |    2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 654867f..e80f033 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -21,6 +21,7 @@
- #include <linux/bug.h>
- #include <linux/interrupt.h>
- #include <linux/dmapool.h>
-+#include <net/mac80211.h>
- 
- #include "htc.h"
- #include "rx_desc.h"
-@@ -1174,6 +1175,7 @@ struct htt_peer_unmap_event {
- 
- struct htt_rx_info {
- 	struct sk_buff *skb;
-+	struct ieee80211_rx_status rx_status;
- 	enum htt_rx_mpdu_status status;
- 	enum htt_rx_mpdu_encrypt_type encrypt_type;
- 	s8 signal;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fd14c3a..f18e41c 100644
+index c07fc8f..fd14c3a 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -756,7 +756,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
+@@ -655,9 +655,9 @@ static const u8 rx_legacy_rate_idx[] = {
+ 	5,	/* 0x0F  - 9Mbps   */
+ };
  
- 	status = IEEE80211_SKB_RXCB(info->skb);
--	memset(status, 0, sizeof(*status));
-+	memcpy(status, &info->rx_status, sizeof(*status));
+-static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
+-			     enum ieee80211_band band,
+-			     struct ieee80211_rx_status *status)
++static void ath10k_htt_rx_h_rates(struct ath10k *ar, struct htt_rx_info *info,
++				  enum ieee80211_band band,
++				  struct ieee80211_rx_status *status)
+ {
+ 	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
+ 	u8 info0 = info->rate.info0;
+@@ -789,7 +789,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		return;
+ 	}
  
- 	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
- 		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
+-	process_rx_rates(ar, info, ch->band, status);
++	ath10k_htt_rx_h_rates(ar, info, ch->band, status);
+ 	status->band = ch->band;
+ 	status->freq = ch->center_freq;
+ 
 -- 
 1.7.9.5
 
