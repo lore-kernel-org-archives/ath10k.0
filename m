@@ -1,23 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x234.google.com ([2607:f8b0:400d:c01::234])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQmUT-0002gG-3m
- for ath10k@lists.infradead.org; Thu, 20 Mar 2014 23:35:14 +0000
-Received: by mail-qc0-f180.google.com with SMTP id w7so1929230qcr.25
- for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 16:34:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <532B7952.5020800@candelatech.com>
-References: <5329CD60.6080609@candelatech.com>
- <87txatfkad.fsf@kamboji.qca.qualcomm.com>
- <532B104A.7060302@candelatech.com>
- <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
- <532B4017.7060803@candelatech.com>
- <CAJ-Vmom2y=7kvjY6587+93b4Yp8BChbAcfuWfdqs1sgPHXiu0g@mail.gmail.com>
- <532B7952.5020800@candelatech.com>
-Date: Thu, 20 Mar 2014 16:34:48 -0700
-Message-ID: <CAJ-Vmo=su_oVvy=UHHkA=uvKcCAveVjV1=qmFKiNw5AQXx3kfw@mail.gmail.com>
-Subject: Re: Trouble connecting to broadcom AC APs?
-From: Adrian Chadd <adrian@freebsd.org>
+ id 1WQmyN-0003ND-T2
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 00:06:08 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Fix getting stats from firmware.
+Date: Thu, 20 Mar 2014 17:05:24 -0700
+Message-Id: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,136 +15,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-.. right, but if you can reproduce it with ath10k in 11n only mode,
-you can use an existing ath9k sniffer to sniff and see if there's
-anything fruity in the frames.
+From: Ben Greear <greearb@candelatech.com>
 
+Make the request command object the right size so that
+firmware will not just throw it away.
+Tested customized and upstream firmware.
 
--a
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index fa1b9e0..4946471 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2766,6 +2766,11 @@ enum wmi_stats_id {
+ 	WMI_REQUEST_AP_STAT	= 0x02
+ };
+ 
++struct wlan_inst_rssi_args {
++	__le16 cfg_retry_count;
++	__le16 retry_count;
++};
++
+ struct wmi_request_stats_cmd {
+ 	__le32 stats_id;
+ 
+@@ -2773,6 +2778,12 @@ struct wmi_request_stats_cmd {
+ 	 * Space to add parameters like
+ 	 * peer mac addr
+ 	 */
++	__le32 vdev_id;
++	/* peer MAC address */
++	struct wmi_mac_addr peer_macaddr;
++
++	/* Instantaneous RSSI arguments */
++	struct wlan_inst_rssi_args inst_rssi_args;
+ } __packed;
+ 
+ /* Suspend option */
+-- 
+1.7.11.7
 
-On 20 March 2014 16:27, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/20/2014 12:26 PM, Adrian Chadd wrote:
->> Is the broadcom ap doing sane or insane things with the sleep bits in
->> transmitted frames?
->>
->> Is this a problem with 11ac only?
->
-> ath9k stations connect just fine, so it's either something with
-> the ath10k (including our modified firmware), or the AP has issues
-> with AC specifically.
->
-> Thanks,
-> Ben
->
->>
->>
->> -a
->>
->>
->> On 20 March 2014 12:23, Ben Greear <greearb@candelatech.com> wrote:
->>> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
->>>> Did the per-rate transmit statistics ever make it into the firmware / driver?
->>>>
->>>> I'd start by looking at what rate(s) it's trying and what the transmit
->>>> completion statistics say. It could be doing something exceedingly
->>>> dumb like transmitting on an invalid rate or stream setup.
->>>>
->>>> Same deal with STBC/LDPC. Try disabling those; see what happens.
->>>
->>> It appears the packets get to the AP, and AP at least tries to
->>> respond.
->>>
->>> If we bring up stations one at a time instead of multiple at once
->>> it works better, and using ddwrt works better than stock firmware
->>> on the AP too.
->>>
->>> Anyone know how well monitor mode works on ath10k?  Would be nice
->>> to see what is actually on the air.
->>>
->>> Truth is, my main concern now is some issue with tx flush hanging,
->>> so it may be a bit until I can dig closely into the issues
->>> with the BCM APs.
->>>
->>> Thanks,
->>> Ben
->>>
->>>>
->>>>
->>>>
->>>> -a
->>>>
->>>>
->>>> On 20 March 2014 08:59, Ben Greear <greearb@candelatech.com> wrote:
->>>>> On 03/19/2014 11:36 PM, Kalle Valo wrote:
->>>>>> Ben Greear <greearb@candelatech.com> writes:
->>>>>>
->>>>>>> We are seeing various funny things when trying to connect
->>>>>>> ath10k stations to commercial APs with broadcom AC NICs.
->>>>>>>
->>>>>>> It sort of works sometimes, but we often see failure to
->>>>>>> acquire DHCP lease in a timely manner, etc.
->>>>>>
->>>>>> So it's a problem with broadcast frames? With or without encryption? Did
->>>>>> you try disabling power save?
->>>>>
->>>>> With and without encryption we see issues.  I am disabling power-save,
->>>>> but from poking around in firmware, I'm not sure how much affect that
->>>>> has.
->>>>>
->>>>> I'm using commands like this to disable it:
->>>>> ./local/sbin/iw dev sta219 set power_save off
->>>>>
->>>>>>> Similar testing on APs using QCA AC NICs appears to work
->>>>>>> much better.
->>>>>>>
->>>>>>> Our problems could be most anything, including the fact that this
->>>>>>> testing is done on our modified firmware, but I am curious if anyone
->>>>>>> else seems any similar issues?
->>>>>>
->>>>>> Occasionally I test connecting to D-Link DIR-865L in STA mode. But I
->>>>>> just do just simple ping tests and with manual IPs.
->>>>>
->>>>> We'll keep poking at things and see if we can find any
->>>>> pattern or work around.
->>>>>
->>>>> Thanks,
->>>>> Ben
->>>>>
->>>>> --
->>>>> Ben Greear <greearb@candelatech.com>
->>>>> Candela Technologies Inc  http://www.candelatech.com
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> ath10k mailing list
->>>>> ath10k@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/ath10k
->>>
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
 
 _______________________________________________
 ath10k mailing list
