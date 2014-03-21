@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR4ci-0007hi-HA
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 18:56:56 +0000
+ id 1WR86f-0003v9-2v
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 22:40:05 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 3/3] ath10k:  add otp and firmware boot error messages.
-Date: Fri, 21 Mar 2014 11:55:50 -0700
-Message-Id: <1395428150-31996-3-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
-References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2] ath10k:  add the Rx rate in FW stats
+Date: Fri, 21 Mar 2014 15:39:20 -0700
+Message-Id: <1395441560-6028-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +21,132 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
 From: Ben Greear <greearb@candelatech.com>
 
-If OTP or firmware fails to load properly, print out some
-extra info in the kernel logs.
+FW stats does provide the Rx rate information. Add this.
+Tested with firmware 10x firmware.
 
+Increase buffer size so more peers can be shown.
+
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index bf5119f..6b61aa7 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -255,7 +255,8 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 	/* OTP is optional */
+v2:  Re-work Chun-Yeow's patch to hopefully be backwards compat
+     with pre 10.x firmware.  I tested on modified 10x firmware.
+
+ drivers/net/wireless/ath/ath10k/core.h  |  1 +
+ drivers/net/wireless/ath/ath10k/debug.c | 24 +++++++++++++++++-------
+ drivers/net/wireless/ath/ath10k/wmi.h   |  9 ++++++++-
+ 3 files changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index a58e6de..2487a23 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -119,6 +119,7 @@ struct ath10k_peer_stat {
+ 	u8 peer_macaddr[ETH_ALEN];
+ 	u32 peer_rssi;
+ 	u32 peer_tx_rate;
++	u32 peer_rx_rate; /* 10x only */
+ };
  
- 	if (!ar->otp_data || !ar->otp_len) {
--		ath10k_warn("Not running otp, calibration will be incorrect!\n");
-+		ath10k_warn("Not running otp, calibration will be incorrect (otp-data %p otp_len %zd)!\n",
-+			    ar->otp_data, ar->otp_len);
- 		return 0;
+ struct ath10k_target_stats {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index f535cdd..dec47df 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -242,13 +242,13 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
  	}
  
-@@ -597,12 +598,16 @@ static int ath10k_init_download_firmware(struct ath10k *ar)
- 		return ret;
+ 	if (num_peer_stats) {
+-		struct wmi_peer_stats *peer_stats;
++		struct wmi_peer_stats_10x *peer_stats;
+ 		struct ath10k_peer_stat *s;
  
- 	ret = ath10k_download_and_run_otp(ar);
--	if (ret)
-+	if (ret) {
-+		ath10k_err("boot otp execute result %d\n", ret);
- 		return ret;
-+	}
+ 		stats->peers = num_peer_stats;
  
- 	ret = ath10k_download_fw(ar);
--	if (ret)
-+	if (ret) {
-+		ath10k_err("boot download firmware result %d\n", ret);
- 		return ret;
-+	}
+ 		for (i = 0; i < num_peer_stats; i++) {
+-			peer_stats = (struct wmi_peer_stats *)tmp;
++			peer_stats = (struct wmi_peer_stats_10x *)tmp;
+ 			s = &stats->peer_stat[i];
  
- 	return ret;
- }
+ 			WMI_MAC_ADDR_TO_CHAR_ARRAY(&peer_stats->peer_macaddr,
+@@ -256,8 +256,15 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 			s->peer_rssi = __le32_to_cpu(peer_stats->peer_rssi);
+ 			s->peer_tx_rate =
+ 				__le32_to_cpu(peer_stats->peer_tx_rate);
+-
+-			tmp += sizeof(struct wmi_peer_stats);
++			if (test_bit(ATH10K_FW_FEATURE_WMI_10X,
++				     ar->fw_features)) {
++				s->peer_rx_rate =
++					__le32_to_cpu(peer_stats->peer_rx_rate);
++				tmp += sizeof(struct wmi_peer_stats_10x);
++
++			} else {
++				tmp += sizeof(struct wmi_peer_stats_old);
++			}
+ 		}
+ 	}
+ 
+@@ -286,7 +293,7 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	struct ath10k *ar = file->private_data;
+ 	struct ath10k_target_stats *fw_stats;
+ 	char *buf = NULL;
+-	unsigned int len = 0, buf_len = 2500;
++	unsigned int len = 0, buf_len = 8000;
+ 	ssize_t ret_cnt = 0;
+ 	int i;
+ 	int ret;
+@@ -418,8 +425,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 			 "MPDU errors (FCS, MIC, ENC)", fw_stats->mpdu_errs);
+ 
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
+-	len += scnprintf(buf + len, buf_len - len, "%30s\n",
+-			 "ath10k PEER stats");
++	len += scnprintf(buf + len, buf_len - len, "%30s (%d)\n",
++			 "ath10k PEER stats", fw_stats->peers);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
+ 				 "=================");
+ 
+@@ -432,6 +439,9 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
+ 				 "Peer TX rate",
+ 				 fw_stats->peer_stat[i].peer_tx_rate);
++		len += scnprintf(buf + len, buf_len - len, "%30s %u\n",
++				 "Peer RX rate",
++				 fw_stats->peer_stat[i].peer_rx_rate);
+ 		len += scnprintf(buf + len, buf_len - len, "\n");
+ 	}
+ 	spin_unlock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index c11f49a..0ab78a6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2853,12 +2853,19 @@ struct wmi_vdev_stats {
+  * peer statistics.
+  * TODO: add more stats
+  */
+-struct wmi_peer_stats {
++struct wmi_peer_stats_old {
+ 	struct wmi_mac_addr peer_macaddr;
+ 	__le32 peer_rssi;
+ 	__le32 peer_tx_rate;
+ } __packed;
+ 
++struct wmi_peer_stats_10x {
++	struct wmi_mac_addr peer_macaddr;
++	__le32 peer_rssi;
++	__le32 peer_tx_rate;
++	__le32 peer_rx_rate;
++} __packed;
++
+ struct wmi_vdev_create_cmd {
+ 	__le32 vdev_id;
+ 	__le32 vdev_type;
 -- 
 1.7.11.7
 
