@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQvqb-0006Cg-KI
+ id 1WQvqb-0006Cd-6i
  for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:34:42 +0000
-Received: by mail-ee0-f46.google.com with SMTP id t10so1553649eei.5
- for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:34:20 -0700 (PDT)
+Received: by mail-ee0-f42.google.com with SMTP id d17so1572240eek.15
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:34:19 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH 2/2] ath10k: fix rssi and rate reporting
-Date: Fri, 21 Mar 2014 10:33:57 +0100
-Message-Id: <1395394437-4048-2-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
-References: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [PATCH 1/2] ath10k: introduce rx_status htt template
+Date: Fri, 21 Mar 2014 10:33:56 +0100
+Message-Id: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +25,140 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-RSSI and RATE fields are valid only when START_VALID
-bit is set. So, in current implementation we have to
-remember/caclulate them when START_VALID and report the same
-when only END_VALID is set. In other case during high
-RX traffic we will report invalid RSSI (-95) and RATE (6Mbps)
-when only END_VALID bit set.
+Introduce rx_status htt template instead of
+stack version.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |    9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+Base on:
+ath10k: finally kill htt_rx_info
 
+ drivers/net/wireless/ath/ath10k/htt.h    |    3 +++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   36 +++++++++++++++---------------
+ 2 files changed, 21 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 2d669c0..645a563 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1273,6 +1273,9 @@ struct ath10k_htt {
+ 	struct tasklet_struct txrx_compl_task;
+ 	struct sk_buff_head tx_compl_q;
+ 	struct sk_buff_head rx_compl_q;
++
++	/* rx_status template */
++	struct ieee80211_rx_status rx_status;
+ };
+ 
+ #define RX_HTT_HDR_STATUS_LEN 64
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 4f1cc67..5a4310f 100644
+index 1bb3c5e..4f1cc67 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1154,8 +1154,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+@@ -1139,7 +1139,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				  struct htt_rx_indication *rx)
+ {
+-	struct ieee80211_rx_status rx_status;
++	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
+ 	struct htt_rx_desc *rxd;
+ 	enum htt_rx_mpdu_status status;
+@@ -1154,7 +1154,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
  
  	lockdep_assert_held(&htt->rx_ring.lock);
  
--	memset(rx_status, 0, sizeof(*rx_status));
--
+-	memset(&rx_status, 0, sizeof(rx_status));
++	memset(rx_status, 0, sizeof(*rx_status));
+ 
  	fw_desc_len = __le16_to_cpu(rx->prefix.fw_rx_desc_bytes);
  	fw_desc = (u8 *)&rx->fw_desc;
- 
-@@ -1164,8 +1162,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+@@ -1164,23 +1164,23 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
  	mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
  
  	/* Fill this once, while this is per-ppdu */
--	rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR;
--	rx_status->signal += rx->ppdu.combined_rssi;
-+	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
-+		memset(rx_status, 0, sizeof(*rx_status));
-+		rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR +
-+				     rx->ppdu.combined_rssi;
-+	}
+-	rx_status.signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+-	rx_status.signal += rx->ppdu.combined_rssi;
++	rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR;
++	rx_status->signal += rx->ppdu.combined_rssi;
  
  	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
  		/* TSF available only in 32-bit */
+-		rx_status.mactime = __le32_to_cpu(rx->ppdu.tsf) & 0xffffffff;
+-		rx_status.flag |= RX_FLAG_MACTIME_END;
++		rx_status->mactime = __le32_to_cpu(rx->ppdu.tsf) & 0xffffffff;
++		rx_status->flag |= RX_FLAG_MACTIME_END;
+ 	}
+ 
+-	channel_set = ath10k_htt_rx_h_channel(htt->ar, &rx_status);
++	channel_set = ath10k_htt_rx_h_channel(htt->ar, rx_status);
+ 
+ 	if (channel_set) {
+-		ath10k_htt_rx_h_rates(htt->ar, rx_status.band,
++		ath10k_htt_rx_h_rates(htt->ar, rx_status->band,
+ 				      rx->ppdu.info0,
+ 				      __le32_to_cpu(rx->ppdu.info1),
+ 				      __le32_to_cpu(rx->ppdu.info2),
+-				      &rx_status);
++				      rx_status);
+ 	}
+ 
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "htt rx ind: ",
+@@ -1229,21 +1229,21 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			}
+ 
+ 			if (attention & RX_ATTENTION_FLAGS_FCS_ERR)
+-				rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
++				rx_status->flag |= RX_FLAG_FAILED_FCS_CRC;
+ 			else
+-				rx_status.flag &= ~RX_FLAG_FAILED_FCS_CRC;
++				rx_status->flag &= ~RX_FLAG_FAILED_FCS_CRC;
+ 
+ 			if (attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
+-				rx_status.flag |= RX_FLAG_MMIC_ERROR;
++				rx_status->flag |= RX_FLAG_MMIC_ERROR;
+ 			else
+-				rx_status.flag &= ~RX_FLAG_MMIC_ERROR;
++				rx_status->flag &= ~RX_FLAG_MMIC_ERROR;
+ 
+ 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
+ 
+ 			if (ath10k_htt_rx_hdr_is_amsdu(hdr))
+-				ath10k_htt_rx_amsdu(htt, &rx_status, msdu_head);
++				ath10k_htt_rx_amsdu(htt, rx_status, msdu_head);
+ 			else
+-				ath10k_htt_rx_msdu(htt, &rx_status, msdu_head);
++				ath10k_htt_rx_msdu(htt, rx_status, msdu_head);
+ 		}
+ 	}
+ 
+@@ -1257,7 +1257,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	enum htt_rx_mpdu_encrypt_type enctype;
+ 	struct htt_rx_desc *rxd;
+ 	enum rx_msdu_decap_format fmt;
+-	struct ieee80211_rx_status rx_status = {};
++	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct ieee80211_hdr *hdr;
+ 	int ret;
+ 	bool tkip_mic_err;
+@@ -1305,7 +1305,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 
+ 	enctype = MS(__le32_to_cpu(rxd->mpdu_start.info0),
+ 		     RX_MPDU_START_INFO0_ENCRYPT_TYPE);
+-	ath10k_htt_rx_h_protected(htt, &rx_status, msdu_head, enctype);
++	ath10k_htt_rx_h_protected(htt, rx_status, msdu_head, enctype);
+ 	msdu_head->ip_summed = ath10k_htt_rx_get_csum_state(msdu_head);
+ 
+ 	if (tkip_mic_err)
+@@ -1350,7 +1350,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "htt rx frag mpdu: ",
+ 			msdu_head->data, msdu_head->len);
+-	ath10k_process_rx(htt->ar, &rx_status, msdu_head);
++	ath10k_process_rx(htt->ar, rx_status, msdu_head);
+ 
+ end:
+ 	if (fw_desc_len > 0) {
 -- 
 1.7.9.5
 
