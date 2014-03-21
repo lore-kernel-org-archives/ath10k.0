@@ -1,14 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x22e.google.com ([2607:f8b0:400e:c03::22e])
+Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQs6y-0001Eo-UZ
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 05:35:21 +0000
-Received: by mail-pa0-f46.google.com with SMTP id kp14so1941425pab.5
- for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 22:34:58 -0700 (PDT)
-From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Subject: [PATCH] ath10k: fix the peer mac address in getting stats
-Date: Fri, 21 Mar 2014 13:34:36 +0800
-Message-Id: <1395380076-4306-1-git-send-email-yeohchunyeow@gmail.com>
+ id 1WQsdI-0001j7-Q9
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 06:08:46 +0000
+Received: by mail-lb0-f181.google.com with SMTP id c11so1313940lbj.40
+ for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 23:08:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <532B4017.7060803@candelatech.com>
+References: <5329CD60.6080609@candelatech.com>
+ <87txatfkad.fsf@kamboji.qca.qualcomm.com>
+ <532B104A.7060302@candelatech.com>
+ <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
+ <532B4017.7060803@candelatech.com>
+Date: Fri, 21 Mar 2014 07:01:28 +0100
+Message-ID: <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
+Subject: Re: Trouble connecting to broadcom AC APs?
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,64 +24,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
 
-Using the macro to convert the MAC address from WMI word
-format to char array has lead to the wrong peer mac
-address printed out while retrieving the peer stats from
-FW. Fix this.
+On 20 March 2014 20:23, Ben Greear <greearb@candelatech.com> wrote:
+> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
+>> Did the per-rate transmit statistics ever make it into the firmware / driver?
+>>
+>> I'd start by looking at what rate(s) it's trying and what the transmit
+>> completion statistics say. It could be doing something exceedingly
+>> dumb like transmitting on an invalid rate or stream setup.
+>>
+>> Same deal with STBC/LDPC. Try disabling those; see what happens.
+>
+> It appears the packets get to the AP, and AP at least tries to
+> respond.
+>
+> If we bring up stations one at a time instead of multiple at once
+> it works better, and using ddwrt works better than stock firmware
+> on the AP too.
+>
+> Anyone know how well monitor mode works on ath10k?  Would be nice
+> to see what is actually on the air.
+>
+With AP firmware, works fine. Could you send airlogs?
 
-Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
----
- drivers/net/wireless/ath/ath10k/debug.c |    4 ++--
- drivers/net/wireless/ath/ath10k/wmi.h   |   10 ----------
- 2 files changed, 2 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 6debd28..f95defa 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -252,8 +252,8 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 			peer_stats = (struct wmi_peer_stats *)tmp;
- 			s = &stats->peer_stat[i];
- 
--			WMI_MAC_ADDR_TO_CHAR_ARRAY(&peer_stats->peer_macaddr,
--						   s->peer_macaddr);
-+			memcpy(s->peer_macaddr, &peer_stats->peer_macaddr.addr,
-+			       ETH_ALEN);
- 			s->peer_rssi = __le32_to_cpu(peer_stats->peer_rssi);
- 			s->peer_tx_rate =
- 				__le32_to_cpu(peer_stats->peer_tx_rate);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e78a7ad..084bcc5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -198,16 +198,6 @@ struct wmi_mac_addr {
- 	} __packed;
- } __packed;
- 
--/* macro to convert MAC address from WMI word format to char array */
--#define WMI_MAC_ADDR_TO_CHAR_ARRAY(pwmi_mac_addr, c_macaddr) do { \
--	(c_macaddr)[0] =  ((pwmi_mac_addr)->word0) & 0xff; \
--	(c_macaddr)[1] = (((pwmi_mac_addr)->word0) >> 8) & 0xff; \
--	(c_macaddr)[2] = (((pwmi_mac_addr)->word0) >> 16) & 0xff; \
--	(c_macaddr)[3] = (((pwmi_mac_addr)->word0) >> 24) & 0xff; \
--	(c_macaddr)[4] =  ((pwmi_mac_addr)->word1) & 0xff; \
--	(c_macaddr)[5] = (((pwmi_mac_addr)->word1) >> 8) & 0xff; \
--	} while (0)
--
- struct wmi_cmd_map {
- 	u32 init_cmdid;
- 	u32 start_scan_cmdid;
--- 
-1.7.9.5
-
+> Truth is, my main concern now is some issue with tx flush hanging,
+> so it may be a bit until I can dig closely into the issues
+> with the BCM APs.
+>
+> Thanks,
+> Ben
+>
+>>
+>>
+>>
+>> -a
+>>
+>>
+>> On 20 March 2014 08:59, Ben Greear <greearb@candelatech.com> wrote:
+>>> On 03/19/2014 11:36 PM, Kalle Valo wrote:
+>>>> Ben Greear <greearb@candelatech.com> writes:
+>>>>
+>>>>> We are seeing various funny things when trying to connect
+>>>>> ath10k stations to commercial APs with broadcom AC NICs.
+>>>>>
+>>>>> It sort of works sometimes, but we often see failure to
+>>>>> acquire DHCP lease in a timely manner, etc.
+>>>>
+>>>> So it's a problem with broadcast frames? With or without encryption? Did
+>>>> you try disabling power save?
+>>>
+>>> With and without encryption we see issues.  I am disabling power-save,
+>>> but from poking around in firmware, I'm not sure how much affect that
+>>> has.
+>>>
+>>> I'm using commands like this to disable it:
+>>> ./local/sbin/iw dev sta219 set power_save off
+>>>
+>>>>> Similar testing on APs using QCA AC NICs appears to work
+>>>>> much better.
+>>>>>
+>>>>> Our problems could be most anything, including the fact that this
+>>>>> testing is done on our modified firmware, but I am curious if anyone
+>>>>> else seems any similar issues?
+>>>>
+>>>> Occasionally I test connecting to D-Link DIR-865L in STA mode. But I
+>>>> just do just simple ping tests and with manual IPs.
+>>>
+>>> We'll keep poking at things and see if we can find any
+>>> pattern or work around.
+>>>
+>>> Thanks,
+>>> Ben
+>>>
+>>> --
+>>> Ben Greear <greearb@candelatech.com>
+>>> Candela Technologies Inc  http://www.candelatech.com
+>>>
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
