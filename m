@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQuzw-0004ae-No
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 08:40:17 +0000
+ id 1WQvE6-00053Y-FW
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 08:54:55 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Failure to allocate large memory blocks upon firmware crash
 References: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
-Date: Fri, 21 Mar 2014 10:39:48 +0200
+Date: Fri, 21 Mar 2014 10:54:28 +0200
 In-Reply-To: <CAHqTa-3=VZr2-S63HXEX++Y5BvPRuUTKgB_nKhpCCUYD-nGe+A@mail.gmail.com>
  (Avery Pennarun's message of "Wed, 19 Mar 2014 22:42:06 -0400")
-Message-ID: <87y504aqsr.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87pplgaq4b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,25 +28,58 @@ Cc: ath10k <ath10k@lists.infradead.org>
 
 Hi Avery,
 
-replying in smaller parts, easier to discuss that way.
+thanks again for the excellent analysis!
 
 Avery Pennarun <apenwarr@gmail.com> writes:
 
-> We are still getting firmware crashes occasionally, but I haven't
-> narrowed down the cause nor tried the very latest driver, so I won't
-> bother you with those just yet.
+> However, when the firmware crashes, I'm sometimes seeing a followup
+> memory allocation failure like this:
+>
+> ath10k: could not suspend target (-11)
+> <6>[30094.735100] : ieee80211 phy1: Hardware restart was requested
+> <4>[30094.995413] : kworker/0:1: page allocation failure: order:4, mode:0x20
+> <4>[30094.995427] : Backtrace:
 
-Even if you are not using the latest and greatest ath10k I think you
-should still post the firmware crashes. Then we can try to analyse
-what's causing them.
+[...]
 
-What I'm wondering is that why you seem to have firmware crashes so
-often. For example, I'm not seeing anything like that on our MIPS based
-AP135 platform. Maybe there are more memory barrier issues like you
-reported earlier?
+> <3>[30095.077634] : ath10k: Failed to initialize CE src ring for ID: 4 (-12)
+> <3>[30095.077646] : ath10k: failed to initialize CE for pipe: 4
+> <3>[30095.077678] : ath10k: failed to initialize CE: -1
+> <4>[30095.077692] : ath10k: failed to power up target using warm reset
+> (-1), trying cold reset
+> <7>[30095.165692] z: 03/19/14 09:18:24.116 cap(1):Warning-Unexpected
+> packet[297]-pld:{843f6a2191e10147 aa294ff5363573ea 86e610a162a190b4
+> 13c096a8349fe599}
+> <1>[30095.305945] : Unable to handle kernel NULL pointer dereference
+> at virtual address 00000139
+> <1>[30095.312742] : pgd = 84004000
+> <1>[30095.312755] : [00000139] *pgd=00000000
 
-What kind of platform are you using? Does it have any special
-characteristics related to cache coherency, PCI access or similar?
+Ouch!
+
+> Someone at work helpfully diagnosed it as follows.  Is there a plan to
+> update to the new DMA API
+
+Does this refer to using dma_alloc_coherent() & co? Yes, we should do
+that.
+
+> and/or use smaller block allocations
+
+For this I'm not that sure. I guess it would be nice to have, but not so
+important? Maybe for hotplugging this would be important?
+
+> and/or allocate the memory areas at startup time and never free them?
+
+Well, we should free them during remove ;) But yeah, we really should do
+that as well.
+
+> The secondary issue here (and what is causing the kernel panic)
+> is that a tasklet is still running & referencing memory that
+> was torn down when the reset failed.  My sources don't match
+> yours, so I can't see what is exactly happening.
+
+This is also a problem we need to investigate. Do you have any more info
+where the null pointer dereference happened?
 
 -- 
 Kalle Valo
