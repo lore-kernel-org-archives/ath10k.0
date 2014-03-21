@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
+Received: from mail-oa0-x22d.google.com ([2607:f8b0:4003:c02::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQsdI-0001j7-Q9
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 06:08:46 +0000
-Received: by mail-lb0-f181.google.com with SMTP id c11so1313940lbj.40
- for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 23:08:17 -0700 (PDT)
+ id 1WQt1J-0001zz-4e
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 06:33:34 +0000
+Received: by mail-oa0-f45.google.com with SMTP id eb12so1764751oac.18
+ for <ath10k@lists.infradead.org>; Thu, 20 Mar 2014 23:33:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <532B4017.7060803@candelatech.com>
-References: <5329CD60.6080609@candelatech.com>
- <87txatfkad.fsf@kamboji.qca.qualcomm.com>
- <532B104A.7060302@candelatech.com>
- <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
- <532B4017.7060803@candelatech.com>
-Date: Fri, 21 Mar 2014 07:01:28 +0100
-Message-ID: <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
-Subject: Re: Trouble connecting to broadcom AC APs?
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+In-Reply-To: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
+References: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
+Date: Fri, 21 Mar 2014 07:33:10 +0100
+Message-ID: <CA+BoTQn1B6g19Ks41kzcoVyhYbHAcJGTNAyucmPMupbRAy1SNg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix getting stats from firmware.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,106 +20,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 20 March 2014 20:23, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
->> Did the per-rate transmit statistics ever make it into the firmware / driver?
->>
->> I'd start by looking at what rate(s) it's trying and what the transmit
->> completion statistics say. It could be doing something exceedingly
->> dumb like transmitting on an invalid rate or stream setup.
->>
->> Same deal with STBC/LDPC. Try disabling those; see what happens.
->
-> It appears the packets get to the AP, and AP at least tries to
-> respond.
->
-> If we bring up stations one at a time instead of multiple at once
-> it works better, and using ddwrt works better than stock firmware
-> on the AP too.
->
-> Anyone know how well monitor mode works on ath10k?  Would be nice
-> to see what is actually on the air.
->
-With AP firmware, works fine. Could you send airlogs?
-
-> Truth is, my main concern now is some issue with tx flush hanging,
-> so it may be a bit until I can dig closely into the issues
-> with the BCM APs.
->
-> Thanks,
-> Ben
->
->>
->>
->>
->> -a
->>
->>
->> On 20 March 2014 08:59, Ben Greear <greearb@candelatech.com> wrote:
->>> On 03/19/2014 11:36 PM, Kalle Valo wrote:
->>>> Ben Greear <greearb@candelatech.com> writes:
->>>>
->>>>> We are seeing various funny things when trying to connect
->>>>> ath10k stations to commercial APs with broadcom AC NICs.
->>>>>
->>>>> It sort of works sometimes, but we often see failure to
->>>>> acquire DHCP lease in a timely manner, etc.
->>>>
->>>> So it's a problem with broadcast frames? With or without encryption? Did
->>>> you try disabling power save?
->>>
->>> With and without encryption we see issues.  I am disabling power-save,
->>> but from poking around in firmware, I'm not sure how much affect that
->>> has.
->>>
->>> I'm using commands like this to disable it:
->>> ./local/sbin/iw dev sta219 set power_save off
->>>
->>>>> Similar testing on APs using QCA AC NICs appears to work
->>>>> much better.
->>>>>
->>>>> Our problems could be most anything, including the fact that this
->>>>> testing is done on our modified firmware, but I am curious if anyone
->>>>> else seems any similar issues?
->>>>
->>>> Occasionally I test connecting to D-Link DIR-865L in STA mode. But I
->>>> just do just simple ping tests and with manual IPs.
->>>
->>> We'll keep poking at things and see if we can find any
->>> pattern or work around.
->>>
->>> Thanks,
->>> Ben
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgTWFyY2ggMjAxNCAwMTowNSwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6
+Cj4gRnJvbTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4KPiBNYWtlIHRo
+ZSByZXF1ZXN0IGNvbW1hbmQgb2JqZWN0IHRoZSByaWdodCBzaXplIHNvIHRoYXQKPiBmaXJtd2Fy
+ZSB3aWxsIG5vdCBqdXN0IHRocm93IGl0IGF3YXkuCj4gVGVzdGVkIGN1c3RvbWl6ZWQgYW5kIHVw
+c3RyZWFtIGZpcm13YXJlLgoKRGlkIHlvdSB0ZXN0IDYzNiBhcyB3ZWxsPyA2MzYgZG9lc24ndCBz
+ZWVtIHRvIHN1cHBvcnQgbW9yZSB0aGFuIGp1c3QgYHN0YXRzX2lkYC4KCgo+IFNpZ25lZC1vZmYt
+Ynk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+ICBkcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oIHwgMTEgKysrKysrKysrKysKPiAgMSBmaWxl
+IGNoYW5nZWQsIDExIGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay93bWkuaAo+IGluZGV4IGZhMWI5ZTAuLjQ5NDY0NzEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvd21pLmgKPiBAQCAtMjc2Niw2ICsyNzY2LDExIEBAIGVudW0gd21pX3N0YXRz
+X2lkIHsKPiAgICAgICAgIFdNSV9SRVFVRVNUX0FQX1NUQVQgICAgID0gMHgwMgo+ICB9Owo+Cj4g
+K3N0cnVjdCB3bGFuX2luc3RfcnNzaV9hcmdzIHsKPiArICAgICAgIF9fbGUxNiBjZmdfcmV0cnlf
+Y291bnQ7Cj4gKyAgICAgICBfX2xlMTYgcmV0cnlfY291bnQ7Cj4gK307Cj4gKwo+ICBzdHJ1Y3Qg
+d21pX3JlcXVlc3Rfc3RhdHNfY21kIHsKPiAgICAgICAgIF9fbGUzMiBzdGF0c19pZDsKPgo+IEBA
+IC0yNzczLDYgKzI3NzgsMTIgQEAgc3RydWN0IHdtaV9yZXF1ZXN0X3N0YXRzX2NtZCB7Cj4gICAg
+ICAgICAgKiBTcGFjZSB0byBhZGQgcGFyYW1ldGVycyBsaWtlCj4gICAgICAgICAgKiBwZWVyIG1h
+YyBhZGRyCj4gICAgICAgICAgKi8KCllvdSBjYW4gcHJvYmFibHkgcmVtb3ZlIHRoZSBjb21tZW50
+IG5vdyA6LSkKCgo+ICsgICAgICAgX19sZTMyIHZkZXZfaWQ7Cj4gKyAgICAgICAvKiBwZWVyIE1B
+QyBhZGRyZXNzICovCj4gKyAgICAgICBzdHJ1Y3Qgd21pX21hY19hZGRyIHBlZXJfbWFjYWRkcjsK
+PiArCj4gKyAgICAgICAvKiBJbnN0YW50YW5lb3VzIFJTU0kgYXJndW1lbnRzICovCj4gKyAgICAg
+ICBzdHJ1Y3Qgd2xhbl9pbnN0X3Jzc2lfYXJncyBpbnN0X3Jzc2lfYXJnczsKPiAgfSBfX3BhY2tl
+ZDsKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
