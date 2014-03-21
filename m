@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR23o-0002i7-9P
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 16:12:44 +0000
+ id 1WR2GG-00034N-5D
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 16:25:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix getting stats from firmware.
-References: <1395360324-20433-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQn1B6g19Ks41kzcoVyhYbHAcJGTNAyucmPMupbRAy1SNg@mail.gmail.com>
- <CAEFj98541uEFjHxjzUeim4nrjELToYrnbJTGuR5WgzwRvF9gkw@mail.gmail.com>
- <532C62DE.6060309@candelatech.com>
-Date: Fri, 21 Mar 2014 18:12:17 +0200
-In-Reply-To: <532C62DE.6060309@candelatech.com> (Ben Greear's message of "Fri, 
- 21 Mar 2014 09:03:42 -0700")
-Message-ID: <87eh1va5um.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add the Rx rate in FW stats
+References: <1395396014-24631-1-git-send-email-yeohchunyeow@gmail.com>
+ <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
+Date: Fri, 21 Mar 2014 18:25:09 +0200
+In-Reply-To: <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 21 Mar 2014 12:02:06 +0100")
+Message-ID: <87a9cja596.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,25 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 03/20/2014 11:41 PM, Yeoh Chun-Yeow wrote:
->>>
->>> Did you test 636 as well? 636 doesn't seem to support more than just `stats_id`.
->>>
->> Nope. Tested with 636 not working.
+> The main problem here is there are subtle yet crazy binary
+> incompatibilities between these firmwares.
 >
-> Does the existing code work with 636?  If so, we can add two different cmd
-> structs and use the smaller one with 636, and the one I modified with
-> 10.x firmware?
+> The best way would probably be to implement wmi as an abstraction
+> layer with completely different backends for different firmware
+> branches/revisions. Otherwise you sign up for some pain..
 
-For this issue that would be the best approach. See Marek P's patch
-"ath10k: update regulatory domain settings for 10.x firmware" (not yet
-applied, still in ath-next-test branch) as an example how this can be
-done.
+Yeah, I'm starting to believe that we will need something like that.
+Other option is just to duplicate wmi.c and wmi.h for each interface
+version. More code, but we get to keep more hair ;)
+
+But we need to talk a lot more about this. For this patch in question we
+should be able to manage with the current method of handling
+differences.
 
 -- 
 Kalle Valo
