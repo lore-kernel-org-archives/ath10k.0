@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x231.google.com ([2607:f8b0:4003:c01::231])
+Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQxDa-0000Ik-1T
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 11:02:33 +0000
-Received: by mail-ob0-f177.google.com with SMTP id wo20so2201283obc.8
- for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 04:02:06 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1395396014-24631-1-git-send-email-yeohchunyeow@gmail.com>
-References: <1395396014-24631-1-git-send-email-yeohchunyeow@gmail.com>
-Date: Fri, 21 Mar 2014 12:02:06 +0100
-Message-ID: <CA+BoTQ=X=UxikrVrmr3hyQgjN2Tg5aeW5Ok7b+23n9X6bxRshA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add the Rx rate in FW stats
+ id 1WR097-00073m-Vl
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 14:10:07 +0000
+Received: by mail-ee0-f47.google.com with SMTP id b15so1840914eek.20
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 07:09:43 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: dont call csa_finish more than once
+Date: Fri, 21 Mar 2014 15:02:00 +0100
+Message-Id: <1395410520-26939-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,109 +17,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 21 March 2014 11:00, Chun-Yeow Yeoh <yeohchunyeow@gmail.com> wrote:
-> FW stats does provide the Rx rate information. Add this.
-> Tested with firmware 10.1.467.2-1.
->
-> Further investigation on firmware 999.999.0.636 indicates
-> that there is no Tx Rate and Rx Rate in the peer stats.
+Driver is supposed to call it only once for each
+scheduled channel_switch_beacon().
 
-Incorrect.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+This is required for multi-vif csa but since that
+isn't merged yet I'm not including any specifics
+in the commit log itself.
 
-999.999.0.636 does have Tx Rate. It doesn't have Rx Rate.
-
-10.1.467.2-1 has both.
-
-
->
-> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-> ---
->  drivers/net/wireless/ath/ath10k/core.h  |    1 +
->  drivers/net/wireless/ath/ath10k/debug.c |    5 +++++
->  drivers/net/wireless/ath/ath10k/wmi.h   |    1 +
->  3 files changed, 7 insertions(+)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireles=
-s/ath/ath10k/core.h
-> index ad209a6..ca4cdab 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -119,6 +119,7 @@ struct ath10k_peer_stat {
->         u8 peer_macaddr[ETH_ALEN];
->         u32 peer_rssi;
->         u32 peer_tx_rate;
-> +       u32 peer_rx_rate;
->  };
->
->  struct ath10k_target_stats {
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wirele=
-ss/ath/ath10k/debug.c
-> index f95defa..4662cb7 100644
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -257,6 +257,8 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
->                         s->peer_rssi =3D __le32_to_cpu(peer_stats->peer_r=
-ssi);
->                         s->peer_tx_rate =3D
->                                 __le32_to_cpu(peer_stats->peer_tx_rate);
-> +                       s->peer_rx_rate =3D
-> +                               __le32_to_cpu(peer_stats->peer_rx_rate);
->
->                         tmp +=3D sizeof(struct wmi_peer_stats);
->                 }
-> @@ -425,6 +427,9 @@ static ssize_t ath10k_read_fw_stats(struct file *file=
-, char __user *user_buf,
->                 len +=3D scnprintf(buf + len, buf_len - len, "%30s %u\n",
->                                  "Peer TX rate",
->                                  fw_stats->peer_stat[i].peer_tx_rate);
-> +               len +=3D scnprintf(buf + len, buf_len - len, "%30s %u\n",
-> +                                "Peer RX rate",
-> +                                fw_stats->peer_stat[i].peer_rx_rate);
->                 len +=3D scnprintf(buf + len, buf_len - len, "\n");
->         }
->         spin_unlock_bh(&ar->data_lock);
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless=
-/ath/ath10k/wmi.h
-> index 084bcc5..2b2f0b7 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -2825,6 +2825,7 @@ struct wmi_peer_stats {
->         struct wmi_mac_addr peer_macaddr;
->         __le32 peer_rssi;
->         __le32 peer_tx_rate;
-> +       __le32 peer_rx_rate;
->  } __packed;
-
-Unfortunately this isn't as simple as it seems.
-
-Stats are received via wmi_stats_event. This structure contains fields
-describing number of pdev/vdev/beer/bcn stat entries. All entries
-(structures) are appended in certain order after this header. This
-means if you change length of structure type you skew the calculation
-of all succeeding entries.
-
-IOW this means this patch breaks peer stats for 999.999.0.636.
-
-I'm quite positive wmi_pdev_stats is also broken. This implies vdev
-stats and peer stats position calculation is skewed in the first place
-and you get garbage.
-
-The main problem here is there are subtle yet crazy binary
-incompatibilities between these firmwares.
-
-The best way would probably be to implement wmi as an abstraction
-layer with completely different backends for different firmware
-branches/revisions. Otherwise you sign up for some pain..
+Preventing multiple ieee80211_csa_finish() calls
+sounds like a good idea in general to me.
 
 
-Micha=B3
+ drivers/net/wireless/ath/ath10k/core.h | 1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 5 +++--
+ drivers/net/wireless/ath/ath10k/wmi.c  | 5 ++++-
+ 3 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index ad209a6..cf4f756 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -228,6 +228,7 @@ struct ath10k_vif {
+ 	struct ath10k *ar;
+ 	struct ieee80211_vif *vif;
+ 
++	bool csa_finished;
+ 	bool is_started;
+ 	bool is_up;
+ 	u32 aid;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 52ae380..583daba 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4090,8 +4090,9 @@ static void ath10k_channel_switch_beacon(struct ieee80211_hw *hw,
+ 					 struct ieee80211_vif *vif,
+ 					 struct cfg80211_chan_def *chandef)
+ {
+-	/* there's no need to do anything here. vif->csa_active is enough */
+-	return;
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++
++	arvif->csa_finished = false;
+ }
+ 
+ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 48130fe..1630cd8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1414,7 +1414,10 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 		 * actual channel switch is done */
+ 		if (arvif->vif->csa_active &&
+ 		    ieee80211_csa_is_complete(arvif->vif)) {
+-			ieee80211_csa_finish(arvif->vif);
++			if (!arvif->csa_finished) {
++				ieee80211_csa_finish(arvif->vif);
++				arvif->csa_finished = true;
++			}
+ 			continue;
+ 		}
+ 
+-- 
+1.8.5.3
+
 
 _______________________________________________
 ath10k mailing list
