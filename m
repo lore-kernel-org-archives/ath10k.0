@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WR4cO-0007gL-LU
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 18:56:37 +0000
+ id 1WR4cd-0007hB-HJ
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 18:56:52 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 2/3] ath10k:  Better firmware loading error messages.
-Date: Fri, 21 Mar 2014 11:55:49 -0700
-Message-Id: <1395428150-31996-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
-References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 1/3] ath10k:  Add debugging for tx-credits usage.
+Date: Fri, 21 Mar 2014 11:55:48 -0700
+Message-Id: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,140 +25,144 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Let user know the name of the board file if it is not
-found, and make it easier to determine if it is api-1
-or api-n firmware logic that is complaining.
+This helps track tx credits accounting and usage.  If
+firmware hangs or otherwise fails to return credits, one
+can more easily see the last few command types that
+was send to the firmware.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c    | 16 ++++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h    |  2 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  8 ++++----
+ drivers/net/wireless/ath/ath10k/wmi.c    |  2 +-
+ 4 files changed, 16 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 35f9db4..bf5119f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -398,7 +398,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 	/* first fetch the firmware file (firmware-*.bin) */
- 	ar->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir, name);
- 	if (IS_ERR(ar->firmware)) {
--		ath10k_err("Could not fetch firmware file '%s': %ld\n",
-+		ath10k_err("api-n: Could not fetch firmware file '%s': %ld\n",
- 			   name, PTR_ERR(ar->firmware));
- 		return PTR_ERR(ar->firmware);
- 	}
-@@ -410,14 +410,14 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 	magic_len = strlen(ATH10K_FIRMWARE_MAGIC) + 1;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index ba3084c..bca5c41 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -121,7 +121,7 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
  
- 	if (len < magic_len) {
--		ath10k_err("firmware image too small to contain magic: %zu\n",
-+		ath10k_err("api-n: firmware image too small to contain magic: %zu\n",
- 			   len);
- 		ret = -EINVAL;
- 		goto err;
- 	}
- 
- 	if (memcmp(data, ATH10K_FIRMWARE_MAGIC, magic_len) != 0) {
--		ath10k_err("Invalid firmware magic\n");
-+		ath10k_err("api-n: Invalid firmware magic\n");
- 		ret = -EINVAL;
- 		goto err;
- 	}
-@@ -439,7 +439,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 		data += sizeof(*hdr);
- 
- 		if (len < ie_len) {
--			ath10k_err("Invalid length for FW IE %d (%zu < %zu)\n",
-+			ath10k_err("api-n: Invalid length for FW IE %d (%zu < %zu)\n",
- 				   ie_id, len, ie_len);
- 			ret = -EINVAL;
- 			goto err;
-@@ -454,7 +454,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 			ar->hw->wiphy->fw_version[ie_len] = '\0';
- 
- 			ath10k_dbg(ATH10K_DBG_BOOT,
--				   "found fw version %s\n",
-+				   "api-n: found fw version %s\n",
- 				    ar->hw->wiphy->fw_version);
- 			break;
- 		case ATH10K_FW_IE_TIMESTAMP:
-@@ -463,12 +463,12 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 
- 			timestamp = (__le32 *)data;
- 
--			ath10k_dbg(ATH10K_DBG_BOOT, "found fw timestamp %d\n",
-+			ath10k_dbg(ATH10K_DBG_BOOT, "api-n: found fw timestamp %d\n",
- 				   le32_to_cpup(timestamp));
- 			break;
- 		case ATH10K_FW_IE_FEATURES:
- 			ath10k_dbg(ATH10K_DBG_BOOT,
--				   "found firmware features ie (%zd B)\n",
-+				   "api-n: found firmware features ie (%zd B)\n",
- 				   ie_len);
- 
- 			for (i = 0; i < ATH10K_FW_FEATURE_COUNT; i++) {
-@@ -492,7 +492,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 			break;
- 		case ATH10K_FW_IE_FW_IMAGE:
- 			ath10k_dbg(ATH10K_DBG_BOOT,
--				   "found fw image ie (%zd B)\n",
-+				   "api-n: found fw image ie (%zd B)\n",
- 				   ie_len);
- 
- 			ar->firmware_data = data;
-@@ -501,7 +501,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 			break;
- 		case ATH10K_FW_IE_OTP_IMAGE:
- 			ath10k_dbg(ATH10K_DBG_BOOT,
--				   "found otp image ie (%zd B)\n",
-+				   "api-n: found otp image ie (%zd B)\n",
- 				   ie_len);
- 
- 			ar->otp_data = data;
-@@ -514,12 +514,12 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 			ar->fw_rom_bss_addr = le32_to_cpu(((u32*)(data))[2]);
- 			ar->fw_rom_bss_len = le32_to_cpu(((u32*)(data))[3]);
- 			ath10k_dbg(ATH10K_DBG_BOOT,
--				   "found FW bss info, RAM: addr 0x%x len 0x%x  ROM: addr 0x%x len 0x%x\n",
-+				   "api-n: found FW bss info, RAM: addr 0x%x len 0x%x  ROM: addr 0x%x len 0x%x\n",
- 				   ar->fw_ram_bss_addr, ar->fw_ram_bss_len,
- 				   ar->fw_rom_bss_addr, ar->fw_rom_bss_len);
- 			break;
- 		default:
--			ath10k_warn("Unknown FW IE: %u\n",
-+			ath10k_warn("api-n: Unknown FW IE: %u\n",
- 				    le32_to_cpu(hdr->id));
- 			break;
+ int ath10k_htc_send(struct ath10k_htc *htc,
+ 		    enum ath10k_htc_ep_id eid,
+-		    struct sk_buff *skb)
++		    struct sk_buff *skb, int dbg)
+ {
+ 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+@@ -167,6 +167,10 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 			goto err_pull;
  		}
-@@ -532,7 +532,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+ 		ep->tx_credits -= credits;
++		ath10k_dbg(ATH10K_DBG_HTC,
++			   "ep %d used %d credits, remaining %d dbg %d (0x%x)\n",
++			   eid, credits, ep->tx_credits, dbg, dbg);
++
+ 		spin_unlock_bh(&htc->tx_lock);
  	}
  
- 	if (!ar->firmware_data || !ar->firmware_len) {
--		ath10k_warn("No ATH10K_FW_IE_FW_IMAGE found from %s, skipping\n",
-+		ath10k_warn("api-n: No ATH10K_FW_IE_FW_IMAGE found from %s, skipping\n",
- 			    name);
- 		ret = -ENOMEDIUM;
- 		goto err;
-@@ -540,7 +540,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+@@ -244,13 +248,13 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 		if (report->eid >= ATH10K_HTC_EP_COUNT)
+ 			break;
  
- 	/* now fetch the board file */
- 	if (ar->hw_params.fw.board == NULL) {
--		ath10k_err("board data file not defined");
-+		ath10k_err("api-n: board data file not defined");
- 		ret = -EINVAL;
- 		goto err;
- 	}
-@@ -550,7 +550,9 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 					 ar->hw_params.fw.board);
- 	if (IS_ERR(ar->board)) {
- 		ret = PTR_ERR(ar->board);
--		ath10k_err("could not fetch board data (%d)\n", ret);
-+		ath10k_err("api-n: could not fetch board data %s/%s (%d)\n",
-+			   ar->hw_params.fw.dir, ar->hw_params.fw.board,
-+			   ret);
- 		goto err;
- 	}
+-		ath10k_dbg(ATH10K_DBG_HTC, "ep %d got %d credits\n",
+-			   report->eid, report->credits);
+-
+ 		ep = &htc->endpoint[report->eid];
+ 		ep->tx_credits += report->credits;
+ 		htc->ar->no_tx_credits_at = 0;
  
++		ath10k_dbg(ATH10K_DBG_HTC, "ep %d got %d credits tot %d\n",
++			   report->eid, report->credits, ep->tx_credits);
++
+ 		if (ep->ep_ops.ep_tx_credits) {
+ 			spin_unlock_bh(&htc->tx_lock);
+ 			ep->ep_ops.ep_tx_credits(htc->ar);
+@@ -680,7 +684,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 
+ 	reinit_completion(&htc->ctl_resp);
+ 
+-	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
++	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+ 	if (status) {
+ 		kfree_skb(skb);
+ 		return status;
+@@ -826,7 +830,7 @@ int ath10k_htc_start(struct ath10k_htc *htc)
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
+ 
+-	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
++	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+ 	if (status) {
+ 		kfree_skb(skb);
+ 		return status;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 4716d33..b86dc2b 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -356,7 +356,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 			       struct ath10k_htc_svc_conn_req  *conn_req,
+ 			       struct ath10k_htc_svc_conn_resp *conn_resp);
+ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
+-		    struct sk_buff *packet);
++		    struct sk_buff *packet, int dbg);
+ void ath10k_htc_stop(struct ath10k_htc *htc);
+ struct sk_buff *ath10k_htc_alloc_skb(int size);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 7a3e2e4..22a4542 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -173,7 +173,7 @@ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt)
+ 	cmd = (struct htt_cmd *)skb->data;
+ 	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_VERSION_REQ;
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		dev_kfree_skb_any(skb);
+ 		return ret;
+@@ -212,7 +212,7 @@ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie)
+ 	req->cookie_lsb = cpu_to_le32(cookie & 0xffffffff);
+ 	req->cookie_msb = cpu_to_le32((cookie & 0xffffffff00000000ULL) >> 32);
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		ath10k_warn("failed to send htt type stats request: %d", ret);
+ 		dev_kfree_skb_any(skb);
+@@ -298,7 +298,7 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 
+ #undef desc_offset
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		dev_kfree_skb_any(skb);
+ 		return ret;
+@@ -360,7 +360,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 
+ 	skb_cb->htt.txbuf = NULL;
+ 
+-	res = ath10k_htc_send(&htt->ar->htc, htt->eid, txdesc);
++	res = ath10k_htc_send(&htt->ar->htc, htt->eid, txdesc, __LINE__);
+ 	if (res)
+ 		goto err_unmap_msdu;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 8b99e17..a8827e2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -544,7 +544,7 @@ static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+ 	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+ 
+ 	memset(skb_cb, 0, sizeof(*skb_cb));
+-	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
++	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb, 0x71100000 | cmd_id);
+ 	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
+ 
+ 	if (ret)
 -- 
 1.7.11.7
 
