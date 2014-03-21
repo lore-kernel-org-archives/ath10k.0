@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x231.google.com ([2a00:1450:4013:c00::231])
+Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WQvp3-00066D-1g
- for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:33:08 +0000
-Received: by mail-ee0-f49.google.com with SMTP id c41so1571257eek.36
- for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:32:43 -0700 (PDT)
+ id 1WQvp6-00066P-VF
+ for ath10k@lists.infradead.org; Fri, 21 Mar 2014 09:33:11 +0000
+Received: by mail-ee0-f51.google.com with SMTP id c13so1587937eek.10
+ for <ath10k@lists.infradead.org>; Fri, 21 Mar 2014 02:32:49 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH 1/8] ath10k: move rx related functions to htt_rx.c
-Date: Fri, 21 Mar 2014 10:32:14 +0100
-Message-Id: <1395394341-3958-2-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [PATCH 7/8] ath10k: improve way we play with attention flags
+Date: Fri, 21 Mar 2014 10:32:20 +0100
+Message-Id: <1395394341-3958-8-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,415 +27,190 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-No functional changes.
+Remove almost the same code, and do only once
+__le32_to_cpu() conversion.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |  183 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/txrx.c   |  183 ------------------------------
- drivers/net/wireless/ath/ath10k/txrx.h   |    1 -
- 3 files changed, 183 insertions(+), 184 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   94 ++++++------------------------
+ 1 file changed, 19 insertions(+), 75 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a407d98..c07fc8f 100644
+index 64abc2a..bc40f11 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -636,6 +636,189 @@ struct amsdu_subframe_hdr {
- 	__be16 len;
- } __packed;
+@@ -800,7 +800,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 	memcpy(status, &info->rx_status, sizeof(*status));
  
-+static const u8 rx_legacy_rate_idx[] = {
-+	3,	/* 0x00  - 11Mbps  */
-+	2,	/* 0x01  - 5.5Mbps */
-+	1,	/* 0x02  - 2Mbps   */
-+	0,	/* 0x03  - 1Mbps   */
-+	3,	/* 0x04  - 11Mbps  */
-+	2,	/* 0x05  - 5.5Mbps */
-+	1,	/* 0x06  - 2Mbps   */
-+	0,	/* 0x07  - 1Mbps   */
-+	10,	/* 0x08  - 48Mbps  */
-+	8,	/* 0x09  - 24Mbps  */
-+	6,	/* 0x0A  - 12Mbps  */
-+	4,	/* 0x0B  - 6Mbps   */
-+	11,	/* 0x0C  - 54Mbps  */
-+	9,	/* 0x0D  - 36Mbps  */
-+	7,	/* 0x0E  - 18Mbps  */
-+	5,	/* 0x0F  - 9Mbps   */
-+};
-+
-+static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
-+			     enum ieee80211_band band,
-+			     struct ieee80211_rx_status *status)
-+{
-+	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
-+	u8 info0 = info->rate.info0;
-+	u32 info1 = info->rate.info1;
-+	u32 info2 = info->rate.info2;
-+	u8 preamble = 0;
-+
-+	/* Check if valid fields */
-+	if (!(info0 & HTT_RX_INDICATION_INFO0_START_VALID))
-+		return;
-+
-+	preamble = MS(info1, HTT_RX_INDICATION_INFO1_PREAMBLE_TYPE);
-+
-+	switch (preamble) {
-+	case HTT_RX_LEGACY:
-+		cck = info0 & HTT_RX_INDICATION_INFO0_LEGACY_RATE_CCK;
-+		rate = MS(info0, HTT_RX_INDICATION_INFO0_LEGACY_RATE);
-+		rate_idx = 0;
-+
-+		if (rate < 0x08 || rate > 0x0F)
-+			break;
-+
-+		switch (band) {
-+		case IEEE80211_BAND_2GHZ:
-+			if (cck)
-+				rate &= ~BIT(3);
-+			rate_idx = rx_legacy_rate_idx[rate];
-+			break;
-+		case IEEE80211_BAND_5GHZ:
-+			rate_idx = rx_legacy_rate_idx[rate];
-+			/* We are using same rate table registering
-+			   HW - ath10k_rates[]. In case of 5GHz skip
-+			   CCK rates, so -4 here */
-+			rate_idx -= 4;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		status->rate_idx = rate_idx;
-+		break;
-+	case HTT_RX_HT:
-+	case HTT_RX_HT_WITH_TXBF:
-+		/* HT-SIG - Table 20-11 in info1 and info2 */
-+		mcs = info1 & 0x1F;
-+		nss = mcs >> 3;
-+		bw = (info1 >> 7) & 1;
-+		sgi = (info2 >> 7) & 1;
-+
-+		status->rate_idx = mcs;
-+		status->flag |= RX_FLAG_HT;
-+		if (sgi)
-+			status->flag |= RX_FLAG_SHORT_GI;
-+		if (bw)
-+			status->flag |= RX_FLAG_40MHZ;
-+		break;
-+	case HTT_RX_VHT:
-+	case HTT_RX_VHT_WITH_TXBF:
-+		/* VHT-SIG-A1 in info 1, VHT-SIG-A2 in info2
-+		   TODO check this */
-+		mcs = (info2 >> 4) & 0x0F;
-+		nss = ((info1 >> 10) & 0x07) + 1;
-+		bw = info1 & 3;
-+		sgi = info2 & 1;
-+
-+		status->rate_idx = mcs;
-+		status->vht_nss = nss;
-+
-+		if (sgi)
-+			status->flag |= RX_FLAG_SHORT_GI;
-+
-+		switch (bw) {
-+		/* 20MHZ */
-+		case 0:
-+			break;
-+		/* 40MHZ */
-+		case 1:
-+			status->flag |= RX_FLAG_40MHZ;
-+			break;
-+		/* 80MHZ */
-+		case 2:
-+			status->vht_flag |= RX_VHT_FLAG_80MHZ;
-+		}
-+
-+		status->flag |= RX_FLAG_VHT;
-+		break;
-+	default:
-+		break;
-+	}
-+}
-+
-+static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
-+{
-+	struct ieee80211_rx_status *status;
-+	struct ieee80211_channel *ch;
-+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
-+
-+	status = IEEE80211_SKB_RXCB(info->skb);
-+	memset(status, 0, sizeof(*status));
-+
-+	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
-+		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
-+				RX_FLAG_MMIC_STRIPPED;
-+		hdr->frame_control = __cpu_to_le16(
-+				__le16_to_cpu(hdr->frame_control) &
-+				~IEEE80211_FCTL_PROTECTED);
-+	}
-+
-+	if (info->mic_err)
-+		status->flag |= RX_FLAG_MMIC_ERROR;
-+
-+	if (info->fcs_err)
-+		status->flag |= RX_FLAG_FAILED_FCS_CRC;
-+
-+	if (info->amsdu_more)
-+		status->flag |= RX_FLAG_AMSDU_MORE;
-+
-+	status->signal = info->signal;
-+
-+	spin_lock_bh(&ar->data_lock);
-+	ch = ar->scan_channel;
-+	if (!ch)
-+		ch = ar->rx_channel;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	if (!ch) {
-+		ath10k_warn("no channel configured; ignoring frame!\n");
-+		dev_kfree_skb_any(info->skb);
-+		return;
-+	}
-+
-+	process_rx_rates(ar, info, ch->band, status);
-+	status->band = ch->band;
-+	status->freq = ch->center_freq;
-+
-+	if (info->rate.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
-+		/* TSF available only in 32-bit */
-+		status->mactime = info->tsf & 0xffffffff;
-+		status->flag |= RX_FLAG_MACTIME_END;
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_DATA,
-+		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
-+		   info->skb,
-+		   info->skb->len,
-+		   status->flag == 0 ? "legacy" : "",
-+		   status->flag & RX_FLAG_HT ? "ht" : "",
-+		   status->flag & RX_FLAG_VHT ? "vht" : "",
-+		   status->flag & RX_FLAG_40MHZ ? "40" : "",
-+		   status->vht_flag & RX_VHT_FLAG_80MHZ ? "80" : "",
-+		   status->flag & RX_FLAG_SHORT_GI ? "sgi " : "",
-+		   status->rate_idx,
-+		   status->vht_nss,
-+		   status->freq,
-+		   status->band, status->flag, info->fcs_err);
-+	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
-+			info->skb->data, info->skb->len);
-+
-+	ieee80211_rx(ar->hw, info->skb);
-+}
-+
- static int ath10k_htt_rx_nwifi_hdrlen(struct ieee80211_hdr *hdr)
- {
- 	/* nwifi header is padded to 4 bytes. this fixes 4addr rx */
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 0541dd9..82669a7 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -100,189 +100,6 @@ exit:
- 		wake_up(&htt->empty_tx_wq);
+ 	ath10k_dbg(ATH10K_DBG_DATA,
+-		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
++		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %imic-err %i\n",
+ 		   info->skb,
+ 		   info->skb->len,
+ 		   status->flag == 0 ? "legacy" : "",
+@@ -813,7 +813,8 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+ 		   status->vht_nss,
+ 		   status->freq,
+ 		   status->band, status->flag,
+-		   !!(status->flag & RX_FLAG_FAILED_FCS_CRC));
++		   !!(status->flag & RX_FLAG_FAILED_FCS_CRC),
++		   !!(status->flag & RX_FLAG_MMIC_ERROR));
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
+ 			info->skb->data, info->skb->len);
+ 
+@@ -1000,62 +1001,6 @@ static void ath10k_htt_rx_msdu(struct ath10k_htt *htt, struct htt_rx_info *info)
+ 	ath10k_process_rx(htt->ar, info);
  }
  
--static const u8 rx_legacy_rate_idx[] = {
--	3,	/* 0x00  - 11Mbps  */
--	2,	/* 0x01  - 5.5Mbps */
--	1,	/* 0x02  - 2Mbps   */
--	0,	/* 0x03  - 1Mbps   */
--	3,	/* 0x04  - 11Mbps  */
--	2,	/* 0x05  - 5.5Mbps */
--	1,	/* 0x06  - 2Mbps   */
--	0,	/* 0x07  - 1Mbps   */
--	10,	/* 0x08  - 48Mbps  */
--	8,	/* 0x09  - 24Mbps  */
--	6,	/* 0x0A  - 12Mbps  */
--	4,	/* 0x0B  - 6Mbps   */
--	11,	/* 0x0C  - 54Mbps  */
--	9,	/* 0x0D  - 36Mbps  */
--	7,	/* 0x0E  - 18Mbps  */
--	5,	/* 0x0F  - 9Mbps   */
--};
--
--static void process_rx_rates(struct ath10k *ar, struct htt_rx_info *info,
--			     enum ieee80211_band band,
--			     struct ieee80211_rx_status *status)
+-static bool ath10k_htt_rx_has_decrypt_err(struct sk_buff *skb)
 -{
--	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
--	u8 info0 = info->rate.info0;
--	u32 info1 = info->rate.info1;
--	u32 info2 = info->rate.info2;
--	u8 preamble = 0;
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
 -
--	/* Check if valid fields */
--	if (!(info0 & HTT_RX_INDICATION_INFO0_START_VALID))
--		return;
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
 -
--	preamble = MS(info1, HTT_RX_INDICATION_INFO1_PREAMBLE_TYPE);
+-	if (flags & RX_ATTENTION_FLAGS_DECRYPT_ERR)
+-		return true;
 -
--	switch (preamble) {
--	case HTT_RX_LEGACY:
--		cck = info0 & HTT_RX_INDICATION_INFO0_LEGACY_RATE_CCK;
--		rate = MS(info0, HTT_RX_INDICATION_INFO0_LEGACY_RATE);
--		rate_idx = 0;
--
--		if (rate < 0x08 || rate > 0x0F)
--			break;
--
--		switch (band) {
--		case IEEE80211_BAND_2GHZ:
--			if (cck)
--				rate &= ~BIT(3);
--			rate_idx = rx_legacy_rate_idx[rate];
--			break;
--		case IEEE80211_BAND_5GHZ:
--			rate_idx = rx_legacy_rate_idx[rate];
--			/* We are using same rate table registering
--			   HW - ath10k_rates[]. In case of 5GHz skip
--			   CCK rates, so -4 here */
--			rate_idx -= 4;
--			break;
--		default:
--			break;
--		}
--
--		status->rate_idx = rate_idx;
--		break;
--	case HTT_RX_HT:
--	case HTT_RX_HT_WITH_TXBF:
--		/* HT-SIG - Table 20-11 in info1 and info2 */
--		mcs = info1 & 0x1F;
--		nss = mcs >> 3;
--		bw = (info1 >> 7) & 1;
--		sgi = (info2 >> 7) & 1;
--
--		status->rate_idx = mcs;
--		status->flag |= RX_FLAG_HT;
--		if (sgi)
--			status->flag |= RX_FLAG_SHORT_GI;
--		if (bw)
--			status->flag |= RX_FLAG_40MHZ;
--		break;
--	case HTT_RX_VHT:
--	case HTT_RX_VHT_WITH_TXBF:
--		/* VHT-SIG-A1 in info 1, VHT-SIG-A2 in info2
--		   TODO check this */
--		mcs = (info2 >> 4) & 0x0F;
--		nss = ((info1 >> 10) & 0x07) + 1;
--		bw = info1 & 3;
--		sgi = info2 & 1;
--
--		status->rate_idx = mcs;
--		status->vht_nss = nss;
--
--		if (sgi)
--			status->flag |= RX_FLAG_SHORT_GI;
--
--		switch (bw) {
--		/* 20MHZ */
--		case 0:
--			break;
--		/* 40MHZ */
--		case 1:
--			status->flag |= RX_FLAG_40MHZ;
--			break;
--		/* 80MHZ */
--		case 2:
--			status->vht_flag |= RX_VHT_FLAG_80MHZ;
--		}
--
--		status->flag |= RX_FLAG_VHT;
--		break;
--	default:
--		break;
--	}
+-	return false;
 -}
 -
--void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+-static bool ath10k_htt_rx_has_fcs_err(struct sk_buff *skb)
 -{
--	struct ieee80211_rx_status *status;
--	struct ieee80211_channel *ch;
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
 -
--	status = IEEE80211_SKB_RXCB(info->skb);
--	memset(status, 0, sizeof(*status));
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
 -
--	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
--		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
--				RX_FLAG_MMIC_STRIPPED;
--		hdr->frame_control = __cpu_to_le16(
--				__le16_to_cpu(hdr->frame_control) &
--				~IEEE80211_FCTL_PROTECTED);
--	}
+-	if (flags & RX_ATTENTION_FLAGS_FCS_ERR)
+-		return true;
 -
--	if (info->mic_err)
--		status->flag |= RX_FLAG_MMIC_ERROR;
--
--	if (info->fcs_err)
--		status->flag |= RX_FLAG_FAILED_FCS_CRC;
--
--	if (info->amsdu_more)
--		status->flag |= RX_FLAG_AMSDU_MORE;
--
--	status->signal = info->signal;
--
--	spin_lock_bh(&ar->data_lock);
--	ch = ar->scan_channel;
--	if (!ch)
--		ch = ar->rx_channel;
--	spin_unlock_bh(&ar->data_lock);
--
--	if (!ch) {
--		ath10k_warn("no channel configured; ignoring frame!\n");
--		dev_kfree_skb_any(info->skb);
--		return;
--	}
--
--	process_rx_rates(ar, info, ch->band, status);
--	status->band = ch->band;
--	status->freq = ch->center_freq;
--
--	if (info->rate.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
--		/* TSF available only in 32-bit */
--		status->mactime = info->tsf & 0xffffffff;
--		status->flag |= RX_FLAG_MACTIME_END;
--	}
--
--	ath10k_dbg(ATH10K_DBG_DATA,
--		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i\n",
--		   info->skb,
--		   info->skb->len,
--		   status->flag == 0 ? "legacy" : "",
--		   status->flag & RX_FLAG_HT ? "ht" : "",
--		   status->flag & RX_FLAG_VHT ? "vht" : "",
--		   status->flag & RX_FLAG_40MHZ ? "40" : "",
--		   status->vht_flag & RX_VHT_FLAG_80MHZ ? "80" : "",
--		   status->flag & RX_FLAG_SHORT_GI ? "sgi " : "",
--		   status->rate_idx,
--		   status->vht_nss,
--		   status->freq,
--		   status->band, status->flag, info->fcs_err);
--	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
--			info->skb->data, info->skb->len);
--
--	ieee80211_rx(ar->hw, info->skb);
+-	return false;
 -}
 -
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr)
+-static bool ath10k_htt_rx_has_mic_err(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
+-		return true;
+-
+-	return false;
+-}
+-
+-static bool ath10k_htt_rx_is_mgmt(struct sk_buff *skb)
+-{
+-	struct htt_rx_desc *rxd;
+-	u32 flags;
+-
+-	rxd = (void *)skb->data - sizeof(*rxd);
+-	flags = __le32_to_cpu(rxd->attention.flags);
+-
+-	if (flags & RX_ATTENTION_FLAGS_MGMT_TYPE)
+-		return true;
+-
+-	return false;
+-}
+-
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb)
  {
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
-index 356dc9c..aee3e20 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.h
-+++ b/drivers/net/wireless/ath/ath10k/txrx.h
-@@ -21,7 +21,6 @@
+ 	struct htt_rx_desc *rxd;
+@@ -1141,7 +1086,8 @@ static int ath10k_unchain_msdu(struct sk_buff *msdu_head)
+ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 					struct sk_buff *head,
+ 					enum htt_rx_mpdu_status status,
+-					bool channel_set)
++					bool channel_set,
++					u32 attention)
+ {
+ 	if (head->len == 0) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+@@ -1149,7 +1095,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 		return false;
+ 	}
  
- void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 			  const struct htt_tx_done *tx_done);
--void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info);
+-	if (ath10k_htt_rx_has_decrypt_err(head)) {
++	if (attention & RX_ATTENTION_FLAGS_DECRYPT_ERR) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+ 			   "htt rx dropping due to decrypt-err\n");
+ 		return false;
+@@ -1162,7 +1108,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
  
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr);
+ 	/* Skip mgmt frames while we handle this in WMI */
+ 	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
+-	    ath10k_htt_rx_is_mgmt(head)) {
++	    attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
+ 		ath10k_dbg(ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
+ 		return false;
+ 	}
+@@ -1191,12 +1137,14 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ {
+ 	struct htt_rx_info info;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
++	struct htt_rx_desc *rxd;
+ 	enum htt_rx_mpdu_status status;
+ 	struct ieee80211_hdr *hdr;
+ 	int num_mpdu_ranges;
++	u32 attention;
+ 	int fw_desc_len;
+ 	u8 *fw_desc;
+-	bool channel_set, fcs_err, mic_err;
++	bool channel_set;
+ 	int i, j;
+ 	int ret;
+ 
+@@ -1258,9 +1206,15 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
+ 
++			rxd = container_of((void *) msdu_head->data,
++					   struct htt_rx_desc,
++					   msdu_payload);
++			attention = __le32_to_cpu(rxd->attention.flags);
++
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+ 							 status,
+-							 channel_set)) {
++							 channel_set,
++							 attention)) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
+@@ -1273,26 +1227,16 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 
+ 			info.skb     = msdu_head;
+ 
+-			fcs_err = ath10k_htt_rx_has_fcs_err(msdu_head);
+-			if (fcs_err)
++			if (attention & RX_ATTENTION_FLAGS_FCS_ERR)
+ 				info.rx_status.flag |= RX_FLAG_FAILED_FCS_CRC;
+ 			else
+ 				info.rx_status.flag &= ~RX_FLAG_FAILED_FCS_CRC;
+ 
+-			mic_err = ath10k_htt_rx_has_mic_err(msdu_head);
+-			if (mic_err)
++			if (attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR)
+ 				info.rx_status.flag |= RX_FLAG_MMIC_ERROR;
+ 			else
+ 				info.rx_status.flag &= ~RX_FLAG_MMIC_ERROR;
+ 
+-			if (fcs_err)
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx has FCS err\n");
+-
+-			if (mic_err)
+-				ath10k_dbg(ATH10K_DBG_HTT,
+-					   "htt rx has MIC err\n");
+-
+ 			hdr = ath10k_htt_rx_skb_get_hdr(msdu_head);
+ 
+ 			if (ath10k_htt_rx_hdr_is_amsdu(hdr))
 -- 
 1.7.9.5
 
