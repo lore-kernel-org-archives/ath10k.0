@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS9LM-0007iK-Mi
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 18:11:30 +0000
-Message-ID: <53307524.8070501@candelatech.com>
-Date: Mon, 24 Mar 2014 11:10:44 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Scanning all 5Ghz channels with AC NIC.
+ id 1WSARU-0000vF-G4
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 19:21:53 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 1/4 v2] ath10k:  add debugging for tx-credits usage
+Date: Mon, 24 Mar 2014 12:20:40 -0700
+Message-Id: <1395688844-24640-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,71 +15,166 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-I notice this issue while trying to scan specific channels with
-an ath10k NIC.
+From: Ben Greear <greearb@candelatech.com>
 
-If I configure supplicant to use a specific freq list, it will fail:
+This helps track tx credits accounting and usage.  If
+firmware hangs or otherwise fails to return credits, one
+can more easily see the last few command types that
+was sent to the firmware.
 
-1395683887.458813: nl80211: Scan frequency 5170 MHz
-1395683887.458823: nl80211: Scan frequency 5180 MHz
-1395683887.458829: nl80211: Scan frequency 5190 MHz
-1395683887.458834: nl80211: Scan frequency 5200 MHz
-1395683887.458840: nl80211: Scan frequency 5210 MHz
-1395683887.458845: nl80211: Scan frequency 5220 MHz
-1395683887.458850: nl80211: Scan frequency 5230 MHz
-1395683887.458855: nl80211: Scan frequency 5240 MHz
-1395683887.458861: nl80211: Scan frequency 5260 MHz
-1395683887.458866: nl80211: Scan frequency 5280 MHz
-1395683887.458871: nl80211: Scan frequency 5300 MHz
-1395683887.458876: nl80211: Scan frequency 5320 MHz
-1395683887.458881: nl80211: Scan frequency 5500 MHz
-1395683887.458886: nl80211: Scan frequency 5520 MHz
-1395683887.458890: nl80211: Scan frequency 5540 MHz
-1395683887.458895: nl80211: Scan frequency 5560 MHz
-1395683887.458900: nl80211: Scan frequency 5580 MHz
-1395683887.458905: nl80211: Scan frequency 5600 MHz
-1395683887.458911: nl80211: Scan frequency 5580 MHz
-1395683887.458916: nl80211: Scan frequency 5600 MHz
-1395683887.458921: nl80211: Scan frequency 5620 MHz
-1395683887.458926: nl80211: Scan frequency 5640 MHz
-1395683887.458931: nl80211: Scan frequency 5660 MHz
-1395683887.458936: nl80211: Scan frequency 5620 MHz
-1395683887.458942: nl80211: Scan frequency 5640 MHz
-1395683887.458947: nl80211: Scan frequency 5660 MHz
-1395683887.458952: nl80211: Scan frequency 5680 MHz
-1395683887.458957: nl80211: Scan frequency 5700 MHz
-1395683887.458962: nl80211: Scan frequency 5745 MHz
-1395683887.458987: nl80211: Scan frequency 5645 MHz
-1395683887.458996: nl80211: Scan frequency 5785 MHz
-1395683887.459001: nl80211: Scan frequency 5805 MHz
-1395683887.459005: nl80211: Scan frequency 5825 MHz
-1395683887.459040: nl80211: Scan trigger failed: ret=-22 (Invalid argument)
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
 
+v2:  Improve comments.  Issue of using __LINE__ is not resolved.
 
-A standard scan seems to use only a subset of these channels.
-But, wouldn't that make us miss scanning for some /a or /n APs
-out there?
+ drivers/net/wireless/ath/ath10k/htc.c    | 16 ++++++++++------
+ drivers/net/wireless/ath/ath10k/htc.h    |  6 +++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  8 ++++----
+ drivers/net/wireless/ath/ath10k/wmi.c    |  5 ++++-
+ 4 files changed, 23 insertions(+), 12 deletions(-)
 
-[root@ct521-FCFC ~]# iw event
-wlan0 (phy #1): scan started
-wlan0 (phy #1): scan finished: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 5180 5200 5220 5240 5260 5280 5300 5320 5745 5765 5785 5805 5825, ""
-
-
-Any idea if this is a bug in my config/assumptions, ath10k, or supplicant?
-
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 7f1bccd..2f8bc33 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -121,7 +121,7 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 
+ int ath10k_htc_send(struct ath10k_htc *htc,
+ 		    enum ath10k_htc_ep_id eid,
+-		    struct sk_buff *skb)
++		    struct sk_buff *skb, int dbg)
+ {
+ 	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+ 	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+@@ -157,6 +157,10 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+ 			goto err_pull;
+ 		}
+ 		ep->tx_credits -= credits;
++		ath10k_dbg(ATH10K_DBG_HTC,
++			   "ep %d used %d credits, remaining %d dbg %d (0x%x)\n",
++			   eid, credits, ep->tx_credits, dbg, dbg);
++
+ 		spin_unlock_bh(&htc->tx_lock);
+ 	}
+ 
+@@ -234,12 +238,12 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 		if (report->eid >= ATH10K_HTC_EP_COUNT)
+ 			break;
+ 
+-		ath10k_dbg(ATH10K_DBG_HTC, "ep %d got %d credits\n",
+-			   report->eid, report->credits);
+-
+ 		ep = &htc->endpoint[report->eid];
+ 		ep->tx_credits += report->credits;
+ 
++		ath10k_dbg(ATH10K_DBG_HTC, "ep %d got %d credits tot %d\n",
++			   report->eid, report->credits, ep->tx_credits);
++
+ 		if (ep->ep_ops.ep_tx_credits) {
+ 			spin_unlock_bh(&htc->tx_lock);
+ 			ep->ep_ops.ep_tx_credits(htc->ar);
+@@ -669,7 +673,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 
+ 	reinit_completion(&htc->ctl_resp);
+ 
+-	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
++	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+ 	if (status) {
+ 		kfree_skb(skb);
+ 		return status;
+@@ -815,7 +819,7 @@ int ath10k_htc_start(struct ath10k_htc *htc)
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTC, "HTC is using TX credit flow control\n");
+ 
+-	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
++	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+ 	if (status) {
+ 		kfree_skb(skb);
+ 		return status;
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index 4716d33..b74b07f 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -355,8 +355,12 @@ int ath10k_htc_start(struct ath10k_htc *htc);
+ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 			       struct ath10k_htc_svc_conn_req  *conn_req,
+ 			       struct ath10k_htc_svc_conn_resp *conn_resp);
++/* dbg is used for logging, trying to track roughly what kind of command
++ * we are sending and/or where it came from.  May help debug firmware
++ * issues where we do not get tx-credits returned properly.
++ */
+ int ath10k_htc_send(struct ath10k_htc *htc, enum ath10k_htc_ep_id eid,
+-		    struct sk_buff *packet);
++		    struct sk_buff *packet, int dbg);
+ void ath10k_htc_stop(struct ath10k_htc *htc);
+ struct sk_buff *ath10k_htc_alloc_skb(int size);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 7a3e2e4..22a4542 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -173,7 +173,7 @@ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt)
+ 	cmd = (struct htt_cmd *)skb->data;
+ 	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_VERSION_REQ;
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		dev_kfree_skb_any(skb);
+ 		return ret;
+@@ -212,7 +212,7 @@ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie)
+ 	req->cookie_lsb = cpu_to_le32(cookie & 0xffffffff);
+ 	req->cookie_msb = cpu_to_le32((cookie & 0xffffffff00000000ULL) >> 32);
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		ath10k_warn("failed to send htt type stats request: %d", ret);
+ 		dev_kfree_skb_any(skb);
+@@ -298,7 +298,7 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 
+ #undef desc_offset
+ 
+-	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb, __LINE__);
+ 	if (ret) {
+ 		dev_kfree_skb_any(skb);
+ 		return ret;
+@@ -360,7 +360,7 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 
+ 	skb_cb->htt.txbuf = NULL;
+ 
+-	res = ath10k_htc_send(&htt->ar->htc, htt->eid, txdesc);
++	res = ath10k_htc_send(&htt->ar->htc, htt->eid, txdesc, __LINE__);
+ 	if (res)
+ 		goto err_unmap_msdu;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index d4b48ef..433ec5a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -544,7 +544,10 @@ static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+ 	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+ 
+ 	memset(skb_cb, 0, sizeof(*skb_cb));
+-	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
++	/* 0x71100000 is hack so that we know the debug value is a cmd-id
++	 * instead of a line number.
++	 */
++	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb, 0x71100000 | cmd_id);
+ 	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
+ 
+ 	if (ret)
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.11.7
 
 
 _______________________________________________
