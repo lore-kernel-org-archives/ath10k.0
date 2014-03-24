@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ob0-x22d.google.com ([2607:f8b0:4003:c01::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS30a-0004iH-N2
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 11:25:37 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/3] ath10k:  add otp and firmware boot error messages.
-References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
- <1395428150-31996-3-git-send-email-greearb@candelatech.com>
-Date: Mon, 24 Mar 2014 13:25:09 +0200
-In-Reply-To: <1395428150-31996-3-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Fri, 21 Mar 2014 11:55:50
- -0700")
-Message-ID: <87siq76dpm.fsf@kamboji.qca.qualcomm.com>
+ id 1WS2wr-0004Sk-0O
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 11:21:49 +0000
+Received: by mail-ob0-f173.google.com with SMTP id gq1so5511454obb.4
+ for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 04:21:22 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <871txr7svw.fsf@kamboji.qca.qualcomm.com>
+References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
+ <871txr7svw.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 24 Mar 2014 12:21:21 +0100
+Message-ID: <CA+BoTQmquq7dXTV0sSV1mJ0+8-9OuiCnqz2iN8VNO4J3iaeexQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ath10k: Add debugging for tx-credits usage.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +21,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
-
-> From: Ben Greear <greearb@candelatech.com>
->
-> If OTP or firmware fails to load properly, print out some
-> extra info in the kernel logs.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-
-[...]
-
-> @@ -597,12 +598,16 @@ static int ath10k_init_download_firmware(struct ath10k *ar)
->  		return ret;
->  
->  	ret = ath10k_download_and_run_otp(ar);
-> -	if (ret)
-> +	if (ret) {
-> +		ath10k_err("boot otp execute result %d\n", ret);
->  		return ret;
-> +	}
-
-"failed to run otp: %d\n"
-
->  	ret = ath10k_download_fw(ar);
-> -	if (ret)
-> +	if (ret) {
-> +		ath10k_err("boot download firmware result %d\n", ret);
->  		return ret;
-> +	}
-
-"failed to download firmware: %d\n"
-
-And I think you should add the same for ath10k_download_board_data()
-call before these two, it neither prints anything when an error happens.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgTWFyY2ggMjAxNCAxMjoxMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gZ3JlZWFyYkBjYW5kZWxhdGVjaC5jb20gd3JpdGVzOgo+Cj4+IEZyb206IEJl
+biBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Pgo+PiBUaGlzIGhlbHBzIHRyYWNr
+IHR4IGNyZWRpdHMgYWNjb3VudGluZyBhbmQgdXNhZ2UuICBJZgo+PiBmaXJtd2FyZSBoYW5ncyBv
+ciBvdGhlcndpc2UgZmFpbHMgdG8gcmV0dXJuIGNyZWRpdHMsIG9uZQo+PiBjYW4gbW9yZSBlYXNp
+bHkgc2VlIHRoZSBsYXN0IGZldyBjb21tYW5kIHR5cGVzIHRoYXQKPj4gd2FzIHNlbmQgdG8gdGhl
+IGZpcm13YXJlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
+bGF0ZWNoLmNvbT4KPgo+IFRoaXMgcGF0Y2hzZXQgZGlkbid0IGFwcGx5LCBhbmQgdGhlIHNoYTEg
+aWRzIHdlcmUgdXNlbGVzcyBzbyB0aGF0IDMtd2F5Cj4gbWVyZ2UgZGlkbid0IHdvcmsuIENhbiB5
+b3UgcmViYXNlLCBwbGVhc2U/IEFuZCBiZXR0ZXIgeWV0IGlmIHlvdSByZWJhc2UKPiBpbiB0b3Ag
+b2YgbXkgbWFzdGVyIGJyYW5jaC4KPgo+PiAgaW50IGF0aDEwa19odGNfc2VuZChzdHJ1Y3QgYXRo
+MTBrX2h0YyAqaHRjLAo+PiAgICAgICAgICAgICAgICAgICBlbnVtIGF0aDEwa19odGNfZXBfaWQg
+ZWlkLAo+PiAtICAgICAgICAgICAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+PiArICAgICAg
+ICAgICAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBpbnQgZGJnKQo+PiAgewo+PiAgICAgICBz
+dHJ1Y3QgYXRoMTBrX2h0Y19lcCAqZXAgPSAmaHRjLT5lbmRwb2ludFtlaWRdOwo+PiAgICAgICBz
+dHJ1Y3QgYXRoMTBrX3NrYl9jYiAqc2tiX2NiID0gQVRIMTBLX1NLQl9DQihza2IpOwo+PiBAQCAt
+MTY3LDYgKzE2NywxMCBAQCBpbnQgYXRoMTBrX2h0Y19zZW5kKHN0cnVjdCBhdGgxMGtfaHRjICpo
+dGMsCj4+ICAgICAgICAgICAgICAgICAgICAgICBnb3RvIGVycl9wdWxsOwo+PiAgICAgICAgICAg
+ICAgIH0KPj4gICAgICAgICAgICAgICBlcC0+dHhfY3JlZGl0cyAtPSBjcmVkaXRzOwo+PiArICAg
+ICAgICAgICAgIGF0aDEwa19kYmcoQVRIMTBLX0RCR19IVEMsCj4+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAiZXAgJWQgdXNlZCAlZCBjcmVkaXRzLCByZW1haW5pbmcgJWQgZGJnICVkICgweCV4
+KVxuIiwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgIGVpZCwgY3JlZGl0cywgZXAtPnR4X2Ny
+ZWRpdHMsIGRiZywgZGJnKTsKPj4gKwo+PiAgICAgICAgICAgICAgIHNwaW5fdW5sb2NrX2JoKCZo
+dGMtPnR4X2xvY2spOwo+PiAgICAgICB9Cj4KPiBbLi4uXQo+Cj4+IEBAIC02ODAsNyArNjg0LDcg
+QEAgaW50IGF0aDEwa19odGNfY29ubmVjdF9zZXJ2aWNlKHN0cnVjdCBhdGgxMGtfaHRjICpodGMs
+Cj4+Cj4+ICAgICAgIHJlaW5pdF9jb21wbGV0aW9uKCZodGMtPmN0bF9yZXNwKTsKPj4KPj4gLSAg
+ICAgc3RhdHVzID0gYXRoMTBrX2h0Y19zZW5kKGh0YywgQVRIMTBLX0hUQ19FUF8wLCBza2IpOwo+
+PiArICAgICBzdGF0dXMgPSBhdGgxMGtfaHRjX3NlbmQoaHRjLCBBVEgxMEtfSFRDX0VQXzAsIHNr
+YiwgX19MSU5FX18pOwo+Cj4gVXNpbmcgbGluZSBudW1iZXJzIGluIGRlYnVnIG1lc3NhZ2VzIGlz
+IHZlcnkgY3VtYmVyc29tZS4gU29tZSBwZW9wbGUKPiBjaGVycnkgcGljayBwYXRjaGVzLCBoYXZl
+IHRoZWlyIG93biBjaGFuZ2VzIGFuZCB3aGF0bm90IHdoaWNoIHdpbGwgbWFrZQo+IGl0IG1vcmUg
+ZGlmZmljdWx0IHRvIHJlYWQgdGhlIGRlYnVnIGxvZ3MuIElzbid0IHRoZXJlIGFueSBiZXR0ZXIg
+d2F5IHRvCj4gZG8gdGhpcz8KCkkgd291bGQgcHJlZmVyIHRvIGV4cGxpY2l0bHkgd2FpdCBmb3Ig
+dHggY3JlZGl0IHJlcGxlbmlzaG1lbnQgaW4KYXRoMTBrX3dtaV9jbWRfc2VuZCgpIGFmdGVyIGEg
+Y29tbWFuZCBpcyBzZW50IGluc3RlYWQgb2YgYWxsIHRoZXNlCnByaW50cy4gVGhpcyB3YXkgeW91
+IGNhbiBnZXQgYSBmdWxsIGNhbGwgdHJhY2UgaWYgaXQgdGltZXMgb3V0LgoKCk1pY2hhxYIKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
