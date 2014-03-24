@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-f49.google.com ([74.125.83.49])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSBQ7-0002ne-8N
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 20:24:32 +0000
-Received: by mail-ee0-f49.google.com with SMTP id c41so4866721eek.36
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 13:24:04 -0700 (PDT)
+ id 1WSBQ7-0002nf-SO
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 20:24:34 +0000
+Received: by mail-ee0-f43.google.com with SMTP id e53so4879765eek.2
+ for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 13:24:10 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH v2 3/8] ath10k: introduce ieee80211_rx_status to htt_rx_info
-Date: Mon, 24 Mar 2014 21:23:17 +0100
-Message-Id: <1395692603-4693-3-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [PATCH v2 6/8] ath10k: return error when ath10k_htt_rx_amsdu_pop()
+ fail
+Date: Mon, 24 Mar 2014 21:23:20 +0100
+Message-Id: <1395692603-4693-6-git-send-email-janusz.dziedzic@tieto.com>
 In-Reply-To: <1395692603-4693-1-git-send-email-janusz.dziedzic@tieto.com>
 References: <1395692603-4693-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,48 +28,137 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Will be used as a template, and final storage for
-rx_status.
+Return error when rx_amsdu_pop() will fail.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h    |    2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c |    2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   50 ++++++++++++++++--------------
+ 1 file changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 654867f..e80f033 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -21,6 +21,7 @@
- #include <linux/bug.h>
- #include <linux/interrupt.h>
- #include <linux/dmapool.h>
-+#include <net/mac80211.h>
- 
- #include "htc.h"
- #include "rx_desc.h"
-@@ -1174,6 +1175,7 @@ struct htt_peer_unmap_event {
- 
- struct htt_rx_info {
- 	struct sk_buff *skb;
-+	struct ieee80211_rx_status rx_status;
- 	enum htt_rx_mpdu_status status;
- 	enum htt_rx_mpdu_encrypt_type encrypt_type;
- 	s8 signal;
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fd14c3a..f18e41c 100644
+index a994a4f..64abc2a 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -756,7 +756,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)info->skb->data;
+@@ -297,6 +297,7 @@ static void ath10k_htt_rx_free_msdu_chain(struct sk_buff *skb)
+ 	}
+ }
  
- 	status = IEEE80211_SKB_RXCB(info->skb);
--	memset(status, 0, sizeof(*status));
-+	memcpy(status, &info->rx_status, sizeof(*status));
++/* return: < 0 fatal error, 0 - non chained msdu, 1 chained msdu */
+ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 				   u8 **fw_desc, int *fw_desc_len,
+ 				   struct sk_buff **head_msdu,
+@@ -310,7 +311,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
  
- 	if (info->encrypt_type != HTT_RX_MPDU_ENCRYPT_NONE) {
- 		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
+ 	if (htt->rx_confused) {
+ 		ath10k_warn("htt is confused. refusing rx\n");
+-		return 0;
++		return -1;
+ 	}
+ 
+ 	msdu = *head_msdu = ath10k_htt_rx_netbuf_pop(htt);
+@@ -442,6 +443,9 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 	}
+ 	*tail_msdu = msdu;
+ 
++	if (*head_msdu == NULL)
++		msdu_chaining = -1;
++
+ 	/*
+ 	 * Don't refill the ring yet.
+ 	 *
+@@ -1139,11 +1143,6 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 					enum htt_rx_mpdu_status status,
+ 					bool channel_set)
+ {
+-	if (!head) {
+-		ath10k_warn("htt rx no data!\n");
+-		return false;
+-	}
+-
+ 	if (head->len == 0) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+ 			   "htt rx dropping due to zero-len\n");
+@@ -1199,6 +1198,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	u8 *fw_desc;
+ 	bool channel_set, fcs_err, mic_err;
+ 	int i, j;
++	int ret;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+@@ -1242,15 +1242,21 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 
+ 		for (j = 0; j < mpdu_ranges[i].mpdu_count; j++) {
+ 			struct sk_buff *msdu_head, *msdu_tail;
+-			int msdu_chaining;
+ 
+ 			msdu_head = NULL;
+ 			msdu_tail = NULL;
+-			msdu_chaining = ath10k_htt_rx_amsdu_pop(htt,
+-							 &fw_desc,
+-							 &fw_desc_len,
+-							 &msdu_head,
+-							 &msdu_tail);
++			ret = ath10k_htt_rx_amsdu_pop(htt,
++						      &fw_desc,
++						      &fw_desc_len,
++						      &msdu_head,
++						      &msdu_tail);
++
++			if (ret < 0) {
++				ath10k_warn("failed to pop amsdu from htt rx ring %d\n",
++					    ret);
++				ath10k_htt_rx_free_msdu_chain(msdu_head);
++				continue;
++			}
+ 
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+ 							 status,
+@@ -1259,8 +1265,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
+ 
+-			if (msdu_chaining &&
+-			    (ath10k_unchain_msdu(msdu_head) < 0)) {
++			if (ret > 0 &&
++			    ath10k_unchain_msdu(msdu_head) < 0) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 				continue;
+ 			}
+@@ -1308,7 +1314,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	enum rx_msdu_decap_format fmt;
+ 	struct htt_rx_info info = {};
+ 	struct ieee80211_hdr *hdr;
+-	int msdu_chaining;
++	int ret;
+ 	bool tkip_mic_err;
+ 	bool decrypt_err;
+ 	u8 *fw_desc;
+@@ -1322,19 +1328,15 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	msdu_tail = NULL;
+ 
+ 	spin_lock_bh(&htt->rx_ring.lock);
+-	msdu_chaining = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
+-						&msdu_head, &msdu_tail);
++	ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
++				      &msdu_head, &msdu_tail);
+ 	spin_unlock_bh(&htt->rx_ring.lock);
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
+ 
+-	if (!msdu_head) {
+-		ath10k_warn("htt rx frag no data\n");
+-		return;
+-	}
+-
+-	if (msdu_chaining || msdu_head != msdu_tail) {
+-		ath10k_warn("aggregation with fragmentation?!\n");
++	if (ret) {
++		ath10k_warn("failed to pop amsdu from httr rx ring for fragmented rx %d\n",
++			    ret);
+ 		ath10k_htt_rx_free_msdu_chain(msdu_head);
+ 		return;
+ 	}
 -- 
 1.7.9.5
 
