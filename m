@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS2Qe-00033K-GL
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:48:29 +0000
+ id 1WS2nx-00043c-MW
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 11:12:34 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: introduce rx_status htt template
-References: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
- <87ior37vx1.fsf@kamboji.qca.qualcomm.com>
- <CALhHN=peGOBr3_9zpiE73HMnOd3_WZqo00B+RtvaXSS0OH2MEQ@mail.gmail.com>
-Date: Mon, 24 Mar 2014 12:47:46 +0200
-In-Reply-To: <CALhHN=peGOBr3_9zpiE73HMnOd3_WZqo00B+RtvaXSS0OH2MEQ@mail.gmail.com>
- (Janusz Dziedzic's message of "Mon, 24 Mar 2014 11:16:54 +0100")
-Message-ID: <87a9cf7u0d.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k:  Add debugging for tx-credits usage.
+References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
+Date: Mon, 24 Mar 2014 13:12:03 +0200
+In-Reply-To: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Fri, 21 Mar 2014 11:55:48
+ -0700")
+Message-ID: <871txr7svw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,45 +24,67 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+greearb@candelatech.com writes:
 
-> On 24 March 2014 11:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->>
->>> Introduce rx_status htt template instead of
->>> stack version.
->>>
->>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->>
->> Why? What's the benefit from doing this?
->>
-> This is the must in case we would like to report rssi + rates correctly.
-> I describe this in 2/2 - maybe squash them?
-
-Nah, better to keep them separated. But in patch 1 please document why
-you are doing that, so that I (and others cherry picking ath10k patches)
-don't need to guess. For example, you can say "in preparation for foo"
-or something like that.
-
-> Currently during heavy traffic we could have:
->> 10 packets with START_VALID - correct RSSI + rates
->> 10 packets with END_VALID
->> 10 packets with START_VALID - correct RSSI + rates
->> 10 packets with END_VALID -
-> ...
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Because of that we have to store rssi + rates for case when END_VALID only.
-> In other case when using monitor we will see:
-> - 10 packets with correct rssi/rates
-> - 10 packets with rssi=-95/rate=6Mbps
+> This helps track tx credits accounting and usage.  If
+> firmware hangs or otherwise fails to return credits, one
+> can more easily see the last few command types that
+> was send to the firmware.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-Ok, I understand now. Please document that in patch 2.
+This patchset didn't apply, and the sha1 ids were useless so that 3-way
+merge didn't work. Can you rebase, please? And better yet if you rebase
+in top of my master branch.
 
-And in the future, please double check that your commit logs answer the
-question "why?". That will save everyone's time :)
+>  int ath10k_htc_send(struct ath10k_htc *htc,
+>  		    enum ath10k_htc_ep_id eid,
+> -		    struct sk_buff *skb)
+> +		    struct sk_buff *skb, int dbg)
+>  {
+>  	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
+>  	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
+> @@ -167,6 +167,10 @@ int ath10k_htc_send(struct ath10k_htc *htc,
+>  			goto err_pull;
+>  		}
+>  		ep->tx_credits -= credits;
+> +		ath10k_dbg(ATH10K_DBG_HTC,
+> +			   "ep %d used %d credits, remaining %d dbg %d (0x%x)\n",
+> +			   eid, credits, ep->tx_credits, dbg, dbg);
+> +
+>  		spin_unlock_bh(&htc->tx_lock);
+>  	}
+
+[...]
+
+> @@ -680,7 +684,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+>  
+>  	reinit_completion(&htc->ctl_resp);
+>  
+> -	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
+> +	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+
+Using line numbers in debug messages is very cumbersome. Some people
+cherry pick patches, have their own changes and whatnot which will make
+it more difficult to read the debug logs. Isn't there any better way to
+do this?
+
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -544,7 +544,7 @@ static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+>  	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
+>  
+>  	memset(skb_cb, 0, sizeof(*skb_cb));
+> -	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
+> +	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb, 0x71100000 | cmd_id);
+>  	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
+
+What does 0x71100000 stand for?
 
 -- 
 Kalle Valo
