@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS1NG-0000of-BW
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 09:40:54 +0000
+ id 1WS1mY-0001l6-F5
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:07:03 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 7/8] ath10k: improve way we play with attention flags
-References: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
- <1395394341-3958-8-git-send-email-janusz.dziedzic@tieto.com>
-Date: Mon, 24 Mar 2014 11:40:10 +0200
-In-Reply-To: <1395394341-3958-8-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 21 Mar 2014 10:32:20 +0100")
-Message-ID: <87mwgg6ikl.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: introduce rx_status htt template
+References: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Mon, 24 Mar 2014 12:06:34 +0200
+In-Reply-To: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Fri, 21 Mar 2014 10:33:56 +0100")
+Message-ID: <87ior37vx1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,14 +28,12 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Remove almost the same code, and do only once
-> __le32_to_cpu() conversion.
+> Introduce rx_status htt template instead of
+> stack version.
 >
 > Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-This patch introduces one checkpatch warning:
-
-drivers/net/wireless/ath/ath10k/htt_rx.c:1209: CHECK: No space is necessary after a cast
+Why? What's the benefit from doing this?
 
 -- 
 Kalle Valo
