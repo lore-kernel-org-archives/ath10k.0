@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS2nx-00043c-MW
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 11:12:34 +0000
+ id 1WS2x4-0004TQ-C2
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 11:22:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k:  Add debugging for tx-credits usage.
+Subject: Re: [PATCH 2/3] ath10k:  Better firmware loading error messages.
 References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
-Date: Mon, 24 Mar 2014 13:12:03 +0200
-In-Reply-To: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Fri, 21 Mar 2014 11:55:48
+ <1395428150-31996-2-git-send-email-greearb@candelatech.com>
+Date: Mon, 24 Mar 2014 13:21:32 +0200
+In-Reply-To: <1395428150-31996-2-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Fri, 21 Mar 2014 11:55:49
  -0700")
-Message-ID: <871txr7svw.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87wqfj6dvn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,60 +32,90 @@ greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> This helps track tx credits accounting and usage.  If
-> firmware hangs or otherwise fails to return credits, one
-> can more easily see the last few command types that
-> was send to the firmware.
+> Let user know the name of the board file if it is not
+> found, and make it easier to determine if it is api-1
+> or api-n firmware logic that is complaining.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
-
-This patchset didn't apply, and the sha1 ids were useless so that 3-way
-merge didn't work. Can you rebase, please? And better yet if you rebase
-in top of my master branch.
-
->  int ath10k_htc_send(struct ath10k_htc *htc,
->  		    enum ath10k_htc_ep_id eid,
-> -		    struct sk_buff *skb)
-> +		    struct sk_buff *skb, int dbg)
->  {
->  	struct ath10k_htc_ep *ep = &htc->endpoint[eid];
->  	struct ath10k_skb_cb *skb_cb = ATH10K_SKB_CB(skb);
-> @@ -167,6 +167,10 @@ int ath10k_htc_send(struct ath10k_htc *htc,
->  			goto err_pull;
->  		}
->  		ep->tx_credits -= credits;
-> +		ath10k_dbg(ATH10K_DBG_HTC,
-> +			   "ep %d used %d credits, remaining %d dbg %d (0x%x)\n",
-> +			   eid, credits, ep->tx_credits, dbg, dbg);
-> +
->  		spin_unlock_bh(&htc->tx_lock);
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 30 ++++++++++++++++--------------
+>  1 file changed, 16 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index 35f9db4..bf5119f 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -398,7 +398,7 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+>  	/* first fetch the firmware file (firmware-*.bin) */
+>  	ar->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir, name);
+>  	if (IS_ERR(ar->firmware)) {
+> -		ath10k_err("Could not fetch firmware file '%s': %ld\n",
+> +		ath10k_err("api-n: Could not fetch firmware file '%s': %ld\n",
+>  			   name, PTR_ERR(ar->firmware));
+>  		return PTR_ERR(ar->firmware);
 >  	}
 
-[...]
+I see the problem, but I don't think "api-n" is any better. What about
+something along these lines (not a complete patch):
 
-> @@ -680,7 +684,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
->  
->  	reinit_completion(&htc->ctl_resp);
->  
-> -	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
-> +	status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb, __LINE__);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 471c219e5137..1b84c54449cf 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -398,8 +398,8 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+        /* first fetch the firmware file (firmware-*.bin) */
+        ar->firmware = ath10k_fetch_fw_file(ar, ar->hw_params.fw.dir, name);
+        if (IS_ERR(ar->firmware)) {
+-               ath10k_err("Could not fetch firmware file '%s': %ld\n",
+-                          name, PTR_ERR(ar->firmware));
++               ath10k_err("Could not fetch firmware file '%s/%s': %ld\n",
++                          ar->hw_params.fw.dir, name, PTR_ERR(ar->firmware));
+                return PTR_ERR(ar->firmware);
+        }
+ 
+@@ -410,8 +410,8 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+        magic_len = strlen(ATH10K_FIRMWARE_MAGIC) + 1;
+ 
+        if (len < magic_len) {
+-               ath10k_err("firmware image too small to contain magic: %zu\n",
+-                          len);
++               ath10k_err("firmware file '%s/%s' too small to contain magic: %zu\n",
++                          ar->hw_params.fw.dir, name, len);
+                ret = -EINVAL;
+                goto err;
+        }
+@@ -558,19 +558,23 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+ {
+        int ret;
+ 
++       ar->fw_api = 2;
++
++       ath10k_dbg(ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
++
+        ret = ath10k_core_fetch_firmware_api_n(ar, ATH10K_FW_API2_FILE);
+-       if (ret == 0) {
+-               ar->fw_api = 2;
+-               goto out;
+-       }
++       if (ret == 0)
++               goto success;
++
++       ar->fw_api = 1;
++
++       ath10k_dbg(ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
+ 
+        ret = ath10k_core_fetch_firmware_api_1(ar);
+        if (ret)
+                return ret;
+ 
+-       ar->fw_api = 1;
+-
+-out:
++success:
+        ath10k_dbg(ATH10K_DBG_BOOT, "using fw api %d\n", ar->fw_api);
+ 
+        return 0;
 
-Using line numbers in debug messages is very cumbersome. Some people
-cherry pick patches, have their own changes and whatnot which will make
-it more difficult to read the debug logs. Isn't there any better way to
-do this?
-
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -544,7 +544,7 @@ static int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
->  	cmd_hdr->cmd_id = __cpu_to_le32(cmd);
->  
->  	memset(skb_cb, 0, sizeof(*skb_cb));
-> -	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb);
-> +	ret = ath10k_htc_send(&ar->htc, ar->wmi.eid, skb, 0x71100000 | cmd_id);
->  	trace_ath10k_wmi_cmd(cmd_id, skb->data, skb->len, ret);
-
-What does 0x71100000 stand for?
 
 -- 
 Kalle Valo
