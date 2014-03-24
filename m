@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS6NN-0002JQ-Fn
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 15:01:25 +0000
+ id 1WS6SC-0002RM-JI
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 15:06:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: [PATCH] ath10k: unify warning messages in mac.c
-Date: Mon, 24 Mar 2014 17:00:51 +0200
-Message-Id: <1395673251-24285-1-git-send-email-kvalo@qca.qualcomm.com>
+Subject: [PATCH v3] ath10k: unify warning messages in mac.c
+Date: Mon, 24 Mar 2014 17:05:55 +0200
+Message-Id: <1395673555-24848-1-git-send-email-kvalo@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,15 +35,19 @@ look similar. The style basically is:
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
 
+v3:
+
+o fix checkpatch warning about a long line
+
 v2:
 
 o use style suggested by Michal
 
- drivers/net/wireless/ath/ath10k/mac.c |  259 +++++++++++++++++----------------
- 1 file changed, 130 insertions(+), 129 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |  260 +++++++++++++++++----------------
+ 1 file changed, 131 insertions(+), 129 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5d3751d75419..b7b1740a45ee 100644
+index 5d3751d75419..58ec5a7dfb34 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -165,7 +165,7 @@ static int ath10k_clear_peer_keys(struct ath10k_vif *arvif,
@@ -509,16 +513,17 @@ index 5d3751d75419..b7b1740a45ee 100644
  					    peer_addr, vdev_id, ret);
  		}
  
-@@ -2085,7 +2089,7 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+@@ -2085,7 +2089,8 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
  
  		ret = ath10k_wmi_mgmt_tx(ar, skb);
  		if (ret) {
 -			ath10k_warn("wmi mgmt_tx failed (%d)\n", ret);
-+			ath10k_warn("failed to transmit management frame via WMI: %d\n", ret);
++			ath10k_warn("failed to transmit management frame via WMI: %d\n",
++				    ret);
  			ieee80211_free_txskb(ar->hw, skb);
  		}
  	}
-@@ -2110,7 +2114,7 @@ void ath10k_reset_scan(unsigned long ptr)
+@@ -2110,7 +2115,7 @@ void ath10k_reset_scan(unsigned long ptr)
  		return;
  	}
  
@@ -527,7 +532,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  
  	if (ar->scan.is_roc)
  		ieee80211_remain_on_channel_expired(ar->hw);
-@@ -2146,7 +2150,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
+@@ -2146,7 +2151,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
  
  	ret = ath10k_wmi_stop_scan(ar, &arg);
  	if (ret) {
@@ -536,7 +541,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		spin_lock_bh(&ar->data_lock);
  		ar->scan.in_progress = false;
  		ath10k_offchan_tx_purge(ar);
-@@ -2166,7 +2170,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
+@@ -2166,7 +2171,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
  
  	spin_lock_bh(&ar->data_lock);
  	if (ar->scan.in_progress) {
@@ -545,7 +550,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ar->scan.in_progress = false;
  		ath10k_offchan_tx_purge(ar);
  		ret = -ETIMEDOUT;
-@@ -2293,14 +2297,14 @@ static int ath10k_start(struct ieee80211_hw *hw)
+@@ -2293,14 +2298,14 @@ static int ath10k_start(struct ieee80211_hw *hw)
  
  	ret = ath10k_hif_power_up(ar);
  	if (ret) {
@@ -562,7 +567,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ath10k_hif_power_down(ar);
  		ar->state = ATH10K_STATE_OFF;
  		goto exit;
-@@ -2313,13 +2317,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
+@@ -2313,13 +2318,11 @@ static int ath10k_start(struct ieee80211_hw *hw)
  
  	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pmf_qos, 1);
  	if (ret)
@@ -578,7 +583,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  
  	/*
  	 * By default FW set ARP frames ac to voice (6). In that case ARP
-@@ -2333,7 +2335,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
+@@ -2333,7 +2336,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
  	ret = ath10k_wmi_pdev_set_param(ar,
  					ar->wmi.pdev_param->arp_ac_override, 0);
  	if (ret) {
@@ -587,7 +592,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    ret);
  		goto exit;
  	}
-@@ -2376,7 +2378,7 @@ static int ath10k_config_ps(struct ath10k *ar)
+@@ -2376,7 +2379,7 @@ static int ath10k_config_ps(struct ath10k *ar)
  	list_for_each_entry(arvif, &ar->arvifs, list) {
  		ret = ath10k_mac_vif_setup_ps(arvif);
  		if (ret) {
@@ -596,7 +601,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			break;
  		}
  	}
-@@ -2438,7 +2440,7 @@ static void ath10k_config_chan(struct ath10k *ar)
+@@ -2438,7 +2441,7 @@ static void ath10k_config_chan(struct ath10k *ar)
  
  		ret = ath10k_vdev_stop(arvif);
  		if (ret) {
@@ -605,7 +610,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			continue;
  		}
-@@ -2455,7 +2457,7 @@ static void ath10k_config_chan(struct ath10k *ar)
+@@ -2455,7 +2458,7 @@ static void ath10k_config_chan(struct ath10k *ar)
  
  		ret = ath10k_vdev_start(arvif);
  		if (ret) {
@@ -614,7 +619,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			continue;
  		}
-@@ -2466,7 +2468,7 @@ static void ath10k_config_chan(struct ath10k *ar)
+@@ -2466,7 +2469,7 @@ static void ath10k_config_chan(struct ath10k *ar)
  		ret = ath10k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
  					 arvif->bssid);
  		if (ret) {
@@ -623,7 +628,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			continue;
  		}
-@@ -2511,14 +2513,14 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+@@ -2511,14 +2514,14 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
  		ret = ath10k_wmi_pdev_set_param(ar, param,
  						hw->conf.power_level * 2);
  		if (ret)
@@ -640,7 +645,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    hw->conf.power_level, ret);
  	}
  
-@@ -2565,7 +2567,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2565,7 +2568,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  	INIT_LIST_HEAD(&arvif->list);
  
  	if ((vif->type == NL80211_IFTYPE_MONITOR) && ar->monitor_present) {
@@ -649,7 +654,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ret = -EBUSY;
  		goto err;
  	}
-@@ -2612,7 +2614,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2612,7 +2615,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  	ret = ath10k_wmi_vdev_create(ar, arvif->vdev_id, arvif->vdev_type,
  				     arvif->vdev_subtype, vif->addr);
  	if (ret) {
@@ -658,7 +663,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, ret);
  		goto err;
  	}
-@@ -2624,7 +2626,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2624,7 +2627,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
  					arvif->def_wep_key_idx);
  	if (ret) {
@@ -667,7 +672,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, ret);
  		goto err_vdev_delete;
  	}
-@@ -2634,7 +2636,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2634,7 +2637,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  					ATH10K_HW_TXRX_NATIVE_WIFI);
  	/* 10.X firmware does not support this VDEV parameter. Do not warn */
  	if (ret && ret != -EOPNOTSUPP) {
@@ -676,7 +681,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, ret);
  		goto err_vdev_delete;
  	}
-@@ -2642,14 +2644,14 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2642,14 +2645,14 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
  		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
  		if (ret) {
@@ -693,7 +698,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			goto err_peer_delete;
  		}
-@@ -2661,7 +2663,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2661,7 +2664,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
  						  param, value);
  		if (ret) {
@@ -702,7 +707,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			goto err_peer_delete;
  		}
-@@ -2671,7 +2673,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2671,7 +2674,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
  						  param, value);
  		if (ret) {
@@ -711,7 +716,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			goto err_peer_delete;
  		}
-@@ -2681,7 +2683,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2681,7 +2684,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
  						  param, value);
  		if (ret) {
@@ -720,7 +725,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			goto err_peer_delete;
  		}
-@@ -2689,14 +2691,14 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+@@ -2689,14 +2692,14 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
  
  	ret = ath10k_mac_set_rts(arvif, ar->hw->wiphy->rts_threshold);
  	if (ret) {
@@ -737,7 +742,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, ret);
  		goto err_peer_delete;
  	}
-@@ -2746,7 +2748,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+@@ -2746,7 +2749,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
  	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
  		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
  		if (ret)
@@ -746,7 +751,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  
  		kfree(arvif->u.ap.noa_data);
-@@ -2757,7 +2759,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+@@ -2757,7 +2760,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
  
  	ret = ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
  	if (ret)
@@ -755,7 +760,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, ret);
  
  	if (arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)
-@@ -2808,7 +2810,7 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
+@@ -2808,7 +2811,7 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
  
  		ret = ath10k_monitor_start(ar, ar->monitor_vdev_id);
  		if (ret)
@@ -764,7 +769,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  	} else if (!(ar->filter_flags & FIF_PROMISC_IN_BSS) &&
  		   ar->monitor_enabled && ar->monitor_present) {
  		ath10k_dbg(ATH10K_DBG_MAC, "mac monitor %d stop\n",
-@@ -2816,7 +2818,7 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
+@@ -2816,7 +2819,7 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
  
  		ret = ath10k_monitor_stop(ar);
  		if (ret)
@@ -773,7 +778,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  	}
  
  	mutex_unlock(&ar->conf_mutex);
-@@ -2847,7 +2849,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2847,7 +2850,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  			   arvif->vdev_id, arvif->beacon_interval);
  
  		if (ret)
@@ -782,7 +787,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -2860,7 +2862,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2860,7 +2863,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_pdev_set_param(ar, pdev_param,
  						WMI_BEACON_STAGGERED_MODE);
  		if (ret)
@@ -791,7 +796,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -2875,7 +2877,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2875,7 +2878,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
  						arvif->dtim_period);
  		if (ret)
@@ -800,7 +805,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -2896,7 +2898,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2896,7 +2899,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  			ret = ath10k_peer_create(ar, arvif->vdev_id,
  						 info->bssid);
  			if (ret)
@@ -809,7 +814,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  					    info->bssid, arvif->vdev_id, ret);
  
  			if (vif->type == NL80211_IFTYPE_STATION) {
-@@ -2941,7 +2943,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2941,7 +2944,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  
  		ret = ath10k_recalc_rtscts_prot(arvif);
  		if (ret)
@@ -818,7 +823,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -2960,7 +2962,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2960,7 +2963,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
  						slottime);
  		if (ret)
@@ -827,7 +832,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -2979,7 +2981,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+@@ -2979,7 +2982,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
  		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
  						preamble);
  		if (ret)
@@ -836,7 +841,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  	}
  
-@@ -3050,7 +3052,7 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
+@@ -3050,7 +3053,7 @@ static int ath10k_hw_scan(struct ieee80211_hw *hw,
  
  	ret = ath10k_start_scan(ar, &arg);
  	if (ret) {
@@ -845,7 +850,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		spin_lock_bh(&ar->data_lock);
  		ar->scan.in_progress = false;
  		spin_unlock_bh(&ar->data_lock);
-@@ -3070,8 +3072,7 @@ static void ath10k_cancel_hw_scan(struct ieee80211_hw *hw,
+@@ -3070,8 +3073,7 @@ static void ath10k_cancel_hw_scan(struct ieee80211_hw *hw,
  	mutex_lock(&ar->conf_mutex);
  	ret = ath10k_abort_scan(ar);
  	if (ret) {
@@ -855,7 +860,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ieee80211_scan_completed(hw, 1 /* aborted */);
  	}
  	mutex_unlock(&ar->conf_mutex);
-@@ -3149,7 +3150,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+@@ -3149,7 +3151,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
  
  	if (!peer) {
  		if (cmd == SET_KEY) {
@@ -864,7 +869,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    peer_addr);
  			ret = -EOPNOTSUPP;
  			goto exit;
-@@ -3172,7 +3173,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+@@ -3172,7 +3174,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
  
  	ret = ath10k_install_key(arvif, key, cmd, peer_addr);
  	if (ret) {
@@ -873,7 +878,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    arvif->vdev_id, peer_addr, ret);
  		goto exit;
  	}
-@@ -3187,7 +3188,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+@@ -3187,7 +3189,7 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
  		peer->keys[key->keyidx] = NULL;
  	else if (peer == NULL)
  		/* impossible unless FW goes crazy */
@@ -882,7 +887,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  	spin_unlock_bh(&ar->data_lock);
  
  exit:
-@@ -3261,7 +3262,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
+@@ -3261,7 +3263,7 @@ static void ath10k_sta_rc_update_wk(struct work_struct *wk)
  
  		err = ath10k_station_assoc(ar, arvif, sta, true);
  		if (err)
@@ -891,7 +896,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    sta->addr);
  	}
  
-@@ -3306,7 +3307,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+@@ -3306,7 +3308,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
  			max_num_peers = TARGET_NUM_PEERS;
  
  		if (ar->num_peers >= max_num_peers) {
@@ -900,7 +905,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    ar->num_peers, max_num_peers);
  			ret = -ENOBUFS;
  			goto exit;
-@@ -3318,7 +3319,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+@@ -3318,7 +3320,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
  
  		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
  		if (ret)
@@ -909,7 +914,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    sta->addr, arvif->vdev_id, ret);
  	} else if ((old_state == IEEE80211_STA_NONE &&
  		    new_state == IEEE80211_STA_NOTEXIST)) {
-@@ -3330,7 +3331,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+@@ -3330,7 +3332,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
  			   arvif->vdev_id, sta->addr);
  		ret = ath10k_peer_delete(ar, arvif->vdev_id, sta->addr);
  		if (ret)
@@ -918,7 +923,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    sta->addr, arvif->vdev_id, ret);
  
  		if (vif->type == NL80211_IFTYPE_STATION)
-@@ -3347,7 +3348,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+@@ -3347,7 +3349,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
  
  		ret = ath10k_station_assoc(ar, arvif, sta, false);
  		if (ret)
@@ -927,7 +932,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    sta->addr, arvif->vdev_id, ret);
  	} else if (old_state == IEEE80211_STA_ASSOC &&
  		   new_state == IEEE80211_STA_AUTH &&
-@@ -3361,7 +3362,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+@@ -3361,7 +3363,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
  
  		ret = ath10k_station_disassoc(ar, arvif, sta);
  		if (ret)
@@ -936,7 +941,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    sta->addr, arvif->vdev_id, ret);
  	}
  exit:
-@@ -3409,7 +3410,7 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
+@@ -3409,7 +3411,7 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
  					  WMI_STA_PS_PARAM_UAPSD,
  					  arvif->u.sta.uapsd);
  	if (ret) {
@@ -945,7 +950,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		goto exit;
  	}
  
-@@ -3422,7 +3423,7 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
+@@ -3422,7 +3424,7 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
  					  WMI_STA_PS_PARAM_RX_WAKE_POLICY,
  					  value);
  	if (ret)
@@ -954,7 +959,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  
  exit:
  	return ret;
-@@ -3472,13 +3473,13 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
+@@ -3472,13 +3474,13 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
  	/* FIXME: FW accepts wmm params per hw, not per vif */
  	ret = ath10k_wmi_pdev_set_wmm_params(ar, &ar->wmm_params);
  	if (ret) {
@@ -970,7 +975,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  
  exit:
  	mutex_unlock(&ar->conf_mutex);
-@@ -3531,7 +3532,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+@@ -3531,7 +3533,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
  
  	ret = ath10k_start_scan(ar, &arg);
  	if (ret) {
@@ -979,7 +984,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		spin_lock_bh(&ar->data_lock);
  		ar->scan.in_progress = false;
  		spin_unlock_bh(&ar->data_lock);
-@@ -3540,7 +3541,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+@@ -3540,7 +3542,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
  
  	ret = wait_for_completion_timeout(&ar->scan.on_channel, 3*HZ);
  	if (ret == 0) {
@@ -988,7 +993,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ath10k_abort_scan(ar);
  		ret = -ETIMEDOUT;
  		goto exit;
-@@ -3581,7 +3582,7 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
+@@ -3581,7 +3583,7 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
  
  		ret = ath10k_mac_set_rts(arvif, value);
  		if (ret) {
@@ -997,7 +1002,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			break;
  		}
-@@ -3604,7 +3605,7 @@ static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
+@@ -3604,7 +3606,7 @@ static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
  
  		ret = ath10k_mac_set_rts(arvif, value);
  		if (ret) {
@@ -1006,7 +1011,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  				    arvif->vdev_id, ret);
  			break;
  		}
-@@ -3643,7 +3644,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
+@@ -3643,7 +3645,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
  		}), ATH10K_FLUSH_TIMEOUT_HZ);
  
  	if (ret <= 0 || skip)
@@ -1015,7 +1020,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    skip, ar->state, ret);
  
  skip:
-@@ -3678,7 +3679,7 @@ static int ath10k_suspend(struct ieee80211_hw *hw,
+@@ -3678,7 +3680,7 @@ static int ath10k_suspend(struct ieee80211_hw *hw,
  
  	ret = ath10k_hif_suspend(ar);
  	if (ret) {
@@ -1024,7 +1029,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		goto resume;
  	}
  
-@@ -3687,7 +3688,7 @@ static int ath10k_suspend(struct ieee80211_hw *hw,
+@@ -3687,7 +3689,7 @@ static int ath10k_suspend(struct ieee80211_hw *hw,
  resume:
  	ret = ath10k_wmi_pdev_resume_target(ar);
  	if (ret)
@@ -1033,7 +1038,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  
  	ret = 1;
  exit:
-@@ -3704,14 +3705,14 @@ static int ath10k_resume(struct ieee80211_hw *hw)
+@@ -3704,14 +3706,14 @@ static int ath10k_resume(struct ieee80211_hw *hw)
  
  	ret = ath10k_hif_resume(ar);
  	if (ret) {
@@ -1050,7 +1055,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		ret = 1;
  		goto exit;
  	}
-@@ -4034,7 +4035,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
+@@ -4034,7 +4036,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
  	ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
  					vdev_param, fixed_rate);
  	if (ret) {
@@ -1059,7 +1064,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    fixed_rate, ret);
  		ret = -EINVAL;
  		goto exit;
-@@ -4047,7 +4048,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
+@@ -4047,7 +4049,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
  					vdev_param, fixed_nss);
  
  	if (ret) {
@@ -1068,7 +1073,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    fixed_nss, ret);
  		ret = -EINVAL;
  		goto exit;
-@@ -4060,7 +4061,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
+@@ -4060,7 +4062,7 @@ static int ath10k_set_fixed_rate_param(struct ath10k_vif *arvif,
  					force_sgi);
  
  	if (ret) {
@@ -1077,7 +1082,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			    force_sgi, ret);
  		ret = -EINVAL;
  		goto exit;
-@@ -4096,7 +4097,7 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
+@@ -4096,7 +4098,7 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
  	}
  
  	if (fixed_rate == WMI_FIXED_RATE_NONE && force_sgi) {
@@ -1086,7 +1091,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  		return -EINVAL;
  	}
  
-@@ -4142,8 +4143,8 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+@@ -4142,8 +4144,8 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
  			bw = WMI_PEER_CHWIDTH_80MHZ;
  			break;
  		case IEEE80211_STA_RX_BW_160:
@@ -1097,7 +1102,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			bw = WMI_PEER_CHWIDTH_20MHZ;
  			break;
  		}
-@@ -4169,8 +4170,8 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
+@@ -4169,8 +4171,8 @@ static void ath10k_sta_rc_update(struct ieee80211_hw *hw,
  			smps = WMI_PEER_SMPS_DYNAMIC;
  			break;
  		case IEEE80211_SMPS_NUM_MODES:
@@ -1108,7 +1113,7 @@ index 5d3751d75419..b7b1740a45ee 100644
  			smps = WMI_PEER_SMPS_PS_NONE;
  			break;
  		}
-@@ -4631,19 +4632,19 @@ int ath10k_mac_register(struct ath10k *ar)
+@@ -4631,19 +4633,19 @@ int ath10k_mac_register(struct ath10k *ar)
  							     NL80211_DFS_UNSET);
  
  		if (!ar->dfs_detector)
