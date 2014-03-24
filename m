@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS1x3-00027s-5p
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:17:53 +0000
-Received: by mail-la0-f46.google.com with SMTP id hr17so3450961lab.19
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 03:17:28 -0700 (PDT)
+ id 1WS2Qe-00033K-GL
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:48:29 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: introduce rx_status htt template
+References: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
+ <87ior37vx1.fsf@kamboji.qca.qualcomm.com>
+ <CALhHN=peGOBr3_9zpiE73HMnOd3_WZqo00B+RtvaXSS0OH2MEQ@mail.gmail.com>
+Date: Mon, 24 Mar 2014 12:47:46 +0200
+In-Reply-To: <CALhHN=peGOBr3_9zpiE73HMnOd3_WZqo00B+RtvaXSS0OH2MEQ@mail.gmail.com>
+ (Janusz Dziedzic's message of "Mon, 24 Mar 2014 11:16:54 +0100")
+Message-ID: <87a9cf7u0d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87vbv46klt.fsf@kamboji.qca.qualcomm.com>
-References: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
- <1395394341-3958-5-git-send-email-janusz.dziedzic@tieto.com>
- <87vbv46klt.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 24 Mar 2014 11:17:28 +0100
-Message-ID: <CALhHN=q0bK3qUDRtm-_zRKs-RFCpiVcGHihQPuHvMW7CVLiePg@mail.gmail.com>
-Subject: Re: [PATCH 4/8] ath10k: setup rx channel per ppdu
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,32 +25,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 24 March 2014 09:56, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->
->> Setup band and frequency in ieee80211_rx_status
->> only once - for ppdu.
->>
->> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->
-> [...]
->
->> @@ -775,23 +794,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
->>       if (info->amsdu_more)
->>               status->flag |= RX_FLAG_AMSDU_MORE;
->>
->> -     status->signal = info->signal;
->
-> What about the signal, how is it set now? I don't see that anywhere in
-> this patch.
->
-This belongs to next patch - will fix it.
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-BR
-janusz
+> On 24 March 2014 11:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+>>
+>>> Introduce rx_status htt template instead of
+>>> stack version.
+>>>
+>>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+>>
+>> Why? What's the benefit from doing this?
+>>
+> This is the must in case we would like to report rssi + rates correctly.
+> I describe this in 2/2 - maybe squash them?
+
+Nah, better to keep them separated. But in patch 1 please document why
+you are doing that, so that I (and others cherry picking ath10k patches)
+don't need to guess. For example, you can say "in preparation for foo"
+or something like that.
+
+> Currently during heavy traffic we could have:
+>> 10 packets with START_VALID - correct RSSI + rates
+>> 10 packets with END_VALID
+>> 10 packets with START_VALID - correct RSSI + rates
+>> 10 packets with END_VALID -
+> ...
+>
+> Because of that we have to store rssi + rates for case when END_VALID only.
+> In other case when using monitor we will see:
+> - 10 packets with correct rssi/rates
+> - 10 packets with rssi=-95/rate=6Mbps
+
+Ok, I understand now. Please document that in patch 2.
+
+And in the future, please double check that your commit logs answer the
+question "why?". That will save everyone's time :)
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
