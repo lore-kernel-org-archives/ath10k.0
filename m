@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22a.google.com ([2607:f8b0:400c:c03::22a])
+Received: from mail-pd0-f182.google.com ([209.85.192.182])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WRze5-0006C9-1r
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 07:50:09 +0000
-Received: by mail-vc0-f170.google.com with SMTP id hu19so5412998vcb.1
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 00:49:45 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1395441560-6028-1-git-send-email-greearb@candelatech.com>
-References: <1395441560-6028-1-git-send-email-greearb@candelatech.com>
-Date: Mon, 24 Mar 2014 15:49:44 +0800
-Message-ID: <CAEFj985_eDiVj2eeJeH0a6o0a0pTrO1NAsL457w82fL5HYW9Fw@mail.gmail.com>
-Subject: Re: [PATCH v2] ath10k: add the Rx rate in FW stats
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ id 1WRzqG-0006Nd-Iv
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 08:02:45 +0000
+Received: by mail-pd0-f182.google.com with SMTP id y10so4998278pdj.13
+ for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 01:02:17 -0700 (PDT)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: update wal_dbg_tx_stats structure with missing
+ parameter
+Date: Mon, 24 Mar 2014 16:02:02 +0800
+Message-Id: <1395648122-2125-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +18,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-> -                       tmp += sizeof(struct wmi_peer_stats);
-> +                       if (test_bit(ATH10K_FW_FEATURE_WMI_10X,
-> +                                    ar->fw_features)) {
-> +                               s->peer_rx_rate =
-> +                                       __le32_to_cpu(peer_stats->peer_rx_rate);
-> +                               tmp += sizeof(struct wmi_peer_stats_10x);
-> +
+This patch is introduced by Bartosz Markowski but never upstream.
+By using this patch, 636 firmware is able to print out the peer
+stats correctly and have caused no regression to the latest AP
+firmware as well.
 
-Oops, additional space.
+The original patch from Bartosz Markowski can be found at:
+http://lists.infradead.org/pipermail/ath10k/2013-September/000318.html
 
-Tested and working for me.
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
-----
-Chun-Yeow
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 2b2f0b7..d1275a3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2685,6 +2685,9 @@ struct wal_dbg_tx_stats {
+ 	/* wal pdev resets  */
+ 	__le32 pdev_resets;
+ 
++	/* frames dropped due to non-availability of stateless TIDs */
++	__le32 stateless_tid_alloc_failure;
++
+ 	__le32 phy_underrun;
+ 
+ 	/* MPDU is more than txop limit */
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
