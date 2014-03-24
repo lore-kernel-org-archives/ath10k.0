@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS09i-0006gM-A8
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 08:22:51 +0000
+ id 1WS0CG-0006k5-W1
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 08:25:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix the peer mac address in getting stats
-References: <1395380076-4306-1-git-send-email-yeohchunyeow@gmail.com>
- <CA+BoTQmLfdkyN8yC8m-i_yXbhQ3UYVj1kPrdFmYSyLONCC=Kig@mail.gmail.com>
-Date: Mon, 24 Mar 2014 10:22:22 +0200
-In-Reply-To: <CA+BoTQmLfdkyN8yC8m-i_yXbhQ3UYVj1kPrdFmYSyLONCC=Kig@mail.gmail.com>
- (Michal Kazior's message of "Fri, 21 Mar 2014 07:51:22 +0100")
-Message-ID: <87d2hc80qp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
+ simulate_fw_crash
+References: <20140313082431.10798.10888.stgit@potku.adurom.net>
+Date: Mon, 24 Mar 2014 10:25:00 +0200
+In-Reply-To: <20140313082431.10798.10888.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 13 Mar 2014 10:24:31 +0200")
+Message-ID: <878us080mb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,47 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-TWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKCj4gT24gMjEg
-TWFyY2ggMjAxNCAwNjozNCwgQ2h1bi1ZZW93IFllb2ggPHllb2hjaHVueWVvd0BnbWFpbC5jb20+
-IHdyb3RlOgo+PiBVc2luZyB0aGUgbWFjcm8gdG8gY29udmVydCB0aGUgTUFDIGFkZHJlc3MgZnJv
-bSBXTUkgd29yZAo+PiBmb3JtYXQgdG8gY2hhciBhcnJheSBoYXMgbGVhZCB0byB0aGUgd3Jvbmcg
-cGVlciBtYWMKPj4gYWRkcmVzcyBwcmludGVkIG91dCB3aGlsZSByZXRyaWV2aW5nIHRoZSBwZWVy
-IHN0YXRzIGZyb20KPj4gRlcuIEZpeCB0aGlzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBDaHVuLVll
-b3cgWWVvaCA8eWVvaGNodW55ZW93QGdtYWlsLmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMgfCAgICA0ICsrLS0KPj4gIGRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvd21pLmggICB8ICAgMTAgLS0tLS0tLS0tLQo+PiAgMiBmaWxlcyBj
-aGFuZ2VkLCAyIGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jIGIvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jCj4+IGluZGV4IDZkZWJkMjguLmY5NWRlZmEgMTAw
-NjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+PiAr
-KysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMKPj4gQEAgLTI1Miw4
-ICsyNTIsOCBAQCB2b2lkIGF0aDEwa19kZWJ1Z19yZWFkX3RhcmdldF9zdGF0cyhzdHJ1Y3QgYXRo
-MTBrICphciwKPj4gICAgICAgICAgICAgICAgICAgICAgICAgcGVlcl9zdGF0cyA9IChzdHJ1Y3Qg
-d21pX3BlZXJfc3RhdHMgKil0bXA7Cj4+ICAgICAgICAgICAgICAgICAgICAgICAgIHMgPSAmc3Rh
-dHMtPnBlZXJfc3RhdFtpXTsKPj4KPj4gLSAgICAgICAgICAgICAgICAgICAgICAgV01JX01BQ19B
-RERSX1RPX0NIQVJfQVJSQVkoJnBlZXJfc3RhdHMtPnBlZXJfbWFjYWRkciwKPj4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcy0+cGVlcl9tYWNhZGRy
-KTsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgbWVtY3B5KHMtPnBlZXJfbWFjYWRkciwgJnBl
-ZXJfc3RhdHMtPnBlZXJfbWFjYWRkci5hZGRyLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgRVRIX0FMRU4pOwo+Cj4gSSBub3RpY2VkIGNoZWNrcGF0Y2ggc3RhcnRlZCBzdWdnZXN0
-aW5nIHRvIHByZWZlciBldGhlcl9hZGRyX2NvcHkoKQo+IG92ZXIgbWVtY3B5KCkuIE5vdCBhIGJp
-ZyBkZWFsIHRob3VnaC4KClllYWgsIGVzcGVjaWFsbHkgdGhhdCBJIGhhdmVuJ3QgdXBkYXRlZCBt
-eSBjaGVja3BhdGNoIGZvciBmZXcgbW9udGhzIGFuZApJIGRvbid0IHNlZSB0aGlzIHdhcm5pbmcg
-eWV0IDopIChJJ2xsIHRyeSB0byBrZWVwIGF0aDEwayBjaGVja3BhdGNoCmNsZWFuIHdoZW5ldmVy
-IHBvc3NpYmxlLikKCldlIG5lZWQgdG8gc3dpdGNoIGF0aDEwayB0byB1c2UgZXRoZXJfYWRkcl9j
-b3B5KCkgZXZlcnl3aGVyZSBpbiBhCnNlcGFyYXRlIHBhdGNoIGFueXdheS4KCj4gT3RoZXIgdGhh
-biB0aGF0IHRoZSBwYXRjaCBsb29rcyBnb29kLgo+Cj4gUmV2aWV3ZWQtQnk6IE1pY2hhxYIgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KClRoYW5rcywgSSBhZGRlZCB0aGlzIHRvIHRo
-ZSBwYXRjaC4KCkxldCdzIGp1c3QgaG9wZSB0aGF0IHRoZSBsIHdpdGggdGhlIGV4dHJhIGxpbmUg
-ZG9lc24ndCBjYXVzZSBhbnkgY2hhcnNldApwcm9ibGVtcyA6KSBCVFcsIHdoYXQgaXMgdGhlIG5h
-bWUgb2YgdGhlIGNoYXJhY3Rlcj8gTmV2ZXIgc2VlbiB0aGF0CmJlZm9yZS4KCi0tIApLYWxsZSBW
-YWxvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> From: Marek Puzyniak <marek.puzyniak@tieto.com>
+>
+> Command WMI_FORCE_FW_HANG_CMDID is not supported in firmware 10.1.
+> In order to have firmware crash simulation functionality also
+> in firmware 10.1 driver can force firmware crash by performing not allowed
+> operation. Driver can deliberately crash firmware when setting vdev param for
+> vdev id out of range.  This patch introduces two keywords to simulate_fw_crash:
+>
+> 'soft' which will cause firmware crash that is recoverable
+>        by warm firmware reset but supported only in main firmware.
+> 'hard' which will cause firmware crash recoverable by cold
+>        firmware reset, this option works for both firmwares.
+>
+> Commands to trigger firmware soft/hard crash:
+>
+> echo 'soft' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+> echo 'hard' > /sys/kernel/debug/ieee80211/phyX/ath10k/simulate_fw_crash
+>
+> kvalo: use strncmp(), remove '\n' before checking the command and
+> document how buf is null terminated
+>
+> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+Thanks, applied. I just removed by strncmp() changes based on the
+discussion.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
