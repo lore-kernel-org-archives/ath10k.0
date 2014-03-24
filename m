@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WS1wW-000267-Fo
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:17:21 +0000
-Received: by mail-lb0-f177.google.com with SMTP id z11so3409616lbi.22
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 03:16:55 -0700 (PDT)
+ id 1WS1x3-00027s-5p
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 10:17:53 +0000
+Received: by mail-la0-f46.google.com with SMTP id hr17so3450961lab.19
+ for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 03:17:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87ior37vx1.fsf@kamboji.qca.qualcomm.com>
-References: <1395394437-4048-1-git-send-email-janusz.dziedzic@tieto.com>
- <87ior37vx1.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 24 Mar 2014 11:16:54 +0100
-Message-ID: <CALhHN=peGOBr3_9zpiE73HMnOd3_WZqo00B+RtvaXSS0OH2MEQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ath10k: introduce rx_status htt template
+In-Reply-To: <87vbv46klt.fsf@kamboji.qca.qualcomm.com>
+References: <1395394341-3958-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1395394341-3958-5-git-send-email-janusz.dziedzic@tieto.com>
+ <87vbv46klt.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 24 Mar 2014 11:17:28 +0100
+Message-ID: <CALhHN=q0bK3qUDRtm-_zRKs-RFCpiVcGHihQPuHvMW7CVLiePg@mail.gmail.com>
+Subject: Re: [PATCH 4/8] ath10k: setup rx channel per ppdu
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,32 +29,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 24 March 2014 11:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+On 24 March 2014 09:56, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 > Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 >
->> Introduce rx_status htt template instead of
->> stack version.
+>> Setup band and frequency in ieee80211_rx_status
+>> only once - for ppdu.
 >>
 >> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 >
-> Why? What's the benefit from doing this?
+> [...]
 >
-This is the must in case we would like to report rssi + rates correctly.
-I describe this in 2/2 - maybe squash them?
-Currently during heavy traffic we could have:
-> 10 packets with START_VALID - correct RSSI + rates
-> 10 packets with END_VALID
-> 10 packets with START_VALID - correct RSSI + rates
-> 10 packets with END_VALID -
-...
-
-Because of that we have to store rssi + rates for case when END_VALID only.
-In other case when using monitor we will see:
-- 10 packets with correct rssi/rates
-- 10 packets with rssi=-95/rate=6Mbps
+>> @@ -775,23 +794,7 @@ static void ath10k_process_rx(struct ath10k *ar, struct htt_rx_info *info)
+>>       if (info->amsdu_more)
+>>               status->flag |= RX_FLAG_AMSDU_MORE;
+>>
+>> -     status->signal = info->signal;
+>
+> What about the signal, how is it set now? I don't see that anywhere in
+> this patch.
+>
+This belongs to next patch - will fix it.
 
 BR
-Janusz
+janusz
 
 _______________________________________________
 ath10k mailing list
