@@ -1,24 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSAp5-0001ku-JH
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 19:46:16 +0000
-Received: by mail-la0-f41.google.com with SMTP id gl10so4128061lab.0
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 12:45:53 -0700 (PDT)
+ id 1WSAse-0001rV-1d
+ for ath10k@lists.infradead.org; Mon, 24 Mar 2014 19:49:56 +0000
+Message-ID: <53308BD4.8060605@candelatech.com>
+Date: Mon, 24 Mar 2014 12:47:32 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <532C79DB.7010505@candelatech.com>
-References: <5329CD60.6080609@candelatech.com>
- <87txatfkad.fsf@kamboji.qca.qualcomm.com>
- <532B104A.7060302@candelatech.com>
- <CAJ-VmokQXgWa1Pi-YBXM1NPfZDF8F=yvWh1w4DTgpJcEq_JfxQ@mail.gmail.com>
- <532B4017.7060803@candelatech.com>
- <CALhHN=quKPAWmgeLHZEBX7u=KDASVVUjVA8E_aD5_rsRzeFB=Q@mail.gmail.com>
- <CALhHN=qYuOY8v__HX3=Y7CeZseC7GA5-epfj+zQXcruG6R2BAA@mail.gmail.com>
- <532C79DB.7010505@candelatech.com>
-Date: Mon, 24 Mar 2014 20:45:53 +0100
-Message-ID: <CALhHN=qWiBaU6WLR6kMZwmxw_dm4F0yOJ34wYb-Opihin_AXjA@mail.gmail.com>
-Subject: Re: Trouble connecting to broadcom AC APs?
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: Re: Scanning all 5Ghz channels with AC NIC.
+References: <53307524.8070501@candelatech.com>
+ <CALhHN=oNjWr+xP=5A_NEnUn1Hc-ht8N4LJ6CU836Q99LrdcAdA@mail.gmail.com>
+In-Reply-To: <CALhHN=oNjWr+xP=5A_NEnUn1Hc-ht8N4LJ6CU836Q99LrdcAdA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,64 +23,131 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, ath10k <ath10k@lists.infradead.org>
 
-On 21 March 2014 18:41, Ben Greear <greearb@candelatech.com> wrote:
-> On 03/21/2014 12:07 AM, Janusz Dziedzic wrote:
->> On 21 March 2014 07:01, Janusz Dziedzic <janusz.dziedzic@tieto.com> wrote:
->>> On 20 March 2014 20:23, Ben Greear <greearb@candelatech.com> wrote:
->>>> On 03/20/2014 12:17 PM, Adrian Chadd wrote:
->>>>> Did the per-rate transmit statistics ever make it into the firmware / driver?
->>>>>
->>>>> I'd start by looking at what rate(s) it's trying and what the transmit
->>>>> completion statistics say. It could be doing something exceedingly
->>>>> dumb like transmitting on an invalid rate or stream setup.
->>>>>
->>>>> Same deal with STBC/LDPC. Try disabling those; see what happens.
->>>>
->>>> It appears the packets get to the AP, and AP at least tries to
->>>> respond.
->>>>
->>>> If we bring up stations one at a time instead of multiple at once
->>>> it works better, and using ddwrt works better than stock firmware
->>>> on the AP too.
->>>>
->>>> Anyone know how well monitor mode works on ath10k?  Would be nice
->>>> to see what is actually on the air.
->>>>
->>> With AP firmware, works fine. Could you send airlogs?
->>>
->> BTW, I have same problem with WRT54G and orginal linksys SW - my home router.
->> Problem disappears when will use FW 636 :)
->> So, seems AP (389, 467) FW is not the best choice for STA mode.
->> I suspect PS problem here - but didn't check this yet ...
->
-> Here is another data point...if we make br0 on the AP promisc,
-> then suddenly it works fine.
->
-> (we noticed this because starting tcpdump on br0 also
-> 'fixes' the problem).
->
+On 03/24/2014 12:33 PM, Janusz Dziedzic wrote:
+> On 24 March 2014 19:10, Ben Greear <greearb@candelatech.com> wrote:
+>> I notice this issue while trying to scan specific channels with
+>> an ath10k NIC.
+>>
+>> If I configure supplicant to use a specific freq list, it will fail:
+>>
+>> 1395683887.458813: nl80211: Scan frequency 5170 MHz
+>> 1395683887.458823: nl80211: Scan frequency 5180 MHz
+>> 1395683887.458829: nl80211: Scan frequency 5190 MHz
+>> 1395683887.458834: nl80211: Scan frequency 5200 MHz
+>> 1395683887.458840: nl80211: Scan frequency 5210 MHz
+>> 1395683887.458845: nl80211: Scan frequency 5220 MHz
+>> 1395683887.458850: nl80211: Scan frequency 5230 MHz
+>> 1395683887.458855: nl80211: Scan frequency 5240 MHz
+>> 1395683887.458861: nl80211: Scan frequency 5260 MHz
+>> 1395683887.458866: nl80211: Scan frequency 5280 MHz
+>> 1395683887.458871: nl80211: Scan frequency 5300 MHz
+>> 1395683887.458876: nl80211: Scan frequency 5320 MHz
+>> 1395683887.458881: nl80211: Scan frequency 5500 MHz
+>> 1395683887.458886: nl80211: Scan frequency 5520 MHz
+>> 1395683887.458890: nl80211: Scan frequency 5540 MHz
+>> 1395683887.458895: nl80211: Scan frequency 5560 MHz
+>> 1395683887.458900: nl80211: Scan frequency 5580 MHz
+>> 1395683887.458905: nl80211: Scan frequency 5600 MHz
+>> 1395683887.458911: nl80211: Scan frequency 5580 MHz
+>> 1395683887.458916: nl80211: Scan frequency 5600 MHz
+>> 1395683887.458921: nl80211: Scan frequency 5620 MHz
+>> 1395683887.458926: nl80211: Scan frequency 5640 MHz
+>> 1395683887.458931: nl80211: Scan frequency 5660 MHz
+>> 1395683887.458936: nl80211: Scan frequency 5620 MHz
+>> 1395683887.458942: nl80211: Scan frequency 5640 MHz
+>> 1395683887.458947: nl80211: Scan frequency 5660 MHz
+>> 1395683887.458952: nl80211: Scan frequency 5680 MHz
+>> 1395683887.458957: nl80211: Scan frequency 5700 MHz
+>> 1395683887.458962: nl80211: Scan frequency 5745 MHz
+>> 1395683887.458987: nl80211: Scan frequency 5645 MHz
+>> 1395683887.458996: nl80211: Scan frequency 5785 MHz
+>> 1395683887.459001: nl80211: Scan frequency 5805 MHz
+>> 1395683887.459005: nl80211: Scan frequency 5825 MHz
+>> 1395683887.459040: nl80211: Scan trigger failed: ret=-22 (Invalid argument)
+>>
+>>
+>> A standard scan seems to use only a subset of these channels.
+>> But, wouldn't that make us miss scanning for some /a or /n APs
+>> out there?
+>>
+>> [root@ct521-FCFC ~]# iw event
+>> wlan0 (phy #1): scan started
+>> wlan0 (phy #1): scan finished: 2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462 5180 5200 5220 5240 5260 5280 5300 5320 5745 5765 5785 5805 5825, ""
+>>
+>>
+>> Any idea if this is a bug in my config/assumptions, ath10k, or supplicant?
+>>
+> Strange, works quite good from iw:
+> 
+> janusz@dell:~$ sudo iw wlan1 scan freq 5180 5200 5220 5240 5260 5280
+> 5300 5320 5745 5765 5785 5805 5825|grep freq
+> janusz@dell:~$ sudo iw wlan1 scan freq 2412 2417 2422 2427 2432 2437
+> 2442 2447 2452 2457 2462 5180 5200 5220 5240 5260 5280 5300 5320 5745
+> 5765 5785 5805 5825|grep freq
+>     freq: 2437
+>     freq: 2427
+>     freq: 2432
+>     freq: 2452
+>     freq: 2442
+> janusz@dell:~$
+> 
+> Last hostap with config:
+> network={
+>     ssid="linksys"
+>     psk="somepsk"
+>     key_mgmt=WPA-PSK
+>     disabled=1
+>     scan_freq=2412 2417 2422 2427 2432 2437 2442 2447 2452 2457 2462
+> 5180 5200 5220 5240 5260 5280 5300 5
+> 320 5745 5765 5785 5805 5825
+> }
 
-In my case:
+Maybe my config is wrong...I was using freq_list instead of scan_freq,
+and using it twice...
 
-ath10k: ath10k_peer_assoc_h_crypto: rsn ie found
-ath10k: ath10k_peer_assoc_h_crypto: wpa ie found
-ath10k: mac peer 00:14:bf:16:b8:44 phymode 11g
+ctrl_interface=/var/run/wpa_supplicant
+fast_reauth=1
+scan_cur_freq=1
+min_scan_gap=5
+freq_list=5170 5180 5190 5200 5210 5220 5230 5240 5260 5280 5300 5320 5500 5520 5540 5560 5580 5600 5580 5600 5620 5640 5660 5620 5640 5660 5680 5700 5745 5645
+5785 5805 5825
 
-Next tx don't work because, FW discard this packets for some reason
-(at least broadcast), I see a lot of:
-ath10k: htt tx completion msdu_id 0 discard 1 no_ack 0
+bss_max_count=2000
+network={
+    ssid="NETGEAR76-5G"
+    disable_ht=0
+    disable_vht=0
+    disable_ht40=0
+    disable_sgi=0
+    ht_mcs=""
+    disable_max_amsdu=-1
+    ampdu_factor=-1
+    ampdu_density=-1
+    freq_list=5170 5180 5190 5200 5210 5220 5230 5240 5260 5280 5300 5320 5500 5520 5540 5560 5580 5600 5580 5600 5620 5640 5660 5620 5640 5660 5680 5700 5745
+5645 5785 5805 5825
 
-while with 636 firmware
-ath10k: htt tx completion msdu_id 0 discard 0 no_ack 0
+    key_mgmt=NONE
+    proactive_key_caching=0
 
-So, could be quite different issue you have. I will check switch to
-CCMP only while now there is TKIP/CCMP.
+}
 
-BR
-Jansuz
+
+> 
+> After enable_n 4:
+
+How are you enabling n?
+
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
