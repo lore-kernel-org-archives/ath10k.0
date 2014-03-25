@@ -1,24 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x230.google.com ([2607:f8b0:400c:c01::230])
+Received: from mail-pa0-x230.google.com ([2607:f8b0:400e:c03::230])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSOdu-0007Xa-MY
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 10:31:39 +0000
-Received: by mail-ve0-f176.google.com with SMTP id cz12so269356veb.35
- for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 03:31:17 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnG4QAYrinu3LLj9PbSAdvuUzqyAZQvgrWme5Qd2Hpq6Q@mail.gmail.com>
-References: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
- <CA+BoTQmVw1fiDU_Pu_fowRfFdme-AZ1-qLmxhCHuxFPSK831rw@mail.gmail.com>
- <CAEFj9867Z+x3orcwUpwjwQB-9c5r4FfAuZBHYDGZ1hNe=6Z1pA@mail.gmail.com>
- <CA+BoTQn4ji2boTV8x-owO8PbaPm510wYEKmbKqf+VS+MS+DXnQ@mail.gmail.com>
- <CAEFj9854WN5qJ4L4V1vkLeGhj=pstjoha19iJMQ8Vy-g24a66A@mail.gmail.com>
- <CA+BoTQmNVHj-rNvVgvTx=Adq6J1kpra2qwi3Pmzh2G2Npn-jGg@mail.gmail.com>
- <CAEFj984srRCqzFmzjGuE2nFLrC-V+PEgDPC-mejsZnfGH52g_Q@mail.gmail.com>
- <CA+BoTQnG4QAYrinu3LLj9PbSAdvuUzqyAZQvgrWme5Qd2Hpq6Q@mail.gmail.com>
-Date: Tue, 25 Mar 2014 18:31:17 +0800
-Message-ID: <CAEFj985jyNgSR18xuitL73mqwkgYSV=v7cXSDLVqE5wJfN3fpw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix printing of peer stats in non-AP firmware
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ id 1WSOw2-0008Tr-Ei
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 10:50:23 +0000
+Received: by mail-pa0-f48.google.com with SMTP id hz1so277732pad.7
+ for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 03:50:00 -0700 (PDT)
+From: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Subject: [PATCH] ath10k: add extra pdev stats on 10.1 firmware
+Date: Tue, 25 Mar 2014 18:49:33 +0800
+Message-Id: <1395744573-13691-1-git-send-email-yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,58 +17,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
->
-> The second stats event has pdev stats. As per my other mail, 10.1 has
-> extra pdev stats. Since ath10k doesn't account that it reads peer
-> stats too early from the buffer. What you see is a tail of pdev stats
-> for 10.1.
->
-> You can try the following to test *10.1*:
->
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -2804,6 +2804,12 @@ struct wmi_pdev_stats {
->         __le32 phy_err_count;  /* Phy error count */
->         __le32 chan_tx_pwr;    /* channel tx power */
->         struct wal_dbg_stats wal; /* WAL dbg stats */
-> +       __le32 ack_rx_bad;
-> +       __le32 rts_bad;
-> +       __le32 rts_good;
-> +       __le32 fcs_bad;
-> +       __le32 no_beacons;
-> +       __le32 mib_int_count;
->  } __packed;
->
+As pointed out by Michal Kazior, add extra pdev stats
+for 10.1 firmware.
 
-Ok. Probably can come out with a patch extending the pdev stats on this.
-
-I get the self STA stats as follow on 10.1 firmware:
-
-AP:
-[  754.280000] ath10k: pdev 1 vdev 0 peer 1
-[  754.280000] ath10k: MAC 04:f0:21:0c:a5:43
-[  754.280000] ath10k: RSSI 0
-[  754.290000] ath10k: Tx 6000
-[  754.290000] ath10k: Rx 0
-
-STA:
-[  880.060000] ath10k: pdev 1 vdev 0 peer 1
-[  880.060000] ath10k: MAC 00:00:00:00:00:01
-[  880.070000] ath10k: RSSI 0
-[  880.070000] ath10k: Tx 6000
-[  880.070000] ath10k: Rx 0
-
-Similar to 636. But on 636, I don't find any tx rate, only rssi.
-
+Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 ---
-Chun-Yeow
+ drivers/net/wireless/ath/ath10k/core.h  |    6 ++++++
+ drivers/net/wireless/ath/ath10k/debug.c |   27 ++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/wmi.h   |   19 ++++++++++++++++++-
+ 3 files changed, 48 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8c5e84c..50fa048 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -131,6 +131,12 @@ struct ath10k_target_stats {
+ 	u32 cycle_count;
+ 	u32 phy_err_count;
+ 	u32 chan_tx_power;
++	u32 ack_rx_bad;
++	u32 rts_bad;
++	u32 rts_good;
++	u32 fcs_bad;
++	u32 no_beacons;
++	u32 mib_int_count;
+ 
+ 	/* PDEV TX stats */
+ 	s32 comp_queued;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 4a4072e..64335dd 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -161,7 +161,7 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 	u8 *tmp = ev->data;
+ 	struct ath10k_target_stats *stats;
+ 	int num_pdev_stats, num_vdev_stats, num_peer_stats;
+-	struct wmi_pdev_stats *ps;
++	struct wmi_pdev_stats_10x *ps;
+ 	int i;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+@@ -173,7 +173,7 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 	num_peer_stats = __le32_to_cpu(ev->num_peer_stats); /* 0 or max peers */
+ 
+ 	if (num_pdev_stats) {
+-		ps = (struct wmi_pdev_stats *)tmp;
++		ps = (struct wmi_pdev_stats_10x *)tmp;
+ 
+ 		stats->ch_noise_floor = __le32_to_cpu(ps->chan_nf);
+ 		stats->tx_frame_count = __le32_to_cpu(ps->tx_frame_count);
+@@ -228,7 +228,18 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 		stats->phy_err_drop = __le32_to_cpu(ps->wal.rx.phy_err_drop);
+ 		stats->mpdu_errs = __le32_to_cpu(ps->wal.rx.mpdu_errs);
+ 
+-		tmp += sizeof(struct wmi_pdev_stats);
++		if (test_bit(ATH10K_FW_FEATURE_WMI_10X,
++			     ar->fw_features)) {
++			stats->ack_rx_bad = __le32_to_cpu(ps->ack_rx_bad);
++			stats->rts_bad = __le32_to_cpu(ps->rts_bad);
++			stats->rts_good = __le32_to_cpu(ps->rts_good);
++			stats->fcs_bad = __le32_to_cpu(ps->fcs_bad);
++			stats->no_beacons = __le32_to_cpu(ps->no_beacons);
++			stats->mib_int_count = __le32_to_cpu(ps->mib_int_count);
++			tmp += sizeof(struct wmi_pdev_stats_10x);
++		} else {
++			tmp += sizeof(struct wmi_pdev_stats_old);
++		}
+ 	}
+ 
+ 	/* 0 or max vdevs */
+@@ -334,6 +345,16 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 			 "Cycle count", fw_stats->cycle_count);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
+ 			 "PHY error count", fw_stats->phy_err_count);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
++			 "RTS bad count", fw_stats->rts_bad);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
++			 "RTS good count", fw_stats->rts_good);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
++			 "FCS bad count", fw_stats->fcs_bad);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
++			 "No beacon count", fw_stats->no_beacons);
++	len += scnprintf(buf + len, buf_len - len, "%30s %10u\n",
++			 "MIB int count", fw_stats->mib_int_count);
+ 
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
+ 	len += scnprintf(buf + len, buf_len - len, "%30s\n",
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index ff69a1b..f6dc92e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2833,7 +2833,7 @@ struct wmi_stats_event {
+  * PDEV statistics
+  * TODO: add all PDEV stats here
+  */
+-struct wmi_pdev_stats {
++struct wmi_pdev_stats_old {
+ 	__le32 chan_nf;        /* Channel noise floor */
+ 	__le32 tx_frame_count; /* TX frame count */
+ 	__le32 rx_frame_count; /* RX frame count */
+@@ -2844,6 +2844,23 @@ struct wmi_pdev_stats {
+ 	struct wal_dbg_stats wal; /* WAL dbg stats */
+ } __packed;
+ 
++struct wmi_pdev_stats_10x {
++	__le32 chan_nf;        /* Channel noise floor */
++	__le32 tx_frame_count; /* TX frame count */
++	__le32 rx_frame_count; /* RX frame count */
++	__le32 rx_clear_count; /* rx clear count */
++	__le32 cycle_count;    /* cycle count */
++	__le32 phy_err_count;  /* Phy error count */
++	__le32 chan_tx_pwr;    /* channel tx power */
++	struct wal_dbg_stats wal; /* WAL dbg stats */
++	__le32 ack_rx_bad;
++	__le32 rts_bad;
++	__le32 rts_good;
++	__le32 fcs_bad;
++	__le32 no_beacons;
++	__le32 mib_int_count;
++} __packed;
++
+ /*
+  * VDEV statistics
+  * TODO: add all VDEV stats here
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
