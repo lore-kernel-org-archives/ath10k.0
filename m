@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSDFA-0005W4-18
- for ath10k@lists.infradead.org; Mon, 24 Mar 2014 22:21:20 +0000
-Message-ID: <5330AFC6.60205@candelatech.com>
-Date: Mon, 24 Mar 2014 15:20:54 -0700
+ id 1WSEn3-0007IS-5Q
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 00:00:25 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s2P0027I022016
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 17:00:02 -0700
+Message-ID: <5330C701.607@candelatech.com>
+Date: Mon, 24 Mar 2014 17:00:01 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] ath10k: fix rssi and rate reporting
-References: <1395692698-4745-1-git-send-email-janusz.dziedzic@tieto.com>
- <1395692698-4745-2-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1395692698-4745-2-git-send-email-janusz.dziedzic@tieto.com>
+Subject: How to get tx rate in ath10k?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +25,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On 03/24/2014 01:24 PM, Janusz Dziedzic wrote:
-> RSSI and RATES fields are valid only when START_VALID
-> bit is set. So, in current implementation we have to
-> remember/caclulate them when START_VALID and report the same
-> when only END_VALID is set.
-> Currently during heavy traffic we could have:
-> - 10 packets with START_VALID - correct RSSI and RATES
-> - 10 packets with END_VALID
-> - 10 packets with START_VALID - correct RSSI and RATES
-> - 10 packets with END_VALID
+With Janusz's changes, rx rate and rx-signal appear to be reported
+correctly.
 
-I applied all 8 of these patches to my tree, and it does fix the problems I saw with
-rx-rate and signal being broken (perhaps because I am using raw rx mode for
-my stations).
+But, tx-rate is not reported.
 
-I'll leave these in my tree and will let you know if I see any
-problems that might be related to them.
+Anyone have any suggestions for what needs doing to get
+tx rate properly reported?
 
 Thanks,
 Ben
