@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-ve0-x233.google.com ([2607:f8b0:400c:c01::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSNlk-0005gV-7l
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:35:41 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: RE : Compilation backport ath10k
-References: <EE97821C81277E459BEA5C6384C6F241012D6BF72CC8@srvexch01.SODIELEC.local>
- <87lhvy3ewa.fsf@kamboji.qca.qualcomm.com>
- <EE97821C81277E459BEA5C6384C6F241012D6BF72CC9@srvexch01.SODIELEC.local>
-Date: Tue, 25 Mar 2014 11:35:11 +0200
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012D6BF72CC9@srvexch01.SODIELEC.local>
- (Vu Hai NGUYEN's message of "Tue, 25 Mar 2014 10:12:59 +0100")
-Message-ID: <8738i639kg.fsf@kamboji.qca.qualcomm.com>
+ id 1WSNoQ-0005ne-TG
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:38:27 +0000
+Received: by mail-ve0-f179.google.com with SMTP id db12so207451veb.24
+ for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 02:38:05 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQmNVHj-rNvVgvTx=Adq6J1kpra2qwi3Pmzh2G2Npn-jGg@mail.gmail.com>
+References: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
+ <CA+BoTQmVw1fiDU_Pu_fowRfFdme-AZ1-qLmxhCHuxFPSK831rw@mail.gmail.com>
+ <CAEFj9867Z+x3orcwUpwjwQB-9c5r4FfAuZBHYDGZ1hNe=6Z1pA@mail.gmail.com>
+ <CA+BoTQn4ji2boTV8x-owO8PbaPm510wYEKmbKqf+VS+MS+DXnQ@mail.gmail.com>
+ <CAEFj9854WN5qJ4L4V1vkLeGhj=pstjoha19iJMQ8Vy-g24a66A@mail.gmail.com>
+ <CA+BoTQmNVHj-rNvVgvTx=Adq6J1kpra2qwi3Pmzh2G2Npn-jGg@mail.gmail.com>
+Date: Tue, 25 Mar 2014 17:38:05 +0800
+Message-ID: <CAEFj984srRCqzFmzjGuE2nFLrC-V+PEgDPC-mejsZnfGH52g_Q@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix printing of peer stats in non-AP firmware
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +29,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, backports@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
+> I don't think that's true for 10.1 firmware and AP interface types.
 
-> After 3 steps above I can obtain 6 module .ko of the driver ath10k
-> which have vermagic: 3.2.55
->
-> Now when I try to compile ath10k on the kernel 3.2.36 (provided by
-> marvell for my pc cible), I repeat 3 steps above but there is some
-> warnings in 3th step when I run the command make (you can see it below
-> my signature) and I obtain only 2 modules: cfg80211.ko compat.ko
->
-> So I supposs that the my kernel 3.2.36 provided from marvell miss
-> library to compiled ath10k. Do you guys have some ideas how to fix it?
+I try to play around with 10.1 firmware as AP (3 connected STAs) and I
+get the following:
 
-[...]
+The first WMI_UPDATE_STATS_EVENTID as follow:
+[  338.290000] ath10k: pdev 0 vdev 0 peer 3
+[  338.300000] ath10k: MAC 04:f0:21:0c:a5:44
+[  338.300000] ath10k: RSSI 60
+[  338.300000] ath10k: Tx 1170000
+[  338.310000] ath10k: Rx 1170000
+[  338.310000] ath10k: MAC 04:f0:21:0c:a5:19
+[  338.320000] ath10k: RSSI 64
+[  338.320000] ath10k: Tx 1300000
+[  338.320000] ath10k: Rx 975000
+[  338.320000] ath10k: MAC 04:f0:21:0c:a5:1c
+[  338.330000] ath10k: RSSI 71
+[  338.330000] ath10k: Tx 975000
+[  338.330000] ath10k: Rx 1300000
 
-> .config:142:warning: symbol value 'm' invalid for OPROFILE
-> .config:497:warning: symbol value 'm' invalid for INET_TUNNEL
-> .config:498:warning: symbol value 'm' invalid for INET_XFRM_MODE_TRANSPORT
-> .config:499:warning: symbol value 'm' invalid for INET_XFRM_MODE_TUNNEL
-> .config:500:warning: symbol value 'm' invalid for INET_XFRM_MODE_BEET
-> .config:502:warning: symbol value 'm' invalid for INET_DIAG
+I think that above is correct.
 
-Thank you, I understand the problem much better now. I'm no backports
-expert so I can't really help with this but I'm guessing that the vendor
-kernel contains changes which break backports, just like you said.
+The second WMI_UPDATE_STATS_EVENTID as follow:
+[  338.340000] ath10k: pdev 1 vdev 0 peer 1
+[  338.350000] ath10k: MAC a8:02:00:00:00:00
+[  338.350000] ath10k: RSSI 0
+[  338.350000] ath10k: Tx 565
+[  338.360000] ath10k: Rx 0
 
-You might get better help from the backports mailing list, CCed. For
-people new to the thread, here's the link to the original mail.
+Although indicating 1 peer, but the data seems to be not the peer
+stats, not even self STA stats. Any idea?
 
-http://lists.infradead.org/pipermail/ath10k/2014-March/001595.html
-
--- 
-Kalle Valo
+---
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
