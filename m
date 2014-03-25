@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x235.google.com ([2607:f8b0:4003:c02::235])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSLlh-0000UK-7o
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 07:27:31 +0000
-Received: by mail-oa0-f53.google.com with SMTP id j17so81074oag.40
- for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 00:27:03 -0700 (PDT)
+ id 1WSLq8-0000jd-WC
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 07:32:05 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: RE : Compilation ath10k
+References: <EE97821C81277E459BEA5C6384C6F241012D6392146F@srvexch01.SODIELEC.local>
+ <871txxh0t8.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012D63921470@srvexch01.SODIELEC.local>
+Date: Tue, 25 Mar 2014 09:31:38 +0200
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012D63921470@srvexch01.SODIELEC.local>
+ (Vu Hai NGUYEN's message of "Thu, 20 Mar 2014 11:30:03 +0100")
+Message-ID: <87ppla3fad.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <53306239.2020006@candelatech.com>
-References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>
- <871txr7svw.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmquq7dXTV0sSV1mJ0+8-9OuiCnqz2iN8VNO4J3iaeexQ@mail.gmail.com>
- <53306239.2020006@candelatech.com>
-Date: Tue, 25 Mar 2014 08:27:02 +0100
-Message-ID: <CA+BoTQkCmJbvQjZ3vTV7AP1EwdcH_pAd0pex_v9bZDzwZdufbw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ath10k: Add debugging for tx-credits usage.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMjQgTWFyY2ggMjAxNCAxNzo1MCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+IHdyb3RlOgo+IE9uIDAzLzI0LzIwMTQgMDQ6MjEgQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6
-Cj4+IE9uIDI0IE1hcmNoIDIwMTQgMTI6MTIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
-bS5jb20+IHdyb3RlOgo+Cj4+Pj4gLSAgICAgc3RhdHVzID0gYXRoMTBrX2h0Y19zZW5kKGh0Yywg
-QVRIMTBLX0hUQ19FUF8wLCBza2IpOwo+Pj4+ICsgICAgIHN0YXR1cyA9IGF0aDEwa19odGNfc2Vu
-ZChodGMsIEFUSDEwS19IVENfRVBfMCwgc2tiLCBfX0xJTkVfXyk7Cj4+Pgo+Pj4gVXNpbmcgbGlu
-ZSBudW1iZXJzIGluIGRlYnVnIG1lc3NhZ2VzIGlzIHZlcnkgY3VtYmVyc29tZS4gU29tZSBwZW9w
-bGUKPj4+IGNoZXJyeSBwaWNrIHBhdGNoZXMsIGhhdmUgdGhlaXIgb3duIGNoYW5nZXMgYW5kIHdo
-YXRub3Qgd2hpY2ggd2lsbCBtYWtlCj4+PiBpdCBtb3JlIGRpZmZpY3VsdCB0byByZWFkIHRoZSBk
-ZWJ1ZyBsb2dzLiBJc24ndCB0aGVyZSBhbnkgYmV0dGVyIHdheSB0bwo+Pj4gZG8gdGhpcz8KPj4K
-Pj4gSSB3b3VsZCBwcmVmZXIgdG8gZXhwbGljaXRseSB3YWl0IGZvciB0eCBjcmVkaXQgcmVwbGVu
-aXNobWVudCBpbgo+PiBhdGgxMGtfd21pX2NtZF9zZW5kKCkgYWZ0ZXIgYSBjb21tYW5kIGlzIHNl
-bnQgaW5zdGVhZCBvZiBhbGwgdGhlc2UKPj4gcHJpbnRzLiBUaGlzIHdheSB5b3UgY2FuIGdldCBh
-IGZ1bGwgY2FsbCB0cmFjZSBpZiBpdCB0aW1lcyBvdXQuCj4KPiBXb3VsZCB0aGF0IGJlIGEgcGVy
-Zm9ybWFuY2UgcHJvYmxlbSAoYnkgZWZmZWN0aXZlbHkgYWxsb3dpbmcgb25seSBhIHNpbmdsZQo+
-IGl0ZW0gdG8gYmUgc2VudCB0byB0aGUgZmlybXdhcmUgYXQgYW55IGdpdmVuIHRpbWU/KQoKVGhl
-IG9ubHkgdGhpbmcgdGhhdCBtYXkgc3VmZmVyIGhlcmUgaXMgd21pIG1nbXQgdHggYnV0IEkgd291
-bGRuJ3QKY29uc2lkZXIgdGhhdCBwZXJmb3JtYW5jZSBjcml0aWNhbC4KCgpNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
+
+> Thak you Valo for your response,  i'm doing an internship and my mission is replacing 
+> the module wifi WLE350NX (used chipset of Atheros and satisfied the standard 802.11n) by the new one
+> WLE900VX to satisfy the standard 802.11ac for a router. Our actual driver is bought from Atheros (Driver Aquila)
+> and i have to replace that driver by ath10k. I tried to compile it from the menuconfig of our code but it has many errors (you can see from the attached file).
+> Then I try to compile in backport as you said, I was on the step 8 (http://wireless.kernel.org/en/users/Drivers/ath10k/backports) and get this error but I don't really understand it:
+> /--------------
+> | You shouldn't run make in the backports tree, but only in
+> | the generated output. This here is only the skeleton code
+> | copied into the output directory. To use the backport system
+> | from scratch, go into the top-level directory and run
+> |	./gentree.py /path/to/linux-next/ /tmp/output
+> | and then make menuconfig/... in the output directory. See
+> |	./gentree.py --help
+> | for more options.
+> \--
+> make[1]: *** [modules] Error 1
+> make: *** [default] Error 
+
+Normal users should not run gentree.py, instead it's recommended to take
+official backports releases. I noticed that the wiki page was a bit
+confusing and I tried to improve it a bit:
+
+Here are simple instructions how to install ath10k from a backports release:
+
+----------------------------------------------------------------------
+Download latest backports release and unpack it.
+Run defconfig for ath10k:
+make defconfig-ath10k
+Compile backports:
+make
+Install backports:
+sudo make install
+Reboot system and ath10k should load automatically.
+See backports documentation for more info.
+----------------------------------------------------------------------
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/backports#ath10k_backports_releases
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
