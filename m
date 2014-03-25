@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSNSp-00058F-BE
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:16:07 +0000
-Subject: [PATCH 8/8] ath10k: print chip id during boot
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 25 Mar 2014 11:15:46 +0200
-Message-ID: <20140325091546.16651.33866.stgit@potku.adurom.net>
-In-Reply-To: <20140325091311.16651.15747.stgit@potku.adurom.net>
-References: <20140325091311.16651.15747.stgit@potku.adurom.net>
+ id 1WSNjM-0005ap-GZ
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:33:13 +0000
+Received: by mail-ob0-f170.google.com with SMTP id uz6so216436obc.29
+ for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 02:32:49 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20140325091505.16651.15554.stgit@potku.adurom.net>
+References: <20140325091311.16651.15747.stgit@potku.adurom.net>
+ <20140325091505.16651.15554.stgit@potku.adurom.net>
+Date: Tue, 25 Mar 2014 10:32:49 +0100
+Message-ID: <CA+BoTQns9QXCctzrMzd5=o6EyA=d0TG-eLJw3hztE1-MD7HwkQ@mail.gmail.com>
+Subject: Re: [PATCH 1/8] ath10k: cleanup ath10k_pci_wait_for_target_init()
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +21,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This makes it easier to debug what kind of board is used.
-
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 471c219e5137..0077ba17e5c0 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -844,9 +844,12 @@ int ath10k_core_start(struct ath10k *ar)
- 	INIT_LIST_HEAD(&ar->arvifs);
- 
- 	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
--		ath10k_info("%s (0x%x) fw %s api %d htt %d.%d\n",
--			    ar->hw_params.name, ar->target_version,
--			    ar->hw->wiphy->fw_version, ar->fw_api,
-+		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-+			    ar->hw_params.name,
-+			    ar->target_version,
-+			    ar->chip_id,
-+			    ar->hw->wiphy->fw_version,
-+			    ar->fw_api,
- 			    ar->htt.target_version_major,
- 			    ar->htt.target_version_minor);
- 
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjUgTWFyY2ggMjAxNCAxMDoxNSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gYXRoMTBrX3BjaV93YWl0X2Zvcl90YXJnZXRfaW5pdCgpIGRpZCByZWFsbHkg
+Zm9sbG93IHRoZSBzdHlsZSB1c2VkIGVsc2V3aGVyZSBpbgo+IGF0aDEway4gVXNlIGF0aDEwa19w
+Y2lfcmVhZC93cml0ZSgpIHdyYXBwZXJzLCBzaW1wbGlmeSB0aGUgd2hpbGUgbG9vcCBhbmQKPiBp
+bXByb3ZlIHdhcm5pbmcgbWVzc2FnZXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxr
+dmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3BjaS5jIHwgICAzMyArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0KPiAg
+MSBmaWxlIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo+Cj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gaW5kZXggOWQyNDJkODAxZDlkLi4wNDI1
+Yzc2ZGFmM2YgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
+Y2kuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBAQCAt
+MjM4NSwzMCArMjM4NSwzNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfZGVpbml0X2lycShzdHJ1
+Y3QgYXRoMTBrICphcikKPiAgc3RhdGljIGludCBhdGgxMGtfcGNpX3dhaXRfZm9yX3RhcmdldF9p
+bml0KHN0cnVjdCBhdGgxMGsgKmFyKQo+ICB7Cj4gICAgICAgICBzdHJ1Y3QgYXRoMTBrX3BjaSAq
+YXJfcGNpID0gYXRoMTBrX3BjaV9wcml2KGFyKTsKPiAtICAgICAgIGludCB3YWl0X2xpbWl0ID0g
+MzAwOyAvKiAzIHNlYyAqLwo+ICsgICAgICAgY29uc3QgaW50IHdhaXQgPSAzMDAwOyAvKiBtcyAq
+LwoKV2UgcHJvYmFibHkgc2hvdWxkIGhhdmUgYSAjZGVmaW5lIGZvciB0aGlzLgoKCj4gKyAgICAg
+ICB1bnNpZ25lZCBsb25nIHRpbWVvdXQ7Cj4gICAgICAgICBpbnQgcmV0Owo+ICsgICAgICAgdTMy
+IHZhbDsKPgo+ICAgICAgICAgcmV0ID0gYXRoMTBrX3BjaV93YWtlKGFyKTsKPiAgICAgICAgIGlm
+IChyZXQpIHsKPiAtICAgICAgICAgICAgICAgYXRoMTBrX2VycigiZmFpbGVkIHRvIHdha2UgdXAg
+dGFyZ2V0OiAlZFxuIiwgcmV0KTsKPiArICAgICAgICAgICAgICAgYXRoMTBrX2VycigiZmFpbGVk
+IHRvIHdha2UgdXAgdGFyZ2V0IGZvciBpbml0OiAlZFxuIiwgcmV0KTsKPiAgICAgICAgICAgICAg
+ICAgcmV0dXJuIHJldDsKPiAgICAgICAgIH0KPgo+IC0gICAgICAgd2hpbGUgKHdhaXRfbGltaXQt
+LSAmJgo+IC0gICAgICAgICAgICAgICEoaW9yZWFkMzIoYXJfcGNpLT5tZW0gKyBGV19JTkRJQ0FU
+T1JfQUREUkVTUykgJgo+IC0gICAgICAgICAgICAgICAgRldfSU5EX0lOSVRJQUxJWkVEKSkgewo+
+ICsgICAgICAgdGltZW91dCA9IGppZmZpZXMgKyBtc2Vjc190b19qaWZmaWVzKHdhaXQpOwo+ICsK
+PiArICAgICAgIGRvIHsKPiArICAgICAgICAgICAgICAgdmFsID0gYXRoMTBrX3BjaV9yZWFkMzIo
+YXIsIEZXX0lORElDQVRPUl9BRERSRVNTKTsKPiArICAgICAgICAgICAgICAgaWYgKHZhbCA9PSBG
+V19JTkRfSU5JVElBTElaRUQpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gKwoK
+SXQgbWlnaHQgYmUgd29ydGggdG8gYWRkOgoKIGlmICh2YWwgPT0gMHhGRkZGRkZGRikKICAgcmV0
+dXJuIC1FSU87CgoKPiAgICAgICAgICAgICAgICAgaWYgKGFyX3BjaS0+bnVtX21zaV9pbnRycyA9
+PSAwKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIC8qIEZpeCBwb3RlbnRpYWwgcmFjZSBieSBy
+ZXBlYXRpbmcgQ09SRV9CQVNFIHdyaXRlcyAqLwo+IC0gICAgICAgICAgICAgICAgICAgICAgIGlv
+d3JpdGUzMihQQ0lFX0lOVFJfRklSTVdBUkVfTUFTSyB8Cj4gLSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIFBDSUVfSU5UUl9DRV9NQVNLX0FMTCwKPiAtICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgYXJfcGNpLT5tZW0gKyAoU09DX0NPUkVfQkFTRV9BRERSRVNTIHwKPiAt
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9JTlRS
+X0VOQUJMRV9BRERSRVNTKSk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3BjaV9z
+b2Nfd3JpdGUzMihhciwgUENJRV9JTlRSX0VOQUJMRV9BRERSRVNTLAo+ICsgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9JTlRSX0ZJUk1XQVJFX01BU0sg
+fAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9J
+TlRSX0NFX01BU0tfQUxMKTsKPiArCj4gICAgICAgICAgICAgICAgIG1kZWxheSgxMCk7Cj4gLSAg
+ICAgICB9Cj4gKyAgICAgICB9IHdoaWxlICh0aW1lX2JlZm9yZShqaWZmaWVzLCB0aW1lb3V0KSk7
+Cj4KPiAtICAgICAgIGlmICh3YWl0X2xpbWl0IDwgMCkgewo+IC0gICAgICAgICAgICAgICBhdGgx
+MGtfZXJyKCJ0YXJnZXQgc3RhbGxlZFxuIik7Cj4gLSAgICAgICAgICAgICAgIHJldCA9IC1FSU87
+Cj4gKyAgICAgICBpZiAodmFsICE9IEZXX0lORF9JTklUSUFMSVpFRCkgewo+ICsgICAgICAgICAg
+ICAgICBhdGgxMGtfZXJyKCJmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFsaXplZCBldmVudCBmcm9t
+IHRhcmdldCBhZnRlciAlZCBtczogJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
+d2FpdCwgdmFsKTsKCmB2YWxgIGlzIHUzMiBzbyBpdCBzaG91bGRuJ3QgYmUgJWQuICUwOHggbWFr
+ZXMgbW9zdCBzZW5zZSBJIGd1ZXNzLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
