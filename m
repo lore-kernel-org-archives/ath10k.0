@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSEn3-0007IS-5Q
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 00:00:25 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s2P0027I022016
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Mon, 24 Mar 2014 17:00:02 -0700
-Message-ID: <5330C701.607@candelatech.com>
-Date: Mon, 24 Mar 2014 17:00:01 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WSLE1-0007HF-SI
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 06:52:42 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
+ simulate_fw_crash
+References: <20140313082431.10798.10888.stgit@potku.adurom.net>
+ <87pplih81g.fsf@kamboji.qca.qualcomm.com>
+ <20140321143737.GA5140@mwanda>
+Date: Tue, 25 Mar 2014 08:52:14 +0200
+In-Reply-To: <20140321143737.GA5140@mwanda> (Dan Carpenter's message of "Fri, 
+ 21 Mar 2014 17:37:38 +0300")
+Message-ID: <8738i64voh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: How to get tx rate in ath10k?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +26,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-With Janusz's changes, rx rate and rx-signal appear to be reported
-correctly.
+Dan Carpenter <dan.carpenter@oracle.com> writes:
 
-But, tx-rate is not reported.
+>> drivers/net/wireless/ath/ath10k/debug.c:500 ath10k_write_simulate_fw_crash() error: strncmp() '"hard"' too small (5 vs 32)
+>> drivers/net/wireless/ath/ath10k/debug.c:497 ath10k_write_simulate_fw_crash() error: strncmp() '"soft"' too small (5 vs 32)
+>> 
+>> I wanted to use strncmp() instead of strcmp(), but I'm not sure what to
+>> do here. In my opinion it's guaranteed that the string "hard" is null
+>> terminated, so it shouldn't matter even if strlen("soft") (5) is less
+>> than sizeof(buf) (32), right? Or am I missing something here?
+>> 
+>
+> I am on vacation until next week.  I didn't think these particular
+> emails went out automatically.
 
-Anyone have any suggestions for what needs doing to get
-tx rate properly reported?
+Actually that's true. Fengguang's bot sends me a build report after
+every build and I saw these warnings in that report.
 
-Thanks,
-Ben
+> Anyway, I have changed this in the latest smatch but it will take some
+> months for the kbuild bot to update.
+>
+> http://repo.or.cz/w/smatch.git/commitdiff/f10f27a7612c5b1e69b5d9080a0194d012beb6aa
+>
+> I'll take a closer look next week.
+
+Thanks!
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
