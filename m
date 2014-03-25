@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x236.google.com ([2607:f8b0:4003:c02::236])
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSMT4-0001md-Vz
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 08:12:19 +0000
-Received: by mail-oa0-f54.google.com with SMTP id n16so129969oag.13
- for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 01:11:58 -0700 (PDT)
+ id 1WSMnz-0002yI-Nu
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 08:33:56 +0000
+Received: by mail-vc0-f173.google.com with SMTP id il7so142962vcb.32
+ for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 01:33:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
+In-Reply-To: <CA+BoTQmVw1fiDU_Pu_fowRfFdme-AZ1-qLmxhCHuxFPSK831rw@mail.gmail.com>
 References: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
-Date: Tue, 25 Mar 2014 09:11:57 +0100
-Message-ID: <CA+BoTQmVw1fiDU_Pu_fowRfFdme-AZ1-qLmxhCHuxFPSK831rw@mail.gmail.com>
+ <CA+BoTQmVw1fiDU_Pu_fowRfFdme-AZ1-qLmxhCHuxFPSK831rw@mail.gmail.com>
+Date: Tue, 25 Mar 2014 16:33:34 +0800
+Message-ID: <CAEFj9867Z+x3orcwUpwjwQB-9c5r4FfAuZBHYDGZ1hNe=6Z1pA@mail.gmail.com>
 Subject: Re: [PATCH] ath10k: fix printing of peer stats in non-AP firmware
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +21,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjUgTWFyY2ggMjAxNCAwODo1NSwgQ2h1bi1ZZW93IFllb2ggPHllb2hjaHVueWVvd0BnbWFp
-bC5jb20+IHdyb3RlOgo+IFRoaXMgcGF0Y2ggaXMgaW50ZW5kZWQgdG8gZml4IHRoZSBwcm9ibGVt
-IGlmIHdlIHVzZSB0aGUKPiBmaXJtd2FyZSA5OTkuOTk5LjAuNjM2IHRvIGdldCBwZWVyIHN0YXRz
-IHdoZW4gdGhlIG51bWJlcgo+IG9mIHBlZXIgaXMgbW9yZSB0aGFuIDMuIFRoZSBXTUlfVVBEQVRF
-X1NUQVRTX0VWRU5USUQgbWF5Cj4gdHJpZ2dlciBtb3JlIHRoYW4gMSB0aW1lIGlmIHRoZSBudW1i
-ZXIgb2YgcGVlcnMgaXMgbW9yZQo+IHRoYW4gMy4gU28gdGhpcyBwYXRjaCBhbGxvd3MgdXMgdG8g
-ZG8gdGhlIGNoZWNraW5nIG9uIHRoaXMKPiBhbmQgbWFrZSBzdXJlIHRoYXQgd2UgcHJpbnQgdGhl
-IHBlZXIgc3RhdHMgY29ycmVjdGx5Lgo+Cj4gU2lnbmVkLW9mZi1ieTogQ2h1bi1ZZW93IFllb2gg
-PHllb2hjaHVueWVvd0BnbWFpbC5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvZGVidWcuYyB8ICAgIDkgKysrKysrKystCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGlu
-c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2RlYnVnLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRo
-MTBrL2RlYnVnLmMKPiBpbmRleCA3YmUyODRjLi40YTQwNzJlIDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYwo+IEBAIC0yNDUsMTAgKzI0NSwxNyBAQCB2b2lkIGF0
-aDEwa19kZWJ1Z19yZWFkX3RhcmdldF9zdGF0cyhzdHJ1Y3QgYXRoMTBrICphciwKPiAgICAgICAg
-IGlmIChudW1fcGVlcl9zdGF0cykgewo+ICAgICAgICAgICAgICAgICBzdHJ1Y3Qgd21pX3BlZXJf
-c3RhdHNfMTB4ICpwZWVyX3N0YXRzOwo+ICAgICAgICAgICAgICAgICBzdHJ1Y3QgYXRoMTBrX3Bl
-ZXJfc3RhdCAqczsKPiArICAgICAgICAgICAgICAgaW50IGogPSAwOwo+ICsKPiArICAgICAgICAg
-ICAgICAgaWYgKCF0ZXN0X2JpdChBVEgxMEtfRldfRkVBVFVSRV9XTUlfMTBYLCBhci0+ZndfZmVh
-dHVyZXMpICYmCj4gKyAgICAgICAgICAgICAgICAgICAhbnVtX3BkZXZfc3RhdHMpIHsKPiArICAg
-ICAgICAgICAgICAgICAgICAgICBqID0gMzsKPiArICAgICAgICAgICAgICAgICAgICAgICBudW1f
-cGVlcl9zdGF0cyArPSAzOwo+ICsgICAgICAgICAgICAgICB9Cj4KPiAgICAgICAgICAgICAgICAg
-c3RhdHMtPnBlZXJzID0gbnVtX3BlZXJfc3RhdHM7Cj4KPiAtICAgICAgICAgICAgICAgZm9yIChp
-ID0gMDsgaSA8IG51bV9wZWVyX3N0YXRzOyBpKyspIHsKPiArICAgICAgICAgICAgICAgZm9yIChp
-ID0gajsgaSA8IG51bV9wZWVyX3N0YXRzOyBpKyspIHsKPiAgICAgICAgICAgICAgICAgICAgICAg
-ICBwZWVyX3N0YXRzID0gKHN0cnVjdCB3bWlfcGVlcl9zdGF0c18xMHggKil0bXA7Cj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgcyA9ICZzdGF0cy0+cGVlcl9zdGF0W2ldOwoKSSBzdXBwb3NlIHRo
-ZXJlJ3MgYSBsaW1pdCBob3cgbXVjaCBwZWVyIGVudHJpZXMgZmlybXdhcmUgaXMgYWJsZSB0bwpw
-YWNrIHVwIGludG8gYSBzaW5nbGUgZXZlbnQuIFRoZSBzZWNvbmQgZXZlbnQgeW91IGhhbmRsZSBo
-ZXJlIGlzIHN0aWxsCmdvaW5nIHRvIGhhdmUgc29tZSBzb3J0IG9mIGEgbGltaXQgYW5kIHlvdSds
-bCBlbmQgdXAgZHJvcHBpbmcgcmVzdWx0cwphZ2Fpbi4gVGhlIHNhbWUgcHJvYmFibHkgZ29lcyB3
-aXRoIHZkZXYgc3RhdHMgKHdoaWNoIGFyZW4ndCBoYW5kbGVkCnlldCwgYnV0IGhleSkuCgpJIHRo
-aW5rIGEgYmV0dGVyIGFwcHJvYWNoIHdvdWxkIGJlIHRvIG1ha2UgcmVhZF90YXJnZXRfc3RhdHMg
-KmFwcGVuZCoKZGF0YSB0byB0aGUgc3RhdHMgc3RydWN0dXJlIGFuZCBtYWtlIGF0aDEwayB3YWl0
-IGZvciBtb3JlIHBvc3NpYmxlCmV2ZW50cyBpbnN0ZWFkIG9mIGJlaW5nIHNhdGlzZmllZCB3aXRo
-IGp1c3Qgb25lLgoKVGhlIHdheSB5b3UgZG8gaXQgbm93IHNlZW1zIGxpa2UgeW91IGVuZCB1cCB3
-aXRoIHRoZSBleHRyYSByZXN1bHRzCmJlaW5nIHNob3duIHVwb24gKm5leHQqIHN0YXQgcmVxdWVz
-dC1yZXNwb25zZS4uIGkuZS4geW91IHNlZSBvbGQKcmVzdWx0cy4KCgpNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi, Michal
+
+> I suppose there's a limit how much peer entries firmware is able to
+> pack up into a single event. The second event you handle here is still
+> going to have some sort of a limit and you'll end up dropping results
+> again. The same probably goes with vdev stats (which aren't handled
+> yet, but hey).
+
+vdev stats is not supported by firmware 999.999.0.636, am I right?
+BTW, I also saw that the same happen to latest AP firmware whenever
+the peer stats is more than 1. But since the first peer stats is self
+stats, so it is ok to overwrite it.
+
+> I think a better approach would be to make read_target_stats *append*
+> data to the stats structure and make ath10k wait for more possible
+> events instead of being satisfied with just one.
+>
+> The way you do it now seems like you end up with the extra results
+> being shown upon *next* stat request-response.. i.e. you see old
+> results.
+
+Will take a look on this.
+
+----
+Chun-Yeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
