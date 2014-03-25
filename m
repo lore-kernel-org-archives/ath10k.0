@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSTdk-0000He-CI
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 15:51:48 +0000
-Message-ID: <5331A5FE.6000801@candelatech.com>
-Date: Tue, 25 Mar 2014 08:51:26 -0700
+ id 1WSTir-0000RL-C8
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 15:57:05 +0000
+Message-ID: <5331A73B.9080803@candelatech.com>
+Date: Tue, 25 Mar 2014 08:56:43 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: How to get tx rate in ath10k?
-References: <5330C701.607@candelatech.com>
- <87ha6m3ejc.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87ha6m3ejc.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 4/4 v2] ath10k:  invalid msdu-id logging
+References: <1395688844-24640-1-git-send-email-greearb@candelatech.com>
+ <1395688844-24640-5-git-send-email-greearb@candelatech.com>
+ <87txam1o70.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87txam1o70.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +25,51 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 03/25/2014 12:47 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
+On 03/25/2014 05:02 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
 > 
->> With Janusz's changes, rx rate and rx-signal appear to be reported
->> correctly.
+>> From: Ben Greear <greearb@candelatech.com>
 >>
->> But, tx-rate is not reported.
+>> Make this message more obvious that it is a serious
+>> problem (will cause tx flush issues, at least).
 >>
->> Anyone have any suggestions for what needs doing to get
->> tx rate properly reported?
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>
+>> v2:  Add this to series, but ordering is not overly important.
+>>
 > 
-> Firmware does not provide this information to the host currently, so
-> this will need firmware changes.
+> [...]
+> 
+>> --- a/drivers/net/wireless/ath/ath10k/txrx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/txrx.c
+>> @@ -58,7 +58,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+>>  		   tx_done->msdu_id, !!tx_done->discard, !!tx_done->no_ack);
+>>  
+>>  	if (tx_done->msdu_id >= htt->max_num_pending_tx) {
+>> -		ath10k_warn("warning: msdu_id %d too big, ignoring\n",
+>> +		ath10k_warn("error: msdu_id %d too big, ignoring\n",
+>>  			    tx_done->msdu_id);
+>>  		return;
+>>  	}
+> 
+> To me any warning is a serious matter, I'm not sure how changing this to
+> message to use "error:" makes any difference?
 
+To me, warning is bad, but probably not critical.  Error would be a failure that
+is not (easily) recovered from.  In the case above, the result of this problem
+would be effectively a reference counting leak that hangs the driver for 5 seconds
+(under rtnl lock, I believe) each time the driver tries to flush.  This will never
+recover until firmware is restarted.
 
-Ok, that was what I suspected.  I'll work on adding it to my
-firmware...
+So, I think it is more of an error than warning, but it is not a big deal
+either way, so feel free to just drop the patch.
 
 Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
