@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSPTx-0001EX-7U
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 11:25:25 +0000
-Received: by mail-ee0-f54.google.com with SMTP id d49so317334eek.27
- for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 04:25:03 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/2] ath10k: ce fixes
-Date: Tue, 25 Mar 2014 12:12:21 +0100
-Message-Id: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
+ id 1WSQ19-00028k-Tn
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 11:59:44 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/4 v2] ath10k:  add debugging for tx-credits usage
+References: <1395688844-24640-1-git-send-email-greearb@candelatech.com>
+Date: Tue, 25 Mar 2014 13:59:12 +0200
+In-Reply-To: <1395688844-24640-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 24 Mar 2014 12:20:40
+ -0700")
+Message-ID: <87y4zy1obz.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,32 +20,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+greearb@candelatech.com writes:
 
-This addresses memory allocations failures
-recently reported by Avery Pennarun.
+> From: Ben Greear <greearb@candelatech.com>
+>
+> This helps track tx credits accounting and usage.  If
+> firmware hangs or otherwise fails to return credits, one
+> can more easily see the last few command types that
+> was sent to the firmware.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>
+> v2:  Improve comments.  Issue of using __LINE__ is not resolved.
 
-
-Michal Kazior (2):
-  ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()
-  ath10k: split ce initialization and allocation
-
- drivers/net/wireless/ath/ath10k/ce.c  | 356 +++++++++++++++++++---------------
- drivers/net/wireless/ath/ath10k/ce.h  |  15 +-
- drivers/net/wireless/ath/ath10k/pci.c |  88 +++++----
- 3 files changed, 264 insertions(+), 195 deletions(-)
+I'm going to drop this patch 1 for now, I'm not really fond of the idea
+using line numbers in debug messages. Hopefully we find an alternative
+solution, like what Michal proposed.
 
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
