@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x22a.google.com ([2607:f8b0:4003:c01::22a])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSNjM-0005ap-GZ
- for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:33:13 +0000
-Received: by mail-ob0-f170.google.com with SMTP id uz6so216436obc.29
- for <ath10k@lists.infradead.org>; Tue, 25 Mar 2014 02:32:49 -0700 (PDT)
+ id 1WSNlk-0005gV-7l
+ for ath10k@lists.infradead.org; Tue, 25 Mar 2014 09:35:41 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: RE : Compilation backport ath10k
+References: <EE97821C81277E459BEA5C6384C6F241012D6BF72CC8@srvexch01.SODIELEC.local>
+ <87lhvy3ewa.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012D6BF72CC9@srvexch01.SODIELEC.local>
+Date: Tue, 25 Mar 2014 11:35:11 +0200
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012D6BF72CC9@srvexch01.SODIELEC.local>
+ (Vu Hai NGUYEN's message of "Tue, 25 Mar 2014 10:12:59 +0100")
+Message-ID: <8738i639kg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20140325091505.16651.15554.stgit@potku.adurom.net>
-References: <20140325091311.16651.15747.stgit@potku.adurom.net>
- <20140325091505.16651.15554.stgit@potku.adurom.net>
-Date: Tue, 25 Mar 2014 10:32:49 +0100
-Message-ID: <CA+BoTQns9QXCctzrMzd5=o6EyA=d0TG-eLJw3hztE1-MD7HwkQ@mail.gmail.com>
-Subject: Re: [PATCH 1/8] ath10k: cleanup ath10k_pci_wait_for_target_init()
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,64 +21,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, backports@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjUgTWFyY2ggMjAxNCAxMDoxNSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4gYXRoMTBrX3BjaV93YWl0X2Zvcl90YXJnZXRfaW5pdCgpIGRpZCByZWFsbHkg
-Zm9sbG93IHRoZSBzdHlsZSB1c2VkIGVsc2V3aGVyZSBpbgo+IGF0aDEway4gVXNlIGF0aDEwa19w
-Y2lfcmVhZC93cml0ZSgpIHdyYXBwZXJzLCBzaW1wbGlmeSB0aGUgd2hpbGUgbG9vcCBhbmQKPiBp
-bXByb3ZlIHdhcm5pbmcgbWVzc2FnZXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxr
-dmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IC0tLQo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL3BjaS5jIHwgICAzMyArKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0KPiAg
-MSBmaWxlIGNoYW5nZWQsIDIwIGluc2VydGlvbnMoKyksIDEzIGRlbGV0aW9ucygtKQo+Cj4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgYi9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gaW5kZXggOWQyNDJkODAxZDlkLi4wNDI1
-Yzc2ZGFmM2YgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
-Y2kuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBAQCAt
-MjM4NSwzMCArMjM4NSwzNyBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfZGVpbml0X2lycShzdHJ1
-Y3QgYXRoMTBrICphcikKPiAgc3RhdGljIGludCBhdGgxMGtfcGNpX3dhaXRfZm9yX3RhcmdldF9p
-bml0KHN0cnVjdCBhdGgxMGsgKmFyKQo+ICB7Cj4gICAgICAgICBzdHJ1Y3QgYXRoMTBrX3BjaSAq
-YXJfcGNpID0gYXRoMTBrX3BjaV9wcml2KGFyKTsKPiAtICAgICAgIGludCB3YWl0X2xpbWl0ID0g
-MzAwOyAvKiAzIHNlYyAqLwo+ICsgICAgICAgY29uc3QgaW50IHdhaXQgPSAzMDAwOyAvKiBtcyAq
-LwoKV2UgcHJvYmFibHkgc2hvdWxkIGhhdmUgYSAjZGVmaW5lIGZvciB0aGlzLgoKCj4gKyAgICAg
-ICB1bnNpZ25lZCBsb25nIHRpbWVvdXQ7Cj4gICAgICAgICBpbnQgcmV0Owo+ICsgICAgICAgdTMy
-IHZhbDsKPgo+ICAgICAgICAgcmV0ID0gYXRoMTBrX3BjaV93YWtlKGFyKTsKPiAgICAgICAgIGlm
-IChyZXQpIHsKPiAtICAgICAgICAgICAgICAgYXRoMTBrX2VycigiZmFpbGVkIHRvIHdha2UgdXAg
-dGFyZ2V0OiAlZFxuIiwgcmV0KTsKPiArICAgICAgICAgICAgICAgYXRoMTBrX2VycigiZmFpbGVk
-IHRvIHdha2UgdXAgdGFyZ2V0IGZvciBpbml0OiAlZFxuIiwgcmV0KTsKPiAgICAgICAgICAgICAg
-ICAgcmV0dXJuIHJldDsKPiAgICAgICAgIH0KPgo+IC0gICAgICAgd2hpbGUgKHdhaXRfbGltaXQt
-LSAmJgo+IC0gICAgICAgICAgICAgICEoaW9yZWFkMzIoYXJfcGNpLT5tZW0gKyBGV19JTkRJQ0FU
-T1JfQUREUkVTUykgJgo+IC0gICAgICAgICAgICAgICAgRldfSU5EX0lOSVRJQUxJWkVEKSkgewo+
-ICsgICAgICAgdGltZW91dCA9IGppZmZpZXMgKyBtc2Vjc190b19qaWZmaWVzKHdhaXQpOwo+ICsK
-PiArICAgICAgIGRvIHsKPiArICAgICAgICAgICAgICAgdmFsID0gYXRoMTBrX3BjaV9yZWFkMzIo
-YXIsIEZXX0lORElDQVRPUl9BRERSRVNTKTsKPiArICAgICAgICAgICAgICAgaWYgKHZhbCA9PSBG
-V19JTkRfSU5JVElBTElaRUQpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gKwoK
-SXQgbWlnaHQgYmUgd29ydGggdG8gYWRkOgoKIGlmICh2YWwgPT0gMHhGRkZGRkZGRikKICAgcmV0
-dXJuIC1FSU87CgoKPiAgICAgICAgICAgICAgICAgaWYgKGFyX3BjaS0+bnVtX21zaV9pbnRycyA9
-PSAwKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIC8qIEZpeCBwb3RlbnRpYWwgcmFjZSBieSBy
-ZXBlYXRpbmcgQ09SRV9CQVNFIHdyaXRlcyAqLwo+IC0gICAgICAgICAgICAgICAgICAgICAgIGlv
-d3JpdGUzMihQQ0lFX0lOVFJfRklSTVdBUkVfTUFTSyB8Cj4gLSAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIFBDSUVfSU5UUl9DRV9NQVNLX0FMTCwKPiAtICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgYXJfcGNpLT5tZW0gKyAoU09DX0NPUkVfQkFTRV9BRERSRVNTIHwKPiAt
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9JTlRS
-X0VOQUJMRV9BRERSRVNTKSk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3BjaV9z
-b2Nfd3JpdGUzMihhciwgUENJRV9JTlRSX0VOQUJMRV9BRERSRVNTLAo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9JTlRSX0ZJUk1XQVJFX01BU0sg
-fAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgUENJRV9J
-TlRSX0NFX01BU0tfQUxMKTsKPiArCj4gICAgICAgICAgICAgICAgIG1kZWxheSgxMCk7Cj4gLSAg
-ICAgICB9Cj4gKyAgICAgICB9IHdoaWxlICh0aW1lX2JlZm9yZShqaWZmaWVzLCB0aW1lb3V0KSk7
-Cj4KPiAtICAgICAgIGlmICh3YWl0X2xpbWl0IDwgMCkgewo+IC0gICAgICAgICAgICAgICBhdGgx
-MGtfZXJyKCJ0YXJnZXQgc3RhbGxlZFxuIik7Cj4gLSAgICAgICAgICAgICAgIHJldCA9IC1FSU87
-Cj4gKyAgICAgICBpZiAodmFsICE9IEZXX0lORF9JTklUSUFMSVpFRCkgewo+ICsgICAgICAgICAg
-ICAgICBhdGgxMGtfZXJyKCJmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFsaXplZCBldmVudCBmcm9t
-IHRhcmdldCBhZnRlciAlZCBtczogJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-d2FpdCwgdmFsKTsKCmB2YWxgIGlzIHUzMiBzbyBpdCBzaG91bGRuJ3QgYmUgJWQuICUwOHggbWFr
-ZXMgbW9zdCBzZW5zZSBJIGd1ZXNzLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
+
+> After 3 steps above I can obtain 6 module .ko of the driver ath10k
+> which have vermagic: 3.2.55
+>
+> Now when I try to compile ath10k on the kernel 3.2.36 (provided by
+> marvell for my pc cible), I repeat 3 steps above but there is some
+> warnings in 3th step when I run the command make (you can see it below
+> my signature) and I obtain only 2 modules: cfg80211.ko compat.ko
+>
+> So I supposs that the my kernel 3.2.36 provided from marvell miss
+> library to compiled ath10k. Do you guys have some ideas how to fix it?
+
+[...]
+
+> .config:142:warning: symbol value 'm' invalid for OPROFILE
+> .config:497:warning: symbol value 'm' invalid for INET_TUNNEL
+> .config:498:warning: symbol value 'm' invalid for INET_XFRM_MODE_TRANSPORT
+> .config:499:warning: symbol value 'm' invalid for INET_XFRM_MODE_TUNNEL
+> .config:500:warning: symbol value 'm' invalid for INET_XFRM_MODE_BEET
+> .config:502:warning: symbol value 'm' invalid for INET_DIAG
+
+Thank you, I understand the problem much better now. I'm no backports
+expert so I can't really help with this but I'm guessing that the vendor
+kernel contains changes which break backports, just like you said.
+
+You might get better help from the backports mailing list, CCed. For
+people new to the thread, here's the link to the original mail.
+
+http://lists.infradead.org/pipermail/ath10k/2014-March/001595.html
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
