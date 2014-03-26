@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSk8Y-0007eG-4Z
- for ath10k@lists.infradead.org; Wed, 26 Mar 2014 09:28:42 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/8] ath10k: cleanup ath10k_pci_wait_for_target_init()
+ id 1WSkWU-0008Ij-7r
+ for ath10k@lists.infradead.org; Wed, 26 Mar 2014 09:53:27 +0000
+Received: by mail-wi0-f179.google.com with SMTP id f8so1648318wiw.0
+ for <ath10k@lists.infradead.org>; Wed, 26 Mar 2014 02:52:59 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87lhvxz4up.fsf@kamboji.qca.qualcomm.com>
 References: <20140325091311.16651.15747.stgit@potku.adurom.net>
  <20140325091505.16651.15554.stgit@potku.adurom.net>
  <CA+BoTQns9QXCctzrMzd5=o6EyA=d0TG-eLJw3hztE1-MD7HwkQ@mail.gmail.com>
-Date: Wed, 26 Mar 2014 11:28:14 +0200
-In-Reply-To: <CA+BoTQns9QXCctzrMzd5=o6EyA=d0TG-eLJw3hztE1-MD7HwkQ@mail.gmail.com>
- (Michal Kazior's message of "Tue, 25 Mar 2014 10:32:49 +0100")
-Message-ID: <87lhvxz4up.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87lhvxz4up.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 26 Mar 2014 10:52:59 +0100
+Message-ID: <CA+BoTQ=N_L53c2Pgw3RQYcJx4-xp9fSOYvbeEUHgFCtSoP3QRA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] ath10k: cleanup ath10k_pci_wait_for_target_init()
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,81 +23,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 25 March 2014 10:15, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> ath10k_pci_wait_for_target_init() did really follow the style used elsewhere in
->> ath10k. Use ath10k_pci_read/write() wrappers, simplify the while loop and
->> improve warning messages.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/pci.c |   33 ++++++++++++++++++++-------------
->>  1 file changed, 20 insertions(+), 13 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
->> index 9d242d801d9d..0425c76daf3f 100644
->> --- a/drivers/net/wireless/ath/ath10k/pci.c
->> +++ b/drivers/net/wireless/ath/ath10k/pci.c
->> @@ -2385,30 +2385,37 @@ static int ath10k_pci_deinit_irq(struct ath10k *ar)
->>  static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
->>  {
->>         struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
->> -       int wait_limit = 300; /* 3 sec */
->> +       const int wait = 3000; /* ms */
->
-> We probably should have a #define for this.
-
-Yeah, I'll change that.
-
->> -       while (wait_limit-- &&
->> -              !(ioread32(ar_pci->mem + FW_INDICATOR_ADDRESS) &
->> -                FW_IND_INITIALIZED)) {
->> +       timeout = jiffies + msecs_to_jiffies(wait);
->> +
->> +       do {
->> +               val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
->> +               if (val == FW_IND_INITIALIZED)
->> +                       break;
->> +
->
-> It might be worth to add:
->
->  if (val == 0xFFFFFFFF)
->    return -EIO;
-
-What does receiving 0xFFFFFFFF mean here? PCI bus kaput?
-
-Do we really want to stop trying after receiving that? What harm would
-it cause to keep on trying? We would return an error anyway after the
-timeout, right?
-
->> +       } while (time_before(jiffies, timeout));
->>
->> -       if (wait_limit < 0) {
->> -               ath10k_err("target stalled\n");
->> -               ret = -EIO;
->> +       if (val != FW_IND_INITIALIZED) {
->> +               ath10k_err("failed to receive initialized event from target after %d ms: %d\n",
->> +                          wait, val);
->
-> `val` is u32 so it shouldn't be %d. %08x makes most sense I guess.
-
-I'll change it.
-
-Thanks for the review!
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjYgTWFyY2ggMjAxNCAxMDoyOCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
+czoKClsuLi5dCgo+Pj4gLSAgICAgICB3aGlsZSAod2FpdF9saW1pdC0tICYmCj4+PiAtICAgICAg
+ICAgICAgICAhKGlvcmVhZDMyKGFyX3BjaS0+bWVtICsgRldfSU5ESUNBVE9SX0FERFJFU1MpICYK
+Pj4+IC0gICAgICAgICAgICAgICAgRldfSU5EX0lOSVRJQUxJWkVEKSkgewo+Pj4gKyAgICAgICB0
+aW1lb3V0ID0gamlmZmllcyArIG1zZWNzX3RvX2ppZmZpZXMod2FpdCk7Cj4+PiArCj4+PiArICAg
+ICAgIGRvIHsKPj4+ICsgICAgICAgICAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3JlYWQzMihhciwg
+RldfSU5ESUNBVE9SX0FERFJFU1MpOwo+Pj4gKyAgICAgICAgICAgICAgIGlmICh2YWwgPT0gRldf
+SU5EX0lOSVRJQUxJWkVEKQo+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7CgpBaCwg
+Zm9yIHNvbWUgcmVhc29uIEkndmUgbWlzc2VkIHRoaXMgZWFybGllci4gWW91IHNlZW0gdG8gcmVw
+bGFjZSAmCndpdGggPT0uIEkgd29uZGVyIGlmIHRoYXQncyBva2F5PwoKRlcgaW5kaWNhdG9yIG1h
+eSBjb250YWluIEZXX0lORF9FVkVOVF9QRU5ESU5HIChpLmUuIGZpcm13YXJlIGNyYXNoZWQKYml0
+KSB0b28uIEl0IG1pZ2h0IGJlIGEgZ29vZCBpZGVhIHRvIGNoZWNrIGZvciB0aGF0IHRvbyBhbmQg
+cmV0dXJuIGEKZGlmZmVyZW50IGVycm5vPwoKCj4+PiArCj4+Cj4+IEl0IG1pZ2h0IGJlIHdvcnRo
+IHRvIGFkZDoKPj4KPj4gIGlmICh2YWwgPT0gMHhGRkZGRkZGRikKPj4gICAgcmV0dXJuIC1FSU87
+Cj4KPiBXaGF0IGRvZXMgcmVjZWl2aW5nIDB4RkZGRkZGRkYgbWVhbiBoZXJlPyBQQ0kgYnVzIGth
+cHV0PwoKQSBzaW1wbGUgZ3JlcHBpbmcgKGZpbmQgZHJpdmVycy9uZXQvZXRoZXJuZXQvIC10eXBl
+IGYgLW5hbWUgJyouW2NoXScgfAp4YXJncyBncmVwIC1uQzUgaW9yZWFkMzIgfCBncmVwIC1DNSAt
+aSAweGZmZmZmZmZmKSB0dXJucyBvdXQgcmVzdWx0cwpsaWtlIHRoaXM6CgogZHJpdmVycy9uZXQv
+ZXRoZXJuZXQvY2lzY28vZW5pYy92bmljX3JxLmMtMjAwLSAgfQogZHJpdmVycy9uZXQvZXRoZXJu
+ZXQvY2lzY28vZW5pYy92bmljX3JxLmMtMjAxLQogZHJpdmVycy9uZXQvZXRoZXJuZXQvY2lzY28v
+ZW5pYy92bmljX3JxLmMtMjAyLSAgLyogVXNlIGN1cnJlbnQKZmV0Y2hfaW5kZXggYXMgdGhlIHJp
+bmcgc3RhcnRpbmcgcG9pbnQgKi8KIGRyaXZlcnMvbmV0L2V0aGVybmV0L2Npc2NvL2VuaWMvdm5p
+Y19ycS5jOjIwMzogIGZldGNoX2luZGV4ID0KaW9yZWFkMzIoJnJxLT5jdHJsLT5mZXRjaF9pbmRl
+eCk7CiBkcml2ZXJzL25ldC9ldGhlcm5ldC9jaXNjby9lbmljL3ZuaWNfcnEuYy0yMDQtCiBkcml2
+ZXJzL25ldC9ldGhlcm5ldC9jaXNjby9lbmljL3ZuaWNfcnEuYy0yMDUtICBpZiAoZmV0Y2hfaW5k
+ZXggPT0KMHhGRkZGRkZGRikgeyAvKiBjaGVjayBmb3IgaGFyZHdhcmUgZ29uZSAgKi8KIGRyaXZl
+cnMvbmV0L2V0aGVybmV0L2Npc2NvL2VuaWMvdm5pY19ycS5jLTIwNi0gICAgICAgICAgLyogSGFy
+ZHdhcmUKc3VycHJpc2UgcmVtb3ZhbDogcmVzZXQgZmV0Y2hfaW5kZXggKi8KIGRyaXZlcnMvbmV0
+L2V0aGVybmV0L2Npc2NvL2VuaWMvdm5pY19ycS5jLTIwNy0gICAgICAgICAgZmV0Y2hfaW5kZXgg
+PSAwOwogZHJpdmVycy9uZXQvZXRoZXJuZXQvY2lzY28vZW5pYy92bmljX3JxLmMtMjA4LSAgfQoK
+Cj4gRG8gd2UgcmVhbGx5IHdhbnQgdG8gc3RvcCB0cnlpbmcgYWZ0ZXIgcmVjZWl2aW5nIHRoYXQ/
+IFdoYXQgaGFybSB3b3VsZAo+IGl0IGNhdXNlIHRvIGtlZXAgb24gdHJ5aW5nPyBXZSB3b3VsZCBy
+ZXR1cm4gYW4gZXJyb3IgYW55d2F5IGFmdGVyIHRoZQo+IHRpbWVvdXQsIHJpZ2h0PwoKWWVzLiBJ
+dCdzIGhhcm1sZXNzIGJ1dCBoYXZpbmcgdGhlIGNoZWNrIGFsbG93cyB0byBkaXNjZXJuIGEgcmVh
+bAp0aW1lb3V0ICh0YXJnZXQgZG9lc24ndCB3YWtlIHVwIGZvciBzb21lIHJlYXNvbikgYW5kIGEg
+cGNpLWUgbGluawppc3N1ZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
