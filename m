@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from userp1040.oracle.com ([156.151.31.81])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSmCV-00030L-TQ
- for ath10k@lists.infradead.org; Wed, 26 Mar 2014 11:40:56 +0000
-Date: Wed, 26 Mar 2014 14:40:22 +0300
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2] ath10k: add soft/hard firmware crash option to
- simulate_fw_crash
-Message-ID: <20140326114021.GK7045@mwanda>
-References: <20140313082431.10798.10888.stgit@potku.adurom.net>
- <87pplih81g.fsf@kamboji.qca.qualcomm.com>
- <20140321143737.GA5140@mwanda>
- <8738i64voh.fsf@kamboji.qca.qualcomm.com>
+ id 1WSp0M-0000bl-Fw
+ for ath10k@lists.infradead.org; Wed, 26 Mar 2014 14:40:35 +0000
+Message-ID: <5332E6C6.7040700@candelatech.com>
+Date: Wed, 26 Mar 2014 07:40:06 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8738i64voh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: Add debugging for tx-credits usage.
+References: <1395428150-31996-1-git-send-email-greearb@candelatech.com>	<871txr7svw.fsf@kamboji.qca.qualcomm.com>	<CA+BoTQmquq7dXTV0sSV1mJ0+8-9OuiCnqz2iN8VNO4J3iaeexQ@mail.gmail.com>	<53306239.2020006@candelatech.com>	<CA+BoTQkCmJbvQjZ3vTV7AP1EwdcH_pAd0pex_v9bZDzwZdufbw@mail.gmail.com>	<53319D65.4090907@candelatech.com>
+ <CA+BoTQnMmwsz0438yVrP_bQ-AKZaoktW7NrGAODVEx4w21-dEA@mail.gmail.com>
+In-Reply-To: <CA+BoTQnMmwsz0438yVrP_bQ-AKZaoktW7NrGAODVEx4w21-dEA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +19,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Mar 25, 2014 at 08:52:14AM +0200, Kalle Valo wrote:
-> Dan Carpenter <dan.carpenter@oracle.com> writes:
-> 
-> >> drivers/net/wireless/ath/ath10k/debug.c:500 ath10k_write_simulate_fw_crash() error: strncmp() '"hard"' too small (5 vs 32)
-> >> drivers/net/wireless/ath/ath10k/debug.c:497 ath10k_write_simulate_fw_crash() error: strncmp() '"soft"' too small (5 vs 32)
-> >> 
-> >> I wanted to use strncmp() instead of strcmp(), but I'm not sure what to
-> >> do here. In my opinion it's guaranteed that the string "hard" is null
-> >> terminated, so it shouldn't matter even if strlen("soft") (5) is less
-> >> than sizeof(buf) (32), right? Or am I missing something here?
-> >> 
-> >
-> > I am on vacation until next week.  I didn't think these particular
-> > emails went out automatically.
-> 
-> Actually that's true. Fengguang's bot sends me a build report after
-> every build and I saw these warnings in that report.
-> 
-> > Anyway, I have changed this in the latest smatch but it will take some
-> > months for the kbuild bot to update.
-> >
-> > http://repo.or.cz/w/smatch.git/commitdiff/f10f27a7612c5b1e69b5d9080a0194d012beb6aa
-> >
-> > I'll take a closer look next week.
-> 
-> Thanks!
-
-Actually I was just looking for why the email went out but you already
-answered the question.  Eventually, this warning will go away when the
-build-bot updates.  (It's sort of painful to update because Smatch
-doesn't have stable releases).
-
-regards,
-dan carpenter
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDMvMjYvMjAxNCAxMjoxOCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyNSBNYXJj
+aCAyMDE0IDE2OjE0LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6
+Cj4+IE9uIDAzLzI1LzIwMTQgMTI6MjcgQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Pgo+Pj4g
+T24gMjQgTWFyY2ggMjAxNCAxNzo1MCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+IHdyb3RlOgo+Pj4+Cj4+Pj4gT24gMDMvMjQvMjAxNCAwNDoyMSBBTSwgTWljaGFsIEthemlv
+ciB3cm90ZToKPj4+Pj4KPj4+Pj4gT24gMjQgTWFyY2ggMjAxNCAxMjoxMiwgS2FsbGUgVmFsbyA8
+a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+Pj4KPj4+Pgo+Pj4+Pj4+IC0gICAgIHN0
+YXR1cyA9IGF0aDEwa19odGNfc2VuZChodGMsIEFUSDEwS19IVENfRVBfMCwgc2tiKTsKPj4+Pj4+
+PiArICAgICBzdGF0dXMgPSBhdGgxMGtfaHRjX3NlbmQoaHRjLCBBVEgxMEtfSFRDX0VQXzAsIHNr
+YiwgX19MSU5FX18pOwo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+PiBVc2luZyBsaW5lIG51bWJlcnMgaW4g
+ZGVidWcgbWVzc2FnZXMgaXMgdmVyeSBjdW1iZXJzb21lLiBTb21lIHBlb3BsZQo+Pj4+Pj4gY2hl
+cnJ5IHBpY2sgcGF0Y2hlcywgaGF2ZSB0aGVpciBvd24gY2hhbmdlcyBhbmQgd2hhdG5vdCB3aGlj
+aCB3aWxsIG1ha2UKPj4+Pj4+IGl0IG1vcmUgZGlmZmljdWx0IHRvIHJlYWQgdGhlIGRlYnVnIGxv
+Z3MuIElzbid0IHRoZXJlIGFueSBiZXR0ZXIgd2F5IHRvCj4+Pj4+PiBkbyB0aGlzPwo+Pj4+Pgo+
+Pj4+Pgo+Pj4+PiBJIHdvdWxkIHByZWZlciB0byBleHBsaWNpdGx5IHdhaXQgZm9yIHR4IGNyZWRp
+dCByZXBsZW5pc2htZW50IGluCj4+Pj4+IGF0aDEwa193bWlfY21kX3NlbmQoKSBhZnRlciBhIGNv
+bW1hbmQgaXMgc2VudCBpbnN0ZWFkIG9mIGFsbCB0aGVzZQo+Pj4+PiBwcmludHMuIFRoaXMgd2F5
+IHlvdSBjYW4gZ2V0IGEgZnVsbCBjYWxsIHRyYWNlIGlmIGl0IHRpbWVzIG91dC4KPj4+Pgo+Pj4+
+Cj4+Pj4gV291bGQgdGhhdCBiZSBhIHBlcmZvcm1hbmNlIHByb2JsZW0gKGJ5IGVmZmVjdGl2ZWx5
+IGFsbG93aW5nIG9ubHkgYQo+Pj4+IHNpbmdsZQo+Pj4+IGl0ZW0gdG8gYmUgc2VudCB0byB0aGUg
+ZmlybXdhcmUgYXQgYW55IGdpdmVuIHRpbWU/KQo+Pj4KPj4+Cj4+PiBUaGUgb25seSB0aGluZyB0
+aGF0IG1heSBzdWZmZXIgaGVyZSBpcyB3bWkgbWdtdCB0eCBidXQgSSB3b3VsZG4ndAo+Pj4gY29u
+c2lkZXIgdGhhdCBwZXJmb3JtYW5jZSBjcml0aWNhbC4KPj4KPj4KPj4gSW4gdGhhdCBjYXNlLCB3
+aHkgdXNlIGNyZWRpdHMgYXQgYWxsPwo+Cj4gRXhjZWxsZW50IHF1ZXN0aW9uLgo+Cj4gRmlybXdh
+cmUgcHJvdmlkZXMgMiBIVEMgdHggY3JlZGl0cyBmb3IgV01JLiBJIGd1ZXNzIHRoaXMgaXMgb24K
+PiBwdXJwb3NlLiBJIGltYWdpbmUgV01JIG1nbXQgdHggY2FuIGhhbmcgKGkuZS4gbm90IHJlcGxl
+bmlzaCB0eAo+IGNyZWRpdHMpLiBJbiB0aGF0IGNhc2UgdGhlIHJlbWFpbmluZyB0eCBjcmVkaXQg
+Y291bGQgYmUgdXNlZCB0byB0cnkKPiByZWNvdmVyaW5nLCBlLmcuIGRvd24vc3RvcCB2ZGV2IChJ
+IHRoaW5rIGl0IHNob3VsZCBkcm9wIGFsbCBwZW5kaW5nIHR4Cj4gYW5kIHRodXMgZnJlZSB0aGUg
+c3R1Y2sgSFRDIHR4IGNyZWRpdCkuCj4KPiBJdCBtaWdodCBiZSBhIGdvb2QgaWRlYSB0byBrZWVw
+IHRoaXMgcmVjb3Zlcnkgc3RyYXRlZ3kgaW4gbWluZCB3aGVuCj4gaW1wbGVtZW50aW5nIHRoZSAi
+d2FpdCBmb3IgdHggcmVwbGVuaXNobWVudCIgd21pIHR4IGJsb2NraW5nLgoKU2VlbXMgdG8gbWUg
+d2Ugc2hvdWxkIGp1c3QgZml4IHRoZSBmaXJtd2FyZSB0byByZXNwb25kIHF1aWNrbHkuLmFuZCBp
+ZiB3ZSBrbm93IGV4YWN0bHkgd2hpY2gKY29tbWFuZCBpcyBub3QgYmVpbmcgYW5zd2VyZWQgKHF1
+aWNrbHkpIGluIHRoZSBmaXJtd2FyZSwgaXQgbWlnaHQgYmUgZWFzaWVyIHRvIGRlYnVnCml0LgoK
+VGhhdCBzYWlkLCB3aGlsZSBkZWJ1Z2dpbmcgSSB0aGluayBJIGhhdmUgc2VlbiBjYXNlcyB3aGVy
+ZSBvbmUgbWVzc2FnZSB3b3VsZApiZSBjb25zdW1lZCBmb3IgYSBsb25nIHRpbWUsIGFuZCB0aGVu
+IHN1ZGRlbmx5IGl0IGZyZWVzIHVwIGFnYWluLgoKU28sIEknbSBub3Qgc3VyZSB3aGF0IHRvIGRv
+LiAgTWF5YmUgY291bGQgaW1wcm92ZSBmaXJtd2FyZSB0byByZXR1cm4gYW4gaWQKc28gd2Uga25v
+dyBleGFjdGx5IHdoaWNoIG9mIHRoZSBtZXNzYWdlcyB3YXMgcHJvY2Vzc2VkLCBhbmQgdGhlbiB0
+aGUgZHJpdmVyCmNvdWxkIGRvIHRoZSB3b3JrIG9mIGZpZ3VyaW5nIG91dCB3aGF0IGNvbW1hbmRz
+IGFyZSBvdXRzdGFuZGluZyBieSBqdXN0IGtlZXBpbmcKYSBjb3B5IGluIFJBTS4uLi4KClRoYW5r
+cywKQmVuCgo+Cj4KPiBNaWNoYcWCCj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
+dGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVj
+aC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
