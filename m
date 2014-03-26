@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-f169.google.com ([74.125.82.169])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WSkiU-0000Db-W1
- for ath10k@lists.infradead.org; Wed, 26 Mar 2014 10:05:51 +0000
-Received: by mail-we0-f169.google.com with SMTP id w62so971082wes.28
- for <ath10k@lists.infradead.org>; Wed, 26 Mar 2014 03:05:26 -0700 (PDT)
+ id 1WSljS-00021A-2i
+ for ath10k@lists.infradead.org; Wed, 26 Mar 2014 11:10:55 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/8] ath10k: cleanup ath10k_pci_wait_for_target_init()
+References: <20140325091311.16651.15747.stgit@potku.adurom.net>
+ <20140325091505.16651.15554.stgit@potku.adurom.net>
+ <CA+BoTQns9QXCctzrMzd5=o6EyA=d0TG-eLJw3hztE1-MD7HwkQ@mail.gmail.com>
+ <87lhvxz4up.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=N_L53c2Pgw3RQYcJx4-xp9fSOYvbeEUHgFCtSoP3QRA@mail.gmail.com>
+Date: Wed, 26 Mar 2014 13:10:11 +0200
+In-Reply-To: <CA+BoTQ=N_L53c2Pgw3RQYcJx4-xp9fSOYvbeEUHgFCtSoP3QRA@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 26 Mar 2014 10:52:59 +0100")
+Message-ID: <87ha6lz04s.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87ppl9z54w.fsf@kamboji.qca.qualcomm.com>
-References: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
- <1395745943-29492-3-git-send-email-michal.kazior@tieto.com>
- <87ppl9z54w.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 26 Mar 2014 11:05:23 +0100
-Message-ID: <CA+BoTQnMZ+B0nC_MdYqKk6z1wH-bK47vE+Uknqnv+FpJRKaRjA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: split ce initialization and allocation
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +23,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjYgTWFyY2ggMjAxNCAxMDoyMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
-czoKPgo+PiBEZWZpbml0aW9ucyBieSB3aGljaCBjb3B5IGVuZ2luZSBzdHJ1Y3R1cmUgYXJlCj4+
-IGFsbG9jYXRlZCBkbyBub3QgY2hhbmdlIHNvIGl0IGRvZXNuJ3QgbWFrZSBtdWNoCj4+IHNlbnNl
-IHRvIHJlLWNyZWF0ZSB0aG9zZSBzdHJ1Y3R1cmVzIGVhY2ggdGltZQo+PiBkZXZpY2UgaXMgYm9v
-dGVkIChlLmcuIGR1ZSB0byBmaXJtd2FyZSByZWNvdmVyeSkuCj4+Cj4+IFRoaXMgc2hvdWxkIGRl
-Y3JlYXNlIGNoYW5jZSBvZiBtZW1vcnkgYWxsb2NhdGlvbgo+PiBmYWlsdXJlcy4KPj4KPj4gUmVw
-b3J0ZWQtQnk6IEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5jb20+Cj4+IFNpZ25lZC1v
-ZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Cj4gWy4uLl0K
-Pgo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NlLmgKPj4gKysrIGIv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jZS5oCj4+IEBAIC0xMDQsNyArMTA0LDgg
-QEAgc3RydWN0IGF0aDEwa19jZV9yaW5nIHsKPj4gICAgICAgdm9pZCAqc2hhZG93X2Jhc2VfdW5h
-bGlnbmVkOwo+PiAgICAgICBzdHJ1Y3QgY2VfZGVzYyAqc2hhZG93X2Jhc2U7Cj4+Cj4+IC0gICAg
-IHZvaWQgKipwZXJfdHJhbnNmZXJfY29udGV4dDsKPj4gKyAgICAgLyoga2VlcCBsYXN0ICovCj4+
-ICsgICAgIHZvaWQgKnBlcl90cmFuc2Zlcl9jb250ZXh0WzBdOwo+PiAgfTsKPgo+IElmIHBvc3Np
-YmxlLCBJIHdvdWxkIHByZWZlciB0byBoYXZlIGNoYW5nZXMgbGlrZSB0aGlzIGluIGEgc2VwYXJh
-dGUKPiBwYXRjaCBhcyBpdCBtYWtlcyBlYXNpZXIgdG8gcmV2aWV3LiBPciBhdCBsZWFzdCBtZW50
-aW9uIHRoZSBjaGFuZ2UgaW4KPiB0aGUgY29tbWl0IGxvZy4KClRoZSBwYXRjaCBhbHJlYWR5IGFs
-dGVycyB0aGUgYWxsb2NhdGlvbiBjb2RlIHNvIEkgdGhvdWdodCBJJ2Qgc3F1YXNoCnRoaXMgaGVy
-ZS4gWW91IHdhbnQgbWUgdG8ganVzdCB1cGRhdGUgdGhlIGNvbW1pdCBsb2cgb3Igc3BsaXQgaXQg
-dXA/CgoKPj4gQEAgLTIwMTgsOSArMjAyOSw5IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19wY2lfaGlm
-X3Bvd2VyX2Rvd24oc3RydWN0IGF0aDEwayAqYXIpCj4+ICAgICAgIGF0aDEwa19wY2lfZnJlZV9l
-YXJseV9pcnEoYXIpOwo+PiAgICAgICBhdGgxMGtfcGNpX2tpbGxfdGFza2xldChhcik7Cj4+ICAg
-ICAgIGF0aDEwa19wY2lfZGVpbml0X2lycShhcik7Cj4+ICsgICAgIGF0aDEwa19wY2lfY2VfZGVp
-bml0KGFyKTsKPj4gICAgICAgYXRoMTBrX3BjaV93YXJtX3Jlc2V0KGFyKTsKPj4KPj4gLSAgICAg
-YXRoMTBrX3BjaV9jZV9kZWluaXQoYXIpOwo+PiAgICAgICBpZiAoIXRlc3RfYml0KEFUSDEwS19Q
-Q0lfRkVBVFVSRV9TT0NfUE9XRVJfU0FWRSwgYXJfcGNpLT5mZWF0dXJlcykpCj4+ICAgICAgICAg
-ICAgICAgYXRoMTBrX2RvX3BjaV9zbGVlcChhcik7Cj4+ICB9Cj4KPiBXaHkgdGhpcz8KCmF0aDEw
-a19wY2lfY2VfZGVpbml0KCkgemVyb2VzIGNvcHkgZW5naW5lIHJlZ2lzdGVycyBub3cgc28gSSB0
-aG91Z2h0Cml0J3MgbmljZSB0byBoYXZlIHRoaXMgZG9uZSBiZWZvcmUgcmVzZXQuCgpCZWZvcmUg
-YXRoMTBrX3BjaV9jZV9kZWluaXQoKSBmcmVlZCBtZW1vcnkgc28gaXQgd2FzIHJlcXVpcmVkIHRv
-IHJlc2V0CnRoZSBkZXZpY2UgYmVmb3JlaGFuZC4gT3RoZXJ3aXNlIHlvdSByaXNrZWQgZGV2aWNl
-IGFjY2Vzc2luZyBtZW1vcnkKdGhhdCB3YXNuJ3QgbWFwcGVkIG5vciBhbGxvY2F0ZWQgYnkgdGhl
-IGRyaXZlciBhbnltb3JlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 26 March 2014 10:28, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>
+> [...]
+>
+>>>> -       while (wait_limit-- &&
+>>>> -              !(ioread32(ar_pci->mem + FW_INDICATOR_ADDRESS) &
+>>>> -                FW_IND_INITIALIZED)) {
+>>>> +       timeout = jiffies + msecs_to_jiffies(wait);
+>>>> +
+>>>> +       do {
+>>>> +               val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
+>>>> +               if (val == FW_IND_INITIALIZED)
+>>>> +                       break;
+>
+> Ah, for some reason I've missed this earlier. You seem to replace &
+> with ==. I wonder if that's okay?
+
+No, it's not. Good catch, I'll change it back to '&'.
+
+> FW indicator may contain FW_IND_EVENT_PENDING (i.e. firmware crashed
+> bit) too.
+
+I'm guessing that FW_IND_INITIALIZED should be the only bit set if
+initialisation has happened correctly, but we cannot be certain (right
+now). Hence I'll change it back to '&'.
+
+> It might be a good idea to check for that too and return a different
+> errno?
+
+Maybe. But to keep this patch simple, I don't add that right now. We can
+create a new patch for that.
+
+>>> It might be worth to add:
+>>>
+>>>  if (val == 0xFFFFFFFF)
+>>>    return -EIO;
+>>
+>> What does receiving 0xFFFFFFFF mean here? PCI bus kaput?
+>
+> A simple grepping (find drivers/net/ethernet/ -type f -name '*.[ch]' |
+> xargs grep -nC5 ioread32 | grep -C5 -i 0xffffffff) turns out results
+> like this:
+>
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-200-  }
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-201-
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-202-  /* Use current
+> fetch_index as the ring starting point */
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c:203:  fetch_index =
+> ioread32(&rq->ctrl->fetch_index);
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-204-
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-205-  if (fetch_index ==
+> 0xFFFFFFFF) { /* check for hardware gone  */
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-206-          /* Hardware
+> surprise removal: reset fetch_index */
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-207-          fetch_index = 0;
+>  drivers/net/ethernet/cisco/enic/vnic_rq.c-208-  }
+>
+>
+>> Do we really want to stop trying after receiving that? What harm would
+>> it cause to keep on trying? We would return an error anyway after the
+>> timeout, right?
+>
+> Yes. It's harmless but having the check allows to discern a real
+> timeout (target doesn't wake up for some reason) and a pci-e link
+> issue.
+
+Ok, I'll add the test you suggested.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
