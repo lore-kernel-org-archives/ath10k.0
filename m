@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTRI6-0003Xg-GJ
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:33:27 +0000
-Subject: [PATCH v2 8/8] ath10k: print chip id during boot
+ id 1WTRHz-0003Wy-OH
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:33:20 +0000
+Subject: [PATCH v2 7/8] ath10k: add module parameter values to the pci info
+ print
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 28 Mar 2014 09:33:04 +0200
-Message-ID: <20140328073304.30438.94161.stgit@potku.adurom.net>
+Date: Fri, 28 Mar 2014 09:32:58 +0200
+Message-ID: <20140328073258.30438.10368.stgit@potku.adurom.net>
 In-Reply-To: <20140328073040.30438.17966.stgit@potku.adurom.net>
 References: <20140328073040.30438.17966.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,32 +26,27 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-This makes it easier to debug what kind of board is used.
+Hopefully this makes it easier to debug problems in the future.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 471c219e5137..0077ba17e5c0 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -844,9 +844,12 @@ int ath10k_core_start(struct ath10k *ar)
- 	INIT_LIST_HEAD(&ar->arvifs);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index a4e2da3251dc..dd34ac9a682f 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1955,7 +1955,9 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
+ 		irq_mode = "legacy";
  
  	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
--		ath10k_info("%s (0x%x) fw %s api %d htt %d.%d\n",
--			    ar->hw_params.name, ar->target_version,
--			    ar->hw->wiphy->fw_version, ar->fw_api,
-+		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-+			    ar->hw_params.name,
-+			    ar->target_version,
-+			    ar->chip_id,
-+			    ar->hw->wiphy->fw_version,
-+			    ar->fw_api,
- 			    ar->htt.target_version_major,
- 			    ar->htt.target_version_minor);
+-		ath10k_info("pci irq %s\n", irq_mode);
++		ath10k_info("pci irq %s irq_mode %d reset_mode %d\n",
++			    irq_mode, ath10k_pci_irq_mode,
++			    ath10k_pci_reset_mode);
+ 
+ 	return 0;
  
 
 
