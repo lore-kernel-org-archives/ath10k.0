@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-f42.google.com ([74.125.82.42])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTXEV-0006Jr-FD
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 13:54:08 +0000
-Received: by mail-wg0-f42.google.com with SMTP id y10so3527790wgg.1
- for <ath10k@lists.infradead.org>; Fri, 28 Mar 2014 06:53:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20140328132849.31620.78501.stgit@potku.adurom.net>
-References: <20140328132849.31620.78501.stgit@potku.adurom.net>
-Date: Fri, 28 Mar 2014 14:53:40 +0100
-Message-ID: <CA+BoTQmqf8kryKEeD00P6o+N7C+980pEqHnT9qe4H4cjZ+eb=w@mail.gmail.com>
+ id 1WTXR8-0006i0-9A
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 14:07:11 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH v5] ath10k: implement per-VDEV FW statistics
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <20140328132849.31620.78501.stgit@potku.adurom.net>
+ <CA+BoTQmqf8kryKEeD00P6o+N7C+980pEqHnT9qe4H4cjZ+eb=w@mail.gmail.com>
+Date: Fri, 28 Mar 2014 16:06:42 +0200
+In-Reply-To: <CA+BoTQmqf8kryKEeD00P6o+N7C+980pEqHnT9qe4H4cjZ+eb=w@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 28 Mar 2014 14:53:40 +0100")
+Message-ID: <87wqfev2ml.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +20,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjggTWFyY2ggMjAxNCAxNDoyOCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4gRnJvbTogQmFydG9zeiBNYXJrb3dza2kgPGJhcnRvc3oubWFya293c2tpQHRp
-ZXRvLmNvbT4KPgo+IFRoZSBXTUlfUkVRVUVTVF9QRUVSX1NUQVQgY29tbWFuZCB3aXRoIGxhdGVz
-dCAoOTk5Ljk5OS4wLjcxNikgRlcKPiBjYW4gcmV0dXJuIHBlci1WREVWIHN0YXRpc3RpY3MuIFVz
-aW5nIGRlYnVnZnMgd2UgY2FuIGZldGNoIHRoaXMgaW5mbyBub3cuCj4KPiBUaGlzIGlzIGEgYmFj
-a3dhcmQgY29tcGF0aWJsZSBjaGFuZ2UuIEluIGNhc2Ugb2Ygb2xkZXIgRlcgdGhlIFZERVYKPiBz
-dGF0aXN0aWNzIGFyZSBzaW1wbHkgbm90IHJldHVybmVkLgo+Cj4ga3ZhbG86IHJlbW92ZSBzdHJ1
-Y3Qgd21pX3BlZXJfc3RhdHNfY29tbW9uIGNhc3QgZnJvbQo+IGF0aDEwa19kZWJ1Z19yZWFkX3Rh
-cmdldF9zdGF0cygpCgpJIGp1c3QgZ2xhbmNlZCBvdmVyIHRoZSBwYXRjaCBhbmQgSSBkb24ndCB0
-aGluayB0aGlzIGlzIGNvcnJlY3QuCgpGaXJtd2FyZSAxMC4xLjQ2NyBoYXMgcGVlcl9yeF9yYXRl
-IGJ1dCBkb2Vzbid0IHNlZW0gdG8gaGF2ZSB2ZGV2IHN0YXRzLgoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 28 March 2014 14:28, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> From: Bartosz Markowski <bartosz.markowski@tieto.com>
+>>
+>> The WMI_REQUEST_PEER_STAT command with latest (999.999.0.716) FW
+>> can return per-VDEV statistics. Using debugfs we can fetch this info now.
+>>
+>> This is a backward compatible change. In case of older FW the VDEV
+>> statistics are simply not returned.
+>>
+>> kvalo: remove struct wmi_peer_stats_common cast from
+>> ath10k_debug_read_target_stats()
+>
+> I just glanced over the patch and I don't think this is correct.
+>
+> Firmware 10.1.467 has peer_rx_rate but doesn't seem to have vdev stats.
+
+Ok, I need to take a closer look at this. If someone else wants to look
+at this instead, feel free to do that :)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
