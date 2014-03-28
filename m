@@ -1,21 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTSDO-00051n-Rj
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 08:32:39 +0000
-Message-ID: <1395995531.4175.3.camel@jlt4.sipsolutions.net>
-Subject: Re: [PATCH] ath10k: dont call csa_finish more than once
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 28 Mar 2014 09:32:11 +0100
-In-Reply-To: <CA+BoTQ=zZo-f=w3KaWPC6TJ6TmoW+XOBHNwyYCSkbc1cnedihQ@mail.gmail.com>
- (sfid-20140324_073736_101334_2EBC9F24)
-References: <1395410520-26939-1-git-send-email-michal.kazior@tieto.com>
- <1395411440.4164.15.camel@jlt4.sipsolutions.net>
- <CA+BoTQk5RiFPjDGMSwFHd6GGt=x9M6QXGZcdENtMjQrDcORicg@mail.gmail.com>
- <1395414428.4164.16.camel@jlt4.sipsolutions.net>
- <CA+BoTQ=zZo-f=w3KaWPC6TJ6TmoW+XOBHNwyYCSkbc1cnedihQ@mail.gmail.com>
- (sfid-20140324_073736_101334_2EBC9F24)
-Mime-Version: 1.0
+ id 1WTT7m-0006jx-Ay
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 09:30:55 +0000
+Subject: [PATCH] ath10k: cleanup debug messages in ath10k_wmi_event_host_swba()
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Fri, 28 Mar 2014 11:30:28 +0200
+Message-ID: <20140328093028.16927.81551.stgit@potku.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,42 +20,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Mon, 2014-03-24 at 07:37 +0100, Michal Kazior wrote:
+They were just too superfluous and made it harder to read logs. Change them to
+follow the normal style used in ath10k.
 
-> > Yeah I guess. What was the reason for this though? Here it's multi-vif?
-> > Before I think we were talking about races?
-> 
-> Before multi-vif if ieee80211_csa_finalize() failed and left
-> csa_active==true driver could end up poking the csa_finalize_work()
-> over and over again I guess?
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c |   12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-I think the concern previously was about races, where finalize_work
-doesn't actually get to run before the next beacon.
-
-> For multi-vif csa using reservation there are 2 reasons:
->  a) channel switches across interfaces may not be tightly
-> synchronized. I did tests where 2 long (cs_count=100) channel switches
-> were a few seconds apart. In that case driver poked csa_finalize work
-> quite a lot resulting in a mess.
->  b) my current approach has the following flow:
-> 
-> 1. reserve_chanctx()
-> 2. (some time later) driver calls csa_finish, and csa_finalize calls
-> use_reserved_chanctx() because reserved_chanctx is set
-> 3. (possibly some time later, for multi-vif reservations) csa_finalize
-> is called again but this time without reserved_chanctx, so it verifies
-> if bss_conf.chandef is csa_chandef (after successful reservation it
-> should be).
-> 
-> This means if driver would poke csa_finalize() more than once then
-> use_reserved_chanctx() would be called again and again as a result.
-
-Yeah but that seems better to catch in mac80211?
-
-johannes
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index d4b48ef0ec2e..fe4d5f1c672f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1362,13 +1362,10 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 	struct sk_buff *bcn;
+ 	int ret, vdev_id = 0;
+ 
+-	ath10k_dbg(ATH10K_DBG_MGMT, "WMI_HOST_SWBA_EVENTID\n");
+-
+ 	ev = (struct wmi_host_swba_event *)skb->data;
+ 	map = __le32_to_cpu(ev->vdev_map);
+ 
+-	ath10k_dbg(ATH10K_DBG_MGMT, "host swba:\n"
+-		   "-vdev map 0x%x\n",
++	ath10k_dbg(ATH10K_DBG_MGMT, "mgmt swba vdev_map 0x%x\n",
+ 		   ev->vdev_map);
+ 
+ 	for (; map; map >>= 1, vdev_id++) {
+@@ -1385,12 +1382,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 		bcn_info = &ev->bcn_info[i];
+ 
+ 		ath10k_dbg(ATH10K_DBG_MGMT,
+-			   "-bcn_info[%d]:\n"
+-			   "--tim_len %d\n"
+-			   "--tim_mcast %d\n"
+-			   "--tim_changed %d\n"
+-			   "--tim_num_ps_pending %d\n"
+-			   "--tim_bitmap 0x%08x%08x%08x%08x\n",
++			   "mgmt event bcn_info %d tim_len %d mcast %d changed %d num_ps_pending %d bitmap 0x%08x%08x%08x%08x\n",
+ 			   i,
+ 			   __le32_to_cpu(bcn_info->tim_info.tim_len),
+ 			   __le32_to_cpu(bcn_info->tim_info.tim_mcast),
 
 
 _______________________________________________
