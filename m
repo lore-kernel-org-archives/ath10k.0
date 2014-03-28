@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTRHz-0003Wy-OH
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:33:20 +0000
-Subject: [PATCH v2 7/8] ath10k: add module parameter values to the pci info
- print
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 28 Mar 2014 09:32:58 +0200
-Message-ID: <20140328073258.30438.10368.stgit@potku.adurom.net>
-In-Reply-To: <20140328073040.30438.17966.stgit@potku.adurom.net>
-References: <20140328073040.30438.17966.stgit@potku.adurom.net>
-MIME-Version: 1.0
+ id 1WTRPB-0003oB-9R
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:40:46 +0000
+Received: by mail-ee0-f47.google.com with SMTP id b15so3674053eek.20
+ for <ath10k@lists.infradead.org>; Fri, 28 Mar 2014 00:40:21 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 0/3] ath10k: ce fixes
+Date: Fri, 28 Mar 2014 08:34:22 +0100
+Message-Id: <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
+References: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +19,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hopefully this makes it easier to debug problems in the future.
+Hi,
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+This addresses memory allocations failures
+recently reported by Avery Pennarun.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a4e2da3251dc..dd34ac9a682f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1955,7 +1955,9 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
- 		irq_mode = "legacy";
- 
- 	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
--		ath10k_info("pci irq %s\n", irq_mode);
-+		ath10k_info("pci irq %s irq_mode %d reset_mode %d\n",
-+			    irq_mode, ath10k_pci_irq_mode,
-+			    ath10k_pci_reset_mode);
- 
- 	return 0;
- 
+
+v2:
+ * add a new patch (result of splitting)
+ * fix commit message
+
+
+Michal Kazior (3):
+  ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()
+  ath10k: split ce initialization and allocation
+  ath10k: deinit copy engine before resetting
+
+ drivers/net/wireless/ath/ath10k/ce.c  | 356 +++++++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/ce.h  |  15 +-
+ drivers/net/wireless/ath/ath10k/pci.c |  88 +++++----
+ 3 files changed, 264 insertions(+), 195 deletions(-)
+
+-- 
+1.8.5.3
 
 
 _______________________________________________
