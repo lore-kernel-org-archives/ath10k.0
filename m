@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTVpa-0003Xl-Bl
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:24:18 +0000
+ id 1WTVyb-0003r7-3E
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:33:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/8] ath10k: small cleanups to pci.c
-References: <20140328073040.30438.17966.stgit@potku.adurom.net>
-Date: Fri, 28 Mar 2014 14:23:51 +0200
-In-Reply-To: <20140328073040.30438.17966.stgit@potku.adurom.net> (Kalle Valo's
- message of "Fri, 28 Mar 2014 09:32:14 +0200")
-Message-ID: <87a9cawlyg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/3] ath10k: ce fixes
+References: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
+ <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 28 Mar 2014 14:33:10 +0200
+In-Reply-To: <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 28 Mar 2014 08:34:22 +0100")
+Message-ID: <8761mywlix.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,29 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> While looking at the cold reset problem I did some cleanup
-> to pci.c.
+> Hi,
 >
-> v2: In patch 1 fix how to check FW_IND_INITIALIZED and also check for 0xffffffff.
+> This addresses memory allocations failures
+> recently reported by Avery Pennarun.
 >
-> ---
 >
-> Kalle Valo (8):
->       ath10k: cleanup ath10k_pci_wait_for_target_init()
->       ath10k: add module parameter to disable cold reset
->       ath10k: fix name of target_ps module parameter
->       ath10k: advertise only firmware API 2 files
->       ath10k: delete ar_pci->fw_indicator_address
->       ath10k: improve pci debug messages
->       ath10k: add module parameter values to the pci info print
->       ath10k: print chip id during boot
+> v2:
+>  * add a new patch (result of splitting)
+>  * fix commit message
+>
+>
+> Michal Kazior (3):
+>   ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()
+>   ath10k: split ce initialization and allocation
+>   ath10k: deinit copy engine before resetting
 
-All eight patches applied.
+Thanks, all patches applied.
 
 -- 
 Kalle Valo
