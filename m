@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTVia-0003Om-9J
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:17:05 +0000
-Subject: [PATCH] ath10k: update wal_dbg_tx_stats structure with missing
- parameter.
+ id 1WTVjB-0003QF-Fm
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:17:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Fri, 28 Mar 2014 14:16:39 +0200
-Message-ID: <20140328121639.4591.17459.stgit@potku.adurom.net>
+Subject: Re: [PATCH] ath10k: update wal_dbg_tx_stats structure with missing
+ parameter
+References: <1395648122-2125-1-git-send-email-yeohchunyeow@gmail.com>
+Date: Fri, 28 Mar 2014 14:17:14 +0200
+In-Reply-To: <1395648122-2125-1-git-send-email-yeohchunyeow@gmail.com>
+ (Chun-Yeow Yeoh's message of "Mon, 24 Mar 2014 16:02:02 +0800")
+Message-ID: <87ha6iwm9h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,38 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
 
-The filed has been missing (missmatched with FW ABI)
-since 999.999.0.629 firmware release.
+> This patch is introduced by Bartosz Markowski but never upstream.
+> By using this patch, 636 firmware is able to print out the peer
+> stats correctly and have caused no regression to the latest AP
+> firmware as well.
+>
+> The original patch from Bartosz Markowski can be found at:
+> http://lists.infradead.org/pipermail/ath10k/2013-September/000318.html
+>
+> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-It's very imporatant to keep these structs up to date with FW,
-due to the arithmetic we use while read the fw_stats.
+I'm going to apply the original patch instead and I'll drop this.
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e0421c271ad1..8b07cebdd6de 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2710,6 +2710,9 @@ struct wal_dbg_tx_stats {
- 	/* wal pdev resets  */
- 	__le32 pdev_resets;
- 
-+	/* frames dropped due to non-availability of stateless TIDs */
-+	__le32 stateless_tid_alloc_failure;
-+
- 	__le32 phy_underrun;
- 
- 	/* MPDU is more than txop limit */
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
