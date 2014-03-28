@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTRPB-0003oG-Dt
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:40:46 +0000
-Received: by mail-ee0-f51.google.com with SMTP id c13so3681747eek.24
- for <ath10k@lists.infradead.org>; Fri, 28 Mar 2014 00:40:22 -0700 (PDT)
+ id 1WTRPB-0003oI-Nc
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 07:40:47 +0000
+Received: by mail-ee0-f54.google.com with SMTP id d49so3676554eek.41
+ for <ath10k@lists.infradead.org>; Fri, 28 Mar 2014 00:40:24 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/3] ath10k: convert pci_alloc_consistent() to
- dma_alloc_coherent()
-Date: Fri, 28 Mar 2014 08:34:23 +0100
-Message-Id: <1395992065-10086-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/3] ath10k: deinit copy engine before resetting
+Date: Fri, 28 Mar 2014 08:34:25 +0100
+Message-Id: <1395992065-10086-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
 References: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
  <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
@@ -29,177 +28,41 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This allows to use GFP_KERNEL allocation. This
-should decrease chance of allocation failure, e.g.
-during firmware recovery.
+Since copy engine allocation has been revised the
+ath10k_pci_ce_deinit() now simply zeroes copy
+engine registers. It's probably a good idea to do
+that before reseting for a more graceful device
+reset.
 
-Reported-By: Avery Pennarun <apenwarr@gmail.com>
+Before ath10k_pci_ce_deinit() freed copy engine
+ringbuffer memory so it was required to call it
+after resetting. Otherwise it was possible for
+device to access unmapped/freed copy engine
+ringbuffer memory.
+
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 53 +++++++++++++++++------------------
- drivers/net/wireless/ath/ath10k/pci.c | 22 ++++++++-------
- 2 files changed, 37 insertions(+), 38 deletions(-)
+v2:
+ * added as a result of splitting another patch
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index a79499c..653a240 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -843,7 +843,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 				   struct ath10k_ce_pipe *ce_state,
- 				   const struct ce_attr *attr)
- {
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct ath10k_ce_ring *src_ring;
- 	unsigned int nentries = attr->src_nentries;
- 	unsigned int ce_nbytes;
-@@ -885,10 +884,10 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 	 * coherent DMA are unsupported
- 	 */
- 	src_ring->base_addr_owner_space_unaligned =
--		pci_alloc_consistent(ar_pci->pdev,
--				     (nentries * sizeof(struct ce_desc) +
--				      CE_DESC_RING_ALIGN),
--				     &base_addr);
-+		dma_alloc_coherent(ar->dev,
-+				   (nentries * sizeof(struct ce_desc) +
-+				    CE_DESC_RING_ALIGN),
-+				   &base_addr, GFP_KERNEL);
- 	if (!src_ring->base_addr_owner_space_unaligned) {
- 		kfree(ce_state->src_ring);
- 		ce_state->src_ring = NULL;
-@@ -912,11 +911,11 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
- 		kmalloc((nentries * sizeof(struct ce_desc) +
- 			 CE_DESC_RING_ALIGN), GFP_KERNEL);
- 	if (!src_ring->shadow_base_unaligned) {
--		pci_free_consistent(ar_pci->pdev,
--				    (nentries * sizeof(struct ce_desc) +
--				     CE_DESC_RING_ALIGN),
--				    src_ring->base_addr_owner_space,
--				    src_ring->base_addr_ce_space);
-+		dma_free_coherent(ar->dev,
-+				  (nentries * sizeof(struct ce_desc) +
-+				   CE_DESC_RING_ALIGN),
-+				  src_ring->base_addr_owner_space,
-+				  src_ring->base_addr_ce_space);
- 		kfree(ce_state->src_ring);
- 		ce_state->src_ring = NULL;
- 		return -ENOMEM;
-@@ -946,7 +945,6 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 				    struct ath10k_ce_pipe *ce_state,
- 				    const struct ce_attr *attr)
- {
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct ath10k_ce_ring *dest_ring;
- 	unsigned int nentries = attr->dest_nentries;
- 	unsigned int ce_nbytes;
-@@ -986,10 +984,10 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
- 	 * coherent DMA are unsupported
- 	 */
- 	dest_ring->base_addr_owner_space_unaligned =
--		pci_alloc_consistent(ar_pci->pdev,
--				     (nentries * sizeof(struct ce_desc) +
--				      CE_DESC_RING_ALIGN),
--				     &base_addr);
-+		dma_alloc_coherent(ar->dev,
-+				   (nentries * sizeof(struct ce_desc) +
-+				    CE_DESC_RING_ALIGN),
-+				   &base_addr, GFP_KERNEL);
- 	if (!dest_ring->base_addr_owner_space_unaligned) {
- 		kfree(ce_state->dest_ring);
- 		ce_state->dest_ring = NULL;
-@@ -1112,26 +1110,25 @@ out:
- void ath10k_ce_deinit(struct ath10k_ce_pipe *ce_state)
- {
- 	struct ath10k *ar = ce_state->ar;
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
- 	if (ce_state->src_ring) {
- 		kfree(ce_state->src_ring->shadow_base_unaligned);
--		pci_free_consistent(ar_pci->pdev,
--				    (ce_state->src_ring->nentries *
--				     sizeof(struct ce_desc) +
--				     CE_DESC_RING_ALIGN),
--				    ce_state->src_ring->base_addr_owner_space,
--				    ce_state->src_ring->base_addr_ce_space);
-+		dma_free_coherent(ar->dev,
-+				  (ce_state->src_ring->nentries *
-+				   sizeof(struct ce_desc) +
-+				   CE_DESC_RING_ALIGN),
-+				  ce_state->src_ring->base_addr_owner_space,
-+				  ce_state->src_ring->base_addr_ce_space);
- 		kfree(ce_state->src_ring);
- 	}
- 
- 	if (ce_state->dest_ring) {
--		pci_free_consistent(ar_pci->pdev,
--				    (ce_state->dest_ring->nentries *
--				     sizeof(struct ce_desc) +
--				     CE_DESC_RING_ALIGN),
--				    ce_state->dest_ring->base_addr_owner_space,
--				    ce_state->dest_ring->base_addr_ce_space);
-+		dma_free_coherent(ar->dev,
-+				  (ce_state->dest_ring->nentries *
-+				   sizeof(struct ce_desc) +
-+				   CE_DESC_RING_ALIGN),
-+				  ce_state->dest_ring->base_addr_owner_space,
-+				  ce_state->dest_ring->base_addr_ce_space);
- 		kfree(ce_state->dest_ring);
- 	}
- 
+ drivers/net/wireless/ath/ath10k/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 9d242d8..f167ceb 100644
+index 10bf612..52c8c0d 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -346,9 +346,10 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	 *   2) Buffer in DMA-able space
- 	 */
- 	orig_nbytes = nbytes;
--	data_buf = (unsigned char *)pci_alloc_consistent(ar_pci->pdev,
--							 orig_nbytes,
--							 &ce_data_base);
-+	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
-+						       orig_nbytes,
-+						       &ce_data_base,
-+						       GFP_ATOMIC);
+@@ -2000,9 +2000,9 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ 	ath10k_pci_free_early_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
+ 	ath10k_pci_deinit_irq(ar);
++	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_warm_reset(ar);
  
- 	if (!data_buf) {
- 		ret = -ENOMEM;
-@@ -446,8 +447,8 @@ done:
- 			   __func__, address);
- 
- 	if (data_buf)
--		pci_free_consistent(ar_pci->pdev, orig_nbytes,
--				    data_buf, ce_data_base);
-+		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-+				  ce_data_base);
- 
- 	return ret;
+-	ath10k_pci_ce_deinit(ar);
+ 	if (!test_bit(ATH10K_PCI_FEATURE_SOC_POWER_SAVE, ar_pci->features))
+ 		ath10k_do_pci_sleep(ar);
  }
-@@ -490,9 +491,10 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 	 *   2) Buffer in DMA-able space
- 	 */
- 	orig_nbytes = nbytes;
--	data_buf = (unsigned char *)pci_alloc_consistent(ar_pci->pdev,
--							 orig_nbytes,
--							 &ce_data_base);
-+	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
-+						       orig_nbytes,
-+						       &ce_data_base,
-+						       GFP_ATOMIC);
- 	if (!data_buf) {
- 		ret = -ENOMEM;
- 		goto done;
-@@ -588,8 +590,8 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
- 
- done:
- 	if (data_buf) {
--		pci_free_consistent(ar_pci->pdev, orig_nbytes, data_buf,
--				    ce_data_base);
-+		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
-+				  ce_data_base);
- 	}
- 
- 	if (ret != 0)
 -- 
 1.8.5.3
 
