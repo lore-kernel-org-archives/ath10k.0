@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTVyb-0003r7-3E
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:33:37 +0000
+ id 1WTWBz-00048M-Vf
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:47:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/3] ath10k: ce fixes
-References: <1395745943-29492-1-git-send-email-michal.kazior@tieto.com>
- <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 28 Mar 2014 14:33:10 +0200
-In-Reply-To: <1395992065-10086-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 28 Mar 2014 08:34:22 +0100")
-Message-ID: <8761mywlix.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix printing of peer stats in non-AP firmware
+References: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
+Date: Fri, 28 Mar 2014 14:47:01 +0200
+In-Reply-To: <1395734146-10907-1-git-send-email-yeohchunyeow@gmail.com>
+ (Chun-Yeow Yeoh's message of "Tue, 25 Mar 2014 15:55:46 +0800")
+Message-ID: <871txmwkvu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,28 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
 
-> Hi,
+> This patch is intended to fix the problem if we use the
+> firmware 999.999.0.636 to get peer stats when the number
+> of peer is more than 3. The WMI_UPDATE_STATS_EVENTID may
+> trigger more than 1 time if the number of peers is more
+> than 3. So this patch allows us to do the checking on this
+> and make sure that we print the peer stats correctly.
 >
-> This addresses memory allocations failures
-> recently reported by Avery Pennarun.
->
->
-> v2:
->  * add a new patch (result of splitting)
->  * fix commit message
->
->
-> Michal Kazior (3):
->   ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()
->   ath10k: split ce initialization and allocation
->   ath10k: deinit copy engine before resetting
+> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
 
-Thanks, all patches applied.
+Based on Michal's comments I'm going to drop this one, we need to find a
+better way to solve this.
 
 -- 
 Kalle Valo
