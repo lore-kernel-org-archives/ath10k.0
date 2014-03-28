@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTVjB-0003QF-Fm
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:17:42 +0000
+ id 1WTVpa-0003Xl-Bl
+ for ath10k@lists.infradead.org; Fri, 28 Mar 2014 12:24:18 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: update wal_dbg_tx_stats structure with missing
- parameter
-References: <1395648122-2125-1-git-send-email-yeohchunyeow@gmail.com>
-Date: Fri, 28 Mar 2014 14:17:14 +0200
-In-Reply-To: <1395648122-2125-1-git-send-email-yeohchunyeow@gmail.com>
- (Chun-Yeow Yeoh's message of "Mon, 24 Mar 2014 16:02:02 +0800")
-Message-ID: <87ha6iwm9h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/8] ath10k: small cleanups to pci.c
+References: <20140328073040.30438.17966.stgit@potku.adurom.net>
+Date: Fri, 28 Mar 2014 14:23:51 +0200
+In-Reply-To: <20140328073040.30438.17966.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Fri, 28 Mar 2014 09:32:14 +0200")
+Message-ID: <87a9cawlyg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,22 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> This patch is introduced by Bartosz Markowski but never upstream.
-> By using this patch, 636 firmware is able to print out the peer
-> stats correctly and have caused no regression to the latest AP
-> firmware as well.
+> While looking at the cold reset problem I did some cleanup
+> to pci.c.
 >
-> The original patch from Bartosz Markowski can be found at:
-> http://lists.infradead.org/pipermail/ath10k/2013-September/000318.html
+> v2: In patch 1 fix how to check FW_IND_INITIALIZED and also check for 0xffffffff.
 >
-> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+> ---
+>
+> Kalle Valo (8):
+>       ath10k: cleanup ath10k_pci_wait_for_target_init()
+>       ath10k: add module parameter to disable cold reset
+>       ath10k: fix name of target_ps module parameter
+>       ath10k: advertise only firmware API 2 files
+>       ath10k: delete ar_pci->fw_indicator_address
+>       ath10k: improve pci debug messages
+>       ath10k: add module parameter values to the pci info print
+>       ath10k: print chip id during boot
 
-I'm going to apply the original patch instead and I'll drop this.
+All eight patches applied.
 
 -- 
 Kalle Valo
