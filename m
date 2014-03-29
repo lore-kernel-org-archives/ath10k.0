@@ -1,13 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTz9F-0005Yp-PF
- for ath10k@lists.infradead.org; Sat, 29 Mar 2014 19:42:34 +0000
-Received: by mail-we0-f178.google.com with SMTP id u56so3370311wes.37
- for <ath10k@lists.infradead.org>; Sat, 29 Mar 2014 12:42:10 -0700 (PDT)
-Message-ID: <53372210.7060903@intec.ugent.be>
-Date: Sat, 29 Mar 2014 20:42:08 +0100
-From: Bart Jooris <bart.jooris@gmail.com>
+ id 1WTzlj-0005xJ-7B
+ for ath10k@lists.infradead.org; Sat, 29 Mar 2014 20:22:20 +0000
+Message-ID: <53372A9A.1090402@candelatech.com>
+Date: Sat, 29 Mar 2014 13:18:34 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: Running throughput tests
 References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
@@ -30,8 +28,8 @@ References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
  <530E5EF2.8070800@intec.ugent.be>
  <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
  <5335910B.3000702@intec.ugent.be> <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
-Reply-To: Bart.Jooris@intec.ugent.be
+ <53372210.7060903@intec.ugent.be>
+In-Reply-To: <53372210.7060903@intec.ugent.be>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -40,89 +38,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Bart.Jooris@intec.ugent.be, Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k@lists.infradead.org
 
-RGVhciBLYWxsZSwKCk9uIDAzLzI4LzIwMTQgMDQ6MzEgUE0sIEthbGxlIFZhbG8gd3JvdGU6Cj4g
-QmFydCBKb29yaXMgPEJhcnQuSm9vcmlzQGludGVjLnVnZW50LmJlPiB3cml0ZXM6Cj4KPj4gT24g
-MDIvMjcvMjAxNCAwNDo1OSBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPj4+IEJhcnQgSm9vcmlzPEJh
-cnQuSm9vcmlzQGludGVjLnVnZW50LmJlPiAgd3JpdGVzOgo+Pj4KPj4+PiBKdXN0IGdvdCBhIHN0
-YWJsZSAxNjBNYnBzCj4+Pj4gV2hhdCBjb3VsZCBiZSB0aGUgbmV4dCBzdGVwcyB0byBzcGVlZCB1
-cCB0aGUgbGluaz8KPj4+IEZpcnN0IEkgd291bGQgdXNlIHRoZSBmdWxsIGhvc3RhcGQgY29uZmln
-dXJhdGlvbiB3aGljaCBJIGp1c3QgYWRkZWQgdG8KPj4+IHRoZSB3aWtpOgo+Pj4KPj4+IGh0dHA6
-Ly93aXJlbGVzcy5rZXJuZWwub3JnL2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2NvbmZpZ3VyYXRp
-b24jRnVsbF9ob3N0YXBkX2NvbmZpZ3VyYXRpb24KPj4+Cj4+PiBOZXh0IEkgd291bGQgZGlzYWJs
-ZSBhbGwgcG9zc2libGUgZGVidWcgZmVhdHVyZXMgZnJvbSBrZXJuZWwgYW5kIG1ha2UKPj4+IHN1
-cmUgdGhhdCB0aGV5IGFyZSBub3QgaW5jbHVkZWQgaW4gdGhlIGJ1aWxkLiBBbmQgbGFzdCB0cnkg
-dG8gZmluZCBhCj4+PiBmcmVlIGNoYW5uZWwgd2l0aCBsaXR0bGUgaW50ZXJmZXJlbmNlIGFzIHBv
-c3NpYmxlLgo+PiBObyBsdWNrIGZvciBub3cuIDE2ME1icHMgc2VlbXMgdG8gYmUgdGhlIGxpbWl0
-IHVzaW5nIHRoZSBtZW50aW9uZWQKPj4gY29uZmlndXJhdGlvbiAoSSBoYWQgdG8gZml4IHRoZSBj
-aGFubmVsIHRvIDM2IGFuZCBhZGQKPj4gdmh0X29wZXJfY2VudHJfZnJlcV9zZWcwX2lkeD00MiBh
-Z2FpbiB0byBicmluZyB1cCB0aGUgQVApCj4+IEknbSB1c2luZyBzcGFya0xBTiBXUEVBLTM1MUFD
-IGNhcmRzIHdpdGggUUNBOTg4MCBjaGlwIHNldC4KPiBZb3UgYXJlIHByb3ZpZGluZyB2ZXJ5IGxp
-dHRsZSBpbmZvcm1hdGlvbiB3aGljaCBtYWtlcyBpdCBkaWZmaWN1bHQgdG8KPiBoZWxwLiBGb3Ig
-c3RhcnRlcnM6Cj4KPiAqIFdoYXQgZmlybXdhcmUgdmVyc2lvbj8KSSd2ZSBjbG9uZWQgJ3JlY2Vu
-dGx5JyBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlLwoKdHJlZSAtRCAv
-bGliL2Zpcm13YXJlL2F0aDEway9RQ0E5ODhYCuKUlOKUgOKUgCBbTWFyIDI5IDEwOjQ2XSBodzIu
-MArilJzilIDilIAgW0ZlYiAyNiAxOTozOV0gYm9hcmQuYmluCuKUnOKUgOKUgCBbRmViIDI2IDE5
-OjM5XSBmaXJtd2FyZS0yLmJpbgrilJTilIDilIAgW0ZlYiAyNiAxOTozOV0gb3RwLmJpbgoKPgo+
-ICogV2hhdCB2ZXJzaW9uIG9mIGF0aDEwayBhcmUgeW91IHVzaW5nPwpJIGNvbXBpbGVkIGtlcm5l
-bCAzLjEzLjUuCgpiam9vcmlzQERTUy0xMzAwLTI6fi9ob3N0YXAvaG9zdGFwZCQgbW9kaW5mbyBh
-dGgxMGtfY29yZQpmaWxlbmFtZTogCi9saWIvbW9kdWxlcy8zLjEzLjUva2VybmVsL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYXRoMTBrX2NvcmUua28KbGljZW5zZTogRHVhbCBCU0Qv
-R1BMCmRlc2NyaXB0aW9uOiBDb3JlIG1vZHVsZSBmb3IgUUNBOTg4WCBQQ0llIGRldmljZXMuCmF1
-dGhvcjogUXVhbGNvbW0gQXRoZXJvcwpzcmN2ZXJzaW9uOiBEQTU1QzI1RTcxQjc5RDMyOTA1MzZF
-OApkZXBlbmRzOiBjZmc4MDIxMSxtYWM4MDIxMSxhdGgKaW50cmVlOiBZCnZlcm1hZ2ljOiAzLjEz
-LjUgU01QIG1vZF91bmxvYWQgbW9kdmVyc2lvbnMKcGFybTogZGVidWdfbWFzazpEZWJ1Z2dpbmcg
-bWFzayAodWludCkKcGFybTogdWFydF9wcmludDpVYXJ0IHRhcmdldCBkZWJ1Z2dpbmcgKGJvb2wp
-CnBhcm06IHAycDpFbmFibGUgYXRoMTBrIFAyUCBzdXBwb3J0ICh1aW50KQoKYmpvb3Jpc0BEU1Mt
-MTMwMC0yOn4vaG9zdGFwL2hvc3RhcGQkIG1vZGluZm8gYXRoMTBrX3BjaQpmaWxlbmFtZTogCi9s
-aWIvbW9kdWxlcy8zLjEzLjUva2VybmVsL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-YXRoMTBrX3BjaS5rbwpmaXJtd2FyZTogYXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQuYmluCmZp
-cm13YXJlOiBhdGgxMGsvUUNBOTg4WC9odzIuMC9vdHAuYmluCmZpcm13YXJlOiBhdGgxMGsvUUNB
-OTg4WC9odzIuMC9maXJtd2FyZS5iaW4KbGljZW5zZTogRHVhbCBCU0QvR1BMCmRlc2NyaXB0aW9u
-OiBEcml2ZXIgc3VwcG9ydCBmb3IgQXRoZXJvcyBRQ0E5ODhYIFBDSWUgZGV2aWNlcwphdXRob3I6
-IFF1YWxjb21tIEF0aGVyb3MKc3JjdmVyc2lvbjogNUY2MEZCOURCMEVFNkRBMjAxMkQ0REIKYWxp
-YXM6IHBjaTp2MDAwMDE2OENkMDAwMDAwM0NzdipzZCpiYypzYyppKgpkZXBlbmRzOiBhdGgxMGtf
-Y29yZSxtYWM4MDIxMQppbnRyZWU6IFkKdmVybWFnaWM6IDMuMTMuNSBTTVAgbW9kX3VubG9hZCBt
-b2R2ZXJzaW9ucwpwYXJtOiBhdGgxMGtfdGFyZ2V0X3BzOkVuYWJsZSBhdGgxMGsgVGFyZ2V0IChT
-b0MpIFBTIG9wdGlvbiAodWludCkKCj4KPiAqIEFyZSB5b3Ugc3VyZSB0aGF0IHRoZSBob3N0IGlz
-IG5vdCBsaW1pdGluZyB0aGUgdGhyb3VnaHB1dCBpbiBhbnkgd2F5Pwo+ICAgIFRyeSB0byBkaXNh
-YmxlIF9hbGxfIGtlcm5lbCBkZWJ1ZyBvcHRpb25zLgovdmFyL2xvZy9zeXNsb2cgYW5kIGRtZXNn
-IGRvZXNuJ3QgdG8gYmUgcGFja2VkIHdpdGggbWVzc2FnZXMgcmVsYXRlZCB0byAKdGhlIHRocm91
-Z2hwdXQgdGVzdC4gSSBkb24ndCB0aGluayB0byBoYXZlIHNlZW4gdGhlIENQVSBiZWluZyBvdmVy
-bG9hZGVkIApkdXJpbmcgdGhlIHRlc3QuCkknbSBwbGFubmluZyB0byBnbyBiYWNrIHRvIHRoZSBv
-ZmZpY2UgdG9tb3Jyb3cgdG8gdmVyaWZ5IHRoaXMuCgpGdXJ0aGVyIEkgaGF2ZSB0aGVzZSBpbiBt
-eSBrZXJuZWwgY29uZmlnCkNPTkZJR19BVEgxMEs9bQpDT05GSUdfQVRIMTBLX1BDST1tCiMgQ09O
-RklHX0FUSDEwS19ERUJVRyBpcyBub3Qgc2V0CkNPTkZJR19BVEgxMEtfREVCVUdGUz15CkNPTkZJ
-R19BVEgxMEtfVFJBQ0lORz15CgpJIHdpbGwgZGlzYWJsZSB0aGUgbGFzdCB0d28gdG9vLgoKPgo+
-ICogQWxzbyBkZXNjcmliZSB5b3VyIHRlc3Qgc2V0dXAgaW4gZGV0YWlsLgo+CkNvbW1vbiBmb3Ig
-QVAgYW5kIFNUQToKCi1EU1MtMTMwMCB3aXRoIGk1LTI1NDBNIENQVSBAIDIuNjBHSHogLSA4R0Ig
-UkFNIC0gU1NEIDY0R0IuCi0xIHNwYXJrTEFOIFdQRUEtMzUxQUMgY2FyZCB3aXRoIFFDQTk4ODAg
-Y2hpcCBzZXQgYW5kIDMgZHVhbCBiYW5kIGFudGVubmEncy4KLUtlcm5lbCAzLjEzLjUgY29udGFp
-bmluZyB0aGUgYXRoMTBrIG1vZHVsZXMKLWZpcm13YXJlcyBjbG9uZWQgZW5kIG9mIEZlYnJ1YXJ5
-Ci1pcGVyZiBpbiB1ZHAgbW9kZSB1c2VkIGZvciB0aGUgIHRocm91Z2hwdXQgdGVzdAoKQVAgb25s
-eToKLXVidW50dSAxMi4wNCBMVFMgYXMgY3JkYSB3b3VsZG4ndCBidWlsZCBvbiB1YnVudHUgMTMu
-MTAgKGxpYmdjcnlwdCBpc3N1ZSkuCi1ob3N0YXBkIHYyLjItZGV2ZWwKLW1vZGlmaWVkIHJlZ3Vs
-YXRvcnkgZGF0YWJhc2UgYW5kIGNyZGEgYnVpbGQKLXlvdXIgRnVsbF9ob3N0YXBkX2NvbmZpZ3Vy
-YXRpb24gKyBjaGFubmVsPTM2IGFuZCB2aHRfb3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCgpT
-VEEgb25seToKLXVidW50dSAxMy4xMAotbm1jbGkgaXMgdXNlZCB0byBjb25uZWN0IHRvIHRoZSBB
-UAoKRGlzdGFuY2UgYmV0d2VlbiBBUCBhbmQgU1RBOiA2MCBjbS4gQW50ZW5uYSdzIGFyZSBub3cg
-ZGlyZWN0ZWQgb3J0aG9nb25hbCBwZXIgZGV2aWNlLCBhbnRlbm5hWCAoWD0xLi4zKSBvbiBib3Ro
-IGRldmljZXMgYXJlIHBvaW50aW5nIGluIHRoZSBzYW1lIGRpcmVjdGlvbi4KQWx0aG91Z2ggSSd2
-ZSBwbGF5ZWQgYSBsb3Qgd2l0aCB0aGUgYW50ZW5uYSdzIGRpcmVjdGlvbnMgYWxyZWFkeSBhbmQg
-SSBjYW4ndCByZW1lbWJlciBvbmUgcnVuIHdoZXJlIGl0IGhhZCBhIGxvdCBvZiBpbXBhY3QuLi4K
-ClRoZSBzcGVjdHJ1bSBhbmFseXNlciBtZWFzdXJlZCBhIGJhbmQgb2YgYWxtb3N0IDgwTUh6IGJl
-aW5nIHVzZWQuCgoKVGhhbmtzIGEgbG90LAoKQmFydAoKCgotLSAKQmFydCBKb29yaXMKRGVwYXJ0
-bWVudCBvZiBJbmZvcm1hdGlvbiBUZWNobm9sb2d5CkludGVybmV0IEJhc2VkIENvbW11bmljYXRp
-b24gTmV0d29ya3MgYW5kIFNlcnZpY2VzIChJQkNOKQpHaGVudCBVbml2ZXJzaXR5IC0gaU1pbmRz
-Ckdhc3RvbiBDcm9tbWVubGFhbiA4IChCdXMgMjAxKSwgQi05MDUwIEdlbnQsIEJlbGdpdW0KRS1t
-YWlsOiBiYXJ0Lmpvb3Jpc0BpbnRlYy5VR2VudC5iZQpNOiArMzIgNDc0IDU5IDUzIDQyClRlbC4g
-KzMyIDkgMzMgMTQ5MDAKRmF4ICszMiA5IDMzIDE0ODk5CgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+On 03/29/2014 12:42 PM, Bart Jooris wrote:
+
+> -DSS-1300 with i5-2540M CPU @ 2.60GHz - 8GB RAM - SSD 64GB.
+> -1 sparkLAN WPEA-351AC card with QCA9880 chip set and 3 dual band antenna's.
+> -Kernel 3.13.5 containing the ath10k modules
+> -firmwares cloned end of February
+> -iperf in udp mode used for the  throughput test
+
+I get 500+Mbps on some other NICs with same chipset...  I'll get some
+WPEA-351AC as soon as I can find someone willing to sell them and will
+do some tests on those as well...
+
+With very latest ath10k tree and firmware, you can cat out the
+debug stats and see your station tx/rx train rates..that might
+be interesting information...
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
