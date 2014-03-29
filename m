@@ -1,9 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WTYlL-0001Xr-Sk
- for ath10k@lists.infradead.org; Fri, 28 Mar 2014 15:32:09 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1WTz9F-0005Yp-PF
+ for ath10k@lists.infradead.org; Sat, 29 Mar 2014 19:42:34 +0000
+Received: by mail-we0-f178.google.com with SMTP id u56so3370311wes.37
+ for <ath10k@lists.infradead.org>; Sat, 29 Mar 2014 12:42:10 -0700 (PDT)
+Message-ID: <53372210.7060903@intec.ugent.be>
+Date: Sat, 29 Mar 2014 20:42:08 +0100
+From: Bart Jooris <bart.jooris@gmail.com>
+MIME-Version: 1.0
 Subject: Re: Running throughput tests
 References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
  <008d01cef722$2a9c05e0$7fd411a0$@sparklan.com>
@@ -24,12 +29,9 @@ References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
  <530A64E5.2040401@intec.ugent.be> <530B0670.1010009@stackframe.org>
  <530E5EF2.8070800@intec.ugent.be>
  <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
- <5335910B.3000702@intec.ugent.be>
-Date: Fri, 28 Mar 2014 17:31:41 +0200
-In-Reply-To: <5335910B.3000702@intec.ugent.be> (Bart Jooris's message of "Fri, 
- 28 Mar 2014 16:11:07 +0100")
-Message-ID: <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <5335910B.3000702@intec.ugent.be> <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
+Reply-To: Bart.Jooris@intec.ugent.be
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,57 +40,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bart.Jooris@intec.ugent.be
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k@lists.infradead.org
 
-Bart Jooris <Bart.Jooris@intec.ugent.be> writes:
-
-> On 02/27/2014 04:59 PM, Kalle Valo wrote:
->> Changing subject.
->>
->> Bart Jooris<Bart.Jooris@intec.ugent.be>  writes:
->>
->>> Just got a stable 160Mbps (iperf udp, tweeking the distance and ended
->>> up around 50cm) on a Ubuntu 13.10 client (regulatory.bin still not
->>> ok).
->>> Not yet the 300Mbps as I read earlier on the thread.
->>> What could be the next steps to speed up the link?
->> First I would use the full hostapd configuration which I just added to
->> the wiki:
->>
->> http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Full_hostapd_configuration
->>
->> Next I would disable all possible debug features from kernel and make
->> sure that they are not included in the build. And last try to find a
->> free channel with little interference as possible.
->>
->> I'm sure others have better ideas.
->>
-> No luck for now. 160Mbps seems to be the limit using the mentioned
-> configuration (I had to fix the channel to 36 and add
-> vht_oper_centr_freq_seg0_idx=42 again to bring up the AP)
-> I'm using sparkLAN WPEA-351AC cards with QCA9880 chip set.
-
-You are providing very little information which makes it difficult to
-help. For starters:
-
-* What firmware version?
-
-* What version of ath10k are you using?
-
-* Are you sure that the host is not limiting the throughput in any way?
-  Try to disable _all_ kernel debug options.
-
-* Also describe your test setup in detail.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBLYWxsZSwKCk9uIDAzLzI4LzIwMTQgMDQ6MzEgUE0sIEthbGxlIFZhbG8gd3JvdGU6Cj4g
+QmFydCBKb29yaXMgPEJhcnQuSm9vcmlzQGludGVjLnVnZW50LmJlPiB3cml0ZXM6Cj4KPj4gT24g
+MDIvMjcvMjAxNCAwNDo1OSBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPj4+IEJhcnQgSm9vcmlzPEJh
+cnQuSm9vcmlzQGludGVjLnVnZW50LmJlPiAgd3JpdGVzOgo+Pj4KPj4+PiBKdXN0IGdvdCBhIHN0
+YWJsZSAxNjBNYnBzCj4+Pj4gV2hhdCBjb3VsZCBiZSB0aGUgbmV4dCBzdGVwcyB0byBzcGVlZCB1
+cCB0aGUgbGluaz8KPj4+IEZpcnN0IEkgd291bGQgdXNlIHRoZSBmdWxsIGhvc3RhcGQgY29uZmln
+dXJhdGlvbiB3aGljaCBJIGp1c3QgYWRkZWQgdG8KPj4+IHRoZSB3aWtpOgo+Pj4KPj4+IGh0dHA6
+Ly93aXJlbGVzcy5rZXJuZWwub3JnL2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2NvbmZpZ3VyYXRp
+b24jRnVsbF9ob3N0YXBkX2NvbmZpZ3VyYXRpb24KPj4+Cj4+PiBOZXh0IEkgd291bGQgZGlzYWJs
+ZSBhbGwgcG9zc2libGUgZGVidWcgZmVhdHVyZXMgZnJvbSBrZXJuZWwgYW5kIG1ha2UKPj4+IHN1
+cmUgdGhhdCB0aGV5IGFyZSBub3QgaW5jbHVkZWQgaW4gdGhlIGJ1aWxkLiBBbmQgbGFzdCB0cnkg
+dG8gZmluZCBhCj4+PiBmcmVlIGNoYW5uZWwgd2l0aCBsaXR0bGUgaW50ZXJmZXJlbmNlIGFzIHBv
+c3NpYmxlLgo+PiBObyBsdWNrIGZvciBub3cuIDE2ME1icHMgc2VlbXMgdG8gYmUgdGhlIGxpbWl0
+IHVzaW5nIHRoZSBtZW50aW9uZWQKPj4gY29uZmlndXJhdGlvbiAoSSBoYWQgdG8gZml4IHRoZSBj
+aGFubmVsIHRvIDM2IGFuZCBhZGQKPj4gdmh0X29wZXJfY2VudHJfZnJlcV9zZWcwX2lkeD00MiBh
+Z2FpbiB0byBicmluZyB1cCB0aGUgQVApCj4+IEknbSB1c2luZyBzcGFya0xBTiBXUEVBLTM1MUFD
+IGNhcmRzIHdpdGggUUNBOTg4MCBjaGlwIHNldC4KPiBZb3UgYXJlIHByb3ZpZGluZyB2ZXJ5IGxp
+dHRsZSBpbmZvcm1hdGlvbiB3aGljaCBtYWtlcyBpdCBkaWZmaWN1bHQgdG8KPiBoZWxwLiBGb3Ig
+c3RhcnRlcnM6Cj4KPiAqIFdoYXQgZmlybXdhcmUgdmVyc2lvbj8KSSd2ZSBjbG9uZWQgJ3JlY2Vu
+dGx5JyBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlLwoKdHJlZSAtRCAv
+bGliL2Zpcm13YXJlL2F0aDEway9RQ0E5ODhYCuKUlOKUgOKUgCBbTWFyIDI5IDEwOjQ2XSBodzIu
+MArilJzilIDilIAgW0ZlYiAyNiAxOTozOV0gYm9hcmQuYmluCuKUnOKUgOKUgCBbRmViIDI2IDE5
+OjM5XSBmaXJtd2FyZS0yLmJpbgrilJTilIDilIAgW0ZlYiAyNiAxOTozOV0gb3RwLmJpbgoKPgo+
+ICogV2hhdCB2ZXJzaW9uIG9mIGF0aDEwayBhcmUgeW91IHVzaW5nPwpJIGNvbXBpbGVkIGtlcm5l
+bCAzLjEzLjUuCgpiam9vcmlzQERTUy0xMzAwLTI6fi9ob3N0YXAvaG9zdGFwZCQgbW9kaW5mbyBh
+dGgxMGtfY29yZQpmaWxlbmFtZTogCi9saWIvbW9kdWxlcy8zLjEzLjUva2VybmVsL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvYXRoMTBrX2NvcmUua28KbGljZW5zZTogRHVhbCBCU0Qv
+R1BMCmRlc2NyaXB0aW9uOiBDb3JlIG1vZHVsZSBmb3IgUUNBOTg4WCBQQ0llIGRldmljZXMuCmF1
+dGhvcjogUXVhbGNvbW0gQXRoZXJvcwpzcmN2ZXJzaW9uOiBEQTU1QzI1RTcxQjc5RDMyOTA1MzZF
+OApkZXBlbmRzOiBjZmc4MDIxMSxtYWM4MDIxMSxhdGgKaW50cmVlOiBZCnZlcm1hZ2ljOiAzLjEz
+LjUgU01QIG1vZF91bmxvYWQgbW9kdmVyc2lvbnMKcGFybTogZGVidWdfbWFzazpEZWJ1Z2dpbmcg
+bWFzayAodWludCkKcGFybTogdWFydF9wcmludDpVYXJ0IHRhcmdldCBkZWJ1Z2dpbmcgKGJvb2wp
+CnBhcm06IHAycDpFbmFibGUgYXRoMTBrIFAyUCBzdXBwb3J0ICh1aW50KQoKYmpvb3Jpc0BEU1Mt
+MTMwMC0yOn4vaG9zdGFwL2hvc3RhcGQkIG1vZGluZm8gYXRoMTBrX3BjaQpmaWxlbmFtZTogCi9s
+aWIvbW9kdWxlcy8zLjEzLjUva2VybmVsL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+YXRoMTBrX3BjaS5rbwpmaXJtd2FyZTogYXRoMTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQuYmluCmZp
+cm13YXJlOiBhdGgxMGsvUUNBOTg4WC9odzIuMC9vdHAuYmluCmZpcm13YXJlOiBhdGgxMGsvUUNB
+OTg4WC9odzIuMC9maXJtd2FyZS5iaW4KbGljZW5zZTogRHVhbCBCU0QvR1BMCmRlc2NyaXB0aW9u
+OiBEcml2ZXIgc3VwcG9ydCBmb3IgQXRoZXJvcyBRQ0E5ODhYIFBDSWUgZGV2aWNlcwphdXRob3I6
+IFF1YWxjb21tIEF0aGVyb3MKc3JjdmVyc2lvbjogNUY2MEZCOURCMEVFNkRBMjAxMkQ0REIKYWxp
+YXM6IHBjaTp2MDAwMDE2OENkMDAwMDAwM0NzdipzZCpiYypzYyppKgpkZXBlbmRzOiBhdGgxMGtf
+Y29yZSxtYWM4MDIxMQppbnRyZWU6IFkKdmVybWFnaWM6IDMuMTMuNSBTTVAgbW9kX3VubG9hZCBt
+b2R2ZXJzaW9ucwpwYXJtOiBhdGgxMGtfdGFyZ2V0X3BzOkVuYWJsZSBhdGgxMGsgVGFyZ2V0IChT
+b0MpIFBTIG9wdGlvbiAodWludCkKCj4KPiAqIEFyZSB5b3Ugc3VyZSB0aGF0IHRoZSBob3N0IGlz
+IG5vdCBsaW1pdGluZyB0aGUgdGhyb3VnaHB1dCBpbiBhbnkgd2F5Pwo+ICAgIFRyeSB0byBkaXNh
+YmxlIF9hbGxfIGtlcm5lbCBkZWJ1ZyBvcHRpb25zLgovdmFyL2xvZy9zeXNsb2cgYW5kIGRtZXNn
+IGRvZXNuJ3QgdG8gYmUgcGFja2VkIHdpdGggbWVzc2FnZXMgcmVsYXRlZCB0byAKdGhlIHRocm91
+Z2hwdXQgdGVzdC4gSSBkb24ndCB0aGluayB0byBoYXZlIHNlZW4gdGhlIENQVSBiZWluZyBvdmVy
+bG9hZGVkIApkdXJpbmcgdGhlIHRlc3QuCkknbSBwbGFubmluZyB0byBnbyBiYWNrIHRvIHRoZSBv
+ZmZpY2UgdG9tb3Jyb3cgdG8gdmVyaWZ5IHRoaXMuCgpGdXJ0aGVyIEkgaGF2ZSB0aGVzZSBpbiBt
+eSBrZXJuZWwgY29uZmlnCkNPTkZJR19BVEgxMEs9bQpDT05GSUdfQVRIMTBLX1BDST1tCiMgQ09O
+RklHX0FUSDEwS19ERUJVRyBpcyBub3Qgc2V0CkNPTkZJR19BVEgxMEtfREVCVUdGUz15CkNPTkZJ
+R19BVEgxMEtfVFJBQ0lORz15CgpJIHdpbGwgZGlzYWJsZSB0aGUgbGFzdCB0d28gdG9vLgoKPgo+
+ICogQWxzbyBkZXNjcmliZSB5b3VyIHRlc3Qgc2V0dXAgaW4gZGV0YWlsLgo+CkNvbW1vbiBmb3Ig
+QVAgYW5kIFNUQToKCi1EU1MtMTMwMCB3aXRoIGk1LTI1NDBNIENQVSBAIDIuNjBHSHogLSA4R0Ig
+UkFNIC0gU1NEIDY0R0IuCi0xIHNwYXJrTEFOIFdQRUEtMzUxQUMgY2FyZCB3aXRoIFFDQTk4ODAg
+Y2hpcCBzZXQgYW5kIDMgZHVhbCBiYW5kIGFudGVubmEncy4KLUtlcm5lbCAzLjEzLjUgY29udGFp
+bmluZyB0aGUgYXRoMTBrIG1vZHVsZXMKLWZpcm13YXJlcyBjbG9uZWQgZW5kIG9mIEZlYnJ1YXJ5
+Ci1pcGVyZiBpbiB1ZHAgbW9kZSB1c2VkIGZvciB0aGUgIHRocm91Z2hwdXQgdGVzdAoKQVAgb25s
+eToKLXVidW50dSAxMi4wNCBMVFMgYXMgY3JkYSB3b3VsZG4ndCBidWlsZCBvbiB1YnVudHUgMTMu
+MTAgKGxpYmdjcnlwdCBpc3N1ZSkuCi1ob3N0YXBkIHYyLjItZGV2ZWwKLW1vZGlmaWVkIHJlZ3Vs
+YXRvcnkgZGF0YWJhc2UgYW5kIGNyZGEgYnVpbGQKLXlvdXIgRnVsbF9ob3N0YXBkX2NvbmZpZ3Vy
+YXRpb24gKyBjaGFubmVsPTM2IGFuZCB2aHRfb3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCgpT
+VEEgb25seToKLXVidW50dSAxMy4xMAotbm1jbGkgaXMgdXNlZCB0byBjb25uZWN0IHRvIHRoZSBB
+UAoKRGlzdGFuY2UgYmV0d2VlbiBBUCBhbmQgU1RBOiA2MCBjbS4gQW50ZW5uYSdzIGFyZSBub3cg
+ZGlyZWN0ZWQgb3J0aG9nb25hbCBwZXIgZGV2aWNlLCBhbnRlbm5hWCAoWD0xLi4zKSBvbiBib3Ro
+IGRldmljZXMgYXJlIHBvaW50aW5nIGluIHRoZSBzYW1lIGRpcmVjdGlvbi4KQWx0aG91Z2ggSSd2
+ZSBwbGF5ZWQgYSBsb3Qgd2l0aCB0aGUgYW50ZW5uYSdzIGRpcmVjdGlvbnMgYWxyZWFkeSBhbmQg
+SSBjYW4ndCByZW1lbWJlciBvbmUgcnVuIHdoZXJlIGl0IGhhZCBhIGxvdCBvZiBpbXBhY3QuLi4K
+ClRoZSBzcGVjdHJ1bSBhbmFseXNlciBtZWFzdXJlZCBhIGJhbmQgb2YgYWxtb3N0IDgwTUh6IGJl
+aW5nIHVzZWQuCgoKVGhhbmtzIGEgbG90LAoKQmFydAoKCgotLSAKQmFydCBKb29yaXMKRGVwYXJ0
+bWVudCBvZiBJbmZvcm1hdGlvbiBUZWNobm9sb2d5CkludGVybmV0IEJhc2VkIENvbW11bmljYXRp
+b24gTmV0d29ya3MgYW5kIFNlcnZpY2VzIChJQkNOKQpHaGVudCBVbml2ZXJzaXR5IC0gaU1pbmRz
+Ckdhc3RvbiBDcm9tbWVubGFhbiA4IChCdXMgMjAxKSwgQi05MDUwIEdlbnQsIEJlbGdpdW0KRS1t
+YWlsOiBiYXJ0Lmpvb3Jpc0BpbnRlYy5VR2VudC5iZQpNOiArMzIgNDc0IDU5IDUzIDQyClRlbC4g
+KzMyIDkgMzMgMTQ5MDAKRmF4ICszMiA5IDMzIDE0ODk5CgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
