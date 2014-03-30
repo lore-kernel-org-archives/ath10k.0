@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUCAg-0003sR-M6
- for ath10k@lists.infradead.org; Sun, 30 Mar 2014 09:36:55 +0000
-Received: by mail-we0-f173.google.com with SMTP id w61so3631401wes.4
- for <ath10k@lists.infradead.org>; Sun, 30 Mar 2014 02:36:30 -0700 (PDT)
-Message-ID: <5337E59C.3060706@intec.ugent.be>
-Date: Sun, 30 Mar 2014 11:36:28 +0200
-From: Bart Jooris <bart.jooris@gmail.com>
+ id 1WUJCd-0008DY-Iz
+ for ath10k@lists.infradead.org; Sun, 30 Mar 2014 17:07:24 +0000
+Message-ID: <53384F2E.8010001@candelatech.com>
+Date: Sun, 30 Mar 2014 10:06:54 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: Running throughput tests
 References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
- <008d01cef722$2a9c05e0$7fd411a0$@sparklan.com>
  <52A9DEF9.8080305@intec.ugent.be>
  <012e01cef7e0$99017e70$cb047b50$@sparklan.com>
  <52AACFB9.8080901@intec.ugent.be>
@@ -30,9 +27,9 @@ References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
  <530E5EF2.8070800@intec.ugent.be>
  <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
  <5335910B.3000702@intec.ugent.be> <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
- <53372210.7060903@intec.ugent.be>
-In-Reply-To: <53372210.7060903@intec.ugent.be>
-Reply-To: Bart.Jooris@intec.ugent.be
+ <53372210.7060903@intec.ugent.be> <53372A9A.1090402@candelatech.com>
+ <5337C859.3040405@intec.ugent.be>
+In-Reply-To: <5337C859.3040405@intec.ugent.be>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -45,86 +42,51 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
+To: Bart.Jooris@intec.ugent.be, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-Dear Kalle,
-
-On 03/29/2014 08:42 PM, Bart Jooris wrote:
-> On 03/28/2014 04:31 PM, Kalle Valo wrote:
+On 03/30/2014 12:31 AM, Bart Jooris wrote:
+> Dear Ben,
 >
+> On 03/29/2014 09:18 PM, Ben Greear wrote:
+>> On 03/29/2014 12:42 PM, Bart Jooris wrote:
 >>
->> * Are you sure that the host is not limiting the throughput in any way?
->>    Try to disable _all_ kernel debug options.
-> /var/log/syslog and dmesg doesn't to be packed with messages related 
-> to the throughput test. I don't think to have seen the CPU being 
-> overloaded during the test.
-> I'm planning to go back to the office tomorrow to verify this.
+>>> -DSS-1300 with i5-2540M CPU @ 2.60GHz - 8GB RAM - SSD 64GB.
+>>> -1 sparkLAN WPEA-351AC card with QCA9880 chip set and 3 dual band antenna's.
+>>> -Kernel 3.13.5 containing the ath10k modules
+>>> -firmwares cloned end of February
+>>> -iperf in udp mode used for the  throughput test
+>>
+>> I get 500+Mbps on some other NICs with same chipset...
+> :-) Which cards are you using?
+
+I get same general throughput with CUS223 and WLE900VX.
+
+>> I'll get some
+>> WPEA-351AC as soon as I can find someone willing to sell them and will
+>> do some tests on those as well...
+>>
+> I have 8 of those, I can lend you 2.
+
+I'll contact you off list about this.
+
+Thanks,
+Ben
+
+>> With very latest ath10k tree and firmware, you can cat out the
+>> debug stats and see your station tx/rx train rates..that might
+>> be interesting information...
+> I will give it another try to compile the latest ath10k.
 >
-
-I just ran a new test to verify if the AP or the STA are under stress.
-What you can see here is dstat, hostapd and iperf running on the AP.
-After +-8 seconds I've started iperf on the STA.
-
-bjooris@DSS-1300-2:~$ dstat -c -n -N wlan0 -d -D sda1
-----total-cpu-usage---- -net/wlan0- --dsk/sda1-
-usr sys idl wai hiq siq| recv  send| read  writ
-   0   0 100   0   0   0|   0     0 | 228k 9002B
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|   0     0 |   0     0
-   0   0 100   0   0   0|4710k    0 |   0     0
-   0   0  99   0   0   0|  16M    0 |   0     0
-   0   0  99   0   0   0|  17M    0 |   0     0
-   0   1  99   0   0   0|  17M    0 |   0     0
-   0   0  99   0   0   0|  17M    0 |   0     0
-   0   0  99   0   0   0|  17M    0 |   0     0
-   1   0  99   0   0   0|  17M   62B|   0     0
-   0   1  99   0   0   0|  17M    0 |   0     0
-   0   0  99   0   0   0|  16M    0 |   0     0
-   0   0  99   0   0   0|  17M    0 |   0     0
-   0   1  99   0   0   0|  17M    0 |   0     0
-   0   0 100   0   0   0|  17M    0 |   0     0
-
-Same info on the STA with iperf already running.
-
-----total-cpu-usage---- -net/wlan0- --dsk/sda1-
-usr sys idl wai hiq siq| recv  send| read  writ
-   0   3  97   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    17M|   0     0
-   0   2  98   0   0   0|   0    18M|   0     0
-   1   4  95   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    18M|   0     0
-   1   3  96   0   0   0|   0    17M|   0     0
-   0   3  96   0   0   0|   0    18M|   0     0
-   1   4  96   0   0   0|   0    18M|   0     0
-   0   4  96   0   0   0|   0    17M|   0     0
-   1   4  95   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    17M|   0     0
-   0   3  97   0   0   0|   0    17M|   0     0
-
-I will now try to build the latest ath10k.
-
-Thanks a lot,
-
-Bart
+> Thanks,
+>
+> Bart
+>
 
 
 -- 
-Bart Jooris
-Department of Information Technology
-Internet Based Communication Networks and Services (IBCN)
-Ghent University - iMinds
-Gaston Crommenlaan 8 (Bus 201), B-9050 Gent, Belgium
-E-mail: bart.jooris@intec.UGent.be
-M: +32 474 59 53 42
-Tel. +32 9 33 14900
-Fax +32 9 33 14899
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
