@@ -1,35 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUJCd-0008DY-Iz
- for ath10k@lists.infradead.org; Sun, 30 Mar 2014 17:07:24 +0000
-Message-ID: <53384F2E.8010001@candelatech.com>
-Date: Sun, 30 Mar 2014 10:06:54 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WUMZp-0001o9-EY
+ for ath10k@lists.infradead.org; Sun, 30 Mar 2014 20:43:34 +0000
+Received: by mail-wi0-f176.google.com with SMTP id r20so2370254wiv.3
+ for <ath10k@lists.infradead.org>; Sun, 30 Mar 2014 13:43:07 -0700 (PDT)
+Received: from [192.168.1.50] (d51A5BB56.access.telenet.be. [81.165.187.86])
+ by mx.google.com with ESMTPSA id bc51sm28138954eeb.22.2014.03.30.13.43.03
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Sun, 30 Mar 2014 13:43:03 -0700 (PDT)
+Message-ID: <533881D6.9010301@intec.ugent.be>
+Date: Sun, 30 Mar 2014 22:43:02 +0200
+From: Bart Jooris <bart.jooris@gmail.com>
 MIME-Version: 1.0
-Subject: Re: Running throughput tests
-References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
- <52A9DEF9.8080305@intec.ugent.be>
- <012e01cef7e0$99017e70$cb047b50$@sparklan.com>
- <52AACFB9.8080901@intec.ugent.be>
- <006301cefa3c$44c07b50$ce4171f0$@sparklan.com>
- <52AEC26B.2060400@intec.ugent.be>
- <007f01cefa41$8a940de0$9fbc29a0$@sparklan.com>
- <52AEE61F.5030505@intec.ugent.be>
- <006b01cefacb$6c0b2d60$44218820$@sparklan.com>
- <52B00B10.3050300@intec.ugent.be>
- <004b01cefb9d$04a543e0$0defcba0$@sparklan.com>
- <52B2AE75.9050206@intec.ugent.be>
- <00df01cf0090$05944f10$10bced30$@sparklan.com>
- <52B9672E.9000701@intec.ugent.be>
- <008c01cf012e$e59563d0$b0c02b70$@sparklan.com>
- <530A64E5.2040401@intec.ugent.be> <530B0670.1010009@stackframe.org>
- <530E5EF2.8070800@intec.ugent.be>
- <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
- <5335910B.3000702@intec.ugent.be> <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
- <53372210.7060903@intec.ugent.be> <53372A9A.1090402@candelatech.com>
- <5337C859.3040405@intec.ugent.be>
-In-Reply-To: <5337C859.3040405@intec.ugent.be>
+Subject: Re: Compiling custom ath10k: step 5 minor issue
+References: <530BB3E2.8000705@intec.ugent.be>
+ <87wqghkc9h.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87wqghkc9h.fsf@kamboji.qca.qualcomm.com>
+Reply-To: Bart.Jooris@intec.ugent.be
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -42,51 +31,66 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bart.Jooris@intec.ugent.be, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On 03/30/2014 12:31 AM, Bart Jooris wrote:
-> Dear Ben,
+Hi all,
+
+On 02/26/2014 06:35 PM, Kalle Valo wrote:
+> Bart Jooris <Bart.Jooris@intec.ugent.be> writes:
 >
-> On 03/29/2014 09:18 PM, Ben Greear wrote:
->> On 03/29/2014 12:42 PM, Bart Jooris wrote:
+>> ../ath/net/core/flow_dissector.c seems to be changed?
 >>
->>> -DSS-1300 with i5-2540M CPU @ 2.60GHz - 8GB RAM - SSD 64GB.
->>> -1 sparkLAN WPEA-351AC card with QCA9880 chip set and 3 dual band antenna's.
->>> -Kernel 3.13.5 containing the ath10k modules
->>> -firmwares cloned end of February
->>> -iperf in udp mode used for the  throughput test
->>
->> I get 500+Mbps on some other NICs with same chipset...
-> :-) Which cards are you using?
+>> ./gentree.py --verbose --clean --git-revision master --copy-list
+>> copy-list.ath ../ath ../backports-output
+>> Get original source files from git ...
+>> Apply patches ...
+>> Not applying backport-adjustments/dma-buf.patch, not needed
+>> Applying patch backport-adjustments/flow_dissector.patch
+>>> patching file compat/net-core-flow_dissector.c
+>>> Hunk #1 FAILED at 177.
+>>> 1 out of 1 hunk FAILED -- saving rejects to file
+>> compat/net-core-flow_dissector.c.rej
+> backports is always a moving target and you might get errors like these
+> when you create it on your own. There really isn't a reliable to avoid
+> it, you just have to fix the errors as you see them.
+I needed one fix, in drivers_net_wireless_ath_wil6210_netdev.patch, to 
+let all the hunks succeed. I ended up with gentree expecting 
+combined.cocci in a tempdir...
 
-I get same general throughput with CUS223 and WLE900VX.
+...
+Not applying 
+collateral-evolutions/regulator/0001-bt8xx-rename-dst-ops.patch, not needed
+Applying patch /tmp/Tgt2Ph/combined.cocci
+Traceback (most recent call last):
+   File "./gentree.py", line 843, in <module>
+     ret = _main()
+   File "./gentree.py", line 490, in _main
+     logwrite=logwrite)
+   File "./gentree.py", line 706, in process
+     cwd=args.outdir)
+   File "/usr/lib/python2.7/subprocess.py", line 709, in __init__
+     errread, errwrite)
+   File "/usr/lib/python2.7/subprocess.py", line 1326, in _execute_child
+     raise child_exception
+OSError: [Errno 2] No such file or directory
 
->> I'll get some
->> WPEA-351AC as soon as I can find someone willing to sell them and will
->> do some tests on those as well...
->>
-> I have 8 of those, I can lend you 2.
 
-I'll contact you off list about this.
+What could be my next move?
 
-Thanks,
-Ben
+Thanks a lot,
 
->> With very latest ath10k tree and firmware, you can cat out the
->> debug stats and see your station tx/rx train rates..that might
->> be interesting information...
-> I will give it another try to compile the latest ath10k.
->
-> Thanks,
->
-> Bart
->
-
+Bart
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Bart Jooris
+Department of Information Technology
+Internet Based Communication Networks and Services (IBCN)
+Ghent University - iMinds
+Gaston Crommenlaan 8 (Bus 201), B-9050 Gent, Belgium
+E-mail: bart.jooris@intec.UGent.be
+M: +32 474 59 53 42
+Tel. +32 9 33 14900
+Fax +32 9 33 14899
 
 
 _______________________________________________
