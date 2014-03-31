@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUf29-0007Zd-UV
- for ath10k@lists.infradead.org; Mon, 31 Mar 2014 16:26:02 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s2VGPeLD007943
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Mon, 31 Mar 2014 09:25:40 -0700
-Message-ID: <53399703.1060302@candelatech.com>
-Date: Mon, 31 Mar 2014 09:25:39 -0700
+ id 1WUfW6-0000BS-Oe
+ for ath10k@lists.infradead.org; Mon, 31 Mar 2014 16:56:59 +0000
+Message-ID: <53399E42.2090504@candelatech.com>
+Date: Mon, 31 Mar 2014 09:56:34 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Clean-ish rebase on top of 3.14.0 (final)?
+Subject: ath10k: ieee80211_restart_work called with hardware scan in progress
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +20,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Kalle:  In case you end up with your tree in a clean rebase
-on stock 3.14.0 (or as clean as is reasonable), could you let
-us know and give us a bit of time before pulling down more
-upstream stuff?
+This came from a customer (demo) system.  Firmware is 10.1.389 based, modified
+by us.  It has lots of known issues, but I haven't seen the warning
+below before, and not sure it is specifically a bug with ath10k or not.
 
-The reason is that I would like to freeze a 3.14 kernel with
-whatever ath10k patches are currently in your tree and attempt
-to stabalize it...
-
-If that is not convenient, then don't worry..I can make it work
-one way or another.
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ath10k: could not start hw scan (-108)
+Mar 31 13:49:54 ct521-5332 kernel: ieee80211_restart_work called with hardware scan in progress
+Mar 31 13:49:54 ct521-5332 kernel: Modules linked in: nf_nat_ipv4 nf_nat fuse 8021q mrp garp stp llc macvlan pktgen coretemp hwmon sunrpc ipv6 uinput
+snd_hda_codec_realtek snd_hda_codec_generic ath10k_pci ath10k_core snd_hda_intel mac80211 snd_hda_codec snd_hwdep snd_seq snd_seq_device iTCO_wdt e1000e
+microcode ath gpio_ich snd_pcm iTCO_vendor_support ppdev ptp snd_timer parport_pc snd cfg80211 parport serio_raw pps_core soundcore pcspkr i2c_i801 lpc_ich i915
+drm_kms_helper drm i2c_algo_bit i2c_core video [last unloaded: iptable_nat]
+Mar 31 13:49:54 ct521-5332 kernel: CPU: 0 PID: 11818 Comm: kworker/0:0 Tainted: G        WC   3.14.0-rc7-wl-ath+ #4
+Mar 31 13:49:54 ct521-5332 kernel: Hardware name: To be filled by O.E.M. To be filled by O.E.M./To be filled by O.E.M., BIOS 4.6.3 09/05/2011
+Mar 31 13:49:54 ct521-5332 kernel: Workqueue: events ieee80211_restart_work [mac80211]
+Mar 31 13:49:54 ct521-5332 kernel: 0000000000000009 ffff8800bd865d68 ffffffff815ab0a5 ffff88022bc0ec38
+Mar 31 13:49:54 ct521-5332 kernel: ffff8800bd865db8 ffff8800bd865da8 ffffffff810c1aa8 ffff8800bd865d88
+Mar 31 13:49:54 ct521-5332 kernel: ffffffffa03858ce ffff8802214d5650 ffff8802214d45e0 ffff8802214d5650
+Mar 31 13:49:54 ct521-5332 kernel: Call Trace:
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff815ab0a5>] dump_stack+0x4e/0x71
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810c1aa8>] warn_slowpath_common+0x77/0x91
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffffa03858ce>] ? ieee80211_restart_work+0x49/0x68 [mac80211]
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810c1b56>] warn_slowpath_fmt+0x41/0x43
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffffa03858ce>] ieee80211_restart_work+0x49/0x68 [mac80211]
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810d52af>] process_one_work+0x162/0x216
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810d5724>] worker_thread+0x12f/0x1fd
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810d55f5>] ? rescuer_thread+0x268/0x268
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810d55f5>] ? rescuer_thread+0x268/0x268
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810da37f>] kthread+0xa0/0xa8
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810da2df>] ? __kthread_parkme+0x5c/0x5c
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff815b5b4c>] ret_from_fork+0x7c/0xb0
+Mar 31 13:49:54 ct521-5332 kernel: [<ffffffff810da2df>] ? __kthread_parkme+0x5c/0x5c
+Mar 31 13:49:54 ct521-5332 kernel: ---[ end trace fd8ccdaa79168e68 ]---
 
 Thanks,
 Ben
