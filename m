@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUrV7-0007lb-Cb
- for ath10k@lists.infradead.org; Tue, 01 Apr 2014 05:44:46 +0000
-Received: by mail-wi0-f172.google.com with SMTP id hi2so2988709wib.11
- for <ath10k@lists.infradead.org>; Mon, 31 Mar 2014 22:44:22 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <533A0729.4030907@candelatech.com>
-References: <533A0729.4030907@candelatech.com>
-Date: Tue, 1 Apr 2014 07:44:22 +0200
-Message-ID: <CA+BoTQm8YEaz7B0jF1GDQrfczEA3tToJPTMx0oS-oZpH25Rkrw@mail.gmail.com>
-Subject: Re: More on ath10k_flush.
+ id 1WUtAh-0001Aa-Q1
+ for ath10k@lists.infradead.org; Tue, 01 Apr 2014 07:31:48 +0000
+Received: by mail-wi0-f174.google.com with SMTP id d1so4565520wiv.7
+ for <ath10k@lists.infradead.org>; Tue, 01 Apr 2014 00:31:25 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix initial radar detection logic
+Date: Tue,  1 Apr 2014 09:25:23 +0200
+Message-Id: <1396337123-12622-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1396015934-7723-1-git-send-email-michal.kazior@tieto.com>
+References: <1396015934-7723-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +19,179 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMSBBcHJpbCAyMDE0IDAyOjI0LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gU28sIEkgdHJpZWQgYWRkaW5nIGxvdHMgb2YgZGVidWcgdG8gdGhlIGF0aDEw
-a19mbHVzaCwKPiBhbmQgSSB0aGluayBJIG1pZ2h0IGhhdmUgZm91bmQgdGhlIGlzc3VlLgo+Cj4g
-TXkgdGVzdCBjYXNlIGlzOiAgY3JlYXRlIDMyIHN0YXRpb25zLCBzdGFydCBUQ1Agb24gYWxsIG9m
-IHRoZW0sCj4gdGhlbiByZXNldCAoZWZmZWN0aXZlbHkgaWZkb3duO2lmdXApIHRoZSBzdGF0aW9u
-IHZpZnMuCj4KPiBJIGdldCBsb3RzIG9mIHNwZXdzIGJlY2F1c2UgdGhlIGF0aDEwa19mbHVzaCBj
-YWxsIHRoaW5rcyBpdCBpcwo+IGhhbmdpbmcuICBCdXQsIGJhc2VkIG9uIHRoZSBkZWJ1ZywgSSB0
-aGluayB0aGUgcHJvYmxlbSBpcyB0aGF0Cj4gdGhlIHR4IGxvZ2ljIGlzIGNvbnRpbnVpbmcgdG8g
-YWNjZXB0IHBhY2tldHMgd2hpbGUgdGhlIGZsdXNoCj4gaXMgdHJ5aW5nIHRvIGhhcHBlbi4KPgo+
-IElmIG15IGRlYnVnZ2luZyBzdGF0cyBhcmUgY29ycmVjdCwgdGhlIE5JQyBtYW5hZ2VkIHRvIHNl
-bmQgYXJvdW5kIDQwMDAKPiBmcmFtZXMgZHVyaW5nIHRoZSBmbHVzaCBhdHRlbXB0LCBhbmQgdGhl
-IGF0aDEwayBkcml2ZXIgcHJvY2Vzc2VkIGxvdHMgb2YKPiB0eCBjb21wbGV0aW9ucyBhcyB3ZWxs
-LiAgQnV0IHRoZXJlIGFyZSBzdGlsbCBsb3RzIG9mIHBrdHMKPiBwZW5kaW5nIHR4IGFuZCB0aGUg
-dHggcXVldWUgd2FzIG5ldmVyIGVtcHR5Lgo+Cj4gYXRoMTBrOiBmYWlsZWQgdG8gZmx1c2ggdHJh
-bnNtaXQgcXVldWUgKHNraXAgMCBhci1zdGF0ZSAxIHBlbmRpbmdfdHggMTAwOSAgcHJlLXBlbmRp
-bmctdHg6IDEwNDUpOiAwCj4gYXRoMTBrOiBwcmU6IGh0Yy1zZW5kLXRvdDogMzQyMyAgaHR0LXR4
-IDI1NDUzOTcgIHR4LWNvbXBsIDI1NDQzNTUgIG1ndC10eCAwICBtZ3QtY29tcGwgMAo+IGF0aDEw
-azogcG9zdDogaHRjLXNlbmQtdG90OiAzNDI0ICBodHQtdHggMjYzMDk4MSAgdHgtY29tcGwgMjYz
-MDE1NiAgbWd0LXR4IDAgIG1ndC1jb21wbCAwCj4gYXRoMTBrOiBwcmU6IGh3LXF1ZXVlZDogMTI0
-Mzk1ICBody1yZWFwZWQ6IDEyNDM5NAo+IGF0aDEwazogcG9zdDogaHctcXVldWVkOiAxMjg0MTgg
-IGh3LXJlYXBlZDogMTI4NDE3CgpXaGF0IGRvIHRoZXNlIHByaW50cyByZWZsZWN0IGV4YWN0bHk/
-IFdoYXQgYmFzZSB1cHN0cmVhbSBhdGgxMGsgY29tbWl0CmFyZSB5b3Ugb24/CgoKPiBEbyB3ZSBu
-ZWVkIHRvIHNvbWVob3cgc2h1dCBkb3duIGFsbCB0eCBsb2dpYyBkdXJpbmcgdGhlIGF0aDEwa19m
-bHVzaAo+IHNvIHRoYXQgKG90aGVyPykgc3RhdGlvbnMgY2Fubm90IHRyYW5zbWl0PwoKVGhpcyBz
-ZWVtcyBzdHJhbmdlLiBkcnZfZmx1c2goKSBpcyBjYWxsZWQgd2l0aCBhbGwgdHggcXVldWVzIGJl
-aW5nCnN0b3BwZWQgaW4gbWFjODAyMTEgd2l0aCBJRUVFODAyMTFfUVVFVUVfU1RPUF9SRUFTT05f
-RkxVU0guIEkgZ3Vlc3MKeW91IGNhbiBzdGlsbCByZWNlaXZlIGEgZmV3IGZyYW1lcyAoZHVlIHRv
-IFNNUCB3aXRoIG1hbnkgaW50ZXJmYWNlcyksCmJ1dCB0aGF0J3MgaXQgKGF0IG1vc3QgbnVtX2Nw
-dXMtMSBJIGd1ZXNzKS4gWW91IHNob3VsZG4ndCBiZSBzZWVpbmcKNDAwMCBmcmFtZXMgYmVpbmcg
-cXVldWVkIHdoaWxlIHlvdSBmbHVzaC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+This fixes a problem of initial radar detection
+(CAC) being stuck and blocking Rx in some cases
+until all interfaces were brought down.
+
+For userspace this meant first run of hostapd
+would perform CAC but due to filtered Rx no
+clients would associate. Subsequent runs of
+hostapd would not perform CAC (as it was already
+done) and would associate clients.
+
+This also makes sure radar detection is performed
+when bandwidth is widened. Before if 20MHz CAC was
+performed then 40MHz CAC wouldn't start monitor
+vdev effectively disabling initial radar
+detection.
+
+A driver should just start/stop radar detection
+based on hw->conf.radar_enabled. However, since
+ath10k needs to start a monitor vdev for the
+initial radar detection special care needs to be
+applied.
+
+While at it cleanup the code a bit.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |  2 ++
+ drivers/net/wireless/ath/ath10k/mac.c  | 56 ++++++++++++----------------------
+ 2 files changed, 21 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8edd6da..ca2abe2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -434,6 +434,8 @@ struct ath10k {
+ 	unsigned int filter_flags;
+ 	unsigned long dev_flags;
+ 	u32 dfs_block_radar_events;
++	bool radar_enabled; /* protected by conf_mutex */
++	int num_started_vdevs; /* protected by conf_mutex */
+ 
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 58ec5a7..024fce4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -489,6 +489,8 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static void ath10k_recalc_radar_detection(struct ath10k *ar);
++
+ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ {
+ 	struct ath10k *ar = arvif->ar;
+@@ -545,6 +547,9 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
+ 		return ret;
+ 	}
+ 
++	ar->num_started_vdevs++;
++	ath10k_recalc_radar_detection(ar);
++
+ 	return ret;
+ }
+ 
+@@ -571,6 +576,11 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
+ 		return ret;
+ 	}
+ 
++	if (WARN_ON(ar->num_started_vdevs == 0)) {
++		ar->num_started_vdevs--;
++		ath10k_recalc_radar_detection(ar);
++	}
++
+ 	return ret;
+ }
+ 
+@@ -804,49 +814,18 @@ static int ath10k_stop_cac(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static const char *ath10k_dfs_state(enum nl80211_dfs_state dfs_state)
+-{
+-	switch (dfs_state) {
+-	case NL80211_DFS_USABLE:
+-		return "USABLE";
+-	case NL80211_DFS_UNAVAILABLE:
+-		return "UNAVAILABLE";
+-	case NL80211_DFS_AVAILABLE:
+-		return "AVAILABLE";
+-	default:
+-		WARN_ON(1);
+-		return "bug";
+-	}
+-}
+-
+-static void ath10k_config_radar_detection(struct ath10k *ar)
++static void ath10k_recalc_radar_detection(struct ath10k *ar)
+ {
+-	struct ieee80211_channel *chan = ar->hw->conf.chandef.chan;
+-	bool radar = ar->hw->conf.radar_enabled;
+-	bool chan_radar = !!(chan->flags & IEEE80211_CHAN_RADAR);
+-	enum nl80211_dfs_state dfs_state = chan->dfs_state;
+ 	int ret;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-	ath10k_dbg(ATH10K_DBG_MAC,
+-		   "mac radar config update: chan %dMHz radar %d chan radar %d chan state %s\n",
+-		   chan->center_freq, radar, chan_radar,
+-		   ath10k_dfs_state(dfs_state));
+-
+-	/*
+-	 * It's safe to call it even if CAC is not started.
+-	 * This call here guarantees changing channel, etc. will stop CAC.
+-	 */
+ 	ath10k_stop_cac(ar);
+ 
+-	if (!radar)
+-		return;
+-
+-	if (!chan_radar)
++	if (!ar->radar_enabled)
+ 		return;
+ 
+-	if (dfs_state != NL80211_DFS_USABLE)
++	if (ar->num_started_vdevs > 0)
+ 		return;
+ 
+ 	ret = ath10k_start_cac(ar);
+@@ -2341,6 +2320,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto exit;
+ 	}
+ 
++	ar->num_started_vdevs = 0;
+ 	ath10k_regd_update(ar);
+ 	ret = 0;
+ 
+@@ -2490,15 +2470,17 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 
+ 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL) {
+ 		ath10k_dbg(ATH10K_DBG_MAC,
+-			   "mac config channel %d mhz flags 0x%x\n",
++			   "mac config channel %dMHz flags 0x%x radar %d\n",
+ 			   conf->chandef.chan->center_freq,
+-			   conf->chandef.chan->flags);
++			   conf->chandef.chan->flags,
++			   conf->radar_enabled);
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 		ar->rx_channel = conf->chandef.chan;
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+-		ath10k_config_radar_detection(ar);
++		ar->radar_enabled = conf->radar_enabled;
++		ath10k_recalc_radar_detection(ar);
+ 
+ 		if (!cfg80211_chandef_identical(&ar->chandef, &conf->chandef)) {
+ 			ar->chandef = conf->chandef;
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
