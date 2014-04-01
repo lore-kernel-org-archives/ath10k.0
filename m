@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUtza-0002Yo-1f
- for ath10k@lists.infradead.org; Tue, 01 Apr 2014 08:24:23 +0000
-Received: by mail-we0-f174.google.com with SMTP id t60so5807597wes.19
- for <ath10k@lists.infradead.org>; Tue, 01 Apr 2014 01:23:56 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: remove not needed warning when peer unmap
-Date: Tue,  1 Apr 2014 10:23:48 +0200
-Message-Id: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WUyUV-0000Y6-Vc
+ for ath10k@lists.infradead.org; Tue, 01 Apr 2014 13:12:36 +0000
+Message-ID: <533ABB20.3000407@candelatech.com>
+Date: Tue, 01 Apr 2014 06:12:00 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: More on ath10k_flush.
+References: <533A0729.4030907@candelatech.com>
+ <CA+BoTQm8YEaz7B0jF1GDQrfczEA3tToJPTMx0oS-oZpH25Rkrw@mail.gmail.com>
+In-Reply-To: <CA+BoTQm8YEaz7B0jF1GDQrfczEA3tToJPTMx0oS-oZpH25Rkrw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +19,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Remove not needed warning when get peer unmap
-event from the firmware. This is not critical
-message. Instead print this as a debug message.
-
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/txrx.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 82669a7..b7f4acc 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -200,7 +200,7 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find_by_id(ar, ev->peer_id);
- 	if (!peer) {
--		ath10k_warn("peer-unmap-event: unknown peer id %d\n",
-+		ath10k_dbg(ATH10K_DBG_HTT, "peer-unmap-event: unknown peer id %d\n",
- 			    ev->peer_id);
- 		goto exit;
- 	}
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDMvMzEvMjAxNCAxMDo0NCBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxIEFwcmls
+IDIwMTQgMDI6MjQsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToK
+Pj4gU28sIEkgdHJpZWQgYWRkaW5nIGxvdHMgb2YgZGVidWcgdG8gdGhlIGF0aDEwa19mbHVzaCwK
+Pj4gYW5kIEkgdGhpbmsgSSBtaWdodCBoYXZlIGZvdW5kIHRoZSBpc3N1ZS4KPj4KPj4gTXkgdGVz
+dCBjYXNlIGlzOiAgY3JlYXRlIDMyIHN0YXRpb25zLCBzdGFydCBUQ1Agb24gYWxsIG9mIHRoZW0s
+Cj4+IHRoZW4gcmVzZXQgKGVmZmVjdGl2ZWx5IGlmZG93bjtpZnVwKSB0aGUgc3RhdGlvbiB2aWZz
+Lgo+Pgo+PiBJIGdldCBsb3RzIG9mIHNwZXdzIGJlY2F1c2UgdGhlIGF0aDEwa19mbHVzaCBjYWxs
+IHRoaW5rcyBpdCBpcwo+PiBoYW5naW5nLiAgQnV0LCBiYXNlZCBvbiB0aGUgZGVidWcsIEkgdGhp
+bmsgdGhlIHByb2JsZW0gaXMgdGhhdAo+PiB0aGUgdHggbG9naWMgaXMgY29udGludWluZyB0byBh
+Y2NlcHQgcGFja2V0cyB3aGlsZSB0aGUgZmx1c2gKPj4gaXMgdHJ5aW5nIHRvIGhhcHBlbi4KPj4K
+Pj4gSWYgbXkgZGVidWdnaW5nIHN0YXRzIGFyZSBjb3JyZWN0LCB0aGUgTklDIG1hbmFnZWQgdG8g
+c2VuZCBhcm91bmQgNDAwMAo+PiBmcmFtZXMgZHVyaW5nIHRoZSBmbHVzaCBhdHRlbXB0LCBhbmQg
+dGhlIGF0aDEwayBkcml2ZXIgcHJvY2Vzc2VkIGxvdHMgb2YKPj4gdHggY29tcGxldGlvbnMgYXMg
+d2VsbC4gIEJ1dCB0aGVyZSBhcmUgc3RpbGwgbG90cyBvZiBwa3RzCj4+IHBlbmRpbmcgdHggYW5k
+IHRoZSB0eCBxdWV1ZSB3YXMgbmV2ZXIgZW1wdHkuCj4+Cj4+IGF0aDEwazogZmFpbGVkIHRvIGZs
+dXNoIHRyYW5zbWl0IHF1ZXVlIChza2lwIDAgYXItc3RhdGUgMSBwZW5kaW5nX3R4IDEwMDkgIHBy
+ZS1wZW5kaW5nLXR4OiAxMDQ1KTogMAo+PiBhdGgxMGs6IHByZTogaHRjLXNlbmQtdG90OiAzNDIz
+ICBodHQtdHggMjU0NTM5NyAgdHgtY29tcGwgMjU0NDM1NSAgbWd0LXR4IDAgIG1ndC1jb21wbCAw
+Cj4+IGF0aDEwazogcG9zdDogaHRjLXNlbmQtdG90OiAzNDI0ICBodHQtdHggMjYzMDk4MSAgdHgt
+Y29tcGwgMjYzMDE1NiAgbWd0LXR4IDAgIG1ndC1jb21wbCAwCj4+IGF0aDEwazogcHJlOiBody1x
+dWV1ZWQ6IDEyNDM5NSAgaHctcmVhcGVkOiAxMjQzOTQKPj4gYXRoMTBrOiBwb3N0OiBody1xdWV1
+ZWQ6IDEyODQxOCAgaHctcmVhcGVkOiAxMjg0MTcKPgo+IFdoYXQgZG8gdGhlc2UgcHJpbnRzIHJl
+ZmxlY3QgZXhhY3RseT8gV2hhdCBiYXNlIHVwc3RyZWFtIGF0aDEwayBjb21taXQKPiBhcmUgeW91
+IG9uPwo+Cj4KPj4gRG8gd2UgbmVlZCB0byBzb21laG93IHNodXQgZG93biBhbGwgdHggbG9naWMg
+ZHVyaW5nIHRoZSBhdGgxMGtfZmx1c2gKPj4gc28gdGhhdCAob3RoZXI/KSBzdGF0aW9ucyBjYW5u
+b3QgdHJhbnNtaXQ/Cj4KPiBUaGlzIHNlZW1zIHN0cmFuZ2UuIGRydl9mbHVzaCgpIGlzIGNhbGxl
+ZCB3aXRoIGFsbCB0eCBxdWV1ZXMgYmVpbmcKPiBzdG9wcGVkIGluIG1hYzgwMjExIHdpdGggSUVF
+RTgwMjExX1FVRVVFX1NUT1BfUkVBU09OX0ZMVVNILiBJIGd1ZXNzCj4geW91IGNhbiBzdGlsbCBy
+ZWNlaXZlIGEgZmV3IGZyYW1lcyAoZHVlIHRvIFNNUCB3aXRoIG1hbnkgaW50ZXJmYWNlcyksCj4g
+YnV0IHRoYXQncyBpdCAoYXQgbW9zdCBudW1fY3B1cy0xIEkgZ3Vlc3MpLiBZb3Ugc2hvdWxkbid0
+IGJlIHNlZWluZwo+IDQwMDAgZnJhbWVzIGJlaW5nIHF1ZXVlZCB3aGlsZSB5b3UgZmx1c2guCgpT
+dWJzZXF1ZW50IGRlYnVnZ2luZyBtYWtlcyBtZSB0aGluayB0aGUgZXh0cmEgcGFja2V0cyBhcmUg
+bm90IGNvbWluZwpmcm9tIHRoZSB1cHBlciBzdGFjay4gIFBvc3NpYmx5IHRoZXJlIGFyZSBhdGgx
+MGs8LT5maXJtd2FyZSBtYW5hZ2VtZW50IG1lc3NhZ2VzCmJlaW5nIHF1ZXVlZCBvciBzb21ldGhp
+bmcgbGlrZSB0aGF0PwoKSSdtIG91dCBvZiBvZmZpY2UgdG9kYXksIHdpbGwgcG9zdCB0aGUgZGVi
+dWcgcGF0Y2ggd2hlbiBJIGdldCBhIGNoYW5jZS4KClRoYW5rcywKQmVuCgo+Cj4KPiBNaWNoYcWC
+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
+aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
