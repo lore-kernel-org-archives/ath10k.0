@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WUyUV-0000Y6-Vc
- for ath10k@lists.infradead.org; Tue, 01 Apr 2014 13:12:36 +0000
-Message-ID: <533ABB20.3000407@candelatech.com>
-Date: Tue, 01 Apr 2014 06:12:00 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: More on ath10k_flush.
-References: <533A0729.4030907@candelatech.com>
- <CA+BoTQm8YEaz7B0jF1GDQrfczEA3tToJPTMx0oS-oZpH25Rkrw@mail.gmail.com>
-In-Reply-To: <CA+BoTQm8YEaz7B0jF1GDQrfczEA3tToJPTMx0oS-oZpH25Rkrw@mail.gmail.com>
+ id 1WV2vM-0000sf-4Q
+ for ath10k@lists.infradead.org; Tue, 01 Apr 2014 17:56:36 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 1/1] ath10k:  add helper method to grab debug stats.
+Date: Tue,  1 Apr 2014 10:55:40 -0700
+Message-Id: <1396374940-21453-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +15,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-T24gMDMvMzEvMjAxNCAxMDo0NCBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxIEFwcmls
-IDIwMTQgMDI6MjQsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToK
-Pj4gU28sIEkgdHJpZWQgYWRkaW5nIGxvdHMgb2YgZGVidWcgdG8gdGhlIGF0aDEwa19mbHVzaCwK
-Pj4gYW5kIEkgdGhpbmsgSSBtaWdodCBoYXZlIGZvdW5kIHRoZSBpc3N1ZS4KPj4KPj4gTXkgdGVz
-dCBjYXNlIGlzOiAgY3JlYXRlIDMyIHN0YXRpb25zLCBzdGFydCBUQ1Agb24gYWxsIG9mIHRoZW0s
-Cj4+IHRoZW4gcmVzZXQgKGVmZmVjdGl2ZWx5IGlmZG93bjtpZnVwKSB0aGUgc3RhdGlvbiB2aWZz
-Lgo+Pgo+PiBJIGdldCBsb3RzIG9mIHNwZXdzIGJlY2F1c2UgdGhlIGF0aDEwa19mbHVzaCBjYWxs
-IHRoaW5rcyBpdCBpcwo+PiBoYW5naW5nLiAgQnV0LCBiYXNlZCBvbiB0aGUgZGVidWcsIEkgdGhp
-bmsgdGhlIHByb2JsZW0gaXMgdGhhdAo+PiB0aGUgdHggbG9naWMgaXMgY29udGludWluZyB0byBh
-Y2NlcHQgcGFja2V0cyB3aGlsZSB0aGUgZmx1c2gKPj4gaXMgdHJ5aW5nIHRvIGhhcHBlbi4KPj4K
-Pj4gSWYgbXkgZGVidWdnaW5nIHN0YXRzIGFyZSBjb3JyZWN0LCB0aGUgTklDIG1hbmFnZWQgdG8g
-c2VuZCBhcm91bmQgNDAwMAo+PiBmcmFtZXMgZHVyaW5nIHRoZSBmbHVzaCBhdHRlbXB0LCBhbmQg
-dGhlIGF0aDEwayBkcml2ZXIgcHJvY2Vzc2VkIGxvdHMgb2YKPj4gdHggY29tcGxldGlvbnMgYXMg
-d2VsbC4gIEJ1dCB0aGVyZSBhcmUgc3RpbGwgbG90cyBvZiBwa3RzCj4+IHBlbmRpbmcgdHggYW5k
-IHRoZSB0eCBxdWV1ZSB3YXMgbmV2ZXIgZW1wdHkuCj4+Cj4+IGF0aDEwazogZmFpbGVkIHRvIGZs
-dXNoIHRyYW5zbWl0IHF1ZXVlIChza2lwIDAgYXItc3RhdGUgMSBwZW5kaW5nX3R4IDEwMDkgIHBy
-ZS1wZW5kaW5nLXR4OiAxMDQ1KTogMAo+PiBhdGgxMGs6IHByZTogaHRjLXNlbmQtdG90OiAzNDIz
-ICBodHQtdHggMjU0NTM5NyAgdHgtY29tcGwgMjU0NDM1NSAgbWd0LXR4IDAgIG1ndC1jb21wbCAw
-Cj4+IGF0aDEwazogcG9zdDogaHRjLXNlbmQtdG90OiAzNDI0ICBodHQtdHggMjYzMDk4MSAgdHgt
-Y29tcGwgMjYzMDE1NiAgbWd0LXR4IDAgIG1ndC1jb21wbCAwCj4+IGF0aDEwazogcHJlOiBody1x
-dWV1ZWQ6IDEyNDM5NSAgaHctcmVhcGVkOiAxMjQzOTQKPj4gYXRoMTBrOiBwb3N0OiBody1xdWV1
-ZWQ6IDEyODQxOCAgaHctcmVhcGVkOiAxMjg0MTcKPgo+IFdoYXQgZG8gdGhlc2UgcHJpbnRzIHJl
-ZmxlY3QgZXhhY3RseT8gV2hhdCBiYXNlIHVwc3RyZWFtIGF0aDEwayBjb21taXQKPiBhcmUgeW91
-IG9uPwo+Cj4KPj4gRG8gd2UgbmVlZCB0byBzb21laG93IHNodXQgZG93biBhbGwgdHggbG9naWMg
-ZHVyaW5nIHRoZSBhdGgxMGtfZmx1c2gKPj4gc28gdGhhdCAob3RoZXI/KSBzdGF0aW9ucyBjYW5u
-b3QgdHJhbnNtaXQ/Cj4KPiBUaGlzIHNlZW1zIHN0cmFuZ2UuIGRydl9mbHVzaCgpIGlzIGNhbGxl
-ZCB3aXRoIGFsbCB0eCBxdWV1ZXMgYmVpbmcKPiBzdG9wcGVkIGluIG1hYzgwMjExIHdpdGggSUVF
-RTgwMjExX1FVRVVFX1NUT1BfUkVBU09OX0ZMVVNILiBJIGd1ZXNzCj4geW91IGNhbiBzdGlsbCBy
-ZWNlaXZlIGEgZmV3IGZyYW1lcyAoZHVlIHRvIFNNUCB3aXRoIG1hbnkgaW50ZXJmYWNlcyksCj4g
-YnV0IHRoYXQncyBpdCAoYXQgbW9zdCBudW1fY3B1cy0xIEkgZ3Vlc3MpLiBZb3Ugc2hvdWxkbid0
-IGJlIHNlZWluZwo+IDQwMDAgZnJhbWVzIGJlaW5nIHF1ZXVlZCB3aGlsZSB5b3UgZmx1c2guCgpT
-dWJzZXF1ZW50IGRlYnVnZ2luZyBtYWtlcyBtZSB0aGluayB0aGUgZXh0cmEgcGFja2V0cyBhcmUg
-bm90IGNvbWluZwpmcm9tIHRoZSB1cHBlciBzdGFjay4gIFBvc3NpYmx5IHRoZXJlIGFyZSBhdGgx
-MGs8LT5maXJtd2FyZSBtYW5hZ2VtZW50IG1lc3NhZ2VzCmJlaW5nIHF1ZXVlZCBvciBzb21ldGhp
-bmcgbGlrZSB0aGF0PwoKSSdtIG91dCBvZiBvZmZpY2UgdG9kYXksIHdpbGwgcG9zdCB0aGUgZGVi
-dWcgcGF0Y2ggd2hlbiBJIGdldCBhIGNoYW5jZS4KClRoYW5rcywKQmVuCgo+Cj4KPiBNaWNoYcWC
-Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
-aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+From: Ben Greear <greearb@candelatech.com>
+
+It can be nice to update the firmware's stats while
+debugging other bits of the driver, so add helper method
+to do this.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c | 26 +++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/debug.h |  2 ++
+ 2 files changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index f562ac5..5813286 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -283,6 +283,21 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 	complete(&ar->debug.event_stats_compl);
+ }
+ 
++int ath10k_refresh_peer_stats(struct ath10k *ar)
++{
++	int ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
++	if (ret) {
++		ath10k_warn("could not request stats (%d)\n", ret);
++		return ret;
++	}
++
++	ret = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
++	if (ret <= 0)
++		return ret;
++
++	return 0;
++}
++
+ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 				    size_t count, loff_t *ppos)
+ {
+@@ -291,7 +306,6 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	char *buf = NULL;
+ 	unsigned int len = 0, buf_len = 8000;
+ 	ssize_t ret_cnt = 0;
+-	long left;
+ 	int i;
+ 	int ret;
+ 
+@@ -306,14 +320,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		goto exit;
+ 
+-	ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
+-	if (ret) {
+-		ath10k_warn("could not request stats (%d)\n", ret);
+-		goto exit;
+-	}
+-
+-	left = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
+-	if (left <= 0)
++	ret = ath10k_refresh_peer_stats(ar);
++	if (ret)
+ 		goto exit;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 12573fa..e5d1391 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -135,4 +135,6 @@ struct dbglog_hdr_s {
+ 
+ void ath10k_dbg_print_fw_dbg_buffer(u8 *buffer, int len, const char* lvl);
+ 
++int ath10k_refresh_peer_stats(struct ath10k *ar);
++
+ #endif /* _DEBUG_H_ */
+-- 
+1.7.11.7
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
