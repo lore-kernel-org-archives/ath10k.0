@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WVE35-00013R-CX
- for ath10k@lists.infradead.org; Wed, 02 Apr 2014 05:49:20 +0000
-Received: by mail-we0-f174.google.com with SMTP id t60so7201719wes.19
- for <ath10k@lists.infradead.org>; Tue, 01 Apr 2014 22:48:54 -0700 (PDT)
+ id 1WVFeQ-0002r8-DI
+ for ath10k@lists.infradead.org; Wed, 02 Apr 2014 07:31:59 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: remove not needed warning when peer unmap
+References: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Wed, 2 Apr 2014 10:31:31 +0300
+In-Reply-To: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 1 Apr 2014 10:23:48 +0200")
+Message-ID: <877g78rxv0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87eh1gs3l7.fsf@kamboji.qca.qualcomm.com>
-References: <1396015934-7723-1-git-send-email-michal.kazior@tieto.com>
- <1396337123-12622-1-git-send-email-michal.kazior@tieto.com>
- <87eh1gs3l7.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 2 Apr 2014 07:48:53 +0200
-Message-ID: <CA+BoTQmbQ0qAO-HGgwjvcZFSVom+QrX+J9pwnb-QUE4QMUBUcQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix initial radar detection logic
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,61 +19,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMiBBcHJpbCAyMDE0IDA3OjI3LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29t
-PiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JpdGVz
-Ogo+Cj4+IFRoaXMgZml4ZXMgYSBwcm9ibGVtIG9mIGluaXRpYWwgcmFkYXIgZGV0ZWN0aW9uCj4+
-IChDQUMpIGJlaW5nIHN0dWNrIGFuZCBibG9ja2luZyBSeCBpbiBzb21lIGNhc2VzCj4+IHVudGls
-IGFsbCBpbnRlcmZhY2VzIHdlcmUgYnJvdWdodCBkb3duLgo+Cj4gSXQgd291bGQgYmUgZ29vZCB0
-byBkZXNjcmliZSBtb3JlIGFib3V0IHRoZSBjYXNlcyB3aGVyZSB0aGlzIHByb2JsZW0KPiBoYXBw
-ZW5lZC4KCk9rLgoKCj4+IEZvciB1c2Vyc3BhY2UgdGhpcyBtZWFudCBmaXJzdCBydW4gb2YgaG9z
-dGFwZAo+PiB3b3VsZCBwZXJmb3JtIENBQyBidXQgZHVlIHRvIGZpbHRlcmVkIFJ4IG5vCj4+IGNs
-aWVudHMgd291bGQgYXNzb2NpYXRlLiBTdWJzZXF1ZW50IHJ1bnMgb2YKPj4gaG9zdGFwZCB3b3Vs
-ZCBub3QgcGVyZm9ybSBDQUMgKGFzIGl0IHdhcyBhbHJlYWR5Cj4+IGRvbmUpIGFuZCB3b3VsZCBh
-c3NvY2lhdGUgY2xpZW50cy4KPj4KPj4gVGhpcyBhbHNvIG1ha2VzIHN1cmUgcmFkYXIgZGV0ZWN0
-aW9uIGlzIHBlcmZvcm1lZAo+PiB3aGVuIGJhbmR3aWR0aCBpcyB3aWRlbmVkLiBCZWZvcmUgaWYg
-MjBNSHogQ0FDIHdhcwo+PiBwZXJmb3JtZWQgdGhlbiA0ME1IeiBDQUMgd291bGRuJ3Qgc3RhcnQg
-bW9uaXRvcgo+PiB2ZGV2IGVmZmVjdGl2ZWx5IGRpc2FibGluZyBpbml0aWFsIHJhZGFyCj4+IGRl
-dGVjdGlvbi4KPj4KPj4gQSBkcml2ZXIgc2hvdWxkIGp1c3Qgc3RhcnQvc3RvcCByYWRhciBkZXRl
-Y3Rpb24KPj4gYmFzZWQgb24gaHctPmNvbmYucmFkYXJfZW5hYmxlZC4gSG93ZXZlciwgc2luY2UK
-Pj4gYXRoMTBrIG5lZWRzIHRvIHN0YXJ0IGEgbW9uaXRvciB2ZGV2IGZvciB0aGUKPj4gaW5pdGlh
-bCByYWRhciBkZXRlY3Rpb24gc3BlY2lhbCBjYXJlIG5lZWRzIHRvIGJlCj4+IGFwcGxpZWQuCj4+
-Cj4+IFdoaWxlIGF0IGl0IGNsZWFudXAgdGhlIGNvZGUgYSBiaXQuCj4+Cj4+IFNpZ25lZC1vZmYt
-Ynk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Cj4gWy4uLl0KPgo+
-PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiArKysgYi9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiBAQCAtNDM0LDYgKzQzNCw4
-IEBAIHN0cnVjdCBhdGgxMGsgewo+PiAgICAgICB1bnNpZ25lZCBpbnQgZmlsdGVyX2ZsYWdzOwo+
-PiAgICAgICB1bnNpZ25lZCBsb25nIGRldl9mbGFnczsKPj4gICAgICAgdTMyIGRmc19ibG9ja19y
-YWRhcl9ldmVudHM7Cj4+ICsgICAgIGJvb2wgcmFkYXJfZW5hYmxlZDsgLyogcHJvdGVjdGVkIGJ5
-IGNvbmZfbXV0ZXggKi8KPj4gKyAgICAgaW50IG51bV9zdGFydGVkX3ZkZXZzOyAvKiBwcm90ZWN0
-ZWQgYnkgY29uZl9tdXRleCAqLwo+Cj4gSSB3b3VsZCBwcmVmZXIgc3R5bGUgbGlrZSB0aGlzOgo+
-Cj4gICAgICAgICB1MzIgZGZzX2Jsb2NrX3JhZGFyX2V2ZW50czsKPgo+ICAgICAgICAgLyogdGhl
-c2UgYXJlIHByb3RlY3RlZCBieSBjb25mX211dGV4ICovCj4gICAgICAgICBib29sIHJhZGFyX2Vu
-YWJsZWQ7Cj4gICAgICAgICBpbnQgbnVtX3N0YXJ0ZWRfdmRldnM7CgpPay4KCgo+Cj4+IC0tLSBh
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4gKysrIGIvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+PiBAQCAtNDg5LDYgKzQ4OSw4IEBAIHN0YXRp
-YyBpbmxpbmUgaW50IGF0aDEwa192ZGV2X3NldHVwX3N5bmMoc3RydWN0IGF0aDEwayAqYXIpCj4+
-ICAgICAgIHJldHVybiAwOwo+PiAgfQo+Pgo+PiArc3RhdGljIHZvaWQgYXRoMTBrX3JlY2FsY19y
-YWRhcl9kZXRlY3Rpb24oc3RydWN0IGF0aDEwayAqYXIpOwo+Cj4gRm9yd2FyZCBkZWNsYXJhdGlv
-bnMgc2hvdWxkIGJlIGF2b2lkZWQgaWYgcG9zc2libGUuIENhbiB5b3UgYWRkIGEgbmV3Cj4gcGF0
-Y2ggd2hpY2gganVzdCBtb3ZlcyBhdGgxMGtfcmVjYWxjX3JhZGFyX2RldGVjdGlvbigpIGFuZCBp
-biB0aGlzIHBhdGNoCj4geW91IGRvIHRoZSBtb2RpZmljYXRpb25zIGluIHRoZSBmdW5jdGlvbj8K
-ClRoZSB3ZSBuZWVkIHRvIG1vdmUgYXRoMTBrX2NhY19zdGFydC9zdG9wIGFuZCBwb3NzaWJseSBh
-IGZldyBvdGhlcgpmdW5jdGlvbnMgYXMgd2VsbC4gSSdsbCBjaGVjayB0aGF0IG91dC4KCgo+PiBA
-QCAtNTcxLDYgKzU3NiwxMSBAQCBzdGF0aWMgaW50IGF0aDEwa192ZGV2X3N0b3Aoc3RydWN0IGF0
-aDEwa192aWYgKmFydmlmKQo+PiAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4+ICAgICAgIH0K
-Pj4KPj4gKyAgICAgaWYgKFdBUk5fT04oYXItPm51bV9zdGFydGVkX3ZkZXZzID09IDApKSB7Cj4+
-ICsgICAgICAgICAgICAgYXItPm51bV9zdGFydGVkX3ZkZXZzLS07Cj4+ICsgICAgICAgICAgICAg
-YXRoMTBrX3JlY2FsY19yYWRhcl9kZXRlY3Rpb24oYXIpOwo+Cj4gTm93IG51bV9zdGFydGVkX3Zk
-ZXZzIHdpbGwgYmUgLTEsIHdoYXQgZG9lcyB0aGF0IG1lYW4/IEl0IHdvdWxkIGJlIGdvb2QKPiB0
-byBkb2N1bWVudCB0aGF0IGluIHN0cnVjdCBhdGgxMGsuCgpBaCwgaXQncyBtaXNzaW5nICIhIiBp
-biBmcm9udCBvZiB0aGUgV0FSTl9PTi4uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+
+> Remove not needed warning when get peer unmap
+> event from the firmware. This is not critical
+> message. Instead print this as a debug message.
+
+I don't agree with that statement. If that would be true, we could
+remove a lot of warnings from ath10k. We have these warnings to catch
+problems early, which again improves the quality of the driver.
+
+Your commit log was again missing the "why?" part. I assume the reason
+for this patch is the problem of seeing the warning "unknown peer id 2"
+when putting the interface is down, which again is a spurious event from
+the firmware? You should document that in the commit log as well as add
+a short comment to the code explaining why we only print a debug message
+when that happens.
+
+Other idea I had would be to keep the warning message but add a new test
+to detect this problematic case, but I guess for that we would need to
+add a new state "stopping" to catch that? For example, something like
+this:
+
+if state == stopping and event->id == 2
+        dbg("foo")
+else
+        warn("bar")
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
