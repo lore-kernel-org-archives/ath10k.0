@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WVMdV-0006Ui-JB
- for ath10k@lists.infradead.org; Wed, 02 Apr 2014 14:59:30 +0000
-Message-ID: <533C25BB.7080803@candelatech.com>
-Date: Wed, 02 Apr 2014 07:59:07 -0700
+ id 1WVTAI-0000tN-MZ
+ for ath10k@lists.infradead.org; Wed, 02 Apr 2014 21:57:47 +0000
+Message-ID: <533C87C1.2090908@candelatech.com>
+Date: Wed, 02 Apr 2014 14:57:21 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: remove not needed warning when peer unmap
-References: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
- <877g78rxv0.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <877g78rxv0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Clean-ish rebase on top of 3.14.0 (final)?
+References: <53399703.1060302@candelatech.com>
+ <87ioqtsdgt.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87ioqtsdgt.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +23,49 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 04/02/2014 12:31 AM, Kalle Valo wrote:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+On 04/01/2014 12:42 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
->> Remove not needed warning when get peer unmap
->> event from the firmware. This is not critical
->> message. Instead print this as a debug message.
+>> Kalle:  In case you end up with your tree in a clean rebase
+>> on stock 3.14.0 (or as clean as is reasonable), could you let
+>> us know and give us a bit of time before pulling down more
+>> upstream stuff?
+>>
+>> The reason is that I would like to freeze a 3.14 kernel with whatever
+>> ath10k patches are currently in your tree and attempt to stabalize
+>> it...
 >
-> I don't agree with that statement. If that would be true, we could
-> remove a lot of warnings from ath10k. We have these warnings to catch
-> problems early, which again improves the quality of the driver.
+> Do you mean 3.14 plus only ath10k patches? Or are you willing to take
+> other wireless patches as well?
 
-I see this message all the time, by the way...  I have been ignoring
-it so far, but if it's  real issue then I can pay more attention.
+Other wireless patches would be fine.  I just don't want all of 3.15.0-rc1,
+at least until I can snapshot a 3.14 to try to stabalize.
+
+> Basically I have two branches in my ath.git:
+>
+> o ath-next: wireless-next + latest ath10k patches
+>
+> o master: wireless-testing + ath-next (= latest ath10k patches)
+>
+> I only merge latest wireless-next to ath-next seldomly, usually once
+> every 1-2 months. But I merge wireless-testing to master branch at least
+> weekly.
+>
+> One idea would be that you merge 3.14 tag with ath-next. That way you
+> get latest wireless code on top of 3.14. Would that work?
+
+That sounds like a good thing to try..I'll see how that works.
 
 Thanks,
 Ben
 
 >
-> Your commit log was again missing the "why?" part. I assume the reason
-> for this patch is the problem of seeing the warning "unknown peer id 2"
-> when putting the interface is down, which again is a spurious event from
-> the firmware? You should document that in the commit log as well as add
-> a short comment to the code explaining why we only print a debug message
-> when that happens.
->
-> Other idea I had would be to keep the warning message but add a new test
-> to detect this problematic case, but I guess for that we would need to
-> add a new state "stopping" to catch that? For example, something like
-> this:
->
-> if state == stopping and event->id == 2
->          dbg("foo")
-> else
->          warn("bar")
+> I'm planning to merge wireless-next to ath-next once John opens his
+> trees again, which usually happens just after the merge window is
+> closed.
 >
 
 
