@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WVFeQ-0002r8-DI
- for ath10k@lists.infradead.org; Wed, 02 Apr 2014 07:31:59 +0000
+ id 1WVFfq-0002sj-IO
+ for ath10k@lists.infradead.org; Wed, 02 Apr 2014 07:33:27 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove not needed warning when peer unmap
-References: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Wed, 2 Apr 2014 10:31:31 +0300
-In-Reply-To: <1396340628-4570-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 1 Apr 2014 10:23:48 +0200")
-Message-ID: <877g78rxv0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/1] ath10k:  add helper method to grab debug stats.
+References: <1396374940-21453-1-git-send-email-greearb@candelatech.com>
+Date: Wed, 2 Apr 2014 10:32:55 +0300
+In-Reply-To: <1396374940-21453-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 1 Apr 2014 10:55:40
+ -0700")
+Message-ID: <8738hwrxso.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,35 +24,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: greearb@candelatech.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+greearb@candelatech.com writes:
 
-> Remove not needed warning when get peer unmap
-> event from the firmware. This is not critical
-> message. Instead print this as a debug message.
+> From: Ben Greear <greearb@candelatech.com>
+>
+> It can be nice to update the firmware's stats while
+> debugging other bits of the driver, so add helper method
+> to do this.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-I don't agree with that statement. If that would be true, we could
-remove a lot of warnings from ath10k. We have these warnings to catch
-problems early, which again improves the quality of the driver.
+[...]
 
-Your commit log was again missing the "why?" part. I assume the reason
-for this patch is the problem of seeing the warning "unknown peer id 2"
-when putting the interface is down, which again is a spurious event from
-the firmware? You should document that in the commit log as well as add
-a short comment to the code explaining why we only print a debug message
-when that happens.
+> --- a/drivers/net/wireless/ath/ath10k/debug.h
+> +++ b/drivers/net/wireless/ath/ath10k/debug.h
+> @@ -135,4 +135,6 @@ struct dbglog_hdr_s {
+>  
+>  void ath10k_dbg_print_fw_dbg_buffer(u8 *buffer, int len, const char* lvl);
+>  
+> +int ath10k_refresh_peer_stats(struct ath10k *ar);
 
-Other idea I had would be to keep the warning message but add a new test
-to detect this problematic case, but I guess for that we would need to
-add a new state "stopping" to catch that? For example, something like
-this:
-
-if state == stopping and event->id == 2
-        dbg("foo")
-else
-        warn("bar")
+I don't see anyone calling this. How are you planning to use it?
 
 -- 
 Kalle Valo
