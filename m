@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-f41.google.com ([74.125.82.41])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Y1-0006wi-TT
- for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:39 +0000
-Received: by mail-wg0-f41.google.com with SMTP id n12so3341064wgh.12
- for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:13 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFT 2/4] ath10k: rework peer accounting
-Date: Fri,  4 Apr 2014 13:37:42 +0200
-Message-Id: <1396611464-5940-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ id 1WW5Rj-0004fr-O5
+ for ath10k@lists.infradead.org; Fri, 04 Apr 2014 14:50:20 +0000
+Message-ID: <533EC686.40505@candelatech.com>
+Date: Fri, 04 Apr 2014 07:49:42 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,245 +18,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-It was troublesome to iterate over peers within a
-sleepable context (e.g. while holding conf_mutex).
-This will be necessary for some upcomming changes
-to tx flushing.
+On 04/04/2014 04:37 AM, Michal Kazior wrote:
+> Hi,
+>
+> After digging around I've found what seems to be
+> the problem with WMI Tx credit starvation and
+> inability to properly flush Tx in ath10k_flush().
+>
+> Long story short: if a client that was asleep (as
+> per what firmware thinks) goes out of range (or
+> just stops responding) then Tx rots in FW/HW
+> queues for a few seconds before it's discarded.
+> For WMI Tx credits this means management frames
+> eat up Tx credits for a few seconds (causing other
+> WMI commands to timeout and return -EAGAIN/-11).
+> For HTT Tx this means NullFunc frames would get
+> stuck for a few seconds before completion was
+> received.
+>
+> @Ben: Can you check if this helps you? I tested
+> this briefly and at least [1/4] seems fixes the
+> WMI Tx starvation. I'm hoping patches 2-4 help
+> with your ath10k_flush() failures which I haven't
+> been successfull in reproducing (but have observed
+> improvement with purging some frames out of FW/HW
+> queues).
 
-Making peer allocation and initial setup
-ar->conf_mutex bound instead ar->data_lock solves
-the problem.
+I'm out of office for a bit, but will test this as
+soon as I'm back.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h |  5 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 69 +++++++++++++++++++++++++++++++---
- drivers/net/wireless/ath/ath10k/txrx.c | 29 +++++++-------
- 3 files changed, 81 insertions(+), 22 deletions(-)
+Thanks for looking into this!
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8edd6da..61e325a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -199,9 +199,14 @@ struct ath10k_dfs_stats {
- #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
- 
- struct ath10k_peer {
-+	/* protected by conf_mutex + data_lock */
- 	struct list_head list;
-+
-+	/* protected by conf_mutex */
- 	int vdev_id;
- 	u8 addr[ETH_ALEN];
-+
-+	/* protected by data_lock */
- 	DECLARE_BITMAP(peer_ids, ATH10K_MAX_NUM_PEER_IDS);
- 	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
- };
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 25362ef..9af3ed5 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -318,28 +318,61 @@ static u8 ath10k_parse_mpdudensity(u8 mpdudensity)
- 
- static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- {
-+	struct ath10k_peer *peer;
- 	int ret;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	peer = ath10k_peer_find(ar, vdev_id, addr);
-+	if (peer) {
-+		ath10k_warn("peer %pM on vdev %i already exists\n",
-+			    addr, vdev_id);
-+		return -EINVAL;
-+	}
-+
-+	peer = kzalloc(sizeof(*peer), GFP_KERNEL);
-+	if (!peer) {
-+		ath10k_warn("failed to allocate peer %pM on vdev %i: not enough memory\n",
-+			    addr, vdev_id);
-+		return -ENOMEM;
-+	}
-+
-+	peer->vdev_id = vdev_id;
-+	memcpy(peer->addr, addr, ETH_ALEN);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	list_add(&peer->list, &ar->peers);
-+	spin_unlock_bh(&ar->data_lock);
-+
- 	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
- 	if (ret) {
- 		ath10k_warn("failed to create wmi peer %pM on vdev %i: %i\n",
- 			    addr, vdev_id, ret);
--		return ret;
-+		goto err_free;
- 	}
- 
- 	ret = ath10k_wait_for_peer_created(ar, vdev_id, addr);
- 	if (ret) {
- 		ath10k_warn("failed to wait for created wmi peer %pM on vdev %i: %i\n",
- 			    addr, vdev_id, ret);
--		return ret;
-+		goto err_free;
- 	}
- 	spin_lock_bh(&ar->data_lock);
- 	ar->num_peers++;
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	return 0;
-+
-+err_free:
-+	spin_lock_bh(&ar->data_lock);
-+	list_del(&peer->list);
-+	/* very unlikely, but check anyway */
-+	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
-+		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
-+			    addr, vdev_id);
-+	spin_unlock_bh(&ar->data_lock);
-+	kfree(peer);
-+	return ret;
- }
- 
- static int ath10k_mac_set_kickout(struct ath10k_vif *arvif)
-@@ -416,22 +449,46 @@ static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
- 
- static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- {
-+	struct ath10k_peer *peer;
- 	int ret;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	peer = ath10k_peer_find(ar, vdev_id, addr);
-+	if (!peer) {
-+		ath10k_warn("failed to lookup peer %pM on vdev %i\n",
-+			    addr, vdev_id);
-+		return -ENOENT;
-+	}
-+
- 	ret = ath10k_wmi_peer_delete(ar, vdev_id, addr);
--	if (ret)
--		return ret;
-+	if (ret) {
-+		ath10k_warn("failed to request wmi peer %pM on vdev %i removal: %d\n",
-+			    addr, vdev_id, ret);
-+		goto out;
-+	}
- 
- 	ret = ath10k_wait_for_peer_deleted(ar, vdev_id, addr);
--	if (ret)
--		return ret;
-+	if (ret) {
-+		ath10k_warn("failed to wait for wmi peer %pM on vdev %i removal: %d\n",
-+			    addr, vdev_id, ret);
-+		goto out;
-+	}
- 
- 	spin_lock_bh(&ar->data_lock);
- 	ar->num_peers--;
- 	spin_unlock_bh(&ar->data_lock);
- 
-+out:
-+	spin_lock_bh(&ar->data_lock);
-+	list_del(&peer->list);
-+	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
-+		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
-+			    addr, vdev_id);
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	kfree(peer);
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 82669a7..d802569 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -100,13 +100,13 @@ exit:
- 		wake_up(&htt->empty_tx_wq);
- }
- 
-+/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
-+ * modifications */
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr)
- {
- 	struct ath10k_peer *peer;
- 
--	lockdep_assert_held(&ar->data_lock);
--
- 	list_for_each_entry(peer, &ar->peers, list) {
- 		if (peer->vdev_id != vdev_id)
- 			continue;
-@@ -139,10 +139,14 @@ static int ath10k_wait_for_peer_common(struct ath10k *ar, int vdev_id,
- 	int ret;
- 
- 	ret = wait_event_timeout(ar->peer_mapping_wq, ({
--			bool mapped;
-+			struct ath10k_peer *peer;
-+			bool mapped = false;
- 
- 			spin_lock_bh(&ar->data_lock);
--			mapped = !!ath10k_peer_find(ar, vdev_id, addr);
-+			peer = ath10k_peer_find(ar, vdev_id, addr);
-+			if (peer)
-+				mapped = !bitmap_empty(peer->peer_ids,
-+						       ATH10K_MAX_NUM_PEER_IDS);
- 			spin_unlock_bh(&ar->data_lock);
- 
- 			mapped == expect_mapped;
-@@ -173,20 +177,16 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
- 	if (!peer) {
--		peer = kzalloc(sizeof(*peer), GFP_ATOMIC);
--		if (!peer)
--			goto exit;
--
--		peer->vdev_id = ev->vdev_id;
--		memcpy(peer->addr, ev->addr, ETH_ALEN);
--		list_add(&peer->list, &ar->peers);
--		wake_up(&ar->peer_mapping_wq);
-+		ath10k_warn("failed to map peer %pM on vdev %i: no such entry\n",
-+			    ev->addr, ev->vdev_id);
-+		goto exit;
- 	}
- 
- 	ath10k_dbg(ATH10K_DBG_HTT, "htt peer map vdev %d peer %pM id %d\n",
- 		   ev->vdev_id, ev->addr, ev->peer_id);
- 
- 	set_bit(ev->peer_id, peer->peer_ids);
-+	wake_up(&ar->peer_mapping_wq);
- exit:
- 	spin_unlock_bh(&ar->data_lock);
- }
-@@ -210,11 +210,8 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
- 
- 	clear_bit(ev->peer_id, peer->peer_ids);
- 
--	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS)) {
--		list_del(&peer->list);
--		kfree(peer);
-+	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
- 		wake_up(&ar->peer_mapping_wq);
--	}
- 
- exit:
- 	spin_unlock_bh(&ar->data_lock);
+In general, would it make more sense to have a few more tx credits
+available to mitigate the slow-to-be-processed buffers?
+
+Thanks,
+Ben
+
+
 -- 
-1.8.5.3
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
