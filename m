@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Xx-0006wf-LH
- for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:34 +0000
-Received: by mail-wi0-f180.google.com with SMTP id q5so1063935wiv.13
- for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:12 -0700 (PDT)
+ id 1WW2Xw-0006we-Eu
+ for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:33 +0000
+Received: by mail-we0-f170.google.com with SMTP id w61so3302572wes.29
+ for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:10 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFT 1/4] ath10k: fix wmi-htc tx credit starvation
-Date: Fri,  4 Apr 2014 13:37:41 +0200
-Message-Id: <1396611464-5940-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+Subject: [RFT 0/4] ath10k: fix flushing and tx stalls
+Date: Fri,  4 Apr 2014 13:37:40 +0200
+Message-Id: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,175 +25,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Each WMI management Tx consumes 1 HTC Tx credit
-and doesn't replenish it until the frame is
-actually transmitted out of firmware's Tx queues.
+Hi,
 
-If associated client was asleep and has gone out
-of range then unicast frames won't be released for
-FW/HW queues for a while (10 seconds per
-observation). This means that if more management
-frames are queued then HTC Tx credits are drained
-to 0 and no other commands can be submitted
-including beacons and peer removal.
+After digging around I've found what seems to be
+the problem with WMI Tx credit starvation and
+inability to properly flush Tx in ath10k_flush().
 
-This could in turn result in clients disconnecting
-due to their beacon loss and may trigger spurious
-sta kickouts because wmi peer removal command may
-never reach firmware during disassociation.
+Long story short: if a client that was asleep (as
+per what firmware thinks) goes out of range (or
+just stops responding) then Tx rots in FW/HW
+queues for a few seconds before it's discarded.
+For WMI Tx credits this means management frames
+eat up Tx credits for a few seconds (causing other
+WMI commands to timeout and return -EAGAIN/-11).
+For HTT Tx this means NullFunc frames would get
+stuck for a few seconds before completion was
+received.
 
-This could happen, e.g. when disconnecting client
-that has gone away while asleep.
+@Ben: Can you check if this helps you? I tested
+this briefly and at least [1/4] seems fixes the
+WMI Tx starvation. I'm hoping patches 2-4 help
+with your ath10k_flush() failures which I haven't
+been successfull in reproducing (but have observed
+improvement with purging some frames out of FW/HW
+queues).
 
-As a workaround flush unicast management frames
-that can possibly be buffered.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 80 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c |  5 ---
- drivers/net/wireless/ath/ath10k/wmi.h |  3 ++
- 3 files changed, 83 insertions(+), 5 deletions(-)
+Michal Kazior (4):
+  ath10k: fix wmi-htc tx credit starvation
+  ath10k: rework peer accounting
+  ath10k: wait for mgmt tx when flushing too
+  ath10k: improve tx flushing
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58ec5a7..25362ef 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2076,9 +2076,56 @@ void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar)
- 	}
- }
- 
-+static void ath10k_mgmt_tx_flush(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	struct ath10k_vif *arvif = NULL, *arvif_iter;
-+	u8 *da = ieee80211_get_DA(hdr);
-+	u8 vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
-+	int ret;
-+
-+	if (!is_unicast_ether_addr(da))
-+		return;
-+
-+	if (!ieee80211_is_disassoc(hdr->frame_control) &&
-+	    !ieee80211_is_deauth(hdr->frame_control) &&
-+	    !ieee80211_is_action(hdr->frame_control))
-+		return;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	list_for_each_entry(arvif_iter, &ar->arvifs, list) {
-+		if (arvif_iter->vdev_id == vdev_id) {
-+			arvif = arvif_iter;
-+			break;
-+		}
-+	}
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	if (!arvif)
-+		return;
-+
-+	ath10k_dbg(ATH10K_DBG_MAC,
-+		   "mac flushing peer %pM on vdev %i mgmt tid for unicast mgmt\n",
-+		   da, vdev_id);
-+
-+	/*
-+	 * Wait 2 beacon intervals before flushing so stations that are
-+	 * asleep but are actually still in range have a chance to see
-+	 * updated PVB, wake up and fetch the frame.
-+	 */
-+	msleep(2 * arvif->beacon_interval * 1024 / 1000);
-+
-+	ret = ath10k_wmi_peer_flush(ar, vdev_id, da,
-+				    WMI_PEER_TID_MGMT_MASK);
-+	if (ret)
-+		ath10k_warn("failed to flush peer %pM mgmt tid: %d\n",
-+			    da, ret);
-+}
-+
- void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- {
- 	struct ath10k *ar = container_of(work, struct ath10k, wmi_mgmt_tx_work);
-+	struct ieee80211_tx_info *info;
- 	struct sk_buff *skb;
- 	int ret;
- 
-@@ -2092,7 +2139,40 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 			ath10k_warn("failed to transmit management frame via WMI: %d\n",
- 				    ret);
- 			ieee80211_free_txskb(ar->hw, skb);
-+			continue;
- 		}
-+
-+		/*
-+		 * Each WMI management Tx consumes 1 HTC Tx credit and doesn't
-+		 * replenish it until the frame is actually transmitted out of
-+		 * firmware's Tx queues.
-+		 *
-+		 * If associated client was asleep and has gone out of range
-+		 * then unicast frames won't be released for FW/HW queues for a
-+		 * while (10 seconds per observation). This means that if more
-+		 * management frames are queued then HTC Tx credits are drained
-+		 * to 0 and no other commands can be submitted including
-+		 * beacons and peer removal.
-+		 *
-+		 * This could in turn result in clients disconnecting due to
-+		 * their beacon loss and may trigger spurious sta kickouts
-+		 * because wmi peer removal command may never reach firmware
-+		 * during disassociation.
-+		 *
-+		 * This could happen, e.g. when disconnecting client that has
-+		 * gone away while asleep.
-+		 *
-+		 * As a workaround flush unicast management frames that can
-+		 * possibly be buffered.
-+		 *
-+		 * Note: This is a deficiency in design of WMI_MGMT_TX command.
-+		 */
-+		ath10k_mgmt_tx_flush(ar, skb);
-+
-+		/* there's no way to get ACK so just assume it's acked */
-+		info = IEEE80211_SKB_CB(skb);
-+		info->flags |= IEEE80211_TX_STAT_ACK;
-+		ieee80211_tx_status(ar->hw, skb);
- 	}
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d4b48ef..3b270a4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -637,7 +637,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	struct wmi_mgmt_tx_cmd *cmd;
- 	struct ieee80211_hdr *hdr;
- 	struct sk_buff *wmi_skb;
--	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	int len;
- 	u16 fc;
- 
-@@ -673,10 +672,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	if (ret)
- 		return ret;
- 
--	/* TODO: report tx status to mac80211 - temporary just ACK */
--	info->flags |= IEEE80211_TX_STAT_ACK;
--	ieee80211_tx_status_irqsafe(ar->hw, skb);
--
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ae83822..90fe2e9 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3844,6 +3844,9 @@ struct wmi_peer_delete_cmd {
- 	struct wmi_mac_addr peer_macaddr;
- } __packed;
- 
-+#define WMI_PEER_TID_MGMT 17
-+#define WMI_PEER_TID_MGMT_MASK BIT(WMI_PEER_TID_MGMT)
-+
- struct wmi_peer_flush_tids_cmd {
- 	__le32 vdev_id;
- 	struct wmi_mac_addr peer_macaddr;
+ drivers/net/wireless/ath/ath10k/core.h |   7 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 254 +++++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/txrx.c |  29 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c  |   5 -
+ drivers/net/wireless/ath/ath10k/wmi.h  |   4 +
+ 5 files changed, 253 insertions(+), 46 deletions(-)
+
 -- 
 1.8.5.3
 
