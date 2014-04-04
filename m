@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-wg0-f41.google.com ([74.125.82.41])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Y0-0006wh-W3
- for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:37 +0000
-Received: by mail-wi0-f169.google.com with SMTP id hm4so2483859wib.0
- for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:15 -0700 (PDT)
+ id 1WW2Y1-0006wi-TT
+ for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:39 +0000
+Received: by mail-wg0-f41.google.com with SMTP id n12so3341064wgh.12
+ for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:13 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFT 4/4] ath10k: improve tx flushing
-Date: Fri,  4 Apr 2014 13:37:44 +0200
-Message-Id: <1396611464-5940-5-git-send-email-michal.kazior@tieto.com>
+Subject: [RFT 2/4] ath10k: rework peer accounting
+Date: Fri,  4 Apr 2014 13:37:42 +0200
+Message-Id: <1396611464-5940-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,169 +27,235 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Flushing was prone to timeouts when powersaving
-clients were involved that went missing while
-asleep. The common culprit was NullFunc frame
-being stuck in FW/HW queues.
+It was troublesome to iterate over peers within a
+sleepable context (e.g. while holding conf_mutex).
+This will be necessary for some upcomming changes
+to tx flushing.
 
-Introduce a two-pass flushing with WMI flush
-commands interleaved to force frame drops if
-necessary. This allows for a decreased flush
-timeout time and should get rid of some warnings.
+Making peer allocation and initial setup
+ar->conf_mutex bound instead ar->data_lock solves
+the problem.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 92 +++++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/wmi.h  |  1 +
- 3 files changed, 76 insertions(+), 19 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |  5 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 69 +++++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/txrx.c | 29 +++++++-------
+ 3 files changed, 81 insertions(+), 22 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 61e325a..0d60e70 100644
+index 8edd6da..61e325a 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -38,7 +38,7 @@
+@@ -199,9 +199,14 @@ struct ath10k_dfs_stats {
+ #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
  
- #define ATH10K_SCAN_ID 0
- #define WMI_READY_TIMEOUT (5 * HZ)
--#define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
-+#define ATH10K_FLUSH_TIMEOUT_HZ (1*HZ)
- #define ATH10K_NUM_CHANS 38
- 
- /* Antenna noise floor */
+ struct ath10k_peer {
++	/* protected by conf_mutex + data_lock */
+ 	struct list_head list;
++
++	/* protected by conf_mutex */
+ 	int vdev_id;
+ 	u8 addr[ETH_ALEN];
++
++	/* protected by data_lock */
+ 	DECLARE_BITMAP(peer_ids, ATH10K_MAX_NUM_PEER_IDS);
+ 	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
+ };
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 47b3574..77e1370 100644
+index 25362ef..9af3ed5 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3753,25 +3753,30 @@ static int ath10k_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
- 	return ret;
- }
+@@ -318,28 +318,61 @@ static u8 ath10k_parse_mpdudensity(u8 mpdudensity)
  
--static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
-+static int ath10k_flush_all_peer_tids(struct ath10k *ar)
+ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
  {
--	struct ath10k *ar = hw->priv;
--	bool skip;
 +	struct ath10k_peer *peer;
  	int ret;
  
--	/* mac80211 doesn't care if we really xmit queued frames or not
--	 * we'll collect those frames either way if we stop/delete vdevs */
--	if (drop)
--		return;
--
--	mutex_lock(&ar->conf_mutex);
-+	lockdep_assert_held(&ar->conf_mutex);
+ 	lockdep_assert_held(&ar->conf_mutex);
  
--	if (ar->state == ATH10K_STATE_WEDGED) {
--		ret = -EBUSY;
--		goto skip;
-+	list_for_each_entry(peer, &ar->peers, list) {
-+		ret = ath10k_wmi_peer_flush(ar, peer->vdev_id, peer->addr,
-+					    WMI_PEER_TID_ALL_MASK);
-+		if (ret) {
-+			ath10k_warn("failed to request peer %pM on vdev %i to flush %08x: %d\n",
-+				    peer->addr, peer->vdev_id, WMI_PEER_TID_ALL_MASK, ret);
-+			return ret;
-+		}
++	peer = ath10k_peer_find(ar, vdev_id, addr);
++	if (peer) {
++		ath10k_warn("peer %pM on vdev %i already exists\n",
++			    addr, vdev_id);
++		return -EINVAL;
++	}
++
++	peer = kzalloc(sizeof(*peer), GFP_KERNEL);
++	if (!peer) {
++		ath10k_warn("failed to allocate peer %pM on vdev %i: not enough memory\n",
++			    addr, vdev_id);
++		return -ENOMEM;
++	}
++
++	peer->vdev_id = vdev_id;
++	memcpy(peer->addr, addr, ETH_ALEN);
++
++	spin_lock_bh(&ar->data_lock);
++	list_add(&peer->list, &ar->peers);
++	spin_unlock_bh(&ar->data_lock);
++
+ 	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
+ 	if (ret) {
+ 		ath10k_warn("failed to create wmi peer %pM on vdev %i: %i\n",
+ 			    addr, vdev_id, ret);
+-		return ret;
++		goto err_free;
  	}
  
--	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
-+	return 0;
-+}
-+
-+static int ath10k_flush_wait(struct ath10k *ar)
-+{
-+	bool skip;
-+	int ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
- 			bool htt_empty, wmi_empty;
- 			unsigned long flags;
+ 	ret = ath10k_wait_for_peer_created(ar, vdev_id, addr);
+ 	if (ret) {
+ 		ath10k_warn("failed to wait for created wmi peer %pM on vdev %i: %i\n",
+ 			    addr, vdev_id, ret);
+-		return ret;
++		goto err_free;
+ 	}
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->num_peers++;
+ 	spin_unlock_bh(&ar->data_lock);
  
-@@ -3789,16 +3794,67 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
- 			((htt_empty && wmi_empty) || skip);
- 		}), ATH10K_FLUSH_TIMEOUT_HZ);
- 
--	if (ret <= 0 || skip)
--		ath10k_warn("failed to flush transmit queue (skip %i ar-state %i): %i\n",
--			    skip, ar->state, ret);
-+	if (ret == 0)
-+		ret = -ETIMEDOUT;
-+	else if (ret > 0)
-+		ret = 0;
+ 	return 0;
 +
-+	if (skip) {
-+		ath10k_warn("ignoring flushing result because hardware is wedged\n");
-+		ret = -EBUSY;
-+	}
-+
++err_free:
++	spin_lock_bh(&ar->data_lock);
++	list_del(&peer->list);
++	/* very unlikely, but check anyway */
++	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
++		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
++			    addr, vdev_id);
++	spin_unlock_bh(&ar->data_lock);
++	kfree(peer);
 +	return ret;
-+}
-+
-+static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
-+{
-+	struct ath10k *ar = hw->priv;
-+	int ret;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (drop) {
-+		ret = ath10k_flush_all_peer_tids(ar);
-+		if (ret) {
-+			ath10k_warn("failed to flush all peer tids: %d\n", ret);
-+			goto out;
-+		}
-+
-+		goto out;
-+	}
-+
-+	if (ar->state == ATH10K_STATE_WEDGED) {
-+		ath10k_warn("skipping flushing because hardware is wedged\n");
-+		ret = -EBUSY;
-+		goto out;
-+	}
-+
-+	ret = ath10k_flush_wait(ar);
-+	if (ret) {
-+		ath10k_dbg(ATH10K_DBG_MAC,
-+			   "failed to wait for tx to flush: %d, forcing\n",
-+			   ret);
-+
-+		ret = ath10k_flush_all_peer_tids(ar);
-+		if (ret) {
-+			ath10k_warn("failed to flush all peer tids: %d\n", ret);
-+			goto out;
-+		}
-+
-+		ret = ath10k_flush_wait(ar);
-+		if (ret) {
-+			ath10k_warn("failed to flush tx: %d\n", ret);
-+			goto out;
-+		}
-+	}
- 
--skip:
-+out:
- 	mutex_unlock(&ar->conf_mutex);
- 
- 	/* empty mgmt tx queue doesn't mean mgmt tx is flushed because the last
- 	 * frame still may be processed by a worker */
--	if (ret > 0)
-+	if (ret == 0)
- 		cancel_work_sync(&ar->wmi_mgmt_tx_work);
  }
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 90fe2e9..2b37c4a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3846,6 +3846,7 @@ struct wmi_peer_delete_cmd {
+ static int ath10k_mac_set_kickout(struct ath10k_vif *arvif)
+@@ -416,22 +449,46 @@ static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
  
- #define WMI_PEER_TID_MGMT 17
- #define WMI_PEER_TID_MGMT_MASK BIT(WMI_PEER_TID_MGMT)
-+#define WMI_PEER_TID_ALL_MASK 0xFFFFFFFF
+ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ {
++	struct ath10k_peer *peer;
+ 	int ret;
  
- struct wmi_peer_flush_tids_cmd {
- 	__le32 vdev_id;
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	peer = ath10k_peer_find(ar, vdev_id, addr);
++	if (!peer) {
++		ath10k_warn("failed to lookup peer %pM on vdev %i\n",
++			    addr, vdev_id);
++		return -ENOENT;
++	}
++
+ 	ret = ath10k_wmi_peer_delete(ar, vdev_id, addr);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ath10k_warn("failed to request wmi peer %pM on vdev %i removal: %d\n",
++			    addr, vdev_id, ret);
++		goto out;
++	}
+ 
+ 	ret = ath10k_wait_for_peer_deleted(ar, vdev_id, addr);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ath10k_warn("failed to wait for wmi peer %pM on vdev %i removal: %d\n",
++			    addr, vdev_id, ret);
++		goto out;
++	}
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->num_peers--;
+ 	spin_unlock_bh(&ar->data_lock);
+ 
++out:
++	spin_lock_bh(&ar->data_lock);
++	list_del(&peer->list);
++	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
++		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
++			    addr, vdev_id);
++	spin_unlock_bh(&ar->data_lock);
++
++	kfree(peer);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 82669a7..d802569 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -100,13 +100,13 @@ exit:
+ 		wake_up(&htt->empty_tx_wq);
+ }
+ 
++/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
++ * modifications */
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr)
+ {
+ 	struct ath10k_peer *peer;
+ 
+-	lockdep_assert_held(&ar->data_lock);
+-
+ 	list_for_each_entry(peer, &ar->peers, list) {
+ 		if (peer->vdev_id != vdev_id)
+ 			continue;
+@@ -139,10 +139,14 @@ static int ath10k_wait_for_peer_common(struct ath10k *ar, int vdev_id,
+ 	int ret;
+ 
+ 	ret = wait_event_timeout(ar->peer_mapping_wq, ({
+-			bool mapped;
++			struct ath10k_peer *peer;
++			bool mapped = false;
+ 
+ 			spin_lock_bh(&ar->data_lock);
+-			mapped = !!ath10k_peer_find(ar, vdev_id, addr);
++			peer = ath10k_peer_find(ar, vdev_id, addr);
++			if (peer)
++				mapped = !bitmap_empty(peer->peer_ids,
++						       ATH10K_MAX_NUM_PEER_IDS);
+ 			spin_unlock_bh(&ar->data_lock);
+ 
+ 			mapped == expect_mapped;
+@@ -173,20 +177,16 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
+ 	if (!peer) {
+-		peer = kzalloc(sizeof(*peer), GFP_ATOMIC);
+-		if (!peer)
+-			goto exit;
+-
+-		peer->vdev_id = ev->vdev_id;
+-		memcpy(peer->addr, ev->addr, ETH_ALEN);
+-		list_add(&peer->list, &ar->peers);
+-		wake_up(&ar->peer_mapping_wq);
++		ath10k_warn("failed to map peer %pM on vdev %i: no such entry\n",
++			    ev->addr, ev->vdev_id);
++		goto exit;
+ 	}
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTT, "htt peer map vdev %d peer %pM id %d\n",
+ 		   ev->vdev_id, ev->addr, ev->peer_id);
+ 
+ 	set_bit(ev->peer_id, peer->peer_ids);
++	wake_up(&ar->peer_mapping_wq);
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+@@ -210,11 +210,8 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
+ 
+ 	clear_bit(ev->peer_id, peer->peer_ids);
+ 
+-	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS)) {
+-		list_del(&peer->list);
+-		kfree(peer);
++	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
+ 		wake_up(&ar->peer_mapping_wq);
+-	}
+ 
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
 -- 
 1.8.5.3
 
