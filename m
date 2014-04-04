@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WW2Xx-0006wg-LH
+ id 1WW2Xx-0006wf-LH
  for ath10k@lists.infradead.org; Fri, 04 Apr 2014 11:44:34 +0000
-Received: by mail-wi0-f180.google.com with SMTP id q5so1065834wiv.7
- for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:14 -0700 (PDT)
+Received: by mail-wi0-f180.google.com with SMTP id q5so1063935wiv.13
+ for <ath10k@lists.infradead.org>; Fri, 04 Apr 2014 04:44:12 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFT 3/4] ath10k: wait for mgmt tx when flushing too
-Date: Fri,  4 Apr 2014 13:37:43 +0200
-Message-Id: <1396611464-5940-4-git-send-email-michal.kazior@tieto.com>
+Subject: [RFT 1/4] ath10k: fix wmi-htc tx credit starvation
+Date: Fri,  4 Apr 2014 13:37:41 +0200
+Message-Id: <1396611464-5940-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,67 +27,175 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The 10.1 firmware uses WMI to Tx management frames
-but ath10k_flush() didn't care. This could lead to
-some frames not being sent.
+Each WMI management Tx consumes 1 HTC Tx credit
+and doesn't replenish it until the frame is
+actually transmitted out of firmware's Tx queues.
 
-Although there are no Tx completions for WMI
-mangement frames it's still better to at least
-wait for ath10k queue to be drained.
+If associated client was asleep and has gone out
+of range then unicast frames won't be released for
+FW/HW queues for a while (10 seconds per
+observation). This means that if more management
+frames are queued then HTC Tx credits are drained
+to 0 and no other commands can be submitted
+including beacons and peer removal.
+
+This could in turn result in clients disconnecting
+due to their beacon loss and may trigger spurious
+sta kickouts because wmi peer removal command may
+never reach firmware during disassociation.
+
+This could happen, e.g. when disconnecting client
+that has gone away while asleep.
+
+As a workaround flush unicast management frames
+that can possibly be buffered.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 80 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c |  5 ---
+ drivers/net/wireless/ath/ath10k/wmi.h |  3 ++
+ 3 files changed, 83 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9af3ed5..47b3574 100644
+index 58ec5a7..25362ef 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3766,19 +3766,27 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
- 
- 	mutex_lock(&ar->conf_mutex);
- 
--	if (ar->state == ATH10K_STATE_WEDGED)
-+	if (ar->state == ATH10K_STATE_WEDGED) {
-+		ret = -EBUSY;
- 		goto skip;
-+	}
- 
- 	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
--			bool empty;
-+			bool htt_empty, wmi_empty;
-+			unsigned long flags;
- 
- 			spin_lock_bh(&ar->htt.tx_lock);
--			empty = (ar->htt.num_pending_tx == 0);
-+			htt_empty = (ar->htt.num_pending_tx == 0);
- 			spin_unlock_bh(&ar->htt.tx_lock);
- 
-+			spin_lock_irqsave(&ar->wmi_mgmt_tx_queue.lock, flags);
-+			wmi_empty = skb_queue_len(&ar->wmi_mgmt_tx_queue) == 0;
-+			spin_unlock_irqrestore(&ar->wmi_mgmt_tx_queue.lock,
-+					       flags);
-+
- 			skip = (ar->state == ATH10K_STATE_WEDGED);
- 
--			(empty || skip);
-+			((htt_empty && wmi_empty) || skip);
- 		}), ATH10K_FLUSH_TIMEOUT_HZ);
- 
- 	if (ret <= 0 || skip)
-@@ -3787,6 +3795,11 @@ static void ath10k_flush(struct ieee80211_hw *hw, u32 queues, bool drop)
- 
- skip:
- 	mutex_unlock(&ar->conf_mutex);
-+
-+	/* empty mgmt tx queue doesn't mean mgmt tx is flushed because the last
-+	 * frame still may be processed by a worker */
-+	if (ret > 0)
-+		cancel_work_sync(&ar->wmi_mgmt_tx_work);
+@@ -2076,9 +2076,56 @@ void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar)
+ 	}
  }
  
- /* TODO: Implement this function properly
++static void ath10k_mgmt_tx_flush(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
++	struct ath10k_vif *arvif = NULL, *arvif_iter;
++	u8 *da = ieee80211_get_DA(hdr);
++	u8 vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
++	int ret;
++
++	if (!is_unicast_ether_addr(da))
++		return;
++
++	if (!ieee80211_is_disassoc(hdr->frame_control) &&
++	    !ieee80211_is_deauth(hdr->frame_control) &&
++	    !ieee80211_is_action(hdr->frame_control))
++		return;
++
++	mutex_lock(&ar->conf_mutex);
++	list_for_each_entry(arvif_iter, &ar->arvifs, list) {
++		if (arvif_iter->vdev_id == vdev_id) {
++			arvif = arvif_iter;
++			break;
++		}
++	}
++	mutex_unlock(&ar->conf_mutex);
++
++	if (!arvif)
++		return;
++
++	ath10k_dbg(ATH10K_DBG_MAC,
++		   "mac flushing peer %pM on vdev %i mgmt tid for unicast mgmt\n",
++		   da, vdev_id);
++
++	/*
++	 * Wait 2 beacon intervals before flushing so stations that are
++	 * asleep but are actually still in range have a chance to see
++	 * updated PVB, wake up and fetch the frame.
++	 */
++	msleep(2 * arvif->beacon_interval * 1024 / 1000);
++
++	ret = ath10k_wmi_peer_flush(ar, vdev_id, da,
++				    WMI_PEER_TID_MGMT_MASK);
++	if (ret)
++		ath10k_warn("failed to flush peer %pM mgmt tid: %d\n",
++			    da, ret);
++}
++
+ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, wmi_mgmt_tx_work);
++	struct ieee80211_tx_info *info;
+ 	struct sk_buff *skb;
+ 	int ret;
+ 
+@@ -2092,7 +2139,40 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ 			ath10k_warn("failed to transmit management frame via WMI: %d\n",
+ 				    ret);
+ 			ieee80211_free_txskb(ar->hw, skb);
++			continue;
+ 		}
++
++		/*
++		 * Each WMI management Tx consumes 1 HTC Tx credit and doesn't
++		 * replenish it until the frame is actually transmitted out of
++		 * firmware's Tx queues.
++		 *
++		 * If associated client was asleep and has gone out of range
++		 * then unicast frames won't be released for FW/HW queues for a
++		 * while (10 seconds per observation). This means that if more
++		 * management frames are queued then HTC Tx credits are drained
++		 * to 0 and no other commands can be submitted including
++		 * beacons and peer removal.
++		 *
++		 * This could in turn result in clients disconnecting due to
++		 * their beacon loss and may trigger spurious sta kickouts
++		 * because wmi peer removal command may never reach firmware
++		 * during disassociation.
++		 *
++		 * This could happen, e.g. when disconnecting client that has
++		 * gone away while asleep.
++		 *
++		 * As a workaround flush unicast management frames that can
++		 * possibly be buffered.
++		 *
++		 * Note: This is a deficiency in design of WMI_MGMT_TX command.
++		 */
++		ath10k_mgmt_tx_flush(ar, skb);
++
++		/* there's no way to get ACK so just assume it's acked */
++		info = IEEE80211_SKB_CB(skb);
++		info->flags |= IEEE80211_TX_STAT_ACK;
++		ieee80211_tx_status(ar->hw, skb);
+ 	}
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index d4b48ef..3b270a4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -637,7 +637,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
+ 	struct wmi_mgmt_tx_cmd *cmd;
+ 	struct ieee80211_hdr *hdr;
+ 	struct sk_buff *wmi_skb;
+-	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	int len;
+ 	u16 fc;
+ 
+@@ -673,10 +672,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
+ 	if (ret)
+ 		return ret;
+ 
+-	/* TODO: report tx status to mac80211 - temporary just ACK */
+-	info->flags |= IEEE80211_TX_STAT_ACK;
+-	ieee80211_tx_status_irqsafe(ar->hw, skb);
+-
+ 	return ret;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index ae83822..90fe2e9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -3844,6 +3844,9 @@ struct wmi_peer_delete_cmd {
+ 	struct wmi_mac_addr peer_macaddr;
+ } __packed;
+ 
++#define WMI_PEER_TID_MGMT 17
++#define WMI_PEER_TID_MGMT_MASK BIT(WMI_PEER_TID_MGMT)
++
+ struct wmi_peer_flush_tids_cmd {
+ 	__le32 vdev_id;
+ 	struct wmi_mac_addr peer_macaddr;
 -- 
 1.8.5.3
 
