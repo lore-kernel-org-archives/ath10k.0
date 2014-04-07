@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WWy0N-0001m3-1t
- for ath10k@lists.infradead.org; Mon, 07 Apr 2014 01:05:43 +0000
-Message-ID: <5341F9D0.2090808@candelatech.com>
-Date: Sun, 06 Apr 2014 18:05:20 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WX5WV-0000F0-41
+ for ath10k@lists.infradead.org; Mon, 07 Apr 2014 09:07:24 +0000
+Received: by mail-wi0-f178.google.com with SMTP id bs8so4606400wib.17
+ for <ath10k@lists.infradead.org>; Mon, 07 Apr 2014 02:06:56 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
+In-Reply-To: <533EC686.40505@candelatech.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <5341F1A9.2030202@candelatech.com>
-In-Reply-To: <5341F1A9.2030202@candelatech.com>
+ <533EC686.40505@candelatech.com>
+Date: Mon, 7 Apr 2014 11:06:55 +0200
+Message-ID: <CA+BoTQknr=Rh6izDWpsDTQM-8i=NJQA1nJomCcugD81pRPeXBw@mail.gmail.com>
+Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +21,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 04/06/2014 05:30 PM, Ben Greear wrote:
-> On 04/04/2014 04:37 AM, Michal Kazior wrote:
->> Hi,
->>
->> After digging around I've found what seems to be
->> the problem with WMI Tx credit starvation and
->> inability to properly flush Tx in ath10k_flush().
->
-> I applied all four, rebooted AP and Station machine with the
-> new kernel (3.14.0-wl-ath+).  I had removed my own tx-hang detection
-> hack.
-
-Looks like the problems start with patch 3/4.
-
-All tests were done with all 4 patches applied on the AP machine,
-and it appears that works fine.  The station machine worked fine with
-the first two patches, but when third was applied, only a few stations
-come up and I get behaviour similar to that described in the first email,
-but I do not see anything obviously wrong in dmesg...
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBBcHJpbCAyMDE0IDE2OjQ5LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gT24gMDQvMDQvMjAxNCAwNDozNyBBTSwgTWljaGFsIEthemlvciB3cm90ZToK
+Pj4KPj4gSGksCj4+Cj4+IEFmdGVyIGRpZ2dpbmcgYXJvdW5kIEkndmUgZm91bmQgd2hhdCBzZWVt
+cyB0byBiZQo+PiB0aGUgcHJvYmxlbSB3aXRoIFdNSSBUeCBjcmVkaXQgc3RhcnZhdGlvbiBhbmQK
+Pj4gaW5hYmlsaXR5IHRvIHByb3Blcmx5IGZsdXNoIFR4IGluIGF0aDEwa19mbHVzaCgpLgo+Pgo+
+PiBMb25nIHN0b3J5IHNob3J0OiBpZiBhIGNsaWVudCB0aGF0IHdhcyBhc2xlZXAgKGFzCj4+IHBl
+ciB3aGF0IGZpcm13YXJlIHRoaW5rcykgZ29lcyBvdXQgb2YgcmFuZ2UgKG9yCj4+IGp1c3Qgc3Rv
+cHMgcmVzcG9uZGluZykgdGhlbiBUeCByb3RzIGluIEZXL0hXCj4+IHF1ZXVlcyBmb3IgYSBmZXcg
+c2Vjb25kcyBiZWZvcmUgaXQncyBkaXNjYXJkZWQuCj4+IEZvciBXTUkgVHggY3JlZGl0cyB0aGlz
+IG1lYW5zIG1hbmFnZW1lbnQgZnJhbWVzCj4+IGVhdCB1cCBUeCBjcmVkaXRzIGZvciBhIGZldyBz
+ZWNvbmRzIChjYXVzaW5nIG90aGVyCj4+IFdNSSBjb21tYW5kcyB0byB0aW1lb3V0IGFuZCByZXR1
+cm4gLUVBR0FJTi8tMTEpLgo+PiBGb3IgSFRUIFR4IHRoaXMgbWVhbnMgTnVsbEZ1bmMgZnJhbWVz
+IHdvdWxkIGdldAo+PiBzdHVjayBmb3IgYSBmZXcgc2Vjb25kcyBiZWZvcmUgY29tcGxldGlvbiB3
+YXMKPj4gcmVjZWl2ZWQuCj4+Cj4+IEBCZW46IENhbiB5b3UgY2hlY2sgaWYgdGhpcyBoZWxwcyB5
+b3U/IEkgdGVzdGVkCj4+IHRoaXMgYnJpZWZseSBhbmQgYXQgbGVhc3QgWzEvNF0gc2VlbXMgZml4
+ZXMgdGhlCj4+IFdNSSBUeCBzdGFydmF0aW9uLiBJJ20gaG9waW5nIHBhdGNoZXMgMi00IGhlbHAK
+Pj4gd2l0aCB5b3VyIGF0aDEwa19mbHVzaCgpIGZhaWx1cmVzIHdoaWNoIEkgaGF2ZW4ndAo+PiBi
+ZWVuIHN1Y2Nlc3NmdWxsIGluIHJlcHJvZHVjaW5nIChidXQgaGF2ZSBvYnNlcnZlZAo+PiBpbXBy
+b3ZlbWVudCB3aXRoIHB1cmdpbmcgc29tZSBmcmFtZXMgb3V0IG9mIEZXL0hXCj4+IHF1ZXVlcyku
+Cj4KPgo+IEknbSBvdXQgb2Ygb2ZmaWNlIGZvciBhIGJpdCwgYnV0IHdpbGwgdGVzdCB0aGlzIGFz
+Cj4gc29vbiBhcyBJJ20gYmFjay4KPgo+IFRoYW5rcyBmb3IgbG9va2luZyBpbnRvIHRoaXMhCj4K
+PiBJbiBnZW5lcmFsLCB3b3VsZCBpdCBtYWtlIG1vcmUgc2Vuc2UgdG8gaGF2ZSBhIGZldyBtb3Jl
+IHR4IGNyZWRpdHMKPiBhdmFpbGFibGUgdG8gbWl0aWdhdGUgdGhlIHNsb3ctdG8tYmUtcHJvY2Vz
+c2VkIGJ1ZmZlcnM/CgpTdXJlLCB3ZSBjYW4gZGlzcmVnYXJkIGZpcm13YXJlIHRlbGxpbmcgdXMg
+d2UgaGF2ZSBvbmx5IDIgY3JlZGl0cyBhbmQKc3VibWl0IGNvbW1hbmRzIGFzIHdlIHNlZSBmaXQu
+IFdlIGNhbiBwcm9iYWJseSBldmVuIGdldCBhd2F5IHdpdGggaXQKYXMgbG9uZyBhcyB3ZSBkb24n
+dCBzdWJtaXQgbW9yZSB0aGFuIDIgV01JX01HTVRfVFhfQ01ESUQgY29tbWFuZHMKYmVjYXVzZSBp
+dCBzZWVtcyB0aGlzIGlzIHRoZSBvbmx5IHJlc291cmNlIGNvbnN1bWluZyBjb21tYW5kIChyZXF1
+aXJlcwpmaXJtd2FyZSB0byBjb3B5IGZyYW1lLCBrZWVwIGl0IGFsbG9jYXRlZCBhbmQgbWFwcGVk
+IGZvciBIVyB1bnRpbApyZWxlYXNlZCBvbiBhaXIpLiBCZWFjb25zIGFyZSBhbHJlYWR5IHNlbnQg
+YnkgcmVmZXJlbmNlLiBCdXQgSSBkb24ndAp0aGluayB0aGlzIGlzIHRoZSBzb2x1dGlvbi4KClRo
+ZSBwcm9ibGVtIGlzIHRoZXJlJ3Mgbm8gdHggY29tcGxldGlvbiBpbmRpY2F0aW9uIGZvcgpXTUlf
+TUdNVF9UWF9DTURJRCBhbmQgeW91IGNhbid0IHJlbHkgb24gdHggY3JlZGl0cyByZXBsZW5pc2ht
+ZW50IGZvcgp0aGF0IGJlY2F1c2UgKGFzIHBlciBteSBvYnNlcnZhdGlvbikgeW91IGhhdmUgdG8g
+c3VibWl0IGFuIGV2ZW4gbnVtYmVyCm9mIFdNSV9NR01UX1RYX0NNRElEIHRvIGdldCB0eCBjcmVk
+aXRzIHJlcGxlbmlzaGVkLiBUaGlzIG1lYW5zIHRoZXJlJ3MKbm8gd2F5IG9mIGRvaW5nIGFuIGVk
+dWNhdGVkIHRpbWVvdXQvZmx1c2hpbmcuIFRoaXMgYWxzbyBtZWFucyB5b3UgY2FuCmdldCBzdHVj
+ayB3aXRoIDIgY3JlZGl0cyBhbmQgMiBmcmFtZXMgYmVpbmcgc3R1Y2sgaW4gRlcgaWYgZGVzdGlu
+YXRpb24KcGVlciBpcyB1bnJlc3BvbnNpdmUgZm9yIHVwIHRvIDEwIHNlY29uZHMuCgpPbmNlIHlv
+dSBnZXQgc3R1Y2sgeW91IGNhbiBnZXQgYSBjYXNjYWRlIG9mIGVycm9ycyBiZWNhdXNlIFdNSQpj
+b21tYW5kcyB0aW1lIG91dCBhZnRlciAzIHNlY29uZHMgYW5kIGlmIHlvdSdyZSBydW5uaW5nIEFQ
+IHlvdSBzdG9wCmJlYWNvbmluZyBiZWNhdXNlIHlvdSBjYW4ndCBldmVuIHN1Ym1pdCBXTUlfQkNO
+X1RYX0NNRElELgoKQW5vdGhlciB3YXkgd291bGQgYmUgdG8gcHJvbG9uZyBXTUkgY29tbWFuZCB0
+aW1lb3V0IHRvIH4xMSBzZWNvbmRzLi4uCmF0IGxlYXN0IGZvciB0aGUgInR4IGNyZWRpdHMgYmVp
+bmcgc3R1Y2siIHByb2JsZW0uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo=
