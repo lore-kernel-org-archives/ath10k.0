@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXUD2-00026r-BI
- for ath10k@lists.infradead.org; Tue, 08 Apr 2014 11:28:57 +0000
-Received: by mail-ee0-f51.google.com with SMTP id c13so567628eek.10
- for <ath10k@lists.infradead.org>; Tue, 08 Apr 2014 04:27:56 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2] ath10k: improve htc tx credit debugging prints
-Date: Tue,  8 Apr 2014 13:21:40 +0200
-Message-Id: <1396956100-26668-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1396955920-25863-1-git-send-email-michal.kazior@tieto.com>
-References: <1396955920-25863-1-git-send-email-michal.kazior@tieto.com>
+ id 1WXLpa-00068Z-2w
+ for ath10k@lists.infradead.org; Tue, 08 Apr 2014 02:32:11 +0000
+Message-ID: <53435F89.60500@candelatech.com>
+Date: Mon, 07 Apr 2014 19:31:37 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>	<5341F1A9.2030202@candelatech.com>
+ <CA+BoTQndgEB7X-RUPPkxdjnp96LJzbv6=Q9K4XTTrky-QwE4Ww@mail.gmail.com>
+In-Reply-To: <CA+BoTQndgEB7X-RUPPkxdjnp96LJzbv6=Q9K4XTTrky-QwE4Ww@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,69 +19,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This way it's easier to track and debug htc tx
-credit issues.
+On 04/07/2014 02:11 AM, Michal Kazior wrote:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-v2:
- * remove empty newline
+> These logs are not enough. I'd love to see traces for this to see what
+> frames are actually submitted and when tx credits are replenished.
+>
+> I also wonder if this can be somehow related to your FW changes to
+> allow connecting multiple client virtual interfaces to a single AP?
 
-(Sorry for the noise!)
+I think it is unlikely due to my firmware changes...little of that touched
+the handling of management frames.  It might very well be a basic problem in
+either the firmware or driver when using multiple station VIFS.  I think that
+aside from my testing that code has not been used much.
 
- drivers/net/wireless/ath/ath10k/htc.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+Note my followup email that problems started with patch 3/4...not sure you
+saw that one or not.  I saw similar failure to associate & get DHCP (and
+slow/hung user-space) without the kernel error logs.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 7f1bccd..5b58dbb 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -157,6 +157,9 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 			goto err_pull;
- 		}
- 		ep->tx_credits -= credits;
-+		ath10k_dbg(ATH10K_DBG_HTC,
-+			   "htc ep %d consumed %d credits (total %d)\n",
-+			   eid, credits, ep->tx_credits);
- 		spin_unlock_bh(&htc->tx_lock);
- 	}
- 
-@@ -185,6 +188,9 @@ err_credits:
- 	if (ep->tx_credit_flow_enabled) {
- 		spin_lock_bh(&htc->tx_lock);
- 		ep->tx_credits += credits;
-+		ath10k_dbg(ATH10K_DBG_HTC,
-+			   "htc ep %d reverted %d credits back (total %d)\n",
-+			   eid, credits, ep->tx_credits);
- 		spin_unlock_bh(&htc->tx_lock);
- 
- 		if (ep->ep_ops.ep_tx_credits)
-@@ -234,12 +240,12 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
- 		if (report->eid >= ATH10K_HTC_EP_COUNT)
- 			break;
- 
--		ath10k_dbg(ATH10K_DBG_HTC, "ep %d got %d credits\n",
--			   report->eid, report->credits);
--
- 		ep = &htc->endpoint[report->eid];
- 		ep->tx_credits += report->credits;
- 
-+		ath10k_dbg(ATH10K_DBG_HTC, "htc ep %d got %d credits (total %d)\n",
-+			   report->eid, report->credits, ep->tx_credits);
-+
- 		if (ep->ep_ops.ep_tx_credits) {
- 			spin_unlock_bh(&htc->tx_lock);
- 			ep->ep_ops.ep_tx_credits(htc->ar);
+I've added the first two patches to my tree and will continue to run
+with them since they do not appear to cause problems so far.
+
+Thanks,
+Ben
+
 -- 
-1.8.5.3
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
