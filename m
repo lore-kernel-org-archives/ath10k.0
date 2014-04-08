@@ -1,13 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXVMl-0001Pi-Go
- for ath10k@lists.infradead.org; Tue, 08 Apr 2014 12:43:04 +0000
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXVPZ-00021k-R3
+ for ath10k@lists.infradead.org; Tue, 08 Apr 2014 12:45:58 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Running throughput tests
 References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
- <012e01cef7e0$99017e70$cb047b50$@sparklan.com>
- <52AACFB9.8080901@intec.ugent.be>
  <006301cefa3c$44c07b50$ce4171f0$@sparklan.com>
  <52AEC26B.2060400@intec.ugent.be>
  <007f01cefa41$8a940de0$9fbc29a0$@sparklan.com>
@@ -24,11 +22,12 @@ References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
  <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
  <5335910B.3000702@intec.ugent.be>
  <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
- <53372210.7060903@intec.ugent.be>
-Date: Tue, 8 Apr 2014 15:42:19 +0300
-In-Reply-To: <53372210.7060903@intec.ugent.be> (Bart Jooris's message of "Sat, 
- 29 Mar 2014 20:42:08 +0100")
-Message-ID: <871tx8m1qs.fsf@kamboji.qca.qualcomm.com>
+ <53372210.7060903@intec.ugent.be> <53372A9A.1090402@candelatech.com>
+ <5337C859.3040405@intec.ugent.be>
+Date: Tue, 8 Apr 2014 15:45:12 +0300
+In-Reply-To: <5337C859.3040405@intec.ugent.be> (Bart Jooris's message of "Sun, 
+ 30 Mar 2014 09:31:37 +0200")
+Message-ID: <87wqf0kn1j.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -38,77 +37,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Bart.Jooris@intec.ugent.be
-Cc: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-SGkgQmFydCwKCkJhcnQgSm9vcmlzIDxiYXJ0Lmpvb3Jpc0BnbWFpbC5jb20+IHdyaXRlczoKCj4g
-T24gMDMvMjgvMjAxNCAwNDozMSBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPgo+PiBZb3UgYXJlIHBy
-b3ZpZGluZyB2ZXJ5IGxpdHRsZSBpbmZvcm1hdGlvbiB3aGljaCBtYWtlcyBpdCBkaWZmaWN1bHQg
-dG8KPj4gaGVscC4gRm9yIHN0YXJ0ZXJzOgo+Pgo+PiAqIFdoYXQgZmlybXdhcmUgdmVyc2lvbj8K
-PiBJJ3ZlIGNsb25lZCAncmVjZW50bHknIGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGst
-ZmlybXdhcmUvCj4KPiB0cmVlIC1EIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTk4OFgKPiDilJTi
-lIDilIAgW01hciAyOSAxMDo0Nl0gaHcyLjAKPiDilJzilIDilIAgW0ZlYiAyNiAxOTozOV0gYm9h
-cmQuYmluCj4g4pSc4pSA4pSAIFtGZWIgMjYgMTk6MzldIGZpcm13YXJlLTIuYmluCj4g4pSU4pSA
-4pSAIFtGZWIgMjYgMTk6MzldIG90cC5iaW4KClRoYXQgZG9lc24ndCB0ZWxsIGFueXRoaW5nIGFi
-b3V0IHRoZSBmaXJtd2FyZSB2ZXJzaW9uLiBQbGVhc2UgcmVhZCB0aGlzOgoKaHR0cDovL3dpcmVs
-ZXNzLmtlcm5lbC5vcmcvZW4vdXNlcnMvRHJpdmVycy9hdGgxMGsvZGVidWcjRmlybXdhcmVfdmVy
-c2lvbgoKWW91IHNob3VsZCB1c2UgMTAuMS40NjcuMi0xIGFuZCBzZWUgdGhpcyBpbiBkbWVzZzoK
-ClsgMjY1MS41MDY2OTFdIGF0aDEwazogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywgMHgwNDMy
-MDJmZikgZncgMTAuMS40NjcuMi0xIGFwaSAyIGh0dCAyLjEKCihQbGVhc2Ugbm90ZSB0aGF0IHRo
-ZSBpbmZvIHByaW50IHdhcyBjaGFuZ2VkIGZldyB3ZWVrcyBiYWNrLCBzbyBpdCB3b24ndApsb29r
-IGV4YWN0bHkgc2FtZSBvbiAzLjEzLikKCj4+ICogV2hhdCB2ZXJzaW9uIG9mIGF0aDEwayBhcmUg
-eW91IHVzaW5nPwo+Cj4gSSBjb21waWxlZCBrZXJuZWwgMy4xMy41LgoKT2ssIHRoYXQncyBhIHJl
-bGF0aXZlbHkgb2xkIGFzIHRoZSB2ZXJzaW9uIG9mIGF0aDEwayBpbiB0aGF0IHJlbGVhc2UgaXMK
-ZnJvbSBsYXN0IE9jdG9iZXIuIFdlIGhhdmUgaGFkIHF1aXRlIGEgZmV3IG9wdGltaXNhdGlvbnMg
-YW5kIGZpeGVzIHNpbmNlCnRoZW4gYnV0IHlvdSBzaG91bGQgc3RpbGwgZWFzaWx5IGdldCA0MDAg
-TWJwcywgZXNwZWNpYWxseSBvbiB5b3VyIGZhc3QKeDg2IGNwdXMuCgo+PiAqIEFyZSB5b3Ugc3Vy
-ZSB0aGF0IHRoZSBob3N0IGlzIG5vdCBsaW1pdGluZyB0aGUgdGhyb3VnaHB1dCBpbiBhbnkgd2F5
-Pwo+PiAgICBUcnkgdG8gZGlzYWJsZSBfYWxsXyBrZXJuZWwgZGVidWcgb3B0aW9ucy4KCj4gL3Zh
-ci9sb2cvc3lzbG9nIGFuZCBkbWVzZyBkb2Vzbid0IHRvIGJlIHBhY2tlZCB3aXRoIG1lc3NhZ2Vz
-IHJlbGF0ZWQKPiB0byB0aGUgdGhyb3VnaHB1dCB0ZXN0LiBJIGRvbid0IHRoaW5rIHRvIGhhdmUg
-c2VlbiB0aGUgQ1BVIGJlaW5nCj4gb3ZlcmxvYWRlZCBkdXJpbmcgdGhlIHRlc3QuCj4gSSdtIHBs
-YW5uaW5nIHRvIGdvIGJhY2sgdG8gdGhlIG9mZmljZSB0b21vcnJvdyB0byB2ZXJpZnkgdGhpcy4K
-Pgo+IEZ1cnRoZXIgSSBoYXZlIHRoZXNlIGluIG15IGtlcm5lbCBjb25maWcKPiBDT05GSUdfQVRI
-MTBLPW0KPiBDT05GSUdfQVRIMTBLX1BDST1tCj4gIyBDT05GSUdfQVRIMTBLX0RFQlVHIGlzIG5v
-dCBzZXQKPiBDT05GSUdfQVRIMTBLX0RFQlVHRlM9eQo+IENPTkZJR19BVEgxMEtfVFJBQ0lORz15
-Cj4KPiBJIHdpbGwgZGlzYWJsZSB0aGUgbGFzdCB0d28gdG9vLgoKT2ssIHRoaXMgbG9va3MgZ29v
-ZC4gQnV0IGp1c3QgdG8gY29uZmlybSwgY2FuIHlvdSBzZW5kIHRoZSBmdWxsIGtlcm5lbApjb25m
-aWcgZmlsZSBhcyB3ZWxsPwoKPj4gKiBBbHNvIGRlc2NyaWJlIHlvdXIgdGVzdCBzZXR1cCBpbiBk
-ZXRhaWwuCj4+Cj4gQ29tbW9uIGZvciBBUCBhbmQgU1RBOgo+Cj4gLURTUy0xMzAwIHdpdGggaTUt
-MjU0ME0gQ1BVIEAgMi42MEdIeiAtIDhHQiBSQU0gLSBTU0QgNjRHQi4KPiAtMSBzcGFya0xBTiBX
-UEVBLTM1MUFDIGNhcmQgd2l0aCBRQ0E5ODgwIGNoaXAgc2V0IGFuZCAzIGR1YWwgYmFuZCBhbnRl
-bm5hJ3MuCj4gLUtlcm5lbCAzLjEzLjUgY29udGFpbmluZyB0aGUgYXRoMTBrIG1vZHVsZXMKPiAt
-ZmlybXdhcmVzIGNsb25lZCBlbmQgb2YgRmVicnVhcnkKPiAtaXBlcmYgaW4gdWRwIG1vZGUgdXNl
-ZCBmb3IgdGhlICB0aHJvdWdocHV0IHRlc3QKPgo+IEFQIG9ubHk6Cj4gLXVidW50dSAxMi4wNCBM
-VFMgYXMgY3JkYSB3b3VsZG4ndCBidWlsZCBvbiB1YnVudHUgMTMuMTAgKGxpYmdjcnlwdCBpc3N1
-ZSkuCj4gLWhvc3RhcGQgdjIuMi1kZXZlbAo+IC1tb2RpZmllZCByZWd1bGF0b3J5IGRhdGFiYXNl
-IGFuZCBjcmRhIGJ1aWxkCj4gLXlvdXIgRnVsbF9ob3N0YXBkX2NvbmZpZ3VyYXRpb24gKyBjaGFu
-bmVsPTM2IGFuZCB2aHRfb3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCj4KPiBTVEEgb25seToK
-PiAtdWJ1bnR1IDEzLjEwCj4gLW5tY2xpIGlzIHVzZWQgdG8gY29ubmVjdCB0byB0aGUgQVAKPgo+
-IERpc3RhbmNlIGJldHdlZW4gQVAgYW5kIFNUQTogNjAgY20uIEFudGVubmEncyBhcmUgbm93IGRp
-cmVjdGVkCj4gb3J0aG9nb25hbCBwZXIgZGV2aWNlLCBhbnRlbm5hWCAoWD0xLi4zKSBvbiBib3Ro
-IGRldmljZXMgYXJlIHBvaW50aW5nCj4gaW4gdGhlIHNhbWUgZGlyZWN0aW9uLiBBbHRob3VnaCBJ
-J3ZlIHBsYXllZCBhIGxvdCB3aXRoIHRoZSBhbnRlbm5hJ3MKPiBkaXJlY3Rpb25zIGFscmVhZHkg
-YW5kIEkgY2FuJ3QgcmVtZW1iZXIgb25lIHJ1biB3aGVyZSBpdCBoYWQgYSBsb3Qgb2YKPiBpbXBh
-Y3QuLi4KPgo+IFRoZSBzcGVjdHJ1bSBhbmFseXNlciBtZWFzdXJlZCBhIGJhbmQgb2YgYWxtb3N0
-IDgwTUh6IGJlaW5nIHVzZWQuCgpUaGlzIGxvb2tzIGdvb2QgYXMgd2VsbC4gSXMgaXQgcG9zc2li
-bGUgZm9yIHlvdSB0YWtlIGRlYnVnIGxvZ3M/IEZpcnN0CmVuYWJsZSB0aGVzZSBhdGgxMGsgb3B0
-aW9uczoKCkNPTkZJR19BVEgxMEtfREVCVUc9eQpDT05GSUdfQVRIMTBLX0RFQlVHRlM9eQpDT05G
-SUdfQVRIMTBLX1RSQUNJTkc9eQoKQW5kIHN0YXJ0IGF0aDEwayB3aXRoIGRlYnVnIG1hc2sgMHg0
-MzIsIHdoaWNoIHByaW50cyBpbmZvIHJlbGF0ZWQgdG8KZmlybXdhcmUgY29uZmlndXJhdGlvbjoK
-Cm1vZHByb2JlIGF0aDEwa19jb3JlLmtvIGRlYnVnX21hc2s9MHg0MzIKCkFsc28gc3RhcnQgaG9z
-dGFwZCB3aXRoIC1kZGR0IGFuZCBjb25uZWN0IHRoZSBhdGgxMGsgU1RBIHRvIHRoZSBBUC4gVGhl
-bgpzZW5kIGhlcmUgYm90aCB0aGUgZnVsbCBkbWVzZyBvdXRwdXQsIHByZWZlcmFibHkgc3RhcnRp
-bmcgZnJvbSBrZXJuZWwKYm9vdCwgYW5kIGhvc3RhcGQgZGVidWcgbG9ncyBoZXJlIGZyb20gdGhl
-IEFQLiBObyBuZWVkIHRvIHJ1biBhbnkKdGhyb3VnaHB1dCB0ZXN0cyBpbiB0aGlzIGNhc2UsIEkg
-anVzdCB3YW50IHRvIHNlZSBob3cgd2UgY29uZmlndXJlIHRoZQpmaXJtd2FyZSB3aGVuIHRoZSBT
-VEEgYXNzb2NpYXRlcy4KCkFuZCBldmVuIGJldHRlciBpZiB5b3UgY291bGQgdXNlIHRyYWNlLWNt
-ZCwgd2UgZ2V0IG1vcmUgbG9ncyB0aGF0IHdheToKCmh0dHA6Ly93aXJlbGVzcy5rZXJuZWwub3Jn
-L2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2RlYnVnI1RyYWNpbmcKCi0tIApLYWxsZSBWYWxvCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Bart Jooris <bart.jooris@gmail.com> writes:
+
+> Dear Ben,
+>
+> On 03/29/2014 09:18 PM, Ben Greear wrote:
+>> On 03/29/2014 12:42 PM, Bart Jooris wrote:
+>>
+>>> -DSS-1300 with i5-2540M CPU @ 2.60GHz - 8GB RAM - SSD 64GB.
+>>> -1 sparkLAN WPEA-351AC card with QCA9880 chip set and 3 dual band
+>>> antenna's.
+>>> -Kernel 3.13.5 containing the ath10k modules
+>>> -firmwares cloned end of February
+>>> -iperf in udp mode used for the  throughput test
+>>
+>> I get 500+Mbps on some other NICs with same chipset... 
+>
+> :-) Which cards are you using?
+>
+>> I'll get some
+>> WPEA-351AC as soon as I can find someone willing to sell them and will
+>> do some tests on those as well...
+>
+> I have 8 of those, I can lend you 2.
+
+Can you setup a third board as a sniffer and see what's happening on the
+air? But it's still more important to get ath10k and hostapd debug logs,
+try to take those first.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
