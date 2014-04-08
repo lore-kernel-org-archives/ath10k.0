@@ -1,16 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXWub-0007k5-Ue
- for ath10k@lists.infradead.org; Tue, 08 Apr 2014 14:22:06 +0000
-From: "Shu, Nick" <Nick.Shu@spirent.com>
-Subject: RE: wifi card disconnected right after assoicated with AP
-Date: Tue, 8 Apr 2014 14:20:38 +0000
-Message-ID: <153F35912E69C446A72CF7D6417EBADE7CF3CF@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
-References: <153F35912E69C446A72CF7D6417EBADE7CF38D@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
- <87ob0ckkax.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87ob0ckkax.fsf@kamboji.qca.qualcomm.com>
-Content-Language: en-US
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXVMl-0001Pi-Go
+ for ath10k@lists.infradead.org; Tue, 08 Apr 2014 12:43:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Running throughput tests
+References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
+ <012e01cef7e0$99017e70$cb047b50$@sparklan.com>
+ <52AACFB9.8080901@intec.ugent.be>
+ <006301cefa3c$44c07b50$ce4171f0$@sparklan.com>
+ <52AEC26B.2060400@intec.ugent.be>
+ <007f01cefa41$8a940de0$9fbc29a0$@sparklan.com>
+ <52AEE61F.5030505@intec.ugent.be>
+ <006b01cefacb$6c0b2d60$44218820$@sparklan.com>
+ <52B00B10.3050300@intec.ugent.be>
+ <004b01cefb9d$04a543e0$0defcba0$@sparklan.com>
+ <52B2AE75.9050206@intec.ugent.be>
+ <00df01cf0090$05944f10$10bced30$@sparklan.com>
+ <52B9672E.9000701@intec.ugent.be>
+ <008c01cf012e$e59563d0$b0c02b70$@sparklan.com>
+ <530A64E5.2040401@intec.ugent.be> <530B0670.1010009@stackframe.org>
+ <530E5EF2.8070800@intec.ugent.be>
+ <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
+ <5335910B.3000702@intec.ugent.be>
+ <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
+ <53372210.7060903@intec.ugent.be>
+Date: Tue, 8 Apr 2014 15:42:19 +0300
+In-Reply-To: <53372210.7060903@intec.ugent.be> (Bart Jooris's message of "Sat, 
+ 29 Mar 2014 20:42:08 +0100")
+Message-ID: <871tx8m1qs.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,94 +38,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
-Thanks, Kalle:
-I installed Ubuntu 13.10 server that has the Linux kernel 3.11 (this is what I read from the info) on my test server, it should have all driver and firmware to support the card.
-Card is a mini PCIe that has a QCA 9880 chip in it with 3x3 antenna configuration, made by Embedded Works.
-Access Point side is a Netgear AC1900 NightHawk. I set it up and using Ch153, WPA-PSK, with DHCP enabled.
-
-I'm new in Linux (worked on Windows for most time), so I'm still learning.
-I used "iw" and "wpa_supplicant" to control the card.
-I failed for scan command at the beginning (posted a message last week for help) and fixed by bring up the wlan0 interface (ip link set woan0 up).
-Then set net key "wpa_passphrase SSID KEY"
-Start wpa with command: "wpa_supplicant -B -D nl80211 -i wlan0 -c /etc/wpa_supplicant.conf".
-
-I actually got the card associated with the AP but couldn't get a valid IP address last Friday, so I was working on getting IP address issue.
-Then on Monday, I logged in to server and found the card wlan0 is up without command "ip link set ...", also the  net key was remembered and auto associate to AP.
-So something is taking over and doing association automatically for me ( I installed metwork-manager, but never use it yet).
-
-You mentioned the card MAC is not a valid one? I though the vender should programmed a valid MAC to chip, right?
-
-I used "iw event -r -f" to monitor the debug message, do I have to enable something to get the kernel and supplicant log?
-
-Thanks!
-Nick
-
-
------Original Message-----
-From: Kalle Valo [mailto:kvalo@qca.qualcomm.com]
-Sent: Tuesday, April 08, 2014 8:44 AM
-To: Shu, Nick
+To: Bart.Jooris@intec.ugent.be
 Cc: ath10k@lists.infradead.org
-Subject: Re: wifi card disconnected right after assoicated with AP
 
-"Shu, Nick" <Nick.Shu@spirent.com> writes:
-
-> I'm trying to use a wifi card to associate to a access point, but got
-> a strange thing here.
-
-What card exactly? And what version of ath10k and the firmware?
-
-> Right after associated with AP, it disconnected from AP, the pattern repeated for:
-> Scan
-> Authentication
-> Association
-> De-authenticated
-> Dis-associated
-> I captured the frames as below, saw a "wlan0 del station <AP's MAC>",
-> why wlan0 do this local request?
-
-Very difficult to say based on the information you provided. How do you exactly control the STA? Using iw, wpa_supplicant, network-manager or something else?
-
-> 0.096321: wlan0 (phy #0): scan started
-> 2.802464: wlan0 (phy #0): scan finished: 2412 2417 2422 2427 2432 2437
-> 2442 2447 2452 2457 2462 5180 5200 5220 5240 5260
->  5280 5300 5320 5500 5520 5540 5560 5580 5660 5680 5700 5745 5765 5785 5805 5825, ""
-> 0.008130: wlan0: new station c4:04:15:29:cd:2e
-> 0.000462: wlan0 (phy #0): auth c4:04:15:29:cd:2e -> 00:03:07:12:34:56
-> status: 0: Successful [frame: b0 00 3c 00 00 03 07
-
-00:03:07:12:34:56 (the default MAC address) implies that there's a problem with the calibration data. Please try with firmware 10.1.467.2-1. Do you get a proper MAC address then?
-
-Also It would be good to see both kernel logs as well as wpasupplicant debug logs. And a sniffer capture would be preferably as well.
-
---
-Kalle Valo
-E-mail confidentiality.
---------------------------------
-This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
-
-Spirent Communications plc
-Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-Tel No. +44 (0) 1293 767676
-Fax No. +44 (0) 1293 767677
-
-Registered in England Number 470893
-Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-
-Or if within the US,
-
-Spirent Communications,
-26750 Agoura Road, Calabasas, CA, 91302, USA.
-Tel No. 1-818-676- 2300
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQmFydCwKCkJhcnQgSm9vcmlzIDxiYXJ0Lmpvb3Jpc0BnbWFpbC5jb20+IHdyaXRlczoKCj4g
+T24gMDMvMjgvMjAxNCAwNDozMSBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPgo+PiBZb3UgYXJlIHBy
+b3ZpZGluZyB2ZXJ5IGxpdHRsZSBpbmZvcm1hdGlvbiB3aGljaCBtYWtlcyBpdCBkaWZmaWN1bHQg
+dG8KPj4gaGVscC4gRm9yIHN0YXJ0ZXJzOgo+Pgo+PiAqIFdoYXQgZmlybXdhcmUgdmVyc2lvbj8K
+PiBJJ3ZlIGNsb25lZCAncmVjZW50bHknIGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGst
+ZmlybXdhcmUvCj4KPiB0cmVlIC1EIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTk4OFgKPiDilJTi
+lIDilIAgW01hciAyOSAxMDo0Nl0gaHcyLjAKPiDilJzilIDilIAgW0ZlYiAyNiAxOTozOV0gYm9h
+cmQuYmluCj4g4pSc4pSA4pSAIFtGZWIgMjYgMTk6MzldIGZpcm13YXJlLTIuYmluCj4g4pSU4pSA
+4pSAIFtGZWIgMjYgMTk6MzldIG90cC5iaW4KClRoYXQgZG9lc24ndCB0ZWxsIGFueXRoaW5nIGFi
+b3V0IHRoZSBmaXJtd2FyZSB2ZXJzaW9uLiBQbGVhc2UgcmVhZCB0aGlzOgoKaHR0cDovL3dpcmVs
+ZXNzLmtlcm5lbC5vcmcvZW4vdXNlcnMvRHJpdmVycy9hdGgxMGsvZGVidWcjRmlybXdhcmVfdmVy
+c2lvbgoKWW91IHNob3VsZCB1c2UgMTAuMS40NjcuMi0xIGFuZCBzZWUgdGhpcyBpbiBkbWVzZzoK
+ClsgMjY1MS41MDY2OTFdIGF0aDEwazogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywgMHgwNDMy
+MDJmZikgZncgMTAuMS40NjcuMi0xIGFwaSAyIGh0dCAyLjEKCihQbGVhc2Ugbm90ZSB0aGF0IHRo
+ZSBpbmZvIHByaW50IHdhcyBjaGFuZ2VkIGZldyB3ZWVrcyBiYWNrLCBzbyBpdCB3b24ndApsb29r
+IGV4YWN0bHkgc2FtZSBvbiAzLjEzLikKCj4+ICogV2hhdCB2ZXJzaW9uIG9mIGF0aDEwayBhcmUg
+eW91IHVzaW5nPwo+Cj4gSSBjb21waWxlZCBrZXJuZWwgMy4xMy41LgoKT2ssIHRoYXQncyBhIHJl
+bGF0aXZlbHkgb2xkIGFzIHRoZSB2ZXJzaW9uIG9mIGF0aDEwayBpbiB0aGF0IHJlbGVhc2UgaXMK
+ZnJvbSBsYXN0IE9jdG9iZXIuIFdlIGhhdmUgaGFkIHF1aXRlIGEgZmV3IG9wdGltaXNhdGlvbnMg
+YW5kIGZpeGVzIHNpbmNlCnRoZW4gYnV0IHlvdSBzaG91bGQgc3RpbGwgZWFzaWx5IGdldCA0MDAg
+TWJwcywgZXNwZWNpYWxseSBvbiB5b3VyIGZhc3QKeDg2IGNwdXMuCgo+PiAqIEFyZSB5b3Ugc3Vy
+ZSB0aGF0IHRoZSBob3N0IGlzIG5vdCBsaW1pdGluZyB0aGUgdGhyb3VnaHB1dCBpbiBhbnkgd2F5
+Pwo+PiAgICBUcnkgdG8gZGlzYWJsZSBfYWxsXyBrZXJuZWwgZGVidWcgb3B0aW9ucy4KCj4gL3Zh
+ci9sb2cvc3lzbG9nIGFuZCBkbWVzZyBkb2Vzbid0IHRvIGJlIHBhY2tlZCB3aXRoIG1lc3NhZ2Vz
+IHJlbGF0ZWQKPiB0byB0aGUgdGhyb3VnaHB1dCB0ZXN0LiBJIGRvbid0IHRoaW5rIHRvIGhhdmUg
+c2VlbiB0aGUgQ1BVIGJlaW5nCj4gb3ZlcmxvYWRlZCBkdXJpbmcgdGhlIHRlc3QuCj4gSSdtIHBs
+YW5uaW5nIHRvIGdvIGJhY2sgdG8gdGhlIG9mZmljZSB0b21vcnJvdyB0byB2ZXJpZnkgdGhpcy4K
+Pgo+IEZ1cnRoZXIgSSBoYXZlIHRoZXNlIGluIG15IGtlcm5lbCBjb25maWcKPiBDT05GSUdfQVRI
+MTBLPW0KPiBDT05GSUdfQVRIMTBLX1BDST1tCj4gIyBDT05GSUdfQVRIMTBLX0RFQlVHIGlzIG5v
+dCBzZXQKPiBDT05GSUdfQVRIMTBLX0RFQlVHRlM9eQo+IENPTkZJR19BVEgxMEtfVFJBQ0lORz15
+Cj4KPiBJIHdpbGwgZGlzYWJsZSB0aGUgbGFzdCB0d28gdG9vLgoKT2ssIHRoaXMgbG9va3MgZ29v
+ZC4gQnV0IGp1c3QgdG8gY29uZmlybSwgY2FuIHlvdSBzZW5kIHRoZSBmdWxsIGtlcm5lbApjb25m
+aWcgZmlsZSBhcyB3ZWxsPwoKPj4gKiBBbHNvIGRlc2NyaWJlIHlvdXIgdGVzdCBzZXR1cCBpbiBk
+ZXRhaWwuCj4+Cj4gQ29tbW9uIGZvciBBUCBhbmQgU1RBOgo+Cj4gLURTUy0xMzAwIHdpdGggaTUt
+MjU0ME0gQ1BVIEAgMi42MEdIeiAtIDhHQiBSQU0gLSBTU0QgNjRHQi4KPiAtMSBzcGFya0xBTiBX
+UEVBLTM1MUFDIGNhcmQgd2l0aCBRQ0E5ODgwIGNoaXAgc2V0IGFuZCAzIGR1YWwgYmFuZCBhbnRl
+bm5hJ3MuCj4gLUtlcm5lbCAzLjEzLjUgY29udGFpbmluZyB0aGUgYXRoMTBrIG1vZHVsZXMKPiAt
+ZmlybXdhcmVzIGNsb25lZCBlbmQgb2YgRmVicnVhcnkKPiAtaXBlcmYgaW4gdWRwIG1vZGUgdXNl
+ZCBmb3IgdGhlICB0aHJvdWdocHV0IHRlc3QKPgo+IEFQIG9ubHk6Cj4gLXVidW50dSAxMi4wNCBM
+VFMgYXMgY3JkYSB3b3VsZG4ndCBidWlsZCBvbiB1YnVudHUgMTMuMTAgKGxpYmdjcnlwdCBpc3N1
+ZSkuCj4gLWhvc3RhcGQgdjIuMi1kZXZlbAo+IC1tb2RpZmllZCByZWd1bGF0b3J5IGRhdGFiYXNl
+IGFuZCBjcmRhIGJ1aWxkCj4gLXlvdXIgRnVsbF9ob3N0YXBkX2NvbmZpZ3VyYXRpb24gKyBjaGFu
+bmVsPTM2IGFuZCB2aHRfb3Blcl9jZW50cl9mcmVxX3NlZzBfaWR4PTQyCj4KPiBTVEEgb25seToK
+PiAtdWJ1bnR1IDEzLjEwCj4gLW5tY2xpIGlzIHVzZWQgdG8gY29ubmVjdCB0byB0aGUgQVAKPgo+
+IERpc3RhbmNlIGJldHdlZW4gQVAgYW5kIFNUQTogNjAgY20uIEFudGVubmEncyBhcmUgbm93IGRp
+cmVjdGVkCj4gb3J0aG9nb25hbCBwZXIgZGV2aWNlLCBhbnRlbm5hWCAoWD0xLi4zKSBvbiBib3Ro
+IGRldmljZXMgYXJlIHBvaW50aW5nCj4gaW4gdGhlIHNhbWUgZGlyZWN0aW9uLiBBbHRob3VnaCBJ
+J3ZlIHBsYXllZCBhIGxvdCB3aXRoIHRoZSBhbnRlbm5hJ3MKPiBkaXJlY3Rpb25zIGFscmVhZHkg
+YW5kIEkgY2FuJ3QgcmVtZW1iZXIgb25lIHJ1biB3aGVyZSBpdCBoYWQgYSBsb3Qgb2YKPiBpbXBh
+Y3QuLi4KPgo+IFRoZSBzcGVjdHJ1bSBhbmFseXNlciBtZWFzdXJlZCBhIGJhbmQgb2YgYWxtb3N0
+IDgwTUh6IGJlaW5nIHVzZWQuCgpUaGlzIGxvb2tzIGdvb2QgYXMgd2VsbC4gSXMgaXQgcG9zc2li
+bGUgZm9yIHlvdSB0YWtlIGRlYnVnIGxvZ3M/IEZpcnN0CmVuYWJsZSB0aGVzZSBhdGgxMGsgb3B0
+aW9uczoKCkNPTkZJR19BVEgxMEtfREVCVUc9eQpDT05GSUdfQVRIMTBLX0RFQlVHRlM9eQpDT05G
+SUdfQVRIMTBLX1RSQUNJTkc9eQoKQW5kIHN0YXJ0IGF0aDEwayB3aXRoIGRlYnVnIG1hc2sgMHg0
+MzIsIHdoaWNoIHByaW50cyBpbmZvIHJlbGF0ZWQgdG8KZmlybXdhcmUgY29uZmlndXJhdGlvbjoK
+Cm1vZHByb2JlIGF0aDEwa19jb3JlLmtvIGRlYnVnX21hc2s9MHg0MzIKCkFsc28gc3RhcnQgaG9z
+dGFwZCB3aXRoIC1kZGR0IGFuZCBjb25uZWN0IHRoZSBhdGgxMGsgU1RBIHRvIHRoZSBBUC4gVGhl
+bgpzZW5kIGhlcmUgYm90aCB0aGUgZnVsbCBkbWVzZyBvdXRwdXQsIHByZWZlcmFibHkgc3RhcnRp
+bmcgZnJvbSBrZXJuZWwKYm9vdCwgYW5kIGhvc3RhcGQgZGVidWcgbG9ncyBoZXJlIGZyb20gdGhl
+IEFQLiBObyBuZWVkIHRvIHJ1biBhbnkKdGhyb3VnaHB1dCB0ZXN0cyBpbiB0aGlzIGNhc2UsIEkg
+anVzdCB3YW50IHRvIHNlZSBob3cgd2UgY29uZmlndXJlIHRoZQpmaXJtd2FyZSB3aGVuIHRoZSBT
+VEEgYXNzb2NpYXRlcy4KCkFuZCBldmVuIGJldHRlciBpZiB5b3UgY291bGQgdXNlIHRyYWNlLWNt
+ZCwgd2UgZ2V0IG1vcmUgbG9ncyB0aGF0IHdheToKCmh0dHA6Ly93aXJlbGVzcy5rZXJuZWwub3Jn
+L2VuL3VzZXJzL0RyaXZlcnMvYXRoMTBrL2RlYnVnI1RyYWNpbmcKCi0tIApLYWxsZSBWYWxvCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
