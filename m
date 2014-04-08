@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXXsv-00050q-3A
- for ath10k@lists.infradead.org; Tue, 08 Apr 2014 15:24:31 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: wifi card disconnected right after assoicated with AP
-References: <153F35912E69C446A72CF7D6417EBADE7CF38D@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
- <87ob0ckkax.fsf@kamboji.qca.qualcomm.com>
- <153F35912E69C446A72CF7D6417EBADE7CF3CF@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
-Date: Tue, 8 Apr 2014 18:23:54 +0300
-In-Reply-To: <153F35912E69C446A72CF7D6417EBADE7CF3CF@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
- (Nick Shu's message of "Tue, 8 Apr 2014 14:20:38 +0000")
-Message-ID: <87fvlnlu9h.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-wg0-f42.google.com ([74.125.82.42])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXQ4z-0002c1-2n
+ for ath10k@lists.infradead.org; Tue, 08 Apr 2014 07:04:22 +0000
+Received: by mail-wg0-f42.google.com with SMTP id y10so473533wgg.25
+ for <ath10k@lists.infradead.org>; Tue, 08 Apr 2014 00:03:15 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87ob0cmhwp.fsf@kamboji.qca.qualcomm.com>
+References: <1396610305-5229-1-git-send-email-michal.kazior@tieto.com>
+ <87y4zgmifa.fsf@kamboji.qca.qualcomm.com>
+ <87ob0cmhwp.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 8 Apr 2014 09:03:15 +0200
+Message-ID: <CA+BoTQkWjr9pxTN0AgqDXLzXqTjJ1a=Zepss5UdDw7tpOQLOAw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: refactor monitor code
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,84 +22,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shu, Nick" <Nick.Shu@spirent.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Nick,
-
-"Shu, Nick" <Nick.Shu@spirent.com> writes:
-
-> I installed Ubuntu 13.10 server that has the Linux kernel 3.11 (this
-> is what I read from the info) on my test server, it should have all
-> driver and firmware to support the card.
-
-In ath10k's lifetime that's ancient. I recommend using backports to get
-a more recent version of ath10k:
-
-https://backports.wiki.kernel.org/index.php/Main_Page
-
-I would not even bother try debugging the issue until you have updated
-ath10k and the firmware.
-
-> Card is a mini PCIe that has a QCA 9880 chip in it with 3x3 antenna
-> configuration, made by Embedded Works.
-> Access Point side is a Netgear AC1900 NightHawk. I set it up and using
-> Ch153, WPA-PSK, with DHCP enabled.
->
-> I'm new in Linux (worked on Windows for most time), so I'm still
-> learning.
-
-Unfortunately I can only help with ath10k specific issues, I do not have
-time to give general Linux support. But I can give you pointers and
-there are other forums which can help you better with those.
-
-> I used "iw" and "wpa_supplicant" to control the card.
-> I failed for scan command at the beginning (posted a message last week
-> for help) and fixed by bring up the wlan0 interface (ip link set woan0
-> up).
-> Then set net key "wpa_passphrase SSID KEY"
-> Start wpa with command: "wpa_supplicant -B -D nl80211 -i wlan0 -c
-> /etc/wpa_supplicant.conf".
->
-> I actually got the card associated with the AP but couldn't get a
-> valid IP address last Friday, so I was working on getting IP address
-> issue.
-> Then on Monday, I logged in to server and found the card wlan0 is up
-> without command "ip link set ...", also the net key was remembered and
-> auto associate to AP.
-> So something is taking over and doing association automatically for me
-> ( I installed metwork-manager, but never use it yet).
-
-If you run wpasupplicant manually you should disable network-manager,
-otherwise there will be problems. IIRC one issue might be that
-network-manager automatically disconnects you, which might be the issue
-you are having.
-
-> You mentioned the card MAC is not a valid one? I though the vender
-> should programmed a valid MAC to chip, right?
-
-Yes, the MAC address is stored in EEPROM and the firmware reads it. But
-older firmwares might not support newer boards and then there will be
-problems in reading the EEPROM. That's why I recommend using firmware
-10.1.467.2-1.
-
-> I used "iw event -r -f" to monitor the debug message, do I have to
-> enable something to get the kernel and supplicant log?
-
-wpasupplicant has it's own debug log (-dddt) and kernel log can be read
-with dmesg. I recommend starting from here:
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/debug
-http://wireless.kernel.org/en/users/Documentation/wpa_supplicant
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBBcHJpbCAyMDE0IDA4OjUzLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29t
+PiB3cm90ZToKPiBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0ZXM6Cj4K
+Pj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKPj4KPj4+
+IEl0IHdhcyBwb3NzaWJsZSB0byBjcmVhdGUvZGVsZXRlL3N0YXJ0L3N0b3AKPj4+IG1vbml0b3Ig
+dmRldiBmcm9tIGEgZmV3IHBsYWNlcyB0aGF0IHdlcmUgbm90Cj4+PiBleGNsdXNpdmVseSBwcm90
+ZWN0ZWQgYWdhaW5zdCBlYWNoIG90aGVyLiBUaGlzCj4+PiByZXN1bHRlZCBpbiBtb25pdG9yIHZk
+ZXYgYmVpbmcgc3RvcHBlZC9yZW1vdmVkIGJ5Cj4+PiBvbmUgY2FsbCBvcmlnaW4gd2hpbGUgYW5v
+dGhlciBvbmUgd2FzIGV4cGVjdGluZyBpdAo+Pj4gdG8gY29udGludWUgcnVubmluZy4KPj4+Cj4+
+PiBGb3IgZXhhbXBsZSBpZiBDQUMgd2FzIHN0YXJ0ZWQgYW5kIGludGVyZmFjZSdzCj4+PiBwcm9t
+aXNjdW91cyBtb2RlIHdhcyB0b2dnbGVkIG1vbml0b3IgdmRldiB3YXMKPj4+IHJlbW92ZWQgZnJv
+bSB0aGUgZHJpdmVyIG1lYW5pbmcgbm8gcmFkYXIgd291bGQgYmUKPj4+IGRldGVjdGVkLiBJbiBh
+ZGRpdGlvbmFsIGEgd2FybmluZyB3b3VsZCBiZSBwcmludGVkCj4+PiB1cG9uIENBQyBjb21wbGV0
+aW9uIGNvbXBsYWluaW5nIGl0IHRyaWVkIHRvIHN0b3AKPj4+IG5vbi1ydW5uaW5nIG1vbml0b3Ig
+dmRldi4KPj4+Cj4+PiBUaGUgcGF0Y2ggc2ltcGxpZmllcyBtb25pdG9yIGNvZGUgYnkgcmVtb3Zp
+bmcKPj4+IElFRUU4MDIxMV9IV19XQU5UX01PTklUT1JfVklGICh3aGljaCB3YXNuJ3QgcmVhbGx5
+Cj4+PiBldmVyIG5lZWRlZCkgYW5kIGltcHJvdmVzIHN0YXRlIHRyYWNraW5nLiBJdCBhbHNvCj4+
+PiB1bmlmaWVzIHByaW50cy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxt
+aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPj4KPj4gVGhhbmtzLCBhcHBsaWVkLgo+Cj4gQWN0dWFs
+bHkgdGhlcmUgd2VyZSB0d28gY2hlY2twYXRjaCB3YXJuaW5ncyB3aGljaCBJIGhhZCBtaXNzZWQ6
+Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jOjI1ODc6IFdBUk5JTkc6
+IGxpbmUgb3ZlciA4MCBjaGFyYWN0ZXJzCj4gZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9tYWMuYzoyODUyOiBXQVJOSU5HOiBsaW5lIG92ZXIgODAgY2hhcmFjdGVycwo+Cj4gSSBhbWVu
+ZGVkIGl0IGxpa2UgdGhpczoKPgoKWy4uLl0KClNvcnJ5IGZvciB0aGUgdHJvdWJsZSBhbmQgdGhh
+bmtzIQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
