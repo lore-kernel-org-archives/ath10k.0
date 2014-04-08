@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXPuq-00007d-F7
- for ath10k@lists.infradead.org; Tue, 08 Apr 2014 06:53:53 +0000
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WXXsv-00050q-3A
+ for ath10k@lists.infradead.org; Tue, 08 Apr 2014 15:24:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: refactor monitor code
-References: <1396610305-5229-1-git-send-email-michal.kazior@tieto.com>
- <87y4zgmifa.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 8 Apr 2014 09:53:10 +0300
-In-Reply-To: <87y4zgmifa.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Tue, 08 Apr 2014 09:42:01 +0300")
-Message-ID: <87ob0cmhwp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: wifi card disconnected right after assoicated with AP
+References: <153F35912E69C446A72CF7D6417EBADE7CF38D@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+ <87ob0ckkax.fsf@kamboji.qca.qualcomm.com>
+ <153F35912E69C446A72CF7D6417EBADE7CF3CF@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+Date: Tue, 8 Apr 2014 18:23:54 +0300
+In-Reply-To: <153F35912E69C446A72CF7D6417EBADE7CF3CF@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+ (Nick Shu's message of "Tue, 8 Apr 2014 14:20:38 +0000")
+Message-ID: <87fvlnlu9h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,65 +25,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Shu, Nick" <Nick.Shu@spirent.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Hi Nick,
 
-> Michal Kazior <michal.kazior@tieto.com> writes:
+"Shu, Nick" <Nick.Shu@spirent.com> writes:
+
+> I installed Ubuntu 13.10 server that has the Linux kernel 3.11 (this
+> is what I read from the info) on my test server, it should have all
+> driver and firmware to support the card.
+
+In ath10k's lifetime that's ancient. I recommend using backports to get
+a more recent version of ath10k:
+
+https://backports.wiki.kernel.org/index.php/Main_Page
+
+I would not even bother try debugging the issue until you have updated
+ath10k and the firmware.
+
+> Card is a mini PCIe that has a QCA 9880 chip in it with 3x3 antenna
+> configuration, made by Embedded Works.
+> Access Point side is a Netgear AC1900 NightHawk. I set it up and using
+> Ch153, WPA-PSK, with DHCP enabled.
 >
->> It was possible to create/delete/start/stop
->> monitor vdev from a few places that were not
->> exclusively protected against each other. This
->> resulted in monitor vdev being stopped/removed by
->> one call origin while another one was expecting it
->> to continue running.
->>
->> For example if CAC was started and interface's
->> promiscuous mode was toggled monitor vdev was
->> removed from the driver meaning no radar would be
->> detected. In additional a warning would be printed
->> upon CAC completion complaining it tried to stop
->> non-running monitor vdev.
->>
->> The patch simplifies monitor code by removing
->> IEEE80211_HW_WANT_MONITOR_VIF (which wasn't really
->> ever needed) and improves state tracking. It also
->> unifies prints.
->>
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> I'm new in Linux (worked on Windows for most time), so I'm still
+> learning.
+
+Unfortunately I can only help with ath10k specific issues, I do not have
+time to give general Linux support. But I can give you pointers and
+there are other forums which can help you better with those.
+
+> I used "iw" and "wpa_supplicant" to control the card.
+> I failed for scan command at the beginning (posted a message last week
+> for help) and fixed by bring up the wlan0 interface (ip link set woan0
+> up).
+> Then set net key "wpa_passphrase SSID KEY"
+> Start wpa with command: "wpa_supplicant -B -D nl80211 -i wlan0 -c
+> /etc/wpa_supplicant.conf".
 >
-> Thanks, applied.
+> I actually got the card associated with the AP but couldn't get a
+> valid IP address last Friday, so I was working on getting IP address
+> issue.
+> Then on Monday, I logged in to server and found the card wlan0 is up
+> without command "ip link set ...", also the net key was remembered and
+> auto associate to AP.
+> So something is taking over and doing association automatically for me
+> ( I installed metwork-manager, but never use it yet).
 
-Actually there were two checkpatch warnings which I had missed:
+If you run wpasupplicant manually you should disable network-manager,
+otherwise there will be problems. IIRC one issue might be that
+network-manager automatically disconnects you, which might be the issue
+you are having.
 
-drivers/net/wireless/ath/ath10k/mac.c:2587: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/mac.c:2852: WARNING: line over 80 characters
+> You mentioned the card MAC is not a valid one? I though the vender
+> should programmed a valid MAC to chip, right?
 
-I amended it like this:
+Yes, the MAC address is stored in EEPROM and the firmware reads it. But
+older firmwares might not support newer boards and then there will be
+problems in reading the EEPROM. That's why I recommend using firmware
+10.1.467.2-1.
 
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2584,7 +2584,8 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
-                        ar->monitor = true;
-                        ret = ath10k_monitor_start(ar);
-                        if (ret) {
--                               ath10k_warn("failed to start monitor (config): %d\n", ret);
-+                               ath10k_warn("failed to start monitor (config): %d\n",
-+                                           ret);
-                                ar->monitor = false;
-                        }
-                } else if (!(conf->flags & IEEE80211_CONF_MONITOR) &&
-@@ -2849,7 +2850,8 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
-                ar->promisc = true;
-                ret = ath10k_monitor_start(ar);
-                if (ret) {
--                       ath10k_warn("failed to start monitor (promisc): %d\n", ret);
-+                       ath10k_warn("failed to start monitor (promisc): %d\n",
-+                                   ret);
-                        ar->promisc = false;
-                }
-        } else if (!(ar->filter_flags & FIF_PROMISC_IN_BSS) && ar->promisc) {
+> I used "iw event -r -f" to monitor the debug message, do I have to
+> enable something to get the kernel and supplicant log?
+
+wpasupplicant has it's own debug log (-dddt) and kernel log can be read
+with dmesg. I recommend starting from here:
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/debug
+http://wireless.kernel.org/en/users/Documentation/wpa_supplicant
 
 -- 
 Kalle Valo
