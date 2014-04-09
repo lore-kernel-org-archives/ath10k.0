@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x229.google.com ([2a00:1450:4013:c00::229])
+Received: from mail-ee0-x235.google.com ([2a00:1450:4013:c00::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXpVo-0004WV-NQ
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:13:49 +0000
-Received: by mail-ee0-f41.google.com with SMTP id t10so1702916eei.28
+ id 1WXpVn-0004WU-L6
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:13:50 +0000
+Received: by mail-ee0-f53.google.com with SMTP id b57so1649164eek.26
  for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:13:22 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: skip suspending when recovering
-Date: Wed,  9 Apr 2014 12:07:08 +0200
-Message-Id: <1397038028-7665-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/3] ath10k: don't wait for device init if it crashed
+Date: Wed,  9 Apr 2014 12:07:07 +0200
+Message-Id: <1397038028-7665-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1397038028-7665-1-git-send-email-michal.kazior@tieto.com>
 References: <1397038028-7665-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,44 +27,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It doesn't make much sense to even try suspending
-the device when recovering. Recovering means the
-device is unresponsive and waiting for suspend
-procedure means taking a 3 second timeout waiting
-for tx credits.
+When warm resetting it's possible for device to
+crash during initialization. Instead of waiting 3
+seconds just return failure as soon as
+FW_IND_EVENT_PENDING is set.
 
-This speeds up firmware recovery significantly.
+This speeds up device bootup and recovery in some
+cases.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 6abde37..75b3dfb 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -680,8 +680,8 @@ static void ath10k_core_restart(struct work_struct *work)
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index cd3b00c..8337608 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2452,6 +2452,9 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 		if (val == 0xffffffff)
+ 			continue;
  
- 	switch (ar->state) {
- 	case ATH10K_STATE_ON:
--		ath10k_halt(ar);
- 		ar->state = ATH10K_STATE_RESTARTING;
-+		ath10k_halt(ar);
- 		ieee80211_restart_hw(ar->hw);
- 		break;
- 	case ATH10K_STATE_OFF:
-@@ -908,7 +908,9 @@ void ath10k_core_stop(struct ath10k *ar)
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	/* try to suspend target */
--	ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
-+	if (ar->state != ATH10K_STATE_RESTARTING)
-+		ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
++		if (val & FW_IND_EVENT_PENDING)
++			break;
 +
- 	ath10k_debug_stop(ar);
- 	ath10k_htc_stop(&ar->htc);
- 	ath10k_htt_detach(&ar->htt);
+ 		if (val & FW_IND_INITIALIZED)
+ 			break;
+ 
+@@ -2470,6 +2473,12 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 		goto out;
+ 	}
+ 
++	if (val & FW_IND_EVENT_PENDING) {
++		ath10k_warn("device has crashed during init\n");
++		ret = -ECOMM;
++		goto out;
++	}
++
+ 	if (!(val & FW_IND_INITIALIZED)) {
+ 		ath10k_err("failed to receive initialized event from target: %08x\n",
+ 			   val);
 -- 
 1.8.5.3
 
