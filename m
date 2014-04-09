@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXqAY-0005v5-Dr
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:55:52 +0000
-Received: by mail-ee0-f45.google.com with SMTP id d17so1731681eek.32
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:55:28 -0700 (PDT)
+ id 1WXqAa-0005v6-1W
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:55:53 +0000
+Received: by mail-ee0-f43.google.com with SMTP id e53so1724922eek.30
+ for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:55:27 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFTv2 1/5] ath10k: always request htc tx replenishment
-Date: Wed,  9 Apr 2014 12:48:47 +0200
-Message-Id: <1397040531-6224-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+Subject: [RFTv2 0/5] ath10k: ath10k: fix flushing and tx stalls
+Date: Wed,  9 Apr 2014 12:48:46 +0200
+Message-Id: <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +27,44 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This simplifies tx credit management and tries to
-address a problem where driver runs out of credits
-and is unable to recover when firmware stalls.
+Hi,
 
-This also makes it a little more easy to track and
-debug htc tx credit flow since there should be no
-laziness involved.
+After digging around I've found what seems to be
+the problem with WMI Tx credit starvation and
+inability to properly flush Tx in ath10k_flush().
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htc.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+Long story short: if a client that was asleep (as
+per what firmware thinks) goes out of range (or
+just stops responding) then Tx rots in FW/HW
+queues for a few seconds before it's discarded.
+For WMI Tx credits this means management frames
+eat up Tx credits for a few seconds (causing other
+WMI commands to timeout and return -EAGAIN/-11).
+For HTT Tx this means NullFunc frames would get
+stuck for a few seconds before completion was
+received.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 7f1bccd..c2a290a 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -86,19 +86,6 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
- 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
- }
- 
--/* assumes tx_lock is held */
--static bool ath10k_htc_ep_need_credit_update(struct ath10k_htc_ep *ep)
--{
--	if (!ep->tx_credit_flow_enabled)
--		return false;
--	if (ep->tx_credits >= ep->tx_credits_per_max_message)
--		return false;
--
--	ath10k_dbg(ATH10K_DBG_HTC, "HTC: endpoint %d needs credit update\n",
--		   ep->eid);
--	return true;
--}
--
- static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
- 				      struct sk_buff *skb)
- {
-@@ -113,7 +100,7 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
- 	spin_lock_bh(&ep->htc->tx_lock);
- 	hdr->seq_no = ep->seq_no++;
- 
--	if (ath10k_htc_ep_need_credit_update(ep))
-+	if (ep->tx_credit_flow_enabled)
- 		hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
- 
- 	spin_unlock_bh(&ep->htc->tx_lock);
+v2:
+ * added tx replenishment patch
+ * added conf_mutex locking
+ * change condition for flushing mgmt tx
+
+
+Michal Kazior (5):
+  ath10k: always request htc tx replenishment
+  ath10k: fix wmi-htc tx credit starvation
+  ath10k: rework peer accounting
+  ath10k: wait for mgmt tx when flushing too
+  ath10k: improve tx flushing
+
+ drivers/net/wireless/ath/ath10k/core.h |   7 +-
+ drivers/net/wireless/ath/ath10k/htc.c  |  15 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 275 ++++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/txrx.c |  29 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c  |   5 -
+ drivers/net/wireless/ath/ath10k/wmi.h  |   4 +
+ 6 files changed, 275 insertions(+), 60 deletions(-)
+
 -- 
 1.8.5.3
 
