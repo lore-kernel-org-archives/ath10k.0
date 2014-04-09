@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-f53.google.com ([74.125.83.53])
+Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXnf1-00013D-6t
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 08:15:08 +0000
-Received: by mail-ee0-f53.google.com with SMTP id b57so1539838eek.40
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 01:14:38 -0700 (PDT)
+ id 1WXnkt-0001EY-Gf
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 08:21:13 +0000
+Received: by mail-ee0-f46.google.com with SMTP id t10so1548053eei.33
+ for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 01:20:49 -0700 (PDT)
 From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-Subject: [PATCH 1/2] mac80211: add option to generate CCMP IVs only for mgmt
- frames
-Date: Wed,  9 Apr 2014 10:14:02 +0200
-Message-Id: <1397031243-24388-1-git-send-email-marek.kwaczynski@tieto.com>
+Subject: [PATCH 2/2] ath10k: Fix pmf for action frames
+Date: Wed,  9 Apr 2014 10:14:03 +0200
+Message-Id: <1397031243-24388-2-git-send-email-marek.kwaczynski@tieto.com>
+In-Reply-To: <1397031243-24388-1-git-send-email-marek.kwaczynski@tieto.com>
+References: <1397031243-24388-1-git-send-email-marek.kwaczynski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +27,96 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, johannes@sipsolutions.net
 
-Some chips can encrypt managment frames in HW, but
-require generated IV in the frame. Add a key flag
-that allows us to achieve this.
+Fix sending and receiveing protected managment frames.
+Lack of protected flag for received protected action frames
+causes report these frames as unprotected robust action frames.
+If the driver in AP mode sent frames with protected flag and
+CCMP header using IEEE80211_KEY_FLAG_SW_MGMT_TX flag,
+the FW encrypted frames once again. From user side all
+received SA Query Requests and Responses were skipped and
+all protected action frames were sent as malformed packets.
 
 Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 ---
- include/net/mac80211.h |   16 ++++++++++------
- net/mac80211/tx.c      |    5 +++--
- net/mac80211/wpa.c     |    6 ++++--
- 3 files changed, 17 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |    5 ++++-
+ drivers/net/wireless/ath/ath10k/wmi.c |   23 +++++++++++++++++++----
+ 2 files changed, 23 insertions(+), 5 deletions(-)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index 2de7ff4..c81415f 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -1202,14 +1202,18 @@ struct ieee80211_vif *wdev_to_ieee80211_vif(struct wireless_dev *wdev);
-  *	fall back to software crypto. Note that this flag deals only with
-  *	RX, if your crypto engine can't deal with TX you can also set the
-  *	%IEEE80211_KEY_FLAG_SW_MGMT_TX flag to encrypt such frames in SW.
-+ * @IEEE80211_KEY_FLAG_GENERATE_MGMT_IV: This flag should be set by the
-+ *	driver for a CCMP key to indicate that is requires IV generation
-+ *	only for managment frames (MFP).
-  */
- enum ieee80211_key_flags {
--	IEEE80211_KEY_FLAG_GENERATE_IV	= 1<<1,
--	IEEE80211_KEY_FLAG_GENERATE_MMIC= 1<<2,
--	IEEE80211_KEY_FLAG_PAIRWISE	= 1<<3,
--	IEEE80211_KEY_FLAG_SW_MGMT_TX	= 1<<4,
--	IEEE80211_KEY_FLAG_PUT_IV_SPACE = 1<<5,
--	IEEE80211_KEY_FLAG_RX_MGMT	= 1<<6,
-+	IEEE80211_KEY_FLAG_GENERATE_IV		= 1<<1,
-+	IEEE80211_KEY_FLAG_GENERATE_MMIC	= 1<<2,
-+	IEEE80211_KEY_FLAG_PAIRWISE		= 1<<3,
-+	IEEE80211_KEY_FLAG_SW_MGMT_TX		= 1<<4,
-+	IEEE80211_KEY_FLAG_PUT_IV_SPACE		= 1<<5,
-+	IEEE80211_KEY_FLAG_RX_MGMT		= 1<<6,
-+	IEEE80211_KEY_FLAG_SW_MGMT_IV_TX	= 1<<7,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 58ec5a7..5fa6ace 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -54,7 +54,10 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
+ 	switch (key->cipher) {
+ 	case WLAN_CIPHER_SUITE_CCMP:
+ 		arg.key_cipher = WMI_CIPHER_AES_CCM;
+-		key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
++		if (arvif->vdev_type == WMI_VDEV_TYPE_AP)
++			key->flags |= IEEE80211_KEY_FLAG_GENERATE_MGMT_IV;
++		else
++			key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
+ 		break;
+ 	case WLAN_CIPHER_SUITE_TKIP:
+ 		arg.key_cipher = WMI_CIPHER_TKIP;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index d4b48ef..c09f2fe 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -639,6 +639,7 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
+ 	struct sk_buff *wmi_skb;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	int len;
++	u32 buf_len = skb->len;
+ 	u16 fc;
  
- /**
-diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
-index 19d36d4..49b19ab 100644
---- a/net/mac80211/tx.c
-+++ b/net/mac80211/tx.c
-@@ -625,8 +625,9 @@ ieee80211_tx_h_select_key(struct ieee80211_tx_data *tx)
- 				tx->key = NULL;
- 			else
- 				skip_hw = (tx->key->conf.flags &
--					   IEEE80211_KEY_FLAG_SW_MGMT_TX) &&
--					ieee80211_is_mgmt(hdr->frame_control);
-+				      (IEEE80211_KEY_FLAG_SW_MGMT_TX |
-+				       IEEE80211_KEY_FLAG_GENERATE_MGMT_IV)) &&
-+				       ieee80211_is_mgmt(hdr->frame_control);
- 			break;
- 		case WLAN_CIPHER_SUITE_AES_CMAC:
- 			if (!ieee80211_is_mgmt(hdr->frame_control))
-diff --git a/net/mac80211/wpa.c b/net/mac80211/wpa.c
-index b8600e3..a5fe1d9 100644
---- a/net/mac80211/wpa.c
-+++ b/net/mac80211/wpa.c
-@@ -450,8 +450,10 @@ static int ccmp_encrypt_skb(struct ieee80211_tx_data *tx, struct sk_buff *skb)
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+@@ -648,6 +649,15 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
+ 		return -EINVAL;
  
- 	ccmp_pn2hdr(pos, pn, key->conf.keyidx);
+ 	len = sizeof(cmd->hdr) + skb->len;
++
++	if ((ieee80211_is_action(hdr->frame_control) ||
++	     ieee80211_is_deauth(hdr->frame_control) ||
++	     ieee80211_is_disassoc(hdr->frame_control)) &&
++	     ieee80211_has_protected(hdr->frame_control)) {
++		len += IEEE80211_CCMP_MIC_LEN;
++		buf_len += IEEE80211_CCMP_MIC_LEN;
++	}
++
+ 	len = round_up(len, 4);
  
--	/* hwaccel - with software CCMP header */
--	if (info->control.hw_key)
-+	/* hwaccel - with software CCMP header or the HW needs
-+	 * generated the IV */
-+	if (info->control.hw_key ||
-+	    (key->conf.flags & IEEE80211_KEY_FLAG_GENERATE_MGMT_IV))
- 		return 0;
+ 	wmi_skb = ath10k_wmi_alloc_skb(len);
+@@ -659,7 +669,7 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
+ 	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(skb)->vdev_id);
+ 	cmd->hdr.tx_rate = 0;
+ 	cmd->hdr.tx_power = 0;
+-	cmd->hdr.buf_len = __cpu_to_le32((u32)(skb->len));
++	cmd->hdr.buf_len = __cpu_to_le32(buf_len);
  
- 	pos += IEEE80211_CCMP_HDR_LEN;
+ 	memcpy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr), ETH_ALEN);
+ 	memcpy(cmd->buf, skb->data, skb->len);
+@@ -957,10 +967,15 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	 * frames with Protected Bit set. */
+ 	if (ieee80211_has_protected(hdr->frame_control) &&
+ 	    !ieee80211_is_auth(hdr->frame_control)) {
+-		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
+-				RX_FLAG_MMIC_STRIPPED;
+-		hdr->frame_control = __cpu_to_le16(fc &
++		status->flag |= RX_FLAG_DECRYPTED;
++
++		if (!ieee80211_is_action(hdr->frame_control) &&
++		    !ieee80211_is_deauth(hdr->frame_control) &&
++		    !ieee80211_is_disassoc(hdr->frame_control)) {
++			status->flag |= RX_FLAG_IV_STRIPPED | RX_FLAG_MMIC_STRIPPED;
++			hdr->frame_control = __cpu_to_le16(fc &
+ 					~IEEE80211_FCTL_PROTECTED);
++		}
+ 	}
+ 
+ 	ath10k_dbg(ATH10K_DBG_MGMT,
 -- 
 1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
