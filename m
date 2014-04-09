@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
+Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXlx2-0001ny-Q0
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 06:25:38 +0000
-Received: by mail-we0-f170.google.com with SMTP id w61so1980828wes.29
- for <ath10k@lists.infradead.org>; Tue, 08 Apr 2014 23:25:11 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <53441D95.9000409@candelatech.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <5341F1A9.2030202@candelatech.com>
- <CA+BoTQndgEB7X-RUPPkxdjnp96LJzbv6=Q9K4XTTrky-QwE4Ww@mail.gmail.com>
- <53435F89.60500@candelatech.com>
- <CA+BoTQk6G4-h8HQENbK9snrXo6j6FW4D+07XKZMEEuvWiu03ww@mail.gmail.com>
- <53441D95.9000409@candelatech.com>
-Date: Wed, 9 Apr 2014 08:25:11 +0200
-Message-ID: <CA+BoTQkCDiUiV7dsg-myOZXQEB=B7JHH8NWm5BHsp1xExjLkSA@mail.gmail.com>
-Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WXnCT-0000No-K0
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 07:45:39 +0000
+Message-ID: <1397029496.4964.0.camel@jlt4.sipsolutions.net>
+Subject: Re: ath10k: ieee80211_restart_work called with hardware scan in
+ progress
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 09 Apr 2014 09:44:56 +0200
+In-Reply-To: <53446607.1060609@candelatech.com>
+ (sfid-20140408_231213_154583_EA8ACCB7)
+References: <53399E42.2090504@candelatech.com>
+ <CA+BoTQmfBGJxwFnpq+7dE7MgL_db5gkCvRVfhk9YFAAPLZQwHQ@mail.gmail.com>
+ <53446607.1060609@candelatech.com> (sfid-20140408_231213_154583_EA8ACCB7)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +22,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-T24gOCBBcHJpbCAyMDE0IDE4OjAyLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDQvMDcvMjAxNCAxMDo1MSBQTSwgTWljaGFsIEthemlvciB3cm90ZToK
-Pj4gT24gOCBBcHJpbCAyMDE0IDA0OjMxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4+PiBPbiAwNC8wNy8yMDE0IDAyOjExIEFNLCBNaWNoYWwgS2F6aW9yIHdy
-b3RlOgo+Pj4KPj4+PiBUaGVzZSBsb2dzIGFyZSBub3QgZW5vdWdoLiBJJ2QgbG92ZSB0byBzZWUg
-dHJhY2VzIGZvciB0aGlzIHRvIHNlZSB3aGF0Cj4+Pj4gZnJhbWVzIGFyZSBhY3R1YWxseSBzdWJt
-aXR0ZWQgYW5kIHdoZW4gdHggY3JlZGl0cyBhcmUgcmVwbGVuaXNoZWQuCj4+Pj4KPj4+PiBJIGFs
-c28gd29uZGVyIGlmIHRoaXMgY2FuIGJlIHNvbWVob3cgcmVsYXRlZCB0byB5b3VyIEZXIGNoYW5n
-ZXMgdG8KPj4+PiBhbGxvdyBjb25uZWN0aW5nIG11bHRpcGxlIGNsaWVudCB2aXJ0dWFsIGludGVy
-ZmFjZXMgdG8gYSBzaW5nbGUgQVA/Cj4+Pgo+Pj4KPj4+IEkgdGhpbmsgaXQgaXMgdW5saWtlbHkg
-ZHVlIHRvIG15IGZpcm13YXJlIGNoYW5nZXMuLi5saXR0bGUgb2YgdGhhdCB0b3VjaGVkCj4+PiB0
-aGUgaGFuZGxpbmcgb2YgbWFuYWdlbWVudCBmcmFtZXMuICBJdCBtaWdodCB2ZXJ5IHdlbGwgYmUg
-YSBiYXNpYyBwcm9ibGVtIGluCj4+PiBlaXRoZXIgdGhlIGZpcm13YXJlIG9yIGRyaXZlciB3aGVu
-IHVzaW5nIG11bHRpcGxlIHN0YXRpb24gVklGUy4gIEkgdGhpbmsKPj4+IHRoYXQKPj4+IGFzaWRl
-IGZyb20gbXkgdGVzdGluZyB0aGF0IGNvZGUgaGFzIG5vdCBiZWVuIHVzZWQgbXVjaC4KPj4+Cj4+
-PiBOb3RlIG15IGZvbGxvd3VwIGVtYWlsIHRoYXQgcHJvYmxlbXMgc3RhcnRlZCB3aXRoIHBhdGNo
-IDMvNC4uLm5vdCBzdXJlIHlvdQo+Pj4gc2F3IHRoYXQgb25lIG9yIG5vdC4gIEkgc2F3IHNpbWls
-YXIgZmFpbHVyZSB0byBhc3NvY2lhdGUgJiBnZXQgREhDUCAoYW5kCj4+PiBzbG93L2h1bmcgdXNl
-ci1zcGFjZSkgd2l0aG91dCB0aGUga2VybmVsIGVycm9yIGxvZ3MuCj4+Cj4+IEkgZGlkIGdldCB0
-aGF0IG1haWwuIEl0J3MganVzdCB0aGF0IGl0IG1ha2VzIGxpdHRsZSBzZW5zZS4gUGF0Y2ggMy80
-Cj4+IHNpbXBseSBleHRlbmRzIGF0aDEwa19mbHVzaCgpIHRvIHdhaXQgZm9yIG1hbmFnZW1lbnQg
-ZnJhbWVzLiBJdAo+PiBzaG91bGRuJ3QgY2hhbmdlIGJlaGF2aW91ciBvZiB0eCBjcmVkaXQgc3Rh
-cnZhdGlvbiB3aGljaCBhcHBlYXJzIHRvIGJlCj4+IHRoZSBjYXNlIGluIHRoZSBsb2dzIHlvdSBw
-cm92aWRlZC4KPgo+IE1heWJlIHRoaXMgY2F1c2VzIHVuZXhwZWN0ZWQgd2FpdHMgKHVuZGVyIGxv
-Y2spIHRoYXQgaW4gdHVybiBjYXVzZXMgb3RoZXIKPiB2aWZzIHRyeWluZyB0byBjb21lIHVwIGF0
-IHRoZSBzYW1lIHRpbWUgdG8gdGltZSBvdXQ/CgpIbS4uLiBNb3N0IHN0dWZmIGlzIGNvbmZpZ3Vy
-ZWQgd2hpbGUgaG9sZGluZyBjb25mX211dGV4IGFuZCBpcwpjb21wbGV0ZWQgd2hpbGUgaXQgaXMg
-aGVsZC4gVGhlIGV4Y2VwdGlvbiBhcmUgYmVhY29ucyBhbmQgbWdtdCB0eC4KUGVyaGFwcyB3YWl0
-aW5nIGZvciBtZ210IHR4IGluIGF0aDEwa19mbHVzaCgpIGRvZXNuJ3QgaW50ZXJsZWF2ZSBtZ210
-CnR4IHdpdGggb3RoZXIgY29tbWFuZHMgYW5kIGVuZHMgdXAgc3RhcnZpbmcgdHggY3JlZGl0IHNv
-b25lci4KCkknbSBwbGFubmluZyB0byBzdWJtaXQgUkZUdjIgbGF0ZXIgdG9kYXkgd2l0aCBhIGZl
-dyBmaXhlcy4KCgo+IEl0IHNlZW1zIGVhc2lseSByZXByb2R1Y2libGUsIHNvIGxldCBtZSBrbm93
-IHdoYXQgc29ydCBvZiBsb2dnaW5nL3RyYWNpbmcKPiB5b3Ugd291bGQgbGlrZSB0byBzZWUgKGFu
-ZCBob3cgdG8gZW5hYmxlIGl0IGlmIGl0IGlzIG5vdCB0cml2aWFsKQo+IGFuZCBJJ2xsIHJlcHJv
-ZHVjZSBpdCBhbmQgc2VuZCB5b3UgdGhlIGxvZ3MuCgpBZGRpdGlvbmFsIGtlcm5lbCBjb25maWc6
-CgpDT05GSUdfQVRIMTBLX0RFQlVHPXkKQ09ORklHX0FUSDEwS19ERUJVR0ZTPXkKQ09ORklHX0FU
-SDEwS19UUkFDSU5HPXkKQ09ORklHX01BQzgwMjExX01FU1NBR0VfVFJBQ0lORz15CgpUaGlzIHBy
-b2JhYmx5IHJlcXVpcmVzIHRoaXMgdG8gYmUgc2V0IGZpcnN0OgoKQ09ORklHX1RSQUNJTkc9eQpD
-T05GSUdfR0VORVJJQ19UUkFDRVI9eQpDT05GSUdfVFJBQ0lOR19TVVBQT1JUPXkKCihpdCdzIGlu
-IEtlcm5lbCBIYWNraW5nKQoKT25jZSB5b3UgaGF2ZSB0aGlzIHlvdSBjYW4gdXNlIHRyYWNlLWNt
-ZCBjb21tYW5kIHRvIGdhdGhlcnMgbG9nczoKCiAgdHJhY2UtY21kIHJlY29yZCAtZSBtYWM4MDIx
-MSAtZSBjZmc4MDIxMSAtZSBhdGgxMGsKCkFuZCB0aGVuIHBlcmZvcm0gd2hhdGV2ZXIgdG9ydHVy
-ZXMgb24gYXRoMTBrIHlvdSB3aXNoLgoKVGhpcyBjcmVhdGVzIHRyYWNlLmRhdCBpbiB5b3VyIGN1
-cnJlbnQgZGlyZWN0b3J5LiBUaGUgZmlsZSBjYW4gZ2V0CnByZXR0eSBoZWF2eSBhbmQgaXQgbWln
-aHQgbm90IGZpdCBpbnRvIGFuIGVtYWlsIHNvIHdlIG1pZ2h0IG5lZWQgdG8KdHJhbnNmZXIgaXQg
-Im91dCBvZiBiYW5kIiBzb21laG93LgoKSWYgeW91IHVzZSB3cGFfc3VwcGxpY2FudC9ob3N0YXBk
-IHlvdSBjYW4gcGFzcyAtVCBhcmd1bWVudCB0byB0aG9zZSB0bwpnZXQgYWxsIHRoZWlyIG1lc3Nh
-Z2VzIGludG8gdHJhY2luZyBhcyBtYXJrZXJzLiBUaGlzIHdheSB5b3UncmUgYWJsZQp0byBnZXQg
-dW5pZmllZCBsb2dzIGluIG9uZSBmaWxlIHdpdGggY29ycmVjdCBjaHJvbm9sb2dpY2FsIG9yZGVy
-LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Tue, 2014-04-08 at 14:11 -0700, Ben Greear wrote:
+> On 03/31/2014 10:32 PM, Michal Kazior wrote:
+> > On 31 March 2014 18:56, Ben Greear <greearb@candelatech.com> wrote:
+> >> This came from a customer (demo) system.  Firmware is 10.1.389 based, modified
+> >> by us.  It has lots of known issues, but I haven't seen the warning
+> >> below before, and not sure it is specifically a bug with ath10k or not.
+> > 
+> > Hmm..
+> 
+> We are seeing crashes that are probably related to this fairly often.
+> 
+> Johannes:  Do you have any suggestion as to how to go about fixing this?
+
+Abort the hw scan properly before calling hw restart.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
