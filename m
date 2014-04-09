@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXpQL-0004GR-Pt
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:08:06 +0000
-Received: by mail-ee0-f51.google.com with SMTP id c13so1698469eek.10
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:07:40 -0700 (PDT)
+ id 1WXpQM-0004GS-K9
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:08:07 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d17so1688096eek.4
+ for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:07:39 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/4] ath10k: make sure to not leak beacon dma mapping
-Date: Wed,  9 Apr 2014 12:01:22 +0200
-Message-Id: <1397037685-7485-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
-References: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/4] ath10k: AP-related fixes
+Date: Wed,  9 Apr 2014 12:01:21 +0200
+Message-Id: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +25,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-If for some reason mac80211 wouldn't stop
-beaconing gracefully and just removed interface of
-a running AP/IBSS interface it was possible to
-leak pending beacon DMA mapping. It's very
-unlikely but better safe than sorry.
+Hi,
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 3 +++
- 1 file changed, 3 insertions(+)
+This is a bunch of fixes I've found while
+investigating tx credit issues.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58ec5a7..5a9da3a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2738,6 +2738,9 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 
- 	spin_lock_bh(&ar->data_lock);
- 	if (arvif->beacon) {
-+		dma_unmap_single(arvif->ar->dev,
-+				 ATH10K_SKB_CB(arvif->beacon)->paddr,
-+				 arvif->beacon->len, DMA_TO_DEVICE);
- 		dev_kfree_skb_any(arvif->beacon);
- 		arvif->beacon = NULL;
- 	}
+I've only experienced problem fixed by 4/4
+firsthand. Other patches are preemptive fixes :-)
+
+
+Michal Kazior (4):
+  ath10k: make sure to not leak beacon dma mapping
+  ath10k: make sure to not use invalid beacon pointer
+  ath10k: prevent beacon memory leak
+  ath10k: fix firmware recovery with ap interface
+
+ drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c |  3 +++
+ 2 files changed, 19 insertions(+)
+
 -- 
 1.8.5.3
 
