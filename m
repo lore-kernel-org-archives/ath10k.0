@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
+Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXqAc-0005v8-OO
+ id 1WXqAc-0005vD-S8
  for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:56:02 +0000
-Received: by mail-ee0-f42.google.com with SMTP id d17so1707803eek.15
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:55:30 -0700 (PDT)
+Received: by mail-ee0-f52.google.com with SMTP id e49so1735098eek.11
+ for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:55:32 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
-Date: Wed,  9 Apr 2014 12:48:48 +0200
-Message-Id: <1397040531-6224-3-git-send-email-michal.kazior@tieto.com>
+Subject: [RFTv2 3/5] ath10k: rework peer accounting
+Date: Wed,  9 Apr 2014 12:48:49 +0200
+Message-Id: <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
  <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
@@ -28,197 +28,236 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Each WMI management Tx consumes 1 HTC Tx credit
-and doesn't replenish it until the frame is
-actually transmitted out of firmware's Tx queues.
+It was troublesome to iterate over peers and
+perform sleepable calls. This will be necessary
+for some upcomming changes to tx flushing.
 
-If associated client was asleep and has gone out
-of range then unicast frames won't be released for
-FW/HW queues for a while (10 seconds per
-observation). This means that if more management
-frames are queued then HTC Tx credits are drained
-to 0 and no other commands can be submitted
-including beacons and peer removal.
-
-This could in turn result in clients disconnecting
-due to their beacon loss and may trigger spurious
-sta kickouts because wmi peer removal command may
-never reach firmware during disassociation.
-
-This could happen, e.g. when disconnecting
-client (hostapd inactivity) that has gone away
-while asleep when acting as AP.
-
-As a workaround flush frames that can potentialy
-get stuck in FW Tx queues.
+Make peer allocation and initial setup
+protected by both ar->conf_mutex and
+ar->data_lock. This way it's possible to iterate
+over peers with conf_mutex and call sleepable
+functions.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 96 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c |  5 --
- drivers/net/wireless/ath/ath10k/wmi.h |  3 ++
- 3 files changed, 99 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |  5 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 69 +++++++++++++++++++++++++++++++---
+ drivers/net/wireless/ath/ath10k/txrx.c | 29 +++++++-------
+ 3 files changed, 81 insertions(+), 22 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8edd6da..61e325a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -199,9 +199,14 @@ struct ath10k_dfs_stats {
+ #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
+ 
+ struct ath10k_peer {
++	/* protected by conf_mutex + data_lock */
+ 	struct list_head list;
++
++	/* protected by conf_mutex */
+ 	int vdev_id;
+ 	u8 addr[ETH_ALEN];
++
++	/* protected by data_lock */
+ 	DECLARE_BITMAP(peer_ids, ATH10K_MAX_NUM_PEER_IDS);
+ 	struct ieee80211_key_conf *keys[WMI_MAX_KEY_INDEX + 1];
+ };
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58ec5a7..5cfbf88 100644
+index 5cfbf88..adb5da1 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2076,9 +2076,67 @@ void ath10k_mgmt_over_wmi_tx_purge(struct ath10k *ar)
- 	}
- }
+@@ -318,28 +318,61 @@ static u8 ath10k_parse_mpdudensity(u8 mpdudensity)
  
-+static void ath10k_mgmt_tx_flush(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	struct ieee80211_sta *sta;
-+	struct ath10k_vif *arvif;
-+	u8 *da = ieee80211_get_DA(hdr);
-+	u8 vdev_id = ATH10K_SKB_CB(skb)->vdev_id;
-+	u32 bcn_intval = 0;
-+	unsigned int msecs;
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	if (!is_unicast_ether_addr(da))
-+		return;
-+
-+	rcu_read_lock();
-+	sta = ieee80211_find_sta_by_ifaddr(ar->hw, da, NULL);
-+	rcu_read_unlock();
-+
-+	/*
-+	 * FW Tx queues can be paused only for associated peers. Since this is
-+	 * a workaround just assume worst case if station simply entry exists.
-+	 */
-+	if (!sta)
-+		return;
-+
-+	list_for_each_entry(arvif, &ar->arvifs, list) {
-+		if (arvif->vdev_id == vdev_id) {
-+			bcn_intval = arvif->beacon_interval;
-+			break;
-+		}
-+	}
-+
-+	if (!bcn_intval)
-+		return;
-+
-+	/*
-+	 * Wait 2 beacon intervals before flushing so stations that are
-+	 * asleep but are actually still in range have a chance to see
-+	 * updated PVB, wake up and fetch the frame. There's no other way of
-+	 * synchronizing other than sleeping because there's no tx completion
-+	 * indication event for WMI management tx.
-+	 */
-+	msecs = 2 * arvif->beacon_interval * 1024 / 1000;
-+	ath10k_dbg(ATH10K_DBG_MAC,
-+		   "mac flushing peer %pM on vdev %i mgmt tid for unicast mgmt (%d msecs)\n",
-+		   da, vdev_id, msecs);
-+	msleep(msecs);
-+
-+	ret = ath10k_wmi_peer_flush(ar, vdev_id, da,
-+				    WMI_PEER_TID_MGMT_MASK);
-+	if (ret)
-+		ath10k_warn("failed to flush peer %pM mgmt tid: %d\n",
-+			    da, ret);
-+}
-+
- void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
+ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
  {
- 	struct ath10k *ar = container_of(work, struct ath10k, wmi_mgmt_tx_work);
-+	struct ieee80211_tx_info *info;
- 	struct sk_buff *skb;
++	struct ath10k_peer *peer;
  	int ret;
  
-@@ -2087,12 +2145,50 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work)
- 		if (!skb)
- 			break;
+ 	lockdep_assert_held(&ar->conf_mutex);
  
-+		mutex_lock(&ar->conf_mutex);
++	peer = ath10k_peer_find(ar, vdev_id, addr);
++	if (peer) {
++		ath10k_warn("peer %pM on vdev %i already exists\n",
++			    addr, vdev_id);
++		return -EINVAL;
++	}
 +
- 		ret = ath10k_wmi_mgmt_tx(ar, skb);
- 		if (ret) {
- 			ath10k_warn("failed to transmit management frame via WMI: %d\n",
- 				    ret);
-+			mutex_unlock(&ar->conf_mutex);
- 			ieee80211_free_txskb(ar->hw, skb);
-+			continue;
- 		}
++	peer = kzalloc(sizeof(*peer), GFP_KERNEL);
++	if (!peer) {
++		ath10k_warn("failed to allocate peer %pM on vdev %i: not enough memory\n",
++			    addr, vdev_id);
++		return -ENOMEM;
++	}
 +
-+		/*
-+		 * Each WMI management Tx consumes 1 HTC Tx credit and doesn't
-+		 * replenish it until the frame is actually transmitted out of
-+		 * firmware's Tx queues.
-+		 *
-+		 * If associated client was asleep and has gone out of range
-+		 * then unicast frames won't be released for FW/HW queues for a
-+		 * while (10 seconds per observation). This means that if more
-+		 * management frames are queued then HTC Tx credits are drained
-+		 * to 0 and no other commands can be submitted including
-+		 * beacons and peer removal.
-+		 *
-+		 * This could in turn result in clients disconnecting due to
-+		 * their beacon loss and may trigger spurious sta kickouts
-+		 * because wmi peer removal command may never reach firmware
-+		 * during disassociation.
-+		 *
-+		 * This could happen, e.g. when disconnecting client that has
-+		 * gone away while asleep.
-+		 *
-+		 * As a workaround flush unicast management frames that can
-+		 * possibly be buffered.
-+		 *
-+		 * Note: This is a deficiency in design of WMI_MGMT_TX command.
-+		 */
-+		ath10k_mgmt_tx_flush(ar, skb);
++	peer->vdev_id = vdev_id;
++	memcpy(peer->addr, addr, ETH_ALEN);
 +
-+		mutex_unlock(&ar->conf_mutex);
++	spin_lock_bh(&ar->data_lock);
++	list_add(&peer->list, &ar->peers);
++	spin_unlock_bh(&ar->data_lock);
 +
-+		/* there's no way to get ACK so just assume it's acked */
-+		info = IEEE80211_SKB_CB(skb);
-+		info->flags |= IEEE80211_TX_STAT_ACK;
-+		ieee80211_tx_status(ar->hw, skb);
+ 	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
+ 	if (ret) {
+ 		ath10k_warn("failed to create wmi peer %pM on vdev %i: %i\n",
+ 			    addr, vdev_id, ret);
+-		return ret;
++		goto err_free;
  	}
- }
  
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d4b48ef..3b270a4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -637,7 +637,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	struct wmi_mgmt_tx_cmd *cmd;
- 	struct ieee80211_hdr *hdr;
- 	struct sk_buff *wmi_skb;
--	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	int len;
- 	u16 fc;
+ 	ret = ath10k_wait_for_peer_created(ar, vdev_id, addr);
+ 	if (ret) {
+ 		ath10k_warn("failed to wait for created wmi peer %pM on vdev %i: %i\n",
+ 			    addr, vdev_id, ret);
+-		return ret;
++		goto err_free;
+ 	}
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->num_peers++;
+ 	spin_unlock_bh(&ar->data_lock);
  
-@@ -673,10 +672,6 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	if (ret)
- 		return ret;
- 
--	/* TODO: report tx status to mac80211 - temporary just ACK */
--	info->flags |= IEEE80211_TX_STAT_ACK;
--	ieee80211_tx_status_irqsafe(ar->hw, skb);
--
- 	return ret;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ae83822..90fe2e9 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3844,6 +3844,9 @@ struct wmi_peer_delete_cmd {
- 	struct wmi_mac_addr peer_macaddr;
- } __packed;
- 
-+#define WMI_PEER_TID_MGMT 17
-+#define WMI_PEER_TID_MGMT_MASK BIT(WMI_PEER_TID_MGMT)
+ 	return 0;
 +
- struct wmi_peer_flush_tids_cmd {
- 	__le32 vdev_id;
- 	struct wmi_mac_addr peer_macaddr;
++err_free:
++	spin_lock_bh(&ar->data_lock);
++	list_del(&peer->list);
++	/* very unlikely, but check anyway */
++	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
++		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
++			    addr, vdev_id);
++	spin_unlock_bh(&ar->data_lock);
++	kfree(peer);
++	return ret;
+ }
+ 
+ static int ath10k_mac_set_kickout(struct ath10k_vif *arvif)
+@@ -416,22 +449,46 @@ static int ath10k_mac_set_frag(struct ath10k_vif *arvif, u32 value)
+ 
+ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ {
++	struct ath10k_peer *peer;
+ 	int ret;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	peer = ath10k_peer_find(ar, vdev_id, addr);
++	if (!peer) {
++		ath10k_warn("failed to lookup peer %pM on vdev %i\n",
++			    addr, vdev_id);
++		return -ENOENT;
++	}
++
+ 	ret = ath10k_wmi_peer_delete(ar, vdev_id, addr);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ath10k_warn("failed to request wmi peer %pM on vdev %i removal: %d\n",
++			    addr, vdev_id, ret);
++		goto out;
++	}
+ 
+ 	ret = ath10k_wait_for_peer_deleted(ar, vdev_id, addr);
+-	if (ret)
+-		return ret;
++	if (ret) {
++		ath10k_warn("failed to wait for wmi peer %pM on vdev %i removal: %d\n",
++			    addr, vdev_id, ret);
++		goto out;
++	}
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 	ar->num_peers--;
+ 	spin_unlock_bh(&ar->data_lock);
+ 
++out:
++	spin_lock_bh(&ar->data_lock);
++	list_del(&peer->list);
++	if (!bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
++		ath10k_warn("removing peer %pM on vdev %i still being mapped in firmware\n",
++			    addr, vdev_id);
++	spin_unlock_bh(&ar->data_lock);
++
++	kfree(peer);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 82669a7..d802569 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -100,13 +100,13 @@ exit:
+ 		wake_up(&htt->empty_tx_wq);
+ }
+ 
++/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
++ * modifications */
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr)
+ {
+ 	struct ath10k_peer *peer;
+ 
+-	lockdep_assert_held(&ar->data_lock);
+-
+ 	list_for_each_entry(peer, &ar->peers, list) {
+ 		if (peer->vdev_id != vdev_id)
+ 			continue;
+@@ -139,10 +139,14 @@ static int ath10k_wait_for_peer_common(struct ath10k *ar, int vdev_id,
+ 	int ret;
+ 
+ 	ret = wait_event_timeout(ar->peer_mapping_wq, ({
+-			bool mapped;
++			struct ath10k_peer *peer;
++			bool mapped = false;
+ 
+ 			spin_lock_bh(&ar->data_lock);
+-			mapped = !!ath10k_peer_find(ar, vdev_id, addr);
++			peer = ath10k_peer_find(ar, vdev_id, addr);
++			if (peer)
++				mapped = !bitmap_empty(peer->peer_ids,
++						       ATH10K_MAX_NUM_PEER_IDS);
+ 			spin_unlock_bh(&ar->data_lock);
+ 
+ 			mapped == expect_mapped;
+@@ -173,20 +177,16 @@ void ath10k_peer_map_event(struct ath10k_htt *htt,
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find(ar, ev->vdev_id, ev->addr);
+ 	if (!peer) {
+-		peer = kzalloc(sizeof(*peer), GFP_ATOMIC);
+-		if (!peer)
+-			goto exit;
+-
+-		peer->vdev_id = ev->vdev_id;
+-		memcpy(peer->addr, ev->addr, ETH_ALEN);
+-		list_add(&peer->list, &ar->peers);
+-		wake_up(&ar->peer_mapping_wq);
++		ath10k_warn("failed to map peer %pM on vdev %i: no such entry\n",
++			    ev->addr, ev->vdev_id);
++		goto exit;
+ 	}
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTT, "htt peer map vdev %d peer %pM id %d\n",
+ 		   ev->vdev_id, ev->addr, ev->peer_id);
+ 
+ 	set_bit(ev->peer_id, peer->peer_ids);
++	wake_up(&ar->peer_mapping_wq);
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+@@ -210,11 +210,8 @@ void ath10k_peer_unmap_event(struct ath10k_htt *htt,
+ 
+ 	clear_bit(ev->peer_id, peer->peer_ids);
+ 
+-	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS)) {
+-		list_del(&peer->list);
+-		kfree(peer);
++	if (bitmap_empty(peer->peer_ids, ATH10K_MAX_NUM_PEER_IDS))
+ 		wake_up(&ar->peer_mapping_wq);
+-	}
+ 
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
 -- 
 1.8.5.3
 
