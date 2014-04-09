@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WXpQM-0004GS-K9
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:08:07 +0000
-Received: by mail-ee0-f45.google.com with SMTP id d17so1688096eek.4
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:07:39 -0700 (PDT)
+ id 1WXpQM-0004GT-08
+ for ath10k@lists.infradead.org; Wed, 09 Apr 2014 10:08:06 +0000
+Received: by mail-ee0-f54.google.com with SMTP id d49so1658758eek.41
+ for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 03:07:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/4] ath10k: AP-related fixes
-Date: Wed,  9 Apr 2014 12:01:21 +0200
-Message-Id: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/4] ath10k: prevent beacon memory leak
+Date: Wed,  9 Apr 2014 12:01:24 +0200
+Message-Id: <1397037685-7485-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
+References: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +27,26 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+If DMA mapping of next beacon failed ath10k leaked
+the beacon.
 
-This is a bunch of fixes I've found while
-investigating tx credit issues.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I've only experienced problem fixed by 4/4
-firsthand. Other patches are preemptive fixes :-)
-
-
-Michal Kazior (4):
-  ath10k: make sure to not leak beacon dma mapping
-  ath10k: make sure to not use invalid beacon pointer
-  ath10k: prevent beacon memory leak
-  ath10k: fix firmware recovery with ap interface
-
- drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c |  3 +++
- 2 files changed, 19 insertions(+)
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 35c7d52..ca51f17 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1450,6 +1450,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 					ATH10K_SKB_CB(bcn)->paddr);
+ 		if (ret) {
+ 			ath10k_warn("failed to map beacon: %d\n", ret);
++			dev_kfree_skb_any(bcn);
+ 			goto skip;
+ 		}
+ 
 -- 
 1.8.5.3
 
