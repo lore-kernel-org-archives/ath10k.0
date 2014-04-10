@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-oa0-x233.google.com ([2607:f8b0:4003:c02::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYFEd-0003oo-DZ
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 13:41:44 +0000
-Received: from [50.54.140.2] (50-54-140-2.evrt.wa.frontiernet.net
- [50.54.140.2]) (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s3ADfFXH023333
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 06:41:15 -0700
-Message-ID: <53469F7B.2080202@candelatech.com>
-Date: Thu, 10 Apr 2014 06:41:15 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WYOGl-0007TN-5D
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 23:20:31 +0000
+Received: by mail-oa0-f51.google.com with SMTP id i4so5270728oah.24
+ for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 16:20:09 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Question on ath10k_mgmt_tx_flush
+In-Reply-To: <CAGsNzD+vQosTK8-ikrxwzrSXY8kzc+GHg5QutB8KdNsHCE8-9w@mail.gmail.com>
+References: <CAGsNzDJ4hDBa82bUFTQkUqjuRuKOaOVMJDsFZUUvdPGf+iKBdQ@mail.gmail.com>
+ <CAEFj985jaYoB0fgoY7G0vstcPJTTtGGLy_unAaTWUKvKGDwChw@mail.gmail.com>
+ <CAGsNzD+vQosTK8-ikrxwzrSXY8kzc+GHg5QutB8KdNsHCE8-9w@mail.gmail.com>
+Date: Thu, 10 Apr 2014 19:20:09 -0400
+Message-ID: <CAGsNzDKvcp453sPLMEa1DTmstCoQT-hVCc=nPucSnmOp3PrerA@mail.gmail.com>
+Subject: Re: WDS and adhoc support with ath10k
+From: Aaron Ray <aaronmray@ohioitguy.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +22,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Can we optimize this method to return early if the tx-credits
-are fully replenished (ie, == 2) instead of just sleeping the
-2 x beacon-interval?  That would indicate all messages
-have been flushed, right?
+Thanks for the response. I'm currently in AP mode, and this was the result:
 
-Thanks,
-Ben
+root@OpenWrt:~# iw dev wlan0 set 4addr on
+command failed: Operation not supported (-122)
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+I thought for sure that command was going to fix it. The link seems to
+be up and running fine, it's the extended addressing that seems to not
+be working. I've noticed arp requests are going unanswered.
 
+On Thu, Apr 10, 2014 at 7:19 PM, Aaron Ray <aaronmray@ohioitguy.com> wrote:
+> Thanks for the response. I'm currently in AP mode, and this was the result:
+>
+> root@OpenWrt:~# iw dev wlan0 set 4addr on
+> command failed: Operation not supported (-122)
+>
+> I thought for sure that command was going to fix it. The link seems to be up
+> and running fine, it's the extended addressing that seems to not be working.
+> I've noticed arp requests are going unanswered.
+>
+>
+> On Thu, Apr 10, 2014 at 2:17 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+> wrote:
+>>
+>> Just make sure that the adhoc mode is working first before proceed to WDS.
+>>
+>> Be sure the firmware version is as follow:
+>> [   13.810000] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
+>> 999.999.0.636 api 2 htt 2.1
+>>
+>> I haven't tried the adhoc mode with WDS, but did try for managed and
+>> AP interface.
+>>
+>> I think that you need to turn on the 4addr flag in iw:
+>> iw dev wlan0 set 4addr on
+>>
+>> ----
+>> Chun-Yeow
+>>
+>> On Thu, Apr 10, 2014 at 12:07 AM, Aaron Ray <aaronmray@ohioitguy.com>
+>> wrote:
+>> > I've been exploring WDS support in OpenWRT and ath10k. I'm running the
+>> > latest openwrt trunk as of this weekend and I'm NOT able to get WDS
+>> > working on my ath10k card.
+>> >
+>> > No sta adapter is created also iw doesn't list any support for WDS.
+>> > I'd like to get this working if anyone has any ideas.
+>> >
+>> > _______________________________________________
+>> > ath10k mailing list
+>> > ath10k@lists.infradead.org
+>> > http://lists.infradead.org/mailman/listinfo/ath10k
+>
+>
 
 _______________________________________________
 ath10k mailing list
