@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.dhc.com.cn ([222.33.68.70] helo=edge-a.dhc.com.cn)
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY3Yk-0006kp-IV
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 01:13:44 +0000
-Message-ID: <5345EF94.1010104@dhc.com.cn>
-Date: Thu, 10 Apr 2014 09:10:44 +0800
-From: wangdc <wangdc@dhc.com.cn>
+ id 1WY3za-00078s-Um
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 01:41:28 +0000
+Message-ID: <5345F6AE.4010607@candelatech.com>
+Date: Wed, 09 Apr 2014 18:41:02 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: ath10k driver and firmware upgrade
-References: <mailman.297.1397087917.1064.ath10k@lists.infradead.org>
-In-Reply-To: <mailman.297.1397087917.1064.ath10k@lists.infradead.org>
+References: <153F35912E69C446A72CF7D6417EBADE7CF57F@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+In-Reply-To: <153F35912E69C446A72CF7D6417EBADE7CF57F@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,43 +18,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nick.Shu@spirent.com
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Shu, Nick" <Nick.Shu@spirent.com>
+Cc: "kvalo@qca.qualcomm.com" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ck9uIDIwMTTlubQwNOaciDEw5pelIDA3OjU4LCBhdGgxMGstcmVxdWVzdEBsaXN0cy5pbmZyYWRl
-YWQub3JnIHdyb3RlOgo+IE1lc3NhZ2U6IDQKPiBEYXRlOiBXZWQsIDkgQXByIDIwMTQgMjE6MTg6
-MzUgKzAwMDAKPiBGcm9tOiAiU2h1LCBOaWNrIjxOaWNrLlNodUBzcGlyZW50LmNvbT4KPiBUbzoi
-a3ZhbG9AcWNhLnF1YWxjb21tLmNvbSIgIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IENjOiJh
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIgIDxhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZz4K
-PiBTdWJqZWN0OiBhdGgxMGsgZHJpdmVyIGFuZCBmaXJtd2FyZSB1cGdyYWRlCj4gTWVzc2FnZS1J
-RDoKPiAgICAgICAgICA8MTUzRjM1OTEyRTY5QzQ0NkE3MkNGN0Q2NDE3RUJBREU3Q0Y1N0ZAU1BD
-Q09SRVhDTUJYMDEuQUQuU1BJUkVOVENPTS5DT00+Cj4KPgo+IFNvLCBJIGNhbiBzZWUgdGhlIGZp
-cm13YXJlIGhhcyBiZWVuIHVwZGF0ZWQgKEkgdXNlZCBmaXJtd2FyZS0yLmJpbl85OTkuOTk5LjAu
-NjM2IGZvciBTVEEsIHJpZ2h0PykuCj4gQnV0IGhvdyBjYW4gSSBmaW5kIG91dCBoYXZlIGRyaXZl
-cnMgYmVlbiBjaGFuZ2VkPwo+Cj4gSSBkaWQgZm9sbG93aW5nIHRvIGNoYW5nZSB0aGUgZHJpdmVy
-Ogo+IDEuIERvd25sb2FkIHRoZSB0YXJiYWxsIGZyb20gImJhY2twb3J0cy0zLjEzLjItMSIgdG8g
-bXkgUEMuCj4gMi4gRlRQIGl0IHRvIG15IExpbnV4IGJveCAodGVzdCBzZXJ2ZXIgcnVubmluZyBv
-biBVYnVudHUgMTMuMTAgc2VydmVyKS4KPiAzLiBVbnBhY2sgaXQgdG8gbXkgd29ya2luZyBkaXJl
-Y3RvcnkuCj4gNC4gUnVuICJtYWtlIGRlZmNvbmZpZy1hdGgxMGsiCj4gICAgICAgICAgIm1ha2Ui
-Cj4gICAgICAgICAgIm1ha2UgaW5zdGFsbCIuCj4gNS4gQnV0IGF1dG8gaW5zdGFsbCBmYWlsZWQg
-YmVjYXVzZSBvZiBzb21lIGluaXRyYW1mcyBpc3N1ZSAobm8ga2V5PyBmcm9tIGVycm9yIG1lc3Nh
-Z2UpLCBzbyBJIG1hbnVhbGx5ICJybW1vZCIgYWxsIGRyaXZlcnMgKCBhdGgxMGtfcGNpLmtvLCBh
-dGgxMGtfY29yZS5rbywgbWFjODAyMTEua28sIGF0aC5rbywgY2ZnODAyMTEua28sIGNvbXBhdC5r
-bykgYW5kIHRoZW4gIkluc21vZCIgYWxsIGRyaXZlcnMgYmFjay4KPiA2LiBSdW4gInVwZGF0ZS1p
-bml0cmFtZnMgLXUiIGFuZCByZWJvb3QuCj4KPiBEaWQgSSBkbyBldmVyeXRoaW5nIGNvcnJlY3Q/
-Cj4gSSB1c2VkICJkaGNwY2Qgd2xhbjAiIHRvIGdldCBhIHZhbGlkIElQIGFkZHJlc3MgZnJvbSBh
-IE5ldGdlYXIgd2lmaWFjIGFjIGFjY2VzcyBwb2ludCwgYnV0IGZyb20gYWNjZXNzIHBvaW50IG1h
-bmFnZXIsIHRoZSBNQUMgZm9yIG15IGNhcmQgaXMgc3RpbGwgIjAwOjAzOjA3OjEyOjM0OjU2Ii4K
-PiA+RnJvbSB5b3VyIGxhc3QgZW1haWwsIHlvdSBzYWlkIHRoaXMgZGVmYXVsdCBNQUMgd2FzIGNh
-dXNlZCBieSB3cm9uZyBkcml2ZXIgYW5kIGZpcm13YXJlLCBzbyB3aHkgaXQncyBzdGlsbCB0aGVy
-ZSBhZnRlciBJIGNoYW5nZWQgZHJpdmVyIGFuZCBmaXJtd2FyZT8gRG8gSSBtaXNzIHNvbWV0aGlu
-Zz8KPgoKTWF5IGJlIHlvdSBjYW4gZ2V0IHRoZSBtYWMgYWRkcmVzcyBjb3JyZWN0bHkgdXNpbmcg
-dGhlIGZvbGxvd2luZyBtZXRob2QuCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFp
-bC9hdGgxMGsvMjAxNC1NYXJjaC8wMDE0NTIuaHRtbAoKLS0tLQoKUmV4CgoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+On 04/09/2014 02:18 PM, Shu, Nick wrote:
+> Hi, Kalle and all:
+> I have a question about upgrade the diver and firmware for my wifi ac pcie card.
+> I read through the docs in your /ath10k website and did the driver and firmware update.
+> After that, here is what I read back from system:
+> 
+> root@coast198:/home/spirent# ethtool -i wlan0
+> driver: ath10k_pci
+> version: 3.11.0-12-generic
+> firmware-version: 999.999.0.636
+> bus-info: 0000:03:00.0
+> supports-statistics: yes
+> supports-test: no
+> supports-eeprom-access: no
+> supports-register-dump: no
+> supports-priv-flags: no
+> 
+> So, I can see the firmware has been updated (I used firmware-2.bin_999.999.0.636 for STA, right?).
+> But how can I find out have drivers been changed?
+> 
+> I did following to change the driver:
+> 1. Download the tarball from "backports-3.13.2-1" to my PC.
+> 2. FTP it to my Linux box (test server running on Ubuntu 13.10 server).
+> 3. Unpack it to my working directory.
+> 4. Run "make defconfig-ath10k"
+>         "make"
+>         "make install".
+> 5. But auto install failed because of some initramfs issue (no key? from error message), so I manually "rmmod" all drivers ( ath10k_pci.ko, ath10k_core.ko, mac80211.ko, ath.ko, cfg80211.ko, compat.ko) and then "Insmod" all drivers back.
+> 6. Run "update-initramfs -u" and reboot.
+> 
+> Did I do everything correct?
+> I used "dhcpcd wlan0" to get a valid IP address from a Netgear wifiac ac access point, but from access point manager, the MAC for my card is still "00:03:07:12:34:56".
+>>From your last email, you said this default MAC was caused by wrong driver and firmware, so why it's still there after I changed driver and firmware? Do I miss something?
+
+You are going to have to use the 10.1.467 firmware for that NIC it seems.  That MAC means
+the OTP logic in the firmware cannot understand the eeprom config on your NIC.
+
+I haven't tried the 999.x firmware, but I did have a similar problem when using WLE900VX on
+a 10.1.389 firmware (.467 had support I needed).
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
