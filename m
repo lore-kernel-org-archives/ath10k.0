@@ -1,15 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY3za-00078s-Um
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 01:41:28 +0000
-Message-ID: <5345F6AE.4010607@candelatech.com>
-Date: Wed, 09 Apr 2014 18:41:02 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WY5wI-0000Ia-Jy
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 03:46:11 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFT 0/4] ath10k: fix flushing and tx stalls
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <5341F1A9.2030202@candelatech.com>
+ <CA+BoTQndgEB7X-RUPPkxdjnp96LJzbv6=Q9K4XTTrky-QwE4Ww@mail.gmail.com>
+ <53435F89.60500@candelatech.com>
+ <CA+BoTQk6G4-h8HQENbK9snrXo6j6FW4D+07XKZMEEuvWiu03ww@mail.gmail.com>
+ <53441D95.9000409@candelatech.com>
+ <CA+BoTQkCDiUiV7dsg-myOZXQEB=B7JHH8NWm5BHsp1xExjLkSA@mail.gmail.com>
+ <5345849A.5090603@candelatech.com>
+Date: Thu, 10 Apr 2014 06:45:39 +0300
+In-Reply-To: <5345849A.5090603@candelatech.com> (Ben Greear's message of "Wed, 
+ 09 Apr 2014 10:34:18 -0700")
+Message-ID: <87eh15j198.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: ath10k driver and firmware upgrade
-References: <153F35912E69C446A72CF7D6417EBADE7CF57F@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
-In-Reply-To: <153F35912E69C446A72CF7D6417EBADE7CF57F@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,57 +30,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Shu, Nick" <Nick.Shu@spirent.com>
-Cc: "kvalo@qca.qualcomm.com" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 04/09/2014 02:18 PM, Shu, Nick wrote:
-> Hi, Kalle and all:
-> I have a question about upgrade the diver and firmware for my wifi ac pcie card.
-> I read through the docs in your /ath10k website and did the driver and firmware update.
-> After that, here is what I read back from system:
-> 
-> root@coast198:/home/spirent# ethtool -i wlan0
-> driver: ath10k_pci
-> version: 3.11.0-12-generic
-> firmware-version: 999.999.0.636
-> bus-info: 0000:03:00.0
-> supports-statistics: yes
-> supports-test: no
-> supports-eeprom-access: no
-> supports-register-dump: no
-> supports-priv-flags: no
-> 
-> So, I can see the firmware has been updated (I used firmware-2.bin_999.999.0.636 for STA, right?).
-> But how can I find out have drivers been changed?
-> 
-> I did following to change the driver:
-> 1. Download the tarball from "backports-3.13.2-1" to my PC.
-> 2. FTP it to my Linux box (test server running on Ubuntu 13.10 server).
-> 3. Unpack it to my working directory.
-> 4. Run "make defconfig-ath10k"
->         "make"
->         "make install".
-> 5. But auto install failed because of some initramfs issue (no key? from error message), so I manually "rmmod" all drivers ( ath10k_pci.ko, ath10k_core.ko, mac80211.ko, ath.ko, cfg80211.ko, compat.ko) and then "Insmod" all drivers back.
-> 6. Run "update-initramfs -u" and reboot.
-> 
-> Did I do everything correct?
-> I used "dhcpcd wlan0" to get a valid IP address from a Netgear wifiac ac access point, but from access point manager, the MAC for my card is still "00:03:07:12:34:56".
->>From your last email, you said this default MAC was caused by wrong driver and firmware, so why it's still there after I changed driver and firmware? Do I miss something?
+Ben Greear <greearb@candelatech.com> writes:
 
-You are going to have to use the 10.1.467 firmware for that NIC it seems.  That MAC means
-the OTP logic in the firmware cannot understand the eeprom config on your NIC.
+> My version of supplicant does not support -T.  I have just sync'd down the
+> latest upstream hostapd code and will see if that adds the support.
 
-I haven't tried the 999.x firmware, but I did have a similar problem when using WLE900VX on
-a 10.1.389 firmware (.467 had support I needed).
+You need to enable CONFIG_DEBUG_LINUX_TRACING in wpasupplicant.
 
-Thanks,
-Ben
-
+http://wireless.kernel.org/en/developers/Documentation/mac80211/tracing
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
