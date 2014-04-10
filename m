@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY7GN-0001YR-CI
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 05:11:08 +0000
-Received: by mail-wg0-f49.google.com with SMTP id a1so3447011wgh.20
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 22:10:35 -0700 (PDT)
+ id 1WY7Vy-0002EU-JS
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 05:27:07 +0000
+Message-ID: <53462B92.7010408@candelatech.com>
+Date: Wed, 09 Apr 2014 22:26:42 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <5345DE8F.2060808@candelatech.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <5345BFA8.7040500@candelatech.com>
- <5345DE8F.2060808@candelatech.com>
-Date: Thu, 10 Apr 2014 07:10:34 +0200
-Message-ID: <CA+BoTQnorw7Z8ve9pvGY-RgZP2N+RWNd14Xa_yxM3q1+7ryNfw@mail.gmail.com>
 Subject: Re: [RFTv2 0/5] ath10k: ath10k: fix flushing and tx stalls
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>	<1397040531-6224-1-git-send-email-michal.kazior@tieto.com>	<5345BFA8.7040500@candelatech.com>	<5345DE8F.2060808@candelatech.com>
+ <CA+BoTQnorw7Z8ve9pvGY-RgZP2N+RWNd14Xa_yxM3q1+7ryNfw@mail.gmail.com>
+In-Reply-To: <CA+BoTQnorw7Z8ve9pvGY-RgZP2N+RWNd14Xa_yxM3q1+7ryNfw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +19,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAgQXByaWwgMjAxNCAwMTo1OCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+IHdyb3RlOgo+IE9uIDA0LzA5LzIwMTQgMDI6NDYgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+
-IEhlcmUncyBhbm90aGVyIGxvZyBzbmlwcGV0IHdpdGggdGhlc2UgNSBwYXRjaGVzIChhbmQgbG90
-cyBtb3JlCj4+IG1vc3RseSBub24gYXRoMTBrIHBhdGNoZXMgb2YgbXkgb3duKSBhcHBsaWVkOgo+
-Cj4gQW5kIGFub3RoZXIgb25lLCB0aGlzIHRpbWUgd2l0aCBtb3JlIGRlYnVnZ2luZyBlbmFibGVk
-Lgo+IFRoZSAweDcxMTBYWFhYIG51bWJlcnMgaW5kaWNhdGUgdGhlIGNvbW1hbmQtaWQgKHRoZSBY
-WFhYIHBhcnQKPiBpcyB0aGUgY21kIGlkKS4KPgo+IEFmdGVyIHRoaXMgYmVsb3csIEkgc2VlIGEg
-ZGVidWctbG9nIG1lc3NhZ2UgY29tZSBmcm9tCj4gdGhlIGZpcm13YXJlLCBhbmQgdGhlbiBub3Ro
-aW5nIGVsc2UuICBJIGhhZCBhZGRlZCBhIHNvcnQKPiBvZiBrZWVwLWFsaXZlIG1lc3NhZ2UgaW4g
-dGhlIGZpcm13YXJlLCBhbmQgSSBkbyBub3Qgc2VlIHRoYXQKPiBpbiBteSBsb2dzLCBzbyBwcm9i
-YWJseSBmaXJtd2FyZSBpcyB3ZWRnZWQgaW4gc3VjaCBhIHdheSB0aGF0Cj4gaXQgY2Fubm90IG9y
-IHdpbGwgbm90IHNlbmQgcGFja2V0cyB0byB0aGUgaG9zdCBhdCB0aGlzIHBvaW50Lgo+Cj4gSSBo
-YWQgY2hhc2VkIHRoaXMgc29ydCBvZiBwcm9ibGVtIHByZXZpb3VzbHksIGFuZCBlbmRlZCB1cAo+
-IHdpdGggYSBoYWNrIHRvIHJlc2V0IGZpcm13YXJlIHdoZW4gdGhlIGZsdXNoIGZhaWxlZCB0d2lj
-ZS4KPiBJIGJhY2tlZCB0aGF0IG91dCB3aGVuIGFwcGx5aW5nIHlvdXIgcGF0Y2hlcywgYnV0IEkg
-Z3Vlc3MKPiBpdCBpcyBzdGlsbCBuZWVkZWQuCgpUaGVuIHRoaXMgbG9va3MgbGlrZSBhIGRpZmZl
-cmVudCBpc3N1ZSBmcm9tIHdoYXQgSSd2ZSBiZWVuIHRyeWluZyB0bwpmaXggYWN0dWFsbHkuCgpJ
-biBteSBjYXNlIHdoZW4gYWN0aW5nIGFzIEFQIGl0J3MgcG9zc2libGUgdG8gZ2V0IFdNSSBtZ210
-IHR4IGZyYW1lcwpzdHVjayBpbiBGVyBxdWV1ZXMgd2hlbiBzbGVlcGluZyBjbGllbnQgc3RvcHMg
-cmVzcG9uZGluZyBmb3IgYWJvdXQgMTAKc2Vjb25kcy4gSWYgeW91IHVzZSB1cCBhbGwgdHggY3Jl
-ZGl0cyAodGhlIG11bHRpdHVkZSBvZiAyIHRoYXQgdGhlcmUKYXJlIDotKSBiZWFjb25pbmcgc3Rv
-cHMgYW5kIGV2ZXJ5dGhpbmcganVzdCBmYWlscy4KCgo+IGF0aDEwazogZXAgMiBnb3QgMSBjcmVk
-aXRzIHRvdCAyCj4gYXRoMTBrOiBtYWMgdmRldiAyMCBzdGFydCAwNDpmMDoyMTowMzozODo5OQo+
-IGF0aDEwazogbWFjIHZkZXYgMjAgc3RhcnQgY2VudGVyX2ZyZXEgNTE4MCBwaHltb2RlIDExYWMt
-dmh0ODAKCj4gYXRoMTBrOiBlcCAyIHVzZWQgMSBjcmVkaXRzLCByZW1haW5pbmcgMSBkYmcgMTg5
-NjkxMDg2NyAoMHg3MTEwOTAxMykKCkkgc3VwcG9zZSB0aGlzIHByaW50IGlzIGxvY2F0ZWQgaW4g
-YXRoMTBrX2h0Y19zZW5kKCk/CgoKPiBhdGgxMGs6IGVwIDIgZ290IDEgY3JlZGl0cyB0b3QgMgo+
-IHN0YTIxOTogc2VuZCBhdXRoIHRvIDA0OmYwOjIxOjAzOjM4Ojk5ICh0cnkgMS8zKSBhdDogMTM5
-NzA4NjIzOC43MjE5ODUKPiBhdGgxMGs6IGVwIDIgdXNlZCAxIGNyZWRpdHMsIHJlbWFpbmluZyAx
-IGRiZyAxODk2OTEwODg4ICgweDcxMTA5MDI4KQo+IGF0aDEwazogbWFjIGZsdXNoaW5nIHBlZXIg
-MDQ6ZjA6MjE6MDM6Mzg6OTkgb24gdmRldiAyMCBtZ210IHRpZCBmb3IgdW5pY2FzdCBtZ210ICgy
-MDQgbXNlY3MpCj4gYXRoMTBrOiBlcCAyIHVzZWQgMSBjcmVkaXRzLCByZW1haW5pbmcgMCBkYmcg
-MTg5NjkxMDg3OCAoMHg3MTEwOTAxZSkKPiBhdGgxMGs6IENyZWF0aW5nIHZkZXYgaWQ6IDIyICBt
-YXA6IDEyNTgyOTEyCj4gYXRoMTBrOiBtYWMgdmRldiBjcmVhdGUgMjIgKGFkZCBpbnRlcmZhY2Up
-IHR5cGUgMiBzdWJ0eXBlIDAKPiBzdGEyMTk6IHNlbmQgYXV0aCB0byAwNDpmMDoyMTowMzozODo5
-OSAodHJ5IDIvMykgYXQ6IDEzOTcwODYyMzkuMjgwODgKPiBbZmlybXdhcmUgbG9nZ2luZyBtc2dd
-Cj4gYXRoMTBrOiBmYWlsZWQgdG8gY3JlYXRlIFdNSSB2ZGV2IDIyOiAtMTEKCkhtbS4uIElmIEkg
-cmVhZCB0aGlzIGNvcnJlY3RseSBpdCBtZWFucyB0aGF0IE1HTVRfVFggYW5kClBFRVJfRkxVU0hf
-VElEUyBjb21tYW5kcyBhcmUgYm90aCBzdHVjayBpbiBmaXJtd2FyZS4gVGhpcyBtb3N0IGxpa2Vs
-eQptZWFucyBmaXJtd2FyZSBzdG9wcyBwcm9jZXNzaW5nIGV2ZXJ5dGhpbmcgYWx0b2dldGhlci4g
-SGF2aW5nIEhUQwpkZWJ1ZyBwcmludHMgZnJvbSBhdGgxMGtfaHRjX25vdGlmeV90eF9jb21wbGV0
-aW9uKCkgY291bGQgcHJvdmlkZSBtb3JlCmluc2lnaHQgcGVyaGFwcy4gSSBzdXNwZWN0IE1HTVRf
-VFggaXMgdGhlIHRyaWdnZXIgaW4gYWxsIGNhc2VzLgoKSSdtIHN0aWxsIHN1c3BpY2lvdXMgb2Yg
-eW91ciBmaXJtd2FyZSBjaGFuZ2VzLiBZb3UgY29ubmVjdCBtdWx0aXBsZQpzdGF0aW9ucyB0byB0
-aGUgZXhhY3Qgc2FtZSBBUC4gSXMgcGVlciBtYXBwaW5nIHdvcmtpbmcgY29ycmVjdGx5PyBBcmUK
-dGlkIHF1ZXVlcyBtYXBwZWQgY29ycmVjdGx5IGluIGFsbCBjYXNlcz8gUGVyaGFwcyB0aGVyZSdz
-IHNvbWUga2luZCBvZgppbmNvbnNpc3RlbmN5IHRoYXQgbGVhZHMgdG8gdGhpcyBtZXNzPyBJIHRo
-aW5rIGZpcm13YXJlIHdhc24ndApvcmlnaW5hbGx5IGRlc2lnbmVkIHRvIHN1cHBvcnQgeW91ciB1
-c2VjYXNlLiBPciBtYXliZSBmaXJtd2FyZSBqdXN0CmJyZWFrcyB3aGVuIHlvdSB0cnkgdG8gcnVu
-IGEgaHVuZHJlZCBvciBzbyBvZiB2ZGV2cyA6LUQKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+On 04/09/2014 10:10 PM, Michal Kazior wrote:
+> On 10 April 2014 01:58, Ben Greear <greearb@candelatech.com> wrote:
+>> On 04/09/2014 02:46 PM, Ben Greear wrote:
+>>> Here's another log snippet with these 5 patches (and lots more
+>>> mostly non ath10k patches of my own) applied:
+>>
+>> And another one, this time with more debugging enabled.
+>> The 0x7110XXXX numbers indicate the command-id (the XXXX part
+>> is the cmd id).
+>>
+>> After this below, I see a debug-log message come from
+>> the firmware, and then nothing else.  I had added a sort
+>> of keep-alive message in the firmware, and I do not see that
+>> in my logs, so probably firmware is wedged in such a way that
+>> it cannot or will not send packets to the host at this point.
+>>
+>> I had chased this sort of problem previously, and ended up
+>> with a hack to reset firmware when the flush failed twice.
+>> I backed that out when applying your patches, but I guess
+>> it is still needed.
+>
+> Then this looks like a different issue from what I've been trying to
+> fix actually.
+>
+> In my case when acting as AP it's possible to get WMI mgmt tx frames
+> stuck in FW queues when sleeping client stops responding for about 10
+> seconds. If you use up all tx credits (the multitude of 2 that there
+> are :-) beaconing stops and everything just fails.
+
+I see them stuck for a long while in STA mode too, but usually
+it recovers.  I tried finding where in firmware I could increase
+the tx-credits to 4 or something, but had no luck...tis a twisty
+maze.
+
+
+>> ath10k: ep 2 got 1 credits tot 2
+>> ath10k: mac vdev 20 start 04:f0:21:03:38:99
+>> ath10k: mac vdev 20 start center_freq 5180 phymode 11ac-vht80
+>
+>> ath10k: ep 2 used 1 credits, remaining 1 dbg 1896910867 (0x71109013)
+>
+> I suppose this print is located in ath10k_htc_send()?
+
+Yes, right after decrementing credits.
+
+>> ath10k: ep 2 got 1 credits tot 2
+>> sta219: send auth to 04:f0:21:03:38:99 (try 1/3) at: 1397086238.721985
+>> ath10k: ep 2 used 1 credits, remaining 1 dbg 1896910888 (0x71109028)
+>> ath10k: mac flushing peer 04:f0:21:03:38:99 on vdev 20 mgmt tid for unicast mgmt (204 msecs)
+>> ath10k: ep 2 used 1 credits, remaining 0 dbg 1896910878 (0x7110901e)
+>> ath10k: Creating vdev id: 22  map: 12582912
+>> ath10k: mac vdev create 22 (add interface) type 2 subtype 0
+>> sta219: send auth to 04:f0:21:03:38:99 (try 2/3) at: 1397086239.28088
+>> [firmware logging msg]
+>> ath10k: failed to create WMI vdev 22: -11
+>
+> Hmm.. If I read this correctly it means that MGMT_TX and
+> PEER_FLUSH_TIDS commands are both stuck in firmware. This most likely
+> means firmware stops processing everything altogether. Having HTC
+> debug prints from ath10k_htc_notify_tx_completion() could provide more
+> insight perhaps. I suspect MGMT_TX is the trigger in all cases.
+>
+> I'm still suspicious of your firmware changes. You connect multiple
+> stations to the exact same AP. Is peer mapping working correctly? Are
+> tid queues mapped correctly in all cases? Perhaps there's some kind of
+> inconsistency that leads to this mess? I think firmware wasn't
+> originally designed to support your usecase. Or maybe firmware just
+> breaks when you try to run a hundred or so of vdevs :-D
+
+I have at least attempted to rectify all of that, but indeed this
+particular lockup seems like a firmware issue.  I personally suspect
+that I just find many bugs 32 times faster than simpler systems will :P
+
+The firmware has it's own sort of tx-to-host-credits logic, so if it runs
+out of space it might not be able to send any messages back to
+the host.  I've crawled through a lot of that code and didn't
+see any obvious ways to leak buffers, but it's far from simple
+code, so I could still be wrong.
+
+Maybe I could add a small scratch area in firmware memory and place debug
+info there and read it from host over the PCI bus like when we
+dump the crash info...  This time of night I really hate firmware :P
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
