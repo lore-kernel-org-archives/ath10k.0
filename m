@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from smtp.dhc.com.cn ([222.33.68.70] helo=edge-a.dhc.com.cn)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY2O3-00069w-5V
- for ath10k@lists.infradead.org; Wed, 09 Apr 2014 23:58:36 +0000
-Message-ID: <5345DE8F.2060808@candelatech.com>
-Date: Wed, 09 Apr 2014 16:58:07 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WY3Yk-0006kp-IV
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 01:13:44 +0000
+Message-ID: <5345EF94.1010104@dhc.com.cn>
+Date: Thu, 10 Apr 2014 09:10:44 +0800
+From: wangdc <wangdc@dhc.com.cn>
 MIME-Version: 1.0
-Subject: Re: [RFTv2 0/5] ath10k: ath10k: fix flushing and tx stalls
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <5345BFA8.7040500@candelatech.com>
-In-Reply-To: <5345BFA8.7040500@candelatech.com>
+Subject: Re: ath10k driver and firmware upgrade
+References: <mailman.297.1397087917.1064.ath10k@lists.infradead.org>
+In-Reply-To: <mailman.297.1397087917.1064.ath10k@lists.infradead.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,127 +18,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nick.Shu@spirent.com
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 04/09/2014 02:46 PM, Ben Greear wrote:
-> Here's another log snippet with these 5 patches (and lots more
-> mostly non ath10k patches of my own) applied:
-
-And another one, this time with more debugging enabled.
-The 0x7110XXXX numbers indicate the command-id (the XXXX part
-is the cmd id).
-
-After this below, I see a debug-log message come from
-the firmware, and then nothing else.  I had added a sort
-of keep-alive message in the firmware, and I do not see that
-in my logs, so probably firmware is wedged in such a way that
-it cannot or will not send packets to the host at this point.
-
-I had chased this sort of problem previously, and ended up
-with a hack to reset firmware when the flush failed twice.
-I backed that out when applying your patches, but I guess
-it is still needed.
-
-
-ath10k: ep 2 got 1 credits tot 2
-ath10k: mac vdev 20 start 04:f0:21:03:38:99
-ath10k: mac vdev 20 start center_freq 5180 phymode 11ac-vht80
-ath10k: ep 2 used 1 credits, remaining 1 dbg 1896910867 (0x71109013)
-ath10k: ep 2 got 1 credits tot 2
-sta219: send auth to 04:f0:21:03:38:99 (try 1/3) at: 1397086238.721985
-ath10k: ep 2 used 1 credits, remaining 1 dbg 1896910888 (0x71109028)
-ath10k: mac flushing peer 04:f0:21:03:38:99 on vdev 20 mgmt tid for unicast mgmt (204 msecs)
-ath10k: ep 2 used 1 credits, remaining 0 dbg 1896910878 (0x7110901e)
-ath10k: Creating vdev id: 22  map: 12582912
-ath10k: mac vdev create 22 (add interface) type 2 subtype 0
-sta219: send auth to 04:f0:21:03:38:99 (try 2/3) at: 1397086239.28088
-[firmware logging msg]
-ath10k: failed to create WMI vdev 22: -11
-ath10k: failed to transmit management frame via WMI: -11
-ath10k: Creating vdev id: 22  map: 12582912
-ath10k: mac vdev create 22 (add interface) type 2 subtype 0
-ath10k: failed to create WMI vdev 22: -11
-sta219: deauthenticating from 04:f0:21:03:38:99 by local choice (reason=3)
-ath10k: failed to wait for tx to flush: -110, forcing
-ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 20 to flush ffffffff: -11
-....
-
-
-
-
-> 
-> No (significant) user traffic was running.
-> 
-> sta215: authenticated at: 1397076587.913186
-> sta215: associate with 04:f0:21:03:38:99 (try 1/3), at: 1397076587.915143
-> ath10k: mac flushing peer 04:f0:21:03:38:99 on vdev 16 mgmt tid for unicast mgmt (204 msecs)
-> sta215: RX AssocResp from 04:f0:21:03:38:99 (capab=0x1 status=0 aid=17) at: 1397076588.120218
-> ath10k: mac vdev 16 dtim_period 2
-> ath10k: mac vdev 16 slot_time 2
-> ath10k: mac ht peer 04:f0:21:03:38:99 mcs cnt 24 nss 3
-> ath10k: mac vht peer 04:f0:21:03:38:99 max_mpdu 65535 flags 0x6003001
-> ath10k: mac peer 04:f0:21:03:38:99 phymode 11ac-vht80
-> ath10k: mac vdev 16 up (associated) bssid 04:f0:21:03:38:99 aid 17
-> sta215: associated at: 1397076588.122484
-> IPv6: ADDRCONF(NETDEV_CHANGE): sta215: link becomes ready
-> sta216: authenticate with 04:f0:21:03:38:99 at: 1397076588.124830
-> ath10k: mac vdev 17 beacon_interval 100
-> ath10k: mac vdev 17 create peer 04:f0:21:03:38:99
-> ath10k: mac vdev 17 start 04:f0:21:03:38:99
-> ath10k: mac vdev 17 start center_freq 5180 phymode 11ac-vht80
-> sta216: send auth to 04:f0:21:03:38:99 (try 1/3) at: 1397076588.125811
-> ath10k: mac flushing peer 04:f0:21:03:38:99 on vdev 17 mgmt tid for unicast mgmt (204 msecs)
-> sta216: send auth to 04:f0:21:03:38:99 (try 2/3) at: 1397076588.431144
-> ath10k: failed to transmit management frame via WMI: -11
-> sta216: send auth to 04:f0:21:03:38:99 (try 3/3) at: 1397076591.431376
-> ath10k: failed to wait for tx to flush: -110, forcing
-> ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 17 to flush ffffffff: -11
-> ath10k: failed to flush all peer tids: -11
-> sta216: deauthenticating from 04:f0:21:03:38:99 by local choice (reason=3)
-> ath10k: failed to wait for tx to flush: -110, forcing
-> ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 17 to flush ffffffff: -11
-> ath10k: failed to flush all peer tids: -11
-> ath10k: mac vdev 17 peer delete 04:f0:21:03:38:99 (sta gone)
-> ath10k: failed to request wmi peer 04:f0:21:03:38:99 on vdev 17 removal: -11
-> ath10k: removing peer 04:f0:21:03:38:99 on vdev 17 still being mapped in firmware
-> ath10k: mac vdev 17 stop (disassociated
-> ath10k: failed to stop WMI vdev 17: -11
-> ath10k: mac vdev 17 down
-> ath10k: failed to wait for tx to flush: -110, forcing
-> ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 16 to flush ffffffff: -11
-> ath10k: failed to flush all peer tids: -11
-> ath10k: failed to wait for tx to flush: -110, forcing
-> ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 16 to flush ffffffff: -11
-> ath10k: failed to flush all peer tids: -11
-> sta218: authenticate with 04:f0:21:03:38:99 at: 1397076616.431328
-> ath10k: failed to wait for tx to flush: -110, forcing
-> ath10k: failed to request peer 04:f0:21:03:38:99 on vdev 16 to flush ffffffff: -11
-> ath10k: failed to flush all peer tids: -11
-> ath10k: mac vdev 19 beacon_interval 100
-> ath10k: failed to set beacon interval for vdev 19: -11
-> ath10k: mac vdev 19 create peer 04:f0:21:03:38:99
-> ath10k: failed to create wmi peer 04:f0:21:03:38:99 on vdev 19: -11
-> ath10k: failed to add peer 04:f0:21:03:38:99 for vdev 19 when changing bssid: -11
-> ath10k: mac vdev 19 start 04:f0:21:03:38:99
-> ath10k: mac vdev 19 start center_freq 5180 phymode 11ac-vht80
-> 
-> 
-> Thanks,
-> Ben
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Ck9uIDIwMTTlubQwNOaciDEw5pelIDA3OjU4LCBhdGgxMGstcmVxdWVzdEBsaXN0cy5pbmZyYWRl
+YWQub3JnIHdyb3RlOgo+IE1lc3NhZ2U6IDQKPiBEYXRlOiBXZWQsIDkgQXByIDIwMTQgMjE6MTg6
+MzUgKzAwMDAKPiBGcm9tOiAiU2h1LCBOaWNrIjxOaWNrLlNodUBzcGlyZW50LmNvbT4KPiBUbzoi
+a3ZhbG9AcWNhLnF1YWxjb21tLmNvbSIgIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPgo+IENjOiJh
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyIgIDxhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZz4K
+PiBTdWJqZWN0OiBhdGgxMGsgZHJpdmVyIGFuZCBmaXJtd2FyZSB1cGdyYWRlCj4gTWVzc2FnZS1J
+RDoKPiAgICAgICAgICA8MTUzRjM1OTEyRTY5QzQ0NkE3MkNGN0Q2NDE3RUJBREU3Q0Y1N0ZAU1BD
+Q09SRVhDTUJYMDEuQUQuU1BJUkVOVENPTS5DT00+Cj4KPgo+IFNvLCBJIGNhbiBzZWUgdGhlIGZp
+cm13YXJlIGhhcyBiZWVuIHVwZGF0ZWQgKEkgdXNlZCBmaXJtd2FyZS0yLmJpbl85OTkuOTk5LjAu
+NjM2IGZvciBTVEEsIHJpZ2h0PykuCj4gQnV0IGhvdyBjYW4gSSBmaW5kIG91dCBoYXZlIGRyaXZl
+cnMgYmVlbiBjaGFuZ2VkPwo+Cj4gSSBkaWQgZm9sbG93aW5nIHRvIGNoYW5nZSB0aGUgZHJpdmVy
+Ogo+IDEuIERvd25sb2FkIHRoZSB0YXJiYWxsIGZyb20gImJhY2twb3J0cy0zLjEzLjItMSIgdG8g
+bXkgUEMuCj4gMi4gRlRQIGl0IHRvIG15IExpbnV4IGJveCAodGVzdCBzZXJ2ZXIgcnVubmluZyBv
+biBVYnVudHUgMTMuMTAgc2VydmVyKS4KPiAzLiBVbnBhY2sgaXQgdG8gbXkgd29ya2luZyBkaXJl
+Y3RvcnkuCj4gNC4gUnVuICJtYWtlIGRlZmNvbmZpZy1hdGgxMGsiCj4gICAgICAgICAgIm1ha2Ui
+Cj4gICAgICAgICAgIm1ha2UgaW5zdGFsbCIuCj4gNS4gQnV0IGF1dG8gaW5zdGFsbCBmYWlsZWQg
+YmVjYXVzZSBvZiBzb21lIGluaXRyYW1mcyBpc3N1ZSAobm8ga2V5PyBmcm9tIGVycm9yIG1lc3Nh
+Z2UpLCBzbyBJIG1hbnVhbGx5ICJybW1vZCIgYWxsIGRyaXZlcnMgKCBhdGgxMGtfcGNpLmtvLCBh
+dGgxMGtfY29yZS5rbywgbWFjODAyMTEua28sIGF0aC5rbywgY2ZnODAyMTEua28sIGNvbXBhdC5r
+bykgYW5kIHRoZW4gIkluc21vZCIgYWxsIGRyaXZlcnMgYmFjay4KPiA2LiBSdW4gInVwZGF0ZS1p
+bml0cmFtZnMgLXUiIGFuZCByZWJvb3QuCj4KPiBEaWQgSSBkbyBldmVyeXRoaW5nIGNvcnJlY3Q/
+Cj4gSSB1c2VkICJkaGNwY2Qgd2xhbjAiIHRvIGdldCBhIHZhbGlkIElQIGFkZHJlc3MgZnJvbSBh
+IE5ldGdlYXIgd2lmaWFjIGFjIGFjY2VzcyBwb2ludCwgYnV0IGZyb20gYWNjZXNzIHBvaW50IG1h
+bmFnZXIsIHRoZSBNQUMgZm9yIG15IGNhcmQgaXMgc3RpbGwgIjAwOjAzOjA3OjEyOjM0OjU2Ii4K
+PiA+RnJvbSB5b3VyIGxhc3QgZW1haWwsIHlvdSBzYWlkIHRoaXMgZGVmYXVsdCBNQUMgd2FzIGNh
+dXNlZCBieSB3cm9uZyBkcml2ZXIgYW5kIGZpcm13YXJlLCBzbyB3aHkgaXQncyBzdGlsbCB0aGVy
+ZSBhZnRlciBJIGNoYW5nZWQgZHJpdmVyIGFuZCBmaXJtd2FyZT8gRG8gSSBtaXNzIHNvbWV0aGlu
+Zz8KPgoKTWF5IGJlIHlvdSBjYW4gZ2V0IHRoZSBtYWMgYWRkcmVzcyBjb3JyZWN0bHkgdXNpbmcg
+dGhlIGZvbGxvd2luZyBtZXRob2QuCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFp
+bC9hdGgxMGsvMjAxNC1NYXJjaC8wMDE0NTIuaHRtbAoKLS0tLQoKUmV4CgoKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
