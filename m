@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYAnJ-0007Ca-VT
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 08:57:14 +0000
-Received: by mail-wg0-f42.google.com with SMTP id y10so3605176wgg.1
- for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 01:56:51 -0700 (PDT)
+ id 1WYHNp-0002Ig-3K
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 15:59:23 +0000
+From: "Shu, Nick" <Nick.Shu@spirent.com>
+Subject: RE: ath10k driver and firmware upgrade
+Date: Thu, 10 Apr 2014 14:09:33 +0000
+Message-ID: <153F35912E69C446A72CF7D6417EBADE7CFA0A@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+References: <153F35912E69C446A72CF7D6417EBADE7CF57F@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+ <87a9btiyzn.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87a9btiyzn.fsf@kamboji.qca.qualcomm.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <53462B92.7010408@candelatech.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <5345BFA8.7040500@candelatech.com>
- <5345DE8F.2060808@candelatech.com>
- <CA+BoTQnorw7Z8ve9pvGY-RgZP2N+RWNd14Xa_yxM3q1+7ryNfw@mail.gmail.com>
- <53462B92.7010408@candelatech.com>
-Date: Thu, 10 Apr 2014 10:50:46 +0200
-Message-ID: <CA+BoTQ=kNdXRfnq+7ju2Bf7S_TfWPfchvRZ=PePdR4Y4_5mwuQ@mail.gmail.com>
-Subject: Re: [RFTv2 0/5] ath10k: ath10k: fix flushing and tx stalls
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,78 +20,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAgQXByaWwgMjAxNCAwNzoyNiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+IHdyb3RlOgo+IE9uIDA0LzA5LzIwMTQgMTA6MTAgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6
-Cj4+IE9uIDEwIEFwcmlsIDIwMTQgMDE6NTgsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPiB3cm90ZToKPj4+IGF0aDEwazogZXAgMiBnb3QgMSBjcmVkaXRzIHRvdCAyCj4+PiBz
-dGEyMTk6IHNlbmQgYXV0aCB0byAwNDpmMDoyMTowMzozODo5OSAodHJ5IDEvMykgYXQ6IDEzOTcw
-ODYyMzguNzIxOTg1Cj4+PiBhdGgxMGs6IGVwIDIgdXNlZCAxIGNyZWRpdHMsIHJlbWFpbmluZyAx
-IGRiZyAxODk2OTEwODg4ICgweDcxMTA5MDI4KQo+Pj4gYXRoMTBrOiBtYWMgZmx1c2hpbmcgcGVl
-ciAwNDpmMDoyMTowMzozODo5OSBvbiB2ZGV2IDIwIG1nbXQgdGlkIGZvcgo+Pj4gdW5pY2FzdCBt
-Z210ICgyMDQgbXNlY3MpCj4+PiBhdGgxMGs6IGVwIDIgdXNlZCAxIGNyZWRpdHMsIHJlbWFpbmlu
-ZyAwIGRiZyAxODk2OTEwODc4ICgweDcxMTA5MDFlKQo+Pj4gYXRoMTBrOiBDcmVhdGluZyB2ZGV2
-IGlkOiAyMiAgbWFwOiAxMjU4MjkxMgo+Pj4gYXRoMTBrOiBtYWMgdmRldiBjcmVhdGUgMjIgKGFk
-ZCBpbnRlcmZhY2UpIHR5cGUgMiBzdWJ0eXBlIDAKPj4+IHN0YTIxOTogc2VuZCBhdXRoIHRvIDA0
-OmYwOjIxOjAzOjM4Ojk5ICh0cnkgMi8zKSBhdDogMTM5NzA4NjIzOS4yODA4OAo+Pj4gW2Zpcm13
-YXJlIGxvZ2dpbmcgbXNnXQo+Pj4gYXRoMTBrOiBmYWlsZWQgdG8gY3JlYXRlIFdNSSB2ZGV2IDIy
-OiAtMTEKPj4KPj4KPj4gSG1tLi4gSWYgSSByZWFkIHRoaXMgY29ycmVjdGx5IGl0IG1lYW5zIHRo
-YXQgTUdNVF9UWCBhbmQKPj4gUEVFUl9GTFVTSF9USURTIGNvbW1hbmRzIGFyZSBib3RoIHN0dWNr
-IGluIGZpcm13YXJlLiBUaGlzIG1vc3QgbGlrZWx5Cj4+IG1lYW5zIGZpcm13YXJlIHN0b3BzIHBy
-b2Nlc3NpbmcgZXZlcnl0aGluZyBhbHRvZ2V0aGVyLiBIYXZpbmcgSFRDCj4+IGRlYnVnIHByaW50
-cyBmcm9tIGF0aDEwa19odGNfbm90aWZ5X3R4X2NvbXBsZXRpb24oKSBjb3VsZCBwcm92aWRlIG1v
-cmUKPj4gaW5zaWdodCBwZXJoYXBzLiBJIHN1c3BlY3QgTUdNVF9UWCBpcyB0aGUgdHJpZ2dlciBp
-biBhbGwgY2FzZXMuCj4+Cj4+IEknbSBzdGlsbCBzdXNwaWNpb3VzIG9mIHlvdXIgZmlybXdhcmUg
-Y2hhbmdlcy4gWW91IGNvbm5lY3QgbXVsdGlwbGUKPj4gc3RhdGlvbnMgdG8gdGhlIGV4YWN0IHNh
-bWUgQVAuIElzIHBlZXIgbWFwcGluZyB3b3JraW5nIGNvcnJlY3RseT8gQXJlCj4+IHRpZCBxdWV1
-ZXMgbWFwcGVkIGNvcnJlY3RseSBpbiBhbGwgY2FzZXM/IFBlcmhhcHMgdGhlcmUncyBzb21lIGtp
-bmQgb2YKPj4gaW5jb25zaXN0ZW5jeSB0aGF0IGxlYWRzIHRvIHRoaXMgbWVzcz8gSSB0aGluayBm
-aXJtd2FyZSB3YXNuJ3QKPj4gb3JpZ2luYWxseSBkZXNpZ25lZCB0byBzdXBwb3J0IHlvdXIgdXNl
-Y2FzZS4gT3IgbWF5YmUgZmlybXdhcmUganVzdAo+PiBicmVha3Mgd2hlbiB5b3UgdHJ5IHRvIHJ1
-biBhIGh1bmRyZWQgb3Igc28gb2YgdmRldnMgOi1ECj4KPgo+IEkgaGF2ZSBhdCBsZWFzdCBhdHRl
-bXB0ZWQgdG8gcmVjdGlmeSBhbGwgb2YgdGhhdCwgYnV0IGluZGVlZCB0aGlzCj4gcGFydGljdWxh
-ciBsb2NrdXAgc2VlbXMgbGlrZSBhIGZpcm13YXJlIGlzc3VlLiAgSSBwZXJzb25hbGx5IHN1c3Bl
-Y3QKPiB0aGF0IEkganVzdCBmaW5kIG1hbnkgYnVncyAzMiB0aW1lcyBmYXN0ZXIgdGhhbiBzaW1w
-bGVyIHN5c3RlbXMgd2lsbCA6UAo+Cj4gVGhlIGZpcm13YXJlIGhhcyBpdCdzIG93biBzb3J0IG9m
-IHR4LXRvLWhvc3QtY3JlZGl0cyBsb2dpYywgc28gaWYgaXQgcnVucwo+IG91dCBvZiBzcGFjZSBp
-dCBtaWdodCBub3QgYmUgYWJsZSB0byBzZW5kIGFueSBtZXNzYWdlcyBiYWNrIHRvCj4gdGhlIGhv
-c3QuICBJJ3ZlIGNyYXdsZWQgdGhyb3VnaCBhIGxvdCBvZiB0aGF0IGNvZGUgYW5kIGRpZG4ndAo+
-IHNlZSBhbnkgb2J2aW91cyB3YXlzIHRvIGxlYWsgYnVmZmVycywgYnV0IGl0J3MgZmFyIGZyb20g
-c2ltcGxlCj4gY29kZSwgc28gSSBjb3VsZCBzdGlsbCBiZSB3cm9uZy4KCkkgZG9uJ3QgdGhpbmsg
-dGhhdCdzIHRoZSBwcm9ibGVtIGhlcmUuCgpGaXJtd2FyZSBzZWVtcyB0byBnZW5lcmF0ZSB0cmFm
-ZmljIHRvIGhvc3Qgd2hpbGUgdHggY3JlZGl0cyBhcmVuJ3QKcmVwbGVuaXNoZWQgKEkndmUgbG9v
-a2VkIGluIHRyYWNlcyB5b3UndmUgc2VuZCBpbiB0aGUgb3RoZXIgZW1haWwpCmluY2x1ZGluZyB3
-bWkgbWdtdCByeC4gRnJvbSB0aGUgdHJhY2VzIGl0IGFsc28gbG9va3MgbGlrZSBodGMgdHgKY29t
-cGxldGlvbiBpcyBkb25lIGZvciBmbHVzaCBjb21tYW5kIHN1Z2dlc3RpbmcgaXQgaGFzIGJlZW4g
-cHJvYmFibHkKcHJvY2Vzc2VkIGJ5IGhpZiBsYXllciBhbmQgbWF5YmUgaHRjIGxheWVyIGJ1dCB0
-aGVyZSBhcmUgbm8gdHggY3JlZGl0cwpyZXBsZW5pc2hlZC4gVGhlcmUncyBldmVuIGEgdG9uIG9m
-IGh0dCB0eCBjb21wbGV0aW9uIGluZGljYXRpb25zCmFsdGhvdWdoIGl0IHNlZW1zIG5ldyBodHQg
-dHggY29tbWFuZHMgYXJlIG5ldmVyIGNvbXBsZXRlZCAoaW4gdGhlCnRyYWNlcykuIFRoaXMgY291
-bGQgc3VnZ2VzdCBodHQgc2VydmljZSBpcyBkZWFkIGFzIHdlbGwgYXMgd21pIG9yIGl0Cmp1c3Qg
-cXVldWVzIGZyYW1lcyBvbiBhIHBhdXNlZCBxdWV1ZS4KClR4IGNyZWRpdHMgZm9yIHdtaSBzaG91
-bGQgYmUgcmVwbGVuaXNoZWQgcmlnaHQgYXdheSBmb3IgYWxsIHdtaQpjb21tYW5kcyBleGNlcHQg
-bWdtdCB0eCBhbmQgYmNuIHR4IChhcyB0aGV5IGNhbm5vdCBiZSBpbW1lZGlhdGVseQpkb25lKS4g
-SWYgdHggY3JlZGl0cyBhcmUgbm90IHJlcGxlbmlzaGVkIGZvciBmbHVzaCBjb21tYW5kICh3aGlj
-aCBpcwp0aGUgY2FzZSkgaXQgbWlnaHQgbm90IGhhdmUgcmVhY2hlZCB0aGUgdGFyZ2V0IHdtaSBz
-ZXJ2aWNlIGF0IGFsbC4KRnJvbSB3aGF0IEkgdW5kZXJzdGFuZCB0aGlzIGNvdWxkIGhhcHBlbiBp
-ZiBlbmRwb2ludCBpcyBwYXVzZWQgYnV0CnRoaXMgcHJvYmFibHkgc2hvdWxkbid0IGhhcHBlbiBh
-cyB0aGlzIGlzIGZvciB3bWkgZGF0YSBwYXRoCnN5bmNocm9uaXphdGlvbiBhcHBhcmVudGx5IHdo
-aWNoIGlzIGEgbGVnYWN5IHRoaW5nIGFuZCBzaG91bGQgYmUgaGl0LgpNYXliZSB0aGVyZSdzIGEg
-ZGlmZmVyZW50IHdheSBmb3Igd21pIHNlcnZpY2UgdG8gc3RvcCByZXNwb25kaW5nIG9yIHRvCnBy
-ZXZlbnQgaXQgZnJvbSByZWNlaXZpbmcgYW5kIHByb2Nlc3NpbmcgY29tbWFuZHM/CgoKPiBNYXli
-ZSBJIGNvdWxkIGFkZCBhIHNtYWxsIHNjcmF0Y2ggYXJlYSBpbiBmaXJtd2FyZSBtZW1vcnkgYW5k
-IHBsYWNlIGRlYnVnCj4gaW5mbyB0aGVyZSBhbmQgcmVhZCBpdCBmcm9tIGhvc3Qgb3ZlciB0aGUg
-UENJIGJ1cyBsaWtlIHdoZW4gd2UKPiBkdW1wIHRoZSBjcmFzaCBpbmZvLi4uICBUaGlzIHRpbWUg
-b2YgbmlnaHQgSSByZWFsbHkgaGF0ZSBmaXJtd2FyZSA6UAoKU291bmRzIHJlYXNvbmFibGUgdG8g
-ZGVidWcgYW5kIHBpbnBvaW50IHRoZSBjYXVzZSBvZiB0aGlzIHByb2JsZW0uClBlcmhhcHMgc29t
-ZSBjb3VudGVycyB0byBjaGVjayBpZiBjZXJ0YWluIGNvZGUgcGF0aHMgYXJlIGhpdCB3aGVuIHlv
-dQpleHBlY3QgdGhlbSB0byBiZT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+Thanks, All:
+I did get the valid MAC after using firmware 10.1.467.2-1.
+But if you look at the firmware site instruction, it says that this one is for AP, not for STA, that's why I picked it.
+Anyway, glad to solve the problem with help from you all.
+
+Nick
+
+-----Original Message-----
+From: Kalle Valo [mailto:kvalo@qca.qualcomm.com]
+Sent: Wednesday, April 09, 2014 11:35 PM
+To: Shu, Nick
+Cc: ath10k@lists.infradead.org
+Subject: Re: ath10k driver and firmware upgrade
+
+Hi Nick,
+
+"Shu, Nick" <Nick.Shu@spirent.com> writes:
+
+> I have a question about upgrade the diver and firmware for my wifi ac
+> pcie card. I read through the docs in your /ath10k website and did the
+> driver and firmware update. After that, here is what I read back from
+> system:
+>
+> root@coast198:/home/spirent# ethtool -i wlan0
+> driver: ath10k_pci
+> version: 3.11.0-12-generic
+> firmware-version: 999.999.0.636
+> bus-info: 0000:03:00.0
+> supports-statistics: yes
+> supports-test: no
+> supports-eeprom-access: no
+> supports-register-dump: no
+> supports-priv-flags: no
+>
+> So, I can see the firmware has been updated (I used
+> firmware-2.bin_999.999.0.636 for STA, right?).
+
+Like Ben said, if you still see 00:03:07:12:34:56 you should use firmware version 10.1.467.2-1.
+
+> But how can I find out have drivers been changed?
+
+I added some tips to the wiki:
+
+----------------------------------------------------------------------
+To check that you are really using ath10k from backports make sure that compat module is loaded and ath10k_pci module uses it:
+
+$ lsmod | grep compat
+compat                 36104  6 iwldvm,iwlwifi,ath10k_pci,ath10k_core,mac80211,cfg80211
+
+To check version of backports project:
+
+$ dmesg | grep backport
+[   23.210662] Loading modules backported from Linux version next-20140221-0-gfaa2e6f
+[   23.210665] Backport generated by backports.git
+backports-20140221-0-g8e94650
+----------------------------------------------------------------------
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/backports
+
+> I did following to change the driver:
+> 1. Download the tarball from "backports-3.13.2-1" to my PC.
+> 2. FTP it to my Linux box (test server running on Ubuntu 13.10 server).
+> 3. Unpack it to my working directory.
+> 4. Run "make defconfig-ath10k"
+>         "make"
+>         "make install".
+> 5. But auto install failed because of some initramfs issue (no key? from error message), so I manually "rmmod" all drivers ( ath10k_pci.ko, ath10k_core.ko, mac80211.ko, ath.ko, cfg80211.ko, compat.ko) and then "Insmod" all drivers back.
+> 6. Run "update-initramfs -u" and reboot.
+>
+> Did I do everything correct?
+
+The initramfs issues look odd, I haven't seen those before. But otherwise this looks good.
+
+> I used "dhcpcd wlan0" to get a valid IP address from a Netgear wifiac
+> ac access point, but from access point manager, the MAC for my card is
+> still "00:03:07:12:34:56". From your last email, you said this default
+> MAC was caused by wrong driver and firmware, so why it's still there
+> after I changed driver and firmware? Do I miss something?
+
+The problem is that firmware 999.999.0.636 doesn't support all hw versions, that's why you need to use firmware from 10.1 branch.
+
+--
+Kalle Valo
+E-mail confidentiality.
+--------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
+
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
+
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+
+Or if within the US,
+
+Spirent Communications,
+26750 Agoura Road, Calabasas, CA, 91302, USA.
+Tel No. 1-818-676- 2300
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
