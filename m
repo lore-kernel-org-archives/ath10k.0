@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY8JL-0002lO-Ax
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 06:18:08 +0000
-Received: by mail-vc0-f175.google.com with SMTP id lh14so2948864vcb.6
- for <ath10k@lists.infradead.org>; Wed, 09 Apr 2014 23:17:39 -0700 (PDT)
+ id 1WY8oq-0003Gc-7k
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 06:50:41 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 10 Apr 2014 09:50:02 +0300
+In-Reply-To: <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 9 Apr 2014 12:48:49 +0200")
+Message-ID: <87ob09he5h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGsNzDJ4hDBa82bUFTQkUqjuRuKOaOVMJDsFZUUvdPGf+iKBdQ@mail.gmail.com>
-References: <CAGsNzDJ4hDBa82bUFTQkUqjuRuKOaOVMJDsFZUUvdPGf+iKBdQ@mail.gmail.com>
-Date: Thu, 10 Apr 2014 14:17:38 +0800
-Message-ID: <CAEFj985jaYoB0fgoY7G0vstcPJTTtGGLy_unAaTWUKvKGDwChw@mail.gmail.com>
-Subject: Re: WDS and adhoc support with ath10k
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Aaron Ray <aaronmray@ohioitguy.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Just make sure that the adhoc mode is working first before proceed to WDS.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Be sure the firmware version is as follow:
-[   13.810000] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
-999.999.0.636 api 2 htt 2.1
-
-I haven't tried the adhoc mode with WDS, but did try for managed and
-AP interface.
-
-I think that you need to turn on the 4addr flag in iw:
-iw dev wlan0 set 4addr on
-
-----
-Chun-Yeow
-
-On Thu, Apr 10, 2014 at 12:07 AM, Aaron Ray <aaronmray@ohioitguy.com> wrote:
-> I've been exploring WDS support in OpenWRT and ath10k. I'm running the
-> latest openwrt trunk as of this weekend and I'm NOT able to get WDS
-> working on my ath10k card.
+> It was troublesome to iterate over peers and
+> perform sleepable calls. This will be necessary
+> for some upcomming changes to tx flushing.
 >
-> No sta adapter is created also iw doesn't list any support for WDS.
-> I'd like to get this working if anyone has any ideas.
+> Make peer allocation and initial setup
+> protected by both ar->conf_mutex and
+> ar->data_lock. This way it's possible to iterate
+> over peers with conf_mutex and call sleepable
+> functions.
 >
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+Sorry, but I'm not really getting your idea here of using both
+conf_mutex and data_lock to protect ar->peers. Can you elaborate more,
+please? Why can't we just use conf_mutex then? What am I missing?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
