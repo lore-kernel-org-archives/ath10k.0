@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WY8xU-0003WA-2s
- for ath10k@lists.infradead.org; Thu, 10 Apr 2014 06:59:40 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
+ id 1WY99Q-0003mj-Ir
+ for ath10k@lists.infradead.org; Thu, 10 Apr 2014 07:11:58 +0000
+Received: by mail-wi0-f181.google.com with SMTP id hm4so4455975wib.2
+ for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 00:11:13 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87k3axhdqc.fsf@kamboji.qca.qualcomm.com>
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
  <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
  <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 10 Apr 2014 09:59:07 +0300
-In-Reply-To: <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 9 Apr 2014 12:48:49 +0200")
-Message-ID: <87k3axhdqc.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87k3axhdqc.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 10 Apr 2014 09:11:13 +0200
+Message-ID: <CA+BoTQ=c+dTcK_diBKi6VJVgUkyBv21bDkRf+9GvGyhhqqMuNQ@mail.gmail.com>
+Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,62 +23,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> It was troublesome to iterate over peers and
-> perform sleepable calls. This will be necessary
-> for some upcomming changes to tx flushing.
->
-> Make peer allocation and initial setup
-> protected by both ar->conf_mutex and
-> ar->data_lock. This way it's possible to iterate
-> over peers with conf_mutex and call sleepable
-> functions.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-First comments, but I need to read this much more carefully still:
-
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -199,9 +199,14 @@ struct ath10k_dfs_stats {
->  #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
->  
->  struct ath10k_peer {
-> +	/* protected by conf_mutex + data_lock */
->  	struct list_head list;
-
-This really needs a lot more documentation. And besides, don't we
-actually want to protect struct ath10k::peers, not this?
-
-> +/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
-> + * modifications */
->  struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
->  				     const u8 *addr)
->  {
->  	struct ath10k_peer *peer;
->  
-> -	lockdep_assert_held(&ar->data_lock);
-> -
->  	list_for_each_entry(peer, &ar->peers, list) {
->  		if (peer->vdev_id != vdev_id)
->  			continue;
-
-The comment here makes me suspicious. How can we safely iterate the list
-if we don't take data_lock? Doesn't it mean that the list can change
-while we have conf_mutex?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgQXByaWwgMjAxNCAwODo1OSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
+czoKPgo+PiBJdCB3YXMgdHJvdWJsZXNvbWUgdG8gaXRlcmF0ZSBvdmVyIHBlZXJzIGFuZAo+PiBw
+ZXJmb3JtIHNsZWVwYWJsZSBjYWxscy4gVGhpcyB3aWxsIGJlIG5lY2Vzc2FyeQo+PiBmb3Igc29t
+ZSB1cGNvbW1pbmcgY2hhbmdlcyB0byB0eCBmbHVzaGluZy4KPj4KPj4gTWFrZSBwZWVyIGFsbG9j
+YXRpb24gYW5kIGluaXRpYWwgc2V0dXAKPj4gcHJvdGVjdGVkIGJ5IGJvdGggYXItPmNvbmZfbXV0
+ZXggYW5kCj4+IGFyLT5kYXRhX2xvY2suIFRoaXMgd2F5IGl0J3MgcG9zc2libGUgdG8gaXRlcmF0
+ZQo+PiBvdmVyIHBlZXJzIHdpdGggY29uZl9tdXRleCBhbmQgY2FsbCBzbGVlcGFibGUKPj4gZnVu
+Y3Rpb25zLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4KPgo+IEZpcnN0IGNvbW1lbnRzLCBidXQgSSBuZWVkIHRvIHJlYWQgdGhpcyBt
+dWNoIG1vcmUgY2FyZWZ1bGx5IHN0aWxsOgo+Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
+L2F0aC9hdGgxMGsvY29yZS5oCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvY29yZS5oCj4+IEBAIC0xOTksOSArMTk5LDE0IEBAIHN0cnVjdCBhdGgxMGtfZGZzX3N0YXRz
+IHsKPj4gICNkZWZpbmUgQVRIMTBLX01BWF9OVU1fUEVFUl9JRFMgKDEgPDwgMTEpIC8qIGh0dCBy
+eF9kZXNjIGxpbWl0ICovCj4+Cj4+ICBzdHJ1Y3QgYXRoMTBrX3BlZXIgewo+PiArICAgICAvKiBw
+cm90ZWN0ZWQgYnkgY29uZl9tdXRleCArIGRhdGFfbG9jayAqLwo+PiAgICAgICBzdHJ1Y3QgbGlz
+dF9oZWFkIGxpc3Q7Cj4KPiBUaGlzIHJlYWxseSBuZWVkcyBhIGxvdCBtb3JlIGRvY3VtZW50YXRp
+b24uIEFuZCBiZXNpZGVzLCBkb24ndCB3ZQo+IGFjdHVhbGx5IHdhbnQgdG8gcHJvdGVjdCBzdHJ1
+Y3QgYXRoMTBrOjpwZWVycywgbm90IHRoaXM/CgpQYXJ0cyBvZiB0aGUgc3RydWN0dXJlIG5lZWRz
+IHRvIGJlIGxvY2tlZCBkaWZmZXJlbnRseS4KCkkgc3VwcG9zZSB3ZSBjYW4gc2F5IHdlIGp1c3Qg
+cHJvdGVjdCBldmVyeXRoaW5nIHdpdGggZGF0YV9sb2NrIGV4Y2VwdApgc3RydWN0IGxpc3RfaGVh
+ZCBsaXN0YCB3aGljaCBuZWVkcyB0byBiZSB3cml0ZS1wcm90ZWN0ZWQgYnkgYm90aApjb25mX211
+dGV4IGFuZCBkYXRhX2xvY2suIEJ1dCB0aGVuIGFnYWluLCBhZGRyIGFuZCB2ZGV2X2lkIGRvbid0
+IG5lZWQKYW55IGxvY2tpbmcgYXMgdGhleSBhcmUgaW1tdXRhYmxlIChhbmQgc2V0IGJlZm9yZSBh
+ZGRpbmcgdG8gdGhlIGxpc3QpLgoKCj4KPj4gKy8qIGhvbGQgY29uZl9tdXRleCBmb3Igc2ltcGxl
+IGl0ZXJhdGlvbiwgb3IgY29uZl9tdXRleCtkYXRhX2xvY2sgZm9yCj4+ICsgKiBtb2RpZmljYXRp
+b25zICovCj4+ICBzdHJ1Y3QgYXRoMTBrX3BlZXIgKmF0aDEwa19wZWVyX2ZpbmQoc3RydWN0IGF0
+aDEwayAqYXIsIGludCB2ZGV2X2lkLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIGNvbnN0IHU4ICphZGRyKQo+PiAgewo+PiAgICAgICBzdHJ1Y3QgYXRoMTBrX3BlZXIgKnBl
+ZXI7Cj4+Cj4+IC0gICAgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5kYXRhX2xvY2spOwo+PiAt
+Cj4+ICAgICAgIGxpc3RfZm9yX2VhY2hfZW50cnkocGVlciwgJmFyLT5wZWVycywgbGlzdCkgewo+
+PiAgICAgICAgICAgICAgIGlmIChwZWVyLT52ZGV2X2lkICE9IHZkZXZfaWQpCj4+ICAgICAgICAg
+ICAgICAgICAgICAgICBjb250aW51ZTsKPgo+IFRoZSBjb21tZW50IGhlcmUgbWFrZXMgbWUgc3Vz
+cGljaW91cy4gSG93IGNhbiB3ZSBzYWZlbHkgaXRlcmF0ZSB0aGUgbGlzdAo+IGlmIHdlIGRvbid0
+IHRha2UgZGF0YV9sb2NrPyBEb2Vzbid0IGl0IG1lYW4gdGhhdCB0aGUgbGlzdCBjYW4gY2hhbmdl
+Cj4gd2hpbGUgd2UgaGF2ZSBjb25mX211dGV4PwoKVGhlIGlkZWEgaXMgeW91IG5lZWQgQk9USCBs
+b2NrcyB0byBtb2RpZnkgdGhlIGxpc3Qgc3RydWN0dXJlLCBidXQgeW91Cm5lZWQgb25seSBvbmUg
+b2YgdGhlbSB0byBpdGVyYXRlIG92ZXIgdGhlIGxpc3Qgc2FmZWx5IGFuZApjb25zaXN0ZW50bHku
+IFRoaXMgbWVhbnMgd3JpdGVyIHdpbGwgbm90IGFsdGVyIHRoZSBsaXN0IHN0cnVjdHVyZQp1bnRp
+bCB0aGVyZSBhcmUgbm8gcmVhZGVycy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
