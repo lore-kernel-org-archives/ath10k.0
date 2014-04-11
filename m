@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x233.google.com ([2607:f8b0:400c:c03::233])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYPmy-0004V9-Ds
- for ath10k@lists.infradead.org; Fri, 11 Apr 2014 00:57:57 +0000
-Received: by mail-vc0-f179.google.com with SMTP id ij19so4240815vcb.10
- for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 17:57:29 -0700 (PDT)
+ id 1WYTYt-0006YQ-42
+ for ath10k@lists.infradead.org; Fri, 11 Apr 2014 04:59:39 +0000
+Message-ID: <5347769F.2020808@candelatech.com>
+Date: Thu, 10 Apr 2014 21:59:11 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGsNzDKvcp453sPLMEa1DTmstCoQT-hVCc=nPucSnmOp3PrerA@mail.gmail.com>
-References: <CAGsNzDJ4hDBa82bUFTQkUqjuRuKOaOVMJDsFZUUvdPGf+iKBdQ@mail.gmail.com>
- <CAEFj985jaYoB0fgoY7G0vstcPJTTtGGLy_unAaTWUKvKGDwChw@mail.gmail.com>
- <CAGsNzD+vQosTK8-ikrxwzrSXY8kzc+GHg5QutB8KdNsHCE8-9w@mail.gmail.com>
- <CAGsNzDKvcp453sPLMEa1DTmstCoQT-hVCc=nPucSnmOp3PrerA@mail.gmail.com>
-Date: Fri, 11 Apr 2014 08:57:29 +0800
-Message-ID: <CAEFj984r21nCirRaTm4qr3qTcjm9Rf3xPs8Fr2P2XeaodvaeHg@mail.gmail.com>
-Subject: Re: WDS and adhoc support with ath10k
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,91 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Aaron Ray <aaronmray@ohioitguy.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Take a look on hostapd.conf, and if you have set bridge parameter,
-then WDS is turned on in AP mode.
+On 04/09/2014 03:48 AM, Michal Kazior wrote:
+> It was troublesome to iterate over peers and
+> perform sleepable calls. This will be necessary
+> for some upcomming changes to tx flushing.
 
-bridge=br0
+Just FYI, I tried all yesterday to get my system stable with all
+of your RFT patches applied, but it just has all sorts of issues.
+I think much of it relates to the management flush logic, perhaps
+all the time it spends under lock (including RTNL lock I think)
+just makes my system fall apart.
 
-# WDS (4-address frame) mode with per-station virtual interfaces
-# (only supported with driver=nl80211)
-# This mode allows associated stations to use 4-address frames to allow layer 2
-# bridging to be used.
-#wds_sta=1
+Possibly related to my peculiar environment & firmware, for sure.
 
-# If bridge parameter is set, the WDS STA interface will be added to the same
-# bridge by default. This can be overridden with the wds_bridge parameter to
-# use a separate bridge.
-#wds_bridge=wds-br0
+I backed out your last two, leaving this one and the two previous,
+and it runs better.  I still see the tx-credits hang (this time,
+when I tried resetting all 32 stations while transmitting packets),
+but at least the stations come up and can transmit packets most of
+the time.
 
------
-Chun-Yeow
+Even in the 'mostly working' state, resetting interfaces while
+they and other vifs are under heavy packet load can effectively
+lock up my user-space app, and things like 'ifconfig -a'
+can take 10s of seconds to complete.  So, I probably need
+to mitigate more of the sleeps related to flushing somehow.
 
-On Fri, Apr 11, 2014 at 7:20 AM, Aaron Ray <aaronmray@ohioitguy.com> wrote:
-> Thanks for the response. I'm currently in AP mode, and this was the result:
->
-> root@OpenWrt:~# iw dev wlan0 set 4addr on
-> command failed: Operation not supported (-122)
->
-> I thought for sure that command was going to fix it. The link seems to
-> be up and running fine, it's the extended addressing that seems to not
-> be working. I've noticed arp requests are going unanswered.
->
-> On Thu, Apr 10, 2014 at 7:19 PM, Aaron Ray <aaronmray@ohioitguy.com> wrote:
->> Thanks for the response. I'm currently in AP mode, and this was the result:
->>
->> root@OpenWrt:~# iw dev wlan0 set 4addr on
->> command failed: Operation not supported (-122)
->>
->> I thought for sure that command was going to fix it. The link seems to be up
->> and running fine, it's the extended addressing that seems to not be working.
->> I've noticed arp requests are going unanswered.
->>
->>
->> On Thu, Apr 10, 2014 at 2:17 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
->> wrote:
->>>
->>> Just make sure that the adhoc mode is working first before proceed to WDS.
->>>
->>> Be sure the firmware version is as follow:
->>> [   13.810000] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
->>> 999.999.0.636 api 2 htt 2.1
->>>
->>> I haven't tried the adhoc mode with WDS, but did try for managed and
->>> AP interface.
->>>
->>> I think that you need to turn on the 4addr flag in iw:
->>> iw dev wlan0 set 4addr on
->>>
->>> ----
->>> Chun-Yeow
->>>
->>> On Thu, Apr 10, 2014 at 12:07 AM, Aaron Ray <aaronmray@ohioitguy.com>
->>> wrote:
->>> > I've been exploring WDS support in OpenWRT and ath10k. I'm running the
->>> > latest openwrt trunk as of this weekend and I'm NOT able to get WDS
->>> > working on my ath10k card.
->>> >
->>> > No sta adapter is created also iw doesn't list any support for WDS.
->>> > I'd like to get this working if anyone has any ideas.
->>> >
->>> > _______________________________________________
->>> > ath10k mailing list
->>> > ath10k@lists.infradead.org
->>> > http://lists.infradead.org/mailman/listinfo/ath10k
->>
->>
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
