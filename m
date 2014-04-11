@@ -1,8 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYUrv-00010x-KA
- for ath10k@lists.infradead.org; Fri, 11 Apr 2014 06:23:20 +0000
+ id 1WYV0g-0003TN-Fa
+ for ath10k@lists.infradead.org; Fri, 11 Apr 2014 06:32:23 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
 References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
@@ -10,12 +10,10 @@ References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
  <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
  <87k3axhdqc.fsf@kamboji.qca.qualcomm.com>
  <CA+BoTQ=c+dTcK_diBKi6VJVgUkyBv21bDkRf+9GvGyhhqqMuNQ@mail.gmail.com>
- <87fvllhctr.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkL8Vp_hjOP-=RZL97QXScF+WVX=BGf6d-HY8cQmu=WCQ@mail.gmail.com>
-Date: Fri, 11 Apr 2014 09:22:50 +0300
-In-Reply-To: <CA+BoTQkL8Vp_hjOP-=RZL97QXScF+WVX=BGf6d-HY8cQmu=WCQ@mail.gmail.com>
- (Michal Kazior's message of "Thu, 10 Apr 2014 09:43:13 +0200")
-Message-ID: <87r454fkqt.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 11 Apr 2014 09:31:56 +0300
+In-Reply-To: <CA+BoTQ=c+dTcK_diBKi6VJVgUkyBv21bDkRf+9GvGyhhqqMuNQ@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 10 Apr 2014 09:11:13 +0200")
+Message-ID: <87mwfsfkbn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -34,56 +32,49 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.ke
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 10 April 2014 09:18, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> On 10 April 2014 08:59, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 >> Michal Kazior <michal.kazior@tieto.com> writes:
 >>
->>> The idea is you need BOTH locks to modify the list structure, but you
->>> need only one of them to iterate over the list safely and
->>> consistently. This means writer will not alter the list structure
->>> until there are no readers.
+>>> It was troublesome to iterate over peers and
+>>> perform sleepable calls. This will be necessary
+>>> for some upcomming changes to tx flushing.
+>>>
+>>> Make peer allocation and initial setup
+>>> protected by both ar->conf_mutex and
+>>> ar->data_lock. This way it's possible to iterate
+>>> over peers with conf_mutex and call sleepable
+>>> functions.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 >>
->> Still not understanding this. Why not then use conf_mutex always, why do
->> we need data_lock at all?
+>> First comments, but I need to read this much more carefully still:
+>>
+>>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>>> @@ -199,9 +199,14 @@ struct ath10k_dfs_stats {
+>>>  #define ATH10K_MAX_NUM_PEER_IDS (1 << 11) /* htt rx_desc limit */
+>>>
+>>>  struct ath10k_peer {
+>>> +     /* protected by conf_mutex + data_lock */
+>>>       struct list_head list;
+>>
+>> This really needs a lot more documentation. And besides, don't we
+>> actually want to protect struct ath10k::peers, not this?
 >
-> htt peer map/unmap which is in tasklet context needs to iterate over
-> the list. It can't take conf_mutex.
+> Parts of the structure needs to be locked differently.
 >
->> Or are you saying that one can iterate the list by either taking
->> conf_mutex or by taking data_lock, depending on context?
->
-> Yes.
+> I suppose we can say we just protect everything with data_lock except
+> `struct list_head list` which needs to be write-protected by both
+> conf_mutex and data_lock. But then again, addr and vdev_id don't need
+> any locking as they are immutable (and set before adding to the list).
 
-Thanks, finally I understand this. At least the comment below needs to
-be changed to cover all cases:
+I guess this depends from the point of view. In my opinion struct
+ath10k::peers is the actual list and that's why the main documentation
+needs to be above struct ath10k::peers field. And I would guess that's
+there most people check there for documentation first.
 
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -100,13 +100,13 @@ exit:
- 		wake_up(&htt->empty_tx_wq);
- }
- 
-+/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
-+ * modifications */
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr)
- {
- 	struct ath10k_peer *peer;
- 
--	lockdep_assert_held(&ar->data_lock);
--
- 	list_for_each_entry(peer, &ar->peers, list) {
- 		if (peer->vdev_id != vdev_id)
- 			continue;
-
-The other thing is that I really like the idea of documenting locking
-requirements with lockdep_assert_held() and I hate to lose that in this
-function. I started to think should we come up with our own macro for
-checking if either of two locks is held? When I look at the original
-macro I think it should be pretty easy:
-
-#define lockdep_assert_held(l)	do {				\
-		WARN_ON(debug_locks && !lockdep_is_held(l));	\
-	} while (0)
+But if we have special rules within struct ath10k_peer (excluding the
+list field), we can document that within struct ath10k_peer.
 
 -- 
 Kalle Valo
