@@ -1,19 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYUQ2-0002DJ-18
- for ath10k@lists.infradead.org; Fri, 11 Apr 2014 05:54:30 +0000
-Received: by mail-wg0-f51.google.com with SMTP id k14so4952174wgh.10
- for <ath10k@lists.infradead.org>; Thu, 10 Apr 2014 22:54:07 -0700 (PDT)
+ id 1WYUrv-00010x-KA
+ for ath10k@lists.infradead.org; Fri, 11 Apr 2014 06:23:20 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFTv2 3/5] ath10k: rework peer accounting
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-4-git-send-email-michal.kazior@tieto.com>
+ <87k3axhdqc.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=c+dTcK_diBKi6VJVgUkyBv21bDkRf+9GvGyhhqqMuNQ@mail.gmail.com>
+ <87fvllhctr.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkL8Vp_hjOP-=RZL97QXScF+WVX=BGf6d-HY8cQmu=WCQ@mail.gmail.com>
+Date: Fri, 11 Apr 2014 09:22:50 +0300
+In-Reply-To: <CA+BoTQkL8Vp_hjOP-=RZL97QXScF+WVX=BGf6d-HY8cQmu=WCQ@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 10 Apr 2014 09:43:13 +0200")
+Message-ID: <87r454fkqt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <8738hkh193.fsf@kamboji.qca.qualcomm.com>
-References: <53461A8A.4030209@candelatech.com>
- <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
- <8738hkh193.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 11 Apr 2014 07:47:44 +0200
-Message-ID: <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: double check bmi xfer pointers
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +25,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTEgQXByaWwgMjAxNCAwNzo0MCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
-czoKPgo+PiBJZiBmb3Igc29tZSByZWFzb24gY29weSBlbmdpbmUgcmluZyBidWZmZXIgYmVjYW1l
-Cj4+IGNvcnJ1cHQgYXRoMTBrIGNvdWxkIGNyYXNoIHRoZSBtYWNoaW5lIGR1ZSB0bwo+PiBpbnZh
-bGlkIHBvaW50ZXIgZGVyZWZlcmVuY2UuIEl0J3MgdmVyeSB1bmxpa2VseQo+PiBidXQgZGV2aWNl
-cyBjYW4gbmV2ZXIgYmUgZnVsbHkgdHJ1c3RlZCBzbyB2ZXJpZnkKPj4gaWYgdGhlIGJtaSB4ZmVy
-IHBvaW50ZXIgcmVhZCBiYWNrIGZyb20gY29weSBlbmdpbmUKPj4gbWF0Y2hlcyB0aGUgb3JpZ2lu
-YWwgcG9pbnRlci4KPgo+IFRoZSBiaWcgcXVlc3Rpb24gaXMgd2h5IGRvZXMgdGhpcyBoYXBwZW4/
-IERvZXMgdGhpcyBoYXBwZW4gb25seSB3aXRoCj4gQmVuJ3MgZmlybXdhcmUgb3IgaXMgaXQgYSBt
-b3JlIGdlbmVyaWMgcHJvYmxlbT8KCkknbGwgbG9vayBtb3JlIGludG8gdGhpcy4KCgpNaWNoYcWC
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 10 April 2014 09:18, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> The idea is you need BOTH locks to modify the list structure, but you
+>>> need only one of them to iterate over the list safely and
+>>> consistently. This means writer will not alter the list structure
+>>> until there are no readers.
+>>
+>> Still not understanding this. Why not then use conf_mutex always, why do
+>> we need data_lock at all?
+>
+> htt peer map/unmap which is in tasklet context needs to iterate over
+> the list. It can't take conf_mutex.
+>
+>> Or are you saying that one can iterate the list by either taking
+>> conf_mutex or by taking data_lock, depending on context?
+>
+> Yes.
+
+Thanks, finally I understand this. At least the comment below needs to
+be changed to cover all cases:
+
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -100,13 +100,13 @@ exit:
+ 		wake_up(&htt->empty_tx_wq);
+ }
+ 
++/* hold conf_mutex for simple iteration, or conf_mutex+data_lock for
++ * modifications */
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr)
+ {
+ 	struct ath10k_peer *peer;
+ 
+-	lockdep_assert_held(&ar->data_lock);
+-
+ 	list_for_each_entry(peer, &ar->peers, list) {
+ 		if (peer->vdev_id != vdev_id)
+ 			continue;
+
+The other thing is that I really like the idea of documenting locking
+requirements with lockdep_assert_held() and I hate to lose that in this
+function. I started to think should we come up with our own macro for
+checking if either of two locks is held? When I look at the original
+macro I think it should be pretty easy:
+
+#define lockdep_assert_held(l)	do {				\
+		WARN_ON(debug_locks && !lockdep_is_held(l));	\
+	} while (0)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
