@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from s3.sipsolutions.net ([144.76.43.152] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WYWMt-0007xe-PO
- for ath10k@lists.infradead.org; Fri, 11 Apr 2014 07:59:24 +0000
-Received: by mail-wi0-f176.google.com with SMTP id r20so555131wiv.15
- for <ath10k@lists.infradead.org>; Fri, 11 Apr 2014 00:58:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
-References: <53461A8A.4030209@candelatech.com>
- <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
- <8738hkh193.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
-Date: Fri, 11 Apr 2014 09:58:54 +0200
-Message-ID: <CA+BoTQ=L7Cj5V04RGEFcdGm1rxEO8NOYMEhSRiQNdoBoMTm5Pg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: double check bmi xfer pointers
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WYWNf-0007yy-IB
+ for ath10k@lists.infradead.org; Fri, 11 Apr 2014 08:00:12 +0000
+Message-ID: <1397203178.4420.6.camel@jlt4.sipsolutions.net>
+Subject: Re: [PATCH v2 1/2] mac80211: add option to generate CCMP IVs only
+ for mgmt frames
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 11 Apr 2014 09:59:38 +0200
+In-Reply-To: <1397033857-2523-1-git-send-email-marek.kwaczynski@tieto.com>
+ (sfid-20140409_105814_570743_B097AC2A)
+References: <1397033857-2523-1-git-send-email-marek.kwaczynski@tieto.com>
+ (sfid-20140409_105814_570743_B097AC2A)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +21,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Marek Kwaczynski <marek.kwaczynski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMTEgQXByaWwgMjAxNCAwNzo0NywgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0
-by5jb20+IHdyb3RlOgo+IE9uIDExIEFwcmlsIDIwMTQgMDc6NDAsIEthbGxlIFZhbG8gPGt2YWxv
-QHFjYS5xdWFsY29tbS5jb20+IHdyb3RlOgo+PiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
-QHRpZXRvLmNvbT4gd3JpdGVzOgo+Pgo+Pj4gSWYgZm9yIHNvbWUgcmVhc29uIGNvcHkgZW5naW5l
-IHJpbmcgYnVmZmVyIGJlY2FtZQo+Pj4gY29ycnVwdCBhdGgxMGsgY291bGQgY3Jhc2ggdGhlIG1h
-Y2hpbmUgZHVlIHRvCj4+PiBpbnZhbGlkIHBvaW50ZXIgZGVyZWZlcmVuY2UuIEl0J3MgdmVyeSB1
-bmxpa2VseQo+Pj4gYnV0IGRldmljZXMgY2FuIG5ldmVyIGJlIGZ1bGx5IHRydXN0ZWQgc28gdmVy
-aWZ5Cj4+PiBpZiB0aGUgYm1pIHhmZXIgcG9pbnRlciByZWFkIGJhY2sgZnJvbSBjb3B5IGVuZ2lu
-ZQo+Pj4gbWF0Y2hlcyB0aGUgb3JpZ2luYWwgcG9pbnRlci4KPj4KPj4gVGhlIGJpZyBxdWVzdGlv
-biBpcyB3aHkgZG9lcyB0aGlzIGhhcHBlbj8gRG9lcyB0aGlzIGhhcHBlbiBvbmx5IHdpdGgKPj4g
-QmVuJ3MgZmlybXdhcmUgb3IgaXMgaXQgYSBtb3JlIGdlbmVyaWMgcHJvYmxlbT8KPgo+IEknbGwg
-bG9vayBtb3JlIGludG8gdGhpcy4KCkhtbS4uIEFmdGVyIGdvaW5nIHRocm91Z2ggdGhlIGNvZGUg
-YSBmZXcgdGltZXMgSSB0aGluayB0aGUgYnVnIGlzCmFjdHVhbGx5IHNvbWV0aGluZyBlbHNlLgoK
-SWYgdGhlIGNyYXNoIGhhcHBlbmVkIGluIGNvbXBsZXRlKCkgaXQgbWVhbnMgdGhlIGNvbXBsZXRp
-b24gc3RydWN0dXJlCndhc24ndCBzZXQgdXAgcHJvcGVybHkuIEhvd2V2ZXIgaXQgaXMgYWx3YXlz
-IGluaXRpYWxpemVkIGluCmF0aDEwa19wY2lfaGlmX2V4Y2hhbmdlX2JtaV9tc2coKSBiZWZvcmUg
-cHJvY2VlZGluZy4gVGhpcyBtZWFucyB4ZmVyCnBvaW50ZXIgcmVhZCBiYWNrIGZyb20gYXRoMTBr
-X2NlX2NvbXBsZXRlZF9zZW5kX25leHQoKSBvcgphdGgxMGtfY2VfY29tcGxldGVkX3JlY3ZfbmV4
-dCgpIGlzIHdyb25nLiBTaW5jZSB0aGUgcG9pbnRlciB0byBpdCBpcwprZXB0IG9uIGhvc3QgZ2V0
-dGluZyB3cm9uZyB4ZmVyIG1lYW5zIHN3X2luZGV4IG11c3QgYmUgd3JvbmcuIElmIEkKYXNzdW1l
-IGluZGV4ZXMgYXJlIG1hbmFnZWQgY29ycmVjdGx5IChpLmUuIG5vIG92ZXJmbG93cywgbG9ja2lu
-ZyBpcwpmaW5lKSB0aGVuIGl0IGlzIHRoZSBlbnRyeSB0aGUgc3dfaW5kZXggcG9pbnRzIHRvIHRo
-YXQgaXMgYWN0dWFsbHkKdW5leHBlY3RlZC4KClRoaXMgY291bGQgaGFwcGVuIGlmIGNvbmN1cnJl
-bnQgdHJhbnNmZXJzIG9jY3VyIG9uIHBpcGUgMCBvciAxICh1c2VkCmZvciBibWkgY29tbXVuaWNh
-dGlvbikgZHVyaW5nIGRldmljZSBib290dXAuIFRoaXMgY291bGQgYmUgZWl0aGVyIGEKY29uY3Vy
-cmVudCBibWkgdHJhbnNmZXIgb3IgYSBub24tYm1pIGJ1ZmZlciBvciBhbiBvbGQgYm1pIHhmZXIg
-ZGF0YS4KVGhlIGxhdHRlciBzaG91bGRuJ3QgYmUgdGhlIGNhc2UgYmVjYXVzZQphdGgxMGtfcGNp
-X2hpZl9leGNoYW5nZV9ibWlfbXNnKCkgY2xlYW5zIHVwIGFmdGVyIGl0c2VsZi4gQ29uY3VycmVu
-dAphY2Nlc3MgZG9lc24ndCBzZWVtIHRvIGJlIHRoZSBjYXNlIGVpdGhlci4KCkkgY29uY2x1ZGUg
-dGhlIGJ1ZyBpcyBub3QgcHJlc2VudCBpbiB0aGUgdmFuaWxsYSBhdGgxMGsgY29kZS4KClRMO0RS
-IGRyb3AgdGhlIHBhdGNoLCBwbGVhc2UKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+On Wed, 2014-04-09 at 10:57 +0200, Marek Kwaczynski wrote:
+> Some chips can encrypt managment frames in HW, but
+> require generated IV in the frame. Add a key flag
+> that allows us to achieve this.
+
+> + * @IEEE80211_KEY_FLAG_GENERATE_MGMT_IV_TX: This flag should be set by the
+> + *	driver for a CCMP key to indicate that is requires IV generation
+> + *	only for managment frames (MFP).
+
+Maybe IEEE80211_KEY_FLAG_GENERATE_IV_MGMT would be better and matching
+the IEEE80211_KEY_FLAG_GENERATE_IV better?
+
+>   */
+>  enum ieee80211_key_flags {
+> -	IEEE80211_KEY_FLAG_GENERATE_IV	= 1<<1,
+> +	IEEE80211_KEY_FLAG_GENERATE_IV		= 1<<1,
+
+Since you're touching all these, please convert them all to BIT().
+
+> @@ -625,8 +625,9 @@ ieee80211_tx_h_select_key(struct ieee80211_tx_data *tx)
+>  				tx->key = NULL;
+>  			else
+>  				skip_hw = (tx->key->conf.flags &
+> -					   IEEE80211_KEY_FLAG_SW_MGMT_TX) &&
+> -					ieee80211_is_mgmt(hdr->frame_control);
+> +				   (IEEE80211_KEY_FLAG_SW_MGMT_TX |
+> +				    IEEE80211_KEY_FLAG_GENERATE_MGMT_IV_TX)) &&
+> +				    ieee80211_is_mgmt(hdr->frame_control);
+
+This seems wrong, you don't want to skip_hw in this case, you just want
+to have the IV generated.
+
+> +	/* hwaccel - with software CCMP header or the HW needs
+> +	 * generated the IV
+> +	 */
+> +	if (info->control.hw_key ||
+> +	    (key->conf.flags & IEEE80211_KEY_FLAG_GENERATE_MGMT_IV_TX))
+>  		return 0;
+
+This seems equally wrong, and it looks like maybe in this case two
+wrongs make a right, but I think you should probably put it in the
+place(s) where IEEE80211_KEY_FLAG_GENERATE_IV is checked.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
