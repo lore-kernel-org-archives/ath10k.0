@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22c.google.com ([2a00:1450:4013:c00::22c])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZdBv-00088c-Se
- for ath10k@lists.infradead.org; Mon, 14 Apr 2014 09:28:40 +0000
-Received: by mail-ee0-f44.google.com with SMTP id e49so6360733eek.31
- for <ath10k@lists.infradead.org>; Mon, 14 Apr 2014 02:28:12 -0700 (PDT)
-From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-Subject: [PATCH 2/2 V3] ath10k: Fix pmf for action frames
-Date: Mon, 14 Apr 2014 11:27:22 +0200
-Message-Id: <1397467642-23544-2-git-send-email-marek.kwaczynski@tieto.com>
-In-Reply-To: <1397467642-23544-1-git-send-email-marek.kwaczynski@tieto.com>
-References: <1397467642-23544-1-git-send-email-marek.kwaczynski@tieto.com>
+ id 1WZj50-0000o4-3E
+ for ath10k@lists.infradead.org; Mon, 14 Apr 2014 15:45:54 +0000
+Message-ID: <534C028E.4000302@candelatech.com>
+Date: Mon, 14 Apr 2014 08:45:18 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: Question on ath10k_mgmt_tx_flush
+References: <53469F7B.2080202@candelatech.com>
+ <CA+BoTQmc=n7ifUh+8Lq_1P=t4KJyDDFjcs3Z1mW1nHFO+WR2hw@mail.gmail.com>
+ <5347ED46.3000406@candelatech.com>
+ <CA+BoTQ=oyXd4qCOhBQE5QCu+KYaqB+_9qSdaTL_z_m2C=c=WYg@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=oyXd4qCOhBQE5QCu+KYaqB+_9qSdaTL_z_m2C=c=WYg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,107 +21,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, johannes@sipsolutions.net
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Fix sending and receiveing protected managment frames.
-Lack of protected flag for received protected action frames
-causes report these frames as unprotected robust action frames.
-If the driver in AP mode sent frame with protected flag and
-CCMP header using IEEE80211_KEY_FLAG_SW_MGMT_TX flag,
-the FW encrypted frames once again. From user side all
-received SA Query Requests and Responses were skipped and
-all protected action frames were sent as malformed packets.
-
-Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |    5 ++++-
- drivers/net/wireless/ath/ath10k/wmi.c |   24 ++++++++++++++++++++----
- 2 files changed, 24 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 58ec5a7..38035dc 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -54,7 +54,10 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
- 	switch (key->cipher) {
- 	case WLAN_CIPHER_SUITE_CCMP:
- 		arg.key_cipher = WMI_CIPHER_AES_CCM;
--		key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
-+		if (arvif->vdev_type == WMI_VDEV_TYPE_AP)
-+			key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
-+		else
-+			key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
- 		break;
- 	case WLAN_CIPHER_SUITE_TKIP:
- 		arg.key_cipher = WMI_CIPHER_TKIP;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d4b48ef..6d8a097 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -639,6 +639,7 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	struct sk_buff *wmi_skb;
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	int len;
-+	u32 buf_len = skb->len;
- 	u16 fc;
- 
- 	hdr = (struct ieee80211_hdr *)skb->data;
-@@ -648,6 +649,15 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 		return -EINVAL;
- 
- 	len = sizeof(cmd->hdr) + skb->len;
-+
-+	if ((ieee80211_is_action(hdr->frame_control) ||
-+	     ieee80211_is_deauth(hdr->frame_control) ||
-+	     ieee80211_is_disassoc(hdr->frame_control)) &&
-+	     ieee80211_has_protected(hdr->frame_control)) {
-+		len += IEEE80211_CCMP_MIC_LEN;
-+		buf_len += IEEE80211_CCMP_MIC_LEN;
-+	}
-+
- 	len = round_up(len, 4);
- 
- 	wmi_skb = ath10k_wmi_alloc_skb(len);
-@@ -659,7 +669,7 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	cmd->hdr.vdev_id = __cpu_to_le32(ATH10K_SKB_CB(skb)->vdev_id);
- 	cmd->hdr.tx_rate = 0;
- 	cmd->hdr.tx_power = 0;
--	cmd->hdr.buf_len = __cpu_to_le32((u32)(skb->len));
-+	cmd->hdr.buf_len = __cpu_to_le32(buf_len);
- 
- 	memcpy(cmd->hdr.peer_macaddr.addr, ieee80211_get_DA(hdr), ETH_ALEN);
- 	memcpy(cmd->buf, skb->data, skb->len);
-@@ -957,10 +967,16 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	 * frames with Protected Bit set. */
- 	if (ieee80211_has_protected(hdr->frame_control) &&
- 	    !ieee80211_is_auth(hdr->frame_control)) {
--		status->flag |= RX_FLAG_DECRYPTED | RX_FLAG_IV_STRIPPED |
--				RX_FLAG_MMIC_STRIPPED;
--		hdr->frame_control = __cpu_to_le16(fc &
-+		status->flag |= RX_FLAG_DECRYPTED;
-+
-+		if (!ieee80211_is_action(hdr->frame_control) &&
-+		    !ieee80211_is_deauth(hdr->frame_control) &&
-+		    !ieee80211_is_disassoc(hdr->frame_control)) {
-+			status->flag |= RX_FLAG_IV_STRIPPED |
-+					RX_FLAG_MMIC_STRIPPED;
-+			hdr->frame_control = __cpu_to_le16(fc &
- 					~IEEE80211_FCTL_PROTECTED);
-+		}
- 	}
- 
- 	ath10k_dbg(ATH10K_DBG_MGMT,
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDQvMTMvMjAxNCAxMTozMSBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMSBBcHJp
+bCAyMDE0IDE1OjI1LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6
+Cj4+IE9uIDA0LzEwLzIwMTQgMTA6MjEgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Pgo+Pj4g
+T24gMTAgQXByaWwgMjAxNCAxNTo0MSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+IHdyb3RlOgo+Pj4+Cj4+Pj4gQ2FuIHdlIG9wdGltaXplIHRoaXMgbWV0aG9kIHRvIHJldHVy
+biBlYXJseSBpZiB0aGUgdHgtY3JlZGl0cwo+Pj4+IGFyZSBmdWxseSByZXBsZW5pc2hlZCAoaWUs
+ID09IDIpIGluc3RlYWQgb2YganVzdCBzbGVlcGluZyB0aGUKPj4+PiAyIHggYmVhY29uLWludGVy
+dmFsPyAgVGhhdCB3b3VsZCBpbmRpY2F0ZSBhbGwgbWVzc2FnZXMKPj4+PiBoYXZlIGJlZW4gZmx1
+c2hlZCwgcmlnaHQ/Cj4+Pgo+Pj4KPj4+IFllYWguIFlvdSdyZSBfYWxtb3N0XyByaWdodC4gRXZl
+cnkgb2RkIG1nbXQgZnJhbWUgd2lsbCB0cmlnZ2VyIHR4Cj4+PiBjcmVkaXQgcmVwbGVuaXNobWVu
+dCwgZXZlbiBpZiB5b3Ugc2V0IE5FRURTX0NSRURJVFMgaHRjIHR4IGZsYWcgZm9yCj4+PiBhbGwg
+cGFja2V0cy4gSXQgc2VlbXMgdGhhdCB0eCBjcmVkaXRzIGFyZW4ndCByZXBsZW5pc2hlZCB1bnRp
+bCB5b3UKPj4+IHN1Ym1pdCBhbiBldmVuIG51bWJlciBvZiBtZ210IHR4Ogo+Pj4KPj4+ICAgW3R4
+IGNyZWRpdHMgPTJdCj4+PiAgIHZkZXYgY3JlYXRlIFstMSwgPTFdCj4+PiAgIFtyZXBsZW5pc2gg
+KzEsID0yXQo+Pj4gICBtZ210IHR4IFstMSwgPTFdCj4+PiAgIFtmcmFtZSBpcyBzZWVuIG9uIGFp
+ciwgbWVhbnMgaXQgbGVmdCB0eCBxdWV1ZSwgYnV0IG5vIHJlcGxlbmlzaG1lbnRdCj4+PiAgIHZk
+ZXYgc2V0IHBhcmFtIFstMSwgPTBdCj4+PiAgIFtyZXBsZW5pc2ggKzEsID0xXQo+Pj4gICBtZ210
+IHR4IFstMSwgPTBdCj4+PiAgIFtmcmFtZSBzZWVuIG9uIGFpcl0KPj4+ICAgW3JlcGxlbmlzaCAr
+MiwgPTJdCj4+Pgo+Pj4gSG93ZXZlciBvbmNlIHlvdSBmbHVzaCBwZWVyIHRpZHMgeW91IGdldCB0
+aGUgdHggY3JlZGl0IGltbWVkaWF0ZWx5Lgo+Pj4gVGhpcyBtZWFucyB5b3UgZG9uJ3QgZXZlciBy
+ZWFjaCBoYXZpbmcgMiBtZ210IHR4IGNvbnN1bWluZyAyIHR4Cj4+PiBjcmVkaXRzICh1bmxlc3Mg
+dGhpbmdzIGdvIHRlcnJpYmx5IHRlcnJpYmx5IHdyb25nIGF0IHdoaWNoIHBvaW50IGl0J3MKPj4+
+IHByb2JhYmx5IGFscmVhZHkgYmV5b25kIGhlbHApLgo+Pj4KPj4+IEEgdmVyeSB1Z2x5IGhhY2sg
+d291bGQgYmUgdG8gdHJ5IGFuZCBzZW5kIG91dCBtZ210IHR4IGluIHBhaXJzIC0gYQo+Pj4gcmVx
+dWVzdGVkIGZyYW1lIGFuZCBhIGR1bW15IGZyYW1lIChzdWNoIHRoYXQgZmlybXdhcmUgd2lsbCBu
+b3QgYnVmZmVyCj4+PiBpdCkgc28gdGhhdCB5b3UgdXNlIHR4IGNyZWRpdCByZXBsZW5pc2htZW50
+IGFzIHR4IGNvbXBsZXRpb24KPj4+IGluZGljYXRpb24uCj4+Cj4+Cj4+IElmIHlvdSBpZ25vcmUg
+aG93IGZpcm13YXJlIHJlcGxlbmlzaGVzIHRoZSB0eC1jcmVkaXRzIGZvciBub3csCj4+IGlzIGl0
+IHNhZmUgdG8gYXNzdW1lIHRoYXQgaWYgeW91IGhhdmUgMiB0eC1jcmVkaXRzIHdoaWxlIGluCj4+
+IHRoZSBmbHVzaCByb3V0aW5lLCB0aGVuIGV2ZXJ5dGhpbmcgaXMgaW5kZWVkIGZsdXNoZWQgYW5k
+Cj4+IHdlIGNhbiBza2lwIHRoZSBzbGVlcD8KPiAKPiBZb3Ugd2FudCB0byBhbHdheXMgc2tpcCB0
+aGUgc2xlZXAgYmV0d2VlbiBtZ210IHR4IGFuZCBmbHVzaCBjb21tYW5kcz8KPiBJJ20gYWZyYWlk
+IHRoaXMgd29uJ3Qgd29yayBiZWNhdXNlIHR4IGZsdXNoIGNvbW1hbmQgY2FuIGVuZCB1cCB3aXRo
+Cj4gcXVldWVkIGZyYW1lIGJlaW5nIGRyb3BwZWQgb3IgdHJhbnNtaXR0ZWQgcmVnYXJkbGVzcyBv
+ZiBkZXN0aW5hdGlvbgo+IHN0YXRpb24gcG93ZXJzYXZlIHN0YXRlIGlmIHN1Ym1pdHRlZCB0b28g
+c29vbi4KCkkganVzdCB3YW50IHRvIGtub3cgaWYgSSBjYW4gc2tpcCB0aGUgc2xlZXAgaWYgd2Ug
+Y3VycmVudGx5IGhhdmUgMiB0eC1jcmVkaXRzLgoKRnJvbSB5b3VyIGFuc3dlciBiZWxvdywgdGhh
+dCBzZWVtcyB0byBiZSBhIHllcy4gIFNvLCAxLzIgb2YgdGhlIHRpbWUgKG9uIGF2ZykKaXMgd29y
+dGggdGhlIGhhY2sgdG8gbWUsIGFuZCBpZi93aGVuIEkgZml4IHRoZSBmaXJtd2FyZSAoYW5kL29y
+IGlmIFFDQSBmaXhlcwp0aGUgZmlybXdhcmUpLCB0aGVuIHdlIHNob3VsZCBoYXZlIDIgdHgtY3Jl
+ZGl0cyBtb3JlIG9mdGVuIGFuZCBvbmx5IHNsZWVwIHdoZW4KdGhlcmUgcmVhbGx5IGlzIHdvcmsg
+dG8gZG8uCgo+PiBJIGltYWdpbmUgYm90aCBJIGFuZCB0aGUgUUNBIGZpcm13YXJlIGd1eXMgY2Fu
+IG1ha2UgdGhlCj4+IGZpcm13YXJlIHByb3Blcmx5IHJlcGxlbmlzaCB0eC1jcmVkaXRzIG9uZSBh
+dCBhIHRpbWUgaW5zdGVhZAo+PiBvZiB0aGUgb25seS1vbi1ldmVuL29kZCBiZWhhdmlvdXIgeW91
+IGZvdW5kLgo+IAo+IFRoYXQgd291bGQgYmUgbmljZS4KPiAKPiAKPj4gQnV0IGV2ZW4gd2l0aG91
+dCB0aGF0LCB3ZSBtaWdodCBiZSBhYmxlIHRvIHNwZWVkIHVwIHRoZQo+PiBmbHVzaCAxLzIgb2Yg
+dGhlIHRpbWU/Cj4gCj4gWWVzLCBhbHRob3VnaCBJJ20gbm90IHZlcnkgZm9uZCBvZiB0aGUgaWRl
+YSBvZiBhcHBseWluZyBhIGhhY2sgb24gdG9wCj4gb2YgYW5vdGhlciBoYWNrLgoKV2hhdCBpcyB5
+b3VyIHByZWZlcnJlZCBmaXggZm9yIHRoaXM/CgpUaGFua3MsCkJlbgoKPiAKPiAKPiBNaWNoYcWC
+Cj4gCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRl
+Y2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
