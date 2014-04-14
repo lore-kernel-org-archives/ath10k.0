@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZjB6-0005mx-EP
- for ath10k@lists.infradead.org; Mon, 14 Apr 2014 15:52:13 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Mon, 14 Apr 2014 17:49:21 +0200
-Subject: RE : load module ath10k: ieee80211 phy0: Failed to initialize wep: -2
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F06CC4838@srvexch01.SODIELEC.local>
-References: <53461A8A.4030209@candelatech.com>
- <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
- <8738hkh193.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
- <CA+BoTQ=L7Cj5V04RGEFcdGm1rxEO8NOYMEhSRiQNdoBoMTm5Pg@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F06CC4837@srvexch01.SODIELEC.local>
- <CA+BoTQkAv_OrJ5cM-wp_fhdb01KV62gLqkXaSikYv9pS9t25eQ@mail.gmail.com>,
- <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
-Content-Language: fr-FR
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZmgO-0002zO-Bz
+ for ath10k@lists.infradead.org; Mon, 14 Apr 2014 19:36:44 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (authenticated bits=0)
+ by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s3EJaHMn022827
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+ for <ath10k@lists.infradead.org>; Mon, 14 Apr 2014 12:36:18 -0700
+Message-ID: <534C38AE.3070504@candelatech.com>
+Date: Mon, 14 Apr 2014 12:36:14 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Modified ath10k firmware is now available for non-commercial use.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-Thank you guys,
-My mistake, the interface is wlan0, not ath0 (which is created before from =
-the driver Aquila supplied by Atheros)
-And the problem about cfg80211/mac80211 is because that I didn't activate c=
-fg80211 in my new kernel of linux when I re-compile my project. (I just tak=
-e the modules ath10k that I compiled before from the kernel that I had modi=
-fied to compile ath10k and then put in my new project)
+Our modified ath10k firmware binary is now available for download.  It may only be used
+for non-commercial purposes unless you get a commercial license from my company.
 
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+The main thing this firmware supports that upstream firmware does not
+is lots of virtual stations connected to the same AP.  We have some
+additional stability fixes we found in testing, and probably have introduced
+some bugs as well.  We will be putting ongoing effort into improving
+this firmware.
 
-________________________________________
-De : Kalle Valo [kvalo@qca.qualcomm.com]
-Date d'envoi : lundi 14 avril 2014 10:10
-=C0 : Michal Kazior
-Cc : Vu Hai NGUYEN; Patrick CARNEIRO RODRIGUEZ; ath10k@lists.infradead.org
-Objet : Re: load module ath10k: ieee80211 phy0: Failed to initialize wep: -2
+We also have the ability to decode firmware stack dumps (found in
+dmesg and/or /var/log/messages) if they come from our firmware.
+We cannot share the details of the decode nor tools to decode it,
+but we will try to fix the problems and/or describe the results of
+our decode in general terms.
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+The firmware should work with stock 3.14 or other recent kernels,
+but we have done most testing using our own modified 3.14 kernel.
+Our kernel patches are required to support the additional stations,
+software-crypt, and other features specific to our firmware.
 
-> On 11 April 2014 17:09, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
->> Hello everyone,
->> I try to load the module of driver ath10k on a cpu marvell 370 which ran=
- linux 3.2.36, my module wifi is  WLE900VX.
->> These modules was built from backport 3.13.2-1.
->> After loading the module, I use the command "lsmod" and saw that 6 modul=
-es was loaded.
->> But my "dmesg" show an error:
->> ieee80211 phy0: Failed to initialize wep: -2
->> And the interface ath0 can not be recognized.
+If you use our firmware and manage to crash it, please send to me the pertinent
+part of /var/log/messages (or dmesg), including any ath10k related ascii
+hex dumps.  Other non-crash bug reports are welcome too.
 
-ath0 interface? ath10k does not use interface names like that, that
-smells like the proprietary driver.
+Please do not bother the QCA developers with any bugs specific to our
+firmware (or our kernel patches).
 
->> Does any one have any idea about this problem????
->
-> I'm guessing here, but I suspect you tried to load a backports driver
-> against cfg80211/mac80211 modules from your distro kernel.
+Links to the firmware binary, our 3.14.0+ kernel source, and related
+info is found here:
 
-Another option is that there's a some sort of problem with the crypto
-modules.
+http://www.candelatech.com/vsta.php
 
---
-Kalle Valo
+Please let me know if you have any questions.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
