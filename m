@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22c.google.com ([2a00:1450:4013:c00::22c])
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZbKF-0002Gc-Qb
- for ath10k@lists.infradead.org; Mon, 14 Apr 2014 07:29:08 +0000
-Received: by mail-ee0-f44.google.com with SMTP id e49so6222237eek.31
- for <ath10k@lists.infradead.org>; Mon, 14 Apr 2014 00:28:45 -0700 (PDT)
+ id 1WZbKH-0002H3-RY
+ for ath10k@lists.infradead.org; Mon, 14 Apr 2014 07:29:10 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d17so6237693eek.4
+ for <ath10k@lists.infradead.org>; Mon, 14 Apr 2014 00:28:48 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 0/3] ath10k: improve recovery speed
-Date: Mon, 14 Apr 2014 09:22:23 +0200
-Message-Id: <1397460146-19450-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1397038028-7665-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCHv2 3/3] ath10k: skip suspending when recovering
+Date: Mon, 14 Apr 2014 09:22:26 +0200
+Message-Id: <1397460146-19450-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1397460146-19450-1-git-send-email-michal.kazior@tieto.com>
 References: <1397038028-7665-1-git-send-email-michal.kazior@tieto.com>
+ <1397460146-19450-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +28,44 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+It doesn't make much sense to even try suspending
+the device when recovering. Recovering means the
+device is unresponsive and waiting for suspend
+procedure means taking a 3 second timeout waiting
+for tx credits.
 
-Patch 1/3 is just a cleanup I wanted to keep
-separate from 2/3 which actually improves recovery
-speed.
+This speeds up firmware recovery significantly.
 
-With this I'm able to recover from a `hard`
-simualtion crash in ~3 seconds instead of ~10.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-This should decrease the chance of CQM kicking in
-on connected clients (due to beacon loss) when
-ath10k is acting as AP.
-
-v2:
- * add a comment in the code
-
-
-Michal Kazior (3):
-  ath10k: differentiate between target init failures
-  ath10k: don't wait for device init if it crashed
-  ath10k: skip suspending when recovering
-
- drivers/net/wireless/ath/ath10k/core.c |  6 ++++--
- drivers/net/wireless/ath/ath10k/pci.c  | 18 +++++++++++++++++-
- 2 files changed, 21 insertions(+), 3 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 6abde37..75b3dfb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -680,8 +680,8 @@ static void ath10k_core_restart(struct work_struct *work)
+ 
+ 	switch (ar->state) {
+ 	case ATH10K_STATE_ON:
+-		ath10k_halt(ar);
+ 		ar->state = ATH10K_STATE_RESTARTING;
++		ath10k_halt(ar);
+ 		ieee80211_restart_hw(ar->hw);
+ 		break;
+ 	case ATH10K_STATE_OFF:
+@@ -908,7 +908,9 @@ void ath10k_core_stop(struct ath10k *ar)
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	/* try to suspend target */
+-	ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
++	if (ar->state != ATH10K_STATE_RESTARTING)
++		ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
++
+ 	ath10k_debug_stop(ar);
+ 	ath10k_htc_stop(&ar->htc);
+ 	ath10k_htt_detach(&ar->htt);
 -- 
 1.8.5.3
 
