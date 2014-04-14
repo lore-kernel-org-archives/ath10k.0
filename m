@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WZj50-0000o4-3E
- for ath10k@lists.infradead.org; Mon, 14 Apr 2014 15:45:54 +0000
-Message-ID: <534C028E.4000302@candelatech.com>
-Date: Mon, 14 Apr 2014 08:45:18 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZjB6-0005mx-EP
+ for ath10k@lists.infradead.org; Mon, 14 Apr 2014 15:52:13 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Mon, 14 Apr 2014 17:49:21 +0200
+Subject: RE : load module ath10k: ieee80211 phy0: Failed to initialize wep: -2
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F06CC4838@srvexch01.SODIELEC.local>
+References: <53461A8A.4030209@candelatech.com>
+ <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
+ <8738hkh193.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
+ <CA+BoTQ=L7Cj5V04RGEFcdGm1rxEO8NOYMEhSRiQNdoBoMTm5Pg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4837@srvexch01.SODIELEC.local>
+ <CA+BoTQkAv_OrJ5cM-wp_fhdb01KV62gLqkXaSikYv9pS9t25eQ@mail.gmail.com>,
+ <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-Subject: Re: Question on ath10k_mgmt_tx_flush
-References: <53469F7B.2080202@candelatech.com>
- <CA+BoTQmc=n7ifUh+8Lq_1P=t4KJyDDFjcs3Z1mW1nHFO+WR2hw@mail.gmail.com>
- <5347ED46.3000406@candelatech.com>
- <CA+BoTQ=oyXd4qCOhBQE5QCu+KYaqB+_9qSdaTL_z_m2C=c=WYg@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=oyXd4qCOhBQE5QCu+KYaqB+_9qSdaTL_z_m2C=c=WYg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,64 +26,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDQvMTMvMjAxNCAxMTozMSBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMSBBcHJp
-bCAyMDE0IDE1OjI1LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6
-Cj4+IE9uIDA0LzEwLzIwMTQgMTA6MjEgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Pgo+Pj4g
-T24gMTAgQXByaWwgMjAxNCAxNTo0MSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+IHdyb3RlOgo+Pj4+Cj4+Pj4gQ2FuIHdlIG9wdGltaXplIHRoaXMgbWV0aG9kIHRvIHJldHVy
-biBlYXJseSBpZiB0aGUgdHgtY3JlZGl0cwo+Pj4+IGFyZSBmdWxseSByZXBsZW5pc2hlZCAoaWUs
-ID09IDIpIGluc3RlYWQgb2YganVzdCBzbGVlcGluZyB0aGUKPj4+PiAyIHggYmVhY29uLWludGVy
-dmFsPyAgVGhhdCB3b3VsZCBpbmRpY2F0ZSBhbGwgbWVzc2FnZXMKPj4+PiBoYXZlIGJlZW4gZmx1
-c2hlZCwgcmlnaHQ/Cj4+Pgo+Pj4KPj4+IFllYWguIFlvdSdyZSBfYWxtb3N0XyByaWdodC4gRXZl
-cnkgb2RkIG1nbXQgZnJhbWUgd2lsbCB0cmlnZ2VyIHR4Cj4+PiBjcmVkaXQgcmVwbGVuaXNobWVu
-dCwgZXZlbiBpZiB5b3Ugc2V0IE5FRURTX0NSRURJVFMgaHRjIHR4IGZsYWcgZm9yCj4+PiBhbGwg
-cGFja2V0cy4gSXQgc2VlbXMgdGhhdCB0eCBjcmVkaXRzIGFyZW4ndCByZXBsZW5pc2hlZCB1bnRp
-bCB5b3UKPj4+IHN1Ym1pdCBhbiBldmVuIG51bWJlciBvZiBtZ210IHR4Ogo+Pj4KPj4+ICAgW3R4
-IGNyZWRpdHMgPTJdCj4+PiAgIHZkZXYgY3JlYXRlIFstMSwgPTFdCj4+PiAgIFtyZXBsZW5pc2gg
-KzEsID0yXQo+Pj4gICBtZ210IHR4IFstMSwgPTFdCj4+PiAgIFtmcmFtZSBpcyBzZWVuIG9uIGFp
-ciwgbWVhbnMgaXQgbGVmdCB0eCBxdWV1ZSwgYnV0IG5vIHJlcGxlbmlzaG1lbnRdCj4+PiAgIHZk
-ZXYgc2V0IHBhcmFtIFstMSwgPTBdCj4+PiAgIFtyZXBsZW5pc2ggKzEsID0xXQo+Pj4gICBtZ210
-IHR4IFstMSwgPTBdCj4+PiAgIFtmcmFtZSBzZWVuIG9uIGFpcl0KPj4+ICAgW3JlcGxlbmlzaCAr
-MiwgPTJdCj4+Pgo+Pj4gSG93ZXZlciBvbmNlIHlvdSBmbHVzaCBwZWVyIHRpZHMgeW91IGdldCB0
-aGUgdHggY3JlZGl0IGltbWVkaWF0ZWx5Lgo+Pj4gVGhpcyBtZWFucyB5b3UgZG9uJ3QgZXZlciBy
-ZWFjaCBoYXZpbmcgMiBtZ210IHR4IGNvbnN1bWluZyAyIHR4Cj4+PiBjcmVkaXRzICh1bmxlc3Mg
-dGhpbmdzIGdvIHRlcnJpYmx5IHRlcnJpYmx5IHdyb25nIGF0IHdoaWNoIHBvaW50IGl0J3MKPj4+
-IHByb2JhYmx5IGFscmVhZHkgYmV5b25kIGhlbHApLgo+Pj4KPj4+IEEgdmVyeSB1Z2x5IGhhY2sg
-d291bGQgYmUgdG8gdHJ5IGFuZCBzZW5kIG91dCBtZ210IHR4IGluIHBhaXJzIC0gYQo+Pj4gcmVx
-dWVzdGVkIGZyYW1lIGFuZCBhIGR1bW15IGZyYW1lIChzdWNoIHRoYXQgZmlybXdhcmUgd2lsbCBu
-b3QgYnVmZmVyCj4+PiBpdCkgc28gdGhhdCB5b3UgdXNlIHR4IGNyZWRpdCByZXBsZW5pc2htZW50
-IGFzIHR4IGNvbXBsZXRpb24KPj4+IGluZGljYXRpb24uCj4+Cj4+Cj4+IElmIHlvdSBpZ25vcmUg
-aG93IGZpcm13YXJlIHJlcGxlbmlzaGVzIHRoZSB0eC1jcmVkaXRzIGZvciBub3csCj4+IGlzIGl0
-IHNhZmUgdG8gYXNzdW1lIHRoYXQgaWYgeW91IGhhdmUgMiB0eC1jcmVkaXRzIHdoaWxlIGluCj4+
-IHRoZSBmbHVzaCByb3V0aW5lLCB0aGVuIGV2ZXJ5dGhpbmcgaXMgaW5kZWVkIGZsdXNoZWQgYW5k
-Cj4+IHdlIGNhbiBza2lwIHRoZSBzbGVlcD8KPiAKPiBZb3Ugd2FudCB0byBhbHdheXMgc2tpcCB0
-aGUgc2xlZXAgYmV0d2VlbiBtZ210IHR4IGFuZCBmbHVzaCBjb21tYW5kcz8KPiBJJ20gYWZyYWlk
-IHRoaXMgd29uJ3Qgd29yayBiZWNhdXNlIHR4IGZsdXNoIGNvbW1hbmQgY2FuIGVuZCB1cCB3aXRo
-Cj4gcXVldWVkIGZyYW1lIGJlaW5nIGRyb3BwZWQgb3IgdHJhbnNtaXR0ZWQgcmVnYXJkbGVzcyBv
-ZiBkZXN0aW5hdGlvbgo+IHN0YXRpb24gcG93ZXJzYXZlIHN0YXRlIGlmIHN1Ym1pdHRlZCB0b28g
-c29vbi4KCkkganVzdCB3YW50IHRvIGtub3cgaWYgSSBjYW4gc2tpcCB0aGUgc2xlZXAgaWYgd2Ug
-Y3VycmVudGx5IGhhdmUgMiB0eC1jcmVkaXRzLgoKRnJvbSB5b3VyIGFuc3dlciBiZWxvdywgdGhh
-dCBzZWVtcyB0byBiZSBhIHllcy4gIFNvLCAxLzIgb2YgdGhlIHRpbWUgKG9uIGF2ZykKaXMgd29y
-dGggdGhlIGhhY2sgdG8gbWUsIGFuZCBpZi93aGVuIEkgZml4IHRoZSBmaXJtd2FyZSAoYW5kL29y
-IGlmIFFDQSBmaXhlcwp0aGUgZmlybXdhcmUpLCB0aGVuIHdlIHNob3VsZCBoYXZlIDIgdHgtY3Jl
-ZGl0cyBtb3JlIG9mdGVuIGFuZCBvbmx5IHNsZWVwIHdoZW4KdGhlcmUgcmVhbGx5IGlzIHdvcmsg
-dG8gZG8uCgo+PiBJIGltYWdpbmUgYm90aCBJIGFuZCB0aGUgUUNBIGZpcm13YXJlIGd1eXMgY2Fu
-IG1ha2UgdGhlCj4+IGZpcm13YXJlIHByb3Blcmx5IHJlcGxlbmlzaCB0eC1jcmVkaXRzIG9uZSBh
-dCBhIHRpbWUgaW5zdGVhZAo+PiBvZiB0aGUgb25seS1vbi1ldmVuL29kZCBiZWhhdmlvdXIgeW91
-IGZvdW5kLgo+IAo+IFRoYXQgd291bGQgYmUgbmljZS4KPiAKPiAKPj4gQnV0IGV2ZW4gd2l0aG91
-dCB0aGF0LCB3ZSBtaWdodCBiZSBhYmxlIHRvIHNwZWVkIHVwIHRoZQo+PiBmbHVzaCAxLzIgb2Yg
-dGhlIHRpbWU/Cj4gCj4gWWVzLCBhbHRob3VnaCBJJ20gbm90IHZlcnkgZm9uZCBvZiB0aGUgaWRl
-YSBvZiBhcHBseWluZyBhIGhhY2sgb24gdG9wCj4gb2YgYW5vdGhlciBoYWNrLgoKV2hhdCBpcyB5
-b3VyIHByZWZlcnJlZCBmaXggZm9yIHRoaXM/CgpUaGFua3MsCkJlbgoKPiAKPiAKPiBNaWNoYcWC
-Cj4gCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRl
-Y2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+Thank you guys,
+My mistake, the interface is wlan0, not ath0 (which is created before from =
+the driver Aquila supplied by Atheros)
+And the problem about cfg80211/mac80211 is because that I didn't activate c=
+fg80211 in my new kernel of linux when I re-compile my project. (I just tak=
+e the modules ath10k that I compiled before from the kernel that I had modi=
+fied to compile ath10k and then put in my new project)
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+________________________________________
+De : Kalle Valo [kvalo@qca.qualcomm.com]
+Date d'envoi : lundi 14 avril 2014 10:10
+=C0 : Michal Kazior
+Cc : Vu Hai NGUYEN; Patrick CARNEIRO RODRIGUEZ; ath10k@lists.infradead.org
+Objet : Re: load module ath10k: ieee80211 phy0: Failed to initialize wep: -2
+
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 11 April 2014 17:09, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+>> Hello everyone,
+>> I try to load the module of driver ath10k on a cpu marvell 370 which ran=
+ linux 3.2.36, my module wifi is  WLE900VX.
+>> These modules was built from backport 3.13.2-1.
+>> After loading the module, I use the command "lsmod" and saw that 6 modul=
+es was loaded.
+>> But my "dmesg" show an error:
+>> ieee80211 phy0: Failed to initialize wep: -2
+>> And the interface ath0 can not be recognized.
+
+ath0 interface? ath10k does not use interface names like that, that
+smells like the proprietary driver.
+
+>> Does any one have any idea about this problem????
+>
+> I'm guessing here, but I suspect you tried to load a backports driver
+> against cfg80211/mac80211 modules from your distro kernel.
+
+Another option is that there's a some sort of problem with the crypto
+modules.
+
+--
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
