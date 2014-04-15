@@ -1,9 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20140415
-Date: Tue, 15 Apr 2014 09:34:31 +0300
-Message-ID: <87mwfndrt4.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WZx4W-0003p3-Ew
+ for ath10k@lists.infradead.org; Tue, 15 Apr 2014 06:42:21 +0000
+Received: by mail-wi0-f175.google.com with SMTP id cc10so5141817wib.8
+ for <ath10k@lists.infradead.org>; Mon, 14 Apr 2014 23:41:56 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <534C028E.4000302@candelatech.com>
+References: <53469F7B.2080202@candelatech.com>
+ <CA+BoTQmc=n7ifUh+8Lq_1P=t4KJyDDFjcs3Z1mW1nHFO+WR2hw@mail.gmail.com>
+ <5347ED46.3000406@candelatech.com>
+ <CA+BoTQ=oyXd4qCOhBQE5QCu+KYaqB+_9qSdaTL_z_m2C=c=WYg@mail.gmail.com>
+ <534C028E.4000302@candelatech.com>
+Date: Tue, 15 Apr 2014 08:41:56 +0200
+Message-ID: <CA+BoTQ=MbQ3a6FMH-mVFhM7ToXys559AAHO_fB-u59bVdPpZKg@mail.gmail.com>
+Subject: Re: Question on ath10k_mgmt_tx_flush
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -12,161 +24,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi John,
-
-here's a pull request for ath6kl and ath10k with changes accumulated
-just before and during the merge window. Please let me know if there any
-problems.
-
-Here's the list of changes:
-
-----------------------------------------------------------------------
-
-For ath6kl Kalle fixed a bunch of checkpatch warnings.
-
-In ath10k we had more changes, major ones being:
-
-* fix memory allocation failures after a firmware crash (Michal)
-
-* some rework of DFS configuration to enable it correctly in all cases
-  (Michal)
-
-* add a new firmware crash option to make it possible to crash 10.1
-  firmware for testing purposes (Marek P)
-
-* fix RTS/CTS protection in certain cases (Marek K)
-
-* fix wrong RSSI and rate reporting in some cases (Janusz)
-
-* fix firmware stats reporting (Chun, Ben & Bartosz)
-
-----------------------------------------------------------------------
-
-The following changes since commit 70dd77b4c50da518b57b8b9b125a8c9aabe9bc1a:
-
-  ath10k: do not overwrite max_antenna_gain (2014-03-07 10:14:10 +0200)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git for-linville
-
-for you to fetch changes up to 4bfee8e8c13fc9477eb9420efd5a5d12e32ac614:
-
-  ath10k: improve htc tx credit debugging prints (2014-04-11 08:35:56 +0300)
-
-----------------------------------------------------------------
-Bartosz Markowski (1):
-      ath10k: update wal_dbg_tx_stats structure with missing parameter.
-
-Ben Greear (4):
-      ath10k: better firmware loading error messages
-      ath10k: add otp and firmware boot error messages
-      ath10k: fix getting stats from firmware
-      ath10k: add the Rx rate in FW stats
-
-Chun-Yeow Yeoh (3):
-      ath10k: allow the supported rate change by reassociate peer
-      ath10k: fix the peer mac address in getting stats
-      ath10k: add extra pdev stats on 10.1 firmware
-
-Janusz Dziedzic (12):
-      ath10k: add ath10k_htt_rx_amsdu_allowed function
-      ath10k: Fill per-ppdu info in rx_info only once
-      ath10k: move rx related functions to htt_rx.c
-      ath10k: rename process_rx_rates to ath10k_htt_rx_h_rates
-      ath10k: introduce ieee80211_rx_status to htt_rx_info
-      ath10k: setup rx channel per ppdu
-      ath10k: kill not needed fields from htt_rx_info
-      ath10k: return error when ath10k_htt_rx_amsdu_pop() fail
-      ath10k: improve way we play with attention flags
-      ath10k: finally kill htt_rx_info
-      ath10k: introduce rx_status htt template
-      ath10k: fix rssi and rate reporting
-
-Kalle Valo (18):
-      ath6kl: fix struct hif_scatter_req list handling
-      ath6kl: fix blank lines before and after braces
-      ath6kl: use braces on both arms of if statement
-      ath6kl: remove spaces before semicolon
-      ath6kl: remove unnecessary line continuations
-      ath6kl: update Kconfig descriptions
-      ath10k: separate result parameter in ath10k_bmi_execute()
-      ath10k: check otp.bin result
-      ath10k: unify warning messages in mac.c
-      ath10k: cleanup ath10k_pci_wait_for_target_init()
-      ath10k: add module parameter to disable cold reset
-      ath10k: fix name of target_ps module parameter
-      ath10k: advertise only firmware API 2 files
-      ath10k: delete ar_pci->fw_indicator_address
-      ath10k: improve pci debug messages
-      ath10k: add module parameter values to the pci info print
-      ath10k: print chip id during boot
-      ath10k: cleanup debug messages in ath10k_wmi_event_host_swba()
-
-Marek Kwaczynski (1):
-      ath10k: add recalc RTS/CTS protection method
-
-Marek Puzyniak (2):
-      ath10k: add soft/hard firmware crash option to simulate_fw_crash
-      ath10k: update regulatory domain settings for 10.x firmware
-
-Michal Kazior (7):
-      ath10k: convert pci_alloc_consistent() to dma_alloc_coherent()
-      ath10k: split ce initialization and allocation
-      ath10k: deinit copy engine before resetting
-      ath10k: refactor monitor code
-      ath10k: reorder functions
-      ath10k: refactor radar detection code
-      ath10k: improve htc tx credit debugging prints
-
- drivers/net/wireless/ath/ath10k/bmi.c      |   13 +-
- drivers/net/wireless/ath/ath10k/bmi.h      |    2 +-
- drivers/net/wireless/ath/ath10k/ce.c       |  356 +++++++------
- drivers/net/wireless/ath/ath10k/ce.h       |   15 +-
- drivers/net/wireless/ath/ath10k/core.c     |   85 ++--
- drivers/net/wireless/ath/ath10k/core.h     |   18 +-
- drivers/net/wireless/ath/ath10k/debug.c    |  109 +++-
- drivers/net/wireless/ath/ath10k/htc.c      |   12 +-
- drivers/net/wireless/ath/ath10k/htt.h      |   21 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c   |  513 ++++++++++++-------
- drivers/net/wireless/ath/ath10k/hw.h       |    1 +
- drivers/net/wireless/ath/ath10k/mac.c      |  763 +++++++++++++++-------------
- drivers/net/wireless/ath/ath10k/pci.c      |  219 +++++---
- drivers/net/wireless/ath/ath10k/pci.h      |    3 -
- drivers/net/wireless/ath/ath10k/txrx.c     |  183 -------
- drivers/net/wireless/ath/ath10k/txrx.h     |    1 -
- drivers/net/wireless/ath/ath10k/wmi.c      |   62 ++-
- drivers/net/wireless/ath/ath10k/wmi.h      |   98 +++-
- drivers/net/wireless/ath/ath6kl/Kconfig    |   30 +-
- drivers/net/wireless/ath/ath6kl/cfg80211.c |    9 +-
- drivers/net/wireless/ath/ath6kl/core.c     |    6 +-
- drivers/net/wireless/ath/ath6kl/debug.c    |    4 -
- drivers/net/wireless/ath/ath6kl/debug.h    |    2 +-
- drivers/net/wireless/ath/ath6kl/hif.c      |    3 -
- drivers/net/wireless/ath/ath6kl/hif.h      |    4 +-
- drivers/net/wireless/ath/ath6kl/htc_mbox.c |   23 +-
- drivers/net/wireless/ath/ath6kl/htc_pipe.c |   10 +-
- drivers/net/wireless/ath/ath6kl/init.c     |    1 -
- drivers/net/wireless/ath/ath6kl/main.c     |   10 +-
- drivers/net/wireless/ath/ath6kl/sdio.c     |   17 +-
- drivers/net/wireless/ath/ath6kl/target.h   |    2 +-
- drivers/net/wireless/ath/ath6kl/txrx.c     |   31 +-
- drivers/net/wireless/ath/ath6kl/usb.c      |    2 -
- drivers/net/wireless/ath/ath6kl/wmi.c      |   19 +-
- drivers/net/wireless/ath/ath6kl/wmi.h      |    1 -
- 35 files changed, 1499 insertions(+), 1149 deletions(-)
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgQXByaWwgMjAxNCAxNzo0NSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
+b20+IHdyb3RlOgo+IE9uIDA0LzEzLzIwMTQgMTE6MzEgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6
+Cj4+IE9uIDExIEFwcmlsIDIwMTQgMTU6MjUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPj4+IE9uIDA0LzEwLzIwMTQgMTA6MjEgUE0sIE1pY2hhbCBLYXppb3Ig
+d3JvdGU6Cj4+Pj4KPj4+PiBPbiAxMCBBcHJpbCAyMDE0IDE1OjQxLCBCZW4gR3JlZWFyIDxncmVl
+YXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+Pj4+Cj4+Pj4+IENhbiB3ZSBvcHRpbWl6ZSB0
+aGlzIG1ldGhvZCB0byByZXR1cm4gZWFybHkgaWYgdGhlIHR4LWNyZWRpdHMKPj4+Pj4gYXJlIGZ1
+bGx5IHJlcGxlbmlzaGVkIChpZSwgPT0gMikgaW5zdGVhZCBvZiBqdXN0IHNsZWVwaW5nIHRoZQo+
+Pj4+PiAyIHggYmVhY29uLWludGVydmFsPyAgVGhhdCB3b3VsZCBpbmRpY2F0ZSBhbGwgbWVzc2Fn
+ZXMKPj4+Pj4gaGF2ZSBiZWVuIGZsdXNoZWQsIHJpZ2h0Pwo+Pj4+Cj4+Pj4KPj4+PiBZZWFoLiBZ
+b3UncmUgX2FsbW9zdF8gcmlnaHQuIEV2ZXJ5IG9kZCBtZ210IGZyYW1lIHdpbGwgdHJpZ2dlciB0
+eAo+Pj4+IGNyZWRpdCByZXBsZW5pc2htZW50LCBldmVuIGlmIHlvdSBzZXQgTkVFRFNfQ1JFRElU
+UyBodGMgdHggZmxhZyBmb3IKPj4+PiBhbGwgcGFja2V0cy4gSXQgc2VlbXMgdGhhdCB0eCBjcmVk
+aXRzIGFyZW4ndCByZXBsZW5pc2hlZCB1bnRpbCB5b3UKPj4+PiBzdWJtaXQgYW4gZXZlbiBudW1i
+ZXIgb2YgbWdtdCB0eDoKPj4+Pgo+Pj4+ICAgW3R4IGNyZWRpdHMgPTJdCj4+Pj4gICB2ZGV2IGNy
+ZWF0ZSBbLTEsID0xXQo+Pj4+ICAgW3JlcGxlbmlzaCArMSwgPTJdCj4+Pj4gICBtZ210IHR4IFst
+MSwgPTFdCj4+Pj4gICBbZnJhbWUgaXMgc2VlbiBvbiBhaXIsIG1lYW5zIGl0IGxlZnQgdHggcXVl
+dWUsIGJ1dCBubyByZXBsZW5pc2htZW50XQo+Pj4+ICAgdmRldiBzZXQgcGFyYW0gWy0xLCA9MF0K
+Pj4+PiAgIFtyZXBsZW5pc2ggKzEsID0xXQo+Pj4+ICAgbWdtdCB0eCBbLTEsID0wXQo+Pj4+ICAg
+W2ZyYW1lIHNlZW4gb24gYWlyXQo+Pj4+ICAgW3JlcGxlbmlzaCArMiwgPTJdCj4+Pj4KPj4+PiBI
+b3dldmVyIG9uY2UgeW91IGZsdXNoIHBlZXIgdGlkcyB5b3UgZ2V0IHRoZSB0eCBjcmVkaXQgaW1t
+ZWRpYXRlbHkuCj4+Pj4gVGhpcyBtZWFucyB5b3UgZG9uJ3QgZXZlciByZWFjaCBoYXZpbmcgMiBt
+Z210IHR4IGNvbnN1bWluZyAyIHR4Cj4+Pj4gY3JlZGl0cyAodW5sZXNzIHRoaW5ncyBnbyB0ZXJy
+aWJseSB0ZXJyaWJseSB3cm9uZyBhdCB3aGljaCBwb2ludCBpdCdzCj4+Pj4gcHJvYmFibHkgYWxy
+ZWFkeSBiZXlvbmQgaGVscCkuCj4+Pj4KPj4+PiBBIHZlcnkgdWdseSBoYWNrIHdvdWxkIGJlIHRv
+IHRyeSBhbmQgc2VuZCBvdXQgbWdtdCB0eCBpbiBwYWlycyAtIGEKPj4+PiByZXF1ZXN0ZWQgZnJh
+bWUgYW5kIGEgZHVtbXkgZnJhbWUgKHN1Y2ggdGhhdCBmaXJtd2FyZSB3aWxsIG5vdCBidWZmZXIK
+Pj4+PiBpdCkgc28gdGhhdCB5b3UgdXNlIHR4IGNyZWRpdCByZXBsZW5pc2htZW50IGFzIHR4IGNv
+bXBsZXRpb24KPj4+PiBpbmRpY2F0aW9uLgo+Pj4KPj4+Cj4+PiBJZiB5b3UgaWdub3JlIGhvdyBm
+aXJtd2FyZSByZXBsZW5pc2hlcyB0aGUgdHgtY3JlZGl0cyBmb3Igbm93LAo+Pj4gaXMgaXQgc2Fm
+ZSB0byBhc3N1bWUgdGhhdCBpZiB5b3UgaGF2ZSAyIHR4LWNyZWRpdHMgd2hpbGUgaW4KPj4+IHRo
+ZSBmbHVzaCByb3V0aW5lLCB0aGVuIGV2ZXJ5dGhpbmcgaXMgaW5kZWVkIGZsdXNoZWQgYW5kCj4+
+PiB3ZSBjYW4gc2tpcCB0aGUgc2xlZXA/Cj4+Cj4+IFlvdSB3YW50IHRvIGFsd2F5cyBza2lwIHRo
+ZSBzbGVlcCBiZXR3ZWVuIG1nbXQgdHggYW5kIGZsdXNoIGNvbW1hbmRzPwo+PiBJJ20gYWZyYWlk
+IHRoaXMgd29uJ3Qgd29yayBiZWNhdXNlIHR4IGZsdXNoIGNvbW1hbmQgY2FuIGVuZCB1cCB3aXRo
+Cj4+IHF1ZXVlZCBmcmFtZSBiZWluZyBkcm9wcGVkIG9yIHRyYW5zbWl0dGVkIHJlZ2FyZGxlc3Mg
+b2YgZGVzdGluYXRpb24KPj4gc3RhdGlvbiBwb3dlcnNhdmUgc3RhdGUgaWYgc3VibWl0dGVkIHRv
+byBzb29uLgo+Cj4gSSBqdXN0IHdhbnQgdG8ga25vdyBpZiBJIGNhbiBza2lwIHRoZSBzbGVlcCBp
+ZiB3ZSBjdXJyZW50bHkgaGF2ZSAyIHR4LWNyZWRpdHMuCgpObywgbm90IHJlYWxseS4gQXQgbGVh
+c3Qgbm90IGluIGFueSBzYW5lIHdheSBJIGNhbiB0aGluayBvZi4KClByb2JsZW0gMToKSWYgeW91
+IHN1Ym1pdCBhIGZyYW1lIHRoYXQgZ2V0cyBzdHVjayBmb3IgMTAgc2Vjb25kcyBhbmQgeW91IGRv
+bid0CmZsdXNoIGl0IChhbmQgeW91IGhhdmUgbm8gaWRlYSB3aGVuIGl0IGlzIHNhZmUgdG8gZmx1
+c2ggb3RoZXIgdGhhbgp0aW1pbmcgdGhpcyB3aXRoIGFyYml0cmFyeSBudW1iZXJzIGxpa2UgYmVh
+Y29uIGludGVydmFscykgYW5kIHlvdSB0cnkKdG8gcXVldWUgYW5vdGhlciBmcmFtZSB0aGF0IGdl
+dHMgc3R1Y2sgeW91IGVuZCB1cCB3aXRoIDAgdHggY3JlZGl0cy4KClByb2JsZW0gMjoKSWYgeW91
+IHN1Ym1pdCBhIGZyYW1lIGFuZCBpbW1lZGlhdGVseSBjYWxsIHR4IGZsdXNoIHlvdSBjYW4gZW5k
+IHVwIG5vdApzZW5kaW5nIG91dCB0aGUgZnJhbWUgYXQgYWxsIG9yIGlnbm9yaW5nIGNsaWVudCBw
+b3dlciBzYXZlIHN0YXRlIEknbQphZnJhaWQuCgpJIHdhcyB0aGlua2luZyBvZiBhIG1vcmUgY2xl
+dmVyIGhhY2sgdGhhdCB3b3VsZCBpbnZvbHZlIHNlbmRpbmcgZHVtbXkKZnJhbWVzIChpLmUuIHNw
+dXJpb3VzIHByb2JlIHJlc3BvbnNlcykgdG8gdGlja2xlIGZpcm13YXJlIGFuZCBmb3JjZSBpdApy
+ZXBsZW5pc2ggdHggY3JlZGl0IGFmdGVyIHNlbmRpbmcgdGhlIGFjdHVhbCByZXF1ZXN0ZWQgbWdt
+dCBmcmFtZS4KVGhpcyBpcyB1Z2x5LCBpbnRydXNpdmUsIHdyb25nIGFuZCBJJ20gbm90IGV2ZW4g
+c3VyZSBpZiB0aGlzIGNhbiBldmVuCndvcmsuCgoKPiBGcm9tIHlvdXIgYW5zd2VyIGJlbG93LCB0
+aGF0IHNlZW1zIHRvIGJlIGEgeWVzLiAgU28sIDEvMiBvZiB0aGUgdGltZSAob24gYXZnKQo+IGlz
+IHdvcnRoIHRoZSBoYWNrIHRvIG1lLCBhbmQgaWYvd2hlbiBJIGZpeCB0aGUgZmlybXdhcmUgKGFu
+ZC9vciBpZiBRQ0EgZml4ZXMKPiB0aGUgZmlybXdhcmUpLCB0aGVuIHdlIHNob3VsZCBoYXZlIDIg
+dHgtY3JlZGl0cyBtb3JlIG9mdGVuIGFuZCBvbmx5IHNsZWVwIHdoZW4KPiB0aGVyZSByZWFsbHkg
+aXMgd29yayB0byBkby4KClRoZSBwcm9ibGVtIGlzIHlvdSBkb24ndCBoYXZlIGEgd2F5IG9mIGtu
+b3dpbmcgaWYgbWdtdCB0eCBpcyBzdHVjayBvcgpub3QgYm90aCBiZWNhdXNlIHRoZXJlIGlzIG5v
+IHR4IGNvbXBsZXRpb24gYW5kIHR4IGNyZWRpdHMgYXJlbid0CnJlcGxlbmlzaGVkIGluIGEgc2Fu
+ZSB3YXkuIElmIGFueSBvZiB0aG9zZSB3ZXJlIG9rLCB3ZSBjb3VsZCBoYXZlIGEKd2FpdF9mb3Jf
+Y29tcGxldGlvbigpIGluc3RlYWQgb2YgYSBtc2xlZXAoKSBhbmQgdGh1cyBjdXQgZG93biB3YWl0
+CnRpbWVzIGZvciBmcmFtZXMgdGhhdCBkb24ndCBnZXQgc3R1Y2suCgoKPj4+IEkgaW1hZ2luZSBi
+b3RoIEkgYW5kIHRoZSBRQ0EgZmlybXdhcmUgZ3V5cyBjYW4gbWFrZSB0aGUKPj4+IGZpcm13YXJl
+IHByb3Blcmx5IHJlcGxlbmlzaCB0eC1jcmVkaXRzIG9uZSBhdCBhIHRpbWUgaW5zdGVhZAo+Pj4g
+b2YgdGhlIG9ubHktb24tZXZlbi9vZGQgYmVoYXZpb3VyIHlvdSBmb3VuZC4KPj4KPj4gVGhhdCB3
+b3VsZCBiZSBuaWNlLgo+Pgo+Pgo+Pj4gQnV0IGV2ZW4gd2l0aG91dCB0aGF0LCB3ZSBtaWdodCBi
+ZSBhYmxlIHRvIHNwZWVkIHVwIHRoZQo+Pj4gZmx1c2ggMS8yIG9mIHRoZSB0aW1lPwo+Pgo+PiBZ
+ZXMsIGFsdGhvdWdoIEknbSBub3QgdmVyeSBmb25kIG9mIHRoZSBpZGVhIG9mIGFwcGx5aW5nIGEg
+aGFjayBvbiB0b3AKPj4gb2YgYW5vdGhlciBoYWNrLgo+Cj4gV2hhdCBpcyB5b3VyIHByZWZlcnJl
+ZCBmaXggZm9yIHRoaXM/CgpGaXggdGhlIGZpcm13YXJlLCBvYnZpb3VzbHkuCgo5OTkuOTk5LjAu
+NjM2IHVzZXMgaHR0IGZvciBtZ210IHR4IHNvIHRoZSBwcm9ibGVtIGRvZXNuJ3QgZXhpc3QgdGhl
+cmUuClRoYXQncyBzb2xlbHkgYSAxMC4xIGJyYW5jaCBpc3N1ZSBhbmQgSSBkb3VidCB0aGlzIHdp
+bGwgYmUgZXZlciBmaXhlZAppbiB0aGlzIGJyYW5jaC4uLgoKCk1pY2hhxYIKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
