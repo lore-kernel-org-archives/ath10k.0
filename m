@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaMtw-0005Ud-Cu
- for ath10k@lists.infradead.org; Wed, 16 Apr 2014 10:17:10 +0000
-Received: by mail-we0-f172.google.com with SMTP id t61so10724700wes.31
- for <ath10k@lists.infradead.org>; Wed, 16 Apr 2014 03:16:45 -0700 (PDT)
+ id 1WaN2X-0001Hm-23
+ for ath10k@lists.infradead.org; Wed, 16 Apr 2014 10:26:02 +0000
+Received: by mail-vc0-f173.google.com with SMTP id il7so10415996vcb.18
+ for <ath10k@lists.infradead.org>; Wed, 16 Apr 2014 03:25:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEFj987O5CJtdO37FZOsYDgja9YrCEt-Uxka2FYHAx86WPbwbQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=ihvm8-bWyyt6vFr2QqfqRONtbSrALGr6WGcLNYGRukg@mail.gmail.com>
 References: <CAEFj987O5CJtdO37FZOsYDgja9YrCEt-Uxka2FYHAx86WPbwbQ@mail.gmail.com>
-Date: Wed, 16 Apr 2014 12:16:44 +0200
-Message-ID: <CA+BoTQ=ihvm8-bWyyt6vFr2QqfqRONtbSrALGr6WGcLNYGRukg@mail.gmail.com>
+ <CA+BoTQ=ihvm8-bWyyt6vFr2QqfqRONtbSrALGr6WGcLNYGRukg@mail.gmail.com>
+Date: Wed, 16 Apr 2014 18:25:39 +0800
+Message-ID: <CAEFj984A6LF0XG593RU+r3VrmnMgk1iONkvJr+=rSAv8w8o6Gg@mail.gmail.com>
 Subject: Re: Firmware 636 crashed with 4addr
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +21,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTYgQXByaWwgMjAxNCAxMjowMSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFp
-bC5jb20+IHdyb3RlOgo+IEhpLCBhbGwKPgo+IEFueW9uZSBrbm93cyB0aGUgcmVhc29uIG9mIHRo
-ZSBmb2xsb3dpbmcgZmlybXdhcmUgY3Jhc2hlZCB3aGVuZXZlciB0aGUKPiBtYW5hZ2VkIGludGVy
-ZmFjZSBpcyBzZXQgd2l0aCA0YWRkciBvbiBhbmQgYnJpZGdlZCB0byBhIGJyaWRnZQo+IGludGVy
-ZmFjZS4KPgo+IGlmY29uZmlnIGJyLWxhbiB1cAo+IGl3IHdsYW4wIHNldCA0YWRkciBvbgo+IGJy
-Y3RsIGFkZGlmIGJyLWxhbiB3bGFuMAo+IFsgICA3OC4xMzAwMDBdIGRldmljZSB3bGFuMCBlbnRl
-cmVkIHByb21pc2N1b3VzIG1vZGUKPiBbICAgNzguMTMwMDAwXSBici1sYW46IHBvcnQgMSh3bGFu
-MCkgZW50ZXJlZCBmb3J3YXJkaW5nIHN0YXRlCj4gWyAgIDc4LjE0MDAwMF0gYnItbGFuOiBwb3J0
-IDEod2xhbjApIGVudGVyZWQgZm9yd2FyZGluZyBzdGF0ZQo+IFsgICA3OS4xNDAwMDBdIGF0aDEw
-azogZmlybXdhcmUgY3Jhc2hlZCEKPiBbICAgNzkuMTUwMDAwXSBhdGgxMGs6IGhhcmR3YXJlIG5h
-bWUgcWNhOTg4eCBodzIuMCB2ZXJzaW9uIDB4NDEwMDAxNmMKPiBbICAgNzkuMTUwMDAwXSBhdGgx
-MGs6IGZpcm13YXJlIHZlcnNpb246IDk5OS45OTkuMC42MzYKPiBbICAgNzkuMTYwMDAwXSBhdGgx
-MGs6IHRhcmdldCByZWdpc3RlciBEdW1wIExvY2F0aW9uOiAweDAwNDBBQzE0Cj4gWyAgIDc5LjE3
-MDAwMF0gYXRoMTBrOiB0YXJnZXQgUmVnaXN0ZXIgRHVtcAo+IFsgICA3OS4xNzAwMDBdIGF0aDEw
-azogWzAwXTogMHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5QzQ1MjEgMHgwMDAwMDAwMAo+IFsg
-ICA3OS4xODAwMDBdIGF0aDEwazogWzA0XTogMHgwMDlDNDUyMSAweDAwMDYwNTMwIDB4MDAwMDAw
-MTkgMHgwMDk1NUEwMAo+IFsgICA3OS4xODAwMDBdIGF0aDEwazogWzA4XTogMHgwMDAxNDg1NSAw
-eDAwMDAwMDAwIDB4MDA0MENDOTQgMHgwMDAwMDAyMAo+IFsgICA3OS4xOTAwMDBdIGF0aDEwazog
-WzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDA5NTgzNjAgMHgwMDk1ODM2Qgo+IFsgICA3
-OS4yMDAwMDBdIGF0aDEwazogWzE2XTogMHg4MDk5MTA5MSAweDAwNDBBRDk0IDB4MDA0MkVBREMg
-MHgwMDAwMDAwMAo+IFsgICA3OS4yMDAwMDBdIGF0aDEwazogWzIwXTogMHgwMDAwRkZGRiAweDAw
-MDAwMDAwIDB4MDAwMDAwNDUgMHgwMDQzNDBDMAo+IFsgICA3OS4yMTAwMDBdIGF0aDEwazogWzI0
-XTogMHg4MDlBMDk3OCAweDAwNDBBRDk0IDB4MDA0MzkzMDQgMHgwNTIxNTdDNwo+IFsgICA3OS4y
-MjAwMDBdIGF0aDEwazogWzI4XTogMHg4MDlBRDFBMiAweDAwNDBBREU0IDB4MDA0MzkzMDQgMHgw
-MDQzRjhCQwo+IFsgICA3OS4yMjAwMDBdIGF0aDEwazogWzMyXTogMHgwMDAwMDAwMSAweDAwMDAw
-MDE4IDB4MDAwMDAwMDAgMHgwMDQyRjY2NAo+IFsgICA3OS4yMzAwMDBdIGF0aDEwazogWzM2XTog
-MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgICA3OS4yMzAw
-MDBdIGF0aDEwazogWzQwXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwNDUgMHgwMDQx
-MjcwMAo+IFsgICA3OS4yNDAwMDBdIGF0aDEwazogWzQ0XTogMHgwMDQzOUMwMCAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAgMHgwMDQwMDAwMAo+IFsgICA3OS4yNTAwMDBdIGF0aDEwazogWzQ4XTogMHg4
-MDlBRTBCNCAweDAwNDBBRTA0IDB4MDA0MDAwMDAgMHgwMDQzRjhCQwo+IFsgICA3OS4yNTAwMDBd
-IGF0aDEwazogWzUyXTogMHgwMDAwMDAwMSAweDAwMDAwMDAwIDB4MDA0MjMxRjAgMHgwMDQwMDAw
-MAo+IFsgICA3OS4yNjAwMDBdIGF0aDEwazogWzU2XTogMHg4MDlBRTE3RSAweDAwNDBBRTQ0IDB4
-MDA0MEZFNkMgMHgwMDQwRDMxMAo+IFsgICA4Mi4yNzAwMDBdIGF0aDEwazogZmFpbGVkIHRvIHRv
-IHJlcXVlc3QgbW9uaXRvciB2ZGV2IDEgc3RvcDogLTExCj4gWyAgIDg3LjI3MDAwMF0gYXRoMTBr
-OiBmYWlsZWQgdG8gc3luY2hyb25pc2UgbW9uaXRvciB2ZGV2IDE6IC0xNDUKPiBbICAgODcuMjcw
-MDAwXSBhdGgxMGs6IGZhaWxlZCB0byBzdG9wIG1vbml0b3IgdmRldjogLTE0NQo+IFsgICA5MC4y
-ODAwMDBdIGF0aDEwazogZmFpbGVkIHRvIHJlcXVlc3Qgd21pIG1vbml0b3IgdmRldiAxIHJlbW92
-YWw6IC0xMQo+IFsgICA5MC4yODAwMDBdIGF0aDEwazogZmFpbGVkIHRvIGRlbGV0ZSBtb25pdG9y
-IHZkZXY6IC0xMQo+Cj4gRnVydGhlciBpbnZlc3RpZ2F0aW9uIHNob3dzIHRoYXQgdGhpcyBpcyBu
-b3QgaGFwcGVuaW5nIHRvIGZpcm13YXJlCj4gMTAuMS40NjcuMi0xLgoKSSdtIHN1c3BlY3Rpbmcg
-dGhpcyBpcyBiZWNhdXNlIG9mIG1vbml0b3IgdmRldi4KCkZpcm13YXJlIDk5OS45OTkuMC42MzYg
-aXMgaW5jYXBhYmxlIG9mIHJ1bm5pbmcgbW9uaXRvciB2ZGV2IGFsb25lLAppLmUuIGl0IGhhcyB0
-byBiZSBwYWlyZWQgd2l0aCBhbm90aGVyIG5vbi1tb25pdG9yIHZkZXYuCgpQbGVhc2UgdHJ5IHRv
-IGZpcnN0IGNvbm5lY3QgdGhlIGludGVyZmFjZSAqYmVmb3JlKiBhZGRpbmcgaXQgdG8gdGhlCmJy
-aWRnZS4gSSdtIGd1ZXNzaW5nIHRoaXMgc2hvdWxkIHdvcmsuIEJlIGF3YXJlLCB0aGF0IGlmIHlv
-dSB0aGVuCmRpc2Nvbm5lY3QgZnJvbSBBUCB3aXRob3V0IGZpcnN0IHJlbW92aW5nIHRoZSBpbnRl
-cmZhY2UgZnJvbSB0aGUKYnJpZGdlIHlvdSdsbCBtb3N0IGxpa2VseSBjcmFzaCB0aGUgZmlybXdh
-cmUgdG9vLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi, Michal
+
+> Please try to first connect the interface *before* adding it to the
+> bridge. I'm guessing this should work.
+
+Do you mean that connect to AP first? Actually, I connect to the AP
+first before bridging.
+
+---
+Chun-Yeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
