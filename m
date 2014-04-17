@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WaiEc-0002tg-A2
- for ath10k@lists.infradead.org; Thu, 17 Apr 2014 09:03:55 +0000
-Received: by mail-ve0-f169.google.com with SMTP id pa12so188520veb.28
- for <ath10k@lists.infradead.org>; Thu, 17 Apr 2014 02:03:32 -0700 (PDT)
+ id 1WaiFv-0002xR-L4
+ for ath10k@lists.infradead.org; Thu, 17 Apr 2014 09:05:16 +0000
+Received: by mail-wg0-f45.google.com with SMTP id l18so167284wgh.16
+ for <ath10k@lists.infradead.org>; Thu, 17 Apr 2014 02:04:51 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CAEFj986P6OmHpue65NVLmaMn7Sdbs21j+B1nOi4awAHYRA4+gw@mail.gmail.com>
 References: <CAEFj987O5CJtdO37FZOsYDgja9YrCEt-Uxka2FYHAx86WPbwbQ@mail.gmail.com>
@@ -16,10 +16,10 @@ References: <CAEFj987O5CJtdO37FZOsYDgja9YrCEt-Uxka2FYHAx86WPbwbQ@mail.gmail.com>
  <CAEFj986pdpL4pCv9sjMU1reRzd_dCkVjc5=ceH_ywSwziwXb2A@mail.gmail.com>
  <CA+BoTQ=U7NDb-J6P-_9o0x46eyk+-mYbsGB5UhDgHizp2fnM1A@mail.gmail.com>
  <CAEFj986P6OmHpue65NVLmaMn7Sdbs21j+B1nOi4awAHYRA4+gw@mail.gmail.com>
-Date: Thu, 17 Apr 2014 17:03:32 +0800
-Message-ID: <CAEFj987ROX3TjV-va4uZQK=okNp6M7kpy4gjW=VATrfytQXXMw@mail.gmail.com>
+Date: Thu, 17 Apr 2014 11:04:51 +0200
+Message-ID: <CA+BoTQk3=pD7By588+8sZo+GQqejQNvQ6Ky9+rgTpj-FVvd0Pw@mail.gmail.com>
 Subject: Re: Firmware 636 crashed with 4addr
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +32,19 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGksIE1pY2hhbAoKSWYgeW91IGFyZSBub3QgYWJsZSB0byByZWNlaXZlIG15IHByZXZpb3VzIGVt
-YWlsIHdpdGggYXR0YWNobWVudCwgZG8KbGV0IG1lIGtub3cuCgotLS0tCkNodW4tWWVvdwoKT24g
-VGh1LCBBcHIgMTcsIDIwMTQgYXQgNDozNCBQTSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVv
-d0BnbWFpbC5jb20+IHdyb3RlOgo+IEkgaGF2ZSBjYXB0dXJlZCBtb3JlIG9uIHRoZSBsb2cuIEl0
-J3MgYWJvdXQgNk0uCj4KPiAtLS0tCj4gQ2h1bi1ZZW93Cj4KPiBPbiBUaHUsIEFwciAxNywgMjAx
-NCBhdCAyOjE1IFBNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3Jv
-dGU6Cj4+IE9uIDE3IEFwcmlsIDIwMTQgMDY6NDUsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnll
-b3dAZ21haWwuY29tPiB3cm90ZToKPj4+IEhpLCBNaWNoYWwKPj4+Cj4+PiBIb3BlZnVsbHkgdGhp
-cyBpcyBzdWZmaWNpZW50LiBQbGVhc2Ugc2VlIHRoZSBhdHRhY2hlZCBmaWxlLgo+Pgo+PiBVbmZv
-cnR1bmF0ZWx5IGl0J3MgdG9vIHNob3J0LiBJIGNhbid0IHRlbGwgYW55dGhpbmcgZnJvbSBpdC4g
-SSBuZWVkIGl0Cj4+IHRvIGluY2x1ZGUgaXQgYWxsIHRoZSB3YXkgZnJvbSB0aGUgbW9tZW50IHRo
-ZSBkZXZpY2UgaXMgYm9vdGVkIGFuZAo+PiB1c2VkLgo+Pgo+Pgo+Pj4gSSB1cCB0aGUgd2xhbiwg
-Y29ubmVjdCB0byBBUCwgc2V0IDRhZGRyIG9uLCB0aGVuIGJyaWRnZSB0aGUgd2xhbjAgdG8KPj4+
-IGJyaWRnZSBpbnRlcmZhY2UuCj4+Cj4+IEkgbmVlZCB0aGVzZSBzdGVwcyB0byBiZSB2aXNpYmxl
-IGluIGxvZ3MuIEkgc2hvdWxkJ3ZlIG1lbnRpb25lZCB0aGF0Cj4+IGVhcmxpZXIuLiBzb3JyeSBm
-b3IgdGhlIHRyb3VibGUuCj4+Cj4+Cj4+IE1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+T24gMTcgQXByaWwgMjAxNCAxMDozNCwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFp
+bC5jb20+IHdyb3RlOgo+IEkgaGF2ZSBjYXB0dXJlZCBtb3JlIG9uIHRoZSBsb2cuIEl0J3MgYWJv
+dXQgNk0uCgpUaGFua3MhIFRoaXMgZ2l2ZXMgbWUgYSBiZXR0ZXIgcGljdHVyZSBvZiB3aGF0J3Mg
+Z29pbmcgb24uCgpXaGF0IGNhdWdodCBteSBleWUgaXMgeW91ciB2aWYgbWFjYWRkciAoNjA6MDI6
+YjQ6OWQ6OTk6OTEpLiBJdCBkb2Vzbid0CnNlZW0gbGlrZSBhbiBvcmlnaW5hbCBmb3IgdGhlIGh3
+ICgwMDowMzo3Zjp4eDp4eDp4eCkuIEkgd291bGRuJ3QgYmUKc3VycHJpc2VkIGlmIHRoYXQncyB0
+aGUgcHJvYmxlbS4KClRoZSA0YWRkciBwYXRjaCBhbG9uZSBzaG91bGRuJ3QgYmUgYSBwcm9ibGVt
+IHNpbmNlIGl0IG9ubHkgZGVhbHMgd2l0aApyeCBmcmFtZSBwcm9jZXNzaW5nIGFuZCBpcyBiZXlv
+bmQgd2hhdCBmdyBpcyBkb2luZy4KCkknbGwgY2hlY2sgc3RhIHZpZiBvbiA2MzYgbGF0ZXIgdG9k
+YXkgYW5kIHNlZSBpZiBJIGNhbiByZXByb2R1Y2UgdGhpcy4KCgpNaWNoYcWCCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
