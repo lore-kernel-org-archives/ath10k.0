@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-qg0-x233.google.com ([2607:f8b0:400d:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbF7D-00039a-58
- for ath10k@lists.infradead.org; Fri, 18 Apr 2014 20:10:27 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (authenticated bits=0)
- by ns3.lanforge.com (8.14.2/8.14.2) with ESMTP id s3IKA2dl027240
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
- for <ath10k@lists.infradead.org>; Fri, 18 Apr 2014 13:10:03 -0700
-Message-ID: <53518697.4090406@candelatech.com>
-Date: Fri, 18 Apr 2014 13:09:59 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WbWSX-00045l-M3
+ for ath10k@lists.infradead.org; Sat, 19 Apr 2014 14:41:38 +0000
+Received: by mail-qg0-f51.google.com with SMTP id f51so680088qge.10
+ for <ath10k@lists.infradead.org>; Sat, 19 Apr 2014 07:41:14 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Anyone else see host machine lockups?
+In-Reply-To: <53518697.4090406@candelatech.com>
+References: <53518697.4090406@candelatech.com>
+Date: Sat, 19 Apr 2014 07:41:14 -0700
+Message-ID: <CAJ-Vmok6D88OHUPKhL0hXqX1RFDv42OkuChDBfEN7nB2JLM_sg@mail.gmail.com>
+Subject: Re: Anyone else see host machine lockups?
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +24,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-We can reliably lock up a host system (no splats, no mention of
-firmware crashes, system just dies) when we bring up or down a
-bunch of vifs in a system with 3 radios in a PC.
+Heh, no, but back in the day this'd happen if the DMA engine wasn't
+shut down in the right order. The NIC would start DMAing crap all over
+random memory.
 
-Anyone else seeing similar?
+I wonder if that's happening here.
 
-Thanks,
-Ben
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
+-a
+
+
+On 18 April 2014 13:09, Ben Greear <greearb@candelatech.com> wrote:
+> We can reliably lock up a host system (no splats, no mention of
+> firmware crashes, system just dies) when we bring up or down a
+> bunch of vifs in a system with 3 radios in a PC.
+>
+> Anyone else seeing similar?
+>
+> Thanks,
+> Ben
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
