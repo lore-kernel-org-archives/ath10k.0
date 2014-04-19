@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WbWoR-0006zA-5y
- for ath10k@lists.infradead.org; Sat, 19 Apr 2014 15:04:15 +0000
-Message-ID: <53529051.2040702@candelatech.com>
-Date: Sat, 19 Apr 2014 08:03:45 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1WbbGJ-0004Vr-Ss
+ for ath10k@lists.infradead.org; Sat, 19 Apr 2014 19:49:21 +0000
+Received: by mail-ee0-f52.google.com with SMTP id e49so2568278eek.39
+ for <ath10k@lists.infradead.org>; Sat, 19 Apr 2014 12:48:57 -0700 (PDT)
+Message-ID: <5352D327.7060106@intec.ugent.be>
+Date: Sat, 19 Apr 2014 21:48:55 +0200
+From: Bart Jooris <bart.jooris@gmail.com>
 MIME-Version: 1.0
-Subject: Re: Anyone else see host machine lockups?
-References: <53518697.4090406@candelatech.com>
- <CAJ-Vmok6D88OHUPKhL0hXqX1RFDv42OkuChDBfEN7nB2JLM_sg@mail.gmail.com>
-In-Reply-To: <CAJ-Vmok6D88OHUPKhL0hXqX1RFDv42OkuChDBfEN7nB2JLM_sg@mail.gmail.com>
+Subject: Re: Running throughput tests
+References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>	<012e01cef7e0$99017e70$cb047b50$@sparklan.com>	<52AACFB9.8080901@intec.ugent.be>	<006301cefa3c$44c07b50$ce4171f0$@sparklan.com>	<52AEC26B.2060400@intec.ugent.be>	<007f01cefa41$8a940de0$9fbc29a0$@sparklan.com>	<52AEE61F.5030505@intec.ugent.be>	<006b01cefacb$6c0b2d60$44218820$@sparklan.com>	<52B00B10.3050300@intec.ugent.be>	<004b01cefb9d$04a543e0$0defcba0$@sparklan.com>	<52B2AE75.9050206@intec.ugent.be>	<00df01cf0090$05944f10$10bced30$@sparklan.com>	<52B9672E.9000701@intec.ugent.be>	<008c01cf012e$e59563d0$b0c02b70$@sparklan.com>	<530A64E5.2040401@intec.ugent.be>
+ <530B0670.1010009@stackframe.org>	<530E5EF2.8070800@intec.ugent.be>	<87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>	<5335910B.3000702@intec.ugent.be>	<87y4zutk4i.fsf@kamboji.qca.qualcomm.com>	<53372210.7060903@intec.ugent.be>
+ <871tx8m1qs.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <871tx8m1qs.fsf@kamboji.qca.qualcomm.com>
+Reply-To: Bart.Jooris@intec.ugent.be
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +23,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-On 04/19/2014 07:41 AM, Adrian Chadd wrote:
-> Heh, no, but back in the day this'd happen if the DMA engine wasn't
-> shut down in the right order. The NIC would start DMAing crap all over
-> random memory.
->
-> I wonder if that's happening here.
-
-Maybe, but I would hope that such a problem would at least often crash
-the OS with some strange crashes as opposed to just silent host lockup?
-
-Thanks,
-Ben
-
->
->
->
-> -a
->
->
-> On 18 April 2014 13:09, Ben Greear <greearb@candelatech.com> wrote:
->> We can reliably lock up a host system (no splats, no mention of
->> firmware crashes, system just dies) when we bring up or down a
->> bunch of vifs in a system with 3 radios in a PC.
->>
->> Anyone else seeing similar?
->>
->> Thanks,
->> Ben
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgS2FsbGUsCgpJIGFsc28gaGF2ZSBhIHN0YWJsZSA1MDBNYnBzICsrIGxpbmsgbm93IDotKSB3
+aXRoIHBlYWtzIHVwIHRvIDUyME1icHMgCihtZWFzdXJlZCB3aXRoIGlwZXJmIFVEUCkuCkkndmUg
+IG1hZGUgYSBzZWNvbmQgQVAgYW5kIFNUQSB3aXRoIHRoZSBXTEU5MDBWWCBjYXJkcyBJJ3ZlIGV4
+Y2hhbmdlZCAKd2l0aCBCZW4gKFRoYW5rcyBhZ2FpbiEpLiBCb3RoIGhhdmUgVWJ1bnR1IDEyLjA0
+LCBhdGgxMGsgZnJvbSBiYWNrcG9ydHMgCnJlbGVhc2UgYW5kIG1vZGlmaWVkICByZWd1bGF0b3J5
+LmJpbi4KVGhlIEFQIGhhcyBub3cgMTAuMS40NjcuMi0xIGxpa2UgeW91IHN1Z2dlc3RlZCBhbmQg
+U1RBIGhhcyBzdGlsbCAKOTk5Ljk5OS4wLjYzNi4KSW4gY29tYmluYXRpb24gd2l0aCwgdGhlIGxv
+d2VzdCB0eFBvd2VyIGFuZCAgdGhlIGRpcG9sZSBhbnRlbm5hcyAKY29uZmlndXJlZCBsaWtlIHRo
+aXMKIlwgICAgfCAvIiAgKHNhbWUgcGxhbmUpCndlIG1lYXN1cmVkIDUwME1icHMrKyBpbiBhIGFu
+ZWNob2ljIGNoYW1iZXIgKHJhbmdlZCBBUDwtPlNUQSAyMGNtIC4uIDI3MGNtKS4KV2Ugb2JzZXJ2
+ZWQgdGhlIHNhbWUgc3BlZWRzICBhdCBvdXIgb2ZmaWNlcyBub3cgYW5kIGV2ZW4gd2hlbiB3ZSBy
+ZXBsYWNlIAp0aGUgIGFudGVubmFzIHdpdGggMToxIGNvYXggKyAyMGRiIGF0dGVudWF0aW9uIHdl
+ICd2ZSBnb3QgNTAwTWJwcysrLgoKU29tZXRpbWUgSXQgY2FuIHRha2UgdXAgdG8gMjAgc2Vjb25k
+cyBiZWZvcmUgdGhlIGxpbmsgbWF4aW1pc2VzLCBidXQgCm9uY2UgaXQgZ2V0cyB0aGVyZSBpdCBp
+cyBleHRyZW1lbHkgc3RhYmxlIDotKS4KSSB3aWxsIHRha2UgYSBsb29rIGF0IHRoZSBhdGgxMGtf
+Y29yZS5rbyBkZWJ1Z19tYXNrIGFuZCBIVFQgc3RhdGlzdGljcyAKZmlyc3QgdG8gc2VlIHdoYXQg
+aGFwcGVucy4KU2hvdWxkIEkgc3RpbGwgYmUgYWJsZSB0byBidWlsZCBhIHNuaWZmZXIgd2l0aCB0
+aGUgaW50ZXJmYWNlIGluIG1vbml0b3IgCm1vZGUgaW4gY29tYmluYXRpb24gV2lyZXNoYXJrPwoK
+VGhhbmtzIGEgbG90LAoKQmFydAoKCnAucy4gVGhlIGNvbmZpZ3VyYXRpb24gd2l0aCB0aGUgc3Bh
+cmtMQU4gV1BFQS0zNTFBQyBjYXJkcyBzdGlsbCBkb2Vzbid0IApnaXZlIHRoZSBzYW1lIHJlc3Vs
+dHMuIFByb2JhYmx5IG15IGJhZCwgSSB3aWxsIGRvdWJsZSBjaGVjayBpdCBhZ2Fpbi4KCgoKT24g
+MDQvMDgvMjAxNCAwMjo0MiBQTSwgS2FsbGUgVmFsbyB3cm90ZToKPiBIaSBCYXJ0LAo+Cj4gQmFy
+dCBKb29yaXMgPGJhcnQuam9vcmlzQGdtYWlsLmNvbT4gd3JpdGVzOgo+Cj4+IE9uIDAzLzI4LzIw
+MTQgMDQ6MzEgUE0sIEthbGxlIFZhbG8gd3JvdGU6Cj4+Cj4+PiBZb3UgYXJlIHByb3ZpZGluZyB2
+ZXJ5IGxpdHRsZSBpbmZvcm1hdGlvbiB3aGljaCBtYWtlcyBpdCBkaWZmaWN1bHQgdG8KPj4+IGhl
+bHAuIEZvciBzdGFydGVyczoKPj4+Cj4+PiAqIFdoYXQgZmlybXdhcmUgdmVyc2lvbj8KPj4gSSd2
+ZSBjbG9uZWQgJ3JlY2VudGx5JyBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13
+YXJlLwo+Pgo+PiB0cmVlIC1EIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTk4OFgKPj4g4pSU4pSA
+4pSAIFtNYXIgMjkgMTA6NDZdIGh3Mi4wCj4+IOKUnOKUgOKUgCBbRmViIDI2IDE5OjM5XSBib2Fy
+ZC5iaW4KPj4g4pSc4pSA4pSAIFtGZWIgMjYgMTk6MzldIGZpcm13YXJlLTIuYmluCj4+IOKUlOKU
+gOKUgCBbRmViIDI2IDE5OjM5XSBvdHAuYmluCj4gVGhhdCBkb2Vzbid0IHRlbGwgYW55dGhpbmcg
+YWJvdXQgdGhlIGZpcm13YXJlIHZlcnNpb24uIFBsZWFzZSByZWFkIHRoaXM6Cj4KPiBodHRwOi8v
+d2lyZWxlc3Mua2VybmVsLm9yZy9lbi91c2Vycy9Ecml2ZXJzL2F0aDEway9kZWJ1ZyNGaXJtd2Fy
+ZV92ZXJzaW9uCj4KPiBZb3Ugc2hvdWxkIHVzZSAxMC4xLjQ2Ny4yLTEgYW5kIHNlZSB0aGlzIGlu
+IGRtZXNnOgo+Cj4gWyAyNjUxLjUwNjY5MV0gYXRoMTBrOiBxY2E5ODh4IGh3Mi4wICgweDQxMDAw
+MTZjLCAweDA0MzIwMmZmKSBmdyAxMC4xLjQ2Ny4yLTEgYXBpIDIgaHR0IDIuMQo+Cj4gKFBsZWFz
+ZSBub3RlIHRoYXQgdGhlIGluZm8gcHJpbnQgd2FzIGNoYW5nZWQgZmV3IHdlZWtzIGJhY2ssIHNv
+IGl0IHdvbid0Cj4gbG9vayBleGFjdGx5IHNhbWUgb24gMy4xMy4pCj4KPj4+ICogV2hhdCB2ZXJz
+aW9uIG9mIGF0aDEwayBhcmUgeW91IHVzaW5nPwo+PiBJIGNvbXBpbGVkIGtlcm5lbCAzLjEzLjUu
+Cj4gT2ssIHRoYXQncyBhIHJlbGF0aXZlbHkgb2xkIGFzIHRoZSB2ZXJzaW9uIG9mIGF0aDEwayBp
+biB0aGF0IHJlbGVhc2UgaXMKPiBmcm9tIGxhc3QgT2N0b2Jlci4gV2UgaGF2ZSBoYWQgcXVpdGUg
+YSBmZXcgb3B0aW1pc2F0aW9ucyBhbmQgZml4ZXMgc2luY2UKPiB0aGVuIGJ1dCB5b3Ugc2hvdWxk
+IHN0aWxsIGVhc2lseSBnZXQgNDAwIE1icHMsIGVzcGVjaWFsbHkgb24geW91ciBmYXN0Cj4geDg2
+IGNwdXMuCj4KPj4+ICogQXJlIHlvdSBzdXJlIHRoYXQgdGhlIGhvc3QgaXMgbm90IGxpbWl0aW5n
+IHRoZSB0aHJvdWdocHV0IGluIGFueSB3YXk/Cj4+PiAgICAgVHJ5IHRvIGRpc2FibGUgX2FsbF8g
+a2VybmVsIGRlYnVnIG9wdGlvbnMuCj4+IC92YXIvbG9nL3N5c2xvZyBhbmQgZG1lc2cgZG9lc24n
+dCB0byBiZSBwYWNrZWQgd2l0aCBtZXNzYWdlcyByZWxhdGVkCj4+IHRvIHRoZSB0aHJvdWdocHV0
+IHRlc3QuIEkgZG9uJ3QgdGhpbmsgdG8gaGF2ZSBzZWVuIHRoZSBDUFUgYmVpbmcKPj4gb3Zlcmxv
+YWRlZCBkdXJpbmcgdGhlIHRlc3QuCj4+IEknbSBwbGFubmluZyB0byBnbyBiYWNrIHRvIHRoZSBv
+ZmZpY2UgdG9tb3Jyb3cgdG8gdmVyaWZ5IHRoaXMuCj4+Cj4+IEZ1cnRoZXIgSSBoYXZlIHRoZXNl
+IGluIG15IGtlcm5lbCBjb25maWcKPj4gQ09ORklHX0FUSDEwSz1tCj4+IENPTkZJR19BVEgxMEtf
+UENJPW0KPj4gIyBDT05GSUdfQVRIMTBLX0RFQlVHIGlzIG5vdCBzZXQKPj4gQ09ORklHX0FUSDEw
+S19ERUJVR0ZTPXkKPj4gQ09ORklHX0FUSDEwS19UUkFDSU5HPXkKPj4KPj4gSSB3aWxsIGRpc2Fi
+bGUgdGhlIGxhc3QgdHdvIHRvby4KPiBPaywgdGhpcyBsb29rcyBnb29kLiBCdXQganVzdCB0byBj
+b25maXJtLCBjYW4geW91IHNlbmQgdGhlIGZ1bGwga2VybmVsCj4gY29uZmlnIGZpbGUgYXMgd2Vs
+bD8KPgo+Pj4gKiBBbHNvIGRlc2NyaWJlIHlvdXIgdGVzdCBzZXR1cCBpbiBkZXRhaWwuCj4+Pgo+
+PiBDb21tb24gZm9yIEFQIGFuZCBTVEE6Cj4+Cj4+IC1EU1MtMTMwMCB3aXRoIGk1LTI1NDBNIENQ
+VSBAIDIuNjBHSHogLSA4R0IgUkFNIC0gU1NEIDY0R0IuCj4+IC0xIHNwYXJrTEFOIFdQRUEtMzUx
+QUMgY2FyZCB3aXRoIFFDQTk4ODAgY2hpcCBzZXQgYW5kIDMgZHVhbCBiYW5kIGFudGVubmEncy4K
+Pj4gLUtlcm5lbCAzLjEzLjUgY29udGFpbmluZyB0aGUgYXRoMTBrIG1vZHVsZXMKPj4gLWZpcm13
+YXJlcyBjbG9uZWQgZW5kIG9mIEZlYnJ1YXJ5Cj4+IC1pcGVyZiBpbiB1ZHAgbW9kZSB1c2VkIGZv
+ciB0aGUgIHRocm91Z2hwdXQgdGVzdAo+Pgo+PiBBUCBvbmx5Ogo+PiAtdWJ1bnR1IDEyLjA0IExU
+UyBhcyBjcmRhIHdvdWxkbid0IGJ1aWxkIG9uIHVidW50dSAxMy4xMCAobGliZ2NyeXB0IGlzc3Vl
+KS4KPj4gLWhvc3RhcGQgdjIuMi1kZXZlbAo+PiAtbW9kaWZpZWQgcmVndWxhdG9yeSBkYXRhYmFz
+ZSBhbmQgY3JkYSBidWlsZAo+PiAteW91ciBGdWxsX2hvc3RhcGRfY29uZmlndXJhdGlvbiArIGNo
+YW5uZWw9MzYgYW5kIHZodF9vcGVyX2NlbnRyX2ZyZXFfc2VnMF9pZHg9NDIKPj4KPj4gU1RBIG9u
+bHk6Cj4+IC11YnVudHUgMTMuMTAKPj4gLW5tY2xpIGlzIHVzZWQgdG8gY29ubmVjdCB0byB0aGUg
+QVAKPj4KPj4gRGlzdGFuY2UgYmV0d2VlbiBBUCBhbmQgU1RBOiA2MCBjbS4gQW50ZW5uYSdzIGFy
+ZSBub3cgZGlyZWN0ZWQKPj4gb3J0aG9nb25hbCBwZXIgZGV2aWNlLCBhbnRlbm5hWCAoWD0xLi4z
+KSBvbiBib3RoIGRldmljZXMgYXJlIHBvaW50aW5nCj4+IGluIHRoZSBzYW1lIGRpcmVjdGlvbi4g
+QWx0aG91Z2ggSSd2ZSBwbGF5ZWQgYSBsb3Qgd2l0aCB0aGUgYW50ZW5uYSdzCj4+IGRpcmVjdGlv
+bnMgYWxyZWFkeSBhbmQgSSBjYW4ndCByZW1lbWJlciBvbmUgcnVuIHdoZXJlIGl0IGhhZCBhIGxv
+dCBvZgo+PiBpbXBhY3QuLi4KPj4KPj4gVGhlIHNwZWN0cnVtIGFuYWx5c2VyIG1lYXN1cmVkIGEg
+YmFuZCBvZiBhbG1vc3QgODBNSHogYmVpbmcgdXNlZC4KPiBUaGlzIGxvb2tzIGdvb2QgYXMgd2Vs
+bC4gSXMgaXQgcG9zc2libGUgZm9yIHlvdSB0YWtlIGRlYnVnIGxvZ3M/IEZpcnN0Cj4gZW5hYmxl
+IHRoZXNlIGF0aDEwayBvcHRpb25zOgo+Cj4gQ09ORklHX0FUSDEwS19ERUJVRz15Cj4gQ09ORklH
+X0FUSDEwS19ERUJVR0ZTPXkKPiBDT05GSUdfQVRIMTBLX1RSQUNJTkc9eQo+Cj4gQW5kIHN0YXJ0
+IGF0aDEwayB3aXRoIGRlYnVnIG1hc2sgMHg0MzIsIHdoaWNoIHByaW50cyBpbmZvIHJlbGF0ZWQg
+dG8KPiBmaXJtd2FyZSBjb25maWd1cmF0aW9uOgo+Cj4gbW9kcHJvYmUgYXRoMTBrX2NvcmUua28g
+ZGVidWdfbWFzaz0weDQzMgo+Cj4gQWxzbyBzdGFydCBob3N0YXBkIHdpdGggLWRkZHQgYW5kIGNv
+bm5lY3QgdGhlIGF0aDEwayBTVEEgdG8gdGhlIEFQLiBUaGVuCj4gc2VuZCBoZXJlIGJvdGggdGhl
+IGZ1bGwgZG1lc2cgb3V0cHV0LCBwcmVmZXJhYmx5IHN0YXJ0aW5nIGZyb20ga2VybmVsCj4gYm9v
+dCwgYW5kIGhvc3RhcGQgZGVidWcgbG9ncyBoZXJlIGZyb20gdGhlIEFQLiBObyBuZWVkIHRvIHJ1
+biBhbnkKPiB0aHJvdWdocHV0IHRlc3RzIGluIHRoaXMgY2FzZSwgSSBqdXN0IHdhbnQgdG8gc2Vl
+IGhvdyB3ZSBjb25maWd1cmUgdGhlCj4gZmlybXdhcmUgd2hlbiB0aGUgU1RBIGFzc29jaWF0ZXMu
+Cj4KPiBBbmQgZXZlbiBiZXR0ZXIgaWYgeW91IGNvdWxkIHVzZSB0cmFjZS1jbWQsIHdlIGdldCBt
+b3JlIGxvZ3MgdGhhdCB3YXk6Cj4KPiBodHRwOi8vd2lyZWxlc3Mua2VybmVsLm9yZy9lbi91c2Vy
+cy9Ecml2ZXJzL2F0aDEway9kZWJ1ZyNUcmFjaW5nCj4KCgotLSAKQmFydCBKb29yaXMKRGVwYXJ0
+bWVudCBvZiBJbmZvcm1hdGlvbiBUZWNobm9sb2d5CkludGVybmV0IEJhc2VkIENvbW11bmljYXRp
+b24gTmV0d29ya3MgYW5kIFNlcnZpY2VzIChJQkNOKQpHaGVudCBVbml2ZXJzaXR5IC0gaU1pbmRz
+Ckdhc3RvbiBDcm9tbWVubGFhbiA4IChCdXMgMjAxKSwgQi05MDUwIEdlbnQsIEJlbGdpdW0KRS1t
+YWlsOiBiYXJ0Lmpvb3Jpc0BpbnRlYy5VR2VudC5iZQpNOiArMzIgNDc0IDU5IDUzIDQyClRlbC4g
+KzMyIDkgMzMgMTQ5MDAKRmF4ICszMiA5IDMzIDE0ODk5CgoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
