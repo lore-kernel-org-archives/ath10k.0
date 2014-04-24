@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ve0-x235.google.com ([2607:f8b0:400c:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdFIC-0008Dd-Kd
- for ath10k@lists.infradead.org; Thu, 24 Apr 2014 08:46:05 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1WdFMc-00017o-HO
+ for ath10k@lists.infradead.org; Thu, 24 Apr 2014 08:50:38 +0000
+Received: by mail-ve0-f181.google.com with SMTP id oy12so2492017veb.26
+ for <ath10k@lists.infradead.org>; Thu, 24 Apr 2014 01:50:15 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CA+BoTQkBCGyKYDaOMgdCi4Yw+SXeuRS+t0rGE8o=8+x2q5N74w@mail.gmail.com>
+References: <1398327250-12923-1-git-send-email-yeohchunyeow@gmail.com>
+ <CA+BoTQkBCGyKYDaOMgdCi4Yw+SXeuRS+t0rGE8o=8+x2q5N74w@mail.gmail.com>
+Date: Thu, 24 Apr 2014 16:50:15 +0800
+Message-ID: <CAEFj986fsmUD2kvEN=vjHK32cunyFO+8bH-y7ZoWZAMkcunJ2w@mail.gmail.com>
 Subject: Re: [PATCH] ath10k: don't allow stand alone monitor mode for non-AP
  firmware
-References: <1398327250-12923-1-git-send-email-yeohchunyeow@gmail.com>
- <87d2g7m90w.fsf@kamboji.qca.qualcomm.com>
- <CAEFj986h0FtMOpbTbYYQzLxZrEcL_og0+qpQkfj36xMWM9LG5g@mail.gmail.com>
-Date: Thu, 24 Apr 2014 11:45:24 +0300
-In-Reply-To: <CAEFj986h0FtMOpbTbYYQzLxZrEcL_og0+qpQkfj36xMWM9LG5g@mail.gmail.com>
- (Yeoh Chun-Yeow's message of "Thu, 24 Apr 2014 16:40:24 +0800")
-Message-ID: <878uqvm7yz.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +26,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+> I think Monitor operation should be performed on a best effort basis.
+> This means monitor_start/stop should be attempted once number of
+> non-monitor vdevs changes.
 
->>> +     if (ar->fw_version_build == 636) {
->>
->> Checking for firmware version in ath10k is a big no. For a functinality
->> change like this you should add a new feature flag to enum
->> ath10k_fw_features (and I need to then recreate the firmware image).
->>
-> Should we just use the ATH10K_FW_FEATURE_WMI_10X?
+I am too clear about this. Do you mean that actually we can have
+monitor mode on non-monitor vdevs in firmware 636?
 
-That's a bit dangerous if in the future there's a new firmware which
-doesn't have ATH10K_FW_FEATURE_WMI_10X but still doesn't support stand
-alone monitor mode.
-
--- 
-Kalle Valo
+----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
