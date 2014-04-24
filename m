@@ -1,21 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yh0-f54.google.com ([209.85.213.54])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdFod-0003Ml-Da
- for ath10k@lists.infradead.org; Thu, 24 Apr 2014 09:19:35 +0000
-Received: by mail-yh0-f54.google.com with SMTP id f73so1946695yha.13
- for <ath10k@lists.infradead.org>; Thu, 24 Apr 2014 02:19:10 -0700 (PDT)
+ id 1WdGAG-0001IN-Ue
+ for ath10k@lists.infradead.org; Thu, 24 Apr 2014 09:41:57 +0000
+Received: by mail-wg0-f52.google.com with SMTP id b13so778176wgh.23
+ for <ath10k@lists.infradead.org>; Thu, 24 Apr 2014 02:41:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <878uqvm7yz.fsf@kamboji.qca.qualcomm.com>
-References: <1398327250-12923-1-git-send-email-yeohchunyeow@gmail.com>
- <87d2g7m90w.fsf@kamboji.qca.qualcomm.com>
- <CAEFj986h0FtMOpbTbYYQzLxZrEcL_og0+qpQkfj36xMWM9LG5g@mail.gmail.com>
- <878uqvm7yz.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 24 Apr 2014 17:19:10 +0800
-Message-ID: <CAEFj986VVHkgSnv=xGo_WAYg+n4Sp0_qJGkpmzjNk9thoizZCA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: don't allow stand alone monitor mode for non-AP
- firmware
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB0@srvexch01.SODIELEC.local>
+References: <53461A8A.4030209@candelatech.com>
+ <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
+ <8738hkh193.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
+ <CA+BoTQ=L7Cj5V04RGEFcdGm1rxEO8NOYMEhSRiQNdoBoMTm5Pg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4837@srvexch01.SODIELEC.local>
+ <CA+BoTQkAv_OrJ5cM-wp_fhdb01KV62gLqkXaSikYv9pS9t25eQ@mail.gmail.com>
+ <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4838@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4839@srvexch01.SODIELEC.local>
+ <87eh0yetyx.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC483A@srvexch01.SODIELEC.local>
+ <87sip3mdzr.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB0@srvexch01.SODIELEC.local>
+Date: Thu, 24 Apr 2014 11:41:34 +0200
+Message-ID: <CA+BoTQkChYC+sTy4MSFCbGDvNoGHRko=Oxbkj=hVy+EQ4LP1Gg@mail.gmail.com>
+Subject: Re: RE : RE : Report Firmware firmware-2.bin_10.1.467.2-1 Error
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +33,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Apr 24, 2014 at 4:45 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
->
->>>> +     if (ar->fw_version_build == 636) {
->>>
->>> Checking for firmware version in ath10k is a big no. For a functinality
->>> change like this you should add a new feature flag to enum
->>> ath10k_fw_features (and I need to then recreate the firmware image).
->>>
->> Should we just use the ATH10K_FW_FEATURE_WMI_10X?
->
-> That's a bit dangerous if in the future there's a new firmware which
-> doesn't have ATH10K_FW_FEATURE_WMI_10X but still doesn't support stand
-> alone monitor mode.
->
-
-Then, we may need to introduce the new feature flag.
-
-But then I just wondering if the firmware 636 claimed to support STA
-mode "well" but then not allowed to be bridged. This may cause
-confusion to end user which is the best firmware for STA mode. FYI, AP
-firmware has no such issue if using as STA mode and put into
-promiscuous mode.
-
-----
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgQXByaWwgMjAxNCAxMTowMywgVnUgSGFpIE5HVVlFTiA8dmgubmd1eWVuQGFjdGlhc29k
+aWVsZWMuZnI+IHdyb3RlOgo+IFRoYW5rIHlvdSBmb3IgeW91ciByZXNwb25zZSwgdGhlIHByb2Js
+ZW0gaXMgc29sdmVkIHdoZW4gSSBkb3dubG9hZCB0aGUgbGF0ZXN0IHZlcnNpb24gb2YgYmFja3Bv
+cnQgKDMuMTUpIGFuZCBjb21waWxlIGF0aDEwayB3aXRoIGl0IChsYXN0IHRpbWUgbXkgdmVyc2lv
+biBpcyAzLjEzIGFuZCBhcyB5b3Ugc2FpZCwgSXQgbWlnaHQgbm90IGluY2x1ZGUgdGhlIHBhdGNo
+KS4KPiBOb3cgSSBjYW4gbG9hZCB0aGUgZmlybXdhcmUgMTAuMS40NjcuMi0xIGJ1dCBJIGdldCBu
+ZXcgcHJvYmxlbSB0b28uCj4gRG9lcyBhdGgxMGsgc3VwcG9ydCBhbGwgdGhlIGNvbW1hbmQgb2Yg
+Iml3Ij8KPiBGb3IgZXhhbXBsZSBJIHNldCB1cCBtb2RlIGFjY2VzcyBwb2ludCBhbmQgdHJpZWQg
+dG8gY2hhbmdlIHRoZSB0eHBvd2VyIGJ5IHRoZSBjb21tYW5kOiAiaXcgd2xhbjAgc2V0IHR4cG93
+ZXIgZml4ZWQgMTIwMCIgKHNhbWUgdGhpbmcgYXMgIml3Y29uZmlnIHdsYW4wIHR4cG93ZXIgMTJk
+Qm0iICwgcmlnaHQ/KQo+IFRoZSBvdXRwdXQgb2YgIml3Y29uZmlnIiBpczoKPiB3bGFuMCAgICAg
+SUVFRSA4MDIuMTFhYmduICBNb2RlOk1hc3RlciAgVHgtUG93ZXI9MTIgZEJtCj4gICAgICAgICAg
+IFJldHJ5IHNob3J0IGxpbWl0OjcgICBSVFMgdGhyOm9mZiAgIEZyYWdtZW50IHRocjpvZmYKPiAg
+ICAgICAgICAgUG93ZXIgTWFuYWdlbWVudDpvbgo+Cj4gQW5kIG91dHB1dCBvZiAiZG1lc2ciOgo+
+IGF0aDEwazogbWFjIGNvbmZpZyBwb3dlciAxMgo+IGF0aDEwazogd21pIHBkZXYgc2V0IHBhcmFt
+IDMgdmFsdWUgMjQKPiBhdGgxMGs6IHdtaSBwZGV2IHNldCBwYXJhbSA0IHZhbHVlIDI0Cj4KPiBJ
+dCBzZWVtcyB0aGF0IHRoZSBjb21tYW5kIGFycml2ZXMgdW50aWwgdGhlIGxldmVsIG9mIGRyaXZl
+ciBhdGgxMGsgYW5kIHdvcmtzIGJ1dCB3aGVuIEkgdmVyaWZpZWQgYnkgY29ubmVjdGluZyBhIHN0
+YXRpb24gdG8gbXkgYWNjZXNzIHBvaW50IGFuZCBsb29rIGF0IHRoZSBvdXQgcHV0IG9mICJpdyB3
+bGFuMCBzdGF0aW9uIGR1bXAiLCB0aGUgdmFsdWUgb2YgdHhwb3dlciByZWNlaXZlZCBhdCB0aGUg
+c3RhdGlvbiBkaWRuJ3QgY2hhbmdlIGV2ZW4gd2hlbiBJIGNoYW5nZWQgdGhlIHR4cG93ZXIgb2Yg
+bXkgYWNjZXNzIHBvaW50IGZyb20gMWRCbSB0byAyMGRCbSAobXkgc3RhdGlvbiBpcyBuZWFyIHRo
+ZSBhY2Nlc3MgcG9pbnQpLgoKVGhpcyB3b3JrcyBmb3IgbWUgKGxhdGVzdCBnaXRodWIuY29tL2t2
+YWxvL2F0aC9tYXN0ZXIgd2l0aCA0NjcuMikuCgpJIGNhbiBzZWUgInNpZ25hbCIgdmFsdWVzIGNo
+YW5nZSBpbiBpdyBzdGF0aW9uIGR1bXAgb24gdGhlIGNvbm5lY3RlZApjbGllbnQgd2hlbiBJIHNl
+dCBkaWZmZXJlbnQgdHhwb3dlciB2YWx1ZXMgb24gYXRoMTBrIEFQLgoKCj4gU2FtZSB0aGluZyB3
+aGVuIEkgZG8gd2l0aCB0aGUgY29tbWFuZCBzZXQgYml0IHJhdGVzOiAiaXcgd2xhbjAgc2V0IGJp
+dHJhdGVzIGxlZ2FjeS0yLjQgNTQgaHQtbWNzLTIuNCIKPgo+IE91dCBwdXQgb2YgZG1lc2c6Cj4g
+YXRoMTBrOiBtYWMgZml4ZWQgcmF0ZSBwcmVhbSAweDAwIG5zcyAweDAwIHJhdGUgMHgwNAo+IGF0
+aDEwazogd21pIHZkZXYgaWQgMHgwIHNldCBwYXJhbSAyNyB2YWx1ZSA0Cj4gYXRoMTBrOiB3bWkg
+dmRldiBpZCAweDAgc2V0IHBhcmFtIDM0IHZhbHVlIDEKPiBhdGgxMGs6IHdtaSB2ZGV2IGlkIDB4
+MCBzZXQgcGFyYW0gMjggdmFsdWUgMAo+IGF0aDEwazogd21pIGV2ZW50IGRlYnVnIG1lc2cgbGVu
+IDE2Cj4KPiBCdXQgdGhlIG91dCBwdXQgb2YgIiBpdyB3bGFuMCBzdGF0aW9uIGR1bXAiIGRpZCBu
+b3Qgc2hvdyBhbnkgY2hhbmdlIHdoZW4gSSB2YXJpZWQgdGhlIGJpdCByYXRlIG9mIG15IGFjY2Vz
+cyBwb2ludCB0b28uCgpBZ2FpbiwgdGhpcyB3b3JrcyBmb3IgbWUuCgpUbyBiZSBjbGVhciAtIGF0
+aDEwayBpcyBpbmNhcGFibGUgb2YgcmVwb3J0aW5nICJ0eCBiaXRyYXRlIiAoaXQgYWx3YXlzCnJl
+cG9ydHMgNm1icHMpLiBJZiB5b3Ugd2FudCB0byB2ZXJpZnkgaWYgdGhlIGJpdHJhdGUgbWFzayB3
+b3JrcyB5b3UKbXVzdCBjaGVjayAicnggYml0cmF0ZSIgb24gdGhlIG90aGVyIHNpZGUsIGkuZS4g
+b24gdGhlIGNvbm5lY3RlZApjbGllbnQuCgpPciBqdXN0IHVzZSBhIHNlcGFyYXRlIHNuaWZmZXIg
+YW5kIHNlZSBpZiBBUCBpcyBzZW5kcyBmcmFtZXMgd2l0aApkaWZmZXJlbnQgdHhwb3dlci9iaXRy
+YXRlIHZhbHVlcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
