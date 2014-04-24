@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-f169.google.com ([209.85.220.169])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdFD8-0006aj-5Z
- for ath10k@lists.infradead.org; Thu, 24 Apr 2014 08:40:50 +0000
-Received: by mail-vc0-f169.google.com with SMTP id im17so2677195vcb.28
- for <ath10k@lists.infradead.org>; Thu, 24 Apr 2014 01:40:25 -0700 (PDT)
+ id 1WdFGw-00077O-7p
+ for ath10k@lists.infradead.org; Thu, 24 Apr 2014 08:44:47 +0000
+Received: by mail-wi0-f180.google.com with SMTP id q5so670083wiv.7
+ for <ath10k@lists.infradead.org>; Thu, 24 Apr 2014 01:44:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87d2g7m90w.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <1398327250-12923-1-git-send-email-yeohchunyeow@gmail.com>
 References: <1398327250-12923-1-git-send-email-yeohchunyeow@gmail.com>
- <87d2g7m90w.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 24 Apr 2014 16:40:24 +0800
-Message-ID: <CAEFj986h0FtMOpbTbYYQzLxZrEcL_og0+qpQkfj36xMWM9LG5g@mail.gmail.com>
+Date: Thu, 24 Apr 2014 10:44:22 +0200
+Message-ID: <CA+BoTQkBCGyKYDaOMgdCi4Yw+SXeuRS+t0rGE8o=8+x2q5N74w@mail.gmail.com>
 Subject: Re: [PATCH] ath10k: don't allow stand alone monitor mode for non-AP
  firmware
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Apr 24, 2014 at 4:22 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Chun-Yeow Yeoh <yeohchunyeow@gmail.com> writes:
->
->> Firmware 999.999.0.636 does not allow stand alone monitor
->> mode. This means that bridging the STA mode and put it into
->> promiscuous mode will also cause the firmware to crash. Avoid
->> this.
->>
->> Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
->
-> [...]
->
->> @@ -647,10 +647,15 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
->>
->>  static int ath10k_monitor_start(struct ath10k *ar)
->>  {
->> -     int ret;
->> +     int ret = -1;
->
-> I prefer to avoid initialising ret variables. And -1 is not a proper
-> error value.
->
-Ok.
-
->>       lockdep_assert_held(&ar->conf_mutex);
->>
->> +     if (ar->fw_version_build == 636) {
->
-> Checking for firmware version in ath10k is a big no. For a functinality
-> change like this you should add a new feature flag to enum
-> ath10k_fw_features (and I need to then recreate the firmware image).
->
-Should we just use the ATH10K_FW_FEATURE_WMI_10X?
-
->> +             ath10k_warn("stand alone monitor mode is not supported\n");
->
-> I would prefer not to print a warning for a situation like this. Can't
-> we instead return an error value back to the caller?
->
-Yes.
-
->> +             return ret;
->
-> return -EOPNOTSUPP or similar is better approach than initialising ret
-> to -1.
-Sure.
-
-----
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgQXByaWwgMjAxNCAxMDoxNCwgQ2h1bi1ZZW93IFllb2ggPHllb2hjaHVueWVvd0BnbWFp
+bC5jb20+IHdyb3RlOgo+IEZpcm13YXJlIDk5OS45OTkuMC42MzYgZG9lcyBub3QgYWxsb3cgc3Rh
+bmQgYWxvbmUgbW9uaXRvcgo+IG1vZGUuIFRoaXMgbWVhbnMgdGhhdCBicmlkZ2luZyB0aGUgU1RB
+IG1vZGUgYW5kIHB1dCBpdCBpbnRvCj4gcHJvbWlzY3VvdXMgbW9kZSB3aWxsIGFsc28gY2F1c2Ug
+dGhlIGZpcm13YXJlIHRvIGNyYXNoLiBBdm9pZAo+IHRoaXMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBD
+aHVuLVllb3cgWWVvaCA8eWVvaGNodW55ZW93QGdtYWlsLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyB8IDcgKysrKysrLQo+ICAxIGZpbGUgY2hhbmdl
+ZCwgNiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
+aC9hdGgxMGsvbWFjLmMKPiBpbmRleCBlMmMwMWRjLi5mNjQwMzI4IDEwMDY0NAo+IC0tLSBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gQEAgLTY0NywxMCArNjQ3LDE1IEBAIHN0YXRpYyBp
+bnQgYXRoMTBrX21vbml0b3JfdmRldl9kZWxldGUoc3RydWN0IGF0aDEwayAqYXIpCj4KPiAgc3Rh
+dGljIGludCBhdGgxMGtfbW9uaXRvcl9zdGFydChzdHJ1Y3QgYXRoMTBrICphcikKPiAgewo+IC0g
+ICAgICAgaW50IHJldDsKPiArICAgICAgIGludCByZXQgPSAtMTsKPgo+ICAgICAgICAgbG9ja2Rl
+cF9hc3NlcnRfaGVsZCgmYXItPmNvbmZfbXV0ZXgpOwo+Cj4gKyAgICAgICBpZiAoYXItPmZ3X3Zl
+cnNpb25fYnVpbGQgPT0gNjM2KSB7Cj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJzdGFu
+ZCBhbG9uZSBtb25pdG9yIG1vZGUgaXMgbm90IHN1cHBvcnRlZFxuIik7Cj4gKyAgICAgICAgICAg
+ICAgIHJldHVybiByZXQ7Cj4gKyAgICAgICB9CgpJIHRoaW5rIE1vbml0b3Igb3BlcmF0aW9uIHNo
+b3VsZCBiZSBwZXJmb3JtZWQgb24gYSBiZXN0IGVmZm9ydCBiYXNpcy4KVGhpcyBtZWFucyBtb25p
+dG9yX3N0YXJ0L3N0b3Agc2hvdWxkIGJlIGF0dGVtcHRlZCBvbmNlIG51bWJlciBvZgpub24tbW9u
+aXRvciB2ZGV2cyBjaGFuZ2VzLgoKV2Ugc2hvdWxkIHByb2JhYmx5IGludHJvZHVjZSBhIGF0aDEw
+a19yZWNhbGNfbW9uaXRvcigpIGZvciB0aGF0IHB1cnBvc2UuCgoKTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
