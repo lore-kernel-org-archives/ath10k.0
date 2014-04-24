@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Tue, 22 Apr 2014 16:06:58 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20140415
-Message-ID: <20140422200658.GD16193@tuxdriver.com>
-References: <87mwfndrt4.fsf@kamboji.qca.qualcomm.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WdD2q-0005gy-AU
+ for ath10k@lists.infradead.org; Thu, 24 Apr 2014 06:22:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCHv2 0/3] ath10k: improve recovery speed
+References: <1397038028-7665-1-git-send-email-michal.kazior@tieto.com>
+ <1397460146-19450-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 24 Apr 2014 09:21:32 +0300
+In-Reply-To: <1397460146-19450-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 14 Apr 2014 09:22:23 +0200")
+Message-ID: <871twnnt77.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87mwfndrt4.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +24,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, Apr 15, 2014 at 09:34:31AM +0300, Kalle Valo wrote:
-> Hi John,
-> 
-> here's a pull request for ath6kl and ath10k with changes accumulated
-> just before and during the merge window. Please let me know if there any
-> problems.
-> 
-> Here's the list of changes:
-> 
-> ----------------------------------------------------------------------
-> 
-> For ath6kl Kalle fixed a bunch of checkpatch warnings.
-> 
-> In ath10k we had more changes, major ones being:
-> 
-> * fix memory allocation failures after a firmware crash (Michal)
-> 
-> * some rework of DFS configuration to enable it correctly in all cases
->   (Michal)
-> 
-> * add a new firmware crash option to make it possible to crash 10.1
->   firmware for testing purposes (Marek P)
-> 
-> * fix RTS/CTS protection in certain cases (Marek K)
-> 
-> * fix wrong RSSI and rate reporting in some cases (Janusz)
-> 
-> * fix firmware stats reporting (Chun, Ben & Bartosz)
-> 
-> ----------------------------------------------------------------------
-> 
-> The following changes since commit 70dd77b4c50da518b57b8b9b125a8c9aabe9bc1a:
-> 
->   ath10k: do not overwrite max_antenna_gain (2014-03-07 10:14:10 +0200)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to 4bfee8e8c13fc9477eb9420efd5a5d12e32ac614:
-> 
->   ath10k: improve htc tx credit debugging prints (2014-04-11 08:35:56 +0300)
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Pulled today...
+> Hi,
+>
+> Patch 1/3 is just a cleanup I wanted to keep
+> separate from 2/3 which actually improves recovery
+> speed.
+>
+> With this I'm able to recover from a `hard`
+> simualtion crash in ~3 seconds instead of ~10.
+>
+> This should decrease the chance of CQM kicking in
+> on connected clients (due to beacon loss) when
+> ath10k is acting as AP.
+>
+> v2:
+>  * add a comment in the code
+>
+>
+> Michal Kazior (3):
+>   ath10k: differentiate between target init failures
+>   ath10k: don't wait for device init if it crashed
+>   ath10k: skip suspending when recovering
+
+Thanks, all patches applied.
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
