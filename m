@@ -1,16 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WdD4l-0005ox-PF
- for ath10k@lists.infradead.org; Thu, 24 Apr 2014 06:24:04 +0000
+ id 1WdDGA-0004Do-DF
+ for ath10k@lists.infradead.org; Thu, 24 Apr 2014 06:35:50 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv2 0/4] ath10k: AP-related fixes
-References: <1397037685-7485-1-git-send-email-michal.kazior@tieto.com>
- <1397460010-19153-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 24 Apr 2014 09:23:32 +0300
-In-Reply-To: <1397460010-19153-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 14 Apr 2014 09:20:06 +0200")
-Message-ID: <87wqefmejf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: RE : Report Firmware  firmware-2.bin_10.1.467.2-1 Error
+References: <53461A8A.4030209@candelatech.com>
+ <1397124355-6321-1-git-send-email-michal.kazior@tieto.com>
+ <8738hkh193.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=gUBsw43M2at0y7iZU3VhwdjH9EBqzdOmKpxLjjqusPw@mail.gmail.com>
+ <CA+BoTQ=L7Cj5V04RGEFcdGm1rxEO8NOYMEhSRiQNdoBoMTm5Pg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4837@srvexch01.SODIELEC.local>
+ <CA+BoTQkAv_OrJ5cM-wp_fhdb01KV62gLqkXaSikYv9pS9t25eQ@mail.gmail.com>
+ <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4838@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4839@srvexch01.SODIELEC.local>
+ <87eh0yetyx.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC483A@srvexch01.SODIELEC.local>
+Date: Thu, 24 Apr 2014 09:35:20 +0300
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F06CC483A@srvexch01.SODIELEC.local>
+ (Vu Hai NGUYEN's message of "Wed, 16 Apr 2014 13:51:04 +0200")
+Message-ID: <87sip3mdzr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +34,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
 
-> Hi,
+> There's another problem: when I used the firmware version 999.999 some
+> times when I ran my program and change the parameter of configuration,
+> the firmware crash and I got a output dmesg which indicate a strange
+> version of firmware (1.0.0.636 ???) :
 >
-> This is a bunch of fixes I've found while
-> investigating tx credit issues.
+> ath10k: firmware crashed!                                                       
+> ath10k: hardware name qca988x hw2.0 version 0x4100016c                          
+> ath10k: firmware version: 1.0.0.636 
+> ath10k: target register Dump Location: 0x00401930                               
+> ath10k: target Register Dump                                                    
+> ath10k: [00]: 0x4100016C 0x00000000 0x0098E3A9 0x00000000                       
+> ath10k: [04]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [08]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [12]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [16]: 0x00000000 0x00000000 0x00000000 0x0098E3A9                       
+> ath10k: [20]: 0x00000000 0x00401930 0x00000000 0x00000000                       
+> ath10k: [24]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [28]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [32]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [36]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [40]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [44]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [48]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [52]: 0x00000000 0x00000000 0x00000000 0x00000000                       
+> ath10k: [56]: 0x00000000 0x00000000 0x00000000 0x00000000    
 >
-> I've only experienced problem fixed by 4/4
-> firsthand. Other patches are preemptive fixes :-)
+> and then It reload the firmware 999.999.  :
 >
-> v2:
->  * minor tweaks
+> ath10k: firmware 999.999.0.636 booted
 >
-> Michal Kazior (4):
->   ath10k: make sure to not leak beacon dma mapping
->   ath10k: make sure to not use invalid beacon pointer
->   ath10k: prevent beacon memory leak
->   ath10k: fix firmware recovery with ap interface
+> You can see the output of my dmesg 
 
-Thanks, all patches applied.
+The patch below should fix it. I suspect you don't have that.
+
+commit 5ba88b395cb447af756d12411456024d65a07814
+Author: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+Date:   Tue Jan 21 17:21:21 2014 +0800
+
+    ath10k: fix the printing of 10.x FW version when FW crashed
+    
+    10.x FW has no structure member sw_version_1. Thus,
+    both fw_version_release and fw_version_build are not
+    available. The provided fw_version_major is also wrong.
+    Fix this by using the fw_version from struct wiphy.
+    
+    Signed-off-by: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>
+    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
 
 -- 
 Kalle Valo
