@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
+Received: from mail-ve0-f180.google.com ([209.85.128.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfZAV-0008M2-ME
- for ath10k@lists.infradead.org; Wed, 30 Apr 2014 18:23:44 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  improve vdev map handling.
-Date: Wed, 30 Apr 2014 11:22:59 -0700
-Message-Id: <1398882179-17100-1-git-send-email-greearb@candelatech.com>
+ id 1WfaOy-000071-C1
+ for ath10k@lists.infradead.org; Wed, 30 Apr 2014 19:42:44 +0000
+Received: by mail-ve0-f180.google.com with SMTP id jz11so2714983veb.25
+ for <ath10k@lists.infradead.org>; Wed, 30 Apr 2014 12:42:20 -0700 (PDT)
+MIME-Version: 1.0
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Wed, 30 Apr 2014 15:36:06 -0400
+Message-ID: <CAHqTa-1D+xrg9=BMzP-offjArA=9-XQ8LcSyun1cqPyePrBrKA@mail.gmail.com>
+Subject: ath10k firmware crash after 4 hours of heavy TCP traffic
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,127 +18,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-From: Ben Greear <greearb@candelatech.com>
+Can someone help me decode this firmware crash so I know where to
+look?  It's possible I have more memory barrier type problems, as I
+did before, but it's very hard to figure these out without the
+firmware printing more helpful error messages.
 
-Check vdev map has space before calling ffs,
-fix invalid cleanup in failure to create vdev
-case.
+Unfortunately there were no interesting messages in the kernel logs
+leading up to this.  hostapd said TX_STATUS received, as usual, about
+2 seconds earlier.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
+In this test, we had three stations connected to the ath10k AP for
+about 4 hours, with heavy TCP traffic in both directions.  This is
+with ath10k-stable-3.11.8.
 
-This is compile-tested only.
+<3>[4305.499544] : ath10k: firmware crashed!
+<3>[4305.499561] : ath10k: hardware name qca988x hw2.0 version 0x4100016c
+<3>[4305.499571] : ath10k: firmware version: 10.1.467.2-1
+<3>[4305.500641] : ath10k: target register Dump Location: 0x0040AC94
+<3>[4305.501691] : ath10k: target Register Dump
+<3>[4305.501703] : ath10k: [00]: 0x4100016C 0x000015B3 0x009A7340 0x00955B31
+<3>[4305.501714] : ath10k: [04]: 0x009A7340 0x00060130 0x00000020 0x00000000
+<3>[4305.501725] : ath10k: [08]: 0x00411124 0x00000000 0x00415B0C 0x00000001
+<3>[4305.501735] : ath10k: [12]: 0x00000009 0x00000000 0x00958360 0x0095836B
+<3>[4305.501746] : ath10k: [16]: 0x00958080 0x0094085D 0x00000000 0x00000000
+<3>[4305.501756] : ath10k: [20]: 0x409A7340 0x0040ADA4 0x00411388 0x0040D144
+<3>[4305.501766] : ath10k: [24]: 0x809A80DE 0x0040AE04 0x0040ADEC 0xC09A7340
+<3>[4305.501777] : ath10k: [28]: 0x809A7885 0x0040AE24 0x0040AE48 0x00411124
+<3>[4305.501787] : ath10k: [32]: 0x809486FA 0x0040AE44 0x00000001 0x00000000
+<3>[4305.501797] : ath10k: [36]: 0x80948E2C 0x0040AEA4 0x0041D728 0x00411778
+<3>[4305.501807] : ath10k: [40]: 0x80942EB3 0x0040AEC4 0x0041D728 0x00000001
+<3>[4305.501817] : ath10k: [44]: 0x80940F18 0x0040AF14 0x00000010 0x00403AC0
+<3>[4305.501827] : ath10k: [48]: 0x80940EEA 0x0040AF44 0x00400000 0x00000000
+<3>[4305.501837] : ath10k: [52]: 0x80940F31 0x0040AF64 0x00401C10 0x00400600
+<3>[4305.501848] : ath10k: [56]: 0x40940024 0x0040AF84 0x004068E8 0x004068E8
 
- drivers/net/wireless/ath/ath10k/mac.c | 29 ++++++++++++-----------------
- 1 file changed, 12 insertions(+), 17 deletions(-)
+Thanks!
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e2c01dc..d461f05 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -594,14 +594,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
--	bit = ffs(ar->free_vdev_map);
--	if (bit == 0) {
-+	if (!ar->free_vdev_map) {
- 		ath10k_warn("failed to find free vdev id for monitor vdev\n");
- 		return -ENOMEM;
- 	}
- 
-+	bit = ffs(ar->free_vdev_map);
-+
- 	ar->monitor_vdev_id = bit - 1;
--	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
- 
- 	ret = ath10k_wmi_vdev_create(ar, ar->monitor_vdev_id,
- 				     WMI_VDEV_TYPE_MONITOR,
-@@ -609,20 +609,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 	if (ret) {
- 		ath10k_warn("failed to request monitor vdev %i creation: %d\n",
- 			    ar->monitor_vdev_id, ret);
--		goto vdev_fail;
-+		return ret;
- 	}
- 
-+	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
- 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d created\n",
- 		   ar->monitor_vdev_id);
- 
- 	return 0;
--
--vdev_fail:
--	/*
--	 * Restore the ID to the global map.
--	 */
--	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
--	return ret;
- }
- 
- static int ath10k_monitor_vdev_delete(struct ath10k *ar)
-@@ -638,7 +632,7 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
-+	ar->free_vdev_map |= (1 << ar->monitor_vdev_id);
- 
- 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d deleted\n",
- 		   ar->monitor_vdev_id);
-@@ -2622,11 +2616,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
- 	INIT_LIST_HEAD(&arvif->list);
- 
--	bit = ffs(ar->free_vdev_map);
--	if (bit == 0) {
-+	if (!ar->free_vdev_map) {
-+		ath10k_warn("Free vdev map is empty, no more interfaces allowed.\n");
- 		ret = -EBUSY;
- 		goto err;
- 	}
-+	bit = ffs(ar->free_vdev_map);
- 
- 	arvif->vdev_id = bit - 1;
- 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
-@@ -2669,7 +2664,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		goto err;
- 	}
- 
--	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
-+	ar->free_vdev_map &= ~(1 << arvif->vdev_id);
- 	list_add(&arvif->list, &ar->arvifs);
- 
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
-@@ -2762,7 +2757,7 @@ err_peer_delete:
- 
- err_vdev_delete:
- 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
--	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
-+	ar->free_vdev_map |= (1 << arvif->vdev_id);
- 	list_del(&arvif->list);
- 
- err:
-@@ -2792,7 +2787,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	}
- 	spin_unlock_bh(&ar->data_lock);
- 
--	ar->free_vdev_map |= 1 << (arvif->vdev_id);
-+	ar->free_vdev_map |= (1 << arvif->vdev_id);
- 	list_del(&arvif->list);
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
--- 
-1.7.11.7
-
+Avery
 
 _______________________________________________
 ath10k mailing list
