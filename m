@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
+Received: from mail.candelatech.com ([208.74.158.172] helo=ns3.lanforge.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WfZ1k-0002cu-WB
- for ath10k@lists.infradead.org; Wed, 30 Apr 2014 18:14:41 +0000
-Received: by mail-vc0-f174.google.com with SMTP id ib6so2667583vcb.5
- for <ath10k@lists.infradead.org>; Wed, 30 Apr 2014 11:14:19 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmsXMo2eJCm5A7H+xBxHhQ8t1yoNfRFF8d+7PeTOJnSJw@mail.gmail.com>
-References: <CAHqTa-31TAb=9+xyPzBVcEiipnN0_uV8mzSpEBD_sJVS1RDXZg@mail.gmail.com>
- <CA+BoTQmsXMo2eJCm5A7H+xBxHhQ8t1yoNfRFF8d+7PeTOJnSJw@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Wed, 30 Apr 2014 14:13:59 -0400
-Message-ID: <CAHqTa-3NVDL7GjgOYc-rSGwU5qGBqtuyMt9YepgLZcJqjk_YgA@mail.gmail.com>
-Subject: Re: ath10k fails to recover from simulated firmware crash in AP mode
+ id 1WfZAV-0008M2-ME
+ for ath10k@lists.infradead.org; Wed, 30 Apr 2014 18:23:44 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  improve vdev map handling.
+Date: Wed, 30 Apr 2014 11:22:59 -0700
+Message-Id: <1398882179-17100-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +15,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On Wed, Apr 30, 2014 at 2:01 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 30 April 2014 05:03, Avery Pennarun <apenwarr@gmail.com> wrote:
->> This is on a 3.2.26 kernel, mindspeed c2000 processor (ARMv7l), using
->> backports-v3.15-rc1 with today's kvalo/ath-next merged in (ie. commit
->> d9bc4b9b69 from Apr 23).
->>
->> Steps:
->> - modprobe ath10k_pci reset_mode=1  (this hardware crashes if you cold reset it)
->
-> There is a reason why ath10k falls back to cold reset (unless you
-> forbid it to): warm reset can't recover target in all cases.
+From: Ben Greear <greearb@candelatech.com>
 
-That makes sense of course.  It's a little disappointing that even the
-simulated firmware crash requires a cold reset to recover, though.
-Wouldn't that be the first one the firmware developers would test?
+Check vdev map has space before calling ffs,
+fix invalid cleanup in failure to create vdev
+case.
 
-Avery
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+
+This is compile-tested only.
+
+ drivers/net/wireless/ath/ath10k/mac.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e2c01dc..d461f05 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -594,14 +594,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-	bit = ffs(ar->free_vdev_map);
+-	if (bit == 0) {
++	if (!ar->free_vdev_map) {
+ 		ath10k_warn("failed to find free vdev id for monitor vdev\n");
+ 		return -ENOMEM;
+ 	}
+ 
++	bit = ffs(ar->free_vdev_map);
++
+ 	ar->monitor_vdev_id = bit - 1;
+-	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
+ 
+ 	ret = ath10k_wmi_vdev_create(ar, ar->monitor_vdev_id,
+ 				     WMI_VDEV_TYPE_MONITOR,
+@@ -609,20 +609,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
+ 	if (ret) {
+ 		ath10k_warn("failed to request monitor vdev %i creation: %d\n",
+ 			    ar->monitor_vdev_id, ret);
+-		goto vdev_fail;
++		return ret;
+ 	}
+ 
++	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d created\n",
+ 		   ar->monitor_vdev_id);
+ 
+ 	return 0;
+-
+-vdev_fail:
+-	/*
+-	 * Restore the ID to the global map.
+-	 */
+-	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
+-	return ret;
+ }
+ 
+ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
+@@ -638,7 +632,7 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
++	ar->free_vdev_map |= (1 << ar->monitor_vdev_id);
+ 
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d deleted\n",
+ 		   ar->monitor_vdev_id);
+@@ -2622,11 +2616,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
+ 	INIT_LIST_HEAD(&arvif->list);
+ 
+-	bit = ffs(ar->free_vdev_map);
+-	if (bit == 0) {
++	if (!ar->free_vdev_map) {
++		ath10k_warn("Free vdev map is empty, no more interfaces allowed.\n");
+ 		ret = -EBUSY;
+ 		goto err;
+ 	}
++	bit = ffs(ar->free_vdev_map);
+ 
+ 	arvif->vdev_id = bit - 1;
+ 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
+@@ -2669,7 +2664,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err;
+ 	}
+ 
+-	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	ar->free_vdev_map &= ~(1 << arvif->vdev_id);
+ 	list_add(&arvif->list, &ar->arvifs);
+ 
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+@@ -2762,7 +2757,7 @@ err_peer_delete:
+ 
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+-	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	ar->free_vdev_map |= (1 << arvif->vdev_id);
+ 	list_del(&arvif->list);
+ 
+ err:
+@@ -2792,7 +2787,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 	}
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+-	ar->free_vdev_map |= 1 << (arvif->vdev_id);
++	ar->free_vdev_map |= (1 << arvif->vdev_id);
+ 	list_del(&arvif->list);
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+-- 
+1.7.11.7
+
 
 _______________________________________________
 ath10k mailing list
