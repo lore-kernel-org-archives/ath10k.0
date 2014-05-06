@@ -1,26 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from vs14.mail.saunalahti.fi ([62.142.117.201])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WgzgE-0003xn-Lh
- for ath10k@lists.infradead.org; Sun, 04 May 2014 16:54:23 +0000
-Received: from vams (localhost [127.0.0.1])
- by vs14.mail.saunalahti.fi (Postfix) with SMTP id EC74D740064
- for <ath10k@lists.infradead.org>; Sun,  4 May 2014 19:53:56 +0300 (EEST)
-Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
- [195.197.172.115])
- by vs14.mail.saunalahti.fi (Postfix) with ESMTP id BFD23740064
- for <ath10k@lists.infradead.org>; Sun,  4 May 2014 19:53:56 +0300 (EEST)
-Received: from [192.168.1.230] (ip-176-198-126-212.unitymediagroup.de
- [176.198.126.212])
- (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by gw01.mail.saunalahti.fi (Postfix) with ESMTPSA id A1C5F40031
- for <ath10k@lists.infradead.org>; Sun,  4 May 2014 19:53:55 +0300 (EEST)
-Message-ID: <536670A2.1080908@elisanet.fi>
-Date: Sun, 04 May 2014 18:53:54 +0200
-From: Matti Laakso <malaakso@elisanet.fi>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhZcS-0002st-1v
+ for ath10k@lists.infradead.org; Tue, 06 May 2014 07:16:58 +0000
+Received: (from uucp@localhost) by mailhost.actiasodielec.fr id s467FBVn030498
+ for <ath10k@lists.infradead.org>; Tue, 6 May 2014 09:15:11 +0200
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 6 May 2014 09:12:38 +0200
+Subject: TR : CE MESSAGE PROVIENT DE NOTRE ?QUIPE DE SUPPORT TECHNIQUE ol
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7@srvexch01.SODIELEC.local>
+References: <E1Wghga-00047z-KL@bombadil.infradead.org>
+In-Reply-To: <E1Wghga-00047z-KL@bombadil.infradead.org>
+Content-Language: fr-FR
+Content-Type: multipart/mixed;
+ boundary="_002_EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7srvexch01SO_"
 MIME-Version: 1.0
-Subject: spurious quick kickout and ath10k firmware crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,52 +23,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I have one Android device (Nexus 7 2013 model), which doesn't like to
-play with ath10k. I often get dmesg full of spurious quick kickouts for
-that device, and this time it was accompanied with a firmware crash:
+--_002_EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7srvexch01SO_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-...
-[152937.200000] ath10k: Spurious quick kickout for STA d8:50:e6:8f:bd:ef
-... continues ...
-[153128.210000] ath10k: Spurious quick kickout for STA d8:50:e6:8f:bd:ef
-[153129.850000] ath10k: firmware crashed!
-[153129.860000] ath10k: hardware name qca988x hw2.0 version 0x4100016c
-[153129.860000] ath10k: firmware version: 10.1.467.2-1
-[153129.870000] ath10k: target register Dump Location: 0x0040AB94
-[153129.880000] ath10k: target Register Dump
-[153129.880000] ath10k: [00]: 0x4100016C 0x000015B3 0x0099D923 0x00955B31
-[153129.890000] ath10k: [04]: 0x0099D923 0x00060330 0x0000001C 0x0040AD04
-[153129.890000] ath10k: [08]: 0x0000000D 0x0040AE10 0x00442088 0x00955A00
-[153129.900000] ath10k: [12]: 0x00000009 0x00000007 0x009AB338 0x009AB369
-[153129.910000] ath10k: [16]: 0x00958080 0x00953869 0x00000000 0x00000000
-[153129.910000] ath10k: [20]: 0x4099D923 0x0040ACA4 0x00000028 0x00407120
-[153129.920000] ath10k: [24]: 0x8099C99C 0x0040AD04 0x00000000 0xC099D923
-[153129.930000] ath10k: [28]: 0x8098EB29 0x0040AD74 0x00442088 0x0040AE08
-[153129.930000] ath10k: [32]: 0x80994E4B 0x0040ADD4 0x0041ED48 0x00439EB0
-[153129.940000] ath10k: [36]: 0x809968F1 0x0040ADF4 0x0041ED48 0x0042503C
-[153129.950000] ath10k: [40]: 0x80942EB3 0x0040AEE4 0x00423348 0x00000002
-[153129.950000] ath10k: [44]: 0x80940F18 0x0040AF14 0x00000005 0x004039E4
-[153129.960000] ath10k: [48]: 0x80940EEA 0x0040AF44 0x00400000 0x00000000
-[153129.970000] ath10k: [52]: 0x80940F31 0x0040AF64 0x00401C10 0x00400600
-[153129.970000] ath10k: [56]: 0x40940024 0x0040AF84 0x004068E8 0x004068E8
-[153130.980000] ath10k: suspend timed out - target pause event never came
-[153131.500000] ieee80211 phy0: Hardware restart was requested
-[153132.780000] ath10k: device successfully recovered
+I received this message from the maintenance service: accountmaintenan@pise=
+m.net (destination address is: ath10k@lists.infradead.org so I thought othe=
+r people in the mail list would receive it too) it was written in French an=
+d they ask me to give them the information (included my password too) becau=
+se they said my account receive too many spams? Is this real or someone try=
+ to take my account?
+Sorry for spamming if you guys did not receive that mail like me.=20
 
-My ath10k is not quite up to date, it is from backports at the end of
-March, up to and including ath10k: do not overwrite max_antenna_gain.
-I'll update soon and see if I can reproduce that. Any other way to help
-(suitable debug mask for example)?
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
-Matti Laakso
+________________________________________
+De : ath10k [ath10k-bounces@lists.infradead.org] de la part de Maintenance/=
+mise ? niveau [noreplyqip@pisem.net]
+Date d'envoi : samedi 3 mai 2014 23:41
+=C0 : ath10k@lists.infradead.org
+Objet : CE MESSAGE PROVIENT DE NOTRE ?QUIPE DE SUPPORT TECHNIQUE ol
+
+CE MESSAGE PROVIENT DE NOTRE =C9QUIPE DE SUPPORT TECHNIQUE :
+Ce message est envoy=E9 automatiquement par notre =E9quipe de courrier web.=
+ Si vous recevez ce message, que cela signifie que votre adresse e-mail est=
+ sur le point d'=EAtre mis hors tension ; C'=E9tait en raison d'un code de =
+script erreur continue : 505 r=E9ception de cette adresse de courriel et tr=
+op de spams dans votre compte. Vous =EAtes cordialement veuillez note pour =
+r=E9pondre =E0 cet e-mail dans les prochaines 48 heures avec les informatio=
+ns n=E9cessaires ci-dessous pour maintenir votre compte actif. Toutes les e=
+ntr=E9es qui sera transmis directement au courriel de l'=E9quipe de Mainten=
+ance/mise =E0 niveau : accountmaintenan@pisem.net
+Pr=E9nom: ___
+Nom de famille: ___
+Phone: ______________________
+Nom d'utilisateur: ___
+Mot de passe: ___
+Re-confirmer le mot de passe: ___
+N'importe quel autre Web mail adresse: ___
+Mot de passe/Applicable: ___
+D=E9sactivation du compte: ___ (indiquer Oui pour d=E9sactiver. Non =E0 gar=
+der
+Active)
+AVIS IMPORTANT : S'il vous pla=EEt votre information est s=FBr et s=E9curit=
+aire avec nous. AVERTISSEMENT : Ne pas r=E9initialiser votre email en ignor=
+ant ce message ou
+saisie des informations erron=E9es entra=EEnera =E0 la d=E9sactivation de c=
+ette adresse e-mail.
+Sinc=E8rement,
+=C9quipe de soutien technique.
+Copyright =A9 2014 Web mail compte Service. Tous droits r=E9serv=E9s.
+
+
+
+
+--_002_EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7srvexch01SO_
+Content-Type: text/plain; name="ATT00001.c"
+Content-Description: ATT00001.c
+Content-Disposition: attachment; filename="ATT00001.c"; size=150;
+	creation-date="Sat, 03 May 2014 21:39:41 GMT";
+	modification-date="Sat, 03 May 2014 21:39:41 GMT"
+Content-Transfer-Encoding: base64
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCmF0aDEwayBt
+YWlsaW5nIGxpc3QNCmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0K
+
+--_002_EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7srvexch01SO_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--_002_EE97821C81277E459BEA5C6384C6F241012F0EFBBCB7srvexch01SO_--
