@@ -1,20 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wi2KD-0004TA-Hh
- for ath10k@lists.infradead.org; Wed, 07 May 2014 13:55:58 +0000
-Received: by mail-wi0-f172.google.com with SMTP id hi2so4993696wib.11
- for <ath10k@lists.infradead.org>; Wed, 07 May 2014 06:55:34 -0700 (PDT)
-Received: from marks-mbp-2.lan (markaswift.plus.com. [80.229.19.182])
- by mx.google.com with ESMTPSA id xm20sm31774039wib.19.2014.05.07.06.55.33
- for <ath10k@lists.infradead.org>
- (version=TLSv1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Wed, 07 May 2014 06:55:34 -0700 (PDT)
-From: "Mark A. Swift" <markaswift@gmail.com>
-Subject: Macbook Pro Retina unable to connect - connection timeout
-Message-Id: <DFFE9B39-5E70-40C7-929E-5D70F15C771B@gmail.com>
-Date: Wed, 7 May 2014 14:55:32 +0100
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.2\))
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wi2aE-0002ol-2R
+ for ath10k@lists.infradead.org; Wed, 07 May 2014 14:12:31 +0000
+Message-ID: <536A3F1E.8040509@candelatech.com>
+Date: Wed, 07 May 2014 07:11:42 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: RE : ath10k does not support selection antenna yet?
+References: <53461A8A.4030209@candelatech.com>
+ <CA+BoTQkAv_OrJ5cM-wp_fhdb01KV62gLqkXaSikYv9pS9t25eQ@mail.gmail.com>
+ <8738hgfi1k.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4838@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC4839@srvexch01.SODIELEC.local>
+ <87eh0yetyx.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F06CC483A@srvexch01.SODIELEC.local>
+ <87sip3mdzr.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB0@srvexch01.SODIELEC.local>
+ <CA+BoTQkChYC+sTy4MSFCbGDvNoGHRko=Oxbkj=hVy+EQ4LP1Gg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCB8@srvexch01.SODIELEC.local>
+ <CA+BoTQ=+SBBL2JYtPf1KoVCtMmuKggEaHbUa0bCL4W-biVMeAg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBA@srvexch01.SODIELEC.local>
+ <CALhHN=p-=HoyOtfDy6xkrT66aXPfX3gi3cqHZTN+kNj1PRVUgA@mail.gmail.com>
+In-Reply-To: <CALhHN=p-=HoyOtfDy6xkrT66aXPfX3gi3cqHZTN+kNj1PRVUgA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,103 +32,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello,
+On 05/07/2014 02:26 AM, Janusz Dziedzic wrote:
+> On 7 May 2014 10:16, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+>>>> I read in the debug's page that ath10k HW is currently limited to handle only single fixed rate setting or limit number of used spatial streams. Does it mean that the selection of antenna is not possible for this moment? Because if I look in the code of ath9k, there are 2 fonctions set_antenna and get_antenna in the structure: struct ieee80211_ops (file main.c) and that's why the out put of "iw list" for ath10k give me: Available Antennas:  TX0 RX0 and I can not select the antenna?
+>>
+>>> I'm not aware if that's possible.
+>>
+>> Thank you for your response. I think if the select and set antenna work, the out put of "iw list" may have some thing like this:
+>>         Available Antennas: TX 0x3 RX 0x3
+>>         Configured Antennas: TX 0x1 RX 0x1
 
-I seem to have identified a problem. Running the latest version of ath10k o=
-n openwrt I=92m unable to connect on my mid 2012 Macbook Pro Retina. The lo=
-g indicates:
+From looking at the 10.1.467 firmware, it appears it would support setting
+the tx and rx chainmask, and it seems the ath10k driver has at least some
+of the support needed to implement this.  grep for TX_CHAIN_MASK.
 
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan1: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: disassociated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:30 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:31 2014 daemon.info hostapd: wlan1: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: deauthenticated due to inactivity (timer DEAUTH/REMOVE)
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:33 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:33 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:33 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:38 2014 daemon.info hostapd: wlan1: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: authenticated
-Wed May  7 11:46:38 2014 daemon.info hostapd: wlan1: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: associated (aid 2)
-Wed May  7 11:46:38 2014 daemon.info hostapd: wlan1: STA 20:c9:d0:43:f5:e7 =
-WPA: pairwise key handshake completed (RSN)
-Wed May  7 11:46:39 2014 daemon.info dnsmasq-dhcp[3757]: DHCPREQUEST(br-lan=
-) 192.168.1.117 20:c9:d0:43:f5:e7 =
+I do NOT see a way in standard firmware to read the current chainmask.
 
-Wed May  7 11:46:40 2014 daemon.info dnsmasq-dhcp[3757]: DHCPACK(br-lan) 19=
-2.168.1.117 20:c9:d0:43:f5:e7 Marks-MBP-2
-Wed May  7 11:51:31 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: disassociated due to inactivity
-Wed May  7 11:51:32 2014 daemon.info hostapd: wlan0: STA 20:c9:d0:43:f5:e7 =
-IEEE 802.11: deauthenticated due to inactivity (timer DEAUTH/REMOVE)
+I have a way to read this in my customized firmware, but I have not yet
+tied it into the driver, and I am not certain my current method is the best option
+at this point...
 
-This was caused by disconnecting from the 2.4Ghz and then trying to connect=
- to the 5Ghz, I then connected back to the 2.4Ghz so that might also be inc=
-luded in the log.
+Thanks,
+Ben
 
-The network is running using the 11na and VHT80 variables. All other device=
-s connect without issues including, an Edimax 5ghz USB stick, iPad Mini Ret=
-ina and 2 Samsung Galaxys.
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-Any help would be greatly appreciated.
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
