@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Whtb5-0002nK-Nw
- for ath10k@lists.infradead.org; Wed, 07 May 2014 04:36:48 +0000
-Message-ID: <5369B848.606@candelatech.com>
-Date: Tue, 06 May 2014 21:36:24 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WhvGi-0006I0-Je
+ for ath10k@lists.infradead.org; Wed, 07 May 2014 06:23:53 +0000
+Received: by mail-wg0-f49.google.com with SMTP id m15so503996wgh.32
+ for <ath10k@lists.infradead.org>; Tue, 06 May 2014 23:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: spurious quick kickout and ath10k firmware crash
-References: <536670A2.1080908@elisanet.fi>
-In-Reply-To: <536670A2.1080908@elisanet.fi>
+In-Reply-To: <CAHqTa-29WHKcUCYbPiC93mZCdJnHP3Fc+r_SHXYgKHSJvz-Pvw@mail.gmail.com>
+References: <CAHqTa-29WHKcUCYbPiC93mZCdJnHP3Fc+r_SHXYgKHSJvz-Pvw@mail.gmail.com>
+Date: Wed, 7 May 2014 08:23:25 +0200
+Message-ID: <CA+BoTQnJa8Rhv+rTEaxtSHAOsCPSEP2AefKntrfaDwENbh40FQ@mail.gmail.com>
+Subject: Re: Receiving your own wifi beacons
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,86 +20,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matti Laakso <malaakso@elisanet.fi>, ath10k@lists.infradead.org
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-
-
-On 05/04/2014 09:53 AM, Matti Laakso wrote:
-> I have one Android device (Nexus 7 2013 model), which doesn't like to
-> play with ath10k. I often get dmesg full of spurious quick kickouts for
-> that device, and this time it was accompanied with a firmware crash:
-
-Looks like you hit an assert in the firmware.
-
-If you feel adventurous and have not gotten any solution elsewhere,
-you could try my firmware.  It will require a small patch to ath10k
-source, but aside from that it should be compatible with standard
-ath10k kernel drivers.
-
-If you crash my firmware, please let me know the crash dump and
-I will have a better chance of figuring out why it crashed.
-
-Info on my firmware is here, mixed in with some other things:
-
-http://www.candelatech.com/vsta.php
-
-I'd suggest using a 3.14.x kernel if you can.
-
-Thanks,
-Ben
-
-
->
-> ...
-> [152937.200000] ath10k: Spurious quick kickout for STA d8:50:e6:8f:bd:ef
-> ... continues ...
-> [153128.210000] ath10k: Spurious quick kickout for STA d8:50:e6:8f:bd:ef
-> [153129.850000] ath10k: firmware crashed!
-> [153129.860000] ath10k: hardware name qca988x hw2.0 version 0x4100016c
-> [153129.860000] ath10k: firmware version: 10.1.467.2-1
-> [153129.870000] ath10k: target register Dump Location: 0x0040AB94
-> [153129.880000] ath10k: target Register Dump
-> [153129.880000] ath10k: [00]: 0x4100016C 0x000015B3 0x0099D923 0x00955B31
-> [153129.890000] ath10k: [04]: 0x0099D923 0x00060330 0x0000001C 0x0040AD04
-> [153129.890000] ath10k: [08]: 0x0000000D 0x0040AE10 0x00442088 0x00955A00
-> [153129.900000] ath10k: [12]: 0x00000009 0x00000007 0x009AB338 0x009AB369
-> [153129.910000] ath10k: [16]: 0x00958080 0x00953869 0x00000000 0x00000000
-> [153129.910000] ath10k: [20]: 0x4099D923 0x0040ACA4 0x00000028 0x00407120
-> [153129.920000] ath10k: [24]: 0x8099C99C 0x0040AD04 0x00000000 0xC099D923
-> [153129.930000] ath10k: [28]: 0x8098EB29 0x0040AD74 0x00442088 0x0040AE08
-> [153129.930000] ath10k: [32]: 0x80994E4B 0x0040ADD4 0x0041ED48 0x00439EB0
-> [153129.940000] ath10k: [36]: 0x809968F1 0x0040ADF4 0x0041ED48 0x0042503C
-> [153129.950000] ath10k: [40]: 0x80942EB3 0x0040AEE4 0x00423348 0x00000002
-> [153129.950000] ath10k: [44]: 0x80940F18 0x0040AF14 0x00000005 0x004039E4
-> [153129.960000] ath10k: [48]: 0x80940EEA 0x0040AF44 0x00400000 0x00000000
-> [153129.970000] ath10k: [52]: 0x80940F31 0x0040AF64 0x00401C10 0x00400600
-> [153129.970000] ath10k: [56]: 0x40940024 0x0040AF84 0x004068E8 0x004068E8
-> [153130.980000] ath10k: suspend timed out - target pause event never came
-> [153131.500000] ieee80211 phy0: Hardware restart was requested
-> [153132.780000] ath10k: device successfully recovered
->
-> My ath10k is not quite up to date, it is from backports at the end of
-> March, up to and including ath10k: do not overwrite max_antenna_gain.
-> I'll update soon and see if I can reproduce that. Any other way to help
-> (suitable debug mask for example)?
->
-> Matti Laakso
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNyBNYXkgMjAxNCAwMTo0MiwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJyQGdtYWlsLmNvbT4g
+d3JvdGU6Cj4gSGkgYWxsLAo+Cj4gV2UncmUgY3VycmVudGx5IGludmVzdGlnYXRpbmcgYSBwcm9i
+bGVtIHdoZXJlIHRoZSBhdGgxMGsgQVAgd2lsbAo+IHNlZW1pbmdseSBzdG9wIHNlbmRpbmcgb3V0
+IGJlYWNvbnMsIHdpdGggbm8gb3RoZXIgb2J2aW91cyBzeW1wdG9tcwo+IChob3N0YXBkIGlzIHN0
+aWxsIHdvcmtpbmcgZmluZSkuICBUaGVyZSdzIG5vdCBtdWNoIEkgY2FuIHJlcG9ydAo+IGJlY2F1
+c2UsIG9mIGNvdXJzZSwgbm8gc3ltcHRvbXMuCj4KPiBXZSB3b3VsZCBsaWtlIHRvIGRldGVjdCB0
+aGlzIHNpdHVhdGlvbiBhdXRvbWF0aWNhbGx5IGJ5IHdhdGNoaW5nIGZvcgo+IG91dGdvaW5nIGJl
+YWNvbnMsIGJ1dCB3ZSd2ZSBub3RpY2VkIHRoYXQgd2hlbiB3ZSBjcmVhdGUgYSBtb25pdG9yCj4g
+aW50ZXJmYWNlLCB3ZSBjYW4gc2VlIGFsbCB0aGUgYmVhY29ucyAqZXhjZXB0KiBvbmVzIGdlbmVy
+YXRlZCBieSB0aGUKPiBsb2NhbCBBUC4gIFRoaXMgc2VlbXMgdG8gYWxzbyBiZSB0cnVlIHdpdGgg
+YXRoOWssIHNvIGl0IG1heSBub3QgYmUgYW4KPiBhdGgxMGstc3BlY2lmaWMgcHJvYmxlbSwgYnV0
+IHdlJ2QgbGlrZSBzb21lIHdheSB0byBzZWUgdGhlbSBnb2luZyBvdXQKPiAoYXQgdGhlIGV4cGVu
+c2Ugb2Ygc29tZSB3YXN0ZWQgQ1BVLCBvZiBjb3Vyc2UpLgo+Cj4gSXMgdGhlcmUgYW55IG1hZ2lj
+IGluY2FudGF0aW9uIHRoYXQgY2FuIHVuLWhpZGUgdGhlIGJlYWNvbnM/CgpJIGRvbid0IHRoaW5r
+IHlvdSBjYW4gZG8gdGhhdC4KCkJlYWNvbnMgaGF2ZSBubyB0eCBjb21wbGV0aW9uIGluIG1hYzgw
+MjExIGFuZCBpdCdzIHRoZSBkcml2ZXIgdGhhdApyZXF1ZXN0cyBiZWFjb24gc2tfYnVmZnMsIG5v
+dCB0aGUgb3RoZXIgd2F5IGFyb3VuZCBzbyB0aGVyZSdzIG5vIHdheQp0byBzbmlmZiB0aGVtLgoK
+WW91ciBiZXN0IG9wdGlvbiBpcyB0byBsb29rIGF0IGF0aDEwayBkZWJ1ZyBsb2dzLiBFYWNoIGJl
+YWNvbiBpcwpzdWJtaXR0ZWQgdXBvbiByZWNlaXZpbmcgYW4gU1dCQSBldmVudCBmcm9tIGZpcm13
+YXJlLgoKSWYgeW91IHdhbnQgdG8gYmUgdmVyaWZ5IGlmIGJlYWNvbnMgYXJlIG9uIGFpciB5b3Ug
+bmVlZCBhbiBleHRyYQpkZXZpY2UgdG8gYWN0IGFzIGEgc25pZmZlciB0aG91Z2guCgoKTWljaGHF
+ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
