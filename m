@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WiH76-0001va-WE
- for ath10k@lists.infradead.org; Thu, 08 May 2014 05:43:26 +0000
-Received: by mail-wi0-f171.google.com with SMTP id hm4so10253318wib.4
- for <ath10k@lists.infradead.org>; Wed, 07 May 2014 22:43:02 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1399499440-32365-2-git-send-email-greearb@candelatech.com>
-References: <1399499440-32365-1-git-send-email-greearb@candelatech.com>
- <1399499440-32365-2-git-send-email-greearb@candelatech.com>
-Date: Thu, 8 May 2014 07:43:01 +0200
-Message-ID: <CA+BoTQ==ayUd3PuD5FBvrKyJ2AtdZTAbFD9AVfm61T_Zn7uYfA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: support get/set antenna configurations.
-From: Michal Kazior <michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WiR22-0007yx-40
+ for ath10k@lists.infradead.org; Thu, 08 May 2014 16:18:50 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2 2/2] ath10k:  support get/set antenna configurations.
+Date: Thu,  8 May 2014 09:18:16 -0700
+Message-Id: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,71 +15,183 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-T24gNyBNYXkgMjAxNCAyMzo1MCwgIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4g
-RnJvbTogQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4KPiBUZXN0ZWQgd2l0
-aCBDVCBmaXJtd2FyZSwgYnV0IHNob3VsZCB3b3JrIG9uIHN0YW5kYXJkCj4gZmlybXdhcmUgYXMg
-d2VsbC4KPgo+IFZlcmlmaWVkIHRoYXQgdGFyZ2V0J3MgdHgvcnggY2hhaW4gcmVnaXN0ZXIgaXMg
-c2V0IGFwcHJvcHJpYXRlbHksCj4gYW5kIHRoYXQgdGhlIHR4IHJhdGUgZ29lcyBkb3duIGFzIG51
-bWJlciBvZiBjaGFpbnMKPiBkZWNyZWFzZSwgYnV0IEkgZGlkIG5vdCBhY3R1YWxseSB0cnkgdG8g
-dmVyaWZ5IGFudGVubmEKPiBjZWFzZWQgdG8gdHJhbnNtaXQgd2hlbiBkaXNhYmxlZC4KPgo+IFNp
-Z25lZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IC0tLQo+
-ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCB8ICA1ICsrKwo+ICBkcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jICB8IDY0ICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWku
-YyAgfCAgNSArKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCA3NCBpbnNlcnRpb25zKCspCj4KPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+IGluZGV4IDcwNTBjNDcuLmY3ZWI4MDUw
-IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4g
-KysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBAQCAtNDcyLDYg
-KzQ3MiwxMSBAQCBzdHJ1Y3QgYXRoMTBrIHsKPiAgICAgICAgIHUzMiBkZnNfYmxvY2tfcmFkYXJf
-ZXZlbnRzOwo+ICAgICAgICAgaW50IGluc3RhbGxfa2V5X3J2OyAvKiBTdG9yZSBlcnJvciBjb2Rl
-IGZyb20ga2V5LWluc3RhbGwgKi8KPgo+ICsgICAgICAgdW5zaWduZWQgY2hhciBzdXBwX3R4X2No
-YWlubWFzazsKPiArICAgICAgIHVuc2lnbmVkIGNoYXIgc3VwcF9yeF9jaGFpbm1hc2s7Cj4gKyAg
-ICAgICB1bnNpZ25lZCBjaGFyIGNmZ190eF9jaGFpbm1hc2s7Cj4gKyAgICAgICB1bnNpZ25lZCBj
-aGFyIGNmZ19yeF9jaGFpbm1hc2s7CgpJdCdzIHByb2JhYmx5IGEgZ29vZCBpZGVhIHRvIG5vdGUg
-dGhlc2UgYXJlIHByb3RlY3RlZCBieSBjb25mX211dGV4LgoKCj4gKwo+ICAgICAgICAgc3RydWN0
-IHdtaV9wZGV2X3NldF93bW1fcGFyYW1zX2FyZyB3bW1fcGFyYW1zOwo+ICAgICAgICAgc3RydWN0
-IGNvbXBsZXRpb24gaW5zdGFsbF9rZXlfZG9uZTsKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25l
-dC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9tYWMuYwo+IGluZGV4IGRjYjE0N2QuLmNjODViZDkgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiBAQCAtMjQ4Myw2ICsyNDgzLDYxIEBAIHZvaWQgYXRoMTBr
-X2hhbHQoc3RydWN0IGF0aDEwayAqYXIpCj4gICAgICAgICBzcGluX3VubG9ja19iaCgmYXItPmRh
-dGFfbG9jayk7Cj4gIH0KPgo+ICtzdGF0aWMgaW50IGF0aDEwa19nZXRfYW50ZW5uYShzdHJ1Y3Qg
-aWVlZTgwMjExX2h3ICpodywgdTMyICp0eF9hbnQsIHUzMiAqcnhfYW50KQo+ICt7Cj4gKyAgICAg
-ICBzdHJ1Y3QgYXRoMTBrICphciA9IGh3LT5wcml2Owo+ICsKPiArICAgICAgIGlmIChhci0+Y2Zn
-X3R4X2NoYWlubWFzaykgewo+ICsgICAgICAgICAgICAgICAqdHhfYW50ID0gYXItPmNmZ190eF9j
-aGFpbm1hc2s7Cj4gKyAgICAgICAgICAgICAgICpyeF9hbnQgPSBhci0+Y2ZnX3J4X2NoYWlubWFz
-azsKPiArICAgICAgIH0gZWxzZSB7Cj4gKyAgICAgICAgICAgICAgICp0eF9hbnQgPSBhci0+c3Vw
-cF90eF9jaGFpbm1hc2s7Cj4gKyAgICAgICAgICAgICAgICpyeF9hbnQgPSBhci0+c3VwcF9yeF9j
-aGFpbm1hc2s7Cj4gKyAgICAgICB9CgpTaG91bGRuJ3QgdGhpcyBiZSBwcm90ZWN0ZWQgYnkgY29u
-Zl9tdXRleD8KCgo+ICsgICAgICAgcmV0dXJuIDA7Cj4gK30KPiArCj4gK3N0YXRpYyBpbnQgX19h
-dGgxMGtfc2V0X2FudGVubmEoc3RydWN0IGF0aDEwayAqYXIsIHUzMiB0eF9hbnQsIHUzMiByeF9h
-bnQpCj4gK3sKPiArICAgICAgIGludCByZXQ7Cj4gKwoKK2xvY2tkZXBfYXNzZXJ0X2hlbGQoJmFy
-LT5jb25mX211dGV4KTsKCgo+ICsgICAgICAgYXItPmNmZ190eF9jaGFpbm1hc2sgPSB0eF9hbnQ7
-Cj4gKyAgICAgICBhci0+Y2ZnX3J4X2NoYWlubWFzayA9IHJ4X2FudDsKPiArCj4gKyAgICAgICBp
-ZiAoYXItPnN0YXRlICE9IEFUSDEwS19TVEFURV9PTikKClRoaXMgd29uJ3QgdXBkYXRlIHNldCBh
-bnRlbm5hIGR1cmluZyBodyByZXN0YXJ0LiBZb3Ugc2hvdWxkIGFjY2VwdApBVEgxMEtfU1RBVEVf
-UkVTVEFSVEVEIGhlcmUgdG9vLgoKCj4gKyAgICAgICAgICAgICAgIHJldHVybiAwOwo+ICsKPiAr
-ICAgICAgIHJldCA9IGF0aDEwa193bWlfcGRldl9zZXRfcGFyYW0oYXIsIGFyLT53bWkucGRldl9w
-YXJhbS0+dHhfY2hhaW5fbWFzaywKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgdHhfYW50KTsKPiArICAgICAgIGlmIChyZXQpIHsKPiArICAgICAgICAgICAgICAgYXRo
-MTBrX3dhcm4oImZhaWxlZCB0byBzZXQgdHgtY2hhaW5tYXNrOiAlZCwgcmVxIDB4JXhcbiIsCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldCwgdHhfYW50KTsKPiArICAgICAgICAgICAg
-ICAgcmV0dXJuIHJldDsKPiArICAgICAgIH0KPiArCj4gKyAgICAgICByZXQgPSBhdGgxMGtfd21p
-X3BkZXZfc2V0X3BhcmFtKGFyLCBhci0+d21pLnBkZXZfcGFyYW0tPnJ4X2NoYWluX21hc2ssCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJ4X2FudCk7Cj4gKyAgICAg
-ICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJmYWlsZWQgdG8gc2V0
-IHJ4LWNoYWlubWFzazogJWQsIHJlcSAweCV4XG4iLAo+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICByZXQsIHJ4X2FudCk7Cj4gKyAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gKyAgICAg
-ICB9Cj4gKwo+ICsgICAgICAgcmV0dXJuIHJldDsKCnJldHVybiAwIGlzIHByb2JhYmx5IGZpbmUg
-aGVyZSB0b28uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Ben Greear <greearb@candelatech.com>
+
+Tested with CT firmware, but should work on standard
+firmware as well.
+
+Verified that target's tx/rx chain register is set appropriately,
+and that the tx rate goes down as number of chains
+decrease, but I did not actually try to verify antenna
+ceased to transmit when disabled.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+
+v2:  Fixes suggested by Michal Kazior.
+
+ drivers/net/wireless/ath/ath10k/core.h |  6 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 72 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  5 +++
+ 3 files changed, 83 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7050c47..791d76d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -472,6 +472,12 @@ struct ath10k {
+ 	u32 dfs_block_radar_events;
+ 	int install_key_rv; /* Store error code from key-install */
+ 
++	/* Protected by conf-mutex */
++	unsigned char supp_tx_chainmask;
++	unsigned char supp_rx_chainmask;
++	unsigned char cfg_tx_chainmask;
++	unsigned char cfg_rx_chainmask;
++
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index dcb147d..01ba41e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2483,6 +2483,69 @@ void ath10k_halt(struct ath10k *ar)
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+ 
++static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->cfg_tx_chainmask) {
++		*tx_ant = ar->cfg_tx_chainmask;
++		*rx_ant = ar->cfg_rx_chainmask;
++	} else {
++		*tx_ant = ar->supp_tx_chainmask;
++		*rx_ant = ar->supp_rx_chainmask;
++	}
++
++	mutex_unlock(&ar->conf_mutex);
++
++	return 0;
++}
++
++static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
++{
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	ar->cfg_tx_chainmask = tx_ant;
++	ar->cfg_rx_chainmask = rx_ant;
++
++	if ((ar->state != ATH10K_STATE_ON) &&
++	    (ar->state != ATH10K_STATE_RESTARTED))
++		return 0;
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->tx_chain_mask,
++					tx_ant);
++	if (ret) {
++		ath10k_warn("failed to set tx-chainmask: %d, req 0x%x\n",
++			    ret, tx_ant);
++		return ret;
++	}
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->rx_chain_mask,
++					rx_ant);
++	if (ret) {
++		ath10k_warn("failed to set rx-chainmask: %d, req 0x%x\n",
++			    ret, rx_ant);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++	ret = __ath10k_set_antenna(ar, tx_ant, rx_ant);
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++
+ static int ath10k_start(struct ieee80211_hw *hw)
+ {
+ 	struct ath10k *ar = hw->priv;
+@@ -2530,6 +2593,10 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	if (ret)
+ 		ath10k_warn("failed to enable dynamic BW: %d\n", ret);
+ 
++	if (ar->cfg_tx_chainmask)
++		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
++				     ar->cfg_rx_chainmask);
++
+ 	/*
+ 	 * By default FW set ARP frames ac to voice (6). In that case ARP
+ 	 * exchange is not working properly for UAPSD enabled AP. ARP requests
+@@ -4437,6 +4504,8 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_frag_threshold		= ath10k_set_frag_threshold,
+ 	.flush				= ath10k_flush,
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
++	.set_antenna			= ath10k_set_antenna,
++	.get_antenna			= ath10k_get_antenna,
+ 	.restart_complete		= ath10k_restart_complete,
+ 	.get_survey			= ath10k_get_survey,
+ 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+@@ -4818,6 +4887,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		BIT(NL80211_IFTYPE_ADHOC) |
+ 		BIT(NL80211_IFTYPE_AP);
+ 
++	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
++	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
++
+ 	if (!test_bit(ATH10K_FW_FEATURE_NO_P2P, ar->fw_features))
+ 		ar->hw->wiphy->interface_modes |=
+ 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 82a827e..d82b740 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2601,6 +2601,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
+ 	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
++	ar->supp_tx_chainmask = TARGET_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+@@ -2721,6 +2723,9 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 	config.num_tids = __cpu_to_le32(TARGET_10X_NUM_TIDS);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
++	/* TODO:  Have to deal with 2x2 chips if/when the come out. */
++	ar->supp_tx_chainmask = TARGET_10X_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_10X_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+-- 
+1.7.11.7
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
