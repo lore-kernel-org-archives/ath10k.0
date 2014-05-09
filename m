@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
+Received: from mail-ee0-x22c.google.com ([2a00:1450:4013:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wik93-00012t-P6
- for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:22 +0000
-Received: by mail-ee0-f45.google.com with SMTP id d49so2588853eek.18
- for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:59 -0700 (PDT)
+ id 1Wik8x-0000zF-HF
+ for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:16 +0000
+Received: by mail-ee0-f44.google.com with SMTP id c41so2606301eek.17
+ for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:53 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 7/7] ath10k: remove old unused defines
-Date: Fri,  9 May 2014 14:35:57 +0200
-Message-Id: <1399638957-20449-8-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/7] ath10k: introduce core restart symbol
+Date: Fri,  9 May 2014 14:35:52 +0200
+Message-Id: <1399638957-20449-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 References: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,39 +27,75 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-These aren't used anywhere anymore.
+This makes it easier to have an extra preparation
+code before restart work is scheduled.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h | 1 -
- drivers/net/wireless/ath/ath10k/mac.c  | 2 --
- 2 files changed, 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++--
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
+ 3 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 01f1830..1128b5d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -37,7 +37,6 @@
- #define WO(_f)      ((_f##_OFFSET) >> 2)
- 
- #define ATH10K_SCAN_ID 0
--#define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
- #define ATH10K_NUM_CHANS 38
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9e3b16f..e9608e7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3551,8 +3551,6 @@ exit:
- 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7034c72..acc22cc 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -672,7 +672,7 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 	return 0;
  }
  
--#define ATH10K_ROC_TIMEOUT_HZ (2*HZ)
--
- static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif,
- 				    struct ieee80211_channel *chan,
+-static void ath10k_core_restart(struct work_struct *work)
++static void ath10k_core_restart_work(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+ 
+@@ -704,6 +704,12 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
++void ath10k_core_restart(struct ath10k *ar)
++{
++	queue_work(ar->workqueue, &ar->restart_work);
++}
++EXPORT_SYMBOL(ath10k_core_restart);
++
+ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 				  const struct ath10k_hif_ops *hif_ops)
+ {
+@@ -749,7 +755,7 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+ 	INIT_WORK(&ar->wmi_mgmt_tx_work, ath10k_mgmt_over_wmi_tx_work);
+ 	skb_queue_head_init(&ar->wmi_mgmt_tx_queue);
+ 
+-	INIT_WORK(&ar->restart_work, ath10k_core_restart);
++	INIT_WORK(&ar->restart_work, ath10k_core_restart_work);
+ 
+ 	return ar;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2c1dfd7..170094d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -494,5 +494,6 @@ int ath10k_wait_for_suspend(struct ath10k *ar, u32 suspend_opt);
+ void ath10k_core_stop(struct ath10k *ar);
+ int ath10k_core_register(struct ath10k *ar, u32 chip_id);
+ void ath10k_core_unregister(struct ath10k *ar);
++void ath10k_core_restart(struct ath10k *ar);
+ 
+ #endif /* _CORE_H_ */
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 438d3cf..7be5784 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1788,7 +1788,7 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 
+ 		if (ar_pci->started) {
+ 			ath10k_pci_hif_dump_area(ar);
+-			queue_work(ar->workqueue, &ar->restart_work);
++			ath10k_core_restart(ar);
+ 		} else {
+ 			/*
+ 			 * Probable Target failure before we're prepared
 -- 
 1.8.5.3
 
