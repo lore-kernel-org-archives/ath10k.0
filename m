@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
+Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wik8w-0000yT-Iw
- for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:15 +0000
-Received: by mail-ee0-f43.google.com with SMTP id d17so2652043eek.30
- for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:52 -0700 (PDT)
+ id 1Wik90-000119-4k
+ for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:18 +0000
+Received: by mail-ee0-f46.google.com with SMTP id t10so2604198eei.33
+ for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:57 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/7] ath10k: move restart_work call
-Date: Fri,  9 May 2014 14:35:51 +0200
-Message-Id: <1399638957-20449-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/7] ath10k: reduce timeout values
+Date: Fri,  9 May 2014 14:35:55 +0200
+Message-Id: <1399638957-20449-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 References: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,39 +27,105 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-That call really should not be in
-ath10k_pci_hif_dump_area(). It's very misleading
-to have a function name which implies just
-printing stuff but actually also restarts
-firmware.
+It doesn't make much sense to wait more than 1
+second in most cases.
 
-Suggested-By: Kalle Valo <kvalo@qca.qualcomm.com>
+This speeds up teardown in some failcases.
+
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/htt.c  | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 6 +++---
+ drivers/net/wireless/ath/ath10k/txrx.c | 2 +-
+ drivers/net/wireless/ath/ath10k/wmi.h  | 4 ++--
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 66b1f30..438d3cf 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -864,8 +864,6 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
- 			   reg_dump_values[i + 1],
- 			   reg_dump_values[i + 2],
- 			   reg_dump_values[i + 3]);
--
--	queue_work(ar->workqueue, &ar->restart_work);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 074cb41..01f1830 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -221,7 +221,7 @@ struct ath10k_sta {
+ 	struct work_struct update_wk;
+ };
+ 
+-#define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
++#define ATH10K_VDEV_SETUP_TIMEOUT_HZ (1*HZ)
+ 
+ struct ath10k_vif {
+ 	struct list_head list;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 69697af5..60ea5f1 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -100,7 +100,7 @@ err_htc_attach:
+ 	return ret;
  }
  
- static void ath10k_pci_hif_send_complete_check(struct ath10k *ar, u8 pipe,
-@@ -1790,6 +1788,7 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+-#define HTT_TARGET_VERSION_TIMEOUT_HZ (3*HZ)
++#define HTT_TARGET_VERSION_TIMEOUT_HZ (1*HZ)
  
- 		if (ar_pci->started) {
- 			ath10k_pci_hif_dump_area(ar);
-+			queue_work(ar->workqueue, &ar->restart_work);
- 		} else {
- 			/*
- 			 * Probable Target failure before we're prepared
+ static int ath10k_htt_verify_version(struct ath10k_htt *htt)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9b14ec8..9e3b16f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -98,7 +98,7 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = wait_for_completion_timeout(&ar->install_key_done, 3*HZ);
++	ret = wait_for_completion_timeout(&ar->install_key_done, 1*HZ);
+ 	if (ret == 0)
+ 		return -ETIMEDOUT;
+ 
+@@ -2190,7 +2190,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
+ 		return -EIO;
+ 	}
+ 
+-	ret = wait_for_completion_timeout(&ar->scan.completed, 3*HZ);
++	ret = wait_for_completion_timeout(&ar->scan.completed, 1*HZ);
+ 	if (ret == 0)
+ 		ath10k_warn("timed out while waiting for scan to stop\n");
+ 
+@@ -3604,7 +3604,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+ 		goto exit;
+ 	}
+ 
+-	ret = wait_for_completion_timeout(&ar->scan.on_channel, 3*HZ);
++	ret = wait_for_completion_timeout(&ar->scan.on_channel, 1*HZ);
+ 	if (ret == 0) {
+ 		ath10k_warn("failed to switch to channel for roc scan\n");
+ 		ath10k_abort_scan(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 82669a7..9007f2e 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -146,7 +146,7 @@ static int ath10k_wait_for_peer_common(struct ath10k *ar, int vdev_id,
+ 			spin_unlock_bh(&ar->data_lock);
+ 
+ 			mapped == expect_mapped;
+-		}), 3*HZ);
++		}), 1*HZ);
+ 
+ 	if (ret <= 0)
+ 		return -ETIMEDOUT;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index ae83822..772dbb6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1162,8 +1162,8 @@ struct wmi_service_ready_event_10x {
+ } __packed;
+ 
+ 
+-#define WMI_SERVICE_READY_TIMEOUT_HZ (5*HZ)
+-#define WMI_UNIFIED_READY_TIMEOUT_HZ (5*HZ)
++#define WMI_SERVICE_READY_TIMEOUT_HZ (1*HZ)
++#define WMI_UNIFIED_READY_TIMEOUT_HZ (1*HZ)
+ 
+ struct wmi_ready_event {
+ 	__le32 sw_version;
 -- 
 1.8.5.3
 
