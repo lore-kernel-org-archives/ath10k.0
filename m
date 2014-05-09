@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
+Received: from mail-ee0-x22d.google.com ([2a00:1450:4013:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wik90-000119-4k
- for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:18 +0000
-Received: by mail-ee0-f46.google.com with SMTP id t10so2604198eei.33
- for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:57 -0700 (PDT)
+ id 1Wik93-00012t-P6
+ for ath10k@lists.infradead.org; Fri, 09 May 2014 12:43:22 +0000
+Received: by mail-ee0-f45.google.com with SMTP id d49so2588853eek.18
+ for <ath10k@lists.infradead.org>; Fri, 09 May 2014 05:42:59 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/7] ath10k: reduce timeout values
-Date: Fri,  9 May 2014 14:35:55 +0200
-Message-Id: <1399638957-20449-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 7/7] ath10k: remove old unused defines
+Date: Fri,  9 May 2014 14:35:57 +0200
+Message-Id: <1399638957-20449-8-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 References: <1399638957-20449-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,105 +27,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It doesn't make much sense to wait more than 1
-second in most cases.
-
-This speeds up teardown in some failcases.
+These aren't used anywhere anymore.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h | 2 +-
- drivers/net/wireless/ath/ath10k/htt.c  | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 6 +++---
- drivers/net/wireless/ath/ath10k/txrx.c | 2 +-
- drivers/net/wireless/ath/ath10k/wmi.h  | 4 ++--
- 5 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 1 -
+ drivers/net/wireless/ath/ath10k/mac.c  | 2 --
+ 2 files changed, 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 074cb41..01f1830 100644
+index 01f1830..1128b5d 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -221,7 +221,7 @@ struct ath10k_sta {
- 	struct work_struct update_wk;
- };
+@@ -37,7 +37,6 @@
+ #define WO(_f)      ((_f##_OFFSET) >> 2)
  
--#define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
-+#define ATH10K_VDEV_SETUP_TIMEOUT_HZ (1*HZ)
+ #define ATH10K_SCAN_ID 0
+-#define WMI_READY_TIMEOUT (5 * HZ)
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
+ #define ATH10K_NUM_CHANS 38
  
- struct ath10k_vif {
- 	struct list_head list;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 69697af5..60ea5f1 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -100,7 +100,7 @@ err_htc_attach:
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9e3b16f..e9608e7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3551,8 +3551,6 @@ exit:
  	return ret;
  }
  
--#define HTT_TARGET_VERSION_TIMEOUT_HZ (3*HZ)
-+#define HTT_TARGET_VERSION_TIMEOUT_HZ (1*HZ)
- 
- static int ath10k_htt_verify_version(struct ath10k_htt *htt)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9b14ec8..9e3b16f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -98,7 +98,7 @@ static int ath10k_install_key(struct ath10k_vif *arvif,
- 	if (ret)
- 		return ret;
- 
--	ret = wait_for_completion_timeout(&ar->install_key_done, 3*HZ);
-+	ret = wait_for_completion_timeout(&ar->install_key_done, 1*HZ);
- 	if (ret == 0)
- 		return -ETIMEDOUT;
- 
-@@ -2190,7 +2190,7 @@ static int ath10k_abort_scan(struct ath10k *ar)
- 		return -EIO;
- 	}
- 
--	ret = wait_for_completion_timeout(&ar->scan.completed, 3*HZ);
-+	ret = wait_for_completion_timeout(&ar->scan.completed, 1*HZ);
- 	if (ret == 0)
- 		ath10k_warn("timed out while waiting for scan to stop\n");
- 
-@@ -3604,7 +3604,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
- 		goto exit;
- 	}
- 
--	ret = wait_for_completion_timeout(&ar->scan.on_channel, 3*HZ);
-+	ret = wait_for_completion_timeout(&ar->scan.on_channel, 1*HZ);
- 	if (ret == 0) {
- 		ath10k_warn("failed to switch to channel for roc scan\n");
- 		ath10k_abort_scan(ar);
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 82669a7..9007f2e 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -146,7 +146,7 @@ static int ath10k_wait_for_peer_common(struct ath10k *ar, int vdev_id,
- 			spin_unlock_bh(&ar->data_lock);
- 
- 			mapped == expect_mapped;
--		}), 3*HZ);
-+		}), 1*HZ);
- 
- 	if (ret <= 0)
- 		return -ETIMEDOUT;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ae83822..772dbb6 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1162,8 +1162,8 @@ struct wmi_service_ready_event_10x {
- } __packed;
- 
- 
--#define WMI_SERVICE_READY_TIMEOUT_HZ (5*HZ)
--#define WMI_UNIFIED_READY_TIMEOUT_HZ (5*HZ)
-+#define WMI_SERVICE_READY_TIMEOUT_HZ (1*HZ)
-+#define WMI_UNIFIED_READY_TIMEOUT_HZ (1*HZ)
- 
- struct wmi_ready_event {
- 	__le32 sw_version;
+-#define ATH10K_ROC_TIMEOUT_HZ (2*HZ)
+-
+ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+ 				    struct ieee80211_vif *vif,
+ 				    struct ieee80211_channel *chan,
 -- 
 1.8.5.3
 
