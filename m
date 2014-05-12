@@ -1,35 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjiZc-0000TE-Nj
- for ath10k@lists.infradead.org; Mon, 12 May 2014 05:14:49 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Running throughput tests
-References: <00ea01cee403$5331f1e0$f995d5a0$@sparklan.com>
- <006b01cefacb$6c0b2d60$44218820$@sparklan.com>
- <52B00B10.3050300@intec.ugent.be>
- <004b01cefb9d$04a543e0$0defcba0$@sparklan.com>
- <52B2AE75.9050206@intec.ugent.be>
- <00df01cf0090$05944f10$10bced30$@sparklan.com>
- <52B9672E.9000701@intec.ugent.be>
- <008c01cf012e$e59563d0$b0c02b70$@sparklan.com>
- <530A64E5.2040401@intec.ugent.be> <530B0670.1010009@stackframe.org>
- <530E5EF2.8070800@intec.ugent.be>
- <87y50weecb.fsf_-_@kamboji.qca.qualcomm.com>
- <5335910B.3000702@intec.ugent.be>
- <87y4zutk4i.fsf@kamboji.qca.qualcomm.com>
- <53372210.7060903@intec.ugent.be>
- <871tx8m1qs.fsf@kamboji.qca.qualcomm.com>
- <5352D327.7060106@intec.ugent.be>
- <87lhuvmdjy.fsf@kamboji.qca.qualcomm.com>
- <535F22C0.9000403@candelatech.com>
- <8761lbk3yo.fsf@kamboji.qca.qualcomm.com>
- <53705196.8070708@candelatech.com>
-Date: Mon, 12 May 2014 08:14:20 +0300
-In-Reply-To: <53705196.8070708@candelatech.com> (Ben Greear's message of "Sun, 
- 11 May 2014 21:44:06 -0700")
-Message-ID: <87oaz3ino3.fsf@kamboji.qca.qualcomm.com>
+ id 1Wjiel-00027T-IB
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 05:20:09 +0000
+Received: by mail-ve0-f174.google.com with SMTP id jw12so8068833veb.19
+ for <ath10k@lists.infradead.org>; Sun, 11 May 2014 22:19:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <537056B1.6060902@candelatech.com>
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+ <53703B61.3050305@candelatech.com>
+ <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
+ <53704888.9060602@candelatech.com>
+ <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
+ <537056B1.6060902@candelatech.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Mon, 12 May 2014 01:19:24 -0400
+Message-ID: <CAHqTa-0VEyuWY6b6DFn-YUKjUEWT1+Ph+O_WNU4u1t1Eqv4ASQ@mail.gmail.com>
+Subject: Re: Unicast packets stop being transmitted to a particular station,
+ under load, when WPA2 is enabled
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -43,38 +31,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: Bart.Jooris@intec.ugent.be, ath10k@lists.infradead.org
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> On 05/11/2014 09:37 PM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->>
->>> We tried with the Sparklan today, and it locks up the system soon after we
->>> start hostapd, so we just removed it from the system.  The WLE900VX in same
->>> machine and same config works fine.
->>
->> Odd. From the website[1] it looks like a normal CUS233 to me. Can you
->> get any more info? For example, where does it exactly lock up? Enabling
->> also all kernel debugging (lock debugging etc) might be also useful.
+On Mon, May 12, 2014 at 1:05 AM, Ben Greear <greearb@candelatech.com> wrote:
+> If it's getting on the air, then I think the only way to figure out
+> what is wrong is to decode the packets and see if they are encrypted
+> properly or not.  I think there is a way to get wireshark to decode
+> pkts by feeding it the proper keys, but I have not ever actually tried
+> doing that.
 >
-> Seems like the bad old days when we saw lots of total host lockups on
-> cold resets, etc.  I didn't see anything useful in the logs, and I was
-> running lockdep enabled kernel.
->
-> Since WLE900VX works for me, I've little interest in hacking on the
-> Sparklan NIC.  Possibly it's just a bad beta hardware or something like that.
+> If pkts do not get on the air, then possibly the tx status and/or tx
+> error counters could tell you why, but it seems that is not relevant
+> in this case.
 
-Yeah, might be.
+Okay, in fact I just learned how to use that wireshark feature last
+week, so I tried it just now and it worked.  It clearly shows the
+downstream packets from the AP *are* decryptable from wireshark, but
+they get no replies from the macbook (and the macbook doesn't show
+them at its IP layer).
 
-> If you have trouble getting a hold of this NIC, I'll be happy to mail
-> it to you.
+Any guesses?  Does that mean somehow the macbook got the wrong
+*decryption* keys or something?
 
-Damn, I just arrived back from US. It would have been easier to ship it
-to our San Jose office.
-
--- 
-Kalle Valo
+I'm currently trying to wade through the giant wireshark capture
+trying to find the actual point where the dropout occurred, but it
+seems to slow down a bit with 1.5 million frames captured :)
 
 _______________________________________________
 ath10k mailing list
