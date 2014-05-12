@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22e.google.com ([2607:f8b0:400c:c01::22e])
+Received: from mail-ve0-x234.google.com ([2607:f8b0:400c:c01::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wjiel-00027T-IB
- for ath10k@lists.infradead.org; Mon, 12 May 2014 05:20:09 +0000
-Received: by mail-ve0-f174.google.com with SMTP id jw12so8068833veb.19
- for <ath10k@lists.infradead.org>; Sun, 11 May 2014 22:19:44 -0700 (PDT)
+ id 1Wjioy-0007Ts-Dz
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 05:30:41 +0000
+Received: by mail-ve0-f180.google.com with SMTP id db12so7959984veb.25
+ for <ath10k@lists.infradead.org>; Sun, 11 May 2014 22:30:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <537056B1.6060902@candelatech.com>
-References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <53703B61.3050305@candelatech.com>
- <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
- <53704888.9060602@candelatech.com>
- <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
- <537056B1.6060902@candelatech.com>
+In-Reply-To: <87wqdriorw.fsf@kamboji.qca.qualcomm.com>
+References: <CAHqTa-29WHKcUCYbPiC93mZCdJnHP3Fc+r_SHXYgKHSJvz-Pvw@mail.gmail.com>
+ <87wqdriorw.fsf@kamboji.qca.qualcomm.com>
 From: Avery Pennarun <apenwarr@gmail.com>
-Date: Mon, 12 May 2014 01:19:24 -0400
-Message-ID: <CAHqTa-0VEyuWY6b6DFn-YUKjUEWT1+Ph+O_WNU4u1t1Eqv4ASQ@mail.gmail.com>
-Subject: Re: Unicast packets stop being transmitted to a particular station,
- under load, when WPA2 is enabled
+Date: Mon, 12 May 2014 01:29:57 -0400
+Message-ID: <CAHqTa-3dREsfjYR_2rpDxjeKEy8ZwqEZ9yXXYtoB8J92AqGB9A@mail.gmail.com>
+Subject: Re: Receiving your own wifi beacons
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,32 +25,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Mon, May 12, 2014 at 1:05 AM, Ben Greear <greearb@candelatech.com> wrote:
-> If it's getting on the air, then I think the only way to figure out
-> what is wrong is to decode the packets and see if they are encrypted
-> properly or not.  I think there is a way to get wireshark to decode
-> pkts by feeding it the proper keys, but I have not ever actually tried
-> doing that.
+On Mon, May 12, 2014 at 12:50 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Avery Pennarun <apenwarr@gmail.com> writes:
+>> We're currently investigating a problem where the ath10k AP will
+>> seemingly stop sending out beacons, with no other obvious symptoms
+>> (hostapd is still working fine).  There's not much I can report
+>> because, of course, no symptoms.
 >
-> If pkts do not get on the air, then possibly the tx status and/or tx
-> error counters could tell you why, but it seems that is not relevant
-> in this case.
+> Can you still provide more information about the problem, please? How
+> often do you see it? What kind of setup do you have? With or without
+> DFS? How many BSS?
 
-Okay, in fact I just learned how to use that wireshark feature last
-week, so I tried it just now and it worked.  It clearly shows the
-downstream packets from the AP *are* decryptable from wireshark, but
-they get no replies from the macbook (and the macbook doesn't show
-them at its IP layer).
+It doesn't happen often.  We haven't been able to reproduce it in a
+lab, only at a small number of our test sites at people's homes, and
+even then only rarely (although some people apparently experience it
+more than others).  We aren't using DFS (does ath10k even support DFS
+yet?).  We are using 20 MHz channel, 5 GHz for all these test users.
+There is only a single BSS configured for our APs right now, although
+other APs may be nearby.
 
-Any guesses?  Does that mean somehow the macbook got the wrong
-*decryption* keys or something?
+Based on Michal's suggestion, we've added some code to enable minimal
+debug messages from the firmware and log whenever a beacon is sent.
+This seems to work, so we'll deploy it to all our test users in the
+next week or so and, if the problem triggers, at least this should
+give us a clue (such as whether the firmware thinks it's still sending
+beacons, and exactly what the dmesg looks like at the time that it
+stops).
 
-I'm currently trying to wade through the giant wireshark capture
-trying to find the actual point where the dropout occurred, but it
-seems to slow down a bit with 1.5 million frames captured :)
+If you have any other suggestions, please let us know.
+
+Thanks!
+
+Avery
 
 _______________________________________________
 ath10k mailing list
