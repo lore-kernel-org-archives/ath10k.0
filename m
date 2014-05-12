@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x235.google.com ([2607:f8b0:400c:c01::235])
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjfVk-0005Hi-JS
- for ath10k@lists.infradead.org; Mon, 12 May 2014 01:58:37 +0000
-Received: by mail-ve0-f181.google.com with SMTP id pa12so8036388veb.12
- for <ath10k@lists.infradead.org>; Sun, 11 May 2014 18:58:14 -0700 (PDT)
+ id 1Wjff0-0005sD-D0
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 02:08:11 +0000
+Received: by mail-we0-f171.google.com with SMTP id w62so6120702wes.2
+ for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:07:47 -0700 (PDT)
 MIME-Version: 1.0
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Sun, 11 May 2014 21:57:54 -0400
-Message-ID: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
-Subject: Unicast packets stop being transmitted to a particular station, under
- load, when WPA2 is enabled
+In-Reply-To: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+Date: Sun, 11 May 2014 19:07:46 -0700
+Message-ID: <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
+Subject: Re: Unicast packets stop being transmitted to a particular station,
+ under load, when WPA2 is enabled
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,72 +21,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Version: 3.15-rc1 and ath10k-stable-3.11-8 (both via backports to kernel 3.2.26)
-Firmware: 10.1.467.2-1
-
-Steps:
-- Configure ath10k as AP on channel 149, width 80 MHz, WPA2 encryption
-- Connect my 2009 macbook
-- Start a ping of 8.8.8.8 in the background from my macbook
-- Generate some traffic.  The trigger varies, but running uTorrent or
-quickly opening a lot of background tabs in Chrome usually seems to
-set it off within a couple of minutes.  iperf and isoping don't seem
-to cause any trouble.
-
-Expected:
-- ping keeps pinging
-
-Actual:
-- tcpdump on the ath10k host shows ICMP requests coming in, and
-responses going out.
-- tcpdump on the macbook shows ICMP requests going out, but no
-responses coming back.
-- tcpdump -I (radiotap mode) on the macbook is a little hard to
-understand since it's encrypted, but it shows some packets coming out
-of the ath10k (broadcasts, I think) but no unicast packets to the
-macbook.
-- tcpdump on the macbook *does* show broadcast packets arriving.  For
-example, ARP requests and "ping -b 192.168.1.255" (my local subnet IP
-address) get through.
-- Disconnecting and then reconnecting the wifi on my macbook fixes the
-problem until it next triggers.
-- Other STAs connected to the AP are not affected when the one STA
-isn't able to communicate (although each one has the potential to
-trigger the problem)
-
-Disabling encryption makes the problem go away permanently.
-
-This is pretty quick for me to reproduce, but unfortunately I don't
-have any steps to trigger it instantly, nor any command line tools
-that seem to make it happen.  (For example I tried multiple parallel
-'curl' processes in a loop, and no lock.)
-
-Nothing interesting appears in the dmesg or hostapd logs at the time
-of the problem.
-
-This sounds like it could be a problem with crypto session keys, but I
-don't understand why it would only be wrong in a single direction.  I
-also don't think my keys are rotating this quickly, so this shouldn't
-be a key rotation problem (though I don't understand very well how
-that works).
-
-It might be my imagination, but it's possible that this triggers more
-quickly if my macbook has been connected for a longer period of time
-before generating the traffic burst.
-
-Anything I can check to help narrow this down?
-
-Thanks,
-
-Avery
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgNjo1NyBQTSwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJy
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gVmVyc2lvbjogMy4xNS1yYzEgYW5kIGF0aDEway1zdGFibGUt
+My4xMS04IChib3RoIHZpYSBiYWNrcG9ydHMgdG8ga2VybmVsIDMuMi4yNikKPiBGaXJtd2FyZTog
+MTAuMS40NjcuMi0xCj4KPiBTdGVwczoKPiAtIENvbmZpZ3VyZSBhdGgxMGsgYXMgQVAgb24gY2hh
+bm5lbCAxNDksIHdpZHRoIDgwIE1IeiwgV1BBMiBlbmNyeXB0aW9uCj4gLSBDb25uZWN0IG15IDIw
+MDkgbWFjYm9vawo+IC0gU3RhcnQgYSBwaW5nIG9mIDguOC44LjggaW4gdGhlIGJhY2tncm91bmQg
+ZnJvbSBteSBtYWNib29rCj4gLSBHZW5lcmF0ZSBzb21lIHRyYWZmaWMuICBUaGUgdHJpZ2dlciB2
+YXJpZXMsIGJ1dCBydW5uaW5nIHVUb3JyZW50IG9yCj4gcXVpY2tseSBvcGVuaW5nIGEgbG90IG9m
+IGJhY2tncm91bmQgdGFicyBpbiBDaHJvbWUgdXN1YWxseSBzZWVtcyB0bwo+IHNldCBpdCBvZmYg
+d2l0aGluIGEgY291cGxlIG9mIG1pbnV0ZXMuICBpcGVyZiBhbmQgaXNvcGluZyBkb24ndCBzZWVt
+Cj4gdG8gY2F1c2UgYW55IHRyb3VibGUuCj4KPiBFeHBlY3RlZDoKPiAtIHBpbmcga2VlcHMgcGlu
+Z2luZwo+Cj4gQWN0dWFsOgo+IC0gdGNwZHVtcCBvbiB0aGUgYXRoMTBrIGhvc3Qgc2hvd3MgSUNN
+UCByZXF1ZXN0cyBjb21pbmcgaW4sIGFuZAo+IHJlc3BvbnNlcyBnb2luZyBvdXQuCj4gLSB0Y3Bk
+dW1wIG9uIHRoZSBtYWNib29rIHNob3dzIElDTVAgcmVxdWVzdHMgZ29pbmcgb3V0LCBidXQgbm8K
+PiByZXNwb25zZXMgY29taW5nIGJhY2suCj4gLSB0Y3BkdW1wIC1JIChyYWRpb3RhcCBtb2RlKSBv
+biB0aGUgbWFjYm9vayBpcyBhIGxpdHRsZSBoYXJkIHRvCj4gdW5kZXJzdGFuZCBzaW5jZSBpdCdz
+IGVuY3J5cHRlZCwgYnV0IGl0IHNob3dzIHNvbWUgcGFja2V0cyBjb21pbmcgb3V0Cj4gb2YgdGhl
+IGF0aDEwayAoYnJvYWRjYXN0cywgSSB0aGluaykgYnV0IG5vIHVuaWNhc3QgcGFja2V0cyB0byB0
+aGUKPiBtYWNib29rLgo+IC0gdGNwZHVtcCBvbiB0aGUgbWFjYm9vayAqZG9lcyogc2hvdyBicm9h
+ZGNhc3QgcGFja2V0cyBhcnJpdmluZy4gIEZvcgo+IGV4YW1wbGUsIEFSUCByZXF1ZXN0cyBhbmQg
+InBpbmcgLWIgMTkyLjE2OC4xLjI1NSIgKG15IGxvY2FsIHN1Ym5ldCBJUAo+IGFkZHJlc3MpIGdl
+dCB0aHJvdWdoLgo+IC0gRGlzY29ubmVjdGluZyBhbmQgdGhlbiByZWNvbm5lY3RpbmcgdGhlIHdp
+Zmkgb24gbXkgbWFjYm9vayBmaXhlcyB0aGUKPiBwcm9ibGVtIHVudGlsIGl0IG5leHQgdHJpZ2dl
+cnMuCj4gLSBPdGhlciBTVEFzIGNvbm5lY3RlZCB0byB0aGUgQVAgYXJlIG5vdCBhZmZlY3RlZCB3
+aGVuIHRoZSBvbmUgU1RBCj4gaXNuJ3QgYWJsZSB0byBjb21tdW5pY2F0ZSAoYWx0aG91Z2ggZWFj
+aCBvbmUgaGFzIHRoZSBwb3RlbnRpYWwgdG8KPiB0cmlnZ2VyIHRoZSBwcm9ibGVtKQo+Cj4gRGlz
+YWJsaW5nIGVuY3J5cHRpb24gbWFrZXMgdGhlIHByb2JsZW0gZ28gYXdheSBwZXJtYW5lbnRseS4K
+Pgo+IFRoaXMgaXMgcHJldHR5IHF1aWNrIGZvciBtZSB0byByZXByb2R1Y2UsIGJ1dCB1bmZvcnR1
+bmF0ZWx5IEkgZG9uJ3QKPiBoYXZlIGFueSBzdGVwcyB0byB0cmlnZ2VyIGl0IGluc3RhbnRseSwg
+bm9yIGFueSBjb21tYW5kIGxpbmUgdG9vbHMKPiB0aGF0IHNlZW0gdG8gbWFrZSBpdCBoYXBwZW4u
+ICAoRm9yIGV4YW1wbGUgSSB0cmllZCBtdWx0aXBsZSBwYXJhbGxlbAo+ICdjdXJsJyBwcm9jZXNz
+ZXMgaW4gYSBsb29wLCBhbmQgbm8gbG9jay4pCj4KPiBOb3RoaW5nIGludGVyZXN0aW5nIGFwcGVh
+cnMgaW4gdGhlIGRtZXNnIG9yIGhvc3RhcGQgbG9ncyBhdCB0aGUgdGltZQo+IG9mIHRoZSBwcm9i
+bGVtLgo+Cj4gVGhpcyBzb3VuZHMgbGlrZSBpdCBjb3VsZCBiZSBhIHByb2JsZW0gd2l0aCBjcnlw
+dG8gc2Vzc2lvbiBrZXlzLCBidXQgSQo+IGRvbid0IHVuZGVyc3RhbmQgd2h5IGl0IHdvdWxkIG9u
+bHkgYmUgd3JvbmcgaW4gYSBzaW5nbGUgZGlyZWN0aW9uLiAgSQo+IGFsc28gZG9uJ3QgdGhpbmsg
+bXkga2V5cyBhcmUgcm90YXRpbmcgdGhpcyBxdWlja2x5LCBzbyB0aGlzIHNob3VsZG4ndAo+IGJl
+IGEga2V5IHJvdGF0aW9uIHByb2JsZW0gKHRob3VnaCBJIGRvbid0IHVuZGVyc3RhbmQgdmVyeSB3
+ZWxsIGhvdwo+IHRoYXQgd29ya3MpLgoKSSBoYXZlIGJlZW4gZmFpbGluZyB0byBmaW5kIGFuZCBm
+aXggYSB2ZXJ5IHNpbWlsYXIgcHJvYmxlbSBvbiB0aGUKYXRoOWsgZm9yIG1hbnkgbW9udGhzIG5v
+dy4gV2hhdCBJIHNlZSBoYXBwZW5pbmcgdGhlcmUgaXMgdGhhdCBvbmUgb3IKbW9yZSBvZiB0aGUK
+aGFyZHdhcmUgcXVldWVzIGxvY2tzIHVwLCBhbmQgc3RvcHMgdHJhbnNtaXR0aW5nIHRyYWZmaWMu
+IFNvLCBmb3IKZXhhbXBsZSBJIG1pZ2h0IGdldCB0cmFmZmljIGRlc3RpbmVkIGZvciB0aGUgQksg
+KGJhY2tncm91bmQgcXVldWUsCnRyYWZmaWMgbWFya2VkIENTMSkgaHVuZywKYnV0IEJFIHJlbWFp
+bnMgZmluZS4gTW9zdCByZWNlbnRseSBJIHdhcyBhYmxlIHRvIGxvY2sgdXAgdGhlIFZPLCBWSQpB
+TkQgQksgcXVldWVzIGJ5IGV4ZXJjaXNpbmcgaXQgb3Zlcm5pZ2h0IHdpdGggbXVsdGlwbGUgY29w
+aWVzIG9mIHRoZQpycnVsIHRlc3QuCgpJIGRvbid0IGtub3cgbXVjaCBhYm91dCBob3cgdGhlIGhh
+cmR3YXJlIHF1ZXVlcyBhcmUgY29uZmlndXJlZCBvbgphdGgxMGssIGJ1dCB5b3UgY2FuIGxhbmQg
+c3R1ZmYgaW4gZWFjaCBxdWV1ZSBieSBtYXJraW5nIHdpdGggQ1MwLCBDUzEsCkNTNSwgYW5kIENT
+NyAoQkUsQkssVkksVk8pIG9uIG1hYzgwMjExIGJhc2VkIGRldmljZXMuCgpJIGNhbiBtYWtlIGl0
+IGhhcHBlbiBtb3JlIG9mdGVuLCBmYXN0ZXIsIGlmIHRoZSBhc3NvY2lhdGVkIHN0YXRpb24gaGFz
+CmNvbnNpZGVyYWJsZSBkaXN0YW5jZSBhbmQgbGVzcyBzaWduYWwgc3RyZW5ndGggdGhhbiBuZWFy
+YnkuCgpNeSBidWcgaW4gdGhlIGJ1ZyB0cmFja2VyIGlzIGhlcmU6CgpodHRwOi8vd3d3LmJ1ZmZl
+cmJsb2F0Lm5ldC9pc3N1ZXMvNDQyCgo+IEl0IG1pZ2h0IGJlIG15IGltYWdpbmF0aW9uLCBidXQg
+aXQncyBwb3NzaWJsZSB0aGF0IHRoaXMgdHJpZ2dlcnMgbW9yZQo+IHF1aWNrbHkgaWYgbXkgbWFj
+Ym9vayBoYXMgYmVlbiBjb25uZWN0ZWQgZm9yIGEgbG9uZ2VyIHBlcmlvZCBvZiB0aW1lCj4gYmVm
+b3JlIGdlbmVyYXRpbmcgdGhlIHRyYWZmaWMgYnVyc3QuCgo+Cj4gQW55dGhpbmcgSSBjYW4gY2hl
+Y2sgdG8gaGVscCBuYXJyb3cgdGhpcyBkb3duPwoKTW92ZSBpdCBmYXJ0aGVyIGF3YXkuCgpCbG93
+IGl0IHVwIHdpdGggbmV0cGVyZi13cmFwcGVycyAtSCBzb21lc2VydmVyIHJydWwuLi4KCj4gVGhh
+bmtzLAo+Cj4gQXZlcnkKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+CgoKLS0gCkRhdmUgVMOkaHQKCk5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5zb3JzaGlwL0lu
+dGVybmV0X2NlbnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFydGljbGUKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
