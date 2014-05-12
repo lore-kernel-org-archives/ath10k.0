@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjiJO-0005MY-FF
- for ath10k@lists.infradead.org; Mon, 12 May 2014 04:58:03 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Macbook Pro Retina unable to connect - connection timeout
-References: <DFFE9B39-5E70-40C7-929E-5D70F15C771B@gmail.com>
-Date: Mon, 12 May 2014 07:57:34 +0300
-In-Reply-To: <DFFE9B39-5E70-40C7-929E-5D70F15C771B@gmail.com> (Mark A. Swift's
- message of "Wed, 7 May 2014 14:55:32 +0100")
-Message-ID: <87siofiog1.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WjiRM-000054-TC
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 05:06:18 +0000
+Message-ID: <537056B1.6060902@candelatech.com>
+Date: Sun, 11 May 2014 22:05:53 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Unicast packets stop being transmitted to a particular station,
+ under load, when WPA2 is enabled
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+ <53703B61.3050305@candelatech.com>
+ <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
+ <53704888.9060602@candelatech.com>
+ <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
+In-Reply-To: <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,49 +23,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Mark A. Swift" <markaswift@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Ik1hcmsgQS4gU3dpZnQiIDxtYXJrYXN3aWZ0QGdtYWlsLmNvbT4gd3JpdGVzOgoKPiBJIHNlZW0g
-dG8gaGF2ZSBpZGVudGlmaWVkIGEgcHJvYmxlbS4gUnVubmluZyB0aGUgbGF0ZXN0IHZlcnNpb24g
-b2YKPiBhdGgxMGsgb24gb3BlbndydCBJ4oCZbSB1bmFibGUgdG8gY29ubmVjdCBvbiBteSBtaWQg
-MjAxMiBNYWNib29rIFBybwo+IFJldGluYS4gVGhlIGxvZyBpbmRpY2F0ZXM6Cj4KPiBXZWQgTWF5
-ICA3IDExOjQ2OjMwIDIwMTQgZGFlbW9uLmluZm8gaG9zdGFwZDogd2xhbjE6IFNUQSAyMDpjOTpk
-MDo0MzpmNTplNyBJRUVFIDgwMi4xMTogZGlzYXNzb2NpYXRlZAo+IFdlZCBNYXkgIDcgMTE6NDY6
-MzAgMjAxNCBkYWVtb24uaW5mbyBob3N0YXBkOiB3bGFuMDogU1RBIDIwOmM5OmQwOjQzOmY1OmU3
-IElFRUUgODAyLjExOiBhdXRoZW50aWNhdGVkCgpbLi4uXQoKPiBXZWQgTWF5ICA3IDExOjQ2OjMz
-IDIwMTQgZGFlbW9uLmluZm8gaG9zdGFwZDogd2xhbjA6IFNUQSAyMDpjOTpkMDo0MzpmNTplNyBJ
-RUVFIDgwMi4xMTogYXV0aGVudGljYXRlZAo+IFdlZCBNYXkgIDcgMTE6NDY6MzggMjAxNCBkYWVt
-b24uaW5mbyBob3N0YXBkOiB3bGFuMTogU1RBIDIwOmM5OmQwOjQzOmY1OmU3IElFRUUgODAyLjEx
-OiBhdXRoZW50aWNhdGVkCj4gV2VkIE1heSAgNyAxMTo0NjozOCAyMDE0IGRhZW1vbi5pbmZvIGhv
-c3RhcGQ6IHdsYW4xOiBTVEEgMjA6Yzk6ZDA6NDM6ZjU6ZTcgSUVFRSA4MDIuMTE6IGFzc29jaWF0
-ZWQgKGFpZCAyKQo+IFdlZCBNYXkgIDcgMTE6NDY6MzggMjAxNCBkYWVtb24uaW5mbyBob3N0YXBk
-OiB3bGFuMTogU1RBIDIwOmM5OmQwOjQzOmY1OmU3IFdQQTogcGFpcndpc2Uga2V5IGhhbmRzaGFr
-ZSBjb21wbGV0ZWQgKFJTTikKPiBXZWQgTWF5ICA3IDExOjQ2OjM5IDIwMTQgZGFlbW9uLmluZm8g
-ZG5zbWFzcS1kaGNwWzM3NTddOiBESENQUkVRVUVTVChici1sYW4pIDE5Mi4xNjguMS4xMTcgMjA6
-Yzk6ZDA6NDM6ZjU6ZTcgCj4gV2VkIE1heSAgNyAxMTo0Njo0MCAyMDE0IGRhZW1vbi5pbmZvIGRu
-c21hc3EtZGhjcFszNzU3XTogREhDUEFDSyhici1sYW4pIDE5Mi4xNjguMS4xMTcgMjA6Yzk6ZDA6
-NDM6ZjU6ZTcgTWFya3MtTUJQLTIKPiBXZWQgTWF5ICA3IDExOjUxOjMxIDIwMTQgZGFlbW9uLmlu
-Zm8gaG9zdGFwZDogd2xhbjA6IFNUQSAyMDpjOTpkMDo0MzpmNTplNyBJRUVFIDgwMi4xMTogZGlz
-YXNzb2NpYXRlZCBkdWUgdG8gaW5hY3Rpdml0eQo+IFdlZCBNYXkgIDcgMTE6NTE6MzIgMjAxNCBk
-YWVtb24uaW5mbyBob3N0YXBkOiB3bGFuMDogU1RBIDIwOmM5OmQwOjQzOmY1OmU3IElFRUUgODAy
-LjExOiBkZWF1dGhlbnRpY2F0ZWQgZHVlIHRvIGluYWN0aXZpdHkgKHRpbWVyIERFQVVUSC9SRU1P
-VkUpCj4KPiBUaGlzIHdhcyBjYXVzZWQgYnkgZGlzY29ubmVjdGluZyBmcm9tIHRoZSAyLjRHaHog
-YW5kIHRoZW4gdHJ5aW5nIHRvCj4gY29ubmVjdCB0byB0aGUgNUdoeiwgSSB0aGVuIGNvbm5lY3Rl
-ZCBiYWNrIHRvIHRoZSAyLjRHaHogc28gdGhhdCBtaWdodAo+IGFsc28gYmUgaW5jbHVkZWQgaW4g
-dGhlIGxvZy4KCklzIGF0aDEwayBvbiB3bGFuMD8gV2hhdCdzIG9uIHdsYW4xPwoKPiBUaGUgbmV0
-d29yayBpcyBydW5uaW5nIHVzaW5nIHRoZSAxMW5hIGFuZCBWSFQ4MCB2YXJpYWJsZXMuIEFsbCBv
-dGhlcgo+IGRldmljZXMgY29ubmVjdCB3aXRob3V0IGlzc3VlcyBpbmNsdWRpbmcsIGFuIEVkaW1h
-eCA1Z2h6IFVTQiBzdGljaywKPiBpUGFkIE1pbmkgUmV0aW5hIGFuZCAyIFNhbXN1bmcgR2FsYXh5
-cy4KPgo+IEFueSBoZWxwIHdvdWxkIGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQuCgpEbyB5b3UgaGF2
-ZSBhIHNuaWZmZXI/IEdldHRpbmcgYW4gYWlybG9nIHdvdWxkIGhlbHAgdG8gdW5kZXJzdGFuZCB0
-aGUKcHJvYmxlbSBtb3JlLgoKQWxzbyBpdCB3b3VsZCBiZSBnb29kIGlkZWEgdG8gdHJ5IGRpZmZl
-cmVudCBzZXR0aW5ncyB0byBuYXJyb3cgZG93biB0aGUKcHJvYmxlbSwgZm9yIGV4YW1wbGUgd2l0
-aG91dCBlbmNyeXB0aW9uLCBkaXNhYmxpbmcgMTFhYyBhbmQgdXNpbmcgYQpkaWZmZXJlbnQgY2hh
-bm5lbC4KCi0tIApLYWxsZSBWYWxvCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+
+On 05/11/2014 09:56 PM, Avery Pennarun wrote:
+> On Mon, May 12, 2014 at 12:05 AM, Ben Greear <greearb@candelatech.com> wrote:
+>> On 05/11/2014 08:54 PM, Avery Pennarun wrote:
+>>> On Sun, May 11, 2014 at 11:09 PM, Ben Greear <greearb@candelatech.com>
+>>> wrote:
+>>>> Also, have you tried sniffing with a third device to see if
+>>>> the AP actually puts the ICMP responses on the air?
+>>>
+>>> I did try that.  As far as I can tell, the ICMP responses are simply
+>>> not being sent at all.
+>
+> I was incorrect about this because I was looking at the wrong data.  I
+> tested again with a more obvious method, running "ping -i0.01
+> 192.168.1.107" where 107 is the address of my macbook.  With 100
+> packets per second, they overwhelm the rest of the traffic so it's
+> easy to see whether they're coming through.
+>
+> The AP definitely *is* transmitting the packets on the air.  Even my
+> macbook can see them in the radiotap tcpdump mode, but it doesn't see
+> them at the IP layer.  So they are either being encrypted wrong or my
+> macbook is decrypting them wrong, I guess.
+>
+> I think I'll try using wireshark and see what it thinks...
+>
+>> I haven't dug into many of the stats yet, but it's possible the
+>> ath10k debugfs file would show some types of transmit errors in this case?
+>
+> Possibly.  Can you give me a hint of where to look?  I don't really
+> know what these files do.
+>
+>> Might be interesting to see how long it takes the AP to generate
+>> the tx status response for the transmitted ICMP packets.  My firmware
+>> has some extended tx status, but I'm not sure it has anything overly
+>> useful for your case...I was mostly concerned with the tx rate reporting
+>> when writing it.
+>
+> I can try it with your firmware if you think there is useful data to
+> gather, although since it turned out my earlier statement wasn't true
+> maybe this is less important :)
+
+If it's getting on the air, then I think the only way to figure out
+what is wrong is to decode the packets and see if they are encrypted
+properly or not.  I think there is a way to get wireshark to decode
+pkts by feeding it the proper keys, but I have not ever actually tried
+doing that.
+
+If pkts do not get on the air, then possibly the tx status and/or tx
+error counters could tell you why, but it seems that is not relevant
+in this case.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
