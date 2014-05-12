@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjgGA-0000Jj-21
- for ath10k@lists.infradead.org; Mon, 12 May 2014 02:46:34 +0000
-Received: by mail-we0-f178.google.com with SMTP id u56so6277024wes.9
- for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:46:10 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wjgca-0004HQ-S5
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 03:09:45 +0000
+Message-ID: <53703B61.3050305@candelatech.com>
+Date: Sun, 11 May 2014 20:09:21 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw7BienqR0c2yD4Z2O8i8RNWp7KnhyG=CTe=Aoq2==e7ow@mail.gmail.com>
-References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
- <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
- <CAA93jw7BienqR0c2yD4Z2O8i8RNWp7KnhyG=CTe=Aoq2==e7ow@mail.gmail.com>
-Date: Sun, 11 May 2014 19:46:10 -0700
-Message-ID: <CAA93jw6b6=quC7m06PS2hGjnYF7wajzMDvaQ7My3Ouf_Of=egw@mail.gmail.com>
 Subject: Re: Unicast packets stop being transmitted to a particular station,
  under load, when WPA2 is enabled
-From: Dave Taht <dave.taht@gmail.com>
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+In-Reply-To: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,76 +19,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Avery Pennarun <apenwarr@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-T24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgNzo0MiBQTSwgRGF2ZSBUYWh0IDxkYXZlLnRhaHRAZ21h
-aWwuY29tPiB3cm90ZToKPiBPbiBTdW4sIE1heSAxMSwgMjAxNCBhdCA3OjI5IFBNLCBBdmVyeSBQ
-ZW5uYXJ1biA8YXBlbndhcnJAZ21haWwuY29tPiB3cm90ZToKPj4gT24gU3VuLCBNYXkgMTEsIDIw
-MTQgYXQgMTA6MDcgUE0sIERhdmUgVGFodCA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+
-PiBJIGhhdmUgYmVlbiBmYWlsaW5nIHRvIGZpbmQgYW5kIGZpeCBhIHZlcnkgc2ltaWxhciBwcm9i
-bGVtIG9uIHRoZQo+Pj4gYXRoOWsgZm9yIG1hbnkgbW9udGhzIG5vdy4gV2hhdCBJIHNlZSBoYXBw
-ZW5pbmcgdGhlcmUgaXMgdGhhdCBvbmUgb3IKPj4+IG1vcmUgb2YgdGhlCj4+PiBoYXJkd2FyZSBx
-dWV1ZXMgbG9ja3MgdXAsIGFuZCBzdG9wcyB0cmFuc21pdHRpbmcgdHJhZmZpYy4gU28sIGZvcgo+
-Pj4gZXhhbXBsZSBJIG1pZ2h0IGdldCB0cmFmZmljIGRlc3RpbmVkIGZvciB0aGUgQksgKGJhY2tn
-cm91bmQgcXVldWUsCj4+PiB0cmFmZmljIG1hcmtlZCBDUzEpIGh1bmcsCj4+PiBidXQgQkUgcmVt
-YWlucyBmaW5lLiBNb3N0IHJlY2VudGx5IEkgd2FzIGFibGUgdG8gbG9jayB1cCB0aGUgVk8sIFZJ
-Cj4+PiBBTkQgQksgcXVldWVzIGJ5IGV4ZXJjaXNpbmcgaXQgb3Zlcm5pZ2h0IHdpdGggbXVsdGlw
-bGUgY29waWVzIG9mIHRoZQo+Pj4gcnJ1bCB0ZXN0Lgo+Pj4KPj4+IEkgZG9uJ3Qga25vdyBtdWNo
-IGFib3V0IGhvdyB0aGUgaGFyZHdhcmUgcXVldWVzIGFyZSBjb25maWd1cmVkIG9uCj4+PiBhdGgx
-MGssIGJ1dCB5b3UgY2FuIGxhbmQgc3R1ZmYgaW4gZWFjaCBxdWV1ZSBieSBtYXJraW5nIHdpdGgg
-Q1MwLCBDUzEsCj4+PiBDUzUsIGFuZCBDUzcgKEJFLEJLLFZJLFZPKSBvbiBtYWM4MDIxMSBiYXNl
-ZCBkZXZpY2VzLgo+Pgo+PiBJIHRoaW5rIG15IHByb2JsZW0gbWF5IGJlIHNvbWV0aGluZyBlbHNl
-LiAgSW4gcGFydGljdWxhciwgaXQgc2VlbXMgdG8KPj4gYWZmZWN0IGVhY2ggc3RhdGlvbiBzZXBh
-cmF0ZWx5LCBhbmQgZG9lc24ndCBzZWVtIHRvIGhhcHBlbiBpZiBJCj4+IGRpc2FibGUgZW5jcnlw
-dGlvbi4gIChEb2VzIHlvdXIgYXRoOWsgcHJvYmxlbSB0cmlnZ2VyIGlmIGVuY3J5cHRpb24gaXMK
-Pj4gdHVybmVkIG9mZj8pCj4KPiBOby4gV1BBMiBvbmx5IHNvIGZhci4KPgo+IEkgd2lsbCB0cnkg
-bXVsdGlwbGUgc3RhdGlvbnMgdG8gc2VlIGlmIEkgY2FuIGdldCBpdCB0byBvY2N1ciBvbmx5IG9u
-IGEKPiBwZXItc3RhdGlvbiBiYXNpcy4gKHRoZXJlIGFyZSBoYXJkd2FyZSBxdWV1ZXMgZm9yIG11
-bHRpcGxlIGZvcm1zIG9mCj4gdHJhZmZpYyBub3QganVzdCB0aGUgdmlzaWJsZSBWTywgVkksIEJF
-LCBhbmQgQksgcXVldWVzKQo+Cj4+IEkgYWxzbyBoYXZlIGFuIGF0aDlrIGRldmljZSBpbiB0aGUg
-c2FtZSBBUCBvbiAyLjQgR0h6LAo+PiBhbmQgaXQgZG9lc24ndCB0cmlnZ2VyIHRoZXJlIGVpdGhl
-ci4gIEkgaGF2ZW4ndCBhdHRlbXB0ZWQgdG8gc2VlIGlmCj4+IHlvdXIgYnVnIHRyaWdnZXJzIG9u
-IHRoYXQgb25lIHRob3VnaCA6KQo+Cj4gSXQgcmVhbGx5IHRha2VzIHdvcmsgdG8gdHJpZ2dlciBp
-dCwgYW5kIEkgY2FuIGNhbiBub3cgZG8gaXQgb24gYm90aAo+IDIuNGdoeiBhbmQgNS4gR2V0dGlu
-ZyBpdCBkb3duIHRvIHVuZGVyIDYgaG91cnMgb2YgaGlnaCB0cmFmZmljCj4gcmVjZW50bHkgd2Fz
-IGFuIGFjY29tcGxpc2htZW50Lgo+Cj4+PiBJIGNhbiBtYWtlIGl0IGhhcHBlbiBtb3JlIG9mdGVu
-LCBmYXN0ZXIsIGlmIHRoZSBhc3NvY2lhdGVkIHN0YXRpb24gaGFzCj4+PiBjb25zaWRlcmFibGUg
-ZGlzdGFuY2UgYW5kIGxlc3Mgc2lnbmFsIHN0cmVuZ3RoIHRoYW4gbmVhcmJ5Lgo+Cj4gVGhlcmUg
-YXJlIG5vdCBvZnRlbiBleGVjdXRlZCBjb2RlIHBhdGhzIGNvbnRyb2xsaW5nIGhvdyBub2lzZSBy
-ZWplY3Rpb24KPiB3b3JrcywgYW5kIGFsbCBzb3J0cyBvZiBoYXJkd2FyZSBpc3N1ZXMgb24gY29u
-ZmlndXJpbmcgaXQgdGhhdCB2YXJ5IGJldHdlZW4KPiBjaGlwc2V0IHZlcnNpb25zLiBUb24gb2Yg
-cGF0Y2hlcyBoYWQgbGFuZGVkIGluIGhlYWQgdGhhdCBoYWQgYW4gdXBkYXRlCj4gdG8gdGhlIEFO
-SSB2YWx1ZXMKPiB0aGF0IHdvcmtlZCBvbiBuZXdlciB2ZXJzaW9ucyBvZiB0aGUgYXRoOWsgY2hp
-cHNldCB0aGF0IGxhdGVyIGhhZCB0byBiZSBtb2RpZmllZAo+IHRvIGRlYWwgd2l0aCBvbGRlciBh
-dGg5ayBjaGlwc2V0cy4KPgo+PiBJIGp1c3QgY2hlY2tlZCwgYW5kIG15IGJ1ZyBzZWVtcyB0byB0
-cmlnZ2VyIG1vcmUgb2Z0ZW4gd2hlbiBJJ20gYXQgYQo+PiBsb25nZXIgZGlzdGFuY2UgKG15IG1h
-Y2Jvb2sgc2F5cyBhYm91dCAtNjAgUlNTSSkgYW5kIGxlc3Mgb2Z0ZW4gYXQgYQo+PiBjbG9zZXIg
-ZGlzdGFuY2UgKGN1cnJlbnRseSBtYWNib29rIHJlcG9ydHMgUlNTSSBvZiAtNDEpLiAgTm90IHN1
-cmUgaWYKPj4gdGhpcyBpcyByZWxhdGVkIHRvIGluY3JlYXNlZCByZXRyYW5zbWl0cyBvciBkZWNy
-ZWFzZWQgc3BlZWQgb3IKPj4gc29tZXRoaW5nIGVsc2UuCj4+Cj4+PiBCbG93IGl0IHVwIHdpdGgg
-bmV0cGVyZi13cmFwcGVycyAtSCBzb21lc2VydmVyIHJydWwuLi4KPj4KPj4gVGhhdCdzIG5vdCBh
-IGJhZCBpZGVhLi4uIEkgcmVhbGx5IG5lZWQgdG8gZ2V0IG5ldHBlcmYtd3JhcHBlcnMgZ29pbmcK
-Pj4gZm9yIHNvbWUgc3RyZXNzIHRlc3RpbmcgOikKPgo+IFRoZSBoYXJkd2FyZSBxdWV1ZXMgYXJl
-IHJhcmVseSB0ZXN0ZWQuCj4KPiBJZiB5b3UganVzdCB3YW50IHRvIGJsb3cgdXAgb25lIHF1ZXVl
-IGF0IGEgdGltZSwgdGhlIHN5bnRheCBmb3IgbmV0cGVyZiBpcwoKbmV0cGVyZiAtSCBzb21lc2Vy
-dmVyIC10IHRoZV90ZXN0IC1ZIENTMSxDUzEgIyBvciBDUzUsQ1M1IG9yIENTNiwgQ1M2CgpJIGhh
-dmUgYmVlbiBmbG9vZGluZyBhbGwgdGhlIHF1ZXVlcyB3aXRoIGJvdGggLXQgVENQX1NUUkVBTSBh
-bmQgVENQX01BRVJUUwp0byBtYWtlIGl0IGhhcHBlbiB1c2luZyB0aGUgcnJ1bCB0ZXN0LCBidXQg
-SSBoYXZlIGFsc28gbWFkZSBpdCBoYXBwZW4Kd2l0aCBCRSBvbmx5LgoKR2V0dGluZyBvbmUgZGF0
-YSBwb2ludCBldmVyeSBkYXkgb3Igc28gbWFrZXMgZm9yIHNsb3cgZGVidWdnaW5nLgoKPgo+IFlv
-dSBjYW4gYWxzbyBhcmJpdHJhcmlseSBkbyB0b3Mtc2V0dGluZyB3aXRoIGlwdGFibGVzLgo+Cj4g
-ZG5zbWFzcSB1c2VzIENTNiBieSBkZWZhdWx0LCBidHcsIHNvIGl0J3MgREhDUCBwYWNrZXRzIGxh
-bmQgYnkgZGVmYXVsdAo+IGluIFZPIGFuZCB0aGVuIGdldCBzaHVmZmxlZCBvdmVyIHRvIHRoZSBt
-dWx0aWNhc3QgaHcgcXVldWUuCj4KPgo+Pgo+PiBIYXZlIGZ1biwKPj4KPj4gQXZlcnkKPgo+Cj4K
-PiAtLQo+IERhdmUgVMOkaHQKPgo+IE5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5zb3JzaGlw
-L0ludGVybmV0X2NlbnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFydGljbGUK
-CgoKLS0gCkRhdmUgVMOkaHQKCk5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5zb3JzaGlwL0lu
-dGVybmV0X2NlbnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFydGljbGUKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+On 05/11/2014 06:57 PM, Avery Pennarun wrote:
+> Version: 3.15-rc1 and ath10k-stable-3.11-8 (both via backports to kernel 3.2.26)
+> Firmware: 10.1.467.2-1
+>
+> Steps:
+> - Configure ath10k as AP on channel 149, width 80 MHz, WPA2 encryption
+> - Connect my 2009 macbook
+> - Start a ping of 8.8.8.8 in the background from my macbook
+> - Generate some traffic.  The trigger varies, but running uTorrent or
+> quickly opening a lot of background tabs in Chrome usually seems to
+> set it off within a couple of minutes.  iperf and isoping don't seem
+> to cause any trouble.
+>
+> Expected:
+> - ping keeps pinging
+>
+> Actual:
+> - tcpdump on the ath10k host shows ICMP requests coming in, and
+> responses going out.
+> - tcpdump on the macbook shows ICMP requests going out, but no
+> responses coming back.
+> - tcpdump -I (radiotap mode) on the macbook is a little hard to
+> understand since it's encrypted, but it shows some packets coming out
+> of the ath10k (broadcasts, I think) but no unicast packets to the
+> macbook.
+> - tcpdump on the macbook *does* show broadcast packets arriving.  For
+> example, ARP requests and "ping -b 192.168.1.255" (my local subnet IP
+> address) get through.
+> - Disconnecting and then reconnecting the wifi on my macbook fixes the
+> problem until it next triggers.
+> - Other STAs connected to the AP are not affected when the one STA
+> isn't able to communicate (although each one has the potential to
+> trigger the problem)
+
+Can you reproduce with any other type of station
+device?
+
+Also, have you tried sniffing with a third device to see if
+the AP actually puts the ICMP responses on the air?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
