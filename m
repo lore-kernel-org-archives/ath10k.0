@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x231.google.com ([2607:f8b0:400c:c01::231])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wjfzw-0000FY-OC
- for ath10k@lists.infradead.org; Mon, 12 May 2014 02:29:49 +0000
-Received: by mail-ve0-f177.google.com with SMTP id db11so7885014veb.22
- for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:29:27 -0700 (PDT)
+ id 1WjgCj-0007ev-EJ
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 02:43:02 +0000
+Received: by mail-wi0-f170.google.com with SMTP id bs8so4815457wib.5
+ for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:42:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
+In-Reply-To: <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
 References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
  <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Sun, 11 May 2014 22:29:06 -0400
-Message-ID: <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
+ <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
+Date: Sun, 11 May 2014 19:42:38 -0700
+Message-ID: <CAA93jw7BienqR0c2yD4Z2O8i8RNWp7KnhyG=CTe=Aoq2==e7ow@mail.gmail.com>
 Subject: Re: Unicast packets stop being transmitted to a particular station,
  under load, when WPA2 is enabled
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +23,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
+To: Avery Pennarun <apenwarr@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Sun, May 11, 2014 at 10:07 PM, Dave Taht <dave.taht@gmail.com> wrote:
-> I have been failing to find and fix a very similar problem on the
-> ath9k for many months now. What I see happening there is that one or
-> more of the
-> hardware queues locks up, and stops transmitting traffic. So, for
-> example I might get traffic destined for the BK (background queue,
-> traffic marked CS1) hung,
-> but BE remains fine. Most recently I was able to lock up the VO, VI
-> AND BK queues by exercising it overnight with multiple copies of the
-> rrul test.
->
-> I don't know much about how the hardware queues are configured on
-> ath10k, but you can land stuff in each queue by marking with CS0, CS1,
-> CS5, and CS7 (BE,BK,VI,VO) on mac80211 based devices.
-
-I think my problem may be something else.  In particular, it seems to
-affect each station separately, and doesn't seem to happen if I
-disable encryption.  (Does your ath9k problem trigger if encryption is
-turned off?)  I also have an ath9k device in the same AP on 2.4 GHz,
-and it doesn't trigger there either.  I haven't attempted to see if
-your bug triggers on that one though :)
-
-> I can make it happen more often, faster, if the associated station has
-> considerable distance and less signal strength than nearby.
-
-I just checked, and my bug seems to trigger more often when I'm at a
-longer distance (my macbook says about -60 RSSI) and less often at a
-closer distance (currently macbook reports RSSI of -41).  Not sure if
-this is related to increased retransmits or decreased speed or
-something else.
-
-> Blow it up with netperf-wrappers -H someserver rrul...
-
-That's not a bad idea... I really need to get netperf-wrappers going
-for some stress testing :)
-
-Have fun,
-
-Avery
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgNzoyOSBQTSwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJy
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gT24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgMTA6MDcgUE0sIERh
+dmUgVGFodCA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEkgaGF2ZSBiZWVuIGZhaWxp
+bmcgdG8gZmluZCBhbmQgZml4IGEgdmVyeSBzaW1pbGFyIHByb2JsZW0gb24gdGhlCj4+IGF0aDlr
+IGZvciBtYW55IG1vbnRocyBub3cuIFdoYXQgSSBzZWUgaGFwcGVuaW5nIHRoZXJlIGlzIHRoYXQg
+b25lIG9yCj4+IG1vcmUgb2YgdGhlCj4+IGhhcmR3YXJlIHF1ZXVlcyBsb2NrcyB1cCwgYW5kIHN0
+b3BzIHRyYW5zbWl0dGluZyB0cmFmZmljLiBTbywgZm9yCj4+IGV4YW1wbGUgSSBtaWdodCBnZXQg
+dHJhZmZpYyBkZXN0aW5lZCBmb3IgdGhlIEJLIChiYWNrZ3JvdW5kIHF1ZXVlLAo+PiB0cmFmZmlj
+IG1hcmtlZCBDUzEpIGh1bmcsCj4+IGJ1dCBCRSByZW1haW5zIGZpbmUuIE1vc3QgcmVjZW50bHkg
+SSB3YXMgYWJsZSB0byBsb2NrIHVwIHRoZSBWTywgVkkKPj4gQU5EIEJLIHF1ZXVlcyBieSBleGVy
+Y2lzaW5nIGl0IG92ZXJuaWdodCB3aXRoIG11bHRpcGxlIGNvcGllcyBvZiB0aGUKPj4gcnJ1bCB0
+ZXN0Lgo+Pgo+PiBJIGRvbid0IGtub3cgbXVjaCBhYm91dCBob3cgdGhlIGhhcmR3YXJlIHF1ZXVl
+cyBhcmUgY29uZmlndXJlZCBvbgo+PiBhdGgxMGssIGJ1dCB5b3UgY2FuIGxhbmQgc3R1ZmYgaW4g
+ZWFjaCBxdWV1ZSBieSBtYXJraW5nIHdpdGggQ1MwLCBDUzEsCj4+IENTNSwgYW5kIENTNyAoQkUs
+QkssVkksVk8pIG9uIG1hYzgwMjExIGJhc2VkIGRldmljZXMuCj4KPiBJIHRoaW5rIG15IHByb2Js
+ZW0gbWF5IGJlIHNvbWV0aGluZyBlbHNlLiAgSW4gcGFydGljdWxhciwgaXQgc2VlbXMgdG8KPiBh
+ZmZlY3QgZWFjaCBzdGF0aW9uIHNlcGFyYXRlbHksIGFuZCBkb2Vzbid0IHNlZW0gdG8gaGFwcGVu
+IGlmIEkKPiBkaXNhYmxlIGVuY3J5cHRpb24uICAoRG9lcyB5b3VyIGF0aDlrIHByb2JsZW0gdHJp
+Z2dlciBpZiBlbmNyeXB0aW9uIGlzCj4gdHVybmVkIG9mZj8pCgpOby4gV1BBMiBvbmx5IHNvIGZh
+ci4KCkkgd2lsbCB0cnkgbXVsdGlwbGUgc3RhdGlvbnMgdG8gc2VlIGlmIEkgY2FuIGdldCBpdCB0
+byBvY2N1ciBvbmx5IG9uIGEKcGVyLXN0YXRpb24gYmFzaXMuICh0aGVyZSBhcmUgaGFyZHdhcmUg
+cXVldWVzIGZvciBtdWx0aXBsZSBmb3JtcyBvZgp0cmFmZmljIG5vdCBqdXN0IHRoZSB2aXNpYmxl
+IFZPLCBWSSwgQkUsIGFuZCBCSyBxdWV1ZXMpCgo+IEkgYWxzbyBoYXZlIGFuIGF0aDlrIGRldmlj
+ZSBpbiB0aGUgc2FtZSBBUCBvbiAyLjQgR0h6LAo+IGFuZCBpdCBkb2Vzbid0IHRyaWdnZXIgdGhl
+cmUgZWl0aGVyLiAgSSBoYXZlbid0IGF0dGVtcHRlZCB0byBzZWUgaWYKPiB5b3VyIGJ1ZyB0cmln
+Z2VycyBvbiB0aGF0IG9uZSB0aG91Z2ggOikKCkl0IHJlYWxseSB0YWtlcyB3b3JrIHRvIHRyaWdn
+ZXIgaXQsIGFuZCBJIGNhbiBjYW4gbm93IGRvIGl0IG9uIGJvdGgKMi40Z2h6IGFuZCA1LiBHZXR0
+aW5nIGl0IGRvd24gdG8gdW5kZXIgNiBob3VycyBvZiBoaWdoIHRyYWZmaWMKcmVjZW50bHkgd2Fz
+IGFuIGFjY29tcGxpc2htZW50LgoKPj4gSSBjYW4gbWFrZSBpdCBoYXBwZW4gbW9yZSBvZnRlbiwg
+ZmFzdGVyLCBpZiB0aGUgYXNzb2NpYXRlZCBzdGF0aW9uIGhhcwo+PiBjb25zaWRlcmFibGUgZGlz
+dGFuY2UgYW5kIGxlc3Mgc2lnbmFsIHN0cmVuZ3RoIHRoYW4gbmVhcmJ5LgoKVGhlcmUgYXJlIG5v
+dCBvZnRlbiBleGVjdXRlZCBjb2RlIHBhdGhzIGNvbnRyb2xsaW5nIGhvdyBub2lzZSByZWplY3Rp
+b24Kd29ya3MsIGFuZCBhbGwgc29ydHMgb2YgaGFyZHdhcmUgaXNzdWVzIG9uIGNvbmZpZ3VyaW5n
+IGl0IHRoYXQgdmFyeSBiZXR3ZWVuCmNoaXBzZXQgdmVyc2lvbnMuIFRvbiBvZiBwYXRjaGVzIGhh
+ZCBsYW5kZWQgaW4gaGVhZCB0aGF0IGhhZCBhbiB1cGRhdGUKdG8gdGhlIEFOSSB2YWx1ZXMKdGhh
+dCB3b3JrZWQgb24gbmV3ZXIgdmVyc2lvbnMgb2YgdGhlIGF0aDlrIGNoaXBzZXQgdGhhdCBsYXRl
+ciBoYWQgdG8gYmUgbW9kaWZpZWQKdG8gZGVhbCB3aXRoIG9sZGVyIGF0aDlrIGNoaXBzZXRzLgoK
+PiBJIGp1c3QgY2hlY2tlZCwgYW5kIG15IGJ1ZyBzZWVtcyB0byB0cmlnZ2VyIG1vcmUgb2Z0ZW4g
+d2hlbiBJJ20gYXQgYQo+IGxvbmdlciBkaXN0YW5jZSAobXkgbWFjYm9vayBzYXlzIGFib3V0IC02
+MCBSU1NJKSBhbmQgbGVzcyBvZnRlbiBhdCBhCj4gY2xvc2VyIGRpc3RhbmNlIChjdXJyZW50bHkg
+bWFjYm9vayByZXBvcnRzIFJTU0kgb2YgLTQxKS4gIE5vdCBzdXJlIGlmCj4gdGhpcyBpcyByZWxh
+dGVkIHRvIGluY3JlYXNlZCByZXRyYW5zbWl0cyBvciBkZWNyZWFzZWQgc3BlZWQgb3IKPiBzb21l
+dGhpbmcgZWxzZS4KPgo+PiBCbG93IGl0IHVwIHdpdGggbmV0cGVyZi13cmFwcGVycyAtSCBzb21l
+c2VydmVyIHJydWwuLi4KPgo+IFRoYXQncyBub3QgYSBiYWQgaWRlYS4uLiBJIHJlYWxseSBuZWVk
+IHRvIGdldCBuZXRwZXJmLXdyYXBwZXJzIGdvaW5nCj4gZm9yIHNvbWUgc3RyZXNzIHRlc3Rpbmcg
+OikKClRoZSBoYXJkd2FyZSBxdWV1ZXMgYXJlIHJhcmVseSB0ZXN0ZWQuCgpJZiB5b3UganVzdCB3
+YW50IHRvIGJsb3cgdXAgb25lIHF1ZXVlIGF0IGEgdGltZSwgdGhlIHN5bnRheCBmb3IgbmV0cGVy
+ZiBpcwoKWW91IGNhbiBhbHNvIGFyYml0cmFyaWx5IGRvIHRvcy1zZXR0aW5nIHdpdGggaXB0YWJs
+ZXMuCgpkbnNtYXNxIHVzZXMgQ1M2IGJ5IGRlZmF1bHQsIGJ0dywgc28gaXQncyBESENQIHBhY2tl
+dHMgbGFuZCBieSBkZWZhdWx0CmluIFZPIGFuZCB0aGVuIGdldCBzaHVmZmxlZCBvdmVyIHRvIHRo
+ZSBtdWx0aWNhc3QgaHcgcXVldWUuCgoKPgo+IEhhdmUgZnVuLAo+Cj4gQXZlcnkKCgoKLS0gCkRh
+dmUgVMOkaHQKCk5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5zb3JzaGlwL0ludGVybmV0X2Nl
+bnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFydGljbGUKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
