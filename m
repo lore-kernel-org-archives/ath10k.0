@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
+Received: from mail-ve0-x231.google.com ([2607:f8b0:400c:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wjff0-0005sD-D0
- for ath10k@lists.infradead.org; Mon, 12 May 2014 02:08:11 +0000
-Received: by mail-we0-f171.google.com with SMTP id w62so6120702wes.2
- for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:07:47 -0700 (PDT)
+ id 1Wjfzw-0000FY-OC
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 02:29:49 +0000
+Received: by mail-ve0-f177.google.com with SMTP id db11so7885014veb.22
+ for <ath10k@lists.infradead.org>; Sun, 11 May 2014 19:29:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+In-Reply-To: <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
 References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
-Date: Sun, 11 May 2014 19:07:46 -0700
-Message-ID: <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
+ <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Sun, 11 May 2014 22:29:06 -0400
+Message-ID: <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
 Subject: Re: Unicast packets stop being transmitted to a particular station,
  under load, when WPA2 is enabled
-From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,77 +22,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
+To: Dave Taht <dave.taht@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgNjo1NyBQTSwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJy
-QGdtYWlsLmNvbT4gd3JvdGU6Cj4gVmVyc2lvbjogMy4xNS1yYzEgYW5kIGF0aDEway1zdGFibGUt
-My4xMS04IChib3RoIHZpYSBiYWNrcG9ydHMgdG8ga2VybmVsIDMuMi4yNikKPiBGaXJtd2FyZTog
-MTAuMS40NjcuMi0xCj4KPiBTdGVwczoKPiAtIENvbmZpZ3VyZSBhdGgxMGsgYXMgQVAgb24gY2hh
-bm5lbCAxNDksIHdpZHRoIDgwIE1IeiwgV1BBMiBlbmNyeXB0aW9uCj4gLSBDb25uZWN0IG15IDIw
-MDkgbWFjYm9vawo+IC0gU3RhcnQgYSBwaW5nIG9mIDguOC44LjggaW4gdGhlIGJhY2tncm91bmQg
-ZnJvbSBteSBtYWNib29rCj4gLSBHZW5lcmF0ZSBzb21lIHRyYWZmaWMuICBUaGUgdHJpZ2dlciB2
-YXJpZXMsIGJ1dCBydW5uaW5nIHVUb3JyZW50IG9yCj4gcXVpY2tseSBvcGVuaW5nIGEgbG90IG9m
-IGJhY2tncm91bmQgdGFicyBpbiBDaHJvbWUgdXN1YWxseSBzZWVtcyB0bwo+IHNldCBpdCBvZmYg
-d2l0aGluIGEgY291cGxlIG9mIG1pbnV0ZXMuICBpcGVyZiBhbmQgaXNvcGluZyBkb24ndCBzZWVt
-Cj4gdG8gY2F1c2UgYW55IHRyb3VibGUuCj4KPiBFeHBlY3RlZDoKPiAtIHBpbmcga2VlcHMgcGlu
-Z2luZwo+Cj4gQWN0dWFsOgo+IC0gdGNwZHVtcCBvbiB0aGUgYXRoMTBrIGhvc3Qgc2hvd3MgSUNN
-UCByZXF1ZXN0cyBjb21pbmcgaW4sIGFuZAo+IHJlc3BvbnNlcyBnb2luZyBvdXQuCj4gLSB0Y3Bk
-dW1wIG9uIHRoZSBtYWNib29rIHNob3dzIElDTVAgcmVxdWVzdHMgZ29pbmcgb3V0LCBidXQgbm8K
-PiByZXNwb25zZXMgY29taW5nIGJhY2suCj4gLSB0Y3BkdW1wIC1JIChyYWRpb3RhcCBtb2RlKSBv
-biB0aGUgbWFjYm9vayBpcyBhIGxpdHRsZSBoYXJkIHRvCj4gdW5kZXJzdGFuZCBzaW5jZSBpdCdz
-IGVuY3J5cHRlZCwgYnV0IGl0IHNob3dzIHNvbWUgcGFja2V0cyBjb21pbmcgb3V0Cj4gb2YgdGhl
-IGF0aDEwayAoYnJvYWRjYXN0cywgSSB0aGluaykgYnV0IG5vIHVuaWNhc3QgcGFja2V0cyB0byB0
-aGUKPiBtYWNib29rLgo+IC0gdGNwZHVtcCBvbiB0aGUgbWFjYm9vayAqZG9lcyogc2hvdyBicm9h
-ZGNhc3QgcGFja2V0cyBhcnJpdmluZy4gIEZvcgo+IGV4YW1wbGUsIEFSUCByZXF1ZXN0cyBhbmQg
-InBpbmcgLWIgMTkyLjE2OC4xLjI1NSIgKG15IGxvY2FsIHN1Ym5ldCBJUAo+IGFkZHJlc3MpIGdl
-dCB0aHJvdWdoLgo+IC0gRGlzY29ubmVjdGluZyBhbmQgdGhlbiByZWNvbm5lY3RpbmcgdGhlIHdp
-Zmkgb24gbXkgbWFjYm9vayBmaXhlcyB0aGUKPiBwcm9ibGVtIHVudGlsIGl0IG5leHQgdHJpZ2dl
-cnMuCj4gLSBPdGhlciBTVEFzIGNvbm5lY3RlZCB0byB0aGUgQVAgYXJlIG5vdCBhZmZlY3RlZCB3
-aGVuIHRoZSBvbmUgU1RBCj4gaXNuJ3QgYWJsZSB0byBjb21tdW5pY2F0ZSAoYWx0aG91Z2ggZWFj
-aCBvbmUgaGFzIHRoZSBwb3RlbnRpYWwgdG8KPiB0cmlnZ2VyIHRoZSBwcm9ibGVtKQo+Cj4gRGlz
-YWJsaW5nIGVuY3J5cHRpb24gbWFrZXMgdGhlIHByb2JsZW0gZ28gYXdheSBwZXJtYW5lbnRseS4K
-Pgo+IFRoaXMgaXMgcHJldHR5IHF1aWNrIGZvciBtZSB0byByZXByb2R1Y2UsIGJ1dCB1bmZvcnR1
-bmF0ZWx5IEkgZG9uJ3QKPiBoYXZlIGFueSBzdGVwcyB0byB0cmlnZ2VyIGl0IGluc3RhbnRseSwg
-bm9yIGFueSBjb21tYW5kIGxpbmUgdG9vbHMKPiB0aGF0IHNlZW0gdG8gbWFrZSBpdCBoYXBwZW4u
-ICAoRm9yIGV4YW1wbGUgSSB0cmllZCBtdWx0aXBsZSBwYXJhbGxlbAo+ICdjdXJsJyBwcm9jZXNz
-ZXMgaW4gYSBsb29wLCBhbmQgbm8gbG9jay4pCj4KPiBOb3RoaW5nIGludGVyZXN0aW5nIGFwcGVh
-cnMgaW4gdGhlIGRtZXNnIG9yIGhvc3RhcGQgbG9ncyBhdCB0aGUgdGltZQo+IG9mIHRoZSBwcm9i
-bGVtLgo+Cj4gVGhpcyBzb3VuZHMgbGlrZSBpdCBjb3VsZCBiZSBhIHByb2JsZW0gd2l0aCBjcnlw
-dG8gc2Vzc2lvbiBrZXlzLCBidXQgSQo+IGRvbid0IHVuZGVyc3RhbmQgd2h5IGl0IHdvdWxkIG9u
-bHkgYmUgd3JvbmcgaW4gYSBzaW5nbGUgZGlyZWN0aW9uLiAgSQo+IGFsc28gZG9uJ3QgdGhpbmsg
-bXkga2V5cyBhcmUgcm90YXRpbmcgdGhpcyBxdWlja2x5LCBzbyB0aGlzIHNob3VsZG4ndAo+IGJl
-IGEga2V5IHJvdGF0aW9uIHByb2JsZW0gKHRob3VnaCBJIGRvbid0IHVuZGVyc3RhbmQgdmVyeSB3
-ZWxsIGhvdwo+IHRoYXQgd29ya3MpLgoKSSBoYXZlIGJlZW4gZmFpbGluZyB0byBmaW5kIGFuZCBm
-aXggYSB2ZXJ5IHNpbWlsYXIgcHJvYmxlbSBvbiB0aGUKYXRoOWsgZm9yIG1hbnkgbW9udGhzIG5v
-dy4gV2hhdCBJIHNlZSBoYXBwZW5pbmcgdGhlcmUgaXMgdGhhdCBvbmUgb3IKbW9yZSBvZiB0aGUK
-aGFyZHdhcmUgcXVldWVzIGxvY2tzIHVwLCBhbmQgc3RvcHMgdHJhbnNtaXR0aW5nIHRyYWZmaWMu
-IFNvLCBmb3IKZXhhbXBsZSBJIG1pZ2h0IGdldCB0cmFmZmljIGRlc3RpbmVkIGZvciB0aGUgQksg
-KGJhY2tncm91bmQgcXVldWUsCnRyYWZmaWMgbWFya2VkIENTMSkgaHVuZywKYnV0IEJFIHJlbWFp
-bnMgZmluZS4gTW9zdCByZWNlbnRseSBJIHdhcyBhYmxlIHRvIGxvY2sgdXAgdGhlIFZPLCBWSQpB
-TkQgQksgcXVldWVzIGJ5IGV4ZXJjaXNpbmcgaXQgb3Zlcm5pZ2h0IHdpdGggbXVsdGlwbGUgY29w
-aWVzIG9mIHRoZQpycnVsIHRlc3QuCgpJIGRvbid0IGtub3cgbXVjaCBhYm91dCBob3cgdGhlIGhh
-cmR3YXJlIHF1ZXVlcyBhcmUgY29uZmlndXJlZCBvbgphdGgxMGssIGJ1dCB5b3UgY2FuIGxhbmQg
-c3R1ZmYgaW4gZWFjaCBxdWV1ZSBieSBtYXJraW5nIHdpdGggQ1MwLCBDUzEsCkNTNSwgYW5kIENT
-NyAoQkUsQkssVkksVk8pIG9uIG1hYzgwMjExIGJhc2VkIGRldmljZXMuCgpJIGNhbiBtYWtlIGl0
-IGhhcHBlbiBtb3JlIG9mdGVuLCBmYXN0ZXIsIGlmIHRoZSBhc3NvY2lhdGVkIHN0YXRpb24gaGFz
-CmNvbnNpZGVyYWJsZSBkaXN0YW5jZSBhbmQgbGVzcyBzaWduYWwgc3RyZW5ndGggdGhhbiBuZWFy
-YnkuCgpNeSBidWcgaW4gdGhlIGJ1ZyB0cmFja2VyIGlzIGhlcmU6CgpodHRwOi8vd3d3LmJ1ZmZl
-cmJsb2F0Lm5ldC9pc3N1ZXMvNDQyCgo+IEl0IG1pZ2h0IGJlIG15IGltYWdpbmF0aW9uLCBidXQg
-aXQncyBwb3NzaWJsZSB0aGF0IHRoaXMgdHJpZ2dlcnMgbW9yZQo+IHF1aWNrbHkgaWYgbXkgbWFj
-Ym9vayBoYXMgYmVlbiBjb25uZWN0ZWQgZm9yIGEgbG9uZ2VyIHBlcmlvZCBvZiB0aW1lCj4gYmVm
-b3JlIGdlbmVyYXRpbmcgdGhlIHRyYWZmaWMgYnVyc3QuCgo+Cj4gQW55dGhpbmcgSSBjYW4gY2hl
-Y2sgdG8gaGVscCBuYXJyb3cgdGhpcyBkb3duPwoKTW92ZSBpdCBmYXJ0aGVyIGF3YXkuCgpCbG93
-IGl0IHVwIHdpdGggbmV0cGVyZi13cmFwcGVycyAtSCBzb21lc2VydmVyIHJydWwuLi4KCj4gVGhh
-bmtzLAo+Cj4gQXZlcnkKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
-CgoKLS0gCkRhdmUgVMOkaHQKCk5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5zb3JzaGlwL0lu
-dGVybmV0X2NlbnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFydGljbGUKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Sun, May 11, 2014 at 10:07 PM, Dave Taht <dave.taht@gmail.com> wrote:
+> I have been failing to find and fix a very similar problem on the
+> ath9k for many months now. What I see happening there is that one or
+> more of the
+> hardware queues locks up, and stops transmitting traffic. So, for
+> example I might get traffic destined for the BK (background queue,
+> traffic marked CS1) hung,
+> but BE remains fine. Most recently I was able to lock up the VO, VI
+> AND BK queues by exercising it overnight with multiple copies of the
+> rrul test.
+>
+> I don't know much about how the hardware queues are configured on
+> ath10k, but you can land stuff in each queue by marking with CS0, CS1,
+> CS5, and CS7 (BE,BK,VI,VO) on mac80211 based devices.
+
+I think my problem may be something else.  In particular, it seems to
+affect each station separately, and doesn't seem to happen if I
+disable encryption.  (Does your ath9k problem trigger if encryption is
+turned off?)  I also have an ath9k device in the same AP on 2.4 GHz,
+and it doesn't trigger there either.  I haven't attempted to see if
+your bug triggers on that one though :)
+
+> I can make it happen more often, faster, if the associated station has
+> considerable distance and less signal strength than nearby.
+
+I just checked, and my bug seems to trigger more often when I'm at a
+longer distance (my macbook says about -60 RSSI) and less often at a
+closer distance (currently macbook reports RSSI of -41).  Not sure if
+this is related to increased retransmits or decreased speed or
+something else.
+
+> Blow it up with netperf-wrappers -H someserver rrul...
+
+That's not a bad idea... I really need to get netperf-wrappers going
+for some stress testing :)
+
+Have fun,
+
+Avery
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
