@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x22f.google.com ([2607:f8b0:400d:c01::22f])
+Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WjrYH-0007kx-LR
- for ath10k@lists.infradead.org; Mon, 12 May 2014 14:50:02 +0000
-Received: by mail-qc0-f175.google.com with SMTP id w7so7983807qcr.34
- for <ath10k@lists.infradead.org>; Mon, 12 May 2014 07:49:38 -0700 (PDT)
+ id 1Wjrbk-0001up-Qa
+ for ath10k@lists.infradead.org; Mon, 12 May 2014 14:53:37 +0000
+Received: by mail-qg0-f42.google.com with SMTP id q107so7880362qgd.29
+ for <ath10k@lists.infradead.org>; Mon, 12 May 2014 07:53:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw6b6=quC7m06PS2hGjnYF7wajzMDvaQ7My3Ouf_Of=egw@mail.gmail.com>
+In-Reply-To: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
 References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <CAA93jw68eh=avxUFSuoBdds7TTsdQtoUdjGpH1753ooRuHXjUw@mail.gmail.com>
- <CAHqTa-2o+KeseCG0_epLTTayn8_WAv3OP22WqB07MSikn+ADTA@mail.gmail.com>
- <CAA93jw7BienqR0c2yD4Z2O8i8RNWp7KnhyG=CTe=Aoq2==e7ow@mail.gmail.com>
- <CAA93jw6b6=quC7m06PS2hGjnYF7wajzMDvaQ7My3Ouf_Of=egw@mail.gmail.com>
-Date: Mon, 12 May 2014 07:49:38 -0700
-Message-ID: <CAJ-VmokGMVW8BxdjBYLOadpbkwf_cUseHJqGPqq7JkDTe3juzg@mail.gmail.com>
+Date: Mon, 12 May 2014 07:53:14 -0700
+Message-ID: <CAJ-Vmo=nFBffABtGdhOjQffOsvCa4UT663vb74oajXLFka0d0g@mail.gmail.com>
 Subject: Re: Unicast packets stop being transmitted to a particular station,
  under load, when WPA2 is enabled
 From: Adrian Chadd <adrian@freebsd.org>
@@ -25,95 +21,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>, Avery Pennarun <apenwarr@gmail.com>
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-SGksCgpJJ3ZlIGZhY2VkIHRoaXMgaW4gRnJlZUJTRC4gSXQncyBvbmx5IHZlcnkgcmVjZW50bHkg
-dGhhdCBJIGZvdW5kIHNvbWUKY29ybmVyIGNhc2UgYmxvY2stYWNrIHdpbmRvdyB0cmFja2luZyBi
-dWdzIHRoYXQgb25seSBvY2N1cmVkIGR1cmluZwpwZXJpb2RzIG9mIGV4dHJlbWUgcGFja2V0IGxv
-c3MuIFdoYXQgSSB3b3VsZCBkbyB3aGVuIHRoaXMgaGFwcGVuczoKCiogSSdkIGR1bXAgb3V0IHRo
-ZSBlbnRpcmUgc29mdHdhcmUgcXVldWUgZm9yIHRoZSBodW5nIHN0YXRpb24gYW5kCmhhcmR3YXJl
-IHF1ZXVlIHN0YXRlLiB0aGUgaGFyZHdhcmUgcXVldWUgc3RhdGUgdGVuZHMgdG8gYmUgcXVpdGUg
-c21hbGwKb24gYXRoOWsvZnJlZWJzZCBhcyB3ZSBhcnRpZmljYWxseSBsaW1pdCB0aGUgcXVldWUg
-ZGVwdGgKKiBJIGFsc28gaGFja2VkIHVwIGEgcm9sbGluZyBsb2cgb2YgYWxsIHRoZSB0cmFuc21p
-dCwgdHJhbnNtaXQKY29tcGxldGlvbiwgYmF3IGFkZCwgYmF3IHJlbW92ZSBsb2cgZW50cmllcywg
-c28gSSBjb3VsZCBnbyBiYWNrIGluCmhpc3RvcnkgdG8gZmluZCB3aGVyZSB0aGUgaG9sZSBjYW1l
-IGZyb20uCgpUaGUgbGFzdCBvbmUgSSBmb3VuZCB0b29rIGEgZGF5IG9mIGFjdGl2ZSB0b3JyZW50
-aW5nIGFuZCBhcm91bmQgNTAwCm1pbGxpb24gbG9nIGxpbmUgZW50cmllcyBqdXN0IHRvIHRyaWdn
-ZXIuIDotKQoKQXMgZm9yIGZpcm13YXJlLCBsZW1tZSByZXNwb25kIHRvIHRoYXQgc2VwYXJhdGVs
-eS4KCgoKLWEKCk9uIDExIE1heSAyMDE0IDE5OjQ2LCBEYXZlIFRhaHQgPGRhdmUudGFodEBnbWFp
-bC5jb20+IHdyb3RlOgo+IE9uIFN1biwgTWF5IDExLCAyMDE0IGF0IDc6NDIgUE0sIERhdmUgVGFo
-dCA8ZGF2ZS50YWh0QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE9uIFN1biwgTWF5IDExLCAyMDE0IGF0
-IDc6MjkgUE0sIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5jb20+IHdyb3RlOgo+Pj4g
-T24gU3VuLCBNYXkgMTEsIDIwMTQgYXQgMTA6MDcgUE0sIERhdmUgVGFodCA8ZGF2ZS50YWh0QGdt
-YWlsLmNvbT4gd3JvdGU6Cj4+Pj4gSSBoYXZlIGJlZW4gZmFpbGluZyB0byBmaW5kIGFuZCBmaXgg
-YSB2ZXJ5IHNpbWlsYXIgcHJvYmxlbSBvbiB0aGUKPj4+PiBhdGg5ayBmb3IgbWFueSBtb250aHMg
-bm93LiBXaGF0IEkgc2VlIGhhcHBlbmluZyB0aGVyZSBpcyB0aGF0IG9uZSBvcgo+Pj4+IG1vcmUg
-b2YgdGhlCj4+Pj4gaGFyZHdhcmUgcXVldWVzIGxvY2tzIHVwLCBhbmQgc3RvcHMgdHJhbnNtaXR0
-aW5nIHRyYWZmaWMuIFNvLCBmb3IKPj4+PiBleGFtcGxlIEkgbWlnaHQgZ2V0IHRyYWZmaWMgZGVz
-dGluZWQgZm9yIHRoZSBCSyAoYmFja2dyb3VuZCBxdWV1ZSwKPj4+PiB0cmFmZmljIG1hcmtlZCBD
-UzEpIGh1bmcsCj4+Pj4gYnV0IEJFIHJlbWFpbnMgZmluZS4gTW9zdCByZWNlbnRseSBJIHdhcyBh
-YmxlIHRvIGxvY2sgdXAgdGhlIFZPLCBWSQo+Pj4+IEFORCBCSyBxdWV1ZXMgYnkgZXhlcmNpc2lu
-ZyBpdCBvdmVybmlnaHQgd2l0aCBtdWx0aXBsZSBjb3BpZXMgb2YgdGhlCj4+Pj4gcnJ1bCB0ZXN0
-Lgo+Pj4+Cj4+Pj4gSSBkb24ndCBrbm93IG11Y2ggYWJvdXQgaG93IHRoZSBoYXJkd2FyZSBxdWV1
-ZXMgYXJlIGNvbmZpZ3VyZWQgb24KPj4+PiBhdGgxMGssIGJ1dCB5b3UgY2FuIGxhbmQgc3R1ZmYg
-aW4gZWFjaCBxdWV1ZSBieSBtYXJraW5nIHdpdGggQ1MwLCBDUzEsCj4+Pj4gQ1M1LCBhbmQgQ1M3
-IChCRSxCSyxWSSxWTykgb24gbWFjODAyMTEgYmFzZWQgZGV2aWNlcy4KPj4+Cj4+PiBJIHRoaW5r
-IG15IHByb2JsZW0gbWF5IGJlIHNvbWV0aGluZyBlbHNlLiAgSW4gcGFydGljdWxhciwgaXQgc2Vl
-bXMgdG8KPj4+IGFmZmVjdCBlYWNoIHN0YXRpb24gc2VwYXJhdGVseSwgYW5kIGRvZXNuJ3Qgc2Vl
-bSB0byBoYXBwZW4gaWYgSQo+Pj4gZGlzYWJsZSBlbmNyeXB0aW9uLiAgKERvZXMgeW91ciBhdGg5
-ayBwcm9ibGVtIHRyaWdnZXIgaWYgZW5jcnlwdGlvbiBpcwo+Pj4gdHVybmVkIG9mZj8pCj4+Cj4+
-IE5vLiBXUEEyIG9ubHkgc28gZmFyLgo+Pgo+PiBJIHdpbGwgdHJ5IG11bHRpcGxlIHN0YXRpb25z
-IHRvIHNlZSBpZiBJIGNhbiBnZXQgaXQgdG8gb2NjdXIgb25seSBvbiBhCj4+IHBlci1zdGF0aW9u
-IGJhc2lzLiAodGhlcmUgYXJlIGhhcmR3YXJlIHF1ZXVlcyBmb3IgbXVsdGlwbGUgZm9ybXMgb2YK
-Pj4gdHJhZmZpYyBub3QganVzdCB0aGUgdmlzaWJsZSBWTywgVkksIEJFLCBhbmQgQksgcXVldWVz
-KQo+Pgo+Pj4gSSBhbHNvIGhhdmUgYW4gYXRoOWsgZGV2aWNlIGluIHRoZSBzYW1lIEFQIG9uIDIu
-NCBHSHosCj4+PiBhbmQgaXQgZG9lc24ndCB0cmlnZ2VyIHRoZXJlIGVpdGhlci4gIEkgaGF2ZW4n
-dCBhdHRlbXB0ZWQgdG8gc2VlIGlmCj4+PiB5b3VyIGJ1ZyB0cmlnZ2VycyBvbiB0aGF0IG9uZSB0
-aG91Z2ggOikKPj4KPj4gSXQgcmVhbGx5IHRha2VzIHdvcmsgdG8gdHJpZ2dlciBpdCwgYW5kIEkg
-Y2FuIGNhbiBub3cgZG8gaXQgb24gYm90aAo+PiAyLjRnaHogYW5kIDUuIEdldHRpbmcgaXQgZG93
-biB0byB1bmRlciA2IGhvdXJzIG9mIGhpZ2ggdHJhZmZpYwo+PiByZWNlbnRseSB3YXMgYW4gYWNj
-b21wbGlzaG1lbnQuCj4+Cj4+Pj4gSSBjYW4gbWFrZSBpdCBoYXBwZW4gbW9yZSBvZnRlbiwgZmFz
-dGVyLCBpZiB0aGUgYXNzb2NpYXRlZCBzdGF0aW9uIGhhcwo+Pj4+IGNvbnNpZGVyYWJsZSBkaXN0
-YW5jZSBhbmQgbGVzcyBzaWduYWwgc3RyZW5ndGggdGhhbiBuZWFyYnkuCj4+Cj4+IFRoZXJlIGFy
-ZSBub3Qgb2Z0ZW4gZXhlY3V0ZWQgY29kZSBwYXRocyBjb250cm9sbGluZyBob3cgbm9pc2UgcmVq
-ZWN0aW9uCj4+IHdvcmtzLCBhbmQgYWxsIHNvcnRzIG9mIGhhcmR3YXJlIGlzc3VlcyBvbiBjb25m
-aWd1cmluZyBpdCB0aGF0IHZhcnkgYmV0d2Vlbgo+PiBjaGlwc2V0IHZlcnNpb25zLiBUb24gb2Yg
-cGF0Y2hlcyBoYWQgbGFuZGVkIGluIGhlYWQgdGhhdCBoYWQgYW4gdXBkYXRlCj4+IHRvIHRoZSBB
-TkkgdmFsdWVzCj4+IHRoYXQgd29ya2VkIG9uIG5ld2VyIHZlcnNpb25zIG9mIHRoZSBhdGg5ayBj
-aGlwc2V0IHRoYXQgbGF0ZXIgaGFkIHRvIGJlIG1vZGlmaWVkCj4+IHRvIGRlYWwgd2l0aCBvbGRl
-ciBhdGg5ayBjaGlwc2V0cy4KPj4KPj4+IEkganVzdCBjaGVja2VkLCBhbmQgbXkgYnVnIHNlZW1z
-IHRvIHRyaWdnZXIgbW9yZSBvZnRlbiB3aGVuIEknbSBhdCBhCj4+PiBsb25nZXIgZGlzdGFuY2Ug
-KG15IG1hY2Jvb2sgc2F5cyBhYm91dCAtNjAgUlNTSSkgYW5kIGxlc3Mgb2Z0ZW4gYXQgYQo+Pj4g
-Y2xvc2VyIGRpc3RhbmNlIChjdXJyZW50bHkgbWFjYm9vayByZXBvcnRzIFJTU0kgb2YgLTQxKS4g
-IE5vdCBzdXJlIGlmCj4+PiB0aGlzIGlzIHJlbGF0ZWQgdG8gaW5jcmVhc2VkIHJldHJhbnNtaXRz
-IG9yIGRlY3JlYXNlZCBzcGVlZCBvcgo+Pj4gc29tZXRoaW5nIGVsc2UuCj4+Pgo+Pj4+IEJsb3cg
-aXQgdXAgd2l0aCBuZXRwZXJmLXdyYXBwZXJzIC1IIHNvbWVzZXJ2ZXIgcnJ1bC4uLgo+Pj4KPj4+
-IFRoYXQncyBub3QgYSBiYWQgaWRlYS4uLiBJIHJlYWxseSBuZWVkIHRvIGdldCBuZXRwZXJmLXdy
-YXBwZXJzIGdvaW5nCj4+PiBmb3Igc29tZSBzdHJlc3MgdGVzdGluZyA6KQo+Pgo+PiBUaGUgaGFy
-ZHdhcmUgcXVldWVzIGFyZSByYXJlbHkgdGVzdGVkLgo+Pgo+PiBJZiB5b3UganVzdCB3YW50IHRv
-IGJsb3cgdXAgb25lIHF1ZXVlIGF0IGEgdGltZSwgdGhlIHN5bnRheCBmb3IgbmV0cGVyZiBpcwo+
-Cj4gbmV0cGVyZiAtSCBzb21lc2VydmVyIC10IHRoZV90ZXN0IC1ZIENTMSxDUzEgIyBvciBDUzUs
-Q1M1IG9yIENTNiwgQ1M2Cj4KPiBJIGhhdmUgYmVlbiBmbG9vZGluZyBhbGwgdGhlIHF1ZXVlcyB3
-aXRoIGJvdGggLXQgVENQX1NUUkVBTSBhbmQgVENQX01BRVJUUwo+IHRvIG1ha2UgaXQgaGFwcGVu
-IHVzaW5nIHRoZSBycnVsIHRlc3QsIGJ1dCBJIGhhdmUgYWxzbyBtYWRlIGl0IGhhcHBlbgo+IHdp
-dGggQkUgb25seS4KPgo+IEdldHRpbmcgb25lIGRhdGEgcG9pbnQgZXZlcnkgZGF5IG9yIHNvIG1h
-a2VzIGZvciBzbG93IGRlYnVnZ2luZy4KPgo+Pgo+PiBZb3UgY2FuIGFsc28gYXJiaXRyYXJpbHkg
-ZG8gdG9zLXNldHRpbmcgd2l0aCBpcHRhYmxlcy4KPj4KPj4gZG5zbWFzcSB1c2VzIENTNiBieSBk
-ZWZhdWx0LCBidHcsIHNvIGl0J3MgREhDUCBwYWNrZXRzIGxhbmQgYnkgZGVmYXVsdAo+PiBpbiBW
-TyBhbmQgdGhlbiBnZXQgc2h1ZmZsZWQgb3ZlciB0byB0aGUgbXVsdGljYXN0IGh3IHF1ZXVlLgo+
-Pgo+Pgo+Pj4KPj4+IEhhdmUgZnVuLAo+Pj4KPj4+IEF2ZXJ5Cj4+Cj4+Cj4+Cj4+IC0tCj4+IERh
-dmUgVMOkaHQKPj4KPj4gTlNGVzogaHR0cHM6Ly93Mi5lZmYub3JnL0NlbnNvcnNoaXAvSW50ZXJu
-ZXRfY2Vuc29yc2hpcF9iaWxscy9ydXNzZWxsXzAyOTZfaW5kZWNlbnQuYXJ0aWNsZQo+Cj4KPgo+
-IC0tCj4gRGF2ZSBUw6RodAo+Cj4gTlNGVzogaHR0cHM6Ly93Mi5lZmYub3JnL0NlbnNvcnNoaXAv
-SW50ZXJuZXRfY2Vuc29yc2hpcF9iaWxscy9ydXNzZWxsXzAyOTZfaW5kZWNlbnQuYXJ0aWNsZQo+
-Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgx
-MGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+So the keys aren't bidirectional. There'll be a set of transmit and
+receive keys per station, as well as the multicast key.
+
+If you're seeing traffic in other TIDs for a given station, then it's
+likely a block-ack tracking issue.
+
+If you only see multicast traffic to the station, but no unicast
+traffic, then it could be all the HWQ's are stuck; but it also could
+be a key exchange issue. Normally on FreeBSD I'd just do a monitor
+mode trace and look at whether I was receiving anything; before I then
+dug down to see if the encryption sequence was fine (ie, no CCMP
+replays, the key is correct, etc.)
+
+As for ath10k, it's been a while since I was deep in the firmware.
+Ideally you'd like to get TX completion notifications from the chip up
+to the firmware as that'll at least tell you the frame is making it
+out to the air and being ACKed (and is thus not going to be a hung
+hardware queue or TID.) I don't know if TX completion notifications
+are completely working though; I'll check once I have firmware source
+again.
+
+
+
+-a
+
+
+On 11 May 2014 18:57, Avery Pennarun <apenwarr@gmail.com> wrote:
+> Version: 3.15-rc1 and ath10k-stable-3.11-8 (both via backports to kernel 3.2.26)
+> Firmware: 10.1.467.2-1
+>
+> Steps:
+> - Configure ath10k as AP on channel 149, width 80 MHz, WPA2 encryption
+> - Connect my 2009 macbook
+> - Start a ping of 8.8.8.8 in the background from my macbook
+> - Generate some traffic.  The trigger varies, but running uTorrent or
+> quickly opening a lot of background tabs in Chrome usually seems to
+> set it off within a couple of minutes.  iperf and isoping don't seem
+> to cause any trouble.
+>
+> Expected:
+> - ping keeps pinging
+>
+> Actual:
+> - tcpdump on the ath10k host shows ICMP requests coming in, and
+> responses going out.
+> - tcpdump on the macbook shows ICMP requests going out, but no
+> responses coming back.
+> - tcpdump -I (radiotap mode) on the macbook is a little hard to
+> understand since it's encrypted, but it shows some packets coming out
+> of the ath10k (broadcasts, I think) but no unicast packets to the
+> macbook.
+> - tcpdump on the macbook *does* show broadcast packets arriving.  For
+> example, ARP requests and "ping -b 192.168.1.255" (my local subnet IP
+> address) get through.
+> - Disconnecting and then reconnecting the wifi on my macbook fixes the
+> problem until it next triggers.
+> - Other STAs connected to the AP are not affected when the one STA
+> isn't able to communicate (although each one has the potential to
+> trigger the problem)
+>
+> Disabling encryption makes the problem go away permanently.
+>
+> This is pretty quick for me to reproduce, but unfortunately I don't
+> have any steps to trigger it instantly, nor any command line tools
+> that seem to make it happen.  (For example I tried multiple parallel
+> 'curl' processes in a loop, and no lock.)
+>
+> Nothing interesting appears in the dmesg or hostapd logs at the time
+> of the problem.
+>
+> This sounds like it could be a problem with crypto session keys, but I
+> don't understand why it would only be wrong in a single direction.  I
+> also don't think my keys are rotating this quickly, so this shouldn't
+> be a key rotation problem (though I don't understand very well how
+> that works).
+>
+> It might be my imagination, but it's possible that this triggers more
+> quickly if my macbook has been connected for a longer period of time
+> before generating the traffic burst.
+>
+> Anything I can check to help narrow this down?
+>
+> Thanks,
+>
+> Avery
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
