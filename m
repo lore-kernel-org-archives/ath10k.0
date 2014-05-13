@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkCWa-0005sD-S2
- for ath10k@lists.infradead.org; Tue, 13 May 2014 13:13:49 +0000
-Received: (from uucp@localhost) by mailhost.actiasodielec.fr id s4DDBPcd007434
- for <ath10k@lists.infradead.org>; Tue, 13 May 2014 15:11:25 +0200
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Tue, 13 May 2014 15:08:38 +0200
-Subject: ath10k: set channel by command "iw" not from hostapd and DFS
- support of firmware-2.bin_10.1.467.2-1
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkGqj-0008Uz-5u
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 17:50:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: RE : [PATCH v2 2/2] ath10k: support get/set antenna
+ configurations.
 References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
  <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
  <5370F41A.70202@candelatech.com>
- <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>,
- <53719332.9040700@candelatech.com>
-In-Reply-To: <53719332.9040700@candelatech.com>
-Content-Language: fr-FR
+Date: Tue, 13 May 2014 20:50:14 +0300
+In-Reply-To: <5370F41A.70202@candelatech.com> (Ben Greear's message of "Mon,
+ 12 May 2014 09:17:30 -0700")
+Message-ID: <8738gdin55.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,37 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I am able to run mode access point by using ath10k and hostapd, but I have to set the channel in the configuration file for hostapd (I desactivated ACS when building hostapd)
-If I set channel by the command "iw wlan0 set channel 10 HT20"  and remove the line "channel=10" from the configuration file of hostapd, this error appears when I run hostapd: 
+Ben Greear <greearb@candelatech.com> writes:
 
-ACS was disabled on your build, rebuild hostapd with CONFIG_ACS=y or set channel    
-wlan0: IEEE 802.11 Configured channel (0) not found from the channel list of current mode (1) IEEE 802.11g
-wlan0: IEEE 802.11 Hardware does not support configured channel
-Could not select hw_mode and channel. (-3)
-wlan0: Unable to setup interface.
-hostapd_free_hapd_data: Interface wlan0 wasn't started
+> On 05/12/2014 08:43 AM, Vu Hai NGUYEN wrote:
+>> Thank you very much for the patch, I just had a question of a new bie: Your patch is for the branch of ath-next-test, not for the branch ath-master, right?
+>> But even it is for ath-next-test, I can not apply it, there is a conflict, for example the first change of your patch (in file "core.h" which starts from line 472 but I found in the branch of ath-next-test that it must start from line 444 where there is u32 dfs_block_radar_events; )
+>> So I have to apply your patch manually (I look for the different and add it to the code) and then the result is quite good, I can see the Available and Configured Antennas from "iw list". Then I can also select the antenna thanks to the command "iw phyX set antenna" too. 
+>> Sorry if I disturbing you for the question about applying the patch. 
+>
+> My patch was against my own tree which is a mix of 3.14 and an older
+> version of git://github.com/kvalo/ath.git
+>
+> I do not have time right now to re-do the patch, but next time I get
+> some time I will fix the patch to apply to ath.git. If someone else
+> wants to do it first, I will not complain :)
 
-Does it mean that ath10k does not support configured channel ???? The reason I want to do it by command "iw" because it has more options than hostapd (iw wlan0 set freq <control freq> [20|40|80|80+80|160] [<center freq 1>] [<center freq 2>] )
+If you send patches agains some out-of-tree version of ath10k, PLEASE
+state that clearly. I now wasted time trying to apply the patch, before
+I read your reply.
 
-I had another problem with setting a cannal that employs DFS (for example 52): 
+The best (=easiest for me) is to base patches on master branch of my
+ath.git tree.
 
-wlan0: interface state COUNTRY_UPDATE->DFS                                      
-wlan0: DFS-CAC-START freq=5260 chan=52 sec_chan=0                               
-wlan0: Unable to setup interface.   
-ADDRCONF(NETDEV_UP): wlan0: link is not ready    
-
-I'm using the firmware-2.bin_10.1.467.2-1 which indicates that supports DFS on the website of ath10k. Is there anyone got the same issue like me?
-Thanks in advance,
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
