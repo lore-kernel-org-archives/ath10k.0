@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
+Received: from mail-ie0-f201.google.com ([209.85.223.201])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkJsM-0002wd-JG
- for ath10k@lists.infradead.org; Tue, 13 May 2014 21:04:39 +0000
-Received: by mail-vc0-f173.google.com with SMTP id il7so1271468vcb.4
- for <ath10k@lists.infradead.org>; Tue, 13 May 2014 14:04:16 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <53726148.3090503@candelatech.com>
-References: <5370F41A.70202@candelatech.com>
- <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
- <87y4y5h7mc.fsf@kamboji.qca.qualcomm.com> <53726148.3090503@candelatech.com>
+ id 1WkJzS-0006uy-H8
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 21:11:59 +0000
+Received: by mail-ie0-f201.google.com with SMTP id rp18so213538iec.4
+ for <ath10k@lists.infradead.org>; Tue, 13 May 2014 14:11:17 -0700 (PDT)
 From: Avery Pennarun <apenwarr@gmail.com>
-Date: Tue, 13 May 2014 17:03:56 -0400
-Message-ID: <CAHqTa-111nY-nqiU99HkwAermVEE8zotVFg3VDA4AMtZyCKUcw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: support get/set antenna configurations.
+Subject: [PATCH v3] ath10k: support get/set antenna configurations.
+Date: Tue, 13 May 2014 17:11:12 -0400
+Message-Id: <1400015472-4647-1-git-send-email-apenwarr@gmail.com>
+In-Reply-To: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
+References: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +19,178 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Avery Pennarun <apenwarr@gmail.com>
 
-On Tue, May 13, 2014 at 2:15 PM, Ben Greear <greearb@candelatech.com> wrote:
-> On 05/13/2014 11:10 AM, Kalle Valo wrote:
->>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->>> @@ -2558,6 +2558,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
->>>      config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
->>>      config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
->>>      config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
->>> +    ar->supp_tx_chainmask = TARGET_TX_CHAIN_MASK;
->>> +    ar->supp_rx_chainmask = TARGET_RX_CHAIN_MASK;
->>>      config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
->>>      config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
->>>      config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
->>> @@ -2652,6 +2654,9 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
->>>      config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
->>>      config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
->>>      config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
->>> +    /* TODO:  Have to deal with 2x2 chips if/when the come out. */
->>> +    ar->supp_tx_chainmask = TARGET_10X_TX_CHAIN_MASK;
->>> +    ar->supp_rx_chainmask = TARGET_10X_RX_CHAIN_MASK;
->>>      config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
->>>      config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
->>>      config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
->>
->> This initialisation looks out of place as we these variables have
->> nothing to do with the actual WMI_INIT_CMDID command. And besides, they
->> would get overwritten every time we start the firmware. Is that on
->> purpose?
->>
->> I think we should find more approriate place, for example
->> ath10k_mac_register() would be one to look at.
->
-> It doesn't hurt that they are over-written, but probably it
-> can be done better.
+From: Ben Greear <greearb@candelatech.com>
 
-As far as I can see, supp_{tx,rx}_chainmask are effectively constants.
- So it kind of makes sense to me to initialize them here with a bunch
-of other constants.  cfg_{tx,rx}_chainmask do not seem to be
-initialized ever (so I guess they default to zero, and we don't change
-the antenna mask unless they are set).  I think this looks safe.
+Tested with CT firmware, but should work on standard
+firmware as well.
 
-> I'm knee deep in other bugs though...maybe Avery has time to
-> address this.
+Verified that target's tx/rx chain register is set appropriately,
+and that the tx rate goes down as number of chains
+decrease, but I did not actually try to verify antenna
+ceased to transmit when disabled.
 
-I'll respin the patch with the other suggested changed.  If you guys
-think the supp_{tx,rx}_chainmask stuff should be moved elsewhere, let
-me know where and I can make another one :)
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Avery Pennarun <apenwarr@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |  6 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 71 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  5 +++
+ 3 files changed, 82 insertions(+)
 
-Have fun,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 9b86e57..6ab6c73 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -440,6 +440,12 @@ struct ath10k {
+ 	bool radar_enabled;
+ 	int num_started_vdevs;
+ 
++	/* Protected by conf-mutex */
++	u8 supp_tx_chainmask;
++	u8 supp_rx_chainmask;
++	u8 cfg_tx_chainmask;
++	u8 cfg_rx_chainmask;
++
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ecd191b..f0ae331 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2329,6 +2329,68 @@ void ath10k_halt(struct ath10k *ar)
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+ 
++static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->cfg_tx_chainmask) {
++		*tx_ant = ar->cfg_tx_chainmask;
++		*rx_ant = ar->cfg_rx_chainmask;
++	} else {
++		*tx_ant = ar->supp_tx_chainmask;
++		*rx_ant = ar->supp_rx_chainmask;
++	}
++
++	mutex_unlock(&ar->conf_mutex);
++
++	return 0;
++}
++
++static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
++{
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	ar->cfg_tx_chainmask = tx_ant;
++	ar->cfg_rx_chainmask = rx_ant;
++
++	if ((ar->state != ATH10K_STATE_ON) &&
++	    (ar->state != ATH10K_STATE_RESTARTED))
++		return 0;
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->tx_chain_mask,
++					tx_ant);
++	if (ret) {
++		ath10k_warn("failed to set tx-chainmask: %d, req 0x%x\n",
++			    ret, tx_ant);
++		return ret;
++	}
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->rx_chain_mask,
++					rx_ant);
++	if (ret) {
++		ath10k_warn("failed to set rx-chainmask: %d, req 0x%x\n",
++			    ret, rx_ant);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++	ret = __ath10k_set_antenna(ar, tx_ant, rx_ant);
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
+ static int ath10k_start(struct ieee80211_hw *hw)
+ {
+ 	struct ath10k *ar = hw->priv;
+@@ -2370,6 +2432,10 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	if (ret)
+ 		ath10k_warn("failed to enable dynamic BW: %d\n", ret);
+ 
++	if (ar->cfg_tx_chainmask)
++		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
++				     ar->cfg_rx_chainmask);
++
+ 	/*
+ 	 * By default FW set ARP frames ac to voice (6). In that case ARP
+ 	 * exchange is not working properly for UAPSD enabled AP. ARP requests
+@@ -4252,6 +4318,8 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_frag_threshold		= ath10k_set_frag_threshold,
+ 	.flush				= ath10k_flush,
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
++	.set_antenna			= ath10k_set_antenna,
++	.get_antenna			= ath10k_get_antenna,
+ 	.restart_complete		= ath10k_restart_complete,
+ 	.get_survey			= ath10k_get_survey,
+ 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+@@ -4601,6 +4669,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		BIT(NL80211_IFTYPE_ADHOC) |
+ 		BIT(NL80211_IFTYPE_AP);
+ 
++	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
++	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
++
+ 	if (!test_bit(ATH10K_FW_FEATURE_NO_P2P, ar->fw_features))
+ 		ar->hw->wiphy->interface_modes |=
+ 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0a2d04c..d22874a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2558,6 +2558,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
+ 	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
++	ar->supp_tx_chainmask = TARGET_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+@@ -2652,6 +2654,9 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
++	/* TODO:  Have to deal with 2x2 chips if/when the come out. */
++	ar->supp_tx_chainmask = TARGET_10X_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_10X_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+-- 
+1.9.1.423.g4596e3a
 
-Avery
 
 _______________________________________________
 ath10k mailing list
