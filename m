@@ -1,17 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk69q-0001MS-29
- for ath10k@lists.infradead.org; Tue, 13 May 2014 06:25:47 +0000
-Received: by mail-wg0-f42.google.com with SMTP id y10so7746586wgg.25
- for <ath10k@lists.infradead.org>; Mon, 12 May 2014 23:25:21 -0700 (PDT)
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkCWa-0005sD-S2
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 13:13:49 +0000
+Received: (from uucp@localhost) by mailhost.actiasodielec.fr id s4DDBPcd007434
+ for <ath10k@lists.infradead.org>; Tue, 13 May 2014 15:11:25 +0200
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 13 May 2014 15:08:38 +0200
+Subject: ath10k: set channel by command "iw" not from hostapd and DFS
+ support of firmware-2.bin_10.1.467.2-1
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>,
+ <53719332.9040700@candelatech.com>
+In-Reply-To: <53719332.9040700@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-In-Reply-To: <53712856.4010807@candelatech.com>
-References: <53711F4C.80402@candelatech.com> <53712856.4010807@candelatech.com>
-Date: Tue, 13 May 2014 08:25:21 +0200
-Message-ID: <CA+BoTQneFFk3r=vwE5kSqWoLEN9XNLG2n6VkjBRz2W5jsNUCdQ@mail.gmail.com>
-Subject: Re: Panic when changing ath10k channel
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +26,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>
 
-T24gMTIgTWF5IDIwMTQgMjI6MDAsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PiB3cm90ZToKPiBXZSBzYXcgdGhpcyBvbiBhIEZlZG9yYSAxNCBzeXN0ZW0gKHdpdGggMy4xNC4z
-KyBrZXJuZWwsIGFuZCBvdXIgZmlybXdhcmUpLgo+Cj4gT3VyIGtlcm5lbCBpcyBhIG1peCBvZiBs
-b2NhbCBwYXRjaGVzIGFuZCBrdmFsbydzIGF0aC5naXQgYW5kIDMuMTQuMy4KPgo+IERvbid0IHRo
-aW5rIEkndmUgc2VlbiB0aGlzIG9uZSBiZWZvcmUsIG5vdCBzdXJlIGlmIGl0IGlzIHJlcHJvZHVj
-aWJsZSwKPiBidXQgaW4gZ2VuZXJhbCB0aGlzIHN5c3RlbSBoYXMgYmVlbiBtb3JlIHRvdWNoeSB0
-aGFuIG1vc3QgZm9yIHNvbWUKPiByZWFzb24uLi4KCkNvdWxkIGl0IGJlIGl0IHN1cHBvcnRzIG11
-bHRpcGxlIE1TSSBpbnRlcnJ1cHQgYWxsb2NhdGlvbiB3aGlsZSB5b3VyCm90aGVyIHN5c3RlbXMg
-ZG9uJ3Q/CgoKPiAtLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0tCj4gU3ViamVjdDog
-RjE0IHBhbmljIHdoZW4gY2hhbmdpbmcgYXRoMTBrIGNoYW5uZWwKPiBEYXRlOiBNb24sIDEyIE1h
-eSAyMDE0IDEyOjIxOjQ4IC0wNzAwCj4gRnJvbTogSXNhYWMgS29uaWtvZmYgPGtvbmlrb2ZpQGNh
-bmRlbGF0ZWNoLmNvbT4KPiBUbzogJ0JlbiBHcmVlYXInIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPgo+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+IFdBUk5JTkc6IENQ
-VTogMiBQSUQ6IDMyNzcgYXQKPiAvaG9tZS9ncmVlYXJiL2dpdC9saW51eC0zLjE0LmRldi55L2tl
-cm5lbC9pcnEvbWFuYWdlLmM6MTI0OQo+IF9fZnJlZV9pcnErMHg5Ni8weDE5OSgpCgpXZXJlIHRo
-ZXJlIGFueSBvdGhlciBtZXNzYWdlcyBwcmVjZWVkaW5nIHRoaXMgSSB3b25kZXI/CgoKPiBUcnlp
-bmcgdG8gZnJlZSBhbHJlYWR5LWZyZWUgSVJRIDE4Cj4gTW9kdWxlcyBsaW5rZWQgaW46IGlwdGFi
-bGVfcmF3IHh0X0NUIG5mX25hdF9pcHY0IG5mX25hdCBmdXNlIDgwMjFxIG1ycAo+IGdhcnAgc3Rw
-IGxsYyBtYWN2bGFuIHdhbmxpbmsoTykgcGt0Z2VuIGNvcmV0ZW1wIGh3bW9uIG5mc3YzIG5mc19h
-Y2wgbmZzCj4gZnNjYWNoZSBsb2NrZCBzdW5ycGMgaXB2NiB1aW5wdXQgc25kX2hkYV9jb2RlY19y
-ZWFsdGVrCj4gc25kX2hkYV9jb2RlY19nZW5lcmljIGF0aDEwa19wY2kgc25kX2hkYV9pbnRlbCBh
-dGg5ayBhdGgxMGtfY29yZQo+IHNuZF9oZGFfY29kZWMgbWFjODAyMTEgc25kX2h3ZGVwIGF0aDlr
-X2NvbW1vbiBzbmRfc2VxIGF0aDlrX2h3Cj4gc25kX3NlcV9kZXZpY2UgZTEwMDBlIHNuZF9wY20g
-YXRoIGlUQ09fd2R0IGdwaW9faWNoIHBwZGV2Cj4gaVRDT192ZW5kb3Jfc3VwcG9ydCBtaWNyb2Nv
-ZGUgcGFycG9ydF9wYyBjZmc4MDIxMSBzbmRfdGltZXIgaTJjX2k4MDEKPiBwY3Nwa3Igc2VyaW9f
-cmF3IHBhcnBvcnQgc25kIHB0cCBscGNfaWNoIHNvdW5kY29yZSBwcHNfY29yZSBpOTE1Cj4gZHJt
-X2ttc19oZWxwZXIgZHJtIGkyY19hbGdvX2JpdCBpMmNfY29yZSB2aWRlbyBbbGFzdCB1bmxvYWRl
-ZDogaXB0YWJsZV9uYXRdCj4gQ1BVOiAyIFBJRDogMzI3NyBDb21tOiBpcCBUYWludGVkOiBHICAg
-ICAgICAgQyBPIDMuMTQuMysgIzI0Cj4gSGFyZHdhcmUgbmFtZTogVG8gYmUgZmlsbGVkIGJ5IE8u
-RS5NLiBUbyBiZSBmaWxsZWQgYnkgTy5FLk0uL1RvIGJlCj4gZmlsbGVkIGJ5IE8uRS5NLiwgQklP
-UyA0LjYuMyAwOS8wNS8yMDExCj4gIDAwMDAwMDAwMDAwMDA0ZTEgZmZmZjg4MDIxOTFiOTM2OCBm
-ZmZmZmZmZjgxNWJkMzE4IDAwMDAwMDAwMDAwMDA0ZTEKPiAgZmZmZjg4MDIxOTFiOTNiOCBmZmZm
-ODgwMjE5MWI5M2E4IGZmZmZmZmZmODEwYWRkY2UgMDAwMDAwMDA4MTBlZjE4Zgo+ICBmZmZmZmZm
-ZjgxMGYxZTNjIDAwMDAwMDAwMDAwMDAwMDAgZmZmZjg4MDIyMWY3ZDYwMCAwMDAwMDAwMDAwMDAw
-MDEyCj4gQ2FsbCBUcmFjZToKPiAgWzxmZmZmZmZmZjgxNWJkMzE4Pl0gZHVtcF9zdGFjaysweDUx
-LzB4NzkKPiAgWzxmZmZmZmZmZjgxMGFkZGNlPl0gd2Fybl9zbG93cGF0aF9jb21tb24rMHg3Ny8w
-eDkxCj4gIFs8ZmZmZmZmZmY4MTBmMWUzYz5dID8gX19mcmVlX2lycSsweDk2LzB4MTk5Cj4gIFs8
-ZmZmZmZmZmY4MTBhZGU3Yz5dIHdhcm5fc2xvd3BhdGhfZm10KzB4NDEvMHg0Mwo+ICBbPGZmZmZm
-ZmZmODEwZjFlM2M+XSBfX2ZyZWVfaXJxKzB4OTYvMHgxOTkKPiAgWzxmZmZmZmZmZjgxMGYxZmIx
-Pl0gZnJlZV9pcnErMHg3Mi8weDhiCgpJJ3ZlIGZvdW5kIG9ubHkgb25lIGNhc2UgdGhlIGRvdWJs
-ZSBmcmVlX2lycSgpIGNhbiBoYXBwZW4gaW4gdmFuaWxsYQphdGgxMGsuIGhpZl9zdG9wKCkgaXMg
-Y2FsbGVkIHR3byB0aW1lcyBpZiBpbml0X2Nvbm5lY3RfaHRjKCkgaGl0cwp0aW1lb3V0IGZhaWxw
-YXRoLgoKVGhpcyBzZWVtcyB0byBiZSBvbmx5IHJlcHJvZHVjaWJsZSBvbiBzeXN0ZW1zIGNhcGFi
-bGUgb2YgYWxsb2NhdGluZwptdWx0aXBsZSBNU0kgaW50ZXJydXB0cyBmb3IgYXRoMTBrLgoKQSBx
-dWljayBmaXggd291bGQgYmUgdG8gcmVzZXQgYXJfcGNpLT5udW1fbXNpX2ludHJzIHRvIDAgaW4K
-YXRoMTBrX3BjaV9mcmVlX2lycSgpLiBUaGlzIHdpbGwgc3RvcCB0aGUgZG91YmxlIGZyZWVfaXJx
-KCkgZnJvbQpoYXBwZW5pbmcgYWxiZWl0IHRoZSBlYXJseSBwY2kgaGFuZGxlciB3aWxsIGJlIHJl
-bWFwcGVkIChoYXJtbGVzcyBhbmQKaXQgYWxyZWFkeSBoYXBwZW5zIG9uIHdpdGggc2luZ2xlIE1T
-SSBpbnRlcnJ1cHQgYW5kIGxlZ2FjeSBpbnRlcnJ1cHQpLgoKSSdsbCB0cnkgdG8gcGF0Y2ggaXQg
-bGF0ZXIgcHJvcGVybHkuCgoKPiAgWzxmZmZmZmZmZmEwNTU2NWViPl0gYXRoMTBrX3BjaV9oaWZf
-c3RvcCsweDc4LzB4MTZiIFthdGgxMGtfcGNpXQo+ICBbPGZmZmZmZmZmYTA0ZjdiMDg+XSBhdGgx
-MGtfaHRjX3N0b3ArMHgzNS8weDNhIFthdGgxMGtfY29yZV0KPiAgWzxmZmZmZmZmZmEwNGY2MTAx
-Pl0gYXRoMTBrX2NvcmVfc3RvcCsweDJhLzB4NDIgW2F0aDEwa19jb3JlXQo+ICBbPGZmZmZmZmZm
-YTA0ZjFjYmQ+XSBhdGgxMGtfaGFsdCsweGMyLzB4MTFhIFthdGgxMGtfY29yZV0KPiAgWzxmZmZm
-ZmZmZmEwNGYxZDRjPl0gYXRoMTBrX3N0b3ArMHgzNy8weDg4IFthdGgxMGtfY29yZV0KPiAgWzxm
-ZmZmZmZmZmEwNDAzZjBkPl0gaWVlZTgwMjExX3N0b3BfZGV2aWNlKzB4NDcvMHg3NCBbbWFjODAy
-MTFdCj4gIFs8ZmZmZmZmZmZhMDNmMDhhND5dIGllZWU4MDIxMV9kb19zdG9wKzB4NjFlLzB4NjU4
-IFttYWM4MDIxMV0KCkkgaGF2ZSB0byBhc3N1bWUgdGhpcyBpcyBhIHJlc3VsdCBvZiBzb21lIG9m
-IHlvdXIgbG9jYWwgcGF0Y2hlcyBzaW5jZQpJIHdhcyB1bmFibGUgdG8gZmluZCBob3cgdGhpcyBj
-b3VsZCBjb21lIGFib3V0IGR1cmluZyBkcml2ZXIgdGVhcmRvd24uCgoKTWljaGHFggoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+I am able to run mode access point by using ath10k and hostapd, but I have to set the channel in the configuration file for hostapd (I desactivated ACS when building hostapd)
+If I set channel by the command "iw wlan0 set channel 10 HT20"  and remove the line "channel=10" from the configuration file of hostapd, this error appears when I run hostapd: 
+
+ACS was disabled on your build, rebuild hostapd with CONFIG_ACS=y or set channel    
+wlan0: IEEE 802.11 Configured channel (0) not found from the channel list of current mode (1) IEEE 802.11g
+wlan0: IEEE 802.11 Hardware does not support configured channel
+Could not select hw_mode and channel. (-3)
+wlan0: Unable to setup interface.
+hostapd_free_hapd_data: Interface wlan0 wasn't started
+
+Does it mean that ath10k does not support configured channel ???? The reason I want to do it by command "iw" because it has more options than hostapd (iw wlan0 set freq <control freq> [20|40|80|80+80|160] [<center freq 1>] [<center freq 2>] )
+
+I had another problem with setting a cannal that employs DFS (for example 52): 
+
+wlan0: interface state COUNTRY_UPDATE->DFS                                      
+wlan0: DFS-CAC-START freq=5260 chan=52 sec_chan=0                               
+wlan0: Unable to setup interface.   
+ADDRCONF(NETDEV_UP): wlan0: link is not ready    
+
+I'm using the firmware-2.bin_10.1.467.2-1 which indicates that supports DFS on the website of ath10k. Is there anyone got the same issue like me?
+Thanks in advance,
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
