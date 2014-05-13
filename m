@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk3WE-0006jy-7z
- for ath10k@lists.infradead.org; Tue, 13 May 2014 03:36:42 +0000
-Message-ID: <53719332.9040700@candelatech.com>
-Date: Mon, 12 May 2014 20:36:18 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wk69q-0001MS-29
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 06:25:47 +0000
+Received: by mail-wg0-f42.google.com with SMTP id y10so7746586wgg.25
+ for <ath10k@lists.infradead.org>; Mon, 12 May 2014 23:25:21 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: RE : [PATCH v2 2/2] ath10k: support get/set antenna
- configurations.
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
- <5370F41A.70202@candelatech.com>
- <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
-In-Reply-To: <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+In-Reply-To: <53712856.4010807@candelatech.com>
+References: <53711F4C.80402@candelatech.com> <53712856.4010807@candelatech.com>
+Date: Tue, 13 May 2014 08:25:21 +0200
+Message-ID: <CA+BoTQneFFk3r=vwE5kSqWoLEN9XNLG2n6VkjBRz2W5jsNUCdQ@mail.gmail.com>
+Subject: Re: Panic when changing ath10k channel
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,62 +20,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-
-
-On 05/12/2014 05:49 PM, Avery Pennarun wrote:
-> On Mon, May 12, 2014 at 12:17 PM, Ben Greear <greearb@candelatech.com> wrote:
->> My patch was against my own tree which is a mix of 3.14 and an older version of git://github.com/kvalo/ath.git
->>
->> I do not have time right now to re-do the patch, but next time I get some time I will
->> fix the patch to apply to ath.git.  If someone else wants to do it first, I will not
->> complain :)
->
-> I've tested it and will upload a re-spun version against a more resent
-> ath-next shortly.
->
-> Using firmware 10.1.467.2-1, I tested it as follows:
-> - disconnected the second antenna
-> - iw phy phy1 set antenna {all, 1, 2, 4, 6, 3, 5, 7}
-> - Measure iperf performance and RSSI from my (2x2) macbook.
->
-> Expected:
-> - lower RSSI when using fewer antennas
-> - very poor signal when using only the disconnected antenna
-> - slower speeds when using fewer antennas
->
-> Actual:
-> - my AP did not successfully send out any beacons with antenna modes 2, 4, or 6.
-> - RSSI was roughly 6dB less with 1 than with 5 or 7
-> - seemed to degrade to 1 spatial stream as expected in modes 1 and 3
-> - 2 spatial streams and good RSSI as expected in modes 5 and 7
->
-> So there seems to be a problem when the first antenna is not enabled.
-> Firmware bug perhaps?
-
-I seem to recall that you can only use 1, 3, or 7 in ath9k, probably ath10k
-has same constraints.
-
-Thanks,
-Ben
-
->
-> Thanks,
->
-> Avery
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIgTWF5IDIwMTQgMjI6MDAsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
+PiB3cm90ZToKPiBXZSBzYXcgdGhpcyBvbiBhIEZlZG9yYSAxNCBzeXN0ZW0gKHdpdGggMy4xNC4z
+KyBrZXJuZWwsIGFuZCBvdXIgZmlybXdhcmUpLgo+Cj4gT3VyIGtlcm5lbCBpcyBhIG1peCBvZiBs
+b2NhbCBwYXRjaGVzIGFuZCBrdmFsbydzIGF0aC5naXQgYW5kIDMuMTQuMy4KPgo+IERvbid0IHRo
+aW5rIEkndmUgc2VlbiB0aGlzIG9uZSBiZWZvcmUsIG5vdCBzdXJlIGlmIGl0IGlzIHJlcHJvZHVj
+aWJsZSwKPiBidXQgaW4gZ2VuZXJhbCB0aGlzIHN5c3RlbSBoYXMgYmVlbiBtb3JlIHRvdWNoeSB0
+aGFuIG1vc3QgZm9yIHNvbWUKPiByZWFzb24uLi4KCkNvdWxkIGl0IGJlIGl0IHN1cHBvcnRzIG11
+bHRpcGxlIE1TSSBpbnRlcnJ1cHQgYWxsb2NhdGlvbiB3aGlsZSB5b3VyCm90aGVyIHN5c3RlbXMg
+ZG9uJ3Q/CgoKPiAtLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0tCj4gU3ViamVjdDog
+RjE0IHBhbmljIHdoZW4gY2hhbmdpbmcgYXRoMTBrIGNoYW5uZWwKPiBEYXRlOiBNb24sIDEyIE1h
+eSAyMDE0IDEyOjIxOjQ4IC0wNzAwCj4gRnJvbTogSXNhYWMgS29uaWtvZmYgPGtvbmlrb2ZpQGNh
+bmRlbGF0ZWNoLmNvbT4KPiBUbzogJ0JlbiBHcmVlYXInIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4KPgo+IC0tLS0tLS0tLS0tLVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+IFdBUk5JTkc6IENQ
+VTogMiBQSUQ6IDMyNzcgYXQKPiAvaG9tZS9ncmVlYXJiL2dpdC9saW51eC0zLjE0LmRldi55L2tl
+cm5lbC9pcnEvbWFuYWdlLmM6MTI0OQo+IF9fZnJlZV9pcnErMHg5Ni8weDE5OSgpCgpXZXJlIHRo
+ZXJlIGFueSBvdGhlciBtZXNzYWdlcyBwcmVjZWVkaW5nIHRoaXMgSSB3b25kZXI/CgoKPiBUcnlp
+bmcgdG8gZnJlZSBhbHJlYWR5LWZyZWUgSVJRIDE4Cj4gTW9kdWxlcyBsaW5rZWQgaW46IGlwdGFi
+bGVfcmF3IHh0X0NUIG5mX25hdF9pcHY0IG5mX25hdCBmdXNlIDgwMjFxIG1ycAo+IGdhcnAgc3Rw
+IGxsYyBtYWN2bGFuIHdhbmxpbmsoTykgcGt0Z2VuIGNvcmV0ZW1wIGh3bW9uIG5mc3YzIG5mc19h
+Y2wgbmZzCj4gZnNjYWNoZSBsb2NrZCBzdW5ycGMgaXB2NiB1aW5wdXQgc25kX2hkYV9jb2RlY19y
+ZWFsdGVrCj4gc25kX2hkYV9jb2RlY19nZW5lcmljIGF0aDEwa19wY2kgc25kX2hkYV9pbnRlbCBh
+dGg5ayBhdGgxMGtfY29yZQo+IHNuZF9oZGFfY29kZWMgbWFjODAyMTEgc25kX2h3ZGVwIGF0aDlr
+X2NvbW1vbiBzbmRfc2VxIGF0aDlrX2h3Cj4gc25kX3NlcV9kZXZpY2UgZTEwMDBlIHNuZF9wY20g
+YXRoIGlUQ09fd2R0IGdwaW9faWNoIHBwZGV2Cj4gaVRDT192ZW5kb3Jfc3VwcG9ydCBtaWNyb2Nv
+ZGUgcGFycG9ydF9wYyBjZmc4MDIxMSBzbmRfdGltZXIgaTJjX2k4MDEKPiBwY3Nwa3Igc2VyaW9f
+cmF3IHBhcnBvcnQgc25kIHB0cCBscGNfaWNoIHNvdW5kY29yZSBwcHNfY29yZSBpOTE1Cj4gZHJt
+X2ttc19oZWxwZXIgZHJtIGkyY19hbGdvX2JpdCBpMmNfY29yZSB2aWRlbyBbbGFzdCB1bmxvYWRl
+ZDogaXB0YWJsZV9uYXRdCj4gQ1BVOiAyIFBJRDogMzI3NyBDb21tOiBpcCBUYWludGVkOiBHICAg
+ICAgICAgQyBPIDMuMTQuMysgIzI0Cj4gSGFyZHdhcmUgbmFtZTogVG8gYmUgZmlsbGVkIGJ5IE8u
+RS5NLiBUbyBiZSBmaWxsZWQgYnkgTy5FLk0uL1RvIGJlCj4gZmlsbGVkIGJ5IE8uRS5NLiwgQklP
+UyA0LjYuMyAwOS8wNS8yMDExCj4gIDAwMDAwMDAwMDAwMDA0ZTEgZmZmZjg4MDIxOTFiOTM2OCBm
+ZmZmZmZmZjgxNWJkMzE4IDAwMDAwMDAwMDAwMDA0ZTEKPiAgZmZmZjg4MDIxOTFiOTNiOCBmZmZm
+ODgwMjE5MWI5M2E4IGZmZmZmZmZmODEwYWRkY2UgMDAwMDAwMDA4MTBlZjE4Zgo+ICBmZmZmZmZm
+ZjgxMGYxZTNjIDAwMDAwMDAwMDAwMDAwMDAgZmZmZjg4MDIyMWY3ZDYwMCAwMDAwMDAwMDAwMDAw
+MDEyCj4gQ2FsbCBUcmFjZToKPiAgWzxmZmZmZmZmZjgxNWJkMzE4Pl0gZHVtcF9zdGFjaysweDUx
+LzB4NzkKPiAgWzxmZmZmZmZmZjgxMGFkZGNlPl0gd2Fybl9zbG93cGF0aF9jb21tb24rMHg3Ny8w
+eDkxCj4gIFs8ZmZmZmZmZmY4MTBmMWUzYz5dID8gX19mcmVlX2lycSsweDk2LzB4MTk5Cj4gIFs8
+ZmZmZmZmZmY4MTBhZGU3Yz5dIHdhcm5fc2xvd3BhdGhfZm10KzB4NDEvMHg0Mwo+ICBbPGZmZmZm
+ZmZmODEwZjFlM2M+XSBfX2ZyZWVfaXJxKzB4OTYvMHgxOTkKPiAgWzxmZmZmZmZmZjgxMGYxZmIx
+Pl0gZnJlZV9pcnErMHg3Mi8weDhiCgpJJ3ZlIGZvdW5kIG9ubHkgb25lIGNhc2UgdGhlIGRvdWJs
+ZSBmcmVlX2lycSgpIGNhbiBoYXBwZW4gaW4gdmFuaWxsYQphdGgxMGsuIGhpZl9zdG9wKCkgaXMg
+Y2FsbGVkIHR3byB0aW1lcyBpZiBpbml0X2Nvbm5lY3RfaHRjKCkgaGl0cwp0aW1lb3V0IGZhaWxw
+YXRoLgoKVGhpcyBzZWVtcyB0byBiZSBvbmx5IHJlcHJvZHVjaWJsZSBvbiBzeXN0ZW1zIGNhcGFi
+bGUgb2YgYWxsb2NhdGluZwptdWx0aXBsZSBNU0kgaW50ZXJydXB0cyBmb3IgYXRoMTBrLgoKQSBx
+dWljayBmaXggd291bGQgYmUgdG8gcmVzZXQgYXJfcGNpLT5udW1fbXNpX2ludHJzIHRvIDAgaW4K
+YXRoMTBrX3BjaV9mcmVlX2lycSgpLiBUaGlzIHdpbGwgc3RvcCB0aGUgZG91YmxlIGZyZWVfaXJx
+KCkgZnJvbQpoYXBwZW5pbmcgYWxiZWl0IHRoZSBlYXJseSBwY2kgaGFuZGxlciB3aWxsIGJlIHJl
+bWFwcGVkIChoYXJtbGVzcyBhbmQKaXQgYWxyZWFkeSBoYXBwZW5zIG9uIHdpdGggc2luZ2xlIE1T
+SSBpbnRlcnJ1cHQgYW5kIGxlZ2FjeSBpbnRlcnJ1cHQpLgoKSSdsbCB0cnkgdG8gcGF0Y2ggaXQg
+bGF0ZXIgcHJvcGVybHkuCgoKPiAgWzxmZmZmZmZmZmEwNTU2NWViPl0gYXRoMTBrX3BjaV9oaWZf
+c3RvcCsweDc4LzB4MTZiIFthdGgxMGtfcGNpXQo+ICBbPGZmZmZmZmZmYTA0ZjdiMDg+XSBhdGgx
+MGtfaHRjX3N0b3ArMHgzNS8weDNhIFthdGgxMGtfY29yZV0KPiAgWzxmZmZmZmZmZmEwNGY2MTAx
+Pl0gYXRoMTBrX2NvcmVfc3RvcCsweDJhLzB4NDIgW2F0aDEwa19jb3JlXQo+ICBbPGZmZmZmZmZm
+YTA0ZjFjYmQ+XSBhdGgxMGtfaGFsdCsweGMyLzB4MTFhIFthdGgxMGtfY29yZV0KPiAgWzxmZmZm
+ZmZmZmEwNGYxZDRjPl0gYXRoMTBrX3N0b3ArMHgzNy8weDg4IFthdGgxMGtfY29yZV0KPiAgWzxm
+ZmZmZmZmZmEwNDAzZjBkPl0gaWVlZTgwMjExX3N0b3BfZGV2aWNlKzB4NDcvMHg3NCBbbWFjODAy
+MTFdCj4gIFs8ZmZmZmZmZmZhMDNmMDhhND5dIGllZWU4MDIxMV9kb19zdG9wKzB4NjFlLzB4NjU4
+IFttYWM4MDIxMV0KCkkgaGF2ZSB0byBhc3N1bWUgdGhpcyBpcyBhIHJlc3VsdCBvZiBzb21lIG9m
+IHlvdXIgbG9jYWwgcGF0Y2hlcyBzaW5jZQpJIHdhcyB1bmFibGUgdG8gZmluZCBob3cgdGhpcyBj
+b3VsZCBjb21lIGFib3V0IGR1cmluZyBkcml2ZXIgdGVhcmRvd24uCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
