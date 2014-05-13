@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
+Received: from mail-ie0-f201.google.com ([209.85.223.201])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk0vZ-00041c-Bx
- for ath10k@lists.infradead.org; Tue, 13 May 2014 00:50:41 +0000
-Received: by mail-ve0-f171.google.com with SMTP id oz11so9778958veb.16
- for <ath10k@lists.infradead.org>; Mon, 12 May 2014 17:50:19 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5370F41A.70202@candelatech.com>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
- <5370F41A.70202@candelatech.com>
+ id 1Wk0xy-0004gm-4w
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 00:53:10 +0000
+Received: by mail-ie0-f201.google.com with SMTP id rp18so937694iec.0
+ for <ath10k@lists.infradead.org>; Mon, 12 May 2014 17:52:47 -0700 (PDT)
 From: Avery Pennarun <apenwarr@gmail.com>
-Date: Mon, 12 May 2014 20:49:58 -0400
-Message-ID: <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
-Subject: Re: RE : [PATCH v2 2/2] ath10k: support get/set antenna
- configurations.
+Subject: [PATCH] ath10k: support get/set antenna configurations.
+Date: Mon, 12 May 2014 20:52:35 -0400
+Message-Id: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
+In-Reply-To: <5370F41A.70202@candelatech.com>
+References: <5370F41A.70202@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +19,178 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, May 12, 2014 at 12:17 PM, Ben Greear <greearb@candelatech.com> wrote:
-> My patch was against my own tree which is a mix of 3.14 and an older version of git://github.com/kvalo/ath.git
->
-> I do not have time right now to re-do the patch, but next time I get some time I will
-> fix the patch to apply to ath.git.  If someone else wants to do it first, I will not
-> complain :)
+From: Ben Greear <greearb@candelatech.com>
 
-I've tested it and will upload a re-spun version against a more resent
-ath-next shortly.
+Tested with CT firmware, but should work on standard
+firmware as well.
 
-Using firmware 10.1.467.2-1, I tested it as follows:
-- disconnected the second antenna
-- iw phy phy1 set antenna {all, 1, 2, 4, 6, 3, 5, 7}
-- Measure iperf performance and RSSI from my (2x2) macbook.
+Verified that target's tx/rx chain register is set appropriately,
+and that the tx rate goes down as number of chains
+decrease, but I did not actually try to verify antenna
+ceased to transmit when disabled.
 
-Expected:
-- lower RSSI when using fewer antennas
-- very poor signal when using only the disconnected antenna
-- slower speeds when using fewer antennas
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+Tested-by: Avery Pennarun <apenwarr@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h |  6 +++
+ drivers/net/wireless/ath/ath10k/mac.c  | 72 ++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c  |  5 +++
+ 3 files changed, 83 insertions(+)
 
-Actual:
-- my AP did not successfully send out any beacons with antenna modes 2, 4, or 6.
-- RSSI was roughly 6dB less with 1 than with 5 or 7
-- seemed to degrade to 1 spatial stream as expected in modes 1 and 3
-- 2 spatial streams and good RSSI as expected in modes 5 and 7
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 9b86e57..2a4638f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -440,6 +440,12 @@ struct ath10k {
+ 	bool radar_enabled;
+ 	int num_started_vdevs;
+ 
++	/* Protected by conf-mutex */
++	unsigned char supp_tx_chainmask;
++	unsigned char supp_rx_chainmask;
++	unsigned char cfg_tx_chainmask;
++	unsigned char cfg_rx_chainmask;
++
+ 	struct wmi_pdev_set_wmm_params_arg wmm_params;
+ 	struct completion install_key_done;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ecd191b..ac1d9b1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2329,6 +2329,69 @@ void ath10k_halt(struct ath10k *ar)
+ 	spin_unlock_bh(&ar->data_lock);
+ }
+ 
++static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->cfg_tx_chainmask) {
++		*tx_ant = ar->cfg_tx_chainmask;
++		*rx_ant = ar->cfg_rx_chainmask;
++	} else {
++		*tx_ant = ar->supp_tx_chainmask;
++		*rx_ant = ar->supp_rx_chainmask;
++	}
++
++	mutex_unlock(&ar->conf_mutex);
++
++	return 0;
++}
++
++static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
++{
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	ar->cfg_tx_chainmask = tx_ant;
++	ar->cfg_rx_chainmask = rx_ant;
++
++	if ((ar->state != ATH10K_STATE_ON) &&
++	    (ar->state != ATH10K_STATE_RESTARTED))
++		return 0;
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->tx_chain_mask,
++					tx_ant);
++	if (ret) {
++		ath10k_warn("failed to set tx-chainmask: %d, req 0x%x\n",
++			    ret, tx_ant);
++		return ret;
++	}
++
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->rx_chain_mask,
++					rx_ant);
++	if (ret) {
++		ath10k_warn("failed to set rx-chainmask: %d, req 0x%x\n",
++			    ret, rx_ant);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
++{
++	struct ath10k *ar = hw->priv;
++	int ret;
++
++	mutex_lock(&ar->conf_mutex);
++	ret = __ath10k_set_antenna(ar, tx_ant, rx_ant);
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++
+ static int ath10k_start(struct ieee80211_hw *hw)
+ {
+ 	struct ath10k *ar = hw->priv;
+@@ -2370,6 +2433,10 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	if (ret)
+ 		ath10k_warn("failed to enable dynamic BW: %d\n", ret);
+ 
++	if (ar->cfg_tx_chainmask)
++		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
++				     ar->cfg_rx_chainmask);
++
+ 	/*
+ 	 * By default FW set ARP frames ac to voice (6). In that case ARP
+ 	 * exchange is not working properly for UAPSD enabled AP. ARP requests
+@@ -4252,6 +4319,8 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_frag_threshold		= ath10k_set_frag_threshold,
+ 	.flush				= ath10k_flush,
+ 	.tx_last_beacon			= ath10k_tx_last_beacon,
++	.set_antenna			= ath10k_set_antenna,
++	.get_antenna			= ath10k_get_antenna,
+ 	.restart_complete		= ath10k_restart_complete,
+ 	.get_survey			= ath10k_get_survey,
+ 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+@@ -4601,6 +4670,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		BIT(NL80211_IFTYPE_ADHOC) |
+ 		BIT(NL80211_IFTYPE_AP);
+ 
++	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
++	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
++
+ 	if (!test_bit(ATH10K_FW_FEATURE_NO_P2P, ar->fw_features))
+ 		ar->hw->wiphy->interface_modes |=
+ 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0a2d04c..d22874a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2558,6 +2558,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
+ 	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
++	ar->supp_tx_chainmask = TARGET_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
+@@ -2652,6 +2654,9 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
+ 	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
+ 	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
++	/* TODO:  Have to deal with 2x2 chips if/when the come out. */
++	ar->supp_tx_chainmask = TARGET_10X_TX_CHAIN_MASK;
++	ar->supp_rx_chainmask = TARGET_10X_RX_CHAIN_MASK;
+ 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+ 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
+-- 
+1.9.1.423.g4596e3a
 
-So there seems to be a problem when the first antenna is not enabled.
-Firmware bug perhaps?
-
-Thanks,
-
-Avery
 
 _______________________________________________
 ath10k mailing list
