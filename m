@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-f201.google.com ([209.85.223.201])
+Received: from mail-qc0-x244.google.com ([2607:f8b0:400d:c01::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk0xy-0004gm-4w
- for ath10k@lists.infradead.org; Tue, 13 May 2014 00:53:10 +0000
-Received: by mail-ie0-f201.google.com with SMTP id rp18so937694iec.0
- for <ath10k@lists.infradead.org>; Mon, 12 May 2014 17:52:47 -0700 (PDT)
-From: Avery Pennarun <apenwarr@gmail.com>
-Subject: [PATCH] ath10k: support get/set antenna configurations.
-Date: Mon, 12 May 2014 20:52:35 -0400
-Message-Id: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
-In-Reply-To: <5370F41A.70202@candelatech.com>
-References: <5370F41A.70202@candelatech.com>
+ id 1Wk2a5-0004v7-1z
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 02:36:37 +0000
+Received: by mail-qc0-f196.google.com with SMTP id l6so3242625qcy.7
+ for <ath10k@lists.infradead.org>; Mon, 12 May 2014 19:36:15 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 12 May 2014 22:36:15 -0400
+Message-ID: <CAMWKU3eT9=ri7P1X69DNw9QshqDR8TUFm3RVuo8=GWuDcCn5oA@mail.gmail.com>
+Subject: openwrt ath10k / MacBook Pro Retina 802.11ac not connecting
+From: while oneq <while1eq1@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,178 +18,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-From: Ben Greear <greearb@candelatech.com>
+Hello,
 
-Tested with CT firmware, but should work on standard
-firmware as well.
+Im currently using lib/firmware/ath10k/QCA988X/hw2.0/  on a TP-Link
+Archer C7 v2.0 / OpenWRT [BARRIER BREAKER (Bleeding Edge, r40749)]
 
-Verified that target's tx/rx chain register is set appropriately,
-and that the tx rate goes down as number of chains
-decrease, but I did not actually try to verify antenna
-ceased to transmit when disabled.
+Package: kmod-ath10k
+Version: 3.10.36+2014-03-31-1
+Depends: kernel (= 3.10.36-1-6548302841f6df0132fbc6960fa209fb), kmod-ath
+Status: install user installed
+Architecture: ar71xx
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
-Tested-by: Avery Pennarun <apenwarr@gmail.com>
----
- drivers/net/wireless/ath/ath10k/core.h |  6 +++
- drivers/net/wireless/ath/ath10k/mac.c  | 72 ++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c  |  5 +++
- 3 files changed, 83 insertions(+)
+[    0.000000] SoC: Qualcomm Atheros QCA9558 rev 0
+[    0.690000] ath79-spi ath79-spi: master is unqueued, this is deprecated
+[    0.820000] switch0: Atheros AR8327 rev. 4 switch registered on ag71xx-mdio.0
+[    2.620000] ag71xx ag71xx.0: connected to PHY at ag71xx-mdio.0:00
+[uid=004dd034, driver=Atheros AR8216/AR8236/AR8316]
+[    2.630000] eth0: Atheros AG71xx at 0xb9000000, irq 4, mode:RGMII
+[    3.190000] eth1: Atheros AG71xx at 0xba000000, irq 5, mode:SGMII
+[   10.160000] ath10k_pci 0000:01:00.0: BAR 0: assigned [mem
+0x12000000-0x121fffff 64bit]
+[   10.480000] ath10k: pci irq legacy
+[   11.700000] ath10k: qca988x hw2.0 (0x4100016c) fw 10.1.467.2-1 api 2 htt 2.1
+[   12.230000] ath: EEPROM regdomain: 0x0
+[   12.230000] ath: EEPROM indicates default country code should be used
+[   12.230000] ath: doing EEPROM country->regdmn map search
+[   12.230000] ath: country maps to regdmn code: 0x3a
+[   12.230000] ath: Country alpha2 being used: US
+[   12.230000] ath: Regpair used: 0x3a
+[   12.450000] ath: EEPROM regdomain: 0x0
+[   12.450000] ath: EEPROM indicates default country code should be used
+[   12.450000] ath: doing EEPROM country->regdmn map search
+[   12.450000] ath: country maps to regdmn code: 0x3a
+[   12.450000] ath: Country alpha2 being used: US
+[   12.450000] ath: Regpair used: 0x3a
+[   12.470000] ieee80211 phy1: Atheros AR9550 Rev:0 mem=0xb8100000, irq=47
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 9b86e57..2a4638f 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -440,6 +440,12 @@ struct ath10k {
- 	bool radar_enabled;
- 	int num_started_vdevs;
- 
-+	/* Protected by conf-mutex */
-+	unsigned char supp_tx_chainmask;
-+	unsigned char supp_rx_chainmask;
-+	unsigned char cfg_tx_chainmask;
-+	unsigned char cfg_rx_chainmask;
-+
- 	struct wmi_pdev_set_wmm_params_arg wmm_params;
- 	struct completion install_key_done;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ecd191b..ac1d9b1 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2329,6 +2329,69 @@ void ath10k_halt(struct ath10k *ar)
- 	spin_unlock_bh(&ar->data_lock);
- }
- 
-+static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
-+{
-+	struct ath10k *ar = hw->priv;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->cfg_tx_chainmask) {
-+		*tx_ant = ar->cfg_tx_chainmask;
-+		*rx_ant = ar->cfg_rx_chainmask;
-+	} else {
-+		*tx_ant = ar->supp_tx_chainmask;
-+		*rx_ant = ar->supp_rx_chainmask;
-+	}
-+
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return 0;
-+}
-+
-+static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
-+{
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	ar->cfg_tx_chainmask = tx_ant;
-+	ar->cfg_rx_chainmask = rx_ant;
-+
-+	if ((ar->state != ATH10K_STATE_ON) &&
-+	    (ar->state != ATH10K_STATE_RESTARTED))
-+		return 0;
-+
-+	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->tx_chain_mask,
-+					tx_ant);
-+	if (ret) {
-+		ath10k_warn("failed to set tx-chainmask: %d, req 0x%x\n",
-+			    ret, tx_ant);
-+		return ret;
-+	}
-+
-+	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->rx_chain_mask,
-+					rx_ant);
-+	if (ret) {
-+		ath10k_warn("failed to set rx-chainmask: %d, req 0x%x\n",
-+			    ret, rx_ant);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
-+{
-+	struct ath10k *ar = hw->priv;
-+	int ret;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	ret = __ath10k_set_antenna(ar, tx_ant, rx_ant);
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+
- static int ath10k_start(struct ieee80211_hw *hw)
- {
- 	struct ath10k *ar = hw->priv;
-@@ -2370,6 +2433,10 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	if (ret)
- 		ath10k_warn("failed to enable dynamic BW: %d\n", ret);
- 
-+	if (ar->cfg_tx_chainmask)
-+		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
-+				     ar->cfg_rx_chainmask);
-+
- 	/*
- 	 * By default FW set ARP frames ac to voice (6). In that case ARP
- 	 * exchange is not working properly for UAPSD enabled AP. ARP requests
-@@ -4252,6 +4319,8 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.set_frag_threshold		= ath10k_set_frag_threshold,
- 	.flush				= ath10k_flush,
- 	.tx_last_beacon			= ath10k_tx_last_beacon,
-+	.set_antenna			= ath10k_set_antenna,
-+	.get_antenna			= ath10k_get_antenna,
- 	.restart_complete		= ath10k_restart_complete,
- 	.get_survey			= ath10k_get_survey,
- 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
-@@ -4601,6 +4670,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 		BIT(NL80211_IFTYPE_ADHOC) |
- 		BIT(NL80211_IFTYPE_AP);
- 
-+	ar->hw->wiphy->available_antennas_rx = ar->supp_rx_chainmask;
-+	ar->hw->wiphy->available_antennas_tx = ar->supp_tx_chainmask;
-+
- 	if (!test_bit(ATH10K_FW_FEATURE_NO_P2P, ar->fw_features))
- 		ar->hw->wiphy->interface_modes |=
- 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 0a2d04c..d22874a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2558,6 +2558,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
- 	config.ast_skid_limit = __cpu_to_le32(TARGET_AST_SKID_LIMIT);
- 	config.tx_chain_mask = __cpu_to_le32(TARGET_TX_CHAIN_MASK);
- 	config.rx_chain_mask = __cpu_to_le32(TARGET_RX_CHAIN_MASK);
-+	ar->supp_tx_chainmask = TARGET_TX_CHAIN_MASK;
-+	ar->supp_rx_chainmask = TARGET_RX_CHAIN_MASK;
- 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
- 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
- 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_RX_TIMEOUT_LO_PRI);
-@@ -2652,6 +2654,9 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
- 	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
- 	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
- 	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
-+	/* TODO:  Have to deal with 2x2 chips if/when the come out. */
-+	ar->supp_tx_chainmask = TARGET_10X_TX_CHAIN_MASK;
-+	ar->supp_rx_chainmask = TARGET_10X_RX_CHAIN_MASK;
- 	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
- 	config.rx_timeout_pri_vi = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
- 	config.rx_timeout_pri_be = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
--- 
-1.9.1.423.g4596e3a
+ and am connecting via
 
+a MacBook Pro Retina:
+
+  Model Name: MacBook Pro
+
+  Model Identifier: MacBookPro11,3
+
+  Processor Name: Intel Core i7
+
+  Processor Speed: 2.6 GHz
+
+  Number of Processors: 1
+
+  Total Number of Cores: 4
+
+  L2 Cache (per Core): 256 KB
+
+  L3 Cache: 6 MB
+
+  Memory: 16 GB
+
+  Boot ROM Version: MBP112.0138.B02
+
+  SMC Version (system): 2.19f3
+
+
+en0:
+
+  Card Type: AirPort Extreme  (0x14E4, 0x134)
+
+  Firmware Version: Broadcom BCM43xx 1.0 (6.30.223.154.63)
+
+  MAC Address: xx:xx:xx:xx:xx:xx
+
+  Locale: FCC
+
+  Country Code: US
+
+  Supported PHY Modes: 802.11 a/b/g/n/ac
+
+  Supported Channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 36, 40, 44,
+48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136,
+140, 144, 149, 153, 157, 161, 165
+
+  Wake On Wireless: Supported
+
+  AirDrop: Supported
+
+  Status: Connected
+
+And am unable to get connected to the access point at all, All
+wireless security settings are disabled at the moment.
+
+Any assistance on this issue would be greatly appreciated.
+
+Thanks
 
 _______________________________________________
 ath10k mailing list
