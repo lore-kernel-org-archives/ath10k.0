@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x244.google.com ([2607:f8b0:400d:c01::244])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wk2a5-0004v7-1z
- for ath10k@lists.infradead.org; Tue, 13 May 2014 02:36:37 +0000
-Received: by mail-qc0-f196.google.com with SMTP id l6so3242625qcy.7
- for <ath10k@lists.infradead.org>; Mon, 12 May 2014 19:36:15 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wk3WE-0006jy-7z
+ for ath10k@lists.infradead.org; Tue, 13 May 2014 03:36:42 +0000
+Message-ID: <53719332.9040700@candelatech.com>
+Date: Mon, 12 May 2014 20:36:18 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Date: Mon, 12 May 2014 22:36:15 -0400
-Message-ID: <CAMWKU3eT9=ri7P1X69DNw9QshqDR8TUFm3RVuo8=GWuDcCn5oA@mail.gmail.com>
-Subject: openwrt ath10k / MacBook Pro Retina 802.11ac not connecting
-From: while oneq <while1eq1@gmail.com>
+Subject: Re: RE : [PATCH v2 2/2] ath10k: support get/set antenna
+ configurations.
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+In-Reply-To: <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,105 +22,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-
-Hello,
-
-Im currently using lib/firmware/ath10k/QCA988X/hw2.0/  on a TP-Link
-Archer C7 v2.0 / OpenWRT [BARRIER BREAKER (Bleeding Edge, r40749)]
-
-Package: kmod-ath10k
-Version: 3.10.36+2014-03-31-1
-Depends: kernel (= 3.10.36-1-6548302841f6df0132fbc6960fa209fb), kmod-ath
-Status: install user installed
-Architecture: ar71xx
-
-[    0.000000] SoC: Qualcomm Atheros QCA9558 rev 0
-[    0.690000] ath79-spi ath79-spi: master is unqueued, this is deprecated
-[    0.820000] switch0: Atheros AR8327 rev. 4 switch registered on ag71xx-mdio.0
-[    2.620000] ag71xx ag71xx.0: connected to PHY at ag71xx-mdio.0:00
-[uid=004dd034, driver=Atheros AR8216/AR8236/AR8316]
-[    2.630000] eth0: Atheros AG71xx at 0xb9000000, irq 4, mode:RGMII
-[    3.190000] eth1: Atheros AG71xx at 0xba000000, irq 5, mode:SGMII
-[   10.160000] ath10k_pci 0000:01:00.0: BAR 0: assigned [mem
-0x12000000-0x121fffff 64bit]
-[   10.480000] ath10k: pci irq legacy
-[   11.700000] ath10k: qca988x hw2.0 (0x4100016c) fw 10.1.467.2-1 api 2 htt 2.1
-[   12.230000] ath: EEPROM regdomain: 0x0
-[   12.230000] ath: EEPROM indicates default country code should be used
-[   12.230000] ath: doing EEPROM country->regdmn map search
-[   12.230000] ath: country maps to regdmn code: 0x3a
-[   12.230000] ath: Country alpha2 being used: US
-[   12.230000] ath: Regpair used: 0x3a
-[   12.450000] ath: EEPROM regdomain: 0x0
-[   12.450000] ath: EEPROM indicates default country code should be used
-[   12.450000] ath: doing EEPROM country->regdmn map search
-[   12.450000] ath: country maps to regdmn code: 0x3a
-[   12.450000] ath: Country alpha2 being used: US
-[   12.450000] ath: Regpair used: 0x3a
-[   12.470000] ieee80211 phy1: Atheros AR9550 Rev:0 mem=0xb8100000, irq=47
-
- and am connecting via
-
-a MacBook Pro Retina:
-
-  Model Name: MacBook Pro
-
-  Model Identifier: MacBookPro11,3
-
-  Processor Name: Intel Core i7
-
-  Processor Speed: 2.6 GHz
-
-  Number of Processors: 1
-
-  Total Number of Cores: 4
-
-  L2 Cache (per Core): 256 KB
-
-  L3 Cache: 6 MB
-
-  Memory: 16 GB
-
-  Boot ROM Version: MBP112.0138.B02
-
-  SMC Version (system): 2.19f3
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 
-en0:
 
-  Card Type: AirPort Extreme  (0x14E4, 0x134)
+On 05/12/2014 05:49 PM, Avery Pennarun wrote:
+> On Mon, May 12, 2014 at 12:17 PM, Ben Greear <greearb@candelatech.com> wrote:
+>> My patch was against my own tree which is a mix of 3.14 and an older version of git://github.com/kvalo/ath.git
+>>
+>> I do not have time right now to re-do the patch, but next time I get some time I will
+>> fix the patch to apply to ath.git.  If someone else wants to do it first, I will not
+>> complain :)
+>
+> I've tested it and will upload a re-spun version against a more resent
+> ath-next shortly.
+>
+> Using firmware 10.1.467.2-1, I tested it as follows:
+> - disconnected the second antenna
+> - iw phy phy1 set antenna {all, 1, 2, 4, 6, 3, 5, 7}
+> - Measure iperf performance and RSSI from my (2x2) macbook.
+>
+> Expected:
+> - lower RSSI when using fewer antennas
+> - very poor signal when using only the disconnected antenna
+> - slower speeds when using fewer antennas
+>
+> Actual:
+> - my AP did not successfully send out any beacons with antenna modes 2, 4, or 6.
+> - RSSI was roughly 6dB less with 1 than with 5 or 7
+> - seemed to degrade to 1 spatial stream as expected in modes 1 and 3
+> - 2 spatial streams and good RSSI as expected in modes 5 and 7
+>
+> So there seems to be a problem when the first antenna is not enabled.
+> Firmware bug perhaps?
 
-  Firmware Version: Broadcom BCM43xx 1.0 (6.30.223.154.63)
+I seem to recall that you can only use 1, 3, or 7 in ath9k, probably ath10k
+has same constraints.
 
-  MAC Address: xx:xx:xx:xx:xx:xx
+Thanks,
+Ben
 
-  Locale: FCC
+>
+> Thanks,
+>
+> Avery
+>
 
-  Country Code: US
-
-  Supported PHY Modes: 802.11 a/b/g/n/ac
-
-  Supported Channels: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 36, 40, 44,
-48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136,
-140, 144, 149, 153, 157, 161, 165
-
-  Wake On Wireless: Supported
-
-  AirDrop: Supported
-
-  Status: Connected
-
-And am unable to get connected to the access point at all, All
-wireless security settings are disabled at the moment.
-
-Any assistance on this issue would be greatly appreciated.
-
-Thanks
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
