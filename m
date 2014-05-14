@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wka7m-0005BN-Qh
- for ath10k@lists.infradead.org; Wed, 14 May 2014 14:25:39 +0000
+ id 1Wka8s-0005S5-7f
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 14:26:46 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: warm reset fixes 2014-05-14
-References: <1400050658-2763-1-git-send-email-michal.kazior@tieto.com>
- <87bnv0fnjm.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 14 May 2014 17:25:10 +0300
-In-Reply-To: <87bnv0fnjm.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 14 May 2014 17:22:05 +0300")
-Message-ID: <877g5ofneh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: fixes 2014-05-14
+References: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 14 May 2014 17:26:15 +0300
+In-Reply-To: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 14 May 2014 14:16:24 +0200")
+Message-ID: <8738gcfnco.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,39 +24,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Michal Kazior <michal.kazior@tieto.com> writes:
+> This is another pair of patches.
 >
->> Warm reset was not able to recover from a device
->> crash so ath10k was falling back to cold reset
->> which would occasionally hang the system or
->> generate a data bus error with some device chips.
->>
->> Warm reset now works a lot more reliably (at least
->> on my T430). It's able to recover from a "hard"
->> simulate fw crash and some firmware asserts I've
->> forced meaning it should recover in most cases
->> without falling back to the cold reset.
->>
->> There's still one case of a crash warm reset is
->> incapable to recover from: IOMMU faults (when
->> supported and enabled and device tries to access
->> non-DMA mapped host memory) trigger device crash
->> and leave CE totally unresponsive before and after
->> the warm reset.
->>
->>
->> Michal Kazior (2):
->>   ath10k: improve warm reset reliability
->>   ath10k: retry warm reset a few times
+> It fixes a crash recently reported by Ben, but..
 >
-> The patches don't apply anymore and the conflict was not trivial enough
-> for me to fix it. Can you rebase, please?
+> I've been able to find only a single code path
+> that called free_irq() twice in upstream code.
+> However it doesn't match the call trace reported
+> by Ben. I have to assume this is related to his
+> local patches or this is a very wierd case of
+> recovery race between userspace/mac80211/driver.
+>
+>
+> Michal Kazior (2):
+>   ath10k: fix core start sequence
+>   ath10k: prevent hif_stop being called twice
 
-Sorry, I replied to the wrong thread. Please ignore what I said above!
+The patches don't apply anymore and the conflict was not trivial enough
+for me to fix it. Can you rebase, please?
+
+(This is the thread I was supposed to reply, sorry for the confusion.)
 
 -- 
 Kalle Valo
