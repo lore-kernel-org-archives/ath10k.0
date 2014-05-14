@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkXtD-0000fC-7I
- for ath10k@lists.infradead.org; Wed, 14 May 2014 12:02:28 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Wed, 14 May 2014 13:56:29 +0200
-Subject: RE : ath10k: set channel by command "iw" not from hostapd and DFS
- support of firmware-2.bin_10.1.467.2-1
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>,
- <5373382C.1030709@elisanet.fi>
-In-Reply-To: <5373382C.1030709@elisanet.fi>
-Content-Language: fr-FR
-MIME-Version: 1.0
+Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkYE1-0005fT-1F
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 12:23:57 +0000
+Received: by mail-ee0-f54.google.com with SMTP id b57so1316373eek.27
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 05:23:34 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: prevent hif_stop being called twice
+Date: Wed, 14 May 2014 14:16:26 +0200
+Message-Id: <1400069786-9764-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
+References: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,68 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matti Laakso <malaakso@elisanet.fi>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Pj5EaWQgeW91IGJ1aWxkIGF0aDEwayB3aXRoIEFUSDEwS19ERlNfQ0VSVElGSUVEIGVuYWJsZWQ/
-DQoNClllcyBJIGRpZCBpdCwgaGVyZSBpcyBteSBjb25maWd1cmF0aW9uOg0KDQo8TT4gICBBdGhl
-cm9zIDgwMi4xMWFjIHdpcmVsZXNzIGNhcmRzIHN1cHBvcnQgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgPE0+ICAgICBBdGhlcm9zIGF0aDEwayBQQ0kgc3VwcG9y
-dCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBbKl0gICAgIEF0aGVyb3MgYXRoMTBrIGRlYnVnZ2luZyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg
-4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0gICAgIEF0aGVyb3MgYXRo
-MTBrIGRlYnVnZnMgc3VwcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBbKl0gICAgIEF0aGVyb3MgYXRoMTBrIHRyYWNpbmcgc3VwcG9ydCAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0g
-ICAgIEF0aGVyb3MgREZTIHN1cHBvcnQgZm9yIGNlcnRpZmllZCBwbGF0Zm9ybXMgDQoNCg0KTkdV
-WUVOIFZ1IEhhaQ0KQWNpdGEtU29kaWVsZWMNClJvdXRlIGRlIE1heXJlcyAtIEIuUC4gOQ0KMTIx
-MDAgU3QgR0VPUkdFUyBERSBMVVpFTkNPTg0KRlJBTkNFDQoNCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18NCkRlIDogYXRoMTBrIFthdGgxMGstYm91bmNlc0BsaXN0cy5p
-bmZyYWRlYWQub3JnXSBkZSBsYSBwYXJ0IGRlIE1hdHRpIExhYWtzbyBbbWFsYWFrc29AZWxpc2Fu
-ZXQuZmldDQpEYXRlIGQnZW52b2kgOiBtZXJjcmVkaSAxNCBtYWkgMjAxNCAxMTozMg0Kw4AgOiBh
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KT2JqZXQgOiBSZTogYXRoMTBrOiBzZXQgY2hhbm5l
-bCBieSBjb21tYW5kICJpdyIgbm90IGZyb20gaG9zdGFwZCBhbmQgREZTIHN1cHBvcnQgb2YgZmly
-bXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xDQoNCj4gSSBhbSBhYmxlIHRvIHJ1biBtb2RlIGFjY2Vz
-cyBwb2ludCBieSB1c2luZyBhdGgxMGsgYW5kIGhvc3RhcGQsIGJ1dCBJIGhhdmUgdG8gc2V0IHRo
-ZSBjaGFubmVsIGluIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgZm9yIGhvc3RhcGQgKEkgZGVzYWN0
-aXZhdGVkIEFDUyB3aGVuIGJ1aWxkaW5nIGhvc3RhcGQpDQo+IElmIEkgc2V0IGNoYW5uZWwgYnkg
-dGhlIGNvbW1hbmQgIml3IHdsYW4wIHNldCBjaGFubmVsIDEwIEhUMjAiICBhbmQgcmVtb3ZlIHRo
-ZSBsaW5lICJjaGFubmVsPTEwIiBmcm9tIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgb2YgaG9zdGFw
-ZCwgdGhpcyBlcnJvciBhcHBlYXJzIHdoZW4gSSBydW4gaG9zdGFwZDoNCj4NCj4gQUNTIHdhcyBk
-aXNhYmxlZCBvbiB5b3VyIGJ1aWxkLCByZWJ1aWxkIGhvc3RhcGQgd2l0aCBDT05GSUdfQUNTPXkg
-b3Igc2V0IGNoYW5uZWwNCj4gd2xhbjA6IElFRUUgODAyLjExIENvbmZpZ3VyZWQgY2hhbm5lbCAo
-MCkgbm90IGZvdW5kIGZyb20gdGhlIGNoYW5uZWwgbGlzdCBvZiBjdXJyZW50IG1vZGUgKDEpIElF
-RUUgODAyLjExZw0KPiB3bGFuMDogSUVFRSA4MDIuMTEgSGFyZHdhcmUgZG9lcyBub3Qgc3VwcG9y
-dCBjb25maWd1cmVkIGNoYW5uZWwNCj4gQ291bGQgbm90IHNlbGVjdCBod19tb2RlIGFuZCBjaGFu
-bmVsLiAoLTMpDQo+IHdsYW4wOiBVbmFibGUgdG8gc2V0dXAgaW50ZXJmYWNlLg0KPiBob3N0YXBk
-X2ZyZWVfaGFwZF9kYXRhOiBJbnRlcmZhY2Ugd2xhbjAgd2Fzbid0IHN0YXJ0ZWQNCj4NCj4gRG9l
-cyBpdCBtZWFuIHRoYXQgYXRoMTBrIGRvZXMgbm90IHN1cHBvcnQgY29uZmlndXJlZCBjaGFubmVs
-ID8/Pz8gVGhlIHJlYXNvbiBJIHdhbnQgdG8gZG8gaXQgYnkgY29tbWFuZCAiaXciIGJlY2F1c2Ug
-aXQgaGFzIG1vcmUgb3B0aW9ucyB0aGFuIGhvc3RhcGQgKGl3IHdsYW4wIHNldCBmcmVxIDxjb250
-cm9sIGZyZXE+IFsyMHw0MHw4MHw4MCs4MHwxNjBdIFs8Y2VudGVyIGZyZXEgMT5dIFs8Y2VudGVy
-IGZyZXEgMj5dICkNCg0KUmVtb3ZpbmcgdGhlIGNoYW5uZWwgZnJvbSBob3N0YXBkLmNvbmYgaW1w
-bGllcyBjaGFubmVsPTAuIEFuZCBpdA0Kb2J2aW91c2x5IGlzIG5vdCBhIHZhbGlkIGNoYW5uZWwg
-d2hlbiBBQ1MgaXMgZGlzYWJsZWQuIEFsbCB0aGUgb3B0aW9ucw0KdGhhdCBpdyBoYXMgY2FuIGJl
-IHNldCBpbiBob3N0YXBkLmNvbmYgYXMgd2VsbC4NCg0KPiBJIGhhZCBhbm90aGVyIHByb2JsZW0g
-d2l0aCBzZXR0aW5nIGEgY2FubmFsIHRoYXQgZW1wbG95cyBERlMgKGZvciBleGFtcGxlIDUyKToN
-Cj4NCj4gd2xhbjA6IGludGVyZmFjZSBzdGF0ZSBDT1VOVFJZX1VQREFURS0+REZTDQo+IHdsYW4w
-OiBERlMtQ0FDLVNUQVJUIGZyZXE9NTI2MCBjaGFuPTUyIHNlY19jaGFuPTANCj4gd2xhbjA6IFVu
-YWJsZSB0byBzZXR1cCBpbnRlcmZhY2UuDQo+IEFERFJDT05GKE5FVERFVl9VUCk6IHdsYW4wOiBs
-aW5rIGlzIG5vdCByZWFkeQ0KPg0KPiBJJ20gdXNpbmcgdGhlIGZpcm13YXJlLTIuYmluXzEwLjEu
-NDY3LjItMSB3aGljaCBpbmRpY2F0ZXMgdGhhdCBzdXBwb3J0cyBERlMgb24gdGhlIHdlYnNpdGUg
-b2YgYXRoMTBrLiBJcyB0aGVyZSBhbnlvbmUgZ290IHRoZSBzYW1lIGlzc3VlIGxpa2UgbWU/DQo+
-DQoNCkRpZCB5b3UgYnVpbGQgYXRoMTBrIHdpdGggQVRIMTBLX0RGU19DRVJUSUZJRUQgZW5hYmxl
-ZD8NCg0KTWF0dGkNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18NCmF0aDEwayBtYWlsaW5nIGxpc3QNCmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Recently there was a bug discovered that involved
+hif_stop() being called twice that ended up with a
+double free_irq() call but it only manifested with
+multiple MSI interrupts mapping.
+
+Catch this kind of a problem early in driver
+regardless of interrupt mapping.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 66b1f30..b58db5a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1271,6 +1271,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "boot hif stop\n");
+ 
++	if (WARN_ON(!ar_pci->started))
++		return;
++
+ 	ret = ath10k_ce_disable_interrupts(ar);
+ 	if (ret)
+ 		ath10k_warn("failed to disable CE interrupts: %d\n", ret);
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
