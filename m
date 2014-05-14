@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkXod-0002EM-4H
- for ath10k@lists.infradead.org; Wed, 14 May 2014 11:57:44 +0000
-Received: by mail-ee0-f52.google.com with SMTP id e53so1294021eek.39
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 04:57:17 -0700 (PDT)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: get rid of pci_assign_resource() call from pci_probe
-Date: Wed, 14 May 2014 13:57:07 +0200
-Message-Id: <1400068627-4076-1-git-send-email-bartosz.markowski@tieto.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkXtD-0000fC-7I
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 12:02:28 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Wed, 14 May 2014 13:56:29 +0200
+Subject: RE : ath10k: set channel by command "iw" not from hostapd and DFS
+ support of firmware-2.bin_10.1.467.2-1
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
+References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>,
+ <5373382C.1030709@elisanet.fi>
+In-Reply-To: <5373382C.1030709@elisanet.fi>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,55 +21,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Matti Laakso <malaakso@elisanet.fi>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On ARM-based (MSM mach), the pci_assign_resource() is passing
-some invalid pointers and leading to L2 cache errors,
-what prevents the PCI communication completly.
-
-So far I have not found this funtion to be directly called by
-any other wifi driver and did not found this assigning needed
-on any other platform. So removing it completly.
-
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 66b1f30..9a579cd 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2602,18 +2602,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 
- 	pci_set_drvdata(pdev, ar);
- 
--	/*
--	 * Without any knowledge of the Host, the Target may have been reset or
--	 * power cycled and its Config Space may no longer reflect the PCI
--	 * address space that was assigned earlier by the PCI infrastructure.
--	 * Refresh it now.
--	 */
--	ret = pci_assign_resource(pdev, BAR_NUM);
--	if (ret) {
--		ath10k_err("failed to assign PCI space: %d\n", ret);
--		goto err_ar;
--	}
--
- 	ret = pci_enable_device(pdev);
- 	if (ret) {
- 		ath10k_err("failed to enable PCI device: %d\n", ret);
--- 
-1.8.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Pj5EaWQgeW91IGJ1aWxkIGF0aDEwayB3aXRoIEFUSDEwS19ERlNfQ0VSVElGSUVEIGVuYWJsZWQ/
+DQoNClllcyBJIGRpZCBpdCwgaGVyZSBpcyBteSBjb25maWd1cmF0aW9uOg0KDQo8TT4gICBBdGhl
+cm9zIDgwMi4xMWFjIHdpcmVsZXNzIGNhcmRzIHN1cHBvcnQgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgPE0+ICAgICBBdGhlcm9zIGF0aDEwayBQQ0kgc3VwcG9y
+dCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBbKl0gICAgIEF0aGVyb3MgYXRoMTBrIGRlYnVnZ2luZyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg
+4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0gICAgIEF0aGVyb3MgYXRo
+MTBrIGRlYnVnZnMgc3VwcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBbKl0gICAgIEF0aGVyb3MgYXRoMTBrIHRyYWNpbmcgc3VwcG9ydCAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIA0KICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0g
+ICAgIEF0aGVyb3MgREZTIHN1cHBvcnQgZm9yIGNlcnRpZmllZCBwbGF0Zm9ybXMgDQoNCg0KTkdV
+WUVOIFZ1IEhhaQ0KQWNpdGEtU29kaWVsZWMNClJvdXRlIGRlIE1heXJlcyAtIEIuUC4gOQ0KMTIx
+MDAgU3QgR0VPUkdFUyBERSBMVVpFTkNPTg0KRlJBTkNFDQoNCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18NCkRlIDogYXRoMTBrIFthdGgxMGstYm91bmNlc0BsaXN0cy5p
+bmZyYWRlYWQub3JnXSBkZSBsYSBwYXJ0IGRlIE1hdHRpIExhYWtzbyBbbWFsYWFrc29AZWxpc2Fu
+ZXQuZmldDQpEYXRlIGQnZW52b2kgOiBtZXJjcmVkaSAxNCBtYWkgMjAxNCAxMTozMg0Kw4AgOiBh
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KT2JqZXQgOiBSZTogYXRoMTBrOiBzZXQgY2hhbm5l
+bCBieSBjb21tYW5kICJpdyIgbm90IGZyb20gaG9zdGFwZCBhbmQgREZTIHN1cHBvcnQgb2YgZmly
+bXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xDQoNCj4gSSBhbSBhYmxlIHRvIHJ1biBtb2RlIGFjY2Vz
+cyBwb2ludCBieSB1c2luZyBhdGgxMGsgYW5kIGhvc3RhcGQsIGJ1dCBJIGhhdmUgdG8gc2V0IHRo
+ZSBjaGFubmVsIGluIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgZm9yIGhvc3RhcGQgKEkgZGVzYWN0
+aXZhdGVkIEFDUyB3aGVuIGJ1aWxkaW5nIGhvc3RhcGQpDQo+IElmIEkgc2V0IGNoYW5uZWwgYnkg
+dGhlIGNvbW1hbmQgIml3IHdsYW4wIHNldCBjaGFubmVsIDEwIEhUMjAiICBhbmQgcmVtb3ZlIHRo
+ZSBsaW5lICJjaGFubmVsPTEwIiBmcm9tIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgb2YgaG9zdGFw
+ZCwgdGhpcyBlcnJvciBhcHBlYXJzIHdoZW4gSSBydW4gaG9zdGFwZDoNCj4NCj4gQUNTIHdhcyBk
+aXNhYmxlZCBvbiB5b3VyIGJ1aWxkLCByZWJ1aWxkIGhvc3RhcGQgd2l0aCBDT05GSUdfQUNTPXkg
+b3Igc2V0IGNoYW5uZWwNCj4gd2xhbjA6IElFRUUgODAyLjExIENvbmZpZ3VyZWQgY2hhbm5lbCAo
+MCkgbm90IGZvdW5kIGZyb20gdGhlIGNoYW5uZWwgbGlzdCBvZiBjdXJyZW50IG1vZGUgKDEpIElF
+RUUgODAyLjExZw0KPiB3bGFuMDogSUVFRSA4MDIuMTEgSGFyZHdhcmUgZG9lcyBub3Qgc3VwcG9y
+dCBjb25maWd1cmVkIGNoYW5uZWwNCj4gQ291bGQgbm90IHNlbGVjdCBod19tb2RlIGFuZCBjaGFu
+bmVsLiAoLTMpDQo+IHdsYW4wOiBVbmFibGUgdG8gc2V0dXAgaW50ZXJmYWNlLg0KPiBob3N0YXBk
+X2ZyZWVfaGFwZF9kYXRhOiBJbnRlcmZhY2Ugd2xhbjAgd2Fzbid0IHN0YXJ0ZWQNCj4NCj4gRG9l
+cyBpdCBtZWFuIHRoYXQgYXRoMTBrIGRvZXMgbm90IHN1cHBvcnQgY29uZmlndXJlZCBjaGFubmVs
+ID8/Pz8gVGhlIHJlYXNvbiBJIHdhbnQgdG8gZG8gaXQgYnkgY29tbWFuZCAiaXciIGJlY2F1c2Ug
+aXQgaGFzIG1vcmUgb3B0aW9ucyB0aGFuIGhvc3RhcGQgKGl3IHdsYW4wIHNldCBmcmVxIDxjb250
+cm9sIGZyZXE+IFsyMHw0MHw4MHw4MCs4MHwxNjBdIFs8Y2VudGVyIGZyZXEgMT5dIFs8Y2VudGVy
+IGZyZXEgMj5dICkNCg0KUmVtb3ZpbmcgdGhlIGNoYW5uZWwgZnJvbSBob3N0YXBkLmNvbmYgaW1w
+bGllcyBjaGFubmVsPTAuIEFuZCBpdA0Kb2J2aW91c2x5IGlzIG5vdCBhIHZhbGlkIGNoYW5uZWwg
+d2hlbiBBQ1MgaXMgZGlzYWJsZWQuIEFsbCB0aGUgb3B0aW9ucw0KdGhhdCBpdyBoYXMgY2FuIGJl
+IHNldCBpbiBob3N0YXBkLmNvbmYgYXMgd2VsbC4NCg0KPiBJIGhhZCBhbm90aGVyIHByb2JsZW0g
+d2l0aCBzZXR0aW5nIGEgY2FubmFsIHRoYXQgZW1wbG95cyBERlMgKGZvciBleGFtcGxlIDUyKToN
+Cj4NCj4gd2xhbjA6IGludGVyZmFjZSBzdGF0ZSBDT1VOVFJZX1VQREFURS0+REZTDQo+IHdsYW4w
+OiBERlMtQ0FDLVNUQVJUIGZyZXE9NTI2MCBjaGFuPTUyIHNlY19jaGFuPTANCj4gd2xhbjA6IFVu
+YWJsZSB0byBzZXR1cCBpbnRlcmZhY2UuDQo+IEFERFJDT05GKE5FVERFVl9VUCk6IHdsYW4wOiBs
+aW5rIGlzIG5vdCByZWFkeQ0KPg0KPiBJJ20gdXNpbmcgdGhlIGZpcm13YXJlLTIuYmluXzEwLjEu
+NDY3LjItMSB3aGljaCBpbmRpY2F0ZXMgdGhhdCBzdXBwb3J0cyBERlMgb24gdGhlIHdlYnNpdGUg
+b2YgYXRoMTBrLiBJcyB0aGVyZSBhbnlvbmUgZ290IHRoZSBzYW1lIGlzc3VlIGxpa2UgbWU/DQo+
+DQoNCkRpZCB5b3UgYnVpbGQgYXRoMTBrIHdpdGggQVRIMTBLX0RGU19DRVJUSUZJRUQgZW5hYmxl
+ZD8NCg0KTWF0dGkNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18NCmF0aDEwayBtYWlsaW5nIGxpc3QNCmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnDQpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
