@@ -1,17 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-qc0-x235.google.com ([2607:f8b0:400d:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkfyZ-0005zf-0I
- for ath10k@lists.infradead.org; Wed, 14 May 2014 20:40:31 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: openwrt ath10k / MacBook Pro Retina 802.11ac not connecting
-References: <CAMWKU3eT9=ri7P1X69DNw9QshqDR8TUFm3RVuo8=GWuDcCn5oA@mail.gmail.com>
- <874n0sce7s.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 14 May 2014 23:39:57 +0300
-In-Reply-To: <874n0sce7s.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 14 May 2014 23:11:51 +0300")
-Message-ID: <87vbt8ayci.fsf@kamboji.qca.qualcomm.com>
+ id 1Wkg58-0000Fw-4d
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 20:47:18 +0000
+Received: by mail-qc0-f181.google.com with SMTP id m20so210708qcx.12
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 13:46:56 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAJ-Vmon6xP25Ah_sSgVJRWNs53+Xs_3BxwO=FpCmHKr0iC2Ahg@mail.gmail.com>
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+ <53703B61.3050305@candelatech.com>
+ <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
+ <53704888.9060602@candelatech.com>
+ <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
+ <537056B1.6060902@candelatech.com>
+ <CAHqTa-1DwKqeSQD5FwOomyhqHv1THWD__0pnEs3RktOigp70kw@mail.gmail.com>
+ <CAHqTa-2y9n3AxdN--QGqGW-HRZnrBwEOhujWZ4FNZKmpU+kHMQ@mail.gmail.com>
+ <CAJ-Vmon6xP25Ah_sSgVJRWNs53+Xs_3BxwO=FpCmHKr0iC2Ahg@mail.gmail.com>
+Date: Wed, 14 May 2014 13:46:56 -0700
+Message-ID: <CAJ-Vmo=U4+XbLbinhmWCVPwXrKP98dmQUZGt+mYNnJwYCZdU4A@mail.gmail.com>
+Subject: Re: Unicast packets stop being transmitted to a particular station,
+ under load, when WPA2 is enabled
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,70 +33,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: while oneq <while1eq1@gmail.com>
-Cc: "Mark A. Swift" <markaswift@gmail.com>, ath10k@lists.infradead.org
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-Hi again,
+ok, so I've taken a 30 second look.
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+The CCMP IV's used for TID 3 look creepy. They start at 0x300000000000
+and go up. It's much higher than the rest of the IVs used for
+transmitting on the other TIDs.
 
-> while oneq <while1eq1@gmail.com> writes:
->
->> Im currently using lib/firmware/ath10k/QCA988X/hw2.0/  on a TP-Link
->> Archer C7 v2.0 / OpenWRT [BARRIER BREAKER (Bleeding Edge, r40749)]
->>
->> Package: kmod-ath10k
->> Version: 3.10.36+2014-03-31-1
->> Depends: kernel (= 3.10.36-1-6548302841f6df0132fbc6960fa209fb), kmod-ath
->> Status: install user installed
->> Architecture: ar71xx
->>
->
-> [...]
->
->>  and am connecting via
->>
->> a MacBook Pro Retina:
->>   Model Name: MacBook Pro
->>   Model Identifier: MacBookPro11,3
->
->
-> [...]
->
->> And am unable to get connected to the access point at all, All
->> wireless security settings are disabled at the moment.
->>
->> Any assistance on this issue would be greatly appreciated.
->
-> With the information you provided it's difficult to say what's the
-> problem. Here are some tips to get forward:
->
-> * Try disabling all possible features. Setup AP to use simple 11a mode
->   with 20 MHz channels without aggregation etc and try to narrow down
->   what is causing the problem.
->
-> * Try with static IPs.
->
-> * Try different channels.
->
-> * If you have a wireless sniffer, take 802.11 airlog with that and post
->   it somewhere.
->
-> * Provide logs from AP, especially dmesg and hostapd debug logs are
->   useful.
->
-> Please let me know if you need more help with the above.
+It'd be nice to see TID 3 traffic -before- it negotiates the ADDBA,
+just to see what the heck is going on there.
 
-I just noticed that Mark had also reported problems with the same
-MacBook. I had even replied to him, but I guess I forgot it entirely due
-to jetlag :)
+What _should_ be happening!
 
-But anyways, it would awesome if you could provide more info so that we
-can find the bug causing the problem. And if you have any questions,
-please ask. We have lots of people here who can help.
+* transmitting to a station should have exactly one CCMP IV, shared
+across all frames being transmitted. It should be allocated in order,
+regardless of the TID
+* on the receiving side, there's tracking for the CCMP IV seen for
+each TID, and checked to avoid replay attacks.
 
--- 
-Kalle Valo
+It's choosing a totally different CCMP IV space for transmitting on
+TID 3. I don't know why.
+
+(And I still don't have firmware source, so I can't tell you yet. grr.)
+
+Ben - I'm punting this one to you!
+
+
+
+
+-a
 
 _______________________________________________
 ath10k mailing list
