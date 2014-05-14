@@ -1,27 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x229.google.com ([2607:f8b0:400d:c01::229])
+Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkf0Q-0002Ij-Hs
- for ath10k@lists.infradead.org; Wed, 14 May 2014 19:38:22 +0000
-Received: by mail-qc0-f169.google.com with SMTP id e16so51949qcx.28
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:38:00 -0700 (PDT)
+ id 1Wkf7o-00088f-PK
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 19:46:01 +0000
+Date: Wed, 14 May 2014 15:40:29 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: Pull request: ath 20140514
+Message-ID: <20140514194029.GE14183@tuxdriver.com>
+References: <87zjikfqus.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw6-Vu5=ySa1Oi6WO1BEo8cuAnKP3FJNJD1P=dEj_-9D3A@mail.gmail.com>
-References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <53703B61.3050305@candelatech.com>
- <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
- <53704888.9060602@candelatech.com>
- <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
- <537056B1.6060902@candelatech.com>
- <CAHqTa-1DwKqeSQD5FwOomyhqHv1THWD__0pnEs3RktOigp70kw@mail.gmail.com>
- <CAHqTa-2y9n3AxdN--QGqGW-HRZnrBwEOhujWZ4FNZKmpU+kHMQ@mail.gmail.com>
- <CAHqTa-3gn1N8hTW4rpMos+h+K4nafoEsv94P0=0O3=Dpiaf2oA@mail.gmail.com>
- <CAA93jw6-Vu5=ySa1Oi6WO1BEo8cuAnKP3FJNJD1P=dEj_-9D3A@mail.gmail.com>
-Date: Wed, 14 May 2014 12:38:00 -0700
-Message-ID: <CAJ-Vmo=iof58iAkg0cGHthnPLq1Pk9VO2-ZZUje2hC=OsGOVdA@mail.gmail.com>
-Subject: Re: Unicast packets stop being transmitted to a particular station,
- under load, when WPA2 is enabled
-From: Adrian Chadd <adrian@freebsd.org>
+Content-Disposition: inline
+In-Reply-To: <87zjikfqus.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,38 +23,58 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>, Avery Pennarun <apenwarr@gmail.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-[snip]
+Were you hoping for 3.15 for these?
 
-I found a lot of .. bad behaving WME/TID/QoS mapping code in freebsd's
-atheros and net80211 code. It wouldn't surprise me to find the same in
-Linux. There's not always a lot of driver / stack testing with
-multiple overlapping TID traffic. (I found a lot out by actually
-running lots of torrents whilst working; that triggers some bulk/best
-effort/high priority concurrent traffic and it clued me in for how
-screwed up it is.)
+On Wed, May 14, 2014 at 04:10:35PM +0300, Kalle Valo wrote:
+> Hi John,
+> 
+> small pull request this time. I'll promise next one will be bigger ;)
+> 
+> Changelog for the request:
+> 
+> For ath10k Michal did various small fixes on how we handle
+> hardware/firmware problems and he also fixed two memory leaks.
+> 
+> Please let me know if there are any problems.
+> 
+> The following changes since commit 644aa4d62096039a79987e13062c6fc656ea380c:
+> 
+>   b43: remove list of IEEE 802.11 devices (2014-04-22 15:06:34 -0400)
+> 
+> are available in the git repository at:
+> 
+>   git://github.com/kvalo/ath.git for-linville
+> 
+> for you to fetch changes up to d9bc4b9b693d52dc14dc1de5dfec760634067d8c:
+> 
+>   ath10k: fix firmware recovery with ap interface (2014-04-24 09:23:03 +0300)
+> 
+> ----------------------------------------------------------------
+> Michal Kazior (7):
+>       ath10k: differentiate between target init failures
+>       ath10k: don't wait for device init if it crashed
+>       ath10k: skip suspending when recovering
+>       ath10k: make sure to not leak beacon dma mapping
+>       ath10k: make sure to not use invalid beacon pointer
+>       ath10k: prevent beacon memory leak
+>       ath10k: fix firmware recovery with ap interface
+> 
+>  drivers/net/wireless/ath/ath10k/core.c |    6 ++++--
+>  drivers/net/wireless/ath/ath10k/mac.c  |   16 ++++++++++++++++
+>  drivers/net/wireless/ath/ath10k/pci.c  |   18 +++++++++++++++++-
+>  drivers/net/wireless/ath/ath10k/wmi.c  |    2 ++
+>  4 files changed, 39 insertions(+), 3 deletions(-)
+> 
+> -- 
+> Kalle Valo
+> 
 
-Ok, so the "seqno = 0" thing is something that various wireless stacks
-do (including a couple of freebsd drivers, ugh) - when aggregation is
-enabled, they reset the seqno back to 0 before continuing. It's kind
-of odd, but it's typically because the non-aggregation seqno space was
-done by the wireless stack (net80211 or derived) but then aggregation,
-BAW tracking transmit/retransmit is done by the driver and/or
-firmware. Thus it doesn't actually know about the sequence numbers in
-question.
-
-Yes, you negotiate a different block-ack setup with each TID. Same as
-how each TID has a separate sequence number space. It gets more
-interesting, as there's only one set of keys for all TIDs, yet each
-TID can have a separate replay counter.
-
-Anyway, lemme look at the trace. I'd like to see what's going on after
-the negotitation.
-
-
--a
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
