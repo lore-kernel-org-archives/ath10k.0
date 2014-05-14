@@ -1,28 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from vs15.mail.saunalahti.fi ([62.142.117.202])
+Received: from mail-ee0-x234.google.com ([2a00:1450:4013:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkVYg-00034u-6h
- for ath10k@lists.infradead.org; Wed, 14 May 2014 09:33:07 +0000
-Received: from vams (localhost [127.0.0.1])
- by vs15.mail.saunalahti.fi (Postfix) with SMTP id 3FC5B400B2
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:39 +0300 (EEST)
-Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
- [195.197.172.115])
- by vs15.mail.saunalahti.fi (Postfix) with ESMTP id 1DC074005F
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:39 +0300 (EEST)
-Received: from [134.61.10.67] (nbtad04.physik.rwth-aachen.de [134.61.10.67])
- (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by gw01.mail.saunalahti.fi (Postfix) with ESMTPSA id 06F18400BB
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:37 +0300 (EEST)
-Message-ID: <5373382C.1030709@elisanet.fi>
-Date: Wed, 14 May 2014 11:32:28 +0200
-From: Matti Laakso <malaakso@elisanet.fi>
-MIME-Version: 1.0
-Subject: Re: ath10k: set channel by command "iw" not from hostapd and DFS
- support of firmware-2.bin_10.1.467.2-1
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ id 1WkXod-0002EM-4H
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 11:57:44 +0000
+Received: by mail-ee0-f52.google.com with SMTP id e53so1294021eek.39
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 04:57:17 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: get rid of pci_assign_resource() call from pci_probe
+Date: Wed, 14 May 2014 13:57:07 +0200
+Message-Id: <1400068627-4076-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +17,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-> I am able to run mode access point by using ath10k and hostapd, but I have to set the channel in the configuration file for hostapd (I desactivated ACS when building hostapd)
-> If I set channel by the command "iw wlan0 set channel 10 HT20"  and remove the line "channel=10" from the configuration file of hostapd, this error appears when I run hostapd: 
->
-> ACS was disabled on your build, rebuild hostapd with CONFIG_ACS=y or set channel    
-> wlan0: IEEE 802.11 Configured channel (0) not found from the channel list of current mode (1) IEEE 802.11g
-> wlan0: IEEE 802.11 Hardware does not support configured channel
-> Could not select hw_mode and channel. (-3)
-> wlan0: Unable to setup interface.
-> hostapd_free_hapd_data: Interface wlan0 wasn't started
->
-> Does it mean that ath10k does not support configured channel ???? The reason I want to do it by command "iw" because it has more options than hostapd (iw wlan0 set freq <control freq> [20|40|80|80+80|160] [<center freq 1>] [<center freq 2>] )
+On ARM-based (MSM mach), the pci_assign_resource() is passing
+some invalid pointers and leading to L2 cache errors,
+what prevents the PCI communication completly.
 
-Removing the channel from hostapd.conf implies channel=0. And it
-obviously is not a valid channel when ACS is disabled. All the options
-that iw has can be set in hostapd.conf as well.
+So far I have not found this funtion to be directly called by
+any other wifi driver and did not found this assigning needed
+on any other platform. So removing it completly.
 
-> I had another problem with setting a cannal that employs DFS (for example 52): 
->
-> wlan0: interface state COUNTRY_UPDATE->DFS                                      
-> wlan0: DFS-CAC-START freq=5260 chan=52 sec_chan=0                               
-> wlan0: Unable to setup interface.   
-> ADDRCONF(NETDEV_UP): wlan0: link is not ready    
->
-> I'm using the firmware-2.bin_10.1.467.2-1 which indicates that supports DFS on the website of ath10k. Is there anyone got the same issue like me?
->
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-Did you build ath10k with ATH10K_DFS_CERTIFIED enabled?
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 66b1f30..9a579cd 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2602,18 +2602,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 
+ 	pci_set_drvdata(pdev, ar);
+ 
+-	/*
+-	 * Without any knowledge of the Host, the Target may have been reset or
+-	 * power cycled and its Config Space may no longer reflect the PCI
+-	 * address space that was assigned earlier by the PCI infrastructure.
+-	 * Refresh it now.
+-	 */
+-	ret = pci_assign_resource(pdev, BAR_NUM);
+-	if (ret) {
+-		ath10k_err("failed to assign PCI space: %d\n", ret);
+-		goto err_ar;
+-	}
+-
+ 	ret = pci_enable_device(pdev);
+ 	if (ret) {
+ 		ath10k_err("failed to enable PCI device: %d\n", ret);
+-- 
+1.8.2
 
-Matti
 
 _______________________________________________
 ath10k mailing list
