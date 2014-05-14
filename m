@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkf7o-00088f-PK
- for ath10k@lists.infradead.org; Wed, 14 May 2014 19:46:01 +0000
-Date: Wed, 14 May 2014 15:40:29 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20140514
-Message-ID: <20140514194029.GE14183@tuxdriver.com>
-References: <87zjikfqus.fsf@kamboji.qca.qualcomm.com>
+ id 1WkfCw-00032n-Mp
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 19:51:19 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 4/5] ath10k: protect wep tx key setup
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+ <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 14 May 2014 22:50:48 +0300
+In-Reply-To: <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 9 May 2014 14:15:48 +0200")
+Message-ID: <87d2fgcf6v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87zjikfqus.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +24,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Were you hoping for 3.15 for these?
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-On Wed, May 14, 2014 at 04:10:35PM +0300, Kalle Valo wrote:
-> Hi John,
-> 
-> small pull request this time. I'll promise next one will be bigger ;)
-> 
-> Changelog for the request:
-> 
-> For ath10k Michal did various small fixes on how we handle
-> hardware/firmware problems and he also fixed two memory leaks.
-> 
-> Please let me know if there are any problems.
-> 
-> The following changes since commit 644aa4d62096039a79987e13062c6fc656ea380c:
-> 
->   b43: remove list of IEEE 802.11 devices (2014-04-22 15:06:34 -0400)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to d9bc4b9b693d52dc14dc1de5dfec760634067d8c:
-> 
->   ath10k: fix firmware recovery with ap interface (2014-04-24 09:23:03 +0300)
-> 
-> ----------------------------------------------------------------
-> Michal Kazior (7):
->       ath10k: differentiate between target init failures
->       ath10k: don't wait for device init if it crashed
->       ath10k: skip suspending when recovering
->       ath10k: make sure to not leak beacon dma mapping
->       ath10k: make sure to not use invalid beacon pointer
->       ath10k: prevent beacon memory leak
->       ath10k: fix firmware recovery with ap interface
-> 
->  drivers/net/wireless/ath/ath10k/core.c |    6 ++++--
->  drivers/net/wireless/ath/ath10k/mac.c  |   16 ++++++++++++++++
->  drivers/net/wireless/ath/ath10k/pci.c  |   18 +++++++++++++++++-
->  drivers/net/wireless/ath/ath10k/wmi.c  |    2 ++
->  4 files changed, 39 insertions(+), 3 deletions(-)
-> 
-> -- 
-> Kalle Valo
-> 
+> All configuration sequences should be protected
+> with conf_mutex to avoid concurrent/conflicting
+> requests.
+>
+> This should make sure that wep tx key setup is not
+> performed while hw is restarted (at least).
+
+Locks and mutexes should protect data, not thread of execution. What are
+we exactly protecting here, arvif->def_wep_key_idx?
+
+The patch makes sense, I'm just trying to understand the idea behind the
+implementation.
+
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -1888,8 +1888,10 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
+>  						wep_key_work);
+>  	int ret, keyidx = arvif->def_wep_key_newidx;
+>  
+> +	mutex_lock(&arvif->ar->conf_mutex);
+> +
+>  	if (arvif->def_wep_key_idx == keyidx)
+> -		return;
+> +		goto unlock;
+
+BTW, shouldn't we also check the state and bail out if the state is not
+ON (and possibly RESTARTED)? How can this work otherwise?
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
