@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkeXN-0007al-K1
- for ath10k@lists.infradead.org; Wed, 14 May 2014 19:08:23 +0000
+ id 1Wkegu-0004yw-Uy
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 19:18:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/5] ath10k: clean up start() callback
+Subject: Re: [PATCH 4/5] ath10k: protect wep tx key setup
 References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
- <1399637749-13489-2-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 14 May 2014 22:07:46 +0300
-In-Reply-To: <1399637749-13489-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 9 May 2014 14:15:45 +0200")
-Message-ID: <87ppjgch6l.fsf@kamboji.qca.qualcomm.com>
+ <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 14 May 2014 22:17:44 +0300
+In-Reply-To: <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 9 May 2014 14:15:48 +0200")
+Message-ID: <87ha4scgpz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,75 +29,31 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This fixes failpath when override AC pdev param
-> setup fails and makes other pdev params setting
-> fail as well.
+> All configuration sequences should be protected
+> with conf_mutex to avoid concurrent/conflicting
+> requests.
+>
+> This should make sure that wep tx key setup is not
+> performed while hw is restarted (at least).
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 [...]
 
->  	ar->num_started_vdevs = 0;
->  	ath10k_regd_update(ar);
->  	ret = 0;
-> +	goto out;
+> @@ -1902,10 +1904,12 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
+>  		ath10k_warn("failed to update wep key index for vdev %d: %d\n",
+>  			    arvif->vdev_id,
+>  			    ret);
+> -		return;
+> +		goto unlock;
+>  	}
 >  
-> -exit:
-> +err_core_stop:
-> +	ath10k_core_stop(ar);
-> +err_power_down:
-> +	ath10k_hif_power_down(ar);
-> +err_off:
-> +	ar->state = ATH10K_STATE_OFF;
-> +out:
->  	mutex_unlock(&ar->conf_mutex);
->  	return ret;
+>  	arvif->def_wep_key_idx = keyidx;
+> +unlock:
+> +	mutex_unlock(&arvif->ar->conf_mutex);
 >  }
 
-Having err_ labels on the "main" code path is not good, the error
-handling code should be clearly separated to make it easier to read. I
-think you should use the same style as pci.c uses, for example something
-like this:
-       
- 	mutex_unlock(&ar->conf_mutex);
- 	return 0;
- 
-err_core_stop:
-	ath10k_core_stop(ar);
-
-err_power_down:
-	ath10k_hif_power_down(ar);
-
-err_off:
-	ar->state = ATH10K_STATE_OFF;
-
- 	mutex_unlock(&ar->conf_mutex);
-
- 	return ret;
-
-I know this has mutex_unlock() so it's not good either, but I think it's
-still better. Other option might be to do like this:
-
-        ret = 0;
-
-out:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
- 
-err_core_stop:
-	ath10k_core_stop(ar);
-
-err_power_down:
-	ath10k_hif_power_down(ar);
-
-err_off:
-	ar->state = ATH10K_STATE_OFF;
-
-        goto out;
-
-But not sure if it's any better. More ideas?
-
-Oh yeah, please also add an empty line before each label.
+Empty line before the label, please.
 
 -- 
 Kalle Valo
