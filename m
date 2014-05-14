@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x236.google.com ([2607:f8b0:400c:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkh0I-0005Ko-BY
- for ath10k@lists.infradead.org; Wed, 14 May 2014 21:46:22 +0000
-Received: by mail-vc0-f182.google.com with SMTP id la4so3303215vcb.13
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 14:45:59 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkiVL-0001B0-Qx
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 23:22:32 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id A8F9040A39A
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 16:22:08 -0700 (PDT)
+Message-ID: <5373FAA0.8090801@candelatech.com>
+Date: Wed, 14 May 2014 16:22:08 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmo=U4+XbLbinhmWCVPwXrKP98dmQUZGt+mYNnJwYCZdU4A@mail.gmail.com>
-References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <53703B61.3050305@candelatech.com>
- <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
- <53704888.9060602@candelatech.com>
- <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
- <537056B1.6060902@candelatech.com>
- <CAHqTa-1DwKqeSQD5FwOomyhqHv1THWD__0pnEs3RktOigp70kw@mail.gmail.com>
- <CAHqTa-2y9n3AxdN--QGqGW-HRZnrBwEOhujWZ4FNZKmpU+kHMQ@mail.gmail.com>
- <CAJ-Vmon6xP25Ah_sSgVJRWNs53+Xs_3BxwO=FpCmHKr0iC2Ahg@mail.gmail.com>
- <CAJ-Vmo=U4+XbLbinhmWCVPwXrKP98dmQUZGt+mYNnJwYCZdU4A@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Wed, 14 May 2014 17:45:39 -0400
-Message-ID: <CAHqTa-2WpP4gttt5Oy2BOr9b4stSzDzUMQ=eM8FbJqETKKeSiw@mail.gmail.com>
-Subject: Re: Unicast packets stop being transmitted to a particular station,
- under load, when WPA2 is enabled
+Subject: Any ideas on how to fix rssi?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +25,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On Wed, May 14, 2014 at 4:46 PM, Adrian Chadd <adrian@freebsd.org> wrote:
-> It'd be nice to see TID 3 traffic -before- it negotiates the ADDBA,
-> just to see what the heck is going on there.
+I'm seeing incorrect signal strength when running a rate-vs-range
+test through an attenuator.  Maybe the FIXME below is the reason?
 
-I'd have to re-check the big trace you're looking at, but at least in
-my new one from today, it actually does the ADDBA before *any* traffic is
-sent on TID=3.
+Any suggestions on what needs doing here?
 
-The IV being different from what it should be definitely sounds like
-something that would explain the odd behaviour of wireshark being able
-to decode it, but MacOS rejecting it.  I guess MacOS could be
-rejecting unexpected IVs to avoid replay attacks.
+Thanks,
+Ben
+
+
+static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+				struct htt_rx_fragment_indication *frag)
+{
+	struct sk_buff *msdu_head, *msdu_tail;
+	enum htt_rx_mpdu_encrypt_type enctype;
+	struct htt_rx_desc *rxd;
+	enum rx_msdu_decap_format fmt;
+	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+	struct ieee80211_hdr *hdr;
+	int ret;
+	bool tkip_mic_err;
+	bool decrypt_err;
+	u8 *fw_desc;
+	int fw_desc_len, hdrlen, paramlen;
+	int trim;
+
+	fw_desc_len = __le16_to_cpu(frag->fw_rx_desc_bytes);
+	fw_desc = (u8 *)frag->fw_msdu_rx_desc;
+
+	msdu_head = NULL;
+	msdu_tail = NULL;
+
+	spin_lock_bh(&htt->rx_ring.lock);
+	ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
+				      &msdu_head, &msdu_tail);
+	spin_unlock_bh(&htt->rx_ring.lock);
+
+	ath10k_dbg(ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
+
+	if (ret) {
+		ath10k_warn("failed to pop amsdu from httr rx ring for fragmented rx %d\n",
+			    ret);
+		ath10k_htt_rx_free_msdu_chain(msdu_head);
+		return;
+	}
+
+	/* FIXME: implement signal strength */
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
