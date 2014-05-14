@@ -1,23 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x230.google.com ([2607:f8b0:400c:c01::230])
+Received: from vs15.mail.saunalahti.fi ([62.142.117.202])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkThf-0004nR-J4
- for ath10k@lists.infradead.org; Wed, 14 May 2014 07:34:16 +0000
-Received: by mail-ve0-f176.google.com with SMTP id jz11so1873687veb.21
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 00:33:52 -0700 (PDT)
+ id 1WkVYg-00034u-6h
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 09:33:07 +0000
+Received: from vams (localhost [127.0.0.1])
+ by vs15.mail.saunalahti.fi (Postfix) with SMTP id 3FC5B400B2
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:39 +0300 (EEST)
+Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
+ [195.197.172.115])
+ by vs15.mail.saunalahti.fi (Postfix) with ESMTP id 1DC074005F
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:39 +0300 (EEST)
+Received: from [134.61.10.67] (nbtad04.physik.rwth-aachen.de [134.61.10.67])
+ (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by gw01.mail.saunalahti.fi (Postfix) with ESMTPSA id 06F18400BB
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 12:32:37 +0300 (EEST)
+Message-ID: <5373382C.1030709@elisanet.fi>
+Date: Wed, 14 May 2014 11:32:28 +0200
+From: Matti Laakso <malaakso@elisanet.fi>
 MIME-Version: 1.0
-In-Reply-To: <CAEFj985-aiarmX1hTkgrUG1grLZ58ccLxsdSrr29_ONXoDRmTQ@mail.gmail.com>
-References: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
- <1400015472-4647-1-git-send-email-apenwarr@gmail.com>
- <CAEFj984Lk-QK67koxUYx=7-xpM5Y_ATr2ZD-ogMsAs6Jfg5A0g@mail.gmail.com>
- <CAHqTa-23jdHZnpJFwKgqDC05yVHhQsgxHm+7qQd3Thp1qsUagg@mail.gmail.com>
- <CAEFj98471PcLD_qpZrWh93CejQzC=u+0dtsGUmkvMQy=OX+C0w@mail.gmail.com>
- <CAHqTa-3o2-4E+5kptgr-e2uPQLQ3ygCfB1SKEH+WZx6X-9semw@mail.gmail.com>
- <CAEFj985-aiarmX1hTkgrUG1grLZ58ccLxsdSrr29_ONXoDRmTQ@mail.gmail.com>
-Date: Wed, 14 May 2014 15:33:52 +0800
-Message-ID: <CAEFj987vqABssjVQ7tFOEkXjM7ieTnc2ZE07wJ6iQzuQsBQzpg@mail.gmail.com>
-Subject: Re: [PATCH v3] ath10k: support get/set antenna configurations.
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Subject: Re: ath10k: set channel by command "iw" not from hostapd and DFS
+ support of firmware-2.bin_10.1.467.2-1
+References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,54 +35,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-I also try to confirm using debug_mask in ath10k and it seems also 3
-spatial streams:
-[ 3826.320000] ath10k: rx skb 86533480 len 1534 vht80 rate_idx 7
-vht_nss 3 freq 5180 band 1 flag 0x40600000 fcs-err 0mic-err 0
-
------
-Chun-Yeow
-
-On Wed, May 14, 2014 at 3:22 PM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
-> Here is the screenshot of my wireshark capture. I am seeing 3 spatial
-> streams instead of 1 after setting the antennas.
+> I am able to run mode access point by using ath10k and hostapd, but I have to set the channel in the configuration file for hostapd (I desactivated ACS when building hostapd)
+> If I set channel by the command "iw wlan0 set channel 10 HT20"  and remove the line "channel=10" from the configuration file of hostapd, this error appears when I run hostapd: 
 >
-> ---
-> Chun-Yeow
+> ACS was disabled on your build, rebuild hostapd with CONFIG_ACS=y or set channel    
+> wlan0: IEEE 802.11 Configured channel (0) not found from the channel list of current mode (1) IEEE 802.11g
+> wlan0: IEEE 802.11 Hardware does not support configured channel
+> Could not select hw_mode and channel. (-3)
+> wlan0: Unable to setup interface.
+> hostapd_free_hapd_data: Interface wlan0 wasn't started
 >
-> On Wed, May 14, 2014 at 3:18 PM, Avery Pennarun <apenwarr@gmail.com> wrote:
->> On Wed, May 14, 2014 at 2:25 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->>> Here is from the fw_stats:
->>>
->>>              ath10k PEER stats (1)
->>>              =================
->>>
->>>               Peer MAC address 04:f0:21:0c:a5:1c
->>>                      Peer RSSI 43
->>>                   Peer TX rate 877500
->>>                   Peer RX rate 877500
->>>
->>> TCP throughput is roughly around 151Mbps.
->>
->> In my tests it's easy to achieve >151 Mbps with a 40 MHz channel and
->> 2x2.  So if you're using an 80 MHz channel (twice the speed) and only
->> one antenna (half the speed) you could still get 151 Mbps pretty
->> easily.
->>
->> I wouldn't be surprised if your speed is being limited by something
->> else, maybe the host CPU or a slow interconnect on the station or AP
->> (USB perhaps?), so it doesn't look "worse" with only one antenna
->> because it should be at least twice as good when operating normally.
->>
->> If you use wireshark or tcpdump you should be able to check the MCS
->> level of the packets and see that it's lower with fewer antennas.
->>
->> Have fun,
->>
->> Avery
+> Does it mean that ath10k does not support configured channel ???? The reason I want to do it by command "iw" because it has more options than hostapd (iw wlan0 set freq <control freq> [20|40|80|80+80|160] [<center freq 1>] [<center freq 2>] )
+
+Removing the channel from hostapd.conf implies channel=0. And it
+obviously is not a valid channel when ACS is disabled. All the options
+that iw has can be set in hostapd.conf as well.
+
+> I had another problem with setting a cannal that employs DFS (for example 52): 
+>
+> wlan0: interface state COUNTRY_UPDATE->DFS                                      
+> wlan0: DFS-CAC-START freq=5260 chan=52 sec_chan=0                               
+> wlan0: Unable to setup interface.   
+> ADDRCONF(NETDEV_UP): wlan0: link is not ready    
+>
+> I'm using the firmware-2.bin_10.1.467.2-1 which indicates that supports DFS on the website of ath10k. Is there anyone got the same issue like me?
+>
+
+Did you build ath10k with ATH10K_DFS_CERTIFIED enabled?
+
+Matti
 
 _______________________________________________
 ath10k mailing list
