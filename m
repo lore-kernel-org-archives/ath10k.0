@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x235.google.com ([2607:f8b0:400c:c03::235])
+Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkSd0-0001oC-EH
- for ath10k@lists.infradead.org; Wed, 14 May 2014 06:25:23 +0000
-Received: by mail-vc0-f181.google.com with SMTP id ld13so1817032vcb.40
- for <ath10k@lists.infradead.org>; Tue, 13 May 2014 23:25:01 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAHqTa-23jdHZnpJFwKgqDC05yVHhQsgxHm+7qQd3Thp1qsUagg@mail.gmail.com>
-References: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
- <1400015472-4647-1-git-send-email-apenwarr@gmail.com>
- <CAEFj984Lk-QK67koxUYx=7-xpM5Y_ATr2ZD-ogMsAs6Jfg5A0g@mail.gmail.com>
- <CAHqTa-23jdHZnpJFwKgqDC05yVHhQsgxHm+7qQd3Thp1qsUagg@mail.gmail.com>
-Date: Wed, 14 May 2014 14:25:01 +0800
-Message-ID: <CAEFj98471PcLD_qpZrWh93CejQzC=u+0dtsGUmkvMQy=OX+C0w@mail.gmail.com>
-Subject: Re: [PATCH v3] ath10k: support get/set antenna configurations.
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ id 1WkTFQ-0003IJ-OB
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 07:05:06 +0000
+Received: by mail-ee0-f43.google.com with SMTP id d17so1003698eek.2
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 00:04:41 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: improve warm reset reliability
+Date: Wed, 14 May 2014 08:57:37 +0200
+Message-Id: <1400050658-2763-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1400050658-2763-1-git-send-email-michal.kazior@tieto.com>
+References: <1400050658-2763-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +19,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Here is from the fw_stats:
+Warm reset is now able to recover after device
+crashes which required a cold reset before.
 
-             ath10k PEER stats (1)
-             =================
+This should greatly reduce chances of getting data
+bus errors or host system freezes due to buggy
+cold reset on some chips.
 
-              Peer MAC address 04:f0:21:0c:a5:1c
-                     Peer RSSI 43
-                  Peer TX rate 877500
-                  Peer RX rate 877500
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-TCP throughput is roughly around 151Mbps.
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 66b1f30..c9b14b4 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1802,6 +1802,28 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+ 	ath10k_pci_sleep(ar);
+ }
+ 
++/* this function effectively clears target memory controller assert line */
++static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
++{
++	u32 val;
++
++	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
++				SOC_RESET_CONTROL_ADDRESS);
++	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
++			   val | SOC_RESET_CONTROL_SI0_RST_MASK);
++	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
++				SOC_RESET_CONTROL_ADDRESS);
++	msleep(10);
++
++	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
++				SOC_RESET_CONTROL_ADDRESS);
++	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
++			   val & ~SOC_RESET_CONTROL_SI0_RST_MASK);
++	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
++				SOC_RESET_CONTROL_ADDRESS);
++	msleep(10);
++}
++
+ static int ath10k_pci_warm_reset(struct ath10k *ar)
+ {
+ 	int ret = 0;
+@@ -1860,6 +1882,8 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
+ 				SOC_RESET_CONTROL_ADDRESS);
+ 	msleep(10);
+ 
++	ath10k_pci_warm_reset_si0(ar);
++
+ 	/* debug */
+ 	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+ 				PCIE_INTR_CAUSE_ADDRESS);
+-- 
+1.8.5.3
 
-----
-Chun-Yeow
-
-
-On Wed, May 14, 2014 at 2:21 PM, Avery Pennarun <apenwarr@gmail.com> wrote:
-> On Wed, May 14, 2014 at 2:20 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->> I try to test by setting of antennas in my AP (firmware version
->> 10.1.467.2-1) using ath10k to the following:
->>
->> iw phy0 info | grep Antennas
->> Available Antennas: TX 0x7 RX 0x7
->> Configured Antennas: TX 0x1 RX 0x1
->>
->> But my STA (using ath10k) seems to get the same throughput even with
->> single tx and rx antenna.
->
-> What throughput are you getting, and what is the signal strength?
 
 _______________________________________________
 ath10k mailing list
