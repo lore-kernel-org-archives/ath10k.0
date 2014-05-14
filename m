@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkfCw-00032n-Mp
- for ath10k@lists.infradead.org; Wed, 14 May 2014 19:51:19 +0000
+ id 1WkfEZ-0003sB-Nb
+ for ath10k@lists.infradead.org; Wed, 14 May 2014 19:53:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4/5] ath10k: protect wep tx key setup
-References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
- <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 14 May 2014 22:50:48 +0300
-In-Reply-To: <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 9 May 2014 14:15:48 +0200")
-Message-ID: <87d2fgcf6v.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Pull request: ath 20140514
+References: <87zjikfqus.fsf@kamboji.qca.qualcomm.com>
+ <20140514194029.GE14183@tuxdriver.com>
+Date: Wed, 14 May 2014 22:52:30 +0300
+In-Reply-To: <20140514194029.GE14183@tuxdriver.com> (John W. Linville's
+ message of "Wed, 14 May 2014 15:40:29 -0400")
+Message-ID: <878uq4cf41.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,38 +24,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: "John W. Linville" <linville@tuxdriver.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+"John W. Linville" <linville@tuxdriver.com> writes:
 
-> All configuration sequences should be protected
-> with conf_mutex to avoid concurrent/conflicting
-> requests.
->
-> This should make sure that wep tx key setup is not
-> performed while hw is restarted (at least).
+> Were you hoping for 3.15 for these?
 
-Locks and mutexes should protect data, not thread of execution. What are
-we exactly protecting here, arvif->def_wep_key_idx?
-
-The patch makes sense, I'm just trying to understand the idea behind the
-implementation.
-
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -1888,8 +1888,10 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
->  						wep_key_work);
->  	int ret, keyidx = arvif->def_wep_key_newidx;
->  
-> +	mutex_lock(&arvif->ar->conf_mutex);
-> +
->  	if (arvif->def_wep_key_idx == keyidx)
-> -		return;
-> +		goto unlock;
-
-BTW, shouldn't we also check the state and bail out if the state is not
-ON (and possibly RESTARTED)? How can this work otherwise?
+This is for 3.16. Sorry, forgot to mention that.
 
 -- 
 Kalle Valo
