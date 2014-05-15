@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkrM4-0002sp-Px
- for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:33 +0000
-Received: by mail-ee0-f51.google.com with SMTP id e51so404253eek.38
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:09 -0700 (PDT)
+ id 1WkrM5-0002tt-HD
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:34 +0000
+Received: by mail-ee0-f47.google.com with SMTP id c13so400307eek.20
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:11 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/5] ath10k: clean up start() callback
-Date: Thu, 15 May 2014 10:42:00 +0200
-Message-Id: <1400143324-14911-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/5] ath10k: drain tx before restarting hw
+Date: Thu, 15 May 2014 10:42:02 +0200
+Message-Id: <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
 References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
  <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
@@ -28,97 +28,88 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This fixes failpath when override AC pdev param
-setup fails and makes other pdev params setting
-fail as well.
+This makes sure no further tx requests are
+submitted to HTT before driver teardown.
 
+This should prevent invalid pointer/NULL
+dereference on htt tx pool in ath10k_htt_tx() in
+some cases of heavy traffic.
+
+Reported-By: Ben Greear <greearb@candelatech.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-v2:
- * add empty lines before each goto label [Kalle]
- * dont use err goto paths on main code path [Kalle]
-
- drivers/net/wireless/ath/ath10k/mac.c | 34 +++++++++++++++++++++++-----------
- 1 file changed, 23 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7026f02..854e183 100644
+index b5d75b8..577a3a5 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2339,22 +2339,19 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	if (ar->state != ATH10K_STATE_OFF &&
- 	    ar->state != ATH10K_STATE_RESTARTING) {
- 		ret = -EINVAL;
--		goto exit;
-+		goto err;
- 	}
- 
- 	ret = ath10k_hif_power_up(ar);
- 	if (ret) {
- 		ath10k_err("Could not init hif: %d\n", ret);
--		ar->state = ATH10K_STATE_OFF;
--		goto exit;
-+		goto err_off;
- 	}
- 
- 	ret = ath10k_core_start(ar);
- 	if (ret) {
- 		ath10k_err("Could not init core: %d\n", ret);
--		ath10k_hif_power_down(ar);
--		ar->state = ATH10K_STATE_OFF;
--		goto exit;
-+		goto err_power_down;
- 	}
- 
- 	if (ar->state == ATH10K_STATE_OFF)
-@@ -2363,12 +2360,16 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		ar->state = ATH10K_STATE_RESTARTED;
- 
- 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pmf_qos, 1);
--	if (ret)
-+	if (ret) {
- 		ath10k_warn("failed to enable PMF QOS: %d\n", ret);
-+		goto err_core_stop;
-+	}
- 
- 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->dynamic_bw, 1);
--	if (ret)
-+	if (ret) {
- 		ath10k_warn("failed to enable dynamic BW: %d\n", ret);
-+		goto err_core_stop;
-+	}
- 
- 	/*
- 	 * By default FW set ARP frames ac to voice (6). In that case ARP
-@@ -2384,14 +2385,25 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	if (ret) {
- 		ath10k_warn("failed to set arp ac override parameter: %d\n",
- 			    ret);
--		goto exit;
-+		goto err_core_stop;
- 	}
- 
- 	ar->num_started_vdevs = 0;
- 	ath10k_regd_update(ar);
--	ret = 0;
- 
--exit:
-+	mutex_unlock(&ar->conf_mutex);
-+	return 0;
+@@ -2289,6 +2289,21 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ /*
+  * Initialize various parameters with default vaules.
+  */
++static void ath10k_drain_tx(struct ath10k *ar)
++{
++	/* workers can hold conf_mutex -- avoid deadlock */
++	WARN_ON(lockdep_is_held(&ar->conf_mutex));
 +
-+err_core_stop:
-+	ath10k_core_stop(ar);
++	/* make sure rcu-protected mac80211 tx path itself is drained */
++	synchronize_net();
 +
-+err_power_down:
-+	ath10k_hif_power_down(ar);
++	ath10k_offchan_tx_purge(ar);
++	ath10k_mgmt_over_wmi_tx_purge(ar);
 +
-+err_off:
-+	ar->state = ATH10K_STATE_OFF;
++	cancel_work_sync(&ar->offchan_tx_work);
++	cancel_work_sync(&ar->wmi_mgmt_tx_work);
++}
 +
-+err:
+ void ath10k_halt(struct ath10k *ar)
+ {
+ 	struct ath10k_vif *arvif;
+@@ -2304,8 +2319,6 @@ void ath10k_halt(struct ath10k *ar)
+ 
+ 	del_timer_sync(&ar->scan.timeout);
+ 	ath10k_reset_scan((unsigned long)ar);
+-	ath10k_offchan_tx_purge(ar);
+-	ath10k_mgmt_over_wmi_tx_purge(ar);
+ 	ath10k_peer_cleanup_all(ar);
+ 	ath10k_core_stop(ar);
+ 	ath10k_hif_power_down(ar);
+@@ -2329,6 +2342,13 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
+ 	int ret = 0;
+ 
++	/*
++	 * This makes sense only when restarting hw. It is harmless to call
++	 * uncoditionally. This is necessary to make sure no HTT/WMI tx
++	 * commands will be submitted while restarting.
++	 */
++	ath10k_drain_tx(ar);
++
+ 	mutex_lock(&ar->conf_mutex);
+ 
+ 	switch (ar->state) {
+@@ -2412,6 +2432,8 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ {
+ 	struct ath10k *ar = hw->priv;
+ 
++	ath10k_drain_tx(ar);
++
+ 	mutex_lock(&ar->conf_mutex);
+ 	if (ar->state != ATH10K_STATE_OFF) {
+ 		ath10k_halt(ar);
+@@ -2419,10 +2441,6 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	}
  	mutex_unlock(&ar->conf_mutex);
- 	return ret;
+ 
+-	ath10k_mgmt_over_wmi_tx_purge(ar);
+-
+-	cancel_work_sync(&ar->offchan_tx_work);
+-	cancel_work_sync(&ar->wmi_mgmt_tx_work);
+ 	cancel_work_sync(&ar->restart_work);
  }
+ 
 -- 
 1.8.5.3
 
