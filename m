@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkyKE-0002XA-6W
- for ath10k@lists.infradead.org; Thu, 15 May 2014 16:16:12 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 15 May 2014 18:08:59 +0200
-Subject: RE : RE : RE : ath10k: set channel by command "iw" not from hostapd
- and DFS support of firmware-2.bin_10.1.467.2-1
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <5373382C.1030709@elisanet.fi>
- <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
- <DUB122-W4070B8F41A0F8A25061141CB360@phx.gbl>
- <EE97821C81277E459BEA5C6384C6F241012F109978CE@srvexch01.SODIELEC.local>,
- <CALhHN=pGozL43B+qiJ20it3QCkvKkOL_RynfvUod_Ert8v1+3Q@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
-Content-Language: fr-FR
+Received: from mail-qg0-x22e.google.com ([2607:f8b0:400d:c04::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkyRU-0004pL-Pz
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 16:23:37 +0000
+Received: by mail-qg0-f46.google.com with SMTP id q108so2083986qgd.19
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 09:23:13 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87vbt8ayci.fsf@kamboji.qca.qualcomm.com>
+References: <CAMWKU3eT9=ri7P1X69DNw9QshqDR8TUFm3RVuo8=GWuDcCn5oA@mail.gmail.com>
+ <874n0sce7s.fsf@kamboji.qca.qualcomm.com>
+ <87vbt8ayci.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 15 May 2014 11:59:43 -0400
+Message-ID: <CAMWKU3eTJ8uPQv9NV_oTD4HVLpyr9_d7U9uc4DgirUk2fB2tNw@mail.gmail.com>
+Subject: Re: openwrt ath10k / MacBook Pro Retina 802.11ac not connecting
+From: while oneq <while1eq1@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +26,80 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "Mark A. Swift" <markaswift@gmail.com>, ath10k@lists.infradead.org
 
+I would be glad to provide any info that I can to help resolve this
+issue. Itll take me a few days for me to gather it up but when I get
+it I will surely post it here.
 
+Mark did you have anything to add to this?
 
+Thanks
 
->Nope, CAC time is not required to start CAC (in case cac == 0 kernel
->will use default value 60s).
->What error you have EBUSY or EINVAL?
->What system (PC kernel, wireless ...) configuration?
+On Wed, May 14, 2014 at 4:39 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Hi again,
+>
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>
+>> while oneq <while1eq1@gmail.com> writes:
+>>
+>>> Im currently using lib/firmware/ath10k/QCA988X/hw2.0/  on a TP-Link
+>>> Archer C7 v2.0 / OpenWRT [BARRIER BREAKER (Bleeding Edge, r40749)]
+>>>
+>>> Package: kmod-ath10k
+>>> Version: 3.10.36+2014-03-31-1
+>>> Depends: kernel (= 3.10.36-1-6548302841f6df0132fbc6960fa209fb), kmod-ath
+>>> Status: install user installed
+>>> Architecture: ar71xx
+>>>
+>>
+>> [...]
+>>
+>>>  and am connecting via
+>>>
+>>> a MacBook Pro Retina:
+>>>   Model Name: MacBook Pro
+>>>   Model Identifier: MacBookPro11,3
+>>
+>>
+>> [...]
+>>
+>>> And am unable to get connected to the access point at all, All
+>>> wireless security settings are disabled at the moment.
+>>>
+>>> Any assistance on this issue would be greatly appreciated.
+>>
+>> With the information you provided it's difficult to say what's the
+>> problem. Here are some tips to get forward:
+>>
+>> * Try disabling all possible features. Setup AP to use simple 11a mode
+>>   with 20 MHz channels without aggregation etc and try to narrow down
+>>   what is causing the problem.
+>>
+>> * Try with static IPs.
+>>
+>> * Try different channels.
+>>
+>> * If you have a wireless sniffer, take 802.11 airlog with that and post
+>>   it somewhere.
+>>
+>> * Provide logs from AP, especially dmesg and hostapd debug logs are
+>>   useful.
+>>
+>> Please let me know if you need more help with the above.
+>
+> I just noticed that Mark had also reported problems with the same
+> MacBook. I had even replied to him, but I guess I forgot it entirely due
+> to jetlag :)
+>
+> But anyways, it would awesome if you could provide more info so that we
+> can find the bug causing the problem. And if you have any questions,
+> please ask. We have lots of people here who can help.
+>
+> --
+> Kalle Valo
 
-Ah I run hostapd with debug option and got a mess that told me:
-nl80211: Failed to start radar detection, device or resource busy => I guess this is EBUSY.
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
