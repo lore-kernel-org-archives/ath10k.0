@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x236.google.com ([2a00:1450:4013:c00::236])
+Received: from mail-ee0-x22e.google.com ([2a00:1450:4013:c00::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkpaZ-0007Su-0M
- for ath10k@lists.infradead.org; Thu, 15 May 2014 06:56:23 +0000
-Received: by mail-ee0-f54.google.com with SMTP id b57so297443eek.13
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 23:55:59 -0700 (PDT)
+ id 1WkpaZ-0007TD-EJ
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 06:56:24 +0000
+Received: by mail-ee0-f46.google.com with SMTP id t10so288622eei.19
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 23:56:01 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/2] ath10k: fixes 2014-05-14
-Date: Thu, 15 May 2014 08:48:39 +0200
-Message-Id: <1400136521-11184-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 2/2] ath10k: prevent hif_stop being called twice
+Date: Thu, 15 May 2014 08:48:41 +0200
+Message-Id: <1400136521-11184-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1400136521-11184-1-git-send-email-michal.kazior@tieto.com>
 References: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
+ <1400136521-11184-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +28,33 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+Recently there was a bug discovered that involved
+hif_stop() being called twice that ended up with a
+double free_irq() call but it only manifested with
+multiple MSI interrupts mapping.
 
-This is another pair of patches.
+Catch this kind of a problem early in driver
+regardless of interrupt mapping.
 
-It fixes a crash recently reported by Ben, but..
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-I've been able to find only a single code path
-that called free_irq() twice in upstream code.
-However it doesn't match the call trace reported
-by Ben. I have to assume this is related to his
-local patches or this is a very wierd case of
-recovery race between userspace/mac80211/driver.
-
-v2:
- * rebase to latest github.com/kvalo/ath-next-test
-
-
-Michal Kazior (2):
-  ath10k: fix core start sequence
-  ath10k: prevent hif_stop being called twice
-
- drivers/net/wireless/ath/ath10k/core.c   | 101 +++++++++++++++++--------------
- drivers/net/wireless/ath/ath10k/htc.c    |   6 --
- drivers/net/wireless/ath/ath10k/htt.c    |  42 +------------
- drivers/net/wireless/ath/ath10k/htt.h    |  18 +++---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   4 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c |   8 +--
- drivers/net/wireless/ath/ath10k/pci.c    |   3 +
- drivers/net/wireless/ath/ath10k/wmi.c    |   2 +-
- drivers/net/wireless/ath/ath10k/wmi.h    |   2 +-
- 9 files changed, 79 insertions(+), 107 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 3d0cd75..70e91ac 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1272,6 +1272,9 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "boot hif stop\n");
+ 
++	if (WARN_ON(!ar_pci->started))
++		return;
++
+ 	ret = ath10k_ce_disable_interrupts(ar);
+ 	if (ret)
+ 		ath10k_warn("failed to disable CE interrupts: %d\n", ret);
 -- 
 1.8.5.3
 
