@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkvMY-0007ap-Pq
- for ath10k@lists.infradead.org; Thu, 15 May 2014 13:06:19 +0000
-Message-ID: <5374BBB4.9000705@candelatech.com>
-Date: Thu, 15 May 2014 06:05:56 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WkvZ0-0006P6-Su
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 13:19:11 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/5] ath10k: drain tx before restarting hw
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 15 May 2014 16:18:37 +0300
+In-Reply-To: <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 15 May 2014 10:42:02 +0200")
+Message-ID: <87k39n89jm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [RFTv2 4/5] ath10k: wait for mgmt tx when flushing too
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>	<1397040531-6224-1-git-send-email-michal.kazior@tieto.com>	<1397040531-6224-5-git-send-email-michal.kazior@tieto.com>	<53727C12.2060100@candelatech.com>
- <CA+BoTQ=05fULptYqAecf-9jsq_aun_NsNT=c2-ZFxm96ymgQdg@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=05fULptYqAecf-9jsq_aun_NsNT=c2-ZFxm96ymgQdg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-CgpPbiAwNS8xNS8yMDE0IDEyOjI0IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDEzIE1h
-eSAyMDE0IDIyOjA5LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6
-Cj4+IE9uIDA0LzA5LzIwMTQgMDM6NDggQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+PiBUaGUg
-MTAuMSBmaXJtd2FyZSB1c2VzIFdNSSB0byBUeCBtYW5hZ2VtZW50IGZyYW1lcwo+Pj4gYnV0IGF0
-aDEwa19mbHVzaCgpIGRpZG4ndCBjYXJlLiBUaGlzIGNvdWxkIGxlYWQgdG8KPj4+IHNvbWUgZnJh
-bWVzIG5vdCBiZWluZyBzZW50Lgo+Pj4KPj4+IEFsdGhvdWdoIHRoZXJlIGFyZSBubyBUeCBjb21w
-bGV0aW9ucyBmb3IgV01JCj4+PiBtYW5nZW1lbnQgZnJhbWVzIGl0J3Mgc3RpbGwgYmV0dGVyIHRv
-IGF0IGxlYXN0Cj4+PiB3YWl0IGZvciBhdGgxMGsgcXVldWUgdG8gYmUgZHJhaW5lZC4KPj4KPj4g
-VGhpcyBhbmQgb3RoZXJzIGluIHRoaXMgc2VyaWVzIGRvIG5vdCBhcHBlYXIgdG8gYmUgaW4gS2Fs
-bGUncwo+PiB0cmVlIHlldC4gIEFyZSB0aGVzZSB0byBiZSBkcm9wcGVkLCBvciBhcmUgdGhleSBz
-dGlsbCBwZW5kaW5nPwo+Cj4gQ29uc2lkZXIgaXQgZHJvcHBlZCBmb3Igbm93LCBwbGVhc2UuIFRo
-aXMgbmVlZHMgZmlybXdhcmUgY2hhbmdlcyB0byBiZQo+IGRlYWx0IHdpdGggcHJvcGVybHkuCgpP
-aywgSSd2ZSBoYWNrZWQgbXkgZmlybXdhcmUgdG8gZGVhbCB3aXRoIGl0IGFscmVhZHkuLndpbGwg
-ZHJvcCB0aGlzCnNlcmllcywgYW5kIHdpbGwgaW52ZXN0aWdhdGUgdGhlIHN1Z2dlc3Rpb24gYmVs
-b3cgYXMgd2VsbC4KClRoYW5rcywKQmVuCgoKPiBJbiB0aGUgbWVhbnRpbWUgaWYgeW91IHdhbnQg
-dG8gaGFzdGVuIHR4IHF1ZXVlIHBzIGV4cGlyYXRpb24geW91IGNhbgo+IHRyeSB0byBzZXQgYGFw
-X2RldGVjdF9vdXRfb2Zfc3luY19zbGVlcGluZ19zdGFfdGltZV9zZWNzYCB2ZGV2IHBhcmFtCj4g
-dG8gMSBzZWNvbmQgKGRlZmF1bHQgaXMgMTAgc2V0IGluIGZpcm13YXJlIGlmIEknbSBub3QgbWlz
-dGFrZW4pLiBJCj4gaGF2ZW4ndCB0ZXN0ZWQgaXQgYnV0IHRoaXMgc2hvdWxkIGluIHRoZW9yeSBz
-aG9ydGVuIHR4IGNyZWRpdAo+IHN0YXJ2YXRpb24gZHVyYXRpb24gYW5kIGF2b2lkIGNhc2NhZGUg
-b2Ygd21pIHRpbWVvdXRzICh3bWkgdGltZW91dD0zCj4gc2Vjb25kcywgbWF4IG1nbXQgdHggcGVu
-ZGluZz0yIHggMSBzZWNvbmQgZWFjaD0ycyB3b3JzdCBjYXNlKSBhcyB3ZWxsCj4gYXMgc2hvdWxk
-IHByZXZlbnQgdHggZmx1c2hpbmcgZnJvbSBmYWlsaW5nICh0aW1lb3V0PTUpLiBUaGlzIHdpbGwg
-bm90Cj4gcHJldmVudCBmcm9tIGJlYWNvbiBTV0JBIG92ZXJydW5zIGJlY2F1c2UgdHggc3RhcnZh
-dGlvbiBpcyBzdGlsbAo+IHBvc3NpYmxlIGFsdGhvdWdoIGl0IHNob3VsZCBiZSBmYXN0ZXIgdG8g
-cmVjb3Zlci4KPgo+IEkgd29uZGVyIGlmIGl0J3MgcmVhc29uYWJsZSB0byBzZXQgdGhpcyB2ZGV2
-IHBhcmFtIGV4cGxpY2l0bHkgaW4KPiB1cHN0cmVhbSBkcml2ZXIuIFdlIHNob3VsZCBwcm9iYWJs
-eSBjb25zaWRlciBsb25nZXN0IGJlYWNvbiBpbnRlcnZhbAo+IGluIGVmZmVjdCB3aGVuIGNhbGN1
-bGF0aW9uIHRoZSB2YWx1ZSB0byBzZXQuIFRob3VnaHRzLCBhbnlvbmU/Cj4KPgo+IE1pY2hhxYIK
-PgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hu
-b2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> This makes sure no further tx requests are
+> submitted to HTT before driver teardown.
+>
+> This should prevent invalid pointer/NULL
+> dereference on htt tx pool in ath10k_htt_tx() in
+> some cases of heavy traffic.
+>
+> Reported-By: Ben Greear <greearb@candelatech.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+For some reason I'm not receiving buildbot emails anymore, but I noticed
+via the kbuild-all archives that this patch has a warning:
+
+   drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_drain_tx':
+>> drivers/net/wireless/ath/ath10k/mac.c:2442:2: error: implicit
+declaration of function 'lockdep_is_held'
+[-Werror=implicit-function-declaration]
+
+https://lists.01.org/pipermail/kbuild-all/2014-May/004387.html
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
