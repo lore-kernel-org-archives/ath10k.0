@@ -1,19 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+Received: from mail-ve0-x22c.google.com ([2607:f8b0:400c:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkomh-0001d4-OT
- for ath10k@lists.infradead.org; Thu, 15 May 2014 06:04:52 +0000
-Received: by mail-we0-f178.google.com with SMTP id u56so538439wes.37
- for <ath10k@lists.infradead.org>; Wed, 14 May 2014 23:04:29 -0700 (PDT)
+ id 1Wkov7-0006yQ-KN
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 06:13:34 +0000
+Received: by mail-ve0-f172.google.com with SMTP id oz11so706476veb.17
+ for <ath10k@lists.infradead.org>; Wed, 14 May 2014 23:13:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87d2fgcf6v.fsf@kamboji.qca.qualcomm.com>
-References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
- <1399637749-13489-5-git-send-email-michal.kazior@tieto.com>
- <87d2fgcf6v.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 15 May 2014 08:04:29 +0200
-Message-ID: <CA+BoTQngH43cXSikG+nPe5MozP4gTcbiHdx_gp7s4u=Fmc+AGQ@mail.gmail.com>
-Subject: Re: [PATCH 4/5] ath10k: protect wep tx key setup
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CAA93jw6-Vu5=ySa1Oi6WO1BEo8cuAnKP3FJNJD1P=dEj_-9D3A@mail.gmail.com>
+References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
+ <53703B61.3050305@candelatech.com>
+ <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
+ <53704888.9060602@candelatech.com>
+ <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
+ <537056B1.6060902@candelatech.com>
+ <CAHqTa-1DwKqeSQD5FwOomyhqHv1THWD__0pnEs3RktOigp70kw@mail.gmail.com>
+ <CAHqTa-2y9n3AxdN--QGqGW-HRZnrBwEOhujWZ4FNZKmpU+kHMQ@mail.gmail.com>
+ <CAHqTa-3gn1N8hTW4rpMos+h+K4nafoEsv94P0=0O3=Dpiaf2oA@mail.gmail.com>
+ <CAA93jw6-Vu5=ySa1Oi6WO1BEo8cuAnKP3FJNJD1P=dEj_-9D3A@mail.gmail.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Thu, 15 May 2014 02:12:51 -0400
+Message-ID: <CAHqTa-1byQ+UHmREP5+RtikWDj-0wFbDPdPcO+HL0HnH+eDdig@mail.gmail.com>
+Subject: Re: Unicast packets stop being transmitted to a particular station,
+ under load, when WPA2 is enabled
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +30,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Dave Taht <dave.taht@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-T24gMTQgTWF5IDIwMTQgMjE6NTAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+
-IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0ZXM6
-Cj4KPj4gQWxsIGNvbmZpZ3VyYXRpb24gc2VxdWVuY2VzIHNob3VsZCBiZSBwcm90ZWN0ZWQKPj4g
-d2l0aCBjb25mX211dGV4IHRvIGF2b2lkIGNvbmN1cnJlbnQvY29uZmxpY3RpbmcKPj4gcmVxdWVz
-dHMuCj4+Cj4+IFRoaXMgc2hvdWxkIG1ha2Ugc3VyZSB0aGF0IHdlcCB0eCBrZXkgc2V0dXAgaXMg
-bm90Cj4+IHBlcmZvcm1lZCB3aGlsZSBodyBpcyByZXN0YXJ0ZWQgKGF0IGxlYXN0KS4KPgo+IExv
-Y2tzIGFuZCBtdXRleGVzIHNob3VsZCBwcm90ZWN0IGRhdGEsIG5vdCB0aHJlYWQgb2YgZXhlY3V0
-aW9uLiBXaGF0IGFyZQo+IHdlIGV4YWN0bHkgcHJvdGVjdGluZyBoZXJlLCBhcnZpZi0+ZGVmX3dl
-cF9rZXlfaWR4PwoKQWN0dWFsbHkgY29uZl9tdXRleCBpZGVhIGlzIHRvIHByb3RlY3QgYW5kIHNl
-cmlhbGl6ZSBjb25maWd1cmF0aW9uCnNlcXVlbmNlcyAoV01JKSB0b28sIG5vdCBqdXN0IGRhdGEu
-IFBlcmhhcHMgd2Ugc2hvdWxkIHJldmlzZSB0aGlzPwoKCj4gVGhlIHBhdGNoIG1ha2VzIHNlbnNl
-LCBJJ20ganVzdCB0cnlpbmcgdG8gdW5kZXJzdGFuZCB0aGUgaWRlYSBiZWhpbmQgdGhlCj4gaW1w
-bGVtZW50YXRpb24uCj4KPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
-YWMuYwo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4+IEBA
-IC0xODg4LDggKzE4ODgsMTAgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3R4X3dlcF9rZXlfd29yayhz
-dHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICB3ZXBfa2V5X3dvcmspOwo+PiAgICAgICBpbnQgcmV0LCBrZXlpZHgg
-PSBhcnZpZi0+ZGVmX3dlcF9rZXlfbmV3aWR4Owo+Pgo+PiArICAgICBtdXRleF9sb2NrKCZhcnZp
-Zi0+YXItPmNvbmZfbXV0ZXgpOwo+PiArCj4+ICAgICAgIGlmIChhcnZpZi0+ZGVmX3dlcF9rZXlf
-aWR4ID09IGtleWlkeCkKPj4gLSAgICAgICAgICAgICByZXR1cm47Cj4+ICsgICAgICAgICAgICAg
-Z290byB1bmxvY2s7Cj4KPiBCVFcsIHNob3VsZG4ndCB3ZSBhbHNvIGNoZWNrIHRoZSBzdGF0ZSBh
-bmQgYmFpbCBvdXQgaWYgdGhlIHN0YXRlIGlzIG5vdAo+IE9OIChhbmQgcG9zc2libHkgUkVTVEFS
-VEVEKT8gSG93IGNhbiB0aGlzIHdvcmsgb3RoZXJ3aXNlPwoKVmVyeSBnb29kIHBvaW50IQoKQnV0
-IGFjdHVhbGx5Li4gdGhpcyBzaG91bGQgYmUgY2FuY2VsbGVkIGR1cmluZyByZWNvdmVyeSBpbiB0
-aGUgZmlyc3QKcGxhY2UuIEkgbmVlZCB0byB0YWtlIGEgbG9vayBhdCBpdC4KCgpNaWNoYcWCCgpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
-bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Wed, May 14, 2014 at 3:26 PM, Dave Taht <dave.taht@gmail.com> wrote:
+> On Wed, May 14, 2014 at 12:07 PM, Avery Pennarun <apenwarr@gmail.com> wrote:
+>> but meanwhile, I think I'm in a
+>> big hurry so I probably want to just rip out all support for mapping
+>> diffserv to QoS on the ath10k transmit side.  Does anyone have any
+>> suggestions on where to look for my hack-and-slash operation?
+>
+> Tis easy to hack and slash it out of cfg80211_classify8021d in
+> net/wireless/util.c
+>
+> Recently someone added a direct mapping from vlan priorities to wifi
+> queues here - which is stupid, as the VO queue does not behave
+> anything like the equivalent vlan priority queue does. I'd like to see
+> that removed or mapped properly, also.
+
+Yup, replaced this function with 'return 0' and my problems are gone.
+(Well okay, this problem is gone, and you're probably not interested
+in my personal problems. :))
+
+Obviously just completely disabling QoS multiple queues is not the
+right long term fix, but as Dave pointed out, it wasn't clear the code
+there was exactly what we want anyway, so I won't feel too guilty
+about it.  Meanwhile, hopefully someone with deeper knowledge than me
+can figure out what's with the IVs.
+
+Thanks!
+
+Avery
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
