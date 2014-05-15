@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
+Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkrM9-0002uJ-BF
- for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:37 +0000
-Received: by mail-ee0-f42.google.com with SMTP id d49so406974eek.1
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:13 -0700 (PDT)
+ id 1WkrM5-0002tD-HH
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:34 +0000
+Received: by mail-ee0-f47.google.com with SMTP id c13so400284eek.20
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:10 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/5] ath10k: protect wep tx key setup
-Date: Thu, 15 May 2014 10:42:03 +0200
-Message-Id: <1400143324-14911-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 2/5] ath10k: perform hw restart lazily
+Date: Thu, 15 May 2014 10:42:01 +0200
+Message-Id: <1400143324-14911-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
 References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
  <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
@@ -28,56 +28,117 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-All configuration sequences should be protected
-with conf_mutex to avoid concurrent/conflicting
-requests.
+This reduces risk of races and prepares for more
+hw restart fixes.
 
-This should make sure that wep tx key setup is not
-performed while hw is restarted (at least).
+It also makes sense to perform teardown after
+mac80211 starts its restart routine as it
+guarantees it has stopped itself by then
+(including tx queues).
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-v2:
- * skip wep update if state != ON [Kalle]
- * add empty space before goto label [Kalle]
+ drivers/net/wireless/ath/ath10k/core.c |  5 ++++-
+ drivers/net/wireless/ath/ath10k/mac.c  | 34 ++++++++++++++++------------------
+ 2 files changed, 20 insertions(+), 19 deletions(-)
 
- drivers/net/wireless/ath/ath10k/mac.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 75b3dfb..7034c72 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -681,7 +681,8 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	switch (ar->state) {
+ 	case ATH10K_STATE_ON:
+ 		ar->state = ATH10K_STATE_RESTARTING;
+-		ath10k_halt(ar);
++		del_timer_sync(&ar->scan.timeout);
++		ath10k_reset_scan((unsigned long)ar);
+ 		ieee80211_restart_hw(ar->hw);
+ 		break;
+ 	case ATH10K_STATE_OFF:
+@@ -690,6 +691,8 @@ static void ath10k_core_restart(struct work_struct *work)
+ 		ath10k_warn("cannot restart a device that hasn't been started\n");
+ 		break;
+ 	case ATH10K_STATE_RESTARTING:
++		/* hw restart might be requested from multiple places */
++		break;
+ 	case ATH10K_STATE_RESTARTED:
+ 		ar->state = ATH10K_STATE_WEDGED;
+ 		/* fall through */
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 577a3a5..e474eca 100644
+index 854e183..b5d75b8 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1888,8 +1888,13 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
- 						wep_key_work);
- 	int ret, keyidx = arvif->def_wep_key_newidx;
- 
-+	mutex_lock(&arvif->ar->conf_mutex);
-+
-+	if (arvif->ar->state != ATH10K_STATE_ON)
-+		goto unlock;
-+
- 	if (arvif->def_wep_key_idx == keyidx)
--		return;
-+		goto unlock;
- 
- 	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d set keyidx %d\n",
- 		   arvif->vdev_id, keyidx);
-@@ -1902,10 +1907,13 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
- 		ath10k_warn("failed to update wep key index for vdev %d: %d\n",
- 			    arvif->vdev_id,
- 			    ret);
--		return;
-+		goto unlock;
+@@ -2303,6 +2303,7 @@ void ath10k_halt(struct ath10k *ar)
  	}
  
- 	arvif->def_wep_key_idx = keyidx;
-+
-+unlock:
-+	mutex_unlock(&arvif->ar->conf_mutex);
- }
+ 	del_timer_sync(&ar->scan.timeout);
++	ath10k_reset_scan((unsigned long)ar);
+ 	ath10k_offchan_tx_purge(ar);
+ 	ath10k_mgmt_over_wmi_tx_purge(ar);
+ 	ath10k_peer_cleanup_all(ar);
+@@ -2310,12 +2311,6 @@ void ath10k_halt(struct ath10k *ar)
+ 	ath10k_hif_power_down(ar);
  
- static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	spin_lock_bh(&ar->data_lock);
+-	if (ar->scan.in_progress) {
+-		del_timer(&ar->scan.timeout);
+-		ar->scan.in_progress = false;
+-		ieee80211_scan_completed(ar->hw, true);
+-	}
+-
+ 	list_for_each_entry(arvif, &ar->arvifs, list) {
+ 		if (!arvif->beacon)
+ 			continue;
+@@ -2336,8 +2331,18 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+-	if (ar->state != ATH10K_STATE_OFF &&
+-	    ar->state != ATH10K_STATE_RESTARTING) {
++	switch (ar->state) {
++	case ATH10K_STATE_OFF:
++		ar->state = ATH10K_STATE_ON;
++		break;
++	case ATH10K_STATE_RESTARTING:
++		ath10k_halt(ar);
++		ar->state = ATH10K_STATE_RESTARTED;
++		break;
++	case ATH10K_STATE_ON:
++	case ATH10K_STATE_RESTARTED:
++	case ATH10K_STATE_WEDGED:
++		WARN_ON(1);
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+@@ -2354,11 +2359,6 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto err_power_down;
+ 	}
+ 
+-	if (ar->state == ATH10K_STATE_OFF)
+-		ar->state = ATH10K_STATE_ON;
+-	else if (ar->state == ATH10K_STATE_RESTARTING)
+-		ar->state = ATH10K_STATE_RESTARTED;
+-
+ 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pmf_qos, 1);
+ 	if (ret) {
+ 		ath10k_warn("failed to enable PMF QOS: %d\n", ret);
+@@ -2413,12 +2413,10 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	if (ar->state == ATH10K_STATE_ON ||
+-	    ar->state == ATH10K_STATE_RESTARTED ||
+-	    ar->state == ATH10K_STATE_WEDGED)
++	if (ar->state != ATH10K_STATE_OFF) {
+ 		ath10k_halt(ar);
+-
+-	ar->state = ATH10K_STATE_OFF;
++		ar->state = ATH10K_STATE_OFF;
++	}
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+ 	ath10k_mgmt_over_wmi_tx_purge(ar);
 -- 
 1.8.5.3
 
