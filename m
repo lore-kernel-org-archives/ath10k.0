@@ -1,20 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkq2G-000514-7E
- for ath10k@lists.infradead.org; Thu, 15 May 2014 07:25:01 +0000
-Received: by mail-wg0-f49.google.com with SMTP id m15so2967810wgh.8
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 00:24:32 -0700 (PDT)
+ id 1WkqU8-0003JY-RH
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 07:53:49 +0000
+Received: by mail-la0-f41.google.com with SMTP id e16so505361lan.28
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 00:53:25 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <53727C12.2060100@candelatech.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-5-git-send-email-michal.kazior@tieto.com>
- <53727C12.2060100@candelatech.com>
-Date: Thu, 15 May 2014 09:24:31 +0200
-Message-ID: <CA+BoTQ=05fULptYqAecf-9jsq_aun_NsNT=c2-ZFxm96ymgQdg@mail.gmail.com>
-Subject: Re: [RFTv2 4/5] ath10k: wait for mgmt tx when flushing too
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+Date: Thu, 15 May 2014 09:53:25 +0200
+Message-ID: <CALhHN=pYabdKjUwBZqAr-a-uoJvn+PZvF2qDjXduoBRhyV2ybg@mail.gmail.com>
+Subject: Re: ath10k: firmware crash in station mode
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +26,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTMgTWF5IDIwMTQgMjI6MDksIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PiB3cm90ZToKPiBPbiAwNC8wOS8yMDE0IDAzOjQ4IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+
-PiBUaGUgMTAuMSBmaXJtd2FyZSB1c2VzIFdNSSB0byBUeCBtYW5hZ2VtZW50IGZyYW1lcwo+PiBi
-dXQgYXRoMTBrX2ZsdXNoKCkgZGlkbid0IGNhcmUuIFRoaXMgY291bGQgbGVhZCB0bwo+PiBzb21l
-IGZyYW1lcyBub3QgYmVpbmcgc2VudC4KPj4KPj4gQWx0aG91Z2ggdGhlcmUgYXJlIG5vIFR4IGNv
-bXBsZXRpb25zIGZvciBXTUkKPj4gbWFuZ2VtZW50IGZyYW1lcyBpdCdzIHN0aWxsIGJldHRlciB0
-byBhdCBsZWFzdAo+PiB3YWl0IGZvciBhdGgxMGsgcXVldWUgdG8gYmUgZHJhaW5lZC4KPgo+IFRo
-aXMgYW5kIG90aGVycyBpbiB0aGlzIHNlcmllcyBkbyBub3QgYXBwZWFyIHRvIGJlIGluIEthbGxl
-J3MKPiB0cmVlIHlldC4gIEFyZSB0aGVzZSB0byBiZSBkcm9wcGVkLCBvciBhcmUgdGhleSBzdGls
-bCBwZW5kaW5nPwoKQ29uc2lkZXIgaXQgZHJvcHBlZCBmb3Igbm93LCBwbGVhc2UuIFRoaXMgbmVl
-ZHMgZmlybXdhcmUgY2hhbmdlcyB0byBiZQpkZWFsdCB3aXRoIHByb3Blcmx5LgoKSW4gdGhlIG1l
-YW50aW1lIGlmIHlvdSB3YW50IHRvIGhhc3RlbiB0eCBxdWV1ZSBwcyBleHBpcmF0aW9uIHlvdSBj
-YW4KdHJ5IHRvIHNldCBgYXBfZGV0ZWN0X291dF9vZl9zeW5jX3NsZWVwaW5nX3N0YV90aW1lX3Nl
-Y3NgIHZkZXYgcGFyYW0KdG8gMSBzZWNvbmQgKGRlZmF1bHQgaXMgMTAgc2V0IGluIGZpcm13YXJl
-IGlmIEknbSBub3QgbWlzdGFrZW4pLiBJCmhhdmVuJ3QgdGVzdGVkIGl0IGJ1dCB0aGlzIHNob3Vs
-ZCBpbiB0aGVvcnkgc2hvcnRlbiB0eCBjcmVkaXQKc3RhcnZhdGlvbiBkdXJhdGlvbiBhbmQgYXZv
-aWQgY2FzY2FkZSBvZiB3bWkgdGltZW91dHMgKHdtaSB0aW1lb3V0PTMKc2Vjb25kcywgbWF4IG1n
-bXQgdHggcGVuZGluZz0yIHggMSBzZWNvbmQgZWFjaD0ycyB3b3JzdCBjYXNlKSBhcyB3ZWxsCmFz
-IHNob3VsZCBwcmV2ZW50IHR4IGZsdXNoaW5nIGZyb20gZmFpbGluZyAodGltZW91dD01KS4gVGhp
-cyB3aWxsIG5vdApwcmV2ZW50IGZyb20gYmVhY29uIFNXQkEgb3ZlcnJ1bnMgYmVjYXVzZSB0eCBz
-dGFydmF0aW9uIGlzIHN0aWxsCnBvc3NpYmxlIGFsdGhvdWdoIGl0IHNob3VsZCBiZSBmYXN0ZXIg
-dG8gcmVjb3Zlci4KCkkgd29uZGVyIGlmIGl0J3MgcmVhc29uYWJsZSB0byBzZXQgdGhpcyB2ZGV2
-IHBhcmFtIGV4cGxpY2l0bHkgaW4KdXBzdHJlYW0gZHJpdmVyLiBXZSBzaG91bGQgcHJvYmFibHkg
-Y29uc2lkZXIgbG9uZ2VzdCBiZWFjb24gaW50ZXJ2YWwKaW4gZWZmZWN0IHdoZW4gY2FsY3VsYXRp
-b24gdGhlIHZhbHVlIHRvIHNldC4gVGhvdWdodHMsIGFueW9uZT8KCgpNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 15 May 2014 09:07, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+> I tried to set up station mode using ath10k and wpa_supplicant.
+> If I used the firmware in branch 10.1 version firmware-2.bin_10.1.467.2-1 (which said that support STA mode but not well tested) , it crashed after associating with the access point:
+>
+> wlan0: SME: Trying to authenticate with 00:15:61:10:51:de (SSID='actia' freq=2457 MHz)
+> wlan0: authenticate with 00:15:61:10:51:de
+> wlan0: send auth to 00:15:61:10:51:de (try 1/3)
+> wlan0: authenticated
+> wlan0: Trying to associate with 00:15:61:10:51:de (SSID='actia' freq=2457 MHz)
+> wlan0: associate with 00:15:61:10:51:de (try 1/3)
+> wlan0: RX AssocResp from 00:15:61:10:51:de (capab=0x421 status=0 aid=1)
+> wlan0: associated
+> ath10k: firmware crashed!
+> ath10k: hardware name qca988x hw2.0 version 0x4100016c
+> ath10k: firmware version: 10.1.467.2-1
+> ath10k: target register Dump Location: 0x00401930
+> ath10k: target Register Dump
+> ath10k: [00]: 0x4100016C 0x00000000 0x009A123A 0x00000000
+> ath10k: [04]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [08]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [12]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [16]: 0x00000000 0x00000000 0x00000000 0x009A123A
+> ath10k: [20]: 0x00000000 0x00401930 0x00000000 0x00000000
+> ath10k: [24]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [28]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [32]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [36]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [40]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [44]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [48]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [52]: 0x00000000 0x00000000 0x00000000 0x00000000
+> ath10k: [56]: 0x00000000 0x00000000 0x00000000 0x00000000
+> br0: received packet on eth0 with own address as source address
+> ADDRCONF(NETDEV_CHANGE): wlan0: link becomes ready
+> br0: port 2(wlan0) entering forwarding state
+> br0: port 2(wlan0) entering forwarding state
+> wlan0: Associated with 00:15:61:10:51:de
+> ath10k: failed to put down monitor vdev 1: -11
+> ath10k: failed to to request monitor vdev 1 stop: -11
+> ath10k: failed to synchronise monitor vdev 1: -110
+> ath10k: failed to stop monitor vdev: -110
+> ath10k: failed to request wmi monitor vdev 1 removal: -11
+> ath10k: failed to delete monitor vdev: -11
+> ieee80211 phy0: Hardware restart was requested
+> ath10k: failed to request monitor vdev 2 creation: -108
+> ath10k: failed to create monitor vdev: -108
+> ath10k: failed to start monitor (promisc): -108
+> wlan0: CTRL-EVENT-CONNECTED - Connection to 00:15:61:10:51:de completed [id=0 id_str=]
+> ath10k: device has crashed during init
+> ath10k: failed to wait for target to init: -70
+> ath10k: failed to power up target using warm reset: -70
+> ath10k: trying cold reset
+>
+> Than I tried another version of firmware from branch 999. (which said that support STA mode) but it worse, the firmware crashed before seeing the access point. (can not associate)
+> This crashed is because of my system or just only the firmware issue? And is the firmware still continue developping? (There is a debug message of my system in the attached file if any one are interested in)
+>
+> Btw is there anyone could set a channel (from 52 and more) that employs DFS sucessfully confirm it for me cause I can not do it until now :D
+What kind of error you see?
+
+BTW, what is your system configuration, is that PC or some other board
+(openwrt ...). What kernel version are you using? Did you change/hack
+ath.ko regdb?
+If that is PC I would recommend to use ath10k kernel from github.
+
+BR
+Janusz
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
