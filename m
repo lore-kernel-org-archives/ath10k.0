@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x231.google.com ([2a00:1450:4013:c00::231])
+Received: from mail-ee0-x22a.google.com ([2a00:1450:4013:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkrM8-0002ua-AZ
- for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:36 +0000
-Received: by mail-ee0-f49.google.com with SMTP id e53so401560eek.36
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:14 -0700 (PDT)
+ id 1WkrM9-0002uJ-BF
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:37 +0000
+Received: by mail-ee0-f42.google.com with SMTP id d49so406974eek.1
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:13 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 5/5] ath10k: dont configure bssid for ap mode
-Date: Thu, 15 May 2014 10:42:04 +0200
-Message-Id: <1400143324-14911-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/5] ath10k: protect wep tx key setup
+Date: Thu, 15 May 2014 10:42:03 +0200
+Message-Id: <1400143324-14911-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
 References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
  <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
@@ -28,40 +28,56 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-FW creates self-peer for AP internally.
+All configuration sequences should be protected
+with conf_mutex to avoid concurrent/conflicting
+requests.
 
-This prevents ath10k from trying to create
-explicit self-peer during hw recovery and thus
-prevents a timeout and a warning during teardown:
-
-  ath10k: removing stale peer $AP_BSSID from vdev_id 0
+This should make sure that wep tx key setup is not
+performed while hw is restarted (at least).
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 v2:
- * add comment why CHANGED_BSSID is skipped for AP [Kalle]
+ * skip wep update if state != ON [Kalle]
+ * add empty space before goto label [Kalle]
 
- drivers/net/wireless/ath/ath10k/mac.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e474eca..5b01b82 100644
+index 577a3a5..e474eca 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2961,7 +2961,12 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 		arvif->u.ap.hidden_ssid = info->hidden_ssid;
+@@ -1888,8 +1888,13 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
+ 						wep_key_work);
+ 	int ret, keyidx = arvif->def_wep_key_newidx;
+ 
++	mutex_lock(&arvif->ar->conf_mutex);
++
++	if (arvif->ar->state != ATH10K_STATE_ON)
++		goto unlock;
++
+ 	if (arvif->def_wep_key_idx == keyidx)
+-		return;
++		goto unlock;
+ 
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac vdev %d set keyidx %d\n",
+ 		   arvif->vdev_id, keyidx);
+@@ -1902,10 +1907,13 @@ static void ath10k_tx_wep_key_work(struct work_struct *work)
+ 		ath10k_warn("failed to update wep key index for vdev %d: %d\n",
+ 			    arvif->vdev_id,
+ 			    ret);
+-		return;
++		goto unlock;
  	}
  
--	if (changed & BSS_CHANGED_BSSID) {
-+	/*
-+	 * Firmware manages AP self-peer internally so make sure to not create
-+	 * it in driver. Otherwise AP self-peer deletion may timeout later.
-+	 */
-+	if (changed & BSS_CHANGED_BSSID &&
-+	    vif->type != NL80211_IFTYPE_AP) {
- 		if (!is_zero_ether_addr(info->bssid)) {
- 			ath10k_dbg(ATH10K_DBG_MAC,
- 				   "mac vdev %d create peer %pM\n",
+ 	arvif->def_wep_key_idx = keyidx;
++
++unlock:
++	mutex_unlock(&arvif->ar->conf_mutex);
+ }
+ 
+ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
 -- 
 1.8.5.3
 
