@@ -1,14 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x233.google.com ([2a00:1450:4013:c00::233])
+Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WktIZ-000840-75
- for ath10k@lists.infradead.org; Thu, 15 May 2014 10:54:04 +0000
-Received: by mail-ee0-f51.google.com with SMTP id e51so527320eek.38
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 03:53:39 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC 1/2] ath10k: add implementation for configure max amsdu, ampdu
-Date: Thu, 15 May 2014 12:53:05 +0200
-Message-Id: <1400151186-24949-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WktMD-0008BQ-Db
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 10:57:50 +0000
+Received: by mail-we0-f173.google.com with SMTP id u57so883622wes.32
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 03:57:27 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+Date: Thu, 15 May 2014 12:57:27 +0200
+Message-ID: <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
+Subject: Re: ath10k: firmware crash in station mode
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,120 +26,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, while1eq1@gmail.com, markaswift@gmail.com
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Allow to setup maximum subframes for AMSDU and AMPDU aggregation.
-
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
-Please check this patches, if help when MacBook Pro Retina used.
-
- drivers/net/wireless/ath/ath10k/htt.h    |   15 +++++-----
- drivers/net/wireless/ath/ath10k/htt_tx.c |   44 ++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 645a563..3ad0e09 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -240,16 +240,14 @@ struct htt_oob_sync_req {
- 	__le16 rsvd0;
- } __packed;
- 
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  0
-+#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F00
-+#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  8
-+#define HTT_AGGR_CONF_MAX_NUM_AMPDU_SUBFRAMES_MASK 0xFF
-+#define HTT_AGGR_CONF_MAX_NUM_AMPDU_SUBFRAMES_LSB  0
- 
- struct htt_aggr_conf {
- 	u8 max_num_ampdu_subframes;
--	union {
--		/* dont use bitfields; undefined behaviour */
--		u8 flags; /* see %HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_ */
--		u8 max_num_amsdu_subframes:5;
--	} __packed;
-+	u8 max_num_amsdu_subframes;
- } __packed;
- 
- #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
-@@ -1341,6 +1339,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
- int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
- int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu);
- 
- void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 7a3e2e4..c3ec9d1 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -307,6 +307,50 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	return 0;
- }
- 
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu)
-+{
-+	struct htt_aggr_conf *aggr_conf;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	int len = 0;
-+	int ret;
-+
-+	/* By default FW setup amsdu = 3 and ampdu = 64 */
-+	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
-+		return -EINVAL;
-+	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
-+		return -EINVAL;
-+
-+	len += sizeof(cmd->hdr);
-+	len += sizeof(cmd->aggr_conf);
-+
-+	skb = ath10k_htc_alloc_skb(len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
-+
-+	aggr_conf = &cmd->aggr_conf;
-+	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
-+	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
-+
-+	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg ampdu %d, amsdu %d",
-+		   aggr_conf->max_num_ampdu_subframes,
-+		   aggr_conf->max_num_ampdu_subframes);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- {
- 	struct device *dev = htt->ar->dev;
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTWF5IDIwMTQgMDk6MDcsIFZ1IEhhaSBOR1VZRU4gPHZoLm5ndXllbkBhY3RpYXNvZGll
+bGVjLmZyPiB3cm90ZToKPiBJIHRyaWVkIHRvIHNldCB1cCBzdGF0aW9uIG1vZGUgdXNpbmcgYXRo
+MTBrIGFuZCB3cGFfc3VwcGxpY2FudC4KPiBJZiBJIHVzZWQgdGhlIGZpcm13YXJlIGluIGJyYW5j
+aCAxMC4xIHZlcnNpb24gZmlybXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xICh3aGljaCBzYWlkIHRo
+YXQgc3VwcG9ydCBTVEEgbW9kZSBidXQgbm90IHdlbGwgdGVzdGVkKSAsIGl0IGNyYXNoZWQgYWZ0
+ZXIgYXNzb2NpYXRpbmcgd2l0aCB0aGUgYWNjZXNzIHBvaW50Ogo+Cj4gd2xhbjA6IFNNRTogVHJ5
+aW5nIHRvIGF1dGhlbnRpY2F0ZSB3aXRoIDAwOjE1OjYxOjEwOjUxOmRlIChTU0lEPSdhY3RpYScg
+ZnJlcT0yNDU3IE1IeikKPiB3bGFuMDogYXV0aGVudGljYXRlIHdpdGggMDA6MTU6NjE6MTA6NTE6
+ZGUKPiB3bGFuMDogc2VuZCBhdXRoIHRvIDAwOjE1OjYxOjEwOjUxOmRlICh0cnkgMS8zKQo+IHds
+YW4wOiBhdXRoZW50aWNhdGVkCj4gd2xhbjA6IFRyeWluZyB0byBhc3NvY2lhdGUgd2l0aCAwMDox
+NTo2MToxMDo1MTpkZSAoU1NJRD0nYWN0aWEnIGZyZXE9MjQ1NyBNSHopCj4gd2xhbjA6IGFzc29j
+aWF0ZSB3aXRoIDAwOjE1OjYxOjEwOjUxOmRlICh0cnkgMS8zKQo+IHdsYW4wOiBSWCBBc3NvY1Jl
+c3AgZnJvbSAwMDoxNTo2MToxMDo1MTpkZSAoY2FwYWI9MHg0MjEgc3RhdHVzPTAgYWlkPTEpCj4g
+d2xhbjA6IGFzc29jaWF0ZWQKPiBhdGgxMGs6IGZpcm13YXJlIGNyYXNoZWQhCj4gYXRoMTBrOiBo
+YXJkd2FyZSBuYW1lIHFjYTk4OHggaHcyLjAgdmVyc2lvbiAweDQxMDAwMTZjCj4gYXRoMTBrOiBm
+aXJtd2FyZSB2ZXJzaW9uOiAxMC4xLjQ2Ny4yLTEKPiBhdGgxMGs6IHRhcmdldCByZWdpc3RlciBE
+dW1wIExvY2F0aW9uOiAweDAwNDAxOTMwCj4gYXRoMTBrOiB0YXJnZXQgUmVnaXN0ZXIgRHVtcAo+
+IGF0aDEwazogWzAwXTogMHg0MTAwMDE2QyAweDAwMDAwMDAwIDB4MDA5QTEyM0EgMHgwMDAwMDAw
+MAo+IGF0aDEwazogWzA0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAw
+MDAwMAo+IGF0aDEwazogWzA4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgw
+MDAwMDAwMAo+IGF0aDEwazogWzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAg
+MHgwMDAwMDAwMAo+IGF0aDEwazogWzE2XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAw
+MDAgMHgwMDlBMTIzQQo+IGF0aDEwazogWzIwXTogMHgwMDAwMDAwMCAweDAwNDAxOTMwIDB4MDAw
+MDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzI0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzI4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzMyXTogMHgwMDAwMDAwMCAweDAwMDAw
+MDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzM2XTogMHgwMDAwMDAwMCAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzQwXTogMHgwMDAwMDAwMCAw
+eDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzQ0XTogMHgwMDAwMDAw
+MCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzQ4XTogMHgwMDAw
+MDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzUyXTogMHgw
+MDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IGF0aDEwazogWzU2XTog
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMApbLi4uXQoKVGhpcyBp
+cyBOVUxMIGRlcmVmZXJlbmNlIGluIGZpcm13YXJlLiBJIHN1c3BlY3QgaXQncyBhbiBpbmNvbXBs
+ZXRlCmRyaXZlci1maXJtd2FyZSBzZXR1cCAoaS5lLiBzb21lIGNvbW1hbmRzIHdlcmVuJ3QgaXNz
+dWVkIG9yIHdlcmUKaW52YWxpZCkuCgpDYW4geW91IGVuYWJsZSBkZWJ1ZyBsb2dzICggZWNobyAw
+eGZmZmZmZjNmIHwgc3VkbyB0ZWUKL3N5cy9tb2R1bGUvYXRoMTBrX2NvcmUvcGFyYW1ldGVycy9k
+ZWJ1Z19tYXNrICkgYmVmb3JlIHlvdSB0cnkgdG8KYXNzb2NpYXRlIGFuZCBwb3N0IGxvZ3MsIHBs
+ZWFzZT8gSSdkIGxpa2UgdG8gc2VlIGNvbW1hbmQgc2VxdWVuY2Ugc2VudAp0byBmaXJtd2FyZSBi
+ZWZvcmUgdGhlIGNyYXNoIGhhcHBlbnMuCgoKPiBUaGFuIEkgdHJpZWQgYW5vdGhlciB2ZXJzaW9u
+IG9mIGZpcm13YXJlIGZyb20gYnJhbmNoIDk5OS4gKHdoaWNoIHNhaWQgdGhhdCBzdXBwb3J0IFNU
+QSBtb2RlKSBidXQgaXQgd29yc2UsIHRoZSBmaXJtd2FyZSBjcmFzaGVkIGJlZm9yZSBzZWVpbmcg
+dGhlIGFjY2VzcyBwb2ludC4gKGNhbiBub3QgYXNzb2NpYXRlKQoKQ2FuIHlvdSBwb3N0IHRoZSBj
+cmFzaCBsb2dzIChhcyBub3RlZCBhYm92ZSkgd2hlbiB5b3UgdHJ5IHRoZSA5OTkKYnJhbmNoIHRv
+bywgcGxlYXNlPyBJdCBzZWVtcyA5OTkgY3Jhc2hlcyBzb29uZXIgdGhhbiAxMC4xLiBJdCBtaWdo
+dCBiZQpoZWxwZnVsIHRvIHNlZSB0aGUgZGlmZmVyZW50IGNyYXNoIHBvaW50cy4KCgo+IFRoaXMg
+Y3Jhc2hlZCBpcyBiZWNhdXNlIG9mIG15IHN5c3RlbSBvciBqdXN0IG9ubHkgdGhlIGZpcm13YXJl
+IGlzc3VlPyBBbmQgaXMgdGhlIGZpcm13YXJlIHN0aWxsIGNvbnRpbnVlIGRldmVsb3BwaW5nPyAo
+VGhlcmUgaXMgYSBkZWJ1ZyBtZXNzYWdlIG9mIG15IHN5c3RlbSBpbiB0aGUgYXR0YWNoZWQgZmls
+ZSBpZiBhbnkgb25lIGFyZSBpbnRlcmVzdGVkIGluKQoKSSBoYXZlIG5vIGlkZWEgd2hhdCB2ZXJz
+aW9uIG9mIGtlcm5lbCB5b3UncmUgdXNpbmcuIFBlcmhhcHMgeW91IGJyb2tlCnlvdXIgc291cmNl
+IHRyZWUgd2hlbiBtZXJnaW5nL3JlYmFzaW5nL2NoZXJyeS1waWNraW5nL2JhY2twb3J0aW5nPwpX
+aGF0J3MgeW91ciBnaXQgaGVhZCBjb21taXQ/CgpJIGNhbiBhc3NvY2lhdGUgYXRoMTBrIHdpdGgg
+Ym90aCBmaXJtd2FyZSBicmFuY2hlcyB3aXRob3V0IGEgcHJvYmxlbS4KCgo+IEJ0dyBpcyB0aGVy
+ZSBhbnlvbmUgY291bGQgc2V0IGEgY2hhbm5lbCAoZnJvbSA1MiBhbmQgbW9yZSkgdGhhdCBlbXBs
+b3lzIERGUyBzdWNlc3NmdWxseSBjb25maXJtIGl0IGZvciBtZSBjYXVzZSBJIGNhbiBub3QgZG8g
+aXQgdW50aWwgbm93IDpECj4gVGhhbmsgeW91IGFsbCBvZiB5b3UgZm9yIHRoZSBzdXBwb3J0LAoK
+WWVzLCB0aGlzIHdvcmtzIChvciBhdCBsZWFzdCBpdCBzaG91bGQpLiBJdCBtaWdodCBiZSB0cmlj
+a3kgdG8gZ2V0IGl0CnJpZ2h0IGZvciBzb21lb25lIHdobydzIG5vdCBmYW1pbGlhciB3aXRoIHJl
+Z3VsYXRvcnkgc2hlbmFuaWdhbnMgaW4Kc29tZSBjYXNlcy4KClJlY2VudGx5IHRoZXJlIHdhcyBh
+IGJ1ZyBpbnRyb2R1Y2VkIHRoYXQgYnJva2UgREZTIChzZWUgbGludXgtd2lyZWxlc3MKbWFpbGlu
+ZyBsaXN0OyBpdCdzIGluIHRoZSBwcm9jZXNzIG9mIGJlaW5nIGZpeGVkKSwgYnV0IHNpbmNlIHlv
+dQpoYXZlbid0IHByb3ZpZGVkIGFueSBpbmZvcm1hdGlvbiB3aGF0IHlvdXIga2VybmVsIHRyZWUg
+aXMgSSBjYW4ndCB0ZWxsCmlmIHRoYXQncyB0aGUgYWN0dWFsIHByb2JsZW0gb3Igbm90LgoKCk1p
+Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
