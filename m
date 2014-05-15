@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wkuiw-0003j0-FO
- for ath10k@lists.infradead.org; Thu, 15 May 2014 12:25:22 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC 1/2] ath10k: add implementation for configure max amsdu,
- ampdu
-References: <1400151186-24949-1-git-send-email-janusz.dziedzic@tieto.com>
- <87egzv9te9.fsf@kamboji.qca.qualcomm.com>
- <CALhHN=o_KUjGWN4sEWaGxc3xKmXt2TdmcYsBT9O8rnixcv2q=A@mail.gmail.com>
-Date: Thu, 15 May 2014 15:24:54 +0300
-In-Reply-To: <CALhHN=o_KUjGWN4sEWaGxc3xKmXt2TdmcYsBT9O8rnixcv2q=A@mail.gmail.com>
- (Janusz Dziedzic's message of "Thu, 15 May 2014 13:35:49 +0200")
-Message-ID: <871tvv9qll.fsf@kamboji.qca.qualcomm.com>
+ id 1Wkuze-0008Tz-Co
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 12:42:39 +0000
+Received: by mail-wi0-f175.google.com with SMTP id f8so9735612wiw.2
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 05:42:16 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87r43v9v2n.fsf@kamboji.qca.qualcomm.com>
+References: <1400050658-2763-1-git-send-email-michal.kazior@tieto.com>
+ <1400050658-2763-2-git-send-email-michal.kazior@tieto.com>
+ <87r43v9v2n.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 15 May 2014 14:42:16 +0200
+Message-ID: <CA+BoTQkYMFi5_a1w0UQaPanAEaeiK9-ScnmLzxro1uB2dzK4MA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: improve warm reset reliability
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +22,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: while1eq1 <while1eq1@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, markaswift <markaswift@gmail.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
-
-> On 15 May 2014 13:24, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->
->> Did you somehow check that this command works as it should?
->
-> Added WMI_DEBUG_EVENT in FW (_htt_tgt_tx_aggr_cfg):
->
-> May 15 12:47:30 dell kernel: [ 6777.355444] ath10k: wmi event debug
-> print 'xxx amsdu: 3, ampdu: 64' // This is default :)
-> May 15 12:47:30 dell kernel: [ 6777.355477] ath10k: wmi event debug
-> print 'xxx data: 0x00014005, 81925'
-> May 15 12:47:30 dell kernel: [ 6777.355520] ath10k: wmi event debug
-> print 'xxx amsdu: 1, ampdu: 64'
-
-Ok, that's one way to test as well. I was more thinking about using
-sniffer or another way to check what's really happening on the air.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTWF5IDIwMTQgMTI6NDgsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+
+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0ZXM6
+Cj4KPj4gV2FybSByZXNldCBpcyBub3cgYWJsZSB0byByZWNvdmVyIGFmdGVyIGRldmljZQo+PiBj
+cmFzaGVzIHdoaWNoIHJlcXVpcmVkIGEgY29sZCByZXNldCBiZWZvcmUuCj4+Cj4+IFRoaXMgc2hv
+dWxkIGdyZWF0bHkgcmVkdWNlIGNoYW5jZXMgb2YgZ2V0dGluZyBkYXRhCj4+IGJ1cyBlcnJvcnMg
+b3IgaG9zdCBzeXN0ZW0gZnJlZXplcyBkdWUgdG8gYnVnZ3kKPj4gY29sZCByZXNldCBvbiBzb21l
+IGNoaXBzLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4KPgo+IEF3ZXNvbWUhIFRoaXMgaXMgdmVyeSBtdWNoIG5lZWRlZC4gSSBqdXN0
+IGhhdmUgYSBjb3NtZXRpYyBjb21tZW50Ogo+Cj4+ICsvKiB0aGlzIGZ1bmN0aW9uIGVmZmVjdGl2
+ZWx5IGNsZWFycyB0YXJnZXQgbWVtb3J5IGNvbnRyb2xsZXIgYXNzZXJ0IGxpbmUgKi8KPj4gK3N0
+YXRpYyB2b2lkIGF0aDEwa19wY2lfd2FybV9yZXNldF9zaTAoc3RydWN0IGF0aDEwayAqYXIpCj4+
+ICt7Cj4+ICsgICAgIHUzMiB2YWw7Cj4+ICsKPj4gKyAgICAgdmFsID0gYXRoMTBrX3BjaV9yZWFk
+MzIoYXIsIFJUQ19TT0NfQkFTRV9BRERSRVNTICsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgU09DX1JFU0VUX0NPTlRST0xfQUREUkVTUyk7Cj4+ICsgICAgIGF0aDEwa19wY2lfd3Jp
+dGUzMihhciwgUlRDX1NPQ19CQVNFX0FERFJFU1MgKyBTT0NfUkVTRVRfQ09OVFJPTF9BRERSRVNT
+LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgdmFsIHwgU09DX1JFU0VUX0NPTlRST0xfU0kw
+X1JTVF9NQVNLKTsKPj4gKyAgICAgdmFsID0gYXRoMTBrX3BjaV9yZWFkMzIoYXIsIFJUQ19TT0Nf
+QkFTRV9BRERSRVNTICsKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU09DX1JFU0VU
+X0NPTlRST0xfQUREUkVTUyk7Cj4KPiBXZSBkbyBoYXZlIHRoZSBhdGgxMGtfcGNpX3NvY18gZnVu
+Y3Rpb25zIGZvciBhY2Nlc3NpbmcgU09DIHJlZ2lzdGVycywgSQo+IHdvdWxkIHByZWZlciB0byB1
+c2UgdGhvc2UgaGVyZS4gSSBub3cgbW9kaWZpZWQgeW91ciBwYXRjaCB3aXRoIHRoZSBkaWZmCj4g
+YmVsb3cuIElzIHRoYXQgb2sgdG8geW91PwoKQWgsIHllYWguIEkgdG90YWxseSBmb3Jnb3QgYWJv
+dXQgdGhlc2UgZnVuY3Rpb25zIChhZ2FpbikuCgoKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL3BjaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9wY2kuYwo+IEBAIC0xODA3LDIwICsxODA3LDE4IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19wY2lf
+d2FybV9yZXNldF9zaTAoc3RydWN0IGF0aDEwayAqYXIpCj4gIHsKPiAgICAgICAgIHUzMiB2YWw7
+Cj4KPiAtICAgICAgIHZhbCA9IGF0aDEwa19wY2lfcmVhZDMyKGFyLCBSVENfU09DX0JBU0VfQURE
+UkVTUyArCj4gLSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBTT0NfUkVTRVRfQ09OVFJP
+TF9BRERSRVNTKTsKPiAtICAgICAgIGF0aDEwa19wY2lfd3JpdGUzMihhciwgUlRDX1NPQ19CQVNF
+X0FERFJFU1MgKyBTT0NfUkVTRVRfQ09OVFJPTF9BRERSRVNTLAo+IC0gICAgICAgICAgICAgICAg
+ICAgICAgICAgIHZhbCB8IFNPQ19SRVNFVF9DT05UUk9MX1NJMF9SU1RfTUFTSyk7Cj4gLSAgICAg
+ICB2YWwgPSBhdGgxMGtfcGNpX3JlYWQzMihhciwgUlRDX1NPQ19CQVNFX0FERFJFU1MgKwo+IC0g
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU09DX1JFU0VUX0NPTlRST0xfQUREUkVTUyk7
+Cj4gKyAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3NvY19yZWFkMzIoYXIsIFNPQ19SRVNFVF9DT05U
+Uk9MX0FERFJFU1MpOwo+ICsgICAgICAgYXRoMTBrX3BjaV9zb2Nfd3JpdGUzMihhciwgU09DX1JF
+U0VUX0NPTlRST0xfQUREUkVTUywKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdmFs
+IHwgU09DX1JFU0VUX0NPTlRST0xfU0kwX1JTVF9NQVNLKTsKPiArICAgICAgIHZhbCA9IGF0aDEw
+a19wY2lfc29jX3JlYWQzMihhciwgU09DX1JFU0VUX0NPTlRST0xfQUREUkVTUyk7Cj4gKwo+ICAg
+ICAgICAgbXNsZWVwKDEwKTsKPgo+IC0gICAgICAgdmFsID0gYXRoMTBrX3BjaV9yZWFkMzIoYXIs
+IFJUQ19TT0NfQkFTRV9BRERSRVNTICsKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFNPQ19SRVNFVF9DT05UUk9MX0FERFJFU1MpOwo+IC0gICAgICAgYXRoMTBrX3BjaV93cml0ZTMy
+KGFyLCBSVENfU09DX0JBU0VfQUREUkVTUyArIFNPQ19SRVNFVF9DT05UUk9MX0FERFJFU1MsCj4g
+LSAgICAgICAgICAgICAgICAgICAgICAgICAgdmFsICYgflNPQ19SRVNFVF9DT05UUk9MX1NJMF9S
+U1RfTUFTSyk7Cj4gLSAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3JlYWQzMihhciwgUlRDX1NPQ19C
+QVNFX0FERFJFU1MgKwo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU09DX1JFU0VU
+X0NPTlRST0xfQUREUkVTUyk7Cj4gKyAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3NvY19yZWFkMzIo
+YXIsIFNPQ19SRVNFVF9DT05UUk9MX0FERFJFU1MpOwo+ICsgICAgICAgYXRoMTBrX3BjaV9zb2Nf
+d3JpdGUzMihhciwgU09DX1JFU0VUX0NPTlRST0xfQUREUkVTUywKPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgdmFsICYgflNPQ19SRVNFVF9DT05UUk9MX1NJMF9SU1RfTUFTSyk7Cj4g
+KyAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3NvY19yZWFkMzIoYXIsIFNPQ19SRVNFVF9DT05UUk9M
+X0FERFJFU1MpOwo+ICsKPiAgICAgICAgIG1zbGVlcCgxMCk7Cj4gIH0KCkxvb2tzIGdvb2QgdG8g
+bWUgOi0pCgoKPiBGdWxsIHBhdGNoIGhlcmU6Cj4KPiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8v
+YXRoL2NvbW1pdC83YjUyMDU0MzA4YTM3MWQ0NzlhOWU2ODZlMWQ4NDExZDE5YTkwZmQ3CgpZb3Ug
+cHJvYmFibHkgbWVhbjoKCmh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgvY29tbWl0LzEzNmVm
+ODExMGNiYTYxNzUyZWVlNWVmNmJkN2NlMTcwYjE1Y2Y0OTEKCgpNaWNoYcWCCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
