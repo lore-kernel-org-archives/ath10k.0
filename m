@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22f.google.com ([2a00:1450:4013:c00::22f])
+Received: from mail-ee0-x231.google.com ([2a00:1450:4013:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkrM5-0002tt-HD
- for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:34 +0000
-Received: by mail-ee0-f47.google.com with SMTP id c13so400307eek.20
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:11 -0700 (PDT)
+ id 1WkrM8-0002ua-AZ
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:36 +0000
+Received: by mail-ee0-f49.google.com with SMTP id e53so401560eek.36
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:14 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 3/5] ath10k: drain tx before restarting hw
-Date: Thu, 15 May 2014 10:42:02 +0200
-Message-Id: <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 5/5] ath10k: dont configure bssid for ap mode
+Date: Thu, 15 May 2014 10:42:04 +0200
+Message-Id: <1400143324-14911-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
 References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
  <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
@@ -28,88 +28,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This makes sure no further tx requests are
-submitted to HTT before driver teardown.
+FW creates self-peer for AP internally.
 
-This should prevent invalid pointer/NULL
-dereference on htt tx pool in ath10k_htt_tx() in
-some cases of heavy traffic.
+This prevents ath10k from trying to create
+explicit self-peer during hw recovery and thus
+prevents a timeout and a warning during teardown:
 
-Reported-By: Ben Greear <greearb@candelatech.com>
+  ath10k: removing stale peer $AP_BSSID from vdev_id 0
+
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
+v2:
+ * add comment why CHANGED_BSSID is skipped for AP [Kalle]
+
+ drivers/net/wireless/ath/ath10k/mac.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b5d75b8..577a3a5 100644
+index e474eca..5b01b82 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2289,6 +2289,21 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- /*
-  * Initialize various parameters with default vaules.
-  */
-+static void ath10k_drain_tx(struct ath10k *ar)
-+{
-+	/* workers can hold conf_mutex -- avoid deadlock */
-+	WARN_ON(lockdep_is_held(&ar->conf_mutex));
-+
-+	/* make sure rcu-protected mac80211 tx path itself is drained */
-+	synchronize_net();
-+
-+	ath10k_offchan_tx_purge(ar);
-+	ath10k_mgmt_over_wmi_tx_purge(ar);
-+
-+	cancel_work_sync(&ar->offchan_tx_work);
-+	cancel_work_sync(&ar->wmi_mgmt_tx_work);
-+}
-+
- void ath10k_halt(struct ath10k *ar)
- {
- 	struct ath10k_vif *arvif;
-@@ -2304,8 +2319,6 @@ void ath10k_halt(struct ath10k *ar)
- 
- 	del_timer_sync(&ar->scan.timeout);
- 	ath10k_reset_scan((unsigned long)ar);
--	ath10k_offchan_tx_purge(ar);
--	ath10k_mgmt_over_wmi_tx_purge(ar);
- 	ath10k_peer_cleanup_all(ar);
- 	ath10k_core_stop(ar);
- 	ath10k_hif_power_down(ar);
-@@ -2329,6 +2342,13 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 	struct ath10k *ar = hw->priv;
- 	int ret = 0;
- 
-+	/*
-+	 * This makes sense only when restarting hw. It is harmless to call
-+	 * uncoditionally. This is necessary to make sure no HTT/WMI tx
-+	 * commands will be submitted while restarting.
-+	 */
-+	ath10k_drain_tx(ar);
-+
- 	mutex_lock(&ar->conf_mutex);
- 
- 	switch (ar->state) {
-@@ -2412,6 +2432,8 @@ static void ath10k_stop(struct ieee80211_hw *hw)
- {
- 	struct ath10k *ar = hw->priv;
- 
-+	ath10k_drain_tx(ar);
-+
- 	mutex_lock(&ar->conf_mutex);
- 	if (ar->state != ATH10K_STATE_OFF) {
- 		ath10k_halt(ar);
-@@ -2419,10 +2441,6 @@ static void ath10k_stop(struct ieee80211_hw *hw)
+@@ -2961,7 +2961,12 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		arvif->u.ap.hidden_ssid = info->hidden_ssid;
  	}
- 	mutex_unlock(&ar->conf_mutex);
  
--	ath10k_mgmt_over_wmi_tx_purge(ar);
--
--	cancel_work_sync(&ar->offchan_tx_work);
--	cancel_work_sync(&ar->wmi_mgmt_tx_work);
- 	cancel_work_sync(&ar->restart_work);
- }
- 
+-	if (changed & BSS_CHANGED_BSSID) {
++	/*
++	 * Firmware manages AP self-peer internally so make sure to not create
++	 * it in driver. Otherwise AP self-peer deletion may timeout later.
++	 */
++	if (changed & BSS_CHANGED_BSSID &&
++	    vif->type != NL80211_IFTYPE_AP) {
+ 		if (!is_zero_ether_addr(info->bssid)) {
+ 			ath10k_dbg(ATH10K_DBG_MAC,
+ 				   "mac vdev %d create peer %pM\n",
 -- 
 1.8.5.3
 
