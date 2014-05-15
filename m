@@ -1,30 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from vs17.mail.saunalahti.fi ([62.142.117.198])
+Received: from mail-ee0-x232.google.com ([2a00:1450:4013:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkqdK-0002fl-5Z
- for ath10k@lists.infradead.org; Thu, 15 May 2014 08:03:19 +0000
-Received: from vams (localhost [127.0.0.1])
- by vs17.mail.saunalahti.fi (Postfix) with SMTP id 0244E100068
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 11:02:55 +0300 (EEST)
-Received: from gw03.mail.saunalahti.fi (gw03.mail.saunalahti.fi
- [195.197.172.111])
- by vs17.mail.saunalahti.fi (Postfix) with ESMTP id C50CF100068
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 11:02:54 +0300 (EEST)
-Received: from mail.hotmail.com (dub0-wss1-s3.dub0.hotmail.com [157.56.194.42])
- (using TLSv1 with cipher RC4-MD5 (128/128 bits))
- (No client certificate requested)
- by gw03.mail.saunalahti.fi (Postfix) with ESMTPSA id 939B620086
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 11:02:53 +0300 (EEST)
-Message-ID: <DUB122-W4070B8F41A0F8A25061141CB360@phx.gbl>
-From: Matti Laakso <malaakso@elisanet.fi>
-Subject: RE : ath10k: set channel by command "iw" not from hostapd and DFS
- support of firmware-2.bin_10.1.467.2-1
-Date: Thu, 15 May 2014 10:02:52 +0200
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>,
- <5373382C.1030709@elisanet.fi>,
- <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
-MIME-Version: 1.0
+ id 1WkrM4-0002sY-Pu
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 08:49:33 +0000
+Received: by mail-ee0-f50.google.com with SMTP id e51so400174eek.23
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 01:49:08 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 0/5] ath10k: recovery fixes 2014-05-09
+Date: Thu, 15 May 2014 10:41:59 +0200
+Message-Id: <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,77 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-PiBGcm9tOiB2aC5uZ3V5ZW5AYWN0aWFzb2RpZWxlYy5mcgo+IFRvOiBtYWxhYWtzb0BlbGlzYW5l
-dC5maTsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBEYXRlOiBXZWQsIDE0IE1heSAyMDE0
-IDEzOjU2OjI5ICswMjAwCj4gU3ViamVjdDogUkUgOiBhdGgxMGs6IHNldCBjaGFubmVsIGJ5IGNv
-bW1hbmQgIml3IiBub3QgZnJvbSBob3N0YXBkIGFuZCBERlMgc3VwcG9ydCBvZiBmaXJtd2FyZS0y
-LmJpbl8xMC4xLjQ2Ny4yLTEKPiAKPj4+RGlkIHlvdSBidWlsZCBhdGgxMGsgd2l0aCBBVEgxMEtf
-REZTX0NFUlRJRklFRCBlbmFibGVkPwo+IAo+IFllcyBJIGRpZCBpdCwgaGVyZSBpcyBteSBjb25m
-aWd1cmF0aW9uOgo+IAo+IDxNPiAgIEF0aGVyb3MgODAyLjExYWMgd2lyZWxlc3MgY2FyZHMgc3Vw
-cG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgCj4gICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPE0+ICAg
-ICBBdGhlcm9zIGF0aDEwayBQQ0kgc3VwcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ICAg4pSCIOKUgiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgWypdICAgICBBdGhlcm9zIGF0aDEwayBkZWJ1
-Z2dpbmcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAKPiAgIOKUgiDilIIgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIFsqXSAgICAgQXRoZXJvcyBhdGgxMGsgZGVidWdmcyBzdXBwb3J0ICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-Cj4gICDilIIg4pSCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0gICAgIEF0
-aGVyb3MgYXRoMTBrIHRyYWNpbmcgc3VwcG9ydCAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAo+ICAg4pSCIOKUgiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgWypdICAgICBBdGhlcm9zIERGUyBzdXBwb3J0IGZv
-ciBjZXJ0aWZpZWQgcGxhdGZvcm1zIAo+IAo+IAoKSG93CiBvbGQgaXMgeW91ciBob3N0YXBkIGJ1
-aWxkPyBEbyB5b3UgaGF2ZSBjb3VudHJ5IGNvZGUsIGllZWU4MDIxMWQsIGFuZCAKaWVlZTgwMjEx
-aHNldCBpbiBob3N0YXBkLmNvbmY/IEkndmUgYmVlbiBydW5uaW5nIGF0aDEwayBpbiBBUCBtb2Rl
-IG9uIApERlMtY2hhbm5lbHMgc2luY2UgZmVicnVhcnkgKDEwLjEtYnJhbmNoIGZpcm13YXJlLCBW
-SFQ4MCkuCgoKPiBOR1VZRU4gVnUgSGFpCj4gQWNpdGEtU29kaWVsZWMKPiBSb3V0ZSBkZSBNYXly
-ZXMgLSBCLlAuIDkKPiAxMjEwMCBTdCBHRU9SR0VTIERFIExVWkVOQ09OCj4gRlJBTkNFCj4gCj4g
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IERlIDogYXRoMTBrIFth
-dGgxMGstYm91bmNlc0BsaXN0cy5pbmZyYWRlYWQub3JnXSBkZSBsYSBwYXJ0IGRlIE1hdHRpIExh
-YWtzbyBbbWFsYWFrc29AZWxpc2FuZXQuZmldCj4gRGF0ZSBkJ2Vudm9pIDogbWVyY3JlZGkgMTQg
-bWFpIDIwMTQgMTE6MzIKPiDDgCA6IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gT2JqZXQg
-OiBSZTogYXRoMTBrOiBzZXQgY2hhbm5lbCBieSBjb21tYW5kICJpdyIgbm90IGZyb20gaG9zdGFw
-ZCBhbmQgREZTIHN1cHBvcnQgb2YgZmlybXdhcmUtMi5iaW5fMTAuMS40NjcuMi0xCj4gCj4+IEkg
-YW0gYWJsZSB0byBydW4gbW9kZSBhY2Nlc3MgcG9pbnQgYnkgdXNpbmcgYXRoMTBrIGFuZCBob3N0
-YXBkLCBidXQgSSBoYXZlIHRvIHNldCB0aGUgY2hhbm5lbCBpbiB0aGUgY29uZmlndXJhdGlvbiBm
-aWxlIGZvciBob3N0YXBkIChJIGRlc2FjdGl2YXRlZCBBQ1Mgd2hlbiBidWlsZGluZyBob3N0YXBk
-KQo+PiBJZiBJIHNldCBjaGFubmVsIGJ5IHRoZSBjb21tYW5kICJpdyB3bGFuMCBzZXQgY2hhbm5l
-bCAxMCBIVDIwIiAgYW5kIHJlbW92ZSB0aGUgbGluZSAiY2hhbm5lbD0xMCIgZnJvbSB0aGUgY29u
-ZmlndXJhdGlvbiBmaWxlIG9mIGhvc3RhcGQsIHRoaXMgZXJyb3IgYXBwZWFycyB3aGVuIEkgcnVu
-IGhvc3RhcGQ6Cj4+Cj4+IEFDUyB3YXMgZGlzYWJsZWQgb24geW91ciBidWlsZCwgcmVidWlsZCBo
-b3N0YXBkIHdpdGggQ09ORklHX0FDUz15IG9yIHNldCBjaGFubmVsCj4+IHdsYW4wOiBJRUVFIDgw
-Mi4xMSBDb25maWd1cmVkIGNoYW5uZWwgKDApIG5vdCBmb3VuZCBmcm9tIHRoZSBjaGFubmVsIGxp
-c3Qgb2YgY3VycmVudCBtb2RlICgxKSBJRUVFIDgwMi4xMWcKPj4gd2xhbjA6IElFRUUgODAyLjEx
-IEhhcmR3YXJlIGRvZXMgbm90IHN1cHBvcnQgY29uZmlndXJlZCBjaGFubmVsCj4+IENvdWxkIG5v
-dCBzZWxlY3QgaHdfbW9kZSBhbmQgY2hhbm5lbC4gKC0zKQo+PiB3bGFuMDogVW5hYmxlIHRvIHNl
-dHVwIGludGVyZmFjZS4KPj4gaG9zdGFwZF9mcmVlX2hhcGRfZGF0YTogSW50ZXJmYWNlIHdsYW4w
-IHdhc24ndCBzdGFydGVkCj4+Cj4+IERvZXMgaXQgbWVhbiB0aGF0IGF0aDEwayBkb2VzIG5vdCBz
-dXBwb3J0IGNvbmZpZ3VyZWQgY2hhbm5lbCA/Pz8/IFRoZSByZWFzb24gSSB3YW50IHRvIGRvIGl0
-IGJ5IGNvbW1hbmQgIml3IiBiZWNhdXNlIGl0IGhhcyBtb3JlIG9wdGlvbnMgdGhhbiBob3N0YXBk
-IChpdyB3bGFuMCBzZXQgZnJlcSA8Y29udHJvbCBmcmVxPiBbMjB8NDB8ODB8ODArODB8MTYwXSBb
-PGNlbnRlciBmcmVxIDE+XSBbPGNlbnRlciBmcmVxIDI+XSApCj4gCj4gUmVtb3ZpbmcgdGhlIGNo
-YW5uZWwgZnJvbSBob3N0YXBkLmNvbmYgaW1wbGllcyBjaGFubmVsPTAuIEFuZCBpdAo+IG9idmlv
-dXNseSBpcyBub3QgYSB2YWxpZCBjaGFubmVsIHdoZW4gQUNTIGlzIGRpc2FibGVkLiBBbGwgdGhl
-IG9wdGlvbnMKPiB0aGF0IGl3IGhhcyBjYW4gYmUgc2V0IGluIGhvc3RhcGQuY29uZiBhcyB3ZWxs
-Lgo+IAo+PiBJIGhhZCBhbm90aGVyIHByb2JsZW0gd2l0aCBzZXR0aW5nIGEgY2FubmFsIHRoYXQg
-ZW1wbG95cyBERlMgKGZvciBleGFtcGxlIDUyKToKPj4KPj4gd2xhbjA6IGludGVyZmFjZSBzdGF0
-ZSBDT1VOVFJZX1VQREFURS0+REZTCj4+IHdsYW4wOiBERlMtQ0FDLVNUQVJUIGZyZXE9NTI2MCBj
-aGFuPTUyIHNlY19jaGFuPTAKPj4gd2xhbjA6IFVuYWJsZSB0byBzZXR1cCBpbnRlcmZhY2UuCj4+
-IEFERFJDT05GKE5FVERFVl9VUCk6IHdsYW4wOiBsaW5rIGlzIG5vdCByZWFkeQo+Pgo+PiBJJ20g
-dXNpbmcgdGhlIGZpcm13YXJlLTIuYmluXzEwLjEuNDY3LjItMSB3aGljaCBpbmRpY2F0ZXMgdGhh
-dCBzdXBwb3J0cyBERlMgb24gdGhlIHdlYnNpdGUgb2YgYXRoMTBrLiBJcyB0aGVyZSBhbnlvbmUg
-Z290IHRoZSBzYW1lIGlzc3VlIGxpa2UgbWU/Cj4+Cj4gCj4gRGlkIHlvdSBidWlsZCBhdGgxMGsg
-d2l0aCBBVEgxMEtfREZTX0NFUlRJRklFRCBlbmFibGVkPwo+IAo+IE1hdHRpCj4gCj4gX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGlu
-ZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawogCQkgCSAgIAkJICAKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+Here's is a bunch of fixes for recovery/hw
+restart. This notably fixes a bug Ben has hit some
+time ago.
+
+I also have some improvements for recovery code as
+well in a follow up patchset that I'll be sending
+separately.
+
+v2:
+ * minor code style adjustments
+ * extra comment
+ * sanity check in wep key worker
+
+
+Michal Kazior (5):
+  ath10k: clean up start() callback
+  ath10k: perform hw restart lazily
+  ath10k: drain tx before restarting hw
+  ath10k: protect wep tx key setup
+  ath10k: dont configure bssid for ap mode
+
+ drivers/net/wireless/ath/ath10k/core.c |   5 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 117 ++++++++++++++++++++++-----------
+ 2 files changed, 83 insertions(+), 39 deletions(-)
+
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
