@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ee0-x22b.google.com ([2a00:1450:4013:c00::22b])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WkvD5-0002Ox-9Z
- for ath10k@lists.infradead.org; Thu, 15 May 2014 12:56:32 +0000
-Received: by mail-ee0-f43.google.com with SMTP id d17so643041eek.30
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 05:56:09 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: revert incomplete scatter-gather pci tx
-Date: Thu, 15 May 2014 14:48:58 +0200
-Message-Id: <1400158139-13836-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
-References: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
+ id 1WkvEq-0002YK-97
+ for ath10k@lists.infradead.org; Thu, 15 May 2014 12:58:20 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: improve warm reset reliability
+References: <1400050658-2763-1-git-send-email-michal.kazior@tieto.com>
+ <1400050658-2763-2-git-send-email-michal.kazior@tieto.com>
+ <87r43v9v2n.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkYMFi5_a1w0UQaPanAEaeiK9-ScnmLzxro1uB2dzK4MA@mail.gmail.com>
+Date: Thu, 15 May 2014 15:57:50 +0300
+In-Reply-To: <CA+BoTQkYMFi5_a1w0UQaPanAEaeiK9-ScnmLzxro1uB2dzK4MA@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 15 May 2014 14:42:16 +0200")
+Message-ID: <87siob8ai9.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,130 +22,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, apenwarr@gmail.com
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This prevents leaving incomplete scatter-gather
-transfer on CE rings which can lead firmware to
-crash.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Reported-By: Avery Pennarun <apenwarr@gmail.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/ce.c  | 27 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/ce.h  |  2 ++
- drivers/net/wireless/ath/ath10k/pci.c | 17 +++++++++++------
- 3 files changed, 40 insertions(+), 6 deletions(-)
+>> Full patch here:
+>>
+>> https://github.com/kvalo/ath/commit/7b52054308a371d479a9e686e1d8411d19a90fd7
+>
+> You probably mean:
+>
+> https://github.com/kvalo/ath/commit/136ef8110cba61752eee5ef6bd7ce170b15cf491
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 1e4cad8..966f26e 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -329,6 +329,33 @@ exit:
- 	return ret;
- }
- 
-+void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe)
-+{
-+	struct ath10k *ar = pipe->ar;
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	struct ath10k_ce_ring *src_ring = pipe->src_ring;
-+	u32 ctrl_addr = pipe->ctrl_addr;
-+
-+	lockdep_assert_held(&ar_pci->ce_lock);
-+
-+	/*
-+	 * This function must be called only if there is an incomplete
-+	 * scatter-gather transfer (before index register is updated)
-+	 * that needs to be cleaned up.
-+	 */
-+	if (WARN_ON(src_ring->write_index == src_ring->sw_index))
-+		return;
-+
-+	if (WARN_ON(src_ring->write_index ==
-+		    ath10k_ce_src_ring_write_index_get(ar, ctrl_addr)))
-+		return;
-+
-+	src_ring->write_index--;
-+	src_ring->write_index &= src_ring->nentries_mask;
-+
-+	src_ring->per_transfer_context[src_ring->write_index] = NULL;
-+}
-+
- int ath10k_ce_send(struct ath10k_ce_pipe *ce_state,
- 		   void *per_transfer_context,
- 		   u32 buffer,
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index fd0bc35..7a5a36f 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -160,6 +160,8 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
- 			  unsigned int transfer_id,
- 			  unsigned int flags);
- 
-+void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe);
-+
- void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
- 				void (*send_cb)(struct ath10k_ce_pipe *),
- 				int disable_interrupts);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 04d8cbf..059add4 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -765,7 +765,7 @@ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 	unsigned int nentries_mask;
- 	unsigned int sw_index;
- 	unsigned int write_index;
--	int err, i;
-+	int err, i = 0;
- 
- 	spin_lock_bh(&ar_pci->ce_lock);
- 
-@@ -776,7 +776,7 @@ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 	if (unlikely(CE_RING_DELTA(nentries_mask,
- 				   write_index, sw_index - 1) < n_items)) {
- 		err = -ENOBUFS;
--		goto unlock;
-+		goto err;
- 	}
- 
- 	for (i = 0; i < n_items - 1; i++) {
-@@ -793,7 +793,7 @@ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 					    items[i].transfer_id,
- 					    CE_SEND_FLAG_GATHER);
- 		if (err)
--			goto unlock;
-+			goto err;
- 	}
- 
- 	/* `i` is equal to `n_items -1` after for() */
-@@ -811,10 +811,15 @@ static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 				    items[i].transfer_id,
- 				    0);
- 	if (err)
--		goto unlock;
-+		goto err;
-+
-+	spin_unlock_bh(&ar_pci->ce_lock);
-+	return 0;
-+
-+err:
-+	for (; i > 0; i--)
-+		__ath10k_ce_send_revert(ce_pipe);
- 
--	err = 0;
--unlock:
- 	spin_unlock_bh(&ar_pci->ce_lock);
- 	return err;
- }
+Yup, sorry for the confusion.
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
