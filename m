@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlHLo-0004vA-Uf
- for ath10k@lists.infradead.org; Fri, 16 May 2014 12:35:01 +0000
+ id 1WlHSL-0002Un-Vh
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 12:41:46 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] ath10k: pci fixes 2014-05-15
-References: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 16 May 2014 15:34:34 +0300
-In-Reply-To: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 15 May 2014 14:48:56 +0200")
-Message-ID: <878uq17vhh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  Ensure rx-frag ignores rssi.
+References: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
+Date: Fri, 16 May 2014 15:41:17 +0300
+In-Reply-To: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Thu, 15 May 2014 11:35:23
+ -0700")
+Message-ID: <874n0p7v6a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,29 +24,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, apenwarr@gmail.com
+To: greearb@candelatech.com
+Cc: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+greearb@candelatech.com writes:
 
-> Hi,
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Patches 1 and 2 were made as a result of analysing
-> `ath10k firmware crash after 4 hours of heavy TCP
-> traffic` bug reported by Avery.
+> It seems ath10k firmware gives us no way to know
+> the rssi for rx-fragments.
 >
-> Patch 3 fixes a bug reported by Avery that was
-> apparently related to missing memory barriers on
-> his ARM test system. @Avery, can you take a look
-> or test it, please? I was never able to reproduce
-> this but it just seems like the right thing to do.
-> Or you can simply post your patch and I'll drop
-> mine then.
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-I think it would be good still to wait a while with patch 3 as
-apparently Avery is still seeing some odd firmware crashes. Once we are
-confident that the memory barrier issues are handled we come up with a
-final patch.
+Janusz, are you ok with this?
+
+> Patch is against my tree, hopefully will apply OK against upstream
+> but have not tested that yet.
+
+Perfect, thanks for telling me this. Then I can just drop the patch if
+it doesn't apply. Oh, and it did apply cleanly to ath-next-test.
 
 -- 
 Kalle Valo
