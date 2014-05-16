@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wl0mR-0006rb-6D
- for ath10k@lists.infradead.org; Thu, 15 May 2014 18:53:23 +0000
-Message-ID: <53750D0D.4060106@candelatech.com>
-Date: Thu, 15 May 2014 11:53:01 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wl9uy-0000wt-7b
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 04:38:48 +0000
+Received: by mail-vc0-f175.google.com with SMTP id hu19so5607110vcb.34
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 21:38:26 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Rate vs Range graphs for ath10k through attentuator.
+Date: Fri, 16 May 2014 12:38:26 +0800
+Message-ID: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
+Subject: Protected flag is clear in Monitor Mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +22,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Just FYI...here's a graph of a UDP upload test through an attenuator.
-The attenuator goes from 0 up to 95.5, though isolation is not perfect
-so even at highest attenuation a small bit of signal gets through.
+Hi, all
 
-One interesting thing to me is that ath10k does so well at very hot
-signal strength.  ath9k runs like crap with hot signal...
+I try to use ath10k (firmware version 10.1.467.2-1_ as standalone
+monitor mode. I assume that monitor mode will allows the frame to pass
+to upper layer without any modification.
 
-AP is another of our systems, both are using my CT firmware, my 3.14.4+
-kernel, and WLE900VX NICs.  32 stations were created and associated
-on the station machine, but only one was actively sending any significant
-data.  AP system had single active AP vdev, one station interface that was
-not connected.  Traffic flow is station send to AP, AP sends back to station
-machine on 1Gbps wired Ethernet connection.  Both systems are mobile core-i7
-CPU, 8GB RAM, etc.
+But it seems that the protected flag in frame control is clear while I
+capture with wireshark. I has verified that the ath9k has not such
+issue and the protected flag is set.
 
-http://www.candelatech.com/examples/ath10k-rate-vs-range-udp-upload/
+So is this a known issue in monitor mode for ath10k?
 
-Lots of graphs in the link above..the most useful ones are:
-
-http://www.candelatech.com/examples/ath10k-rate-vs-range-udp-upload/chart-0.png
-
-http://www.candelatech.com/examples/ath10k-rate-vs-range-udp-upload/chart-30.png
-
-The throughput is a bit spikey, possibly because I am only doing 5 second throughput
-tests.  Will run a 30-second one some day and hope that smooths out.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+-----
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
