@@ -1,18 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlBts-0004FP-5e
- for ath10k@lists.infradead.org; Fri, 16 May 2014 06:45:49 +0000
-Received: by mail-la0-f47.google.com with SMTP id pn19so1608837lab.34
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 23:45:19 -0700 (PDT)
+ id 1WlC19-00086z-0w
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 06:53:19 +0000
+Received: by mail-lb0-f175.google.com with SMTP id l4so1595058lbv.34
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 23:52:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5374F84E.1090208@candelatech.com>
-References: <1395692698-4745-1-git-send-email-janusz.dziedzic@tieto.com>
- <1395692698-4745-2-git-send-email-janusz.dziedzic@tieto.com>
- <5374F84E.1090208@candelatech.com>
-Date: Fri, 16 May 2014 08:45:19 +0200
-Message-ID: <CALhHN=oUaP7rQB+hP8iyjEPiVqbbXY8_o5g=JwBcQpt36AJO2Q@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: fix rssi and rate reporting
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
+References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <5373382C.1030709@elisanet.fi>
+ <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
+ <DUB122-W4070B8F41A0F8A25061141CB360@phx.gbl>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CE@srvexch01.SODIELEC.local>
+ <CALhHN=pGozL43B+qiJ20it3QCkvKkOL_RynfvUod_Ert8v1+3Q@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
+Date: Fri, 16 May 2014 08:52:54 +0200
+Message-ID: <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
+Subject: Re: RE : RE : RE : ath10k: set channel by command "iw" not from
+ hostapd and DFS support of firmware-2.bin_10.1.467.2-1
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,69 +32,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
-On 15 May 2014 19:24, Ben Greear <greearb@candelatech.com> wrote:
-> I have a few questions on this patch (long since accepted upstream).
+On 15 May 2014 18:08, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
 >
-> First, why do you only memset the rx_status if START_VALID is set,
-> and why do you not set:
 >
-> rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL
 >
-> in an else clause if START_VALID is not set?
+>>Nope, CAC time is not required to start CAC (in case cac == 0 kernel
+>>will use default value 60s).
+>>What error you have EBUSY or EINVAL?
+>>What system (PC kernel, wireless ...) configuration?
 >
-> The patch definitely helps, but I'm still getting less accuracy than expected
-> (as compared to ath9k going through a similar rate vs range test).
+> Ah I run hostapd with debug option and got a mess that told me:
+> nl80211: Failed to start radar detection, device or resource busy => I guess this is EBUSY.
 >
 
-From START_VALID to END_VALID we have same RSSI/RATES like reported
-when START_VALID.
-We could wait to get all packets from START_VALID to END_VALID and
-after that report them to upper
-layer. But currently we don't do that and report what we have and have
-to remember RSSI/RATES.
+OK then. EBUSY you get when you don't have correct combination (DFS
+combination is not present).
+Which suggest for some reason your configuration didn't activate
+CONFIG_ATH10K_DFS_CERTIFIED.
+Check iw list, you shuld see:
+radar detect widths: { 20 MHz (no HT), 20 MHz, 40 MHz, 80 MHz }
 
-BTW there is still a problem with TSF which is valid only when
-END_VALID. So in current implementation we don't report this correctly
-for packets we report when only START_VALID.
 
 BR
 Janusz
-
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -1154,8 +1154,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
->>
->>       lockdep_assert_held(&htt->rx_ring.lock);
->>
->> -     memset(rx_status, 0, sizeof(*rx_status));
->> -
->>       fw_desc_len = __le16_to_cpu(rx->prefix.fw_rx_desc_bytes);
->>       fw_desc = (u8 *)&rx->fw_desc;
->>
->> @@ -1164,8 +1162,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
->>       mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
->>
->>       /* Fill this once, while this is per-ppdu */
->> -     rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR;
->> -     rx_status->signal += rx->ppdu.combined_rssi;
->> +     if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
->> +             memset(rx_status, 0, sizeof(*rx_status));
->> +             rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR +
->> +                                  rx->ppdu.combined_rssi;
->> +     }
->>
->>       if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
->>               /* TSF available only in 32-bit */
->>
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
 
 _______________________________________________
 ath10k mailing list
