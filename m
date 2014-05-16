@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wl9uy-0000wt-7b
- for ath10k@lists.infradead.org; Fri, 16 May 2014 04:38:48 +0000
-Received: by mail-vc0-f175.google.com with SMTP id hu19so5607110vcb.34
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 21:38:26 -0700 (PDT)
+ id 1WlBts-0004FP-5e
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 06:45:49 +0000
+Received: by mail-la0-f47.google.com with SMTP id pn19so1608837lab.34
+ for <ath10k@lists.infradead.org>; Thu, 15 May 2014 23:45:19 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 16 May 2014 12:38:26 +0800
-Message-ID: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
-Subject: Protected flag is clear in Monitor Mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+In-Reply-To: <5374F84E.1090208@candelatech.com>
+References: <1395692698-4745-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1395692698-4745-2-git-send-email-janusz.dziedzic@tieto.com>
+ <5374F84E.1090208@candelatech.com>
+Date: Fri, 16 May 2014 08:45:19 +0200
+Message-ID: <CALhHN=oUaP7rQB+hP8iyjEPiVqbbXY8_o5g=JwBcQpt36AJO2Q@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: fix rssi and rate reporting
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +26,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi, all
+On 15 May 2014 19:24, Ben Greear <greearb@candelatech.com> wrote:
+> I have a few questions on this patch (long since accepted upstream).
+>
+> First, why do you only memset the rx_status if START_VALID is set,
+> and why do you not set:
+>
+> rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL
+>
+> in an else clause if START_VALID is not set?
+>
+> The patch definitely helps, but I'm still getting less accuracy than expected
+> (as compared to ath9k going through a similar rate vs range test).
+>
 
-I try to use ath10k (firmware version 10.1.467.2-1_ as standalone
-monitor mode. I assume that monitor mode will allows the frame to pass
-to upper layer without any modification.
+From START_VALID to END_VALID we have same RSSI/RATES like reported
+when START_VALID.
+We could wait to get all packets from START_VALID to END_VALID and
+after that report them to upper
+layer. But currently we don't do that and report what we have and have
+to remember RSSI/RATES.
 
-But it seems that the protected flag in frame control is clear while I
-capture with wireshark. I has verified that the ath9k has not such
-issue and the protected flag is set.
+BTW there is still a problem with TSF which is valid only when
+END_VALID. So in current implementation we don't report this correctly
+for packets we report when only START_VALID.
 
-So is this a known issue in monitor mode for ath10k?
+BR
+Janusz
 
------
-Chun-Yeow
+>> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> @@ -1154,8 +1154,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>
+>>       lockdep_assert_held(&htt->rx_ring.lock);
+>>
+>> -     memset(rx_status, 0, sizeof(*rx_status));
+>> -
+>>       fw_desc_len = __le16_to_cpu(rx->prefix.fw_rx_desc_bytes);
+>>       fw_desc = (u8 *)&rx->fw_desc;
+>>
+>> @@ -1164,8 +1162,11 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>       mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
+>>
+>>       /* Fill this once, while this is per-ppdu */
+>> -     rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR;
+>> -     rx_status->signal += rx->ppdu.combined_rssi;
+>> +     if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
+>> +             memset(rx_status, 0, sizeof(*rx_status));
+>> +             rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR +
+>> +                                  rx->ppdu.combined_rssi;
+>> +     }
+>>
+>>       if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
+>>               /* TSF available only in 32-bit */
+>>
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
 _______________________________________________
 ath10k mailing list
