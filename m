@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wallace.st-andrews.ac.uk ([138.251.9.23])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlJ5t-0007qn-NX
- for ath10k@lists.infradead.org; Fri, 16 May 2014 14:26:42 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath9k/ath10k: remove unnecessary channel_switch_beacon
- callbacks
-References: <1400248534-16763-1-git-send-email-luca@coelho.fi>
-Date: Fri, 16 May 2014 17:26:13 +0300
-In-Reply-To: <1400248534-16763-1-git-send-email-luca@coelho.fi> (Luca Coelho's
- message of "Fri, 16 May 2014 16:55:34 +0300")
-Message-ID: <87y4y13im2.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1WlJFa-0004yQ-HE
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 14:36:43 +0000
+Received: from dyn-195-129.cs.st-andrews.ac.uk
+ (dyn-195-129.cs.st-andrews.ac.uk [138.251.195.129])
+ (authenticated bits=0)
+ by wallace.st-andrews.ac.uk (8.14.3/8.14.3/Debian-9.4) with ESMTP id
+ s4GEaB4Q002845
+ (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
+ for <ath10k@lists.infradead.org>; Fri, 16 May 2014 14:36:13 GMT
+From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
+Subject: Sparklan cards
+Message-Id: <2747CB3C-580D-4F35-9617-3616D1617C5D@st-andrews.ac.uk>
+Date: Fri, 16 May 2014 15:36:05 +0100
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +27,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Luca Coelho <luca@coelho.fi>
-Cc: ath9k-devel@venema.h4ckr.net, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Luca Coelho <luca@coelho.fi> writes:
 
-> From: Luciano Coelho <luciano.coelho@intel.com>
->
-> The channel_switch_beacon callback is optional, so it doesn't have to
-> be defined if it's not going to do anything useful with it.  Both
-> ath9k and ath10k define the callback and just returns.  This commit
-> removes them.
->
-> Cc: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Luciano Coelho <luciano.coelho@intel.com>
-> ---
->
-> I'm plannnig to remove the channel_switch_beacon callback (actually,
-> replace it with a more generic one that can be used for STA and other
-> iftypes too) and ath9k/ath10k are the only (non) users of it. ;)
 
-John, I'm planning to take this as I think we will get less conflicts
-that way. But let me know if you want it instead.
-
--- 
-Kalle Valo
-
+Hi, 
+Dose anyone get 500Mbps throughput using the Sparklan cards?!! I managed to achieve 177 Mbps using those cards. 
+Do I need to order the Compex ones as they seem has much better performance?
+Kind regards 
+Mamun
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
