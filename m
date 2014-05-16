@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlJLs-0001E5-Jz
- for ath10k@lists.infradead.org; Fri, 16 May 2014 14:43:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Sparklan cards
-References: <2747CB3C-580D-4F35-9617-3616D1617C5D@st-andrews.ac.uk>
-Date: Fri, 16 May 2014 17:42:46 +0300
-In-Reply-To: <2747CB3C-580D-4F35-9617-3616D1617C5D@st-andrews.ac.uk> (Mamun
- Abu-Tair's message of "Fri, 16 May 2014 15:36:05 +0100")
-Message-ID: <87ppjd3huh.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WlKCF-0004wx-HD
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 15:37:20 +0000
+Message-ID: <53763097.6020201@candelatech.com>
+Date: Fri, 16 May 2014 08:36:55 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: fix rssi reporting.
+References: <1400178894-26206-1-git-send-email-greearb@candelatech.com>	<CALhHN=o6zrn_0rtEJzfZsaJp5b8JoGNew-qq_=LU6Uh-XJbJ6g@mail.gmail.com>	<53760CEA.1000500@candelatech.com>
+ <CALhHN=oriD4jGQEQ9XQ5Q0bzR31HkkW6F-tJ7xuRd8pAAs3fKA@mail.gmail.com>
+ <537610EE.6050008@candelatech.com>
+In-Reply-To: <537610EE.6050008@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +24,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
-Cc: ath10k@lists.infradead.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Mamun Abu-Tair <ma86@st-andrews.ac.uk> writes:
+On 05/16/2014 06:21 AM, Ben Greear wrote:
+> 
+> 
+> On 05/16/2014 06:16 AM, Janusz Dziedzic wrote:
+>> On 16 May 2014 15:04, Ben Greear <greearb@candelatech.com> wrote:
+>>>
+>>>
+>>> On 05/16/2014 05:18 AM, Janusz Dziedzic wrote:
+>>>>
+>>>> On 15 May 2014 20:34,  <greearb@candelatech.com> wrote:
+>>>>>
+>>>>> From: Ben Greear <greearb@candelatech.com>
+>>>>>
+>>>>> When the driver cannot provide proper rssi, mark
+>>>>> status with RX_FLAG_NO_SIGNAL_VAL so that stack
+>>>>> properly ignores it.
+>>>>>
+>>>> I think we should skip this one while we know rssi/rates.
+>>>> They are correct for all packets between START_VALID and END_VALID flags.
+>>>
+>>>
+>>> Skip what, the patch?  With current code, you are sending packets up
+>>> the tree without signal being set and yet without the flag set that says
+>>> to ignore the (unset) signal value.
+>>>
+>> Didn't reproduce this yet, while we have this values saved when
+>> START_VALID - rx status is an template in htt structure.
+>>
+>> struct ieee80211_rx_status *rx_status = &htt->rx_status;
+>>
+>> Are you sure you have all patches?
+>> This could be passible if we will get first packet with only flag
+>> END_VALID (not sure this is even possible). In case we get packets
+>> with START valid before, we will use template correctly. In case we
+>> will get packets with flags START and END valid we will also reports
+>> this correctly.
+>> Did you reproduce this with official firmware?
+>>
+>> BTW
+>> your patch break rates info based also on htt->rx_status template.
+>>
+>> BR
+>> Janusz
+> 
+> I will test again without my patch, and if you think current code is
+> correct, then just drop this patch and I'll retest everything when I
+> move back to testing on kalle's tree.
 
-> Dose anyone get 500Mbps throughput using the Sparklan cards?!! I
-> managed to achieve 177 Mbps using those cards. Do I need to order the
-> Compex ones as they seem has much better performance?
+I tested again without my patch, and the graph looks smooth against
+my attenuator's settings, so looks like my patch is not needed.
 
-You are not the first one to mention problems with Sparklan cards, the
-archives should have similar reports.
+Thanks,
+Ben
 
-Unfortunately I don't have any of those cards but it would be good to
-get more information so that we can investigate what's wrong. For
-example, debug logs with 0x432 would be a good start.
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/debug
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
