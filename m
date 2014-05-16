@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlKCF-0004wx-HD
- for ath10k@lists.infradead.org; Fri, 16 May 2014 15:37:20 +0000
-Message-ID: <53763097.6020201@candelatech.com>
-Date: Fri, 16 May 2014 08:36:55 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WlKKs-0004H1-71
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 15:46:14 +0000
+Date: Fri, 16 May 2014 11:34:41 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: [PATCH] ath9k/ath10k: remove unnecessary channel_switch_beacon
+ callbacks
+Message-ID: <20140516153441.GD3431@tuxdriver.com>
+References: <1400248534-16763-1-git-send-email-luca@coelho.fi>
+ <87y4y13im2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix rssi reporting.
-References: <1400178894-26206-1-git-send-email-greearb@candelatech.com>	<CALhHN=o6zrn_0rtEJzfZsaJp5b8JoGNew-qq_=LU6Uh-XJbJ6g@mail.gmail.com>	<53760CEA.1000500@candelatech.com>
- <CALhHN=oriD4jGQEQ9XQ5Q0bzR31HkkW6F-tJ7xuRd8pAAs3fKA@mail.gmail.com>
- <537610EE.6050008@candelatech.com>
-In-Reply-To: <537610EE.6050008@candelatech.com>
+Content-Disposition: inline
+In-Reply-To: <87y4y13im2.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,68 +25,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath9k-devel@venema.h4ckr.net, Luca Coelho <luca@coelho.fi>, michal.kazior@tieto.com, ath10k@lists.infradead.org
 
-On 05/16/2014 06:21 AM, Ben Greear wrote:
+On Fri, May 16, 2014 at 05:26:13PM +0300, Kalle Valo wrote:
+> Luca Coelho <luca@coelho.fi> writes:
 > 
+> > From: Luciano Coelho <luciano.coelho@intel.com>
+> >
+> > The channel_switch_beacon callback is optional, so it doesn't have to
+> > be defined if it's not going to do anything useful with it.  Both
+> > ath9k and ath10k define the callback and just returns.  This commit
+> > removes them.
+> >
+> > Cc: Michal Kazior <michal.kazior@tieto.com>
+> > Signed-off-by: Luciano Coelho <luciano.coelho@intel.com>
+> > ---
+> >
+> > I'm plannnig to remove the channel_switch_beacon callback (actually,
+> > replace it with a more generic one that can be used for STA and other
+> > iftypes too) and ath9k/ath10k are the only (non) users of it. ;)
 > 
-> On 05/16/2014 06:16 AM, Janusz Dziedzic wrote:
->> On 16 May 2014 15:04, Ben Greear <greearb@candelatech.com> wrote:
->>>
->>>
->>> On 05/16/2014 05:18 AM, Janusz Dziedzic wrote:
->>>>
->>>> On 15 May 2014 20:34,  <greearb@candelatech.com> wrote:
->>>>>
->>>>> From: Ben Greear <greearb@candelatech.com>
->>>>>
->>>>> When the driver cannot provide proper rssi, mark
->>>>> status with RX_FLAG_NO_SIGNAL_VAL so that stack
->>>>> properly ignores it.
->>>>>
->>>> I think we should skip this one while we know rssi/rates.
->>>> They are correct for all packets between START_VALID and END_VALID flags.
->>>
->>>
->>> Skip what, the patch?  With current code, you are sending packets up
->>> the tree without signal being set and yet without the flag set that says
->>> to ignore the (unset) signal value.
->>>
->> Didn't reproduce this yet, while we have this values saved when
->> START_VALID - rx status is an template in htt structure.
->>
->> struct ieee80211_rx_status *rx_status = &htt->rx_status;
->>
->> Are you sure you have all patches?
->> This could be passible if we will get first packet with only flag
->> END_VALID (not sure this is even possible). In case we get packets
->> with START valid before, we will use template correctly. In case we
->> will get packets with flags START and END valid we will also reports
->> this correctly.
->> Did you reproduce this with official firmware?
->>
->> BTW
->> your patch break rates info based also on htt->rx_status template.
->>
->> BR
->> Janusz
-> 
-> I will test again without my patch, and if you think current code is
-> correct, then just drop this patch and I'll retest everything when I
-> move back to testing on kalle's tree.
+> John, I'm planning to take this as I think we will get less conflicts
+> that way. But let me know if you want it instead.
 
-I tested again without my patch, and the graph looks smooth against
-my attenuator's settings, so looks like my patch is not needed.
-
-Thanks,
-Ben
-
+No, that's good.  You will take the ath9k part too, right?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
