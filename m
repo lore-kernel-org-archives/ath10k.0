@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlHHa-0003W1-8i
- for ath10k@lists.infradead.org; Fri, 16 May 2014 12:30:38 +0000
+ id 1WlHJU-0004L0-TP
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 12:32:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: support get/set antenna configurations.
-References: <1399942355-19993-1-git-send-email-apenwarr@gmail.com>
- <1400015472-4647-1-git-send-email-apenwarr@gmail.com>
-Date: Fri, 16 May 2014 15:30:07 +0300
-In-Reply-To: <1400015472-4647-1-git-send-email-apenwarr@gmail.com> (Avery
- Pennarun's message of "Tue, 13 May 2014 17:11:12 -0400")
-Message-ID: <87ha4p7vow.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: add explicit memory barrier for ring index
+ update
+References: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
+ <1400158139-13836-4-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 16 May 2014 15:32:11 +0300
+In-Reply-To: <1400158139-13836-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 15 May 2014 14:48:59 +0200")
+Message-ID: <87d2fd7vlg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,30 +25,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, apenwarr@gmail.com
 
-Avery Pennarun <apenwarr@gmail.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> Avery reported he had some issues related to
+> instructions being re-ordered on his ARM test
+> system resulting in firmware crashes.
 >
-> Tested with CT firmware, but should work on standard
-> firmware as well.
+> This makes sure that data is in place before CE
+> ring index is updated telling firmware it can
+> fetch the data.
 >
-> Verified that target's tx/rx chain register is set appropriately,
-> and that the tx rate goes down as number of chains
-> decrease, but I did not actually try to verify antenna
-> ceased to transmit when disabled.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Avery Pennarun <apenwarr@gmail.com>
+> Reported-By: Avery Pennarun <apenwarr@gmail.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
 
-I now moved ar->supp_*_chainmask initialisation to
-ath10k_mac_register(). Ben & Avery, is that for you two?
+[...]
 
-Full patch here:
+> --- a/drivers/net/wireless/ath/ath10k/ce.c
+> +++ b/drivers/net/wireless/ath/ath10k/ce.c
+> @@ -63,6 +63,7 @@ static inline void ath10k_ce_dest_ring_write_index_set(struct ath10k *ar,
+>  						       u32 ce_ctrl_addr,
+>  						       unsigned int n)
+>  {
+> +	mb();
+>  	ath10k_pci_write32(ar, ce_ctrl_addr + DST_WR_INDEX_ADDRESS, n);
+>  }
+>  
+> @@ -76,6 +77,7 @@ static inline void ath10k_ce_src_ring_write_index_set(struct ath10k *ar,
+>  						      u32 ce_ctrl_addr,
+>  						      unsigned int n)
+>  {
+> +	mb();
+>  	ath10k_pci_write32(ar, ce_ctrl_addr + SR_WR_INDEX_ADDRESS, n);
+>  }
 
-https://github.com/kvalo/ath/commit/8230cdc4f434817d3c929292600fc3582e7dd3a8
+I see two new checkpatch warnings:
+
+drivers/net/wireless/ath/ath10k/ce.c:66: CHECK: memory barrier without comment
+drivers/net/wireless/ath/ath10k/ce.c:80: CHECK: memory barrier without comment
 
 -- 
 Kalle Valo
