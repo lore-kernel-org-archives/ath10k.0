@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlHSL-0002Un-Vh
- for ath10k@lists.infradead.org; Fri, 16 May 2014 12:41:46 +0000
+ id 1WlHWQ-00069z-TU
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 12:45:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  Ensure rx-frag ignores rssi.
-References: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 16 May 2014 15:41:17 +0300
-In-Reply-To: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Thu, 15 May 2014 11:35:23
- -0700")
-Message-ID: <874n0p7v6a.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Protected flag is clear in Monitor Mode
+References: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
+Date: Fri, 16 May 2014 15:45:31 +0300
+In-Reply-To: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
+ (Yeoh Chun-Yeow's message of "Fri, 16 May 2014 12:38:26 +0800")
+Message-ID: <87zjih6ges.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,25 +23,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: ath10k@lists.infradead.org
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
+Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> I try to use ath10k (firmware version 10.1.467.2-1_ as standalone
+> monitor mode. I assume that monitor mode will allows the frame to pass
+> to upper layer without any modification.
 >
-> It seems ath10k firmware gives us no way to know
-> the rssi for rx-fragments.
+> But it seems that the protected flag in frame control is clear while I
+> capture with wireshark. I has verified that the ath9k has not such
+> issue and the protected flag is set.
 >
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> So is this a known issue in monitor mode for ath10k?
 
-Janusz, are you ok with this?
+I don't recall anyone mentioning anything like this so I would say this
+is not a known issue. But on the other hand, I'm notorious in forgetting
+stuff :)
 
-> Patch is against my tree, hopefully will apply OK against upstream
-> but have not tested that yet.
-
-Perfect, thanks for telling me this. Then I can just drop the patch if
-it doesn't apply. Oh, and it did apply cleanly to ath-next-test.
+What we really need is a public bug tracker for ath10k.
 
 -- 
 Kalle Valo
