@@ -1,29 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlIsl-00064T-4Y
- for ath10k@lists.infradead.org; Fri, 16 May 2014 14:13:07 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: RE : RE : RE : RE : ath10k: set channel by command "iw" not from
- hostapd and DFS support of firmware-2.bin_10.1.467.2-1
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <5373382C.1030709@elisanet.fi>
- <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
- <DUB122-W4070B8F41A0F8A25061141CB360@phx.gbl>
- <EE97821C81277E459BEA5C6384C6F241012F109978CE@srvexch01.SODIELEC.local>
- <CALhHN=pGozL43B+qiJ20it3QCkvKkOL_RynfvUod_Ert8v1+3Q@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
- <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978D3@srvexch01.SODIELEC.local>
- <CALhHN=pYKwhCRy8RZWFm=5mssrL=oqTsazWfkVaN2L8O6YNO3w@mail.gmail.com>
- <87oayx6fp7.fsf@kamboji.qca.qualcomm.com>
- <CALhHN=reP0gh+xbcRKc4gj4Edhs7V4Y5Eef=BLK3YP43v2p7Mw@mail.gmail.com>
-Date: Fri, 16 May 2014 17:12:40 +0300
-In-Reply-To: <CALhHN=reP0gh+xbcRKc4gj4Edhs7V4Y5Eef=BLK3YP43v2p7Mw@mail.gmail.com>
- (Janusz Dziedzic's message of "Fri, 16 May 2014 16:03:53 +0200")
-Message-ID: <877g5l4xt3.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from mga02.intel.com ([134.134.136.20])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WlItN-0006IM-ME
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 14:13:46 +0000
+From: Frederic Danis <frederic.danis@linux.intel.com>
+Subject: [PATCH] ath10k: Fix ath10k_bmi_read32 macro
+Date: Fri, 16 May 2014 16:13:21 +0200
+Message-Id: <1400249601-24899-1-git-send-email-frederic.danis@linux.intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,50 +15,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
+To: linville@tuxdriver.com
+Cc: kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, Frederic Danis <frederic.danis@linux.intel.com>, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+tmp may be used uninitialized if ath10k_bmi_read_memory() returns
+an error.
 
-> On 16 May 2014 15:00, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->>
->>> Seems CONFIG_ATH10K_DFS_CERTIFIED is not set.
->>> You can simply check this during compilation adding eg. to mac.c
->>> #ifndef CONFIG_ATH10K_DFS_CERTIFIED
->>> #error DFS_NOT_SET
->>> #endif
->>
->> This reminds me of a feature I have been thinking. We really should have
->> an info print of what ath10k kconfig options are enabled in the build.
->> For example something like this:
->>
->> ath10k: debug off debugfs on tracing off dfs on
->>
->> Patches welcome :)
->
-> I can add this, but question here is what *.c file should I use -
-> mac.c looks fine
+Signed-off-by: Frederic Danis <frederic.danis@linux.intel.com>
+---
+ drivers/net/wireless/ath/ath10k/bmi.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I think having it after the info message below in core.c is a good place.
-
-	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
-		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-
-> but still someone can set flags only for some files and for some files
-> not.
-
-We cannot make this 100% bullet proof. If someone messes around with the
-build system and breaks it in the process, then it his/her problem and
-there's nothing we can do. We can only assume that the build system
-works as specified.
-
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index 3a9bdf51..111ab70 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -201,7 +201,8 @@ int ath10k_bmi_write_memory(struct ath10k *ar, u32 address,
+ 									\
+ 		addr = host_interest_item_address(HI_ITEM(item));	\
+ 		ret = ath10k_bmi_read_memory(ar, addr, (u8 *)&tmp, 4); \
+-		*val = __le32_to_cpu(tmp);				\
++		if (!ret)						\
++			*val = __le32_to_cpu(tmp);			\
+ 		ret;							\
+ 	 })
+ 
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
