@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wallace.st-andrews.ac.uk ([138.251.9.23])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlJFa-0004yQ-HE
- for ath10k@lists.infradead.org; Fri, 16 May 2014 14:36:43 +0000
-Received: from dyn-195-129.cs.st-andrews.ac.uk
- (dyn-195-129.cs.st-andrews.ac.uk [138.251.195.129])
- (authenticated bits=0)
- by wallace.st-andrews.ac.uk (8.14.3/8.14.3/Debian-9.4) with ESMTP id
- s4GEaB4Q002845
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <ath10k@lists.infradead.org>; Fri, 16 May 2014 14:36:13 GMT
-From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
-Subject: Sparklan cards
-Message-Id: <2747CB3C-580D-4F35-9617-3616D1617C5D@st-andrews.ac.uk>
-Date: Fri, 16 May 2014 15:36:05 +0100
-Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+ id 1WlJGg-0005NR-IF
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 14:37:51 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/5] ath10k: drain tx before restarting hw
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+ <87k39n89jm.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 16 May 2014 17:37:23 +0300
+In-Reply-To: <87k39n89jm.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Thu, 15 May 2014 16:18:37 +0300")
+Message-ID: <87tx8p3i3g.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +26,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
+> Michal Kazior <michal.kazior@tieto.com> writes:
+>
+>> This makes sure no further tx requests are
+>> submitted to HTT before driver teardown.
+>>
+>> This should prevent invalid pointer/NULL
+>> dereference on htt tx pool in ath10k_htt_tx() in
+>> some cases of heavy traffic.
+>>
+>> Reported-By: Ben Greear <greearb@candelatech.com>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>
+> For some reason I'm not receiving buildbot emails anymore, but I noticed
+> via the kbuild-all archives that this patch has a warning:
+>
+>    drivers/net/wireless/ath/ath10k/mac.c: In function 'ath10k_drain_tx':
+>>> drivers/net/wireless/ath/ath10k/mac.c:2442:2: error: implicit
+> declaration of function 'lockdep_is_held'
+> [-Werror=implicit-function-declaration]
+>
+> https://lists.01.org/pipermail/kbuild-all/2014-May/004387.html
 
-Hi, 
-Dose anyone get 500Mbps throughput using the Sparklan cards?!! I managed to achieve 177 Mbps using those cards. 
-Do I need to order the Compex ones as they seem has much better performance?
-Kind regards 
-Mamun
+I fixed it with this:
+
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -19,6 +19,7 @@
+ 
+ #include <net/mac80211.h>
+ #include <linux/etherdevice.h>
++#include <linux/lockdep.h>
+ 
+ #include "hif.h"
+ #include "core.h"
+
+Let's see if buildbot is happier now.
+
+-- 
+Kalle Valo
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
