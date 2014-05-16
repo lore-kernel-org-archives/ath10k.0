@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlC19-00086z-0w
- for ath10k@lists.infradead.org; Fri, 16 May 2014 06:53:19 +0000
-Received: by mail-lb0-f175.google.com with SMTP id l4so1595058lbv.34
- for <ath10k@lists.infradead.org>; Thu, 15 May 2014 23:52:54 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WlCHU-0000lA-Lz
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 07:10:14 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Fri, 16 May 2014 09:01:56 +0200
+Subject: RE : RE : RE : RE : ath10k: set channel by command "iw" not from
+ hostapd and DFS support of firmware-2.bin_10.1.467.2-1
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978D3@srvexch01.SODIELEC.local>
 References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
  <5373382C.1030709@elisanet.fi>
  <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
@@ -14,12 +15,11 @@ References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.loc
  <EE97821C81277E459BEA5C6384C6F241012F109978CE@srvexch01.SODIELEC.local>
  <CALhHN=pGozL43B+qiJ20it3QCkvKkOL_RynfvUod_Ert8v1+3Q@mail.gmail.com>
  <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
-Date: Fri, 16 May 2014 08:52:54 +0200
-Message-ID: <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
-Subject: Re: RE : RE : RE : ath10k: set channel by command "iw" not from
- hostapd and DFS support of firmware-2.bin_10.1.467.2-1
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>,
+ <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
+In-Reply-To: <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,38 +28,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
-On 15 May 2014 18:08, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
->
->
->
->>Nope, CAC time is not required to start CAC (in case cac == 0 kernel
->>will use default value 60s).
->>What error you have EBUSY or EINVAL?
->>What system (PC kernel, wireless ...) configuration?
->
-> Ah I run hostapd with debug option and got a mess that told me:
-> nl80211: Failed to start radar detection, device or resource busy => I guess this is EBUSY.
->
-
-OK then. EBUSY you get when you don't have correct combination (DFS
-combination is not present).
-Which suggest for some reason your configuration didn't activate
-CONFIG_ATH10K_DFS_CERTIFIED.
-Check iw list, you shuld see:
-radar detect widths: { 20 MHz (no HT), 20 MHz, 40 MHz, 80 MHz }
-
-
-BR
-Janusz
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Pk9LIHRoZW4uIEVCVVNZIHlvdSBnZXQgd2hlbiB5b3UgZG9uJ3QgaGF2ZSBjb3JyZWN0IGNvbWJp
+bmF0aW9uIChERlMKPmNvbWJpbmF0aW9uIGlzIG5vdCBwcmVzZW50KS4KPldoaWNoIHN1Z2dlc3Qg
+Zm9yIHNvbWUgcmVhc29uIHlvdXIgY29uZmlndXJhdGlvbiBkaWRuJ3QgYWN0aXZhdGUKPkNPTkZJ
+R19BVEgxMEtfREZTX0NFUlRJRklFRC4KPkNoZWNrIGl3IGxpc3QsIHlvdSBzaHVsZCBzZWU6Cj5y
+YWRhciBkZXRlY3Qgd2lkdGhzOiB7IDIwIE1IeiAobm8gSFQpLCAyMCBNSHosIDQwIE1IeiwgODAg
+TUh6IH0KClllcyBJIGFscmVhZHkgZGlkIGl0LCBoZXJlIGlzIG15IGNvbmZpZ3VyYXRpb246Cgo8
+TT4gICBBdGhlcm9zIDgwMi4xMWFjIHdpcmVsZXNzIGNhcmRzIHN1cHBvcnQKICAggSCBICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgPE0+ICAgICBBdGhlcm9zIGF0aDEwayBQQ0kgc3Vw
+cG9ydAogICCBIIEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFsqXSAgICAgQXRo
+ZXJvcyBhdGgxMGsgZGVidWdnaW5nCiAgIIEggSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgWypdICAgICBBdGhlcm9zIGF0aDEwayBkZWJ1Z2ZzIHN1cHBvcnQKICAggSCBICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBbKl0gICAgIEF0aGVyb3MgYXRoMTBrIHRyYWNp
+bmcgc3VwcG9ydAogICCBIIEgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFsqXSAg
+ICAgQXRoZXJvcyBERlMgc3VwcG9ydCBmb3IgY2VydGlmaWVkIHBsYXRmb3JtcwoKQnV0IHdoZW4g
+SSBjaGVjayAiaXcgbGlzdCIgSSBkb24ndCBzZWUgdGhlIGxpbmUgbGlrZSB5b3Ugc2FpZC4gQnV0
+IGlzIHRoaXMgbm9ybWFsPyA6CgpGcmVxdWVuY2llczoKCQkJKiA1MTgwIE1IeiBbMzZdICgyMC4w
+IGRCbSkKCQkJKiA1MjAwIE1IeiBbNDBdICgyMC4wIGRCbSkKCQkJKiA1MjIwIE1IeiBbNDRdICgy
+MC4wIGRCbSkKCQkJKiA1MjQwIE1IeiBbNDhdICgyMC4wIGRCbSkKCQkJKiA1MjYwIE1IeiBbNTJd
+ICgyMC4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCgkJCSAgREZTIHN0YXRlOiB1c2Fi
+bGUgKGZvciA1MTY4MyBzZWMpCgkJCSogNTI4MCBNSHogWzU2XSAoMjAuMCBkQm0pIChubyBJUiwg
+cmFkYXIgZGV0ZWN0aW9uKQoJCQkgIERGUyBzdGF0ZTogdXNhYmxlIChmb3IgNTE2ODMgc2VjKQoJ
+CQkqIDUzMDAgTUh6IFs2MF0gKDIwLjAgZEJtKSAobm8gSVIsIHJhZGFyIGRldGVjdGlvbikKCQkJ
+ICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDUxNjgzIHNlYykKCQkJKiA1MzIwIE1IeiBbNjRdICgy
+MC4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCgkJCSAgREZTIHN0YXRlOiB1c2FibGUg
+KGZvciA1MTY4MyBzZWMpCgkJCSogNTUwMCBNSHogWzEwMF0gKDI3LjAgZEJtKSAobm8gSVIsIHJh
+ZGFyIGRldGVjdGlvbikKCQkJICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDUxNjgzIHNlYykKCQkJ
+KiA1NTIwIE1IeiBbMTA0XSAoMjcuMCBkQm0pIChubyBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJCQkg
+IERGUyBzdGF0ZTogdXNhYmxlIChmb3IgNTE2ODMgc2VjKQoJCQkqIDU1NDAgTUh6IFsxMDhdICgy
+Ny4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCgkJCSAgREZTIHN0YXRlOiB1c2FibGUg
+KGZvciA1MTY4MyBzZWMpCgkJCSogNTU2MCBNSHogWzExMl0gKDI3LjAgZEJtKSAobm8gSVIsIHJh
+ZGFyIGRldGVjdGlvbikKCQkJICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDUxNjgzIHNlYykKCQkJ
+KiA1NTgwIE1IeiBbMTE2XSAoMjcuMCBkQm0pIChubyBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJCQkg
+IERGUyBzdGF0ZTogdXNhYmxlIChmb3IgNTE2ODMgc2VjKQoJCQkqIDU2MDAgTUh6IFsxMjBdICgy
+Ny4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCgkJCSAgREZTIHN0YXRlOiB1c2FibGUg
+KGZvciA1MTY4MyBzZWMpCgkJCSogNTYyMCBNSHogWzEyNF0gKDI3LjAgZEJtKSAobm8gSVIsIHJh
+ZGFyIGRldGVjdGlvbikKCQkJICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDUxNjgzIHNlYykKCQkJ
+KiA1NjQwIE1IeiBbMTI4XSAoMjcuMCBkQm0pIChubyBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJCQkg
+IERGUyBzdGF0ZTogdXNhYmxlIChmb3IgNTE2ODMgc2VjKQoJCQkqIDU2NjAgTUh6IFsxMzJdICgy
+Ny4wIGRCbSkgKG5vIElSLCByYWRhciBkZXRlY3Rpb24pCgkJCSAgREZTIHN0YXRlOiB1c2FibGUg
+KGZvciA1MTY4MyBzZWMpCgkJCSogNTY4MCBNSHogWzEzNl0gKDI3LjAgZEJtKSAobm8gSVIsIHJh
+ZGFyIGRldGVjdGlvbikKCQkJICBERlMgc3RhdGU6IHVzYWJsZSAoZm9yIDUxNjgzIHNlYykKCQkJ
+KiA1NzAwIE1IeiBbMTQwXSAoMjcuMCBkQm0pIChubyBJUiwgcmFkYXIgZGV0ZWN0aW9uKQoJCQkg
+IERGUyBzdGF0ZTogdXNhYmxlIChmb3IgNTE2ODMgc2VjKQoJCQkqIDU3NDUgTUh6IFsxNDldIChk
+aXNhYmxlZCkKCQkJKiA1NzY1IE1IeiBbMTUzXSAoZGlzYWJsZWQpCgkJCSogNTc4NSBNSHogWzE1
+N10gKGRpc2FibGVkKQoJCQkqIDU4MDUgTUh6IFsxNjFdIChkaXNhYmxlZCkKCQkJKiA1ODI1IE1I
+eiBbMTY1XSAoZGlzYWJsZWQpCgoKTkdVWUVOIFZ1IEhhaQpBY2l0YS1Tb2RpZWxlYwpSb3V0ZSBk
+ZSBNYXlyZXMgLSBCLlAuIDkKMTIxMDAgU3QgR0VPUkdFUyBERSBMVVpFTkNPTgpGUkFOQ0UKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
