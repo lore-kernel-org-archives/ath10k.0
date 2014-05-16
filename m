@@ -1,27 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlHlN-0008Pn-Mx
- for ath10k@lists.infradead.org; Fri, 16 May 2014 13:01:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: RE : RE : RE : RE : ath10k: set channel by command "iw" not from
- hostapd and DFS support of firmware-2.bin_10.1.467.2-1
-References: <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <5373382C.1030709@elisanet.fi>
- <EE97821C81277E459BEA5C6384C6F241012F109978C9@srvexch01.SODIELEC.local>
- <DUB122-W4070B8F41A0F8A25061141CB360@phx.gbl>
- <EE97821C81277E459BEA5C6384C6F241012F109978CE@srvexch01.SODIELEC.local>
- <CALhHN=pGozL43B+qiJ20it3QCkvKkOL_RynfvUod_Ert8v1+3Q@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978CF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978D1@srvexch01.SODIELEC.local>
- <CALhHN=q_kuaszuBdsWHLZJYEA1PW63AqDFiF89DC3c4pOJseOg@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978D3@srvexch01.SODIELEC.local>
- <CALhHN=pYKwhCRy8RZWFm=5mssrL=oqTsazWfkVaN2L8O6YNO3w@mail.gmail.com>
-Date: Fri, 16 May 2014 16:00:52 +0300
-In-Reply-To: <CALhHN=pYKwhCRy8RZWFm=5mssrL=oqTsazWfkVaN2L8O6YNO3w@mail.gmail.com>
- (Janusz Dziedzic's message of "Fri, 16 May 2014 09:35:40 +0200")
-Message-ID: <87oayx6fp7.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1WlHme-0000mE-VQ
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 13:02:45 +0000
+Received: by mail-wi0-f180.google.com with SMTP id hi2so921652wib.1
+ for <ath10k@lists.infradead.org>; Fri, 16 May 2014 06:02:21 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: add implementation for configure max amsdu, ampdu
+Date: Fri, 16 May 2014 15:02:12 +0200
+Message-Id: <1400245332-6974-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +17,227 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Allow to setup maximum subframes for AMSDU and AMPDU aggregation,
+using debugfs htt_max_amsdu_ampdu file.
 
-> Seems CONFIG_ATH10K_DFS_CERTIFIED is not set.
-> You can simply check this during compilation adding eg. to mac.c
-> #ifndef CONFIG_ATH10K_DFS_CERTIFIED
-> #error DFS_NOT_SET
-> #endif
+Eg.
+echo "2 64" > htt_max_amsdu_ampdu
+will setup maximum amsdu subframes equal 2 and
+maximum ampdu subframes equal to 64.
 
-This reminds me of a feature I have been thinking. We really should have
-an info print of what ath10k kconfig options are enabled in the build.
-For example something like this:
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+I wasn't sure we have to protect
+debug.htt_max_amsdu, debug.htt_max_ampdu using conf_mutex.
+Anyway I can add such protection if required.
 
-ath10k: debug off debugfs on tracing off dfs on
+ drivers/net/wireless/ath/ath10k/core.h   |    3 ++
+ drivers/net/wireless/ath/ath10k/debug.c  |   62 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt.h    |   13 +++----
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   45 ++++++++++++++++++++++
+ 4 files changed, 115 insertions(+), 8 deletions(-)
 
-Patches welcome :)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2c1dfd7..6f7f124 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -290,6 +290,9 @@ struct ath10k_debug {
+ 	struct ath_dfs_pool_stats dfs_pool_stats;
+ 
+ 	u32 fw_dbglog_mask;
++
++	u8 htt_max_amsdu;
++	u8 htt_max_ampdu;
+ };
+ 
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 1b7ff4b..e13f69a 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -671,6 +671,61 @@ static const struct file_operations fops_htt_stats_mask = {
+ 	.llseek = default_llseek,
+ };
+ 
++static ssize_t ath10k_read_htt_max_amsdu_ampdu(struct file *file,
++					       char __user *user_buf,
++					       size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	char buf[64];
++	unsigned int len;
++
++	if (!ar->debug.htt_max_amsdu || !ar->debug.htt_max_ampdu)
++		len = scnprintf(buf, sizeof(buf), "using FW default max subframes configuration: amsdu 3, ampdu 64\n");
++	else
++		len = scnprintf(buf, sizeof(buf), "max subframes amsdu %u, ampdu %d\n",
++				ar->debug.htt_max_amsdu,
++				ar->debug.htt_max_ampdu);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
++						const char __user *user_buf,
++						size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	int res;
++	char buf[64];
++	unsigned int amsdu, ampdu;
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = 0;
++
++	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
++
++	if (res != 2)
++		return -EINVAL;
++
++	res = ath10k_htt_h2t_aggr_cfg_msg(&ar->htt, ampdu, amsdu);
++	if (res)
++		return res;
++
++	ar->debug.htt_max_amsdu = amsdu;
++	ar->debug.htt_max_ampdu = ampdu;
++
++	return count;
++}
++
++static const struct file_operations fops_htt_max_amsdu_ampdu = {
++	.read = ath10k_read_htt_max_amsdu_ampdu,
++	.write = ath10k_write_htt_max_amsdu_ampdu,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ static ssize_t ath10k_read_fw_dbglog(struct file *file,
+ 					    char __user *user_buf,
+ 					    size_t count, loff_t *ppos)
+@@ -757,6 +812,9 @@ void ath10k_debug_stop(struct ath10k *ar)
+ 	 * warning from del_timer(). */
+ 	if (ar->debug.htt_stats_mask != 0)
+ 		cancel_delayed_work(&ar->debug.htt_stats_dwork);
++
++	ar->debug.htt_max_amsdu = 0;
++	ar->debug.htt_max_ampdu = 0;
+ }
+ 
+ static ssize_t ath10k_write_simulate_radar(struct file *file,
+@@ -867,6 +925,10 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	debugfs_create_file("htt_stats_mask", S_IRUSR, ar->debug.debugfs_phy,
+ 			    ar, &fops_htt_stats_mask);
+ 
++	debugfs_create_file("htt_max_amsdu_ampdu", S_IRUSR | S_IWUSR,
++			    ar->debug.debugfs_phy, ar,
++			    &fops_htt_max_amsdu_ampdu);
++
+ 	debugfs_create_file("fw_dbglog", S_IRUSR, ar->debug.debugfs_phy,
+ 			    ar, &fops_fw_dbglog);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 645a563..bb6d04f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -240,16 +240,10 @@ struct htt_oob_sync_req {
+ 	__le16 rsvd0;
+ } __packed;
+ 
+-#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F
+-#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  0
+-
+ struct htt_aggr_conf {
+ 	u8 max_num_ampdu_subframes;
+-	union {
+-		/* dont use bitfields; undefined behaviour */
+-		u8 flags; /* see %HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_ */
+-		u8 max_num_amsdu_subframes:5;
+-	} __packed;
++	/* amsdu_subframes is limited by 0x1F mask */
++	u8 max_num_amsdu_subframes;
+ } __packed;
+ 
+ #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
+@@ -1341,6 +1335,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
+ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
+ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
++int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
++				u8 max_subfrms_ampdu,
++				u8 max_subfrms_amsdu);
+ 
+ void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 7a3e2e4..5636cbd 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -307,6 +307,51 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
++int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
++				u8 max_subfrms_ampdu,
++				u8 max_subfrms_amsdu)
++{
++	struct htt_aggr_conf *aggr_conf;
++	struct sk_buff *skb;
++	struct htt_cmd *cmd;
++	int len;
++	int ret;
++
++	/* By default FW setup amsdu = 3 and ampdu = 64 */
++	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
++		return -EINVAL;
++
++	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
++		return -EINVAL;
++
++	len = sizeof(cmd->hdr);
++	len += sizeof(cmd->aggr_conf);
++
++	skb = ath10k_htc_alloc_skb(len);
++	if (!skb)
++		return -ENOMEM;
++
++	skb_put(skb, len);
++	cmd = (struct htt_cmd *)skb->data;
++	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
++
++	aggr_conf = &cmd->aggr_conf;
++	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
++	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
++
++	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d, ampdu %d",
++		   aggr_conf->max_num_amsdu_subframes,
++		   aggr_conf->max_num_ampdu_subframes);
++
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	if (ret) {
++		dev_kfree_skb_any(skb);
++		return ret;
++	}
++
++	return 0;
++}
++
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ {
+ 	struct device *dev = htt->ar->dev;
 -- 
-Kalle Valo
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
