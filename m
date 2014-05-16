@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WlHme-0000mE-VQ
- for ath10k@lists.infradead.org; Fri, 16 May 2014 13:02:45 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hi2so921652wib.1
- for <ath10k@lists.infradead.org>; Fri, 16 May 2014 06:02:21 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: add implementation for configure max amsdu, ampdu
-Date: Fri, 16 May 2014 15:02:12 +0200
-Message-Id: <1400245332-6974-1-git-send-email-janusz.dziedzic@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WlHou-0001R2-1t
+ for ath10k@lists.infradead.org; Fri, 16 May 2014 13:05:05 +0000
+Message-ID: <53760CEA.1000500@candelatech.com>
+Date: Fri, 16 May 2014 06:04:42 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: fix rssi reporting.
+References: <1400178894-26206-1-git-send-email-greearb@candelatech.com>
+ <CALhHN=o6zrn_0rtEJzfZsaJp5b8JoGNew-qq_=LU6Uh-XJbJ6g@mail.gmail.com>
+In-Reply-To: <CALhHN=o6zrn_0rtEJzfZsaJp5b8JoGNew-qq_=LU6Uh-XJbJ6g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,227 +19,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Allow to setup maximum subframes for AMSDU and AMPDU aggregation,
-using debugfs htt_max_amsdu_ampdu file.
 
-Eg.
-echo "2 64" > htt_max_amsdu_ampdu
-will setup maximum amsdu subframes equal 2 and
-maximum ampdu subframes equal to 64.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
-I wasn't sure we have to protect
-debug.htt_max_amsdu, debug.htt_max_ampdu using conf_mutex.
-Anyway I can add such protection if required.
+On 05/16/2014 05:18 AM, Janusz Dziedzic wrote:
+> On 15 May 2014 20:34,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> When the driver cannot provide proper rssi, mark
+>> status with RX_FLAG_NO_SIGNAL_VAL so that stack
+>> properly ignores it.
+>>
+> I think we should skip this one while we know rssi/rates.
+> They are correct for all packets between START_VALID and END_VALID flags.
 
- drivers/net/wireless/ath/ath10k/core.h   |    3 ++
- drivers/net/wireless/ath/ath10k/debug.c  |   62 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.h    |   13 +++----
- drivers/net/wireless/ath/ath10k/htt_tx.c |   45 ++++++++++++++++++++++
- 4 files changed, 115 insertions(+), 8 deletions(-)
+Skip what, the patch?  With current code, you are sending packets up
+the tree without signal being set and yet without the flag set that says
+to ignore the (unset) signal value.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2c1dfd7..6f7f124 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -290,6 +290,9 @@ struct ath10k_debug {
- 	struct ath_dfs_pool_stats dfs_pool_stats;
- 
- 	u32 fw_dbglog_mask;
-+
-+	u8 htt_max_amsdu;
-+	u8 htt_max_ampdu;
- };
- 
- enum ath10k_state {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 1b7ff4b..e13f69a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -671,6 +671,61 @@ static const struct file_operations fops_htt_stats_mask = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_read_htt_max_amsdu_ampdu(struct file *file,
-+					       char __user *user_buf,
-+					       size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[64];
-+	unsigned int len;
-+
-+	if (!ar->debug.htt_max_amsdu || !ar->debug.htt_max_ampdu)
-+		len = scnprintf(buf, sizeof(buf), "using FW default max subframes configuration: amsdu 3, ampdu 64\n");
-+	else
-+		len = scnprintf(buf, sizeof(buf), "max subframes amsdu %u, ampdu %d\n",
-+				ar->debug.htt_max_amsdu,
-+				ar->debug.htt_max_ampdu);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
-+						const char __user *user_buf,
-+						size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	int res;
-+	char buf[64];
-+	unsigned int amsdu, ampdu;
-+
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = 0;
-+
-+	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
-+
-+	if (res != 2)
-+		return -EINVAL;
-+
-+	res = ath10k_htt_h2t_aggr_cfg_msg(&ar->htt, ampdu, amsdu);
-+	if (res)
-+		return res;
-+
-+	ar->debug.htt_max_amsdu = amsdu;
-+	ar->debug.htt_max_ampdu = ampdu;
-+
-+	return count;
-+}
-+
-+static const struct file_operations fops_htt_max_amsdu_ampdu = {
-+	.read = ath10k_read_htt_max_amsdu_ampdu,
-+	.write = ath10k_write_htt_max_amsdu_ampdu,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- static ssize_t ath10k_read_fw_dbglog(struct file *file,
- 					    char __user *user_buf,
- 					    size_t count, loff_t *ppos)
-@@ -757,6 +812,9 @@ void ath10k_debug_stop(struct ath10k *ar)
- 	 * warning from del_timer(). */
- 	if (ar->debug.htt_stats_mask != 0)
- 		cancel_delayed_work(&ar->debug.htt_stats_dwork);
-+
-+	ar->debug.htt_max_amsdu = 0;
-+	ar->debug.htt_max_ampdu = 0;
- }
- 
- static ssize_t ath10k_write_simulate_radar(struct file *file,
-@@ -867,6 +925,10 @@ int ath10k_debug_create(struct ath10k *ar)
- 	debugfs_create_file("htt_stats_mask", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_htt_stats_mask);
- 
-+	debugfs_create_file("htt_max_amsdu_ampdu", S_IRUSR | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar,
-+			    &fops_htt_max_amsdu_ampdu);
-+
- 	debugfs_create_file("fw_dbglog", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_fw_dbglog);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 645a563..bb6d04f 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -240,16 +240,10 @@ struct htt_oob_sync_req {
- 	__le16 rsvd0;
- } __packed;
- 
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  0
--
- struct htt_aggr_conf {
- 	u8 max_num_ampdu_subframes;
--	union {
--		/* dont use bitfields; undefined behaviour */
--		u8 flags; /* see %HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_ */
--		u8 max_num_amsdu_subframes:5;
--	} __packed;
-+	/* amsdu_subframes is limited by 0x1F mask */
-+	u8 max_num_amsdu_subframes;
- } __packed;
- 
- #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
-@@ -1341,6 +1335,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
- int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
- int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu);
- 
- void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 7a3e2e4..5636cbd 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -307,6 +307,51 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	return 0;
- }
- 
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu)
-+{
-+	struct htt_aggr_conf *aggr_conf;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	int len;
-+	int ret;
-+
-+	/* By default FW setup amsdu = 3 and ampdu = 64 */
-+	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
-+		return -EINVAL;
-+
-+	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
-+		return -EINVAL;
-+
-+	len = sizeof(cmd->hdr);
-+	len += sizeof(cmd->aggr_conf);
-+
-+	skb = ath10k_htc_alloc_skb(len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
-+
-+	aggr_conf = &cmd->aggr_conf;
-+	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
-+	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
-+
-+	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d, ampdu %d",
-+		   aggr_conf->max_num_amsdu_subframes,
-+		   aggr_conf->max_num_ampdu_subframes);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- {
- 	struct device *dev = htt->ar->dev;
+Thanks,
+Ben
+
+>
+> BR
+> Janusz
+>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>
+>> Patch is against my tree, hopefully will apply OK against upstream
+>> but have not tested that yet.
+>>
+>>   drivers/net/wireless/ath/ath10k/htt_rx.c | 7 ++++---
+>>   1 file changed, 4 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> index 0c83ffb..d8ec8dd 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> @@ -1216,11 +1216,12 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+>>          mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
+>>
+>>          /* Fill this once, while this is per-ppdu */
+>> -       if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
+>> -               memset(rx_status, 0, sizeof(*rx_status));
+>> +       memset(rx_status, 0, sizeof(*rx_status));
+>> +       if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID)
+>>                  rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR +
+>>                                       rx->ppdu.combined_rssi;
+>> -       }
+>> +       else
+>> +               rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
+>>
+>>          if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
+>>                  /* TSF available only in 32-bit */
+>> --
+>> 1.7.11.7
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
 -- 
-1.7.9.5
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
