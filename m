@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from mail-qg0-x234.google.com ([2607:f8b0:400d:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmN2S-0002df-Qq
- for ath10k@lists.infradead.org; Mon, 19 May 2014 12:51:34 +0000
-Received: by mail-we0-f176.google.com with SMTP id q59so5352936wes.21
- for <ath10k@lists.infradead.org>; Mon, 19 May 2014 05:51:09 -0700 (PDT)
+ id 1WmQzm-0003pR-CF
+ for ath10k@lists.infradead.org; Mon, 19 May 2014 17:05:03 +0000
+Received: by mail-qg0-f52.google.com with SMTP id a108so9370970qge.11
+ for <ath10k@lists.infradead.org>; Mon, 19 May 2014 10:04:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
- <5370F41A.70202@candelatech.com>
- <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
- <53719332.9040700@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
- <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
- <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
-Date: Mon, 19 May 2014 14:51:08 +0200
-Message-ID: <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
-Subject: Re: RE : RE : ath10k: firmware crash in station mode
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <87zjih6ges.fsf@kamboji.qca.qualcomm.com>
+References: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
+ <87zjih6ges.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 19 May 2014 10:04:39 -0700
+Message-ID: <CAJ-VmokauFeQF9FBSzJsPsJKb8o5+kT1FiXYL09mBFm=CEx7Rg@mail.gmail.com>
+Subject: Re: Protected flag is clear in Monitor Mode
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,68 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTkgTWF5IDIwMTQgMTE6NDcsIFZ1IEhhaSBOR1VZRU4gPHZoLm5ndXllbkBhY3RpYXNvZGll
-bGVjLmZyPiB3cm90ZToKPj5UaGUgNjM2IGNyYXNoZXMgYmVjYXVzZSB0aGUgaW50ZXJmYWNlIGlz
-IGluIHByb21pc2N1b3VzIG1vZGUgKGl0J3MKPj5laXRoZXIgcHV0IGluIGEgYnJpZGdlIG9yIHlv
-dSBoYXZlIHRjcGR1bXAgcnVubmluZyBvbiBpdD8pLiBUaGlzIHdvbid0Cj4+d29yayB3aXRoIDYz
-Ni4gU2VlIG1haWxpbmcgbGlzdCBhcmNoaXZlcy4gNjM2IGhhcyBicm9rZW4gbW9uaXRvciBtb2Rl
-Cj4+YW5kIGl0IGNyYXNoZXMgb2Z0ZW4uCj4KPj5DYW4geW91IHBsZWFzZSByZXRyeSB3aXRoIGRl
-YnVnX21hc2s9MHhmZmZmZmZmZiB0byBnZXQgZnVsbCBkdW1wcyBhbmQKPj5zZWUgd2hhdCBraW5k
-IG9mIGZyYW1lIGlzIGJlaW5nIHNlbnQ/IEkgZ3Vlc3MgaXQncyBhbiBpcHY2IG5laWdoYm91cgo+
-PnNvbGljaXRhdGlvbiBidXQgdGhlIHJlcXVlc3QgaXRzZWxmIG1pZ2h0IGJlIG1hbGZvcm1lZCBm
-b3Igc29tZSByZWFzb24KPj5jYXVzaW5nIGZpcm13YXJlIHRvIGNyYXNoIHVuZXhwZWN0ZWRseS4K
-CkFjdHVhbGx5IEknbSBhYmxlIHRvIHJlcHJvZHVjZSB0aGlzIGxvY2FsbHkuIFRoZSBmcmFtZSBp
-cyBhIE51bGxGdW5jCmZyYW1lLiBIb3dldmVyIGZyb20gd2hhdCBJJ20gc2VlaW5nIGZpcm13YXJl
-IDEwLjEgY3Jhc2hlcyBpbiByZXNwb25zZQp0byB3bWkgdmRldiB1cCBjb21tYW5kLiBUaGVyZSdz
-IG5vIGZpcm13YXJlIGNyYXNoIGlmIEkgYXNzb2NpYXRlCmJlZm9yZSBhZGRpbmcgdGhlbiB3bGFu
-IGludGVyZmFjZSB0byBhIGJyaWRnZSB0aG91Z2guIFBlcmhhcHMgdGhlcmUncwpzb21ldGhpbmcg
-YXRoMTBrIGlzIGRvaW5nIGJ1dCBzaG91bGRuJ3Qgb3Igc2hvdWxkIGJlIGJ1dCBpc24ndCAtIEkK
-aGF2ZSBubyBpZGVhIHdoYXQgdGhhdCBjb3VsZCBiZSBub3cuCgpJJ20gYSBiaXQgc3VycHJpc2Vk
-IHNpbmNlIEkgdGhvdWdodCB0aGlzIHdvcmtlZCB3aXRoIDEwLjEuIEkgdGhpbmsKSSd2ZSBldmVu
-IGhhZCB0ZXN0ZWQgNGFkZHIgdGhpcyB3YXkgYmVmb3JlIHNvIHRoZXJlJ3MgYSBjaGFuY2UgdGhp
-cyBpcwphIHJlZ3Jlc3Npb24gaW4gYXRoMTBrLgoKVGhhbmtzIGZvciB0aGUgbG9ncyBhbnl3YXku
-IEkgd2FzIGFibGUgdG8gcmVwcm9kdWNlIHRoaXMgcXVpY2tseSBzaW5jZQppdCBuYXJyb3dlZCBt
-eSBzZWFyY2ggZm9yIHRoZSBjcmFzaCB0cmlnZ2VyLgoKCj4+QWxzbywgY2FuIHlvdSB0cnkgdGhl
-IHRlc3Qgd2l0aG91dCBtYWtpbmcgd2xhbiBpbnRlcmZhY2UgcHJvbWlzY3VvdXMKPj4ob24gYm90
-aCBmaXJtd2FyZXMsIHdpdGggZGVidWdfbWFzaz0weGZmZmZmZmZmKSB0b28sIHBsZWFzZT8KPgo+
-IFllcyBJIHVzZWQgcHJvbWlzY3VvdXMgdG8gc2V0IHVwIG15IHN0YXRpb24gaW4gYnJpZGdlIG1v
-ZGUsIHRoZSBmaXJtd2FyZSBjcmFzaGVkCj4gYnV0IElmIGRvbid0IHVzZSBwcm9taXNjdW91cyAo
-cHV0IG15IHN0YXRpb24gaW4gcm91dGVyIG1vZGUpLCB0aGUgZmlybXdhcmUgZGlkbid0IGNyYXNo
-IGFuZAo+IEkgY2FuIGFzc29jaWF0ZSB3aXRoIHRoZSBhY2Nlc3MgcG9pbnQgd2l0aG91dCBwcm9i
-bGVtLgo+IFlvdSBjYW4gZm91bmQgaW4gdGhlIGF0dGFjaGVkIGZpbGUgNCBkbWVzZyBmaWxlICh3
-aXRoL3dpdGhvdXQgcHJvbWljdW91cykgZm9yIGJvdGggdmVyc2lvbiBvZiBmaXJtd2FyZS4KPiAo
-SWYgSSBzZXQgZGVidWcgbWFzaz0weGZmZmZmZmZmIHRoZXJlIGFyZSBtYW55IGxpbmVzICJodHQg
-cnggcG9wIiBhbmQgSSBjYW4gbm90IHNlZSBhbGwgdGhlIGRtZXNnLCBzbyBJCj4gb25seSBzZXQg
-dGhlIG1hc2s9MHhmZmZmZmYzZikuCgo+IEJ1dCBJIHdvbmRlciBpZiB0aGVyZSB3aWxsIGJlIGFu
-eSBwcm9ncmVzcyBvZiB0aGUgZmlybXdhcmUgaW4gdGhlIGZ1dHVyZSBmb3IgcHJvbWlzY3VvdXMg
-c28gdGhhdCBJIGNhbgo+IHNldCB1cCBicmlkZ2UgbW9kZT8KCkJlYXRzIG1lLiBZb3Ugc2hvdWxk
-IGFzayBRQ0EgYWJvdXQgdGhlIGZ1dHVyZSBvZiBhdGgxMGsgZmlybXdhcmUuCgoKPj5JZiB5b3Ug
-Z2VuZXJhdGUgYmFja3BvcnRzIHdpdGgga3ZhbG8vYXRoIG1hc3RlciBicmFuY2ggdGhlbiBERlMg
-d29uJ3QKPj53b3JrIGFzIGl0IGlzIG5vdyAoZHVlIHRvIHRoZSBidWcgSSd2ZSBtZW50aW9uZWQg
-ZWFybGllcikuIEthbGxlCj4+ZG9lc24ndCBoYXZlIHRoZSBwYXRjaCB0aGF0IGRlYWxzIHdpdGgg
-aXQsIHlldC4gWW91J2xsIG5lZWQgdG8KPj5jaGVycnktcGljayB0aGUgZm9sbG93aW5nIDIgcGF0
-Y2hlcyBiZWZvcmUgZ2VuZXJhdGluZyBiYWNrcG9ydHMgZnJvbSBrdmFsby9hdGg6Cj4KPiAgPiBo
-dHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC9qYmVyZy9tYWM4MDIx
-MS1uZXh0LmdpdC9jb21taXQvP2lkPTY3YWUwN2ExMDlmM2Q1MTgwODVlM2I4MWFhNDg3NDBlOGM1
-Y2MzZjcKPiAgPmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L2pi
-ZXJnL21hYzgwMjExLW5leHQuZ2l0L2NvbW1pdC8/aWQ9MDBlYzc1ZmM1YTY0OTlkOGZkZWI2ZWM5
-ZjhmNWRmNjhiOTI5MWM3NAo+Cj4gIEkgZGlkIG5vdCBnZXQgeW91ciBzdWdnZXN0IGhlcmUsIEhv
-dyBjYW4gSSAiY2hlcnJ5LXBpY2siIHRob3NlcyAyIHBhdGNoIGJlZm9yZSBnZW5lcmF0aW5nIGJh
-Y2twb3J0cz8gSSB0aGluayB0aGF0IEkgc291bGQgZ2VuZXJhdGUgdGhlIGJhY2twb3J0IGZpcnN0
-IGFuZCB0aGVuIGFwcGx5IHRoZXNlIDIgcGF0Y2hzIGxhdGVyPwoKWW91IHNob3VsZCBwcm9iYWJs
-eSBnZXQgeW91cnNlbGYgZmFtaWxpYXIgd2l0aCBnaXQKKGh0dHA6Ly9naXQtc2NtLmNvbS9ib29r
-L2VuL0dldHRpbmctU3RhcnRlZC1HaXQtQmFzaWNzLApodHRwOi8vdGhpbmstbGlrZS1hLWdpdC5u
-ZXQvc2VjdGlvbnMvcmViYXNlLWZyb20tdGhlLWdyb3VuZC11cC9jaGVycnktcGlja2luZy1leHBs
-YWluZWQuaHRtbCkuCgpQYXRjaGluZyBhIGdlbmVyYXRlZCBiYWNrcG9ydHMgdHJlZSBpcyBhIG1l
-c3MuIEdlbmVyYWxseSB5b3Ugc2hvdWxkCmFwcGx5IGZpeGVzIHRvIHlvdXIgc291cmNlIGtlcm5l
-bCB0cmVlIHRoYXQgeW91ciBiYWNrcG9ydHMgYXJlIGJlaW5nCmRlcml2ZWQgZnJvbS4KCgpNaWNo
-YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi,
+
+Just create an ath10k project in github under the qca group so you
+have a place to stick issues and things like firmware documentation.
+
+
+
+-a
+
+
+On 16 May 2014 05:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
+>
+>> I try to use ath10k (firmware version 10.1.467.2-1_ as standalone
+>> monitor mode. I assume that monitor mode will allows the frame to pass
+>> to upper layer without any modification.
+>>
+>> But it seems that the protected flag in frame control is clear while I
+>> capture with wireshark. I has verified that the ath9k has not such
+>> issue and the protected flag is set.
+>>
+>> So is this a known issue in monitor mode for ath10k?
+>
+> I don't recall anyone mentioning anything like this so I would say this
+> is not a known issue. But on the other hand, I'm notorious in forgetting
+> stuff :)
+>
+> What we really need is a public bug tracker for ath10k.
+>
+> --
+> Kalle Valo
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
