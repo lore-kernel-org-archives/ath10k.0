@@ -1,30 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x229.google.com ([2607:f8b0:400d:c01::229])
+Received: from mail-vc0-x22f.google.com ([2607:f8b0:400c:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WmUoa-00076a-0Z
- for ath10k@lists.infradead.org; Mon, 19 May 2014 21:09:44 +0000
-Received: by mail-qc0-f169.google.com with SMTP id e16so10094331qcx.14
- for <ath10k@lists.infradead.org>; Mon, 19 May 2014 14:09:22 -0700 (PDT)
+ id 1WmZ0b-0004bz-Dg
+ for ath10k@lists.infradead.org; Tue, 20 May 2014 01:38:26 +0000
+Received: by mail-vc0-f175.google.com with SMTP id hu19so10479328vcb.20
+ for <ath10k@lists.infradead.org>; Mon, 19 May 2014 18:38:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAA93jw62Msp9p33u_bOGUfSjHrP1t=YZcf=0E3V79-haAUFybw@mail.gmail.com>
-References: <CAHqTa-3YUpt3jByNxiEkPGV52CoRDS-R4W33ywKVLa-Ye9d2bQ@mail.gmail.com>
- <53703B61.3050305@candelatech.com>
- <CAHqTa-3Rj-=4A3BoQoD0fb7P=jDd53KvGjxW_BnkoF_+hdWW5g@mail.gmail.com>
- <53704888.9060602@candelatech.com>
- <CAHqTa-2sG0wDVaGQVkVcPezArA=OGT+35s_GU+5AmV0TQOau7w@mail.gmail.com>
- <537056B1.6060902@candelatech.com>
- <CAHqTa-1DwKqeSQD5FwOomyhqHv1THWD__0pnEs3RktOigp70kw@mail.gmail.com>
- <CAHqTa-2y9n3AxdN--QGqGW-HRZnrBwEOhujWZ4FNZKmpU+kHMQ@mail.gmail.com>
- <CAHqTa-3gn1N8hTW4rpMos+h+K4nafoEsv94P0=0O3=Dpiaf2oA@mail.gmail.com>
- <CAA93jw6-Vu5=ySa1Oi6WO1BEo8cuAnKP3FJNJD1P=dEj_-9D3A@mail.gmail.com>
- <CAHqTa-1byQ+UHmREP5+RtikWDj-0wFbDPdPcO+HL0HnH+eDdig@mail.gmail.com>
- <CAJ-Vmo=ODZMM5KRSNC087MqgHBwHT6r1AK49+i3dtJrUtoAi=g@mail.gmail.com>
- <CAA93jw62Msp9p33u_bOGUfSjHrP1t=YZcf=0E3V79-haAUFybw@mail.gmail.com>
-Date: Mon, 19 May 2014 14:09:22 -0700
-Message-ID: <CAJ-VmomtPNu3wCfZdAzxMcH5TZuJWtTMe+8QTt1OXpVwOF9KYQ@mail.gmail.com>
-Subject: Re: Unicast packets stop being transmitted to a particular station,
- under load, when WPA2 is enabled
-From: Adrian Chadd <adrian@freebsd.org>
+In-Reply-To: <CA+BoTQnULHkPFofa3K9hEETKPR4UVFQ3ZnTVNujHx25pZWC_WQ@mail.gmail.com>
+References: <CAEFj986_nUoRY7qOf7=6divui_sa2tMnfjd8vS0w00Mk62GqnA@mail.gmail.com>
+ <CA+BoTQ=9c4MPHmqGRAgEvADSp9K+Kda-U75PRAUZE8FH70VOAw@mail.gmail.com>
+ <CAEFj986w3ByHH7LNRgYFKNsVym8g3FJFxGjSJ1-b91r1bnooqw@mail.gmail.com>
+ <CA+BoTQnULHkPFofa3K9hEETKPR4UVFQ3ZnTVNujHx25pZWC_WQ@mail.gmail.com>
+Date: Tue, 20 May 2014 09:38:03 +0800
+Message-ID: <CAEFj987t2mGVXHsGAX9P6nWrONP7GNKK3xy7UarGp1NHcvS9OQ@mail.gmail.com>
+Subject: Re: Protected flag is clear in Monitor Mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,25 +23,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>, Avery Pennarun <apenwarr@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 19 May 2014 14:07, Dave Taht <dave.taht@gmail.com> wrote:
-> from what I see from reports on the ath9k list, and openwrt
-> I tend to think this problem is endemic, and not driver specific.
-
-I thought the IV for ath10k was handled in the firmware, rather than
-setup from the host. I'll have to go digging.
-
-
-
--a
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T2sgZ290IGl0LgoKLS0tLQpDaHVuLVllb3cKCk9uIE1vbiwgTWF5IDE5LCAyMDE0IGF0IDc6MDYg
+UE0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPiBPbiAx
+OSBNYXkgMjAxNCAxMjo0MywgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFpbC5jb20+
+IHdyb3RlOgo+PiBPbiBNb24sIE1heSAxOSwgMjAxNCBhdCA1OjI1IFBNLCBNaWNoYWwgS2F6aW9y
+IDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+PiBPbiAxNiBNYXkgMjAxNCAwNjoz
+OCwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFpbC5jb20+IHdyb3RlOgo+Pj4+IEhp
+LCBhbGwKPj4+Pgo+Pj4+IEkgdHJ5IHRvIHVzZSBhdGgxMGsgKGZpcm13YXJlIHZlcnNpb24gMTAu
+MS40NjcuMi0xXyBhcyBzdGFuZGFsb25lCj4+Pj4gbW9uaXRvciBtb2RlLiBJIGFzc3VtZSB0aGF0
+IG1vbml0b3IgbW9kZSB3aWxsIGFsbG93cyB0aGUgZnJhbWUgdG8gcGFzcwo+Pj4+IHRvIHVwcGVy
+IGxheWVyIHdpdGhvdXQgYW55IG1vZGlmaWNhdGlvbi4KPj4+Pgo+Pj4+IEJ1dCBpdCBzZWVtcyB0
+aGF0IHRoZSBwcm90ZWN0ZWQgZmxhZyBpbiBmcmFtZSBjb250cm9sIGlzIGNsZWFyIHdoaWxlIEkK
+Pj4+PiBjYXB0dXJlIHdpdGggd2lyZXNoYXJrLiBJIGhhcyB2ZXJpZmllZCB0aGF0IHRoZSBhdGg5
+ayBoYXMgbm90IHN1Y2gKPj4+PiBpc3N1ZSBhbmQgdGhlIHByb3RlY3RlZCBmbGFnIGlzIHNldC4K
+Pj4+Pgo+Pj4+IFNvIGlzIHRoaXMgYSBrbm93biBpc3N1ZSBpbiBtb25pdG9yIG1vZGUgZm9yIGF0
+aDEwaz8KPj4+Cj4+PiBHb29kIGNhdGNoIQo+Pj4KPj4+IGF0aDEwayBkb2Vzbid0IHJlYWxseSBj
+aGVjayBpZiBmcmFtZSB3YXMgZGVjcnlwdGVkIGJ5IGZpcm13YXJlIG9yIG5vdAo+Pj4gKHRoZXJl
+J3Mgbm8gZXhwbGljaXQgZGVzY3JpcHRvciBmbGFnIGZvciB0aGF0KS4KPj4+Cj4+PiBJIHRoaW5r
+IHdlIG5lZWQgdG8gcmVseSBvbiB0aGUgcmF3IGZyYW1lIGRlY2FwIG1vZGUgYXMgYW4gaW1wbGlj
+aXQKPj4+IGluZGljYXRpb24gYSBmcmFtZSBtdXN0IG5vdCBoYXZlIGl0J3MgcHJvdGVjdGVkIGZs
+YWcgc3RyaXBwZWQuCj4+Pgo+Pgo+PiBJIHRyeSB0byBzZXQgVEFSR0VUXzEwWF9SWF9ERUNBUF9N
+T0RFIHRvIEFUSDEwS19IV19UWFJYX1JBVy4gQnV0IHN0aWxsCj4+IG5vdCB3b3JraW5nLgo+Pgo+
+PiBTbyB3ZSBuZWVkIGZpcm13YXJlIGNoYW5nZSBmb3IgdGhpcz8KPgo+IFRoZXJlJ3MgYWJzb2x1
+dGVseSBubyBuZWVkIHRvICpzZXQqIHRoZSByeCBkZWNhcCBtb2RlIHRvIHJhdy4KPgo+IFdoYXQg
+SSBtZWFudCB3YXMgdG8gbG9vayBhdCBkZWNhcCBtb2RlIGluIGh0dCByeCBkZXNjcmlwdG9yIG9m
+IGVhY2gKPiBmcmFtZSB3aGVuIGRlY2lkaW5nIHdoZXRoZXIgdG8gc3RyaXAgdGhlIHByb3RlY3Rl
+ZCBmbGFnIG9yIG5vdC4gSSd2ZQo+IG1hZGUgYSBwYXRjaCBidXQgSSBuZWVkIHRvIHRlc3QgYSBm
+ZXcgdGhpbmdzIGJlZm9yZSBzZW5kaW5nIGl0IG91dC4KPgo+Cj4gTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
