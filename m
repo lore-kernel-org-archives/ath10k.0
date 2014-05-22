@@ -1,16 +1,36 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnW5E-0007cE-Kj
- for ath10k@lists.infradead.org; Thu, 22 May 2014 16:43:08 +0000
+ id 1WnW6p-0007rC-B4
+ for ath10k@lists.infradead.org; Thu, 22 May 2014 16:44:47 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2] ath10k: make core registering async
-References: <1400767955-16313-1-git-send-email-michal.kazior@tieto.com>
- <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 22 May 2014 19:42:41 +0300
-In-Reply-To: <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 22 May 2014 16:12:35 +0200")
-Message-ID: <87ppj5wyri.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+ <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
+ <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
+ <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DE@srvexch01.SODIELEC.local>
+ <CALhHN=qKpm3RRG9S6UF17c3NZZaid4Zo15e0AACnrEgb0f-aqg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DF@srvexch01.SODIELEC.local>
+ <CALhHN=r0vg3hf+pozRQujmCzYXb7g2YX8Ur-bQ_HQ0-qd=yRAg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E1@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E5@srvexch01.SODIELEC.local>
+ <CALhHN=oC4LdH0vr31dAZpvFLjZnJJ_Bg2d=pnCved6TKAmwi0A@mail.gmail.com>
+ <CALhHN=rw7=nm8ZoMVm1u=nVou1OLY30jUq0G6LvA861Yrknn_Q@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E6@srvexch01.SODIELEC.local>
+Date: Thu, 22 May 2014 19:44:19 +0300
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978E6@srvexch01.SODIELEC.local>
+ (Vu Hai NGUYEN's message of "Thu, 22 May 2014 16:40:29 +0200")
+Message-ID: <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,42 +44,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
 
-> If ath10k was built into the kernel it could stall
-> booting for 120 seconds by default (60 seconds for
-> each firmware API variant) waiting for firmware
-> files before userspace was ready or filesystems
-> mounted.
->
-> Fix this by making the core registering
-> asynchronous.
->
-> This also shoves off about 1 second from boot time
-> on most systems since the driver is now mostly
-> initialized in a worker and modprobe takes very
-> little time to complete.
->
-> As a side effect there's no way to propagate
-> registering errors to the pci subsystem but this
-> probably isn't really necessary.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> I didn't have the option -T in my hostapd, only those: 
+> options:                                                                        
+>    -h   show this usage                                                         
+>    -d   show more debug messages (-dd for even more)                            
+>    -B   run daemon in the background                                            
+>    -e   entropy file                                                            
+>    -g   global control interface path                                           
+>    -G   group for control interfaces                                            
+>    -P   PID file                                                                
+>    -K   include key data in debug messages                                      
+>    -t   include timestamps in some debug messages                               
+>    -v   show hostapd version                  
+> Is it because I don't have package trace installed in my kernel???? 
 
-[...]
+You need to enable CONFIG_DEBUG_LINUX_TRACING in hostapd to get -T
+switch. It's documented here:
 
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -2758,8 +2758,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
->  	if (!ar_pci)
->  		return;
->  
-> -	tasklet_kill(&ar_pci->msi_fw_err);
-
-Why this? That's not obvious to me.
+http://wireless.kernel.org/en/developers/Documentation/mac80211/tracing
 
 -- 
 Kalle Valo
