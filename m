@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f180.google.com ([209.85.212.180])
+Received: from mail-we0-f173.google.com ([74.125.82.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnP4K-00072q-NL
- for ath10k@lists.infradead.org; Thu, 22 May 2014 09:13:45 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hi2so4019907wib.1
- for <ath10k@lists.infradead.org>; Thu, 22 May 2014 02:13:22 -0700 (PDT)
+ id 1WnPU4-0006xP-0d
+ for ath10k@lists.infradead.org; Thu, 22 May 2014 09:40:22 +0000
+Received: by mail-we0-f173.google.com with SMTP id u57so3184993wes.4
+ for <ath10k@lists.infradead.org>; Thu, 22 May 2014 02:39:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALhHN=r1w9Bfeqc1jH2644yVM3S0cxjdUnvavHgq56APX+9uOQ@mail.gmail.com>
-References: <CAJ+vNU3jF_GAEVETh1utpYgNGQ6_k=JwYZrsjvVoXDPpuhJdsA@mail.gmail.com>
- <CALhHN=r1w9Bfeqc1jH2644yVM3S0cxjdUnvavHgq56APX+9uOQ@mail.gmail.com>
-Date: Thu, 22 May 2014 02:13:22 -0700
-Message-ID: <CAJ+vNU30DvLy466soQECT1RQ08nATZaMZi-CHzOQMShvi-nfGA@mail.gmail.com>
-Subject: Re: ath10k rate control and stats
+Date: Thu, 22 May 2014 02:39:56 -0700
+Message-ID: <CAJ+vNU23qE-H0cp9fGams0h3xVJqNJQKNgX-2r0mPiV8ioz_rA@mail.gmail.com>
+Subject: help troubleshooting low throughput
 From: Tim Harvey <tharvey@gateworks.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,35 +22,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, May 20, 2014 at 12:39 PM, Janusz Dziedzic
-<janusz.dziedzic@tieto.com> wrote:
-> On 20 May 2014 21:07, Tim Harvey <tharvey@gateworks.com> wrote:
->> Greetings,
->>
->> I can't figure out how to get rate control stats to show me what MCS
->> rate my ath10k links are at. Is rate control implemented by the
->> firmware or part of the mac80211 rate control? Is there any way to get
->> stats akin to the per-station rc_stats I'm used to seeing with ath9k?
->>
->
-> ath10k rate control is implemented in the firmware. There is debugfs
-> fw_stats command - check tx_rate, rx_rate.
-> Also iw wlanX station dump will report correct RX rate (tx is not set
-> while we don't get this info  from firmware yet).
->
-> BR
-> Janusz
+Greetings,
 
-Janusz,
+I could use some help troubleshooting a low throughput issue. I'm
+currently using the following:
+ - UNEX DAXA-O1 11ac/n/a 3x3 MIMO qca988x hw2.0
+http://www.unex.com.tw/product/daxa-o1
+ - 80MHz channel w/o local interference
+ - ath10k git 0dbbb028a7c461777bf4a0d53780e539e6f40e14 (May 16)
+ - up-to-date git of hostapd/wpa_supplicant/iw
+ - fw 10.1.467.2-1 api 2 htt 2.1
+ - infrastructure mode using
+http://wireless.kernel.org/en/users/Drivers/ath10k/configuration#Full_hostapd_configuration
 
-Thanks - that helped!
+I'm using iperf for throughput tests and getting no more than 220mbps
+best case, typically more like 120mbps. The rx bitrate bounces around
+MCS 5 to 8 and shows 3 spatial streams so I would be expecting a much
+higher throughput. The cards are in boards with a quad-core ARM 1GHz
+Cortex-A9 CPU and there is no indication the system is bottle-necked.
+There are no other kernel modules loaded other thank
+ath10k_pci/ath10k_core/ath and debugging is disabled.
 
-I noticed that 'TX frame count' and 'RX frame count' from fw_stats
-don't look correct - I think its showing bytes there not frames. Is
-this a known issue perhaps?
+Using tcpdump/wireshark to inspect the radiotap headers I only see
+packets with 'Antenna: 0' - Does this field indicate what transmitter
+the pkt was received on and indicate I'm only receiving from a single
+transmitter?
+
+I've noticed 'iw phy0 info' shows 'Available Antennas: TX 0 RX 0' and
+any attempt to set the antenna mask with 'iw phy set antenna' fails
+with an 'Operation not supported (-95)' - does this indicate an issue
+with ath10k, iw, or perhaps the card's EEPROM?
+
+I've also noticed that 'iw wlan0 station dump' statistics show in the
+rx bitrate stat that sometimes SGI is flagged and sometimes its not -
+should I expect this to change like this? I was under the impression
+that was a static configuration.
+
+Thanks,
 
 Tim
 
