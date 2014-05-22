@@ -1,18 +1,36 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnPw3-0000Bd-O5
- for ath10k@lists.infradead.org; Thu, 22 May 2014 10:09:17 +0000
-Received: by mail-wg0-f51.google.com with SMTP id x13so3184780wgg.10
- for <ath10k@lists.infradead.org>; Thu, 22 May 2014 03:08:49 -0700 (PDT)
+ id 1WnRxO-0006db-1X
+ for ath10k@lists.infradead.org; Thu, 22 May 2014 12:18:47 +0000
+Received: by mail-lb0-f180.google.com with SMTP id p9so2537201lbv.39
+ for <ath10k@lists.infradead.org>; Thu, 22 May 2014 05:18:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJ+vNU09pWS9+mheetHtvQfQACHDNfjzchkCc3zGBOWD7ef02w@mail.gmail.com>
-References: <CAJ+vNU23qE-H0cp9fGams0h3xVJqNJQKNgX-2r0mPiV8ioz_rA@mail.gmail.com>
- <CAJ+vNU09pWS9+mheetHtvQfQACHDNfjzchkCc3zGBOWD7ef02w@mail.gmail.com>
-Date: Thu, 22 May 2014 12:08:49 +0200
-Message-ID: <CA+BoTQnYB8JESb7cvmivMM0WY_OC51WcuGp3aynwcmQTUxztpA@mail.gmail.com>
-Subject: Re: help troubleshooting low throughput
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978E5@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+ <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
+ <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
+ <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DE@srvexch01.SODIELEC.local>
+ <CALhHN=qKpm3RRG9S6UF17c3NZZaid4Zo15e0AACnrEgb0f-aqg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DF@srvexch01.SODIELEC.local>
+ <CALhHN=r0vg3hf+pozRQujmCzYXb7g2YX8Ur-bQ_HQ0-qd=yRAg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E1@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E5@srvexch01.SODIELEC.local>
+Date: Thu, 22 May 2014 14:18:18 +0200
+Message-ID: <CALhHN=oC4LdH0vr31dAZpvFLjZnJJ_Bg2d=pnCved6TKAmwi0A@mail.gmail.com>
+Subject: Re: RE : RE : RE : ath10k: firmware crash in station mode & problem
+ DFS
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,98 +39,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tim Harvey <tharvey@gateworks.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjIgTWF5IDIwMTQgMTE6NDYsIFRpbSBIYXJ2ZXkgPHRoYXJ2ZXlAZ2F0ZXdvcmtzLmNvbT4g
-d3JvdGU6Cj4gT24gVGh1LCBNYXkgMjIsIDIwMTQgYXQgMjozOSBBTSwgVGltIEhhcnZleSA8dGhh
-cnZleUBnYXRld29ya3MuY29tPiB3cm90ZToKPj4gR3JlZXRpbmdzLAo+Pgo+PiBJIGNvdWxkIHVz
-ZSBzb21lIGhlbHAgdHJvdWJsZXNob290aW5nIGEgbG93IHRocm91Z2hwdXQgaXNzdWUuIEknbQo+
-PiBjdXJyZW50bHkgdXNpbmcgdGhlIGZvbGxvd2luZzoKPj4gIC0gVU5FWCBEQVhBLU8xIDExYWMv
-bi9hIDN4MyBNSU1PIHFjYTk4OHggaHcyLjAKPj4gaHR0cDovL3d3dy51bmV4LmNvbS50dy9wcm9k
-dWN0L2RheGEtbzEKPj4gIC0gODBNSHogY2hhbm5lbCB3L28gbG9jYWwgaW50ZXJmZXJlbmNlCj4+
-ICAtIGF0aDEwayBnaXQgMGRiYmIwMjhhN2M0NjE3NzdiZjRhMGQ1Mzc4MGU1MzllNmY0MGUxNCAo
-TWF5IDE2KQo+PiAgLSB1cC10by1kYXRlIGdpdCBvZiBob3N0YXBkL3dwYV9zdXBwbGljYW50L2l3
-Cj4+ICAtIGZ3IDEwLjEuNDY3LjItMSBhcGkgMiBodHQgMi4xCj4+ICAtIGluZnJhc3RydWN0dXJl
-IG1vZGUgdXNpbmcKPj4gaHR0cDovL3dpcmVsZXNzLmtlcm5lbC5vcmcvZW4vdXNlcnMvRHJpdmVy
-cy9hdGgxMGsvY29uZmlndXJhdGlvbiNGdWxsX2hvc3RhcGRfY29uZmlndXJhdGlvbgoKRGlkIHlv
-dSBqdXN0IGNvcHkmcGFzdGUgdGhlIGV4YW1wbGUgY29uZmlnIGZpbGUgKGFuZCB1cGRhdGVkCmlu
-dGVyZmFjZT0pIG9yIGRpZCB5b3UgZG8gc29tZXRoaW5nIGV4dHJhPwoKVHlwaWNhbGx5IHRoZSBt
-b3N0IGltcG9ydGFudCBvcHRpb24gaXMgdmh0X2NhcGFiIE1BWC1BLU1QRFUtTEVOLUVYUHgKKHg9
-MCBvciA3IGRlcGVuZGluZyBvbiBob3N0YXBkIHZlcnNpb24pLiBXaXRob3V0IHRoaXMgYWdncmVn
-YXRpb24gaXMKY3JpcHBsZWQgYW5kIGl0IHlpZWxkcyBwcmV0dHkgcG9vciB0aHJvdWdocHV0LgoK
-V2hhdCBhYm91dCB0aGUgY2xpZW50PyBXaGF0IGlzIGl0PyBJcyBpdCBjb25uZWN0ZWQgaW4gVkhU
-ODAgbW9kZT8KCgo+PiBJJ20gdXNpbmcgaXBlcmYgZm9yIHRocm91Z2hwdXQgdGVzdHMgYW5kIGdl
-dHRpbmcgbm8gbW9yZSB0aGFuIDIyMG1icHMKPj4gYmVzdCBjYXNlLCB0eXBpY2FsbHkgbW9yZSBs
-aWtlIDEyMG1icHMuIFRoZSByeCBiaXRyYXRlIGJvdW5jZXMgYXJvdW5kCj4+IE1DUyA1IHRvIDgg
-YW5kIHNob3dzIDMgc3BhdGlhbCBzdHJlYW1zIHNvIEkgd291bGQgYmUgZXhwZWN0aW5nIGEgbXVj
-aAo+PiBoaWdoZXIgdGhyb3VnaHB1dC4gVGhlIGNhcmRzIGFyZSBpbiBib2FyZHMgd2l0aCBhIHF1
-YWQtY29yZSBBUk0gMUdIego+PiBDb3J0ZXgtQTkgQ1BVIGFuZCB0aGVyZSBpcyBubyBpbmRpY2F0
-aW9uIHRoZSBzeXN0ZW0gaXMgYm90dGxlLW5lY2tlZC4KPj4gVGhlcmUgYXJlIG5vIG90aGVyIGtl
-cm5lbCBtb2R1bGVzIGxvYWRlZCBvdGhlciB0aGFuawo+PiBhdGgxMGtfcGNpL2F0aDEwa19jb3Jl
-L2F0aCBhbmQgZGVidWdnaW5nIGlzIGRpc2FibGVkLgoKQ3VycmVudGx5IGF0aDEwayBkb2Vzbid0
-IHJlYWxseSBzY2FsZSBtdWNoIHdpdGggbnVtYmVyIG9mIENQVXMuIFRoZXJlCmFyZSBiYXNpY2Fs
-bHkgdHdvIHRhc2tsZXRzIHRoYXQgY291bGQgc3BsaXQgdGhlIHdvcmsganVzdCBhIGxpdHRsZQpi
-aXQsIGJ1dCB0aGlzIHJlcXVpcmVzIGludGVycnVwdCBzcHJlYWRpbmcuIEZyb20gd2hhdCBJIGtu
-b3cgc29tZSBBUk0KY2hpcHMgY2FuJ3QgZG8gdGhhdCBzbyBhdGgxMGsgZW5kcyB1cCB1c2luZyBv
-bmx5IHNpbmdsZSBDUFUgYWxsIHRoZQp0aW1lLiAxR0h6IG9mIGFuIEE5IHNob3VsZCBzdGlsbCBi
-ZSBlbm91Z2ggdG8gZ2V0IHlvdSA1MDBtYnBzKyB0aG91Z2guCgpEaWQgeW91IHJ1biBUQ1AgYW5k
-L29yIFVEUCB0ZXN0cz8gV2hhdCBkaXJlY3Rpb24gZGlkIHlvdSB0ZXN0CihzdGF0aW9uLT5hcCAv
-IGFwLT5zdGF0aW9uKT8KCgo+PiBVc2luZyB0Y3BkdW1wL3dpcmVzaGFyayB0byBpbnNwZWN0IHRo
-ZSByYWRpb3RhcCBoZWFkZXJzIEkgb25seSBzZWUKPj4gcGFja2V0cyB3aXRoICdBbnRlbm5hOiAw
-JyAtIERvZXMgdGhpcyBmaWVsZCBpbmRpY2F0ZSB3aGF0IHRyYW5zbWl0dGVyCj4+IHRoZSBwa3Qg
-d2FzIHJlY2VpdmVkIG9uIGFuZCBpbmRpY2F0ZSBJJ20gb25seSByZWNlaXZpbmcgZnJvbSBhIHNp
-bmdsZQo+PiB0cmFuc21pdHRlcj8KCkFudGVubmEgY2FsbGJhY2tzIGFyZW4ndCBpbXBsZW1lbnRl
-ZCBpbiBtYXN0ZXIgYnJhbmNoIHlldC4gWW91IGNhbgpjaGVjayBhdGgtbmV4dC10ZXN0IGZvciB0
-aGF0IG9yIGNoZXJyeSBwaWNrcyBCZW4ncyBwYXRjaGVzLgoKWW91IGNhbiB2ZXJpZnkgbWF4IG51
-bWJlciBvZiBzcGF0aWFsIHN0cmVhbXMgd2l0aCBpdyBieSBsb29raW5nIGF0IGBIVApUWC9SWCBN
-Q1MgcmF0ZSBpbmRleGVzIHN1cHBvcnRlZDpgIGFuZC9vciBWSFQgVFgvUlggTUNTIHNldHMuCgoK
-Pj4gSSd2ZSBub3RpY2VkICdpdyBwaHkwIGluZm8nIHNob3dzICdBdmFpbGFibGUgQW50ZW5uYXM6
-IFRYIDAgUlggMCcgYW5kCj4+IGFueSBhdHRlbXB0IHRvIHNldCB0aGUgYW50ZW5uYSBtYXNrIHdp
-dGggJ2l3IHBoeSBzZXQgYW50ZW5uYScgZmFpbHMKPj4gd2l0aCBhbiAnT3BlcmF0aW9uIG5vdCBz
-dXBwb3J0ZWQgKC05NSknIC0gZG9lcyB0aGlzIGluZGljYXRlIGFuIGlzc3VlCj4+IHdpdGggYXRo
-MTBrLCBpdywgb3IgcGVyaGFwcyB0aGUgY2FyZCdzIEVFUFJPTT8KCkl0IHdvdWxkIGJlIG1vcmUg
-aGVscGZ1bCBpZiB5b3UgY291bGQgcHJvdmlkZSBgaXcgbGlzdGAgb3V0cHV0IGluc3RlYWQKbmV4
-dCB0aW1lLgoKCj4+IEkndmUgYWxzbyBub3RpY2VkIHRoYXQgJ2l3IHdsYW4wIHN0YXRpb24gZHVt
-cCcgc3RhdGlzdGljcyBzaG93IGluIHRoZQo+PiByeCBiaXRyYXRlIHN0YXQgdGhhdCBzb21ldGlt
-ZXMgU0dJIGlzIGZsYWdnZWQgYW5kIHNvbWV0aW1lcyBpdHMgbm90IC0KPj4gc2hvdWxkIEkgZXhw
-ZWN0IHRoaXMgdG8gY2hhbmdlIGxpa2UgdGhpcz8gSSB3YXMgdW5kZXIgdGhlIGltcHJlc3Npb24K
-Pj4gdGhhdCB3YXMgYSBzdGF0aWMgY29uZmlndXJhdGlvbi4KCkkgdGhpbmsgdGhpcyBhdGgxMGsn
-cyBodyByYXRlIGNvbnRyb2wgaXMgZnJlZSB0byBwaWNrIFNHSS9MR0kKKGFzc3VtaW5nIHRhcmdl
-dCBzdGF0aW9uIHN1cHBvcnRzIFNHSSBhdCBhbGwpLgoKClsuLi5dCgo+IEkgbmVnbGVjdGVkIHRv
-IG1lbnRpb24gdGhhdCBvbiB3aGljaGV2ZXIgZW5kIGlzIHJ1bm5pbmcgdGhlIGlwZXJmCj4gc2Vy
-dmVyIChyZWNlaXZpbmcpIEkgZG8gc2VlIHBlcmlvZGljICdmYWlsZWQgdG8gcG9wLi4uJyB3YXJu
-aW5ncywgYQo+IHBhaXIgb2YgdGhlbSBhIGNvdXBsZSB0aW1lcyBhIG1pbnV0ZS4gSSdtIG5vdCBx
-dWl0ZSBjbGVhciBpZiB0aGlzIGlzIGEKPiBoYXJkd2FyZSBpc3N1ZSBvciBzb21ldGhpbmcgZWxz
-ZToKPgo+IFsgMzc2My4xMzEyODBdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9tIGh0
-dCByeCByaW5nIC0yMgo+IFsgMzc2OS4wODEwOTNdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBjaGFp
-bmVkIG1zZHVzLCBkcm9wcGluZwo+IFsgMzc2OS4wODY1NzVdIGF0aDEwazogZmFpbGVkIHRvIHBv
-cCBhbXNkdSBmcm9tIGh0dCByeCByaW5nIC0yMgo+IFsgMzc4MS4wOTIzODNdIGF0aDEwazogZmFp
-bGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVzLCBkcm9wcGluZwo+IFsgMzc4MS4wOTc4NjldIGF0aDEw
-azogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9tIGh0dCByeCByaW5nIC0yMgo+IFsgMzc4NC4zNjcy
-MjVdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVzLCBkcm9wcGluZwo+IFsgMzc4
-NC4zNzI3MzVdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9tIGh0dCByeCByaW5nIC0y
-Mgo+IFsgMzgwOS41MDE0ODRdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVzLCBk
-cm9wcGluZwo+IFsgMzgwOS41MDY5OTNdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9t
-IGh0dCByeCByaW5nIC0yMgo+IFsgMzgyMS43MjM0MDRdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBj
-aGFpbmVkIG1zZHVzLCBkcm9wcGluZwo+IFsgMzgyMS43Mjg5MTRdIGF0aDEwazogZmFpbGVkIHRv
-IHBvcCBhbXNkdSBmcm9tIGh0dCByeCByaW5nIC0yMgo+IFsgMzgzMi4wNjcxMzZdIGF0aDEwazog
-ZmFpbGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVzLCBkcm9wcGluZwo+IFsgMzgzMi4wNzI2OTBdIGF0
-aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9tIGh0dCByeCByaW5nIC0yMgo+IFsgMzgzMy42
-MzI4NTldIGF0aDEwazogZmFpbGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVzLCBkcm9wcGluZwo+IFsg
-MzgzMy42MzgzNDFdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBmcm9tIGh0dCByeCByaW5n
-IC0yMgo+IFsgMzgzNy45NDA0MTRdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBjaGFpbmVkIG1zZHVz
-LCBkcm9wcGluZwo+IFsgMzgzNy45NDU5ODJdIGF0aDEwazogZmFpbGVkIHRvIHBvcCBhbXNkdSBm
-cm9tIGh0dCByeCByaW5nIC0yMgo+IFsgMzg0NC4xMDA1MTRdIGF0aDEwazogZmFpbGVkIHRvIHBv
-cCBjaGFpbmVkIG1zZHVzLCBkcm9wcGluZwoKWW91IGRvbid0IGhhdmUgdG8gd29ycnkgYWJvdXQg
-dGhlc2UgbWVzc2FnZXMuCgpUaGlzIHdhcyByZWNlbnRseSBpbnRyb2R1Y2VkIGJ5IG9uZSBvZiBt
-eSBwYXRjaGVzIHRvIGZ1cnRoZXIgYW5hbHl6ZSBhCmJ1ZyB0aGF0IEF2ZXJ5IHdhcyBzZWVpbmcg
-KGtlcm5lbCBwYW5pYyBkdWUgdG8gc2tiX3B1c2gpLiBJIHBsYW4gb24KbWFraW5nIGEgcGF0Y2gg
-dG8gY2xlYW4gdGhpcyB1cC4KCkFueXdheSwgdGhhbmtzIGZvciBsZXR0aW5nIGtub3cgOi0pCgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 22 May 2014 10:06, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+>
+>>>Thanks for logs,
+>
+>>>Seems hostapd try to send probe resp:
+>
+>>>1262304186.542126: nl80211: send_mlme - noack=1 freq=0 no_cck=0 offchanok=0 wait
+>>>_time=0 fc=0x50 nlmode=3
+>
+>>>0x50 - probe resp
+>
+>>>I think you will have to check ailogs.
+>
+>>Thanks, I'll try it with wireshark but can you give me the detail that which information that I've to look in the frame? We tried it before but there are a lot of frames
+> and i'm confused.
+>
+> We could see the probe request from the station but not the probe response from the AP.
+> THere are 2 airlogs that we captured from wireshark for the canal36 (non DFS) and canal 56 (DFS) in the attached file
+>
+
+Could you get trace log with debug_mask = 0xffffff3f?
+
+You can also start hostapd with -ddt -T then we will have all logs in trace :)
+You can also add traces from mac80211, cfg80211
+
+Here description:
+http://wireless.kernel.org/en/users/Drivers/ath10k/debug
+
+
+BR
+Janusz
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
