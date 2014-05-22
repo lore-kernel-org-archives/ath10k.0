@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnW3T-00072H-IL
- for ath10k@lists.infradead.org; Thu, 22 May 2014 16:41:20 +0000
+ id 1WnW5E-0007cE-Kj
+ for ath10k@lists.infradead.org; Thu, 22 May 2014 16:43:08 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH 2/2] ath10k: make core registering async
 References: <1400767955-16313-1-git-send-email-michal.kazior@tieto.com>
  <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 22 May 2014 19:40:50 +0300
+Date: Thu, 22 May 2014 19:42:41 +0300
 In-Reply-To: <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
  (Michal Kazior's message of "Thu, 22 May 2014 16:12:35 +0200")
-Message-ID: <87tx8hwyul.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87ppj5wyri.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -49,9 +49,17 @@ Michal Kazior <michal.kazior@tieto.com> writes:
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I see a new sparse warning with this patch:
+[...]
 
-drivers/net/wireless/ath/ath10k/core.c:956:6: warning: symbol 'ath10k_core_register_work' was not declared. Should it be static?
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -2758,8 +2758,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+>  	if (!ar_pci)
+>  		return;
+>  
+> -	tasklet_kill(&ar_pci->msi_fw_err);
+
+Why this? That's not obvious to me.
 
 -- 
 Kalle Valo
