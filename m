@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnkQW-0002By-Gn
- for ath10k@lists.infradead.org; Fri, 23 May 2014 08:02:05 +0000
+ id 1Wnkp5-0005jB-Lq
+ for ath10k@lists.infradead.org; Fri, 23 May 2014 08:27:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/2] ath10k: fixes 2014-05-14
-References: <1400069786-9764-1-git-send-email-michal.kazior@tieto.com>
- <1400136521-11184-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 23 May 2014 11:01:35 +0300
-In-Reply-To: <1400136521-11184-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 15 May 2014 08:48:39 +0200")
-Message-ID: <87sio0vs80.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/5] ath10k: drain tx before restarting hw
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 23 May 2014 11:27:01 +0300
+In-Reply-To: <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 15 May 2014 10:42:02 +0200")
+Message-ID: <87oayovr1m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,26 +30,35 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This is another pair of patches.
+> This makes sure no further tx requests are
+> submitted to HTT before driver teardown.
 >
-> It fixes a crash recently reported by Ben, but..
+> This should prevent invalid pointer/NULL
+> dereference on htt tx pool in ath10k_htt_tx() in
+> some cases of heavy traffic.
 >
-> I've been able to find only a single code path
-> that called free_irq() twice in upstream code.
-> However it doesn't match the call trace reported
-> by Ben. I have to assume this is related to his
-> local patches or this is a very wierd case of
-> recovery race between userspace/mac80211/driver.
->
-> v2:
->  * rebase to latest github.com/kvalo/ath-next-test
->
->
-> Michal Kazior (2):
->   ath10k: fix core start sequence
->   ath10k: prevent hif_stop being called twice
+> Reported-By: Ben Greear <greearb@candelatech.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, both patches applied.
+[...]
+
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -2289,6 +2289,21 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+>  /*
+>   * Initialize various parameters with default vaules.
+>   */
+> +static void ath10k_drain_tx(struct ath10k *ar)
+> +{
+> +	/* workers can hold conf_mutex -- avoid deadlock */
+> +	WARN_ON(lockdep_is_held(&ar->conf_mutex));
+
+If CONFIG_LOCKDEP is disabled this will fail with:
+
+drivers/net/wireless/ath/ath10k/mac.c:2301:2: error: implicit declaration of function 'lockdep_is_held' [-Werror=implicit-function-declaration]
+
+I wasn't able to come up with any other way than adding '#ifdef
+CONFIG_LOCKDEP' which is quite ugly. What should we do?
 
 -- 
 Kalle Valo
