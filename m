@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wnkt9-0007Au-0f
- for ath10k@lists.infradead.org; Fri, 23 May 2014 08:31:39 +0000
+ id 1Wnkuh-0007GS-75
+ for ath10k@lists.infradead.org; Fri, 23 May 2014 08:33:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix ath10k_bmi_read32 macro
-References: <1400249601-24899-1-git-send-email-frederic.danis@linux.intel.com>
-Date: Fri, 23 May 2014 11:31:12 +0300
-In-Reply-To: <1400249601-24899-1-git-send-email-frederic.danis@linux.intel.com>
- (Frederic Danis's message of "Fri, 16 May 2014 16:13:21 +0200")
-Message-ID: <87k39cvqum.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath9k/ath10k: remove unnecessary channel_switch_beacon
+ callbacks
+References: <1400248534-16763-1-git-send-email-luca@coelho.fi>
+Date: Fri, 23 May 2014 11:32:30 +0300
+In-Reply-To: <1400248534-16763-1-git-send-email-luca@coelho.fi> (Luca Coelho's
+ message of "Fri, 16 May 2014 16:55:34 +0300")
+Message-ID: <87fvk0vqsh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,15 +24,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Frederic Danis <frederic.danis@linux.intel.com>
-Cc: linux-wireless@vger.kernel.org, linville@tuxdriver.com, ath10k@lists.infradead.org
+To: Luca Coelho <luca@coelho.fi>
+Cc: ath9k-devel@venema.h4ckr.net, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
 
-Frederic Danis <frederic.danis@linux.intel.com> writes:
+Luca Coelho <luca@coelho.fi> writes:
 
-> tmp may be used uninitialized if ath10k_bmi_read_memory() returns
-> an error.
+> From: Luciano Coelho <luciano.coelho@intel.com>
 >
-> Signed-off-by: Frederic Danis <frederic.danis@linux.intel.com>
+> The channel_switch_beacon callback is optional, so it doesn't have to
+> be defined if it's not going to do anything useful with it.  Both
+> ath9k and ath10k define the callback and just returns.  This commit
+> removes them.
+>
+> Cc: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Luciano Coelho <luciano.coelho@intel.com>
 
 Thanks, applied.
 
