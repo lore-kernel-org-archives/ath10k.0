@@ -1,23 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wnp8s-0004Lw-M6
- for ath10k@lists.infradead.org; Fri, 23 May 2014 13:04:14 +0000
-Message-ID: <1400850209.4358.31.camel@jlt4.sipsolutions.net>
-Subject: Re: [PATCH v2 3/5] ath10k: drain tx before restarting hw
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 23 May 2014 15:03:29 +0200
-In-Reply-To: <CA+BoTQn_V5zGA18qGMNrWYy_-fBQzBi1=EmzMs=0SLvk1LBVJQ@mail.gmail.com>
- (sfid-20140523_110633_993738_661A8280)
-References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
- <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
- <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
- <87oayovr1m.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmJTsh3Kcwmqx19WAzoBhYrhkQaPT_S=JFVPptkVaaKyw@mail.gmail.com>
- <87bnuovq6x.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQn_V5zGA18qGMNrWYy_-fBQzBi1=EmzMs=0SLvk1LBVJQ@mail.gmail.com>
- (sfid-20140523_110633_993738_661A8280)
-Mime-Version: 1.0
+ id 1WnqRj-0008V2-3C
+ for ath10k@lists.infradead.org; Fri, 23 May 2014 14:27:43 +0000
+Received: by mail-vc0-f174.google.com with SMTP id hq11so569355vcb.5
+ for <ath10k@lists.infradead.org>; Fri, 23 May 2014 07:27:21 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978EB@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+ <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
+ <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
+ <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
+ <CAEFj984iGQpP0_g6b1zR8WSY8KCJZHwFmXOBG-fZyG06FKqB1w@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EB@srvexch01.SODIELEC.local>
+Date: Fri, 23 May 2014 22:27:21 +0800
+Message-ID: <CAEFj985yu0chzgUP2ULP9vUTpyvmPOZ=BQ+Kt2v4EaMt7H+kgA@mail.gmail.com>
+Subject: Re: RE : RE : RE : ath10k: firmware crash in station mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,25 +37,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, 2014-05-23 at 11:06 +0200, Michal Kazior wrote:
+Yes, you can do it with firmware 10.1.467.2-1 but not firmware 999.999.0.636.
 
-> There's nothing wrong with other thread holding it. Actually that's
-> the reason for this very check.
-> 
-> The point is to prevent ath10k_drain_tx() being called while caller
-> (current thread) holds conf_mutex. If it were to hold conf_mutex then
-> cancel_work_sync() can deadlock as both workers it tries to stop try
-> to get a hold of the lock too.
+---
+Chun-Yeow
 
-That seems pointless - lockdep would warn you about that *anyway*
-because cancel_work_sync() and friends have proper annotations. Try it
-sometime :)
-
-johannes
-
+On Fri, May 23, 2014 at 7:35 PM, Vu Hai NGUYEN
+<vh.nguyen@actiasodielec.fr> wrote:
+>>>> But I wonder if there will be any progress of the firmware in the future for promiscuous so that I can
+>>>> set up bridge mode?
+>>>>
+>
+>>> Beats me. You should ask QCA about the future of ath10k firmware.
+>>>
+>
+>>The best you can is use the firmware-2.bin_10.1.467.2-1. It should
+>>allow you to bridge even in STA mode.
+>
+> I need to run the command "iw wlan0 set 4addr on" before setup bridge, else my bridge did not work.
+> How did you bridge without that command?
+>
+> Regards,
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
 
 _______________________________________________
 ath10k mailing list
