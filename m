@@ -1,28 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x234.google.com ([2607:f8b0:400c:c03::234])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WnlZT-0008Ij-ST
- for ath10k@lists.infradead.org; Fri, 23 May 2014 09:15:24 +0000
-Received: by mail-vc0-f180.google.com with SMTP id hy4so5910200vcb.11
- for <ath10k@lists.infradead.org>; Fri, 23 May 2014 02:15:01 -0700 (PDT)
+ id 1Wnml6-00015x-I0
+ for ath10k@lists.infradead.org; Fri, 23 May 2014 10:31:29 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/5] ath10k: drain tx before restarting hw
+References: <1399637749-13489-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-1-git-send-email-michal.kazior@tieto.com>
+ <1400143324-14911-4-git-send-email-michal.kazior@tieto.com>
+ <87oayovr1m.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQmJTsh3Kcwmqx19WAzoBhYrhkQaPT_S=JFVPptkVaaKyw@mail.gmail.com>
+ <87bnuovq6x.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQn_V5zGA18qGMNrWYy_-fBQzBi1=EmzMs=0SLvk1LBVJQ@mail.gmail.com>
+Date: Fri, 23 May 2014 13:31:01 +0300
+In-Reply-To: <CA+BoTQn_V5zGA18qGMNrWYy_-fBQzBi1=EmzMs=0SLvk1LBVJQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 23 May 2014 11:06:25 +0200")
+Message-ID: <877g5cvlay.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
- <5370F41A.70202@candelatech.com>
- <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
- <53719332.9040700@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
- <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
- <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
- <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
-Date: Fri, 23 May 2014 17:15:01 +0800
-Message-ID: <CAEFj984iGQpP0_g6b1zR8WSY8KCJZHwFmXOBG-fZyG06FKqB1w@mail.gmail.com>
-Subject: Re: RE : RE : ath10k: firmware crash in station mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +30,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->
->> But I wonder if there will be any progress of the firmware in the future for promiscuous so that I can
->> set up bridge mode?
->
-> Beats me. You should ask QCA about the future of ath10k firmware.
->
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-The best you can is use the firmware-2.bin_10.1.467.2-1. It should
-allow you to bridge even in STA mode.
+>> Sure, but I still think it's a bit ugly. The right way to fix this would
+>> be to add it to include/lockdep.h, instead of adding custom checks to a
+>> driver.
+>
+> Good point. I wonder if it's generic enough to justify.
 
----
-Chun-Yeow
+No idea. But no matter what it will take some time to get it accepted,
+so we need to solve this in a faster way so that I can apply this patch.
+
+>> But does this check even make sense? There's nothing preventing
+>> to another thread to take lock just after the WARN_ON(), right?
+>
+> There's nothing wrong with other thread holding it. Actually that's
+> the reason for this very check.
+>
+> The point is to prevent ath10k_drain_tx() being called while caller
+> (current thread) holds conf_mutex. If it were to hold conf_mutex then
+> cancel_work_sync() can deadlock as both workers it tries to stop try
+> to get a hold of the lock too.
+
+Ah, now I understand.
+
+What if we just drop the WARN_ON() from this patch just so that I can
+apply the patch and we add a proper code for checking the mutex in a
+followup patch? Are you ok with that?
+
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
