@@ -1,12 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WoF6H-0007Ml-7K
- for ath10k@lists.infradead.org; Sat, 24 May 2014 16:47:13 +0000
-Received: by mail-vc0-f178.google.com with SMTP id ij19so4319236vcb.9
- for <ath10k@lists.infradead.org>; Sat, 24 May 2014 09:46:50 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAJ+vNU0tQ5jPKQXs_psiY+wqb9b77z3hB2F0Sfe1gP4t6Gj70Q@mail.gmail.com>
+ id 1WoSpd-0003fb-Lq
+ for ath10k@lists.infradead.org; Sun, 25 May 2014 07:26:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: TR : ath10k: firmware crash in station mode
 References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
  <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
  <5370F41A.70202@candelatech.com>
@@ -18,11 +16,13 @@ References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
  <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
  <EE97821C81277E459BEA5C6384C6F241012F109978EF@srvexch01.SODIELEC.local>
  <CAEFj985+HSVXZ611v6ERGxXfn9AOw_OQB37SKVP+o0r0KHP17w@mail.gmail.com>
- <CAJ+vNU0tQ5jPKQXs_psiY+wqb9b77z3hB2F0Sfe1gP4t6Gj70Q@mail.gmail.com>
-Date: Sun, 25 May 2014 00:46:50 +0800
-Message-ID: <CAEFj9855Yxwv1cuqmkNiww6eVOkKEkYmK=QJouNBf6=cFuJ_YQ@mail.gmail.com>
-Subject: Re: TR : ath10k: firmware crash in station mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ <537F7135.7030109@candelatech.com>
+ <CAJ+vNU39FSOfjJv=hSPKc-9usaAkfxvP=ksout0iXTss20WtUg@mail.gmail.com>
+Date: Sun, 25 May 2014 10:26:27 +0300
+In-Reply-To: <CAJ+vNU39FSOfjJv=hSPKc-9usaAkfxvP=ksout0iXTss20WtUg@mail.gmail.com>
+ (Tim Harvey's message of "Fri, 23 May 2014 23:29:43 -0700")
+Message-ID: <87vbsutj30.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,24 +36,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Tim Harvey <tharvey@gateworks.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->
-> I am able to reproduce this firmware crash as well very easily. While
-> you can avoid it by associating first, then setting 4addr, then adding
-> it to a bridge, any dissassociation/reassociation will trigger the
-> crash. Additionally its not always convenient to configure things in
-> that order - using OpenWrt with the interface bridged and wds enabled
-> will always trigger the crash on association.
->
-> Tim
->
+Hi Tim,
 
-Yes. I agree with that. But it seems that this is the best we can do
-for the time being.
+Tim Harvey <tharvey@gateworks.com> writes:
 
----
-Chun-Yeow
+> Kalle - Will QCA make some sort of statement as to what the plans are
+> with this firmware? Will there be updates? Will the features be merged
+> into a single firmware? Will it be opened up so that the community can
+> improve the product?
+
+I'm responsible only for the host driver and we have a separate team
+doing the firmware development. I can not comment on behalf of that
+team.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
