@@ -1,27 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WoSpd-0003fb-Lq
- for ath10k@lists.infradead.org; Sun, 25 May 2014 07:26:58 +0000
+ id 1WoSvn-0004oD-8K
+ for ath10k@lists.infradead.org; Sun, 25 May 2014 07:33:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: TR : ath10k: firmware crash in station mode
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>
- <5370F41A.70202@candelatech.com>
- <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
- <53719332.9040700@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
- <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978EF@srvexch01.SODIELEC.local>
- <CAEFj985+HSVXZ611v6ERGxXfn9AOw_OQB37SKVP+o0r0KHP17w@mail.gmail.com>
- <537F7135.7030109@candelatech.com>
- <CAJ+vNU39FSOfjJv=hSPKc-9usaAkfxvP=ksout0iXTss20WtUg@mail.gmail.com>
-Date: Sun, 25 May 2014 10:26:27 +0300
-In-Reply-To: <CAJ+vNU39FSOfjJv=hSPKc-9usaAkfxvP=ksout0iXTss20WtUg@mail.gmail.com>
- (Tim Harvey's message of "Fri, 23 May 2014 23:29:43 -0700")
-Message-ID: <87vbsutj30.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: help troubleshooting low throughput
+References: <CAJ+vNU23qE-H0cp9fGams0h3xVJqNJQKNgX-2r0mPiV8ioz_rA@mail.gmail.com>
+ <CAJ+vNU09pWS9+mheetHtvQfQACHDNfjzchkCc3zGBOWD7ef02w@mail.gmail.com>
+ <CA+BoTQnYB8JESb7cvmivMM0WY_OC51WcuGp3aynwcmQTUxztpA@mail.gmail.com>
+ <CAJ+vNU2eHHBQBFBbiRjntMn9qg_tXMpVcnkKtsV7KvXtXizVDA@mail.gmail.com>
+ <CA+BoTQk_G=UA-FsXOU+eoveYWLCLqs67Xj6muNUPVzKBdEL0-Q@mail.gmail.com>
+ <CAJ+vNU0KuGgGYVUyNbO=TTwH_P0zGszmFt6dBMWLNiO7APW0kw@mail.gmail.com>
+Date: Sun, 25 May 2014 10:32:52 +0300
+In-Reply-To: <CAJ+vNU0KuGgGYVUyNbO=TTwH_P0zGszmFt6dBMWLNiO7APW0kw@mail.gmail.com>
+ (Tim Harvey's message of "Fri, 23 May 2014 22:32:59 -0700")
+Message-ID: <87r43itisb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -36,20 +29,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Tim Harvey <tharvey@gateworks.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-
-Hi Tim,
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Tim Harvey <tharvey@gateworks.com> writes:
 
-> Kalle - Will QCA make some sort of statement as to what the plans are
-> with this firmware? Will there be updates? Will the features be merged
-> into a single firmware? Will it be opened up so that the community can
-> improve the product?
+>> Also, now that I think about you don't have a bridge. This means your
+>> AP system has to perform a lot more packet mangling which I guess can
+>> be pretty taxing for the A9.
+>>
+>
+> yep - turns out it is a cpu bottleneck. I'm not sure what I was
+> looking at when I checked the performance before but now I see that I
+> am hitting 100% utilization.
+>
+> Putting the AP in a bridge and moving iperf off of it, brings up my
+> TCP bandwidth to 240mbps (at which point the STA running iperf is 100%
+> pegged) and 463mbps UDP (at which point the AP was 100% pegged).
 
-I'm responsible only for the host driver and we have a separate team
-doing the firmware development. I can not comment on behalf of that
-team.
+Did you check that you had all kernel debug options disabled, including
+ath10k debug options? Kernel debugging code can significantly decrease
+maximum throughput.
 
 -- 
 Kalle Valo
