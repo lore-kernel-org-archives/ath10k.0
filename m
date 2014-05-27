@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpDxG-0004tl-1I
- for ath10k@lists.infradead.org; Tue, 27 May 2014 09:45:58 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: FYI: msdu-desc must be multiple of 8.
-References: <53729DED.6000104@candelatech.com>
- <CAHqTa-2OCz30cetjY3pALup-e0WL=YRLOkrB3Q6QmSyQBxdvhQ@mail.gmail.com>
- <5372A1A7.2080602@candelatech.com>
- <CAHqTa-3xqtoU+hTazpRJZCMQX27Uyyi0HFjkJ9LvrGCd2Mv4vg@mail.gmail.com>
-Date: Tue, 27 May 2014 12:45:24 +0300
-In-Reply-To: <CAHqTa-3xqtoU+hTazpRJZCMQX27Uyyi0HFjkJ9LvrGCd2Mv4vg@mail.gmail.com>
- (Avery Pennarun's message of "Tue, 13 May 2014 20:17:55 -0400")
-Message-ID: <87bnujblmz.fsf@kamboji.qca.qualcomm.com>
+ id 1WpE1V-00064n-90
+ for ath10k@lists.infradead.org; Tue, 27 May 2014 09:50:21 +0000
+Received: by mail-vc0-f176.google.com with SMTP id id10so6922939vcb.35
+ for <ath10k@lists.infradead.org>; Tue, 27 May 2014 02:49:59 -0700 (PDT)
 MIME-Version: 1.0
+Date: Tue, 27 May 2014 17:49:59 +0800
+Message-ID: <CAEFj986qfY7yKpNha7vojY77TPeOLcJgk1mJqr++tyXG-qiwqA@mail.gmail.com>
+Subject: warning message
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Avery Pennarun <apenwarr@gmail.com> writes:
+Hi, all
 
-> On Tue, May 13, 2014 at 6:50 PM, Ben Greear <greearb@candelatech.com> wrote:
->> As an aside, if you do manage to crash firmware in this manner, it also
->> takes down the host when it tries to clean up the stale tx buffers.  Possibly
->> that bug is just due to some of my own patches, but might be worth investigating
->> some day when I have more time and a cleaner tree...
->
-> At least on my boxes, firmware crashes lead to kernel panics pretty
-> often, say 1/3 of the time.  There appear to be lots of ways the
-> cleanups are still not happening properly on a firmware crash.
+I have tested the ath-next with iperf, and one as AP and another one
+as STA. I have received a lot of following warning messages:
 
-I just merged a patch from Michal which I think is related:
+[ 1812.690000] ath10k: failed to pop chained msdus, dropping
+[ 1812.690000] ath10k: failed to pop amsdu from htt rx ring -22
+[ 1812.980000] ath10k: failed to pop chained msdus, dropping
+[ 1812.990000] ath10k: failed to pop amsdu from htt rx ring -22
+[ 1815.360000] ath10k: failed to pop chained msdus, dropping
+[ 1815.370000] ath10k: failed to pop amsdu from htt rx ring -22
+[ 1815.380000] ath10k: failed to pop chained msdus, dropping
+[ 1815.390000] ath10k: failed to pop amsdu from htt rx ring -22
+[ 1815.490000] ath10k: failed to pop chained msdus, dropping
+[ 1815.500000] ath10k: failed to pop amsdu from htt rx ring -22
 
-7147a13135ee ath10k: protect src_ring state with ce_lock in tx_sg()
+Anyone has the same issue?
 
-Did that help? If not, any chance to get more info? I know these kind of
-crashes don't usually provide much information, but even small hints
-help.
-
--- 
-Kalle Valo
+---
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
