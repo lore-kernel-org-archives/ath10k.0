@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpMok-0005nN-9N
- for ath10k@lists.infradead.org; Tue, 27 May 2014 19:13:46 +0000
-Message-ID: <5384E3D1.5020508@candelatech.com>
-Date: Tue, 27 May 2014 12:13:21 -0700
+ id 1WpMtp-0008UY-Dx
+ for ath10k@lists.infradead.org; Tue, 27 May 2014 19:19:01 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 9DAE740CA81
+ for <ath10k@lists.infradead.org>; Tue, 27 May 2014 12:18:40 -0700 (PDT)
+Message-ID: <5384E510.10109@candelatech.com>
+Date: Tue, 27 May 2014 12:18:40 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: TR : ath10k: firmware crash in station mode
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>	<EE97821C81277E459BEA5C6384C6F241012F0EFBBCBC@srvexch01.SODIELEC.local>	<5370F41A.70202@candelatech.com>	<CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>	<53719332.9040700@candelatech.com>	<EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>	<EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>	<CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>	<EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>	<EE97821C81277E459BEA5C6384C6F241012F109978EF@srvexch01.SODIELEC.local>	<CAEFj985+HSVXZ611v6ERGxXfn9AOw_OQB37SKVP+o0r0KHP17w@mail.gmail.com>	<537F7135.7030109@candelatech.com>
- <CAJ+vNU39FSOfjJv=hSPKc-9usaAkfxvP=ksout0iXTss20WtUg@mail.gmail.com>
- <5380C54E.7060800@candelatech.com>
-In-Reply-To: <5380C54E.7060800@candelatech.com>
+Subject: New version of CT firmware is available.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,88 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Tim Harvey <tharvey@gateworks.com>, "Valo, Kalle" <kvalo@qca.qualcomm.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 05/24/2014 09:14 AM, Ben Greear wrote:
-> 
-> 
-> On 05/23/2014 11:29 PM, Tim Harvey wrote:
->> On Fri, May 23, 2014 at 9:03 AM, Ben Greear <greearb@candelatech.com> wrote:
->>> On 05/23/2014 08:36 AM, Yeoh Chun-Yeow wrote:
->>>> Based on my testing, due to firmware 636 is not able to support
->>>> standalone monitor mode, and bridge requires promiscuous mode, it
->>>> would crash. Then, I have tested with AP firmware and it works well.
->>>> But then, I have not up the node for long time.
->>>>
->>>> By the way, I am associating the AP before setting "iw dev wlan0 set
->>>> 4addr on" and bridge it.
->>>
->>> Well, if nothing else, you could try my firmware, with a small patch to
->>> make it work on standard kernels.  If you can crash it, send me the
->>> firmware crash message and I'll see if I can fix it.
->>>
->>> Current binary is non-commercial, but I will shortly have a free-for-whatever-use
->>> binary that has everything except the multiple-vif-to-same-ap-with-encryption
->>> feature.  Virtually no one except folks like us doing wifi testing equipment
->>> needs that feature....
->>>
->>> My firmware has been fairly well tested with my patched kernel and in
->>> station and AP mode.  I'm sure there are still bugs, but I will try
->>> to fix them, at least.
->>>
->>> http://www.candelatech.com/vsta.php
->>>
->>> Thanks,
->>> Ben
->>>
->>
->> Ben,
->>
->> I tried using your firmware on a 3.14 kernel without any luck. I don't
->> see any errors, but the sta never associates nor see's any ap on scan.
->> I followed http://www.candelatech.com/vsta.php step 4 and step 6 and
->> did this on OpenWrt, so the udev stuff doesn't apply.
-> 
-> Skip step 6 unless you are using my kernel.  Just step 4 for upstream
-> kernels.  I need to make a separate page for folks just using my CT
-> firmware on normal kernels doing normal things...
-> 
-> No arguments with the rest of your email :)
+Just a quick note:  Our firmware should now work on standard kernels with
+no kernel modifications.  Just drop the firmware into the appropriate directory
+(and re-named firmware-2.bin), and reboot.
 
-I have just uploaded my latest firmware image, and it now works on
-un-modified kernels (tested on Ubuntu 14.04 system with kernel
-3.13.0-24-generic:  Brought up a station, associated with AP on
-channel 36, obtained DHCP address).  I have not done any extensive
-testing of our firmware on standard kernels.
+I did a quick test on Ubuntu 14.04 with kernel 3.13.0-24-generic:  Associated
+a station on an AP on channel 36 and obtained DHCP.  Used open authentication.
 
-You should only have to copy the firmware image to your existing system
-and reboot and it should just work (tm).
+If you can crash this firmware or see any other bugs that could be firmware related,
+please send me the kernel firmware crash dump and/or bug report.
 
-One problem we often see is that the regulatory domain gets too restrictive
-when we have several nics and/or different timezones and/or different
-domains configured directly with 'iw'.
+Please do not bother QCA about issues with my firmware image.
 
-This keeps you from scanning on all normally available channels.
+I am interested to know results if anyone tries this.
 
-I have hacked my kernel to allow ignoring ath10k (and ath9k) regulatory
-settings in the NICs, and we are now careful about the timezone
-settings, but please do double-check that if you have scan issues,
-you are actually scanning the needed channels.
+You can ignore most of this page linked below if not dealing with
+multiple station vifs, but it has a link to the firmware image, etc:
 
-'iw event' has enough info to show this.
-
-If you do get a chance to try our firmware again, I'm interested
-to know the results.
+http://www.candelatech.com/vsta.php
 
 Thanks,
 Ben
-
-> 
-> Thanks,
-> Ben
-> 
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
