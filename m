@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpDiy-0003uj-M7
- for ath10k@lists.infradead.org; Tue, 27 May 2014 09:31:13 +0000
+ id 1WpDl5-0004on-4Q
+ for ath10k@lists.infradead.org; Tue, 27 May 2014 09:33:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k:  Ensure rx-frag ignores rssi.
-References: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
-Date: Tue, 27 May 2014 12:30:44 +0300
-In-Reply-To: <1400178923-26306-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Thu, 15 May 2014 11:35:23
- -0700")
-Message-ID: <87oayjbmbf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/2] ath10k: pci fixes 2014-05-15
+References: <1400158139-13836-1-git-send-email-michal.kazior@tieto.com>
+ <1401098579-31842-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 27 May 2014 12:32:55 +0300
+In-Reply-To: <1401098579-31842-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 26 May 2014 12:02:57 +0200")
+Message-ID: <87k397bm7s.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,19 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, apenwarr@gmail.com
 
-greearb@candelatech.com writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> Hi,
 >
-> It seems ath10k firmware gives us no way to know
-> the rssi for rx-fragments.
+> Patches are a result of analysing `ath10k firmware
+> crash after 4 hours of heavy TCP traffic` bug
+> reported by Avery.
 >
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> v2:
+>  * dropped patch 3/3 (memory barrier addition) [Kalle]
+>
+> Based on github.com/kvalo/ath/master
+>
+>
+> Michal Kazior (2):
+>   ath10k: protect src_ring state with ce_lock in tx_sg()
+>   ath10k: abort incomplete scatter-gather pci tx properly
 
-Thanks, applied.
+Thanks, both patches applied.
 
 -- 
 Kalle Valo
