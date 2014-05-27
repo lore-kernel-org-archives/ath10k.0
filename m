@@ -1,15 +1,44 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpIFp-0004Ys-4d
- for ath10k@lists.infradead.org; Tue, 27 May 2014 14:21:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add implementation for configure max amsdu, ampdu
-References: <1400245332-6974-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 27 May 2014 17:20:55 +0300
-In-Reply-To: <1400245332-6974-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 16 May 2014 15:02:12 +0200")
-Message-ID: <87zji39ubc.fsf@kamboji.qca.qualcomm.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WpKPo-0007NZ-CI
+ for ath10k@lists.infradead.org; Tue, 27 May 2014 16:39:53 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 27 May 2014 18:36:04 +0200
+Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <5370F41A.70202@candelatech.com>
+ <CAHqTa-1xYF=eO-Ai5UMF4BuzzLa84SrzayiGZVmt0jaGs5sZDQ@mail.gmail.com>
+ <53719332.9040700@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F0EFBBCBD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978CC@srvexch01.SODIELEC.local>
+ <CA+BoTQmxBHbeu=4si9sCkqtXtY6mBHahktVKoWLCuShecjUytw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978D0@srvexch01.SODIELEC.local>
+ <CA+BoTQnsLGHLHjnr+aFm44qwkPQxNcpuCg0oo75iD=QVsh4U7w@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DA@srvexch01.SODIELEC.local>
+ <CA+BoTQnKrBWBUtdw4YB8GQPu5VZuZNc7OgwT5v5_qp=zOqxd_A@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DD@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DE@srvexch01.SODIELEC.local>
+ <CALhHN=qKpm3RRG9S6UF17c3NZZaid4Zo15e0AACnrEgb0f-aqg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978DF@srvexch01.SODIELEC.local>
+ <CALhHN=r0vg3hf+pozRQujmCzYXb7g2YX8Ur-bQ_HQ0-qd=yRAg@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E1@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E5@srvexch01.SODIELEC.local>
+ <CALhHN=oC4LdH0vr31dAZpvFLjZnJJ_Bg2d=pnCved6TKAmwi0A@mail.gmail.com>
+ <CALhHN=rw7=nm8ZoMVm1u=nVou1OLY30jUq0G6LvA861Yrknn_Q@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E6@srvexch01.SODIELEC.local>
+ <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>
+In-Reply-To: <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,135 +52,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Allow to setup maximum subframes for AMSDU and AMPDU aggregation,
-> using debugfs htt_max_amsdu_ampdu file.
->
-> Eg.
-> echo "2 64" > htt_max_amsdu_ampdu
-> will setup maximum amsdu subframes equal 2 and
-> maximum ampdu subframes equal to 64.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> This is set base on what driver/mac80211/cfg80211 report - function
+> wpa_driver_nl80211_capa().
+> With ath10k and new mac80211 this should be never set. So, seems you still
+> have old/wrong modules and system build/configuration problem?
+> Check cfg80211.ko/mac80211.ko ... and/or add some prints to driver_nl80211.c
 
-I saw two new warnings:
+I tried to trace back where the problem is in the code but can not found anything strange, since the modules that I compiled from backports seems normal (though I get some warnings (unused variable and defined but not used like:
+/backports-output/net/wireless/sysfs.c:78:1: warning: 'init_ieee80211_attrs' defined but not used [-Wunused-function]
+/backports-output/drivers/net/wireless/ath/ath10k/ce.c:337:21: warning: unused variable 'ar_pci' [-Wunused-variable]
+/backports-output/net/mac80211/chan.c:858:26: warning: unused variable 'local' [-Wunused-variable]
 
-drivers/net/wireless/ath/ath10k/debug.c:683: WARNING: line over 80 characters
-drivers/net/wireless/ath/ath10k/debug.c:685: WARNING: line over 80 characters
+DO I have to activate cfg80211 and mac80211 when I built my old kernel 3.2.36 (so that the .config of the kernel is changed) or I can build them directly from backport? I just link them to my kernel by setting KLIB=... and KLIB_BUILD=...
+Thanks,
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
-> I wasn't sure we have to protect
-> debug.htt_max_amsdu, debug.htt_max_ampdu using conf_mutex.
-> Anyway I can add such protection if required.
 
-Yeah, we need to protect those variables.
-
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -671,6 +671,61 @@ static const struct file_operations fops_htt_stats_mask = {
->  	.llseek = default_llseek,
->  };
->  
-> +static ssize_t ath10k_read_htt_max_amsdu_ampdu(struct file *file,
-> +					       char __user *user_buf,
-> +					       size_t count, loff_t *ppos)
-> +{
-> +	struct ath10k *ar = file->private_data;
-> +	char buf[64];
-> +	unsigned int len;
-> +
-> +	if (!ar->debug.htt_max_amsdu || !ar->debug.htt_max_ampdu)
-> +		len = scnprintf(buf, sizeof(buf), "using FW default max subframes configuration: amsdu 3, ampdu 64\n");
-> +	else
-> +		len = scnprintf(buf, sizeof(buf), "max subframes amsdu %u, ampdu %d\n",
-> +				ar->debug.htt_max_amsdu,
-> +				ar->debug.htt_max_ampdu);
-> +
-> +	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-> +}
-
-I would prefer to have something more machine readable, for example
-something like this:
-
-if (ar->debug.htt_max_amsdu != 0) {
-        amsdu = ar->debug.htt_max_amsdu;
-} else {
-        amsdu = 3;
-        amsdu_default = " (default)";
-}
-
-len += scnprintf(buf + len, sizeof(buf) - len, 
-                "max subframes amsdu %u%s\n", amsdu, amsdu_default);
-
-And the same for ampdu. But I'm not actually sure if it makes any sense
-to print the default at all?
-
-Now I think more maybe we should just use the same format as we use as
-input ("%u %u"). That would follow the KISS principle.
-
-> @@ -757,6 +812,9 @@ void ath10k_debug_stop(struct ath10k *ar)
->  	 * warning from del_timer(). */
->  	if (ar->debug.htt_stats_mask != 0)
->  		cancel_delayed_work(&ar->debug.htt_stats_dwork);
-> +
-> +	ar->debug.htt_max_amsdu = 0;
-> +	ar->debug.htt_max_ampdu = 0;
->  }
-
-This is correct. But the problem now is that the value only is valid
-until the interface is put down or firmware crashes. That's a bit
-confusing for the user, but I guess we can fix that later if that will
-become a problem. Users should not use this command normally.
-
-> +int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-> +				u8 max_subfrms_ampdu,
-> +				u8 max_subfrms_amsdu)
-> +{
-> +	struct htt_aggr_conf *aggr_conf;
-> +	struct sk_buff *skb;
-> +	struct htt_cmd *cmd;
-> +	int len;
-> +	int ret;
-> +
-> +	/* By default FW setup amsdu = 3 and ampdu = 64 */
-> +	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
-> +		return -EINVAL;
-
-I didn't immediately understand the comment above. Is it just to
-document what are the firmware defaults? In that case please add an
-empty line after the comment and clear up the wording. For example,
-"Firmware defaults are: amsdu = 3 and ampdu = 64 */".
-
-> +
-> +	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
-> +		return -EINVAL;
-> +
-> +	len = sizeof(cmd->hdr);
-> +	len += sizeof(cmd->aggr_conf);
-> +
-> +	skb = ath10k_htc_alloc_skb(len);
-> +	if (!skb)
-> +		return -ENOMEM;
-> +
-> +	skb_put(skb, len);
-> +	cmd = (struct htt_cmd *)skb->data;
-> +	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
-> +
-> +	aggr_conf = &cmd->aggr_conf;
-> +	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
-> +	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
-> +
-> +	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d, ampdu %d",
-> +		   aggr_conf->max_num_amsdu_subframes,
-> +		   aggr_conf->max_num_ampdu_subframes);
-
-No comma in the debug message, please.
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
