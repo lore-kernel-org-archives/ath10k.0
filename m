@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WpR1M-0003DH-PU
- for ath10k@lists.infradead.org; Tue, 27 May 2014 23:43:05 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id A9EAC40BF83
- for <ath10k@lists.infradead.org>; Tue, 27 May 2014 16:42:42 -0700 (PDT)
-Message-ID: <538522F2.1060803@candelatech.com>
-Date: Tue, 27 May 2014 16:42:42 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WpYUS-0001HV-T3
+ for ath10k@lists.infradead.org; Wed, 28 May 2014 07:41:37 +0000
+Subject: [PATCH] ath10k: remove unused len variables from wmi process rx
+ functions
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Wed, 28 May 2014 10:41:10 +0300
+Message-ID: <20140528074110.8437.58039.stgit@potku.adurom.net>
 MIME-Version: 1.0
-Subject: Re: New version of CT firmware is available.
-References: <5384E510.10109@candelatech.com>
-In-Reply-To: <5384E510.10109@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,51 +21,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 05/27/2014 12:18 PM, Ben Greear wrote:
-> Just a quick note:  Our firmware should now work on standard kernels with
-> no kernel modifications.  Just drop the firmware into the appropriate directory
-> (and re-named firmware-2.bin), and reboot.
-> 
-> I did a quick test on Ubuntu 14.04 with kernel 3.13.0-24-generic:  Associated
-> a station on an AP on channel 36 and obtained DHCP.  Used open authentication.
-> 
-> If you can crash this firmware or see any other bugs that could be firmware related,
-> please send me the kernel firmware crash dump and/or bug report.
-> 
-> Please do not bother QCA about issues with my firmware image.
-> 
-> I am interested to know results if anyone tries this.
-> 
-> You can ignore most of this page linked below if not dealing with
-> multiple station vifs, but it has a link to the firmware image, etc:
-> 
-> http://www.candelatech.com/vsta.php
+These len variables are not used anywhere.
 
-And, as previously promised, there is now a 'community'
-version that may be used commercially or otherwise, under
-the same restrictions as that of the official QCA firmware.
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c |    6 ------
+ 1 file changed, 6 deletions(-)
 
-The only difference is that the community version will not
-allow multiple station vifs to connect to the same AP when
-using encryption because it does not allow software-rx-crypt.
-Multiple stations to same AP with open authentication works fine
-if you are using our kernel patches or some proper subset thereof.
-
-For normal use (single station, or single AP), both images should
-act similar and should work on standard un-patched kernels.
-
-See link above for more info...just see notes in bold at top, and
-list item #3 for normal-use scenarios.
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 921d18d599fc..0646203f7518 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2105,7 +2105,6 @@ static void ath10k_wmi_main_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_cmd_hdr *cmd_hdr;
+ 	enum wmi_event_id id;
+-	u16 len;
+ 
+ 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+@@ -2113,8 +2112,6 @@ static void ath10k_wmi_main_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+ 		return;
+ 
+-	len = skb->len;
+-
+ 	trace_ath10k_wmi_event(id, skb->data, skb->len);
+ 
+ 	switch (id) {
+@@ -2224,7 +2221,6 @@ static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_cmd_hdr *cmd_hdr;
+ 	enum wmi_10x_event_id id;
+-	u16 len;
+ 
+ 	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+@@ -2232,8 +2228,6 @@ static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+ 		return;
+ 
+-	len = skb->len;
+-
+ 	trace_ath10k_wmi_event(id, skb->data, skb->len);
+ 
+ 	switch (id) {
 
 
 _______________________________________________
