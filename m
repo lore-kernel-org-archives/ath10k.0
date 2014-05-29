@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x233.google.com ([2607:f8b0:400c:c03::233])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wpv5U-0000RZ-D7
- for ath10k@lists.infradead.org; Thu, 29 May 2014 07:49:21 +0000
-Received: by mail-vc0-f179.google.com with SMTP id im17so13756054vcb.10
- for <ath10k@lists.infradead.org>; Thu, 29 May 2014 00:48:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
-Date: Thu, 29 May 2014 09:48:55 +0200
-Message-ID: <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+ id 1Wpx5u-0001Wx-6w
+ for ath10k@lists.infradead.org; Thu, 29 May 2014 09:57:55 +0000
+Received: by mail-we0-f170.google.com with SMTP id u57so120964wes.29
+ for <ath10k@lists.infradead.org>; Thu, 29 May 2014 02:57:30 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: remove unnecessary htt rx corruption check
+Date: Thu, 29 May 2014 11:50:08 +0200
+Message-Id: <1401357008-16259-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +17,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-K2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCgpPbiAyOCBNYXkgMjAxNCAyMDozNSwgQW5keSBM
-dXRvbWlyc2tpIDxsdXRvQGFtYWNhcGl0YWwubmV0PiB3cm90ZToKPiBJdCBkaWVzIHdpdGggJ290
-cCBjYWxpYnJhdGlvbiBmYWlsZWQ6IDInLgo+Cj4gU29tZSBvbGRlciB2ZXJzaW9uIG9mIHRoZSBk
-cml2ZXIgc2VlbWVkIHRvIHdvcmsgZmluZS4KCmF0aDEwayBkaWQgbm90IHZlcmlmeSBvdHAgcmVz
-dWx0IGJlZm9yZSBzbyBpdCBjb3VsZCBsb2FkIHN1Y2Nlc3NmdWxseQpkZXNwaXRlIGVycm9ycy4K
-ClNvbWVvbmUgcmFpc2VkIHRoaXMgcHJvYmxlbSB5ZXN0ZXJkYXkgb24gSVJDLiBJJ20gbm90IHJl
-YWxseSBzdXJlIGhvdwp3ZSBzaG91bGQgZGVhbCB3aXRoIHRoaXMgcHJvcGVybHkuCgoKTWljaGHF
-ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+While fixing a bug reported by Avery I went ahead
+and added a warning suspecting there might be
+something more to the bug. This ended up with
+people reporting they see warnings during heavy
+traffic. This bought me some time and helped me
+understand the problem better - apparently fw/hw
+can report a chained msdus as follows: 1 msdu, 1
+chained, 1 msdu (0 length).
+
+The patch removes the extra check but leaves the
+other change that fixed the original skb_push
+panic bug (msdu_chaining was overwritten in an
+unfortunate way which made the above example to
+be treated as non-chained case).
+
+Reported-by: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Reported-by: Tim Harvey <tharvey@gateworks.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6c102b1..eebc860 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -312,7 +312,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 	int msdu_len, msdu_chaining = 0;
+ 	struct sk_buff *msdu;
+ 	struct htt_rx_desc *rx_desc;
+-	bool corrupted = false;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+ 
+@@ -439,9 +438,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 		last_msdu = __le32_to_cpu(rx_desc->msdu_end.info0) &
+ 				RX_MSDU_END_INFO0_LAST_MSDU;
+ 
+-		if (msdu_chaining && !last_msdu)
+-			corrupted = true;
+-
+ 		if (last_msdu) {
+ 			msdu->next = NULL;
+ 			break;
+@@ -457,20 +453,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 		msdu_chaining = -1;
+ 
+ 	/*
+-	 * Apparently FW sometimes reports weird chained MSDU sequences with
+-	 * more than one rx descriptor. This seems like a bug but needs more
+-	 * analyzing. For the time being fix it by dropping such sequences to
+-	 * avoid blowing up the host system.
+-	 */
+-	if (corrupted) {
+-		ath10k_warn("failed to pop chained msdus, dropping\n");
+-		ath10k_htt_rx_free_msdu_chain(*head_msdu);
+-		*head_msdu = NULL;
+-		*tail_msdu = NULL;
+-		msdu_chaining = -EINVAL;
+-	}
+-
+-	/*
+ 	 * Don't refill the ring yet.
+ 	 *
+ 	 * First, the elements popped here are still in use - it is not
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
