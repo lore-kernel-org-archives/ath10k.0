@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wq2hr-0006vE-76
- for ath10k@lists.infradead.org; Thu, 29 May 2014 15:57:28 +0000
-Message-ID: <538758CF.8090208@candelatech.com>
-Date: Thu, 29 May 2014 08:57:03 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-vc0-f175.google.com ([209.85.220.175])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wq4Vv-0002Bk-AE
+ for ath10k@lists.infradead.org; Thu, 29 May 2014 17:53:15 +0000
+Received: by mail-vc0-f175.google.com with SMTP id id10so781285vcb.6
+ for <ath10k@lists.infradead.org>; Thu, 29 May 2014 10:52:53 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix vdev map size for 10.x firmware
-References: <1401370567-13543-1-git-send-email-bartosz.markowski@tieto.com>
- <53873A58.1070209@candelatech.com>
- <CACKGw+FT0GTRF+tn_Odi0KQvEFL93Oyjj4x=SKgNP1aayB4-QA@mail.gmail.com>
- <CACKGw+HZEvVVaGk3DzbvCTe7GSvU206=hr4QswLXVyiat1ozZg@mail.gmail.com>
-In-Reply-To: <CACKGw+HZEvVVaGk3DzbvCTe7GSvU206=hr4QswLXVyiat1ozZg@mail.gmail.com>
+In-Reply-To: <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
+ <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Thu, 29 May 2014 10:52:32 -0700
+Message-ID: <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +25,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 05/29/2014 07:42 AM, Bartosz Markowski wrote:
-> On 29 May 2014 16:10, Bartosz Markowski <bartosz.markowski@tieto.com> wrote:
->> On 29 May 2014 15:47, Ben Greear <greearb@candelatech.com> wrote:
->>>
->>>
->>> On 05/29/2014 06:36 AM, Bartosz Markowski wrote:
->>>>
->>>> Firmware 10.x supports up to 8 virtual AP interfaces
->>>> (comparing to 7 for main firmware). Previous vdev map
->>>> initialization was missing enough space for 8 + 1 vdevs
->>>> (we may spent one for mac monitor), due to wrong define used.
->>>>
->>>> Use correct one - TARGET_10X_NUM_VDEVS - for 10.x firmware.
->>>
->>>
->>> You are bumping total vdevs up to 16 with that patch...have you
->>> actually tested that many?  The stock firmware has quite a bit of
->>> deficiencies in the concurrency handling, at least for stations.
+On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> +ath10k@lists.infradead.org
+>
+> On 28 May 2014 20:35, Andy Lutomirski <luto@amacapital.net> wrote:
+>> It dies with 'otp calibration failed: 2'.
 >>
->> No, I have never tested it with so many. I'm running tests with 8 at
->> most. And by this patch I just aimed to support 8 VAPS we advertise in
->> iface_combinations to mac80211 (.max_interfaces = 8). I was managed to
->> get only 7 before, since 1 vdev was being allocated as monitor.
-> 
-> FYI: I quickly tried to extend the .max_interfaces +
-> interface_combinations limit in ath10k and check with 15 VAPs (using
-> hostapd, open network; on MIPS platform) and it just worked.. I did
-> not perform any exploratory testing, but managed to connect a couple
-> of clients to various bssids + run some sane iperf traffic etc.
+>> Some older version of the driver seemed to work fine.
+>
+> ath10k did not verify otp result before so it could load successfully
+> despite errors.
+>
+> Someone raised this problem yesterday on IRC. I'm not really sure how
+> we should deal with this properly.
+>
 
-Good to know that many VAPs can work...
+Ideally, someone from Atheros could figure out what the error is.
+Barring that, the card seems to work okay without otp (I don't even
+know what otp is), so just warning and continuing to load might be
+better than bailing.
 
-If the OS limits are going to remain at 8, then maybe
-only set the vdev mask to support 9 instead of 16
-vifs to handle the monitor interface?  That should make
-it easier (or at least safer) to support my firmware on
-un-patched kernels...
-
-Some of the problems with running out of resources in the
-firmware (which generally just asserts or crashes in that case)
-are only seen under load and/or random-ish cases
-in my experience.  I'm all for pushing the firmware to the
-max, but I suspect 16 vifs may not be that stable.
-
-That said, I have only been testing multiple stations, so maybe it
-will just work fine.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+--Andy
 
 _______________________________________________
 ath10k mailing list
