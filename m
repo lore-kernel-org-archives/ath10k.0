@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wq0g4-0005vu-Iu
- for ath10k@lists.infradead.org; Thu, 29 May 2014 13:47:29 +0000
-Message-ID: <53873A58.1070209@candelatech.com>
-Date: Thu, 29 May 2014 06:47:04 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wq12r-0001y0-HT
+ for ath10k@lists.infradead.org; Thu, 29 May 2014 14:11:10 +0000
+Received: by mail-we0-f172.google.com with SMTP id k48so471316wev.31
+ for <ath10k@lists.infradead.org>; Thu, 29 May 2014 07:10:39 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: fix vdev map size for 10.x firmware
+In-Reply-To: <53873A58.1070209@candelatech.com>
 References: <1401370567-13543-1-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1401370567-13543-1-git-send-email-bartosz.markowski@tieto.com>
+ <53873A58.1070209@candelatech.com>
+Date: Thu, 29 May 2014 16:10:39 +0200
+Message-ID: <CACKGw+FT0GTRF+tn_Odi0KQvEFL93Oyjj4x=SKgNP1aayB4-QA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix vdev map size for 10.x firmware
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,63 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-
-
-On 05/29/2014 06:36 AM, Bartosz Markowski wrote:
-> Firmware 10.x supports up to 8 virtual AP interfaces
-> (comparing to 7 for main firmware). Previous vdev map
-> initialization was missing enough space for 8 + 1 vdevs
-> (we may spent one for mac monitor), due to wrong define used.
+On 29 May 2014 15:47, Ben Greear <greearb@candelatech.com> wrote:
 >
-> Use correct one - TARGET_10X_NUM_VDEVS - for 10.x firmware.
-
-You are bumping total vdevs up to 16 with that patch...have you
-actually tested that many?  The stock firmware has quite a bit of
-deficiencies in the concurrency handling, at least for stations.
-
-For what it's worth, my firmware will only work on stock kernels
-because I ignore the request for 16 vdevs in the firmware and knock
-it down to 8 to match the kernel driver (before your change below).
-
-Thanks,
-Ben
-
-
 >
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
-> ---
->   drivers/net/wireless/ath/ath10k/core.c | 6 +++++-
->   1 file changed, 5 insertions(+), 1 deletion(-)
+> On 05/29/2014 06:36 AM, Bartosz Markowski wrote:
+>>
+>> Firmware 10.x supports up to 8 virtual AP interfaces
+>> (comparing to 7 for main firmware). Previous vdev map
+>> initialization was missing enough space for 8 + 1 vdevs
+>> (we may spent one for mac monitor), due to wrong define used.
+>>
+>> Use correct one - TARGET_10X_NUM_VDEVS - for 10.x firmware.
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> index 82017f5..e6c56c5 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -795,7 +795,11 @@ int ath10k_core_start(struct ath10k *ar)
->   	if (status)
->   		goto err_htc_stop;
 >
-> -	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
-> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
-> +		ar->free_vdev_map = (1 << TARGET_10X_NUM_VDEVS) - 1;
-> +	else
-> +		ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
-> +
->   	INIT_LIST_HEAD(&ar->arvifs);
->
->   	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
->
+> You are bumping total vdevs up to 16 with that patch...have you
+> actually tested that many?  The stock firmware has quite a bit of
+> deficiencies in the concurrency handling, at least for stations.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+No, I have never tested it with so many. I'm running tests with 8 at
+most. And by this patch I just aimed to support 8 VAPS we advertise in
+iface_combinations to mac80211 (.max_interfaces = 8). I was managed to
+get only 7 before, since 1 vdev was being allocated as monitor.
+
+[  219.960000] ath10k: mac monitor refs: promisc 1 monitor 0 cac 0
+[  219.960000] ath10k: mac monitor vdev 1 created
+
+I agree the 10X_NUM_VDEVS is a bit unfortunate with its 16 value, but
+that's what was there from FW APIs for a long time and I do not know
+exactly if it's still valid (from firmware point of view).
+
+> For what it's worth, my firmware will only work on stock kernels
+> because I ignore the request for 16 vdevs in the firmware and knock
+> it down to 8 to match the kernel driver (before your change below).
+
+Do you encode your firmware with the FW IE (wmi-10x) also? If som then
+it's a bit weird to have different firmware tracks that introduce
+themselves as 10.x.
+
+-Bartosz
 
 _______________________________________________
 ath10k mailing list
