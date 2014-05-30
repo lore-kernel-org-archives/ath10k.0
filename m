@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqIyi-0005Hs-SE
- for ath10k@lists.infradead.org; Fri, 30 May 2014 09:19:57 +0000
-Received: by mail-we0-f176.google.com with SMTP id q59so1636780wes.7
- for <ath10k@lists.infradead.org>; Fri, 30 May 2014 02:19:34 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: print Kconfig options
-Date: Fri, 30 May 2014 11:19:23 +0200
-Message-Id: <1401441563-9921-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WqJht-0005BA-Cl
+ for ath10k@lists.infradead.org; Fri, 30 May 2014 10:06:38 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC PATCH 2/2] ath10k: add testmode
+References: <20140528091832.8030.93169.stgit@potku.adurom.net>
+ <20140528091956.8030.46201.stgit@potku.adurom.net>
+ <CA+BoTQnLPua6Mds+ywPY==9QtnHbuucVamDYpWnfwKiC7J=9dQ@mail.gmail.com>
+ <87ha48693v.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=rNe_xcmp6yGsE1iGoRnGq_ZksfHg6JW_-U1iK3NszjQ@mail.gmail.com>
+Date: Fri, 30 May 2014 13:06:05 +0300
+In-Reply-To: <CA+BoTQ=rNe_xcmp6yGsE1iGoRnGq_ZksfHg6JW_-U1iK3NszjQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 30 May 2014 08:17:14 +0200")
+Message-ID: <87ioon4m42.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,50 +23,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Print Kconfig options enabled/disabled in the build.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> On 29 May 2014 14:51, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>
+>> BTW, please edit your quotes. It's pain to find your comments from a 700
+>> line monster :)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 82017f5..68bed4e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -798,7 +798,7 @@ int ath10k_core_start(struct ath10k *ar)
- 	ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
- 	INIT_LIST_HEAD(&ar->arvifs);
- 
--	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
-+	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags)) {
- 		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
- 			    ar->hw_params.name,
- 			    ar->target_version,
-@@ -807,6 +807,12 @@ int ath10k_core_start(struct ath10k *ar)
- 			    ar->fw_api,
- 			    ar->htt.target_version_major,
- 			    ar->htt.target_version_minor);
-+		ath10k_info("debug %d debugfs %d tracing %d dfs %d\n",
-+			    config_enabled(CONFIG_ATH10K_DEBUG),
-+			    config_enabled(CONFIG_ATH10K_DEBUGFS),
-+			    config_enabled(CONFIG_ATH10K_TRACING),
-+			    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED));
-+	}
- 
- 	__set_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags);
- 
+This request still stands, even though 170 lines is much better than 700
+lines ;)
+
+>>>> +       if (ar->state != ATH10K_STATE_UTF)
+>>>> +               /* utf firmware is not running */
+>>>> +               return;
+>>>> +
+>>>> +       ath10k_htc_stop(&ar->htc);
+>>>> +       ath10k_wmi_detach(ar);
+>>>
+>>> Why not ath10k_core_stop() ?
+>>
+>> Doh, I can't remember anymore. Maybe because of the htt calls? But I
+>> agree, we should call core_stop() for symmetry. I'll investigate.
+>
+> Well, you already call ath10k_core_stop() in ath10k_tm_cmd_utf_stop().
+> I think it should be safe (without getting deep into this) because you
+> only skip htt_connect (basically a htc service connect command) and
+> htt_setup (htt rx ring setup and htt rx version req commands), but
+> maybe I'm missing something.
+
+Ok, I'll check it carefully.
+
+>>> I'm a little confused how this works. When UTF firmware is loaded does
+>>> it generate regular WMI events? Or does it generate UTF_EVENTID only?
+>>
+>> Only UTF_EVENTID, at least for now.
+>>
+>>> Is there a particular reason for ath10k_tm_event_wmi() to be called
+>>> before the switch() and have it no effect on processing of the event
+>>> later whatsoever?
+>>
+>> I want to send the full WMI packet (instead of UTF_EVENTID) to user
+>> space to make it easier to extend this later, in case there will be a
+>> need for that in the future. For example, there can be new event ids and
+>> whatnot. The less we need to change the user space interface the easier
+>> it will be.
+>
+> I get it now. We could call skb_push() in UTF_EVENTID case to get back
+> the wmi header. It's not very pretty but saves a lot of work (i.e. no
+> need to depend on ar->state and no need to create a worker/skb queue)
+> now.
+
+That still limits us to only UTF_EVENTID, I would like to avoid that.
+And I want to send WMI events to user space only when it's explicitly
+enabled via testmode interface. But I have some ideas, let me send v2.
+
+(But only once I have managed to make my huge email backlog smaller,
+argh!)
+
+> We could also depend on cmd_id to accept/reject skbuffs in
+> ath10k_tm_event_wmi() since, at least for now, there aren't any
+> special cases to handle. But then.. will we really ever need to have a
+> passthrough (i.e. pass buffers to userspace but still process them in
+> the driver afterwards)? Does that even make sense?
+
+I think that's getting a bit too complicated. Basically we just need
+ath10k act as a pipe for WMI packets.
+
+> Either way I think this (why we want to send out a wmi packet
+> including its header to userspace) should be documented.
+
+Yes, I'll do that.
+
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
