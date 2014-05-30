@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqI7Y-0003P0-KG
- for ath10k@lists.infradead.org; Fri, 30 May 2014 08:25:01 +0000
-Received: by mail-wg0-f48.google.com with SMTP id k14so1562993wgh.31
- for <ath10k@lists.infradead.org>; Fri, 30 May 2014 01:24:34 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH v2] ath10k: add implementation for configure max amsdu, ampdu
-Date: Fri, 30 May 2014 10:24:15 +0200
-Message-Id: <1401438255-7349-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1WqILU-0000cG-Ul
+ for ath10k@lists.infradead.org; Fri, 30 May 2014 08:39:25 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Pull request: ath 20140530
+Date: Fri, 30 May 2014 11:38:54 +0300
+Message-ID: <87vbsn4q5d.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,235 +16,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Allow to setup maximum subframes for AMSDU and AMPDU aggregation
-via debugfs htt_max_amsdu_ampdu file.
+Hi John,
 
-Eg.
-echo "2 64" > htt_max_amsdu_ampdu
-will setup maximum amsdu subframes equal 2 and
-maximum ampdu subframes equal to 64.
+here's a new pull request for ath10k and also a small change for ath9k.
+I'm hoping to get these still to 3.16. The changelog is:
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h   |    3 ++
- drivers/net/wireless/ath/ath10k/debug.c  |   73 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.h    |   13 ++----
- drivers/net/wireless/ath/ath10k/htt_tx.c |   46 +++++++++++++++++++
- 4 files changed, 127 insertions(+), 8 deletions(-)
+----------------------------------------------------------------------
+Ben added support for setting antenna configurations. Michal improved
+warm reset so that we would not need to fall back to cold reset that
+often, an issue where ath10k stripped protected flag while in monitor
+mode and made module initialisation asynchronous to fix the problems
+with firmware loading when the driver is linked to the kernel.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 68ceef6..83a5fa9 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -290,6 +290,9 @@ struct ath10k_debug {
- 	struct ath_dfs_pool_stats dfs_pool_stats;
- 
- 	u32 fw_dbglog_mask;
-+
-+	u8 htt_max_amsdu;
-+	u8 htt_max_ampdu;
- };
- 
- enum ath10k_state {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 1b7ff4b..3030158 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -671,6 +671,72 @@ static const struct file_operations fops_htt_stats_mask = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_read_htt_max_amsdu_ampdu(struct file *file,
-+					       char __user *user_buf,
-+					       size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[64];
-+	u8 amsdu = 3, ampdu = 64;
-+	unsigned int len;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->debug.htt_max_amsdu)
-+		amsdu = ar->debug.htt_max_amsdu;
-+
-+	if (ar->debug.htt_max_ampdu)
-+		ampdu = ar->debug.htt_max_ampdu;
-+
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	len = scnprintf(buf, sizeof(buf), "%u %u\n", amsdu, ampdu);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
-+						const char __user *user_buf,
-+						size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	int res;
-+	char buf[64];
-+	unsigned int amsdu, ampdu;
-+
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = 0;
-+
-+	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
-+
-+	if (res != 2)
-+		return -EINVAL;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	res = ath10k_htt_h2t_aggr_cfg_msg(&ar->htt, ampdu, amsdu);
-+	if (res)
-+		goto out;
-+
-+	res = count;
-+	ar->debug.htt_max_amsdu = amsdu;
-+	ar->debug.htt_max_ampdu = ampdu;
-+
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return res;
-+}
-+
-+static const struct file_operations fops_htt_max_amsdu_ampdu = {
-+	.read = ath10k_read_htt_max_amsdu_ampdu,
-+	.write = ath10k_write_htt_max_amsdu_ampdu,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- static ssize_t ath10k_read_fw_dbglog(struct file *file,
- 					    char __user *user_buf,
- 					    size_t count, loff_t *ppos)
-@@ -757,6 +823,9 @@ void ath10k_debug_stop(struct ath10k *ar)
- 	 * warning from del_timer(). */
- 	if (ar->debug.htt_stats_mask != 0)
- 		cancel_delayed_work(&ar->debug.htt_stats_dwork);
-+
-+	ar->debug.htt_max_amsdu = 0;
-+	ar->debug.htt_max_ampdu = 0;
- }
- 
- static ssize_t ath10k_write_simulate_radar(struct file *file,
-@@ -867,6 +936,10 @@ int ath10k_debug_create(struct ath10k *ar)
- 	debugfs_create_file("htt_stats_mask", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_htt_stats_mask);
- 
-+	debugfs_create_file("htt_max_amsdu_ampdu", S_IRUSR | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar,
-+			    &fops_htt_max_amsdu_ampdu);
-+
- 	debugfs_create_file("fw_dbglog", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_fw_dbglog);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 9a26346..6c93f38 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -240,16 +240,10 @@ struct htt_oob_sync_req {
- 	__le16 rsvd0;
- } __packed;
- 
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F
--#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  0
--
- struct htt_aggr_conf {
- 	u8 max_num_ampdu_subframes;
--	union {
--		/* dont use bitfields; undefined behaviour */
--		u8 flags; /* see %HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_ */
--		u8 max_num_amsdu_subframes:5;
--	} __packed;
-+	/* amsdu_subframes is limited by 0x1F mask */
-+	u8 max_num_amsdu_subframes;
- } __packed;
- 
- #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
-@@ -1343,6 +1337,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
- int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
- int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu);
- 
- void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
- int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 7064354..accb6b4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -307,6 +307,52 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- 	return 0;
- }
- 
-+int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
-+				u8 max_subfrms_ampdu,
-+				u8 max_subfrms_amsdu)
-+{
-+	struct htt_aggr_conf *aggr_conf;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	int len;
-+	int ret;
-+
-+	/* Firmware defaults are: amsdu = 3 and ampdu = 64 */
-+
-+	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
-+		return -EINVAL;
-+
-+	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
-+		return -EINVAL;
-+
-+	len = sizeof(cmd->hdr);
-+	len += sizeof(cmd->aggr_conf);
-+
-+	skb = ath10k_htc_alloc_skb(len);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, len);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
-+
-+	aggr_conf = &cmd->aggr_conf;
-+	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
-+	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
-+
-+	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d ampdu %d",
-+		   aggr_conf->max_num_amsdu_subframes,
-+		   aggr_conf->max_num_ampdu_subframes);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		dev_kfree_skb_any(skb);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- {
- 	struct device *dev = htt->ar->dev;
+Luca removed unused channel_switch_beacon callbacks both from ath9k and
+ath10k. Marek fixed Protected Management Frames (PMF) when using Action
+Frames. Also we had other small fixes everywhere in the driver.
+----------------------------------------------------------------------
+
+Please let me know if there are any problems.
+
+Kalle
+
+
+The following changes since commit 5f407acbb7d6a92841c455b37a6ad4833757740e:
+
+  rsi: Changed the return value to enable BA set-up (2014-05-13 15:56:53 -0400)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git tags/for-linville-20140530
+
+for you to fetch changes up to 08b8aa0931830cc4b96b47f884fe623aef5c4b84:
+
+  ath10k: abort incomplete scatter-gather pci tx properly (2014-05-27 12:32:10 +0300)
+
+----------------------------------------------------------------
+Bartosz Markowski (1):
+      ath10k: get rid of pci_assign_resource() call from pci_probe
+
+Ben Greear (3):
+      ath10k: fix spelling mistake in comments
+      ath10k: support get/set antenna configurations.
+      ath10k: ensure rx-frag ignores rssi
+
+Frederic Danis (1):
+      ath10k: fix ath10k_bmi_read32 macro
+
+Kalle Valo (1):
+      Merge remote-tracking branch 'wireless-next/master' into ath-next
+
+Luciano Coelho (1):
+      ath9k/ath10k: remove unnecessary channel_switch_beacon callbacks
+
+Marek Kwaczynski (1):
+      ath10k: fix pmf for action frames
+
+Michal Kazior (18):
+      ath10k: fix htt rx ring clean up
+      ath10k: fix handling of wierd MSDU chaining cases
+      ath10k: improve warm reset reliability
+      ath10k: retry warm reset a few times
+      ath10k: enable early device dumps
+      ath10k: fix core start sequence
+      ath10k: prevent hif_stop being called twice
+      ath10k: fix protected flag stripping
+      ath10k: relocate core create/destroy functions
+      ath10k: remove unnecessary tasklet_kill()
+      ath10k: make core registering async
+      ath10k: clean up start() callback
+      ath10k: perform hw restart lazily
+      ath10k: drain tx before restarting hw
+      ath10k: protect wep tx key setup
+      ath10k: dont configure bssid for ap mode
+      ath10k: protect src_ring state with ce_lock in tx_sg()
+      ath10k: abort incomplete scatter-gather pci tx properly
+
+ drivers/net/wireless/ath/ath10k/bmi.h    |    3 +-
+ drivers/net/wireless/ath/ath10k/ce.c     |   27 +++
+ drivers/net/wireless/ath/ath10k/ce.h     |    2 +
+ drivers/net/wireless/ath/ath10k/core.c   |  281 +++++++++++++++++-------------
+ drivers/net/wireless/ath/ath10k/core.h   |    8 +
+ drivers/net/wireless/ath/ath10k/htc.c    |    6 -
+ drivers/net/wireless/ath/ath10k/htt.c    |   42 +----
+ drivers/net/wireless/ath/ath10k/htt.h    |   18 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   92 +++++++---
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    8 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |  224 ++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/pci.c    |  121 +++++++++----
+ drivers/net/wireless/ath/ath10k/wmi.c    |   28 ++-
+ drivers/net/wireless/ath/ath10k/wmi.h    |    6 +-
+ drivers/net/wireless/ath/ath9k/main.c    |    9 -
+ 15 files changed, 570 insertions(+), 305 deletions(-)
+
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
