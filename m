@@ -1,18 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqLTA-0002Qj-LY
- for ath10k@lists.infradead.org; Fri, 30 May 2014 11:59:34 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Fri, 30 May 2014 13:55:44 +0200
-Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
- problem DFS
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978F7@srvexch01.SODIELEC.local>
-References: <CALhHN=ox62ktxxNwcmkbc6BfTU7o+vHXnXEwHT1dp2zrBrosJw@mail.gmail.com>,
- <CALhHN=qkqvrj+GdBJ6oakd=jzX+6M2-Vb=EJjXvxDC+B+rLytw@mail.gmail.com>
-In-Reply-To: <CALhHN=qkqvrj+GdBJ6oakd=jzX+6M2-Vb=EJjXvxDC+B+rLytw@mail.gmail.com>
-Content-Language: fr-FR
+ id 1WqO8G-0008E2-AV
+ for ath10k@lists.infradead.org; Fri, 30 May 2014 14:50:08 +0000
+Message-ID: <53889A89.90802@candelatech.com>
+Date: Fri, 30 May 2014 07:49:45 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E6@srvexch01.SODIELEC.local>
+ <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +32,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
->> OK, btw I see there is a bug when sending frame using monitor
->> interface in mac80211 in ieee80211_monitor_start_xmit() - because of
->> that you have this problem. Seems for old kernel < 3.3.0 monitor
->> interface is required.
->> I will fix mac80211 issue when monitor is used.
 
->Please remove your hack (use_monitor again) and check attached patch.
 
-Thanks for the the patch, I applied and it worked with a monitor interface in AP mode. But do you why does it require monitor interface for old kernel < 3.3.0?
-Btw, I have a doubt, in both case (I means when I applied your patch or my hack), I have to run the command "iw wlan0 scan" (after running wpa_supplicant) on my station to connect if the channel employs DFS
-If the channel doesn't employs DFS, it can connect directly after running wpa_supplicant.
+On 05/30/2014 02:10 AM, Vu Hai NGUYEN wrote:
+> On 05/28/2014 08:25 AM, Vu Hai NGUYEN wrote:
+>>>> This is set base on what driver/mac80211/cfg80211 report - function
+>>>> wpa_driver_nl80211_capa().
+>>>> With ath10k and new mac80211 this should be never set. So, seems you still
+>>>> have old/wrong modules and system build/configuration problem?
+>>>> Check cfg80211.ko/mac80211.ko ... and/or add some prints to driver_nl80211.c
+>>>
+>>> Problem solved. I looked in the driver_nl80211.c and found that use_monitor relied on "poll_command_supported" and "data_tx_status". I printed these 2 parameters and saw that data_tx_status=0, it depends on >>NL80211_FEATURE_SK_TX_STATUS and this parameter was affected to the flags of wiphy->features, defined in /net/mac80211/main.c.I find this parameter was set = 0 in /backport-include/linux/nl80211.h
+>>> That's why montior mode was forced to used with AP mode. I set that parameter = 1 and no more monitor interface in AP mode, my AP work in DFS mode now.
+>>> I'll write a mail to backport mail list to ask them why do they set that parameter=0.
+>
+>> So, did my firmware actually fix something, or was the problem just with the
+>> backports and how you were using the official firmware?
+>
+> Your firmware allows me  to enter the promiscuous mode to set up bridge network for myStation (using wpa_supplicant), If I use the official firmware (10.1.467-2.1) for my station, it crashed after associated with an AP. Thing that I've changed concern the backport, I disable monitor interface in AP mode to solve the connection problem in a channel using DFS and it doesn't concern your firmware.
 
->> I get another question: There a conflict of information about HT40+ and HT40- in hostapd and ht40allow_map (fromdebugfs).
->> In the hostapd.conf example file:
->> #      Note: There are limits on which channels can be used with HT40- and
->> #       HT40+. Following table shows the channels that may be available for
->> #       HT40- and HT40+ use per IEEE 802.11n Annex J:
->> #       freq            HT40-           HT40+
->> #       5 GHz   40,48,56,64     36,44,52,60
->> It means the channel 48 is not available in HT40+. But the info from ht40allow_map said that channel 5240 Mhz (ie 48) is available in both 40+ and 40-.
->> If I set ht-capab=[HT40+] and channel=48, hostapd can not setup AP mode.
->> And the channel 140 can not be set neither in bandwidth 40+ nor 40- even my "iw list' show that channel 140 is available.
->> Is there a problem with ht40allow_map?
->>
-> Seems ht40allow_map don't care about 80211n standard, just check
-> neighbor channels and set -/+. So, hostapd play with this correctly.
-> channel 140 as I remember correctly is disabled for all atheros cards.
-> I think Luis write about it.
+Thanks for the confirmation.  I haven't tested bridged networks yet, but maybe you were
+hitting some more general firmware problem that I had already fixed.
 
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
