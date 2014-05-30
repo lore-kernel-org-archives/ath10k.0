@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WqG8I-0005q1-Qu
- for ath10k@lists.infradead.org; Fri, 30 May 2014 06:17:40 +0000
-Received: by mail-wg0-f50.google.com with SMTP id x12so1482175wgg.9
- for <ath10k@lists.infradead.org>; Thu, 29 May 2014 23:17:14 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87ha48693v.fsf@kamboji.qca.qualcomm.com>
-References: <20140528091832.8030.93169.stgit@potku.adurom.net>
- <20140528091956.8030.46201.stgit@potku.adurom.net>
- <CA+BoTQnLPua6Mds+ywPY==9QtnHbuucVamDYpWnfwKiC7J=9dQ@mail.gmail.com>
- <87ha48693v.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 30 May 2014 08:17:14 +0200
-Message-ID: <CA+BoTQ=rNe_xcmp6yGsE1iGoRnGq_ZksfHg6JW_-U1iK3NszjQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/2] ath10k: add testmode
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1WqI7Y-0003P0-KG
+ for ath10k@lists.infradead.org; Fri, 30 May 2014 08:25:01 +0000
+Received: by mail-wg0-f48.google.com with SMTP id k14so1562993wgh.31
+ for <ath10k@lists.infradead.org>; Fri, 30 May 2014 01:24:34 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH v2] ath10k: add implementation for configure max amsdu, ampdu
+Date: Fri, 30 May 2014 10:24:15 +0200
+Message-Id: <1401438255-7349-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,108 +17,237 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-T24gMjkgTWF5IDIwMTQgMTQ6NTEsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+
-IHdyb3RlOgo+IEhpIE1pY2hhbCwKPgo+IEJUVywgcGxlYXNlIGVkaXQgeW91ciBxdW90ZXMuIEl0
-J3MgcGFpbiB0byBmaW5kIHlvdXIgY29tbWVudHMgZnJvbSBhIDcwMAo+IGxpbmUgbW9uc3RlciA6
-KQo+Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKPgo+
-PiBPbiAyOCBNYXkgMjAxNCAxMToxOSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4+PiArLyogc2tiIG93bmVkIGJ5IHRoZSBjYWxsZXIsIG11c3Qgbm90IHNsZWVw
-ICovCj4+PiArdm9pZCBhdGgxMGtfdG1fZXZlbnRfd21pKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIg
-Y21kX2lkLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+Pj4gK3sKPj4+ICsgICAgICAgc3RydWN0IHNr
-X2J1ZmYgKm5sX3NrYjsKPj4+ICsgICAgICAgaW50IHJldDsKPj4+ICsKPj4+ICsgICAgICAgYXRo
-MTBrX2RiZyhBVEgxMEtfREJHX1RFU1RNT0RFLAo+Pj4gKyAgICAgICAgICAgICAgICAgICJ0ZXN0
-bW9kZSBldmVudCB3bWkgY21kX2lkICVkIHNrYiAlcCBza2ItPmxlbiAlZFxuIiwKPj4+ICsgICAg
-ICAgICAgICAgICAgICBjbWRfaWQsIHNrYiwgc2tiLT5sZW4pOwo+Pj4gKwo+Pj4gKyAgICAgICBh
-dGgxMGtfZGJnX2R1bXAoQVRIMTBLX0RCR19URVNUTU9ERSwgTlVMTCwgIiIsIHNrYi0+ZGF0YSwg
-c2tiLT5sZW4pOwo+Pj4gKwo+Pj4gKyAgICAgICAvKiBGSVhNRTogbG9ja2luZyEgKi8KPj4+ICsK
-Pj4+ICsgICAgICAgaWYgKGFyLT5zdGF0ZSAhPSBBVEgxMEtfU1RBVEVfVVRGKQo+Pj4gKyAgICAg
-ICAgICAgICAgIHJldHVybjsKPj4KPj4gWW91IHNob3VsZG4ndCByZWFsbHkgYmUgZGVwZW5kaW5n
-IG9uIHRoZSB2YWx1ZSBvZiBhci0+c3RhdGUgd2l0aG91dAo+PiBjb25mX211dGV4IGJlaW5nIGhl
-bGQuCj4+Cj4+IFNpbmNlIHRoaXMgaXMgdGFza2xldCBjb250ZXh0IHlvdSBjYW4ndCBqdXN0IGdy
-YWIgdGhlIG11dGV4IGhlcmUuCj4+Cj4+IFRoZSBzaW1wbGVzdCB3YXkgaXMgdG8gcHJvYmFibHkg
-dG8gbW92ZSB0aGlzIGludG8gYSB3b3JrZXIgYW5kIGEgaGF2ZQo+PiBza19idWZmX2hlYWQuCj4K
-PiBZZWFoLCB0aGlzIGlzIHdoYXQgSSB3YXMgcGxhbm5pbmcgdG8gZG8uCj4KPj4gQW5vdGhlciB3
-YXkgaXMgdG8gcmV3b3JrIHRoZSBzdGF0ZSBzeXN0ZW0gdG8gYmUgYXN5bmMgKGl0IG1pZ2h0IGJl
-Cj4+IGVhc2llciB0byBkbyBub3cgYWZ0ZXIgbXkgcmVjZW50IGh3IHJlc3RhcnQgY2hhbmdlcykg
-YW5kIGhhdmUKPj4gYXItPnN0YXRlIGJlIHByb3RlY3RlZCBvbmx5IGJ5IGFyLT5kYXRhX2xvY2su
-IFRoaXMgbWlnaHQgYmUgdHJpY2t5Cj4+IHRob3VnaC4gSSdsbCB0YWtlIGEgbG9vayBhdCBpdC4u
-Cj4KPiBQbGVhc2UgZG9uJ3Qgd2FzdGUgdGltZSBvbiB0aGF0LCB1bmxlc3MgdGhlcmUgYXJlIG90
-aGVyIGFkdmFudGFnZXMuIFRoaXMKPiB0ZXN0bW9kZSBpbnRlcmZhY2UgaXMgbm8gd2F5IHBlcmZv
-cm1hbmNlIGNyaXRpY2FsIGFuZCB3b3JrcXVldWUgaXMgbW9yZQo+IHRoYW4gYWRlcXVhdGUuCj4K
-Pj4+ICsgICAgICAgaWYgKGFyLT50ZXN0bW9kZS51dGYgIT0gTlVMTCkKPj4+ICsgICAgICAgICAg
-ICAgICAvKiB1dGYgaXMgYWxyZWFkeSBsb2FkZWQgKi8KPj4+ICsgICAgICAgICAgICAgICBnb3Rv
-IHBvd2VyX3VwOwo+Pj4gKwo+Pj4gKwo+Pj4gKyAgICAgICBzbnByaW50ZihmaWxlbmFtZSwgc2l6
-ZW9mKGZpbGVuYW1lKSwgIiVzLyVzIiwKPj4+ICsgICAgICAgICAgICAgICAgYXItPmh3X3BhcmFt
-cy5mdy5kaXIsIEFUSDEwS19GV19VVEZfRklMRSk7Cj4+Cj4+IDEgZXh0cmFuZW91cyBlbXB0eSBs
-aW5lLgo+Cj4gV2lsbCBmaXguCj4KPj4+ICsgICAgICAgYXRoMTBrX2RiZyhBVEgxMEtfREJHX1RF
-U1RNT0RFLAo+Pj4gKyAgICAgICAgICAgICAgICAgICJ0ZXN0bW9kZSBjbWQgd21pIGNtZF9pZCAl
-ZCBidWYgJXAgYnVmX2xlbiAlZFxuIiwKPj4+ICsgICAgICAgICAgICAgICAgICBjbWRfaWQsIGJ1
-ZiwgYnVmX2xlbik7Cj4+PiArCj4+PiArICAgICAgIGF0aDEwa19kYmdfZHVtcChBVEgxMEtfREJH
-X1RFU1RNT0RFLCBOVUxMLCAiIiwgYnVmLCBidWZfbGVuKTsKPj4+ICsKPj4+ICsgICAgICAgc2ti
-ID0gYXRoMTBrX3dtaV9hbGxvY19za2IoYnVmX2xlbik7Cj4+Cj4+IGlmICghc2tiKSByZXR1cm4g
-LUVOT01FTTsgPwo+Cj4gWXVwLgo+Cj4+PiAraW50IGF0aDEwa190bV9jbWQoc3RydWN0IGllZWU4
-MDIxMV9odyAqaHcsIHN0cnVjdCBpZWVlODAyMTFfdmlmICp2aWYsCj4+PiArICAgICAgICAgICAg
-ICAgICB2b2lkICpkYXRhLCBpbnQgbGVuKQo+Pj4gK3sKPj4+ICsgICAgICAgc3RydWN0IGF0aDEw
-ayAqYXIgPSBody0+cHJpdjsKPj4+ICsgICAgICAgc3RydWN0IG5sYXR0ciAqdGJbQVRIMTBLX1RN
-X0FUVFJfTUFYICsgMV07Cj4+PiArICAgICAgIGludCBlcnI7Cj4+PiArCj4+PiArICAgICAgIGVy
-ciA9IG5sYV9wYXJzZSh0YiwgQVRIMTBLX1RNX0FUVFJfTUFYLCBkYXRhLCBsZW4sCj4+PiArICAg
-ICAgICAgICAgICAgICAgICAgICBhdGgxMGtfdG1fcG9saWN5KTsKPj4+ICsgICAgICAgaWYgKGVy
-cikKPj4+ICsgICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+Pgo+PiBzL2Vyci9yZXQvID8KPgo+
-IFllcywgSSdsbCBjaGFuZ2UgdGhhdC4KPgo+Pj4gK3ZvaWQgYXRoMTBrX3Rlc3Rtb2RlX3VucmVn
-aXN0ZXIoc3RydWN0IGF0aDEwayAqYXIpCj4+PiArewo+Pj4gKyAgICAgICAvKiBGSVhNRTogbG9j
-a2luZyEgKi8KPj4KPj4gSSB0aGluayB0aGlzIHNob3VsZCBiZSBwcm90ZWN0ZWQgYnkgY29uZl9t
-dXRleC4KPgo+IFllYWgsIHRoYXQncyB3aHkgSSBoYXZlIHRoZSBGSVhNRSA6KQo+Cj4+PiArCj4+
-PiArICAgICAgIHJlbGVhc2VfZmlybXdhcmUoYXItPnRlc3Rtb2RlLnV0Zik7Cj4+Cj4+IEl0IG1p
-Z2h0IGJlIGEgZ29vZCBpZGVhIHRvIGFyLT50ZXN0bW9kZS51dGYgPSBOVUxMID8KPgo+IEkgYWdy
-ZWUuCj4KPj4+ICsgICAgICAgaWYgKGFyLT5zdGF0ZSAhPSBBVEgxMEtfU1RBVEVfVVRGKQo+Pj4g
-KyAgICAgICAgICAgICAgIC8qIHV0ZiBmaXJtd2FyZSBpcyBub3QgcnVubmluZyAqLwo+Pj4gKyAg
-ICAgICAgICAgICAgIHJldHVybjsKPj4+ICsKPj4+ICsgICAgICAgYXRoMTBrX2h0Y19zdG9wKCZh
-ci0+aHRjKTsKPj4+ICsgICAgICAgYXRoMTBrX3dtaV9kZXRhY2goYXIpOwo+Pgo+PiBXaHkgbm90
-IGF0aDEwa19jb3JlX3N0b3AoKSA/Cj4KPiBEb2gsIEkgY2FuJ3QgcmVtZW1iZXIgYW55bW9yZS4g
-TWF5YmUgYmVjYXVzZSBvZiB0aGUgaHR0IGNhbGxzPyBCdXQgSQo+IGFncmVlLCB3ZSBzaG91bGQg
-Y2FsbCBjb3JlX3N0b3AoKSBmb3Igc3ltbWV0cnkuIEknbGwgaW52ZXN0aWdhdGUuCgpXZWxsLCB5
-b3UgYWxyZWFkeSBjYWxsIGF0aDEwa19jb3JlX3N0b3AoKSBpbiBhdGgxMGtfdG1fY21kX3V0Zl9z
-dG9wKCkuCkkgdGhpbmsgaXQgc2hvdWxkIGJlIHNhZmUgKHdpdGhvdXQgZ2V0dGluZyBkZWVwIGlu
-dG8gdGhpcykgYmVjYXVzZSB5b3UKb25seSBza2lwIGh0dF9jb25uZWN0IChiYXNpY2FsbHkgYSBo
-dGMgc2VydmljZSBjb25uZWN0IGNvbW1hbmQpIGFuZApodHRfc2V0dXAgKGh0dCByeCByaW5nIHNl
-dHVwIGFuZCBodHQgcnggdmVyc2lvbiByZXEgY29tbWFuZHMpLCBidXQKbWF5YmUgSSdtIG1pc3Np
-bmcgc29tZXRoaW5nLgoKCj4+PiBAQCAtMjMzMyw2ICsyMzM4LDcgQEAgc3RhdGljIHZvaWQgYXRo
-MTBrX3dtaV8xMHhfcHJvY2Vzc19yeChzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYg
-KnNrYikKPj4+Cj4+PiAgc3RhdGljIHZvaWQgYXRoMTBrX3dtaV9wcm9jZXNzX3J4KHN0cnVjdCBh
-dGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+Pj4gIHsKPj4+ICsgICAgICAgLyogRklY
-TUU6IHNvbWVob3cgZm9yY2Ugb3QgdXNlIDEweCB3aXRoIFVURiAqLwo+Pgo+PiBgb3RgOiB0eXBv
-Pwo+Cj4gWWVhaC4gQW5kIHRoZSBGSVhNRSB3aWxsIGJlIGdvbmUgaW4gdGhlIGZpbmFsIHZlcnNp
-b24sIHRoaXMgd2FzIGp1c3QgYW4KPiBSRkMgdG8gZ2V0IGVhcmx5IGNvbW1lbnRzIG9uIHRoZSBk
-ZXNpZ24uCj4KPj4gSSdtIGEgbGl0dGxlIGNvbmZ1c2VkIGhvdyB0aGlzIHdvcmtzLiBXaGVuIFVU
-RiBmaXJtd2FyZSBpcyBsb2FkZWQgZG9lcwo+PiBpdCBnZW5lcmF0ZSByZWd1bGFyIFdNSSBldmVu
-dHM/IE9yIGRvZXMgaXQgZ2VuZXJhdGUgVVRGX0VWRU5USUQgb25seT8KPgo+IE9ubHkgVVRGX0VW
-RU5USUQsIGF0IGxlYXN0IGZvciBub3cuCj4KPj4gSXMgdGhlcmUgYSBwYXJ0aWN1bGFyIHJlYXNv
-biBmb3IgYXRoMTBrX3RtX2V2ZW50X3dtaSgpIHRvIGJlIGNhbGxlZAo+PiBiZWZvcmUgdGhlIHN3
-aXRjaCgpIGFuZCBoYXZlIGl0IG5vIGVmZmVjdCBvbiBwcm9jZXNzaW5nIG9mIHRoZSBldmVudAo+
-PiBsYXRlciB3aGF0c29ldmVyPwo+Cj4gSSB3YW50IHRvIHNlbmQgdGhlIGZ1bGwgV01JIHBhY2tl
-dCAoaW5zdGVhZCBvZiBVVEZfRVZFTlRJRCkgdG8gdXNlcgo+IHNwYWNlIHRvIG1ha2UgaXQgZWFz
-aWVyIHRvIGV4dGVuZCB0aGlzIGxhdGVyLCBpbiBjYXNlIHRoZXJlIHdpbGwgYmUgYQo+IG5lZWQg
-Zm9yIHRoYXQgaW4gdGhlIGZ1dHVyZS4gRm9yIGV4YW1wbGUsIHRoZXJlIGNhbiBiZSBuZXcgZXZl
-bnQgaWRzIGFuZAo+IHdoYXRub3QuIFRoZSBsZXNzIHdlIG5lZWQgdG8gY2hhbmdlIHRoZSB1c2Vy
-IHNwYWNlIGludGVyZmFjZSB0aGUgZWFzaWVyCj4gaXQgd2lsbCBiZS4KCkkgZ2V0IGl0IG5vdy4g
-V2UgY291bGQgY2FsbCBza2JfcHVzaCgpIGluIFVURl9FVkVOVElEIGNhc2UgdG8gZ2V0IGJhY2sK
-dGhlIHdtaSBoZWFkZXIuIEl0J3Mgbm90IHZlcnkgcHJldHR5IGJ1dCBzYXZlcyBhIGxvdCBvZiB3
-b3JrIChpLmUuIG5vCm5lZWQgdG8gZGVwZW5kIG9uIGFyLT5zdGF0ZSBhbmQgbm8gbmVlZCB0byBj
-cmVhdGUgYSB3b3JrZXIvc2tiIHF1ZXVlKQpub3cuCgpXZSBjb3VsZCBhbHNvIGRlcGVuZCBvbiBj
-bWRfaWQgdG8gYWNjZXB0L3JlamVjdCBza2J1ZmZzIGluCmF0aDEwa190bV9ldmVudF93bWkoKSBz
-aW5jZSwgYXQgbGVhc3QgZm9yIG5vdywgdGhlcmUgYXJlbid0IGFueQpzcGVjaWFsIGNhc2VzIHRv
-IGhhbmRsZS4gQnV0IHRoZW4uLiB3aWxsIHdlIHJlYWxseSBldmVyIG5lZWQgdG8gaGF2ZSBhCnBh
-c3N0aHJvdWdoIChpLmUuIHBhc3MgYnVmZmVycyB0byB1c2Vyc3BhY2UgYnV0IHN0aWxsIHByb2Nl
-c3MgdGhlbSBpbgp0aGUgZHJpdmVyIGFmdGVyd2FyZHMpPyBEb2VzIHRoYXQgZXZlbiBtYWtlIHNl
-bnNlPwoKRWl0aGVyIHdheSBJIHRoaW5rIHRoaXMgKHdoeSB3ZSB3YW50IHRvIHNlbmQgb3V0IGEg
-d21pIHBhY2tldAppbmNsdWRpbmcgaXRzIGhlYWRlciB0byB1c2Vyc3BhY2UpIHNob3VsZCBiZSBk
-b2N1bWVudGVkLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Allow to setup maximum subframes for AMSDU and AMPDU aggregation
+via debugfs htt_max_amsdu_ampdu file.
+
+Eg.
+echo "2 64" > htt_max_amsdu_ampdu
+will setup maximum amsdu subframes equal 2 and
+maximum ampdu subframes equal to 64.
+
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h   |    3 ++
+ drivers/net/wireless/ath/ath10k/debug.c  |   73 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt.h    |   13 ++----
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   46 +++++++++++++++++++
+ 4 files changed, 127 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 68ceef6..83a5fa9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -290,6 +290,9 @@ struct ath10k_debug {
+ 	struct ath_dfs_pool_stats dfs_pool_stats;
+ 
+ 	u32 fw_dbglog_mask;
++
++	u8 htt_max_amsdu;
++	u8 htt_max_ampdu;
+ };
+ 
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 1b7ff4b..3030158 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -671,6 +671,72 @@ static const struct file_operations fops_htt_stats_mask = {
+ 	.llseek = default_llseek,
+ };
+ 
++static ssize_t ath10k_read_htt_max_amsdu_ampdu(struct file *file,
++					       char __user *user_buf,
++					       size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	char buf[64];
++	u8 amsdu = 3, ampdu = 64;
++	unsigned int len;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->debug.htt_max_amsdu)
++		amsdu = ar->debug.htt_max_amsdu;
++
++	if (ar->debug.htt_max_ampdu)
++		ampdu = ar->debug.htt_max_ampdu;
++
++	mutex_unlock(&ar->conf_mutex);
++
++	len = scnprintf(buf, sizeof(buf), "%u %u\n", amsdu, ampdu);
++
++	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
++}
++
++static ssize_t ath10k_write_htt_max_amsdu_ampdu(struct file *file,
++						const char __user *user_buf,
++						size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	int res;
++	char buf[64];
++	unsigned int amsdu, ampdu;
++
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = 0;
++
++	res = sscanf(buf, "%u %u", &amsdu, &ampdu);
++
++	if (res != 2)
++		return -EINVAL;
++
++	mutex_lock(&ar->conf_mutex);
++
++	res = ath10k_htt_h2t_aggr_cfg_msg(&ar->htt, ampdu, amsdu);
++	if (res)
++		goto out;
++
++	res = count;
++	ar->debug.htt_max_amsdu = amsdu;
++	ar->debug.htt_max_ampdu = ampdu;
++
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return res;
++}
++
++static const struct file_operations fops_htt_max_amsdu_ampdu = {
++	.read = ath10k_read_htt_max_amsdu_ampdu,
++	.write = ath10k_write_htt_max_amsdu_ampdu,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ static ssize_t ath10k_read_fw_dbglog(struct file *file,
+ 					    char __user *user_buf,
+ 					    size_t count, loff_t *ppos)
+@@ -757,6 +823,9 @@ void ath10k_debug_stop(struct ath10k *ar)
+ 	 * warning from del_timer(). */
+ 	if (ar->debug.htt_stats_mask != 0)
+ 		cancel_delayed_work(&ar->debug.htt_stats_dwork);
++
++	ar->debug.htt_max_amsdu = 0;
++	ar->debug.htt_max_ampdu = 0;
+ }
+ 
+ static ssize_t ath10k_write_simulate_radar(struct file *file,
+@@ -867,6 +936,10 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	debugfs_create_file("htt_stats_mask", S_IRUSR, ar->debug.debugfs_phy,
+ 			    ar, &fops_htt_stats_mask);
+ 
++	debugfs_create_file("htt_max_amsdu_ampdu", S_IRUSR | S_IWUSR,
++			    ar->debug.debugfs_phy, ar,
++			    &fops_htt_max_amsdu_ampdu);
++
+ 	debugfs_create_file("fw_dbglog", S_IRUSR, ar->debug.debugfs_phy,
+ 			    ar, &fops_fw_dbglog);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 9a26346..6c93f38 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -240,16 +240,10 @@ struct htt_oob_sync_req {
+ 	__le16 rsvd0;
+ } __packed;
+ 
+-#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_MASK 0x1F
+-#define HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_LSB  0
+-
+ struct htt_aggr_conf {
+ 	u8 max_num_ampdu_subframes;
+-	union {
+-		/* dont use bitfields; undefined behaviour */
+-		u8 flags; /* see %HTT_AGGR_CONF_MAX_NUM_AMSDU_SUBFRAMES_ */
+-		u8 max_num_amsdu_subframes:5;
+-	} __packed;
++	/* amsdu_subframes is limited by 0x1F mask */
++	u8 max_num_amsdu_subframes;
+ } __packed;
+ 
+ #define HTT_MGMT_FRM_HDR_DOWNLOAD_LEN 32
+@@ -1343,6 +1337,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
+ int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
+ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
+ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
++int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
++				u8 max_subfrms_ampdu,
++				u8 max_subfrms_amsdu);
+ 
+ void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
+ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 7064354..accb6b4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -307,6 +307,52 @@ int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
+ 	return 0;
+ }
+ 
++int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
++				u8 max_subfrms_ampdu,
++				u8 max_subfrms_amsdu)
++{
++	struct htt_aggr_conf *aggr_conf;
++	struct sk_buff *skb;
++	struct htt_cmd *cmd;
++	int len;
++	int ret;
++
++	/* Firmware defaults are: amsdu = 3 and ampdu = 64 */
++
++	if (max_subfrms_ampdu == 0 || max_subfrms_ampdu > 64)
++		return -EINVAL;
++
++	if (max_subfrms_amsdu == 0 || max_subfrms_amsdu > 31)
++		return -EINVAL;
++
++	len = sizeof(cmd->hdr);
++	len += sizeof(cmd->aggr_conf);
++
++	skb = ath10k_htc_alloc_skb(len);
++	if (!skb)
++		return -ENOMEM;
++
++	skb_put(skb, len);
++	cmd = (struct htt_cmd *)skb->data;
++	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_AGGR_CFG;
++
++	aggr_conf = &cmd->aggr_conf;
++	aggr_conf->max_num_ampdu_subframes = max_subfrms_ampdu;
++	aggr_conf->max_num_amsdu_subframes = max_subfrms_amsdu;
++
++	ath10k_dbg(ATH10K_DBG_HTT, "htt h2t aggr cfg msg amsdu %d ampdu %d",
++		   aggr_conf->max_num_amsdu_subframes,
++		   aggr_conf->max_num_ampdu_subframes);
++
++	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
++	if (ret) {
++		dev_kfree_skb_any(skb);
++		return ret;
++	}
++
++	return 0;
++}
++
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ {
+ 	struct device *dev = htt->ar->dev;
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
