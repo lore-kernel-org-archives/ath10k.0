@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrWeG-0002wR-8R
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 18:07:52 +0000
+ id 1WrWpS-0007Uo-76
+ for ath10k@lists.infradead.org; Mon, 02 Jun 2014 18:19:26 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove unnecessary htt rx corruption check
-References: <1401357008-16259-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 2 Jun 2014 21:07:13 +0300
-In-Reply-To: <1401357008-16259-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 29 May 2014 11:50:08 +0200")
-Message-ID: <87sinnxk1a.fsf@kamboji.qca.qualcomm.com>
+Subject: ath-current branch
+Date: Mon, 2 Jun 2014 21:19:00 +0300
+Message-ID: <87oaybxjhn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,31 +20,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi,
 
-> While fixing a bug reported by Avery I went ahead
-> and added a warning suspecting there might be
-> something more to the bug. This ended up with
-> people reporting they see warnings during heavy
-> traffic. This bought me some time and helped me
-> understand the problem better - apparently fw/hw
-> can report a chained msdus as follows: 1 msdu, 1
-> chained, 1 msdu (0 length).
->
-> The patch removes the extra check but leaves the
-> other change that fixed the original skb_push
-> panic bug (msdu_chaining was overwritten in an
-> unfortunate way which made the above example to
-> be treated as non-chained case).
->
-> Reported-by: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-> Reported-by: Tim Harvey <tharvey@gateworks.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+as I start to send patches also to -rc releases there's a small change
+in ath10k git branches:
 
-Thanks, applied to ath-current branch.
+I have a new branch ath-current which is for fixes going to the
+"current" kernel version under development, for example currently that
+means 3.16 which development will soon start. The ath-current branch
+will contain only very important fixes we want to have in the next -rc
+release.
+
+ath-next branch will continue be the main location for new ath10k
+patches. All new features and most of the bugfixes go into this branch.
+
+In practise these branches are transparate to ath10k developers and
+users. Just continue using the master branch as I merge both ath-current
+and ath-next branches into the master branch, just as before. But if you
+used ath-next branch for something before, now make sure to check also
+ath-current for important fixes. They will not be in ath-next branch.
 
 -- 
 Kalle Valo
