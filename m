@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrW2J-000721-Rh
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 17:28:40 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix vdev map size for 10.x firmware
-References: <1401370567-13543-1-git-send-email-bartosz.markowski@tieto.com>
- <87ppirz2ic.fsf@kamboji.qca.qualcomm.com>
- <CACKGw+HRLuaRX3JW86PtMzRG86024m8YOmZj14eyE9vQTffMeg@mail.gmail.com>
-Date: Mon, 2 Jun 2014 20:28:12 +0300
-In-Reply-To: <CACKGw+HRLuaRX3JW86PtMzRG86024m8YOmZj14eyE9vQTffMeg@mail.gmail.com>
- (Bartosz Markowski's message of "Mon, 2 Jun 2014 19:11:30 +0200")
-Message-ID: <87a99vz0er.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WrWG1-0003jP-CG
+ for ath10k@lists.infradead.org; Mon, 02 Jun 2014 17:42:49 +0000
+Message-ID: <538CB782.1000509@candelatech.com>
+Date: Mon, 02 Jun 2014 10:42:26 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com> <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +24,79 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> On 2 June 2014 18:42, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->
->> So what is the actual bug you are fixing? Previously with 10.x it was
->> possible to get only 7 VIFs, even though we advertised 8 to user space,
->> and with your fix we get the full 8 VIFs?
->
-> For CAC, we use one VDEV to start monitor interface. In case of 10.X
-> firmware we advertise support up to 8 VAPs, but if we spent one for
-> monitor interface, only 7 left. I've noticed we fail on .add_interface
-> when trying to add 8th AP, here:
->
->     bit = ffs(ar->free_vdev_map);
->     if (bit == 0) {
->         ret = -EBUSY;
->         goto err;
->     }
->
-> and this lead me to initialization code for vdev_map
->
->     ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
->
-> We have an API split for main and 10.x firmware (incl. number of
-> vdevs, target fw is able to handle), but here we missed this split.
+[Good stuff snipped, adding linux-wireless as this is a more
+general issue if we are going to consider general framework]
 
-This is a bit too technical. Basically I need a simple description of
-the bug so that both kernel and distro maintainers can quicly understand
-what this fix is about. Would this be correct:
 
-"ath10k: fix 8th virtual AP interface with DFS
+Maybe we should start with goals before getting to implementation
+details.  Here's my wish list that is ath10k specific, but probably
+similar to other firmware users:
 
-Firmware 10.x supports up to 8 virtual AP interfaces, but in a DFS
-channel it was possible to create only 7 interfaces as ath10k internal
-creates a monitor interface for DFS. Previous vdev map initialization
-was missing enough space for 8 + 1 vdevs due to wrong define used and
-that's why there was no space for 8th interface. Use the correct define
-TARGET_10X_NUM_VDEVS with 10.x firmware to make it possible to create
-the 8th virtual interface."
+1)  We need the firmware crash text currently printed to
+/var/log/messages.
 
-> Ben has a valid point, the TARGET_10X_NUM_VDEVS claims to be 16, so
-> there's an inconsistency between what we adverts to mac in max
-> interfaces, but I'm not sure if this is such a big deal.
+2)  It would be nice to get the firmware RAM and stack dumps at time of
+crash to debug more interesting crashes.
 
-I don't see that as a problem as long as we advertise 8 to user space.
+3)  It would be nice to know about firmware debug messages for
+the period of time directly before the crash (maybe 2-5 minutes?)
 
->> It would be good to clear have that in the commit log so that anyone
->> can understand what bug is fixed.
->
-> Do you want me to send a v2 with just an updated commit (better user
-> impact description)? (No patch content changes)
+4)  It would be nice to have this interleaved with kernel, supplicant,
+and related logs.
 
-I can update the commit log, we just need to agree on the content.
+
+We need a solution for different types of users.  I suspect the number
+of crashes seen in the wild will be more for users nearer the top
+of this list.
+
+a) Normal Fedora/Ubuntu/etc default-installed distribution user
+with ath10k NIC has wifi issues, firmware crashes, they don't
+really know what firmware means or that it crashed, but some automated crash-log
+tool notices and gathers debug info for automated bug reporting.
+
+b) Slightly more advanced user actually notices the problem at coffee shop
+earlier today, posts about it when they get home, and we ask for
+debug info.
+
+c) Experienced and determined user has similar issues, but is able to
+reproduce the problem and/or turn on more advanced debugging efforts.
+
+d)  Even more determined user that can and will recompile kernels and/or
+try patches.
+
+
+Anything that has to be enabled before-hand will not help a) and b) above.
+
+If support is not compiled into default kernels, c) will not help you either.
+
+If it is difficult or requires acquiring cutting edge tools not in their
+distribution by default, many of c) and some of d) will just ignore the problem or use
+different hardware.
+
+If we are storing crashes for something like ethtool to report, we need
+RAM and/or disk storage so the firmware RAM dumps and such can be stored until
+the user and/or automated tools ask for them.  We need some way to automatically
+clean up old crashes so disk/ram is not overly utilized.  For APs,
+they are low on both RAM and 'disk', so storing crash logs for any
+length of time may be problematic.
+
+
+I am indeed biased towards using printk, but lets agree on some goals and
+see if we can find a set of tools and methods that meets them.
+
+
+Thanks,
+Ben
+
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
