@@ -1,30 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrVPT-0007JO-Gw
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 16:48:32 +0000
-Message-ID: <538CAACA.2030202@candelatech.com>
-Date: Mon, 02 Jun 2014 09:48:10 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WrVjZ-0006fG-3n
+ for ath10k@lists.infradead.org; Mon, 02 Jun 2014 17:09:17 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
+ <538CA904.4000508@candelatech.com>
+Date: Mon, 2 Jun 2014 20:08:50 +0300
+In-Reply-To: <538CA904.4000508@candelatech.com> (Ben Greear's message of "Mon, 
+ 02 Jun 2014 09:40:36 -0700")
+Message-ID: <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: RE : RE : RE : RE : ath10k: firmware crash in station mode &
- problem DFS
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
- <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
- <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
- <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
- <5386059B.7040301@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,38 +25,98 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 06/02/2014 09:16 AM, Vu Hai NGUYEN wrote:
->>> Your firmware allows me  to enter the promiscuous mode to set up bridge network for myStation (using wpa_supplicant), If I use the official firmware (10.1.467-2.1) for my station, it crashed after associated with an AP. Thing that I've >>changed concern the backport, I disable monitor interface in AP mode to solve the connection problem in a channel using DFS and it doesn't concern your firmware.
-> 
->> Thanks for the confirmation.  I haven't tested bridged networks yet, but maybe you were
->> hitting some more general firmware problem that I had already fixed.
-> 
-> Hi Ben, I just discover something news, when I run my program with your firmware, I can not see a channel DFS (from command "iw wlan0 scan", it does not show me the network using a channel DFS). 
-> I can see the channel DFS if I use the official firmware (both 999 or 10.1). Do you need me to trace back something so that you can detect where the problem is? 
+Ben Greear <greearb@candelatech.com> writes:
 
-I could try building a set of binaries and let you bisect the problem, perhaps.
+> On 06/02/2014 09:21 AM, Kalle Valo wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+>> 
+>>> I have a bunch of patches that can dump some firmware debug logs,
+>>> stack, and exception stacks as ascii hex. Ath10k firmware-having folks
+>>> can use private tools to extract and decode useful info from this.
+>> 
+>> You mean via printk? That sounds ugly.
+>
+> It is fairly ugly, but it is easy to ask someone to just email you
+> a snippet of /var/log/messages.  I am certainly open to suggestions
+> for how to do it better.
 
-This might take a bit of your time, but if you are willing, I will write a script
-to create firmware binaries for each of my commits so you can do a manual
-bisect.
+I already gave suggestions :)
 
-I also think that the '2-1' part of the upstream 10.1 firmware is not in the source code
-QCA made available to me, so there may be upstream fixes I have not seen, and possibly
-part of that enables/fixes DFS.
+> And, even if it is ugly, hopefully the firmware crashes will become
+> more rare and so most folks won't see so much of this.
+>
+>> There was talk on linux-wireless about how to handle firmware crash
+>> dumps in a generic way. One proposal was to use ethtool and an event for
+>> this. Before that I was thinking of using trace points. Maybe we should
+>> support both?
+>
+> I think it must not be anything that has to be turned on by users,
+> otherwise we will not see a lot of useful reports from any
+> normal-ish users, and so we will lose a great deal of coverage.
+>
+> Perhaps the more verbose dump info could be disabled by default,
+> and enabled with a debug-level setting (which even relatively
+> unsophisticated, or just folks that can't be bothered to jump
+> through hoops) could enable on their systems.
 
-I am not aware of any changes in my firmware that should have broken
-DFS, but of course with 100+ commits, I could have easily added regressions...
+My main concern is about maintaining that functionality in ath10k, not
+about dumping stuff to kernel log. With different firmware versions etc
+it will become a pain to maintain that in kernel. But if we push all the
+necessary information to user space we can have that complexity in user
+space, which is a lot easier to maintain.
 
-Thanks,
-Ben
+> Trace points do not meet this level of simplicity in my experience.
+
+You should try it more. To me it's the best thing in the field of kernel
+debugging for a long time.
+
+>> We should come up with an extensible format how to provide the firmware
+>> crash logs to user space, for example using some TLV based format, which
+>> contain all the necessary information (hw details, firmware version,
+>> memory dumps and whatnot). But ath10k should not have any parsing of the
+>> dumps, that should happen in user space.
+>
+> Actually decoding ath10k firmware (and probably every other close-sourced
+> firmware is necessarily going to be something unique for that firmware),
+> so aside from transporting the data to user-space, there is probably
+> very little that can be shared.
+
+Of course. But we should have a generic interface for providing the
+crash data to user space.
+
+> Also, for the ath10k debug-log WMI messages, you often need to see what
+> comes before the crash to be useful.  If we are printing this to logs
+> in ascii hex (enabled by an ath10k debug-level setting), then we can easily
+> get that info from /var/log/messages or equivalent.  Putting the firmware
+> dumps in the same file seems logical to me.  You also get to see the
+> context of the rest of the kernel logs, including wifi stack prints,
+> other kernel warnings/errors, etc.
+
+This is exactly why I push for trace points. You can have all wireless
+related messages, including hostapd and firmware logs, in one file.
+That's extremely convenient.
+
+> And, I have some pretty well tested patches and user-space tools
+> already written to support this, so we could have this feature
+> in ath10k almost immediately...  I have already send my user-space
+> decode app to QCA, so they can freely propagate it to anyone they wish
+> (typically just those under NDA I assume).
+>
+> So, I think that 'ugliness' of seeing a lot of ascii hex in
+> /var/log/messages is a fairly small price to pay.  I will post some
+> patches for consideration and suggestions for improvement when I get
+> my changes properly rebased onto your latest tree and get some
+> minimal testing done on the rebase...
+
+I get the feeling that you push for this only because you have worked
+like this before. I still think that using printk() is not the way
+forward and we should use more advanced methods for firmware logs.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
