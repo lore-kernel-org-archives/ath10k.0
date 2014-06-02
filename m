@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrWbY-0001b6-GK
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 18:05:05 +0000
+ id 1WrWeG-0002wR-8R
+ for ath10k@lists.infradead.org; Mon, 02 Jun 2014 18:07:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: print Kconfig options
-References: <1401441563-9921-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Mon, 2 Jun 2014 21:04:18 +0300
-In-Reply-To: <1401441563-9921-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 30 May 2014 11:19:23 +0200")
-Message-ID: <87wqczxk65.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: remove unnecessary htt rx corruption check
+References: <1401357008-16259-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 2 Jun 2014 21:07:13 +0300
+In-Reply-To: <1401357008-16259-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 29 May 2014 11:50:08 +0200")
+Message-ID: <87sinnxk1a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,16 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Print Kconfig options enabled/disabled in the build.
+> While fixing a bug reported by Avery I went ahead
+> and added a warning suspecting there might be
+> something more to the bug. This ended up with
+> people reporting they see warnings during heavy
+> traffic. This bought me some time and helped me
+> understand the problem better - apparently fw/hw
+> can report a chained msdus as follows: 1 msdu, 1
+> chained, 1 msdu (0 length).
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> The patch removes the extra check but leaves the
+> other change that fixed the original skb_push
+> panic bug (msdu_chaining was overwritten in an
+> unfortunate way which made the above example to
+> be treated as non-chained case).
+>
+> Reported-by: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+> Reported-by: Tim Harvey <tharvey@gateworks.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+Thanks, applied to ath-current branch.
 
 -- 
 Kalle Valo
