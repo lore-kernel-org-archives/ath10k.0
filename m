@@ -1,16 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrUU7-0004Y2-So
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 15:49:16 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC PATCH 0/2] ath10k: testmode support
-References: <20140528091832.8030.93169.stgit@potku.adurom.net>
- <538B8446.50301@stackframe.org>
-Date: Mon, 2 Jun 2014 18:48:47 +0300
-In-Reply-To: <538B8446.50301@stackframe.org> (Sven Schnelle's message of "Sun, 
- 1 Jun 2014 21:51:34 +0200")
-Message-ID: <87iooj1fds.fsf@kamboji.qca.qualcomm.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WrUyA-00024J-B7
+ for ath10k@lists.infradead.org; Mon, 02 Jun 2014 16:20:19 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Mon, 2 Jun 2014 18:16:12 +0200
+Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E6@srvexch01.SODIELEC.local>
+ <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+In-Reply-To: <53889A89.90802@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,22 +38,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Schnelle <svens@stackframe.org>
-Cc: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-Sven Schnelle <svens@stackframe.org> writes:
+>> Your firmware allows me  to enter the promiscuous mode to set up bridge network for myStation (using wpa_supplicant), If I use the official firmware (10.1.467-2.1) for my station, it crashed after associated with an AP. Thing that I've >>changed concern the backport, I disable monitor interface in AP mode to solve the connection problem in a channel using DFS and it doesn't concern your firmware.
 
-> Only one small thing: The firmware expects the UTF commands in
-> segmented format. Should that splitting be done in your testmode
-> patch, or should userspace handle that?
+>Thanks for the confirmation.  I haven't tested bridged networks yet, but maybe you were
+>hitting some more general firmware problem that I had already fixed.
 
-I would prefer to keep the driver as simple as possible. My idea here is
-that the testmode interface is only about tranmitting and receiving WMI
-packets, it does not look at all what's inside the packet. AFAIK the
-user space should be able to handle everything on it's own.
+Hi Ben, I just discover something news, when I run my program with your firmware, I can not see a channel DFS (from command "iw wlan0 scan", it does not show me the network using a channel DFS). 
+I can see the channel DFS if I use the official firmware (both 999 or 10.1). Do you need me to trace back something so that you can detect where the problem is? 
 
--- 
-Kalle Valo
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
+
+
 
 _______________________________________________
 ath10k mailing list
