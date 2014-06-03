@@ -1,16 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WrZg8-00006V-FS
- for ath10k@lists.infradead.org; Mon, 02 Jun 2014 21:22:01 +0000
-Message-ID: <538CEAE0.6090304@candelatech.com>
-Date: Mon, 02 Jun 2014 14:21:36 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1Wrife-0006mv-L6
+ for ath10k@lists.infradead.org; Tue, 03 Jun 2014 06:58:07 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 3 Jun 2014 08:51:01 +0200
+Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+In-Reply-To: <538CAACA.2030202@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +39,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-On 06/02/2014 09:21 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
-> 
->> I have a bunch of patches that can dump some firmware debug logs,
->> stack, and exception stacks as ascii hex. Ath10k firmware-having folks
->> can use private tools to extract and decode useful info from this.
-> 
-> You mean via printk? That sounds ugly.
-> 
-> There was talk on linux-wireless about how to handle firmware crash
-> dumps in a generic way. One proposal was to use ethtool and an event for
-> this. Before that I was thinking of using trace points. Maybe we should
-> support both?
-> 
-> We should come up with an extensible format how to provide the firmware
-> crash logs to user space, for example using some TLV based format, which
-> contain all the necessary information (hw details, firmware version,
-> memory dumps and whatnot). But ath10k should not have any parsing of the
-> dumps, that should happen in user space.
+>I could try building a set of binaries and let you bisect the problem, perhaps.
 
-I'm looking at how iwlwifi/mvm does this.  I should be able to read the
-ath10k stack and exception stack on generic firmware, but to get the BSS region,
-I ended up adding some additional meta info to the firmware-2.bin image
-specifying the offsets when doing my CT firmware.
+>This might take a bit of your time, but if you are willing, I will write a script
+>to create firmware binaries for each of my commits so you can do a manual
+>bisect.
 
-You should not need to re-compile the firmware for this, but you would have
-to be able to run some xtensa tool commands to get this info and re-pack
-the firmware with additional meta-info (as far as I know).
+>I also think that the '2-1' part of the upstream 10.1 firmware is not in the source code
+>QCA made available to me, so there may be upstream fixes I have not seen, and possibly
+>part of that enables/fixes DFS.
 
-Any chance upstream firmware could support specifying the bss region
-offsets so that I can dump that into the debugfs dump file?
+>I am not aware of any changes in my firmware that should have broken
+>DFS, but of course with 100+ commits, I could have easily added regressions...
 
-Thanks,
-Ben
+Yes, I'll try it, you can explain it to me if I don't know how to apply your script?
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
 _______________________________________________
 ath10k mailing list
