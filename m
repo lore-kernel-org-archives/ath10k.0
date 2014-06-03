@@ -1,32 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wrife-0006mv-L6
- for ath10k@lists.infradead.org; Tue, 03 Jun 2014 06:58:07 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Tue, 3 Jun 2014 08:51:01 +0200
-Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
- problem DFS
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <87lhttwyos.fsf@kamboji.qca.qualcomm.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978E8@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978E9@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
- <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
- <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
- <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
- <5386059B.7040301@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
- <538CAACA.2030202@candelatech.com>
-In-Reply-To: <538CAACA.2030202@candelatech.com>
-Content-Language: fr-FR
+Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WriqK-00050j-AX
+ for ath10k@lists.infradead.org; Tue, 03 Jun 2014 07:09:10 +0000
+Message-ID: <538D7542.2070007@stackframe.org>
+Date: Tue, 03 Jun 2014 09:12:02 +0200
+From: Sven Schnelle <svens@stackframe.org>
 MIME-Version: 1.0
+Subject: Re: [RFC PATCH 0/2] ath10k: testmode support
+References: <20140528091832.8030.93169.stgit@potku.adurom.net>
+ <538B8446.50301@stackframe.org> <87iooj1fds.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87iooj1fds.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,33 +19,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: kvalo@qca.qualcomm.com
+Cc: ath10k@lists.infradead.org
 
->I could try building a set of binaries and let you bisect the problem, perhaps.
+Hi Kalle,
 
->This might take a bit of your time, but if you are willing, I will write a script
->to create firmware binaries for each of my commits so you can do a manual
->bisect.
+On 06/02/2014 05:48 PM, Kalle Valo wrote:
+> Sven Schnelle <svens@stackframe.org> writes:
+>
+>> Only one small thing: The firmware expects the UTF commands in
+>> segmented format. Should that splitting be done in your testmode
+>> patch, or should userspace handle that?
+> I would prefer to keep the driver as simple as possible. My idea here is
+> that the testmode interface is only about tranmitting and receiving WMI
+> packets, it does not look at all what's inside the packet. AFAIK the
+> user space should be able to handle everything on it's own.
+>
+Ok, that's fine with me. I'm doing the fragmation in userspace already,
+just wanted to mention that.
 
->I also think that the '2-1' part of the upstream 10.1 firmware is not in the source code
->QCA made available to me, so there may be upstream fixes I have not seen, and possibly
->part of that enables/fixes DFS.
-
->I am not aware of any changes in my firmware that should have broken
->DFS, but of course with 100+ commits, I could have easily added regressions...
-
-Yes, I'll try it, you can explain it to me if I don't know how to apply your script?
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+Thanks
+Sven
 
 _______________________________________________
 ath10k mailing list
