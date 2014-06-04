@@ -1,28 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx0.aculab.com ([213.249.233.131])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsBLA-0005pu-JD
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 13:34:53 +0000
-Received: from mx0.aculab.com ([127.0.0.1])
- by localhost (mx0.aculab.com [127.0.0.1]) (amavisd-new, port 10024) with SMTP
- id 06368-07 for <ath10k@lists.infradead.org>;
- Wed,  4 Jun 2014 14:34:29 +0100 (BST)
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH 0/10] use safer test on the result of find_first_zero_bit
-Date: Wed, 4 Jun 2014 13:34:08 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D172571DB@AcuExch.aculab.com>
-References: <1401872880-23685-1-git-send-email-Julia.Lawall@lip6.fr>
- <CAMuHMdXsoFUXj4jLMWN6NY7Um19KwWO9Rhx=9=gqWu_K5Ev2kQ@mail.gmail.com>
- <alpine.DEB.2.10.1406041137270.2441@hadrien>
- <063D6719AE5E284EB5DD2968C1650D6D1725705F@AcuExch.aculab.com>
- <alpine.DEB.2.10.1406041148590.2441@hadrien>
- <CAMuHMdXPBQTYA0c=1hkC7943-_J59TVSFaEKsfY1F2ogV=Ld+A@mail.gmail.com>
- <alpine.DEB.2.10.1406041258200.2441@hadrien>
- <CAMuHMdV2wP43Lxf-UtCum37HyMPSboRb6RLNTHzm_ZNOBeJR0g@mail.gmail.com>
- <alpine.DEB.2.10.1406041510520.2441@hadrien>
-In-Reply-To: <alpine.DEB.2.10.1406041510520.2441@hadrien>
-Content-Language: en-US
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsDw9-0003Av-KG
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 16:21:14 +0000
+Message-ID: <538F4761.1030906@candelatech.com>
+Date: Wed, 04 Jun 2014 09:20:49 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: RE : RE : RE : ath10k: firmware crash in station mode & problem
+ DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
+ .local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,50 +39,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Julia Lawall' <julia.lawall@lip6.fr>, Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: driverdevel <devel@driverdev.osuosl.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "iss_storagedev@hp.com" <iss_storagedev@hp.com>, Linux-sh list <linux-sh@vger.kernel.org>, linux-rdma <linux-rdma@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, Arnd Bergmann <arnd@arndb.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "sebott@linux.vnet.ibm.com" <sebott@linux.vnet.ibm.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-From: Julia Lawall
-> On Wed, 4 Jun 2014, Geert Uytterhoeven wrote:
+On 06/04/2014 02:20 AM, Vu Hai NGUYEN wrote:
+>> I have a script to build every commit now, but except for the first few
+>> and the last few images, you would need various driver changes to work with them.
 > 
-> > Hi Julia,
-> >
-> > On Wed, Jun 4, 2014 at 1:00 PM, Julia Lawall <julia.lawall@lip6.fr> wrote:
-> > > OK, thanks.  I was only looking at the C code.
-> > >
-> > > But the C code contains a loop that is followed by:
-> > >
-> > >         if (!size)
-> > >                 return result;
-> > >         tmp = *p;
-> > >
-> > > found_first:
-> > >         tmp |= ~0UL << size;
-> > >         if (tmp == ~0UL)        /* Are any bits zero? */
-> > >                 return result + size;   /* Nope. */
-> > >
-> > > In the first return, it would seem that result == size.  Could the second
-> > > one be changed to just return size?  It should not hurt performance.
-> >
-> > "size" may have been changed between function entry and this line.
-> > So you have to store it in a temporary.
+>> I can rebase my firmware changes so that hopefully all (or at least most) of the
+>> images will work on standard kernels, but it may be a few days before I
+>> can get that done.
 > 
-> Sorry, after reflection it seems that indeed size + result is always the
-> original size, so it is actually all of the code that uses >= that is
-> doing something unnecessary.  == for the failure test is fine.
+>> In the meantime, please try these two:
+> 
+>> Compiled from original source received from QCA:
+> 
+>> http://www.candelatech.com/downloads/firmware-2-community-commit-0-207ce4b.bin
+> 
+>> It appeared to me that that code had a regression, so next commit fixed
+>> that:
+> 
+>> http://www.candelatech.com/downloads/firmware-2-community-commit-1-5717c65.bin
+> 
+>> If either of these work with DFS, then some change I made later broke it, and I can
+>> build the rest of the images so we can figure out where.
+> 
+> Both firmware in the link that you gave me work well, my station associate directly with the AP after running wpa_supplicant.
+> But then I re-put your firmware version non commercial, my STA did not associate directly after running wpa_supp, it keep print the message SCAN EVENT STARTED of wlan0. 
+> I run "iw wlan0 scan" and some times it can see and associate with my AP, some times it can not see the network with channel DFS, I mean it is not stable.
 
-There is nothing wrong with defensive coding.
-The 'tmp |= ~0UL << size' ensures that the return value is 'correct'
-when there are no bits set.
-The function could have been defined so that this wasn't needed.
+Ok, I will work on a series of firmwares for each of my commits so we can find
+the bad commit and fix it.
 
-If you assume that the 'no zero bits' is unlikely, then checking the
-return value from ffz() could well be slightly faster.
-Not that anything is likely to notice.
+> And I had other question too, I thought that you've done some test with ath10k in mode 802.11ac by iperf? What is the maximum rate that you obtain?
+> I'm using 2 PC and connect each one to my AP and STA, but the max rate that I had is around 120Mbps only, in both 802.11n and 802.11ac.
+> Strange things is that I config 3 antennas in used and leave the rate automatically (Don't set rates using "iw"), my station dump and file "fw_stats" in debugfs show me the rates of MCS 7 or 15 (in 802.11n) and NSS1 or 2 (in 802.11ac).
+> It never set in MCS 23 or NSS3, though my module wifi support 3 STREAMS, 1 can see it from "iw list":
+> VHT RX MCS set:
+> 			1 streams: MCS 0-9
+> 			2 streams: MCS 0-9
+> 			3 streams: MCS 0-9
+> But it also show me: VHT RX highest supported: 0 Mbps and VHT TX highest supported: 0 Mbps, is there something wrong with it?
+> If I use "iw" to fixed rate, the info from station dump (TX rates is always false because of firmware issue), but RX rate and the info from "fw_stats" is same thing as what I fixed (I can fixe rate at MCS23 and NSS 3 too, I also verified with dmesg | grep mac to see debug message from ath10k). But as I said above, my rate is around 120 Mbps in iperf.
 
-	David
+We can get 500+Mbps download, and about 400Mbps upload, TCP traffic using our own traffic generator,
+which is somewhat similar to iperf.  Use large tx/rx buffers, large write sizes, and 10+ streams in
+iperf for more optimal throughput.
+
+We often get rates reported at 1.3Gbps, so it seems in our tests we train up well.
+
+Unless you are using a modified driver with my firmware, you will not get useful
+tx-rate stats reported, but I think the rx-rate is accurate with latest upstream
+driver.
+
+Thanks,
+Ben
+
+> 
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+> 
 
 
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
