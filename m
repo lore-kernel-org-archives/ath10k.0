@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsEjL-0001AA-G2
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 17:12:03 +0000
-Message-ID: <538F533A.3050808@candelatech.com>
-Date: Wed, 04 Jun 2014 10:11:22 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: [RFC 1/4] ath10k: provide firmware crash info via debugfs.
-References: <1401812719-25061-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQnvAzCHvKwib39dOZnN6SEyNG_=U9Jgx5arM819dUoMYw@mail.gmail.com>
-In-Reply-To: <CA+BoTQnvAzCHvKwib39dOZnN6SEyNG_=U9Jgx5arM819dUoMYw@mail.gmail.com>
+ id 1WsFVt-0003Nc-OH
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 18:02:14 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 4/4] ath10k: Dump exception stack contents on firmware crash.
+Date: Wed,  4 Jun 2014 11:01:42 -0700
+Message-Id: <1401904902-5842-4-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
+References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +17,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On 06/04/2014 02:04 AM, Michal Kazior wrote:
+From: Ben Greear <greearb@candelatech.com>
 
->> +               if (dbufp == dbg_hdr.dbuf) {
->> +                       /* It is a circular buffer it seems, bail if next
->> +                        * is head
->> +                        */
-> 
-> Hmm, we seem to be mixing comment styles in ath10k now I guess (this
-> applies to other instances of multi-line comments in your patch). What
-> multi-line comment style should we really be using in ath10k? Kalle?
+Firmware developers can decode this and maybe figure out
+why the firmware crashed.
 
-Check-patch bitches if you do it differently than what is above, so I say
-we keep it as I have it.  Not worth cleaning up other comments to match
-unless someone actually cares enough to do it...
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  |  2 ++
+ drivers/net/wireless/ath/ath10k/debug.c | 10 +++++++++-
+ drivers/net/wireless/ath/ath10k/pci.c   | 11 ++++++++++-
+ 3 files changed, 21 insertions(+), 2 deletions(-)
 
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index f2c256b..f2e8690 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -353,6 +353,7 @@ enum ath10k_fw_error_dump_type {
+ 	ATH10K_FW_ERROR_DUMP_DBGLOG = 0,
+ 	ATH10K_FW_ERROR_DUMP_REGDUMP = 1,
+ 	ATH10K_FW_ERROR_DUMP_STACK = 2,
++	ATH10K_FW_ERROR_DUMP_EXC_STACK = 3,
+ 
+ 	ATH10K_FW_ERROR_DUMP_MAX,
+ };
+@@ -563,6 +564,7 @@ struct ath10k {
+ 	struct ath10k_dbglog_entry_storage dbglog_entry_data;
+ 	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X];
+ 	unsigned char stack_buf[ATH10K_FW_STACK_SIZE];
++	unsigned char exc_stack_buf[ATH10K_FW_STACK_SIZE];
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 	struct ath10k_debug debug;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 9c9fc10..a8d3978 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -602,6 +602,7 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ {
+ 	unsigned int len = (sizeof(ar->dbglog_entry_data)
+ 			    + sizeof(ar->stack_buf)
++			    + sizeof(ar->exc_stack_buf)
+ 			    + sizeof(ar->reg_dump_values));
+ 	unsigned int sofar = 0;
+ 	char *buf;
+@@ -615,7 +616,7 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 	sofar += hdr_len;
+ 
+ 	/* So we can add headers to the data dump */
+-	len += 3 * sizeof(*dump_tlv);
++	len += 4 * sizeof(*dump_tlv);
+ 
+ 	/* This is going to get big when we start dumping FW RAM and such,
+ 	 * so go ahead and use vmalloc.
+@@ -670,6 +671,13 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 	memcpy(dump_tlv->tlv_data, &ar->stack_buf, dump_tlv->tlv_len);
+ 	sofar += sizeof(*dump_tlv) + dump_tlv->tlv_len;
+ 
++	/* Gather firmware exception (irq) stack dump */
++	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
++	dump_tlv->type = ATH10K_FW_ERROR_DUMP_EXC_STACK;
++	dump_tlv->tlv_len = sizeof(ar->exc_stack_buf);
++	memcpy(dump_tlv->tlv_data, &ar->exc_stack_buf, dump_tlv->tlv_len);
++	sofar += sizeof(*dump_tlv) + dump_tlv->tlv_len;
++
+ 	WARN_ON(sofar != len);
+ 	return dump_data;
+ }
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e709c02..cf1cc41 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -864,6 +864,13 @@ static void ath10k_save_firmware_stack(struct ath10k *ar)
+ 					ar->stack_buf, HI_ITEM(hi_stack));
+ }
+ 
++/* Save the firmware exception stack */
++static void ath10k_save_firmware_exc_stack(struct ath10k *ar)
++{
++	ath10k_save_firmware_mem_helper(ar, ATH10K_FW_STACK_SIZE,
++					ar->exc_stack_buf,
++					HI_ITEM(hi_err_stack));
++}
+ 
+ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ {
+@@ -909,8 +916,10 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 			   reg_dump_values[i + 2],
+ 			   reg_dump_values[i + 3]);
+ 
+-	if (!ar->crashed_since_read)
++	if (!ar->crashed_since_read) {
+ 		ath10k_save_firmware_stack(ar);
++		ath10k_save_firmware_exc_stack(ar);
++	}
+ 
+ 	/* Dump the debug logs on the target */
+ 	host_addr = host_interest_item_address(HI_ITEM(hi_dbglog_hdr));
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.11.7
 
 
 _______________________________________________
