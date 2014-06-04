@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83])
+Received: from mail-ve0-x231.google.com ([2607:f8b0:400c:c01::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ws7sZ-0006UF-6I
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 09:53:08 +0000
-Date: Wed, 4 Jun 2014 11:52:32 +0200 (CEST)
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: RE: [PATCH 0/10] use safer test on the result of find_first_zero_bit
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D1725705F@AcuExch.aculab.com>
-Message-ID: <alpine.DEB.2.10.1406041148590.2441@hadrien>
-References: <1401872880-23685-1-git-send-email-Julia.Lawall@lip6.fr>
- <CAMuHMdXsoFUXj4jLMWN6NY7Um19KwWO9Rhx=9=gqWu_K5Ev2kQ@mail.gmail.com>
- <alpine.DEB.2.10.1406041137270.2441@hadrien>
- <063D6719AE5E284EB5DD2968C1650D6D1725705F@AcuExch.aculab.com>
+ id 1Ws83I-0000hn-OH
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 10:04:13 +0000
+Received: by mail-ve0-f177.google.com with SMTP id db11so8390017veb.22
+ for <ath10k@lists.infradead.org>; Wed, 04 Jun 2014 03:03:51 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
+References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
+Date: Wed, 4 Jun 2014 18:03:51 +0800
+Message-ID: <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
+Subject: Re: RE : Bridging problem in ath10k (STA)
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +25,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: driverdevel <devel@driverdev.osuosl.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "iss_storagedev@hp.com" <iss_storagedev@hp.com>, Linux-sh list <linux-sh@vger.kernel.org>, linux-rdma <linux-rdma@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, 'Julia Lawall' <julia.lawall@lip6.fr>, Geert Uytterhoeven <geert@linux-m68k.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+I have tested with the following CT firmware:
+http://www.candelatech.com/downloads/firmware-2-ct-community.bin
 
+But seems not working for STA mode. I am having problem if the AP is
+configured as 802.11ac. Is this FW that you mentioned?
 
-On Wed, 4 Jun 2014, David Laight wrote:
+----
+ChunYeow
 
-> From: Julia Lawall
-> > On Wed, 4 Jun 2014, Geert Uytterhoeven wrote:
-> >
-> > > Hi Julia,
-> > >
-> > > On Wed, Jun 4, 2014 at 11:07 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
-> > > > Find_first_zero_bit considers BITS_PER_LONG bits at a time, and thus may
-> > > > return a larger number than the maximum position argument if that position
-> > > > is not a multiple of BITS_PER_LONG.
-> > >
-> > > Shouldn't this be fixed in find_first_zero_bit() instead?
-> >
-> > OK, I could do that as well.  Most of the callers currently test with >=.
-> > Should they be left as is, or changed to use ==?
+On Wed, Jun 4, 2014 at 5:20 PM, Vu Hai NGUYEN
+<vh.nguyen@actiasodielec.fr> wrote:
+>>Hi, all
 >
-> Do we want to add an extra test to find_first_zero_bit() and effectively
-> slow down all the calls - especially those where the length is a
-> multiple of 8 (probably the most common).
-
-Currently, most of the calls test with >=, and most of the others seem to
-need to (either the size value did not look like a multiple of anything in
-particular, or it was eg read from a device).
-
-Note that it is BITS_PER_LONG, so it seems like it is typically 32 or 64,
-not 8.
-
-> Maybe the documented return code should be changed to allow for the
-> existing behaviour.
-
-Sorry, I'm not sure to understand what you suggest here.
-
-thanks,
-julia
+>>I just found out that the bridging is not able to work for STA mode
+>>even for firmware 10.1.467.2-1 if the AP is operating at 80MHz.
+>
+>>But it is working if the AP is operating at 20MHz or 802.11n instead
+>>of 802.11ac. But off course, the STA needs to associate with AP first
+>>before bridging.
+>
+>>Anyone has the similar problem?
+>
+> I do have the station with broken firmware in bridge network, the firmware of Ben from CT can fixe it. You can give it a try :D
+>
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+>
+>
 
 _______________________________________________
 ath10k mailing list
