@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsFVt-0003N5-Ok
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 18:02:15 +0000
+ id 1WsFVt-0003MX-O5
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 18:02:14 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 3/4] ath10k:  save firmware stack upon firmware crash.
-Date: Wed,  4 Jun 2014 11:01:41 -0700
-Message-Id: <1401904902-5842-3-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 2/4] ath10k:  save firmware debug log messages.
+Date: Wed,  4 Jun 2014 11:01:40 -0700
+Message-Id: <1401904902-5842-2-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
 References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,133 +27,31 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Should help debug firmware crashes, and give users a way
-to provide some useful debug reports to firmware developers.
+They may be dumped through the firmware dump debugfs
+file.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  |  3 +++
- drivers/net/wireless/ath/ath10k/debug.c | 11 ++++++++++-
- drivers/net/wireless/ath/ath10k/pci.c   | 35 +++++++++++++++++++++++++++++++++
- 3 files changed, 48 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index a8866d3..f2c256b 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -45,6 +45,7 @@
-  * get a compile error.  Cannot just include pci.h here.
-  */
- #define REG_DUMP_COUNT_QCA988X 60
-+#define ATH10K_FW_STACK_SIZE 4096
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 4b7782a..40a1d8d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1089,6 +1089,12 @@ static int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
  
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
-@@ -351,6 +352,7 @@ enum ath10k_dev_flags {
- enum ath10k_fw_error_dump_type {
- 	ATH10K_FW_ERROR_DUMP_DBGLOG = 0,
- 	ATH10K_FW_ERROR_DUMP_REGDUMP = 1,
-+	ATH10K_FW_ERROR_DUMP_STACK = 2,
+ 	trace_ath10k_wmi_dbglog(skb->data, skb->len);
  
- 	ATH10K_FW_ERROR_DUMP_MAX,
- };
-@@ -560,6 +562,7 @@ struct ath10k {
- 	bool crashed_since_read;
- 	struct ath10k_dbglog_entry_storage dbglog_entry_data;
- 	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X];
-+	unsigned char stack_buf[ATH10K_FW_STACK_SIZE];
- 
- #ifdef CONFIG_ATH10K_DEBUGFS
- 	struct ath10k_debug debug;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index a7d7877..9c9fc10 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -601,6 +601,7 @@ EXPORT_SYMBOL(ath10k_dbg_save_fw_dbg_buffer);
- static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- {
- 	unsigned int len = (sizeof(ar->dbglog_entry_data)
-+			    + sizeof(ar->stack_buf)
- 			    + sizeof(ar->reg_dump_values));
- 	unsigned int sofar = 0;
- 	char *buf;
-@@ -614,7 +615,7 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	sofar += hdr_len;
- 
- 	/* So we can add headers to the data dump */
--	len += 2 * sizeof(*dump_tlv);
-+	len += 3 * sizeof(*dump_tlv);
- 
- 	/* This is going to get big when we start dumping FW RAM and such,
- 	 * so go ahead and use vmalloc.
-@@ -662,6 +663,14 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
- 	memcpy(dump_tlv->tlv_data, &ar->reg_dump_values, dump_tlv->tlv_len);
- 	sofar += sizeof(*dump_tlv) + dump_tlv->tlv_len;
- 
-+	/* Gather firmware stack dump */
-+	dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
-+	dump_tlv->type = ATH10K_FW_ERROR_DUMP_STACK;
-+	dump_tlv->tlv_len = sizeof(ar->stack_buf);
-+	memcpy(dump_tlv->tlv_data, &ar->stack_buf, dump_tlv->tlv_len);
-+	sofar += sizeof(*dump_tlv) + dump_tlv->tlv_len;
++	/* First 4 bytes are a messages-dropped-due-to-overflow counter,
++	 * and should not be recorded in the dbglog buffer, so we skip
++	 * them.
++	 */
++	ath10k_dbg_save_fw_dbg_buffer(ar, skb->data + 4, skb->len - 4);
 +
-+	WARN_ON(sofar != len);
- 	return dump_data;
+ 	return 0;
  }
  
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index f2cfe69..e709c02 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -833,6 +833,38 @@ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
- 	return ath10k_ce_num_free_src_entries(ar_pci->pipe_info[pipe].ce_hdl);
- }
- 
-+static void ath10k_save_firmware_mem_helper(struct ath10k *ar, u32 sz,
-+					    unsigned char *to, u32 addr)
-+{
-+	u32 host_addr;
-+	u32 reg_dump_area;
-+	int ret;
-+
-+	host_addr = host_interest_item_address(addr);
-+
-+	ret = ath10k_pci_diag_read_mem(ar, host_addr, &reg_dump_area,
-+				       sizeof(u32));
-+	if (ret != 0) {
-+		ath10k_warn("failed to read FW addr: %d (addr %d)\n",
-+			    ret, addr);
-+		return;
-+	}
-+
-+	ret = ath10k_pci_diag_read_mem(ar, reg_dump_area, to, sz);
-+	if (ret != 0)
-+		ath10k_err("failed to read FW memory: %d (addr %d sz %d)\n",
-+			   ret, reg_dump_area, sz);
-+}
-+
-+/* Save the main firmware stack */
-+static void ath10k_save_firmware_stack(struct ath10k *ar)
-+{
-+	BUILD_BUG_ON(ATH10K_FW_STACK_SIZE % 8);
-+	ath10k_save_firmware_mem_helper(ar, ATH10K_FW_STACK_SIZE,
-+					ar->stack_buf, HI_ITEM(hi_stack));
-+}
-+
-+
- static void ath10k_pci_hif_dump_area(struct ath10k *ar)
- {
- 	u32 reg_dump_area = 0;
-@@ -877,6 +909,9 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
- 			   reg_dump_values[i + 2],
- 			   reg_dump_values[i + 3]);
- 
-+	if (!ar->crashed_since_read)
-+		ath10k_save_firmware_stack(ar);
-+
- 	/* Dump the debug logs on the target */
- 	host_addr = host_interest_item_address(HI_ITEM(hi_dbglog_hdr));
- 	if (ath10k_pci_diag_read_mem(ar, host_addr,
 -- 
 1.7.11.7
 
