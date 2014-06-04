@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ws7Sy-0004Jk-GM
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 09:26:42 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Wed, 4 Jun 2014 11:20:42 +0200
-Subject: RE : Bridging problem in ath10k (STA)
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
-References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
-In-Reply-To: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
-Content-Language: fr-FR
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ws7c3-0007Lg-9w
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 09:36:04 +0000
+Received: by mail-ie0-f182.google.com with SMTP id x19so7008445ier.27
+ for <ath10k@lists.infradead.org>; Wed, 04 Jun 2014 02:35:37 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1401872880-23685-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1401872880-23685-1-git-send-email-Julia.Lawall@lip6.fr>
+Date: Wed, 4 Jun 2014 11:35:37 +0200
+Message-ID: <CAMuHMdXsoFUXj4jLMWN6NY7Um19KwWO9Rhx=9=gqWu_K5Ev2kQ@mail.gmail.com>
+Subject: Re: [PATCH 0/10] use safer test on the result of find_first_zero_bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Julia Lawall <Julia.Lawall@lip6.fr>
+Cc: driverdevel <devel@driverdev.osuosl.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, iss_storagedev@hp.com, Linux-sh list <linux-sh@vger.kernel.org>, linux-rdma <linux-rdma@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
->Hi, all
+Hi Julia,
 
->I just found out that the bridging is not able to work for STA mode
->even for firmware 10.1.467.2-1 if the AP is operating at 80MHz.
+On Wed, Jun 4, 2014 at 11:07 AM, Julia Lawall <Julia.Lawall@lip6.fr> wrote:
+> Find_first_zero_bit considers BITS_PER_LONG bits at a time, and thus may
+> return a larger number than the maximum position argument if that position
+> is not a multiple of BITS_PER_LONG.
 
->But it is working if the AP is operating at 20MHz or 802.11n instead
->of 802.11ac. But off course, the STA needs to associate with AP first
->before bridging.
+Shouldn't this be fixed in find_first_zero_bit() instead?
 
->Anyone has the similar problem?
+Gr{oetje,eeting}s,
 
-I do have the station with broken firmware in bridge network, the firmware of Ben from CT can fixe it. You can give it a try :D
+                        Geert
 
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 _______________________________________________
 ath10k mailing list
