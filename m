@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ws8YF-0004BM-IU
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 10:36:12 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Wed, 4 Jun 2014 12:27:27 +0200
-Subject: RE : RE : Bridging problem in ath10k (STA)
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
-References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>,
- <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
-In-Reply-To: <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
-Content-Language: fr-FR
+Received: from mail-ie0-x233.google.com ([2607:f8b0:4001:c03::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ws8rI-0002Im-Br
+ for ath10k@lists.infradead.org; Wed, 04 Jun 2014 10:55:53 +0000
+Received: by mail-ie0-f179.google.com with SMTP id rd18so6816808iec.24
+ for <ath10k@lists.infradead.org>; Wed, 04 Jun 2014 03:55:30 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.10.1406041148590.2441@hadrien>
+References: <1401872880-23685-1-git-send-email-Julia.Lawall@lip6.fr>
+ <CAMuHMdXsoFUXj4jLMWN6NY7Um19KwWO9Rhx=9=gqWu_K5Ev2kQ@mail.gmail.com>
+ <alpine.DEB.2.10.1406041137270.2441@hadrien>
+ <063D6719AE5E284EB5DD2968C1650D6D1725705F@AcuExch.aculab.com>
+ <alpine.DEB.2.10.1406041148590.2441@hadrien>
+Date: Wed, 4 Jun 2014 12:55:29 +0200
+Message-ID: <CAMuHMdXPBQTYA0c=1hkC7943-_J59TVSFaEKsfY1F2ogV=Ld+A@mail.gmail.com>
+Subject: Re: [PATCH 0/10] use safer test on the result of find_first_zero_bit
+From: Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +28,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: driverdevel <devel@driverdev.osuosl.org>, linux-s390 <linux-s390@vger.kernel.org>, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, scsi <linux-scsi@vger.kernel.org>, "iss_storagedev@hp.com" <iss_storagedev@hp.com>, Linux-sh list <linux-sh@vger.kernel.org>, linux-rdma <linux-rdma@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-buildroot-devel@lists.sourceforge.net>, David Laight <David.Laight@aculab.com>, Arnd Bergmann <arnd@arndb.de>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
->I have tested with the following CT firmware:
->http://www.candelatech.com/downloads/firmware-2-ct-community.bin
+Hi Julia,
 
->But seems not working for STA mode. I am having problem if the AP is
->configured as 802.11ac. Is this FW that you mentioned?
+On Wed, Jun 4, 2014 at 11:52 AM, Julia Lawall <julia.lawall@lip6.fr> wrote:
+>> Maybe the documented return code should be changed to allow for the
+>> existing behaviour.
+>
+> Sorry, I'm not sure to understand what you suggest here.
 
-Yes, I can enter promiscuous mode to set up bridge network (before associated with AP, configured as 802.11ac) with the firmware in your link or this one:
-http://www.candelatech.com/downloads/firmware-2-ct-non-commercial.bin
+include/asm-generic/bitops/find.h:
 
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+| /**
+|  * find_first_zero_bit - find the first cleared bit in a memory region
+|  * @addr: The address to start the search at
+|  * @size: The maximum number of bits to search
+|  *
+|  * Returns the bit number of the first cleared bit.
+|  * If no bits are zero, returns @size.
 
+"If no bits are zero, returns @size or a number larger than @size."
 
+|  */
+| extern unsigned long find_first_zero_bit(const unsigned long *addr,
+|                                          unsigned long size);
 
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
 
 _______________________________________________
 ath10k mailing list
