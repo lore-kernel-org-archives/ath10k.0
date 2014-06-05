@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wsa9G-0003kN-W5
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 16:04:19 +0000
-Message-ID: <539094E8.9020305@candelatech.com>
-Date: Thu, 05 Jun 2014 09:03:52 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-vc0-f170.google.com ([209.85.220.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsaA6-0003rW-D1
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 16:05:07 +0000
+Received: by mail-vc0-f170.google.com with SMTP id lc6so1407653vcb.29
+ for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 09:04:43 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com> <538CA904.4000508@candelatech.com>
- <87ioojz1b1.fsf@kamboji.qca.qualcomm.com> <538CB782.1000509@candelatech.com>
- <87k38vpr28.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87k38vpr28.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
+References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
+ <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+ <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
+ <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Thu, 5 Jun 2014 09:04:22 -0700
+Message-ID: <CALCETrUQxF68b86POMfAurBcR0bZbXc8NmhXopksWh3nojeauA@mail.gmail.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +28,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/05/2014 03:51 AM, Kalle Valo wrote:
-> Hi,
-> 
-> sorry for jumping in late, I get too much email as usual :/
-> 
-> Ben Greear <greearb@candelatech.com> writes:
-> 
->> [Good stuff snipped, adding linux-wireless as this is a more
->> general issue if we are going to consider general framework]
+On Thu, Jun 5, 2014 at 3:26 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Andy Lutomirski <luto@amacapital.net> writes:
+>
+>> On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+>>> +ath10k@lists.infradead.org
+>>>
+>>> On 28 May 2014 20:35, Andy Lutomirski <luto@amacapital.net> wrote:
+>>>> It dies with 'otp calibration failed: 2'.
+>>>>
+>>>> Some older version of the driver seemed to work fine.
+>>>
+>>> ath10k did not verify otp result before so it could load successfully
+>>> despite errors.
+>>>
+>>> Someone raised this problem yesterday on IRC. I'm not really sure how
+>>> we should deal with this properly.
 >>
->>
->> Maybe we should start with goals before getting to implementation
->> details.  Here's my wish list that is ath10k specific, but probably
->> similar to other firmware users:
->>
->> 1)  We need the firmware crash text currently printed to
->> /var/log/messages.
->>
->> 2)  It would be nice to get the firmware RAM and stack dumps at time of
->> crash to debug more interesting crashes.
->>
->> 3)  It would be nice to know about firmware debug messages for
->> the period of time directly before the crash (maybe 2-5 minutes?)
->>
->> 4)  It would be nice to have this interleaved with kernel, supplicant,
->> and related logs.
-> 
-> I would add:
-> 
-> 5) A generic user space interface so that the same user space tool can
->    store firmware crash dumps from all wireless drivers and no need to
->    reinvent the wheel.
+>> Ideally, someone from Atheros could figure out what the error is.
+>
+> Michal already did. The error means that for some reason the
+> calibaration data was not found from OTP. OTP is the storage area where
+> the calibration data is normally stored within QCA9880.
 
-Looks like the plan to move the feature up into mac80211 once
-we get the lower-level details sorted would take care of this.
+Ah -- I misunderstood.  I assumed that the OTP read was failing
+mysteriously and that expert input was needed to resolve that mystery
+:)
 
-> 
->> If we are storing crashes for something like ethtool to report, we need
->> RAM and/or disk storage so the firmware RAM dumps and such can be stored until
->> the user and/or automated tools ask for them.  We need some way to automatically
->> clean up old crashes so disk/ram is not overly utilized.  For APs,
->> they are low on both RAM and 'disk', so storing crash logs for any
->> length of time may be problematic.
-> 
-> I think most, if not all, wireless drivers store the firmware binary in
-> RAM forever. I'm having hard time to believe that storing one instance
-> (the latest one) of firmware crash dump would make any difference.
-> That's why I'm not worried about RAM usage.
+>
+>> Barring that, the card seems to work okay without otp (I don't even
+>> know what otp is), so just warning and continuing to load might be
+>> better than bailing.
+>
+> This means that your card is not properly calibrated and it doesn't
+> function in an optimal way (for example range or throughput is less than
+> what it could be).
+>
+> Do you see that with all Archer C7 v2 devices or with just one? One
+> possibility is that the calibration data is actually stored outside of
+> QCA9880 board, for example in the host flash or similar. I don't have
+> that AP, can someone else see where the calibration data is stored?
 
-I'm concerned about the contents of the target's RAM, not the firmware
-binary image.  Each crash would want to store a snapshot of the target's
-RAM, including bss regions, stack(s), etc.  Basically, a poor man's
-re-implementation of a core file.  In practice, this works out to
-less that 100k bytes I think, so likely anything that can run ath10k
-has that much memory to spare for debugging efforts...
+I only have one of these.  I put a likely looking directory of the GPL
+sources here:
 
-I think this is resolved well enough in my patch (and iwlwifi does
-it slightly differently, but should work too).
+http://web.mit.edu/luto/www/archerc7_gpl/atheros/
 
-Thanks,
-Ben
+I'm not entirely sure what I'm looking for, but this might be it:
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+http://web.mit.edu/luto/www/archerc7_gpl/atheros/otp.c
 
+I don't really know what I'm looking for, though.
+
+--Andy
 
 _______________________________________________
 ath10k mailing list
