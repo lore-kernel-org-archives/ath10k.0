@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsSXT-0008Ic-OB
+ id 1WsSXT-0008Hb-Cg
  for ath10k@lists.infradead.org; Thu, 05 Jun 2014 07:56:44 +0000
-Received: by mail-wi0-f177.google.com with SMTP id f8so2832822wiw.16
- for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:21 -0700 (PDT)
+Received: by mail-wg0-f48.google.com with SMTP id n12so393318wgh.19
+ for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:17 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: sanitize tx ring index access properly
-Date: Thu,  5 Jun 2014 09:48:40 +0200
-Message-Id: <1401954520-3365-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
-References: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/2] ath10k: pci fixes 2014-06-05
+Date: Thu,  5 Jun 2014 09:48:38 +0200
+Message-Id: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +25,33 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The tx ring index was immediately trimmed with a
-bitmask. This discarded the 0xFFFFFFFF error case
-(which theoretically can happen when a device is
-abruptly disconnected) and led to using an invalid
-tx ring index. This could lead to memory
-corruption.
+Hi,
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/ce.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+I've found a few issues while I was testing ath10k
+in QEMU/KVM with PCI passthrough. The second patch
+is something that I've found while analysing the
+bmi race and I don't think anyone experienced
+problems associated with it.
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index d185dc0..7c6c7d5 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -603,16 +603,19 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
- 		if (ret)
- 			return ret;
- 
--		src_ring->hw_index =
--			ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
--		src_ring->hw_index &= nentries_mask;
-+		read_index = ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
-+		if (read_index == 0xFFFFFFFF)
-+			return -ENODEV;
-+
-+		read_index &= nentries_mask;
-+		src_ring->hw_index = read_index;
- 
- 		ath10k_pci_sleep(ar);
- 	}
- 
- 	read_index = src_ring->hw_index;
- 
--	if ((read_index == sw_index) || (read_index == 0xffffffff))
-+	if (read_index == sw_index)
- 		return -EIO;
- 
- 	sbase = src_ring->shadow_base;
+There's still a weird synchronization issue with
+(what I think is) iomap write propagation. The
+initial fw bootup interrupt doesn't come in and
+it seems CE interrupts are unmasked with a lag
+because explicit polling after ctl_resp timeout
+seems to be sufficient to work around it. I
+suspect this might be a virtualization problem
+rather than ath10k. Ideas, anyone?
+
+
+Michal Kazior (2):
+  ath10k: fix bmi exchange tx/rx race
+  ath10k: sanitize tx ring index access properly
+
+ drivers/net/wireless/ath/ath10k/ce.c  | 11 +++++++----
+ drivers/net/wireless/ath/ath10k/pci.c | 11 +++--------
+ drivers/net/wireless/ath/ath10k/pci.h |  3 ++-
+ 3 files changed, 12 insertions(+), 13 deletions(-)
+
 -- 
 1.8.5.3
 
