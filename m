@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsSXT-0008Hb-Cg
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 07:56:44 +0000
-Received: by mail-wg0-f48.google.com with SMTP id n12so393318wgh.19
- for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:17 -0700 (PDT)
+ id 1WsSXX-0008ID-B8
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 07:56:47 +0000
+Received: by mail-wi0-f176.google.com with SMTP id n15so9941672wiw.3
+ for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:20 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/2] ath10k: pci fixes 2014-06-05
-Date: Thu,  5 Jun 2014 09:48:38 +0200
-Message-Id: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: fix bmi exchange tx/rx race
+Date: Thu,  5 Jun 2014 09:48:39 +0200
+Message-Id: <1401954520-3365-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
+References: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +27,78 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+It was possible for tx completion not to be
+processed. In that case an old stack pointer was
+left on copy engine tx ring. Next bmi exchange
+would immediately pop it and use complete() on the
+completion struct there causing corruption.
 
-I've found a few issues while I was testing ath10k
-in QEMU/KVM with PCI passthrough. The second patch
-is something that I've found while analysing the
-bmi race and I don't think anyone experienced
-problems associated with it.
+Make sure to wait for both tx and rx completions
+properly.
 
-There's still a weird synchronization issue with
-(what I think is) iomap write propagation. The
-initial fw bootup interrupt doesn't come in and
-it seems CE interrupts are unmasked with a lag
-because explicit polling after ctl_resp timeout
-seems to be sufficient to work around it. I
-suspect this might be a virtualization problem
-rather than ath10k. Ideas, anyone?
-
-
-Michal Kazior (2):
-  ath10k: fix bmi exchange tx/rx race
-  ath10k: sanitize tx ring index access properly
-
- drivers/net/wireless/ath/ath10k/ce.c  | 11 +++++++----
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
  drivers/net/wireless/ath/ath10k/pci.c | 11 +++--------
  drivers/net/wireless/ath/ath10k/pci.h |  3 ++-
- 3 files changed, 12 insertions(+), 13 deletions(-)
+ 2 files changed, 5 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index d0004d5..06840d1 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1362,8 +1362,6 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
+ 		ath10k_ce_recv_buf_enqueue(ce_rx, &xfer, resp_paddr);
+ 	}
+ 
+-	init_completion(&xfer.done);
+-
+ 	ret = ath10k_ce_send(ce_tx, &xfer, req_paddr, req_len, -1, 0);
+ 	if (ret)
+ 		goto err_resp;
+@@ -1414,10 +1412,7 @@ static void ath10k_pci_bmi_send_done(struct ath10k_ce_pipe *ce_state)
+ 					  &nbytes, &transfer_id))
+ 		return;
+ 
+-	if (xfer->wait_for_resp)
+-		return;
+-
+-	complete(&xfer->done);
++	xfer->tx_done = true;
+ }
+ 
+ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+@@ -1438,7 +1433,7 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	}
+ 
+ 	xfer->resp_len = nbytes;
+-	complete(&xfer->done);
++	xfer->rx_done = true;
+ }
+ 
+ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+@@ -1451,7 +1446,7 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+ 		ath10k_pci_bmi_send_done(tx_pipe);
+ 		ath10k_pci_bmi_recv_data(rx_pipe);
+ 
+-		if (completion_done(&xfer->done))
++		if (xfer->tx_done && (xfer->rx_done == xfer->wait_for_resp))
+ 			return 0;
+ 
+ 		schedule();
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index dfdebb4..9401292 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -38,7 +38,8 @@
+ #define DIAG_TRANSFER_LIMIT 2048
+ 
+ struct bmi_xfer {
+-	struct completion done;
++	bool tx_done;
++	bool rx_done;
+ 	bool wait_for_resp;
+ 	u32 resp_len;
+ };
 -- 
 1.8.5.3
 
