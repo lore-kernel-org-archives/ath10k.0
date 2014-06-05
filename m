@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsZv0-0008AX-JB
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 15:49:31 +0000
-Message-ID: <53909175.30009@candelatech.com>
-Date: Thu, 05 Jun 2014 08:49:09 -0700
+ id 1WsZxQ-0002Vc-8Q
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 15:52:00 +0000
+Message-ID: <5390920B.7000903@candelatech.com>
+Date: Thu, 05 Jun 2014 08:51:39 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [RFC 1/4] ath10k: provide firmware crash info via debugfs.
-References: <1401812719-25061-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQnvAzCHvKwib39dOZnN6SEyNG_=U9Jgx5arM819dUoMYw@mail.gmail.com>
- <538F4DEE.6040405@candelatech.com> <8738fjppba.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8738fjppba.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com> <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com> <538CB782.1000509@candelatech.com>
+ <538CC68C.10808@gmail.com> <538CC949.5020901@candelatech.com>
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
+ <538CD507.1050803@candelatech.com>
+ <CANUX_P1iaTtFccraAF_p1dFZ3SJFpdNfF=i=eAVXP8yM3GrM4A@mail.gmail.com>
+ <538F7381.4070100@candelatech.com> <877g4vpq6i.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <877g4vpq6i.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +30,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
-On 06/05/2014 04:29 AM, Kalle Valo wrote:
+On 06/05/2014 04:10 AM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 > 
->> On 06/04/2014 02:04 AM, Michal Kazior wrote:
->>> On 3 June 2014 18:25,  <greearb@candelatech.com> wrote:
->>>
->>>> --- a/drivers/net/wireless/ath/ath10k/core.h
->>>> +++ b/drivers/net/wireless/ath/ath10k/core.h
->>>> @@ -41,6 +41,8 @@
->>>>  #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
->>>>  #define ATH10K_NUM_CHANS 38
+>> On 06/04/2014 12:23 PM, Emmanuel Grumbach wrote:
+>>
+>>>> Do you have a link to your patch that defines the types you used?
 >>>>
->>>> +#define REG_DUMP_COUNT_QCA988X 60 /* from pci.h */
 >>>
->>> I don't like this.
+>>> Take a look at 1bd3cbc1a0e9ed977a6bd470c5bc7bd36fd87e26.
+>>> But I am adding more and more content to this file.
+>>
+>> Yeah, after implementing it in ath10k it seems there would
+>> be very little over-lap, so probably each driver should just
+>> do their own.
+>>
+>> We can keep the debugfs file names the same, and the udev
+>> event types the same, which should help user-space a bit.
 > 
-> Me neither.
-> 
->> You want me to make a different define for this that duplicates
->> the '60' value?  At least with my method above, we should get compile
->> errors if the values ever diverge in the two files.
-> 
-> There should be only one define. Somewhere (forgot where) Michal
-> suggested hw.h, I think this define would be a good candidate to move
-> there too.
+> In the future I would actually want to take this a step further and put
+> all that to cfg80211. That way the driver would only need to call
+> cfg80211_firmware_crashed(wiphy, dump) and cfg80211 will handle the
+> rest. This would make sure that all drivers use the exactly same user
+> space interfaces and hopefully also motivate other drivers to use it.
 
-Ok, I'll move it to hw.h
+Sounds like a good goal, but let's get the drivers well implemented first
+while we have flexibility to change the API.  When things are solid, can
+move some common functionality upwards in the stack.
 
->>>> +/* This will store at least the last 128 entries. */
->>>> +#define ATH10K_DBGLOG_DATA_LEN (128 * 7 * 4)
->>>
->>> Where does the 7 and 4 come from? Can't we use sizeof() to compute this?
->>
->> It is from the guts of how the firmware does debug logs.
->>
->> Each entry is a max of 7 32-bit integers in length.
->>
->>> The 128 should probably be a separate #define?
->>
->> I don't see why...
-> 
-> To make the code more readable.
-> 
->> dbglog messages are variable number of 32-bit integers in length, so
->> the 128 is fairly arbitrary.
-> 
-> A person should immeaditely understand where the numbers are coming from
-> and not start googling about it. The minimum is to put your description
-> above to the comment. And it would be clearer to replace 4 with
-> sizeof(u32).
-
-Would the comments I put in the PATCH 1/4 combined with the sizeof(4)
-be sufficient, or do you want actual defines?  To really understand
-this code you need details from how the firmware encodes the messages.
-I would rather a QCA person add that info just in case it is considered
-protected info...
+For instance, the ath10k can get wedged where even cold resets fail
+over and over...I'm thinking that could have it's own uevent so
+user-space can know we need a reboot to recover the NIC...
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
