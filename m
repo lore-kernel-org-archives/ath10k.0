@@ -1,32 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsIvb-0005Re-Hj
- for ath10k@lists.infradead.org; Wed, 04 Jun 2014 21:41:00 +0000
-Message-ID: <538F9255.1060101@candelatech.com>
-Date: Wed, 04 Jun 2014 14:40:37 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: RE : RE : RE : ath10k: firmware crash in station mode & problem
- DFS
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
- <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
- <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
- <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
- <5386059B.7040301@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
- <538CAACA.2030202@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
- <538E9D26.4040009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
- .local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC.local>
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsSXT-0008Ic-OB
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 07:56:44 +0000
+Received: by mail-wi0-f177.google.com with SMTP id f8so2832822wiw.16
+ for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:21 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: sanitize tx ring index access properly
+Date: Thu,  5 Jun 2014 09:48:40 +0200
+Message-Id: <1401954520-3365-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
+References: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,59 +19,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 06/04/2014 02:20 AM, Vu Hai NGUYEN wrote:
->> I have a script to build every commit now, but except for the first few
->> and the last few images, you would need various driver changes to work with them.
-> 
->> I can rebase my firmware changes so that hopefully all (or at least most) of the
->> images will work on standard kernels, but it may be a few days before I
->> can get that done.
-> 
->> In the meantime, please try these two:
-> 
->> Compiled from original source received from QCA:
-> 
->> http://www.candelatech.com/downloads/firmware-2-community-commit-0-207ce4b.bin
-> 
->> It appeared to me that that code had a regression, so next commit fixed
->> that:
-> 
->> http://www.candelatech.com/downloads/firmware-2-community-commit-1-5717c65.bin
-> 
->> If either of these work with DFS, then some change I made later broke it, and I can
->> build the rest of the images so we can figure out where.
-> 
-> Both firmware in the link that you gave me work well, my station associate directly with the AP after running wpa_supplicant.
-> But then I re-put your firmware version non commercial, my STA did not associate directly after running wpa_supp, it keep print the message SCAN EVENT STARTED of wlan0. 
-> I run "iw wlan0 scan" and some times it can see and associate with my AP, some times it can not see the network with channel DFS, I mean it is not stable.
+The tx ring index was immediately trimmed with a
+bitmask. This discarded the 0xFFFFFFFF error case
+(which theoretically can happen when a device is
+abruptly disconnected) and led to using an invalid
+tx ring index. This could lead to memory
+corruption.
 
-Ok, I have built an image for each of my commits, and I have attempted to rebase my changes
-so that these kernels should work on un-patched drivers.  I have not actually tested these
-various images on un-patched drivers, so if you see any un-expected problems, let me know
-and I can test those specific images.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-From your previous testing, you know the first commit should be OK for DFS, and the
-last commit (172) is not.  To bisect, choose an image in the middle (ie, commit 86)
-and see if it works.  If so, choose middle one between 86 and 172, if not, choose middle one
-between 0 and 86...repeat until you find the first bad commit and let me know what that
-is and I will try to figure out the problem in the firmware.
-
-http://www.candelatech.com/downloads/ath10k-fw-all-images/
-
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index d185dc0..7c6c7d5 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -603,16 +603,19 @@ static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+ 		if (ret)
+ 			return ret;
+ 
+-		src_ring->hw_index =
+-			ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
+-		src_ring->hw_index &= nentries_mask;
++		read_index = ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
++		if (read_index == 0xFFFFFFFF)
++			return -ENODEV;
++
++		read_index &= nentries_mask;
++		src_ring->hw_index = read_index;
+ 
+ 		ath10k_pci_sleep(ar);
+ 	}
+ 
+ 	read_index = src_ring->hw_index;
+ 
+-	if ((read_index == sw_index) || (read_index == 0xffffffff))
++	if (read_index == sw_index)
+ 		return -EIO;
+ 
+ 	sbase = src_ring->shadow_base;
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.8.5.3
 
 
 _______________________________________________
