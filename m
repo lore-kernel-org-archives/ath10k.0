@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WscMi-0003nS-Sr
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 18:26:17 +0000
-Message-ID: <5390B632.7030305@candelatech.com>
-Date: Thu, 05 Jun 2014 11:25:54 -0700
+ id 1Wschs-0003OW-JS
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 18:48:10 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id F378740B5A0
+ for <ath10k@lists.infradead.org>; Thu,  5 Jun 2014 11:47:44 -0700 (PDT)
+Message-ID: <5390BB50.7040600@candelatech.com>
+Date: Thu, 05 Jun 2014 11:47:44 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
-References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
+Subject: More issues with ath10k_flush
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,121 +25,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On 06/05/2014 09:18 AM, Kalle Valo wrote:
+I'm back to debugging this charmer.
 
->> +struct ath10k_tlv_dump_data {
->> +	u32 type; /* see ath10k_fw_error_dump_type above */
->> +	u32 tlv_len; /* in bytes */
->> +	u8 tlv_data[]; /* Pad to 32-bit boundaries as needed. */
->> +} __packed;
->> +
->> +struct ath10k_dump_file_data {
->> +	/* Dump file information */
->> +	u32 len;
->> +	u32 magic; /* 0x01020304, tells us byte-order of host if we care */
->> +	u32 version; /* File dump version, 1 for now. */
-> 
-> Actually I would prefer to have magic first and have ASCII string as
-> string, for example "ATH10K-FW-DUMP".
+Currently I see the flush fail (and take 5 seconds doing so)
+fairly often when creating lots of station vifs against my firmware.
 
-I'd like magic number to stay, was planning to use it to detect byte
-ordering (ie, dumps might come from various different platforms, to
-be decoded on some different platform).
+Once stations are connected, there are usually no more timeouts,
+even though I might be sending/receiving 100+Mbps of traffic for hours at
+a time.
 
-I will add the string, however.
+By printing out the firmware stats, I see that much of the time
+the hardware has accepted X packets for transmission, but has completed
+X-1.  It is possible the firmware's counters are screwed up some how
+or that it lost a packet, but I think it may also be possible that
+the firmware is just being really slow about completing a packet
+every now and then.  I have looked at the firmware in detail and
+have found no way that it could actually leak tx descriptors.
 
->> +	/* Some info we can get from ath10k struct that might help. */
->> +	u32 chip_id;
->> +	u32 target_version;
-> 
-> bus_type or something like that would be good to add already now.
+So, I was thinking about changing the flush logic to try
+the current flush (that just waits) for up to 1/5 of the
+flush timeout, and if that fails, try telling the firmware to purge
+it's tx buffers, and then wait up to 4/5ths more of the
+flush timeout.
 
-Can you be more specific on what info you want here?  I don't see
-any mention of bus_type in the ath10k dir.
+Does that sound like a reasonable approach?
 
->> +	u32 fw_version_minor;
->> +	u16 fw_version_release;
->> +	u16 fw_version_build;
->> +	u32 phy_capability;
->> +	u32 hw_min_tx_power;
->> +	u32 hw_max_tx_power;
->> +	u32 ht_cap_info;
->> +	u32 vht_cap_info;
->> +	u32 num_rf_chains;
->> +	char fw_ver[64]; /* Firmware version string */
-> 
-> Can we reuse ETHTOOL_FWVERS_LEN? cfg80211 already uses that.
-> 
-> #define ETHTOOL_FWVERS_LEN	32
-
-I prefer not to..that way, firmware format will remain the same even if
-the kernel changes the fwvers-len some day.
-
-
->> +	/* Kernel related information */
->> +	u32 kernel_ver_code; /* LINUX_VERSION_CODE */
->> +	char kernel_ver[64]; /* VERMAGIC_STRING */
->> +
->> +	u8 unused[64]; /* Room for growth w/out changing binary format */
-> 
-> Maybe 128 bytes, just so that we don't need to change it for some time?
-
-certainly.
-
->> @@ -488,6 +555,12 @@ struct ath10k {
->>  
->>  	struct dfs_pattern_detector *dfs_detector;
->>  
->> +	/* Used for crash-dump storage */
->> +	/* Don't over-write dump info until someone reads the data. */
->> +	bool crashed_since_read;
->> +	struct ath10k_dbglog_entry_storage dbglog_entry_data;
->> +	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X];
-> 
-> I think these should be in struct ath10k_debug.
-
-I did not do this because I figure we will want ethtool support w/out
-forcing debugfs to be enabled someday soon.
-
->> +void ath10k_dbg_save_fw_dbg_buffer(struct ath10k *ar, u8 *buffer, int len)
->> +{
->> +	int i;
->> +	int z = ar->dbglog_entry_data.next_idx;
->> +
->> +	/* Don't save any new logs until user-space reads this. */
->> +	if (ar->crashed_since_read)
->> +		return;
-> 
-> Locking? If this functions depends on something, please document that
-> with lockdep_assert_held().
-
-To be honest, I was going to ignore locking and assume that firmware
-will not crash that often.  Worst case would be a garbled crash dump
-as there is no memory allocation involved in gathering the crash,
-and the length of the crash dump will not change based on anything in
-the crash logic.
-
-I'm a bit leery of adding spin-locks in the dump routine just for
-this, but I can add and use a new spin-lock if you prefer.  If so,
-any idea if we can do the reads of the target's memory while holding
-a spin-lock, or would I need some temporary buffers and only lock
-while copying that in to the storage in the 'ar'?
-
-
->> +	ar->dbglog_entry_data.next_idx = z;
->> +}
->> +EXPORT_SYMBOL(ath10k_dbg_save_fw_dbg_buffer);
->> +
->> +static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
->> +{
->> +	unsigned int len = (sizeof(ar->dbglog_entry_data)
-> 
-> Unneeded parenthesis.
-
-Makes things line up nicely in xemacs auto-indent, but will fix.
+Currently, my work-around is just to restart firmware
+after it fails to flush for 2 tries in a row, seems
+like there could be something better!
 
 Thanks,
 Ben
