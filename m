@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsZxQ-0002Vc-8Q
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 15:52:00 +0000
-Message-ID: <5390920B.7000903@candelatech.com>
-Date: Thu, 05 Jun 2014 08:51:39 -0700
+ id 1Wsa3D-0000qb-Ey
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 15:57:59 +0000
+Message-ID: <53909372.1040707@candelatech.com>
+Date: Thu, 05 Jun 2014 08:57:38 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: Firmware debugging patches?
@@ -13,10 +13,8 @@ References: <53891ACD.7070902@candelatech.com>
  <87ioojz1b1.fsf@kamboji.qca.qualcomm.com> <538CB782.1000509@candelatech.com>
  <538CC68C.10808@gmail.com> <538CC949.5020901@candelatech.com>
  <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
- <538CD507.1050803@candelatech.com>
- <CANUX_P1iaTtFccraAF_p1dFZ3SJFpdNfF=i=eAVXP8yM3GrM4A@mail.gmail.com>
- <538F7381.4070100@candelatech.com> <877g4vpq6i.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <877g4vpq6i.fsf@kamboji.qca.qualcomm.com>
+ <538CD507.1050803@candelatech.com> <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +30,56 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
-On 06/05/2014 04:10 AM, Kalle Valo wrote:
+On 06/05/2014 04:06 AM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 > 
->> On 06/04/2014 12:23 PM, Emmanuel Grumbach wrote:
+>> On 06/02/2014 12:29 PM, Emmanuel Grumbach wrote:
 >>
->>>> Do you have a link to your patch that defines the types you used?
->>>>
->>>
->>> Take a look at 1bd3cbc1a0e9ed977a6bd470c5bc7bd36fd87e26.
->>> But I am adding more and more content to this file.
+>>> Different TLV based binary blobs concatenated. The actual encoding of
+>>> each of them is another story.
 >>
->> Yeah, after implementing it in ath10k it seems there would
->> be very little over-lap, so probably each driver should just
->> do their own.
->>
->> We can keep the debugfs file names the same, and the udev
->> event types the same, which should help user-space a bit.
+>> Should we try to make the 'Type' in TLV be consistent as convenient
+>> across different drivers?  That might someday help auto-reporting
+>> tools?
 > 
-> In the future I would actually want to take this a step further and put
-> all that to cfg80211. That way the driver would only need to call
-> cfg80211_firmware_crashed(wiphy, dump) and cfg80211 will handle the
-> rest. This would make sure that all drivers use the exactly same user
-> space interfaces and hopefully also motivate other drivers to use it.
+> I don't see the need for that as all firmwares are so different anyway.
+> As long as there's some magic string to recognize/verify for which
+> firmware it is we should be ok.
+> 
+>> It does not resolve my interest in firmware logs interleaved with
+>> kernel logs and possibly supplicant, however.
+>>
+>> Looks like trace-cmds could do that, but it will not be
+>> running for normal users when they experience crashes.
+>>
+>> Any suggestions other than printk for this feature?
+> 
+> Why do you want to put the crash dump in kernel log, can you describe
+> your "use case" here? For me it would be enough to have a UUID for each
+> crash dump and then have the driver print that to kernel log:
+> 
+> ath10k: firmware crashed (uuid 1234567890-4321)
+> 
+> And then you just need to find the correct dump from the file system and
+> start debugging. Would that be enough for you?
 
-Sounds like a good goal, but let's get the drivers well implemented first
-while we have flexibility to change the API.  When things are solid, can
-move some common functionality upwards in the stack.
+Not all systems will have fancy user-space able to deal with this.
 
-For instance, the ath10k can get wedged where even cold resets fail
-over and over...I'm thinking that could have it's own uevent so
-user-space can know we need a reboot to recover the NIC...
+At the very least, please leave in the current firmware crash
+dump text.  That is enough to get a backtrace out of the firmware
+most of the time, and almost every system that has any ability
+to be debugged at all will be able to capture that text from
+a kernel log file.
+
+I like the printk for the same reason you like the trace:  It shows
+things interleaved with other messages, and it is 'always on' unlike
+trace, which has to be manually enabled and will not be running by default
+on user's systems.
+
+That said, I think there is no need to argue further on this.  Let's
+get the debugfs dump stuff working, and maybe it will be good
+enough.  It will certainly be better that what is currently
+upstream.
 
 Thanks,
 Ben
