@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-f170.google.com ([209.85.220.170])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsaA6-0003rW-D1
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 16:05:07 +0000
-Received: by mail-vc0-f170.google.com with SMTP id lc6so1407653vcb.29
- for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 09:04:43 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsaDq-0005a3-TI
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 16:09:02 +0000
+Message-ID: <53909602.5010703@candelatech.com>
+Date: Thu, 05 Jun 2014 09:08:34 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
 References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
  <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
  <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
  <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 5 Jun 2014 09:04:22 -0700
-Message-ID: <CALCETrUQxF68b86POMfAurBcR0bZbXc8NmhXopksWh3nojeauA@mail.gmail.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+In-Reply-To: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +26,11 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Andy Lutomirski <luto@amacapital.net>
 
-On Thu, Jun 5, 2014 at 3:26 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+On 06/05/2014 03:26 AM, Kalle Valo wrote:
 > Andy Lutomirski <luto@amacapital.net> writes:
->
+> 
 >> On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
 >>> +ath10k@lists.infradead.org
 >>>
@@ -48,41 +46,42 @@ On Thu, Jun 5, 2014 at 3:26 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 >>> we should deal with this properly.
 >>
 >> Ideally, someone from Atheros could figure out what the error is.
->
+> 
 > Michal already did. The error means that for some reason the
 > calibaration data was not found from OTP. OTP is the storage area where
 > the calibration data is normally stored within QCA9880.
 
-Ah -- I misunderstood.  I assumed that the OTP read was failing
-mysteriously and that expert input was needed to resolve that mystery
-:)
+I fought this with .387 firmware and WLE900VX NICs.  If it's a common
+problem with more than a single NIC (ie, not just a bad piece of
+hardware), then one could load my firmware and my ath10k patches.
 
->
+I have a way to effectively get text debug messages out of the
+OTP firmware code and can probably debug this (eventually...busy
+with other things currently).
+
+If you know the basic hardware architecture of the NIC, then you can at least
+make a better guess of the calibration data and choose an eeprom
+table that is a better match than just total failure of OTP.
+
 >> Barring that, the card seems to work okay without otp (I don't even
 >> know what otp is), so just warning and continuing to load might be
 >> better than bailing.
->
+> 
 > This means that your card is not properly calibrated and it doesn't
 > function in an optimal way (for example range or throughput is less than
 > what it could be).
->
-> Do you see that with all Archer C7 v2 devices or with just one? One
-> possibility is that the calibration data is actually stored outside of
-> QCA9880 board, for example in the host flash or similar. I don't have
-> that AP, can someone else see where the calibration data is stored?
 
-I only have one of these.  I put a likely looking directory of the GPL
-sources here:
+And, your MAC address will be wrong and identical to all other devices of this
+type, which means the second one of these NICs
+on your network will make everything go to hell.
 
-http://web.mit.edu/luto/www/archerc7_gpl/atheros/
+Thanks,
+Ben
 
-I'm not entirely sure what I'm looking for, but this might be it:
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-http://web.mit.edu/luto/www/archerc7_gpl/atheros/otp.c
-
-I don't really know what I'm looking for, though.
-
---Andy
 
 _______________________________________________
 ath10k mailing list
