@@ -1,8 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsVVI-0000mW-AQ
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 11:06:40 +0000
+ id 1WsVZf-00027Z-Ja
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 11:11:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Firmware debugging patches?
 References: <53891ACD.7070902@candelatech.com>
@@ -13,10 +13,12 @@ References: <53891ACD.7070902@candelatech.com>
  <538CC949.5020901@candelatech.com>
  <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
  <538CD507.1050803@candelatech.com>
-Date: Thu, 5 Jun 2014 14:06:13 +0300
-In-Reply-To: <538CD507.1050803@candelatech.com> (Ben Greear's message of "Mon, 
- 2 Jun 2014 12:48:23 -0700")
-Message-ID: <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+ <CANUX_P1iaTtFccraAF_p1dFZ3SJFpdNfF=i=eAVXP8yM3GrM4A@mail.gmail.com>
+ <538F7381.4070100@candelatech.com>
+Date: Thu, 5 Jun 2014 14:10:45 +0300
+In-Reply-To: <538F7381.4070100@candelatech.com> (Ben Greear's message of "Wed, 
+ 4 Jun 2014 12:29:05 -0700")
+Message-ID: <877g4vpq6i.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -35,35 +37,26 @@ Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <a
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> On 06/02/2014 12:29 PM, Emmanuel Grumbach wrote:
+> On 06/04/2014 12:23 PM, Emmanuel Grumbach wrote:
 >
->> Different TLV based binary blobs concatenated. The actual encoding of
->> each of them is another story.
+>>> Do you have a link to your patch that defines the types you used?
+>>>
+>> 
+>> Take a look at 1bd3cbc1a0e9ed977a6bd470c5bc7bd36fd87e26.
+>> But I am adding more and more content to this file.
 >
-> Should we try to make the 'Type' in TLV be consistent as convenient
-> across different drivers?  That might someday help auto-reporting
-> tools?
-
-I don't see the need for that as all firmwares are so different anyway.
-As long as there's some magic string to recognize/verify for which
-firmware it is we should be ok.
-
-> It does not resolve my interest in firmware logs interleaved with
-> kernel logs and possibly supplicant, however.
+> Yeah, after implementing it in ath10k it seems there would
+> be very little over-lap, so probably each driver should just
+> do their own.
 >
-> Looks like trace-cmds could do that, but it will not be
-> running for normal users when they experience crashes.
->
-> Any suggestions other than printk for this feature?
+> We can keep the debugfs file names the same, and the udev
+> event types the same, which should help user-space a bit.
 
-Why do you want to put the crash dump in kernel log, can you describe
-your "use case" here? For me it would be enough to have a UUID for each
-crash dump and then have the driver print that to kernel log:
-
-ath10k: firmware crashed (uuid 1234567890-4321)
-
-And then you just need to find the correct dump from the file system and
-start debugging. Would that be enough for you?
+In the future I would actually want to take this a step further and put
+all that to cfg80211. That way the driver would only need to call
+cfg80211_firmware_crashed(wiphy, dump) and cfg80211 will handle the
+rest. This would make sure that all drivers use the exactly same user
+space interfaces and hopefully also motivate other drivers to use it.
 
 -- 
 Kalle Valo
