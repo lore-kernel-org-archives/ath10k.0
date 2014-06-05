@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsVHF-0004dg-Ta
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 10:52:11 +0000
+ id 1WsVOI-0006j9-Ew
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 10:59:26 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Firmware debugging patches?
 References: <53891ACD.7070902@candelatech.com>
  <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
  <538CA904.4000508@candelatech.com>
  <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
- <538CB782.1000509@candelatech.com>
-Date: Thu, 5 Jun 2014 13:51:43 +0300
-In-Reply-To: <538CB782.1000509@candelatech.com> (Ben Greear's message of "Mon, 
- 2 Jun 2014 10:42:26 -0700")
-Message-ID: <87k38vpr28.fsf@kamboji.qca.qualcomm.com>
+ <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
+ <538CC949.5020901@candelatech.com>
+Date: Thu, 5 Jun 2014 13:58:49 +0300
+In-Reply-To: <538CC949.5020901@candelatech.com> (Ben Greear's message of "Mon, 
+ 2 Jun 2014 11:58:17 -0700")
+Message-ID: <87fvjjpqqe.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,51 +29,23 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
-
-Hi,
-
-sorry for jumping in late, I get too much email as usual :/
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> [Good stuff snipped, adding linux-wireless as this is a more
-> general issue if we are going to consider general framework]
->
->
-> Maybe we should start with goals before getting to implementation
-> details.  Here's my wish list that is ath10k specific, but probably
-> similar to other firmware users:
->
-> 1)  We need the firmware crash text currently printed to
-> /var/log/messages.
->
-> 2)  It would be nice to get the firmware RAM and stack dumps at time of
-> crash to debug more interesting crashes.
->
-> 3)  It would be nice to know about firmware debug messages for
-> the period of time directly before the crash (maybe 2-5 minutes?)
->
-> 4)  It would be nice to have this interleaved with kernel, supplicant,
-> and related logs.
+> I am not sure this is really the case currently.  But, once the
+> blob is generated and stored in RAM, it would be easily enough to
+> add ethtool option to dump it w/out debugfs support.  This will
+> still not really address my concerns because it may take a year
+> or two for the latest ethtool binary to make it to normal-ish users.
 
-I would add:
+[...]
 
-5) A generic user space interface so that the same user space tool can
-   store firmware crash dumps from all wireless drivers and no need to
-   reinvent the wheel.
+> I think ethtool would not be overly hard to implement...basic framework is already
+> in the wifi stack.
 
-> If we are storing crashes for something like ethtool to report, we need
-> RAM and/or disk storage so the firmware RAM dumps and such can be stored until
-> the user and/or automated tools ask for them.  We need some way to automatically
-> clean up old crashes so disk/ram is not overly utilized.  For APs,
-> they are low on both RAM and 'disk', so storing crash logs for any
-> length of time may be problematic.
-
-I think most, if not all, wireless drivers store the firmware binary in
-RAM forever. I'm having hard time to believe that storing one instance
-(the latest one) of firmware crash dump would make any difference.
-That's why I'm not worried about RAM usage.
+Few weeks back John Linville sent ethtool related patches to support
+something like this. Did you notice that?
 
 -- 
 Kalle Valo
