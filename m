@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsVac-0002A8-HR
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 11:12:12 +0000
-Received: from port-92-198-130-130.static.qsc.de ([92.198.130.130]
- helo=[10.128.129.30])
- by smtp.eurescom.eu with esmtpsa (TLSv1:DHE-RSA-AES128-SHA:128)
- (Exim 4.80.1) (envelope-from <svens@stackframe.org>)
- id 1WsVa2-0003ki-Vb
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 13:11:35 +0200
-Message-ID: <53905134.8010303@stackframe.org>
-Date: Thu, 05 Jun 2014 13:15:00 +0200
-From: Sven Schnelle <svens@stackframe.org>
+ id 1WsVrv-0000F2-Nd
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 11:30:05 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC 1/4] ath10k: provide firmware crash info via debugfs.
+References: <1401812719-25061-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQnvAzCHvKwib39dOZnN6SEyNG_=U9Jgx5arM819dUoMYw@mail.gmail.com>
+ <538F4DEE.6040405@candelatech.com>
+Date: Thu, 5 Jun 2014 14:29:29 +0300
+In-Reply-To: <538F4DEE.6040405@candelatech.com> (Ben Greear's message of "Wed, 
+ 04 Jun 2014 09:48:46 -0700")
+Message-ID: <8738fjppba.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
- <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
-In-Reply-To: <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +21,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 05/29/2014 09:48 AM, Michal Kazior wrote:
-> +ath10k@lists.infradead.org
->
-> On 28 May 2014 20:35, Andy Lutomirski <luto@amacapital.net> wrote:
->> It dies with 'otp calibration failed: 2'.
+Ben Greear <greearb@candelatech.com> writes:
+
+> On 06/04/2014 02:04 AM, Michal Kazior wrote:
+>> On 3 June 2014 18:25,  <greearb@candelatech.com> wrote:
 >>
->> Some older version of the driver seemed to work fine.
-> ath10k did not verify otp result before so it could load successfully
-> despite errors.
->
-> Someone raised this problem yesterday on IRC. I'm not really sure how
-> we should deal with this properly.
->
->
-> http://lists.infradead.org/mailman/listinfo/ath10k
-I see the following output on the firmware console:
+>>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>>> @@ -41,6 +41,8 @@
+>>>  #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
+>>>  #define ATH10K_NUM_CHANS 38
+>>>
+>>> +#define REG_DUMP_COUNT_QCA988X 60 /* from pci.h */
+>> 
+>> I don't like this.
 
-otp main...
-Table initialized..
-streamCnt 0
-Golden Bin/fake Board Template used ...
-otp done...
-assertion failed? pc=0x948f19, line=5555, dump area=0x40ad04
-Target ID: 0x4100016c (1090519404)
-Debug Info:
-0x4100016c 0x000015b3 0x00948f19 0x00955b31
-0x00948f19 0x00060530 0x00000004 0x00000000
-0x00000000 0x004045f0 0x00404610 0x00955a00
-0x0000
+Me neither.
 
-However, the AP where OTP now fails is an engineering sample,
-and probably doesn't contain any valid calibration. It did work
-in the past, but with the latest ath10k the driver doesn't load
-because of OTP failing. So maybe that output is helpful here.
+> You want me to make a different define for this that duplicates
+> the '60' value?  At least with my method above, we should get compile
+> errors if the values ever diverge in the two files.
+
+There should be only one define. Somewhere (forgot where) Michal
+suggested hw.h, I think this define would be a good candidate to move
+there too.
+
+>>> +struct ath10k_tlv_dump_data {
+>>> +       u32 type; /* see ath10k_fw_error_dump_type above */
+>>> +       u32 tlv_len; /* in bytes */
+>>> +       u8 tlv_data[]; /* Pad to 32-bit boundaries as needed. */
+>>> +} __packed;
+>>> +
+>>> +struct ath10k_dump_file_data {
+>>> +       u32 len;
+>>> +       u32 magic; /* 0x01020304, tells us byte-order of host if we care */
+>>> +       struct ath10k_tlv_dump_data data; /* more may follow */
+>>> +} __packed;
+>>> +
+>>> +/* This will store at least the last 128 entries. */
+>>> +#define ATH10K_DBGLOG_DATA_LEN (128 * 7 * 4)
+>> 
+>> Where does the 7 and 4 come from? Can't we use sizeof() to compute this?
+>
+> It is from the guts of how the firmware does debug logs.
+>
+> Each entry is a max of 7 32-bit integers in length.
+>
+>> The 128 should probably be a separate #define?
+>
+> I don't see why...
+
+To make the code more readable.
+
+> dbglog messages are variable number of 32-bit integers in length, so
+> the 128 is fairly arbitrary.
+
+A person should immeaditely understand where the numbers are coming from
+and not start googling about it. The minimum is to put your description
+above to the comment. And it would be clearer to replace 4 with
+sizeof(u32).
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
