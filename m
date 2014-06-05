@@ -1,20 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-f169.google.com ([209.85.220.169])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsaSl-0004Wz-KX
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 16:24:24 +0000
-Received: by mail-vc0-f169.google.com with SMTP id la4so1457618vcb.0
- for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 09:24:01 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsbXY-0001Q5-9S
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 17:33:24 +0000
+Message-ID: <5390A9CC.7060400@candelatech.com>
+Date: Thu, 05 Jun 2014 10:33:00 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <53909602.5010703@candelatech.com>
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
- <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
- <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
- <87r433ps7w.fsf@kamboji.qca.qualcomm.com> <53909602.5010703@candelatech.com>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Thu, 5 Jun 2014 09:23:41 -0700
-Message-ID: <CALCETrVugM9gTB20ACOmiFie8kuiGBSrJTV8q2AZTqCULRLzyw@mail.gmail.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+Subject: Re: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
+ <538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,91 +38,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-On Thu, Jun 5, 2014 at 9:08 AM, Ben Greear <greearb@candelatech.com> wrote:
-> On 06/05/2014 03:26 AM, Kalle Valo wrote:
->> Andy Lutomirski <luto@amacapital.net> writes:
+On 06/05/2014 01:41 AM, Vu Hai NGUYEN wrote:
+>> Ok, I have built an image for each of my commits, and I have attempted to rebase my changes
+>> so that these kernels should work on un-patched drivers.  I have not actually tested these
+>> various images on un-patched drivers, so if you see any un-expected problems, let me know
+>> and I can test those specific images.
 >>
->>> On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
->>>> +ath10k@lists.infradead.org
->>>>
->>>> On 28 May 2014 20:35, Andy Lutomirski <luto@amacapital.net> wrote:
->>>>> It dies with 'otp calibration failed: 2'.
->>>>>
->>>>> Some older version of the driver seemed to work fine.
->>>>
->>>> ath10k did not verify otp result before so it could load successfully
->>>> despite errors.
->>>>
->>>> Someone raised this problem yesterday on IRC. I'm not really sure how
->>>> we should deal with this properly.
->>>
->>> Ideally, someone from Atheros could figure out what the error is.
+>>From your previous testing, you know the first commit should be OK for DFS, and the
+> l>ast commit (172) is not.  To bisect, choose an image in the middle (ie, commit 86)
+>> and see if it works.  If so, choose middle one between 86 and 172, if not, choose middle one
+>> between 0 and 86...repeat until you find the first bad commit and let me know what that
+>> is and I will try to figure out the problem in the firmware.
 >>
->> Michal already did. The error means that for some reason the
->> calibaration data was not found from OTP. OTP is the storage area where
->> the calibration data is normally stored within QCA9880.
->
-> I fought this with .387 firmware and WLE900VX NICs.  If it's a common
-> problem with more than a single NIC (ie, not just a bad piece of
-> hardware), then one could load my firmware and my ath10k patches.
+>> http://www.candelatech.com/downloads/ath10k-fw-all-images/
+> 
+> Thanks for building the image, I found out the diffrent is between the the 58th (work with DFS) and 59th commit (can not see DFS).
+> Here is my serial of test: 86: KO => 43 OK => 64 KO => 53 OK => 58 OK => 61 KO => 59 KO. Then I change between 58 and 59th commit one more time to confirm the different. 
 
-No clue.  I can buy another one of these things to find out, though,
-if that would help.
+Ok, the difference must be changes I made to the scanning state machine.
+That patch was fairly big, and did several different things.  I have split
+it up into 4 separate patches to try to narrow down where the problem was
+introduced.
 
->
-> I have a way to effectively get text debug messages out of the
-> OTP firmware code and can probably debug this (eventually...busy
-> with other things currently).
+Can you try these firmware images in order and let me know the first
+that fails to do DFS properly?  The scan-1 should be white-space and
+debugging only, so hopefully it works.
 
-Is this something you can send me?  If not, and if you have time, I'd
-be happy to mail you your very own Archer C7 v2.
+firmware-2-community-scan1.bin
+firmware-2-community-scan2.bin
+firmware-2-community-scan3.bin
+firmware-2-community-scan4.bin
 
-OTOH, if this is likely to be it, then it might be a decent thing to play with:
+http://www.candelatech.com/downloads/
 
-http://web.mit.edu/luto/www/archerc7_gpl/atheros/otp.c
-
-This hardware has two Atheros WLANs: a platform device ath9k and a
-minipcie ath10k.  Would ath9k also have something called 'OTP'?
-
->
-> If you know the basic hardware architecture of the NIC, then you can at least
-> make a better guess of the calibration data and choose an eeprom
-> table that is a better match than just total failure of OTP.
->
-
-I don't even know what that means. :(
-
->>> Barring that, the card seems to work okay without otp (I don't even
->>> know what otp is), so just warning and continuing to load might be
->>> better than bailing.
->>
->> This means that your card is not properly calibrated and it doesn't
->> function in an optimal way (for example range or throughput is less than
->> what it could be).
->
-> And, your MAC address will be wrong and identical to all other devices of this
-> type, which means the second one of these NICs
-> on your network will make everything go to hell.
->
-
-Heh.  I'm already overriding the MAC address with a locally administered one.
-
-> Thanks,
-> Ben
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+Thanks,
+Ben
 
 
 
 -- 
-Andy Lutomirski
-AMA Capital Management, LLC
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
