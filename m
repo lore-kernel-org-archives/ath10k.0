@@ -1,16 +1,33 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsSXX-0008ID-B8
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 07:56:47 +0000
-Received: by mail-wi0-f176.google.com with SMTP id n15so9941672wiw.3
- for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 00:56:20 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: fix bmi exchange tx/rx race
-Date: Thu,  5 Jun 2014 09:48:39 +0200
-Message-Id: <1401954520-3365-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
-References: <1401954520-3365-1-git-send-email-michal.kazior@tieto.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsTIg-00082K-DG
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 08:45:31 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Thu, 5 Jun 2014 10:41:13 +0200
+Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
+ <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
+ <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
+ .local>,<538F9255.1060101@candelatech.com>
+In-Reply-To: <538F9255.1060101@candelatech.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,88 +36,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-It was possible for tx completion not to be
-processed. In that case an old stack pointer was
-left on copy engine tx ring. Next bmi exchange
-would immediately pop it and use complete() on the
-completion struct there causing corruption.
+>Ok, I have built an image for each of my commits, and I have attempted to rebase my changes
+>so that these kernels should work on un-patched drivers.  I have not actually tested these
+>various images on un-patched drivers, so if you see any un-expected problems, let me know
+>and I can test those specific images.
+>
+From your previous testing, you know the first commit should be OK for DFS, and the
+l>ast commit (172) is not.  To bisect, choose an image in the middle (ie, commit 86)
+>and see if it works.  If so, choose middle one between 86 and 172, if not, choose middle one
+>between 0 and 86...repeat until you find the first bad commit and let me know what that
+>is and I will try to figure out the problem in the firmware.
+>
+>http://www.candelatech.com/downloads/ath10k-fw-all-images/
 
-Make sure to wait for both tx and rx completions
-properly.
+Thanks for building the image, I found out the diffrent is between the the 58th (work with DFS) and 59th commit (can not see DFS).
+Here is my serial of test: 86: KO => 43 OK => 64 KO => 53 OK => 58 OK => 61 KO => 59 KO. Then I change between 58 and 59th commit one more time to confirm the different. 
+Is that all of your commit that you've done? Cause with the firmware-2-ct-non-commercial.bin I can enter promiscuous mode to set up bridge network, but yesterday I tried your 2 firmwares 
+and today with the firmware of 172th commit they are all broke in bridge network.
+If not, can you rebuild other image so that I can trace your commit that allow to enter promiscuous mode?
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 11 +++--------
- drivers/net/wireless/ath/ath10k/pci.h |  3 ++-
- 2 files changed, 5 insertions(+), 9 deletions(-)
+Thanks,
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d0004d5..06840d1 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1362,8 +1362,6 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
- 		ath10k_ce_recv_buf_enqueue(ce_rx, &xfer, resp_paddr);
- 	}
- 
--	init_completion(&xfer.done);
--
- 	ret = ath10k_ce_send(ce_tx, &xfer, req_paddr, req_len, -1, 0);
- 	if (ret)
- 		goto err_resp;
-@@ -1414,10 +1412,7 @@ static void ath10k_pci_bmi_send_done(struct ath10k_ce_pipe *ce_state)
- 					  &nbytes, &transfer_id))
- 		return;
- 
--	if (xfer->wait_for_resp)
--		return;
--
--	complete(&xfer->done);
-+	xfer->tx_done = true;
- }
- 
- static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
-@@ -1438,7 +1433,7 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
- 	}
- 
- 	xfer->resp_len = nbytes;
--	complete(&xfer->done);
-+	xfer->rx_done = true;
- }
- 
- static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
-@@ -1451,7 +1446,7 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
- 		ath10k_pci_bmi_send_done(tx_pipe);
- 		ath10k_pci_bmi_recv_data(rx_pipe);
- 
--		if (completion_done(&xfer->done))
-+		if (xfer->tx_done && (xfer->rx_done == xfer->wait_for_resp))
- 			return 0;
- 
- 		schedule();
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index dfdebb4..9401292 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -38,7 +38,8 @@
- #define DIAG_TRANSFER_LIMIT 2048
- 
- struct bmi_xfer {
--	struct completion done;
-+	bool tx_done;
-+	bool rx_done;
- 	bool wait_for_resp;
- 	u32 resp_len;
- };
--- 
-1.8.5.3
+
+
+
 
 
 _______________________________________________
