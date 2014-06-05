@@ -1,32 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsTIg-00082K-DG
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 08:45:31 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 5 Jun 2014 10:41:13 +0200
-Subject: RE : RE : RE : RE : ath10k: firmware crash in station mode &
- problem DFS
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978EA@srvexch01.SODIELEC.local>
- <CALhHN=qsgcL04x+vsXgmHnSr5H-aoQW7oC5Y+NmCZCLS1DWGAQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F0@srvexch01.SODIELEC.local>
- <CAFED-j=i5uhjqaJYL+dm_ui48EFeHG3isHYSSSo=+3gk-Wa5YQ@mail.gmail.com>,
- <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
- <5386059B.7040301@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
- <538CAACA.2030202@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
- <538E9D26.4040009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
- .local>,<538F9255.1060101@candelatech.com>
-In-Reply-To: <538F9255.1060101@candelatech.com>
-Content-Language: fr-FR
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsV4x-0007Mc-CP
+ for ath10k@lists.infradead.org; Thu, 05 Jun 2014 10:39:28 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+In-Reply-To: <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
+ (Andy Lutomirski's message of "Thu, 29 May 2014 10:52:32 -0700")
+References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
+ <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+ <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
+Date: Thu, 5 Jun 2014 13:26:43 +0300
+Message-ID: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -40,39 +25,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->Ok, I have built an image for each of my commits, and I have attempted to rebase my changes
->so that these kernels should work on un-patched drivers.  I have not actually tested these
->various images on un-patched drivers, so if you see any un-expected problems, let me know
->and I can test those specific images.
+Andy Lutomirski <luto@amacapital.net> writes:
+
+> On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> +ath10k@lists.infradead.org
+>>
+>> On 28 May 2014 20:35, Andy Lutomirski <luto@amacapital.net> wrote:
+>>> It dies with 'otp calibration failed: 2'.
+>>>
+>>> Some older version of the driver seemed to work fine.
+>>
+>> ath10k did not verify otp result before so it could load successfully
+>> despite errors.
+>>
+>> Someone raised this problem yesterday on IRC. I'm not really sure how
+>> we should deal with this properly.
 >
-From your previous testing, you know the first commit should be OK for DFS, and the
-l>ast commit (172) is not.  To bisect, choose an image in the middle (ie, commit 86)
->and see if it works.  If so, choose middle one between 86 and 172, if not, choose middle one
->between 0 and 86...repeat until you find the first bad commit and let me know what that
->is and I will try to figure out the problem in the firmware.
->
->http://www.candelatech.com/downloads/ath10k-fw-all-images/
+> Ideally, someone from Atheros could figure out what the error is.
 
-Thanks for building the image, I found out the diffrent is between the the 58th (work with DFS) and 59th commit (can not see DFS).
-Here is my serial of test: 86: KO => 43 OK => 64 KO => 53 OK => 58 OK => 61 KO => 59 KO. Then I change between 58 and 59th commit one more time to confirm the different. 
-Is that all of your commit that you've done? Cause with the firmware-2-ct-non-commercial.bin I can enter promiscuous mode to set up bridge network, but yesterday I tried your 2 firmwares 
-and today with the firmware of 172th commit they are all broke in bridge network.
-If not, can you rebuild other image so that I can trace your commit that allow to enter promiscuous mode?
+Michal already did. The error means that for some reason the
+calibaration data was not found from OTP. OTP is the storage area where
+the calibration data is normally stored within QCA9880.
 
-Thanks,
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+> Barring that, the card seems to work okay without otp (I don't even
+> know what otp is), so just warning and continuing to load might be
+> better than bailing.
 
+This means that your card is not properly calibrated and it doesn't
+function in an optimal way (for example range or throughput is less than
+what it could be).
 
+Do you see that with all Archer C7 v2 devices or with just one? One
+possibility is that the calibration data is actually stored outside of
+QCA9880 board, for example in the host flash or similar. I don't have
+that AP, can someone else see where the calibration data is stored?
 
+I know that ath9k supports this kind of setup, most likely ath10k should
+as well.
 
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
