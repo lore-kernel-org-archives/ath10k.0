@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsqgV-0006j8-9f
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 09:43:43 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
- <538CEAE0.6090304@candelatech.com>
-Date: Fri, 6 Jun 2014 12:43:13 +0300
-In-Reply-To: <538CEAE0.6090304@candelatech.com> (Ben Greear's message of "Mon, 
- 2 Jun 2014 14:21:36 -0700")
-Message-ID: <87tx7yl6fh.fsf@kamboji.qca.qualcomm.com>
+ id 1WsqiJ-00081X-Ua
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 09:45:36 +0000
+Received: by mail-wg0-f43.google.com with SMTP id l18so2464902wgh.2
+ for <ath10k@lists.infradead.org>; Fri, 06 Jun 2014 02:45:08 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
+References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
+ <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
+ <5390B632.7030305@candelatech.com>
+ <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
+ <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 6 Jun 2014 11:45:08 +0200
+Message-ID: <CA+BoTQmyXy1dSdhugSiXq50C4DpjbRWBcopn0b3anJ4W55oCwA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ath10k: provide firmware crash info via debugfs.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +25,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> I'm looking at how iwlwifi/mvm does this.  I should be able to read the
-> ath10k stack and exception stack on generic firmware, but to get the BSS region,
-> I ended up adding some additional meta info to the firmware-2.bin image
-> specifying the offsets when doing my CT firmware.
->
-> You should not need to re-compile the firmware for this, but you would have
-> to be able to run some xtensa tool commands to get this info and re-pack
-> the firmware with additional meta-info (as far as I know).
->
-> Any chance upstream firmware could support specifying the bss region
-> offsets so that I can dump that into the debugfs dump file?
-
-Sure, having the bss region in enum ath10k_fw_ie_type makes sense. And
-if the value is missing from the image, we would have some sane default
-in ath10k.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBKdW5lIDIwMTQgMTA6NTUsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+
+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0ZXM6
+Cj4KPj4gT24gNiBKdW5lIDIwMTQgMDg6MTAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+Pj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
+aXRlczoKPj4gWy4uLl0KPj4+PiBJJ20gYSBiaXQgbGVlcnkgb2YgYWRkaW5nIHNwaW4tbG9ja3Mg
+aW4gdGhlIGR1bXAgcm91dGluZSBqdXN0IGZvcgo+Pj4+IHRoaXMsIGJ1dCBJIGNhbiBhZGQgYW5k
+IHVzZSBhIG5ldyBzcGluLWxvY2sgaWYgeW91IHByZWZlci4KPj4+Cj4+PiBXaHkgYSBuZXcgc3Bp
+bmxvY2s/IEkgZGlkbid0IHJldmlldyB0aGUgbG9ja2luZyByZXF1aXJlbWVudHMsIGJ1dCBJCj4+
+PiB3b3VsZCBmaXJzdCBjaGVjayBhci0+ZGF0YV9sb2NrIGNhbiBiZSB1c2VkLgo+Pj4KPj4+PiBJ
+ZiBzbywgYW55IGlkZWEgaWYgd2UgY2FuIGRvIHRoZSByZWFkcyBvZiB0aGUgdGFyZ2V0J3MgbWVt
+b3J5IHdoaWxlCj4+Pj4gaG9sZGluZyBhIHNwaW4tbG9jaywgb3Igd291bGQgSSBuZWVkIHNvbWUg
+dGVtcG9yYXJ5IGJ1ZmZlcnMgYW5kIG9ubHkKPj4+PiBsb2NrIHdoaWxlIGNvcHlpbmcgdGhhdCBp
+biB0byB0aGUgc3RvcmFnZSBpbiB0aGUgJ2FyJz8KPj4+Cj4+PiBJIGRvbid0IHNlZSB3aHkgeW91
+IHdvdWxkIG5lZWQgc3BlY2lhbCBsb2NrcyBmb3IgcmVhZGluZyB0YXJnZXQncwo+Pj4gbWVtb3J5
+LiBJZiB0aGVyZSBpcyBzb21ldGhpbmcgbmVlZGVkLCBwY2kuYyBzaG91bGQgaGFuZGxlIHRoYXQu
+IE1pY2hhbD8KPj4KPj4gQnkgZGVmaW5pdGlvbiB0aGUgZGlhZ25vc3RpYyB3aW5kb3cgYWNjZXNz
+IG11c3QgYmUgc2VyaWFsaXplZC4gV2UKPj4gZG9uJ3QgZG8gdGhpcyB3aXRoIGxvY2tzIG5vdyBi
+dXQgcmVseSBPTiBkcml2ZXIgc3RhdGVzL3NlcXVlbmNlcy4gV2UKPj4gbWlnaHQgaGF2ZSBzb21l
+IHByb2JsZW1zIGx1cmtpbmcgdGhlcmUgYWxyZWFkeSBidXQgSSdkIG5lZWQgdG8gYW5hbHl6ZQo+
+PiBpdCB0byB0ZWxsIGZvciBzdXJlLgo+Cj4gU2hvdWxkIHRoYXQgc2VyaWFsaXNhdGlvbiBoYXBw
+ZW4gd2l0aGluIHBjaS5jPwoKWW91IGNhbiBidXQgdGhhdCdzIG5vdCBhIHJlcXVpcmVtZW50IEkg
+Z3Vlc3MuIEUuZy4gZXhjaGFuZ2VfYm1pX21zZwpoaWYgY2FsbGJhY2sgcmVxdWlyZXMgdGhlIGNh
+bGxlciB0byBzZXJpYWxpemUgY2FsbHMuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
