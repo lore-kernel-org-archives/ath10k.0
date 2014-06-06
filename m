@@ -1,20 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from vs14.mail.saunalahti.fi ([62.142.117.201])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wspwa-0006bP-RY
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 08:56:16 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k: provide firmware crash info via debugfs.
-References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
- <5390B632.7030305@candelatech.com>
- <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
-Date: Fri, 6 Jun 2014 11:55:36 +0300
-In-Reply-To: <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
- (Michal Kazior's message of "Fri, 6 Jun 2014 08:30:09 +0200")
-Message-ID: <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
+ id 1Wsq0K-0006iW-70
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 09:00:05 +0000
+Received: from vams (localhost [127.0.0.1])
+ by vs14.mail.saunalahti.fi (Postfix) with SMTP id 33726740069
+ for <ath10k@lists.infradead.org>; Fri,  6 Jun 2014 11:59:38 +0300 (EEST)
+Received: from gw02.mail.saunalahti.fi (gw02.mail.saunalahti.fi
+ [195.197.172.116])
+ by vs14.mail.saunalahti.fi (Postfix) with ESMTP id 19717740069
+ for <ath10k@lists.infradead.org>; Fri,  6 Jun 2014 11:59:38 +0300 (EEST)
+Received: from [134.61.10.67] (nbtad04.physik.rwth-aachen.de [134.61.10.67])
+ (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by gw02.mail.saunalahti.fi (Postfix) with ESMTPSA id F2AD740008
+ for <ath10k@lists.infradead.org>; Fri,  6 Jun 2014 11:59:36 +0300 (EEST)
+Message-ID: <539182F4.1080804@elisanet.fi>
+Date: Fri, 06 Jun 2014 10:59:32 +0200
+From: Matti Laakso <malaakso@elisanet.fi>
 MIME-Version: 1.0
+Subject: Re: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7
+ v2
+References: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,45 +35,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 6 June 2014 08:10, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Ben Greear <greearb@candelatech.com> writes:
-> [...]
->>> I'm a bit leery of adding spin-locks in the dump routine just for
->>> this, but I can add and use a new spin-lock if you prefer.
->>
->> Why a new spinlock? I didn't review the locking requirements, but I
->> would first check ar->data_lock can be used.
->>
->>> If so, any idea if we can do the reads of the target's memory while
->>> holding a spin-lock, or would I need some temporary buffers and only
->>> lock while copying that in to the storage in the 'ar'?
->>
->> I don't see why you would need special locks for reading target's
->> memory. If there is something needed, pci.c should handle that. Michal?
+> ------------------------------------------------------------------------
+> Andy Lutomirski <luto at amacapital.net <http://lists.infradead.org/mailman/listinfo/ath10k>> writes:
 >
-> By definition the diagnostic window access must be serialized. We
-> don't do this with locks now but rely ON driver states/sequences. We
-> might have some problems lurking there already but I'd need to analyze
-> it to tell for sure.
-
-Should that serialisation happen within pci.c?
-
-> Calling pci_diag_* functions while holding a spinlock should otherwise
-> be fine because these functions use mdelay() and poll the diagnostic
-> window copy engine pipe.
+> >/ On Thu, May 29, 2014 at 12:48 AM, Michal Kazior <michal.kazior at tieto.com <http://lists.infradead.org/mailman/listinfo/ath10k>> wrote:
+> />>/ +ath10k at lists.infradead.org <http://lists.infradead.org/mailman/listinfo/ath10k>
+> />>/
+> />>/ On 28 May 2014 20:35, Andy Lutomirski <luto at amacapital.net <http://lists.infradead.org/mailman/listinfo/ath10k>> wrote:
+> />>>/ It dies with 'otp calibration failed: 2'.
+> />>>/
+> />>>/ Some older version of the driver seemed to work fine.
+> />>/
+> />>/ ath10k did not verify otp result before so it could load successfully
+> />>/ despite errors.
+> />>/
+> />>/ Someone raised this problem yesterday on IRC. I'm not really sure how
+> />>/ we should deal with this properly.
+> />/
+> />/ Ideally, someone from Atheros could figure out what the error is.
+> /
+> Michal already did. The error means that for some reason the
+> calibaration data was not found from OTP. OTP is the storage area where
+> the calibration data is normally stored within QCA9880.
 >
-> Using ar->data_lock for a pci transport specific requirement (the
-> diagnostic window) seems wrong though.
+> >/ Barring that, the card seems to work okay without otp (I don't even
+> />/ know what otp is), so just warning and continuing to load might be
+> />/ better than bailing.
+> /
+> This means that your card is not properly calibrated and it doesn't
+> function in an optimal way (for example range or throughput is less than
+> what it could be).
+>
+> Do you see that with all Archer C7 v2 devices or with just one? One
+> possibility is that the calibration data is actually stored outside of
+> QCA9880 board, for example in the host flash or similar. I don't have
+> that AP, can someone else see where the calibration data is stored?
+>
+> I know that ath9k supports this kind of setup, most likely ath10k should
+> as well.
+>
+> -- 
+> Kalle Valo
+>
+C7 v1 has the AR9550 calibration data in flash in the last 64 kiB,
+likely C7 v2 as well. Could someone with v2 and OpenWrt use dd to dump
+the contents of the "art" partition (/dev/mtdblock4 IIRC) and upload it
+somewhere? I think it would be easy to see whether there is just the
+calibration data for AR9550 or if there is also data for QCA9880.
 
-I agree. I did not mean using data_lock to serialise the pci code.
-
--- 
-Kalle Valo
+Matti
 
 _______________________________________________
 ath10k mailing list
