@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wswbd-0000vb-Mk
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 16:03:01 +0000
-Message-ID: <5391E620.4090706@candelatech.com>
-Date: Fri, 06 Jun 2014 09:02:40 -0700
+ id 1WsweF-00031D-Ut
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 16:05:44 +0000
+Message-ID: <5391E6C2.7030602@candelatech.com>
+Date: Fri, 06 Jun 2014 09:05:22 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com> <538CA904.4000508@candelatech.com>
- <87ioojz1b1.fsf@kamboji.qca.qualcomm.com> <538CB782.1000509@candelatech.com>
- <538CC68C.10808@gmail.com> <538CC949.5020901@candelatech.com>
- <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
- <538CD507.1050803@candelatech.com> <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
- <53909372.1040707@candelatech.com> <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
+ <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+ <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
+ <87r433ps7w.fsf@kamboji.qca.qualcomm.com> <53909602.5010703@candelatech.com>
+ <87oay6mthk.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87oay6mthk.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +27,30 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
+Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Andy Lutomirski <luto@amacapital.net>
 
-On 06/05/2014 11:51 PM, Kalle Valo wrote:
+On 06/05/2014 11:39 PM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 > 
->>> Why do you want to put the crash dump in kernel log, can you describe
->>> your "use case" here? For me it would be enough to have a UUID for each
->>> crash dump and then have the driver print that to kernel log:
->>>
->>> ath10k: firmware crashed (uuid 1234567890-4321)
->>>
->>> And then you just need to find the correct dump from the file system and
->>> start debugging. Would that be enough for you?
+>>> Michal already did. The error means that for some reason the
+>>> calibaration data was not found from OTP. OTP is the storage area where
+>>> the calibration data is normally stored within QCA9880.
 >>
->> Not all systems will have fancy user-space able to deal with this.
->>
->> At the very least, please leave in the current firmware crash
->> dump text.
+>> I fought this with .387 firmware and WLE900VX NICs.  If it's a common
+>> problem with more than a single NIC (ie, not just a bad piece of
+>> hardware), then one could load my firmware and my ath10k patches.
 > 
-> I'm not removing anything. That was just an example how we can identify
-> crashes.
+> That's XB143, right? I think that's different as firmware started to
+> support XB143 only starting from 10.1.467.
 
-Perhaps the time-stamp is good enough?  I don't see a need for
-a uuid, but perhaps I am missing something?
+
+Yes.  My point is that I have the ability to get debug info out of
+of the otp in my modified firmware, so it is possible to debug why
+the otp is failing in the first place, and possibly fix otp to work
+with that NIC.
+
+I'll start begging to get my CT firmware support in upstream kernels
+as soon as we get the firmware-crash stuff ironed out :)
 
 Thanks,
 Ben
