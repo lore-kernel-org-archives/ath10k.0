@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wso5A-0001am-Qe
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 06:57:00 +0000
+ id 1Wspwa-0006bP-RY
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 08:56:16 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
+Subject: Re: [PATCH 1/4] ath10k: provide firmware crash info via debugfs.
 References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
-Date: Fri, 6 Jun 2014 09:55:37 +0300
-In-Reply-To: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Wed, 4 Jun 2014 11:01:39
- -0700")
-Message-ID: <87bnu6msra.fsf@kamboji.qca.qualcomm.com>
+ <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
+ <5390B632.7030305@candelatech.com>
+ <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
+Date: Fri, 6 Jun 2014 11:55:36 +0300
+In-Reply-To: <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 6 Jun 2014 08:30:09 +0200")
+Message-ID: <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +27,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-greearb@candelatech.com writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> On 6 June 2014 08:10, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+> [...]
+>>> I'm a bit leery of adding spin-locks in the dump routine just for
+>>> this, but I can add and use a new spin-lock if you prefer.
+>>
+>> Why a new spinlock? I didn't review the locking requirements, but I
+>> would first check ar->data_lock can be used.
+>>
+>>> If so, any idea if we can do the reads of the target's memory while
+>>> holding a spin-lock, or would I need some temporary buffers and only
+>>> lock while copying that in to the storage in the 'ar'?
+>>
+>> I don't see why you would need special locks for reading target's
+>> memory. If there is something needed, pci.c should handle that. Michal?
 >
-> Store the firmware crash registers and last 128 or so
-> firmware debug-log ids and present them to user-space
-> via debugfs.
+> By definition the diagnostic window access must be serialized. We
+> don't do this with locks now but rely ON driver states/sequences. We
+> might have some problems lurking there already but I'd need to analyze
+> it to tell for sure.
+
+Should that serialisation happen within pci.c?
+
+> Calling pci_diag_* functions while holding a spinlock should otherwise
+> be fine because these functions use mdelay() and poll the diagnostic
+> window copy engine pipe.
 >
-> Should help with figuring out why the firmware crashed.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> Using ar->data_lock for a pci transport specific requirement (the
+> diagnostic window) seems wrong though.
 
-[...]
-
-> +	dump_data->kernel_ver_code = LINUX_VERSION_CODE;
-> +	strncpy(dump_data->kernel_ver, VERMAGIC_STRING,
-> +		sizeof(dump_data->kernel_ver) - 1);
-
-Other thing nice to have here is the kernel timestamp in the kernel log
-"[123456.4321]". How difficult would it be to add that to the dump?
+I agree. I did not mean using data_lock to serialise the pci code.
 
 -- 
 Kalle Valo
