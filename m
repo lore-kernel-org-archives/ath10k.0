@@ -1,16 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsvSO-0007MJ-3E
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 14:49:24 +0000
-Message-ID: <5391D4DC.7060402@candelatech.com>
-Date: Fri, 06 Jun 2014 07:49:00 -0700
+ id 1WswQN-0000eb-Go
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 15:51:23 +0000
+Message-ID: <5391E363.50907@candelatech.com>
+Date: Fri, 06 Jun 2014 08:50:59 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: More issues with ath10k_flush
-References: <5390BB50.7040600@candelatech.com>	<5390FF56.4070503@candelatech.com>
- <CA+BoTQm8Ga2JH6cGcJ4kr0jbocusNecL1VL+LMPXk+du_OY5sw@mail.gmail.com>
-In-Reply-To: <CA+BoTQm8Ga2JH6cGcJ4kr0jbocusNecL1VL+LMPXk+du_OY5sw@mail.gmail.com>
+Subject: Re: RE : RE : RE : RE : RE : ath10k: firmware crash in station mode
+ & problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
+ <538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,93 +34,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+
+On 06/06/2014 02:05 AM, Vu Hai NGUYEN wrote:
+>> Ok, the difference must be changes I made to the scanning state machine.
+>> That patch was fairly big, and did several different things.  I have split
+>> it up into 4 separate patches to try to narrow down where the problem was
+>> introduced.
+>>
+>> Can you try these firmware images in order and let me know the first
+>> that fails to do DFS properly?  The scan-1 should be white-space and
+>> debugging only, so hopefully it works.
+>>
+>> firmware-2-community-scan1.bin
+>> firmware-2-community-scan2.bin
+>> firmware-2-community-scan3.bin
+>> firmware-2-community-scan4.bin
+>>
+>> http://www.candelatech.com/downloads/
+> 
+> Thank you, I did the test, the first one and second one (scan 1 & 2) can work with DFS, the last 2 cann't.
+
+Ok, looks like the patch where I change the scan state machine logic is the bad one.
+
+I will review it carefully and maybe try splitting it further today.
+
+Are you able to test with a modified kernel?  If so, I can add debuglog
+messages to the firmware and give you a kernel ath10k patch to print
+those out in the kernel logs so you can send them to me for decoding...
 
 
-
-On 06/05/2014 10:16 PM, Michal Kazior wrote:
-> On 6 June 2014 01:37, Ben Greear <greearb@candelatech.com> wrote:
->> On 06/05/2014 11:47 AM, Ben Greear wrote:
->>> I'm back to debugging this charmer.
->>>
->>> Currently I see the flush fail (and take 5 seconds doing so)
->>> fairly often when creating lots of station vifs against my firmware.
->>>
->>> Once stations are connected, there are usually no more timeouts,
->>> even though I might be sending/receiving 100+Mbps of traffic for hours at
->>> a time.
->>>
->>> By printing out the firmware stats, I see that much of the time
->>> the hardware has accepted X packets for transmission, but has completed
->>> X-1.  It is possible the firmware's counters are screwed up some how
->>> or that it lost a packet, but I think it may also be possible that
->>> the firmware is just being really slow about completing a packet
->>> every now and then.  I have looked at the firmware in detail and
->>> have found no way that it could actually leak tx descriptors.
->
-> Interesting. This reminds me the lazy wmi-htc tx credit replenishment
-> after wmi mgmt tx is completed. Maybe it's a similar sort of thing?
-> Maybe it's actually completed but for some reason the completion
-> hasn't been fully processed yet..
-
-I didn't see any reason for that to happen in the firmware, but it
-is not the simplest code...
-
->>> So, I was thinking about changing the flush logic to try
->>> the current flush (that just waits) for up to 1/5 of the
->>> flush timeout, and if that fails, try telling the firmware to purge
->>> it's tx buffers, and then wait up to 4/5ths more of the
->>> flush timeout.
->
-> Sounds reasonable.
-
-By flushing before we start waiting, maybe we don't need the extra
-cleverness...but possibly it would be better to wait a short bit
-of time an then flush firmware if we still have pending skbs?
-
->> After poking around, it seems there is no wmi command to tell
->> the firmware to just flush everything, so I hacked one into
->> my firmware, called it before ath10k_flush starts waiting,
->> and after several reboots, I do not see any timeouts trying
->> to flush.
->
-> I thought WMI_PEER_FLUSH_TIDS_CMDID is for that. It didn't work for
-> you? If so I would assume it's a firmware bug..
-
-Well, actually, the command may have worked...but instead of iterating
-through all peers for all vdevs and making lots of wmi calls, I just
-made the firmware do the iteration by passing 0xFFFFFFFF as the vdev-id
-and special-casing the firmware handling of the message.
-
-Was only about 8 extra lines of code in the firmware...
-
-I also noticed something where the firmware might not be
-flushing it's tids when a vdev goes down...I didn't bother
-to change that yet, but possibly that is part of the issue.
-(It only flushed if vdev was 'paused'...not sure why.)
+Anyone have any ideas what sorts of problems I might be introducing by
+changing around the scan logic?  Normal scanning seems to at least mostly
+work...how is DFS special?
 
 
->> So, maybe that will do the trick...other suggestions are
->> still welcome :)
->
-> Did you try to find out what kind of frame is supposedly held? I
-> recall you've posted a NullFunc hexdump once pointing that it's one of
-> the offending frames that didn't complete.
->
-> So.. maybe just not sending NullFunc frames (hell, they don't get a
-> proper ack status anyway..) or somehow altering how they are sent is
-> another way to work this around.
+> I also retried to test promiscuous mode, may be yesterday I did something wrong when copy-paste the firmware.
+> Today I try the 172 commit firmware and it works in promisc mode, so again with binary search I redo my serie of test,
+> the different is between 120 (broken firmware) and 121 (non broken). 
+> (My serie is: 172 OK => 86 KO => 129 OK => 107 KO => 118 KO => 124 OK => 121 OK => 120 KO, than re-change to 
+> confirm the different :D)
+> Hope that is helpful for you 
 
-I haven't tried printing them lately...and if the flush logic continues
-to work, I probably won't bother...
-
-In the past, I know there were sometimes lots of larger frames as well, but possibly
-that was a separate issue as I have not seen more than one frame hung lately.
+That is interesting...patch 121 is small and just fixes a firmware crash I was seeing
+related to null dereference in beacon config logic.  Do you see firmware crashes for
+build 120, or does it just silently not work?
 
 Thanks,
 Ben
@@ -114,6 +92,7 @@ Ben
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
