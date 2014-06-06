@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsqiJ-00081X-Ua
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 09:45:36 +0000
-Received: by mail-wg0-f43.google.com with SMTP id l18so2464902wgh.2
- for <ath10k@lists.infradead.org>; Fri, 06 Jun 2014 02:45:08 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsvSO-0007MJ-3E
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 14:49:24 +0000
+Message-ID: <5391D4DC.7060402@candelatech.com>
+Date: Fri, 06 Jun 2014 07:49:00 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
-References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
- <5390B632.7030305@candelatech.com>
- <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkzVLQJcsNfSr=r8d0F_opsHEim0fgxMGhPHGyhz0KBzw@mail.gmail.com>
- <877g4umn7b.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 6 Jun 2014 11:45:08 +0200
-Message-ID: <CA+BoTQmyXy1dSdhugSiXq50C4DpjbRWBcopn0b3anJ4W55oCwA@mail.gmail.com>
-Subject: Re: [PATCH 1/4] ath10k: provide firmware crash info via debugfs.
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: More issues with ath10k_flush
+References: <5390BB50.7040600@candelatech.com>	<5390FF56.4070503@candelatech.com>
+ <CA+BoTQm8Ga2JH6cGcJ4kr0jbocusNecL1VL+LMPXk+du_OY5sw@mail.gmail.com>
+In-Reply-To: <CA+BoTQm8Ga2JH6cGcJ4kr0jbocusNecL1VL+LMPXk+du_OY5sw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +19,103 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gNiBKdW5lIDIwMTQgMTA6NTUsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+
-IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0ZXM6
-Cj4KPj4gT24gNiBKdW5lIDIwMTQgMDg6MTAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
-bS5jb20+IHdyb3RlOgo+Pj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
-aXRlczoKPj4gWy4uLl0KPj4+PiBJJ20gYSBiaXQgbGVlcnkgb2YgYWRkaW5nIHNwaW4tbG9ja3Mg
-aW4gdGhlIGR1bXAgcm91dGluZSBqdXN0IGZvcgo+Pj4+IHRoaXMsIGJ1dCBJIGNhbiBhZGQgYW5k
-IHVzZSBhIG5ldyBzcGluLWxvY2sgaWYgeW91IHByZWZlci4KPj4+Cj4+PiBXaHkgYSBuZXcgc3Bp
-bmxvY2s/IEkgZGlkbid0IHJldmlldyB0aGUgbG9ja2luZyByZXF1aXJlbWVudHMsIGJ1dCBJCj4+
-PiB3b3VsZCBmaXJzdCBjaGVjayBhci0+ZGF0YV9sb2NrIGNhbiBiZSB1c2VkLgo+Pj4KPj4+PiBJ
-ZiBzbywgYW55IGlkZWEgaWYgd2UgY2FuIGRvIHRoZSByZWFkcyBvZiB0aGUgdGFyZ2V0J3MgbWVt
-b3J5IHdoaWxlCj4+Pj4gaG9sZGluZyBhIHNwaW4tbG9jaywgb3Igd291bGQgSSBuZWVkIHNvbWUg
-dGVtcG9yYXJ5IGJ1ZmZlcnMgYW5kIG9ubHkKPj4+PiBsb2NrIHdoaWxlIGNvcHlpbmcgdGhhdCBp
-biB0byB0aGUgc3RvcmFnZSBpbiB0aGUgJ2FyJz8KPj4+Cj4+PiBJIGRvbid0IHNlZSB3aHkgeW91
-IHdvdWxkIG5lZWQgc3BlY2lhbCBsb2NrcyBmb3IgcmVhZGluZyB0YXJnZXQncwo+Pj4gbWVtb3J5
-LiBJZiB0aGVyZSBpcyBzb21ldGhpbmcgbmVlZGVkLCBwY2kuYyBzaG91bGQgaGFuZGxlIHRoYXQu
-IE1pY2hhbD8KPj4KPj4gQnkgZGVmaW5pdGlvbiB0aGUgZGlhZ25vc3RpYyB3aW5kb3cgYWNjZXNz
-IG11c3QgYmUgc2VyaWFsaXplZC4gV2UKPj4gZG9uJ3QgZG8gdGhpcyB3aXRoIGxvY2tzIG5vdyBi
-dXQgcmVseSBPTiBkcml2ZXIgc3RhdGVzL3NlcXVlbmNlcy4gV2UKPj4gbWlnaHQgaGF2ZSBzb21l
-IHByb2JsZW1zIGx1cmtpbmcgdGhlcmUgYWxyZWFkeSBidXQgSSdkIG5lZWQgdG8gYW5hbHl6ZQo+
-PiBpdCB0byB0ZWxsIGZvciBzdXJlLgo+Cj4gU2hvdWxkIHRoYXQgc2VyaWFsaXNhdGlvbiBoYXBw
-ZW4gd2l0aGluIHBjaS5jPwoKWW91IGNhbiBidXQgdGhhdCdzIG5vdCBhIHJlcXVpcmVtZW50IEkg
-Z3Vlc3MuIEUuZy4gZXhjaGFuZ2VfYm1pX21zZwpoaWYgY2FsbGJhY2sgcmVxdWlyZXMgdGhlIGNh
-bGxlciB0byBzZXJpYWxpemUgY2FsbHMuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+
+
+On 06/05/2014 10:16 PM, Michal Kazior wrote:
+> On 6 June 2014 01:37, Ben Greear <greearb@candelatech.com> wrote:
+>> On 06/05/2014 11:47 AM, Ben Greear wrote:
+>>> I'm back to debugging this charmer.
+>>>
+>>> Currently I see the flush fail (and take 5 seconds doing so)
+>>> fairly often when creating lots of station vifs against my firmware.
+>>>
+>>> Once stations are connected, there are usually no more timeouts,
+>>> even though I might be sending/receiving 100+Mbps of traffic for hours at
+>>> a time.
+>>>
+>>> By printing out the firmware stats, I see that much of the time
+>>> the hardware has accepted X packets for transmission, but has completed
+>>> X-1.  It is possible the firmware's counters are screwed up some how
+>>> or that it lost a packet, but I think it may also be possible that
+>>> the firmware is just being really slow about completing a packet
+>>> every now and then.  I have looked at the firmware in detail and
+>>> have found no way that it could actually leak tx descriptors.
+>
+> Interesting. This reminds me the lazy wmi-htc tx credit replenishment
+> after wmi mgmt tx is completed. Maybe it's a similar sort of thing?
+> Maybe it's actually completed but for some reason the completion
+> hasn't been fully processed yet..
+
+I didn't see any reason for that to happen in the firmware, but it
+is not the simplest code...
+
+>>> So, I was thinking about changing the flush logic to try
+>>> the current flush (that just waits) for up to 1/5 of the
+>>> flush timeout, and if that fails, try telling the firmware to purge
+>>> it's tx buffers, and then wait up to 4/5ths more of the
+>>> flush timeout.
+>
+> Sounds reasonable.
+
+By flushing before we start waiting, maybe we don't need the extra
+cleverness...but possibly it would be better to wait a short bit
+of time an then flush firmware if we still have pending skbs?
+
+>> After poking around, it seems there is no wmi command to tell
+>> the firmware to just flush everything, so I hacked one into
+>> my firmware, called it before ath10k_flush starts waiting,
+>> and after several reboots, I do not see any timeouts trying
+>> to flush.
+>
+> I thought WMI_PEER_FLUSH_TIDS_CMDID is for that. It didn't work for
+> you? If so I would assume it's a firmware bug..
+
+Well, actually, the command may have worked...but instead of iterating
+through all peers for all vdevs and making lots of wmi calls, I just
+made the firmware do the iteration by passing 0xFFFFFFFF as the vdev-id
+and special-casing the firmware handling of the message.
+
+Was only about 8 extra lines of code in the firmware...
+
+I also noticed something where the firmware might not be
+flushing it's tids when a vdev goes down...I didn't bother
+to change that yet, but possibly that is part of the issue.
+(It only flushed if vdev was 'paused'...not sure why.)
+
+
+>> So, maybe that will do the trick...other suggestions are
+>> still welcome :)
+>
+> Did you try to find out what kind of frame is supposedly held? I
+> recall you've posted a NullFunc hexdump once pointing that it's one of
+> the offending frames that didn't complete.
+>
+> So.. maybe just not sending NullFunc frames (hell, they don't get a
+> proper ack status anyway..) or somehow altering how they are sent is
+> another way to work this around.
+
+I haven't tried printing them lately...and if the flush logic continues
+to work, I probably won't bother...
+
+In the past, I know there were sometimes lots of larger frames as well, but possibly
+that was a separate issue as I have not seen more than one frame hung lately.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
