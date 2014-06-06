@@ -1,19 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wsnrw-0003cN-33
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 06:43:19 +0000
+ id 1Wso0i-0006zg-0p
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 06:52:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
- <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
- <CALCETrUDWvXddiACacre3erhwrKCjO53iHVKmPrApTi65Z5yBA@mail.gmail.com>
- <87r433ps7w.fsf@kamboji.qca.qualcomm.com>
- <53909602.5010703@candelatech.com>
-Date: Fri, 6 Jun 2014 09:39:51 +0300
-In-Reply-To: <53909602.5010703@candelatech.com> (Ben Greear's message of "Thu, 
- 5 Jun 2014 09:08:34 -0700")
-Message-ID: <87oay6mthk.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
+ <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
+ <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
+ <538CC949.5020901@candelatech.com>
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
+ <538CD507.1050803@candelatech.com>
+ <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+ <53909372.1040707@candelatech.com>
+Date: Fri, 6 Jun 2014 09:51:52 +0300
+In-Reply-To: <53909372.1040707@candelatech.com> (Ben Greear's message of "Thu, 
+ 5 Jun 2014 08:57:38 -0700")
+Message-ID: <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,20 +33,26 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: Linux Wireless List <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Andy Lutomirski <luto@amacapital.net>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
 Ben Greear <greearb@candelatech.com> writes:
 
->> Michal already did. The error means that for some reason the
->> calibaration data was not found from OTP. OTP is the storage area where
->> the calibration data is normally stored within QCA9880.
+>> Why do you want to put the crash dump in kernel log, can you describe
+>> your "use case" here? For me it would be enough to have a UUID for each
+>> crash dump and then have the driver print that to kernel log:
+>> 
+>> ath10k: firmware crashed (uuid 1234567890-4321)
+>> 
+>> And then you just need to find the correct dump from the file system and
+>> start debugging. Would that be enough for you?
 >
-> I fought this with .387 firmware and WLE900VX NICs.  If it's a common
-> problem with more than a single NIC (ie, not just a bad piece of
-> hardware), then one could load my firmware and my ath10k patches.
+> Not all systems will have fancy user-space able to deal with this.
+>
+> At the very least, please leave in the current firmware crash
+> dump text.
 
-That's XB143, right? I think that's different as firmware started to
-support XB143 only starting from 10.1.467.
+I'm not removing anything. That was just an example how we can identify
+crashes.
 
 -- 
 Kalle Valo
