@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm29-vm4.bullet.mail.ne1.yahoo.com ([98.138.91.189])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WsxF9-0004o6-Od
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 16:43:52 +0000
-Message-ID: <5391EFB0.4080604@yahoo.com>
-Date: Fri, 06 Jun 2014 12:43:28 -0400
-From: Frank Agius <ftagius@yahoo.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsxbY-0003XX-2T
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 17:07:00 +0000
+Message-ID: <5391F51B.4020103@candelatech.com>
+Date: Fri, 06 Jun 2014 10:06:35 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: ATH10K set bitrates problem
+Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
+References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
+ <87y4xal6vb.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87y4xal6vb.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,30 +19,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-I am unable to set the bitrates for devices using the ath10k driver, 
-regardless of the arguments I pass:
+On 06/06/2014 02:33 AM, Kalle Valo wrote:
 
+>> +					kfree(buffer);
+>> +					goto save_regs_and_restart;
+>> +				}
+>> +
+>> +				ath10k_dbg_save_fw_dbg_buffer(ar, buffer,
+>> +							      dbuf.length);
+>> +				kfree(buffer);
+> 
+> Instead of doing atomic allocations multiple times in a loop, would it
+> be better to allocate just one buffer before the loop and free it
+> afterwards?
 
-# iw wlan0 set bitrates legacy-2.4 6 12 24
-command failed: Invalid argument (-22)
-# iw dev wlan0 set bitrates mcs-2.4 10
-command failed: Invalid argument (-22)
+There is no hard guarantee that the buffer lengths are the same,
+so I think it needs to remain as is.  Would rather not crap out
+because firmware suddenly got more clever...
 
+Thanks,
+Ben
 
-The ath10k drivers were built from stable backports v3.15-rc1.   I am 
-using firmware file firmware-2.bin_999.999.0.636
-
-
-Is this a known issue?
-
-
-frank agius
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
