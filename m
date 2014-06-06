@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WshEj-0004aj-Nv
- for ath10k@lists.infradead.org; Thu, 05 Jun 2014 23:38:22 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 84D1840BAEF
- for <ath10k@lists.infradead.org>; Thu,  5 Jun 2014 16:37:58 -0700 (PDT)
-Message-ID: <5390FF56.4070503@candelatech.com>
-Date: Thu, 05 Jun 2014 16:37:58 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WsmWF-0003MR-G2
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 05:16:52 +0000
+Received: by mail-wi0-f171.google.com with SMTP id cc10so269030wib.16
+ for <ath10k@lists.infradead.org>; Thu, 05 Jun 2014 22:16:23 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: More issues with ath10k_flush
+In-Reply-To: <5390FF56.4070503@candelatech.com>
 References: <5390BB50.7040600@candelatech.com>
-In-Reply-To: <5390BB50.7040600@candelatech.com>
+ <5390FF56.4070503@candelatech.com>
+Date: Fri, 6 Jun 2014 07:16:23 +0200
+Message-ID: <CA+BoTQm8Ga2JH6cGcJ4kr0jbocusNecL1VL+LMPXk+du_OY5sw@mail.gmail.com>
+Subject: Re: More issues with ath10k_flush
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,65 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 06/05/2014 11:47 AM, Ben Greear wrote:
-> I'm back to debugging this charmer.
-> 
-> Currently I see the flush fail (and take 5 seconds doing so)
-> fairly often when creating lots of station vifs against my firmware.
-> 
-> Once stations are connected, there are usually no more timeouts,
-> even though I might be sending/receiving 100+Mbps of traffic for hours at
-> a time.
-> 
-> By printing out the firmware stats, I see that much of the time
-> the hardware has accepted X packets for transmission, but has completed
-> X-1.  It is possible the firmware's counters are screwed up some how
-> or that it lost a packet, but I think it may also be possible that
-> the firmware is just being really slow about completing a packet
-> every now and then.  I have looked at the firmware in detail and
-> have found no way that it could actually leak tx descriptors.
-> 
-> So, I was thinking about changing the flush logic to try
-> the current flush (that just waits) for up to 1/5 of the
-> flush timeout, and if that fails, try telling the firmware to purge
-> it's tx buffers, and then wait up to 4/5ths more of the
-> flush timeout.
-
-After poking around, it seems there is no wmi command to tell
-the firmware to just flush everything, so I hacked one into
-my firmware, called it before ath10k_flush starts waiting,
-and after several reboots, I do not see any timeouts trying
-to flush.
-
-So, maybe that will do the trick...other suggestions are
-still welcome :)
-
-Ben
-
-> 
-> Does that sound like a reasonable approach?
-> 
-> Currently, my work-around is just to restart firmware
-> after it fails to flush for 2 tries in a row, seems
-> like there could be something better!
-> 
-> Thanks,
-> Ben
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBKdW5lIDIwMTQgMDE6MzcsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
+PiB3cm90ZToKPiBPbiAwNi8wNS8yMDE0IDExOjQ3IEFNLCBCZW4gR3JlZWFyIHdyb3RlOgo+PiBJ
+J20gYmFjayB0byBkZWJ1Z2dpbmcgdGhpcyBjaGFybWVyLgo+Pgo+PiBDdXJyZW50bHkgSSBzZWUg
+dGhlIGZsdXNoIGZhaWwgKGFuZCB0YWtlIDUgc2Vjb25kcyBkb2luZyBzbykKPj4gZmFpcmx5IG9m
+dGVuIHdoZW4gY3JlYXRpbmcgbG90cyBvZiBzdGF0aW9uIHZpZnMgYWdhaW5zdCBteSBmaXJtd2Fy
+ZS4KPj4KPj4gT25jZSBzdGF0aW9ucyBhcmUgY29ubmVjdGVkLCB0aGVyZSBhcmUgdXN1YWxseSBu
+byBtb3JlIHRpbWVvdXRzLAo+PiBldmVuIHRob3VnaCBJIG1pZ2h0IGJlIHNlbmRpbmcvcmVjZWl2
+aW5nIDEwMCtNYnBzIG9mIHRyYWZmaWMgZm9yIGhvdXJzIGF0Cj4+IGEgdGltZS4KPj4KPj4gQnkg
+cHJpbnRpbmcgb3V0IHRoZSBmaXJtd2FyZSBzdGF0cywgSSBzZWUgdGhhdCBtdWNoIG9mIHRoZSB0
+aW1lCj4+IHRoZSBoYXJkd2FyZSBoYXMgYWNjZXB0ZWQgWCBwYWNrZXRzIGZvciB0cmFuc21pc3Np
+b24sIGJ1dCBoYXMgY29tcGxldGVkCj4+IFgtMS4gIEl0IGlzIHBvc3NpYmxlIHRoZSBmaXJtd2Fy
+ZSdzIGNvdW50ZXJzIGFyZSBzY3Jld2VkIHVwIHNvbWUgaG93Cj4+IG9yIHRoYXQgaXQgbG9zdCBh
+IHBhY2tldCwgYnV0IEkgdGhpbmsgaXQgbWF5IGFsc28gYmUgcG9zc2libGUgdGhhdAo+PiB0aGUg
+ZmlybXdhcmUgaXMganVzdCBiZWluZyByZWFsbHkgc2xvdyBhYm91dCBjb21wbGV0aW5nIGEgcGFj
+a2V0Cj4+IGV2ZXJ5IG5vdyBhbmQgdGhlbi4gIEkgaGF2ZSBsb29rZWQgYXQgdGhlIGZpcm13YXJl
+IGluIGRldGFpbCBhbmQKPj4gaGF2ZSBmb3VuZCBubyB3YXkgdGhhdCBpdCBjb3VsZCBhY3R1YWxs
+eSBsZWFrIHR4IGRlc2NyaXB0b3JzLgoKSW50ZXJlc3RpbmcuIFRoaXMgcmVtaW5kcyBtZSB0aGUg
+bGF6eSB3bWktaHRjIHR4IGNyZWRpdCByZXBsZW5pc2htZW50CmFmdGVyIHdtaSBtZ210IHR4IGlz
+IGNvbXBsZXRlZC4gTWF5YmUgaXQncyBhIHNpbWlsYXIgc29ydCBvZiB0aGluZz8KTWF5YmUgaXQn
+cyBhY3R1YWxseSBjb21wbGV0ZWQgYnV0IGZvciBzb21lIHJlYXNvbiB0aGUgY29tcGxldGlvbgpo
+YXNuJ3QgYmVlbiBmdWxseSBwcm9jZXNzZWQgeWV0Li4KCgo+PiBTbywgSSB3YXMgdGhpbmtpbmcg
+YWJvdXQgY2hhbmdpbmcgdGhlIGZsdXNoIGxvZ2ljIHRvIHRyeQo+PiB0aGUgY3VycmVudCBmbHVz
+aCAodGhhdCBqdXN0IHdhaXRzKSBmb3IgdXAgdG8gMS81IG9mIHRoZQo+PiBmbHVzaCB0aW1lb3V0
+LCBhbmQgaWYgdGhhdCBmYWlscywgdHJ5IHRlbGxpbmcgdGhlIGZpcm13YXJlIHRvIHB1cmdlCj4+
+IGl0J3MgdHggYnVmZmVycywgYW5kIHRoZW4gd2FpdCB1cCB0byA0LzV0aHMgbW9yZSBvZiB0aGUK
+Pj4gZmx1c2ggdGltZW91dC4KClNvdW5kcyByZWFzb25hYmxlLgoKCj4gQWZ0ZXIgcG9raW5nIGFy
+b3VuZCwgaXQgc2VlbXMgdGhlcmUgaXMgbm8gd21pIGNvbW1hbmQgdG8gdGVsbAo+IHRoZSBmaXJt
+d2FyZSB0byBqdXN0IGZsdXNoIGV2ZXJ5dGhpbmcsIHNvIEkgaGFja2VkIG9uZSBpbnRvCj4gbXkg
+ZmlybXdhcmUsIGNhbGxlZCBpdCBiZWZvcmUgYXRoMTBrX2ZsdXNoIHN0YXJ0cyB3YWl0aW5nLAo+
+IGFuZCBhZnRlciBzZXZlcmFsIHJlYm9vdHMsIEkgZG8gbm90IHNlZSBhbnkgdGltZW91dHMgdHJ5
+aW5nCj4gdG8gZmx1c2guCgpJIHRob3VnaHQgV01JX1BFRVJfRkxVU0hfVElEU19DTURJRCBpcyBm
+b3IgdGhhdC4gSXQgZGlkbid0IHdvcmsgZm9yCnlvdT8gSWYgc28gSSB3b3VsZCBhc3N1bWUgaXQn
+cyBhIGZpcm13YXJlIGJ1Zy4uCgoKPiBTbywgbWF5YmUgdGhhdCB3aWxsIGRvIHRoZSB0cmljay4u
+Lm90aGVyIHN1Z2dlc3Rpb25zIGFyZQo+IHN0aWxsIHdlbGNvbWUgOikKCkRpZCB5b3UgdHJ5IHRv
+IGZpbmQgb3V0IHdoYXQga2luZCBvZiBmcmFtZSBpcyBzdXBwb3NlZGx5IGhlbGQ/IEkKcmVjYWxs
+IHlvdSd2ZSBwb3N0ZWQgYSBOdWxsRnVuYyBoZXhkdW1wIG9uY2UgcG9pbnRpbmcgdGhhdCBpdCdz
+IG9uZSBvZgp0aGUgb2ZmZW5kaW5nIGZyYW1lcyB0aGF0IGRpZG4ndCBjb21wbGV0ZS4KClNvLi4g
+bWF5YmUganVzdCBub3Qgc2VuZGluZyBOdWxsRnVuYyBmcmFtZXMgKGhlbGwsIHRoZXkgZG9uJ3Qg
+Z2V0IGEKcHJvcGVyIGFjayBzdGF0dXMgYW55d2F5Li4pIG9yIHNvbWVob3cgYWx0ZXJpbmcgaG93
+IHRoZXkgYXJlIHNlbnQgaXMKYW5vdGhlciB3YXkgdG8gd29yayB0aGlzIGFyb3VuZC4KCgpNaWNo
+YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
