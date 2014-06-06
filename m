@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qa0-x235.google.com ([2607:f8b0:400d:c00::235])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wsz7F-00069E-Lm
- for ath10k@lists.infradead.org; Fri, 06 Jun 2014 18:43:50 +0000
-Received: by mail-qa0-f53.google.com with SMTP id k15so4258718qaq.12
- for <ath10k@lists.infradead.org>; Fri, 06 Jun 2014 11:43:24 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5391EFB0.4080604@yahoo.com>
-References: <5391EFB0.4080604@yahoo.com>
-Date: Fri, 6 Jun 2014 20:43:24 +0200
-Message-ID: <CALhHN=oCUQHdLakS5bvCs2dXxH9yS4RLGNhgs0G2zdc5+VvVZw@mail.gmail.com>
-Subject: Re: ATH10K set bitrates problem
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WszVo-0005kg-0G
+ for ath10k@lists.infradead.org; Fri, 06 Jun 2014 19:09:12 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2 2/4] ath10k:  save firmware debug log messages.
+Date: Fri,  6 Jun 2014 12:08:41 -0700
+Message-Id: <1402081723-30040-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1402081723-30040-1-git-send-email-greearb@candelatech.com>
+References: <1402081723-30040-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +17,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Frank Agius <ftagius@yahoo.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On 6 June 2014 18:43, Frank Agius <ftagius@yahoo.com> wrote:
-> I am unable to set the bitrates for devices using the ath10k driver,
-> regardless of the arguments I pass:
->
->
-> # iw wlan0 set bitrates legacy-2.4 6 12 24
-> command failed: Invalid argument (-22)
-> # iw dev wlan0 set bitrates mcs-2.4 10
-> command failed: Invalid argument (-22)
->
->
-> The ath10k drivers were built from stable backports v3.15-rc1.   I am using
-> firmware file firmware-2.bin_999.999.0.636
->
->
-> Is this a known issue?
->
-This is expected.
-ath10k support only single rate setting (or single nss). So, please
-check commit message,
-ath10k: add set_bitrate_mask callback
+From: Ben Greear <greearb@candelatech.com>
 
-Try this:
-iw wlan0 set bitrates legacy-2.4 18 ht-mcs-2.4
-iw wlan0 set bitrates legacy-2.4 ht-mcs-2.4 6
-iw wlan0 set bitrates - back to default mask.
+They may be dumped through the firmware dump debugfs
+file.
 
-BR
-Janusz
->
-> frank agius
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6f83cae..df62115 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1089,6 +1089,12 @@ static int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 	trace_ath10k_wmi_dbglog(skb->data, skb->len);
+ 
++	/* First 4 bytes are a messages-dropped-due-to-overflow counter,
++	 * and should not be recorded in the dbglog buffer, so we skip
++	 * them.
++	 */
++	ath10k_dbg_save_fw_dbg_buffer(ar, skb->data + 4, skb->len - 4);
++
+ 	return 0;
+ }
+ 
+-- 
+1.7.11.7
+
 
 _______________________________________________
 ath10k mailing list
