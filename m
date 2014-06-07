@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtG4v-000300-Dn
- for ath10k@lists.infradead.org; Sat, 07 Jun 2014 12:50:34 +0000
+ id 1WtGAa-0004CF-Tb
+ for ath10k@lists.infradead.org; Sat, 07 Jun 2014 12:56:25 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
 References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87bnu6msra.fsf@kamboji.qca.qualcomm.com>
- <5391E5D7.1030302@candelatech.com>
-Date: Sat, 7 Jun 2014 15:50:01 +0300
-In-Reply-To: <5391E5D7.1030302@candelatech.com> (Ben Greear's message of "Fri, 
- 6 Jun 2014 09:01:27 -0700")
-Message-ID: <878up8khom.fsf@kamboji.qca.qualcomm.com>
+ <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
+ <5390B632.7030305@candelatech.com>
+ <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
+ <5391E842.4010401@candelatech.com>
+Date: Sat, 7 Jun 2014 15:55:56 +0300
+In-Reply-To: <5391E842.4010401@candelatech.com> (Ben Greear's message of "Fri, 
+ 6 Jun 2014 09:11:46 -0700")
+Message-ID: <874mzwkher.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,42 +32,40 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> On 06/05/2014 11:55 PM, Kalle Valo wrote:
->> greearb@candelatech.com writes:
+> On 06/05/2014 11:10 PM, Kalle Valo wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
 >> 
->>> From: Ben Greear <greearb@candelatech.com>
->>>
->>> Store the firmware crash registers and last 128 or so
->>> firmware debug-log ids and present them to user-space
->>> via debugfs.
->>>
->>> Should help with figuring out why the firmware crashed.
->>>
->>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>>> I did not do this because I figure we will want ethtool support w/out
+>>> forcing debugfs to be enabled someday soon.
 >> 
->> [...]
->> 
->>> +	dump_data->kernel_ver_code = LINUX_VERSION_CODE;
->>> +	strncpy(dump_data->kernel_ver, VERMAGIC_STRING,
->>> +		sizeof(dump_data->kernel_ver) - 1);
->> 
->> Other thing nice to have here is the kernel timestamp in the kernel log
->> "[123456.4321]". How difficult would it be to add that to the dump?
+>> When we add ethtool support, it's easy to move these back. And then we
+>> need to move the code out from debug.c anyway.
 >
-> It's easy to get the time-of-day, if that is what you mean.
+> Well, it seems like needless churn and makes it harder to follow
+> 'git blame' when you move big chunks around.
 
-That's actually seconds from boot, not wall time:
+I don't care about 'git blame', the actual code is far more important to
+me. If git blame is so important, someone else can improve 'git blame'
+to detect moving code chunks.
 
-[    0.000000] tsc: Fast TSC calibration using PIT
-[    0.000000] tsc: Detected 2793.393 MHz processor
-[    0.000004] Calibrating delay loop (skipped), value calculated using timer frequency.. 5586.78 BogoMIP
-S (lpj=27933930)
-[    0.000009] pid_max: default: 32768 minimum: 301
-[    0.000016] ACPI: Core revision 20140214
-[    0.023399] ACPI: All ACPI Tables successfully acquired
+> We would not have to move the code out of debug.c, but if you do want
+> it moved, lets pick that place now and just put it there to begin
+> with.
 
-There's function print_time() which prints the time and the timestamp
-apparently comes from local_clock().
+Code in debug.c should have the data it owns in struct ath10k_debug.
+
+>>> I'm a bit leery of adding spin-locks in the dump routine just for
+>>> this, but I can add and use a new spin-lock if you prefer.
+>> 
+>> Why a new spinlock? I didn't review the locking requirements, but I
+>> would first check ar->data_lock can be used.
+>
+> I think it has to be a spin-lock because the crash dump is gathered
+> in the irq handler, so I can't use a mutex as far as I know...
+>
+> I'll work on adding such a lock today.
+
+I asked why add a _new_ spinlock as ar->data_lock is already a spinlock.
 
 -- 
 Kalle Valo
