@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wt9rC-0002ye-W9
- for ath10k@lists.infradead.org; Sat, 07 Jun 2014 06:12:00 +0000
-Received: from hsi-kbw-091-089-013-092.hsi2.kabelbw.de ([91.89.13.92]
- helo=[10.12.27.253])
- by smtp.eurescom.eu with esmtpsa (TLSv1:DHE-RSA-AES128-SHA:128)
- (Exim 4.80.1) (envelope-from <svens@stackframe.org>)
- id 1Wt9qm-0000KI-N1
- for ath10k@lists.infradead.org; Sat, 07 Jun 2014 08:11:32 +0200
-Message-ID: <5392AD19.3060103@stackframe.org>
-Date: Sat, 07 Jun 2014 08:11:37 +0200
-From: Sven Schnelle <svens@stackframe.org>
+ id 1WtG4v-000300-Dn
+ for ath10k@lists.infradead.org; Sat, 07 Jun 2014 12:50:34 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
+References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
+ <87bnu6msra.fsf@kamboji.qca.qualcomm.com>
+ <5391E5D7.1030302@candelatech.com>
+Date: Sat, 7 Jun 2014 15:50:01 +0300
+In-Reply-To: <5391E5D7.1030302@candelatech.com> (Ben Greear's message of "Fri, 
+ 6 Jun 2014 09:01:27 -0700")
+Message-ID: <878up8khom.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-References: <8738fimmjp.fsf@kamboji.qca.qualcomm.com>
- <53924F5F.5090104@gmail.com> <87wqctjn6o.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87wqctjn6o.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +21,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Kalle,
+Ben Greear <greearb@candelatech.com> writes:
 
-Am 07.06.2014 07:36, schrieb Kalle Valo:
-> Kamal Koshy <kamal.koshy@gmail.com> writes:
+> On 06/05/2014 11:55 PM, Kalle Valo wrote:
+>> greearb@candelatech.com writes:
+>> 
+>>> From: Ben Greear <greearb@candelatech.com>
+>>>
+>>> Store the firmware crash registers and last 128 or so
+>>> firmware debug-log ids and present them to user-space
+>>> via debugfs.
+>>>
+>>> Should help with figuring out why the firmware crashed.
+>>>
+>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> 
+>> [...]
+>> 
+>>> +	dump_data->kernel_ver_code = LINUX_VERSION_CODE;
+>>> +	strncpy(dump_data->kernel_ver, VERMAGIC_STRING,
+>>> +		sizeof(dump_data->kernel_ver) - 1);
+>> 
+>> Other thing nice to have here is the kernel timestamp in the kernel log
+>> "[123456.4321]". How difficult would it be to add that to the dump?
 >
->> Attaching the result of dd if=/dev/mtd4 > ~/mtd4
-> Thanks, I'll take a look at that later. But before that, do you know
-> what's the mac address of the QCA9880 device with the proprietary
-> driver? (_not_ with ath10k) That would help searching for the
-> calibration data.
->
-To me it looks like ath9k calibration data starts at 0x1000, and ath10k 
-calibration data
-starts at 0x5000 in that mtd image. That's the same as on my board.
+> It's easy to get the time-of-day, if that is what you mean.
 
-Sven
+That's actually seconds from boot, not wall time:
+
+[    0.000000] tsc: Fast TSC calibration using PIT
+[    0.000000] tsc: Detected 2793.393 MHz processor
+[    0.000004] Calibrating delay loop (skipped), value calculated using timer frequency.. 5586.78 BogoMIP
+S (lpj=27933930)
+[    0.000009] pid_max: default: 32768 minimum: 301
+[    0.000016] ACPI: Core revision 20140214
+[    0.023399] ACPI: All ACPI Tables successfully acquired
+
+There's function print_time() which prints the time and the timestamp
+apparently comes from local_clock().
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
