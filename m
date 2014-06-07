@@ -1,31 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wt4Uw-0000Re-2p
- for ath10k@lists.infradead.org; Sat, 07 Jun 2014 00:28:38 +0000
-Message-ID: <53925C9E.4040204@candelatech.com>
-Date: Fri, 06 Jun 2014 17:28:14 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wt9JM-0003Fu-EL
+ for ath10k@lists.infradead.org; Sat, 07 Jun 2014 05:37:00 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+References: <8738fimmjp.fsf@kamboji.qca.qualcomm.com>
+ <53924F5F.5090104@gmail.com>
+Date: Sat, 7 Jun 2014 08:36:31 +0300
+In-Reply-To: <53924F5F.5090104@gmail.com> (Kamal Koshy's message of "Fri, 06
+ Jun 2014 16:31:43 -0700")
+Message-ID: <87wqctjn6o.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: RE : RE : RE : RE : RE : ath10k: firmware crash in station mode
- & problem DFS
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
- <5386059B.7040301@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
- <538CAACA.2030202@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
- <538E9D26.4040009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
- <538F9255.1060101@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
- <5390A9CC.7060400@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,39 +24,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: Kamal Koshy <kamal.koshy@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-On 06/06/2014 02:05 AM, Vu Hai NGUYEN wrote:
->> Ok, the difference must be changes I made to the scanning state machine.
->> That patch was fairly big, and did several different things.  I have split
->> it up into 4 separate patches to try to narrow down where the problem was
->> introduced.
->>
->> Can you try these firmware images in order and let me know the first
->> that fails to do DFS properly?  The scan-1 should be white-space and
->> debugging only, so hopefully it works.
->>
->> firmware-2-community-scan1.bin
->> firmware-2-community-scan2.bin
->> firmware-2-community-scan3.bin
->> firmware-2-community-scan4.bin
->>
->> http://www.candelatech.com/downloads/
-> 
-> Thank you, I did the test, the first one and second one (scan 1 & 2) can work with DFS, the last 2 cann't.
+Kamal Koshy <kamal.koshy@gmail.com> writes:
 
-Can you please see if this firmware is any better for the DFS issue?
+> Attaching the result of dd if=/dev/mtd4 > ~/mtd4
 
-http://www.candelatech.com/downloads/firmware-2-community-scan3-a.bin
-
-Thanks,
-Ben
+Thanks, I'll take a look at that later. But before that, do you know
+what's the mac address of the QCA9880 device with the proprietary
+driver? (_not_ with ath10k) That would help searching for the
+calibration data.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
