@@ -1,31 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from vs15.mail.saunalahti.fi ([62.142.117.202])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtZAm-0000ZB-Is
- for ath10k@lists.infradead.org; Sun, 08 Jun 2014 09:13:53 +0000
-Message-ID: <1402218792.4406.2.camel@jlt4.sipsolutions.net>
-Subject: Re: Firmware debugging patches?
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Sun, 08 Jun 2014 11:13:12 +0200
-In-Reply-To: <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
- (sfid-20140608_103606_337478_803FD86E)
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
- <538CA904.4000508@candelatech.com>
- <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
- <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
- <538CC949.5020901@candelatech.com>
- <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
- <538CD507.1050803@candelatech.com>
- <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
- <53909372.1040707@candelatech.com>
- <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
- <5391E620.4090706@candelatech.com>
- <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>
- <53932F52.2030203@candelatech.com>
- <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
- (sfid-20140608_103606_337478_803FD86E)
-Mime-Version: 1.0
+ id 1WtbeP-0007ZW-Nj
+ for ath10k@lists.infradead.org; Sun, 08 Jun 2014 11:52:38 +0000
+Received: from vams (localhost [127.0.0.1])
+ by vs15.mail.saunalahti.fi (Postfix) with SMTP id 1E40A40046
+ for <ath10k@lists.infradead.org>; Sun,  8 Jun 2014 14:52:08 +0300 (EEST)
+Received: from gw01.mail.saunalahti.fi (gw01.mail.saunalahti.fi
+ [195.197.172.115])
+ by vs15.mail.saunalahti.fi (Postfix) with ESMTP id EFBE040046
+ for <ath10k@lists.infradead.org>; Sun,  8 Jun 2014 14:52:07 +0300 (EEST)
+Received: from [192.168.1.230] (ip-37-24-112-12.unitymediagroup.de
+ [37.24.112.12])
+ (using TLSv1 with cipher ECDHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by gw01.mail.saunalahti.fi (Postfix) with ESMTPSA id D2B8F40013
+ for <ath10k@lists.infradead.org>; Sun,  8 Jun 2014 14:52:05 +0300 (EEST)
+Message-ID: <53944E64.9000002@elisanet.fi>
+Date: Sun, 08 Jun 2014 13:52:04 +0200
+From: Matti Laakso <malaakso@elisanet.fi>
+MIME-Version: 1.0
+Subject: Re: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7
+ v2
+References: <5392AD19.3060103@stackframe.org>
+In-Reply-To: <5392AD19.3060103@stackframe.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,33 +36,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
+To: ath10k@lists.infradead.org
 
-On Sun, 2014-06-08 at 11:35 +0300, Kalle Valo wrote:
+> ------------------------------------------------------------------------
+> Hi Kalle,
+>
+> Am 07.06.2014 07:36, schrieb Kalle Valo:
+> >/ Kamal Koshy <kamal.koshy at gmail.com <http://lists.infradead.org/mailman/listinfo/ath10k>> writes:
+> />/
+> />>/ Attaching the result of dd if=/dev/mtd4 > ~/mtd4
+> />/ Thanks, I'll take a look at that later. But before that, do you know
+> />/ what's the mac address of the QCA9880 device with the proprietary
+> />/ driver? (_not_ with ath10k) That would help searching for the
+> />/ calibration data.
+> />/
+> /To me it looks like ath9k calibration data starts at 0x1000, and ath10k 
+> calibration data
+> starts at 0x5000 in that mtd image. That's the same as on my board.
+>
+> Sven
+>
 
-> > I was thinking we should not add a MAC to the dump, for privacy concerns,
-> > but whatever user-space tools gather the dump could add MAC if user perfers.
-> 
-> The MAC addresses can be extracted from the target memory anyway so I
-> don't see harm from including that in the dump. Is it even possible to
-> address all privacy issues when dealing with firmware dumps?
+Yeah, that's definitely the case.
 
-We had something of a discussion about this - it's usually not just
-BSSIDs/MAC addresses, but also encryption keys (say WEP keys, or at
-least temporal keys, sometimes more), SSIDs, etc. In short, there's a
-whole bunch of private data that can be included in such dumps.
+I think we need something like this for ath10k:
 
-However, we haven't really found a good solution. Popping up big scary
-warnings to the user is unlikely to be productive, trying to keep the
-data private and only accessible to (the right) developers is not going
-to work ... encryption might work, but who manages that?
+https://github.com/kvalo/ath/blob/master/include/linux/ath9k_platform.h
 
-Certainly the data shouldn't be attached to a public bug tracker
-automatically...
+which we can then populate in the mach-file.
 
-johannes
-
+Matti
 
 _______________________________________________
 ath10k mailing list
