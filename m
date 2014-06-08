@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtfCM-0006G7-VZ
- for ath10k@lists.infradead.org; Sun, 08 Jun 2014 15:39:55 +0000
-Message-ID: <539483B1.5020401@candelatech.com>
-Date: Sun, 08 Jun 2014 08:39:29 -0700
+ id 1WtfDS-0007LR-Hr
+ for ath10k@lists.infradead.org; Sun, 08 Jun 2014 15:41:03 +0000
+Message-ID: <539483F9.9050401@candelatech.com>
+Date: Sun, 08 Jun 2014 08:40:41 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>	<87wqczz3h9.fsf@kamboji.qca.qualcomm.com>	<538CA904.4000508@candelatech.com>	<87ioojz1b1.fsf@kamboji.qca.qualcomm.com>	<538CB782.1000509@candelatech.com>
- <538CC68C.10808@gmail.com>	<538CC949.5020901@candelatech.com>	<CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>	<538CD507.1050803@candelatech.com>	<87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>	<53909372.1040707@candelatech.com>	<87fvjimsxj.fsf@kamboji.qca.qualcomm.com>	<5391E620.4090706@candelatech.com>	<87vbscj2ho.fsf@kamboji.qca.qualcomm.com>	<53932F52.2030203@candelatech.com>
- <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
+References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
+ <87egz3nxdn.fsf@kamboji.qca.qualcomm.com> <5390B632.7030305@candelatech.com>
+ <87wqcumuuw.fsf@kamboji.qca.qualcomm.com> <5391E842.4010401@candelatech.com>
+ <874mzwkher.fsf@kamboji.qca.qualcomm.com> <539330A1.9050307@candelatech.com>
+ <877g4riz3w.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <877g4riz3w.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +27,46 @@ Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
 
-On 06/08/2014 01:35 AM, Kalle Valo wrote:
+On 06/08/2014 01:28 AM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 >
->>>> Perhaps the time-stamp is good enough?  I don't see a need for
->>>> a uuid, but perhaps I am missing something?
+>> On 06/07/2014 05:55 AM, Kalle Valo wrote:
+>>> Ben Greear <greearb@candelatech.com> writes:
 >>>
->>> UUID is supposed to be unique. If we use walltime there's no guarantee
->>> that the clock is correct and if we use local_clock() (my preference) it
->>> will be reset after every boot.
+>>>>>> I'm a bit leery of adding spin-locks in the dump routine just for
+>>>>>> this, but I can add and use a new spin-lock if you prefer.
+>>>>>
+>>>>> Why a new spinlock? I didn't review the locking requirements, but I
+>>>>> would first check ar->data_lock can be used.
+>>>>
+>>>> I think it has to be a spin-lock because the crash dump is gathered
+>>>> in the irq handler, so I can't use a mutex as far as I know...
+>>>>
+>>>> I'll work on adding such a lock today.
 >>>
->>> I just think using something like UUID is more robust. Especially if one
->>> implements an automatic crash dump collector from thousands of deployed
->>> APs, having an UUID makes it a lot easier to manage.
+>>> I asked why add a _new_ spinlock as ar->data_lock is already a spinlock.
 >>
->> I can add since-boot timestamp as well.  Time-since-boot is less likely
->> to be unique than wall-time, and for systems that do have proper wall-time
->> clock configured, I think that provides some useful info.  (Would be interesting
->> if all APs in a stadium crashed near the same time, for instance.)
->>
->> I was thinking we should not add a MAC to the dump, for privacy concerns,
->> but whatever user-space tools gather the dump could add MAC if user perfers.
+>> Surely we do not want to impede traffic flow just to dump debug info?
 >
-> The MAC addresses can be extracted from the target memory anyway so I
-> don't see harm from including that in the dump. Is it even possible to
-> address all privacy issues when dealing with firmware dumps?
-
-It would be more difficult to find it in debug-log messages (and in most cases,
-it is probably not the debug-log at all).  Probably not in the stack dump
-most of the time either.
-
-I'm not sure it will be in the BSS regions or not.  I have no plans to dump the
-non-bss RAM on the firmware because I have no tools that can decode it anyway,
-so probably the patches I've posted so far are relatively OK as far as privacy
-is concerned.  Someone who is very paranoid should not be using this feature
-anyway.
-
-
->> With time-of-day, time-since-boot, and MAC, each dump should be unique.
+> I don't see data_lock being used anywhere in hotpath, but of course I
+> might have missed something. Anyway, if for optimisation reasons we need
+> to introduce a new lock that should happen for a specific case in hot
+> path. Handling firmware debug log events is not in that category.
 >
-> But I would like to easily match from kernel log that the crash dump
-> matches with log. uuid would provide that in a simple way (check that
-> the uuid in the log matches with the uuid in the dump). What's so bad
-> from using uuid?
+>> And, it is easier to review a specific spinlock rather than use one big
+>> global-ish lock and have to review every use of that lock for issues.
+>
+> Sure, it's easier for you to just add a new lock and then forget :) But
+> not for me who would have to maintain 20 different locks for years to
+> come. My view is that a new lock should be added on very exceptional
+> cases and with good justifications.
 
-Just tell me how you want me to create the uuid and I'll do so.
+I have the opposite opinion on what makes it easy to maintain
+locks, but I'll switch to the data-spinlock as you suggest.
 
 Thanks,
 Ben
