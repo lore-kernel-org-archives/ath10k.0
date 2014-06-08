@@ -1,21 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtYTg-0006vy-6u
- for ath10k@lists.infradead.org; Sun, 08 Jun 2014 08:29:20 +0000
+ id 1WtYcl-0000ki-5a
+ for ath10k@lists.infradead.org; Sun, 08 Jun 2014 08:38:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
-References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87egz3nxdn.fsf@kamboji.qca.qualcomm.com>
- <5390B632.7030305@candelatech.com>
- <87wqcumuuw.fsf@kamboji.qca.qualcomm.com>
- <5391E842.4010401@candelatech.com>
- <874mzwkher.fsf@kamboji.qca.qualcomm.com>
- <539330A1.9050307@candelatech.com>
-Date: Sun, 8 Jun 2014 11:28:51 +0300
-In-Reply-To: <539330A1.9050307@candelatech.com> (Ben Greear's message of "Sat, 
- 7 Jun 2014 08:32:49 -0700")
-Message-ID: <877g4riz3w.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
+ <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
+ <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
+ <538CC949.5020901@candelatech.com>
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
+ <538CD507.1050803@candelatech.com>
+ <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+ <53909372.1040707@candelatech.com>
+ <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
+ <5391E620.4090706@candelatech.com>
+ <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>
+ <53932F52.2030203@candelatech.com>
+Date: Sun, 8 Jun 2014 11:35:28 +0300
+In-Reply-To: <53932F52.2030203@candelatech.com> (Ben Greear's message of "Sat, 
+ 7 Jun 2014 08:27:14 -0700")
+Message-ID: <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,40 +37,39 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> On 06/07/2014 05:55 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
+>>> Perhaps the time-stamp is good enough?  I don't see a need for
+>>> a uuid, but perhaps I am missing something?
 >>
->>>>> I'm a bit leery of adding spin-locks in the dump routine just for
->>>>> this, but I can add and use a new spin-lock if you prefer.
->>>>
->>>> Why a new spinlock? I didn't review the locking requirements, but I
->>>> would first check ar->data_lock can be used.
->>>
->>> I think it has to be a spin-lock because the crash dump is gathered
->>> in the irq handler, so I can't use a mutex as far as I know...
->>>
->>> I'll work on adding such a lock today.
+>> UUID is supposed to be unique. If we use walltime there's no guarantee
+>> that the clock is correct and if we use local_clock() (my preference) it
+>> will be reset after every boot.
 >>
->> I asked why add a _new_ spinlock as ar->data_lock is already a spinlock.
+>> I just think using something like UUID is more robust. Especially if one
+>> implements an automatic crash dump collector from thousands of deployed
+>> APs, having an UUID makes it a lot easier to manage.
 >
-> Surely we do not want to impede traffic flow just to dump debug info?
+> I can add since-boot timestamp as well.  Time-since-boot is less likely
+> to be unique than wall-time, and for systems that do have proper wall-time
+> clock configured, I think that provides some useful info.  (Would be interesting
+> if all APs in a stadium crashed near the same time, for instance.)
+>
+> I was thinking we should not add a MAC to the dump, for privacy concerns,
+> but whatever user-space tools gather the dump could add MAC if user perfers.
 
-I don't see data_lock being used anywhere in hotpath, but of course I
-might have missed something. Anyway, if for optimisation reasons we need
-to introduce a new lock that should happen for a specific case in hot
-path. Handling firmware debug log events is not in that category.
+The MAC addresses can be extracted from the target memory anyway so I
+don't see harm from including that in the dump. Is it even possible to
+address all privacy issues when dealing with firmware dumps?
 
-> And, it is easier to review a specific spinlock rather than use one big
-> global-ish lock and have to review every use of that lock for issues.
+> With time-of-day, time-since-boot, and MAC, each dump should be unique.
 
-Sure, it's easier for you to just add a new lock and then forget :) But
-not for me who would have to maintain 20 different locks for years to
-come. My view is that a new lock should be added on very exceptional
-cases and with good justifications.
+But I would like to easily match from kernel log that the crash dump
+matches with log. uuid would provide that in a simple way (check that
+the uuid in the log matches with the uuid in the dump). What's so bad
+from using uuid?
 
 -- 
 Kalle Valo
