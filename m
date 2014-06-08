@@ -1,19 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtfDS-0007LR-Hr
- for ath10k@lists.infradead.org; Sun, 08 Jun 2014 15:41:03 +0000
-Message-ID: <539483F9.9050401@candelatech.com>
-Date: Sun, 08 Jun 2014 08:40:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WtfY3-0004S0-QL
+ for ath10k@lists.infradead.org; Sun, 08 Jun 2014 16:02:20 +0000
+Received: by mail-wi0-f175.google.com with SMTP id f8so3132222wiw.2
+ for <ath10k@lists.infradead.org>; Sun, 08 Jun 2014 09:01:57 -0700 (PDT)
+Message-ID: <539488F1.2040900@gmail.com>
+Date: Sun, 08 Jun 2014 19:01:53 +0300
+From: Emmanuel Grumbach <egrumbach@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] ath10k:  provide firmware crash info via debugfs.
-References: <1401904902-5842-1-git-send-email-greearb@candelatech.com>
- <87egz3nxdn.fsf@kamboji.qca.qualcomm.com> <5390B632.7030305@candelatech.com>
- <87wqcumuuw.fsf@kamboji.qca.qualcomm.com> <5391E842.4010401@candelatech.com>
- <874mzwkher.fsf@kamboji.qca.qualcomm.com> <539330A1.9050307@candelatech.com>
- <877g4riz3w.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <877g4riz3w.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>	
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>	
+ <538CA904.4000508@candelatech.com>	
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>	 <538CB782.1000509@candelatech.com>
+ <538CC68C.10808@gmail.com>	 <538CC949.5020901@candelatech.com>	
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>	
+ <538CD507.1050803@candelatech.com>	
+ <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>	
+ <53909372.1040707@candelatech.com>	
+ <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>	
+ <5391E620.4090706@candelatech.com>	
+ <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>	
+ <53932F52.2030203@candelatech.com>	
+ <8738ffiysv.fsf@kamboji.qca.qualcomm.com>	
+ (sfid-20140608_103606_337478_803FD86E)
+ <1402218792.4406.2.camel@jlt4.sipsolutions.net>
+In-Reply-To: <1402218792.4406.2.camel@jlt4.sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +35,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
 
 
-On 06/08/2014 01:28 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> On 06/07/2014 05:55 AM, Kalle Valo wrote:
->>> Ben Greear <greearb@candelatech.com> writes:
->>>
->>>>>> I'm a bit leery of adding spin-locks in the dump routine just for
->>>>>> this, but I can add and use a new spin-lock if you prefer.
->>>>>
->>>>> Why a new spinlock? I didn't review the locking requirements, but I
->>>>> would first check ar->data_lock can be used.
->>>>
->>>> I think it has to be a spin-lock because the crash dump is gathered
->>>> in the irq handler, so I can't use a mutex as far as I know...
->>>>
->>>> I'll work on adding such a lock today.
->>>
->>> I asked why add a _new_ spinlock as ar->data_lock is already a spinlock.
+On 06/08/2014 12:13 PM, Johannes Berg wrote:
+> On Sun, 2014-06-08 at 11:35 +0300, Kalle Valo wrote:
+> 
+>>> I was thinking we should not add a MAC to the dump, for privacy concerns,
+>>> but whatever user-space tools gather the dump could add MAC if user perfers.
 >>
->> Surely we do not want to impede traffic flow just to dump debug info?
->
-> I don't see data_lock being used anywhere in hotpath, but of course I
-> might have missed something. Anyway, if for optimisation reasons we need
-> to introduce a new lock that should happen for a specific case in hot
-> path. Handling firmware debug log events is not in that category.
->
->> And, it is easier to review a specific spinlock rather than use one big
->> global-ish lock and have to review every use of that lock for issues.
->
-> Sure, it's easier for you to just add a new lock and then forget :) But
-> not for me who would have to maintain 20 different locks for years to
-> come. My view is that a new lock should be added on very exceptional
-> cases and with good justifications.
+>> The MAC addresses can be extracted from the target memory anyway so I
+>> don't see harm from including that in the dump. Is it even possible to
+>> address all privacy issues when dealing with firmware dumps?
+> 
+> We had something of a discussion about this - it's usually not just
+> BSSIDs/MAC addresses, but also encryption keys (say WEP keys, or at
+> least temporal keys, sometimes more), SSIDs, etc. In short, there's a
+> whole bunch of private data that can be included in such dumps.
+> 
+> However, we haven't really found a good solution. Popping up big scary
+> warnings to the user is unlikely to be productive, trying to keep the
+> data private and only accessible to (the right) developers is not going
+> to work ... encryption might work, but who manages that?
+> 
 
-I have the opposite opinion on what makes it easy to maintain
-locks, but I'll switch to the data-spinlock as you suggest.
+I disagree here. We found something that met the requirements of the organization we work for.
+Note that each company has its requirements when it comes to this kind of things.
+If we wanted to come up with a community statement of user privacy, the first step would be to stop printing the BSSID of the AP we associate to the kernel which is typically captured automatically by bug trackers...
+So we need to separate between different things: we have the kernel / driver on one side, and we have the distribution on the other. We don't ship kernels to user. The distribution does.
+The way I see it, we need to keep the distribution informed on what information this dump might include and how easy it is parse / hack. If the distribution wants to enable it or not is another problem.
+Loading iwlwifi with debug=0xffffffff or even tracing can record pretty much everything. Should we stop allowing usage of these?
+This doesn't make sense to me.
 
-Thanks,
-Ben
+> Certainly the data shouldn't be attached to a public bug tracker
+> automatically...
+> 
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Sure - but again, I don't think that "good" or "bad" will help here. We need to come up with a real statement of what we information might be enclosed and guarantee that nothing else is included in the data. Then we can make a declaration somewhere.
+Note that the distribution is shipping the whole package and that the distribution typically have a "legal department" that handles this kind of things - including a privacy statement that is agreed by the user when he installs the distribution.
 
 _______________________________________________
 ath10k mailing list
