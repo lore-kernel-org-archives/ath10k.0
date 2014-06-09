@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtsKS-0004th-NQ
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 05:41:09 +0000
-Received: by mail-vc0-f178.google.com with SMTP id ij19so2043186vcb.23
- for <ath10k@lists.infradead.org>; Sun, 08 Jun 2014 22:40:46 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5393781C.8090403@stackframe.org>
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
- <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
- <53905134.8010303@stackframe.org>
- <87tx7zoafw.fsf@kamboji.qca.qualcomm.com>
- <5390594F.4070801@stackframe.org>
- <CA+BoTQ=QCNcbWmhEd1vyXDZY1yy0yvz_VSFqnOzOzYGMyxjGJw@mail.gmail.com>
- <5393781C.8090403@stackframe.org>
-Date: Mon, 9 Jun 2014 07:40:46 +0200
-Message-ID: <CA+BoTQm7XA7f3pd0am2eCuJYuHMJfko8XCc2t=n__vpYe3C0nQ@mail.gmail.com>
+ id 1Wtuwu-0007PG-7W
+ for ath10k@lists.infradead.org; Mon, 09 Jun 2014 08:29:00 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <5392AD19.3060103@stackframe.org> <53944E64.9000002@elisanet.fi>
+Date: Mon, 9 Jun 2014 11:28:29 +0300
+In-Reply-To: <53944E64.9000002@elisanet.fi> (Matti Laakso's message of "Sun,
+ 08 Jun 2014 13:52:04 +0200")
+Message-ID: <87lht6h4gi.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +19,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Schnelle <svens@stackframe.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Matti Laakso <malaakso@elisanet.fi>
+Cc: ath10k@lists.infradead.org
 
-T24gNyBKdW5lIDIwMTQgMjI6MzcsIFN2ZW4gU2NobmVsbGUgPHN2ZW5zQHN0YWNrZnJhbWUub3Jn
-PiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiBBbSAwNS4wNi4yMDE0IDE0OjIwLCBzY2hyaWViIE1p
-Y2hhbCBLYXppb3I6Cj4KPj4gVGhpcyBzZWVtcyB0byBjb25maXJtIG90cCBmYWlscyB0byBsb2Fk
-IHdpdGggZXJyb3IgY29kZSAyLiBUaGUgYXNzZXJ0Cj4+IHN0YWNrIHRyYWNlIHBvaW50cyB0byBj
-b3B5IGVuZ2luZSBpbiBST00gaW1hZ2UuIFdpZXJkLiBBbnl3YXksIEkndmUKPj4gZXh0cmFjdGVk
-IGZpcm13YXJlIGZpbGVzIGZyb20gVFAtTGluayBBcmNoZXIgQzcgb3JpZ2luYWwgcm9vdGZzLiBD
-YW4geW91Cj4+IGdpdmUgaXQgYSB0cnksIHBsZWFzZT8gU2VlIHRoZSBPcGVuV1JUIHRpY2tldDoK
-Pj4gaHR0cHM6Ly9kZXYub3BlbndydC5vcmcvdGlja2V0LzE2NTg5Cj4KPgo+IGkgdHJpZWQsIGJ1
-dCB0aGUgcmVzdWx0IGRvZXNuJ3QgbG9vayBiZXR0ZXI6Cj4KPiBbICAgIDkuNjQwMDAwXSBhdGgx
-MGs6IHBjaSBpcnEgbGVnYWN5IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCj4gWyAgICA5LjczMDAw
-MF0gYXRoMTBrOiBvdHAgY2FsaWJyYXRpb24gZmFpbGVkOiAyCj4gWyAgIDEwLjU0MDAwMF0gYXRo
-MTBrOiBVQVJUIHByaW50cyBlbmFibGVkCj4gWyAgIDEwLjYwMDAwMF0gYXRoMTBrOiBxY2E5ODh4
-IGh3Mi4wICgweDQxMDAwMTZjLCAweDA0MzIwMmZmKSBmdwo+IDEwLjEuNDY3LXRwbGluay1hLWM3
-IGFwaSAyIGh0dCAyLjEKPgo+IEkgcmVtb3ZlZCB0aGUgZXJyb3IgcmV0dXJuIGluIGF0aDEwaywg
-dGhhdCdzIHdoeSB0aGUgZmlybXdhcmUgc3RhcnRzIGV2ZW4KPiB3aXRoIHRoZSBvdHAgZXJyb3Iu
-IEkgZG9uJ3Qgc2VlIHRoZSBBc3NlcnRpb24gZmFpbHVyZSB3aXRoIHRoaXMgb3RwCj4gZmlybXdh
-cmU6Cj4KPiBDTEk+YnVpbGRfdmVyc2lvbj0weDExLCByb21fdmVyc2lvbj0weDQxMDIwMDAwLCBy
-YW1fdmVyc2lvbj0weDExLAo+IHN0YWNrX3NpemU9NjM0OAo+IHJlc2V0IHJlYXNvbj0weDUKPgo+
-IEltYWdlIHN0YXJ0dXAgb2YgTm9ybWFsIG1vZGUKPiBNYWMgYWRkcmVzcyBpcyA6IDAwOjAzOjdm
-OjRmOjAwOjE2Cj4gYWxsb2MgcmVtOiAxOTc0OTIKPiAqKldNSSBTZXJ2aWNlIFJlYWR5ICoqCj4g
-TlVNX0RFVj0xNgo+IFRHVF9WRVI6IDQxMDAwMTZDCj4gUmVnRG9tYWluOiAwLCBDZmdDdGw6IDIy
-NCAtIDIyNAo+IGFyX3dhbF9wZWVyX2F0dGFjaDogbnVtX3BlZXJfZW50cmllcyAxNDUsIG51bV90
-aWRfZW50cmllcyA0NDMKPiBhbGxvY2F0ZWQgNjQgdGlkcyBhdCAweDQzOWEyOCAoZWFjaCA5NiBi
-eXRlcykKPiBhbGxvY2F0ZWQgMzc5IHRpZHMgaW4gSVJBTSBhdCAweDliYWYzNCAoZWFjaCA5NiBi
-eXRlcykKPiBhbGxvY2F0ZWQgNjQgc3RhdGVsZXNzIHRpZHMgYXQgMHg0M2IyNTAgKGVhY2ggNDAg
-Ynl0ZXMpCj4gIyMjIHR1cm4gb24gVHggY29tcGxldGlvbiBpbmRleCB0cmFja2luZyAjIyMKPiAq
-KldNSSBSZWFkeSAqKgoKVGhhbmtzIGZvciB0ZXN0aW5nLgoKCj4gSnVzdCB0byBiZSBzdXJlLCBo
-ZXJlIGFyZSB0aGUgbWQ1c3VtcyBvZiB0aGUgZmlybXdhcmUgZmlsZXMgaSdtIHVzaW5nOgo+Cj4g
-cm9vdEBPcGVuV3J0Oi8jIG1kNXN1bSAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E5ODhYL2h3Mi4w
-LyoKPiA3MTBmYjliNTgyZWRhM2QyMzcyOGRlZTc1N2Q5ZmY4NQo+IC9saWIvZmlybXdhcmUvYXRo
-MTBrL1FDQTk4OFgvaHcyLjAvYm9hcmQuYmluCgpUaGUgYXR0YWNoZWQgYm9hcmQuYmluIGluIHRo
-ZSB0aWNrZXQgc2hvdWxkIGJlOgoKICA0MTlkNzM1NjljYjBlZmZjMGE4YjM4MGY4ZTRkZDE5NyAg
-Ym9hcmQuYmluCgpCdXQgaXQgbWlnaHQgYmUgd29ydGggdXNpbmcgdGhlIGRhdGEgZm91bmQgaW4g
-bXRkNCBAIDB4NTAwMC0weDU4NDQgYXMKYm9hcmQuYmluIChzZWUgbXkgb3RoZXIgbWFpbCkgaW5z
-dGVhZC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Matti Laakso <malaakso@elisanet.fi> writes:
+
+>> ------------------------------------------------------------------------
+>> Hi Kalle,
+>>
+>> Am 07.06.2014 07:36, schrieb Kalle Valo:
+>> >/ Kamal Koshy <kamal.koshy at gmail.com <http://lists.infradead.org/mailman/listinfo/ath10k>> writes:
+>> />/
+>> />>/ Attaching the result of dd if=/dev/mtd4 > ~/mtd4
+>> />/ Thanks, I'll take a look at that later. But before that, do you know
+>> />/ what's the mac address of the QCA9880 device with the proprietary
+>> />/ driver? (_not_ with ath10k) That would help searching for the
+>> />/ calibration data.
+>> />/
+>> /To me it looks like ath9k calibration data starts at 0x1000, and ath10k 
+>> calibration data
+>> starts at 0x5000 in that mtd image. That's the same as on my board.
+>>
+>> Sven
+>>
+>
+> Yeah, that's definitely the case.
+>
+> I think we need something like this for ath10k:
+>
+> https://github.com/kvalo/ath/blob/master/include/linux/ath9k_platform.h
+>
+> which we can then populate in the mach-file.
+
+Yeah, we need that. But before that an ugly workaround is to do what
+Michal suggests (copy the content to board.bin and skip otp.bin
+execution in ath10k).
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
