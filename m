@@ -1,31 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ve0-x229.google.com ([2607:f8b0:400c:c01::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wtv27-0000X0-Hx
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 08:34:24 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>
- <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
- <538CA904.4000508@candelatech.com>
- <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
- <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
- <538CC949.5020901@candelatech.com>
- <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
- <538CD507.1050803@candelatech.com>
- <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
- <53909372.1040707@candelatech.com>
- <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
- <5391E620.4090706@candelatech.com>
- <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>
- <53932F52.2030203@candelatech.com>
- <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
- <539483B1.5020401@candelatech.com>
-Date: Mon, 9 Jun 2014 11:17:03 +0300
-In-Reply-To: <539483B1.5020401@candelatech.com> (Ben Greear's message of "Sun, 
- 8 Jun 2014 08:39:29 -0700")
-Message-ID: <87ppiih4zk.fsf@kamboji.qca.qualcomm.com>
+ id 1Wtx9b-0000kf-5m
+ for ath10k@lists.infradead.org; Mon, 09 Jun 2014 10:50:15 +0000
+Received: by mail-ve0-f169.google.com with SMTP id jx11so6330682veb.28
+ for <ath10k@lists.infradead.org>; Mon, 09 Jun 2014 03:49:52 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
+References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
+ <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
+Date: Mon, 9 Jun 2014 18:49:52 +0800
+Message-ID: <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
+Subject: Re: RE : RE : Bridging problem in ath10k (STA)
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,26 +27,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+Hmm, redo the testing. The FW is not crashed on STA site, but could
+not ping the AP or IP behind the AP once bridging. Only happen if the
+AP is operating at 80MHz.
 
->>> With time-of-day, time-since-boot, and MAC, each dump should be unique.
->>
->> But I would like to easily match from kernel log that the crash dump
->> matches with log. uuid would provide that in a simple way (check that
->> the uuid in the log matches with the uuid in the dump). What's so bad
->> from using uuid?
+Any idea on what to look for?
+
+----
+ChunYeow
+
+On Wed, Jun 4, 2014 at 6:27 PM, Vu Hai NGUYEN
+<vh.nguyen@actiasodielec.fr> wrote:
+>>I have tested with the following CT firmware:
+>>http://www.candelatech.com/downloads/firmware-2-ct-community.bin
 >
-> Just tell me how you want me to create the uuid and I'll do so.
-
-As kbuild found some compilation problems, I think it would be easier if
-I make the final changes to your patches and send that for review. Would
-that be ok for you?
-
--- 
-Kalle Valo
+>>But seems not working for STA mode. I am having problem if the AP is
+>>configured as 802.11ac. Is this FW that you mentioned?
+>
+> Yes, I can enter promiscuous mode to set up bridge network (before associated with AP, configured as 802.11ac) with the firmware in your link or this one:
+> http://www.candelatech.com/downloads/firmware-2-ct-non-commercial.bin
+>
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+>
+>
+>
 
 _______________________________________________
 ath10k mailing list
