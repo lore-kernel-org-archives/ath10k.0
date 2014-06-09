@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wu2Qj-0005UD-1z
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 16:28:17 +0000
-Message-ID: <5395E089.1000601@candelatech.com>
-Date: Mon, 09 Jun 2014 09:27:53 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wu5li-0007Pa-95
+ for ath10k@lists.infradead.org; Mon, 09 Jun 2014 20:02:11 +0000
+Message-ID: <539612A2.60400@stackframe.org>
+Date: Mon, 09 Jun 2014 22:01:38 +0200
+From: Sven Schnelle <svens@stackframe.org>
 MIME-Version: 1.0
-Subject: Re: Firmware debugging patches?
-References: <53891ACD.7070902@candelatech.com>	<87wqczz3h9.fsf@kamboji.qca.qualcomm.com>	<538CA904.4000508@candelatech.com>	<87ioojz1b1.fsf@kamboji.qca.qualcomm.com>	<538CB782.1000509@candelatech.com>
- <538CC68C.10808@gmail.com>	<538CC949.5020901@candelatech.com>	<CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>	<538CD507.1050803@candelatech.com>	<87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>	<53909372.1040707@candelatech.com>	<87fvjimsxj.fsf@kamboji.qca.qualcomm.com>	<5391E620.4090706@candelatech.com>	<87vbscj2ho.fsf@kamboji.qca.qualcomm.com>	<53932F52.2030203@candelatech.com>	<8738ffiysv.fsf@kamboji.qca.qualcomm.com>	<539483B1.5020401@candelatech.com>
- <87ppiih4zk.fsf@kamboji.qca.qualcomm.com> <5395CE36.30407@candelatech.com>
- <5395D718.4090704@candelatech.com>
-In-Reply-To: <5395D718.4090704@candelatech.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+References: <8738fimmjp.fsf@kamboji.qca.qualcomm.com>	<53924F5F.5090104@gmail.com>	<87wqctjn6o.fsf@kamboji.qca.qualcomm.com>	<5392AD19.3060103@stackframe.org>
+ <CA+BoTQ=OogF--KzZS9SkQorjqHSCwp6MzM4yYojri4uGzH3+3w@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=OogF--KzZS9SkQorjqHSCwp6MzM4yYojri4uGzH3+3w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +19,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Emmanuel Grumbach <egrumbach@gmail.com>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/09/2014 08:47 AM, Ben Greear wrote:
-> On 06/09/2014 08:09 AM, Ben Greear wrote:
+
+Am 09.06.2014 07:07, schrieb Michal Kazior:
+> On 7 June 2014 08:11, Sven Schnelle <svens@stackframe.org> wrote:
+>> Hi Kalle,
 >>
+>> Am 07.06.2014 07:36, schrieb Kalle Valo:
 >>
->> On 06/09/2014 01:17 AM, Kalle Valo wrote:
->>> Ben Greear <greearb@candelatech.com> writes:
+>>> Kamal Koshy <kamal.koshy@gmail.com> writes:
 >>>
->>>>>> With time-of-day, time-since-boot, and MAC, each dump should be unique.
->>>>>
->>>>> But I would like to easily match from kernel log that the crash dump
->>>>> matches with log. uuid would provide that in a simple way (check that
->>>>> the uuid in the log matches with the uuid in the dump). What's so bad
->>>>> from using uuid?
->>>>
->>>> Just tell me how you want me to create the uuid and I'll do so.
+>>>> Attaching the result of dd if=/dev/mtd4 > ~/mtd4
+>>> Thanks, I'll take a look at that later. But before that, do you know
+>>> what's the mac address of the QCA9880 device with the proprietary
+>>> driver? (_not_ with ath10k) That would help searching for the
+>>> calibration data.
 >>>
->>> As kbuild found some compilation problems, I think it would be easier if
->>> I make the final changes to your patches and send that for review. Would
->>> that be ok for you?
->>
->> Yes, that would be great.
-> 
-> In case it helps, let me post my latest patches...will get those up
-> in an hour or two.
+>> To me it looks like ath9k calibration data starts at 0x1000, and ath10k
+>> calibration data
+>> starts at 0x5000 in that mtd image. That's the same as on my board.
+> The data looks very similar to board.bin (2116 bytes and familiar hex
+> patterns). Can anyone replacing using it as the
+> /lib/firmware/ath10k/QCA988X/hw2.0/board.bin?
+>
 
-Actually, I seem to have just forgotten everything over the weekend...the
-v2 patches I posted last Friday are current with my own tree.  So,
-if you can tweak them to your satisfaction, that should work fine for
-me.
+Doesn't make a difference. The flash layout is the same on my 
+engineering sample,
+and i've extracted board.bin from the flash layout. Can anyone explain 
+how OTP
+works? It looks to me like otp is only run if calibration data in flash 
+is invalid in the
+proprietary driver.
 
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Thanks
+Sven
 
 _______________________________________________
 ath10k mailing list
