@@ -1,21 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from nm21-vm4.bullet.mail.ne1.yahoo.com ([98.138.91.181])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WtxKC-0005nb-K1
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 11:01:13 +0000
-Received: by mail-wi0-f178.google.com with SMTP id n15so994499wiw.11
- for <ath10k@lists.infradead.org>; Mon, 09 Jun 2014 04:00:50 -0700 (PDT)
+ id 1WtxzV-0007cb-VX
+ for ath10k@lists.infradead.org; Mon, 09 Jun 2014 11:43:55 +0000
+Message-ID: <53959DE2.7050906@yahoo.com>
+Date: Mon, 09 Jun 2014 07:43:30 -0400
+From: frank agius <ftagius@yahoo.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
-References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
- <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
- <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
-Date: Mon, 9 Jun 2014 13:00:49 +0200
-Message-ID: <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
-Subject: Re: RE : RE : Bridging problem in ath10k (STA)
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: ATH10K set bitrates problem
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +16,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gOSBKdW5lIDIwMTQgMTI6NDksIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwu
-Y29tPiB3cm90ZToKPiBIbW0sIHJlZG8gdGhlIHRlc3RpbmcuIFRoZSBGVyBpcyBub3QgY3Jhc2hl
-ZCBvbiBTVEEgc2l0ZSwgYnV0IGNvdWxkCj4gbm90IHBpbmcgdGhlIEFQIG9yIElQIGJlaGluZCB0
-aGUgQVAgb25jZSBicmlkZ2luZy4gT25seSBoYXBwZW4gaWYgdGhlCj4gQVAgaXMgb3BlcmF0aW5n
-IGF0IDgwTUh6Lgo+Cj4gQW55IGlkZWEgb24gd2hhdCB0byBsb29rIGZvcj8KCkRvZXMgdGhpcyBy
-ZXByb2R1Y2UgaWYgeW91IGhhdmUgbm9uLWJyaWRnZWQgU1RBIGNvbm5lY3RlZCB0byBhbiBBUAp3
-aGlsZSB0aGUgU1RBIGludGVyZmFjZSBpcyBpbiBwcm9taXNjdW91cyBtb2RlIChzbyB0aGF0IG1v
-bml0b3IgdmRldgppcyBydW5uaW5nKT8gSWYgaXQgZG9lc24ndCByZXByb2R1Y2UgSSdkIGxvb2sg
-Zm9yIEFQIGNvbmZpZ3VyYXRpb24KaXNzdWUuIERvZXMgeW91ciBBUCBoYXZlIHdkc19zdGE9MT8g
-RG9lcyBpdCBjcmVhdGUgd2xhblguc3RhWQppbnRlcmZhY2VzIHdoZW4gc3RhdGlvbnMgY29ubmVj
-dD8gKEknbSBhc3N1bWluZyB5b3VyIEFQIGlzIHJ1bm5pbmcKaG9zdGFwZCkuCgoKTWljaGHFggoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 6/6/2014 2:43 PM, Janusz Dziedzic wrote:
+ > On 6 June 2014 18:43, Frank Agius <ftagius@yahoo.com> wrote:
+ >> I am unable to set the bitrates for devices using the ath10k driver,
+ >> regardless of the arguments I pass:
+ >>
+ >>
+ >> # iw wlan0 set bitrates legacy-2.4 6 12 24
+ >> command failed: Invalid argument (-22)
+ >> # iw dev wlan0 set bitrates mcs-2.4 10
+ >> command failed: Invalid argument (-22)
+ >>
+ >>
+ >> The ath10k drivers were built from stable backports v3.15-rc1.   I 
+am using
+ >> firmware file firmware-2.bin_999.999.0.636
+ >>
+ >>
+ >> Is this a known issue?
+ >>
+ > This is expected.
+ > ath10k support only single rate setting (or single nss). So, please
+ > check commit message,
+ > ath10k: add set_bitrate_mask callback
+ >
+ > Try this:
+ > iw wlan0 set bitrates legacy-2.4 18 ht-mcs-2.4
+ > iw wlan0 set bitrates legacy-2.4 ht-mcs-2.4 6
+ > iw wlan0 set bitrates - back to default mask.
+
+
+Thanks, using the bitrate option ht-mcs-2.4 instead of mcs-2.4 worked. 
+Note that I did have to upgrade the iw tools package.  The version I was 
+using (3.11) does not have support for bitrate option ht-mcs.  Version 
+3.15 of iw tools does support the new options.
+
+frank agius
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
