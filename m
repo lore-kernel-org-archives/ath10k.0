@@ -1,15 +1,30 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wtuwu-0007PG-7W
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 08:29:00 +0000
+ id 1Wtv27-0000X0-Hx
+ for ath10k@lists.infradead.org; Mon, 09 Jun 2014 08:34:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-References: <5392AD19.3060103@stackframe.org> <53944E64.9000002@elisanet.fi>
-Date: Mon, 9 Jun 2014 11:28:29 +0300
-In-Reply-To: <53944E64.9000002@elisanet.fi> (Matti Laakso's message of "Sun,
- 08 Jun 2014 13:52:04 +0200")
-Message-ID: <87lht6h4gi.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com>
+ <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com>
+ <538CB782.1000509@candelatech.com> <538CC68C.10808@gmail.com>
+ <538CC949.5020901@candelatech.com>
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
+ <538CD507.1050803@candelatech.com>
+ <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+ <53909372.1040707@candelatech.com>
+ <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
+ <5391E620.4090706@candelatech.com>
+ <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>
+ <53932F52.2030203@candelatech.com>
+ <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
+ <539483B1.5020401@candelatech.com>
+Date: Mon, 9 Jun 2014 11:17:03 +0300
+In-Reply-To: <539483B1.5020401@candelatech.com> (Ben Greear's message of "Sun, 
+ 8 Jun 2014 08:39:29 -0700")
+Message-ID: <87ppiih4zk.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,41 +38,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matti Laakso <malaakso@elisanet.fi>
-Cc: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, Emmanuel Grumbach <egrumbach@gmail.com>
 
-Matti Laakso <malaakso@elisanet.fi> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
->> ------------------------------------------------------------------------
->> Hi Kalle,
+>>> With time-of-day, time-since-boot, and MAC, each dump should be unique.
 >>
->> Am 07.06.2014 07:36, schrieb Kalle Valo:
->> >/ Kamal Koshy <kamal.koshy at gmail.com <http://lists.infradead.org/mailman/listinfo/ath10k>> writes:
->> />/
->> />>/ Attaching the result of dd if=/dev/mtd4 > ~/mtd4
->> />/ Thanks, I'll take a look at that later. But before that, do you know
->> />/ what's the mac address of the QCA9880 device with the proprietary
->> />/ driver? (_not_ with ath10k) That would help searching for the
->> />/ calibration data.
->> />/
->> /To me it looks like ath9k calibration data starts at 0x1000, and ath10k 
->> calibration data
->> starts at 0x5000 in that mtd image. That's the same as on my board.
->>
->> Sven
->>
+>> But I would like to easily match from kernel log that the crash dump
+>> matches with log. uuid would provide that in a simple way (check that
+>> the uuid in the log matches with the uuid in the dump). What's so bad
+>> from using uuid?
 >
-> Yeah, that's definitely the case.
->
-> I think we need something like this for ath10k:
->
-> https://github.com/kvalo/ath/blob/master/include/linux/ath9k_platform.h
->
-> which we can then populate in the mach-file.
+> Just tell me how you want me to create the uuid and I'll do so.
 
-Yeah, we need that. But before that an ugly workaround is to do what
-Michal suggests (copy the content to board.bin and skip otp.bin
-execution in ath10k).
+As kbuild found some compilation problems, I think it would be easier if
+I make the final changes to your patches and send that for review. Would
+that be ok for you?
 
 -- 
 Kalle Valo
