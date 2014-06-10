@@ -1,16 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wu5li-0007Pa-95
- for ath10k@lists.infradead.org; Mon, 09 Jun 2014 20:02:11 +0000
-Message-ID: <539612A2.60400@stackframe.org>
-Date: Mon, 09 Jun 2014 22:01:38 +0200
-From: Sven Schnelle <svens@stackframe.org>
+Received: from mail-vc0-x22b.google.com ([2607:f8b0:400c:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WuDVh-0000UM-Uc
+ for ath10k@lists.infradead.org; Tue, 10 Jun 2014 04:18:10 +0000
+Received: by mail-vc0-f171.google.com with SMTP id id10so5564972vcb.16
+ for <ath10k@lists.infradead.org>; Mon, 09 Jun 2014 21:17:47 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-References: <8738fimmjp.fsf@kamboji.qca.qualcomm.com>	<53924F5F.5090104@gmail.com>	<87wqctjn6o.fsf@kamboji.qca.qualcomm.com>	<5392AD19.3060103@stackframe.org>
- <CA+BoTQ=OogF--KzZS9SkQorjqHSCwp6MzM4yYojri4uGzH3+3w@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=OogF--KzZS9SkQorjqHSCwp6MzM4yYojri4uGzH3+3w@mail.gmail.com>
+In-Reply-To: <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
+References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
+ <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
+ <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
+ <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
+Date: Tue, 10 Jun 2014 12:17:47 +0800
+Message-ID: <CAEFj985CuYtOLQtf3j2=CvDTDhqAek351=wThbxpw9ijj5kcnA@mail.gmail.com>
+Subject: Re: RE : RE : Bridging problem in ath10k (STA)
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +25,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+> Does this reproduce if you have non-bridged STA connected to an AP
+> while the STA interface is in promiscuous mode (so that monitor vdev
+> is running)? If it doesn't reproduce I'd look for AP configuration
+> issue. Does your AP have wds_sta=1?
 
-Am 09.06.2014 07:07, schrieb Michal Kazior:
-> On 7 June 2014 08:11, Sven Schnelle <svens@stackframe.org> wrote:
->> Hi Kalle,
->>
->> Am 07.06.2014 07:36, schrieb Kalle Valo:
->>
->>> Kamal Koshy <kamal.koshy@gmail.com> writes:
->>>
->>>> Attaching the result of dd if=/dev/mtd4 > ~/mtd4
->>> Thanks, I'll take a look at that later. But before that, do you know
->>> what's the mac address of the QCA9880 device with the proprietary
->>> driver? (_not_ with ath10k) That would help searching for the
->>> calibration data.
->>>
->> To me it looks like ath9k calibration data starts at 0x1000, and ath10k
->> calibration data
->> starts at 0x5000 in that mtd image. That's the same as on my board.
-> The data looks very similar to board.bin (2116 bytes and familiar hex
-> patterns). Can anyone replacing using it as the
-> /lib/firmware/ath10k/QCA988X/hw2.0/board.bin?
->
+Oops, I missed out the wds_sta=1 in my second config file. So it seems
+that this solve the problem.
 
-Doesn't make a difference. The flash layout is the same on my 
-engineering sample,
-and i've extracted board.bin from the flash layout. Can anyone explain 
-how OTP
-works? It looks to me like otp is only run if calibration data in flash 
-is invalid in the
-proprietary driver.
+Also, I found out that even if I bridge the wlan interface first
+before associate to the AP, the CT firmware does not crashed.
 
-Thanks
-Sven
+---
+ChunYeow
 
 _______________________________________________
 ath10k mailing list
