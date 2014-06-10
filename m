@@ -1,21 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WuG4R-0007B0-Ca
- for ath10k@lists.infradead.org; Tue, 10 Jun 2014 07:02:11 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: RE : RE : Bridging problem in ath10k (STA)
-References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
- <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
- <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
- <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
- <CAEFj985CuYtOLQtf3j2=CvDTDhqAek351=wThbxpw9ijj5kcnA@mail.gmail.com>
-Date: Tue, 10 Jun 2014 10:01:35 +0300
-In-Reply-To: <CAEFj985CuYtOLQtf3j2=CvDTDhqAek351=wThbxpw9ijj5kcnA@mail.gmail.com>
- (Yeoh Chun-Yeow's message of "Tue, 10 Jun 2014 12:17:47 +0800")
-Message-ID: <87tx7tckog.fsf@kamboji.qca.qualcomm.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WuGLs-0004lm-FX
+ for ath10k@lists.infradead.org; Tue, 10 Jun 2014 07:20:13 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 10 Jun 2014 09:15:46 +0200
+Subject: RE : RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <CALhHN=r3eYxgFTRo7zAna3q1qopo21WvzREM=6rQY6hfuQmPeQ@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
+ .local>,<538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+In-Reply-To: <5391E363.50907@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,26 +40,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-Yeoh Chun-Yeow <yeohchunyeow@gmail.com> writes:
-
->> Does this reproduce if you have non-bridged STA connected to an AP
->> while the STA interface is in promiscuous mode (so that monitor vdev
->> is running)? If it doesn't reproduce I'd look for AP configuration
->> issue. Does your AP have wds_sta=1?
+>Can you please see if this firmware is any better for the DFS issue?
 >
-> Oops, I missed out the wds_sta=1 in my second config file. So it seems
-> that this solve the problem.
+>http://www.candelatech.com/downloads/firmware-2-community-scan3-a.bin
 
-It would be good if someone could add a section to the wiki how to
-configure this:
+Thanks, I check your firmware but it can not fix the problem
 
-http://wireless.kernel.org/en/users/Drivers/ath10k/configuration
+>Ok, looks like the patch where I change the scan state machine logic is the bad one.
+>
+>I will review it carefully and maybe try splitting it further today.
+>
+>Are you able to test with a modified kernel?  If so, I can add debuglog
+>messages to the firmware and give you a kernel ath10k patch to print
+>those out in the kernel logs so you can send them to me for decoding...
 
--- 
-Kalle Valo
+Sorry I don't really get it, you mean that I can re-compiled ath10k for my own
+kernel?  Actually I'm using backport to compile ath10k for my kernel 3.2.36 provided
+for my chipset, If so, I can do it. 
+
+>Anyone have any ideas what sorts of problems I might be introducing by
+>changing around the scan logic?  Normal scanning seems to at least mostly
+>work...how is DFS special?
+
+
+>> I also retried to test promiscuous mode, may be yesterday I did something wrong when copy-paste the firmware.
+>> Today I try the 172 commit firmware and it works in promisc mode, so again with binary search I redo my serie of test,
+>> the different is between 120 (broken firmware) and 121 (non broken).
+>> (My serie is: 172 OK => 86 KO => 129 OK => 107 KO => 118 KO => 124 OK => 121 OK => 120 KO, than re-change to
+>> confirm the different :D)
+>> Hope that is helpful for you
+
+>That is interesting...patch 121 is small and just fixes a firmware crash I was seeing
+>related to null dereference in beacon config logic.  Do you see firmware crashes for
+>build 120, or does it just silently not work?
+
+Yes it crashed once the STA associate to my AP in bridge network (promisc mode)
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
 
 _______________________________________________
 ath10k mailing list
