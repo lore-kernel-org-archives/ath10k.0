@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WuHyT-0008M6-Ou
- for ath10k@lists.infradead.org; Tue, 10 Jun 2014 09:04:11 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: fetching calibration data from flash
-References: <5396B9F9.2070107@stackframe.org> <5396C39A.9080402@elisanet.fi>
- <87wqcpb0w1.fsf@kamboji.qca.qualcomm.com>
- <5396C8EC.4090105@elisanet.fi>
-Date: Tue, 10 Jun 2014 12:03:40 +0300
-In-Reply-To: <5396C8EC.4090105@elisanet.fi> (Matti Laakso's message of "Tue,
- 10 Jun 2014 10:59:24 +0200")
-Message-ID: <87sindb0gj.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WuNdk-0004fP-DO
+ for ath10k@lists.infradead.org; Tue, 10 Jun 2014 15:07:10 +0000
+Message-ID: <53971F04.6060109@candelatech.com>
+Date: Tue, 10 Jun 2014 08:06:44 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>	<87wqczz3h9.fsf@kamboji.qca.qualcomm.com>	<538CA904.4000508@candelatech.com>	<87ioojz1b1.fsf@kamboji.qca.qualcomm.com>	<538CB782.1000509@candelatech.com>
+ <538CC68C.10808@gmail.com>	<538CC949.5020901@candelatech.com>	<CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>	<538CD507.1050803@candelatech.com>	<87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>	<53909372.1040707@candelatech.com>	<87fvjimsxj.fsf@kamboji.qca.qualcomm.com>	<5391E620.4090706@candelatech.com>	<87vbscj2ho.fsf@kamboji.qca.qualcomm.com>	<53932F52.2030203@candelatech.com>	<8738ffiysv.fsf@kamboji.qca.qualcomm.com>	<539483B1.5020401@candelatech.com>	<87ppiih4zk.fsf@kamboji.qca.qualcomm.com>	<5395CE36.30407@candelatech.com>
+ <5395D718.4090704@candelatech.com>	<5395E089.1000601@candelatech.com>
+ <87fvjde1u0.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87fvjde1u0.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matti Laakso <malaakso@elisanet.fi>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Emmanuel Grumbach <egrumbach@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-Matti Laakso <malaakso@elisanet.fi> writes:
 
->> But why let the user name provide the file name? Why cannot it be a
->> fixed name, like "cal.bin"?
 
-s/user name/user space/
+On 06/09/2014 11:05 PM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+>
+>>>>> As kbuild found some compilation problems, I think it would be easier if
+>>>>> I make the final changes to your patches and send that for review. Would
+>>>>> that be ok for you?
+>>>>
+>>>> Yes, that would be great.
+>>>
+>>> In case it helps, let me post my latest patches...will get those up
+>>> in an hour or two.
+>>
+>> Actually, I seem to have just forgotten everything over the weekend...the
+>> v2 patches I posted last Friday are current with my own tree.  So,
+>> if you can tweak them to your satisfaction, that should work fine for
+>> me.
+>
+> Great, thanks. I'll try to send a new version today. If you could then
+> review them carefully and test as well, that would be really good.
 
-> If there are multiple WNICs each with its own calibration data?
+I'll update my decode tool to support this as soon as it is pushed to your
+tree, and will put it into our development tree for testing.  I have some
+more patches related to this that I can post after the current 4 make it
+upstream...these patches dump BSS data areas and send uevent, etc.
 
-Ah, of course.
+Thanks,
+Ben
+
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
