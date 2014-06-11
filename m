@@ -1,21 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WuVzN-0005s1-IV
- for ath10k@lists.infradead.org; Wed, 11 Jun 2014 00:02:03 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 35A2240A9E6
- for <ath10k@lists.infradead.org>; Tue, 10 Jun 2014 17:01:38 -0700 (PDT)
-Message-ID: <53979C61.4070108@candelatech.com>
-Date: Tue, 10 Jun 2014 17:01:37 -0700
-From: Ben Greear <greearb@candelatech.com>
+ id 1Wucsb-0000t3-5j
+ for ath10k@lists.infradead.org; Wed, 11 Jun 2014 07:23:30 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Wed, 11 Jun 2014 09:19:01 +0200
+Subject: RE : RE : RE : RE : RE : ath10k: firmware crash in station mode &
+ problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F2@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F4@srvexch01.SODIELEC.local>,
+ <5386059B.7040301@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F6@srvexch01.SODIELEC.local>,
+ <53889A89.90802@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC
+ .local>,<538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
+ <53972984.8020303@candelatech.com>
+In-Reply-To: <53972984.8020303@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-Subject: Re: How to configure hostapd + ath10k for DFS channel?
-References: <53978B53.8050501@candelatech.com>
- <53978CBD.3020404@candelatech.com>
-In-Reply-To: <53978CBD.3020404@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,56 +41,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-On 06/10/2014 03:54 PM, Ben Greear wrote:
-> On 06/10/2014 03:48 PM, Ben Greear wrote:
->>
->> I'm trying to put an AP on a DFS channel (52) in order to test
->> my CT firmware in station mode on DFS channels.
->>
->> I have tried both CT and standard upstream 10.1.467-2.1 firmware on
->> the AP machine, with similar behaviour (hostapd will not start
->> because DFS cannot set channel, or something like that).
->>
->> Kernel is 'ath', fairly recent, with a bunch of my own ath10k
->> patches applied (though they should mostly not be doing anything
->> different from upstream when running standard firmware).
-> 
-> Actually, this was hacked upon 3.14.6+ kernel...will try with newer kernel...
+>Can you explain how you test this?  Do I need a special AP configuration
+>to do the test, or is a normal ath10k NIC and hostapd enough?
+>
+>I can try to reproduce the problem and test the fixes here.
 
-Not much luck...I was using bad channel in hostapd conf, but when
-I fixed that to use proper values for channel 52, it still won't
-work because of regulatory, evidently:
+In my code, I copy the firmware chosen (10.1, 999 or CT) from another folder to /lib/firmware/ath10k/... 
+before loading the modules of ath10k. Then I set up network (bridge or router) and finally run hostapd (if AP)
+and wpa_supplicant (if STA). Each time I change a parameter of my network the program will kill almost 
+all the actual processus, unload the modules and then reload, run new processus ....
 
-[root@ath10k-2220 lanforge]# iw reg get
-country 98: DFS-UNSET
-	(2402 - 2472 @ 70), (N/A, 20)
-	(2457 - 2472 @ 70), (N/A, 20), PASSIVE-SCAN
-	(5170 - 5250 @ 80), (N/A, 17), PASSIVE-SCAN
-	(5250 - 5330 @ 80), (N/A, 20), DFS, PASSIVE-SCAN
-	(5735 - 5835 @ 80), (N/A, 20), PASSIVE-SCAN
-	(57240 - 63720 @ 2160), (N/A, 0)
+Btw, I think that there is a conflict in your hostapd config file. I saw that you use channel 52 and 
+vht_oper_centr_freq_seg0_idx=54, it means that you use 40 MHz operating Channel width?
+If so  vht_oper_chwidth=1 should be set to 0. If you want to use 80Mhz Channel width you should 
+set vht_oper_centr_freq_seg0_idx=58.
 
-How frustrating!
 
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
+
+
+
+
+
+Thanks,
 Ben
 
-> 
-> Ben
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-
-
--- 
+--
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
 
