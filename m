@@ -1,32 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wv9D0-0005St-5w
- for ath10k@lists.infradead.org; Thu, 12 Jun 2014 17:54:42 +0000
-Message-ID: <5399E94A.4080601@candelatech.com>
-Date: Thu, 12 Jun 2014 10:54:18 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: RE : RE : RE : RE : RE : RE : ath10k: firmware crash in station
- mode & problem DFS
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <53889A89.90802@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978F9@srvexch01.SODIELEC.local>,
- <538CAACA.2030202@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
- <538E9D26.4040009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
- <538F9255.1060101@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
- <5390A9CC.7060400@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
- <5391E363.50907@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
- <53972984.8020303@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
- <53988C53.6030806@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>
+Received: from mail.sablalik.us ([66.80.92.144])
+ by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WvA4V-0006Jb-84
+ for ath10k@lists.infradead.org; Thu, 12 Jun 2014 18:50:03 +0000
+Date: Thu, 12 Jun 2014 14:49:24 -0400
+Subject: Re: basic help request
+From: Peter Sabat <pete@sablalik.us>
+Message-ID: <CFBF6DF3.B2656%pete@sablalik.us>
+In-Reply-To: <53993583.2000607@candelatech.com>
+Mime-version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -39,43 +21,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-On 06/12/2014 01:48 AM, Vu Hai NGUYEN wrote:
->> Can you please try this firmware:
->>
->> http://www.candelatech.com/downloads/firmware-2-community-scan-X.bin
->>
->> I have verified that it works fine for me when connecting to an
->> AP on a DFS channel.  It should have the bridging fix as well.
->>
->> There was an inverted beacon-filter setting bug in my code, though that
->> also should have been fixed in the previous firmware I sent you.
->>
->> I might have had some other problem in that older firmware, however.
-> 
-> Thank you, your new firmware work fine with DFS channel and promiscuous mode.
-> But there is a small bug, with the firmware 10.1 my station can associate with AP directly
-> after running wpa_supplicant. Your firmware had this:
-> wlan0: direct probe to (@ mac) (try 1/3)
-> wlan0: direct probe to (@ mac) (try 2/3)
-> wlan0: direct probe to (@ mac) (try 3/3)
-> and I have to run "iw wlan0 scan" to detect the network again and connect to it.
-> I've tested it with different channels DFS for 2 version of firmware (yours and 10.1)
-> so I'm quite sure about it.
-
-Does this problem happen only with DFS, or do you see it on other channels as well?
-
-I can build another set of firmwares for bisecting later today.
-
-Thanks,
-Ben
+I think I may have found a clue - just noticed on the console
 
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+
+
+root@server2:/run# [  856.450077] ath10k: target stalled
+[  856.453659] ath10k: failed to wait for target to init: -5
+
+
+
+
+
+
+
+On 6/12/14, 1:07 AM, "Ben Greear" <greearb@candelatech.com> wrote:
+
+>
+>
+>On 06/11/2014 09:58 PM, Peter Sabat wrote:
+>> So I grabbed it again - I just did a wget before, maybe something got
+>> garbled there.
+>
+>It's using the new firmware, I don't think mod-info
+>is entirely correct.
+>
+>Others have reported problems with upstream firmware and
+>bridging, but not sure if that is your problem or not.
+>
+>You might try:  dmesg | grep "crash"
+>to see if firmware is crashing.
+>
+>Or, remove the bridge logic from your hostapd config
+>file.
+>
+>Or possibly, give my firmware a try:
+>
+>http://www.candelatech.com/ath10k.php
+>
+>I haven't done any testing with ath10k APs in
+>a bridge yet, so no idea how well or not it actually
+>works.
+>
+>Thanks,
+>Ben
+>
+>-- 
+>Ben Greear <greearb@candelatech.com>
+>Candela Technologies Inc  http://www.candelatech.com
+>
+>_______________________________________________
+>ath10k mailing list
+>ath10k@lists.infradead.org
+>http://lists.infradead.org/mailman/listinfo/ath10k
+
+
 
 
 _______________________________________________
