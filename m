@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.sablalik.us ([66.80.92.144])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WusEV-00086v-3S
- for ath10k@lists.infradead.org; Wed, 11 Jun 2014 23:47:07 +0000
-Date: Wed, 11 Jun 2014 19:46:28 -0400
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WuwD6-0004Fw-N9
+ for ath10k@lists.infradead.org; Thu, 12 Jun 2014 04:01:57 +0000
+Message-ID: <5399261C.9010906@candelatech.com>
+Date: Wed, 11 Jun 2014 21:01:32 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
 Subject: Re: basic help request
-From: Peter Sabat <pete@sablalik.us>
-Message-ID: <CFBE5F91.B2585%pete@sablalik.us>
-In-Reply-To: <5398E5FC.4010307@candelatech.com>
-Mime-version: 1.0
+References: <CFBE5F91.B2585%pete@sablalik.us>
+In-Reply-To: <CFBE5F91.B2585%pete@sablalik.us>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,72 +18,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="euc-kr"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Peter Sabat <pete@sablalik.us>
 Cc: ath10k@lists.infradead.org
 
-QXMgaW5zdHJ1Y3RlZCAgOikKCgoKLXJ3eHIteHIteCAxIHJvb3Qgcm9vdCAgMjQzNDcgSnVuIDEx
-IDE5OjMyIGZpcm13YXJlLTIuYmluCi1yd3hyLXhyLXggMSByb290IHJvb3QgICAyMTE2IEphbiAz
-MCAwODo0MSBib2FyZC5iaW4KLXJ3eHIteHIteCAxIHJvb3Qgcm9vdCAyNDkwOTMgSmFuIDMwIDA4
-OjQxIGZpcm13YXJlLmJpbgotcnd4ci14ci14IDEgcm9vdCByb290ICAgNTQwMiBKYW4gMzAgMDg6
-NDEgb3RwLmJpbgoKCgphZnRlciBtb2Rwcm9iZSA6CgoKW1dlZCBKdW4gMTEgMTk6MzU6MDQgMjAx
-NF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IEJBUiAwOiBhc3NpZ25lZCBbbWVtCjB4OTA0MDAw
-MDAtMHg5MDVmZmZmZiA2NGJpdF0KW1dlZCBKdW4gMTEgMTk6MzU6MDUgMjAxNF0gYXRoMTBrX3Bj
-aSAwMDAwOjAzOjAwLjA6IGlycSAxMTYgZm9yIE1TSS9NU0ktWApbV2VkIEp1biAxMSAxOTozNTow
-NSAyMDE0XSBhdGgxMGs6IHBjaSBpcnEgTVNJCltXZWQgSnVuIDExIDE5OjM1OjA1IDIwMTRdIGF0
-aDEwazogSW52YWxpZCBmaXJtd2FyZSBtYWdpYwpbV2VkIEp1biAxMSAxOTozNTowNiAyMDE0XSBh
-dGgxMGs6IHFjYTk4OHggaHcyLjAgKDB4NDEwMDAxNmMpIGZ3IDEuMC4wLjYzNgphcGkgMSBodHQg
-Mi4xCltXZWQgSnVuIDExIDE5OjM1OjA2IDIwMTRdIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHgw
-CltXZWQgSnVuIDExIDE5OjM1OjA2IDIwMTRdIGF0aDogRUVQUk9NIGluZGljYXRlcyBkZWZhdWx0
-IGNvdW50cnkgY29kZQpzaG91bGQgYmUgdXNlZApbV2VkIEp1biAxMSAxOTozNTowNiAyMDE0XSBh
-dGg6IGRvaW5nIEVFUFJPTSBjb3VudHJ5LT5yZWdkbW4gbWFwIHNlYXJjaApbV2VkIEp1biAxMSAx
-OTozNTowNiAyMDE0XSBhdGg6IGNvdW50cnkgbWFwcyB0byByZWdkbW4gY29kZTogMHgzYQpbV2Vk
-IEp1biAxMSAxOTozNTowNiAyMDE0XSBhdGg6IENvdW50cnkgYWxwaGEyIGJlaW5nIHVzZWQ6IFVT
-CltXZWQgSnVuIDExIDE5OjM1OjA2IDIwMTRdIGF0aDogUmVncGFpciB1c2VkOiAweDNhCgoKQnV0
-IHN0aWxsIHdhbnRzIHRvIHVzZSBWMSBpdCBzZWVtcyAgOigKCgpyb290QHNlcnZlcjI6L2xpYi9m
-aXJtd2FyZS9hdGgxMGsvUUNBOTg4WC9odzIuMCMgbW9kaW5mbyBhdGgxMGtfcGNpCmZpbGVuYW1l
-OiAgICAgICAKL2xpYi9tb2R1bGVzLzMuMTQuNC1zY3N0L3VwZGF0ZXMvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9hdGgxMGtfcGNpCi5rbwpmaXJtd2FyZTogICAgICAgYXRoMTBrL1FD
-QTk4OFgvaHcyLjAvYm9hcmQuYmluCmZpcm13YXJlOiAgICAgICBhdGgxMGsvUUNBOTg4WC9odzIu
-MC9vdHAuYmluCmZpcm13YXJlOiAgICAgICBhdGgxMGsvUUNBOTg4WC9odzIuMC9maXJtd2FyZS5i
-aW4KbGljZW5zZTogICAgICAgIER1YWwgQlNEL0dQTApkZXNjcmlwdGlvbjogICAgRHJpdmVyIHN1
-cHBvcnQgZm9yIEF0aGVyb3MgUUNBOTg4WCBQQ0llIGRldmljZXMKYXV0aG9yOiAgICAgICAgIFF1
-YWxjb21tIEF0aGVyb3MKdmVyc2lvbjogICAgICAgIGJhY2twb3J0ZWQgZnJvbSBMaW51eCAodjMu
-MTUtcmMxLTAtZ2M5ZWFhNDQpIHVzaW5nCmJhY2twb3J0cyB2My4xNS1yYzEtMS0wLWcyYTI1NDgz
-CnNyY3ZlcnNpb246ICAgICAyRjAyQzU2QkI2OTZFQ0MxRDk4NkQxOQphbGlhczogICAgICAgICAg
-cGNpOnYwMDAwMTY4Q2QwMDAwMDAzQ3N2KnNkKmJjKnNjKmkqCmRlcGVuZHM6ICAgICAgICBhdGgx
-MGtfY29yZSxjb21wYXQKdmVybWFnaWM6ICAgICAgIDMuMTQuNC1zY3N0IFNNUCBtb2RfdW5sb2Fk
-IG1vZHZlcnNpb25zCnBhcm06ICAgICAgICAgICBhdGgxMGtfdGFyZ2V0X3BzOkVuYWJsZSBhdGgx
-MGsgVGFyZ2V0IChTb0MpIFBTIG9wdGlvbgoodWludCkKcGFybTogICAgICAgICAgIGlycV9tb2Rl
-OjA6IGF1dG8sIDE6IGxlZ2FjeSwgMjogbXNpIChkZWZhdWx0OiAwKSAodWludCkKCgoKClRoaXMg
-aXMgYW4gdWJ1bnR1IDE0LjA0IGluc3RhbGwgcnVubmluZyBhIDMuMTQga2VybmVsLgoKCkkgcmVh
-bGx5IGFwcHJlY2lhdGUgdGhlIGhlbHAuCgpQZXRlCgoKCgoKT24gNi8xMS8xNCwgNzoyNyBQTSwg
-IkJlbiBHcmVlYXIiIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cgo+T24gMDYvMTEv
-MjAxNCAwNDoxMiBQTSwgUGV0ZXIgU2FiYXQgd3JvdGU6Cj4+IEhvcGluZyB0aGF0IEkgY2FuIHBv
-c3NpYmx5IGdldCBhIHBvaW50ZXIgb24gd2hhdCBJqfZtIGRvaW5nIHdyb25nIHcvCj4+YXRoMTBr
-Cj4+IGFuZCBob3N0YXBkLgo+PiAKPj4gSan2bSBydW5uaW5nIGEgMy4xNCBrZXJuZWwgYW5kIGlu
-c3RhbGxlZCB0aGUgMy4xNS1yYy0xIGJhY2twb3J0cy4gSSBjYW4KPj4gc3RhcnQgaG9zdGFwZCwg
-YnV0IG5vIG1hdHRlciB3aGF0IEkgZG8sIEkgY2FuqfZ0IHNlZSB0aGUgU1NJRC4gSSBoYXZlCj4+
-YWxzbwo+PiBqdXN0IHRyaWVkIHRvIHVzZSBOIGJ5IGl0c2VsZi4KPj4gCj4+IEkgYW0gdXNpbmcg
-YSBXTEU5MDBWNS0yMyBjYXJkLgo+PiAKPj4gVGhlIHRoaW5ncyB0aGF0IEmp9nZlIG5vdGljZWQg
-c28gZmFyIGlzIHRoYXQgSSBhbSB1bmFibGUgdG8gdXNlIHRoZSB2Mgo+PiBmaXJtd2FyZSChqSBh
-ZGRpdGlvbmFsbHksIGV2ZW4gdy8gdGhlIHYxIGZpcm13YXJlLCBJIGdldCBhOgo+PiAKPj4gYXRo
-MTBrOiBJbnZhbGlkIGZpcm13YXJlIG1hZ2ljCj4KPi4uLi4KPgo+PiBmaWxlbmFtZTogICAgICAg
-Cj4+IAo+Pi9saWIvbW9kdWxlcy8zLjE0LjQtc2NzdC91cGRhdGVzL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvYXRoMTBrX3AKPj5jaQo+PiAua28KPj4gZmlybXdhcmU6ICAgICAgIGF0
-aDEway9RQ0E5ODhYL2h3Mi4wL2JvYXJkLmJpbgo+PiBmaXJtd2FyZTogICAgICAgYXRoMTBrL1FD
-QTk4OFgvaHcyLjAvb3RwLmJpbgo+PiBmaXJtd2FyZTogICAgICAgYXRoMTBrL1FDQTk4OFgvaHcy
-LjAvZmlybXdhcmUuYmluCj4KPllvdSBuZWVkIGZpcm13YXJlLTIuYmluLiAgUGxlYXNlIGdldCB0
-aGUgNC4xLjQ2Ny0yLjEgdmVyc2lvbiBmaXJtd2FyZSBhbmQKPnB1dCBpdAo+aW4geW91ciBmaXJt
-d2FyZSBkaXJlY3RvcnkuLi4KPgo+V2hhdCBPUyBpcyB0aGlzPwo+Cj5UaGFua3MsCj5CZW4KPgo+
-Cj4tLSAKPkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Q2FuZGVsYSBUZWNo
-bm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Cj4KPl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj5hdGgxMGsgbWFpbGluZyBsaXN0
-Cj5hdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+
+
+On 06/11/2014 04:46 PM, Peter Sabat wrote:
+> As instructed  :)
+> 
+> 
+> 
+> -rwxr-xr-x 1 root root  24347 Jun 11 19:32 firmware-2.bin
+> -rwxr-xr-x 1 root root   2116 Jan 30 08:41 board.bin
+> -rwxr-xr-x 1 root root 249093 Jan 30 08:41 firmware.bin
+> -rwxr-xr-x 1 root root   5402 Jan 30 08:41 otp.bin
+
+That firmware-2.bin looks way too small, should be around 200kbytes.
+
+Where did you get it from?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
