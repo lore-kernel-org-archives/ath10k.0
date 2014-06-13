@@ -1,25 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WvPPs-0003UO-CN
- for ath10k@lists.infradead.org; Fri, 13 Jun 2014 11:13:05 +0000
-Received: by mail-wi0-f175.google.com with SMTP id r20so671417wiv.8
- for <ath10k@lists.infradead.org>; Fri, 13 Jun 2014 04:12:40 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WvSYs-0006BU-6V
+ for ath10k@lists.infradead.org; Fri, 13 Jun 2014 14:34:34 +0000
+Message-ID: <539B0BDF.30105@candelatech.com>
+Date: Fri, 13 Jun 2014 07:34:07 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <539A015C.2020703@stackframe.org>
-References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
- <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
- <53905134.8010303@stackframe.org>
- <87tx7zoafw.fsf@kamboji.qca.qualcomm.com>
- <5390594F.4070801@stackframe.org>
- <CA+BoTQ=QCNcbWmhEd1vyXDZY1yy0yvz_VSFqnOzOzYGMyxjGJw@mail.gmail.com>
- <5393781C.8090403@stackframe.org>
- <CA+BoTQk8Z-ngkWMX4dLnc6fzLZGbn_bMEYZDcLqsfUVVmf8Hgg@mail.gmail.com>
- <539A015C.2020703@stackframe.org>
-Date: Fri, 13 Jun 2014 13:12:40 +0200
-Message-ID: <CA+BoTQ=H0oB+OKFXvvu4MP2s89OaEbwrFgurHavj2BO2Bvu9tQ@mail.gmail.com>
-Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: RE : ath10k: firmware crash in station mode & problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
+ <538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>,
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +34,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Schnelle <svens@stackframe.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-T24gMTIgSnVuZSAyMDE0IDIxOjM3LCBTdmVuIFNjaG5lbGxlIDxzdmVuc0BzdGFja2ZyYW1lLm9y
-Zz4gd3JvdGU6Cj4gQW0gMTIuMDYuMjAxNCAxNDo1Nywgc2NocmllYiBNaWNoYWwgS2F6aW9yOgo+
-PiBJbnRlcmVzdGluZy4gSSBhc3N1bWUgeW91IHNlZSB0aGlzIGV4YWN0IHNhbWUgbWFjIGFkZHIg
-aW4gaWZjb25maWcgZm9yCj4+IGF0aDEwaydzIHdsYW4gaW50ZXJmYWNlPyBJZiBPVFAgaXMgYnJv
-a2VuIHlvdSB1c3VhbGx5IGdldCAwMDowMzowNzoxMjozNDo1Ngo+PiBpZiBteSBtZW1vcnkgc2Vy
-dmVzIHJpZ2h0LiBXaGF0IG1hYyBhZGRyZXNzIGRvIHlvdSBnZXQgd2hlbiB5b3UgdXNlIHRoZQo+
-PiBzdG9jayBmaXJtd2FyZS0yLmJpbiBhbmQgYm9hcmQuYmluIChpbnN0ZWFkIG9mIG1pbmUvZnJv
-bSBtdGQpPyBNaWNoYcWCCj4KPgo+IEkgZ2V0IHRoZSBtYWMgYWRkcmVzcyBmcm9tIGJvYXJkLmJp
-bi4gSWYgaSB1bmRlcnN0YW5kIE9UUCBjb3JyZWN0LCBpdCBzaG91bGQKPiBpbnN0ZWFkIHVzZSB0
-aGUgTWFjIEFkcmVzcyBmcm9tCj4gT1RQLiBNeSBndWVzcyBpcyB0aGF0IHRoZSBPVFAgTWVtb3J5
-IG9uIHRoYXQgZGV2aWNlIGlzIHNpbXBseSBub3QKPiBwcm9ncmFtbWVkLCBzbyBpdCBmYWxscyBi
-YWNrIHRvIGJvYXJkLmJpbi4KPiBJcyBteSBhc3N1bXB0aW9uIGNvcnJlY3Q/IE9uIHN5c3RlbSB3
-aXRob3V0IHByb2dyYW1tZWQgT1RQLCBzaG91bGRuJ3QgYXRoMTBrCj4gc3RhcnQgdXAgYW5kIHNp
-bXBseSBmYWxsIGJhY2sKPiB0byBib2FyZC5iaW4gaW5zdGVhZCBvZiBiYWlsaW5nIG91dD8KPgo+
-IEknbSBub3Qgc3VyZSBpZiBpIHJlYWxseSB1bnRlcnN0b29kIGhvdyBvdHAgYW5kIGJvYXJkLmJp
-biByZWxhdGVzIHRvIGVhY2gKPiBvdGhlciBub3cuIDspCgpGcm9tIHdoYXQgSSB1bmRlcnN0YW5k
-IGJvYXJkLmJpbiBpcyByZXF1aXJlZCBieSBvdHAuYmluLiBib2FyZC5iaW4Kc2VlbXMgbGlrZSBk
-YXRhIHdoaWxlIG90cC5iaW4gaXMgYSBwcm9ncmFtIHRoYXQgaXMgZXhlY3V0ZWQgb24gdGhlCmRl
-dmljZS4KCkl0IG1pZ2h0IGJlIHRoYXQgb3RwLmJpbiBmYWxscyBiYWNrIHRvIGJvYXJkLmJpbiBv
-ciBtYXliZSB1c2VzCmJvYXJkLmJpbiBhcyBhIGJvb3RzdHJhcCBvZiBzb3J0cyAoZS5nLiBwb2lu
-dHMgdG8gYSBjdXN0b20gbG9jYXRpb24Kd2hlcmUgb3RwIGRhdGEgaXMgYWN0dWFsbHkgc3RvcmVk
-KS4gVGhpcyBpcyBiZXlvbmQgbWUuCgpNeSBzdXNwaWNpb24gbm93IGlzIG90cCBmYWlsdXJlIGNv
-ZGUgMiAod2hpY2ggaXMgdGhlIG9yaWdpbmFsIHByb2JsZW0Kd2UncmUgZGlzY3Vzc2luZykgZG9l
-cyBub3QgbmVjZXNzYXJpbHkgbWVhbiB0aGF0IG90cCBmYWlsZWQgZW50aXJlbHkuClRoYXQncyB3
-aHkgSSBhc2tlZCBhYm91dCBtYWMgYWRkcmVzcyB5b3Ugd2VyZSBnZXR0aW5nIHdpdGggdGhlIGdl
-bmVyaWMKKHRoZSBvbmUgdGhhdCBjYW4gYmUgZm91bmQgaW4gS2FsbGUncyBnaXRodWIgb3IgdGhl
-IG9uZSB0aGF0J3MgaW4KdmFuaWxsYSBPcGVuV1JUKSBib2FyZC5iaW4gYW5kIGZpcm13YXJlLTIu
-YmluLiBBbm90aGVyIHBlcnNvbiByZXBvcnRlZApbMV0gdGhleSBnb3QgMDA6MDM6MDc6MTI6MzQ6
-NTYgbWFjIHdoZW4gd2l0aCBvbGQgYXRoMTBrIChiZWZvcmUgb3RwCnJlc3VsdCB3YXMgdmVyaWZp
-ZWQpIGJ1dCB5b3VyIHVhcnQgZHVtcCBzdWdnZXN0cyB5b3UgZ290IGEgbm9uLWdlbmVyaWMKbWFj
-LiBJJ2QgbGlrZSB0byBlc3RhYmxpc2ggdW5kZXIgd2hhdCBjaXJjdW1zdGFuY2VzIHlvdSBnb3Qg
-eW91ciBtYWMuCgpUbyByZWNhcGl0dWxhdGUsIGNhbiB5b3UgcGxlYXNlIGNoZWNrIHdoYXQgbWFj
-IGFkZHJlc3MgeW91ciB3bGFuIGludGVyZmFjZSBoYXM6CgogYSkgd2l0aCBvdHAgZmFpbHVyZSBp
-Z25vcmVkLCB0cnkgYm9hcmQuYmluIGFuZCAxMC4xLjQ2NwpmaXJtd2FyZS0yLmJpbiBib3RoIGFz
-IGZvdW5kIGluIHZhbmlsbGEgT3BlbldSVCAob3IgZnJvbSBLYWxsZSdzCmdpdGh1YikKIGIpIHdp
-dGggb3RwIGZhaWx1cmUgaWdub3JlZCwgdHJ5IGJvYXJkLmJpbiBhcyBleHRyYWN0ZWQgZnJvbSB0
-aGUKY2FsaWJyYXRpb24gbXRkIHBhcnRpdGlvbiBidXQgZmlybXdhcmUtMi5iaW4gYXMgZm91bmQg
-aW4gdmFuaWxsYQpPcGVuV1JUCiBjKSB3aXRoIG90cCBmYWlsdXJlIGlnbm9yZWQsIHRyeSBib2Fy
-ZC5iaW4gYXMgZXh0cmFjdGVkIGZyb20gdGhlCmNhbGlicmF0aW9uIG10ZCBwYXJ0aXRpb24gYnV0
-IGZpcm13YXJlLTIuYmluIHRoYXQgSSBwcm92aWRlZCBpbiB0aGUKT3BlbldSVCB0aWNrZXRbMl0K
-ClsxXTogaHR0cHM6Ly9kZXYub3BlbndydC5vcmcvdGlja2V0LzE2NTg5I2NvbW1lbnQ6NApbMl06
-IGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL3RpY2tldC8xNjU4OQoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+
+On 06/13/2014 01:50 AM, Vu Hai NGUYEN wrote:
+>> I put a new series of patches (one build for every commit in my tree)
+>> here.  This has the scan fix in place (at around build 70 or so)
+>> so hopefully a bisect will work OK for you.
+>>
+>> http://www.candelatech.com/downloads/ath10k-fw-all-images/
+>>
+>> If you bisect the problem, please let me know the results
+>> and I'll try to track down the problem.
+>
+> Thanks, the different is between the 61th and 62th commit. I have to type "iw wlan0 scan" for the 62th commit firmware to connect after running wpa_supp.
+> They all had:
+> wlan0: CTRL-EVENT-SCAN-STARTED
+> wlan0: SME: Trying to authenticate with 04:f0:21:0e:38:be (SSID='ath10k' freq=5280 MHz)
+> wlan0: authenticate with 04:f0:21:0e:38:be
+> wlan0: direct probe to 04:f0:21:0e:38:be (try 1/3)
+> wlan0: direct probe to 04:f0:21:0e:38:be (try 2/3)
+> wlan0: direct probe to 04:f0:21:0e:38:be (try 3/3)
+> wlan0: authentication with 04:f0:21:0e:38:be timed out
+
+You see this with official firmware as well?  Any idea why
+AP does not answer?
+
+
+> But the first firmware continue to do this:
+> wlan0: SME: Trying to authenticate with 04:f0:21:0e:38:be (SSID='ath10k' freq=5280 MHz)
+> wlan0: authenticate with 04:f0:21:0e:38:be
+> wlan0: authenticated
+>   wlan0: Trying to associate with 04:f0:21:0e:38:be (try 1/3)
+>   wlan0: associate with 04:f0:21:0e:38:be
+>   wlan0: associated
+>
+> While the second one keeps saying:
+> wlan0: CTRL-EVENT-SCAN-STARTED
+
+I'll investigate the firmware change between 61 and 62, thanks for
+narrowing it down.
+
+Also, do you see this same behaviour on non-DFS channels?
+
+Thanks,
+Ben
+
+>
+> Thanks,
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+>
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
