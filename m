@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x231.google.com ([2607:f8b0:400c:c03::231])
+Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WvNvd-0001Wn-Lv
- for ath10k@lists.infradead.org; Fri, 13 Jun 2014 09:37:46 +0000
-Received: by mail-vc0-f177.google.com with SMTP id ij19so1990715vcb.8
- for <ath10k@lists.infradead.org>; Fri, 13 Jun 2014 02:37:24 -0700 (PDT)
+ id 1WvO7G-0005PT-9Z
+ for ath10k@lists.infradead.org; Fri, 13 Jun 2014 09:49:47 +0000
+Received: by mail-we0-f169.google.com with SMTP id t60so2557808wes.28
+ for <ath10k@lists.infradead.org>; Fri, 13 Jun 2014 02:49:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkV9QBj+UOtm1cyxewq3cd-SjnyaAZ4+nniRvf+1gnLLw@mail.gmail.com>
+In-Reply-To: <CAHqTa-2k8F45d8qXicM0N=-hg=iEJvmd8TXK-Vu4GV6x3bipqg@mail.gmail.com>
 References: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
  <CA+BoTQkV9QBj+UOtm1cyxewq3cd-SjnyaAZ4+nniRvf+1gnLLw@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Fri, 13 Jun 2014 05:37:03 -0400
-Message-ID: <CAHqTa-2k8F45d8qXicM0N=-hg=iEJvmd8TXK-Vu4GV6x3bipqg@mail.gmail.com>
+ <CAHqTa-2k8F45d8qXicM0N=-hg=iEJvmd8TXK-Vu4GV6x3bipqg@mail.gmail.com>
+Date: Fri, 13 Jun 2014 11:49:23 +0200
+Message-ID: <CA+BoTQkmFq8+bwaY4P2+w9eKrKvSK=Jo2MB8eHBhYqHcUYrx9g@mail.gmail.com>
 Subject: Re: After shutdown/restart, ath10k sometimes stops receiving packets
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,98 +22,86 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Avery Pennarun <apenwarr@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Fri, Jun 13, 2014 at 5:14 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 13 June 2014 01:37, Avery Pennarun <apenwarr@gmail.com> wrote:
->> We are experiencing a relatively-rare-but-not-rare-enough case which
->> has approximately these steps:
->>
->> - run a wifi AP for a while with a station or two connected
->> - shut down hostapd (stations all get disconnected of course)
->
-> Did you make sure you had no interface up and running? Did the
-> hardware go through warm/cold reset?
-
-No, I didn't see any logs about that.  The firmware seemed happy.
-
->> - restart hostapd (perhaps on another channel or with different settings)
->>
->> After that, an external wifi sniffer can see beacons being transmitted
->> by the AP as expected, but all packets from stations trying to connect
->> are ignored.  In particular, Probe requests are not answered, and Auth
->> requests do not even receive a wifi ACK.
->
-> This means WMI is working (each beacon is submitted via WMI). This
-> also implies CE works.
->
-> But if there are no ACKs this suggest HW must've been instructed to
-> ignore frames somehow.
->
-> (..) After taking a look I think wmi_vdev_start_request_cmd isn't
-> really handled properly for 10.x firmware. I'm guessing this ABI issue
-> might be the problem.
->
-> 10.x firmware has:
->   struct wmi_channel chan;
->   __le32 vdev_id;
->   __le32 requestor_id;
->   __le32 num_noa_descriptors;
->   __le32 disable_hw_ack;
->   struct wmi_p2p_noa_descriptor noa_descriptors[2];
->
-> disable_hw_ack overlaps with dtim_period. Perhaps that's the problem.
->
-> It's intriguing how this hasn't manifested itself until now..
-
-I'm not sure what you mean by overlapping...
-
->> Restarting hostapd doesn't fix it.  However, rmmoding and modprobing
->> the ath10k_pci module does fix it.
->
-> Did the hardware go through warm or cold reset?
-
-Reloading the driver, I believe it does a warm reset.  I know it's not
-doing a cold reset because that tends to crash my machine :)
-
->> This is with a mindspeed c2k host processor, 3.2 kernel, and modules
->> backported by backports from kvalo's ath-next as of
->> v3.15-rc1-237-gd9bc4b9 (roughly 2014-04-29).  Firmware is
->> 10.1.467.2-1.
->>
->> Has anyone else seen this?  Any suggestions where to look to narrow
->> down the problem?
->
-> I haven't seen anything like this.
->
-> For one reloading the driver may tickle cfg80211 and regulatory
-> updates but I just can't imagine how that could cripple ACKing.
-
-Just to clarify, reloading the driver fixes it, it doesn't cripple it.
-It's restarting hostapd that seems to cripple it.
-
->> I can't exactly produce it on demand yet, but if someone suggests
->> things to look for when it happens, it occurs often enough that I
->> should be able tor run those things.
->
-> You might want to print out the vdev_start command's dtim_period
-> (which overlaps with 10.x's disable_hw_ack) before it is sent to fw
-> and compare the value for when ACKing works and when it doesn't.
-
-Do you mean printing the dtim_period we are sending to the firmware,
-from inside vdev_start(), and watching to see if it is ever different
-than expected?
-
-Thanks,
-
-Avery
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgSnVuZSAyMDE0IDExOjM3LCBBdmVyeSBQZW5uYXJ1biA8YXBlbndhcnJAZ21haWwuY29t
+PiB3cm90ZToKPiBPbiBGcmksIEp1biAxMywgMjAxNCBhdCA1OjE0IEFNLCBNaWNoYWwgS2F6aW9y
+IDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDEzIEp1bmUgMjAxNCAwMToz
+NywgQXZlcnkgUGVubmFydW4gPGFwZW53YXJyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBXZSBhcmUg
+ZXhwZXJpZW5jaW5nIGEgcmVsYXRpdmVseS1yYXJlLWJ1dC1ub3QtcmFyZS1lbm91Z2ggY2FzZSB3
+aGljaAo+Pj4gaGFzIGFwcHJveGltYXRlbHkgdGhlc2Ugc3RlcHM6Cj4+Pgo+Pj4gLSBydW4gYSB3
+aWZpIEFQIGZvciBhIHdoaWxlIHdpdGggYSBzdGF0aW9uIG9yIHR3byBjb25uZWN0ZWQKPj4+IC0g
+c2h1dCBkb3duIGhvc3RhcGQgKHN0YXRpb25zIGFsbCBnZXQgZGlzY29ubmVjdGVkIG9mIGNvdXJz
+ZSkKPj4KPj4gRGlkIHlvdSBtYWtlIHN1cmUgeW91IGhhZCBubyBpbnRlcmZhY2UgdXAgYW5kIHJ1
+bm5pbmc/IERpZCB0aGUKPj4gaGFyZHdhcmUgZ28gdGhyb3VnaCB3YXJtL2NvbGQgcmVzZXQ/Cj4K
+PiBObywgSSBkaWRuJ3Qgc2VlIGFueSBsb2dzIGFib3V0IHRoYXQuICBUaGUgZmlybXdhcmUgc2Vl
+bWVkIGhhcHB5LgoKV2hlbiBsYXN0IGludGVyZmFjZSBpcyBicm91Z2h0IGRvd24gbWFjODAyMTEg
+Y2FsbHMgYXRoMTBrX3N0b3AoKSB3aGljaAppbiB0dXJuIHN0b3BzIGFuZCByZXNldHMgdGhlIGRl
+dmljZS4gV2hlbiB5b3UgYnJpbmcgdXAgZmlyc3QgaW50ZXJmYWNlCnVwIG1hYzgwMjExIGNhbGxz
+IGF0aDEwa19zdGFydCgpIHdoaWNoIGJvb3RzIHRoZSBkZXZpY2UgKGFuZCBwZXJmb3JtcwpyZXNl
+dCB0b28pLgoKV2hlbiB5b3Ugc2F5ICJyZXN0YXJ0IGhvc3RhcGQiIGl0IGRvZXNuJ3Qgc3RhdGUg
+d2hldGhlciB0aGUgZHJpdmVyCndlbnQgdGhyb3VnaCBzdGFydC1zdG9wIG9yIG5vdC4KCgo+Pj4g
+LSByZXN0YXJ0IGhvc3RhcGQgKHBlcmhhcHMgb24gYW5vdGhlciBjaGFubmVsIG9yIHdpdGggZGlm
+ZmVyZW50IHNldHRpbmdzKQo+Pj4KPj4+IEFmdGVyIHRoYXQsIGFuIGV4dGVybmFsIHdpZmkgc25p
+ZmZlciBjYW4gc2VlIGJlYWNvbnMgYmVpbmcgdHJhbnNtaXR0ZWQKPj4+IGJ5IHRoZSBBUCBhcyBl
+eHBlY3RlZCwgYnV0IGFsbCBwYWNrZXRzIGZyb20gc3RhdGlvbnMgdHJ5aW5nIHRvIGNvbm5lY3QK
+Pj4+IGFyZSBpZ25vcmVkLiAgSW4gcGFydGljdWxhciwgUHJvYmUgcmVxdWVzdHMgYXJlIG5vdCBh
+bnN3ZXJlZCwgYW5kIEF1dGgKPj4+IHJlcXVlc3RzIGRvIG5vdCBldmVuIHJlY2VpdmUgYSB3aWZp
+IEFDSy4KPj4KPj4gVGhpcyBtZWFucyBXTUkgaXMgd29ya2luZyAoZWFjaCBiZWFjb24gaXMgc3Vi
+bWl0dGVkIHZpYSBXTUkpLiBUaGlzCj4+IGFsc28gaW1wbGllcyBDRSB3b3Jrcy4KPj4KPj4gQnV0
+IGlmIHRoZXJlIGFyZSBubyBBQ0tzIHRoaXMgc3VnZ2VzdCBIVyBtdXN0J3ZlIGJlZW4gaW5zdHJ1
+Y3RlZCB0bwo+PiBpZ25vcmUgZnJhbWVzIHNvbWVob3cuCj4+Cj4+ICguLikgQWZ0ZXIgdGFraW5n
+IGEgbG9vayBJIHRoaW5rIHdtaV92ZGV2X3N0YXJ0X3JlcXVlc3RfY21kIGlzbid0Cj4+IHJlYWxs
+eSBoYW5kbGVkIHByb3Blcmx5IGZvciAxMC54IGZpcm13YXJlLiBJJ20gZ3Vlc3NpbmcgdGhpcyBB
+QkkgaXNzdWUKPj4gbWlnaHQgYmUgdGhlIHByb2JsZW0uCj4+Cj4+IDEwLnggZmlybXdhcmUgaGFz
+Ogo+PiAgIHN0cnVjdCB3bWlfY2hhbm5lbCBjaGFuOwo+PiAgIF9fbGUzMiB2ZGV2X2lkOwo+PiAg
+IF9fbGUzMiByZXF1ZXN0b3JfaWQ7Cj4+ICAgX19sZTMyIG51bV9ub2FfZGVzY3JpcHRvcnM7Cj4+
+ICAgX19sZTMyIGRpc2FibGVfaHdfYWNrOwo+PiAgIHN0cnVjdCB3bWlfcDJwX25vYV9kZXNjcmlw
+dG9yIG5vYV9kZXNjcmlwdG9yc1syXTsKPj4KPj4gZGlzYWJsZV9od19hY2sgb3ZlcmxhcHMgd2l0
+aCBkdGltX3BlcmlvZC4gUGVyaGFwcyB0aGF0J3MgdGhlIHByb2JsZW0uCj4+Cj4+IEl0J3MgaW50
+cmlndWluZyBob3cgdGhpcyBoYXNuJ3QgbWFuaWZlc3RlZCBpdHNlbGYgdW50aWwgbm93Li4KPgo+
+IEknbSBub3Qgc3VyZSB3aGF0IHlvdSBtZWFuIGJ5IG92ZXJsYXBwaW5nLi4uCgoxMC54IGFuZCBt
+YWluIGZpcm13YXJlIGJyYW5jaGVzIGhhdmUgQUJJIGRpZmZlcmVuY2VzLiBTb21lIHN0cnVjdHVy
+ZXMKZGlmZmVyLiB2ZGV2X3N0YXJ0IGlzIG9uZSBvZiB0aGVtIGJ1dCBhcHBhcmVudGx5IHRoaXMg
+d2Fzbid0IGEgcHJvYmxlbQpmb3IgZWl0aGVyIGZpcm13YXJlIHNvIGZhci4KClRoZSAxMHRoIGR3
+b3JkIChkd29yZD0zMmJpdCB3b3JkKSBpcyBkaXNhYmxlX2h3X2FjayBmb3IgMTAueCB3aGlsZSBm
+b3IKbWFpbiBicmFuY2ggaXQgaXMgZHRpbV9wZXJpb2QuCgoKPj4+IFJlc3RhcnRpbmcgaG9zdGFw
+ZCBkb2Vzbid0IGZpeCBpdC4gIEhvd2V2ZXIsIHJtbW9kaW5nIGFuZCBtb2Rwcm9iaW5nCj4+PiB0
+aGUgYXRoMTBrX3BjaSBtb2R1bGUgZG9lcyBmaXggaXQuCj4+Cj4+IERpZCB0aGUgaGFyZHdhcmUg
+Z28gdGhyb3VnaCB3YXJtIG9yIGNvbGQgcmVzZXQ/Cj4KPiBSZWxvYWRpbmcgdGhlIGRyaXZlciwg
+SSBiZWxpZXZlIGl0IGRvZXMgYSB3YXJtIHJlc2V0LiAgSSBrbm93IGl0J3Mgbm90Cj4gZG9pbmcg
+YSBjb2xkIHJlc2V0IGJlY2F1c2UgdGhhdCB0ZW5kcyB0byBjcmFzaCBteSBtYWNoaW5lIDopCgpK
+dXN0IGJlY2F1c2UgaXQgdGVuZHMgdG8gZG9lc24ndCBtZWFuIGl0IGRvZXMsIHJpZ2h0PyBVbmxl
+c3MgeW91CmRpc2FibGVkIGNvbGQgcmVzZXQuCgoKPj4+IFRoaXMgaXMgd2l0aCBhIG1pbmRzcGVl
+ZCBjMmsgaG9zdCBwcm9jZXNzb3IsIDMuMiBrZXJuZWwsIGFuZCBtb2R1bGVzCj4+PiBiYWNrcG9y
+dGVkIGJ5IGJhY2twb3J0cyBmcm9tIGt2YWxvJ3MgYXRoLW5leHQgYXMgb2YKPj4+IHYzLjE1LXJj
+MS0yMzctZ2Q5YmM0YjkgKHJvdWdobHkgMjAxNC0wNC0yOSkuICBGaXJtd2FyZSBpcwo+Pj4gMTAu
+MS40NjcuMi0xLgo+Pj4KPj4+IEhhcyBhbnlvbmUgZWxzZSBzZWVuIHRoaXM/ICBBbnkgc3VnZ2Vz
+dGlvbnMgd2hlcmUgdG8gbG9vayB0byBuYXJyb3cKPj4+IGRvd24gdGhlIHByb2JsZW0/Cj4+Cj4+
+IEkgaGF2ZW4ndCBzZWVuIGFueXRoaW5nIGxpa2UgdGhpcy4KPj4KPj4gRm9yIG9uZSByZWxvYWRp
+bmcgdGhlIGRyaXZlciBtYXkgdGlja2xlIGNmZzgwMjExIGFuZCByZWd1bGF0b3J5Cj4+IHVwZGF0
+ZXMgYnV0IEkganVzdCBjYW4ndCBpbWFnaW5lIGhvdyB0aGF0IGNvdWxkIGNyaXBwbGUgQUNLaW5n
+Lgo+Cj4gSnVzdCB0byBjbGFyaWZ5LCByZWxvYWRpbmcgdGhlIGRyaXZlciBmaXhlcyBpdCwgaXQg
+ZG9lc24ndCBjcmlwcGxlIGl0Lgo+IEl0J3MgcmVzdGFydGluZyBob3N0YXBkIHRoYXQgc2VlbXMg
+dG8gY3JpcHBsZSBpdC4KClllYWgsIHNvcnJ5LiBJIG1lYW50IEkgY2FuJ3QgaW1hZ2luZSBob3cg
+cmVndWxhdG9yeSBjb3VsZCBiZSBpbnZvbHZlZAppbiBjcmlwcGxpbmcgQUNLaW5nLgoKCj4+PiBJ
+IGNhbid0IGV4YWN0bHkgcHJvZHVjZSBpdCBvbiBkZW1hbmQgeWV0LCBidXQgaWYgc29tZW9uZSBz
+dWdnZXN0cwo+Pj4gdGhpbmdzIHRvIGxvb2sgZm9yIHdoZW4gaXQgaGFwcGVucywgaXQgb2NjdXJz
+IG9mdGVuIGVub3VnaCB0aGF0IEkKPj4+IHNob3VsZCBiZSBhYmxlIHRvciBydW4gdGhvc2UgdGhp
+bmdzLgo+Pgo+PiBZb3UgbWlnaHQgd2FudCB0byBwcmludCBvdXQgdGhlIHZkZXZfc3RhcnQgY29t
+bWFuZCdzIGR0aW1fcGVyaW9kCj4+ICh3aGljaCBvdmVybGFwcyB3aXRoIDEwLngncyBkaXNhYmxl
+X2h3X2FjaykgYmVmb3JlIGl0IGlzIHNlbnQgdG8gZncKPj4gYW5kIGNvbXBhcmUgdGhlIHZhbHVl
+IGZvciB3aGVuIEFDS2luZyB3b3JrcyBhbmQgd2hlbiBpdCBkb2Vzbid0Lgo+Cj4gRG8geW91IG1l
+YW4gcHJpbnRpbmcgdGhlIGR0aW1fcGVyaW9kIHdlIGFyZSBzZW5kaW5nIHRvIHRoZSBmaXJtd2Fy
+ZSwKPiBmcm9tIGluc2lkZSB2ZGV2X3N0YXJ0KCksIGFuZCB3YXRjaGluZyB0byBzZWUgaWYgaXQg
+aXMgZXZlciBkaWZmZXJlbnQKPiB0aGFuIGV4cGVjdGVkPwoKSSB0aGluayBgcHJpbnRrKCJkdGlt
+IHBlcmlvZDogJWRcbiIsIGFyZy0+ZHRpbV9wZXJpb2QpO2AgaW4KYXRoMTBrX3dtaV92ZGV2X3N0
+YXJ0X3Jlc3RhcnQoKSBzaG91bGQgYmUgZW5vdWdoLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hdGgxMGsK
