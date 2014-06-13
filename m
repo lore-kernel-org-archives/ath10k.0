@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WvSYs-0006BU-6V
- for ath10k@lists.infradead.org; Fri, 13 Jun 2014 14:34:34 +0000
-Message-ID: <539B0BDF.30105@candelatech.com>
-Date: Fri, 13 Jun 2014 07:34:07 -0700
+ id 1WvUuR-00087B-LK
+ for ath10k@lists.infradead.org; Fri, 13 Jun 2014 17:05:00 +0000
+Message-ID: <539B2F21.3020609@candelatech.com>
+Date: Fri, 13 Jun 2014 10:04:33 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: RE : ath10k: firmware crash in station mode & problem DFS
@@ -34,14 +34,12 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
-
-
 
 On 06/13/2014 01:50 AM, Vu Hai NGUYEN wrote:
 >> I put a new series of patches (one build for every commit in my tree)
@@ -52,59 +50,34 @@ On 06/13/2014 01:50 AM, Vu Hai NGUYEN wrote:
 >>
 >> If you bisect the problem, please let me know the results
 >> and I'll try to track down the problem.
->
+> 
 > Thanks, the different is between the 61th and 62th commit. I have to type "iw wlan0 scan" for the 62th commit firmware to connect after running wpa_supp.
-> They all had:
+> They all had: 
 > wlan0: CTRL-EVENT-SCAN-STARTED
 > wlan0: SME: Trying to authenticate with 04:f0:21:0e:38:be (SSID='ath10k' freq=5280 MHz)
 > wlan0: authenticate with 04:f0:21:0e:38:be
-> wlan0: direct probe to 04:f0:21:0e:38:be (try 1/3)
+> wlan0: direct probe to 04:f0:21:0e:38:be (try 1/3)   
 > wlan0: direct probe to 04:f0:21:0e:38:be (try 2/3)
 > wlan0: direct probe to 04:f0:21:0e:38:be (try 3/3)
 > wlan0: authentication with 04:f0:21:0e:38:be timed out
 
-You see this with official firmware as well?  Any idea why
-AP does not answer?
+Looks like my scan-on-operating-channel optimization patch is
+the problem.  I have just disabled this until I have time to
+debug it in detail...
 
+Here is a build of my full patch-set with that buggy patch reverted,
+please see if it works for you:
 
-> But the first firmware continue to do this:
-> wlan0: SME: Trying to authenticate with 04:f0:21:0e:38:be (SSID='ath10k' freq=5280 MHz)
-> wlan0: authenticate with 04:f0:21:0e:38:be
-> wlan0: authenticated
->   wlan0: Trying to associate with 04:f0:21:0e:38:be (try 1/3)
->   wlan0: associate with 04:f0:21:0e:38:be
->   wlan0: associated
->
-> While the second one keeps saying:
-> wlan0: CTRL-EVENT-SCAN-STARTED
-
-I'll investigate the firmware change between 61 and 62, thanks for
-narrowing it down.
-
-Also, do you see this same behaviour on non-DFS channels?
+http://www.candelatech.com/downloads/firmware-2-community-scanfix.bin
 
 Thanks,
 Ben
 
->
-> Thanks,
-> NGUYEN Vu Hai
-> Acita-Sodielec
-> Route de Mayres - B.P. 9
-> 12100 St GEORGES DE LUZENCON
-> FRANCE
->
->
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
 
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
