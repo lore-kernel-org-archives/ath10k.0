@@ -1,15 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wvr5Y-0002j1-RP
- for ath10k@lists.infradead.org; Sat, 14 Jun 2014 16:45:57 +0000
+ id 1WvrBT-00045q-UF
+ for ath10k@lists.infradead.org; Sat, 14 Jun 2014 16:52:04 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: After shutdown/restart, ath10k sometimes stops receiving packets
-References: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
-Date: Sat, 14 Jun 2014 19:45:29 +0300
-In-Reply-To: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
- (Avery Pennarun's message of "Thu, 12 Jun 2014 19:37:12 -0400")
-Message-ID: <878uoz4eza.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: compat-wireless-2014-05-22 breaks ath10k in an Archer C7 v2
+References: <CALCETrU=8+tnptdfva4p27nA-5=E31DwXagoLqUxYcLtEKrB+w@mail.gmail.com>
+ <CA+BoTQmUyvTr+ga81EacbMkE4UVtMBP2PfBs_vH-PF4OvHuZQg@mail.gmail.com>
+ <53905134.8010303@stackframe.org>
+ <87tx7zoafw.fsf@kamboji.qca.qualcomm.com>
+ <5390594F.4070801@stackframe.org>
+ <CA+BoTQ=QCNcbWmhEd1vyXDZY1yy0yvz_VSFqnOzOzYGMyxjGJw@mail.gmail.com>
+ <5393781C.8090403@stackframe.org>
+ <CA+BoTQk8Z-ngkWMX4dLnc6fzLZGbn_bMEYZDcLqsfUVVmf8Hgg@mail.gmail.com>
+ <539A015C.2020703@stackframe.org>
+ <CA+BoTQ=H0oB+OKFXvvu4MP2s89OaEbwrFgurHavj2BO2Bvu9tQ@mail.gmail.com>
+Date: Sat, 14 Jun 2014 19:51:31 +0300
+In-Reply-To: <CA+BoTQ=H0oB+OKFXvvu4MP2s89OaEbwrFgurHavj2BO2Bvu9tQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 13 Jun 2014 13:12:40 +0200")
+Message-ID: <874mzn4ep8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,39 +32,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Sven Schnelle <svens@stackframe.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Avery Pennarun <apenwarr@gmail.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> We are experiencing a relatively-rare-but-not-rare-enough case which
-> has approximately these steps:
+> To recapitulate, can you please check what mac address your wlan interface has:
 >
-> - run a wifi AP for a while with a station or two connected
-> - shut down hostapd (stations all get disconnected of course)
-> - restart hostapd (perhaps on another channel or with different settings)
->
-> After that, an external wifi sniffer can see beacons being transmitted
-> by the AP as expected, but all packets from stations trying to connect
-> are ignored.  In particular, Probe requests are not answered, and Auth
-> requests do not even receive a wifi ACK.
->
-> Restarting hostapd doesn't fix it.  However, rmmoding and modprobing
-> the ath10k_pci module does fix it.
->
-> This is with a mindspeed c2k host processor, 3.2 kernel, and modules
-> backported by backports from kvalo's ath-next as of
-> v3.15-rc1-237-gd9bc4b9 (roughly 2014-04-29).  Firmware is
-> 10.1.467.2-1.
->
-> Has anyone else seen this?  Any suggestions where to look to narrow
-> down the problem?
->
-> I can't exactly produce it on demand yet, but if someone suggests
-> things to look for when it happens, it occurs often enough that I
-> should be able tor run those things.
+>  b) with otp failure ignored, try board.bin as extracted from the
+> calibration mtd partition but firmware-2.bin as found in vanilla
+> OpenWRT
 
-Do you have any guesses how often this happens? Once a day, once a week?
+I haven't checked this yet, but I assume that when the data from MTD is
+used we should not even run otp.bin. It would be good to check that case
+as well:
+
+  b) don't run otp.bin at all, try board.bin as extracted from the
+ calibration mtd partition but firmware-2.bin as found in vanilla
+ OpenWRT
 
 -- 
 Kalle Valo
