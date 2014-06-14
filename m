@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.sablalik.us ([66.80.92.144])
- by bombadil.infradead.org with smtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WvWN5-0001Zx-0c
- for ath10k@lists.infradead.org; Fri, 13 Jun 2014 18:38:39 +0000
-Date: Fri, 13 Jun 2014 14:38:02 -0400
-Subject: Re: basic help request
-From: Peter Sabat <pete@sablalik.us>
-Message-ID: <CFC0BC89.B2E43%pete@sablalik.us>
-In-Reply-To: <539B3DF9.2040300@candelatech.com>
-Mime-version: 1.0
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wvr5Y-0002j1-RP
+ for ath10k@lists.infradead.org; Sat, 14 Jun 2014 16:45:57 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: After shutdown/restart, ath10k sometimes stops receiving packets
+References: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
+Date: Sat, 14 Jun 2014 19:45:29 +0300
+In-Reply-To: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
+ (Avery Pennarun's message of "Thu, 12 Jun 2014 19:37:12 -0400")
+Message-ID: <878uoz4eza.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,51 +23,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-I think that after your help w/ the FW copy (or whatever it was) this
-turns out to be an example of no RTFM.
+Avery Pennarun <apenwarr@gmail.com> writes:
 
-I was deceived since I could see scans from the STA, but it turns out that
-this card needs a separate 5v input to actually work.  ;-)
-
-The wife and I are using it right now.
-
-
-Thanks again for all your assistance.
-
-On 6/13/14, 2:07 PM, "Ben Greear" <greearb@candelatech.com> wrote:
-
->On 06/12/2014 11:49 AM, Peter Sabat wrote:
->> I think I may have found a clue - just noticed on the console
->> 
->> 
->> 
->> 
->> root@server2:/run# [  856.450077] ath10k: target stalled
->> [  856.453659] ath10k: failed to wait for target to init: -5
+> We are experiencing a relatively-rare-but-not-rare-enough case which
+> has approximately these steps:
 >
->I haven't tried your specific NIC, but the WLE900VX works well for me.
+> - run a wifi AP for a while with a station or two connected
+> - shut down hostapd (stations all get disconnected of course)
+> - restart hostapd (perhaps on another channel or with different settings)
 >
->Could try power-cycling..ath10k can get hung such that only a power-cycle
->fixes it sometimes.
+> After that, an external wifi sniffer can see beacons being transmitted
+> by the AP as expected, but all packets from stations trying to connect
+> are ignored.  In particular, Probe requests are not answered, and Auth
+> requests do not even receive a wifi ACK.
 >
->Thanks,
->Ben
+> Restarting hostapd doesn't fix it.  However, rmmoding and modprobing
+> the ath10k_pci module does fix it.
 >
->-- 
->Ben Greear <greearb@candelatech.com>
->Candela Technologies Inc  http://www.candelatech.com
+> This is with a mindspeed c2k host processor, 3.2 kernel, and modules
+> backported by backports from kvalo's ath-next as of
+> v3.15-rc1-237-gd9bc4b9 (roughly 2014-04-29).  Firmware is
+> 10.1.467.2-1.
 >
+> Has anyone else seen this?  Any suggestions where to look to narrow
+> down the problem?
 >
->_______________________________________________
->ath10k mailing list
->ath10k@lists.infradead.org
->http://lists.infradead.org/mailman/listinfo/ath10k
+> I can't exactly produce it on demand yet, but if someone suggests
+> things to look for when it happens, it occurs often enough that I
+> should be able tor run those things.
 
+Do you have any guesses how often this happens? Once a day, once a week?
 
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
