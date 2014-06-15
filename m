@@ -1,18 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WwD3l-0003Rs-53
- for ath10k@lists.infradead.org; Sun, 15 Jun 2014 16:13:33 +0000
-Message-ID: <539DC612.1000902@candelatech.com>
-Date: Sun, 15 Jun 2014 09:13:06 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: After shutdown/restart, ath10k sometimes stops receiving packets
-References: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
- <878uoz4eza.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1MGGFK50sO=JAswMZLA0=Yy8AH4g0ziLr6+RK2R57jFg@mail.gmail.com>
- <87vbs23ev5.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87vbs23ev5.fsf@kamboji.qca.qualcomm.com>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH -next 13/26] ath: Use dma_zalloc_coherent
+Date: Sun, 15 Jun 2014 13:37:42 -0700
+Message-Id: <55b103a2ec78c0031b348e103603bf9a0d9cac3b.1402863905.git.joe@perches.com>
+In-Reply-To: <cover.1402863904.git.joe@perches.com>
+References: <cover.1402863904.git.joe@perches.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +13,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, wcn36xx@lists.infradead.org, Eugene Krasnikov <k.eugene.e@gmail.com>
 
+Use the zeroing function instead of dma_alloc_coherent & memset(,0,)
 
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c  | 8 ++------
+ drivers/net/wireless/ath/ath10k/wmi.c  | 8 ++------
+ drivers/net/wireless/ath/wcn36xx/dxe.c | 6 ++----
+ 3 files changed, 6 insertions(+), 16 deletions(-)
 
-On 06/14/2014 10:45 PM, Kalle Valo wrote:
-> Avery Pennarun <apenwarr@gmail.com> writes:
->
->> On Sat, Jun 14, 2014 at 12:45 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->>> Avery Pennarun <apenwarr@gmail.com> writes:
->>>> We are experiencing a relatively-rare-but-not-rare-enough case which
->>>> has approximately these steps:
->>>>
->>>> - run a wifi AP for a while with a station or two connected
->>>> - shut down hostapd (stations all get disconnected of course)
->>>> - restart hostapd (perhaps on another channel or with different settings)
->>>>
->>>> After that, an external wifi sniffer can see beacons being transmitted
->>>> by the AP as expected, but all packets from stations trying to connect
->>>> are ignored.
->>>
->>> Do you have any guesses how often this happens? Once a day, once a week?
->>
->> Someone in our QA group seems to be able to produce it after two or
->> three test runs with Veriwave.  Before each run, he stops and restarts
->> hostapd.
->
-> That's quite often. Was he testing DFS or something else? Maybe this is
-> related to radar detection or channel switching?
-
-For my firmware, I hacked a WMI message to return some register values.
-
-But, can they be read directly through the pci-e bus somehow (on stock firmware)?
-It would be great to get a register dump for debugging stuff like this.
-
-Could check the rx-filters and other such registers to see if there is
-some pattern involved.
-
-Thanks,
-Ben
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index d0004d5..35045a4 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -359,16 +359,12 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 	 *   2) Buffer in DMA-able space
+ 	 */
+ 	orig_nbytes = nbytes;
+-	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
+-						       orig_nbytes,
+-						       &ce_data_base,
+-						       GFP_ATOMIC);
+-
++	data_buf = dma_zalloc_coherent(ar->dev, orig_nbytes, &ce_data_base,
++				       GFP_ATOMIC);
+ 	if (!data_buf) {
+ 		ret = -ENOMEM;
+ 		goto done;
+ 	}
+-	memset(data_buf, 0, orig_nbytes);
+ 
+ 	remaining_bytes = orig_nbytes;
+ 	ce_data = ce_data_base;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 4b7782a..0093269 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1889,17 +1889,13 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	if (!pool_size)
+ 		return -EINVAL;
+ 
+-	ar->wmi.mem_chunks[idx].vaddr = dma_alloc_coherent(ar->dev,
+-							   pool_size,
+-							   &paddr,
+-							   GFP_ATOMIC);
++	ar->wmi.mem_chunks[idx].vaddr = dma_zalloc_coherent(ar->dev, pool_size,
++							    &paddr, GFP_ATOMIC);
+ 	if (!ar->wmi.mem_chunks[idx].vaddr) {
+ 		ath10k_warn("failed to allocate memory chunk\n");
+ 		return -ENOMEM;
+ 	}
+ 
+-	memset(ar->wmi.mem_chunks[idx].vaddr, 0, pool_size);
+-
+ 	ar->wmi.mem_chunks[idx].paddr = paddr;
+ 	ar->wmi.mem_chunks[idx].len = pool_size;
+ 	ar->wmi.mem_chunks[idx].req_id = req_id;
+diff --git a/drivers/net/wireless/ath/wcn36xx/dxe.c b/drivers/net/wireless/ath/wcn36xx/dxe.c
+index 73f12f1..1975a1a 100644
+--- a/drivers/net/wireless/ath/wcn36xx/dxe.c
++++ b/drivers/net/wireless/ath/wcn36xx/dxe.c
+@@ -177,13 +177,11 @@ static int wcn36xx_dxe_init_descs(struct wcn36xx_dxe_ch *wcn_ch)
+ 	int i;
+ 
+ 	size = wcn_ch->desc_num * sizeof(struct wcn36xx_dxe_desc);
+-	wcn_ch->cpu_addr = dma_alloc_coherent(NULL, size, &wcn_ch->dma_addr,
+-					      GFP_KERNEL);
++	wcn_ch->cpu_addr = dma_zalloc_coherent(NULL, size, &wcn_ch->dma_addr,
++					       GFP_KERNEL);
+ 	if (!wcn_ch->cpu_addr)
+ 		return -ENOMEM;
+ 
+-	memset(wcn_ch->cpu_addr, 0, size);
+-
+ 	cur_dxe = (struct wcn36xx_dxe_desc *)wcn_ch->cpu_addr;
+ 	cur_ctl = wcn_ch->head_blk_ctl;
+ 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.8.1.2.459.gbcd45b4.dirty
+
 
 _______________________________________________
 ath10k mailing list
