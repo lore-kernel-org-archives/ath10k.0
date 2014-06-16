@@ -1,10 +1,33 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH -next 13/26] ath: Use dma_zalloc_coherent
-Date: Sun, 15 Jun 2014 13:37:42 -0700
-Message-Id: <55b103a2ec78c0031b348e103603bf9a0d9cac3b.1402863905.git.joe@perches.com>
-In-Reply-To: <cover.1402863904.git.joe@perches.com>
-References: <cover.1402863904.git.joe@perches.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WwRE1-0005L7-0F
+ for ath10k@lists.infradead.org; Mon, 16 Jun 2014 07:21:05 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Mon, 16 Jun 2014 09:16:19 +0200
+Subject: RE : ath10k: firmware crash in station mode & problem DFS
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <538CAACA.2030202@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FA@srvexch01.SODIELEC.local>,
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
+ <538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>,
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>,
+ <539B2F21.3020609@candelatech.com>
+In-Reply-To: <539B2F21.3020609@candelatech.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -13,92 +36,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, wcn36xx@lists.infradead.org, Eugene Krasnikov <k.eugene.e@gmail.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-Use the zeroing function instead of dma_alloc_coherent & memset(,0,)
+>Also, do you see this same behaviour on non-DFS channels?
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/net/wireless/ath/ath10k/pci.c  | 8 ++------
- drivers/net/wireless/ath/ath10k/wmi.c  | 8 ++------
- drivers/net/wireless/ath/wcn36xx/dxe.c | 6 ++----
- 3 files changed, 6 insertions(+), 16 deletions(-)
+No your firmware works normally on non-DFS channels.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index d0004d5..35045a4 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -359,16 +359,12 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
- 	 *   2) Buffer in DMA-able space
- 	 */
- 	orig_nbytes = nbytes;
--	data_buf = (unsigned char *)dma_alloc_coherent(ar->dev,
--						       orig_nbytes,
--						       &ce_data_base,
--						       GFP_ATOMIC);
--
-+	data_buf = dma_zalloc_coherent(ar->dev, orig_nbytes, &ce_data_base,
-+				       GFP_ATOMIC);
- 	if (!data_buf) {
- 		ret = -ENOMEM;
- 		goto done;
- 	}
--	memset(data_buf, 0, orig_nbytes);
- 
- 	remaining_bytes = orig_nbytes;
- 	ce_data = ce_data_base;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 4b7782a..0093269 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1889,17 +1889,13 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
- 	if (!pool_size)
- 		return -EINVAL;
- 
--	ar->wmi.mem_chunks[idx].vaddr = dma_alloc_coherent(ar->dev,
--							   pool_size,
--							   &paddr,
--							   GFP_ATOMIC);
-+	ar->wmi.mem_chunks[idx].vaddr = dma_zalloc_coherent(ar->dev, pool_size,
-+							    &paddr, GFP_ATOMIC);
- 	if (!ar->wmi.mem_chunks[idx].vaddr) {
- 		ath10k_warn("failed to allocate memory chunk\n");
- 		return -ENOMEM;
- 	}
- 
--	memset(ar->wmi.mem_chunks[idx].vaddr, 0, pool_size);
--
- 	ar->wmi.mem_chunks[idx].paddr = paddr;
- 	ar->wmi.mem_chunks[idx].len = pool_size;
- 	ar->wmi.mem_chunks[idx].req_id = req_id;
-diff --git a/drivers/net/wireless/ath/wcn36xx/dxe.c b/drivers/net/wireless/ath/wcn36xx/dxe.c
-index 73f12f1..1975a1a 100644
---- a/drivers/net/wireless/ath/wcn36xx/dxe.c
-+++ b/drivers/net/wireless/ath/wcn36xx/dxe.c
-@@ -177,13 +177,11 @@ static int wcn36xx_dxe_init_descs(struct wcn36xx_dxe_ch *wcn_ch)
- 	int i;
- 
- 	size = wcn_ch->desc_num * sizeof(struct wcn36xx_dxe_desc);
--	wcn_ch->cpu_addr = dma_alloc_coherent(NULL, size, &wcn_ch->dma_addr,
--					      GFP_KERNEL);
-+	wcn_ch->cpu_addr = dma_zalloc_coherent(NULL, size, &wcn_ch->dma_addr,
-+					       GFP_KERNEL);
- 	if (!wcn_ch->cpu_addr)
- 		return -ENOMEM;
- 
--	memset(wcn_ch->cpu_addr, 0, size);
--
- 	cur_dxe = (struct wcn36xx_dxe_desc *)wcn_ch->cpu_addr;
- 	cur_ctl = wcn_ch->head_blk_ctl;
- 
--- 
-1.8.1.2.459.gbcd45b4.dirty
+>Looks like my scan-on-operating-channel optimization patch is
+>the problem.  I have just disabled this until I have time to
+>debug it in detail...
+>
+>Here is a build of my full patch-set with that buggy patch reverted,
+>please see if it works for you:
+>
+>http://www.candelatech.com/downloads/firmware-2-community-scanfix.bin
+
+Thanks,  I just do the test with your new firmware, It works on DFS channels and promiscuous mode.
+If you update something for your patch, please feel free to ask me to do the test.
+
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
 
 
 _______________________________________________
