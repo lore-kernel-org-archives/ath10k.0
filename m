@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WwTFM-0003yZ-Ua
- for ath10k@lists.infradead.org; Mon, 16 Jun 2014 09:30:40 +0000
+ id 1WwVyQ-0002x4-2s
+ for ath10k@lists.infradead.org; Mon, 16 Jun 2014 12:25:18 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: After shutdown/restart, ath10k sometimes stops receiving packets
-References: <CAHqTa-1EDoRwSXWx4JQ_JSpF1_60B3fn=KecE4mDCrLrDJ5odw@mail.gmail.com>
- <878uoz4eza.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1MGGFK50sO=JAswMZLA0=Yy8AH4g0ziLr6+RK2R57jFg@mail.gmail.com>
- <87vbs23ev5.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-32qgA7y6-+FKV117gGGqY7LO+=vjB4wURh31NP+cV2cg@mail.gmail.com>
-Date: Mon, 16 Jun 2014 12:30:07 +0300
-In-Reply-To: <CAHqTa-32qgA7y6-+FKV117gGGqY7LO+=vjB4wURh31NP+cV2cg@mail.gmail.com>
- (Avery Pennarun's message of "Sun, 15 Jun 2014 02:49:25 -0400")
-Message-ID: <87bntt2odc.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: fetching calibration data from flash
+References: <5396B9F9.2070107@stackframe.org> <5396C39A.9080402@elisanet.fi>
+ <87wqcpb0w1.fsf@kamboji.qca.qualcomm.com>
+ <5396C8EC.4090105@elisanet.fi>
+ <87sindb0gj.fsf@kamboji.qca.qualcomm.com>
+ <53972A91.1080600@candelatech.com>
+ <87egyvalj0.fsf@kamboji.qca.qualcomm.com>
+ <53985C61.5000201@candelatech.com>
+Date: Mon, 16 Jun 2014 15:24:48 +0300
+In-Reply-To: <53985C61.5000201@candelatech.com> (Ben Greear's message of "Wed, 
+ 11 Jun 2014 06:40:49 -0700")
+Message-ID: <87ioo111pr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,39 +29,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org, Matti Laakso <malaakso@elisanet.fi>
 
-Avery Pennarun <apenwarr@gmail.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> On Sun, Jun 15, 2014 at 1:45 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Avery Pennarun <apenwarr@gmail.com> writes:
->>> Someone in our QA group seems to be able to produce it after two or
->>> three test runs with Veriwave.  Before each run, he stops and restarts
->>> hostapd.
+> On 06/11/2014 01:38 AM, Kalle Valo wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
 >>
->> That's quite often. Was he testing DFS or something else? Maybe this is
->> related to radar detection or channel switching?
+>>> Another nice feature would be to allow configuring the number of
+>>> vdevs, peers, etc per NIC.  That way, you could have one NIC
+>>> tuned to be one big AP with lots of peers, and a second could
+>>> be several small APs with fewer peers and some stations, etc.
+>>>
+>>> Maybe this could be a separate file, or maybe it would be worth
+>>> adding this to a TLV type file with cal.bin being part of the
+>>> data?
+>>
+>> So basically you want a configuration (".ini") file for ath10k, right? I
+>> have seen those in out-of-tree drivers, but not in upstream drivers.
+>>
+>> If I'm guessing right what these configuration items would do in ath10k,
+>> I think instead of static configuration it would be much more flexible
+>> to have this stuff configurable dynamically. But how, that's the
+>> question. A sysfs file to set different profiles (or modes) was the
+>> first one which came to my mind, but that's ugly.
 >
-> He's not using DFS channels.
+> You also need this info before you do the initial firmware configuration,
+> otherwise you are going to have to restart firmware again later to apply
+> the new config (and advertise different interface combinations up the
+> stack, etc).
 
-Good, so we can rule out that.
+Ok.
 
-> This is supposedly just a simple throughput test. (Although I've
-> noticed in the past that the Veriwave sometimes produces odd sequences
-> of packets.)
+> Maybe a kernel module option to point to a file-name would work
+> (with some way to give different options to different nics in the
+> same system).
 
-Yeah, these kind of test equipments can behave different than normal
-802.11 devices. For example, I remember one very expensive test box was
-acting as an AP and it just ignored PM bit from the clients. No wonder
-the packet loss was high :)
+Over years I have seen these .ini suggestions few times and I never have
+been very fund of the idea. For example, that would mean yet another
+layer of configuration and more things to support. I would prefer to
+find a more automatic way of doing the same.
 
-In this case it might that the way Veriwave behaves so which makes it
-easy to reproduce the bug. And that's a good thing.
-
-Any chance you could get full trace-cmd logs (ath10k, mac80211, cfg80211
-and hostapd) when the bug fails with Veriwave? I'm sure that would get
-more hints what's happening.
+And I'm not sure if kernel maintainers would even accept this.
 
 -- 
 Kalle Valo
