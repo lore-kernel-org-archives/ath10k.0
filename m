@@ -1,22 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WwVyQ-0002x4-2s
- for ath10k@lists.infradead.org; Mon, 16 Jun 2014 12:25:18 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: fetching calibration data from flash
-References: <5396B9F9.2070107@stackframe.org> <5396C39A.9080402@elisanet.fi>
- <87wqcpb0w1.fsf@kamboji.qca.qualcomm.com>
- <5396C8EC.4090105@elisanet.fi>
- <87sindb0gj.fsf@kamboji.qca.qualcomm.com>
- <53972A91.1080600@candelatech.com>
- <87egyvalj0.fsf@kamboji.qca.qualcomm.com>
- <53985C61.5000201@candelatech.com>
-Date: Mon, 16 Jun 2014 15:24:48 +0300
-In-Reply-To: <53985C61.5000201@candelatech.com> (Ben Greear's message of "Wed, 
- 11 Jun 2014 06:40:49 -0700")
-Message-ID: <87ioo111pr.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WwYCj-0007Aa-Ut
+ for ath10k@lists.infradead.org; Mon, 16 Jun 2014 14:48:14 +0000
+Message-ID: <539F0393.1090009@candelatech.com>
+Date: Mon, 16 Jun 2014 07:47:47 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: RE : ath10k: firmware crash in station mode & problem DFS
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <538E9D26.4040009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
+ <538F9255.1060101@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>,
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>,
+ <539B2F21.3020609@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,56 +34,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org, Matti Laakso <malaakso@elisanet.fi>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Janusz Dziedzic <janusz.dziedzic@gmail.com>
 
-Ben Greear <greearb@candelatech.com> writes:
 
-> On 06/11/2014 01:38 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->>
->>> Another nice feature would be to allow configuring the number of
->>> vdevs, peers, etc per NIC.  That way, you could have one NIC
->>> tuned to be one big AP with lots of peers, and a second could
->>> be several small APs with fewer peers and some stations, etc.
->>>
->>> Maybe this could be a separate file, or maybe it would be worth
->>> adding this to a TLV type file with cal.bin being part of the
->>> data?
->>
->> So basically you want a configuration (".ini") file for ath10k, right? I
->> have seen those in out-of-tree drivers, but not in upstream drivers.
->>
->> If I'm guessing right what these configuration items would do in ath10k,
->> I think instead of static configuration it would be much more flexible
->> to have this stuff configurable dynamically. But how, that's the
->> question. A sysfs file to set different profiles (or modes) was the
->> first one which came to my mind, but that's ugly.
+
+On 06/16/2014 12:16 AM, Vu Hai NGUYEN wrote:
+>> Also, do you see this same behaviour on non-DFS channels?
 >
-> You also need this info before you do the initial firmware configuration,
-> otherwise you are going to have to restart firmware again later to apply
-> the new config (and advertise different interface combinations up the
-> stack, etc).
+> No your firmware works normally on non-DFS channels.
+>
+>> Looks like my scan-on-operating-channel optimization patch is
+>> the problem.  I have just disabled this until I have time to
+>> debug it in detail...
+>>
+>> Here is a build of my full patch-set with that buggy patch reverted,
+>> please see if it works for you:
+>>
+>> http://www.candelatech.com/downloads/firmware-2-community-scanfix.bin
+>
+> Thanks,  I just do the test with your new firmware, It works on DFS channels and promiscuous mode.
+> If you update something for your patch, please feel free to ask me to do the test.
 
-Ok.
+I uploaded the latest CT firmware builds with this fix last Friday.  The 10.1.467-ct-006
+should be basically the same as the -scanfix.bin that you tested earlier.
 
-> Maybe a kernel module option to point to a file-name would work
-> (with some way to give different options to different nics in the
-> same system).
+Please let me know if you see any additional problems.
 
-Over years I have seen these .ini suggestions few times and I never have
-been very fund of the idea. For example, that would mean yet another
-layer of configuration and more things to support. I would prefer to
-find a more automatic way of doing the same.
+Thanks,
+Ben
 
-And I'm not sure if kernel maintainers would even accept this.
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
