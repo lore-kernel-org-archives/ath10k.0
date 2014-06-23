@@ -1,34 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wz0Af-00049L-99
- for ath10k@lists.infradead.org; Mon, 23 Jun 2014 09:04:14 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Mon, 23 Jun 2014 11:03:30 +0200
-Subject: Warning message in bridge mode
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <538E9D26.4040009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FB@srvexch01.SODIELEC .local>,
- <538F9255.1060101@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
- <5390A9CC.7060400@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
- <5391E363.50907@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
- <53972984.8020303@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
- <53988C53.6030806@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>,
- <539A0C06.6050105@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>,
- <539B2F21.3020609@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>,
- <539F0393.1090009@candelatech.com>,
- <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
-Content-Language: fr-FR
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Wz1LT-0004BO-0J
+ for ath10k@lists.infradead.org; Mon, 23 Jun 2014 10:19:27 +0000
+Received: by mail-wi0-f172.google.com with SMTP id hi2so3866712wib.11
+ for <ath10k@lists.infradead.org>; Mon, 23 Jun 2014 03:19:04 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1400769683.4174.25.camel@jlt4.sipsolutions.net>
+References: <1400767955-16313-1-git-send-email-michal.kazior@tieto.com>
+ <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
+ <1400769683.4174.25.camel@jlt4.sipsolutions.net>
+Date: Mon, 23 Jun 2014 12:19:03 +0200
+Message-ID: <CA+BoTQk=DU=-HzVo-XsQTpCt6CS7aXxQMy5hTyQ7qC56ebBLZQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: make core registering async
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -37,59 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "greearb@candelatech.com" <greearb@candelatech.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I get this warning message when doing my test with iperf in my AP:
-br0: received packet on wlan0.sta1 with own address as source address
-
-My STA is set up in bridge network (promiscuous mode) and using the firmware of CT.
-http://www.candelatech.com/downloads/firmware-2-ct-community-6.bin
-When my STA is associated successfully with my AP, the interface "wlan0.sta1" is created
-in my AP. And I have this config:
-br0              Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6  
-eth0            Link encap:Ethernet  HWaddr 00:10:02:0F:C5:05
-wlan0          Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6
-wlan0.sta1  Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6 
-
-I think that the warning message is because my interface br0 and wlan0.sta1 have the same
-mac address. And it decrease the performance of the rate (I get higher rate with iperf when my 
-STA is set up in router network (not enter promiscuous mode). I can not do the test with the
-official firmware cause it crashed in promiscuous mode.
-So I wonder that if anyone get the same issue like me?
-
-Thanks,
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
-
-
-I can use it for my STA in promiscuous mode and connect to my AP on channels DFS,
-Sometimes I get this message "wlan0: received packet with  own address as source address".
-I'm not sure that it is your firmware issue or because of my network configuration.
-I'll try to figure it out and report to you if it relates to your firmware.
-
-Thanks,
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgSm9oYW5uZXMsCgoKT24gMjIgTWF5IDIwMTQgMTY6NDEsIEpvaGFubmVzIEJlcmcgPGpvaGFu
+bmVzQHNpcHNvbHV0aW9ucy5uZXQ+IHdyb3RlOgo+IE9uIFRodSwgMjAxNC0wNS0yMiBhdCAxNjox
+MiArMDIwMCwgTWljaGFsIEthemlvciB3cm90ZToKPgo+PiBBcyBhIHNpZGUgZWZmZWN0IHRoZXJl
+J3Mgbm8gd2F5IHRvIHByb3BhZ2F0ZQo+PiByZWdpc3RlcmluZyBlcnJvcnMgdG8gdGhlIHBjaSBz
+dWJzeXN0ZW0gYnV0IHRoaXMKPj4gcHJvYmFibHkgaXNuJ3QgcmVhbGx5IG5lY2Vzc2FyeS4KPgo+
+IFlvdSBzaG91bGQgcHJvYmFibHkgdW5iaW5kIGlmIGl0IGZhaWxzIC0gaXdsd2lmaSBkb2VzIHRo
+YXQuCgpIbW0uLgoKQXMgaXQgc3RhbmRzIGF0aDEwayBub3cgZGVhZGxvY2tzIHdoZW4gZmlybXdh
+cmUgcHJvYmluZyB3b3JrZXIgZmFpbHMKYW5kIGNhbGxzIGRldmljZV9yZWxlYXNlX2RyaXZlcigp
+LiBUaGlzIGluZGlyZWN0bHkgaGl0cyBwY2kgcmVtb3ZlKCkKY2FsbGJhY2sgd2hpY2ggd2FpdHMg
+Zm9yIHRoZSB3b3JrZXIuIE9vcHMuCgpTbyBJJ3ZlIHRha2VuIGEgbG9vayBob3cgb3RoZXIgZHJp
+dmVyIGRvIGl0IHNvIEkgY2FuIGNvbWUgdXAgd2l0aCBhCnNvbHV0aW9uIC0gbW9zdCBvZiB0aGVt
+IHNlZW0gdXNlIGNvbXBsZXRpb25zLiBBZnRlciB0YWtpbmcgYSBjbG9zZXIKbG9vayBJIGNhbWUg
+dG8gYSBjb25jbHVzaW9uIHRoaXMgaXMgaW5oZXJlbnRseSByYWN5IHRvby4gQ29uc2lkZXIgdGhl
+CmZvbGxvd2luZyBzY2VuYXJpbzoKCiBbc3lzY2FsbF0KIGluc21vZAogcGNpLT5wcm9iZSgpCiBx
+dWV1ZV93b3JrKCkKIHJldHVybgogW3dvcmtlcl0KIHByb2JlX2Z3KCkKIFtzeXNjYWxsXQogcm1t
+b2QKIGRldl9sb2NrKCkKIHBjaS0+cmVtb3ZlKCkKIHdhaXRfZm9yX2NvbXBsZXRpb24oKQogW3dv
+cmtlcl0KIGNvbXBsZXRlX2FsbCgpCiBkZXZpY2VfcmVsZWFzZV9kcml2ZXIoKQogZGV2X2xvY2so
+KQoge2FscmVhZHkgaGVsZCwgeWllbGR9CiBbc3lzY2FsbF0KIGZyZWUoaW50ZXJuYWwgc3RydWN0
+dXJlcykKIGRldl91bmxvY2soKQogcmV0dXJuCiBbd29ya2VyXQoge3dva2VuIHVwLCBidXQgZGV2
+LT5kcml2ZXIgPT0gTlVMTCBzbyBubyBjYWxsYmFja3N9CiBkZXZfdW5sb2NrKCkKIHJldHVybgoK
+VGhlIGRyaXZlciBjb2RlIHNlY3Rpb24gbWF5IG5vdCBiZSByZWFjaGFibGUgYW55bW9yZSB1cG9u
+IHdvcmtlcgpyZXR1cm5pbmcgZnJvbSB0aGUgZGV2aWNlX3JlbGVhc2VfZHJpdmVyKCkgY2FsbCwg
+cmlnaHQ/IEFsc28gc2luY2UKYXRoMTBrIHVzZXMgYW4gaW50ZXJuYWwgd29ya2VyIGl0IGFsc28g
+bWVhbnMgdGhlIHdvcmtfc3RydWN0IHdvdWxkIGJlCmFscmVhZHkgZnJlZWQgYnkgdGhlIHN5c2Nh
+bGwgZmxvdyAoaS5lLiB3b3JrZXIgd291bGQgcnVuIGFmdGVyIGRyaXZlcgpoYXMgc3VwcG9zZWRs
+eSBiZWVuIGNsZWFuZWQgdXAuLikuIEV2ZW4gaWYgYXRoMTBrIHdhcyB0byB1c2UKcmVxdWVzdF9m
+aXJtd2FyZV9ub3dhaXQoKSwgd2hpY2ggYWxsb2NhdGVzIGEgdGVtcG9yYXJ5IHdvcmtfc3RydWN0
+LAp0aGUgdW5yZWFjaGFibGUgY29kZSBzZWN0aW9uIHN0aWxsIHJlbWFpbnMgYSBwcm9ibGVtLgoK
+T3IgbWF5YmUgdGhpcyBpc24ndCByZWFsbHkgYSBwcm9ibGVtIGFuZC9vciBJJ20gbWlzc2luZyBz
+b21ldGhpbmc/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
