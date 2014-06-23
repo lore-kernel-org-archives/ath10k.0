@@ -1,17 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzBAB-0000k2-Sj
- for ath10k@lists.infradead.org; Mon, 23 Jun 2014 20:48:28 +0000
-Message-ID: <53A89286.8090504@candelatech.com>
-Date: Mon, 23 Jun 2014 13:48:06 -0700
+ id 1WzBsC-0005aZ-2A
+ for ath10k@lists.infradead.org; Mon, 23 Jun 2014 21:33:56 +0000
+Message-ID: <53A89D2E.6010708@candelatech.com>
+Date: Mon, 23 Jun 2014 14:33:34 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: General firmware stability issue.
-References: <53A332E7.2060400@candelatech.com>
- <CA+BoTQnfgbhyUDjp-FKO4pnwZ3N7nGGT+jcg9XYbSxcq4tQxzg@mail.gmail.com>
- <53A85040.1020404@candelatech.com>
-In-Reply-To: <53A85040.1020404@candelatech.com>
+Subject: Re: Warning message in bridge mode
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>,
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>,
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>,
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>,
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>,
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>,
+ <539B2F21.3020609@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>,
+ <539F0393.1090009@candelatech.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,71 +38,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/23/2014 09:05 AM, Ben Greear wrote:
+On 06/23/2014 02:03 AM, Vu Hai NGUYEN wrote:
+> I get this warning message when doing my test with iperf in my AP:
+> br0: received packet on wlan0.sta1 with own address as source address
 > 
+> My STA is set up in bridge network (promiscuous mode) and using the firmware of CT.
+> http://www.candelatech.com/downloads/firmware-2-ct-community-6.bin
+> When my STA is associated successfully with my AP, the interface "wlan0.sta1" is created
+> in my AP. And I have this config:
+> br0              Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6  
+> eth0            Link encap:Ethernet  HWaddr 00:10:02:0F:C5:05
+> wlan0          Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6
+> wlan0.sta1  Link encap:Ethernet     HWaddr 04:F0:21:0E:38:C6 
 > 
-> On 06/22/2014 11:49 PM, Michal Kazior wrote:
->> On 19 June 2014 20:58, Ben Greear <greearb@candelatech.com> wrote:
->>> When using our firmware and kernel mods, we often see our AP system
->>> crash the firmware after several days of various testing.
->>>
->>> Often after this, it takes a full reboot to bring the system back.
->>
->> Can you elaborate on this? Why does it need a full reboot?
-> 
-> I'll send kernel messages next time it happens, but basically it just
-> fails cold restart over and over again.
+> I think that the warning message is because my interface br0 and wlan0.sta1 have the same
+> mac address. And it decrease the performance of the rate (I get higher rate with iperf when my 
+> STA is set up in router network (not enter promiscuous mode). I can not do the test with the
+> official firmware cause it crashed in promiscuous mode.
+> So I wonder that if anyone get the same issue like me?
 
-Here's logs from a station system that had a problem of this nature.  Since
-it should not be doing any beaconing, I guess the root cause of at least this
-particular problem is different.  This is with our firmware and hacked ath10k
-driver, so of course it is possible it is not an upstream problem.
+Why do you have the same MAC for wlan0 and wlan0.sta1?  What are those interfaces
+exactly?  It is normal for the bridge to have same MAC as one of the interfaces
+it contains.
 
-Kernel is 3.14, with most of the ath10k patches from 3.15 backported to it,
-plus additional patches.
+> I can use it for my STA in promiscuous mode and connect to my AP on channels DFS,
+> Sometimes I get this message "wlan0: received packet with  own address as source address".
+> I'm not sure that it is your firmware issue or because of my network configuration.
+> I'll try to figure it out and report to you if it relates to your firmware.
 
-http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.14.dev.y/.git;a=summary
-
-Jun 22 10:00:00 localhost kernel: ath10k: Creating vdev id: 0  map: 68719476735
-Jun 22 10:00:00 localhost kernel: IPv6: ADDRCONF(NETDEV_UP): sta1: link is not ready
-Jun 22 10:00:00 localhost kernel: ath10k: Creating vdev id: 1  map: 68719476734
-Jun 22 10:00:00 localhost kernel: IPv6: ADDRCONF(NETDEV_UP): sta2: link is not ready
-Jun 22 10:00:01 localhost kernel: ath10k: stop, state OFF
-Jun 22 10:00:02 localhost kernel: e1000e: eth1 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
-Jun 22 10:00:02 localhost kernel: IPv6: ADDRCONF(NETDEV_CHANGE): eth1: link becomes ready
-Jun 22 10:00:04 localhost kernel: ath10k: Target ready! transmit resources: 3 size:1792
-Jun 22 10:00:04 localhost kernel: ath10k: wmi event firmware message 'P 73 V 36 T 411'
-Jun 22 10:00:04 localhost kernel: ath10k: wmi event firmware message 'msdu-desc: 808  sw-crypt: 1'
-Jun 22 10:00:04 localhost kernel: ath10k: wmi event firmware message 'alloc rem: 4332 iram: 57220'
-Jun 22 10:00:04 localhost kernel: ath10k: start, state going from OFF to ON
-Jun 22 10:00:04 localhost kernel: ath10k: Creating vdev id: 0  map: 68719476735
-Jun 22 10:00:04 localhost kernel: IPv6: ADDRCONF(NETDEV_UP): sta1: link is not ready
-Jun 22 10:00:05 localhost kernel: ath10k: stop, state OFF
-Jun 22 10:00:08 localhost kernel: ath10k: failed to receive initialized event from target: 00000000
-Jun 22 10:00:08 localhost kernel: ath10k: failed to wait for target to init: -110
-Jun 22 10:00:08 localhost kernel: ath10k: failed to power up target using warm reset: -110
-Jun 22 10:00:08 localhost kernel: ath10k: trying cold reset
-Jun 22 10:00:08 localhost kernel: ath10k: target took longer 5000 us to wake up (awake count 1)
-Jun 22 10:00:11 localhost kernel: ath10k: failed to receive initialized event from target: ffffffff
-Jun 22 10:00:11 localhost kernel: ath10k: failed to wait for target to init: -110
-Jun 22 10:00:11 localhost kernel: ath10k: device crashed - no diagnostics available
-Jun 22 10:00:11 localhost kernel: ath10k: target took longer 5000 us to wake up (awake count 2)
-Jun 22 10:00:11 localhost kernel: ath10k: failed to wake up target: -110
-Jun 22 10:00:11 localhost kernel: ath10k: failed to power up target using cold reset too (-110)
-Jun 22 10:00:11 localhost kernel: ath10k: Could not init hif: -110 (state OFF)
-Jun 22 10:00:11 localhost kernel: ath10k: target took longer 5000 us to wake up (awake count 2)
-Jun 22 10:00:11 localhost kernel: ath10k: failed to wake up target: -110
-Jun 22 10:00:11 localhost kernel: ath10k: failed to reset target: -110
-Jun 22 10:00:11 localhost kernel: ath10k: failed to power up target using warm reset: -110
-.....
-
-
+I doubt my firmware has any impact on this particular problem.
 
 Thanks,
 Ben
+
+> 
+> Thanks,
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+> 
+> 
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+> 
 
 
 -- 
