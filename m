@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Wz1LT-0004BO-0J
- for ath10k@lists.infradead.org; Mon, 23 Jun 2014 10:19:27 +0000
-Received: by mail-wi0-f172.google.com with SMTP id hi2so3866712wib.11
- for <ath10k@lists.infradead.org>; Mon, 23 Jun 2014 03:19:04 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1400769683.4174.25.camel@jlt4.sipsolutions.net>
+ id 1Wz2mv-0003Mo-Hz
+ for ath10k@lists.infradead.org; Mon, 23 Jun 2014 11:51:54 +0000
+Message-ID: <1403524278.4418.19.camel@jlt4.sipsolutions.net>
+Subject: Re: [PATCH 2/2] ath10k: make core registering async
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 23 Jun 2014 13:51:18 +0200
+In-Reply-To: <CA+BoTQk=DU=-HzVo-XsQTpCt6CS7aXxQMy5hTyQ7qC56ebBLZQ@mail.gmail.com>
+ (sfid-20140623_121907_420359_3A843E5E)
 References: <1400767955-16313-1-git-send-email-michal.kazior@tieto.com>
  <1400767955-16313-3-git-send-email-michal.kazior@tieto.com>
  <1400769683.4174.25.camel@jlt4.sipsolutions.net>
-Date: Mon, 23 Jun 2014 12:19:03 +0200
-Message-ID: <CA+BoTQk=DU=-HzVo-XsQTpCt6CS7aXxQMy5hTyQ7qC56ebBLZQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: make core registering async
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQk=DU=-HzVo-XsQTpCt6CS7aXxQMy5hTyQ7qC56ebBLZQ@mail.gmail.com>
+ (sfid-20140623_121907_420359_3A843E5E)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,42 +23,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgSm9oYW5uZXMsCgoKT24gMjIgTWF5IDIwMTQgMTY6NDEsIEpvaGFubmVzIEJlcmcgPGpvaGFu
-bmVzQHNpcHNvbHV0aW9ucy5uZXQ+IHdyb3RlOgo+IE9uIFRodSwgMjAxNC0wNS0yMiBhdCAxNjox
-MiArMDIwMCwgTWljaGFsIEthemlvciB3cm90ZToKPgo+PiBBcyBhIHNpZGUgZWZmZWN0IHRoZXJl
-J3Mgbm8gd2F5IHRvIHByb3BhZ2F0ZQo+PiByZWdpc3RlcmluZyBlcnJvcnMgdG8gdGhlIHBjaSBz
-dWJzeXN0ZW0gYnV0IHRoaXMKPj4gcHJvYmFibHkgaXNuJ3QgcmVhbGx5IG5lY2Vzc2FyeS4KPgo+
-IFlvdSBzaG91bGQgcHJvYmFibHkgdW5iaW5kIGlmIGl0IGZhaWxzIC0gaXdsd2lmaSBkb2VzIHRo
-YXQuCgpIbW0uLgoKQXMgaXQgc3RhbmRzIGF0aDEwayBub3cgZGVhZGxvY2tzIHdoZW4gZmlybXdh
-cmUgcHJvYmluZyB3b3JrZXIgZmFpbHMKYW5kIGNhbGxzIGRldmljZV9yZWxlYXNlX2RyaXZlcigp
-LiBUaGlzIGluZGlyZWN0bHkgaGl0cyBwY2kgcmVtb3ZlKCkKY2FsbGJhY2sgd2hpY2ggd2FpdHMg
-Zm9yIHRoZSB3b3JrZXIuIE9vcHMuCgpTbyBJJ3ZlIHRha2VuIGEgbG9vayBob3cgb3RoZXIgZHJp
-dmVyIGRvIGl0IHNvIEkgY2FuIGNvbWUgdXAgd2l0aCBhCnNvbHV0aW9uIC0gbW9zdCBvZiB0aGVt
-IHNlZW0gdXNlIGNvbXBsZXRpb25zLiBBZnRlciB0YWtpbmcgYSBjbG9zZXIKbG9vayBJIGNhbWUg
-dG8gYSBjb25jbHVzaW9uIHRoaXMgaXMgaW5oZXJlbnRseSByYWN5IHRvby4gQ29uc2lkZXIgdGhl
-CmZvbGxvd2luZyBzY2VuYXJpbzoKCiBbc3lzY2FsbF0KIGluc21vZAogcGNpLT5wcm9iZSgpCiBx
-dWV1ZV93b3JrKCkKIHJldHVybgogW3dvcmtlcl0KIHByb2JlX2Z3KCkKIFtzeXNjYWxsXQogcm1t
-b2QKIGRldl9sb2NrKCkKIHBjaS0+cmVtb3ZlKCkKIHdhaXRfZm9yX2NvbXBsZXRpb24oKQogW3dv
-cmtlcl0KIGNvbXBsZXRlX2FsbCgpCiBkZXZpY2VfcmVsZWFzZV9kcml2ZXIoKQogZGV2X2xvY2so
-KQoge2FscmVhZHkgaGVsZCwgeWllbGR9CiBbc3lzY2FsbF0KIGZyZWUoaW50ZXJuYWwgc3RydWN0
-dXJlcykKIGRldl91bmxvY2soKQogcmV0dXJuCiBbd29ya2VyXQoge3dva2VuIHVwLCBidXQgZGV2
-LT5kcml2ZXIgPT0gTlVMTCBzbyBubyBjYWxsYmFja3N9CiBkZXZfdW5sb2NrKCkKIHJldHVybgoK
-VGhlIGRyaXZlciBjb2RlIHNlY3Rpb24gbWF5IG5vdCBiZSByZWFjaGFibGUgYW55bW9yZSB1cG9u
-IHdvcmtlcgpyZXR1cm5pbmcgZnJvbSB0aGUgZGV2aWNlX3JlbGVhc2VfZHJpdmVyKCkgY2FsbCwg
-cmlnaHQ/IEFsc28gc2luY2UKYXRoMTBrIHVzZXMgYW4gaW50ZXJuYWwgd29ya2VyIGl0IGFsc28g
-bWVhbnMgdGhlIHdvcmtfc3RydWN0IHdvdWxkIGJlCmFscmVhZHkgZnJlZWQgYnkgdGhlIHN5c2Nh
-bGwgZmxvdyAoaS5lLiB3b3JrZXIgd291bGQgcnVuIGFmdGVyIGRyaXZlcgpoYXMgc3VwcG9zZWRs
-eSBiZWVuIGNsZWFuZWQgdXAuLikuIEV2ZW4gaWYgYXRoMTBrIHdhcyB0byB1c2UKcmVxdWVzdF9m
-aXJtd2FyZV9ub3dhaXQoKSwgd2hpY2ggYWxsb2NhdGVzIGEgdGVtcG9yYXJ5IHdvcmtfc3RydWN0
-LAp0aGUgdW5yZWFjaGFibGUgY29kZSBzZWN0aW9uIHN0aWxsIHJlbWFpbnMgYSBwcm9ibGVtLgoK
-T3IgbWF5YmUgdGhpcyBpc24ndCByZWFsbHkgYSBwcm9ibGVtIGFuZC9vciBJJ20gbWlzc2luZyBz
-b21ldGhpbmc/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+>  [worker]
+>  complete_all()
+>  device_release_driver()
+>  dev_lock()
+>  {already held, yield}
+>  [syscall]
+>  free(internal structures)
+>  dev_unlock()
+>  return
+>  [worker]
+>  {woken up, but dev->driver == NULL so no callbacks}
+>  dev_unlock()
+>  return
+> 
+> The driver code section may not be reachable anymore upon worker
+> returning from the device_release_driver() call, right? Also since
+> ath10k uses an internal worker it also means the work_struct would be
+> already freed by the syscall flow (i.e. worker would run after driver
+> has supposedly been cleaned up..). Even if ath10k was to use
+> request_firmware_nowait(), which allocates a temporary work_struct,
+> the unreachable code section still remains a problem.
+> 
+> Or maybe this isn't really a problem and/or I'm missing something?
+
+Yeah, hmm, this looks like a problem. I guess we didn't really consider
+module unload in such detail ...
+
+I guess this would crash upon return from device_release_driver()? I
+guess if that's the last thing then maybe we'd actually get a tail-call
+optimisation, but we don't want to rely on that of course!
+
+Seems like to fix it we just need to get a module reference though? Can
+a module put() itself though? Hmmm.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
