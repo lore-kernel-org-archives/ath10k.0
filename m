@@ -1,31 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzSNM-0001eb-0Y
- for ath10k@lists.infradead.org; Tue, 24 Jun 2014 15:11:16 +0000
-Message-ID: <53A994F7.6090707@candelatech.com>
-Date: Tue, 24 Jun 2014 08:10:47 -0700
+ id 1WzV5t-00078Y-QR
+ for ath10k@lists.infradead.org; Tue, 24 Jun 2014 18:05:22 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 686A240A79A
+ for <ath10k@lists.infradead.org>; Tue, 24 Jun 2014 11:04:58 -0700 (PDT)
+Message-ID: <53A9BDCA.8080000@candelatech.com>
+Date: Tue, 24 Jun 2014 11:04:58 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: RE : Warning message in bridge mode
-References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
- <5391E363.50907@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>
- <53972984.8020303@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>
- <53988C53.6030806@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>
- <539A0C06.6050105@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>
- <539B2F21.3020609@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
- <539F0393.1090009@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
- <53A89D2E.6010708@candelatech.com>,
- <E37BEAE7-CCA9-4C79-9F24-051E867FC0F6@gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F10997915@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F10997915@srvexch01.SODIELEC.local>
+Subject: Latest ath10k performance stats
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,28 +21,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Bruno Antunes <baantunes@gmail.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 06/24/2014 12:39 AM, Vu Hai NGUYEN wrote:
+Using CT firmware, E5 3.7Ghz hex-core station system, slightly slower AP system,
+kernel is hacked 3.14.7+.
+AP is NOT configured for software-crypt, but station machine is.
+Systems are connected with 3 meter high quality COAX SMA cables + 30dB fixed attenuator,
+but this is not a fully isolated environment.  Running on channel 149, HT80.
+UDP connections are configured with 2MB send + receive socket buffers, 1500 MTU sized packets.
+AP is acting as router (and running ath10k, etc).
 
-> I was wrong, the only warning msg is "br0: received packet on wlan0.sta1 with own address as source address".
-> And I have another question: When doing test with iperf, I always have rate from AP to STA higher than STA to AP
-> (380Mbps vs 240 Mbps).This is normal too right? Cause before you told me that when you did the test with your
-> own trafficgenerator, you can get 500+Mbps download, and about 400Mbps upload.
+TCP is configured for 10 streams, default OS send/receive buffer management.
 
-We have done some tests recently on E5 3.7Ghz systems (ie, top-end-ish server systems)
-that can push 800+Mbps UDP, but can't recall if that is upload or download.
+Station machine sends to/from eth1 and station, ie it is both ends
+of the connection.  UDP transmit is tuned to be just above what system
+can handle.  If you send at full 1Gbps, total received throughput is
+around 20% slower.
 
-We need to re-run tests and publish the info.
+The rates reported are 'goodput' for the protocol in question.
 
-Looks like host CPU is very important to higher-speeds with ath10k.  I did a perf top
-months ago, and there was bad contention on a spinlock or two in ath10k driver, so that
-is probably much of the performance problems we see.
+WPA2 (station RX uses software encryption, so CPU bound)
+  UDP Download: 530 Mbps
+  UDP Upload:   610 Mbps
+  TCP Download: 459 Mbps
+  TCP Upload:   570 Mbps
+
+
+Open Authentication
+  UDP Download: 830 Mbps  **
+  UDP Upload:   615 Mbps
+  TCP Download: 660 Mbps (400+ ms latency, one way, by the way)
+  TCP Upload:   570 Mbps
+
+
+** We currently ignore checksum errors, part of what it takes to make
+   rx-software-crypt work.  But, on high-speed UDP download (Open Auth) we see a fair
+   bit of what must be legit checksum errors, and our traffic generator sees
+   corrupted data streams and restarts itself.  So throughput is not even.
+
+   Will work on fixing this in our kernel, should be able to pay attention to
+   csum errors IF packet is not encrypted.
 
 Thanks,
 Ben
