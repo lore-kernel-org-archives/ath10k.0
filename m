@@ -1,20 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzJLc-00044c-Tt
- for ath10k@lists.infradead.org; Tue, 24 Jun 2014 05:32:50 +0000
-Received: by mail-wi0-f171.google.com with SMTP id n15so5306544wiw.16
- for <ath10k@lists.infradead.org>; Mon, 23 Jun 2014 22:32:25 -0700 (PDT)
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WzLLF-0007ka-Ov
+ for ath10k@lists.infradead.org; Tue, 24 Jun 2014 07:40:34 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 24 Jun 2014 09:39:59 +0200
+Subject: RE : Warning message in bridge mode
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F10997915@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FF@srvexch01.SODIELEC.local>
+ <5390A9CC.7060400@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997900@srvexch01.SODIELEC.local>
+ <5391E363.50907@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997902@srvexch01.SODIELEC.local>
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>
+ <539B2F21.3020609@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
+ <539F0393.1090009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
+ <53A89D2E.6010708@candelatech.com>,
+ <E37BEAE7-CCA9-4C79-9F24-051E867FC0F6@gmail.com>
+In-Reply-To: <E37BEAE7-CCA9-4C79-9F24-051E867FC0F6@gmail.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-In-Reply-To: <53A89286.8090504@candelatech.com>
-References: <53A332E7.2060400@candelatech.com>
- <CA+BoTQnfgbhyUDjp-FKO4pnwZ3N7nGGT+jcg9XYbSxcq4tQxzg@mail.gmail.com>
- <53A85040.1020404@candelatech.com>
- <53A89286.8090504@candelatech.com>
-Date: Tue, 24 Jun 2014 07:32:25 +0200
-Message-ID: <CA+BoTQkNcOfEHmfgjATzwDO0dZCCpvT7jJtzcREPon2qHP=45Q@mail.gmail.com>
-Subject: Re: General firmware stability issue.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,76 +37,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Bruno Antunes <baantunes@gmail.com>, Ben Greear <greearb@candelatech.com>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjMgSnVuZSAyMDE0IDIyOjQ4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4gd3JvdGU6Cj4gT24gMDYvMjMvMjAxNCAwOTowNSBBTSwgQmVuIEdyZWVhciB3cm90ZToKPj4K
-Pj4KPj4gT24gMDYvMjIvMjAxNCAxMTo0OSBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPj4+IE9u
-IDE5IEp1bmUgMjAxNCAyMDo1OCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+
-IHdyb3RlOgo+Pj4+IFdoZW4gdXNpbmcgb3VyIGZpcm13YXJlIGFuZCBrZXJuZWwgbW9kcywgd2Ug
-b2Z0ZW4gc2VlIG91ciBBUCBzeXN0ZW0KPj4+PiBjcmFzaCB0aGUgZmlybXdhcmUgYWZ0ZXIgc2V2
-ZXJhbCBkYXlzIG9mIHZhcmlvdXMgdGVzdGluZy4KPj4+Pgo+Pj4+IE9mdGVuIGFmdGVyIHRoaXMs
-IGl0IHRha2VzIGEgZnVsbCByZWJvb3QgdG8gYnJpbmcgdGhlIHN5c3RlbSBiYWNrLgo+Pj4KPj4+
-IENhbiB5b3UgZWxhYm9yYXRlIG9uIHRoaXM/IFdoeSBkb2VzIGl0IG5lZWQgYSBmdWxsIHJlYm9v
-dD8KPj4KPj4gSSdsbCBzZW5kIGtlcm5lbCBtZXNzYWdlcyBuZXh0IHRpbWUgaXQgaGFwcGVucywg
-YnV0IGJhc2ljYWxseSBpdCBqdXN0Cj4+IGZhaWxzIGNvbGQgcmVzdGFydCBvdmVyIGFuZCBvdmVy
-IGFnYWluLgo+Cj4gSGVyZSdzIGxvZ3MgZnJvbSBhIHN0YXRpb24gc3lzdGVtIHRoYXQgaGFkIGEg
-cHJvYmxlbSBvZiB0aGlzIG5hdHVyZS4gIFNpbmNlCj4gaXQgc2hvdWxkIG5vdCBiZSBkb2luZyBh
-bnkgYmVhY29uaW5nLCBJIGd1ZXNzIHRoZSByb290IGNhdXNlIG9mIGF0IGxlYXN0IHRoaXMKPiBw
-YXJ0aWN1bGFyIHByb2JsZW0gaXMgZGlmZmVyZW50LiAgVGhpcyBpcyB3aXRoIG91ciBmaXJtd2Fy
-ZSBhbmQgaGFja2VkIGF0aDEwawo+IGRyaXZlciwgc28gb2YgY291cnNlIGl0IGlzIHBvc3NpYmxl
-IGl0IGlzIG5vdCBhbiB1cHN0cmVhbSBwcm9ibGVtLgoKVGhlIGNhdXNlIG1heSBiZSBkaWZmZXJl
-bnQgYnV0IHRoZSBtZWNoYW5pc20gbWlnaHQgYmUgdGhlIHNhbWUsIGkuZS4KYXQgb25lIHBvaW50
-IHRhcmdldCBhY2Nlc3NlcyBhbiBpbnZhbGlkIG1lbW9yeSBhZGRyZXNzIG9uIGhvc3QgYW5kCmNv
-bnRyb2xsZXIgZ29lcyBub3Blbm9wZW5vcGUuCgoKPiBLZXJuZWwgaXMgMy4xNCwgd2l0aCBtb3N0
-IG9mIHRoZSBhdGgxMGsgcGF0Y2hlcyBmcm9tIDMuMTUgYmFja3BvcnRlZCB0byBpdCwKPiBwbHVz
-IGFkZGl0aW9uYWwgcGF0Y2hlcy4KPgo+IGh0dHA6Ly9kbXoyLmNhbmRlbGF0ZWNoLmNvbS9naXQv
-Z2l0d2ViLmNnaT9wPWxpbnV4LTMuMTQuZGV2LnkvLmdpdDthPXN1bW1hcnkKPgo+IEp1biAyMiAx
-MDowMDowMCBsb2NhbGhvc3Qga2VybmVsOiBhdGgxMGs6IENyZWF0aW5nIHZkZXYgaWQ6IDAgIG1h
-cDogNjg3MTk0NzY3MzUKPiBKdW4gMjIgMTA6MDA6MDAgbG9jYWxob3N0IGtlcm5lbDogSVB2Njog
-QUREUkNPTkYoTkVUREVWX1VQKTogc3RhMTogbGluayBpcyBub3QgcmVhZHkKPiBKdW4gMjIgMTA6
-MDA6MDAgbG9jYWxob3N0IGtlcm5lbDogYXRoMTBrOiBDcmVhdGluZyB2ZGV2IGlkOiAxICBtYXA6
-IDY4NzE5NDc2NzM0Cj4gSnVuIDIyIDEwOjAwOjAwIGxvY2FsaG9zdCBrZXJuZWw6IElQdjY6IEFE
-RFJDT05GKE5FVERFVl9VUCk6IHN0YTI6IGxpbmsgaXMgbm90IHJlYWR5Cj4gSnVuIDIyIDEwOjAw
-OjAxIGxvY2FsaG9zdCBrZXJuZWw6IGF0aDEwazogc3RvcCwgc3RhdGUgT0ZGCj4gSnVuIDIyIDEw
-OjAwOjAyIGxvY2FsaG9zdCBrZXJuZWw6IGUxMDAwZTogZXRoMSBOSUMgTGluayBpcyBVcCAxMDAw
-IE1icHMgRnVsbCBEdXBsZXgsIEZsb3cgQ29udHJvbDogUngvVHgKPiBKdW4gMjIgMTA6MDA6MDIg
-bG9jYWxob3N0IGtlcm5lbDogSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IGV0aDE6IGxp
-bmsgYmVjb21lcyByZWFkeQo+IEp1biAyMiAxMDowMDowNCBsb2NhbGhvc3Qga2VybmVsOiBhdGgx
-MGs6IFRhcmdldCByZWFkeSEgdHJhbnNtaXQgcmVzb3VyY2VzOiAzIHNpemU6MTc5Mgo+IEp1biAy
-MiAxMDowMDowNCBsb2NhbGhvc3Qga2VybmVsOiBhdGgxMGs6IHdtaSBldmVudCBmaXJtd2FyZSBt
-ZXNzYWdlICdQIDczIFYgMzYgVCA0MTEnCj4gSnVuIDIyIDEwOjAwOjA0IGxvY2FsaG9zdCBrZXJu
-ZWw6IGF0aDEwazogd21pIGV2ZW50IGZpcm13YXJlIG1lc3NhZ2UgJ21zZHUtZGVzYzogODA4ICBz
-dy1jcnlwdDogMScKPiBKdW4gMjIgMTA6MDA6MDQgbG9jYWxob3N0IGtlcm5lbDogYXRoMTBrOiB3
-bWkgZXZlbnQgZmlybXdhcmUgbWVzc2FnZSAnYWxsb2MgcmVtOiA0MzMyIGlyYW06IDU3MjIwJwo+
-IEp1biAyMiAxMDowMDowNCBsb2NhbGhvc3Qga2VybmVsOiBhdGgxMGs6IHN0YXJ0LCBzdGF0ZSBn
-b2luZyBmcm9tIE9GRiB0byBPTgo+IEp1biAyMiAxMDowMDowNCBsb2NhbGhvc3Qga2VybmVsOiBh
-dGgxMGs6IENyZWF0aW5nIHZkZXYgaWQ6IDAgIG1hcDogNjg3MTk0NzY3MzUKPiBKdW4gMjIgMTA6
-MDA6MDQgbG9jYWxob3N0IGtlcm5lbDogSVB2NjogQUREUkNPTkYoTkVUREVWX1VQKTogc3RhMTog
-bGluayBpcyBub3QgcmVhZHkKPiBKdW4gMjIgMTA6MDA6MDUgbG9jYWxob3N0IGtlcm5lbDogYXRo
-MTBrOiBzdG9wLCBzdGF0ZSBPRkYKPiBKdW4gMjIgMTA6MDA6MDggbG9jYWxob3N0IGtlcm5lbDog
-YXRoMTBrOiBmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFsaXplZCBldmVudCBmcm9tIHRhcmdldDog
-MDAwMDAwMDAKPiBKdW4gMjIgMTA6MDA6MDggbG9jYWxob3N0IGtlcm5lbDogYXRoMTBrOiBmYWls
-ZWQgdG8gd2FpdCBmb3IgdGFyZ2V0IHRvIGluaXQ6IC0xMTAKPiBKdW4gMjIgMTA6MDA6MDggbG9j
-YWxob3N0IGtlcm5lbDogYXRoMTBrOiBmYWlsZWQgdG8gcG93ZXIgdXAgdGFyZ2V0IHVzaW5nIHdh
-cm0gcmVzZXQ6IC0xMTAKPiBKdW4gMjIgMTA6MDA6MDggbG9jYWxob3N0IGtlcm5lbDogYXRoMTBr
-OiB0cnlpbmcgY29sZCByZXNldAoKWW91IG1pZ2h0IHdhbnQgdG8gdHJ5IG91dCBteSB3YXJtIHJl
-c2V0IHBhdGNoIGZyb20gS2FsbGUncyB0cmVlIHRvCnJlZHVjZSB1c2FnZSBvZiBjb2xkIHJlc2V0
-LgoKCj4gSnVuIDIyIDEwOjAwOjA4IGxvY2FsaG9zdCBrZXJuZWw6IGF0aDEwazogdGFyZ2V0IHRv
-b2sgbG9uZ2VyIDUwMDAgdXMgdG8gd2FrZSB1cCAoYXdha2UgY291bnQgMSkKPiBKdW4gMjIgMTA6
-MDA6MTEgbG9jYWxob3N0IGtlcm5lbDogYXRoMTBrOiBmYWlsZWQgdG8gcmVjZWl2ZSBpbml0aWFs
-aXplZCBldmVudCBmcm9tIHRhcmdldDogZmZmZmZmZmYKCjB4ZmZmZmZmZmYgZnJvbSBvbiBpb3Jl
-YWQzMigpPyBJdCBsb29rcyBhcyBpZiB0aGUgZGV2aWNlIHdhcwpkaXNjb25uZWN0ZWQgZnJvbSB0
-aGUgYnVzLgoKUGVyaGFwcyB5b3VyIGNvbnRyb2xsZXIgaXMgbW9yZSByZXNpbGllbnQgdG8gdGhl
-IGh3IGNvbGQgcmVzZXQgYnVnIGFuZAp5b3UganVzdCBlbmQgdXAgd2l0aCBhIGRldmljZSB0aGF0
-IGxvb2tzIGFzIGlmIGRpc2Nvbm5lY3RlZCwgZS5nLiBteQpUNDMwIGhhbmdzIGJ1dCBBUDEzNSBq
-dXN0IGNvbXBsYWlucyB3aXRoIGEgImRhdGEgYnVzIGVycm9yIiAoYm90aCB3aGVuCmNvbGQgcmVz
-ZXQgZmFpbHMpLiBCb3RoIGNhc2VzIG5lZWQgYSByZWJvb3QgdG8gbWFrZSBzdHVmZiB3b3JrIGFn
-YWluLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+>>> I get this warning message when doing my test with iperf in my AP:
+>>> br0: received packet on wlan0.sta1 with own address as source address
+
+>That message is common in other scenarios.
+>I also have this messages when in layer 2 mesh ( batman-adv)
+
+So I don't have to worry about this warning???
+
+>>> My STA is set up in bridge network (promiscuous mode) and using the firmware of CT.
+>>> http://www.candelatech.com/downloads/firmware-2-ct-community-6.bin
+>>> When my STA is associated successfully with my AP, the interface "wlan0.sta1" is created
+>>> in my AP. And I have this config:
+>>> br0              Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6
+>>> eth0            Link encap:Ethernet  HWaddr 00:10:02:0F:C5:05
+>>> wlan0          Link encap:Ethernet  HWaddr 04:F0:21:0E:38:C6
+>>> wlan0.sta1  Link encap:Ethernet     HWaddr 04:F0:21:0E:38:C6
+>>>
+>>> I think that the warning message is because my interface br0 and wlan0.sta1 have the same
+>>> mac address. And it decrease the performance of the rate (I get higher rate with iperf when my
+>>> STA is set up in router network (not enter promiscuous mode). I can not do the test with the
+>>>official firmware cause it crashed in promiscuous mode.
+>>> So I wonder that if anyone get the same issue like me?
+
+>> Why do you have the same MAC for wlan0 and wlan0.sta1?  What are those interfaces
+>> exactly?  It is normal for the bridge to have same MAC as one of the interfaces
+>> it contains.
+>I think he is using WDS mode.
+>For each station connected to the AP a new sub interface is added: wlan0.sta1, wlan0.sta2 ...
+>All sub interfaces share the MAC address.
+>At least that's what happens with ath9k.
+
+Yes I'm using WDS mode, set up from command "iw set 4addr on" and in my hostapd config I also have 
+wds_sta=1. The sub interface is created only if my STA is set up is bridge network, if I use my STA as
+a router there is no sub interface created, my STA associate with AP directly on interface wlan0.
+
+>>> I can use it for my STA in promiscuous mode and connect to my AP on channels DFS,
+>>> Sometimes I get this message "wlan0: received packet with  own address as source address".
+>>> I'm not sure that it is your firmware issue or because of my network configuration.
+>>> I'll try to figure it out and report to you if it relates to your firmware.
+
+>> I doubt my firmware has any impact on this particular problem.
+>Me too.
+
+I was wrong, the only warning msg is "br0: received packet on wlan0.sta1 with own address as source address".
+And I have another question: When doing test with iperf, I always have rate from AP to STA higher than STA to AP
+(380Mbps vs 240 Mbps).This is normal too right? Cause before you told me that when you did the test with your 
+own traffic generator, you can get 500+Mbps download, and about 400Mbps upload.
+
+Thanks,
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
