@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzV5t-00078Y-QR
- for ath10k@lists.infradead.org; Tue, 24 Jun 2014 18:05:22 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 686A240A79A
- for <ath10k@lists.infradead.org>; Tue, 24 Jun 2014 11:04:58 -0700 (PDT)
-Message-ID: <53A9BDCA.8080000@candelatech.com>
-Date: Tue, 24 Jun 2014 11:04:58 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ve0-x22c.google.com ([2607:f8b0:400c:c01::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WzfAD-0000kl-32
+ for ath10k@lists.infradead.org; Wed, 25 Jun 2014 04:50:29 +0000
+Received: by mail-ve0-f172.google.com with SMTP id jz11so1413462veb.17
+ for <ath10k@lists.infradead.org>; Tue, 24 Jun 2014 21:50:06 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Latest ath10k performance stats
+Date: Wed, 25 Jun 2014 12:50:06 +0800
+Message-ID: <CAEFj987hAnJV_0KOk4qfk3YbzPZNWqVY1Uq2sDe-+F0bw3hgbA@mail.gmail.com>
+Subject: CT and AP firmware not allowed beaconing in adhoc mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +22,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Using CT firmware, E5 3.7Ghz hex-core station system, slightly slower AP system,
-kernel is hacked 3.14.7+.
-AP is NOT configured for software-crypt, but station machine is.
-Systems are connected with 3 meter high quality COAX SMA cables + 30dB fixed attenuator,
-but this is not a fully isolated environment.  Running on channel 149, HT80.
-UDP connections are configured with 2MB send + receive socket buffers, 1500 MTU sized packets.
-AP is acting as router (and running ath10k, etc).
+Hi, all
 
-TCP is configured for 10 streams, default OS send/receive buffer management.
+Both CT and AP firmware seem not allow beaconing in adhoc  mode.
+Anyone will fix this?
 
-Station machine sends to/from eth1 and station, ie it is both ends
-of the connection.  UDP transmit is tuned to be just above what system
-can handle.  If you send at full 1Gbps, total received throughput is
-around 20% slower.
-
-The rates reported are 'goodput' for the protocol in question.
-
-WPA2 (station RX uses software encryption, so CPU bound)
-  UDP Download: 530 Mbps
-  UDP Upload:   610 Mbps
-  TCP Download: 459 Mbps
-  TCP Upload:   570 Mbps
-
-
-Open Authentication
-  UDP Download: 830 Mbps  **
-  UDP Upload:   615 Mbps
-  TCP Download: 660 Mbps (400+ ms latency, one way, by the way)
-  TCP Upload:   570 Mbps
-
-
-** We currently ignore checksum errors, part of what it takes to make
-   rx-software-crypt work.  But, on high-speed UDP download (Open Auth) we see a fair
-   bit of what must be legit checksum errors, and our traffic generator sees
-   corrupted data streams and restarts itself.  So throughput is not even.
-
-   Will work on fixing this in our kernel, should be able to pay attention to
-   csum errors IF packet is not encrypted.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Regards,
+ChunYeow
 
 _______________________________________________
 ath10k mailing list
