@@ -1,16 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1WzmUp-0006tV-NS
- for ath10k@lists.infradead.org; Wed, 25 Jun 2014 12:40:16 +0000
-Message-ID: <53AAC317.4050403@candelatech.com>
-Date: Wed, 25 Jun 2014 05:39:51 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-pb0-x22b.google.com ([2607:f8b0:400e:c01::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1WzpQX-0000s2-6U
+ for ath10k@lists.infradead.org; Wed, 25 Jun 2014 15:48:02 +0000
+Received: by mail-pb0-f43.google.com with SMTP id um1so1864561pbc.16
+ for <ath10k@lists.infradead.org>; Wed, 25 Jun 2014 08:47:36 -0700 (PDT)
+Date: Wed, 25 Jun 2014 08:47:31 -0700
+From: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
+Subject: Re: [PATCH 3/3] ath10k: add firmware files
+Message-ID: <20140625154731.GJ1390@garbanzo.do-not-panic.com>
+References: <20140314084501.23100.13103.stgit@x230>
+ <20140314084514.23100.72654.stgit@x230>
+ <CAB=NE6WW8yX4kdy02j2fT4g0JvYj4a_XkiqYtXKZSMB7FHuwNg@mail.gmail.com>
+ <1394996230.15764.113.camel@deadeye.wl.decadent.org.uk>
+ <CAB=NE6UP7dAwBHWUvtqAWksbrrdJ=vBRmT2PfcJPdeNhHfb7Kw@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: CT and AP firmware not allowed beaconing in adhoc mode
-References: <CAEFj987hAnJV_0KOk4qfk3YbzPZNWqVY1Uq2sDe-+F0bw3hgbA@mail.gmail.com>
- <CA+BoTQnnrjhUK_ZPwpG-L+wQ=suisNrkb1Tdhdww4ueMpAvDwQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQnnrjhUK_ZPwpG-L+wQ=suisNrkb1Tdhdww4ueMpAvDwQ@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CAB=NE6UP7dAwBHWUvtqAWksbrrdJ=vBRmT2PfcJPdeNhHfb7Kw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +25,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Hutchings <ben@decadent.org.uk>
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, David Woodhouse <dwmw2@infradead.org>
 
+On Sun, Mar 16, 2014 at 01:17:52PM -0700, Luis R. Rodriguez wrote:
+> On Sun, Mar 16, 2014 at 11:57 AM, Ben Hutchings <ben@decadent.org.uk> wrote:
+> > On Fri, 2014-03-14 at 05:36 -0700, Luis R. Rodriguez wrote:
+> >> On Fri, Mar 14, 2014 at 1:45 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> > [...]
+> >> > + NO LICENSES OR OTHER RIGHTS,
+> >> > +WHETHER EXPRESS, IMPLIED, BASED ON ESTOPPEL OR OTHERWISE, ARE GRANTED
+> >> > +TO ANY PARTY'S PATENTS, PATENT APPLICATIONS, OR PATENTABLE INVENTIONS
+> >> > +BY VIRTUE OF THIS LICENSE OR THE DELIVERY OR PROVISION BY QUALCOMM
+> >> > +ATHEROS, INC. OF THE SOFTWARE.
+> >>
+> >> This -- however is new to linux-firmware -- and I hereby raise a big
+> >> red fucking flag. All other licenses on linux-firmware provide at the
+> >> very least a limited patent grant. What makes Qualcomm special ?
+> > [...]
+> >
+> > There are several licence texts that don't mention patents at all.  I'm
+> > assuming that the companies submitting firmware for inclusion in Linux
+> > or linux-firmware do intend to grant whatever licences are required to
+> > distribute it to end users.
+> 
+> Agreed, this would be the only fair thing.
+> 
+> > Several licence texts explicitly exclude patent licences relating to any
+> > *other* products of the same company, but that's quite redundant.
+> 
+> Sure.
+> 
+> > However this language seems to explicitly exclude *any* patent licence.
+> 
+> Yeap, they are making it crystal clear.
+> 
+> > You're right to raise a red flag because, assuming Qualcomm does have
+> > patents that cover the firmware alone, this seems to disallow
+> > redistribution in whatever jurisdictions those patents apply.
+> 
+> I'm also fearful of this setting a precedent for other vendors.
 
+<-- snip -->
 
-On 06/25/2014 05:33 AM, Michal Kazior wrote:
-> On 25 June 2014 06:50, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->> Hi, all
->>
->> Both CT and AP firmware seem not allow beaconing in adhoc  mode.
->> Anyone will fix this?
->
-> AP firmware doesn't really support IBSS. I guess ath10k shouldn't
-> advertise the iftype if 10.1 firmware is used.
->
-> As far as I know CT firmware is based on the AP firmware branch which
-> means no IBSS as well.
+> To avoid patches as this one should we define some basic guidelines
+> for linux-firmware acceptable licenses?
 
-That is true.  I have not had any time to see what it would take
-to support IBSS in the 10.1.x firmware, and do not have access to the
-999.x source to see what it does differently.
+How about this small change to clarify ?
 
-I'm not sure when I'll have time to work on it....
+From b0b9bd8328f797836ce0db6157232d017220594b Mon Sep 17 00:00:00 2001
+From: "Luis R. Rodriguez" <mcgrof@suse.com>
+Date: Wed, 25 Jun 2014 08:41:25 -0700
+Subject: [PATCH] README: clarify redistribution requirements covering patents
 
-Thanks,
-Ben
+Firmware licenses should include an implicit or explicit
+patent grant to end users for full device operation.
 
+Signed-off-by: Luis R. Rodriguez <mcgrof@suse.com>
+---
+ README | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/README b/README
+index f2ed92e..d2a56ec 100644
+--- a/README
++++ b/README
+@@ -18,7 +18,10 @@ and also cc: to related mailing lists.
+ 
+ Your commit should include an update to the WHENCE file clearly
+ identifying the licence under which the firmware is available, and
+-that it is redistributable. If the licence is long and involved, it's
++that it is redistributable. Being redistributable includes ensuring
++the firmware license provided includes an implicit or explicit
++patent grant to end users to ensure full functionality of device
++operation with the firmware. If the licence is long and involved, it's
+ permitted to include it in a separate file and refer to it from the
+ WHENCE file.
+ And if it were possible, a changelog of the firmware itself.
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.0.0
+
 
 _______________________________________________
 ath10k mailing list
