@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X089J-0000bp-51
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 11:47:29 +0000
-Received: by mail-wg0-f47.google.com with SMTP id k14so3465353wgh.6
- for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 04:47:06 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X09ER-0004tm-Fj
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 12:56:52 +0000
+Message-ID: <53AC187C.2010309@candelatech.com>
+Date: Thu, 26 Jun 2014 05:56:28 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <53ABFFAC.1050603@stackframe.org>
-References: <53ABFFAC.1050603@stackframe.org>
-Date: Thu, 26 Jun 2014 13:47:06 +0200
-Message-ID: <CA+BoTQkm9BOtuvwY6h-z38WSe9rNw34V89A3bomAcY--T1vE9g@mail.gmail.com>
-Subject: Re: Firmware crash
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: CT and AP firmware not allowed beaconing in adhoc mode
+References: <CAEFj987hAnJV_0KOk4qfk3YbzPZNWqVY1Uq2sDe-+F0bw3hgbA@mail.gmail.com>	<CA+BoTQnnrjhUK_ZPwpG-L+wQ=suisNrkb1Tdhdww4ueMpAvDwQ@mail.gmail.com>	<53AAC317.4050403@candelatech.com>	<CAEFj9861McWmx4s81Y6bDirJX4s99_WG4W6Voi2fZRreoeB=4w@mail.gmail.com>
+ <CAJ-VmonZUQzSLqGT=sU5OAxprYfv_cucho2rFMyP3gLap5--tg@mail.gmail.com>
+In-Reply-To: <CAJ-VmonZUQzSLqGT=sU5OAxprYfv_cucho2rFMyP3gLap5--tg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +19,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Schnelle <svens@stackframe.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian@freebsd.org>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjYgSnVuZSAyMDE0IDEzOjEwLCBTdmVuIFNjaG5lbGxlIDxzdmVuc0BzdGFja2ZyYW1lLm9y
-Zz4gd3JvdGU6Cj4gSGkgTGlzdCwKPgo+IGkndmUgc2VlbiBhIHN0cmFuZ2UgZmlybXdhcmUgY3Jh
-c2g6Cj4KPiBBdGhvcy9YdCBCU1AgdmVyc2lvbiBPY3QgMTkgMjAxMi0xNjowMDo1OQo+IEJhdWQg
-cmF0ZSBob3N0IHNldCBpcyAxMTUyMDAuCj4gTWFjIGFkZHJlc3MgaXMgOiAwMDowMzowNzoxMjoz
-NDo1Ngo+IGFsbG9jIHJlbTogMTk3NTI0Cj4gKipXTUkgU2VydmljZSBSZWFkeSAqKgo+IE5VTV9E
-RVY9MTYKPiBUR1RfVkVSOiA0MTAwMDE2Qwo+IFJlZ0RvbWFpbjogMCwgQ2ZnQ3RsOiAyMjQgLSAy
-MjQKPiBhcl93YWxfcGVlcl9hdHRhY2g6IG51bV9wZWVyX2VudHJpZXMgMTQ1LCBudW1fdGlkX2Vu
-dHJpZXMgNDQzCj4gYWxsb2NhdGVkIDY0IHRpZHMgYXQgMHg0MzlhMDggKGVhY2ggOTYgYnl0ZXMp
-Cj4gYWxsb2NhdGVkIDM3OSB0aWRzIGluIElSQU0gYXQgMHg5YmFlYjQgKGVhY2ggOTYgYnl0ZXMp
-Cj4gYWxsb2NhdGVkIDY0IHN0YXRlbGVzcyB0aWRzIGF0IDB4NDNiMjMwIChlYWNoIDQwIGJ5dGVz
-KQo+ICMjIyB0dXJuIG9uIFR4IGNvbXBsZXRpb24gaW5kZXggdHJhY2tpbmcgIyMjCj4gKipXTUkg
-UmVhZHkgKioKPiBUR1RfVkVSOiA0MTAwMDE2Qwo+IFJlZ0RvbWFpbjogM0EsIENmZ0N0bDogMTYg
-LSAxNgo+IHBlZXIgY3JlYXRlIGNvbW1hbmQgZm9yICoqKiowOjM6NzoxMjozNDo1NioqKioKPiBf
-d2xhbl92ZGV2X3NldF9wYXJhbTogdW5pbXBsZW1lbnRlZCBjb21tYW5kIDB4Mgo+IF93bGFuX3Zk
-ZXZfc2V0X3BhcmFtOiB1bmltcGxlbWVudGVkIGNvbW1hbmQgMHg3Cj4gX3dsYW5fdmRldl9zZXRf
-cGFyYW06IHVuaW1wbGVtZW50ZWQgY29tbWFuZCAweDgKPiBUT0RPOiBBZGQgREJHTE9HIGZvciBX
-TU0gUGFyYW1zCj4gVE9ETzogQWRkIERCR0xPRyBmb3IgV01NIFBhcmFtcwo+IFRPRE86IEFkZCBE
-QkdMT0cgZm9yIFdNTSBQYXJhbXMKPiBUT0RPOiBBZGQgREJHTE9HIGZvciBXTU0gUGFyYW1zCj4g
-VFNGIGlkOiAxLCBmcmVlX3RzZl9pZF9tYXA6IDEKPiBhc3NlcnRpb24gZmFpbGVkPyBwYz0weDlh
-MGUxNSwgbGluZT0wLCBkdW1wIGFyZWE9MHg0MDE5MzAKPiBUYXJnZXQgSUQ6IDB4NDEwMDAxNmMg
-KDEwOTA1MTk0MDQpCj4gRGVidWcgSW5mbzoKPiAweDQxMDAwMTZjIDB4MDAwMDAwMDAgMHgwMDlh
-MGUxNSAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAw
-MDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDlhMGUxNQo+IDB4MDAwMDAwMDAgMHgwMDQwMTkzMCAweDAw
-MDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAw
-MDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4
-MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4
-MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
-MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
-MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
-MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAg
-MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKCkFwcGFyZW50bHkgZmlybXdhcmUgY3Jh
-c2hlcyB3aGlsZSBwcm9jZXNzaW5nIGEgYmVhY29uIGZyYW1lIHdpdGggYQpOVUxMIGRlcmVmZXJl
-bmNlLgoKCj4gVGhpcyBoYXBwZW5lZCBvbiB0d28gQVBzIGF0IHRoZSBzYW1lIHRpbWUsIHdoaWNo
-IHdlcmUgcnVubmluZyBiZWZvcmUgd2l0aG91dAo+IHByb2JsZW1zLiBBcyBib3RoIEFQcyBhcmUg
-aW4gc2hvcnQgZGlzdGFuY2UgKGFib3V0IDEwbSkgaSBndWVzcyBpdCB3YXMKPiBjYXVzZWQKPiBi
-eSBzb21lIHBhY2tldCBvbiB0aGUgQWlyLgo+Cj4gSSBzZWUgYSAnYXNzZXJ0aW9uIGZhaWxlZCcg
-YWJvdmUsIGNhbiBhbnlvbmUgdGVsbCB3aGF0IHRoYXQgYXNzZXJ0aW9uIGlzPwo+Cj4gRmlybXdh
-cmUgVmVyc2lvbiBpczoKPgo+IFsgICAyNy4xMjAwMDBdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBx
-Y2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAwMDE2Ywo+IFsgICAyNy4xMzAwMDBdIGF0aDEwazog
-ZmlybXdhcmUgdmVyc2lvbjogMTAuMS40NjcuMi0xCgpEaWQgeW91IGhhcHBlbiB0byBoYXZlIHRo
-ZSBhdGgxMGsgaW50ZXJmYWNlIGluIGEgYnJpZGdlPyBJZiBzbyBtb25pdG9yCnZkZXYgaXMgbW9z
-dCBsaWtlbHkgdGhlIGN1bHByaXQgaGVyZS4gQSB2ZXJ5IHNpbWlsYXIgaXNzdWUgd2FzCnJlcG9y
-dGVkIGZvciA0YWRkciBzdGF0aW9uIGJyaWRnaW5nIGFuZCBhbHNvIGludm9sdmVzIG1vbml0b3Ig
-dmRldi4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+
+On 06/26/2014 12:43 AM, Adrian Chadd wrote:
+> On 26 June 2014 00:40, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+>> Not possible for all the modes to be supported in one single firmware?
+>
+> It (mostly) is; it's a question of time, effort and resources.
+>
+> There's a size limitation to how much code and data you can squeeze
+> into the firmware. Is it possible to structure the firmware in a way
+> that gives you one source tree for multiple firmware builds, with
+> different features on and off? Quite so.
+>
+> That's just not how it happened inside of QCA. When I was working
+> there on the ath10k chip bringup, there indeed was one branch to do
+> station, adhoc and AP mode. That changed shortly after I left for
+> reasons I don't quite know. I'm still trying to .. well, figure out
+> how to try and repair that damage.
+
+In my firmware, with 37 vdevs, I have maybe 2k of RAM left, but
+55+k bytes of instruction ram (ie, where the program code can live left).
+
+So, there is plenty of room for more code, and most people can get by with way
+less than 37 vdevs, which saves both RAM and IRAM.
+
+I am steadily improving RAM usage in CT firmware, mostly be naturally
+packing structures, using bit shifting instead of uint32 for booleans, etc.
+
+So, the code size is not the problem here....  Time and resources and the
+fact we cannot share dev efforts with other developers due to NDA issues
+is the main problem.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
