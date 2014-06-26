@@ -1,10 +1,10 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0AoX-0007u8-J0
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 14:38:17 +0000
-Message-ID: <53AC303F.2040606@candelatech.com>
-Date: Thu, 26 Jun 2014 07:37:51 -0700
+ id 1X0BWk-0001Ml-1Y
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 15:23:57 +0000
+Message-ID: <53AC3AF1.8080808@candelatech.com>
+Date: Thu, 26 Jun 2014 08:23:29 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
 Subject: Re: Firmware crash
@@ -34,10 +34,17 @@ On 06/26/2014 07:33 AM, Emanuel Taube wrote:
 > I am able to reproduce it with your firmware-2-ct-no-commercial-7.bin
 > here is the crash dump:
 
-Thanks.  I am going to have to update my decode program to parse
-this...it doesn't look like 'normal' dmesg output on my systems.
-Should have it done shortly...
+Can you reproduce with this firmware?  I have been making local changes,
+and I will get a better decode easier if you can re-run the test with
+this binary...
 
+http://www.candelatech.com/downloads/firmware-2-community.bin
+
+I fixed my tool to decode the bare dump, but dmesg output will
+probably be more convenient for the future (looks like you missed a line
+of the dump in the first email??)
+
+Thanks,
 Ben
 
 > 
