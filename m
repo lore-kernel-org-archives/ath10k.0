@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
+Received: from mail-qc0-x22a.google.com ([2607:f8b0:400d:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X04JA-0001HM-BF
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:41:25 +0000
-Received: by mail-ve0-f171.google.com with SMTP id jz11so3250616veb.16
- for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:40:59 -0700 (PDT)
+ id 1X04Lg-00020t-Sg
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:44:03 +0000
+Received: by mail-qc0-f170.google.com with SMTP id l6so2814698qcy.15
+ for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:43:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <53AAC317.4050403@candelatech.com>
+In-Reply-To: <CAEFj9861McWmx4s81Y6bDirJX4s99_WG4W6Voi2fZRreoeB=4w@mail.gmail.com>
 References: <CAEFj987hAnJV_0KOk4qfk3YbzPZNWqVY1Uq2sDe-+F0bw3hgbA@mail.gmail.com>
  <CA+BoTQnnrjhUK_ZPwpG-L+wQ=suisNrkb1Tdhdww4ueMpAvDwQ@mail.gmail.com>
  <53AAC317.4050403@candelatech.com>
-Date: Thu, 26 Jun 2014 15:40:59 +0800
-Message-ID: <CAEFj9861McWmx4s81Y6bDirJX4s99_WG4W6Voi2fZRreoeB=4w@mail.gmail.com>
+ <CAEFj9861McWmx4s81Y6bDirJX4s99_WG4W6Voi2fZRreoeB=4w@mail.gmail.com>
+Date: Thu, 26 Jun 2014 00:43:39 -0700
+Message-ID: <CAJ-VmonZUQzSLqGT=sU5OAxprYfv_cucho2rFMyP3gLap5--tg@mail.gmail.com>
 Subject: Re: CT and AP firmware not allowed beaconing in adhoc mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,46 +27,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Not possible for all the modes to be supported in one single firmware?
+On 26 June 2014 00:40, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+> Not possible for all the modes to be supported in one single firmware?
 
-----
-Chun-Yeow
+It (mostly) is; it's a question of time, effort and resources.
 
-On Wed, Jun 25, 2014 at 8:39 PM, Ben Greear <greearb@candelatech.com> wrote:
->
->
-> On 06/25/2014 05:33 AM, Michal Kazior wrote:
->>
->> On 25 June 2014 06:50, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->>>
->>> Hi, all
->>>
->>> Both CT and AP firmware seem not allow beaconing in adhoc  mode.
->>> Anyone will fix this?
->>
->>
->> AP firmware doesn't really support IBSS. I guess ath10k shouldn't
->> advertise the iftype if 10.1 firmware is used.
->>
->> As far as I know CT firmware is based on the AP firmware branch which
->> means no IBSS as well.
->
->
-> That is true.  I have not had any time to see what it would take
-> to support IBSS in the 10.1.x firmware, and do not have access to the
-> 999.x source to see what it does differently.
->
-> I'm not sure when I'll have time to work on it....
->
-> Thanks,
-> Ben
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
+There's a size limitation to how much code and data you can squeeze
+into the firmware. Is it possible to structure the firmware in a way
+that gives you one source tree for multiple firmware builds, with
+different features on and off? Quite so.
+
+That's just not how it happened inside of QCA. When I was working
+there on the ath10k chip bringup, there indeed was one branch to do
+station, adhoc and AP mode. That changed shortly after I left for
+reasons I don't quite know. I'm still trying to .. well, figure out
+how to try and repair that damage.
+
+
+
+-a
 
 _______________________________________________
 ath10k mailing list
