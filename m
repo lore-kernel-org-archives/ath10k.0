@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+Received: from mail-qg0-x22c.google.com ([2607:f8b0:400d:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X04Px-0005QP-Gd
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:48:26 +0000
-Received: by mail-wg0-f42.google.com with SMTP id z12so3177979wgg.25
- for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:47:57 -0700 (PDT)
+ id 1X04Sa-0006yi-MV
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:51:09 +0000
+Received: by mail-qg0-f44.google.com with SMTP id j107so2737036qga.31
+ for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:50:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmokmpi0DGKHvXvjbu9imD1W65fSAzbyXpGrn-9Hu3PTudg@mail.gmail.com>
+In-Reply-To: <CA+BoTQnBSS_Oq+1HDfcsD5tekszBwrbt6gOe65tRRieTkzReww@mail.gmail.com>
 References: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
  <CAJ-Vmokmpi0DGKHvXvjbu9imD1W65fSAzbyXpGrn-9Hu3PTudg@mail.gmail.com>
-Date: Thu, 26 Jun 2014 09:47:56 +0200
-Message-ID: <CA+BoTQnBSS_Oq+1HDfcsD5tekszBwrbt6gOe65tRRieTkzReww@mail.gmail.com>
+ <CA+BoTQnBSS_Oq+1HDfcsD5tekszBwrbt6gOe65tRRieTkzReww@mail.gmail.com>
+Date: Thu, 26 Jun 2014 00:50:47 -0700
+Message-ID: <CAJ-Vmo=6ydGJDAdN8xp=1uSvfcHHBJSFhQwZmBz9zo7D_pzwHA@mail.gmail.com>
 Subject: Re: No reorder buffer?
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
 
-T24gMjYgSnVuZSAyMDE0IDA5OjM4LCBBZHJpYW4gQ2hhZGQgPGFkcmlhbkBmcmVlYnNkLm9yZz4g
-d3JvdGU6Cj4gLi4uIGhtLiBXZWxsLCBpbiBub3JtYWwgb3BlcmF0aW9uIHRoZSBmaXJtd2FyZSBp
-cyBzdXBwb3NlZCB0byBiZSBkb2luZwo+IHJlb3JkZXJpbmcuIEJ1dCBJIGRvbid0IHRoaW5rIGF0
-aDEwayBydW5zIHRoZSBNQUMgaW4gbm9ybWFsIGV0aGVybmV0Cj4gcGlwZSBtb2RlLCByaWdodD8g
-U28gYSBsb3Qgb2YgdGhlIGZpcm13YXJlIC8gaGFyZHdhcmUgb2ZmbG9hZCBiaXRzCj4gZG9uJ3Qg
-d29yay4KPgo+IENhbiBzb21lb25lIHZlcmlmeSBmb3IgbWUgd2hpY2ggbW9kZSB0aGUgTUFDIGlz
-IGluPyBJIGZvcmdldCB3aGF0IHdhcyBkb25lLgoKYXRoMTBrIHJ1bnMgaW4gTmF0aXZlIFdpZmkg
-UnggZGVjYXAgbW9kZSBpZiB0aGF0J3Mgd2hhdCB5b3UncmUKaW50ZXJlc3RlZCBpbj8gQnV0IEkg
-d291bGRuJ3QgZXhwZWN0IGl0IHRvIGJlaGF2ZSBhbnkgZGlmZmVyZW50IHRoYW4KODAyLjMgZGVj
-YXAgbW9kZSBvdGhlciB0aGFuIGEgZGlmZmVyZW50IGZyYW1lIGhlYWRlcnMuCgpNYXliZSByZS1v
-cmRlcmluZyBpcyBkaXNhYmxlZCBpbXBsaWNpdGx5IHdoZW4gYSBtb25pdG9yIHZkZXYgaXMKcnVu
-bmluZyBpbiBmaXJtd2FyZSAoZS5nLiB3aGVuIGludGVyZmFjZSBpcyBpbiBwcm9taXNjIG1vZGUv
-IGluIGEKYnJpZGdlKT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+On 26 June 2014 00:47, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 26 June 2014 09:38, Adrian Chadd <adrian@freebsd.org> wrote:
+>> ... hm. Well, in normal operation the firmware is supposed to be doing
+>> reordering. But I don't think ath10k runs the MAC in normal ethernet
+>> pipe mode, right? So a lot of the firmware / hardware offload bits
+>> don't work.
+>>
+>> Can someone verify for me which mode the MAC is in? I forget what was done.
+>
+> ath10k runs in Native Wifi Rx decap mode if that's what you're
+> interested in? But I wouldn't expect it to behave any different than
+> 802.3 decap mode other than a different frame headers.
+>
+> Maybe re-ordering is disabled implicitly when a monitor vdev is
+> running in firmware (e.g. when interface is in promisc mode/ in a
+> bridge)?
+
+Native wifi Rx decap does disable a bunch of hardware offload
+features. Ugh. I'd have to go dig up the firmware and QCA9880 chipset
+design docs to figure it out again.
+
+Maybe it's time all y'all ath10k developers came out here to San Jose
+for a couple of days for a meet, greet, code and learn session. It'd
+give me a reason to re-study all this stuff again. :-)
+
+
+
+-a
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
