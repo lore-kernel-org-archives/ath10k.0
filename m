@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x232.google.com ([2607:f8b0:4003:c02::232])
+Received: from mail-oa0-x229.google.com ([2607:f8b0:4003:c02::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X01xm-0008F5-RX
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 05:11:11 +0000
-Received: by mail-oa0-f50.google.com with SMTP id n16so3285706oag.23
- for <ath10k@lists.infradead.org>; Wed, 25 Jun 2014 22:10:48 -0700 (PDT)
+ id 1X042o-00085R-2B
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:24:31 +0000
+Received: by mail-oa0-f41.google.com with SMTP id l6so3429809oag.14
+ for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:24:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
+In-Reply-To: <CABnBrYWmyJC_eyH7sWzgt8BNhUKTf5-1_F=X-ZZZh=ZdyiSBkw@mail.gmail.com>
 References: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
-Date: Wed, 25 Jun 2014 22:10:48 -0700
-Message-ID: <CABnBrYWmyJC_eyH7sWzgt8BNhUKTf5-1_F=X-ZZZh=ZdyiSBkw@mail.gmail.com>
+ <CABnBrYWmyJC_eyH7sWzgt8BNhUKTf5-1_F=X-ZZZh=ZdyiSBkw@mail.gmail.com>
+Date: Thu, 26 Jun 2014 00:24:08 -0700
+Message-ID: <CAA93jw5FEZZqXH_O7Bmd6iE5zQSMBsC=kDev3UbTXvjPTfCHkw@mail.gmail.com>
 Subject: Re: No reorder buffer?
-From: Denton Gentry <denton.gentry@gmail.com>
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +21,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Denton Gentry <denton.gentry@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Following up: to confirm or disprove whether the lack of a reorder
-buffer is a factor in abnormally low throughput from Windows STAs, I
-hacked sta_info_alloc() to allocate sta->ampdu_mlme.tid_rx[0] directly
-instead of allocating it when processing an AddBA from the STA.
-
-Throughput from a Windows system running iperf went up from ~45 Mbps
-to 230 Mbps. A pcap collected by the Ethernet system at the other end
-of the test no longer shows frames delivered out of order.
-
-I suspect a proper fix would involve having the firmware pass the
-AddBA up to the host.
-
-
-On Tue, Jun 24, 2014 at 7:47 AM, Denton Gentry <denton.gentry@gmail.com> wrote:
-> I'm bridging ath10k to Ethernet, gathering pcaps on another ath10k
-> system in monitor mode and on the Ethernet system which is receiving
-> the packets. I see packets being delivered out of order to the
-> Ethernet system. So far as I can tell, any packet which has to be
-> re-sent on the Wifi link will be delivered out of order to Ethernet.
->
-> I believe this happens because there is no reorder buffer.
-> ieee80211_rx_reorder_ampdu returns because tid_agg_rx[tid] is NULL.
->
-> I believe there is no reorder buffer because
-> ieee80211_process_addba_request is not being called.
-> ieee80211_process_addba_request would allocate tid_agg_rx[tid].
->
-> I believe ieee80211_process_addba_request is not being called because
-> the firmware processes the AddBA and does not pass it up. This is the
-> part I am least sure about.
->
->
-> Can anyone confirm or deny that this is correct: does the firmware
-> process the AddBA, but not have a reorder buffer in the firmware?
->
->
-> This is noticeable mostly because of Windows. The Windows TCP stack
-> seems to react more strongly to packet reordering (inferred via SACKs,
-> I guess), and slows down.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gV2VkLCBKdW4gMjUsIDIwMTQgYXQgMTA6MTAgUE0sIERlbnRvbiBHZW50cnkgPGRlbnRvbi5n
+ZW50cnlAZ21haWwuY29tPiB3cm90ZToKPiBGb2xsb3dpbmcgdXA6IHRvIGNvbmZpcm0gb3IgZGlz
+cHJvdmUgd2hldGhlciB0aGUgbGFjayBvZiBhIHJlb3JkZXIKPiBidWZmZXIgaXMgYSBmYWN0b3Ig
+aW4gYWJub3JtYWxseSBsb3cgdGhyb3VnaHB1dCBmcm9tIFdpbmRvd3MgU1RBcywgSQo+IGhhY2tl
+ZCBzdGFfaW5mb19hbGxvYygpIHRvIGFsbG9jYXRlIHN0YS0+YW1wZHVfbWxtZS50aWRfcnhbMF0g
+ZGlyZWN0bHkKPiBpbnN0ZWFkIG9mIGFsbG9jYXRpbmcgaXQgd2hlbiBwcm9jZXNzaW5nIGFuIEFk
+ZEJBIGZyb20gdGhlIFNUQS4KCnRoZSBwcm9vZiBvZiBjb25jZXB0IHBhdGNoIHdvdWxkIGJlIG5p
+Y2UuCgo+IFRocm91Z2hwdXQgZnJvbSBhIFdpbmRvd3Mgc3lzdGVtIHJ1bm5pbmcgaXBlcmYgd2Vu
+dCB1cCBmcm9tIH40NSBNYnBzCj4gdG8gMjMwIE1icHMuIEEgcGNhcCBjb2xsZWN0ZWQgYnkgdGhl
+IEV0aGVybmV0IHN5c3RlbSBhdCB0aGUgb3RoZXIgZW5kCj4gb2YgdGhlIHRlc3Qgbm8gbG9uZ2Vy
+IHNob3dzIGZyYW1lcyBkZWxpdmVyZWQgb3V0IG9mIG9yZGVyLgoKV2hhdCB3aW5kb3dzIHZlcnNp
+b24/CgpXaGF0IGlzIHRoZSBlZmZlY3Qgb24gaW9zIGFuZCBhIG1vZGVybiBsaW51eD8gKGJlZm9y
+ZS9hZnRlciBmaXgpCgpXaGF0IGRvZXMgaXQgZG8gdG8gbGF0ZW5jeSBhbmQgaG93IGRvZXMgaXQg
+ZWZmZWN0IG11bHRpcGxlIHN0YXRpb25zCmxhdGVuY3kgYW5kIHRocm91Z2hwdXQ/Cgo+IEkgc3Vz
+cGVjdCBhIHByb3BlciBmaXggd291bGQgaW52b2x2ZSBoYXZpbmcgdGhlIGZpcm13YXJlIHBhc3Mg
+dGhlCj4gQWRkQkEgdXAgdG8gdGhlIGhvc3QuCj4KPgo+IE9uIFR1ZSwgSnVuIDI0LCAyMDE0IGF0
+IDc6NDcgQU0sIERlbnRvbiBHZW50cnkgPGRlbnRvbi5nZW50cnlAZ21haWwuY29tPiB3cm90ZToK
+Pj4gSSdtIGJyaWRnaW5nIGF0aDEwayB0byBFdGhlcm5ldCwgZ2F0aGVyaW5nIHBjYXBzIG9uIGFu
+b3RoZXIgYXRoMTBrCj4+IHN5c3RlbSBpbiBtb25pdG9yIG1vZGUgYW5kIG9uIHRoZSBFdGhlcm5l
+dCBzeXN0ZW0gd2hpY2ggaXMgcmVjZWl2aW5nCj4+IHRoZSBwYWNrZXRzLiBJIHNlZSBwYWNrZXRz
+IGJlaW5nIGRlbGl2ZXJlZCBvdXQgb2Ygb3JkZXIgdG8gdGhlCj4+IEV0aGVybmV0IHN5c3RlbS4g
+U28gZmFyIGFzIEkgY2FuIHRlbGwsIGFueSBwYWNrZXQgd2hpY2ggaGFzIHRvIGJlCj4+IHJlLXNl
+bnQgb24gdGhlIFdpZmkgbGluayB3aWxsIGJlIGRlbGl2ZXJlZCBvdXQgb2Ygb3JkZXIgdG8gRXRo
+ZXJuZXQuCj4+Cj4+IEkgYmVsaWV2ZSB0aGlzIGhhcHBlbnMgYmVjYXVzZSB0aGVyZSBpcyBubyBy
+ZW9yZGVyIGJ1ZmZlci4KPj4gaWVlZTgwMjExX3J4X3Jlb3JkZXJfYW1wZHUgcmV0dXJucyBiZWNh
+dXNlIHRpZF9hZ2dfcnhbdGlkXSBpcyBOVUxMLgo+Pgo+PiBJIGJlbGlldmUgdGhlcmUgaXMgbm8g
+cmVvcmRlciBidWZmZXIgYmVjYXVzZQo+PiBpZWVlODAyMTFfcHJvY2Vzc19hZGRiYV9yZXF1ZXN0
+IGlzIG5vdCBiZWluZyBjYWxsZWQuCj4+IGllZWU4MDIxMV9wcm9jZXNzX2FkZGJhX3JlcXVlc3Qg
+d291bGQgYWxsb2NhdGUgdGlkX2FnZ19yeFt0aWRdLgo+Pgo+PiBJIGJlbGlldmUgaWVlZTgwMjEx
+X3Byb2Nlc3NfYWRkYmFfcmVxdWVzdCBpcyBub3QgYmVpbmcgY2FsbGVkIGJlY2F1c2UKPj4gdGhl
+IGZpcm13YXJlIHByb2Nlc3NlcyB0aGUgQWRkQkEgYW5kIGRvZXMgbm90IHBhc3MgaXQgdXAuIFRo
+aXMgaXMgdGhlCj4+IHBhcnQgSSBhbSBsZWFzdCBzdXJlIGFib3V0Lgo+Pgo+Pgo+PiBDYW4gYW55
+b25lIGNvbmZpcm0gb3IgZGVueSB0aGF0IHRoaXMgaXMgY29ycmVjdDogZG9lcyB0aGUgZmlybXdh
+cmUKPj4gcHJvY2VzcyB0aGUgQWRkQkEsIGJ1dCBub3QgaGF2ZSBhIHJlb3JkZXIgYnVmZmVyIGlu
+IHRoZSBmaXJtd2FyZT8KPj4KPj4KPj4gVGhpcyBpcyBub3RpY2VhYmxlIG1vc3RseSBiZWNhdXNl
+IG9mIFdpbmRvd3MuIFRoZSBXaW5kb3dzIFRDUCBzdGFjawo+PiBzZWVtcyB0byByZWFjdCBtb3Jl
+IHN0cm9uZ2x5IHRvIHBhY2tldCByZW9yZGVyaW5nIChpbmZlcnJlZCB2aWEgU0FDS3MsCj4+IEkg
+Z3Vlc3MpLCBhbmQgc2xvd3MgZG93bi4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5p
+bmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsKCgoKLS0gCkRhdmUgVMOkaHQKCk5TRlc6IGh0dHBzOi8vdzIuZWZmLm9yZy9DZW5z
+b3JzaGlwL0ludGVybmV0X2NlbnNvcnNoaXBfYmlsbHMvcnVzc2VsbF8wMjk2X2luZGVjZW50LmFy
+dGljbGUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
