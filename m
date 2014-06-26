@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x22f.google.com ([2607:f8b0:400d:c01::22f])
+Received: from mail-qc0-x236.google.com ([2607:f8b0:400d:c01::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X04GN-0007ZY-Ua
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:38:32 +0000
-Received: by mail-qc0-f175.google.com with SMTP id i8so2745262qcq.20
- for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:38:10 -0700 (PDT)
+ id 1X04IR-00014q-DQ
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 07:40:39 +0000
+Received: by mail-qc0-f182.google.com with SMTP id m20so2805558qcx.27
+ for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 00:40:17 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
 References: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
-Date: Thu, 26 Jun 2014 00:38:09 -0700
-Message-ID: <CAJ-Vmokmpi0DGKHvXvjbu9imD1W65fSAzbyXpGrn-9Hu3PTudg@mail.gmail.com>
+Date: Thu, 26 Jun 2014 00:40:17 -0700
+Message-ID: <CAJ-Vmo=Wstip25TkAF34UJ6Ma5wZSfS6y2+aQUAAjThn59wQkg@mail.gmail.com>
 Subject: Re: No reorder buffer?
 From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,17 +27,24 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Denton Gentry <denton.gentry@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-... hm. Well, in normal operation the firmware is supposed to be doing
-reordering. But I don't think ath10k runs the MAC in normal ethernet
-pipe mode, right? So a lot of the firmware / hardware offload bits
-don't work.
+.. and to confirm, the initial design of this is that yes, the
+firmware is _supposed_ to be doing all of the RX reordering and the TX
+aggregation/retransmission/BAR handling and powersave. As far as the
+host stack is concerned, the design was supposed to offload as much of
+the data pipeline processing as possible, handling only 802.11
+negotiation, encryption setup/rekeying, etc.
 
-Can someone verify for me which mode the MAC is in? I forget what was done.
+But ath10k did change that because, and I'm fuzzy on the details,
+there's various functionality that gets hidden from you when you're
+running in the full offload mode.
 
+So yes, if the MAC isn't configured in ethernet offload mode - if it's
+in one of the monitor-ish wifi modes - then the NIC and firmware
+aren't doing reordering and you'll have to do it on the host.
 
+hth,
 
 -a
-
 
 On 24 June 2014 07:47, Denton Gentry <denton.gentry@gmail.com> wrote:
 > I'm bridging ath10k to Ethernet, gathering pcaps on another ath10k
