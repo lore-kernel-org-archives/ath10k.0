@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0BWk-0001Ml-1Y
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 15:23:57 +0000
-Message-ID: <53AC3AF1.8080808@candelatech.com>
-Date: Thu, 26 Jun 2014 08:23:29 -0700
+ id 1X0BZy-0004Tc-JY
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 15:27:18 +0000
+Message-ID: <53AC3BBD.3050003@candelatech.com>
+Date: Thu, 26 Jun 2014 08:26:53 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Firmware crash
-References: <53ABFFAC.1050603@stackframe.org>
- <CA+BoTQkm9BOtuvwY6h-z38WSe9rNw34V89A3bomAcY--T1vE9g@mail.gmail.com>
- <53AC1ABF.4020906@candelatech.com>
- <CAANdOW6yrv-Z_+bXw_z3zrmz=Q4N=r0xh9YitwwCoUAQchChLg@mail.gmail.com>
-In-Reply-To: <CAANdOW6yrv-Z_+bXw_z3zrmz=Q4N=r0xh9YitwwCoUAQchChLg@mail.gmail.com>
+Subject: Re: Firmware debugging patches?
+References: <53891ACD.7070902@candelatech.com>
+ <87wqczz3h9.fsf@kamboji.qca.qualcomm.com> <538CA904.4000508@candelatech.com>
+ <87ioojz1b1.fsf@kamboji.qca.qualcomm.com> <538CB782.1000509@candelatech.com>
+ <538CC68C.10808@gmail.com> <538CC949.5020901@candelatech.com>
+ <CANUX_P2vbKD3zkwE=DvJJWpo=gEMORCBy=XFoC2YSFpmg9sr_A@mail.gmail.com>
+ <538CD507.1050803@candelatech.com> <87bnu7pqe2.fsf@kamboji.qca.qualcomm.com>
+ <53909372.1040707@candelatech.com> <87fvjimsxj.fsf@kamboji.qca.qualcomm.com>
+ <5391E620.4090706@candelatech.com> <87vbscj2ho.fsf@kamboji.qca.qualcomm.com>
+ <53932F52.2030203@candelatech.com> <8738ffiysv.fsf@kamboji.qca.qualcomm.com>
+ <539483B1.5020401@candelatech.com> <87ppiih4zk.fsf@kamboji.qca.qualcomm.com>
+ <5395CE36.30407@candelatech.com> <5395D718.4090704@candelatech.com>
+ <5395E089.1000601@candelatech.com> <87fvjde1u0.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87fvjde1u0.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,113 +33,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Emanuel Taube <emanuel.taube@gmail.com>
-Cc: Sven Schnelle <svens@stackframe.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Emmanuel Grumbach <egrumbach@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-On 06/26/2014 07:33 AM, Emanuel Taube wrote:
-> Hi Ben,
+On 06/09/2014 11:05 PM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 > 
-> I am able to reproduce it with your firmware-2-ct-no-commercial-7.bin
-> here is the crash dump:
+>>>>> As kbuild found some compilation problems, I think it would be easier if
+>>>>> I make the final changes to your patches and send that for review. Would
+>>>>> that be ok for you?
+>>>>
+>>>> Yes, that would be great.
+>>>
+>>> In case it helps, let me post my latest patches...will get those up
+>>> in an hour or two.
+>>
+>> Actually, I seem to have just forgotten everything over the weekend...the
+>> v2 patches I posted last Friday are current with my own tree.  So,
+>> if you can tweak them to your satisfaction, that should work fine for
+>> me.
+> 
+> Great, thanks. I'll try to send a new version today. If you could then
+> review them carefully and test as well, that would be really good.
 
-Can you reproduce with this firmware?  I have been making local changes,
-and I will get a better decode easier if you can re-run the test with
-this binary...
+Any chance we could get at least some version of this in soon?
 
-http://www.candelatech.com/downloads/firmware-2-community.bin
-
-I fixed my tool to decode the bare dump, but dmesg output will
-probably be more convenient for the future (looks like you missed a line
-of the dump in the first email??)
+It would be nice to have a good way for users to report more than
+just the basic crash dump registers...
 
 Thanks,
 Ben
-
-> 
-> assertion failed? pc=0x9a1a49, line=0, dump area=0x401930
-> Target ID: 0x4100016c (1090519404)
-> Debug Info:
-> 0x4100016c 0x00000000 0x009a1a49 0x00000000 
-> 0x00000000 0x00060324 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x009b58cb 0x0094085d 0x00000000 0x009a1a49 
-> 0x809430b8 0x00401a40 0x00000001 0x00000002 
-> 0x80940975 0x00401a60 0x0000001f 0x00403bec 
-> 0x409406b9 0x00401a80 0x0000001f 0x00419154 
-> 0x00000000 0x00401aa0 0x00050024 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 0x00000000 0x00000000 0x00000000 0x00000000 
-> 
-> to reproduce it I run 2 ath10k APs, one with the 
-> WIPHY_FLAG_IBSS_RSN enabled and one without.
-> Whichever AP starts first keeps running while the other one
-> crashes when trying to start hostapd.
-> 
-> Thanks,
-> Emanuel
-> 
-> 
-> 2014-06-26 15:06 GMT+02:00 Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>:
-> 
-> 
-> 
->     On 06/26/2014 04:47 AM, Michal Kazior wrote:
-> 
->             TSF id: 1, free_tsf_id_map: 1
->             assertion failed? pc=0x9a0e15, line=0, dump area=0x401930
->             Target ID: 0x4100016c (1090519404)
->             Debug Info:
->             0x4100016c 0x00000000 0x009a0e15 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x009a0e15
->             0x00000000 0x00401930 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
->             0x00000000 0x00000000 0x00000000 0x00000000
-> 
-> 
->         Apparently firmware crashes while processing a beacon frame with a
->         NULL dereference.
-> 
-> 
->     I fixed some issues in this area in my CT firmware, so you could
->     try it if you want.  If you can crash my firmware, please
->     send me the similar crash dump and I can probably fix it.
-> 
->     Note this is not official QCA firmware, so any problems specific to
->     this firmware should be directed at me, and not QCA, and when reporting
->     general bugs (say, with driver), if you are using CT firmware be sure to
->     note that.
-> 
->     http://www.candelatech.com/__ath10k.php <http://www.candelatech.com/ath10k.php>
-> 
->     Thanks,
->     Ben
-> 
->     -- 
->     Ben Greear <greearb@candelatech.com <mailto:greearb@candelatech.com>>
->     Candela Technologies Inc  http://www.candelatech.com
-> 
-> 
->     _________________________________________________
->     ath10k mailing list
->     ath10k@lists.infradead.org <mailto:ath10k@lists.infradead.org>
->     http://lists.infradead.org/__mailman/listinfo/ath10k <http://lists.infradead.org/mailman/listinfo/ath10k>
-> 
-> 
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
