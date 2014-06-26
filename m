@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.duncanthrax.net ([2001:470:70c5:1111::170])
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X07W7-0006zo-DS
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 11:07:00 +0000
-Received: from port-92-198-130-130.static.qsc.de ([92.198.130.130]
- helo=[10.128.129.30])
- by smtp.eurescom.eu with esmtpsa (TLSv1:DHE-RSA-AES128-SHA:128)
- (Exim 4.80.1) (envelope-from <svens@stackframe.org>)
- id 1X07Ve-0005WR-RE
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 13:06:30 +0200
-Message-ID: <53ABFFAC.1050603@stackframe.org>
-Date: Thu, 26 Jun 2014 13:10:36 +0200
-From: Sven Schnelle <svens@stackframe.org>
+ id 1X089J-0000bp-51
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 11:47:29 +0000
+Received: by mail-wg0-f47.google.com with SMTP id k14so3465353wgh.6
+ for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 04:47:06 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Firmware crash
+In-Reply-To: <53ABFFAC.1050603@stackframe.org>
+References: <53ABFFAC.1050603@stackframe.org>
+Date: Thu, 26 Jun 2014 13:47:06 +0200
+Message-ID: <CA+BoTQkm9BOtuvwY6h-z38WSe9rNw34V89A3bomAcY--T1vE9g@mail.gmail.com>
+Subject: Re: Firmware crash
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sven Schnelle <svens@stackframe.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi List,
-
-i've seen a strange firmware crash:
-
-Athos/Xt BSP version Oct 19 2012-16:00:59
-Baud rate host set is 115200.
-Mac address is : 00:03:07:12:34:56
-alloc rem: 197524
-**WMI Service Ready **
-NUM_DEV=16
-TGT_VER: 4100016C
-RegDomain: 0, CfgCtl: 224 - 224
-ar_wal_peer_attach: num_peer_entries 145, num_tid_entries 443
-allocated 64 tids at 0x439a08 (each 96 bytes)
-allocated 379 tids in IRAM at 0x9baeb4 (each 96 bytes)
-allocated 64 stateless tids at 0x43b230 (each 40 bytes)
-### turn on Tx completion index tracking ###
-**WMI Ready **
-TGT_VER: 4100016C
-RegDomain: 3A, CfgCtl: 16 - 16
-peer create command for ****0:3:7:12:34:56****
-_wlan_vdev_set_param: unimplemented command 0x2
-_wlan_vdev_set_param: unimplemented command 0x7
-_wlan_vdev_set_param: unimplemented command 0x8
-TODO: Add DBGLOG for WMM Params
-TODO: Add DBGLOG for WMM Params
-TODO: Add DBGLOG for WMM Params
-TODO: Add DBGLOG for WMM Params
-TSF id: 1, free_tsf_id_map: 1
-assertion failed? pc=0x9a0e15, line=0, dump area=0x401930
-Target ID: 0x4100016c (1090519404)
-Debug Info:
-0x4100016c 0x00000000 0x009a0e15 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x009a0e15
-0x00000000 0x00401930 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000
-
-This happened on two APs at the same time, which were running before without
-problems. As both APs are in short distance (about 10m) i guess it was 
-caused
-by some packet on the Air.
-
-I see a 'assertion failed' above, can anyone tell what that assertion is?
-
-Firmware Version is:
-
-[   27.120000] ath10k: hardware name qca988x hw2.0 version 0x4100016c
-[   27.130000] ath10k: firmware version: 10.1.467.2-1
-
-
-Thanks
-Sven
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjYgSnVuZSAyMDE0IDEzOjEwLCBTdmVuIFNjaG5lbGxlIDxzdmVuc0BzdGFja2ZyYW1lLm9y
+Zz4gd3JvdGU6Cj4gSGkgTGlzdCwKPgo+IGkndmUgc2VlbiBhIHN0cmFuZ2UgZmlybXdhcmUgY3Jh
+c2g6Cj4KPiBBdGhvcy9YdCBCU1AgdmVyc2lvbiBPY3QgMTkgMjAxMi0xNjowMDo1OQo+IEJhdWQg
+cmF0ZSBob3N0IHNldCBpcyAxMTUyMDAuCj4gTWFjIGFkZHJlc3MgaXMgOiAwMDowMzowNzoxMjoz
+NDo1Ngo+IGFsbG9jIHJlbTogMTk3NTI0Cj4gKipXTUkgU2VydmljZSBSZWFkeSAqKgo+IE5VTV9E
+RVY9MTYKPiBUR1RfVkVSOiA0MTAwMDE2Qwo+IFJlZ0RvbWFpbjogMCwgQ2ZnQ3RsOiAyMjQgLSAy
+MjQKPiBhcl93YWxfcGVlcl9hdHRhY2g6IG51bV9wZWVyX2VudHJpZXMgMTQ1LCBudW1fdGlkX2Vu
+dHJpZXMgNDQzCj4gYWxsb2NhdGVkIDY0IHRpZHMgYXQgMHg0MzlhMDggKGVhY2ggOTYgYnl0ZXMp
+Cj4gYWxsb2NhdGVkIDM3OSB0aWRzIGluIElSQU0gYXQgMHg5YmFlYjQgKGVhY2ggOTYgYnl0ZXMp
+Cj4gYWxsb2NhdGVkIDY0IHN0YXRlbGVzcyB0aWRzIGF0IDB4NDNiMjMwIChlYWNoIDQwIGJ5dGVz
+KQo+ICMjIyB0dXJuIG9uIFR4IGNvbXBsZXRpb24gaW5kZXggdHJhY2tpbmcgIyMjCj4gKipXTUkg
+UmVhZHkgKioKPiBUR1RfVkVSOiA0MTAwMDE2Qwo+IFJlZ0RvbWFpbjogM0EsIENmZ0N0bDogMTYg
+LSAxNgo+IHBlZXIgY3JlYXRlIGNvbW1hbmQgZm9yICoqKiowOjM6NzoxMjozNDo1NioqKioKPiBf
+d2xhbl92ZGV2X3NldF9wYXJhbTogdW5pbXBsZW1lbnRlZCBjb21tYW5kIDB4Mgo+IF93bGFuX3Zk
+ZXZfc2V0X3BhcmFtOiB1bmltcGxlbWVudGVkIGNvbW1hbmQgMHg3Cj4gX3dsYW5fdmRldl9zZXRf
+cGFyYW06IHVuaW1wbGVtZW50ZWQgY29tbWFuZCAweDgKPiBUT0RPOiBBZGQgREJHTE9HIGZvciBX
+TU0gUGFyYW1zCj4gVE9ETzogQWRkIERCR0xPRyBmb3IgV01NIFBhcmFtcwo+IFRPRE86IEFkZCBE
+QkdMT0cgZm9yIFdNTSBQYXJhbXMKPiBUT0RPOiBBZGQgREJHTE9HIGZvciBXTU0gUGFyYW1zCj4g
+VFNGIGlkOiAxLCBmcmVlX3RzZl9pZF9tYXA6IDEKPiBhc3NlcnRpb24gZmFpbGVkPyBwYz0weDlh
+MGUxNSwgbGluZT0wLCBkdW1wIGFyZWE9MHg0MDE5MzAKPiBUYXJnZXQgSUQ6IDB4NDEwMDAxNmMg
+KDEwOTA1MTk0MDQpCj4gRGVidWcgSW5mbzoKPiAweDQxMDAwMTZjIDB4MDAwMDAwMDAgMHgwMDlh
+MGUxNSAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAw
+MDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAgMHgwMDlhMGUxNQo+IDB4MDAwMDAwMDAgMHgwMDQwMTkzMCAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAw
+MDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4
+MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAg
+MHgwMDAwMDAwMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAKCkFwcGFyZW50bHkgZmlybXdhcmUgY3Jh
+c2hlcyB3aGlsZSBwcm9jZXNzaW5nIGEgYmVhY29uIGZyYW1lIHdpdGggYQpOVUxMIGRlcmVmZXJl
+bmNlLgoKCj4gVGhpcyBoYXBwZW5lZCBvbiB0d28gQVBzIGF0IHRoZSBzYW1lIHRpbWUsIHdoaWNo
+IHdlcmUgcnVubmluZyBiZWZvcmUgd2l0aG91dAo+IHByb2JsZW1zLiBBcyBib3RoIEFQcyBhcmUg
+aW4gc2hvcnQgZGlzdGFuY2UgKGFib3V0IDEwbSkgaSBndWVzcyBpdCB3YXMKPiBjYXVzZWQKPiBi
+eSBzb21lIHBhY2tldCBvbiB0aGUgQWlyLgo+Cj4gSSBzZWUgYSAnYXNzZXJ0aW9uIGZhaWxlZCcg
+YWJvdmUsIGNhbiBhbnlvbmUgdGVsbCB3aGF0IHRoYXQgYXNzZXJ0aW9uIGlzPwo+Cj4gRmlybXdh
+cmUgVmVyc2lvbiBpczoKPgo+IFsgICAyNy4xMjAwMDBdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBx
+Y2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAwMDE2Ywo+IFsgICAyNy4xMzAwMDBdIGF0aDEwazog
+ZmlybXdhcmUgdmVyc2lvbjogMTAuMS40NjcuMi0xCgpEaWQgeW91IGhhcHBlbiB0byBoYXZlIHRo
+ZSBhdGgxMGsgaW50ZXJmYWNlIGluIGEgYnJpZGdlPyBJZiBzbyBtb25pdG9yCnZkZXYgaXMgbW9z
+dCBsaWtlbHkgdGhlIGN1bHByaXQgaGVyZS4gQSB2ZXJ5IHNpbWlsYXIgaXNzdWUgd2FzCnJlcG9y
+dGVkIGZvciA0YWRkciBzdGF0aW9uIGJyaWRnaW5nIGFuZCBhbHNvIGludm9sdmVzIG1vbml0b3Ig
+dmRldi4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
+dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
