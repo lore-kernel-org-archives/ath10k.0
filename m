@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X09Nl-0000qp-8v
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 13:06:29 +0000
-Message-ID: <53AC1ABF.4020906@candelatech.com>
-Date: Thu, 26 Jun 2014 06:06:07 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X0ASb-0007WH-N8
+ for ath10k@lists.infradead.org; Thu, 26 Jun 2014 14:15:37 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Pull request: ath-current 20140626
+Date: Thu, 26 Jun 2014 17:15:02 +0300
+Message-ID: <878uojzrix.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Firmware crash
-References: <53ABFFAC.1050603@stackframe.org>
- <CA+BoTQkm9BOtuvwY6h-z38WSe9rNw34V89A3bomAcY--T1vE9g@mail.gmail.com>
-In-Reply-To: <CA+BoTQkm9BOtuvwY6h-z38WSe9rNw34V89A3bomAcY--T1vE9g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +16,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Schnelle <svens@stackframe.org>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Hi John,
 
+here's a pull request with two ath10k patches I would like to get into
+3.16. Both of the changes are small and pretty safe. Change log:
 
-On 06/26/2014 04:47 AM, Michal Kazior wrote:
+Bartosz fixed an issue where we were not able to create 8 vdevs when
+using DFS. Michal removed a false warning which was just confusing
+people.
 
->> TSF id: 1, free_tsf_id_map: 1
->> assertion failed? pc=0x9a0e15, line=0, dump area=0x401930
->> Target ID: 0x4100016c (1090519404)
->> Debug Info:
->> 0x4100016c 0x00000000 0x009a0e15 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x009a0e15
->> 0x00000000 0x00401930 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->> 0x00000000 0x00000000 0x00000000 0x00000000
->
-> Apparently firmware crashes while processing a beacon frame with a
-> NULL dereference.
+The following changes since commit a715c7ddd65a1a3b2839b8ebd759bb2d361f7675:
 
-I fixed some issues in this area in my CT firmware, so you could
-try it if you want.  If you can crash my firmware, please
-send me the similar crash dump and I can probably fix it.
+  wil6210: improve debug for WMI receive (2014-05-30 13:49:34 -0400)
 
-Note this is not official QCA firmware, so any problems specific to
-this firmware should be directed at me, and not QCA, and when reporting
-general bugs (say, with driver), if you are using CT firmware be sure to
-note that.
+are available in the git repository at:
 
-http://www.candelatech.com/ath10k.php
+  git://github.com/kvalo/ath.git ath-current
 
-Thanks,
-Ben
+for you to fetch changes up to dfa413de1e4388818f7dcdce0a90d6212e74895b:
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+  ath10k: fix 8th virtual AP interface with DFS (2014-06-02 21:44:53 +0300)
+
+----------------------------------------------------------------
+Bartosz Markowski (1):
+      ath10k: fix 8th virtual AP interface with DFS
+
+Michal Kazior (1):
+      ath10k: remove unnecessary htt rx corruption check
+
+ drivers/net/wireless/ath/ath10k/core.c   |    6 +++++-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   18 ------------------
+ 2 files changed, 5 insertions(+), 19 deletions(-)
 
 _______________________________________________
 ath10k mailing list
