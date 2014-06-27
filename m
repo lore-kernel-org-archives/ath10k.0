@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22b.google.com ([2607:f8b0:400c:c01::22b])
+Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0JTa-0002qb-Lk
- for ath10k@lists.infradead.org; Thu, 26 Jun 2014 23:53:11 +0000
-Received: by mail-ve0-f171.google.com with SMTP id jz11so4525445veb.16
- for <ath10k@lists.infradead.org>; Thu, 26 Jun 2014 16:52:45 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CABnBrYWEN+KL5vHGggi_b4HZ6gd15yqpna0WBNo0p6i76y9uWw@mail.gmail.com>
-References: <CABnBrYV8-UY56eEYn7FYEXrNU_SMeMOBXa1fwH9ugOHf_xAq0A@mail.gmail.com>
- <CA+BoTQnOBaB0QY6_AtkL6La=aw7gFxgqy_4OLDccuHe7f75mNg@mail.gmail.com>
- <CABnBrYWEN+KL5vHGggi_b4HZ6gd15yqpna0WBNo0p6i76y9uWw@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Thu, 26 Jun 2014 19:52:24 -0400
-Message-ID: <CAHqTa-2zzSb-Yk_yM-O8R9-Z=gWJ471A6qX3arvUDO__3FtRtQ@mail.gmail.com>
-Subject: Re: No reorder buffer?
+ id 1X0SI3-00035M-Ul
+ for ath10k@lists.infradead.org; Fri, 27 Jun 2014 09:17:53 +0000
+Received: by mail-we0-f172.google.com with SMTP id u57so4841353wes.3
+ for <ath10k@lists.infradead.org>; Fri, 27 Jun 2014 02:17:23 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC/RFT 0/2] mac80211/ath10k: fix Rx reordering
+Date: Fri, 27 Jun 2014 11:06:53 +0200
+Message-Id: <1403860015-31601-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +17,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Denton Gentry <denton.gentry@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Denton Gentry <denton.gentry@gmail.com>
 
-On Thu, Jun 26, 2014 at 6:27 PM, Denton Gentry <denton.gentry@gmail.com> wrote:
-> On Thu, Jun 26, 2014 at 3:28 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
->> On 24 June 2014 16:47, Denton Gentry <denton.gentry@gmail.com> wrote:
->>> I'm bridging ath10k to Ethernet, gathering pcaps on another ath10k
->>> system in monitor mode and on the Ethernet system which is receiving
->>> the packets. I see packets being delivered out of order to the
->>> Ethernet system. So far as I can tell, any packet which has to be
->>> re-sent on the Wifi link will be delivered out of order to Ethernet.
->>
->> As I've mentioned in my other mail - perhaps reordering is disabled in
->> firmware under some circumstances.
->>
->> My suspicion is monitor vdev may be involved. It is created in
->> firmware when you set ath10k interface into promisc mode (bridging
->> implies that; most sniffers set promisc mode too unless told to not
->> to, e.g. tcpdump -p).
->>
->> Can you somehow verify if you observe the reordering problem without
->> bridging with ethernet (e.g. run traffic to AP w/ bridging and w/o
->> bridging) ? If it's too much work then forget it :-)
->
-> Running an iperf server on my AP, to take bridging out of the picture:
-> iperf -s -w 1M
+Hi,
 
-Note that our version of hostapd (and possibly all versions of
-hostapd) automatically creates a monitor interface alongside the wlan
-interface.  From what I've seen in the code, this is entirely for
-legacy reasons (??) and it doesn't actually use the monitor interface
-anymore for anything.  So we could probably chop out the code that
-creates it.  I suspect if we don't, it will be in monitor mode even
-when bridging is not active.
+I'm posting these 2 patches together in a single
+patchset for easier review/testing for now. Once
+review goes well I can split up the patchset and
+send patches separately if it is desired so.
 
-For this test, I guess we could also just manually delete the monitor
-interface after starting hostapd.  But I'm unclear on whether the
-firmware would switch reordering back on in that case.
+Recently Denton pointed out ath10k fails to
+perform Rx reordering and this causes performance
+issues in some cases.
 
-Or maybe using a separate monitor-mode interface doesn't trigger this
-with the main wlan0 interface, but I'm guessing that's not the case.
+Due to ath10k design I had to come up with a patch
+for mac80211 to allow Rx reordering offloading via
+existing Rx BA sessions code.
 
-(Separately, it makes me a bit sad that enabling monitor mode changes
-the behaviour of the wifi.  It defeats part of the purpose of monitor
-mode.)
+I've tested this pretty lightly so far. With the
+patchset `iperf -u` reports 0* out-of-order
+frames. Without the patch I'm seeing 400+ per
+second (the particular number isn't relevant as it
+depends on throughput and environment). It seems
+to improve single-threaded TCP performance as
+well. All test traffic is station -> ath10k AP.
+
+* There are a few out-of-rder frames in the first
+second after Rx tid is set up. I suspect this is
+because ath10k is forced to start Rx BA sesion
+with an arbitrary start_seq_num. 
+
+Note: This is based on https://github.com/kvalo/ath
+30a165cb84793fa3896ad93497e11eed651b1813.
+
+
+Michal Kazior (2):
+  mac80211: add support for Rx reordering offloading
+  ath10k: fix Rx aggregation reordering
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  92 +++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    |  30 +++++++++
+ drivers/net/wireless/ath/ath10k/txrx.c   |   3 +-
+ drivers/net/wireless/ath/ath10k/txrx.h   |   1 +
+ include/net/mac80211.h                   |  40 ++++++++++++
+ net/mac80211/agg-rx.c                    | 108 ++++++++++++++++++++++++-------
+ net/mac80211/ieee80211_i.h               |  16 +++++
+ net/mac80211/iface.c                     |  25 +++++++
+ 8 files changed, 287 insertions(+), 28 deletions(-)
+
+-- 
+1.8.5.3
+
 
 _______________________________________________
 ath10k mailing list
