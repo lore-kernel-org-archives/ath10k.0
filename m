@@ -1,16 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X0WyE-00035B-Ky
- for ath10k@lists.infradead.org; Fri, 27 Jun 2014 14:17:43 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC/RFT 2/2] ath10k: fix Rx aggregation reordering
-References: <1403860015-31601-1-git-send-email-michal.kazior@tieto.com>
- <1403860015-31601-3-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 27 Jun 2014 17:17:13 +0300
-In-Reply-To: <1403860015-31601-3-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 27 Jun 2014 11:06:55 +0200")
-Message-ID: <8761jmtp1y.fsf@kamboji.qca.qualcomm.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X0YSZ-0003KB-8c
+ for ath10k@lists.infradead.org; Fri, 27 Jun 2014 15:53:08 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Fri, 27 Jun 2014 17:52:27 +0200
+Subject: RE : Warning message in bridge mode
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7D6@srvexch01.SODIELEC.local>
+References: <1399565896-29791-1-git-send-email-greearb@candelatech.com>
+ <53972984.8020303@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997906@srvexch01.SODIELEC.local>
+ <53988C53.6030806@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997908@srvexch01.SODIELEC.local>
+ <539A0C06.6050105@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790A@srvexch01.SODIELEC.local>
+ <539B2F21.3020609@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790B@srvexch01.SODIELEC.local>
+ <539F0393.1090009@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F1099790D@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F10997914@srvexch01.SODIELEC.local>
+ <53A89D2E.6010708@candelatech.com>,
+ <E37BEAE7-CCA9-4C79-9F24-051E867FC0F6@gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F10997915@srvexch01.SODIELEC.local>,
+ <53A994F7.6090707@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7D5@srvexch01.SODIELEC.local>,
+ <53AC2F78.7080307@candelatech.com>
+In-Reply-To: <53AC2F78.7080307@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,68 +40,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Denton Gentry <denton.gentry@gmail.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bruno Antunes <baantunes@gmail.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+>It would not be easy for me to do that.  While you found a single patch that
+>fixed the crash for you, I believe it is also dependent on many patches that
+>came before that one as well.
 
-> Firmware doesn't perform Rx reordering so it is
-> left to the host driver to do that.
->
-> Use mac80211 to perform reordering instead of
-> re-inventing the wheel.
->
-> This fixes TCP throughput issues in some
-> environments (notably Windows stations connecting
-> to ath10k AP).
->
-> Reported-By: Denton Gentry <denton.gentry@gmail.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>For your throughput tests, are you using UDP or TCP?  You might try TCP in
+>case you are hitting the same packet-reordering issue reported in another
+>email thread.
 
-[...]
+But as you and Bruno Antunes said before the warning message is normal and I can ignore it?
+I've tested with both TCP and UDP using iperf. I'm testing TCP with option -w256K and 10 stream (-P10)
+With Open Authentication in 802.11ac VHT80
+  UDP Download (1% packet lost) :  565 Mbps  
+  UDP Upload (1% packet lost):   320 Mbps
+  TCP Download:  380 Mbps
+  TCP Upload:    260 Mbps
 
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -21,6 +21,7 @@
->  #include "txrx.h"
->  #include "debug.h"
->  #include "trace.h"
-> +#include "mac.h"
+>At least for standard operation (ie, no software-crypt), I doubt my
+>changes to the firmware had any significant impact on performance
+>or throughput.
 
-Why this? At least from a quick search I didn't see any reason to add this.
+You're right, If I do not enter promiscuous mode, I get the same rate when doing test with your firmware and the official firmware. 
+But if I use your firmware for my STA in promiscuous mode, the rate is a little bit slower when doing test (about 20 Mbps less than non promiscuous mode)
 
->  
->  #include <linux/log2.h>
->  
-> @@ -1533,10 +1534,95 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
->  	case HTT_T2H_MSG_TYPE_STATS_CONF:
->  		trace_ath10k_htt_stats(skb->data, skb->len);
->  		break;
-> +	case HTT_T2H_MSG_TYPE_RX_ADDBA: {
-> +		struct ath10k *ar = htt->ar;
-> +		struct htt_rx_addba *ev = &resp->rx_addba;
-> +		struct ath10k_peer *peer;
-> +		struct ath10k_vif *arvif;
-> +		u16 info0, tid, peer_id;
-> +
-> +		info0 = __le32_to_cpu(ev->info0);
-> +		tid = MS(info0, HTT_RX_BA_INFO0_TID);
-> +		peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
 
-This event handling is pretty long. I think it would be better to have a
-separate function for this event.
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
-> +	case HTT_T2H_MSG_TYPE_RX_DELBA: {
-> +		struct ath10k *ar = htt->ar;
-> +		struct htt_rx_addba *ev = &resp->rx_addba;
-> +		struct ath10k_peer *peer;
-> +		struct ath10k_vif *arvif;
-> +		u16 info0, tid, peer_id;
 
-And the same for this event.
 
--- 
-Kalle Valo
+
+
 
 _______________________________________________
 ath10k mailing list
