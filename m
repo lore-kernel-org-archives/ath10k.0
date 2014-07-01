@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ve0-x22f.google.com ([2607:f8b0:400c:c01::22f])
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X1t3m-0006Q4-8g
- for ath10k@lists.infradead.org; Tue, 01 Jul 2014 08:05:03 +0000
-Received: by mail-ve0-f175.google.com with SMTP id jx11so9184908veb.6
- for <ath10k@lists.infradead.org>; Tue, 01 Jul 2014 01:04:40 -0700 (PDT)
+ id 1X1tj6-00037o-EC
+ for ath10k@lists.infradead.org; Tue, 01 Jul 2014 08:47:44 +0000
+Received: by mail-we0-f178.google.com with SMTP id x48so9301243wes.37
+ for <ath10k@lists.infradead.org>; Tue, 01 Jul 2014 01:47:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnAVooNEHZbmqaudUpoCGCzSi-nWM8xarwqv+mLq14Dcw@mail.gmail.com>
+In-Reply-To: <CAEFj984+jp4L3x0W2euEPsUbq9QsbDid0h0iTrTu36LHZh-URw@mail.gmail.com>
 References: <CAEFj984N4HSVosxx52s9e-sX3STK=YjOmh_UUwJWDJRQZAZdcg@mail.gmail.com>
  <CA+BoTQnAVooNEHZbmqaudUpoCGCzSi-nWM8xarwqv+mLq14Dcw@mail.gmail.com>
-Date: Tue, 1 Jul 2014 16:04:40 +0800
-Message-ID: <CAEFj984+jp4L3x0W2euEPsUbq9QsbDid0h0iTrTu36LHZh-URw@mail.gmail.com>
+ <CAEFj984+jp4L3x0W2euEPsUbq9QsbDid0h0iTrTu36LHZh-URw@mail.gmail.com>
+Date: Tue, 1 Jul 2014 10:47:19 +0200
+Message-ID: <CA+BoTQkkR0yi38xEDwEDsRdDx8kXRbGCOfy-q1TvRupAW9zt-g@mail.gmail.com>
 Subject: Re: Frame Injection in Monitor Mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,38 +22,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Jul 1, 2014 at 3:29 PM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 1 July 2014 09:17, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
->> Hi, all
->>
->> Anyone has tried the frame injection using the standalone monitor mode
->> on AP firmware.
->>
->> I have tried this but no luck not working.
->
-> I played with this a little a while ago.
->
-> Raw tx on 10.1.467 is broken. It needs htt tx command to be modified
-> to send a fixed up msdu len (msdu->len -
-> ieee80211_hdrlen(hdr->frame_control) + sizeof(struct ethhdr) if my
-
-So with this msdu->len, it means that there is no 802.11 MAC header in
-the frame submission for transmission, and only Ethernet header. So
-the transmit mode is ATH10K_HW_TXRX_ETHERNET, am I right?
-
-Please advice. Thanks
-
-Regards,
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBKdWx5IDIwMTQgMTA6MDQsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwu
+Y29tPiB3cm90ZToKPiBPbiBUdWUsIEp1bCAxLCAyMDE0IGF0IDM6MjkgUE0sIE1pY2hhbCBLYXpp
+b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4gT24gMSBKdWx5IDIwMTQgMDk6
+MTcsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwuY29tPiB3cm90ZToKPj4+IEhp
+LCBhbGwKPj4+Cj4+PiBBbnlvbmUgaGFzIHRyaWVkIHRoZSBmcmFtZSBpbmplY3Rpb24gdXNpbmcg
+dGhlIHN0YW5kYWxvbmUgbW9uaXRvciBtb2RlCj4+PiBvbiBBUCBmaXJtd2FyZS4KPj4+Cj4+PiBJ
+IGhhdmUgdHJpZWQgdGhpcyBidXQgbm8gbHVjayBub3Qgd29ya2luZy4KPj4KPj4gSSBwbGF5ZWQg
+d2l0aCB0aGlzIGEgbGl0dGxlIGEgd2hpbGUgYWdvLgo+Pgo+PiBSYXcgdHggb24gMTAuMS40Njcg
+aXMgYnJva2VuLiBJdCBuZWVkcyBodHQgdHggY29tbWFuZCB0byBiZSBtb2RpZmllZAo+PiB0byBz
+ZW5kIGEgZml4ZWQgdXAgbXNkdSBsZW4gKG1zZHUtPmxlbiAtCj4+IGllZWU4MDIxMV9oZHJsZW4o
+aGRyLT5mcmFtZV9jb250cm9sKSArIHNpemVvZihzdHJ1Y3QgZXRoaGRyKSBpZiBteQo+Cj4gU28g
+d2l0aCB0aGlzIG1zZHUtPmxlbiwgaXQgbWVhbnMgdGhhdCB0aGVyZSBpcyBubyA4MDIuMTEgTUFD
+IGhlYWRlciBpbgo+IHRoZSBmcmFtZSBzdWJtaXNzaW9uIGZvciB0cmFuc21pc3Npb24sIGFuZCBv
+bmx5IEV0aGVybmV0IGhlYWRlci4gU28KPiB0aGUgdHJhbnNtaXQgbW9kZSBpcyBBVEgxMEtfSFdf
+VFhSWF9FVEhFUk5FVCwgYW0gSSByaWdodD8KClRoaXMgY2FsY3VsYXRpb24gaXMgbmVjZXNzYXJ5
+IGZvciBUWFJYX1JBVyBhY3R1YWxseS4gVGhlcmUgc2VlbXMgdG8gYmUKYSBidWcgaW4gZncgYW5k
+IHRoaXMgdHJpY2tzIGl0IHRvIHNlbmQgdGhlIHJhdyBmcmFtZSBjb3JyZWN0bHkuCgoKTWljaGHF
+ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
