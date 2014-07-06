@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x22b.google.com ([2607:f8b0:400d:c01::22b])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X3eEY-0006wN-0T
- for ath10k@lists.infradead.org; Sun, 06 Jul 2014 04:39:26 +0000
-Received: by mail-qc0-f171.google.com with SMTP id w7so2718895qcr.30
- for <ath10k@lists.infradead.org>; Sat, 05 Jul 2014 21:39:04 -0700 (PDT)
+ id 1X3fWi-0006Be-VA
+ for ath10k@lists.infradead.org; Sun, 06 Jul 2014 06:02:17 +0000
+From: Sujith Manoharan <sujith@msujith.org>
 MIME-Version: 1.0
-In-Reply-To: <53B8C4DF.5000308@candelatech.com>
+Message-ID: <21432.58953.39322.640936@gargle.gargle.HOWL>
+Date: Sun, 6 Jul 2014 11:31:45 +0530
+Subject: Re: Question on beacon-miss handling.
+In-Reply-To: <CAJ-Vmo=tjqCAns3N2_PY08r6A85Q9e8CoSWCV7g5KCQHRmqN-g@mail.gmail.com>
 References: <53B808BF.8070000@candelatech.com>
  <CAJ-Vmo=8pO0eVpL5L28AVALn+rpYPxhOw5kYkaGieBt-RzN3iQ@mail.gmail.com>
  <53B8C4DF.5000308@candelatech.com>
-Date: Sat, 5 Jul 2014 21:39:04 -0700
-Message-ID: <CAJ-Vmo=tjqCAns3N2_PY08r6A85Q9e8CoSWCV7g5KCQHRmqN-g@mail.gmail.com>
-Subject: Re: Question on beacon-miss handling.
-From: Adrian Chadd <adrian@freebsd.org>
+ <CAJ-Vmo=tjqCAns3N2_PY08r6A85Q9e8CoSWCV7g5KCQHRmqN-g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +25,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-On 5 July 2014 20:39, Ben Greear <greearb@candelatech.com> wrote:
-> On 07/05/2014 07:14 PM, Adrian Chadd wrote:
->>
->> Where is it in the firmware again?
->
->
-> wlan_swbmiss_offload.c
->
->
->> The beacon miss stuff is a little .. odd. Mostly because there's only
->> one (and maybe two) timers for it and they're a pain in the ass to
->> configure correctly. Having it scale (correctly) to more than two
->> vdevs may be a little challenging.
->
->
-> I've seen other funny stuff where an AP will crash hard(-ish?) and the
-> associated stations
-> take a long time to figure out their AP is dead.  Could be related to this
-> maybe..or maybe was something else.  I have not investigated closely.
->
-> I'd be happy to have all the beacon miss stuff move to the driver..seems
-> a waste of limited resources in the firmware.
+Adrian Chadd wrote:
+> Think about it in terms of "minimising how much the host is woken up."
+> 
+> That's what the target market of the STA firmware for this chip is
+> thinking about.
 
-Think about it in terms of "minimising how much the host is woken up."
+I don't think beacon filtering is enabled for ath10k, which means
+all beacons are sent to mac80211 anyway. HW/FW connection monitoring
+(in STA mode) is also not enabled in ath10k, so mac80211's beacon loss/miss
+infrastructure is already used, no ?
 
-That's what the target market of the STA firmware for this chip is
-thinking about.
-
-
--a
+Sujith
 
 _______________________________________________
 ath10k mailing list
