@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X5Co7-0001kT-6O
- for ath10k@lists.infradead.org; Thu, 10 Jul 2014 11:46:36 +0000
-Received: by mail-wg0-f49.google.com with SMTP id a1so5547646wgh.32
- for <ath10k@lists.infradead.org>; Thu, 10 Jul 2014 04:46:09 -0700 (PDT)
+ id 1X5Co5-0001kQ-KT
+ for ath10k@lists.infradead.org; Thu, 10 Jul 2014 11:46:35 +0000
+Received: by mail-we0-f171.google.com with SMTP id q58so8945769wes.2
+ for <ath10k@lists.infradead.org>; Thu, 10 Jul 2014 04:46:06 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFT/RFC 3/5] cfg80211: allow RX amsdu to be reported as a list
-Date: Thu, 10 Jul 2014 13:45:12 +0200
-Message-Id: <1404992714-15690-4-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
-References: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [RFT/RFC 0/5] ath10k: handle/report A-MSDU as a skb list
+Date: Thu, 10 Jul 2014 13:45:09 +0200
+Message-Id: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,74 +25,40 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, denton.gentry@gmail.com
 
-ath10k hw report amsdu frames as a separate frames.
-mac80211 before this patch expect one big frame
-with msdu subframes included. Next split this big
-frame into smaller ethernet frames and report to
-the stack.
-To skip this not needed memcpy, allow driver to report
-amsdu as a list of frames using skb->next.
+This is prototype, how we can handle A-MSDU as a skb list in mac80211.
+No changes in mac80211 reordering code required in such case, also
+we don't need to build one big frame using memcpy ...
+With such prototype tid_agg_rx->reorder_buf[sn] will describe exactly
+one MPDU (with included A-MSDU subframes if skb->next) and detection of duplicated
+frames will work correctly. So, reordering should works correctly.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- net/wireless/util.c |   44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+I tested this with A-MPDU and A-MSDU run together (A-MSDU frame up to 10k) - TCP STA -> AP.
+I used ath10k STA with unlocked A-MSDU limit in RC in firmware.
+Didn't notice any problems.
 
-diff --git a/net/wireless/util.c b/net/wireless/util.c
-index 728f1c0..72e9ae7 100644
---- a/net/wireless/util.c
-+++ b/net/wireless/util.c
-@@ -617,6 +617,50 @@ void ieee80211_amsdu_to_8023s(struct sk_buff *skb, struct sk_buff_head *list,
- 		eth = (struct ethhdr *) skb->data;
- 	}
- 
-+	if (skb->next) {
-+		/* Seems we already get list of msdu frames */
-+		do {
-+			__be16 len;
-+			eth = (struct ethhdr *) skb->data;
-+
-+			frame = skb;
-+
-+			memcpy(dst, eth->h_dest, ETH_ALEN);
-+			memcpy(src, eth->h_source, ETH_ALEN);
-+			len = eth->h_proto;
-+
-+			skb_pull(skb, sizeof(struct ethhdr));
-+
-+			skb_reset_network_header(frame);
-+			frame->dev = skb->dev;
-+			frame->priority = skb->priority;
-+
-+			payload = frame->data;
-+			ethertype = (payload[6] << 8) | payload[7];
-+
-+			if (likely((ether_addr_equal(payload, rfc1042_header) &&
-+				    ethertype != ETH_P_AARP && ethertype != ETH_P_IPX) ||
-+				   ether_addr_equal(payload, bridge_tunnel_header))) {
-+				/* remove RFC1042 or Bridge-Tunnel
-+				 * encapsulation and replace EtherType */
-+				skb_pull(frame, 6);
-+				memcpy(skb_push(frame, ETH_ALEN), src, ETH_ALEN);
-+				memcpy(skb_push(frame, ETH_ALEN), dst, ETH_ALEN);
-+			} else {
-+				memcpy(skb_push(frame, sizeof(__be16)), &len,
-+					sizeof(__be16));
-+				memcpy(skb_push(frame, ETH_ALEN), src, ETH_ALEN);
-+				memcpy(skb_push(frame, ETH_ALEN), dst, ETH_ALEN);
-+			}
-+
-+			skb = skb->next;
-+			frame->next = NULL;
-+			__skb_queue_tail(list, frame);
-+		} while (skb);
-+
-+		return;
-+	}
-+
- 	while (skb != frame) {
- 		u8 padding;
- 		__be16 len = eth->h_proto;
+@Denton could you check this prototype in your env please
+
+TODO:
+mac80211 - release correctly A-MSDU list in case of problems (errors)
+verify crypted networks + A-MSDU
+introduce test code to ath10k driver that we can test mac80211 reordering implementation
+
+
+Janusz Dziedzic (5):
+  ath10k: amsdu rx, buid one big frame
+  mac80211: add option to handle amsdu as a list of skb
+  cfg80211: allow RX amsdu to be reported as a list
+  ath10k: report amsdu as a skb list
+  ath10k: rx, don't pass frames with invalid FCS
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   62 ++++++++++++++++----------
+ include/net/mac80211.h                   |    4 ++
+ net/mac80211/ieee80211_i.h               |    1 +
+ net/mac80211/main.c                      |    2 +-
+ net/mac80211/rx.c                        |   70 ++++++++++++++++++++++++++++--
+ net/wireless/util.c                      |   44 +++++++++++++++++++
+ 6 files changed, 155 insertions(+), 28 deletions(-)
+
 -- 
 1.7.9.5
 
