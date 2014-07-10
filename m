@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mcgraw.st-andrews.ac.uk ([138.251.8.95])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X4slz-00011t-09
- for ath10k@lists.infradead.org; Wed, 09 Jul 2014 14:23:04 +0000
-Received: from dyn-195-212.cs.st-andrews.ac.uk
- (dyn-195-212.cs.st-andrews.ac.uk [138.251.195.212])
- (authenticated bits=0)
- by mcgraw.st-andrews.ac.uk (8.14.3/8.14.3/Debian-9.4) with ESMTP id
- s69EMEIc011934
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <ath10k@lists.infradead.org>; Wed, 9 Jul 2014 14:22:15 GMT
-From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
-Subject: Throughput is very low
-Message-Id: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
-Date: Wed, 9 Jul 2014 15:22:09 +0100
-Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X58AK-00082y-9S
+ for ath10k@lists.infradead.org; Thu, 10 Jul 2014 06:49:13 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Thu, 10 Jul 2014 08:48:20 +0200
+Subject: RE : Bridging problem in ath10k (STA)
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7E0@srvexch01.SODIELEC.local>
+References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
+ <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
+ <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>,
+ <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
+In-Reply-To: <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +24,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-Dear all, 
-I am trying to do throughput test with copmex AC cards Model (WLE900VX 7AA) .,using hostapd running on the server and  one client. 
-
-I used Kalle sitting for the hostapd. However, the maximum throughput i can get is around 70Mbit/s which is far away from the throughput achieved by many users (UDP traffic). 
-
-I have notice that Bit Rate keeps fixed 6 Mb/s . and it dose not responding to any commands to change it. 
-
-The machines used: 
- Ubuntu 12.04, Kerenl 3.16 , updated regulatory to cover 80Mhz channels , and the latest  firmware 
-
-Your help is appreciated . 
-Kind regards 
-Mamun
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSByYW4gaW50byBhIHByb2JsZW0gYWJvdXQgYnJpZGdpbmcgd2hpbGUgZG9pbmcgdGVzdCB3aXRo
+IGlwZXJmLCBteSBzeXN0ZW0gaXMgbGlrZSB0aGlzOg0KUEMxIC0gRGV2aWNlIDEgKEFQKSA8PSBX
+aWZpID0+IERldmljZSAyIChTVEEpIC0gUEMyDQpNeSBBUCBpcyBzZXQgdXAgaW4gODAyLjExYWMg
+VkhUIDgwLiBNeSBTVEEgaXMgbm9uLWJyaWRnZWQgYW5kIGl0IGFzc29jaWF0ZWQgd2l0aCBteSBB
+UCBkaXJlY3RseSANCm9uIGludGVyZmFjZSB3bGFuMC4NCklmIEkgcnVuIGlwZXJmIGluIHRoZSBk
+aXJlY3Rpb24gZnJvbSBBUCB0byBTVEEgKG9wdGlvbiAtYyBvbiBQQzEgYW5kIC1zIG9uIFBDMiks
+IGV2ZXJ5IHRoaW5ncyB3b3JrIGZpbmUuDQpCdXQgaW4gdGhlIG9wcG9zaXRlIGRpcmVjdGlvbiAo
+LXMgb24gUEMxIGFuZCAtYyBvbiBQQzIpLCB0aGUgaW50ZXJmYWNlIHdsYW4wLnN0YTEgaXMgY3Jl
+YXRlZCBvbiBteSBBUCANCmR1cmluZyBpcGVyZiBpcyBydW5uaW5nIGFuZCBJIGxvc3QgdGhlIGNv
+bm5lY3Rpb24gYmV0d2VlbiAyIGRldmljZSwgdGhvdWdoICJpdyB3bGFuLnN0YTEgc3RhdGlvbiBk
+dW1wIiANCnN0aWxsIHJlcG9ydCB0aGUgaW5mb3JtYXRpb24gYWJvdXQgY29ubmVjdGlvbiAocmF0
+ZSwgdHhwb3dlciwgcnggYnl0ZXMgKGNoYW5nZSB2ZXJ5IHZlcnkgc2xvd2x5KSwgLi4uKQ0KSSB0
+cnkgdG8gcGluZyBidXQgbm90IHN1Y2Nlc3MgYW5kIGlwZXJmIHN0b3AgcnVubmluZy4gVGhpcyBw
+cm9ibGVtIGhhcHBlbmVkIG9ubHkgd2hlbiBJIHJ1biBpcGVyZiwgbm90DQppZiBJIHBpbmcgYmV0
+d2VlbiBQQzEgYW5kIFBDMiBhbmQgaW52ZXJzZS4gDQpJZiBJIGRlbGV0ZSB0aGUgIndkc19zdGE9
+MSIgaW4gdGhlIGNvbmZpZyBmaWxlIG9mIGhvc3RhcGQgdGhpcyBwcm9ibGVtIGlzIG5vIG1vcmUg
+b2NjdXJyZWQuIEJ1dCBJIHdvbmRlcg0KaWYgb25seSB0aGlzIHBhcmFtZXRlciBjcmVhdGVzIGVm
+ZmVjdHMgb24gdGhpcyBwcm9ibGVtIGNhdXNlIEkgaGF2ZSBtYW55IFNUQSB0aGF0IGNvdWxkIGFz
+c29jaWF0ZQ0KdG8gbXkgQVAsIHNvbWUgb2YgdGhlbSBhcmUgYnJpZGdlZCwgb3RoZXIgYXJlIG5v
+bi1icmlkZ2VkIGFuZCBJIHdhbnQgdG8ga2VlcCAid2RzX3N0YT0xIiBpbiBteSBjb25maWcNCmZp
+bGUgc28gdGhhdCBicmlkZ2VkIFNUQSBjYW4gY29ubmVjdC4NCkFueSBvbmUgaGF2ZSBhbnkgaWRl
+YXMgYWJvdXQgdGhpcz8NClRoYW5rIHlvdSBpbiBhZHZhbmNlLg0KIA0KTkdVWUVOIFZ1IEhhaQ0K
+QWNpdGEtU29kaWVsZWMNClJvdXRlIGRlIE1heXJlcyAtIEIuUC4gOQ0KMTIxMDAgU3QgR0VPUkdF
+UyBERSBMVVpFTkNPTg0KRlJBTkNFDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18NCkRlIDogTWljaGFsIEthemlvciBbbWljaGFsLmthemlvckB0aWV0by5jb21dDQpE
+YXRlIGQnZW52b2kgOiBsdW5kaSA5IGp1aW4gMjAxNCAxMzowMA0Kw4AgOiBZZW9oIENodW4tWWVv
+dw0KQ2MgOiBWdSBIYWkgTkdVWUVOOyBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KT2JqZXQg
+OiBSZTogUkUgOiBSRSA6IEJyaWRnaW5nIHByb2JsZW0gaW4gYXRoMTBrIChTVEEpDQoNCk9uIDkg
+SnVuZSAyMDE0IDEyOjQ5LCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93QGdtYWlsLmNvbT4g
+d3JvdGU6DQo+IEhtbSwgcmVkbyB0aGUgdGVzdGluZy4gVGhlIEZXIGlzIG5vdCBjcmFzaGVkIG9u
+IFNUQSBzaXRlLCBidXQgY291bGQNCj4gbm90IHBpbmcgdGhlIEFQIG9yIElQIGJlaGluZCB0aGUg
+QVAgb25jZSBicmlkZ2luZy4gT25seSBoYXBwZW4gaWYgdGhlDQo+IEFQIGlzIG9wZXJhdGluZyBh
+dCA4ME1Iei4NCj4NCj4gQW55IGlkZWEgb24gd2hhdCB0byBsb29rIGZvcj8NCg0KRG9lcyB0aGlz
+IHJlcHJvZHVjZSBpZiB5b3UgaGF2ZSBub24tYnJpZGdlZCBTVEEgY29ubmVjdGVkIHRvIGFuIEFQ
+DQp3aGlsZSB0aGUgU1RBIGludGVyZmFjZSBpcyBpbiBwcm9taXNjdW91cyBtb2RlIChzbyB0aGF0
+IG1vbml0b3IgdmRldg0KaXMgcnVubmluZyk/IElmIGl0IGRvZXNuJ3QgcmVwcm9kdWNlIEknZCBs
+b29rIGZvciBBUCBjb25maWd1cmF0aW9uDQppc3N1ZS4gRG9lcyB5b3VyIEFQIGhhdmUgd2RzX3N0
+YT0xPyBEb2VzIGl0IGNyZWF0ZSB3bGFuWC5zdGFZDQppbnRlcmZhY2VzIHdoZW4gc3RhdGlvbnMg
+Y29ubmVjdD8gKEknbSBhc3N1bWluZyB5b3VyIEFQIGlzIHJ1bm5pbmcNCmhvc3RhcGQpLg0KDQoN
+Ck1pY2hhxYINCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
