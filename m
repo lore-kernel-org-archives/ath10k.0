@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X58qS-0004hT-1X
- for ath10k@lists.infradead.org; Thu, 10 Jul 2014 07:32:45 +0000
-Received: by mail-lb0-f171.google.com with SMTP id s7so5835145lbd.30
- for <ath10k@lists.infradead.org>; Thu, 10 Jul 2014 00:32:19 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7E0@srvexch01.SODIELEC.local>
-References: <CAEFj986inLh+Upgx-rVF0zviii+yaQZnr9cuMYOXAqEjXrVMvQ@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FC@srvexch01.SODIELEC.local>
- <CAEFj986wbAp3-7y3ocpYzCWvYU=J0H6fQbrnMA3-qetRruF6RA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F109978FE@srvexch01.SODIELEC.local>
- <CAEFj986pnp2qHu8YuYyHLN66jAy2Mf+AAS=pLsuK6gdq6BU23Q@mail.gmail.com>
- <CA+BoTQnpdcBOrX32Ma7q0OZ5eaPYM31g8VV4HU==nMUqfA2Fzw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7E0@srvexch01.SODIELEC.local>
-Date: Thu, 10 Jul 2014 09:32:19 +0200
-Message-ID: <CALhHN=qAGsGa_+79he1R9okHEj8ZoJdEUYUC0tM4jQy0Y9ogxQ@mail.gmail.com>
-Subject: Re: RE : Bridging problem in ath10k (STA)
+ id 1X5Co8-0001kX-7J
+ for ath10k@lists.infradead.org; Thu, 10 Jul 2014 11:46:36 +0000
+Received: by mail-wg0-f48.google.com with SMTP id x13so994727wgg.19
+ for <ath10k@lists.infradead.org>; Thu, 10 Jul 2014 04:46:12 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFT/RFC 5/5] ath10k: rx, don't pass frames with invalid FCS
+Date: Thu, 10 Jul 2014 13:45:14 +0200
+Message-Id: <1404992714-15690-6-git-send-email-janusz.dziedzic@tieto.com>
+In-Reply-To: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
+References: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +19,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Janusz Dziedzic <janusz.dziedzi@tieto.com>, denton.gentry@gmail.com
 
-T24gMTAgSnVseSAyMDE0IDA4OjQ4LCBWdSBIYWkgTkdVWUVOIDx2aC5uZ3V5ZW5AYWN0aWFzb2Rp
-ZWxlYy5mcj4gd3JvdGU6Cj4gSSByYW4gaW50byBhIHByb2JsZW0gYWJvdXQgYnJpZGdpbmcgd2hp
-bGUgZG9pbmcgdGVzdCB3aXRoIGlwZXJmLCBteSBzeXN0ZW0gaXMgbGlrZSB0aGlzOgo+IFBDMSAt
-IERldmljZSAxIChBUCkgPD0gV2lmaSA9PiBEZXZpY2UgMiAoU1RBKSAtIFBDMgo+IE15IEFQIGlz
-IHNldCB1cCBpbiA4MDIuMTFhYyBWSFQgODAuIE15IFNUQSBpcyBub24tYnJpZGdlZCBhbmQgaXQg
-YXNzb2NpYXRlZCB3aXRoIG15IEFQIGRpcmVjdGx5Cj4gb24gaW50ZXJmYWNlIHdsYW4wLgo+IElm
-IEkgcnVuIGlwZXJmIGluIHRoZSBkaXJlY3Rpb24gZnJvbSBBUCB0byBTVEEgKG9wdGlvbiAtYyBv
-biBQQzEgYW5kIC1zIG9uIFBDMiksIGV2ZXJ5IHRoaW5ncyB3b3JrIGZpbmUuCj4gQnV0IGluIHRo
-ZSBvcHBvc2l0ZSBkaXJlY3Rpb24gKC1zIG9uIFBDMSBhbmQgLWMgb24gUEMyKSwgdGhlIGludGVy
-ZmFjZSB3bGFuMC5zdGExIGlzIGNyZWF0ZWQgb24gbXkgQVAKSnVzdCBndWVzc2luZywgSXMgd2xh
-bjAuc3RhMSBhZGRlZCB0byBicmlkZ2U/IElmIG5vdCB3aGF0IGlmIHlvdSB3aWxsCmFkZCBpdCBt
-YW51YWxseSBhZnRlciBjcmVhdGVkPwoKPiBkdXJpbmcgaXBlcmYgaXMgcnVubmluZyBhbmQgSSBs
-b3N0IHRoZSBjb25uZWN0aW9uIGJldHdlZW4gMiBkZXZpY2UsIHRob3VnaCAiaXcgd2xhbi5zdGEx
-IHN0YXRpb24gZHVtcCIKPiBzdGlsbCByZXBvcnQgdGhlIGluZm9ybWF0aW9uIGFib3V0IGNvbm5l
-Y3Rpb24gKHJhdGUsIHR4cG93ZXIsIHJ4IGJ5dGVzIChjaGFuZ2UgdmVyeSB2ZXJ5IHNsb3dseSks
-IC4uLikKPiBJIHRyeSB0byBwaW5nIGJ1dCBub3Qgc3VjY2VzcyBhbmQgaXBlcmYgc3RvcCBydW5u
-aW5nLiBUaGlzIHByb2JsZW0gaGFwcGVuZWQgb25seSB3aGVuIEkgcnVuIGlwZXJmLCBub3QKPiBp
-ZiBJIHBpbmcgYmV0d2VlbiBQQzEgYW5kIFBDMiBhbmQgaW52ZXJzZS4KPiBJZiBJIGRlbGV0ZSB0
-aGUgIndkc19zdGE9MSIgaW4gdGhlIGNvbmZpZyBmaWxlIG9mIGhvc3RhcGQgdGhpcyBwcm9ibGVt
-IGlzIG5vIG1vcmUgb2NjdXJyZWQuIEJ1dCBJIHdvbmRlcgo+IGlmIG9ubHkgdGhpcyBwYXJhbWV0
-ZXIgY3JlYXRlcyBlZmZlY3RzIG9uIHRoaXMgcHJvYmxlbSBjYXVzZSBJIGhhdmUgbWFueSBTVEEg
-dGhhdCBjb3VsZCBhc3NvY2lhdGUKPiB0byBteSBBUCwgc29tZSBvZiB0aGVtIGFyZSBicmlkZ2Vk
-LCBvdGhlciBhcmUgbm9uLWJyaWRnZWQgYW5kIEkgd2FudCB0byBrZWVwICJ3ZHNfc3RhPTEiIGlu
-IG15IGNvbmZpZwo+IGZpbGUgc28gdGhhdCBicmlkZ2VkIFNUQSBjYW4gY29ubmVjdC4KPiBBbnkg
-b25lIGhhdmUgYW55IGlkZWFzIGFib3V0IHRoaXM/Cj4gVGhhbmsgeW91IGluIGFkdmFuY2UuCj4K
-PiBOR1VZRU4gVnUgSGFpCj4gQWNpdGEtU29kaWVsZWMKPiBSb3V0ZSBkZSBNYXlyZXMgLSBCLlAu
-IDkKPiAxMjEwMCBTdCBHRU9SR0VTIERFIExVWkVOQ09OCj4gRlJBTkNFCj4KPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gRGUgOiBNaWNoYWwgS2F6aW9yIFttaWNo
-YWwua2F6aW9yQHRpZXRvLmNvbV0KPiBEYXRlIGQnZW52b2kgOiBsdW5kaSA5IGp1aW4gMjAxNCAx
-MzowMAo+IMOAIDogWWVvaCBDaHVuLVllb3cKPiBDYyA6IFZ1IEhhaSBOR1VZRU47IGF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCj4gT2JqZXQgOiBSZTogUkUgOiBSRSA6IEJyaWRnaW5nIHByb2Js
-ZW0gaW4gYXRoMTBrIChTVEEpCj4KPiBPbiA5IEp1bmUgMjAxNCAxMjo0OSwgWWVvaCBDaHVuLVll
-b3cgPHllb2hjaHVueWVvd0BnbWFpbC5jb20+IHdyb3RlOgo+PiBIbW0sIHJlZG8gdGhlIHRlc3Rp
-bmcuIFRoZSBGVyBpcyBub3QgY3Jhc2hlZCBvbiBTVEEgc2l0ZSwgYnV0IGNvdWxkCj4+IG5vdCBw
-aW5nIHRoZSBBUCBvciBJUCBiZWhpbmQgdGhlIEFQIG9uY2UgYnJpZGdpbmcuIE9ubHkgaGFwcGVu
-IGlmIHRoZQo+PiBBUCBpcyBvcGVyYXRpbmcgYXQgODBNSHouCj4+Cj4+IEFueSBpZGVhIG9uIHdo
-YXQgdG8gbG9vayBmb3I/Cj4KPiBEb2VzIHRoaXMgcmVwcm9kdWNlIGlmIHlvdSBoYXZlIG5vbi1i
-cmlkZ2VkIFNUQSBjb25uZWN0ZWQgdG8gYW4gQVAKPiB3aGlsZSB0aGUgU1RBIGludGVyZmFjZSBp
-cyBpbiBwcm9taXNjdW91cyBtb2RlIChzbyB0aGF0IG1vbml0b3IgdmRldgo+IGlzIHJ1bm5pbmcp
-PyBJZiBpdCBkb2Vzbid0IHJlcHJvZHVjZSBJJ2QgbG9vayBmb3IgQVAgY29uZmlndXJhdGlvbgo+
-IGlzc3VlLiBEb2VzIHlvdXIgQVAgaGF2ZSB3ZHNfc3RhPTE/IERvZXMgaXQgY3JlYXRlIHdsYW5Y
-LnN0YVkKPiBpbnRlcmZhY2VzIHdoZW4gc3RhdGlvbnMgY29ubmVjdD8gKEknbSBhc3N1bWluZyB5
-b3VyIEFQIGlzIHJ1bm5pbmcKPiBob3N0YXBkKS4KPgo+Cj4gTWljaGHFggo+IF9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlz
-dAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+In case of bridged network, don't pass frames with
+invalid FCS to the upper layer.
+
+TODO: pass all frames in standalone monitor mode.
+
+Signed-off-by: Janusz Dziedzic <janusz.dziedzi@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 702653e..efcee32 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1173,8 +1173,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 
+ 	if (status != HTT_RX_IND_MPDU_STATUS_OK &&
+ 	    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
+-	    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
+-	    !htt->ar->monitor_started) {
++	    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER) {
+ 		ath10k_dbg(ATH10K_DBG_HTT,
+ 			   "htt rx ignoring frame w/ status %d\n",
+ 			   status);
+-- 
+1.7.9.5
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
