@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X6fgr-0002OV-UW
- for ath10k@lists.infradead.org; Mon, 14 Jul 2014 12:49:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: add implementation for configure max amsdu,
- ampdu
-References: <1401438255-7349-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Mon, 14 Jul 2014 15:48:40 +0300
-In-Reply-To: <1401438255-7349-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Fri, 30 May 2014 10:24:15 +0200")
-Message-ID: <87lhrwm7h3.fsf@kamboji.qca.qualcomm.com>
+ id 1X6g9E-0001GT-MR
+ for ath10k@lists.infradead.org; Mon, 14 Jul 2014 13:18:29 +0000
+Received: by mail-we0-f178.google.com with SMTP id w61so3187001wes.37
+ for <ath10k@lists.infradead.org>; Mon, 14 Jul 2014 06:18:05 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1404803407.4419.3.camel@jlt4.sipsolutions.net>
+References: <1403860015-31601-1-git-send-email-michal.kazior@tieto.com>
+ <1403860015-31601-2-git-send-email-michal.kazior@tieto.com>
+ <1404803407.4419.3.camel@jlt4.sipsolutions.net>
+Date: Mon, 14 Jul 2014 15:18:05 +0200
+Message-ID: <CA+BoTQ=8UU+S8F_OhALShkoD5jT7Lj-m2oZ=B5HhmSwEuDyxpw@mail.gmail.com>
+Subject: Re: [RFC/RFT 1/2] mac80211: add support for Rx reordering offloading
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +22,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
-
-> Allow to setup maximum subframes for AMSDU and AMPDU aggregation
-> via debugfs htt_max_amsdu_ampdu file.
->
-> Eg.
-> echo "2 64" > htt_max_amsdu_ampdu
-> will setup maximum amsdu subframes equal 2 and
-> maximum ampdu subframes equal to 64.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-
-Thanks, applied.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBKdWx5IDIwMTQgMDk6MTAsIEpvaGFubmVzIEJlcmcgPGpvaGFubmVzQHNpcHNvbHV0aW9u
+cy5uZXQ+IHdyb3RlOgo+IE9uIEZyaSwgMjAxNC0wNi0yNyBhdCAxMTowNiArMDIwMCwgTWljaGFs
+IEthemlvciB3cm90ZToKPgo+PiArLyoqCj4+ICsgKiBpZWVlODAyMTFfc3RhcnRfcnhfYmFfc2Vz
+c2lvbl9vZmZsIC0gc3RhcnQgYSBSeCBCQSBzZXNzaW9uCj4+ICsgKgo+PiArICogU29tZSBkZXZp
+Y2UgZHJpdmVycyBtYXkgb2ZmbG9hZCBwYXJ0IG9mIHRoZSBSeCBhZ2dyZWdhdGlvbiBmbG93IGlu
+Y2x1ZGluZwo+PiArICogQWRkQmEvRGVsQmEgbmVnb3RpYXRpb24gYnV0IG1heSBvdGhlcndpc2Ug
+YmUgaW5jYXBhYmxlIG9mIGZ1bGwgUngKPj4gKyAqIHJlb3JkZXJpbmcuCj4+ICsgKgo+PiArICog
+Q3JlYXRlIHN0cnVjdHVyZXMgcmVzcG9uc2libGUgZm9yIHJlb3JkZXJpbmcgc28gZGV2aWNlIGRy
+aXZlcnMgbWF5IGNhbGwgaGVyZQo+PiArICogd2hlbiB0aGV5IGNvbXBsZXRlIEFkZEJhIG5lZ290
+aWF0aW9uLgo+PiArICoKPj4gKyAqIEB2aWY6ICZzdHJ1Y3QgaWVlZTgwMjExX3ZpZiBwb2ludGVy
+IGZyb20gdGhlIGFkZF9pbnRlcmZhY2UgY2FsbGJhY2sKPj4gKyAqIEBhZGRyOiBzdGF0aW9uIG1h
+YyBhZGRyZXNzCj4+ICsgKiBAZGlhbG9nX3Rva2VuOgo+PiArICogQHRpbWVvdXQ6IHNlc3Npb24g
+dGltZW91dCAoaW4gVFUpCj4KPiBXaHkgd291bGQgeW91IG5lZWQgdGhlIGRpYWxvZyB0b2tlbiAo
+YW5kIHdoeSBubyBkb2NzPykgYW5kIHRpbWVvdXQ/CgpHb29kIHBvaW50LiBJJ2xsIHJlbW92ZSBi
+b3RoLgoKCj4+ICsgKiBAc3RhcnRfc2VxX251bTogc3RhcnRpbmcgZnJhbWUgc2VxdWVuY2UgbnVt
+YmVyCj4+ICsgKiBAdGlkOiB0aGUgcnggdGlkCj4KPj4gKyAqIEBidWZfc2l6ZTogbWF4IG51bWJl
+ciBvZiBmcmFtZXMgaW4gcmVvcmRlciBidWZmZXIKPgo+IFRoZSBidWZfc2l6ZSBhbHNvIGlzbid0
+IHJlYWxseSBuZWVkZWQsIGlzIGl0PyBXZSBhcmUgYWxsb3dlZCB0byB1c2UgYQo+IGJpZ2dlciBi
+dWZmZXIsIEkgYmVsaWV2ZT8KCkdvb2QgcG9pbnQuIEknbGwgdXNlIHRoZSBtYXggYnVmZmVyIHNp
+emUgbWFjcm8uCgoKPj4gK3ZvaWQgaWVlZTgwMjExX3N0YXJ0X3J4X2JhX3Nlc3Npb25fb2ZmbChz
+dHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIGNvbnN0IHU4ICphZGRyLCB1OCBkaWFsb2dfdG9rZW4sCj4+ICsgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgdTE2IHRpbWVvdXQsIHUxNiBzdGFydF9zZXFfbnVt
+LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHUxNiB0aWQsIHUxNiBi
+dWZfc2l6ZSkKPj4gK3sKPj4gKyAgICAgc3RydWN0IGllZWU4MDIxMV9zdWJfaWZfZGF0YSAqc2Rh
+dGEgPSB2aWZfdG9fc2RhdGEodmlmKTsKPj4gKyAgICAgc3RydWN0IGllZWU4MDIxMV9sb2NhbCAq
+bG9jYWwgPSBzZGF0YS0+bG9jYWw7Cj4+ICsgICAgIHN0cnVjdCBpZWVlODAyMTFfcnhfYWdnICpy
+eF9hZ2c7Cj4+ICsgICAgIHN0cnVjdCBza19idWZmICpza2IgPSBkZXZfYWxsb2Nfc2tiKDApOwo+
+PiArCj4+ICsgICAgIGlmICh1bmxpa2VseSghc2tiKSkKPj4gKyAgICAgICAgICAgICByZXR1cm47
+Cj4+ICsKPj4gKyAgICAgcnhfYWdnID0gKHN0cnVjdCBpZWVlODAyMTFfcnhfYWdnICopICZza2It
+PmNiOwo+PiArICAgICBtZW1jcHkoJnJ4X2FnZy0+YWRkciwgYWRkciwgRVRIX0FMRU4pOwo+PiAr
+ICAgICByeF9hZ2ctPmRpYWxvZ190b2tlbiA9IGRpYWxvZ190b2tlbjsKPj4gKyAgICAgcnhfYWdn
+LT50aW1lb3V0ID0gdGltZW91dDsKPj4gKyAgICAgcnhfYWdnLT5zdGFydF9zZXFfbnVtID0gc3Rh
+cnRfc2VxX251bTsKPj4gKyAgICAgcnhfYWdnLT5iYV9wb2xpY3kgPSAxOwo+PiArICAgICByeF9h
+Z2ctPnRpZCA9IHRpZDsKPj4gKyAgICAgcnhfYWdnLT5idWZfc2l6ZSA9IGJ1Zl9zaXplOwo+PiAr
+Cj4+ICsgICAgIHNrYi0+cGt0X3R5cGUgPSBJRUVFODAyMTFfU0RBVEFfUVVFVUVfUlhfQUdHX1NU
+QVJUOwo+PiArICAgICBza2JfcXVldWVfdGFpbCgmc2RhdGEtPnNrYl9xdWV1ZSwgc2tiKTsKPj4g
+KyAgICAgaWVlZTgwMjExX3F1ZXVlX3dvcmsoJmxvY2FsLT5odywgJnNkYXRhLT53b3JrKTsKPgo+
+IFRoaXMgc2VlbXMgcHJvYmxlbWF0aWMsIHNpbmNlIHBhY2tldHMgbWlnaHQgYmUgcmVjZWl2ZWQg
+aW1tZWRpYXRlbHkuCj4KPiBPbiB0aGUgdGVhcmRvd24gcGF0aCBpdCBzaG91bGQgcHJvYmFibHkg
+YWxzbyBiZSBpbnZhbGlkYXRlZCBpbW1lZGlhdGVseSwKPiBubz8KPgo+IFRoZW4gYWdhaW4sIHdl
+IGhhdmUgdGhlIHNhbWUgcHJvYmxlbSBhbHJlYWR5PyBIbW0uCgpZZWFoLiBZb3UgaGF2ZSB0byBn
+byB0aHJvdWdoIHRoZSBpZmFjZSB3b3JrZXIgc28geW91IGNhbiByYWNlIHdpdGgKZGF0YSBmcmFt
+ZXMgY29taW5nIGluIGluIGllZWU4MDIxMV9yeCgpIGVpdGhlciB3YXkuCgpZb3UnZCBoYXZlIHRv
+IG1ha2UgYW1wZHVfYWN0aW9uKCkgYXRvbWljLCByZXBsYWNlIHN0YS0+YW1wZHVfbWxtZS5tdHgK
+d2l0aCBhIHNwaW5sb2NrIGFuZCBtb3ZlIHNvbWUgZGVsX3RpbWVyX3N5bmMoKSBhcm91bmQgLSBh
+dCBsZWFzdAp0aGF0J3Mgd2hhdCBJJ3ZlIGZvdW5kIGFmdGVyIHRha2luZyBhIHF1aWNrIGxvb2su
+CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
