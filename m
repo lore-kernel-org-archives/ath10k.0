@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7PI0-00044z-Q7
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 13:30:35 +0000
-Received: by mail-we0-f174.google.com with SMTP id x48so933324wes.19
- for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 06:30:08 -0700 (PDT)
+ id 1X7Pb9-0004Zr-O1
+ for ath10k@lists.infradead.org; Wed, 16 Jul 2014 13:50:20 +0000
+Received: by mail-we0-f169.google.com with SMTP id u56so979633wes.0
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 06:49:56 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC/RFT 2/2] ath10k: don't start monitor vdev for promisc
-Date: Wed, 16 Jul 2014 15:21:13 +0200
-Message-Id: <1405516873-26411-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1405516873-26411-1-git-send-email-michal.kazior@tieto.com>
-References: <1405516873-26411-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: prevent some tx flushing failures
+Date: Wed, 16 Jul 2014 15:41:13 +0200
+Message-Id: <1405518073-14513-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +23,61 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: vh.nguyen@actiasodielec.fr, svens@stackframe.org, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-ath10k doesn't apply any extra rx filters so
-there's no need to start monitor vdev for
-promiscuous mode.
+Firmware could request inspection of some
+submitted tx requests. Since the callback wasn't
+implemented it was possible to bleed tx msdu_ids
+which could translate to tx flushing timeouts.
 
-This fixes crashes with 4addr station interface
-bridging and some very rare crashes of AP
-interfaces with bridging as well.
+There's nothing ath10k can do to help firmware
+with tx processing now so just report all tx
+frames as already inspected to prevent firmware
+from sending up inspection events and force it to
+report regular tx completion indications with
+discard status.
 
-Reported-by: Sven Schnelle <svens@stackframe.org>
-Reported-by: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h | 1 -
- drivers/net/wireless/ath/ath10k/mac.c  | 9 +--------
- 2 files changed, 1 insertion(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 7 +++++++
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 6 ++++++
+ 2 files changed, 13 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 83a5fa9..d5cba97 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -432,7 +432,6 @@ struct ath10k {
- 	struct cfg80211_chan_def chandef;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index eebc860..318efc3 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1516,6 +1516,13 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		trace_ath10k_htt_stats(skb->data, skb->len);
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_TX_INSPECT_IND:
++		/* Firmware can return tx frames if it's unable to fully
++		 * process them and suspects host may be able to fix it. ath10k
++		 * sends all tx frames as already inspected so this shouldn't
++		 * happen unless fw has a bug.
++		 */
++		ath10k_warn("received an unexpected htt tx inspect event\n");
++		break;
+ 	case HTT_T2H_MSG_TYPE_RX_ADDBA:
+ 	case HTT_T2H_MSG_TYPE_RX_DELBA:
+ 	case HTT_T2H_MSG_TYPE_RX_FLUSH:
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index accb6b4..8b27bfc 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -531,6 +531,12 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
+ 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L4_OFFLOAD;
  
- 	int free_vdev_map;
--	bool promisc;
- 	bool monitor;
- 	int monitor_vdev_id;
- 	bool monitor_started;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 2a1c710..f9ab878 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -688,7 +688,7 @@ static int ath10k_monitor_recalc(struct ath10k *ar)
- {
- 	bool should_start;
- 
--	should_start = ar->promisc || ar->monitor ||
-+	should_start = ar->monitor ||
- 		       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
- 
- 	ath10k_dbg(ATH10K_DBG_MAC,
-@@ -2308,7 +2308,6 @@ void ath10k_halt(struct ath10k *ar)
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	clear_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
--	ar->promisc = false;
- 	ar->monitor = false;
- 
- 	if (ar->monitor_started)
-@@ -2917,7 +2916,6 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 				    u64 multicast)
- {
- 	struct ath10k *ar = hw->priv;
--	int ret;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -2925,11 +2923,6 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 	*total_flags &= SUPPORTED_FILTERS;
- 	ar->filter_flags = *total_flags;
- 
--	ar->promisc = !!(ar->filter_flags & FIF_PROMISC_IN_BSS);
--	ret = ath10k_monitor_recalc(ar);
--	if (ret)
--		ath10k_warn("failed to recalc montior: %d\n", ret);
--
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
++	/* Prevent firmware from sending up tx inspection requests. There's
++	 * nothing ath10k can do with frames requested for inspection so force
++	 * it to simply rely a regular tx completion with discard status.
++	 */
++	flags1 |= HTT_DATA_TX_DESC_FLAGS1_POSTPONED;
++
+ 	skb_cb->htt.txbuf->cmd_hdr.msg_type = HTT_H2T_MSG_TYPE_TX_FRM;
+ 	skb_cb->htt.txbuf->cmd_tx.flags0 = flags0;
+ 	skb_cb->htt.txbuf->cmd_tx.flags1 = __cpu_to_le16(flags1);
 -- 
 1.8.5.3
 
