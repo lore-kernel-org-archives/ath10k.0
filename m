@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7LXo-0003Iy-NJ
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 09:30:38 +0000
-Received: by mail-wg0-f48.google.com with SMTP id x13so611258wgg.7
- for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 02:30:12 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1405441966-32681-3-git-send-email-sw@simonwunderlich.de>
-References: <1405441966-32681-1-git-send-email-sw@simonwunderlich.de>
- <1405441966-32681-3-git-send-email-sw@simonwunderlich.de>
-Date: Wed, 16 Jul 2014 11:30:12 +0200
-Message-ID: <CA+BoTQm1i2UoTtPBf7Z3QLQDBs_1uXwdG8gYOkP556+a7AqcpQ@mail.gmail.com>
-Subject: Re: [RFC 2/2] ath10k: add spectral scan feature
+ id 1X7MQ5-0007r8-78
+ for ath10k@lists.infradead.org; Wed, 16 Jul 2014 10:26:43 +0000
+Received: by mail-we0-f174.google.com with SMTP id x48so686394wes.5
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 03:26:17 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2] ath10k: fix Rx aggregation reordering
+Date: Wed, 16 Jul 2014 12:17:35 +0200
+Message-Id: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,184 +17,254 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, "Giori,
- Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Denton Gentry <denton.gentry@gmail.com>
 
-T24gMTUgSnVseSAyMDE0IDE4OjMyLCBTaW1vbiBXdW5kZXJsaWNoIDxzd0BzaW1vbnd1bmRlcmxp
-Y2guZGU+IHdyb3RlOgo+IEZyb206IFN2ZW4gRWNrZWxtYW5uIDxzdmVuQG5hcmZhdGlvbi5vcmc+
-Cj4KPiBBZGRzIHRoZSBzcGVjdHJhbCBzY2FuIGZlYXR1cmUgZm9yIGF0aDEway4gVGhlIHNwZWN0
-cmFsIHNjYW4gaXMgdHJpZ2dlcmVkIGJ5Cj4gY29uZmlndXJpbmcgYSBtb2RlIHRocm91Z2ggYSBk
-ZWJ1Z2ZzIGNvbnRyb2wgZmlsZS4gU2FtcGxlcyBjYW4gYmUgZ2F0aGVyZWQgdmlhCj4gYW5vdGhl
-ciByZWxheSBkZWJ1Z2ZzIGZpbGUuCj4KPiBFc3NlbnRpYWxseSwgdG8gdHJ5IGl0IG91dDoKPgo+
-IGlwIGxpbmsgZGV2IHdsYW4wIHNldCB1cAo+IGVjaG8gYmFja2dyb3VuZCA+IC9zeXMva2VybmVs
-L2RlYnVnL2llZWU4MDIxMS9waHkwL2F0aDEway9zcGVjdHJhbF9zY2FuX2N0bAo+IGl3IGRldiB3
-bGFuMCBzY2FuCj4gZWNobyBkaXNhYmxlID4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3Bo
-eTAvYXRoMTBrL3NwZWN0cmFsX3NjYW5fY3RsCj4gY2F0IC9zeXMva2VybmVsL2RlYnVnL2llZWU4
-MDIxMS9waHkwL2F0aDEway9zcGVjdHJhbF9zY2FuMCA+IHNhbXBsZXMKPgo+IFRoaXMgZmVhdHVy
-ZSBpcyBzdGlsbCBleHBlcmltZW50YWwuCj4KPiBTaWduZWQtb2ZmLWJ5OiBTdmVuIEVja2VsbWFu
-biA8c3ZlbkBuYXJmYXRpb24ub3JnPgo+IFNpZ25lZC1vZmYtYnk6IFNpbW9uIFd1bmRlcmxpY2gg
-PHN3QHNpbW9ud3VuZGVybGljaC5kZT4KPiBTaWduZWQtb2ZmLWJ5OiBNYXRoaWFzIEtyZXRzY2ht
-ZXIgPG1hdGhpYXMua3JldHNjaG1lckBmb2t1cy5mcmF1bmhvZmVyLmRlPgo+IC0tLQo+ICBkcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL0tjb25maWcgICAgfCAgIDEgKwo+ICBkcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL01ha2VmaWxlICAgfCAgIDMgKy0KPiAgZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmggICAgIHwgICA2ICsKPiAgZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9kZWJ1Zy5jICAgIHwgICAzICsKPiAgZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9zcGVjdHJhbC5jIHwgMzY4ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvc3BlY3RyYWwuaCB8ICA2
-NiArKysrKysKPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyAgICAgIHwg
-IDk4ICsrKysrKystCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggICAg
-ICB8ICA4MCArKysrKysrCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9zcGVjdHJhbF9jb21t
-b24uaCB8ICAyMCArKwo+ICA5IGZpbGVzIGNoYW5nZWQsIDY0MyBpbnNlcnRpb25zKCspLCAyIGRl
-bGV0aW9ucygtKQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9zcGVjdHJhbC5jCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL3NwZWN0cmFsLmgKPgpbLi4uXQo+ICtzdGF0aWMgdm9pZCBhdGhfZGVi
-dWdfc2VuZF9mZnRfc2FtcGxlKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGZmdF9zYW1wbGVfdGx2ICpmZnRfc2FtcGxlX3Rs
-dikKPiArewoKV2h5IGF0aF9kZWJ1Z18uLi4gaW5zdGVhZCBvZiBhdGgxMGtfZGVidWdfLi4gPwoK
-ClsuLi5dCj4gK3N0YXRpYyBpbnQgYXRoX2dldF9zcGVjdHJhbF92ZGV2aWQoc3RydWN0IGF0aDEw
-ayAqYXIpCgphdGhfZ2V0Xy4uPyBTaG91bGRuJ3QgdGhpcyBiZSBhdGgxMGtfZ2V0PwoKCj4gK3sK
-PiArICAgICAgIHN0cnVjdCBhdGgxMGtfdmlmICphcnZpZjsKPiArCj4gKyAgICAgICBpZiAobGlz
-dF9lbXB0eSgmYXItPmFydmlmcykpCj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRU5PREVWOwo+
-ICsKPiArICAgICAgIGFydmlmID0gbGlzdF9maXJzdF9lbnRyeSgmYXItPmFydmlmcywgdHlwZW9m
-KCphcnZpZiksIGxpc3QpOwo+ICsgICAgICAgcmV0dXJuIGFydmlmLT52ZGV2X2lkOwo+ICt9CgpO
-byBsb2Nrcz8gQWNjZXNzIHRvIGFydmlmcyBtdXN0IGJlIHByb3RlY3RlZCB3aXRoIGNvbmZfbXV0
-ZXguCgpXaGF0IGhhcHBlbnMgd2hlbiBhbiBpbnRlcmZhY2UgaXMgcmVtb3ZlZCB3aXRob3V0IHNw
-ZWN0cmFsIHNjYW4gYmVpbmcgc3RvcHBlZD8KCgo+ICtpbnQgYXRoMTBrX3NwZWN0cmFsX3NjYW5f
-dHJpZ2dlcihzdHJ1Y3QgYXRoMTBrICphcikKPiArewo+ICsgICAgICAgaW50IHJldDsKPiArICAg
-ICAgIGludCB2ZGV2X2lkOwo+ICsKPiArICAgICAgIHZkZXZfaWQgPSBhdGhfZ2V0X3NwZWN0cmFs
-X3ZkZXZpZChhcik7Cj4gKyAgICAgICBpZiAodmRldl9pZCA8IDApCj4gKyAgICAgICAgICAgICAg
-IHJldHVybiB2ZGV2X2lkOwo+ICsKPiArICAgICAgIGlmIChhci0+c3BlY3RyYWxfbW9kZSA9PSBT
-UEVDVFJBTF9ESVNBQkxFRCkKPiArICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gKwo+ICsgICAg
-ICAgcmV0ID0gYXRoMTBrX3ZkZXZfc3BlY3RyYWxfZW5hYmxlKGFyLCB2ZGV2X2lkLAo+ICsgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdNSV9TUEVDVFJBTF9UUklHR0VS
-X0NNRF9DTEVBUiwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBX
-TUlfU1BFQ1RSQUxfRU5BQkxFX0NNRF9FTkFCTEUpOwo+ICsgICAgICAgaWYgKHJldCA8IDApCj4g
-KyAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4gKwo+ICsgICAgICAgcmV0ID0gYXRoMTBrX3Zk
-ZXZfc3BlY3RyYWxfZW5hYmxlKGFyLCB2ZGV2X2lkLAo+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIFdNSV9TUEVDVFJBTF9UUklHR0VSX0NNRF9UUklHR0VSLAo+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFdNSV9TUEVDVFJBTF9FTkFC
-TEVfQ01EX0VOQUJMRSk7Cj4gKyAgICAgICBpZiAocmV0IDwgMCkKPiArICAgICAgICAgICAgICAg
-cmV0dXJuIHJldDsKPiArCj4gKyAgICAgICByZXR1cm4gMDsKPiArfQo+ICsKPiAraW50IGF0aDEw
-a19zcGVjdHJhbF9zY2FuX2NvbmZpZyhzdHJ1Y3QgYXRoMTBrICphciwgZW51bSBzcGVjdHJhbF9t
-b2RlIG1vZGUpCj4gK3sKPiArICAgICAgIGludCBjb3VudCwgcmV0OwoKV2UgdGVuZCB0byB1c2Ug
-YHJlc2AgaW4gYXRoMTBrLgoKCj4gKyAgICAgICBzdHJ1Y3Qgd21pX3ZkZXZfc3BlY3RyYWxfY29u
-ZmlndXJlX2FyZyBhcmc7Cj4gKyAgICAgICBpbnQgdmRldl9pZDsKPiArCj4gKyAgICAgICB2ZGV2
-X2lkID0gYXRoX2dldF9zcGVjdHJhbF92ZGV2aWQoYXIpOwo+ICsgICAgICAgaWYgKHZkZXZfaWQg
-PCAwKQo+ICsgICAgICAgICAgICAgICByZXR1cm4gdmRldl9pZDsKPiArCj4gKyAgICAgICBhci0+
-c3BlY3RyYWxfbW9kZSA9IG1vZGU7Cj4gKwo+ICsgICAgICAgYXRoMTBrX3ZkZXZfc3BlY3RyYWxf
-ZW5hYmxlKGFyLCB2ZGV2X2lkLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFdNSV9TUEVDVFJBTF9UUklHR0VSX0NNRF9DTEVBUiwKPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBXTUlfU1BFQ1RSQUxfRU5BQkxFX0NNRF9ESVNBQkxFKTsKPiArICAgICAg
-IGlmIChtb2RlID09IFNQRUNUUkFMX0RJU0FCTEVEKQo+ICsgICAgICAgICAgICAgICByZXR1cm4g
-MDsKPiArCj4gKyAgICAgICBpZiAobW9kZSA9PSBTUEVDVFJBTF9CQUNLR1JPVU5EKQo+ICsgICAg
-ICAgICAgICAgICBjb3VudCA9IFdNSV9TUEVDVFJBTF9DT1VOVF9ERUZBVUxUOwo+ICsgICAgICAg
-ZWxzZQo+ICsgICAgICAgICAgICAgICBjb3VudCA9IG1heF90KHU4LCAxLCBhci0+c3BlY19jb25m
-aWcuY291bnQpOwo+ICsKPiArICAgICAgIGFyZy52ZGV2X2lkICAgICAgICAgICAgICA9IHZkZXZf
-aWQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9jb3VudCAgICAgICAgICAgPSBjb3VudDsKPiArICAgICAg
-IGFyZy5zY2FuX3BlcmlvZCAgICAgICAgICA9IFdNSV9TUEVDVFJBTF9QRVJJT0RfREVGQVVMVDsK
-PiArICAgICAgIGFyZy5zY2FuX3ByaW9yaXR5ICAgICAgICA9IFdNSV9TUEVDVFJBTF9QUklPUklU
-WV9ERUZBVUxUOwo+ICsgICAgICAgYXJnLnNjYW5fZmZ0X3NpemUgICAgICAgID0gV01JX1NQRUNU
-UkFMX0ZGVF9TSVpFX0RFRkFVTFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9nY19lbmEgICAgICAgICAg
-PSBXTUlfU1BFQ1RSQUxfR0NfRU5BX0RFRkFVTFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9yZXN0YXJ0
-X2VuYSAgICAgPSBXTUlfU1BFQ1RSQUxfUkVTVEFSVF9FTkFfREVGQVVMVDsKPiArICAgICAgIGFy
-Zy5zY2FuX25vaXNlX2Zsb29yX3JlZiA9IFdNSV9TUEVDVFJBTF9OT0lTRV9GTE9PUl9SRUZfREVG
-QVVMVDsKPiArICAgICAgIGFyZy5zY2FuX2luaXRfZGVsYXkgICAgICA9IFdNSV9TUEVDVFJBTF9J
-TklUX0RFTEFZX0RFRkFVTFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9uYl90b25lX3RociAgICAgPSBX
-TUlfU1BFQ1RSQUxfTkJfVE9ORV9USFJfREVGQVVMVDsKPiArICAgICAgIGFyZy5zY2FuX3N0cl9i
-aW5fdGhyICAgICA9IFdNSV9TUEVDVFJBTF9TVFJfQklOX1RIUl9ERUZBVUxUOwo+ICsgICAgICAg
-YXJnLnNjYW5fd2JfcnB0X21vZGUgICAgID0gV01JX1NQRUNUUkFMX1dCX1JQVF9NT0RFX0RFRkFV
-TFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9yc3NpX3JwdF9tb2RlICAgPSBXTUlfU1BFQ1RSQUxfUlNT
-SV9SUFRfTU9ERV9ERUZBVUxUOwo+ICsgICAgICAgYXJnLnNjYW5fcnNzaV90aHIgICAgICAgID0g
-V01JX1NQRUNUUkFMX1JTU0lfVEhSX0RFRkFVTFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9wd3JfZm9y
-bWF0ICAgICAgPSBXTUlfU1BFQ1RSQUxfUFdSX0ZPUk1BVF9ERUZBVUxUOwo+ICsgICAgICAgYXJn
-LnNjYW5fcnB0X21vZGUgICAgICAgID0gV01JX1NQRUNUUkFMX1JQVF9NT0RFX0RFRkFVTFQ7Cj4g
-KyAgICAgICBhcmcuc2Nhbl9iaW5fc2NhbGUgICAgICAgPSBXTUlfU1BFQ1RSQUxfQklOX1NDQUxF
-X0RFRkFVTFQ7Cj4gKyAgICAgICBhcmcuc2Nhbl9kQm1fYWRqICAgICAgICAgPSBXTUlfU1BFQ1RS
-QUxfREJNX0FESl9ERUZBVUxUOwo+ICsgICAgICAgYXJnLnNjYW5fY2huX21hc2sgICAgICAgID0g
-V01JX1NQRUNUUkFMX0NITl9NQVNLX0RFRkFVTFQ7Cj4gKwo+ICsgICAgICAgcmV0ID0gYXRoMTBr
-X3ZkZXZfc3BlY3RyYWxfY29uZmlndXJlKGFyLCAmYXJnKTsKPiArICAgICAgIGlmIChyZXQgPCAw
-KQoKKyBhdGgxMGtfd2FybigiZmFpbGVkIHRvIGNvbmZpZ3VyZSBzcGVjdHJhbCBzY2FuOiAlZFxu
-IiwgcmV0KTsKCgo+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+ICsKPiArICAgICAgIGlm
-IChtb2RlID09IFNQRUNUUkFMX0JBQ0tHUk9VTkQpCj4gKyAgICAgICAgICAgICAgIGF0aDEwa19z
-cGVjdHJhbF9zY2FuX3RyaWdnZXIoYXIpOwoKV2h5IGlzbid0IGF0aDEwa19zcGVjdHJhbF9zY2Fu
-X3RyaWdnZXIoKSByZXR1cm4gdmFsdWUgbm90IGNoZWNrZWQ/CkFsc28gK2F0aDEwa193YXJuLgoK
-ClsuLi5dCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21p
-LmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4gaW5kZXggNmY4M2Nh
-ZS4uN2FkOWM3MSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
-L3dtaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+IEBA
-IC0xNjU5LDcgKzE2NTksNDcgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3dtaV9ldmVudF9zcGVjdHJh
-bF9zY2FuKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc3RydWN0IHdtaV9zaW5nbGVfcGh5ZXJyX3J4X2V2ZW50ICpldmVudCwKPiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHU2NCB0c2YpCj4gIHsKPiAtICAgICAgIGF0aDEwa19kYmco
-QVRIMTBLX0RCR19XTUksICJ3bWkgZXZlbnQgc3BlY3RyYWwgc2NhblxuIik7Cj4gKyAgICAgICBp
-bnQgYnVmX2xlbiwgdGx2X2xlbiwgcmVzLCBpID0gMDsKPiArICAgICAgIHN0cnVjdCBwaHllcnJf
-dGx2ICp0bHY7Cj4gKyAgICAgICB1OCAqdGx2X2J1ZjsKPiArICAgICAgIHN0cnVjdCBwaHllcnJf
-ZmZ0X3JlcG9ydCAqZmZ0cjsKPiArICAgICAgIHNpemVfdCBmZnRyX2xlbjsKPiArCj4gKyAgICAg
-ICBidWZfbGVuID0gX19sZTMyX3RvX2NwdShldmVudC0+aGRyLmJ1Zl9sZW4pOwo+ICsKPiArICAg
-ICAgIHdoaWxlIChpIDwgYnVmX2xlbikgewo+ICsgICAgICAgICAgICAgICBpZiAoaSArIHNpemVv
-ZigqdGx2KSA+IGJ1Zl9sZW4pIHsKPiArICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2Fy
-bigidG9vIHNob3J0IGJ1ZiBmb3IgdGx2IGhlYWRlciAoJWQpXG4iLCBpKTsKCiJmYWlsZWQgdG8g
-cGFyc2UgcGh5ZXJyIHRsdiBoZWFkZXIgYXQgYnl0ZSAlZFxuIiwgaQoKCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgcmV0dXJuOwo+ICsgICAgICAgICAgICAgICB9Cj4gKwo+ICsgICAgICAgICAg
-ICAgICB0bHYgPSAoc3RydWN0IHBoeWVycl90bHYgKikmZXZlbnQtPmJ1ZnBbaV07Cj4gKyAgICAg
-ICAgICAgICAgIHRsdl9sZW4gPSBfX2xlMTZfdG9fY3B1KHRsdi0+bGVuKTsKPiArICAgICAgICAg
-ICAgICAgdGx2X2J1ZiA9ICZldmVudC0+YnVmcFtpICsgc2l6ZW9mKCp0bHYpXTsKPiArCj4gKyAg
-ICAgICAgICAgICAgIGlmIChpICsgc2l6ZW9mKCp0bHYpICsgdGx2X2xlbiA+IGJ1Zl9sZW4pIHsK
-PiArICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybigidG9vIHNob3J0IGJ1ZiBmb3Ig
-dGx2ICglZClcbiIsIGkpOwoKImZhaWxlZCB0byBwYXJzZSBwaHllcnIgdGx2IHBheWxvYWQgYXQg
-Ynl0ZSAlZFxuIiwgaQoKCj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOwo+ICsgICAg
-ICAgICAgICAgICB9Cj4gKwo+ICsgICAgICAgICAgICAgICBzd2l0Y2ggKHRsdi0+dGFnKSB7Cj4g
-KyAgICAgICAgICAgICAgIGNhc2UgUEhZRVJSX1RMVl9UQUdfU0VBUkNIX0ZGVF9SRVBPUlQ6Cj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgaWYgKHNpemVvZigqZmZ0cikgPiB0bHZfbGVuKSB7Cj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybigidG9vIHNob3J0IGZm
-dCByZXBvcnQgKCVkKVxuIiwgaSk7CgoiZmFpbGVkIHRvIHBhcnNlIGZmdCByZXBvcnQgYXQgYnl0
-ZSAlZFxuIiwgaQoKCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47Cj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgfQo+ICsKPiArICAgICAgICAgICAgICAgICAgICAgICBm
-ZnRyX2xlbiA9IHRsdl9sZW4gLSBzaXplb2YoKmZmdHIpOwo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgIGZmdHIgPSAoc3RydWN0IHBoeWVycl9mZnRfcmVwb3J0ICopdGx2X2J1ZjsKPiArICAgICAg
-ICAgICAgICAgICAgICAgICByZXMgPSBhdGgxMGtfcHJvY2Vzc19mZnQoYXIsIGV2ZW50LCBmZnRy
-LCBmZnRyX2xlbiwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgdHNmKTsKPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAocmVzKQoKKyBhdGgxMGtf
-d2FybigiZmFpbGVkIHRvIHByb2Nlc3MgZmZ0IHJlcG9ydDogJWRcbiIsIHJlcykKCgpbLi4uXQo+
-ICtpbnQgYXRoMTBrX3ZkZXZfc3BlY3RyYWxfY29uZmlndXJlKHN0cnVjdCBhdGgxMGsgKmFyLAo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0cnVjdCB3bWlfdmRldl9zcGVj
-dHJhbF9jb25maWd1cmVfYXJnICphcmcpCgphdGgxMGtfd21pX3ZkZXZfc3BlY3RyYWxfY29uZmln
-dXJlCgoKWy4uLl0KPiAraW50IGF0aDEwa192ZGV2X3NwZWN0cmFsX2VuYWJsZShzdHJ1Y3QgYXRo
-MTBrICphciwgdTMyIHZkZXZfaWQsIHUzMiB0cmlnZ2VyLAo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgdTMyIGVuYWJsZSkKCmF0aDEwa193bWlfdmRldl9zcGVjdHJhbF9lbmFibGUK
-CgpbLi4uXQo+ICtzdHJ1Y3Qgd21pX3ZkZXZfc3BlY3RyYWxfY29uZmlndXJlX2FyZyB7Cj4gKyAg
-ICAgICB1MzIgdmRldl9pZDsKPiArICAgICAgIHUzMiBzY2FuX2NvdW50Owo+ICsgICAgICAgdTMy
-IHNjYW5fcGVyaW9kOwo+ICsgICAgICAgdTMyIHNjYW5fcHJpb3JpdHk7Cj4gKyAgICAgICB1MzIg
-c2Nhbl9mZnRfc2l6ZTsKPiArICAgICAgIHUzMiBzY2FuX2djX2VuYTsKPiArICAgICAgIHUzMiBz
-Y2FuX3Jlc3RhcnRfZW5hOwo+ICsgICAgICAgdTMyIHNjYW5fbm9pc2VfZmxvb3JfcmVmOwo+ICsg
-ICAgICAgdTMyIHNjYW5faW5pdF9kZWxheTsKPiArICAgICAgIHUzMiBzY2FuX25iX3RvbmVfdGhy
-Owo+ICsgICAgICAgdTMyIHNjYW5fc3RyX2Jpbl90aHI7Cj4gKyAgICAgICB1MzIgc2Nhbl93Yl9y
-cHRfbW9kZTsKPiArICAgICAgIHUzMiBzY2FuX3Jzc2lfcnB0X21vZGU7Cj4gKyAgICAgICB1MzIg
-c2Nhbl9yc3NpX3RocjsKPiArICAgICAgIHUzMiBzY2FuX3B3cl9mb3JtYXQ7Cj4gKyAgICAgICB1
-MzIgc2Nhbl9ycHRfbW9kZTsKPiArICAgICAgIHUzMiBzY2FuX2Jpbl9zY2FsZTsKPiArICAgICAg
-IHUzMiBzY2FuX2RCbV9hZGo7Cj4gKyAgICAgICB1MzIgc2Nhbl9jaG5fbWFzazsKClNvbWUgc3R1
-ZmYgaXNuJ3Qgc2VsZi1leHBsYW5hdG9yeS4gSSdkIGxvdmUgdG8gc2VlIHNvbWUgb2YgdGhlc2UK
-ZmllbGRzIGRvY3VtZW50ZWQgdG8gYWNjb3VudCBmb3IgcG9zc2libGUgdmFsdWVzICh3Yl9ycHRf
-bW9kZT8pIGFuZAp1bml0cyAoaW5pdF9kZWxheT8pLgoKClsuLi5dCj4gK3N0cnVjdCBmZnRfc2Ft
-cGxlX2F0aDEwa19odDIwIHsKPiArICAgICAgIHN0cnVjdCBmZnRfc2FtcGxlX3RsdiB0bHY7Cj4g
-KyAgICAgICB1OCBtaHo7CgpBIG1vcmUgc3VpdGFibGUgbmFtZSB3b3VsZCBiZSAiY2hhbl93aWR0
-aF9taHoiIEkgZ3Vlc3M/CgoKPiArICAgICAgIF9fYmUxNiBmcmVxMTsKPiArICAgICAgIF9fYmUx
-NiBmcmVxMjsKPiArICAgICAgIF9fYmUxNiBub2lzZTsKPiArICAgICAgIF9fYmUxNiBtYXhfbWFn
-bml0dWRlOwo+ICsgICAgICAgX19iZTE2IHRvdGFsX2dhaW5fZGI7Cj4gKyAgICAgICBfX2JlMTYg
-YmFzZV9wd3JfZGI7Cj4gKyAgICAgICBfX2JlNjQgdHNmOwo+ICsgICAgICAgczggbWF4X2luZGV4
-Owo+ICsgICAgICAgdTggcnNzaTsKPiArICAgICAgIHU4IHJlbHB3cl9kYjsKPiArICAgICAgIHU4
-IGF2Z3B3cl9kYjsKPiArCj4gKyAgICAgICB1OCBkYXRhW1NQRUNUUkFMX0FUSDEwS19IVDIwX05V
-TV9CSU5TXTsKCkFuZCBhcyBwb2ludGVkIG91dCB0aGUgc2l6ZS9jb3VudCBvZiBiaW5zIGlzIG1v
-c3QgbGlrZWx5IG5vdApiYW5kd2lkdGgtZGVwZW5kYW50LiBJdCdzIGp1c3QgYSBtYXR0ZXIgb2Yg
-cmVzb2x1dGlvbiBjb25maWd1cmVkIHdpdGgKZmZ0X3NpemUgKyBiaW5fc2NhbGUuIE1heWJlIHRo
-aXMgc2hvdWxkIGJlIGEgdmFyaWFibGUtc2l6ZWQgYXJyYXk/CgoKR2VuZXJhbGx5IHRoaXMgc2Vl
-bXMgdG8gYmUgbWlzc2luZyBsb2NraW5nIChkb2VzIGRlYnVnZnMgZ3VhcmFudGVlCnNlcmlhbGl6
-ZWQgcmVhZC93cml0ZSBjYWxscz8pLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Firmware doesn't perform Rx reordering so it is
+left to the host driver to do that.
+
+Use mac80211 to perform reordering instead of
+re-inventing the wheel.
+
+This fixes TCP throughput issues in some
+environments.
+
+Reported-by: Denton Gentry <denton.gentry@gmail.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+This depends on:
+
+ * mac80211: fix Rx reordering with RX_FLAG_AMSDU_MORE
+ * mac80211: add support for Rx reordering offloading
+
+I'm still seeing some issues with TCP traffic.
+Apparently firmware/hardware sometimes stalls Rx
+for ~100ms and misses some aggregate frames. I
+wasn't able to pinpoint what the problem is. The
+more parallel TCP streams (iperf) the more often
+stalls happen. UDP doesn't seem to trigger the Rx
+stalls at all.
+
+
+Notes:
+    v2:
+     * split addba/delba handling into separate functions [Kalle]
+     * extend ampdu_action debug print (+vdev_id, +sta addr, +tid)
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 94 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    | 33 +++++++++++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  3 +-
+ drivers/net/wireless/ath/ath10k/txrx.h   |  1 +
+ 4 files changed, 127 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index eebc860..966bd4a 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -21,6 +21,7 @@
+ #include "txrx.h"
+ #include "debug.h"
+ #include "trace.h"
++#include "mac.h"
+ 
+ #include <linux/log2.h>
+ 
+@@ -1422,6 +1423,86 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
+ 	}
+ }
+ 
++static void ath10k_htt_rx_addba(struct ath10k *ar, struct htt_resp *resp)
++{
++	struct htt_rx_addba *ev = &resp->rx_addba;
++	struct ath10k_peer *peer;
++	struct ath10k_vif *arvif;
++	u16 info0, tid, peer_id;
++
++	info0 = __le32_to_cpu(ev->info0);
++	tid = MS(info0, HTT_RX_BA_INFO0_TID);
++	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx addba tid %hu peer_id %hu size %hhu\n",
++		   tid, peer_id, ev->window_size);
++
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_warn("received addba event for invalid peer_id: %hu\n",
++			    peer_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	arvif = ath10k_get_arvif(ar, peer->vdev_id);
++	if (!arvif) {
++		ath10k_warn("received addba event for invalid vdev_id: %u\n",
++			    peer->vdev_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx start rx ba session sta %pM tid %hu size %hhu\n",
++		   peer->addr, tid, ev->window_size);
++
++	ieee80211_start_rx_ba_session_offl(arvif->vif, peer->addr, tid);
++	spin_unlock_bh(&ar->data_lock);
++}
++
++static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
++{
++	struct htt_rx_addba *ev = &resp->rx_addba;
++	struct ath10k_peer *peer;
++	struct ath10k_vif *arvif;
++	u16 info0, tid, peer_id;
++
++	info0 = __le32_to_cpu(ev->info0);
++	tid = MS(info0, HTT_RX_BA_INFO0_TID);
++	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx delba tid %hu peer_id %hu\n",
++		   tid, peer_id);
++
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_warn("received addba event for invalid peer_id: %hu\n",
++			    peer_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	arvif = ath10k_get_arvif(ar, peer->vdev_id);
++	if (!arvif) {
++		ath10k_warn("received addba event for invalid vdev_id: %u\n",
++			    peer->vdev_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx stop rx ba session sta %pM tid %hu\n",
++		   peer->addr, tid);
++
++	ieee80211_stop_rx_ba_session_offl(arvif->vif, peer->addr, tid);
++	spin_unlock_bh(&ar->data_lock);
++}
++
+ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+@@ -1515,10 +1596,19 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 	case HTT_T2H_MSG_TYPE_STATS_CONF:
+ 		trace_ath10k_htt_stats(skb->data, skb->len);
+ 		break;
+-	case HTT_T2H_MSG_TYPE_TX_INSPECT_IND:
+ 	case HTT_T2H_MSG_TYPE_RX_ADDBA:
++		ath10k_htt_rx_addba(ar, resp);
++		break;
+ 	case HTT_T2H_MSG_TYPE_RX_DELBA:
+-	case HTT_T2H_MSG_TYPE_RX_FLUSH:
++		ath10k_htt_rx_delba(ar, resp);
++		break;
++	case HTT_T2H_MSG_TYPE_RX_FLUSH: {
++		/* Ignore this event because mac80211 takes care of Rx
++		 * aggregation reordering.
++		 */
++		break;
++	}
++	case HTT_T2H_MSG_TYPE_TX_INSPECT_IND:
+ 	default:
+ 		ath10k_dbg(ATH10K_DBG_HTT, "htt event (%d) not handled\n",
+ 			   resp->hdr.msg_type);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b8314a5..24d5ac0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4331,6 +4331,38 @@ static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+ 	return 0;
+ }
+ 
++int ath10k_ampdu_action(struct ieee80211_hw *hw,
++			struct ieee80211_vif *vif,
++			enum ieee80211_ampdu_mlme_action action,
++			struct ieee80211_sta *sta, u16 tid, u16 *ssn,
++			u8 buf_size)
++{
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++
++	ath10k_dbg(ATH10K_DBG_MAC, "mac ampdu vdev_id %i sta %pM tid %hu action %d\n",
++		   arvif->vdev_id, sta->addr, tid, action);
++
++	switch (action) {
++	case IEEE80211_AMPDU_RX_START:
++	case IEEE80211_AMPDU_RX_STOP:
++		/* HTT AddBa/DelBa events trigger mac80211 Rx BA session
++		 * creation/removal. Do we need to verify this?
++		 */
++		return 0;
++	case IEEE80211_AMPDU_TX_START:
++	case IEEE80211_AMPDU_TX_STOP_CONT:
++	case IEEE80211_AMPDU_TX_STOP_FLUSH:
++	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
++	case IEEE80211_AMPDU_TX_OPERATIONAL:
++		/* Firmware offloads Tx aggregation entirely so deny mac80211
++		 * Tx aggregation requests.
++		 */
++		break;
++	}
++
++	return -EOPNOTSUPP;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_tx,
+ 	.start				= ath10k_start,
+@@ -4358,6 +4390,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+ 	.sta_rc_update			= ath10k_sta_rc_update,
+ 	.get_tsf			= ath10k_get_tsf,
++	.ampdu_action			= ath10k_ampdu_action,
+ #ifdef CONFIG_PM
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 82669a7..f4fa22d 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -119,8 +119,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 	return NULL;
+ }
+ 
+-static struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar,
+-						  int peer_id)
++struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id)
+ {
+ 	struct ath10k_peer *peer;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
+index aee3e20..a90e09f 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.h
++++ b/drivers/net/wireless/ath/ath10k/txrx.h
+@@ -24,6 +24,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr);
++struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id);
+ int ath10k_wait_for_peer_created(struct ath10k *ar, int vdev_id,
+ 				 const u8 *addr);
+ int ath10k_wait_for_peer_deleted(struct ath10k *ar, int vdev_id,
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
