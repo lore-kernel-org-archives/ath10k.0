@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7OWs-0005sM-Ik
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 12:41:51 +0000
-Received: by mail-wi0-f174.google.com with SMTP id d1so6085332wiv.13
- for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 05:41:27 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQn8TYX4vDx=K4P5rE+LBXrrUL2q1E7GsiOpBj82QgRKsw@mail.gmail.com>
-References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
- <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
- <53C66422.10702@gmail.com>
- <CA+BoTQn8TYX4vDx=K4P5rE+LBXrrUL2q1E7GsiOpBj82QgRKsw@mail.gmail.com>
-Date: Wed, 16 Jul 2014 14:41:27 +0200
-Message-ID: <CA+BoTQkk5oYS4JZ5a6W02rZ62AgxcHE76knS7QA2VfZDxYi2Jg@mail.gmail.com>
-Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
+ id 1X7Oyp-0008Qp-03
+ for ath10k@lists.infradead.org; Wed, 16 Jul 2014 13:10:43 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so6134528wiv.11
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 06:10:20 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: workaround boot issues with KVM/PCI-passthrough
+Date: Wed, 16 Jul 2014 15:01:39 +0200
+Message-Id: <1405515699-32452-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +17,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Varka Bhadram <varkabhadram@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTYgSnVseSAyMDE0IDE0OjM1LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRv
-LmNvbT4gd3JvdGU6Cj4gT24gMTYgSnVseSAyMDE0IDEzOjM4LCBWYXJrYSBCaGFkcmFtIDx2YXJr
-YWJoYWRyYW1AZ21haWwuY29tPiB3cm90ZToKPj4gT24gMDcvMTYvMjAxNCAwNDo0OSBQTSwgTWlj
-aGFsIEthemlvciB3cm90ZToKPj4KPj4gKC4uLikKPj4KPj4KPj4+ICtzdGF0aWMgdm9pZCBhdGgx
-MGtfaHR0X3J4X2FkZGJhKHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3QgaHR0X3Jlc3AgKnJlc3Ap
-Cj4+PiArewo+Pj4gKyAgICAgICBzdHJ1Y3QgaHR0X3J4X2FkZGJhICpldiA9ICZyZXNwLT5yeF9h
-ZGRiYTsKPj4+ICsgICAgICAgc3RydWN0IGF0aDEwa19wZWVyICpwZWVyOwo+Pj4gKyAgICAgICBz
-dHJ1Y3QgYXRoMTBrX3ZpZiAqYXJ2aWY7Cj4+PiArICAgICAgIHUxNiBpbmZvMCwgdGlkLCBwZWVy
-X2lkOwo+Pj4gKwo+Pj4gKyAgICAgICBpbmZvMCA9IF9fbGUzMl90b19jcHUoZXYtPmluZm8wKTsK
-Pj4+ICsgICAgICAgdGlkID0gTVMoaW5mbzAsIEhUVF9SWF9CQV9JTkZPMF9USUQpOwo+Pj4gKyAg
-ICAgICBwZWVyX2lkID0gTVMoaW5mbzAsIEhUVF9SWF9CQV9JTkZPMF9QRUVSX0lEKTsKPj4+ICsK
-Pj4+ICsgICAgICAgYXRoMTBrX2RiZyhBVEgxMEtfREJHX0hUVCwKPj4+ICsgICAgICAgICAgICAg
-ICAgICAiaHR0IHJ4IGFkZGJhIHRpZCAlaHUgcGVlcl9pZCAlaHUgc2l6ZSAlaGh1XG4iLAo+Pj4g
-KyAgICAgICAgICAgICAgICAgIHRpZCwgcGVlcl9pZCwgZXYtPndpbmRvd19zaXplKTsKPj4+ICsK
-Pj4+ICsgICAgICAgc3Bpbl9sb2NrX2JoKCZhci0+ZGF0YV9sb2NrKTsKPj4+ICsgICAgICAgcGVl
-ciA9IGF0aDEwa19wZWVyX2ZpbmRfYnlfaWQoYXIsIHBlZXJfaWQpOwo+Pj4gKyAgICAgICBpZiAo
-IXBlZXIpIHsKPj4+ICsgICAgICAgICAgICAgICBhdGgxMGtfd2FybigicmVjZWl2ZWQgYWRkYmEg
-ZXZlbnQgZm9yIGludmFsaWQgcGVlcl9pZDoKPj4+ICVodVxuIiwKPj4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBwZWVyX2lkKTsKPj4+ICsgICAgICAgICAgICAgICBzcGluX3VubG9ja19i
-aCgmYXItPmRhdGFfbG9jayk7Cj4+PiArICAgICAgICAgICAgICAgcmV0dXJuOwo+Pj4gKyAgICAg
-ICB9Cj4+Cj4+Cj4+IEhlcmUgbXkgY29uY2VybiBpbiBhbW91bnQgb2YgdGltZSBob2xkaW5nIHRo
-ZSBsb2NrLi4uCj4+Cj4+IHNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4+IHBlZXIgPSBh
-dGgxMGtfcGVlcl9maW5kX2J5X2lkKGFyLCBwZWVyX2lkKTsKPj4gaWYgKCFwZWVyKSB7Cj4+ICAg
-ICAgICAgc3Bpbl91bmxvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo+Pgo+PiAgICAgICAgIGF0aDEw
-a193YXJuKCJyZWNlaXZlZCBhZGRiYSBldmVudCBmb3IgaW52YWxpZCBwZWVyX2lkOiAlaHVcbiIs
-Cj4+ICAgICAgICAgICAgICAgICAgICAgcGVlcl9pZCk7Cj4+ICAgICAgICAgcmV0dXJuOwo+PiB9
-Cj4+Cj4+IE5vIG5lZWQgdG8gb2YgcHV0dGluZyB0aGUgZGVidWcgbWVzc2FnZSBpbnNpZGUgdGhl
-IGNyaXRpY2FsIHJlZ2lvbi4uLiAgOi0pCj4KPiBTb3VuZHMgcmVhc29uYWJsZSBpbiB0aGlzIGNh
-c2UgYXMgSSdtIG5vdCBwcmludGluZyBzcGlubG9jay1wcm90ZWN0ZWQgdmFsdWVzLgoKLi5hbmQg
-SSByZWFsaXplZCB0aGlzIGlzbid0IHRydWUgdXBvbiBoaXR0aW5nIHRoZSBzZW5kIGJ1dHRvbi4K
-ClRoZSBvdGhlciBwcmludCB1c2VzIHBlZXItPnZkZXZfaWQuIFRoZSBwZWVyIHdhcyBhY3F1aXJl
-ZCB1bmRlciBhIGxvY2sKYW5kIG11c3Qgbm90IGJlIHVzZWQgYWZ0ZXIgdGhlIGxvY2sgaXMgcmVs
-ZWFzZWQuIEl0J2xsIGp1c3QgbG9vawpjb25mdXNpbmcgaWYgSSBtaXggb3JkZXJpbmcgb2YgdW5s
-b2NrL3ByaW50IGluIHNvbWUgY2FzZXMgc28gSSdsbApsZWF2ZSBpdCBhcyBpcy4KCihzb3JyeSBm
-b3IgdGhlIG5vaXNlKQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Apparently iomap writes that unmask CE irqs aren't
+propagated properly sometimes. Before failing try
+to poll for the control response message as it may
+have been delivered without an interrupt.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htc.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index e493db4..5fdc40d 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -546,7 +546,7 @@ static u8 ath10k_htc_get_credit_allocation(struct ath10k_htc *htc,
+ 
+ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ {
+-	int status = 0;
++	int i, status = 0;
+ 	struct ath10k_htc_svc_conn_req conn_req;
+ 	struct ath10k_htc_svc_conn_resp conn_resp;
+ 	struct ath10k_htc_msg *msg;
+@@ -556,10 +556,26 @@ int ath10k_htc_wait_target(struct ath10k_htc *htc)
+ 
+ 	status = wait_for_completion_timeout(&htc->ctl_resp,
+ 					     ATH10K_HTC_WAIT_TIMEOUT_HZ);
+-	if (status <= 0) {
++	if (status == 0) {
++		/* Workaround: In some cases the PCI HIF doesn't
++		 * receive interrupt for the control response message
++		 * even if the buffer was completed. It is suspected
++		 * iomap writes unmasking PCI CE irqs aren't propagated
++		 * properly in KVM PCI-passthrough sometimes.
++		 */
++		ath10k_warn("failed to receive control response completion, polling..\n");
++
++		for (i = 0; i < CE_COUNT; i++)
++			ath10k_hif_send_complete_check(htc->ar, i, 1);
++
++		status = wait_for_completion_timeout(&htc->ctl_resp,
++					ATH10K_HTC_WAIT_TIMEOUT_HZ);
++
+ 		if (status == 0)
+ 			status = -ETIMEDOUT;
++	}
+ 
++	if (status < 0) {
+ 		ath10k_err("ctl_resp never came in (%d)\n", status);
+ 		return status;
+ 	}
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
