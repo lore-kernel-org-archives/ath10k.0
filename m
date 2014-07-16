@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7KjT-00011i-5V
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 08:38:36 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [RFC 0/2] ath10k spectral scan support
-Date: Wed, 16 Jul 2014 10:38:09 +0200
+ id 1X7L11-0006Ma-UZ
+ for ath10k@lists.infradead.org; Wed, 16 Jul 2014 08:56:44 +0000
+Received: by mail-wi0-f177.google.com with SMTP id ho1so898396wib.4
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 01:56:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <201407161038.10130.sw@simonwunderlich.de>
 References: <1405441966-32681-1-git-send-email-sw@simonwunderlich.de>
  <CA+BoTQmNJuwYpSiXqF8OUuXQULLSdUW+PO4Sz5oNKyaduHMKPg@mail.gmail.com>
  <4111404.UJkIUxkzQm@bentobox>
-In-Reply-To: <4111404.UJkIUxkzQm@bentobox>
-MIME-Version: 1.0
-Message-Id: <201407161038.10130.sw@simonwunderlich.de>
+ <201407161038.10130.sw@simonwunderlich.de>
+Date: Wed, 16 Jul 2014 10:56:16 +0200
+Message-ID: <CA+BoTQm_pbtiT+ujRypZ6DuoqfFkYM-OfzvtaC+q9qurnMwpaA@mail.gmail.com>
+Subject: Re: [RFC 0/2] ath10k spectral scan support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,41 +23,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sven Eckelmann <sven@narfation.org>
+To: Simon Wunderlich <sw@simonwunderlich.de>
 Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, "Giori,
- Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+ Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sven Eckelmann <sven@narfation.org>
 
-
-> On Wednesday 16 July 2014 08:24:58 Michal Kazior wrote:
-> > >  * So far, we always get 64 bins of fft data in the samples, even if we
-> > >  
-> > >    are in HT40 or VHT80 mode. That doesn't seem right, as there should
-> > >    be more bins for wider channels (e.g. 128 or 256 bins). Is there any
-> > >    parameter to change in the configuration to get the output from
-> > >    multiple channels / higher bandwidth?
-> > 
-> > Hmm.. I suspect this may be because you use scan command. Scanning
-> > uses channel list which is programmed with legacy modes a and g
-> > (implying 20Mhz). Perhaps that's the limiting factor now. Using other
-> > (wider) modes breaks scan from what I remember but it might be worth
-> > checking out if it impacts fft bin sizes.
-> 
-> I did the HT80 and HT40 stuff on a single channel in the spectral
-> "background" mode. They reports from the firmware (10.1) still only had 64
-> bins. The HT80 stuff wasn't tested with the "main" firmware because it
-> refused to switch to HT80 mode as AP/Sta.
-
-Just to clarify this a little more, we tried AP (running hostapd) as well a 
-STA in 40 and 80 MHz modes. We always got 64 bins returned.
-
-Cheers,
-    Simon
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgSnVseSAyMDE0IDEwOjM4LCBTaW1vbiBXdW5kZXJsaWNoIDxzd0BzaW1vbnd1bmRlcmxp
+Y2guZGU+IHdyb3RlOgo+Cj4+IE9uIFdlZG5lc2RheSAxNiBKdWx5IDIwMTQgMDg6MjQ6NTggTWlj
+aGFsIEthemlvciB3cm90ZToKPj4gPiA+ICAqIFNvIGZhciwgd2UgYWx3YXlzIGdldCA2NCBiaW5z
+IG9mIGZmdCBkYXRhIGluIHRoZSBzYW1wbGVzLCBldmVuIGlmIHdlCj4+ID4gPgo+PiA+ID4gICAg
+YXJlIGluIEhUNDAgb3IgVkhUODAgbW9kZS4gVGhhdCBkb2Vzbid0IHNlZW0gcmlnaHQsIGFzIHRo
+ZXJlIHNob3VsZAo+PiA+ID4gICAgYmUgbW9yZSBiaW5zIGZvciB3aWRlciBjaGFubmVscyAoZS5n
+LiAxMjggb3IgMjU2IGJpbnMpLiBJcyB0aGVyZSBhbnkKPj4gPiA+ICAgIHBhcmFtZXRlciB0byBj
+aGFuZ2UgaW4gdGhlIGNvbmZpZ3VyYXRpb24gdG8gZ2V0IHRoZSBvdXRwdXQgZnJvbQo+PiA+ID4g
+ICAgbXVsdGlwbGUgY2hhbm5lbHMgLyBoaWdoZXIgYmFuZHdpZHRoPwo+PiA+Cj4+ID4gSG1tLi4g
+SSBzdXNwZWN0IHRoaXMgbWF5IGJlIGJlY2F1c2UgeW91IHVzZSBzY2FuIGNvbW1hbmQuIFNjYW5u
+aW5nCj4+ID4gdXNlcyBjaGFubmVsIGxpc3Qgd2hpY2ggaXMgcHJvZ3JhbW1lZCB3aXRoIGxlZ2Fj
+eSBtb2RlcyBhIGFuZCBnCj4+ID4gKGltcGx5aW5nIDIwTWh6KS4gUGVyaGFwcyB0aGF0J3MgdGhl
+IGxpbWl0aW5nIGZhY3RvciBub3cuIFVzaW5nIG90aGVyCj4+ID4gKHdpZGVyKSBtb2RlcyBicmVh
+a3Mgc2NhbiBmcm9tIHdoYXQgSSByZW1lbWJlciBidXQgaXQgbWlnaHQgYmUgd29ydGgKPj4gPiBj
+aGVja2luZyBvdXQgaWYgaXQgaW1wYWN0cyBmZnQgYmluIHNpemVzLgo+Pgo+PiBJIGRpZCB0aGUg
+SFQ4MCBhbmQgSFQ0MCBzdHVmZiBvbiBhIHNpbmdsZSBjaGFubmVsIGluIHRoZSBzcGVjdHJhbAo+
+PiAiYmFja2dyb3VuZCIgbW9kZS4gVGhleSByZXBvcnRzIGZyb20gdGhlIGZpcm13YXJlICgxMC4x
+KSBzdGlsbCBvbmx5IGhhZCA2NAo+PiBiaW5zLiBUaGUgSFQ4MCBzdHVmZiB3YXNuJ3QgdGVzdGVk
+IHdpdGggdGhlICJtYWluIiBmaXJtd2FyZSBiZWNhdXNlIGl0Cj4+IHJlZnVzZWQgdG8gc3dpdGNo
+IHRvIEhUODAgbW9kZSBhcyBBUC9TdGEuCj4KPiBKdXN0IHRvIGNsYXJpZnkgdGhpcyBhIGxpdHRs
+ZSBtb3JlLCB3ZSB0cmllZCBBUCAocnVubmluZyBob3N0YXBkKSBhcyB3ZWxsIGEKPiBTVEEgaW4g
+NDAgYW5kIDgwIE1IeiBtb2Rlcy4gV2UgYWx3YXlzIGdvdCA2NCBiaW5zIHJldHVybmVkLgoKSXQg
+c2VlbXMgdGhlIG51bWJlciBvZiBiaW5zIGlzIDJeIChmZnRfc2l6ZSAtIGJpbl9zY2FsZSkgPSAy
+Xig3LTEpID0KNjQuIENoYW5naW5nIGZmdF9zaXplIHRvIDkgeWllbGRzIDI1NiBiaW5zLgoKUGVy
+aGFwcyBmZnQgcmVwb3J0cyBhcmUgKGltcGxpY2l0bHkpIHJlbGF0aXZlIHRvIHRoZSBtb2RlIHRo
+ZSBodyBpcyBpbgphdCBhIGdpdmVuIHRpbWUgYW5kIGlmIHlvdSB3YW50IGEgcmVhc29uYWJsZSBi
+aW4gcmVzb2x1dGlvbiBmb3IsIGUuZy4KVkhUODAgeW91IG5lZWQgdG8gaW5jcmVhc2UgZmZ0X3Np
+emU/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
