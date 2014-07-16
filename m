@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7MQ5-0007r8-78
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 10:26:43 +0000
-Received: by mail-we0-f174.google.com with SMTP id x48so686394wes.5
- for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 03:26:17 -0700 (PDT)
+ id 1X7NNW-0002IQ-FF
+ for ath10k@lists.infradead.org; Wed, 16 Jul 2014 11:28:07 +0000
+Received: by mail-we0-f173.google.com with SMTP id q58so778345wes.18
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 04:27:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2] ath10k: fix Rx aggregation reordering
-Date: Wed, 16 Jul 2014 12:17:35 +0200
-Message-Id: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3] ath10k: fix Rx aggregation reordering
+Date: Wed, 16 Jul 2014 13:19:00 +0200
+Message-Id: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
+References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -52,6 +54,9 @@ stalls at all.
 
 
 Notes:
+    v3:
+     * make ath10k_ampdu_action() static
+    
     v2:
      * split addba/delba handling into separate functions [Kalle]
      * extend ampdu_action debug print (+vdev_id, +sta addr, +tid)
@@ -184,18 +189,18 @@ index eebc860..966bd4a 100644
  		ath10k_dbg(ATH10K_DBG_HTT, "htt event (%d) not handled\n",
  			   resp->hdr.msg_type);
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b8314a5..24d5ac0 100644
+index b8314a5..67bf8ed 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -4331,6 +4331,38 @@ static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
  	return 0;
  }
  
-+int ath10k_ampdu_action(struct ieee80211_hw *hw,
-+			struct ieee80211_vif *vif,
-+			enum ieee80211_ampdu_mlme_action action,
-+			struct ieee80211_sta *sta, u16 tid, u16 *ssn,
-+			u8 buf_size)
++static int ath10k_ampdu_action(struct ieee80211_hw *hw,
++			       struct ieee80211_vif *vif,
++			       enum ieee80211_ampdu_mlme_action action,
++			       struct ieee80211_sta *sta, u16 tid, u16 *ssn,
++			       u8 buf_size)
 +{
 +	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
 +
