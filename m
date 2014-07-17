@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp2.ugent.be ([157.193.49.126])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7ReL-0002au-6e
- for ath10k@lists.infradead.org; Wed, 16 Jul 2014 16:01:46 +0000
-Message-ID: <53C6A1C7.5060004@intec.ugent.be>
-Date: Wed, 16 Jul 2014 18:01:11 +0200
-From: Bart Jooris <Bart.Jooris@intec.ugent.be>
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7e2X-0007E4-4u
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 05:15:34 +0000
+Received: by mail-wg0-f48.google.com with SMTP id x13so1845356wgg.7
+ for <ath10k@lists.infradead.org>; Wed, 16 Jul 2014 22:15:08 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Throughput is very low
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
-In-Reply-To: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+In-Reply-To: <53C69A32.3090305@candelatech.com>
+References: <1405516873-26411-1-git-send-email-michal.kazior@tieto.com>
+ <1405516873-26411-2-git-send-email-michal.kazior@tieto.com>
+ <53C69A32.3090305@candelatech.com>
+Date: Thu, 17 Jul 2014 07:15:07 +0200
+Message-ID: <CA+BoTQ=X6GZLYmztehWp=gi6JHWZAJrOnvtB-HjbTqGfwUR4eA@mail.gmail.com>
+Subject: Re: [RFC/RFT 2/2] ath10k: don't start monitor vdev for promisc
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,62 +22,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: Bart.Jooris@intec.ugent.be
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Mamun Abu-Tair <ma86@st-andrews.ac.uk>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>, Sven Schnelle <svens@stackframe.org>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Dear Mamum,
-
-On 07/09/2014 04:22 PM, Mamun Abu-Tair wrote:
-> Dear all,
-> I am trying to do throughput test with copmex AC cards Model (WLE900VX 7AA) .,using hostapd running on the server and  one client.
-I have some cards with the same label. Hostapd on the server, on the 
-station we use wpa_supplicant.
->
-> I used Kalle sitting for the hostapd. However, the maximum throughput i can get is around 70Mbit/s which is far away from the throughput achieved by many users (UDP traffic).
-In a setup with those cards we can observe a UDP throughput of approx. 
-640Mbps.
-
->
-> I have notice that Bit Rate keeps fixed 6 Mb/s . and it dose not responding to any commands to change it.
-While running iperf client on the station I can also retrieve the Tx 
-bitrate of 6Mbps with both iwconfig and 'iw wlanX station dump'. Version 
-of iw has some impact on the output too, I have version 3.15.  I don't 
-know a tool which shows the right info on the transmitting node...
-But a third node which is configured as a sniffer shows Tx bitrate of 
-1299.99Mbps :-)
-
->
-> The machines used:
->   Ubuntu 12.04, Kerenl 3.16 , updated regulatory to cover 80Mhz channels , and the latest  firmware
-Our nodes are also running 12.04 but still with the default kernel 
-3.11.0-15-generic.
-dmesg | grep qca98 shows
-[    4.594975] ath10k: qca988x hw2.0 (0x4100016c) fw 10.1.467.2-1 api 2 
-htt 2.1
-Further, as Kalle suggested, we installed the ath10k driver from 
-backports-3.15.1-1.
-
-Best regards,
-
-Bart
-
--- 
-Bart Jooris
-Department of Information Technology
-Internet Based Communication Networks and Services (IBCN)
-Ghent University - iMinds
-Gaston Crommenlaan 8 (Bus 201), B-9050 Gent, Belgium
-E-mail: bart.jooris@intec.UGent.be
-M: +32 474 59 53 42
-Tel. +32 9 33 14900
-Fax +32 9 33 14899
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgSnVseSAyMDE0IDE3OjI4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gT24gMDcvMTYvMjAxNCAwNjoyMSBBTSwgTWljaGFsIEthemlvciB3cm90ZToK
+Pj4KPj4gYXRoMTBrIGRvZXNuJ3QgYXBwbHkgYW55IGV4dHJhIHJ4IGZpbHRlcnMgc28KPj4gdGhl
+cmUncyBubyBuZWVkIHRvIHN0YXJ0IG1vbml0b3IgdmRldiBmb3IKPj4gcHJvbWlzY3VvdXMgbW9k
+ZS4KPj4KPj4gVGhpcyBmaXhlcyBjcmFzaGVzIHdpdGggNGFkZHIgc3RhdGlvbiBpbnRlcmZhY2UK
+Pj4gYnJpZGdpbmcgYW5kIHNvbWUgdmVyeSByYXJlIGNyYXNoZXMgb2YgQVAKPj4gaW50ZXJmYWNl
+cyB3aXRoIGJyaWRnaW5nIGFzIHdlbGwuCj4KPgo+IEFoaCwgSSB3YXMganVzdCB3b3JraW5nIG9u
+IHNvbWUgcmVsYXRlZCBoYWNrLWFyb3VuZHMgdG8gbWFrZSBzdXJlCj4gSSBsZWZ0IGEgdmRldiBz
+bG90IG9wZW4gZm9yIHRoZSBtb25pdG9yIGludGVyZmFjZSBpbiBjYXNlIHNvbWUgcG9vcgo+IHBl
+cnNvbiBzdGFydGVkIGEgc25pZmZlciBvbiBhbiBpbnRlcmZhY2UgYW5kIG1hZGUgaXQgZ28gcHJv
+bWlzYy4uLgo+Cj4gV2l0aCB0aGlzIHBhdGNoLCBJIGNhbiBiZSBzdXJlIG1vbml0b3IgaW50ZXJm
+YWNlcyB3aWxsIG5vdAo+IGJlIGF1dG9tYXRpY2FsbHkgY3JlYXRlZCB3aXRob3V0IGV4cGxpY2l0
+IHVzZXIgcmVxdWVzdD8KCkknbSBub3Qgc3VyZSBpZiBJIHVuZGVyc3RhbmQgeW91IGNvcnJlY3Rs
+eSwgYnV0OgoKV2l0aCB0aGlzIHBhdGNoIG1vbml0b3IgdmRldiB3aWxsIGJlIGNyZWF0ZWQgYW5k
+IHN0YXJ0ZWQgb25seSBpZiB0aGVyZQppcyBhdCBsZWFzdCBvbmUgbW9uaXRvciBpbnRlcmZhY2Ug
+dXAgYW5kIHJ1bm5pbmcgb3IgQ0FDIGlzIGluCnByb2dyZXNzLiBQcm9taXNjdW91cyBtb2RlIGRv
+ZXMgbm90IGNoYW5nZSBkcml2ZXIgc3RhdGUgYXQgYWxsLiBJT1cgaWYKeW91IHN0YXJ0IHRjcGR1
+bXAgb24gYSB3bGFuMCAoc3RhdGlvbiBpZnR5cGUpIG9yIGFkZCB3bGFuMCAoYXAgaWZ0eXBlLApz
+dGEgaWZ0eXBlKSB0byBhIGJyaWRnZSB0aGVuIG1vbml0b3IgdmRldiB3aWxsIG5vdCBiZSBjcmVh
+dGVkLiBZb3UKaGF2ZSB0byBpdyB3bGFuMCBpbnRlcmZhY2UgYWRkIG1vbiB0eXBlIG1vbml0b3Ig
+JiYgaXAgbGluayBzZXQgbW9uIHVwCnRvIHN0YXJ0IG1vbml0b3IgdmRldi4gRnJvbSB0aGVuIG9u
+IHlvdSBjYW4gdGNwZHVtcCBvciB0Y3BkdW1wIC1wIG9uCm1vbiB0byBzbmlmZiBldmVyeXRoaW5n
+IHRoYXQgdGhlIGNhcmQgc2VlcyBvbiB0aGUgYWlyLgoKCj4gQW55IGlkZWEgaWYgaXQgd2lsbCBi
+ZSBhIHByb2JsZW0gdG8gYXBwbHkgdGhpcyB0byB3aGF0IGlzCj4gZWZmZWN0aXZlbHkgYSAzLjE1
+IGtlcm5lbD8KCkhtbS4uIEkgZ3Vlc3MgaXQgc2hvdWxkIGFwcGx5LiBUaGlzIGRlcGVuZHMgb24g
+c29tZSBlYXJsaWVyIG1vbml0b3IKY2xlYW4gdXAgcGF0Y2hlcyBidXQgSSBjYW4ndCByZW1lbWJl
+ciB3aGVuIHRob3NlIHdlcmUgbWVyZ2VkLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
