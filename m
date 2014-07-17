@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mcgraw.st-andrews.ac.uk ([138.251.8.95])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7lsX-0008JY-3t
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 13:37:46 +0000
-Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
-Subject: Re: Throughput is very low
-From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
-In-Reply-To: <CA+BoTQkxnxwHCimjcPBJbMxiJjX-UnG-5P-11skGKAs9Dh3Wfw@mail.gmail.com>
-Date: Thu, 17 Jul 2014 14:37:07 +0100
-Message-Id: <2D8D7F08-9E64-4D53-8D47-0A825E9CE626@st-andrews.ac.uk>
-References: <7771CBBE-70F2-44FF-AAC8-C35987A83D67@st-andrews.ac.uk>
- <830E6887-0C19-4FE3-B264-E07B2427697D@st-andrews.ac.uk>
- <CA+BoTQkxnxwHCimjcPBJbMxiJjX-UnG-5P-11skGKAs9Dh3Wfw@mail.gmail.com>
+ id 1X7mQf-0007h1-9i
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 14:13:03 +0000
+Received: by mail-ie0-f174.google.com with SMTP id rp18so2976296iec.33
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 07:12:36 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <53C59A22.6000505@marcant.net>
+References: <53AD2EEE.4040704@marcant.net>
+ <87tx70p4e0.fsf@kamboji.qca.qualcomm.com>
+ <CAGXE3d-i1Cf93cTuM=gSPttOBsCrP1c_Hb0=XDi8mXsZBm-MUQ@mail.gmail.com>
+ <53C59A22.6000505@marcant.net>
+Date: Thu, 17 Jul 2014 16:12:35 +0200
+Message-ID: <CAGXE3d8KZ=BG6a2PBhY_ZAhf71admtrnCF01LNoyA2tnLNJcAA@mail.gmail.com>
+Subject: Re: ath10k OTP loading issues
+From: Helmut Schaa <helmut.schaa@googlemail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +23,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Andre Valentin <avalentin@marcant.net>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
 
-Ck9uIDE3IEp1bCAyMDE0LCBhdCAxMjozOCwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyb3RlOgoKPiBPbiAxNyBKdWx5IDIwMTQgMTM6MzUsIE1hbXVuIEFidS1UYWly
-IDxtYTg2QHN0LWFuZHJld3MuYWMudWs+IHdyb3RlOgo+PiBTb3JyeSBmb3JnZXQgdG8gQ0MgdGhl
-IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4gCj4+IEJlZ2luIGZvcndhcmRlZCBtZXNzYWdlOgo+PiAK
-Pj4gRnJvbTogTWFtdW4gQWJ1LVRhaXIgPG1hODZAc3QtYW5kcmV3cy5hYy51az4KPj4gU3ViamVj
-dDogUmU6IFRocm91Z2hwdXQgaXMgdmVyeSBsb3cKPj4gRGF0ZTogMTcgSnVseSAyMDE0IDEyOjIy
-OjQ2IEJTVAo+PiBUbzogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4+
-IAo+PiBNYW55IHRoYW5rcyBNaWNqaGFsZSwKPj4gCj4+IE9uIDE3IEp1bCAyMDE0LCBhdCAwNjoy
-MSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiAKPj4g
-T24gMTYgSnVseSAyMDE0IDE4OjAxLCBCYXJ0IEpvb3JpcyA8QmFydC5Kb29yaXNAaW50ZWMudWdl
-bnQuYmU+IHdyb3RlOgo+PiAKPj4gT24gMDcvMDkvMjAxNCAwNDoyMiBQTSwgTWFtdW4gQWJ1LVRh
-aXIgd3JvdGU6Cj4+IAo+PiBbLi4uXQo+PiAKPj4gSSBoYXZlIG5vdGljZSB0aGF0IEJpdCBSYXRl
-IGtlZXBzIGZpeGVkIDYgTWIvcyAuIGFuZCBpdCBkb3NlIG5vdAo+PiByZXNwb25kaW5nIHRvIGFu
-eSBjb21tYW5kcyB0byBjaGFuZ2UgaXQuCj4+IAo+PiAKPj4gV2hpbGUgcnVubmluZyBpcGVyZiBj
-bGllbnQgb24gdGhlIHN0YXRpb24gSSBjYW4gYWxzbyByZXRyaWV2ZSB0aGUgVHggYml0cmF0ZQo+
-PiBvZiA2TWJwcyB3aXRoIGJvdGggaXdjb25maWcgYW5kICdpdyB3bGFuWCBzdGF0aW9uIGR1bXAn
-LiBWZXJzaW9uIG9mIGl3IGhhcwo+PiBzb21lIGltcGFjdCBvbiB0aGUgb3V0cHV0IHRvbywgSSBo
-YXZlIHZlcnNpb24gMy4xNS4gIEkgZG9uJ3Qga25vdyBhIHRvb2wKPj4gd2hpY2ggc2hvd3MgdGhl
-IHJpZ2h0IGluZm8gb24gdGhlIHRyYW5zbWl0dGluZyBub2RlLi4uCj4+IEJ1dCBhIHRoaXJkIG5v
-ZGUgd2hpY2ggaXMgY29uZmlndXJlZCBhcyBhIHNuaWZmZXIgc2hvd3MgVHggYml0cmF0ZSBvZgo+
-PiAxMjk5Ljk5TWJwcyA6LSkKPj4gCj4+IAo+PiBUaGUgNm1icHMgdHggcmF0ZSByZXBvcnRpbmcg
-aXMgZHVlIHRvIGZpcm13YXJlIGxpbWl0YXRpb24uCj4+IAo+PiBZb3UgbWlnaHQgd2FudCB0byBj
-aGVjawo+PiAvc3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5WC9hdGgxMGsvZndfc3RhdHMg
-KHJlcGxhY2UgcGh5WCB3aXRoCj4+IGFjY29yZGluZyBwaHkgb2YgeW91ciBhdGgxMGsgZGV2aWNl
-KSBpbnN0ZWFkLgo+PiAKPj4gCj4+IEkgaGF2ZSBjaGVja2VkIHRoZSBmaWxlIGFuZCBpdCBoYXMg
-bm90aGluZyBvbiBpdC4gSXMgdGhpcyBub3JtYWwgPyEhIQo+IAo+IElmIG5vIGF0aDEwayBpbnRl
-cmZhY2UgaXMgcnVubmluZyAoY29ubmVjdGVkL2Fzc29jaWF0ZWQpIHRoZW4gZndfc3RhdHMKPiBp
-cyBlbXB0eS4gUnVuIGhvc3RhcGQgb3IgY29ubmVjdCB0byBhbiBBUCBhbmQgdGhlbiBjaGVjayB0
-aGUgZmlsZS4gSWYKPiBpdCdzIHN0aWxsIGVtcHR5IG1ha2Ugc3VyZSB5b3UgdXBkYXRlIHRoZSBk
-cml2ZXIgKGkuZS4gdXNpbmcKPiBiYWNrcG9ydHMpLgo+IApXZWxsICx0aGUgZndfc3RhdHMgaXMg
-c3RpbGwgZW1wdHkgLiBBZnRlciB1cGdyYWRpbmcgdGhlIGRyaXZlciB0aGUgdGhyb3VnaHB1dCBk
-cm9wcGVkIGRvd24gZnJvbSAxODBNYml0L3MgdHAgNjAgTWJpdC9zIDotKC4gCnRoZSBmb2xsb3dp
-bmcgaXMgYSBuZXcgbWVzc2FnZSBJIGhhdmUgZ290OiAKWyAgNTA5LjgzMTg1MF0gYXRoMTBrOiBw
-ZWVyLXVubWFwLWV2ZW50OiB1bmtub3duIHBlZXIgaWQgMgpNYW55IHRoYW5rcyBmb3IgeW91ciBo
-ZWxwLiAKCgo+IAo+IE1pY2hhxYIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hey,
+
+On Tue, Jul 15, 2014 at 11:16 PM, Andre Valentin <avalentin@marcant.net> wrote:
+> Hi!
+>
+> Somehow I did not see this message. Sorry.
+
+No problem.
+
+>>>> If I remove OTP loading the card initializes fine, but I think I will
+>>>>
+>>>> not have a good performance. So bad idea.
+>>>
+>>>
+>>> All that was changed recently was that we now check the error code
+>>> coming from otp.bin. So you have had this issue all along, it was just
+>>> hidden before.
+>>
+>>
+>> Same issue here.
+>>
+>> Is it correct that board.bin should contain the calibration data of
+>> the actual board?
+>> I tried copying it from the APs ART partition but still no luck.
+>>
+>> Any hint on how to debug further why the otp calibration fails?
+>
+>
+> I have no idea except disabling the error return inside of ath10k_pci.
+> Would that make sense as a temporary workaround? It seems I have normal
+> performance without enfording otp loading.
+
+Sure, but it is a workaround and I'd like to find out why it fails if I use the
+calibration data from the original firmware.
+
+Thanks,
+Helmut
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
