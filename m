@@ -1,24 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-qc0-x22a.google.com ([2607:f8b0:400d:c01::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7o6Q-000303-5F
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 16:00:14 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: ath10k OTP loading issues
-References: <53AD2EEE.4040704@marcant.net>
- <87tx70p4e0.fsf@kamboji.qca.qualcomm.com>
- <CAGXE3d-i1Cf93cTuM=gSPttOBsCrP1c_Hb0=XDi8mXsZBm-MUQ@mail.gmail.com>
- <53C59A22.6000505@marcant.net>
- <CAGXE3d8KZ=BG6a2PBhY_ZAhf71admtrnCF01LNoyA2tnLNJcAA@mail.gmail.com>
- <87wqbc6n8n.fsf@kamboji.qca.qualcomm.com>
- <CAGXE3d_FQvvmkGajQ1ioU5mEL04xVzUQ1k9-uXSLjoDFX+Z-Cg@mail.gmail.com>
- <87lhrs6l2r.fsf@kamboji.qca.qualcomm.com>
- <53C7F1CE.3060501@marcant.net>
-Date: Thu, 17 Jul 2014 18:59:47 +0300
-In-Reply-To: <53C7F1CE.3060501@marcant.net> (Andre Valentin's message of "Thu, 
- 17 Jul 2014 17:54:54 +0200")
-Message-ID: <87fvi06kng.fsf@kamboji.qca.qualcomm.com>
+ id 1X7rCv-0004L1-7M
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 19:19:09 +0000
+Received: by mail-qc0-f170.google.com with SMTP id c9so2525679qcz.15
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 12:18:46 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
+References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+ <53C6A1C7.5060004@intec.ugent.be>
+ <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+ <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
+Date: Thu, 17 Jul 2014 12:18:46 -0700
+Message-ID: <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
+Subject: Re: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,38 +31,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andre Valentin <avalentin@marcant.net>
-Cc: Helmut Schaa <helmut.schaa@googlemail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Andre Valentin <avalentin@marcant.net> writes:
-
-> Hi!
+On 17 July 2014 06:19, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+>>So probably the air condition you have forces the rate control to pick
+>>MCS7 as the most suitable rates.
 >
-> On 17.07.2014 17:50, Kalle Valo wrote:
->> Helmut Schaa <helmut.schaa@googlemail.com> writes:
->>
->>>> But in method 2) otp.bin will fail as there's no data in the OTP area.
->>>> This is expected and that's why we should not run otp.bin at all with
->>>> method 2).
->>>
->>> Thanks for clarification Kalle! So, method 2 requires only a
->>> board.bin?
->>
->> Yes. You need to extract the board file from the MTD partition and
->> provide it to ath10k.
+> What could I do to improve this? (Change the air conditioner LOL?)
 >
-> So the question is why does in this case fail the otp.bin loading
-> process or why is it started. How can I prevent it. I provided the
-> correspondig board.bin. If needed, I could run a debug on the ath10k
-> loading.
 
-Because ath10k does not support method 2) yet. We only support method 1)
-right now, ie. the calibration data stored in OTP area.
+Heh, he meant the RF environment in the location you are. :)
 
-Patches more than welcome to fix the situation :)
+And ugh - this is why we need an open source ART already.
 
--- 
-Kalle Valo
+
+
+-a
 
 _______________________________________________
 ath10k mailing list
