@@ -1,24 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x22a.google.com ([2607:f8b0:400d:c01::22a])
+Received: from mail-qg0-x232.google.com ([2607:f8b0:400d:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7rCv-0004L1-7M
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 19:19:09 +0000
-Received: by mail-qc0-f170.google.com with SMTP id c9so2525679qcz.15
- for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 12:18:46 -0700 (PDT)
+ id 1X7tTo-0006OZ-4D
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 21:44:44 +0000
+Received: by mail-qg0-f50.google.com with SMTP id q108so2514837qgd.37
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 14:44:20 -0700 (PDT)
+In-Reply-To: <87lhrs6l2r.fsf@kamboji.qca.qualcomm.com>
+References: <53AD2EEE.4040704@marcant.net>
+ <87tx70p4e0.fsf@kamboji.qca.qualcomm.com>
+ <CAGXE3d-i1Cf93cTuM=gSPttOBsCrP1c_Hb0=XDi8mXsZBm-MUQ@mail.gmail.com>
+ <53C59A22.6000505@marcant.net>
+ <CAGXE3d8KZ=BG6a2PBhY_ZAhf71admtrnCF01LNoyA2tnLNJcAA@mail.gmail.com>
+ <87wqbc6n8n.fsf@kamboji.qca.qualcomm.com>
+ <CAGXE3d_FQvvmkGajQ1ioU5mEL04xVzUQ1k9-uXSLjoDFX+Z-Cg@mail.gmail.com>
+ <87lhrs6l2r.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <53C6A1C7.5060004@intec.ugent.be>
- <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
-Date: Thu, 17 Jul 2014 12:18:46 -0700
-Message-ID: <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
-Subject: Re: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-From: Adrian Chadd <adrian@freebsd.org>
+Subject: Re: ath10k OTP loading issues
+From: Helmut Schaa <helmut.schaa@googlemail.com>
+Date: Thu, 17 Jul 2014 23:44:08 +0200
+Message-ID: <63dce1c7-0142-4592-b8a1-2b09dce63af3@email.android.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +31,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Andre Valentin <avalentin@marcant.net>, ath10k@lists.infradead.org
 
-On 17 July 2014 06:19, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
->>So probably the air condition you have forces the rate control to pick
->>MCS7 as the most suitable rates.
+
+
+On 17. Juli 2014 17:50:36 MESZ, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>Helmut Schaa <helmut.schaa@googlemail.com> writes:
 >
-> What could I do to improve this? (Change the air conditioner LOL?)
+>>> But in method 2) otp.bin will fail as there's no data in the OTP
+>area.
+>>> This is expected and that's why we should not run otp.bin at all
+>with
+>>> method 2).
+>>
+>> Thanks for clarification Kalle! So, method 2 requires only a
+>> board.bin?
 >
+>Yes. You need to extract the board file from the MTD partition and
+>provide it to ath10k.
 
-Heh, he meant the RF environment in the location you are. :)
-
-And ugh - this is why we need an open source ART already.
-
-
-
--a
+Understood. Will give it a try soon ...
+Helmut
 
 _______________________________________________
 ath10k mailing list
