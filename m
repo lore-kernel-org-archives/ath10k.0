@@ -1,9 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20140717
-Date: Thu, 17 Jul 2014 18:54:33 +0300
-Message-ID: <87k37c6kw6.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.marcant.net ([217.14.160.186])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7o1s-0000dr-Vh
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 15:55:33 +0000
+Message-ID: <53C7F1CE.3060501@marcant.net>
+Date: Thu, 17 Jul 2014 17:54:54 +0200
+From: Andre Valentin <avalentin@marcant.net>
 MIME-Version: 1.0
+Subject: Re: ath10k OTP loading issues
+References: <53AD2EEE.4040704@marcant.net>	<87tx70p4e0.fsf@kamboji.qca.qualcomm.com>	<CAGXE3d-i1Cf93cTuM=gSPttOBsCrP1c_Hb0=XDi8mXsZBm-MUQ@mail.gmail.com>	<53C59A22.6000505@marcant.net>	<CAGXE3d8KZ=BG6a2PBhY_ZAhf71admtrnCF01LNoyA2tnLNJcAA@mail.gmail.com>	<87wqbc6n8n.fsf@kamboji.qca.qualcomm.com>	<CAGXE3d_FQvvmkGajQ1ioU5mEL04xVzUQ1k9-uXSLjoDFX+Z-Cg@mail.gmail.com>
+ <87lhrs6l2r.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87lhrs6l2r.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -12,87 +19,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Helmut Schaa <helmut.schaa@googlemail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi John,
+Hi!
 
-here's new pull request for 3.17. Major changes are:
+On 17.07.2014 17:50, Kalle Valo wrote:
+> Helmut Schaa <helmut.schaa@googlemail.com> writes:
+>
+>>> But in method 2) otp.bin will fail as there's no data in the OTP area.
+>>> This is expected and that's why we should not run otp.bin at all with
+>>> method 2).
+>>
+>> Thanks for clarification Kalle! So, method 2 requires only a
+>> board.bin?
+>
+> Yes. You need to extract the board file from the MTD partition and
+> provide it to ath10k.
+>
+So the question is why does in this case fail the otp.bin loading process o=
+r why is it started.
+How can I prevent it. I provided the correspondig board.bin. If needed, I c=
+ould run
+a debug on the ath10k loading.
 
-For ath6kl me and Jessica added support for ar6004 hw3.0, our latest
-version of ar6004.
+Kind regards,
 
-For ath10k Janusz added a printout so that it's easier to check what
-ath10k kconfig options are enabled. He also added a debugfs file to
-configure maximum amsdu and ampdu values. Also we had few fixes as
-usual.
+Andr=E9
 
-Please let me know if there are any problems.
-
-Kalle
-
-The following changes since commit a715c7ddd65a1a3b2839b8ebd759bb2d361f7675:
-
-  wil6210: improve debug for WMI receive (2014-05-30 13:49:34 -0400)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git tags/for-linville-20140717
-
-for you to fetch changes up to 993619443774f7ef4df3b98655df4c3bf298548c:
-
-  ath10k: sanitize tx ring index access properly (2014-07-15 11:19:45 +0300)
-
-----------------------------------------------------------------
-Frederic Danis (1):
-      ath6kl: Fix ath6kl_bmi_read_hi32 macro
-
-Janusz Dziedzic (2):
-      ath10k: print Kconfig options
-      ath10k: add implementation for configure max amsdu, ampdu
-
-Jessica Wu (3):
-      ath6kl: implement rx flush for htc pipe
-      ath6kl: add support wmi rate tables with mcs15
-      ath6kl: add support for ar6004 hw3.0
-
-Kalle Valo (3):
-      ath10k: remove unused len variables from wmi process rx functions
-      ath6kl: convert ar6004 hardware flags to firmware feature flags
-      ath6kl: don't set hi_refclk_hz if hardware version doesn't need it
-
-Michal Kazior (3):
-      ath10k: fix unregister deadlock when fw probe fails
-      ath10k: fix bmi exchange tx/rx race
-      ath10k: sanitize tx ring index access properly
-
- drivers/net/wireless/ath/ath10k/ce.c       |   11 ++--
- drivers/net/wireless/ath/ath10k/core.c     |   12 +++-
- drivers/net/wireless/ath/ath10k/core.h     |    3 +
- drivers/net/wireless/ath/ath10k/debug.c    |   73 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.h      |   13 ++--
- drivers/net/wireless/ath/ath10k/htt_tx.c   |   46 ++++++++++++++
- drivers/net/wireless/ath/ath10k/pci.c      |   11 +---
- drivers/net/wireless/ath/ath10k/pci.h      |    3 +-
- drivers/net/wireless/ath/ath10k/wmi.c      |    6 --
- drivers/net/wireless/ath/ath6kl/bmi.h      |    3 +-
- drivers/net/wireless/ath/ath6kl/cfg80211.c |    6 +-
- drivers/net/wireless/ath/ath6kl/core.c     |   16 +++++
- drivers/net/wireless/ath/ath6kl/core.h     |   36 +++++++++--
- drivers/net/wireless/ath/ath6kl/htc_pipe.c |   32 +++++++++-
- drivers/net/wireless/ath/ath6kl/init.c     |   90 ++++++++++++++++++++++------
- drivers/net/wireless/ath/ath6kl/main.c     |   17 ++++--
- drivers/net/wireless/ath/ath6kl/usb.c      |    7 ++-
- drivers/net/wireless/ath/ath6kl/wmi.c      |   72 ++++++++++++++++++++--
- drivers/net/wireless/ath/ath6kl/wmi.h      |    2 +-
- 19 files changed, 388 insertions(+), 71 deletions(-)
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
