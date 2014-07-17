@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7leF-0001VQ-TA
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 13:23:00 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 17 Jul 2014 15:19:11 +0200
-Subject: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <53C6A1C7.5060004@intec.ugent.be>
- <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>,
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
-In-Reply-To: <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
-Content-Language: fr-FR
-MIME-Version: 1.0
+Received: from mcgraw.st-andrews.ac.uk ([138.251.8.95])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7lsX-0008JY-3t
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 13:37:46 +0000
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+Subject: Re: Throughput is very low
+From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
+In-Reply-To: <CA+BoTQkxnxwHCimjcPBJbMxiJjX-UnG-5P-11skGKAs9Dh3Wfw@mail.gmail.com>
+Date: Thu, 17 Jul 2014 14:37:07 +0100
+Message-Id: <2D8D7F08-9E64-4D53-8D47-0A825E9CE626@st-andrews.ac.uk>
+References: <7771CBBE-70F2-44FF-AAC8-C35987A83D67@st-andrews.ac.uk>
+ <830E6887-0C19-4FE3-B264-E07B2427697D@st-andrews.ac.uk>
+ <CA+BoTQkxnxwHCimjcPBJbMxiJjX-UnG-5P-11skGKAs9Dh3Wfw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +20,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->So probably the air condition you have forces the rate control to pick
->MCS7 as the most suitable rates.
-
-What could I do to improve this? (Change the air conditioner LOL?)
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Ck9uIDE3IEp1bCAyMDE0LCBhdCAxMjozOCwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
+aWV0by5jb20+IHdyb3RlOgoKPiBPbiAxNyBKdWx5IDIwMTQgMTM6MzUsIE1hbXVuIEFidS1UYWly
+IDxtYTg2QHN0LWFuZHJld3MuYWMudWs+IHdyb3RlOgo+PiBTb3JyeSBmb3JnZXQgdG8gQ0MgdGhl
+IGF0aDEwayBtYWlsaW5nIGxpc3QKPj4gCj4+IEJlZ2luIGZvcndhcmRlZCBtZXNzYWdlOgo+PiAK
+Pj4gRnJvbTogTWFtdW4gQWJ1LVRhaXIgPG1hODZAc3QtYW5kcmV3cy5hYy51az4KPj4gU3ViamVj
+dDogUmU6IFRocm91Z2hwdXQgaXMgdmVyeSBsb3cKPj4gRGF0ZTogMTcgSnVseSAyMDE0IDEyOjIy
+OjQ2IEJTVAo+PiBUbzogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4+
+IAo+PiBNYW55IHRoYW5rcyBNaWNqaGFsZSwKPj4gCj4+IE9uIDE3IEp1bCAyMDE0LCBhdCAwNjoy
+MSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiAKPj4g
+T24gMTYgSnVseSAyMDE0IDE4OjAxLCBCYXJ0IEpvb3JpcyA8QmFydC5Kb29yaXNAaW50ZWMudWdl
+bnQuYmU+IHdyb3RlOgo+PiAKPj4gT24gMDcvMDkvMjAxNCAwNDoyMiBQTSwgTWFtdW4gQWJ1LVRh
+aXIgd3JvdGU6Cj4+IAo+PiBbLi4uXQo+PiAKPj4gSSBoYXZlIG5vdGljZSB0aGF0IEJpdCBSYXRl
+IGtlZXBzIGZpeGVkIDYgTWIvcyAuIGFuZCBpdCBkb3NlIG5vdAo+PiByZXNwb25kaW5nIHRvIGFu
+eSBjb21tYW5kcyB0byBjaGFuZ2UgaXQuCj4+IAo+PiAKPj4gV2hpbGUgcnVubmluZyBpcGVyZiBj
+bGllbnQgb24gdGhlIHN0YXRpb24gSSBjYW4gYWxzbyByZXRyaWV2ZSB0aGUgVHggYml0cmF0ZQo+
+PiBvZiA2TWJwcyB3aXRoIGJvdGggaXdjb25maWcgYW5kICdpdyB3bGFuWCBzdGF0aW9uIGR1bXAn
+LiBWZXJzaW9uIG9mIGl3IGhhcwo+PiBzb21lIGltcGFjdCBvbiB0aGUgb3V0cHV0IHRvbywgSSBo
+YXZlIHZlcnNpb24gMy4xNS4gIEkgZG9uJ3Qga25vdyBhIHRvb2wKPj4gd2hpY2ggc2hvd3MgdGhl
+IHJpZ2h0IGluZm8gb24gdGhlIHRyYW5zbWl0dGluZyBub2RlLi4uCj4+IEJ1dCBhIHRoaXJkIG5v
+ZGUgd2hpY2ggaXMgY29uZmlndXJlZCBhcyBhIHNuaWZmZXIgc2hvd3MgVHggYml0cmF0ZSBvZgo+
+PiAxMjk5Ljk5TWJwcyA6LSkKPj4gCj4+IAo+PiBUaGUgNm1icHMgdHggcmF0ZSByZXBvcnRpbmcg
+aXMgZHVlIHRvIGZpcm13YXJlIGxpbWl0YXRpb24uCj4+IAo+PiBZb3UgbWlnaHQgd2FudCB0byBj
+aGVjawo+PiAvc3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5WC9hdGgxMGsvZndfc3RhdHMg
+KHJlcGxhY2UgcGh5WCB3aXRoCj4+IGFjY29yZGluZyBwaHkgb2YgeW91ciBhdGgxMGsgZGV2aWNl
+KSBpbnN0ZWFkLgo+PiAKPj4gCj4+IEkgaGF2ZSBjaGVja2VkIHRoZSBmaWxlIGFuZCBpdCBoYXMg
+bm90aGluZyBvbiBpdC4gSXMgdGhpcyBub3JtYWwgPyEhIQo+IAo+IElmIG5vIGF0aDEwayBpbnRl
+cmZhY2UgaXMgcnVubmluZyAoY29ubmVjdGVkL2Fzc29jaWF0ZWQpIHRoZW4gZndfc3RhdHMKPiBp
+cyBlbXB0eS4gUnVuIGhvc3RhcGQgb3IgY29ubmVjdCB0byBhbiBBUCBhbmQgdGhlbiBjaGVjayB0
+aGUgZmlsZS4gSWYKPiBpdCdzIHN0aWxsIGVtcHR5IG1ha2Ugc3VyZSB5b3UgdXBkYXRlIHRoZSBk
+cml2ZXIgKGkuZS4gdXNpbmcKPiBiYWNrcG9ydHMpLgo+IApXZWxsICx0aGUgZndfc3RhdHMgaXMg
+c3RpbGwgZW1wdHkgLiBBZnRlciB1cGdyYWRpbmcgdGhlIGRyaXZlciB0aGUgdGhyb3VnaHB1dCBk
+cm9wcGVkIGRvd24gZnJvbSAxODBNYml0L3MgdHAgNjAgTWJpdC9zIDotKC4gCnRoZSBmb2xsb3dp
+bmcgaXMgYSBuZXcgbWVzc2FnZSBJIGhhdmUgZ290OiAKWyAgNTA5LjgzMTg1MF0gYXRoMTBrOiBw
+ZWVyLXVubWFwLWV2ZW50OiB1bmtub3duIHBlZXIgaWQgMgpNYW55IHRoYW5rcyBmb3IgeW91ciBo
+ZWxwLiAKCgo+IAo+IE1pY2hhxYIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
