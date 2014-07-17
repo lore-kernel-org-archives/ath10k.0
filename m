@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wallace.st-andrews.ac.uk ([138.251.9.23])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7k1L-0001Co-JE
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 11:38:54 +0000
-Received: from dyn-195-212.cs.st-andrews.ac.uk
- (dyn-195-212.cs.st-andrews.ac.uk [138.251.195.212])
- (authenticated bits=0)
- by wallace.st-andrews.ac.uk (8.14.3/8.14.3/Debian-9.4) with ESMTP id
- s6HBbYIC020088
- (version=TLSv1/SSLv3 cipher=AES128-SHA bits=128 verify=NOT)
- for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 11:37:35 GMT
-From: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
-Subject: Re: Throughput is very low
-Date: Thu, 17 Jul 2014 12:37:28 +0100
+ id 1X7k1f-0001Ii-AN
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 11:39:07 +0000
+Received: by mail-we0-f170.google.com with SMTP id w62so2519029wes.15
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 04:38:01 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <830E6887-0C19-4FE3-B264-E07B2427697D@st-andrews.ac.uk>
 References: <7771CBBE-70F2-44FF-AAC8-C35987A83D67@st-andrews.ac.uk>
-Message-Id: <6EC6CD88-590A-4BA4-996D-405A46CB1988@st-andrews.ac.uk>
-Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+ <830E6887-0C19-4FE3-B264-E07B2427697D@st-andrews.ac.uk>
+Date: Thu, 17 Jul 2014 13:38:01 +0200
+Message-ID: <CA+BoTQkxnxwHCimjcPBJbMxiJjX-UnG-5P-11skGKAs9Dh3Wfw@mail.gmail.com>
+Subject: Re: Throughput is very low
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +25,36 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Mamun Abu-Tair <ma86@st-andrews.ac.uk>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-CkJlZ2luIGZvcndhcmRlZCBtZXNzYWdlOgoKPiBGcm9tOiBNYW11biBBYnUtVGFpciA8bWE4NkBz
-dC1hbmRyZXdzLmFjLnVrPgo+IFN1YmplY3Q6IFJlOiBUaHJvdWdocHV0IGlzIHZlcnkgbG93Cj4g
-RGF0ZTogMTcgSnVseSAyMDE0IDEyOjIyOjQ2IEJTVAo+IFRvOiBNaWNoYWwgS2F6aW9yIDxtaWNo
-YWwua2F6aW9yQHRpZXRvLmNvbT4KPiAKPiBNYW55IHRoYW5rcyBNaWNoYWxlLCAKPiAKPiBPbiAx
-NyBKdWwgMjAxNCwgYXQgMDY6MjEsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8u
-Y29tPiB3cm90ZToKPiAKPj4gT24gMTYgSnVseSAyMDE0IDE4OjAxLCBCYXJ0IEpvb3JpcyA8QmFy
-dC5Kb29yaXNAaW50ZWMudWdlbnQuYmU+IHdyb3RlOgo+Pj4gT24gMDcvMDkvMjAxNCAwNDoyMiBQ
-TSwgTWFtdW4gQWJ1LVRhaXIgd3JvdGU6Cj4+IFsuLi5dCj4+Pj4gSSBoYXZlIG5vdGljZSB0aGF0
-IEJpdCBSYXRlIGtlZXBzIGZpeGVkIDYgTWIvcyAuIGFuZCBpdCBkb3NlIG5vdAo+Pj4+IHJlc3Bv
-bmRpbmcgdG8gYW55IGNvbW1hbmRzIHRvIGNoYW5nZSBpdC4KPj4+IAo+Pj4gV2hpbGUgcnVubmlu
-ZyBpcGVyZiBjbGllbnQgb24gdGhlIHN0YXRpb24gSSBjYW4gYWxzbyByZXRyaWV2ZSB0aGUgVHgg
-Yml0cmF0ZQo+Pj4gb2YgNk1icHMgd2l0aCBib3RoIGl3Y29uZmlnIGFuZCAnaXcgd2xhblggc3Rh
-dGlvbiBkdW1wJy4gVmVyc2lvbiBvZiBpdyBoYXMKPj4+IHNvbWUgaW1wYWN0IG9uIHRoZSBvdXRw
-dXQgdG9vLCBJIGhhdmUgdmVyc2lvbiAzLjE1LiAgSSBkb24ndCBrbm93IGEgdG9vbAo+Pj4gd2hp
-Y2ggc2hvd3MgdGhlIHJpZ2h0IGluZm8gb24gdGhlIHRyYW5zbWl0dGluZyBub2RlLi4uCj4+PiBC
-dXQgYSB0aGlyZCBub2RlIHdoaWNoIGlzIGNvbmZpZ3VyZWQgYXMgYSBzbmlmZmVyIHNob3dzIFR4
-IGJpdHJhdGUgb2YKPj4+IDEyOTkuOTlNYnBzIDotKQo+PiAKPj4gVGhlIDZtYnBzIHR4IHJhdGUg
-cmVwb3J0aW5nIGlzIGR1ZSB0byBmaXJtd2FyZSBsaW1pdGF0aW9uLgo+PiAKPj4gWW91IG1pZ2h0
-IHdhbnQgdG8gY2hlY2sKPj4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeVgvYXRoMTBr
-L2Z3X3N0YXRzIChyZXBsYWNlIHBoeVggd2l0aAo+PiBhY2NvcmRpbmcgcGh5IG9mIHlvdXIgYXRo
-MTBrIGRldmljZSkgaW5zdGVhZC4KPiAKPiBJIGhhdmUgY2hlY2tlZCB0aGUgZmlsZSBhbmQgaXQg
-aGFzIG5vdGhpbmcgb24gaXQuIElzIHRoaXMgbm9ybWFsID8hISEKPiBLaW5kIHJlZ2FyZHMgCj4g
-TWFtdW4KPiAKPj4gCj4+IAo+PiBNaWNoYcWCCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+T24gMTcgSnVseSAyMDE0IDEzOjM1LCBNYW11biBBYnUtVGFpciA8bWE4NkBzdC1hbmRyZXdzLmFj
+LnVrPiB3cm90ZToKPiBTb3JyeSBmb3JnZXQgdG8gQ0MgdGhlIGF0aDEwayBtYWlsaW5nIGxpc3QK
+Pgo+IEJlZ2luIGZvcndhcmRlZCBtZXNzYWdlOgo+Cj4gRnJvbTogTWFtdW4gQWJ1LVRhaXIgPG1h
+ODZAc3QtYW5kcmV3cy5hYy51az4KPiBTdWJqZWN0OiBSZTogVGhyb3VnaHB1dCBpcyB2ZXJ5IGxv
+dwo+IERhdGU6IDE3IEp1bHkgMjAxNCAxMjoyMjo0NiBCU1QKPiBUbzogTWljaGFsIEthemlvciA8
+bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBNYW55IHRoYW5rcyBNaWNqaGFsZSwKPgo+IE9u
+IDE3IEp1bCAyMDE0LCBhdCAwNjoyMSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0
+by5jb20+IHdyb3RlOgo+Cj4gT24gMTYgSnVseSAyMDE0IDE4OjAxLCBCYXJ0IEpvb3JpcyA8QmFy
+dC5Kb29yaXNAaW50ZWMudWdlbnQuYmU+IHdyb3RlOgo+Cj4gT24gMDcvMDkvMjAxNCAwNDoyMiBQ
+TSwgTWFtdW4gQWJ1LVRhaXIgd3JvdGU6Cj4KPiBbLi4uXQo+Cj4gSSBoYXZlIG5vdGljZSB0aGF0
+IEJpdCBSYXRlIGtlZXBzIGZpeGVkIDYgTWIvcyAuIGFuZCBpdCBkb3NlIG5vdAo+IHJlc3BvbmRp
+bmcgdG8gYW55IGNvbW1hbmRzIHRvIGNoYW5nZSBpdC4KPgo+Cj4gV2hpbGUgcnVubmluZyBpcGVy
+ZiBjbGllbnQgb24gdGhlIHN0YXRpb24gSSBjYW4gYWxzbyByZXRyaWV2ZSB0aGUgVHggYml0cmF0
+ZQo+IG9mIDZNYnBzIHdpdGggYm90aCBpd2NvbmZpZyBhbmQgJ2l3IHdsYW5YIHN0YXRpb24gZHVt
+cCcuIFZlcnNpb24gb2YgaXcgaGFzCj4gc29tZSBpbXBhY3Qgb24gdGhlIG91dHB1dCB0b28sIEkg
+aGF2ZSB2ZXJzaW9uIDMuMTUuICBJIGRvbid0IGtub3cgYSB0b29sCj4gd2hpY2ggc2hvd3MgdGhl
+IHJpZ2h0IGluZm8gb24gdGhlIHRyYW5zbWl0dGluZyBub2RlLi4uCj4gQnV0IGEgdGhpcmQgbm9k
+ZSB3aGljaCBpcyBjb25maWd1cmVkIGFzIGEgc25pZmZlciBzaG93cyBUeCBiaXRyYXRlIG9mCj4g
+MTI5OS45OU1icHMgOi0pCj4KPgo+IFRoZSA2bWJwcyB0eCByYXRlIHJlcG9ydGluZyBpcyBkdWUg
+dG8gZmlybXdhcmUgbGltaXRhdGlvbi4KPgo+IFlvdSBtaWdodCB3YW50IHRvIGNoZWNrCj4gL3N5
+cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeVgvYXRoMTBrL2Z3X3N0YXRzIChyZXBsYWNlIHBo
+eVggd2l0aAo+IGFjY29yZGluZyBwaHkgb2YgeW91ciBhdGgxMGsgZGV2aWNlKSBpbnN0ZWFkLgo+
+Cj4KPiBJIGhhdmUgY2hlY2tlZCB0aGUgZmlsZSBhbmQgaXQgaGFzIG5vdGhpbmcgb24gaXQuIElz
+IHRoaXMgbm9ybWFsID8hISEKCklmIG5vIGF0aDEwayBpbnRlcmZhY2UgaXMgcnVubmluZyAoY29u
+bmVjdGVkL2Fzc29jaWF0ZWQpIHRoZW4gZndfc3RhdHMKaXMgZW1wdHkuIFJ1biBob3N0YXBkIG9y
+IGNvbm5lY3QgdG8gYW4gQVAgYW5kIHRoZW4gY2hlY2sgdGhlIGZpbGUuIElmCml0J3Mgc3RpbGwg
+ZW1wdHkgbWFrZSBzdXJlIHlvdSB1cGRhdGUgdGhlIGRyaXZlciAoaS5lLiB1c2luZwpiYWNrcG9y
+dHMpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
