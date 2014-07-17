@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7l1h-0006zz-R9
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 12:43:10 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 17 Jul 2014 14:42:40 +0200
-Subject: RE : Trouble shooting low rate MCS9 in 802.11ac
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7ED@srvexch01.SODIELEC.local>
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X7l1o-00070R-Lf
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 12:43:17 +0000
+Received: by mail-we0-f180.google.com with SMTP id w61so2795756wes.39
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 05:42:52 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
 References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
  <53C6A1C7.5060004@intec.ugent.be>
  <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>,
- <CA+BoTQmENGOcdWTGDU6By-4sXu2o9WNzTuizD=+_bDK14miWqg@mail.gmail.com>
-In-Reply-To: <CA+BoTQmENGOcdWTGDU6By-4sXu2o9WNzTuizD=+_bDK14miWqg@mail.gmail.com>
-Content-Language: fr-FR
-MIME-Version: 1.0
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+Date: Thu, 17 Jul 2014 14:42:52 +0200
+Message-ID: <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+Subject: Re: RE : Trouble shooting low rate MCS9 in 802.11ac
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +29,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
 Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->The higher the MCS rate the more symbols are packed up per baud which
->means it is more susceptible to interference and corruption.
+On 17 July 2014 14:22, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
+>>Did you use cables or measured OTA?
+>
+> My system is like this:
+> PC1 - Device 1 (AP) <= Wifi => Device 2 (STA) - PC2
+> Each PC connects to the device by a Gigabit Ethernet  cable.
 
->You probably don't have an environment clean enough to pull off MCS8
->and MCS9 and you end up with a lot of retransmissions.
+I ment RF cables and attenuation to get around 30dBm signal lvl.
 
->If you're sure you have a clean environment then try putting your
->devices (or them antenna) at different angles against each other and
->different distances.
+PC    ---(eth)---   [AP135 - APUT]ath10k    - - - (RF cable) - - -
+[AP135]Station    ---(eth)---    PC
 
-What did you mean by clean environment? (There's no other 5Ghz wifi in the room,
-no radar or device that emit in 5Ghz frequency? I may have other 2.4Ghz wifi in my room, 
-hope that it doesn't create any effects)
-I'm using an Omnidirectional antennas of PCTEL so I guess it doesn't change anything 
-if I change the angle.
-One more thing, my processor is already exhausted (0-1% idle) when I obtain 410Mbps in NSS3 -MCS7,
-so if I force it to MCS8 or 9, is it possible that a reverse effects is created? The processor gets a lot of work 
-to do and then I end up with retransmissions like you said? 
-I hope not cause even in VHT40 or VHT20 my processor is not exhausted and MCS9 is still lower than MCS 8 or 7. 
+>>What platform it is?
+> My platform is a PC built with an ARMv7 1.2GHz.
+>
+>> Did you use hostapd? Is it AP mode (bridge)?
+> I'm using hostapd for AP and wpa_supplicant for STA. AP is in mode bridge
+> but STA isn't (the official firmware crashed in bridge mode, I can set up bridged STA
+> using the firmware of Candelatech but the rate is slower a little bit when I do iperf test.
+>
+>>(You did not provide basically any details on what exacly you've measured).
+> Sorry, please feel free to ask me more details.
+> I obtained that result table  when I did iperf test in TCP, option -w256K and 10 streams (-P10)
+> If I did the test in UDP, with the same bandwidth (option -b),  I lost more packets
+> in MCS 8 and 9 compared to MCS7, which also means that MCS7 has better performance.
 
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
+So probably the air condition you have forces the rate control to pick
+MCS7 as the most suitable rates.
 
+>>In open AP mode (bridge), CUS223 HW (not WLE900VX however) and on
+>>AP135 platform (customized openwrt SW + bleeding edge of
+>>ath10k/wireless subsystem souces - private backports tarball).. for
+>>UDP (last time I measured) I have around 820Mpbs for UCP both ways and
+>>720Mbps TCP.
+>
+> This is in NSS3 -MCS9? Did you get better or worse rate if you clear the mask
+> (iw wlanX set bitrates) cause if I don't config rate, from AP to STA I have the best rate
+> (ie same as MCS7) but from STA to AP my rate is much lower than MCS7 (240 Mbps
+> vs 370 Mbps in TCP).
 
+Yes, NSS-3; Over the RF-cables I'm easily able to get MCS9 rates
+transmitions without any forced settings (the rate control is picking
+the highest rates).
+
+-- 
+Bartosz
 
 _______________________________________________
 ath10k mailing list
