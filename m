@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X7l1o-00070R-Lf
- for ath10k@lists.infradead.org; Thu, 17 Jul 2014 12:43:17 +0000
-Received: by mail-we0-f180.google.com with SMTP id w61so2795756wes.39
- for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 05:42:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <53C6A1C7.5060004@intec.ugent.be>
- <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
-Date: Thu, 17 Jul 2014 14:42:52 +0200
-Message-ID: <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
-Subject: Re: RE : Trouble shooting low rate MCS9 in 802.11ac
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
+ id 1X7lCc-0003dl-Ou
+ for ath10k@lists.infradead.org; Thu, 17 Jul 2014 12:54:28 +0000
+Received: by mail-we0-f170.google.com with SMTP id w62so2810239wes.1
+ for <ath10k@lists.infradead.org>; Thu, 17 Jul 2014 05:54:04 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: simplify tx helpers
+Date: Thu, 17 Jul 2014 14:45:21 +0200
+Message-Id: <1405601122-29726-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +17,163 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 17 July 2014 14:22, Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> wrote:
->>Did you use cables or measured OTA?
->
-> My system is like this:
-> PC1 - Device 1 (AP) <= Wifi => Device 2 (STA) - PC2
-> Each PC connects to the device by a Gigabit Ethernet  cable.
+It always bugged me how tid is computed and stored
+in a temporary var before written to the control
+buffer. It was confusing and it made it difficult
+to work with tx helpers.
 
-I ment RF cables and attenuation to get around 30dBm signal lvl.
+While at it rename the qos workaround function as
+it was misleading - it's not a workaround but
+preparation for nwifi tx mode.
 
-PC    ---(eth)---   [AP135 - APUT]ath10k    - - - (RF cable) - - -
-[AP135]Station    ---(eth)---    PC
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 49 ++++++++++++++---------------------
+ drivers/net/wireless/ath/ath10k/mac.h |  4 +--
+ drivers/net/wireless/ath/ath10k/wmi.c |  2 +-
+ 3 files changed, 23 insertions(+), 32 deletions(-)
 
->>What platform it is?
-> My platform is a PC built with an ARMv7 1.2GHz.
->
->> Did you use hostapd? Is it AP mode (bridge)?
-> I'm using hostapd for AP and wpa_supplicant for STA. AP is in mode bridge
-> but STA isn't (the official firmware crashed in bridge mode, I can set up bridged STA
-> using the firmware of Candelatech but the rate is slower a little bit when I do iperf test.
->
->>(You did not provide basically any details on what exacly you've measured).
-> Sorry, please feel free to ask me more details.
-> I obtained that result table  when I did iperf test in TCP, option -w256K and 10 streams (-P10)
-> If I did the test in UDP, with the same bandwidth (option -b),  I lost more packets
-> in MCS 8 and 9 compared to MCS7, which also means that MCS7 has better performance.
-
-So probably the air condition you have forces the rate control to pick
-MCS7 as the most suitable rates.
-
->>In open AP mode (bridge), CUS223 HW (not WLE900VX however) and on
->>AP135 platform (customized openwrt SW + bleeding edge of
->>ath10k/wireless subsystem souces - private backports tarball).. for
->>UDP (last time I measured) I have around 820Mpbs for UCP both ways and
->>720Mbps TCP.
->
-> This is in NSS3 -MCS9? Did you get better or worse rate if you clear the mask
-> (iw wlanX set bitrates) cause if I don't config rate, from AP to STA I have the best rate
-> (ie same as MCS7) but from STA to AP my rate is much lower than MCS7 (240 Mbps
-> vs 370 Mbps in TCP).
-
-Yes, NSS-3; Over the RF-cables I'm easily able to get MCS9 rates
-transmitions without any forced settings (the rate control is picking
-the highest rates).
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b8314a5..bbce3a0 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1865,13 +1865,10 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar,
+ 	return 0;
+ }
+ 
+-/*
+- * Frames sent to the FW have to be in "Native Wifi" format.
+- * Strip the QoS field from the 802.11 header.
++/* HTT Tx uses Native Wifi tx mode which expects 802.11 frames without QoS
++ * Control in the header.
+  */
+-static void ath10k_tx_h_qos_workaround(struct ieee80211_hw *hw,
+-				       struct ieee80211_tx_control *control,
+-				       struct sk_buff *skb)
++static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
+ {
+ 	struct ieee80211_hdr *hdr = (void *)skb->data;
+ 	u8 *qos_ctl;
+@@ -1919,14 +1916,13 @@ unlock:
+ 	mutex_unlock(&arvif->ar->conf_mutex);
+ }
+ 
+-static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
++static void ath10k_tx_h_update_wep_key(struct ieee80211_vif *vif,
++				       struct ieee80211_key_conf *key,
++				       struct sk_buff *skb)
+ {
+-	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	struct ath10k *ar = arvif->ar;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	struct ieee80211_key_conf *key = info->control.hw_key;
+ 
+ 	if (!ieee80211_has_protected(hdr->frame_control))
+ 		return;
+@@ -1948,11 +1944,11 @@ static void ath10k_tx_h_update_wep_key(struct sk_buff *skb)
+ 	ieee80211_queue_work(ar->hw, &arvif->wep_key_work);
+ }
+ 
+-static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar, struct sk_buff *skb)
++static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
++				       struct ieee80211_vif *vif,
++				       struct sk_buff *skb)
+ {
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 
+ 	/* This is case only for P2P_GO */
+@@ -2254,33 +2250,28 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		      struct ieee80211_tx_control *control,
+ 		      struct sk_buff *skb)
+ {
++	struct ath10k *ar = hw->priv;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
++	struct ieee80211_vif *vif = info->control.vif;
++	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	struct ath10k *ar = hw->priv;
+-	u8 tid, vdev_id;
+ 
+ 	/* We should disable CCK RATE due to P2P */
+ 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
+ 		ath10k_dbg(ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+ 
+-	/* we must calculate tid before we apply qos workaround
+-	 * as we'd lose the qos control field */
+-	tid = ath10k_tx_h_get_tid(hdr);
+-	vdev_id = ath10k_tx_h_get_vdev_id(ar, info);
++	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
++	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
++	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, info);
+ 
+ 	/* it makes no sense to process injected frames like that */
+-	if (info->control.vif &&
+-	    info->control.vif->type != NL80211_IFTYPE_MONITOR) {
+-		ath10k_tx_h_qos_workaround(hw, control, skb);
+-		ath10k_tx_h_update_wep_key(skb);
+-		ath10k_tx_h_add_p2p_noa_ie(ar, skb);
+-		ath10k_tx_h_seq_no(skb);
++	if (vif && vif->type != NL80211_IFTYPE_MONITOR) {
++		ath10k_tx_h_nwifi(hw, skb);
++		ath10k_tx_h_update_wep_key(vif, key, skb);
++		ath10k_tx_h_add_p2p_noa_ie(ar, vif, skb);
++		ath10k_tx_h_seq_no(vif, skb);
+ 	}
+ 
+-	ATH10K_SKB_CB(skb)->vdev_id = vdev_id;
+-	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
+-	ATH10K_SKB_CB(skb)->htt.tid = tid;
+-
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+ 		spin_lock_bh(&ar->data_lock);
+ 		ATH10K_SKB_CB(skb)->htt.is_offchan = true;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index ba10219..ef4f843 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -43,11 +43,11 @@ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ 	return (struct ath10k_vif *)vif->drv_priv;
+ }
+ 
+-static inline void ath10k_tx_h_seq_no(struct sk_buff *skb)
++static inline void ath10k_tx_h_seq_no(struct ieee80211_vif *vif,
++				      struct sk_buff *skb)
+ {
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+-	struct ieee80211_vif *vif = info->control.vif;
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 
+ 	if (info->flags  & IEEE80211_TX_CTL_ASSIGN_SEQ) {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6f83cae..c2c87c9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1432,7 +1432,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 			continue;
+ 		}
+ 
+-		ath10k_tx_h_seq_no(bcn);
++		ath10k_tx_h_seq_no(arvif->vif, bcn);
+ 		ath10k_wmi_update_tim(ar, arvif, bcn, bcn_info);
+ 		ath10k_wmi_update_noa(ar, arvif, bcn, bcn_info);
+ 
 -- 
-Bartosz
+1.8.5.3
+
 
 _______________________________________________
 ath10k mailing list
