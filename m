@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Message-ID: <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-From: James Bottomley <James.Bottomley@HansenPartnership.com>
-Date: Fri, 18 Jul 2014 11:50:21 -0700
+MIME-Version: 1.0
 In-Reply-To: <20140718181759.GB2193@kroah.com>
 References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
- <20140718162213.GC31114@tuxdriver.com> <20140718164340.GA24960@kroah.com>
+ <20140718162213.GC31114@tuxdriver.com>
+ <20140718164340.GA24960@kroah.com>
  <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
  <20140718181759.GB2193@kroah.com>
-Mime-Version: 1.0
+Date: Sat, 19 Jul 2014 07:14:12 +1000
+Message-ID: <CAPM=9tzgWdnv7jc+xjsJUf0EcyGU+V7nFHzzQ16ui1eE0ihyQA@mail.gmail.com>
+Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+From: Dave Airlie <airlied@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,82 +18,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Greg KH <greg@kroah.com>
-Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-wireless@vger.kernel.org, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
+Cc: linux-mips@linux-mips.org, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-pci@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, James Bottomley <James.Bottomley@hansenpartnership.com>, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, Linux SCSI List <linux-scsi@vger.kernel.org>, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, Linux Wireless List <linux-wireless@vger.kernel.org>, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, Network Development <netdev@vger.kernel.org>, linux-mmc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
 
-T24gRnJpLCAyMDE0LTA3LTE4IGF0IDExOjE3IC0wNzAwLCBHcmVnIEtIIHdyb3RlOgo+IE9uIEZy
-aSwgSnVsIDE4LCAyMDE0IGF0IDA5OjU0OjMyQU0gLTA3MDAsIEphbWVzIEJvdHRvbWxleSB3cm90
-ZToKPiA+IE9uIEZyaSwgMjAxNC0wNy0xOCBhdCAwOTo0MyAtMDcwMCwgR3JlZyBLSCB3cm90ZToK
-PiA+ID4gT24gRnJpLCBKdWwgMTgsIDIwMTQgYXQgMTI6MjI6MTNQTSAtMDQwMCwgSm9obiBXLiBM
-aW52aWxsZSB3cm90ZToKPiA+ID4gPiBPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAwNToyNjo0N1BN
-ICswMjAwLCBCZW5vaXQgVGFpbmUgd3JvdGU6Cj4gPiA+ID4gPiBXZSBzaG91bGQgcHJlZmVyIGBj
-b25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZGAgb3Zlcgo+ID4gPiA+ID4gYERFRklORV9QQ0lfREVW
-SUNFX1RBQkxFYCB0byBtZWV0IGtlcm5lbCBjb2Rpbmcgc3R5bGUgZ3VpZGVsaW5lcy4KPiA+ID4g
-PiA+IFRoaXMgaXNzdWUgd2FzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2guCj4gPiA+ID4gCj4gPiA+
-ID4gSG9uZXN0bHksIEkgcHJlZmVyIHRoZSBtYWNybyAtLSBpdCBzdGFuZHMtb3V0IG1vcmUuICBN
-YXliZSB0aGUgc3R5bGUKPiA+ID4gPiBndWlkZWxpbmVzIGFuZC9vciBjaGVja3BhdGNoIHNob3Vs
-ZCBjaGFuZ2UgaW5zdGVhZD8KPiA+ID4gCj4gPiA+IFRoZSBtYWNybyBpcyBob3JyaWQsIG5vIG90
-aGVyIGJ1cyBoYXMgdGhpcyB0eXBlIG9mIHRoaW5nIGp1c3QgdG8gc2F2ZSBhCj4gPiA+IGZldyBj
-aGFyYWN0ZXJzIGluIHR5cGluZwo+ID4gCj4gPiBPSywgc28gdGhpcyBpcyB0aGUgbWFjcm86Cj4g
-PiAKPiA+ICNkZWZpbmUgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUoX3RhYmxlKSBcCj4gPiAJY29u
-c3Qgc3RydWN0IHBjaV9kZXZpY2VfaWQgX3RhYmxlW10KPiA+IAo+ID4gQ291bGQgeW91IGV4cGxh
-aW4gd2hhdCdzIHNvIGhvcnJpYmxlPwo+ID4gCj4gPiBUaGUgcmVhc29uIGl0J3MgdXNlZnVsIHRv
-ZGF5IGlzIHRoYXQgcGVvcGxlIGZvcmdldCB0aGUgY29uc3QgKGFuZAo+ID4gc29tZXRpbWVzIHRo
-ZSBbXSBtYWtpbmcgaXQgYSB0cnVlIHRhYmxlIGluc3RlYWQgb2YgYSBwb2ludGVyKS4gIElmIHlv
-dQo+ID4gdXNlIHRoZSBERUZJTkVfUENJX0RFVklDRV9UQUJMRSBtYWNybywgdGhlIGNvbXBpbGUg
-YnJlYWtzIGlmIHlvdSB1c2UgaXQKPiA+IHdyb25nbHkgKGdvb2QpIGFuZCB5b3UgYXV0b21hdGlj
-YWxseSBnZXQgdGhlIGNvcnJlY3QgYW5ub3RhdGlvbnMuCj4gCj4gV2UgaGF2ZSBhbG1vc3QgMTAw
-MCBtb3JlIHVzZXMgb2YgdGhlIG5vbi1tYWNybyB2ZXJzaW9uIHRoYW4gdGhlICJtYWNybyIKPiB2
-ZXJzaW9uIGluIHRoZSBrZXJuZWwgdG9kYXk6Cj4gJCBnaXQgZ3JlcCAtdyBERUZJTkVfUENJX0RF
-VklDRV9UQUJMRSB8IHdjIC1sCj4gMjYyCj4gJCBnaXQgZ3JlcCAiY29uc3Qgc3RydWN0IHBjaV9k
-ZXZpY2VfaWQiIHwgd2MgLWwKPiAxMjU0Cj4gCj4gTXkgYmlnIGNvbXBsYWludCBpcyB0aGF0IHdl
-IG5lZWQgdG8gYmUgY29uc2lzdGFudCwgZWl0aGVyIHBpY2sgb25lIG9yCj4gdGhlIG90aGVyIGFu
-ZCBzdGljayB0byBpdC4gIEFzIHRoZSBtYWNybyBpcyB0aGUgbGVhc3QgdXNlZCwgaXQncyBlYXNp
-ZXN0Cj4gdG8gZml4IHVwLCBhbmQgaXQgYWxzbyBpcyBtb3JlIGNvbnNpc3RhbnQgd2l0aCBhbGwg
-b3RoZXIga2VybmVsCj4gc3Vic3lzdGVtcyB3aGljaCBkbyBub3QgaGF2ZSBzdWNoIGEgbWFjcm8u
-CgpJJ3ZlIGEgd2VhayBwcmVmZXJlbmNlIGZvciBjb25zaXN0ZW5jeSwgYnV0IG5vdCBhdCB0aGUg
-ZXhwZW5zZSBvZgpodW5kcmVkcyBvZiBwYXRjaGVzIGNodXJuaW5nIHRoZSBrZXJuZWwgdG8gcmVt
-b3ZlIGFuIGlubm9jdW91cyBtYWNyby4KQ2h1cm4gY29zdHMgdGltZSBhbmQgZWZmb3J0LgoKPiBB
-cyB0aGVyZSBpcyBubyBuZWVkIGZvciB0aGUgX19pbml0IG1hY3JvIG1lc3MgYW55bW9yZSwgdGhl
-cmUncyBubyByZWFsCj4gbmVlZCBmb3IgdGhlIERFRklORV9QQ0lfREVWSUNFX1RBQkxFIG1hY3Jv
-IGVpdGhlci4gIEkgdGhpbmsgY2hlY2twYXRjaAo+IHdpbGwgY2F0Y2ggdGhlIHVzZSBvZiBub24t
-Y29uc3QgdXNlcnMgZm9yIHRoZSBpZCB0YWJsZSBhbHJlYWR5IHRvZGF5LCBpdAo+IGNhdGNoZXMg
-bG90cyBvZiBvdGhlciB1c2VzIGxpa2UgdGhpcyBhbHJlYWR5Lgo+IAo+ID4gPiAsIHNvIHdoeSBz
-aG91bGQgUENJIGJlICJzcGVjaWFsIiBpbiB0aGlzIHJlZ2FyZAo+ID4gPiBhbnltb3JlPwo+ID4g
-Cj4gPiBJIHRoaW5rIHRoZSBQQ0kgdXNhZ2UgZHdhcmZzIG1vc3Qgb3RoZXIgYnVzIHR5cGVzIG5v
-dywgc28geW91IGNvdWxkIHR1cm4KPiA+IHRoZSBxdWVzdGlvbiBhcm91bmQuICBIb3dldmVyLCBJ
-IGRvbid0IHRoaW5rIG1ham9yaXR5IHZvdGluZyBpcyBhIGdvb2QKPiA+IGd1aWRlIHRvIGJlc3Qg
-cHJhY3Rpc2U7IGxldHMgZGViYXRlIHRoZSBtZXJpdHMgZm9yIHRoZWlyIG93biBzYWtlLgo+IAo+
-IE5vdCByZWFsbHkgImR3YXJmIiwgVVNCIGlzIGNsb3NlIHdpdGggb3ZlciA3MDAgc3VjaCBzdHJ1
-Y3R1cmVzOgo+ICQgZ2l0IGdyZXAgImNvbnN0IHN0cnVjdCB1c2JfZGV2aWNlX2lkIiB8IHdjIC1s
-Cj4gNzI1Cj4gCj4gQW5kIGkyYyBpcyBhbG1vc3QganVzdCBhcyBiaWcgYXMgUENJOgo+ICQgZ2l0
-IGdyZXAgImNvbnN0IHN0cnVjdCBpMmNfZGV2aWNlX2lkIiB8IHdjIC1sCj4gMTIyMwo+IAo+IFNv
-IGFnYWluLCB0aGlzIG1hY3JvIGlzIG5vdCBjb25zaXN0ZW50IHdpdGggdGhlIG1ham9yaXR5IG9m
-IFBDSSBkcml2ZXJzLAo+IG5vciB3aXRoIGFueSBvdGhlciB0eXBlIG9mICJkZXZpY2UgaWQiIGRl
-Y2xhcmF0aW9uIGluIHRoZSBrZXJuZWwsIHdoaWNoCj4gaXMgd2h5IEkgZmVlbCBpdCBzaG91bGQg
-YmUgcmVtb3ZlZC4KPiAKPiBBbmQgZmluYWxseSwgdGhlIFBDSSBkb2N1bWVudGF0aW9uIGl0c2Vs
-ZiBzYXlzIHRvIG5vdCB1c2UgdGhpcyBtYWNybywgc28KPiB0aGlzIGlzbid0IGEgIm5ldyIgdGhp
-bmcuICBGcm9tIERvY3VtZW50YXRpb24vUENJL3BjaS50eHQ6Cj4gCj4gCVRoZSBJRCB0YWJsZSBp
-cyBhbiBhcnJheSBvZiBzdHJ1Y3QgcGNpX2RldmljZV9pZCBlbnRyaWVzIGVuZGluZyB3aXRoIGFu
-Cj4gCWFsbC16ZXJvIGVudHJ5LiAgRGVmaW5pdGlvbnMgd2l0aCBzdGF0aWMgY29uc3QgYXJlIGdl
-bmVyYWxseSBwcmVmZXJyZWQuCj4gCVVzZSBvZiB0aGUgZGVwcmVjYXRlZCBtYWNybyBERUZJTkVf
-UENJX0RFVklDRV9UQUJMRSBzaG91bGQgYmUgYXZvaWRlZC4KPiAKPiBUaGF0IHdvcmRpbmcgd2Vu
-dCBpbnRvIHRoZSBmaWxlIGxhc3QgRGVjZW1iZXIsIHdoZW4gd2UgbGFzdCB0YWxrZWQgYWJvdXQK
-PiB0aGlzIGFuZCBldmVyeW9uZSBpbiB0aGF0IGRpc2N1c3Npb24gYWdyZWVkIHRvIHJlbW92ZSB0
-aGUgbWFjcm8gZm9yIHRoZQo+IGFib3ZlIHJlYXNvbnMuCj4gCj4gQ29uc2lzdGVuY3kgbWF0dGVy
-cy4KCkluIHRoaXMgY2FzZSwgSSBkb24ndCB0aGluayBpdCBkb2VzIHRoYXQgbXVjaCAuLi4gYSBj
-dXQgYW5kIHBhc3RlIGVpdGhlcgp3YXkgKGZyb20gYSBtYWNybyBvciBub24tbWFjcm8gYmFzZWQg
-ZHJpdmVyKSB5aWVsZHMgY29ycmVjdCBjb2RlLiAgU2luY2UKdGhlcmUncyBubyBidWcgaGVyZSBh
-bmQgbm8gYXBwYXJlbnQgd2F5IHRvIG1pc3VzZSB0aGUgbWFjcm8sIHdoeSBib3RoZXI/CgpBbnl3
-YXksIGl0J3MgUENJIGNvZGUgLi4uIGxldCB0aGUgUENJIG1haW50YWluZXIgZGVjaWRlLiAgSG93
-ZXZlciwgaWYgaGUKZG9lcyB3YW50IHRoaXMgZG8gaXQgYXMgb25lIGJpZyBiYW5nIHBhdGNoIHZp
-YSBlaXRoZXIgdGhlIFBDSSBvciBUcml2aWFsCnRyZWUgKGxhdHRlciBiZWNhdXNlIEppxZnDrSBo
-YXMgZXhwZXJpZW5jZSBkb2luZyB0aGlzLCBidXQgdGhlIGZvcm1lcgptaWdodCBiZSB1c2VmdWwg
-c28gdGhlIGRlY2lkZXIgZmVlbHMgdGhlIHBhaW4gLi4uKQoKSmFtZXMKCgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+>
+> We have almost 1000 more uses of the non-macro version than the "macro"
+> version in the kernel today:
+> $ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
+> 262
+> $ git grep "const struct pci_device_id" | wc -l
+> 1254
+
+did you check for non-const ones? just to see if we have any of the
+broken case in the tree :-)
+
+as for consistency, pci_dev vs usb_device :-P
+
+Dave.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
