@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+Received: from out3-smtp.messagingengine.com ([66.111.4.27])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X99Ls-00087r-8U
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 08:53:45 +0000
-Received: by mail-lb0-f176.google.com with SMTP id u10so4216583lbd.21
- for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 01:53:16 -0700 (PDT)
+ id 1X8Cje-0005hq-Gr
+ for ath10k@lists.infradead.org; Fri, 18 Jul 2014 18:18:23 +0000
+Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
+ by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id A19CB22539
+ for <ath10k@lists.infradead.org>; Fri, 18 Jul 2014 14:18:00 -0400 (EDT)
+Date: Fri, 18 Jul 2014 11:17:59 -0700
+From: Greg KH <greg@kroah.com>
+Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+Message-ID: <20140718181759.GB2193@kroah.com>
+References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
+ <20140718162213.GC31114@tuxdriver.com>
+ <20140718164340.GA24960@kroah.com>
+ <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
 MIME-Version: 1.0
-In-Reply-To: <87pph225mq.fsf@kamboji.qca.qualcomm.com>
-References: <1405342041-7114-1-git-send-email-janusz.dziedzic@tieto.com>
- <87pph225mq.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 21 Jul 2014 10:53:16 +0200
-Message-ID: <CALhHN=q2XcvPiLpeDgw_DksU1xzQLvJtxjzk8iZte-VMd+viLg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: handle attention flags correctly when A-MSDU
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,92 +29,87 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-wireless@vger.kernel.org, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
 
-On 18 July 2014 14:50, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->
->> In case of A-MSDU RX we should check flags for all
->> MSDU subframes to be sure we have correct FCS status.
->>
->> Before we check attention flags only for first frame
->> where we didn't have correct info about FCS status in
->> case of A-MSDU. Next didn't mark RX_FLAG_FAILED_FCS_CRC
->> for skb. As a side efect we see big TP drop when TCP used.
->> This was easy to reproduce when AP interface was used
->> and added monitor interface run in promiscuous mode.
->>
->> Reported-by: Denton Gentry <denton.gentry@gmail.com>
->> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->
-> I'm having a hard time to understand the commit log. I think it would
-> make it easier to read if you first clearly describe the bug you are
-> fixing and then, in a separate paragraph, tell how you fix it.
->
-Will change that.
+On Fri, Jul 18, 2014 at 09:54:32AM -0700, James Bottomley wrote:
+> On Fri, 2014-07-18 at 09:43 -0700, Greg KH wrote:
+> > On Fri, Jul 18, 2014 at 12:22:13PM -0400, John W. Linville wrote:
+> > > On Fri, Jul 18, 2014 at 05:26:47PM +0200, Benoit Taine wrote:
+> > > > We should prefer `const struct pci_device_id` over
+> > > > `DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
+> > > > This issue was reported by checkpatch.
+> > > 
+> > > Honestly, I prefer the macro -- it stands-out more.  Maybe the style
+> > > guidelines and/or checkpatch should change instead?
+> > 
+> > The macro is horrid, no other bus has this type of thing just to save a
+> > few characters in typing
+> 
+> OK, so this is the macro:
+> 
+> #define DEFINE_PCI_DEVICE_TABLE(_table) \
+> 	const struct pci_device_id _table[]
+> 
+> Could you explain what's so horrible?
+> 
+> The reason it's useful today is that people forget the const (and
+> sometimes the [] making it a true table instead of a pointer).  If you
+> use the DEFINE_PCI_DEVICE_TABLE macro, the compile breaks if you use it
+> wrongly (good) and you automatically get the correct annotations.
 
-> So what is the bug Denton reported? "we see big TP drop when TCP used"
-> implies that this happens with all TCP traffic, but that can't be right.
-> Or did it happen with one of the reorder patches?
->
-TP drop is seen with/without reordering patches when TCP STA --> AP and:
-- used ath10k STA
-- I force to use AMSDU (7 frames) on STA
-- not using cables and other traffic on the channel (often FCS errors)
-- monitor iface used on AP
+We have almost 1000 more uses of the non-macro version than the "macro"
+version in the kernel today:
+$ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
+262
+$ git grep "const struct pci_device_id" | wc -l
+1254
 
-Without a patch we report AMSDU packets with wrong FCS as a correct to
-the stack, next there is a lot of DUP ACK packets from AP --> STA.
-TP drop depends on FCS errors for AMSDU.
+My big complaint is that we need to be consistant, either pick one or
+the other and stick to it.  As the macro is the least used, it's easiest
+to fix up, and it also is more consistant with all other kernel
+subsystems which do not have such a macro.
 
+As there is no need for the __init macro mess anymore, there's no real
+need for the DEFINE_PCI_DEVICE_TABLE macro either.  I think checkpatch
+will catch the use of non-const users for the id table already today, it
+catches lots of other uses like this already.
 
-This is example what I see without patch (without reordering patch):
+> > , so why should PCI be "special" in this regard
+> > anymore?
+> 
+> I think the PCI usage dwarfs most other bus types now, so you could turn
+> the question around.  However, I don't think majority voting is a good
+> guide to best practise; lets debate the merits for their own sake.
 
-echo "1 64" > htt_max_amsdu_ampdu
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0- 5.0 sec  56.6 MBytes  95.0 Mbits/sec
-[  3]  5.0-10.0 sec  60.4 MBytes   101 Mbits/sec
-[  3] 10.0-15.0 sec  60.2 MBytes   101 Mbits/sec
-[  3] 15.0-20.0 sec  60.2 MBytes   101 Mbits/sec
-[  3] 20.0-25.0 sec  63.8 MBytes   107 Mbits/sec
-[  3] 25.0-30.0 sec  64.9 MBytes   109 Mbits/sec
+Not really "dwarf", USB is close with over 700 such structures:
+$ git grep "const struct usb_device_id" | wc -l
+725
 
-echo "7 64" > htt_max_amsdu_ampdu  // lot of DUP ACK from AP --> STA seen
-[  3] 30.0-35.0 sec  40.0 MBytes  67.1 Mbits/sec
-[  3] 35.0-40.0 sec  35.9 MBytes  60.2 Mbits/sec
-[  3] 40.0-45.0 sec  36.9 MBytes  61.9 Mbits/sec
-[  3] 45.0-50.0 sec  37.9 MBytes  63.5 Mbits/sec
-[  3] 50.0-55.0 sec  34.5 MBytes  57.9 Mbits/sec
-[  3] 55.0-60.0 sec  25.4 MBytes  42.6 Mbits/sec
-[  3] 60.0-65.0 sec  48.2 MBytes  81.0 Mbits/sec
-[  3] 65.0-70.0 sec  28.8 MBytes  48.2 Mbits/sec
-[  3] 70.0-75.0 sec  29.2 MBytes  49.1 Mbits/sec
-[  3] 75.0-80.0 sec  22.9 MBytes  38.4 Mbits/sec
-[  3] 80.0-85.0 sec  26.4 MBytes  44.2 Mbits/sec
-[  3] 85.0-90.0 sec  31.5 MBytes  52.8 Mbits/sec
+And i2c is almost just as big as PCI:
+$ git grep "const struct i2c_device_id" | wc -l
+1223
 
+So again, this macro is not consistent with the majority of PCI drivers,
+nor with any other type of "device id" declaration in the kernel, which
+is why I feel it should be removed.
 
-With patch:
+And finally, the PCI documentation itself says to not use this macro, so
+this isn't a "new" thing.  From Documentation/PCI/pci.txt:
 
-echo "1 64" > htt_max_amsdu_ampdu
-[  3] local 192.168.12.2 port 57512 connected with 192.168.12.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0- 5.0 sec  60.8 MBytes   102 Mbits/sec
-[  3]  5.0-10.0 sec  62.2 MBytes   104 Mbits/sec
-[  3] 10.0-15.0 sec  60.9 MBytes   102 Mbits/sec
+	The ID table is an array of struct pci_device_id entries ending with an
+	all-zero entry.  Definitions with static const are generally preferred.
+	Use of the deprecated macro DEFINE_PCI_DEVICE_TABLE should be avoided.
 
-echo "7 64" > htt_max_amsdu_ampdu  // none DUP ACK form AP --> STA seen
-[  3] 15.0-20.0 sec  68.1 MBytes   114 Mbits/sec
-[  3] 20.0-25.0 sec  80.5 MBytes   135 Mbits/sec
-[  3] 25.0-30.0 sec  83.0 MBytes   139 Mbits/sec
-[  3] 30.0-35.0 sec  79.1 MBytes   133 Mbits/sec
-[  3] 35.0-40.0 sec  77.1 MBytes   129 Mbits/sec
-[  3] 40.0-45.0 sec  77.4 MBytes   130 Mbits/sec
+That wording went into the file last December, when we last talked about
+this and everyone in that discussion agreed to remove the macro for the
+above reasons.
 
+Consistency matters.
 
-BR
-Janusz
+thanks,
+
+greg k-h
 
 _______________________________________________
 ath10k mailing list
