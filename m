@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X87fu-0002hx-3B
- for ath10k@lists.infradead.org; Fri, 18 Jul 2014 12:54:10 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hi2so780300wib.17
- for <ath10k@lists.infradead.org>; Fri, 18 Jul 2014 05:53:45 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: prevent endless pci rx loop
-Date: Fri, 18 Jul 2014 14:45:01 +0200
-Message-Id: <1405687501-25917-1-git-send-email-michal.kazior@tieto.com>
+ id 1X88Bf-0000T2-I0
+ for ath10k@lists.infradead.org; Fri, 18 Jul 2014 13:27:00 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: [PATCH 1/2] ath: Move spectral debugfs structs to shared header
+Date: Fri, 18 Jul 2014 15:26:31 +0200
+Message-Id: <1405689992-8538-2-git-send-email-sw@simonwunderlich.de>
+In-Reply-To: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
+References: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,72 +24,221 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, Simon Wunderlich <sw@simonwunderlich.de>
 
-It was possible to enter an endless loop while
-processing a single pci copy engine pipe. This
-could effectively render ath10k incapable of
-responding to any requests.
+From: Sven Eckelmann <sven@narfation.org>
 
-An example case when this could happen is when
-firmware generates a lot of events, e.g. spectral
-scan phyerr via WMI.
+The ath9k and ath10k will share the definitions of the debugfs spectral
+structures and enums. Having them in the same place helps to avoid conflicts.
 
-Reported-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>
 ---
-Janusz was testing spectral scan when he found
-ath10k would sometimes stop responding while
-flooding dmesg with phyerr prints.
+ drivers/net/wireless/ath/ath9k/spectral.h  | 71 +-----------------------
+ drivers/net/wireless/ath/spectral_common.h | 88 ++++++++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+), 69 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/spectral_common.h
 
-There's another bug he found related to scan code
-but we still need to test some stuff before I can
-post the fix.
-
- drivers/net/wireless/ath/ath10k/pci.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 06840d1..0ffff20 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -726,18 +726,12 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
- 	unsigned int nbytes, max_nbytes;
- 	unsigned int transfer_id;
- 	unsigned int flags;
--	int err;
-+	int err, num_replenish = 0;
+diff --git a/drivers/net/wireless/ath/ath9k/spectral.h b/drivers/net/wireless/ath/ath9k/spectral.h
+index 137e2e6..0b9465e 100644
+--- a/drivers/net/wireless/ath/ath9k/spectral.h
++++ b/drivers/net/wireless/ath/ath9k/spectral.h
+@@ -17,6 +17,8 @@
+ #ifndef SPECTRAL_H
+ #define SPECTRAL_H
  
- 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
- 					     &ce_data, &nbytes, &transfer_id,
- 					     &flags) == 0) {
--		err = ath10k_pci_post_rx_pipe(pipe_info, 1);
--		if (unlikely(err)) {
--			/* FIXME: retry */
--			ath10k_warn("failed to replenish CE rx ring %d: %d\n",
--				    pipe_info->pipe_num, err);
--		}
--
-+		num_replenish++;
- 		skb = transfer_context;
- 		max_nbytes = skb->len + skb_tailroom(skb);
- 		dma_unmap_single(ar->dev, ATH10K_SKB_CB(skb)->paddr,
-@@ -753,6 +747,13 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
- 		skb_put(skb, nbytes);
- 		cb->rx_completion(ar, skb, pipe_info->pipe_num);
- 	}
++#include "../spectral_common.h"
 +
-+	err = ath10k_pci_post_rx_pipe(pipe_info, num_replenish);
-+	if (unlikely(err)) {
-+		/* FIXME: retry */
-+		ath10k_warn("failed to replenish CE rx ring %d (%d bufs): %d\n",
-+			    pipe_info->pipe_num, num_replenish, err);
-+	}
+ /* enum spectral_mode:
+  *
+  * @SPECTRAL_DISABLED: spectral mode is disabled
+@@ -54,8 +56,6 @@ struct ath_ht20_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_NUM_BINS		56
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data by -1/+2. This struct is for reference only.
+  */
+@@ -83,8 +83,6 @@ struct ath_ht20_40_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_40_NUM_BINS		128
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data. This struct is for reference only.
+  */
+@@ -125,71 +123,6 @@ static inline u8 spectral_bitmap_weight(u8 *bins)
+ 	return bins[0] & 0x3f;
  }
  
- static int ath10k_pci_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+-/* FFT sample format given to userspace via debugfs.
+- *
+- * Please keep the type/length at the front position and change
+- * other fields after adding another sample type
+- *
+- * TODO: this might need rework when switching to nl80211-based
+- * interface.
+- */
+-enum ath_fft_sample_type {
+-	ATH_FFT_SAMPLE_HT20 = 1,
+-	ATH_FFT_SAMPLE_HT20_40,
+-};
+-
+-struct fft_sample_tlv {
+-	u8 type;	/* see ath_fft_sample */
+-	__be16 length;
+-	/* type dependent data follows */
+-} __packed;
+-
+-struct fft_sample_ht20 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 max_exp;
+-
+-	__be16 freq;
+-	s8 rssi;
+-	s8 noise;
+-
+-	__be16 max_magnitude;
+-	u8 max_index;
+-	u8 bitmap_weight;
+-
+-	__be64 tsf;
+-
+-	u8 data[SPECTRAL_HT20_NUM_BINS];
+-} __packed;
+-
+-struct fft_sample_ht20_40 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 channel_type;
+-	__be16 freq;
+-
+-	s8 lower_rssi;
+-	s8 upper_rssi;
+-
+-	__be64 tsf;
+-
+-	s8 lower_noise;
+-	s8 upper_noise;
+-
+-	__be16 lower_max_magnitude;
+-	__be16 upper_max_magnitude;
+-
+-	u8 lower_max_index;
+-	u8 upper_max_index;
+-
+-	u8 lower_bitmap_weight;
+-	u8 upper_bitmap_weight;
+-
+-	u8 max_exp;
+-
+-	u8 data[SPECTRAL_HT20_40_NUM_BINS];
+-} __packed;
+-
+ void ath9k_spectral_init_debug(struct ath_softc *sc);
+ void ath9k_spectral_deinit_debug(struct ath_softc *sc);
+ 
+diff --git a/drivers/net/wireless/ath/spectral_common.h b/drivers/net/wireless/ath/spectral_common.h
+new file mode 100644
+index 0000000..b9ab722
+--- /dev/null
++++ b/drivers/net/wireless/ath/spectral_common.h
+@@ -0,0 +1,88 @@
++/*
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifndef SPECTRAL_COMMON_H
++#define SPECTRAL_COMMON_H
++
++#define SPECTRAL_HT20_NUM_BINS		56
++#define SPECTRAL_HT20_40_NUM_BINS		128
++
++/* FFT sample format given to userspace via debugfs.
++ *
++ * Please keep the type/length at the front position and change
++ * other fields after adding another sample type
++ *
++ * TODO: this might need rework when switching to nl80211-based
++ * interface.
++ */
++enum ath_fft_sample_type {
++	ATH_FFT_SAMPLE_HT20 = 1,
++	ATH_FFT_SAMPLE_HT20_40,
++};
++
++struct fft_sample_tlv {
++	u8 type;	/* see ath_fft_sample */
++	__be16 length;
++	/* type dependent data follows */
++} __packed;
++
++struct fft_sample_ht20 {
++	struct fft_sample_tlv tlv;
++
++	u8 max_exp;
++
++	__be16 freq;
++	s8 rssi;
++	s8 noise;
++
++	__be16 max_magnitude;
++	u8 max_index;
++	u8 bitmap_weight;
++
++	__be64 tsf;
++
++	u8 data[SPECTRAL_HT20_NUM_BINS];
++} __packed;
++
++struct fft_sample_ht20_40 {
++	struct fft_sample_tlv tlv;
++
++	u8 channel_type;
++	__be16 freq;
++
++	s8 lower_rssi;
++	s8 upper_rssi;
++
++	__be64 tsf;
++
++	s8 lower_noise;
++	s8 upper_noise;
++
++	__be16 lower_max_magnitude;
++	__be16 upper_max_magnitude;
++
++	u8 lower_max_index;
++	u8 upper_max_index;
++
++	u8 lower_bitmap_weight;
++	u8 upper_bitmap_weight;
++
++	u8 max_exp;
++
++	u8 data[SPECTRAL_HT20_40_NUM_BINS];
++} __packed;
++
++#endif /* SPECTRAL_COMMON_H */
 -- 
-1.8.5.3
+1.9.1
 
 
 _______________________________________________
