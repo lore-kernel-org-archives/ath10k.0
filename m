@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X87Sp-0005Fu-JZ
- for ath10k@lists.infradead.org; Fri, 18 Jul 2014 12:40:40 +0000
-Received: by mail-lb0-f170.google.com with SMTP id w7so1953683lbi.29
- for <ath10k@lists.infradead.org>; Fri, 18 Jul 2014 05:40:16 -0700 (PDT)
+ id 1X87Ti-0005Rr-Dn
+ for ath10k@lists.infradead.org; Fri, 18 Jul 2014 12:41:34 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
+References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
+ <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+ <53C66422.10702@gmail.com>
+ <CA+BoTQn8TYX4vDx=K4P5rE+LBXrrUL2q1E7GsiOpBj82QgRKsw@mail.gmail.com>
+ <CA+BoTQkk5oYS4JZ5a6W02rZ62AgxcHE76knS7QA2VfZDxYi2Jg@mail.gmail.com>
+Date: Fri, 18 Jul 2014 15:41:07 +0300
+In-Reply-To: <CA+BoTQkk5oYS4JZ5a6W02rZ62AgxcHE76knS7QA2VfZDxYi2Jg@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 16 Jul 2014 14:41:27 +0200")
+Message-ID: <87tx6e261o.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <871tti3l0t.fsf@kamboji.qca.qualcomm.com>
-References: <1404992714-15690-1-git-send-email-janusz.dziedzic@tieto.com>
- <871tti3l0t.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 18 Jul 2014 14:40:15 +0200
-Message-ID: <CALhHN=rwv1uVmrnErypGBTEu50JfmNSFFiHub2bZD4MBoQbpaQ@mail.gmail.com>
-Subject: Re: [RFT/RFC 0/5] ath10k: handle/report A-MSDU as a skb list
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +27,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Varka Bhadram <varkabhadram@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
 
-On 18 July 2014 14:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->
->> This is prototype, how we can handle A-MSDU as a skb list in mac80211.
->> No changes in mac80211 reordering code required in such case, also we
->> don't need to build one big frame using memcpy ...
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+>>> Here my concern in amount of time holding the lock...
+>>>
+>>> spin_lock_bh(&ar->data_lock);
+>>> peer = ath10k_peer_find_by_id(ar, peer_id);
+>>> if (!peer) {
+>>>         spin_unlock_bh(&ar->data_lock);
+>>>
+>>>         ath10k_warn("received addba event for invalid peer_id: %hu\n",
+>>>                     peer_id);
+>>>         return;
+>>> }
+>>>
+>>> No need to of putting the debug message inside the critical region...  :-)
 >>
->> With such prototype tid_agg_rx->reorder_buf[sn] will describe exactly
->> one MPDU (with included A-MSDU subframes if skb->next) and detection of
->> duplicated frames will work correctly. So, reordering should works
->> correctly.
->>
->> I tested this with A-MPDU and A-MSDU run together (A-MSDU frame up to
->> 10k) - TCP STA -> AP. I used ath10k STA with unlocked A-MSDU limit in
->> RC in firmware. Didn't notice any problems.
+>> Sounds reasonable in this case as I'm not printing spinlock-protected values.
 >
-> So what are you exactly fixing here? It would be nice to get some
-> background and motivations for the changes in the cover letter.
+> ..and I realized this isn't true upon hitting the send button.
 >
-> Also we have so many reordering patches that I'm confused now. For
-> example, how is this related to patch "ath10k: handle attention flags
-> correctly when A-MSDU"?
->
-We should skip this patchset, while we decide to change reordering
-code in mac80211 instead of passing skb list.
+> The other print uses peer->vdev_id. The peer was acquired under a lock
+> and must not be used after the lock is released. It'll just look
+> confusing if I mix ordering of unlock/print in some cases so I'll
+> leave it as is.
 
-ath10k: handle attention flags correctly when A-MSDU  is required
-while fix generic FCS reporting issue.
+I actually prefer also the original form of "warn(); unlock(); return;",
+somehow it feels more natural for me. And this is on error path where
+efficiency is not really a priority.
 
-BR
-Janusz
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
