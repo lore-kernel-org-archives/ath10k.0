@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X87Ti-0005Rr-Dn
- for ath10k@lists.infradead.org; Fri, 18 Jul 2014 12:41:34 +0000
+ id 1X87cQ-00024M-1d
+ for ath10k@lists.infradead.org; Fri, 18 Jul 2014 12:50:34 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
-References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
- <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
- <53C66422.10702@gmail.com>
- <CA+BoTQn8TYX4vDx=K4P5rE+LBXrrUL2q1E7GsiOpBj82QgRKsw@mail.gmail.com>
- <CA+BoTQkk5oYS4JZ5a6W02rZ62AgxcHE76knS7QA2VfZDxYi2Jg@mail.gmail.com>
-Date: Fri, 18 Jul 2014 15:41:07 +0300
-In-Reply-To: <CA+BoTQkk5oYS4JZ5a6W02rZ62AgxcHE76knS7QA2VfZDxYi2Jg@mail.gmail.com>
- (Michal Kazior's message of "Wed, 16 Jul 2014 14:41:27 +0200")
-Message-ID: <87tx6e261o.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: handle attention flags correctly when A-MSDU
+References: <1405342041-7114-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Fri, 18 Jul 2014 15:50:05 +0300
+In-Reply-To: <1405342041-7114-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Mon, 14 Jul 2014 14:47:21 +0200")
+Message-ID: <87pph225mq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,37 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Varka Bhadram <varkabhadram@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
->>> Here my concern in amount of time holding the lock...
->>>
->>> spin_lock_bh(&ar->data_lock);
->>> peer = ath10k_peer_find_by_id(ar, peer_id);
->>> if (!peer) {
->>>         spin_unlock_bh(&ar->data_lock);
->>>
->>>         ath10k_warn("received addba event for invalid peer_id: %hu\n",
->>>                     peer_id);
->>>         return;
->>> }
->>>
->>> No need to of putting the debug message inside the critical region...  :-)
->>
->> Sounds reasonable in this case as I'm not printing spinlock-protected values.
+> In case of A-MSDU RX we should check flags for all
+> MSDU subframes to be sure we have correct FCS status.
 >
-> ..and I realized this isn't true upon hitting the send button.
+> Before we check attention flags only for first frame
+> where we didn't have correct info about FCS status in
+> case of A-MSDU. Next didn't mark RX_FLAG_FAILED_FCS_CRC
+> for skb. As a side efect we see big TP drop when TCP used.
+> This was easy to reproduce when AP interface was used
+> and added monitor interface run in promiscuous mode.
 >
-> The other print uses peer->vdev_id. The peer was acquired under a lock
-> and must not be used after the lock is released. It'll just look
-> confusing if I mix ordering of unlock/print in some cases so I'll
-> leave it as is.
+> Reported-by: Denton Gentry <denton.gentry@gmail.com>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-I actually prefer also the original form of "warn(); unlock(); return;",
-somehow it feels more natural for me. And this is on error path where
-efficiency is not really a priority.
+I'm having a hard time to understand the commit log. I think it would
+make it easier to read if you first clearly describe the bug you are
+fixing and then, in a separate paragraph, tell how you fix it.
+
+So what is the bug Denton reported? "we see big TP drop when TCP used"
+implies that this happens with all TCP traffic, but that can't be right.
+Or did it happen with one of the reorder patches?
 
 -- 
 Kalle Valo
