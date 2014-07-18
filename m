@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from out3-smtp.messagingengine.com ([66.111.4.27])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X8Cje-0005hq-Gr
- for ath10k@lists.infradead.org; Fri, 18 Jul 2014 18:18:23 +0000
-Received: from compute5.internal (compute5.nyi.mail.srv.osa [10.202.2.45])
- by gateway1.nyi.mail.srv.osa (Postfix) with ESMTP id A19CB22539
- for <ath10k@lists.infradead.org>; Fri, 18 Jul 2014 14:18:00 -0400 (EDT)
-Date: Fri, 18 Jul 2014 11:17:59 -0700
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Message-ID: <20140718181759.GB2193@kroah.com>
-References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
- <20140718162213.GC31114@tuxdriver.com>
- <20140718164340.GA24960@kroah.com>
- <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
+Received: from isis.lip6.fr ([2001:660:3302:283c::2])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X8AFZ-0001rm-1q
+ for ath10k@lists.infradead.org; Fri, 18 Jul 2014 15:39:10 +0000
+From: Benoit Taine <benoit.taine@lip6.fr>
+Subject: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
+Date: Fri, 18 Jul 2014 17:26:47 +0200
+Message-Id: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,91 +15,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-pci@vger.kernel.org, dri-devel@lists.freedesktop.org, virtualization@lists.linux-foundation.org, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, linux-wireless@vger.kernel.org, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
+To: linux-pci@vger.kernel.org
+Cc: linux-mips@linux-mips.org, linux-fbdev@vger.kernel.org, linux-mmc@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, benoit.taine@lip6.fr, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, virtualization@lists.linux-foundation.org, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, users@rt2x00.serialmonkey.com, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
 
-On Fri, Jul 18, 2014 at 09:54:32AM -0700, James Bottomley wrote:
-> On Fri, 2014-07-18 at 09:43 -0700, Greg KH wrote:
-> > On Fri, Jul 18, 2014 at 12:22:13PM -0400, John W. Linville wrote:
-> > > On Fri, Jul 18, 2014 at 05:26:47PM +0200, Benoit Taine wrote:
-> > > > We should prefer `const struct pci_device_id` over
-> > > > `DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
-> > > > This issue was reported by checkpatch.
-> > > 
-> > > Honestly, I prefer the macro -- it stands-out more.  Maybe the style
-> > > guidelines and/or checkpatch should change instead?
-> > 
-> > The macro is horrid, no other bus has this type of thing just to save a
-> > few characters in typing
-> 
-> OK, so this is the macro:
-> 
-> #define DEFINE_PCI_DEVICE_TABLE(_table) \
-> 	const struct pci_device_id _table[]
-> 
-> Could you explain what's so horrible?
-> 
-> The reason it's useful today is that people forget the const (and
-> sometimes the [] making it a true table instead of a pointer).  If you
-> use the DEFINE_PCI_DEVICE_TABLE macro, the compile breaks if you use it
-> wrongly (good) and you automatically get the correct annotations.
+We should prefer `const struct pci_device_id` over
+`DEFINE_PCI_DEVICE_TABLE` to meet kernel coding style guidelines.
+This issue was reported by checkpatch.
 
-We have almost 1000 more uses of the non-macro version than the "macro"
-version in the kernel today:
-$ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
-262
-$ git grep "const struct pci_device_id" | wc -l
-1254
+A simplified version of the semantic patch that makes this change is as
+follows (http://coccinelle.lip6.fr/):
 
-My big complaint is that we need to be consistant, either pick one or
-the other and stick to it.  As the macro is the least used, it's easiest
-to fix up, and it also is more consistant with all other kernel
-subsystems which do not have such a macro.
+// <smpl>
 
-As there is no need for the __init macro mess anymore, there's no real
-need for the DEFINE_PCI_DEVICE_TABLE macro either.  I think checkpatch
-will catch the use of non-const users for the id table already today, it
-catches lots of other uses like this already.
+@@
+identifier i;
+declarer name DEFINE_PCI_DEVICE_TABLE;
+initializer z;
+@@
 
-> > , so why should PCI be "special" in this regard
-> > anymore?
-> 
-> I think the PCI usage dwarfs most other bus types now, so you could turn
-> the question around.  However, I don't think majority voting is a good
-> guide to best practise; lets debate the merits for their own sake.
+- DEFINE_PCI_DEVICE_TABLE(i)
++ const struct pci_device_id i[]
+= z;
 
-Not really "dwarf", USB is close with over 700 such structures:
-$ git grep "const struct usb_device_id" | wc -l
-725
+// </smpl>
 
-And i2c is almost just as big as PCI:
-$ git grep "const struct i2c_device_id" | wc -l
-1223
+I have 103 patches ready, and will only send a few for you to judge if
+it is useful enough, and to prevent from spamming too much.
 
-So again, this macro is not consistent with the majority of PCI drivers,
-nor with any other type of "device id" declaration in the kernel, which
-is why I feel it should be removed.
-
-And finally, the PCI documentation itself says to not use this macro, so
-this isn't a "new" thing.  From Documentation/PCI/pci.txt:
-
-	The ID table is an array of struct pci_device_id entries ending with an
-	all-zero entry.  Definitions with static const are generally preferred.
-	Use of the deprecated macro DEFINE_PCI_DEVICE_TABLE should be avoided.
-
-That wording went into the file last December, when we last talked about
-this and everyone in that discussion agreed to remove the macro for the
-above reasons.
-
-Consistency matters.
-
-thanks,
-
-greg k-h
+Thanks.
 
 _______________________________________________
 ath10k mailing list
