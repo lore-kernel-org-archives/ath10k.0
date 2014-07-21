@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from narfation.org ([79.140.41.39] helo=v3-1039.vlinux.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9Irm-0006El-1w
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 19:03:18 +0000
-From: Sven Eckelmann <sven@narfation.org>
-Subject: Re: [PATCHv2 2/2] ath10k: add spectral scan feature
-Date: Mon, 21 Jul 2014 21:02:47 +0200
-Message-ID: <43945028.YYV8n3Af3F@sven-edge>
-In-Reply-To: <1405945943-8303-3-git-send-email-sw@simonwunderlich.de>
-References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
- <1405945943-8303-3-git-send-email-sw@simonwunderlich.de>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9Mbf-00080o-Cf
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 23:02:55 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 964CD409C9D
+ for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 16:02:33 -0700 (PDT)
+Message-ID: <53CD9C08.9090908@candelatech.com>
+Date: Mon, 21 Jul 2014 16:02:32 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: New CT firmware release is uploaded.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Monday 21 July 2014 14:32:23 Simon Wunderlich wrote:
-> diff --git a/drivers/net/wireless/ath/ath10k/Makefile
-> b/drivers/net/wireless/ath/ath10k/Makefile index 2110a5c..e1dcefd 100644
-> --- a/drivers/net/wireless/ath/ath10k/Makefile
-> +++ b/drivers/net/wireless/ath/ath10k/Makefile
-> @@ -8,7 +8,8 @@ ath10k_core-y += mac.o \
->  		 htt_tx.o \
->  		 txrx.o \
->  		 wmi.o \
-> -		 bmi.o
-> +		 bmi.o \
-> +		 spectral.o
+Release notes:
 
+      Improve RAM usage:  Re-organized, trimmed, and otherwise made better use
+      of RAM.  Allow compiling out swbmiss, beacon filtering, roaming code.
+      Images with 'full' in their name do NOT have the previously mentioned features
+      compiled out.
 
-ath9k doesn't compile the debugfs+spectral source files when 
-CONFIG_ATH9K_DEBUGFS is not enabled. So this most likely has to be changed to 
+      Over-all, freed up about 80k of extra RAM, which can be used for more vdevs,
+      peers, buffers, etc.
 
-ath10k_core-$(CONFIG_ATH10K_DEBUGFS) += spectral.o
+      Supports 64 vdevs (one should be reserved for monitor interface, so
+      effectively 63 vdevs for current kernels.)
 
-Otherwise the static inline functions in the spectral.h may collide with the 
-functions inside spectral.c when CONFIG_ATH10K_DEBUGFS is disabled.
+I have only lightly tested this on my 3.14 kernel so far.
 
-Kind regards,
-	Sven
+A lot of these changes could potentially introduce run-time
+crashes due to extensive use of a different type of RAM for
+storing many structures.  Should be a quick fix should problems
+arise.
+
+As always, let me know if you find any problems.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
