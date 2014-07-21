@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9AdS-0002E3-9J
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 10:15:59 +0000
-Received: by mail-wi0-f172.google.com with SMTP id n3so3825535wiv.17
- for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 03:15:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <201407211159.26103.sw@simonwunderlich.de>
-References: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
- <1405689992-8538-3-git-send-email-sw@simonwunderlich.de>
- <CA+BoTQmrn0ddGe=p_d9+vCpMUMQ6dKhL+DmZ76OicacmxoYVMA@mail.gmail.com>
- <201407211159.26103.sw@simonwunderlich.de>
-Date: Mon, 21 Jul 2014 12:15:34 +0200
-Message-ID: <CA+BoTQnCLDJYzGDLA-zHcaddY-cyuC48dMwTnoHJP+KYG2tN_Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: add spectral scan feature
+ id 1X9Bdx-0002mD-EM
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 11:20:36 +0000
+Received: by mail-wi0-f175.google.com with SMTP id ho1so3901916wib.2
+ for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 04:20:11 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: simplify scan debug prints
+Date: Mon, 21 Jul 2014 13:11:21 +0200
+Message-Id: <1405941081-17359-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1405941081-17359-1-git-send-email-michal.kazior@tieto.com>
+References: <1405941081-17359-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,79 +19,133 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, "Giori,
- Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, sw@simonwunderlich.de
 
-T24gMjEgSnVseSAyMDE0IDExOjU5LCBTaW1vbiBXdW5kZXJsaWNoIDxzd0BzaW1vbnd1bmRlcmxp
-Y2guZGU+IHdyb3RlOgo+IEhleSBNaWNoYWwsCj4KPiB0aGFua3MgZm9yIHRoZSByZXZpZXchIEkg
-YWdyZWUgdG8gbW9zdCBwb2ludHMgYW5kIHdpbGwgZml4ZWQgdGhlbSBpbiB0aGUgbmV4dAo+IHJl
-dmlzaW9uLCBmb3IgdGhlIHJlc3QgSSdtIHB1dHRpbmcgY29tbWVudHMgYmVsb3c6Cj4KPiBbLi4u
-XQo+PiA+ICsgICAgICAgbmZfbGlzdDEgPSBfX2xlMzJfdG9fY3B1KGV2ZW50LT5oZHIubmZfbGlz
-dF8xKTsKPj4gPiArICAgICAgIG5mX2xpc3QyID0gX19sZTMyX3RvX2NwdShldmVudC0+aGRyLm5m
-X2xpc3RfMik7Cj4+ID4gKyAgICAgICBjaGFpbl9pZHggPSBNUyhyZWcwLCBTRUFSQ0hfRkZUX1JF
-UE9SVF9SRUcwX0ZGVF9DSE5fSURYKTsKPj4gPiArICAgICAgIHN3aXRjaCAoY2hhaW5faWR4KSB7
-Cj4+ID4gKyAgICAgICBjYXNlIDA6Cj4+ID4gKyAgICAgICAgICAgICAgIGZmdF9zYW1wbGUtPm5v
-aXNlID0gX19jcHVfdG9fYmUxNihuZl9saXN0MSAmIDB4ZmZmZnUpOwo+Pgo+PiBBcmUgeW91IHN1
-cmUgeW91IHdhbnQgdG8gJiBuZl9saXN0MSBpdHNlbGYgKmJlZm9yZSogdGhlIGJ5dGUgc3dhcD8g
-WW91Cj4+IHByb2JhYmx5IHdvbid0IHNlZSBhIGRpZmZlcmVuY2Ugd2l0aCBhbiBpbnRlbCBob3N0
-IHN5c3RlbSB3aGljaCBpcwo+PiBsaXR0bGUtZW5kaWFuIGp1c3QgbGlrZSB0aGUgdGFyZ2V0IGRl
-dmljZS4KPgo+IFRoYXQgaXMgaW50ZW5kZWQgYXMgd3JpdHRlbjogd2l0aCBsZTMyX3RvX2NwdSgp
-IGFib3ZlIHdlIGdldCB0aGUgZGF0YSBpbnRvCj4gaG9zdCBvcmRlciB0byBwcm9jZXNzIGl0LCB0
-aGVuIHdlIGdldCB0aGUgMTYtYml0IG5vaXNlIHZhbHVlcyBhY2NvcmRpbmcgdG8gdGhlCj4gY2hh
-aW4gaW5kZXgsIGFuZCBmaW5hbGx5IGNvbnZlcnQgaXQgdG8gYmlnIGVuZGlhbiBhcyB0aGlzIGlz
-IG91ciBleGNoYW5nZQo+IGZvcm1hdCB0byB1c2Vyc3BhY2UgLSBhcyB5b3UgY2FuIHNlZSwgd2Ug
-ZG8gdGhlIHNhbWUgZm9yIHRoZSBvdGhlciAxNmJpdAo+IG1lbWJlcnMgb2YgZmZ0X3NhbXBsZSBh
-cyB3ZWxsLgoKQWgsIEkgZ3Vlc3MgSSBzaG91bGQgcHV0IG9uIG15IGdsYXNzZXMgbm93LiBJIHBh
-cnNlZCB0aGF0IGxpbmUgYXMKX3RvX2NwdSgpLiBTb3JyeSA6LSkKCgo+IFsuLi5dCj4+ID4gKyAg
-ICAgICBhcnZpZiA9IGF0aDEwa19nZXRfc3BlY3RyYWxfdmRldihhcik7Cj4+ID4gKyAgICAgICBp
-ZiAoIWFydmlmKQo+PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVOT0RFVjsKPj4gPiArICAg
-ICAgIHZkZXZfaWQgPSBhcnZpZi0+dmRldl9pZDsKPj4gPiArCj4+ID4gKyAgICAgICBpZiAoYXIt
-PnNwZWN0cmFsX21vZGUgPT0gU1BFQ1RSQUxfRElTQUJMRUQpCj4+ID4gKyAgICAgICAgICAgICAg
-IHJldHVybiAwOwo+PiA+ICsKPj4gPiArICAgICAgIHJlcyA9IGF0aDEwa193bWlfdmRldl9zcGVj
-dHJhbF9lbmFibGUoYXIsIHZkZXZfaWQsCj4+ID4gKwo+PiA+IFdNSV9TUEVDVFJBTF9UUklHR0VS
-X0NNRF9DTEVBUiwgKwo+PiA+ICAgICAgV01JX1NQRUNUUkFMX0VOQUJMRV9DTURfRU5BQkxFKTsg
-KyAgICAgICBpZiAocmVzIDwgMCkKPj4gPiArICAgICAgICAgICAgICAgcmV0dXJuIHJlczsKPj4g
-PiArCj4+ID4gKyAgICAgICByZXMgPSBhdGgxMGtfd21pX3ZkZXZfc3BlY3RyYWxfZW5hYmxlKGFy
-LCB2ZGV2X2lkLAo+PiA+ICsKPj4gPiBXTUlfU1BFQ1RSQUxfVFJJR0dFUl9DTURfVFJJR0dFUiwg
-Kwo+PiA+ICAgICAgICBXTUlfU1BFQ1RSQUxfRU5BQkxFX0NNRF9FTkFCTEUpOyArICAgICAgIGlm
-IChyZXMgPCAwKQo+PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gcmVzOwo+PiA+ICsKPj4gPiAr
-ICAgICAgIHJldHVybiAwOwo+PiA+ICt9Cj4+ID4gK3N0YXRpYyBpbnQgYXRoMTBrX3NwZWN0cmFs
-X3NjYW5fY29uZmlnKHN0cnVjdCBhdGgxMGsgKmFyLAo+PiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgIGVudW0gYXRoMTBrX3NwZWN0cmFsX21vZGUgbW9kZSkKPj4gPiAr
-ewo+PiA+ICsgICAgICAgc3RydWN0IHdtaV92ZGV2X3NwZWN0cmFsX2NvbmZfYXJnIGFyZzsKPj4g
-PiArICAgICAgIHN0cnVjdCBhdGgxMGtfdmlmICphcnZpZjsKPj4gPiArICAgICAgIGludCB2ZGV2
-X2lkLCBjb3VudCwgcmVzID0gMDsKPj4gPiArCj4+Cj4+IERpdHRvLiBsb2NrZGVwX2Fzc2VydF9o
-ZWxkKCkuCj4KPiBBY3R1YWxseSBib3RoIGZ1bmN0aW9ucyBhcmUgY2FsbGluZyBhdGgxMGtfZ2V0
-X3NwZWN0cmFsX3ZkZXYoKSB3aGljaCBhbHJlYWR5Cj4gaGFzIHRoYXQgYXNzZXJ0LCBidXQgaXQg
-ZG9lc24ndCBodXJ0IHRvIHB1dCBpdCBoZXJlIGFzIHdlbGwuIFdpbGwgZG8uIDopCgpUcnVlIGJ1
-dCB0aG9zZSBmdW5jdGlvbnMgKHNjYW5fY29uZmlnLCBzY2FuX3RyaWdnZXIpIGFsc28gYWNjZXNz
-CmNvbmZfbXV0ZXggcHJvdGVjdGVkIGRhdGEgdGhlbXNlbHZlcyBkaXJlY3RseS4gSWYKYXRoMTBr
-X2dldF9zcGVjdHJhbF92ZGV2KCkgd2FzIHRvIGJlIGNoYW5nZWQgdG8gbm90IHJlcXVpcmUgY29u
-Zl9tdXRleAp5b3UnZCBoYXZlIHRvIHJlbWVtYmVyIHRvIG1vdmUgbG9ja2RlcF9hc3NlcnRfaGVs
-ZCgpIHVwIHRoZSBjYWxsCnN0YWNrLgoKCj4+IERpZCB5b3UgdGVzdCB0aGlzIGFnYWluc3QgYSBm
-aXJtd2FyZSBjcmFzaCB3aGlsZSBzcGVjdHJhbCBzY2FuIGlzCj4+IGVuYWJsZWQ/IGFyLT5zcGVj
-dHJhbF9tb2RlIHdpbGwgYmUgbGVmdCBhcy1pcyB3aGVuIHJlc3RhcnQgaXMKPj4gcGVyZm9ybWVk
-IGJ1dCBubyBzcGVjdHJhbCBzY2FuIHdpbGwgYmUgYWN0dWFsbHkgY29uZmlndXJlZC4gWW91IGVp
-dGhlcgo+PiBuZWVkIHRvIHJlc3RhcnQgc3BlY3RyYWwgc2NhbiAoYmV0dGVyIGZyb20gdXNlciBw
-ZXJzcGVjdGl2ZSkgb3IgY2xlYXIKPj4gb3V0IHRoZSBvbGQgbW9kZSAoZWFzaWVyIHRvIGNvZGUs
-IGJ1dCBiYWQgZnJvbSB1c2VyIHBlcnNwZWN0aXZlCj4+IGJlY2F1c2Ugc3VkZGVubHkgc3BlY3Ry
-YWwgc2NhbiB3b3VsZCBiZSBzdG9wcGVkIGltcGxpY2l0bHkgYnkgZGV2aWNlCj4+IGNyYXNoKS4K
-Pgo+IE5vLCBJIGRpZG4ndCB0ZXN0IHRoYXQgYWdhaW5zdCBhIGZpcm13YXJlIGNyYXNoIHlldCAu
-Li4KClRoZXJlJ3MgJ3NpbXVsYXRlX2Z3X2NyYXNoJyBpbiBkZWJ1Z2ZzLiBJIHN1Z2dlc3QgJ2hh
-cmQnIG1ldGhvZC4KJ3NvZnQnIHdvcmtzIG9ubHkgd2l0aCBmdyA2MzYgbm93LiBXYXRjaCBvdXQg
-Zm9yIHBvc3NpYmxlIGhvc3QgbG9ja3Vwcwp0aG91Z2guCgoKPiBSZXN0YXJ0aW5nIHNwZWN0cmFs
-Cj4gd291bGQgcHJvYmFibHkgYSBnb29kIGlkZWEgaW4gZW5kbGVzcyBtb2RlLCBidXQgbm90IGlm
-ICJjb3VudCIgaGFzIGJlZW4gc2V0LgoKSG1tIGdvb2QgcG9pbnQsIGJ1dCB0aGVuIHdoYXQgaWYg
-eW91IGhhdmUgY291bnQ9MjAgYW5kIGZ3IGNyYXNoZXMgaW4KdGhlIG1pZGRsZSBvZiBwZXJmb3Jt
-aW5nIHRoZSBzcGVjdHJhbCBzY2FuIHJ1biAoZS5nLiBhdCBpdGVyYXRpb24gMTApPwoKQnV0IHRo
-ZW4gdGhpcyBpcyBqdXN0IGEgZGVidWcgaW50ZXJmYWNlIChvciBpcyBpdD8pLiBJIGRvbid0IGtu
-b3cgaWYKaXQncyB3b3J0aCBpdCBnb2luZyB0byBncmVhdCBsZW5ndGhzIHRvIHByb3ZpZGUgYSBz
-dXBlciBzbW9vdGggdXNlcgpleHBlcmllbmNlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+This also reduces the cruft of printing scan event
+names in capitals.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 66 ++++++++++++++++++++---------------
+ 1 file changed, 38 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 7ff5280..b4930c4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -792,6 +792,42 @@ static void ath10k_wmi_event_scan_foreign_chan(struct ath10k *ar, u32 freq)
+ 	}
+ }
+ 
++static const char *
++ath10k_wmi_event_scan_type_str(enum wmi_scan_event_type type,
++			       enum wmi_scan_completion_reason reason)
++{
++	switch (type) {
++	case WMI_SCAN_EVENT_STARTED:
++		return "started";
++	case WMI_SCAN_EVENT_COMPLETED:
++		switch (reason) {
++		case WMI_SCAN_REASON_COMPLETED:
++			return "completed";
++		case WMI_SCAN_REASON_CANCELLED:
++			return "completed [cancelled]";
++		case WMI_SCAN_REASON_PREEMPTED:
++			return "completed [preempted]";
++		case WMI_SCAN_REASON_TIMEDOUT:
++			return "completed [timedout]";
++		case WMI_SCAN_REASON_MAX:
++			break;
++		}
++		return "completed [unknown]";
++	case WMI_SCAN_EVENT_BSS_CHANNEL:
++		return "bss channel";
++	case WMI_SCAN_EVENT_FOREIGN_CHANNEL:
++		return "foreign channel";
++	case WMI_SCAN_EVENT_DEQUEUED:
++		return "dequeued";
++	case WMI_SCAN_EVENT_PREEMPTED:
++		return "preempted";
++	case WMI_SCAN_EVENT_START_FAILED:
++		return "start failed";
++	default:
++		return "unknown";
++	}
++}
++
+ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_scan_event *event = (struct wmi_scan_event *)skb->data;
+@@ -809,56 +845,30 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+ 	scan_id    = __le32_to_cpu(event->scan_id);
+ 	vdev_id    = __le32_to_cpu(event->vdev_id);
+ 
+-	ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENTID\n");
+ 	ath10k_dbg(ATH10K_DBG_WMI,
+-		   "scan event type %d reason %d freq %d req_id %d "
++		   "scan event %s type %d reason %d freq %d req_id %d "
+ 		   "scan_id %d vdev_id %d\n",
++		   ath10k_wmi_event_scan_type_str(event_type, reason),
+ 		   event_type, reason, freq, req_id, scan_id, vdev_id);
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 
+ 	switch (event_type) {
+ 	case WMI_SCAN_EVENT_STARTED:
+-		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_STARTED\n");
+ 		ath10k_wmi_event_scan_started(ar);
+ 		break;
+ 	case WMI_SCAN_EVENT_COMPLETED:
+-		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_COMPLETED\n");
+-		switch (reason) {
+-		case WMI_SCAN_REASON_COMPLETED:
+-			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_COMPLETED\n");
+-			break;
+-		case WMI_SCAN_REASON_CANCELLED:
+-			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_CANCELED\n");
+-			break;
+-		case WMI_SCAN_REASON_PREEMPTED:
+-			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_PREEMPTED\n");
+-			break;
+-		case WMI_SCAN_REASON_TIMEDOUT:
+-			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_TIMEDOUT\n");
+-			break;
+-		default:
+-			break;
+-		}
+ 		ath10k_wmi_event_scan_completed(ar);
+ 		break;
+ 	case WMI_SCAN_EVENT_BSS_CHANNEL:
+-		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_BSS_CHANNEL\n");
+ 		ath10k_wmi_event_scan_bss_chan(ar);
+ 		break;
+ 	case WMI_SCAN_EVENT_FOREIGN_CHANNEL:
+-		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_FOREIGN_CHANNEL\n");
+ 		ath10k_wmi_event_scan_foreign_chan(ar, freq);
+ 		break;
+ 	case WMI_SCAN_EVENT_DEQUEUED:
+-		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_DEQUEUED\n");
+-		break;
+ 	case WMI_SCAN_EVENT_PREEMPTED:
+-		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_PREEMPTED\n");
+-		break;
+ 	case WMI_SCAN_EVENT_START_FAILED:
+-		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_START_FAILED\n");
+-		break;
+ 	default:
+ 		break;
+ 	}
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
