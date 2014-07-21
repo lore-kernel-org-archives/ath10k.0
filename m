@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9CTa-0007ss-40
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 12:13:55 +0000
+ id 1X9Cly-0000DV-1m
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 12:32:56 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [PATCH 2/2] ath10k: add spectral scan feature
-Date: Mon, 21 Jul 2014 14:13:29 +0200
-References: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
- <201407211159.26103.sw@simonwunderlich.de>
- <CA+BoTQnCLDJYzGDLA-zHcaddY-cyuC48dMwTnoHJP+KYG2tN_Q@mail.gmail.com>
-In-Reply-To: <CA+BoTQnCLDJYzGDLA-zHcaddY-cyuC48dMwTnoHJP+KYG2tN_Q@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201407211413.29392.sw@simonwunderlich.de>
+Subject: [PATCHv2 1/2] ath: Move spectral debugfs structs to shared header
+Date: Mon, 21 Jul 2014 14:32:22 +0200
+Message-Id: <1405945943-8303-2-git-send-email-sw@simonwunderlich.de>
+In-Reply-To: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
+References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,101 +18,228 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, "Giori,
- Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, Simon Wunderlich <sw@simonwunderlich.de>
 
-> >> > +       arvif = ath10k_get_spectral_vdev(ar);
-> >> > +       if (!arvif)
-> >> > +               return -ENODEV;
-> >> > +       vdev_id = arvif->vdev_id;
-> >> > +
-> >> > +       if (ar->spectral_mode == SPECTRAL_DISABLED)
-> >> > +               return 0;
-> >> > +
-> >> > +       res = ath10k_wmi_vdev_spectral_enable(ar, vdev_id,
-> >> > +
-> >> > WMI_SPECTRAL_TRIGGER_CMD_CLEAR, +
-> >> > 
-> >> >      WMI_SPECTRAL_ENABLE_CMD_ENABLE); +       if (res < 0)
-> >> > 
-> >> > +               return res;
-> >> > +
-> >> > +       res = ath10k_wmi_vdev_spectral_enable(ar, vdev_id,
-> >> > +
-> >> > WMI_SPECTRAL_TRIGGER_CMD_TRIGGER, +
-> >> > 
-> >> >        WMI_SPECTRAL_ENABLE_CMD_ENABLE); +       if (res < 0)
-> >> > 
-> >> > +               return res;
-> >> > +
-> >> > +       return 0;
-> >> > +}
-> >> > +static int ath10k_spectral_scan_config(struct ath10k *ar,
-> >> > +                                      enum ath10k_spectral_mode mode)
-> >> > +{
-> >> > +       struct wmi_vdev_spectral_conf_arg arg;
-> >> > +       struct ath10k_vif *arvif;
-> >> > +       int vdev_id, count, res = 0;
-> >> > +
-> >> 
-> >> Ditto. lockdep_assert_held().
-> > 
-> > Actually both functions are calling ath10k_get_spectral_vdev() which
-> > already has that assert, but it doesn't hurt to put it here as well.
-> > Will do. :)
-> 
-> True but those functions (scan_config, scan_trigger) also access
-> conf_mutex protected data themselves directly. If
-> ath10k_get_spectral_vdev() was to be changed to not require conf_mutex
-> you'd have to remember to move lockdep_assert_held() up the call
-> stack.
+From: Sven Eckelmann <sven@narfation.org>
 
-Ah, that's right. I'll add that anyway. :)
+The ath9k and ath10k will share the definitions of the debugfs spectral
+structures and enums. Having them in the same place helps to avoid conflicts.
 
-> 
-> >> Did you test this against a firmware crash while spectral scan is
-> >> enabled? ar->spectral_mode will be left as-is when restart is
-> >> performed but no spectral scan will be actually configured. You either
-> >> need to restart spectral scan (better from user perspective) or clear
-> >> out the old mode (easier to code, but bad from user perspective
-> >> because suddenly spectral scan would be stopped implicitly by device
-> >> crash).
-> > 
-> > No, I didn't test that against a firmware crash yet ...
-> 
-> There's 'simulate_fw_crash' in debugfs. I suggest 'hard' method.
-> 'soft' works only with fw 636 now. Watch out for possible host lockups
-> though.
-> 
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>
+---
+ drivers/net/wireless/ath/ath9k/spectral.h  | 71 +-----------------------
+ drivers/net/wireless/ath/spectral_common.h | 88 ++++++++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+), 69 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/spectral_common.h
 
-Thanks, the hard firmware crash worked for me.
+diff --git a/drivers/net/wireless/ath/ath9k/spectral.h b/drivers/net/wireless/ath/ath9k/spectral.h
+index 137e2e6..0b9465e 100644
+--- a/drivers/net/wireless/ath/ath9k/spectral.h
++++ b/drivers/net/wireless/ath/ath9k/spectral.h
+@@ -17,6 +17,8 @@
+ #ifndef SPECTRAL_H
+ #define SPECTRAL_H
+ 
++#include "../spectral_common.h"
++
+ /* enum spectral_mode:
+  *
+  * @SPECTRAL_DISABLED: spectral mode is disabled
+@@ -54,8 +56,6 @@ struct ath_ht20_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_NUM_BINS		56
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data by -1/+2. This struct is for reference only.
+  */
+@@ -83,8 +83,6 @@ struct ath_ht20_40_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_40_NUM_BINS		128
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data. This struct is for reference only.
+  */
+@@ -125,71 +123,6 @@ static inline u8 spectral_bitmap_weight(u8 *bins)
+ 	return bins[0] & 0x3f;
+ }
+ 
+-/* FFT sample format given to userspace via debugfs.
+- *
+- * Please keep the type/length at the front position and change
+- * other fields after adding another sample type
+- *
+- * TODO: this might need rework when switching to nl80211-based
+- * interface.
+- */
+-enum ath_fft_sample_type {
+-	ATH_FFT_SAMPLE_HT20 = 1,
+-	ATH_FFT_SAMPLE_HT20_40,
+-};
+-
+-struct fft_sample_tlv {
+-	u8 type;	/* see ath_fft_sample */
+-	__be16 length;
+-	/* type dependent data follows */
+-} __packed;
+-
+-struct fft_sample_ht20 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 max_exp;
+-
+-	__be16 freq;
+-	s8 rssi;
+-	s8 noise;
+-
+-	__be16 max_magnitude;
+-	u8 max_index;
+-	u8 bitmap_weight;
+-
+-	__be64 tsf;
+-
+-	u8 data[SPECTRAL_HT20_NUM_BINS];
+-} __packed;
+-
+-struct fft_sample_ht20_40 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 channel_type;
+-	__be16 freq;
+-
+-	s8 lower_rssi;
+-	s8 upper_rssi;
+-
+-	__be64 tsf;
+-
+-	s8 lower_noise;
+-	s8 upper_noise;
+-
+-	__be16 lower_max_magnitude;
+-	__be16 upper_max_magnitude;
+-
+-	u8 lower_max_index;
+-	u8 upper_max_index;
+-
+-	u8 lower_bitmap_weight;
+-	u8 upper_bitmap_weight;
+-
+-	u8 max_exp;
+-
+-	u8 data[SPECTRAL_HT20_40_NUM_BINS];
+-} __packed;
+-
+ void ath9k_spectral_init_debug(struct ath_softc *sc);
+ void ath9k_spectral_deinit_debug(struct ath_softc *sc);
+ 
+diff --git a/drivers/net/wireless/ath/spectral_common.h b/drivers/net/wireless/ath/spectral_common.h
+new file mode 100644
+index 0000000..b9ab722
+--- /dev/null
++++ b/drivers/net/wireless/ath/spectral_common.h
+@@ -0,0 +1,88 @@
++/*
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifndef SPECTRAL_COMMON_H
++#define SPECTRAL_COMMON_H
++
++#define SPECTRAL_HT20_NUM_BINS		56
++#define SPECTRAL_HT20_40_NUM_BINS		128
++
++/* FFT sample format given to userspace via debugfs.
++ *
++ * Please keep the type/length at the front position and change
++ * other fields after adding another sample type
++ *
++ * TODO: this might need rework when switching to nl80211-based
++ * interface.
++ */
++enum ath_fft_sample_type {
++	ATH_FFT_SAMPLE_HT20 = 1,
++	ATH_FFT_SAMPLE_HT20_40,
++};
++
++struct fft_sample_tlv {
++	u8 type;	/* see ath_fft_sample */
++	__be16 length;
++	/* type dependent data follows */
++} __packed;
++
++struct fft_sample_ht20 {
++	struct fft_sample_tlv tlv;
++
++	u8 max_exp;
++
++	__be16 freq;
++	s8 rssi;
++	s8 noise;
++
++	__be16 max_magnitude;
++	u8 max_index;
++	u8 bitmap_weight;
++
++	__be64 tsf;
++
++	u8 data[SPECTRAL_HT20_NUM_BINS];
++} __packed;
++
++struct fft_sample_ht20_40 {
++	struct fft_sample_tlv tlv;
++
++	u8 channel_type;
++	__be16 freq;
++
++	s8 lower_rssi;
++	s8 upper_rssi;
++
++	__be64 tsf;
++
++	s8 lower_noise;
++	s8 upper_noise;
++
++	__be16 lower_max_magnitude;
++	__be16 upper_max_magnitude;
++
++	u8 lower_max_index;
++	u8 upper_max_index;
++
++	u8 lower_bitmap_weight;
++	u8 upper_bitmap_weight;
++
++	u8 max_exp;
++
++	u8 data[SPECTRAL_HT20_40_NUM_BINS];
++} __packed;
++
++#endif /* SPECTRAL_COMMON_H */
+-- 
+1.9.1
 
-> > Restarting spectral
-> > would probably a good idea in endless mode, but not if "count" has been
-> > set.
-> 
-> Hmm good point, but then what if you have count=20 and fw crashes in
-> the middle of performing the spectral scan run (e.g. at iteration 10)?
-> 
-> But then this is just a debug interface (or is it?). I don't know if
-> it's worth it going to great lengths to provide a super smooth user
-> experience.
-
-Well yeah, it's in debugfs so its a debug interface. ;) Since we don't really 
-keep track whether a scan was triggered or not, and the firmware takes some 
-time to recover, I don't think it's worth the hassle - without creating more 
-confusion. I'll reset the spectral mode in any case so users at least see that 
-its disabled.
-
-I'll send the next round of patches in some minutes. :)
-
-Thanks!
-    Simon
 
 _______________________________________________
 ath10k mailing list
