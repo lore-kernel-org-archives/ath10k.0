@@ -1,14 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22f.google.com ([2a00:1450:400c:c03::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9Bdw-0002lL-G1
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 11:20:33 +0000
-Received: by mail-we0-f175.google.com with SMTP id t60so7411029wes.34
- for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 04:20:08 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/2] ath10k: scan fixes 2014-07-21
-Date: Mon, 21 Jul 2014 13:11:19 +0200
-Message-Id: <1405941081-17359-1-git-send-email-michal.kazior@tieto.com>
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9CR4-0006kt-TK
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 12:11:19 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Mon, 21 Jul 2014 14:10:38 +0200
+Subject: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
+References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+ <53C6A1C7.5060004@intec.ugent.be>
+ <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+ <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>,
+ <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
+In-Reply-To: <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
+Content-Language: fr-FR
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,53 +27,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, sw@simonwunderlich.de
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Hi,
+>>>So probably the air condition you have forces the rate control to pick
+>>>MCS7 as the most suitable rates.
 
-This addresses an issue found by Janusz with
-current spectral scan patches from Simon.
+>> What could I do to improve this? (Change the air conditioner LOL?)
 
-This goes along patch `ath10k: prevent endless pci rx
-loop` I've posted a few days ago.
+>Heh, he meant the RF environment in the location you are. :)
+>And ugh - this is why we need an open source ART already.
 
-There seems to be a condition in firmware which
-causes some WMI events to be not delivered by
-firmware to host most likely due to CE/PCI pipe
-being full (that's a guess judging by the huge
-amount of phyerrs reported and their behaviour
-while spectral scan is enabled). This also
-suggests some SWBA events may be dropped by
-firmware when spectral scan is running (same goes
-for management rx).
-
-@Simon: you may be interested in applying these
-patches if you run into trouble while testing
-spectral scan + hw_scan/hw_roc.
-
-@Ben: since you reported some scan issues in the
-past you may be interested in this as well.
+Thanks, I captured log from Wireshark and saw in the frame of broadcast of my AP that VHT Supported MCS 0-9 with NSS1,2,3 (both TX and RX MCS map)
+but VHT Operation basic MCS map only indicate MCS 0-7 with NSS1 (strange cause if NSS1 I can not go up to 410 Mbps).
+I might move my devices to a closed room to do the test so that I can avoid other RF effects.
 
 
-Michal Kazior (2):
-  ath10k: introduce a stricter scan state machine
-  ath10k: simplify scan debug prints
-
- drivers/net/wireless/ath/ath10k/core.c |   4 +-
- drivers/net/wireless/ath/ath10k/core.h |  10 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 219 +++++++++++++++++++--------------
- drivers/net/wireless/ath/ath10k/mac.h  |   3 +-
- drivers/net/wireless/ath/ath10k/wmi.c  | 210 ++++++++++++++++++++++---------
- 5 files changed, 290 insertions(+), 156 deletions(-)
-
--- 
-1.8.5.3
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
 
 
 _______________________________________________
