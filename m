@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Fri, 18 Jul 2014 14:27:00 -0700
-From: Greg KH <greg@kroah.com>
-Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
-Message-ID: <20140718212700.GA12121@kroah.com>
-References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
- <20140718162213.GC31114@tuxdriver.com>
- <20140718164340.GA24960@kroah.com>
- <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
- <20140718181759.GB2193@kroah.com>
- <CAPM=9tzgWdnv7jc+xjsJUf0EcyGU+V7nFHzzQ16ui1eE0ihyQA@mail.gmail.com>
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9A81-00012R-HA
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 09:43:30 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Re: [PATCH 2/2] ath10k: add spectral scan feature
+Date: Mon, 21 Jul 2014 11:43:04 +0200
+References: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
+ <1405689992-8538-3-git-send-email-sw@simonwunderlich.de>
+ <CAEFj986Vruig8wCP+RLS_gQf8utAirmTDCKwmMGyfj7B2vH9pw@mail.gmail.com>
+In-Reply-To: <CAEFj986Vruig8wCP+RLS_gQf8utAirmTDCKwmMGyfj7B2vH9pw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAPM=9tzgWdnv7jc+xjsJUf0EcyGU+V7nFHzzQ16ui1eE0ihyQA@mail.gmail.com>
+Message-Id: <201407211143.04868.sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Airlie <airlied@gmail.com>
-Cc: linux-mips@linux-mips.org, Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-pci@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, James Bottomley <James.Bottomley@hansenpartnership.com>, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, Linux SCSI List <linux-scsi@vger.kernel.org>, users@rt2x00.serialmonkey.com, linux-rdma@vger.kernel.org, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, Linux Wireless List <linux-wireless@vger.kernel.org>, xen-devel@lists.xenproject.org, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, Network Development <netdev@vger.kernel.org>, linux-mmc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, e1000-devel@lists.sourceforge.net, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, sven@narfation.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Sat, Jul 19, 2014 at 07:14:12AM +1000, Dave Airlie wrote:
-> >
-> > We have almost 1000 more uses of the non-macro version than the "macro"
-> > version in the kernel today:
-> > $ git grep -w DEFINE_PCI_DEVICE_TABLE | wc -l
-> > 262
-> > $ git grep "const struct pci_device_id" | wc -l
-> > 1254
+> On Fri, Jul 18, 2014 at 9:26 PM, Simon Wunderlich <sw@simonwunderlich.de> 
+wrote:
+> > Adds the spectral scan feature for ath10k. The spectral scan is triggered
+> > by configuring a mode through a debugfs control file. Samples can be
+> > gathered via another relay debugfs file.
+> > 
+> > Essentially, to try it out:
+> > 
+> > ip link dev wlan0 set up
 > 
-> did you check for non-const ones? just to see if we have any of the
-> broken case in the tree :-)
+> It should be "ip link set dev wlan0 up", right?
 
-I didn't :)
+Whoops, yeah, that's right, I'll change that in the next iteration.
+> 
+> I have tried to capture the samples on ath10k and open it using fft_eval.
+> 
+> But found the following errors in my samples "invalid bin length 63".
+> 
+> I will send the samples in separate email.
 
-> as for consistency, pci_dev vs usb_device :-P
+Thanks for the output! Could it be that you are using the old RFC patch with 
+the new fft-eval? I've added another byte (max_exp), so the header became 
+longer. Please try again with the latest patch (from this thread), if that is 
+the case. Otherwise we have to find out whats wrong ... The sample_len as used 
+in fft_eval (tlv-header + data) should be 93 with that version.
 
-Read farther down the email...
-
+Thanks!
+    Simon
 
 _______________________________________________
 ath10k mailing list
