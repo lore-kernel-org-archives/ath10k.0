@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-lb0-f173.google.com ([209.85.217.173])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9IRm-0004j5-AW
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 18:36:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv2 2/2] ath10k: add spectral scan feature
-References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
- <1405945943-8303-3-git-send-email-sw@simonwunderlich.de>
-Date: Mon, 21 Jul 2014 21:35:58 +0300
-In-Reply-To: <1405945943-8303-3-git-send-email-sw@simonwunderlich.de> (Simon
- Wunderlich's message of "Mon, 21 Jul 2014 14:32:23 +0200")
-Message-ID: <87r41ewodt.fsf@kamboji.qca.qualcomm.com>
+ id 1X9Ibp-0000J9-D7
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 18:46:49 +0000
+Received: by mail-lb0-f173.google.com with SMTP id p9so1873291lbv.4
+ for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 11:46:23 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87vbqqwoks.fsf@kamboji.qca.qualcomm.com>
+References: <CALCETrUXvbhkKDAvEw+643mKZtJzcJtPGhxbo35r3h=rCMOWwA@mail.gmail.com>
+ <87vbqqwoks.fsf@kamboji.qca.qualcomm.com>
+From: Andy Lutomirski <luto@amacapital.net>
+Date: Mon, 21 Jul 2014 11:46:03 -0700
+Message-ID: <CALCETrXwiNFyX0XBFTuugzD3qoMzMgR29BU0MJF5-r=7emuFmw@mail.gmail.com>
+Subject: Re: ath10k tx to a Macbook Pro stalls
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Simon Wunderlich <sw@simonwunderlich.de> writes:
-
-> Adds the spectral scan feature for ath10k. The spectral scan is triggered by
-> configuring a mode through a debugfs control file. Samples can be gathered via
-> another relay debugfs file.
+On Mon, Jul 21, 2014 at 11:31 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Andy Lutomirski <luto@amacapital.net> writes:
 >
-> Essentially, to try it out:
+>> On my Archer C7 v2, as soon as the MBP tries to do something like
+>> playing a video, it seems like frames *to* the MBP no longer get
+>> there.  At the very least, arp replies don't get there.
 >
-> ip link set dev wlan0 up
-> echo background > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> iw dev wlan0 scan
-> echo disable > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 > samples
+> A multicast problem? Can you run for example 'arping -b <macbook's ip>'
+> to check if multicast stops working at some point? What if you hardcode
+> the ARP address, do unicast packets go to the macbook still?
+
+I thought that ARP replies were unicast.  Certainly my laptop replies
+to ARP requests with a unicast frame to the requester.
+
+I was also unable to ping the MBP from my laptop, which suggests that
+broadcasts were also not being received.  But I could have gotten
+confused there.
+
 >
-> This feature is still experimental. Based on the original RFC patch of
-> Sven Eckelmann.
+> If there are multicast problems, my first suspect is always power save.
+> Is there a way to disable power save on the macbook for narrowing down
+> the problem?
+
+No clue.  I'll take a look.
+
 >
-> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>
+> Also we had discussion about macbook problems before and aggreation came
+> up as one suspect. Now we have a debugfs interface to change aggregation
+> settings, but I doubt openwrt has that yet. Check the archives for more.
 
-While I was commiting this to ath-next-test for build tests and review,
-I had a trivial conflict. Please check the patch:
+This problem seems to be sporadic enough that it's hard to tell, but
+changing the AP's mode from VHT80 to HT40 seems to have solved the
+problem.
 
-https://github.com/kvalo/ath/commit/85dec746d1f4728176bd06a53b6da4ef014f2a27
+I'll try to reproduce this later tonight and see if I can learn more.
 
-Oddly enough with this patch I see a new warning:
-
-include/uapi/linux/swab.h:71:16: error: undefined identifier '__builtin_bswap64'
-
-But I guess there's not much we can do about that?
-
--- 
-Kalle Valo
+--Andy
 
 _______________________________________________
 ath10k mailing list
