@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9ANu-0001aX-Ah
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 09:59:55 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [PATCH 2/2] ath10k: add spectral scan feature
-Date: Mon, 21 Jul 2014 11:59:25 +0200
+ id 1X9AdS-0002E3-9J
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 10:15:59 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so3825535wiv.17
+ for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 03:15:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <201407211159.26103.sw@simonwunderlich.de>
 References: <1405689992-8538-1-git-send-email-sw@simonwunderlich.de>
  <1405689992-8538-3-git-send-email-sw@simonwunderlich.de>
  <CA+BoTQmrn0ddGe=p_d9+vCpMUMQ6dKhL+DmZ76OicacmxoYVMA@mail.gmail.com>
-In-Reply-To: <CA+BoTQmrn0ddGe=p_d9+vCpMUMQ6dKhL+DmZ76OicacmxoYVMA@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201407211159.26103.sw@simonwunderlich.de>
+ <201407211159.26103.sw@simonwunderlich.de>
+Date: Mon, 21 Jul 2014 12:15:34 +0200
+Message-ID: <CA+BoTQnCLDJYzGDLA-zHcaddY-cyuC48dMwTnoHJP+KYG2tN_Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: add spectral scan feature
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +23,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Simon Wunderlich <sw@simonwunderlich.de>
 Cc: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>, "Giori,
  Kathy" <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hey Michal,
-
-thanks for the review! I agree to most points and will fixed them in the next 
-revision, for the rest I'm putting comments below:
-
-[...]
-> > +       nf_list1 = __le32_to_cpu(event->hdr.nf_list_1);
-> > +       nf_list2 = __le32_to_cpu(event->hdr.nf_list_2);
-> > +       chain_idx = MS(reg0, SEARCH_FFT_REPORT_REG0_FFT_CHN_IDX);
-> > +       switch (chain_idx) {
-> > +       case 0:
-> > +               fft_sample->noise = __cpu_to_be16(nf_list1 & 0xffffu);
-> 
-> Are you sure you want to & nf_list1 itself *before* the byte swap? You
-> probably won't see a difference with an intel host system which is
-> little-endian just like the target device.
-
-That is intended as written: with le32_to_cpu() above we get the data into 
-host order to process it, then we get the 16-bit noise values according to the 
-chain index, and finally convert it to big endian as this is our exchange 
-format to userspace - as you can see, we do the same for the other 16bit 
-members of fft_sample as well.
-
-[...]
-> > +       arvif = ath10k_get_spectral_vdev(ar);
-> > +       if (!arvif)
-> > +               return -ENODEV;
-> > +       vdev_id = arvif->vdev_id;
-> > +
-> > +       if (ar->spectral_mode == SPECTRAL_DISABLED)
-> > +               return 0;
-> > +
-> > +       res = ath10k_wmi_vdev_spectral_enable(ar, vdev_id,
-> > +                                            
-> > WMI_SPECTRAL_TRIGGER_CMD_CLEAR, +                                       
-> >      WMI_SPECTRAL_ENABLE_CMD_ENABLE); +       if (res < 0)
-> > +               return res;
-> > +
-> > +       res = ath10k_wmi_vdev_spectral_enable(ar, vdev_id,
-> > +                                            
-> > WMI_SPECTRAL_TRIGGER_CMD_TRIGGER, +                                     
-> >        WMI_SPECTRAL_ENABLE_CMD_ENABLE); +       if (res < 0)
-> > +               return res;
-> > +
-> > +       return 0;
-> > +}
-> > +static int ath10k_spectral_scan_config(struct ath10k *ar,
-> > +                                      enum ath10k_spectral_mode mode)
-> > +{
-> > +       struct wmi_vdev_spectral_conf_arg arg;
-> > +       struct ath10k_vif *arvif;
-> > +       int vdev_id, count, res = 0;
-> > +
-> 
-> Ditto. lockdep_assert_held().
-
-Actually both functions are calling ath10k_get_spectral_vdev() which already 
-has that assert, but it doesn't hurt to put it here as well. Will do. :)
-[...]
-
-> 
-> Did you test this against a firmware crash while spectral scan is
-> enabled? ar->spectral_mode will be left as-is when restart is
-> performed but no spectral scan will be actually configured. You either
-> need to restart spectral scan (better from user perspective) or clear
-> out the old mode (easier to code, but bad from user perspective
-> because suddenly spectral scan would be stopped implicitly by device
-> crash).
-
-No, I didn't test that against a firmware crash yet ... Restarting spectral 
-would probably a good idea in endless mode, but not if "count" has been set. 
-I'll look into that and propose something in the next iteration.
-
-Thanks. :)
-    Simon
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgSnVseSAyMDE0IDExOjU5LCBTaW1vbiBXdW5kZXJsaWNoIDxzd0BzaW1vbnd1bmRlcmxp
+Y2guZGU+IHdyb3RlOgo+IEhleSBNaWNoYWwsCj4KPiB0aGFua3MgZm9yIHRoZSByZXZpZXchIEkg
+YWdyZWUgdG8gbW9zdCBwb2ludHMgYW5kIHdpbGwgZml4ZWQgdGhlbSBpbiB0aGUgbmV4dAo+IHJl
+dmlzaW9uLCBmb3IgdGhlIHJlc3QgSSdtIHB1dHRpbmcgY29tbWVudHMgYmVsb3c6Cj4KPiBbLi4u
+XQo+PiA+ICsgICAgICAgbmZfbGlzdDEgPSBfX2xlMzJfdG9fY3B1KGV2ZW50LT5oZHIubmZfbGlz
+dF8xKTsKPj4gPiArICAgICAgIG5mX2xpc3QyID0gX19sZTMyX3RvX2NwdShldmVudC0+aGRyLm5m
+X2xpc3RfMik7Cj4+ID4gKyAgICAgICBjaGFpbl9pZHggPSBNUyhyZWcwLCBTRUFSQ0hfRkZUX1JF
+UE9SVF9SRUcwX0ZGVF9DSE5fSURYKTsKPj4gPiArICAgICAgIHN3aXRjaCAoY2hhaW5faWR4KSB7
+Cj4+ID4gKyAgICAgICBjYXNlIDA6Cj4+ID4gKyAgICAgICAgICAgICAgIGZmdF9zYW1wbGUtPm5v
+aXNlID0gX19jcHVfdG9fYmUxNihuZl9saXN0MSAmIDB4ZmZmZnUpOwo+Pgo+PiBBcmUgeW91IHN1
+cmUgeW91IHdhbnQgdG8gJiBuZl9saXN0MSBpdHNlbGYgKmJlZm9yZSogdGhlIGJ5dGUgc3dhcD8g
+WW91Cj4+IHByb2JhYmx5IHdvbid0IHNlZSBhIGRpZmZlcmVuY2Ugd2l0aCBhbiBpbnRlbCBob3N0
+IHN5c3RlbSB3aGljaCBpcwo+PiBsaXR0bGUtZW5kaWFuIGp1c3QgbGlrZSB0aGUgdGFyZ2V0IGRl
+dmljZS4KPgo+IFRoYXQgaXMgaW50ZW5kZWQgYXMgd3JpdHRlbjogd2l0aCBsZTMyX3RvX2NwdSgp
+IGFib3ZlIHdlIGdldCB0aGUgZGF0YSBpbnRvCj4gaG9zdCBvcmRlciB0byBwcm9jZXNzIGl0LCB0
+aGVuIHdlIGdldCB0aGUgMTYtYml0IG5vaXNlIHZhbHVlcyBhY2NvcmRpbmcgdG8gdGhlCj4gY2hh
+aW4gaW5kZXgsIGFuZCBmaW5hbGx5IGNvbnZlcnQgaXQgdG8gYmlnIGVuZGlhbiBhcyB0aGlzIGlz
+IG91ciBleGNoYW5nZQo+IGZvcm1hdCB0byB1c2Vyc3BhY2UgLSBhcyB5b3UgY2FuIHNlZSwgd2Ug
+ZG8gdGhlIHNhbWUgZm9yIHRoZSBvdGhlciAxNmJpdAo+IG1lbWJlcnMgb2YgZmZ0X3NhbXBsZSBh
+cyB3ZWxsLgoKQWgsIEkgZ3Vlc3MgSSBzaG91bGQgcHV0IG9uIG15IGdsYXNzZXMgbm93LiBJIHBh
+cnNlZCB0aGF0IGxpbmUgYXMKX3RvX2NwdSgpLiBTb3JyeSA6LSkKCgo+IFsuLi5dCj4+ID4gKyAg
+ICAgICBhcnZpZiA9IGF0aDEwa19nZXRfc3BlY3RyYWxfdmRldihhcik7Cj4+ID4gKyAgICAgICBp
+ZiAoIWFydmlmKQo+PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gLUVOT0RFVjsKPj4gPiArICAg
+ICAgIHZkZXZfaWQgPSBhcnZpZi0+dmRldl9pZDsKPj4gPiArCj4+ID4gKyAgICAgICBpZiAoYXIt
+PnNwZWN0cmFsX21vZGUgPT0gU1BFQ1RSQUxfRElTQUJMRUQpCj4+ID4gKyAgICAgICAgICAgICAg
+IHJldHVybiAwOwo+PiA+ICsKPj4gPiArICAgICAgIHJlcyA9IGF0aDEwa193bWlfdmRldl9zcGVj
+dHJhbF9lbmFibGUoYXIsIHZkZXZfaWQsCj4+ID4gKwo+PiA+IFdNSV9TUEVDVFJBTF9UUklHR0VS
+X0NNRF9DTEVBUiwgKwo+PiA+ICAgICAgV01JX1NQRUNUUkFMX0VOQUJMRV9DTURfRU5BQkxFKTsg
+KyAgICAgICBpZiAocmVzIDwgMCkKPj4gPiArICAgICAgICAgICAgICAgcmV0dXJuIHJlczsKPj4g
+PiArCj4+ID4gKyAgICAgICByZXMgPSBhdGgxMGtfd21pX3ZkZXZfc3BlY3RyYWxfZW5hYmxlKGFy
+LCB2ZGV2X2lkLAo+PiA+ICsKPj4gPiBXTUlfU1BFQ1RSQUxfVFJJR0dFUl9DTURfVFJJR0dFUiwg
+Kwo+PiA+ICAgICAgICBXTUlfU1BFQ1RSQUxfRU5BQkxFX0NNRF9FTkFCTEUpOyArICAgICAgIGlm
+IChyZXMgPCAwKQo+PiA+ICsgICAgICAgICAgICAgICByZXR1cm4gcmVzOwo+PiA+ICsKPj4gPiAr
+ICAgICAgIHJldHVybiAwOwo+PiA+ICt9Cj4+ID4gK3N0YXRpYyBpbnQgYXRoMTBrX3NwZWN0cmFs
+X3NjYW5fY29uZmlnKHN0cnVjdCBhdGgxMGsgKmFyLAo+PiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgIGVudW0gYXRoMTBrX3NwZWN0cmFsX21vZGUgbW9kZSkKPj4gPiAr
+ewo+PiA+ICsgICAgICAgc3RydWN0IHdtaV92ZGV2X3NwZWN0cmFsX2NvbmZfYXJnIGFyZzsKPj4g
+PiArICAgICAgIHN0cnVjdCBhdGgxMGtfdmlmICphcnZpZjsKPj4gPiArICAgICAgIGludCB2ZGV2
+X2lkLCBjb3VudCwgcmVzID0gMDsKPj4gPiArCj4+Cj4+IERpdHRvLiBsb2NrZGVwX2Fzc2VydF9o
+ZWxkKCkuCj4KPiBBY3R1YWxseSBib3RoIGZ1bmN0aW9ucyBhcmUgY2FsbGluZyBhdGgxMGtfZ2V0
+X3NwZWN0cmFsX3ZkZXYoKSB3aGljaCBhbHJlYWR5Cj4gaGFzIHRoYXQgYXNzZXJ0LCBidXQgaXQg
+ZG9lc24ndCBodXJ0IHRvIHB1dCBpdCBoZXJlIGFzIHdlbGwuIFdpbGwgZG8uIDopCgpUcnVlIGJ1
+dCB0aG9zZSBmdW5jdGlvbnMgKHNjYW5fY29uZmlnLCBzY2FuX3RyaWdnZXIpIGFsc28gYWNjZXNz
+CmNvbmZfbXV0ZXggcHJvdGVjdGVkIGRhdGEgdGhlbXNlbHZlcyBkaXJlY3RseS4gSWYKYXRoMTBr
+X2dldF9zcGVjdHJhbF92ZGV2KCkgd2FzIHRvIGJlIGNoYW5nZWQgdG8gbm90IHJlcXVpcmUgY29u
+Zl9tdXRleAp5b3UnZCBoYXZlIHRvIHJlbWVtYmVyIHRvIG1vdmUgbG9ja2RlcF9hc3NlcnRfaGVs
+ZCgpIHVwIHRoZSBjYWxsCnN0YWNrLgoKCj4+IERpZCB5b3UgdGVzdCB0aGlzIGFnYWluc3QgYSBm
+aXJtd2FyZSBjcmFzaCB3aGlsZSBzcGVjdHJhbCBzY2FuIGlzCj4+IGVuYWJsZWQ/IGFyLT5zcGVj
+dHJhbF9tb2RlIHdpbGwgYmUgbGVmdCBhcy1pcyB3aGVuIHJlc3RhcnQgaXMKPj4gcGVyZm9ybWVk
+IGJ1dCBubyBzcGVjdHJhbCBzY2FuIHdpbGwgYmUgYWN0dWFsbHkgY29uZmlndXJlZC4gWW91IGVp
+dGhlcgo+PiBuZWVkIHRvIHJlc3RhcnQgc3BlY3RyYWwgc2NhbiAoYmV0dGVyIGZyb20gdXNlciBw
+ZXJzcGVjdGl2ZSkgb3IgY2xlYXIKPj4gb3V0IHRoZSBvbGQgbW9kZSAoZWFzaWVyIHRvIGNvZGUs
+IGJ1dCBiYWQgZnJvbSB1c2VyIHBlcnNwZWN0aXZlCj4+IGJlY2F1c2Ugc3VkZGVubHkgc3BlY3Ry
+YWwgc2NhbiB3b3VsZCBiZSBzdG9wcGVkIGltcGxpY2l0bHkgYnkgZGV2aWNlCj4+IGNyYXNoKS4K
+Pgo+IE5vLCBJIGRpZG4ndCB0ZXN0IHRoYXQgYWdhaW5zdCBhIGZpcm13YXJlIGNyYXNoIHlldCAu
+Li4KClRoZXJlJ3MgJ3NpbXVsYXRlX2Z3X2NyYXNoJyBpbiBkZWJ1Z2ZzLiBJIHN1Z2dlc3QgJ2hh
+cmQnIG1ldGhvZC4KJ3NvZnQnIHdvcmtzIG9ubHkgd2l0aCBmdyA2MzYgbm93LiBXYXRjaCBvdXQg
+Zm9yIHBvc3NpYmxlIGhvc3QgbG9ja3Vwcwp0aG91Z2guCgoKPiBSZXN0YXJ0aW5nIHNwZWN0cmFs
+Cj4gd291bGQgcHJvYmFibHkgYSBnb29kIGlkZWEgaW4gZW5kbGVzcyBtb2RlLCBidXQgbm90IGlm
+ICJjb3VudCIgaGFzIGJlZW4gc2V0LgoKSG1tIGdvb2QgcG9pbnQsIGJ1dCB0aGVuIHdoYXQgaWYg
+eW91IGhhdmUgY291bnQ9MjAgYW5kIGZ3IGNyYXNoZXMgaW4KdGhlIG1pZGRsZSBvZiBwZXJmb3Jt
+aW5nIHRoZSBzcGVjdHJhbCBzY2FuIHJ1biAoZS5nLiBhdCBpdGVyYXRpb24gMTApPwoKQnV0IHRo
+ZW4gdGhpcyBpcyBqdXN0IGEgZGVidWcgaW50ZXJmYWNlIChvciBpcyBpdD8pLiBJIGRvbid0IGtu
+b3cgaWYKaXQncyB3b3J0aCBpdCBnb2luZyB0byBncmVhdCBsZW5ndGhzIHRvIHByb3ZpZGUgYSBz
+dXBlciBzbW9vdGggdXNlcgpleHBlcmllbmNlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
