@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9Mbf-00080o-Cf
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 23:02:55 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 964CD409C9D
- for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 16:02:33 -0700 (PDT)
-Message-ID: <53CD9C08.9090908@candelatech.com>
-Date: Mon, 21 Jul 2014 16:02:32 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-oi0-x22a.google.com ([2607:f8b0:4003:c06::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9Mp3-0000BG-3T
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 23:16:45 +0000
+Received: by mail-oi0-f42.google.com with SMTP id a3so3821005oib.1
+ for <ath10k@lists.infradead.org>; Mon, 21 Jul 2014 16:16:23 -0700 (PDT)
 MIME-Version: 1.0
-Subject: New CT firmware release is uploaded.
+In-Reply-To: <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
+References: <1405697232-11785-1-git-send-email-benoit.taine@lip6.fr>
+ <20140718162213.GC31114@tuxdriver.com> <20140718164340.GA24960@kroah.com>
+ <1405702472.30262.1.camel@dabdike.int.hansenpartnership.com>
+ <20140718181759.GB2193@kroah.com>
+ <1405709421.30262.8.camel@dabdike.int.hansenpartnership.com>
+From: Bjorn Helgaas <bhelgaas@google.com>
+Date: Mon, 21 Jul 2014 17:16:03 -0600
+Message-ID: <CAErSpo7svKg0HiL=g8wWAHWUN3vs0UgCvVhvd84DM6nVDmT=FQ@mail.gmail.com>
+Subject: Re: [PATCH 0/25] Replace DEFINE_PCI_DEVICE_TABLE macro use
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +24,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, linux-fbdev@vger.kernel.org, "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>, DRI mailing list <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, Benoit Taine <benoit.taine@lip6.fr>, ath5k-devel@venema.h4ckr.net, linux-acenic@sunsite.dk, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, users@rt2x00.serialmonkey.com, "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>, Jingoo Han <jg1.han@samsung.com>, ath10k@lists.infradead.org, linux-hippi@sunsite.dk, industrypack-devel@lists.sourceforge.net, Greg KH <greg@kroah.com>, linux-wireless <linux-wireless@vger.kernel.org>, "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>, MPT-FusionLinux.pdl@avagotech.com, ath9k-devel@venema.h4ckr.net, wil6210@qca.qualcomm.com, linux-pcmcia@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, linux-can@vger.kernel.org, platform-driver-x86@vger.kernel.org, netdev <netdev@vger.kernel.org>, linux-mmc <linux-mmc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>, linux-crypto@vger.kernel.org, devel@linuxdriverproject.org
 
-Release notes:
-
-      Improve RAM usage:  Re-organized, trimmed, and otherwise made better use
-      of RAM.  Allow compiling out swbmiss, beacon filtering, roaming code.
-      Images with 'full' in their name do NOT have the previously mentioned features
-      compiled out.
-
-      Over-all, freed up about 80k of extra RAM, which can be used for more vdevs,
-      peers, buffers, etc.
-
-      Supports 64 vdevs (one should be reserved for monitor interface, so
-      effectively 63 vdevs for current kernels.)
-
-I have only lightly tested this on my 3.14 kernel so far.
-
-A lot of these changes could potentially introduce run-time
-crashes due to extensive use of a different type of RAM for
-storing many structures.  Should be a quick fix should problems
-arise.
-
-As always, let me know if you find any problems.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+WytjYyBKaW5nb29dCgpPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAxMjo1MCBQTSwgSmFtZXMgQm90
+dG9tbGV5CjxKYW1lcy5Cb3R0b21sZXlAaGFuc2VucGFydG5lcnNoaXAuY29tPiB3cm90ZToKPiBP
+biBGcmksIDIwMTQtMDctMTggYXQgMTE6MTcgLTA3MDAsIEdyZWcgS0ggd3JvdGU6Cj4+IE9uIEZy
+aSwgSnVsIDE4LCAyMDE0IGF0IDA5OjU0OjMyQU0gLTA3MDAsIEphbWVzIEJvdHRvbWxleSB3cm90
+ZToKPj4gPiBPbiBGcmksIDIwMTQtMDctMTggYXQgMDk6NDMgLTA3MDAsIEdyZWcgS0ggd3JvdGU6
+Cj4+ID4gPiBPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAxMjoyMjoxM1BNIC0wNDAwLCBKb2huIFcu
+IExpbnZpbGxlIHdyb3RlOgo+PiA+ID4gPiBPbiBGcmksIEp1bCAxOCwgMjAxNCBhdCAwNToyNjo0
+N1BNICswMjAwLCBCZW5vaXQgVGFpbmUgd3JvdGU6Cj4+ID4gPiA+ID4gV2Ugc2hvdWxkIHByZWZl
+ciBgY29uc3Qgc3RydWN0IHBjaV9kZXZpY2VfaWRgIG92ZXIKPj4gPiA+ID4gPiBgREVGSU5FX1BD
+SV9ERVZJQ0VfVEFCTEVgIHRvIG1lZXQga2VybmVsIGNvZGluZyBzdHlsZSBndWlkZWxpbmVzLgo+
+PiA+ID4gPiA+IFRoaXMgaXNzdWUgd2FzIHJlcG9ydGVkIGJ5IGNoZWNrcGF0Y2guCj4+ID4gPiA+
+Cj4+ID4gPiA+IEhvbmVzdGx5LCBJIHByZWZlciB0aGUgbWFjcm8gLS0gaXQgc3RhbmRzLW91dCBt
+b3JlLiAgTWF5YmUgdGhlIHN0eWxlCj4+ID4gPiA+IGd1aWRlbGluZXMgYW5kL29yIGNoZWNrcGF0
+Y2ggc2hvdWxkIGNoYW5nZSBpbnN0ZWFkPwo+PiA+ID4KPj4gPiA+IFRoZSBtYWNybyBpcyBob3Jy
+aWQsIG5vIG90aGVyIGJ1cyBoYXMgdGhpcyB0eXBlIG9mIHRoaW5nIGp1c3QgdG8gc2F2ZSBhCj4+
+ID4gPiBmZXcgY2hhcmFjdGVycyBpbiB0eXBpbmcKPj4gPgo+PiA+IE9LLCBzbyB0aGlzIGlzIHRo
+ZSBtYWNybzoKPj4gPgo+PiA+ICNkZWZpbmUgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUoX3RhYmxl
+KSBcCj4+ID4gICAgIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkIF90YWJsZVtdCj4+ID4KPj4g
+PiBDb3VsZCB5b3UgZXhwbGFpbiB3aGF0J3Mgc28gaG9ycmlibGU/Cj4+ID4KPj4gPiBUaGUgcmVh
+c29uIGl0J3MgdXNlZnVsIHRvZGF5IGlzIHRoYXQgcGVvcGxlIGZvcmdldCB0aGUgY29uc3QgKGFu
+ZAo+PiA+IHNvbWV0aW1lcyB0aGUgW10gbWFraW5nIGl0IGEgdHJ1ZSB0YWJsZSBpbnN0ZWFkIG9m
+IGEgcG9pbnRlcikuICBJZiB5b3UKPj4gPiB1c2UgdGhlIERFRklORV9QQ0lfREVWSUNFX1RBQkxF
+IG1hY3JvLCB0aGUgY29tcGlsZSBicmVha3MgaWYgeW91IHVzZSBpdAo+PiA+IHdyb25nbHkgKGdv
+b2QpIGFuZCB5b3UgYXV0b21hdGljYWxseSBnZXQgdGhlIGNvcnJlY3QgYW5ub3RhdGlvbnMuCj4+
+Cj4+IFdlIGhhdmUgYWxtb3N0IDEwMDAgbW9yZSB1c2VzIG9mIHRoZSBub24tbWFjcm8gdmVyc2lv
+biB0aGFuIHRoZSAibWFjcm8iCj4+IHZlcnNpb24gaW4gdGhlIGtlcm5lbCB0b2RheToKPj4gJCBn
+aXQgZ3JlcCAtdyBERUZJTkVfUENJX0RFVklDRV9UQUJMRSB8IHdjIC1sCj4+IDI2Mgo+PiAkIGdp
+dCBncmVwICJjb25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCIgfCB3YyAtbAo+PiAxMjU0Cj4+Cj4+
+IE15IGJpZyBjb21wbGFpbnQgaXMgdGhhdCB3ZSBuZWVkIHRvIGJlIGNvbnNpc3RhbnQsIGVpdGhl
+ciBwaWNrIG9uZSBvcgo+PiB0aGUgb3RoZXIgYW5kIHN0aWNrIHRvIGl0LiAgQXMgdGhlIG1hY3Jv
+IGlzIHRoZSBsZWFzdCB1c2VkLCBpdCdzIGVhc2llc3QKPj4gdG8gZml4IHVwLCBhbmQgaXQgYWxz
+byBpcyBtb3JlIGNvbnNpc3RhbnQgd2l0aCBhbGwgb3RoZXIga2VybmVsCj4+IHN1YnN5c3RlbXMg
+d2hpY2ggZG8gbm90IGhhdmUgc3VjaCBhIG1hY3JvLgo+Cj4gSSd2ZSBhIHdlYWsgcHJlZmVyZW5j
+ZSBmb3IgY29uc2lzdGVuY3ksIGJ1dCBub3QgYXQgdGhlIGV4cGVuc2Ugb2YKPiBodW5kcmVkcyBv
+ZiBwYXRjaGVzIGNodXJuaW5nIHRoZSBrZXJuZWwgdG8gcmVtb3ZlIGFuIGlubm9jdW91cyBtYWNy
+by4KPiBDaHVybiBjb3N0cyB0aW1lIGFuZCBlZmZvcnQuCj4KPj4gQXMgdGhlcmUgaXMgbm8gbmVl
+ZCBmb3IgdGhlIF9faW5pdCBtYWNybyBtZXNzIGFueW1vcmUsIHRoZXJlJ3Mgbm8gcmVhbAo+PiBu
+ZWVkIGZvciB0aGUgREVGSU5FX1BDSV9ERVZJQ0VfVEFCTEUgbWFjcm8gZWl0aGVyLiAgSSB0aGlu
+ayBjaGVja3BhdGNoCj4+IHdpbGwgY2F0Y2ggdGhlIHVzZSBvZiBub24tY29uc3QgdXNlcnMgZm9y
+IHRoZSBpZCB0YWJsZSBhbHJlYWR5IHRvZGF5LCBpdAo+PiBjYXRjaGVzIGxvdHMgb2Ygb3RoZXIg
+dXNlcyBsaWtlIHRoaXMgYWxyZWFkeS4KPj4KPj4gPiA+ICwgc28gd2h5IHNob3VsZCBQQ0kgYmUg
+InNwZWNpYWwiIGluIHRoaXMgcmVnYXJkCj4+ID4gPiBhbnltb3JlPwo+PiA+Cj4+ID4gSSB0aGlu
+ayB0aGUgUENJIHVzYWdlIGR3YXJmcyBtb3N0IG90aGVyIGJ1cyB0eXBlcyBub3csIHNvIHlvdSBj
+b3VsZCB0dXJuCj4+ID4gdGhlIHF1ZXN0aW9uIGFyb3VuZC4gIEhvd2V2ZXIsIEkgZG9uJ3QgdGhp
+bmsgbWFqb3JpdHkgdm90aW5nIGlzIGEgZ29vZAo+PiA+IGd1aWRlIHRvIGJlc3QgcHJhY3Rpc2U7
+IGxldHMgZGViYXRlIHRoZSBtZXJpdHMgZm9yIHRoZWlyIG93biBzYWtlLgo+Pgo+PiBOb3QgcmVh
+bGx5ICJkd2FyZiIsIFVTQiBpcyBjbG9zZSB3aXRoIG92ZXIgNzAwIHN1Y2ggc3RydWN0dXJlczoK
+Pj4gJCBnaXQgZ3JlcCAiY29uc3Qgc3RydWN0IHVzYl9kZXZpY2VfaWQiIHwgd2MgLWwKPj4gNzI1
+Cj4+Cj4+IEFuZCBpMmMgaXMgYWxtb3N0IGp1c3QgYXMgYmlnIGFzIFBDSToKPj4gJCBnaXQgZ3Jl
+cCAiY29uc3Qgc3RydWN0IGkyY19kZXZpY2VfaWQiIHwgd2MgLWwKPj4gMTIyMwo+Pgo+PiBTbyBh
+Z2FpbiwgdGhpcyBtYWNybyBpcyBub3QgY29uc2lzdGVudCB3aXRoIHRoZSBtYWpvcml0eSBvZiBQ
+Q0kgZHJpdmVycywKPj4gbm9yIHdpdGggYW55IG90aGVyIHR5cGUgb2YgImRldmljZSBpZCIgZGVj
+bGFyYXRpb24gaW4gdGhlIGtlcm5lbCwgd2hpY2gKPj4gaXMgd2h5IEkgZmVlbCBpdCBzaG91bGQg
+YmUgcmVtb3ZlZC4KPj4KPj4gQW5kIGZpbmFsbHksIHRoZSBQQ0kgZG9jdW1lbnRhdGlvbiBpdHNl
+bGYgc2F5cyB0byBub3QgdXNlIHRoaXMgbWFjcm8sIHNvCj4+IHRoaXMgaXNuJ3QgYSAibmV3IiB0
+aGluZy4gIEZyb20gRG9jdW1lbnRhdGlvbi9QQ0kvcGNpLnR4dDoKPj4KPj4gICAgICAgVGhlIElE
+IHRhYmxlIGlzIGFuIGFycmF5IG9mIHN0cnVjdCBwY2lfZGV2aWNlX2lkIGVudHJpZXMgZW5kaW5n
+IHdpdGggYW4KPj4gICAgICAgYWxsLXplcm8gZW50cnkuICBEZWZpbml0aW9ucyB3aXRoIHN0YXRp
+YyBjb25zdCBhcmUgZ2VuZXJhbGx5IHByZWZlcnJlZC4KPj4gICAgICAgVXNlIG9mIHRoZSBkZXBy
+ZWNhdGVkIG1hY3JvIERFRklORV9QQ0lfREVWSUNFX1RBQkxFIHNob3VsZCBiZSBhdm9pZGVkLgo+
+Pgo+PiBUaGF0IHdvcmRpbmcgd2VudCBpbnRvIHRoZSBmaWxlIGxhc3QgRGVjZW1iZXIsIHdoZW4g
+d2UgbGFzdCB0YWxrZWQgYWJvdXQKPj4gdGhpcyBhbmQgZXZlcnlvbmUgaW4gdGhhdCBkaXNjdXNz
+aW9uIGFncmVlZCB0byByZW1vdmUgdGhlIG1hY3JvIGZvciB0aGUKPj4gYWJvdmUgcmVhc29ucy4K
+Pj4KPj4gQ29uc2lzdGVuY3kgbWF0dGVycy4KPgo+IEluIHRoaXMgY2FzZSwgSSBkb24ndCB0aGlu
+ayBpdCBkb2VzIHRoYXQgbXVjaCAuLi4gYSBjdXQgYW5kIHBhc3RlIGVpdGhlcgo+IHdheSAoZnJv
+bSBhIG1hY3JvIG9yIG5vbi1tYWNybyBiYXNlZCBkcml2ZXIpIHlpZWxkcyBjb3JyZWN0IGNvZGUu
+ICBTaW5jZQo+IHRoZXJlJ3Mgbm8gYnVnIGhlcmUgYW5kIG5vIGFwcGFyZW50IHdheSB0byBtaXN1
+c2UgdGhlIG1hY3JvLCB3aHkgYm90aGVyPwo+Cj4gQW55d2F5LCBpdCdzIFBDSSBjb2RlIC4uLiBs
+ZXQgdGhlIFBDSSBtYWludGFpbmVyIGRlY2lkZS4gIEhvd2V2ZXIsIGlmIGhlCj4gZG9lcyB3YW50
+IHRoaXMgZG8gaXQgYXMgb25lIGJpZyBiYW5nIHBhdGNoIHZpYSBlaXRoZXIgdGhlIFBDSSBvciBU
+cml2aWFsCj4gdHJlZSAobGF0dGVyIGJlY2F1c2UgSmnFmcOtIGhhcyBleHBlcmllbmNlIGRvaW5n
+IHRoaXMsIGJ1dCB0aGUgZm9ybWVyCj4gbWlnaHQgYmUgdXNlZnVsIHNvIHRoZSBkZWNpZGVyIGZl
+ZWxzIHRoZSBwYWluIC4uLikKCkkgZG9uJ3QgZmVlbCBzdHJvbmdseSBlaXRoZXIgd2F5LCBzbyBJ
+IGd1ZXNzIEknbSBPSyB3aXRoIHRoaXMsIGFuZCBpbgp0aGUgc3Bpcml0IG9mIGZlZWxpbmcgdGhl
+IHBhaW4sIEknbSB3aWxsaW5nIHRvIGhhbmRsZSBpdC4gIEppbmdvbwpwcm9wb3NlZCBzaW1pbGFy
+IHBhdGNoZXMsIHNvIGl0IG1pZ2h0IGJlIG5pY2UgdG8gZ2l2ZSBoaW0gc29tZSBjcmVkaXQuCgpC
+ZW5vaXQsIGhvdyBhYm91dCBpZiB5b3Ugd2FpdCB1bnRpbCBhYm91dCBoYWxmLXdheSB0aHJvdWdo
+IHRoZSBtZXJnZQp3aW5kb3cgYWZ0ZXIgdjMuMTYgcmVsZWFzZXMsIGdlbmVyYXRlIGFuIHVwLXRv
+LWRhdGUgc2luZ2xlIHBhdGNoLCBhbmQKcG9zdCB0aGF0PyAgVGhlbiB3ZSBjYW4gdHJ5IHRvIGdl
+dCBpdCBpbiBiZWZvcmUgdjMuMTctcmMxIHRvIG1pbmltaXplCm1lcmdlIGhhc3NsZXMuCgpCam9y
+bgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
