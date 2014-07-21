@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9HvC-00057B-0P
- for ath10k@lists.infradead.org; Mon, 21 Jul 2014 18:02:46 +0000
+ id 1X9INh-0001zh-5A
+ for ath10k@lists.infradead.org; Mon, 21 Jul 2014 18:32:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: prevent some tx flushing failures
-References: <1405518073-14513-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 21 Jul 2014 21:02:16 +0300
-In-Reply-To: <1405518073-14513-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 16 Jul 2014 15:41:13 +0200")
-Message-ID: <874myay4if.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k tx to a Macbook Pro stalls
+References: <CALCETrUXvbhkKDAvEw+643mKZtJzcJtPGhxbo35r3h=rCMOWwA@mail.gmail.com>
+Date: Mon, 21 Jul 2014 21:31:47 +0300
+In-Reply-To: <CALCETrUXvbhkKDAvEw+643mKZtJzcJtPGhxbo35r3h=rCMOWwA@mail.gmail.com>
+ (Andy Lutomirski's message of "Mon, 21 Jul 2014 10:04:48 -0700")
+Message-ID: <87vbqqwoks.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,26 +23,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Andy Lutomirski <luto@amacapital.net> writes:
 
-> Firmware could request inspection of some
-> submitted tx requests. Since the callback wasn't
-> implemented it was possible to bleed tx msdu_ids
-> which could translate to tx flushing timeouts.
->
-> There's nothing ath10k can do to help firmware
-> with tx processing now so just report all tx
-> frames as already inspected to prevent firmware
-> from sending up inspection events and force it to
-> report regular tx completion indications with
-> discard status.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> On my Archer C7 v2, as soon as the MBP tries to do something like
+> playing a video, it seems like frames *to* the MBP no longer get
+> there.  At the very least, arp replies don't get there.
 
-Thanks, applied.
+A multicast problem? Can you run for example 'arping -b <macbook's ip>'
+to check if multicast stops working at some point? What if you hardcode
+the ARP address, do unicast packets go to the macbook still?
+
+If there are multicast problems, my first suspect is always power save.
+Is there a way to disable power save on the macbook for narrowing down
+the problem?
+
+Also we had discussion about macbook problems before and aggreation came
+up as one suspect. Now we have a debugfs interface to change aggregation
+settings, but I doubt openwrt has that yet. Check the archives for more.
 
 -- 
 Kalle Valo
