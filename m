@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9erU-0001GG-Gx
- for ath10k@lists.infradead.org; Tue, 22 Jul 2014 18:32:29 +0000
+ id 1X9ewz-0003zV-V2
+ for ath10k@lists.infradead.org; Tue, 22 Jul 2014 18:38:10 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: prevent endless pci rx loop
-References: <1405687501-25917-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 22 Jul 2014 21:32:01 +0300
-In-Reply-To: <1405687501-25917-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 18 Jul 2014 14:45:01 +0200")
-Message-ID: <87vbqptfby.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
+References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
+ <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 22 Jul 2014 21:37:29 +0300
+In-Reply-To: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 16 Jul 2014 13:19:00 +0200")
+Message-ID: <87r41dtf2u.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,23 +25,45 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: ath10k@lists.infradead.org, Denton Gentry <denton.gentry@gmail.com>
+
+(dropping linux-wireless)
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> It was possible to enter an endless loop while
-> processing a single pci copy engine pipe. This
-> could effectively render ath10k incapable of
-> responding to any requests.
+> Firmware doesn't perform Rx reordering so it is
+> left to the host driver to do that.
 >
-> An example case when this could happen is when
-> firmware generates a lot of events, e.g. spectral
-> scan phyerr via WMI.
+> Use mac80211 to perform reordering instead of
+> re-inventing the wheel.
 >
-> Reported-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> This fixes TCP throughput issues in some
+> environments.
+>
+> Reported-by: Denton Gentry <denton.gentry@gmail.com>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+> This depends on:
+>
+>  * mac80211: fix Rx reordering with RX_FLAG_AMSDU_MORE
+>  * mac80211: add support for Rx reordering offloading
+>
+> I'm still seeing some issues with TCP traffic.
+> Apparently firmware/hardware sometimes stalls Rx
+> for ~100ms and misses some aggregate frames. I
+> wasn't able to pinpoint what the problem is. The
+> more parallel TCP streams (iperf) the more often
+> stalls happen. UDP doesn't seem to trigger the Rx
+> stalls at all.
 
-Thanks, applied.
+The mac80211 patches are in mac80211-next, but I can only apply this one
+only once they are in wireless-next.
+
+Also the other thing is that 3.17 merge window is very close. I might be
+able to squeeze this in but there's the risk that this patch hasn't
+received enough testing from being in ath.git. How safe (or risky) is
+this patch? If we push this to 3.17, we could try to fix regressions in
+-rc releases but that's always more difficult than waiting for 3.18.
 
 -- 
 Kalle Valo
