@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9ewz-0003zV-V2
- for ath10k@lists.infradead.org; Tue, 22 Jul 2014 18:38:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
-References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
- <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 22 Jul 2014 21:37:29 +0300
-In-Reply-To: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 16 Jul 2014 13:19:00 +0200")
-Message-ID: <87r41dtf2u.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9j2r-0007s5-L7
+ for ath10k@lists.infradead.org; Tue, 22 Jul 2014 23:00:30 +0000
+From: greearb@candelatech.com
+Subject: [PATCH] ath10k:  Improve 'hard' simulate fw crash.
+Date: Tue, 22 Jul 2014 16:00:04 -0700
+Message-Id: <1406070004-6238-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +15,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k@lists.infradead.org, Denton Gentry <denton.gentry@gmail.com>
+To: linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-(dropping linux-wireless)
+From: Ben Greear <greearb@candelatech.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Different firmware may support different numbers of
+vdevs.  Use value that is always out of range for all
+firmware.
 
-> Firmware doesn't perform Rx reordering so it is
-> left to the host driver to do that.
->
-> Use mac80211 to perform reordering instead of
-> re-inventing the wheel.
->
-> This fixes TCP throughput issues in some
-> environments.
->
-> Reported-by: Denton Gentry <denton.gentry@gmail.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
-> This depends on:
->
->  * mac80211: fix Rx reordering with RX_FLAG_AMSDU_MORE
->  * mac80211: add support for Rx reordering offloading
->
-> I'm still seeing some issues with TCP traffic.
-> Apparently firmware/hardware sometimes stalls Rx
-> for ~100ms and misses some aggregate frames. I
-> wasn't able to pinpoint what the problem is. The
-> more parallel TCP streams (iperf) the more often
-> stalls happen. UDP doesn't seem to trigger the Rx
-> stalls at all.
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/debug.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-The mac80211 patches are in mac80211-next, but I can only apply this one
-only once they are in wireless-next.
-
-Also the other thing is that 3.17 merge window is very close. I might be
-able to squeeze this in but there's the risk that this patch hasn't
-received enough testing from being in ath.git. How safe (or risky) is
-this patch? If we push this to 3.17, we could try to fix regressions in
--rc releases but that's always more difficult than waiting for 3.18.
-
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 3030158..c9e35c87e 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -531,7 +531,10 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 		ret = ath10k_wmi_force_fw_hang(ar, WMI_FORCE_FW_HANG_ASSERT, 0);
+ 	} else if (!strcmp(buf, "hard")) {
+ 		ath10k_info("simulating hard firmware crash\n");
+-		ret = ath10k_wmi_vdev_set_param(ar, TARGET_NUM_VDEVS + 1,
++		/* 0x7fff is vdev id, and it is always out of range for all
++		 * firmware variants in order to force a firmware crash.
++		 */
++		ret = ath10k_wmi_vdev_set_param(ar, 0x7fff,
+ 					ar->wmi.vdev_param->rts_threshold, 0);
+ 	} else {
+ 		ret = -EINVAL;
 -- 
-Kalle Valo
+1.7.11.7
+
 
 _______________________________________________
 ath10k mailing list
