@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9tSi-0002cN-IZ
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 10:07:54 +0000
-Received: by mail-wi0-f181.google.com with SMTP id bs8so1903212wib.2
- for <ath10k@lists.infradead.org>; Wed, 23 Jul 2014 03:07:28 -0700 (PDT)
+ id 1X9tnu-0003aQ-JJ
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 10:29:47 +0000
+Received: by mail-we0-f182.google.com with SMTP id k48so959273wev.13
+ for <ath10k@lists.infradead.org>; Wed, 23 Jul 2014 03:29:21 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: don't advertise IBSS iftype for 10.x
-Date: Wed, 23 Jul 2014 11:58:09 +0200
-Message-Id: <1406109489-17928-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4] ath10k: fix Rx aggregation reordering
+Date: Wed, 23 Jul 2014 12:20:33 +0200
+Message-Id: <1406110833-14031-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+References: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +25,248 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Denton Gentry <denton.gentry@gmail.com>
 
-The 10.x firmware does not support IBSS mode at
-all. It can't beacon and it crashes when trying to
-scan.
+Firmware doesn't perform Rx reordering so it is
+left to the host driver to do that.
 
+Use mac80211 to perform reordering instead of
+re-inventing the wheel.
+
+This fixes TCP throughput issues in some
+environments.
+
+Reported-by: Denton Gentry <denton.gentry@gmail.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This depends on:
 
+ * mac80211: fix Rx reordering with RX_FLAG_AMSDU_MORE
+ * mac80211: add support for Rx reordering offloading
+
+I'm still seeing some issues with TCP traffic.
+Apparently firmware/hardware sometimes stalls Rx
+for ~100ms and misses some aggregate frames. I
+wasn't able to pinpoint what the problem is. The
+more parallel TCP streams (iperf) the more often
+stalls happen. UDP doesn't seem to trigger the Rx
+stalls at all.
+
+
+Notes:
+    v4:
+     * return immediatelly instead break [Varka]
+     * fix endianess conversion (__le32 -> __le16)
+     * use rx_delba in delba callback
+    
+    v3:
+     * make ath10k_ampdu_action() static
+    
+    v2:
+     * split addba/delba handling into separate functions [Kalle]
+     * extend ampdu_action debug print (+vdev_id, +sta addr, +tid)
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 92 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.c    | 33 ++++++++++++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  3 +-
+ drivers/net/wireless/ath/ath10k/txrx.h   |  1 +
+ 4 files changed, 126 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 318efc3..77cdc21 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -21,6 +21,7 @@
+ #include "txrx.h"
+ #include "debug.h"
+ #include "trace.h"
++#include "mac.h"
+ 
+ #include <linux/log2.h>
+ 
+@@ -1422,6 +1423,86 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
+ 	}
+ }
+ 
++static void ath10k_htt_rx_addba(struct ath10k *ar, struct htt_resp *resp)
++{
++	struct htt_rx_addba *ev = &resp->rx_addba;
++	struct ath10k_peer *peer;
++	struct ath10k_vif *arvif;
++	u16 info0, tid, peer_id;
++
++	info0 = __le16_to_cpu(ev->info0);
++	tid = MS(info0, HTT_RX_BA_INFO0_TID);
++	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx addba tid %hu peer_id %hu size %hhu\n",
++		   tid, peer_id, ev->window_size);
++
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_warn("received addba event for invalid peer_id: %hu\n",
++			    peer_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	arvif = ath10k_get_arvif(ar, peer->vdev_id);
++	if (!arvif) {
++		ath10k_warn("received addba event for invalid vdev_id: %u\n",
++			    peer->vdev_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx start rx ba session sta %pM tid %hu size %hhu\n",
++		   peer->addr, tid, ev->window_size);
++
++	ieee80211_start_rx_ba_session_offl(arvif->vif, peer->addr, tid);
++	spin_unlock_bh(&ar->data_lock);
++}
++
++static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
++{
++	struct htt_rx_delba *ev = &resp->rx_delba;
++	struct ath10k_peer *peer;
++	struct ath10k_vif *arvif;
++	u16 info0, tid, peer_id;
++
++	info0 = __le16_to_cpu(ev->info0);
++	tid = MS(info0, HTT_RX_BA_INFO0_TID);
++	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx delba tid %hu peer_id %hu\n",
++		   tid, peer_id);
++
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find_by_id(ar, peer_id);
++	if (!peer) {
++		ath10k_warn("received addba event for invalid peer_id: %hu\n",
++			    peer_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	arvif = ath10k_get_arvif(ar, peer->vdev_id);
++	if (!arvif) {
++		ath10k_warn("received addba event for invalid vdev_id: %u\n",
++			    peer->vdev_id);
++		spin_unlock_bh(&ar->data_lock);
++		return;
++	}
++
++	ath10k_dbg(ATH10K_DBG_HTT,
++		   "htt rx stop rx ba session sta %pM tid %hu\n",
++		   peer->addr, tid);
++
++	ieee80211_stop_rx_ba_session_offl(arvif->vif, peer->addr, tid);
++	spin_unlock_bh(&ar->data_lock);
++}
++
+ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ath10k_htt *htt = &ar->htt;
+@@ -1524,8 +1605,17 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_warn("received an unexpected htt tx inspect event\n");
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_RX_ADDBA:
++		ath10k_htt_rx_addba(ar, resp);
++		break;
+ 	case HTT_T2H_MSG_TYPE_RX_DELBA:
+-	case HTT_T2H_MSG_TYPE_RX_FLUSH:
++		ath10k_htt_rx_delba(ar, resp);
++		break;
++	case HTT_T2H_MSG_TYPE_RX_FLUSH: {
++		/* Ignore this event because mac80211 takes care of Rx
++		 * aggregation reordering.
++		 */
++		break;
++	}
+ 	default:
+ 		ath10k_dbg(ATH10K_DBG_HTT, "htt event (%d) not handled\n",
+ 			   resp->hdr.msg_type);
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3f9afaa..5122d1b 100644
+index 3f9afaa..3baa229 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4700,7 +4700,6 @@ int ath10k_mac_register(struct ath10k *ar)
+@@ -4333,6 +4333,38 @@ static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
+ 	return 0;
+ }
  
- 	ar->hw->wiphy->interface_modes =
- 		BIT(NL80211_IFTYPE_STATION) |
--		BIT(NL80211_IFTYPE_ADHOC) |
- 		BIT(NL80211_IFTYPE_AP);
- 
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
-@@ -4770,6 +4769,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_if_comb);
++static int ath10k_ampdu_action(struct ieee80211_hw *hw,
++			       struct ieee80211_vif *vif,
++			       enum ieee80211_ampdu_mlme_action action,
++			       struct ieee80211_sta *sta, u16 tid, u16 *ssn,
++			       u8 buf_size)
++{
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
 +
-+		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
- 	}
++	ath10k_dbg(ATH10K_DBG_MAC, "mac ampdu vdev_id %i sta %pM tid %hu action %d\n",
++		   arvif->vdev_id, sta->addr, tid, action);
++
++	switch (action) {
++	case IEEE80211_AMPDU_RX_START:
++	case IEEE80211_AMPDU_RX_STOP:
++		/* HTT AddBa/DelBa events trigger mac80211 Rx BA session
++		 * creation/removal. Do we need to verify this?
++		 */
++		return 0;
++	case IEEE80211_AMPDU_TX_START:
++	case IEEE80211_AMPDU_TX_STOP_CONT:
++	case IEEE80211_AMPDU_TX_STOP_FLUSH:
++	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
++	case IEEE80211_AMPDU_TX_OPERATIONAL:
++		/* Firmware offloads Tx aggregation entirely so deny mac80211
++		 * Tx aggregation requests.
++		 */
++		return -EOPNOTSUPP;
++	}
++
++	return -EINVAL;
++}
++
+ static const struct ieee80211_ops ath10k_ops = {
+ 	.tx				= ath10k_tx,
+ 	.start				= ath10k_start,
+@@ -4360,6 +4392,7 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
+ 	.sta_rc_update			= ath10k_sta_rc_update,
+ 	.get_tsf			= ath10k_get_tsf,
++	.ampdu_action			= ath10k_ampdu_action,
+ #ifdef CONFIG_PM
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 82669a7..f4fa22d 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -119,8 +119,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 	return NULL;
+ }
  
- 	ar->hw->netdev_features = NETIF_F_HW_CSUM;
+-static struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar,
+-						  int peer_id)
++struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id)
+ {
+ 	struct ath10k_peer *peer;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
+index aee3e20..a90e09f 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.h
++++ b/drivers/net/wireless/ath/ath10k/txrx.h
+@@ -24,6 +24,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 
+ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
+ 				     const u8 *addr);
++struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id);
+ int ath10k_wait_for_peer_created(struct ath10k *ar, int vdev_id,
+ 				 const u8 *addr);
+ int ath10k_wait_for_peer_deleted(struct ath10k *ar, int vdev_id,
 -- 
 1.8.5.3
 
