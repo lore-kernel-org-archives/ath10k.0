@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9zI0-0005fY-RC
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 16:21:13 +0000
+ id 1X9zVP-00024s-Rx
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 16:35:04 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: fix Rx aggregation reordering
-References: <1405505855-13741-1-git-send-email-michal.kazior@tieto.com>
- <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
- <87r41dtf2u.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQng1xwLEbwfQ6P-T=VWYby529jFZ=duTH6hC=HzMW9Y=w@mail.gmail.com>
-Date: Wed, 23 Jul 2014 19:20:46 +0300
-In-Reply-To: <CA+BoTQng1xwLEbwfQ6P-T=VWYby529jFZ=duTH6hC=HzMW9Y=w@mail.gmail.com>
- (Michal Kazior's message of "Wed, 23 Jul 2014 11:50:02 +0200")
-Message-ID: <87fvhst5b5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCHv2 2/2] ath10k: add spectral scan feature
+References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
+ <1405945943-8303-3-git-send-email-sw@simonwunderlich.de>
+ <87zjg1tfjd.fsf@kamboji.qca.qualcomm.com>
+ <201407231712.43500.sw@simonwunderlich.de>
+Date: Wed, 23 Jul 2014 19:34:33 +0300
+In-Reply-To: <201407231712.43500.sw@simonwunderlich.de> (Simon Wunderlich's
+ message of "Wed, 23 Jul 2014 17:12:43 +0200")
+Message-ID: <8738dst4o6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,29 +26,55 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Denton Gentry <denton.gentry@gmail.com>
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Simon Wunderlich <sw@simonwunderlich.de> writes:
 
->> The mac80211 patches are in mac80211-next, but I can only apply this one
->> only once they are in wireless-next.
->>
->> Also the other thing is that 3.17 merge window is very close. I might be
->> able to squeeze this in but there's the risk that this patch hasn't
->> received enough testing from being in ath.git. How safe (or risky) is
->> this patch? If we push this to 3.17, we could try to fix regressions in
->> -rc releases but that's always more difficult than waiting for 3.18.
+> Hey Kalle,
 >
-> I think it should be fairly safe. The stalls I've observed don't make
-> it worse than it is without Rx reordering.
+> thanks for all the comments!
 >
-> But! I need to re-spin this patch since there's an endianess bug with
-> info0 being treated as __le32 while its __le16.
+> I'll make the changes as you suggested, although I'd like to point out that 
+> the "empty line before comment" and the "no indentation for WMI command 
+> parameters" things are not really consistent - there are also empty lines 
+> missing (e.g. struct wmi_start_scan_cmd) and indentation present (e.g. 
+> ath10k_wmi_peer_assoc and many others). Maybe that should be cleaned up at 
+> some point if you think that's important. :)
 
-Ok, let's try to get the new version of this patch to 3.17, if at all
-possible. But if there are any regressions, please let me know ASAP so
-that we can quickly fix it and push the fix to -rc releases.
+Yeah, I have been sloppy in reviewing those part before but not anymore
+:) Also struct ath10k is quite a mess now. Sorry for the confusion.
+
+I'm planning to fix these at some point, but if someone else wants to do
+it I'm very happy to take patches.
+
+>> > +struct fft_sample_ath10k {
+>> > +	struct fft_sample_tlv tlv;
+>> > +	u8 chan_width_mhz;
+>> > +	__be16 freq1;
+>> > +	__be16 freq2;
+>> > +	__be16 noise;
+>> > +	__be16 max_magnitude;
+>> > +	__be16 total_gain_db;
+>> > +	__be16 base_pwr_db;
+>> > +	__be64 tsf;
+>> > +	s8 max_index;
+>> > +	u8 rssi;
+>> > +	u8 relpwr_db;
+>> > +	u8 avgpwr_db;
+>> > +	u8 max_exp;
+>> > +
+>> > +	u8 data[0];
+>> > +} __packed;
+>> 
+>> __be16, that's a first. Just making sure that this really is big endian?
+>
+> As the __le32 you use in other ath10k structs, this is just for checking - at 
+> least sparse should check that, maybe other tools as well.
+
+Sorry, I didn't understand your comment here. But basically I was asking
+is the fft sample really in big endian? I assume it would be little
+endian as everything else coming from the firmware.
 
 -- 
 Kalle Valo
