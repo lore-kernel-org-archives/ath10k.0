@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9rru-0004sW-OL
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 08:25:47 +0000
-Received: by mail-wi0-f169.google.com with SMTP id n3so7134156wiv.4
- for <ath10k@lists.infradead.org>; Wed, 23 Jul 2014 01:25:17 -0700 (PDT)
+ id 1X9s16-0000QG-5f
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 08:35:16 +0000
+Received: by mail-la0-f54.google.com with SMTP id el20so659525lab.13
+ for <ath10k@lists.infradead.org>; Wed, 23 Jul 2014 01:34:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1406070154-6614-1-git-send-email-greearb@candelatech.com>
+In-Reply-To: <CA+BoTQnngYO_AzqQnxFpWQrez-q7Z=hBUNOt+H8FybE9+fq5fA@mail.gmail.com>
 References: <1406070154-6614-1-git-send-email-greearb@candelatech.com>
-Date: Wed, 23 Jul 2014 10:25:16 +0200
-Message-ID: <CA+BoTQnngYO_AzqQnxFpWQrez-q7Z=hBUNOt+H8FybE9+fq5fA@mail.gmail.com>
+ <CA+BoTQnngYO_AzqQnxFpWQrez-q7Z=hBUNOt+H8FybE9+fq5fA@mail.gmail.com>
+Date: Wed, 23 Jul 2014 11:34:52 +0300
+Message-ID: <CANUX_P3BaQU6Xx+U2Ujwin6JSvsnf-jdB3Hi7vA1sXJDrvmm-Q@mail.gmail.com>
 Subject: Re: [PATCH v3 1/5] ath10k: provide firmware crash info via debugfs.
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Emmanuel Grumbach <egrumbach@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,79 +21,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjMgSnVseSAyMDE0IDAxOjAyLCAgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToK
-PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPgo+IFN0b3JlIHRo
-ZSBmaXJtd2FyZSBjcmFzaCByZWdpc3RlcnMgYW5kIGxhc3QgMTI4IG9yIHNvCj4gZmlybXdhcmUg
-ZGVidWctbG9nIGlkcyBhbmQgcHJlc2VudCB0aGVtIHRvIHVzZXItc3BhY2UKPiB2aWEgZGVidWdm
-cy4KPgo+IFNob3VsZCBoZWxwIHdpdGggZmlndXJpbmcgb3V0IHdoeSB0aGUgZmlybXdhcmUgY3Jh
-c2hlZC4KPgo+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
-Y29tPgpbLi4uXQo+ICtzdHJ1Y3QgYXRoMTBrX2R1bXBfZmlsZV9kYXRhIHsKPiArICAgICAgIC8q
-IER1bXAgZmlsZSBpbmZvcm1hdGlvbiAqLwo+ICsgICAgICAgY2hhciBkZl9tYWdpY1sxNl07IC8q
-IEFUSDEwSy1GVy1EVU1QICovCj4gKyAgICAgICB1MzIgbGVuOwo+ICsgICAgICAgdTMyIGJpZ19l
-bmRpYW47IC8qIDB4MSBpZiBob3N0IGlzIGJpZy1lbmRpYW4gKi8KPiArICAgICAgIHUzMiB2ZXJz
-aW9uOyAvKiBGaWxlIGR1bXAgdmVyc2lvbiwgMSBmb3Igbm93LiAqLwo+ICsKPiArICAgICAgIC8q
-IFNvbWUgaW5mbyB3ZSBjYW4gZ2V0IGZyb20gYXRoMTBrIHN0cnVjdCB0aGF0IG1pZ2h0IGhlbHAu
-ICovCj4gKyAgICAgICB1MzIgY2hpcF9pZDsKPiArICAgICAgIHUzMiBidXNfdHlwZTsgLyogMCBm
-b3Igbm93LCBpbiBwbGFjZSBmb3IgbGF0ZXIgaGFyZHdhcmUgKi8KPiArICAgICAgIHUzMiB0YXJn
-ZXRfdmVyc2lvbjsKPiArICAgICAgIHUzMiBmd192ZXJzaW9uX21ham9yOwo+ICsgICAgICAgdTMy
-IGZ3X3ZlcnNpb25fbWlub3I7Cj4gKyAgICAgICB1MzIgZndfdmVyc2lvbl9yZWxlYXNlOwo+ICsg
-ICAgICAgdTMyIGZ3X3ZlcnNpb25fYnVpbGQ7Cj4gKyAgICAgICB1MzIgcGh5X2NhcGFiaWxpdHk7
-Cj4gKyAgICAgICB1MzIgaHdfbWluX3R4X3Bvd2VyOwo+ICsgICAgICAgdTMyIGh3X21heF90eF9w
-b3dlcjsKPiArICAgICAgIHUzMiBodF9jYXBfaW5mbzsKPiArICAgICAgIHUzMiB2aHRfY2FwX2lu
-Zm87Cj4gKyAgICAgICB1MzIgbnVtX3JmX2NoYWluczsKPiArICAgICAgIGNoYXIgZndfdmVyW0VU
-SFRPT0xfRldWRVJTX0xFTl07IC8qIEZpcm13YXJlIHZlcnNpb24gc3RyaW5nICovCj4gKwo+ICsg
-ICAgICAgLyogS2VybmVsIHJlbGF0ZWQgaW5mb3JtYXRpb24gKi8KPiArICAgICAgIHUzMiB0dl9z
-ZWNfaGk7IC8qIHRpbWUtb2YtZGF5IHN0YW1wLCBoaWdoIDMyLWJpdHMgZm9yIHNlY29uZHMgKi8K
-PiArICAgICAgIHUzMiB0dl9zZWNfbG87IC8qIHRpbWUtb2YtZGF5IHN0YW1wLCBsb3cgMzItYml0
-cyBmb3Igc2Vjb25kcyAqLwo+ICsgICAgICAgdTMyIHR2X25zZWNfaGk7IC8qIHRpbWUtb2YtZGF5
-IHN0YW1wLCBuYW5vLXNlY29uZHMsIGhpZ2ggYml0cyAqLwo+ICsgICAgICAgdTMyIHR2X25zZWNf
-bG87IC8qIHRpbWUtb2YtZGF5IHN0YW1wLCBuYW5vLXNlY29uZHMsIGxvdyBiaXRzICovCj4gKyAg
-ICAgICB1MzIga2VybmVsX3Zlcl9jb2RlOyAvKiBMSU5VWF9WRVJTSU9OX0NPREUgKi8KPiArICAg
-ICAgIGNoYXIga2VybmVsX3Zlcls2NF07IC8qIFZFUk1BR0lDX1NUUklORyAqLwo+ICsKPiArICAg
-ICAgIHU4IHVudXNlZFsxMjhdOyAvKiBSb29tIGZvciBncm93dGggdy9vdXQgY2hhbmdpbmcgYmlu
-YXJ5IGZvcm1hdCAqLwo+ICsKPiArICAgICAgIHU4IGRhdGFbMF07IC8qIHN0cnVjdCBhdGgxMGtf
-dGx2X2R1bXBfZGF0YSArIG1vcmUgKi8KPiArfSBfX3BhY2tlZDsKCkkgdGhpbmsgaXQgd291bGQg
-YmUgYSBsb3QgYmV0dGVyIGlmIHRoaXMgZm9ybWF0IGhhZCBhIGZpeGVkIGVuZGlhbmVzcwooX19s
-ZS9fX2JlIGluc3RlYWQgb2YgdTMyKS4gQnV0IHNlZSBiZWxvdy4KCgo+ICtzdGF0aWMgc3RydWN0
-IGF0aDEwa19kdW1wX2ZpbGVfZGF0YSAqYXRoMTBrX2J1aWxkX2R1bXBfZmlsZShzdHJ1Y3QgYXRo
-MTBrICphcikKWy4uLl0KPiArICAgICAgIGdldG5zdGltZW9mZGF5KCZ0aW1lc3RhbXApOwo+ICsg
-ICAgICAgZHVtcF9kYXRhLT50dl9zZWNfaGkgPSB0aW1lc3RhbXAudHZfc2VjID4+IDMyOwo+ICsg
-ICAgICAgZHVtcF9kYXRhLT50dl9zZWNfbG8gPSB0aW1lc3RhbXAudHZfc2VjOwo+ICsgICAgICAg
-ZHVtcF9kYXRhLT50dl9uc2VjX2hpID0gdGltZXN0YW1wLnR2X25zZWMgPj4gMzI7Cj4gKyAgICAg
-ICBkdW1wX2RhdGEtPnR2X25zZWNfbG8gPSB0aW1lc3RhbXAudHZfbnNlYzsKPiArCj4gKyAgICAg
-ICBzcGluX2xvY2tfaXJxc2F2ZSgmYXItPmRhdGFfbG9jaywgZmxhZ3MpOwoKWW91IGNhbid0IGp1
-c3QgdXNlIF9pcnFzYXZlIHdpdGggZGF0YV9sb2NrIGxpa2UgdGhhdC4gWW91IGhhdmUgdG8KY29u
-dmVydCAqYWxsKiBkYXRhX2xvY2sgdXNhZ2VzIGZyb20gX2JoIHRvIF9pcnFzYXZlLgoKSXMgaXQg
-cmVhbGx5IG5lY2Vzc2FyeSB0byB1c2UgdGhlIF9pcnFzYXZlIGhlcmUgYW55d2F5PyBXZSBjYW4K
-cHJvYmFibHkgbWFrZSBzdXJlIGR1bXAgZnVuY3Rpb24gaXMgbmV2ZXIgY2FsbGVkIGRpcmVjdGx5
-IGZyb20gYW4KaW50ZXJydXB0LiBJIHRoaW5rIHRoYXQncyBhbHJlYWR5IHRoZSBjYXNlIGFueXdh
-eS4KCgo+ICsvKiBUYXJnZXQgZGVidWcgbG9nIHJlbGF0ZWQgZGVmaW5lcyBhbmQgc3RydWN0cyAq
-Lwo+ICsKPiArLyogVGFyZ2V0IGlzIDMyLWJpdCBDUFUsIHNvIHdlIGp1c3QgdXNlIHUzMiBmb3IK
-PiArICogdGhlIHBvaW50ZXJzLiAgVGhlIG1lbW9yeSBzcGFjZSBpcyByZWxhdGl2ZSB0byB0aGUK
-PiArICogdGFyZ2V0LCBub3QgdGhlIGhvc3QuCj4gKyAqLwo+ICtzdHJ1Y3QgYXRoMTBrX2Z3X2Ri
-Z2xvZ19idWYgewo+ICsgICAgICAgdTMyIG5leHQ7IC8qIHBvaW50ZXIgdG8gZGJsb2dfYnVmX3Mu
-ICovCj4gKyAgICAgICB1MzIgYnVmZmVyOyAvKiBwb2ludGVyIHRvIHU4IGJ1ZmZlciAqLwo+ICsg
-ICAgICAgdTMyIGJ1ZnNpemU7Cj4gKyAgICAgICB1MzIgbGVuZ3RoOwo+ICsgICAgICAgdTMyIGNv
-dW50Owo+ICsgICAgICAgdTMyIGZyZWU7Cj4gK30gX19wYWNrZWQ7Cj4gKwo+ICtzdHJ1Y3QgYXRo
-MTBrX2Z3X2RiZ2xvZ19oZHIgewo+ICsgICAgICAgdTMyIGRidWY7IC8qIHBvaW50ZXIgdG8gZGJn
-bG9nX2J1Zl9zICovCj4gKyAgICAgICB1MzIgZHJvcHBlZDsKPiArfSBfX3BhY2tlZDsKClRoZXNl
-IHN0cnVjdHVyZXMgYXJlIHRhcmdldCBkZXZpY2Ugc3BlY2lmaWMsIHJpZ2h0PyBTaW5jZSB0aGUg
-dGFyZ2V0CmlzIGxpdHRsZS1lbmRpYW4gSSdkIHRoaW5rIHRoZXNlIHN0cnVjdHVyZXMgc2hvdWxk
-IGJlIGRlZmluZWQgYXMgc3VjaAooaS5lLiBfX2xlMzIgaW5zdGVhZCBvZiB1MzIpLgoKQnV0IHRo
-ZW4gYXRoMTBrX3BjaV9kaWFnX3JlYWQvd3JpdGVfbWVtKCkgZG8gYnl0ZS1zd2FwcGluZwphdXRv
-bWF0aWNhbGx5IChoaW50OiB0aGV5IHNob3VsZG4ndCwgYnV0IHNpbmNlIGl0J3MgbXkgZmF1bHQg
-SSBndWVzcyBJCnNob3VsZCBiZSB0aGUgb25lIHRvIGZpeCBpdCB1cC4uIDopLgoKVGhpcyB3b3Vs
-ZCBhbHNvIGV4cGxhaW4gd2h5IHlvdSBkZWZpbmVkIGEgYmlnX2VuZGlhbiBib29sIGluIHRoZSBk
-dW1wCnN0cnVjdHVyZSBpbnN0ZWFkIG9mIHVzaW5nIF9fYmUvX19sZSBhbmQgZXhwbGljaXQgY29u
-dmVyc2lvbi4gSXQncyBhbGwKZ29vZCB1bnRpbCB5b3Ugc3RhcnQgZHVtcGluZyBSQU0gYW5kIHRy
-eSB0byBkZWFsIHdpdGggbm9uLXdvcmQgZGF0YQooZS5nLiBtYWMgYWRkcmVzc2VzKS4KCgpNaWNo
-YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Wed, Jul 23, 2014 at 11:25 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 23 July 2014 01:02,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Store the firmware crash registers and last 128 or so
+>> firmware debug-log ids and present them to user-space
+>> via debugfs.
+>>
+>> Should help with figuring out why the firmware crashed.
+>>
+
+Do we plan to have a common place for all the drivers?
+I'd suggest to have mac80211 / cfg80211 link to a file created by the
+driver. This would allow us to have this file even if we haven't
+registered to mac80211 yet - although it'd be under a different place.
+What do you think?
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
