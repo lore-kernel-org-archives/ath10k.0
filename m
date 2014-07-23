@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9tnu-0003aQ-JJ
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 10:29:47 +0000
-Received: by mail-we0-f182.google.com with SMTP id k48so959273wev.13
- for <ath10k@lists.infradead.org>; Wed, 23 Jul 2014 03:29:21 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4] ath10k: fix Rx aggregation reordering
-Date: Wed, 23 Jul 2014 12:20:33 +0200
-Message-Id: <1406110833-14031-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
-References: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1X9vvX-000559-C0
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 12:45:47 +0000
+Message-ID: <53CFAE62.2050401@candelatech.com>
+Date: Wed, 23 Jul 2014 05:45:22 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 1/5] ath10k: provide firmware crash info via debugfs.
+References: <1406070154-6614-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQnngYO_AzqQnxFpWQrez-q7Z=hBUNOt+H8FybE9+fq5fA@mail.gmail.com>
+In-Reply-To: <CA+BoTQnngYO_AzqQnxFpWQrez-q7Z=hBUNOt+H8FybE9+fq5fA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,257 +19,129 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Denton Gentry <denton.gentry@gmail.com>
-
-Firmware doesn't perform Rx reordering so it is
-left to the host driver to do that.
-
-Use mac80211 to perform reordering instead of
-re-inventing the wheel.
-
-This fixes TCP throughput issues in some
-environments.
-
-Reported-by: Denton Gentry <denton.gentry@gmail.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-This depends on:
-
- * mac80211: fix Rx reordering with RX_FLAG_AMSDU_MORE
- * mac80211: add support for Rx reordering offloading
-
-I'm still seeing some issues with TCP traffic.
-Apparently firmware/hardware sometimes stalls Rx
-for ~100ms and misses some aggregate frames. I
-wasn't able to pinpoint what the problem is. The
-more parallel TCP streams (iperf) the more often
-stalls happen. UDP doesn't seem to trigger the Rx
-stalls at all.
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 
-Notes:
-    v4:
-     * return immediatelly instead break [Varka]
-     * fix endianess conversion (__le32 -> __le16)
-     * use rx_delba in delba callback
-    
-    v3:
-     * make ath10k_ampdu_action() static
-    
-    v2:
-     * split addba/delba handling into separate functions [Kalle]
-     * extend ampdu_action debug print (+vdev_id, +sta addr, +tid)
 
- drivers/net/wireless/ath/ath10k/htt_rx.c | 92 +++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/mac.c    | 33 ++++++++++++
- drivers/net/wireless/ath/ath10k/txrx.c   |  3 +-
- drivers/net/wireless/ath/ath10k/txrx.h   |  1 +
- 4 files changed, 126 insertions(+), 3 deletions(-)
+On 07/23/2014 01:25 AM, Michal Kazior wrote:
+> On 23 July 2014 01:02,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Store the firmware crash registers and last 128 or so
+>> firmware debug-log ids and present them to user-space
+>> via debugfs.
+>>
+>> Should help with figuring out why the firmware crashed.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> [...]
+>> +struct ath10k_dump_file_data {
+>> +       /* Dump file information */
+>> +       char df_magic[16]; /* ATH10K-FW-DUMP */
+>> +       u32 len;
+>> +       u32 big_endian; /* 0x1 if host is big-endian */
+>> +       u32 version; /* File dump version, 1 for now. */
+>> +
+>> +       /* Some info we can get from ath10k struct that might help. */
+>> +       u32 chip_id;
+>> +       u32 bus_type; /* 0 for now, in place for later hardware */
+>> +       u32 target_version;
+>> +       u32 fw_version_major;
+>> +       u32 fw_version_minor;
+>> +       u32 fw_version_release;
+>> +       u32 fw_version_build;
+>> +       u32 phy_capability;
+>> +       u32 hw_min_tx_power;
+>> +       u32 hw_max_tx_power;
+>> +       u32 ht_cap_info;
+>> +       u32 vht_cap_info;
+>> +       u32 num_rf_chains;
+>> +       char fw_ver[ETHTOOL_FWVERS_LEN]; /* Firmware version string */
+>> +
+>> +       /* Kernel related information */
+>> +       u32 tv_sec_hi; /* time-of-day stamp, high 32-bits for seconds */
+>> +       u32 tv_sec_lo; /* time-of-day stamp, low 32-bits for seconds */
+>> +       u32 tv_nsec_hi; /* time-of-day stamp, nano-seconds, high bits */
+>> +       u32 tv_nsec_lo; /* time-of-day stamp, nano-seconds, low bits */
+>> +       u32 kernel_ver_code; /* LINUX_VERSION_CODE */
+>> +       char kernel_ver[64]; /* VERMAGIC_STRING */
+>> +
+>> +       u8 unused[128]; /* Room for growth w/out changing binary format */
+>> +
+>> +       u8 data[0]; /* struct ath10k_tlv_dump_data + more */
+>> +} __packed;
+>
+> I think it would be a lot better if this format had a fixed endianess
+> (__le/__be instead of u32). But see below.
+>
+>
+>> +static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+> [...]
+>> +       getnstimeofday(&timestamp);
+>> +       dump_data->tv_sec_hi = timestamp.tv_sec >> 32;
+>> +       dump_data->tv_sec_lo = timestamp.tv_sec;
+>> +       dump_data->tv_nsec_hi = timestamp.tv_nsec >> 32;
+>> +       dump_data->tv_nsec_lo = timestamp.tv_nsec;
+>> +
+>> +       spin_lock_irqsave(&ar->data_lock, flags);
+>
+> You can't just use _irqsave with data_lock like that. You have to
+> convert *all* data_lock usages from _bh to _irqsave.
+>
+> Is it really necessary to use the _irqsave here anyway? We can
+> probably make sure dump function is never called directly from an
+> interrupt. I think that's already the case anyway.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 318efc3..77cdc21 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -21,6 +21,7 @@
- #include "txrx.h"
- #include "debug.h"
- #include "trace.h"
-+#include "mac.h"
- 
- #include <linux/log2.h>
- 
-@@ -1422,6 +1423,86 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
- 	}
- }
- 
-+static void ath10k_htt_rx_addba(struct ath10k *ar, struct htt_resp *resp)
-+{
-+	struct htt_rx_addba *ev = &resp->rx_addba;
-+	struct ath10k_peer *peer;
-+	struct ath10k_vif *arvif;
-+	u16 info0, tid, peer_id;
-+
-+	info0 = __le16_to_cpu(ev->info0);
-+	tid = MS(info0, HTT_RX_BA_INFO0_TID);
-+	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
-+
-+	ath10k_dbg(ATH10K_DBG_HTT,
-+		   "htt rx addba tid %hu peer_id %hu size %hhu\n",
-+		   tid, peer_id, ev->window_size);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	peer = ath10k_peer_find_by_id(ar, peer_id);
-+	if (!peer) {
-+		ath10k_warn("received addba event for invalid peer_id: %hu\n",
-+			    peer_id);
-+		spin_unlock_bh(&ar->data_lock);
-+		return;
-+	}
-+
-+	arvif = ath10k_get_arvif(ar, peer->vdev_id);
-+	if (!arvif) {
-+		ath10k_warn("received addba event for invalid vdev_id: %u\n",
-+			    peer->vdev_id);
-+		spin_unlock_bh(&ar->data_lock);
-+		return;
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_HTT,
-+		   "htt rx start rx ba session sta %pM tid %hu size %hhu\n",
-+		   peer->addr, tid, ev->window_size);
-+
-+	ieee80211_start_rx_ba_session_offl(arvif->vif, peer->addr, tid);
-+	spin_unlock_bh(&ar->data_lock);
-+}
-+
-+static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
-+{
-+	struct htt_rx_delba *ev = &resp->rx_delba;
-+	struct ath10k_peer *peer;
-+	struct ath10k_vif *arvif;
-+	u16 info0, tid, peer_id;
-+
-+	info0 = __le16_to_cpu(ev->info0);
-+	tid = MS(info0, HTT_RX_BA_INFO0_TID);
-+	peer_id = MS(info0, HTT_RX_BA_INFO0_PEER_ID);
-+
-+	ath10k_dbg(ATH10K_DBG_HTT,
-+		   "htt rx delba tid %hu peer_id %hu\n",
-+		   tid, peer_id);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	peer = ath10k_peer_find_by_id(ar, peer_id);
-+	if (!peer) {
-+		ath10k_warn("received addba event for invalid peer_id: %hu\n",
-+			    peer_id);
-+		spin_unlock_bh(&ar->data_lock);
-+		return;
-+	}
-+
-+	arvif = ath10k_get_arvif(ar, peer->vdev_id);
-+	if (!arvif) {
-+		ath10k_warn("received addba event for invalid vdev_id: %u\n",
-+			    peer->vdev_id);
-+		spin_unlock_bh(&ar->data_lock);
-+		return;
-+	}
-+
-+	ath10k_dbg(ATH10K_DBG_HTT,
-+		   "htt rx stop rx ba session sta %pM tid %hu\n",
-+		   peer->addr, tid);
-+
-+	ieee80211_stop_rx_ba_session_offl(arvif->vif, peer->addr, tid);
-+	spin_unlock_bh(&ar->data_lock);
-+}
-+
- void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
-@@ -1524,8 +1605,17 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_warn("received an unexpected htt tx inspect event\n");
- 		break;
- 	case HTT_T2H_MSG_TYPE_RX_ADDBA:
-+		ath10k_htt_rx_addba(ar, resp);
-+		break;
- 	case HTT_T2H_MSG_TYPE_RX_DELBA:
--	case HTT_T2H_MSG_TYPE_RX_FLUSH:
-+		ath10k_htt_rx_delba(ar, resp);
-+		break;
-+	case HTT_T2H_MSG_TYPE_RX_FLUSH: {
-+		/* Ignore this event because mac80211 takes care of Rx
-+		 * aggregation reordering.
-+		 */
-+		break;
-+	}
- 	default:
- 		ath10k_dbg(ATH10K_DBG_HTT, "htt event (%d) not handled\n",
- 			   resp->hdr.msg_type);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3f9afaa..3baa229 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4333,6 +4333,38 @@ static u64 ath10k_get_tsf(struct ieee80211_hw *hw, struct ieee80211_vif *vif)
- 	return 0;
- }
- 
-+static int ath10k_ampdu_action(struct ieee80211_hw *hw,
-+			       struct ieee80211_vif *vif,
-+			       enum ieee80211_ampdu_mlme_action action,
-+			       struct ieee80211_sta *sta, u16 tid, u16 *ssn,
-+			       u8 buf_size)
-+{
-+	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
-+
-+	ath10k_dbg(ATH10K_DBG_MAC, "mac ampdu vdev_id %i sta %pM tid %hu action %d\n",
-+		   arvif->vdev_id, sta->addr, tid, action);
-+
-+	switch (action) {
-+	case IEEE80211_AMPDU_RX_START:
-+	case IEEE80211_AMPDU_RX_STOP:
-+		/* HTT AddBa/DelBa events trigger mac80211 Rx BA session
-+		 * creation/removal. Do we need to verify this?
-+		 */
-+		return 0;
-+	case IEEE80211_AMPDU_TX_START:
-+	case IEEE80211_AMPDU_TX_STOP_CONT:
-+	case IEEE80211_AMPDU_TX_STOP_FLUSH:
-+	case IEEE80211_AMPDU_TX_STOP_FLUSH_CONT:
-+	case IEEE80211_AMPDU_TX_OPERATIONAL:
-+		/* Firmware offloads Tx aggregation entirely so deny mac80211
-+		 * Tx aggregation requests.
-+		 */
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static const struct ieee80211_ops ath10k_ops = {
- 	.tx				= ath10k_tx,
- 	.start				= ath10k_start,
-@@ -4360,6 +4392,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.set_bitrate_mask		= ath10k_set_bitrate_mask,
- 	.sta_rc_update			= ath10k_sta_rc_update,
- 	.get_tsf			= ath10k_get_tsf,
-+	.ampdu_action			= ath10k_ampdu_action,
- #ifdef CONFIG_PM
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 82669a7..f4fa22d 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -119,8 +119,7 @@ struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 	return NULL;
- }
- 
--static struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar,
--						  int peer_id)
-+struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id)
- {
- 	struct ath10k_peer *peer;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.h b/drivers/net/wireless/ath/ath10k/txrx.h
-index aee3e20..a90e09f 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.h
-+++ b/drivers/net/wireless/ath/ath10k/txrx.h
-@@ -24,6 +24,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
- 				     const u8 *addr);
-+struct ath10k_peer *ath10k_peer_find_by_id(struct ath10k *ar, int peer_id);
- int ath10k_wait_for_peer_created(struct ath10k *ar, int vdev_id,
- 				 const u8 *addr);
- int ath10k_wait_for_peer_deleted(struct ath10k *ar, int vdev_id,
+I can change to bh variant and make sure lockdep doesn't complain.
+
+>> +/* Target debug log related defines and structs */
+>> +
+>> +/* Target is 32-bit CPU, so we just use u32 for
+>> + * the pointers.  The memory space is relative to the
+>> + * target, not the host.
+>> + */
+>> +struct ath10k_fw_dbglog_buf {
+>> +       u32 next; /* pointer to dblog_buf_s. */
+>> +       u32 buffer; /* pointer to u8 buffer */
+>> +       u32 bufsize;
+>> +       u32 length;
+>> +       u32 count;
+>> +       u32 free;
+>> +} __packed;
+>> +
+>> +struct ath10k_fw_dbglog_hdr {
+>> +       u32 dbuf; /* pointer to dbglog_buf_s */
+>> +       u32 dropped;
+>> +} __packed;
+>
+> These structures are target device specific, right? Since the target
+> is little-endian I'd think these structures should be defined as such
+> (i.e. __le32 instead of u32).
+>
+> But then ath10k_pci_diag_read/write_mem() do byte-swapping
+> automatically (hint: they shouldn't, but since it's my fault I guess I
+> should be the one to fix it up.. :).
+>
+> This would also explain why you defined a big_endian bool in the dump
+> structure instead of using __be/__le and explicit conversion. It's all
+> good until you start dumping RAM and try to deal with non-word data
+> (e.g. mac addresses).
+
+This can all be handled in the decode tool, so I'd like to just keep the
+kernel bit as is.
+
+Thanks,
+Ben
+
+
 -- 
-1.8.5.3
-
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
