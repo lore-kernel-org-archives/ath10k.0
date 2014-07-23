@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9zfM-0007ad-T1
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 16:45:21 +0000
+ id 1XA08P-0005vm-2i
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 17:15:21 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv2 2/2] ath10k: add spectral scan feature
-References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
- <201407231712.43500.sw@simonwunderlich.de>
- <8738dst4o6.fsf@kamboji.qca.qualcomm.com>
- <201407231840.22674.sw@simonwunderlich.de>
-Date: Wed, 23 Jul 2014 19:44:54 +0300
-In-Reply-To: <201407231840.22674.sw@simonwunderlich.de> (Simon Wunderlich's
- message of "Wed, 23 Jul 2014 18:40:22 +0200")
-Message-ID: <87y4vkrpmh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCHv3 0/2] ath10k spectral scan support
+References: <1406130837-10353-1-git-send-email-sw@simonwunderlich.de>
+Date: Wed, 23 Jul 2014 20:14:53 +0300
+In-Reply-To: <1406130837-10353-1-git-send-email-sw@simonwunderlich.de> (Simon
+ Wunderlich's message of "Wed, 23 Jul 2014 17:53:55 +0200")
+Message-ID: <87mwc0ro8i.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,44 +28,33 @@ Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wirel
 
 Simon Wunderlich <sw@simonwunderlich.de> writes:
 
-> Hey Kalle,
+> This is the third "PATCH" patchset iteration for the ath10k spectral
+> scan feature. It includes quite a few style fixes, the compile issues
+> were fixed when debugfs were disabled, and sending WMI commands after
+> a firmware crash should not happen any more. Thanks to Michal, Chun-Yeow
+> and Kalle for reviewing!
 >
->> Simon Wunderlich <sw@simonwunderlich.de> writes:
->> >> > +struct fft_sample_ath10k {
->> >> > +	struct fft_sample_tlv tlv;
->> >> > +	u8 chan_width_mhz;
->> >> > +	__be16 freq1;
->> >> > +	__be16 freq2;
->> >> > +	__be16 noise;
->> >> > +	__be16 max_magnitude;
->> >> > +	__be16 total_gain_db;
->> >> > +	__be16 base_pwr_db;
->> >> > +	__be64 tsf;
->> >> > +	s8 max_index;
->> >> > +	u8 rssi;
->> >> > +	u8 relpwr_db;
->> >> > +	u8 avgpwr_db;
->> >> > +	u8 max_exp;
->> >> > +
->> >> > +	u8 data[0];
->> >> > +} __packed;
->> >> 
->> >> __be16, that's a first. Just making sure that this really is big endian?
->> > 
->> > As the __le32 you use in other ath10k structs, this is just for checking
->> > - at least sparse should check that, maybe other tools as well.
->> 
->> Sorry, I didn't understand your comment here. But basically I was asking
->> is the fft sample really in big endian? I assume it would be little
->> endian as everything else coming from the firmware.
+> To view the samples, please have a look at the fft_eval tool [1] which
+> now supports both ath9k and ath10k formats.
 >
-> Yeah that is intended - we are also using big endian in ath9k to send fft 
-> samples to userspace, because that is the network byte order and we then just 
-> use ntohs() and friends in userspace to read samples from any system. 
-> Therefore we intent to use the same encoding in ath10k. :)
+> The count issue is still open: Even when a count is specified, the
+> hardware seems to send endless samples. It seems to work most of the
+> time in VHT80 mode though, but in HT20 and HT40 the count value seems
+> to be ignored. To reproduce this, start hostapd with the desired
+> channel width and do:
+>
+> echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
+> echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
+>
+> Repeating the last line and checking the filesize will easily show
+> whether ath10k still sends samples or not. We would expect 8 samples in
+> this configuration.
+>
+> Please see the patches for more information on the changes.
 
-Ah, this is the struct going to user space? I thought it's coming from
-the firmware. Then forget my question :)
+This one had conflicts so I'm dropping it.
 
 -- 
 Kalle Valo
