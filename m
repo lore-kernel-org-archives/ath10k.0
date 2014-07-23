@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1X9yEC-00037k-1U
- for ath10k@lists.infradead.org; Wed, 23 Jul 2014 15:13:12 +0000
+ id 1X9ysB-0006al-UQ
+ for ath10k@lists.infradead.org; Wed, 23 Jul 2014 15:54:32 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [PATCHv2 2/2] ath10k: add spectral scan feature
-Date: Wed, 23 Jul 2014 17:12:43 +0200
-References: <1405945943-8303-1-git-send-email-sw@simonwunderlich.de>
- <1405945943-8303-3-git-send-email-sw@simonwunderlich.de>
- <87zjg1tfjd.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87zjg1tfjd.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
-Message-Id: <201407231712.43500.sw@simonwunderlich.de>
+Subject: [PATCHv3 0/2] ath10k spectral scan support
+Date: Wed, 23 Jul 2014 17:53:55 +0200
+Message-Id: <1406130837-10353-1-git-send-email-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +15,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, Simon Wunderlich <sw@simonwunderlich.de>
 
-Hey Kalle,
+This is the third "PATCH" patchset iteration for the ath10k spectral
+scan feature. It includes quite a few style fixes, the compile issues
+were fixed when debugfs were disabled, and sending WMI commands after
+a firmware crash should not happen any more. Thanks to Michal, Chun-Yeow
+and Kalle for reviewing!
 
-thanks for all the comments!
+To view the samples, please have a look at the fft_eval tool [1] which
+now supports both ath9k and ath10k formats.
 
-I'll make the changes as you suggested, although I'd like to point out that 
-the "empty line before comment" and the "no indentation for WMI command 
-parameters" things are not really consistent - there are also empty lines 
-missing (e.g. struct wmi_start_scan_cmd) and indentation present (e.g. 
-ath10k_wmi_peer_assoc and many others). Maybe that should be cleaned up at 
-some point if you think that's important. :)
+The count issue is still open: Even when a count is specified, the
+hardware seems to send endless samples. It seems to work most of the
+time in VHT80 mode though, but in HT20 and HT40 the count value seems
+to be ignored. To reproduce this, start hostapd with the desired
+channel width and do:
 
-> > +struct fft_sample_ath10k {
-> > +	struct fft_sample_tlv tlv;
-> > +	u8 chan_width_mhz;
-> > +	__be16 freq1;
-> > +	__be16 freq2;
-> > +	__be16 noise;
-> > +	__be16 max_magnitude;
-> > +	__be16 total_gain_db;
-> > +	__be16 base_pwr_db;
-> > +	__be64 tsf;
-> > +	s8 max_index;
-> > +	u8 rssi;
-> > +	u8 relpwr_db;
-> > +	u8 avgpwr_db;
-> > +	u8 max_exp;
-> > +
-> > +	u8 data[0];
-> > +} __packed;
-> 
-> __be16, that's a first. Just making sure that this really is big endian?
+echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
+echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
 
-As the __le32 you use in other ath10k structs, this is just for checking - at 
-least sparse should check that, maybe other tools as well.
+Repeating the last line and checking the filesize will easily show
+whether ath10k still sends samples or not. We would expect 8 samples in
+this configuration.
 
-I'll send a new patchset with the suggestions of Michal, Chun-Yeow and you 
-soon. :)
+Please see the patches for more information on the changes.
 
-Thanks!
+Cheers,
     Simon
+
+[1] https://github.com/simonwunderlich/FFT_eval
+
+Simon Wunderlich (1):
+  ath10k: add spectral scan feature
+
+Sven Eckelmann (1):
+  ath: Move spectral debugfs structs to shared header
+
+ drivers/net/wireless/ath/ath10k/Kconfig    |   1 +
+ drivers/net/wireless/ath/ath10k/Makefile   |   1 +
+ drivers/net/wireless/ath/ath10k/core.c     |   7 +-
+ drivers/net/wireless/ath/ath10k/core.h     |  10 +
+ drivers/net/wireless/ath/ath10k/debug.c    |   3 +
+ drivers/net/wireless/ath/ath10k/mac.c      |   7 +
+ drivers/net/wireless/ath/ath10k/spectral.c | 557 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/spectral.h |  82 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c      | 104 +++++-
+ drivers/net/wireless/ath/ath10k/wmi.h      |  97 +++++
+ drivers/net/wireless/ath/ath9k/spectral.h  |  71 +---
+ drivers/net/wireless/ath/spectral_common.h | 113 ++++++
+ 12 files changed, 982 insertions(+), 71 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/spectral.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/spectral.h
+ create mode 100644 drivers/net/wireless/ath/spectral_common.h
+
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
