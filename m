@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XADHr-00016k-Q5
- for ath10k@lists.infradead.org; Thu, 24 Jul 2014 07:18:01 +0000
-Received: by mail-la0-f41.google.com with SMTP id s18so1593995lam.0
- for <ath10k@lists.infradead.org>; Thu, 24 Jul 2014 00:17:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87egxdv0u2.fsf@kamboji.qca.qualcomm.com>
-References: <1405672472-16302-1-git-send-email-janusz.dziedzic@tieto.com>
- <87egxdv0u2.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 24 Jul 2014 09:17:29 +0200
-Message-ID: <CALhHN=oOWgAhWL4B15OduHuL-qrLs3DaSMnpYJDa1xqmK=aZ6Q@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: extend debug code for RX path
+ id 1XAFI7-0007Eb-Cz
+ for ath10k@lists.infradead.org; Thu, 24 Jul 2014 09:26:24 +0000
+Received: by mail-wg0-f52.google.com with SMTP id a1so2388966wgh.11
+ for <ath10k@lists.infradead.org>; Thu, 24 Jul 2014 02:25:59 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH v2] ath10k: handle attention flags correctly when using A-MSDU
+Date: Thu, 24 Jul 2014 11:25:31 +0200
+Message-Id: <1406193931-5478-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,101 +17,164 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-On 22 July 2014 18:02, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->
->> Print sequence number, AMSDU_MORE flag and AC when additional
->> debug enabled in RX path. This is usefull for debugging purpose.
->>
->> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/htt_rx.c |   32 ++++++++++++++++++++++++++++--
->>  1 file changed, 30 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> index 6db0e49..04140e3 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -819,19 +819,46 @@ static bool ath10k_htt_rx_h_channel(struct ath10k *ar,
->>       return true;
->>  }
->>
->> +static char *tid_to_ac[] = {
->
-> static const?
->
->> +     "BE(0)",
->> +     "BK(1)",
->> +     "BK(2)",
->> +     "BE(3)",
->> +     "VI(4)",
->> +     "VI(5)",
->> +     "VO(6)",
->> +     "VO(7)",
->> +     "tid(8)",
->> +     "tid(9)",
->> +     "tid(10)",
->> +     "tid(11)",
->> +     "tid(12)",
->> +     "tid(13)",
->> +     "tid(14)",
->> +     "tid(15)",
->> +};
->
-> I don't see much point of adding tid number to the string when you could
-> print it with "%i". Also about the string format, maybe this would be
-> clearer:
->
-> "rx skb %p len %u peer %pM tid %i (%s) sn %u"
->
-> For example "...tid 4 (VI)..." and for tid > 7 we don't print "(VI)"
-> part at all, just the number.
->
-tid don't need to be always present (eg sta with disabled qos).
-So I can use:
-- table as above
-- buffer[] + snprintf() + %i
-Depends what you prefer here.
+In case of A-MSDU RX we should check attention flags
+correctly to be sure we report correct FCS status for
+A-MSDU subframes. Without a patch we could report A-MSDU
+subframes with wrong FCS as a correct to the stack, next
+get a lot of DUP ACK TCP packets. Finally TP drop is seen
+and this drop depends on FCS errors ratio for A-MSDU frame.
 
->>  static void ath10k_process_rx(struct ath10k *ar,
->>                             struct ieee80211_rx_status *rx_status,
->>                             struct sk_buff *skb)
->>  {
->>       struct ieee80211_rx_status *status;
->> +     struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
->>
->>       status = IEEE80211_SKB_RXCB(skb);
->>       *status = *rx_status;
->>
->>       ath10k_dbg(ATH10K_DBG_DATA,
->> -                "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %imic-err %i\n",
->> +                "rx skb %p len %u peer %pM %s sn %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
->>                  skb,
->>                  skb->len,
->> +                ieee80211_get_SA(hdr),
->
-> This looks ok.
->
->> +                ieee80211_is_data_qos(hdr->frame_control) ?
->> +                     (tid_to_ac[*(ieee80211_get_qos_ctl(hdr)) &
->> +                                IEEE80211_QOS_CTL_TID_MASK]) :
->> +                     (is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
->> +                             "mcast" : "ucast"),
->> +                (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4,
->
-> But this is hard to read. Is it possible to have a helper function for
-> this?
-Sure I can put this in the function.
+Example test case when TP drop is seen:
+- ath10k configured as an AP
+- used ath10k station
+- forced A-MSDU (7 frames) on STA
+- other traffic on channel (often FCS errors)
+- monitor iface added on AP
+- TCP STA -> AP traffic (iperf)
 
-BR
-Janusz
+a) Iperf logs for case without the patch:
+
+echo "1 64" > htt_max_amsdu_ampdu // disable A-MSDU
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0- 5.0 sec  56.6 MBytes  95.0 Mbits/sec
+[  3]  5.0-10.0 sec  60.4 MBytes   101 Mbits/sec
+[  3] 10.0-15.0 sec  60.2 MBytes   101 Mbits/sec
+[  3] 15.0-20.0 sec  60.2 MBytes   101 Mbits/sec
+[  3] 20.0-25.0 sec  63.8 MBytes   107 Mbits/sec
+[  3] 25.0-30.0 sec  64.9 MBytes   109 Mbits/sec
+
+echo "7 64" > htt_max_amsdu_ampdu  // set 7 A-MSDU subframes
+[  3] 30.0-35.0 sec  40.0 MBytes  67.1 Mbits/sec
+[  3] 35.0-40.0 sec  35.9 MBytes  60.2 Mbits/sec
+[  3] 40.0-45.0 sec  36.9 MBytes  61.9 Mbits/sec
+[  3] 45.0-50.0 sec  37.9 MBytes  63.5 Mbits/sec
+[  3] 50.0-55.0 sec  34.5 MBytes  57.9 Mbits/sec
+[  3] 55.0-60.0 sec  25.4 MBytes  42.6 Mbits/sec
+[  3] 60.0-65.0 sec  48.2 MBytes  81.0 Mbits/sec
+[  3] 65.0-70.0 sec  28.8 MBytes  48.2 Mbits/sec
+[  3] 70.0-75.0 sec  29.2 MBytes  49.1 Mbits/sec
+[  3] 75.0-80.0 sec  22.9 MBytes  38.4 Mbits/sec
+[  3] 80.0-85.0 sec  26.4 MBytes  44.2 Mbits/sec
+[  3] 85.0-90.0 sec  31.5 MBytes  52.8 Mbits/sec
+
+b) Iperf logs for case with patch:
+
+echo "1 64" > htt_max_amsdu_ampdu // disable A-MSDU
+[  3] local 192.168.12.2 port 57512 connected with 192.168.12.1 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0- 5.0 sec  60.8 MBytes   102 Mbits/sec
+[  3]  5.0-10.0 sec  62.2 MBytes   104 Mbits/sec
+[  3] 10.0-15.0 sec  60.9 MBytes   102 Mbits/sec
+
+echo "7 64" > htt_max_amsdu_ampdu  // set 7 A-MSDU subframes
+[  3] 15.0-20.0 sec  68.1 MBytes   114 Mbits/sec
+[  3] 20.0-25.0 sec  80.5 MBytes   135 Mbits/sec
+[  3] 25.0-30.0 sec  83.0 MBytes   139 Mbits/sec
+[  3] 30.0-35.0 sec  79.1 MBytes   133 Mbits/sec
+[  3] 35.0-40.0 sec  77.1 MBytes   129 Mbits/sec
+[  3] 40.0-45.0 sec  77.4 MBytes   130 Mbits/sec
+
+Reported-by: Denton Gentry <denton.gentry@gmail.com>
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+*v2 - changed commit message
+
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   23 +++++++++++++++--------
+ 1 file changed, 15 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 8e14c58..4767d22 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -307,7 +307,8 @@ static void ath10k_htt_rx_free_msdu_chain(struct sk_buff *skb)
+ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 				   u8 **fw_desc, int *fw_desc_len,
+ 				   struct sk_buff **head_msdu,
+-				   struct sk_buff **tail_msdu)
++				   struct sk_buff **tail_msdu,
++				   u32 *attention)
+ {
+ 	int msdu_len, msdu_chaining = 0;
+ 	struct sk_buff *msdu;
+@@ -357,6 +358,11 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
+ 			break;
+ 		}
+ 
++		*attention |= __le32_to_cpu(rx_desc->attention.flags) &
++					    (RX_ATTENTION_FLAGS_TKIP_MIC_ERR |
++					     RX_ATTENTION_FLAGS_DECRYPT_ERR |
++					     RX_ATTENTION_FLAGS_FCS_ERR |
++					     RX_ATTENTION_FLAGS_MGMT_TYPE);
+ 		/*
+ 		 * Copy the FW rx descriptor for this MSDU from the rx
+ 		 * indication message into the MSDU's netbuf. HL uses the
+@@ -1256,13 +1262,15 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 		for (j = 0; j < mpdu_ranges[i].mpdu_count; j++) {
+ 			struct sk_buff *msdu_head, *msdu_tail;
+ 
++			attention = 0;
+ 			msdu_head = NULL;
+ 			msdu_tail = NULL;
+ 			ret = ath10k_htt_rx_amsdu_pop(htt,
+ 						      &fw_desc,
+ 						      &fw_desc_len,
+ 						      &msdu_head,
+-						      &msdu_tail);
++						      &msdu_tail,
++						      &attention);
+ 
+ 			if (ret < 0) {
+ 				ath10k_warn("failed to pop amsdu from htt rx ring %d\n",
+@@ -1274,7 +1282,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			rxd = container_of((void *)msdu_head->data,
+ 					   struct htt_rx_desc,
+ 					   msdu_payload);
+-			attention = __le32_to_cpu(rxd->attention.flags);
+ 
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+ 							 status,
+@@ -1327,6 +1334,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	u8 *fw_desc;
+ 	int fw_desc_len, hdrlen, paramlen;
+ 	int trim;
++	u32 attention = 0;
+ 
+ 	fw_desc_len = __le16_to_cpu(frag->fw_rx_desc_bytes);
+ 	fw_desc = (u8 *)frag->fw_msdu_rx_desc;
+@@ -1336,7 +1344,8 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 
+ 	spin_lock_bh(&htt->rx_ring.lock);
+ 	ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
+-				      &msdu_head, &msdu_tail);
++				      &msdu_head, &msdu_tail,
++				      &attention);
+ 	spin_unlock_bh(&htt->rx_ring.lock);
+ 
+ 	ath10k_dbg(ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
+@@ -1353,10 +1362,8 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 
+ 	hdr = (struct ieee80211_hdr *)msdu_head->data;
+ 	rxd = (void *)msdu_head->data - sizeof(*rxd);
+-	tkip_mic_err = !!(__le32_to_cpu(rxd->attention.flags) &
+-				RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
+-	decrypt_err = !!(__le32_to_cpu(rxd->attention.flags) &
+-				RX_ATTENTION_FLAGS_DECRYPT_ERR);
++	tkip_mic_err = !!(attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
++	decrypt_err = !!(attention & RX_ATTENTION_FLAGS_DECRYPT_ERR);
+ 	fmt = MS(__le32_to_cpu(rxd->msdu_start.info1),
+ 			RX_MSDU_START_INFO1_DECAP_FORMAT);
+ 
+-- 
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
