@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XAFI7-0007Eb-Cz
- for ath10k@lists.infradead.org; Thu, 24 Jul 2014 09:26:24 +0000
-Received: by mail-wg0-f52.google.com with SMTP id a1so2388966wgh.11
- for <ath10k@lists.infradead.org>; Thu, 24 Jul 2014 02:25:59 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH v2] ath10k: handle attention flags correctly when using A-MSDU
-Date: Thu, 24 Jul 2014 11:25:31 +0200
-Message-Id: <1406193931-5478-1-git-send-email-janusz.dziedzic@tieto.com>
+ id 1XAFLD-0007pF-2p
+ for ath10k@lists.infradead.org; Thu, 24 Jul 2014 09:29:35 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCHv3-ath-resend 2/2] ath10k: add spectral scan feature
+References: <87mwc0ro8i.fsf@kamboji.qca.qualcomm.com>
+ <1406136773-19957-1-git-send-email-sw@simonwunderlich.de>
+Date: Thu, 24 Jul 2014 12:29:07 +0300
+In-Reply-To: <1406136773-19957-1-git-send-email-sw@simonwunderlich.de> (Simon
+ Wunderlich's message of "Wed, 23 Jul 2014 19:32:53 +0200")
+Message-ID: <871ttbrtp8.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,164 +20,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
 
-In case of A-MSDU RX we should check attention flags
-correctly to be sure we report correct FCS status for
-A-MSDU subframes. Without a patch we could report A-MSDU
-subframes with wrong FCS as a correct to the stack, next
-get a lot of DUP ACK TCP packets. Finally TP drop is seen
-and this drop depends on FCS errors ratio for A-MSDU frame.
+Simon Wunderlich <sw@simonwunderlich.de> writes:
 
-Example test case when TP drop is seen:
-- ath10k configured as an AP
-- used ath10k station
-- forced A-MSDU (7 frames) on STA
-- other traffic on channel (often FCS errors)
-- monitor iface added on AP
-- TCP STA -> AP traffic (iperf)
+> Adds the spectral scan feature for ath10k. The spectral scan is triggered by
+> configuring a mode through a debugfs control file. Samples can be gathered via
+> another relay debugfs file.
+>
+> Essentially, to try it out:
+>
+> ip link set dev wlan0 up
+> echo background > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> iw dev wlan0 scan
+> echo disable > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 > samples
+>
+> This feature is still experimental. Based on the original RFC patch of
+> Sven Eckelmann.
+>
+> Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>
 
-a) Iperf logs for case without the patch:
+[...]
 
-echo "1 64" > htt_max_amsdu_ampdu // disable A-MSDU
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0- 5.0 sec  56.6 MBytes  95.0 Mbits/sec
-[  3]  5.0-10.0 sec  60.4 MBytes   101 Mbits/sec
-[  3] 10.0-15.0 sec  60.2 MBytes   101 Mbits/sec
-[  3] 15.0-20.0 sec  60.2 MBytes   101 Mbits/sec
-[  3] 20.0-25.0 sec  63.8 MBytes   107 Mbits/sec
-[  3] 25.0-30.0 sec  64.9 MBytes   109 Mbits/sec
+> diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
+> index a4179f4..3241ef9 100644
+> --- a/drivers/net/wireless/ath/ath10k/Makefile
+> +++ b/drivers/net/wireless/ath/ath10k/Makefile
+> @@ -10,6 +10,7 @@ ath10k_core-y += mac.o \
+>  		 wmi.o \
+>  		 bmi.o
+>  
+> +ath10k_core-$(CPTCFG_ATH10K_DEBUGFS) += spectral.o
 
-echo "7 64" > htt_max_amsdu_ampdu  // set 7 A-MSDU subframes
-[  3] 30.0-35.0 sec  40.0 MBytes  67.1 Mbits/sec
-[  3] 35.0-40.0 sec  35.9 MBytes  60.2 Mbits/sec
-[  3] 40.0-45.0 sec  36.9 MBytes  61.9 Mbits/sec
-[  3] 45.0-50.0 sec  37.9 MBytes  63.5 Mbits/sec
-[  3] 50.0-55.0 sec  34.5 MBytes  57.9 Mbits/sec
-[  3] 55.0-60.0 sec  25.4 MBytes  42.6 Mbits/sec
-[  3] 60.0-65.0 sec  48.2 MBytes  81.0 Mbits/sec
-[  3] 65.0-70.0 sec  28.8 MBytes  48.2 Mbits/sec
-[  3] 70.0-75.0 sec  29.2 MBytes  49.1 Mbits/sec
-[  3] 75.0-80.0 sec  22.9 MBytes  38.4 Mbits/sec
-[  3] 80.0-85.0 sec  26.4 MBytes  44.2 Mbits/sec
-[  3] 85.0-90.0 sec  31.5 MBytes  52.8 Mbits/sec
+This one still uses CPTCFG_ prefix, I'll fix those.
 
-b) Iperf logs for case with patch:
+> @@ -800,8 +800,6 @@ int ath10k_core_start(struct ath10k *ar)
+>  	else
+>  		ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
+>  
+> -	INIT_LIST_HEAD(&ar->arvifs);
+> -
+>  	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags)) {
+>  		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
+>  			    ar->hw_params.name,
+> @@ -1084,6 +1082,12 @@ struct ath10k *ath10k_core_create(void *hif_priv, struct device *dev,
+>  	INIT_WORK(&ar->register_work, ath10k_core_register_work);
+>  	INIT_WORK(&ar->restart_work, ath10k_core_restart);
+>  
+> +	INIT_LIST_HEAD(&ar->arvifs);
 
-echo "1 64" > htt_max_amsdu_ampdu // disable A-MSDU
-[  3] local 192.168.12.2 port 57512 connected with 192.168.12.1 port 5001
-[ ID] Interval       Transfer     Bandwidth
-[  3]  0.0- 5.0 sec  60.8 MBytes   102 Mbits/sec
-[  3]  5.0-10.0 sec  62.2 MBytes   104 Mbits/sec
-[  3] 10.0-15.0 sec  60.9 MBytes   102 Mbits/sec
+I'm a bit suspicious about this, why is it needed?
 
-echo "7 64" > htt_max_amsdu_ampdu  // set 7 A-MSDU subframes
-[  3] 15.0-20.0 sec  68.1 MBytes   114 Mbits/sec
-[  3] 20.0-25.0 sec  80.5 MBytes   135 Mbits/sec
-[  3] 25.0-30.0 sec  83.0 MBytes   139 Mbits/sec
-[  3] 30.0-35.0 sec  79.1 MBytes   133 Mbits/sec
-[  3] 35.0-40.0 sec  77.1 MBytes   129 Mbits/sec
-[  3] 40.0-45.0 sec  77.4 MBytes   130 Mbits/sec
-
-Reported-by: Denton Gentry <denton.gentry@gmail.com>
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
-*v2 - changed commit message
-
- drivers/net/wireless/ath/ath10k/htt_rx.c |   23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 8e14c58..4767d22 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -307,7 +307,8 @@ static void ath10k_htt_rx_free_msdu_chain(struct sk_buff *skb)
- static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 				   u8 **fw_desc, int *fw_desc_len,
- 				   struct sk_buff **head_msdu,
--				   struct sk_buff **tail_msdu)
-+				   struct sk_buff **tail_msdu,
-+				   u32 *attention)
- {
- 	int msdu_len, msdu_chaining = 0;
- 	struct sk_buff *msdu;
-@@ -357,6 +358,11 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 			break;
- 		}
- 
-+		*attention |= __le32_to_cpu(rx_desc->attention.flags) &
-+					    (RX_ATTENTION_FLAGS_TKIP_MIC_ERR |
-+					     RX_ATTENTION_FLAGS_DECRYPT_ERR |
-+					     RX_ATTENTION_FLAGS_FCS_ERR |
-+					     RX_ATTENTION_FLAGS_MGMT_TYPE);
- 		/*
- 		 * Copy the FW rx descriptor for this MSDU from the rx
- 		 * indication message into the MSDU's netbuf. HL uses the
-@@ -1256,13 +1262,15 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 		for (j = 0; j < mpdu_ranges[i].mpdu_count; j++) {
- 			struct sk_buff *msdu_head, *msdu_tail;
- 
-+			attention = 0;
- 			msdu_head = NULL;
- 			msdu_tail = NULL;
- 			ret = ath10k_htt_rx_amsdu_pop(htt,
- 						      &fw_desc,
- 						      &fw_desc_len,
- 						      &msdu_head,
--						      &msdu_tail);
-+						      &msdu_tail,
-+						      &attention);
- 
- 			if (ret < 0) {
- 				ath10k_warn("failed to pop amsdu from htt rx ring %d\n",
-@@ -1274,7 +1282,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 			rxd = container_of((void *)msdu_head->data,
- 					   struct htt_rx_desc,
- 					   msdu_payload);
--			attention = __le32_to_cpu(rxd->attention.flags);
- 
- 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
- 							 status,
-@@ -1327,6 +1334,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 	u8 *fw_desc;
- 	int fw_desc_len, hdrlen, paramlen;
- 	int trim;
-+	u32 attention = 0;
- 
- 	fw_desc_len = __le16_to_cpu(frag->fw_rx_desc_bytes);
- 	fw_desc = (u8 *)frag->fw_msdu_rx_desc;
-@@ -1336,7 +1344,8 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
--				      &msdu_head, &msdu_tail);
-+				      &msdu_head, &msdu_tail,
-+				      &attention);
- 	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	ath10k_dbg(ATH10K_DBG_HTT_DUMP, "htt rx frag ahead\n");
-@@ -1353,10 +1362,8 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 
- 	hdr = (struct ieee80211_hdr *)msdu_head->data;
- 	rxd = (void *)msdu_head->data - sizeof(*rxd);
--	tkip_mic_err = !!(__le32_to_cpu(rxd->attention.flags) &
--				RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
--	decrypt_err = !!(__le32_to_cpu(rxd->attention.flags) &
--				RX_ATTENTION_FLAGS_DECRYPT_ERR);
-+	tkip_mic_err = !!(attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
-+	decrypt_err = !!(attention & RX_ATTENTION_FLAGS_DECRYPT_ERR);
- 	fmt = MS(__le32_to_cpu(rxd->msdu_start.info1),
- 			RX_MSDU_START_INFO1_DECAP_FORMAT);
- 
 -- 
-1.7.9.5
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
