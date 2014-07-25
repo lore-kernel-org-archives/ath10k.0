@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XAaiP-00040r-S2
- for ath10k@lists.infradead.org; Fri, 25 Jul 2014 08:18:58 +0000
+ id 1XAajQ-0004Fk-7r
+ for ath10k@lists.infradead.org; Fri, 25 Jul 2014 08:20:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4] ath10k: fix Rx aggregation reordering
-References: <1405509540-32691-1-git-send-email-michal.kazior@tieto.com>
- <1406110833-14031-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 25 Jul 2014 11:18:30 +0300
-In-Reply-To: <1406110833-14031-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 23 Jul 2014 12:20:33 +0200")
-Message-ID: <87ha25rgvd.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: don't advertise IBSS iftype for 10.x
+References: <1406109489-17928-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 25 Jul 2014 11:19:33 +0300
+In-Reply-To: <1406109489-17928-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 23 Jul 2014 11:58:09 +0200")
+Message-ID: <87d2ctrgtm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,20 +24,14 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Denton Gentry <denton.gentry@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Firmware doesn't perform Rx reordering so it is
-> left to the host driver to do that.
+> The 10.x firmware does not support IBSS mode at
+> all. It can't beacon and it crashes when trying to
+> scan.
 >
-> Use mac80211 to perform reordering instead of
-> re-inventing the wheel.
->
-> This fixes TCP throughput issues in some
-> environments.
->
-> Reported-by: Denton Gentry <denton.gentry@gmail.com>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
