@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XAoiK-0006yi-NY
- for ath10k@lists.infradead.org; Fri, 25 Jul 2014 23:15:49 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id F2081409E87
- for <ath10k@lists.infradead.org>; Fri, 25 Jul 2014 16:15:26 -0700 (PDT)
-Message-ID: <53D2E50E.5010205@candelatech.com>
-Date: Fri, 25 Jul 2014 16:15:26 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XBSbW-0003IP-DK
+ for ath10k@lists.infradead.org; Sun, 27 Jul 2014 17:51:27 +0000
+Received: by mail-la0-f53.google.com with SMTP id gl10so4601104lab.40
+ for <ath10k@lists.infradead.org>; Sun, 27 Jul 2014 10:51:02 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Performance v/s signal quality graph.
+Date: Sun, 27 Jul 2014 10:51:01 -0700
+Message-ID: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
+Subject: [RFC] extract seqno from sta->last_seq_ctrl
+From: Denton Gentry <denton.gentry@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +22,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Michal Kazior <michal.kazior@tieto.com>
 
-Some time back, I ran some tests, and someone (sorry, can't remember or find the email)
-suggested my signal might be too hot.  I was using a 30 db fixed attenuator inline with the SMA
-cables.
+[Sending to ath10k list as I think ath10k is the only impacted driver right now]
 
-I set up a test today with E5 processor system as station, and a fast i7 processor
-system as AP, with the two systems cabled through our variable attenuator.  Open authentication,
-channel 149, other wifi equipment in area on 5ghz was (mostly) idle or powered down.
-Kernel is 3.14.13+, latest ath10k CT (10.1.467 based) firmware on both systems
-(though I don't think that matters much for throughput tests).  10 virtual stations
-configured on station machine, but only one was actively doing traffic.
+I believe there is a minor problem in
+[PATCH v2] mac80211: add support for Rx reordering offloading
+http://www.spinics.net/lists/linux-wireless/msg124812.html
 
-Here is a udp download v/s rx-signal graph as the attenuator is stepped from 0 to 95.5
-db attenuation in .5 db steps.
+sta->last_seq_ctrl is the seq_ctrl field from the last seen packet. To
+get the sequence number it needs to be byteswapped and shifted 4 bits;
+patch below.
 
-http://www.candelatech.com/pdfs/ath10k_atten_vs_throughput.pdf
+This mostly impacts Windows clients, because Windows sends 100-200
+frames before sending ADDBA. This results in a starting seqno which is
+quite large due to the 4 bit shift, and the ieee80211_sn_less() check
+at the top of ieee80211_sta_manage_reorder_buf drops subsequent frames
+until the sequence number catches up.
 
-The rx-signal axis is the left hand side.  The green graph is the station's (ie netdev)
-rx bps, the black is UDP goodput.
 
-It seems ath10k (WLE900VX) has no real trouble with hot signals, and runs best between
--15 and -52 rx signal level (as reported by the station device).
+From d0647db58d13533e5441c07f95b23e912976c87b Mon Sep 17 00:00:00 2001
+From: Denton Gentry <denton.gentry@gmail.com>
+Date: Sun, 27 Jul 2014 08:24:36 -0700
+Subject: [PATCH] extract seqno from sta->last_seq_ctrl
 
-Our systems are not perfectly isolated, so the maximum attenuation is around -85.
+This depends on:
+* [PATCH v2] mac80211: add support for Rx reordering offloading
 
-Enjoy,
-Ben
+sta->last_seq_ctrl is the seq_ctrl field from the last
+header seen, need to byteswap and shift it 4 bits to
+extract the sequence number.
 
+ net/mac80211/iface.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
+index 77cd025..1903220 100644
+--- a/net/mac80211/iface.c
++++ b/net/mac80211/iface.c
+@@ -1171,7 +1171,7 @@ static void ieee80211_iface_work(struct work_struct *work)
+                        mutex_lock(&local->sta_mtx);
+                        sta = sta_info_get_bss(sdata, rx_agg->addr);
+                        if (sta) {
+-                               u16 last_seq = sta->last_seq_ctrl[rx_agg->tid];
++                               u16 last_seq =
+le16_to_cpu(sta->last_seq_ctrl[rx_agg->tid]) >> 4;
+
+                                __ieee80211_start_rx_ba_session(sta,
+                                                0, 0,
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+2.0.0.526.g5318336
 
 _______________________________________________
 ath10k mailing list
