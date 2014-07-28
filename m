@@ -1,17 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBhwf-0001Si-GY
- for ath10k@lists.infradead.org; Mon, 28 Jul 2014 10:14:21 +0000
-Received: by mail-we0-f171.google.com with SMTP id p10so7151141wes.16
- for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 03:13:43 -0700 (PDT)
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XBjX5-0005Su-6q
+ for ath10k@lists.infradead.org; Mon, 28 Jul 2014 11:56:00 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Mon, 28 Jul 2014 13:53:18 +0200
+Subject: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
+References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+ <53C6A1C7.5060004@intec.ugent.be>
+ <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+ <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>,
+ <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>,
+ <53D252B4.9070704@candelatech.com>
+In-Reply-To: <53D252B4.9070704@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-In-Reply-To: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
-References: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
-Date: Mon, 28 Jul 2014 12:13:43 +0200
-Message-ID: <CA+BoTQm9VXKki+st5A5cVOA-yjrVhLw+gZ6cKPNPPAUtzWFo5Q@mail.gmail.com>
-Subject: Re: [RFC] extract seqno from sta->last_seq_ctrl
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +30,92 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Denton Gentry <denton.gentry@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gMjcgSnVseSAyMDE0IDE5OjUxLCBEZW50b24gR2VudHJ5IDxkZW50b24uZ2VudHJ5QGdtYWls
-LmNvbT4gd3JvdGU6Cj4gW1NlbmRpbmcgdG8gYXRoMTBrIGxpc3QgYXMgSSB0aGluayBhdGgxMGsg
-aXMgdGhlIG9ubHkgaW1wYWN0ZWQgZHJpdmVyIHJpZ2h0IG5vd10KPgo+IEkgYmVsaWV2ZSB0aGVy
-ZSBpcyBhIG1pbm9yIHByb2JsZW0gaW4KPiBbUEFUQ0ggdjJdIG1hYzgwMjExOiBhZGQgc3VwcG9y
-dCBmb3IgUnggcmVvcmRlcmluZyBvZmZsb2FkaW5nCj4gaHR0cDovL3d3dy5zcGluaWNzLm5ldC9s
-aXN0cy9saW51eC13aXJlbGVzcy9tc2cxMjQ4MTIuaHRtbAo+Cj4gc3RhLT5sYXN0X3NlcV9jdHJs
-IGlzIHRoZSBzZXFfY3RybCBmaWVsZCBmcm9tIHRoZSBsYXN0IHNlZW4gcGFja2V0LiBUbwo+IGdl
-dCB0aGUgc2VxdWVuY2UgbnVtYmVyIGl0IG5lZWRzIHRvIGJlIGJ5dGVzd2FwcGVkIGFuZCBzaGlm
-dGVkIDQgYml0czsKPiBwYXRjaCBiZWxvdy4KCkdvb2QgY2F0Y2ghCgoKPiBUaGlzIG1vc3RseSBp
-bXBhY3RzIFdpbmRvd3MgY2xpZW50cywgYmVjYXVzZSBXaW5kb3dzIHNlbmRzIDEwMC0yMDAKPiBm
-cmFtZXMgYmVmb3JlIHNlbmRpbmcgQUREQkEuIFRoaXMgcmVzdWx0cyBpbiBhIHN0YXJ0aW5nIHNl
-cW5vIHdoaWNoIGlzCj4gcXVpdGUgbGFyZ2UgZHVlIHRvIHRoZSA0IGJpdCBzaGlmdCwgYW5kIHRo
-ZSBpZWVlODAyMTFfc25fbGVzcygpIGNoZWNrCj4gYXQgdGhlIHRvcCBvZiBpZWVlODAyMTFfc3Rh
-X21hbmFnZV9yZW9yZGVyX2J1ZiBkcm9wcyBzdWJzZXF1ZW50IGZyYW1lcwo+IHVudGlsIHRoZSBz
-ZXF1ZW5jZSBudW1iZXIgY2F0Y2hlcyB1cC4KPgo+Cj4gRnJvbSBkMDY0N2RiNThkMTM1MzNlNTQ0
-MWMwN2Y5NWIyM2U5MTI5NzZjODdiIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+IEZyb206IERl
-bnRvbiBHZW50cnkgPGRlbnRvbi5nZW50cnlAZ21haWwuY29tPgo+IERhdGU6IFN1biwgMjcgSnVs
-IDIwMTQgMDg6MjQ6MzYgLTA3MDAKPiBTdWJqZWN0OiBbUEFUQ0hdIGV4dHJhY3Qgc2Vxbm8gZnJv
-bSBzdGEtPmxhc3Rfc2VxX2N0cmwKCllvdSdyZSBtaXNzaW5nICJtYWM4MDIxMTogIiBwcmVmaXgu
-IEFsc28gdGhpcyBtZXNzYWdlIGRvZXNuJ3Qgc2VlbSB0bwp0ZWxsIG11Y2guIEknZCBwcm9iYWJs
-eSBlbnRpdGxlIGl0ICJtYWM4MDIxMTogZml4IHN0YXJ0X3NlcV9udW0gaW4gUngKcmVvcmRlciBv
-ZmZsb2FkIiBhbmQgdGhlbiBmb2xsb3cgdGhhdCB3aXRoIGRldGFpbHMgKHdoYXQvd2h5KS4KCgo+
-Cj4gVGhpcyBkZXBlbmRzIG9uOgo+ICogW1BBVENIIHYyXSBtYWM4MDIxMTogYWRkIHN1cHBvcnQg
-Zm9yIFJ4IHJlb3JkZXJpbmcgb2ZmbG9hZGluZwoKVGhpcyBzaG91bGRuJ3QgYmUgaW4gdGhlIGNv
-bW1pdCBsb2cuCgoKPgo+IHN0YS0+bGFzdF9zZXFfY3RybCBpcyB0aGUgc2VxX2N0cmwgZmllbGQg
-ZnJvbSB0aGUgbGFzdAo+IGhlYWRlciBzZWVuLCBuZWVkIHRvIGJ5dGVzd2FwIGFuZCBzaGlmdCBp
-dCA0IGJpdHMgdG8KPiBleHRyYWN0IHRoZSBzZXF1ZW5jZSBudW1iZXIuCj4KPiAgbmV0L21hYzgw
-MjExL2lmYWNlLmMgfCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
-ZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL25ldC9tYWM4MDIxMS9pZmFjZS5jIGIvbmV0L21h
-YzgwMjExL2lmYWNlLmMKPiBpbmRleCA3N2NkMDI1Li4xOTAzMjIwIDEwMDY0NAo+IC0tLSBhL25l
-dC9tYWM4MDIxMS9pZmFjZS5jCj4gKysrIGIvbmV0L21hYzgwMjExL2lmYWNlLmMKPiBAQCAtMTE3
-MSw3ICsxMTcxLDcgQEAgc3RhdGljIHZvaWQgaWVlZTgwMjExX2lmYWNlX3dvcmsoc3RydWN0IHdv
-cmtfc3RydWN0ICp3b3JrKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIG11dGV4X2xvY2soJmxv
-Y2FsLT5zdGFfbXR4KTsKPiAgICAgICAgICAgICAgICAgICAgICAgICBzdGEgPSBzdGFfaW5mb19n
-ZXRfYnNzKHNkYXRhLCByeF9hZ2ctPmFkZHIpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlm
-IChzdGEpIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHUxNiBsYXN0X3NlcSA9
-IHN0YS0+bGFzdF9zZXFfY3RybFtyeF9hZ2ctPnRpZF07Cj4gKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB1MTYgbGFzdF9zZXEgPQo+IGxlMTZfdG9fY3B1KHN0YS0+bGFzdF9zZXFfY3Ry
-bFtyeF9hZ2ctPnRpZF0pID4+IDQ7CgpUaGUgYnl0ZXN3YXAgaXMgYWxyZWFkeSBpbiBwbGFjZSAo
-Sm9oYW5uZXMgZml4ZWQgaXQpLgoKVGhlIGJpdHNoaWZ0IHNob3VsZCBiZSBkb25lIHdpdGggSUVF
-RTgwMjExX1NFUV9UT19TTiBtYWNyby4KCk9uY2UgeW91IGZpeCB0aGUgY29tbWl0IGxvZyBhbmQg
-cmViYXNlIHlvdXIgcGF0Y2ggeW91IHNob3VsZCBzdWJtaXQKdGhpcyB0byBsaW51eC13aXJlbGVz
-cyBtYWlsaW5nIGxpc3QuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+>> My 2 devices have an ARM processor 1200MHz.
+>> If I connect these two devices by an Ethernet cable and doing iperf (in TCP)
+>> I can obtain 880 Mbps, it means that my processor can deal with that speed
+>> of data transfer. But if I use Wi-fi instead of Ethernet to test rate between these
+>> devices, my processor is exhausted, I run command top and see that 0~1%
+>> idle only,  ksoftirqd and kworker take most of my processor resource.
+>>
+>> Last week I discovered by chance that the module loaded in kernel can create
+>> effects to performance of rate, in my case it is "iptables". If I unload all module
+>> that related to iptables I can improve the performance.
+>> So I wonder if I can do some thing with the Wi-fi driver to  improve rate?
+>> Or the only solution is overclock/change my processor?
+
+>Can you run 'perf top' on your system when it is under load so we can
+>see where the CPU is being used the most?
+
+I follow a tutorial to cross compile perf so here is my result
+
+
+PerfTop:      70 irqs/sec  kernel:98.6%  exact:  0.0% [1000Hz cycles],  (all, 1 CPU)
+-------------------------------------------------------------------------------
+
+    39.43%  [kernel]       [k] csum_partial_copy_nocheck
+     5.54%  [kernel]       [k] __kmalloc_track_caller
+     4.93%  [kernel]       [k] kfree
+     4.31%  [mac80211]     [k] ieee80211_tx_status
+     4.31%  [kernel]       [k] memcpy
+     3.49%  [kernel]       [k] __memzero
+     3.29%  [kernel]       [k] mv_eth_poll
+     3.29%  [kernel]       [k] __kfree_skb
+     2.05%  [ath10k_pci]   [k] ath10k_ce_send_nolock
+     1.44%  [mac80211]     [k] $a
+     1.44%  [kernel]       [k] dev_gro_receive
+     1.44%  [kernel]       [k] napi_gro_receive
+     1.44%  [kernel]       [k] eth_type_trans
+     1.44%  [kernel]       [k] inet_gro_receive
+     1.44%  [kernel]       [k] skb_copy_and_csum_bits
+     1.44%  [kernel]       [k] skb_segment
+     1.44%  [ath10k_core]  [k] ath10k_htt_rx_amsdu_pop
+     1.44%  [ath10k_core]  [k] ath10k_txrx_tx_unref
+     1.23%  [kernel]       [k] local_bh_enable                                  
+     1.23%  [kernel]       [k] kmem_cache_alloc                                 
+     1.23%  [kernel]       [k] dev_hard_start_xmit 
+
+
+Thank you in advance for your response,
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
+
+Thanks,
+Ben
+
+>
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+>
+>
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+--
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
