@@ -1,14 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBl7y-0006wb-2C
- for ath10k@lists.infradead.org; Mon, 28 Jul 2014 13:38:14 +0000
-Received: by mail-we0-f176.google.com with SMTP id q58so7406438wes.35
- for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 06:37:45 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: improve channel switching
-Date: Mon, 28 Jul 2014 15:28:52 +0200
-Message-Id: <1406554132-17264-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XBnTk-0007wt-Qo
+ for ath10k@lists.infradead.org; Mon, 28 Jul 2014 16:08:49 +0000
+Message-ID: <53D6757A.8040803@candelatech.com>
+Date: Mon, 28 Jul 2014 09:08:26 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+ <53C6A1C7.5060004@intec.ugent.be>
+ <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+ <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>,
+ <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>,
+ <53D252B4.9070704@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,113 +30,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-In some cases during heavy tx vdev stop-start
-would timeout on vdev synchronization causing
-traffic to stall for a few seconds.
+On 07/28/2014 04:53 AM, Vu Hai NGUYEN wrote:
+>>> My 2 devices have an ARM processor 1200MHz.
+>>> If I connect these two devices by an Ethernet cable and doing iperf (in TCP)
+>>> I can obtain 880 Mbps, it means that my processor can deal with that speed
+>>> of data transfer. But if I use Wi-fi instead of Ethernet to test rate between these
+>>> devices, my processor is exhausted, I run command top and see that 0~1%
+>>> idle only,  ksoftirqd and kworker take most of my processor resource.
+>>>
+>>> Last week I discovered by chance that the module loaded in kernel can create
+>>> effects to performance of rate, in my case it is "iptables". If I unload all module
+>>> that related to iptables I can improve the performance.
+>>> So I wonder if I can do some thing with the Wi-fi driver to  improve rate?
+>>> Or the only solution is overclock/change my processor?
+> 
+>> Can you run 'perf top' on your system when it is under load so we can
+>> see where the CPU is being used the most?
+> 
+> I follow a tutorial to cross compile perf so here is my result
+> 
+> 
+> PerfTop:      70 irqs/sec  kernel:98.6%  exact:  0.0% [1000Hz cycles],  (all, 1 CPU)
+> -------------------------------------------------------------------------------
+> 
+>     39.43%  [kernel]       [k] csum_partial_copy_nocheck
 
-Instead of stop-starting use a dedicated vdev
-restart command and down vdevs explicitly before
-doing so.
+Looks like your ethernet driver is not doing checksum offloading?
 
-This gets rid of the synchronization
-warnings/timeouts and makes channel switching
-smoother during traffic.
+I am pretty sure ath10k does support this unless you have managed
+to disabled it somehow?
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+Thanks,
+Ben
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9d61bb1..b76efe2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -796,7 +796,7 @@ static void ath10k_recalc_radar_detection(struct ath10k *ar)
- 	}
- }
- 
--static int ath10k_vdev_start(struct ath10k_vif *arvif)
-+static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- {
- 	struct ath10k *ar = arvif->ar;
- 	struct cfg80211_chan_def *chandef = &ar->chandef;
-@@ -838,7 +838,11 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
- 		   arg.vdev_id, arg.channel.freq,
- 		   ath10k_wmi_phymode_str(arg.channel.mode));
- 
--	ret = ath10k_wmi_vdev_start(ar, &arg);
-+	if (restart)
-+		ret = ath10k_wmi_vdev_restart(ar, &arg);
-+	else
-+		ret = ath10k_wmi_vdev_start(ar, &arg);
-+
- 	if (ret) {
- 		ath10k_warn("failed to start WMI vdev %i: %d\n",
- 			    arg.vdev_id, ret);
-@@ -858,6 +862,16 @@ static int ath10k_vdev_start(struct ath10k_vif *arvif)
- 	return ret;
- }
- 
-+static int ath10k_vdev_start(struct ath10k_vif *arvif)
-+{
-+	return ath10k_vdev_start_restart(arvif, false);
-+}
-+
-+static int ath10k_vdev_restart(struct ath10k_vif *arvif)
-+{
-+	return ath10k_vdev_start_restart(arvif, true);
-+}
-+
- static int ath10k_vdev_stop(struct ath10k_vif *arvif)
- {
- 	struct ath10k *ar = arvif->ar;
-@@ -2582,18 +2596,21 @@ static void ath10k_config_chan(struct ath10k *ar)
- 		if (!arvif->is_started)
- 			continue;
- 
-+		if (!arvif->is_up)
-+			continue;
-+
- 		if (arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)
- 			continue;
- 
--		ret = ath10k_vdev_stop(arvif);
-+		ret = ath10k_wmi_vdev_down(ar, arvif->vdev_id);
- 		if (ret) {
--			ath10k_warn("failed to stop vdev %d: %d\n",
-+			ath10k_warn("failed to down vdev %d: %d\n",
- 				    arvif->vdev_id, ret);
- 			continue;
- 		}
- 	}
- 
--	/* all vdevs are now stopped - now attempt to restart them */
-+	/* all vdevs are downed now - attempt to restart and re-up them */
- 
- 	list_for_each_entry(arvif, &ar->arvifs, list) {
- 		if (!arvif->is_started)
-@@ -2602,9 +2619,9 @@ static void ath10k_config_chan(struct ath10k *ar)
- 		if (arvif->vdev_type == WMI_VDEV_TYPE_MONITOR)
- 			continue;
- 
--		ret = ath10k_vdev_start(arvif);
-+		ret = ath10k_vdev_restart(arvif);
- 		if (ret) {
--			ath10k_warn("failed to start vdev %d: %d\n",
-+			ath10k_warn("failed to restart vdev %d: %d\n",
- 				    arvif->vdev_id, ret);
- 			continue;
- 		}
+>      5.54%  [kernel]       [k] __kmalloc_track_caller
+>      4.93%  [kernel]       [k] kfree
+>      4.31%  [mac80211]     [k] ieee80211_tx_status
+>      4.31%  [kernel]       [k] memcpy
+>      3.49%  [kernel]       [k] __memzero
+>      3.29%  [kernel]       [k] mv_eth_poll
+>      3.29%  [kernel]       [k] __kfree_skb
+>      2.05%  [ath10k_pci]   [k] ath10k_ce_send_nolock
+>      1.44%  [mac80211]     [k] $a
+>      1.44%  [kernel]       [k] dev_gro_receive
+>      1.44%  [kernel]       [k] napi_gro_receive
+>      1.44%  [kernel]       [k] eth_type_trans
+>      1.44%  [kernel]       [k] inet_gro_receive
+>      1.44%  [kernel]       [k] skb_copy_and_csum_bits
+>      1.44%  [kernel]       [k] skb_segment
+>      1.44%  [ath10k_core]  [k] ath10k_htt_rx_amsdu_pop
+>      1.44%  [ath10k_core]  [k] ath10k_txrx_tx_unref
+>      1.23%  [kernel]       [k] local_bh_enable                                  
+>      1.23%  [kernel]       [k] kmem_cache_alloc                                 
+>      1.23%  [kernel]       [k] dev_hard_start_xmit 
+> 
+> 
+> Thank you in advance for your response,
+> 
+> NGUYEN Vu Hai
+> Acita-Sodielec
+> Route de Mayres - B.P. 9
+> 12100 St GEORGES DE LUZENCON
+> FRANCE
+> 
+> 
+> 
+> Thanks,
+> Ben
+> 
+>>
+>> NGUYEN Vu Hai
+>> Acita-Sodielec
+>> Route de Mayres - B.P. 9
+>> 12100 St GEORGES DE LUZENCON
+>> FRANCE
+>>
+>>
+>>
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
+> 
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+> 
+
+
 -- 
-1.8.5.3
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
