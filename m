@@ -1,27 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBfRF-00047U-J1
- for ath10k@lists.infradead.org; Mon, 28 Jul 2014 07:33:42 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Mon, 28 Jul 2014 09:32:50 +0200
-Subject: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7F6@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <53C6A1C7.5060004@intec.ugent.be>
- <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>,
- <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>,
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>,
- <53D252B4.9070704@candelatech.com>
-In-Reply-To: <53D252B4.9070704@candelatech.com>
-Content-Language: fr-FR
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XBfjr-0002op-Kh
+ for ath10k@lists.infradead.org; Mon, 28 Jul 2014 07:52:56 +0000
+Received: by mail-la0-f41.google.com with SMTP id s18so5193986lam.0
+ for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 00:52:30 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <53D5EF33.1080208@gmail.com>
+References: <1406528765-4669-1-git-send-email-janusz.dziedzic@tieto.com>
+ <53D5EF33.1080208@gmail.com>
+Date: Mon, 28 Jul 2014 09:52:30 +0200
+Message-ID: <CALhHN=rOF+-8gJCM4tBNk39ksd_F_w_h2GB=njP6N6PXqkZiXg@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: extend debug code for RX path
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,44 +25,113 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Varka Bhadram <varkabhadram@gmail.com>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
->> My 2 devices have an ARM processor 1200MHz.
->> If I connect these two devices by an Ethernet cable and doing iperf (in TCP)
->> I can obtain 880 Mbps, it means that my processor can deal with that speed
->> of data transfer. But if I use Wi-fi instead of Ethernet to test rate between these
->> devices, my processor is exhausted, I run command top and see that 0~1%
->> idle only,  ksoftirqd and kworker take most of my processor resource.
+On 28 July 2014 08:35, Varka Bhadram <varkabhadram@gmail.com> wrote:
+> On 07/28/2014 11:56 AM, Janusz Dziedzic wrote:
 >>
->> Last week I discovered by chance that the module loaded in kernel can create
->> effects to performance of rate, in my case it is "iptables". If I unload all module
->> that related to iptables I can improve the performance.
->> So I wonder if I can do some thing with the Wi-fi driver to  improve rate?
->> Or the only solution is overclock/change my processor?
+>> Print sequence number, AMSDU_MORE flag and AC when additional
+>> debug enabled in RX path. This is usefull for debugging purpose.
+>>
+>> Signed-off-by: Janusz Dziedzic<janusz.dziedzic@tieto.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/htt_rx.c |   41
+>> ++++++++++++++++++++++++++++--
+>>   1 file changed, 39 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> index d80fcda..f7c8021 100644
+>> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+>> @@ -818,19 +818,55 @@ static bool ath10k_htt_rx_h_channel(struct ath10k
+>> *ar,
+>>         return true;
+>>   }
+>>   +static const char * const tid_to_ac[] = {
+>
+>
+> No space required '*' and const.
+>
+Seems checkpatch didn't find this.
 
->Can you run 'perf top' on your system when it is under load so we can
->see where the CPU is being used the most?
+> static const char *const tid_to_ac[] = {
+>
+>
+>
+>> +       "BE",
+>> +       "BK",
+>> +       "BK",
+>> +       "BE",
+>> +       "VI",
+>> +       "VI",
+>> +       "VO",
+>> +       "VO",
+>> +};
+>> +
+>> +static char *ath10k_get_tid(struct ieee80211_hdr *hdr, char *out, size_t
+>> size)
+>> +{
+>> +       u8 *qc;
+>> +       int tid;
+>> +
+>> +       if (!ieee80211_is_data_qos(hdr->frame_control))
+>> +               return "";
+>
+>
+> return NULL would be more readable...?
+>
+We don't need extra "(null)" in printf, empty string is what I expect
+here (same as other params in this dbg info).
+Anyway I can return "out" here and initialize as empty before calling
+ath10k_get_tid().
 
-It's complicated for me to install "perf" cause it depends on the package linux-tools (please
-correct me if I'm wrong :D)and our linux kernel is provided from the processor's producer.
-I don't see the option to build "perf" form the menuconfig of our linux. I've enabled these parameters
-but still when I run perf from shell there is no program found.
+>
+>> +
+>> +       qc = ieee80211_get_qos_ctl(hdr);
+>> +       tid = *qc & IEEE80211_QOS_CTL_TID_MASK;
+>> +       if (tid < 8)
+>> +               snprintf(out, size, "tid %d (%s)", tid, tid_to_ac[tid]);
+>> +       else
+>> +               snprintf(out, size, "tid %d", tid);
+>> +
+>> +       return out;
+>> +}
+>> +
+>>   static void ath10k_process_rx(struct ath10k *ar,
+>>                               struct ieee80211_rx_status *rx_status,
+>>                               struct sk_buff *skb)
+>>   {
+>>         struct ieee80211_rx_status *status;
+>> +       struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+>> +       char tid[32];
+>>         status = IEEE80211_SKB_RXCB(skb);
+>>         *status = *rx_status;
+>>         ath10k_dbg(ATH10K_DBG_DATA,
+>> -                  "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u
+>> freq %u band %u flag 0x%x fcs-err %imic-err %i\n",
+>> +                  "rx skb %p len %u peer %pM %s %s sn %u %s%s%s%s%s
+>> %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i
+>> amsdu-more %i\n",
+>>                    skb,
+>>                    skb->len,
+>> +                  ieee80211_get_SA(hdr),
+>> +                  ath10k_get_tid(hdr, tid, sizeof(tid)),
+>> +                  is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
+>> +                                                       "mcast" : "ucast",
+>
+>
+> should match open paranthesis...
+>
+> is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
+>
+>                         "mcast" : "ucast",
+>
+Could you describe this more (I didn't find clear description about this)?
 
-CONFIG_HAVE_PERF_EVENTS=y   
-CONFIG_EVENT_TRACING=y     
-CONFIG_PERF_EVENTS=y       
-CONFIG_PERF_COUNTERS=y     
-
-I can only run "top" to see what process used most of out CPU, they are  ksoftirqd and kworker.
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
-
+BR
+Janusz
 
 _______________________________________________
 ath10k mailing list
