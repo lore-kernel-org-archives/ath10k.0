@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBg3e-00025a-No
- for ath10k@lists.infradead.org; Mon, 28 Jul 2014 08:13:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC] extract seqno from sta->last_seq_ctrl
-References: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
-Date: Mon, 28 Jul 2014 11:12:52 +0300
-In-Reply-To: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
- (Denton Gentry's message of "Sun, 27 Jul 2014 10:51:01 -0700")
-Message-ID: <87lhrdlx4r.fsf@kamboji.qca.qualcomm.com>
+ id 1XBhwf-0001Si-GY
+ for ath10k@lists.infradead.org; Mon, 28 Jul 2014 10:14:21 +0000
+Received: by mail-we0-f171.google.com with SMTP id p10so7151141wes.16
+ for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 03:13:43 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
+References: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
+Date: Mon, 28 Jul 2014 12:13:43 +0200
+Message-ID: <CA+BoTQm9VXKki+st5A5cVOA-yjrVhLw+gZ6cKPNPPAUtzWFo5Q@mail.gmail.com>
+Subject: Re: [RFC] extract seqno from sta->last_seq_ctrl
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,34 +20,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Denton Gentry <denton.gentry@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Denton Gentry <denton.gentry@gmail.com> writes:
-
->>From d0647db58d13533e5441c07f95b23e912976c87b Mon Sep 17 00:00:00 2001
-> From: Denton Gentry <denton.gentry@gmail.com>
-> Date: Sun, 27 Jul 2014 08:24:36 -0700
-> Subject: [PATCH] extract seqno from sta->last_seq_ctrl
->
-> This depends on:
-> * [PATCH v2] mac80211: add support for Rx reordering offloading
->
-> sta->last_seq_ctrl is the seq_ctrl field from the last
-> header seen, need to byteswap and shift it 4 bits to
-> extract the sequence number.
-
-I'll let Michal comment on the bug, but I cannot do anything with this
-patch as it doesn't have the Signed-off-by tag. Can you resend, please?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgSnVseSAyMDE0IDE5OjUxLCBEZW50b24gR2VudHJ5IDxkZW50b24uZ2VudHJ5QGdtYWls
+LmNvbT4gd3JvdGU6Cj4gW1NlbmRpbmcgdG8gYXRoMTBrIGxpc3QgYXMgSSB0aGluayBhdGgxMGsg
+aXMgdGhlIG9ubHkgaW1wYWN0ZWQgZHJpdmVyIHJpZ2h0IG5vd10KPgo+IEkgYmVsaWV2ZSB0aGVy
+ZSBpcyBhIG1pbm9yIHByb2JsZW0gaW4KPiBbUEFUQ0ggdjJdIG1hYzgwMjExOiBhZGQgc3VwcG9y
+dCBmb3IgUnggcmVvcmRlcmluZyBvZmZsb2FkaW5nCj4gaHR0cDovL3d3dy5zcGluaWNzLm5ldC9s
+aXN0cy9saW51eC13aXJlbGVzcy9tc2cxMjQ4MTIuaHRtbAo+Cj4gc3RhLT5sYXN0X3NlcV9jdHJs
+IGlzIHRoZSBzZXFfY3RybCBmaWVsZCBmcm9tIHRoZSBsYXN0IHNlZW4gcGFja2V0LiBUbwo+IGdl
+dCB0aGUgc2VxdWVuY2UgbnVtYmVyIGl0IG5lZWRzIHRvIGJlIGJ5dGVzd2FwcGVkIGFuZCBzaGlm
+dGVkIDQgYml0czsKPiBwYXRjaCBiZWxvdy4KCkdvb2QgY2F0Y2ghCgoKPiBUaGlzIG1vc3RseSBp
+bXBhY3RzIFdpbmRvd3MgY2xpZW50cywgYmVjYXVzZSBXaW5kb3dzIHNlbmRzIDEwMC0yMDAKPiBm
+cmFtZXMgYmVmb3JlIHNlbmRpbmcgQUREQkEuIFRoaXMgcmVzdWx0cyBpbiBhIHN0YXJ0aW5nIHNl
+cW5vIHdoaWNoIGlzCj4gcXVpdGUgbGFyZ2UgZHVlIHRvIHRoZSA0IGJpdCBzaGlmdCwgYW5kIHRo
+ZSBpZWVlODAyMTFfc25fbGVzcygpIGNoZWNrCj4gYXQgdGhlIHRvcCBvZiBpZWVlODAyMTFfc3Rh
+X21hbmFnZV9yZW9yZGVyX2J1ZiBkcm9wcyBzdWJzZXF1ZW50IGZyYW1lcwo+IHVudGlsIHRoZSBz
+ZXF1ZW5jZSBudW1iZXIgY2F0Y2hlcyB1cC4KPgo+Cj4gRnJvbSBkMDY0N2RiNThkMTM1MzNlNTQ0
+MWMwN2Y5NWIyM2U5MTI5NzZjODdiIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+IEZyb206IERl
+bnRvbiBHZW50cnkgPGRlbnRvbi5nZW50cnlAZ21haWwuY29tPgo+IERhdGU6IFN1biwgMjcgSnVs
+IDIwMTQgMDg6MjQ6MzYgLTA3MDAKPiBTdWJqZWN0OiBbUEFUQ0hdIGV4dHJhY3Qgc2Vxbm8gZnJv
+bSBzdGEtPmxhc3Rfc2VxX2N0cmwKCllvdSdyZSBtaXNzaW5nICJtYWM4MDIxMTogIiBwcmVmaXgu
+IEFsc28gdGhpcyBtZXNzYWdlIGRvZXNuJ3Qgc2VlbSB0bwp0ZWxsIG11Y2guIEknZCBwcm9iYWJs
+eSBlbnRpdGxlIGl0ICJtYWM4MDIxMTogZml4IHN0YXJ0X3NlcV9udW0gaW4gUngKcmVvcmRlciBv
+ZmZsb2FkIiBhbmQgdGhlbiBmb2xsb3cgdGhhdCB3aXRoIGRldGFpbHMgKHdoYXQvd2h5KS4KCgo+
+Cj4gVGhpcyBkZXBlbmRzIG9uOgo+ICogW1BBVENIIHYyXSBtYWM4MDIxMTogYWRkIHN1cHBvcnQg
+Zm9yIFJ4IHJlb3JkZXJpbmcgb2ZmbG9hZGluZwoKVGhpcyBzaG91bGRuJ3QgYmUgaW4gdGhlIGNv
+bW1pdCBsb2cuCgoKPgo+IHN0YS0+bGFzdF9zZXFfY3RybCBpcyB0aGUgc2VxX2N0cmwgZmllbGQg
+ZnJvbSB0aGUgbGFzdAo+IGhlYWRlciBzZWVuLCBuZWVkIHRvIGJ5dGVzd2FwIGFuZCBzaGlmdCBp
+dCA0IGJpdHMgdG8KPiBleHRyYWN0IHRoZSBzZXF1ZW5jZSBudW1iZXIuCj4KPiAgbmV0L21hYzgw
+MjExL2lmYWNlLmMgfCAyICstCj4gIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBk
+ZWxldGlvbigtKQo+Cj4gZGlmZiAtLWdpdCBhL25ldC9tYWM4MDIxMS9pZmFjZS5jIGIvbmV0L21h
+YzgwMjExL2lmYWNlLmMKPiBpbmRleCA3N2NkMDI1Li4xOTAzMjIwIDEwMDY0NAo+IC0tLSBhL25l
+dC9tYWM4MDIxMS9pZmFjZS5jCj4gKysrIGIvbmV0L21hYzgwMjExL2lmYWNlLmMKPiBAQCAtMTE3
+MSw3ICsxMTcxLDcgQEAgc3RhdGljIHZvaWQgaWVlZTgwMjExX2lmYWNlX3dvcmsoc3RydWN0IHdv
+cmtfc3RydWN0ICp3b3JrKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIG11dGV4X2xvY2soJmxv
+Y2FsLT5zdGFfbXR4KTsKPiAgICAgICAgICAgICAgICAgICAgICAgICBzdGEgPSBzdGFfaW5mb19n
+ZXRfYnNzKHNkYXRhLCByeF9hZ2ctPmFkZHIpOwo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlm
+IChzdGEpIHsKPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHUxNiBsYXN0X3NlcSA9
+IHN0YS0+bGFzdF9zZXFfY3RybFtyeF9hZ2ctPnRpZF07Cj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICB1MTYgbGFzdF9zZXEgPQo+IGxlMTZfdG9fY3B1KHN0YS0+bGFzdF9zZXFfY3Ry
+bFtyeF9hZ2ctPnRpZF0pID4+IDQ7CgpUaGUgYnl0ZXN3YXAgaXMgYWxyZWFkeSBpbiBwbGFjZSAo
+Sm9oYW5uZXMgZml4ZWQgaXQpLgoKVGhlIGJpdHNoaWZ0IHNob3VsZCBiZSBkb25lIHdpdGggSUVF
+RTgwMjExX1NFUV9UT19TTiBtYWNyby4KCk9uY2UgeW91IGZpeCB0aGUgY29tbWl0IGxvZyBhbmQg
+cmViYXNlIHlvdXIgcGF0Y2ggeW91IHNob3VsZCBzdWJtaXQKdGhpcyB0byBsaW51eC13aXJlbGVz
+cyBtYWlsaW5nIGxpc3QuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
