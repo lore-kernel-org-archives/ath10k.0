@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBSbW-0003IP-DK
- for ath10k@lists.infradead.org; Sun, 27 Jul 2014 17:51:27 +0000
-Received: by mail-la0-f53.google.com with SMTP id gl10so4601104lab.40
- for <ath10k@lists.infradead.org>; Sun, 27 Jul 2014 10:51:02 -0700 (PDT)
-MIME-Version: 1.0
-Date: Sun, 27 Jul 2014 10:51:01 -0700
-Message-ID: <CABnBrYV27yNECG6PPWp2Gsz5w3azbEzGc4n5TcfavvUBbN8U_g@mail.gmail.com>
-Subject: [RFC] extract seqno from sta->last_seq_ctrl
-From: Denton Gentry <denton.gentry@gmail.com>
+ id 1XBeOf-0005g8-WE
+ for ath10k@lists.infradead.org; Mon, 28 Jul 2014 06:26:58 +0000
+Received: by mail-wi0-f180.google.com with SMTP id n3so3782206wiv.13
+ for <ath10k@lists.infradead.org>; Sun, 27 Jul 2014 23:26:32 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH v2] ath10k: extend debug code for RX path
+Date: Mon, 28 Jul 2014 08:26:05 +0200
+Message-Id: <1406528765-4669-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,61 +17,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Michal Kazior <michal.kazior@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-[Sending to ath10k list as I think ath10k is the only impacted driver right now]
+Print sequence number, AMSDU_MORE flag and AC when additional
+debug enabled in RX path. This is usefull for debugging purpose.
 
-I believe there is a minor problem in
-[PATCH v2] mac80211: add support for Rx reordering offloading
-http://www.spinics.net/lists/linux-wireless/msg124812.html
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   41 ++++++++++++++++++++++++++++--
+ 1 file changed, 39 insertions(+), 2 deletions(-)
 
-sta->last_seq_ctrl is the seq_ctrl field from the last seen packet. To
-get the sequence number it needs to be byteswapped and shifted 4 bits;
-patch below.
-
-This mostly impacts Windows clients, because Windows sends 100-200
-frames before sending ADDBA. This results in a starting seqno which is
-quite large due to the 4 bit shift, and the ieee80211_sn_less() check
-at the top of ieee80211_sta_manage_reorder_buf drops subsequent frames
-until the sequence number catches up.
-
-
-From d0647db58d13533e5441c07f95b23e912976c87b Mon Sep 17 00:00:00 2001
-From: Denton Gentry <denton.gentry@gmail.com>
-Date: Sun, 27 Jul 2014 08:24:36 -0700
-Subject: [PATCH] extract seqno from sta->last_seq_ctrl
-
-This depends on:
-* [PATCH v2] mac80211: add support for Rx reordering offloading
-
-sta->last_seq_ctrl is the seq_ctrl field from the last
-header seen, need to byteswap and shift it 4 bits to
-extract the sequence number.
-
- net/mac80211/iface.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 77cd025..1903220 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1171,7 +1171,7 @@ static void ieee80211_iface_work(struct work_struct *work)
-                        mutex_lock(&local->sta_mtx);
-                        sta = sta_info_get_bss(sdata, rx_agg->addr);
-                        if (sta) {
--                               u16 last_seq = sta->last_seq_ctrl[rx_agg->tid];
-+                               u16 last_seq =
-le16_to_cpu(sta->last_seq_ctrl[rx_agg->tid]) >> 4;
-
-                                __ieee80211_start_rx_ba_session(sta,
-                                                0, 0,
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d80fcda..f7c8021 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -818,19 +818,55 @@ static bool ath10k_htt_rx_h_channel(struct ath10k *ar,
+ 	return true;
+ }
+ 
++static const char * const tid_to_ac[] = {
++	"BE",
++	"BK",
++	"BK",
++	"BE",
++	"VI",
++	"VI",
++	"VO",
++	"VO",
++};
++
++static char *ath10k_get_tid(struct ieee80211_hdr *hdr, char *out, size_t size)
++{
++	u8 *qc;
++	int tid;
++
++	if (!ieee80211_is_data_qos(hdr->frame_control))
++		return "";
++
++	qc = ieee80211_get_qos_ctl(hdr);
++	tid = *qc & IEEE80211_QOS_CTL_TID_MASK;
++	if (tid < 8)
++		snprintf(out, size, "tid %d (%s)", tid, tid_to_ac[tid]);
++	else
++		snprintf(out, size, "tid %d", tid);
++
++	return out;
++}
++
+ static void ath10k_process_rx(struct ath10k *ar,
+ 			      struct ieee80211_rx_status *rx_status,
+ 			      struct sk_buff *skb)
+ {
+ 	struct ieee80211_rx_status *status;
++	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
++	char tid[32];
+ 
+ 	status = IEEE80211_SKB_RXCB(skb);
+ 	*status = *rx_status;
+ 
+ 	ath10k_dbg(ATH10K_DBG_DATA,
+-		   "rx skb %p len %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %imic-err %i\n",
++		   "rx skb %p len %u peer %pM %s %s sn %u %s%s%s%s%s %srate_idx %u vht_nss %u freq %u band %u flag 0x%x fcs-err %i mic-err %i amsdu-more %i\n",
+ 		   skb,
+ 		   skb->len,
++		   ieee80211_get_SA(hdr),
++		   ath10k_get_tid(hdr, tid, sizeof(tid)),
++		   is_multicast_ether_addr(ieee80211_get_DA(hdr)) ?
++							"mcast" : "ucast",
++		   (__le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4,
+ 		   status->flag == 0 ? "legacy" : "",
+ 		   status->flag & RX_FLAG_HT ? "ht" : "",
+ 		   status->flag & RX_FLAG_VHT ? "vht" : "",
+@@ -842,7 +878,8 @@ static void ath10k_process_rx(struct ath10k *ar,
+ 		   status->freq,
+ 		   status->band, status->flag,
+ 		   !!(status->flag & RX_FLAG_FAILED_FCS_CRC),
+-		   !!(status->flag & RX_FLAG_MMIC_ERROR));
++		   !!(status->flag & RX_FLAG_MMIC_ERROR),
++		   !!(status->flag & RX_FLAG_AMSDU_MORE));
+ 	ath10k_dbg_dump(ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
+ 			skb->data, skb->len);
+ 
 -- 
-2.0.0.526.g5318336
+1.7.9.5
+
 
 _______________________________________________
 ath10k mailing list
