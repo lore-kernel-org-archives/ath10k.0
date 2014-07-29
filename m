@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XBs1L-0004wi-OK
- for ath10k@lists.infradead.org; Mon, 28 Jul 2014 20:59:48 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add support for 10.2 firmware
-References: <1406287937-26507-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 28 Jul 2014 23:59:15 +0300
-In-Reply-To: <1406287937-26507-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 25 Jul 2014 13:32:17 +0200")
-Message-ID: <87oaw9jj30.fsf@kamboji.qca.qualcomm.com>
+ id 1XC0s3-0004Ta-C0
+ for ath10k@lists.infradead.org; Tue, 29 Jul 2014 06:26:48 +0000
+Received: by mail-we0-f172.google.com with SMTP id x48so8345622wes.17
+ for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 23:26:23 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CALCETrXtvTyFbc0RM0kHcW_UiX+eurRTdp0vdQER2ysUrd4FcQ@mail.gmail.com>
+References: <CALCETrUXvbhkKDAvEw+643mKZtJzcJtPGhxbo35r3h=rCMOWwA@mail.gmail.com>
+ <87vbqqwoks.fsf@kamboji.qca.qualcomm.com>
+ <CALCETrXtvTyFbc0RM0kHcW_UiX+eurRTdp0vdQER2ysUrd4FcQ@mail.gmail.com>
+Date: Tue, 29 Jul 2014 08:26:22 +0200
+Message-ID: <CA+BoTQ=q-Xfk6+FwcT7yLd+YpcZobNVhszfwhLHeyL3XExps4w@mail.gmail.com>
+Subject: Re: ath10k tx to a Macbook Pro stalls
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +22,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> The 10.2 firmware is a successor of 10.1 firmware
-> (formerly identified as 10.x). Both share a lot
-> but have some slight ABI differences that need to
-> be taken care of.
->
-> The 10.2 firmware introduces some new features but
-> those can be added in subsequent patches. This
-> patch makes ath10k boot and work with 10.2 with
-> comparable functionality to 10.1.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-Thanks, applied with minor changes:
-
-> +static void ath10k_wmi_10_2_process_rx(struct ath10k *ar, struct sk_buff *skb)
-> +{
-> +	struct wmi_cmd_hdr *cmd_hdr;
-> +	enum wmi_10_2_event_id id;
-> +
-> +	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
-> +	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
-> +
-> +	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
-> +		return;
-> +
-> +	trace_ath10k_wmi_event(id, skb->data, skb->len);
-> +
-> +	switch (id) {
-> +
-> +
-> +	case WMI_10_2_MGMT_RX_EVENTID:
-
-checkpatch warned about extra newlines here.
-
-> +static void
-> +ath10k_wmi_peer_assoc_fill_main_636(struct ath10k *ar, void *buf,
-> +				    const struct wmi_peer_assoc_complete_arg *arg)
-> +{
-
-And this was too long. I "fixed" it by s/main_636/main/. I think the 636
-part was a bit redundant anyway.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjIgSnVseSAyMDE0IDA2OjEyLCBBbmR5IEx1dG9taXJza2kgPGx1dG9AYW1hY2FwaXRhbC5u
+ZXQ+IHdyb3RlOgo+IE9uIE1vbiwgSnVsIDIxLCAyMDE0IGF0IDExOjMxIEFNLCBLYWxsZSBWYWxv
+IDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cm90ZToKPj4gQW5keSBMdXRvbWlyc2tpIDxsdXRv
+QGFtYWNhcGl0YWwubmV0PiB3cml0ZXM6Cj4+Cj4+PiBPbiBteSBBcmNoZXIgQzcgdjIsIGFzIHNv
+b24gYXMgdGhlIE1CUCB0cmllcyB0byBkbyBzb21ldGhpbmcgbGlrZQo+Pj4gcGxheWluZyBhIHZp
+ZGVvLCBpdCBzZWVtcyBsaWtlIGZyYW1lcyAqdG8qIHRoZSBNQlAgbm8gbG9uZ2VyIGdldAo+Pj4g
+dGhlcmUuICBBdCB0aGUgdmVyeSBsZWFzdCwgYXJwIHJlcGxpZXMgZG9uJ3QgZ2V0IHRoZXJlLgo+
+Pgo+PiBBIG11bHRpY2FzdCBwcm9ibGVtPyBDYW4geW91IHJ1biBmb3IgZXhhbXBsZSAnYXJwaW5n
+IC1iIDxtYWNib29rJ3MgaXA+Jwo+PiB0byBjaGVjayBpZiBtdWx0aWNhc3Qgc3RvcHMgd29ya2lu
+ZyBhdCBzb21lIHBvaW50PyBXaGF0IGlmIHlvdSBoYXJkY29kZQo+PiB0aGUgQVJQIGFkZHJlc3Ms
+IGRvIHVuaWNhc3QgcGFja2V0cyBnbyB0byB0aGUgbWFjYm9vayBzdGlsbD8KPgo+IEl0J3MgYSB1
+bmljYXN0IHByb2JsZW0sIGFjdHVhbGx5LiAgYXJwaW5nIC1iIHdvcmtzLiAgYXJwaW5nIHcvbyAt
+Ygo+IGdldHMgb25lIHJlcGx5Lgo+Cj4gYXJwIC1zIDxJUD4gZmY6ZmY6ZmY6ZmY6ZmY6ZmYgYWxs
+b3dzIG1lIHRvIHBpbmcgdGhlIE1CUCAod2l0aAo+IG1vZGVyYXRlbHkgaGlnaCBsb3NzKS4gIChJ
+J20gYWN0dWFsbHkgYSBiaXQgc3VycHJpc2VkIHRoYXQgTGludXggaXMKPiBva2F5IHdpdGggdGhh
+dC4pCj4KPiBEb2VzIHRoaXMgbWVhbiB0aGF0IHRoZSBNQlAgaXMgZmFpbGluZyB0byBub3RpY2Ug
+VElNIGVudHJpZXMsIG9yIHRoYXQKPiBhdGgxMGsgc29tZWhvdyBzdG9wcyBidWZmZXJpbmcgcGFj
+a2V0cyB0byBwb3dlci1zYXZpbmcgc3RhdGlvbnM/CgpEbyB5b3UgaGF2ZSB1LUFQU0QgZW5hYmxl
+ZCBpbiB5b3VyIE9wZW5XUlQgY29uZmlndXJhdGlvbiBieSBhbnkgY2hhbmNlPwoKCk1pY2hhxYIK
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
