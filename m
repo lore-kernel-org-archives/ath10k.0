@@ -1,19 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XC0s3-0004Ta-C0
- for ath10k@lists.infradead.org; Tue, 29 Jul 2014 06:26:48 +0000
-Received: by mail-we0-f172.google.com with SMTP id x48so8345622wes.17
- for <ath10k@lists.infradead.org>; Mon, 28 Jul 2014 23:26:23 -0700 (PDT)
+Received: from mailhost.actiasodielec.fr ([89.91.64.97])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XC2Nm-000756-4l
+ for ath10k@lists.infradead.org; Tue, 29 Jul 2014 08:03:40 +0000
+From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Date: Tue, 29 Jul 2014 10:02:34 +0200
+Subject: RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D7FE@srvexch01.SODIELEC.local>
+References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
+ <53C6A1C7.5060004@intec.ugent.be>
+ <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
+ <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
+ <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>,
+ <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>,
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>,
+ <53D252B4.9070704@candelatech.com>
+ <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>,
+ <53D6757A.8040803@candelatech.com>
+In-Reply-To: <53D6757A.8040803@candelatech.com>
+Content-Language: fr-FR
 MIME-Version: 1.0
-In-Reply-To: <CALCETrXtvTyFbc0RM0kHcW_UiX+eurRTdp0vdQER2ysUrd4FcQ@mail.gmail.com>
-References: <CALCETrUXvbhkKDAvEw+643mKZtJzcJtPGhxbo35r3h=rCMOWwA@mail.gmail.com>
- <87vbqqwoks.fsf@kamboji.qca.qualcomm.com>
- <CALCETrXtvTyFbc0RM0kHcW_UiX+eurRTdp0vdQER2ysUrd4FcQ@mail.gmail.com>
-Date: Tue, 29 Jul 2014 08:26:22 +0200
-Message-ID: <CA+BoTQ=q-Xfk6+FwcT7yLd+YpcZobNVhszfwhLHeyL3XExps4w@mail.gmail.com>
-Subject: Re: ath10k tx to a Macbook Pro stalls
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +32,106 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Andy Lutomirski <luto@amacapital.net>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Adrian Chadd <adrian@freebsd.org>, Bartosz Markowski <bartosz.markowski@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjIgSnVseSAyMDE0IDA2OjEyLCBBbmR5IEx1dG9taXJza2kgPGx1dG9AYW1hY2FwaXRhbC5u
-ZXQ+IHdyb3RlOgo+IE9uIE1vbiwgSnVsIDIxLCAyMDE0IGF0IDExOjMxIEFNLCBLYWxsZSBWYWxv
-IDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cm90ZToKPj4gQW5keSBMdXRvbWlyc2tpIDxsdXRv
-QGFtYWNhcGl0YWwubmV0PiB3cml0ZXM6Cj4+Cj4+PiBPbiBteSBBcmNoZXIgQzcgdjIsIGFzIHNv
-b24gYXMgdGhlIE1CUCB0cmllcyB0byBkbyBzb21ldGhpbmcgbGlrZQo+Pj4gcGxheWluZyBhIHZp
-ZGVvLCBpdCBzZWVtcyBsaWtlIGZyYW1lcyAqdG8qIHRoZSBNQlAgbm8gbG9uZ2VyIGdldAo+Pj4g
-dGhlcmUuICBBdCB0aGUgdmVyeSBsZWFzdCwgYXJwIHJlcGxpZXMgZG9uJ3QgZ2V0IHRoZXJlLgo+
-Pgo+PiBBIG11bHRpY2FzdCBwcm9ibGVtPyBDYW4geW91IHJ1biBmb3IgZXhhbXBsZSAnYXJwaW5n
-IC1iIDxtYWNib29rJ3MgaXA+Jwo+PiB0byBjaGVjayBpZiBtdWx0aWNhc3Qgc3RvcHMgd29ya2lu
-ZyBhdCBzb21lIHBvaW50PyBXaGF0IGlmIHlvdSBoYXJkY29kZQo+PiB0aGUgQVJQIGFkZHJlc3Ms
-IGRvIHVuaWNhc3QgcGFja2V0cyBnbyB0byB0aGUgbWFjYm9vayBzdGlsbD8KPgo+IEl0J3MgYSB1
-bmljYXN0IHByb2JsZW0sIGFjdHVhbGx5LiAgYXJwaW5nIC1iIHdvcmtzLiAgYXJwaW5nIHcvbyAt
-Ygo+IGdldHMgb25lIHJlcGx5Lgo+Cj4gYXJwIC1zIDxJUD4gZmY6ZmY6ZmY6ZmY6ZmY6ZmYgYWxs
-b3dzIG1lIHRvIHBpbmcgdGhlIE1CUCAod2l0aAo+IG1vZGVyYXRlbHkgaGlnaCBsb3NzKS4gIChJ
-J20gYWN0dWFsbHkgYSBiaXQgc3VycHJpc2VkIHRoYXQgTGludXggaXMKPiBva2F5IHdpdGggdGhh
-dC4pCj4KPiBEb2VzIHRoaXMgbWVhbiB0aGF0IHRoZSBNQlAgaXMgZmFpbGluZyB0byBub3RpY2Ug
-VElNIGVudHJpZXMsIG9yIHRoYXQKPiBhdGgxMGsgc29tZWhvdyBzdG9wcyBidWZmZXJpbmcgcGFj
-a2V0cyB0byBwb3dlci1zYXZpbmcgc3RhdGlvbnM/CgpEbyB5b3UgaGF2ZSB1LUFQU0QgZW5hYmxl
-ZCBpbiB5b3VyIE9wZW5XUlQgY29uZmlndXJhdGlvbiBieSBhbnkgY2hhbmNlPwoKCk1pY2hhxYIK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+>> I follow a tutorial to cross compile perf so here is my result
+>>
+>>
+>> PerfTop:      70 irqs/sec  kernel:98.6%  exact:  0.0% [1000Hz cycles],  (all, 1 CPU)
+>> -------------------------------------------------------------------------------
+>>
+>>     39.43%  [kernel]       [k] csum_partial_copy_nocheck
+
+>Looks like your ethernet driver is not doing checksum offloading?
+
+>I am pretty sure ath10k does support this unless you have managed
+>to disabled it somehow?
+
+I'm using ath10k from master branch (generated by backport), My only hack is changing the default country of regulatory domain from US to France.
+The checksum patch is implemented by Michal Kazior since july 2013 and I also check that there is function checksum state in htt_rx.c file so it should be in my 
+driver module.
+But I install ethtool and here is the ouput of my interface wlan0:
+#ethtool --show-offload  wlan0 
+Features for wlan0:
+rx-checksumming: off [fixed]
+tx-checksumming: on
+	tx-checksum-ipv4: off [fixed]
+	tx-checksum-unneeded: off [fixed]
+	tx-checksum-ip-generic: on [fixed]
+	tx-checksum-ipv6: off [fixed]
+	tx-checksum-fcoe-crc: off [fixed]
+	tx-checksum-sctp: off [fixed]
+scatter-gather: off
+	tx-scatter-gather: off [fixed]
+	tx-scatter-gather-fraglist: off [fixed]
+tcp-segmentation-offload: off
+	tx-tcp-segmentation: off [fixed]
+	tx-tcp-ecn-segmentation: off [fixed]
+	tx-tcp6-segmentation: off [fixed]
+udp-fragmentation-offload: off [fixed]
+generic-segmentation-offload: off [requested on]
+generic-receive-offload: on
+large-receive-offload: off [fixed]
+rx-vlan-offload: off [fixed]
+tx-vlan-offload: off [fixed]
+ntuple-filters: off [fixed]
+receive-hashing: off [fixed]
+highdma: off [fixed]
+rx-vlan-filter: off [fixed]
+vlan-challenged: off [fixed]
+tx-lockless: off [fixed]
+netns-local: on [fixed]
+tx-gso-robust: off [fixed]
+tx-fcoe-segmentation: off [fixed]
+fcoe-mtu: off [fixed]
+tx-nocache-copy: on
+loopback: off [fixed]
+
+And I cannot enable these function, as it show [fixed] like above.
+# ethtool --offload  wlan0  rx on  tx on
+Cannot change rx-checksumming
+Cannot change tx-checksumming
+
+
+>>      5.54%  [kernel]       [k] __kmalloc_track_caller
+>>      4.93%  [kernel]       [k] kfree
+>>      4.31%  [mac80211]     [k] ieee80211_tx_status
+>>      4.31%  [kernel]       [k] memcpy
+>>      3.49%  [kernel]       [k] __memzero
+>>      3.29%  [kernel]       [k] mv_eth_poll
+>>      3.29%  [kernel]       [k] __kfree_skb
+>>      2.05%  [ath10k_pci]   [k] ath10k_ce_send_nolock
+>>      1.44%  [mac80211]     [k] $a
+>>      1.44%  [kernel]       [k] dev_gro_receive
+>>      1.44%  [kernel]       [k] napi_gro_receive
+>>      1.44%  [kernel]       [k] eth_type_trans
+>>      1.44%  [kernel]       [k] inet_gro_receive
+>>      1.44%  [kernel]       [k] skb_copy_and_csum_bits
+>>      1.44%  [kernel]       [k] skb_segment
+>>      1.44%  [ath10k_core]  [k] ath10k_htt_rx_amsdu_pop
+>>      1.44%  [ath10k_core]  [k] ath10k_txrx_tx_unref
+>>      1.23%  [kernel]       [k] local_bh_enable
+>>      1.23%  [kernel]       [k] kmem_cache_alloc
+>>      1.23%  [kernel]       [k] dev_hard_start_xmit
+>>
+>>
+>> Thank you in advance for your response,
+
+
+NGUYEN Vu Hai
+Acita-Sodielec
+Route de Mayres - B.P. 9
+12100 St GEORGES DE LUZENCON
+FRANCE
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
