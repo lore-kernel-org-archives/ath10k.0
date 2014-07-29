@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XC428-0006cU-6j
- for ath10k@lists.infradead.org; Tue, 29 Jul 2014 09:49:27 +0000
+ id 1XC44S-0008KC-2l
+ for ath10k@lists.infradead.org; Tue, 29 Jul 2014 09:51:48 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: extend debug code for RX path
-References: <1406528765-4669-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 29 Jul 2014 12:48:46 +0300
-In-Reply-To: <1406528765-4669-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Mon, 28 Jul 2014 08:26:05 +0200")
-Message-ID: <871tt4ijgh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: introduce a stricter scan state machine
+References: <1405941081-17359-1-git-send-email-michal.kazior@tieto.com>
+ <1405941081-17359-2-git-send-email-michal.kazior@tieto.com>
+ <87egx4iksd.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQnMKDCPTOZswZTg8s-_hmaKBiwDT_Rj4tt=ReR7RUWQ3w@mail.gmail.com>
+Date: Tue, 29 Jul 2014 12:51:17 +0300
+In-Reply-To: <CA+BoTQnMKDCPTOZswZTg8s-_hmaKBiwDT_Rj4tt=ReR7RUWQ3w@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 29 Jul 2014 11:46:48 +0200")
+Message-ID: <87wqawh4ru.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +26,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "sw@simonwunderlich.de" <sw@simonwunderlich.de>
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Print sequence number, AMSDU_MORE flag and AC when additional
-> debug enabled in RX path. This is usefull for debugging purpose.
+>>> @@ -2323,8 +2348,6 @@ void ath10k_halt(struct ath10k *ar)
+>>>               ath10k_monitor_stop(ar);
+>>>       }
+>>>
+>>> -     del_timer_sync(&ar->scan.timeout);
+>>> -     ath10k_reset_scan((unsigned long)ar);
+>>>       ath10k_peer_cleanup_all(ar);
+>>>       ath10k_core_stop(ar);
+>>>       ath10k_hif_power_down(ar);
+>>
+>> Why you don't call ath10k_scan_reset() here? I would have assumed that
+>> you do that.
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Hmm.. Good catch.
+>
+> Anyway I need to work on this patch a little bit more and fix another
+> corner case.
 
-Thanks, applied.
+Ok, I'll drop this patch and wait for the next version.
 
 -- 
 Kalle Valo
