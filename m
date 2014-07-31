@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22e.google.com ([2607:f8b0:400c:c03::22e])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XChK2-0002XL-7T
- for ath10k@lists.infradead.org; Thu, 31 Jul 2014 03:46:30 +0000
-Received: by mail-vc0-f174.google.com with SMTP id la4so3312873vcb.5
- for <ath10k@lists.infradead.org>; Wed, 30 Jul 2014 20:46:07 -0700 (PDT)
+ id 1XClGg-000109-95
+ for ath10k@lists.infradead.org; Thu, 31 Jul 2014 07:59:19 +0000
+Received: by mail-wi0-f176.google.com with SMTP id bs8so8912818wib.9
+ for <ath10k@lists.infradead.org>; Thu, 31 Jul 2014 00:58:50 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87y4vhmshr.fsf@kamboji.qca.qualcomm.com>
-References: <1406287937-26507-1-git-send-email-michal.kazior@tieto.com>
- <87y4vhmshr.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 31 Jul 2014 11:46:07 +0800
-Message-ID: <CAEFj98698nmqwou0PV0v8qV6==MPk=Y0pj18_kiHrRUXgQ4VEw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add support for 10.2 firmware
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+In-Reply-To: <53D9136E.8050908@candelatech.com>
+References: <53D9136E.8050908@candelatech.com>
+Date: Thu, 31 Jul 2014 09:58:49 +0200
+Message-ID: <CA+BoTQk7MNoD_PcbhaLxhtknQiORbW3ak6f=go31csif2JMAsQ@mail.gmail.com>
+Subject: Re: Crash in hacked kernel with CT firmware.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +20,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-> Anyone who wants to test this, the firmware image is here:
->
-> https://github.com/kvalo/ath10k-firmware/tree/master/10.2
->
-
-So, 10.x firmware won't have IBSS support?
-
------
-Chun-Yeow
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzAgSnVseSAyMDE0IDE3OjQ2LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4gd3JvdGU6Cj4gTm90IHN1cmUgaG93IHJlbGV2YW50IHRoaXMgaXMgdG8gdXBzdHJlYW0sIGJ1
+dCBqdXN0IGluIGNhc2Ugc29tZW9uZQo+IHdhbnRzIHRvIGxvb2sgYXQgaXQ6Cj4KPiBLZXJuZWwg
+aXMgbW9kaWZpZWQgMy4xNC4xNCssIHdpdGggYSBnb29kIGJpdCBvZiBiYWNrcG9ydGVkIGF0aDEw
+ayBhbmQgc29tZQo+IHBhdGNoZXMgb2YgbXkgb3duIHRvIGhlbHAgc3RhYmlsaXplIGF0aDEwayB3
+aXRoIG15IHdvcmtsb2FkIGFuZCB0byBzdXBwb3J0Cj4gQ1QgZmlybXdhcmUgZmVhdHVyZXMuCj4K
+PiBodHRwOi8vZG16Mi5jYW5kZWxhdGVjaC5jb20vZ2l0L2dpdHdlYi5jZ2k/cD1saW51eC0zLjE0
+LmRldi55Ly5naXQ7YT1zdW1tYXJ5Cj4KPiBGaXJtd2FyZSBpcyBDVCBmaXJtd2FyZSwgYW5kIGl0
+IGhhcyBhIGJ1ZyBpbiB0aGlzIHRlc3QgY2FzZSB3aGVyZSBpdCBjcmFzaGVzCj4gZmFpcmx5IG9m
+dGVuIHVwb24gcmVtb3ZhbCBvZiBhIHZkZXYgYWZ0ZXIgc29tZSB0cmFmZmljIHRlc3RzIGhhdmUg
+YmVlbgo+IHJ1bm5pbmcuICBMaWtlbHkgdGhpcyBmaXJtd2FyZSBidWcgaXMgc29tZXRoaW5nIHRo
+YXQgSSBoYXZlIGFkZGVkIG9yCj4gYXQgbGVhc3QgZXhhY2VyYmF0ZWQsIGFuZCBJIGFtIHdvcmtp
+bmcgb24gZml4aW5nIGl0Lgo+Cj4gQnV0LCB3aGVuIGl0IGNyYXNoZXMsIGl0IHRha2VzIHRoZSBr
+ZXJuZWwgZG93biBzaG9ydGx5IGFmdGVyd2FyZHMKPiBpbiBhIHJlbGlhYmxlIG1hbm5lcjoKWy4u
+Ll0KPiBCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIE5VTEwgcG9pbnRlciBkZXJlZmVyZW5j
+ZSBhdCAwMDAwMDAwMDAwMDAwMDY4Cj4gSVA6IFs8ZmZmZmZmZmZhMDZhMzE4ZD5dIGF0aDEwa190
+eHJ4X3R4X3VucmVmKzB4OTEvMHgzYzcgW2F0aDEwa19jb3JlXQpbLi4uXQo+IENhbGwgVHJhY2U6
+Cj4gIFs8ZmZmZmZmZmZhMDZhMjhiND5dIGF0aDEwa19odHRfdHhfZGV0YWNoKzB4NzAvMHhkMSBb
+YXRoMTBrX2NvcmVdCj4gIFs8ZmZmZmZmZmZhMDZhMDRjZj5dIGF0aDEwa19odHRfZGV0YWNoKzB4
+MTYvMHgxYiBbYXRoMTBrX2NvcmVdCj4gIFs8ZmZmZmZmZmZhMDY5ZWFiMz5dIGF0aDEwa19jb3Jl
+X3N0b3ArMHg0Zi8weDcwIFthdGgxMGtfY29yZV0KPiAgWzxmZmZmZmZmZmEwNjlhZTMyPl0gYXRo
+MTBrX2hhbHQrMHhkZS8weDE2MSBbYXRoMTBrX2NvcmVdCj4gIFs8ZmZmZmZmZmZhMDY5YWVlZD5d
+IGF0aDEwa19zdG9wKzB4MzgvMHg4OSBbYXRoMTBrX2NvcmVdCj4gIFs8ZmZmZmZmZmZhMDViMGFl
+Nj5dIGllZWU4MDIxMV9zdG9wX2RldmljZSsweDU4LzB4ODQgW21hYzgwMjExXQo+ICBbPGZmZmZm
+ZmZmYTA2OTU0MWM+XSA/IHNwaW5fbG9ja19iaCsweDkvMHhiIFthdGgxMGtfY29yZV0KPiAgWzxm
+ZmZmZmZmZmEwNTlkMGQzPl0gaWVlZTgwMjExX2RvX3N0b3ArMHg2MjUvMHg2N2QgW21hYzgwMjEx
+XQo+ICBbPGZmZmZmZmZmODEwZmRmNmE+XSA/IHRyYWNlX2hhcmRpcnFzX29uKzB4ZC8weGYKPiAg
+WzxmZmZmZmZmZjgxMGM2ZDQyPl0gPyBfX2xvY2FsX2JoX2VuYWJsZV9pcCsweGFmLzB4ZDkKPiAg
+WzxmZmZmZmZmZjgxNWQ4MTU2Pl0gPyBfcmF3X3NwaW5fdW5sb2NrX2JoKzB4MzEvMHgzNQo+ICBb
+PGZmZmZmZmZmODE1M2E2OTM+XSA/IGRldl9kZWFjdGl2YXRlX21hbnkrMHgxMjkvMHgxNzIKPiAg
+WzxmZmZmZmZmZmEwNTlkMTQwPl0gaWVlZTgwMjExX3N0b3ArMHgxNS8weDE5IFttYWM4MDIxMV0K
+Wy4uLl0KPiAoZ2RiKSBsICooYXRoMTBrX3R4cnhfdHhfdW5yZWYrMHg5MSkKPiAweGUxOGQgaXMg
+aW4gYXRoMTBrX3R4cnhfdHhfdW5yZWYgKC9tbnQvc2RhL2hvbWUvZ3JlZWFyYi9naXQvbGludXgt
+My4xNC5kZXYueS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3R4cnguYzoxMDkpLgo+
+IDEwNCAgICAgICAgICAgICB9Cj4gMTA1Cj4gMTA2ICAgICAgICAgICAgIG1zZHUgPSBodHQtPnBl
+bmRpbmdfdHhbdHhfZG9uZS0+bXNkdV9pZF07Cj4gMTA3ICAgICAgICAgICAgIHNrYl9jYiA9IEFU
+SDEwS19TS0JfQ0IobXNkdSk7Cj4gMTA4Cj4gMTA5ICAgICAgICAgICAgIGRtYV91bm1hcF9zaW5n
+bGUoZGV2LCBza2JfY2ItPnBhZGRyLCBtc2R1LT5sZW4sIERNQV9UT19ERVZJQ0UpOwoKT2theS4u
+IFNvIGBtc2R1YCBpcyBOVUxMLiBJIGNhbid0IHNlZW0gdG8gZmluZCB1bnBhaXJlZCB1c2VkX21z
+ZHVfaWRzCmFuZCBwZW5kaW5nX3R4IGFjY2Vzc2VzLiBUaGlzIHN1Z2dlc3RzIGh0dC0+cGVuZGlu
+Z190eCBpdHNlbGYgaXMKaW52YWxpZCAoYXMgd2VsbCBhcyB1c2VkX21zZHVfaWRzKSAtIHBlcmhh
+cHMgdXNlLWFmdGVyLWZyZWUgKGJvdGgKcG9pbnRlcnMgYXJlbid0IE5VTExlZCkuIFRoaXMgaW4g
+dHVybiBzdWdnZXN0cyBhdGgxMGtfaHR0X3R4X2RldGFjaCgpCndhcyBjYWxsZWQgYmVmb3JlIGFu
+ZCB0aGlzIGlzIHRoZSBzZWNvbmQgY2FsbC4gU3RhY2sgdHJhY2Ugc3VnZ2VzdHMKdGhlIChhbGxl
+Z2FkbHkgc2Vjb25kKSBjYWxsIG9yaWdpbmF0ZXMgZnJvbSBkcnZfc3RvcCgpLiBXaGVuIGF0aDEw
+awpjcmFzaGVzIGF0aDEwa19jb3JlX3N0YXJ0KCkgd29ya2VyIGNhbGxzIGF0aDEwa19oYWx0KCkg
+ZGlyZWN0bHksIHNldHMKUkVTVEFSVElORyBzdGF0ZSBhbmQgcXVldWVzIG1hYzgwMjExIGh3IHJl
+c3RhcnQuIGF0aDEwa19zdG9wKCkgY2FsbHMKYXRoMTBrX2hhbHQoKSBvbmx5IGlmIHN0YXRlIGlz
+IE9OLCBSRVNUQVJURUQgb3IgV0VER0VELiBSRVNUQVJUSU5HCmlzbid0IG9uZSBvZiB0aGVtLCBi
+dXQgc2luY2UgeW91IGhhdmUgbW9yZSB0aGFuIDEgZW50cnkgcG9pbnQgZm9yIGh3CnJlY292ZXJ5
+IChwY2kgaW5kaWNhdGlvbiwgd21pX3NlbmQsIGZsdXNoKSB5b3UgY2FuIHRyaWdnZXIKYXRoMTBr
+X2NvcmVfc3RhcnQoKSB3b3JrZXIgd2l0aCBSRVNUQVJUSU5HIHN0YXRlIChpLmUuIGNyYXNoIHdp
+dGhpbiBhCmNyYXNoIGJlZm9yZSBhdGgxMGtfc3RhcnQoKSBpcyBjYWxsZWQpIHdoaWNoIGNoYW5n
+ZXMgc3RhdGUgdG8gV0VER0VELgpXRURHRUQgYWxsb3dzIGF0aDEwa19oYWx0KCkgdG8gYmUgY2Fs
+bGVkIGluIGF0aDEwa19zdG9wKCkuIFFFRC4KClRoZSBmb2xsb3dpbmcgKGl0IGhhcyBiZWVuIGlu
+IHVwc3RyZWFtIGZvciBzb21lIHRpbWUgbm93KSBzaG91bGQgZml4CnRoZSBwcm9ibGVtOgoKY29t
+bWl0IGM1MDU4ZjViODJmMjI2YjIzNmRjNWE2NTAxNTE1MmVkM2MyM2VmZmYKQXV0aG9yOiBNaWNo
+YWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KRGF0ZTogICBNb24gTWF5IDI2IDEy
+OjQ2OjAzIDIwMTQgKzAzMDAKCiAgICBhdGgxMGs6IHBlcmZvcm0gaHcgcmVzdGFydCBsYXppbHkK
+CiAgICBUaGlzIHJlZHVjZXMgcmlzayBvZiByYWNlcyBhbmQgcHJlcGFyZXMgZm9yIG1vcmUKICAg
+IGh3IHJlc3RhcnQgZml4ZXMuCgogICAgSXQgYWxzbyBtYWtlcyBzZW5zZSB0byBwZXJmb3JtIHRl
+YXJkb3duIGFmdGVyCiAgICBtYWM4MDIxMSBzdGFydHMgaXRzIHJlc3RhcnQgcm91dGluZSBhcyBp
+dAogICAgZ3VhcmFudGVlcyBpdCBoYXMgc3RvcHBlZCBpdHNlbGYgYnkgdGhlbgogICAgKGluY2x1
+ZGluZyB0eCBxdWV1ZXMpLgoKICAgIFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hh
+bC5rYXppb3JAdGlldG8uY29tPgogICAgU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9A
+cWNhLnF1YWxjb21tLmNvbT4KClRoaXMgcHJvYmFibHkgbWFrZXMgeW91ciBpZWVlODAyMTFfc3Rv
+cF9xdWV1ZXMoKSBpbiBhdGgxMGtfaGFsdCgpIG9ic29sZXRlIHRvby4KCgpNaWNoYcWCCgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
+ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
+b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
