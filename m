@@ -1,30 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mailhost.actiasodielec.fr ([89.91.64.97])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCnCL-0004lm-6n
- for ath10k@lists.infradead.org; Thu, 31 Jul 2014 10:02:58 +0000
+ id 1XCscf-0003CY-3O
+ for ath10k@lists.infradead.org; Thu, 31 Jul 2014 15:50:31 +0000
 From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 31 Jul 2014 12:02:09 +0200
-Subject: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D803@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <53C6A1C7.5060004@intec.ugent.be>
- <CA+BoTQ==9HQrPxp3qZGwEm_a3wQY_wMW5ckrbSRu+MkxU1HRgw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EB@srvexch01.SODIELEC.local>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
- <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>
- <53D252B4.9070704@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
- <53D6757A.8040803@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7FE@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D800@srvexch01.SODIELEC.local>,
- <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
+Date: Thu, 31 Jul 2014 17:49:49 +0200
+Subject: RE : [PATCH] ath10k: fix aggregated 4addr Rx
+Message-ID: <EE97821C81277E459BEA5C6384C6F241012F15C1D805@srvexch01.SODIELEC.local>
+References: <1406205374-24858-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1406205374-24858-1-git-send-email-michal.kazior@tieto.com>
 Content-Language: fr-FR
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
@@ -35,114 +19,103 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, "greearb@candelatech.com" <greearb@candelatech.com>
 
->Strange that disabling checksum helped things.  Maybe your ethernet driver
->has issues?
+Thank you for the patch. I applied it (manually not automatically, the patc=
+h is not based on ath-master branch?)
+The warning msg: br0: received packet on wlan0.sta1 with own address as sou=
+rce address disappeared on the console of my AP.
+But the performance of my bridged STA (using CT firmware) is still lower th=
+an non-bridged STA (10.1-467 firmware).
+(520 vs 550 Mbps)
 
-I've no idea about this. Do you have any suggest how to check it? :D
+The processor of my AP is not exhausted (about 15-20% idle) but perf top on=
+ my bridged STA show that there is this thread: br_fdb_update.
+I didn't see it on non-bridged STA, it takes 5% resource of the processor
+I look for it on google and this thread is related to the warning message b=
+r0:received packet on wlan0.sta1 with own address as source address
+Do you guy have any suggestion?
 
->Looks like removing netfilter (and maybe ebtables?) would
->also help your performance...
-
-I don't enable ebtables in my kernel config, so it shoud not be built in my kernel
-
->tx status is needed for bookkeping at least, even if you don't
->get useful status info in stock firmware.
->
->CT firmware will give you proper status if you apply some of the
->ath10k driver patches from my tree, but that is unlikely to help
->performance.
-
->This accounts for 76.58% of CPU usage. You've most likely trimmed down
->the remaining entries accounting for 24% before posting.
-
-I saw there is option -a when running perf top but I did it and still, it doesn't 
-print all processes :(
-
->By the looks of it you might be able to strip down netfilter
->(iptables) rules to none on all chains and tables if you just want to
->max out the performance at the cost of having no firewall whatsoever.
-
-I'd cleaned all rules of iptables and removed all modules of iptables from kernel by command modprobe -r
-But there's still some process of netfilter process running. I disabled netfilter on bridge interface by writing 0 to these files:
-/proc/sys/net/bridge/bridge-nf-call-arptables
-/proc/sys/net/bridge/bridge-nf-call-iptables
-/proc/sys/net/bridge/bridge-nf-call-ip6tables
-
-and the performance increases from 500 to 550 Mbps (iperf in tcp reports between 530 ~ 570Mbps). 
-There is no more process like  "br_nf_pre_routing" and "br_nf_forward_ip".
-Do you think I can do anything more to strip down netfilter?
-Now the processor of my AP (about 20% idle)  is no more exhausted but not the same on STA (about 4.5 % idle)
-Here is my perf top result on AP:
-
-PerfTop:      99 irqs/sec  kernel:96.0%  exact:  0.0% [1000Hz cycles],  (all, 1 CPU)
--------------------------------------------------------------------------------
-
-    24.40%  [kernel]       [k] armadaxp_enter_idle
-     6.04%  [mac80211]     [k] ieee80211_tx_status
-     5.07%  [kernel]       [k] memcpy
-     3.38%  [kernel]       [k] mv_eth_poll
-     3.38%  [mac80211]     [k] $a
-     2.66%  [kernel]       [k] __memzero
-     2.54%  [ath10k_pci]   [k] ath10k_ce_send_nolock
-     2.17%  [ath10k_core]  [k] ath10k_txrx_tx_unref
-     2.05%  [kernel]       [k] dev_queue_xmit
-     2.05%  [kernel]       [k] br_handle_frame
-     1.69%  [kernel]       [k] local_bh_enable
-     1.69%  [kernel]       [k] eth_type_trans
-     1.69%  [ath10k_core]  [k] ath10k_htt_tx
-     1.69%  ld-2.13.so     [.] 0xf120  
-     1.69%  [ath10k_pci]   [k] ath10k_ce_completed_send_next
-     1.57%  [kernel]       [k] __netif_receive_skb
-     1.45%  [kernel]       [k] dev_hard_start_xmit
-     1.45%  [kernel]       [k] nf_iterate
-     1.33%  [kernel]       [k] dev_gro_receive                                  
-     1.21%  [kernel]       [k] kfree                                            
-     1.21%  [kernel]       [k] __kfree_skb 
-
-And on STA:
-
-PerfTop:      51 irqs/sec  kernel:94.1%  exact:  0.0% [1000Hz cycles],  (all, 1 CPU)
--------------------------------------------------------------------------------
-
-     7.51%  [kernel]       [k] memcpy
-     6.65%  [ath10k_core]  [k] ath10k_htt_rx_amsdu_pop
-     5.49%  [kernel]       [k] mv_eth_tx
-     4.91%  [kernel]       [k] kfree
-     4.91%  [kernel]       [k] __memzero
-     4.05%  [kernel]       [k] armadaxp_enter_idle
-     4.05%  [kernel]       [k] __kmalloc_track_caller
-     4.05%  [kernel]       [k] dev_queue_xmit
-     4.05%  [kernel]       [k] ip_rcv
-     3.76%  [mac80211]     [k] ieee80211_rx
-     3.76%  [kernel]       [k] __kfree_skb
-     3.76%  [ath10k_core]  [k] $a
-     2.89%  [mac80211]     [k] ieee80211_rx_handlers
-     2.60%  [mac80211]     [k] $a
-     2.60%  [kernel]       [k] ip_forward
-     2.60%  [cfg80211]     [k] ieee80211_data_to_8023
-     2.60%  [ath10k_pci]   [k] ath10k_ce_completed_send_next
-     2.31%  ld-2.13.so     [.] 0x9d8c  
-     2.31%  [cfg80211]     [k] ieee80211_hdrlen
-     2.02%  [mac80211]     [k] $a
-
->You also might want to change qdisc (`tc` command) on all interfaces
->involved to pfifo in case you're using codel to further reduce CPU
->load at the cost of buffer bloating the system.
-
-I installed tc from package iproute2 and did : tc qdisc but it doesn't improve the performance :D
-
+Thanks,
 NGUYEN Vu Hai
 Acita-Sodielec
 Route de Mayres - B.P. 9
 12100 St GEORGES DE LUZENCON
 FRANCE
+
+________________________________________
+De : Michal Kazior [michal.kazior@tieto.com]
+Date d'envoi : jeudi 24 juillet 2014 14:36
+=C0 : ath10k@lists.infradead.org
+Cc : linux-wireless@vger.kernel.org; Vu Hai NGUYEN; Michal Kazior
+Objet : [PATCH] ath10k: fix aggregated 4addr Rx
+
+A-MSDU 4addr frames weren't reconstructed properly
+and in some cases this resulted in a warning:
+
+ br0: received packet on wlan0.sta1 with own address as source address
+
+Since this was only related to A-MSDU it would
+trigger when more intense traffic was generated.
+
+Reported-by: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireles=
+s/ath/ath10k/htt_rx.c
+index 318efc3..a8328f9 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -859,7 +859,7 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+        enum rx_msdu_decap_format fmt;
+        enum htt_rx_mpdu_encrypt_type enctype;
+        struct ieee80211_hdr *hdr;
+-       u8 hdr_buf[64], addr[ETH_ALEN], *qos;
++       u8 hdr_buf[64], da[ETH_ALEN], sa[ETH_ALEN], *qos;
+        unsigned int hdr_len;
+
+        rxd =3D (void *)skb->data - sizeof(*rxd);
+@@ -897,10 +897,11 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *ht=
+t,
+                        skb_trim(skb, skb->len - FCS_LEN);
+                        break;
+                case RX_MSDU_DECAP_NATIVE_WIFI:
+-                       /* pull decapped header and copy DA */
++                       /* pull decapped header and copy SA & DA */
+                        hdr =3D (struct ieee80211_hdr *)skb->data;
+                        hdr_len =3D ath10k_htt_rx_nwifi_hdrlen(hdr);
+-                       memcpy(addr, ieee80211_get_DA(hdr), ETH_ALEN);
++                       memcpy(da, ieee80211_get_DA(hdr), ETH_ALEN);
++                       memcpy(sa, ieee80211_get_SA(hdr), ETH_ALEN);
+                        skb_pull(skb, hdr_len);
+
+                        /* push original 802.11 header */
+@@ -914,8 +915,11 @@ static void ath10k_htt_rx_amsdu(struct ath10k_htt *htt,
+                        qos =3D ieee80211_get_qos_ctl(hdr);
+                        qos[0] &=3D ~IEEE80211_QOS_CTL_A_MSDU_PRESENT;
+
+-                       /* original 802.11 header has a different DA */
+-                       memcpy(ieee80211_get_DA(hdr), addr, ETH_ALEN);
++                       /* original 802.11 header has a different DA and in
++                        * case of 4addr it may also have different SA
++                        */
++                       memcpy(ieee80211_get_DA(hdr), da, ETH_ALEN);
++                       memcpy(ieee80211_get_SA(hdr), sa, ETH_ALEN);
+                        break;
+                case RX_MSDU_DECAP_ETHERNET2_DIX:
+                        /* strip ethernet header and insert decapped 802.11
+--
+1.8.5.3
+
+
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
