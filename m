@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XCu3d-0002X0-QK
- for ath10k@lists.infradead.org; Thu, 31 Jul 2014 17:22:26 +0000
-Message-ID: <53DA7B3A.7000403@candelatech.com>
-Date: Thu, 31 Jul 2014 10:22:02 -0700
+ id 1XCxvL-0008GO-Sa
+ for ath10k@lists.infradead.org; Thu, 31 Jul 2014 21:30:08 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 5770240AC0B
+ for <ath10k@lists.infradead.org>; Thu, 31 Jul 2014 14:29:43 -0700 (PDT)
+Message-ID: <53DAB547.3030700@candelatech.com>
+Date: Thu, 31 Jul 2014 14:29:43 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: RE : [PATCH] ath10k: fix aggregated 4addr Rx
-References: <1406205374-24858-1-git-send-email-michal.kazior@tieto.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D805@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241012F15C1D805@srvexch01.SODIELEC.local>
+Subject: Re: New CT firmware release is uploaded.
+References: <53CD9C08.9090908@candelatech.com>
+In-Reply-To: <53CD9C08.9090908@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +27,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 07/31/2014 08:49 AM, Vu Hai NGUYEN wrote:
-> Thank you for the patch. I applied it (manually not automatically, the patch is not based on ath-master branch?)
-> The warning msg: br0: received packet on wlan0.sta1 with own address as source address disappeared on the console of my AP.
-> But the performance of my bridged STA (using CT firmware) is still lower than non-bridged STA (10.1-467 firmware).
-> (520 vs 550 Mbps)
-> 
-> The processor of my AP is not exhausted (about 15-20% idle) but perf top on my bridged STA show that there is this thread: br_fdb_update.
-> I didn't see it on non-bridged STA, it takes 5% resource of the processor
-> I look for it on google and this thread is related to the warning message br0:received packet on wlan0.sta1 with own address as source address
-> Do you guy have any suggestion?
+I've put up a new version (010) that fixes a crash bug in the 009
+release.  64 stations (vdevs) have been fairly well tested at
+this point (using my 3.14.14+ kernel).
 
-Is there any way at all to make the standard firmware do bridged mode?  I am curious if
-the slow-down is due to my firmware or to bridging in general...
+http://www.candelatech.com/ath10k.php
 
 Thanks,
 Ben
+
+
+On 07/21/2014 04:02 PM, Ben Greear wrote:
+> Release notes:
+> 
+>       Improve RAM usage:  Re-organized, trimmed, and otherwise made better use
+>       of RAM.  Allow compiling out swbmiss, beacon filtering, roaming code.
+>       Images with 'full' in their name do NOT have the previously mentioned features
+>       compiled out.
+> 
+>       Over-all, freed up about 80k of extra RAM, which can be used for more vdevs,
+>       peers, buffers, etc.
+> 
+>       Supports 64 vdevs (one should be reserved for monitor interface, so
+>       effectively 63 vdevs for current kernels.)
+> 
+> I have only lightly tested this on my 3.14 kernel so far.
+> 
+> A lot of these changes could potentially introduce run-time
+> crashes due to extensive use of a different type of RAM for
+> storing many structures.  Should be a quick fix should problems
+> arise.
+> 
+> As always, let me know if you find any problems.
+> 
+> Thanks,
+> Ben
+> 
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
