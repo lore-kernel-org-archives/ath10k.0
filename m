@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XDCir-0001nx-HU
+ id 1XDCir-0001oP-MW
  for ath10k@lists.infradead.org; Fri, 01 Aug 2014 13:18:14 +0000
 From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCHv5 0/2] ath10k spectral scan support
-Date: Fri,  1 Aug 2014 15:17:12 +0200
-Message-Id: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+Subject: [PATCHv5 1/2] ath: Move spectral debugfs structs to shared header
+Date: Fri,  1 Aug 2014 15:17:13 +0200
+Message-Id: <1406899034-13473-2-git-send-email-sw@simonwunderlich.de>
+In-Reply-To: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,61 +24,220 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, Simon Wunderlich <sw@simonwunderlich.de>
+Cc: Simon Wunderlich <sw@simonwunderlich.de>, mathias.kretschmer@fokus.fraunhofer.de, linux-wireless@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, kgiori@qca.qualcomm.com, sven@narfation.org
 
-This is the fifth "PATCH" patchset iteration for the ath10k spectral
-scan feature. It includes a small change compared to Kalles PATCHv4
-series: the parameter initialization has been moved to
-ath10k_spectral_start() so that the parameters also get reset when the
-firmware crashes.
+From: Sven Eckelmann <sven@narfation.org>
 
-To view the samples, please have a look at the fft_eval tool [1] which
-now supports both ath9k and ath10k formats.
+The ath9k and ath10k will share the definitions of the debugfs spectral
+structures and enums. Having them in the same place helps to avoid conflicts.
 
-The count issue is still open: Even when a count is specified, the
-hardware seems to send endless samples. It seems to work most of the
-time in VHT80 mode though, but in HT20 and HT40 the count value seems
-to be ignored. To reproduce this, start hostapd with the desired
-channel width and do:
-
-echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
-echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
-
-Repeating the last line and checking the filesize will easily show
-whether ath10k still sends samples or not. We would expect 8 samples in
-this configuration.
-
-Please see the patches for more information on the changes.
-
-Cheers,
-    Simon
-
-[1] https://github.com/simonwunderlich/FFT_eval
-
-Simon Wunderlich (1):
-  ath10k: add spectral scan feature
-
-Sven Eckelmann (1):
-  ath: Move spectral debugfs structs to shared header
-
- drivers/net/wireless/ath/ath10k/Kconfig    |   1 +
- drivers/net/wireless/ath/ath10k/Makefile   |   1 +
- drivers/net/wireless/ath/ath10k/core.c     |  10 +
- drivers/net/wireless/ath/ath10k/core.h     |  11 +
- drivers/net/wireless/ath/ath10k/mac.c      |   8 +
- drivers/net/wireless/ath/ath10k/spectral.c | 561 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/spectral.h |  90 +++++
- drivers/net/wireless/ath/ath10k/wmi.c      | 105 +++++-
- drivers/net/wireless/ath/ath10k/wmi.h      |  97 +++++
- drivers/net/wireless/ath/ath9k/spectral.h  |  71 +---
- drivers/net/wireless/ath/spectral_common.h | 113 ++++++
- 11 files changed, 998 insertions(+), 70 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/spectral.c
- create mode 100644 drivers/net/wireless/ath/ath10k/spectral.h
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+Signed-off-by: Mathias Kretschmer <mathias.kretschmer@fokus.fraunhofer.de>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath9k/spectral.h  | 71 +-----------------------
+ drivers/net/wireless/ath/spectral_common.h | 88 ++++++++++++++++++++++++++++++
+ 2 files changed, 90 insertions(+), 69 deletions(-)
  create mode 100644 drivers/net/wireless/ath/spectral_common.h
 
+diff --git a/drivers/net/wireless/ath/ath9k/spectral.h b/drivers/net/wireless/ath/ath9k/spectral.h
+index ead6341..7b410c6 100644
+--- a/drivers/net/wireless/ath/ath9k/spectral.h
++++ b/drivers/net/wireless/ath/ath9k/spectral.h
+@@ -17,6 +17,8 @@
+ #ifndef SPECTRAL_H
+ #define SPECTRAL_H
+ 
++#include "../spectral_common.h"
++
+ /* enum spectral_mode:
+  *
+  * @SPECTRAL_DISABLED: spectral mode is disabled
+@@ -54,8 +56,6 @@ struct ath_ht20_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_NUM_BINS		56
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data by -1/+2. This struct is for reference only.
+  */
+@@ -83,8 +83,6 @@ struct ath_ht20_40_mag_info {
+ 	u8 max_exp;
+ } __packed;
+ 
+-#define SPECTRAL_HT20_40_NUM_BINS		128
+-
+ /* WARNING: don't actually use this struct! MAC may vary the amount of
+  * data. This struct is for reference only.
+  */
+@@ -125,71 +123,6 @@ static inline u8 spectral_bitmap_weight(u8 *bins)
+ 	return bins[0] & 0x3f;
+ }
+ 
+-/* FFT sample format given to userspace via debugfs.
+- *
+- * Please keep the type/length at the front position and change
+- * other fields after adding another sample type
+- *
+- * TODO: this might need rework when switching to nl80211-based
+- * interface.
+- */
+-enum ath_fft_sample_type {
+-	ATH_FFT_SAMPLE_HT20 = 1,
+-	ATH_FFT_SAMPLE_HT20_40,
+-};
+-
+-struct fft_sample_tlv {
+-	u8 type;	/* see ath_fft_sample */
+-	__be16 length;
+-	/* type dependent data follows */
+-} __packed;
+-
+-struct fft_sample_ht20 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 max_exp;
+-
+-	__be16 freq;
+-	s8 rssi;
+-	s8 noise;
+-
+-	__be16 max_magnitude;
+-	u8 max_index;
+-	u8 bitmap_weight;
+-
+-	__be64 tsf;
+-
+-	u8 data[SPECTRAL_HT20_NUM_BINS];
+-} __packed;
+-
+-struct fft_sample_ht20_40 {
+-	struct fft_sample_tlv tlv;
+-
+-	u8 channel_type;
+-	__be16 freq;
+-
+-	s8 lower_rssi;
+-	s8 upper_rssi;
+-
+-	__be64 tsf;
+-
+-	s8 lower_noise;
+-	s8 upper_noise;
+-
+-	__be16 lower_max_magnitude;
+-	__be16 upper_max_magnitude;
+-
+-	u8 lower_max_index;
+-	u8 upper_max_index;
+-
+-	u8 lower_bitmap_weight;
+-	u8 upper_bitmap_weight;
+-
+-	u8 max_exp;
+-
+-	u8 data[SPECTRAL_HT20_40_NUM_BINS];
+-} __packed;
+-
+ void ath9k_spectral_init_debug(struct ath_softc *sc);
+ void ath9k_spectral_deinit_debug(struct ath_softc *sc);
+ 
+diff --git a/drivers/net/wireless/ath/spectral_common.h b/drivers/net/wireless/ath/spectral_common.h
+new file mode 100644
+index 0000000..b9ab722
+--- /dev/null
++++ b/drivers/net/wireless/ath/spectral_common.h
+@@ -0,0 +1,88 @@
++/*
++ * Copyright (c) 2013 Qualcomm Atheros, Inc.
++ *
++ * Permission to use, copy, modify, and/or distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifndef SPECTRAL_COMMON_H
++#define SPECTRAL_COMMON_H
++
++#define SPECTRAL_HT20_NUM_BINS		56
++#define SPECTRAL_HT20_40_NUM_BINS		128
++
++/* FFT sample format given to userspace via debugfs.
++ *
++ * Please keep the type/length at the front position and change
++ * other fields after adding another sample type
++ *
++ * TODO: this might need rework when switching to nl80211-based
++ * interface.
++ */
++enum ath_fft_sample_type {
++	ATH_FFT_SAMPLE_HT20 = 1,
++	ATH_FFT_SAMPLE_HT20_40,
++};
++
++struct fft_sample_tlv {
++	u8 type;	/* see ath_fft_sample */
++	__be16 length;
++	/* type dependent data follows */
++} __packed;
++
++struct fft_sample_ht20 {
++	struct fft_sample_tlv tlv;
++
++	u8 max_exp;
++
++	__be16 freq;
++	s8 rssi;
++	s8 noise;
++
++	__be16 max_magnitude;
++	u8 max_index;
++	u8 bitmap_weight;
++
++	__be64 tsf;
++
++	u8 data[SPECTRAL_HT20_NUM_BINS];
++} __packed;
++
++struct fft_sample_ht20_40 {
++	struct fft_sample_tlv tlv;
++
++	u8 channel_type;
++	__be16 freq;
++
++	s8 lower_rssi;
++	s8 upper_rssi;
++
++	__be64 tsf;
++
++	s8 lower_noise;
++	s8 upper_noise;
++
++	__be16 lower_max_magnitude;
++	__be16 upper_max_magnitude;
++
++	u8 lower_max_index;
++	u8 upper_max_index;
++
++	u8 lower_bitmap_weight;
++	u8 upper_bitmap_weight;
++
++	u8 max_exp;
++
++	u8 data[SPECTRAL_HT20_40_NUM_BINS];
++} __packed;
++
++#endif /* SPECTRAL_COMMON_H */
 -- 
 1.9.1
 
