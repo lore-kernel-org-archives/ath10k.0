@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEBT8-0005Yg-Ql
- for ath10k@lists.infradead.org; Mon, 04 Aug 2014 06:10:06 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCHv5 0/2] ath10k spectral scan support
-References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
-Date: Mon, 4 Aug 2014 09:09:29 +0300
-In-Reply-To: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de> (Simon
- Wunderlich's message of "Fri, 1 Aug 2014 15:17:12 +0200")
-Message-ID: <877g2o6b1i.fsf@kamboji.qca.qualcomm.com>
+ id 1XEM2s-0004zF-Ru
+ for ath10k@lists.infradead.org; Mon, 04 Aug 2014 17:27:40 +0000
+Received: by mail-lb0-f174.google.com with SMTP id c11so5653684lbj.33
+ for <ath10k@lists.infradead.org>; Mon, 04 Aug 2014 10:27:15 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+From: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
+Date: Mon, 4 Aug 2014 10:26:55 -0700
+Message-ID: <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
+Subject: Re: [PATCHv5 0/2] ath10k spectral scan support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +25,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Simon Wunderlich <sw@simonwunderlich.de>
-Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
+Cc: mathias.kretschmer@fokus.fraunhofer.de, Kathy Giori <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, ath10k@lists.infradead.org
 
-Simon Wunderlich <sw@simonwunderlich.de> writes:
-
-> This is the fifth "PATCH" patchset iteration for the ath10k spectral
-> scan feature. It includes a small change compared to Kalles PATCHv4
-> series: the parameter initialization has been moved to
-> ath10k_spectral_start() so that the parameters also get reset when the
-> firmware crashes.
->
+On Fri, Aug 1, 2014 at 6:17 AM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
 > To view the samples, please have a look at the fft_eval tool [1] which
 > now supports both ath9k and ath10k formats.
->
-> The count issue is still open: Even when a count is specified, the
-> hardware seems to send endless samples. It seems to work most of the
-> time in VHT80 mode though, but in HT20 and HT40 the count value seems
-> to be ignored. To reproduce this, start hostapd with the desired
-> channel width and do:
->
-> echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
-> echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
-> cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
->
-> Repeating the last line and checking the filesize will easily show
-> whether ath10k still sends samples or not. We would expect 8 samples in
-> this configuration.
->
-> Please see the patches for more information on the changes.
->
-> Cheers,
->     Simon
->
-> [1] https://github.com/simonwunderlich/FFT_eval
->
-> Simon Wunderlich (1):
->   ath10k: add spectral scan feature
->
-> Sven Eckelmann (1):
->   ath: Move spectral debugfs structs to shared header
 
-Thanks, both patches applied.
+Can you please edit the ath9k and ath10k wiki about this tool and
+reference to it?
 
-And thanks for fixing a bug I introduced!
-
--- 
-Kalle Valo
+  Luis
 
 _______________________________________________
 ath10k mailing list
