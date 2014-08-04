@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEM2s-0004zF-Ru
- for ath10k@lists.infradead.org; Mon, 04 Aug 2014 17:27:40 +0000
-Received: by mail-lb0-f174.google.com with SMTP id c11so5653684lbj.33
- for <ath10k@lists.infradead.org>; Mon, 04 Aug 2014 10:27:15 -0700 (PDT)
+ id 1XEM3O-00053h-3l
+ for ath10k@lists.infradead.org; Mon, 04 Aug 2014 17:28:10 +0000
+Received: by mail-la0-f53.google.com with SMTP id gl10so5757721lab.12
+ for <ath10k@lists.infradead.org>; Mon, 04 Aug 2014 10:27:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+In-Reply-To: <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
 References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+ <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
 From: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
-Date: Mon, 4 Aug 2014 10:26:55 -0700
-Message-ID: <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
+Date: Mon, 4 Aug 2014 10:27:25 -0700
+Message-ID: <CAB=NE6UYz7Q4frOn+cbePkpqTuyAM91katK8z_CZkncFgdP=yQ@mail.gmail.com>
 Subject: Re: [PATCHv5 0/2] ath10k spectral scan support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,12 +28,16 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Simon Wunderlich <sw@simonwunderlich.de>
 Cc: mathias.kretschmer@fokus.fraunhofer.de, Kathy Giori <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, ath10k@lists.infradead.org
 
-On Fri, Aug 1, 2014 at 6:17 AM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
-> To view the samples, please have a look at the fft_eval tool [1] which
-> now supports both ath9k and ath10k formats.
+On Mon, Aug 4, 2014 at 10:26 AM, Luis R. Rodriguez
+<mcgrof@do-not-panic.com> wrote:
+> On Fri, Aug 1, 2014 at 6:17 AM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
+>> To view the samples, please have a look at the fft_eval tool [1] which
+>> now supports both ath9k and ath10k formats.
+>
+> Can you please edit the ath9k and ath10k wiki about this tool and
+> reference to it?
 
-Can you please edit the ath9k and ath10k wiki about this tool and
-reference to it?
+While at it also please update the iw wiki page too.
 
   Luis
 
