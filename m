@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XDUH0-00066r-Go
- for ath10k@lists.infradead.org; Sat, 02 Aug 2014 08:02:39 +0000
+ id 1XEBT8-0005Yg-Ql
+ for ath10k@lists.infradead.org; Mon, 04 Aug 2014 06:10:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
-References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
- <87k36r5ra2.fsf@kamboji.qca.qualcomm.com>
- <1406962776.1835.3.camel@joe-AO725>
-Date: Sat, 2 Aug 2014 11:02:08 +0300
-In-Reply-To: <1406962776.1835.3.camel@joe-AO725> (Joe Perches's message of
- "Fri, 1 Aug 2014 23:59:36 -0700")
-Message-ID: <87fvhf5ngf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCHv5 0/2] ath10k spectral scan support
+References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
+Date: Mon, 4 Aug 2014 09:09:29 +0300
+In-Reply-To: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de> (Simon
+ Wunderlich's message of "Fri, 1 Aug 2014 15:17:12 +0200")
+Message-ID: <877g2o6b1i.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,51 +23,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: mathias.kretschmer@fokus.fraunhofer.de, kgiori@qca.qualcomm.com, linux-wireless@vger.kernel.org, sven@narfation.org, ath10k@lists.infradead.org
 
-Joe Perches <joe@perches.com> writes:
+Simon Wunderlich <sw@simonwunderlich.de> writes:
 
->> This introduces a new checkpatch warning:
->> 
->> drivers/net/wireless/ath/ath10k/wmi.h:214: ERROR: spaces required around that ':' (ctx:VxE)
->> 
->> But I think that's just a false warning and I should ignore it. Any
->> other ideas?
+> This is the fifth "PATCH" patchset iteration for the ath10k spectral
+> scan feature. It includes a small change compared to Kalles PATCHv4
+> series: the parameter initialization has been moved to
+> ath10k_spectral_start() so that the parameters also get reset when the
+> firmware crashes.
 >
-> I don't get a warning with this patch.
+> To view the samples, please have a look at the fft_eval tool [1] which
+> now supports both ath9k and ath10k formats.
 >
-> What's the last git commit id of the checkpatch version
-> you used?
+> The count issue is still open: Even when a count is specified, the
+> hardware seems to send endless samples. It seems to work most of the
+> time in VHT80 mode though, but in HT20 and HT40 the count value seems
+> to be ignored. To reproduce this, start hostapd with the desired
+> channel width and do:
+>
+> echo 8 > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_count
+> echo manual > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> echo trigger > /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan_ctl
+> cat /sys/kernel/debug/ieee80211/phy0/ath10k/spectral_scan0 >> /tmp/fft.dump
+>
+> Repeating the last line and checking the filesize will easily show
+> whether ath10k still sends samples or not. We would expect 8 samples in
+> this configuration.
+>
+> Please see the patches for more information on the changes.
+>
+> Cheers,
+>     Simon
+>
+> [1] https://github.com/simonwunderlich/FFT_eval
+>
+> Simon Wunderlich (1):
+>   ath10k: add spectral scan feature
+>
+> Sven Eckelmann (1):
+>   ath: Move spectral debugfs structs to shared header
 
-I was using a pretty old version of checkpatch (I have a local copy of
-it) but now I updated it to commit ae3ccc4678. I still see the warning
-plus a new fallthrough warning (see below).
+Thanks, both patches applied.
 
-> $ ./scripts/checkpatch.pl --strict ath10k.diff  
-> total: 0 errors, 0 warnings, 0 checks, 471 lines checked
-
-With that command line I don't see it either. But normally I use -f and
-that's when I see it:
-
-$ scripts/checkpatch.pl --strict --ignore NETWORKING_BLOCK_COMMENT_STYLE,PARENTHESIS_ALIGNMENT -f drivers/net/wireless/ath/ath10k/wmi.h
-ERROR: spaces required around that ':' (ctx:VxE)
-#214: FILE: drivers/net/wireless/ath/ath10k/wmi.h:214:
-+       default:
-               ^
-
-WARNING: Possible switch case/default not preceeded by break or fallthrough comment
-#214: FILE: drivers/net/wireless/ath/ath10k/wmi.h:214:
-+       default:
-
-total: 1 errors, 1 warnings, 0 checks, 4803 lines checked
-
-NOTE: Ignored message types: NETWORKING_BLOCK_COMMENT_STYLE PARENTHESIS_ALIGNMENT
-
-drivers/net/wireless/ath/ath10k/wmi.h has style problems, please review.
-
-If any of these errors are false positives, please report
-them to the maintainer, see CHECKPATCH in MAINTAINERS.
+And thanks for fixing a bug I introduced!
 
 -- 
 Kalle Valo
