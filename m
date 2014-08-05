@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEeS0-0000zA-RR
- for ath10k@lists.infradead.org; Tue, 05 Aug 2014 13:06:52 +0000
-Received: by mail-wg0-f47.google.com with SMTP id b13so930962wgh.6
- for <ath10k@lists.infradead.org>; Tue, 05 Aug 2014 06:05:55 -0700 (PDT)
+ id 1XEeVs-0002fD-9G
+ for ath10k@lists.infradead.org; Tue, 05 Aug 2014 13:10:58 +0000
+Received: by mail-wi0-f182.google.com with SMTP id d1so1311588wiv.9
+ for <ath10k@lists.infradead.org>; Tue, 05 Aug 2014 06:10:22 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <9087ccfa9e9346eb808c2b0f61259744@exmbx1.ad.aau.at>
+References: <9087ccfa9e9346eb808c2b0f61259744@exmbx1.ad.aau.at>
+Date: Tue, 5 Aug 2014 15:10:21 +0200
+Message-ID: <CA+BoTQ=VGtqKL1CBF_pAgzkdd9sKZ7Du=YfaP9MRqoDbeu5Wtg@mail.gmail.com>
+Subject: Re: ath10k with hostapd
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCHv2 1/2] ath10k: simplify scan debug prints
-Date: Tue,  5 Aug 2014 14:54:43 +0200
-Message-Id: <1407243284-19803-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1407243284-19803-1-git-send-email-michal.kazior@tieto.com>
-References: <1407243284-19803-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,145 +20,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: "Hayat, Samira" <Samira.Hayat@aau.at>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This also reduces the cruft of printing scan event
-names in capitals.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 67 ++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 29 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b09661d..98bfffd 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -811,6 +811,42 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	return ret;
- }
- 
-+static const char *
-+ath10k_wmi_event_scan_type_str(enum wmi_scan_event_type type,
-+			       enum wmi_scan_completion_reason reason)
-+{
-+	switch (type) {
-+	case WMI_SCAN_EVENT_STARTED:
-+		return "started";
-+	case WMI_SCAN_EVENT_COMPLETED:
-+		switch (reason) {
-+		case WMI_SCAN_REASON_COMPLETED:
-+			return "completed";
-+		case WMI_SCAN_REASON_CANCELLED:
-+			return "completed [cancelled]";
-+		case WMI_SCAN_REASON_PREEMPTED:
-+			return "completed [preempted]";
-+		case WMI_SCAN_REASON_TIMEDOUT:
-+			return "completed [timedout]";
-+		case WMI_SCAN_REASON_MAX:
-+			break;
-+		}
-+		return "completed [unknown]";
-+	case WMI_SCAN_EVENT_BSS_CHANNEL:
-+		return "bss channel";
-+	case WMI_SCAN_EVENT_FOREIGN_CHANNEL:
-+		return "foreign channel";
-+	case WMI_SCAN_EVENT_DEQUEUED:
-+		return "dequeued";
-+	case WMI_SCAN_EVENT_PREEMPTED:
-+		return "preempted";
-+	case WMI_SCAN_EVENT_START_FAILED:
-+		return "start failed";
-+	default:
-+		return "unknown";
-+	}
-+}
-+
- static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_scan_event *event = (struct wmi_scan_event *)skb->data;
-@@ -828,41 +864,22 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- 	scan_id    = __le32_to_cpu(event->scan_id);
- 	vdev_id    = __le32_to_cpu(event->vdev_id);
- 
--	ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENTID\n");
- 	ath10k_dbg(ATH10K_DBG_WMI,
--		   "scan event type %d reason %d freq %d req_id %d "
-+		   "scan event %s type %d reason %d freq %d req_id %d "
- 		   "scan_id %d vdev_id %d\n",
-+		   ath10k_wmi_event_scan_type_str(event_type, reason),
- 		   event_type, reason, freq, req_id, scan_id, vdev_id);
- 
- 	spin_lock_bh(&ar->data_lock);
- 
- 	switch (event_type) {
- 	case WMI_SCAN_EVENT_STARTED:
--		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_STARTED\n");
- 		if (ar->scan.in_progress && ar->scan.is_roc)
- 			ieee80211_ready_on_channel(ar->hw);
- 
- 		complete(&ar->scan.started);
- 		break;
- 	case WMI_SCAN_EVENT_COMPLETED:
--		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_COMPLETED\n");
--		switch (reason) {
--		case WMI_SCAN_REASON_COMPLETED:
--			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_COMPLETED\n");
--			break;
--		case WMI_SCAN_REASON_CANCELLED:
--			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_CANCELED\n");
--			break;
--		case WMI_SCAN_REASON_PREEMPTED:
--			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_PREEMPTED\n");
--			break;
--		case WMI_SCAN_REASON_TIMEDOUT:
--			ath10k_dbg(ATH10K_DBG_WMI, "SCAN_REASON_TIMEDOUT\n");
--			break;
--		default:
--			break;
--		}
--
- 		ar->scan_channel = NULL;
- 		if (!ar->scan.in_progress) {
- 			ath10k_warn("no scan requested, ignoring\n");
-@@ -883,11 +900,9 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- 		ar->scan.in_progress = false;
- 		break;
- 	case WMI_SCAN_EVENT_BSS_CHANNEL:
--		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_BSS_CHANNEL\n");
- 		ar->scan_channel = NULL;
- 		break;
- 	case WMI_SCAN_EVENT_FOREIGN_CHANNEL:
--		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_FOREIGN_CHANNEL\n");
- 		ar->scan_channel = ieee80211_get_channel(ar->hw->wiphy, freq);
- 		if (ar->scan.in_progress && ar->scan.is_roc &&
- 		    ar->scan.roc_freq == freq) {
-@@ -895,14 +910,8 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- 		}
- 		break;
- 	case WMI_SCAN_EVENT_DEQUEUED:
--		ath10k_dbg(ATH10K_DBG_WMI, "SCAN_EVENT_DEQUEUED\n");
--		break;
- 	case WMI_SCAN_EVENT_PREEMPTED:
--		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_PREEMPTED\n");
--		break;
- 	case WMI_SCAN_EVENT_START_FAILED:
--		ath10k_dbg(ATH10K_DBG_WMI, "WMI_SCAN_EVENT_START_FAILED\n");
--		break;
- 	default:
- 		break;
- 	}
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBBdWd1c3QgMjAxNCAxNDo1OSwgSGF5YXQsIFNhbWlyYSA8U2FtaXJhLkhheWF0QGFhdS5h
+dD4gd3JvdGU6Cj4gSGksCj4KPiBJIGhhdmUgYmVlbiB0cnlpbmcgdG8gZ2V0IGhvc3RhcGQgcnVu
+bmluZyBmb3IgODAyMTFhYy4gSSBoYXZlIGEgY2FyZAo+IHRoYXQgc3VwcG9ydHMgbi9hYy4gSSB1
+c2VkIGJhY2twb3J0cyB0byBnZXQgYXRoMTBrIHJ1bm5pbmcgb24gbXkga2VybmVsLgo+IHRoZSBv
+dXRwdXQgb2YKPgo+IGxzbW9kIHwgZ3JlcCBhdGgxMGsKPgo+IGlzOgo+Cj4gYXRoMTBrX3BjaSAg
+ICAgICAgICAgICA0MTE4NSAgICAgMAo+IGF0aDEwa19jb3JlICAgICAgICAgICAxMzczNTMgIDEg
+YXRoMTBrX3BjaQo+IG1hYzgwMjExICAgICAgICAgICAgICA2MTM0NTggIDEgYXRoMTBrX2NvcmUK
+PiBhdGggICAgICAgICAgICAgICAgICAgICAgICAgICAyODk2NiAgICAxIGF0aDEwa19jb3JlCj4g
+Y2ZnODAyMTEgICAgICAgICAgICAgICAgIDU4Njk1NiAgMyBhdGgxMGtfY29yZSxtYWM4MDIxMSxh
+dGgKPiBjb21wYXQgICAgICAgICAgICAgICAgICAgIDI5ODQxICAgIDMgYXRoMTBrX3BjaSxtYWM4
+MDIxMSxjZmc4MDIxMQo+Cj4gSSBoYXZlIHRyaWVkIHJ1bm5pbmcgaG9zdGFwZCB3aXRoIGNvbmZp
+Z184MDIxMW4gYW5kIGNvbmZpZ184MDIxMWFjCj4gZW5hYmxlZCBpbiB0aGUgLmNvbmZpZyBmaWxl
+LiBFdmVuIGhhdmluZyBkb25lIHRoYXQsIEkgZ2V0Cj4KPiBDb25maWd1cmF0aW9uIGZpbGU6IC4v
+aG9zdGFwZC1taW5pbWFsLmNvbmYKPiBMaW5lIDg6IHVua25vd24gY29uZmlndXJhdGlvbiBpdGVt
+ICdodF9jYXBhYicKPiBMaW5lIDk6IHVua25vd24gY29uZmlndXJhdGlvbiBpdGVtICdpZWVlODAy
+MTFuJwo+IExpbmUgMTA6IHVua25vd24gY29uZmlndXJhdGlvbiBpdGVtICdpZWVlODAyMTFhYycK
+PiBMaW5lIDExOiB1bmtub3duIGNvbmZpZ3VyYXRpb24gaXRlbSAndmh0X29wZXJfY2h3aWR0aCcK
+PiBMaW5lIDEyOiB1bmtub3duIGNvbmZpZ3VyYXRpb24gaXRlbSAndmh0X29wZXJfY2VudHJfZnJl
+cV9zZWcwX2lkeCcKPiA1IGVycm9ycyBmb3VuZCBpbiBjb25maWd1cmF0aW9uIGZpbGUgJy4vaG9z
+dGFwZC1taW5pbWFsLmNvbmYnCj4gRmFpbGVkIHRvIHNldCB1cCBpbnRlcmZhY2Ugd2l0aCAuL2hv
+c3RhcGQtbWluaW1hbC5jb25mCj4gRmFpbGVkIHRvIGluaXRpYWxpemUgaW50ZXJmYWNlCgpZb3Vy
+IGhvc3RhcGQgZG9lc24ndCBzZWVtIHRvIGhhdmUgMTFuIG5vciAxMWFjIHN1cHBvcnQgY29tcGls
+ZWQgaW4uCllvdSBtaWdodCByZWNvbnNpZGVyIHRha2luZyBhIGxvb2sgYXQgeW91ciBob3N0YXBk
+J3MgLmNvbmZpZyBmaWxlCmFnYWluLiBZb3UgY2FuIGNvbXBhcmUgaXQgd2l0aCBtaW5lOiBodHRw
+Oi8vcGFzdGViaW4uY29tL05HNThEV3VxCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
