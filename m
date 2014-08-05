@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEllS-0002Mi-DX
- for ath10k@lists.infradead.org; Tue, 05 Aug 2014 20:55:26 +0000
+ id 1XEmVD-0001O3-M1
+ for ath10k@lists.infradead.org; Tue, 05 Aug 2014 21:42:40 +0000
 From: greearb@candelatech.com
-Subject: [PATCH] ath10k: extra logging for core-restart state change logic.
-Date: Tue,  5 Aug 2014 13:54:59 -0700
-Message-Id: <1407272099-6271-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH] ath10k: logging for state change transitions.
+Date: Tue,  5 Aug 2014 14:42:14 -0700
+Message-Id: <1407274934-5048-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +25,29 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
+Print error if device failed to recover.
+
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 030bef1..d522d3a 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -700,6 +700,7 @@ static void ath10k_core_restart(struct work_struct *work)
- 	switch (ar->state) {
- 	case ATH10K_STATE_ON:
- 		ar->state = ATH10K_STATE_RESTARTING;
-+		ath10k_warn("core-restart, going to state RESTARTING from ON\n");
- 		del_timer_sync(&ar->scan.timeout);
- 		ath10k_reset_scan((unsigned long)ar);
- 		ieee80211_restart_hw(ar->hw);
-@@ -713,10 +714,11 @@ static void ath10k_core_restart(struct work_struct *work)
- 		/* hw restart might be requested from multiple places */
- 		break;
- 	case ATH10K_STATE_RESTARTED:
--		ar->state = ATH10K_STATE_WEDGED;
- 		/* fall through */
- 	case ATH10K_STATE_WEDGED:
--		ath10k_warn("device is wedged, will not restart\n");
-+		ath10k_warn("device is wedged, will not restart (state %d)\n",
-+			ar->state);
-+		ar->state = ATH10K_STATE_WEDGED;
- 		break;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b2e7303..ced5eca 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3905,8 +3905,10 @@ static void ath10k_restart_complete(struct ieee80211_hw *hw)
+ 	/* If device failed to restart it will be in a different state, e.g.
+ 	 * ATH10K_STATE_WEDGED */
+ 	if (ar->state == ATH10K_STATE_RESTARTED) {
+-		ath10k_info("device successfully recovered\n");
++		ath10k_info("device successfully recovered (state RESTARTED to ON)\n");
+ 		ar->state = ATH10K_STATE_ON;
++	} else {
++		ath10k_info("device failed to recover (state %d)\n", ar->state);
  	}
  
+ 	mutex_unlock(&ar->conf_mutex);
 -- 
 1.7.11.7
 
