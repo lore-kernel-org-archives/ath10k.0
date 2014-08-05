@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XEhxU-0008I8-3S
- for ath10k@lists.infradead.org; Tue, 05 Aug 2014 16:51:33 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: [PATCHv5 0/2] ath10k spectral scan support
-Date: Tue, 5 Aug 2014 18:51:06 +0200
-References: <1406899034-13473-1-git-send-email-sw@simonwunderlich.de>
- <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
-In-Reply-To: <CAB=NE6XOquKeF3JTCDBUJhtjtUYGjPi2tG7By+1Ntyk-_Km6rg@mail.gmail.com>
-MIME-Version: 1.0
-Message-Id: <201408051851.06457.sw@simonwunderlich.de>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XEinQ-0007Xd-5j
+ for ath10k@lists.infradead.org; Tue, 05 Aug 2014 17:45:12 +0000
+From: greearb@candelatech.com
+Subject: [PATCH v2] ath10k:  improve vdev map handling.
+Date: Tue,  5 Aug 2014 10:44:44 -0700
+Message-Id: <1407260684-22624-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +15,131 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Luis R. Rodriguez" <mcgrof@do-not-panic.com>
-Cc: mathias.kretschmer@fokus.fraunhofer.de, Kathy Giori <kgiori@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Sven Eckelmann <sven@narfation.org>, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
+From: Ben Greear <greearb@candelatech.com>
 
-> On Fri, Aug 1, 2014 at 6:17 AM, Simon Wunderlich <sw@simonwunderlich.de> 
-wrote:
-> > To view the samples, please have a look at the fft_eval tool [1] which
-> > now supports both ath9k and ath10k formats.
-> 
-> Can you please edit the ath9k and ath10k wiki about this tool and
-> reference to it?
+Check vdev map has space before calling ffs,
+fix invalid cleanup in failure to create vdev
+case.
 
-Thanks for pointing that out. I've updated ath9k with some instructions how to 
-actually run the spectral scan. A link to the tool was already included. I've 
-also added an ath10k page with test instructions and description of the 
-debugfs files, including a reference to fft_eval. Feel free to 
-update/improve/edit, everyone. :)
+Open-code the BIT() logic since BIT does not properly
+handle 64-bit bitfields and future patches will make
+use of larger bitfields.
 
-I did not update the iw page because there is (no longer) any changes 
-neccesary in iw for running spectral - we had this only in the very first 
-version of the ath9k patch. I've updated the README/usage in fft_eval to 
-reflect that properly, though.
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
 
-Thanks,
-    Simon
+v2:  Use == 0, remove some un-needed parens.
+
+ drivers/net/wireless/ath/ath10k/mac.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 3c794203..33a66b9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -597,14 +597,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+-	bit = ffs(ar->free_vdev_map);
+-	if (bit == 0) {
++	if (ar->free_vdev_map == 0) {
+ 		ath10k_warn("failed to find free vdev id for monitor vdev\n");
+ 		return -ENOMEM;
+ 	}
+ 
++	bit = ffs(ar->free_vdev_map);
++
+ 	ar->monitor_vdev_id = bit - 1;
+-	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
+ 
+ 	ret = ath10k_wmi_vdev_create(ar, ar->monitor_vdev_id,
+ 				     WMI_VDEV_TYPE_MONITOR,
+@@ -612,20 +612,14 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
+ 	if (ret) {
+ 		ath10k_warn("failed to request monitor vdev %i creation: %d\n",
+ 			    ar->monitor_vdev_id, ret);
+-		goto vdev_fail;
++		return ret;
+ 	}
+ 
++	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d created\n",
+ 		   ar->monitor_vdev_id);
+ 
+ 	return 0;
+-
+-vdev_fail:
+-	/*
+-	 * Restore the ID to the global map.
+-	 */
+-	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
+-	return ret;
+ }
+ 
+ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
+@@ -641,7 +635,7 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	ar->free_vdev_map |= 1 << (ar->monitor_vdev_id);
++	ar->free_vdev_map |= 1 << ar->monitor_vdev_id;
+ 
+ 	ath10k_dbg(ATH10K_DBG_MAC, "mac monitor vdev %d deleted\n",
+ 		   ar->monitor_vdev_id);
+@@ -2743,11 +2737,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
+ 	INIT_LIST_HEAD(&arvif->list);
+ 
+-	bit = ffs(ar->free_vdev_map);
+-	if (bit == 0) {
++	if (ar->free_vdev_map == 0) {
++		ath10k_warn("Free vdev map is empty, no more interfaces allowed.\n");
+ 		ret = -EBUSY;
+ 		goto err;
+ 	}
++	bit = ffs(ar->free_vdev_map);
+ 
+ 	arvif->vdev_id = bit - 1;
+ 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
+@@ -2790,7 +2785,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err;
+ 	}
+ 
+-	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	ar->free_vdev_map &= ~(1 << arvif->vdev_id);
+ 	list_add(&arvif->list, &ar->arvifs);
+ 
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+@@ -2883,7 +2878,7 @@ err_peer_delete:
+ 
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+-	ar->free_vdev_map &= ~BIT(arvif->vdev_id);
++	ar->free_vdev_map |= 1 << arvif->vdev_id;
+ 	list_del(&arvif->list);
+ 
+ err:
+@@ -2919,7 +2914,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 		ath10k_warn("failed to stop spectral for vdev %i: %d\n",
+ 			    arvif->vdev_id, ret);
+ 
+-	ar->free_vdev_map |= 1 << (arvif->vdev_id);
++	ar->free_vdev_map |= 1 << arvif->vdev_id;
+ 	list_del(&arvif->list);
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+-- 
+1.7.11.7
+
 
 _______________________________________________
 ath10k mailing list
