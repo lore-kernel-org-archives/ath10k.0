@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XElht-0001nv-DE
- for ath10k@lists.infradead.org; Tue, 05 Aug 2014 20:51:45 +0000
+ id 1XEllS-0002Mi-DX
+ for ath10k@lists.infradead.org; Tue, 05 Aug 2014 20:55:26 +0000
 From: greearb@candelatech.com
-Subject: [PATCH] ath10k: fix typo in error message.
-Date: Tue,  5 Aug 2014 13:51:18 -0700
-Message-Id: <1407271878-15230-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH] ath10k: extra logging for core-restart state change logic.
+Date: Tue,  5 Aug 2014 13:54:59 -0700
+Message-Id: <1407272099-6271-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +27,35 @@ From: Ben Greear <greearb@candelatech.com>
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e67137a..b2e7303 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2004,7 +2004,7 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
- 			     ar->fw_features)) {
- 			if (skb_queue_len(&ar->wmi_mgmt_tx_queue) >=
- 			    ATH10K_MAX_NUM_MGMT_PENDING) {
--				ath10k_warn("reached WMI management tranmist queue limit\n");
-+				ath10k_warn("reached WMI management transmit queue limit\n");
- 				ret = -EBUSY;
- 				goto exit;
- 			}
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 030bef1..d522d3a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -700,6 +700,7 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	switch (ar->state) {
+ 	case ATH10K_STATE_ON:
+ 		ar->state = ATH10K_STATE_RESTARTING;
++		ath10k_warn("core-restart, going to state RESTARTING from ON\n");
+ 		del_timer_sync(&ar->scan.timeout);
+ 		ath10k_reset_scan((unsigned long)ar);
+ 		ieee80211_restart_hw(ar->hw);
+@@ -713,10 +714,11 @@ static void ath10k_core_restart(struct work_struct *work)
+ 		/* hw restart might be requested from multiple places */
+ 		break;
+ 	case ATH10K_STATE_RESTARTED:
+-		ar->state = ATH10K_STATE_WEDGED;
+ 		/* fall through */
+ 	case ATH10K_STATE_WEDGED:
+-		ath10k_warn("device is wedged, will not restart\n");
++		ath10k_warn("device is wedged, will not restart (state %d)\n",
++			ar->state);
++		ar->state = ATH10K_STATE_WEDGED;
+ 		break;
+ 	}
+ 
 -- 
 1.7.11.7
 
