@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFJmc-0002ng-1X
+ id 1XFJmc-0002nx-Dt
  for ath10k@lists.infradead.org; Thu, 07 Aug 2014 09:14:50 +0000
-Received: by mail-we0-f173.google.com with SMTP id q58so3874474wes.32
+Received: by mail-wg0-f52.google.com with SMTP id a1so3783818wgh.35
  for <ath10k@lists.infradead.org>; Thu, 07 Aug 2014 02:14:28 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/5] ath10k: dont reset the chip on hif_stop
-Date: Thu,  7 Aug 2014 11:05:05 +0200
-Message-Id: <1407402308-29899-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/5] ath10k: ignore ar_pci->started in pipe cleanup
+Date: Thu,  7 Aug 2014 11:05:06 +0200
+Message-Id: <1407402308-29899-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
 References: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,36 +27,41 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The copy engine structures are never changed until
-driver unregisters the device so it is not
-necessary to reset the device chip anymore when
-stopping.
-
-This reduces driver register time approx. by 200ms.
+Structures used by these functions are now
+guaranteed to remain accessible until driver is
+unregistered.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 7 -------
- 1 file changed, 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 7efcf8e..6a5ca9e 100644
+index 6a5ca9e..8244658 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1192,13 +1192,6 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+@@ -1088,10 +1088,6 @@ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
  
- 	ath10k_pci_buffer_cleanup(ar);
- 
--	/* Make the sure the device won't access any structures on the host by
--	 * resetting it. The device was fed with PCI CE ringbuffer
--	 * configuration during init. If ringbuffers are freed and the device
--	 * were to access them this could lead to memory corruption on the
--	 * host. */
--	ath10k_pci_warm_reset(ar);
+ 	ar = pipe_info->hif_ce_state;
+ 	ar_pci = ath10k_pci_priv(ar);
 -
- 	ar_pci->started = 0;
- }
+-	if (!ar_pci->started)
+-		return;
+-
+ 	ce_hdl = pipe_info->ce_hdl;
  
+ 	while (ath10k_ce_revoke_recv_next(ce_hdl, (void **)&netbuf,
+@@ -1122,10 +1118,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
+ 
+ 	ar = pipe_info->hif_ce_state;
+ 	ar_pci = ath10k_pci_priv(ar);
+-
+-	if (!ar_pci->started)
+-		return;
+-
+ 	ce_hdl = pipe_info->ce_hdl;
+ 
+ 	while (ath10k_ce_cancel_send_next(ce_hdl, (void **)&netbuf,
 -- 
 1.8.5.3
 
