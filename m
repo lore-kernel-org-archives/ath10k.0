@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFJmc-0002nx-Dt
- for ath10k@lists.infradead.org; Thu, 07 Aug 2014 09:14:50 +0000
-Received: by mail-wg0-f52.google.com with SMTP id a1so3783818wgh.35
- for <ath10k@lists.infradead.org>; Thu, 07 Aug 2014 02:14:28 -0700 (PDT)
+ id 1XFJme-0002pF-Nd
+ for ath10k@lists.infradead.org; Thu, 07 Aug 2014 09:14:53 +0000
+Received: by mail-wi0-f182.google.com with SMTP id d1so4652740wiv.9
+ for <ath10k@lists.infradead.org>; Thu, 07 Aug 2014 02:14:30 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/5] ath10k: ignore ar_pci->started in pipe cleanup
-Date: Thu,  7 Aug 2014 11:05:06 +0200
-Message-Id: <1407402308-29899-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/5] ath10k: flush hif buffers before recovery
+Date: Thu,  7 Aug 2014 11:05:08 +0200
+Message-Id: <1407402308-29899-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
 References: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,41 +27,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Structures used by these functions are now
-guaranteed to remain accessible until driver is
-unregistered.
+Transport buffers weren't flushed and processed
+before queueing hw recovery request to mac80211.
+
+This could in theory result in an unwanted htt/wmi
+rx events being processed while mac80211 recovers
+the device and possibly interfere or even crash
+the system.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 6a5ca9e..8244658 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1088,10 +1088,6 @@ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 
- 	ar = pipe_info->hif_ce_state;
- 	ar_pci = ath10k_pci_priv(ar);
--
--	if (!ar_pci->started)
--		return;
--
- 	ce_hdl = pipe_info->ce_hdl;
- 
- 	while (ath10k_ce_revoke_recv_next(ce_hdl, (void **)&netbuf,
-@@ -1122,10 +1118,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 
- 	ar = pipe_info->hif_ce_state;
- 	ar_pci = ath10k_pci_priv(ar);
--
--	if (!ar_pci->started)
--		return;
--
- 	ce_hdl = pipe_info->ce_hdl;
- 
- 	while (ath10k_ce_cancel_send_next(ce_hdl, (void **)&netbuf,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index b5161c8..5c9620b 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -667,6 +667,7 @@ static void ath10k_core_restart(struct work_struct *work)
+ 		ar->state = ATH10K_STATE_RESTARTING;
+ 		del_timer_sync(&ar->scan.timeout);
+ 		ath10k_reset_scan((unsigned long)ar);
++		ath10k_hif_stop(ar);
+ 		ieee80211_restart_hw(ar->hw);
+ 		break;
+ 	case ATH10K_STATE_OFF:
 -- 
 1.8.5.3
 
