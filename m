@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFh9t-0004he-VD
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 10:12:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
-References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 8 Aug 2014 13:11:57 +0300
-In-Reply-To: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 29 Jul 2014 12:03:59 +0200")
-Message-ID: <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
+ id 1XFhME-0004ij-3q
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 10:25:10 +0000
+Received: by mail-wg0-f43.google.com with SMTP id l18so5288315wgh.26
+ for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 03:24:48 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
+References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
+ <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 8 Aug 2014 12:24:48 +0200
+Message-ID: <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,125 +21,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> The 10.x and main firmware branches have
-> conflicting WMI service bitmap definitions.
->
-> This also fixes WMI services parsing on big-endian
-> hosts and changes debugfs output to be more human
-> friendly.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-Based on Joe's suggestion, I'm planning to change the macro like below.
-Are you ok with that?
-
-It actually adds a new checkpatch warning but I'm going to ignore that
-for now:
-
-drivers/net/wireless/ath/ath10k/wmi.h:177: ERROR: Macros with complex values should be enclosed in parenthesis
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 109ea684f88f..e70836586756 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -174,46 +174,48 @@ enum wmi_main_service {
- 
- static inline char *wmi_service_name(int service_id)
- {
--#define SVCSTR(x) { case x: return #x; }
-+#define SVCSTR(x) case x: return #x
-+
- 	switch (service_id) {
--	SVCSTR(WMI_SERVICE_BEACON_OFFLOAD)
--	SVCSTR(WMI_SERVICE_SCAN_OFFLOAD)
--	SVCSTR(WMI_SERVICE_ROAM_OFFLOAD)
--	SVCSTR(WMI_SERVICE_BCN_MISS_OFFLOAD)
--	SVCSTR(WMI_SERVICE_STA_PWRSAVE)
--	SVCSTR(WMI_SERVICE_STA_ADVANCED_PWRSAVE)
--	SVCSTR(WMI_SERVICE_AP_UAPSD)
--	SVCSTR(WMI_SERVICE_AP_DFS)
--	SVCSTR(WMI_SERVICE_11AC)
--	SVCSTR(WMI_SERVICE_BLOCKACK)
--	SVCSTR(WMI_SERVICE_PHYERR)
--	SVCSTR(WMI_SERVICE_BCN_FILTER)
--	SVCSTR(WMI_SERVICE_RTT)
--	SVCSTR(WMI_SERVICE_RATECTRL)
--	SVCSTR(WMI_SERVICE_WOW)
--	SVCSTR(WMI_SERVICE_RATECTRL_CACHE)
--	SVCSTR(WMI_SERVICE_IRAM_TIDS)
--	SVCSTR(WMI_SERVICE_ARPNS_OFFLOAD)
--	SVCSTR(WMI_SERVICE_NLO)
--	SVCSTR(WMI_SERVICE_GTK_OFFLOAD)
--	SVCSTR(WMI_SERVICE_SCAN_SCH)
--	SVCSTR(WMI_SERVICE_CSA_OFFLOAD)
--	SVCSTR(WMI_SERVICE_CHATTER)
--	SVCSTR(WMI_SERVICE_COEX_FREQAVOID)
--	SVCSTR(WMI_SERVICE_PACKET_POWER_SAVE)
--	SVCSTR(WMI_SERVICE_FORCE_FW_HANG)
--	SVCSTR(WMI_SERVICE_GPIO)
--	SVCSTR(WMI_SERVICE_STA_DTIM_PS_MODULATED_DTIM)
--	SVCSTR(WMI_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG)
--	SVCSTR(WMI_SERVICE_STA_UAPSD_VAR_AUTO_TRIG)
--	SVCSTR(WMI_SERVICE_STA_KEEP_ALIVE)
--	SVCSTR(WMI_SERVICE_TX_ENCAP)
--	SVCSTR(WMI_SERVICE_BURST)
--	SVCSTR(WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT)
--	SVCSTR(WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT)
-+	SVCSTR(WMI_SERVICE_BEACON_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_SCAN_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_ROAM_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_BCN_MISS_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_STA_PWRSAVE);
-+	SVCSTR(WMI_SERVICE_STA_ADVANCED_PWRSAVE);
-+	SVCSTR(WMI_SERVICE_AP_UAPSD);
-+	SVCSTR(WMI_SERVICE_AP_DFS);
-+	SVCSTR(WMI_SERVICE_11AC);
-+	SVCSTR(WMI_SERVICE_BLOCKACK);
-+	SVCSTR(WMI_SERVICE_PHYERR);
-+	SVCSTR(WMI_SERVICE_BCN_FILTER);
-+	SVCSTR(WMI_SERVICE_RTT);
-+	SVCSTR(WMI_SERVICE_RATECTRL);
-+	SVCSTR(WMI_SERVICE_WOW);
-+	SVCSTR(WMI_SERVICE_RATECTRL_CACHE);
-+	SVCSTR(WMI_SERVICE_IRAM_TIDS);
-+	SVCSTR(WMI_SERVICE_ARPNS_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_NLO);
-+	SVCSTR(WMI_SERVICE_GTK_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_SCAN_SCH);
-+	SVCSTR(WMI_SERVICE_CSA_OFFLOAD);
-+	SVCSTR(WMI_SERVICE_CHATTER);
-+	SVCSTR(WMI_SERVICE_COEX_FREQAVOID);
-+	SVCSTR(WMI_SERVICE_PACKET_POWER_SAVE);
-+	SVCSTR(WMI_SERVICE_FORCE_FW_HANG);
-+	SVCSTR(WMI_SERVICE_GPIO);
-+	SVCSTR(WMI_SERVICE_STA_DTIM_PS_MODULATED_DTIM);
-+	SVCSTR(WMI_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG);
-+	SVCSTR(WMI_SERVICE_STA_UAPSD_VAR_AUTO_TRIG);
-+	SVCSTR(WMI_SERVICE_STA_KEEP_ALIVE);
-+	SVCSTR(WMI_SERVICE_TX_ENCAP);
-+	SVCSTR(WMI_SERVICE_BURST);
-+	SVCSTR(WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT);
-+	SVCSTR(WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT);
- 	default:
- 		return NULL;
- 	}
-+
- #undef SVCSTR
- }
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBBdWd1c3QgMjAxNCAxMjoxMSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
+bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
+czoKPgo+PiBUaGUgMTAueCBhbmQgbWFpbiBmaXJtd2FyZSBicmFuY2hlcyBoYXZlCj4+IGNvbmZs
+aWN0aW5nIFdNSSBzZXJ2aWNlIGJpdG1hcCBkZWZpbml0aW9ucy4KPj4KPj4gVGhpcyBhbHNvIGZp
+eGVzIFdNSSBzZXJ2aWNlcyBwYXJzaW5nIG9uIGJpZy1lbmRpYW4KPj4gaG9zdHMgYW5kIGNoYW5n
+ZXMgZGVidWdmcyBvdXRwdXQgdG8gYmUgbW9yZSBodW1hbgo+PiBmcmllbmRseS4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBC
+YXNlZCBvbiBKb2UncyBzdWdnZXN0aW9uLCBJJ20gcGxhbm5pbmcgdG8gY2hhbmdlIHRoZSBtYWNy
+byBsaWtlIGJlbG93Lgo+IEFyZSB5b3Ugb2sgd2l0aCB0aGF0Pwo+Cj4gSXQgYWN0dWFsbHkgYWRk
+cyBhIG5ldyBjaGVja3BhdGNoIHdhcm5pbmcgYnV0IEknbSBnb2luZyB0byBpZ25vcmUgdGhhdAo+
+IGZvciBub3c6Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oOjE3Nzog
+RVJST1I6IE1hY3JvcyB3aXRoIGNvbXBsZXggdmFsdWVzIHNob3VsZCBiZSBlbmNsb3NlZCBpbiBw
+YXJlbnRoZXNpcwo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvd21pLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4gaW5kZXgg
+MTA5ZWE2ODRmODhmLi5lNzA4MzY1ODY3NTYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway93bWkuaAo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvd21pLmgKPiBAQCAtMTc0LDQ2ICsxNzQsNDggQEAgZW51bSB3bWlfbWFpbl9zZXJ2aWNl
+IHsKPgo+ICBzdGF0aWMgaW5saW5lIGNoYXIgKndtaV9zZXJ2aWNlX25hbWUoaW50IHNlcnZpY2Vf
+aWQpCj4gIHsKPiAtI2RlZmluZSBTVkNTVFIoeCkgeyBjYXNlIHg6IHJldHVybiAjeDsgfQo+ICsj
+ZGVmaW5lIFNWQ1NUUih4KSBjYXNlIHg6IHJldHVybiAjeAo+ICsKWy4uLl0KClRoaXMgd2FzIHRo
+ZSBjaGVja3BhdGNoIHdhcm5pbmcgSSBvcmlnaW5hbGx5IGZpeGVkIGJ5IHVzaW5nIHsgLi4gfSA6
+LSkKCkFueXdheSwgSSBkb24ndCBzZWUgYSBwcm9ibGVtIHdpdGggdGhlIG1hY3JvIGNoYW5nZSB5
+b3Ugc3VnZ2VzdC4KQXBwYXJlbnRseSB3ZSdyZSBkb29tZWQgdG8gaGF2ZSBhIGNoZWNrcGF0Y2gg
+d2FybmluZyBlaXRoZXIgd2F5IHVubGVzcwp3ZSBkb24ndCB1c2UgYSBtYWNybyBhdCBhbGwuCgoK
+TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
