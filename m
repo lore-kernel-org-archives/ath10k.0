@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFi75-0005ED-Vs
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 11:13:36 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
-References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
- <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
-Date: Fri, 8 Aug 2014 14:13:10 +0300
-In-Reply-To: <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
- (Michal Kazior's message of "Fri, 8 Aug 2014 12:24:48 +0200")
-Message-ID: <87mwbfxmih.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFmJI-0007hQ-Hk
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 15:42:28 +0000
+Message-ID: <53E4EFCB.5090501@candelatech.com>
+Date: Fri, 08 Aug 2014 08:42:03 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Reporting firmware stats to ethtool
+References: <53E3F65D.8080102@candelatech.com>
+ <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +23,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
->> Based on Joe's suggestion, I'm planning to change the macro like below.
->> Are you ok with that?
+On 08/08/2014 02:06 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+> 
+>> I'm working on a patch to report the stats seen in debugfs/...ath10k/fw_stats
+>> as ethtool stats, somewhat similar to how ath9k does it.
 >>
->> It actually adds a new checkpatch warning but I'm going to ignore that
->> for now:
+>> I notice that my user-space tool is reporting huge numbers because
+>> the stats are reset to zero when firmware restarts, and so my tool
+>> thinks the stats wrapped.
 >>
->> drivers/net/wireless/ath/ath10k/wmi.h:177: ERROR: Macros with complex values should be enclosed in parenthesis
+>> I can fix my tool easily enough, but I first wanted to see if
+>> anyone had strong feelings about keeping the stats from resetting
+>> to zero by storing history and calculating diffs in the driver.
 >>
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
->> index 109ea684f88f..e70836586756 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.h
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
->> @@ -174,46 +174,48 @@ enum wmi_main_service {
->>
->>  static inline char *wmi_service_name(int service_id)
->>  {
->> -#define SVCSTR(x) { case x: return #x; }
->> +#define SVCSTR(x) case x: return #x
->> +
-> [...]
->
-> This was the checkpatch warning I originally fixed by using { .. } :-)
+>> I think my preference is to punt this to user-space, but if
+>> someone feels otherwise, please let me know sooner than later.
+> 
+> I also prefer to have this in user space, but how does user space know
+> when the stats have been zeroed?
 
-Hehe, I was actually thinking maybe that's why you added the braces :)
+Poll often enough that it cannot increment more than 2 billion (or other large number)
+between polls, and then if polled value is less than previous (and difference is > 2 billion),
+we know we had a reset and not a wrap.
 
-> Anyway, I don't see a problem with the macro change you suggest.
-> Apparently we're doomed to have a checkpatch warning either way unless
-> we don't use a macro at all.
+User-space stats will not be perfect in the case of firmware resets, or resets
+after the 'large number', but nothing is going to make it perfect, and in
+practice, this seems good enough.
 
-Yeah. And it's not like that we need to have 0 checkpatch warnings. For
-example, I already have a long list of errors I ignore:
-
-MSLEEP,USLEEP_RANGE,PRINTK_WITHOUT_KERN_LEVEL,NETWORKING_BLOCK_COMMENT_STYLE,LINUX_VERSION_CODE,COMPLEX_MACRO
-
-checkpatch just a good tool to catch some of the style issues and makes
-my work easier, especially when newbies send patches.
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
