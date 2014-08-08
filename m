@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFhME-0004ij-3q
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 10:25:10 +0000
-Received: by mail-wg0-f43.google.com with SMTP id l18so5288315wgh.26
- for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 03:24:48 -0700 (PDT)
+ id 1XFhgQ-0003ye-F4
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 10:46:02 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/6] ath10k: remove target soc ps code
+References: <1407402212-29809-1-git-send-email-michal.kazior@tieto.com>
+ <1407402212-29809-3-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 8 Aug 2014 13:45:31 +0300
+In-Reply-To: <1407402212-29809-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 7 Aug 2014 11:03:28 +0200")
+Message-ID: <878umzz2d0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
-References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
- <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 8 Aug 2014 12:24:48 +0200
-Message-ID: <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gOCBBdWd1c3QgMjAxNCAxMjoxMSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNv
-bT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRl
-czoKPgo+PiBUaGUgMTAueCBhbmQgbWFpbiBmaXJtd2FyZSBicmFuY2hlcyBoYXZlCj4+IGNvbmZs
-aWN0aW5nIFdNSSBzZXJ2aWNlIGJpdG1hcCBkZWZpbml0aW9ucy4KPj4KPj4gVGhpcyBhbHNvIGZp
-eGVzIFdNSSBzZXJ2aWNlcyBwYXJzaW5nIG9uIGJpZy1lbmRpYW4KPj4gaG9zdHMgYW5kIGNoYW5n
-ZXMgZGVidWdmcyBvdXRwdXQgdG8gYmUgbW9yZSBodW1hbgo+PiBmcmllbmRseS4KPj4KPj4gU2ln
-bmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBC
-YXNlZCBvbiBKb2UncyBzdWdnZXN0aW9uLCBJJ20gcGxhbm5pbmcgdG8gY2hhbmdlIHRoZSBtYWNy
-byBsaWtlIGJlbG93Lgo+IEFyZSB5b3Ugb2sgd2l0aCB0aGF0Pwo+Cj4gSXQgYWN0dWFsbHkgYWRk
-cyBhIG5ldyBjaGVja3BhdGNoIHdhcm5pbmcgYnV0IEknbSBnb2luZyB0byBpZ25vcmUgdGhhdAo+
-IGZvciBub3c6Cj4KPiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oOjE3Nzog
-RVJST1I6IE1hY3JvcyB3aXRoIGNvbXBsZXggdmFsdWVzIHNob3VsZCBiZSBlbmNsb3NlZCBpbiBw
-YXJlbnRoZXNpcwo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvd21pLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4gaW5kZXgg
-MTA5ZWE2ODRmODhmLi5lNzA4MzY1ODY3NTYgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway93bWkuaAo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvd21pLmgKPiBAQCAtMTc0LDQ2ICsxNzQsNDggQEAgZW51bSB3bWlfbWFpbl9zZXJ2aWNl
-IHsKPgo+ICBzdGF0aWMgaW5saW5lIGNoYXIgKndtaV9zZXJ2aWNlX25hbWUoaW50IHNlcnZpY2Vf
-aWQpCj4gIHsKPiAtI2RlZmluZSBTVkNTVFIoeCkgeyBjYXNlIHg6IHJldHVybiAjeDsgfQo+ICsj
-ZGVmaW5lIFNWQ1NUUih4KSBjYXNlIHg6IHJldHVybiAjeAo+ICsKWy4uLl0KClRoaXMgd2FzIHRo
-ZSBjaGVja3BhdGNoIHdhcm5pbmcgSSBvcmlnaW5hbGx5IGZpeGVkIGJ5IHVzaW5nIHsgLi4gfSA6
-LSkKCkFueXdheSwgSSBkb24ndCBzZWUgYSBwcm9ibGVtIHdpdGggdGhlIG1hY3JvIGNoYW5nZSB5
-b3Ugc3VnZ2VzdC4KQXBwYXJlbnRseSB3ZSdyZSBkb29tZWQgdG8gaGF2ZSBhIGNoZWNrcGF0Y2gg
-d2FybmluZyBlaXRoZXIgd2F5IHVubGVzcwp3ZSBkb24ndCB1c2UgYSBtYWNybyBhdCBhbGwuCgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> The soc powersave was disabled by default. It
+> never was fully tested. Some hw apparently had
+> problems with it and the implementation itself had
+> a possible race.
+>
+> Just remove the refcounting and simply wake up the
+> device when probing and put to sleep when
+> removing.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+This one introduced new warnings:
+
+drivers/net/wireless/ath/ath10k/pci.c:646:5: warning: symbol 'ath10k_pci_wake' was not declared. Should it be static?
+drivers/net/wireless/ath/ath10k/pci.c:653:6: warning: symbol 'ath10k_pci_sleep' was not declared. Should it be static?
+
+Is it okay if I fix it like this:
+
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -643,14 +643,14 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
+        return -ETIMEDOUT;
+ }
+ 
+-int ath10k_pci_wake(struct ath10k *ar)
++static int ath10k_pci_wake(struct ath10k *ar)
+ {
+        ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
+                               PCIE_SOC_WAKE_V_MASK);
+        return ath10k_pci_wake_wait(ar);
+ }
+ 
+-void ath10k_pci_sleep(struct ath10k *ar)
++static void ath10k_pci_sleep(struct ath10k *ar)
+ {
+        ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
+                               PCIE_SOC_WAKE_RESET);
+
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
