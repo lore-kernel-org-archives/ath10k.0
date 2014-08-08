@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFhvO-0001J4-JD
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 11:01:30 +0000
+ id 1XFhyV-0001cz-92
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 11:04:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/6] ath10k: remove pci features var
+Subject: Re: [PATCH 2/6] ath10k: remove target soc ps code
 References: <1407402212-29809-1-git-send-email-michal.kazior@tieto.com>
- <1407402212-29809-4-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 8 Aug 2014 14:01:03 +0300
-In-Reply-To: <1407402212-29809-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 7 Aug 2014 11:03:29 +0200")
-Message-ID: <874mxnz1n4.fsf@kamboji.qca.qualcomm.com>
+ <1407402212-29809-3-git-send-email-michal.kazior@tieto.com>
+ <878umzz2d0.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQnvS2C9_C7qkrX5cPLa8weHx_FmS8Gd=d2Pf=EAmf9EiQ@mail.gmail.com>
+Date: Fri, 8 Aug 2014 14:04:13 +0300
+In-Reply-To: <CA+BoTQnvS2C9_C7qkrX5cPLa8weHx_FmS8Gd=d2Pf=EAmf9EiQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 8 Aug 2014 13:00:56 +0200")
+Message-ID: <87zjffxmxe.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,36 +27,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The ATH10K_PCI_FEATURE_MSI_X was originally
-> introduced to support both chips QCA988Xv1 and
-> QCA988Xv2. Since v1 isn't supported anymore it
-> doesn't make sense to keep the feature flag
-> around. Since this is the last one remove the
-> whole thing.
+> On 8 August 2014 12:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> The soc powersave was disabled by default. It
+>>> never was fully tested. Some hw apparently had
+>>> problems with it and the implementation itself had
+>>> a possible race.
+>>>
+>>> Just remove the refcounting and simply wake up the
+>>> device when probing and put to sleep when
+>>> removing.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>
+>> This one introduced new warnings:
+>>
+>> drivers/net/wireless/ath/ath10k/pci.c:646:5: warning: symbol 'ath10k_pci_wake' was not declared. Should it be static?
+>> drivers/net/wireless/ath/ath10k/pci.c:653:6: warning: symbol 'ath10k_pci_sleep' was not declared. Should it be static?
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> I didn't catch this for some reason. Can you share how you run
+> checkpatch, please?
 
-[...]
+I think these are coming from sparse, in essence I run this:
 
-> --- a/drivers/net/wireless/ath/ath10k/pci.h
-> +++ b/drivers/net/wireless/ath/ath10k/pci.h
-> @@ -135,13 +135,6 @@ struct service_to_pipe {
->  	u32 pipenum;
->  };
->  
-> -enum ath10k_pci_features {
-> -	ATH10K_PCI_FEATURE_MSI_X		= 0,
-> -
-> -	/* keep last */
-> -	ATH10K_PCI_FEATURE_COUNT
-> -};
+make drivers/net/wireless/ath/ath10k/ C=2 CF="-D__CHECK_ENDIAN__"
 
-I wouldn't be too surprised if we need this again at some point. But we
-can then add it back.
+Which reminds me that I should add -D__CHECK_ENDIAN__ to the makefile.
 
 -- 
 Kalle Valo
