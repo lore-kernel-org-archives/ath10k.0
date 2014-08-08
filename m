@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFg8O-0003Gr-HK
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 09:06:48 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Reporting firmware stats to ethtool
-References: <53E3F65D.8080102@candelatech.com>
-Date: Fri, 8 Aug 2014 12:06:15 +0300
-In-Reply-To: <53E3F65D.8080102@candelatech.com> (Ben Greear's message of "Thu, 
- 07 Aug 2014 14:57:49 -0700")
-Message-ID: <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
+ id 1XFgGD-0005BN-5q
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 09:14:54 +0000
+Received: by mail-we0-f180.google.com with SMTP id w61so5314349wes.39
+ for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 02:14:30 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1407402308-29899-3-git-send-email-michal.kazior@tieto.com>
+References: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
+ <1407402308-29899-3-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 8 Aug 2014 11:14:29 +0200
+Message-ID: <CA+BoTQkDcp3Aqp2=s_1NJsG1a+RhBkmpAmy-4Ov0NFFtS_sraQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] ath10k: dont reset the chip on hif_stop
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +21,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
 
-Ben Greear <greearb@candelatech.com> writes:
-
-> I'm working on a patch to report the stats seen in debugfs/...ath10k/fw_stats
-> as ethtool stats, somewhat similar to how ath9k does it.
->
-> I notice that my user-space tool is reporting huge numbers because
-> the stats are reset to zero when firmware restarts, and so my tool
-> thinks the stats wrapped.
->
-> I can fix my tool easily enough, but I first wanted to see if
-> anyone had strong feelings about keeping the stats from resetting
-> to zero by storing history and calculating diffs in the driver.
->
-> I think my preference is to punt this to user-space, but if
-> someone feels otherwise, please let me know sooner than later.
-
-I also prefer to have this in user space, but how does user space know
-when the stats have been zeroed?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNyBBdWd1c3QgMjAxNCAxMTowNSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0
+by5jb20+IHdyb3RlOgo+IFRoZSBjb3B5IGVuZ2luZSBzdHJ1Y3R1cmVzIGFyZSBuZXZlciBjaGFu
+Z2VkIHVudGlsCj4gZHJpdmVyIHVucmVnaXN0ZXJzIHRoZSBkZXZpY2Ugc28gaXQgaXMgbm90Cj4g
+bmVjZXNzYXJ5IHRvIHJlc2V0IHRoZSBkZXZpY2UgY2hpcCBhbnltb3JlIHdoZW4KPiBzdG9wcGlu
+Zy4KPgo+IFRoaXMgcmVkdWNlcyBkcml2ZXIgcmVnaXN0ZXIgdGltZSBhcHByb3guIGJ5IDIwMG1z
+Lgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5j
+b20+Cj4gLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgfCA3IC0t
+LS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDcgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYyBiL2RyaXZlcnMvbmV0L3dpcmVs
+ZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBpbmRleCA3ZWZjZjhlLi42YTVjYTllIDEwMDY0NAo+IC0t
+LSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiArKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gQEAgLTExOTIsMTMgKzExOTIsNiBAQCBz
+dGF0aWMgdm9pZCBhdGgxMGtfcGNpX2hpZl9zdG9wKHN0cnVjdCBhdGgxMGsgKmFyKQo+Cj4gICAg
+ICAgICBhdGgxMGtfcGNpX2J1ZmZlcl9jbGVhbnVwKGFyKTsKPgo+IC0gICAgICAgLyogTWFrZSB0
+aGUgc3VyZSB0aGUgZGV2aWNlIHdvbid0IGFjY2VzcyBhbnkgc3RydWN0dXJlcyBvbiB0aGUgaG9z
+dCBieQo+IC0gICAgICAgICogcmVzZXR0aW5nIGl0LiBUaGUgZGV2aWNlIHdhcyBmZWQgd2l0aCBQ
+Q0kgQ0UgcmluZ2J1ZmZlcgo+IC0gICAgICAgICogY29uZmlndXJhdGlvbiBkdXJpbmcgaW5pdC4g
+SWYgcmluZ2J1ZmZlcnMgYXJlIGZyZWVkIGFuZCB0aGUgZGV2aWNlCj4gLSAgICAgICAgKiB3ZXJl
+IHRvIGFjY2VzcyB0aGVtIHRoaXMgY291bGQgbGVhZCB0byBtZW1vcnkgY29ycnVwdGlvbiBvbiB0
+aGUKPiAtICAgICAgICAqIGhvc3QuICovCj4gLSAgICAgICBhdGgxMGtfcGNpX3dhcm1fcmVzZXQo
+YXIpOwo+IC0KPiAgICAgICAgIGFyX3BjaS0+c3RhcnRlZCA9IDA7CgpJZiBmaXJtd2FyZSBjcmFz
+aGVzIGl0IGRvZXNuJ3QgbmVjZXNzYXJpbHkgbWVhbiBoYXJkd2FyZSBoYXMgY3Jhc2hlZAphcyB3
+ZWxsLiBTaW5jZSBodHQgcnggcmluZyBkbWEgYnVmZmVyIGlzIGZlZCBkaXJlY3RseSB0byBoYXJk
+d2FyZSBpdApjYW4gc3RpbGwgYmUgYWNjZXNzZWQgZXZlbiBhZnRlciBmaXJtd2FyZSBoYXMgY3Jh
+c2hlZCAoZS5nLiByZWNlaXZlCmJlYWNvbnMgaW4gc3RhdGlvbiBtb2RlKS4gVGhpcyBtZWFucyBj
+YWxsaW5nIGhpZl9zdG9wIG11c3QgZ3VhcmFudGVlCnRvIHN0b3AgaGFyZHdhcmUgY29tcGxldGVs
+eSBvciBlbHNlIGl0IG1pZ2h0IGNvcnJ1cHQgaG9zdCBtZW1vcnkKKG5vdGFibHkgc2tfYnVmZnM7
+IHByZXR0eSBiYWRseSAtIEkndmUgYmVlbiBoaXR0aW5nIGdlbmVyYWwgcHJvdGVjdGlvbgpmYXVs
+dHMgcmFuZG9tbHkgYW5kIHdhcyBwdXp6bGVkIGF0IGZpcnN0KS4KClRodXMgdGhpcyBwYXRjaCBo
+YXMgdG8gYmUgZHJvcHBlZCAoSSdsbCBwcm9iYWJseSByZXBsYWNlIGl0IHdpdGggYQpwYXRjaCB0
+byB1cGRhdGUgdGhlIGNvbW1lbnQgb25seSkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
