@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFgGD-0005BN-5q
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 09:14:54 +0000
-Received: by mail-we0-f180.google.com with SMTP id w61so5314349wes.39
- for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 02:14:30 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1407402308-29899-3-git-send-email-michal.kazior@tieto.com>
-References: <1407402308-29899-1-git-send-email-michal.kazior@tieto.com>
- <1407402308-29899-3-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 8 Aug 2014 11:14:29 +0200
-Message-ID: <CA+BoTQkDcp3Aqp2=s_1NJsG1a+RhBkmpAmy-4Ov0NFFtS_sraQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] ath10k: dont reset the chip on hif_stop
+ id 1XFgWm-0005Rd-7i
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 09:32:00 +0000
+Received: by mail-wg0-f43.google.com with SMTP id l18so5392100wgh.14
+ for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 02:31:38 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [RFC 2/3] ath10k: dont duplicate service-pipe mapping
+Date: Fri,  8 Aug 2014 11:22:14 +0200
+Message-Id: <1407489735-28091-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1407489735-28091-1-git-send-email-michal.kazior@tieto.com>
+References: <1407489735-28091-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +19,134 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
 
-T24gNyBBdWd1c3QgMjAxNCAxMTowNSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0
-by5jb20+IHdyb3RlOgo+IFRoZSBjb3B5IGVuZ2luZSBzdHJ1Y3R1cmVzIGFyZSBuZXZlciBjaGFu
-Z2VkIHVudGlsCj4gZHJpdmVyIHVucmVnaXN0ZXJzIHRoZSBkZXZpY2Ugc28gaXQgaXMgbm90Cj4g
-bmVjZXNzYXJ5IHRvIHJlc2V0IHRoZSBkZXZpY2UgY2hpcCBhbnltb3JlIHdoZW4KPiBzdG9wcGlu
-Zy4KPgo+IFRoaXMgcmVkdWNlcyBkcml2ZXIgcmVnaXN0ZXIgdGltZSBhcHByb3guIGJ5IDIwMG1z
-Lgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5j
-b20+Cj4gLS0tCj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMgfCA3IC0t
-LS0tLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDcgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYyBiL2RyaXZlcnMvbmV0L3dpcmVs
-ZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiBpbmRleCA3ZWZjZjhlLi42YTVjYTllIDEwMDY0NAo+IC0t
-LSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMKPiArKysgYi9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gQEAgLTExOTIsMTMgKzExOTIsNiBAQCBz
-dGF0aWMgdm9pZCBhdGgxMGtfcGNpX2hpZl9zdG9wKHN0cnVjdCBhdGgxMGsgKmFyKQo+Cj4gICAg
-ICAgICBhdGgxMGtfcGNpX2J1ZmZlcl9jbGVhbnVwKGFyKTsKPgo+IC0gICAgICAgLyogTWFrZSB0
-aGUgc3VyZSB0aGUgZGV2aWNlIHdvbid0IGFjY2VzcyBhbnkgc3RydWN0dXJlcyBvbiB0aGUgaG9z
-dCBieQo+IC0gICAgICAgICogcmVzZXR0aW5nIGl0LiBUaGUgZGV2aWNlIHdhcyBmZWQgd2l0aCBQ
-Q0kgQ0UgcmluZ2J1ZmZlcgo+IC0gICAgICAgICogY29uZmlndXJhdGlvbiBkdXJpbmcgaW5pdC4g
-SWYgcmluZ2J1ZmZlcnMgYXJlIGZyZWVkIGFuZCB0aGUgZGV2aWNlCj4gLSAgICAgICAgKiB3ZXJl
-IHRvIGFjY2VzcyB0aGVtIHRoaXMgY291bGQgbGVhZCB0byBtZW1vcnkgY29ycnVwdGlvbiBvbiB0
-aGUKPiAtICAgICAgICAqIGhvc3QuICovCj4gLSAgICAgICBhdGgxMGtfcGNpX3dhcm1fcmVzZXQo
-YXIpOwo+IC0KPiAgICAgICAgIGFyX3BjaS0+c3RhcnRlZCA9IDA7CgpJZiBmaXJtd2FyZSBjcmFz
-aGVzIGl0IGRvZXNuJ3QgbmVjZXNzYXJpbHkgbWVhbiBoYXJkd2FyZSBoYXMgY3Jhc2hlZAphcyB3
-ZWxsLiBTaW5jZSBodHQgcnggcmluZyBkbWEgYnVmZmVyIGlzIGZlZCBkaXJlY3RseSB0byBoYXJk
-d2FyZSBpdApjYW4gc3RpbGwgYmUgYWNjZXNzZWQgZXZlbiBhZnRlciBmaXJtd2FyZSBoYXMgY3Jh
-c2hlZCAoZS5nLiByZWNlaXZlCmJlYWNvbnMgaW4gc3RhdGlvbiBtb2RlKS4gVGhpcyBtZWFucyBj
-YWxsaW5nIGhpZl9zdG9wIG11c3QgZ3VhcmFudGVlCnRvIHN0b3AgaGFyZHdhcmUgY29tcGxldGVs
-eSBvciBlbHNlIGl0IG1pZ2h0IGNvcnJ1cHQgaG9zdCBtZW1vcnkKKG5vdGFibHkgc2tfYnVmZnM7
-IHByZXR0eSBiYWRseSAtIEkndmUgYmVlbiBoaXR0aW5nIGdlbmVyYWwgcHJvdGVjdGlvbgpmYXVs
-dHMgcmFuZG9tbHkgYW5kIHdhcyBwdXp6bGVkIGF0IGZpcnN0KS4KClRodXMgdGhpcyBwYXRjaCBo
-YXMgdG8gYmUgZHJvcHBlZCAoSSdsbCBwcm9iYWJseSByZXBsYWNlIGl0IHdpdGggYQpwYXRjaCB0
-byB1cGRhdGUgdGhlIGNvbW1lbnQgb25seSkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+The mapping is already defined in a structure. It
+makes little sense to duplicate information stored
+in it within a function.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 77 +++++++++++++++--------------------
+ 1 file changed, 33 insertions(+), 44 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 38a9546..fee875b 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1056,68 +1056,57 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
+ 		tasklet_kill(&ar_pci->pipe_info[i].intr);
+ }
+ 
+-/* TODO - temporary mapping while we have too few CE's */
+ static int ath10k_pci_hif_map_service_to_pipe(struct ath10k *ar,
+ 					      u16 service_id, u8 *ul_pipe,
+ 					      u8 *dl_pipe, int *ul_is_polled,
+ 					      int *dl_is_polled)
+ {
+-	int ret = 0;
++	const struct service_to_pipe *entry;
++	bool ul_set = false, dl_set = false;
++	int i;
+ 
+ 	ath10k_dbg(ATH10K_DBG_PCI, "pci hif map service\n");
+ 
+ 	/* polling for received messages not supported */
+ 	*dl_is_polled = 0;
+ 
+-	switch (service_id) {
+-	case ATH10K_HTC_SVC_ID_HTT_DATA_MSG:
+-		/*
+-		 * Host->target HTT gets its own pipe, so it can be polled
+-		 * while other pipes are interrupt driven.
+-		 */
+-		*ul_pipe = 4;
+-		/*
+-		 * Use the same target->host pipe for HTC ctrl, HTC raw
+-		 * streams, and HTT.
+-		 */
+-		*dl_pipe = 1;
+-		break;
+-
+-	case ATH10K_HTC_SVC_ID_RSVD_CTRL:
+-	case ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS:
+-		/*
+-		 * Note: HTC_RAW_STREAMS_SVC is currently unused, and
+-		 * HTC_CTRL_RSVD_SVC could share the same pipe as the
+-		 * WMI services.  So, if another CE is needed, change
+-		 * this to *ul_pipe = 3, which frees up CE 0.
+-		 */
+-		/* *ul_pipe = 3; */
+-		*ul_pipe = 0;
+-		*dl_pipe = 1;
+-		break;
++	for (i = 0; i < ARRAY_SIZE(target_service_to_ce_map_wlan); i++) {
++		entry = &target_service_to_ce_map_wlan[i];
+ 
+-	case ATH10K_HTC_SVC_ID_WMI_DATA_BK:
+-	case ATH10K_HTC_SVC_ID_WMI_DATA_BE:
+-	case ATH10K_HTC_SVC_ID_WMI_DATA_VI:
+-	case ATH10K_HTC_SVC_ID_WMI_DATA_VO:
++		if (entry->service_id != service_id)
++			continue;
+ 
+-	case ATH10K_HTC_SVC_ID_WMI_CONTROL:
+-		*ul_pipe = 3;
+-		*dl_pipe = 2;
+-		break;
++		switch (entry->pipedir) {
++		case PIPEDIR_NONE:
++			break;
++		case PIPEDIR_IN:
++			WARN_ON(dl_set);
++			*dl_pipe = entry->pipenum;
++			dl_set = true;
++			break;
++		case PIPEDIR_OUT:
++			WARN_ON(ul_set);
++			*ul_pipe = entry->pipenum;
++			ul_set = true;
++			break;
++		case PIPEDIR_INOUT:
++			WARN_ON(dl_set);
++			WARN_ON(ul_set);
++			*dl_pipe = entry->pipenum;
++			*ul_pipe = entry->pipenum;
++			dl_set = true;
++			ul_set = true;
++			break;
++		}
++	}
+ 
+-		/* pipe 5 unused   */
+-		/* pipe 6 reserved */
+-		/* pipe 7 reserved */
++	if (WARN_ON(!ul_set || !dl_set))
++		return -ENOENT;
+ 
+-	default:
+-		ret = -1;
+-		break;
+-	}
+ 	*ul_is_polled =
+ 		(host_ce_config_wlan[*ul_pipe].flags & CE_ATTR_DIS_INTR) != 0;
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
