@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFmJI-0007hQ-Hk
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 15:42:28 +0000
-Message-ID: <53E4EFCB.5090501@candelatech.com>
-Date: Fri, 08 Aug 2014 08:42:03 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ob0-x22f.google.com ([2607:f8b0:4003:c01::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XFmWL-0005zG-8k
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 15:55:57 +0000
+Received: by mail-ob0-f175.google.com with SMTP id wp18so4151645obc.34
+ for <ath10k@lists.infradead.org>; Fri, 08 Aug 2014 08:55:35 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Reporting firmware stats to ethtool
+In-Reply-To: <53E4EFCB.5090501@candelatech.com>
 References: <53E3F65D.8080102@candelatech.com>
  <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
+ <53E4EFCB.5090501@candelatech.com>
+Date: Fri, 8 Aug 2014 08:55:35 -0700
+Message-ID: <CAA93jw429GCjwiD0FQNFudZ0RDEKShZh4iiuOP+g+PpRjFNT7Q@mail.gmail.com>
+Subject: Re: Reporting firmware stats to ethtool
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +22,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 08/08/2014 02:06 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
-> 
->> I'm working on a patch to report the stats seen in debugfs/...ath10k/fw_stats
->> as ethtool stats, somewhat similar to how ath9k does it.
->>
->> I notice that my user-space tool is reporting huge numbers because
->> the stats are reset to zero when firmware restarts, and so my tool
->> thinks the stats wrapped.
->>
->> I can fix my tool easily enough, but I first wanted to see if
->> anyone had strong feelings about keeping the stats from resetting
->> to zero by storing history and calculating diffs in the driver.
->>
->> I think my preference is to punt this to user-space, but if
->> someone feels otherwise, please let me know sooner than later.
-> 
-> I also prefer to have this in user space, but how does user space know
-> when the stats have been zeroed?
-
-Poll often enough that it cannot increment more than 2 billion (or other large number)
-between polls, and then if polled value is less than previous (and difference is > 2 billion),
-we know we had a reset and not a wrap.
-
-User-space stats will not be perfect in the case of firmware resets, or resets
-after the 'large number', but nothing is going to make it perfect, and in
-practice, this seems good enough.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCBBdWcgOCwgMjAxNCBhdCA4OjQyIEFNLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
+bGF0ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDgvMDgvMjAxNCAwMjowNiBBTSwgS2FsbGUgVmFsbyB3
+cm90ZToKPj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyaXRlczoKPj4K
+Pj4+IEknbSB3b3JraW5nIG9uIGEgcGF0Y2ggdG8gcmVwb3J0IHRoZSBzdGF0cyBzZWVuIGluIGRl
+YnVnZnMvLi4uYXRoMTBrL2Z3X3N0YXRzCj4+PiBhcyBldGh0b29sIHN0YXRzLCBzb21ld2hhdCBz
+aW1pbGFyIHRvIGhvdyBhdGg5ayBkb2VzIGl0Lgo+Pj4KPj4+IEkgbm90aWNlIHRoYXQgbXkgdXNl
+ci1zcGFjZSB0b29sIGlzIHJlcG9ydGluZyBodWdlIG51bWJlcnMgYmVjYXVzZQo+Pj4gdGhlIHN0
+YXRzIGFyZSByZXNldCB0byB6ZXJvIHdoZW4gZmlybXdhcmUgcmVzdGFydHMsIGFuZCBzbyBteSB0
+b29sCj4+PiB0aGlua3MgdGhlIHN0YXRzIHdyYXBwZWQuCj4+Pgo+Pj4gSSBjYW4gZml4IG15IHRv
+b2wgZWFzaWx5IGVub3VnaCwgYnV0IEkgZmlyc3Qgd2FudGVkIHRvIHNlZSBpZgo+Pj4gYW55b25l
+IGhhZCBzdHJvbmcgZmVlbGluZ3MgYWJvdXQga2VlcGluZyB0aGUgc3RhdHMgZnJvbSByZXNldHRp
+bmcKPj4+IHRvIHplcm8gYnkgc3RvcmluZyBoaXN0b3J5IGFuZCBjYWxjdWxhdGluZyBkaWZmcyBp
+biB0aGUgZHJpdmVyLgo+Pj4KPj4+IEkgdGhpbmsgbXkgcHJlZmVyZW5jZSBpcyB0byBwdW50IHRo
+aXMgdG8gdXNlci1zcGFjZSwgYnV0IGlmCj4+PiBzb21lb25lIGZlZWxzIG90aGVyd2lzZSwgcGxl
+YXNlIGxldCBtZSBrbm93IHNvb25lciB0aGFuIGxhdGVyLgo+Pgo+PiBJIGFsc28gcHJlZmVyIHRv
+IGhhdmUgdGhpcyBpbiB1c2VyIHNwYWNlLCBidXQgaG93IGRvZXMgdXNlciBzcGFjZSBrbm93Cj4+
+IHdoZW4gdGhlIHN0YXRzIGhhdmUgYmVlbiB6ZXJvZWQ/Cj4KPiBQb2xsIG9mdGVuIGVub3VnaCB0
+aGF0IGl0IGNhbm5vdCBpbmNyZW1lbnQgbW9yZSB0aGFuIDIgYmlsbGlvbiAob3Igb3RoZXIgbGFy
+Z2UgbnVtYmVyKQo+IGJldHdlZW4gcG9sbHMsIGFuZCB0aGVuIGlmIHBvbGxlZCB2YWx1ZSBpcyBs
+ZXNzIHRoYW4gcHJldmlvdXMgKGFuZCBkaWZmZXJlbmNlIGlzID4gMiBiaWxsaW9uKSwKPiB3ZSBr
+bm93IHdlIGhhZCBhIHJlc2V0IGFuZCBub3QgYSB3cmFwLgoKSSBkbyBraW5kIG9mIHByZWZlciA2
+NCBiaXQgY291bnRlcnMgaW4gdGhlIGdlbmVyYWwgY2FzZS4gTnVrZSBpdCBmcm9tCm9yYml0LCBp
+dCdzIHRoZSBvbmx5IHdheSB0byBiZSBzdXJlLgoKPiBVc2VyLXNwYWNlIHN0YXRzIHdpbGwgbm90
+IGJlIHBlcmZlY3QgaW4gdGhlIGNhc2Ugb2YgZmlybXdhcmUgcmVzZXRzLCBvciByZXNldHMKPiBh
+ZnRlciB0aGUgJ2xhcmdlIG51bWJlcicsIGJ1dCBub3RoaW5nIGlzIGdvaW5nIHRvIG1ha2UgaXQg
+cGVyZmVjdCwgYW5kIGluCj4gcHJhY3RpY2UsIHRoaXMgc2VlbXMgZ29vZCBlbm91Z2guCj4KPiBU
+aGFua3MsCj4gQmVuCj4KPiAtLQo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
+Pgo+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20K
+Pgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBh
+dGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKCgotLSAKRGF2ZSBU
+w6RodAoKTlNGVzogaHR0cHM6Ly93Mi5lZmYub3JnL0NlbnNvcnNoaXAvSW50ZXJuZXRfY2Vuc29y
+c2hpcF9iaWxscy9ydXNzZWxsXzAyOTZfaW5kZWNlbnQuYXJ0aWNsZQoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
