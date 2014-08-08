@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XFhyV-0001cz-92
- for ath10k@lists.infradead.org; Fri, 08 Aug 2014 11:04:43 +0000
+ id 1XFi75-0005ED-Vs
+ for ath10k@lists.infradead.org; Fri, 08 Aug 2014 11:13:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/6] ath10k: remove target soc ps code
-References: <1407402212-29809-1-git-send-email-michal.kazior@tieto.com>
- <1407402212-29809-3-git-send-email-michal.kazior@tieto.com>
- <878umzz2d0.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnvS2C9_C7qkrX5cPLa8weHx_FmS8Gd=d2Pf=EAmf9EiQ@mail.gmail.com>
-Date: Fri, 8 Aug 2014 14:04:13 +0300
-In-Reply-To: <CA+BoTQnvS2C9_C7qkrX5cPLa8weHx_FmS8Gd=d2Pf=EAmf9EiQ@mail.gmail.com>
- (Michal Kazior's message of "Fri, 8 Aug 2014 13:00:56 +0200")
-Message-ID: <87zjffxmxe.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
+References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
+ <87d2cbz3wy.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
+Date: Fri, 8 Aug 2014 14:13:10 +0300
+In-Reply-To: <CA+BoTQkF3+-1ded_dj63BGH7-bdD_uxLSkTZjGMb654yPzbtnA@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 8 Aug 2014 12:24:48 +0200")
+Message-ID: <87mwbfxmih.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,33 +30,42 @@ Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 8 August 2014 12:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
+>> Based on Joe's suggestion, I'm planning to change the macro like below.
+>> Are you ok with that?
 >>
->>> The soc powersave was disabled by default. It
->>> never was fully tested. Some hw apparently had
->>> problems with it and the implementation itself had
->>> a possible race.
->>>
->>> Just remove the refcounting and simply wake up the
->>> device when probing and put to sleep when
->>> removing.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> It actually adds a new checkpatch warning but I'm going to ignore that
+>> for now:
 >>
->> This one introduced new warnings:
+>> drivers/net/wireless/ath/ath10k/wmi.h:177: ERROR: Macros with complex values should be enclosed in parenthesis
 >>
->> drivers/net/wireless/ath/ath10k/pci.c:646:5: warning: symbol 'ath10k_pci_wake' was not declared. Should it be static?
->> drivers/net/wireless/ath/ath10k/pci.c:653:6: warning: symbol 'ath10k_pci_sleep' was not declared. Should it be static?
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+>> index 109ea684f88f..e70836586756 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.h
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
+>> @@ -174,46 +174,48 @@ enum wmi_main_service {
+>>
+>>  static inline char *wmi_service_name(int service_id)
+>>  {
+>> -#define SVCSTR(x) { case x: return #x; }
+>> +#define SVCSTR(x) case x: return #x
+>> +
+> [...]
 >
-> I didn't catch this for some reason. Can you share how you run
-> checkpatch, please?
+> This was the checkpatch warning I originally fixed by using { .. } :-)
 
-I think these are coming from sparse, in essence I run this:
+Hehe, I was actually thinking maybe that's why you added the braces :)
 
-make drivers/net/wireless/ath/ath10k/ C=2 CF="-D__CHECK_ENDIAN__"
+> Anyway, I don't see a problem with the macro change you suggest.
+> Apparently we're doomed to have a checkpatch warning either way unless
+> we don't use a macro at all.
 
-Which reminds me that I should add -D__CHECK_ENDIAN__ to the makefile.
+Yeah. And it's not like that we need to have 0 checkpatch warnings. For
+example, I already have a long list of errors I ignore:
+
+MSLEEP,USLEEP_RANGE,PRINTK_WITHOUT_KERN_LEVEL,NETWORKING_BLOCK_COMMENT_STYLE,LINUX_VERSION_CODE,COMPLEX_MACRO
+
+checkpatch just a good tool to catch some of the style issues and makes
+my work easier, especially when newbies send patches.
 
 -- 
 Kalle Valo
