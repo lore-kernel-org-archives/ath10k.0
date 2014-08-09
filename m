@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XGBJm-0005Mb-L7
- for ath10k@lists.infradead.org; Sat, 09 Aug 2014 18:24:39 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/6] ath10k: remove target soc ps code
-References: <1407402212-29809-1-git-send-email-michal.kazior@tieto.com>
- <1407402212-29809-3-git-send-email-michal.kazior@tieto.com>
- <87ha1lttgh.fsf@kamboji.qca.qualcomm.com>
-Date: Sat, 9 Aug 2014 21:24:09 +0300
-In-Reply-To: <87ha1lttgh.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Sat, 09 Aug 2014 21:21:18 +0300")
-Message-ID: <87d2c9ttbq.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XGDbL-0006F3-Nx
+ for ath10k@lists.infradead.org; Sat, 09 Aug 2014 20:50:56 +0000
+Message-ID: <53E68995.1020005@candelatech.com>
+Date: Sat, 09 Aug 2014 13:50:29 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH v6 0/8] ath10k: firmware crash dump
+References: <20140809180552.29215.58612.stgit@potku.adurom.net>
+In-Reply-To: <20140809180552.29215.58612.stgit@potku.adurom.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +18,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
->> @@ -1915,7 +1870,6 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
->>  
->>  	ath10k_dbg(ATH10K_DBG_BOOT, "boot warm reset complete\n");
->>  
->> -	ath10k_do_pci_sleep(ar);
->>  	return ret;
->>  }
+
+On 08/09/2014 11:07 AM, Kalle Valo wrote:
+> Next version of ath10k firmware crash dump feature, based on Ben's patches but
+> heavily modified.
 >
-> For some reason I don't get all kbuild emails, and I don't know if you
-> got it either, but smatch found a style error here:
->
->>> drivers/net/wireless/ath/ath10k/pci.c:1797:5-8: Unneeded variable: "ret". Return "0" on line 1873
+> v6:
 
-Forgot the link to the mail:
+I see no obvious problems.  If it passes basic testing, poke it upstream
+and I'll start making my decode tool able to parse it (and package my CT
+firmware with the BSS addrs/lengths..it is currently using a slightly
+different IE format.
 
-https://lists.01.org/pipermail/kbuild/2014-August/001684.html
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
