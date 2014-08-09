@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XG91K-0005Zu-Gq
- for ath10k@lists.infradead.org; Sat, 09 Aug 2014 15:57:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Reporting firmware stats to ethtool
-References: <53E3F65D.8080102@candelatech.com>
- <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
- <53E4EFCB.5090501@candelatech.com>
- <CAA93jw429GCjwiD0FQNFudZ0RDEKShZh4iiuOP+g+PpRjFNT7Q@mail.gmail.com>
- <53E4F6B8.50009@candelatech.com> <53E4FEA9.80803@broadcom.com>
- <87vbq2uqdt.fsf@kamboji.qca.qualcomm.com>
- <53E5CDF9.4010008@broadcom.com>
-Date: Sat, 9 Aug 2014 18:56:55 +0300
-In-Reply-To: <53E5CDF9.4010008@broadcom.com> (Arend van Spriel's message of
- "Sat, 9 Aug 2014 09:30:01 +0200")
-Message-ID: <87y4uxu054.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XG9sL-00057P-Uc
+ for ath10k@lists.infradead.org; Sat, 09 Aug 2014 16:52:14 +0000
+Message-ID: <53E651A5.2030500@candelatech.com>
+Date: Sat, 09 Aug 2014 09:51:49 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH v5 0/7] ath10k: firmware crash dump
+References: <20140808201815.20713.85582.stgit@potku.adurom.net>
+ <53E541E6.50707@candelatech.com> <87lhqyw6s3.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87lhqyw6s3.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +19,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arend van Spriel <arend@broadcom.com>
-Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>, Franky Lin <frankyl@broadcom.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-Arend van Spriel <arend@broadcom.com> writes:
 
->>> Does ath driver notify mac80211 about firmware restart, ie. through
->>> ieee80211_restart_hw().
->>
->> ath10k does use ieee80211_restart_hw().
->>
->>> If only user-space could get that info.
->>
->> Yeah, that would be nice to have for ath10k firmware crash dump
->> functionality. And doesn't Android also need something similar?
+
+On 08/08/2014 10:50 PM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
-> Probably. bcmdhd seems to send a "firmware hang" event up to wpa_supp,
-> which probably ends up in the android wifi framework through the
-> control interface. Currently, this is a driver private event handled
-> by wpa_supplicant_lib, but it seems trivial to me to add a nl80211
-> event to trigger that.
+>> On 08/08/2014 01:28 PM, Kalle Valo wrote:
+>>> Hi,
+>>>
+>>> here's my reworked Ben's patchset adding firmware crash dump support to ath10k.
+>>> Unfortunately this crashes when reading the stack dump from the firmware but
+>>> time run out for me to fix that and I wanted to send this for comments anyway.
+>>>
+>>> I did quite a lot of changes, basically to simplify the code, remove ifdefs and
+>>> so on. Here's some sort of list what I did:
+>>>
+>>> * dump_data->tv_sec and tv_nsec to 64 bits (because long can be 32 bits
+>>>    on some platforms)
+>>
+>> I did u32 on purpose because I know how to do ntohl, htonl if I need
+>> to flip the machine order in user-space.
 >
-> I am not sure what infrastructure your "ath10k firmware crash dump" is
-> going to use.
+> On my 32-bit box I got a compiler warning for this and that's why I
+> changed it to u64.
 
-Currently we are planning to just provide a debugfs file to retrieve the
-latest dump.
+Casting could have fixed that I imagine.
 
-> I have seen similar thing from Marvell recently [1] which relies on
-> udev and ethtool to do the work. I guess aligning the solutions is why
-> this topic is listed for the wireless breakout session at kernel
-> summit in Chicago.
+>> Is there something similar for 64-bit numbers?
+>
+> At least I haven't heard anything. But it should be easy to implement on
+> your own.
 
-Yeah, we did talk about that a bit in the mailing list few months back.
+Sure...it's not a big deal, likely there will be at most two different apps
+that ever decode this anyway (mine and qca's).
+
+
+>>> * latest crash dump is always stored (instead of the oldest unread)
+>>
+>> At least with the kernel, the first crash is normally the most useful,
+>> so I figured the same would be true of the firmware (a firmware crash
+>> is excellent way to find hidden bugs in the driver, so upon crash/reload,
+>> it is more likely that the driver will be screwed up and thus mis-configure
+>> firmware...)
+>
+> Think of an AP with 3 month uptime where firmware crashes once in June
+> and second time in August and when you retrieve the crash dump you get
+> the one from June. I find that very unintuitive.
+
+AP should have gathered the crash the first time, but again, not a big deal,
+as I would gather the crash logs as soon as they happen anyway.
+
+>>> * what should ath10k_fw_error_dump_open() do if firmware hasn't
+>>>    crashed? check crashed_since_read and return zero len file? or an
+>>>    error code? -ENOMSG?
+>>
+>> Maybe a mostly empty crash log with just the header, should be easy enough
+>> to figure out it's not really a crash.  If we use udev to gather these,
+>> it is likely to be stupid shell scripts doing a lot of the work, so
+>> being clever on return codes might not be helpful.
+>
+> But with cp in that case you also get an empty file, right? That way
+> it's easy to detect that there's no crash dump available.
+>
+> What is the benefit from providing an empty header to user space? I
+> don't get that.
+
+An empty file could be any sort of error or mis-configuration
+...but an empty header means the infrastructure is working properly.
+
+I think with all of this, it mostly a matter of opinion, and whatever
+you choose should be fine with me.  If we find any serious issues, we
+can of course fix it later.
+
+>> I'll go dig through the patches in a bit..have to figure out why systemd
+>> is fcked up on my lab machine first. :P
+>
+> But wasn't systemd supposed to fix all of our problems? ;)
+
+On Fedora 19, the latest update forgot how to enable/disable programs.  It must
+have a zero-regression-test policy as well as it's other issues :P
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
