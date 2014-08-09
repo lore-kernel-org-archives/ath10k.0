@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XG9sL-00057P-Uc
- for ath10k@lists.infradead.org; Sat, 09 Aug 2014 16:52:14 +0000
-Message-ID: <53E651A5.2030500@candelatech.com>
-Date: Sat, 09 Aug 2014 09:51:49 -0700
+ id 1XG9un-0005I0-28
+ for ath10k@lists.infradead.org; Sat, 09 Aug 2014 16:54:45 +0000
+Message-ID: <53E6523F.1060001@candelatech.com>
+Date: Sat, 09 Aug 2014 09:54:23 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v5 0/7] ath10k: firmware crash dump
+Subject: Re: [PATCH v5 6/7] ath10k: save firmware RAM and ROM BSS sections
+ on crash
 References: <20140808201815.20713.85582.stgit@potku.adurom.net>
- <53E541E6.50707@candelatech.com> <87lhqyw6s3.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87lhqyw6s3.fsf@kamboji.qca.qualcomm.com>
+ <20140808202920.20713.58726.stgit@potku.adurom.net>
+ <53E550F2.1040209@candelatech.com> <87d2caw632.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87d2caw632.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,83 +30,53 @@ Cc: ath10k@lists.infradead.org
 
 
 
-On 08/08/2014 10:50 PM, Kalle Valo wrote:
+On 08/08/2014 11:05 PM, Kalle Valo wrote:
 > Ben Greear <greearb@candelatech.com> writes:
 >
->> On 08/08/2014 01:28 PM, Kalle Valo wrote:
->>> Hi,
+>> On 08/08/2014 01:29 PM, Kalle Valo wrote:
 >>>
->>> here's my reworked Ben's patchset adding firmware crash dump support to ath10k.
->>> Unfortunately this crashes when reading the stack dump from the firmware but
->>> time run out for me to fix that and I wanted to send this for comments anyway.
->>>
->>> I did quite a lot of changes, basically to simplify the code, remove ifdefs and
->>> so on. Here's some sort of list what I did:
->>>
->>> * dump_data->tv_sec and tv_nsec to 64 bits (because long can be 32 bits
->>>    on some platforms)
+>>> +/* estimated values, hopefully these are enough */
+>>> +#define ATH10K_ROM_BSS_BUF_LEN 10000
+>>> +#define ATH10K_RAM_BSS_BUF_LEN 30000
+>>> +
+>>>   /* used for crash-dump storage, protected by data-lock */
+>>>   struct ath10k_fw_crash_data {
+>>>   	bool crashed_since_read;
+>>> @@ -301,6 +305,9 @@ struct ath10k_fw_crash_data {
+>>>   	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X];
+>>>   	u8 stack_buf[ATH10K_FW_STACK_SIZE];
+>>>   	u8 exc_stack_buf[ATH10K_FW_STACK_SIZE];
+>>> +
+>>> +	u8 rom_bss_buf[ATH10K_ROM_BSS_BUF_LEN];
+>>> +	u8 ram_bss_buf[ATH10K_RAM_BSS_BUF_LEN];
+>>>   };
 >>
->> I did u32 on purpose because I know how to do ntohl, htonl if I need
->> to flip the machine order in user-space.
+>> That (using estimates instead of allocating memory when we know the
+>> true value and/or when we need it) is wasting quite a bit of RAM.
+>> Doesn't matter on my systems, but AP manufacturers might be more
+>> ticklish about RAM usage...
 >
-> On my 32-bit box I got a compiler warning for this and that's why I
-> changed it to u64.
-
-Casting could have fixed that I imagine.
-
->> Is there something similar for 64-bit numbers?
+> Yeah, that is a problem bu this can be avoided by disabling
+> CONFIG_ATH10K_DEBUGFS altogether. But on the other hand, there might be
+> people who would still prefer to enable debugfs but not waste RAM on
+> firmware crash dumps. For those we could add a module parameter or
+> similar to disable firmware crash dumps, but is that overengineering
+> already?
 >
-> At least I haven't heard anything. But it should be easy to implement on
-> your own.
-
-Sure...it's not a big deal, likely there will be at most two different apps
-that ever decode this anyway (mine and qca's).
-
-
->>> * latest crash dump is always stored (instead of the oldest unread)
->>
->> At least with the kernel, the first crash is normally the most useful,
->> so I figured the same would be true of the firmware (a firmware crash
->> is excellent way to find hidden bugs in the driver, so upon crash/reload,
->> it is more likely that the driver will be screwed up and thus mis-configure
->> firmware...)
+> Another option is that we do firmware crash memory allocation on the
+> fly, when the crash happens. But as we are in atomic context it's pretty
+> expensive. We cannot do huge kmalloc() call due to memory fragmentation
+> and I doubt __vmalloc() is acceptable to call in atomic contexts (at
+> least I didn't find use of that in the kernel).
 >
-> Think of an AP with 3 month uptime where firmware crashes once in June
-> and second time in August and when you retrieve the crash dump you get
-> the one from June. I find that very unintuitive.
+> Third option is that we allocate crash dump buffers after the firmware
+> has been loaded and FW IEs are read. That way we don't allocate any
+> extra memory but the fundamental problem still persists.
 
-AP should have gathered the crash the first time, but again, not a big deal,
-as I would gather the crash logs as soon as they happen anyway.
+I'd prefer this third option..seems more elegant all around.
 
->>> * what should ath10k_fw_error_dump_open() do if firmware hasn't
->>>    crashed? check crashed_since_read and return zero len file? or an
->>>    error code? -ENOMSG?
->>
->> Maybe a mostly empty crash log with just the header, should be easy enough
->> to figure out it's not really a crash.  If we use udev to gather these,
->> it is likely to be stupid shell scripts doing a lot of the work, so
->> being clever on return codes might not be helpful.
->
-> But with cp in that case you also get an empty file, right? That way
-> it's easy to detect that there's no crash dump available.
->
-> What is the benefit from providing an empty header to user space? I
-> don't get that.
-
-An empty file could be any sort of error or mis-configuration
-...but an empty header means the infrastructure is working properly.
-
-I think with all of this, it mostly a matter of opinion, and whatever
-you choose should be fine with me.  If we find any serious issues, we
-can of course fix it later.
-
->> I'll go dig through the patches in a bit..have to figure out why systemd
->> is fcked up on my lab machine first. :P
->
-> But wasn't systemd supposed to fix all of our problems? ;)
-
-On Fedora 19, the latest update forgot how to enable/disable programs.  It must
-have a zero-regression-test policy as well as it's other issues :P
+I don't think you can do vmalloc in atomic context, btw.  But, can do it
+on firmware load.
 
 Thanks,
 Ben
