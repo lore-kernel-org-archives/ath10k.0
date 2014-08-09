@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XG08H-00088E-Dq
- for ath10k@lists.infradead.org; Sat, 09 Aug 2014 06:28:01 +0000
+ id 1XG0Ao-00017V-To
+ for ath10k@lists.infradead.org; Sat, 09 Aug 2014 06:30:39 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Reporting firmware stats to ethtool
 References: <53E3F65D.8080102@candelatech.com>
  <87wqajz6yg.fsf@kamboji.qca.qualcomm.com>
  <53E4EFCB.5090501@candelatech.com>
-Date: Sat, 9 Aug 2014 09:27:31 +0300
-In-Reply-To: <53E4EFCB.5090501@candelatech.com> (Ben Greear's message of "Fri, 
- 8 Aug 2014 08:42:03 -0700")
-Message-ID: <87zjfeuqi4.fsf@kamboji.qca.qualcomm.com>
+ <CAA93jw429GCjwiD0FQNFudZ0RDEKShZh4iiuOP+g+PpRjFNT7Q@mail.gmail.com>
+ <53E4F6B8.50009@candelatech.com> <53E4FEA9.80803@broadcom.com>
+Date: Sat, 9 Aug 2014 09:30:06 +0300
+In-Reply-To: <53E4FEA9.80803@broadcom.com> (Arend van Spriel's message of
+ "Fri, 8 Aug 2014 18:45:29 +0200")
+Message-ID: <87vbq2uqdt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,45 +27,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Arend van Spriel <arend@broadcom.com>
+Cc: Ben Greear <greearb@candelatech.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Dave Taht <dave.taht@gmail.com>, ath10k <ath10k@lists.infradead.org>
 
-Ben Greear <greearb@candelatech.com> writes:
+Arend van Spriel <arend@broadcom.com> writes:
 
-> On 08/08/2014 02:06 AM, Kalle Valo wrote:
->> Ben Greear <greearb@candelatech.com> writes:
->> 
->>> I'm working on a patch to report the stats seen in debugfs/...ath10k/fw_stats
->>> as ethtool stats, somewhat similar to how ath9k does it.
->>>
->>> I notice that my user-space tool is reporting huge numbers because
->>> the stats are reset to zero when firmware restarts, and so my tool
->>> thinks the stats wrapped.
->>>
->>> I can fix my tool easily enough, but I first wanted to see if
->>> anyone had strong feelings about keeping the stats from resetting
->>> to zero by storing history and calculating diffs in the driver.
->>>
->>> I think my preference is to punt this to user-space, but if
->>> someone feels otherwise, please let me know sooner than later.
->> 
->> I also prefer to have this in user space, but how does user space know
->> when the stats have been zeroed?
+>>> I do kind of prefer 64 bit counters in the general case. Nuke it from
+>>> orbit, it's the only way to be sure.
+>>
+>> It's 64-bit to user-space, but that means nothing because firmware
+>> uses 32-bit (or even 16 bit in some cases, probably) internally.
+>> A great deal of counters are the same, so be very careful when
+>> trying to keep long term counters grabbed from firmware/drivers/hardware.
+>>
+>> And, stations come and go when you re-associate, so all sorts of wifi counters
+>> reset themselves all the time...
 >
-> Poll often enough that it cannot increment more than 2 billion (or
-> other large number) between polls, and then if polled value is less
-> than previous (and difference is > 2 billion), we know we had a reset
-> and not a wrap.
+> Does ath driver notify mac80211 about firmware restart, ie. through
+> ieee80211_restart_hw().
 
-That's not very reliable as "less than previous" assumption is not
-always true.
+ath10k does use ieee80211_restart_hw().
 
-> User-space stats will not be perfect in the case of firmware resets, or resets
-> after the 'large number', but nothing is going to make it perfect, and in
-> practice, this seems good enough.
+> If only user-space could get that info.
 
-Yeah, and we can always fix this later if there's a sudden need to get
-reliable numbers.
+Yeah, that would be nice to have for ath10k firmware crash dump
+functionality. And doesn't Android also need something similar?
 
 -- 
 Kalle Valo
