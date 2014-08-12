@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XGDbL-0006F3-Nx
- for ath10k@lists.infradead.org; Sat, 09 Aug 2014 20:50:56 +0000
-Message-ID: <53E68995.1020005@candelatech.com>
-Date: Sat, 09 Aug 2014 13:50:29 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XH6l9-0001Y0-Kp
+ for ath10k@lists.infradead.org; Tue, 12 Aug 2014 07:44:44 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix wmi service bitmap debug
+References: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 12 Aug 2014 10:44:14 +0300
+In-Reply-To: <1406628239-31322-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 29 Jul 2014 12:03:59 +0200")
+Message-ID: <87y4uuqhip.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v6 0/8] ath10k: firmware crash dump
-References: <20140809180552.29215.58612.stgit@potku.adurom.net>
-In-Reply-To: <20140809180552.29215.58612.stgit@potku.adurom.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +19,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-
-On 08/09/2014 11:07 AM, Kalle Valo wrote:
-> Next version of ath10k firmware crash dump feature, based on Ben's patches but
-> heavily modified.
+> The 10.x and main firmware branches have
+> conflicting WMI service bitmap definitions.
 >
-> v6:
+> This also fixes WMI services parsing on big-endian
+> hosts and changes debugfs output to be more human
+> friendly.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I see no obvious problems.  If it passes basic testing, poke it upstream
-and I'll start making my decode tool able to parse it (and package my CT
-firmware with the BSS addrs/lengths..it is currently using a slightly
-different IE format.
-
-Thanks,
-Ben
+Thanks, applied.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
