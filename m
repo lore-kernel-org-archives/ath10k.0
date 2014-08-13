@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHDko-0003J8-39
- for ath10k@lists.infradead.org; Tue, 12 Aug 2014 15:12:54 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: [PATCH] ath10k: unregister spectral before mac
-Date: Tue, 12 Aug 2014 17:12:17 +0200
-Message-Id: <1407856337-13067-1-git-send-email-sw@simonwunderlich.de>
+ id 1XHYuk-0001v7-UY
+ for ath10k@lists.infradead.org; Wed, 13 Aug 2014 13:48:31 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/5] ath10k: setup irq method in probe
+References: <1407402260-29854-1-git-send-email-michal.kazior@tieto.com>
+ <1407402260-29854-3-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 13 Aug 2014 16:48:03 +0300
+In-Reply-To: <1407402260-29854-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 7 Aug 2014 11:04:17 +0200")
+Message-ID: <87d2c4pkks.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,54 +20,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Simon Wunderlich <sw@simonwunderlich.de>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-If spectral is unregistered after mac80211, the relayfs file has already
-been removed recursively by mac/cfg80211, and spectral tries to remove
-the file once more, thus leading to double free problems. Better clean
-up spectral before to avoid that problem.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
----
- drivers/net/wireless/ath/ath10k/core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+> It doesn't make sense to re-init irqs completely
+> whenever transport is started/stopped. Do it just
+> once upon probing/removing.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index d3474b4..ba2e87a 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1043,6 +1043,12 @@ void ath10k_core_unregister(struct ath10k *ar)
- 	if (!test_bit(ATH10K_FLAG_CORE_REGISTERED, &ar->dev_flags))
- 		return;
- 
-+	/* Stop spectral before unregistering from mac80211 to remove the
-+	 * relayfs debugfs file cleanly. Otherwise the parent debugfs tree
-+	 * would be already be free'd recursively, leading to a double free.
-+	 */
-+	ath10k_spectral_destroy(ar);
-+
- 	/* We must unregister from mac80211 before we stop HTC and HIF.
- 	 * Otherwise we will fail to submit commands to FW and mac80211 will be
- 	 * unhappy about callback failures. */
-@@ -1050,8 +1056,6 @@ void ath10k_core_unregister(struct ath10k *ar)
- 
- 	ath10k_core_free_firmware_files(ar);
- 
--	ath10k_spectral_destroy(ar);
--
- 	ath10k_debug_destroy(ar);
- }
- EXPORT_SYMBOL(ath10k_core_unregister);
+[...]
+
+> @@ -1905,22 +1915,10 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
+>  		goto err;
+>  	}
+>  
+> -	ret = ath10k_ce_disable_interrupts(ar);
+> -	if (ret) {
+> -		ath10k_err("failed to disable CE interrupts: %d\n", ret);
+> -		goto err_ce;
+> -	}
+> -
+> -	ret = ath10k_pci_init_irq(ar);
+> -	if (ret) {
+> -		ath10k_err("failed to init irqs: %d\n", ret);
+> -		goto err_ce;
+> -	}
+> -
+>  	ret = ath10k_pci_request_early_irq(ar);
+>  	if (ret) {
+>  		ath10k_err("failed to request early irq: %d\n", ret);
+> -		goto err_deinit_irq;
+> +		goto err_ce;
+>  	}
+
+You add ath10k_pci_ce_init() to probe() and respective
+ath10k_pci_ce_deinit() to remove(), and you remove
+ath10k_pci_ce_deinit() from hif_power_down(). But why do you leave
+ath10k_pci_ce_init() to hif_power_up()? Isn't that unnecessary as we
+already do that in probe()?
+
+> +	ath10k_info("pci irq %s (num %d) irq_mode %d reset_mode %d\n",
+> +		    ath10k_pci_get_irq_method(ar), ar_pci->num_msi_intrs,
+> +		    ath10k_pci_irq_mode, ath10k_pci_reset_mode);
+
+"pci irq %s interrupts %d irq_mode %d ..."
+
 -- 
-2.1.0.rc1
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
