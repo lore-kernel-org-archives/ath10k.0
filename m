@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHYuk-0001v7-UY
- for ath10k@lists.infradead.org; Wed, 13 Aug 2014 13:48:31 +0000
+ id 1XHZFj-0002MB-P1
+ for ath10k@lists.infradead.org; Wed, 13 Aug 2014 14:10:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/5] ath10k: setup irq method in probe
+Subject: Re: [PATCH 3/5] ath10k: remove early irq handling
 References: <1407402260-29854-1-git-send-email-michal.kazior@tieto.com>
- <1407402260-29854-3-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 13 Aug 2014 16:48:03 +0300
-In-Reply-To: <1407402260-29854-3-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 7 Aug 2014 11:04:17 +0200")
-Message-ID: <87d2c4pkks.fsf@kamboji.qca.qualcomm.com>
+ <1407402260-29854-4-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 13 Aug 2014 17:09:45 +0300
+In-Reply-To: <1407402260-29854-4-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 7 Aug 2014 11:04:18 +0200")
+Message-ID: <878umspjkm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,48 +29,70 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> It doesn't make sense to re-init irqs completely
-> whenever transport is started/stopped. Do it just
-> once upon probing/removing.
+> It's not really necessary to have a dedicated irq
+> handler just for the sake of catching early fw
+> crashes. It is now safe to use one handler even
+> during early stages of device boot up.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-[...]
+Nice, this really needs to be cleaned up.
 
-> @@ -1905,22 +1915,10 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
->  		goto err;
+>  drivers/net/wireless/ath/ath10k/pci.c | 160 ++++++++--------------------------
+>  1 file changed, 36 insertions(+), 124 deletions(-)
+
+Shouldn't you also remove early_irq_tasklet from struct ath10k_pci?
+
+> -static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
+> +static bool ath10k_pci_fw_crashed(struct ath10k *ar)
+>  {
+> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+> -	u32 fw_indicator;
+> -
+> -	fw_indicator = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
+> -
+> -	if (fw_indicator & FW_IND_EVENT_PENDING) {
+> -		/* ACK: clear Target-side pending event */
+> -		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+> -				   fw_indicator & ~FW_IND_EVENT_PENDING);
+> +	return ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS) &
+> +	       FW_IND_EVENT_PENDING;
+> +}
+
+Hehe, in Ben's firmware crash dump patches I renamed
+ath10k_pci_hif_dump_area() to ath10k_pci_firmware_crashed(). So we now
+have two very similarly named functions doing very different :)
+
+I propose that you rename this function to ath10k_pci_is_fw_crashed() or
+ath10k_pci_has_fw_crashed() and I rename ath10k_pci_hif_dump_area() to
+ath10k_pci_fw_crashed_dump(). I think that we have pretty consistent
+naming, no?
+
+> +static void ath10k_pci_fw_crashed_clear(struct ath10k *ar)
+> +{
+> +	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+> +			   (ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS) &
+> +			    ~FW_IND_EVENT_PENDING));
+
+Please don't embed calls like this, with a temporary variable you get it
+more readable and the resulting code should be the same anyway.
+
+> @@ -2412,14 +2322,6 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+>  		return -EIO;
 >  	}
 >  
-> -	ret = ath10k_ce_disable_interrupts(ar);
-> -	if (ret) {
-> -		ath10k_err("failed to disable CE interrupts: %d\n", ret);
-> -		goto err_ce;
+> -	if (val & FW_IND_EVENT_PENDING) {
+> -		ath10k_warn("device has crashed during init\n");
+> -		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+> -				   val & ~FW_IND_EVENT_PENDING);
+> -		ath10k_pci_hif_dump_area(ar);
+> -		return -ECOMM;
 > -	}
-> -
-> -	ret = ath10k_pci_init_irq(ar);
-> -	if (ret) {
-> -		ath10k_err("failed to init irqs: %d\n", ret);
-> -		goto err_ce;
-> -	}
-> -
->  	ret = ath10k_pci_request_early_irq(ar);
->  	if (ret) {
->  		ath10k_err("failed to request early irq: %d\n", ret);
-> -		goto err_deinit_irq;
-> +		goto err_ce;
->  	}
 
-You add ath10k_pci_ce_init() to probe() and respective
-ath10k_pci_ce_deinit() to remove(), and you remove
-ath10k_pci_ce_deinit() from hif_power_down(). But why do you leave
-ath10k_pci_ce_init() to hif_power_up()? Isn't that unnecessary as we
-already do that in probe()?
-
-> +	ath10k_info("pci irq %s (num %d) irq_mode %d reset_mode %d\n",
-> +		    ath10k_pci_get_irq_method(ar), ar_pci->num_msi_intrs,
-> +		    ath10k_pci_irq_mode, ath10k_pci_reset_mode);
-
-"pci irq %s interrupts %d irq_mode %d ..."
+I'm a bit worried about this. Are you relying now that the target will
+always trigger an interrupt or what? If yes, how can we sure it will
+happen on all possible cases? I would prefer to have some kind of safety
+net anyway, even if it's just a simple warning.
 
 -- 
 Kalle Valo
