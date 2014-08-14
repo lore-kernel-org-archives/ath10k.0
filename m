@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHtz5-00048w-24
- for ath10k@lists.infradead.org; Thu, 14 Aug 2014 12:18:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k:  improve vdev map handling.
-References: <1407260684-22624-1-git-send-email-greearb@candelatech.com>
-Date: Thu, 14 Aug 2014 15:17:53 +0300
-In-Reply-To: <1407260684-22624-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Tue, 5 Aug 2014 10:44:44
- -0700")
-Message-ID: <87fvgzmfim.fsf@kamboji.qca.qualcomm.com>
+ id 1XHu34-0006Ho-5c
+ for ath10k@lists.infradead.org; Thu, 14 Aug 2014 12:22:31 +0000
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: Re: Re: [PATCH] ath10k: unregister spectral before mac
+Date: Thu, 14 Aug 2014 14:22:04 +0200
+Message-ID: <9205567.prhmu1LLGe@prime>
+In-Reply-To: <87wqabmlc2.fsf@kamboji.qca.qualcomm.com>
+References: <1407856337-13067-1-git-send-email-sw@simonwunderlich.de>
+ <87wqabmlc2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,27 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+On Thursday 14 August 2014 13:12:13 Kalle Valo wrote:
+> Simon Wunderlich <sw@simonwunderlich.de> writes:
+> > If spectral is unregistered after mac80211, the relayfs file has already
+> > been removed recursively by mac/cfg80211, and spectral tries to remove
+> > the file once more, thus leading to double free problems. Better clean
+> > up spectral before to avoid that problem.
+> > 
+> > Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> > Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
+> 
+> Thanks for checking this. But I'm just wondering why even bother to call
+> relay_close() in the first place if mac80211 recursively removes
+> everything anyway? We don't remove any of the debugfs files anyway.
 
-> From: Ben Greear <greearb@candelatech.com>
->
-> Check vdev map has space before calling ffs,
-> fix invalid cleanup in failure to create vdev
-> case.
->
-> Open-code the BIT() logic since BIT does not properly
-> handle 64-bit bitfields and future patches will make
-> use of larger bitfields.
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+We need to relay_close() in any case because this function also causes to 
+clean up internal buffers of relayfs.
 
-Thanks, applied.
+An alternative to this patch could be to instead having 
+remove_buf_file_handler() call debugfs_remove() just do nothing and relay on 
+the upper layers to (recursively) remove that file - then, the relayfs stuff 
+still can get cleaned up. But that's also not very elegant either. If you 
+prefer that I can prepare a patch though ....
 
--- 
-Kalle Valo
+Cheers,
+     Simon
 
 _______________________________________________
 ath10k mailing list
