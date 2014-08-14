@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([79.140.42.25] helo=mail.mail.packetmixer.de)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHu34-0006Ho-5c
- for ath10k@lists.infradead.org; Thu, 14 Aug 2014 12:22:31 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: Re: [PATCH] ath10k: unregister spectral before mac
-Date: Thu, 14 Aug 2014 14:22:04 +0200
-Message-ID: <9205567.prhmu1LLGe@prime>
-In-Reply-To: <87wqabmlc2.fsf@kamboji.qca.qualcomm.com>
-References: <1407856337-13067-1-git-send-email-sw@simonwunderlich.de>
- <87wqabmlc2.fsf@kamboji.qca.qualcomm.com>
+ id 1XHu54-0006hq-Un
+ for ath10k@lists.infradead.org; Thu, 14 Aug 2014 12:24:35 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix typo in error message.
+References: <1407271878-15230-1-git-send-email-greearb@candelatech.com>
+Date: Thu, 14 Aug 2014 15:24:04 +0300
+In-Reply-To: <1407271878-15230-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 5 Aug 2014 13:51:18
+ -0700")
+Message-ID: <87bnrnmf8b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,34 +24,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Thursday 14 August 2014 13:12:13 Kalle Valo wrote:
-> Simon Wunderlich <sw@simonwunderlich.de> writes:
-> > If spectral is unregistered after mac80211, the relayfs file has already
-> > been removed recursively by mac/cfg80211, and spectral tries to remove
-> > the file once more, thus leading to double free problems. Better clean
-> > up spectral before to avoid that problem.
-> > 
-> > Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> > Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
-> 
-> Thanks for checking this. But I'm just wondering why even bother to call
-> relay_close() in the first place if mac80211 recursively removes
-> everything anyway? We don't remove any of the debugfs files anyway.
+greearb@candelatech.com writes:
 
-We need to relay_close() in any case because this function also causes to 
-clean up internal buffers of relayfs.
+> From: Ben Greear <greearb@candelatech.com>
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-An alternative to this patch could be to instead having 
-remove_buf_file_handler() call debugfs_remove() just do nothing and relay on 
-the upper layers to (recursively) remove that file - then, the relayfs stuff 
-still can get cleaned up. But that's also not very elegant either. If you 
-prefer that I can prepare a patch though ....
+Thanks, applied with a simple commit log.
 
-Cheers,
-     Simon
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
