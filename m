@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XHZFj-0002MB-P1
- for ath10k@lists.infradead.org; Wed, 13 Aug 2014 14:10:12 +0000
+ id 1XHqO8-0000Dt-HB
+ for ath10k@lists.infradead.org; Thu, 14 Aug 2014 08:28:01 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/5] ath10k: remove early irq handling
-References: <1407402260-29854-1-git-send-email-michal.kazior@tieto.com>
- <1407402260-29854-4-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 13 Aug 2014 17:09:45 +0300
-In-Reply-To: <1407402260-29854-4-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 7 Aug 2014 11:04:18 +0200")
-Message-ID: <878umspjkm.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 6/6] ath10k: move fw init print
+References: <1407402212-29809-1-git-send-email-michal.kazior@tieto.com>
+ <1407402212-29809-7-git-send-email-michal.kazior@tieto.com>
+ <87ppg6qh3z.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 14 Aug 2014 11:27:29 +0300
+In-Reply-To: <87ppg6qh3z.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Tue, 12 Aug 2014 10:53:04 +0300")
+Message-ID: <87egwjo4r2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,72 +28,31 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> It's not really necessary to have a dedicated irq
-> handler just for the sake of catching early fw
-> crashes. It is now safe to use one handler even
-> during early stages of device boot up.
+> Michal Kazior <michal.kazior@tieto.com> writes:
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> Firmware probing is done only once when driver is
+>> registered and firmware version is guaranteed to
+>> remain the same until driver is unregistered.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>
+> [...]
+>
+>> -	__set_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags);
+>
+> Doesn't this break this print in pci.c:
+>
+>         if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
+>            ath10k_info("pci irq %s irq_mode %d reset_mode %d\n",
+>                                     irq_mode, ath10k_pci_irq_mode,
+>                                                     ath10k_pci_reset_mode);
 
-Nice, this really needs to be cleaned up.
-
->  drivers/net/wireless/ath/ath10k/pci.c | 160 ++++++++--------------------------
->  1 file changed, 36 insertions(+), 124 deletions(-)
-
-Shouldn't you also remove early_irq_tasklet from struct ath10k_pci?
-
-> -static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
-> +static bool ath10k_pci_fw_crashed(struct ath10k *ar)
->  {
-> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -	u32 fw_indicator;
-> -
-> -	fw_indicator = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
-> -
-> -	if (fw_indicator & FW_IND_EVENT_PENDING) {
-> -		/* ACK: clear Target-side pending event */
-> -		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
-> -				   fw_indicator & ~FW_IND_EVENT_PENDING);
-> +	return ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS) &
-> +	       FW_IND_EVENT_PENDING;
-> +}
-
-Hehe, in Ben's firmware crash dump patches I renamed
-ath10k_pci_hif_dump_area() to ath10k_pci_firmware_crashed(). So we now
-have two very similarly named functions doing very different :)
-
-I propose that you rename this function to ath10k_pci_is_fw_crashed() or
-ath10k_pci_has_fw_crashed() and I rename ath10k_pci_hif_dump_area() to
-ath10k_pci_fw_crashed_dump(). I think that we have pretty consistent
-naming, no?
-
-> +static void ath10k_pci_fw_crashed_clear(struct ath10k *ar)
-> +{
-> +	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
-> +			   (ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS) &
-> +			    ~FW_IND_EVENT_PENDING));
-
-Please don't embed calls like this, with a temporary variable you get it
-more readable and the resulting code should be the same anyway.
-
-> @@ -2412,14 +2322,6 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
->  		return -EIO;
->  	}
->  
-> -	if (val & FW_IND_EVENT_PENDING) {
-> -		ath10k_warn("device has crashed during init\n");
-> -		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
-> -				   val & ~FW_IND_EVENT_PENDING);
-> -		ath10k_pci_hif_dump_area(ar);
-> -		return -ECOMM;
-> -	}
-
-I'm a bit worried about this. Are you relying now that the target will
-always trigger an interrupt or what? If yes, how can we sure it will
-happen on all possible cases? I would prefer to have some kind of safety
-net anyway, even if it's just a simple warning.
+Ah, now I understand. You rework that part in patch "ath10k: setup irq
+method in probe" which was just in a different patchset. Then this extra
+print during interface up is ok, as it just happens between the two
+patches.
 
 -- 
 Kalle Valo
