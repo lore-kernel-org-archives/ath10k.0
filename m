@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJJgp-0003n6-T1
- for ath10k@lists.infradead.org; Mon, 18 Aug 2014 09:57:25 +0000
-Received: by mail-we0-f177.google.com with SMTP id w62so4763067wes.36
- for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 02:57:01 -0700 (PDT)
+ id 1XJLHu-0006EQ-Vy
+ for ath10k@lists.infradead.org; Mon, 18 Aug 2014 11:39:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v6 2/8] ath10k: provide firmware crash info via debugfs
+References: <20140809180552.29215.58612.stgit@potku.adurom.net>
+ <20140809180805.29215.45232.stgit@potku.adurom.net>
+ <CA+BoTQ=dO0kr+0tnXpJRoPd7iwGDtPj_cWM=vvMsRgGn1we5ow@mail.gmail.com>
+Date: Mon, 18 Aug 2014 14:39:14 +0300
+In-Reply-To: <CA+BoTQ=dO0kr+0tnXpJRoPd7iwGDtPj_cWM=vvMsRgGn1we5ow@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 18 Aug 2014 10:54:35 +0200")
+Message-ID: <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1408048216.124582840@f117.i.mail.ru>
-References: <1408048216.124582840@f117.i.mail.ru>
-Date: Mon, 18 Aug 2014 11:57:01 +0200
-Message-ID: <CA+BoTQkSaGupEnz76LdOubuG0Ow3O+gxz+-ugfPJF6Qygep72g@mail.gmail.com>
-Subject: Re: firmware 10.1.467.2-1 crash
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +21,252 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Serge Druzhinin <drserge@inbox.ru>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTQgQXVndXN0IDIwMTQgMjI6MzAsIFNlcmdlIERydXpoaW5pbiA8ZHJzZXJnZUBpbmJveC5y
-dT4gd3JvdGU6Cj4gSGVsbG8hCj4KPiBHb3QgZmlybXdhcmUgY3Jhc2ggb24gQ29tcGV4IFdMRTkw
-MFZYICgxNjhjOjAwM2MpLCBsb2c6Cj4KPiBbIDE1MTguODIxMjkwXSBhdGgxMGs6IGZpcm13YXJl
-IGNyYXNoZWQhCj4gWyAxNTE4LjgyMTMwNV0gYXRoMTBrOiBoYXJkd2FyZSBuYW1lIHFjYTk4OHgg
-aHcyLjAgdmVyc2lvbiAweDQxMDAwMTZjCj4gWyAxNTE4LjgyMTMxMV0gYXRoMTBrOiBmaXJtd2Fy
-ZSB2ZXJzaW9uOiAxMC4xLjQ2Ny4yLTEKPiBbIDE1MTguODIyMzM2XSBhdGgxMGs6IHRhcmdldCBy
-ZWdpc3RlciBEdW1wIExvY2F0aW9uOiAweDAwNDBBRDY0Cj4gWyAxNTE4LjgyMzM1OV0gYXRoMTBr
-OiB0YXJnZXQgUmVnaXN0ZXIgRHVtcAo+IFsgMTUxOC44MjMzNzVdIGF0aDEwazogWzAwXTogMHg0
-MTAwMDE2QyAweDAwMDAxNUIzIDB4MDA5NDhFRDEgMHgwMDk1NUIzMQo+IFsgMTUxOC44MjMzODJd
-IGF0aDEwazogWzA0XTogMHgwMDk0OEVEMSAweDAwMDYwMTMwIDB4MDAwMDAwMDQgMHgwMDAwMDAw
-MAo+IFsgMTUxOC44MjMzODldIGF0aDEwazogWzA4XTogMHgwMDk1NUIzMSAweDAwNDAwNjAwIDB4
-MDA0MDAwMDAgMHgwMDQwMEEwMAo+IFsgMTUxOC44MjMzOTVdIGF0aDEwazogWzEyXTogMHgwMDAw
-MDAwOSAweEZGRkZGRkZGIDB4MDA5NTgwOEMgMHgwMDk1ODBBMgo+IFsgMTUxOC44MjM0MDNdIGF0
-aDEwazogWzE2XTogMHgwMDk1ODA4MCAweDAwOTQwODVEIDB4MDAwMDAwMDAgMHgwMDk0MDg1RAo+
-IFsgMTUxOC44MjM0MDldIGF0aDEwazogWzIwXTogMHg0MDk0OEVEMSAweDAwNDBBRTc0IDB4MDA0
-MDkyNDQgMHgwMDAwMDAwMAo+IFsgMTUxOC44MjM0MTVdIGF0aDEwazogWzI0XTogMHg4MDk0OEYx
-MCAweDAwNDBBRUQ0IDB4MDAwMDAwMDQgMHhDMDk0OEVEMQo+IFsgMTUxOC44MjM0MjFdIGF0aDEw
-azogWzI4XTogMHg4MDk0MkVCMyAweDAwNDBBRUY0IDB4MDAwMDAwMDAgMHgwMDQwNDVGNAo+IFsg
-MTUxOC44MjM0MjVdIGF0aDEwazogWzMyXTogMHg4MDk0MEYxOCAweDAwNDBBRjE0IDB4MDAwMDAw
-MUMgMHgwMDQwM0JCMAo+IFsgMTUxOC44MjM0MjldIGF0aDEwazogWzM2XTogMHg4MDk0MEVFQSAw
-eDAwNDBBRjQ0IDB4MDA0MDAwMDAgMHgwMDAwMDAwMAo+IFsgMTUxOC44MjM0MzRdIGF0aDEwazog
-WzQwXTogMHg4MDk0MEYzMSAweDAwNDBBRjY0IDB4MDA0MDFDMTAgMHgwMDQwMDYwMAo+IFsgMTUx
-OC44MjM0NDBdIGF0aDEwazogWzQ0XTogMHg0MDk0MDAyNCAweDAwNDBBRjg0IDB4MDA0MDY4RTgg
-MHgwMDQwNjhFOAo+IFsgMTUxOC44MjM0NDRdIGF0aDEwazogWzQ4XTogMHgwMDAwMDAwMCAweDAw
-NDBBRkE0IDB4MDA5QkIwMDEgMHgwMDA0MDAyMAo+IFsgMTUxOC44MjM0NDhdIGF0aDEwazogWzUy
-XTogMHg4MDk0MEYzMSAweDAwNDBBRjY0IDB4MDA0MDFDMTAgMHgwMDQwMDYwMAo+IFsgMTUxOC44
-MjM0NTJdIGF0aDEwazogWzU2XTogMHgwMDAwMDAwMSAweDAwNDAxQkYwIDB4MDA0MDQyM0MgMHgw
-MDQwMDAwMAo+IFsgMTUyMS44MjA2MjNdIGF0aDEwazogZmFpbGVkIHRvIHB1dCBkb3duIG1vbml0
-b3IgdmRldiAxOiAtMTEKPiBbIDE1MjQuODE5MzQ4XSBhdGgxMGs6IGZhaWxlZCB0byB0byByZXF1
-ZXN0IG1vbml0b3IgdmRldiAxIHN0b3A6IC0xMQo+IFsgMTUyOS44MTcyMzZdIGF0aDEwazogZmFp
-bGVkIHRvIHN5bmNocm9uaXNlIG1vbml0b3IgdmRldiAxOiAtMTEwCj4gWyAxNTI5LjgxNzI0MF0g
-YXRoMTBrOiBmYWlsZWQgdG8gc3RvcCBtb25pdG9yIHZkZXY6IC0xMTAKPiBbIDE1MzIuODE1OTY2
-XSBhdGgxMGs6IGZhaWxlZCB0byByZXF1ZXN0IHdtaSBtb25pdG9yIHZkZXYgMSByZW1vdmFsOiAt
-MTEKPiBbIDE1MzIuODE1OTcwXSBhdGgxMGs6IGZhaWxlZCB0byBkZWxldGUgbW9uaXRvciB2ZGV2
-OiAtMTEKPiBbIDE1MzMuNzE1ODY5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogaXJxIDUxIGZv
-ciBNU0kvTVNJLVgKPiBbIDE1MzUuNzM4MzY2XSBhdGgxMGs6IGRldmljZSBzdWNjZXNzZnVsbHkg
-cmVjb3ZlcmVkCgpUaGlzIGxvb2tzIGxpa2Ugc29tZSBsb3ctbGV2ZWwgY3Jhc2guIEkgdGhpbmsg
-SSd2ZSBzZWVuIHNvbWV0aGluZwpzaW1pbGFyIGJlZm9yZS4KCkNhbiB5b3UgcHV0IHRoaXMgaW50
-byBjb250ZXh0PyBXZXJlIHlvdSBkb2luZyBhbnl0aGluZyBwYXJ0aWN1bGFyIHdoZW4KdGhpcyBo
-YXBwZW5lZD8gV2hhdCBpbnRlcmZhY2UgdHlwZXMgd2VyZSBydW5uaW5nIChBUCwgc3RhdGlvbik/
-CgoKPiBBbmQgYWxzbyBzZWUgdGhpcyBtZXNzYWdlIGVhY2ggdGltZSBkcml2ZXJzIHN0YXJ0czoK
-Pgo+IFsgMjE0OC4wMDM3NDVdIGF0aDEwazogcGVlci11bm1hcC1ldmVudDogdW5rbm93biBwZWVy
-IGlkIDIKClRoaXMgaXMgYSBmaXJtd2FyZSBxdWlyay4gSXQncyBoYXJtbGVzcyB0aG91Z2guCgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 9 August 2014 20:08, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Store the firmware crash registers and last 128 or so
+>> firmware debug-log ids and present them to user-space
+>> via debugfs.
+>>
+>> Should help with figuring out why the firmware crashed.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/core.h  |   27 +++
+>>  drivers/net/wireless/ath/ath10k/debug.c |  273 +++++++++++++++++++++++++++++++
+>>  drivers/net/wireless/ath/ath10k/debug.h |   22 ++
+>>  drivers/net/wireless/ath/ath10k/hw.h    |   30 +++
+>>  drivers/net/wireless/ath/ath10k/pci.c   |  133 ++++++++++++++-
+>>  drivers/net/wireless/ath/ath10k/pci.h   |    3
+>>  6 files changed, 478 insertions(+), 10 deletions(-)
+> [...]
+>
+>> +struct ath10k_dump_file_data {
+>> +       /* dump file information */
+>> +
+>> +       /* "ATH10K-FW-DUMP" */
+>> +       char df_magic[16];
+>> +
+>> +       u32 len;
+>> +
+>> +       /* 0x1 if host is big-endian */
+>> +       u32 big_endian;
+>
+> This isn't entirely correct. Depending on host endianess you'll end up
+> with 0x1 or 0x1000000. This will still work if you do a boolean
+> evaluation of it in userspace or compare it to 0, but god forbid to
+> compare it with 0x1.
+
+That's true. Didn't you at one point suggest just always using little
+endian? I think that's simplest approach here.
+
+>> +
+>> +       /* file dump version, 1 for now. */
+>> +       u32 version;
+>
+> I think this should have a #define instead of the comment. You'll need
+> to update 2 values when you bump the version with comment+hardcode
+> approach.
+
+Good point, I'll add that.
+
+>> +       /* some info we can get from ath10k struct that might help */
+>> +
+>> +       u8 uuid[16];
+>> +
+>> +       u32 chip_id;
+>> +
+>> +       /* 0 for now, in place for later hardware */
+>> +       u32 bus_type;
+>
+> Maybe we should have an enum for that instead of using a hardcoded 0?
+
+We had that but you removed it in 3a0861fffd223 =)
+
+>> +       /* time-of-day stamp, nano-seconds */
+>> +       u64 tv_nsec;
+>> +
+>> +
+>> +       /* LINUX_VERSION_CODE */
+>> +       u32 kernel_ver_code;
+>
+> 2 empty newlines?
+
+Will fix.
+
+>> +static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+>> +{
+>> +       struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
+>> +       struct ath10k_dump_file_data *dump_data;
+>> +       struct ath10k_tlv_dump_data *dump_tlv;
+>> +       int hdr_len = sizeof(*dump_data);
+>> +       unsigned int len, sofar = 0;
+>> +       unsigned char *buf;
+>> +
+>> +       lockdep_assert_held(&ar->conf_mutex);
+>> +
+>> +       spin_lock_bh(&ar->data_lock);
+>> +
+>> +       if (!crash_data->crashed_since_read) {
+>> +               spin_unlock_bh(&ar->data_lock);
+>> +               return NULL;
+>> +       }
+>> +
+>> +       spin_unlock_bh(&ar->data_lock);
+>> +
+>> +       len = hdr_len;
+>> +       len += sizeof(*dump_tlv) + sizeof(crash_data->reg_dump_values);
+>> +       len += sizeof(*dump_tlv) + sizeof(crash_data->dbglog_entry_data);
+>> +
+>> +       sofar += hdr_len;
+>> +
+>> +       /* This is going to get big when we start dumping FW RAM and such,
+>> +        * so go ahead and use vmalloc.
+>> +        */
+>> +       buf = vmalloc(len);
+>> +       if (!buf)
+>> +               return NULL;
+>> +
+>> +       spin_lock_bh(&ar->data_lock);
+>
+> The current code doesn't seem to allow it, but according to comments
+> crashed_since_read is protected by data_lock only. As such it might've
+> changed while the lock was released.
+
+Another good point.
+
+> Current code, however, guarantees it remains true while conf_mutex is
+> held.
+>
+> Perhaps the vmalloc() should be done before spin_lock is acquired
+
+That sounds the simple way to do it. We get a useless allocation when
+there's no crash data, but that's so bad.
+
+> and/or the memory should be allocated outside this function completely
+> and make it consume the crashed_since_read (i.e. set it to false) once
+> it's done (while the data_lock is still held).
+
+You mean like allocating the memory in advance, for example during
+module probe time? Then we would have a big chunk of memory we don't use
+for anything most of the time.
+
+>> +       memset(buf, 0, len);
+>> +       dump_data = (struct ath10k_dump_file_data *)(buf);
+>> +       strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
+>> +               sizeof(dump_data->df_magic));
+>> +       dump_data->len = len;
+>> +
+>> +#ifdef __BIG_ENDIAN
+>> +       dump_data->big_endian = 1;
+>> +#else
+>> +       dump_data->big_endian = 0;
+>> +#endif
+>
+> Yuck.
+
+Yeah. I'm thinking of switching to little endian more and more :)
+
+>> +static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
+>> +{
+>> +       struct ath10k *ar = inode->i_private;
+>> +       struct ath10k_dump_file_data *dump;
+>> +       int ret;
+>> +
+>> +       mutex_lock(&ar->conf_mutex);
+>> +
+>> +       dump = ath10k_build_dump_file(ar);
+>> +       if (!dump) {
+>> +               ret = -ENODATA;
+>> +               goto out;
+>> +       }
+>> +
+>> +       file->private_data = dump;
+>
+>> +       ar->debug.fw_crash_data->crashed_since_read = false;
+>
+> According to comments this should be protected by data_lock, but
+> isn't.
+
+Yup. I'll move crashed_since_read handling to ath10k_build_dump_file().
+
+>
+>> +       ret = 0;
+>> +
+>> +out:
+>> +       mutex_unlock(&ar->conf_mutex);
+>> +       return ret;
+>> +}
+>
+>
+>>  static int ath10k_debug_htt_stats_req(struct ath10k *ar)
+>>  {
+>>         u64 cookie;
+>> @@ -913,6 +1178,10 @@ static const struct file_operations fops_dfs_stats = {
+>>
+>>  int ath10k_debug_create(struct ath10k *ar)
+>>  {
+>> +       ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+>> +       if (!ar->debug.fw_crash_data)
+>> +               return -ENOMEM;
+>> +
+>>         ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
+>>                                                    ar->hw->wiphy->debugfsdir);
+>
+> I think there's a check if debug_phy is NULL. If it is it does return
+> -ENOMEM. This means you leak fw_crash_data.
+
+Indeed. I'll fix that.
+
+>> +/* Target debug log related defines and structs */
+>> +
+>> +/* Target is 32-bit CPU, so we just use u32 for
+>> + * the pointers.  The memory space is relative to the
+>> + * target, not the host.
+>> + */
+>> +struct ath10k_fw_dbglog_buf {
+>> +       /* pointer to dblog_buf_s */
+>> +       u32 next;
+>> +
+>> +       /* pointer to u8 buffer */
+>> +       u32 buffer;
+>> +
+>> +       u32 bufsize;
+>> +       u32 length;
+>> +       u32 count;
+>> +       u32 free;
+>> +} __packed;
+>> +
+>> +struct ath10k_fw_dbglog_hdr {
+>> +       /* pointer to dbglog_buf_s */
+>> +       u32 dbuf;
+>> +
+>> +       u32 dropped;
+>> +} __packed;
+>
+> This is confusing.
+
+Sorry, what are referring to here? I don't understand your comment.
+
+> Target is a 32-bit *Little-Endian* CPU but due to implicit byteswap in
+> ath10k_pci_diag_* functions everything is already in host endianess.
+
+I think I'll that as a comment here.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
