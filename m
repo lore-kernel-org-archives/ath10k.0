@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJLHu-0006EQ-Vy
- for ath10k@lists.infradead.org; Mon, 18 Aug 2014 11:39:47 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v6 2/8] ath10k: provide firmware crash info via debugfs
+ id 1XJMBe-0006Ij-LA
+ for ath10k@lists.infradead.org; Mon, 18 Aug 2014 12:37:23 +0000
+Received: by mail-we0-f170.google.com with SMTP id w62so4930795wes.1
+ for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 05:36:59 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
 References: <20140809180552.29215.58612.stgit@potku.adurom.net>
  <20140809180805.29215.45232.stgit@potku.adurom.net>
  <CA+BoTQ=dO0kr+0tnXpJRoPd7iwGDtPj_cWM=vvMsRgGn1we5ow@mail.gmail.com>
-Date: Mon, 18 Aug 2014 14:39:14 +0300
-In-Reply-To: <CA+BoTQ=dO0kr+0tnXpJRoPd7iwGDtPj_cWM=vvMsRgGn1we5ow@mail.gmail.com>
- (Michal Kazior's message of "Mon, 18 Aug 2014 10:54:35 +0200")
-Message-ID: <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 18 Aug 2014 14:36:59 +0200
+Message-ID: <CA+BoTQ=0sigYGooKwqy6LtTQXrkg2kP1htofgPRfryiUcwTyrA@mail.gmail.com>
+Subject: Re: [PATCH v6 2/8] ath10k: provide firmware crash info via debugfs
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,252 +23,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 9 August 2014 20:08, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> From: Ben Greear <greearb@candelatech.com>
->>
->> Store the firmware crash registers and last 128 or so
->> firmware debug-log ids and present them to user-space
->> via debugfs.
->>
->> Should help with figuring out why the firmware crashed.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/core.h  |   27 +++
->>  drivers/net/wireless/ath/ath10k/debug.c |  273 +++++++++++++++++++++++++++++++
->>  drivers/net/wireless/ath/ath10k/debug.h |   22 ++
->>  drivers/net/wireless/ath/ath10k/hw.h    |   30 +++
->>  drivers/net/wireless/ath/ath10k/pci.c   |  133 ++++++++++++++-
->>  drivers/net/wireless/ath/ath10k/pci.h   |    3
->>  6 files changed, 478 insertions(+), 10 deletions(-)
-> [...]
->
->> +struct ath10k_dump_file_data {
->> +       /* dump file information */
->> +
->> +       /* "ATH10K-FW-DUMP" */
->> +       char df_magic[16];
->> +
->> +       u32 len;
->> +
->> +       /* 0x1 if host is big-endian */
->> +       u32 big_endian;
->
-> This isn't entirely correct. Depending on host endianess you'll end up
-> with 0x1 or 0x1000000. This will still work if you do a boolean
-> evaluation of it in userspace or compare it to 0, but god forbid to
-> compare it with 0x1.
-
-That's true. Didn't you at one point suggest just always using little
-endian? I think that's simplest approach here.
-
->> +
->> +       /* file dump version, 1 for now. */
->> +       u32 version;
->
-> I think this should have a #define instead of the comment. You'll need
-> to update 2 values when you bump the version with comment+hardcode
-> approach.
-
-Good point, I'll add that.
-
->> +       /* some info we can get from ath10k struct that might help */
->> +
->> +       u8 uuid[16];
->> +
->> +       u32 chip_id;
->> +
->> +       /* 0 for now, in place for later hardware */
->> +       u32 bus_type;
->
-> Maybe we should have an enum for that instead of using a hardcoded 0?
-
-We had that but you removed it in 3a0861fffd223 =)
-
->> +       /* time-of-day stamp, nano-seconds */
->> +       u64 tv_nsec;
->> +
->> +
->> +       /* LINUX_VERSION_CODE */
->> +       u32 kernel_ver_code;
->
-> 2 empty newlines?
-
-Will fix.
-
->> +static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
->> +{
->> +       struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
->> +       struct ath10k_dump_file_data *dump_data;
->> +       struct ath10k_tlv_dump_data *dump_tlv;
->> +       int hdr_len = sizeof(*dump_data);
->> +       unsigned int len, sofar = 0;
->> +       unsigned char *buf;
->> +
->> +       lockdep_assert_held(&ar->conf_mutex);
->> +
->> +       spin_lock_bh(&ar->data_lock);
->> +
->> +       if (!crash_data->crashed_since_read) {
->> +               spin_unlock_bh(&ar->data_lock);
->> +               return NULL;
->> +       }
->> +
->> +       spin_unlock_bh(&ar->data_lock);
->> +
->> +       len = hdr_len;
->> +       len += sizeof(*dump_tlv) + sizeof(crash_data->reg_dump_values);
->> +       len += sizeof(*dump_tlv) + sizeof(crash_data->dbglog_entry_data);
->> +
->> +       sofar += hdr_len;
->> +
->> +       /* This is going to get big when we start dumping FW RAM and such,
->> +        * so go ahead and use vmalloc.
->> +        */
->> +       buf = vmalloc(len);
->> +       if (!buf)
->> +               return NULL;
->> +
->> +       spin_lock_bh(&ar->data_lock);
->
-> The current code doesn't seem to allow it, but according to comments
-> crashed_since_read is protected by data_lock only. As such it might've
-> changed while the lock was released.
-
-Another good point.
-
-> Current code, however, guarantees it remains true while conf_mutex is
-> held.
->
-> Perhaps the vmalloc() should be done before spin_lock is acquired
-
-That sounds the simple way to do it. We get a useless allocation when
-there's no crash data, but that's so bad.
-
-> and/or the memory should be allocated outside this function completely
-> and make it consume the crashed_since_read (i.e. set it to false) once
-> it's done (while the data_lock is still held).
-
-You mean like allocating the memory in advance, for example during
-module probe time? Then we would have a big chunk of memory we don't use
-for anything most of the time.
-
->> +       memset(buf, 0, len);
->> +       dump_data = (struct ath10k_dump_file_data *)(buf);
->> +       strlcpy(dump_data->df_magic, "ATH10K-FW-DUMP",
->> +               sizeof(dump_data->df_magic));
->> +       dump_data->len = len;
->> +
->> +#ifdef __BIG_ENDIAN
->> +       dump_data->big_endian = 1;
->> +#else
->> +       dump_data->big_endian = 0;
->> +#endif
->
-> Yuck.
-
-Yeah. I'm thinking of switching to little endian more and more :)
-
->> +static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
->> +{
->> +       struct ath10k *ar = inode->i_private;
->> +       struct ath10k_dump_file_data *dump;
->> +       int ret;
->> +
->> +       mutex_lock(&ar->conf_mutex);
->> +
->> +       dump = ath10k_build_dump_file(ar);
->> +       if (!dump) {
->> +               ret = -ENODATA;
->> +               goto out;
->> +       }
->> +
->> +       file->private_data = dump;
->
->> +       ar->debug.fw_crash_data->crashed_since_read = false;
->
-> According to comments this should be protected by data_lock, but
-> isn't.
-
-Yup. I'll move crashed_since_read handling to ath10k_build_dump_file().
-
->
->> +       ret = 0;
->> +
->> +out:
->> +       mutex_unlock(&ar->conf_mutex);
->> +       return ret;
->> +}
->
->
->>  static int ath10k_debug_htt_stats_req(struct ath10k *ar)
->>  {
->>         u64 cookie;
->> @@ -913,6 +1178,10 @@ static const struct file_operations fops_dfs_stats = {
->>
->>  int ath10k_debug_create(struct ath10k *ar)
->>  {
->> +       ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
->> +       if (!ar->debug.fw_crash_data)
->> +               return -ENOMEM;
->> +
->>         ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
->>                                                    ar->hw->wiphy->debugfsdir);
->
-> I think there's a check if debug_phy is NULL. If it is it does return
-> -ENOMEM. This means you leak fw_crash_data.
-
-Indeed. I'll fix that.
-
->> +/* Target debug log related defines and structs */
->> +
->> +/* Target is 32-bit CPU, so we just use u32 for
->> + * the pointers.  The memory space is relative to the
->> + * target, not the host.
->> + */
->> +struct ath10k_fw_dbglog_buf {
->> +       /* pointer to dblog_buf_s */
->> +       u32 next;
->> +
->> +       /* pointer to u8 buffer */
->> +       u32 buffer;
->> +
->> +       u32 bufsize;
->> +       u32 length;
->> +       u32 count;
->> +       u32 free;
->> +} __packed;
->> +
->> +struct ath10k_fw_dbglog_hdr {
->> +       /* pointer to dbglog_buf_s */
->> +       u32 dbuf;
->> +
->> +       u32 dropped;
->> +} __packed;
->
-> This is confusing.
-
-Sorry, what are referring to here? I don't understand your comment.
-
-> Target is a 32-bit *Little-Endian* CPU but due to implicit byteswap in
-> ath10k_pci_diag_* functions everything is already in host endianess.
-
-I think I'll that as a comment here.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTggQXVndXN0IDIwMTQgMTM6MzksIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
+b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
+ZXM6Cj4KPj4gT24gOSBBdWd1c3QgMjAxNCAyMDowOCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1
+YWxjb21tLmNvbT4gd3JvdGU6Cj4+PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4KPj4+Cj4+PiBTdG9yZSB0aGUgZmlybXdhcmUgY3Jhc2ggcmVnaXN0ZXJzIGFuZCBs
+YXN0IDEyOCBvciBzbwo+Pj4gZmlybXdhcmUgZGVidWctbG9nIGlkcyBhbmQgcHJlc2VudCB0aGVt
+IHRvIHVzZXItc3BhY2UKPj4+IHZpYSBkZWJ1Z2ZzLgo+Pj4KPj4+IFNob3VsZCBoZWxwIHdpdGgg
+ZmlndXJpbmcgb3V0IHdoeSB0aGUgZmlybXdhcmUgY3Jhc2hlZC4KPj4+Cj4+PiBTaWduZWQtb2Zm
+LWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+IFNpZ25lZC1vZmYt
+Ynk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cj4+PiAtLS0KPj4+ICBkcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCAgfCAgIDI3ICsrKwo+Pj4gIGRyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYyB8ICAyNzMgKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKwo+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVi
+dWcuaCB8ICAgMjIgKysKPj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3Lmgg
+ICAgfCAgIDMwICsrKwo+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMg
+ICB8ICAxMzMgKysrKysrKysrKysrKystCj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9wY2kuaCAgIHwgICAgMwo+Pj4gIDYgZmlsZXMgY2hhbmdlZCwgNDc4IGluc2VydGlvbnMo
+KyksIDEwIGRlbGV0aW9ucygtKQo+PiBbLi4uXQo+Pgo+Pj4gK3N0cnVjdCBhdGgxMGtfZHVtcF9m
+aWxlX2RhdGEgewo+Pj4gKyAgICAgICAvKiBkdW1wIGZpbGUgaW5mb3JtYXRpb24gKi8KPj4+ICsK
+Pj4+ICsgICAgICAgLyogIkFUSDEwSy1GVy1EVU1QIiAqLwo+Pj4gKyAgICAgICBjaGFyIGRmX21h
+Z2ljWzE2XTsKPj4+ICsKPj4+ICsgICAgICAgdTMyIGxlbjsKPj4+ICsKPj4+ICsgICAgICAgLyog
+MHgxIGlmIGhvc3QgaXMgYmlnLWVuZGlhbiAqLwo+Pj4gKyAgICAgICB1MzIgYmlnX2VuZGlhbjsK
+Pj4KPj4gVGhpcyBpc24ndCBlbnRpcmVseSBjb3JyZWN0LiBEZXBlbmRpbmcgb24gaG9zdCBlbmRp
+YW5lc3MgeW91J2xsIGVuZCB1cAo+PiB3aXRoIDB4MSBvciAweDEwMDAwMDAuIFRoaXMgd2lsbCBz
+dGlsbCB3b3JrIGlmIHlvdSBkbyBhIGJvb2xlYW4KPj4gZXZhbHVhdGlvbiBvZiBpdCBpbiB1c2Vy
+c3BhY2Ugb3IgY29tcGFyZSBpdCB0byAwLCBidXQgZ29kIGZvcmJpZCB0bwo+PiBjb21wYXJlIGl0
+IHdpdGggMHgxLgo+Cj4gVGhhdCdzIHRydWUuIERpZG4ndCB5b3UgYXQgb25lIHBvaW50IHN1Z2dl
+c3QganVzdCBhbHdheXMgdXNpbmcgbGl0dGxlCj4gZW5kaWFuPyBJIHRoaW5rIHRoYXQncyBzaW1w
+bGVzdCBhcHByb2FjaCBoZXJlLgoKWWVzLiBJIGRpZCBwb2ludCB0aGF0IG91dCBhdCBzb21lIHRp
+bWUgYWdvLgoKCj4+PiArICAgICAgIC8qIHNvbWUgaW5mbyB3ZSBjYW4gZ2V0IGZyb20gYXRoMTBr
+IHN0cnVjdCB0aGF0IG1pZ2h0IGhlbHAgKi8KPj4+ICsKPj4+ICsgICAgICAgdTggdXVpZFsxNl07
+Cj4+PiArCj4+PiArICAgICAgIHUzMiBjaGlwX2lkOwo+Pj4gKwo+Pj4gKyAgICAgICAvKiAwIGZv
+ciBub3csIGluIHBsYWNlIGZvciBsYXRlciBoYXJkd2FyZSAqLwo+Pj4gKyAgICAgICB1MzIgYnVz
+X3R5cGU7Cj4+Cj4+IE1heWJlIHdlIHNob3VsZCBoYXZlIGFuIGVudW0gZm9yIHRoYXQgaW5zdGVh
+ZCBvZiB1c2luZyBhIGhhcmRjb2RlZCAwPwo+Cj4gV2UgaGFkIHRoYXQgYnV0IHlvdSByZW1vdmVk
+IGl0IGluIDNhMDg2MWZmZmQyMjMgPSkKCi4uIHJpZ2h0IDotKSBJIHN1cHBvc2Ugd2UgY291bGQg
+anVzdCByZW1vdmUgdGhlIGJ1c190eXBlIHRoZW4/IFdlIGRvCmhhdmUgYW4gdW51c2VkWzEyOF0g
+Zm9yIGZ1dHVyZSBleHBhbnNpb24sIGRvbid0IHdlPwoKCj4+IGFuZC9vciB0aGUgbWVtb3J5IHNo
+b3VsZCBiZSBhbGxvY2F0ZWQgb3V0c2lkZSB0aGlzIGZ1bmN0aW9uIGNvbXBsZXRlbHkKPj4gYW5k
+IG1ha2UgaXQgY29uc3VtZSB0aGUgY3Jhc2hlZF9zaW5jZV9yZWFkIChpLmUuIHNldCBpdCB0byBm
+YWxzZSkgb25jZQo+PiBpdCdzIGRvbmUgKHdoaWxlIHRoZSBkYXRhX2xvY2sgaXMgc3RpbGwgaGVs
+ZCkuCj4KPiBZb3UgbWVhbiBsaWtlIGFsbG9jYXRpbmcgdGhlIG1lbW9yeSBpbiBhZHZhbmNlLCBm
+b3IgZXhhbXBsZSBkdXJpbmcKPiBtb2R1bGUgcHJvYmUgdGltZT8gVGhlbiB3ZSB3b3VsZCBoYXZl
+IGEgYmlnIGNodW5rIG9mIG1lbW9yeSB3ZSBkb24ndCB1c2UKPiBmb3IgYW55dGhpbmcgbW9zdCBv
+ZiB0aGUgdGltZS4KCkkgbWVhbnQganVzdCBtb3ZpbmcgaXQgdXAgaW4gdGhlIGNhbGwgc3RhY2ss
+IGUuZy4gdG8KYXRoMTBrX2Z3X2NyYXNoX2R1bXBfb3BlbigpLgoKCk1pY2hhxYIKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
