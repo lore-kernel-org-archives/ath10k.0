@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJMBe-0006Ij-LA
- for ath10k@lists.infradead.org; Mon, 18 Aug 2014 12:37:23 +0000
-Received: by mail-we0-f170.google.com with SMTP id w62so4930795wes.1
- for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 05:36:59 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
+ id 1XJMS5-0008B7-1S
+ for ath10k@lists.infradead.org; Mon, 18 Aug 2014 12:54:21 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v6 2/8] ath10k: provide firmware crash info via debugfs
 References: <20140809180552.29215.58612.stgit@potku.adurom.net>
  <20140809180805.29215.45232.stgit@potku.adurom.net>
  <CA+BoTQ=dO0kr+0tnXpJRoPd7iwGDtPj_cWM=vvMsRgGn1we5ow@mail.gmail.com>
  <878ummdo2l.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 18 Aug 2014 14:36:59 +0200
-Message-ID: <CA+BoTQ=0sigYGooKwqy6LtTQXrkg2kP1htofgPRfryiUcwTyrA@mail.gmail.com>
-Subject: Re: [PATCH v6 2/8] ath10k: provide firmware crash info via debugfs
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQ=0sigYGooKwqy6LtTQXrkg2kP1htofgPRfryiUcwTyrA@mail.gmail.com>
+Date: Mon, 18 Aug 2014 15:53:49 +0300
+In-Reply-To: <CA+BoTQ=0sigYGooKwqy6LtTQXrkg2kP1htofgPRfryiUcwTyrA@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 18 Aug 2014 14:36:59 +0200")
+Message-ID: <874mxadkma.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +23,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTggQXVndXN0IDIwMTQgMTM6MzksIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gT24gOSBBdWd1c3QgMjAxNCAyMDowOCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1
-YWxjb21tLmNvbT4gd3JvdGU6Cj4+PiBGcm9tOiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
-ZWNoLmNvbT4KPj4+Cj4+PiBTdG9yZSB0aGUgZmlybXdhcmUgY3Jhc2ggcmVnaXN0ZXJzIGFuZCBs
-YXN0IDEyOCBvciBzbwo+Pj4gZmlybXdhcmUgZGVidWctbG9nIGlkcyBhbmQgcHJlc2VudCB0aGVt
-IHRvIHVzZXItc3BhY2UKPj4+IHZpYSBkZWJ1Z2ZzLgo+Pj4KPj4+IFNob3VsZCBoZWxwIHdpdGgg
-ZmlndXJpbmcgb3V0IHdoeSB0aGUgZmlybXdhcmUgY3Jhc2hlZC4KPj4+Cj4+PiBTaWduZWQtb2Zm
-LWJ5OiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPj4+IFNpZ25lZC1vZmYt
-Ynk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+Cj4+PiAtLS0KPj4+ICBkcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaCAgfCAgIDI3ICsrKwo+Pj4gIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVidWcuYyB8ICAyNzMgKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKwo+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvZGVi
-dWcuaCB8ICAgMjIgKysKPj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3Lmgg
-ICAgfCAgIDMwICsrKwo+Pj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvcGNpLmMg
-ICB8ICAxMzMgKysrKysrKysrKysrKystCj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9wY2kuaCAgIHwgICAgMwo+Pj4gIDYgZmlsZXMgY2hhbmdlZCwgNDc4IGluc2VydGlvbnMo
-KyksIDEwIGRlbGV0aW9ucygtKQo+PiBbLi4uXQo+Pgo+Pj4gK3N0cnVjdCBhdGgxMGtfZHVtcF9m
-aWxlX2RhdGEgewo+Pj4gKyAgICAgICAvKiBkdW1wIGZpbGUgaW5mb3JtYXRpb24gKi8KPj4+ICsK
-Pj4+ICsgICAgICAgLyogIkFUSDEwSy1GVy1EVU1QIiAqLwo+Pj4gKyAgICAgICBjaGFyIGRmX21h
-Z2ljWzE2XTsKPj4+ICsKPj4+ICsgICAgICAgdTMyIGxlbjsKPj4+ICsKPj4+ICsgICAgICAgLyog
-MHgxIGlmIGhvc3QgaXMgYmlnLWVuZGlhbiAqLwo+Pj4gKyAgICAgICB1MzIgYmlnX2VuZGlhbjsK
-Pj4KPj4gVGhpcyBpc24ndCBlbnRpcmVseSBjb3JyZWN0LiBEZXBlbmRpbmcgb24gaG9zdCBlbmRp
-YW5lc3MgeW91J2xsIGVuZCB1cAo+PiB3aXRoIDB4MSBvciAweDEwMDAwMDAuIFRoaXMgd2lsbCBz
-dGlsbCB3b3JrIGlmIHlvdSBkbyBhIGJvb2xlYW4KPj4gZXZhbHVhdGlvbiBvZiBpdCBpbiB1c2Vy
-c3BhY2Ugb3IgY29tcGFyZSBpdCB0byAwLCBidXQgZ29kIGZvcmJpZCB0bwo+PiBjb21wYXJlIGl0
-IHdpdGggMHgxLgo+Cj4gVGhhdCdzIHRydWUuIERpZG4ndCB5b3UgYXQgb25lIHBvaW50IHN1Z2dl
-c3QganVzdCBhbHdheXMgdXNpbmcgbGl0dGxlCj4gZW5kaWFuPyBJIHRoaW5rIHRoYXQncyBzaW1w
-bGVzdCBhcHByb2FjaCBoZXJlLgoKWWVzLiBJIGRpZCBwb2ludCB0aGF0IG91dCBhdCBzb21lIHRp
-bWUgYWdvLgoKCj4+PiArICAgICAgIC8qIHNvbWUgaW5mbyB3ZSBjYW4gZ2V0IGZyb20gYXRoMTBr
-IHN0cnVjdCB0aGF0IG1pZ2h0IGhlbHAgKi8KPj4+ICsKPj4+ICsgICAgICAgdTggdXVpZFsxNl07
-Cj4+PiArCj4+PiArICAgICAgIHUzMiBjaGlwX2lkOwo+Pj4gKwo+Pj4gKyAgICAgICAvKiAwIGZv
-ciBub3csIGluIHBsYWNlIGZvciBsYXRlciBoYXJkd2FyZSAqLwo+Pj4gKyAgICAgICB1MzIgYnVz
-X3R5cGU7Cj4+Cj4+IE1heWJlIHdlIHNob3VsZCBoYXZlIGFuIGVudW0gZm9yIHRoYXQgaW5zdGVh
-ZCBvZiB1c2luZyBhIGhhcmRjb2RlZCAwPwo+Cj4gV2UgaGFkIHRoYXQgYnV0IHlvdSByZW1vdmVk
-IGl0IGluIDNhMDg2MWZmZmQyMjMgPSkKCi4uIHJpZ2h0IDotKSBJIHN1cHBvc2Ugd2UgY291bGQg
-anVzdCByZW1vdmUgdGhlIGJ1c190eXBlIHRoZW4/IFdlIGRvCmhhdmUgYW4gdW51c2VkWzEyOF0g
-Zm9yIGZ1dHVyZSBleHBhbnNpb24sIGRvbid0IHdlPwoKCj4+IGFuZC9vciB0aGUgbWVtb3J5IHNo
-b3VsZCBiZSBhbGxvY2F0ZWQgb3V0c2lkZSB0aGlzIGZ1bmN0aW9uIGNvbXBsZXRlbHkKPj4gYW5k
-IG1ha2UgaXQgY29uc3VtZSB0aGUgY3Jhc2hlZF9zaW5jZV9yZWFkIChpLmUuIHNldCBpdCB0byBm
-YWxzZSkgb25jZQo+PiBpdCdzIGRvbmUgKHdoaWxlIHRoZSBkYXRhX2xvY2sgaXMgc3RpbGwgaGVs
-ZCkuCj4KPiBZb3UgbWVhbiBsaWtlIGFsbG9jYXRpbmcgdGhlIG1lbW9yeSBpbiBhZHZhbmNlLCBm
-b3IgZXhhbXBsZSBkdXJpbmcKPiBtb2R1bGUgcHJvYmUgdGltZT8gVGhlbiB3ZSB3b3VsZCBoYXZl
-IGEgYmlnIGNodW5rIG9mIG1lbW9yeSB3ZSBkb24ndCB1c2UKPiBmb3IgYW55dGhpbmcgbW9zdCBv
-ZiB0aGUgdGltZS4KCkkgbWVhbnQganVzdCBtb3ZpbmcgaXQgdXAgaW4gdGhlIGNhbGwgc3RhY2ss
-IGUuZy4gdG8KYXRoMTBrX2Z3X2NyYXNoX2R1bXBfb3BlbigpLgoKCk1pY2hhxYIKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 18 August 2014 13:39, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> On 9 August 2014 20:08, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>>>
+>>>> +struct ath10k_dump_file_data {
+>>>> +       /* dump file information */
+>>>> +
+>>>> +       /* "ATH10K-FW-DUMP" */
+>>>> +       char df_magic[16];
+>>>> +
+>>>> +       u32 len;
+>>>> +
+>>>> +       /* 0x1 if host is big-endian */
+>>>> +       u32 big_endian;
+>>>
+>>> This isn't entirely correct. Depending on host endianess you'll end up
+>>> with 0x1 or 0x1000000. This will still work if you do a boolean
+>>> evaluation of it in userspace or compare it to 0, but god forbid to
+>>> compare it with 0x1.
+>>
+>> That's true. Didn't you at one point suggest just always using little
+>> endian? I think that's simplest approach here.
+>
+> Yes. I did point that out at some time ago.
+
+Ok. I started converting to use little endian already.
+
+>>>> +       /* some info we can get from ath10k struct that might help */
+>>>> +
+>>>> +       u8 uuid[16];
+>>>> +
+>>>> +       u32 chip_id;
+>>>> +
+>>>> +       /* 0 for now, in place for later hardware */
+>>>> +       u32 bus_type;
+>>>
+>>> Maybe we should have an enum for that instead of using a hardcoded 0?
+>>
+>> We had that but you removed it in 3a0861fffd223 =)
+>
+> .. right :-) 
+
+Sorry, I couldn't resist :)
+
+> I suppose we could just remove the bus_type then? We do have an
+> unused[128] for future expansion, don't we?
+
+We could, but then we would have to modify the crash dump tools. I would
+rather be prepared for this, it's only a u32 anyway. If we have to do
+something, I would prefer to get back the enum.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
