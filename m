@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJcZy-0006FQ-NX
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 06:07:35 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
-References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
- <8761hpc9j9.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
-Date: Tue, 19 Aug 2014 09:07:05 +0300
-In-Reply-To: <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
- (Avery Pennarun's message of "Tue, 19 Aug 2014 01:56:35 -0400")
-Message-ID: <87wqa5au7q.fsf@kamboji.qca.qualcomm.com>
+ id 1XJclq-0001oL-Nl
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 06:19:51 +0000
+Received: by mail-wi0-f174.google.com with SMTP id d1so4832093wiv.13
+ for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 23:19:28 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
+References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
+Date: Tue, 19 Aug 2014 08:19:28 +0200
+Message-ID: <CA+BoTQnEwiSAXnJV21Fyuo0W05L__TCO74cQ=t8Smg6hiMUBHw@mail.gmail.com>
+Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,35 +20,22 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Avery Pennarun <apenwarr@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-Avery Pennarun <apenwarr@gmail.com> writes:
-
->>> Are there any plans to implement this feature?  It's important in
->>> order to implement automatic channel change in case of changes in the
->>> interference environment.
->>
->> No plans at the moment. Does anyone know how much work would it be to
->> change mac80211 to support this with hw_scan?
->
-> Is there any particular reason it can't just resort to a sw_scan for
-> this use case?  What's the benefit of hw_scan?  I'm surprised there
-> would be any particular CPU time taken for such a thing.
-
-For mobile devices hw_scan is important because the ability to allow the
-host CPU to sleep while scanning. For others I'm not that sure, maybe
-firmware can do timing better (less intrusive) than host based sw
-scanning?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgQXVndXN0IDIwMTQgMDQ6MjYsIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5j
+b20+IHdyb3RlOgo+IEhpLAo+Cj4gSW4gdGhlIGF0aDlrIGFuZCBzZXZlcmFsIG90aGVyIGRyaXZl
+cnMsIGNvbW1hbmRzIGxpa2UgdGhlIGZvbGxvd2luZwo+IHdvcmsgd2hpbGUgaW4gQVAgbW9kZToK
+Pgo+ICAgaXcgd2xhbjAgc2NhbiAtdSBhcC1mb3JjZSBwYXNzaXZlCj4gYW5kCgpIbW0uLiBJIHJl
+Y2FsbCBzZWVpbmcgYSBoYWNrIGZvciB0aGF0IGluIE9wZW5XUlQgY29kZWJhc2UuIEknZCBoYXZl
+IHRvCmRvdWJsZSBjaGVjayB0aGF0LgoKCj4gICBpdyB3bGFuMCBvZmZjaGFubmVsIDI0NTIgIDEw
+MAoKVGhpcyBhY3R1YWxseSB3b3JrcyogZm9yIG1lLgoKKiB0aGUgcmVtYWluIG9uIGNoYW5uZWwg
+aXMgY29tcGxldGVkIHByZW1hdHVyZWx5IGJ5IGZpcm13YXJlIHByb2JhYmx5CmR1ZSB0byBiZWFj
+b25pbmcuIFBlcmhhcHMgY2hhbmdpbmcgaW50ZXJuYWwgc2NhbiBwcmlvcml0eSBjb3VsZCBoZWxw
+LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
