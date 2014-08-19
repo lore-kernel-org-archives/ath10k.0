@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-x236.google.com ([2607:f8b0:400d:c01::236])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJlGR-0006YZ-Vo
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 15:24:00 +0000
-Received: by mail-qc0-f182.google.com with SMTP id i8so6270888qcq.41
- for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 08:23:37 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XJlI8-0000Pq-HF
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 15:25:45 +0000
+Message-ID: <53F36C63.8040809@candelatech.com>
+Date: Tue, 19 Aug 2014 08:25:23 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <87siktat4d.fsf@kamboji.qca.qualcomm.com>
-References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
- <8761hpc9j9.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
- <87wqa5au7q.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=Qcrrutt6ZUtbrgKzx0Mo9186SRuV7dc97FnOxwn3Jxg@mail.gmail.com>
- <87siktat4d.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 19 Aug 2014 08:23:37 -0700
-Message-ID: <CAJ-VmonCMHb9ekiKGsNqpbjar6iWj2souUj0vRpwRkNaadQf1w@mail.gmail.com>
-Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
-From: Adrian Chadd <adrian@freebsd.org>
+Subject: Re: [PATCH v7 2/8] ath10k: provide firmware crash info via debugfs
+References: <20140819082038.16842.46876.stgit@potku.adurom.net>	<20140819082253.16842.32433.stgit@potku.adurom.net>
+ <CA+BoTQn2aq5EV4mvTs3Ww4i9gAJsmMM5iDfrFd=YfC0YxMi2WQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQn2aq5EV4mvTs3Ww4i9gAJsmMM5iDfrFd=YfC0YxMi2WQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +19,137 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>, Avery Pennarun <apenwarr@gmail.com>
-
-Hi,
-
-Yes. The whole point is that the firmware knows about the vdev and you
-set the channel on that. The intention is that there's multiple vdevs
-and if they're on different channels (eg STA + P2P, or STA + STA) then
-the firmware can handle channel changing, sending sleep notifications
-to the AP, buffering frames (well, pointers to frame data) so things
-don't get dropped, etc.
-
-I vaguely recall there being feature requests to do scanning in AP
-mode. It's a dirty hack, because yes you end up having packet loss
-during the scan for reasons I don't have to describe here, but you
-don't want it to be so bad that clients disassociate from you or end
-up having holes in the A-MPDU sequence space..
+To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 
--a
+
+On 08/19/2014 02:33 AM, Michal Kazior wrote:
+> On 19 August 2014 10:22, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> Store the firmware crash registers and last 128 or so
+>> firmware debug-log ids and present them to user-space
+>> via debugfs.
+>>
+>> Should help with figuring out why the firmware crashed.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+>> ---
+> [...]
+>> +struct ath10k_dump_file_data {
+>> +       /* dump file information */
+>> +
+>> +       /* "ATH10K-FW-DUMP" */
+>> +       char df_magic[16];
+>> +
+>> +       __le32 len;
+>> +
+>> +       /* file dump version */
+>> +       __le32 version;
+>> +
+>> +       /* some info we can get from ath10k struct that might help */
+>> +
+>> +       u8 uuid[16];
+>> +
+>> +       __le32 chip_id;
+>> +
+>> +       /* 0 for now, in place for later hardware */
+>> +       __le32 bus_type;
+>> +
+>> +       __le32 target_version;
+>> +       __le32 fw_version_major;
+>> +       __le32 fw_version_minor;
+>> +       __le32 fw_version_release;
+>> +       __le32 fw_version_build;
+>> +       __le32 phy_capability;
+>> +       __le32 hw_min_tx_power;
+>> +       __le32 hw_max_tx_power;
+>> +       __le32 ht_cap_info;
+>> +       __le32 vht_cap_info;
+>> +       __le32 num_rf_chains;
+>
+> Hmm.. some of these values don't really change once driver is loaded
+> so we could probably just export them as separate debugfs entries but
+> perhaps that's an overkill just for dumping.
+
+I think it will be easier for all involved if there is a single dump image that
+has all needed info.  Likely the end user of the dump file will have little or no
+interaction with the host that dumped the file to begin with.
+
+>> +       dump_data->kernel_ver_code = cpu_to_le32(LINUX_VERSION_CODE);
+>> +       strlcpy(dump_data->kernel_ver, VERMAGIC_STRING,
+>> +               sizeof(dump_data->kernel_ver));
+>> +
+>> +       dump_data->tv_sec = cpu_to_le64(crash_data->timestamp.tv_sec);
+>> +       dump_data->tv_nsec = cpu_to_le64(crash_data->timestamp.tv_nsec);
+>> +
+>> +       /* Gather dbg-log */
+>> +       dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
+>> +       dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_DBGLOG);
+>> +       dump_tlv->tlv_len = cpu_to_le32(sizeof(crash_data->dbglog_entry_data));
+>
+> Hmm should this really be sizeof()? Not next_idx (which effectively
+> defines number of bytes of the dbglog)?
+
+I haven't tried decoding this yet, but we may need to know the next_idx
+to decode this properly.
+
+>> +       memcpy(dump_tlv->tlv_data, &crash_data->dbglog_entry_data,
+>> +              sizeof(crash_data->dbglog_entry_data));
+>> +       sofar += sizeof(*dump_tlv) + sizeof(crash_data->dbglog_entry_data);
+>> +
+>> +       /* Gather crash-dump */
+>> +       dump_tlv = (struct ath10k_tlv_dump_data *)(buf + sofar);
+>> +       dump_tlv->type = cpu_to_le32(ATH10K_FW_CRASH_DUMP_REGDUMP);
+>> +       dump_tlv->tlv_len = cpu_to_le32(sizeof(crash_data->reg_dump_values));
+>> +       memcpy(dump_tlv->tlv_data, &crash_data->reg_dump_values,
+>> +              sizeof(crash_data->reg_dump_values));
+>> +       sofar += sizeof(*dump_tlv) + sizeof(crash_data->reg_dump_values);
+>
+> I haven't seen you mention that your latest patchset is based on my
+> patches that remove implicit byte swap from some diag functions so I
+> infer you're might've missed that reg_dump_values will be byte swapped
+> on big-endian hosts and userspace will remain unaware of that since
+> there is no endianess indication in the crash dump structure anymore.
+>
+> reg_dump_values must be swapped cpu_to_le32 here (or should be never
+> implicit byte swapped in the first place).
+>
+> It's probably worth stating in the comments that
+> ATH10K_FW_CRASH_DUMP_REGDUMP returns a list of __le32.
+>
+>
+>> +               ret = ath10k_pci_diag_read_mem(ar, dbuf.buffer, buffer,
+>> +                                              dbuf.length);
+>> +               if (ret != 0) {
+>> +                       ath10k_warn("failed to read debug log buffer from address 0x%x: %d\n",
+>> +                                   dbuf.buffer, ret);
+>> +                       kfree(buffer);
+>> +                       return;
+>> +               }
+>> +
+>> +               ath10k_debug_dbglog_add(ar, buffer, dbuf.length);
+>> +               kfree(buffer);
+>
+> Is the `buffer` really a string of bytes (u8) or just u32 in disguise?
+> If it's the former then on big-endian host the implicit byte swap will
+> mess it up and userspace will have no way of knowing that now.
+
+dbglog is array of 32 bit ints.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
