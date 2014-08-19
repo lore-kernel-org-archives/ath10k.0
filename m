@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-f179.google.com ([209.85.216.179])
+Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJr3D-0003sl-58
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 21:34:44 +0000
-Received: by mail-qc0-f179.google.com with SMTP id m20so6773187qcx.24
- for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 14:34:15 -0700 (PDT)
+ id 1XJrFN-0000Q4-Cj
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 21:47:17 +0000
+Received: by mail-we0-f176.google.com with SMTP id q58so7066845wes.21
+ for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 14:46:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <53F39AB3.10601@candelatech.com>
-References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
- <53F39AB3.10601@candelatech.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Tue, 19 Aug 2014 14:33:44 -0700
-Message-ID: <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
-Subject: Re: Timeout Issues
+In-Reply-To: <CAJ-VmonCMHb9ekiKGsNqpbjar6iWj2souUj0vRpwRkNaadQf1w@mail.gmail.com>
+References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
+ <8761hpc9j9.fsf@kamboji.qca.qualcomm.com>
+ <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
+ <87wqa5au7q.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=Qcrrutt6ZUtbrgKzx0Mo9186SRuV7dc97FnOxwn3Jxg@mail.gmail.com>
+ <87siktat4d.fsf@kamboji.qca.qualcomm.com>
+ <CAJ-VmonCMHb9ekiKGsNqpbjar6iWj2souUj0vRpwRkNaadQf1w@mail.gmail.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Tue, 19 Aug 2014 17:46:35 -0400
+Message-ID: <CAHqTa-0f0CtPhK6M9_oA+nahrEkP9+gqnigYQsUkfWuhLGmkhQ@mail.gmail.com>
+Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +30,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k@lists.infradead.org
+To: Adrian Chadd <adrian@freebsd.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-On Tue, Aug 19, 2014 at 11:42 AM, Ben Greear <greearb@candelatech.com> wrote:
-> Have you tried a WLE900 VX NIC?  Those have worked well for me.
-
-I haven't yet, though I'll get my hands on one to try out.  I have
-tried a WLE900N5-20 with the
-same results below, however.
-
->> I am using the following software on an ARM board:
->> ath10k branch of linux kernel: 3.16.0-wl-ath-182333-g6a69f0c
->> latest git of hostapd
->> latest git of iw
->> latest git of wpa_supplicant
->>
->> I have tried both firmware-2 binary blobs (the "AP" and "STA"
->> versions) as well as the newer firmware-3 binary with the same exact
->> messages being displayed.
+On Tue, Aug 19, 2014 at 11:23 AM, Adrian Chadd <adrian@freebsd.org> wrote:
+> Yes. The whole point is that the firmware knows about the vdev and you
+> set the channel on that. The intention is that there's multiple vdevs
+> and if they're on different channels (eg STA + P2P, or STA + STA) then
+> the firmware can handle channel changing, sending sleep notifications
+> to the AP, buffering frames (well, pointers to frame data) so things
+> don't get dropped, etc.
 >
-> Probably this is not a firmware issue, but if you have nothing else
-> to try, you can try my version of the 10.1.x firmware:
->
-> http://www.candelatech.com/ath10k.php
->
-> and possibly my hacked 3.14.14 kernel, which may spew out some additional
-> debug info if you have something like OTP issues.
->
-> git clone git://dmz2.candelatech.com/linux-3.14.dev.y
+> I vaguely recall there being feature requests to do scanning in AP
+> mode. It's a dirty hack, because yes you end up having packet loss
+> during the scan for reasons I don't have to describe here, but you
+> don't want it to be so bad that clients disassociate from you or end
+> up having holes in the A-MPDU sequence space..
 
-With the Kernel I was using (the 3.16.0-wl-ath-x-x), your firmware
-produced the following:
-[    5.466186] ath10k: Unknown FW IE: 5
-
-and then output the same timed out messages. The upstream ath10k
-driver that I'm using is
-looking for firmware-3.bin it seems.
-
-I cloned your kernel and built it, but was having the same exact
-errors I posted before (no extra
-debug info). One interesting thing I found is if I use OpenWrt trunk,
-ath10k seems to behave fine,
-but another distro seems to break things. I'll need to dig further
-into that, but in the mean time, do
-you have any thoughts?
-
-- Pushpal
+For my own purposes - scanning while the AP is running - the dirtiness
+doesn't bother me *too* much.  Ideally I would like to request a
+super-low-priority scan that only goes offchannel for short periods
+but could take several (or even many) seconds to complete.  I gather
+this is what the 'lowpri' option to 'iw ... scan' is for.
 
 _______________________________________________
 ath10k mailing list
