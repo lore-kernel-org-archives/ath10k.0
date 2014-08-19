@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJei6-0001sK-VF
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 08:24:07 +0000
-Subject: [PATCH v7 8/8] ath10k: print more driver info when firmware crashes
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 19 Aug 2014 11:23:41 +0300
-Message-ID: <20140819082341.16842.1298.stgit@potku.adurom.net>
-In-Reply-To: <20140819082038.16842.46876.stgit@potku.adurom.net>
-References: <20140819082038.16842.46876.stgit@potku.adurom.net>
+ id 1XJfnR-0000xE-OR
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 09:33:42 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so5077484wiv.11
+ for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 02:33:15 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20140819082253.16842.32433.stgit@potku.adurom.net>
+References: <20140819082038.16842.46876.stgit@potku.adurom.net>
+ <20140819082253.16842.32433.stgit@potku.adurom.net>
+Date: Tue, 19 Aug 2014 11:33:15 +0200
+Message-ID: <CA+BoTQn2aq5EV4mvTs3Ww4i9gAJsmMM5iDfrFd=YfC0YxMi2WQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/8] ath10k: provide firmware crash info via debugfs
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,108 +21,85 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c  |   17 ++---------------
- drivers/net/wireless/ath/ath10k/debug.c |   18 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h |    1 +
- drivers/net/wireless/ath/ath10k/pci.c   |    4 +---
- 4 files changed, 22 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1472c0a767e2..e90f41dc6ae6 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -869,21 +869,8 @@ int ath10k_core_start(struct ath10k *ar)
- 
- 	INIT_LIST_HEAD(&ar->arvifs);
- 
--	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags)) {
--		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
--			    ar->hw_params.name,
--			    ar->target_version,
--			    ar->chip_id,
--			    ar->hw->wiphy->fw_version,
--			    ar->fw_api,
--			    ar->htt.target_version_major,
--			    ar->htt.target_version_minor);
--		ath10k_info("debug %d debugfs %d tracing %d dfs %d\n",
--			    config_enabled(CONFIG_ATH10K_DEBUG),
--			    config_enabled(CONFIG_ATH10K_DEBUGFS),
--			    config_enabled(CONFIG_ATH10K_TRACING),
--			    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED));
--	}
-+	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
-+		ath10k_print_driver_info(ar);
- 
- 	__set_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 67bb53c64ead..27ddce6ca1da 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -152,6 +152,24 @@ int ath10k_info(const char *fmt, ...)
- }
- EXPORT_SYMBOL(ath10k_info);
- 
-+void ath10k_print_driver_info(struct ath10k *ar)
-+{
-+	ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-+		    ar->hw_params.name,
-+		    ar->target_version,
-+		    ar->chip_id,
-+		    ar->hw->wiphy->fw_version,
-+		    ar->fw_api,
-+		    ar->htt.target_version_major,
-+		    ar->htt.target_version_minor);
-+	ath10k_info("debug %d debugfs %d tracing %d dfs %d\n",
-+		    config_enabled(CONFIG_ATH10K_DEBUG),
-+		    config_enabled(CONFIG_ATH10K_DEBUGFS),
-+		    config_enabled(CONFIG_ATH10K_TRACING),
-+		    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED));
-+}
-+EXPORT_SYMBOL(ath10k_print_driver_info);
-+
- int ath10k_err(const char *fmt, ...)
- {
- 	struct va_format vaf = {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 80ff14e4db9b..494044a89226 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -42,6 +42,7 @@ extern unsigned int ath10k_debug_mask;
- __printf(1, 2) int ath10k_info(const char *fmt, ...);
- __printf(1, 2) int ath10k_err(const char *fmt, ...);
- __printf(1, 2) int ath10k_warn(const char *fmt, ...);
-+void ath10k_print_driver_info(struct ath10k *ar);
- 
- #ifdef CONFIG_ATH10K_DEBUGFS
- int ath10k_debug_start(struct ath10k *ar);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8aaaeda7d20b..55b027a77b8e 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1033,9 +1033,7 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- 		scnprintf(uuid, sizeof(uuid), "n/a");
- 
- 	ath10k_err("firmware crashed! (uuid %s)\n", uuid);
--	ath10k_err("hardware name %s version 0x%x\n",
--		   ar->hw_params.name, ar->target_version);
--	ath10k_err("firmware version: %s\n", ar->hw->wiphy->fw_version);
-+	ath10k_print_driver_info(ar);
- 
- 	if (!crash_data)
- 		goto exit;
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgQXVndXN0IDIwMTQgMTA6MjIsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
+b20+IHdyb3RlOgo+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+
+Cj4gU3RvcmUgdGhlIGZpcm13YXJlIGNyYXNoIHJlZ2lzdGVycyBhbmQgbGFzdCAxMjggb3Igc28K
+PiBmaXJtd2FyZSBkZWJ1Zy1sb2cgaWRzIGFuZCBwcmVzZW50IHRoZW0gdG8gdXNlci1zcGFjZQo+
+IHZpYSBkZWJ1Z2ZzLgo+Cj4gU2hvdWxkIGhlbHAgd2l0aCBmaWd1cmluZyBvdXQgd2h5IHRoZSBm
+aXJtd2FyZSBjcmFzaGVkLgo+Cj4gU2lnbmVkLW9mZi1ieTogQmVuIEdyZWVhciA8Z3JlZWFyYkBj
+YW5kZWxhdGVjaC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1
+YWxjb21tLmNvbT4KPiAtLS0KWy4uLl0KPiArc3RydWN0IGF0aDEwa19kdW1wX2ZpbGVfZGF0YSB7
+Cj4gKyAgICAgICAvKiBkdW1wIGZpbGUgaW5mb3JtYXRpb24gKi8KPiArCj4gKyAgICAgICAvKiAi
+QVRIMTBLLUZXLURVTVAiICovCj4gKyAgICAgICBjaGFyIGRmX21hZ2ljWzE2XTsKPiArCj4gKyAg
+ICAgICBfX2xlMzIgbGVuOwo+ICsKPiArICAgICAgIC8qIGZpbGUgZHVtcCB2ZXJzaW9uICovCj4g
+KyAgICAgICBfX2xlMzIgdmVyc2lvbjsKPiArCj4gKyAgICAgICAvKiBzb21lIGluZm8gd2UgY2Fu
+IGdldCBmcm9tIGF0aDEwayBzdHJ1Y3QgdGhhdCBtaWdodCBoZWxwICovCj4gKwo+ICsgICAgICAg
+dTggdXVpZFsxNl07Cj4gKwo+ICsgICAgICAgX19sZTMyIGNoaXBfaWQ7Cj4gKwo+ICsgICAgICAg
+LyogMCBmb3Igbm93LCBpbiBwbGFjZSBmb3IgbGF0ZXIgaGFyZHdhcmUgKi8KPiArICAgICAgIF9f
+bGUzMiBidXNfdHlwZTsKPiArCj4gKyAgICAgICBfX2xlMzIgdGFyZ2V0X3ZlcnNpb247Cj4gKyAg
+ICAgICBfX2xlMzIgZndfdmVyc2lvbl9tYWpvcjsKPiArICAgICAgIF9fbGUzMiBmd192ZXJzaW9u
+X21pbm9yOwo+ICsgICAgICAgX19sZTMyIGZ3X3ZlcnNpb25fcmVsZWFzZTsKPiArICAgICAgIF9f
+bGUzMiBmd192ZXJzaW9uX2J1aWxkOwo+ICsgICAgICAgX19sZTMyIHBoeV9jYXBhYmlsaXR5Owo+
+ICsgICAgICAgX19sZTMyIGh3X21pbl90eF9wb3dlcjsKPiArICAgICAgIF9fbGUzMiBod19tYXhf
+dHhfcG93ZXI7Cj4gKyAgICAgICBfX2xlMzIgaHRfY2FwX2luZm87Cj4gKyAgICAgICBfX2xlMzIg
+dmh0X2NhcF9pbmZvOwo+ICsgICAgICAgX19sZTMyIG51bV9yZl9jaGFpbnM7CgpIbW0uLiBzb21l
+IG9mIHRoZXNlIHZhbHVlcyBkb24ndCByZWFsbHkgY2hhbmdlIG9uY2UgZHJpdmVyIGlzIGxvYWRl
+ZApzbyB3ZSBjb3VsZCBwcm9iYWJseSBqdXN0IGV4cG9ydCB0aGVtIGFzIHNlcGFyYXRlIGRlYnVn
+ZnMgZW50cmllcyBidXQKcGVyaGFwcyB0aGF0J3MgYW4gb3ZlcmtpbGwganVzdCBmb3IgZHVtcGlu
+Zy4KCgo+ICsKPiArICAgICAgIGR1bXBfZGF0YS0+a2VybmVsX3Zlcl9jb2RlID0gY3B1X3RvX2xl
+MzIoTElOVVhfVkVSU0lPTl9DT0RFKTsKPiArICAgICAgIHN0cmxjcHkoZHVtcF9kYXRhLT5rZXJu
+ZWxfdmVyLCBWRVJNQUdJQ19TVFJJTkcsCj4gKyAgICAgICAgICAgICAgIHNpemVvZihkdW1wX2Rh
+dGEtPmtlcm5lbF92ZXIpKTsKPiArCj4gKyAgICAgICBkdW1wX2RhdGEtPnR2X3NlYyA9IGNwdV90
+b19sZTY0KGNyYXNoX2RhdGEtPnRpbWVzdGFtcC50dl9zZWMpOwo+ICsgICAgICAgZHVtcF9kYXRh
+LT50dl9uc2VjID0gY3B1X3RvX2xlNjQoY3Jhc2hfZGF0YS0+dGltZXN0YW1wLnR2X25zZWMpOwo+
+ICsKPiArICAgICAgIC8qIEdhdGhlciBkYmctbG9nICovCj4gKyAgICAgICBkdW1wX3RsdiA9IChz
+dHJ1Y3QgYXRoMTBrX3Rsdl9kdW1wX2RhdGEgKikoYnVmICsgc29mYXIpOwo+ICsgICAgICAgZHVt
+cF90bHYtPnR5cGUgPSBjcHVfdG9fbGUzMihBVEgxMEtfRldfQ1JBU0hfRFVNUF9EQkdMT0cpOwo+
+ICsgICAgICAgZHVtcF90bHYtPnRsdl9sZW4gPSBjcHVfdG9fbGUzMihzaXplb2YoY3Jhc2hfZGF0
+YS0+ZGJnbG9nX2VudHJ5X2RhdGEpKTsKCkhtbSBzaG91bGQgdGhpcyByZWFsbHkgYmUgc2l6ZW9m
+KCk/IE5vdCBuZXh0X2lkeCAod2hpY2ggZWZmZWN0aXZlbHkKZGVmaW5lcyBudW1iZXIgb2YgYnl0
+ZXMgb2YgdGhlIGRiZ2xvZyk/CgoKPiArICAgICAgIG1lbWNweShkdW1wX3Rsdi0+dGx2X2RhdGEs
+ICZjcmFzaF9kYXRhLT5kYmdsb2dfZW50cnlfZGF0YSwKPiArICAgICAgICAgICAgICBzaXplb2Yo
+Y3Jhc2hfZGF0YS0+ZGJnbG9nX2VudHJ5X2RhdGEpKTsKPiArICAgICAgIHNvZmFyICs9IHNpemVv
+ZigqZHVtcF90bHYpICsgc2l6ZW9mKGNyYXNoX2RhdGEtPmRiZ2xvZ19lbnRyeV9kYXRhKTsKPiAr
+Cj4gKyAgICAgICAvKiBHYXRoZXIgY3Jhc2gtZHVtcCAqLwo+ICsgICAgICAgZHVtcF90bHYgPSAo
+c3RydWN0IGF0aDEwa190bHZfZHVtcF9kYXRhICopKGJ1ZiArIHNvZmFyKTsKPiArICAgICAgIGR1
+bXBfdGx2LT50eXBlID0gY3B1X3RvX2xlMzIoQVRIMTBLX0ZXX0NSQVNIX0RVTVBfUkVHRFVNUCk7
+Cj4gKyAgICAgICBkdW1wX3Rsdi0+dGx2X2xlbiA9IGNwdV90b19sZTMyKHNpemVvZihjcmFzaF9k
+YXRhLT5yZWdfZHVtcF92YWx1ZXMpKTsKPiArICAgICAgIG1lbWNweShkdW1wX3Rsdi0+dGx2X2Rh
+dGEsICZjcmFzaF9kYXRhLT5yZWdfZHVtcF92YWx1ZXMsCj4gKyAgICAgICAgICAgICAgc2l6ZW9m
+KGNyYXNoX2RhdGEtPnJlZ19kdW1wX3ZhbHVlcykpOwo+ICsgICAgICAgc29mYXIgKz0gc2l6ZW9m
+KCpkdW1wX3RsdikgKyBzaXplb2YoY3Jhc2hfZGF0YS0+cmVnX2R1bXBfdmFsdWVzKTsKCkkgaGF2
+ZW4ndCBzZWVuIHlvdSBtZW50aW9uIHRoYXQgeW91ciBsYXRlc3QgcGF0Y2hzZXQgaXMgYmFzZWQg
+b24gbXkKcGF0Y2hlcyB0aGF0IHJlbW92ZSBpbXBsaWNpdCBieXRlIHN3YXAgZnJvbSBzb21lIGRp
+YWcgZnVuY3Rpb25zIHNvIEkKaW5mZXIgeW91J3JlIG1pZ2h0J3ZlIG1pc3NlZCB0aGF0IHJlZ19k
+dW1wX3ZhbHVlcyB3aWxsIGJlIGJ5dGUgc3dhcHBlZApvbiBiaWctZW5kaWFuIGhvc3RzIGFuZCB1
+c2Vyc3BhY2Ugd2lsbCByZW1haW4gdW5hd2FyZSBvZiB0aGF0IHNpbmNlCnRoZXJlIGlzIG5vIGVu
+ZGlhbmVzcyBpbmRpY2F0aW9uIGluIHRoZSBjcmFzaCBkdW1wIHN0cnVjdHVyZSBhbnltb3JlLgoK
+cmVnX2R1bXBfdmFsdWVzIG11c3QgYmUgc3dhcHBlZCBjcHVfdG9fbGUzMiBoZXJlIChvciBzaG91
+bGQgYmUgbmV2ZXIKaW1wbGljaXQgYnl0ZSBzd2FwcGVkIGluIHRoZSBmaXJzdCBwbGFjZSkuCgpJ
+dCdzIHByb2JhYmx5IHdvcnRoIHN0YXRpbmcgaW4gdGhlIGNvbW1lbnRzIHRoYXQKQVRIMTBLX0ZX
+X0NSQVNIX0RVTVBfUkVHRFVNUCByZXR1cm5zIGEgbGlzdCBvZiBfX2xlMzIuCgoKPiArICAgICAg
+ICAgICAgICAgcmV0ID0gYXRoMTBrX3BjaV9kaWFnX3JlYWRfbWVtKGFyLCBkYnVmLmJ1ZmZlciwg
+YnVmZmVyLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ZGJ1Zi5sZW5ndGgpOwo+ICsgICAgICAgICAgICAgICBpZiAocmV0ICE9IDApIHsKPiArICAgICAg
+ICAgICAgICAgICAgICAgICBhdGgxMGtfd2FybigiZmFpbGVkIHRvIHJlYWQgZGVidWcgbG9nIGJ1
+ZmZlciBmcm9tIGFkZHJlc3MgMHgleDogJWRcbiIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgZGJ1Zi5idWZmZXIsIHJldCk7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+a2ZyZWUoYnVmZmVyKTsKPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1cm47Cj4gKyAgICAg
+ICAgICAgICAgIH0KPiArCj4gKyAgICAgICAgICAgICAgIGF0aDEwa19kZWJ1Z19kYmdsb2dfYWRk
+KGFyLCBidWZmZXIsIGRidWYubGVuZ3RoKTsKPiArICAgICAgICAgICAgICAga2ZyZWUoYnVmZmVy
+KTsKCklzIHRoZSBgYnVmZmVyYCByZWFsbHkgYSBzdHJpbmcgb2YgYnl0ZXMgKHU4KSBvciBqdXN0
+IHUzMiBpbiBkaXNndWlzZT8KSWYgaXQncyB0aGUgZm9ybWVyIHRoZW4gb24gYmlnLWVuZGlhbiBo
+b3N0IHRoZSBpbXBsaWNpdCBieXRlIHN3YXAgd2lsbAptZXNzIGl0IHVwIGFuZCB1c2Vyc3BhY2Ug
+d2lsbCBoYXZlIG5vIHdheSBvZiBrbm93aW5nIHRoYXQgbm93LgoKCk1pY2hhxYIKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
