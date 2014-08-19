@@ -1,29 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJo7x-0007ng-Qj
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 18:27:26 +0000
-Message-ID: <53F396F1.8070906@candelatech.com>
-Date: Tue, 19 Aug 2014 11:26:57 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-qg0-f43.google.com ([209.85.192.43])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XJo8m-0008GS-93
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 18:28:16 +0000
+Received: by mail-qg0-f43.google.com with SMTP id a108so6492154qge.30
+ for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 11:27:53 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
- <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>
- <53D252B4.9070704@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
- <53D6757A.8040803@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7FE@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D800@srvexch01.SODIELEC.local>,
- <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC35@srvexch01.SODIELEC.local>
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241014DDDD4DC35@srvexch01.SODIELEC.local>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Tue, 19 Aug 2014 11:27:23 -0700
+Message-ID: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
+Subject: Timeout Issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,53 +22,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Adrian Chadd <adrian@freebsd.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: ath10k@lists.infradead.org
 
-On 08/18/2014 02:45 AM, Vu Hai NGUYEN wrote:
+Hi,
 
-> I'd cleaned all rules of iptables and removed all modules of iptables from kernel by command modprobe -r
-> But there's still some process of netfilter process running. I disabled netfilter on bridge interface by writing 0 to these files:
-> /proc/sys/net/bridge/bridge-nf-call-arptables
-> /proc/sys/net/bridge/bridge-nf-call-iptables
-> /proc/sys/net/bridge/bridge-nf-call-ip6tables
-> 
-> and the performance increases from 500 to 550 Mbps (iperf in tcp reports between 530 ~ 570Mbps).
-> There is no more process like  "br_nf_pre_routing" and "br_nf_forward_ip".
-> Do you think I can do anything more to strip down netfilter?
+I'm having issues with ath10k timing out when trying to communicate
+with the wireless card (UNEX DAXA-O1 + have tried several others).
+Below is what I grabbed from dmesg.
 
-What do you get for UDP?  That seems like pretty good TCP throughput.
+$ dmesg | grep ath10k
+[    5.233469] ath10k_pci 0000:09:00.0: enabling device (0140 -> 0142)
+[    5.575954] ath10k: pci irq legacy irq_mode 0 reset_mode 0
+[    7.704403] ath10k: failed to receive control response completion, polling..
+[    8.704379] ath10k: Service connect timeout: -110
+[    8.709089] ath10k: failed to connect htt (-110)
+[    9.020495] ath10k: could not init core (-110)
+[    9.324371] ath10k: could not probe fw (-110)
 
-Also, do you get different results if you use Open v/s WPA2 encryption?
+This causes the card to not be registered, and thus is unusable (there
+is no wlanX)
 
-A test I just ran showed decreased performance on one of my systems
-when I ran with open v/s wpa2 (400Mbps v/s 350Mbps, UDP goodput).
-This was using hardware-crypt, so I expected it to be as fast as Open.
-I'm running customized firmware and driver, so maybe that is cause of
-slowdown...curious what results others are seeing though!
+I am able to use the Intel 7260 card (another AC card) with their
+firmware binary blob, so I don't believe this is a hardware
+configuration issue with mini-pcie.
 
-> I installed tc from package iproute2 and did : tc qdisc but it doesn't improve the performance
-> One more question: Could the antennas create any effect on the MCS in use?
-> We are using this antenna from PCTEL:
-> http://www.antenna.com/apg_products.cgi?id_num=11395
-> And in the specification, I saw that it supports the standard 802.11n, so may be this is the reason
-> that the best rate for me is MCS7?
+I am using the following software on an ARM board:
+ath10k branch of linux kernel: 3.16.0-wl-ath-182333-g6a69f0c
+latest git of hostapd
+latest git of iw
+latest git of wpa_supplicant
 
-Antenna and orientation matter, but the one you list advertises itself
-as dual-band, so it looks like it should work well in the 5Ghz band
-that AC uses.
+I have tried both firmware-2 binary blobs (the "AP" and "STA"
+versions) as well as the newer firmware-3 binary with the same exact
+messages being displayed.
 
-You might try changing orientation and/or trying some different
-antenna.
+Any help towards finding a solution is appreciated, thanks!
 
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+- Pushpal Sidhu
 
 _______________________________________________
 ath10k mailing list
