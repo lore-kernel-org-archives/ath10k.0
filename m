@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJhts-000139-Oq
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 11:48:29 +0000
+ id 1XJiGW-0003nC-17
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 12:11:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/5] ath10k: setup irq method in probe
-References: <1407402260-29854-1-git-send-email-michal.kazior@tieto.com>
- <1407402260-29854-3-git-send-email-michal.kazior@tieto.com>
- <87d2c4pkks.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmTiEaZ03Nu-UiOn2ObW8e-m7it7_Th2KKCn+byFP+mPg@mail.gmail.com>
-Date: Tue, 19 Aug 2014 14:47:44 +0300
-In-Reply-To: <CA+BoTQmTiEaZ03Nu-UiOn2ObW8e-m7it7_Th2KKCn+byFP+mPg@mail.gmail.com>
- (Michal Kazior's message of "Mon, 18 Aug 2014 15:47:03 +0200")
-Message-ID: <8738csbt0f.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:  improve logging in firmware crash routine.
+References: <1407271772-14874-1-git-send-email-greearb@candelatech.com>
+Date: Tue, 19 Aug 2014 15:11:21 +0300
+In-Reply-To: <1407271772-14874-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 5 Aug 2014 13:49:32
+ -0700")
+Message-ID: <87ppfwadcm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,55 +24,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+greearb@candelatech.com writes:
 
->>> @@ -1905,22 +1915,10 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
->>>               goto err;
->>>       }
->>>
->>> -     ret = ath10k_ce_disable_interrupts(ar);
->>> -     if (ret) {
->>> -             ath10k_err("failed to disable CE interrupts: %d\n", ret);
->>> -             goto err_ce;
->>> -     }
->>> -
->>> -     ret = ath10k_pci_init_irq(ar);
->>> -     if (ret) {
->>> -             ath10k_err("failed to init irqs: %d\n", ret);
->>> -             goto err_ce;
->>> -     }
->>> -
->>>       ret = ath10k_pci_request_early_irq(ar);
->>>       if (ret) {
->>>               ath10k_err("failed to request early irq: %d\n", ret);
->>> -             goto err_deinit_irq;
->>> +             goto err_ce;
->>>       }
->>
->> You add ath10k_pci_ce_init() to probe() and respective
->> ath10k_pci_ce_deinit() to remove(), and you remove
->> ath10k_pci_ce_deinit() from hif_power_down(). But why do you leave
->> ath10k_pci_ce_init() to hif_power_up()? Isn't that unnecessary as we
->> already do that in probe()?
+> From: Ben Greear <greearb@candelatech.com>
 >
-> Hmm.. I didn't check if copy engine register state (notable ring index
-> values) is guaranteed to be usable in all cases yet and decided it's
-> safer to just re-init it on each power up until it is proven it is not
-> necessary.
+> Only print error message upon failure, and print more
+> details in case it does find an error.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>
+> This is on top of the firmware crash reporting patches,
+> not sure it would apply clean until those get in.
 
-So I have been trying to follow this naming scheme for initilisation:
+Yeah, this does conflict with the firmware crash dump patches.
 
-_create() - called during device probe time
-_start() - if up / power up
-_stop() - if down / power down
-_destroy() - called when device is removed
+>  drivers/net/wireless/ath/ath10k/pci.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+> index 24688b7..085c0c8 100644
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -929,12 +929,11 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+>  	ret = ath10k_pci_diag_read_mem(ar, host_addr,
+>  				       &reg_dump_area, sizeof(u32));
+>  	if (ret) {
+> -		ath10k_err("failed to read FW dump area address: %d\n", ret);
+> +		ath10k_err("failed to read FW dump area address: %d  (hostaddr 0x%08X  hi-failure-state 0x%08lX)\n",
+> +			   ret, host_addr, HI_ITEM(hi_failure_state));
+>  		goto exit;
+>  	}
 
-If you call ce_init() both in create() and start() time there has to be
-some redundant code and I think the function should be split. This isn't
-a concern now, but something for the future.
+As I reworked how the diag interface is used, this doesn't directly
+apply anymore. And are these values really that important?
+
+> -	ath10k_err("target register Dump Location: 0x%08X\n", reg_dump_area);
+
+I actually removed this line in the firmware crash dump patchset.
 
 -- 
 Kalle Valo
