@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJNLv-00075g-8J
- for ath10k@lists.infradead.org; Mon, 18 Aug 2014 13:52:03 +0000
-Received: by mail-wg0-f50.google.com with SMTP id n12so5071348wgh.9
- for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 06:51:40 -0700 (PDT)
+ id 1XJZ8w-0002Ic-QB
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 02:27:27 +0000
+Received: by mail-wg0-f42.google.com with SMTP id l18so5685339wgh.1
+ for <ath10k@lists.infradead.org>; Mon, 18 Aug 2014 19:27:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <878umspjkm.fsf@kamboji.qca.qualcomm.com>
-References: <1407402260-29854-1-git-send-email-michal.kazior@tieto.com>
- <1407402260-29854-4-git-send-email-michal.kazior@tieto.com>
- <878umspjkm.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 18 Aug 2014 15:51:40 +0200
-Message-ID: <CA+BoTQnFCnixx1P8Q-F-xgiNr8W05fv8h8jiCBFfmV7aQmXKjA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ath10k: remove early irq handling
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Mon, 18 Aug 2014 22:26:42 -0400
+Message-ID: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
+Subject: Support for scan while in AP mode, and offchannel while in AP mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,68 +18,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-T24gMTMgQXVndXN0IDIwMTQgMTY6MDksIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gSXQncyBub3QgcmVhbGx5IG5lY2Vzc2FyeSB0byBoYXZlIGEgZGVkaWNhdGVkIGly
-cQo+PiBoYW5kbGVyIGp1c3QgZm9yIHRoZSBzYWtlIG9mIGNhdGNoaW5nIGVhcmx5IGZ3Cj4+IGNy
-YXNoZXMuIEl0IGlzIG5vdyBzYWZlIHRvIHVzZSBvbmUgaGFuZGxlciBldmVuCj4+IGR1cmluZyBl
-YXJseSBzdGFnZXMgb2YgZGV2aWNlIGJvb3QgdXAuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hh
-bCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Cj4gTmljZSwgdGhpcyByZWFsbHkg
-bmVlZHMgdG8gYmUgY2xlYW5lZCB1cC4KPgo+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9wY2kuYyB8IDE2MCArKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+ICAx
-IGZpbGUgY2hhbmdlZCwgMzYgaW5zZXJ0aW9ucygrKSwgMTI0IGRlbGV0aW9ucygtKQo+Cj4gU2hv
-dWxkbid0IHlvdSBhbHNvIHJlbW92ZSBlYXJseV9pcnFfdGFza2xldCBmcm9tIHN0cnVjdCBhdGgx
-MGtfcGNpPwoKT29wcy4gR29vZCBjYXRjaC4KCgo+PiAtc3RhdGljIHZvaWQgYXRoMTBrX3BjaV9m
-d19pbnRlcnJ1cHRfaGFuZGxlcihzdHJ1Y3QgYXRoMTBrICphcikKPj4gK3N0YXRpYyBib29sIGF0
-aDEwa19wY2lfZndfY3Jhc2hlZChzdHJ1Y3QgYXRoMTBrICphcikKPj4gIHsKPj4gLSAgICAgc3Ry
-dWN0IGF0aDEwa19wY2kgKmFyX3BjaSA9IGF0aDEwa19wY2lfcHJpdihhcik7Cj4+IC0gICAgIHUz
-MiBmd19pbmRpY2F0b3I7Cj4+IC0KPj4gLSAgICAgZndfaW5kaWNhdG9yID0gYXRoMTBrX3BjaV9y
-ZWFkMzIoYXIsIEZXX0lORElDQVRPUl9BRERSRVNTKTsKPj4gLQo+PiAtICAgICBpZiAoZndfaW5k
-aWNhdG9yICYgRldfSU5EX0VWRU5UX1BFTkRJTkcpIHsKPj4gLSAgICAgICAgICAgICAvKiBBQ0s6
-IGNsZWFyIFRhcmdldC1zaWRlIHBlbmRpbmcgZXZlbnQgKi8KPj4gLSAgICAgICAgICAgICBhdGgx
-MGtfcGNpX3dyaXRlMzIoYXIsIEZXX0lORElDQVRPUl9BRERSRVNTLAo+PiAtICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICBmd19pbmRpY2F0b3IgJiB+RldfSU5EX0VWRU5UX1BFTkRJTkcp
-Owo+PiArICAgICByZXR1cm4gYXRoMTBrX3BjaV9yZWFkMzIoYXIsIEZXX0lORElDQVRPUl9BRERS
-RVNTKSAmCj4+ICsgICAgICAgICAgICBGV19JTkRfRVZFTlRfUEVORElORzsKPj4gK30KPgo+IEhl
-aGUsIGluIEJlbidzIGZpcm13YXJlIGNyYXNoIGR1bXAgcGF0Y2hlcyBJIHJlbmFtZWQKPiBhdGgx
-MGtfcGNpX2hpZl9kdW1wX2FyZWEoKSB0byBhdGgxMGtfcGNpX2Zpcm13YXJlX2NyYXNoZWQoKS4g
-U28gd2Ugbm93Cj4gaGF2ZSB0d28gdmVyeSBzaW1pbGFybHkgbmFtZWQgZnVuY3Rpb25zIGRvaW5n
-IHZlcnkgZGlmZmVyZW50IDopCj4KPiBJIHByb3Bvc2UgdGhhdCB5b3UgcmVuYW1lIHRoaXMgZnVu
-Y3Rpb24gdG8gYXRoMTBrX3BjaV9pc19md19jcmFzaGVkKCkgb3IKPiBhdGgxMGtfcGNpX2hhc19m
-d19jcmFzaGVkKCkgYW5kIEkgcmVuYW1lIGF0aDEwa19wY2lfaGlmX2R1bXBfYXJlYSgpIHRvCj4g
-YXRoMTBrX3BjaV9md19jcmFzaGVkX2R1bXAoKS4gSSB0aGluayB0aGF0IHdlIGhhdmUgcHJldHR5
-IGNvbnNpc3RlbnQKPiBuYW1pbmcsIG5vPwoKSSdtIG9rYXkgd2l0aCB0aGF0LiBXSWxsIGZpeC4K
-Cgo+PiArc3RhdGljIHZvaWQgYXRoMTBrX3BjaV9md19jcmFzaGVkX2NsZWFyKHN0cnVjdCBhdGgx
-MGsgKmFyKQo+PiArewo+PiArICAgICBhdGgxMGtfcGNpX3dyaXRlMzIoYXIsIEZXX0lORElDQVRP
-Ul9BRERSRVNTLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgKGF0aDEwa19wY2lfcmVhZDMy
-KGFyLCBGV19JTkRJQ0FUT1JfQUREUkVTUykgJgo+PiArICAgICAgICAgICAgICAgICAgICAgICAg
-IH5GV19JTkRfRVZFTlRfUEVORElORykpOwo+Cj4gUGxlYXNlIGRvbid0IGVtYmVkIGNhbGxzIGxp
-a2UgdGhpcywgd2l0aCBhIHRlbXBvcmFyeSB2YXJpYWJsZSB5b3UgZ2V0IGl0Cj4gbW9yZSByZWFk
-YWJsZSBhbmQgdGhlIHJlc3VsdGluZyBjb2RlIHNob3VsZCBiZSB0aGUgc2FtZSBhbnl3YXkuCgpX
-aWxsIGZpeC4KCgo+Cj4+IEBAIC0yNDEyLDE0ICsyMzIyLDYgQEAgc3RhdGljIGludCBhdGgxMGtf
-cGNpX3dhaXRfZm9yX3RhcmdldF9pbml0KHN0cnVjdCBhdGgxMGsgKmFyKQo+PiAgICAgICAgICAg
-ICAgIHJldHVybiAtRUlPOwo+PiAgICAgICB9Cj4+Cj4+IC0gICAgIGlmICh2YWwgJiBGV19JTkRf
-RVZFTlRfUEVORElORykgewo+PiAtICAgICAgICAgICAgIGF0aDEwa193YXJuKCJkZXZpY2UgaGFz
-IGNyYXNoZWQgZHVyaW5nIGluaXRcbiIpOwo+PiAtICAgICAgICAgICAgIGF0aDEwa19wY2lfd3Jp
-dGUzMihhciwgRldfSU5ESUNBVE9SX0FERFJFU1MsCj4+IC0gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHZhbCAmIH5GV19JTkRfRVZFTlRfUEVORElORyk7Cj4+IC0gICAgICAgICAgICAg
-YXRoMTBrX3BjaV9oaWZfZHVtcF9hcmVhKGFyKTsKPj4gLSAgICAgICAgICAgICByZXR1cm4gLUVD
-T01NOwo+PiAtICAgICB9Cj4KPiBJJ20gYSBiaXQgd29ycmllZCBhYm91dCB0aGlzLiBBcmUgeW91
-IHJlbHlpbmcgbm93IHRoYXQgdGhlIHRhcmdldCB3aWxsCj4gYWx3YXlzIHRyaWdnZXIgYW4gaW50
-ZXJydXB0IG9yIHdoYXQ/IElmIHllcywgaG93IGNhbiB3ZSBzdXJlIGl0IHdpbGwKPiBoYXBwZW4g
-b24gYWxsIHBvc3NpYmxlIGNhc2VzPyBJIHdvdWxkIHByZWZlciB0byBoYXZlIHNvbWUga2luZCBv
-ZiBzYWZldHkKPiBuZXQgYW55d2F5LCBldmVuIGlmIGl0J3MganVzdCBhIHNpbXBsZSB3YXJuaW5n
-LgoKSG1tLCBJJ2xsIGtlZXAgaXQuIEkganVzdCByZW1lbWJlcmVkIGl0J3MgcG9zc2libGUgZm9y
-IGEgZGV2aWNlIHRvCmZhaWwgdG8gZnVsbHkgc2V0dXAgcGNpIGxpbmsvY29uZmlnIGFuZCBjcmFz
-aCB3aXRob3V0IGFzc2VydGluZyBhbgppbnRlcnJ1cHQgd2hpbGUgc3RpbGwgcHJvdmlkaW5nIGEg
-dHJhY2UgaW4gdGhlIGhvc3QgaW50ZXJlc3QgYXJlYS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi,
+
+In the ath9k and several other drivers, commands like the following
+work while in AP mode:
+
+  iw wlan0 scan -u ap-force passive
+and
+  iw wlan0 offchannel 2452  100
+
+On ath10k (using a driver from v3.15-rc1 as of April 13th), these tell
+me the operation is not supported.
+
+Are there any plans to implement this feature?  It's important in
+order to implement automatic channel change in case of changes in the
+interference environment.
+
+Thanks,
+
+Avery
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
