@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJftG-00038o-DF
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 09:39:43 +0000
-Received: by mail-wi0-f181.google.com with SMTP id bs8so4976672wib.8
- for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 02:39:20 -0700 (PDT)
+ id 1XJftt-0003Gd-Eu
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 09:40:21 +0000
+Received: by mail-we0-f180.google.com with SMTP id w61so6164664wes.25
+ for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 02:39:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140819082325.16842.18721.stgit@potku.adurom.net>
+In-Reply-To: <20140819082300.16842.40769.stgit@potku.adurom.net>
 References: <20140819082038.16842.46876.stgit@potku.adurom.net>
- <20140819082325.16842.18721.stgit@potku.adurom.net>
-Date: Tue, 19 Aug 2014 11:39:20 +0200
-Message-ID: <CA+BoTQ=H6Pnm39xxzT+u_kRBDkGujaR3r6gMyTU3V+8cZi0qLw@mail.gmail.com>
-Subject: Re: [PATCH v7 6/8] ath10k: save firmware RAM and ROM BSS sections on
- crash
+ <20140819082300.16842.40769.stgit@potku.adurom.net>
+Date: Tue, 19 Aug 2014 11:39:59 +0200
+Message-ID: <CA+BoTQmubLrvB1LHquFDNf8W06vePvEk6K3aNV9ngCAAXemY6w@mail.gmail.com>
+Subject: Re: [PATCH v7 3/8] ath10k: save firmware debug log messages
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,50 +21,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTkgQXVndXN0IDIwMTQgMTA6MjMsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+
-Cj4gVGhpcyBjYW4gYmUgdXNlZCB0byBnZXQgYSB1c2VmdWwgYmFjayB0cmFjZSBvdXQgb2YgYSBm
-aXJtd2FyZQo+IGNyYXNoIHRoYXQgaW52b2x2ZXMgYW4gaW50ZXJydXB0IGhhbmRsZXIuICBGb3Ig
-aW5zdGFuY2UsIGEKPiBudWxsLXBvaW50ZXItZXhjZXB0aW9uIHdvdWxkIGJlIHRoaXMga2luZCBv
-ZiB0cmFjZS4gIEEgdXNlci1zcGFjZQo+IHRvb2wgY2FuIHJlYWQgdGhlIGRlYnVnZnMgZmlsZSBh
-bmQgZGVjb2RlIHRoaW5ncyBhcyB3aXNoZWQuCj4KPiBUaGlzIHJlcXVpcmVzIGEgcGFja2FnZWQg
-ZmlybXdhcmUgd2l0aCBhIG5ldyBJRSB0byBkZXNjcmliZSB0aGUKPiBCU1Mgc2VjdGlvbiBzdGFy
-dHMgYW5kIGxlbmd0aC4KPgo+IFNpZ25lZC1vZmYtYnk6IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tPgo+IFNpZ25lZC1vZmYtYnk6IEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFs
-Y29tbS5jb20+Cj4gLS0tClsuLi5dCj4gK3N0YXRpYyB2b2lkIGF0aDEwa19wY2lfZHVtcF9ic3Nf
-cmFtKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHN0cnVjdCBhdGgxMGtfZndfY3Jhc2hfZGF0YSAqY3Jhc2hfZGF0YSkgewo+ICsgICAgICAg
-aW50IHJldDsKPiArCj4gKyAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+ZGF0YV9sb2Nr
-KTsKPiArCj4gKyAgICAgICBpZiAoIWFyLT5mdy5yYW1fYnNzX2FkZHIpCj4gKyAgICAgICAgICAg
-ICAgIHJldHVybjsKPiArCj4gKyAgICAgICBpZiAoIWFyLT5mdy5yYW1fYnNzX2xlbikKPiArICAg
-ICAgICAgICAgICAgcmV0dXJuOwo+ICsKPiArICAgICAgIHJldCA9IGF0aDEwa19wY2lfZGlhZ19y
-ZWFkX21lbShhciwgYXItPmZ3LnJhbV9ic3NfYWRkciwKPiArICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBjcmFzaF9kYXRhLT5yYW1fYnNzX2J1ZiwKPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBhci0+ZncucmFtX2Jzc19sZW4pOwo+ICsgICAgICAg
-aWYgKHJldCkKPiArICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oImZhaWxlZCB0byByZWFkIGZp
-cm13YXJlIFJBTSBCU1MgbWVtb3J5IGZyb20gJWQgKCVkIEIpOiAlZFxuIiwKPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgYXItPmZ3LnJhbV9ic3NfYWRkciwgYXItPmZ3LnJhbV9ic3NfbGVu
-LCByZXQpOwo+ICt9Cj4gKwo+ICtzdGF0aWMgdm9pZCBhdGgxMGtfcGNpX2R1bXBfYnNzX3JvbShz
-dHJ1Y3QgYXRoMTBrICphciwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBz
-dHJ1Y3QgYXRoMTBrX2Z3X2NyYXNoX2RhdGEgKmNyYXNoX2RhdGEpCj4gK3sKPiArICAgICAgIGlu
-dCByZXQ7Cj4gKwo+ICsgICAgICAgbG9ja2RlcF9hc3NlcnRfaGVsZCgmYXItPmRhdGFfbG9jayk7
-Cj4gKwo+ICsgICAgICAgaWYgKCFhci0+Zncucm9tX2Jzc19hZGRyKQo+ICsgICAgICAgICAgICAg
-ICByZXR1cm47Cj4gKwo+ICsgICAgICAgaWYgKCFhci0+Zncucm9tX2Jzc19sZW4pCj4gKyAgICAg
-ICAgICAgICAgIHJldHVybjsKPiArCj4gKyAgICAgICByZXQgPSBhdGgxMGtfcGNpX2RpYWdfcmVh
-ZF9tZW0oYXIsIGFyLT5mdy5yb21fYnNzX2FkZHIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgY3Jhc2hfZGF0YS0+cm9tX2Jzc19idWYsCj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgYXItPmZ3LnJvbV9ic3NfbGVuKTsKPiArICAgICAgIGlm
-IChyZXQpCj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKCJmYWlsZWQgdG8gcmVhZCBmaXJt
-d2FyZSBST00gQlNTIG1lbW9yeSBmcm9tICVkICglZCBCKTogJWRcbiIsCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGFyLT5mdy5yb21fYnNzX2FkZHIsIGFyLT5mdy5yb21fYnNzX2xlbiwg
-cmV0KTsKPiArfQoKRGl0dG8gYXMgd2l0aCBvdGhlciBwYXRjaGVzIC0gZW5kaWFuZXNzIG1lc3Mu
-CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 19 August 2014 10:23, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> From: Ben Greear <greearb@candelatech.com>
+>
+> They may be dumped through the firmware dump debugfs
+> file.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.c |   10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index 23acbadeb8fa..eafc565240f1 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1290,6 +1290,16 @@ static int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
+>
+>         trace_ath10k_wmi_dbglog(skb->data, skb->len);
+>
+> +       spin_lock_bh(&ar->data_lock);
+> +
+> +       /* First 4 bytes are a messages-dropped-due-to-overflow counter,
+> +        * and should not be recorded in the dbglog buffer, so we skip
+> +        * them.
+> +        */
+> +       ath10k_debug_dbglog_add(ar, skb->data + 4, skb->len - 4);
+> +
+> +       spin_unlock_bh(&ar->data_lock);
+> +
+>         return 0;
+>  }
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
