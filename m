@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJehx-0001qh-JR
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 08:23:58 +0000
-Subject: [PATCH v7 7/8] ath10k: rename ath10k_pci_hif_dump_area() to
- ath10k_pci_fw_crashed_dump()
+ id 1XJehE-0001eJ-2W
+ for ath10k@lists.infradead.org; Tue, 19 Aug 2014 08:23:13 +0000
+Subject: [PATCH v7 1/8] ath10k: add ath10k_pci_diag_* helpers
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 19 Aug 2014 11:23:34 +0300
-Message-ID: <20140819082334.16842.61579.stgit@potku.adurom.net>
+Date: Tue, 19 Aug 2014 11:22:46 +0300
+Message-ID: <20140819082245.16842.10751.stgit@potku.adurom.net>
 In-Reply-To: <20140819082038.16842.46876.stgit@potku.adurom.net>
 References: <20140819082038.16842.46876.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -26,61 +25,100 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Better to have a clear name for the function. While at it, clear up the title
-for the register dump.
+ath10k_pci_diag_read32() is for reading u32 from a device and ath10k_pci_diag_read_hi()
+is a helper for reading data using "host interest" table.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c |   55 +++++++++++++++++++++++----------
+ 1 file changed, 38 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 4825cef69c6e..8aaaeda7d20b 100644
+index 98c029b7d0ab..b4ae4bb3fc09 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1005,7 +1005,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 
- 	BUILD_BUG_ON(REG_DUMP_COUNT_QCA988X % 4);
- 
--	ath10k_err("target Register Dump\n");
-+	ath10k_err("firmware register dump:\n");
- 	for (i = 0; i < REG_DUMP_COUNT_QCA988X; i += 4)
- 		ath10k_err("[%02d]: 0x%08X 0x%08X 0x%08X 0x%08X\n",
- 			   i,
-@@ -1018,7 +1018,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 	       sizeof(crash_data->reg_dump_values));
+@@ -460,13 +460,46 @@ done:
+ 	return ret;
  }
  
--static void ath10k_pci_hif_dump_area(struct ath10k *ar)
-+static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
++static int ath10k_pci_diag_read32(struct ath10k *ar, u32 address, u32 *value)
++{
++	return ath10k_pci_diag_read_mem(ar, address, value, sizeof(u32));
++}
++
++static int __ath10k_pci_diag_read_hi(struct ath10k *ar, void *dest,
++				     u32 src, u32 len)
++{
++	u32 host_addr, addr;
++	int ret;
++
++	host_addr = host_interest_item_address(src);
++
++	ret = ath10k_pci_diag_read32(ar, host_addr, &addr);
++	if (ret != 0) {
++		ath10k_warn("failed to get memcpy hi address for firmware address %d: %d\n",
++			    src, ret);
++		return ret;
++	}
++
++	ret = ath10k_pci_diag_read_mem(ar, addr, dest, len);
++	if (ret != 0) {
++		ath10k_warn("failed to memcpy firmware memory from %d (%d B): %d\n",
++			    addr, len, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++#define ath10k_pci_diag_read_hi(ar, dest, src, len)		\
++	__ath10k_pci_diag_read_hi(ar, dest, HI_ITEM(src), len);
++
+ /* Read 4-byte aligned data from Target memory or register */
+ static int ath10k_pci_diag_read_access(struct ath10k *ar, u32 address,
+ 				       u32 *data)
  {
- 	struct ath10k_fw_crash_data *crash_data;
- 	char uuid[50];
-@@ -1970,7 +1970,7 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
- 				   fw_indicator & ~FW_IND_EVENT_PENDING);
+ 	/* Assume range doesn't cross this boundary */
+ 	if (address >= DRAM_BASE_ADDRESS)
+-		return ath10k_pci_diag_read_mem(ar, address, data, sizeof(u32));
++		return ath10k_pci_diag_read32(ar, address, data);
  
- 		if (ar_pci->started) {
--			ath10k_pci_hif_dump_area(ar);
-+			ath10k_pci_fw_crashed_dump(ar);
- 		} else {
- 			/*
- 			 * Probable Target failure before we're prepared
-@@ -2391,7 +2391,7 @@ static void ath10k_pci_early_irq_tasklet(unsigned long data)
- 	if (fw_ind & FW_IND_EVENT_PENDING) {
- 		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
- 				   fw_ind & ~FW_IND_EVENT_PENDING);
--		ath10k_pci_hif_dump_area(ar);
-+		ath10k_pci_fw_crashed_dump(ar);
- 	}
+ 	*data = ath10k_pci_read32(ar, address);
+ 	return 0;
+@@ -801,9 +834,7 @@ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
  
- 	ath10k_pci_enable_legacy_irq(ar);
-@@ -2642,7 +2642,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 		ath10k_warn("device has crashed during init\n");
- 		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
- 				   val & ~FW_IND_EVENT_PENDING);
--		ath10k_pci_hif_dump_area(ar);
-+		ath10k_pci_fw_crashed_dump(ar);
- 		return -ECOMM;
+ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ {
+-	u32 reg_dump_area = 0;
+ 	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X] = {};
+-	u32 host_addr;
+ 	int ret;
+ 	u32 i;
+ 
+@@ -812,21 +843,11 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 		   ar->hw_params.name, ar->target_version);
+ 	ath10k_err("firmware version: %s\n", ar->hw->wiphy->fw_version);
+ 
+-	host_addr = host_interest_item_address(HI_ITEM(hi_failure_state));
+-	ret = ath10k_pci_diag_read_mem(ar, host_addr,
+-				       &reg_dump_area, sizeof(u32));
++	ret = ath10k_pci_diag_read_hi(ar, &reg_dump_values[0],
++				      hi_failure_state,
++				      REG_DUMP_COUNT_QCA988X * sizeof(u32));
+ 	if (ret) {
+-		ath10k_err("failed to read FW dump area address: %d\n", ret);
+-		return;
+-	}
+-
+-	ath10k_err("target register Dump Location: 0x%08X\n", reg_dump_area);
+-
+-	ret = ath10k_pci_diag_read_mem(ar, reg_dump_area,
+-				       &reg_dump_values[0],
+-				       REG_DUMP_COUNT_QCA988X * sizeof(u32));
+-	if (ret != 0) {
+-		ath10k_err("failed to read FW dump area: %d\n", ret);
++		ath10k_err("failed to read firmware dump area: %d\n", ret);
+ 		return;
  	}
  
 
