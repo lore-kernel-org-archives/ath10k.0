@@ -1,25 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJrTZ-0005V0-JT
- for ath10k@lists.infradead.org; Tue, 19 Aug 2014 22:01:58 +0000
-Received: by mail-we0-f169.google.com with SMTP id u56so7122543wes.0
- for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 15:01:34 -0700 (PDT)
+ id 1XJydv-0001QN-Ef
+ for ath10k@lists.infradead.org; Wed, 20 Aug 2014 05:41:07 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Timeout Issues
+References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
+ <53F39AB3.10601@candelatech.com>
+ <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
+Date: Wed, 20 Aug 2014 08:40:22 +0300
+In-Reply-To: <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
+ (Pushpal Sidhu's message of "Tue, 19 Aug 2014 14:33:44 -0700")
+Message-ID: <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ-Vmo=q4KgzM76AuAxrMYKSz5anVbv+JMEOknvToshDOE-ziQ@mail.gmail.com>
-References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
- <8761hpc9j9.fsf@kamboji.qca.qualcomm.com>
- <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
- <87wqa5au7q.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=Qcrrutt6ZUtbrgKzx0Mo9186SRuV7dc97FnOxwn3Jxg@mail.gmail.com>
- <87siktat4d.fsf@kamboji.qca.qualcomm.com>
- <CAJ-VmonCMHb9ekiKGsNqpbjar6iWj2souUj0vRpwRkNaadQf1w@mail.gmail.com>
- <CAHqTa-0f0CtPhK6M9_oA+nahrEkP9+gqnigYQsUkfWuhLGmkhQ@mail.gmail.com>
- <CAJ-Vmo=q4KgzM76AuAxrMYKSz5anVbv+JMEOknvToshDOE-ziQ@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Tue, 19 Aug 2014 18:01:14 -0400
-Message-ID: <CAHqTa-223dsnJt_nqpJeB2S5vi9=zMRsMdLX0rA=MP5ganatGA@mail.gmail.com>
-Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +25,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
+To: Pushpal Sidhu <psidhu@gateworks.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-On Tue, Aug 19, 2014 at 5:56 PM, Adrian Chadd <adrian@freebsd.org> wrote:
-> Yeah, but you have to be careful to not drop any queued frames or
-> associated station state. Hence why it's done as a separate vdev,
-> rather than being done under software channel change control.
+Pushpal Sidhu <psidhu@gateworks.com> writes:
 
-That makes sense.  So how doomed am I if I want this feature? :)
+> One interesting thing I found is if I use OpenWrt trunk, ath10k seems
+> to behave fine, but another distro seems to break things. I'll need to
+> dig further into that, but in the mean time, do you have any thoughts?
+
+What do you mean? On the exact same board ath10k works with openwrt but
+with another distribution it fails?
+
+What's this another distribution?
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
