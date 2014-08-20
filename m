@@ -1,32 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XK7FB-0007Fq-Qg
- for ath10k@lists.infradead.org; Wed, 20 Aug 2014 14:52:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
- <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>
- <53D252B4.9070704@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
- <53D6757A.8040803@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7FE@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D800@srvexch01.SODIELEC.local>
- <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC35@srvexch01.SODIELEC.local>
- <53F396F1.8070906@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC37@srvexch01.SODIELEC.local>
-Date: Wed, 20 Aug 2014 17:51:35 +0300
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241014DDDD4DC37@srvexch01.SODIELEC.local>
- (Vu Hai NGUYEN's message of "Wed, 20 Aug 2014 16:13:13 +0200")
-Message-ID: <87sikr43k8.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XK7GG-0007Wc-Fy
+ for ath10k@lists.infradead.org; Wed, 20 Aug 2014 14:53:16 +0000
+Message-ID: <53F4B641.1080900@candelatech.com>
+Date: Wed, 20 Aug 2014 07:52:49 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH v7 2/8] ath10k: provide firmware crash info via debugfs
+References: <20140819082038.16842.46876.stgit@potku.adurom.net>	<20140819082253.16842.32433.stgit@potku.adurom.net>	<CA+BoTQn2aq5EV4mvTs3Ww4i9gAJsmMM5iDfrFd=YfC0YxMi2WQ@mail.gmail.com>	<53F36C63.8040809@candelatech.com>	<87tx5762lk.fsf@kamboji.qca.qualcomm.com>	<53F49DDC.1030300@candelatech.com>
+ <87ha175jlv.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87ha175jlv.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,41 +19,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr> writes:
 
->>> I'd cleaned all rules of iptables and removed all modules of
->>> iptables from kernel by command modprobe -r But there's still some
->>> process of netfilter process running. I disabled netfilter on
->>> bridge interface by writing 0 to these files:
->>> /proc/sys/net/bridge/bridge-nf-call-arptables
->>> /proc/sys/net/bridge/bridge-nf-call-iptables
->>> /proc/sys/net/bridge/bridge-nf-call-ip6tables
->>> and the performance increases from 500 to 550 Mbps (iperf in tcp
->>> reports between 530 ~ 570Mbps). There is no more process like
->>> "br_nf_pre_routing" and "br_nf_forward_ip". Do you think I can do
->>> anything more to strip down netfilter?
+
+On 08/20/2014 07:19 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
->>What do you get for UDP? That seems like pretty good TCP throughput.
+>> On 08/20/2014 12:29 AM, Kalle Valo wrote:
+>>> Ben Greear <greearb@candelatech.com> writes:
+>>>
+>>>>>> + /* Gather dbg-log */ + dump_tlv = (struct ath10k_tlv_dump_data
+>>>>>> *)(buf + sofar); + dump_tlv->type =
+>>>>>> cpu_to_le32(ATH10K_FW_CRASH_DUMP_DBGLOG); + dump_tlv->tlv_len =
+>>>>>> cpu_to_le32(sizeof(crash_data->dbglog_entry_data));
+>>>>> Hmm should this really be sizeof()? Not next_idx (which
+>>>>> effectively defines number of bytes of the dbglog)?
+>>>> I haven't tried decoding this yet, but we may need to know the
+>>>> next_idx to decode this properly.
+>>> I really don't like the idea of having untested code in ath10k.
+>>> Buggy code is okay (preferably document the known bugs when
+>>> submitting code), but untested code is not.
+>>
+>> It would be quite a waste of time to keep re-writing a user-space dump
+>> tool while the patch set is in this much churn, I think.
 >
-> In VHT80 mode and rate forced to NSS3:MCS7, I can obtain 750 Mbps with
-> less than 1% data lost (in both way, AP to STA and vice versa).
-> Normally I can obtain 2/3 theory rate in practical (for expl NSS3:MCS3
-> has 390 Mbps in theory, and if I force to that rate, my TCP throughput
-> is around 270 Mbps). So I should obtain 650 Mbps in practical for TCP
-> with NSS3:MCS7 (975 Mbps in theory). 570 Mbps is so far to 650 Mbps :(
+>> It's not like ath10k is going to blow up, but maybe the decode is less
+>> useful in that we cannot actually get a useful debuglog decode until
+>> the problem is resolved. We get zero firmware dbglog messages
+>> currently, so nothing is lost.
+>
+> Of course ath10k won't blow up, but every patch and every line of code
+> increases the maintenance cost. For example, if I had known that the
+> dbglog dump in your patchset doesn't work at all, I would have dropped
+> it immediately and saved a lot of time of everyone's time, especially
+> mine.
+>
+> So next time you send me untested code PLEASE clearly mention that. I
+> assume that the developer has tested the submitted code well enough that
+> it really works. Hoping it to work is not enough! Unless you are
+> Johannes, Linus or Davem :)
 
-Forcing the data rate isn't really optimal. Have you tried 10.2
-firmware? I was told it has improvements in the rate control algorithm.
+I know that I mentioned I have not actually written the decode tool.
+I did test my original patches to make sure they properly dumped
+a data file and did not crash the kernel or otherwise muck up the
+driver.
+
+And, actually I think I could make a decode tool able to decode the
+dbglog as written, especially if the next-idx is included...the messages
+are normalized enough that I can just read ints until I find something
+that is a legit start of message.  Not super clean, but kernel would
+remain simpler.
+
+I think we would make more progress if we were slightly less picky on
+style issues and details for patches, and just make more
+improvements after the initial patches go in.  It would certainly
+make it easier to do things like write and test and improve the decode
+tool.
+
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
