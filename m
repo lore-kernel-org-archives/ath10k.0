@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJzhU-0005Qx-TY
- for ath10k@lists.infradead.org; Wed, 20 Aug 2014 06:48:54 +0000
-Received: by mail-wi0-f181.google.com with SMTP id bs8so6388213wib.8
- for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 23:48:30 -0700 (PDT)
+ id 1XJzhg-0005Ve-5i
+ for ath10k@lists.infradead.org; Wed, 20 Aug 2014 06:49:05 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v7 2/8] ath10k: provide firmware crash info via debugfs
+References: <20140819082038.16842.46876.stgit@potku.adurom.net>
+ <20140819082253.16842.32433.stgit@potku.adurom.net>
+ <CA+BoTQn2aq5EV4mvTs3Ww4i9gAJsmMM5iDfrFd=YfC0YxMi2WQ@mail.gmail.com>
+ <53F36C63.8040809@candelatech.com>
+ <CA+BoTQ=ocpY2BDCGhMB7E9s4ykp18uXHMTc7rOn0qb7mDyZ5qw@mail.gmail.com>
+Date: Wed, 20 Aug 2014 09:48:31 +0300
+In-Reply-To: <CA+BoTQ=ocpY2BDCGhMB7E9s4ykp18uXHMTc7rOn0qb7mDyZ5qw@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 20 Aug 2014 08:28:14 +0200")
+Message-ID: <87bnrf7j28.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
-References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
- <53F39AB3.10601@candelatech.com>
- <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
- <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 20 Aug 2014 08:48:30 +0200
-Message-ID: <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
-Subject: Re: Timeout Issues
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,71 +27,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, Pushpal Sidhu <psidhu@gateworks.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 20 August 2014 07:40, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Pushpal Sidhu <psidhu@gateworks.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 19 August 2014 17:25, Ben Greear <greearb@candelatech.com> wrote:
+>> On 08/19/2014 02:33 AM, Michal Kazior wrote:
+>>> On 19 August 2014 10:22, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>>>> +       __le32 target_version;
+>>>> +       __le32 fw_version_major;
+>>>> +       __le32 fw_version_minor;
+>>>> +       __le32 fw_version_release;
+>>>> +       __le32 fw_version_build;
+>>>> +       __le32 phy_capability;
+>>>> +       __le32 hw_min_tx_power;
+>>>> +       __le32 hw_max_tx_power;
+>>>> +       __le32 ht_cap_info;
+>>>> +       __le32 vht_cap_info;
+>>>> +       __le32 num_rf_chains;
+>>>
+>>>
+>>> Hmm.. some of these values don't really change once driver is loaded
+>>> so we could probably just export them as separate debugfs entries but
+>>> perhaps that's an overkill just for dumping.
+>>
+>>
+>> I think it will be easier for all involved if there is a single dump image
+>> that
+>> has all needed info.  Likely the end user of the dump file will have little
+>> or no
+>> interaction with the host that dumped the file to begin with.
 >
->> One interesting thing I found is if I use OpenWrt trunk, ath10k seems
->> to behave fine, but another distro seems to break things. I'll need to
->> dig further into that, but in the mean time, do you have any thoughts?
->
-> What do you mean? On the exact same board ath10k works with openwrt but
-> with another distribution it fails?
->
-> What's this another distribution?
+> I think there's been this idea about moving dumping to udev somewhat,
+> no? 
 
-I'm rather interested in the toolchain differences. Perhaps the
-compiler you used to build 3.16 reorders instructions so much it
-breaks driver interaction with the hardware. This would suggests
-ath10k is missing some compiler/memory barriers.
+Yeah. But I'm thinking that should just signal user space that there's a
+new crash dump available, nothing else.
 
-Can you apply the following patch and see if it changes anything, please?
+> Since this is just debugfs then I imagine you could have a userspace
+> program that would create the single blob/crash report from things it
+> thinks is important, e.g.. `uname -a`, debugfs entries (fw stack
+> traces, dbglog, etc), recent kernel log buffer, etc. It could even all
+> be stored in plaintext (with binary data encoded as a hexdump). But
+> that, I guess, could be cumbersome, at least initially, until all
+> major distros adapt.
 
+Sure, we can push lots of this to user space. But what's the point?
 
-From 3f5fc9bae19a0b429370025e781701472fc64529 Mon Sep 17 00:00:00 2001
-From: Michal Kazior <michal.kazior@tieto.com>
-Date: Wed, 20 Aug 2014 08:30:15 +0200
-Subject: [PATCH] ath10k: add memory barries
+With the current approach we get a self-contained crash dump which the
+user (be it a real person or automated) can store with a simple file
+copy operatation and can be easily post-processed afterwards. What you
+propose is a lot of work for everyone, most likely even more bugs and
+without any clear benefits. At least the memory consumption should be
+the same (if not even increase due to increased complexity).
 
-Testing purposes.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htc.c | 1 +
- drivers/net/wireless/ath/ath10k/pci.c | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c
-b/drivers/net/wireless/ath/ath10k/htc.c
-index 7e08bb3..a1eb639 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -682,6 +682,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
-        req_msg->service_id = __cpu_to_le16(conn_req->service_id);
-
-        reinit_completion(&htc->ctl_resp);
-+       mb();
-
-        status = ath10k_htc_send(htc, ATH10K_HTC_EP_0, skb);
-        if (status) {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c
-b/drivers/net/wireless/ath/ath10k/pci.c
-index 98c029b..673de9f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1115,6 +1115,8 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
-                goto err_stop;
-        }
-
-+       mb();
-+
-        /* Post buffers once to start things off. */
-        ret = ath10k_pci_post_rx(ar);
-        if (ret) {
 -- 
-1.8.5.3
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
