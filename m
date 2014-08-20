@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XJyxT-00088W-4b
- for ath10k@lists.infradead.org; Wed, 20 Aug 2014 06:01:20 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Timeout Issues
-References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
- <87vbpn7lqq.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 20 Aug 2014 09:00:12 +0300
-In-Reply-To: <87vbpn7lqq.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 20 Aug 2014 08:50:37 +0300")
-Message-ID: <87r40b7lar.fsf@kamboji.qca.qualcomm.com>
+ id 1XJz7J-0003st-8O
+ for ath10k@lists.infradead.org; Wed, 20 Aug 2014 06:11:30 +0000
+Received: by mail-wi0-f175.google.com with SMTP id ho1so6498999wib.14
+ for <ath10k@lists.infradead.org>; Tue, 19 Aug 2014 23:10:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
+References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
+Date: Wed, 20 Aug 2014 08:10:57 +0200
+Message-ID: <CA+BoTQ=84qaFpqoQ3LmSenzT0LOfYTiLFVA=KErEohCa2LGwpw@mail.gmail.com>
+Subject: Re: Timeout Issues
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Pushpal Sidhu <psidhu@gateworks.com>
-Cc: ath10k@lists.infradead.org
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> Pushpal Sidhu <psidhu@gateworks.com> writes:
->
->> I'm having issues with ath10k timing out when trying to communicate
->> with the wireless card (UNEX DAXA-O1 + have tried several others).
->> Below is what I grabbed from dmesg.
->>
->> $ dmesg | grep ath10k
->> [    5.233469] ath10k_pci 0000:09:00.0: enabling device (0140 -> 0142)
->> [    5.575954] ath10k: pci irq legacy irq_mode 0 reset_mode 0
->> [    7.704403] ath10k: failed to receive control response completion, polling..
->> [    8.704379] ath10k: Service connect timeout: -110
->> [    8.709089] ath10k: failed to connect htt (-110)
->> [    9.020495] ath10k: could not init core (-110)
->> [    9.324371] ath10k: could not probe fw (-110)
->>
->> This causes the card to not be registered, and thus is unusable (there
->> is no wlanX)
->
-> My first guess is a problem related with the PCI bus, but that's just a
-> guess. Can you get us a trace-cmd log:
->
-> http://wireless.kernel.org/en/users/Drivers/ath10k/debug#Tracing
-
-Just realised that's not possible as you would have to run trace-cmd
-running before ath10k is loaded and that won't work.
-
-debug_mask with 0xffffffff is better:
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/debug#Debug_log_messages
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgQXVndXN0IDIwMTQgMjA6MjcsIFB1c2hwYWwgU2lkaHUgPHBzaWRodUBnYXRld29ya3Mu
+Y29tPiB3cm90ZToKPiBIaSwKPgo+IEknbSBoYXZpbmcgaXNzdWVzIHdpdGggYXRoMTBrIHRpbWlu
+ZyBvdXQgd2hlbiB0cnlpbmcgdG8gY29tbXVuaWNhdGUKPiB3aXRoIHRoZSB3aXJlbGVzcyBjYXJk
+IChVTkVYIERBWEEtTzEgKyBoYXZlIHRyaWVkIHNldmVyYWwgb3RoZXJzKS4KPiBCZWxvdyBpcyB3
+aGF0IEkgZ3JhYmJlZCBmcm9tIGRtZXNnLgo+Cj4gJCBkbWVzZyB8IGdyZXAgYXRoMTBrCj4gWyAg
+ICA1LjIzMzQ2OV0gYXRoMTBrX3BjaSAwMDAwOjA5OjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDE0
+MCAtPiAwMTQyKQo+IFsgICAgNS41NzU5NTRdIGF0aDEwazogcGNpIGlycSBsZWdhY3kgaXJxX21v
+ZGUgMCByZXNldF9tb2RlIDAKPiBbICAgIDcuNzA0NDAzXSBhdGgxMGs6IGZhaWxlZCB0byByZWNl
+aXZlIGNvbnRyb2wgcmVzcG9uc2UgY29tcGxldGlvbiwgcG9sbGluZy4uCj4gWyAgICA4LjcwNDM3
+OV0gYXRoMTBrOiBTZXJ2aWNlIGNvbm5lY3QgdGltZW91dDogLTExMAo+IFsgICAgOC43MDkwODld
+IGF0aDEwazogZmFpbGVkIHRvIGNvbm5lY3QgaHR0ICgtMTEwKQo+IFsgICAgOS4wMjA0OTVdIGF0
+aDEwazogY291bGQgbm90IGluaXQgY29yZSAoLTExMCkKPiBbICAgIDkuMzI0MzcxXSBhdGgxMGs6
+IGNvdWxkIG5vdCBwcm9iZSBmdyAoLTExMCkKCk5vdGUgdGhlOgoKWyAgICA3LjcwNDQwM10gYXRo
+MTBrOiBmYWlsZWQgdG8gcmVjZWl2ZSBjb250cm9sIHJlc3BvbnNlIGNvbXBsZXRpb24sIHBvbGxp
+bmcuLgoKVGhpcyBzdWdnZXN0cyBpbnRlcnJ1cHRzIGFyZW4ndCBkZWxpdmVyZWQgdG8gdGhlIGhv
+c3Qgc3lzdGVtIGZvciBzb21lCnJlYXNvbiBhbHRob3VnaCBmaXJtd2FyZSBpcyBvcGVyYXRpb25h
+bCAoY29udHJvbCByZXNwb25zZSBpdHNlbGYgd2FzCmRlbGl2ZXJlZCB0byB0aGUgaG9zdCkuCgpU
+aGlzIHBhcnRpY3VsYXIgd2FybmluZyB3YXMgaW50cm9kdWNlZCBhcyBwYXJ0IG9mIGEgd29ya2Fy
+b3VuZCBmb3IgYQp2aXJ0dWFsIG1hY2hpbmUgUENJIHBhc3N0aHJvdWdoICh3aXRoIHRoZSBzdXNw
+aWNpb24gaW9tZW0gd3JpdGVzCmFyZW4ndCBwcm9wYWdhdGVkIHByb3Blcmx5IGluIHRoZSBWTSku
+IEhvd2V2ZXIgb25seSBjb250cm9sIHJlc3BvbnNlCndhcyB0aGUgc3ViamVjdCBvZiB0aGUgbWlz
+c2luZyBpbnRlcnJ1cHQuIEluIHlvdXIgY2FzZSBzdWJzZXF1ZW50CmNvbW11bmljYXRpb24gaXMg
+bWlzc2luZyBpbnRlcnJ1cHRzLgoKQ2FuIHlvdSBjaGVjayBpZiB0aGUgaW50ZXJydXB0IGxpbmUg
+aXMgc2hhcmVkIHdpdGggYW55IG90aGVyIGRldmljZXMsIHBsZWFzZToKCiAgbHNwY2kgLXZ2IHwg
+Z3JlcCAtZSAnLi46Li5cLi4nIC1lIElSUQogIGNhdCAvcHJvYy9pbnRlcnJ1cHRzCgoKPgo+IFRo
+aXMgY2F1c2VzIHRoZSBjYXJkIHRvIG5vdCBiZSByZWdpc3RlcmVkLCBhbmQgdGh1cyBpcyB1bnVz
+YWJsZSAodGhlcmUKPiBpcyBubyB3bGFuWCkKPgo+IEkgYW0gYWJsZSB0byB1c2UgdGhlIEludGVs
+IDcyNjAgY2FyZCAoYW5vdGhlciBBQyBjYXJkKSB3aXRoIHRoZWlyCj4gZmlybXdhcmUgYmluYXJ5
+IGJsb2IsIHNvIEkgZG9uJ3QgYmVsaWV2ZSB0aGlzIGlzIGEgaGFyZHdhcmUKPiBjb25maWd1cmF0
+aW9uIGlzc3VlIHdpdGggbWluaS1wY2llLgoKSSBhc3N1bWUgeW91IGhhdmUgb25seSAxIG1pbmkt
+cGNpZSBzbG90IG9uIHRoZSBib2FyZCBhbmQgeW91J3ZlIHVzZWQKaXQgd2hlbiB0ZXN0aW5nIGJv
+dGggaW50ZWwgYW5kIGF0aCBkZXZpY2VzIG9yIGRvZXMgaXQgaGF2ZSBtb3JlIHRoYW4gMQpzbG90
+IGFuZCB5b3UndmUgdXNlZCBkaWZmZXJlbnQgc2xvdHMgd2hlbiB0ZXN0aW5nIGJvdGggZGV2aWNl
+cz8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
