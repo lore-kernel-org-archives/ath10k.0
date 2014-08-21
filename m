@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKRnq-0004d6-DL
- for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:49:19 +0000
-Subject: [PATCH v8 0/4] ath10k: firmware crash dump
+ id 1XKRnx-0004eC-EO
+ for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:49:26 +0000
+Subject: [PATCH v8 1/4] ath10k: add ath10k_pci_diag_* helpers
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 21 Aug 2014 15:48:50 +0300
-Message-ID: <20140821124705.27159.67898.stgit@potku.adurom.net>
+Date: Thu, 21 Aug 2014 15:49:00 +0300
+Message-ID: <20140821124900.27159.1594.stgit@potku.adurom.net>
+In-Reply-To: <20140821124705.27159.67898.stgit@potku.adurom.net>
+References: <20140821124705.27159.67898.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,130 +25,102 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-And yet another version of firmware crash dumps. Now I dropped all dumps except
-firmware registers and tested all the features myself.
+ath10k_pci_diag_read32() is for reading u32 from a device and ath10k_pci_diag_read_hi()
+is a helper for reading data using "host interest" table.
 
-v8:
-
-* ATH10K_FW_CRASH_DUMP_REGDUMP -> ATH10K_FW_CRASH_DUMP_REGISTERS
-
-* drop storing of dbglogs in patch 2
-
-* drop patches adding stack and BSS dumps as they are still untested
-
-* fix endian issue with the register dump
-
-v7:
-
-* really send "ath10k: print more driver info when firmware crashes",
-  I had accidentally dropped it in previous series
-
-* add ATH10K_FW_CRASH_DUMP_VERSION (Michal)
-
-* remove extra newline (Michal)
-
-* fix unprotected access of crashed_since_read in
-  ath10k_fw_crash_dump_open() (Michal)
-
-* take data_lock only once in ath10k_build_dump_file() (Michal)
-
-* use vzalloc() instead of vmalloc() and memset() in
-  ath10k_build_dump_file()
-
-* fix memory leak in ath10k_debug_create() (Michal)
-
-* always use little endian in the dump file and drop endian field from
-  the dump file (Michal)
-
-* print uuid in LE format
-
-v6:
-
-* fix vzalloc(sizeof(ar->debug.fw_crash_data)), fixes the crash I saw (Ben)
-
-* "Target Register Dump" -> "firmware register dump"
-
-* add ath10k_print_driver_info()
-
-* take timestamp at crash time instead of crash-dump-gather time (Ben)
-
-* fix locking comment in struct ath10k::fw (Ben)
-
-* move "crash_data->crashed_since_read = true" to
-  ath10k_debug_get_new_few_crash_data()
-
-* ath10k_pci_hif_dump_area() holds the lock all the time so that we
-  can guarantee that changes to ath10k_fw_crash_data are atomic
-
-* take data_lock earlier in ath10k_build_dump_file() so that all
-  access to crash_data is protected
-
-* rename debugfs file fw_crash_dump
-
-* fw_crash_dump debugfs files returns -ENODATA if there's no new
-  crash dump
-
-* store bss addresses and lengths as u32 in struct ath10k::fw
-
-v5:
-
-* dump_data->tv_sec and tv_nsec to 64 bits (because long can be 32 bits
-  on some platforms)
-
-* fix long lines
-
-* renamed ath10k_dbg_save_fw_dbg_buffer() to ath10k_debug_dbglog_add()
-
-* add helpers for ath10k_pci_diag* functions
-
-* refactor and rename ath10k_pci_hif_dump_area()
-
-* latest crash dump is always stored (instead of the oldest unread)
-
-* add ath10k_debug_get_fw_crash_data()
-
-* move fw_r?m_bss_* fields to ar->fw
-
-* struct ath10k_fw_crash_data is allocated with vmalloc()
-
-* atomic allocation in ath10k_pci_dump_bss() is bad, fix that by using vmalloc
-  in module initialisation
-
-* separate FW IE entries for BSS regions
-
-* don't use ath10k_err()
-
-* simplify locking and memory allocation for FW IE handling
-
-* add uuid
-
-* move struct ath10k_dump_file_data and enum ath10k_fw_error_dump_type to debug.c
-
-* function and variable naming, using ath10k_fw_crash_ prefix etc
-
-* change warning and debug messages to follow ath10k style
-
-* add ath10k_debug_get_new_fw_crash_data() to avoid ifdefs in pci.c
-
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/pci.c |   55 +++++++++++++++++++++++----------
+ 1 file changed, 38 insertions(+), 17 deletions(-)
 
-Ben Greear (1):
-      ath10k: provide firmware crash info via debugfs
-
-Kalle Valo (3):
-      ath10k: add ath10k_pci_diag_* helpers
-      ath10k: rename ath10k_pci_hif_dump_area() to ath10k_pci_fw_crashed_dump()
-      ath10k: print more driver info when firmware crashes
-
-
- drivers/net/wireless/ath/ath10k/core.c  |   17 --
- drivers/net/wireless/ath/ath10k/core.h  |   13 ++
- drivers/net/wireless/ath/ath10k/debug.c |  267 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h |   16 ++
- drivers/net/wireless/ath/ath10k/hw.h    |    2 
- drivers/net/wireless/ath/ath10k/pci.c   |  104 +++++++++---
- drivers/net/wireless/ath/ath10k/pci.h   |    3 
- 7 files changed, 373 insertions(+), 49 deletions(-)
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 98c029b7d0ab..b4ae4bb3fc09 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -460,13 +460,46 @@ done:
+ 	return ret;
+ }
+ 
++static int ath10k_pci_diag_read32(struct ath10k *ar, u32 address, u32 *value)
++{
++	return ath10k_pci_diag_read_mem(ar, address, value, sizeof(u32));
++}
++
++static int __ath10k_pci_diag_read_hi(struct ath10k *ar, void *dest,
++				     u32 src, u32 len)
++{
++	u32 host_addr, addr;
++	int ret;
++
++	host_addr = host_interest_item_address(src);
++
++	ret = ath10k_pci_diag_read32(ar, host_addr, &addr);
++	if (ret != 0) {
++		ath10k_warn("failed to get memcpy hi address for firmware address %d: %d\n",
++			    src, ret);
++		return ret;
++	}
++
++	ret = ath10k_pci_diag_read_mem(ar, addr, dest, len);
++	if (ret != 0) {
++		ath10k_warn("failed to memcpy firmware memory from %d (%d B): %d\n",
++			    addr, len, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++#define ath10k_pci_diag_read_hi(ar, dest, src, len)		\
++	__ath10k_pci_diag_read_hi(ar, dest, HI_ITEM(src), len);
++
+ /* Read 4-byte aligned data from Target memory or register */
+ static int ath10k_pci_diag_read_access(struct ath10k *ar, u32 address,
+ 				       u32 *data)
+ {
+ 	/* Assume range doesn't cross this boundary */
+ 	if (address >= DRAM_BASE_ADDRESS)
+-		return ath10k_pci_diag_read_mem(ar, address, data, sizeof(u32));
++		return ath10k_pci_diag_read32(ar, address, data);
+ 
+ 	*data = ath10k_pci_read32(ar, address);
+ 	return 0;
+@@ -801,9 +834,7 @@ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+ 
+ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ {
+-	u32 reg_dump_area = 0;
+ 	u32 reg_dump_values[REG_DUMP_COUNT_QCA988X] = {};
+-	u32 host_addr;
+ 	int ret;
+ 	u32 i;
+ 
+@@ -812,21 +843,11 @@ static void ath10k_pci_hif_dump_area(struct ath10k *ar)
+ 		   ar->hw_params.name, ar->target_version);
+ 	ath10k_err("firmware version: %s\n", ar->hw->wiphy->fw_version);
+ 
+-	host_addr = host_interest_item_address(HI_ITEM(hi_failure_state));
+-	ret = ath10k_pci_diag_read_mem(ar, host_addr,
+-				       &reg_dump_area, sizeof(u32));
++	ret = ath10k_pci_diag_read_hi(ar, &reg_dump_values[0],
++				      hi_failure_state,
++				      REG_DUMP_COUNT_QCA988X * sizeof(u32));
+ 	if (ret) {
+-		ath10k_err("failed to read FW dump area address: %d\n", ret);
+-		return;
+-	}
+-
+-	ath10k_err("target register Dump Location: 0x%08X\n", reg_dump_area);
+-
+-	ret = ath10k_pci_diag_read_mem(ar, reg_dump_area,
+-				       &reg_dump_values[0],
+-				       REG_DUMP_COUNT_QCA988X * sizeof(u32));
+-	if (ret != 0) {
+-		ath10k_err("failed to read FW dump area: %d\n", ret);
++		ath10k_err("failed to read firmware dump area: %d\n", ret);
+ 		return;
+ 	}
+ 
 
 
 _______________________________________________
