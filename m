@@ -1,35 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKRgM-0002ZN-8z
- for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:41:35 +0000
-Received: by mail-wi0-f173.google.com with SMTP id f8so8595293wiw.6
- for <ath10k@lists.infradead.org>; Thu, 21 Aug 2014 05:41:10 -0700 (PDT)
+ id 1XKRnq-0004d6-DL
+ for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:49:19 +0000
+Subject: [PATCH v8 0/4] ath10k: firmware crash dump
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Thu, 21 Aug 2014 15:48:50 +0300
+Message-ID: <20140821124705.27159.67898.stgit@potku.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <EE97821C81277E459BEA5C6384C6F241014DDDD4DC38@srvexch01.SODIELEC.local>
-References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
- <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
- <CACKGw+HraUvPSVprRQCEh0=MRaiahpGde9wUj-w5pbDtXSj8Yw@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EE@srvexch01.SODIELEC.local>
- <CAJ-Vmon+TC_TouvoAX3kZT5x+crrStHLmcjCfOeGHvC5eszbTA@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7EF@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F5@srvexch01.SODIELEC.local>
- <53D252B4.9070704@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7F8@srvexch01.SODIELEC.local>
- <53D6757A.8040803@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D7FE@srvexch01.SODIELEC.local>
- <EE97821C81277E459BEA5C6384C6F241012F15C1D800@srvexch01.SODIELEC.local>
- <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC35@srvexch01.SODIELEC.local>
- <53F396F1.8070906@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC37@srvexch01.SODIELEC.local>
- <87sikr43k8.fsf@kamboji.qca.qualcomm.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC38@srvexch01.SODIELEC.local>
-Date: Thu, 21 Aug 2014 14:41:10 +0200
-Message-ID: <CA+BoTQk4LeWAydcuoqanMP_1GumsWdEmaL4EDua3w7vp-uAtsQ@mail.gmail.com>
-Subject: Re: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -38,52 +16,140 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gMjEgQXVndXN0IDIwMTQgMTQ6MjMsIFZ1IEhhaSBOR1VZRU4gPHZoLm5ndXllbkBhY3RpYXNv
-ZGllbGVjLmZyPiB3cm90ZToKPj4+PldoYXQgZG8geW91IGdldCBmb3IgVURQPyBUaGF0IHNlZW1z
-IGxpa2UgcHJldHR5IGdvb2QgVENQIHRocm91Z2hwdXQuCj4KPj4+IEluIFZIVDgwIG1vZGUgYW5k
-IHJhdGUgZm9yY2VkIHRvIE5TUzM6TUNTNywgSSBjYW4gb2J0YWluIDc1MCBNYnBzIHdpdGgKPj4+
-IGxlc3MgdGhhbiAxJSBkYXRhIGxvc3QgKGluIGJvdGggd2F5LCBBUCB0byBTVEEgYW5kIHZpY2Ug
-dmVyc2EpLgo+Pj4gTm9ybWFsbHkgSSBjYW4gb2J0YWluIDIvMyB0aGVvcnkgcmF0ZSBpbiBwcmFj
-dGljYWwgKGZvciBleHBsIE5TUzM6TUNTMwo+Pj4gaGFzIDM5MCBNYnBzIGluIHRoZW9yeSwgYW5k
-IGlmIEkgZm9yY2UgdG8gdGhhdCByYXRlLCBteSBUQ1AgdGhyb3VnaHB1dAo+Pj4gaXMgYXJvdW5k
-IDI3MCBNYnBzKS4gU28gSSBzaG91bGQgb2J0YWluIDY1MCBNYnBzIGluIHByYWN0aWNhbCBmb3Ig
-VENQCj4+PiB3aXRoIE5TUzM6TUNTNyAoOTc1IE1icHMgaW4gdGhlb3J5KS4gNTcwIE1icHMgaXMg
-c28gZmFyIHRvIDY1MCBNYnBzIDooCj4KPj5Gb3JjaW5nIHRoZSBkYXRhIHJhdGUgaXNuJ3QgcmVh
-bGx5IG9wdGltYWwuIEhhdmUgeW91IHRyaWVkIDEwLjIKPj5maXJtd2FyZT8gSSB3YXMgdG9sZCBp
-dCBoYXMgaW1wcm92ZW1lbnRzIGluIHRoZSByYXRlIGNvbnRyb2wgYWxnb3JpdGhtLgo+Cj4gWWVz
-IGJ1dCBpdCBkb2Vzbid0IGhlbHAsIGV2ZW4gd29yc2UuCj4gV2l0aCAxMC4xIGZpcm13YXJlLCBJ
-IGNhbiBnbyB1cCB0byA2MTAgTWJwcyBUQ1AgKE5TUzM6TUNTNyBhbmQgY2hlY2tzdW0gb2ZmIGxv
-YWQgZGlzYWJsZWQgb24gaW50ZXJmYWNlIGV0aGVybmV0Cj4gb2YgdGhlIFBDIHdoaWNoIGNvbm5l
-Y3RzIHRvIG15IHN0YXRpb24ncyBkZXZpY2UsIEkganVzdCBkaXNjb3ZlciBpdCwgYmVmb3JlIG15
-IHJhdGUgd2FzIH4gNTcwIE1icHMpLgo+IFdpdGggMTAuMiBmaXJtd2FyZSBhbmQgdGhlIHNhbWUg
-Y29uZmlnLCBteSBoaWdoZXN0IHRocm91Z2ggcHV0IGlzIG9ubHkgYXJvdW5kIDU2MCBNYnBzLiBC
-dXQgdGhlcmUgaXMgYW4gaW1wcm92ZW1lbnQKPiB0aGF0IHRoZSByYXRlIG9mIE1DUzggYW5kIE1D
-UzkgaXMgbm90IG11Y2ggbG93ZXIgdGhhbiBNQ1M3IGFzIGluIDEwLjEgZmlybXdhcmUuIEhlcmUg
-aXMgYSBzbWFsbCBjb21wYXJlIGJldHdlZW4gMTAuMQo+IGFuZCAxMC4yIChhbHdheXMgd2l0aCBO
-U1MzKQo+IE1DUyA3OiA2MTAgdnMgNTYwIE1icHMKPiBNQ1MgODogNTMwIHZzIDU2MCBNYnBzIChN
-Q1M4IGdvdCB0aGUgc2FtZSByYXRlIGFzIE1DUzcgd2l0aCAxMC4yIGZpcm13YXJlKQo+IE1DUyA5
-OiA0MTAgdnMgNTEwIE1icHMKPgo+IEJ1dCBjYXB0dXJlZCBsb2cgZnJvbSBXaXJlc2hhcmsgc3Rp
-bGwgc2hvd3MgbWUgVkhUIGNhcGFiIGlzIGJldHdlZW4gTUNTIDAtOSBidXQgVkhUIG9wZXJhdGlv
-biBpcyBvbmx5IGJldHdlZW4gTUNTIDAtNy4KClRoZSAxMC4yIHNlZW1zIHRvIHBlcmZvcm0gc2xv
-d2VyIGluIG15IGNhYmxlZCB0ZXN0IGVudmlyb25tZW50Cih+OTAwbWJwcyBvbiAxMC4xIHZzIH44
-MjBtYnBzIG9uIDEwLjIpIGFzIHdlbGwgc28gZmFyLgoKCj4gQW5kIHRoZSAxMC4yIGZpcm13YXJl
-IHN0aWxsIGNyYXNoZWQgd2l0aCBzdGF0aW9uIG9uIHByb21pc2N1b3VzIG1vZGUuIFRoZXJlIGlz
-IGFub3RoZXIgYnVnIHRoYXQgSSBhbHNvIHNhdyBpbiAxMC4yIGZpcm13YXJlLAo+IGFmdGVyIGEg
-bW9tZW50IHRoYXQgbXkgU1RBIGNvbm5lY3RlZCB0byB0aGUgQVAsIEkgbG9zdCB0aGUgY29ubmVj
-dGlvbiAocGluZ2luZyBub24gc3VjY2VzcykgYW5kIHRoaXMgbWVzc2FnZSBrZWVwcyBwcmludGlu
-ZzoKPiBhdGgxMGs6IGZhaWxlZCB0byBmbHVzaCB0cmFuc21pdCBxdWV1ZSAoc2tpcCAwIGFyLXN0
-YXRlIDEpOiAwCgpZZWFoLiBUaGVyZSBzZWVtcyB0byBiZSBhIGJ1ZyBpbiAxMC4yOiA4ICh0aGF0
-J3MgdGhlIG1heCBJJ3ZlIHNlZW4gc28KZmFyOyBuZXZlciBtb3JlKSB0eGVkIGZyYW1lcyBnZXQg
-c3R1Y2sgYW5kIGFyZSBuZXZlciBjb21wbGV0ZWQgYnkKZmlybXdhcmUuIE9uY2UgeW91IGdldCBh
-dCBsZWFzdCAxIGZyYW1lIHN0dWNrIHlvdSdsbCBzdGFydCBnZXR0aW5nCiJmYWlsZWQgdG8gZmx1
-c2giIHVudGlsIHlvdSBzdG9wIGFsbCBhdGgxMGsncyBpbnRlcmZhY2VzLgoKCk1pY2hhxYIKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+And yet another version of firmware crash dumps. Now I dropped all dumps except
+firmware registers and tested all the features myself.
+
+v8:
+
+* ATH10K_FW_CRASH_DUMP_REGDUMP -> ATH10K_FW_CRASH_DUMP_REGISTERS
+
+* drop storing of dbglogs in patch 2
+
+* drop patches adding stack and BSS dumps as they are still untested
+
+* fix endian issue with the register dump
+
+v7:
+
+* really send "ath10k: print more driver info when firmware crashes",
+  I had accidentally dropped it in previous series
+
+* add ATH10K_FW_CRASH_DUMP_VERSION (Michal)
+
+* remove extra newline (Michal)
+
+* fix unprotected access of crashed_since_read in
+  ath10k_fw_crash_dump_open() (Michal)
+
+* take data_lock only once in ath10k_build_dump_file() (Michal)
+
+* use vzalloc() instead of vmalloc() and memset() in
+  ath10k_build_dump_file()
+
+* fix memory leak in ath10k_debug_create() (Michal)
+
+* always use little endian in the dump file and drop endian field from
+  the dump file (Michal)
+
+* print uuid in LE format
+
+v6:
+
+* fix vzalloc(sizeof(ar->debug.fw_crash_data)), fixes the crash I saw (Ben)
+
+* "Target Register Dump" -> "firmware register dump"
+
+* add ath10k_print_driver_info()
+
+* take timestamp at crash time instead of crash-dump-gather time (Ben)
+
+* fix locking comment in struct ath10k::fw (Ben)
+
+* move "crash_data->crashed_since_read = true" to
+  ath10k_debug_get_new_few_crash_data()
+
+* ath10k_pci_hif_dump_area() holds the lock all the time so that we
+  can guarantee that changes to ath10k_fw_crash_data are atomic
+
+* take data_lock earlier in ath10k_build_dump_file() so that all
+  access to crash_data is protected
+
+* rename debugfs file fw_crash_dump
+
+* fw_crash_dump debugfs files returns -ENODATA if there's no new
+  crash dump
+
+* store bss addresses and lengths as u32 in struct ath10k::fw
+
+v5:
+
+* dump_data->tv_sec and tv_nsec to 64 bits (because long can be 32 bits
+  on some platforms)
+
+* fix long lines
+
+* renamed ath10k_dbg_save_fw_dbg_buffer() to ath10k_debug_dbglog_add()
+
+* add helpers for ath10k_pci_diag* functions
+
+* refactor and rename ath10k_pci_hif_dump_area()
+
+* latest crash dump is always stored (instead of the oldest unread)
+
+* add ath10k_debug_get_fw_crash_data()
+
+* move fw_r?m_bss_* fields to ar->fw
+
+* struct ath10k_fw_crash_data is allocated with vmalloc()
+
+* atomic allocation in ath10k_pci_dump_bss() is bad, fix that by using vmalloc
+  in module initialisation
+
+* separate FW IE entries for BSS regions
+
+* don't use ath10k_err()
+
+* simplify locking and memory allocation for FW IE handling
+
+* add uuid
+
+* move struct ath10k_dump_file_data and enum ath10k_fw_error_dump_type to debug.c
+
+* function and variable naming, using ath10k_fw_crash_ prefix etc
+
+* change warning and debug messages to follow ath10k style
+
+* add ath10k_debug_get_new_fw_crash_data() to avoid ifdefs in pci.c
+
+---
+
+Ben Greear (1):
+      ath10k: provide firmware crash info via debugfs
+
+Kalle Valo (3):
+      ath10k: add ath10k_pci_diag_* helpers
+      ath10k: rename ath10k_pci_hif_dump_area() to ath10k_pci_fw_crashed_dump()
+      ath10k: print more driver info when firmware crashes
+
+
+ drivers/net/wireless/ath/ath10k/core.c  |   17 --
+ drivers/net/wireless/ath/ath10k/core.h  |   13 ++
+ drivers/net/wireless/ath/ath10k/debug.c |  267 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h |   16 ++
+ drivers/net/wireless/ath/ath10k/hw.h    |    2 
+ drivers/net/wireless/ath/ath10k/pci.c   |  104 +++++++++---
+ drivers/net/wireless/ath/ath10k/pci.h   |    3 
+ 7 files changed, 373 insertions(+), 49 deletions(-)
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
