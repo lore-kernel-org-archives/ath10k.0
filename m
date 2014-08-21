@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailhost.actiasodielec.fr ([89.91.64.97])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKRPY-0000h1-Kd
- for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:24:13 +0000
-From: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
-Date: Thu, 21 Aug 2014 14:23:34 +0200
-Subject: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
-Message-ID: <EE97821C81277E459BEA5C6384C6F241014DDDD4DC38@srvexch01.SODIELEC.local>
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XKRgM-0002ZN-8z
+ for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:41:35 +0000
+Received: by mail-wi0-f173.google.com with SMTP id f8so8595293wiw.6
+ for <ath10k@lists.infradead.org>; Thu, 21 Aug 2014 05:41:10 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <EE97821C81277E459BEA5C6384C6F241014DDDD4DC38@srvexch01.SODIELEC.local>
 References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
  <CACKGw+HM-VYpotQGcTsanebvfU-4iGocOpbbGak7iUDb7sUURA@mail.gmail.com>
  <EE97821C81277E459BEA5C6384C6F241012F15C1D7EC@srvexch01.SODIELEC.local>
@@ -23,11 +23,13 @@ References: <30258C2D-7A80-42C1-8AE7-713C490ABF05@st-andrews.ac.uk>
  <CA+BoTQ=QscHgrk5bbWugjdnVGh=T_L-psEPKToYHOdKGcQZi7A@mail.gmail.com>
  <EE97821C81277E459BEA5C6384C6F241014DDDD4DC35@srvexch01.SODIELEC.local>
  <53F396F1.8070906@candelatech.com>
- <EE97821C81277E459BEA5C6384C6F241014DDDD4DC37@srvexch01.SODIELEC.local>,
+ <EE97821C81277E459BEA5C6384C6F241014DDDD4DC37@srvexch01.SODIELEC.local>
  <87sikr43k8.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87sikr43k8.fsf@kamboji.qca.qualcomm.com>
-Content-Language: fr-FR
-MIME-Version: 1.0
+ <EE97821C81277E459BEA5C6384C6F241014DDDD4DC38@srvexch01.SODIELEC.local>
+Date: Thu, 21 Aug 2014 14:41:10 +0200
+Message-ID: <CA+BoTQk4LeWAydcuoqanMP_1GumsWdEmaL4EDua3w7vp-uAtsQ@mail.gmail.com>
+Subject: Re: RE : RE : RE : Trouble shooting low rate MCS9 in 802.11ac
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -36,50 +38,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Vu Hai NGUYEN <vh.nguyen@actiasodielec.fr>
+Cc: Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Patrick CARNEIRO RODRIGUEZ <p.carneiro@actiasodielec.fr>, Ben Greear <greearb@candelatech.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
->>>What do you get for UDP? That seems like pretty good TCP throughput.
-
->> In VHT80 mode and rate forced to NSS3:MCS7, I can obtain 750 Mbps with
->> less than 1% data lost (in both way, AP to STA and vice versa).
->> Normally I can obtain 2/3 theory rate in practical (for expl NSS3:MCS3
->> has 390 Mbps in theory, and if I force to that rate, my TCP throughput
->> is around 270 Mbps). So I should obtain 650 Mbps in practical for TCP
->> with NSS3:MCS7 (975 Mbps in theory). 570 Mbps is so far to 650 Mbps :(
-
->Forcing the data rate isn't really optimal. Have you tried 10.2
->firmware? I was told it has improvements in the rate control algorithm.
-
-Yes but it doesn't help, even worse. 
-With 10.1 firmware, I can go up to 610 Mbps TCP (NSS3:MCS7 and checksum off load disabled on interface ethernet 
-of the PC which connects to my station's device, I just discover it, before my rate was ~ 570 Mbps). 
-With 10.2 firmware and the same config, my highest through put is only around 560 Mbps. But there is an improvement 
-that the rate of MCS8 and MCS9 is not much lower than MCS7 as in 10.1 firmware. Here is a small compare between 10.1
-and 10.2 (always with NSS3)
-MCS 7: 610 vs 560 Mbps
-MCS 8: 530 vs 560 Mbps (MCS8 got the same rate as MCS7 with 10.2 firmware)
-MCS 9: 410 vs 510 Mbps 
-
-But captured log from Wireshark still shows me VHT capab is between MCS 0-9 but VHT operation is only between MCS 0-7. 
-And the 10.2 firmware still crashed with station on promiscuous mode. There is another bug that I also saw in 10.2 firmware,
-after a moment that my STA connected to the AP, I lost the connection (pinging non success) and this message keeps printing:
-ath10k: failed to flush transmit queue (skip 0 ar-state 1): 0
-
-NGUYEN Vu Hai
-Acita-Sodielec
-Route de Mayres - B.P. 9
-12100 St GEORGES DE LUZENCON
-FRANCE
-
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgQXVndXN0IDIwMTQgMTQ6MjMsIFZ1IEhhaSBOR1VZRU4gPHZoLm5ndXllbkBhY3RpYXNv
+ZGllbGVjLmZyPiB3cm90ZToKPj4+PldoYXQgZG8geW91IGdldCBmb3IgVURQPyBUaGF0IHNlZW1z
+IGxpa2UgcHJldHR5IGdvb2QgVENQIHRocm91Z2hwdXQuCj4KPj4+IEluIFZIVDgwIG1vZGUgYW5k
+IHJhdGUgZm9yY2VkIHRvIE5TUzM6TUNTNywgSSBjYW4gb2J0YWluIDc1MCBNYnBzIHdpdGgKPj4+
+IGxlc3MgdGhhbiAxJSBkYXRhIGxvc3QgKGluIGJvdGggd2F5LCBBUCB0byBTVEEgYW5kIHZpY2Ug
+dmVyc2EpLgo+Pj4gTm9ybWFsbHkgSSBjYW4gb2J0YWluIDIvMyB0aGVvcnkgcmF0ZSBpbiBwcmFj
+dGljYWwgKGZvciBleHBsIE5TUzM6TUNTMwo+Pj4gaGFzIDM5MCBNYnBzIGluIHRoZW9yeSwgYW5k
+IGlmIEkgZm9yY2UgdG8gdGhhdCByYXRlLCBteSBUQ1AgdGhyb3VnaHB1dAo+Pj4gaXMgYXJvdW5k
+IDI3MCBNYnBzKS4gU28gSSBzaG91bGQgb2J0YWluIDY1MCBNYnBzIGluIHByYWN0aWNhbCBmb3Ig
+VENQCj4+PiB3aXRoIE5TUzM6TUNTNyAoOTc1IE1icHMgaW4gdGhlb3J5KS4gNTcwIE1icHMgaXMg
+c28gZmFyIHRvIDY1MCBNYnBzIDooCj4KPj5Gb3JjaW5nIHRoZSBkYXRhIHJhdGUgaXNuJ3QgcmVh
+bGx5IG9wdGltYWwuIEhhdmUgeW91IHRyaWVkIDEwLjIKPj5maXJtd2FyZT8gSSB3YXMgdG9sZCBp
+dCBoYXMgaW1wcm92ZW1lbnRzIGluIHRoZSByYXRlIGNvbnRyb2wgYWxnb3JpdGhtLgo+Cj4gWWVz
+IGJ1dCBpdCBkb2Vzbid0IGhlbHAsIGV2ZW4gd29yc2UuCj4gV2l0aCAxMC4xIGZpcm13YXJlLCBJ
+IGNhbiBnbyB1cCB0byA2MTAgTWJwcyBUQ1AgKE5TUzM6TUNTNyBhbmQgY2hlY2tzdW0gb2ZmIGxv
+YWQgZGlzYWJsZWQgb24gaW50ZXJmYWNlIGV0aGVybmV0Cj4gb2YgdGhlIFBDIHdoaWNoIGNvbm5l
+Y3RzIHRvIG15IHN0YXRpb24ncyBkZXZpY2UsIEkganVzdCBkaXNjb3ZlciBpdCwgYmVmb3JlIG15
+IHJhdGUgd2FzIH4gNTcwIE1icHMpLgo+IFdpdGggMTAuMiBmaXJtd2FyZSBhbmQgdGhlIHNhbWUg
+Y29uZmlnLCBteSBoaWdoZXN0IHRocm91Z2ggcHV0IGlzIG9ubHkgYXJvdW5kIDU2MCBNYnBzLiBC
+dXQgdGhlcmUgaXMgYW4gaW1wcm92ZW1lbnQKPiB0aGF0IHRoZSByYXRlIG9mIE1DUzggYW5kIE1D
+UzkgaXMgbm90IG11Y2ggbG93ZXIgdGhhbiBNQ1M3IGFzIGluIDEwLjEgZmlybXdhcmUuIEhlcmUg
+aXMgYSBzbWFsbCBjb21wYXJlIGJldHdlZW4gMTAuMQo+IGFuZCAxMC4yIChhbHdheXMgd2l0aCBO
+U1MzKQo+IE1DUyA3OiA2MTAgdnMgNTYwIE1icHMKPiBNQ1MgODogNTMwIHZzIDU2MCBNYnBzIChN
+Q1M4IGdvdCB0aGUgc2FtZSByYXRlIGFzIE1DUzcgd2l0aCAxMC4yIGZpcm13YXJlKQo+IE1DUyA5
+OiA0MTAgdnMgNTEwIE1icHMKPgo+IEJ1dCBjYXB0dXJlZCBsb2cgZnJvbSBXaXJlc2hhcmsgc3Rp
+bGwgc2hvd3MgbWUgVkhUIGNhcGFiIGlzIGJldHdlZW4gTUNTIDAtOSBidXQgVkhUIG9wZXJhdGlv
+biBpcyBvbmx5IGJldHdlZW4gTUNTIDAtNy4KClRoZSAxMC4yIHNlZW1zIHRvIHBlcmZvcm0gc2xv
+d2VyIGluIG15IGNhYmxlZCB0ZXN0IGVudmlyb25tZW50Cih+OTAwbWJwcyBvbiAxMC4xIHZzIH44
+MjBtYnBzIG9uIDEwLjIpIGFzIHdlbGwgc28gZmFyLgoKCj4gQW5kIHRoZSAxMC4yIGZpcm13YXJl
+IHN0aWxsIGNyYXNoZWQgd2l0aCBzdGF0aW9uIG9uIHByb21pc2N1b3VzIG1vZGUuIFRoZXJlIGlz
+IGFub3RoZXIgYnVnIHRoYXQgSSBhbHNvIHNhdyBpbiAxMC4yIGZpcm13YXJlLAo+IGFmdGVyIGEg
+bW9tZW50IHRoYXQgbXkgU1RBIGNvbm5lY3RlZCB0byB0aGUgQVAsIEkgbG9zdCB0aGUgY29ubmVj
+dGlvbiAocGluZ2luZyBub24gc3VjY2VzcykgYW5kIHRoaXMgbWVzc2FnZSBrZWVwcyBwcmludGlu
+ZzoKPiBhdGgxMGs6IGZhaWxlZCB0byBmbHVzaCB0cmFuc21pdCBxdWV1ZSAoc2tpcCAwIGFyLXN0
+YXRlIDEpOiAwCgpZZWFoLiBUaGVyZSBzZWVtcyB0byBiZSBhIGJ1ZyBpbiAxMC4yOiA4ICh0aGF0
+J3MgdGhlIG1heCBJJ3ZlIHNlZW4gc28KZmFyOyBuZXZlciBtb3JlKSB0eGVkIGZyYW1lcyBnZXQg
+c3R1Y2sgYW5kIGFyZSBuZXZlciBjb21wbGV0ZWQgYnkKZmlybXdhcmUuIE9uY2UgeW91IGdldCBh
+dCBsZWFzdCAxIGZyYW1lIHN0dWNrIHlvdSdsbCBzdGFydCBnZXR0aW5nCiJmYWlsZWQgdG8gZmx1
+c2giIHVudGlsIHlvdSBzdG9wIGFsbCBhdGgxMGsncyBpbnRlcmZhY2VzLgoKCk1pY2hhxYIKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
