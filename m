@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKRoC-0004hd-6b
- for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:49:40 +0000
-Subject: [PATCH v8 3/4] ath10k: rename ath10k_pci_hif_dump_area() to
- ath10k_pci_fw_crashed_dump()
+ id 1XKRoM-0004jS-3o
+ for ath10k@lists.infradead.org; Thu, 21 Aug 2014 12:49:51 +0000
+Subject: [PATCH v8 4/4] ath10k: print more driver info when firmware crashes
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 21 Aug 2014 15:49:16 +0300
-Message-ID: <20140821124916.27159.2913.stgit@potku.adurom.net>
+Date: Thu, 21 Aug 2014 15:49:24 +0300
+Message-ID: <20140821124924.27159.81041.stgit@potku.adurom.net>
 In-Reply-To: <20140821124705.27159.67898.stgit@potku.adurom.net>
 References: <20140821124705.27159.67898.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -26,63 +25,101 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Better to have a clear name for the function. While at it, clear up the title
-for the register dump.
+Sometimes users forget to include important info like firmware version,
+so better to print all the info.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c  |   17 ++---------------
+ drivers/net/wireless/ath/ath10k/debug.c |   18 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h |    1 +
+ drivers/net/wireless/ath/ath10k/pci.c   |    4 +---
+ 4 files changed, 22 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index ba2e87ab19bd..28f0adea73b6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -815,21 +815,8 @@ int ath10k_core_start(struct ath10k *ar)
+ 
+ 	INIT_LIST_HEAD(&ar->arvifs);
+ 
+-	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags)) {
+-		ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
+-			    ar->hw_params.name,
+-			    ar->target_version,
+-			    ar->chip_id,
+-			    ar->hw->wiphy->fw_version,
+-			    ar->fw_api,
+-			    ar->htt.target_version_major,
+-			    ar->htt.target_version_minor);
+-		ath10k_info("debug %d debugfs %d tracing %d dfs %d\n",
+-			    config_enabled(CONFIG_ATH10K_DEBUG),
+-			    config_enabled(CONFIG_ATH10K_DEBUGFS),
+-			    config_enabled(CONFIG_ATH10K_TRACING),
+-			    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED));
+-	}
++	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
++		ath10k_print_driver_info(ar);
+ 
+ 	__set_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index b30dba661c07..bf08f026b202 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -142,6 +142,24 @@ int ath10k_info(const char *fmt, ...)
+ }
+ EXPORT_SYMBOL(ath10k_info);
+ 
++void ath10k_print_driver_info(struct ath10k *ar)
++{
++	ath10k_info("%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
++		    ar->hw_params.name,
++		    ar->target_version,
++		    ar->chip_id,
++		    ar->hw->wiphy->fw_version,
++		    ar->fw_api,
++		    ar->htt.target_version_major,
++		    ar->htt.target_version_minor);
++	ath10k_info("debug %d debugfs %d tracing %d dfs %d\n",
++		    config_enabled(CONFIG_ATH10K_DEBUG),
++		    config_enabled(CONFIG_ATH10K_DEBUGFS),
++		    config_enabled(CONFIG_ATH10K_TRACING),
++		    config_enabled(CONFIG_ATH10K_DFS_CERTIFIED));
++}
++EXPORT_SYMBOL(ath10k_print_driver_info);
++
+ int ath10k_err(const char *fmt, ...)
+ {
+ 	struct va_format vaf = {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 416c62bbbb26..47ee4a623af6 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -42,6 +42,7 @@ extern unsigned int ath10k_debug_mask;
+ __printf(1, 2) int ath10k_info(const char *fmt, ...);
+ __printf(1, 2) int ath10k_err(const char *fmt, ...);
+ __printf(1, 2) int ath10k_warn(const char *fmt, ...);
++void ath10k_print_driver_info(struct ath10k *ar);
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ int ath10k_debug_start(struct ath10k *ar);
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 36c4f4130027..bc8c3e3345c1 100644
+index bc8c3e3345c1..bb1e4738add4 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -850,7 +850,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
+@@ -879,9 +879,7 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 		scnprintf(uuid, sizeof(uuid), "n/a");
  
- 	BUILD_BUG_ON(REG_DUMP_COUNT_QCA988X % 4);
+ 	ath10k_err("firmware crashed! (uuid %s)\n", uuid);
+-	ath10k_err("hardware name %s version 0x%x\n",
+-		   ar->hw_params.name, ar->target_version);
+-	ath10k_err("firmware version: %s\n", ar->hw->wiphy->fw_version);
++	ath10k_print_driver_info(ar);
  
--	ath10k_err("target Register Dump\n");
-+	ath10k_err("firmware register dump:\n");
- 	for (i = 0; i < REG_DUMP_COUNT_QCA988X; i += 4)
- 		ath10k_err("[%02d]: 0x%08X 0x%08X 0x%08X 0x%08X\n",
- 			   i,
-@@ -864,7 +864,7 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 		crash_data->registers[i] = cpu_to_le32(reg_dump_values[i]);
- }
- 
--static void ath10k_pci_hif_dump_area(struct ath10k *ar)
-+static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- {
- 	struct ath10k_fw_crash_data *crash_data;
- 	char uuid[50];
-@@ -1811,7 +1811,7 @@ static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
- 				   fw_indicator & ~FW_IND_EVENT_PENDING);
- 
- 		if (ar_pci->started) {
--			ath10k_pci_hif_dump_area(ar);
-+			ath10k_pci_fw_crashed_dump(ar);
- 		} else {
- 			/*
- 			 * Probable Target failure before we're prepared
-@@ -2232,7 +2232,7 @@ static void ath10k_pci_early_irq_tasklet(unsigned long data)
- 	if (fw_ind & FW_IND_EVENT_PENDING) {
- 		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
- 				   fw_ind & ~FW_IND_EVENT_PENDING);
--		ath10k_pci_hif_dump_area(ar);
-+		ath10k_pci_fw_crashed_dump(ar);
- 	}
- 
- 	ath10k_pci_enable_legacy_irq(ar);
-@@ -2483,7 +2483,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 		ath10k_warn("device has crashed during init\n");
- 		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
- 				   val & ~FW_IND_EVENT_PENDING);
--		ath10k_pci_hif_dump_area(ar);
-+		ath10k_pci_fw_crashed_dump(ar);
- 		return -ECOMM;
- 	}
- 
+ 	if (!crash_data)
+ 		goto exit;
 
 
 _______________________________________________
