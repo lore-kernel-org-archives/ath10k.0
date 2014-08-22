@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKo2S-0006P7-Ez
- for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:33:53 +0000
-Received: by mail-la0-f42.google.com with SMTP id pv20so10019413lab.29
- for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:33:29 -0700 (PDT)
+ id 1XKo2U-0006Pq-6m
+ for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:33:55 +0000
+Received: by mail-la0-f49.google.com with SMTP id hz20so10013709lab.36
+ for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:33:31 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/6] ath10k: split ce irq/handler setup
-Date: Fri, 22 Aug 2014 14:23:32 +0200
-Message-Id: <1408710214-24894-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 6/6] ath10k: remove early irq handling
+Date: Fri, 22 Aug 2014 14:23:34 +0200
+Message-Id: <1408710214-24894-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
 References: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,202 +27,362 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It doesn't make much sense to overwrite send_cb
-and recv_cb callbacks over and over again whenever
-transport starts. Just make sure to unmask copy
-engine interrupts when starting.
+It's not really necessary to have a dedicated irq
+handler just for the sake of catching early fw
+crashes anymore. It is now safe to use one handler
+even during early stages of device boot up.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c  | 36 +++++++++++-------------------
- drivers/net/wireless/ath/ath10k/ce.h  | 12 ++++------
- drivers/net/wireless/ath/ath10k/pci.c | 41 ++++-------------------------------
- 3 files changed, 21 insertions(+), 68 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 5117705..8cbc0ab 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -769,11 +769,11 @@ void ath10k_ce_per_engine_service_any(struct ath10k *ar)
-  *
-  * Called with ce_lock held.
-  */
--static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state,
--						int disable_copy_compl_intr)
-+static void ath10k_ce_per_engine_handler_adjust(struct ath10k_ce_pipe *ce_state)
- {
- 	u32 ctrl_addr = ce_state->ctrl_addr;
- 	struct ath10k *ar = ce_state->ar;
-+	bool disable_copy_compl_intr = ce_state->attr_flags & CE_ATTR_DIS_INTR;
- 
- 	if ((!disable_copy_compl_intr) &&
- 	    (ce_state->send_cb || ce_state->recv_cb))
-@@ -799,29 +799,13 @@ int ath10k_ce_disable_interrupts(struct ath10k *ar)
- 	return 0;
- }
- 
--void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
--				void (*send_cb)(struct ath10k_ce_pipe *),
--				int disable_interrupts)
-+void ath10k_ce_enable_interrupts(struct ath10k *ar)
- {
--	struct ath10k *ar = ce_state->ar;
--	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--
--	spin_lock_bh(&ar_pci->ce_lock);
--	ce_state->send_cb = send_cb;
--	ath10k_ce_per_engine_handler_adjust(ce_state, disable_interrupts);
--	spin_unlock_bh(&ar_pci->ce_lock);
--}
--
--void ath10k_ce_recv_cb_register(struct ath10k_ce_pipe *ce_state,
--				void (*recv_cb)(struct ath10k_ce_pipe *))
--{
--	struct ath10k *ar = ce_state->ar;
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	int ce_id;
- 
--	spin_lock_bh(&ar_pci->ce_lock);
--	ce_state->recv_cb = recv_cb;
--	ath10k_ce_per_engine_handler_adjust(ce_state, 0);
--	spin_unlock_bh(&ar_pci->ce_lock);
-+	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
-+		ath10k_ce_per_engine_handler_adjust(&ar_pci->ce_states[ce_id]);
- }
- 
- static int ath10k_ce_init_src_ring(struct ath10k *ar,
-@@ -1023,7 +1007,9 @@ ath10k_ce_alloc_dest_ring(struct ath10k *ar, unsigned int ce_id,
-  * initialized by software/firmware.
-  */
- int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
--			const struct ce_attr *attr)
-+			const struct ce_attr *attr,
-+			void (*send_cb)(struct ath10k_ce_pipe *),
-+			void (*recv_cb)(struct ath10k_ce_pipe *))
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct ath10k_ce_pipe *ce_state = &ar_pci->ce_states[ce_id];
-@@ -1046,6 +1032,10 @@ int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
- 	ce_state->ctrl_addr = ath10k_ce_base_address(ce_id);
- 	ce_state->attr_flags = attr->flags;
- 	ce_state->src_sz_max = attr->src_sz_max;
-+	if (attr->src_nentries)
-+		ce_state->send_cb = send_cb;
-+	if (attr->dest_nentries)
-+		ce_state->recv_cb = recv_cb;
- 	spin_unlock_bh(&ar_pci->ce_lock);
- 
- 	if (attr->src_nentries) {
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 7a5a36f..d48dbb9 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -162,10 +162,6 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
- 
- void __ath10k_ce_send_revert(struct ath10k_ce_pipe *pipe);
- 
--void ath10k_ce_send_cb_register(struct ath10k_ce_pipe *ce_state,
--				void (*send_cb)(struct ath10k_ce_pipe *),
--				int disable_interrupts);
--
- int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe);
- 
- /*==================Recv=======================*/
-@@ -184,9 +180,6 @@ int ath10k_ce_recv_buf_enqueue(struct ath10k_ce_pipe *ce_state,
- 			       void *per_transfer_recv_context,
- 			       u32 buffer);
- 
--void ath10k_ce_recv_cb_register(struct ath10k_ce_pipe *ce_state,
--				void (*recv_cb)(struct ath10k_ce_pipe *));
--
- /* recv flags */
- /* Data is byte-swapped */
- #define CE_RECV_FLAG_SWAPPED	1
-@@ -214,7 +207,9 @@ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
- /*==================CE Engine Initialization=======================*/
- 
- int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
--			const struct ce_attr *attr);
-+			const struct ce_attr *attr,
-+			void (*send_cb)(struct ath10k_ce_pipe *),
-+			void (*recv_cb)(struct ath10k_ce_pipe *));
- void ath10k_ce_deinit_pipe(struct ath10k *ar, unsigned int ce_id);
- int ath10k_ce_alloc_pipe(struct ath10k *ar, int ce_id,
- 			  const struct ce_attr *attr);
-@@ -245,6 +240,7 @@ int ath10k_ce_cancel_send_next(struct ath10k_ce_pipe *ce_state,
- void ath10k_ce_per_engine_service_any(struct ath10k *ar);
- void ath10k_ce_per_engine_service(struct ath10k *ar, unsigned int ce_id);
- int ath10k_ce_disable_interrupts(struct ath10k *ar);
-+void ath10k_ce_enable_interrupts(struct ath10k *ar);
- 
- /* ce_attr.flags values */
- /* Use NonSnooping PCIe accesses? */
+Notes:
+    v2:
+     * remove early_tasket_struct [Kalle]
+     * s/ath10k_pci_fw_crashed/ath10k_pci_has_fw_crashed [Kalle]
+     * perform warm reset before initializing irq
+
+ drivers/net/wireless/ath/ath10k/pci.c | 172 ++++++++++------------------------
+ drivers/net/wireless/ath/ath10k/pci.h |   1 -
+ 2 files changed, 48 insertions(+), 125 deletions(-)
+
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index c3b3f62..c764dd7 100644
+index 6224952..ffb980c 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -941,37 +941,6 @@ static void ath10k_pci_hif_set_callbacks(struct ath10k *ar,
- 	       sizeof(ar_pci->msg_callbacks_current));
+@@ -266,46 +266,6 @@ static void ath10k_pci_enable_legacy_irq(struct ath10k *ar)
+ 				 PCIE_INTR_ENABLE_ADDRESS);
  }
  
--static int ath10k_pci_setup_ce_irq(struct ath10k *ar)
+-static irqreturn_t ath10k_pci_early_irq_handler(int irq, void *arg)
+-{
+-	struct ath10k *ar = arg;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-
+-	if (ar_pci->num_msi_intrs == 0) {
+-		if (!ath10k_pci_irq_pending(ar))
+-			return IRQ_NONE;
+-
+-		ath10k_pci_disable_and_clear_legacy_irq(ar);
+-	}
+-
+-	tasklet_schedule(&ar_pci->early_irq_tasklet);
+-
+-	return IRQ_HANDLED;
+-}
+-
+-static int ath10k_pci_request_early_irq(struct ath10k *ar)
 -{
 -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
--	const struct ce_attr *attr;
--	struct ath10k_pci_pipe *pipe_info;
--	int pipe_num, disable_interrupts;
+-	int ret;
 -
--	for (pipe_num = 0; pipe_num < CE_COUNT; pipe_num++) {
--		pipe_info = &ar_pci->pipe_info[pipe_num];
--
--		/* Handle Diagnostic CE specially */
--		if (pipe_info->ce_hdl == ar_pci->ce_diag)
--			continue;
--
--		attr = &host_ce_config_wlan[pipe_num];
--
--		if (attr->src_nentries) {
--			disable_interrupts = attr->flags & CE_ATTR_DIS_INTR;
--			ath10k_ce_send_cb_register(pipe_info->ce_hdl,
--						   ath10k_pci_ce_send_done,
--						   disable_interrupts);
--		}
--
--		if (attr->dest_nentries)
--			ath10k_ce_recv_cb_register(pipe_info->ce_hdl,
--						   ath10k_pci_ce_recv_data);
+-	/* Regardless whether MSI-X/MSI/legacy irqs have been set up the first
+-	 * interrupt from irq vector is triggered in all cases for FW
+-	 * indication/errors */
+-	ret = request_irq(ar_pci->pdev->irq, ath10k_pci_early_irq_handler,
+-			  IRQF_SHARED, "ath10k_pci (early)", ar);
+-	if (ret) {
+-		ath10k_warn("failed to request early irq: %d\n", ret);
+-		return ret;
 -	}
 -
 -	return 0;
 -}
 -
- static void ath10k_pci_kill_tasklet(struct ath10k *ar)
+-static void ath10k_pci_free_early_irq(struct ath10k *ar)
+-{
+-	free_irq(ath10k_pci_priv(ar)->pdev->irq, ar);
+-}
+-
+ static inline const char *ath10k_pci_get_irq_method(struct ath10k *ar)
  {
  	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1169,11 +1138,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
- 		goto err_early_irq;
- 	}
+@@ -948,7 +908,6 @@ static void ath10k_pci_kill_tasklet(struct ath10k *ar)
  
--	ret = ath10k_pci_setup_ce_irq(ar);
+ 	tasklet_kill(&ar_pci->intr_tq);
+ 	tasklet_kill(&ar_pci->msi_fw_err);
+-	tasklet_kill(&ar_pci->early_irq_tasklet);
+ 
+ 	for (i = 0; i < CE_COUNT; i++)
+ 		tasklet_kill(&ar_pci->pipe_info[i].intr);
+@@ -1158,20 +1117,10 @@ static void ath10k_pci_irq_enable(struct ath10k *ar)
+ static int ath10k_pci_hif_start(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	int ret, ret_early;
++	int ret;
+ 
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "boot hif start\n");
+ 
+-	ath10k_pci_free_early_irq(ar);
+-	ath10k_pci_kill_tasklet(ar);
+-
+-	ret = ath10k_pci_request_irq(ar);
 -	if (ret) {
--		ath10k_warn("failed to setup CE interrupts: %d\n", ret);
--		goto err_stop;
+-		ath10k_warn("failed to post RX buffers for all pipes: %d\n",
+-			    ret);
+-		goto err_early_irq;
 -	}
-+	ath10k_ce_enable_interrupts(ar);
+-
+ 	ath10k_pci_irq_enable(ar);
  
  	/* Post buffers once to start things off. */
- 	ret = ath10k_pci_post_rx(ar);
-@@ -1786,7 +1751,9 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
- 		pipe_info->hif_ce_state = ar;
- 		attr = &host_ce_config_wlan[pipe_num];
+@@ -1187,15 +1136,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
  
--		ret = ath10k_ce_init_pipe(ar, pipe_num, attr);
-+		ret = ath10k_ce_init_pipe(ar, pipe_num, attr,
-+					  ath10k_pci_ce_send_done,
-+					  ath10k_pci_ce_recv_data);
- 		if (ret) {
- 			ath10k_err("failed to initialize copy engine pipe %d: %d\n",
- 				   pipe_num, ret);
+ err_stop:
+ 	ath10k_pci_irq_disable(ar);
+-	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
+-err_early_irq:
+-	/* Though there should be no interrupts (device was reset)
+-	 * power_down() expects the early IRQ to be installed as per the
+-	 * driver lifecycle. */
+-	ret_early = ath10k_pci_request_early_irq(ar);
+-	if (ret_early)
+-		ath10k_warn("failed to re-enable early irq: %d\n", ret_early);
+ 
+ 	return ret;
+ }
+@@ -1302,7 +1243,6 @@ static void ath10k_pci_ce_deinit(struct ath10k *ar)
+ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	int ret;
+ 
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "boot hif stop\n");
+ 
+@@ -1310,17 +1250,7 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 		return;
+ 
+ 	ath10k_pci_irq_disable(ar);
+-	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_kill_tasklet(ar);
+-
+-	ret = ath10k_pci_request_early_irq(ar);
+-	if (ret)
+-		ath10k_warn("failed to re-enable early irq: %d\n", ret);
+-
+-	/* At this point, asynchronous threads are stopped, the target should
+-	 * not DMA nor interrupt. We process the leftovers and then free
+-	 * everything else up. */
+-
+ 	ath10k_pci_buffer_cleanup(ar);
+ 
+ 	/* Make the sure the device won't access any structures on the host by
+@@ -1806,28 +1736,19 @@ static int ath10k_pci_ce_init(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static void ath10k_pci_fw_interrupt_handler(struct ath10k *ar)
++static bool ath10k_pci_has_fw_crashed(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	u32 fw_indicator;
+-
+-	fw_indicator = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
++	return ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS) &
++	       FW_IND_EVENT_PENDING;
++}
+ 
+-	if (fw_indicator & FW_IND_EVENT_PENDING) {
+-		/* ACK: clear Target-side pending event */
+-		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+-				   fw_indicator & ~FW_IND_EVENT_PENDING);
++static void ath10k_pci_fw_crashed_clear(struct ath10k *ar)
++{
++	u32 val;
+ 
+-		if (ar_pci->started) {
+-			ath10k_pci_fw_crashed_dump(ar);
+-		} else {
+-			/*
+-			 * Probable Target failure before we're prepared
+-			 * to handle it.  Generally unexpected.
+-			 */
+-			ath10k_warn("early firmware event indicated\n");
+-		}
+-	}
++	val = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
++	val &= ~FW_IND_EVENT_PENDING;
++	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, val);
+ }
+ 
+ /* this function effectively clears target memory controller assert line */
+@@ -1960,34 +1881,26 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
+ 		goto err;
+ 	}
+ 
+-	ret = ath10k_pci_request_early_irq(ar);
+-	if (ret) {
+-		ath10k_err("failed to request early irq: %d\n", ret);
+-		goto err_ce;
+-	}
+-
+ 	ret = ath10k_pci_wait_for_target_init(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to wait for target to init: %d\n", ret);
+-		goto err_free_early_irq;
++		goto err_ce;
+ 	}
+ 
+ 	ret = ath10k_pci_init_config(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to setup init config: %d\n", ret);
+-		goto err_free_early_irq;
++		goto err_ce;
+ 	}
+ 
+ 	ret = ath10k_pci_wake_target_cpu(ar);
+ 	if (ret) {
+ 		ath10k_err("could not wake up target CPU: %d\n", ret);
+-		goto err_free_early_irq;
++		goto err_ce;
+ 	}
+ 
+ 	return 0;
+ 
+-err_free_early_irq:
+-	ath10k_pci_free_early_irq(ar);
+ err_ce:
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_warm_reset(ar);
+@@ -2056,8 +1969,6 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ {
+ 	ath10k_dbg(ATH10K_DBG_BOOT, "boot hif power down\n");
+ 
+-	ath10k_pci_free_early_irq(ar);
+-	ath10k_pci_kill_tasklet(ar);
+ 	ath10k_pci_warm_reset(ar);
+ }
+ 
+@@ -2140,7 +2051,13 @@ static void ath10k_msi_err_tasklet(unsigned long data)
+ {
+ 	struct ath10k *ar = (struct ath10k *)data;
+ 
+-	ath10k_pci_fw_interrupt_handler(ar);
++	if (!ath10k_pci_has_fw_crashed(ar)) {
++		ath10k_warn("received unsolicited fw crash interrupt\n");
++		return;
++	}
++
++	ath10k_pci_fw_crashed_clear(ar);
++	ath10k_pci_fw_crashed_dump(ar);
+ }
+ 
+ /*
+@@ -2201,27 +2118,17 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void ath10k_pci_early_irq_tasklet(unsigned long data)
++static void ath10k_pci_tasklet(unsigned long data)
+ {
+ 	struct ath10k *ar = (struct ath10k *)data;
+-	u32 fw_ind;
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 
+-	fw_ind = ath10k_pci_read32(ar, FW_INDICATOR_ADDRESS);
+-	if (fw_ind & FW_IND_EVENT_PENDING) {
+-		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+-				   fw_ind & ~FW_IND_EVENT_PENDING);
++	if (ath10k_pci_has_fw_crashed(ar)) {
++		ath10k_pci_fw_crashed_clear(ar);
+ 		ath10k_pci_fw_crashed_dump(ar);
++		return;
+ 	}
+ 
+-	ath10k_pci_enable_legacy_irq(ar);
+-}
+-
+-static void ath10k_pci_tasklet(unsigned long data)
+-{
+-	struct ath10k *ar = (struct ath10k *)data;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-
+-	ath10k_pci_fw_interrupt_handler(ar); /* FIXME: Handle FW error */
+ 	ath10k_ce_per_engine_service_any(ar);
+ 
+ 	/* Re-enable legacy irq that was disabled in the irq handler */
+@@ -2332,8 +2239,6 @@ static void ath10k_pci_init_irq_tasklets(struct ath10k *ar)
+ 	tasklet_init(&ar_pci->intr_tq, ath10k_pci_tasklet, (unsigned long)ar);
+ 	tasklet_init(&ar_pci->msi_fw_err, ath10k_msi_err_tasklet,
+ 		     (unsigned long)ar);
+-	tasklet_init(&ar_pci->early_irq_tasklet, ath10k_pci_early_irq_tasklet,
+-		     (unsigned long)ar);
+ 
+ 	for (i = 0; i < CE_COUNT; i++) {
+ 		ar_pci->pipe_info[i].ar_pci = ar_pci;
+@@ -2459,8 +2364,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 
+ 	if (val & FW_IND_EVENT_PENDING) {
+ 		ath10k_warn("device has crashed during init\n");
+-		ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS,
+-				   val & ~FW_IND_EVENT_PENDING);
++		ath10k_pci_fw_crashed_clear(ar);
+ 		ath10k_pci_fw_crashed_dump(ar);
+ 		return -ECOMM;
+ 	}
+@@ -2643,6 +2547,13 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_free_ce;
+ 	}
+ 
++	/* Workaround: There's no known way to mask all possible interrupts via
++	 * device CSR. The only way to make sure device doesn't assert
++	 * interrupts is to reset it. Interrupts are then disabled on host
++	 * after handlers are registered.
++	 */
++	ath10k_pci_warm_reset(ar);
++
+ 	ret = ath10k_pci_init_irq(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to init irqs: %d\n", ret);
+@@ -2653,14 +2564,26 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		    ath10k_pci_get_irq_method(ar), ar_pci->num_msi_intrs,
+ 		    ath10k_pci_irq_mode, ath10k_pci_reset_mode);
+ 
++	ret = ath10k_pci_request_irq(ar);
++	if (ret) {
++		ath10k_warn("failed to request irqs: %d\n", ret);
++		goto err_deinit_irq;
++	}
++
++	/* This shouldn't race as the device has been reset above. */
++	ath10k_pci_irq_disable(ar);
++
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err("failed to register driver core: %d\n", ret);
+-		goto err_deinit_irq;
++		goto err_free_irq;
+ 	}
+ 
+ 	return 0;
+ 
++err_free_irq:
++	ath10k_pci_free_irq(ar);
++
+ err_deinit_irq:
+ 	ath10k_pci_deinit_irq(ar);
+ 
+@@ -2695,6 +2618,7 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 		return;
+ 
+ 	ath10k_core_unregister(ar);
++	ath10k_pci_free_irq(ar);
+ 	ath10k_pci_deinit_irq(ar);
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_free_ce(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index 294a72e..caed918 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -166,7 +166,6 @@ struct ath10k_pci {
+ 
+ 	struct tasklet_struct intr_tq;
+ 	struct tasklet_struct msi_fw_err;
+-	struct tasklet_struct early_irq_tasklet;
+ 
+ 	int started;
+ 
 -- 
 1.8.5.3
 
