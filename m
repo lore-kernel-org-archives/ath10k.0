@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKoAl-0003Ki-SE
- for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:42:28 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hi2so9841611wib.17
- for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:42:04 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
-References: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 22 Aug 2014 14:42:04 +0200
-Message-ID: <CA+BoTQkNsK4m9XGtmgrtQHjLT=erAo9NA66HUEK2E=36xK-51Q@mail.gmail.com>
-Subject: Re: [PATCH v2 0/6] ath10k: ath10k: fixes 2014-08-07, part 2
+ id 1XKoBi-0003S6-Lw
+ for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:43:27 +0000
+Received: by mail-la0-f50.google.com with SMTP id pi18so9946022lab.37
+ for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:43:04 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 0/5] ath10k: fixes 2014-08-07, part 3
+Date: Fri, 22 Aug 2014 14:33:13 +0200
+Message-Id: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +17,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjIgQXVndXN0IDIwMTQgMTQ6MjMsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGll
-dG8uY29tPiB3cm90ZToKPiBIaSwKPgo+IFRoaXMgaXMgcGFydCAyIChvZiAzKSBvZiBteSBwYXRj
-aGVzLiBTcGxpdCBmb3IKPiB5b3VyIHJldmlld2luZyBwbGVhc3VyZS4KPgo+IFRoaXMgaXMgcmVs
-YXRlZCB0byBpcnEgaGFuZGxpbmcgb25seS4gUHJlcGFyZXMgZm9yCj4gbW9yZSBzdGFydC9yZXN0
-YXJ0IHNlcXVlbmNlcyBmaXhlcy4KPgo+IHYyOgo+ICAqIHBhdGNoIFsxLzZdIGlzIGZyb20gcGFy
-dCAxCj4gICogcGF0Y2ggWzUvNl0gaXMgbmV3Cj4gICogc29tZSBmaXhlcywgc2VlIG5vdGVzCj4g
-ICogYmFzZWQgb24KPiAgICBmMmM3Y2I3NzRlM2UwYTgxNTJiMTEzNDAxNWMyNDViYTBhYmRkZmM2
-IGFuZAo+ICAgIDQgY3Jhc2ggZHVtcCBwYXRjaGVzICh2OCkgZnJvbSBLYWxsZQoKRm9yZ290IHRv
-IGFkZCBJIGFsc28gZHJvcHBlZCBgYXRoMTBrOiB1bm1hc2sgY2UgaXJxcyBhZnRlciBwb3N0aW5n
-IHJ4CmJ1ZmZlcnNgIGFzIGl0IGRpZG4ndCByZWFsbHkgbWFrZSBtdWNoIHNlbnNlIHRvIHN3YXAg
-dGhlIG9yZGVyLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi,
+
+This is part 3 (of 3) of my patches. Split for
+your reviewing pleasure.
+
+This is related to start/restart sequences.
+
+This is based on:
+  [PATCH v2 0/6] ath10k: fixes 2014-08-07, part 2
+
+v2:
+ * patch [2/5] replaced
+ * fixes, see notes
+
+
+Michal Kazior (5):
+  ath10k: rework posting pci rx buffers
+  ath10k: update comment regarding warm reset
+  ath10k: ignore ar_pci->started in pipe cleanup
+  ath10k: remove ar_pci->started
+  ath10k: flush hif buffers before recovery
+
+ drivers/net/wireless/ath/ath10k/ce.c   |  71 +++++----
+ drivers/net/wireless/ath/ath10k/ce.h   |  16 +-
+ drivers/net/wireless/ath/ath10k/core.c |   1 +
+ drivers/net/wireless/ath/ath10k/pci.c  | 259 +++++++++++++++------------------
+ drivers/net/wireless/ath/ath10k/pci.h  |   4 +-
+ 5 files changed, 165 insertions(+), 186 deletions(-)
+
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
