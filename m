@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKoBl-0003S8-87
- for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:43:29 +0000
-Received: by mail-lb0-f174.google.com with SMTP id c11so9367025lbj.19
- for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:43:07 -0700 (PDT)
+ id 1XKoBm-0003SA-Jo
+ for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:43:31 +0000
+Received: by mail-lb0-f169.google.com with SMTP id s7so9481130lbd.0
+ for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:43:08 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/5] ath10k: update comment regarding warm reset
-Date: Fri, 22 Aug 2014 14:33:15 +0200
-Message-Id: <1408710798-25198-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/5] ath10k: ignore ar_pci->started in pipe cleanup
+Date: Fri, 22 Aug 2014 14:33:16 +0200
+Message-Id: <1408710798-25198-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
 References: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,41 +27,41 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The old comment was a little out of date. HTT Rx
-ring is a more relevant problem when stopping
-transport layer.
+Structures used by these functions are now
+guaranteed to remain accessible until driver is
+unregistered.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-
-Notes:
-    v2:
-     * don't remove the warm_reset, instead update the comment
-     * this replaces patch named `ath10k: dont reset the chip on hif_stop`
-
- drivers/net/wireless/ath/ath10k/pci.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 21f7dc3..daa38ce 100644
+index daa38ce..cb4049f 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1243,11 +1243,10 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_flush(ar);
+@@ -1143,10 +1143,6 @@ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
  
--	/* Make the sure the device won't access any structures on the host by
--	 * resetting it. The device was fed with PCI CE ringbuffer
--	 * configuration during init. If ringbuffers are freed and the device
--	 * were to access them this could lead to memory corruption on the
--	 * host. */
-+	/* Most likely the device has HTT Rx ring configured. The only way to
-+	 * prevent the device from accessing (and possible corrupting) host
-+	 * memory is to reset the chip now.
-+	 */
- 	ath10k_pci_warm_reset(ar);
+ 	ar = pipe_info->hif_ce_state;
+ 	ar_pci = ath10k_pci_priv(ar);
+-
+-	if (!ar_pci->started)
+-		return;
+-
+ 	ce_hdl = pipe_info->ce_hdl;
  
- 	ar_pci->started = 0;
+ 	while (ath10k_ce_revoke_recv_next(ce_hdl, (void **)&netbuf,
+@@ -1177,10 +1173,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
+ 
+ 	ar = pipe_info->hif_ce_state;
+ 	ar_pci = ath10k_pci_priv(ar);
+-
+-	if (!ar_pci->started)
+-		return;
+-
+ 	ce_hdl = pipe_info->ce_hdl;
+ 
+ 	while (ath10k_ce_cancel_send_next(ce_hdl, (void **)&netbuf,
 -- 
 1.8.5.3
 
