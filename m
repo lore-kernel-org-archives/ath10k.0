@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKoBm-0003SA-Jo
- for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:43:31 +0000
-Received: by mail-lb0-f169.google.com with SMTP id s7so9481130lbd.0
- for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:43:08 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 3/5] ath10k: ignore ar_pci->started in pipe cleanup
-Date: Fri, 22 Aug 2014 14:33:16 +0200
-Message-Id: <1408710798-25198-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
-References: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
+ id 1XKpvs-00084h-I5
+ for ath10k@lists.infradead.org; Fri, 22 Aug 2014 14:35:13 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v8 2/4] ath10k: provide firmware crash info via debugfs
+References: <20140821124705.27159.67898.stgit@potku.adurom.net>
+ <20140821124907.27159.64620.stgit@potku.adurom.net>
+ <1408626616.4388.0.camel@jlt4.sipsolutions.net>
+ <877g21c3dd.fsf@kamboji.qca.qualcomm.com>
+ <1408670355.4388.4.camel@jlt4.sipsolutions.net>
+Date: Fri, 22 Aug 2014 17:34:43 +0300
+In-Reply-To: <1408670355.4388.4.camel@jlt4.sipsolutions.net> (Johannes Berg's
+ message of "Fri, 22 Aug 2014 03:19:15 +0200")
+Message-ID: <87egw8a8zg.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +23,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Structures used by these functions are now
-guaranteed to remain accessible until driver is
-unregistered.
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 8 --------
- 1 file changed, 8 deletions(-)
+> On Thu, 2014-08-21 at 17:40 +0300, Kalle Valo wrote:
+>
+>> Heh, this has been a pretty long review period. To be honest I really
+>> would like to get this just out of my hands :) And we do have a need for
+>> this. When are you planning to implement that generic framework?
+>
+> Soon (TM). We need it, so really, I should do it soon.
+>
+>> What I understood is that this is already pretty close what you are
+>> planning. Instead of creating a debugfs file of our own and allocating a
+>> vmalloc buffer (which we do now), we would just use the buffer provided
+>> by cfg80211 (or whatever component that would be) and use the sysfs file
+>> the framework provides. So hopefully it would be pretty easy to convert
+>> this to use your framework.
+>
+> I'm thinking now that since vmalloc space is limited on some
+> architectures, we should just have a list of pages, but of course we
+> could copy it there from vmalloc area.
+>
+> Anyway, yes, it should be fairly simple to convert - but is it worth it
+> for you to have it now? Depends how you use it, I guess.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index daa38ce..cb4049f 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1143,10 +1143,6 @@ static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 
- 	ar = pipe_info->hif_ce_state;
- 	ar_pci = ath10k_pci_priv(ar);
--
--	if (!ar_pci->started)
--		return;
--
- 	ce_hdl = pipe_info->ce_hdl;
- 
- 	while (ath10k_ce_revoke_recv_next(ce_hdl, (void **)&netbuf,
-@@ -1177,10 +1173,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
- 
- 	ar = pipe_info->hif_ce_state;
- 	ar_pci = ath10k_pci_priv(ar);
--
--	if (!ar_pci->started)
--		return;
--
- 	ce_hdl = pipe_info->ce_hdl;
- 
- 	while (ath10k_ce_cancel_send_next(ce_hdl, (void **)&netbuf,
+We really would have use for this, that's why I'm hesitant to wait more.
+Even having this from an "unofficial" location would be a big help. If
+it's ok for you, I would like to apply this once all review comments are
+addressed. But naturally if you think it's better to wait, I will do
+that.
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
