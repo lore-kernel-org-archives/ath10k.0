@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XKo2S-0006PL-RC
- for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:33:53 +0000
-Received: by mail-lb0-f179.google.com with SMTP id v6so9156033lbi.24
- for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:33:30 -0700 (PDT)
+ id 1XKo2Q-0006On-Tk
+ for ath10k@lists.infradead.org; Fri, 22 Aug 2014 12:33:51 +0000
+Received: by mail-lb0-f174.google.com with SMTP id c11so9501743lbj.33
+ for <ath10k@lists.infradead.org>; Fri, 22 Aug 2014 05:33:27 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 5/6] ath10k: make sure to really disable irqs
-Date: Fri, 22 Aug 2014 14:23:33 +0200
-Message-Id: <1408710214-24894-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/6] ath10k: setup irq method in probe
+Date: Fri, 22 Aug 2014 14:23:31 +0200
+Message-Id: <1408710214-24894-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
 References: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,99 +27,181 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This fixes two corner cases.
-
-One is a race between disabling copy engine
-interrupts and unhandled pending interrupts on the
-host. This could end up with a runaway tasklet and
-consequently memory leak of a few copy engine
-rx buffers.
-
-The other one is an unexpected (and non-maskable
-via device CSR) MSI fw indication interrupt during
-teardown. This could trigger the same problem as
-the first corner case.
+It doesn't make sense to re-init irqs completely
+whenever transport is started/stopped. Do it just
+once upon probing/removing.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 43 ++++++++++++++++++++++++++++++-----
- 1 file changed, 37 insertions(+), 6 deletions(-)
 
+Notes:
+    v2:
+     * tweak print style [Kalle]
+     * use ce_deinit instead of ce_init
+
+ drivers/net/wireless/ath/ath10k/core.h |  1 -
+ drivers/net/wireless/ath/ath10k/pci.c  | 73 ++++++++++++++++++----------------
+ 2 files changed, 39 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8da77c7..4ef4760 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -357,7 +357,6 @@ enum ath10k_fw_features {
+ enum ath10k_dev_flags {
+ 	/* Indicates that ath10k device is during CAC phase of DFS */
+ 	ATH10K_CAC_RUNNING,
+-	ATH10K_FLAG_FIRST_BOOT_DONE,
+ 	ATH10K_FLAG_CORE_REGISTERED,
+ };
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index c764dd7..6224952 100644
+index 4a7a5fe..c3b3f62 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1121,6 +1121,40 @@ static int ath10k_pci_post_rx(struct ath10k *ar)
- 	return 0;
+@@ -306,6 +306,18 @@ static void ath10k_pci_free_early_irq(struct ath10k *ar)
+ 	free_irq(ath10k_pci_priv(ar)->pdev->irq, ar);
  }
  
-+static void ath10k_pci_irq_disable(struct ath10k *ar)
-+{
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	int i;
-+
-+	ath10k_ce_disable_interrupts(ar);
-+
-+	/* Regardless how many interrupts were assigned for MSI the first one
-+	 * is always used for firmware indications (crashes). There's no way to
-+	 * mask the irq in the device so call disable_irq(). Legacy (shared)
-+	 * interrupts can be masked on the device though.
-+	 */
-+	if (ar_pci->num_msi_intrs > 0)
-+		disable_irq(ar_pci->pdev->irq);
-+	else
-+		ath10k_pci_disable_and_clear_legacy_irq(ar);
-+
-+	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
-+		synchronize_irq(ar_pci->pdev->irq + i);
-+}
-+
-+static void ath10k_pci_irq_enable(struct ath10k *ar)
++static inline const char *ath10k_pci_get_irq_method(struct ath10k *ar)
 +{
 +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
 +
-+	ath10k_ce_enable_interrupts(ar);
-+
-+	/* See comment in ath10k_pci_irq_disable() */
-+	if (ar_pci->num_msi_intrs > 0)
-+		enable_irq(ar_pci->pdev->irq);
++	if (ar_pci->num_msi_intrs > 1)
++		return "msi-x";
++	else if (ar_pci->num_msi_intrs == 1)
++		return "msi";
 +	else
-+		ath10k_pci_enable_legacy_irq(ar);
++		return "legacy";
 +}
 +
- static int ath10k_pci_hif_start(struct ath10k *ar)
+ /*
+  * Diagnostic read/write access is provided for startup/config/debug usage.
+  * Caller must guarantee proper alignment, when applicable, and single user
+@@ -1922,8 +1934,6 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
+ 
+ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
  {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1138,7 +1172,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
- 		goto err_early_irq;
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	const char *irq_mode;
+ 	int ret;
+ 
+ 	/*
+@@ -1952,22 +1962,10 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
+ 		goto err;
  	}
  
--	ath10k_ce_enable_interrupts(ar);
-+	ath10k_pci_irq_enable(ar);
+-	ret = ath10k_ce_disable_interrupts(ar);
+-	if (ret) {
+-		ath10k_err("failed to disable CE interrupts: %d\n", ret);
+-		goto err_ce;
+-	}
+-
+-	ret = ath10k_pci_init_irq(ar);
+-	if (ret) {
+-		ath10k_err("failed to init irqs: %d\n", ret);
+-		goto err_ce;
+-	}
+-
+ 	ret = ath10k_pci_request_early_irq(ar);
+ 	if (ret) {
+ 		ath10k_err("failed to request early irq: %d\n", ret);
+-		goto err_deinit_irq;
++		goto err_ce;
+ 	}
  
- 	/* Post buffers once to start things off. */
- 	ret = ath10k_pci_post_rx(ar);
-@@ -1152,7 +1186,7 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 	ret = ath10k_pci_wait_for_target_init(ar);
+@@ -1988,24 +1986,10 @@ static int __ath10k_pci_hif_power_up(struct ath10k *ar, bool cold_reset)
+ 		goto err_free_early_irq;
+ 	}
+ 
+-	if (ar_pci->num_msi_intrs > 1)
+-		irq_mode = "MSI-X";
+-	else if (ar_pci->num_msi_intrs == 1)
+-		irq_mode = "MSI";
+-	else
+-		irq_mode = "legacy";
+-
+-	if (!test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
+-		ath10k_info("pci irq %s irq_mode %d reset_mode %d\n",
+-			    irq_mode, ath10k_pci_irq_mode,
+-			    ath10k_pci_reset_mode);
+-
  	return 0;
  
- err_stop:
--	ath10k_ce_disable_interrupts(ar);
-+	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_free_irq(ar);
+ err_free_early_irq:
+ 	ath10k_pci_free_early_irq(ar);
+-err_deinit_irq:
+-	ath10k_pci_deinit_irq(ar);
+ err_ce:
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_warm_reset(ar);
+@@ -2076,8 +2060,6 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ 
+ 	ath10k_pci_free_early_irq(ar);
  	ath10k_pci_kill_tasklet(ar);
- err_early_irq:
-@@ -1275,10 +1309,7 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 	if (WARN_ON(!ar_pci->started))
+-	ath10k_pci_deinit_irq(ar);
+-	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_warm_reset(ar);
+ }
+ 
+@@ -2369,8 +2351,7 @@ static int ath10k_pci_init_irq(struct ath10k *ar)
+ 
+ 	ath10k_pci_init_irq_tasklets(ar);
+ 
+-	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_AUTO &&
+-	    !test_bit(ATH10K_FLAG_FIRST_BOOT_DONE, &ar->dev_flags))
++	if (ath10k_pci_irq_mode != ATH10K_PCI_IRQ_AUTO)
+ 		ath10k_info("limiting irq mode to: %d\n", ath10k_pci_irq_mode);
+ 
+ 	/* Try MSI-X */
+@@ -2655,14 +2636,36 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_sleep;
+ 	}
+ 
++	ath10k_pci_ce_deinit(ar);
++
++	ret = ath10k_ce_disable_interrupts(ar);
++	if (ret) {
++		ath10k_err("failed to disable copy engine interrupts: %d\n",
++			   ret);
++		goto err_free_ce;
++	}
++
++	ret = ath10k_pci_init_irq(ar);
++	if (ret) {
++		ath10k_err("failed to init irqs: %d\n", ret);
++		goto err_free_ce;
++	}
++
++	ath10k_info("pci irq %s interrupts %d irq_mode %d reset_mode %d\n",
++		    ath10k_pci_get_irq_method(ar), ar_pci->num_msi_intrs,
++		    ath10k_pci_irq_mode, ath10k_pci_reset_mode);
++
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err("failed to register driver core: %d\n", ret);
+-		goto err_free_ce;
++		goto err_deinit_irq;
+ 	}
+ 
+ 	return 0;
+ 
++err_deinit_irq:
++	ath10k_pci_deinit_irq(ar);
++
+ err_free_ce:
+ 	ath10k_pci_free_ce(ar);
+ 
+@@ -2694,6 +2697,8 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
  		return;
  
--	ret = ath10k_ce_disable_interrupts(ar);
--	if (ret)
--		ath10k_warn("failed to disable CE interrupts: %d\n", ret);
--
-+	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_free_irq(ar);
- 	ath10k_pci_kill_tasklet(ar);
- 
+ 	ath10k_core_unregister(ar);
++	ath10k_pci_deinit_irq(ar);
++	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_free_ce(ar);
+ 	ath10k_pci_sleep(ar);
+ 	ath10k_pci_release(ar);
 -- 
 1.8.5.3
 
