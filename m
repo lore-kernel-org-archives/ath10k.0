@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLpfn-0006KI-99
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 08:30:44 +0000
+ id 1XLpkD-00075B-0P
+ for ath10k@lists.infradead.org; Mon, 25 Aug 2014 08:35:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/6] ath10k: ath10k: fixes 2014-08-07, part 2
-References: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 25 Aug 2014 11:30:17 +0300
-In-Reply-To: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 22 Aug 2014 14:23:28 +0200")
-Message-ID: <8738cl6kfa.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/5] ath10k: fixes 2014-08-07, part 3
+References: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 25 Aug 2014 11:34:50 +0300
+In-Reply-To: <1408710798-25198-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 22 Aug 2014 14:33:13 +0200")
+Message-ID: <87y4ud55n9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,32 +28,27 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Hi,
->
-> This is part 2 (of 3) of my patches. Split for
+> This is part 3 (of 3) of my patches. Split for
 > your reviewing pleasure.
 >
-> This is related to irq handling only. Prepares for
-> more start/restart sequences fixes.
+> This is related to start/restart sequences.
+>
+> This is based on:
+>   [PATCH v2 0/6] ath10k: fixes 2014-08-07, part 2
 >
 > v2:
->  * patch [1/6] is from part 1
->  * patch [5/6] is new
->  * some fixes, see notes
->  * based on
->    f2c7cb774e3e0a8152b1134015c245ba0abddfc6 and
->    4 crash dump patches (v8) from Kalle
+>  * patch [2/5] replaced
+>  * fixes, see notes
 >
 >
-> Michal Kazior (6):
->   ath10k: move fw init print
->   ath10k: fix legacy irq workaround
->   ath10k: setup irq method in probe
->   ath10k: split ce irq/handler setup
->   ath10k: make sure to really disable irqs
->   ath10k: remove early irq handling
+> Michal Kazior (5):
+>   ath10k: rework posting pci rx buffers
+>   ath10k: update comment regarding warm reset
+>   ath10k: ignore ar_pci->started in pipe cleanup
+>   ath10k: remove ar_pci->started
+>   ath10k: flush hif buffers before recovery
 
-Thanks, all six patches applied.
+Thanks, all five patches applied.
 
 -- 
 Kalle Valo
