@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLrQp-0002X4-3W
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 10:23:23 +0000
-Received: by mail-la0-f50.google.com with SMTP id pi18so12706206lab.9
- for <ath10k@lists.infradead.org>; Mon, 25 Aug 2014 03:22:59 -0700 (PDT)
+ id 1XLrWn-000564-Hi
+ for ath10k@lists.infradead.org; Mon, 25 Aug 2014 10:29:34 +0000
+Received: by mail-lb0-f170.google.com with SMTP id l4so12115347lbv.29
+ for <ath10k@lists.infradead.org>; Mon, 25 Aug 2014 03:29:10 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix fw crash dumping
-Date: Mon, 25 Aug 2014 12:13:14 +0200
-Message-Id: <1408961594-2440-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 1/3] ath10k: move pci init structures
+Date: Mon, 25 Aug 2014 12:19:21 +0200
+Message-Id: <1408961963-3682-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1408961963-3682-1-git-send-email-michal.kazior@tieto.com>
+References: <1408961963-3682-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +27,225 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Recent crash dump patches introduced a regression.
-If debugfs was disabled upon crash user could only
-see the following:
-
- [  793.880000] ath10k: firmware crashed! (uuid n/a)
- [  793.890000] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.1.467.2-1 api 2 htt 2.1
- [  793.890000] ath10k: debug 0 debugfs 0 tracing 0 dfs 1
-
-The report was missing register dump. Fix it by
-printing registers regardless if crash_data is
-present or not.
+It doesn't make much sense to have copy engine
+configuration structures spread across the whole
+source file.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-Note: This is based on my logging patch.
-
- drivers/net/wireless/ath/ath10k/pci.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 192 +++++++++++++++++-----------------
+ 1 file changed, 96 insertions(+), 96 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 83ef6ef..144eb8a3 100644
+index 144eb8a3..71ac018 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -916,6 +916,9 @@ static void ath10k_pci_dump_registers(struct ath10k *ar,
- 			   reg_dump_values[i + 2],
- 			   reg_dump_values[i + 3]);
+@@ -222,6 +222,102 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+ 	/* CE7 used only by Host */
+ };
  
-+	if (!crash_data)
-+		return;
++/*
++ * Map from service/endpoint to Copy Engine.
++ * This table is derived from the CE_PCI TABLE, above.
++ * It is passed to the Target at startup for use by firmware.
++ */
++static const struct service_to_pipe target_service_to_ce_map_wlan[] = {
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_VO,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 3,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_VO,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 2,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_BK,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 3,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_BK,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 2,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_BE,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 3,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_BE,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 2,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_VI,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 3,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_DATA_VI,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 2,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_CONTROL,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 3,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_WMI_CONTROL,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 2,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_RSVD_CTRL,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 0,		/* could be moved to 3 (share with WMI) */
++	},
++	{
++		 ATH10K_HTC_SVC_ID_RSVD_CTRL,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 1,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS,	/* not currently used */
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 0,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS,	/* not currently used */
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 1,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_HTT_DATA_MSG,
++		 PIPEDIR_OUT,		/* out = UL = host -> target */
++		 4,
++	},
++	{
++		 ATH10K_HTC_SVC_ID_HTT_DATA_MSG,
++		 PIPEDIR_IN,		/* in = DL = target -> host */
++		 1,
++	},
 +
- 	/* crash_data is in little endian */
- 	for (i = 0; i < REG_DUMP_COUNT_QCA988X; i++)
- 		crash_data->registers[i] = cpu_to_le32(reg_dump_values[i]);
-@@ -937,13 +940,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
++	/* (Additions here) */
++
++	{				/* Must be last */
++		 0,
++		 0,
++		 0,
++	},
++};
++
+ static bool ath10k_pci_irq_pending(struct ath10k *ar)
+ {
+ 	u32 cause;
+@@ -1378,102 +1474,6 @@ static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
+ }
  
- 	ath10k_err(ar, "firmware crashed! (uuid %s)\n", uuid);
- 	ath10k_print_driver_info(ar);
+ /*
+- * Map from service/endpoint to Copy Engine.
+- * This table is derived from the CE_PCI TABLE, above.
+- * It is passed to the Target at startup for use by firmware.
+- */
+-static const struct service_to_pipe target_service_to_ce_map_wlan[] = {
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_VO,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 3,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_VO,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 2,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_BK,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 3,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_BK,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 2,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_BE,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 3,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_BE,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 2,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_VI,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 3,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_DATA_VI,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 2,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_CONTROL,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 3,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_WMI_CONTROL,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 2,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_RSVD_CTRL,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 0,		/* could be moved to 3 (share with WMI) */
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_RSVD_CTRL,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 1,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS,	/* not currently used */
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 0,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_TEST_RAW_STREAMS,	/* not currently used */
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 1,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_HTT_DATA_MSG,
+-		 PIPEDIR_OUT,		/* out = UL = host -> target */
+-		 4,
+-	},
+-	{
+-		 ATH10K_HTC_SVC_ID_HTT_DATA_MSG,
+-		 PIPEDIR_IN,		/* in = DL = target -> host */
+-		 1,
+-	},
 -
--	if (!crash_data)
--		goto exit;
+-	/* (Additions here) */
 -
- 	ath10k_pci_dump_registers(ar, crash_data);
- 
--exit:
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	queue_work(ar->workqueue, &ar->restart_work);
+-	{				/* Must be last */
+-		 0,
+-		 0,
+-		 0,
+-	},
+-};
+-
+-/*
+  * Send an interrupt to the device to wake up the Target CPU
+  * so it has an opportunity to notice any changed state.
+  */
 -- 
 1.8.5.3
 
