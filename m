@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLqYG-00042i-Ob
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 09:27:01 +0000
-Received: by mail-wg0-f47.google.com with SMTP id b13so12908789wgh.30
- for <ath10k@lists.infradead.org>; Mon, 25 Aug 2014 02:26:33 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87tx5153lw.fsf@kamboji.qca.qualcomm.com>
+ id 1XLqoV-0005zz-2n
+ for ath10k@lists.infradead.org; Mon, 25 Aug 2014 09:43:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC] ath10k: improve logging to include dev id
 References: <1408952456-3121-1-git-send-email-michal.kazior@tieto.com>
  <87tx5153lw.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 25 Aug 2014 11:26:33 +0200
-Message-ID: <CA+BoTQnJYK0Sf6jy+tXHrTM06gXCjTxv_JKdK=01+jz5RgZ+tQ@mail.gmail.com>
-Subject: Re: [RFC] ath10k: improve logging to include dev id
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQnJYK0Sf6jy+tXHrTM06gXCjTxv_JKdK=01+jz5RgZ+tQ@mail.gmail.com>
+Date: Mon, 25 Aug 2014 12:43:20 +0300
+In-Reply-To: <CA+BoTQnJYK0Sf6jy+tXHrTM06gXCjTxv_JKdK=01+jz5RgZ+tQ@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 25 Aug 2014 11:26:33 +0200")
+Message-ID: <87mwas6h1j.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +21,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjUgQXVndXN0IDIwMTQgMTE6MTgsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gVGhpcyBtYWtlcyBpdCBhIGxvdCBlYXNpZXIgdG8gbG9nIGFuZCBkZWJ1Zwo+PiBt
-ZXNzYWdlcyBpZiB0aGVyZSdzIG1vcmUgdGhhbiAxIGF0aDEwayBkZXZpY2Ugb24gYQo+PiBzeXN0
-ZW0uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGll
-dG8uY29tPgo+Cj4gRGlkIG9ubHkgYSBxdWljayByZXZpZXcgYW5kIHRlc3QgYnV0IGxvb2tzIGdv
-b2QgdG8gbWUgZXhjZXB0IG9uZSBwcm9ibGVtCj4gaW4gcGNpLmMsIHNlZSBiZWxvdy4gQnV0IHRo
-ZXJlIGFyZSBzb21lIGNvbmZsaWN0cyBub3csIGNhbiB5b3UgcmViYXNlCj4gcGxlYXNlPyBJIGhv
-cGUgaXQncyBub3QgdG9vIG11Y2ggd29yayB0byBmaXggdGhlbS4KCkkndmUgcmViYXNlZCB0aGlz
-IGluIG15IGludGVybmFsIHRyZWUgYWxyZWFkeS4KCgo+IEknbGwgYWxzbyBzdW1tYXJpc2UgdGhl
-ICJtZWF0IiBvZiB0aGUgY2hhbmdlcyBzbyB0aGF0IGl0J3MgZWFzaWVyIGZvcgo+IG90aGVycyB0
-byByZXZpZXc6Cj4KWy4uLl0KPj4gQEAgLTI1NjYsMTIgKzI1NzYsMTIgQEAgc3RhdGljIGludCBh
-dGgxMGtfcGNpX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpwZGV2LAo+PiAgICAgICBzdHJ1Y3QgYXRo
-MTBrX3BjaSAqYXJfcGNpOwo+PiAgICAgICB1MzIgY2hpcF9pZDsKPj4KPj4gLSAgICAgYXRoMTBr
-X2RiZyhBVEgxMEtfREJHX1BDSSwgInBjaSBwcm9iZVxuIik7Cj4+ICsgICAgIGRldl9wcmludGso
-S0VSTl9ERUJVRywgJnBkZXYtPmRldiwgInBjaSBwcm9iZVxuIik7Cj4KPiBCdXQgdGhpcyBkb2Vz
-bid0IGxvb2sgcmlnaHQuIEEgbGVmdG92ZXIgZnJvbSB0ZXN0aW5nLCBwZXJoYXBzPwoKQXQgdGhp
-cyBwb2ludCB0aGVyZSdzIG5vICJhciIgeWV0LiBUaGUgImFyIiBpcyBhbGxvY2F0ZWQgYSBmZXcg
-bGluZXMKYmVsb3cuIElmIHRoZSBhbGxvY2F0aW9uIGZhaWxzIHRoZW4gdGhlcmUncyBubyAiYXIi
-IHNvIGRldl9lcnIoKSBpcwp1c2VkIGV4cGxpY2l0bHkgaW4gdGhlIGZhaWxwYXRoLgoKSSB0aGlu
-ayB0aGVzZSBhcmUganVzdCAyIGV4Y2VwdGlvbnMgd2UgY2FuJ3QgZG8gZGlmZmVyZW50bHksIGNh
-biB3ZT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 25 August 2014 11:18, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> This makes it a lot easier to log and debug
+>>> messages if there's more than 1 ath10k device on a
+>>> system.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>
+>> Did only a quick review and test but looks good to me except one problem
+>> in pci.c, see below. But there are some conflicts now, can you rebase
+>> please? I hope it's not too much work to fix them.
+>
+> I've rebased this in my internal tree already.
+
+Nice :)
+
+>> I'll also summarise the "meat" of the changes so that it's easier for
+>> others to review:
+>>
+> [...]
+>>> @@ -2566,12 +2576,12 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+>>>       struct ath10k_pci *ar_pci;
+>>>       u32 chip_id;
+>>>
+>>> -     ath10k_dbg(ATH10K_DBG_PCI, "pci probe\n");
+>>> +     dev_printk(KERN_DEBUG, &pdev->dev, "pci probe\n");
+>>
+>> But this doesn't look right. A leftover from testing, perhaps?
+>
+> At this point there's no "ar" yet. The "ar" is allocated a few lines
+> below. If the allocation fails then there's no "ar" so dev_err() is
+> used explicitly in the failpath.
+
+Ah, of course.
+
+> I think these are just 2 exceptions we can't do differently, can we?
+
+Using dev_err() is okay, but this debug print has the problem that it's
+now always printed. I see few options:
+
+1) we create __ath10k_dbg(dev, mask, fmt, ...)
+
+2) we move the debug print after ar is created
+
+3) we remove the debug print entirely
+
+I vote for 2)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
