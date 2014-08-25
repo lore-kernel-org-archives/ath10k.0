@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLk20-0004h6-DU
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 02:29:17 +0000
-Received: by mail-la0-f49.google.com with SMTP id hz20so11979164lab.22
- for <ath10k@lists.infradead.org>; Sun, 24 Aug 2014 19:28:53 -0700 (PDT)
+ id 1XLnmG-0005Dl-My
+ for ath10k@lists.infradead.org; Mon, 25 Aug 2014 06:29:17 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v8 2/4] ath10k: provide firmware crash info via debugfs
+References: <20140821124705.27159.67898.stgit@potku.adurom.net>
+ <20140821124907.27159.64620.stgit@potku.adurom.net>
+ <CA+BoTQk6wvXMEWnfFvASJwzj2AC0VB=Zby+zLO-tJ3NN_eA2mg@mail.gmail.com>
+Date: Mon, 25 Aug 2014 09:28:48 +0300
+In-Reply-To: <CA+BoTQk6wvXMEWnfFvASJwzj2AC0VB=Zby+zLO-tJ3NN_eA2mg@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 22 Aug 2014 08:49:35 +0200")
+Message-ID: <878umd84m7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ-VmokR-2SQG-Hb+7yTXG-5X1PQ_VqB1wiYVCdWa17JyAnMTw@mail.gmail.com>
-References: <CABnBrYUtF_S+Gh9nwPQwOct1uA5wsLvwW_oxoYYVtWBqiRQROQ@mail.gmail.com>
- <CAJ-VmokR-2SQG-Hb+7yTXG-5X1PQ_VqB1wiYVCdWa17JyAnMTw@mail.gmail.com>
-Date: Sun, 24 Aug 2014 19:28:52 -0700
-Message-ID: <CABnBrYUv4tLcmOJLUD99B96jWRwepk1_-6NQ1LdEaCaPQ5QOwg@mail.gmail.com>
-Subject: Re: Malformed AddBA Response prevents clients from associating?
-From: Denton Gentry <denton.gentry@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,59 +21,95 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-WyAgIDE4LjA0NzU5N10gYXRoMTBrOiBxY2E5ODh4IGh3Mi4wICgweDQxMDAwMTZjLCAweDA0MzIw
-MmZmKSBmdwoxMC4xLjQ2Ny4yLTEgYXBpIDIgaHR0IDIuMQoKT24gU3VuLCBBdWcgMjQsIDIwMTQg
-YXQgNzoyMiBQTSwgQWRyaWFuIENoYWRkIDxhZHJpYW5AZnJlZWJzZC5vcmc+IHdyb3RlOgo+IFdo
-aWNoIGZpcm13YXJlIGJ1aWxkIGFyZSB5b3UgdXNpbmc/Cj4KPgo+Cj4gLWEKPgo+Cj4gT24gMjQg
-QXVndXN0IDIwMTQgMTk6MTcsIERlbnRvbiBHZW50cnkgPGRlbnRvbi5nZW50cnlAZ21haWwuY29t
-PiB3cm90ZToKPj4gSSBoYXZlIGFuIEFQIHVzaW5nIGF0aDEwayBhcyBhIDUgR0h6IDgwMi4xMWFj
-IGludGVyZmFjZS4gVmVyeQo+PiBvY2Nhc2lvbmFsbHkgaXQgZ2V0cyBpbnRvIGEgbW9kZSB3aGVy
-ZSBzdGF0aW9ucyBhcmUgdW5hYmxlIHRvCj4+IGFzc29jaWF0ZS4gSSBkb27igJl0IGtub3cgaG93
-IGl0IGdldHMgaW50byB0aGlzIG1vZGUsIGJ1dCBvbmNlIHRoZXJlIHRoZQo+PiBzZXF1ZW5jZSBv
-ZiBldmVudHMgd2hlbiBhIGNsaWVudCB0cmllcyB0byBhc3NvY2lhdGUgaXM6Cj4+Cj4+IDEuIENs
-aWVudCBhbmQgQVAgZXhjaGFuZ2UgQXV0aGVudGljYXRpb24sIEFzc29jaWF0aW9uIFJlcXVlc3Qs
-IGFuZAo+PiBBc3NvY2lhdGlvbiBSZXNwb25zZSBmcmFtZXMuCj4+Cj4+IDIuIEFQIHNlbmRzIHRo
-ZSBmaXJzdCBwYWNrZXQgaW4gdGhlIEVBUE9MIGV4Y2hhbmdlLgo+Pgo+PiAzLiBDbGllbnQgc2Vu
-ZHMgYW4gQWRkQkEgcmVxdWVzdC4KPj4KPj4gNC4gQVAgc2VuZHMgYmFjayBhIG1hbGZvcm1lZCBB
-ZGRCQSBSZXNwb25zZS4gVGhlIGNvcnJ1cHRpb24gdGFrZXMgdGhlCj4+IGZvcm0gb2YgYSByZWNv
-Z25pemFibGUgQWRkQkEgUmVzcG9uc2UgYXBwZW5kZWQgd2l0aCAxMCBieXRlcyBvZgo+PiBhZGRp
-dGlvbmFsIHN0dWZmLCBhbmQgY2FycnlpbmcgYSBiYWQgRkNTLgo+PiBPbmNlIGluIHRoaXMgc3Rh
-dGUsIGV2ZXJ5IEFkZEJBIFJlc3BvbnNlIEnigJl2ZSBjYXB0dXJlZCBoYXMgdGhpcyBleHRyYQo+
-PiAxMCBieXRlcyBvZiBzdHVmZiBhcHBlbmRlZCB0byB0aGUgZW5kLCBhbmQgY2FycmllcyBhIGJh
-ZCBGQ1MuCj4+Cj4+IDUuIFRoZSBjbGllbnQgZGlzY2FyZHMgdGhlIEFkZEJBIFJlc3BvbnNlIGJl
-Y2F1c2UgdGhlIEZDUyBpcyB3cm9uZy4KPj4gR2F0aGVyaW5nIHBjYXBzIG9uIHRoZSBjbGllbnQg
-c2hvd3MgdGhhdCBpdCBkb2VzIHRyeSB0byBzZW5kIGl0cyBFQVBPTAo+PiByZXNwb25zZSwgYnV0
-IHRoYXQgcGFja2V0IG5ldmVyIG1ha2VzIGl0IG9udG8gdGhlIGFpciAocHJlc3VtYWJseQo+PiBi
-ZWNhdXNlIHRoZSBBZGRCQSBpcyBwZW5kaW5nKS4KPj4KPj4KPj4gUmVib290aW5nIHRoZSBjbGll
-bnQgZG9lcyBub3QgcmVzb2x2ZSB0aGUgcHJvYmxlbSwgYWZ0ZXIgcmVib290IGl0Cj4+IHN0aWxs
-IGNhbm5vdCBhc3NvY2lhdGUuIFJlYm9vdGluZyB0aGUgQVAgcmVzb2x2ZXMgdGhlIHByb2JsZW0u
-Cj4+Cj4+IEkgZG9u4oCZdCBrbm93IGEgbG90IGFib3V0IHdoYXQgY2F1c2VzIHRoZSBBUCB0byBn
-ZXQgaW50byB0aGlzIHN0YXRlLiBJCj4+IHdyb3RlIGEgc2NyaXB0IHRvIG1ha2UgY2xpZW50cyBz
-aXQgaW4gYSBsb29wIGRpc2Fzc29jaWF0aW5nIGFuZAo+PiBhc3NvY2lhdGluZyBldmVyeSBmZXcg
-c2Vjb25kcy4gQSBzaW5nbGUgY2xpZW50IHJ1bm5pbmcgdGhpcyBsb29wCj4+IHdvcmtlZCBmb3Ig
-bWFueSBob3VyczsgaXQgbmV2ZXIgZmFpbGVkLiBTdGFydGluZyB0aGUgbG9vcCBvbiB0d28KPj4g
-Y2xpZW50cyBtYWRlIHRoZSBwcm9ibGVtIGhhcHBlbiBpbiBhYm91dCB0d28gaG91cnMuIEkgaGF2
-ZSBub3QgeWV0Cj4+IHRyaWVkIGl0IHdpdGggbW9yZSBjbGllbnRzIHlldC4KPj4KPj4gQmVjYXVz
-ZSB0aGUgQWRkQkEgUmVzcG9uc2UgaXMgZ2VuZXJhdGVkIGJ5IHRoZSBmaXJtd2FyZSwgSSBiZWxp
-ZXZlIHRoZQo+PiBwcm9ibGVtIG11c3QgYmUgaW4gdGhlIGZpcm13YXJlLiBGb3Igc29tZSByZWFz
-b24sIGl0IHN0YXJ0cyBzZW5kaW5nCj4+IG1hbGZvcm1lZCBBZGRCQSBSZXNwb25zZXMuCj4+Cj4+
-IEnigJl2ZSBhdHRhY2hlZCB0d28gcGNhcHMsIHdoaWNoIEnigJl2ZSB0cmltbWVkIGRvd24gdG8g
-bWFuYWdlYWJsZSBzaXplIGJ5Cj4+IHJlbW92aW5nIGxvdHMgb2YgYmVhY29ucy4gVGhlIE1hbGZv
-cm1lZF9BZGRCQVIucGNhcCBpcyBmcm9tIGEgc3lzdGVtCj4+IGluIHRoZSBzdGF0ZSB3aGVyZSBj
-bGllbnRzIGNhbm5vdCBhc3NvY2lhdGUuIFRoZSBOb3JtYWxfQWRkQkFSLnBjYXAgaXMKPj4gY2Fw
-dHVyZWQgdXNpbmcgdGhlIHNhbWUgQVAgYW5kIGNsaWVudCwgYnV0IHdpdGggZXZlcnl0aGluZyB3
-b3JraW5nCj4+IG5vcm1hbGx5ICh0aGUgRUFQT0wgZXhjaGFuZ2UgY29tcGxldGVzLCBhbmQgdGhl
-IGNsaWVudCBiZWdpbnMgc2VuZGluZwo+PiBRb1MgRGF0YSBmcmFtZXMpLgo+Pgo+PiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGlu
-ZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+CgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 21 August 2014 14:49, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>
+>> +static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+>> +{
+>> +       struct ath10k_fw_crash_data *crash_data = ar->debug.fw_crash_data;
+>> +       struct ath10k_dump_file_data *dump_data;
+>> +       struct ath10k_tlv_dump_data *dump_tlv;
+>> +       int hdr_len = sizeof(*dump_data);
+>> +       unsigned int len, sofar = 0;
+>> +       unsigned char *buf;
+>> +
+>> +       lockdep_assert_held(&ar->conf_mutex);
+> [...]
+>> +static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
+>> +{
+>> +       struct ath10k *ar = inode->i_private;
+>> +       struct ath10k_dump_file_data *dump;
+>> +       int ret;
+>> +
+>> +       mutex_lock(&ar->conf_mutex);
+>
+> I don't think we need conf_mutex here at all, do we?
+
+You are right, I removed that (diff below).
+
+> I'm sorry, I should've spotted this earlier. Feel free to just ignore
+> me :-)
+
+Hehe, no worries. It's difficult to spot all problems in the first
+review and I do that all the time :)
+
+> Other than that this looks fine.
+
+Great, thanks for good review!
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index bf08f026b202..442fe93d18be 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -712,8 +712,6 @@ static struct ath10k_dump_file_data *ath10k_build_dump_file(struct ath10k *ar)
+ 	unsigned int len, sofar = 0;
+ 	unsigned char *buf;
+ 
+-	lockdep_assert_held(&ar->conf_mutex);
+-
+ 	len = hdr_len;
+ 	len += sizeof(*dump_tlv) + sizeof(crash_data->registers);
+ 
+@@ -785,22 +783,14 @@ static int ath10k_fw_crash_dump_open(struct inode *inode, struct file *file)
+ {
+ 	struct ath10k *ar = inode->i_private;
+ 	struct ath10k_dump_file_data *dump;
+-	int ret;
+-
+-	mutex_lock(&ar->conf_mutex);
+ 
+ 	dump = ath10k_build_dump_file(ar);
+-	if (!dump) {
+-		ret = -ENODATA;
+-		goto out;
+-	}
++	if (!dump)
++		return -ENODATA;
+ 
+ 	file->private_data = dump;
+-	ret = 0;
+ 
+-out:
+-	mutex_unlock(&ar->conf_mutex);
+-	return ret;
++	return 0;
+ }
+ 
+ static ssize_t ath10k_fw_crash_dump_read(struct file *file,
+
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
