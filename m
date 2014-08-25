@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLpbC-0004E7-Mj
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 08:25:59 +0000
+ id 1XLpfn-0006KI-99
+ for ath10k@lists.infradead.org; Mon, 25 Aug 2014 08:30:44 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v8 0/4] ath10k: firmware crash dump
-References: <20140821124705.27159.67898.stgit@potku.adurom.net>
-Date: Mon, 25 Aug 2014 11:25:33 +0300
-In-Reply-To: <20140821124705.27159.67898.stgit@potku.adurom.net> (Kalle Valo's
- message of "Thu, 21 Aug 2014 15:48:50 +0300")
-Message-ID: <877g1x6kn6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/6] ath10k: ath10k: fixes 2014-08-07, part 2
+References: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 25 Aug 2014 11:30:17 +0300
+In-Reply-To: <1408710214-24894-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 22 Aug 2014 14:23:28 +0200")
+Message-ID: <8738cl6kfa.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,28 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> And yet another version of firmware crash dumps. Now I dropped all dumps except
-> firmware registers and tested all the features myself.
-
-[...]
-
-> Ben Greear (1):
->       ath10k: provide firmware crash info via debugfs
+> Hi,
 >
-> Kalle Valo (3):
->       ath10k: add ath10k_pci_diag_* helpers
->       ath10k: rename ath10k_pci_hif_dump_area() to ath10k_pci_fw_crashed_dump()
->       ath10k: print more driver info when firmware crashes
+> This is part 2 (of 3) of my patches. Split for
+> your reviewing pleasure.
+>
+> This is related to irq handling only. Prepares for
+> more start/restart sequences fixes.
+>
+> v2:
+>  * patch [1/6] is from part 1
+>  * patch [5/6] is new
+>  * some fixes, see notes
+>  * based on
+>    f2c7cb774e3e0a8152b1134015c245ba0abddfc6 and
+>    4 crash dump patches (v8) from Kalle
+>
+>
+> Michal Kazior (6):
+>   ath10k: move fw init print
+>   ath10k: fix legacy irq workaround
+>   ath10k: setup irq method in probe
+>   ath10k: split ce irq/handler setup
+>   ath10k: make sure to really disable irqs
+>   ath10k: remove early irq handling
 
-Finally applied :)
-
-I also applied the small diff to patch 2 to remove the unneeded use of
-mutex in ath10k_fw_crash_dump_open().
+Thanks, all six patches applied.
 
 -- 
 Kalle Valo
