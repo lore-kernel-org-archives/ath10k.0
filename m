@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XLrWn-00055p-Dh
- for ath10k@lists.infradead.org; Mon, 25 Aug 2014 10:29:33 +0000
-Received: by mail-la0-f49.google.com with SMTP id hz20so12625934lab.36
- for <ath10k@lists.infradead.org>; Mon, 25 Aug 2014 03:29:09 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/3] ath10k: ce fixes 2014-08-08
-Date: Mon, 25 Aug 2014 12:19:20 +0200
-Message-Id: <1408961963-3682-1-git-send-email-michal.kazior@tieto.com>
+ id 1XMAlh-0007qb-8p
+ for ath10k@lists.infradead.org; Tue, 26 Aug 2014 07:02:13 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: improve logging to include dev id
+References: <1408961378-1390-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 26 Aug 2014 10:01:45 +0300
+In-Reply-To: <1408961378-1390-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 25 Aug 2014 12:09:38 +0200")
+Message-ID: <87vbpf3fae.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +19,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-This removes implicit endianess in some places.
-I'd love to get rid of it from
-ath10k_pci_diag_access* as well but let's fix
-ath10k_pci_diag_mem_* first.
+> This makes it a lot easier to log and debug
+> messages if there's more than 1 ath10k device on a
+> system.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Note: This is based on my logging patch and fw
-crash dump fix.
+A comment for the future, no need to change anything in this patch:
 
-v2:
- * rebased
- * some fixes in patch [3/3] (see notes there)
+> -int ath10k_info(const char *fmt, ...)
+> +int ath10k_info(struct ath10k *ar, const char *fmt, ...)
+>  {
+>  	struct va_format vaf = {
+>  		.fmt = fmt,
+> @@ -134,7 +116,7 @@ int ath10k_info(const char *fmt, ...)
+>  
+>  	va_start(args, fmt);
+>  	vaf.va = &args;
+> -	ret = ath10k_printk(KERN_INFO, "%pV", &vaf);
+> +	ret = dev_info(ar->dev, "%pV", &vaf);
+>  	trace_ath10k_log_info(&vaf);
+>  	va_end(args);
+>  
 
+So how should we handle tracing? We would want to provide same
+information through logging trace events, right?
 
-Michal Kazior (3):
-  ath10k: move pci init structures
-  ath10k: dont duplicate service-pipe mapping
-  ath10k: make target endianess more explicit
-
- drivers/net/wireless/ath/ath10k/pci.c | 408 +++++++++++++++++-----------------
- drivers/net/wireless/ath/ath10k/pci.h |  18 +-
- 2 files changed, 209 insertions(+), 217 deletions(-)
+One idea I had is that we modify the tracing logging macros to take
+struct ath10k (or struct device) and use dev_driver_string() &
+dev_name() to provide the same info via trace events.
 
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
