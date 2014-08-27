@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMYRY-0004An-QS
- for ath10k@lists.infradead.org; Wed, 27 Aug 2014 08:19:01 +0000
-Received: by mail-wi0-f180.google.com with SMTP id n3so6479wiv.7
- for <ath10k@lists.infradead.org>; Wed, 27 Aug 2014 01:18:38 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <874mwyxugq.fsf@kamboji.qca.qualcomm.com>
+ id 1XMc7h-00027b-2P
+ for ath10k@lists.infradead.org; Wed, 27 Aug 2014 12:14:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/3] ath10k: ce fixes 2014-08-08
 References: <1408961963-3682-1-git-send-email-michal.kazior@tieto.com>
- <1408961963-3682-4-git-send-email-michal.kazior@tieto.com>
- <874mwyxugq.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 27 Aug 2014 10:18:38 +0200
-Message-ID: <CA+BoTQ=sTzfyR2XEf4qCjs-XbLTpJbAX_boyVKb37uyT65JYog@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ath10k: make target endianess more explicit
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 27 Aug 2014 15:14:16 +0300
+In-Reply-To: <1408961963-3682-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 25 Aug 2014 12:19:20 +0200")
+Message-ID: <87mwaqw2nb.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +19,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjcgQXVndXN0IDIwMTQgMDk6MjgsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0
-ZXM6Cj4KPj4gU29tZSBjb3B5IGVuZ2luZSBzdHJ1Y3R1cmVzIGFyZSB0YXJnZXQgc3BlY2lmaWMK
-Pj4gYW5kIGFyZSB1cGxvYWRlZCB0byB0aGUgZGV2aWNlIGR1cmluZwo+PiBpbml0L2NvbmZpZ3Vy
-YXRpb24uCj4+Cj4+IFRoaXMgYWxzbyBjbGVhbnMgdXAgYSBiaXQgZGlhZ19tZW1fcmVhZC93cml0
-ZQo+PiBpbXBsaWNpdCBieXRlc3dhcCBtZXNzIGxlYXZpbmcgb25seQo+PiBkaWFnX2FjY2Vzc19y
-ZWFkL3dyaXRlIHdpdGggYW4gaW1wbGljaXQgZW5kaWFuZXNzCj4+IGJ5dGVzd2FwLgo+Pgo+PiBT
-aWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPgo+
-IFsuLi5dCj4KPj4gIC8qIFdyaXRlIDRCIGRhdGEgdG8gVGFyZ2V0IG1lbW9yeSBvciByZWdpc3Rl
-ciAqLwo+PiAgc3RhdGljIGludCBhdGgxMGtfcGNpX2RpYWdfd3JpdGVfYWNjZXNzKHN0cnVjdCBh
-dGgxMGsgKmFyLCB1MzIgYWRkcmVzcywKPj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB1MzIgZGF0YSkKPj4gIHsKPj4gICAgICAgLyogQXNzdW1lIHJhbmdlIGRvZXNuJ3Qg
-Y3Jvc3MgdGhpcyBib3VuZGFyeSAqLwo+PiAgICAgICBpZiAoYWRkcmVzcyA+PSBEUkFNX0JBU0Vf
-QUREUkVTUykKPj4gLSAgICAgICAgICAgICByZXR1cm4gYXRoMTBrX3BjaV9kaWFnX3dyaXRlX21l
-bShhciwgYWRkcmVzcywgJmRhdGEsCj4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgc2l6ZW9mKHUzMikpOwo+PiArICAgICAgICAgICAgIHJldHVybiBhdGgx
-MGtfcGNpX2RpYWdfd3JpdGUzMihhciwgYWRkcmVzcywgZGF0YSk7Cj4KPiBOb3RoaW5nIHdyb25n
-IHdpdGggeW91ciBwYXRjaCwgYnV0IEkgcmVhbGx5IGRlc3Bpc2UgZnVuY3Rpb25zIHdpdGggc3Bs
-aXQKPiBwZXJzb25hbGl0eSBsaWtlIHRoaXMgb25lLiBUaGUgY2FsbGVyIHNob3VsZCBrbm93IHdo
-aWNoIGFyZWEgaXQncwo+IHdyaXRpbmcgdG8uIEFuZCB3ZSBoYXZlIHNpbWlsYXIgc3R1ZmYgaW4g
-YXRoMTBrX3BjaV9kaWFnX3JlYWRfbWVtKCkgYXMKPiB3ZWxsOgo+Cj4gICAgICAgICAvKgo+ICAg
-ICAgICAgICogVGhpcyBjb2RlIGNhbm5vdCBoYW5kbGUgcmVhZHMgdG8gbm9uLW1lbW9yeSBzcGFj
-ZS4gUmVkaXJlY3QgdG8gdGhlCj4gICAgICAgICAgKiByZWdpc3RlciByZWFkIGZuIGJ1dCBwcmVz
-ZXJ2ZSB0aGUgbXVsdGkgd29yZCByZWFkIGNhcGFiaWxpdHkgb2YKPiAgICAgICAgICAqIHRoaXMg
-Zm4KPiAgICAgICAgICAqLwo+ICAgICAgICAgaWYgKGFkZHJlc3MgPCBEUkFNX0JBU0VfQUREUkVT
-Uykgewo+ICAgICAgICAgICAgICAgICBpZiAoIUlTX0FMSUdORUQoYWRkcmVzcywgNCkgfHwKPiAg
-ICAgICAgICAgICAgICAgICAgICFJU19BTElHTkVEKCh1bnNpZ25lZCBsb25nKWRhdGEsIDQpKQo+
-ICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAtRUlPOwo+Cj4gICAgICAgICAgICAgICAg
-IHdoaWxlICgobmJ5dGVzID49IDQpICYmICAoKHJldCA9IGF0aDEwa19wY2lfZGlhZ19yZWFkX2Fj
-Y2VzcygKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXIsIGFk
-ZHJlc3MsICh1MzIgKilkYXRhKSkgPT0gMCkpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICBu
-Ynl0ZXMgLT0gc2l6ZW9mKHUzMik7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgYWRkcmVzcyAr
-PSBzaXplb2YodTMyKTsKPiAgICAgICAgICAgICAgICAgICAgICAgICBkYXRhICs9IHNpemVvZih1
-MzIpOwo+ICAgICAgICAgICAgICAgICB9Cj4gICAgICAgICAgICAgICAgIHJldHVybiByZXQ7Cj4g
-ICAgICAgICB9Cj4KPgo+IENhbiB5b3UgZ3Vlc3Mgd2hhdCdzIHRoZSBpZGVhIGJlaGluZCB0aGlz
-PyBJIHdvdWxkIHByZWZlciB0aGF0IHdlIGdldAo+IHJpZCBvZiBhbGwgdGhlIHVnbHkgX2FjY2Vz
-cygpIGZ1bmN0aW9ucyBpbiBwY2kuYy4KCkJlYXRzIG1lLiBJIHBsYW4gdG8gcmVtb3ZlIHRoaXMg
-aW4gdGhlIGZ1dHVyZSB1bmxlc3MgSSBmaW5kIGl0J3MKYWN0dWFsbHkgbmVjZXNzYXJ5IHRvIGJl
-IGtlcHQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> This removes implicit endianess in some places.
+> I'd love to get rid of it from
+> ath10k_pci_diag_access* as well but let's fix
+> ath10k_pci_diag_mem_* first.
+>
+> Note: This is based on my logging patch and fw
+> crash dump fix.
+>
+> v2:
+>  * rebased
+>  * some fixes in patch [3/3] (see notes there)
+>
+>
+> Michal Kazior (3):
+>   ath10k: move pci init structures
+>   ath10k: dont duplicate service-pipe mapping
+>   ath10k: make target endianess more explicit
+
+Thanks, all three applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
