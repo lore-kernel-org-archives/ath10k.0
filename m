@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMX11-0007TG-PV
- for ath10k@lists.infradead.org; Wed, 27 Aug 2014 06:47:33 +0000
-Received: by mail-wg0-f47.google.com with SMTP id b13so15543068wgh.30
- for <ath10k@lists.infradead.org>; Tue, 26 Aug 2014 23:47:09 -0700 (PDT)
+ id 1XMX9C-00041Z-V3
+ for ath10k@lists.infradead.org; Wed, 27 Aug 2014 06:55:59 +0000
+Received: by mail-wi0-f177.google.com with SMTP id ho1so5235457wib.4
+ for <ath10k@lists.infradead.org>; Tue, 26 Aug 2014 23:55:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=QGc+bqN+9NA39AxTeN7Xr-PDK13dDD8JxuYxorbmayw@mail.gmail.com>
+In-Reply-To: <CAHqTa-0Z=VbsZvWNW_=prAU4gCYq4D4ab6m+P8di2s6PHL7bbA@mail.gmail.com>
 References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
  <8761hpc9j9.fsf@kamboji.qca.qualcomm.com>
  <CAHqTa-1ZWg38dkT1N0fm3JkLL1kVc_pP1dsuCuorZxXm8z6M7Q@mail.gmail.com>
@@ -14,10 +14,11 @@ References: <CAHqTa-0GxKjo2ObRtoAKu6H9J6upC7JNS44MpNQpFDPXpiEKJw@mail.gmail.com>
  <CA+BoTQ=Qcrrutt6ZUtbrgKzx0Mo9186SRuV7dc97FnOxwn3Jxg@mail.gmail.com>
  <87siktat4d.fsf@kamboji.qca.qualcomm.com>
  <CA+BoTQ=QGc+bqN+9NA39AxTeN7Xr-PDK13dDD8JxuYxorbmayw@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Wed, 27 Aug 2014 02:46:48 -0400
-Message-ID: <CAHqTa-0Z=VbsZvWNW_=prAU4gCYq4D4ab6m+P8di2s6PHL7bbA@mail.gmail.com>
+ <CAHqTa-0Z=VbsZvWNW_=prAU4gCYq4D4ab6m+P8di2s6PHL7bbA@mail.gmail.com>
+Date: Wed, 27 Aug 2014 08:55:36 +0200
+Message-ID: <CA+BoTQkys4ZHohK6BG7_h8fFJDFv=Ro4He7tprwZOHaODRCXSQ@mail.gmail.com>
 Subject: Re: Support for scan while in AP mode, and offchannel while in AP mode
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,81 +27,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Avery Pennarun <apenwarr@gmail.com>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k <ath10k@lists.infradead.org>
 
-On Tue, Aug 19, 2014 at 3:01 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 19 August 2014 08:30, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Yes, my understanding as well is that the ath10k firmware is like that.
->> But I'm no firmware expert :)
->>
->> I assume that the 10.x firmware does support hw_scan when in AP mode and
->> we would need to "just" change mac80211 to support that. But no idea how
->> big task that actually is.
->
-> Yes it does. If we raise internal scan priority from low to at least
-> high then beaconing does not preempt scanning. I haven't checked how
-> well this works with traffic to/from connected stations though.
->
-> I've also found the OpenWRT hack I've mentioned earlier:
->
-> http://git.openwrt.org/?p=openwrt.git;a=blob;f=package/kernel/mac80211/patches/310-ap_scan.patch;h=23ecd370300f13c25983bbbeaa7d718c3e250997;hb=HEAD
-
-Followup: I tried the above patch and it "works", though with some problems.
-
-To check channel reliability, I ran my isoping tool:
-https://gfiber.googlesource.com/vendor/google/platform/+/master/cmds/isoping.c
-
-On the client:
-   isoping -q
-On the AP:
-   isoping -r33 <ipaddr-of-client>
-
-This sends a packet in each direction every 10ms and prints the time
-delay for each packet as well as the total packet loss.
-
-I have my AP running on channel 149 with 80 MHz width and things work
-fine (typical measured delay is <1ms).  Then I run this on the ath10k
-AP:
-
-iw wlan1 scan freq 5180 flush ap-force passive | grep KNOWN_SSID_ON_CHANNEL_36
-
-The result is:
-- isoping reports zero packets lost (very consistent)
-- packets in each direction are delayed by some amount *less* than
-100ms.  (It looks to be about 40-50ms but sometimes less.)
-- the passive channel scan *sometimes* sees the KNOWN_SSID beacons
-(roughly 50% of the time)
-
-When I stop hostapd, the passive channel scan succeeds about 100% of the time.
-
-Removing the 'passive' parameter also makes it work, even without
-killing hostapd.  Of course this sends unwanted Probe packets on the
-channel.
-
-With an ath9k AP instead of an ath10k, it works correctly: isoping
-reports no loss, a roughly 100ms delay (within its precision), and
-passive scanning works about 100% of the time.
-
-Any guesses about why the offchannel time would be too short on ath10k?
-
-I haven't investigated whether the packets are enqueued or simply
-retransmitted after it returns to the channel, but in any case,
-userspace and TCP don't see packet loss, so it's fine with me.
-
-This is the ath10k driver from 3.15rc1 and firmware 10.1.467.2-1.
-
-Suggestions?
-
-Thanks,
-
-Avery
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgQXVndXN0IDIwMTQgMDg6NDYsIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5j
+b20+IHdyb3RlOgo+IE9uIFR1ZSwgQXVnIDE5LCAyMDE0IGF0IDM6MDEgQU0sIE1pY2hhbCBLYXpp
+b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4gT24gMTkgQXVndXN0IDIwMTQg
+MDg6MzAsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+IHdyb3RlOgo+Pj4gWWVz
+LCBteSB1bmRlcnN0YW5kaW5nIGFzIHdlbGwgaXMgdGhhdCB0aGUgYXRoMTBrIGZpcm13YXJlIGlz
+IGxpa2UgdGhhdC4KPj4+IEJ1dCBJJ20gbm8gZmlybXdhcmUgZXhwZXJ0IDopCj4+Pgo+Pj4gSSBh
+c3N1bWUgdGhhdCB0aGUgMTAueCBmaXJtd2FyZSBkb2VzIHN1cHBvcnQgaHdfc2NhbiB3aGVuIGlu
+IEFQIG1vZGUgYW5kCj4+PiB3ZSB3b3VsZCBuZWVkIHRvICJqdXN0IiBjaGFuZ2UgbWFjODAyMTEg
+dG8gc3VwcG9ydCB0aGF0LiBCdXQgbm8gaWRlYSBob3cKPj4+IGJpZyB0YXNrIHRoYXQgYWN0dWFs
+bHkgaXMuCj4+Cj4+IFllcyBpdCBkb2VzLiBJZiB3ZSByYWlzZSBpbnRlcm5hbCBzY2FuIHByaW9y
+aXR5IGZyb20gbG93IHRvIGF0IGxlYXN0Cj4+IGhpZ2ggdGhlbiBiZWFjb25pbmcgZG9lcyBub3Qg
+cHJlZW1wdCBzY2FubmluZy4gSSBoYXZlbid0IGNoZWNrZWQgaG93Cj4+IHdlbGwgdGhpcyB3b3Jr
+cyB3aXRoIHRyYWZmaWMgdG8vZnJvbSBjb25uZWN0ZWQgc3RhdGlvbnMgdGhvdWdoLgo+Pgo+PiBJ
+J3ZlIGFsc28gZm91bmQgdGhlIE9wZW5XUlQgaGFjayBJJ3ZlIG1lbnRpb25lZCBlYXJsaWVyOgo+
+Pgo+PiBodHRwOi8vZ2l0Lm9wZW53cnQub3JnLz9wPW9wZW53cnQuZ2l0O2E9YmxvYjtmPXBhY2th
+Z2Uva2VybmVsL21hYzgwMjExL3BhdGNoZXMvMzEwLWFwX3NjYW4ucGF0Y2g7aD0yM2VjZDM3MDMw
+MGYxM2MyNTk4M2JiYmVhYTdkNzE4YzNlMjUwOTk3O2hiPUhFQUQKPgo+IEZvbGxvd3VwOiBJIHRy
+aWVkIHRoZSBhYm92ZSBwYXRjaCBhbmQgaXQgIndvcmtzIiwgdGhvdWdoIHdpdGggc29tZSBwcm9i
+bGVtcy4KPgo+IFRvIGNoZWNrIGNoYW5uZWwgcmVsaWFiaWxpdHksIEkgcmFuIG15IGlzb3Bpbmcg
+dG9vbDoKPiBodHRwczovL2dmaWJlci5nb29nbGVzb3VyY2UuY29tL3ZlbmRvci9nb29nbGUvcGxh
+dGZvcm0vKy9tYXN0ZXIvY21kcy9pc29waW5nLmMKPgo+IE9uIHRoZSBjbGllbnQ6Cj4gICAgaXNv
+cGluZyAtcQo+IE9uIHRoZSBBUDoKPiAgICBpc29waW5nIC1yMzMgPGlwYWRkci1vZi1jbGllbnQ+
+Cj4KPiBUaGlzIHNlbmRzIGEgcGFja2V0IGluIGVhY2ggZGlyZWN0aW9uIGV2ZXJ5IDEwbXMgYW5k
+IHByaW50cyB0aGUgdGltZQo+IGRlbGF5IGZvciBlYWNoIHBhY2tldCBhcyB3ZWxsIGFzIHRoZSB0
+b3RhbCBwYWNrZXQgbG9zcy4KPgo+IEkgaGF2ZSBteSBBUCBydW5uaW5nIG9uIGNoYW5uZWwgMTQ5
+IHdpdGggODAgTUh6IHdpZHRoIGFuZCB0aGluZ3Mgd29yawo+IGZpbmUgKHR5cGljYWwgbWVhc3Vy
+ZWQgZGVsYXkgaXMgPDFtcykuICBUaGVuIEkgcnVuIHRoaXMgb24gdGhlIGF0aDEwawo+IEFQOgo+
+Cj4gaXcgd2xhbjEgc2NhbiBmcmVxIDUxODAgZmx1c2ggYXAtZm9yY2UgcGFzc2l2ZSB8IGdyZXAg
+S05PV05fU1NJRF9PTl9DSEFOTkVMXzM2Cj4KPiBUaGUgcmVzdWx0IGlzOgo+IC0gaXNvcGluZyBy
+ZXBvcnRzIHplcm8gcGFja2V0cyBsb3N0ICh2ZXJ5IGNvbnNpc3RlbnQpCj4gLSBwYWNrZXRzIGlu
+IGVhY2ggZGlyZWN0aW9uIGFyZSBkZWxheWVkIGJ5IHNvbWUgYW1vdW50ICpsZXNzKiB0aGFuCj4g
+MTAwbXMuICAoSXQgbG9va3MgdG8gYmUgYWJvdXQgNDAtNTBtcyBidXQgc29tZXRpbWVzIGxlc3Mu
+KQo+IC0gdGhlIHBhc3NpdmUgY2hhbm5lbCBzY2FuICpzb21ldGltZXMqIHNlZXMgdGhlIEtOT1dO
+X1NTSUQgYmVhY29ucwo+IChyb3VnaGx5IDUwJSBvZiB0aGUgdGltZSkKPgo+IFdoZW4gSSBzdG9w
+IGhvc3RhcGQsIHRoZSBwYXNzaXZlIGNoYW5uZWwgc2NhbiBzdWNjZWVkcyBhYm91dCAxMDAlIG9m
+IHRoZSB0aW1lLgo+Cj4gUmVtb3ZpbmcgdGhlICdwYXNzaXZlJyBwYXJhbWV0ZXIgYWxzbyBtYWtl
+cyBpdCB3b3JrLCBldmVuIHdpdGhvdXQKPiBraWxsaW5nIGhvc3RhcGQuICBPZiBjb3Vyc2UgdGhp
+cyBzZW5kcyB1bndhbnRlZCBQcm9iZSBwYWNrZXRzIG9uIHRoZQo+IGNoYW5uZWwuCj4KPiBXaXRo
+IGFuIGF0aDlrIEFQIGluc3RlYWQgb2YgYW4gYXRoMTBrLCBpdCB3b3JrcyBjb3JyZWN0bHk6IGlz
+b3BpbmcKPiByZXBvcnRzIG5vIGxvc3MsIGEgcm91Z2hseSAxMDBtcyBkZWxheSAod2l0aGluIGl0
+cyBwcmVjaXNpb24pLCBhbmQKPiBwYXNzaXZlIHNjYW5uaW5nIHdvcmtzIGFib3V0IDEwMCUgb2Yg
+dGhlIHRpbWUuCj4KPiBBbnkgZ3Vlc3NlcyBhYm91dCB3aHkgdGhlIG9mZmNoYW5uZWwgdGltZSB3
+b3VsZCBiZSB0b28gc2hvcnQgb24gYXRoMTBrPwoKVHJ5IHNldHRpbmcgdXAgYSBsYXJnZXIgYmVh
+Y29uIGludGVydmFsLCBlLmcuIDMwMG1zLgoKCj4gSSBoYXZlbid0IGludmVzdGlnYXRlZCB3aGV0
+aGVyIHRoZSBwYWNrZXRzIGFyZSBlbnF1ZXVlZCBvciBzaW1wbHkKPiByZXRyYW5zbWl0dGVkIGFm
+dGVyIGl0IHJldHVybnMgdG8gdGhlIGNoYW5uZWwsIGJ1dCBpbiBhbnkgY2FzZSwKPiB1c2Vyc3Bh
+Y2UgYW5kIFRDUCBkb24ndCBzZWUgcGFja2V0IGxvc3MsIHNvIGl0J3MgZmluZSB3aXRoIG1lLgo+
+Cj4gVGhpcyBpcyB0aGUgYXRoMTBrIGRyaXZlciBmcm9tIDMuMTVyYzEgYW5kIGZpcm13YXJlIDEw
+LjEuNDY3LjItMS4KCkkgdGhpbmsgMTAuMiBoYW5kbGVzIHNjYW5uaW5nIGluIEFQIG1vZGUgbW9y
+ZSByZWxpYWJseSBzbyBJJ2Qgc3VnZ2VzdAp5b3UgdHJ5IGl0IG91dC4gWW91IG1pZ2h0IG5lZWQg
+dG8gY2hlcnJ5IHBpY2sgdGhlIDEwLjIgc3VwcG9ydCBmb3IKeW91ciAzLjE1cmMxIChodHRwczov
+L2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC8yNGM4OGY3ODA3ZmI3YzcyMzY5MDQ3NGQwYTVk
+MzQ0MTQ2ODE4NWQ5KS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
