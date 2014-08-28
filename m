@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMuAX-00067C-5g
- for ath10k@lists.infradead.org; Thu, 28 Aug 2014 07:30:54 +0000
-Subject: [PATCH v2 0/2] ath10k: testmode support
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 28 Aug 2014 10:30:28 +0300
-Message-ID: <20140828072642.14691.44313.stgit@potku.adurom.net>
+ id 1XMuIj-0000lu-8H
+ for ath10k@lists.infradead.org; Thu, 28 Aug 2014 07:39:22 +0000
+Received: by mail-wg0-f48.google.com with SMTP id n12so336986wgh.19
+ for <ath10k@lists.infradead.org>; Thu, 28 Aug 2014 00:38:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87ha0xuml6.fsf@kamboji.qca.qualcomm.com>
+References: <87ha0xuml6.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 28 Aug 2014 09:38:56 +0200
+Message-ID: <CA+BoTQmw7-FXUazyMUb_+jWr8Zsd-N_z6T_zm6Rnc6NkfpLLYw@mail.gmail.com>
+Subject: Re: BUG when doing rmmod
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,87 +20,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi,
-
-here's v2 of my ath10k testmode patches. I sent v1 back in May, here's the link
-to the archives:
-
-http://lists.infradead.org/pipermail/ath10k/2014-May/002254.html
-
-I hope I have addressed all the review comments now.
-
-v2:
-
-* check error from ath10k_wmi_alloc_skb() (Michal)
-
-* int err -> int ret (Michal)
-
-* fix conflicts in core.c
-
-* add ar->testmode.utf_monitor to check if ath10k_tm_event_wmi()
-  should deliver WMI events or not
-
-* print mode in ath10k_download_fw() log messages
-
-* set ar->testmode.utf to NULL after it's released (Michal)
-
-* release ar->testmode.utf also in ath10k_tm_cmd_utf_stop()
-
-* rename ath10k_testmode_unregister() to ath10k_testmode_destroy()
-
-* call ath10k_core_stop() in ath10k_testmode_destroy() (Michal)
-
-* document wmi packet format in testmode commands (Michal)
-
-* consume WMI packets so that mac80211 calls are not made in UTF mode (Michal)
-
-* force to use 10x WMI interface with UTF firmware
-
-* API change: remove ATH10K_TM_CMD_EVENT_WMI, use ATH10K_TM_CMD_WMI also for events
-
-* API change: add major and minor version numbers to
-  ATH10K_TM_CMD_GET_VERSION for the user space more easily to detect
-  interface changes
-
-* use conf_mutex in ath10k_tm_cmd_wmi()
-
-* print "UTF firmware started" and "UTF firmware stopped"
-
-* print "testmode %d" in ath10k_print_driver_info()
-
-* don't call ath10k_wait_for_suspend() in UTF mode
-
----
-
-Kalle Valo (2):
-      ath10k: make ath10k_wmi_cmd_send() public
-      ath10k: add testmode
-
-
- drivers/net/wireless/ath/ath10k/Makefile   |    1 
- drivers/net/wireless/ath/ath10k/core.c     |   88 ++++--
- drivers/net/wireless/ath/ath10k/core.h     |   22 +-
- drivers/net/wireless/ath/ath10k/debug.c    |    5 
- drivers/net/wireless/ath/ath10k/debug.h    |    1 
- drivers/net/wireless/ath/ath10k/hw.h       |    2 
- drivers/net/wireless/ath/ath10k/mac.c      |   10 +
- drivers/net/wireless/ath/ath10k/testmode.c |  404 ++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/testmode.h |   46 +++
- drivers/net/wireless/ath/ath10k/wmi.c      |   22 +-
- drivers/net/wireless/ath/ath10k/wmi.h      |    4 
- 11 files changed, 572 insertions(+), 33 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/testmode.c
- create mode 100644 drivers/net/wireless/ath/ath10k/testmode.h
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggQXVndXN0IDIwMTQgMDg6NTgsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5j
+b20+IHdyb3RlOgo+IEhpLAo+Cj4gd2hpbGUgSSB3YXMgdGVzdGluZyB0ZXN0bW9kZSBwYXRjaGVz
+IEkgbm90aWNlZCBhdGgxMGsgd2FzIGNyYXNoaW5nCj4gZHVyaW5nIHJtbW9kLiBGdXJ0aGVyIGlu
+dmVzdGlnYXRpb24gc2hvd2VkIHRoYXQgSSBhY3R1YWxseSBzZWUgdGhlIGNyYXNoCj4gYWxzbyB3
+aXRob3V0IHRlc3Rtb2RlIHBhdGNoZXMgKHVzaW5nIGNvbW1pdCAzNDZjMTY2NTQzNTYpIC4gSSBq
+dXN0IG5lZWQKPiB0byByZWxvYWQgYXRoMTBrIG1vZHVsZXMgaW4gc2VxdWVuY2UsIHVzdWFsbHkg
+MTAtMTUgdGltZXMgaXMgZW5vdWdoIHRvCj4gcmVwcm9jdWNlIHRoZSBjcmFzaC4KPgo+IEkgYWxz
+byB0ZXN0ZWQgd2l0aCAiYXRoMTBrOiByZS1lbmFibGUgaW50ZXJydXB0cyBwcm9wZXJseSBpbiBo
+dwo+IHJlY292ZXJ5IiBidXQgaXQgZG9lc24ndCBzZWVtIHRvIG1ha2UgYW55IGRpZmZlcmVuY2Uu
+Cj4KWy4uLl0KPiBbICAxMjMuNTQ3NDcwXSBCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBh
+Z2luZyByZXF1ZXN0IGF0IGZlNTg5MDMwCj4gWyAgMTIzLjU0Nzc0NV0gSVA6IFs8YzEzMTZmYjA+
+XSBpb3JlYWQzMisweDMwLzB4NDAKPiBbICAxMjMuNTQ3OTI0XSAqcGRlID0gMmQ2NzAwNjcgKnB0
+ZSA9IDAwMDAwMDAwCj4gWyAgMTIzLjU0ODE3MF0gT29wczogMDAwMCBbIzFdIFNNUCBERUJVR19Q
+QUdFQUxMT0MKPiBbICAxMjMuNTQ4NTAwXSBNb2R1bGVzIGxpbmtlZCBpbjogYXRoMTBrX3BjaSgt
+KSBhdGgxMGtfY29yZSBhdGggbWFjODAyMTEgY2ZnODAyMTEgW2xhc3QgdW5sb2FkZWQ6IGNmZzgw
+MjExXQo+IFsgIDEyMy41NDkxMjFdIENQVTogMCBQSUQ6IDM2MzEgQ29tbTogcm1tb2QgTm90IHRh
+aW50ZWQgMy4xNi4wLXdsLWF0aCsgIzU3MAo+IFsgIDEyMy41NDkyNjFdIEhhcmR3YXJlIG5hbWU6
+IEhld2xldHQtUGFja2FyZCBIUCBQcm9Cb29rIDY1NDBiLzE3MjIsIEJJT1MgNjhDREQgVmVyLiBG
+LjA0IDAxLzI3LzIwMTAKPiBbICAxMjMuNTQ5NDA5XSB0YXNrOiBlZjc2MmQ0MCB0aTogZWQ0YTYw
+MDAgdGFzay50aTogZWQ0YTYwMDAKPiBbICAxMjMuNTQ5NTIyXSBFSVA6IDAwNjA6WzxjMTMxNmZi
+MD5dIEVGTEFHUzogMDAwMTAyOTIgQ1BVOiAwCj4gWyAgMTIzLjU0OTY0MF0gRUlQIGlzIGF0IGlv
+cmVhZDMyKzB4MzAvMHg0MAo+IFsgIDEyMy41NDk3NDldIEVBWDogZmU1ODkwMzAgRUJYOiBlY2Fk
+ZDdlMCBFQ1g6IDAwMDAwMDAyIEVEWDogZWY3NjMyZTAKPiBbICAxMjMuNTQ5ODcxXSBFU0k6IDAw
+MDAwMDAwIEVESTogZWNhZGYyMDggRUJQOiBmNDQxYmY4NCBFU1A6IGY0NDFiZjg0Cj4gWyAgMTIz
+LjU0OTk5NF0gIERTOiAwMDdiIEVTOiAwMDdiIEZTOiAwMGQ4IEdTOiAwMDMzIFNTOiAwMDY4Cj4g
+WyAgMTIzLjU1MDExMF0gQ1IwOiA4MDA1MDAzYiBDUjI6IGZlNTg5MDMwIENSMzogMmM3YzMwMDAg
+Q1I0OiAwMDAwMDdkMAo+IFsgIDEyMy41NTAyMzJdIFN0YWNrOgo+IFsgIDEyMy41NTAzMjFdICBm
+NDQxYmY5MCBmZTU3NmMxYiBlY2FkZjIwNCBmNDQxYmZhNCBjMTA1M2ZiZSBlZjc2MmQ0MCAwMDAw
+MDAwNiBjMWIzNTIxOAo+IFsgIDEyMy41NTEwNDldICBmNDQxYmZmOCBjMTA1MzRmMSAwMDAwMDAw
+MCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMAo+IFsgIDEyMy41
+NTE3NTVdICAwMDQwNjEwMCAwMTAwMDAwMCBlZDRhN2ZlYyBmZmZkNGUzMyAwMDAwMDAwYSAwMDAw
+MDAwMCAwMDAwMDAwNSAwMDAwMDAzMAo+IFsgIDEyMy41NTI0OTldIENhbGwgVHJhY2U6Cj4gWyAg
+MTIzLjU1NDk1N10gIFs8ZmU1NzZjMWI+XSBhdGgxMGtfcGNpX3Rhc2tsZXQrMHgxYi8weDYwIFth
+dGgxMGtfcGNpXQo+IFsgIDEyMy41NTc0MzZdICBbPGMxMDUzZmJlPl0gdGFza2xldF9hY3Rpb24r
+MHg5ZS8weGIwCj4gWyAgMTIzLjU1OTg3NF0gIFs8YzEwNTM0ZjE+XSBfX2RvX3NvZnRpcnErMHhm
+MS8weDNmMAo+IFsgIDEyMy41NjIyNzddICBbPGMxMDUzNDAwPl0gPyBmdHJhY2VfcmF3X2V2ZW50
+X2lycV9oYW5kbGVyX2VudHJ5KzB4YTAvMHhhMAo+IFsgIDEyMy41NjQ3MjBdICBbPGMxMDA0OTk5
+Pl0gZG9fc29mdGlycV9vd25fc3RhY2srMHgyOS8weDQwCj4gWyAgMTIzLjU2NzA5Nl0gIDxJUlE+
+ClsuLi5dCj4gWyAgMTIzLjY0MzMzOF0gIFs8ZmU1NzQwYjM+XSBhdGgxMGtfcGNpX3JlbGVhc2Ur
+MHgzMy8weDQwIFthdGgxMGtfcGNpXQo+IFsgIDEyMy42NDUyODldICBbPGZlNTc1ZDRiPl0gYXRo
+MTBrX3BjaV9yZW1vdmUrMHg3Yi8weDkwIFthdGgxMGtfcGNpXQo+IFsgIDEyMy42NDcxNzRdICBb
+PGMxMzJmNWI4Pl0gcGNpX2RldmljZV9yZW1vdmUrMHgyOC8weDUwCj4gWyAgMTIzLjY0OTA1Nl0g
+IFs8YzE0NmNiZWU+XSBfX2RldmljZV9yZWxlYXNlX2RyaXZlcisweDRlLzB4YjAKCkkgc2hvdWxk
+J3ZlIGV4cGVjdGVkIHNwdXJpb3VzIGludGVycnVwdHMgaW4gcGNpX3JlbW92ZSgpLi4gRG9lcyB0
+aGUKZm9sbG93aW5nIGZpeCB0aGUgcHJvYmxlbT8KCmRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCmIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ay9wY2kuYwppbmRleCAxNDRlYjhhMy4uYTAzZDg4NSAxMDA2NDQKLS0tIGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3BjaS5jCkBAIC0yNTk4LDYgKzI1OTgsNyBAQCBzdGF0aWMgdm9pZCBhdGgxMGtfcGNp
+X3JlbW92ZShzdHJ1Y3QgcGNpX2RldiAqcGRldikKCiAgICAgICAgYXRoMTBrX2NvcmVfdW5yZWdp
+c3Rlcihhcik7CiAgICAgICAgYXRoMTBrX3BjaV9mcmVlX2lycShhcik7CisgICAgICAgYXRoMTBr
+X3BjaV9raWxsX3Rhc2tsZXQoYXIpOwogICAgICAgIGF0aDEwa19wY2lfZGVpbml0X2lycShhcik7
+CiAgICAgICAgYXRoMTBrX3BjaV9jZV9kZWluaXQoYXIpOwogICAgICAgIGF0aDEwa19wY2lfZnJl
+ZV9jZShhcik7CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
