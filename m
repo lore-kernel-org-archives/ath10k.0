@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-f176.google.com ([209.85.217.176])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMvBO-0007yL-93
- for ath10k@lists.infradead.org; Thu, 28 Aug 2014 08:35:51 +0000
-Received: by mail-lb0-f176.google.com with SMTP id s7so497871lbd.35
- for <ath10k@lists.infradead.org>; Thu, 28 Aug 2014 01:35:23 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: kill tasklets after free_irq
-Date: Thu, 28 Aug 2014 10:24:40 +0200
-Message-Id: <1409214280-6492-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail-gw3-out.broadcom.com ([216.31.210.64])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XMwaN-0007ZC-01
+ for ath10k@lists.infradead.org; Thu, 28 Aug 2014 10:05:43 +0000
+Message-ID: <53FEFEDE.5030505@broadcom.com>
+Date: Thu, 28 Aug 2014 12:05:18 +0200
+From: Arend van Spriel <arend@broadcom.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH v2 2/2] ath10k: add testmode
+References: <20140828072642.14691.44313.stgit@potku.adurom.net>	<20140828073041.14691.15099.stgit@potku.adurom.net>
+ <878um9ujn1.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878um9ujn1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,66 +19,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Commit 5c771e7454d148af35e8b4297d00f880de79ea49
-introduced a regression. On some systems spurious
-interrupts could schedule a tasklet while tearing
-down leading to, e.g.:
+On 08/28/14 10:02, Kalle Valo wrote:
+> Kalle Valo<kvalo@qca.qualcomm.com>  writes:
+>
+>> Add testmode interface for starting and using UTF firmware which is used to run
+>> factory tests. This is implemented by adding new state ATH10K_STATE_UTF and user
+>> space can enable this state with ATH10K_TM_CMD_UTF_START command. To go back to
+>> normal mode user space can send ATH10K_TM_CMD_UTF_STOP.
+>>
+>> Signed-off-by: Kalle Valo<kvalo@qca.qualcomm.com>
+>
+> [...]
+>
+>> +/* "API" level of the ath10k testmode interface. Bump it after every
+>> + * incompatible interface change. */
+>> +#define ATH10K_TESTMODE_VERSION_MAJOR 1
+>> +
+>> +/* Bump this after every _compatible_ interface change, for example
+>> + * addition of a new command or an attribute. */
+>> +#define ATH10K_TESTMODE_VERSION_MINOR 0
+>> +
+>> +#define ATH10K_TM_DATA_MAX_LEN		5000
+>> +
+>> +enum ath10k_tm_attr {
+>> +	__ATH10K_TM_ATTR_INVALID	= 0,
+>> +	ATH10K_TM_ATTR_CMD		= 1,
+>> +	ATH10K_TM_ATTR_DATA		= 2,
+>> +	ATH10K_TM_ATTR_WMI_CMDID	= 3,
+>> +	ATH10K_TM_ATTR_VERSION_MAJOR	= 4,
+>> +	ATH10K_TM_ATTR_VERSION_MINOR	= 5,
+>> +
+>> +	/* keep last */
+>> +	__ATH10K_TM_ATTR_AFTER_LAST,
+>> +	ATH10K_TM_ATTR_MAX		= __ATH10K_TM_ATTR_AFTER_LAST - 1,
+>> +};
+>> +
+>> +/* All ath10k testmode interface commands specified in
+>> + * ATH10K_TM_ATTR_CMD */
+>> +enum ath10k_tm_cmd {
+>> +	/* Returns the supported ath10k testmode interface version in
+>> +	 * ATH10K_TM_ATTR_VERSION. Always guaranteed to work. User space
+>> +	 * uses this to verify it's using the correct version of the
+>> +	 * testmode interface */
+>> +	ATH10K_TM_CMD_GET_VERSION = 0,
+>> +
+>> +	/* Boots the UTF firmware, the netdev interface must be down at the
+>> +	 * time. */
+>> +	ATH10K_TM_CMD_UTF_START = 1,
+>> +
+>> +	/* Shuts down the UTF firmware and puts the driver back into OFF
+>> +	 * state. */
+>> +	ATH10K_TM_CMD_UTF_STOP = 2,
+>> +
+>> +	/* The command used to transmit a WMI command to the firmware and
+>> +	 * the event to receive WMI events from the firmware. Without
+>> +	 * struct wmi_cmd_hdr header, only the WMI payload. Command id is
+>> +	 * provided with ATH10K_TM_ATTR_WMI_CMDID and payload in
+>> +	 * ATH10K_TM_ATTR_DATA.*/
+>> +	ATH10K_TM_CMD_WMI = 3,
+>> +};
+>
+> Johannes suggested to put this to a separate file as that way it's
+> easier for the user space. In v3 I'm planning to create testmode_uapi.h
+> for this.
 
- BUG: unable to handle kernel paging request at fe589030
- IP: [<c1316fb0>] ioread32+0x30/0x40
- ...
- Call Trace:
-  [<fe576c1b>] ath10k_pci_tasklet+0x1b/0x60 [ath10k_pci]
-  [<c1053fbe>] tasklet_action+0x9e/0xb0
-  [<c10534f1>] __do_softirq+0xf1/0x3f0
-  [<c1053400>] ? ftrace_raw_event_irq_handler_entry+0xa0/0xa0
-  [<c1004999>] do_softirq_own_stack+0x29/0x40
-  <IRQ>
-  [<c1053a76>] irq_exit+0x86/0xb0
- ...
-  [<c132d522>] do_pci_disable_device+0x52/0x60
-  [<c132d57f>] pci_disable_device+0x4f/0xb0
-  [<c132a961>] ? __pci_set_master+0x51/0x80
-  [<fe5740b3>] ath10k_pci_release+0x33/0x40 [ath10k_pci]
-  [<fe575d4b>] ath10k_pci_remove+0x7b/0x90 [ath10k_pci]
+I suppose that file will/should end up in include/uapi/... so wouldn't 
+it be better to call it ath10k_testmode.h?
 
-Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 1ff2f34..b299205 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2554,6 +2554,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 
- err_free_irq:
- 	ath10k_pci_free_irq(ar);
-+	ath10k_pci_kill_tasklet(ar);
- 
- err_deinit_irq:
- 	ath10k_pci_deinit_irq(ar);
-@@ -2590,6 +2591,7 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
- 
- 	ath10k_core_unregister(ar);
- 	ath10k_pci_free_irq(ar);
-+	ath10k_pci_kill_tasklet(ar);
- 	ath10k_pci_deinit_irq(ar);
- 	ath10k_pci_ce_deinit(ar);
- 	ath10k_pci_free_ce(ar);
--- 
-1.8.5.3
-
+Regards,
+Arend
 
 _______________________________________________
 ath10k mailing list
