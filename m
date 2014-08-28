@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XMxZZ-0002Si-J9
- for ath10k@lists.infradead.org; Thu, 28 Aug 2014 11:08:58 +0000
-Received: by mail-la0-f45.google.com with SMTP id pn19so717192lab.18
- for <ath10k@lists.infradead.org>; Thu, 28 Aug 2014 04:08:35 -0700 (PDT)
+ id 1XMxZV-0002Rx-Hl
+ for ath10k@lists.infradead.org; Thu, 28 Aug 2014 11:08:54 +0000
+Received: by mail-lb0-f175.google.com with SMTP id u10so676326lbd.6
+ for <ath10k@lists.infradead.org>; Thu, 28 Aug 2014 04:08:31 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: stop monitor vdev for sta assoc
-Date: Thu, 28 Aug 2014 12:58:17 +0200
-Message-Id: <1409223497-19946-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1409223497-19946-1-git-send-email-michal.kazior@tieto.com>
-References: <1409223497-19946-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/2] ath10k: monitor fixes
+Date: Thu, 28 Aug 2014 12:58:15 +0200
+Message-Id: <1409223497-19946-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,38 +25,28 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This prevents some fw revisions from crashing in
-many cases when user is trying to run a
-promiscuous station interface (e.g. sniffing,
-4addr bridge).
+Hi,
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+This cleans up the monitor code a bit and
+introduces a workaround for a fw bug (leading to a
+fw crash) when station interface associates while
+a monitor vdev is running.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 19562a7..bf8a402 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3169,8 +3169,16 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	}
- 
- 	if (changed & BSS_CHANGED_ASSOC) {
--		if (info->assoc)
-+		if (info->assoc) {
-+			/* Workaround: Make sure monitor vdev is not running
-+			 * when associating to prevent some firmware revisions
-+			 * (e.g. 10.1 and 10.2) from crashing.
-+			 */
-+			if (ar->monitor_started)
-+				ath10k_monitor_stop(ar);
- 			ath10k_bss_assoc(hw, vif, info);
-+			ath10k_monitor_recalc(ar);
-+		}
- 	}
- 
- exit:
+People have been complaining about the fw crash
+for some time now. I guess we have no choice but
+to make a workaround in ath10k. The most common
+usecase that will benefit from this fix is
+probably 4addr sta briding.
+
+
+Michal Kazior (2):
+  ath10k: fix monitor start/stop sequences
+  ath10k: stop monitor vdev for sta assoc
+
+ drivers/net/wireless/ath/ath10k/core.h |   1 -
+ drivers/net/wireless/ath/ath10k/mac.c  | 131 +++++++++++++++------------------
+ 2 files changed, 58 insertions(+), 74 deletions(-)
+
 -- 
 1.8.5.3
 
