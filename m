@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XNF1j-0002ke-Tp
- for ath10k@lists.infradead.org; Fri, 29 Aug 2014 05:47:12 +0000
+ id 1XNFHj-0006P4-88
+ for ath10k@lists.infradead.org; Fri, 29 Aug 2014 06:03:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add device/driver strings to tracepoints
-References: <1409231135-16233-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 29 Aug 2014 08:46:46 +0300
-In-Reply-To: <1409231135-16233-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 28 Aug 2014 15:05:35 +0200")
-Message-ID: <877g1ru9tl.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 2/2] ath10k: add testmode
+References: <20140828072642.14691.44313.stgit@potku.adurom.net>
+ <20140828073041.14691.15099.stgit@potku.adurom.net>
+ <878um9ujn1.fsf@kamboji.qca.qualcomm.com>
+ <53FEFEDE.5030505@broadcom.com>
+Date: Fri, 29 Aug 2014 09:03:09 +0300
+In-Reply-To: <53FEFEDE.5030505@broadcom.com> (Arend van Spriel's message of
+ "Thu, 28 Aug 2014 12:05:18 +0200")
+Message-ID: <87y4u7suhu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,20 +26,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Arend van Spriel <arend@broadcom.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Arend van Spriel <arend@broadcom.com> writes:
 
-> This makes it easier to log and debug via tracing
-> with more than 1 ath10k device on a system.
+> On 08/28/14 10:02, Kalle Valo wrote:
+>> Kalle Valo<kvalo@qca.qualcomm.com>  writes:
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> Johannes suggested to put this to a separate file as that way it's
+>> easier for the user space. In v3 I'm planning to create testmode_uapi.h
+>> for this.
+>
+> I suppose that file will/should end up in include/uapi/...
 
-In ath-next-test I had a simple conflict in wmi.c. Please check my
-conflict resolution:
+I was thinking not to put this to the include directory. This is just a
+testmode interface used only by few people, not a proper driver
+interface.
 
-https://github.com/kvalo/ath/commit/d4bcfa9487e0837fdaf01645ade15acbadc3873c
+> so wouldn't it be better to call it ath10k_testmode.h?
+
+We already have testmode.h so having ath10k_testmode.h in the same
+directory would be confusing. Would testmode_i.h be any better?
 
 -- 
 Kalle Valo
