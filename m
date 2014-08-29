@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x235.google.com ([2a00:1450:400c:c03::235])
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XNGb5-0004LH-HI
- for ath10k@lists.infradead.org; Fri, 29 Aug 2014 07:27:48 +0000
-Received: by mail-we0-f181.google.com with SMTP id x48so1799706wes.40
- for <ath10k@lists.infradead.org>; Fri, 29 Aug 2014 00:27:23 -0700 (PDT)
+ id 1XNHEG-00057H-Pd
+ for ath10k@lists.infradead.org; Fri, 29 Aug 2014 08:08:17 +0000
+Received: by mail-vc0-f173.google.com with SMTP id im17so2089117vcb.32
+ for <ath10k@lists.infradead.org>; Fri, 29 Aug 2014 01:07:55 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEFj986a+=EvXGL62TjnjRtB6uUu=NppcYpJTBJj9gDZhsUhCA@mail.gmail.com>
+In-Reply-To: <CA+BoTQmLa9NRR0oL=GeTX7TRnYCEYyFnLZ7_m8CAwW_WAABwvA@mail.gmail.com>
 References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
  <CAEFj986a+=EvXGL62TjnjRtB6uUu=NppcYpJTBJj9gDZhsUhCA@mail.gmail.com>
-Date: Fri, 29 Aug 2014 09:27:23 +0200
-Message-ID: <CA+BoTQmLa9NRR0oL=GeTX7TRnYCEYyFnLZ7_m8CAwW_WAABwvA@mail.gmail.com>
+ <CA+BoTQmLa9NRR0oL=GeTX7TRnYCEYyFnLZ7_m8CAwW_WAABwvA@mail.gmail.com>
+Date: Fri, 29 Aug 2014 16:07:55 +0800
+Message-ID: <CAEFj985gNJXyr2+Pz1vOYCE67XzCyBSLaSZdq5=aM02UJBmAqQ@mail.gmail.com>
 Subject: Re: [RFC] ath10k: use raw tx
-From: Michal Kazior <michal.kazior@tieto.com>
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,40 +22,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjkgQXVndXN0IDIwMTQgMDk6MTUsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21h
-aWwuY29tPiB3cm90ZToKPiBIaSwgTWljaGFsCj4KPiBPbiBGcmksIEF1ZyAyMiwgMjAxNCBhdCAz
-OjUyIFBNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+
-IFRoaXMgaXMganVzdCBhIHJlZmVyZW5jZSBmb3IgYW55b25lIGludGVyZXN0ZWQgaW4KPj4gZ2V0
-dGluZyBpbmplY3Rpb24gd29ya2luZyB3aXRoIGF0aDEway4KPj4KPj4gVGhpcyBqdXN0IHN3aXRj
-aGVzIHRvIHJhdyB0eCBtb2RlIGluc3RlYWQgb2YgbndpZmkKPj4gZm9yIHJlZ3VsYXIgb3BlcmF0
-aW9uLiBJbmplY3Rpb24gZG9lc24ndCB3b3JrIHlldC4KPj4KPj4gSSd2ZSB0ZXN0ZWQgdGhpcyBv
-biA5OTkuOTk5LjAuNjM2LCAxMC4xLjQ2Ny4yLTEKPj4gYW5kIDEwLjItMDAwODItNC4gVGhlIDEw
-LjEuNDY3LjItMSBjcmFzaGVzIGFzIHNvb24KPj4gYXMgZmlyc3QgdHggY29tcGxldGlvbiBjb21l
-cyBpbi4gVGhlIG90aGVyIHR3bwo+PiBzZWVtIHRvIHdvcmsgYnV0IGRvbid0IHdvcmsgd2l0aCBB
-LU1TRFUgc28gaXQgaXMKPj4gbmVjZXNzYXJ5IHRvIGRpc2FibGUgaXQ6Cj4KPiBQYWNrZXQgaW5q
-ZWN0aW9uIHJlcXVpcmVzIG1vbml0b3IgbW9kZSwgYW0gSSByaWdodD8KClR5cGljYWxseSB5b3Ug
-aW5qZWN0IGZyYW1lcyB2aWEgbW9uaXRvciB2aWYgaW4gcmFkaW90YXAgbW9kZS4gVGhpcwpkb2Vz
-bid0IGltcGx5IGFueXRoaW5nIGFib3V0IGRyaXZlciBpbXBsZW1lbnRhdGlvbi4KCgo+IEZpcm13
-YXJlIDk5OS45OTkuMC42MzYgaGFzIG5vIG1vbml0b3IgbW9kZSBzdXBwb3J0LCBhbSBJIHJpZ2h0
-PwoKSXQgY3Jhc2hlcyBzb29uIGFmdGVyIHN0YXJ0aW5nIGEgbG9uZSBtb25pdG9yIHZkZXYgYnV0
-IEkgcmVjYWxsIGl0CndvcmtlZCBhcyBsb25nIGFzIHlvdSBydW4gaXQgYWxvbmdzaWRlLCBlLmcu
-IGFuIGFzc29jaWF0ZWQgc3RhdGlvbgppbnRlcmZhY2Ugc28geW91IGNhbiB0cnkgd29ya2luZyBh
-cm91bmQgdGhpcyBwcm9ibGVtLiBPciB5b3UgY2FuIHJ1bgoxMC4yLgoKVGhlbiBUeGluZyB3aXRo
-IG1vbml0b3IgdmRldl9pZCB3aWxsIGRlZmluaXRlbHkgY3Jhc2ggYWxsIGtub3duCmZpcm13YXJl
-IGJpbmFyaWVzLiBPdGhlciB2ZGV2IHR5cGVzIG5lZWQgcGVlciBlbnRyaWVzIHRvIGJlIHNldCB1
-cApiZWZvcmUgYSBmcmFtZSBjYW4gYmUgc2VudCB3aXRoIGNlcnRhaW4gREEgKG90aGVyd2lzZSBp
-dCBzdGF5cyBpbiB0aGUKcXVldWVzIGluZGVmaW5pdGVseSkuIFRha2UgYSBsb29rIGF0IHRoZSBv
-ZmZjaGFubmVsIHdvcmtlciBpbiBhdGgxMGsKYXMgaXQgbWF5IGJlIHVzZWZ1bCBpZiB5b3Ugd2Fu
-dCB0byBnZXQgdGhpcyBydW5uaW5nIChhdCBsZWFzdCB0byBhCmxpbWl0ZWQgZGVncmVlKS4KCkFs
-c28sIHdpdGggcmF3IHR4IGluIGF0aDEwayB5b3UgY2FuIHByb2JhYmx5IHRyeSBwbGF5aW5nIHdp
-dGggbWVzaApiZWNhdXNlIFFvUyBDb250cm9sIGlzIG5vIGxvbmdlciBzdHJpcHBlZCwgcmlnaHQ/
-CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+>
+> Also, with raw tx in ath10k you can probably try playing with mesh
+> because QoS Control is no longer stripped, right?
+>
+Yes. This is one of the issues.
+
+--------
+ChunYeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
