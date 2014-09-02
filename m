@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-f172.google.com ([209.85.216.172])
+Received: from mail-qc0-x22f.google.com ([2607:f8b0:400d:c01::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOtCB-0005pv-NQ
- for ath10k@lists.infradead.org; Tue, 02 Sep 2014 18:52:48 +0000
-Received: by mail-qc0-f172.google.com with SMTP id o8so7269291qcw.17
- for <ath10k@lists.infradead.org>; Tue, 02 Sep 2014 11:52:23 -0700 (PDT)
+ id 1XOtZK-0007zo-GM
+ for ath10k@lists.infradead.org; Tue, 02 Sep 2014 19:16:43 +0000
+Received: by mail-qc0-f175.google.com with SMTP id c9so7362201qcz.6
+ for <ath10k@lists.infradead.org>; Tue, 02 Sep 2014 12:16:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
+In-Reply-To: <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
 References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
  <53F39AB3.10601@candelatech.com>
  <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
  <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
  <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Tue, 2 Sep 2014 11:51:53 -0700
-Message-ID: <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
+ <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
+Date: Tue, 2 Sep 2014 12:16:20 -0700
+Message-ID: <CAJ-VmokfCnNVDwGks0jdew6K4kPHFot=fmMLpnNTnD2+x+ZXRw@mail.gmail.com>
 Subject: Re: Timeout Issues
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +25,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Pushpal Sidhu <psidhu@gateworks.com>
+Cc: Ben Greear <greearb@candelatech.com>, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-U29ycnkgZm9yIHRoZSBhbWF6aW5nbHkgbGF0ZSByZXBseSwgb3RoZXIgdGhpbmdzIGNyZXB0IGlu
-dG8gbXkgc2NoZWR1bGUuCgpLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0
-ZXM6Cj5IYXZlIHlvdSB2ZXJpZmllZCB0aGF0IHdpdGggdGhpcyBrZXJuZWwgdmVyc2lvbiB0aGUg
-UENJIGJ1cyB3b3Jrcwo+Y29ycmVjdGx5IG9uIHlvdXIgQVJNIGJvYXJkPyBFc3BlY2lhbGx5IGNo
-ZWNrIHRoYXQgaW50ZXJydXB0cyB3b3JrLgoKTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyaXRlczoKPk5vdGUgdGhlOgo+Cj5bICAgIDcuNzA0NDAzXSBhdGgxMGs6IGZh
-aWxlZCB0byByZWNlaXZlIGNvbnRyb2wgcmVzcG9uc2UgY29tcGxldGlvbiwgcG9sbGluZy4uCj4K
-PlRoaXMgc3VnZ2VzdHMgaW50ZXJydXB0cyBhcmVuJ3QgZGVsaXZlcmVkIHRvIHRoZSBob3N0IHN5
-c3RlbSBmb3Igc29tZQo+cmVhc29uIGFsdGhvdWdoIGZpcm13YXJlIGlzIG9wZXJhdGlvbmFsIChj
-b250cm9sIHJlc3BvbnNlIGl0c2VsZiB3YXMKPmRlbGl2ZXJlZCB0byB0aGUgaG9zdCkuCj4KPlRo
-aXMgcGFydGljdWxhciB3YXJuaW5nIHdhcyBpbnRyb2R1Y2VkIGFzIHBhcnQgb2YgYSB3b3JrYXJv
-dW5kIGZvciBhCj52aXJ0dWFsIG1hY2hpbmUgUENJIHBhc3N0aHJvdWdoICh3aXRoIHRoZSBzdXNw
-aWNpb24gaW9tZW0gd3JpdGVzCj5hcmVuJ3QgcHJvcGFnYXRlZCBwcm9wZXJseSBpbiB0aGUgVk0p
-LiBIb3dldmVyIG9ubHkgY29udHJvbCByZXNwb25zZQo+d2FzIHRoZSBzdWJqZWN0IG9mIHRoZSBt
-aXNzaW5nIGludGVycnVwdC4gSW4geW91ciBjYXNlIHN1YnNlcXVlbnQKPmNvbW11bmljYXRpb24g
-aXMgbWlzc2luZyBpbnRlcnJ1cHRzLgo+Cj5DYW4geW91IGNoZWNrIGlmIHRoZSBpbnRlcnJ1cHQg
-bGluZSBpcyBzaGFyZWQgd2l0aCBhbnkgb3RoZXIgZGV2aWNlcywgcGxlYXNlOgo+Cj4gbHNwY2kg
-LXZ2IHwgZ3JlcCAtZSAnLi46Li5cLi4nIC1lIElSUQo+ICBjYXQgL3Byb2MvaW50ZXJydXB0cwo+
-Cj4KPj4KPj4gVGhpcyBjYXVzZXMgdGhlIGNhcmQgdG8gbm90IGJlIHJlZ2lzdGVyZWQsIGFuZCB0
-aHVzIGlzIHVudXNhYmxlICh0aGVyZQo+PmlzIG5vIHdsYW5YKQo+Pgo+PiBJIGFtIGFibGUgdG8g
-dXNlIHRoZSBJbnRlbCA3MjYwIGNhcmQgKGFub3RoZXIgQUMgY2FyZCkgd2l0aCB0aGVpcgo+PiBm
-aXJtd2FyZSBiaW5hcnkgYmxvYiwgc28gSSBkb24ndCBiZWxpZXZlIHRoaXMgaXMgYSBoYXJkd2Fy
-ZQo+PiBjb25maWd1cmF0aW9uIGlzc3VlIHdpdGggbWluaS1wY2llLgo+Cj5JIGFzc3VtZSB5b3Ug
-aGF2ZSBvbmx5IDEgbWluaS1wY2llIHNsb3Qgb24gdGhlIGJvYXJkIGFuZCB5b3UndmUgdXNlZAo+
-aXQgd2hlbiB0ZXN0aW5nIGJvdGggaW50ZWwgYW5kIGF0aCBkZXZpY2VzIG9yIGRvZXMgaXQgaGF2
-ZSBtb3JlIHRoYW4gMQo+c2xvdCBhbmQgeW91J3ZlIHVzZWQgZGlmZmVyZW50IHNsb3RzIHdoZW4g
-dGVzdGluZyBib3RoIGRldmljZXM/Cj4KPgo+TWljaGHFggoKVGhlIGJvYXJkIGhhcyA5IHBvcnQg
-UENJLWUgc3dpdGNoIGJlaGluZCB0aGUgUkMuIEkgZGlkLCBob3dldmVyLCB1c2UKdGhlIHNhbWUg
-c2xvdC4gSSBmb3VuZCB0aGF0IHRoZXJlIHdhcyBhbHdheXMgMSBpbnRlcnJ1cHQsIGJ1dCBuZXZl
-cgphbnkgbW9yZS4gVGhpcyBtYWRlIG1lIHRoaW5rIGEgYml0IG1vcmUgYW5kIGZvdW5kIHRoYXQg
-aWYgSSBzZXQKUENJX01TST1uIGluIHRoZSBrZXJuZWwgY29uZmlnLCB0aGUgcHJvYmxlbSAnZ29l
-cyBhd2F5JyBhbmQgSSBzZWUKaW5jcmVhc2luZyBudW1iZXIgb2YgaW50ZXJydXB0cyBhbmQgZG8g
-bm90IHNlZSBhbnltb3JlIG9mIHRoZSAnLTExMCcKZXJyb3IgbWVzc2FnZXMuIFRoaXMgaXNzdWUs
-IGZvciBtZSwgaXMgc29sdmVkIGFzIEkgZG9uJ3QgbmVjZXNzYXJ5Cm5lZWQgbWl4ZWQgc2lnbmFs
-ZWQgaW50ZXJydXB0cywgYnV0IEknbSB1bnN1cmUgb2Ygd2h5IHRoaXMgaXMKaGFwcGVuaW5nIGFu
-ZCB3aGF0IGlzIGRpZmZlcmVudCBhYm91dCB0aGUgSW50ZWwgNzI2MEhNVyBjYXJkIGZyb20gdGhl
-CkF0aGVyb3MgY2FyZHMgb3IgaW4gdGhlaXIgcmVzcGVjdGl2ZSBkcml2ZXJzLgoKLSBQdXNocGFs
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+.. wasn't there some odd-ness with the QCA988x MSI stuff anyway?
+
+I recall driver WAR's in the 1.0 world; I haven't checked what 2.0 fixed.
+
+
+-a
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
