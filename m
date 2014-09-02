@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOnuJ-00039U-KX
- for ath10k@lists.infradead.org; Tue, 02 Sep 2014 13:14:00 +0000
+ id 1XOnyY-0008Jc-2D
+ for ath10k@lists.infradead.org; Tue, 02 Sep 2014 13:18:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove diag_*_access functions
-References: <1409231036-16137-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 2 Sep 2014 16:13:31 +0300
-In-Reply-To: <1409231036-16137-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 28 Aug 2014 15:03:56 +0200")
-Message-ID: <87iol6mah0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add device/driver strings to tracepoints
+References: <1409231135-16233-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 2 Sep 2014 16:17:52 +0300
+In-Reply-To: <1409231135-16233-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 28 Aug 2014 15:05:35 +0200")
+Message-ID: <87bnqyma9r.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,8 +28,8 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Remove the ugly _access functions. Being explicit
-> is a good thing.
+> This makes it easier to log and debug via tracing
+> with more than 1 ath10k device on a system.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
