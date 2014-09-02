@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XOqZ9-0007Ya-JP
- for ath10k@lists.infradead.org; Tue, 02 Sep 2014 16:04:20 +0000
-Message-ID: <5405EA6D.2040803@candelatech.com>
-Date: Tue, 02 Sep 2014 09:03:57 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-qc0-f172.google.com ([209.85.216.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XOtCB-0005pv-NQ
+ for ath10k@lists.infradead.org; Tue, 02 Sep 2014 18:52:48 +0000
+Received: by mail-qc0-f172.google.com with SMTP id o8so7269291qcw.17
+ for <ath10k@lists.infradead.org>; Tue, 02 Sep 2014 11:52:23 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v5] ath10k: save firmware debug log messages.
-References: <1409239441-4878-1-git-send-email-greearb@candelatech.com>
- <8738cam9by.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQk2CkmaZtZQ9iQyqU_9K3E_TYwetGNbsKpxYjbUvdL43g@mail.gmail.com>
- <87y4u2ksl1.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87y4u2ksl1.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
+References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
+ <53F39AB3.10601@candelatech.com>
+ <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
+ <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Tue, 2 Sep 2014 11:51:53 -0700
+Message-ID: <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
+Subject: Re: Timeout Issues
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,77 +24,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/02/2014 07:25 AM, Kalle Valo wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
-> 
->> On 2 September 2014 15:38, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->>> (Dropping linux-wireless)
->>>
->>> greearb@candelatech.com writes:
->>>
->>>> From: Ben Greear <greearb@candelatech.com>
->>>>
->>>> They may be dumped through the firmware dump debugfs
->>>> file.
->>>>
->>>> Signed-off-by: Ben Greear <greearb@candelatech.com>
->>>
->>> Before I start looking at this in detail: this looks fragile and
->>> complicated from ath10k point of view. Why not just take a dump of the
->>> whole firmware memory and postprocess this, with whatever else we might
->>> need from the firmware? That's a lot easier to maintain.
->>
->> I like the idea although it still makes sense to keep some sort of a
->> circular buffer for the debug mesg events delivered via wmi, does it
->> not?
-> 
-> How would ath10k use those stored debug mesg events? Attach them to the
-> firmare crash dump file? Or did you have something else in mind?
-
-It can log them to /var/log/messages as hex for ongoing firmware logging.
-It can allow dumping snapshots through debugfs for similar reasons.
-Using the above, it can allow firmware devs to insert the equivalent of printf in their
-firmware around crash sites and get some debug info in the logs to
-aid debugging firmware crashes or other strange things w/out having
-a serial console attached to the ath10k NIC.  That is how I debug and fix
-crashes in firmware that are not obvious from the initial dump.
-Surely your firmware guys could use similar tools.
-
-You have no guarantee when debug log messages are delivered to the host,
-so without storing them as received from the target, you may not have anything
-useful to dump/decode at crash time.
-
-> But most importantly, would that be useful? Does the firmware send debug
-> events now? Or would it require the user to change the firmware log
-> level through fw_dbglog debugfs file before the crash?
-
-Standard firmware sends some info with un-modifed ath10k driver,
-and modified firmware can provide much more as needed.  There is
-no need to twiddle firmware debug log levels for basic use, though
-that may give added benefit in some cases.
-
-> I want to avoid a situation where we have to maintain a feature which
-> nobody uses.
-
-Anyone that cares about fixing firmware bugs and making the firmware
-stable can make good use of this feature.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+U29ycnkgZm9yIHRoZSBhbWF6aW5nbHkgbGF0ZSByZXBseSwgb3RoZXIgdGhpbmdzIGNyZXB0IGlu
+dG8gbXkgc2NoZWR1bGUuCgpLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0uY29tPiB3cml0
+ZXM6Cj5IYXZlIHlvdSB2ZXJpZmllZCB0aGF0IHdpdGggdGhpcyBrZXJuZWwgdmVyc2lvbiB0aGUg
+UENJIGJ1cyB3b3Jrcwo+Y29ycmVjdGx5IG9uIHlvdXIgQVJNIGJvYXJkPyBFc3BlY2lhbGx5IGNo
+ZWNrIHRoYXQgaW50ZXJydXB0cyB3b3JrLgoKTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
+aWV0by5jb20+IHdyaXRlczoKPk5vdGUgdGhlOgo+Cj5bICAgIDcuNzA0NDAzXSBhdGgxMGs6IGZh
+aWxlZCB0byByZWNlaXZlIGNvbnRyb2wgcmVzcG9uc2UgY29tcGxldGlvbiwgcG9sbGluZy4uCj4K
+PlRoaXMgc3VnZ2VzdHMgaW50ZXJydXB0cyBhcmVuJ3QgZGVsaXZlcmVkIHRvIHRoZSBob3N0IHN5
+c3RlbSBmb3Igc29tZQo+cmVhc29uIGFsdGhvdWdoIGZpcm13YXJlIGlzIG9wZXJhdGlvbmFsIChj
+b250cm9sIHJlc3BvbnNlIGl0c2VsZiB3YXMKPmRlbGl2ZXJlZCB0byB0aGUgaG9zdCkuCj4KPlRo
+aXMgcGFydGljdWxhciB3YXJuaW5nIHdhcyBpbnRyb2R1Y2VkIGFzIHBhcnQgb2YgYSB3b3JrYXJv
+dW5kIGZvciBhCj52aXJ0dWFsIG1hY2hpbmUgUENJIHBhc3N0aHJvdWdoICh3aXRoIHRoZSBzdXNw
+aWNpb24gaW9tZW0gd3JpdGVzCj5hcmVuJ3QgcHJvcGFnYXRlZCBwcm9wZXJseSBpbiB0aGUgVk0p
+LiBIb3dldmVyIG9ubHkgY29udHJvbCByZXNwb25zZQo+d2FzIHRoZSBzdWJqZWN0IG9mIHRoZSBt
+aXNzaW5nIGludGVycnVwdC4gSW4geW91ciBjYXNlIHN1YnNlcXVlbnQKPmNvbW11bmljYXRpb24g
+aXMgbWlzc2luZyBpbnRlcnJ1cHRzLgo+Cj5DYW4geW91IGNoZWNrIGlmIHRoZSBpbnRlcnJ1cHQg
+bGluZSBpcyBzaGFyZWQgd2l0aCBhbnkgb3RoZXIgZGV2aWNlcywgcGxlYXNlOgo+Cj4gbHNwY2kg
+LXZ2IHwgZ3JlcCAtZSAnLi46Li5cLi4nIC1lIElSUQo+ICBjYXQgL3Byb2MvaW50ZXJydXB0cwo+
+Cj4KPj4KPj4gVGhpcyBjYXVzZXMgdGhlIGNhcmQgdG8gbm90IGJlIHJlZ2lzdGVyZWQsIGFuZCB0
+aHVzIGlzIHVudXNhYmxlICh0aGVyZQo+PmlzIG5vIHdsYW5YKQo+Pgo+PiBJIGFtIGFibGUgdG8g
+dXNlIHRoZSBJbnRlbCA3MjYwIGNhcmQgKGFub3RoZXIgQUMgY2FyZCkgd2l0aCB0aGVpcgo+PiBm
+aXJtd2FyZSBiaW5hcnkgYmxvYiwgc28gSSBkb24ndCBiZWxpZXZlIHRoaXMgaXMgYSBoYXJkd2Fy
+ZQo+PiBjb25maWd1cmF0aW9uIGlzc3VlIHdpdGggbWluaS1wY2llLgo+Cj5JIGFzc3VtZSB5b3Ug
+aGF2ZSBvbmx5IDEgbWluaS1wY2llIHNsb3Qgb24gdGhlIGJvYXJkIGFuZCB5b3UndmUgdXNlZAo+
+aXQgd2hlbiB0ZXN0aW5nIGJvdGggaW50ZWwgYW5kIGF0aCBkZXZpY2VzIG9yIGRvZXMgaXQgaGF2
+ZSBtb3JlIHRoYW4gMQo+c2xvdCBhbmQgeW91J3ZlIHVzZWQgZGlmZmVyZW50IHNsb3RzIHdoZW4g
+dGVzdGluZyBib3RoIGRldmljZXM/Cj4KPgo+TWljaGHFggoKVGhlIGJvYXJkIGhhcyA5IHBvcnQg
+UENJLWUgc3dpdGNoIGJlaGluZCB0aGUgUkMuIEkgZGlkLCBob3dldmVyLCB1c2UKdGhlIHNhbWUg
+c2xvdC4gSSBmb3VuZCB0aGF0IHRoZXJlIHdhcyBhbHdheXMgMSBpbnRlcnJ1cHQsIGJ1dCBuZXZl
+cgphbnkgbW9yZS4gVGhpcyBtYWRlIG1lIHRoaW5rIGEgYml0IG1vcmUgYW5kIGZvdW5kIHRoYXQg
+aWYgSSBzZXQKUENJX01TST1uIGluIHRoZSBrZXJuZWwgY29uZmlnLCB0aGUgcHJvYmxlbSAnZ29l
+cyBhd2F5JyBhbmQgSSBzZWUKaW5jcmVhc2luZyBudW1iZXIgb2YgaW50ZXJydXB0cyBhbmQgZG8g
+bm90IHNlZSBhbnltb3JlIG9mIHRoZSAnLTExMCcKZXJyb3IgbWVzc2FnZXMuIFRoaXMgaXNzdWUs
+IGZvciBtZSwgaXMgc29sdmVkIGFzIEkgZG9uJ3QgbmVjZXNzYXJ5Cm5lZWQgbWl4ZWQgc2lnbmFs
+ZWQgaW50ZXJydXB0cywgYnV0IEknbSB1bnN1cmUgb2Ygd2h5IHRoaXMgaXMKaGFwcGVuaW5nIGFu
+ZCB3aGF0IGlzIGRpZmZlcmVudCBhYm91dCB0aGUgSW50ZWwgNzI2MEhNVyBjYXJkIGZyb20gdGhl
+CkF0aGVyb3MgY2FyZHMgb3IgaW4gdGhlaXIgcmVzcGVjdGl2ZSBkcml2ZXJzLgoKLSBQdXNocGFs
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
