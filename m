@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPUVZ-0003A9-Ig
- for ath10k@lists.infradead.org; Thu, 04 Sep 2014 10:43:18 +0000
-Received: by mail-la0-f42.google.com with SMTP id mc6so11702401lab.29
- for <ath10k@lists.infradead.org>; Thu, 04 Sep 2014 03:42:55 -0700 (PDT)
+ id 1XPUZQ-00057K-UF
+ for ath10k@lists.infradead.org; Thu, 04 Sep 2014 10:47:17 +0000
+Received: by mail-la0-f47.google.com with SMTP id el20so2933743lab.20
+ for <ath10k@lists.infradead.org>; Thu, 04 Sep 2014 03:46:54 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2] ath10k: fix debugfs_create_dir() checking
-Date: Thu,  4 Sep 2014 12:32:36 +0200
-Message-Id: <1409826756-3609-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3] ath10k: fix debugfs_create_dir() checking
+Date: Thu,  4 Sep 2014 12:36:45 +0200
+Message-Id: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -85,6 +85,10 @@ Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Notes:
     v2:
      * fix commit subject (sorry for the noise!)
+    
+    v3:
+     * remove Kconfig patch (I accidentally amended something I shouldn't have,
+       sorry for the noise again! I guess I need a break..)
 
 @Kalle:
 
@@ -99,23 +103,9 @@ to drop all but the first paragraph of my commit
 message if you want to.
 
 
- drivers/net/wireless/ath/ath10k/Kconfig | 2 +-
  drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
-index 1053bb5..72acb82 100644
---- a/drivers/net/wireless/ath/ath10k/Kconfig
-+++ b/drivers/net/wireless/ath/ath10k/Kconfig
-@@ -24,7 +24,7 @@ config ATH10K_DEBUG
- 
- config ATH10K_DEBUGFS
- 	bool "Atheros ath10k debugfs support"
--	depends on ATH10K
-+	depends on ATH10K && DEBUG_FS
- 	select RELAY
- 	---help---
- 	  Enabled debugfs support
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
 index d922ef4..ed192a5 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
