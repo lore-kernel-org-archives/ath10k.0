@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPC3X-0006iN-3U
- for ath10k@lists.infradead.org; Wed, 03 Sep 2014 15:01:08 +0000
-Message-ID: <54072D19.7010809@candelatech.com>
-Date: Wed, 03 Sep 2014 08:00:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XPQyI-0000R8-Ae
+ for ath10k@lists.infradead.org; Thu, 04 Sep 2014 06:56:43 +0000
+Received: by mail-wi0-f173.google.com with SMTP id cc10so467878wib.6
+ for <ath10k@lists.infradead.org>; Wed, 03 Sep 2014 23:56:15 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: WMI version handling
+In-Reply-To: <54072D19.7010809@candelatech.com>
 References: <1407261537-11308-1-git-send-email-greearb@candelatech.com>
  <87zjehjkmg.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87zjehjkmg.fsf@kamboji.qca.qualcomm.com>
+ <54072D19.7010809@candelatech.com>
+Date: Thu, 4 Sep 2014 08:56:15 +0200
+Message-ID: <CA+BoTQkbLRpAvmjVEvjCqwTnk9XqFeWOxhr1cpQSuvtVm898tw@mail.gmail.com>
+Subject: Re: WMI version handling
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,138 +22,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/02/2014 11:14 PM, Kalle Valo wrote:
-> Hi,
-> 
-> This was "[PATCH] ath10k: Support 32+ stations." but I'll change the
-> subject as this a bigger discussion. I'll also drop linux-wireless for
-> now, I assume they are not interested about our discussion how to manage
-> firmware interfaces.
-> 
-> greearb@candelatech.com writes:
-> 
->> From: Ben Greear <greearb@candelatech.com>
->>
->> Implement 64-bit vdev map to support larger numbers
->> of virtual devices.  Support up to 32 stations
->> (actual limit will be determined when loading firmware,
->> as different firmwares have different limits)
->>
->> Enable larger limits when using Candela Technologies
->> firmware.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> 
-> So what this firmware does is that it changes these values:
-> 
->> +/* Over-rides for Candela Technologies firmware */
->> +#define TARGET_10X_NUM_VDEVS_CT			32
->> +#define TARGET_10X_NUM_PEERS_CT			(32 + (TARGET_10X_NUM_VDEVS_CT))
->> +#define TARGET_10X_AST_SKID_LIMIT_CT		(TARGET_10X_NUM_PEERS_CT * TARGET_10X_NUM_PEER_AST)
-
-My firmware really makes better use of resources and is able to deal better with
-a wider range of configured values.
-
-For a full list of ath10k patches that I hope to someday submit, see:
-
-http://dmz2.candelatech.com/git/gitweb.cgi?p=linux.ath/.git;a=summary
-
-Towards the end, I have patches to configure number of stations with
-kernel module variable.  I think at a minimum, should be able to configure
-peer count as well.
-
-> I think it would be better to provide these through FW IEs, one u32 for
-> each. I guess we need one also for the skid limit? That way it's easier
-> to maintain this in ath10k.
-
-Skid limit should depend on the others.  If you get unlucky with hashes,
-or an attacker figures out how to do so artificially, then you can crash
-upstream ath10k firmware by associating more than skid-limit stations.
-
-> Of course that would mean we have to create struct ieee80211_iface_limit
-> and struct ieee80211_iface_combination runtime, instead of statically
-> how it's done now. But shouldn't be a problem, right?
-
-Yes, I do that later in my patch series.  It works, my patches as written
-may need some changes as I had to remove some const markings that might not
-be acceptable upstream.
-
-> Also I have been thinking that using firmware feature bits (for example
-> ATH10K_FW_FEATURE_WMI_10_2 and ATH10K_FW_FEATURE_WMI_10X) for WMI
-> version is not the best way. I think it's easier to manage all this if
-> we have a u32 FW IE to provide WMI version. IIRC Ben was suggesting this
-> at some point.
-> 
-> Example:
-> 
-> enum ath10k_fw_wmi_version {
-> 	ATH10K_FW_WMI_VERSION_MAIN = 0,
-> 	ATH10K_FW_WMI_VERSION_10_1 = 1,
-> 	ATH10K_FW_WMI_VERSION_10_2 = 2,
-> }
-> 
-> And then wmi.c would set correct interface based on this version.
-
-I am happy with the current flags, it seems to work well enough.
-I'd leave policy out of the IEs as much as possible, as normal users
-cannot modify it, and certainly it would be a problem if you wanted
-different policy with different NICs in same system.
-IEs should describe the minimum needed for the
-ath10k to enforce policy as best as it can.  We have to assume that
-users tweaking station and peer count can deal with fw crashes until
-they get the settings right.
-
-My CT firmware will print out available RAM once booted, so it is
-fairly easy to utilize maximum amount of resources with a bit of
-trial and error.  It would be trivial to make upstream firmware do
-the same, of course, but upstream firmware may crash for other
-reasons as you change resource config...
-
-> We would still use feature bits to enable and disable smaller changes
-> like ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX does. But for bigger WMI changes
-> we would change the WMI version, for example if we have a new firmware
-> branch with significant changes or similar.
-> 
-> And for backwards comptability we need to do so that
-> ATH10K_FW_FEATURE_WMI_10X sets ATH10K_FW_WMI_VERSION_10_1 and
-> ATH10K_FW_FEATURE_WMI_10_2 sets ATH10K_FW_WMI_VERSION_10_2.
-
-I was able to do all of my changes w/out needing new a new WMI version,
-and I think that is the right approach.  I do not like large amounts of
-duplicated code and table lookups, which is what new WMI versions appear
-to imply.
-
-I'd prefer to keep IEs generally as they are now (in my firmware,
-at least), and allow changing number of peers, stations, etc through debugfs
-and/or kernel modules.  Just restart the firmware when users have completed
-the config changes.  Don't assume ath10k can properly limit all configurables
-to keep firmware from crashing, but give users enough info (ie, RAM usage),
-that they can deal with it themselves.  Normal users will never need to know
-about or change the configurables anyway, but those building APs can tweak
-as needed.
-
-If QCA goes to more of a rolling release for firmware, like I do for CT
-firmware, then we may want to add IEs a bit more often, to notify things like
-"can-support-feature-foo".  10.2 v/s 10.1 can still determine the
-over-all WMI api, perhaps, but at specific points we can take advantage of
-specific firmware features based on IE flag.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBTZXB0ZW1iZXIgMjAxNCAxNzowMCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IE9uIDA5LzAyLzIwMTQgMTE6MTQgUE0sIEthbGxlIFZhbG8gd3JvdGU6
+Cj4+IEhpLApbLi4uXQo+PiBBbHNvIEkgaGF2ZSBiZWVuIHRoaW5raW5nIHRoYXQgdXNpbmcgZmly
+bXdhcmUgZmVhdHVyZSBiaXRzIChmb3IgZXhhbXBsZQo+PiBBVEgxMEtfRldfRkVBVFVSRV9XTUlf
+MTBfMiBhbmQgQVRIMTBLX0ZXX0ZFQVRVUkVfV01JXzEwWCkgZm9yIFdNSQo+PiB2ZXJzaW9uIGlz
+IG5vdCB0aGUgYmVzdCB3YXkuIEkgdGhpbmsgaXQncyBlYXNpZXIgdG8gbWFuYWdlIGFsbCB0aGlz
+IGlmCj4+IHdlIGhhdmUgYSB1MzIgRlcgSUUgdG8gcHJvdmlkZSBXTUkgdmVyc2lvbi4gSUlSQyBC
+ZW4gd2FzIHN1Z2dlc3RpbmcgdGhpcwo+PiBhdCBzb21lIHBvaW50Lgo+Pgo+PiBFeGFtcGxlOgo+
+Pgo+PiBlbnVtIGF0aDEwa19md193bWlfdmVyc2lvbiB7Cj4+ICAgICAgIEFUSDEwS19GV19XTUlf
+VkVSU0lPTl9NQUlOID0gMCwKPj4gICAgICAgQVRIMTBLX0ZXX1dNSV9WRVJTSU9OXzEwXzEgPSAx
+LAo+PiAgICAgICBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMiA9IDIsCj4+IH0KPj4KPj4gQW5k
+IHRoZW4gd21pLmMgd291bGQgc2V0IGNvcnJlY3QgaW50ZXJmYWNlIGJhc2VkIG9uIHRoaXMgdmVy
+c2lvbi4KPgo+IEkgYW0gaGFwcHkgd2l0aCB0aGUgY3VycmVudCBmbGFncywgaXQgc2VlbXMgdG8g
+d29yayB3ZWxsIGVub3VnaC4KCkknbSBhY3R1YWxseSBva2F5IHdpdGggdGhpcyBidXQgSSdkIGFj
+dHVhbGx5IHRocm93IG91dCB0aGUgIndtaSIKc3RyaW5nIGZyb20gaXQgYW5kIGxlYXZlIG91dCBq
+dXN0ICJhdGgxMGtfZndfdmVyc2lvbiIuIEkndmUgcmVjZW50bHkKZGlzY292ZXJlZCBzb21lIG1p
+bm9yIEhUVCBkaXNjcmVwYW5jaWVzIGJldHdlZW4gZncgYnJhbmNoZXMgc28gd2UKbWlnaHQgd2Fu
+dCB0byB1c2UgdGhlIHZlcnNpb24gdGFnIHRvIHBpY2sgSFRUICJiYWNrZW5kIiBhcyB3ZWxsLi4K
+Cgo+IEknZCBsZWF2ZSBwb2xpY3kgb3V0IG9mIHRoZSBJRXMgYXMgbXVjaCBhcyBwb3NzaWJsZSwg
+YXMgbm9ybWFsIHVzZXJzCj4gY2Fubm90IG1vZGlmeSBpdCwgYW5kIGNlcnRhaW5seSBpdCB3b3Vs
+ZCBiZSBhIHByb2JsZW0gaWYgeW91IHdhbnRlZAo+IGRpZmZlcmVudCBwb2xpY3kgd2l0aCBkaWZm
+ZXJlbnQgTklDcyBpbiBzYW1lIHN5c3RlbS4KPiBJRXMgc2hvdWxkIGRlc2NyaWJlIHRoZSBtaW5p
+bXVtIG5lZWRlZCBmb3IgdGhlCj4gYXRoMTBrIHRvIGVuZm9yY2UgcG9saWN5IGFzIGJlc3QgYXMg
+aXQgY2FuLiAgV2UgaGF2ZSB0byBhc3N1bWUgdGhhdAo+IHVzZXJzIHR3ZWFraW5nIHN0YXRpb24g
+YW5kIHBlZXIgY291bnQgY2FuIGRlYWwgd2l0aCBmdyBjcmFzaGVzIHVudGlsCj4gdGhleSBnZXQg
+dGhlIHNldHRpbmdzIHJpZ2h0Lgo+Cj4gTXkgQ1QgZmlybXdhcmUgd2lsbCBwcmludCBvdXQgYXZh
+aWxhYmxlIFJBTSBvbmNlIGJvb3RlZCwgc28gaXQgaXMKPiBmYWlybHkgZWFzeSB0byB1dGlsaXpl
+IG1heGltdW0gYW1vdW50IG9mIHJlc291cmNlcyB3aXRoIGEgYml0IG9mCj4gdHJpYWwgYW5kIGVy
+cm9yLiAgSXQgd291bGQgYmUgdHJpdmlhbCB0byBtYWtlIHVwc3RyZWFtIGZpcm13YXJlIGRvCj4g
+dGhlIHNhbWUsIG9mIGNvdXJzZSwgYnV0IHVwc3RyZWFtIGZpcm13YXJlIG1heSBjcmFzaCBmb3Ig
+b3RoZXIKPiByZWFzb25zIGFzIHlvdSBjaGFuZ2UgcmVzb3VyY2UgY29uZmlnLi4uCgpJT1cgWW91
+J3JlIG9rYXkgaWYgYXRoMTBrIGFwcGxpZXMgZGVmYXVsdC9oYXJkY29kZWQgY29uZmlndXJhdGlv
+bgp2YWx1ZXMgb2YgMTAuMSBmb3IgeW91ciBmaXJtd2FyZSAoYXMgeW91ciBmaXJtd2FyZSBpcyBn
+b2luZyB0bwphZHZlcnRpc2UgYXMgYSAxMC4xKSAtIGlzIHRoYXQgY29ycmVjdD8gWW91IGp1c3Qg
+d2FudCB0byBiZSBhYmxlIHRvCnR1bmUgdGhlc2UgdmFsdWVzIHBlci1kZXZpY2UgaW4gcnVudGlt
+ZS4gSSB0aGluayBkZWJ1Z2ZzIGlzIHRoZSBiZXN0CmNhbmRpZGF0ZSBoZXJlIHRoZW4uCgphdGgx
+MGsgd291bGQgbmVlZCB0byBoYXZlIGEgc2VwYXJhdGUgZGVidWdmcyBlbnRyeSBmb3IgdGhhdCB0
+aGVuLCBpLmUuCm9uZSB0aGF0IGlzIGluZGVwZW5kZW50IGZyb20gd2lwaHkuIFlvdSBjb3VsZCBo
+YXZlLCBlLmcuCi9zeXMva2VybmVsL2RlYnVnL2F0aDEway9wY2kvMDAwMDowNDowMC4wL251bV9w
+ZWVycyB3aGljaCByZS1yZWdpc3RlcnMKdG8gbWFjODAyMTEgdXBvbiBtb2RpZmljYXRpb24uCgoK
+Pj4gV2Ugd291bGQgc3RpbGwgdXNlIGZlYXR1cmUgYml0cyB0byBlbmFibGUgYW5kIGRpc2FibGUg
+c21hbGxlciBjaGFuZ2VzCj4+IGxpa2UgQVRIMTBLX0ZXX0ZFQVRVUkVfSEFTX1dNSV9NR01UX1RY
+IGRvZXMuIEJ1dCBmb3IgYmlnZ2VyIFdNSSBjaGFuZ2VzCj4+IHdlIHdvdWxkIGNoYW5nZSB0aGUg
+V01JIHZlcnNpb24sIGZvciBleGFtcGxlIGlmIHdlIGhhdmUgYSBuZXcgZmlybXdhcmUKPj4gYnJh
+bmNoIHdpdGggc2lnbmlmaWNhbnQgY2hhbmdlcyBvciBzaW1pbGFyLgo+Pgo+PiBBbmQgZm9yIGJh
+Y2t3YXJkcyBjb21wdGFiaWxpdHkgd2UgbmVlZCB0byBkbyBzbyB0aGF0Cj4+IEFUSDEwS19GV19G
+RUFUVVJFX1dNSV8xMFggc2V0cyBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMSBhbmQKPj4gQVRI
+MTBLX0ZXX0ZFQVRVUkVfV01JXzEwXzIgc2V0cyBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMi4K
+Pgo+IEkgd2FzIGFibGUgdG8gZG8gYWxsIG9mIG15IGNoYW5nZXMgdy9vdXQgbmVlZGluZyBuZXcg
+YSBuZXcgV01JIHZlcnNpb24sCj4gYW5kIEkgdGhpbmsgdGhhdCBpcyB0aGUgcmlnaHQgYXBwcm9h
+Y2guICBJIGRvIG5vdCBsaWtlIGxhcmdlIGFtb3VudHMgb2YKPiBkdXBsaWNhdGVkIGNvZGUgYW5k
+IHRhYmxlIGxvb2t1cHMsIHdoaWNoIGlzIHdoYXQgbmV3IFdNSSB2ZXJzaW9ucyBhcHBlYXIKPiB0
+byBpbXBseS4KCkl0J3MgYWN0dWFsbHkgcmVhbGx5IHNpbXBsZSB0byB1cGRhdGUgV01JIGluIGFu
+IEFCSS1zYWZlIHdheS4KVW5mb3J0dW5hdGVseSBvZmZpY2lhbCBmaXJtd2FyZSB1cGRhdGVzIGJy
+ZWFrIGl0IGZhaXJseSBvZnRlbiBhbmQgd2UKaGF2ZSB0byBkZWFsIHdpdGggdGhhdC4gQWFhbmQg
+dGhlcmUncyBnb2luZyB0byBiZSBhbm90aGVyIFdNSSBiYWNrZW5kCnNvb24gbW9zdCBsaWtlbHku
+CgoKWy4uLl0KPiBJZiBRQ0EgZ29lcyB0byBtb3JlIG9mIGEgcm9sbGluZyByZWxlYXNlIGZvciBm
+aXJtd2FyZSwgbGlrZSBJIGRvIGZvciBDVAo+IGZpcm13YXJlLCB0aGVuIHdlIG1heSB3YW50IHRv
+IGFkZCBJRXMgYSBiaXQgbW9yZSBvZnRlbiwgdG8gbm90aWZ5IHRoaW5ncyBsaWtlCj4gImNhbi1z
+dXBwb3J0LWZlYXR1cmUtZm9vIi4gIDEwLjIgdi9zIDEwLjEgY2FuIHN0aWxsIGRldGVybWluZSB0
+aGUKPiBvdmVyLWFsbCBXTUkgYXBpLCBwZXJoYXBzLCBidXQgYXQgc3BlY2lmaWMgcG9pbnRzIHdl
+IGNhbiB0YWtlIGFkdmFudGFnZSBvZgo+IHNwZWNpZmljIGZpcm13YXJlIGZlYXR1cmVzIGJhc2Vk
+IG9uIElFIGZsYWcuCgpUaGlzIGlzIHdoYXQgV01JIGJpdG1hcCBzZXJ2aWNlIGlzIGFjdHVhbGx5
+IGZvci4gYXRoMTBrIGlzIGlnbm9yaW5nCnRoaXMgbm93IGFuZCBleHBvc2VzIGl0IHZpYSBkZWJ1
+Z2ZzIG9ubHkuIEl0J3MgcG9zc2libGUgdG8sIGUuZy4gcGljawoibWF4IG51bSBvZiBzdGF0aW9u
+cyIgY29uZmlndXJhdGlvbiB2YWx1ZXMgYmFzZWQgb24gdGhlICJpcmFtIHRpZHMiCmJlaW5nIHNl
+dCBvciBub3QuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
