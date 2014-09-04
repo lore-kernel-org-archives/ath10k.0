@@ -1,22 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPSE2-0000yg-O8
- for ath10k@lists.infradead.org; Thu, 04 Sep 2014 08:17:04 +0000
-Received: by mail-wi0-f174.google.com with SMTP id d1so581331wiv.7
- for <ath10k@lists.infradead.org>; Thu, 04 Sep 2014 01:16:40 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
-References: <CAD1M062MNW7y_hf+5btNA14xt9K69TqQy=Q-rCm+2xuHCZDEsA@mail.gmail.com>
- <53F39AB3.10601@candelatech.com>
- <CAD1M062FPxZyj86LvvaomwR3z2KeScnYDCNT_g6zMQzK10+vxA@mail.gmail.com>
- <87zjez7m7t.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQn1EiwajmmymkLSM6Nm0pJFOKqo89L4ZUiw6TGbQ-Cv_w@mail.gmail.com>
- <CAD1M060R0x021Rw=mviL54PVH=KS5vnTZBHpUog=fJX007r7Gw@mail.gmail.com>
-Date: Thu, 4 Sep 2014 10:16:40 +0200
-Message-ID: <CA+BoTQnr5R+shHJ0ikXKbhVfhJ_92J_3Db8tNE8+U1kChpQgEg@mail.gmail.com>
-Subject: Re: Timeout Issues
+ id 1XPSQO-0004ZR-Dr
+ for ath10k@lists.infradead.org; Thu, 04 Sep 2014 08:29:49 +0000
+Received: by mail-lb0-f171.google.com with SMTP id 10so2464691lbg.16
+ for <ath10k@lists.infradead.org>; Thu, 04 Sep 2014 01:29:24 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: use proper service bitmap size
+Date: Thu,  4 Sep 2014 10:18:32 +0200
+Message-Id: <1409818712-7493-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +17,132 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pushpal Sidhu <psidhu@gateworks.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMiBTZXB0ZW1iZXIgMjAxNCAyMDo1MSwgUHVzaHBhbCBTaWRodSA8cHNpZGh1QGdhdGV3b3Jr
-cy5jb20+IHdyb3RlOgo+IFNvcnJ5IGZvciB0aGUgYW1hemluZ2x5IGxhdGUgcmVwbHksIG90aGVy
-IHRoaW5ncyBjcmVwdCBpbnRvIG15IHNjaGVkdWxlLgpbLi4uXQo+Cj4gVGhlIGJvYXJkIGhhcyA5
-IHBvcnQgUENJLWUgc3dpdGNoIGJlaGluZCB0aGUgUkMuIEkgZGlkLCBob3dldmVyLCB1c2UKPiB0
-aGUgc2FtZSBzbG90LiBJIGZvdW5kIHRoYXQgdGhlcmUgd2FzIGFsd2F5cyAxIGludGVycnVwdCwg
-YnV0IG5ldmVyCj4gYW55IG1vcmUuIFRoaXMgbWFkZSBtZSB0aGluayBhIGJpdCBtb3JlIGFuZCBm
-b3VuZCB0aGF0IGlmIEkgc2V0Cj4gUENJX01TST1uIGluIHRoZSBrZXJuZWwgY29uZmlnLCB0aGUg
-cHJvYmxlbSAnZ29lcyBhd2F5JyBhbmQgSSBzZWUKPiBpbmNyZWFzaW5nIG51bWJlciBvZiBpbnRl
-cnJ1cHRzIGFuZCBkbyBub3Qgc2VlIGFueW1vcmUgb2YgdGhlICctMTEwJwo+IGVycm9yIG1lc3Nh
-Z2VzLiBUaGlzIGlzc3VlLCBmb3IgbWUsIGlzIHNvbHZlZCBhcyBJIGRvbid0IG5lY2Vzc2FyeQo+
-IG5lZWQgbWl4ZWQgc2lnbmFsZWQgaW50ZXJydXB0cywgYnV0IEknbSB1bnN1cmUgb2Ygd2h5IHRo
-aXMgaXMKPiBoYXBwZW5pbmcgYW5kIHdoYXQgaXMgZGlmZmVyZW50IGFib3V0IHRoZSBJbnRlbCA3
-MjYwSE1XIGNhcmQgZnJvbSB0aGUKPiBBdGhlcm9zIGNhcmRzIG9yIGluIHRoZWlyIHJlc3BlY3Rp
-dmUgZHJpdmVycy4KCkhtbS4uIFlvdXIgb3JpZ2luYWwgbG9ncyBzdWdnZXN0IGF0aDEwayB3YXMg
-YWxyZWFkeSBydW5uaW5nIGluCmxlZ2FjeS9zaGFyZWQgaXJxIG1vZGUgYmVmb3JlIHdoaWNoIG1l
-YW5zIGl0IGFscmVhZHkgdHJpZWQgTVNJIGFuZApmYWlsZWQ6Cgo+IFsgICAgNS4yMzM0NjldIGF0
-aDEwa19wY2kgMDAwMDowOTowMC4wOiBlbmFibGluZyBkZXZpY2UgKDAxNDAgLT4gMDE0MikKPiBb
-ICAgIDUuNTc1OTU0XSBhdGgxMGs6IHBjaSBpcnEgbGVnYWN5IGlycV9tb2RlIDAgcmVzZXRfbW9k
-ZSAwCgpJIHdvbmRlciBpZiB0aGUgSW50ZWwgY2FyZCBzdWNjZWVkcyB0byBwY2lfZW5hYmxlX21z
-aSgpLiBQZXJoYXBzIHRoaXMKaXMgYSBidWcgd2l0aCBRQ0E5ODhYIGZhaWxpbmcgdG8gcmVjb3Zl
-ciBmcm9tIGEgZmFpbGVkIE1TSSBuZWdvdGlhdGlvbgp3aXRoIHRoZSBQQ0ktRSBjb250cm9sbGVy
-PwoKWW91IGNvdWxkIHRyeSBhZGRpbmcgaXJxX21vZGU9MSBwYXJhbWV0ZXIgdG8gYXRoMTBrX3Bj
-aSBtb2R1bGUuIFRoaXMKd2F5IHlvdSdsbCBmb3JjZSBhdGgxMGsgdG8gdXNlIHNoYXJlZCBpbnRl
-cnJ1cHRzIHdpdGhvdXQgZXZlbiB0cnlpbmcKdG8gZ28gdGhyb3VnaCBNU0ktPnNoYXJlZCBmYWls
-b3ZlciBhbmQgaWYgSSdtIHJpZ2h0IHlvdSB3b24ndCBuZWVkIHRoZQpQQ0lfTVNJPW4gaW4geW91
-ciBrZXJuZWwuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 32bit systems the bitmap was too small and it
+was overwritten partially by the stat completion
+structure. This was visible with 10.2 firmware
+only due to it using a few of the last service
+ids.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  |  2 +-
+ drivers/net/wireless/ath/ath10k/debug.c |  2 +-
+ drivers/net/wireless/ath/ath10k/wmi.c   |  4 ++--
+ drivers/net/wireless/ath/ath10k/wmi.h   | 12 +++++-------
+ 4 files changed, 9 insertions(+), 11 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 797741d..a2695e3 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -293,7 +293,7 @@ struct ath10k_debug {
+ 	struct dentry *debugfs_phy;
+ 
+ 	struct ath10k_target_stats target_stats;
+-	DECLARE_BITMAP(wmi_service_bitmap, WMI_SERVICE_BM_SIZE);
++	DECLARE_BITMAP(wmi_service_bitmap, WMI_SERVICE_MAX);
+ 
+ 	struct completion event_stats_compl;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index d922ef4..e487064 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -208,7 +208,7 @@ static ssize_t ath10k_read_wmi_services(struct file *file,
+ 	if (len > buf_len)
+ 		len = buf_len;
+ 
+-	for (i = 0; i < WMI_MAX_SERVICE; i++) {
++	for (i = 0; i < WMI_SERVICE_MAX; i++) {
+ 		enabled = test_bit(i, ar->debug.wmi_service_bitmap);
+ 		name = wmi_service_name(i);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index b13ccf6..e7edc89 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2164,7 +2164,7 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 					      struct sk_buff *skb)
+ {
+ 	struct wmi_service_ready_event *ev = (void *)skb->data;
+-	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_BM_SIZE) = {};
++	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_MAX) = {};
+ 
+ 	if (skb->len < sizeof(*ev)) {
+ 		ath10k_warn(ar, "Service ready event was %d B but expected %zu B. Wrong firmware version?\n",
+@@ -2241,7 +2241,7 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
+ 	int ret;
+ 	struct wmi_service_ready_event_10x *ev = (void *)skb->data;
+-	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_BM_SIZE) = {};
++	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_MAX) = {};
+ 
+ 	if (skb->len < sizeof(*ev)) {
+ 		ath10k_warn(ar, "Service ready event was %d B but expected %zu B. Wrong firmware version?\n",
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index e708365..bdb2e6c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -109,6 +109,9 @@ enum wmi_service {
+ 	WMI_SERVICE_BURST,
+ 	WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT,
+ 	WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT,
++
++	/* keep last */
++	WMI_SERVICE_MAX,
+ };
+ 
+ enum wmi_10x_service {
+@@ -219,8 +222,6 @@ static inline char *wmi_service_name(int service_id)
+ #undef SVCSTR
+ }
+ 
+-#define WMI_MAX_SERVICE 64
+-
+ #define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id) \
+ 	(__le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
+ 	 BIT((svc_id)%(sizeof(u32))))
+@@ -347,9 +348,6 @@ static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out)
+ 
+ #undef SVCMAP
+ 
+-#define WMI_SERVICE_BM_SIZE \
+-	((WMI_MAX_SERVICE + sizeof(u32) - 1)/sizeof(u32))
+-
+ /* 2 word representation of MAC addr */
+ struct wmi_mac_addr {
+ 	union {
+@@ -1405,7 +1403,7 @@ struct wmi_service_ready_event {
+ 	__le32 phy_capability;
+ 	/* Maximum number of frag table entries that SW will populate less 1 */
+ 	__le32 max_frag_entry;
+-	__le32 wmi_service_bitmap[WMI_SERVICE_BM_SIZE];
++	__le32 wmi_service_bitmap[16];
+ 	__le32 num_rf_chains;
+ 	/*
+ 	 * The following field is only valid for service type
+@@ -1444,7 +1442,7 @@ struct wmi_service_ready_event_10x {
+ 
+ 	/* Maximum number of frag table entries that SW will populate less 1 */
+ 	__le32 max_frag_entry;
+-	__le32 wmi_service_bitmap[WMI_SERVICE_BM_SIZE];
++	__le32 wmi_service_bitmap[16];
+ 	__le32 num_rf_chains;
+ 
+ 	/*
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
