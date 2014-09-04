@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XPQyI-0000R8-Ae
- for ath10k@lists.infradead.org; Thu, 04 Sep 2014 06:56:43 +0000
-Received: by mail-wi0-f173.google.com with SMTP id cc10so467878wib.6
- for <ath10k@lists.infradead.org>; Wed, 03 Sep 2014 23:56:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <54072D19.7010809@candelatech.com>
-References: <1407261537-11308-1-git-send-email-greearb@candelatech.com>
- <87zjehjkmg.fsf@kamboji.qca.qualcomm.com>
- <54072D19.7010809@candelatech.com>
-Date: Thu, 4 Sep 2014 08:56:15 +0200
-Message-ID: <CA+BoTQkbLRpAvmjVEvjCqwTnk9XqFeWOxhr1cpQSuvtVm898tw@mail.gmail.com>
-Subject: Re: WMI version handling
+ id 1XPRON-00046d-3C
+ for ath10k@lists.infradead.org; Thu, 04 Sep 2014 07:23:40 +0000
+Received: by mail-lb0-f178.google.com with SMTP id v6so10912554lbi.23
+ for <ath10k@lists.infradead.org>; Thu, 04 Sep 2014 00:23:16 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: move fw_crash_dump allocation
+Date: Thu,  4 Sep 2014 09:13:08 +0200
+Message-Id: <1409814788-1661-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +17,234 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMyBTZXB0ZW1iZXIgMjAxNCAxNzowMCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IE9uIDA5LzAyLzIwMTQgMTE6MTQgUE0sIEthbGxlIFZhbG8gd3JvdGU6
-Cj4+IEhpLApbLi4uXQo+PiBBbHNvIEkgaGF2ZSBiZWVuIHRoaW5raW5nIHRoYXQgdXNpbmcgZmly
-bXdhcmUgZmVhdHVyZSBiaXRzIChmb3IgZXhhbXBsZQo+PiBBVEgxMEtfRldfRkVBVFVSRV9XTUlf
-MTBfMiBhbmQgQVRIMTBLX0ZXX0ZFQVRVUkVfV01JXzEwWCkgZm9yIFdNSQo+PiB2ZXJzaW9uIGlz
-IG5vdCB0aGUgYmVzdCB3YXkuIEkgdGhpbmsgaXQncyBlYXNpZXIgdG8gbWFuYWdlIGFsbCB0aGlz
-IGlmCj4+IHdlIGhhdmUgYSB1MzIgRlcgSUUgdG8gcHJvdmlkZSBXTUkgdmVyc2lvbi4gSUlSQyBC
-ZW4gd2FzIHN1Z2dlc3RpbmcgdGhpcwo+PiBhdCBzb21lIHBvaW50Lgo+Pgo+PiBFeGFtcGxlOgo+
-Pgo+PiBlbnVtIGF0aDEwa19md193bWlfdmVyc2lvbiB7Cj4+ICAgICAgIEFUSDEwS19GV19XTUlf
-VkVSU0lPTl9NQUlOID0gMCwKPj4gICAgICAgQVRIMTBLX0ZXX1dNSV9WRVJTSU9OXzEwXzEgPSAx
-LAo+PiAgICAgICBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMiA9IDIsCj4+IH0KPj4KPj4gQW5k
-IHRoZW4gd21pLmMgd291bGQgc2V0IGNvcnJlY3QgaW50ZXJmYWNlIGJhc2VkIG9uIHRoaXMgdmVy
-c2lvbi4KPgo+IEkgYW0gaGFwcHkgd2l0aCB0aGUgY3VycmVudCBmbGFncywgaXQgc2VlbXMgdG8g
-d29yayB3ZWxsIGVub3VnaC4KCkknbSBhY3R1YWxseSBva2F5IHdpdGggdGhpcyBidXQgSSdkIGFj
-dHVhbGx5IHRocm93IG91dCB0aGUgIndtaSIKc3RyaW5nIGZyb20gaXQgYW5kIGxlYXZlIG91dCBq
-dXN0ICJhdGgxMGtfZndfdmVyc2lvbiIuIEkndmUgcmVjZW50bHkKZGlzY292ZXJlZCBzb21lIG1p
-bm9yIEhUVCBkaXNjcmVwYW5jaWVzIGJldHdlZW4gZncgYnJhbmNoZXMgc28gd2UKbWlnaHQgd2Fu
-dCB0byB1c2UgdGhlIHZlcnNpb24gdGFnIHRvIHBpY2sgSFRUICJiYWNrZW5kIiBhcyB3ZWxsLi4K
-Cgo+IEknZCBsZWF2ZSBwb2xpY3kgb3V0IG9mIHRoZSBJRXMgYXMgbXVjaCBhcyBwb3NzaWJsZSwg
-YXMgbm9ybWFsIHVzZXJzCj4gY2Fubm90IG1vZGlmeSBpdCwgYW5kIGNlcnRhaW5seSBpdCB3b3Vs
-ZCBiZSBhIHByb2JsZW0gaWYgeW91IHdhbnRlZAo+IGRpZmZlcmVudCBwb2xpY3kgd2l0aCBkaWZm
-ZXJlbnQgTklDcyBpbiBzYW1lIHN5c3RlbS4KPiBJRXMgc2hvdWxkIGRlc2NyaWJlIHRoZSBtaW5p
-bXVtIG5lZWRlZCBmb3IgdGhlCj4gYXRoMTBrIHRvIGVuZm9yY2UgcG9saWN5IGFzIGJlc3QgYXMg
-aXQgY2FuLiAgV2UgaGF2ZSB0byBhc3N1bWUgdGhhdAo+IHVzZXJzIHR3ZWFraW5nIHN0YXRpb24g
-YW5kIHBlZXIgY291bnQgY2FuIGRlYWwgd2l0aCBmdyBjcmFzaGVzIHVudGlsCj4gdGhleSBnZXQg
-dGhlIHNldHRpbmdzIHJpZ2h0Lgo+Cj4gTXkgQ1QgZmlybXdhcmUgd2lsbCBwcmludCBvdXQgYXZh
-aWxhYmxlIFJBTSBvbmNlIGJvb3RlZCwgc28gaXQgaXMKPiBmYWlybHkgZWFzeSB0byB1dGlsaXpl
-IG1heGltdW0gYW1vdW50IG9mIHJlc291cmNlcyB3aXRoIGEgYml0IG9mCj4gdHJpYWwgYW5kIGVy
-cm9yLiAgSXQgd291bGQgYmUgdHJpdmlhbCB0byBtYWtlIHVwc3RyZWFtIGZpcm13YXJlIGRvCj4g
-dGhlIHNhbWUsIG9mIGNvdXJzZSwgYnV0IHVwc3RyZWFtIGZpcm13YXJlIG1heSBjcmFzaCBmb3Ig
-b3RoZXIKPiByZWFzb25zIGFzIHlvdSBjaGFuZ2UgcmVzb3VyY2UgY29uZmlnLi4uCgpJT1cgWW91
-J3JlIG9rYXkgaWYgYXRoMTBrIGFwcGxpZXMgZGVmYXVsdC9oYXJkY29kZWQgY29uZmlndXJhdGlv
-bgp2YWx1ZXMgb2YgMTAuMSBmb3IgeW91ciBmaXJtd2FyZSAoYXMgeW91ciBmaXJtd2FyZSBpcyBn
-b2luZyB0bwphZHZlcnRpc2UgYXMgYSAxMC4xKSAtIGlzIHRoYXQgY29ycmVjdD8gWW91IGp1c3Qg
-d2FudCB0byBiZSBhYmxlIHRvCnR1bmUgdGhlc2UgdmFsdWVzIHBlci1kZXZpY2UgaW4gcnVudGlt
-ZS4gSSB0aGluayBkZWJ1Z2ZzIGlzIHRoZSBiZXN0CmNhbmRpZGF0ZSBoZXJlIHRoZW4uCgphdGgx
-MGsgd291bGQgbmVlZCB0byBoYXZlIGEgc2VwYXJhdGUgZGVidWdmcyBlbnRyeSBmb3IgdGhhdCB0
-aGVuLCBpLmUuCm9uZSB0aGF0IGlzIGluZGVwZW5kZW50IGZyb20gd2lwaHkuIFlvdSBjb3VsZCBo
-YXZlLCBlLmcuCi9zeXMva2VybmVsL2RlYnVnL2F0aDEway9wY2kvMDAwMDowNDowMC4wL251bV9w
-ZWVycyB3aGljaCByZS1yZWdpc3RlcnMKdG8gbWFjODAyMTEgdXBvbiBtb2RpZmljYXRpb24uCgoK
-Pj4gV2Ugd291bGQgc3RpbGwgdXNlIGZlYXR1cmUgYml0cyB0byBlbmFibGUgYW5kIGRpc2FibGUg
-c21hbGxlciBjaGFuZ2VzCj4+IGxpa2UgQVRIMTBLX0ZXX0ZFQVRVUkVfSEFTX1dNSV9NR01UX1RY
-IGRvZXMuIEJ1dCBmb3IgYmlnZ2VyIFdNSSBjaGFuZ2VzCj4+IHdlIHdvdWxkIGNoYW5nZSB0aGUg
-V01JIHZlcnNpb24sIGZvciBleGFtcGxlIGlmIHdlIGhhdmUgYSBuZXcgZmlybXdhcmUKPj4gYnJh
-bmNoIHdpdGggc2lnbmlmaWNhbnQgY2hhbmdlcyBvciBzaW1pbGFyLgo+Pgo+PiBBbmQgZm9yIGJh
-Y2t3YXJkcyBjb21wdGFiaWxpdHkgd2UgbmVlZCB0byBkbyBzbyB0aGF0Cj4+IEFUSDEwS19GV19G
-RUFUVVJFX1dNSV8xMFggc2V0cyBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMSBhbmQKPj4gQVRI
-MTBLX0ZXX0ZFQVRVUkVfV01JXzEwXzIgc2V0cyBBVEgxMEtfRldfV01JX1ZFUlNJT05fMTBfMi4K
-Pgo+IEkgd2FzIGFibGUgdG8gZG8gYWxsIG9mIG15IGNoYW5nZXMgdy9vdXQgbmVlZGluZyBuZXcg
-YSBuZXcgV01JIHZlcnNpb24sCj4gYW5kIEkgdGhpbmsgdGhhdCBpcyB0aGUgcmlnaHQgYXBwcm9h
-Y2guICBJIGRvIG5vdCBsaWtlIGxhcmdlIGFtb3VudHMgb2YKPiBkdXBsaWNhdGVkIGNvZGUgYW5k
-IHRhYmxlIGxvb2t1cHMsIHdoaWNoIGlzIHdoYXQgbmV3IFdNSSB2ZXJzaW9ucyBhcHBlYXIKPiB0
-byBpbXBseS4KCkl0J3MgYWN0dWFsbHkgcmVhbGx5IHNpbXBsZSB0byB1cGRhdGUgV01JIGluIGFu
-IEFCSS1zYWZlIHdheS4KVW5mb3J0dW5hdGVseSBvZmZpY2lhbCBmaXJtd2FyZSB1cGRhdGVzIGJy
-ZWFrIGl0IGZhaXJseSBvZnRlbiBhbmQgd2UKaGF2ZSB0byBkZWFsIHdpdGggdGhhdC4gQWFhbmQg
-dGhlcmUncyBnb2luZyB0byBiZSBhbm90aGVyIFdNSSBiYWNrZW5kCnNvb24gbW9zdCBsaWtlbHku
-CgoKWy4uLl0KPiBJZiBRQ0EgZ29lcyB0byBtb3JlIG9mIGEgcm9sbGluZyByZWxlYXNlIGZvciBm
-aXJtd2FyZSwgbGlrZSBJIGRvIGZvciBDVAo+IGZpcm13YXJlLCB0aGVuIHdlIG1heSB3YW50IHRv
-IGFkZCBJRXMgYSBiaXQgbW9yZSBvZnRlbiwgdG8gbm90aWZ5IHRoaW5ncyBsaWtlCj4gImNhbi1z
-dXBwb3J0LWZlYXR1cmUtZm9vIi4gIDEwLjIgdi9zIDEwLjEgY2FuIHN0aWxsIGRldGVybWluZSB0
-aGUKPiBvdmVyLWFsbCBXTUkgYXBpLCBwZXJoYXBzLCBidXQgYXQgc3BlY2lmaWMgcG9pbnRzIHdl
-IGNhbiB0YWtlIGFkdmFudGFnZSBvZgo+IHNwZWNpZmljIGZpcm13YXJlIGZlYXR1cmVzIGJhc2Vk
-IG9uIElFIGZsYWcuCgpUaGlzIGlzIHdoYXQgV01JIGJpdG1hcCBzZXJ2aWNlIGlzIGFjdHVhbGx5
-IGZvci4gYXRoMTBrIGlzIGlnbm9yaW5nCnRoaXMgbm93IGFuZCBleHBvc2VzIGl0IHZpYSBkZWJ1
-Z2ZzIG9ubHkuIEl0J3MgcG9zc2libGUgdG8sIGUuZy4gcGljawoibWF4IG51bSBvZiBzdGF0aW9u
-cyIgY29uZmlndXJhdGlvbiB2YWx1ZXMgYmFzZWQgb24gdGhlICJpcmFtIHRpZHMiCmJlaW5nIHNl
-dCBvciBub3QuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+The fw_crash_data was allocated too late. Upon
+early firmware crash, before registering to
+mac80211, it was possible to crash the whole
+system:
+
+ ath10k_pci 0000:00:05.0: device has crashed during init
+ BUG: unable to handle kernel NULL pointer dereference at           (null)
+ IP: [<ffffffffa0058005>] ath10k_debug_get_new_fw_crash_data+0x15/0x30 [ath10k_core]
+ PGD 0
+ Oops: 0002 [#1] SMP
+ Modules linked in: ath10k_pci(O) ath10k_core(O) ath [last unloaded: ath]
+ CPU: 3 PID: 29 Comm: kworker/u8:1 Tainted: G           O   3.17.0-rc2-wl-ath+ #447
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+ Workqueue: ath10k_wq ath10k_core_register_work [ath10k_core]
+ task: ffff88001eb01ad0 ti: ffff88001eb60000 task.ti: ffff88001eb60000
+ RIP: 0010:[<ffffffffa0058005>]  [<ffffffffa0058005>] ath10k_debug_get_new_fw_crash_data+0x15/0x30 [ath10k_core]
+ RSP: 0018:ffff88001eb63ce8  EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: ffffc90001a09030 RDI: 0000000000000001
+ RBP: ffff88001eb63cf0 R08: 0000000000000000 R09: ffff8800000bb200
+ R10: 00000000000001e2 R11: ffff88001eb638de R12: ffff88001d7459a0
+ R13: ffff88001d746ab0 R14: 00000000fffe14d4 R15: ffff88001d747c60
+ FS:  0000000000000000(0000) GS:ffff88001fd80000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+ CR2: 0000000000000000 CR3: 000000001df34000 CR4: 00000000000006e0
+ Stack:
+  ffff88001d7459a0 ffff88001eb63d58 ffffffffa0083bbe ffff880000000010
+  ffff88001eb63d68 ffff88001eb63d18 0000000000000002 0000000000059010
+  ffffffffa0086fef 00000000deadbeef ffff88001d747a28 ffff88001d7459a0
+ Call Trace:
+  [<ffffffffa0083bbe>] ath10k_pci_fw_crashed_dump+0x2e/0xd0 [ath10k_pci]
+  [<ffffffffa0085410>] __ath10k_pci_hif_power_up+0x5f0/0x700 [ath10k_pci]
+  [<ffffffffa0085550>] ath10k_pci_hif_power_up+0x30/0xe0 [ath10k_pci]
+  [<ffffffffa005bc7b>] ath10k_core_register_work+0x2b/0x520 [ath10k_core]
+  [<ffffffff810689cc>] process_one_work+0x18c/0x3f0
+  [<ffffffff81069011>] worker_thread+0x121/0x4a0
+  [<ffffffff81068ef0>] ? rescuer_thread+0x2c0/0x2c0
+  [<ffffffff8106daf2>] kthread+0xd2/0xf0
+  [<ffffffff8106da20>] ? kthread_create_on_node+0x170/0x170
+  [<ffffffff81857cfc>] ret_from_fork+0x7c/0xb0
+  [<ffffffff8106da20>] ? kthread_create_on_node+0x170/0x170
+ Code: 8b 40 38 48 c7 80 00 01 00 00 00 00 00 00 5b 5d c3 0f 1f 44 00 00 0f 1f 44 00 00 55 48 89 e5 53 48 8b 9f 90 1d 00 00 48 8d 7b 01 <c6> 03 01 e8 e3 ec 2b e1 48 8d 7b 18 e8 6a 4f 05 e1 48 89 d8 5b
+ RIP  [<ffffffffa0058005>] ath10k_debug_get_new_fw_crash_data+0x15/0x30 [ath10k_core]
+  RSP <ffff88001eb63ce8>
+ CR2: 0000000000000000
+ ---[ end trace 5d0ed15b050bcc1f ]---
+ Kernel panic - not syncing: Fatal exception in interrupt
+ Kernel Offset: 0x0 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffff9fffffff)
+ ---[ end Kernel panic - not syncing: Fatal exception in interrupt
+
+To prevent that split debug functions and allocate
+fw_crash_data earlier.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c  | 18 +++++++++++++----
+ drivers/net/wireless/ath/ath10k/debug.c | 34 ++++++++++++++++-----------------
+ drivers/net/wireless/ath/ath10k/debug.h | 11 +++++++++++
+ 3 files changed, 41 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 651a6da..eadb225 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -977,7 +977,7 @@ static void ath10k_core_register_work(struct work_struct *work)
+ 		goto err_release_fw;
+ 	}
+ 
+-	status = ath10k_debug_create(ar);
++	status = ath10k_debug_register(ar);
+ 	if (status) {
+ 		ath10k_err(ar, "unable to initialize debugfs\n");
+ 		goto err_unregister_mac;
+@@ -1043,7 +1043,7 @@ void ath10k_core_unregister(struct ath10k *ar)
+ 
+ 	ath10k_core_free_firmware_files(ar);
+ 
+-	ath10k_debug_destroy(ar);
++	ath10k_debug_unregister(ar);
+ }
+ EXPORT_SYMBOL(ath10k_core_unregister);
+ 
+@@ -1051,6 +1051,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 				  const struct ath10k_hif_ops *hif_ops)
+ {
+ 	struct ath10k *ar;
++	int ret;
+ 
+ 	ar = ath10k_mac_create(priv_size);
+ 	if (!ar)
+@@ -1076,7 +1077,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 
+ 	ar->workqueue = create_singlethread_workqueue("ath10k_wq");
+ 	if (!ar->workqueue)
+-		goto err_wq;
++		goto err_free_mac;
+ 
+ 	mutex_init(&ar->conf_mutex);
+ 	spin_lock_init(&ar->data_lock);
+@@ -1094,10 +1095,18 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 	INIT_WORK(&ar->register_work, ath10k_core_register_work);
+ 	INIT_WORK(&ar->restart_work, ath10k_core_restart);
+ 
++	ret = ath10k_debug_create(ar);
++	if (ret)
++		goto err_free_wq;
++
+ 	return ar;
+ 
+-err_wq:
++err_free_wq:
++	destroy_workqueue(ar->workqueue);
++
++err_free_mac:
+ 	ath10k_mac_destroy(ar);
++
+ 	return NULL;
+ }
+ EXPORT_SYMBOL(ath10k_core_create);
+@@ -1107,6 +1116,7 @@ void ath10k_core_destroy(struct ath10k *ar)
+ 	flush_workqueue(ar->workqueue);
+ 	destroy_workqueue(ar->workqueue);
+ 
++	ath10k_debug_destroy(ar);
+ 	ath10k_mac_destroy(ar);
+ }
+ EXPORT_SYMBOL(ath10k_core_destroy);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index d922ef4..966784a 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1132,20 +1132,25 @@ static const struct file_operations fops_dfs_stats = {
+ 
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+-	int ret;
+-
+ 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+-	if (!ar->debug.fw_crash_data) {
+-		ret = -ENOMEM;
+-		goto err;
+-	}
++	if (!ar->debug.fw_crash_data)
++		return -ENOMEM;
+ 
++	return 0;
++}
++
++void ath10k_debug_destroy(struct ath10k *ar)
++{
++	vfree(ar->debug.fw_crash_data);
++	ar->debug.fw_crash_data = NULL;
++}
++
++int ath10k_debug_register(struct ath10k *ar)
++{
+ 	ar->debug.debugfs_phy = debugfs_create_dir("ath10k",
+ 						   ar->hw->wiphy->debugfsdir);
+-	if (!ar->debug.debugfs_phy) {
+-		ret = -ENOMEM;
+-		goto err_free_fw_crash_data;
+-	}
++	if (!ar->debug.debugfs_phy)
++		return -ENOMEM;
+ 
+ 	INIT_DELAYED_WORK(&ar->debug.htt_stats_dwork,
+ 			  ath10k_debug_htt_stats_dwork);
+@@ -1192,17 +1197,10 @@ int ath10k_debug_create(struct ath10k *ar)
+ 	}
+ 
+ 	return 0;
+-
+-err_free_fw_crash_data:
+-	vfree(ar->debug.fw_crash_data);
+-
+-err:
+-	return ret;
+ }
+ 
+-void ath10k_debug_destroy(struct ath10k *ar)
++void ath10k_debug_unregister(struct ath10k *ar)
+ {
+-	vfree(ar->debug.fw_crash_data);
+ 	cancel_delayed_work_sync(&ar->debug.htt_stats_dwork);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 5674653..71c8084 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -49,6 +49,8 @@ int ath10k_debug_start(struct ath10k *ar);
+ void ath10k_debug_stop(struct ath10k *ar);
+ int ath10k_debug_create(struct ath10k *ar);
+ void ath10k_debug_destroy(struct ath10k *ar);
++int ath10k_debug_register(struct ath10k *ar);
++void ath10k_debug_unregister(struct ath10k *ar);
+ void ath10k_debug_read_service_map(struct ath10k *ar,
+ 				   void *service_map,
+ 				   size_t map_size);
+@@ -80,6 +82,15 @@ static inline void ath10k_debug_destroy(struct ath10k *ar)
+ {
+ }
+ 
++static inline int ath10k_debug_register(struct ath10k *ar)
++{
++	return 0;
++}
++
++static inline void ath10k_debug_unregister(struct ath10k *ar)
++{
++}
++
+ static inline void ath10k_debug_read_service_map(struct ath10k *ar,
+ 						 void *service_map,
+ 						 size_t map_size)
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
