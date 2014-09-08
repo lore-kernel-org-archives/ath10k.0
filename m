@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQ0ZA-00072R-Ea
- for ath10k@lists.infradead.org; Fri, 05 Sep 2014 20:57:09 +0000
-Received: by mail-lb0-f174.google.com with SMTP id n15so4532857lbi.5
- for <ath10k@lists.infradead.org>; Fri, 05 Sep 2014 13:56:45 -0700 (PDT)
+ id 1XQsS7-00040H-CO
+ for ath10k@lists.infradead.org; Mon, 08 Sep 2014 06:29:28 +0000
+Received: by mail-wi0-f173.google.com with SMTP id cc10so2023996wib.0
+ for <ath10k@lists.infradead.org>; Sun, 07 Sep 2014 23:28:58 -0700 (PDT)
 MIME-Version: 1.0
-Date: Fri, 5 Sep 2014 13:56:45 -0700
-Message-ID: <CABnBrYV4Lh7EF9xaEK6zkPk0HhU=iP283WhH+wA9=i7XfHroGg@mail.gmail.com>
-Subject: Firmware crash w/ 10.2 diagnosis?
-From: Denton Gentry <denton.gentry@gmail.com>
+In-Reply-To: <CABnBrYV4Lh7EF9xaEK6zkPk0HhU=iP283WhH+wA9=i7XfHroGg@mail.gmail.com>
+References: <CABnBrYV4Lh7EF9xaEK6zkPk0HhU=iP283WhH+wA9=i7XfHroGg@mail.gmail.com>
+Date: Mon, 8 Sep 2014 08:28:58 +0200
+Message-ID: <CA+BoTQ=tDMX4TKwmGcML4n-r-LPV3aici=X4Ms4rACoBhq2cKA@mail.gmail.com>
+Subject: Re: Firmware crash w/ 10.2 diagnosis?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +20,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Denton Gentry <denton.gentry@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Can anyone tell me what this firmware crash means?
-I don't have steps to reproduce it, it seems to happen randomly. The
-clients are mostly idle.
-
-[Fri Sep  5 11:37:08 2014] ath10k: firmware crashed!
-[Fri Sep  5 11:37:08 2014] ath10k: hardware name qca988x hw2.0 version
-0x4100016c
-[Fri Sep  5 11:37:08 2014] ath10k: firmware version: 10.2-00082-4-2
-[Fri Sep  5 11:37:08 2014] ath10k: target register Dump Location: 0x0040AA34
-[Fri Sep  5 11:37:08 2014] ath10k: target Register Dump
-[Fri Sep  5 11:37:08 2014] ath10k: [00]: 0x4100016C 0x00000000
-0x00949FF9 0x803044BE
-[Fri Sep  5 11:37:08 2014] ath10k: [04]: 0x00949FF9 0x00060730
-0x00000015 0x00000002
-[Fri Sep  5 11:37:08 2014] ath10k: [08]: 0x00425BD0 0x803044BE
-0x00000000 0x00000000
-[Fri Sep  5 11:37:08 2014] ath10k: [12]: 0x00000009 0xFFFFFFFF
-0x00958360 0x0095836B
-[Fri Sep  5 11:37:08 2014] ath10k: [16]: 0x00958080 0x009BD000
-0x00000000 0x00000000
-[Fri Sep  5 11:37:08 2014] ath10k: [20]: 0x40949FF9 0x0040AB44
-0x00000000 0x0043AC74
-[Fri Sep  5 11:37:08 2014] ath10k: [24]: 0x8099519C 0x0040ABA4
-0x00000F40 0xC0949FF9
-[Fri Sep  5 11:37:08 2014] ath10k: [28]: 0x8099861D 0x0040ABC4
-0x00424B2C 0x00439E64
-[Fri Sep  5 11:37:08 2014] ath10k: [32]: 0x80998802 0x0040AD14
-0x00000000 0x0042DD18
-[Fri Sep  5 11:37:08 2014] ath10k: [36]: 0x80998704 0x0040AD44
-0x0042DD18 0x00000002
-[Fri Sep  5 11:37:08 2014] ath10k: [40]: 0x80998830 0x0040AD74
-0x00439EC4 0x0042DD18
-[Fri Sep  5 11:37:08 2014] ath10k: [44]: 0x809970B2 0x0040AD94
-0x00439EC4 0x00000002
-[Fri Sep  5 11:37:08 2014] ath10k: [48]: 0x80998EF5 0x0040ADB4
-0x0041FA54 0x00425760
-[Fri Sep  5 11:37:08 2014] ath10k: [52]: 0x809BCF0D 0x0040AEE4
-0x004245FC 0x00000002
-[Fri Sep  5 11:37:08 2014] ath10k: [56]: 0x80940F18 0x0040AF14
-0x00000005 0x004039E4
-[Fri Sep  5 11:37:13 2014] ath10k: failed to synchronise monitor vdev 1: -110
-[Fri Sep  5 11:37:13 2014] ath10k: failed to stop monitor vdev: -110
-[Fri Sep  5 11:37:16 2014] ath10k: failed to request wmi monitor vdev
-1 removal: -11
-[Fri Sep  5 11:37:16 2014] ath10k: failed to delete monitor vdev: -11
-[Fri Sep  5 11:37:19 2014] ath10k_wmi_vdev_start_restart: dtim_period=0
-[Fri Sep  5 11:37:19 2014] ath10k: peer 88:dc:96:XX:XX:XX on vdev 0
-already exists
-[Fri Sep  5 11:37:19 2014] ath10k: failed to add peer
-88:dc:96:XX:XX:XX for vdev 0 when changing bssid: -22
-[Fri Sep  5 11:37:19 2014] ath10k_wmi_vdev_start_restart: dtim_period=0
-[Fri Sep  5 11:37:20 2014] ath10k: device successfully recovered
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBTZXB0ZW1iZXIgMjAxNCAyMjo1NiwgRGVudG9uIEdlbnRyeSA8ZGVudG9uLmdlbnRyeUBn
+bWFpbC5jb20+IHdyb3RlOgo+IENhbiBhbnlvbmUgdGVsbCBtZSB3aGF0IHRoaXMgZmlybXdhcmUg
+Y3Jhc2ggbWVhbnM/Cj4gSSBkb24ndCBoYXZlIHN0ZXBzIHRvIHJlcHJvZHVjZSBpdCwgaXQgc2Vl
+bXMgdG8gaGFwcGVuIHJhbmRvbWx5LiBUaGUKPiBjbGllbnRzIGFyZSBtb3N0bHkgaWRsZS4KPgo+
+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogZmlybXdhcmUgY3Jhc2hlZCEKPiBb
+RnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IGhhcmR3YXJlIG5hbWUgcWNhOTg4eCBo
+dzIuMCB2ZXJzaW9uCj4gMHg0MTAwMDE2Ywo+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0
+aDEwazogZmlybXdhcmUgdmVyc2lvbjogMTAuMi0wMDA4Mi00LTIKPiBbRnJpIFNlcCAgNSAxMToz
+NzowOCAyMDE0XSBhdGgxMGs6IHRhcmdldCByZWdpc3RlciBEdW1wIExvY2F0aW9uOiAweDAwNDBB
+QTM0Cj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiB0YXJnZXQgUmVnaXN0ZXIg
+RHVtcAo+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzAwXTogMHg0MTAwMDE2
+QyAweDAwMDAwMDAwCj4gMHgwMDk0OUZGOSAweDgwMzA0NEJFCj4gW0ZyaSBTZXAgIDUgMTE6Mzc6
+MDggMjAxNF0gYXRoMTBrOiBbMDRdOiAweDAwOTQ5RkY5IDB4MDAwNjA3MzAKPiAweDAwMDAwMDE1
+IDB4MDAwMDAwMDIKPiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFswOF06IDB4
+MDA0MjVCRDAgMHg4MDMwNDRCRQo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFtGcmkgU2VwICA1
+IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzEyXTogMHgwMDAwMDAwOSAweEZGRkZGRkZGCj4gMHgw
+MDk1ODM2MCAweDAwOTU4MzZCCj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiBb
+MTZdOiAweDAwOTU4MDgwIDB4MDA5QkQwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbRnJp
+IFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFsyMF06IDB4NDA5NDlGRjkgMHgwMDQwQUI0
+NAo+IDB4MDAwMDAwMDAgMHgwMDQzQUM3NAo+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0
+aDEwazogWzI0XTogMHg4MDk5NTE5QyAweDAwNDBBQkE0Cj4gMHgwMDAwMEY0MCAweEMwOTQ5RkY5
+Cj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiBbMjhdOiAweDgwOTk4NjFEIDB4
+MDA0MEFCQzQKPiAweDAwNDI0QjJDIDB4MDA0MzlFNjQKPiBbRnJpIFNlcCAgNSAxMTozNzowOCAy
+MDE0XSBhdGgxMGs6IFszMl06IDB4ODA5OTg4MDIgMHgwMDQwQUQxNAo+IDB4MDAwMDAwMDAgMHgw
+MDQyREQxOAo+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzM2XTogMHg4MDk5
+ODcwNCAweDAwNDBBRDQ0Cj4gMHgwMDQyREQxOCAweDAwMDAwMDAyCj4gW0ZyaSBTZXAgIDUgMTE6
+Mzc6MDggMjAxNF0gYXRoMTBrOiBbNDBdOiAweDgwOTk4ODMwIDB4MDA0MEFENzQKPiAweDAwNDM5
+RUM0IDB4MDA0MkREMTgKPiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFs0NF06
+IDB4ODA5OTcwQjIgMHgwMDQwQUQ5NAo+IDB4MDA0MzlFQzQgMHgwMDAwMDAwMgo+IFtGcmkgU2Vw
+ICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzQ4XTogMHg4MDk5OEVGNSAweDAwNDBBREI0Cj4g
+MHgwMDQxRkE1NCAweDAwNDI1NzYwCj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBr
+OiBbNTJdOiAweDgwOUJDRjBEIDB4MDA0MEFFRTQKPiAweDAwNDI0NUZDIDB4MDAwMDAwMDIKPiBb
+RnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFs1Nl06IDB4ODA5NDBGMTggMHgwMDQw
+QUYxNAo+IDB4MDAwMDAwMDUgMHgwMDQwMzlFNAo+IFtGcmkgU2VwICA1IDExOjM3OjEzIDIwMTRd
+IGF0aDEwazogZmFpbGVkIHRvIHN5bmNocm9uaXNlIG1vbml0b3IgdmRldiAxOiAtMTEwCj4gW0Zy
+aSBTZXAgIDUgMTE6Mzc6MTMgMjAxNF0gYXRoMTBrOiBmYWlsZWQgdG8gc3RvcCBtb25pdG9yIHZk
+ZXY6IC0xMTAKPiBbRnJpIFNlcCAgNSAxMTozNzoxNiAyMDE0XSBhdGgxMGs6IGZhaWxlZCB0byBy
+ZXF1ZXN0IHdtaSBtb25pdG9yIHZkZXYKPiAxIHJlbW92YWw6IC0xMQo+IFtGcmkgU2VwICA1IDEx
+OjM3OjE2IDIwMTRdIGF0aDEwazogZmFpbGVkIHRvIGRlbGV0ZSBtb25pdG9yIHZkZXY6IC0xMQo+
+IFtGcmkgU2VwICA1IDExOjM3OjE5IDIwMTRdIGF0aDEwa193bWlfdmRldl9zdGFydF9yZXN0YXJ0
+OiBkdGltX3BlcmlvZD0wCj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MTkgMjAxNF0gYXRoMTBrOiBwZWVy
+IDg4OmRjOjk2OlhYOlhYOlhYIG9uIHZkZXYgMAo+IGFscmVhZHkgZXhpc3RzCj4gW0ZyaSBTZXAg
+IDUgMTE6Mzc6MTkgMjAxNF0gYXRoMTBrOiBmYWlsZWQgdG8gYWRkIHBlZXIKPiA4ODpkYzo5NjpY
+WDpYWDpYWCBmb3IgdmRldiAwIHdoZW4gY2hhbmdpbmcgYnNzaWQ6IC0yMgo+IFtGcmkgU2VwICA1
+IDExOjM3OjE5IDIwMTRdIGF0aDEwa193bWlfdmRldl9zdGFydF9yZXN0YXJ0OiBkdGltX3Blcmlv
+ZD0wCgpIbW0sIHlvdSBzZWVtIHRvIGJlIHVzaW5nIHNvbWUgY3VzdG9tIHBhdGNoZXMgb24gYXRo
+MTBrLiBJdCBzZWVtcyB5b3UKd2VyZSBydW5uaW5nIGEgc3RhdGlvbiBpbnRlcmZhY2UgYW5kIGl0
+IHJvYW1lZCBidXQgZm9yIHNvbWUgcmVhc29uIGl0CnRyaWVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2
+IGFzIHdlbGw/CgpDYW4geW91IHNoYXJlIG1vcmUgZGV0YWlscyBvbiB3aGF0IHlvdXIgc2V0dXAg
+aXM/IFdoYXQgdGhlIGN1c3RvbSBwYXRjaGVzIGFyZT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
