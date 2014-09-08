@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XQyH6-0000mZ-KE
- for ath10k@lists.infradead.org; Mon, 08 Sep 2014 12:42:29 +0000
-Received: by mail-lb0-f180.google.com with SMTP id b12so11549lbj.11
- for <ath10k@lists.infradead.org>; Mon, 08 Sep 2014 05:42:02 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XR1Eg-0005If-Vv
+ for ath10k@lists.infradead.org; Mon, 08 Sep 2014 15:52:11 +0000
+Received: from [172.20.7.90] (wsip-24-234-46-157.lv.lv.cox.net [24.234.46.157])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id CDFDF40BE43
+ for <ath10k@lists.infradead.org>; Mon,  8 Sep 2014 08:51:46 -0700 (PDT)
+Message-ID: <540DD093.5070702@candelatech.com>
+Date: Mon, 08 Sep 2014 08:51:47 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=tDMX4TKwmGcML4n-r-LPV3aici=X4Ms4rACoBhq2cKA@mail.gmail.com>
-References: <CABnBrYV4Lh7EF9xaEK6zkPk0HhU=iP283WhH+wA9=i7XfHroGg@mail.gmail.com>
- <CA+BoTQ=tDMX4TKwmGcML4n-r-LPV3aici=X4Ms4rACoBhq2cKA@mail.gmail.com>
-Date: Mon, 8 Sep 2014 05:42:02 -0700
-Message-ID: <CABnBrYVb+BN4BFxrj82dj0KypxEy6GGYXtOitVW7twtzTeCArA@mail.gmail.com>
-Subject: Re: Firmware crash w/ 10.2 diagnosis?
-From: Denton Gentry <denton.gentry@gmail.com>
+Subject: RTS threshold ignored in ath10k?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,91 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-VGhlIGF0aDEwayBpcyBvcGVyYXRpbmcgaW4gQVAgbW9kZS4KCkl0cyB1c2luZyBhIGJhc2UgYXRo
-MTBrIGRyaXZlciBmcm9tIGEgZmV3IG1vbnRocyBhZ286CgogICAgICAgZ2l0IGZldGNoIGdpdDov
-L2dpdGh1Yi5jb20va3ZhbG8vYXRoLmdpdCBhdGgtbmV4dAogICAgICAgZ2l0IGNoZWNrb3V0IHYz
-LjE1LXJjMS0yMzctZ2Q5YmM0YjkKCldlJ3ZlIHB1bGxlZCBpbiBzZWxlY3RlZCBjaGFuZ2VzIHNp
-bmNlLiBOb3RhYmx5OgoKd2FybSByZXNldApodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBl
-cm1haWwvYXRoMTBrLzIwMTQtTWF5LzAwMTk5Mi5odG1sCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNC1NYXkvMDAxOTkzLmh0bWwKClJYIFJlb3JkZXJpbmcK
-aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE0LUp1bHkvMDAy
-NjM3Lmh0bWwKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE0
-LUp1bHkvMDAyNjIxLmh0bWwKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0
-aDEway8yMDE0LUp1bHkvMDAyNzQ2Lmh0bWwKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlw
-ZXJtYWlsL2F0aDEway8yMDE0LUp1bHkvMDAyNzg0Lmh0bWwKCkZpcm13YXJlIDEwLjIKaHR0cHM6
-Ly9naXRodWIuY29tL2t2YWxvL2F0aC9jb21taXQvMjRjODhmNzgwN2ZiN2M3MjM2OTA0NzRkMGE1
-ZDM0NDE0NjgxODVkOQoKTW9yZSByZWNlbnRseSwgd2UgcHVsbGVkIGluIFRYIGNyZWRpdCBhbmQg
-Zmx1c2hpbmcgY2hhbmdlcwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRo
-MTBrLzIwMTQtQXByaWwvMDAxNzY1Lmh0bWwKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlw
-ZXJtYWlsL2F0aDEway8yMDE0LUFwcmlsLzAwMTcwOS5odG1sCmh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNC1BcHJpbC8wMDE3MDYuaHRtbApodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTQtQXByaWwvMDAxNzA4Lmh0bWwK
-CgpUaGUgZGF0YSBmcm9tIHRoZSBmaXJtd2FyZSBzaG93cyBzb21ldGhpbmcgYWJvdXQgYSBtb25p
-dG9yIHZkZXYgYmVpbmcKcmVtb3ZlZD8gaG9zdGFwZCBkb2VzIGNyZWF0ZSBhIG1vbml0b3IgaW50
-ZXJmYWNlLCB0aG91Z2ggSSBkb24ndCBzZWUKYW4gaW5kaWNhdGlvbiB0aGF0IGl0IHdhcyBiZWlu
-ZyByZW1vdmVkIGF0IHRoZSB0aW1lIG9mIHRoZSBjcmFzaC4KaG9zdGFwZCBoYWQgZXhpdGVkIGFu
-ZCByZXN0YXJ0ZWQgd2VsbCBiZWZvcmUgdGhvdWdoLCBpcyBpdCBwb3NzaWJsZQp0aGF0IHJlbW92
-YWwgb2YgYSBtb25pdG9yIGludGVyZmFjZSBzb21lIHRpbWUgYWdvIG1pZ2h0IGJlCmNvbnRyaWJ1
-dGluZz8KCk9uIFN1biwgU2VwIDcsIDIwMTQgYXQgMTE6MjggUE0sIE1pY2hhbCBLYXppb3IgPG1p
-Y2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPiBPbiA1IFNlcHRlbWJlciAyMDE0IDIyOjU2
-LCBEZW50b24gR2VudHJ5IDxkZW50b24uZ2VudHJ5QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IENhbiBh
-bnlvbmUgdGVsbCBtZSB3aGF0IHRoaXMgZmlybXdhcmUgY3Jhc2ggbWVhbnM/Cj4+IEkgZG9uJ3Qg
-aGF2ZSBzdGVwcyB0byByZXByb2R1Y2UgaXQsIGl0IHNlZW1zIHRvIGhhcHBlbiByYW5kb21seS4g
-VGhlCj4+IGNsaWVudHMgYXJlIG1vc3RseSBpZGxlLgo+Pgo+PiBbRnJpIFNlcCAgNSAxMTozNzow
-OCAyMDE0XSBhdGgxMGs6IGZpcm13YXJlIGNyYXNoZWQhCj4+IFtGcmkgU2VwICA1IDExOjM3OjA4
-IDIwMTRdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3Mi4wIHZlcnNpb24KPj4gMHg0
-MTAwMDE2Ywo+PiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IGZpcm13YXJlIHZl
-cnNpb246IDEwLjItMDAwODItNC0yCj4+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEw
-azogdGFyZ2V0IHJlZ2lzdGVyIER1bXAgTG9jYXRpb246IDB4MDA0MEFBMzQKPj4gW0ZyaSBTZXAg
-IDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiB0YXJnZXQgUmVnaXN0ZXIgRHVtcAo+PiBbRnJpIFNl
-cCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFswMF06IDB4NDEwMDAxNkMgMHgwMDAwMDAwMAo+
-PiAweDAwOTQ5RkY5IDB4ODAzMDQ0QkUKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRo
-MTBrOiBbMDRdOiAweDAwOTQ5RkY5IDB4MDAwNjA3MzAKPj4gMHgwMDAwMDAxNSAweDAwMDAwMDAy
-Cj4+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzA4XTogMHgwMDQyNUJEMCAw
-eDgwMzA0NEJFCj4+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+PiBbRnJpIFNlcCAgNSAxMTozNzow
-OCAyMDE0XSBhdGgxMGs6IFsxMl06IDB4MDAwMDAwMDkgMHhGRkZGRkZGRgo+PiAweDAwOTU4MzYw
-IDB4MDA5NTgzNkIKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiBbMTZdOiAw
-eDAwOTU4MDgwIDB4MDA5QkQwMDAKPj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+IFtGcmkgU2Vw
-ICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzIwXTogMHg0MDk0OUZGOSAweDAwNDBBQjQ0Cj4+
-IDB4MDAwMDAwMDAgMHgwMDQzQUM3NAo+PiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgx
-MGs6IFsyNF06IDB4ODA5OTUxOUMgMHgwMDQwQUJBNAo+PiAweDAwMDAwRjQwIDB4QzA5NDlGRjkK
-Pj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiBbMjhdOiAweDgwOTk4NjFEIDB4
-MDA0MEFCQzQKPj4gMHgwMDQyNEIyQyAweDAwNDM5RTY0Cj4+IFtGcmkgU2VwICA1IDExOjM3OjA4
-IDIwMTRdIGF0aDEwazogWzMyXTogMHg4MDk5ODgwMiAweDAwNDBBRDE0Cj4+IDB4MDAwMDAwMDAg
-MHgwMDQyREQxOAo+PiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFszNl06IDB4
-ODA5OTg3MDQgMHgwMDQwQUQ0NAo+PiAweDAwNDJERDE4IDB4MDAwMDAwMDIKPj4gW0ZyaSBTZXAg
-IDUgMTE6Mzc6MDggMjAxNF0gYXRoMTBrOiBbNDBdOiAweDgwOTk4ODMwIDB4MDA0MEFENzQKPj4g
-MHgwMDQzOUVDNCAweDAwNDJERDE4Cj4+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEw
-azogWzQ0XTogMHg4MDk5NzBCMiAweDAwNDBBRDk0Cj4+IDB4MDA0MzlFQzQgMHgwMDAwMDAwMgo+
-PiBbRnJpIFNlcCAgNSAxMTozNzowOCAyMDE0XSBhdGgxMGs6IFs0OF06IDB4ODA5OThFRjUgMHgw
-MDQwQURCNAo+PiAweDAwNDFGQTU0IDB4MDA0MjU3NjAKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MDgg
-MjAxNF0gYXRoMTBrOiBbNTJdOiAweDgwOUJDRjBEIDB4MDA0MEFFRTQKPj4gMHgwMDQyNDVGQyAw
-eDAwMDAwMDAyCj4+IFtGcmkgU2VwICA1IDExOjM3OjA4IDIwMTRdIGF0aDEwazogWzU2XTogMHg4
-MDk0MEYxOCAweDAwNDBBRjE0Cj4+IDB4MDAwMDAwMDUgMHgwMDQwMzlFNAo+PiBbRnJpIFNlcCAg
-NSAxMTozNzoxMyAyMDE0XSBhdGgxMGs6IGZhaWxlZCB0byBzeW5jaHJvbmlzZSBtb25pdG9yIHZk
-ZXYgMTogLTExMAo+PiBbRnJpIFNlcCAgNSAxMTozNzoxMyAyMDE0XSBhdGgxMGs6IGZhaWxlZCB0
-byBzdG9wIG1vbml0b3IgdmRldjogLTExMAo+PiBbRnJpIFNlcCAgNSAxMTozNzoxNiAyMDE0XSBh
-dGgxMGs6IGZhaWxlZCB0byByZXF1ZXN0IHdtaSBtb25pdG9yIHZkZXYKPj4gMSByZW1vdmFsOiAt
-MTEKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MTYgMjAxNF0gYXRoMTBrOiBmYWlsZWQgdG8gZGVsZXRl
-IG1vbml0b3IgdmRldjogLTExCj4+IFtGcmkgU2VwICA1IDExOjM3OjE5IDIwMTRdIGF0aDEwa193
-bWlfdmRldl9zdGFydF9yZXN0YXJ0OiBkdGltX3BlcmlvZD0wCj4+IFtGcmkgU2VwICA1IDExOjM3
-OjE5IDIwMTRdIGF0aDEwazogcGVlciA4ODpkYzo5NjpYWDpYWDpYWCBvbiB2ZGV2IDAKPj4gYWxy
-ZWFkeSBleGlzdHMKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MTkgMjAxNF0gYXRoMTBrOiBmYWlsZWQg
-dG8gYWRkIHBlZXIKPj4gODg6ZGM6OTY6WFg6WFg6WFggZm9yIHZkZXYgMCB3aGVuIGNoYW5naW5n
-IGJzc2lkOiAtMjIKPj4gW0ZyaSBTZXAgIDUgMTE6Mzc6MTkgMjAxNF0gYXRoMTBrX3dtaV92ZGV2
-X3N0YXJ0X3Jlc3RhcnQ6IGR0aW1fcGVyaW9kPTAKPgo+IEhtbSwgeW91IHNlZW0gdG8gYmUgdXNp
-bmcgc29tZSBjdXN0b20gcGF0Y2hlcyBvbiBhdGgxMGsuIEl0IHNlZW1zIHlvdQo+IHdlcmUgcnVu
-bmluZyBhIHN0YXRpb24gaW50ZXJmYWNlIGFuZCBpdCByb2FtZWQgYnV0IGZvciBzb21lIHJlYXNv
-biBpdAo+IHRyaWVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2IGFzIHdlbGw/Cj4KPiBDYW4geW91IHNo
-YXJlIG1vcmUgZGV0YWlscyBvbiB3aGF0IHlvdXIgc2V0dXAgaXM/IFdoYXQgdGhlIGN1c3RvbSBw
-YXRjaGVzIGFyZT8KPgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+We did some tests using ath9k and ath10k.  It seems that ath10k
+completely ignores RTS threshold settings.
+
+I haven't had time to look into the code yet, but will try to
+do so next week.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
