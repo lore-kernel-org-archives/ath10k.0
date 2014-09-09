@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
+Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRRfe-0002U0-3d
- for ath10k@lists.infradead.org; Tue, 09 Sep 2014 20:05:48 +0000
-Received: by mail-lb0-f181.google.com with SMTP id z11so6029565lbi.40
- for <ath10k@lists.infradead.org>; Tue, 09 Sep 2014 13:05:21 -0700 (PDT)
+ id 1XRRyL-00015u-5A
+ for ath10k@lists.infradead.org; Tue, 09 Sep 2014 20:25:05 +0000
+From: "Shu, Nick" <Nick.Shu@spirent.com>
+Subject: How to set ath10k NIC to a specific wifi mode?
+Date: Tue, 9 Sep 2014 20:24:43 +0000
+Message-ID: <153F35912E69C446A72CF7D6417EBADE13AFF2AD@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnC0Px3gi6nK1MTjFMTr2cY0dTntCi+KBcvnEd31ELVZA@mail.gmail.com>
-References: <CABnBrYV4Lh7EF9xaEK6zkPk0HhU=iP283WhH+wA9=i7XfHroGg@mail.gmail.com>
- <CA+BoTQ=tDMX4TKwmGcML4n-r-LPV3aici=X4Ms4rACoBhq2cKA@mail.gmail.com>
- <CABnBrYVb+BN4BFxrj82dj0KypxEy6GGYXtOitVW7twtzTeCArA@mail.gmail.com>
- <87tx4h8096.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnC0Px3gi6nK1MTjFMTr2cY0dTntCi+KBcvnEd31ELVZA@mail.gmail.com>
-Date: Tue, 9 Sep 2014 13:05:21 -0700
-Message-ID: <CABnBrYV6MSw1LgcgbL4O4sgR0K_P-9jCMEhOvMDmPt8yw2UeXQ@mail.gmail.com>
-Subject: Re: Firmware crash w/ 10.2 diagnosis?
-From: Denton Gentry <denton.gentry@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +17,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SSdtIHVzaW5nIGJhY2twb3J0cywgYW5kIHRoZSBrZXJuZWwgdmVyc2lvbiBpcyAzLjIuCmhvc3Rh
-cGQgc2F5cyBpdCBpcyBpbmRlZWQgdXNpbmcgdGhlIGNvb2tlZCBtb25pdG9yOgoKICAgIG1vbml0
-b3IgbW9kZSBuZWVkZWQ6IDEgKHBvbGxfY21kPTEgZGF0YV90eF9zdGF0dXM9MCkKCkknbGwgbG9v
-ayBhdCB1cGRhdGluZyB0aGUga2VybmVsLCBpZiBub3QgdG8gMy4xNiB0aGVuIGF0IGxlYXN0IHRv
-CnNvbWV0aGluZyByZWNlbnQgZW5vdWdoIHRvIHN0b3AgdXNpbmcgdGhlIG1vbml0b3IgaW50ZXJm
-YWNlIGZyb20KaG9zdGFwZC4KCk9uIFR1ZSwgU2VwIDksIDIwMTQgYXQgNTo0OCBBTSwgTWljaGFs
-IEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+IE9uIDkgU2VwdGVtYmVy
-IDIwMTQgMTQ6MDgsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29tbS5jb20+IHdyb3RlOgo+
-PiBEZW50b24gR2VudHJ5IDxkZW50b24uZ2VudHJ5QGdtYWlsLmNvbT4gd3JpdGVzOgo+Pgo+Pj4g
-VGhlIGF0aDEwayBpcyBvcGVyYXRpbmcgaW4gQVAgbW9kZS4KPj4+Cj4+PiBJdHMgdXNpbmcgYSBi
-YXNlIGF0aDEwayBkcml2ZXIgZnJvbSBhIGZldyBtb250aHMgYWdvOgo+Pj4KPj4+ICAgICAgICBn
-aXQgZmV0Y2ggZ2l0Oi8vZ2l0aHViLmNvbS9rdmFsby9hdGguZ2l0IGF0aC1uZXh0Cj4+PiAgICAg
-ICAgZ2l0IGNoZWNrb3V0IHYzLjE1LXJjMS0yMzctZ2Q5YmM0YjkKPj4KPj4gV2hhdCBpcyB0aGUg
-a2VybmVsIHZlcnNpb24/IERvIHlvdSB1c2UgYmFja3BvcnRzPwo+Pgo+Pj4gVGhlIGRhdGEgZnJv
-bSB0aGUgZmlybXdhcmUgc2hvd3Mgc29tZXRoaW5nIGFib3V0IGEgbW9uaXRvciB2ZGV2IGJlaW5n
-Cj4+PiByZW1vdmVkPyBob3N0YXBkIGRvZXMgY3JlYXRlIGEgbW9uaXRvciBpbnRlcmZhY2UsIHRo
-b3VnaCBJIGRvbid0IHNlZQo+Pj4gYW4gaW5kaWNhdGlvbiB0aGF0IGl0IHdhcyBiZWluZyByZW1v
-dmVkIGF0IHRoZSB0aW1lIG9mIHRoZSBjcmFzaC4KPj4+IGhvc3RhcGQgaGFkIGV4aXRlZCBhbmQg
-cmVzdGFydGVkIHdlbGwgYmVmb3JlIHRob3VnaCwgaXMgaXQgcG9zc2libGUKPj4+IHRoYXQgcmVt
-b3ZhbCBvZiBhIG1vbml0b3IgaW50ZXJmYWNlIHNvbWUgdGltZSBhZ28gbWlnaHQgYmUKPj4+IGNv
-bnRyaWJ1dGluZz8KPj4KPj4gU28gYXJlIHlvdSBzdGlsbCB1c2luZyB0aGUgb2xkIGNvb2tlZCBt
-b25pdG9yIGludGVyZmFjZSBmb3IgbWFuYWdlbWVudAo+PiBmcmFtZXM/IEkgc3Ryb25nbHkgcmVj
-b21tZW5kIHN3aXRjaGluZyB0byB0aGUgbmV3IHdheSBvZiB0cmFuc21pdHRpbmcKPj4gYW5kIHJl
-Y2VpdmluZyBtYW5hZ2VtZW50IGZyYW1lcyB0aHJvdWdoIG5sODAyMTEgYXMgdGhlbiBob3N0YXBk
-IHdpbGwgbm90Cj4+IGEgY3JlYXRlIG1vbml0b3IgaW50ZXJmYWNlLiBUaGlzIGlzIHdoYXQgbW9z
-dCBwZW9wbGUgdXNlIGFuZCBpcyBtb3N0Cj4+IGV4dGVuc2l2ZWx5IHRlc3RlZC4KPgo+IEkgZG9u
-J3QgdGhpbmsgaGUncyB1c2luZyBjb29rZWQgbW9uaXRvci4gSW5zdGVhZCBoaXMgQVAgaW50ZXJm
-YWNlIHdhcwo+IGluIGEgYnJpZGdlIHdoaWNoIG1lYW5zIGl0IHdhcyBwcm9taXNjdW91cyB3aGlj
-aCBtZWFucyBhdGgxMGsgdXNlZAo+IG1vbml0b3IgdmRldi4gVGhhdCdzIHBlcmZlY3RseSBub3Jt
-YWwuCj4KPiBXYXJuaW5ncyBJIHdhcyBjb25jZXJuZWQgYWJvdXQgYXJlIGFjdHVhbGx5IGEgcmVz
-dWx0IG9mIHJlY292ZXJ5Cj4gcHJvY2VkdXJlIGl0c2VsZiBhbmQgZG8gbm90IHNlZW0gdG8gYmUg
-cmVsYXRlZCB0byB0aGUgY3Jhc2ggcm9vdAo+IGNhdXNlLgo+Cj4KPiBNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Hi, All:
+I have an ath10k PCIe NIC card that supports A/B/G/N/AC wifi modes.
+Can somebody tell me that is there any way I can set it to work on a specific mode like wifiN mode? By using "iw" or any other tool under Linux OS?
+Thanks!
+Nick Shu
+Spirent Communications e-mail confidentiality.
+------------------------------------------------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
+
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
+
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+
+Or if within the US,
+
+Spirent Communications,
+26750 Agoura Road, Calabasas, CA, 91302, USA.
+Tel No. 1-818-676- 2300
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
