@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRjDT-00036C-UD
- for ath10k@lists.infradead.org; Wed, 10 Sep 2014 14:49:52 +0000
+ id 1XRjkD-0007cQ-LU
+ for ath10k@lists.infradead.org; Wed, 10 Sep 2014 15:23:42 +0000
+Subject: [PATCH v4 0/2] ath10k: testmode support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 2/2] ath10k: add testmode
-References: <20140904135447.26750.52873.stgit@potku.adurom.net>
- <20140904135654.26750.69133.stgit@potku.adurom.net>
- <CA+BoTQmheuGLxicMCwVREkru5eh7FxV3T8qmsME4U5_2vi-iyA@mail.gmail.com>
-Date: Wed, 10 Sep 2014 17:49:04 +0300
-In-Reply-To: <CA+BoTQmheuGLxicMCwVREkru5eh7FxV3T8qmsME4U5_2vi-iyA@mail.gmail.com>
- (Michal Kazior's message of "Fri, 5 Sep 2014 09:27:57 +0200")
-Message-ID: <87egvj7cpr.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 10 Sep 2014 18:23:16 +0300
+Message-ID: <20140910152136.12610.18499.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,122 +20,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi,
 
-> (On 4 September 2014 15:56, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Add testmode interface for starting and using UTF firmware which is used to run
->> factory tests. This is implemented by adding new state ATH10K_STATE_UTF and user
->> space can enable this state with ATH10K_TM_CMD_UTF_START command. To go back to
->> normal mode user space can send ATH10K_TM_CMD_UTF_STOP.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> ---
-> [...]
->> +bool ath10k_tm_event_wmi(struct ath10k *ar, u32 cmd_id, struct sk_buff *skb)
->> +{
->> +       struct sk_buff *nl_skb;
->> +       bool consumed;
->> +       int ret;
->> +
->> +       ath10k_dbg(ar, ATH10K_DBG_TESTMODE,
->> +                  "testmode event wmi cmd_id %d skb %p skb->len %d\n",
->> +                  cmd_id, skb, skb->len);
->> +
->> +       ath10k_dbg_dump(ar, ATH10K_DBG_TESTMODE, NULL, "", skb->data, skb->len);
->> +
->> +       spin_lock_bh(&ar->data_lock);
->> +
->> +       if (!ar->testmode.utf_monitor) {
->> +               consumed = false;
->> +               goto out;
->> +       }
->> +
->> +       /* Only testmode.c should be handling events from utf firmware,
->> +        * otherwise all sort of problems will arise as mac80211 operations
->> +        * are not initialised. */
->
-> Comment style.
+latest version of my testmode patches. Getting closer, more or less cosmetic
+changes this time :)
 
-Argh, will I ever learn :) Fixed now.
+v4:
 
->> +static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
->> +{
->> +       char filename[100];
->> +       int ret;
->> +
->> +       ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode cmd utf start\n");
->> +
->> +       mutex_lock(&ar->conf_mutex);
->> +
->> +       if (ar->state == ATH10K_STATE_UTF) {
->> +               ret = -EALREADY;
->> +               goto err;
->> +       }
->> +
->> +       /* start utf only when the driver is not in use  */
->> +       if (ar->state != ATH10K_STATE_OFF) {
->> +               ret = -EBUSY;
->> +               goto err;
->> +       }
->> +
->> +       if (ar->testmode.utf != NULL)
->> +               /* utf image is already downloaded */
->> +               goto power_up;
->
-> I believe this shouldn't happen with the current code. We should
-> probably treat it with a if (WARN_ON(utf != NULL)) goto err;
+* fix comment style (Michal)
 
-Yeah, I'll add that.
+* add extra checks for at->testmode.utf (Michal)
 
->> +void ath10k_testmode_destroy(struct ath10k *ar)
->> +{
->> +       mutex_lock(&ar->conf_mutex);
->> +
->> +       release_firmware(ar->testmode.utf);
->> +       ar->testmode.utf = NULL;
->> +
->> +       if (ar->state != ATH10K_STATE_UTF) {
->> +               /* utf firmware is not running, nothing to do */
->> +               goto out;
->> +       }
->> +
->> +       ath10k_core_stop(ar);
->
-> Hmm, you don't call power_down here. This isn't a problem from a
-> practical point of view after my recent changes but hey.
->
-> How about we split out guts from ath10k_tm_cmd_utf_stop() to
-> __ath10k_tm_cmd_utf_stop() (which assumes conf_mutex is already held)
-> and call it here like this:
->
->  mutex_lock(conf_mutex);
->  if (ar->state==UTF)
->    __ath10k_tm_cmd_utf_stop(ar);
->  mutex_unlock(conf_mutex);
+* add __ath10k_tm_cmd_utf_stop() and call it from
+  ath10k_testmode_destroy() (Michal)
 
-Good idea, I'll do that.
+v3:
 
->> @@ -2488,6 +2490,17 @@ static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
->>
->>         trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
->>
->> +       consumed = ath10k_tm_event_wmi(ar, id, skb);
->> +
->> +       /* Ready event must be handled normally also in UTF mode so that we
->> +        * know the UTF firmware has booted, others we are just bypass WMI
->> +        * events to testmode. */
->
-> Comment style.
+* remove false "fall through" comment in ath10k_start() (Michal)
 
-Fixed.
+* fix multiline comment style (Michal)
 
-Thanks for the review! I'll send v4 soon.
+* put testmode interface definitions to testmode_uapi.h (or similar) (Johannes)
 
--- 
-Kalle Valo
+* document __set_bit(ar->fw_features) better (Michal)
+
+* ath10k_tm_cmd_utf_start(): return ar->fw_feature value if there's an error
+
+* free firmware in ath10k_tm_cmd_utf_start() when an error happens (Michal)
+
+* ath10k_tm_cmd_utf_start(): move hif_power_down() to err_power_down label
+
+
+v2:
+
+* check error from ath10k_wmi_alloc_skb() (Michal)
+
+* int err -> int ret (Michal)
+
+* fix conflicts in core.c
+
+* add ar->testmode.utf_monitor to check if ath10k_tm_event_wmi()
+  should deliver WMI events or not
+
+* print mode in ath10k_download_fw() log messages
+
+* set ar->testmode.utf to NULL after it's released (Michal)
+
+* release ar->testmode.utf also in ath10k_tm_cmd_utf_stop()
+
+* rename ath10k_testmode_unregister() to ath10k_testmode_destroy()
+
+* call ath10k_core_stop() in ath10k_testmode_destroy() (Michal)
+
+* document wmi packet format in testmode commands (Michal)
+
+* consume WMI packets so that mac80211 calls are not made in UTF mode (Michal)
+
+* force to use 10x WMI interface with UTF firmware
+
+* API change: remove ATH10K_TM_CMD_EVENT_WMI, use ATH10K_TM_CMD_WMI also for events
+
+* API change: add major and minor version numbers to
+  ATH10K_TM_CMD_GET_VERSION for the user space more easily to detect
+  interface changes
+
+* use conf_mutex in ath10k_tm_cmd_wmi()
+
+* print "UTF firmware started" and "UTF firmware stopped"
+
+* print "testmode %d" in ath10k_print_driver_info()
+
+* don't call ath10k_wait_for_suspend() in UTF mode
+
+---
+
+Kalle Valo (2):
+      ath10k: make ath10k_wmi_cmd_send() public
+      ath10k: add testmode
+
+
+ drivers/net/wireless/ath/ath10k/Makefile     |    1 
+ drivers/net/wireless/ath/ath10k/core.c       |   88 ++++--
+ drivers/net/wireless/ath/ath10k/core.h       |   22 +-
+ drivers/net/wireless/ath/ath10k/debug.c      |    5 
+ drivers/net/wireless/ath/ath10k/debug.h      |    1 
+ drivers/net/wireless/ath/ath10k/hw.h         |    2 
+ drivers/net/wireless/ath/ath10k/mac.c        |    9 +
+ drivers/net/wireless/ath/ath10k/testmode.c   |  381 ++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/testmode.h   |   46 +++
+ drivers/net/wireless/ath/ath10k/testmode_i.h |   70 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c        |   23 +-
+ drivers/net/wireless/ath/ath10k/wmi.h        |    4 
+ 12 files changed, 619 insertions(+), 33 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/testmode.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/testmode.h
+ create mode 100644 drivers/net/wireless/ath/ath10k/testmode_i.h
+
 
 _______________________________________________
 ath10k mailing list
