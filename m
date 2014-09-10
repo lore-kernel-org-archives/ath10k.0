@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRRyL-00015u-5A
- for ath10k@lists.infradead.org; Tue, 09 Sep 2014 20:25:05 +0000
-From: "Shu, Nick" <Nick.Shu@spirent.com>
-Subject: How to set ath10k NIC to a specific wifi mode?
-Date: Tue, 9 Sep 2014 20:24:43 +0000
-Message-ID: <153F35912E69C446A72CF7D6417EBADE13AFF2AD@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
-Content-Language: en-US
+ id 1XRfrm-0006LR-P3
+ for ath10k@lists.infradead.org; Wed, 10 Sep 2014 11:15:15 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: move fw_crash_dump allocation
+References: <1409814788-1661-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 10 Sep 2014 14:14:23 +0300
+In-Reply-To: <1409814788-1661-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 4 Sep 2014 09:13:08 +0200")
+Message-ID: <878ulr9180.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,30 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi, All:
-I have an ath10k PCIe NIC card that supports A/B/G/N/AC wifi modes.
-Can somebody tell me that is there any way I can set it to work on a specific mode like wifiN mode? By using "iw" or any other tool under Linux OS?
-Thanks!
-Nick Shu
-Spirent Communications e-mail confidentiality.
-------------------------------------------------------------------------
-This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Spirent Communications plc
-Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
-Tel No. +44 (0) 1293 767676
-Fax No. +44 (0) 1293 767677
+> The fw_crash_data was allocated too late. Upon
+> early firmware crash, before registering to
+> mac80211, it was possible to crash the whole
+> system:
+>
+>  ath10k_pci 0000:00:05.0: device has crashed during init
+>  BUG: unable to handle kernel NULL pointer dereference at           (null)
 
-Registered in England Number 470893
-Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+[...]
 
-Or if within the US,
+>  ---[ end Kernel panic - not syncing: Fatal exception in interrupt
+>
+> To prevent that split debug functions and allocate
+> fw_crash_data earlier.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Spirent Communications,
-26750 Agoura Road, Calabasas, CA, 91302, USA.
-Tel No. 1-818-676- 2300
+Thanks, applied.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
