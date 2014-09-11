@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XRkqz-0005uQ-16
- for ath10k@lists.infradead.org; Wed, 10 Sep 2014 16:34:45 +0000
-Message-ID: <54107D90.7080907@candelatech.com>
-Date: Wed, 10 Sep 2014 09:34:24 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XRxV9-000257-Si
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 06:05:04 +0000
+Received: by mail-wi0-f169.google.com with SMTP id cc10so583254wib.4
+ for <ath10k@lists.infradead.org>; Wed, 10 Sep 2014 23:04:36 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: support firmware crash-by-assert
-References: <20140910155928.30418.45160.stgit@potku.adurom.net>
-In-Reply-To: <20140910155928.30418.45160.stgit@potku.adurom.net>
+In-Reply-To: <87sijz5u6q.fsf@kamboji.qca.qualcomm.com>
+References: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
+ <87sijz5u6q.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 11 Sep 2014 08:04:36 +0200
+Message-ID: <CA+BoTQnc9Vvedo5bwzvoRbEAiu=xcTbagEmxUDJ=9+Uva_UbWg@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: fix debugfs_create_dir() checking
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,109 +21,22 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/10/2014 08:59 AM, Kalle Valo wrote:
-> From: Ben Greear <greearb@candelatech.com>
->
-> 10.1 firmware does not have an official way to
-> cause assert on purpose, but it can be done with
-> carefully crafted WMI command.  This is a different
-> kind of crash from the 'hard' crash, which is
-> a bad memory dereference.
->
-> Different crashes decode in different manners, so
-> this will help the crash-report testing as well as
-> offer better ways to test firmware failure and
-> recovery.
->
-> kvalo: move the wmi command creation to debug.c, modify
-> the info print
-
-This looks fine to me.  I have not tested this version.
-
-Thanks,
-Ben
-
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/debug.c |   28 +++++++++++++++++++++++++++-
->   1 file changed, 27 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-> index f948a4d8ee59..c5d01058c2a3 100644
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -565,6 +565,26 @@ static const struct file_operations fops_fw_stats = {
->   	.llseek = default_llseek,
->   };
->
-> +/* This is a clean assert crash in firmware. */
-> +static int ath10k_debug_fw_assert(struct ath10k *ar)
-> +{
-> +	struct wmi_vdev_install_key_cmd *cmd;
-> +	struct sk_buff *skb;
-> +
-> +	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd) + 16);
-> +	if (!skb)
-> +		return -ENOMEM;
-> +
-> +	cmd = (struct wmi_vdev_install_key_cmd *)skb->data;
-> +	memset(cmd, 0, sizeof(*cmd));
-> +
-> +	/* big enough number so that firmware asserts */
-> +	cmd->vdev_id = __cpu_to_le32(0x7ffe);
-> +
-> +	return ath10k_wmi_cmd_send(ar, skb,
-> +				   ar->wmi.cmd->vdev_install_key_cmdid);
-> +}
-> +
->   static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
->   					     char __user *user_buf,
->   					     size_t count, loff_t *ppos)
-> @@ -574,7 +594,10 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
->   			   " WMI_FORCE_FW_HANG_ASSERT to firmware if FW"
->   			   " supports that command.\n `hard` - this will send"
->   			   " to firmware command with illegal parameters"
-> -			   " causing firmware crash.\n";
-> +			   " causing firmware crash.\n"
-> +			   "`assert` - this will send special illegal parameter"
-> +			   " to firmware to cause assert failure"
-> +			   " and crash.\n";
->
->   	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
->   }
-> @@ -623,6 +646,9 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
->   		 */
->   		ret = ath10k_wmi_vdev_set_param(ar, 0x7fff,
->   					ar->wmi.vdev_param->rts_threshold, 0);
-> +	} else if (!strcmp(buf, "assert")) {
-> +		ath10k_info(ar, "simulating firmware assert crash\n");
-> +		ret = ath10k_debug_fw_assert(ar);
->   	} else {
->   		ret = -EINVAL;
->   		goto exit;
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgU2VwdGVtYmVyIDIwMTQgMTg6MTQsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6ClsuLi5dCj4+IFNpbmNlIG1pbmUgaXMganVzdCBhbiBleHRyYSBwcmVjYXV0aW9uIGZl
+ZWwgZnJlZQo+PiB0byBkcm9wIGFsbCBidXQgdGhlIGZpcnN0IHBhcmFncmFwaCBvZiBteSBjb21t
+aXQKPj4gbWVzc2FnZSBpZiB5b3Ugd2FudCB0by4KPgo+IFRoYW5rcywgSSBqdXN0IGxlZnQgdGhl
+IGZpcnN0IHBhcmFncmFwaCBsaWtlIHlvdSByZWNvbW1lbmRlZC4gQWxzbyBJIGhhZAo+IGEgY29u
+ZmxpY3Qgd2l0aCB0aGlzIHBhdGNoLCBwbGVhc2UgZG91YmxlIGNoZWNrIG15IHJlc29sdXRpb24g
+aW4KPiBhdGgtbmV4dC10ZXN0Ogo+Cj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aC9jb21t
+aXQvYmVlNmQ2NTVlZWZlNDg4Yjc2OTk4YzljMDAxOGE0ZTZiMDgyOGRlNgoKTG9va3MgZ29vZCwg
+dGhhbmtzIQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
