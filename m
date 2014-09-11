@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XS1nX-0001Mt-Tg
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 10:40:20 +0000
+ id 1XS1vQ-0006Bi-Fn
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 10:48:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 2/2] ath10k: add testmode
-References: <20140910152136.12610.18499.stgit@potku.adurom.net>
- <20140910152329.12610.41409.stgit@potku.adurom.net>
- <CA+BoTQkBiKPzHBfTA2xpmgbUbutSj5Z6w6gP7EO6aotacM5_cA@mail.gmail.com>
-Date: Thu, 11 Sep 2014 13:39:41 +0300
-In-Reply-To: <CA+BoTQkBiKPzHBfTA2xpmgbUbutSj5Z6w6gP7EO6aotacM5_cA@mail.gmail.com>
- (Michal Kazior's message of "Thu, 11 Sep 2014 11:47:34 +0200")
-Message-ID: <87ppf230gi.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC] ath10k: use raw tx
+References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
+ <5400F497.7070904@candelatech.com>
+ <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
+Date: Thu, 11 Sep 2014 13:47:58 +0300
+In-Reply-To: <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 11 Sep 2014 12:35:52 +0200")
+Message-ID: <87ha0e302p.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,59 +26,36 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 10 September 2014 17:23, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> [...]
+> On 29 August 2014 23:45, Ben Greear <greearb@candelatech.com> wrote:
+>> On 08/22/2014 12:52 AM, Michal Kazior wrote:
+>>> This is just a reference for anyone interested in
+>>> getting injection working with ath10k.
+>>
+>> Did you try this with encryption?  I can reproduce the crash
+>> in open mode on my CT firmware, but I couldn't even get
+>> DHCP to complete with wpa2 enabled.
 >
-> Just a small nitpick:
+> Hi,
 >
->> +static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
->> +{
->> +       int ret;
->> +
->> +       ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode cmd utf stop\n");
->> +
->> +       mutex_lock(&ar->conf_mutex);
->> +
->> +       if (ar->state != ATH10K_STATE_UTF) {
->> +               ret = -ENETDOWN;
->> +               goto out;
->> +       }
->> +
->> +       __ath10k_tm_cmd_utf_stop(ar);
->> +
->> +       ar->state = ATH10K_STATE_OFF; // <-- this
+> Late reply, sorry.
 >
-> I would move it to __ath10k_tm_cmd_utf_stop() itself so that the state
-> is reset in ath10k_testmode_destroy() as well.
+> I've just did a quick test on 10.2 (both AP and STA) with WPA2.
+> Apparently the raw tx mode requires IV to be set up on host and packet
+> length (reported in HTT Tx command header) must be re-adjusted
+> differently, otherwise frames are broken (incorrect FCS, too long,
+> somewhat encrypted except LLC/SNAP). The best I could get were
+> FCS-correct undecryptable frames on air. Perhaps someone will figure
+> that out..
+>
+> Another way around this would be to perform software crypto for tx
+> entirely on host.
 
-Ok. It doesn't make any difference on the functionality, but I'll change
-it anyway. I folded this patch to the commit:
-
-diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
-index 9d77d72042ff..483db9cb8c96 100644
---- a/drivers/net/wireless/ath/ath10k/testmode.c
-+++ b/drivers/net/wireless/ath/ath10k/testmode.c
-@@ -253,6 +253,8 @@ static void __ath10k_tm_cmd_utf_stop(struct ath10k *ar)
- 
-        release_firmware(ar->testmode.utf);
-        ar->testmode.utf = NULL;
-+
-+       ar->state = ATH10K_STATE_OFF;
- }
- 
- static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
-@@ -270,7 +272,6 @@ static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
- 
-        __ath10k_tm_cmd_utf_stop(ar);
- 
--       ar->state = ATH10K_STATE_OFF;
-        ret = 0;
- 
-        ath10k_info(ar, "UTF firmware stopped\n");
+BTW, it would be nice to get software crypto support to ath10k, for
+example with a nohwcrypt module parameter like ath9k has.
 
 -- 
 Kalle Valo
