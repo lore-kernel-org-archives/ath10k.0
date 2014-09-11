@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XS0yu-0006aR-5G
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 09:48:00 +0000
-Received: by mail-we0-f176.google.com with SMTP id q58so6490353wes.35
- for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 02:47:34 -0700 (PDT)
+ id 1XS1jd-000077-0j
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 10:36:17 +0000
+Received: by mail-we0-f179.google.com with SMTP id u56so5808643wes.10
+ for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 03:35:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20140910152329.12610.41409.stgit@potku.adurom.net>
-References: <20140910152136.12610.18499.stgit@potku.adurom.net>
- <20140910152329.12610.41409.stgit@potku.adurom.net>
-Date: Thu, 11 Sep 2014 11:47:34 +0200
-Message-ID: <CA+BoTQkBiKPzHBfTA2xpmgbUbutSj5Z6w6gP7EO6aotacM5_cA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] ath10k: add testmode
+In-Reply-To: <5400F497.7070904@candelatech.com>
+References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
+ <5400F497.7070904@candelatech.com>
+Date: Thu, 11 Sep 2014 12:35:52 +0200
+Message-ID: <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
+Subject: Re: [RFC] ath10k: use raw tx
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,21 +25,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTAgU2VwdGVtYmVyIDIwMTQgMTc6MjMsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
-bS5jb20+IHdyb3RlOgpbLi4uXQoKSnVzdCBhIHNtYWxsIG5pdHBpY2s6Cgo+ICtzdGF0aWMgaW50
-IGF0aDEwa190bV9jbWRfdXRmX3N0b3Aoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBubGF0dHIg
-KnRiW10pCj4gK3sKPiArICAgICAgIGludCByZXQ7Cj4gKwo+ICsgICAgICAgYXRoMTBrX2RiZyhh
-ciwgQVRIMTBLX0RCR19URVNUTU9ERSwgInRlc3Rtb2RlIGNtZCB1dGYgc3RvcFxuIik7Cj4gKwo+
-ICsgICAgICAgbXV0ZXhfbG9jaygmYXItPmNvbmZfbXV0ZXgpOwo+ICsKPiArICAgICAgIGlmIChh
-ci0+c3RhdGUgIT0gQVRIMTBLX1NUQVRFX1VURikgewo+ICsgICAgICAgICAgICAgICByZXQgPSAt
-RU5FVERPV047Cj4gKyAgICAgICAgICAgICAgIGdvdG8gb3V0Owo+ICsgICAgICAgfQo+ICsKPiAr
-ICAgICAgIF9fYXRoMTBrX3RtX2NtZF91dGZfc3RvcChhcik7Cj4gKwo+ICsgICAgICAgYXItPnN0
-YXRlID0gQVRIMTBLX1NUQVRFX09GRjsgLy8gPC0tIHRoaXMKCkkgd291bGQgbW92ZSBpdCB0byBf
-X2F0aDEwa190bV9jbWRfdXRmX3N0b3AoKSBpdHNlbGYgc28gdGhhdCB0aGUgc3RhdGUKaXMgcmVz
-ZXQgaW4gYXRoMTBrX3Rlc3Rtb2RlX2Rlc3Ryb3koKSBhcyB3ZWxsLgoKCk1pY2hhxYIKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
-IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+T24gMjkgQXVndXN0IDIwMTQgMjM6NDUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
+Y29tPiB3cm90ZToKPiBPbiAwOC8yMi8yMDE0IDEyOjUyIEFNLCBNaWNoYWwgS2F6aW9yIHdyb3Rl
+Ogo+PiBUaGlzIGlzIGp1c3QgYSByZWZlcmVuY2UgZm9yIGFueW9uZSBpbnRlcmVzdGVkIGluCj4+
+IGdldHRpbmcgaW5qZWN0aW9uIHdvcmtpbmcgd2l0aCBhdGgxMGsuCj4KPiBEaWQgeW91IHRyeSB0
+aGlzIHdpdGggZW5jcnlwdGlvbj8gIEkgY2FuIHJlcHJvZHVjZSB0aGUgY3Jhc2gKPiBpbiBvcGVu
+IG1vZGUgb24gbXkgQ1QgZmlybXdhcmUsIGJ1dCBJIGNvdWxkbid0IGV2ZW4gZ2V0Cj4gREhDUCB0
+byBjb21wbGV0ZSB3aXRoIHdwYTIgZW5hYmxlZC4KCkhpLAoKTGF0ZSByZXBseSwgc29ycnkuCgpJ
+J3ZlIGp1c3QgZGlkIGEgcXVpY2sgdGVzdCBvbiAxMC4yIChib3RoIEFQIGFuZCBTVEEpIHdpdGgg
+V1BBMi4KQXBwYXJlbnRseSB0aGUgcmF3IHR4IG1vZGUgcmVxdWlyZXMgSVYgdG8gYmUgc2V0IHVw
+IG9uIGhvc3QgYW5kIHBhY2tldApsZW5ndGggKHJlcG9ydGVkIGluIEhUVCBUeCBjb21tYW5kIGhl
+YWRlcikgbXVzdCBiZSByZS1hZGp1c3RlZApkaWZmZXJlbnRseSwgb3RoZXJ3aXNlIGZyYW1lcyBh
+cmUgYnJva2VuIChpbmNvcnJlY3QgRkNTLCB0b28gbG9uZywKc29tZXdoYXQgZW5jcnlwdGVkIGV4
+Y2VwdCBMTEMvU05BUCkuIFRoZSBiZXN0IEkgY291bGQgZ2V0IHdlcmUKRkNTLWNvcnJlY3QgdW5k
+ZWNyeXB0YWJsZSBmcmFtZXMgb24gYWlyLiBQZXJoYXBzIHNvbWVvbmUgd2lsbCBmaWd1cmUKdGhh
+dCBvdXQuLgoKQW5vdGhlciB3YXkgYXJvdW5kIHRoaXMgd291bGQgYmUgdG8gcGVyZm9ybSBzb2Z0
+d2FyZSBjcnlwdG8gZm9yIHR4CmVudGlyZWx5IG9uIGhvc3QuCgoKTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
