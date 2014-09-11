@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XS1jd-000077-0j
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 10:36:17 +0000
-Received: by mail-we0-f179.google.com with SMTP id u56so5808643wes.10
- for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 03:35:53 -0700 (PDT)
+ id 1XS1nX-0001Mt-Tg
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 10:40:20 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v4 2/2] ath10k: add testmode
+References: <20140910152136.12610.18499.stgit@potku.adurom.net>
+ <20140910152329.12610.41409.stgit@potku.adurom.net>
+ <CA+BoTQkBiKPzHBfTA2xpmgbUbutSj5Z6w6gP7EO6aotacM5_cA@mail.gmail.com>
+Date: Thu, 11 Sep 2014 13:39:41 +0300
+In-Reply-To: <CA+BoTQkBiKPzHBfTA2xpmgbUbutSj5Z6w6gP7EO6aotacM5_cA@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 11 Sep 2014 11:47:34 +0200")
+Message-ID: <87ppf230gi.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <5400F497.7070904@candelatech.com>
-References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
- <5400F497.7070904@candelatech.com>
-Date: Thu, 11 Sep 2014 12:35:52 +0200
-Message-ID: <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
-Subject: Re: [RFC] ath10k: use raw tx
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +21,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjkgQXVndXN0IDIwMTQgMjM6NDUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
-Y29tPiB3cm90ZToKPiBPbiAwOC8yMi8yMDE0IDEyOjUyIEFNLCBNaWNoYWwgS2F6aW9yIHdyb3Rl
-Ogo+PiBUaGlzIGlzIGp1c3QgYSByZWZlcmVuY2UgZm9yIGFueW9uZSBpbnRlcmVzdGVkIGluCj4+
-IGdldHRpbmcgaW5qZWN0aW9uIHdvcmtpbmcgd2l0aCBhdGgxMGsuCj4KPiBEaWQgeW91IHRyeSB0
-aGlzIHdpdGggZW5jcnlwdGlvbj8gIEkgY2FuIHJlcHJvZHVjZSB0aGUgY3Jhc2gKPiBpbiBvcGVu
-IG1vZGUgb24gbXkgQ1QgZmlybXdhcmUsIGJ1dCBJIGNvdWxkbid0IGV2ZW4gZ2V0Cj4gREhDUCB0
-byBjb21wbGV0ZSB3aXRoIHdwYTIgZW5hYmxlZC4KCkhpLAoKTGF0ZSByZXBseSwgc29ycnkuCgpJ
-J3ZlIGp1c3QgZGlkIGEgcXVpY2sgdGVzdCBvbiAxMC4yIChib3RoIEFQIGFuZCBTVEEpIHdpdGgg
-V1BBMi4KQXBwYXJlbnRseSB0aGUgcmF3IHR4IG1vZGUgcmVxdWlyZXMgSVYgdG8gYmUgc2V0IHVw
-IG9uIGhvc3QgYW5kIHBhY2tldApsZW5ndGggKHJlcG9ydGVkIGluIEhUVCBUeCBjb21tYW5kIGhl
-YWRlcikgbXVzdCBiZSByZS1hZGp1c3RlZApkaWZmZXJlbnRseSwgb3RoZXJ3aXNlIGZyYW1lcyBh
-cmUgYnJva2VuIChpbmNvcnJlY3QgRkNTLCB0b28gbG9uZywKc29tZXdoYXQgZW5jcnlwdGVkIGV4
-Y2VwdCBMTEMvU05BUCkuIFRoZSBiZXN0IEkgY291bGQgZ2V0IHdlcmUKRkNTLWNvcnJlY3QgdW5k
-ZWNyeXB0YWJsZSBmcmFtZXMgb24gYWlyLiBQZXJoYXBzIHNvbWVvbmUgd2lsbCBmaWd1cmUKdGhh
-dCBvdXQuLgoKQW5vdGhlciB3YXkgYXJvdW5kIHRoaXMgd291bGQgYmUgdG8gcGVyZm9ybSBzb2Z0
-d2FyZSBjcnlwdG8gZm9yIHR4CmVudGlyZWx5IG9uIGhvc3QuCgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 10 September 2014 17:23, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>
+> Just a small nitpick:
+>
+>> +static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
+>> +{
+>> +       int ret;
+>> +
+>> +       ath10k_dbg(ar, ATH10K_DBG_TESTMODE, "testmode cmd utf stop\n");
+>> +
+>> +       mutex_lock(&ar->conf_mutex);
+>> +
+>> +       if (ar->state != ATH10K_STATE_UTF) {
+>> +               ret = -ENETDOWN;
+>> +               goto out;
+>> +       }
+>> +
+>> +       __ath10k_tm_cmd_utf_stop(ar);
+>> +
+>> +       ar->state = ATH10K_STATE_OFF; // <-- this
+>
+> I would move it to __ath10k_tm_cmd_utf_stop() itself so that the state
+> is reset in ath10k_testmode_destroy() as well.
+
+Ok. It doesn't make any difference on the functionality, but I'll change
+it anyway. I folded this patch to the commit:
+
+diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
+index 9d77d72042ff..483db9cb8c96 100644
+--- a/drivers/net/wireless/ath/ath10k/testmode.c
++++ b/drivers/net/wireless/ath/ath10k/testmode.c
+@@ -253,6 +253,8 @@ static void __ath10k_tm_cmd_utf_stop(struct ath10k *ar)
+ 
+        release_firmware(ar->testmode.utf);
+        ar->testmode.utf = NULL;
++
++       ar->state = ATH10K_STATE_OFF;
+ }
+ 
+ static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
+@@ -270,7 +272,6 @@ static int ath10k_tm_cmd_utf_stop(struct ath10k *ar, struct nlattr *tb[])
+ 
+        __ath10k_tm_cmd_utf_stop(ar);
+ 
+-       ar->state = ATH10K_STATE_OFF;
+        ret = 0;
+ 
+        ath10k_info(ar, "UTF firmware stopped\n");
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
