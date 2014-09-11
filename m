@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSBFm-0002AP-2i
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:46:06 +0000
+ id 1XSBNc-0004Sh-O5
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:54:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: fix debugfs_create_dir() checking
-References: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 11 Sep 2014 23:45:29 +0300
-In-Reply-To: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 4 Sep 2014 12:36:45 +0200")
-Message-ID: <87r3zh28eu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFC PATCH 3/3] ath10k: add cal_data debugfs file
+References: <20140911202926.12514.79908.stgit@potku.adurom.net>
+ <20140911203152.12514.95332.stgit@potku.adurom.net>
+Date: Thu, 11 Sep 2014 23:53:42 +0300
+In-Reply-To: <20140911203152.12514.95332.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Thu, 11 Sep 2014 23:31:52 +0300")
+Message-ID: <87mwa52815.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> The function may return an -ENODEV if debugfs is
-> disabled in kernel. This should originally be
-> guarded by ath10k's Kconfig but it still makes
-> sense to check for the non-NULL errno return
-> value.
+> Provide calibration data used by the firmware to user space via a debugfs file.
+> This makes it easier to debug calibration related problems.
 >
+> Example:
+>
+> sudo cp /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data 1.cal
+>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
 [...]
 
-> Reported-by: Matteo Croce <matteo@openwrt.org>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> +	ret = ath10k_hif_diag_read(ar, hi_addr, &addr, sizeof(addr));
+> +	if (ret) {
+> +		ath10k_warn("failed to read hi_board_data address: %d\n", ret);
 
-Thanks, applied.
+This and rest of the fuction is missing 'ar' parameter. Obviously it's
+too late for me :)
 
 -- 
 Kalle Valo
