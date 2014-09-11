@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
+Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSB2I-0003jI-JQ
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:32:11 +0000
+ id 1XSB2C-0003it-Jy
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:32:05 +0000
 Received: from potku.adurom.net (a91-155-131-35.elisa-laajakaista.fi
  [91.155.131.35])
- by emh03.mail.saunalahti.fi (Postfix) with ESMTP id B365318876A
- for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 23:31:47 +0300 (EEST)
-Subject: [RFC PATCH 2/3] ath10k: add diag_read() to hif ops
+ by emh01.mail.saunalahti.fi (Postfix) with ESMTP id 0B33490056
+ for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 23:31:41 +0300 (EEST)
+Subject: [RFC PATCH 1/3] ath10k: ignore diagnose pipes in
+ ath10k_pci_ce_recv_data()/_send_done()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 11 Sep 2014 23:31:47 +0300
-Message-ID: <20140911203147.12514.84857.stgit@potku.adurom.net>
+Date: Thu, 11 Sep 2014 23:31:41 +0300
+Message-ID: <20140911203141.12514.23469.stgit@potku.adurom.net>
 In-Reply-To: <20140911202926.12514.79908.stgit@potku.adurom.net>
 References: <20140911202926.12514.79908.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -28,69 +29,39 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-diag_read() is used for reading from firmware memory via the diagnose window.
-First user will be cal_data debugfs file.
+As ath10k_pci_diag_read_mem() uses polling to receive data from CE, the CE callbacks
+have to ignore the pipe used for diagnose reads. Otherwise ath10k crashes due
+to NULL dereference and polling reads timeout.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hif.h |   10 ++++++++++
- drivers/net/wireless/ath/ath10k/pci.c |    8 ++++++++
- 2 files changed, 18 insertions(+)
+ drivers/net/wireless/ath/ath10k/pci.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index 2ac7beacddca..0a8877d33f1f 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -43,6 +43,10 @@ struct ath10k_hif_ops {
- 	int (*tx_sg)(struct ath10k *ar, u8 pipe_id,
- 		     struct ath10k_hif_sg_item *items, int n_items);
- 
-+	/* read firmware memory through the diagnose interface */
-+	int (*diag_read)(struct ath10k *ar, u32 address, void *buf,
-+			 size_t buf_len);
-+
- 	/*
- 	 * API to handle HIF-specific BMI message exchanges, this API is
- 	 * synchronous and only allowed to be called from a context that
-@@ -99,6 +103,12 @@ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
- 	return ar->hif.ops->tx_sg(ar, pipe_id, items, n_items);
- }
- 
-+static inline int ath10k_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
-+				       size_t buf_len)
-+{
-+	return ar->hif.ops->diag_read(ar, address, buf, buf_len);
-+}
-+
- static inline int ath10k_hif_exchange_bmi_msg(struct ath10k *ar,
- 					      void *request, u32 request_len,
- 					      void *response, u32 *response_len)
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 154451ab3e3c..d3c51079034e 100644
+index baeb98e78b1f..154451ab3e3c 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -941,6 +941,13 @@ err:
- 	return err;
- }
+@@ -819,6 +819,9 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
+ 	unsigned int nbytes;
+ 	unsigned int transfer_id;
  
-+static int ath10k_pci_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
-+				    size_t buf_len)
-+{
-+	/* FIXME: locking */
-+	return ath10k_pci_diag_read_mem(ar, address, buf, buf_len);
-+}
++	if (ce_state->id == 7)
++		return;
 +
- static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1926,6 +1933,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 	while (ath10k_ce_completed_send_next(ce_state, &transfer_context,
+ 					     &ce_data, &nbytes,
+ 					     &transfer_id) == 0) {
+@@ -844,6 +847,9 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
+ 	unsigned int transfer_id;
+ 	unsigned int flags;
  
- static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.tx_sg			= ath10k_pci_hif_tx_sg,
-+	.diag_read		= ath10k_pci_hif_diag_read,
- 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
- 	.start			= ath10k_pci_hif_start,
- 	.stop			= ath10k_pci_hif_stop,
++	if (ce_state->id == 7)
++		return;
++
+ 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
+ 					     &ce_data, &nbytes, &transfer_id,
+ 					     &flags) == 0) {
 
 
 _______________________________________________
