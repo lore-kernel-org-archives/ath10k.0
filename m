@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSBES-0000Rc-Dj
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:44:44 +0000
+ id 1XSBFm-0002AP-2i
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:46:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: support firmware crash-by-assert
-References: <20140910155928.30418.45160.stgit@potku.adurom.net>
-Date: Thu, 11 Sep 2014 23:44:00 +0300
-In-Reply-To: <20140910155928.30418.45160.stgit@potku.adurom.net> (Kalle Valo's
- message of "Wed, 10 Sep 2014 18:59:28 +0300")
-Message-ID: <87vbot28hb.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: fix debugfs_create_dir() checking
+References: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 11 Sep 2014 23:45:29 +0300
+In-Reply-To: <1409827005-3777-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 4 Sep 2014 12:36:45 +0200")
+Message-ID: <87r3zh28eu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,31 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> The function may return an -ENODEV if debugfs is
+> disabled in kernel. This should originally be
+> guarded by ath10k's Kconfig but it still makes
+> sense to check for the non-NULL errno return
+> value.
 >
-> 10.1 firmware does not have an official way to
-> cause assert on purpose, but it can be done with
-> carefully crafted WMI command.  This is a different
-> kind of crash from the 'hard' crash, which is
-> a bad memory dereference.
->
-> Different crashes decode in different manners, so
-> this will help the crash-report testing as well as
-> offer better ways to test firmware failure and
-> recovery.
->
-> kvalo: move the wmi command creation to debug.c, modify
-> the info print
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Thanks Ben, applied.
+[...]
+
+> Reported-by: Matteo Croce <matteo@openwrt.org>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+Thanks, applied.
 
 -- 
 Kalle Valo
