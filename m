@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSB2C-0003it-Jy
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:32:05 +0000
+ id 1XSB2M-0003jT-E7
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:32:15 +0000
 Received: from potku.adurom.net (a91-155-131-35.elisa-laajakaista.fi
  [91.155.131.35])
- by emh01.mail.saunalahti.fi (Postfix) with ESMTP id 0B33490056
- for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 23:31:41 +0300 (EEST)
-Subject: [RFC PATCH 1/3] ath10k: ignore diagnose pipes in
- ath10k_pci_ce_recv_data()/_send_done()
+ by emh01.mail.saunalahti.fi (Postfix) with ESMTP id 611609000C
+ for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 23:31:53 +0300 (EEST)
+Subject: [RFC PATCH 3/3] ath10k: add cal_data debugfs file
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 11 Sep 2014 23:31:41 +0300
-Message-ID: <20140911203141.12514.23469.stgit@potku.adurom.net>
+Date: Thu, 11 Sep 2014 23:31:52 +0300
+Message-ID: <20140911203152.12514.95332.stgit@potku.adurom.net>
 In-Reply-To: <20140911202926.12514.79908.stgit@potku.adurom.net>
 References: <20140911202926.12514.79908.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -29,39 +28,138 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-As ath10k_pci_diag_read_mem() uses polling to receive data from CE, the CE callbacks
-have to ignore the pipe used for diagnose reads. Otherwise ath10k crashes due
-to NULL dereference and polling reads timeout.
+Provide calibration data used by the firmware to user space via a debugfs file.
+This makes it easier to debug calibration related problems.
+
+Example:
+
+sudo cp /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data 1.cal
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/wireless/ath/ath10k/debug.c |   81 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h    |    2 +
+ 2 files changed, 83 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index baeb98e78b1f..154451ab3e3c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -819,6 +819,9 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
- 	unsigned int nbytes;
- 	unsigned int transfer_id;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index f948a4d8ee59..6500fd44f527 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -23,6 +23,7 @@
  
-+	if (ce_state->id == 7)
-+		return;
-+
- 	while (ath10k_ce_completed_send_next(ce_state, &transfer_context,
- 					     &ce_data, &nbytes,
- 					     &transfer_id) == 0) {
-@@ -844,6 +847,9 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
- 	unsigned int transfer_id;
- 	unsigned int flags;
+ #include "core.h"
+ #include "debug.h"
++#include "hif.h"
  
-+	if (ce_state->id == 7)
-+		return;
+ /* ms */
+ #define ATH10K_DEBUG_HTT_STATS_INTERVAL 1000
+@@ -1014,6 +1015,83 @@ static const struct file_operations fops_fw_dbglog = {
+ 	.llseek = default_llseek,
+ };
+ 
++static int ath10k_cal_data_open(struct inode *inode, struct file *file)
++{
++	struct ath10k *ar = inode->i_private;
++	void *buf;
++	u32 hi_addr;
++	__le32 addr;
++	int ret;
 +
- 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
- 					     &ce_data, &nbytes, &transfer_id,
- 					     &flags) == 0) {
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state != ATH10K_STATE_ON &&
++	    ar->state != ATH10K_STATE_UTF) {
++		ret = -ENETDOWN;
++		goto err;
++	}
++
++	buf = vmalloc(QCA988X_CAL_DATA_LEN);
++	if (!buf) {
++		ret = -ENOMEM;
++		goto err;
++	}
++
++	hi_addr = host_interest_item_address(HI_ITEM(hi_board_data));
++
++	ret = ath10k_hif_diag_read(ar, hi_addr, &addr, sizeof(addr));
++	if (ret) {
++		ath10k_warn("failed to read hi_board_data address: %d\n", ret);
++		goto err_vfree;
++	}
++
++	ret = ath10k_hif_diag_read(ar, le32_to_cpu(addr), buf,
++				   QCA988X_CAL_DATA_LEN);
++	if (ret) {
++		ath10k_warn("failed to read calibration data: %d\n", ret);
++		goto err_vfree;
++	}
++
++	file->private_data = buf;
++
++	mutex_unlock(&ar->conf_mutex);
++
++	return 0;
++
++err_vfree:
++	vfree(buf);
++
++err:
++	mutex_unlock(&ar->conf_mutex);
++
++	return ret;
++}
++
++static ssize_t ath10k_cal_data_read(struct file *file, char __user *user_buf,
++				   size_t count, loff_t *ppos)
++{
++	void *buf = file->private_data;
++
++	return simple_read_from_buffer(user_buf, count, ppos,
++				       buf, QCA988X_CAL_DATA_LEN);
++}
++
++static int ath10k_cal_data_release(struct inode *inode,
++				   struct file *file)
++{
++	vfree(file->private_data);
++
++	return 0;
++}
++
++static const struct file_operations fops_cal_data = {
++	.open = ath10k_cal_data_open,
++	.read = ath10k_cal_data_read,
++	.release = ath10k_cal_data_release,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ int ath10k_debug_start(struct ath10k *ar)
+ {
+ 	int ret;
+@@ -1183,6 +1261,9 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("fw_dbglog", S_IRUSR, ar->debug.debugfs_phy,
+ 			    ar, &fops_fw_dbglog);
+ 
++	debugfs_create_file("cal_data", S_IRUSR, ar->debug.debugfs_phy,
++			    ar, &fops_cal_data);
++
+ 	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED)) {
+ 		debugfs_create_file("dfs_simulate_radar", S_IWUSR,
+ 				    ar->debug.debugfs_phy, ar,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 3cf5702c1e7e..006a9cbc60b2 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -43,6 +43,8 @@
+ 
+ #define REG_DUMP_COUNT_QCA988X 60
+ 
++#define QCA988X_CAL_DATA_LEN		2116
++
+ struct ath10k_fw_ie {
+ 	__le32 id;
+ 	__le32 len;
 
 
 _______________________________________________
