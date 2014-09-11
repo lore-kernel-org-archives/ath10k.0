@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XS5Fq-00067X-UY
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 14:21:47 +0000
-Message-ID: <5411AFE7.8060008@candelatech.com>
-Date: Thu, 11 Sep 2014 07:21:27 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XSB27-0003iE-2k
+ for ath10k@lists.infradead.org; Thu, 11 Sep 2014 20:31:59 +0000
+Received: from potku.adurom.net (a91-155-131-35.elisa-laajakaista.fi
+ [91.155.131.35])
+ by emh02.mail.saunalahti.fi (Postfix) with ESMTP id 593208189F
+ for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 23:31:36 +0300 (EEST)
+Subject: [RFC PATCH 0/3] ath10k: export calibration data to user space
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Thu, 11 Sep 2014 23:31:32 +0300
+Message-ID: <20140911202926.12514.79908.stgit@potku.adurom.net>
 MIME-Version: 1.0
-Subject: Re: Change the number of active antennas (RF-chains)
-References: <CANzpp-k2QdD6C9VJF7hPR2sKOQwhXxxA4qsJcihjKVrwgtXQng@mail.gmail.com>
-In-Reply-To: <CANzpp-k2QdD6C9VJF7hPR2sKOQwhXxxA4qsJcihjKVrwgtXQng@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,38 +20,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Okhwan Lee <ohlee@mwnl.snu.ac.kr>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-On 09/11/2014 12:37 AM, Okhwan Lee wrote:
-> Hi,
->
-> I have been trying to configure the number of active antennas (not
-> spatial stream) by using ath10k/QCA9880.
->
-> When I use ath9k, we can easily change the number of active antenna by
-> using REG_WRITE(ah, AR_PHY_RX_CHAINMASK, ah->rxchainmask) function
-> used in ar9003_hw_set_chain_masks.
->
-> However, in ath10k, we failed to handle the values (e.g, rx/tx chain
-> mask of QCA9880) by using ath10k_wmi_pdev_set_param(ar,
-> ar->wmi.pdev_param->rx_chain_mask, rx_ant) funcion in used in
-> __ath10k_set_antenna.
+Hi,
 
-Newer kernels should have this support, and it seemed to work in my
-testing.  I did not test power consumption.
+here's a small patchset exporting firmware calibration data to user space. This
+makes it easier to debug various calibration data related problems. The first
+patch is more or less a hack, not sure how to do that properly.
 
-What kernel version are you using?
+Please comment.
 
-Thanks,
-Ben
+---
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo (3):
+      ath10k: ignore diagnose pipes in ath10k_pci_ce_recv_data()/_send_done()
+      ath10k: add diag_read() to hif ops
+      ath10k: add cal_data debugfs file
+
+
+ drivers/net/wireless/ath/ath10k/debug.c |   81 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hif.h   |   10 ++++
+ drivers/net/wireless/ath/ath10k/hw.h    |    2 +
+ drivers/net/wireless/ath/ath10k/pci.c   |   14 +++++
+ 4 files changed, 107 insertions(+)
 
 
 _______________________________________________
