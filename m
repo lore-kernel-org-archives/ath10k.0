@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x22c.google.com ([2607:f8b0:400c:c03::22c])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSOIW-0002Vp-Kd
- for ath10k@lists.infradead.org; Fri, 12 Sep 2014 10:41:49 +0000
-Received: by mail-vc0-f172.google.com with SMTP id hy10so479568vcb.17
- for <ath10k@lists.infradead.org>; Fri, 12 Sep 2014 03:41:26 -0700 (PDT)
+ id 1XSORO-00068E-C6
+ for ath10k@lists.infradead.org; Fri, 12 Sep 2014 10:50:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [RFC PATCH 3/3] ath10k: add cal_data debugfs file
+References: <20140911202926.12514.79908.stgit@potku.adurom.net>
+ <20140911203152.12514.95332.stgit@potku.adurom.net>
+ <CA+BoTQkPVN2ivGx0LRkXX2TSVpJLgqjBr9nPhtdntYhWdTpabQ@mail.gmail.com>
+Date: Fri, 12 Sep 2014 13:50:30 +0300
+In-Reply-To: <CA+BoTQkPVN2ivGx0LRkXX2TSVpJLgqjBr9nPhtdntYhWdTpabQ@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 12 Sep 2014 12:11:06 +0200")
+Message-ID: <874mwdyux5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <5411AF6A.7010702@candelatech.com>
-References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
- <5400F497.7070904@candelatech.com>
- <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
- <5411AF6A.7010702@candelatech.com>
-Date: Fri, 12 Sep 2014 18:41:25 +0800
-Message-ID: <CAEFj985XJgeyX7iXaXpYGvFMFUsPndajVVGAYFqzp0P_4zp8Lw@mail.gmail.com>
-Subject: Re: [RFC] ath10k: use raw tx
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGksIGFsbAoKRGlkIGFueW9uZSB0cnkgdGhlIHJhdyB0eCBvbiBhZGhvYyBtb2RlPyBJIGhhdmUg
-dGVzdGVkIHRoaXMgcGF0Y2ggd2l0aApmaXJtd2FyZSA5OTkuOTk5LjAuNjM2LgoKVGhlIHVuaWNh
-c3QgZnJhbWUgaXMgbm90IHRyYW5zbWl0dGVkIHVzaW5nIHJhdyB0eCwgb25seSBicm9hZGNhc3Qu
-CgpBZnRlciBhZGp1c3QgdGhlIGNtZF90eC5sZW4gYXMgZm9sbG93LCBJIGhhdmUgbWFuYWdlZCB0
-byBtYWtlIHRoZQphZGhvYyBTVEEgdG8gcGluZyBlYWNoIG90aGVycy4KCnNrYl9jYi0+aHR0LnR4
-YnVmLT5jbWRfdHgubGVuID0gX19jcHVfdG9fbGUxNihtc2R1LT5sZW4gLQpzaXplb2Yoc3RydWN0
-IGllZWU4MDIxMV9oZHJfM2FkZHIpICsgc2l6ZW9mKHN0cnVjdCBldGhoZHIpKTsKCkNhbiBzb21l
-b25lIGNvbW1lbnQgb24gdGhpcz8KCi0tLS0KQ2h1bi1ZZW93CgoKT24gVGh1LCBTZXAgMTEsIDIw
-MTQgYXQgMTA6MTkgUE0sIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90
-ZToKPiBPbiAwOS8xMS8yMDE0IDAzOjM1IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+Pgo+PiBP
-biAyOSBBdWd1c3QgMjAxNCAyMzo0NSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5j
-b20+IHdyb3RlOgo+Pj4KPj4+IE9uIDA4LzIyLzIwMTQgMTI6NTIgQU0sIE1pY2hhbCBLYXppb3Ig
-d3JvdGU6Cj4+Pj4KPj4+PiBUaGlzIGlzIGp1c3QgYSByZWZlcmVuY2UgZm9yIGFueW9uZSBpbnRl
-cmVzdGVkIGluCj4+Pj4gZ2V0dGluZyBpbmplY3Rpb24gd29ya2luZyB3aXRoIGF0aDEway4KPj4+
-Cj4+Pgo+Pj4gRGlkIHlvdSB0cnkgdGhpcyB3aXRoIGVuY3J5cHRpb24/ICBJIGNhbiByZXByb2R1
-Y2UgdGhlIGNyYXNoCj4+PiBpbiBvcGVuIG1vZGUgb24gbXkgQ1QgZmlybXdhcmUsIGJ1dCBJIGNv
-dWxkbid0IGV2ZW4gZ2V0Cj4+PiBESENQIHRvIGNvbXBsZXRlIHdpdGggd3BhMiBlbmFibGVkLgo+
-Pgo+Pgo+PiBIaSwKPj4KPj4gTGF0ZSByZXBseSwgc29ycnkuCj4+Cj4+IEkndmUganVzdCBkaWQg
-YSBxdWljayB0ZXN0IG9uIDEwLjIgKGJvdGggQVAgYW5kIFNUQSkgd2l0aCBXUEEyLgo+PiBBcHBh
-cmVudGx5IHRoZSByYXcgdHggbW9kZSByZXF1aXJlcyBJViB0byBiZSBzZXQgdXAgb24gaG9zdCBh
-bmQgcGFja2V0Cj4+IGxlbmd0aCAocmVwb3J0ZWQgaW4gSFRUIFR4IGNvbW1hbmQgaGVhZGVyKSBt
-dXN0IGJlIHJlLWFkanVzdGVkCj4+IGRpZmZlcmVudGx5LCBvdGhlcndpc2UgZnJhbWVzIGFyZSBi
-cm9rZW4gKGluY29ycmVjdCBGQ1MsIHRvbyBsb25nLAo+PiBzb21ld2hhdCBlbmNyeXB0ZWQgZXhj
-ZXB0IExMQy9TTkFQKS4gVGhlIGJlc3QgSSBjb3VsZCBnZXQgd2VyZQo+PiBGQ1MtY29ycmVjdCB1
-bmRlY3J5cHRhYmxlIGZyYW1lcyBvbiBhaXIuIFBlcmhhcHMgc29tZW9uZSB3aWxsIGZpZ3VyZQo+
-PiB0aGF0IG91dC4uCj4+Cj4+IEFub3RoZXIgd2F5IGFyb3VuZCB0aGlzIHdvdWxkIGJlIHRvIHBl
-cmZvcm0gc29mdHdhcmUgY3J5cHRvIGZvciB0eAo+PiBlbnRpcmVseSBvbiBob3N0Lgo+Cj4KPiBU
-aGF0IGRpZCBub3QgZml4IHRoZSBwcm9ibGVtIGZvciBtZS4gIFRoZSBmaXJtd2FyZS9oYXJkd2Fy
-ZSBjb3VsZCBub3QgYmUKPiBjb252aW5jZWQgKGJ5IG1lLCBhdCBsZWFzdCkgdG8gbGVhdmUgdGhl
-IGVuY3J5cHRlZCBwYWNrZXQgYWxvbmUgYW5kIGluc2lzdGVkCj4gb24KPiBkb2luZyBhdCBsZWFz
-dCBwYXJ0aWFsIHJlLWNyeXB0LCBvciBzb21ldGhpbmcgbGlrZSB0aGF0Lgo+Cj4gVGhhbmtzLAo+
-IEJlbgo+Cj4+Cj4+Cj4+IE1pY2hhxYIKPj4KPgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cu
-Y2FuZGVsYXRlY2guY29tCj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 11 September 2014 22:31, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Provide calibration data used by the firmware to user space via a debugfs file.
+>> This makes it easier to debug calibration related problems.
+>>
+>> Example:
+>>
+>> sudo cp /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data 1.cal
+>
+> How about having a generic r/w access to target memory via debugfs?
+> Userspace would deal with the extraction of the cal data. 
+
+Yeah, Yanbo is working on that kind of generic interface.
+
+> Or do you want to make it easier for the user to provide the cal data
+> without any extra tools (and that sending entire unprocessed target
+> memory dump may introduce some privacy concerns)?
+
+This (to make it easier) is exactly my motivation here. In some of the
+problems, especially once we add support to get calibration data from
+host instead of just OTP, it's important to get easily access to the
+calibration data. User only needs to do a simple cp operation and send
+the file to us for further investigation.
+
+Of course we could use the generic target memory interface for this, but
+it's just more complicated for an unexperienced user and that's why I
+think we should have this interface. But to be honest I'm not 100% sure
+yet so other comments are more than welcome.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
