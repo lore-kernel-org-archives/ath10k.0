@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSD7o-0002rp-W4
- for ath10k@lists.infradead.org; Thu, 11 Sep 2014 22:46:01 +0000
-Message-ID: <5412260F.80607@candelatech.com>
-Date: Thu, 11 Sep 2014 15:45:35 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-pd0-f170.google.com ([209.85.192.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XSHqb-0002cR-FM
+ for ath10k@lists.infradead.org; Fri, 12 Sep 2014 03:48:34 +0000
+Received: by mail-pd0-f170.google.com with SMTP id fp1so289675pdb.15
+ for <ath10k@lists.infradead.org>; Thu, 11 Sep 2014 20:48:11 -0700 (PDT)
+Date: Fri, 12 Sep 2014 12:48:07 +0900
+From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
+Message-ID: <AFAC18488DA64ACD88984878834DF25A@mwnl.snu.ac.kr>
+In-Reply-To: <5411AFE7.8060008@candelatech.com>
+References: <CANzpp-k2QdD6C9VJF7hPR2sKOQwhXxxA4qsJcihjKVrwgtXQng@mail.gmail.com>
+ <5411AFE7.8060008@candelatech.com>
+Subject: Re: Change the number of active antennas (RF-chains)
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH 3/3] ath10k: add cal_data debugfs file
-References: <20140911202926.12514.79908.stgit@potku.adurom.net>
- <20140911203152.12514.95332.stgit@potku.adurom.net>
-In-Reply-To: <20140911203152.12514.95332.stgit@potku.adurom.net>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +22,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-On 09/11/2014 01:31 PM, Kalle Valo wrote:
-> Provide calibration data used by the firmware to user space via a debugfs file.
-> This makes it easier to debug calibration related problems.
->
-> Example:
->
-> sudo cp /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data 1.cal
-
-Is this data that could be made human readable, or does it need to
-be parsed by some private tool?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksICAKClRoYW5rIHlvdSBmb3IgeW91ciBhbnN3ZXIuICAKSSB1c2UgMy4xNi4xIGtlcm5lbCB2
+ZXJzaW9uLCAgMy4xNi4xIGJhY2twb3J0IHZlcnNpb24gYW5kIDEwLjEuNDY3LjItMSBmaXJtd2Fy
+ZSB2ZXJzaW9uLiAgCkkgYW0gY3VyaW91cyB0byBrbm93IHlvdXIgdGVzdGluZy4gIAoKVGhpcyBp
+cyBteSB0ZXN0IGJhc2gtc2NyaXB0LgoKIyMjIyMjIyMjIyMgdGVzdC5zaCAjIyMjIyMjIyMjIwoK
+IyEvdXNyL2Jpbi9zdWRvIC9iaW4vYmFzaApybW1vZCBhdGgxMGtfcGNpIGF0aDEwa19jb3JlIGF0
+aCBtYWM4MDIxMSBjZmc4MDIxMQptb2Rwcm9iZSBhdGgxMGtfcGNpICAKaWZjb25maWcgd2xhbjAg
+Mj4vZGV2L251bGwgMT4vZGV2L251bGwKd2hpbGUgWyAkPyAtbmUgMCBdICAKZG8KaWZjb25maWcg
+d2xhbjAgMj4vZGV2L251bGwgMT4vZGV2L251bGwKZG9uZQplY2hvIDB4MTIgPiAvc3lzL21vZHVs
+ZS9hdGgxMGtfY29yZS9wYXJhbWV0ZXJzL2RlYnVnX21hc2sKaXcgZGV2IHdsYW4wIGludGVyZmFj
+ZSBhZGQgbW9uMCB0eXBlIG1vbml0b3IKaXcgbW9uMCBzZXQgZnJlcSA1MTgwIDgwIDUyMTAKaWZj
+b25maWcgbW9uMCB1cAoKCgojIyMjIyMjIyMjIyMjIyMjIyMjIyMjCgp0aGVuIOKApiB0eXBlIHRo
+ZSBmb2xsb3dpbmcgY29tbWFuZCBpbiBzaGVsbCBwcm9tcHQgIAoKZWNobyAweDEgPiAvc3lzL2tl
+cm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5Ki9hdGgxMGsvcnhfY2hhaW5tYXNrCmVjaG8gMHg3ID4g
+L3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeSovYXRoMTBrL3J4X2NoYWlubWFzawoKLgou
+Ci4KCkkgYWxzbyB0ZXN0IGl0IGJ5IHVzaW5nIGhvc3RhcGQuCgpUaGFuayB5b3UuICAKCi0tCk9r
+aHdhbiBMZWUsCk11bHRpbWVkaWEgJiBXaXJlbGVzcyBOZXR3b3JraW5nIExhYi4gKE1XTkwpLApT
+ZW91bCBOYXRpb25hbCBVbml2ZXJzaXR5IChTTlUpLgoKVGVsOiArODItMi04ODAtMTc1NQpDZWxs
+OiArODItMTAtNDYzMi0xOTgwClVSTDogaHR0cDovL213bmwuc251LmFjLmtyL35vaGxlZQoKCk9u
+IDIwMTTrhYQgOeyblCAxMeydvCBUaHVyc2RheSBhdCDsmKTtm4QgMTE6MjEsIEJlbiBHcmVlYXIg
+d3JvdGU6Cgo+IE9uIDA5LzExLzIwMTQgMTI6MzcgQU0sIE9raHdhbiBMZWUgd3JvdGU6Cj4gPiBI
+aSwKPiA+ICAKPiA+IEkgaGF2ZSBiZWVuIHRyeWluZyB0byBjb25maWd1cmUgdGhlIG51bWJlciBv
+ZiBhY3RpdmUgYW50ZW5uYXMgKG5vdAo+ID4gc3BhdGlhbCBzdHJlYW0pIGJ5IHVzaW5nIGF0aDEw
+ay9RQ0E5ODgwLgo+ID4gIAo+ID4gV2hlbiBJIHVzZSBhdGg5aywgd2UgY2FuIGVhc2lseSBjaGFu
+Z2UgdGhlIG51bWJlciBvZiBhY3RpdmUgYW50ZW5uYSBieQo+ID4gdXNpbmcgUkVHX1dSSVRFKGFo
+LCBBUl9QSFlfUlhfQ0hBSU5NQVNLLCBhaC0+cnhjaGFpbm1hc2spIGZ1bmN0aW9uCj4gPiB1c2Vk
+IGluIGFyOTAwM19od19zZXRfY2hhaW5fbWFza3MuCj4gPiAgCj4gPiBIb3dldmVyLCBpbiBhdGgx
+MGssIHdlIGZhaWxlZCB0byBoYW5kbGUgdGhlIHZhbHVlcyAoZS5nLCByeC90eCBjaGFpbgo+ID4g
+bWFzayBvZiBRQ0E5ODgwKSBieSB1c2luZyBhdGgxMGtfd21pX3BkZXZfc2V0X3BhcmFtKGFyLAo+
+ID4gYXItPndtaS5wZGV2X3BhcmFtLT5yeF9jaGFpbl9tYXNrLCByeF9hbnQpIGZ1bmNpb24gaW4g
+dXNlZCBpbgo+ID4gX19hdGgxMGtfc2V0X2FudGVubmEuCj4gIAo+ICAKPiAgCj4gTmV3ZXIga2Vy
+bmVscyBzaG91bGQgaGF2ZSB0aGlzIHN1cHBvcnQsIGFuZCBpdCBzZWVtZWQgdG8gd29yayBpbiBt
+eQo+IHRlc3RpbmcuIEkgZGlkIG5vdCB0ZXN0IHBvd2VyIGNvbnN1bXB0aW9uLgo+ICAKPiBXaGF0
+IGtlcm5lbCB2ZXJzaW9uIGFyZSB5b3UgdXNpbmc/Cj4gIAo+IFRoYW5rcywKPiBCZW4KPiAgCj4g
+LS0gIAo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tIChtYWlsdG86Z3JlZWFy
+YkBjYW5kZWxhdGVjaC5jb20pPgo+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyBodHRwOi8vd3d3
+LmNhbmRlbGF0ZWNoLmNvbQoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
