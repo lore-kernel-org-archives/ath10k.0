@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wg0-f42.google.com ([74.125.82.42])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSORO-00068E-C6
- for ath10k@lists.infradead.org; Fri, 12 Sep 2014 10:50:58 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC PATCH 3/3] ath10k: add cal_data debugfs file
-References: <20140911202926.12514.79908.stgit@potku.adurom.net>
- <20140911203152.12514.95332.stgit@potku.adurom.net>
- <CA+BoTQkPVN2ivGx0LRkXX2TSVpJLgqjBr9nPhtdntYhWdTpabQ@mail.gmail.com>
-Date: Fri, 12 Sep 2014 13:50:30 +0300
-In-Reply-To: <CA+BoTQkPVN2ivGx0LRkXX2TSVpJLgqjBr9nPhtdntYhWdTpabQ@mail.gmail.com>
- (Michal Kazior's message of "Fri, 12 Sep 2014 12:11:06 +0200")
-Message-ID: <874mwdyux5.fsf@kamboji.qca.qualcomm.com>
+ id 1XSOgC-00039n-4o
+ for ath10k@lists.infradead.org; Fri, 12 Sep 2014 11:06:16 +0000
+Received: by mail-wg0-f42.google.com with SMTP id x12so531168wgg.1
+ for <ath10k@lists.infradead.org>; Fri, 12 Sep 2014 04:05:47 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAEFj985XJgeyX7iXaXpYGvFMFUsPndajVVGAYFqzp0P_4zp8Lw@mail.gmail.com>
+References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
+ <5400F497.7070904@candelatech.com>
+ <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
+ <5411AF6A.7010702@candelatech.com>
+ <CAEFj985XJgeyX7iXaXpYGvFMFUsPndajVVGAYFqzp0P_4zp8Lw@mail.gmail.com>
+Date: Fri, 12 Sep 2014 13:05:45 +0200
+Message-ID: <CA+BoTQkr0gB_uYvRk3Za035vAcT1BhqVccVD2gR1iJXGmMpABA@mail.gmail.com>
+Subject: Re: [RFC] ath10k: use raw tx
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +24,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 11 September 2014 22:31, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Provide calibration data used by the firmware to user space via a debugfs file.
->> This makes it easier to debug calibration related problems.
->>
->> Example:
->>
->> sudo cp /sys/kernel/debug/ieee80211/phy0/ath10k/cal_data 1.cal
->
-> How about having a generic r/w access to target memory via debugfs?
-> Userspace would deal with the extraction of the cal data. 
-
-Yeah, Yanbo is working on that kind of generic interface.
-
-> Or do you want to make it easier for the user to provide the cal data
-> without any extra tools (and that sending entire unprocessed target
-> memory dump may introduce some privacy concerns)?
-
-This (to make it easier) is exactly my motivation here. In some of the
-problems, especially once we add support to get calibration data from
-host instead of just OTP, it's important to get easily access to the
-calibration data. User only needs to do a simple cp operation and send
-the file to us for further investigation.
-
-Of course we could use the generic target memory interface for this, but
-it's just more complicated for an unexperienced user and that's why I
-think we should have this interface. But to be honest I'm not 100% sure
-yet so other comments are more than welcome.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIgU2VwdGVtYmVyIDIwMTQgMTI6NDEsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dA
+Z21haWwuY29tPiB3cm90ZToKPiBIaSwgYWxsCj4KPiBEaWQgYW55b25lIHRyeSB0aGUgcmF3IHR4
+IG9uIGFkaG9jIG1vZGU/IEkgaGF2ZSB0ZXN0ZWQgdGhpcyBwYXRjaCB3aXRoCj4gZmlybXdhcmUg
+OTk5Ljk5OS4wLjYzNi4KPgo+IFRoZSB1bmljYXN0IGZyYW1lIGlzIG5vdCB0cmFuc21pdHRlZCB1
+c2luZyByYXcgdHgsIG9ubHkgYnJvYWRjYXN0LgoKSSBkaWQgbm90IHRlc3QgNjM2IHdpdGggSUJT
+Uy4KCgo+IEFmdGVyIGFkanVzdCB0aGUgY21kX3R4LmxlbiBhcyBmb2xsb3csIEkgaGF2ZSBtYW5h
+Z2VkIHRvIG1ha2UgdGhlCj4gYWRob2MgU1RBIHRvIHBpbmcgZWFjaCBvdGhlcnMuCj4KPiBza2Jf
+Y2ItPmh0dC50eGJ1Zi0+Y21kX3R4LmxlbiA9IF9fY3B1X3RvX2xlMTYobXNkdS0+bGVuIC0KPiBz
+aXplb2Yoc3RydWN0IGllZWU4MDIxMV9oZHJfM2FkZHIpICsgc2l6ZW9mKHN0cnVjdCBldGhoZHIp
+KTsKPgo+IENhbiBzb21lb25lIGNvbW1lbnQgb24gdGhpcz8KCkludGVyZXN0aW5nIQoKQ2FuIHlv
+dSBjb25maXJtIHdoYXQga2luZCBvZiBhIGhlYWRlciB5b3VyIHVuaWNhc3QgZnJhbWVzIGFjdHVh
+bGx5CmhhdmU/IERvIHlvdSBwZXJoYXBzIHJ1biA0YWRkciBtb2RlPyBPciBtYXliZSBEYXRhL1Fv
+UyBEYXRhICgyIGJ5dGUKZGlmZmVyZW5jZSBhdCBsZWFzdCkgY2FsY3VsYXRpb24gaXMgdGhlIHBy
+b2JsZW0uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
