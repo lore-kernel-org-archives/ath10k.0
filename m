@@ -1,19 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSLnp-0006xZ-3C
- for ath10k@lists.infradead.org; Fri, 12 Sep 2014 08:01:57 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [RFC PATCH 1/3] ath10k: ignore diagnose pipes in
- ath10k_pci_ce_recv_data()/_send_done()
-References: <20140911202926.12514.79908.stgit@potku.adurom.net>
- <20140911203141.12514.23469.stgit@potku.adurom.net>
- <CA+BoTQ=9kUFXpTKwE1i8TjEPFeszih+U9FDpWRdaYguf7Xa-Gw@mail.gmail.com>
-Date: Fri, 12 Sep 2014 11:01:12 +0300
-In-Reply-To: <CA+BoTQ=9kUFXpTKwE1i8TjEPFeszih+U9FDpWRdaYguf7Xa-Gw@mail.gmail.com>
- (Michal Kazior's message of "Fri, 12 Sep 2014 09:53:08 +0200")
-Message-ID: <8761gt1d4n.fsf@kamboji.qca.qualcomm.com>
+ id 1XSNcI-0002e4-8C
+ for ath10k@lists.infradead.org; Fri, 12 Sep 2014 09:58:11 +0000
+Received: by mail-we0-f176.google.com with SMTP id q58so475027wes.7
+ for <ath10k@lists.infradead.org>; Fri, 12 Sep 2014 02:57:46 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20140911203147.12514.84857.stgit@potku.adurom.net>
+References: <20140911202926.12514.79908.stgit@potku.adurom.net>
+ <20140911203147.12514.84857.stgit@potku.adurom.net>
+Date: Fri, 12 Sep 2014 11:57:46 +0200
+Message-ID: <CA+BoTQ=oj9SkaeWBbX2jsD2UHUknhb6f_-ZUBbVSmuWUXFvm-g@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] ath10k: add diag_read() to hif ops
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 11 September 2014 22:31, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> As ath10k_pci_diag_read_mem() uses polling to receive data from CE, the CE callbacks
->> have to ignore the pipe used for diagnose reads. Otherwise ath10k crashes due
->> to NULL dereference and polling reads timeout.
->>
->> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->> ---
->>  drivers/net/wireless/ath/ath10k/pci.c |    6 ++++++
->>  1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
->> index baeb98e78b1f..154451ab3e3c 100644
->> --- a/drivers/net/wireless/ath/ath10k/pci.c
->> +++ b/drivers/net/wireless/ath/ath10k/pci.c
->> @@ -819,6 +819,9 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
->>         unsigned int nbytes;
->>         unsigned int transfer_id;
->>
->> +       if (ce_state->id == 7)
->> +               return;
->
-> I think you can check it in a saner way: (ce_state == ar_pci->ce_diag).
->
-> Another approach is to prevent this from happening in the first place
-> by never unmasking the diagnostic window copy engine pipe in
-> ath10k_ce_enable_interrupts() and preventing
-> ath10k_ce_per_engine_service() from being called in
-> ath10k_pci_hif_send_complete_check() for the diagnostic ce pipe.
-
-I like the latter approach and I'll try to implement that first. Thanks!
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTEgU2VwdGVtYmVyIDIwMTQgMjI6MzEsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IGRpYWdfcmVhZCgpIGlzIHVzZWQgZm9yIHJlYWRpbmcgZnJvbSBmaXJt
+d2FyZSBtZW1vcnkgdmlhIHRoZSBkaWFnbm9zZSB3aW5kb3cuCj4gRmlyc3QgdXNlciB3aWxsIGJl
+IGNhbF9kYXRhIGRlYnVnZnMgZmlsZS4KWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvcGNpLmMKPiBpbmRleCAxNTQ0NTFhYjNlM2MuLmQzYzUxMDc5MDM0ZSAxMDA2NDQKPiAtLS0g
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gKysrIGIvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2kuYwo+IEBAIC05NDEsNiArOTQxLDEzIEBAIGVycjoK
+PiAgICAgICAgIHJldHVybiBlcnI7Cj4gIH0KPgo+ICtzdGF0aWMgaW50IGF0aDEwa19wY2lfaGlm
+X2RpYWdfcmVhZChzdHJ1Y3QgYXRoMTBrICphciwgdTMyIGFkZHJlc3MsIHZvaWQgKmJ1ZiwKPiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplX3QgYnVmX2xlbikKPiArewo+
+ICsgICAgICAgLyogRklYTUU6IGxvY2tpbmcgKi8KPiArICAgICAgIHJldHVybiBhdGgxMGtfcGNp
+X2RpYWdfcmVhZF9tZW0oYXIsIGFkZHJlc3MsIGJ1ZiwgYnVmX2xlbik7CgpIbW0uLiBUaGlzIGNh
+biBwb3RlbnRpYWxseSBjb2xsaWRlIHdpdGggZmlybXdhcmUgY3Jhc2ggYXMgaXQgdXNlcyBDRQpk
+aWFnIHdpbmRvdyBhcyB3ZWxsLgoKSSdtIHRoaW5raW5nIGVudGlyZSBib2RpZXMgb2YgZGlhZ19y
+ZWFkX21lbSgpL2RpYWdfd3JpdGVtZW0oKSBzaG91bGQKYmUgcHJvdGVjdGVkIGJ5IGFyX3BjaS0+
+Y2VfbG9jay4gSXQgc2hvdWxkbid0IGJlIGhhcmQuIEFzIGZvcgpkaWFnX3JlYWRfbWVtKCk6Cgog
+KiBzL2F0aDEwa19jZV9yeF9wb3N0X2J1Zi9fX2F0aDEwa19jZV9yeF9wb3N0X2J1Zi8KICogcy9h
+dGgxMGtfY2Vfc2VuZC9hdGgxMGtfY2Vfc2VuZF9ub2xvY2svCiAqIHMvYXRoMTBrX2NlX2NvbXBs
+ZXRlZF9zZW5kX25leHQvYXRoMTBrX2NlX2NvbXBsZXRlZF9zZW5kX25leHRfbm9sb2NrLwogKiBz
+L2F0aDEwa19jZV9jb21wbGV0ZWRfcmVjdl9uZXh0L2F0aDEwa19jZV9jb21wbGV0ZWRfcmVjdl9u
+ZXh0X25vbG9jay8KCk5vdGU6IE1vc3QgX25vbG9jayBzdHVmZiBpcyBzdGF0aWMgaW4gY2UuYyBz
+byBpdCBuZWVkcyB0byBiZSBjaGFuZ2VkCnRvIGJlIGFjY2Vzc2libGUgaW4gcGNpLmMuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
