@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XSTdj-0003lM-At
- for ath10k@lists.infradead.org; Fri, 12 Sep 2014 16:24:03 +0000
-Message-ID: <54131E0D.3010903@candelatech.com>
-Date: Fri, 12 Sep 2014 09:23:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-vc0-x236.google.com ([2607:f8b0:400c:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XSbom-0000mn-J7
+ for ath10k@lists.infradead.org; Sat, 13 Sep 2014 01:08:01 +0000
+Received: by mail-vc0-f182.google.com with SMTP id le20so1495663vcb.13
+ for <ath10k@lists.infradead.org>; Fri, 12 Sep 2014 18:07:37 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Change the number of active antennas (RF-chains)
-References: <CANzpp-k2QdD6C9VJF7hPR2sKOQwhXxxA4qsJcihjKVrwgtXQng@mail.gmail.com>
- <5411AFE7.8060008@candelatech.com>
- <AFAC18488DA64ACD88984878834DF25A@mwnl.snu.ac.kr>
-In-Reply-To: <AFAC18488DA64ACD88984878834DF25A@mwnl.snu.ac.kr>
+In-Reply-To: <CA+BoTQkr0gB_uYvRk3Za035vAcT1BhqVccVD2gR1iJXGmMpABA@mail.gmail.com>
+References: <1408693965-29858-1-git-send-email-michal.kazior@tieto.com>
+ <5400F497.7070904@candelatech.com>
+ <CA+BoTQnhqxtHcX46-U+TjQBMDm27jM11xCJ956UFM_gjMvvs+A@mail.gmail.com>
+ <5411AF6A.7010702@candelatech.com>
+ <CAEFj985XJgeyX7iXaXpYGvFMFUsPndajVVGAYFqzp0P_4zp8Lw@mail.gmail.com>
+ <CA+BoTQkr0gB_uYvRk3Za035vAcT1BhqVccVD2gR1iJXGmMpABA@mail.gmail.com>
+Date: Sat, 13 Sep 2014 09:07:37 +0800
+Message-ID: <CAEFj987FUy7UrTXz-nSCcpMQ+vYwEXTMnd3BzpJ7HEEbC5Ti8A@mail.gmail.com>
+Subject: Re: [RFC] ath10k: use raw tx
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +25,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDkvMTEvMjAxNCAwODo0OCBQTSwgT2tod2FuIExlZSB3cm90ZToKPiBIaSwgIAo+IAo+IFRo
-YW5rIHlvdSBmb3IgeW91ciBhbnN3ZXIuICAKPiBJIHVzZSAzLjE2LjEga2VybmVsIHZlcnNpb24s
-ICAzLjE2LjEgYmFja3BvcnQgdmVyc2lvbiBhbmQgMTAuMS40NjcuMi0xIGZpcm13YXJlIHZlcnNp
-b24uICAKPiBJIGFtIGN1cmlvdXMgdG8ga25vdyB5b3VyIHRlc3RpbmcuICAKPiAKPiBUaGlzIGlz
-IG15IHRlc3QgYmFzaC1zY3JpcHQuCj4gCj4gIyMjIyMjIyMjIyMgdGVzdC5zaCAjIyMjIyMjIyMj
-Iwo+IAo+ICMhL3Vzci9iaW4vc3VkbyAvYmluL2Jhc2gKPiBybW1vZCBhdGgxMGtfcGNpIGF0aDEw
-a19jb3JlIGF0aCBtYWM4MDIxMSBjZmc4MDIxMQo+IG1vZHByb2JlIGF0aDEwa19wY2kgIAo+IGlm
-Y29uZmlnIHdsYW4wIDI+L2Rldi9udWxsIDE+L2Rldi9udWxsCj4gd2hpbGUgWyAkPyAtbmUgMCBd
-ICAKPiBkbwo+IGlmY29uZmlnIHdsYW4wIDI+L2Rldi9udWxsIDE+L2Rldi9udWxsCj4gZG9uZQoK
-V2hhdCBhcmUgdGhlIGNvbW1hbmRzIGFib3ZlIHN1cHBvc2VkIHRvIGJlIGRvaW5nPwoKPiBlY2hv
-IDB4MTIgPiAvc3lzL21vZHVsZS9hdGgxMGtfY29yZS9wYXJhbWV0ZXJzL2RlYnVnX21hc2sKPiBp
-dyBkZXYgd2xhbjAgaW50ZXJmYWNlIGFkZCBtb24wIHR5cGUgbW9uaXRvcgo+IGl3IG1vbjAgc2V0
-IGZyZXEgNTE4MCA4MCA1MjEwCj4gaWZjb25maWcgbW9uMCB1cAo+IAo+IAo+IAo+ICMjIyMjIyMj
-IyMjIyMjIyMjIyMjIyMKPiAKPiB0aGVuIOKApiB0eXBlIHRoZSBmb2xsb3dpbmcgY29tbWFuZCBp
-biBzaGVsbCBwcm9tcHQgIAo+IAo+IGVjaG8gMHgxID4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgw
-MjExL3BoeSovYXRoMTBrL3J4X2NoYWlubWFzawo+IGVjaG8gMHg3ID4gL3N5cy9rZXJuZWwvZGVi
-dWcvaWVlZTgwMjExL3BoeSovYXRoMTBrL3J4X2NoYWlubWFzawoKWW91IHNob3VsZCBiZSBhYmxl
-IHRvIGNvbmZpZ3VyZSB0aGlzIHVzaW5nICdpdycKCkFuZCwgeW91IHByb2JhYmx5IG5lZWQgdG8g
-Y29uZmlndXJlIHRoZSBjaGFpbm1hc2sgYmVmb3JlCmNyZWF0aW5nIG9yIHN0YXJ0aW5nIHRoZSB3
-bGFuIGFuZCBvdGhlciB2aWZzLgoKVGhhbmtzLApCZW4KCi0tIApCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNh
-bmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Fri, Sep 12, 2014 at 7:05 PM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> On 12 September 2014 12:41, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+>
+> Interesting!
+>
+> Can you confirm what kind of a header your unicast frames actually
+> have? Do you perhaps run 4addr mode? Or maybe Data/QoS Data (2 byte
+> difference at least) calculation is the problem.
+>
+
+It's a QoS Data frame. Yes (2 byte different). Probably the firmware
+raw tx mode only cater for non-QoS frame?
+
+Question, 4addr mode is allowed in adhoc mode by the firmware? No, right?
+
+----
+Chun-Yeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
