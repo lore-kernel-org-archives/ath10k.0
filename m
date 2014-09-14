@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from emh03.mail.saunalahti.fi ([62.142.5.109])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XT6Kj-0003zT-Rn
- for ath10k@lists.infradead.org; Sun, 14 Sep 2014 09:43:02 +0000
-Subject: [PATCH 01/10] ath10k: fix parenthesis alignment warning in
- ath10k_htt_rx_alloc()
+ id 1XT6Kf-0003xh-Cx
+ for ath10k@lists.infradead.org; Sun, 14 Sep 2014 09:42:58 +0000
+Subject: [PATCH 00/10] ath10k: checkpatch fixes from v3.17
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Sun, 14 Sep 2014 12:50:00 +0300
-Message-ID: <20140914095000.9063.95112.stgit@x230>
-In-Reply-To: <20140914094728.9063.32593.stgit@x230>
-References: <20140914094728.9063.32593.stgit@x230>
+Date: Sun, 14 Sep 2014 12:49:55 +0300
+Message-ID: <20140914094728.9063.32593.stgit@x230>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,41 +23,46 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Fixes checkpatch warning:
+Hi,
 
-ath10k/htt_rx.c:519: CHECK: Alignment should match open parenthesis
+some fixes to recently added checkpatch warnings. Please review.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Kalle
+
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 57e1fe77602b..7313bd16a4b3 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -488,6 +488,7 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	struct ath10k *ar = htt->ar;
- 	dma_addr_t paddr;
- 	void *vaddr;
-+	size_t size;
- 	struct timer_list *timer = &htt->rx_ring.refill_retry_timer;
- 
- 	htt->rx_ring.size = ath10k_htt_rx_ring_size(htt);
-@@ -515,9 +516,9 @@ int ath10k_htt_rx_alloc(struct ath10k_htt *htt)
- 	if (!htt->rx_ring.netbufs_ring)
- 		goto err_netbuf;
- 
--	vaddr = dma_alloc_coherent(htt->ar->dev,
--		   (htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring)),
--		   &paddr, GFP_DMA);
-+	size = htt->rx_ring.size * sizeof(htt->rx_ring.paddrs_ring);
-+
-+	vaddr = dma_alloc_coherent(htt->ar->dev, size, &paddr, GFP_DMA);
- 	if (!vaddr)
- 		goto err_dma_ring;
- 
+Kalle Valo (10):
+      ath10k: fix parenthesis alignment warning in ath10k_htt_rx_alloc()
+      ath10k: fix checkpatch warnings about parenthesis alignment
+      ath10k: fix use of multiple blank lines
+      ath10k: fix missing a blank line after declarations
+      ath10k: fix space after a cast style errors
+      ath10k: don't use return on void functions
+      ath10k: else is not generally useful after a break or return
+      ath10k: miscellaneous checkpatch fixes
+      ath10k: reformat help text in ath10k_read_simulate_fw_crash()
+      ath10k: use ether_addr_copy()
 
+
+ drivers/net/wireless/ath/ath10k/bmi.h       |    1 
+ drivers/net/wireless/ath/ath10k/ce.c        |    2 -
+ drivers/net/wireless/ath/ath10k/ce.h        |   13 ++---
+ drivers/net/wireless/ath/ath10k/debug.c     |   33 ++++++--------
+ drivers/net/wireless/ath/ath10k/hif.h       |    1 
+ drivers/net/wireless/ath/ath10k/htc.c       |   10 +---
+ drivers/net/wireless/ath/ath10k/htc.h       |    1 
+ drivers/net/wireless/ath/ath10k/htt.c       |    2 -
+ drivers/net/wireless/ath/ath10k/htt.h       |    3 -
+ drivers/net/wireless/ath/ath10k/htt_rx.c    |   52 +++++++++++----------
+ drivers/net/wireless/ath/ath10k/htt_tx.c    |    2 -
+ drivers/net/wireless/ath/ath10k/mac.c       |   45 ++++++++----------
+ drivers/net/wireless/ath/ath10k/pci.c       |   37 ++++++++-------
+ drivers/net/wireless/ath/ath10k/rx_desc.h   |    1 
+ drivers/net/wireless/ath/ath10k/targaddrs.h |    1 
+ drivers/net/wireless/ath/ath10k/txrx.c      |    2 -
+ drivers/net/wireless/ath/ath10k/wmi.c       |   66 ++++++++++++++-------------
+ drivers/net/wireless/ath/ath10k/wmi.h       |   17 ++-----
+ 18 files changed, 132 insertions(+), 157 deletions(-)
 
 _______________________________________________
 ath10k mailing list
