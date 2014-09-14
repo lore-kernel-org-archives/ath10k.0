@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
+Received: from emh02.mail.saunalahti.fi ([62.142.5.108])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XT6Ky-00045L-7J
- for ath10k@lists.infradead.org; Sun, 14 Sep 2014 09:43:17 +0000
-Subject: [PATCH 04/10] ath10k: fix missing a blank line after declarations
+ id 1XT6Kv-00044G-4a
+ for ath10k@lists.infradead.org; Sun, 14 Sep 2014 09:43:14 +0000
+Subject: [PATCH 03/10] ath10k: fix use of multiple blank lines
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Sun, 14 Sep 2014 12:50:17 +0300
-Message-ID: <20140914095017.9063.87892.stgit@x230>
+Date: Sun, 14 Sep 2014 12:50:11 +0300
+Message-ID: <20140914095011.9063.98994.stgit@x230>
 In-Reply-To: <20140914094728.9063.32593.stgit@x230>
 References: <20140914094728.9063.32593.stgit@x230>
 MIME-Version: 1.0
@@ -27,153 +27,309 @@ Cc: linux-wireless@vger.kernel.org
 
 Fixes checkpatch warnings:
 
-WARNING: Missing a blank line after declarations
-
-Please note that some of the cases I fixed by moving the variable declarations
-to the beginning of the function, which is the preferred style in ath10k.
+CHECK: Please don't use multiple blank lines
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |   10 +++++++---
- drivers/net/wireless/ath/ath10k/mac.c    |    6 ++----
- drivers/net/wireless/ath/ath10k/wmi.c    |    8 ++++++--
- 3 files changed, 15 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/bmi.h       |    1 -
+ drivers/net/wireless/ath/ath10k/ce.c        |    2 --
+ drivers/net/wireless/ath/ath10k/ce.h        |    3 ---
+ drivers/net/wireless/ath/ath10k/hif.h       |    1 -
+ drivers/net/wireless/ath/ath10k/htc.h       |    1 -
+ drivers/net/wireless/ath/ath10k/htt.h       |    2 --
+ drivers/net/wireless/ath/ath10k/htt_rx.c    |    1 -
+ drivers/net/wireless/ath/ath10k/htt_tx.c    |    1 -
+ drivers/net/wireless/ath/ath10k/mac.c       |    4 ----
+ drivers/net/wireless/ath/ath10k/rx_desc.h   |    1 -
+ drivers/net/wireless/ath/ath10k/targaddrs.h |    1 -
+ drivers/net/wireless/ath/ath10k/wmi.c       |    2 --
+ drivers/net/wireless/ath/ath10k/wmi.h       |    9 ---------
+ 13 files changed, 29 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/bmi.h b/drivers/net/wireless/ath/ath10k/bmi.h
+index 111ab701465c..31a990635490 100644
+--- a/drivers/net/wireless/ath/ath10k/bmi.h
++++ b/drivers/net/wireless/ath/ath10k/bmi.h
+@@ -177,7 +177,6 @@ struct bmi_target_info {
+ 	u32 type;
+ };
+ 
+-
+ /* in msec */
+ #define BMI_COMMUNICATION_TIMEOUT_HZ (1*HZ)
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 71eef233bd01..101cadb6e4ba 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -260,7 +260,6 @@ static inline void ath10k_ce_engine_int_status_clear(struct ath10k *ar,
+ 	ath10k_pci_write32(ar, ce_ctrl_addr + HOST_IS_ADDRESS, mask);
+ }
+ 
+-
+ /*
+  * Guts of ath10k_ce_send, used by both ath10k_ce_send and
+  * ath10k_ce_sendlist_send.
+@@ -385,7 +384,6 @@ int ath10k_ce_num_free_src_entries(struct ath10k_ce_pipe *pipe)
+ 	return delta;
+ }
+ 
+-
+ int __ath10k_ce_rx_num_free_bufs(struct ath10k_ce_pipe *pipe)
+ {
+ 	struct ath10k *ar = pipe->ar;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index ad4fa7eb945f..329b7340fa72 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -20,7 +20,6 @@
+ 
+ #include "hif.h"
+ 
+-
+ /* Maximum number of Copy Engine's supported */
+ #define CE_COUNT_MAX 8
+ #define CE_HTT_H2T_MSG_SRC_NENTRIES 4096
+@@ -37,7 +36,6 @@
+ 
+ struct ath10k_ce_pipe;
+ 
+-
+ #define CE_DESC_FLAGS_GATHER         (1 << 0)
+ #define CE_DESC_FLAGS_BYTE_SWAP      (1 << 1)
+ #define CE_DESC_FLAGS_META_DATA_MASK 0xFFFC
+@@ -383,7 +381,6 @@ struct ce_attr {
+ #define DST_WATERMARK_HIGH_RESET		0
+ #define DST_WATERMARK_ADDRESS			0x0050
+ 
+-
+ static inline u32 ath10k_ce_base_address(unsigned int ce_id)
+ {
+ 	return CE0_BASE_ADDRESS + (CE1_BASE_ADDRESS - CE0_BASE_ADDRESS) * ce_id;
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index 2ac7beacddca..62323fea27e1 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -91,7 +91,6 @@ struct ath10k_hif_ops {
+ 	int (*resume)(struct ath10k *ar);
+ };
+ 
+-
+ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 				   struct ath10k_hif_sg_item *items,
+ 				   int n_items)
+diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
+index bf532f671189..527179c0edce 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.h
++++ b/drivers/net/wireless/ath/ath10k/htc.h
+@@ -214,7 +214,6 @@ struct ath10k_htc_frame {
+ 	struct ath10k_htc_record trailer[0];
+ } __packed __aligned(4);
+ 
+-
+ /*******************/
+ /* Host-side stuff */
+ /*******************/
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 6c93f3885ee5..e20472672efe 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -265,7 +265,6 @@ enum htt_mgmt_tx_status {
+ 
+ /*=== target -> host messages ===============================================*/
+ 
+-
+ enum htt_t2h_msg_type {
+ 	HTT_T2H_MSG_TYPE_VERSION_CONF		= 0x0,
+ 	HTT_T2H_MSG_TYPE_RX_IND			= 0x1,
+@@ -1148,7 +1147,6 @@ struct htt_resp {
+ 	};
+ } __packed;
+ 
+-
+ /*** host side structures follow ***/
+ 
+ struct htt_tx_done {
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 1e69db52e465..26196ed947bc 100644
+index a720de3d20c4..1e69db52e465 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -222,6 +222,7 @@ static void ath10k_htt_rx_msdu_buff_replenish(struct ath10k_htt *htt)
- static void ath10k_htt_rx_ring_refill_retry(unsigned long arg)
- {
- 	struct ath10k_htt *htt = (struct ath10k_htt *)arg;
-+
- 	ath10k_htt_rx_msdu_buff_replenish(htt);
- }
+@@ -42,7 +42,6 @@
+ /* when under memory pressure rx ring refill may fail and needs a retry */
+ #define HTT_RX_RING_REFILL_RETRY_MS 50
  
-@@ -313,7 +314,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- {
- 	struct ath10k *ar = htt->ar;
- 	int msdu_len, msdu_chaining = 0;
--	struct sk_buff *msdu;
-+	struct sk_buff *msdu, *next;
- 	struct htt_rx_desc *rx_desc;
+-
+ static int ath10k_htt_rx_get_csum_state(struct sk_buff *skb);
+ static void ath10k_htt_txrx_compl_task(unsigned long ptr);
  
- 	lockdep_assert_held(&htt->rx_ring.lock);
-@@ -450,7 +451,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 			msdu->next = NULL;
- 			break;
- 		} else {
--			struct sk_buff *next = ath10k_htt_rx_netbuf_pop(htt);
-+			next = ath10k_htt_rx_netbuf_pop(htt);
- 			msdu->next = next;
- 			msdu = next;
- 		}
-@@ -479,6 +480,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- static void ath10k_htt_rx_replenish_task(unsigned long ptr)
- {
- 	struct ath10k_htt *htt = (struct ath10k_htt *)ptr;
-+
- 	ath10k_htt_rx_msdu_buff_replenish(htt);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index eaa73aa99c20..1ab64631ba1b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -377,7 +377,6 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	int msdu_id = -1;
+ 	int res;
  
-@@ -636,8 +638,10 @@ static struct ieee80211_hdr *ath10k_htt_rx_skb_get_hdr(struct sk_buff *skb)
- /* This function only applies for first msdu in an msdu chain */
- static bool ath10k_htt_rx_hdr_is_amsdu(struct ieee80211_hdr *hdr)
- {
-+	u8 *qc;
-+
- 	if (ieee80211_is_data_qos(hdr->frame_control)) {
--		u8 *qc = ieee80211_get_qos_ctl(hdr);
-+		qc = ieee80211_get_qos_ctl(hdr);
- 		if (qc[0] & 0x80)
- 			return true;
- 	}
+-
+ 	res = ath10k_htt_tx_inc_pending(htt);
+ 	if (res)
+ 		goto err;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 75b30adfd367..c1cf6ff319e8 100644
+index bd852078a413..75b30adfd367 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1157,6 +1157,7 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
+@@ -225,7 +225,6 @@ static int ath10k_clear_vdev_key(struct ath10k_vif *arvif,
+ 	return first_errno;
+ }
+ 
+-
+ /*********************/
+ /* General utilities */
+ /*********************/
+@@ -1262,7 +1261,6 @@ static int ath10k_peer_assoc_qos_ap(struct ath10k *ar,
+ 			uapsd |= WMI_AP_PS_UAPSD_AC0_DELIVERY_EN |
+ 				 WMI_AP_PS_UAPSD_AC0_TRIGGER_EN;
+ 
+-
+ 		if (sta->max_sp < MAX_WMI_AP_PS_PEER_PARAM_MAX_SP)
+ 			max_sp = sta->max_sp;
+ 
+@@ -1316,7 +1314,6 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 	arg->peer_flags |= WMI_PEER_VHT;
+ 	arg->peer_vht_caps = vht_cap->cap;
+ 
+-
+ 	ampdu_factor = (vht_cap->cap &
+ 			IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_MASK) >>
+ 		       IEEE80211_VHT_CAP_MAX_A_MPDU_LENGTH_EXPONENT_SHIFT;
+@@ -4715,7 +4712,6 @@ static struct ieee80211_sta_ht_cap ath10k_get_ht_cap(struct ath10k *ar)
+ 	return ht_cap;
+ }
+ 
+-
+ static void ath10k_get_arvif_iter(void *data, u8 *mac,
+ 				  struct ieee80211_vif *vif)
  {
- 	const struct ieee80211_sta_ht_cap *ht_cap = &sta->ht_cap;
- 	int i, n;
-+	u32 stbc;
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 1c584c4b019c..e1ffdd57a18c 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -839,7 +839,6 @@ struct rx_ppdu_start {
+  *		Reserved: HW should fill with 0, FW should ignore.
+ */
  
- 	lockdep_assert_held(&ar->conf_mutex);
+-
+ #define RX_PPDU_END_FLAGS_PHY_ERR             (1 << 0)
+ #define RX_PPDU_END_FLAGS_RX_LOCATION         (1 << 1)
+ #define RX_PPDU_END_FLAGS_TXBF_H_INFO         (1 << 2)
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index be7ba1e78afe..9d0ae30f9ff1 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -284,7 +284,6 @@ Fw Mode/SubMode Mask
+ #define HI_OPTION_ALL_FW_SUBMODE_MASK  0xFF00
+ #define HI_OPTION_ALL_FW_SUBMODE_SHIFT 0x8
  
-@@ -1193,7 +1194,6 @@ static void ath10k_peer_assoc_h_ht(struct ath10k *ar,
- 	}
- 
- 	if (ht_cap->cap & IEEE80211_HT_CAP_RX_STBC) {
--		u32 stbc;
- 		stbc = ht_cap->cap & IEEE80211_HT_CAP_RX_STBC;
- 		stbc = stbc >> IEEE80211_HT_CAP_RX_STBC_SHIFT;
- 		stbc = stbc << WMI_RC_RX_STBC_FLAG_S;
-@@ -3011,7 +3011,7 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
- 	int ret = 0;
--	u32 vdev_param, pdev_param;
-+	u32 vdev_param, pdev_param, slottime, preamble;
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -3132,7 +3132,6 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_SLOT) {
--		u32 slottime;
- 		if (info->use_short_slot)
- 			slottime = WMI_VDEV_SLOT_TIME_SHORT; /* 9us */
- 
-@@ -3151,7 +3150,6 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 	}
- 
- 	if (changed & BSS_CHANGED_ERP_PREAMBLE) {
--		u32 preamble;
- 		if (info->use_short_preamble)
- 			preamble = WMI_VDEV_PREAMBLE_SHORT;
- 		else
+-
+ /* hi_option_flag2 options */
+ #define HI_OPTION_OFFLOAD_AMSDU     0x01
+ #define HI_OPTION_DFS_SUPPORT       0x02 /* Enable DFS support */
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ed438edb9763..6b9f38b8b827 100644
+index 3b5749d8b081..ed438edb9763 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -612,6 +612,7 @@ static struct wmi_cmd_map wmi_10_2_cmd_map = {
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
+@@ -1511,7 +1511,6 @@ static u32 ath10k_p2p_calc_noa_ie_len(struct wmi_p2p_noa_info *noa)
+ 	u8 opp_ps_info = noa->ctwindow_oppps;
+ 	bool opps_enabled = !!(opp_ps_info & WMI_P2P_OPPPS_ENABLE_BIT);
+ 
+-
+ 	if (!noa_descriptors && !opps_enabled)
+ 		return len;
+ 
+@@ -1568,7 +1567,6 @@ cleanup:
+ 	kfree(old_data);
+ }
+ 
+-
+ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
  {
- 	int ret;
-+
- 	ret = wait_for_completion_timeout(&ar->wmi.service_ready,
- 					  WMI_SERVICE_READY_TIMEOUT_HZ);
- 	return ret;
-@@ -620,6 +621,7 @@ int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
- int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar)
- {
- 	int ret;
-+
- 	ret = wait_for_completion_timeout(&ar->wmi.unified_ready,
- 					  WMI_UNIFIED_READY_TIMEOUT_HZ);
- 	return ret;
-@@ -1384,6 +1386,8 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
- 	struct ieee80211_tim_ie *tim;
- 	u8 *ies, *ie;
- 	u8 ie_len, pvm_len;
-+	__le32 t;
-+	u32 v;
+ 	struct wmi_host_swba_event *ev;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 1cc594e18a07..86f5ebccfe79 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1269,7 +1269,6 @@ enum wmi_channel_change_cause {
+ 				WMI_HT_CAP_RX_STBC       | \
+ 				WMI_HT_CAP_LDPC)
  
- 	/* if next SWBA has no tim_changed the tim_bitmap is garbage.
- 	 * we must copy the bitmap upon change and reuse it later */
-@@ -1394,8 +1398,8 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
- 			     sizeof(bcn_info->tim_info.tim_bitmap));
+-
+ /*
+  * WMI_VHT_CAP_* these maps to ieee 802.11ac vht capability information
+  * field. The fields not defined here are not supported, or reserved.
+@@ -1471,7 +1470,6 @@ struct wmi_service_ready_event_10x {
+ 	struct wlan_host_mem_req mem_reqs[1];
+ } __packed;
  
- 		for (i = 0; i < sizeof(arvif->u.ap.tim_bitmap); i++) {
--			__le32 t = bcn_info->tim_info.tim_bitmap[i / 4];
--			u32 v = __le32_to_cpu(t);
-+			t = bcn_info->tim_info.tim_bitmap[i / 4];
-+			v = __le32_to_cpu(t);
- 			arvif->u.ap.tim_bitmap[i] = (v >> ((i % 4) * 8)) & 0xFF;
- 		}
+-
+ #define WMI_SERVICE_READY_TIMEOUT_HZ (5*HZ)
+ #define WMI_UNIFIED_READY_TIMEOUT_HZ (5*HZ)
  
+@@ -2125,7 +2123,6 @@ struct wmi_start_scan_cmd_10x {
+ 	 */
+ } __packed;
+ 
+-
+ struct wmi_ssid_arg {
+ 	int len;
+ 	const u8 *ssid;
+@@ -2186,7 +2183,6 @@ struct wmi_start_scan_arg {
+ /* WMI_SCAN_CLASS_MASK must be the same value as IEEE80211_SCAN_CLASS_MASK */
+ #define WMI_SCAN_CLASS_MASK 0xFF000000
+ 
+-
+ enum wmi_stop_scan_type {
+ 	WMI_SCAN_STOP_ONE	= 0x00000000, /* stop by scan_id */
+ 	WMI_SCAN_STOP_VDEV_ALL	= 0x01000000, /* stop by vdev_id */
+@@ -2371,7 +2367,6 @@ struct wmi_single_phyerr_rx_hdr {
+ 	__le32 nf_list_1;
+ 	__le32 nf_list_2;
+ 
+-
+ 	/* Length of the frame */
+ 	__le32 buf_len;
+ } __packed;
+@@ -2473,7 +2468,6 @@ struct phyerr_fft_report {
+ #define SEARCH_FFT_REPORT_REG1_NUM_STR_BINS_IB_MASK	0x000000FF
+ #define SEARCH_FFT_REPORT_REG1_NUM_STR_BINS_IB_LSB	0
+ 
+-
+ struct phyerr_tlv {
+ 	__le16 len;
+ 	u8 tag;
+@@ -2504,7 +2498,6 @@ struct wmi_echo_cmd {
+ 	__le32 value;
+ } __packed;
+ 
+-
+ struct wmi_pdev_set_regdomain_cmd {
+ 	__le32 reg_domain;
+ 	__le32 reg_domain_2G;
+@@ -2553,7 +2546,6 @@ struct wmi_pdev_set_quiet_cmd {
+ 	__le32 enabled;
+ } __packed;
+ 
+-
+ /*
+  * 802.11g protection mode.
+  */
+@@ -4291,7 +4283,6 @@ struct wmi_tbtt_offset_event {
+ 	__le32 tbttoffset_list[WMI_MAX_AP_VDEV];
+ } __packed;
+ 
+-
+ struct wmi_peer_create_cmd {
+ 	__le32 vdev_id;
+ 	struct wmi_mac_addr peer_macaddr;
 
 
 _______________________________________________
