@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XU8pf-0004dY-1W
- for ath10k@lists.infradead.org; Wed, 17 Sep 2014 06:35:16 +0000
-Received: by mail-wg0-f45.google.com with SMTP id z12so866853wgg.4
- for <ath10k@lists.infradead.org>; Tue, 16 Sep 2014 23:34:45 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUHXA-0001Kh-V8
+ for ath10k@lists.infradead.org; Wed, 17 Sep 2014 15:52:45 +0000
+Message-ID: <5419AE32.6010805@candelatech.com>
+Date: Wed, 17 Sep 2014 08:52:18 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <541884AC.3020402@candelatech.com>
-References: <541884AC.3020402@candelatech.com>
-Date: Wed, 17 Sep 2014 08:34:44 +0200
-Message-ID: <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
 Subject: Re: Hard lockup during vif restart tests.
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <541884AC.3020402@candelatech.com>
+ <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
+In-Reply-To: <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +19,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMTYgU2VwdGVtYmVyIDIwMTQgMjA6NDIsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPiB3cm90ZToKPiBUaGlzIGlzIG9uIGEgMy4xNC4xNCsgaGFja2VkIGtlcm5lbCwgd2l0
-aCBDVCBmaXJtd2FyZS4KPgo+IFRlc3QgY2FzZSBpcyB0byByZXN0YXJ0IHN0YXRpb25zIChhbmQg
-dGhlIEFQCj4gb24gdGhlIG90aGVyIHNpZGUpIGV2ZXJ5IDEwLTMwIHNlY29uZHMuCj4gQWZ0ZXIg
-YSBiaXQsIHRoZSBzdGF0aW9uIG1hY2hpbmUgbG9ja2VkIHVwIGhhcmQuCj4KPiBJIGhhdmUgbm8g
-aWRlYSBob3cgdG8gdHJvdWJsZS1zaG9vdCB0aGlzIGJldHRlciwgc28gdGhpcyBpcwo+IGp1c3Qg
-RllJLgo+ClsuLi5dCj4gYXRoMTBrOiBib290IHdhcm0gcmVzZXQgY29tcGxldGUKPiBhdGgxMGs6
-IGZhaWxlZCB0byBwb3dlciB1cCB0YXJnZXQgdXNpbmcgd2FybSByZXNldDogLTExMAo+IGF0aDEw
-azogdHJ5aW5nIGNvbGQgcmVzZXQKPiBhdGgxMGs6IGJvb3QgY29sZCByZXNldAo+IGF0aDEwazog
-Ym9vdCBjb2xkIHJlc2V0IGNvbXBsZXRlCj4gW2hhbmcsIGV2ZW4gc3lzcnEgd2lsbCBub3Qgd29y
-a10KClRoZXJlJ3MgYSBrbm93biBwcm9ibGVtIHdpdGggY29sZCByZXNldCBiZWluZyBjYXBhYmxl
-IG9mIGxvY2tpbmcgdXAKZW50aXJlIHN5c3RlbSAoZGVwZW5kcyBvbiB0aGUgcGNpLWUgY29udHJv
-bGxlciwgZS5nLiBBUDEzNSBzcGxhdHMgYQpEYXRhIEJ1cyBFcnJvciBpbnN0ZWFkKS4KCkFjdHVh
-bGx5IHdhcm0gcmVzZXQgY2FuIGRvIHRoZSBzYW1lIGluIHNvbWUgY29ybmVyIGNhc2VzOiB0cnkg
-cnVubmluZwpSeCB0cmFmZmljIGFuZCBqdXN0IHN0YXJ0IHRoZSByZWNvdmVyeSBzZXF1ZW5jZSAo
-d2l0aG91dCBhY3R1YWxseQpjcmFzaGluZyB0aGUgZncpLiBNeSB4ODYgbG9ja3MgdXAgdmVyeSBl
-YXNpbHkgd2l0aCB0aGlzLgoKSSBzdHJvbmdseSBzdWdnZXN0IHlvdSB1c2UgcmVzZXRfbW9kZT0x
-IHdoZW4geW91IGxvYWQgYXRoMTBrX3BjaSBzbwpjb2xkIHJlc2V0IGlzbid0IHVzZWQuIFRoaXMg
-bWF5IHJlc3VsdCBpbiBhdGgxMGsgYmVpbmcgdW5hYmxlIHRvIGJyaW5nCnVwIHRoZSBkZXZpY2Ug
-aW4gc29tZSByYXJlIGNhc2VzIChlLmcuIGFmdGVyIGFuIElPTU1VIGZhdWx0IGlmIHlvdXIKc3lz
-dGVtIHN1cHBvcnRzIGl0KSBidXQgSSBiZWxpZXZlIGl0J3MgZmFyIGJldHRlciB0aGFuIGhhdmlu
-ZyB0aGUKd2hvbGUgc3lzdGVtIGxvY2sgdXAuCgpNeSBzdXNwaWNpb24gaXMgdHgvcnggcmluZ3Ms
-IGRtYSB0cmFuc2ZlciBlbmdpbmVzLCBpbnRlcm5hbCBpcnFzCmFyZW4ndCBzdG9wcGVkIHByb3Bl
-cmx5LiBJIGhhdmUgYSBwcm90b3R5cGUgcGF0Y2ggZm9yIHRoZSB3YXJtIHJlc2V0CnByb2JsZW0g
-YnV0IGl0J3MgaW5jb21wbGV0ZSBhbmQgSSdtIG5vdCBzdXJlIGlmIEkgY2FuIHNoYXJlIGl0IHll
-dC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
-Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 09/16/2014 11:34 PM, Michal Kazior wrote:
+> On 16 September 2014 20:42, Ben Greear <greearb@candelatech.com> wrote:
+>> This is on a 3.14.14+ hacked kernel, with CT firmware.
+>>
+>> Test case is to restart stations (and the AP
+>> on the other side) every 10-30 seconds.
+>> After a bit, the station machine locked up hard.
+>>
+>> I have no idea how to trouble-shoot this better, so this is
+>> just FYI.
+>>
+> [...]
+>> ath10k: boot warm reset complete
+>> ath10k: failed to power up target using warm reset: -110
+>> ath10k: trying cold reset
+>> ath10k: boot cold reset
+>> ath10k: boot cold reset complete
+>> [hang, even sysrq will not work]
+> 
+> There's a known problem with cold reset being capable of locking up
+> entire system (depends on the pci-e controller, e.g. AP135 splats a
+> Data Bus Error instead).
+> 
+> Actually warm reset can do the same in some corner cases: try running
+> Rx traffic and just start the recovery sequence (without actually
+> crashing the fw). My x86 locks up very easily with this.
+> 
+> I strongly suggest you use reset_mode=1 when you load ath10k_pci so
+> cold reset isn't used. This may result in ath10k being unable to bring
+> up the device in some rare cases (e.g. after an IOMMU fault if your
+> system supports it) but I believe it's far better than having the
+> whole system lock up.
+> 
+> My suspicion is tx/rx rings, dma transfer engines, internal irqs
+> aren't stopped properly. I have a prototype patch for the warm reset
+> problem but it's incomplete and I'm not sure if I can share it yet.
+
+I will try the warm-reset-only flag, and I do hope you have success
+with the warm/cold reset fixes.
+
+But, I still wonder if we could just reset less often and maybe
+make it a bit harder to hit these problems?
+
+Why do we reset the firmware/NIC when we admin down/up the
+vif (when a single vif is active)?  Couldn't we just keep
+the firmware active in this state and not risk lockup due
+to reset?
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
