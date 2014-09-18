@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUbsh-0004J9-M5
- for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:36:20 +0000
-Received: by mail-we0-f171.google.com with SMTP id p10so917920wes.30
+ id 1XUbsg-0004GJ-1N
+ for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:36:18 +0000
+Received: by mail-wg0-f49.google.com with SMTP id m15so899534wgh.8
  for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:35:56 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: dump hex bytes with dev string prefix
-Date: Thu, 18 Sep 2014 15:25:20 +0200
-Message-Id: <1411046721-20510-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/3] ath10k: print wmi version info
+Date: Thu, 18 Sep 2014 15:25:19 +0200
+Message-Id: <1411046721-20510-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1411046721-20510-1-git-send-email-michal.kazior@tieto.com>
 References: <1411046721-20510-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,50 +27,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This makes it easier to debug hex dumps on systems
-with more than a single ath10k device.
+HTT version is already printed so print WMI
+version as well for consistency.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index f1e5916..9f8dddc 100644
+index 3756feb..f1e5916 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
 +++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1264,11 +1264,30 @@ void ath10k_dbg_dump(struct ath10k *ar,
- 		     const char *msg, const char *prefix,
- 		     const void *buf, size_t len)
+@@ -126,14 +126,18 @@ EXPORT_SYMBOL(ath10k_info);
+ 
+ void ath10k_print_driver_info(struct ath10k *ar)
  {
-+	char linebuf[256];
-+	unsigned int linebuflen;
-+	const void *ptr;
-+
- 	if (ath10k_debug_mask & mask) {
- 		if (msg)
- 			ath10k_dbg(ar, mask, "%s\n", msg);
- 
--		print_hex_dump_bytes(prefix, DUMP_PREFIX_OFFSET, buf, len);
-+		for (ptr = buf; (ptr - buf) < len; ptr += 16) {
-+			linebuflen = 0;
-+			if (prefix)
-+				linebuflen += scnprintf(linebuf + linebuflen,
-+							sizeof(linebuf) -
-+							linebuflen,
-+							"%s", prefix);
-+			linebuflen += scnprintf(linebuf + linebuflen,
-+						sizeof(linebuf) - linebuflen,
-+						"%08x: ",
-+						(unsigned int)(ptr - buf));
-+			hex_dump_to_buffer(ptr, len - (ptr - buf), 16, 1,
-+					   linebuf + linebuflen,
-+					   sizeof(linebuf) - linebuflen, true);
-+			dev_printk(KERN_DEBUG, ar->dev, "%s\n", linebuf);
-+		}
- 	}
- 
- 	/* tracing code doesn't like null strings :/ */
+-	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
++	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d.%d.%d.%d\n",
+ 		    ar->hw_params.name,
+ 		    ar->target_version,
+ 		    ar->chip_id,
+ 		    ar->hw->wiphy->fw_version,
+ 		    ar->fw_api,
+ 		    ar->htt.target_version_major,
+-		    ar->htt.target_version_minor);
++		    ar->htt.target_version_minor,
++		    ar->fw_version_major,
++		    ar->fw_version_minor,
++		    ar->fw_version_release,
++		    ar->fw_version_build);
+ 	ath10k_info(ar, "debug %d debugfs %d tracing %d dfs %d testmode %d\n",
+ 		    config_enabled(CONFIG_ATH10K_DEBUG),
+ 		    config_enabled(CONFIG_ATH10K_DEBUGFS),
 -- 
 1.8.5.3
 
