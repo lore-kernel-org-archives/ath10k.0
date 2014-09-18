@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUbp2-0001z3-AV
- for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:32:33 +0000
-Received: by mail-we0-f170.google.com with SMTP id u57so929505wes.1
- for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:32:12 -0700 (PDT)
+ id 1XUbp3-0001yo-5i
+ for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:32:34 +0000
+Received: by mail-wi0-f178.google.com with SMTP id ho1so1205395wib.5
+ for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:32:11 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/9] ath10k: relocate wmi attach/deatch functions
-Date: Thu, 18 Sep 2014 15:21:23 +0200
-Message-Id: <1411046487-19544-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 4/9] ath10k: deduplicate host mem chunk code
+Date: Thu, 18 Sep 2014 15:21:22 +0200
+Message-Id: <1411046487-19544-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 References: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,107 +27,225 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Init functions should be placed at the end of
-files in most cases to avoid forward declarations
-for static functions.
+Simplify the code by deduplicating structure
+definitions and code.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 77 +++++++++++++++++------------------
- 1 file changed, 38 insertions(+), 39 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 103 +++++++++-------------------------
+ drivers/net/wireless/ath/ath10k/wmi.h |  30 +++-------
+ 2 files changed, 34 insertions(+), 99 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index f99cdef..029a127 100644
+index 78fc5aaf..f99cdef 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2772,45 +2772,6 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
- 	}
+@@ -2955,13 +2955,34 @@ int ath10k_wmi_pdev_set_param(struct ath10k *ar, u32 id, u32 value)
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->pdev_set_param_cmdid);
  }
  
--/* WMI Initialization functions */
--int ath10k_wmi_attach(struct ath10k *ar)
--{
--	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
--		if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
--			ar->wmi.cmd = &wmi_10_2_cmd_map;
--		else
--			ar->wmi.cmd = &wmi_10x_cmd_map;
--
--		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
--		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
--	} else {
--		ar->wmi.cmd = &wmi_cmd_map;
--		ar->wmi.vdev_param = &wmi_vdev_param_map;
--		ar->wmi.pdev_param = &wmi_pdev_param_map;
--	}
--
--	init_completion(&ar->wmi.service_ready);
--	init_completion(&ar->wmi.unified_ready);
--	init_waitqueue_head(&ar->wmi.tx_credits_wq);
--
--	return 0;
--}
--
--void ath10k_wmi_detach(struct ath10k *ar)
--{
--	int i;
--
--	/* free the host memory chunks requested by firmware */
--	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
--		dma_free_coherent(ar->dev,
--				  ar->wmi.mem_chunks[i].len,
--				  ar->wmi.mem_chunks[i].vaddr,
--				  ar->wmi.mem_chunks[i].paddr);
--	}
--
--	ar->wmi.num_mem_chunks = 0;
--}
--
- int ath10k_wmi_connect(struct ath10k *ar)
- {
- 	int status;
-@@ -4179,3 +4140,41 @@ int ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable)
- 
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->dbglog_cfg_cmdid);
- }
-+
-+int ath10k_wmi_attach(struct ath10k *ar)
++static void ath10k_wmi_put_host_mem_chunks(struct ath10k *ar,
++					   struct wmi_host_mem_chunks *chunks)
 +{
-+	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
-+		if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
-+			ar->wmi.cmd = &wmi_10_2_cmd_map;
-+		else
-+			ar->wmi.cmd = &wmi_10x_cmd_map;
-+
-+		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
-+		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
-+	} else {
-+		ar->wmi.cmd = &wmi_cmd_map;
-+		ar->wmi.vdev_param = &wmi_vdev_param_map;
-+		ar->wmi.pdev_param = &wmi_pdev_param_map;
-+	}
-+
-+	init_completion(&ar->wmi.service_ready);
-+	init_completion(&ar->wmi.unified_ready);
-+	init_waitqueue_head(&ar->wmi.tx_credits_wq);
-+
-+	return 0;
-+}
-+
-+void ath10k_wmi_detach(struct ath10k *ar)
-+{
++	struct host_memory_chunk *chunk;
 +	int i;
 +
-+	/* free the host memory chunks requested by firmware */
-+	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
-+		dma_free_coherent(ar->dev,
-+				  ar->wmi.mem_chunks[i].len,
-+				  ar->wmi.mem_chunks[i].vaddr,
-+				  ar->wmi.mem_chunks[i].paddr);
-+	}
++	chunks->count = __cpu_to_le32(ar->wmi.num_mem_chunks);
 +
-+	ar->wmi.num_mem_chunks = 0;
++	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
++		chunk = &chunks->items[i];
++		chunk->ptr = __cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
++		chunk->size = __cpu_to_le32(ar->wmi.mem_chunks[i].len);
++		chunk->req_id = __cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
++
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "wmi chunk %d len %d requested, addr 0x%llx\n",
++			   i,
++			   ar->wmi.mem_chunks[i].len,
++			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
++	}
 +}
++
+ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
+ {
+ 	struct wmi_init_cmd *cmd;
+ 	struct sk_buff *buf;
+ 	struct wmi_resource_config config = {};
+ 	u32 len, val;
+-	int i;
+ 
+ 	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
+ 	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS + TARGET_NUM_VDEVS);
+@@ -3023,32 +3044,8 @@ static int ath10k_wmi_main_cmd_init(struct ath10k *ar)
+ 
+ 	cmd = (struct wmi_init_cmd *)buf->data;
+ 
+-	if (ar->wmi.num_mem_chunks == 0) {
+-		cmd->num_host_mem_chunks = 0;
+-		goto out;
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
+-		   ar->wmi.num_mem_chunks);
+-
+-	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
+-
+-	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+-		cmd->host_mem_chunks[i].ptr =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
+-		cmd->host_mem_chunks[i].size =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].len);
+-		cmd->host_mem_chunks[i].req_id =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
+-
+-		ath10k_dbg(ar, ATH10K_DBG_WMI,
+-			   "wmi chunk %d len %d requested, addr 0x%llx\n",
+-			   i,
+-			   ar->wmi.mem_chunks[i].len,
+-			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
+-	}
+-out:
+ 	memcpy(&cmd->resource_config, &config, sizeof(config));
++	ath10k_wmi_put_host_mem_chunks(ar, &cmd->mem_chunks);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi init\n");
+ 	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->init_cmdid);
+@@ -3060,7 +3057,6 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 	struct sk_buff *buf;
+ 	struct wmi_resource_config_10x config = {};
+ 	u32 len, val;
+-	int i;
+ 
+ 	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
+ 	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
+@@ -3114,32 +3110,8 @@ static int ath10k_wmi_10x_cmd_init(struct ath10k *ar)
+ 
+ 	cmd = (struct wmi_init_cmd_10x *)buf->data;
+ 
+-	if (ar->wmi.num_mem_chunks == 0) {
+-		cmd->num_host_mem_chunks = 0;
+-		goto out;
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
+-		   ar->wmi.num_mem_chunks);
+-
+-	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
+-
+-	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+-		cmd->host_mem_chunks[i].ptr =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
+-		cmd->host_mem_chunks[i].size =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].len);
+-		cmd->host_mem_chunks[i].req_id =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
+-
+-		ath10k_dbg(ar, ATH10K_DBG_WMI,
+-			   "wmi chunk %d len %d requested, addr 0x%llx\n",
+-			   i,
+-			   ar->wmi.mem_chunks[i].len,
+-			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
+-	}
+-out:
+ 	memcpy(&cmd->resource_config, &config, sizeof(config));
++	ath10k_wmi_put_host_mem_chunks(ar, &cmd->mem_chunks);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi init 10x\n");
+ 	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->init_cmdid);
+@@ -3151,7 +3123,6 @@ static int ath10k_wmi_10_2_cmd_init(struct ath10k *ar)
+ 	struct sk_buff *buf;
+ 	struct wmi_resource_config_10x config = {};
+ 	u32 len, val;
+-	int i;
+ 
+ 	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
+ 	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
+@@ -3205,32 +3176,8 @@ static int ath10k_wmi_10_2_cmd_init(struct ath10k *ar)
+ 
+ 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
+ 
+-	if (ar->wmi.num_mem_chunks == 0) {
+-		cmd->num_host_mem_chunks = 0;
+-		goto out;
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi sending %d memory chunks info.\n",
+-		   ar->wmi.num_mem_chunks);
+-
+-	cmd->num_host_mem_chunks = __cpu_to_le32(ar->wmi.num_mem_chunks);
+-
+-	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+-		cmd->host_mem_chunks[i].ptr =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].paddr);
+-		cmd->host_mem_chunks[i].size =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].len);
+-		cmd->host_mem_chunks[i].req_id =
+-			__cpu_to_le32(ar->wmi.mem_chunks[i].req_id);
+-
+-		ath10k_dbg(ar, ATH10K_DBG_WMI,
+-			   "wmi chunk %d len %d requested, addr 0x%llx\n",
+-			   i,
+-			   ar->wmi.mem_chunks[i].len,
+-			   (unsigned long long)ar->wmi.mem_chunks[i].paddr);
+-	}
+-out:
+ 	memcpy(&cmd->resource_config.common, &config, sizeof(config));
++	ath10k_wmi_put_host_mem_chunks(ar, &cmd->mem_chunks);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi init 10.2\n");
+ 	return ath10k_wmi_cmd_send(ar, buf, ar->wmi.cmd->init_cmdid);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index b8098d2..fc8bc9d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1883,38 +1883,26 @@ struct host_memory_chunk {
+ 	__le32 size;
+ } __packed;
+ 
++struct wmi_host_mem_chunks {
++	__le32 count;
++	/* some fw revisions require at least 1 chunk regardless of count */
++	struct host_memory_chunk items[1];
++} __packed;
++
+ struct wmi_init_cmd {
+ 	struct wmi_resource_config resource_config;
+-	__le32 num_host_mem_chunks;
+-
+-	/*
+-	 * variable number of host memory chunks.
+-	 * This should be the last element in the structure
+-	 */
+-	struct host_memory_chunk host_mem_chunks[1];
++	struct wmi_host_mem_chunks mem_chunks;
+ } __packed;
+ 
+ /* _10x stucture is from 10.X FW API */
+ struct wmi_init_cmd_10x {
+ 	struct wmi_resource_config_10x resource_config;
+-	__le32 num_host_mem_chunks;
+-
+-	/*
+-	 * variable number of host memory chunks.
+-	 * This should be the last element in the structure
+-	 */
+-	struct host_memory_chunk host_mem_chunks[1];
++	struct wmi_host_mem_chunks mem_chunks;
+ } __packed;
+ 
+ struct wmi_init_cmd_10_2 {
+ 	struct wmi_resource_config_10_2 resource_config;
+-	__le32 num_host_mem_chunks;
+-
+-	/*
+-	 * variable number of host memory chunks.
+-	 * This should be the last element in the structure
+-	 */
+-	struct host_memory_chunk host_mem_chunks[1];
++	struct wmi_host_mem_chunks mem_chunks;
+ } __packed;
+ 
+ struct wmi_chan_list_entry {
 -- 
 1.8.5.3
 
