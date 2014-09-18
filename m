@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUbsg-0004GJ-1N
- for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:36:18 +0000
-Received: by mail-wg0-f49.google.com with SMTP id m15so899534wgh.8
- for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:35:56 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: print wmi version info
-Date: Thu, 18 Sep 2014 15:25:19 +0200
-Message-Id: <1411046721-20510-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1411046721-20510-1-git-send-email-michal.kazior@tieto.com>
-References: <1411046721-20510-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUeEf-0003L5-GN
+ for ath10k@lists.infradead.org; Thu, 18 Sep 2014 16:07:10 +0000
+Message-ID: <541B0311.3060508@candelatech.com>
+Date: Thu, 18 Sep 2014 09:06:41 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: Hard lockup during vif restart tests.
+References: <541884AC.3020402@candelatech.com>
+ <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
+ <5419AE32.6010805@candelatech.com>
+ <CA+BoTQkcP=Yc8kA2=OotrWbaAf09aMOmiPQp5W2j1vxsu3x4Kg@mail.gmail.com>
+ <87vbols7tg.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87vbols7tg.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,49 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-HTT version is already printed so print WMI
-version as well for consistency.
+On 09/18/2014 12:31 AM, Kalle Valo wrote:
+> Michal Kazior <michal.kazior@tieto.com> writes:
+> 
+>>> Why do we reset the firmware/NIC when we admin down/up the
+>>> vif (when a single vif is active)?  Couldn't we just keep
+>>> the firmware active in this state and not risk lockup due
+>>> to reset?
+>>
+>> If you put down last interface mac80211 calls drv_stop(). There isn't
+>> any real need to keep the device up and running after that other than
+>> trying to workaround the reset issue. But then you need to deal with
+>> firmware quirks. I recall it could report Rx indications after all
+>> vdevs had been removed (and this is now also observable with 10.2
+>> during probing/bootup). It's just simpler to reboot firmware on
+>> drv_stop/start().
+> 
+> And there's the reliability issue. Being able to reset the firmware with
+> interface down/up sequency is pretty useful and AFAIK almost all
+> upstream drivers do that. And let's not forget power consumption either.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+The fact that restarting firmware can hang the machine or require
+reboot to recover is so serious that I think a work-around is
+worth looking into.
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3756feb..f1e5916 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -126,14 +126,18 @@ EXPORT_SYMBOL(ath10k_info);
- 
- void ath10k_print_driver_info(struct ath10k *ar)
- {
--	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-+	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d.%d.%d.%d\n",
- 		    ar->hw_params.name,
- 		    ar->target_version,
- 		    ar->chip_id,
- 		    ar->hw->wiphy->fw_version,
- 		    ar->fw_api,
- 		    ar->htt.target_version_major,
--		    ar->htt.target_version_minor);
-+		    ar->htt.target_version_minor,
-+		    ar->fw_version_major,
-+		    ar->fw_version_minor,
-+		    ar->fw_version_release,
-+		    ar->fw_version_build);
- 	ath10k_info(ar, "debug %d debugfs %d tracing %d dfs %d testmode %d\n",
- 		    config_enabled(CONFIG_ATH10K_DEBUG),
- 		    config_enabled(CONFIG_ATH10K_DEBUGFS),
+Thanks,
+Ben
+
 -- 
-1.8.5.3
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
