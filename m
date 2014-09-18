@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from mail-we0-x22a.google.com ([2a00:1450:400c:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUbp1-0001yQ-I8
+ id 1XUbp2-0001z3-AV
  for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:32:33 +0000
-Received: by mail-wg0-f43.google.com with SMTP id x12so888780wgg.2
- for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:32:09 -0700 (PDT)
+Received: by mail-we0-f170.google.com with SMTP id u57so929505wes.1
+ for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:32:12 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/9] ath10k: remove unused pdev_set_channel command
-Date: Thu, 18 Sep 2014 15:21:20 +0200
-Message-Id: <1411046487-19544-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/9] ath10k: relocate wmi attach/deatch functions
+Date: Thu, 18 Sep 2014 15:21:23 +0200
+Message-Id: <1411046487-19544-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 References: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,88 +27,107 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This command is not used anymore and most firmware
-revisions do not seem to handle it well. Channel
-switching is done via vdev restarting.
+Init functions should be placed at the end of
+files in most cases to avoid forward declarations
+for static functions.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 36 -----------------------------------
- drivers/net/wireless/ath/ath10k/wmi.h |  7 -------
- 2 files changed, 43 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 77 +++++++++++++++++------------------
+ 1 file changed, 38 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 772cca5..89e63d5 100644
+index f99cdef..029a127 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2871,42 +2871,6 @@ int ath10k_wmi_pdev_set_regdomain(struct ath10k *ar, u16 rd, u16 rd2g,
- 							 ctl2g, ctl5g);
+@@ -2772,45 +2772,6 @@ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	}
  }
  
--int ath10k_wmi_pdev_set_channel(struct ath10k *ar,
--				const struct wmi_channel_arg *arg)
+-/* WMI Initialization functions */
+-int ath10k_wmi_attach(struct ath10k *ar)
 -{
--	struct wmi_set_channel_cmd *cmd;
--	struct sk_buff *skb;
--	u32 ch_flags = 0;
+-	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+-		if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
+-			ar->wmi.cmd = &wmi_10_2_cmd_map;
+-		else
+-			ar->wmi.cmd = &wmi_10x_cmd_map;
 -
--	if (arg->passive)
--		return -EINVAL;
+-		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
+-		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
+-	} else {
+-		ar->wmi.cmd = &wmi_cmd_map;
+-		ar->wmi.vdev_param = &wmi_vdev_param_map;
+-		ar->wmi.pdev_param = &wmi_pdev_param_map;
+-	}
 -
--	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
--	if (!skb)
--		return -ENOMEM;
+-	init_completion(&ar->wmi.service_ready);
+-	init_completion(&ar->wmi.unified_ready);
+-	init_waitqueue_head(&ar->wmi.tx_credits_wq);
 -
--	if (arg->chan_radar)
--		ch_flags |= WMI_CHAN_FLAG_DFS;
--
--	cmd = (struct wmi_set_channel_cmd *)skb->data;
--	cmd->chan.mhz               = __cpu_to_le32(arg->freq);
--	cmd->chan.band_center_freq1 = __cpu_to_le32(arg->freq);
--	cmd->chan.mode              = arg->mode;
--	cmd->chan.flags		   |= __cpu_to_le32(ch_flags);
--	cmd->chan.min_power         = arg->min_power;
--	cmd->chan.max_power         = arg->max_power;
--	cmd->chan.reg_power         = arg->max_reg_power;
--	cmd->chan.reg_classid       = arg->reg_class_id;
--	cmd->chan.antenna_max       = arg->max_antenna_gain;
--
--	ath10k_dbg(ar, ATH10K_DBG_WMI,
--		   "wmi set channel mode %d freq %d\n",
--		   arg->mode, arg->freq);
--
--	return ath10k_wmi_cmd_send(ar, skb,
--				   ar->wmi.cmd->pdev_set_channel_cmdid);
+-	return 0;
 -}
 -
- int ath10k_wmi_pdev_suspend_target(struct ath10k *ar, u32 suspend_opt)
- {
- 	struct wmi_pdev_suspend_cmd *cmd;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 86f5ebc..b8098d2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2908,11 +2908,6 @@ enum wmi_tp_scale {
- 	WMI_TP_SCALE_SIZE   = 5,	/* max num of enum     */
- };
- 
--struct wmi_set_channel_cmd {
--	/* channel (only frequency and mode info are used) */
--	struct wmi_channel chan;
--} __packed;
+-void ath10k_wmi_detach(struct ath10k *ar)
+-{
+-	int i;
 -
- struct wmi_pdev_chanlist_update_event {
- 	/* number of channels */
- 	__le32 num_chan;
-@@ -4732,8 +4727,6 @@ int ath10k_wmi_connect(struct ath10k *ar);
- struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len);
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+-	/* free the host memory chunks requested by firmware */
+-	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
+-		dma_free_coherent(ar->dev,
+-				  ar->wmi.mem_chunks[i].len,
+-				  ar->wmi.mem_chunks[i].vaddr,
+-				  ar->wmi.mem_chunks[i].paddr);
+-	}
+-
+-	ar->wmi.num_mem_chunks = 0;
+-}
+-
+ int ath10k_wmi_connect(struct ath10k *ar)
+ {
+ 	int status;
+@@ -4179,3 +4140,41 @@ int ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable)
  
--int ath10k_wmi_pdev_set_channel(struct ath10k *ar,
--				const struct wmi_channel_arg *);
- int ath10k_wmi_pdev_suspend_target(struct ath10k *ar, u32 suspend_opt);
- int ath10k_wmi_pdev_resume_target(struct ath10k *ar);
- int ath10k_wmi_pdev_set_regdomain(struct ath10k *ar, u16 rd, u16 rd2g,
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->dbglog_cfg_cmdid);
+ }
++
++int ath10k_wmi_attach(struct ath10k *ar)
++{
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
++		if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
++			ar->wmi.cmd = &wmi_10_2_cmd_map;
++		else
++			ar->wmi.cmd = &wmi_10x_cmd_map;
++
++		ar->wmi.vdev_param = &wmi_10x_vdev_param_map;
++		ar->wmi.pdev_param = &wmi_10x_pdev_param_map;
++	} else {
++		ar->wmi.cmd = &wmi_cmd_map;
++		ar->wmi.vdev_param = &wmi_vdev_param_map;
++		ar->wmi.pdev_param = &wmi_pdev_param_map;
++	}
++
++	init_completion(&ar->wmi.service_ready);
++	init_completion(&ar->wmi.unified_ready);
++	init_waitqueue_head(&ar->wmi.tx_credits_wq);
++
++	return 0;
++}
++
++void ath10k_wmi_detach(struct ath10k *ar)
++{
++	int i;
++
++	/* free the host memory chunks requested by firmware */
++	for (i = 0; i < ar->wmi.num_mem_chunks; i++) {
++		dma_free_coherent(ar->dev,
++				  ar->wmi.mem_chunks[i].len,
++				  ar->wmi.mem_chunks[i].vaddr,
++				  ar->wmi.mem_chunks[i].paddr);
++	}
++
++	ar->wmi.num_mem_chunks = 0;
++}
 -- 
 1.8.5.3
 
