@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUHXA-0001Kh-V8
- for ath10k@lists.infradead.org; Wed, 17 Sep 2014 15:52:45 +0000
-Message-ID: <5419AE32.6010805@candelatech.com>
-Date: Wed, 17 Sep 2014 08:52:18 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XUV85-0004iR-Op
+ for ath10k@lists.infradead.org; Thu, 18 Sep 2014 06:23:46 +0000
+Received: by mail-wg0-f51.google.com with SMTP id k14so341560wgh.34
+ for <ath10k@lists.infradead.org>; Wed, 17 Sep 2014 23:23:17 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Hard lockup during vif restart tests.
+In-Reply-To: <5419AE32.6010805@candelatech.com>
 References: <541884AC.3020402@candelatech.com>
  <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
-In-Reply-To: <CA+BoTQkeSSp5K=Ov-Sce9tcKz5ARL1im615PckPgNK-X8O-c1Q@mail.gmail.com>
+ <5419AE32.6010805@candelatech.com>
+Date: Thu, 18 Sep 2014 08:23:17 +0200
+Message-ID: <CA+BoTQkcP=Yc8kA2=OotrWbaAf09aMOmiPQp5W2j1vxsu3x4Kg@mail.gmail.com>
+Subject: Re: Hard lockup during vif restart tests.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,71 +22,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 09/16/2014 11:34 PM, Michal Kazior wrote:
-> On 16 September 2014 20:42, Ben Greear <greearb@candelatech.com> wrote:
->> This is on a 3.14.14+ hacked kernel, with CT firmware.
->>
->> Test case is to restart stations (and the AP
->> on the other side) every 10-30 seconds.
->> After a bit, the station machine locked up hard.
->>
->> I have no idea how to trouble-shoot this better, so this is
->> just FYI.
->>
-> [...]
->> ath10k: boot warm reset complete
->> ath10k: failed to power up target using warm reset: -110
->> ath10k: trying cold reset
->> ath10k: boot cold reset
->> ath10k: boot cold reset complete
->> [hang, even sysrq will not work]
-> 
-> There's a known problem with cold reset being capable of locking up
-> entire system (depends on the pci-e controller, e.g. AP135 splats a
-> Data Bus Error instead).
-> 
-> Actually warm reset can do the same in some corner cases: try running
-> Rx traffic and just start the recovery sequence (without actually
-> crashing the fw). My x86 locks up very easily with this.
-> 
-> I strongly suggest you use reset_mode=1 when you load ath10k_pci so
-> cold reset isn't used. This may result in ath10k being unable to bring
-> up the device in some rare cases (e.g. after an IOMMU fault if your
-> system supports it) but I believe it's far better than having the
-> whole system lock up.
-> 
-> My suspicion is tx/rx rings, dma transfer engines, internal irqs
-> aren't stopped properly. I have a prototype patch for the warm reset
-> problem but it's incomplete and I'm not sure if I can share it yet.
-
-I will try the warm-reset-only flag, and I do hope you have success
-with the warm/cold reset fixes.
-
-But, I still wonder if we could just reset less often and maybe
-make it a bit harder to hit these problems?
-
-Why do we reset the firmware/NIC when we admin down/up the
-vif (when a single vif is active)?  Couldn't we just keep
-the firmware active in this state and not risk lockup due
-to reset?
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgU2VwdGVtYmVyIDIwMTQgMTc6NTIsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPiBPbiAwOS8xNi8yMDE0IDExOjM0IFBNLCBNaWNoYWwgS2F6aW9yIHdy
+b3RlOgo+PiBPbiAxNiBTZXB0ZW1iZXIgMjAxNCAyMDo0MiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBj
+YW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pj4gVGhpcyBpcyBvbiBhIDMuMTQuMTQrIGhhY2tlZCBr
+ZXJuZWwsIHdpdGggQ1QgZmlybXdhcmUuCj4+Pgo+Pj4gVGVzdCBjYXNlIGlzIHRvIHJlc3RhcnQg
+c3RhdGlvbnMgKGFuZCB0aGUgQVAKPj4+IG9uIHRoZSBvdGhlciBzaWRlKSBldmVyeSAxMC0zMCBz
+ZWNvbmRzLgo+Pj4gQWZ0ZXIgYSBiaXQsIHRoZSBzdGF0aW9uIG1hY2hpbmUgbG9ja2VkIHVwIGhh
+cmQuCj4+Pgo+Pj4gSSBoYXZlIG5vIGlkZWEgaG93IHRvIHRyb3VibGUtc2hvb3QgdGhpcyBiZXR0
+ZXIsIHNvIHRoaXMgaXMKPj4+IGp1c3QgRllJLgo+Pj4KPj4gWy4uLl0KPj4+IGF0aDEwazogYm9v
+dCB3YXJtIHJlc2V0IGNvbXBsZXRlCj4+PiBhdGgxMGs6IGZhaWxlZCB0byBwb3dlciB1cCB0YXJn
+ZXQgdXNpbmcgd2FybSByZXNldDogLTExMAo+Pj4gYXRoMTBrOiB0cnlpbmcgY29sZCByZXNldAo+
+Pj4gYXRoMTBrOiBib290IGNvbGQgcmVzZXQKPj4+IGF0aDEwazogYm9vdCBjb2xkIHJlc2V0IGNv
+bXBsZXRlCj4+PiBbaGFuZywgZXZlbiBzeXNycSB3aWxsIG5vdCB3b3JrXQo+Pgo+PiBUaGVyZSdz
+IGEga25vd24gcHJvYmxlbSB3aXRoIGNvbGQgcmVzZXQgYmVpbmcgY2FwYWJsZSBvZiBsb2NraW5n
+IHVwCj4+IGVudGlyZSBzeXN0ZW0gKGRlcGVuZHMgb24gdGhlIHBjaS1lIGNvbnRyb2xsZXIsIGUu
+Zy4gQVAxMzUgc3BsYXRzIGEKPj4gRGF0YSBCdXMgRXJyb3IgaW5zdGVhZCkuCj4+Cj4+IEFjdHVh
+bGx5IHdhcm0gcmVzZXQgY2FuIGRvIHRoZSBzYW1lIGluIHNvbWUgY29ybmVyIGNhc2VzOiB0cnkg
+cnVubmluZwo+PiBSeCB0cmFmZmljIGFuZCBqdXN0IHN0YXJ0IHRoZSByZWNvdmVyeSBzZXF1ZW5j
+ZSAod2l0aG91dCBhY3R1YWxseQo+PiBjcmFzaGluZyB0aGUgZncpLiBNeSB4ODYgbG9ja3MgdXAg
+dmVyeSBlYXNpbHkgd2l0aCB0aGlzLgo+Pgo+PiBJIHN0cm9uZ2x5IHN1Z2dlc3QgeW91IHVzZSBy
+ZXNldF9tb2RlPTEgd2hlbiB5b3UgbG9hZCBhdGgxMGtfcGNpIHNvCj4+IGNvbGQgcmVzZXQgaXNu
+J3QgdXNlZC4gVGhpcyBtYXkgcmVzdWx0IGluIGF0aDEwayBiZWluZyB1bmFibGUgdG8gYnJpbmcK
+Pj4gdXAgdGhlIGRldmljZSBpbiBzb21lIHJhcmUgY2FzZXMgKGUuZy4gYWZ0ZXIgYW4gSU9NTVUg
+ZmF1bHQgaWYgeW91cgo+PiBzeXN0ZW0gc3VwcG9ydHMgaXQpIGJ1dCBJIGJlbGlldmUgaXQncyBm
+YXIgYmV0dGVyIHRoYW4gaGF2aW5nIHRoZQo+PiB3aG9sZSBzeXN0ZW0gbG9jayB1cC4KPj4KPj4g
+TXkgc3VzcGljaW9uIGlzIHR4L3J4IHJpbmdzLCBkbWEgdHJhbnNmZXIgZW5naW5lcywgaW50ZXJu
+YWwgaXJxcwo+PiBhcmVuJ3Qgc3RvcHBlZCBwcm9wZXJseS4gSSBoYXZlIGEgcHJvdG90eXBlIHBh
+dGNoIGZvciB0aGUgd2FybSByZXNldAo+PiBwcm9ibGVtIGJ1dCBpdCdzIGluY29tcGxldGUgYW5k
+IEknbSBub3Qgc3VyZSBpZiBJIGNhbiBzaGFyZSBpdCB5ZXQuCj4KPiBJIHdpbGwgdHJ5IHRoZSB3
+YXJtLXJlc2V0LW9ubHkgZmxhZywgYW5kIEkgZG8gaG9wZSB5b3UgaGF2ZSBzdWNjZXNzCj4gd2l0
+aCB0aGUgd2FybS9jb2xkIHJlc2V0IGZpeGVzLgoKSXQgc29ydCBvZiB3b3JrcyBhcyBpdCBpcyBu
+b3cgYnV0IGl0J3MgdWdseS4KCgo+IEJ1dCwgSSBzdGlsbCB3b25kZXIgaWYgd2UgY291bGQganVz
+dCByZXNldCBsZXNzIG9mdGVuIGFuZCBtYXliZQo+IG1ha2UgaXQgYSBiaXQgaGFyZGVyIHRvIGhp
+dCB0aGVzZSBwcm9ibGVtcz8KPgo+IFdoeSBkbyB3ZSByZXNldCB0aGUgZmlybXdhcmUvTklDIHdo
+ZW4gd2UgYWRtaW4gZG93bi91cCB0aGUKPiB2aWYgKHdoZW4gYSBzaW5nbGUgdmlmIGlzIGFjdGl2
+ZSk/ICBDb3VsZG4ndCB3ZSBqdXN0IGtlZXAKPiB0aGUgZmlybXdhcmUgYWN0aXZlIGluIHRoaXMg
+c3RhdGUgYW5kIG5vdCByaXNrIGxvY2t1cCBkdWUKPiB0byByZXNldD8KCklmIHlvdSBwdXQgZG93
+biBsYXN0IGludGVyZmFjZSBtYWM4MDIxMSBjYWxscyBkcnZfc3RvcCgpLiBUaGVyZSBpc24ndAph
+bnkgcmVhbCBuZWVkIHRvIGtlZXAgdGhlIGRldmljZSB1cCBhbmQgcnVubmluZyBhZnRlciB0aGF0
+IG90aGVyIHRoYW4KdHJ5aW5nIHRvIHdvcmthcm91bmQgdGhlIHJlc2V0IGlzc3VlLiBCdXQgdGhl
+biB5b3UgbmVlZCB0byBkZWFsIHdpdGgKZmlybXdhcmUgcXVpcmtzLiBJIHJlY2FsbCBpdCBjb3Vs
+ZCByZXBvcnQgUnggaW5kaWNhdGlvbnMgYWZ0ZXIgYWxsCnZkZXZzIGhhZCBiZWVuIHJlbW92ZWQg
+KGFuZCB0aGlzIGlzIG5vdyBhbHNvIG9ic2VydmFibGUgd2l0aCAxMC4yCmR1cmluZyBwcm9iaW5n
+L2Jvb3R1cCkuIEl0J3MganVzdCBzaW1wbGVyIHRvIHJlYm9vdCBmaXJtd2FyZSBvbgpkcnZfc3Rv
+cC9zdGFydCgpLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
+cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
