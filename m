@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUbp6-0001zb-0o
- for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:32:38 +0000
-Received: by mail-wi0-f171.google.com with SMTP id d1so170085wiv.16
+ id 1XUbp5-0001zP-2b
+ for ath10k@lists.infradead.org; Thu, 18 Sep 2014 13:32:37 +0000
+Received: by mail-wg0-f47.google.com with SMTP id l18so886476wgh.6
  for <ath10k@lists.infradead.org>; Thu, 18 Sep 2014 06:32:13 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 7/9] ath10k: clean up phyerr code
-Date: Thu, 18 Sep 2014 15:21:25 +0200
-Message-Id: <1411046487-19544-8-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 6/9] ath10k: deduplicate wmi service ready logic
+Date: Thu, 18 Sep 2014 15:21:24 +0200
+Message-Id: <1411046487-19544-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 References: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,471 +27,448 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Make the phyerr structures more compact and easier
-to understand. Also add constness.
+The logic responsible for processing the event is
+no different across different firmware binaries.
+The difference that needs to be dealt with is the
+ABI of data structures.
+
+The intermediate structure uses __le32 to avoid
+extra memory allocations to byteswap
+variable-length substructures (i.e. host mem
+chunks).
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/spectral.c | 34 ++++-------
- drivers/net/wireless/ath/ath10k/spectral.h |  8 +--
- drivers/net/wireless/ath/ath10k/wmi.c      | 90 +++++++++++++++---------------
- drivers/net/wireless/ath/ath10k/wmi.h      | 83 +++------------------------
- 4 files changed, 66 insertions(+), 149 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  |   4 +-
+ drivers/net/wireless/ath/ath10k/debug.c |   2 +-
+ drivers/net/wireless/ath/ath10k/debug.h |   4 +-
+ drivers/net/wireless/ath/ath10k/wmi.c   | 237 ++++++++++++++++----------------
+ drivers/net/wireless/ath/ath10k/wmi.h   |  24 +++-
+ 5 files changed, 142 insertions(+), 129 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-index 3e1454b..63ce61f 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.c
-+++ b/drivers/net/wireless/ath/ath10k/spectral.c
-@@ -56,14 +56,14 @@ static uint8_t get_max_exp(s8 max_index, u16 max_magnitude, size_t bin_len,
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index fe531ea..a4ef3c6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -96,8 +96,6 @@ struct ath10k_bmi {
+ 	bool done_sent;
+ };
  
- int ath10k_spectral_process_fft(struct ath10k *ar,
--				struct wmi_single_phyerr_rx_event *event,
--				struct phyerr_fft_report *fftr,
-+				const struct wmi_phyerr *phyerr,
-+				const struct phyerr_fft_report *fftr,
- 				size_t bin_len, u64 tsf)
- {
- 	struct fft_sample_ath10k *fft_sample;
- 	u8 buf[sizeof(*fft_sample) + SPECTRAL_ATH10K_MAX_NUM_BINS];
- 	u16 freq1, freq2, total_gain_db, base_pwr_db, length, peak_mag;
--	u32 reg0, reg1, nf_list1, nf_list2;
-+	u32 reg0, reg1;
- 	u8 chain_idx, *bins;
- 	int dc_pos;
+-#define ATH10K_MAX_MEM_REQS 16
+-
+ struct ath10k_mem_chunk {
+ 	void *vaddr;
+ 	dma_addr_t paddr;
+@@ -115,7 +113,7 @@ struct ath10k_wmi {
+ 	struct wmi_pdev_param_map *pdev_param;
  
-@@ -82,7 +82,7 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
- 	/* TODO: there might be a reason why the hardware reports 20/40/80 MHz,
- 	 * but the results/plots suggest that its actually 22/44/88 MHz.
- 	 */
--	switch (event->hdr.chan_width_mhz) {
-+	switch (phyerr->chan_width_mhz) {
- 	case 20:
- 		fft_sample->chan_width_mhz = 22;
- 		break;
-@@ -101,7 +101,7 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
- 		fft_sample->chan_width_mhz = 88;
- 		break;
- 	default:
--		fft_sample->chan_width_mhz = event->hdr.chan_width_mhz;
-+		fft_sample->chan_width_mhz = phyerr->chan_width_mhz;
- 	}
+ 	u32 num_mem_chunks;
+-	struct ath10k_mem_chunk mem_chunks[ATH10K_MAX_MEM_REQS];
++	struct ath10k_mem_chunk mem_chunks[WMI_MAX_MEM_REQS];
+ };
  
- 	fft_sample->relpwr_db = MS(reg1, SEARCH_FFT_REPORT_REG1_RELPWR_DB);
-@@ -110,36 +110,22 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
- 	peak_mag = MS(reg1, SEARCH_FFT_REPORT_REG1_PEAK_MAG);
- 	fft_sample->max_magnitude = __cpu_to_be16(peak_mag);
- 	fft_sample->max_index = MS(reg0, SEARCH_FFT_REPORT_REG0_PEAK_SIDX);
--	fft_sample->rssi = event->hdr.rssi_combined;
-+	fft_sample->rssi = phyerr->rssi_combined;
- 
- 	total_gain_db = MS(reg0, SEARCH_FFT_REPORT_REG0_TOTAL_GAIN_DB);
- 	base_pwr_db = MS(reg0, SEARCH_FFT_REPORT_REG0_BASE_PWR_DB);
- 	fft_sample->total_gain_db = __cpu_to_be16(total_gain_db);
- 	fft_sample->base_pwr_db = __cpu_to_be16(base_pwr_db);
- 
--	freq1 = __le16_to_cpu(event->hdr.freq1);
--	freq2 = __le16_to_cpu(event->hdr.freq2);
-+	freq1 = __le16_to_cpu(phyerr->freq1);
-+	freq2 = __le16_to_cpu(phyerr->freq2);
- 	fft_sample->freq1 = __cpu_to_be16(freq1);
- 	fft_sample->freq2 = __cpu_to_be16(freq2);
- 
--	nf_list1 = __le32_to_cpu(event->hdr.nf_list_1);
--	nf_list2 = __le32_to_cpu(event->hdr.nf_list_2);
- 	chain_idx = MS(reg0, SEARCH_FFT_REPORT_REG0_FFT_CHN_IDX);
- 
--	switch (chain_idx) {
--	case 0:
--		fft_sample->noise = __cpu_to_be16(nf_list1 & 0xffffu);
--		break;
--	case 1:
--		fft_sample->noise = __cpu_to_be16((nf_list1 >> 16) & 0xffffu);
--		break;
--	case 2:
--		fft_sample->noise = __cpu_to_be16(nf_list2 & 0xffffu);
--		break;
--	case 3:
--		fft_sample->noise = __cpu_to_be16((nf_list2 >> 16) & 0xffffu);
--		break;
--	}
-+	fft_sample->noise = __cpu_to_be16(
-+			__le16_to_cpu(phyerr->nf_chains[chain_idx]));
- 
- 	bins = (u8 *)fftr;
- 	bins += sizeof(*fftr);
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.h b/drivers/net/wireless/ath/ath10k/spectral.h
-index ddc57c5..042f5b3 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.h
-+++ b/drivers/net/wireless/ath/ath10k/spectral.h
-@@ -47,8 +47,8 @@ enum ath10k_spectral_mode {
+ struct ath10k_peer_stat {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 3756feb..101c6f9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -182,7 +182,7 @@ EXPORT_SYMBOL(ath10k_warn);
  #ifdef CONFIG_ATH10K_DEBUGFS
  
- int ath10k_spectral_process_fft(struct ath10k *ar,
--				struct wmi_single_phyerr_rx_event *event,
--				struct phyerr_fft_report *fftr,
-+				const struct wmi_phyerr *phyerr,
-+				const struct phyerr_fft_report *fftr,
- 				size_t bin_len, u64 tsf);
- int ath10k_spectral_start(struct ath10k *ar);
- int ath10k_spectral_vif_stop(struct ath10k_vif *arvif);
-@@ -59,8 +59,8 @@ void ath10k_spectral_destroy(struct ath10k *ar);
- 
- static inline int
- ath10k_spectral_process_fft(struct ath10k *ar,
--			    struct wmi_single_phyerr_rx_event *event,
--			    struct phyerr_fft_report *fftr,
-+			    const struct wmi_phyerr *phyerr,
-+			    const struct phyerr_fft_report *fftr,
- 			    size_t bin_len, u64 tsf)
+ void ath10k_debug_read_service_map(struct ath10k *ar,
+-				   void *service_map,
++				   const void *service_map,
+ 				   size_t map_size)
  {
- 	return 0;
+ 	memcpy(ar->debug.wmi_service_bitmap, service_map, map_size);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index b3774f7..d6276fe 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -53,7 +53,7 @@ void ath10k_debug_destroy(struct ath10k *ar);
+ int ath10k_debug_register(struct ath10k *ar);
+ void ath10k_debug_unregister(struct ath10k *ar);
+ void ath10k_debug_read_service_map(struct ath10k *ar,
+-				   void *service_map,
++				   const void *service_map,
+ 				   size_t map_size);
+ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 				    struct wmi_stats_event *ev);
+@@ -93,7 +93,7 @@ static inline void ath10k_debug_unregister(struct ath10k *ar)
+ }
+ 
+ static inline void ath10k_debug_read_service_map(struct ath10k *ar,
+-						 void *service_map,
++						 const void *service_map,
+ 						 size_t map_size)
+ {
+ }
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index eab6b70..592e3af 100644
+index 029a127..eab6b70 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1715,8 +1715,8 @@ static void ath10k_wmi_event_tbttoffset_update(struct ath10k *ar,
+@@ -2197,30 +2197,113 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
+ 	return 0;
  }
  
- static void ath10k_dfs_radar_report(struct ath10k *ar,
--				    struct wmi_single_phyerr_rx_event *event,
--				    struct phyerr_radar_report *rr,
-+				    const struct wmi_phyerr *phyerr,
-+				    const struct phyerr_radar_report *rr,
- 				    u64 tsf)
++static int ath10k_wmi_pull_svc_rdy_ev(struct sk_buff *skb,
++				      struct wmi_svc_rdy_ev_arg *arg)
++{
++	struct wmi_service_ready_event *ev;
++	size_t i, n;
++
++	if (skb->len < sizeof(*ev))
++		return -EPROTO;
++
++	ev = (void *)skb->data;
++	skb_pull(skb, sizeof(*ev));
++	arg->min_tx_power = ev->hw_min_tx_power;
++	arg->max_tx_power = ev->hw_max_tx_power;
++	arg->ht_cap = ev->ht_cap_info;
++	arg->vht_cap = ev->vht_cap_info;
++	arg->sw_ver0 = ev->sw_version;
++	arg->sw_ver1 = ev->sw_version_1;
++	arg->phy_capab = ev->phy_capability;
++	arg->num_rf_chains = ev->num_rf_chains;
++	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->num_mem_reqs = ev->num_mem_reqs;
++	arg->service_map = ev->wmi_service_bitmap;
++
++	n = min_t(size_t, __le32_to_cpu(arg->num_mem_reqs),
++		  ARRAY_SIZE(arg->mem_reqs));
++	for (i = 0; i < n; i++)
++		arg->mem_reqs[i] = &ev->mem_reqs[i];
++
++	if (skb->len <
++	    __le32_to_cpu(arg->num_mem_reqs) * sizeof(arg->mem_reqs[0]))
++		return -EPROTO;
++
++	return 0;
++}
++
++static int ath10k_wmi_10x_pull_svc_rdy_ev(struct sk_buff *skb,
++					  struct wmi_svc_rdy_ev_arg *arg)
++{
++	struct wmi_10x_service_ready_event *ev;
++	int i, n;
++
++	if (skb->len < sizeof(*ev))
++		return -EPROTO;
++
++	ev = (void *)skb->data;
++	skb_pull(skb, sizeof(*ev));
++	arg->min_tx_power = ev->hw_min_tx_power;
++	arg->max_tx_power = ev->hw_max_tx_power;
++	arg->ht_cap = ev->ht_cap_info;
++	arg->vht_cap = ev->vht_cap_info;
++	arg->sw_ver0 = ev->sw_version;
++	arg->phy_capab = ev->phy_capability;
++	arg->num_rf_chains = ev->num_rf_chains;
++	arg->eeprom_rd = ev->hal_reg_capabilities.eeprom_rd;
++	arg->num_mem_reqs = ev->num_mem_reqs;
++	arg->service_map = ev->wmi_service_bitmap;
++
++	n = min_t(size_t, __le32_to_cpu(arg->num_mem_reqs),
++		  ARRAY_SIZE(arg->mem_reqs));
++	for (i = 0; i < n; i++)
++		arg->mem_reqs[i] = &ev->mem_reqs[i];
++
++	if (skb->len <
++	    __le32_to_cpu(arg->num_mem_reqs) * sizeof(arg->mem_reqs[0]))
++		return -EPROTO;
++
++	return 0;
++}
++
+ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 					      struct sk_buff *skb)
  {
- 	u32 reg0, reg1, tsf32l;
-@@ -1749,12 +1749,12 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
- 		return;
+-	struct wmi_service_ready_event *ev = (void *)skb->data;
++	struct wmi_svc_rdy_ev_arg arg = {};
++	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
+ 	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_MAX) = {};
++	int ret;
  
- 	/* report event to DFS pattern detector */
--	tsf32l = __le32_to_cpu(event->hdr.tsf_timestamp);
-+	tsf32l = __le32_to_cpu(phyerr->tsf_timestamp);
- 	tsf64 = tsf & (~0xFFFFFFFFULL);
- 	tsf64 |= tsf32l;
- 
- 	width = MS(reg1, RADAR_REPORT_REG1_PULSE_DUR);
--	rssi = event->hdr.rssi_combined;
-+	rssi = phyerr->rssi_combined;
- 
- 	/* hardware store this as 8 bit signed value,
- 	 * set to zero if negative number
-@@ -1793,8 +1793,8 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
- }
- 
- static int ath10k_dfs_fft_report(struct ath10k *ar,
--				 struct wmi_single_phyerr_rx_event *event,
--				 struct phyerr_fft_report *fftr,
-+				 const struct wmi_phyerr *phyerr,
-+				 const struct phyerr_fft_report *fftr,
- 				 u64 tsf)
- {
- 	u32 reg0, reg1;
-@@ -1802,7 +1802,7 @@ static int ath10k_dfs_fft_report(struct ath10k *ar,
- 
- 	reg0 = __le32_to_cpu(fftr->reg0);
- 	reg1 = __le32_to_cpu(fftr->reg1);
--	rssi = event->hdr.rssi_combined;
-+	rssi = phyerr->rssi_combined;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
- 		   "wmi phyerr fft report total_gain_db %d base_pwr_db %d fft_chn_idx %d peak_sidx %d\n",
-@@ -1831,20 +1831,20 @@ static int ath10k_dfs_fft_report(struct ath10k *ar,
- }
- 
- static void ath10k_wmi_event_dfs(struct ath10k *ar,
--				 struct wmi_single_phyerr_rx_event *event,
-+				 const struct wmi_phyerr *phyerr,
- 				 u64 tsf)
- {
- 	int buf_len, tlv_len, res, i = 0;
--	struct phyerr_tlv *tlv;
--	struct phyerr_radar_report *rr;
--	struct phyerr_fft_report *fftr;
--	u8 *tlv_buf;
-+	const struct phyerr_tlv *tlv;
-+	const struct phyerr_radar_report *rr;
-+	const struct phyerr_fft_report *fftr;
-+	const u8 *tlv_buf;
- 
--	buf_len = __le32_to_cpu(event->hdr.buf_len);
-+	buf_len = __le32_to_cpu(phyerr->buf_len);
- 	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
- 		   "wmi event dfs err_code %d rssi %d tsfl 0x%X tsf64 0x%llX len %d\n",
--		   event->hdr.phy_err_code, event->hdr.rssi_combined,
--		   __le32_to_cpu(event->hdr.tsf_timestamp), tsf, buf_len);
-+		   phyerr->phy_err_code, phyerr->rssi_combined,
-+		   __le32_to_cpu(phyerr->tsf_timestamp), tsf, buf_len);
- 
- 	/* Skip event if DFS disabled */
- 	if (!config_enabled(CONFIG_ATH10K_DFS_CERTIFIED))
-@@ -1859,9 +1859,9 @@ static void ath10k_wmi_event_dfs(struct ath10k *ar,
- 			return;
- 		}
- 
--		tlv = (struct phyerr_tlv *)&event->bufp[i];
-+		tlv = (struct phyerr_tlv *)&phyerr->buf[i];
- 		tlv_len = __le16_to_cpu(tlv->len);
--		tlv_buf = &event->bufp[i + sizeof(*tlv)];
-+		tlv_buf = &phyerr->buf[i + sizeof(*tlv)];
- 		ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
- 			   "wmi event dfs tlv_len %d tlv_tag 0x%02X tlv_sig 0x%02X\n",
- 			   tlv_len, tlv->tag, tlv->sig);
-@@ -1875,7 +1875,7 @@ static void ath10k_wmi_event_dfs(struct ath10k *ar,
- 			}
- 
- 			rr = (struct phyerr_radar_report *)tlv_buf;
--			ath10k_dfs_radar_report(ar, event, rr, tsf);
-+			ath10k_dfs_radar_report(ar, phyerr, rr, tsf);
- 			break;
- 		case PHYERR_TLV_TAG_SEARCH_FFT_REPORT:
- 			if (i + sizeof(*tlv) + sizeof(*fftr) > buf_len) {
-@@ -1885,7 +1885,7 @@ static void ath10k_wmi_event_dfs(struct ath10k *ar,
- 			}
- 
- 			fftr = (struct phyerr_fft_report *)tlv_buf;
--			res = ath10k_dfs_fft_report(ar, event, fftr, tsf);
-+			res = ath10k_dfs_fft_report(ar, phyerr, fftr, tsf);
- 			if (res)
- 				return;
- 			break;
-@@ -1897,16 +1897,16 @@ static void ath10k_wmi_event_dfs(struct ath10k *ar,
- 
- static void
- ath10k_wmi_event_spectral_scan(struct ath10k *ar,
--			       struct wmi_single_phyerr_rx_event *event,
-+			       const struct wmi_phyerr *phyerr,
- 			       u64 tsf)
- {
- 	int buf_len, tlv_len, res, i = 0;
- 	struct phyerr_tlv *tlv;
--	u8 *tlv_buf;
--	struct phyerr_fft_report *fftr;
-+	const void *tlv_buf;
-+	const struct phyerr_fft_report *fftr;
- 	size_t fftr_len;
- 
--	buf_len = __le32_to_cpu(event->hdr.buf_len);
-+	buf_len = __le32_to_cpu(phyerr->buf_len);
- 
- 	while (i < buf_len) {
- 		if (i + sizeof(*tlv) > buf_len) {
-@@ -1915,9 +1915,9 @@ ath10k_wmi_event_spectral_scan(struct ath10k *ar,
- 			return;
- 		}
- 
--		tlv = (struct phyerr_tlv *)&event->bufp[i];
-+		tlv = (struct phyerr_tlv *)&phyerr->buf[i];
- 		tlv_len = __le16_to_cpu(tlv->len);
--		tlv_buf = &event->bufp[i + sizeof(*tlv)];
-+		tlv_buf = &phyerr->buf[i + sizeof(*tlv)];
- 
- 		if (i + sizeof(*tlv) + tlv_len > buf_len) {
- 			ath10k_warn(ar, "failed to parse phyerr tlv payload at byte %d\n",
-@@ -1934,8 +1934,8 @@ ath10k_wmi_event_spectral_scan(struct ath10k *ar,
- 			}
- 
- 			fftr_len = tlv_len - sizeof(*fftr);
--			fftr = (struct phyerr_fft_report *)tlv_buf;
--			res = ath10k_spectral_process_fft(ar, event,
-+			fftr = tlv_buf;
-+			res = ath10k_spectral_process_fft(ar, phyerr,
- 							  fftr, fftr_len,
- 							  tsf);
- 			if (res < 0) {
-@@ -1952,8 +1952,8 @@ ath10k_wmi_event_spectral_scan(struct ath10k *ar,
- 
- static void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct wmi_comb_phyerr_rx_event *comb_event;
--	struct wmi_single_phyerr_rx_event *event;
-+	const struct wmi_phyerr_event *ev;
-+	const struct wmi_phyerr *phyerr;
- 	u32 count, i, buf_len, phy_err_code;
- 	u64 tsf;
- 	int left_len = skb->len;
-@@ -1961,38 +1961,38 @@ static void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
- 	ATH10K_DFS_STAT_INC(ar, phy_errors);
- 
- 	/* Check if combined event available */
--	if (left_len < sizeof(*comb_event)) {
-+	if (left_len < sizeof(*ev)) {
- 		ath10k_warn(ar, "wmi phyerr combined event wrong len\n");
+-	if (skb->len < sizeof(*ev)) {
+-		ath10k_warn(ar, "Service ready event was %d B but expected %zu B. Wrong firmware version?\n",
+-			    skb->len, sizeof(*ev));
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
++		ret = ath10k_wmi_10x_pull_svc_rdy_ev(skb, &arg);
++		wmi_10x_svc_map(arg.service_map, svc_bmap);
++	} else {
++		ret = ath10k_wmi_pull_svc_rdy_ev(skb, &arg);
++		wmi_main_svc_map(arg.service_map, svc_bmap);
++	}
++
++	if (ret) {
++		ath10k_warn(ar, "failed to parse service ready: %d\n", ret);
  		return;
  	}
  
--	left_len -= sizeof(*comb_event);
-+	left_len -= sizeof(*ev);
+-	ar->hw_min_tx_power = __le32_to_cpu(ev->hw_min_tx_power);
+-	ar->hw_max_tx_power = __le32_to_cpu(ev->hw_max_tx_power);
+-	ar->ht_cap_info = __le32_to_cpu(ev->ht_cap_info);
+-	ar->vht_cap_info = __le32_to_cpu(ev->vht_cap_info);
++	ar->hw_min_tx_power = __le32_to_cpu(arg.min_tx_power);
++	ar->hw_max_tx_power = __le32_to_cpu(arg.max_tx_power);
++	ar->ht_cap_info = __le32_to_cpu(arg.ht_cap);
++	ar->vht_cap_info = __le32_to_cpu(arg.vht_cap);
+ 	ar->fw_version_major =
+-		(__le32_to_cpu(ev->sw_version) & 0xff000000) >> 24;
+-	ar->fw_version_minor = (__le32_to_cpu(ev->sw_version) & 0x00ffffff);
++		(__le32_to_cpu(arg.sw_ver0) & 0xff000000) >> 24;
++	ar->fw_version_minor = (__le32_to_cpu(arg.sw_ver0) & 0x00ffffff);
+ 	ar->fw_version_release =
+-		(__le32_to_cpu(ev->sw_version_1) & 0xffff0000) >> 16;
+-	ar->fw_version_build = (__le32_to_cpu(ev->sw_version_1) & 0x0000ffff);
+-	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
+-	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
++		(__le32_to_cpu(arg.sw_ver1) & 0xffff0000) >> 16;
++	ar->fw_version_build = (__le32_to_cpu(arg.sw_ver1) & 0x0000ffff);
++	ar->phy_capability = __le32_to_cpu(arg.phy_capab);
++	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
++	ar->ath_common.regulatory.current_rd = __le32_to_cpu(arg.eeprom_rd);
++
++	ath10k_debug_read_service_map(ar, svc_bmap, sizeof(svc_bmap));
++	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
++			arg.service_map, sizeof(arg.service_map));
  
- 	/* Check number of included events */
--	comb_event = (struct wmi_comb_phyerr_rx_event *)skb->data;
--	count = __le32_to_cpu(comb_event->hdr.num_phyerr_events);
-+	ev = (const struct wmi_phyerr_event *)skb->data;
-+	count = __le32_to_cpu(ev->num_phyerrs);
+ 	/* only manually set fw features when not using FW IE format */
+ 	if (ar->fw_api == 1 && ar->fw_version_build > 636)
+@@ -2235,14 +2318,6 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 	ar->supp_tx_chainmask = (1 << ar->num_rf_chains) - 1;
+ 	ar->supp_rx_chainmask = (1 << ar->num_rf_chains) - 1;
  
--	tsf = __le32_to_cpu(comb_event->hdr.tsf_u32);
-+	tsf = __le32_to_cpu(ev->tsf_u32);
- 	tsf <<= 32;
--	tsf |= __le32_to_cpu(comb_event->hdr.tsf_l32);
-+	tsf |= __le32_to_cpu(ev->tsf_l32);
+-	ar->ath_common.regulatory.current_rd =
+-		__le32_to_cpu(ev->hal_reg_capabilities.eeprom_rd);
+-
+-	wmi_main_svc_map(ev->wmi_service_bitmap, svc_bmap);
+-	ath10k_debug_read_service_map(ar, svc_bmap, sizeof(svc_bmap));
+-	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
+-			ev->wmi_service_bitmap, sizeof(ev->wmi_service_bitmap));
+-
+ 	if (strlen(ar->hw->wiphy->fw_version) == 0) {
+ 		snprintf(ar->hw->wiphy->fw_version,
+ 			 sizeof(ar->hw->wiphy->fw_version),
+@@ -2253,96 +2328,18 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
+ 			 ar->fw_version_build);
+ 	}
  
+-	/* FIXME: it probably should be better to support this */
+-	if (__le32_to_cpu(ev->num_mem_reqs) > 0) {
+-		ath10k_warn(ar, "target requested %d memory chunks; ignoring\n",
+-			    __le32_to_cpu(ev->num_mem_reqs));
+-	}
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI,
+-		   "wmi event service ready sw_ver 0x%08x sw_ver1 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
+-		   __le32_to_cpu(ev->sw_version),
+-		   __le32_to_cpu(ev->sw_version_1),
+-		   __le32_to_cpu(ev->abi_version),
+-		   __le32_to_cpu(ev->phy_capability),
+-		   __le32_to_cpu(ev->ht_cap_info),
+-		   __le32_to_cpu(ev->vht_cap_info),
+-		   __le32_to_cpu(ev->vht_supp_mcs),
+-		   __le32_to_cpu(ev->sys_cap_info),
+-		   __le32_to_cpu(ev->num_mem_reqs),
+-		   __le32_to_cpu(ev->num_rf_chains));
+-
+-	complete(&ar->wmi.service_ready);
+-}
+-
+-static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+-						  struct sk_buff *skb)
+-{
+-	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
+-	int ret;
+-	struct wmi_service_ready_event_10x *ev = (void *)skb->data;
+-	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_MAX) = {};
+-
+-	if (skb->len < sizeof(*ev)) {
+-		ath10k_warn(ar, "Service ready event was %d B but expected %zu B. Wrong firmware version?\n",
+-			    skb->len, sizeof(*ev));
+-		return;
+-	}
+-
+-	ar->hw_min_tx_power = __le32_to_cpu(ev->hw_min_tx_power);
+-	ar->hw_max_tx_power = __le32_to_cpu(ev->hw_max_tx_power);
+-	ar->ht_cap_info = __le32_to_cpu(ev->ht_cap_info);
+-	ar->vht_cap_info = __le32_to_cpu(ev->vht_cap_info);
+-	ar->fw_version_major =
+-		(__le32_to_cpu(ev->sw_version) & 0xff000000) >> 24;
+-	ar->fw_version_minor = (__le32_to_cpu(ev->sw_version) & 0x00ffffff);
+-	ar->phy_capability = __le32_to_cpu(ev->phy_capability);
+-	ar->num_rf_chains = __le32_to_cpu(ev->num_rf_chains);
+-
+-	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
+-		ath10k_warn(ar, "hardware advertises support for more spatial streams than it should (%d > %d)\n",
+-			    ar->num_rf_chains, WMI_MAX_SPATIAL_STREAM);
+-		ar->num_rf_chains = WMI_MAX_SPATIAL_STREAM;
+-	}
+-
+-	ar->supp_tx_chainmask = (1 << ar->num_rf_chains) - 1;
+-	ar->supp_rx_chainmask = (1 << ar->num_rf_chains) - 1;
+-
+-	ar->ath_common.regulatory.current_rd =
+-		__le32_to_cpu(ev->hal_reg_capabilities.eeprom_rd);
+-
+-	wmi_10x_svc_map(ev->wmi_service_bitmap, svc_bmap);
+-	ath10k_debug_read_service_map(ar, svc_bmap, sizeof(svc_bmap));
+-	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
+-			ev->wmi_service_bitmap, sizeof(ev->wmi_service_bitmap));
+-
+-	if (strlen(ar->hw->wiphy->fw_version) == 0) {
+-		snprintf(ar->hw->wiphy->fw_version,
+-			 sizeof(ar->hw->wiphy->fw_version),
+-			 "%u.%u",
+-			 ar->fw_version_major,
+-			 ar->fw_version_minor);
+-	}
+-
+-	num_mem_reqs = __le32_to_cpu(ev->num_mem_reqs);
+-
+-	if (num_mem_reqs > ATH10K_MAX_MEM_REQS) {
++	num_mem_reqs = __le32_to_cpu(arg.num_mem_reqs);
++	if (num_mem_reqs > WMI_MAX_MEM_REQS) {
+ 		ath10k_warn(ar, "requested memory chunks number (%d) exceeds the limit\n",
+ 			    num_mem_reqs);
+ 		return;
+ 	}
+ 
+-	if (!num_mem_reqs)
+-		goto exit;
+-
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "firmware has requested %d memory chunks\n",
+-		   num_mem_reqs);
+-
+ 	for (i = 0; i < num_mem_reqs; ++i) {
+-		req_id = __le32_to_cpu(ev->mem_reqs[i].req_id);
+-		num_units = __le32_to_cpu(ev->mem_reqs[i].num_units);
+-		unit_size = __le32_to_cpu(ev->mem_reqs[i].unit_size);
+-		num_unit_info = __le32_to_cpu(ev->mem_reqs[i].num_unit_info);
++		req_id = __le32_to_cpu(arg.mem_reqs[i]->req_id);
++		num_units = __le32_to_cpu(arg.mem_reqs[i]->num_units);
++		unit_size = __le32_to_cpu(arg.mem_reqs[i]->unit_size);
++		num_unit_info = __le32_to_cpu(arg.mem_reqs[i]->num_unit_info);
+ 
+ 		if (num_unit_info & NUM_UNITS_IS_NUM_PEERS)
+ 			/* number of units to allocate is number of
+@@ -2356,7 +2353,7 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 		ath10k_dbg(ar, ATH10K_DBG_WMI,
+ 			   "wmi mem_req_id %d num_units %d num_unit_info %d unit size %d actual units %d\n",
+ 			   req_id,
+-			   __le32_to_cpu(ev->mem_reqs[i].num_units),
++			   __le32_to_cpu(arg.mem_reqs[i]->num_units),
+ 			   num_unit_info,
+ 			   unit_size,
+ 			   num_units);
+@@ -2367,18 +2364,18 @@ static void ath10k_wmi_10x_service_ready_event_rx(struct ath10k *ar,
+ 			return;
+ 	}
+ 
+-exit:
  	ath10k_dbg(ar, ATH10K_DBG_WMI,
- 		   "wmi event phyerr count %d tsf64 0x%llX\n",
- 		   count, tsf);
+-		   "wmi event service ready sw_ver 0x%08x abi_ver %u phy_cap 0x%08x ht_cap 0x%08x vht_cap 0x%08x vht_supp_msc 0x%08x sys_cap_info 0x%08x mem_reqs %u num_rf_chains %u\n",
+-		   __le32_to_cpu(ev->sw_version),
+-		   __le32_to_cpu(ev->abi_version),
+-		   __le32_to_cpu(ev->phy_capability),
+-		   __le32_to_cpu(ev->ht_cap_info),
+-		   __le32_to_cpu(ev->vht_cap_info),
+-		   __le32_to_cpu(ev->vht_supp_mcs),
+-		   __le32_to_cpu(ev->sys_cap_info),
+-		   __le32_to_cpu(ev->num_mem_reqs),
+-		   __le32_to_cpu(ev->num_rf_chains));
++		   "wmi event service ready min_tx_power 0x%08x max_tx_power 0x%08x ht_cap 0x%08x vht_cap 0x%08x sw_ver0 0x%08x sw_ver1 0x%08x phy_capab 0x%08x num_rf_chains 0x%08x eeprom_rd 0x%08x num_mem_reqs 0x%08x\n",
++		   __le32_to_cpu(arg.min_tx_power),
++		   __le32_to_cpu(arg.max_tx_power),
++		   __le32_to_cpu(arg.ht_cap),
++		   __le32_to_cpu(arg.vht_cap),
++		   __le32_to_cpu(arg.sw_ver0),
++		   __le32_to_cpu(arg.sw_ver1),
++		   __le32_to_cpu(arg.phy_capab),
++		   __le32_to_cpu(arg.num_rf_chains),
++		   __le32_to_cpu(arg.eeprom_rd),
++		   __le32_to_cpu(arg.num_mem_reqs));
  
--	event = (struct wmi_single_phyerr_rx_event *)comb_event->bufp;
-+	phyerr = ev->phyerrs;
- 	for (i = 0; i < count; i++) {
- 		/* Check if we can read event header */
--		if (left_len < sizeof(*event)) {
-+		if (left_len < sizeof(*phyerr)) {
- 			ath10k_warn(ar, "single event (%d) wrong head len\n",
- 				    i);
- 			return;
- 		}
- 
--		left_len -= sizeof(*event);
-+		left_len -= sizeof(*phyerr);
- 
--		buf_len = __le32_to_cpu(event->hdr.buf_len);
--		phy_err_code = event->hdr.phy_err_code;
-+		buf_len = __le32_to_cpu(phyerr->buf_len);
-+		phy_err_code = phyerr->phy_err_code;
- 
- 		if (left_len < buf_len) {
- 			ath10k_warn(ar, "single event (%d) wrong buf len\n", i);
-@@ -2003,20 +2003,20 @@ static void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
- 
- 		switch (phy_err_code) {
- 		case PHY_ERROR_RADAR:
--			ath10k_wmi_event_dfs(ar, event, tsf);
-+			ath10k_wmi_event_dfs(ar, phyerr, tsf);
- 			break;
- 		case PHY_ERROR_SPECTRAL_SCAN:
--			ath10k_wmi_event_spectral_scan(ar, event, tsf);
-+			ath10k_wmi_event_spectral_scan(ar, phyerr, tsf);
- 			break;
- 		case PHY_ERROR_FALSE_RADAR_EXT:
--			ath10k_wmi_event_dfs(ar, event, tsf);
--			ath10k_wmi_event_spectral_scan(ar, event, tsf);
-+			ath10k_wmi_event_dfs(ar, phyerr, tsf);
-+			ath10k_wmi_event_spectral_scan(ar, phyerr, tsf);
- 			break;
- 		default:
- 			break;
- 		}
- 
--		event += sizeof(*event) + buf_len;
-+		phyerr = (void *)phyerr + sizeof(*phyerr) + buf_len;
- 	}
+ 	complete(&ar->wmi.service_ready);
  }
- 
+@@ -2626,7 +2623,7 @@ static void ath10k_wmi_10x_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_vdev_resume_req(ar, skb);
+ 		break;
+ 	case WMI_10X_SERVICE_READY_EVENTID:
+-		ath10k_wmi_10x_service_ready_event_rx(ar, skb);
++		ath10k_wmi_service_ready_event_rx(ar, skb);
+ 		break;
+ 	case WMI_10X_READY_EVENTID:
+ 		ath10k_wmi_ready_event_rx(ar, skb);
+@@ -2737,7 +2734,7 @@ static void ath10k_wmi_10_2_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_vdev_resume_req(ar, skb);
+ 		break;
+ 	case WMI_10_2_SERVICE_READY_EVENTID:
+-		ath10k_wmi_10x_service_ready_event_rx(ar, skb);
++		ath10k_wmi_service_ready_event_rx(ar, skb);
+ 		break;
+ 	case WMI_10_2_READY_EVENTID:
+ 		ath10k_wmi_ready_event_rx(ar, skb);
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ebdf154..a041567 100644
+index fc8bc9d..ebdf154 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2295,94 +2295,25 @@ struct wmi_mgmt_rx_event_v2 {
- #define PHY_ERROR_FALSE_RADAR_EXT		0x24
- #define PHY_ERROR_RADAR				0x05
- 
--struct wmi_single_phyerr_rx_hdr {
--	/* TSF timestamp */
-+struct wmi_phyerr {
- 	__le32 tsf_timestamp;
--
--	/*
--	 * Current freq1, freq2
--	 *
--	 * [7:0]:    freq1[lo]
--	 * [15:8] :   freq1[hi]
--	 * [23:16]:   freq2[lo]
--	 * [31:24]:   freq2[hi]
--	 */
- 	__le16 freq1;
- 	__le16 freq2;
--
--	/*
--	 * Combined RSSI over all chains and channel width for this PHY error
--	 *
--	 * [7:0]: RSSI combined
--	 * [15:8]: Channel width (MHz)
--	 * [23:16]: PHY error code
--	 * [24:16]: reserved (future use)
--	 */
- 	u8 rssi_combined;
- 	u8 chan_width_mhz;
- 	u8 phy_err_code;
- 	u8 rsvd0;
--
--	/*
--	 * RSSI on chain 0 through 3
--	 *
--	 * This is formatted the same as the PPDU_START RX descriptor
--	 * field:
--	 *
--	 * [7:0]:   pri20
--	 * [15:8]:  sec20
--	 * [23:16]: sec40
--	 * [31:24]: sec80
--	 */
--
--	__le32 rssi_chain0;
--	__le32 rssi_chain1;
--	__le32 rssi_chain2;
--	__le32 rssi_chain3;
--
--	/*
--	 * Last calibrated NF value for chain 0 through 3
--	 *
--	 * nf_list_1:
--	 *
--	 * + [15:0] - chain 0
--	 * + [31:16] - chain 1
--	 *
--	 * nf_list_2:
--	 *
--	 * + [15:0] - chain 2
--	 * + [31:16] - chain 3
--	 */
--	__le32 nf_list_1;
--	__le32 nf_list_2;
--
--	/* Length of the frame */
-+	__le32 rssi_chains[4];
-+	__le16 nf_chains[4];
- 	__le32 buf_len;
-+	u8 buf[0];
+@@ -1394,6 +1394,7 @@ struct wlan_host_mem_req {
+  * wmi_service_ready_event,e.g., 11ac pass some of the
+  * device capability to the host.
+  */
++
+ struct wmi_service_ready_event {
+ 	__le32 sw_version;
+ 	__le32 sw_version_1;
+@@ -1428,11 +1429,11 @@ struct wmi_service_ready_event {
+ 	 * where FW can access this memory directly (or) by DMA.
+ 	 */
+ 	__le32 num_mem_reqs;
+-	struct wlan_host_mem_req mem_reqs[1];
++	struct wlan_host_mem_req mem_reqs[0];
  } __packed;
  
--struct wmi_single_phyerr_rx_event {
--	/* Phy error event header */
--	struct wmi_single_phyerr_rx_hdr hdr;
--	/* frame buffer */
--	u8 bufp[0];
--} __packed;
--
--struct wmi_comb_phyerr_rx_hdr {
--	/* Phy error phy error count */
--	__le32 num_phyerr_events;
-+struct wmi_phyerr_event {
-+	__le32 num_phyerrs;
- 	__le32 tsf_l32;
- 	__le32 tsf_u32;
--} __packed;
--
--struct wmi_comb_phyerr_rx_event {
--	/* Phy error phy error count */
--	struct wmi_comb_phyerr_rx_hdr hdr;
--	/*
--	 * frame buffer - contains multiple payloads in the order:
--	 *                    header - payload, header - payload...
--	 *  (The header is of type: wmi_single_phyerr_rx_hdr)
--	 */
--	u8 bufp[0];
-+	struct wmi_phyerr phyerrs[0];
+ /* This is the definition from 10.X firmware branch */
+-struct wmi_service_ready_event_10x {
++struct wmi_10x_service_ready_event {
+ 	__le32 sw_version;
+ 	__le32 abi_version;
+ 
+@@ -1467,7 +1468,7 @@ struct wmi_service_ready_event_10x {
+ 	 */
+ 	__le32 num_mem_reqs;
+ 
+-	struct wlan_host_mem_req mem_reqs[1];
++	struct wlan_host_mem_req mem_reqs[0];
  } __packed;
  
- #define PHYERR_TLV_SIG				0xBB
+ #define WMI_SERVICE_READY_TIMEOUT_HZ (5*HZ)
+@@ -4702,6 +4703,23 @@ struct wmi_dbglog_cfg_cmd {
+ /* By default disable power save for IBSS */
+ #define ATH10K_DEFAULT_ATIM 0
+ 
++#define WMI_MAX_MEM_REQS 16
++
++struct wmi_svc_rdy_ev_arg {
++	__le32 min_tx_power;
++	__le32 max_tx_power;
++	__le32 ht_cap;
++	__le32 vht_cap;
++	__le32 sw_ver0;
++	__le32 sw_ver1;
++	__le32 phy_capab;
++	__le32 num_rf_chains;
++	__le32 eeprom_rd;
++	__le32 num_mem_reqs;
++	const __le32 *service_map;
++	const struct wlan_host_mem_req *mem_reqs[WMI_MAX_MEM_REQS];
++};
++
+ struct ath10k;
+ struct ath10k_vif;
+ 
 -- 
 1.8.5.3
 
