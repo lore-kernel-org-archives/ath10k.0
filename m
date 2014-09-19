@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XV2Yg-0003fm-6k
- for ath10k@lists.infradead.org; Fri, 19 Sep 2014 18:05:26 +0000
+ id 1XV2l3-0002MY-NE
+ for ath10k@lists.infradead.org; Fri, 19 Sep 2014 18:18:14 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 1/3] ath10k:  use 64-bit vdev map.
-Date: Fri, 19 Sep 2014 11:04:48 -0700
-Message-Id: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 1/2] ath10k: add helper method to grab debug stats.
+Date: Fri, 19 Sep 2014 11:17:38 -0700
+Message-Id: <1411150659-10998-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,121 +25,79 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This can allow more than 32 stations to be supported
-without over-running the bitmap.
+It can be nice to update the firmware's stats while
+debugging other bits of the driver, so add helper method
+to do this.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  4 ++--
- drivers/net/wireless/ath/ath10k/core.h |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 21 ++++++++++++---------
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c | 26 +++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/debug.h |  3 +++
+ 2 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index cee18c8..37e3166 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -846,9 +846,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 		goto err_hif_stop;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 3756feb..e223ba9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -371,6 +371,21 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 	complete(&ar->debug.event_stats_compl);
+ }
  
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
--		ar->free_vdev_map = (1 << TARGET_10X_NUM_VDEVS) - 1;
-+		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS) - 1;
- 	else
--		ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
-+		ar->free_vdev_map = (1LL << TARGET_NUM_VDEVS) - 1;
- 
- 	INIT_LIST_HEAD(&ar->arvifs);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index fe531ea..20c5e40 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -482,7 +482,7 @@ struct ath10k {
- 	/* current operating channel definition */
- 	struct cfg80211_chan_def chandef;
- 
--	int free_vdev_map;
-+	unsigned long long free_vdev_map;
- 	bool monitor;
- 	int monitor_vdev_id;
- 	bool monitor_started;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 4670930..e1ddac4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -590,9 +590,9 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 		return -ENOMEM;
- 	}
- 
--	bit = ffs(ar->free_vdev_map);
-+	bit = __ffs64(ar->free_vdev_map);
- 
--	ar->monitor_vdev_id = bit - 1;
-+	ar->monitor_vdev_id = bit;
- 
- 	ret = ath10k_wmi_vdev_create(ar, ar->monitor_vdev_id,
- 				     WMI_VDEV_TYPE_MONITOR,
-@@ -603,7 +603,7 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
-+	ar->free_vdev_map &= ~(1LL << ar->monitor_vdev_id);
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %d created\n",
- 		   ar->monitor_vdev_id);
- 
-@@ -623,7 +623,7 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ar->free_vdev_map |= 1 << ar->monitor_vdev_id;
-+	ar->free_vdev_map |= 1LL << ar->monitor_vdev_id;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %d deleted\n",
- 		   ar->monitor_vdev_id);
-@@ -2772,9 +2772,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		ret = -EBUSY;
- 		goto err;
- 	}
--	bit = ffs(ar->free_vdev_map);
-+	bit = __ffs64(ar->free_vdev_map);
- 
--	arvif->vdev_id = bit - 1;
-+	ath10k_warn(ar, "Creating vdev id: %i  map: %llu\n",
-+		    bit, ar->free_vdev_map);
++int ath10k_refresh_peer_stats(struct ath10k *ar)
++{
++	int ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
++	if (ret) {
++		ath10k_warn(ar, "could not request stats (%d)\n", ret);
++		return ret;
++	}
 +
-+	arvif->vdev_id = bit;
- 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
++	ret = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
++	if (ret <= 0)
++		return ret;
++
++	return 0;
++}
++
+ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 				    size_t count, loff_t *ppos)
+ {
+@@ -379,7 +394,6 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	char *buf = NULL;
+ 	unsigned int len = 0, buf_len = 8000;
+ 	ssize_t ret_cnt = 0;
+-	long left;
+ 	int i;
+ 	int ret;
  
- 	if (ar->p2p)
-@@ -2815,7 +2818,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		goto err;
- 	}
+@@ -394,14 +408,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		goto exit;
  
--	ar->free_vdev_map &= ~(1 << arvif->vdev_id);
-+	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
- 	list_add(&arvif->list, &ar->arvifs);
+-	ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
+-	if (ret) {
+-		ath10k_warn(ar, "could not request stats (%d)\n", ret);
+-		goto exit;
+-	}
+-
+-	left = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
+-	if (left <= 0)
++	ret = ath10k_refresh_peer_stats(ar);
++	if (ret)
+ 		goto exit;
  
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
-@@ -2908,7 +2911,7 @@ err_peer_delete:
- 
- err_vdev_delete:
- 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
--	ar->free_vdev_map |= 1 << arvif->vdev_id;
-+	ar->free_vdev_map |= 1LL << arvif->vdev_id;
- 	list_del(&arvif->list);
- 
- err:
-@@ -2944,7 +2947,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to stop spectral for vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
--	ar->free_vdev_map |= 1 << arvif->vdev_id;
-+	ar->free_vdev_map |= 1LL << arvif->vdev_id;
- 	list_del(&arvif->list);
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 	spin_lock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index b3774f7..91b217e 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -142,4 +142,7 @@ static inline void ath10k_dbg_dump(struct ath10k *ar,
+ {
+ }
+ #endif /* CONFIG_ATH10K_DEBUG */
++
++int ath10k_refresh_peer_stats(struct ath10k *ar);
++
+ #endif /* _DEBUG_H_ */
 -- 
 1.7.11.7
 
