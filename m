@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XUthB-0007js-Go
- for ath10k@lists.infradead.org; Fri, 19 Sep 2014 08:37:39 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 6/9] ath10k: deduplicate wmi service ready logic
+ id 1XUtnB-0001gZ-P5
+ for ath10k@lists.infradead.org; Fri, 19 Sep 2014 08:43:50 +0000
+Received: by mail-we0-f178.google.com with SMTP id q58so2141660wes.37
+ for <ath10k@lists.infradead.org>; Fri, 19 Sep 2014 01:43:25 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87a95wngzt.fsf@kamboji.qca.qualcomm.com>
 References: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
  <1411046487-19544-7-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 19 Sep 2014 11:37:10 +0300
-In-Reply-To: <1411046487-19544-7-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 18 Sep 2014 15:21:24 +0200")
-Message-ID: <87a95wngzt.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87a95wngzt.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 19 Sep 2014 10:43:25 +0200
+Message-ID: <CA+BoTQmsVqvGgu_fUqKGqhEKXV7E_w0KdcH_GFoPhAvyjtVdDA@mail.gmail.com>
+Subject: Re: [PATCH 6/9] ath10k: deduplicate wmi service ready logic
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +22,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> The logic responsible for processing the event is
-> no different across different firmware binaries.
-> The difference that needs to be dealt with is the
-> ABI of data structures.
->
-> The intermediate structure uses __le32 to avoid
-> extra memory allocations to byteswap
-> variable-length substructures (i.e. host mem
-> chunks).
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-[...]
-
-> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
-> +		ret = ath10k_wmi_10x_pull_svc_rdy_ev(skb, &arg);
-> +		wmi_10x_svc_map(arg.service_map, svc_bmap);
-> +	} else {
-> +		ret = ath10k_wmi_pull_svc_rdy_ev(skb, &arg);
-> +		wmi_main_svc_map(arg.service_map, svc_bmap);
-> +	}
-
-For consistency shouldn't the latter be
-ath10k_wmi_main_pull_svc_rdy_ev()?
-
-> --- a/drivers/net/wireless/ath/ath10k/wmi.h
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-> @@ -1394,6 +1394,7 @@ struct wlan_host_mem_req {
->   * wmi_service_ready_event,e.g., 11ac pass some of the
->   * device capability to the host.
->   */
-> +
->  struct wmi_service_ready_event {
->  	__le32 sw_version;
->  	__le32 sw_version_1;
-
-Isn't this unneeded change?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgU2VwdGVtYmVyIDIwMTQgMTA6MzcsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gVGhlIGxvZ2ljIHJlc3BvbnNpYmxlIGZvciBwcm9jZXNzaW5nIHRoZSBldmVu
+dCBpcwo+PiBubyBkaWZmZXJlbnQgYWNyb3NzIGRpZmZlcmVudCBmaXJtd2FyZSBiaW5hcmllcy4K
+Pj4gVGhlIGRpZmZlcmVuY2UgdGhhdCBuZWVkcyB0byBiZSBkZWFsdCB3aXRoIGlzIHRoZQo+PiBB
+Qkkgb2YgZGF0YSBzdHJ1Y3R1cmVzLgo+Pgo+PiBUaGUgaW50ZXJtZWRpYXRlIHN0cnVjdHVyZSB1
+c2VzIF9fbGUzMiB0byBhdm9pZAo+PiBleHRyYSBtZW1vcnkgYWxsb2NhdGlvbnMgdG8gYnl0ZXN3
+YXAKPj4gdmFyaWFibGUtbGVuZ3RoIHN1YnN0cnVjdHVyZXMgKGkuZS4gaG9zdCBtZW0KPj4gY2h1
+bmtzKS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
+aWV0by5jb20+Cj4KPiBbLi4uXQo+Cj4+ICsgICAgIGlmICh0ZXN0X2JpdChBVEgxMEtfRldfRkVB
+VFVSRV9XTUlfMTBYLCBhci0+ZndfZmVhdHVyZXMpKSB7Cj4+ICsgICAgICAgICAgICAgcmV0ID0g
+YXRoMTBrX3dtaV8xMHhfcHVsbF9zdmNfcmR5X2V2KHNrYiwgJmFyZyk7Cj4+ICsgICAgICAgICAg
+ICAgd21pXzEweF9zdmNfbWFwKGFyZy5zZXJ2aWNlX21hcCwgc3ZjX2JtYXApOwo+PiArICAgICB9
+IGVsc2Ugewo+PiArICAgICAgICAgICAgIHJldCA9IGF0aDEwa193bWlfcHVsbF9zdmNfcmR5X2V2
+KHNrYiwgJmFyZyk7Cj4+ICsgICAgICAgICAgICAgd21pX21haW5fc3ZjX21hcChhcmcuc2Vydmlj
+ZV9tYXAsIHN2Y19ibWFwKTsKPj4gKyAgICAgfQo+Cj4gRm9yIGNvbnNpc3RlbmN5IHNob3VsZG4n
+dCB0aGUgbGF0dGVyIGJlCj4gYXRoMTBrX3dtaV9tYWluX3B1bGxfc3ZjX3JkeV9ldigpPwoKR29v
+ZCBwb2ludC4gTWFrZXMgc2Vuc2UuIEknbGwgYWRkIHRoZSBfbWFpbiB0byB0aGUgZnVuY3Rpb24g
+bmFtZS4KCgo+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oCj4+
+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmgKPj4gQEAgLTEzOTQs
+NiArMTM5NCw3IEBAIHN0cnVjdCB3bGFuX2hvc3RfbWVtX3JlcSB7Cj4+ICAgKiB3bWlfc2Vydmlj
+ZV9yZWFkeV9ldmVudCxlLmcuLCAxMWFjIHBhc3Mgc29tZSBvZiB0aGUKPj4gICAqIGRldmljZSBj
+YXBhYmlsaXR5IHRvIHRoZSBob3N0Lgo+PiAgICovCj4+ICsKPj4gIHN0cnVjdCB3bWlfc2Vydmlj
+ZV9yZWFkeV9ldmVudCB7Cj4+ICAgICAgIF9fbGUzMiBzd192ZXJzaW9uOwo+PiAgICAgICBfX2xl
+MzIgc3dfdmVyc2lvbl8xOwo+Cj4gSXNuJ3QgdGhpcyB1bm5lZWRlZCBjaGFuZ2U/CgpHb29kIGNh
+dGNoLiBJJ2xsIGZpeCB0aGF0LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
