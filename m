@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XV2l3-0002MY-NE
+ id 1XV2l3-0002Nn-ND
  for ath10k@lists.infradead.org; Fri, 19 Sep 2014 18:18:14 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 1/2] ath10k: add helper method to grab debug stats.
-Date: Fri, 19 Sep 2014 11:17:38 -0700
-Message-Id: <1411150659-10998-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 2/2] ath10k: support ethtool stats.
+Date: Fri, 19 Sep 2014 11:17:39 -0700
+Message-Id: <1411150659-10998-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1411150659-10998-1-git-send-email-greearb@candelatech.com>
+References: <1411150659-10998-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,79 +27,253 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-It can be nice to update the firmware's stats while
-debugging other bits of the driver, so add helper method
-to do this.
+Add support for reading firmware stats through the ethtool
+API.  This may be easier for applications to manipulate
+compared to parsing a text based debugfs file.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 26 +++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/debug.h |  3 +++
- 2 files changed, 20 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  |   4 +
+ drivers/net/wireless/ath/ath10k/debug.c | 143 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h |   9 ++
+ drivers/net/wireless/ath/ath10k/mac.c   |   5 ++
+ drivers/net/wireless/ath/ath10k/pci.c   |   4 +
+ 5 files changed, 165 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 3f14858..3c8d904 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -544,6 +544,10 @@ struct ath10k {
+ 
+ 	struct dfs_pattern_detector *dfs_detector;
+ 
++	u32 fw_crash_counter;
++	u32 fw_warm_reset_counter;
++	u32 fw_cold_reset_counter;
++
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 	struct ath10k_debug debug;
+ #endif
 diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3756feb..e223ba9 100644
+index e223ba9..e3cda06 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.c
 +++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -371,6 +371,21 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 	complete(&ar->debug.event_stats_compl);
+@@ -1037,6 +1037,149 @@ exit:
+ 	return ret;
  }
  
-+int ath10k_refresh_peer_stats(struct ath10k *ar)
++#ifdef CONFIG_ATH10K_DEBUGFS
++/* TODO:  Would be nice to always support ethtool stats, would need to
++ * move the stats storage out of ath10k_debug, or always have ath10k_debug
++ * struct available..
++ */
++
++/* This generally cooresponds to the debugfs fw_stats file */
++static const char ath10k_gstrings_stats[][ETH_GSTRING_LEN] = {
++	"tx_pkts_nic",
++	"tx_bytes_nic",
++	"rx_pkts_nic",
++	"rx_bytes_nic",
++	"d_noise_floor",
++	"d_cycle_count",
++	"d_phy_error",
++	"d_rts_bad",
++	"d_rts_good",
++	"d_tx_power", /* in .5 dbM I think */
++	"d_rx_crc_err", /* fcs_bad */
++	"d_no_beacon",
++	"d_tx_mpdus_queued",
++	"d_tx_msdu_queued",
++	"d_tx_msdu_dropped",
++	"d_local_enqued",
++	"d_local_freed",
++	"d_tx_ppdu_hw_queued",
++	"d_tx_ppdu_reaped",
++	"d_tx_fifo_underrun",
++	"d_tx_ppdu_abort",
++	"d_tx_mpdu_requed",
++	"d_tx_excessive_retries",
++	"d_tx_hw_rate",
++	"d_tx_dropped_sw_retries",
++	"d_tx_illegal_rate",
++	"d_tx_continuous_xretries",
++	"d_tx_timeout",
++	"d_tx_mpdu_txop_limit",
++	"d_pdev_resets",
++	"d_rx_mid_ppdu_route_change",
++	"d_rx_status",
++	"d_rx_extra_frags_ring0",
++	"d_rx_extra_frags_ring1",
++	"d_rx_extra_frags_ring2",
++	"d_rx_extra_frags_ring3",
++	"d_rx_msdu_htt",
++	"d_rx_mpdu_htt",
++	"d_rx_msdu_stack",
++	"d_rx_mpdu_stack",
++	"d_rx_phy_err",
++	"d_rx_phy_err_drops",
++	"d_rx_mpdu_errors", /* FCS, MIC, ENC */
++	"d_fw_crash_count",
++	"d_fw_warm_reset_count",
++	"d_fw_cold_reset_count",
++};
++#define ATH10K_SSTATS_LEN ARRAY_SIZE(ath10k_gstrings_stats)
++
++void ath10k_get_et_strings(struct ieee80211_hw *hw,
++			   struct ieee80211_vif *vif,
++			   u32 sset, u8 *data)
 +{
-+	int ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
-+	if (ret) {
-+		ath10k_warn(ar, "could not request stats (%d)\n", ret);
-+		return ret;
-+	}
++	if (sset == ETH_SS_STATS)
++		memcpy(data, *ath10k_gstrings_stats,
++		       sizeof(ath10k_gstrings_stats));
++}
 +
-+	ret = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
-+	if (ret <= 0)
-+		return ret;
-+
++int ath10k_get_et_sset_count(struct ieee80211_hw *hw,
++			     struct ieee80211_vif *vif, int sset)
++{
++	if (sset == ETH_SS_STATS)
++		return ATH10K_SSTATS_LEN;
 +	return 0;
 +}
 +
- static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 				    size_t count, loff_t *ppos)
- {
-@@ -379,7 +394,6 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	char *buf = NULL;
- 	unsigned int len = 0, buf_len = 8000;
- 	ssize_t ret_cnt = 0;
--	long left;
- 	int i;
- 	int ret;
- 
-@@ -394,14 +408,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	if (!buf)
- 		goto exit;
- 
--	ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
--	if (ret) {
--		ath10k_warn(ar, "could not request stats (%d)\n", ret);
--		goto exit;
--	}
--
--	left = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
--	if (left <= 0)
-+	ret = ath10k_refresh_peer_stats(ar);
-+	if (ret)
- 		goto exit;
- 
- 	spin_lock_bh(&ar->data_lock);
++void ath10k_get_et_stats(struct ieee80211_hw *hw,
++			 struct ieee80211_vif *vif,
++			 struct ethtool_stats *stats, u64 *data)
++{
++	struct ath10k *ar = hw->priv;
++	int i = 0;
++	struct ath10k_target_stats *fw_stats;
++
++	fw_stats = &ar->debug.target_stats;
++
++	mutex_lock(&ar->conf_mutex);
++
++	if (ar->state == ATH10K_STATE_ON)
++		ath10k_refresh_peer_stats(ar);
++
++	data[i++] = fw_stats->hw_reaped; /* ppdu reaped */
++	data[i++] = 0; /* tx bytes */
++	data[i++] = fw_stats->htt_mpdus;
++	data[i++] = 0; /* rx bytes */
++	data[i++] = fw_stats->ch_noise_floor;
++	data[i++] = fw_stats->cycle_count;
++	data[i++] = fw_stats->phy_err_count;
++	data[i++] = fw_stats->rts_bad;
++	data[i++] = fw_stats->rts_good;
++	data[i++] = fw_stats->chan_tx_power;
++	data[i++] = fw_stats->fcs_bad;
++	data[i++] = fw_stats->no_beacons;
++	data[i++] = fw_stats->mpdu_enqued;
++	data[i++] = fw_stats->msdu_enqued;
++	data[i++] = fw_stats->wmm_drop;
++	data[i++] = fw_stats->local_enqued;
++	data[i++] = fw_stats->local_freed;
++	data[i++] = fw_stats->hw_queued;
++	data[i++] = fw_stats->hw_reaped;
++	data[i++] = fw_stats->underrun;
++	data[i++] = fw_stats->tx_abort;
++	data[i++] = fw_stats->mpdus_requed;
++	data[i++] = fw_stats->tx_ko;
++	data[i++] = fw_stats->data_rc;
++	data[i++] = fw_stats->sw_retry_failure;
++	data[i++] = fw_stats->illgl_rate_phy_err;
++	data[i++] = fw_stats->pdev_cont_xretry;
++	data[i++] = fw_stats->pdev_tx_timeout;
++	data[i++] = fw_stats->txop_ovf;
++	data[i++] = fw_stats->pdev_resets;
++	data[i++] = fw_stats->mid_ppdu_route_change;
++	data[i++] = fw_stats->status_rcvd;
++	data[i++] = fw_stats->r0_frags;
++	data[i++] = fw_stats->r1_frags;
++	data[i++] = fw_stats->r2_frags;
++	data[i++] = fw_stats->r3_frags;
++	data[i++] = fw_stats->htt_msdus;
++	data[i++] = fw_stats->htt_mpdus;
++	data[i++] = fw_stats->loc_msdus;
++	data[i++] = fw_stats->loc_mpdus;
++	data[i++] = fw_stats->phy_errs;
++	data[i++] = fw_stats->phy_err_drop;
++	data[i++] = fw_stats->mpdu_errs;
++	data[i++] = ar->fw_crash_counter;
++	data[i++] = ar->fw_warm_reset_counter;
++	data[i++] = ar->fw_cold_reset_counter;
++
++	mutex_unlock(&ar->conf_mutex);
++
++	WARN_ON(i != ATH10K_SSTATS_LEN);
++}
++
++#endif
++
+ static const struct file_operations fops_fw_dbglog = {
+ 	.read = ath10k_read_fw_dbglog,
+ 	.write = ath10k_write_fw_dbglog,
 diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index b3774f7..91b217e 100644
+index 91b217e..e44e6fc 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.h
 +++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -142,4 +142,7 @@ static inline void ath10k_dbg_dump(struct ath10k *ar,
+@@ -64,6 +64,15 @@ void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
+ 
+ #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
+ 
++void ath10k_get_et_strings(struct ieee80211_hw *hw,
++			   struct ieee80211_vif *vif,
++			   u32 sset, u8 *data);
++int ath10k_get_et_sset_count(struct ieee80211_hw *hw,
++			     struct ieee80211_vif *vif, int sset);
++void ath10k_get_et_stats(struct ieee80211_hw *hw,
++			 struct ieee80211_vif *vif,
++			 struct ethtool_stats *stats, u64 *data);
++
+ #else
+ static inline int ath10k_debug_start(struct ath10k *ar)
  {
- }
- #endif /* CONFIG_ATH10K_DEBUG */
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index b517f71..af24f6c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4468,6 +4468,11 @@ static const struct ieee80211_ops ath10k_ops = {
+ 	.suspend			= ath10k_suspend,
+ 	.resume				= ath10k_resume,
+ #endif
++#ifdef CONFIG_ATH10K_DEBUGFS
++	.get_et_sset_count  = ath10k_get_et_sset_count,
++	.get_et_stats       = ath10k_get_et_stats,
++	.get_et_strings     = ath10k_get_et_strings,
++#endif
+ };
+ 
+ #define RATETAB_ENT(_rate, _rateid, _flags) { \
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 59e0ea8..38f7386 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -986,6 +986,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 
++	ar->fw_crash_counter++;
 +
-+int ath10k_refresh_peer_stats(struct ath10k *ar);
-+
- #endif /* _DEBUG_H_ */
+ 	crash_data = ath10k_debug_get_new_fw_crash_data(ar);
+ 
+ 	if (crash_data)
+@@ -1671,6 +1673,7 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
+ 	u32 val;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
++	ar->fw_warm_reset_counter++;
+ 
+ 	/* debug */
+ 	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+@@ -2286,6 +2289,7 @@ static int ath10k_pci_cold_reset(struct ath10k *ar)
+ 	u32 val;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset\n");
++	ar->fw_cold_reset_counter++;
+ 
+ 	/* Put Target, including PCIe, into RESET. */
+ 	val = ath10k_pci_reg_read32(ar, SOC_GLOBAL_RESET_ADDRESS);
 -- 
 1.7.11.7
 
