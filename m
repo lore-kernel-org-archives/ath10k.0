@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW9UM-0001jF-0j
- for ath10k@lists.infradead.org; Mon, 22 Sep 2014 19:41:34 +0000
-Received: by mail-oa0-f44.google.com with SMTP id eb12so4303075oac.17
- for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 12:41:12 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
-References: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
-Date: Mon, 22 Sep 2014 12:41:12 -0700
-Message-ID: <CAA93jw5Aw_edkMPBEUxR3FZ_GFQ8hQ1C+rsK7dURb+n3Kjm1-g@mail.gmail.com>
-Subject: Re: Dusseldorf: LPC special session on ath10k
-From: Dave Taht <dave.taht@gmail.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XWAcw-0001Jw-Va
+ for ath10k@lists.infradead.org; Mon, 22 Sep 2014 20:54:31 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 2/2] ath10k: apply chainmask settings to vdev on creation.
+Date: Mon, 22 Sep 2014 13:54:05 -0700
+Message-Id: <1411419245-25799-2-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
+References: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +17,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kathy Giori <kathy.giori@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org
+Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-T24gTW9uLCBTZXAgMjIsIDIwMTQgYXQgMTI6MjYgUE0sIEthdGh5IEdpb3JpIDxrYXRoeS5naW9y
-aUBnbWFpbC5jb20+IHdyb3RlOgo+IEhleSB0aGVyZSBhdGgxMGsgZW50aHVzaWFzdHMsCj4KPiBU
-aGUgYWZ0ZXJub29uIHByaW9yIHRvIHRoZSBMaW51eCB3aXJlbGVzcyBzdW1taXQgdGhhdCBKb2hu
-IExpbnZpbGxlCj4gYW5kIEpvaGFubmVzIEJlcmcgYXJlIGhvc3Rpbmc6Cj4gaHR0cDovL3d3dy5s
-aW51eHBsdW1iZXJzY29uZi5vcmcvMjAxNC9vY3cvZXZlbnRzL0xQQzIwMTQvdHJhY2tzLzMzOQo+
-Cj4gd2UndmUgcmVzZXJ2ZWQgYSBjb25mZXJlbmNlIHJvb20gdG8gZm9jdXMgb24gYXRoMTBrIHRv
-cGljcyBvZgo+IGludGVyZXN0LiBJZiB5b3UgaGF2ZSBzcGVjaWZpYyBpdGVtcyB5b3UnZCBsaWtl
-IHRvIHNlZSBhZGRyZXNzZWQsCj4gcGxlYXNlIGxldCBtZSAob3IgS2FsbGUgVmFsbykga25vdyBp
-biBhZHZhbmNlLgo+Cj4gVGhlIG1pbmkgYXRoMTBrIHN1bW1pdCB3aWxsIGJlIGhlbGQgaW4gdGhl
-ICJWSVAtU0giIHNwb25zb3IgbWVldGluZwo+IHJvb20gdGhhdCBpcyBsb2NhdGVkIG9uIHRoZSAy
-bmQgZmxvb3Igb2YgdGhlIENDRC4gQXBwYXJlbnRseSB0aGVyZQo+IHdpbGwgYmUgc2lnbmFnZSBv
-bnNpdGUgdG8gZ3VpZGUgeW91IHRvIHRoZSByb29tLiBXZSBoYXZlIHRoZSByb29tCj4gcmVzZXJ2
-ZWQgZnJvbSAxLTVwbSBXZWRuZXNkYXksIE9jdG9iZXIgMTUuIEFuZCB3ZSBtaWdodCB3YW50IHRv
-IGNhcnJ5Cj4gb24gdGhlIGNvbnZlcnNhdGlvbnMgaW50byB0aGUgZXZlbmluZyBvdmVyIGRpbm5l
-ciBvciB3aGF0ZXZlciAtLSBzbwo+IGxldCBtZSBrbm93IGlmIHlvdSBhcmUgaW50ZXJlc3RlZCBp
-biB0aGF0IHBhcnQgYXMgd2VsbC4gSG9waW5nIHRvIHNlZQo+IHlvdSB0aGVyZSEKCkkgd29uJ3Qg
-YmUgdGhlcmUsIGJ1dCBJIGhvcGUgcHJvZ3Jlc3MgaXMgbWFkZS4gTGFzdCB3ZWVrIEkgaGFkIGEg
-Y2hhbmNlCnRvIGdpdmUgYSBzaG9ydCB0YWxrIGF0IHRoZSBpZWVlIHBsZW5hcnksIGFuZCBhIGxv
-bmdlciBwcmVzZW50YXRpb24gaW4gZnJvbnQgb2YKdGhlIGllZWUgODAyLjExIHduZyBtZWV0aW5n
-IGluIGF0aGVucywgZ3JlZWNlLCBhYm91dCBzb21lIG9mIHRoZSBwcm9ibGVtcwp3ZSBhcmUgc2Vl
-aW5nIGluIHRoZSA4MDIuMTEqIHdvcmxkLCBhbmQgc29tZSBwb3NzaWJsZSBzb2x1dGlvbnMuCgpJ
-IGRvbid0IGtub3cgaWYgdGhhdCBwcmVzbyBpcyBhdmFpbGFibGUgb3V0c2lkZSB0aGUgaWVlZSBy
-ZWZsZWN0b3IsIHRoZQpzbGlkZXMgYXJlIGF0OgoKaHR0cDovL3NuYXBvbi5sYWIuYnVmZmVyYmxv
-YXQubmV0L35kL2llZWU4MDIuMTEtc2VwdC0xNy0yMDE0LzExLTE0LTEyNjUtMDAtMHduZy1Nb3Jl
-LW9uLUJ1ZmZlcmJsb2F0LnBkZgoKT2YgbW9zdCByZWxldmFuY2UgYXJlIHNsaWRlcyAyMy0zNC4K
-Ckkgd2FzIHBsZWFzZWQgdG8gc2VlIHZhcmlvdXMgImxhdGVuY3kiIHJlcXVpcmVtZW50cyBnZXQg
-YWRkZWQgdG8gdGhlIDgwMi4xMWF4CmRvY3VtZW50cyBhbmQgdGVzdGluZyBwbGFucyB0aGUgbmV4
-dCBkYXkuCgoKLS0gCkRhdmUgVMOkaHQKCmh0dHBzOi8vd3d3LmJ1ZmZlcmJsb2F0Lm5ldC9wcm9q
-ZWN0cy9tYWtlLXdpZmktZmFzdAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+From: Ben Greear <greearb@candelatech.com>
+
+It appears it takes more than just setting the
+hardware's chainmask to make things work well.  Without
+this patch, a vdev would only use 1x1 rates when chainmask
+was set to 0x3.
+
+Setting the 'nss' (number of spatial streams) on the vdev
+helps the firmware's rate-control algorithm work properly.
+
+Tested on CT firmware, but probably this works (and
+is required) on normal firmware.
+
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4dc5a40..855c71c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2767,6 +2767,17 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 	return ret;
+ }
+ 
++static u32 get_nss_from_chainmask(u16 chain_mask)
++{
++	if ((chain_mask & 0x15) == 0x15)
++		return 4;
++	else if ((chain_mask & 0x7) == 0x7)
++		return 3;
++	else if ((chain_mask & 0x3) == 0x3)
++		return 2;
++	return 1;
++}
++
+ /*
+  * TODO:
+  * Figure out how to handle WMI_VDEV_SUBTYPE_P2P_DEVICE,
+@@ -2868,6 +2879,19 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err_vdev_delete;
+ 	}
+ 
++	if (ar->cfg_tx_chainmask) {
++		u16 nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
++		vdev_param = ar->wmi.vdev_param->nss;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++						nss);
++		if (ret) {
++			ath10k_warn(ar, "failed to set vdev %i chainmask 0x%x, nss %i: %d\n",
++				    arvif->vdev_id, ar->cfg_tx_chainmask, nss,
++				    ret);
++			goto err_vdev_delete;
++		}
++	}
++
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
+ 		if (ret) {
+-- 
+1.7.11.7
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
