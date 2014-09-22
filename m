@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW0D1-0001fm-7g
- for ath10k@lists.infradead.org; Mon, 22 Sep 2014 09:47:04 +0000
+ id 1XW0VS-0003nG-DQ
+ for ath10k@lists.infradead.org; Mon, 22 Sep 2014 10:06:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 6/9] ath10k: deduplicate wmi service ready logic
-References: <1411046487-19544-1-git-send-email-michal.kazior@tieto.com>
- <1411046487-19544-7-git-send-email-michal.kazior@tieto.com>
- <87a95wngzt.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmsVqvGgu_fUqKGqhEKXV7E_w0KdcH_GFoPhAvyjtVdDA@mail.gmail.com>
-Date: Mon, 22 Sep 2014 12:46:35 +0300
-In-Reply-To: <CA+BoTQmsVqvGgu_fUqKGqhEKXV7E_w0KdcH_GFoPhAvyjtVdDA@mail.gmail.com>
- (Michal Kazior's message of "Fri, 19 Sep 2014 10:43:25 +0200")
-Message-ID: <87oau8m1hg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: print wmi version info
+References: <1411046721-20510-1-git-send-email-michal.kazior@tieto.com>
+ <1411046721-20510-2-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 22 Sep 2014 13:05:35 +0300
+In-Reply-To: <1411046721-20510-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 18 Sep 2014 15:25:19 +0200")
+Message-ID: <87fvfkm0ls.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,85 +25,37 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 19 September 2014 10:37, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> +     if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
->>> +             ret = ath10k_wmi_10x_pull_svc_rdy_ev(skb, &arg);
->>> +             wmi_10x_svc_map(arg.service_map, svc_bmap);
->>> +     } else {
->>> +             ret = ath10k_wmi_pull_svc_rdy_ev(skb, &arg);
->>> +             wmi_main_svc_map(arg.service_map, svc_bmap);
->>> +     }
->>
->> For consistency shouldn't the latter be
->> ath10k_wmi_main_pull_svc_rdy_ev()?
+> HTT version is already printed so print WMI
+> version as well for consistency.
 >
-> Good point. Makes sense. I'll add the _main to the function name.
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 >
->
->>> --- a/drivers/net/wireless/ath/ath10k/wmi.h
->>> +++ b/drivers/net/wireless/ath/ath10k/wmi.h
->>> @@ -1394,6 +1394,7 @@ struct wlan_host_mem_req {
->>>   * wmi_service_ready_event,e.g., 11ac pass some of the
->>>   * device capability to the host.
->>>   */
->>> +
->>>  struct wmi_service_ready_event {
->>>       __le32 sw_version;
->>>       __le32 sw_version_1;
->>
->> Isn't this unneeded change?
->
-> Good catch. I'll fix that.
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> index 3756feb..f1e5916 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -126,14 +126,18 @@ EXPORT_SYMBOL(ath10k_info);
+>  
+>  void ath10k_print_driver_info(struct ath10k *ar)
+>  {
+> -	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
+> +	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d.%d.%d.%d\n",
 
-Like discussed in IRC, you don't need to resent the whole patchset just
-because of this. I have now folded the patch below onto your patch in
-ath-next-test, please review:
+Heh, I have been thinking about to add something similar.
 
-https://github.com/kvalo/ath/commit/1d13ab4a3bdfd342ed8fbead859de398b379435c
+But if in the future we add the u32 FW IE for WMI version I would like
+to print that as well. I guess we could do that with "%d/%d.%d.%d.%d",
+the %d being the u32. The idea here being that both version numbers are
+good to know.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 37a520150358..a7c11b292bf4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2205,8 +2205,8 @@ static int ath10k_wmi_alloc_host_mem(struct ath10k *ar, u32 req_id,
- 	return 0;
- }
- 
--static int ath10k_wmi_pull_svc_rdy_ev(struct sk_buff *skb,
--				      struct wmi_svc_rdy_ev_arg *arg)
-+static int ath10k_wmi_main_pull_svc_rdy_ev(struct sk_buff *skb,
-+					   struct wmi_svc_rdy_ev_arg *arg)
- {
- 	struct wmi_service_ready_event *ev;
- 	size_t i, n;
-@@ -2286,7 +2286,7 @@ static void ath10k_wmi_service_ready_event_rx(struct ath10k *ar,
- 		ret = ath10k_wmi_10x_pull_svc_rdy_ev(skb, &arg);
- 		wmi_10x_svc_map(arg.service_map, svc_bmap);
- 	} else {
--		ret = ath10k_wmi_pull_svc_rdy_ev(skb, &arg);
-+		ret = ath10k_wmi_main_pull_svc_rdy_ev(skb, &arg);
- 		wmi_main_svc_map(arg.service_map, svc_bmap);
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ebdf15454f27..ca31cdbac557 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1394,7 +1394,6 @@ struct wlan_host_mem_req {
-  * wmi_service_ready_event,e.g., 11ac pass some of the
-  * device capability to the host.
-  */
--
- struct wmi_service_ready_event {
- 	__le32 sw_version;
- 	__le32 sw_version_1;
-
+But of course for now the above is good, just thinking aloud here.
 
 -- 
 Kalle Valo
