@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+Received: from mail-oa0-x22c.google.com ([2607:f8b0:4003:c02::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW9G5-0002m3-Lf
- for ath10k@lists.infradead.org; Mon, 22 Sep 2014 19:26:50 +0000
-Received: by mail-pd0-f178.google.com with SMTP id ft15so4921480pdb.23
- for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 12:26:28 -0700 (PDT)
+ id 1XW9UM-0001jF-0j
+ for ath10k@lists.infradead.org; Mon, 22 Sep 2014 19:41:34 +0000
+Received: by mail-oa0-f44.google.com with SMTP id eb12so4303075oac.17
+ for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 12:41:12 -0700 (PDT)
 MIME-Version: 1.0
-Date: Mon, 22 Sep 2014 12:26:28 -0700
-Message-ID: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
-Subject: Dusseldorf: LPC special session on ath10k
-From: Kathy Giori <kathy.giori@gmail.com>
+In-Reply-To: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
+References: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
+Date: Mon, 22 Sep 2014 12:41:12 -0700
+Message-ID: <CAA93jw5Aw_edkMPBEUxR3FZ_GFQ8hQ1C+rsK7dURb+n3Kjm1-g@mail.gmail.com>
+Subject: Re: Dusseldorf: LPC special session on ath10k
+From: Dave Taht <dave.taht@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,34 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>
+To: Kathy Giori <kathy.giori@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hey there ath10k enthusiasts,
-
-The afternoon prior to the Linux wireless summit that John Linville
-and Johannes Berg are hosting:
-http://www.linuxplumbersconf.org/2014/ocw/events/LPC2014/tracks/339
-
-we've reserved a conference room to focus on ath10k topics of
-interest. If you have specific items you'd like to see addressed,
-please let me (or Kalle Valo) know in advance.
-
-The mini ath10k summit will be held in the "VIP-SH" sponsor meeting
-room that is located on the 2nd floor of the CCD. Apparently there
-will be signage onsite to guide you to the room. We have the room
-reserved from 1-5pm Wednesday, October 15. And we might want to carry
-on the conversations into the evening over dinner or whatever -- so
-let me know if you are interested in that part as well. Hoping to see
-you there!
-
-kathy
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gTW9uLCBTZXAgMjIsIDIwMTQgYXQgMTI6MjYgUE0sIEthdGh5IEdpb3JpIDxrYXRoeS5naW9y
+aUBnbWFpbC5jb20+IHdyb3RlOgo+IEhleSB0aGVyZSBhdGgxMGsgZW50aHVzaWFzdHMsCj4KPiBU
+aGUgYWZ0ZXJub29uIHByaW9yIHRvIHRoZSBMaW51eCB3aXJlbGVzcyBzdW1taXQgdGhhdCBKb2hu
+IExpbnZpbGxlCj4gYW5kIEpvaGFubmVzIEJlcmcgYXJlIGhvc3Rpbmc6Cj4gaHR0cDovL3d3dy5s
+aW51eHBsdW1iZXJzY29uZi5vcmcvMjAxNC9vY3cvZXZlbnRzL0xQQzIwMTQvdHJhY2tzLzMzOQo+
+Cj4gd2UndmUgcmVzZXJ2ZWQgYSBjb25mZXJlbmNlIHJvb20gdG8gZm9jdXMgb24gYXRoMTBrIHRv
+cGljcyBvZgo+IGludGVyZXN0LiBJZiB5b3UgaGF2ZSBzcGVjaWZpYyBpdGVtcyB5b3UnZCBsaWtl
+IHRvIHNlZSBhZGRyZXNzZWQsCj4gcGxlYXNlIGxldCBtZSAob3IgS2FsbGUgVmFsbykga25vdyBp
+biBhZHZhbmNlLgo+Cj4gVGhlIG1pbmkgYXRoMTBrIHN1bW1pdCB3aWxsIGJlIGhlbGQgaW4gdGhl
+ICJWSVAtU0giIHNwb25zb3IgbWVldGluZwo+IHJvb20gdGhhdCBpcyBsb2NhdGVkIG9uIHRoZSAy
+bmQgZmxvb3Igb2YgdGhlIENDRC4gQXBwYXJlbnRseSB0aGVyZQo+IHdpbGwgYmUgc2lnbmFnZSBv
+bnNpdGUgdG8gZ3VpZGUgeW91IHRvIHRoZSByb29tLiBXZSBoYXZlIHRoZSByb29tCj4gcmVzZXJ2
+ZWQgZnJvbSAxLTVwbSBXZWRuZXNkYXksIE9jdG9iZXIgMTUuIEFuZCB3ZSBtaWdodCB3YW50IHRv
+IGNhcnJ5Cj4gb24gdGhlIGNvbnZlcnNhdGlvbnMgaW50byB0aGUgZXZlbmluZyBvdmVyIGRpbm5l
+ciBvciB3aGF0ZXZlciAtLSBzbwo+IGxldCBtZSBrbm93IGlmIHlvdSBhcmUgaW50ZXJlc3RlZCBp
+biB0aGF0IHBhcnQgYXMgd2VsbC4gSG9waW5nIHRvIHNlZQo+IHlvdSB0aGVyZSEKCkkgd29uJ3Qg
+YmUgdGhlcmUsIGJ1dCBJIGhvcGUgcHJvZ3Jlc3MgaXMgbWFkZS4gTGFzdCB3ZWVrIEkgaGFkIGEg
+Y2hhbmNlCnRvIGdpdmUgYSBzaG9ydCB0YWxrIGF0IHRoZSBpZWVlIHBsZW5hcnksIGFuZCBhIGxv
+bmdlciBwcmVzZW50YXRpb24gaW4gZnJvbnQgb2YKdGhlIGllZWUgODAyLjExIHduZyBtZWV0aW5n
+IGluIGF0aGVucywgZ3JlZWNlLCBhYm91dCBzb21lIG9mIHRoZSBwcm9ibGVtcwp3ZSBhcmUgc2Vl
+aW5nIGluIHRoZSA4MDIuMTEqIHdvcmxkLCBhbmQgc29tZSBwb3NzaWJsZSBzb2x1dGlvbnMuCgpJ
+IGRvbid0IGtub3cgaWYgdGhhdCBwcmVzbyBpcyBhdmFpbGFibGUgb3V0c2lkZSB0aGUgaWVlZSBy
+ZWZsZWN0b3IsIHRoZQpzbGlkZXMgYXJlIGF0OgoKaHR0cDovL3NuYXBvbi5sYWIuYnVmZmVyYmxv
+YXQubmV0L35kL2llZWU4MDIuMTEtc2VwdC0xNy0yMDE0LzExLTE0LTEyNjUtMDAtMHduZy1Nb3Jl
+LW9uLUJ1ZmZlcmJsb2F0LnBkZgoKT2YgbW9zdCByZWxldmFuY2UgYXJlIHNsaWRlcyAyMy0zNC4K
+Ckkgd2FzIHBsZWFzZWQgdG8gc2VlIHZhcmlvdXMgImxhdGVuY3kiIHJlcXVpcmVtZW50cyBnZXQg
+YWRkZWQgdG8gdGhlIDgwMi4xMWF4CmRvY3VtZW50cyBhbmQgdGVzdGluZyBwbGFucyB0aGUgbmV4
+dCBkYXkuCgoKLS0gCkRhdmUgVMOkaHQKCmh0dHBzOi8vd3d3LmJ1ZmZlcmJsb2F0Lm5ldC9wcm9q
+ZWN0cy9tYWtlLXdpZmktZmFzdAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
