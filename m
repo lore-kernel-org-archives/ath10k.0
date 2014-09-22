@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XW7dt-000151-Bn
- for ath10k@lists.infradead.org; Mon, 22 Sep 2014 17:43:17 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 81BE240A032
- for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 10:42:56 -0700 (PDT)
-Message-ID: <54205FA0.5000802@candelatech.com>
-Date: Mon, 22 Sep 2014 10:42:56 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-pd0-x232.google.com ([2607:f8b0:400e:c02::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XW9G5-0002m3-Lf
+ for ath10k@lists.infradead.org; Mon, 22 Sep 2014 19:26:50 +0000
+Received: by mail-pd0-f178.google.com with SMTP id ft15so4921480pdb.23
+ for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 12:26:28 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Using host's rate-ctrl in ath10k?
+Date: Mon, 22 Sep 2014 12:26:28 -0700
+Message-ID: <CAMowtuPU=nnz9wGeJsKJEN1XFK3=6m3ddmW22fuPownr2ZLPGA@mail.gmail.com>
+Subject: Dusseldorf: LPC special session on ath10k
+From: Kathy Giori <kathy.giori@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +22,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>
 
-Has anyone looked into what it would take to use standard host OS's
-rate control (minstrel_ht) with ath10k?
+Hey there ath10k enthusiasts,
 
-I suspect the ath10k rate control logic in the firmware is
-a bit dodgy, and it would be nice to use something with wider
-testing such as minstrel_ht...
+The afternoon prior to the Linux wireless summit that John Linville
+and Johannes Berg are hosting:
+http://www.linuxplumbersconf.org/2014/ocw/events/LPC2014/tracks/339
 
-Thanks,
-Ben
+we've reserved a conference room to focus on ath10k topics of
+interest. If you have specific items you'd like to see addressed,
+please let me (or Kalle Valo) know in advance.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+The mini ath10k summit will be held in the "VIP-SH" sponsor meeting
+room that is located on the 2nd floor of the CCD. Apparently there
+will be signage onsite to guide you to the room. We have the room
+reserved from 1-5pm Wednesday, October 15. And we might want to carry
+on the conversations into the evening over dinner or whatever -- so
+let me know if you are interested in that part as well. Hoping to see
+you there!
 
+kathy
 
 _______________________________________________
 ath10k mailing list
