@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
+Received: from emh04.mail.saunalahti.fi ([62.142.5.110])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWR92-0005tm-TE
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 14:32:45 +0000
-Subject: [PATCH v2 1/3] ath10k: don't enable interrupts for the diagnostic
- window
+ id 1XWR9A-00062E-Af
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 14:32:53 +0000
+Subject: [PATCH v2 2/3] ath10k: add diag_read() to hif ops
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 23 Sep 2014 17:32:19 +0300
-Message-ID: <20140923143219.23585.34114.stgit@potku.adurom.net>
+Date: Tue, 23 Sep 2014 17:32:26 +0300
+Message-ID: <20140923143226.23585.50550.stgit@potku.adurom.net>
+In-Reply-To: <20140923143219.23585.34114.stgit@potku.adurom.net>
+References: <20140923143219.23585.34114.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +25,268 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-The diagnostic window (CE7) uses polling and is not initiliased to retrieve
-interrupts so disable interrupts altogether for CE7. Otherwise ath10k crashes
-when using the diagnostic window while the firmware is running due to NULL
-dereference and polling reads timeout.
+diag_read() is used for reading from firmware memory via the diagnose window.
+First user will be cal_data debugfs file.
+
+To serialise diagnostic window access and make it safe to use while firmware is
+running take ce_lock both in ath10k_pci_diag_write_mem() and
+ath10k_pci_diag_read_mem(). Because of that all the CE calls had to be changed
+to _nolock variants.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |   22 +++++++-------
+ drivers/net/wireless/ath/ath10k/ce.h  |   13 ++++++++
+ drivers/net/wireless/ath/ath10k/hif.h |   10 ++++++
+ drivers/net/wireless/ath/ath10k/pci.c |   51 +++++++++++++++++++++------------
+ 4 files changed, 67 insertions(+), 29 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index 101cadb6e4ba..03b3a2c441fe 100644
+index 03b3a2c441fe..2f895bead693 100644
 --- a/drivers/net/wireless/ath/ath10k/ce.c
 +++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -817,7 +817,9 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ce_id;
+@@ -443,12 +443,12 @@ int ath10k_ce_rx_post_buf(struct ath10k_ce_pipe *pipe, void *ctx, u32 paddr)
+  * Guts of ath10k_ce_completed_recv_next.
+  * The caller takes responsibility for any necessary locking.
+  */
+-static int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
+-						void **per_transfer_contextp,
+-						u32 *bufferp,
+-						unsigned int *nbytesp,
+-						unsigned int *transfer_idp,
+-						unsigned int *flagsp)
++int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
++					 void **per_transfer_contextp,
++					 u32 *bufferp,
++					 unsigned int *nbytesp,
++					 unsigned int *transfer_idp,
++					 unsigned int *flagsp)
+ {
+ 	struct ath10k_ce_ring *dest_ring = ce_state->dest_ring;
+ 	unsigned int nentries_mask = dest_ring->nentries_mask;
+@@ -576,11 +576,11 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+  * Guts of ath10k_ce_completed_send_next.
+  * The caller takes responsibility for any necessary locking.
+  */
+-static int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
+-						void **per_transfer_contextp,
+-						u32 *bufferp,
+-						unsigned int *nbytesp,
+-						unsigned int *transfer_idp)
++int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
++					 void **per_transfer_contextp,
++					 u32 *bufferp,
++					 unsigned int *nbytesp,
++					 unsigned int *transfer_idp)
+ {
+ 	struct ath10k_ce_ring *src_ring = ce_state->src_ring;
+ 	u32 ctrl_addr = ce_state->ctrl_addr;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 329b7340fa72..608262ab964e 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -192,6 +192,12 @@ int ath10k_ce_completed_send_next(struct ath10k_ce_pipe *ce_state,
+ 				  unsigned int *nbytesp,
+ 				  unsigned int *transfer_idp);
  
--	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
-+	/* Skip the last copy engine, CE7 the diagnostic window, as that
-+	 * uses polling and isn't initialized for interrupts. */
-+	for (ce_id = 0; ce_id < CE_COUNT - 1; ce_id++)
- 		ath10k_ce_per_engine_handler_adjust(&ar_pci->ce_states[ce_id]);
++int ath10k_ce_completed_send_next_nolock(struct ath10k_ce_pipe *ce_state,
++					 void **per_transfer_contextp,
++					 u32 *bufferp,
++					 unsigned int *nbytesp,
++					 unsigned int *transfer_idp);
++
+ /*==================CE Engine Initialization=======================*/
+ 
+ int ath10k_ce_init_pipe(struct ath10k *ar, unsigned int ce_id,
+@@ -213,6 +219,13 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
+ 			       void **per_transfer_contextp,
+ 			       u32 *bufferp);
+ 
++int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
++					 void **per_transfer_contextp,
++					 u32 *bufferp,
++					 unsigned int *nbytesp,
++					 unsigned int *transfer_idp,
++					 unsigned int *flagsp);
++
+ /*
+  * Support clean shutdown by allowing the caller to cancel
+  * pending sends.  Target DMA must be stopped before using
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index 62323fea27e1..30301f5b6051 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -43,6 +43,10 @@ struct ath10k_hif_ops {
+ 	int (*tx_sg)(struct ath10k *ar, u8 pipe_id,
+ 		     struct ath10k_hif_sg_item *items, int n_items);
+ 
++	/* read firmware memory through the diagnose interface */
++	int (*diag_read)(struct ath10k *ar, u32 address, void *buf,
++			 size_t buf_len);
++
+ 	/*
+ 	 * API to handle HIF-specific BMI message exchanges, this API is
+ 	 * synchronous and only allowed to be called from a context that
+@@ -98,6 +102,12 @@ static inline int ath10k_hif_tx_sg(struct ath10k *ar, u8 pipe_id,
+ 	return ar->hif.ops->tx_sg(ar, pipe_id, items, n_items);
  }
  
++static inline int ath10k_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
++				       size_t buf_len)
++{
++	return ar->hif.ops->diag_read(ar, address, buf, buf_len);
++}
++
+ static inline int ath10k_hif_exchange_bmi_msg(struct ath10k *ar,
+ 					      void *request, u32 request_len,
+ 					      void *response, u32 *response_len)
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 59e0ea83be50..0784b48b04ce 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -485,6 +485,8 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 	void *data_buf = NULL;
+ 	int i;
+ 
++	spin_lock_bh(&ar_pci->ce_lock);
++
+ 	ce_diag = ar_pci->ce_diag;
+ 
+ 	/*
+@@ -511,7 +513,7 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		nbytes = min_t(unsigned int, remaining_bytes,
+ 			       DIAG_TRANSFER_LIMIT);
+ 
+-		ret = ath10k_ce_rx_post_buf(ce_diag, NULL, ce_data);
++		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, ce_data);
+ 		if (ret != 0)
+ 			goto done;
+ 
+@@ -527,15 +529,15 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		address = TARG_CPU_SPACE_TO_CE_SPACE(ar, ar_pci->mem,
+ 						     address);
+ 
+-		ret = ath10k_ce_send(ce_diag, NULL, (u32)address, nbytes, 0,
+-				     0);
++		ret = ath10k_ce_send_nolock(ce_diag, NULL, (u32)address, nbytes, 0,
++					    0);
+ 		if (ret)
+ 			goto done;
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_send_next(ce_diag, NULL, &buf,
+-						     &completed_nbytes,
+-						     &id) != 0) {
++		while (ath10k_ce_completed_send_next_nolock(ce_diag, NULL, &buf,
++							    &completed_nbytes,
++							    &id) != 0) {
+ 			mdelay(1);
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+ 				ret = -EBUSY;
+@@ -554,9 +556,9 @@ static int ath10k_pci_diag_read_mem(struct ath10k *ar, u32 address, void *data,
+ 		}
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_recv_next(ce_diag, NULL, &buf,
+-						     &completed_nbytes,
+-						     &id, &flags) != 0) {
++		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
++							    &completed_nbytes,
++							    &id, &flags) != 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -591,6 +593,8 @@ done:
+ 		dma_free_coherent(ar->dev, orig_nbytes, data_buf,
+ 				  ce_data_base);
+ 
++	spin_unlock_bh(&ar_pci->ce_lock);
++
+ 	return ret;
+ }
+ 
+@@ -648,6 +652,8 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 	dma_addr_t ce_data_base = 0;
+ 	int i;
+ 
++	spin_lock_bh(&ar_pci->ce_lock);
++
+ 	ce_diag = ar_pci->ce_diag;
+ 
+ 	/*
+@@ -688,7 +694,7 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		nbytes = min_t(int, remaining_bytes, DIAG_TRANSFER_LIMIT);
+ 
+ 		/* Set up to receive directly into Target(!) address */
+-		ret = ath10k_ce_rx_post_buf(ce_diag, NULL, address);
++		ret = __ath10k_ce_rx_post_buf(ce_diag, NULL, address);
+ 		if (ret != 0)
+ 			goto done;
+ 
+@@ -696,15 +702,15 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		 * Request CE to send caller-supplied data that
+ 		 * was copied to bounce buffer to Target(!) address.
+ 		 */
+-		ret = ath10k_ce_send(ce_diag, NULL, (u32)ce_data,
+-				     nbytes, 0, 0);
++		ret = ath10k_ce_send_nolock(ce_diag, NULL, (u32)ce_data,
++					    nbytes, 0, 0);
+ 		if (ret != 0)
+ 			goto done;
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_send_next(ce_diag, NULL, &buf,
+-						     &completed_nbytes,
+-						     &id) != 0) {
++		while (ath10k_ce_completed_send_next_nolock(ce_diag, NULL, &buf,
++							    &completed_nbytes,
++							    &id) != 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -724,9 +730,9 @@ static int ath10k_pci_diag_write_mem(struct ath10k *ar, u32 address,
+ 		}
+ 
+ 		i = 0;
+-		while (ath10k_ce_completed_recv_next(ce_diag, NULL, &buf,
+-						     &completed_nbytes,
+-						     &id, &flags) != 0) {
++		while (ath10k_ce_completed_recv_next_nolock(ce_diag, NULL, &buf,
++							    &completed_nbytes,
++							    &id, &flags) != 0) {
+ 			mdelay(1);
+ 
+ 			if (i++ > DIAG_ACCESS_CE_TIMEOUT_MS) {
+@@ -760,6 +766,8 @@ done:
+ 		ath10k_warn(ar, "failed to write diag value at 0x%x: %d\n",
+ 			    address, ret);
+ 
++	spin_unlock_bh(&ar_pci->ce_lock);
++
+ 	return ret;
+ }
+ 
+@@ -936,6 +944,12 @@ err:
+ 	return err;
+ }
+ 
++static int ath10k_pci_hif_diag_read(struct ath10k *ar, u32 address, void *buf,
++				    size_t buf_len)
++{
++	return ath10k_pci_diag_read_mem(ar, address, buf, buf_len);
++}
++
+ static u16 ath10k_pci_hif_get_free_queue_number(struct ath10k *ar, u8 pipe)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -1921,6 +1935,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 
+ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.tx_sg			= ath10k_pci_hif_tx_sg,
++	.diag_read		= ath10k_pci_hif_diag_read,
+ 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
+ 	.start			= ath10k_pci_hif_start,
+ 	.stop			= ath10k_pci_hif_stop,
 
 
 _______________________________________________
