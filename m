@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWQx0-0005Km-M1
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 14:20:19 +0000
-Message-ID: <5421818A.9040501@candelatech.com>
-Date: Tue, 23 Sep 2014 07:19:54 -0700
+ id 1XWQyy-00071B-C2
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 14:22:20 +0000
+Message-ID: <54218207.6050907@candelatech.com>
+Date: Tue, 23 Sep 2014 07:21:59 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
-References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ath10k:  use 64-bit vdev map.
+References: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
+ <878ulaebug.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878ulaebug.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +23,45 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 
 
-On 09/23/2014 02:16 AM, Michal Kazior wrote:
-> On 19 September 2014 20:28,  <greearb@candelatech.com> wrote:
-> [...]
->> +       /* If we are CT firmware, ask it to flush all tids on all peers on
->> +        * all vdevs.  Normal firmware will just crash if you do this.
->> +        */
->> +       if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
->> +               ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr, 0xFFFFFFFF);
+On 09/23/2014 05:54 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
 >
-> I recall you've explained this some time ago, but can you refresh my
-> memory, please? Is this any different from iterating over all peers
-> and flushing each? Or does your firmware do so extra magic that is
-> impossible to do with normal firmware commands?
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> This can allow more than 32 stations to be supported
+>> without over-running the bitmap.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>
+> [...]
+>
+>> -	ar->monitor_vdev_id = bit - 1;
+>> +	ar->monitor_vdev_id = bit;
+>
+> [...]
+>
+>> -	arvif->vdev_id = bit - 1;
+>> +	ath10k_warn(ar, "Creating vdev id: %i  map: %llu\n",
+>> +		    bit, ar->free_vdev_map);
+>> +
+>> +	arvif->vdev_id = bit;
+>
+> Why remove the "- 1"? Are you sure that's not going to break any
+> assumptions somewhere?
 
-My firmware does that iteration internally.
+I have been testing this patch in one form or another for almost a year
+and have not noticed any problems with it.
 
-You could probably do that in the driver, but it would be a lot
-of messages (for all vdevs, all peers, all tids)...
-I was not sure if there were limits to the number
-of commands you should attempt during the flush...
+The return value is subtly different when using the 64-bit version,
+so you don't need the -1.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
