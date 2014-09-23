@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWXU2-0003jv-PK
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:51 +0000
+ id 1XWXTh-0003IO-Fu
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:30 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 10/10] ath10k: request firmware flush in ath10k_flush.
-Date: Tue, 23 Sep 2014 14:17:25 -0700
-Message-Id: <1411507045-18973-10-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 02/10] ath10k: add helper method to grab debug stats.
+Date: Tue, 23 Sep 2014 14:17:17 -0700
+Message-Id: <1411507045-18973-2-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
 References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,44 +27,82 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-CT firmware now supports flushing all tids for all
-peers for all vdevs.  This appears to help the ath10k_flush
-logic work faster and not cause timeouts.
+It can be nice to update the firmware's stats while
+debugging other bits of the driver, so add helper method
+to do this.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
 
-v2:  No changes, just added it to the series in case it
-  helps justify adding the CT feature flag.
+v2:  No changes.
 
- drivers/net/wireless/ath/ath10k/mac.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/net/wireless/ath/ath10k/debug.c | 26 +++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/debug.h |  3 +++
+ 2 files changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 34ec992..bde3a2f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3917,6 +3917,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	struct ath10k *ar = hw->priv;
- 	bool skip;
- 	int ret;
-+	u8 peer_addr[ETH_ALEN] = {0};
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 101c6f9..c2c02ce 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -371,6 +371,21 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
+ 	complete(&ar->debug.event_stats_compl);
+ }
  
- 	/* mac80211 doesn't care if we really xmit queued frames or not
- 	 * we'll collect those frames either way if we stop/delete vdevs */
-@@ -3928,6 +3929,12 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	if (ar->state == ATH10K_STATE_WEDGED)
- 		goto skip;
- 
-+	/* If we are CT firmware, ask it to flush all tids on all peers on
-+	 * all vdevs.  Normal firmware will just crash if you do this.
-+	 */
-+	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
-+		ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr, 0xFFFFFFFF);
++int ath10k_refresh_peer_stats(struct ath10k *ar)
++{
++	int ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
++	if (ret) {
++		ath10k_warn(ar, "could not request stats (%d)\n", ret);
++		return ret;
++	}
 +
- 	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
- 			bool empty;
++	ret = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
++	if (ret <= 0)
++		return ret;
++
++	return 0;
++}
++
+ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 				    size_t count, loff_t *ppos)
+ {
+@@ -379,7 +394,6 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	char *buf = NULL;
+ 	unsigned int len = 0, buf_len = 8000;
+ 	ssize_t ret_cnt = 0;
+-	long left;
+ 	int i;
+ 	int ret;
  
+@@ -394,14 +408,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
+ 	if (!buf)
+ 		goto exit;
+ 
+-	ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
+-	if (ret) {
+-		ath10k_warn(ar, "could not request stats (%d)\n", ret);
+-		goto exit;
+-	}
+-
+-	left = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
+-	if (left <= 0)
++	ret = ath10k_refresh_peer_stats(ar);
++	if (ret)
+ 		goto exit;
+ 
+ 	spin_lock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index d6276fe..ba6d280 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -142,4 +142,7 @@ static inline void ath10k_dbg_dump(struct ath10k *ar,
+ {
+ }
+ #endif /* CONFIG_ATH10K_DEBUG */
++
++int ath10k_refresh_peer_stats(struct ath10k *ar);
++
+ #endif /* _DEBUG_H_ */
 -- 
 1.7.11.7
 
