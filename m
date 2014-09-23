@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWTGU-0004ly-7k
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:48:34 +0000
-Message-ID: <5421A44C.8080307@candelatech.com>
-Date: Tue, 23 Sep 2014 09:48:12 -0700
+ id 1XWTPm-0001jp-0h
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:58:10 +0000
+Message-ID: <5421A68C.8090508@candelatech.com>
+Date: Tue, 23 Sep 2014 09:57:48 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: use configured nss instead of max nss.
-References: <1411426820-4047-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
-In-Reply-To: <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ath10k: apply chainmask settings to vdev on creation.
+References: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
+ <1411419245-25799-2-git-send-email-greearb@candelatech.com>
+ <CA+BoTQ=NtS3hOD+gVZ2whx+K2xsKrZUWBPUa=gfKxaNFcoTHEw@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=NtS3hOD+gVZ2whx+K2xsKrZUWBPUa=gfKxaNFcoTHEw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,50 +27,84 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/23/2014 01:59 AM, Michal Kazior wrote:
-> On 23 September 2014 01:00,  <greearb@candelatech.com> wrote:
+On 09/23/2014 01:53 AM, Michal Kazior wrote:
+> On 22 September 2014 22:54,  <greearb@candelatech.com> wrote:
 >> From: Ben Greear <greearb@candelatech.com>
 >>
->> When re-associating a station, the nss was set back to
->> maximum value even if user had configured small number
->> of tx chains.  So, pay attention to user's config in
->> this case as well.
+>> It appears it takes more than just setting the
+>> hardware's chainmask to make things work well.  Without
+>> this patch, a vdev would only use 1x1 rates when chainmask
+>> was set to 0x3.
+>>
+>> Setting the 'nss' (number of spatial streams) on the vdev
+>> helps the firmware's rate-control algorithm work properly.
+>>
+>> Tested on CT firmware, but probably this works (and
+>> is required) on normal firmware.
 >>
 >> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >> ---
->>  drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++--
->>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>  drivers/net/wireless/ath/ath10k/mac.c | 24 ++++++++++++++++++++++++
+>>  1 file changed, 24 insertions(+)
 >>
 >> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 855c71c..c5d31cc 100644
+>> index 4dc5a40..855c71c 100644
 >> --- a/drivers/net/wireless/ath/ath10k/mac.c
 >> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -4086,6 +4086,10 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
->>         u32 legacy = 0x00ff;
->>         u8 ht = 0xff, i;
->>         u16 vht = 0x3ff;
->> +       u16 nrf = ar->num_rf_chains;
->> +
->> +       if (ar->cfg_tx_chainmask)
->> +               nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
+>> @@ -2767,6 +2767,17 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+>>         return ret;
+>>  }
+>>
+>> +static u32 get_nss_from_chainmask(u16 chain_mask)
+>> +{
+>> +       if ((chain_mask & 0x15) == 0x15)
+>> +               return 4;
+>> +       else if ((chain_mask & 0x7) == 0x7)
+>> +               return 3;
+>> +       else if ((chain_mask & 0x3) == 0x3)
+>> +               return 2;
+>> +       return 1;
+>> +}
 > 
-> Oh, so you do update the peer nss value here.
+> So a chainmask of `BIT(0) | BIT(2) = 0x5` is nss=1?
 
-Yeah, I found this was needed in further testing yesterday...
+That is how the firmware treats it.
 
-> I think it might be a good idea to convey the limitation of tx/rx
-> chainmask to the user: you can't change the tx/rx chainmask on the fly
-> easily (while connected/have associated stations). Or do you plan to
-> schedule peer reassoc in __ath10k_set_antenna() in a follow up
-> patch(es) later?
+> Why not just use `hweight16()` kernel macro? Or do we want to forbid
+> odd chainmasks (in which case additional checks need to be added as
+> well)?
 
-My user-space tools assume you have to re-connect (requested from user-space)
-after changing the chainmask.  I was under the impression that this
-is how ath9k works, though I could be wrong.
+Even after looking at the hweight16 code I don't know what it is supposed
+to do.  I think open-coding is plenty adequate.
 
-I would rather keep this requirement in user-space...
+Maybe the driver should only allow a chainmask of 1, 3, 7, (and eventually 15 when 4x4 exists),
+but maybe also that can just be on the user to get it right.  It is possible that there
+is some use for having a different chainmask, but it would require someone with good knowledge
+of the hardware to answer that I think.
 
-I am not sure where to document this...just a comment in the code?
+>> +       if (ar->cfg_tx_chainmask) {
+>> +               u16 nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
+>> +               vdev_param = ar->wmi.vdev_param->nss;
+>> +               ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
+>> +                                               nss);
+>> +               if (ret) {
+>> +                       ath10k_warn(ar, "failed to set vdev %i chainmask 0x%x, nss %i: %d\n",
+>> +                                   arvif->vdev_id, ar->cfg_tx_chainmask, nss,
+>> +                                   ret);
+>> +                       goto err_vdev_delete;
+>> +               }
+>> +       }
+>> +
+> 
+> If this is required won't setting up peer nss (after association) be
+> necessary as well?
+> 
+> Shouldn't the vdev nss param be set in __ath10k_set_antenna() as well?
+> What about peer nss (assuming it's necessary to update it) in that
+> case?
+
+Did the second patch address all of this?  I may have missed more cases,
+but at least with the second patch it seems to work for me reliably.
 
 Thanks,
 Ben
