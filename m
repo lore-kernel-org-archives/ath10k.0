@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWXTh-0003IO-Fu
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:30 +0000
-From: greearb@candelatech.com
-Subject: [PATCH v2 02/10] ath10k: add helper method to grab debug stats.
-Date: Tue, 23 Sep 2014 14:17:17 -0700
-Message-Id: <1411507045-18973-2-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
-References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+Received: from mail-we0-f174.google.com ([74.125.82.174])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XWZyl-0000Zp-M4
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 23:58:44 +0000
+Received: by mail-we0-f174.google.com with SMTP id w62so4891478wes.33
+ for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 16:58:17 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <54219982.8020204@candelatech.com>
+References: <5420BCDA.5010701@candelatech.com>
+ <CA+BoTQ=21YJ=WC+T51J_15m1qtDKhWSVP0cYw-P6R-tEmLoLNQ@mail.gmail.com>
+ <54219982.8020204@candelatech.com>
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Tue, 23 Sep 2014 19:57:57 -0400
+Message-ID: <CAHqTa-3L+6cK_mtub9hCZmAYyZsGTMTAd=d+EG5u5xqAQWiukg@mail.gmail.com>
+Subject: Re: Rate ctrl problem with 2x2 station.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,95 +22,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-From: Ben Greear <greearb@candelatech.com>
+On Tue, Sep 23, 2014 at 12:02 PM, Ben Greear <greearb@candelatech.com> wrote:
+> I have not tried 10.2, the latest snapshot I can get is from last
+> December, so it does not appear anyone is actively working on it,
+> and if it took 8 months to get into the ath10k driver, it must not be
+> obviously better??
 
-It can be nice to update the firmware's stats while
-debugging other bits of the driver, so add helper method
-to do this.
+We tried the 10.2 firmware.  It definitely fixes some bugs that we've
+run into (packet corruption), but it adds some even worse ones
+(unexplained firmware crashes).
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
-
-v2:  No changes.
-
- drivers/net/wireless/ath/ath10k/debug.c | 26 +++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/debug.h |  3 +++
- 2 files changed, 20 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 101c6f9..c2c02ce 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -371,6 +371,21 @@ void ath10k_debug_read_target_stats(struct ath10k *ar,
- 	complete(&ar->debug.event_stats_compl);
- }
- 
-+int ath10k_refresh_peer_stats(struct ath10k *ar)
-+{
-+	int ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
-+	if (ret) {
-+		ath10k_warn(ar, "could not request stats (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	ret = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
-+	if (ret <= 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 				    size_t count, loff_t *ppos)
- {
-@@ -379,7 +394,6 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	char *buf = NULL;
- 	unsigned int len = 0, buf_len = 8000;
- 	ssize_t ret_cnt = 0;
--	long left;
- 	int i;
- 	int ret;
- 
-@@ -394,14 +408,8 @@ static ssize_t ath10k_read_fw_stats(struct file *file, char __user *user_buf,
- 	if (!buf)
- 		goto exit;
- 
--	ret = ath10k_wmi_request_stats(ar, WMI_REQUEST_PEER_STAT);
--	if (ret) {
--		ath10k_warn(ar, "could not request stats (%d)\n", ret);
--		goto exit;
--	}
--
--	left = wait_for_completion_timeout(&ar->debug.event_stats_compl, 1*HZ);
--	if (left <= 0)
-+	ret = ath10k_refresh_peer_stats(ar);
-+	if (ret)
- 		goto exit;
- 
- 	spin_lock_bh(&ar->data_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index d6276fe..ba6d280 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -142,4 +142,7 @@ static inline void ath10k_dbg_dump(struct ath10k *ar,
- {
- }
- #endif /* CONFIG_ATH10K_DEBUG */
-+
-+int ath10k_refresh_peer_stats(struct ath10k *ar);
-+
- #endif /* _DEBUG_H_ */
--- 
-1.7.11.7
-
+Certainly you could try the new firmware and see if your particular
+bug is fixed.  But I also wouldn't say it's ready for prime time.
 
 _______________________________________________
 ath10k mailing list
