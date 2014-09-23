@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWPgq-0005Eo-VI
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 12:59:33 +0000
+ id 1XWPux-0004U8-7l
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 13:14:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/3] ath10k: support 32+ stations.
-References: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
- <1411149890-12618-3-git-send-email-greearb@candelatech.com>
-Date: Tue, 23 Sep 2014 15:59:06 +0300
-In-Reply-To: <1411149890-12618-3-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Fri, 19 Sep 2014 11:04:50
+Subject: Re: [PATCH 1/2] ath10k: make firmware text debug messages more
+ verbose.
+References: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
+Date: Tue, 23 Sep 2014 16:13:28 +0300
+In-Reply-To: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Mon, 22 Sep 2014 13:54:04
  -0700")
-Message-ID: <874mvyebmt.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87zjdqcwef.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,38 +32,30 @@ greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> Support up to 32 stations when using CT firmware.
+> There are not many of these messages producted by the
+> firmware, but they are generally fairly useful, so print
+> them at info level.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index cd60940..6be62ac 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -2050,7 +2050,7 @@ static void ath10k_wmi_event_debug_print(struct ath10k *ar,
+>  	/* the last byte is always reserved for the null character */
+>  	buf[i] = '\0';
+>  
+> -	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event debug print '%s'\n", buf);
+> +	ath10k_info(ar, "wmi event debug print '%s'\n", buf);
 
-[...]
-
-> -	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
-> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
-> +		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS_CT) - 1;
-> +	else if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
->  		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS) - 1;
->  	else
->  		ar->free_vdev_map = (1LL << TARGET_NUM_VDEVS) - 1;
-
-[...]
-
-> +/* Over-rides for Candela Technologies firmware */
-> +#define TARGET_10X_NUM_VDEVS_CT			32
-> +#define TARGET_10X_NUM_PEERS_CT			(32 + (TARGET_10X_NUM_VDEVS_CT))
-> +#define TARGET_10X_AST_SKID_LIMIT_CT		(TARGET_10X_NUM_PEERS_CT * TARGET_10X_NUM_PEER_AST)
-
-[...]
-
-> +		if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
-> +			max_num_peers = TARGET_10X_NUM_PEERS_CT - 1;
-
-Like I said before, this hardcoding of values using feature bits is not
-going to work in the long run. It's better that these values come
-directly from FW IEs as integers, that gives us a lot more flexibility
-between firmware versions.
-
-That's why I'll drop patches 2 and 3.
+This does not bring any extra value to normal users, it's only useful to
+firmware engineers. That's why it needs to stay as a debug message.
+Maybe we should add a new debug level just for these events, would that
+help?
 
 -- 
 Kalle Valo
