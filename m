@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWCbC-0007Fb-Vz
- for ath10k@lists.infradead.org; Mon, 22 Sep 2014 23:00:51 +0000
-From: greearb@candelatech.com
-Subject: [PATCH] ath10k:  use configured nss instead of max nss.
-Date: Mon, 22 Sep 2014 16:00:20 -0700
-Message-Id: <1411426820-4047-1-git-send-email-greearb@candelatech.com>
+ id 1XWDqq-00044p-2t
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 00:21:04 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id DCBA440A0D9
+ for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 17:20:42 -0700 (PDT)
+Message-ID: <5420BCDA.5010701@candelatech.com>
+Date: Mon, 22 Sep 2014 17:20:42 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Rate ctrl problem with 2x2 station.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,67 +21,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-From: Ben Greear <greearb@candelatech.com>
+While testing the previously posted patches that fix up the
+transmit rate for 3x3 NICs configured for 2x2 chainmask, I
+noticed that an ath10k configured as 3x3 AP will use only
+1x1 rates when transmitting to a 2x2 station.
 
-When re-associating a station, the nss was set back to
-maximum value even if user had configured small number
-of tx chains.  So, pay attention to user's config in
-this case as well.
+From debugging so far, it appears the root cause is that
+the method ath10k_peer_assoc_h_ht in mac.c is passed an
+sta with rx_nss set to 3, when in fact the station *should*
+be showing up as 2x2.
 
-Signed-off-by: Ben Greear <greearb@candelatech.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Possibly station system is still messed up some how...
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 855c71c..c5d31cc 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4086,6 +4086,10 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
- 	u32 legacy = 0x00ff;
- 	u8 ht = 0xff, i;
- 	u16 vht = 0x3ff;
-+	u16 nrf = ar->num_rf_chains;
-+
-+	if (ar->cfg_tx_chainmask)
-+		nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
- 
- 	switch (band) {
- 	case IEEE80211_BAND_2GHZ:
-@@ -4101,11 +4105,11 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
- 	if (mask->control[band].legacy != legacy)
- 		return false;
- 
--	for (i = 0; i < ar->num_rf_chains; i++)
-+	for (i = 0; i < nrf; i++)
- 		if (mask->control[band].ht_mcs[i] != ht)
- 			return false;
- 
--	for (i = 0; i < ar->num_rf_chains; i++)
-+	for (i = 0; i < nrf; i++)
- 		if (mask->control[band].vht_mcs[i] != vht)
- 			return false;
- 
-@@ -4356,6 +4360,9 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
- 	u8 fixed_nss = ar->num_rf_chains;
- 	u8 force_sgi;
- 
-+	if (ar->cfg_tx_chainmask)
-+		fixed_nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
-+
- 	force_sgi = mask->control[band].gi;
- 	if (force_sgi == NL80211_TXRATE_FORCE_LGI)
- 		return -EINVAL;
+Thanks,
+Ben
+
 -- 
-1.7.11.7
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
