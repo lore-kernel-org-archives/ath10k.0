@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWPcj-0002FI-M7
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 12:55:18 +0000
+ id 1XWPgq-0005Eo-VI
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 12:59:33 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k:  use 64-bit vdev map.
+Subject: Re: [PATCH 3/3] ath10k: support 32+ stations.
 References: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
-Date: Tue, 23 Sep 2014 15:54:31 +0300
-In-Reply-To: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Fri, 19 Sep 2014 11:04:48
+ <1411149890-12618-3-git-send-email-greearb@candelatech.com>
+Date: Tue, 23 Sep 2014 15:59:06 +0300
+In-Reply-To: <1411149890-12618-3-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Fri, 19 Sep 2014 11:04:50
  -0700")
-Message-ID: <878ulaebug.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <874mvyebmt.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,26 +32,38 @@ greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> This can allow more than 32 stations to be supported
-> without over-running the bitmap.
+> Support up to 32 stations when using CT firmware.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
 
 [...]
 
-> -	ar->monitor_vdev_id = bit - 1;
-> +	ar->monitor_vdev_id = bit;
+> -	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
+> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
+> +		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS_CT) - 1;
+> +	else if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
+>  		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS) - 1;
+>  	else
+>  		ar->free_vdev_map = (1LL << TARGET_NUM_VDEVS) - 1;
 
 [...]
 
-> -	arvif->vdev_id = bit - 1;
-> +	ath10k_warn(ar, "Creating vdev id: %i  map: %llu\n",
-> +		    bit, ar->free_vdev_map);
-> +
-> +	arvif->vdev_id = bit;
+> +/* Over-rides for Candela Technologies firmware */
+> +#define TARGET_10X_NUM_VDEVS_CT			32
+> +#define TARGET_10X_NUM_PEERS_CT			(32 + (TARGET_10X_NUM_VDEVS_CT))
+> +#define TARGET_10X_AST_SKID_LIMIT_CT		(TARGET_10X_NUM_PEERS_CT * TARGET_10X_NUM_PEER_AST)
 
-Why remove the "- 1"? Are you sure that's not going to break any
-assumptions somewhere?
+[...]
+
+> +		if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
+> +			max_num_peers = TARGET_10X_NUM_PEERS_CT - 1;
+
+Like I said before, this hardcoding of values using feature bits is not
+going to work in the long run. It's better that these values come
+directly from FW IEs as integers, that gives us a lot more flexibility
+between firmware versions.
+
+That's why I'll drop patches 2 and 3.
 
 -- 
 Kalle Valo
