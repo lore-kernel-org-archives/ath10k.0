@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWRYO-0003c6-PX
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 14:58:57 +0000
-Message-ID: <54218A9A.7090305@candelatech.com>
-Date: Tue, 23 Sep 2014 07:58:34 -0700
-From: Ben Greear <greearb@candelatech.com>
+Date: Tue, 23 Sep 2014 10:46:27 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: [PATCH] ath: change logging functions to return void
+Message-ID: <20140923144627.GG23806@tuxdriver.com>
+References: <1411407334.2952.46.camel@joe-AO725>
+ <874mvzj7bu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/3] ath10k: support 32+ stations.
-References: <1411149890-12618-1-git-send-email-greearb@candelatech.com>
- <1411149890-12618-3-git-send-email-greearb@candelatech.com>
- <874mvyebmt.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <874mvyebmt.fsf@kamboji.qca.qualcomm.com>
+Content-Disposition: inline
+In-Reply-To: <874mvzj7bu.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +16,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: wil6210 <wil6210@qca.qualcomm.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, ath6kl@lists.infradead.org, Joe Perches <joe@perches.com>
 
+On Tue, Sep 23, 2014 at 07:20:53AM +0300, Kalle Valo wrote:
+> Joe Perches <joe@perches.com> writes:
+> 
+> > The return values are not used by callers of these functions
+> > so change the functions to return void.
+> >
+> > Other miscellanea:
+> >
+> > o add __printf verification to wil6210 logging functions
+> >   No format/argument mismatches found
+> >
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> > ---
+> > This change is associated to a desire to eventually
+> > change printk to return void.
+> >
+> >  drivers/net/wireless/ath/ath10k/debug.c    | 18 +++++-------------
+> >  drivers/net/wireless/ath/ath10k/debug.h    |  6 +++---
+> >  drivers/net/wireless/ath/ath6kl/common.h   |  2 +-
+> >  drivers/net/wireless/ath/ath6kl/debug.c    | 28 ++++++++--------------------
+> >  drivers/net/wireless/ath/ath6kl/debug.h    | 13 ++++++-------
+> 
+> For ath6kl and ath10k:
+> 
+> Acked-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> 
+> >  drivers/net/wireless/ath/wil6210/debug.c   | 14 ++++----------
+> >  drivers/net/wireless/ath/wil6210/wil6210.h |  7 +++++--
+> >  7 files changed, 32 insertions(+), 56 deletions(-)
+> 
+> John, as this patch also contains a wil6210 change how do you want to
+> handle this?
 
+I had presumed that you would merge it through the ath tree, so I
+deleted it...
 
-On 09/23/2014 05:59 AM, Kalle Valo wrote:
-> greearb@candelatech.com writes:
->
->> From: Ben Greear <greearb@candelatech.com>
->>
->> Support up to 32 stations when using CT firmware.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
->
-> [...]
->
->> -	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
->> +	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
->> +		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS_CT) - 1;
->> +	else if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
->>   		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS) - 1;
->>   	else
->>   		ar->free_vdev_map = (1LL << TARGET_NUM_VDEVS) - 1;
->
-> [...]
->
->> +/* Over-rides for Candela Technologies firmware */
->> +#define TARGET_10X_NUM_VDEVS_CT			32
->> +#define TARGET_10X_NUM_PEERS_CT			(32 + (TARGET_10X_NUM_VDEVS_CT))
->> +#define TARGET_10X_AST_SKID_LIMIT_CT		(TARGET_10X_NUM_PEERS_CT * TARGET_10X_NUM_PEER_AST)
->
-> [...]
->
->> +		if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
->> +			max_num_peers = TARGET_10X_NUM_PEERS_CT - 1;
->
-> Like I said before, this hardcoding of values using feature bits is not
-> going to work in the long run. It's better that these values come
-> directly from FW IEs as integers, that gives us a lot more flexibility
-> between firmware versions.
->
-> That's why I'll drop patches 2 and 3.
-
-Please suggest the name and definition of the IE(s) that you want for
-this feature so I don't have to guess.
-
-I also have a pending patch that supports tx status when using CT
-firmware.  How would you prefer this feature be communicated to
-the driver?  IE flag?
-
-Please also understand, it will be a bad idea to force the number of
-stations based on IE, but we could note upper limits and let module
-parameters tune the actual stations?
-
-Note that my patch above, for instance, decreases number of peers, but
-increases vdevs.  That works well for my purposes, but others may
-want more peers and less vdevs.
-
-Thanks,
-Ben
-
+John
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
