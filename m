@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWXTh-0003IC-Fw
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:30 +0000
+ id 1XWXU2-0003jv-PK
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:51 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 01/10] ath10k: use 64-bit vdev map.
-Date: Tue, 23 Sep 2014 14:17:16 -0700
-Message-Id: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 10/10] ath10k: request firmware flush in ath10k_flush.
+Date: Tue, 23 Sep 2014 14:17:25 -0700
+Message-Id: <1411507045-18973-10-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,124 +27,44 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This can allow more than 32 stations to be supported
-without over-running the bitmap.
+CT firmware now supports flushing all tids for all
+peers for all vdevs.  This appears to help the ath10k_flush
+logic work faster and not cause timeouts.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
 
-v2:  Change debug message.
+v2:  No changes, just added it to the series in case it
+  helps justify adding the CT feature flag.
 
- drivers/net/wireless/ath/ath10k/core.c |  4 ++--
- drivers/net/wireless/ath/ath10k/core.h |  2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 21 ++++++++++++---------
- 3 files changed, 15 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index cee18c8..37e3166 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -846,9 +846,9 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 		goto err_hif_stop;
- 
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
--		ar->free_vdev_map = (1 << TARGET_10X_NUM_VDEVS) - 1;
-+		ar->free_vdev_map = (1LL << TARGET_10X_NUM_VDEVS) - 1;
- 	else
--		ar->free_vdev_map = (1 << TARGET_NUM_VDEVS) - 1;
-+		ar->free_vdev_map = (1LL << TARGET_NUM_VDEVS) - 1;
- 
- 	INIT_LIST_HEAD(&ar->arvifs);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8a997b6..2f1d509 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -482,7 +482,7 @@ struct ath10k {
- 	/* current operating channel definition */
- 	struct cfg80211_chan_def chandef;
- 
--	int free_vdev_map;
-+	unsigned long long free_vdev_map;
- 	bool monitor;
- 	int monitor_vdev_id;
- 	bool monitor_started;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a99d919..02e0a45 100644
+index 34ec992..bde3a2f 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -624,9 +624,9 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 		return -ENOMEM;
- 	}
+@@ -3917,6 +3917,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	struct ath10k *ar = hw->priv;
+ 	bool skip;
+ 	int ret;
++	u8 peer_addr[ETH_ALEN] = {0};
  
--	bit = ffs(ar->free_vdev_map);
-+	bit = __ffs64(ar->free_vdev_map);
+ 	/* mac80211 doesn't care if we really xmit queued frames or not
+ 	 * we'll collect those frames either way if we stop/delete vdevs */
+@@ -3928,6 +3929,12 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 	if (ar->state == ATH10K_STATE_WEDGED)
+ 		goto skip;
  
--	ar->monitor_vdev_id = bit - 1;
-+	ar->monitor_vdev_id = bit;
- 
- 	ret = ath10k_wmi_vdev_create(ar, ar->monitor_vdev_id,
- 				     WMI_VDEV_TYPE_MONITOR,
-@@ -637,7 +637,7 @@ static int ath10k_monitor_vdev_create(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ar->free_vdev_map &= ~(1 << ar->monitor_vdev_id);
-+	ar->free_vdev_map &= ~(1LL << ar->monitor_vdev_id);
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %d created\n",
- 		   ar->monitor_vdev_id);
- 
-@@ -657,7 +657,7 @@ static int ath10k_monitor_vdev_delete(struct ath10k *ar)
- 		return ret;
- 	}
- 
--	ar->free_vdev_map |= 1 << ar->monitor_vdev_id;
-+	ar->free_vdev_map |= 1LL << ar->monitor_vdev_id;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %d deleted\n",
- 		   ar->monitor_vdev_id);
-@@ -2791,9 +2791,12 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		ret = -EBUSY;
- 		goto err;
- 	}
--	bit = ffs(ar->free_vdev_map);
-+	bit = __ffs64(ar->free_vdev_map);
- 
--	arvif->vdev_id = bit - 1;
-+	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac create vdev %i map %llx\n",
-+		   bit, ar->free_vdev_map);
++	/* If we are CT firmware, ask it to flush all tids on all peers on
++	 * all vdevs.  Normal firmware will just crash if you do this.
++	 */
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
++		ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr, 0xFFFFFFFF);
 +
-+	arvif->vdev_id = bit;
- 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
+ 	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
+ 			bool empty;
  
- 	if (ar->p2p)
-@@ -2865,7 +2868,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		goto err;
- 	}
- 
--	ar->free_vdev_map &= ~(1 << arvif->vdev_id);
-+	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
- 	list_add(&arvif->list, &ar->arvifs);
- 
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
-@@ -2958,7 +2961,7 @@ err_peer_delete:
- 
- err_vdev_delete:
- 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
--	ar->free_vdev_map |= 1 << arvif->vdev_id;
-+	ar->free_vdev_map |= 1LL << arvif->vdev_id;
- 	list_del(&arvif->list);
- 
- err:
-@@ -2993,7 +2996,7 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to stop spectral for vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
--	ar->free_vdev_map |= 1 << arvif->vdev_id;
-+	ar->free_vdev_map |= 1LL << arvif->vdev_id;
- 	list_del(&arvif->list);
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
 -- 
 1.7.11.7
 
