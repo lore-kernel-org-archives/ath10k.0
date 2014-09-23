@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath: change logging functions to return void
-References: <1411407334.2952.46.camel@joe-AO725>
-Date: Tue, 23 Sep 2014 07:20:53 +0300
-In-Reply-To: <1411407334.2952.46.camel@joe-AO725> (Joe Perches's message of
- "Mon, 22 Sep 2014 10:35:34 -0700")
-Message-ID: <874mvzj7bu.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XWKMK-0000MD-2E
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 07:18:01 +0000
+Received: by mail-wg0-f43.google.com with SMTP id y10so4232006wgg.14
+ for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 00:17:35 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <54205FA0.5000802@candelatech.com>
+References: <54205FA0.5000802@candelatech.com>
+Date: Tue, 23 Sep 2014 09:17:35 +0200
+Message-ID: <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
+Subject: Re: Using host's rate-ctrl in ath10k?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,49 +20,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: wil6210 <wil6210@qca.qualcomm.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, ath6kl@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Joe Perches <joe@perches.com> writes:
-
-> The return values are not used by callers of these functions
-> so change the functions to return void.
->
-> Other miscellanea:
->
-> o add __printf verification to wil6210 logging functions
->   No format/argument mismatches found
->
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
-> This change is associated to a desire to eventually
-> change printk to return void.
->
->  drivers/net/wireless/ath/ath10k/debug.c    | 18 +++++-------------
->  drivers/net/wireless/ath/ath10k/debug.h    |  6 +++---
->  drivers/net/wireless/ath/ath6kl/common.h   |  2 +-
->  drivers/net/wireless/ath/ath6kl/debug.c    | 28 ++++++++--------------------
->  drivers/net/wireless/ath/ath6kl/debug.h    | 13 ++++++-------
-
-For ath6kl and ath10k:
-
-Acked-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
->  drivers/net/wireless/ath/wil6210/debug.c   | 14 ++++----------
->  drivers/net/wireless/ath/wil6210/wil6210.h |  7 +++++--
->  7 files changed, 32 insertions(+), 56 deletions(-)
-
-John, as this patch also contains a wil6210 change how do you want to
-handle this?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjIgU2VwdGVtYmVyIDIwMTQgMTk6NDIsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPiBIYXMgYW55b25lIGxvb2tlZCBpbnRvIHdoYXQgaXQgd291bGQgdGFr
+ZSB0byB1c2Ugc3RhbmRhcmQgaG9zdCBPUydzCj4gcmF0ZSBjb250cm9sIChtaW5zdHJlbF9odCkg
+d2l0aCBhdGgxMGs/Cj4KPiBJIHN1c3BlY3QgdGhlIGF0aDEwayByYXRlIGNvbnRyb2wgbG9naWMg
+aW4gdGhlIGZpcm13YXJlIGlzCj4gYSBiaXQgZG9kZ3ksIGFuZCBpdCB3b3VsZCBiZSBuaWNlIHRv
+IHVzZSBzb21ldGhpbmcgd2l0aCB3aWRlcgo+IHRlc3Rpbmcgc3VjaCBhcyBtaW5zdHJlbF9odC4u
+LgoKQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcgYnV0IHRoYXQgd291bGQgcmVxdWlyZSB0eCBjb21w
+bGV0aW9ucyB0bwppbmNsdWRlIHR4IHJldHJ5IGluZm9ybWF0aW9uIGFuZCBhIHdheSB0byBzZXR1
+cCB0eCByZXRyaWVzLgoKSSByZWNhbGwgdGhlcmUncyBhIFdNSSBjb21tYW5kIHRvIGNvbnRyb2wg
+dHggcmV0cmllcyBpbiAxMC4xIGJ1dCBJCnRoaW5rIHRoZSBXTUkgc2VydmljZSBiaXRtYXAgZG9l
+c24ndCBpbmRpY2F0ZSBpdCBhcyBlbmFibGVkIChhdCBsZWFzdAppbiBvZmZpY2lhbCBmaXJtd2Fy
+ZSBiaW5hcmllcykgc28gSSBndWVzcyBpdCdzIGp1c3QgYSBuby1vcCBub3cuClRoZXJlJ3MgYWxz
+byBIVFQgcGt0bG9nIHdoaWNoIGlzIGFibGUgdG8gZGVsaXZlciB0eCBkZXNjcmlwdG9ycyB0byB0
+aGUKaG9zdCBidXQgdGhlc2UgYXJlbid0IHB1YmxpYy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
