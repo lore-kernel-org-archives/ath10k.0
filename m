@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWSXw-0006tQ-Dh
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:02:32 +0000
-Message-ID: <54219982.8020204@candelatech.com>
-Date: Tue, 23 Sep 2014 09:02:10 -0700
+ id 1XWSbm-0000rK-8o
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:06:30 +0000
+Message-ID: <54219A6E.6080902@candelatech.com>
+Date: Tue, 23 Sep 2014 09:06:06 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Rate ctrl problem with 2x2 station.
-References: <5420BCDA.5010701@candelatech.com>
- <CA+BoTQ=21YJ=WC+T51J_15m1qtDKhWSVP0cYw-P6R-tEmLoLNQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=21YJ=WC+T51J_15m1qtDKhWSVP0cYw-P6R-tEmLoLNQ@mail.gmail.com>
+Subject: Re: Using host's rate-ctrl in ath10k?
+References: <54205FA0.5000802@candelatech.com>
+ <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 09/23/2014 01:43 AM, Michal Kazior wrote:
-> On 23 September 2014 02:20, Ben Greear <greearb@candelatech.com> wrote:
->> While testing the previously posted patches that fix up the
->> transmit rate for 3x3 NICs configured for 2x2 chainmask, I
->> noticed that an ath10k configured as 3x3 AP will use only
->> 1x1 rates when transmitting to a 2x2 station.
->>
->> From debugging so far, it appears the root cause is that
->> the method ath10k_peer_assoc_h_ht in mac.c is passed an
->> sta with rx_nss set to 3, when in fact the station *should*
->> be showing up as 2x2.
->>
->> Possibly station system is still messed up some how...
-> 
-> Am I understanding correctly that the 2x2 station is just a 3x3 ath10k
-> device with "tx/rx_chainmask" being set to 0x3? If so then rx_nss
-> being 3 is okay because setting chainmasks does not affect advertised
-> capabilities and association sequences remain unaffected.
-
-I was thinking the peer's rx-nss would be what the peer (ie, station)
-can receive from the AP?  If so, then it should be 2 in this case
-since that is what the station is (or should be) advertising.
-
-> The problem might be  the hw rate control is unable to deal with the
-> strange chainmask setup. Did you try 10.2? I've been told it contains
-> some rate control improvements.
-
-It could easily be the hw rate control, but I will try to work around
-it in the driver, as it is very likely 10.1 has same issue as my
-firmware.  Certainly my 10.1 based firmware craps out if nss does
-not match reality (see previously posted patches).  Looks like same
-general problem on the AP side.
-
-I have not tried 10.2, the latest snapshot I can get is from last
-December, so it does not appear anyone is actively working on it,
-and if it took 8 months to get into the ath10k driver, it must not be
-obviously better??
-
-I will take a look at the difference between 10.2 and 10.1 and
-try to merge them into my tree when I get a chance.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDkvMjMvMjAxNCAxMjoxNyBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyMiBTZXB0
+ZW1iZXIgMjAxNCAxOTo0MiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
+b3RlOgo+PiBIYXMgYW55b25lIGxvb2tlZCBpbnRvIHdoYXQgaXQgd291bGQgdGFrZSB0byB1c2Ug
+c3RhbmRhcmQgaG9zdCBPUydzCj4+IHJhdGUgY29udHJvbCAobWluc3RyZWxfaHQpIHdpdGggYXRo
+MTBrPwo+Pgo+PiBJIHN1c3BlY3QgdGhlIGF0aDEwayByYXRlIGNvbnRyb2wgbG9naWMgaW4gdGhl
+IGZpcm13YXJlIGlzCj4+IGEgYml0IGRvZGd5LCBhbmQgaXQgd291bGQgYmUgbmljZSB0byB1c2Ug
+c29tZXRoaW5nIHdpdGggd2lkZXIKPj4gdGVzdGluZyBzdWNoIGFzIG1pbnN0cmVsX2h0Li4uCj4g
+Cj4gQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcgYnV0IHRoYXQgd291bGQgcmVxdWlyZSB0eCBjb21w
+bGV0aW9ucyB0bwo+IGluY2x1ZGUgdHggcmV0cnkgaW5mb3JtYXRpb24gYW5kIGEgd2F5IHRvIHNl
+dHVwIHR4IHJldHJpZXMuCgpTb21ldGhpbmcgbGlrZSB0aGF0Li4uSSBoYXZlIG5vdCBsb29rZWQg
+aW4gZGV0YWlsLiAgSXQgd291bGQKcmVxdWlyZSBhIHJlLWNvbXBpbGUgb2YgdGhlIGZpcm13YXJl
+IGF0IGxlYXN0LgoKSSBqdXN0IGRvbid0IGxpa2UgdGhhdCB3ZSBhcmUgZGVwZW5kaW5nIG9uIHRo
+ZSBmaXJtd2FyZSBmb3Igc29tZXRoaW5nCnNvbWV0aGluZyBhcyB0cmlja3kgYXMgcmF0ZSBjb250
+cm9sLCBlc3BlY2lhbGx5IHdoZW4gaXQgc2VlbXMgYnVnZ3kuCgpCdXQsIEkgZG9uJ3QgaGF2ZSB0
+aW1lIHRvIGRlYWwgd2l0aCB0cnlpbmcgdG8gbW92ZSBpdCBpbnRvCnRoZSBkcml2ZXIgbm93LCBh
+bmQgY2VydGFpbmx5IG5vdCBhcyBhIHBhdGNoIEkgd291bGQgaGF2ZSB0bwpjYXJyeSBmb3JldmVy
+IGluIG15IG93biB0cmVlLgoKVGhhbmtzLApCZW4KCgo+IEkgcmVjYWxsIHRoZXJlJ3MgYSBXTUkg
+Y29tbWFuZCB0byBjb250cm9sIHR4IHJldHJpZXMgaW4gMTAuMSBidXQgSQo+IHRoaW5rIHRoZSBX
+TUkgc2VydmljZSBiaXRtYXAgZG9lc24ndCBpbmRpY2F0ZSBpdCBhcyBlbmFibGVkIChhdCBsZWFz
+dAo+IGluIG9mZmljaWFsIGZpcm13YXJlIGJpbmFyaWVzKSBzbyBJIGd1ZXNzIGl0J3MganVzdCBh
+IG5vLW9wIG5vdy4KPiBUaGVyZSdzIGFsc28gSFRUIHBrdGxvZyB3aGljaCBpcyBhYmxlIHRvIGRl
+bGl2ZXIgdHggZGVzY3JpcHRvcnMgdG8gdGhlCj4gaG9zdCBidXQgdGhlc2UgYXJlbid0IHB1Ymxp
+Yy4KPiAKPiAKPiBNaWNoYcWCCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo+IAoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVs
+YSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
