@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWXTh-0003IV-Ft
+ id 1XWXTh-0003J5-Fv
  for ath10k@lists.infradead.org; Tue, 23 Sep 2014 21:18:31 +0000
 From: greearb@candelatech.com
-Subject: [PATCH v2 03/10] ath10k: support ethtool stats.
-Date: Tue, 23 Sep 2014 14:17:18 -0700
-Message-Id: <1411507045-18973-3-git-send-email-greearb@candelatech.com>
+Subject: [PATCH v2 05/10] ath10k: apply chainmask settings to vdev on creation.
+Date: Tue, 23 Sep 2014 14:17:20 -0700
+Message-Id: <1411507045-18973-5-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
 References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,264 +27,98 @@ Cc: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Add support for reading firmware stats through the ethtool
-API.  This may be easier for applications to manipulate
-compared to parsing a text based debugfs file.
+It appears it takes more than just setting the
+hardware's chainmask to make things work well.  Without
+this patch, a vdev would only use 1x1 rates when chainmask
+was set to 0x3.
 
-This patch also adds and reports firmware reset and
-crash counters.
+Setting the 'nss' (number of spatial streams) on the vdev
+helps the firmware's rate-control algorithm work properly.
+
+Tested on CT firmware, but probably this works (and
+is required) on normal firmware.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
 
-v2:  Add data-lock around assignment of the stats.
-     Update changelog to mention firmware reset/crash
-     counters.
+v2:  Add warning if chainmask is set to probably-invalid configuration.
+  Also, from a quick test, it appears you cannot even set the chainmask
+  using 'iw' when vdevs are active.
 
- drivers/net/wireless/ath/ath10k/core.h  |   4 +
- drivers/net/wireless/ath/ath10k/debug.c | 146 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/debug.h |   9 ++
- drivers/net/wireless/ath/ath10k/mac.c   |   5 ++
- drivers/net/wireless/ath/ath10k/pci.c   |   4 +
- 5 files changed, 168 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 40 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2f1d509..7b220b1 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -541,6 +541,10 @@ struct ath10k {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 4bb3ef6..e75607d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2427,12 +2427,27 @@ static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
+ 	return 0;
+ }
  
- 	struct dfs_pattern_detector *dfs_detector;
- 
-+	u32 fw_crash_counter;
-+	u32 fw_warm_reset_counter;
-+	u32 fw_cold_reset_counter;
++static void ath10k_check_chain_mask(struct ath10k *ar, u32 cm, const char* dbg)
++{
++	/* It is not clear that allowing gaps in chainmask
++	 * is helpful.  Probably it will not do what user
++	 * is hoping for, so warn in that case.
++	 */
++	if (cm == 15 || cm == 7 || cm == 3 || cm == 1 || cm == 0)
++		return;
++	ath10k_warn(ar, "mac %s antenna chainmask may be invalid: 0x%x.  Suggested values: 15, 7, 3, 1 or 0.\n",
++		    dbg, cm);
++}
 +
- #ifdef CONFIG_ATH10K_DEBUGFS
- 	struct ath10k_debug debug;
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index c2c02ce..af1ca3e 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1037,6 +1037,152 @@ exit:
+ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
+ {
+ 	int ret;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	ath10k_check_chain_mask(ar, tx_ant, "tx");
++	ath10k_check_chain_mask(ar, rx_ant, "rx");
++	
+ 	ar->cfg_tx_chainmask = tx_ant;
+ 	ar->cfg_rx_chainmask = rx_ant;
+ 
+@@ -2758,6 +2773,17 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
  	return ret;
  }
  
-+#ifdef CONFIG_ATH10K_DEBUGFS
-+/* TODO:  Would be nice to always support ethtool stats, would need to
-+ * move the stats storage out of ath10k_debug, or always have ath10k_debug
-+ * struct available..
-+ */
-+
-+/* This generally cooresponds to the debugfs fw_stats file */
-+static const char ath10k_gstrings_stats[][ETH_GSTRING_LEN] = {
-+	"tx_pkts_nic",
-+	"tx_bytes_nic",
-+	"rx_pkts_nic",
-+	"rx_bytes_nic",
-+	"d_noise_floor",
-+	"d_cycle_count",
-+	"d_phy_error",
-+	"d_rts_bad",
-+	"d_rts_good",
-+	"d_tx_power", /* in .5 dbM I think */
-+	"d_rx_crc_err", /* fcs_bad */
-+	"d_no_beacon",
-+	"d_tx_mpdus_queued",
-+	"d_tx_msdu_queued",
-+	"d_tx_msdu_dropped",
-+	"d_local_enqued",
-+	"d_local_freed",
-+	"d_tx_ppdu_hw_queued",
-+	"d_tx_ppdu_reaped",
-+	"d_tx_fifo_underrun",
-+	"d_tx_ppdu_abort",
-+	"d_tx_mpdu_requed",
-+	"d_tx_excessive_retries",
-+	"d_tx_hw_rate",
-+	"d_tx_dropped_sw_retries",
-+	"d_tx_illegal_rate",
-+	"d_tx_continuous_xretries",
-+	"d_tx_timeout",
-+	"d_tx_mpdu_txop_limit",
-+	"d_pdev_resets",
-+	"d_rx_mid_ppdu_route_change",
-+	"d_rx_status",
-+	"d_rx_extra_frags_ring0",
-+	"d_rx_extra_frags_ring1",
-+	"d_rx_extra_frags_ring2",
-+	"d_rx_extra_frags_ring3",
-+	"d_rx_msdu_htt",
-+	"d_rx_mpdu_htt",
-+	"d_rx_msdu_stack",
-+	"d_rx_mpdu_stack",
-+	"d_rx_phy_err",
-+	"d_rx_phy_err_drops",
-+	"d_rx_mpdu_errors", /* FCS, MIC, ENC */
-+	"d_fw_crash_count",
-+	"d_fw_warm_reset_count",
-+	"d_fw_cold_reset_count",
-+};
-+#define ATH10K_SSTATS_LEN ARRAY_SIZE(ath10k_gstrings_stats)
-+
-+void ath10k_get_et_strings(struct ieee80211_hw *hw,
-+			   struct ieee80211_vif *vif,
-+			   u32 sset, u8 *data)
++static u32 get_nss_from_chainmask(u16 chain_mask)
 +{
-+	if (sset == ETH_SS_STATS)
-+		memcpy(data, *ath10k_gstrings_stats,
-+		       sizeof(ath10k_gstrings_stats));
++	if ((chain_mask & 0x15) == 0x15)
++		return 4;
++	else if ((chain_mask & 0x7) == 0x7)
++		return 3;
++	else if ((chain_mask & 0x3) == 0x3)
++		return 2;
++	return 1;
 +}
 +
-+int ath10k_get_et_sset_count(struct ieee80211_hw *hw,
-+			     struct ieee80211_vif *vif, int sset)
-+{
-+	if (sset == ETH_SS_STATS)
-+		return ATH10K_SSTATS_LEN;
-+	return 0;
-+}
-+
-+void ath10k_get_et_stats(struct ieee80211_hw *hw,
-+			 struct ieee80211_vif *vif,
-+			 struct ethtool_stats *stats, u64 *data)
-+{
-+	struct ath10k *ar = hw->priv;
-+	int i = 0;
-+	struct ath10k_target_stats *fw_stats;
-+
-+	fw_stats = &ar->debug.target_stats;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->state == ATH10K_STATE_ON)
-+		ath10k_refresh_peer_stats(ar);
-+
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	data[i++] = fw_stats->hw_reaped; /* ppdu reaped */
-+	data[i++] = 0; /* tx bytes */
-+	data[i++] = fw_stats->htt_mpdus;
-+	data[i++] = 0; /* rx bytes */
-+	data[i++] = fw_stats->ch_noise_floor;
-+	data[i++] = fw_stats->cycle_count;
-+	data[i++] = fw_stats->phy_err_count;
-+	data[i++] = fw_stats->rts_bad;
-+	data[i++] = fw_stats->rts_good;
-+	data[i++] = fw_stats->chan_tx_power;
-+	data[i++] = fw_stats->fcs_bad;
-+	data[i++] = fw_stats->no_beacons;
-+	data[i++] = fw_stats->mpdu_enqued;
-+	data[i++] = fw_stats->msdu_enqued;
-+	data[i++] = fw_stats->wmm_drop;
-+	data[i++] = fw_stats->local_enqued;
-+	data[i++] = fw_stats->local_freed;
-+	data[i++] = fw_stats->hw_queued;
-+	data[i++] = fw_stats->hw_reaped;
-+	data[i++] = fw_stats->underrun;
-+	data[i++] = fw_stats->tx_abort;
-+	data[i++] = fw_stats->mpdus_requed;
-+	data[i++] = fw_stats->tx_ko;
-+	data[i++] = fw_stats->data_rc;
-+	data[i++] = fw_stats->sw_retry_failure;
-+	data[i++] = fw_stats->illgl_rate_phy_err;
-+	data[i++] = fw_stats->pdev_cont_xretry;
-+	data[i++] = fw_stats->pdev_tx_timeout;
-+	data[i++] = fw_stats->txop_ovf;
-+	data[i++] = fw_stats->pdev_resets;
-+	data[i++] = fw_stats->mid_ppdu_route_change;
-+	data[i++] = fw_stats->status_rcvd;
-+	data[i++] = fw_stats->r0_frags;
-+	data[i++] = fw_stats->r1_frags;
-+	data[i++] = fw_stats->r2_frags;
-+	data[i++] = fw_stats->r3_frags;
-+	data[i++] = fw_stats->htt_msdus;
-+	data[i++] = fw_stats->htt_mpdus;
-+	data[i++] = fw_stats->loc_msdus;
-+	data[i++] = fw_stats->loc_mpdus;
-+	data[i++] = fw_stats->phy_errs;
-+	data[i++] = fw_stats->phy_err_drop;
-+	data[i++] = fw_stats->mpdu_errs;
-+	data[i++] = ar->fw_crash_counter;
-+	data[i++] = ar->fw_warm_reset_counter;
-+	data[i++] = ar->fw_cold_reset_counter;
-+
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	WARN_ON(i != ATH10K_SSTATS_LEN);
-+}
-+
-+#endif
-+
- static const struct file_operations fops_fw_dbglog = {
- 	.read = ath10k_read_fw_dbglog,
- 	.write = ath10k_write_fw_dbglog,
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index ba6d280..39032e9 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -64,6 +64,15 @@ void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
+ /*
+  * TODO:
+  * Figure out how to handle WMI_VDEV_SUBTYPE_P2P_DEVICE,
+@@ -2890,6 +2916,20 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err_vdev_delete;
+ 	}
  
- #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
- 
-+void ath10k_get_et_strings(struct ieee80211_hw *hw,
-+			   struct ieee80211_vif *vif,
-+			   u32 sset, u8 *data);
-+int ath10k_get_et_sset_count(struct ieee80211_hw *hw,
-+			     struct ieee80211_vif *vif, int sset);
-+void ath10k_get_et_stats(struct ieee80211_hw *hw,
-+			 struct ieee80211_vif *vif,
-+			 struct ethtool_stats *stats, u64 *data);
++	if (ar->cfg_tx_chainmask) {
++		u16 nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
 +
- #else
- static inline int ath10k_debug_start(struct ath10k *ar)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 02e0a45..4bb3ef6 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4515,6 +4515,11 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
- #endif
-+#ifdef CONFIG_ATH10K_DEBUGFS
-+	.get_et_sset_count  = ath10k_get_et_sset_count,
-+	.get_et_stats       = ath10k_get_et_stats,
-+	.get_et_strings     = ath10k_get_et_strings,
-+#endif
- };
- 
- #define RATETAB_ENT(_rate, _rateid, _flags) { \
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 59e0ea8..38f7386 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -986,6 +986,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- 
- 	spin_lock_bh(&ar->data_lock);
- 
-+	ar->fw_crash_counter++;
++		vdev_param = ar->wmi.vdev_param->nss;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++						nss);
++		if (ret) {
++			ath10k_warn(ar, "failed to set vdev %i chainmask 0x%x, nss %i: %d\n",
++				    arvif->vdev_id, ar->cfg_tx_chainmask, nss,
++				    ret);
++			goto err_vdev_delete;
++		}
++	}
 +
- 	crash_data = ath10k_debug_get_new_fw_crash_data(ar);
- 
- 	if (crash_data)
-@@ -1671,6 +1673,7 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
- 	u32 val;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
-+	ar->fw_warm_reset_counter++;
- 
- 	/* debug */
- 	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-@@ -2286,6 +2289,7 @@ static int ath10k_pci_cold_reset(struct ath10k *ar)
- 	u32 val;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset\n");
-+	ar->fw_cold_reset_counter++;
- 
- 	/* Put Target, including PCIe, into RESET. */
- 	val = ath10k_pci_reg_read32(ar, SOC_GLOBAL_RESET_ADDRESS);
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
+ 		if (ret) {
 -- 
 1.7.11.7
 
