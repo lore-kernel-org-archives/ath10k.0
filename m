@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWSbm-0000rK-8o
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:06:30 +0000
-Message-ID: <54219A6E.6080902@candelatech.com>
-Date: Tue, 23 Sep 2014 09:06:06 -0700
+ id 1XWTGU-0004ly-7k
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 16:48:34 +0000
+Message-ID: <5421A44C.8080307@candelatech.com>
+Date: Tue, 23 Sep 2014 09:48:12 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Using host's rate-ctrl in ath10k?
-References: <54205FA0.5000802@candelatech.com>
- <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: use configured nss instead of max nss.
+References: <1411426820-4047-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
+In-Reply-To: <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +19,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDkvMjMvMjAxNCAxMjoxNyBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyMiBTZXB0
-ZW1iZXIgMjAxNCAxOTo0MiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
-b3RlOgo+PiBIYXMgYW55b25lIGxvb2tlZCBpbnRvIHdoYXQgaXQgd291bGQgdGFrZSB0byB1c2Ug
-c3RhbmRhcmQgaG9zdCBPUydzCj4+IHJhdGUgY29udHJvbCAobWluc3RyZWxfaHQpIHdpdGggYXRo
-MTBrPwo+Pgo+PiBJIHN1c3BlY3QgdGhlIGF0aDEwayByYXRlIGNvbnRyb2wgbG9naWMgaW4gdGhl
-IGZpcm13YXJlIGlzCj4+IGEgYml0IGRvZGd5LCBhbmQgaXQgd291bGQgYmUgbmljZSB0byB1c2Ug
-c29tZXRoaW5nIHdpdGggd2lkZXIKPj4gdGVzdGluZyBzdWNoIGFzIG1pbnN0cmVsX2h0Li4uCj4g
-Cj4gQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcgYnV0IHRoYXQgd291bGQgcmVxdWlyZSB0eCBjb21w
-bGV0aW9ucyB0bwo+IGluY2x1ZGUgdHggcmV0cnkgaW5mb3JtYXRpb24gYW5kIGEgd2F5IHRvIHNl
-dHVwIHR4IHJldHJpZXMuCgpTb21ldGhpbmcgbGlrZSB0aGF0Li4uSSBoYXZlIG5vdCBsb29rZWQg
-aW4gZGV0YWlsLiAgSXQgd291bGQKcmVxdWlyZSBhIHJlLWNvbXBpbGUgb2YgdGhlIGZpcm13YXJl
-IGF0IGxlYXN0LgoKSSBqdXN0IGRvbid0IGxpa2UgdGhhdCB3ZSBhcmUgZGVwZW5kaW5nIG9uIHRo
-ZSBmaXJtd2FyZSBmb3Igc29tZXRoaW5nCnNvbWV0aGluZyBhcyB0cmlja3kgYXMgcmF0ZSBjb250
-cm9sLCBlc3BlY2lhbGx5IHdoZW4gaXQgc2VlbXMgYnVnZ3kuCgpCdXQsIEkgZG9uJ3QgaGF2ZSB0
-aW1lIHRvIGRlYWwgd2l0aCB0cnlpbmcgdG8gbW92ZSBpdCBpbnRvCnRoZSBkcml2ZXIgbm93LCBh
-bmQgY2VydGFpbmx5IG5vdCBhcyBhIHBhdGNoIEkgd291bGQgaGF2ZSB0bwpjYXJyeSBmb3JldmVy
-IGluIG15IG93biB0cmVlLgoKVGhhbmtzLApCZW4KCgo+IEkgcmVjYWxsIHRoZXJlJ3MgYSBXTUkg
-Y29tbWFuZCB0byBjb250cm9sIHR4IHJldHJpZXMgaW4gMTAuMSBidXQgSQo+IHRoaW5rIHRoZSBX
-TUkgc2VydmljZSBiaXRtYXAgZG9lc24ndCBpbmRpY2F0ZSBpdCBhcyBlbmFibGVkIChhdCBsZWFz
-dAo+IGluIG9mZmljaWFsIGZpcm13YXJlIGJpbmFyaWVzKSBzbyBJIGd1ZXNzIGl0J3MganVzdCBh
-IG5vLW9wIG5vdy4KPiBUaGVyZSdzIGFsc28gSFRUIHBrdGxvZyB3aGljaCBpcyBhYmxlIHRvIGRl
-bGl2ZXIgdHggZGVzY3JpcHRvcnMgdG8gdGhlCj4gaG9zdCBidXQgdGhlc2UgYXJlbid0IHB1Ymxp
-Yy4KPiAKPiAKPiBNaWNoYcWCCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo+IAoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVs
-YSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On 09/23/2014 01:59 AM, Michal Kazior wrote:
+> On 23 September 2014 01:00,  <greearb@candelatech.com> wrote:
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> When re-associating a station, the nss was set back to
+>> maximum value even if user had configured small number
+>> of tx chains.  So, pay attention to user's config in
+>> this case as well.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++--
+>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 855c71c..c5d31cc 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -4086,6 +4086,10 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
+>>         u32 legacy = 0x00ff;
+>>         u8 ht = 0xff, i;
+>>         u16 vht = 0x3ff;
+>> +       u16 nrf = ar->num_rf_chains;
+>> +
+>> +       if (ar->cfg_tx_chainmask)
+>> +               nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
+> 
+> Oh, so you do update the peer nss value here.
+
+Yeah, I found this was needed in further testing yesterday...
+
+> I think it might be a good idea to convey the limitation of tx/rx
+> chainmask to the user: you can't change the tx/rx chainmask on the fly
+> easily (while connected/have associated stations). Or do you plan to
+> schedule peer reassoc in __ath10k_set_antenna() in a follow up
+> patch(es) later?
+
+My user-space tools assume you have to re-connect (requested from user-space)
+after changing the chainmask.  I was under the impression that this
+is how ath9k works, though I could be wrong.
+
+I would rather keep this requirement in user-space...
+
+I am not sure where to document this...just a comment in the code?
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
