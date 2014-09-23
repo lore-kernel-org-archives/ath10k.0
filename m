@@ -1,18 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWDqq-00044p-2t
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 00:21:04 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id DCBA440A0D9
- for <ath10k@lists.infradead.org>; Mon, 22 Sep 2014 17:20:42 -0700 (PDT)
-Message-ID: <5420BCDA.5010701@candelatech.com>
-Date: Mon, 22 Sep 2014 17:20:42 -0700
-From: Ben Greear <greearb@candelatech.com>
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath: change logging functions to return void
+References: <1411407334.2952.46.camel@joe-AO725>
+Date: Tue, 23 Sep 2014 07:20:53 +0300
+In-Reply-To: <1411407334.2952.46.camel@joe-AO725> (Joe Perches's message of
+ "Mon, 22 Sep 2014 10:35:34 -0700")
+Message-ID: <874mvzj7bu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Rate ctrl problem with 2x2 station.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +19,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Joe Perches <joe@perches.com>
+Cc: wil6210 <wil6210@qca.qualcomm.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, ath6kl@lists.infradead.org
 
-While testing the previously posted patches that fix up the
-transmit rate for 3x3 NICs configured for 2x2 chainmask, I
-noticed that an ath10k configured as 3x3 AP will use only
-1x1 rates when transmitting to a 2x2 station.
+Joe Perches <joe@perches.com> writes:
 
-From debugging so far, it appears the root cause is that
-the method ath10k_peer_assoc_h_ht in mac.c is passed an
-sta with rx_nss set to 3, when in fact the station *should*
-be showing up as 2x2.
+> The return values are not used by callers of these functions
+> so change the functions to return void.
+>
+> Other miscellanea:
+>
+> o add __printf verification to wil6210 logging functions
+>   No format/argument mismatches found
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+> This change is associated to a desire to eventually
+> change printk to return void.
+>
+>  drivers/net/wireless/ath/ath10k/debug.c    | 18 +++++-------------
+>  drivers/net/wireless/ath/ath10k/debug.h    |  6 +++---
+>  drivers/net/wireless/ath/ath6kl/common.h   |  2 +-
+>  drivers/net/wireless/ath/ath6kl/debug.c    | 28 ++++++++--------------------
+>  drivers/net/wireless/ath/ath6kl/debug.h    | 13 ++++++-------
 
-Possibly station system is still messed up some how...
+For ath6kl and ath10k:
 
-Thanks,
-Ben
+Acked-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+>  drivers/net/wireless/ath/wil6210/debug.c   | 14 ++++----------
+>  drivers/net/wireless/ath/wil6210/wil6210.h |  7 +++++--
+>  7 files changed, 32 insertions(+), 56 deletions(-)
+
+John, as this patch also contains a wil6210 change how do you want to
+handle this?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
