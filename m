@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWLXt-0000RR-RH
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 08:34:03 +0000
-Received: by mail-wi0-f180.google.com with SMTP id q5so4522714wiv.13
- for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 01:33:39 -0700 (PDT)
+ id 1XWLhp-0005Bv-1Z
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 08:44:17 +0000
+Received: by mail-wi0-f182.google.com with SMTP id d1so4534930wiv.15
+ for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 01:43:55 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <5420BCDA.5010701@candelatech.com>
+References: <5420BCDA.5010701@candelatech.com>
+Date: Tue, 23 Sep 2014 10:43:54 +0200
+Message-ID: <CA+BoTQ=21YJ=WC+T51J_15m1qtDKhWSVP0cYw-P6R-tEmLoLNQ@mail.gmail.com>
+Subject: Re: Rate ctrl problem with 2x2 station.
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/3] ath10k: print wmi version info
-Date: Tue, 23 Sep 2014 10:22:52 +0200
-Message-Id: <1411460574-5424-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
-References: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +20,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-HTT version is already printed so print WMI
-version as well for consistency.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 3756feb..f1e5916 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -126,14 +126,18 @@ EXPORT_SYMBOL(ath10k_info);
- 
- void ath10k_print_driver_info(struct ath10k *ar)
- {
--	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d\n",
-+	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d.%d.%d.%d\n",
- 		    ar->hw_params.name,
- 		    ar->target_version,
- 		    ar->chip_id,
- 		    ar->hw->wiphy->fw_version,
- 		    ar->fw_api,
- 		    ar->htt.target_version_major,
--		    ar->htt.target_version_minor);
-+		    ar->htt.target_version_minor,
-+		    ar->fw_version_major,
-+		    ar->fw_version_minor,
-+		    ar->fw_version_release,
-+		    ar->fw_version_build);
- 	ath10k_info(ar, "debug %d debugfs %d tracing %d dfs %d testmode %d\n",
- 		    config_enabled(CONFIG_ATH10K_DEBUG),
- 		    config_enabled(CONFIG_ATH10K_DEBUGFS),
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgU2VwdGVtYmVyIDIwMTQgMDI6MjAsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPiBXaGlsZSB0ZXN0aW5nIHRoZSBwcmV2aW91c2x5IHBvc3RlZCBwYXRj
+aGVzIHRoYXQgZml4IHVwIHRoZQo+IHRyYW5zbWl0IHJhdGUgZm9yIDN4MyBOSUNzIGNvbmZpZ3Vy
+ZWQgZm9yIDJ4MiBjaGFpbm1hc2ssIEkKPiBub3RpY2VkIHRoYXQgYW4gYXRoMTBrIGNvbmZpZ3Vy
+ZWQgYXMgM3gzIEFQIHdpbGwgdXNlIG9ubHkKPiAxeDEgcmF0ZXMgd2hlbiB0cmFuc21pdHRpbmcg
+dG8gYSAyeDIgc3RhdGlvbi4KPgo+IEZyb20gZGVidWdnaW5nIHNvIGZhciwgaXQgYXBwZWFycyB0
+aGUgcm9vdCBjYXVzZSBpcyB0aGF0Cj4gdGhlIG1ldGhvZCBhdGgxMGtfcGVlcl9hc3NvY19oX2h0
+IGluIG1hYy5jIGlzIHBhc3NlZCBhbgo+IHN0YSB3aXRoIHJ4X25zcyBzZXQgdG8gMywgd2hlbiBp
+biBmYWN0IHRoZSBzdGF0aW9uICpzaG91bGQqCj4gYmUgc2hvd2luZyB1cCBhcyAyeDIuCj4KPiBQ
+b3NzaWJseSBzdGF0aW9uIHN5c3RlbSBpcyBzdGlsbCBtZXNzZWQgdXAgc29tZSBob3cuLi4KCkFt
+IEkgdW5kZXJzdGFuZGluZyBjb3JyZWN0bHkgdGhhdCB0aGUgMngyIHN0YXRpb24gaXMganVzdCBh
+IDN4MyBhdGgxMGsKZGV2aWNlIHdpdGggInR4L3J4X2NoYWlubWFzayIgYmVpbmcgc2V0IHRvIDB4
+Mz8gSWYgc28gdGhlbiByeF9uc3MKYmVpbmcgMyBpcyBva2F5IGJlY2F1c2Ugc2V0dGluZyBjaGFp
+bm1hc2tzIGRvZXMgbm90IGFmZmVjdCBhZHZlcnRpc2VkCmNhcGFiaWxpdGllcyBhbmQgYXNzb2Np
+YXRpb24gc2VxdWVuY2VzIHJlbWFpbiB1bmFmZmVjdGVkLgoKVGhlIHByb2JsZW0gbWlnaHQgYmUg
+IHRoZSBodyByYXRlIGNvbnRyb2wgaXMgdW5hYmxlIHRvIGRlYWwgd2l0aCB0aGUKc3RyYW5nZSBj
+aGFpbm1hc2sgc2V0dXAuIERpZCB5b3UgdHJ5IDEwLjI/IEkndmUgYmVlbiB0b2xkIGl0IGNvbnRh
+aW5zCnNvbWUgcmF0ZSBjb250cm9sIGltcHJvdmVtZW50cy4KCgpNaWNoYcWCCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
