@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWKMK-0000MD-2E
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 07:18:01 +0000
-Received: by mail-wg0-f43.google.com with SMTP id y10so4232006wgg.14
- for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 00:17:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <54205FA0.5000802@candelatech.com>
-References: <54205FA0.5000802@candelatech.com>
-Date: Tue, 23 Sep 2014 09:17:35 +0200
-Message-ID: <CA+BoTQ=wwCbfFqdQqgYfu9RTLiuot-bNh3mNN0c3R=1R_FUTzQ@mail.gmail.com>
-Subject: Re: Using host's rate-ctrl in ath10k?
+ id 1XWLXw-0000S4-Fh
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 08:34:04 +0000
+Received: by mail-wg0-f41.google.com with SMTP id k14so3946952wgh.0
+ for <ath10k@lists.infradead.org>; Tue, 23 Sep 2014 01:33:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 3/3] ath10k: add debug dump for pci rx
+Date: Tue, 23 Sep 2014 10:22:54 +0200
+Message-Id: <1411460574-5424-4-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
+References: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +19,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjIgU2VwdGVtYmVyIDIwMTQgMTk6NDIsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPiB3cm90ZToKPiBIYXMgYW55b25lIGxvb2tlZCBpbnRvIHdoYXQgaXQgd291bGQgdGFr
-ZSB0byB1c2Ugc3RhbmRhcmQgaG9zdCBPUydzCj4gcmF0ZSBjb250cm9sIChtaW5zdHJlbF9odCkg
-d2l0aCBhdGgxMGs/Cj4KPiBJIHN1c3BlY3QgdGhlIGF0aDEwayByYXRlIGNvbnRyb2wgbG9naWMg
-aW4gdGhlIGZpcm13YXJlIGlzCj4gYSBiaXQgZG9kZ3ksIGFuZCBpdCB3b3VsZCBiZSBuaWNlIHRv
-IHVzZSBzb21ldGhpbmcgd2l0aCB3aWRlcgo+IHRlc3Rpbmcgc3VjaCBhcyBtaW5zdHJlbF9odC4u
-LgoKQ29ycmVjdCBtZSBpZiBJJ20gd3JvbmcgYnV0IHRoYXQgd291bGQgcmVxdWlyZSB0eCBjb21w
-bGV0aW9ucyB0bwppbmNsdWRlIHR4IHJldHJ5IGluZm9ybWF0aW9uIGFuZCBhIHdheSB0byBzZXR1
-cCB0eCByZXRyaWVzLgoKSSByZWNhbGwgdGhlcmUncyBhIFdNSSBjb21tYW5kIHRvIGNvbnRyb2wg
-dHggcmV0cmllcyBpbiAxMC4xIGJ1dCBJCnRoaW5rIHRoZSBXTUkgc2VydmljZSBiaXRtYXAgZG9l
-c24ndCBpbmRpY2F0ZSBpdCBhcyBlbmFibGVkIChhdCBsZWFzdAppbiBvZmZpY2lhbCBmaXJtd2Fy
-ZSBiaW5hcmllcykgc28gSSBndWVzcyBpdCdzIGp1c3QgYSBuby1vcCBub3cuClRoZXJlJ3MgYWxz
-byBIVFQgcGt0bG9nIHdoaWNoIGlzIGFibGUgdG8gZGVsaXZlciB0eCBkZXNjcmlwdG9ycyB0byB0
-aGUKaG9zdCBidXQgdGhlc2UgYXJlbid0IHB1YmxpYy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+This makes it easier to debug the device-target
+communication at a very low level.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 59e0ea8..8319d83 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -861,6 +861,12 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
+ 		}
+ 
+ 		skb_put(skb, nbytes);
++
++		ath10k_dbg(ar, ATH10K_DBG_PCI, "pci rx ce pipe %d len %d\n",
++			   ce_state->id, skb->len);
++		ath10k_dbg_dump(ar, ATH10K_DBG_PCI_DUMP, NULL, "pci rx: ",
++				skb->data, skb->len);
++
+ 		cb->rx_completion(ar, skb, pipe_info->pipe_num);
+ 	}
+ 
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
