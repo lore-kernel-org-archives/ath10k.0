@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWPux-0004U8-7l
- for ath10k@lists.infradead.org; Tue, 23 Sep 2014 13:14:07 +0000
+ id 1XWQ55-0000Xa-Nn
+ for ath10k@lists.infradead.org; Tue, 23 Sep 2014 13:24:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: make firmware text debug messages more
- verbose.
-References: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
-Date: Tue, 23 Sep 2014 16:13:28 +0300
-In-Reply-To: <1411419245-25799-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 22 Sep 2014 13:54:04
+Subject: Re: [PATCH 1/2] ath10k: save firmware stacks upon firmware crash
+References: <1409934849-23078-1-git-send-email-greearb@candelatech.com>
+Date: Tue, 23 Sep 2014 16:23:57 +0300
+In-Reply-To: <1409934849-23078-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Fri, 5 Sep 2014 09:34:08
  -0700")
-Message-ID: <87zjdqcwef.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87vboecvwy.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,30 +31,26 @@ greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> There are not many of these messages producted by the
-> firmware, but they are generally fairly useful, so print
-> them at info level.
+> Should help debug firmware crashes, and give users a way
+> to provide some useful debug reports to firmware developers.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
->  drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index cd60940..6be62ac 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -2050,7 +2050,7 @@ static void ath10k_wmi_event_debug_print(struct ath10k *ar,
->  	/* the last byte is always reserved for the null character */
->  	buf[i] = '\0';
->  
-> -	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi event debug print '%s'\n", buf);
-> +	ath10k_info(ar, "wmi event debug print '%s'\n", buf);
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-This does not bring any extra value to normal users, it's only useful to
-firmware engineers. That's why it needs to stay as a debug message.
-Maybe we should add a new debug level just for these events, would that
-help?
+Like we talked on IRC, I think it's better to take a dump of the whole
+DRAM and find all the info during postprocessing in user space. I just
+consider it too much work to investigate firmware internals from ath10k
+as the internals can change between firmware versions. In user space
+that's a lot easier to manage.
+
+Of course downside is the increased memory usage, but if that becomes a
+problem there are ways to solve that. For example, adding a module
+parameter with bitmask for individually enabling enum
+ath10k_fw_crash_dump_type is first which comes to my mind.
+
+I have patches ready for the DRAM thing, but I have some issues which I
+found during testing. I'll post the patches soon as I have solved the
+issues, but don't know how long that will take.
 
 -- 
 Kalle Valo
