@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWjmm-0008GX-5n
- for ath10k@lists.infradead.org; Wed, 24 Sep 2014 10:27:01 +0000
+ id 1XWkK6-0008Tq-Q2
+ for ath10k@lists.infradead.org; Wed, 24 Sep 2014 11:01:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/3] ath10k: don't enable interrupts for the diagnostic
- window
+Subject: Re: [PATCH v2 3/3] ath10k: add cal_data debugfs file
 References: <20140923143219.23585.34114.stgit@potku.adurom.net>
- <CA+BoTQ=P2mKLbdPTQYM_c-ohMtsucTHbc_aukzqcdpQUwhwtvQ@mail.gmail.com>
-Date: Wed, 24 Sep 2014 13:26:18 +0300
-In-Reply-To: <CA+BoTQ=P2mKLbdPTQYM_c-ohMtsucTHbc_aukzqcdpQUwhwtvQ@mail.gmail.com>
- (Michal Kazior's message of "Wed, 24 Sep 2014 08:58:56 +0200")
-Message-ID: <87d2al9uwl.fsf@kamboji.qca.qualcomm.com>
+ <20140923143234.23585.2139.stgit@potku.adurom.net>
+ <CA+BoTQ=O8j1x-71SCLq9ZiXBU28Ax9M7tyfbvB=mjsWUwgPSjw@mail.gmail.com>
+Date: Wed, 24 Sep 2014 14:00:37 +0300
+In-Reply-To: <CA+BoTQ=O8j1x-71SCLq9ZiXBU28Ax9M7tyfbvB=mjsWUwgPSjw@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 24 Sep 2014 09:00:39 +0200")
+Message-ID: <87egv18eqy.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,15 +32,22 @@ Michal Kazior <michal.kazior@tieto.com> writes:
 
 > On 23 September 2014 16:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 > [...]
->> -       for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
->> +       /* Skip the last copy engine, CE7 the diagnostic window, as that
->> +        * uses polling and isn't initialized for interrupts. */
+>> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+>> index 101c6f9cf2a8..426341480262 100644
+>> --- a/drivers/net/wireless/ath/ath10k/debug.c
+>> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> [...]
+>> +static int ath10k_cal_data_open(struct inode *inode, struct file *file)
 >
-> Comment style :-)
+> Shouldn't functions in debug.c have ath10k_debug_ prefix? I'm aware
+> other fops stuff doesn't include the _debug word as well so this is
+> somewhat consistent with the current code but is this okay in the
+> grand scheme of things? Just wondering.
 
-Argh, I never learn. This new comment style is so unnatural for me that
-I guess I need to completely convert ath10k to use the new style so that
-I can use checkpatch to catch these :)
+IMHO we should use ath10k_debug_ with fops functions as well, I just
+haven't been that picky about that.
+
+I'll change this as well and send v3. Thanks for review!
 
 -- 
 Kalle Valo
