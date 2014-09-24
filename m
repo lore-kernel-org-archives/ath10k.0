@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from emh01.mail.saunalahti.fi ([62.142.5.107])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWkK6-0008Tq-Q2
- for ath10k@lists.infradead.org; Wed, 24 Sep 2014 11:01:30 +0000
+ id 1XWkZK-0003yr-Dr
+ for ath10k@lists.infradead.org; Wed, 24 Sep 2014 11:17:11 +0000
+Subject: [PATCH v3 1/3] ath10k: don't enable interrupts for the diagnostic
+ window
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 3/3] ath10k: add cal_data debugfs file
-References: <20140923143219.23585.34114.stgit@potku.adurom.net>
- <20140923143234.23585.2139.stgit@potku.adurom.net>
- <CA+BoTQ=O8j1x-71SCLq9ZiXBU28Ax9M7tyfbvB=mjsWUwgPSjw@mail.gmail.com>
-Date: Wed, 24 Sep 2014 14:00:37 +0300
-In-Reply-To: <CA+BoTQ=O8j1x-71SCLq9ZiXBU28Ax9M7tyfbvB=mjsWUwgPSjw@mail.gmail.com>
- (Michal Kazior's message of "Wed, 24 Sep 2014 09:00:39 +0200")
-Message-ID: <87egv18eqy.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 24 Sep 2014 14:16:46 +0300
+Message-ID: <20140924111646.6539.44330.stgit@potku.adurom.net>
+In-Reply-To: <20140924111416.6539.95299.stgit@potku.adurom.net>
+References: <20140924111416.6539.95299.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,32 +23,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+The diagnostic window (CE7) uses polling and is not initiliased to retrieve
+interrupts so disable interrupts altogether for CE7. Otherwise ath10k crashes
+when using the diagnostic window while the firmware is running due to NULL
+dereference and polling reads timeout.
 
-> On 23 September 2014 16:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> [...]
->> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
->> index 101c6f9cf2a8..426341480262 100644
->> --- a/drivers/net/wireless/ath/ath10k/debug.c
->> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> [...]
->> +static int ath10k_cal_data_open(struct inode *inode, struct file *file)
->
-> Shouldn't functions in debug.c have ath10k_debug_ prefix? I'm aware
-> other fops stuff doesn't include the _debug word as well so this is
-> somewhat consistent with the current code but is this okay in the
-> grand scheme of things? Just wondering.
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/ce.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-IMHO we should use ath10k_debug_ with fops functions as well, I just
-haven't been that picky about that.
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 101cadb6e4ba..09ef03e7af89 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -817,7 +817,10 @@ void ath10k_ce_enable_interrupts(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ce_id;
+ 
+-	for (ce_id = 0; ce_id < CE_COUNT; ce_id++)
++	/* Skip the last copy engine, CE7 the diagnostic window, as that
++	 * uses polling and isn't initialized for interrupts.
++	 */
++	for (ce_id = 0; ce_id < CE_COUNT - 1; ce_id++)
+ 		ath10k_ce_per_engine_handler_adjust(&ar_pci->ce_states[ce_id]);
+ }
+ 
 
-I'll change this as well and send v3. Thanks for review!
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
