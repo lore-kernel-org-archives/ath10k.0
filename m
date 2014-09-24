@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWpC5-0001dk-05
- for ath10k@lists.infradead.org; Wed, 24 Sep 2014 16:13:30 +0000
-Message-ID: <5422ED94.60402@candelatech.com>
-Date: Wed, 24 Sep 2014 09:13:08 -0700
+ id 1XWpTL-0007ep-NJ
+ for ath10k@lists.infradead.org; Wed, 24 Sep 2014 16:31:20 +0000
+Message-ID: <5422F1C2.4090100@candelatech.com>
+Date: Wed, 24 Sep 2014 09:30:58 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
-References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
- <5421818A.9040501@candelatech.com>
- <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
-In-Reply-To: <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
+Subject: Re: [RFC 2/2] ath10k: re-config ht_caps when chainmask is modified.
+References: <1411518383-32634-1-git-send-email-greearb@candelatech.com>
+ <1411518383-32634-2-git-send-email-greearb@candelatech.com>
+ <CA+BoTQ=fS30xz9KcdBJcioNers6PovOFEeqPCCSFn52HkscXug@mail.gmail.com>
+ <5422D6CF.10408@candelatech.com>
+ <CA+BoTQk=X2qVJsY64ZH88h29L6+Y5M9K07nLtzo=0ga1bUsXGw@mail.gmail.com>
+In-Reply-To: <CA+BoTQk=X2qVJsY64ZH88h29L6+Y5M9K07nLtzo=0ga1bUsXGw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +29,52 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/23/2014 11:50 PM, Michal Kazior wrote:
-> On 23 September 2014 16:19, Ben Greear <greearb@candelatech.com> wrote:
->> On 09/23/2014 02:16 AM, Michal Kazior wrote:
->>> On 19 September 2014 20:28,  <greearb@candelatech.com> wrote:
+On 09/24/2014 08:05 AM, Michal Kazior wrote:
+> On 24 September 2014 16:35, Ben Greear <greearb@candelatech.com> wrote:
+>> On 09/24/2014 12:51 AM, Michal Kazior wrote:
+>>> On 24 September 2014 02:26,  <greearb@candelatech.com> wrote:
 >>> [...]
 >>>>
->>>> +       /* If we are CT firmware, ask it to flush all tids on all peers
->>>> on
->>>> +        * all vdevs.  Normal firmware will just crash if you do this.
->>>> +        */
->>>> +       if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
->>>> +               ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr,
->>>> 0xFFFFFFFF);
+>>>> +static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k
+>>>> *ar,
+>>>> +                                                         bool
+>>>> use_cfg_chains)
+>>>>   {
+>>>>          struct ieee80211_sta_vht_cap vht_cap = {0};
+>>>>          u16 mcs_map;
+>>>>          int i;
+>>>> +       int nrf = ar->num_rf_chains;
+>>>> +
+>>>> +       if (use_cfg_chains && ar->cfg_tx_chainmask)
+>>>> +               nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
 >>>
->>> I recall you've explained this some time ago, but can you refresh my
->>> memory, please? Is this any different from iterating over all peers
->>> and flushing each? Or does your firmware do so extra magic that is
->>> impossible to do with normal firmware commands?
+>>>
+>>> Is use_cfg_chains really necessary here? Is setting tx/rx chainmask to
+>>> 0x0 make any sense at all? Shouldn't we deny it or make it fallback to
+>>> the supported tx/rx chainmask values?
 >>
->> My firmware does that iteration internally.
->>
->> You could probably do that in the driver, but it would be a lot
->> of messages (for all vdevs, all peers, all tids)...
->> I was not sure if there were limits to the number
->> of commands you should attempt during the flush...
+>> It would cause the logic to flip back to the defaults, so seems mildly
+>> useful.  I'm not sure
+>> upper layers would ever let it be < 1 though.
 > 
-> Thanks. I think ath10k should do this instead of having CT-specific
-> flush eventually.
+> 0 is a valid argument as far as upper layers are concerned and should
+> be treated as "use all available antennas" (see `iw list` output
+> before ever setting antenna, after setting to, e.g. 1 and then to 0).
+> 
+> This implies current set_antenna() implementation is actually buggy
+> (pdev param should involve using supp_tx/rx_chainmask). Your
+> assumption in recent patches is also incorrect as antenna mask = 0
+> should imply max nss, not 1.
 
-Yes, though I would still like the optimization enabled if my
-firmware is running...
+I tested this using:
 
-> I recall I actually did per-peer flushing in RFC patches a long time
-> ago but I didn't pursue getting them merged. I think Denton uses these
-> patches in his setup. They don't flush vdev self-peers though (do you
-> do that internally?).
+iw phy wiphy1 set antenna 0 0
 
-I think I do.  Let me check, and send you some details privately.
+This flips it back to 3x3 (I had previously configured it for 2x2),
+so I think the patches are working properly.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
