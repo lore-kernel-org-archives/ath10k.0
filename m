@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWp8L-0007U3-Od
- for ath10k@lists.infradead.org; Wed, 24 Sep 2014 16:09:38 +0000
-Message-ID: <5422ECAA.6050600@candelatech.com>
-Date: Wed, 24 Sep 2014 09:09:14 -0700
+ id 1XWpC5-0001dk-05
+ for ath10k@lists.infradead.org; Wed, 24 Sep 2014 16:13:30 +0000
+Message-ID: <5422ED94.60402@candelatech.com>
+Date: Wed, 24 Sep 2014 09:13:08 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: use configured nss instead of max nss.
-References: <1411426820-4047-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
- <5421A44C.8080307@candelatech.com>
- <CA+BoTQ=mry3tPD-LK+gFD2bC6RU0KvY6LC9=FOAGTLi_1rzUog@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=mry3tPD-LK+gFD2bC6RU0KvY6LC9=FOAGTLi_1rzUog@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
+References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
+ <5421818A.9040501@candelatech.com>
+ <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
+In-Reply-To: <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,65 +28,48 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 09/24/2014 12:09 AM, Michal Kazior wrote:
-> On 23 September 2014 18:48, Ben Greear <greearb@candelatech.com> wrote:
->> On 09/23/2014 01:59 AM, Michal Kazior wrote:
->>> On 23 September 2014 01:00,  <greearb@candelatech.com> wrote:
->>>> From: Ben Greear <greearb@candelatech.com>
-> [...]
->>>> @@ -4086,6 +4086,10 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
->>>>         u32 legacy = 0x00ff;
->>>>         u8 ht = 0xff, i;
->>>>         u16 vht = 0x3ff;
->>>> +       u16 nrf = ar->num_rf_chains;
->>>> +
->>>> +       if (ar->cfg_tx_chainmask)
->>>> +               nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
-> [...]
->>> I think it might be a good idea to convey the limitation of tx/rx
->>> chainmask to the user: you can't change the tx/rx chainmask on the fly
->>> easily (while connected/have associated stations). Or do you plan to
->>> schedule peer reassoc in __ath10k_set_antenna() in a follow up
->>> patch(es) later?
+On 09/23/2014 11:50 PM, Michal Kazior wrote:
+> On 23 September 2014 16:19, Ben Greear <greearb@candelatech.com> wrote:
+>> On 09/23/2014 02:16 AM, Michal Kazior wrote:
+>>> On 19 September 2014 20:28,  <greearb@candelatech.com> wrote:
+>>> [...]
+>>>>
+>>>> +       /* If we are CT firmware, ask it to flush all tids on all peers
+>>>> on
+>>>> +        * all vdevs.  Normal firmware will just crash if you do this.
+>>>> +        */
+>>>> +       if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
+>>>> +               ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr,
+>>>> 0xFFFFFFFF);
+>>>
+>>> I recall you've explained this some time ago, but can you refresh my
+>>> memory, please? Is this any different from iterating over all peers
+>>> and flushing each? Or does your firmware do so extra magic that is
+>>> impossible to do with normal firmware commands?
 >>
->> My user-space tools assume you have to re-connect (requested from user-space)
->> after changing the chainmask.  I was under the impression that this
->> is how ath9k works, though I could be wrong.
+>> My firmware does that iteration internally.
+>>
+>> You could probably do that in the driver, but it would be a lot
+>> of messages (for all vdevs, all peers, all tids)...
+>> I was not sure if there were limits to the number
+>> of commands you should attempt during the flush...
 > 
-> ath9k doesn't have firmware and it doesn't have a blackbox rate
-> control so maybe it doesn't need to worry about this as much as ath10k
-> needs to.
-> 
-> But then this is not something you normally use except some very
-> specific use cases so I think it might not be worth the hassle to
-> implement full-blown reconfig after chainmask is updated.
+> Thanks. I think ath10k should do this instead of having CT-specific
+> flush eventually.
 
-See this in net/mac80211/cfg.c:
+Yes, though I would still like the optimization enabled if my
+firmware is running...
 
-static int ieee80211_set_antenna(struct wiphy *wiphy, u32 tx_ant, u32 rx_ant)
-{
-	struct ieee80211_local *local = wiphy_priv(wiphy);
+> I recall I actually did per-peer flushing in RFC patches a long time
+> ago but I didn't pursue getting them merged. I think Denton uses these
+> patches in his setup. They don't flush vdev self-peers though (do you
+> do that internally?).
 
-	if (local->started)
-		return -EOPNOTSUPP;
-
-	return drv_set_antenna(local, tx_ant, rx_ant);
-}
-
-
-It ensures there are no active vdevs when this change is made, so
-you should not have to worry about block-ack or anything similar.
-
-
-> But it's still probably a good idea to comment the quoted code chunk
-> above explaining why nrf is overriden by chainmask (i.e. due to
-> firmware rate control issues, right?).
-
-I am not certain it is a bug in the firmware.  The driver should not configure
-nss incorrectly as it was doing previous to my recent patches.
+I think I do.  Let me check, and send you some details privately.
 
 Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
