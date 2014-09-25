@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XWwOB-0005IM-Bx
- for ath10k@lists.infradead.org; Wed, 24 Sep 2014 23:54:27 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id C494F40A1E9
- for <ath10k@lists.infradead.org>; Wed, 24 Sep 2014 16:54:01 -0700 (PDT)
-Message-ID: <54235999.1020600@candelatech.com>
-Date: Wed, 24 Sep 2014 16:54:01 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XX2Lt-0005VU-0n
+ for ath10k@lists.infradead.org; Thu, 25 Sep 2014 06:16:29 +0000
+Received: by mail-wi0-f172.google.com with SMTP id em10so8226989wid.11
+ for <ath10k@lists.infradead.org>; Wed, 24 Sep 2014 23:16:03 -0700 (PDT)
 MIME-Version: 1.0
-Subject: More fun with firmware crashes.
+In-Reply-To: <5422ECAA.6050600@candelatech.com>
+References: <1411426820-4047-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQn9sECMNZsxQpB4i3wHPxfVL+LXq9=2GBd-opH6+9TD=A@mail.gmail.com>
+ <5421A44C.8080307@candelatech.com>
+ <CA+BoTQ=mry3tPD-LK+gFD2bC6RU0KvY6LC9=FOAGTLi_1rzUog@mail.gmail.com>
+ <5422ECAA.6050600@candelatech.com>
+Date: Thu, 25 Sep 2014 08:16:03 +0200
+Message-ID: <CA+BoTQnLbJ7cnyUo-o6Ebx9pAxGyAHv8W8eKE8BEd7Kh8f+uTw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: use configured nss instead of max nss.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +24,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Here's a fun case:  Firmware crashed before device could register,
-so there is no debugfs to grab the binary crash dump...hope it
-can be decoded from what is printed in the logs!
-
-ath10k_pci 0000:04:00.0: firmware 10.1.467-ct-swcrypt-diet-012 booted
-ath10k_pci 0000:04:00.0: firmware crashed! (uuid 31d718ad-2aec-4f41-bc2a-3d127a15d86d)
-ath10k_pci 0000:04:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.1.467-ct-swcrypt-diet-012 api 2 htt 0.0
-ath10k_pci 0000:04:00.0: debug 1 debugfs 1 tracing 1 dfs 1 testmode 1
-ath10k_pci 0000:04:00.0: firmware register dump:
-ath10k_pci 0000:04:00.0: [00]: 0x4100016C 0x000015B3 0x009B4260 0x00955B31
-ath10k_pci 0000:04:00.0: [04]: 0x009B4260 0x00060730 0x00000005 0x00000003
-ath10k_pci 0000:04:00.0: [08]: 0x0044E6C4 0x00000E50 0x00000000 0x0044E5A4
-ath10k_pci 0000:04:00.0: [12]: 0x00000009 0x00000000 0x00958360 0x0095836B
-ath10k_pci 0000:04:00.0: [16]: 0x00958080 0x0094085D 0x00000000 0x00000000
-ath10k_pci 0000:04:00.0: [20]: 0x409B4260 0x0040AC84 0x00000001 0x00000000
-ath10k_pci 0000:04:00.0: [24]: 0x809AD621 0x0040ACE4 0x00000000 0xC09B4260
-ath10k_pci 0000:04:00.0: [28]: 0x809897A2 0x0040AD24 0x0040AD44 0x0040F668
-ath10k_pci 0000:04:00.0: [32]: 0x80988342 0x0040AD44 0x0040F668 0x0040F828
-ath10k_pci 0000:04:00.0: [36]: 0x8098927D 0x0040AD74 0x0040F668 0x00000001
-ath10k_pci 0000:04:00.0: [40]: 0x809AC99E 0x0040ADB4 0x0040F668 0x0000A000
-ath10k_pci 0000:04:00.0: [44]: 0x809A8FFA 0x0040ADD4 0x00400000 0x0041578C
-ath10k_pci 0000:04:00.0: [48]: 0x809A8783 0x0040AE24 0x0040AE48 0x00410ECC
-ath10k_pci 0000:04:00.0: [52]: 0x809486FA 0x0040AE44 0x00000001 0x00000000
-ath10k_pci 0000:04:00.0: [56]: 0x80948E2C 0x0040AEA4 0x0041D508 0x004115F4
-ath10k_pci 0000:04:00.0: wmi unified ready event not received
-ath10k_pci 0000:04:00.0: boot hif stop
-ath10k_pci 0000:04:00.0: boot warm reset
-ath10k_pci 0000:04:00.0: boot host cpu intr cause: 0x00047800
-ath10k_pci 0000:04:00.0: boot target cpu intr cause: 0x00006000
-ath10k_pci 0000:04:00.0: boot host cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot target cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot target reset state: 0x00000800
-ath10k_pci 0000:04:00.0: boot warm reset complete
-ath10k_pci 0000:04:00.0: could not init core (-110)
-ath10k_pci 0000:04:00.0: boot hif power down
-ath10k_pci 0000:04:00.0: boot warm reset
-ath10k_pci 0000:04:00.0: boot host cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot target cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot host cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot target cpu intr cause: 0x00000000
-ath10k_pci 0000:04:00.0: boot target reset state: 0x00000800
-ath10k_pci 0000:04:00.0: boot warm reset complete
-ath10k_pci 0000:04:00.0: could not probe fw (-110)
-ath10k_pci 0000:04:00.0: cannot restart a device that hasn't been started
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgU2VwdGVtYmVyIDIwMTQgMTg6MDksIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPiBPbiAwOS8yNC8yMDE0IDEyOjA5IEFNLCBNaWNoYWwgS2F6aW9yIHdy
+b3RlOgo+PiBPbiAyMyBTZXB0ZW1iZXIgMjAxNCAxODo0OCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBj
+YW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pj4gT24gMDkvMjMvMjAxNCAwMTo1OSBBTSwgTWljaGFs
+IEthemlvciB3cm90ZToKPj4+PiBPbiAyMyBTZXB0ZW1iZXIgMjAxNCAwMTowMCwgIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+Pj4+IEZyb206IEJlbiBHcmVlYXIgPGdyZWVhcmJA
+Y2FuZGVsYXRlY2guY29tPgo+PiBbLi4uXQo+Pj4+PiBAQCAtNDA4Niw2ICs0MDg2LDEwIEBAIGF0
+aDEwa19kZWZhdWx0X2JpdHJhdGVfbWFzayhzdHJ1Y3QgYXRoMTBrICphciwKPj4+Pj4gICAgICAg
+ICB1MzIgbGVnYWN5ID0gMHgwMGZmOwo+Pj4+PiAgICAgICAgIHU4IGh0ID0gMHhmZiwgaTsKPj4+
+Pj4gICAgICAgICB1MTYgdmh0ID0gMHgzZmY7Cj4+Pj4+ICsgICAgICAgdTE2IG5yZiA9IGFyLT5u
+dW1fcmZfY2hhaW5zOwo+Pj4+PiArCj4+Pj4+ICsgICAgICAgaWYgKGFyLT5jZmdfdHhfY2hhaW5t
+YXNrKQo+Pj4+PiArICAgICAgICAgICAgICAgbnJmID0gZ2V0X25zc19mcm9tX2NoYWlubWFzayhh
+ci0+Y2ZnX3R4X2NoYWlubWFzayk7Cj4+IFsuLi5dCj4+Pj4gSSB0aGluayBpdCBtaWdodCBiZSBh
+IGdvb2QgaWRlYSB0byBjb252ZXkgdGhlIGxpbWl0YXRpb24gb2YgdHgvcngKPj4+PiBjaGFpbm1h
+c2sgdG8gdGhlIHVzZXI6IHlvdSBjYW4ndCBjaGFuZ2UgdGhlIHR4L3J4IGNoYWlubWFzayBvbiB0
+aGUgZmx5Cj4+Pj4gZWFzaWx5ICh3aGlsZSBjb25uZWN0ZWQvaGF2ZSBhc3NvY2lhdGVkIHN0YXRp
+b25zKS4gT3IgZG8geW91IHBsYW4gdG8KPj4+PiBzY2hlZHVsZSBwZWVyIHJlYXNzb2MgaW4gX19h
+dGgxMGtfc2V0X2FudGVubmEoKSBpbiBhIGZvbGxvdyB1cAo+Pj4+IHBhdGNoKGVzKSBsYXRlcj8K
+Wy4uLl0KPiBTZWUgdGhpcyBpbiBuZXQvbWFjODAyMTEvY2ZnLmM6Cj4KPiBzdGF0aWMgaW50IGll
+ZWU4MDIxMV9zZXRfYW50ZW5uYShzdHJ1Y3Qgd2lwaHkgKndpcGh5LCB1MzIgdHhfYW50LCB1MzIg
+cnhfYW50KQo+IHsKPiAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfbG9jYWwgKmxvY2FsID0gd2lw
+aHlfcHJpdih3aXBoeSk7Cj4KPiAgICAgICAgIGlmIChsb2NhbC0+c3RhcnRlZCkKPiAgICAgICAg
+ICAgICAgICAgcmV0dXJuIC1FT1BOT1RTVVBQOwoKQWgsIHRoYW5rcyEgU28gbXkgYXJndW1lbnQg
+aXMgaW52YWxpZCA6KQoKCj4+IEJ1dCBpdCdzIHN0aWxsIHByb2JhYmx5IGEgZ29vZCBpZGVhIHRv
+IGNvbW1lbnQgdGhlIHF1b3RlZCBjb2RlIGNodW5rCj4+IGFib3ZlIGV4cGxhaW5pbmcgd2h5IG5y
+ZiBpcyBvdmVycmlkZW4gYnkgY2hhaW5tYXNrIChpLmUuIGR1ZSB0bwo+PiBmaXJtd2FyZSByYXRl
+IGNvbnRyb2wgaXNzdWVzLCByaWdodD8pLgo+Cj4gSSBhbSBub3QgY2VydGFpbiBpdCBpcyBhIGJ1
+ZyBpbiB0aGUgZmlybXdhcmUuICBUaGUgZHJpdmVyIHNob3VsZCBub3QgY29uZmlndXJlCj4gbnNz
+IGluY29ycmVjdGx5IGFzIGl0IHdhcyBkb2luZyBwcmV2aW91cyB0byBteSByZWNlbnQgcGF0Y2hl
+cy4KClNpbmNlIGZpcm13YXJlIGRvZXMgcmF0ZSBjb250cm9sIGl0IGp1c3Qgc2VlbXMgcmVkdW5k
+YW50IGZvciB0aGUKZHJpdmVyIHRvIHVwZGF0ZSBib3RoIGNoYWlubWFzayBhbmQgbnNzICh0aGUg
+Zmlyc3QgaW1wbGllcyB0aGUgb3RoZXIpLgpCdXQgbWF5YmUgdGhhdCdzIGp1c3QgbWUuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
