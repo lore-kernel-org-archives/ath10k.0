@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XX94d-00041T-1t
- for ath10k@lists.infradead.org; Thu, 25 Sep 2014 13:27:08 +0000
-Message-ID: <54241815.6030000@candelatech.com>
-Date: Thu, 25 Sep 2014 06:26:45 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XXSs4-0006wn-Rs
+ for ath10k@lists.infradead.org; Fri, 26 Sep 2014 10:35:29 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/3] ath10k: debug improvements
+References: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 26 Sep 2014 13:34:58 +0300
+In-Reply-To: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 23 Sep 2014 10:22:51 +0200")
+Message-ID: <87a95m6565.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [RFC 2/2] ath10k: re-config ht_caps when chainmask is modified.
-References: <1411518383-32634-1-git-send-email-greearb@candelatech.com>	<1411518383-32634-2-git-send-email-greearb@candelatech.com>	<CA+BoTQ=fS30xz9KcdBJcioNers6PovOFEeqPCCSFn52HkscXug@mail.gmail.com>	<5422D6CF.10408@candelatech.com>	<CA+BoTQk=X2qVJsY64ZH88h29L6+Y5M9K07nLtzo=0ga1bUsXGw@mail.gmail.com>	<5422F1C2.4090100@candelatech.com>
- <CA+BoTQkncctvMFx7U0Qzq7+7W2o9Vo5qKcDEi6DUdJTEQWDfAA@mail.gmail.com>
-In-Reply-To: <CA+BoTQkncctvMFx7U0Qzq7+7W2o9Vo5qKcDEi6DUdJTEQWDfAA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +19,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-CgpPbiAwOS8yNC8yMDE0IDExOjIzIFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDI0IFNl
-cHRlbWJlciAyMDE0IDE4OjMwLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4g
-d3JvdGU6Cj4+IE9uIDA5LzI0LzIwMTQgMDg6MDUgQU0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+
-PiBPbiAyNCBTZXB0ZW1iZXIgMjAxNCAxNjozNSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
-dGVjaC5jb20+IHdyb3RlOgo+Pj4+IE9uIDA5LzI0LzIwMTQgMTI6NTEgQU0sIE1pY2hhbCBLYXpp
-b3Igd3JvdGU6Cj4+Pj4+IE9uIDI0IFNlcHRlbWJlciAyMDE0IDAyOjI2LCAgPGdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tPiB3cm90ZToKPj4+Pj4gWy4uLl0KPj4+Pj4+Cj4+Pj4+PiArc3RhdGljIHN0
-cnVjdCBpZWVlODAyMTFfc3RhX3ZodF9jYXAgYXRoMTBrX2NyZWF0ZV92aHRfY2FwKHN0cnVjdCBh
-dGgxMGsKPj4+Pj4+ICphciwKPj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBib29sCj4+Pj4+PiB1c2VfY2ZnX2NoYWlucykKPj4+
-Pj4+ICAgIHsKPj4+Pj4+ICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YV92aHRfY2FwIHZo
-dF9jYXAgPSB7MH07Cj4+Pj4+PiAgICAgICAgICAgdTE2IG1jc19tYXA7Cj4+Pj4+PiAgICAgICAg
-ICAgaW50IGk7Cj4+Pj4+PiArICAgICAgIGludCBucmYgPSBhci0+bnVtX3JmX2NoYWluczsKPj4+
-Pj4+ICsKPj4+Pj4+ICsgICAgICAgaWYgKHVzZV9jZmdfY2hhaW5zICYmIGFyLT5jZmdfdHhfY2hh
-aW5tYXNrKQo+Pj4+Pj4gKyAgICAgICAgICAgICAgIG5yZiA9IGdldF9uc3NfZnJvbV9jaGFpbm1h
-c2soYXItPmNmZ190eF9jaGFpbm1hc2spOwo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBJcyB1c2VfY2ZnX2No
-YWlucyByZWFsbHkgbmVjZXNzYXJ5IGhlcmU/IElzIHNldHRpbmcgdHgvcnggY2hhaW5tYXNrIHRv
-Cj4+Pj4+IDB4MCBtYWtlIGFueSBzZW5zZSBhdCBhbGw/IFNob3VsZG4ndCB3ZSBkZW55IGl0IG9y
-IG1ha2UgaXQgZmFsbGJhY2sgdG8KPj4+Pj4gdGhlIHN1cHBvcnRlZCB0eC9yeCBjaGFpbm1hc2sg
-dmFsdWVzPwo+Pj4+Cj4+Pj4gSXQgd291bGQgY2F1c2UgdGhlIGxvZ2ljIHRvIGZsaXAgYmFjayB0
-byB0aGUgZGVmYXVsdHMsIHNvIHNlZW1zIG1pbGRseQo+Pj4+IHVzZWZ1bC4gIEknbSBub3Qgc3Vy
-ZQo+Pj4+IHVwcGVyIGxheWVycyB3b3VsZCBldmVyIGxldCBpdCBiZSA8IDEgdGhvdWdoLgo+Pj4K
-Pj4+IDAgaXMgYSB2YWxpZCBhcmd1bWVudCBhcyBmYXIgYXMgdXBwZXIgbGF5ZXJzIGFyZSBjb25j
-ZXJuZWQgYW5kIHNob3VsZAo+Pj4gYmUgdHJlYXRlZCBhcyAidXNlIGFsbCBhdmFpbGFibGUgYW50
-ZW5uYXMiIChzZWUgYGl3IGxpc3RgIG91dHB1dAo+Pj4gYmVmb3JlIGV2ZXIgc2V0dGluZyBhbnRl
-bm5hLCBhZnRlciBzZXR0aW5nIHRvLCBlLmcuIDEgYW5kIHRoZW4gdG8gMCkuCj4+Pgo+Pj4gVGhp
-cyBpbXBsaWVzIGN1cnJlbnQgc2V0X2FudGVubmEoKSBpbXBsZW1lbnRhdGlvbiBpcyBhY3R1YWxs
-eSBidWdneQo+Pj4gKHBkZXYgcGFyYW0gc2hvdWxkIGludm9sdmUgdXNpbmcgc3VwcF90eC9yeF9j
-aGFpbm1hc2spLiBZb3VyCj4+PiBhc3N1bXB0aW9uIGluIHJlY2VudCBwYXRjaGVzIGlzIGFsc28g
-aW5jb3JyZWN0IGFzIGFudGVubmEgbWFzayA9IDAKPj4+IHNob3VsZCBpbXBseSBtYXggbnNzLCBu
-b3QgMS4KPj4KPj4gSSB0ZXN0ZWQgdGhpcyB1c2luZzoKPj4KPj4gaXcgcGh5IHdpcGh5MSBzZXQg
-YW50ZW5uYSAwIDAKPj4KPj4gVGhpcyBmbGlwcyBpdCBiYWNrIHRvIDN4MyAoSSBoYWQgcHJldmlv
-dXNseSBjb25maWd1cmVkIGl0IGZvciAyeDIpLAo+PiBzbyBJIHRoaW5rIHRoZSBwYXRjaGVzIGFy
-ZSB3b3JraW5nIHByb3Blcmx5Lgo+Cj4gTWVhIGN1bHBhLiBJdCB3aWxsIGZsaXAgYmFjayBpbmRl
-ZWQuCj4KPiBCdXQgSSBzdGlsbCBkb24ndCBzZWUgd2h5IHVzZV9jZmdfY2hhaW5zIGlzIG5lY2Vz
-c2FyeS4gSSBkb24ndCBzZWUgaG93Cj4gY2ZnX3R4X2NoYWlubWFzayBjb3VsZCBiZSBub24temVy
-byB3aGVuIGF0aDEwayBpcyByZWdpc3RlcmluZyB0byBtYWMuCgpJIHdhcyB0aGlua2luZyB3ZSBt
-aWdodCB3YW50IHRvIHJlLXJlZ2lzdGVyIHNvbWVkYXksIGxpa2UgYWZ0ZXIgbG9hZGluZwphIG5l
-dyBmaXJtd2FyZSwgb3IgdHVuaW5nIGZpcm13YXJlIGRpZmZlcmVudGx5IHNvIHRoYXQgdGhlIHZk
-ZXYgbGltaXRzCmNoYW5nZWQuCgpJZiB5b3UgYXJlIHN1cmUgd2UgY3VycmVudGx5IG9ubHkgcmVn
-aXN0ZXIgb25jZSBwZXIgbW9kdWxlIGxvYWQsIHRoZW4KSSBhZ3JlZSB0aGF0IHVzZV9jZmdfY2hh
-aW5zIHNob3VsZCBub3QgYmUgbmVlZGVkIGN1cnJlbnRseS4KCkJ1dCwgY29uc2lkZXJpbmcgbXkg
-ZGVzaXJlIHRvIGFsbG93IHRvIHJlLXJlZ2lzdGVyIGluIHRoZSBmdXR1cmUsIEknZApwcmVmZXIg
-dGhlIHBhdGNoIHRvIHJlbWFpbiBhcyBpcyB1bmxlc3MgeW91IGRpc2FncmVlLgoKVGhhbmtzLApC
-ZW4KCj4KPgo+IE1pY2hhxYIKPgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
-Y29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> Hi,
+>
+> This adds extra prints and information for
+> debugging purposes.
+>
+>
+> v2:
+>  * merge scnprintfs
+>
+> Michal Kazior (3):
+>   ath10k: print wmi version info
+>   ath10k: dump hex bytes with dev string prefix
+>   ath10k: add debug dump for pci rx
+
+Thanks, all three applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
