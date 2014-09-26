@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXSs4-0006wn-Rs
- for ath10k@lists.infradead.org; Fri, 26 Sep 2014 10:35:29 +0000
+ id 1XXSuE-0007pp-MG
+ for ath10k@lists.infradead.org; Fri, 26 Sep 2014 10:37:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/3] ath10k: debug improvements
-References: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 26 Sep 2014 13:34:58 +0300
-In-Reply-To: <1411460574-5424-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 23 Sep 2014 10:22:51 +0200")
-Message-ID: <87a95m6565.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 0/3] ath10k: export calibration data to user space
+References: <20140924111416.6539.95299.stgit@potku.adurom.net>
+Date: Fri, 26 Sep 2014 13:36:34 +0300
+In-Reply-To: <20140924111416.6539.95299.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Wed, 24 Sep 2014 14:16:39 +0300")
+Message-ID: <8761ga653h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,26 +23,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> Hi,
+> Here's a small patchset exporting firmware calibration data to user space. This
+> makes it easier to debug various calibration data related problems.
 >
-> This adds extra prints and information for
-> debugging purposes.
+> Please comment.
 >
+> v3:
+>
+> * patch 1: fix comment style (Michal)
+>
+> * patch 3: use ath10k_debug_ prefix (Michal)
 >
 > v2:
->  * merge scnprintfs
 >
-> Michal Kazior (3):
->   ath10k: print wmi version info
->   ath10k: dump hex bytes with dev string prefix
->   ath10k: add debug dump for pci rx
+> * never unmask the diagnostic window copy engine pipe in
+>   ath10k_ce_enable_interrupts()
+>
+> * add locking for diag_read_mem()/diag_write_mem()
+>
+> ---
+>
+> Kalle Valo (3):
+>       ath10k: don't enable interrupts for the diagnostic window
+>       ath10k: add diag_read() to hif ops
+>       ath10k: add cal_data debugfs file
 
-Thanks, all three applied.
+All three patches applied.
 
 -- 
 Kalle Valo
