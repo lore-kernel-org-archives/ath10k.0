@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtprelay0130.hostedemail.com ([216.40.44.130]
+Received: from smtprelay0161.hostedemail.com ([216.40.44.161]
  helo=smtprelay.hostedemail.com)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXWIM-0000Bs-2j
- for ath10k@lists.infradead.org; Fri, 26 Sep 2014 14:14:50 +0000
-Message-ID: <1411740861.19443.6.camel@joe-AO725>
-Subject: Re: [PATCH 0/4] ath10k: fix/cleanup fw stats
+ id 1XXZ9m-0003rR-1x
+ for ath10k@lists.infradead.org; Fri, 26 Sep 2014 17:18:10 +0000
+Message-ID: <1411751863.19443.7.camel@joe-AO725>
+Subject: Re: [PATCH] ath: change logging functions to return void
 From: Joe Perches <joe@perches.com>
-Date: Fri, 26 Sep 2014 07:14:21 -0700
-In-Reply-To: <CA+BoTQmJ-HprccxTO3UrX+NkhOMVt2i2X7p4k0b5bs6TVrKrpw@mail.gmail.com>
-References: <1411641230-18785-1-git-send-email-michal.kazior@tieto.com>
- <871tqy63p9.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmJ-HprccxTO3UrX+NkhOMVt2i2X7p4k0b5bs6TVrKrpw@mail.gmail.com>
+Date: Fri, 26 Sep 2014 10:17:43 -0700
+In-Reply-To: <87wq8q4oz6.fsf@kamboji.qca.qualcomm.com>
+References: <1411407334.2952.46.camel@joe-AO725>
+ <87wq8q4oz6.fsf@kamboji.qca.qualcomm.com>
 Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,49 +24,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: wil6210 <wil6210@qca.qualcomm.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, "John W.
+ Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org
 
-On Fri, 2014-09-26 at 13:14 +0200, Michal Kazior wrote:
-> On 26 September 2014 13:06, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> > drivers/net/wireless/ath/ath10k/wmi.c:1513: WARNING: else is not generally useful after a break or return
-> I'm aware of this one but the code looks nicer with the `else` to me though.
+On Fri, 2014-09-26 at 14:10 +0300, Kalle Valo wrote:
+> Joe Perches <joe@perches.com> writes:
+> 
+> > The return values are not used by callers of these functions
+> > so change the functions to return void.
+> >
+> > Other miscellanea:
+> >
+> > o add __printf verification to wil6210 logging functions
+> >   No format/argument mismatches found
+> >
+> > Signed-off-by: Joe Perches <joe@perches.com>
+> 
+> While applying this to our ath-next-test branch for build testing I had
+> few conflicts in ath10k. Joe, can you please check my conflict
+> resolution:
+> 
+> https://github.com/kvalo/ath/commit/9c5bd0cb84e4189ca85c041021aacdc015f3a9a5
+> 
 
-Yay Michal.
-
-Always use your taste over any mindless style tool.
-
-Ignore any checkpatch complaint you want.
-
-btw: checkpatch shouldn't warn about this as of:
-
-commit adefeef310ee8bd3923d41b67bc53c398bc53621
-Author: Joe Perches <joe@perches.com>
-Date:   Fri Sep 26 10:19:29 2014 +1000
-
-    checkpatch: add exception to return then else test
-    
-    Add an exception to the return before else warning
-    when the line following it is also a return like:
-    
-        if (foo)
-                return bar;
-        else
-                return baz;
-    
-    This form of a test then return is at least as readable as
-    
-        if (foo)
-                return bar;
-        return baz;
-    
-    so don't emit a warning on the first form.
-    
-    Signed-off-by: Joe Perches <joe@perches.com>
-    Reported-by: Al Viro <viro@ZenIV.linux.org.uk>
-    Cc: Elshad Mustafayev <elshadimo@gmail.com>
-    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-
+I don't know what the conflicts were, but the
+changes seem fine to me.
 
 
 _______________________________________________
