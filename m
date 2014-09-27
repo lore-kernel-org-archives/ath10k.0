@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXZac-0008PF-LL
- for ath10k@lists.infradead.org; Fri, 26 Sep 2014 17:45:56 +0000
-Date: Fri, 26 Sep 2014 13:36:33 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20140923
-Message-ID: <20140926173633.GF22967@tuxdriver.com>
-References: <8738big00t.fsf@kamboji.qca.qualcomm.com>
+ id 1XXmwy-0000KE-Iz
+ for ath10k@lists.infradead.org; Sat, 27 Sep 2014 08:01:53 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 4/4] ath10k: fix fw stats processing
+References: <1411641230-18785-1-git-send-email-michal.kazior@tieto.com>
+ <1411641230-18785-5-git-send-email-michal.kazior@tieto.com>
+Date: Sat, 27 Sep 2014 11:01:23 +0300
+In-Reply-To: <1411641230-18785-5-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 25 Sep 2014 12:33:50 +0200")
+Message-ID: <8761g94hm4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8738big00t.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +24,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Tue, Sep 23, 2014 at 12:26:58PM +0300, Kalle Valo wrote:
-> Hi John,
-> 
-> a new pull request just with ath10k changes this time. Changelog below
-> and please let me know if there are any problems.
-> 
-> ----------------------------------------------------------------------
-> 
-> The only new feature is testmode support from me. Ben added a new method
-> to crash the firmware with an assert for debug purposes. As usual, we
-> have lots of smaller fixes from Michal. Matteo fixed a Kconfig
-> dependency with debugfs. I fixed some warnings recently added to
-> checkpatch.
-> 
-> ----------------------------------------------------------------------
-> 
-> 
-> The following changes since commit 6a5d088a923854569e20eac4f3f569926d5911ec:
-> 
->   carl9170: tx: Replace rcu_assign_pointer() with RCU_INIT_POINTER() (2014-08-28 14:50:13 -0400)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to b25f32cb02155d68c690255ba846796a1c248fd3:
-> 
->   ath10k: use ether_addr_copy() (2014-09-18 10:47:03 +0300)
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Pulling now, but I don't plan to push it back out until Dave pulls my earlier batch...
+> If stat data exceeds wmi-htc buffer limits
+> firmware splits it into many wmi stats update
+> events which are delivered in a ping-pong fashion
+> triggered by wmi stats request command.
+>
+> Since there's only an implicit start-of-data and
+> no end-of-data indications the driver has to
+> perform some trickery to get complete stat data.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+I folded the patch below in ath-next-next. Please check:
+
+https://github.com/kvalo/ath/commit/7071112c5ddaff761cd7d9bb3110c3f3d2f83bb8
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0e6626282664..680d5088b6f3 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -343,7 +343,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
+ 
+ free:
+ 	/* In some cases lists have been spliced and cleared. Free up
+-	 * resouruces if that is not the case.
++	 * resources if that is not the case.
+ 	 */
+ 	ath10k_debug_fw_stats_pdevs_free(&stats.pdevs);
+ 	ath10k_debug_fw_stats_peers_free(&stats.peers);
+@@ -536,7 +536,7 @@ static void ath10k_fw_stats_fill(struct ath10k *ar,
+ 			 "MPDU errors (FCS, MIC, ENC)", pdev->mpdu_errs);
+ 
+ 	len += scnprintf(buf + len, buf_len - len, "\n");
+-	len += scnprintf(buf + len, buf_len - len, "%30s (%lu)\n",
++	len += scnprintf(buf + len, buf_len - len, "%30s (%zu)\n",
+ 			 "ath10k PEER stats", num_peers);
+ 	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
+ 				 "=================");
+
 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
