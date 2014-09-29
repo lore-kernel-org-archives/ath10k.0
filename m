@@ -1,16 +1,11 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYYyS-0003Kw-AP
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 11:18:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Possible issue with firmware crash reporting.
-References: <5421B67D.8060508@candelatech.com>
- <87wq8m1ydg.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 29 Sep 2014 14:18:05 +0300
-In-Reply-To: <87wq8m1ydg.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 29 Sep 2014 14:04:27 +0300")
-Message-ID: <87lhp21xqq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath: change logging functions to return void
+References: <1411407334.2952.46.camel@joe-AO725>
+Date: Mon, 29 Sep 2014 14:28:42 +0300
+In-Reply-To: <1411407334.2952.46.camel@joe-AO725> (Joe Perches's message of
+ "Mon, 22 Sep 2014 10:35:34 -0700")
+Message-ID: <87h9zq1x91.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,16 +19,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Joe Perches <joe@perches.com>
+Cc: wil6210 <wil6210@qca.qualcomm.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, "John W. Linville" <linville@tuxdriver.com>, Vladimir Kondratiev <qca_vkondrat@qca.qualcomm.com>, ath6kl@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Joe Perches <joe@perches.com> writes:
 
-> If I'm reading this right, uevent_sock_mutex is by both
-> platform_bus_init()
+> The return values are not used by callers of these functions
+> so change the functions to return void.
+>
+> Other miscellanea:
+>
+> o add __printf verification to wil6210 logging functions
+>   No format/argument mismatches found
+>
+> Signed-off-by: Joe Perches <joe@perches.com>
 
-"uevent_sock_mutex is held by platform_bus_init()"
-
+Thanks, applied.
 
 -- 
 Kalle Valo
