@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYXYY-0006o1-PM
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 09:47:47 +0000
+ id 1XYYaH-00085A-8N
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 10:53:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: add firmware crash counters
-References: <20140929094214.12889.97523.stgit@potku.adurom.net>
-Date: Mon, 29 Sep 2014 12:47:01 +0300
-In-Reply-To: <20140929094214.12889.97523.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 29 Sep 2014 12:42:15 +0300")
-Message-ID: <8761g63giy.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
+References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
+ <5421818A.9040501@candelatech.com>
+ <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
+Date: Mon, 29 Sep 2014 13:53:05 +0300
+In-Reply-To: <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 24 Sep 2014 08:50:38 +0200")
+Message-ID: <871tqu3dgu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,53 +26,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> On 23 September 2014 16:19, Ben Greear <greearb@candelatech.com> wrote:
+>> On 09/23/2014 02:16 AM, Michal Kazior wrote:
+>>> On 19 September 2014 20:28,  <greearb@candelatech.com> wrote:
+>>> [...]
+>>>>
+>>>> +       /* If we are CT firmware, ask it to flush all tids on all peers
+>>>> on
+>>>> +        * all vdevs.  Normal firmware will just crash if you do this.
+>>>> +        */
+>>>> +       if (test_bit(ATH10K_FW_FEATURE_WMI_10X_CT, ar->fw_features))
+>>>> +               ath10k_wmi_peer_flush(ar, 0xFFFFFFFF, peer_addr,
+>>>> 0xFFFFFFFF);
+>>>
+>>> I recall you've explained this some time ago, but can you refresh my
+>>> memory, please? Is this any different from iterating over all peers
+>>> and flushing each? Or does your firmware do so extra magic that is
+>>> impossible to do with normal firmware commands?
+>>
+>> My firmware does that iteration internally.
+>>
+>> You could probably do that in the driver, but it would be a lot
+>> of messages (for all vdevs, all peers, all tids)...
+>> I was not sure if there were limits to the number
+>> of commands you should attempt during the flush...
 >
-> kvalo: split into it's own patch, add debugfs file and add locking
->
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Thanks. I think ath10k should do this instead of having CT-specific
+> flush eventually.
 
-Oh, I forgot to add a commit log. I'm planning to add something like
-this:
-
-----------------------------------------------------------------------
-Add three counters related to firmware crashes or resets.
-
-Usage:
-
-# cat /sys/kernel/debug/ieee80211/phy0/ath10k/fw_reset_stats 
-fw_crash_counter                2
-fw_warm_reset_counter           43
-fw_cold_reset_counter           0
-#
-
-----------------------------------------------------------------------
-
-Also I forgot to add the cover letter, here's the changelog for both
-patches:
-
-v2:
-
-* remove unneeded ifdef from debug.c
-
-* rebase on top of Michal's "ath10k: fix fw stats processing",
-  dropping patch "ath10k: add helper method to grab debug stats"
-  because it was not needed anymore
-
-* remove ifdef from ath10k_ops with "#define foo NULL" hack
-
-* hold mutex when reading pdev_stats in ath10k_debug_get_et_stats()
-
-* move fw reset stats to struct ath10k::stats and add locking
-
-* add fw_reset_stats debugfs file
-
+I agree. We should not be forking functionality unless absolutely
+necessary.
 
 -- 
 Kalle Valo
