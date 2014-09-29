@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYdM8-00075F-JF
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 15:59:20 +0000
-Message-ID: <542981C1.7020000@candelatech.com>
-Date: Mon, 29 Sep 2014 08:58:57 -0700
+ id 1XYdSD-0002DG-9l
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 16:05:37 +0000
+Message-ID: <5429833C.60003@candelatech.com>
+Date: Mon, 29 Sep 2014 09:05:16 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
-References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
- <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
- <5421818A.9040501@candelatech.com>
- <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
- <871tqu3dgu.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <871tqu3dgu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 07/10] ath10k: add fw-powerup-fail to ethtool stats.
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+ <1411507045-18973-7-git-send-email-greearb@candelatech.com>
+ <87a95i3kcb.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87a95i3kcb.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +25,70 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 09/29/2014 03:53 AM, Kalle Valo wrote:
-
->> Thanks. I think ath10k should do this instead of having CT-specific
->> flush eventually.
+On 09/29/2014 01:24 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
 > 
-> I agree. We should not be forking functionality unless absolutely
-> necessary.
+>> From: Ben Greear <greearb@candelatech.com>
+>>
+>> This gives user-space a normal-ish way to detect that
+>> firmware has failed to start and that a reboot is
+>> probably required.
+>>
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> 
+> [...]
+> 
+>> --- a/drivers/net/wireless/ath/ath10k/pci.c
+>> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+>> @@ -1851,7 +1851,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+>>  			    ret);
+>>  
+>>  		if (ath10k_pci_reset_mode == ATH10K_PCI_RESET_WARM_ONLY)
+>> -			return ret;
+>> +			goto out;
+>>  
+>>  		ath10k_warn(ar, "trying cold reset\n");
+>>  
+>> @@ -1859,11 +1859,17 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+>>  		if (ret) {
+>>  			ath10k_err(ar, "failed to power up target using cold reset too (%d)\n",
+>>  				   ret);
+>> -			return ret;
+>> +			goto out;
+>>  		}
+>>  	}
+>>  
+>> -	return 0;
+>> +out:
+>> +	/* If we have failed to power-up, it may take a reboot to
+>> +	 * get the NIC back online.
+>> +	 * Set flag accordinly so that user-space can know.
+>> +	 */
+>> +	ar->fw_powerup_failed = !!ret;
+>> +	return ret;
+>>  }
+> 
+> Would it be better to use ATH10K_STATE_WEDGED for this and then just
+> export the state value to user space? Or should we have two different
+> states, like FW_WEDGED and HW_WEDGED?
 
-Ok, this patch is easy to carry in my own tree.
+I didn't want to mess with the state machine.  This counter
+is just a clue to users that things might be badly wrong.  Some systems
+might recover with another hard reset, some will hang the entire
+system hard, and some will just stick in this state unable to
+recover.  Some of my systems exhibit this last behaviour, so at
+least with this patch I can warn the user that they need to
+reboot to regain wifi functionality.
 
-But, for things upstream firmware just cannot support,
-like tx-rate-status and rx-software-crypt, how do you
-want it flagged in the driver?  Can I get the CT firmware
-flag in for that, or does it have to be some other way?
-
-If you just will not accept any such patch, let me know so
-I can quite bothering you about it.
+If you want to tie it to a state machine, that is OK with me, but
+I don't want to mess with it because that code is already tricky
+enough.
 
 Thanks,
 Ben
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
