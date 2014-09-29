@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYWDU-0001TU-DX
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 08:21:56 +0000
+ id 1XYWGV-0001gy-Pn
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 08:25:04 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 03/10] ath10k: support ethtool stats.
+Subject: Re: [PATCH v2 07/10] ath10k: add fw-powerup-fail to ethtool stats.
 References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
- <1411507045-18973-3-git-send-email-greearb@candelatech.com>
- <CA+BoTQkK=6NfPN9e-3qN2Qaq2RLVdEwrp5x03_T=E2ZLcBeiaA@mail.gmail.com>
- <5422D71F.7080809@candelatech.com>
-Date: Mon, 29 Sep 2014 11:21:10 +0300
-In-Reply-To: <5422D71F.7080809@candelatech.com> (Ben Greear's message of "Wed, 
- 24 Sep 2014 07:37:19 -0700")
-Message-ID: <87eguu3ki1.fsf@kamboji.qca.qualcomm.com>
+ <1411507045-18973-7-git-send-email-greearb@candelatech.com>
+Date: Mon, 29 Sep 2014 11:24:36 +0300
+In-Reply-To: <1411507045-18973-7-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 23 Sep 2014 14:17:22
+ -0700")
+Message-ID: <87a95i3kcb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,45 +25,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ben Greear <greearb@candelatech.com> writes:
+greearb@candelatech.com writes:
 
-> On 09/24/2014 12:44 AM, Michal Kazior wrote:
->> On 23 September 2014 23:17,  <greearb@candelatech.com> wrote:
->> [...]
->>> +void ath10k_get_et_stats(struct ieee80211_hw *hw,
->>> +                        struct ieee80211_vif *vif,
->>> +                        struct ethtool_stats *stats, u64 *data)
->>> +{
->>> +       struct ath10k *ar = hw->priv;
->>> +       int i = 0;
->>> +       struct ath10k_target_stats *fw_stats;
->>> +
->>> +       fw_stats = &ar->debug.target_stats;
->>> +
->>> +       mutex_lock(&ar->conf_mutex);
->>> +
->>> +       if (ar->state == ATH10K_STATE_ON)
->>> +               ath10k_refresh_peer_stats(ar);
->>> +
->>> +       mutex_unlock(&ar->conf_mutex);
->>
->> Just for correctness sake - it's probably a good idea to
->> mutex_unlock() at the end (i.e. after spin_unlock_bh()) to make sure
->> the stats are for this particular request. With your patch there's a
->> very slight chance that, e.g. fw_stats debug file is being read at the
->> same time and it updates fw stats between the above mutex_unlock() and
->> following spin_lock_bh().
+> From: Ben Greear <greearb@candelatech.com>
 >
-> That makes no difference at all to the user though, and it is one less
-> set of nested locks to worry about.
+> This gives user-space a normal-ish way to detect that
+> firmware has failed to start and that a reboot is
+> probably required.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-I still do not want to have known races, especially when it's so easy to
-fix. The ethtool patches patches conflict with Michal's fw_stats fixes.
-Let me take the ethtool patches so that I can rebase them, fix this race
-and do some other small changes as well. I'll send v2 soon.
+[...]
+
+> --- a/drivers/net/wireless/ath/ath10k/pci.c
+> +++ b/drivers/net/wireless/ath/ath10k/pci.c
+> @@ -1851,7 +1851,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+>  			    ret);
+>  
+>  		if (ath10k_pci_reset_mode == ATH10K_PCI_RESET_WARM_ONLY)
+> -			return ret;
+> +			goto out;
+>  
+>  		ath10k_warn(ar, "trying cold reset\n");
+>  
+> @@ -1859,11 +1859,17 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+>  		if (ret) {
+>  			ath10k_err(ar, "failed to power up target using cold reset too (%d)\n",
+>  				   ret);
+> -			return ret;
+> +			goto out;
+>  		}
+>  	}
+>  
+> -	return 0;
+> +out:
+> +	/* If we have failed to power-up, it may take a reboot to
+> +	 * get the NIC back online.
+> +	 * Set flag accordinly so that user-space can know.
+> +	 */
+> +	ar->fw_powerup_failed = !!ret;
+> +	return ret;
+>  }
+
+Would it be better to use ATH10K_STATE_WEDGED for this and then just
+export the state value to user space? Or should we have two different
+states, like FW_WEDGED and HW_WEDGED?
 
 -- 
 Kalle Valo
