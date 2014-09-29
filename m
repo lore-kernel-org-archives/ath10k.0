@@ -1,13 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYZT5-0001P3-7F
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 11:50:15 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: checkpatch: CHECK: No space is necessary after a cast
-Date: Mon, 29 Sep 2014 14:49:48 +0300
-Message-ID: <874mvq1w9v.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XYdM8-00075F-JF
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 15:59:20 +0000
+Message-ID: <542981C1.7020000@candelatech.com>
+Date: Mon, 29 Sep 2014 08:58:57 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: request firmware flush in ath10k_flush.
+References: <1411151304-31544-1-git-send-email-greearb@candelatech.com>
+ <CA+BoTQm1rZO+yBbYxihpgEvR1cGZWS4Pr0AP+KMODcG4jpd_jQ@mail.gmail.com>
+ <5421818A.9040501@candelatech.com>
+ <CA+BoTQkZaGSkC9mhE8UF0He0RZWmPghDukdE1A5qiO1UNAZj5Q@mail.gmail.com>
+ <871tqu3dgu.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <871tqu3dgu.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +26,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joe Perches <joe@perches.com>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Joe,
+On 09/29/2014 03:53 AM, Kalle Valo wrote:
 
-I have a problem with checkpatch. On ath10k we have this function:
+>> Thanks. I think ath10k should do this instead of having CT-specific
+>> flush eventually.
+> 
+> I agree. We should not be forking functionality unless absolutely
+> necessary.
 
-static inline struct ath10k_skb_cb *ATH10K_SKB_CB(struct sk_buff *skb)
-{
-	BUILD_BUG_ON(sizeof(struct ath10k_skb_cb) >
-		     IEEE80211_TX_INFO_DRIVER_DATA_SIZE);
-	return (struct ath10k_skb_cb *)&IEEE80211_SKB_CB(skb)->driver_data;
-}
+Ok, this patch is easy to carry in my own tree.
 
-And the BUILD_BUG_ON triggers this warning:
+But, for things upstream firmware just cannot support,
+like tx-rate-status and rx-software-crypt, how do you
+want it flagged in the driver?  Can I get the CT firmware
+flag in for that, or does it have to be some other way?
 
-drivers/net/wireless/ath/ath10k/core.h:85: CHECK: No space is necessary after a cast
+If you just will not accept any such patch, let me know so
+I can quite bothering you about it.
 
-Any advice how to handle that?
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
