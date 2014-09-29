@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XXmwy-0000KE-Iz
- for ath10k@lists.infradead.org; Sat, 27 Sep 2014 08:01:53 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4/4] ath10k: fix fw stats processing
+ id 1XYVCL-0001yZ-QU
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 07:16:42 +0000
+Received: by mail-wi0-f172.google.com with SMTP id ex7so819703wid.11
+ for <ath10k@lists.infradead.org>; Mon, 29 Sep 2014 00:16:14 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <8761g94hm4.fsf@kamboji.qca.qualcomm.com>
 References: <1411641230-18785-1-git-send-email-michal.kazior@tieto.com>
  <1411641230-18785-5-git-send-email-michal.kazior@tieto.com>
-Date: Sat, 27 Sep 2014 11:01:23 +0300
-In-Reply-To: <1411641230-18785-5-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 25 Sep 2014 12:33:50 +0200")
-Message-ID: <8761g94hm4.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <8761g94hm4.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 29 Sep 2014 09:16:14 +0200
+Message-ID: <CA+BoTQmC7vec3OW8ZbCvkx761cMtUTT6f+UAVp7dMXj2hNRKUA@mail.gmail.com>
+Subject: Re: [PATCH 4/4] ath10k: fix fw stats processing
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +22,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> If stat data exceeds wmi-htc buffer limits
-> firmware splits it into many wmi stats update
-> events which are delivered in a ping-pong fashion
-> triggered by wmi stats request command.
->
-> Since there's only an implicit start-of-data and
-> no end-of-data indications the driver has to
-> perform some trickery to get complete stat data.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-I folded the patch below in ath-next-next. Please check:
-
-https://github.com/kvalo/ath/commit/7071112c5ddaff761cd7d9bb3110c3f3d2f83bb8
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 0e6626282664..680d5088b6f3 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -343,7 +343,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 
- free:
- 	/* In some cases lists have been spliced and cleared. Free up
--	 * resouruces if that is not the case.
-+	 * resources if that is not the case.
- 	 */
- 	ath10k_debug_fw_stats_pdevs_free(&stats.pdevs);
- 	ath10k_debug_fw_stats_peers_free(&stats.peers);
-@@ -536,7 +536,7 @@ static void ath10k_fw_stats_fill(struct ath10k *ar,
- 			 "MPDU errors (FCS, MIC, ENC)", pdev->mpdu_errs);
- 
- 	len += scnprintf(buf + len, buf_len - len, "\n");
--	len += scnprintf(buf + len, buf_len - len, "%30s (%lu)\n",
-+	len += scnprintf(buf + len, buf_len - len, "%30s (%zu)\n",
- 			 "ath10k PEER stats", num_peers);
- 	len += scnprintf(buf + len, buf_len - len, "%30s\n\n",
- 				 "=================");
-
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgU2VwdGVtYmVyIDIwMTQgMTA6MDEsIEthbGxlIFZhbG8gPGt2YWxvQHFjYS5xdWFsY29t
+bS5jb20+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cml0ZXM6Cj4KPj4gSWYgc3RhdCBkYXRhIGV4Y2VlZHMgd21pLWh0YyBidWZmZXIgbGltaXRzCj4+
+IGZpcm13YXJlIHNwbGl0cyBpdCBpbnRvIG1hbnkgd21pIHN0YXRzIHVwZGF0ZQo+PiBldmVudHMg
+d2hpY2ggYXJlIGRlbGl2ZXJlZCBpbiBhIHBpbmctcG9uZyBmYXNoaW9uCj4+IHRyaWdnZXJlZCBi
+eSB3bWkgc3RhdHMgcmVxdWVzdCBjb21tYW5kLgo+Pgo+PiBTaW5jZSB0aGVyZSdzIG9ubHkgYW4g
+aW1wbGljaXQgc3RhcnQtb2YtZGF0YSBhbmQKPj4gbm8gZW5kLW9mLWRhdGEgaW5kaWNhdGlvbnMg
+dGhlIGRyaXZlciBoYXMgdG8KPj4gcGVyZm9ybSBzb21lIHRyaWNrZXJ5IHRvIGdldCBjb21wbGV0
+ZSBzdGF0IGRhdGEuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5r
+YXppb3JAdGlldG8uY29tPgo+Cj4gSSBmb2xkZWQgdGhlIHBhdGNoIGJlbG93IGluIGF0aC1uZXh0
+LW5leHQuIFBsZWFzZSBjaGVjazoKPgo+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgvY29t
+bWl0LzcwNzExMTJjNWRkYWZmNzYxY2Q3ZDliYjMxMTBjM2YzZDJmODNiYjgKWy4uLl0KCkkgdGhp
+bmsgeW91IG1lYW50OgoKICBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC81MTIy
+YTYwZjRmYmY1YTM4ZTcwYTE0NTc4ODU4YjM5MDU4ZWUzNjdhCgpJdCBsb29rcyBnb29kLiBUaGFu
+a3MhCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
