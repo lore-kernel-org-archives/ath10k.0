@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XYZCL-0002aV-7j
- for ath10k@lists.infradead.org; Mon, 29 Sep 2014 11:32:57 +0000
+ id 1XYZT5-0001P3-7F
+ for ath10k@lists.infradead.org; Mon, 29 Sep 2014 11:50:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/4] ath10k: fix/cleanup fw stats
-References: <1411641230-18785-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 29 Sep 2014 14:32:23 +0300
-In-Reply-To: <1411641230-18785-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 25 Sep 2014 12:33:46 +0200")
-Message-ID: <87d2ae1x2w.fsf@kamboji.qca.qualcomm.com>
+Subject: checkpatch: CHECK: No space is necessary after a cast
+Date: Mon, 29 Sep 2014 14:49:48 +0300
+Message-ID: <874mvq1w9v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +20,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Joe Perches <joe@perches.com>
+Cc: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi Joe,
 
-> This cleans up and fixes fw stats aggregation.
->
->
-> Michal Kazior (4):
->   ath10k: split wmi stats parsing
->   ath10k: rename fw_stats related stuff
->   ath10k: request fw_stats once on open
->   ath10k: fix fw stats processing
+I have a problem with checkpatch. On ath10k we have this function:
 
-Thanks, applied.
+static inline struct ath10k_skb_cb *ATH10K_SKB_CB(struct sk_buff *skb)
+{
+	BUILD_BUG_ON(sizeof(struct ath10k_skb_cb) >
+		     IEEE80211_TX_INFO_DRIVER_DATA_SIZE);
+	return (struct ath10k_skb_cb *)&IEEE80211_SKB_CB(skb)->driver_data;
+}
 
-And thank you for fixing this for good, it has been buggy for way too
-long.
+And the BUILD_BUG_ON triggers this warning:
+
+drivers/net/wireless/ath/ath10k/core.h:85: CHECK: No space is necessary after a cast
+
+Any advice how to handle that?
 
 -- 
 Kalle Valo
