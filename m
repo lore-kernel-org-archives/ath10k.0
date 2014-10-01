@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZF9v-0002Ox-RW
- for ath10k@lists.infradead.org; Wed, 01 Oct 2014 08:21:17 +0000
+ id 1XZFBr-00035m-Km
+ for ath10k@lists.infradead.org; Wed, 01 Oct 2014 08:23:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: add firmware crash counters
-References: <20140929094214.12889.97523.stgit@potku.adurom.net>
-Date: Wed, 1 Oct 2014 11:20:23 +0300
-In-Reply-To: <20140929094214.12889.97523.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 29 Sep 2014 12:42:15 +0300")
-Message-ID: <87zjdgtd4o.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 01/10] ath10k: use 64-bit vdev map.
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+Date: Wed, 1 Oct 2014 11:22:23 +0300
+In-Reply-To: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 23 Sep 2014 14:17:16
+ -0700")
+Message-ID: <87vbo4td1c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,19 +24,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: greearb@candelatech.com
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+greearb@candelatech.com writes:
 
 > From: Ben Greear <greearb@candelatech.com>
 >
-> kvalo: split into it's own patch, add debugfs file and add locking
+> This can allow more than 32 stations to be supported
+> without over-running the bitmap.
 >
 > Signed-off-by: Ben Greear <greearb@candelatech.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-Thanks, both patches applied.
+Thanks, I have applied this patch.
 
 -- 
 Kalle Valo
