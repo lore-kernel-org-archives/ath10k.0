@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.24])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZgQk-0002nQ-Pw
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 13:28:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
+Received: from cam-admin0.cambridge.arm.com ([217.140.96.50])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XZgS2-0003R5-EO
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 13:29:47 +0000
+Date: Thu, 2 Oct 2014 14:29:15 +0100
+From: Mark Rutland <mark.rutland@arm.com>
 Subject: Re: ath10k: calibration data through Device Tree?
-Date: Thu, 02 Oct 2014 15:27:53 +0200
-Message-ID: <3548219.ad4Qe1WtGp@wuerfel>
-In-Reply-To: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <20141002132914.GN5788@leverpostej>
 References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +24,47 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: devicetree@vger.kernel.org, ath10k@lists.infradead.org
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thursday 02 October 2014 16:14:43 Kalle Valo wrote:
-> Hi Device Tree gurus,
-> 
+Hi,
+
 > ath10k is a wireless driver for Qualcomm Atheros 802.11ac hardware and
 > located in drivers/net/wireless/ath/ath10k/. Currently it only supports
 > PCI devices.
 > 
 > Some of the devices store the calibration data to the host flash and the
 > bootloader reads the data from the flash. And now we need a method to
-> deliver the calibration data from bootloader to ath10k. Basically our
-> requirements are:
-> 
-> * ath10k must support any number of radios (one radio per PCI device).
-> 
+> deliver the calibration data from bootloader to ath10k. 
+
+What does this calibration data consist of?
+
+What happens if you don't have the calibration data? Is it a critical
+requirement for the use of the device, or does its absence simply result
+in degraded performance?
+
+What do you do on non-DT systems? Where does the information come from
+in that case?
+
+I'm somewhat puzzled as to why a discoverable PCI device would require
+non-discoverable information to use.
+
 > * The calibration data is now 2116 bytes, in the future it might be
 >   longer. The data is unique for each radio and is created at the
 >   factory.
-> 
+
+Why would this change in future? Who is in charge of providing this
+information, and deciding upon the format thereof?
+
 > * ath10k must be able to reliably map the PCI device (=radio) to the
 >   correct calibration data. Maybe with using PCI bus and slot numbers?
-> 
-> We have been trying to find similar cases from other drivers but no
-> luck. Basically my question is how to do this properly with Device Tree?
-> Especially how to map the calibration data to correct PCI device? Are
-> there any examples which would help us to implement this?
 
-When you know the PCI bus/device/function ID of the device, you can put
-a device node in the dts file that corresponds to the PCI dev, and you
-can find the of_node pointer from pci_dev->dev.of_node. 2116 is probably
-ok to put into a DT property of that device directly.
+I guess we'd have to do something along those lines.
 
-	Arnd
+I'd like to get a better understanding of the problem before we start
+figuring out how to pass an arbitrary blob of information around.
+
+Thanks,
+Mark.
 
 _______________________________________________
 ath10k mailing list
