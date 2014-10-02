@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZfF9-0007hR-Bi
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:12:23 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: add tracing for tx msdu pktlog event
-Date: Thu, 2 Oct 2014 17:42:14 +0530
-Message-ID: <1412251934-7011-5-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1XZfdY-0008Lw-7A
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:37:36 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so3812195wiv.5
+ for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 05:37:13 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1412251934-7011-2-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1412251934-7011-2-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Thu, 2 Oct 2014 14:37:13 +0200
+Message-ID: <CA+BoTQ=QEnDhW_Kb-dCO--67LAFNL37g4JSDuET84FFPLHpz8w@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ath10k: Add support to configure pktlog filter
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,183 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This is useful for collecting msdu statistics. For every msdu
-entry in the pktlog message, corresponding msdu length is determined.
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 48 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h     | 27 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/trace.h  | 33 ++++++++++++++++++++++
- 3 files changed, 108 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index be24071..22ef0f4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1569,6 +1569,48 @@ static void ath10k_htt_rx_delba(struct ath10k *ar, struct htt_resp *resp)
- 	spin_unlock_bh(&ar->data_lock);
- }
- 
-+static void ath10k_htt_pktlog_msdu(struct ath10k *ar,
-+				   struct ath10k_pktlog_hdr *hdr)
-+{
-+	struct ath10k_htt *htt = &ar->htt;
-+	struct sk_buff *msdu;
-+	__le32 num_msdu;
-+	__le16 *msdu_id;
-+	u16 msdu_len[MAX_PKT_INFO_MSDU_ID], id;
-+	u32 i;
-+
-+	num_msdu = __le32_to_cpu(*((u32 *)hdr->payload)) * 2;
-+	if (num_msdu >= MAX_PKT_INFO_MSDU_ID)
-+		return;
-+
-+	msdu_id = (u16 *)&hdr->payload[MSDU_ID_INFO_ID_OFFSET];
-+	memset(msdu_len, 0, sizeof(msdu_len));
-+
-+	spin_lock_bh(&htt->tx_lock);
-+	for (i = 0; i < num_msdu; i++) {
-+		id = __le16_to_cpu(*msdu_id);
-+		if (id >= htt->max_num_pending_tx) {
-+			msdu_id++;
-+			continue;
-+		}
-+
-+		msdu = htt->pending_tx[id];
-+		if (!msdu) {
-+			msdu_id++;
-+			continue;
-+		}
-+
-+		msdu_len[i] =
-+			(hdr->flags & ATH10K_PKTLOG_FLG_TYPE_CLONE_S) ?
-+			CLONED_PKT_MSDU_LEN_DEFAULT : (u16)msdu->len;
-+		msdu_id++;
-+	}
-+	spin_unlock_bh(&htt->tx_lock);
-+	trace_ath10k_htt_pktlog_msdu(ar, hdr->payload,
-+				     sizeof(*hdr) + __le16_to_cpu(hdr->size),
-+				     msdu_len, sizeof(msdu_len));
-+}
-+
- void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
-@@ -1680,6 +1722,12 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		struct ath10k_pktlog_hdr *hdr =
- 			(struct ath10k_pktlog_hdr *)resp->pktlog_msg.payload;
- 
-+		if (__le16_to_cpu(hdr->log_type) ==
-+				ATH10K_PKTLOG_TYPE_TX_MSDU_ID) {
-+			ath10k_htt_pktlog_msdu(ar, hdr);
-+			break;
-+		}
-+
- 		trace_ath10k_htt_pktlog(ar, resp->pktlog_msg.payload,
- 					sizeof(*hdr) +
- 					__le16_to_cpu(hdr->size));
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 4b86ca3..57a4c72 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -80,6 +80,27 @@ enum ath10k_mcast2ucast_mode {
- 	ATH10K_MCAST2UCAST_ENABLED = 1,
- };
- 
-+/* Types of packet log events */
-+enum ath10k_pktlog_type {
-+	ATH10K_PKTLOG_TYPE_TX_CTRL = 1,
-+	ATH10K_PKTLOG_TYPE_TX_STAT,
-+	ATH10K_PKTLOG_TYPE_TX_MSDU_ID,
-+	ATH10K_PKTLOG_TYPE_TX_FRM_HDR,
-+	ATH10K_PKTLOG_TYPE_RX_STAT,
-+	ATH10K_PKTLOG_TYPE_RC_FIND,
-+	ATH10K_PKTLOG_TYPE_RC_UPDATE,
-+	ATH10K_PKTLOG_TYPE_TX_VIRT_ADDR,
-+	ATH10K_PKTLOG_TYPE_DBG_PRINT,
-+	ATH10K_PKTLOG_TYPE_MAX,
-+};
-+
-+enum ath10k_pktlog_flag_type {
-+	ATH10K_PKTLOG_FLG_TYPE_LOCAL_S = 0,
-+	ATH10K_PKTLOG_FLG_TYPE_REMOTE_S,
-+	ATH10K_PKTLOG_FLG_TYPE_CLONE_S,
-+	ATH10K_PKTLOG_FLG_TYPE_UNKNOWN_S
-+};
-+
- struct ath10k_pktlog_hdr {
- 	__le16 flags;
- 	__le16 missed_cnt;
-@@ -89,6 +110,12 @@ struct ath10k_pktlog_hdr {
- 	u8 payload[0];
- } __packed;
- 
-+#define MAX_PKT_INFO_MSDU_ID 192
-+#define MSDU_ID_INFO_ID_OFFSET  ((MAX_PKT_INFO_MSDU_ID >> 3) + 4)
-+#define MSDU_ID_INFO_SIZE ((MAX_PKT_INFO_MSDU_ID >> 3) + 4 + \
-+			   (MAX_PKT_INFO_MSDU_ID * 2))
-+#define CLONED_PKT_MSDU_LEN_DEFAULT 200
-+
- /* Target specific defines for MAIN firmware */
- #define TARGET_NUM_VDEVS			8
- #define TARGET_NUM_PEER_AST			2
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 3dff799..4f8a20a 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -310,6 +310,39 @@ TRACE_EVENT(ath10k_rx_pktlog,
- 		__entry->len
- 	 )
- );
-+
-+TRACE_EVENT(ath10k_htt_pktlog_msdu,
-+	    TP_PROTO(struct ath10k *ar, void *buf, u16 buf_len,
-+		     void *msdu, u16 msdu_len),
-+
-+	TP_ARGS(ar, buf, buf_len, msdu, msdu_len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, buf_len)
-+		__dynamic_array(u8, pktlog, buf_len)
-+		__field(u16, msdu_len)
-+		__dynamic_array(u8, msdu, msdu_len)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->buf_len = buf_len;
-+		memcpy(__get_dynamic_array(pktlog), buf, buf_len);
-+		__entry->msdu_len = msdu_len;
-+		memcpy(__get_dynamic_array(msdu), msdu, msdu_len);
-+	),
-+
-+	TP_printk(
-+		"%s %s size %hu msdu size %hu",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->buf_len,
-+		__entry->msdu_len
-+	 )
-+);
- #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
- 
- /* we don't want to use include/trace/events */
--- 
-2.1.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBPY3RvYmVyIDIwMTQgMTQ6MTIsIFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRp
+LnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gQWRkIHN1cHBvcnQgdG8gY29uZmlndXJlIHBhY2tldCBs
+b2cgZmlsdGVycyAodHgsIHJ4LCByYXRlIGNvbnRyb2wpCj4gdmlhIGRlYnVnZnMuIFRvIGRpc2Fi
+bGUgaHR0IHBrdGxvZyBldmVudHMgc2V0IHRoZSBmaWx0ZXJzIHRvIDAuClsuLi5dCj4gK3N0YXRp
+YyBzc2l6ZV90IGF0aDEwa193cml0ZV9wa3Rsb2dfZmlsdGVyKHN0cnVjdCBmaWxlICpmaWxlLAo+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IGNoYXIgX191
+c2VyICp1YnVmLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNp
+emVfdCBjb3VudCwgbG9mZl90ICpwcG9zKQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3QgYXRoMTBrICph
+ciA9IGZpbGUtPnByaXZhdGVfZGF0YTsKPiArICAgICAgIHUzMiBmaWx0ZXI7Cj4gKyAgICAgICBp
+bnQgcmV0Owo+ICsKPiArICAgICAgIGlmIChrc3RydG91aW50X2Zyb21fdXNlcih1YnVmLCBjb3Vu
+dCwgMCwgJmZpbHRlcikpCj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+ICsKPiAr
+ICAgICAgIG11dGV4X2xvY2soJmFyLT5jb25mX211dGV4KTsKPiArICAgICAgIGlmIChmaWx0ZXIg
+JiYgKGZpbHRlciAhPSBhci0+ZGVidWcucGt0bG9nX2ZpbHRlcikpCj4gKyAgICAgICAgICAgICAg
+IHJldCA9IGF0aDEwa193bWlfcGRldl9wa3Rsb2dfZW5hYmxlKGFyLCBmaWx0ZXIpOwo+ICsgICAg
+ICAgZWxzZQo+ICsgICAgICAgICAgICAgICByZXQgPSBhdGgxMGtfd21pX3BkZXZfcGt0bG9nX2Rp
+c2FibGUoYXIpOwoKWW91J3JlIG5vdCBjaGVja2luZyBpZiBhci0+c3RhdGUgaXMgT04uCgpFdmVu
+IGlmIEkgYXNzdW1lIHRoZSBhYm92ZSBkb2Vzbid0IGNyYXNoIHRoZSBkcml2ZXIvc3lzdGVtIHRo
+aXMgaGFzCnN0cmFuZ2Ugc2VtYW50aWNzLiBPbiBvbmUgaGFuZCB0aGUgZHJpdmVyIGhhcyB0byBi
+ZSBhZnRlciBkcnZfc3RhcnQKKGUuZy4gYXQgbGVhc3Qgb25lIGludGVyZmFjZSBtdXN0IGJlIHVw
+KSBiZWZvcmUgaXQncyBwb3NzaWJsZSB0byBzZXQKaXQgYnV0IG9uIHRoZSBvdGhlciBoYW5kIHBr
+dGxvZ19maWx0ZXIgaXMgcmV0YWluZWQgYWNyb3NzCmRydl9zdG9wL3N0YXJ0LiBJJ2QgZXhwZWN0
+IGl0IHRvIGJlIHBvc3NpYmxlIHRvIHNldCB0aGUgcGt0bG9nX2ZpbHRlcgpyZWdhcmRsZXNzIG9m
+IGRyaXZlciBzdGF0ZSBidXQgbWF5YmUgdGhhdCdzIGp1c3QgbWUuCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
