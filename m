@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZfEu-0007dN-34
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:12:08 +0000
+ id 1XZfF0-0007fH-VX
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:12:15 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/4] ath10k: add tracing for ath10k_htt_pktlog
-Date: Thu, 2 Oct 2014 17:42:12 +0530
-Message-ID: <1412251934-7011-3-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 3/4] ath10k: add tracing for rx descriptor
+Date: Thu, 2 Oct 2014 17:42:13 +0530
+Message-ID: <1412251934-7011-4-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,118 +25,119 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-This is useful for collecting pktlog statistics of tx, rx
-and rate information, so add tracing for the API call.
+Upon the reception of frame, the descriptor status are reported
+to user space by tracepoint. This is useful for collecting rx
+statistics for pktlog.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.h  |  1 -
- drivers/net/wireless/ath/ath10k/htt.h    |  2 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c |  9 +++++++++
- drivers/net/wireless/ath/ath10k/hw.h     |  9 +++++++++
- drivers/net/wireless/ath/ath10k/trace.h  | 27 +++++++++++++++++++++++++++
- 5 files changed, 46 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c  | 17 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/debug.h  |  5 +++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  2 ++
+ drivers/net/wireless/ath/ath10k/trace.h  | 29 +++++++++++++++++++++++++++++
+ 4 files changed, 53 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 48672da..29fa820 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1439,6 +1439,23 @@ void ath10k_debug_unregister(struct ath10k *ar)
+ 	cancel_delayed_work_sync(&ar->debug.htt_stats_dwork);
+ }
+ 
++void ath10k_debug_pktlog_rx(struct ath10k *ar, struct sk_buff *msdu)
++{
++	struct htt_rx_desc *rxd;
++	u32 tsf;
++
++	if (!(ar->debug.pktlog_filter & ATH10K_PKTLOG_RX))
++		return;
++
++	while (msdu) {
++		rxd = (void *)msdu->data - sizeof(*rxd);
++		tsf = __le32_to_cpu(rxd->ppdu_end.tsf_timestamp);
++
++		trace_ath10k_rx_pktlog(ar, tsf, &rxd->attention,
++				       sizeof(*rxd) - sizeof(u32));
++		msdu = msdu->next;
++	}
++}
+ #endif /* CONFIG_ATH10K_DEBUGFS */
+ 
+ #ifdef CONFIG_ATH10K_DEBUG
 diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 794e6bb..aafdcab 100644
+index aafdcab..389387c 100644
 --- a/drivers/net/wireless/ath/ath10k/debug.h
 +++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -69,7 +69,6 @@ struct ath10k_fw_crash_data *
- ath10k_debug_get_new_fw_crash_data(struct ath10k *ar);
- 
+@@ -71,6 +71,7 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar);
  void ath10k_debug_dbglog_add(struct ath10k *ar, u8 *buffer, int len);
--
  #define ATH10K_DFS_STAT_INC(ar, c) (ar->debug.dfs_stats.c++)
  
++void ath10k_debug_pktlog_rx(struct ath10k *ar, struct sk_buff *msdu);
  #else
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 3b44217..15c58e8 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -725,7 +725,7 @@ static inline u8 *htt_rx_test_get_chars(struct htt_rx_test *rx_test)
-  */
- struct htt_pktlog_msg {
- 	u8 pad[3];
--	__le32 payload[1 /* or more */];
-+	u8 payload[0];
- } __packed;
+ static inline int ath10k_debug_start(struct ath10k *ar)
+ {
+@@ -121,6 +122,10 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
+ 	return NULL;
+ }
  
- struct htt_dbg_stats_rx_reorder_stats {
++static inline void ath10k_debug_pktlog_rx(struct ath10k *ar,
++					  struct sk_buff *msdu)
++{
++}
+ #define ATH10K_DFS_STAT_INC(ar, c) do { } while (0)
+ 
+ #endif /* CONFIG_ATH10K_DEBUGFS */
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 60d40a0..a078451 100644
+index a078451..be24071 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1674,6 +1674,15 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 	case HTT_T2H_MSG_TYPE_RX_DELBA:
- 		ath10k_htt_rx_delba(ar, resp);
- 		break;
-+	case HTT_T2H_MSG_TYPE_PKTLOG: {
-+		struct ath10k_pktlog_hdr *hdr =
-+			(struct ath10k_pktlog_hdr *)resp->pktlog_msg.payload;
-+
-+		trace_ath10k_htt_pktlog(ar, resp->pktlog_msg.payload,
-+					sizeof(*hdr) +
-+					__le16_to_cpu(hdr->size));
-+		break;
-+	}
- 	case HTT_T2H_MSG_TYPE_RX_FLUSH: {
- 		/* Ignore this event because mac80211 takes care of Rx
- 		 * aggregation reordering.
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 006a9cb..4b86ca3 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -80,6 +80,15 @@ enum ath10k_mcast2ucast_mode {
- 	ATH10K_MCAST2UCAST_ENABLED = 1,
- };
+@@ -1295,6 +1295,8 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
  
-+struct ath10k_pktlog_hdr {
-+	__le16 flags;
-+	__le16 missed_cnt;
-+	__le16 log_type;
-+	__le16 size;
-+	__le32 timestamp;
-+	u8 payload[0];
-+} __packed;
++			ath10k_debug_pktlog_rx(ar, msdu_head);
 +
- /* Target specific defines for MAIN firmware */
- #define TARGET_NUM_VDEVS			8
- #define TARGET_NUM_PEER_AST			2
+ 			rxd = container_of((void *)msdu_head->data,
+ 					   struct htt_rx_desc,
+ 					   msdu_payload);
 diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 574b75a..971ff23 100644
+index 971ff23..3dff799 100644
 --- a/drivers/net/wireless/ath/ath10k/trace.h
 +++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -254,6 +254,33 @@ TRACE_EVENT(ath10k_wmi_dbglog,
- 	)
+@@ -281,6 +281,35 @@ TRACE_EVENT(ath10k_htt_pktlog,
+ 	 )
  );
  
-+TRACE_EVENT(ath10k_htt_pktlog,
-+	    TP_PROTO(struct ath10k *ar, void *buf, u16 buf_len),
++TRACE_EVENT(ath10k_rx_pktlog,
++	    TP_PROTO(struct ath10k *ar, u32 tsf, void *rxdesc, u16 len),
 +
-+	TP_ARGS(ar, buf, buf_len),
++	TP_ARGS(ar, tsf, rxdesc, len),
 +
 +	TP_STRUCT__entry(
 +		__string(device, dev_name(ar->dev))
 +		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, buf_len)
-+		__dynamic_array(u8, pktlog, buf_len)
++		__field(u32, tsf)
++		__field(u16, len)
++		__dynamic_array(u8, rxdesc, len)
 +	),
 +
 +	TP_fast_assign(
 +		__assign_str(device, dev_name(ar->dev));
 +		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->buf_len = buf_len;
-+		memcpy(__get_dynamic_array(pktlog), buf, buf_len);
++		__entry->tsf = tsf;
++		__entry->len = len;
++		memcpy(__get_dynamic_array(rxdesc), rxdesc, len);
 +	),
 +
 +	TP_printk(
-+		"%s %s size %hu",
++		"%s %s %u len %hu",
 +		__get_str(driver),
 +		__get_str(device),
-+		__entry->buf_len
++		__entry->tsf,
++		__entry->len
 +	 )
 +);
-+
  #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
  
  /* we don't want to use include/trace/events */
