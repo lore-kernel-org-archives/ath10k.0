@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZdnk-0000eA-OW
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 10:40:02 +0000
-Received: by mail-wi0-f177.google.com with SMTP id fb4so902920wid.10
- for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 03:39:36 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAB6w8enBQM5+xApKgA=p=NZicit6nzasefwjv_0XfO3ZwaS67g@mail.gmail.com>
-References: <CAB6w8enBQM5+xApKgA=p=NZicit6nzasefwjv_0XfO3ZwaS67g@mail.gmail.com>
-Date: Thu, 2 Oct 2014 12:39:36 +0200
-Message-ID: <CA+BoTQ=nFs9o1VipEinmJgxXYr24jL9QH9RCDzpXPKo_qsB0-w@mail.gmail.com>
+ id 1XZdrL-00037i-BH
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 10:43:43 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: Unable to upgrade firmware for QCA988x module, ath10k!
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <CAB6w8enBQM5+xApKgA=p=NZicit6nzasefwjv_0XfO3ZwaS67g@mail.gmail.com>
+ <CA+BoTQ=nFs9o1VipEinmJgxXYr24jL9QH9RCDzpXPKo_qsB0-w@mail.gmail.com>
+Date: Thu, 2 Oct 2014 13:43:11 +0300
+In-Reply-To: <CA+BoTQ=nFs9o1VipEinmJgxXYr24jL9QH9RCDzpXPKo_qsB0-w@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 2 Oct 2014 12:39:36 +0200")
+Message-ID: <87tx3moips.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +20,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ramprasad Vempati <ramprasad.vempati@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ramprasad Vempati <ramprasad.vempati@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMiBPY3RvYmVyIDIwMTQgMTE6NDYsIFJhbXByYXNhZCBWZW1wYXRpIDxyYW1wcmFzYWQudmVt
-cGF0aUBnbWFpbC5jb20+IHdyb3RlOgo+IEhpLAo+Cj4gSSd2ZSBnb3QgY29tcGV4IHdsYW4gbW9k
-dWxlOiBXTEU2MDBWWCAsIHdoaWNoIGlzIDJ4MiA4MDIuMTFhYyBRQ0E5ODgyCj4gbW9kdWxlLiBJ
-J20gdXNpbmcga2VybmVsOiAzLjExLCB3aGljaCBoYXMgYnkgZGVmYXVsdCBhdGgxMGsuIEFzIEkK
-PiBwbHVnZ2VkIGluIG15IGNhcmQsIEkgc2F3IGludGVyZmFjZSBjYW1lIHVwLiBCdXQgdGhlIHBy
-b2JsZW0gaXMgaXQKPiBkb2Vzbid0IGNvbm5lY3QgaW4gMTFhYyBtb2RlLgoKVGhhdCdzIHByb2Jh
-Ymx5IGEgZGlmZmVyZW50IGlzc3VlLiBVcGdyYWRpbmcgZmlybXdhcmUgd29uJ3Qgc29sdmUgdGhl
-IHByb2JsZW0uCgpJJ20gZ3Vlc3NpbmcgdGhpcyBpcyByZWd1bGF0b3J5ICh3aXJlbGVzcy1yZWdk
-YikgcHJvYmxlbS4gWW91IGNhbgp2ZXJpZnkgdGhhdCBpZiB5b3UgcnVuIGBpdyByZWcgZ2V0YCBj
-b21tYW5kLiBJIGdldDoKCiBjb3VudHJ5IFVTOiBERlMtRkNDCiAgICAgICAgICgyNDAyIC0gMjQ3
-MiBAIDQwKSwgKE4vQSwgMzApLCAoTi9BKQogICAgICAgICAoNTE3MCAtIDUyNTAgQCA4MCksIChO
-L0EsIDE3KSwgKE4vQSkKICAgICAgICAgKDUyNTAgLSA1MzMwIEAgODApLCAoTi9BLCAyMyksICgw
-IG1zKSwgREZTCiAgICAgICAgICg1NzM1IC0gNTgzNSBAIDgwKSwgKE4vQSwgMzApLCAoTi9BKQog
-ICAgICAgICAoNTcyNDAgLSA2MzcyMCBAIDIxNjApLCAoTi9BLCA0MCksIChOL0EpCgpOb3RlIHRo
-ZSBAIDgwIGF0IDVHSHogYmFuZCB3aGljaCBtZWFucyBpdCdzIHBvc3NpYmxlIHRvIG9wZXJhdGUg
-b24KODBNSHogY2hhbm5lbCBiYW5kd2lkdGguIElmIHlvdSBnZXQgQCA0MCBpdCBtZWFucyB5b3Ug
-aGF2ZSBhbiBvbGQKd2lyZWxlc3MgcmVndWxhdG9yeSBkYXRhYmFzZS4gWW91IGNhbiBnZXQgdGhl
-IGxhdGVzdCBvbmUgaGVyZToKaHR0cDovL2RydmJwMS5saW51eC1mb3VuZGF0aW9uLm9yZy9+bWNn
-cm9mL3JlbC1odG1sL3dpcmVsZXNzLXJlZ2RiLyAuCk1ha2Ugc3VyZSB5b3UgaGF2ZSBjcmRhIGJp
-bmFyeSBpbnN0YWxsZWQgYW5kIHVwIHRvIGRhdGUgYXMgd2VsbCAoCmh0dHA6Ly93aXJlbGVzcy5r
-ZXJuZWwub3JnL2VuL2RldmVsb3BlcnMvUmVndWxhdG9yeS9DUkRBICkuCgoKPiBodHRwOi8vd3d3
-LmNvbXBleHNob3AuY29tL3Byb2R1Y3RfaW5mby5waHA/Y3VycmVuY3k9VVNEJnByb2R1Y3RzX2lk
-PTQ2MAo+Cj4gSSd2ZSBwbGFjZWQgdGhlIGZpcm13YXJlIHRoYXQncyBkb3dubG9hZGVkIGZyb20g
-IDoKPiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlLiBJJ3ZlIHBhc3Rl
-ZCB0aGUgZmlybXdhcmUKPiBmaWxlIGFzICJmaXJtd2FyZS0yLmJpbiIgaW4gL2xpYi9maXJtd2Fy
-ZS9hdGgxMGsvUUNBOTg4WC9odzIuMC4gTm93Cj4gdGhlcmUgYXJlIHR3byBmaWxlcyBmaXJtd2Fy
-ZS5iaW4gKGRlZmF1bHQgb25lKSBhbmQgImZpcm13YXJlLTIuYmluIgo+IGRvd25sb2FkZWQgZnJv
-bSBnaXRodWIuIE5vdyBldmVuIGFmdGVyIHJlYm9vdCBvZiBsYXB0b3AgdGhlIGZpcm13YXJlCj4g
-dmVyc2lvbiBkb2Vzbid0IGNoYW5nZS4gSXQgc3RpbGwgc2hvd3MgMS4wLjAuNjM2Lgo+Cj4gQ2Fu
-IHNvbWVvbmUgbGV0IG1lIGtub3cgd2hhdCBhbSBJIG1pc3Npbmc/CgpTdXBwb3J0IGZvciBmaXJt
-d2FyZS0yLmJpbiB3YXMgYWRkZWQgaW4ga2VybmVsIDMuMTMuCgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+>> http://www.compexshop.com/product_info.php?currency=USD&products_id=460
+>>
+>> I've placed the firmware that's downloaded from  :
+>> https://github.com/kvalo/ath10k-firmware. I've pasted the firmware
+>> file as "firmware-2.bin" in /lib/firmware/ath10k/QCA988X/hw2.0. Now
+>> there are two files firmware.bin (default one) and "firmware-2.bin"
+>> downloaded from github. Now even after reboot of laptop the firmware
+>> version doesn't change. It still shows 1.0.0.636.
+>>
+>> Can someone let me know what am I missing?
+>
+> Support for firmware-2.bin was added in kernel 3.13.
+
+And if you want to run latest ath10k on an older kernel, you need to use
+backports:
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/faq#How_can_I_run_latest_ath10k_on_older_kernels.3F
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
