@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZfrY-0005ha-Hb
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:52:04 +0000
-Date: Thu, 2 Oct 2014 18:23:26 +0530
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k: Add support to configure pktlog filter
-Message-ID: <20141002125324.GA11177@qca.qualcomm.com>
+ id 1XZfyN-0000cx-7M
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 12:59:08 +0000
+Received: by mail-wi0-f180.google.com with SMTP id em10so3979810wid.1
+ for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 05:58:43 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20141002125324.GA11177@qca.qualcomm.com>
 References: <1412251934-7011-1-git-send-email-rmanohar@qti.qualcomm.com>
  <1412251934-7011-2-git-send-email-rmanohar@qti.qualcomm.com>
  <CA+BoTQ=QEnDhW_Kb-dCO--67LAFNL37g4JSDuET84FFPLHpz8w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQ=QEnDhW_Kb-dCO--67LAFNL37g4JSDuET84FFPLHpz8w@mail.gmail.com>
+ <20141002125324.GA11177@qca.qualcomm.com>
+Date: Thu, 2 Oct 2014 14:58:43 +0200
+Message-ID: <CA+BoTQk-w9D=0urUTfaF6RrSYEkXAqUT+DAJZKq0bfTVFK18xA@mail.gmail.com>
+Subject: Re: [PATCH 1/4] ath10k: Add support to configure pktlog filter
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +23,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Oct 02, 2014 at 02:37:13PM +0200, Michal Kazior wrote:
-> On 2 October 2014 14:12, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> > Add support to configure packet log filters (tx, rx, rate control)
-> > via debugfs. To disable htt pktlog events set the filters to 0.
-> [...]
-> > +static ssize_t ath10k_write_pktlog_filter(struct file *file,
-> > +                                         const char __user *ubuf,
-> > +                                         size_t count, loff_t *ppos)
-> > +{
-> > +       struct ath10k *ar = file->private_data;
-> > +       u32 filter;
-> > +       int ret;
-> > +
-> > +       if (kstrtouint_from_user(ubuf, count, 0, &filter))
-> > +               return -EINVAL;
-> > +
-> > +       mutex_lock(&ar->conf_mutex);
-> > +       if (filter && (filter != ar->debug.pktlog_filter))
-> > +               ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
-> > +       else
-> > +               ret = ath10k_wmi_pdev_pktlog_disable(ar);
-> 
-> You're not checking if ar->state is ON.
->
-How about updating pktlog_filter alone and not sending WMI command when
-state != ON. So that in the next drv_start pktlog will be either be
-disabled or enabled based on filter value at debug_start.
-
-> Even if I assume the above doesn't crash the driver/system this has
-> strange semantics. On one hand the driver has to be after drv_start
-> (e.g. at least one interface must be up) before it's possible to set
-> it but on the other hand pktlog_filter is retained across
-> drv_stop/start. I'd expect it to be possible to set the pktlog_filter
-> regardless of driver state but maybe that's just me.
-> 
-So pktlog should be disabed at ath10k_debug_stop. isn't it?
-
--Rajkumar
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBPY3RvYmVyIDIwMTQgMTQ6NTMsIFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRp
+LnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gT24gVGh1LCBPY3QgMDIsIDIwMTQgYXQgMDI6Mzc6MTNQ
+TSArMDIwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gT24gMiBPY3RvYmVyIDIwMTQgMTQ6MTIs
+IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+
+ID4gQWRkIHN1cHBvcnQgdG8gY29uZmlndXJlIHBhY2tldCBsb2cgZmlsdGVycyAodHgsIHJ4LCBy
+YXRlIGNvbnRyb2wpCj4+ID4gdmlhIGRlYnVnZnMuIFRvIGRpc2FibGUgaHR0IHBrdGxvZyBldmVu
+dHMgc2V0IHRoZSBmaWx0ZXJzIHRvIDAuCj4+IFsuLi5dCj4+ID4gK3N0YXRpYyBzc2l6ZV90IGF0
+aDEwa193cml0ZV9wa3Rsb2dfZmlsdGVyKHN0cnVjdCBmaWxlICpmaWxlLAo+PiA+ICsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IGNoYXIgX191c2VyICp1YnVm
+LAo+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVfdCBj
+b3VudCwgbG9mZl90ICpwcG9zKQo+PiA+ICt7Cj4+ID4gKyAgICAgICBzdHJ1Y3QgYXRoMTBrICph
+ciA9IGZpbGUtPnByaXZhdGVfZGF0YTsKPj4gPiArICAgICAgIHUzMiBmaWx0ZXI7Cj4+ID4gKyAg
+ICAgICBpbnQgcmV0Owo+PiA+ICsKPj4gPiArICAgICAgIGlmIChrc3RydG91aW50X2Zyb21fdXNl
+cih1YnVmLCBjb3VudCwgMCwgJmZpbHRlcikpCj4+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAt
+RUlOVkFMOwo+PiA+ICsKPj4gPiArICAgICAgIG11dGV4X2xvY2soJmFyLT5jb25mX211dGV4KTsK
+Pj4gPiArICAgICAgIGlmIChmaWx0ZXIgJiYgKGZpbHRlciAhPSBhci0+ZGVidWcucGt0bG9nX2Zp
+bHRlcikpCj4+ID4gKyAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa193bWlfcGRldl9wa3Rsb2df
+ZW5hYmxlKGFyLCBmaWx0ZXIpOwo+PiA+ICsgICAgICAgZWxzZQo+PiA+ICsgICAgICAgICAgICAg
+ICByZXQgPSBhdGgxMGtfd21pX3BkZXZfcGt0bG9nX2Rpc2FibGUoYXIpOwo+Pgo+PiBZb3UncmUg
+bm90IGNoZWNraW5nIGlmIGFyLT5zdGF0ZSBpcyBPTi4KPj4KPiBIb3cgYWJvdXQgdXBkYXRpbmcg
+cGt0bG9nX2ZpbHRlciBhbG9uZSBhbmQgbm90IHNlbmRpbmcgV01JIGNvbW1hbmQgd2hlbgo+IHN0
+YXRlICE9IE9OLiBTbyB0aGF0IGluIHRoZSBuZXh0IGRydl9zdGFydCBwa3Rsb2cgd2lsbCBiZSBl
+aXRoZXIgYmUKPiBkaXNhYmxlZCBvciBlbmFibGVkIGJhc2VkIG9uIGZpbHRlciB2YWx1ZSBhdCBk
+ZWJ1Z19zdGFydC4KClNvdW5kcyBnb29kIHRvIG1lLgoKCj4+IEV2ZW4gaWYgSSBhc3N1bWUgdGhl
+IGFib3ZlIGRvZXNuJ3QgY3Jhc2ggdGhlIGRyaXZlci9zeXN0ZW0gdGhpcyBoYXMKPj4gc3RyYW5n
+ZSBzZW1hbnRpY3MuIE9uIG9uZSBoYW5kIHRoZSBkcml2ZXIgaGFzIHRvIGJlIGFmdGVyIGRydl9z
+dGFydAo+PiAoZS5nLiBhdCBsZWFzdCBvbmUgaW50ZXJmYWNlIG11c3QgYmUgdXApIGJlZm9yZSBp
+dCdzIHBvc3NpYmxlIHRvIHNldAo+PiBpdCBidXQgb24gdGhlIG90aGVyIGhhbmQgcGt0bG9nX2Zp
+bHRlciBpcyByZXRhaW5lZCBhY3Jvc3MKPj4gZHJ2X3N0b3Avc3RhcnQuIEknZCBleHBlY3QgaXQg
+dG8gYmUgcG9zc2libGUgdG8gc2V0IHRoZSBwa3Rsb2dfZmlsdGVyCj4+IHJlZ2FyZGxlc3Mgb2Yg
+ZHJpdmVyIHN0YXRlIGJ1dCBtYXliZSB0aGF0J3MganVzdCBtZS4KPj4KPiBTbyBwa3Rsb2cgc2hv
+dWxkIGJlIGRpc2FiZWQgYXQgYXRoMTBrX2RlYnVnX3N0b3AuIGlzbid0IGl0PwoKQWN0dWFsbHkg
+bXkgYmFkLiBZb3Ugc2V0IGFyLT5kZWJ1Zy5wa3Rsb2dfZmlsdGVyIHJlZ2FyZGxlc3Mgb2Ygd21p
+CmNvbW1hbmQgcmVzdWx0IHdoaWNoIGlzIGZpbmUuCgoKTWljaGHFggoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
