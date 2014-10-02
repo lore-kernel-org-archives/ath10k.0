@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZimF-0007zM-RW
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 15:58:48 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: ath10k: calibration data through Device Tree?
-Date: Thu, 02 Oct 2014 17:58:19 +0200
-Message-ID: <7004963.mtH2SDQocr@wuerfel>
-In-Reply-To: <87d2aamsg2.fsf@kamboji.qca.qualcomm.com>
-References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
- <2397903.vznsjdQh6x@wuerfel> <87d2aamsg2.fsf@kamboji.qca.qualcomm.com>
+ id 1XZjrj-0007PO-RU
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 17:08:32 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 0/4] ath10k: Add pktlog support
+Date: Thu, 2 Oct 2014 22:39:34 +0530
+Message-ID: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: devicetree@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-On Thursday 02 October 2014 17:55:57 Kalle Valo wrote:
-> 
-> > I notice that there are no Qualcomm or Atheros PCI host controller drivers
-> > in Linux though, so you first have to write a driver that allows probing
-> > the PCI bus, and get the binding reviewed for that before you can add
-> > it to the dts files. Is this for ipq8064 or something else?
-> 
-> But now I'm lost again  I want ath10k and this feature to work with
-> all possible PCI controllers, not just with Qualcomm controllers. So why
-> do I need to wait for Qualcomm PCI host controller driver?
+This implements the Packet log feature for ath10k.
+All tx and rx events and rx descriptor details are
+posted to user space by tracepoints.
 
-Sorry, my fault. You can definitely do this with any SoC that uses DT
-for probing the PCI. I was merely assuming that you were asking about
-ipq because the wifi chips and SoCs tend to come bundled from the
-same manufacturer in embedded systems, and the MIPS based QCA SoCs
-currently don't use DT.
+v2: Addressed review comments and based on discussion with Michal
+    dropped tx_msdu_id patch and added tx info changes
 
-For any machine that does not use DT, it would be much harder to
-solve this problem though.
+Rajkumar Manoharan (4):
+  ath10k: Add support to configure pktlog filter
+  ath10k: add tracing for ath10k_htt_pktlog
+  ath10k: add tracing for rx descriptor
+  ath10k: add tracing for tx msdu pktlog event
 
-	Arnd
+ drivers/net/wireless/ath/ath10k/core.h   |  2 +
+ drivers/net/wireless/ath/ath10k/debug.c  | 80 +++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/debug.h  | 15 +++++-
+ drivers/net/wireless/ath/ath10k/htt.h    |  2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 47 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h     | 35 +++++++++++++
+ drivers/net/wireless/ath/ath10k/trace.h  | 89 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c    | 33 ++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h    |  6 +++
+ 9 files changed, 306 insertions(+), 3 deletions(-)
+
+-- 
+2.1.1
+
 
 _______________________________________________
 ath10k mailing list
