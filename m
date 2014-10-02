@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZetC-0007lh-RF
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 11:49:43 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Unable to upgrade firmware for QCA988x module, ath10k!
-References: <CAB6w8enBQM5+xApKgA=p=NZicit6nzasefwjv_0XfO3ZwaS67g@mail.gmail.com>
- <CA+BoTQ=nFs9o1VipEinmJgxXYr24jL9QH9RCDzpXPKo_qsB0-w@mail.gmail.com>
- <87tx3moips.fsf@kamboji.qca.qualcomm.com>
- <CAB6w8emWrQDtETBzKVxU3Ya6MF4c6dP1vr_2pqYxYzfMXG+Xwg@mail.gmail.com>
-Date: Thu, 2 Oct 2014 14:49:14 +0300
-In-Reply-To: <CAB6w8emWrQDtETBzKVxU3Ya6MF4c6dP1vr_2pqYxYzfMXG+Xwg@mail.gmail.com>
- (Ramprasad Vempati's message of "Thu, 2 Oct 2014 16:58:23 +0530")
-Message-ID: <87bnpuofnp.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1XZf18-0002DM-Va
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 11:57:55 +0000
+Received: by mail-wi0-f175.google.com with SMTP id d1so3702398wiv.2
+ for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 04:57:31 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: don't create bssid peer for ibss
+Date: Thu,  2 Oct 2014 13:56:40 +0200
+Message-Id: <1412251000-25377-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +17,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ramprasad Vempati <ramprasad.vempati@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Ramprasad Vempati <ramprasad.vempati@gmail.com> writes:
+It's not really necessary to create bssid peer for
+bssid. Self-address peer is sufficient.
 
-> And I'm updating my kernel 3.13.
+This prevents some firmware revisions from crashing.
 
-I recommend updating to the latest kernel. The older the kernel the more
-difficult it is to help.
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e3d2a9e..1fbbf8c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1052,14 +1052,6 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
+ 		if (is_zero_ether_addr(arvif->bssid))
+ 			return;
+ 
+-		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id,
+-					 arvif->bssid);
+-		if (ret) {
+-			ath10k_warn(ar, "failed to delete IBSS BSSID peer %pM for vdev %d: %d\n",
+-				    arvif->bssid, arvif->vdev_id, ret);
+-			return;
+-		}
+-
+ 		memset(arvif->bssid, 0, ETH_ALEN);
+ 
+ 		return;
+@@ -3178,17 +3170,17 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 	if (changed & BSS_CHANGED_BSSID &&
+ 	    vif->type != NL80211_IFTYPE_AP) {
+ 		if (!is_zero_ether_addr(info->bssid)) {
+-			ath10k_dbg(ar, ATH10K_DBG_MAC,
+-				   "mac vdev %d create peer %pM\n",
+-				   arvif->vdev_id, info->bssid);
+-
+-			ret = ath10k_peer_create(ar, arvif->vdev_id,
+-						 info->bssid);
+-			if (ret)
+-				ath10k_warn(ar, "failed to add peer %pM for vdev %d when changing bssid: %i\n",
+-					    info->bssid, arvif->vdev_id, ret);
+-
+ 			if (vif->type == NL80211_IFTYPE_STATION) {
++				ath10k_dbg(ar, ATH10K_DBG_MAC,
++					   "mac vdev %d create peer %pM\n",
++					   arvif->vdev_id, info->bssid);
++
++				ret = ath10k_peer_create(ar, arvif->vdev_id,
++							 info->bssid);
++				if (ret)
++					ath10k_warn(ar, "failed to add peer %pM for vdev %d when changing bssid: %i\n",
++						    info->bssid, arvif->vdev_id,
++						    ret);
+ 				/*
+ 				 * this is never erased as we it for crypto key
+ 				 * clearing; this is FW requirement
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
