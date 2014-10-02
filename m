@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-pa0-f45.google.com ([209.85.220.45])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZjsl-0007kP-NH
- for ath10k@lists.infradead.org; Thu, 02 Oct 2014 17:09:36 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 4/4] ath10k: add tracing for tx info
-Date: Thu, 2 Oct 2014 22:39:38 +0530
-Message-ID: <1412269778-1045-5-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1XZlhJ-00054m-9C
+ for ath10k@lists.infradead.org; Thu, 02 Oct 2014 19:05:53 +0000
+Received: by mail-pa0-f45.google.com with SMTP id rd3so3212551pab.18
+ for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 12:05:30 -0700 (PDT)
+Message-ID: <542DA1F7.9090904@amacapital.net>
+Date: Thu, 02 Oct 2014 12:05:27 -0700
+From: Andy Lutomirski <luto@amacapital.net>
 MIME-Version: 1.0
+Subject: Re: ath10k: calibration data through Device Tree?
+References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>	<20141002132914.GN5788@leverpostej>
+ <87ppeamvr9.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87ppeamvr9.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,118 +25,60 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, Mark Rutland <mark.rutland@arm.com>
+Cc: devicetree@vger.kernel.org, ath10k@lists.infradead.org
 
-The tx info such as msdu_id, frame len, vdev id and tid are reported
-to user space by tracepoint. This is useful for collecting tx
-statistics.
+On 10/02/2014 06:44 AM, Kalle Valo wrote:
+> Hi Mark,
+> 
+> Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org> writes:
+> 
+>>> ath10k is a wireless driver for Qualcomm Atheros 802.11ac hardware and
+>>> located in drivers/net/wireless/ath/ath10k/. Currently it only supports
+>>> PCI devices.
+>>>
+>>> Some of the devices store the calibration data to the host flash and the
+>>> bootloader reads the data from the flash. And now we need a method to
+>>> deliver the calibration data from bootloader to ath10k. 
+>>
+>> What does this calibration data consist of?
+> 
+> From ath10k point of view it's just a binary blob which we push to the
+> firmware before we start it. ath10k does not parse it in any way.
+> 
+>> What happens if you don't have the calibration data? Is it a critical
+>> requirement for the use of the device, or does its absence simply result
+>> in degraded performance?
+> 
+> From my point of view the device should not be used if it doesn't
+> contain the correct calibration data. I guess it could work somehow but
+> there's no guarantee about the perfomance.
+> 
+>> What do you do on non-DT systems? Where does the information come from
+>> in that case?
+> 
+> Currently ath10k only supports having the calibration data in the OTP
+> area inside the QCA98XX chip. But some manufacturers want to store it on
+> the host file, I assume because of the flexibility it provides. And
+> that's why we have the need for Device Tree support.
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_tx.c |  1 +
- drivers/net/wireless/ath/ath10k/trace.h  | 60 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/txrx.c   |  1 +
- 3 files changed, 62 insertions(+)
+To give an actual concrete example that might be what Kalle is talking
+about:
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index bd87a35..fdfb171 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -557,6 +557,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
- 	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le32(HTT_INVALID_PEERID);
- 
-+	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
- 		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu\n",
- 		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 3841667..33b9bf4 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -310,6 +310,66 @@ TRACE_EVENT(ath10k_htt_rx_desc,
- 		__entry->len
- 	 )
- );
-+
-+TRACE_EVENT(ath10k_htt_tx,
-+	    TP_PROTO(struct ath10k *ar, u16 msdu_id, u16 msdu_len,
-+		     u8 vdev_id, u8 tid),
-+
-+	TP_ARGS(ar, msdu_id, msdu_len, vdev_id, tid),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, msdu_id)
-+		__field(u16, msdu_len)
-+		__field(u8, vdev_id)
-+		__field(u8, tid)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->msdu_id = msdu_id;
-+		__entry->msdu_len = msdu_len;
-+		__entry->vdev_id = vdev_id;
-+		__entry->tid = tid;
-+	),
-+
-+	TP_printk(
-+		"%s %s msdu_id %d msdu_len %d vdev_id %d tid %d",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->msdu_id,
-+		__entry->msdu_len,
-+		__entry->vdev_id,
-+		__entry->tid
-+	 )
-+);
-+
-+TRACE_EVENT(ath10k_txrx_tx_unref,
-+	    TP_PROTO(struct ath10k *ar, u16 msdu_id),
-+
-+	TP_ARGS(ar, msdu_id),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, msdu_id)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->msdu_id = msdu_id;
-+	),
-+
-+	TP_printk(
-+		"%s %s msdu_id %d",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->msdu_id
-+	 )
-+);
- #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
- 
- /* we don't want to use include/trace/events */
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index a0cbc21..f9c90e3 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -78,6 +78,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- 	info = IEEE80211_SKB_CB(msdu);
- 	memset(&info->status, 0, sizeof(info->status));
-+	trace_ath10k_txrx_tx_unref(ar, tx_done->msdu_id);
- 
- 	if (tx_done->discard) {
- 		ieee80211_free_txskb(htt->ar->hw, msdu);
--- 
-2.1.1
+I have a TP-Link Archer C7, which has a mips cpu and an ath10k minipcie
+device.  For whatever reason (I honestly have no clue whatsoever why the
+hardware works this way), the calibration data is on a host flash
+partition, not on the minipcie device's ROM or flash or whatever it is.
 
+Needless to say, the mainline ath10k driver won't load on it.  (An old
+version used to load without calibration data.  It didn't work very well.)
+
+Presuambly the idea is that, if things like this used DT (which mine
+doesn't, I presume), then ath10k could get the calibration data via DT.
+ And maybe some vendors of ARM-based wifi devices are planning on
+playing similar games, and they do use DT.
+
+--Andy
 
 _______________________________________________
 ath10k mailing list
