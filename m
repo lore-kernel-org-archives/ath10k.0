@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
+Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZxRB-0004GL-Sj
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 07:38:02 +0000
-Received: by mail-wg0-f45.google.com with SMTP id m15so776169wgh.16
- for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 00:37:39 -0700 (PDT)
+ id 1XZzgv-000141-S7
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 10:02:26 +0000
+Received: by mail-vc0-f176.google.com with SMTP id hq11so434421vcb.7
+ for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 03:02:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHqTa-33hHnsQHw8HzW+OGXi33zVBphofKyynWv38f3f3tTQgQ@mail.gmail.com>
-References: <CAHqTa-2yz13WAgvXxJVYMXQ7fVqRtuQ8ABAC6vKv07=fne_YGw@mail.gmail.com>
- <CA+BoTQmeMNz2PvT9Si_smYqL24OBA+JX8fJORnp5hck0x7eP2g@mail.gmail.com>
- <CAHqTa-33hHnsQHw8HzW+OGXi33zVBphofKyynWv38f3f3tTQgQ@mail.gmail.com>
-Date: Fri, 3 Oct 2014 09:37:39 +0200
-Message-ID: <CA+BoTQkOJP64UBVW9XSs+b+k8yxa4PbDMnKceUtNZAg21VSbHw@mail.gmail.com>
-Subject: Re: Probe Response packets sometimes delayed by 200ms
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
+References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
+Date: Fri, 3 Oct 2014 18:02:02 +0800
+Message-ID: <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
+Subject: Re: Dynamic channel Access
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Avery Pennarun <apenwarr@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kamran Nishat <kamran.nishat@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMyBPY3RvYmVyIDIwMTQgMDg6MzksIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5j
-b20+IHdyb3RlOgo+IE9uIEZyaSwgT2N0IDMsIDIwMTQgYXQgMjoxMCBBTSwgTWljaGFsIEthemlv
-ciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBPbiAzIE9jdG9iZXIgMjAxNCAw
-Nzo0OCwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBTdGVw
-czoKPj4+IC0gc3RhcnQgY2FwdHVyaW5nIHBhY2tldHMsIGVpdGhlciBvbiB0aGUgYXRoMTBrIEFQ
-IGl0c2VsZiBvciBhCj4+PiBzZWNvbmRhcnkgbW9uaXRvciBzeXN0ZW0KPj4+IC0gb24gdGhlIE1h
-Y2Jvb2sgQWlyICh3aGljaCBoYXMgam9pbmVkIHlvdXIgU1NJRCBhdCBsZWFzdCBvbmNlCj4+PiBi
-ZWZvcmUpLCBvcGVuIGFuZCBjbG9zZSB0aGUgd2lmaSBkcm9wZG93biBtZW51IGEgZmV3IHRpbWVz
-LiAgKE1heSBhbHNvCj4+PiBoYXBwZW4gd2l0aCBjbGllbnRzIG90aGVyIHRoYW4gTWFjYm9vayBB
-aXI7IG5vdCBoZWF2aWx5IHRlc3RlZC4pCj4+Cj4+IFdhcyB0aGUgTWFjYm9vayBBaXIgZGlzY29u
-bmVjdGVkIGNsZWFubHkgb24gdGhlIEFQPwo+Cj4gSW4gbXkgcGFydGljdWxhciB0ZXN0IGNhc2Us
-IEkgd2FzIGFjdHVhbGx5IGFscmVhZHkgYXNzb2NpYXRlZCB3aXRoIHRoZQo+IEFQIHdoaWxlIEkg
-d2FzIGRvaW5nIHRoZXNlIHN0ZXBzLiAgSSBkb24ndCB0aGluayB0aGF0IGFmZmVjdHMgdGhlCj4g
-cmVzdWx0cywgd2hpY2ggbWVhbnMgaW4gdGhpcyBjYXNlIHRoYXQgdGhlcmUgaXMgbm8gcXVlc3Rp
-b24gb2YgYmVpbmcKPiB1bmNsZWFubHkgZGlzY29ubmVjdGVkIHNpbmNlIEkgd2FzIG5vdCBkaXNj
-b25uZWN0ZWQgYXQgYWxsLgoKQnV0IHRoaXMga2luZCBvZiBjb25maXJtcyB0aGF0IGlmIHRoZXJl
-J3MgYSBwZWVyIGVudHJ5IHRoZW4gYXRoMTBrIEFQCndpbGwgdHJ5IHRvIGRvIHBvd2Vyc2F2ZSBn
-YW1lIHdpdGggcHJvYmUgcmVxIC8gcmVzcC4KCgo+PiBUaGVyZSdzIGEgdHggY3JlZGl0IHN0YXJ2
-YXRpb24gYnVnIHdoaWNoIGJsb2NrcyB3bWkgY29tbWFuZHMgYWZ0ZXIKPj4gZGlzYXNzb2MrZGVh
-dXRoIGZyYW1lcyBhcmUgcXVldWVkICh2aWEgd21pIGFzIHdlbGwpIGFuZCBhcmVuJ3QgYWNrZWQK
-Pj4gYnkgc3RhdGlvbiBpbiB3aGljaCBjYXNlIHdtaSBwZWVyIGRlbGV0ZSBjb21tYW5kIHRpbWVz
-IG91dCBhbmQKPj4gc3RhX3N0YXRlIHNwbGF0cyBhIGNhbGx0cmFjZSBpbiBrZXJuZWwgbG9ncy4g
-VGhpcyBlZmZlY3RpdmVseSBsZWF2ZXMKPj4gZmlybXdhcmUgdGhpbmtpbmcgdGhlIHBlZXIgaXMg
-c3RpbGwgY29ubmVjdGVkIGFuZCBpdCBpcyBuZXZlcgo+PiBkaXNjb25uZWN0ZWQgKHlvdSBjYW4g
-ZXhwZWN0IHNwdXJpb3VzIHN0YSBraWNrb3V0IGV2ZW50cyBhZnRlciBhbiBob3VyCj4+IG9uY2Ug
-dGhhdCBoYXBwZW5zKS4gVGhpcyBjb3VsZCBleHBsYWluIHdoeSBhdGgxMGsgQVAgdHJpZXMgdG8g
-cGxheQo+PiBwb3dlcnNhdmUgd2l0aCB0aGUgTWFjYm9vayBBaXIuCj4KPiBJIHRoaW5rIHdlIHBy
-ZXZpb3VzbHkgcmFuIGludG8gdGhlIHR4IGNyZWRpdCBzdGFydmF0aW9uIGJ1ZyBhbmQKPiBjaGVy
-cnktcGlja2VkIG9uZSBvZiB5b3VyIHBhdGNoZXMgdG8gZml4IGl0LiAgU28gSSBkb24ndCB0aGlu
-ayB0aGF0J3MKPiB0aGUgcHJvYmxlbSBoZXJlLgoKVHggc3RhcnZhdGlvbiBjcmVkaXQgYnVnIGNh
-bm5vdCBiZSBzaW1wbHkgZml4ZWQgaW4gaG9zdC4gSXQgbmVlZHMKZmlybXdhcmUgY2hhbmdlcyBh
-cyB3ZWxsIHdoaWNoIGFyZW4ndCB0aGVyZS4gUGVyaGFwcyB0aGlzIGlzIGFjdHVhbGx5CndoYXQg
-Y2F1c2VzIHRoZSBwcm9ibGVtPyBJIHJlY2FsbCBteSBwYXRjaGVzIGhhZCBhIHRpbWVvdXQgb24g
-d21pIG1nbXQKdHguIFdhc24ndCBpdCAyeCBiZWFjb24gaW50ZXJ2YWw/IFRoYXQncyB0aGUgMjAw
-bXMuIFBjYXAgc3VnZ2VzdHMgeW91cgpiZWFjb24gaW50ZXJ2YWwgaXMgMTAwbXMuCgpDYW4geW91
-IGxvb2sgYXQgYXRoMTBrIGxvZ3MgaWYgZWFjaCB3bWkgbWdtdCB0eCBpcyBzZW50IGltbWVkaWF0
-ZWx5CmFmdGVyIHdtaSBtZ210IHJ4PyBDYW4geW91IHNoYXJlIHRoZSBleGFjdCBwYXRjaCB5b3Ug
-Y2hlcnJ5LXBpY2tlZD8KCgo+PiBPciBwZXJoYXBzIHRoaXMgaXMgcmVsYXRlZCB0byB1QVBTRD8g
-RG8geW91IGhhdmUgaXQgZW5hYmxlZCBpbgo+PiBob3N0YXBkPyBJcyBNYWNib29rIEFpciBhc3Nv
-Y2lhdGluZyB3aXRoIHVBUFNEIGVuYWJsZWQ/Cj4KPiBXZSB0cmllZCBlbmFibGluZyB1QVBTRCBi
-dXQgaXQgY2F1c2VkIGxvdHMgb2YgcHJvYmxlbXMgc28gd2UgdHVybmVkIGl0Cj4gb2ZmIGFnYWlu
-LgoKSSdtIGFza2luZyBzaW5jZSBpdCBjYWxscyBwZXItcGVlciBwb3dlcnNhdmUgd21pIGNvbW1h
-bmQgYSBmZXcgdGltZXMKKHdtaV9hcF9wc19wZWVyX2NtZCkuCgoKTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+As far as I know, dynamic bandwidth operation is based on RTS/CTS
+exchange on each 20MHz channel before deciding whether to use 20MHz,
+40MHz or 80MHz channel access.
+
+Did you able to capture the RTS or CTS when testing with ath10k?
+
+-----
+Chun-Yeow
+
+On Fri, Oct 3, 2014 at 3:58 AM, Kamran Nishat <kamran.nishat@gmail.com> wrote:
+> Hi,
+> To deal with co-channel interference 802.11ac standard propose Dynamic
+> channel access. It means if my AP is configured on 40MHz, but it sense
+> only its primary 20Mhz channel is free then it will dynamically
+> changes its channel width to 20MHz and starts sending.
+>
+> Is dynamic channel access implemented in Atheros based 802.11ac chips?
+>
+>
+> Regards
+> Kamran
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
