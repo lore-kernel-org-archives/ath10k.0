@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x230.google.com ([2607:f8b0:400c:c03::230])
+Received: from mail-pa0-f42.google.com ([209.85.220.42])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZzgv-000141-S7
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 10:02:26 +0000
-Received: by mail-vc0-f176.google.com with SMTP id hq11so434421vcb.7
- for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 03:02:03 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
+ id 1Xa1Pj-00062M-8u
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 11:52:47 +0000
+Received: by mail-pa0-f42.google.com with SMTP id bj1so1433718pad.1
+ for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 04:52:26 -0700 (PDT)
+Date: Fri, 3 Oct 2014 20:52:21 +0900
+From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
+Message-ID: <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
+In-Reply-To: <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
 References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
-Date: Fri, 3 Oct 2014 18:02:02 +0800
-Message-ID: <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
+ <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
 Subject: Re: Dynamic channel Access
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +22,20 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kamran Nishat <kamran.nishat@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kamran Nishat <kamran.nishat@gmail.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "=?utf-8?Q?ath10k=40lists.infradead.org?=" <ath10k@lists.infradead.org>
 
-As far as I know, dynamic bandwidth operation is based on RTS/CTS
-exchange on each 20MHz channel before deciding whether to use 20MHz,
-40MHz or 80MHz channel access.
-
-Did you able to capture the RTS or CTS when testing with ath10k?
-
------
-Chun-Yeow
-
-On Fri, Oct 3, 2014 at 3:58 AM, Kamran Nishat <kamran.nishat@gmail.com> wrote:
-> Hi,
-> To deal with co-channel interference 802.11ac standard propose Dynamic
-> channel access. It means if my AP is configured on 40MHz, but it sense
-> only its primary 20Mhz channel is free then it will dynamically
-> changes its channel width to 20MHz and starts sending.
->
-> Is dynamic channel access implemented in Atheros based 802.11ac chips?
->
->
-> Regards
-> Kamran
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+wqBJZiBJ4oCZbSBub3Qgd3JvbmcsIGFkYXB0aXZlIGJhbmR3aWR0aCBzZWxlY3Rpb24gYXQgdGhl
+IHJlY2VpdmVyIHNpZGUgYnkgdXNpbmcgUlRTL0NUUyBleGNoYW5nZSBpcyBkeW5hbWljIGJhbmR3
+aWR0aCBvcGVyYXRpb24uwqAKQW5kIHRoZSBiYW5kd2lkdGggc2VsZWN0aW9uIGF0IHRyYW5zbWl0
+IHNpZGUgYnkgdXNpbmcgQ0NBIGlzIGR5bmFtaWMgYWNjZXNzLsKgCgpCYXNlZCBvbiBteSBtZWFz
+dXJlbWVudCwgYm90aCBhbGdvcml0aG1zIGFyZSBub3Qgc3VwcG9ydGVkIGluIGN1cnJlbnQgYXRo
+MTBrLgrCoAoK4oCUCk9raHdhbiBMZWUsCgoKPiBPbiBGcmksIE9jdCAzLCAyMDE0IGF0IDM6NTgg
+QU0sIEthbXJhbiBOaXNoYXQgd3JvdGU6ICAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
