@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZwXG-0005sH-Gw
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 06:40:15 +0000
-Received: by mail-wg0-f50.google.com with SMTP id a1so682343wgh.9
- for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 23:39:52 -0700 (PDT)
+ id 1XZxRB-0004GL-Sj
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 07:38:02 +0000
+Received: by mail-wg0-f45.google.com with SMTP id m15so776169wgh.16
+ for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 00:37:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmeMNz2PvT9Si_smYqL24OBA+JX8fJORnp5hck0x7eP2g@mail.gmail.com>
+In-Reply-To: <CAHqTa-33hHnsQHw8HzW+OGXi33zVBphofKyynWv38f3f3tTQgQ@mail.gmail.com>
 References: <CAHqTa-2yz13WAgvXxJVYMXQ7fVqRtuQ8ABAC6vKv07=fne_YGw@mail.gmail.com>
  <CA+BoTQmeMNz2PvT9Si_smYqL24OBA+JX8fJORnp5hck0x7eP2g@mail.gmail.com>
-From: Avery Pennarun <apenwarr@gmail.com>
-Date: Fri, 3 Oct 2014 02:39:32 -0400
-Message-ID: <CAHqTa-33hHnsQHw8HzW+OGXi33zVBphofKyynWv38f3f3tTQgQ@mail.gmail.com>
+ <CAHqTa-33hHnsQHw8HzW+OGXi33zVBphofKyynWv38f3f3tTQgQ@mail.gmail.com>
+Date: Fri, 3 Oct 2014 09:37:39 +0200
+Message-ID: <CA+BoTQkOJP64UBVW9XSs+b+k8yxa4PbDMnKceUtNZAg21VSbHw@mail.gmail.com>
 Subject: Re: Probe Response packets sometimes delayed by 200ms
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +22,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Avery Pennarun <apenwarr@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Fri, Oct 3, 2014 at 2:10 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> On 3 October 2014 07:48, Avery Pennarun <apenwarr@gmail.com> wrote:
->> Steps:
->> - start capturing packets, either on the ath10k AP itself or a
->> secondary monitor system
->> - on the Macbook Air (which has joined your SSID at least once
->> before), open and close the wifi dropdown menu a few times.  (May also
->> happen with clients other than Macbook Air; not heavily tested.)
->
-> Was the Macbook Air disconnected cleanly on the AP?
-
-In my particular test case, I was actually already associated with the
-AP while I was doing these steps.  I don't think that affects the
-results, which means in this case that there is no question of being
-uncleanly disconnected since I was not disconnected at all.
-
-> There's a tx credit starvation bug which blocks wmi commands after
-> disassoc+deauth frames are queued (via wmi as well) and aren't acked
-> by station in which case wmi peer delete command times out and
-> sta_state splats a calltrace in kernel logs. This effectively leaves
-> firmware thinking the peer is still connected and it is never
-> disconnected (you can expect spurious sta kickout events after an hour
-> once that happens). This could explain why ath10k AP tries to play
-> powersave with the Macbook Air.
-
-I think we previously ran into the tx credit starvation bug and
-cherry-picked one of your patches to fix it.  So I don't think that's
-the problem here.
-
-> Or perhaps this is related to uAPSD? Do you have it enabled in
-> hostapd? Is Macbook Air associating with uAPSD enabled?
-
-We tried enabling uAPSD but it caused lots of problems so we turned it
-off again.
-
-> Or maybe firmware expects host driver should reset some ap-sta
-> powersave related settings before deleting peer entries.
-
-I'm not sure it's deleting peer entries, but my guess is that the host
-driver needs to reset some power save related setting, yeah.  I looked
-through the ath10k driver and wasn't really sure where to look
-however.  I found some global per-vdev power save mode settings, but
-not any per-STA ones.
-
-Thanks!
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBPY3RvYmVyIDIwMTQgMDg6MzksIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5j
+b20+IHdyb3RlOgo+IE9uIEZyaSwgT2N0IDMsIDIwMTQgYXQgMjoxMCBBTSwgTWljaGFsIEthemlv
+ciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBPbiAzIE9jdG9iZXIgMjAxNCAw
+Nzo0OCwgQXZlcnkgUGVubmFydW4gPGFwZW53YXJyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBTdGVw
+czoKPj4+IC0gc3RhcnQgY2FwdHVyaW5nIHBhY2tldHMsIGVpdGhlciBvbiB0aGUgYXRoMTBrIEFQ
+IGl0c2VsZiBvciBhCj4+PiBzZWNvbmRhcnkgbW9uaXRvciBzeXN0ZW0KPj4+IC0gb24gdGhlIE1h
+Y2Jvb2sgQWlyICh3aGljaCBoYXMgam9pbmVkIHlvdXIgU1NJRCBhdCBsZWFzdCBvbmNlCj4+PiBi
+ZWZvcmUpLCBvcGVuIGFuZCBjbG9zZSB0aGUgd2lmaSBkcm9wZG93biBtZW51IGEgZmV3IHRpbWVz
+LiAgKE1heSBhbHNvCj4+PiBoYXBwZW4gd2l0aCBjbGllbnRzIG90aGVyIHRoYW4gTWFjYm9vayBB
+aXI7IG5vdCBoZWF2aWx5IHRlc3RlZC4pCj4+Cj4+IFdhcyB0aGUgTWFjYm9vayBBaXIgZGlzY29u
+bmVjdGVkIGNsZWFubHkgb24gdGhlIEFQPwo+Cj4gSW4gbXkgcGFydGljdWxhciB0ZXN0IGNhc2Us
+IEkgd2FzIGFjdHVhbGx5IGFscmVhZHkgYXNzb2NpYXRlZCB3aXRoIHRoZQo+IEFQIHdoaWxlIEkg
+d2FzIGRvaW5nIHRoZXNlIHN0ZXBzLiAgSSBkb24ndCB0aGluayB0aGF0IGFmZmVjdHMgdGhlCj4g
+cmVzdWx0cywgd2hpY2ggbWVhbnMgaW4gdGhpcyBjYXNlIHRoYXQgdGhlcmUgaXMgbm8gcXVlc3Rp
+b24gb2YgYmVpbmcKPiB1bmNsZWFubHkgZGlzY29ubmVjdGVkIHNpbmNlIEkgd2FzIG5vdCBkaXNj
+b25uZWN0ZWQgYXQgYWxsLgoKQnV0IHRoaXMga2luZCBvZiBjb25maXJtcyB0aGF0IGlmIHRoZXJl
+J3MgYSBwZWVyIGVudHJ5IHRoZW4gYXRoMTBrIEFQCndpbGwgdHJ5IHRvIGRvIHBvd2Vyc2F2ZSBn
+YW1lIHdpdGggcHJvYmUgcmVxIC8gcmVzcC4KCgo+PiBUaGVyZSdzIGEgdHggY3JlZGl0IHN0YXJ2
+YXRpb24gYnVnIHdoaWNoIGJsb2NrcyB3bWkgY29tbWFuZHMgYWZ0ZXIKPj4gZGlzYXNzb2MrZGVh
+dXRoIGZyYW1lcyBhcmUgcXVldWVkICh2aWEgd21pIGFzIHdlbGwpIGFuZCBhcmVuJ3QgYWNrZWQK
+Pj4gYnkgc3RhdGlvbiBpbiB3aGljaCBjYXNlIHdtaSBwZWVyIGRlbGV0ZSBjb21tYW5kIHRpbWVz
+IG91dCBhbmQKPj4gc3RhX3N0YXRlIHNwbGF0cyBhIGNhbGx0cmFjZSBpbiBrZXJuZWwgbG9ncy4g
+VGhpcyBlZmZlY3RpdmVseSBsZWF2ZXMKPj4gZmlybXdhcmUgdGhpbmtpbmcgdGhlIHBlZXIgaXMg
+c3RpbGwgY29ubmVjdGVkIGFuZCBpdCBpcyBuZXZlcgo+PiBkaXNjb25uZWN0ZWQgKHlvdSBjYW4g
+ZXhwZWN0IHNwdXJpb3VzIHN0YSBraWNrb3V0IGV2ZW50cyBhZnRlciBhbiBob3VyCj4+IG9uY2Ug
+dGhhdCBoYXBwZW5zKS4gVGhpcyBjb3VsZCBleHBsYWluIHdoeSBhdGgxMGsgQVAgdHJpZXMgdG8g
+cGxheQo+PiBwb3dlcnNhdmUgd2l0aCB0aGUgTWFjYm9vayBBaXIuCj4KPiBJIHRoaW5rIHdlIHBy
+ZXZpb3VzbHkgcmFuIGludG8gdGhlIHR4IGNyZWRpdCBzdGFydmF0aW9uIGJ1ZyBhbmQKPiBjaGVy
+cnktcGlja2VkIG9uZSBvZiB5b3VyIHBhdGNoZXMgdG8gZml4IGl0LiAgU28gSSBkb24ndCB0aGlu
+ayB0aGF0J3MKPiB0aGUgcHJvYmxlbSBoZXJlLgoKVHggc3RhcnZhdGlvbiBjcmVkaXQgYnVnIGNh
+bm5vdCBiZSBzaW1wbHkgZml4ZWQgaW4gaG9zdC4gSXQgbmVlZHMKZmlybXdhcmUgY2hhbmdlcyBh
+cyB3ZWxsIHdoaWNoIGFyZW4ndCB0aGVyZS4gUGVyaGFwcyB0aGlzIGlzIGFjdHVhbGx5CndoYXQg
+Y2F1c2VzIHRoZSBwcm9ibGVtPyBJIHJlY2FsbCBteSBwYXRjaGVzIGhhZCBhIHRpbWVvdXQgb24g
+d21pIG1nbXQKdHguIFdhc24ndCBpdCAyeCBiZWFjb24gaW50ZXJ2YWw/IFRoYXQncyB0aGUgMjAw
+bXMuIFBjYXAgc3VnZ2VzdHMgeW91cgpiZWFjb24gaW50ZXJ2YWwgaXMgMTAwbXMuCgpDYW4geW91
+IGxvb2sgYXQgYXRoMTBrIGxvZ3MgaWYgZWFjaCB3bWkgbWdtdCB0eCBpcyBzZW50IGltbWVkaWF0
+ZWx5CmFmdGVyIHdtaSBtZ210IHJ4PyBDYW4geW91IHNoYXJlIHRoZSBleGFjdCBwYXRjaCB5b3Ug
+Y2hlcnJ5LXBpY2tlZD8KCgo+PiBPciBwZXJoYXBzIHRoaXMgaXMgcmVsYXRlZCB0byB1QVBTRD8g
+RG8geW91IGhhdmUgaXQgZW5hYmxlZCBpbgo+PiBob3N0YXBkPyBJcyBNYWNib29rIEFpciBhc3Nv
+Y2lhdGluZyB3aXRoIHVBUFNEIGVuYWJsZWQ/Cj4KPiBXZSB0cmllZCBlbmFibGluZyB1QVBTRCBi
+dXQgaXQgY2F1c2VkIGxvdHMgb2YgcHJvYmxlbXMgc28gd2UgdHVybmVkIGl0Cj4gb2ZmIGFnYWlu
+LgoKSSdtIGFza2luZyBzaW5jZSBpdCBjYWxscyBwZXItcGVlciBwb3dlcnNhdmUgd21pIGNvbW1h
+bmQgYSBmZXcgdGltZXMKKHdtaV9hcF9wc19wZWVyX2NtZCkuCgoKTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
