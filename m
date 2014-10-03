@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-f42.google.com ([209.85.220.42])
+Received: from mout.kundenserver.de ([212.227.17.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xa1Pj-00062M-8u
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 11:52:47 +0000
-Received: by mail-pa0-f42.google.com with SMTP id bj1so1433718pad.1
- for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 04:52:26 -0700 (PDT)
-Date: Fri, 3 Oct 2014 20:52:21 +0900
-From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Message-ID: <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
-In-Reply-To: <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
-References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
- <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
-Subject: Re: Dynamic channel Access
+ id 1Xa4oO-00017b-Ck
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 15:30:29 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: ath10k: calibration data through Device Tree?
+Date: Fri, 03 Oct 2014 17:29:54 +0200
+Message-ID: <2386503.dNPayhXJTQ@wuerfel>
+In-Reply-To: <542DA1F7.9090904@amacapital.net>
+References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
+ <87ppeamvr9.fsf@kamboji.qca.qualcomm.com> <542DA1F7.9090904@amacapital.net>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +19,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kamran Nishat <kamran.nishat@gmail.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "=?utf-8?Q?ath10k=40lists.infradead.org?=" <ath10k@lists.infradead.org>
+To: Andy Lutomirski <luto@amacapital.net>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
 
-wqBJZiBJ4oCZbSBub3Qgd3JvbmcsIGFkYXB0aXZlIGJhbmR3aWR0aCBzZWxlY3Rpb24gYXQgdGhl
-IHJlY2VpdmVyIHNpZGUgYnkgdXNpbmcgUlRTL0NUUyBleGNoYW5nZSBpcyBkeW5hbWljIGJhbmR3
-aWR0aCBvcGVyYXRpb24uwqAKQW5kIHRoZSBiYW5kd2lkdGggc2VsZWN0aW9uIGF0IHRyYW5zbWl0
-IHNpZGUgYnkgdXNpbmcgQ0NBIGlzIGR5bmFtaWMgYWNjZXNzLsKgCgpCYXNlZCBvbiBteSBtZWFz
-dXJlbWVudCwgYm90aCBhbGdvcml0aG1zIGFyZSBub3Qgc3VwcG9ydGVkIGluIGN1cnJlbnQgYXRo
-MTBrLgrCoAoK4oCUCk9raHdhbiBMZWUsCgoKPiBPbiBGcmksIE9jdCAzLCAyMDE0IGF0IDM6NTgg
-QU0sIEthbXJhbiBOaXNoYXQgd3JvdGU6ICAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+On Thursday 02 October 2014 12:05:27 Andy Lutomirski wrote:
+> On 10/02/2014 06:44 AM, Kalle Valo wrote:
+> > Hi Mark,
+> > 
+> > Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org> writes:
+> > 
+> >>> ath10k is a wireless driver for Qualcomm Atheros 802.11ac hardware and
+> >>> located in drivers/net/wireless/ath/ath10k/. Currently it only supports
+> >>> PCI devices.
+> >>>
+> >>> Some of the devices store the calibration data to the host flash and the
+> >>> bootloader reads the data from the flash. And now we need a method to
+> >>> deliver the calibration data from bootloader to ath10k. 
+> >>
+> >> What does this calibration data consist of?
+> > 
+> > From ath10k point of view it's just a binary blob which we push to the
+> > firmware before we start it. ath10k does not parse it in any way.
+> > 
+> >> What happens if you don't have the calibration data? Is it a critical
+> >> requirement for the use of the device, or does its absence simply result
+> >> in degraded performance?
+> > 
+> > From my point of view the device should not be used if it doesn't
+> > contain the correct calibration data. I guess it could work somehow but
+> > there's no guarantee about the perfomance.
+> > 
+> >> What do you do on non-DT systems? Where does the information come from
+> >> in that case?
+> > 
+> > Currently ath10k only supports having the calibration data in the OTP
+> > area inside the QCA98XX chip. But some manufacturers want to store it on
+> > the host file, I assume because of the flexibility it provides. And
+> > that's why we have the need for Device Tree support.
+> 
+> To give an actual concrete example that might be what Kalle is talking
+> about:
+> 
+> I have a TP-Link Archer C7, which has a mips cpu and an ath10k minipcie
+> device.  For whatever reason (I honestly have no clue whatsoever why the
+> hardware works this way), the calibration data is on a host flash
+> partition, not on the minipcie device's ROM or flash or whatever it is.
+
+Just to clarify: is this data specific to the design of the device and
+identical for all parts in a manufacture run, or does each individual
+board have to be calibrated separately?
+
+> Needless to say, the mainline ath10k driver won't load on it.  (An old
+> version used to load without calibration data.  It didn't work very well.)
+> 
+> Presuambly the idea is that, if things like this used DT (which mine
+> doesn't, I presume), then ath10k could get the calibration data via DT.
+>  And maybe some vendors of ARM-based wifi devices are planning on
+> playing similar games, and they do use DT.
+
+Yes, this makes sense. I would also very much love to see DT support for
+arch/mips/ath79 in general, it seems like a nice platform that is used
+in a lot of devices with good openwrt support, and using DT would make
+it easier to support additional devices.
+
+From a system design point, it's still horrible that you have to use
+DT for a device that is on a discoverable bus like PCI, but as you describe,
+the reality is that products are shipping that use ath10k PCI devices
+without this data in them.
+
+	Arnd
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
