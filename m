@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-f49.google.com ([209.85.220.49])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XZw2l-0004aj-3a
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 06:08:43 +0000
-Received: by mail-pa0-f49.google.com with SMTP id hz1so993370pad.36
- for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 23:08:21 -0700 (PDT)
-Received: from Okhwanui-Mac-mini.local ([183.99.51.51])
- by mx.google.com with ESMTPSA id qc3sm5672702pab.48.2014.10.02.23.08.18
- for <ath10k@lists.infradead.org>
- (version=SSLv3 cipher=RC4-SHA bits=128/128);
- Thu, 02 Oct 2014 23:08:19 -0700 (PDT)
-Date: Fri, 3 Oct 2014 15:08:15 +0900
-From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Message-ID: <etPan.542e3d50.19495cff.5e9@Okhwanui-Mac-mini.local>
-Subject: RTS/CTS exchanges do not follow the RTS threshold
+ id 1XZw5H-0006C4-6P
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 06:11:19 +0000
+Received: by mail-wg0-f41.google.com with SMTP id b13so631304wgh.24
+ for <ath10k@lists.infradead.org>; Thu, 02 Oct 2014 23:10:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
+In-Reply-To: <CAHqTa-2yz13WAgvXxJVYMXQ7fVqRtuQ8ABAC6vKv07=fne_YGw@mail.gmail.com>
+References: <CAHqTa-2yz13WAgvXxJVYMXQ7fVqRtuQ8ABAC6vKv07=fne_YGw@mail.gmail.com>
+Date: Fri, 3 Oct 2014 08:10:46 +0200
+Message-ID: <CA+BoTQmeMNz2PvT9Si_smYqL24OBA+JX8fJORnp5hck0x7eP2g@mail.gmail.com>
+Subject: Re: Probe Response packets sometimes delayed by 200ms
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +24,38 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Avery Pennarun <apenwarr@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-wqBIaSBhbGwswqAKCgpBcyBzdGF0ZWQgaW4gdGhlIHN0YW5kYXJkLCBpZiBQU0RVIHNpemUgaXMg
-bGFyZ2VyIHRoZW4gdGhlIFJUUyB0aHJlc2hvbGQswqAKdGhlIFBTRFUgZm9sbG93cyBSVFMvQ1RT
-IGV4Y2hhbmdlLsKgCkhvd2V2ZXIsIGJhc2VkIG9uIG91ciBtZWFzdXJlbWVudCwgdGhlIFJUUy9D
-VFMgZXhjaGFuZ2VzIGlzIGRlY2lkZWQgYmFzZWQgb24gdGhlIE1TRFUgc2l6ZS7CoApJZiBBLU1Q
-RFUgaXMgYWdncmVnYXRlZCB3aXRoIG11bHRpcGxlIDEwMDAgYnl0ZSBNUERVcywgdGhlIEEtTVBE
-VSBpcyB0cmFuc21pdHRlZCB3aXRob3V0IFJUUy9DVFMgZXZlbiBpZiBSVFMgdGhyZXNob2xkIGlz
-IHNldCB0byAyMzQ3LgoKCkFkZGl0aW9uYWx5LCBpcyB0aGVyZSBhbnkgZnVuY3Rpb24gY2FsbGVk
-IHdoZW4gUlRTIG9yIENUUyByZWNlaXZlZCBpbiBhdGgxMGsgb3IgYXRoPyBPciBSVFMvQ1RTIGV4
-Y2hhbmdlIGlzIGRvbmUgYnkgdGhlIGZpcm13YXJlPwoKCmJhY2twb3J0IHZlcnNpb246IDMuMTYu
-MQpmaXJtd2FyZSB2ZXJzaW9uOiBmaXJtd2FyZS0yLmJpbl8xMC4xLjQ2Ny4yLTEKCgrigJQKT2to
-d2FuIExlZSwKTXVsdGltZWRpYSAmIFdpcmVsZXNzIE5ldHdvcmtpbmcgTGFiLiAoTVdOTCksClNl
-b3VsIE5hdGlvbmFsIFVuaXZlcnNpdHkgKFNOVSkuCgpUZWw6ICs4Mi0yLTg4MC0xNzU1CkNlbGw6
-ICs4Mi0xMC00NjMyLTE5ODAKVVJMOiBodHRwOi8vbXdubC5zbnUuYWMua3Ivfm9obGVlCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gMyBPY3RvYmVyIDIwMTQgMDc6NDgsIEF2ZXJ5IFBlbm5hcnVuIDxhcGVud2FyckBnbWFpbC5j
+b20+IHdyb3RlOgo+IEhpIGFsbCwKPgo+IFdlJ3JlIGNoYXNpbmcgYSBwcm9ibGVtIHdoZXJlLCB3
+aXRoIGFuIGF0aDEwayBkZXZpY2UgcnVubmluZyBhcyBhY2Nlc3MKPiBwb2ludCBhbmQgYSBNYWNi
+b29rIEFpciBhcyBhIGNsaWVudCwgcmVzcG9uc2VzIHRvIHByb2JlIHJlcXVlc3RzIGFyZQo+IHNv
+bWV0aW1lcyBtaXNzZWQgYnkgdGhlIE1hY2Jvb2sgQWlyIGJlY2F1c2UgdGhleSBhcmUgZGVsYXll
+ZCBmb3IgYQo+IGxvbmcgdGltZSwgYW5kIHRoZSBNYWNib29rIGhhcyBjaGFuZ2VkIGNoYW5uZWxz
+IGJ5IHRoZSB0aW1lIHRoZXkgY29tZQo+IHRocm91Z2guCj4KPiBhdGgxMGsgZHJpdmVyIHZlcnNp
+b246IGZyb20gYmFja3BvcnRzIGFzIG9mIGt2YWxvL2F0aC1uZXh0IG9uCj4gMjAxNC0wMy0wOCAo
+djMuMTUtcmMxLTIzNy1nZDliYzRiOSkKPgo+IEZpcm13YXJlIHZlcnNpb246IDEwLjEuNDY3LjMK
+Pgo+IFN0ZXBzOgo+IC0gc3RhcnQgY2FwdHVyaW5nIHBhY2tldHMsIGVpdGhlciBvbiB0aGUgYXRo
+MTBrIEFQIGl0c2VsZiBvciBhCj4gc2Vjb25kYXJ5IG1vbml0b3Igc3lzdGVtCj4gLSBvbiB0aGUg
+TWFjYm9vayBBaXIgKHdoaWNoIGhhcyBqb2luZWQgeW91ciBTU0lEIGF0IGxlYXN0IG9uY2UKPiBi
+ZWZvcmUpLCBvcGVuIGFuZCBjbG9zZSB0aGUgd2lmaSBkcm9wZG93biBtZW51IGEgZmV3IHRpbWVz
+LiAgKE1heSBhbHNvCj4gaGFwcGVuIHdpdGggY2xpZW50cyBvdGhlciB0aGFuIE1hY2Jvb2sgQWly
+OyBub3QgaGVhdmlseSB0ZXN0ZWQuKQoKV2FzIHRoZSBNYWNib29rIEFpciBkaXNjb25uZWN0ZWQg
+Y2xlYW5seSBvbiB0aGUgQVA/CgpUaGVyZSdzIGEgdHggY3JlZGl0IHN0YXJ2YXRpb24gYnVnIHdo
+aWNoIGJsb2NrcyB3bWkgY29tbWFuZHMgYWZ0ZXIKZGlzYXNzb2MrZGVhdXRoIGZyYW1lcyBhcmUg
+cXVldWVkICh2aWEgd21pIGFzIHdlbGwpIGFuZCBhcmVuJ3QgYWNrZWQKYnkgc3RhdGlvbiBpbiB3
+aGljaCBjYXNlIHdtaSBwZWVyIGRlbGV0ZSBjb21tYW5kIHRpbWVzIG91dCBhbmQKc3RhX3N0YXRl
+IHNwbGF0cyBhIGNhbGx0cmFjZSBpbiBrZXJuZWwgbG9ncy4gVGhpcyBlZmZlY3RpdmVseSBsZWF2
+ZXMKZmlybXdhcmUgdGhpbmtpbmcgdGhlIHBlZXIgaXMgc3RpbGwgY29ubmVjdGVkIGFuZCBpdCBp
+cyBuZXZlcgpkaXNjb25uZWN0ZWQgKHlvdSBjYW4gZXhwZWN0IHNwdXJpb3VzIHN0YSBraWNrb3V0
+IGV2ZW50cyBhZnRlciBhbiBob3VyCm9uY2UgdGhhdCBoYXBwZW5zKS4gVGhpcyBjb3VsZCBleHBs
+YWluIHdoeSBhdGgxMGsgQVAgdHJpZXMgdG8gcGxheQpwb3dlcnNhdmUgd2l0aCB0aGUgTWFjYm9v
+ayBBaXIuCgpPciBwZXJoYXBzIHRoaXMgaXMgcmVsYXRlZCB0byB1QVBTRD8gRG8geW91IGhhdmUg
+aXQgZW5hYmxlZCBpbgpob3N0YXBkPyBJcyBNYWNib29rIEFpciBhc3NvY2lhdGluZyB3aXRoIHVB
+UFNEIGVuYWJsZWQ/CgpPciBtYXliZSBmaXJtd2FyIGV4cGVjdHMgaG9zdCBkcml2ZXIgc2hvdWxk
+IHJlc2V0IHNvbWUgYXAtc3RhCnBvd2Vyc2F2ZSByZWxhdGVkIHNldHRpbmdzIGJlZm9yZSBkZWxl
+dGluZyBwZWVyIGVudHJpZXMuCgpJIGRvbid0IGhhdmUgYW55IG90aGVyIGlkZWFzIG5vdy4KCgpN
+aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
