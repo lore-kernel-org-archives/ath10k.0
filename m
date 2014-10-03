@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-f178.google.com ([209.85.217.178])
+Received: from mout.kundenserver.de ([212.227.17.13])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xa5ld-0006A8-8y
- for ath10k@lists.infradead.org; Fri, 03 Oct 2014 16:31:42 +0000
-Received: by mail-lb0-f178.google.com with SMTP id w7so1333735lbi.9
- for <ath10k@lists.infradead.org>; Fri, 03 Oct 2014 09:31:18 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <2386503.dNPayhXJTQ@wuerfel>
-References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
- <87ppeamvr9.fsf@kamboji.qca.qualcomm.com>
- <542DA1F7.9090904@amacapital.net> <2386503.dNPayhXJTQ@wuerfel>
-From: Andy Lutomirski <luto@amacapital.net>
-Date: Fri, 3 Oct 2014 09:24:08 -0700
-Message-ID: <CALCETrVMrRA8AQ_nVui-MMy9R9FkRjz7tNYKp14OpPK-CQarHQ@mail.gmail.com>
+ id 1Xa5wV-0002wX-DH
+ for ath10k@lists.infradead.org; Fri, 03 Oct 2014 16:42:56 +0000
+From: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: ath10k: calibration data through Device Tree?
+Date: Fri, 03 Oct 2014 18:42:24 +0200
+Message-ID: <2162399.E7Ru1MI0QH@wuerfel>
+In-Reply-To: <20141003162513.GW26643@leverpostej>
+References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
+ <2386503.dNPayhXJTQ@wuerfel> <20141003162513.GW26643@leverpostej>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +23,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Andy Lutomirski <luto@amacapital.net>
 
-On Fri, Oct 3, 2014 at 8:29 AM, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thursday 02 October 2014 12:05:27 Andy Lutomirski wrote:
->> On 10/02/2014 06:44 AM, Kalle Valo wrote:
->> > Hi Mark,
->> >
->> > Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org> writes:
->> >
->> >>> ath10k is a wireless driver for Qualcomm Atheros 802.11ac hardware and
->> >>> located in drivers/net/wireless/ath/ath10k/. Currently it only supports
->> >>> PCI devices.
->> >>>
->> >>> Some of the devices store the calibration data to the host flash and the
->> >>> bootloader reads the data from the flash. And now we need a method to
->> >>> deliver the calibration data from bootloader to ath10k.
->> >>
->> >> What does this calibration data consist of?
->> >
->> > From ath10k point of view it's just a binary blob which we push to the
->> > firmware before we start it. ath10k does not parse it in any way.
->> >
->> >> What happens if you don't have the calibration data? Is it a critical
->> >> requirement for the use of the device, or does its absence simply result
->> >> in degraded performance?
->> >
->> > From my point of view the device should not be used if it doesn't
->> > contain the correct calibration data. I guess it could work somehow but
->> > there's no guarantee about the perfomance.
->> >
->> >> What do you do on non-DT systems? Where does the information come from
->> >> in that case?
->> >
->> > Currently ath10k only supports having the calibration data in the OTP
->> > area inside the QCA98XX chip. But some manufacturers want to store it on
->> > the host file, I assume because of the flexibility it provides. And
->> > that's why we have the need for Device Tree support.
->>
->> To give an actual concrete example that might be what Kalle is talking
->> about:
->>
->> I have a TP-Link Archer C7, which has a mips cpu and an ath10k minipcie
->> device.  For whatever reason (I honestly have no clue whatsoever why the
->> hardware works this way), the calibration data is on a host flash
->> partition, not on the minipcie device's ROM or flash or whatever it is.
->
-> Just to clarify: is this data specific to the design of the device and
-> identical for all parts in a manufacture run, or does each individual
-> board have to be calibrated separately?
+On Friday 03 October 2014 17:25:13 Mark Rutland wrote:
+> > From a system design point, it's still horrible that you have to use
+> > DT for a device that is on a discoverable bus like PCI, but as you describe,
+> > the reality is that products are shipping that use ath10k PCI devices
+> > without this data in them.
+> 
+> I'd see any DT property for this as a workaround, the use of which
+> should be discouraged.
 
-Each board has separate data.  (Even the MAC address is in this blob
-on my device.)
+By extension though, any use of DT is really a workaround for the fact
+that embedded systems and SoCs don't use discoverable buses, and it should
+be discouraged. x86 SoCs actually get this right to a large degree by
+making on-chip devices appear as PCI devices that can be used standalone,
+although Intel's latest generation SoCs are regressing in this regard
+and you still need DT (or something like it) to describe off-chip devices
+there.
 
---Andy
+> A fun question that springs to mind is can the ath10k chip be removed,
+> and if so am I able to place it into a non-DT system (whereupon I have
+> no calibration data, so it won't work)?
+
+Some can be removed, others cannot. If the chip is on a removable pcie
+mini card and doesn't have that data on the card itself, it's already
+impossible to put it into another system. I don't think we need to solve
+that case.
+
+We have similar issues with removable but nondiscoverable USB and SDIO
+devices, e.g. when they are lacking the PROM for the mac address.
+
+	Arnd
 
 _______________________________________________
 ath10k mailing list
