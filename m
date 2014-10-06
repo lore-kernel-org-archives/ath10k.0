@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb8JE-0002Px-It
- for ath10k@lists.infradead.org; Mon, 06 Oct 2014 13:26:40 +0000
+ id 1Xb8JA-0002OV-Ic
+ for ath10k@lists.infradead.org; Mon, 06 Oct 2014 13:26:36 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 3/4] ath10k: add htt rx tracepoints
-Date: Mon, 6 Oct 2014 18:57:03 +0530
-Message-ID: <1412602024-31706-4-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/4] ath10k: add tracepoint for wmi bcn tx
+Date: Mon, 6 Oct 2014 18:57:02 +0530
+Message-ID: <1412602024-31706-3-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1412602024-31706-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1412602024-31706-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -27,40 +27,24 @@ Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
 From: Michal Kazior <michal.kazior@tieto.com>
 
-Although frame contents were printed via dbg_dump
-already it was not possible to easily filter them
-out for processing.
+Allows an easier beacon inspection/debugging.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |  3 +++
- drivers/net/wireless/ath/ath10k/trace.h  | 27 +++++++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ drivers/net/wireless/ath/ath10k/trace.h | 27 +++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c   |  1 +
+ 2 files changed, 28 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 7add88e..4dbb2dd 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -291,6 +291,9 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
- 	htt->rx_ring.fill_cnt--;
- 
-+	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
-+				     skb_tailroom(msdu));
-+
- 	return msdu;
- }
- 
 diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index c074de0..6d39055 100644
+index 04236d6..c074de0 100644
 --- a/drivers/net/wireless/ath/ath10k/trace.h
 +++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -424,6 +424,33 @@ TRACE_EVENT(ath10k_wmi_bcn_tx,
+@@ -397,6 +397,33 @@ TRACE_EVENT(ath10k_wmi_mgmt_tx,
  		__entry->len
  	)
  );
 +
-+TRACE_EVENT(ath10k_htt_rx_pop_msdu,
++TRACE_EVENT(ath10k_wmi_bcn_tx,
 +	    TP_PROTO(struct ath10k *ar, void *data, size_t len),
 +
 +	TP_ARGS(ar, data, len),
@@ -89,6 +73,18 @@ index c074de0..6d39055 100644
  #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
  
  /* we don't want to use include/trace/events */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6cf4bfc..54042bf 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1893,6 +1893,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ 		arvif->beacon = bcn;
+ 		arvif->beacon_sent = false;
+ 
++		trace_ath10k_wmi_bcn_tx(ar, bcn->data, bcn->len);
+ 		ath10k_wmi_tx_beacon_nowait(arvif);
+ skip:
+ 		spin_unlock_bh(&ar->data_lock);
 -- 
 2.1.2
 
