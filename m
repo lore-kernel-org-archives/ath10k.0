@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb79h-0007zx-CT
- for ath10k@lists.infradead.org; Mon, 06 Oct 2014 12:12:45 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/4] ath10k: Add support to configure pktlog filter
-References: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1412269778-1045-2-git-send-email-rmanohar@qti.qualcomm.com>
- <877g0dl8j6.fsf@kamboji.qca.qualcomm.com>
- <20141006120656.GA19615@qca.qualcomm.com>
-Date: Mon, 6 Oct 2014 15:11:57 +0300
-In-Reply-To: <20141006120656.GA19615@qca.qualcomm.com> (Rajkumar Manoharan's
- message of "Mon, 6 Oct 2014 17:36:58 +0530")
-Message-ID: <87y4stjt2q.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Xb7EE-0002uA-CF
+ for ath10k@lists.infradead.org; Mon, 06 Oct 2014 12:17:27 +0000
+Received: by mail-wg0-f50.google.com with SMTP id a1so6452316wgh.9
+ for <ath10k@lists.infradead.org>; Mon, 06 Oct 2014 05:17:02 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: advertise all possible firmware(-api) files
+Date: Mon,  6 Oct 2014 14:16:41 +0200
+Message-Id: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +17,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+This is required if we take into account possibility to load the driver
+from initrd (RAM disk), so in other words: very early in the boot process,
+before the file system is visible.
 
-> On Mon, Oct 06, 2014 at 02:52:45PM +0300, Kalle Valo wrote:
->> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
->> 
->> > Add support to configure packet log filters (tx, rx, rate control)
->> > via debugfs. To disable htt pktlog events set the filters to 0.
->> >
->> > ex:
->> >
->> > To enable pktlog for all filters
->> >
->> >    echo 0x1f > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
->> >
->> > To disable pktlog
->> >
->> >    echo 0 > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
->> >
->> > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->> 
->> I did minor changes to the error handling in
->> ath10k_write_pktlog_filter() and in ath10k_debug_start(). Diff below and
->> full commit here:
->> 
->> https://github.com/kvalo/ath/commit/470c43d83b7ee4147dea38a4f7b986070555a032
->> 
->> Please review my changes.
->
-> LGTM.
+In such case we need to have the firmware files accessible from ram disk too,
+and this patch guarantee this.
 
-Joe Perches pointed out to me offline that I had missed '\n' in two of
-the warning messages. So one more change:
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/hw.h  | 1 -
+ drivers/net/wireless/ath/ath10k/pci.c | 4 +++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1402,13 +1402,13 @@ int ath10k_debug_start(struct ath10k *ar)
- 		if (ret)
- 			/* not serious */
- 			ath10k_warn(ar,
--				    "failed to enable pktlog filter %x: %d",
-+				    "failed to enable pktlog filter %x: %d\n",
- 				    ar->debug.pktlog_filter, ret);
- 	} else {
- 		ret = ath10k_wmi_pdev_pktlog_disable(ar);
- 		if (ret)
- 			/* not serious */
--			ath10k_warn(ar, "failed to disable pktlog: %d", ret);
-+			ath10k_warn(ar, "failed to disable pktlog: %d\n", ret);
- 	}
- 
- 	return ret;
-@@ -1532,14 +1532,14 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
- 	if (filter && (filter != ar->debug.pktlog_filter)) {
- 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
- 		if (ret) {
--			ath10k_warn(ar, "failed to enable pktlog filter %x: %d",
-+			ath10k_warn(ar, "failed to enable pktlog filter %x: %d\n",
- 				    ar->debug.pktlog_filter, ret);
- 			goto out;
- 		}
- 	} else {
- 		ret = ath10k_wmi_pdev_pktlog_disable(ar);
- 		if (ret) {
--			ath10k_warn(ar, "failed to disable pktlog: %d", ret);
-+			ath10k_warn(ar, "failed to disable pktlog: %d\n", ret);
- 			goto out;
- 		}
- 	}
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 006a9cb..6dca960 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -28,7 +28,6 @@
+ #define QCA988X_HW_2_0_CHIP_ID_REV	0x2
+ #define QCA988X_HW_2_0_FW_DIR		"ath10k/QCA988X/hw2.0"
+ #define QCA988X_HW_2_0_FW_FILE		"firmware.bin"
+-#define QCA988X_HW_2_0_FW_3_FILE	"firmware-3.bin"
+ #define QCA988X_HW_2_0_OTP_FILE		"otp.bin"
+ #define QCA988X_HW_2_0_BOARD_DATA_FILE	"board.bin"
+ #define QCA988X_HW_2_0_PATCH_LOAD_ADDR	0x1234
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 8a04904..730bb18 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2600,5 +2600,7 @@ module_exit(ath10k_pci_exit);
+ MODULE_AUTHOR("Qualcomm Atheros");
+ MODULE_DESCRIPTION("Driver support for Atheros QCA988X PCIe devices");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_3_FILE);
++MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_FILE);
++MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API2_FILE);
++MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API3_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
 -- 
-Kalle Valo
+1.8.2
+
 
 _______________________________________________
 ath10k mailing list
