@@ -1,25 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb1oY-0002dW-Uk
- for ath10k@lists.infradead.org; Mon, 06 Oct 2014 06:30:35 +0000
-Received: by mail-wi0-f169.google.com with SMTP id cc10so5801775wib.0
- for <ath10k@lists.infradead.org>; Sun, 05 Oct 2014 23:30:08 -0700 (PDT)
+ id 1Xb6qm-0006vB-QU
+ for ath10k@lists.infradead.org; Mon, 06 Oct 2014 11:53:13 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/4] ath10k: Add support to configure pktlog filter
+References: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1412269778-1045-2-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 6 Oct 2014 14:52:45 +0300
+In-Reply-To: <1412269778-1045-2-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 2 Oct 2014 22:39:35 +0530")
+Message-ID: <877g0dl8j6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAB6w8ekXbhf8fM8O6pjAsNV2HVUxiu3c4DMOVmKWp-=CCFRoQg@mail.gmail.com>
-References: <CAB6w8enBQM5+xApKgA=p=NZicit6nzasefwjv_0XfO3ZwaS67g@mail.gmail.com>
- <CA+BoTQ=nFs9o1VipEinmJgxXYr24jL9QH9RCDzpXPKo_qsB0-w@mail.gmail.com>
- <87tx3moips.fsf@kamboji.qca.qualcomm.com>
- <CAB6w8emWrQDtETBzKVxU3Ya6MF4c6dP1vr_2pqYxYzfMXG+Xwg@mail.gmail.com>
- <87bnpuofnp.fsf@kamboji.qca.qualcomm.com>
- <CAB6w8ekCfRR-SLLDMvVukwVyTp0ooXPQgXdj6o8GqdPtCr+c3g@mail.gmail.com>
- <CAB6w8e=biRnbmku6Z=mAhbfLaU9u9+q6c3Fr0S5v-HxJxUB-Fg@mail.gmail.com>
- <CA+BoTQkKe-2mEOdisENNfvh6zJunX=2ffkX62tEQ1+okRC=doA@mail.gmail.com>
- <CAB6w8ekXbhf8fM8O6pjAsNV2HVUxiu3c4DMOVmKWp-=CCFRoQg@mail.gmail.com>
-Date: Mon, 6 Oct 2014 08:30:08 +0200
-Message-ID: <CA+BoTQnV90z8o5PXp1FYOgoRs-0nuvGm9=k+dmjWnFQ_TV28Xg@mail.gmail.com>
-Subject: Re: Unable to upgrade firmware for QCA988x module, ath10k!
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +20,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ramprasad Vempati <ramprasad.vempati@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gNCBPY3RvYmVyIDIwMTQgMTU6MjAsIFJhbXByYXNhZCBWZW1wYXRpIDxyYW1wcmFzYWQudmVt
-cGF0aUBnbWFpbC5jb20+IHdyb3RlOgo+IEhpIE1pY2hhbCwKPgo+IEFzIHlvdSBzdWdnZXN0ZWQg
-SSd2ZSBtb3ZlZCB0byBsYXRlc3Qgc3RhYmxlIGtlcm5lbDogMy4xNi4zIC4gSSBzdGlsbAo+IGhh
-dmUgdGhlIHNhbWUgcHJvYmxlbS4KPgo+IFByb2JsZW0gaXM6IE15IEFQIHN0YXJ0cyBhZHZlcnRp
-c2luZyBiZWFjb25zLCBjbGllbnRzIGNvbm5lY3QgJiBhbHNvCj4gdGFsayB0byBlYWNoIG90aGVy
-LiBidXQgQ2xpZW50IHRvIEFQIG9yIEFQIHRvIGNsaWVudCBjb21tdW5pY2F0aW9uIGlzCj4gbm90
-IGdvaW5nIHRocm91Z2guIE9uIHRoZSBBcCBpbnRlcmZhY2UgSSBzZWUgQVJQIHJlcXVlc3RzIGNv
-bWluZywgYnV0Cj4gbm8gQVJQIHJlc3BvbnNlLiBCZWxvdyBpcyB0aGUgY29uc29sZSBvdXRwdXQu
-IEknbSBhdHRhY2hpbmcgaG9zdGFwZAo+IGxvZ3MgYWxzbyBmb3IgeW91ciByZWZlcmVuY2UuCj4K
-PiBGVyBJJ20gdXNpbmcgaXM6IDEwLjEuNDY3LTIuMQpbLi4uXQoKSG9zdGFwIGxvZ3MgcG9pbnQg
-b3V0IHlvdSBoYXZlIGEgYnIwIChicmlkZ2UpIGludGVyZmFjZSBhbmQgd2xhbjMgaXMgYQpwYXJ0
-IG9mIGl0LiBZb3Ugc2hvdWxkIGJlIHNldHRpbmcgMTkyLjE2OC4zLjEgZm9yIGJyMCBpbnN0ZWFk
-IG9mCndsYW4zOgoKIGlmY29uZmlnIHdsYW4zIDAuMC4wLjAKIGlmY29uZmlnIGJyMCAxOTIuMTY4
-LjMuMQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+
+> Add support to configure packet log filters (tx, rx, rate control)
+> via debugfs. To disable htt pktlog events set the filters to 0.
+>
+> ex:
+>
+> To enable pktlog for all filters
+>
+>    echo 0x1f > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
+>
+> To disable pktlog
+>
+>    echo 0 > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
+>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+
+I did minor changes to the error handling in
+ath10k_write_pktlog_filter() and in ath10k_debug_start(). Diff below and
+full commit here:
+
+https://github.com/kvalo/ath/commit/470c43d83b7ee4147dea38a4f7b986070555a032
+
+Please review my changes.
+
+Kalle
+
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index a5700a2aff8c..fe71494cefa9 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1396,15 +1396,20 @@ int ath10k_debug_start(struct ath10k *ar)
+ 				    ret);
+ 	}
+ 
+-	if (ar->debug.pktlog_filter)
++	if (ar->debug.pktlog_filter) {
+ 		ret = ath10k_wmi_pdev_pktlog_enable(ar,
+ 						    ar->debug.pktlog_filter);
+-	else
++		if (ret)
++			/* not serious */
++			ath10k_warn(ar,
++				    "failed to enable pktlog filter %x: %d",
++				    ar->debug.pktlog_filter, ret);
++	} else {
+ 		ret = ath10k_wmi_pdev_pktlog_disable(ar);
+-
+-	if (ret)
+-		ath10k_warn(ar, "failed to send pktlog command: %d filter %x",
+-			    ret, ar->debug.pktlog_filter);
++		if (ret)
++			/* not serious */
++			ath10k_warn(ar, "failed to disable pktlog: %d", ret);
++	}
+ 
+ 	return ret;
+ }
+@@ -1520,23 +1525,31 @@ static ssize_t ath10k_write_pktlog_filter(struct file *file,
+ 
+ 	if (ar->state != ATH10K_STATE_ON) {
+ 		ar->debug.pktlog_filter = filter;
+-		mutex_unlock(&ar->conf_mutex);
+-		return count;
++		ret = count;
++		goto out;
+ 	}
+ 
+-	if (filter && (filter != ar->debug.pktlog_filter))
++	if (filter && (filter != ar->debug.pktlog_filter)) {
+ 		ret = ath10k_wmi_pdev_pktlog_enable(ar, filter);
+-	else
++		if (ret) {
++			ath10k_warn(ar, "failed to enable pktlog filter %x: %d",
++				    ar->debug.pktlog_filter, ret);
++			goto out;
++		}
++	} else {
+ 		ret = ath10k_wmi_pdev_pktlog_disable(ar);
++		if (ret) {
++			ath10k_warn(ar, "failed to disable pktlog: %d", ret);
++			goto out;
++		}
++	}
+ 
+ 	ar->debug.pktlog_filter = filter;
+-	mutex_unlock(&ar->conf_mutex);
+-
+-	if (ret)
+-		ath10k_warn(ar, "failed to send pktlog command: %d filter %x",
+-			    ret, ar->debug.pktlog_filter);
++	ret = count;
+ 
+-	return count;
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
+ }
+ 
+ static ssize_t ath10k_read_pktlog_filter(struct file *file, char __user *ubuf,
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
