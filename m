@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from emh07.mail.saunalahti.fi ([62.142.5.117])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xb7EE-0002uA-CF
- for ath10k@lists.infradead.org; Mon, 06 Oct 2014 12:17:27 +0000
-Received: by mail-wg0-f50.google.com with SMTP id a1so6452316wgh.9
- for <ath10k@lists.infradead.org>; Mon, 06 Oct 2014 05:17:02 -0700 (PDT)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: advertise all possible firmware(-api) files
-Date: Mon,  6 Oct 2014 14:16:41 +0200
-Message-Id: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1Xb8AQ-0007d3-CC
+ for ath10k@lists.infradead.org; Mon, 06 Oct 2014 13:17:35 +0000
+Subject: [PATCH] ath10k: add missing '\n' to warning and error messages
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Mon, 06 Oct 2014 16:17:08 +0300
+Message-ID: <20141006131708.3639.18609.stgit@potku.adurom.net>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,54 +16,133 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org
 
-This is required if we take into account possibility to load the driver
-from initrd (RAM disk), so in other words: very early in the boot process,
-before the file system is visible.
+All warning and error messages should end with '\n', fix that.
 
-In such case we need to have the firmware files accessible from ram disk too,
-and this patch guarantee this.
-
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h  | 1 -
- drivers/net/wireless/ath/ath10k/pci.c | 4 +++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c   |   10 +++++-----
+ drivers/net/wireless/ath/ath10k/debug.c  |    2 +-
+ drivers/net/wireless/ath/ath10k/htc.c    |    4 ++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    2 +-
+ drivers/net/wireless/ath/ath10k/pci.c    |    2 +-
+ 5 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 006a9cb..6dca960 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -28,7 +28,6 @@
- #define QCA988X_HW_2_0_CHIP_ID_REV	0x2
- #define QCA988X_HW_2_0_FW_DIR		"ath10k/QCA988X/hw2.0"
- #define QCA988X_HW_2_0_FW_FILE		"firmware.bin"
--#define QCA988X_HW_2_0_FW_3_FILE	"firmware-3.bin"
- #define QCA988X_HW_2_0_OTP_FILE		"otp.bin"
- #define QCA988X_HW_2_0_BOARD_DATA_FILE	"board.bin"
- #define QCA988X_HW_2_0_PATCH_LOAD_ADDR	0x1234
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 37e31665628c..dce2eeaa20c8 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -251,7 +251,7 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot otp execute result %d\n", result);
+ 
+ 	if (result != 0) {
+-		ath10k_err(ar, "otp calibration failed: %d", result);
++		ath10k_err(ar, "otp calibration failed: %d\n", result);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -331,7 +331,7 @@ static int ath10k_core_fetch_firmware_api_1(struct ath10k *ar)
+ 	}
+ 
+ 	if (ar->hw_params.fw.board == NULL) {
+-		ath10k_err(ar, "board data file not defined");
++		ath10k_err(ar, "board data file not defined\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -525,14 +525,14 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+ 
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features) &&
+ 	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+-		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well");
++		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well\n");
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+ 
+ 	/* now fetch the board file */
+ 	if (ar->hw_params.fw.board == NULL) {
+-		ath10k_err(ar, "board data file not defined");
++		ath10k_err(ar, "board data file not defined\n");
+ 		ret = -EINVAL;
+ 		goto err;
+ 	}
+@@ -809,7 +809,7 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
+ 		status = ath10k_wmi_wait_for_service_ready(ar);
+ 		if (status <= 0) {
+-			ath10k_warn(ar, "wmi service ready event not received");
++			ath10k_warn(ar, "wmi service ready event not received\n");
+ 			status = -ETIMEDOUT;
+ 			goto err_hif_stop;
+ 		}
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0d94febbb360..e1cb150353c8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1392,7 +1392,7 @@ int ath10k_debug_start(struct ath10k *ar)
+ 		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask);
+ 		if (ret)
+ 			/* not serious */
+-			ath10k_warn(ar, "failed to enable dbglog during start: %d",
++			ath10k_warn(ar, "failed to enable dbglog during start: %d\n",
+ 				    ret);
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 676bd4ed969b..2394d9901957 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -227,7 +227,7 @@ ath10k_htc_process_credit_report(struct ath10k_htc *htc,
+ 	int i, n_reports;
+ 
+ 	if (len % sizeof(*report))
+-		ath10k_warn(ar, "Uneven credit report len %d", len);
++		ath10k_warn(ar, "Uneven credit report len %d\n", len);
+ 
+ 	n_reports = len / sizeof(*report);
+ 
+@@ -716,7 +716,7 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
+ 	if ((message_id != ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID) ||
+ 	    (htc->control_resp_len < sizeof(msg->hdr) +
+ 	     sizeof(msg->connect_service_response))) {
+-		ath10k_err(ar, "Invalid resp message ID 0x%x", message_id);
++		ath10k_err(ar, "Invalid resp message ID 0x%x\n", message_id);
+ 		return -EPROTO;
+ 	}
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index fdfb1713b173..1524ff447e8b 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -222,7 +222,7 @@ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie)
+ 
+ 	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to send htt type stats request: %d",
++		ath10k_warn(ar, "failed to send htt type stats request: %d\n",
+ 			    ret);
+ 		dev_kfree_skb_any(skb);
+ 		return ret;
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 8a04904..730bb18 100644
+index 8a04904cccee..8a3f4df83523 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2600,5 +2600,7 @@ module_exit(ath10k_pci_exit);
- MODULE_AUTHOR("Qualcomm Atheros");
- MODULE_DESCRIPTION("Driver support for Atheros QCA988X PCIe devices");
- MODULE_LICENSE("Dual BSD/GPL");
--MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_3_FILE);
-+MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_FILE);
-+MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API2_FILE);
-+MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API3_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
--- 
-1.8.2
+@@ -862,7 +862,7 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
+ 				 max_nbytes, DMA_FROM_DEVICE);
+ 
+ 		if (unlikely(max_nbytes < nbytes)) {
+-			ath10k_warn(ar, "rxed more than expected (nbytes %d, max %d)",
++			ath10k_warn(ar, "rxed more than expected (nbytes %d, max %d)\n",
+ 				    nbytes, max_nbytes);
+ 			dev_kfree_skb_any(skb);
+ 			continue;
 
 
 _______________________________________________
