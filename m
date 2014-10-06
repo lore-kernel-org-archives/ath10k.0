@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbBRO-0003XK-AA
- for ath10k@lists.infradead.org; Mon, 06 Oct 2014 16:47:18 +0000
+ id 1XbBRY-0003Xu-0N
+ for ath10k@lists.infradead.org; Mon, 06 Oct 2014 16:47:28 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: add tracing for frame transmission
-Date: Mon, 6 Oct 2014 22:18:38 +0530
-Message-ID: <1412614118-17205-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1412614118-17205-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1412614118-17205-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: add tracepoint for htt tx frames
+Date: Mon, 6 Oct 2014 22:18:37 +0530
+Message-ID: <1412614118-17205-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,105 +21,80 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
 
-Add support to send management and data frames to user space
-by tracing for packet inspection.
+Although frame contents were printed via dbg_dump
+already it was not possible to easily filter them
+out for processing.
 
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c |  3 +++
- drivers/net/wireless/ath/ath10k/trace.h  | 42 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c    |  2 ++
- 3 files changed, 47 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  3 ++-
+ drivers/net/wireless/ath/ath10k/trace.h  | 13 +++++++++----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 7add88e..4dbb2dd 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -291,6 +291,9 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
- 	htt->rx_ring.fill_cnt--;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index fdfb171..9621b62 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -557,7 +557,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
+ 	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le32(HTT_INVALID_PEERID);
  
-+	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
-+				     skb_tailroom(msdu));
-+
- 	return msdu;
- }
- 
+-	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
++	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid,
++			    msdu->data, msdu->len);
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT,
+ 		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu\n",
+ 		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
 diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index dbf7bc9..8e37573 100644
+index 33b9bf4..dbf7bc9 100644
 --- a/drivers/net/wireless/ath/ath10k/trace.h
 +++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -375,6 +375,48 @@ TRACE_EVENT(ath10k_txrx_tx_unref,
- 		__entry->msdu_id
- 	 )
- );
-+
-+DECLARE_EVENT_CLASS(ath10k_data_event,
-+		    TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+
-+	TP_ARGS(ar, data, len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
+@@ -313,9 +313,9 @@ TRACE_EVENT(ath10k_htt_rx_desc,
+ 
+ TRACE_EVENT(ath10k_htt_tx,
+ 	    TP_PROTO(struct ath10k *ar, u16 msdu_id, u16 msdu_len,
+-		     u8 vdev_id, u8 tid),
++		     u8 vdev_id, u8 tid, void *data, size_t len),
+ 
+-	TP_ARGS(ar, msdu_id, msdu_len, vdev_id, tid),
++	TP_ARGS(ar, msdu_id, msdu_len, vdev_id, tid, data, len),
+ 
+ 	TP_STRUCT__entry(
+ 		__string(device, dev_name(ar->dev))
+@@ -324,6 +324,8 @@ TRACE_EVENT(ath10k_htt_tx,
+ 		__field(u16, msdu_len)
+ 		__field(u8, vdev_id)
+ 		__field(u8, tid)
 +		__field(size_t, len)
 +		__dynamic_array(u8, data, len)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -333,16 +335,19 @@ TRACE_EVENT(ath10k_htt_tx,
+ 		__entry->msdu_len = msdu_len;
+ 		__entry->vdev_id = vdev_id;
+ 		__entry->tid = tid;
 +		__entry->len = len;
 +		memcpy(__get_dynamic_array(data), data, len);
-+	),
-+
-+	TP_printk(
-+		"%s %s len %zu\n",
-+		__get_str(driver),
-+		__get_str(device),
+ 	),
+ 
+ 	TP_printk(
+-		"%s %s msdu_id %d msdu_len %d vdev_id %d tid %d",
++		"%s %s msdu_id %d msdu_len %d vdev_id %d tid %d len %zu",
+ 		__get_str(driver),
+ 		__get_str(device),
+ 		__entry->msdu_id,
+ 		__entry->msdu_len,
+ 		__entry->vdev_id,
+-		__entry->tid
++		__entry->tid,
 +		__entry->len
-+	)
-+);
-+
-+DEFINE_EVENT(ath10k_data_event, ath10k_htt_rx_pop_msdu,
-+	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+	     TP_ARGS(ar, data, len)
-+);
-+
-+DEFINE_EVENT(ath10k_data_event, ath10k_wmi_mgmt_tx,
-+	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+	     TP_ARGS(ar, data, len)
-+);
-+
-+DEFINE_EVENT(ath10k_data_event, ath10k_wmi_bcn_tx,
-+	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+	     TP_ARGS(ar, data, len)
-+);
- #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
+ 	 )
+ );
  
- /* we don't want to use include/trace/events */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c145b98..54042bf 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -834,6 +834,7 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
- 		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
- 		   fc & IEEE80211_FCTL_STYPE);
-+	trace_ath10k_wmi_mgmt_tx(ar, skb->data, skb->len);
- 
- 	/* Send the management frame buffer to the target */
- 	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->mgmt_tx_cmdid);
-@@ -1892,6 +1893,7 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 		arvif->beacon = bcn;
- 		arvif->beacon_sent = false;
- 
-+		trace_ath10k_wmi_bcn_tx(ar, bcn->data, bcn->len);
- 		ath10k_wmi_tx_beacon_nowait(arvif);
- skip:
- 		spin_unlock_bh(&ar->data_lock);
 -- 
 2.1.2
 
