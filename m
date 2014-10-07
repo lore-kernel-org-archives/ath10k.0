@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbORI-0002kd-93
- for ath10k@lists.infradead.org; Tue, 07 Oct 2014 06:40:05 +0000
-Received: by mail-la0-f45.google.com with SMTP id q1so5731897lam.4
- for <ath10k@lists.infradead.org>; Mon, 06 Oct 2014 23:39:33 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAEFj985Di47A3OUSKn3ycW01Ohmeqs=uL4y_59YL+HyUDWvO0g@mail.gmail.com>
-References: <1412251000-25377-1-git-send-email-janusz.dziedzic@tieto.com>
- <CAEFj985Di47A3OUSKn3ycW01Ohmeqs=uL4y_59YL+HyUDWvO0g@mail.gmail.com>
-Date: Tue, 7 Oct 2014 08:39:33 +0200
-Message-ID: <CALhHN=pFM8-Ck62nzNfOkS+bU3Xm_k30_AYrqagP0tY9nuV4pw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: don't create bssid peer for ibss
+ id 1XbRzr-0000Rt-AZ
+ for ath10k@lists.infradead.org; Tue, 07 Oct 2014 10:28:00 +0000
+Received: by mail-wg0-f50.google.com with SMTP id a1so8973824wgh.9
+ for <ath10k@lists.infradead.org>; Tue, 07 Oct 2014 03:27:34 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH] ath10k: fix WMI scan command length
+Date: Tue,  7 Oct 2014 12:26:43 +0200
+Message-Id: <1412677603-11748-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +17,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-On 4 October 2014 03:06, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
-> On Thu, Oct 2, 2014 at 7:56 PM, Janusz Dziedzic
-> <janusz.dziedzic@tieto.com> wrote:
->> It's not really necessary to create bssid peer for
->> bssid. Self-address peer is sufficient.
->>
->> This prevents some firmware revisions from crashing.
->>
->
-> Which firmware? AFAIK, only firmware version 636 supports adhoc, right?
->
-Yes, this is for 636.
+Fix WMI scan command length we setup when scan request.
 
-BR
-Janusz
+This fix issue with 636 firmware when scan always failed
+with message:
+
+ath10k_pci 0000:02:00.0: wmi start scan
+ath10k_pci 0000:02:00.0: wmi stop scan reqid 1 req_type 0 vdev/scan_id 0
+ath10k_pci 0000:02:00.0: failed to stop wmi scan: -11
+ath10k_pci 0000:02:00.0: failed to stop scan: -11
+ath10k_pci 0000:02:00.0: failed to start hw scan: -110
+
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index f65032f..d878fbe 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3506,10 +3506,10 @@ int ath10k_wmi_start_scan(struct ath10k *ar,
+ 		return ret;
+ 
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
+-		len = sizeof(struct wmi_start_scan_cmd) +
++		len = sizeof(struct wmi_10x_start_scan_cmd) +
+ 		      ath10k_wmi_start_scan_tlvs_len(arg);
+ 	else
+-		len = sizeof(struct wmi_10x_start_scan_cmd) +
++		len = sizeof(struct wmi_start_scan_cmd) +
+ 		      ath10k_wmi_start_scan_tlvs_len(arg);
+ 
+ 	skb = ath10k_wmi_alloc_skb(ar, len);
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
