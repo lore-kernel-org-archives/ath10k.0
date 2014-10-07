@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbVox-0005vd-8x
- for ath10k@lists.infradead.org; Tue, 07 Oct 2014 14:32:59 +0000
+ id 1XbXU7-0005EA-RQ
+ for ath10k@lists.infradead.org; Tue, 07 Oct 2014 16:19:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH v2] ath10k: add tracing for frame transmission
 References: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 7 Oct 2014 17:32:30 +0300
+Date: Tue, 7 Oct 2014 19:19:05 +0300
 In-Reply-To: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
  (Rajkumar Manoharan's message of "Mon, 6 Oct 2014 22:39:06 +0530")
-Message-ID: <87lhoshrwh.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87d2a3j1ja.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -33,21 +33,18 @@ Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 >
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-My assumption is that this patch superseded the patches below. Please
-let me know if I have misunderstood.
+[...]
 
-!  [  27: Rajkumar Manoharan     ] [PATCH 0/4] ath10k: Add tracing for tx and rx frames
-!      [  70: Rajkumar Manoharan     ] [PATCH 1/4] ath10k: add tracepoint for wmi mgmt tx frames
-!      [  68: Rajkumar Manoharan     ] [PATCH 2/4] ath10k: add tracepoint for wmi bcn tx
-!      [  72: Rajkumar Manoharan     ] [PATCH 3/4] ath10k: add htt rx tracepoints
-!      [  80: Rajkumar Manoharan     ] [PATCH 4/4] ath10k: add tracepoint for htt tx frames
-!  [  80: Rajkumar Manoharan     ] [PATCH 1/2] ath10k: add tracepoint for htt tx frames
-!      [ 105: Rajkumar Manoharan     ] [PATCH 2/2] ath10k: add tracing for frame transmission
+> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> @@ -291,6 +291,9 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
+>  	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
+>  	htt->rx_ring.fill_cnt--;
+>  
+> +	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
+> +				     skb_tailroom(msdu));
 
-For the future: it's a lot easier if you add a cover letter for the
-patch series, keep the cover letter title unchanged and just increase
-the version number after each revision. That way I can immeaditely see
-what patches I should take or ignore.
+Why add skb_tailroom() to the length? I think that deserves a comment.
 
 -- 
 Kalle Valo
