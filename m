@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbVYb-0006Wv-9H
- for ath10k@lists.infradead.org; Tue, 07 Oct 2014 14:16:05 +0000
+ id 1XbVox-0005vd-8x
+ for ath10k@lists.infradead.org; Tue, 07 Oct 2014 14:32:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/4] ath10k: Add pktlog support
-References: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 7 Oct 2014 17:15:20 +0300
-In-Reply-To: <1412269778-1045-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Thu, 2 Oct 2014 22:39:34 +0530")
-Message-ID: <87sij0hsp3.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add tracing for frame transmission
+References: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Tue, 7 Oct 2014 17:32:30 +0300
+In-Reply-To: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Mon, 6 Oct 2014 22:39:06 +0530")
+Message-ID: <87lhoshrwh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,20 +28,26 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> This implements the Packet log feature for ath10k.
-> All tx and rx events and rx descriptor details are
-> posted to user space by tracepoints.
+> Add tracing support to forward management and data frames to
+> user space for packet inspection.
 >
-> v2: Addressed review comments and based on discussion with Michal
->     dropped tx_msdu_id patch and added tx info changes
->
-> Rajkumar Manoharan (4):
->   ath10k: Add support to configure pktlog filter
->   ath10k: add tracing for ath10k_htt_pktlog
->   ath10k: add tracing for rx descriptor
->   ath10k: add tracing for tx msdu pktlog event
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Thanks, all four patches applied.
+My assumption is that this patch superseded the patches below. Please
+let me know if I have misunderstood.
+
+!  [  27: Rajkumar Manoharan     ] [PATCH 0/4] ath10k: Add tracing for tx and rx frames
+!      [  70: Rajkumar Manoharan     ] [PATCH 1/4] ath10k: add tracepoint for wmi mgmt tx frames
+!      [  68: Rajkumar Manoharan     ] [PATCH 2/4] ath10k: add tracepoint for wmi bcn tx
+!      [  72: Rajkumar Manoharan     ] [PATCH 3/4] ath10k: add htt rx tracepoints
+!      [  80: Rajkumar Manoharan     ] [PATCH 4/4] ath10k: add tracepoint for htt tx frames
+!  [  80: Rajkumar Manoharan     ] [PATCH 1/2] ath10k: add tracepoint for htt tx frames
+!      [ 105: Rajkumar Manoharan     ] [PATCH 2/2] ath10k: add tracing for frame transmission
+
+For the future: it's a lot easier if you add a cover letter for the
+patch series, keep the cover letter title unchanged and just increase
+the version number after each revision. That way I can immeaditely see
+what patches I should take or ignore.
 
 -- 
 Kalle Valo
