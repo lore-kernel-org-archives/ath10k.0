@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XboPe-0007OF-S9
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:24:07 +0000
+ id 1XboQa-0007nz-G3
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:25:05 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: advertise all possible firmware(-api) files
-References: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Wed, 8 Oct 2014 13:23:20 +0300
-In-Reply-To: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
- (Bartosz Markowski's message of "Mon, 6 Oct 2014 14:16:41 +0200")
-Message-ID: <87siiyg8rr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix WMI scan command length
+References: <1412677603-11748-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Wed, 8 Oct 2014 13:24:17 +0300
+In-Reply-To: <1412677603-11748-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 7 Oct 2014 12:26:43 +0200")
+Message-ID: <87oatmg8q6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,19 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Bartosz Markowski <bartosz.markowski@tieto.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> This is required if we take into account possibility to load the driver
-> from initrd (RAM disk), so in other words: very early in the boot process,
-> before the file system is visible.
+> Fix WMI scan command length we setup when scan request.
 >
-> In such case we need to have the firmware files accessible from ram disk too,
-> and this patch guarantee this.
+> This fix issue with 636 firmware when scan always failed
+> with message:
 >
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> ath10k_pci 0000:02:00.0: wmi start scan
+> ath10k_pci 0000:02:00.0: wmi stop scan reqid 1 req_type 0 vdev/scan_id 0
+> ath10k_pci 0000:02:00.0: failed to stop wmi scan: -11
+> ath10k_pci 0000:02:00.0: failed to stop scan: -11
+> ath10k_pci 0000:02:00.0: failed to start hw scan: -110
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
 Thanks, applied.
 
