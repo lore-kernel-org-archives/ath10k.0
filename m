@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-vc0-x22d.google.com ([2607:f8b0:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbnKw-0000EV-Bp
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 09:15:13 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix kernel panic while shutting down AP
-Date: Wed, 8 Oct 2014 14:46:26 +0530
-Message-ID: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1Xbnoo-0003xO-JF
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 09:46:03 +0000
+Received: by mail-vc0-f173.google.com with SMTP id ij19so6329443vcb.4
+ for <ath10k@lists.infradead.org>; Wed, 08 Oct 2014 02:45:38 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Wed, 8 Oct 2014 11:45:38 +0200
+Message-ID: <CA+BoTQ=K=F5TodrmuaEaJfErFx1=BL-bmPDrAaeMLjjb8c3fJQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,107 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The commit "ath10k: workaround fw beaconing bug" is freeing
-DMA-coherent memory in irq context which is hitting BUG ON
-in ARM platforms. Fix this by moving dma_free out of spin
-lock.
-
-kernel BUG at mm/vmalloc.c:1512!
-Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
-CPU: 0 PID: 722 Comm: hostapd Not tainted 3.14.0 #3
-task: dd58b840 ti: da6a6000 task.ti: da6a6000
-PC is at vunmap+0x24/0x34
-LR is at __arm_dma_free.isra.21+0x12c/0x190
-[<c02a97d0>] (vunmap) from [<c021f81c>] (__arm_dma_free.isra.21+0x12c/0x190)
-[<c021f81c>] (__arm_dma_free.isra.21) from [<bf3b2440>]
-			(ath10k_mac_vif_beacon_free+0xf4/0x100 [ath10k_core])
-[<bf3b2440>] (ath10k_mac_vif_beacon_free [ath10k_core]) from [<bf3b2490>]
-			(ath10k_remove_interface+0x44/0x1ec [ath10k_core])
-[<bf3b2490>] (ath10k_remove_interface [ath10k_core]) from [<bf3352e4>]
-			(ieee80211_add_virtual_monitor+0x9d8/0x9f0 [mac80211])
-[<bf3352e4>] (ieee80211_add_virtual_monitor [mac80211]) from [<bf33530c>]
-			(ieee80211_stop+0x10/0x18 [mac80211])
-[<bf33530c>] (ieee80211_stop [mac80211]) from [<c040d144>]
-			(__dev_close_many+0x9c/0xcc)
-
-Cc: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index bf8333c..dd4f56a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -498,21 +498,6 @@ void ath10k_mac_vif_beacon_free(struct ath10k_vif *arvif)
- 	arvif->beacon_sent = false;
- }
- 
--static void ath10k_mac_vif_beacon_cleanup(struct ath10k_vif *arvif)
--{
--	struct ath10k *ar = arvif->ar;
--
--	lockdep_assert_held(&ar->data_lock);
--
--	ath10k_mac_vif_beacon_free(arvif);
--
--	if (arvif->beacon_buf) {
--		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
--				  arvif->beacon_buf, arvif->beacon_paddr);
--		arvif->beacon_buf = NULL;
--	}
--}
--
- static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
- {
- 	int ret;
-@@ -2404,8 +2389,15 @@ void ath10k_halt(struct ath10k *ar)
- 
- 	spin_lock_bh(&ar->data_lock);
- 	list_for_each_entry(arvif, &ar->arvifs, list)
--		ath10k_mac_vif_beacon_cleanup(arvif);
-+		ath10k_mac_vif_beacon_free(arvif);
- 	spin_unlock_bh(&ar->data_lock);
-+	list_for_each_entry(arvif, &ar->arvifs, list) {
-+		if (!arvif->beacon_buf)
-+			continue;
-+		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+				  arvif->beacon_buf, arvif->beacon_paddr);
-+		arvif->beacon_buf = NULL;
-+	}
- }
- 
- static int ath10k_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
-@@ -2988,9 +2980,15 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	cancel_work_sync(&arvif->wep_key_work);
- 
- 	spin_lock_bh(&ar->data_lock);
--	ath10k_mac_vif_beacon_cleanup(arvif);
-+	ath10k_mac_vif_beacon_free(arvif);
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	if (arvif->beacon_buf) {
-+		dma_free_coherent(ar->dev, IEEE80211_MAX_FRAME_LEN,
-+				  arvif->beacon_buf, arvif->beacon_paddr);
-+		arvif->beacon_buf = NULL;
-+	}
-+
- 	ret = ath10k_spectral_vif_stop(arvif);
- 	if (ret)
- 		ath10k_warn(ar, "failed to stop spectral for vdev %i: %d\n",
--- 
-2.1.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBPY3RvYmVyIDIwMTQgMTE6MTYsIFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRp
+LnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gVGhlIGNvbW1pdCAiYXRoMTBrOiB3b3JrYXJvdW5kIGZ3
+IGJlYWNvbmluZyBidWciIGlzIGZyZWVpbmcKPiBETUEtY29oZXJlbnQgbWVtb3J5IGluIGlycSBj
+b250ZXh0IHdoaWNoIGlzIGhpdHRpbmcgQlVHIE9OCj4gaW4gQVJNIHBsYXRmb3Jtcy4gRml4IHRo
+aXMgYnkgbW92aW5nIGRtYV9mcmVlIG91dCBvZiBzcGluCj4gbG9jay4KCkkgaGFyZGx5IHNlZSBo
+b3cgbW92aW5nIHRoZSBmcmVlaW5nIG91dHNpZGUgdGhlIHNwaW5sb2NrIGlzIGEgZml4LgoKCj4g
+a2VybmVsIEJVRyBhdCBtbS92bWFsbG9jLmM6MTUxMiEKPiBJbnRlcm5hbCBlcnJvcjogT29wcyAt
+IEJVRzogMCBbIzFdIFBSRUVNUFQgU01QIEFSTQo+IENQVTogMCBQSUQ6IDcyMiBDb21tOiBob3N0
+YXBkIE5vdCB0YWludGVkIDMuMTQuMCAjMwo+IHRhc2s6IGRkNThiODQwIHRpOiBkYTZhNjAwMCB0
+YXNrLnRpOiBkYTZhNjAwMAo+IFBDIGlzIGF0IHZ1bm1hcCsweDI0LzB4MzQKPiBMUiBpcyBhdCBf
+X2FybV9kbWFfZnJlZS5pc3JhLjIxKzB4MTJjLzB4MTkwCj4gWzxjMDJhOTdkMD5dICh2dW5tYXAp
+IGZyb20gWzxjMDIxZjgxYz5dIChfX2FybV9kbWFfZnJlZS5pc3JhLjIxKzB4MTJjLzB4MTkwKQo+
+IFs8YzAyMWY4MWM+XSAoX19hcm1fZG1hX2ZyZWUuaXNyYS4yMSkgZnJvbSBbPGJmM2IyNDQwPl0K
+PiAgICAgICAgICAgICAgICAgICAgICAgICAoYXRoMTBrX21hY192aWZfYmVhY29uX2ZyZWUrMHhm
+NC8weDEwMCBbYXRoMTBrX2NvcmVdKQo+IFs8YmYzYjI0NDA+XSAoYXRoMTBrX21hY192aWZfYmVh
+Y29uX2ZyZWUgW2F0aDEwa19jb3JlXSkgZnJvbSBbPGJmM2IyNDkwPl0KPiAgICAgICAgICAgICAg
+ICAgICAgICAgICAoYXRoMTBrX3JlbW92ZV9pbnRlcmZhY2UrMHg0NC8weDFlYyBbYXRoMTBrX2Nv
+cmVdKQo+IFs8YmYzYjI0OTA+XSAoYXRoMTBrX3JlbW92ZV9pbnRlcmZhY2UgW2F0aDEwa19jb3Jl
+XSkgZnJvbSBbPGJmMzM1MmU0Pl0KPiAgICAgICAgICAgICAgICAgICAgICAgICAoaWVlZTgwMjEx
+X2FkZF92aXJ0dWFsX21vbml0b3IrMHg5ZDgvMHg5ZjAgW21hYzgwMjExXSkKPiBbPGJmMzM1MmU0
+Pl0gKGllZWU4MDIxMV9hZGRfdmlydHVhbF9tb25pdG9yIFttYWM4MDIxMV0pIGZyb20gWzxiZjMz
+NTMwYz5dCj4gICAgICAgICAgICAgICAgICAgICAgICAgKGllZWU4MDIxMV9zdG9wKzB4MTAvMHgx
+OCBbbWFjODAyMTFdKQo+IFs8YmYzMzUzMGM+XSAoaWVlZTgwMjExX3N0b3AgW21hYzgwMjExXSkg
+ZnJvbSBbPGMwNDBkMTQ0Pl0KPiAgICAgICAgICAgICAgICAgICAgICAgICAoX19kZXZfY2xvc2Vf
+bWFueSsweDljLzB4Y2MpCgogMS4gSG93IGNhbiBldmVuIGllZWU4MDIxMV9hZGRfdmlydHVhbF9t
+b25pdG9yKCkgY2FsbAphdGgxMGtfcmVtb3ZlX2ludGVyZmFjZSgpPyBVcHN0cmVhbSBhdGgxMGsg
+ZG9lc24ndCBhZHZlcnRpc2UKSUVFRTgwMjExX0hXX1dBTlRfTU9OSVRPUl9WSUYuIFRoaXMgY2Fs
+bCB0cmFjZSBpcyBlaXRoZXIgaW52YWxpZCwKeW91J3JlIG5vdCB1c2luZyB1cHN0cmVhbSBhdGgx
+MGsgYW5kL29yIGhhdmUgY3VzdG9tIHBhdGNoZXMgYXBwbGllZCB0bwphdGgxMGsuCgogMi4gSG93
+IGNhbiBpZWVlODAyMTFfc3RvcCgpIGJlIGNhbGxlZCBmcm9tIGFuIGludGVycnVwdCBjb250ZXh0
+CmFueXdheT8gaWVlZTgwMjExX3N0b3AoKSBjYWxscyBpZWVlODAyMTFfZG9fc3RvcCgpIHdoaWNo
+IGNhbGxzCmllZWU4MDIxMV9yb2NfcHVyZ2UoKSB3aGljaCB0cmllcyB0byBnZXQgYSBob2xkIG9m
+IGxvY2FsLT5tdHguIFRoaXMKaW1wbGllcyBpZWVlODAyMTFfc3RvcCgpIGlzbid0IGRlc2lnbiB0
+byBiZSBydW4gaW4gYW4gaW50ZXJydXB0CmNvbnRleHQgdG8gYmVnaW4gd2l0aCBzbyBJIGRvbid0
+IHNlZSB3aHkgYXRoMTBrIHNob3VsZCBldmVuIGNhcmUgaWYKYXRoMTBrX3JlbW92ZV9pbnRlcmZh
+Y2UoKSBpcyBjYWxsZWQgaW4gYW4gaW50ZXJydXB0IGNvbnRleHQgYXQgdGhpcwpwb2ludC4KCgpN
+aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
