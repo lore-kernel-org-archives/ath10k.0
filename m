@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-vc0-x236.google.com ([2607:f8b0:400c:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbpA9-0007b8-83
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 11:12:09 +0000
-Date: Wed, 8 Oct 2014 16:43:00 +0530
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
-Message-ID: <20141008111258.GD25666@qca.qualcomm.com>
+ id 1XbqAc-0004cL-TJ
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 12:16:44 +0000
+Received: by mail-vc0-f182.google.com with SMTP id la4so6714927vcb.27
+ for <ath10k@lists.infradead.org>; Wed, 08 Oct 2014 05:16:19 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20141008110842.GC25666@qca.qualcomm.com>
 References: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
  <CA+BoTQ=K=F5TodrmuaEaJfErFx1=BL-bmPDrAaeMLjjb8c3fJQ@mail.gmail.com>
  <20141008103312.GA25666@qca.qualcomm.com>
  <CA+BoTQmVsyuxjvc_s-BC6ZwRWk3ACG0CvDYHJRnZ7OqY6W1Upw@mail.gmail.com>
  <20141008110842.GC25666@qca.qualcomm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20141008110842.GC25666@qca.qualcomm.com>
+Date: Wed, 8 Oct 2014 14:16:18 +0200
+Message-ID: <CA+BoTQ=BuSrkBxkbsShZM=Zh8uqye5u0HydpfM9roubgi0-4tQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,100 +24,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Wed, Oct 08, 2014 at 04:38:44PM +0530, Rajkumar Manoharan wrote:
-> On Wed, Oct 08, 2014 at 12:50:28PM +0200, Michal Kazior wrote:
-> > On 8 October 2014 12:33, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> > > On Wed, Oct 08, 2014 at 11:45:38AM +0200, Michal Kazior wrote:
-> > >> On 8 October 2014 11:16, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
-> > >> > The commit "ath10k: workaround fw beaconing bug" is freeing
-> > >> > DMA-coherent memory in irq context which is hitting BUG ON
-> > >> > in ARM platforms. Fix this by moving dma_free out of spin
-> > >> > lock.
-> > >>
-> > >> I hardly see how moving the freeing outside the spinlock is a fix.
-> > >>
-> > >>
-> > >> > kernel BUG at mm/vmalloc.c:1512!
-> > >> > Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
-> > >> > CPU: 0 PID: 722 Comm: hostapd Not tainted 3.14.0 #3
-> > >> > task: dd58b840 ti: da6a6000 task.ti: da6a6000
-> > >> > PC is at vunmap+0x24/0x34
-> > >> > LR is at __arm_dma_free.isra.21+0x12c/0x190
-> > >> > [<c02a97d0>] (vunmap) from [<c021f81c>] (__arm_dma_free.isra.21+0x12c/0x190)
-> > >> > [<c021f81c>] (__arm_dma_free.isra.21) from [<bf3b2440>]
-> > >> >                         (ath10k_mac_vif_beacon_free+0xf4/0x100 [ath10k_core])
-> > >> > [<bf3b2440>] (ath10k_mac_vif_beacon_free [ath10k_core]) from [<bf3b2490>]
-> > >> >                         (ath10k_remove_interface+0x44/0x1ec [ath10k_core])
-> > >> > [<bf3b2490>] (ath10k_remove_interface [ath10k_core]) from [<bf3352e4>]
-> > >> >                         (ieee80211_add_virtual_monitor+0x9d8/0x9f0 [mac80211])
-> > >> > [<bf3352e4>] (ieee80211_add_virtual_monitor [mac80211]) from [<bf33530c>]
-> > >> >                         (ieee80211_stop+0x10/0x18 [mac80211])
-> > >> > [<bf33530c>] (ieee80211_stop [mac80211]) from [<c040d144>]
-> > >> >                         (__dev_close_many+0x9c/0xcc)
-> > >>
-> > >>  1. How can even ieee80211_add_virtual_monitor() call
-> > >> ath10k_remove_interface()? Upstream ath10k doesn't advertise
-> > >> IEEE80211_HW_WANT_MONITOR_VIF. This call trace is either invalid,
-> > >> you're not using upstream ath10k and/or have custom patches applied to
-> > >> ath10k.
-> > >>
-> > > This is the backtrace captured on panic and we are getting the same
-> > > backtrace consistently. I confirmed that add_virtual_monitor is not
-> > > called for ath10k as it is not advertising. ath10k_remove_interface is
-> > > called for master mode.
-> > >
-> > >>  2. How can ieee80211_stop() be called from an interrupt context
-> > >> anyway? ieee80211_stop() calls ieee80211_do_stop() which calls
-> > >> ieee80211_roc_purge() which tries to get a hold of local->mtx. This
-> > >> implies ieee80211_stop() isn't design to be run in an interrupt
-> > >> context to begin with so I don't see why ath10k should even care if
-> > >> ath10k_remove_interface() is called in an interrupt context at this
-> > >> point.
-> > >>
-> > > in_interrupt is counting soft and hard irqs. ieee80211_stop is not
-> > > called from interrupt context. In ath10k, by aquiring spin_lock in
-> > > ath10k_mac_vif_beacon_free is increasing soft irq count.
-> > >
-> > > In ARM arch, __arm_dma_free is calling vunmap which might sleep. So it
-> > > can not be called within spin_lock.
-> > 
-> > Did you try using GFP_ATOMIC in the dma_alloc_coherent instead of
-> > moving the spinlock?
-> >
-> Nope. The problem is while freeing dma memory not during allocation.
-> dma_free_coherent won't take any GFP_* flags.
-> > 
-> > >
-> > > Similar to dma_alloc_coherent, dma_free_coherent can not be called under
-> > > soft irq context.
-> > 
-> > The call trace points to ath10k_mac_vif_beacon_free() which doesn't
-> > use dma_free_coherent() so why are you blaming it for the BUG_ON?
-> > 
-> I agree the calltrace is a bogus. ath10k_mac_vif_beacon_cleanup is
-> calling dma_free_coherent.
-> 
-> > If anything the offender should be dma_unmap_single() but the thing is
-> > beacon_buf is always allocated for AP/IBSS now which means
-> > dma_unmap_single() is never called. For non-AP/IBSS both arvif->beacon
-> > and arvif->beacon_buf are always NULL so neither
-> > dma_alloc/free_coherent nor dma_map/unmap_single are called.
-> >
-> Agree. We need one more check in ath10k_mac_vif_beacon_free.
-
-No additional check is needed. For non beaconing mode, arvif->beacon
-should be false. isn't it?
-
--Rajkumar
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBPY3RvYmVyIDIwMTQgMTM6MDgsIFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRp
+LnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBPY3QgMDgsIDIwMTQgYXQgMTI6NTA6MjhQ
+TSArMDIwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gT24gOCBPY3RvYmVyIDIwMTQgMTI6MzMs
+IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+
+ID4gT24gV2VkLCBPY3QgMDgsIDIwMTQgYXQgMTE6NDU6MzhBTSArMDIwMCwgTWljaGFsIEthemlv
+ciB3cm90ZToKPj4gPj4gT24gOCBPY3RvYmVyIDIwMTQgMTE6MTYsIFJhamt1bWFyIE1hbm9oYXJh
+biA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+ID4+ID4gVGhlIGNvbW1pdCAi
+YXRoMTBrOiB3b3JrYXJvdW5kIGZ3IGJlYWNvbmluZyBidWciIGlzIGZyZWVpbmcKPj4gPj4gPiBE
+TUEtY29oZXJlbnQgbWVtb3J5IGluIGlycSBjb250ZXh0IHdoaWNoIGlzIGhpdHRpbmcgQlVHIE9O
+Cj4+ID4+ID4gaW4gQVJNIHBsYXRmb3Jtcy4gRml4IHRoaXMgYnkgbW92aW5nIGRtYV9mcmVlIG91
+dCBvZiBzcGluCj4+ID4+ID4gbG9jay4KPj4gPj4KPj4gPj4gSSBoYXJkbHkgc2VlIGhvdyBtb3Zp
+bmcgdGhlIGZyZWVpbmcgb3V0c2lkZSB0aGUgc3BpbmxvY2sgaXMgYSBmaXguCj4+ID4+Cj4+ID4+
+Cj4+ID4+ID4ga2VybmVsIEJVRyBhdCBtbS92bWFsbG9jLmM6MTUxMiEKPj4gPj4gPiBJbnRlcm5h
+bCBlcnJvcjogT29wcyAtIEJVRzogMCBbIzFdIFBSRUVNUFQgU01QIEFSTQo+PiA+PiA+IENQVTog
+MCBQSUQ6IDcyMiBDb21tOiBob3N0YXBkIE5vdCB0YWludGVkIDMuMTQuMCAjMwo+PiA+PiA+IHRh
+c2s6IGRkNThiODQwIHRpOiBkYTZhNjAwMCB0YXNrLnRpOiBkYTZhNjAwMAo+PiA+PiA+IFBDIGlz
+IGF0IHZ1bm1hcCsweDI0LzB4MzQKPj4gPj4gPiBMUiBpcyBhdCBfX2FybV9kbWFfZnJlZS5pc3Jh
+LjIxKzB4MTJjLzB4MTkwCj4+ID4+ID4gWzxjMDJhOTdkMD5dICh2dW5tYXApIGZyb20gWzxjMDIx
+ZjgxYz5dIChfX2FybV9kbWFfZnJlZS5pc3JhLjIxKzB4MTJjLzB4MTkwKQo+PiA+PiA+IFs8YzAy
+MWY4MWM+XSAoX19hcm1fZG1hX2ZyZWUuaXNyYS4yMSkgZnJvbSBbPGJmM2IyNDQwPl0KPj4gPj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAoYXRoMTBrX21hY192aWZfYmVhY29uX2ZyZWUrMHhm
+NC8weDEwMCBbYXRoMTBrX2NvcmVdKQo+PiA+PiA+IFs8YmYzYjI0NDA+XSAoYXRoMTBrX21hY192
+aWZfYmVhY29uX2ZyZWUgW2F0aDEwa19jb3JlXSkgZnJvbSBbPGJmM2IyNDkwPl0KPj4gPj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAoYXRoMTBrX3JlbW92ZV9pbnRlcmZhY2UrMHg0NC8weDFl
+YyBbYXRoMTBrX2NvcmVdKQo+PiA+PiA+IFs8YmYzYjI0OTA+XSAoYXRoMTBrX3JlbW92ZV9pbnRl
+cmZhY2UgW2F0aDEwa19jb3JlXSkgZnJvbSBbPGJmMzM1MmU0Pl0KPj4gPj4gPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAoaWVlZTgwMjExX2FkZF92aXJ0dWFsX21vbml0b3IrMHg5ZDgvMHg5ZjAg
+W21hYzgwMjExXSkKPj4gPj4gPiBbPGJmMzM1MmU0Pl0gKGllZWU4MDIxMV9hZGRfdmlydHVhbF9t
+b25pdG9yIFttYWM4MDIxMV0pIGZyb20gWzxiZjMzNTMwYz5dCj4+ID4+ID4gICAgICAgICAgICAg
+ICAgICAgICAgICAgKGllZWU4MDIxMV9zdG9wKzB4MTAvMHgxOCBbbWFjODAyMTFdKQo+PiA+PiA+
+IFs8YmYzMzUzMGM+XSAoaWVlZTgwMjExX3N0b3AgW21hYzgwMjExXSkgZnJvbSBbPGMwNDBkMTQ0
+Pl0KPj4gPj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAoX19kZXZfY2xvc2VfbWFueSsweDlj
+LzB4Y2MpCj4+ID4+Cj4+ID4+ICAxLiBIb3cgY2FuIGV2ZW4gaWVlZTgwMjExX2FkZF92aXJ0dWFs
+X21vbml0b3IoKSBjYWxsCj4+ID4+IGF0aDEwa19yZW1vdmVfaW50ZXJmYWNlKCk/IFVwc3RyZWFt
+IGF0aDEwayBkb2Vzbid0IGFkdmVydGlzZQo+PiA+PiBJRUVFODAyMTFfSFdfV0FOVF9NT05JVE9S
+X1ZJRi4gVGhpcyBjYWxsIHRyYWNlIGlzIGVpdGhlciBpbnZhbGlkLAo+PiA+PiB5b3UncmUgbm90
+IHVzaW5nIHVwc3RyZWFtIGF0aDEwayBhbmQvb3IgaGF2ZSBjdXN0b20gcGF0Y2hlcyBhcHBsaWVk
+IHRvCj4+ID4+IGF0aDEway4KPj4gPj4KPj4gPiBUaGlzIGlzIHRoZSBiYWNrdHJhY2UgY2FwdHVy
+ZWQgb24gcGFuaWMgYW5kIHdlIGFyZSBnZXR0aW5nIHRoZSBzYW1lCj4+ID4gYmFja3RyYWNlIGNv
+bnNpc3RlbnRseS4gSSBjb25maXJtZWQgdGhhdCBhZGRfdmlydHVhbF9tb25pdG9yIGlzIG5vdAo+
+PiA+IGNhbGxlZCBmb3IgYXRoMTBrIGFzIGl0IGlzIG5vdCBhZHZlcnRpc2luZy4gYXRoMTBrX3Jl
+bW92ZV9pbnRlcmZhY2UgaXMKPj4gPiBjYWxsZWQgZm9yIG1hc3RlciBtb2RlLgo+PiA+Cj4+ID4+
+ICAyLiBIb3cgY2FuIGllZWU4MDIxMV9zdG9wKCkgYmUgY2FsbGVkIGZyb20gYW4gaW50ZXJydXB0
+IGNvbnRleHQKPj4gPj4gYW55d2F5PyBpZWVlODAyMTFfc3RvcCgpIGNhbGxzIGllZWU4MDIxMV9k
+b19zdG9wKCkgd2hpY2ggY2FsbHMKPj4gPj4gaWVlZTgwMjExX3JvY19wdXJnZSgpIHdoaWNoIHRy
+aWVzIHRvIGdldCBhIGhvbGQgb2YgbG9jYWwtPm10eC4gVGhpcwo+PiA+PiBpbXBsaWVzIGllZWU4
+MDIxMV9zdG9wKCkgaXNuJ3QgZGVzaWduIHRvIGJlIHJ1biBpbiBhbiBpbnRlcnJ1cHQKPj4gPj4g
+Y29udGV4dCB0byBiZWdpbiB3aXRoIHNvIEkgZG9uJ3Qgc2VlIHdoeSBhdGgxMGsgc2hvdWxkIGV2
+ZW4gY2FyZSBpZgo+PiA+PiBhdGgxMGtfcmVtb3ZlX2ludGVyZmFjZSgpIGlzIGNhbGxlZCBpbiBh
+biBpbnRlcnJ1cHQgY29udGV4dCBhdCB0aGlzCj4+ID4+IHBvaW50Lgo+PiA+Pgo+PiA+IGluX2lu
+dGVycnVwdCBpcyBjb3VudGluZyBzb2Z0IGFuZCBoYXJkIGlycXMuIGllZWU4MDIxMV9zdG9wIGlz
+IG5vdAo+PiA+IGNhbGxlZCBmcm9tIGludGVycnVwdCBjb250ZXh0LiBJbiBhdGgxMGssIGJ5IGFx
+dWlyaW5nIHNwaW5fbG9jayBpbgo+PiA+IGF0aDEwa19tYWNfdmlmX2JlYWNvbl9mcmVlIGlzIGlu
+Y3JlYXNpbmcgc29mdCBpcnEgY291bnQuCj4+ID4KPj4gPiBJbiBBUk0gYXJjaCwgX19hcm1fZG1h
+X2ZyZWUgaXMgY2FsbGluZyB2dW5tYXAgd2hpY2ggbWlnaHQgc2xlZXAuIFNvIGl0Cj4+ID4gY2Fu
+IG5vdCBiZSBjYWxsZWQgd2l0aGluIHNwaW5fbG9jay4KPj4KPj4gRGlkIHlvdSB0cnkgdXNpbmcg
+R0ZQX0FUT01JQyBpbiB0aGUgZG1hX2FsbG9jX2NvaGVyZW50IGluc3RlYWQgb2YKPj4gbW92aW5n
+IHRoZSBzcGlubG9jaz8KPj4KPiBOb3BlLiBUaGUgcHJvYmxlbSBpcyB3aGlsZSBmcmVlaW5nIGRt
+YSBtZW1vcnkgbm90IGR1cmluZyBhbGxvY2F0aW9uLgo+IGRtYV9mcmVlX2NvaGVyZW50IHdvbid0
+IHRha2UgYW55IEdGUF8qIGZsYWdzLgoKTXkgdGhpbmtpbmcgd2FzIEdGUF8gZ2l2ZW4gdG8gZG1h
+X2FsbG9jX2NvaGVyZW50IGNvdWxkIGltcGFjdApiZWhhdmlvdXIgb2YgZG1hX2ZyZWVfY29oZXJl
+bnQgKGUuZy4gZGlmZmVyZW50IGtpbmQgb2YgcGFnZXMgaXMKYWxsb2NhdGVkIHNvIGRpZmZlcmVu
+dCBraW5kIG9mIGZyZWVpbmcgd2lsbCBiZSBpbnZvbHZlZCkgYnV0IEkgbWF5IGJlCndyb25nLgoK
+Q2FuIHlvdSBnaXZlIGl0IGEgdHJ5LCBwbGVhc2U/CgoKPj4gPiBTaW1pbGFyIHRvIGRtYV9hbGxv
+Y19jb2hlcmVudCwgZG1hX2ZyZWVfY29oZXJlbnQgY2FuIG5vdCBiZSBjYWxsZWQgdW5kZXIKPj4g
+PiBzb2Z0IGlycSBjb250ZXh0Lgo+Pgo+PiBUaGUgY2FsbCB0cmFjZSBwb2ludHMgdG8gYXRoMTBr
+X21hY192aWZfYmVhY29uX2ZyZWUoKSB3aGljaCBkb2Vzbid0Cj4+IHVzZSBkbWFfZnJlZV9jb2hl
+cmVudCgpIHNvIHdoeSBhcmUgeW91IGJsYW1pbmcgaXQgZm9yIHRoZSBCVUdfT04/Cj4+Cj4gSSBh
+Z3JlZSB0aGUgY2FsbHRyYWNlIGlzIGEgYm9ndXMuIGF0aDEwa19tYWNfdmlmX2JlYWNvbl9jbGVh
+bnVwIGlzCj4gY2FsbGluZyBkbWFfZnJlZV9jb2hlcmVudC4KClRoZSBjYWxsIHRyYWNlIHdpdGhv
+dXQgYWRkaXRpb25hbCBjb21tZW50IGluIHRoZSBjb21taXQgbG9nIChzdGF0aW5nCnRoZSBmYWN0
+IHRoYXQgdGhlIGNhbGwgdHJhY2UgaXMgaW5hY2N1cmF0ZSBmb3Igc29tZSByZWFzb24pIGlzCmNv
+bmZ1c2luZy4KCgo+PiBJZiBhbnl0aGluZyB0aGUgb2ZmZW5kZXIgc2hvdWxkIGJlIGRtYV91bm1h
+cF9zaW5nbGUoKSBidXQgdGhlIHRoaW5nIGlzCj4+IGJlYWNvbl9idWYgaXMgYWx3YXlzIGFsbG9j
+YXRlZCBmb3IgQVAvSUJTUyBub3cgd2hpY2ggbWVhbnMKPj4gZG1hX3VubWFwX3NpbmdsZSgpIGlz
+IG5ldmVyIGNhbGxlZC4gRm9yIG5vbi1BUC9JQlNTIGJvdGggYXJ2aWYtPmJlYWNvbgo+PiBhbmQg
+YXJ2aWYtPmJlYWNvbl9idWYgYXJlIGFsd2F5cyBOVUxMIHNvIG5laXRoZXIKPj4gZG1hX2FsbG9j
+L2ZyZWVfY29oZXJlbnQgbm9yIGRtYV9tYXAvdW5tYXBfc2luZ2xlIGFyZSBjYWxsZWQuCj4+Cj4g
+QWdyZWUuIFdlIG5lZWQgb25lIG1vcmUgY2hlY2sgaW4gYXRoMTBrX21hY192aWZfYmVhY29uX2Zy
+ZWUuIEJ1dCBoZXJlCj4gdGhlIHByb2JsZW0gaXMgZG1hX2ZyZWVfY29oZXJlbnQgaXMgYmVpbmcg
+Y2FsbGVkIGZyb20gc29mdCBpcnEgY29udGV4dAo+IHdoaWNoIGlzIG5vdCBhbGxvd2VkIChCVUdf
+T04gbm90ZWQgaW4gQVJNIGFyY2gpLgo+Cj4gQWZ0ZXIgbW92aW5nIGRtYV9mcmVlX2NvaGVyZW50
+IG91dCBvZiBzcGlubG9jaywgdGhlIGtlcm5lbAo+IEJVRyBhdCBtbS92bWFsbG9jLmM6MTUxMiBp
+cyBuZXZlciBoaXQuCgpJdCBzZWVtcyB0aGVyZSdzIGEgYml0IG9mIGJyYW5jaGluZyBpbiB0aGUg
+YXJtIGRtYSBjb2RlLiBNYXliZSBpdCdzCnBvc3NpYmxlIHRvIGZpeCB0aGlzIHByb2JsZW0gaW4g
+YXRoMTBrIGRpZmZlcmVudGx5ICh2aWRlIHRoZSBnZnAKaWRlYSkuCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
