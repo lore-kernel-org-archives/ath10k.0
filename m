@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vc0-x232.google.com ([2607:f8b0:400c:c03::232])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XbopW-0006Ji-78
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:50:51 +0000
-Received: by mail-vc0-f178.google.com with SMTP id hq12so6560858vcb.9
- for <ath10k@lists.infradead.org>; Wed, 08 Oct 2014 03:50:29 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <20141008103312.GA25666@qca.qualcomm.com>
+ id 1Xbp5R-0005f4-P2
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 11:07:18 +0000
+Date: Wed, 8 Oct 2014 16:38:44 +0530
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
+Message-ID: <20141008110842.GC25666@qca.qualcomm.com>
 References: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
  <CA+BoTQ=K=F5TodrmuaEaJfErFx1=BL-bmPDrAaeMLjjb8c3fJQ@mail.gmail.com>
  <20141008103312.GA25666@qca.qualcomm.com>
-Date: Wed, 8 Oct 2014 12:50:28 +0200
-Message-ID: <CA+BoTQmVsyuxjvc_s-BC6ZwRWk3ACG0CvDYHJRnZ7OqY6W1Upw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQmVsyuxjvc_s-BC6ZwRWk3ACG0CvDYHJRnZ7OqY6W1Upw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQmVsyuxjvc_s-BC6ZwRWk3ACG0CvDYHJRnZ7OqY6W1Upw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +22,101 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gOCBPY3RvYmVyIDIwMTQgMTI6MzMsIFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRp
-LnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gT24gV2VkLCBPY3QgMDgsIDIwMTQgYXQgMTE6NDU6MzhB
-TSArMDIwMCwgTWljaGFsIEthemlvciB3cm90ZToKPj4gT24gOCBPY3RvYmVyIDIwMTQgMTE6MTYs
-IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+
-ID4gVGhlIGNvbW1pdCAiYXRoMTBrOiB3b3JrYXJvdW5kIGZ3IGJlYWNvbmluZyBidWciIGlzIGZy
-ZWVpbmcKPj4gPiBETUEtY29oZXJlbnQgbWVtb3J5IGluIGlycSBjb250ZXh0IHdoaWNoIGlzIGhp
-dHRpbmcgQlVHIE9OCj4+ID4gaW4gQVJNIHBsYXRmb3Jtcy4gRml4IHRoaXMgYnkgbW92aW5nIGRt
-YV9mcmVlIG91dCBvZiBzcGluCj4+ID4gbG9jay4KPj4KPj4gSSBoYXJkbHkgc2VlIGhvdyBtb3Zp
-bmcgdGhlIGZyZWVpbmcgb3V0c2lkZSB0aGUgc3BpbmxvY2sgaXMgYSBmaXguCj4+Cj4+Cj4+ID4g
-a2VybmVsIEJVRyBhdCBtbS92bWFsbG9jLmM6MTUxMiEKPj4gPiBJbnRlcm5hbCBlcnJvcjogT29w
-cyAtIEJVRzogMCBbIzFdIFBSRUVNUFQgU01QIEFSTQo+PiA+IENQVTogMCBQSUQ6IDcyMiBDb21t
-OiBob3N0YXBkIE5vdCB0YWludGVkIDMuMTQuMCAjMwo+PiA+IHRhc2s6IGRkNThiODQwIHRpOiBk
-YTZhNjAwMCB0YXNrLnRpOiBkYTZhNjAwMAo+PiA+IFBDIGlzIGF0IHZ1bm1hcCsweDI0LzB4MzQK
-Pj4gPiBMUiBpcyBhdCBfX2FybV9kbWFfZnJlZS5pc3JhLjIxKzB4MTJjLzB4MTkwCj4+ID4gWzxj
-MDJhOTdkMD5dICh2dW5tYXApIGZyb20gWzxjMDIxZjgxYz5dIChfX2FybV9kbWFfZnJlZS5pc3Jh
-LjIxKzB4MTJjLzB4MTkwKQo+PiA+IFs8YzAyMWY4MWM+XSAoX19hcm1fZG1hX2ZyZWUuaXNyYS4y
-MSkgZnJvbSBbPGJmM2IyNDQwPl0KPj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAoYXRoMTBr
-X21hY192aWZfYmVhY29uX2ZyZWUrMHhmNC8weDEwMCBbYXRoMTBrX2NvcmVdKQo+PiA+IFs8YmYz
-YjI0NDA+XSAoYXRoMTBrX21hY192aWZfYmVhY29uX2ZyZWUgW2F0aDEwa19jb3JlXSkgZnJvbSBb
-PGJmM2IyNDkwPl0KPj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAoYXRoMTBrX3JlbW92ZV9p
-bnRlcmZhY2UrMHg0NC8weDFlYyBbYXRoMTBrX2NvcmVdKQo+PiA+IFs8YmYzYjI0OTA+XSAoYXRo
-MTBrX3JlbW92ZV9pbnRlcmZhY2UgW2F0aDEwa19jb3JlXSkgZnJvbSBbPGJmMzM1MmU0Pl0KPj4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAoaWVlZTgwMjExX2FkZF92aXJ0dWFsX21vbml0b3Ir
-MHg5ZDgvMHg5ZjAgW21hYzgwMjExXSkKPj4gPiBbPGJmMzM1MmU0Pl0gKGllZWU4MDIxMV9hZGRf
-dmlydHVhbF9tb25pdG9yIFttYWM4MDIxMV0pIGZyb20gWzxiZjMzNTMwYz5dCj4+ID4gICAgICAg
-ICAgICAgICAgICAgICAgICAgKGllZWU4MDIxMV9zdG9wKzB4MTAvMHgxOCBbbWFjODAyMTFdKQo+
-PiA+IFs8YmYzMzUzMGM+XSAoaWVlZTgwMjExX3N0b3AgW21hYzgwMjExXSkgZnJvbSBbPGMwNDBk
-MTQ0Pl0KPj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAoX19kZXZfY2xvc2VfbWFueSsweDlj
-LzB4Y2MpCj4+Cj4+ICAxLiBIb3cgY2FuIGV2ZW4gaWVlZTgwMjExX2FkZF92aXJ0dWFsX21vbml0
-b3IoKSBjYWxsCj4+IGF0aDEwa19yZW1vdmVfaW50ZXJmYWNlKCk/IFVwc3RyZWFtIGF0aDEwayBk
-b2Vzbid0IGFkdmVydGlzZQo+PiBJRUVFODAyMTFfSFdfV0FOVF9NT05JVE9SX1ZJRi4gVGhpcyBj
-YWxsIHRyYWNlIGlzIGVpdGhlciBpbnZhbGlkLAo+PiB5b3UncmUgbm90IHVzaW5nIHVwc3RyZWFt
-IGF0aDEwayBhbmQvb3IgaGF2ZSBjdXN0b20gcGF0Y2hlcyBhcHBsaWVkIHRvCj4+IGF0aDEway4K
-Pj4KPiBUaGlzIGlzIHRoZSBiYWNrdHJhY2UgY2FwdHVyZWQgb24gcGFuaWMgYW5kIHdlIGFyZSBn
-ZXR0aW5nIHRoZSBzYW1lCj4gYmFja3RyYWNlIGNvbnNpc3RlbnRseS4gSSBjb25maXJtZWQgdGhh
-dCBhZGRfdmlydHVhbF9tb25pdG9yIGlzIG5vdAo+IGNhbGxlZCBmb3IgYXRoMTBrIGFzIGl0IGlz
-IG5vdCBhZHZlcnRpc2luZy4gYXRoMTBrX3JlbW92ZV9pbnRlcmZhY2UgaXMKPiBjYWxsZWQgZm9y
-IG1hc3RlciBtb2RlLgo+Cj4+ICAyLiBIb3cgY2FuIGllZWU4MDIxMV9zdG9wKCkgYmUgY2FsbGVk
-IGZyb20gYW4gaW50ZXJydXB0IGNvbnRleHQKPj4gYW55d2F5PyBpZWVlODAyMTFfc3RvcCgpIGNh
-bGxzIGllZWU4MDIxMV9kb19zdG9wKCkgd2hpY2ggY2FsbHMKPj4gaWVlZTgwMjExX3JvY19wdXJn
-ZSgpIHdoaWNoIHRyaWVzIHRvIGdldCBhIGhvbGQgb2YgbG9jYWwtPm10eC4gVGhpcwo+PiBpbXBs
-aWVzIGllZWU4MDIxMV9zdG9wKCkgaXNuJ3QgZGVzaWduIHRvIGJlIHJ1biBpbiBhbiBpbnRlcnJ1
-cHQKPj4gY29udGV4dCB0byBiZWdpbiB3aXRoIHNvIEkgZG9uJ3Qgc2VlIHdoeSBhdGgxMGsgc2hv
-dWxkIGV2ZW4gY2FyZSBpZgo+PiBhdGgxMGtfcmVtb3ZlX2ludGVyZmFjZSgpIGlzIGNhbGxlZCBp
-biBhbiBpbnRlcnJ1cHQgY29udGV4dCBhdCB0aGlzCj4+IHBvaW50Lgo+Pgo+IGluX2ludGVycnVw
-dCBpcyBjb3VudGluZyBzb2Z0IGFuZCBoYXJkIGlycXMuIGllZWU4MDIxMV9zdG9wIGlzIG5vdAo+
-IGNhbGxlZCBmcm9tIGludGVycnVwdCBjb250ZXh0LiBJbiBhdGgxMGssIGJ5IGFxdWlyaW5nIHNw
-aW5fbG9jayBpbgo+IGF0aDEwa19tYWNfdmlmX2JlYWNvbl9mcmVlIGlzIGluY3JlYXNpbmcgc29m
-dCBpcnEgY291bnQuCj4KPiBJbiBBUk0gYXJjaCwgX19hcm1fZG1hX2ZyZWUgaXMgY2FsbGluZyB2
-dW5tYXAgd2hpY2ggbWlnaHQgc2xlZXAuIFNvIGl0Cj4gY2FuIG5vdCBiZSBjYWxsZWQgd2l0aGlu
-IHNwaW5fbG9jay4KCkRpZCB5b3UgdHJ5IHVzaW5nIEdGUF9BVE9NSUMgaW4gdGhlIGRtYV9hbGxv
-Y19jb2hlcmVudCBpbnN0ZWFkIG9mCm1vdmluZyB0aGUgc3BpbmxvY2s/CgoKPgo+IFNpbWlsYXIg
-dG8gZG1hX2FsbG9jX2NvaGVyZW50LCBkbWFfZnJlZV9jb2hlcmVudCBjYW4gbm90IGJlIGNhbGxl
-ZCB1bmRlcgo+IHNvZnQgaXJxIGNvbnRleHQuCgpUaGUgY2FsbCB0cmFjZSBwb2ludHMgdG8gYXRo
-MTBrX21hY192aWZfYmVhY29uX2ZyZWUoKSB3aGljaCBkb2Vzbid0CnVzZSBkbWFfZnJlZV9jb2hl
-cmVudCgpIHNvIHdoeSBhcmUgeW91IGJsYW1pbmcgaXQgZm9yIHRoZSBCVUdfT04/CgpJZiBhbnl0
-aGluZyB0aGUgb2ZmZW5kZXIgc2hvdWxkIGJlIGRtYV91bm1hcF9zaW5nbGUoKSBidXQgdGhlIHRo
-aW5nIGlzCmJlYWNvbl9idWYgaXMgYWx3YXlzIGFsbG9jYXRlZCBmb3IgQVAvSUJTUyBub3cgd2hp
-Y2ggbWVhbnMKZG1hX3VubWFwX3NpbmdsZSgpIGlzIG5ldmVyIGNhbGxlZC4gRm9yIG5vbi1BUC9J
-QlNTIGJvdGggYXJ2aWYtPmJlYWNvbgphbmQgYXJ2aWYtPmJlYWNvbl9idWYgYXJlIGFsd2F5cyBO
-VUxMIHNvIG5laXRoZXIKZG1hX2FsbG9jL2ZyZWVfY29oZXJlbnQgbm9yIGRtYV9tYXAvdW5tYXBf
-c2luZ2xlIGFyZSBjYWxsZWQuCgoKPiBQUzogSSBhbSB1c2luZyB1cHN0cmVhbSBhdGgxMGsgZHJp
-dmVyIHdpdGhvdXQgcHJpdmF0ZSBjaGFuZ2VzLgoKSW50ZXJlc3RpbmcuIFdoeSBpcyB0aGVyZSBp
-ZWVlODAyMTFfYWRkX3ZpcnR1YWxfbW9uaXRvcigpIGNhbGxpbmcKYXRoMTBrX3JlbW92ZV9pbnRl
-cmZhY2UoKSB0aGVuPyBUaGlzIG1ha2VzIGFic29sdXRlbHkgbm8gc2Vuc2UuCgpDYW4geW91IHRy
-eSBjaGVja2luZyB3aGF0IGxpbmVzIGRvZXMgdGhlIGNhbGwgdHJhY2UgcG9pbnQgdG8gaW4gZ2Ri
-PwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Wed, Oct 08, 2014 at 12:50:28PM +0200, Michal Kazior wrote:
+> On 8 October 2014 12:33, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> > On Wed, Oct 08, 2014 at 11:45:38AM +0200, Michal Kazior wrote:
+> >> On 8 October 2014 11:16, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> >> > The commit "ath10k: workaround fw beaconing bug" is freeing
+> >> > DMA-coherent memory in irq context which is hitting BUG ON
+> >> > in ARM platforms. Fix this by moving dma_free out of spin
+> >> > lock.
+> >>
+> >> I hardly see how moving the freeing outside the spinlock is a fix.
+> >>
+> >>
+> >> > kernel BUG at mm/vmalloc.c:1512!
+> >> > Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+> >> > CPU: 0 PID: 722 Comm: hostapd Not tainted 3.14.0 #3
+> >> > task: dd58b840 ti: da6a6000 task.ti: da6a6000
+> >> > PC is at vunmap+0x24/0x34
+> >> > LR is at __arm_dma_free.isra.21+0x12c/0x190
+> >> > [<c02a97d0>] (vunmap) from [<c021f81c>] (__arm_dma_free.isra.21+0x12c/0x190)
+> >> > [<c021f81c>] (__arm_dma_free.isra.21) from [<bf3b2440>]
+> >> >                         (ath10k_mac_vif_beacon_free+0xf4/0x100 [ath10k_core])
+> >> > [<bf3b2440>] (ath10k_mac_vif_beacon_free [ath10k_core]) from [<bf3b2490>]
+> >> >                         (ath10k_remove_interface+0x44/0x1ec [ath10k_core])
+> >> > [<bf3b2490>] (ath10k_remove_interface [ath10k_core]) from [<bf3352e4>]
+> >> >                         (ieee80211_add_virtual_monitor+0x9d8/0x9f0 [mac80211])
+> >> > [<bf3352e4>] (ieee80211_add_virtual_monitor [mac80211]) from [<bf33530c>]
+> >> >                         (ieee80211_stop+0x10/0x18 [mac80211])
+> >> > [<bf33530c>] (ieee80211_stop [mac80211]) from [<c040d144>]
+> >> >                         (__dev_close_many+0x9c/0xcc)
+> >>
+> >>  1. How can even ieee80211_add_virtual_monitor() call
+> >> ath10k_remove_interface()? Upstream ath10k doesn't advertise
+> >> IEEE80211_HW_WANT_MONITOR_VIF. This call trace is either invalid,
+> >> you're not using upstream ath10k and/or have custom patches applied to
+> >> ath10k.
+> >>
+> > This is the backtrace captured on panic and we are getting the same
+> > backtrace consistently. I confirmed that add_virtual_monitor is not
+> > called for ath10k as it is not advertising. ath10k_remove_interface is
+> > called for master mode.
+> >
+> >>  2. How can ieee80211_stop() be called from an interrupt context
+> >> anyway? ieee80211_stop() calls ieee80211_do_stop() which calls
+> >> ieee80211_roc_purge() which tries to get a hold of local->mtx. This
+> >> implies ieee80211_stop() isn't design to be run in an interrupt
+> >> context to begin with so I don't see why ath10k should even care if
+> >> ath10k_remove_interface() is called in an interrupt context at this
+> >> point.
+> >>
+> > in_interrupt is counting soft and hard irqs. ieee80211_stop is not
+> > called from interrupt context. In ath10k, by aquiring spin_lock in
+> > ath10k_mac_vif_beacon_free is increasing soft irq count.
+> >
+> > In ARM arch, __arm_dma_free is calling vunmap which might sleep. So it
+> > can not be called within spin_lock.
+> 
+> Did you try using GFP_ATOMIC in the dma_alloc_coherent instead of
+> moving the spinlock?
+>
+Nope. The problem is while freeing dma memory not during allocation.
+dma_free_coherent won't take any GFP_* flags.
+> 
+> >
+> > Similar to dma_alloc_coherent, dma_free_coherent can not be called under
+> > soft irq context.
+> 
+> The call trace points to ath10k_mac_vif_beacon_free() which doesn't
+> use dma_free_coherent() so why are you blaming it for the BUG_ON?
+> 
+I agree the calltrace is a bogus. ath10k_mac_vif_beacon_cleanup is
+calling dma_free_coherent.
+
+> If anything the offender should be dma_unmap_single() but the thing is
+> beacon_buf is always allocated for AP/IBSS now which means
+> dma_unmap_single() is never called. For non-AP/IBSS both arvif->beacon
+> and arvif->beacon_buf are always NULL so neither
+> dma_alloc/free_coherent nor dma_map/unmap_single are called.
+>
+Agree. We need one more check in ath10k_mac_vif_beacon_free. But here
+the problem is dma_free_coherent is being called from soft irq context
+which is not allowed (BUG_ON noted in ARM arch).
+
+After moving dma_free_coherent out of spinlock, the kernel
+BUG at mm/vmalloc.c:1512 is never hit.
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
