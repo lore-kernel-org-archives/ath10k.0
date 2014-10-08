@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XboNe-0006ik-El
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:22:02 +0000
+ id 1XboPe-0007OF-S9
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:24:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: don't create bssid peer for ibss
-References: <1412251000-25377-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Wed, 8 Oct 2014 13:21:25 +0300
-In-Reply-To: <1412251000-25377-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Thu, 2 Oct 2014 13:56:40 +0200")
-Message-ID: <87wq8ag8uy.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: advertise all possible firmware(-api) files
+References: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Wed, 8 Oct 2014 13:23:20 +0300
+In-Reply-To: <1412597801-19298-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Mon, 6 Oct 2014 14:16:41 +0200")
+Message-ID: <87siiyg8rr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> It's not really necessary to create bssid peer for
-> bssid. Self-address peer is sufficient.
+> This is required if we take into account possibility to load the driver
+> from initrd (RAM disk), so in other words: very early in the boot process,
+> before the file system is visible.
 >
-> This prevents some firmware revisions from crashing.
+> In such case we need to have the firmware files accessible from ram disk too,
+> and this patch guarantee this.
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
 Thanks, applied.
 
