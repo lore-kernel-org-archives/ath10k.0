@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XboQa-0007nz-G3
- for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:25:05 +0000
+ id 1XboTu-0002qu-PW
+ for ath10k@lists.infradead.org; Wed, 08 Oct 2014 10:28:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix WMI scan command length
-References: <1412677603-11748-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Wed, 8 Oct 2014 13:24:17 +0300
-In-Reply-To: <1412677603-11748-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 7 Oct 2014 12:26:43 +0200")
-Message-ID: <87oatmg8q6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: add tracing for frame transmission
+References: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Wed, 8 Oct 2014 13:27:58 +0300
+In-Reply-To: <1412615346-18010-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Mon, 6 Oct 2014 22:39:06 +0530")
+Message-ID: <87k34ag8k1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,23 +23,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Fix WMI scan command length we setup when scan request.
+> Add tracing support to forward management and data frames to
+> user space for packet inspection.
 >
-> This fix issue with 636 firmware when scan always failed
-> with message:
->
-> ath10k_pci 0000:02:00.0: wmi start scan
-> ath10k_pci 0000:02:00.0: wmi stop scan reqid 1 req_type 0 vdev/scan_id 0
-> ath10k_pci 0000:02:00.0: failed to stop wmi scan: -11
-> ath10k_pci 0000:02:00.0: failed to stop scan: -11
-> ath10k_pci 0000:02:00.0: failed to start hw scan: -110
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
 Thanks, applied.
 
