@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xc9Ag-0002Dg-0Y
- for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:03 +0000
-Received: by mail-wg0-f43.google.com with SMTP id m15so705897wgh.14
- for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:38 -0700 (PDT)
+ id 1Xc9Ag-0002Dl-OR
+ for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:04 +0000
+Received: by mail-wi0-f170.google.com with SMTP id hi2so779578wib.1
+ for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:40 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/5] ath10k: re-disable interrupts after target init
-Date: Thu,  9 Oct 2014 10:22:26 +0200
-Message-Id: <1412842950-14098-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/5] ath10k: mask/unmask msi fw irq
+Date: Thu,  9 Oct 2014 10:22:27 +0200
+Message-Id: <1412842950-14098-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 References: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,41 +27,87 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-If MSI isn't configured device ROM program expects
-legacy interrupts to be enabled before it can
-fully boot. Don't forget to disable legacy
-interrupts after that.
+This was the final missing bit to making sure the
+device doesn't assert interrupts to host.
 
-While at it re-use the legacy irq enabling helper
-instead of calling ath10k_pci_write32().
+This should fix possible race when target crashes
+during driver teardown.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/hw.h  |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c | 25 +++++++++++++++++++++++--
+ 2 files changed, 24 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5dd6551..6242319 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -289,6 +289,7 @@ struct ath10k_pktlog_hdr {
+ #define SI_RX_DATA1_OFFSET			0x00000014
+ 
+ #define CORE_CTRL_CPU_INTR_MASK			0x00002000
++#define CORE_CTRL_PCIE_REG_31_MASK		0x00000800
+ #define CORE_CTRL_ADDRESS			0x0000
+ #define PCIE_INTR_ENABLE_ADDRESS		0x0008
+ #define PCIE_INTR_CAUSE_ADDRESS			0x000c
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 730bb18..6077095 100644
+index 6077095..cdc03e4 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2279,14 +2279,13 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+@@ -1143,6 +1143,26 @@ static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
+ 						 &dl_is_polled);
+ }
  
- 		if (ar_pci->num_msi_intrs == 0)
- 			/* Fix potential race by repeating CORE_BASE writes */
--			ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--					   PCIE_INTR_ENABLE_ADDRESS,
--					   PCIE_INTR_FIRMWARE_MASK |
--					   PCIE_INTR_CE_MASK_ALL);
-+			ath10k_pci_enable_legacy_irq(ar);
++static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
++{
++	u32 val;
++
++	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
++	val &= ~CORE_CTRL_PCIE_REG_31_MASK;
++
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
++}
++
++static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
++{
++	u32 val;
++
++	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
++	val |= CORE_CTRL_PCIE_REG_31_MASK;
++
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
++}
++
+ static void ath10k_pci_irq_disable(struct ath10k *ar)
+ {
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+@@ -1150,7 +1170,7 @@ static void ath10k_pci_irq_disable(struct ath10k *ar)
  
- 		mdelay(10);
+ 	ath10k_ce_disable_interrupts(ar);
+ 	ath10k_pci_disable_and_clear_legacy_irq(ar);
+-	/* FIXME: How to mask all MSI interrupts? */
++	ath10k_pci_irq_msi_fw_mask(ar);
+ 
+ 	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
+ 		synchronize_irq(ar_pci->pdev->irq + i);
+@@ -1160,7 +1180,7 @@ static void ath10k_pci_irq_enable(struct ath10k *ar)
+ {
+ 	ath10k_ce_enable_interrupts(ar);
+ 	ath10k_pci_enable_legacy_irq(ar);
+-	/* FIXME: How to unmask all MSI interrupts? */
++	ath10k_pci_irq_msi_fw_unmask(ar);
+ }
+ 
+ static int ath10k_pci_hif_start(struct ath10k *ar)
+@@ -2285,6 +2305,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
  	} while (time_before(jiffies, timeout));
  
-+	ath10k_pci_disable_and_clear_legacy_irq(ar);
-+
+ 	ath10k_pci_disable_and_clear_legacy_irq(ar);
++	ath10k_pci_irq_msi_fw_mask(ar);
+ 
  	if (val == 0xffffffff) {
  		ath10k_err(ar, "failed to read device register, device is gone\n");
- 		return -EIO;
 -- 
 1.8.5.3
 
