@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xc9Ai-0002Dv-Aa
- for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:06 +0000
-Received: by mail-wi0-f171.google.com with SMTP id em10so12352304wid.16
- for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:41 -0700 (PDT)
+ id 1Xc9Ag-0002Dg-0Y
+ for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:03 +0000
+Received: by mail-wg0-f43.google.com with SMTP id m15so705897wgh.14
+ for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:38 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/5] ath10k: make warm reset a bit safer and faster
-Date: Thu,  9 Oct 2014 10:22:28 +0200
-Message-Id: <1412842950-14098-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/5] ath10k: re-disable interrupts after target init
+Date: Thu,  9 Oct 2014 10:22:26 +0200
+Message-Id: <1412842950-14098-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 References: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,164 +27,41 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-One of the problems with warm reset I've found is
-that it must be guaranteed that copy engine
-registers are not being accessed while being
-reset. Otherwise in worst case scenario the host
-may lock up.
+If MSI isn't configured device ROM program expects
+legacy interrupts to be enabled before it can
+fully boot. Don't forget to disable legacy
+interrupts after that.
 
-Instead of using sleeps and hoping the device is
-operational in some arbitrary timeframes use
-firmware indication register.
-
-As a side effect this makes driver
-boot/stop/recovery faster.
+While at it re-use the legacy irq enabling helper
+instead of calling ath10k_pci_write32().
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 108 +++++++++++++++-------------------
- 1 file changed, 46 insertions(+), 62 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index cdc03e4..dad92de 100644
+index 730bb18..6077095 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1708,89 +1708,73 @@ static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
- 	msleep(10);
- }
+@@ -2279,14 +2279,13 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
  
--static int ath10k_pci_warm_reset(struct ath10k *ar)
-+static void ath10k_pci_warm_reset_cpu(struct ath10k *ar)
- {
- 	u32 val;
+ 		if (ar_pci->num_msi_intrs == 0)
+ 			/* Fix potential race by repeating CORE_BASE writes */
+-			ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
+-					   PCIE_INTR_ENABLE_ADDRESS,
+-					   PCIE_INTR_FIRMWARE_MASK |
+-					   PCIE_INTR_CE_MASK_ALL);
++			ath10k_pci_enable_legacy_irq(ar);
  
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
--
--	spin_lock_bh(&ar->data_lock);
--
--	ar->stats.fw_warm_reset_counter++;
--
--	spin_unlock_bh(&ar->data_lock);
--
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
--
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
--
--	/* disable pending irqs */
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_ENABLE_ADDRESS, 0);
--
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_CLR_ADDRESS, ~0);
--
--	msleep(100);
--
--	/* clear fw indicator */
- 	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, 0);
+ 		mdelay(10);
+ 	} while (time_before(jiffies, timeout));
  
--	/* clear target LF timer interrupts */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_LF_TIMER_CONTROL0_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
--			   SOC_LF_TIMER_CONTROL0_ADDRESS,
--			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+				SOC_RESET_CONTROL_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
-+			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+}
++	ath10k_pci_disable_and_clear_legacy_irq(ar);
 +
-+static void ath10k_pci_warm_reset_ce(struct ath10k *ar)
-+{
-+	u32 val;
- 
--	/* reset CE */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
- 				SOC_RESET_CONTROL_ADDRESS);
-+
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val | SOC_RESET_CONTROL_CE_RST_MASK);
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
- 	msleep(10);
--
--	/* unreset CE */
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val & ~SOC_RESET_CONTROL_CE_RST_MASK);
-+}
-+
-+static void ath10k_pci_warm_reset_clear_lf(struct ath10k *ar)
-+{
-+	u32 val;
-+
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	msleep(10);
-+				SOC_LF_TIMER_CONTROL0_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
-+			   SOC_LF_TIMER_CONTROL0_ADDRESS,
-+			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+}
- 
--	ath10k_pci_warm_reset_si0(ar);
-+static int ath10k_pci_warm_reset(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
- 
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
-+	spin_lock_bh(&ar->data_lock);
-+	ar->stats.fw_warm_reset_counter++;
-+	spin_unlock_bh(&ar->data_lock);
- 
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
-+	ath10k_pci_irq_disable(ar);
- 
--	/* CPU warm reset */
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
--			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+	/* Make sure the target CPU is not doing anything dangerous, e.g. if it
-+	 * were to access copy engine while host performs copy engine reset
-+	 * then it is possible for the device to confuse pci-e controller to
-+	 * the point of bringing host system to a complete stop (i.e. hang).
-+	 */
-+	ath10k_pci_warm_reset_si0(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
-+	ath10k_pci_wait_for_target_init(ar);
- 
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target reset state: 0x%08x\n",
--		   val);
-+	ath10k_pci_warm_reset_clear_lf(ar);
-+	ath10k_pci_warm_reset_ce(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
- 
--	msleep(100);
-+	ret = ath10k_pci_wait_for_target_init(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wait for target init: %d\n", ret);
-+		return ret;
-+	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset complete\n");
- 
+ 	if (val == 0xffffffff) {
+ 		ath10k_err(ar, "failed to read device register, device is gone\n");
+ 		return -EIO;
 -- 
 1.8.5.3
 
