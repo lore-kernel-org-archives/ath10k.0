@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xc9Ag-0002Dl-OR
- for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:04 +0000
-Received: by mail-wi0-f170.google.com with SMTP id hi2so779578wib.1
- for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:40 -0700 (PDT)
+ id 1Xc9Ak-0002EX-18
+ for ath10k@lists.infradead.org; Thu, 09 Oct 2014 08:34:07 +0000
+Received: by mail-wi0-f173.google.com with SMTP id fb4so12424079wid.0
+ for <ath10k@lists.infradead.org>; Thu, 09 Oct 2014 01:33:44 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/5] ath10k: mask/unmask msi fw irq
-Date: Thu,  9 Oct 2014 10:22:27 +0200
-Message-Id: <1412842950-14098-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 5/5] ath10k: replace power up/down with reset callback
+Date: Thu,  9 Oct 2014 10:22:30 +0200
+Message-Id: <1412842950-14098-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 References: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,87 +27,252 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This was the final missing bit to making sure the
-device doesn't assert interrupts to host.
+The power up/down didn't make much sense any more
+since hif_stop already stops the device
+compeletely. The target lifecycle was never symmetric
+so don't bother trying to make it look like it is
+and expose a reset hif callback instead of power
+up/down callbacks.
 
-This should fix possible race when target crashes
-during driver teardown.
+This removes redundant reset calls and thus makes
+device boot/stop/recovery a bit faster.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h  |  1 +
- drivers/net/wireless/ath/ath10k/pci.c | 25 +++++++++++++++++++++++--
- 2 files changed, 24 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c     |  7 +------
+ drivers/net/wireless/ath/ath10k/hif.h      | 22 ++++++----------------
+ drivers/net/wireless/ath/ath10k/mac.c      |  8 ++------
+ drivers/net/wireless/ath/ath10k/pci.c      | 12 ++----------
+ drivers/net/wireless/ath/ath10k/testmode.c |  8 ++------
+ 5 files changed, 13 insertions(+), 44 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 5dd6551..6242319 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -289,6 +289,7 @@ struct ath10k_pktlog_hdr {
- #define SI_RX_DATA1_OFFSET			0x00000014
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 37e3166..5000348 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -915,7 +915,7 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	struct bmi_target_info target_info;
+ 	int ret = 0;
  
- #define CORE_CTRL_CPU_INTR_MASK			0x00002000
-+#define CORE_CTRL_PCIE_REG_31_MASK		0x00000800
- #define CORE_CTRL_ADDRESS			0x0000
- #define PCIE_INTR_ENABLE_ADDRESS		0x0008
- #define PCIE_INTR_CAUSE_ADDRESS			0x000c
+-	ret = ath10k_hif_power_up(ar);
++	ret = ath10k_hif_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not start pci hif (%d)\n", ret);
+ 		return ret;
+@@ -925,7 +925,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	ret = ath10k_bmi_get_target_info(ar, &target_info);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not get target info (%d)\n", ret);
+-		ath10k_hif_power_down(ar);
+ 		return ret;
+ 	}
+ 
+@@ -935,14 +934,12 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	ret = ath10k_init_hw_params(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not get hw params (%d)\n", ret);
+-		ath10k_hif_power_down(ar);
+ 		return ret;
+ 	}
+ 
+ 	ret = ath10k_core_fetch_firmware_files(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "could not fetch firmware files (%d)\n", ret);
+-		ath10k_hif_power_down(ar);
+ 		return ret;
+ 	}
+ 
+@@ -952,7 +949,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	if (ret) {
+ 		ath10k_err(ar, "could not init core (%d)\n", ret);
+ 		ath10k_core_free_firmware_files(ar);
+-		ath10k_hif_power_down(ar);
+ 		mutex_unlock(&ar->conf_mutex);
+ 		return ret;
+ 	}
+@@ -962,7 +958,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+ 
+-	ath10k_hif_power_down(ar);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
+index 30301f5..26a8bcf 100644
+--- a/drivers/net/wireless/ath/ath10k/hif.h
++++ b/drivers/net/wireless/ath/ath10k/hif.h
+@@ -56,11 +56,13 @@ struct ath10k_hif_ops {
+ 				void *request, u32 request_len,
+ 				void *response, u32 *response_len);
+ 
++	/* Reset the device and puts it into BMI */
++	int (*reset)(struct ath10k *ar);
++
+ 	/* Post BMI phase, after FW is loaded. Starts regular operation */
+ 	int (*start)(struct ath10k *ar);
+ 
+-	/* Clean up what start() did. This does not revert to BMI phase. If
+-	 * desired so, call power_down() and power_up() */
++	/* Clean up what start() did. This does not revert to BMI */
+ 	void (*stop)(struct ath10k *ar);
+ 
+ 	int (*map_service_to_pipe)(struct ath10k *ar, u16 service_id,
+@@ -84,13 +86,6 @@ struct ath10k_hif_ops {
+ 
+ 	u16 (*get_free_queue_number)(struct ath10k *ar, u8 pipe_id);
+ 
+-	/* Power up the device and enter BMI transfer mode for FW download */
+-	int (*power_up)(struct ath10k *ar);
+-
+-	/* Power down the device and free up resources. stop() must be called
+-	 * before this if start() was called earlier */
+-	void (*power_down)(struct ath10k *ar);
+-
+ 	int (*suspend)(struct ath10k *ar);
+ 	int (*resume)(struct ath10k *ar);
+ };
+@@ -161,14 +156,9 @@ static inline u16 ath10k_hif_get_free_queue_number(struct ath10k *ar,
+ 	return ar->hif.ops->get_free_queue_number(ar, pipe_id);
+ }
+ 
+-static inline int ath10k_hif_power_up(struct ath10k *ar)
+-{
+-	return ar->hif.ops->power_up(ar);
+-}
+-
+-static inline void ath10k_hif_power_down(struct ath10k *ar)
++static inline int ath10k_hif_reset(struct ath10k *ar)
+ {
+-	ar->hif.ops->power_down(ar);
++	return ar->hif.ops->reset(ar);
+ }
+ 
+ static inline int ath10k_hif_suspend(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 75e0aeb..001ff1a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2392,7 +2392,6 @@ void ath10k_halt(struct ath10k *ar)
+ 	ath10k_scan_finish(ar);
+ 	ath10k_peer_cleanup_all(ar);
+ 	ath10k_core_stop(ar);
+-	ath10k_hif_power_down(ar);
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 	list_for_each_entry(arvif, &ar->arvifs, list)
+@@ -2495,7 +2494,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto err;
+ 	}
+ 
+-	ret = ath10k_hif_power_up(ar);
++	ret = ath10k_hif_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "Could not init hif: %d\n", ret);
+ 		goto err_off;
+@@ -2504,7 +2503,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	ret = ath10k_core_start(ar, ATH10K_FIRMWARE_MODE_NORMAL);
+ 	if (ret) {
+ 		ath10k_err(ar, "Could not init core: %d\n", ret);
+-		goto err_power_down;
++		goto err_off;
+ 	}
+ 
+ 	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->pmf_qos, 1);
+@@ -2551,9 +2550,6 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ err_core_stop:
+ 	ath10k_core_stop(ar);
+ 
+-err_power_down:
+-	ath10k_hif_power_down(ar);
+-
+ err_off:
+ 	ar->state = ATH10K_STATE_OFF;
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 6077095..cdc03e4 100644
+index a63fe7c..78226a6 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1143,6 +1143,26 @@ static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
- 						 &dl_is_polled);
+@@ -1855,7 +1855,7 @@ static int ath10k_pci_chip_reset(struct ath10k *ar)
+ 	return 0;
  }
  
-+static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
-+{
-+	u32 val;
-+
-+	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
-+	val &= ~CORE_CTRL_PCIE_REG_31_MASK;
-+
-+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
-+}
-+
-+static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
-+{
-+	u32 val;
-+
-+	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
-+	val |= CORE_CTRL_PCIE_REG_31_MASK;
-+
-+	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
-+}
-+
- static void ath10k_pci_irq_disable(struct ath10k *ar)
+-static int ath10k_pci_hif_power_up(struct ath10k *ar)
++static int ath10k_pci_hif_reset(struct ath10k *ar)
  {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-@@ -1150,7 +1170,7 @@ static void ath10k_pci_irq_disable(struct ath10k *ar)
+ 	int ret;
  
- 	ath10k_ce_disable_interrupts(ar);
- 	ath10k_pci_disable_and_clear_legacy_irq(ar);
--	/* FIXME: How to mask all MSI interrupts? */
-+	ath10k_pci_irq_msi_fw_mask(ar);
- 
- 	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
- 		synchronize_irq(ar_pci->pdev->irq + i);
-@@ -1160,7 +1180,7 @@ static void ath10k_pci_irq_enable(struct ath10k *ar)
- {
- 	ath10k_ce_enable_interrupts(ar);
- 	ath10k_pci_enable_legacy_irq(ar);
--	/* FIXME: How to unmask all MSI interrupts? */
-+	ath10k_pci_irq_msi_fw_unmask(ar);
+@@ -1904,13 +1904,6 @@ err:
+ 	return ret;
  }
  
- static int ath10k_pci_hif_start(struct ath10k *ar)
-@@ -2285,6 +2305,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 	} while (time_before(jiffies, timeout));
+-static void ath10k_pci_hif_power_down(struct ath10k *ar)
+-{
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power down\n");
+-
+-	ath10k_pci_warm_reset(ar);
+-}
+-
+ #ifdef CONFIG_PM
  
- 	ath10k_pci_disable_and_clear_legacy_irq(ar);
-+	ath10k_pci_irq_msi_fw_mask(ar);
+ #define ATH10K_PCI_PM_CONTROL 0x44
+@@ -1964,6 +1957,7 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.tx_sg			= ath10k_pci_hif_tx_sg,
+ 	.diag_read		= ath10k_pci_hif_diag_read,
+ 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
++	.reset			= ath10k_pci_hif_reset,
+ 	.start			= ath10k_pci_hif_start,
+ 	.stop			= ath10k_pci_hif_stop,
+ 	.map_service_to_pipe	= ath10k_pci_hif_map_service_to_pipe,
+@@ -1971,8 +1965,6 @@ static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
+ 	.send_complete_check	= ath10k_pci_hif_send_complete_check,
+ 	.set_callbacks		= ath10k_pci_hif_set_callbacks,
+ 	.get_free_queue_number	= ath10k_pci_hif_get_free_queue_number,
+-	.power_up		= ath10k_pci_hif_power_up,
+-	.power_down		= ath10k_pci_hif_power_down,
+ #ifdef CONFIG_PM
+ 	.suspend		= ath10k_pci_hif_suspend,
+ 	.resume			= ath10k_pci_hif_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/testmode.c b/drivers/net/wireless/ath/ath10k/testmode.c
+index 483db9c..0bb3df6 100644
+--- a/drivers/net/wireless/ath/ath10k/testmode.c
++++ b/drivers/net/wireless/ath/ath10k/testmode.c
+@@ -195,7 +195,7 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
+ 	memset(ar->fw_features, 0, sizeof(ar->fw_features));
+ 	__set_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features);
  
- 	if (val == 0xffffffff) {
- 		ath10k_err(ar, "failed to read device register, device is gone\n");
+-	ret = ath10k_hif_power_up(ar);
++	ret = ath10k_hif_reset(ar);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to power up hif (testmode): %d\n", ret);
+ 		ar->state = ATH10K_STATE_OFF;
+@@ -206,7 +206,7 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to start core (testmode): %d\n", ret);
+ 		ar->state = ATH10K_STATE_OFF;
+-		goto err_power_down;
++		goto err_fw_features;
+ 	}
+ 
+ 	ar->state = ATH10K_STATE_UTF;
+@@ -217,9 +217,6 @@ static int ath10k_tm_cmd_utf_start(struct ath10k *ar, struct nlattr *tb[])
+ 
+ 	return 0;
+ 
+-err_power_down:
+-	ath10k_hif_power_down(ar);
+-
+ err_fw_features:
+ 	/* return the original firmware features */
+ 	memcpy(ar->fw_features, ar->testmode.orig_fw_features,
+@@ -239,7 +236,6 @@ static void __ath10k_tm_cmd_utf_stop(struct ath10k *ar)
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	ath10k_core_stop(ar);
+-	ath10k_hif_power_down(ar);
+ 
+ 	spin_lock_bh(&ar->data_lock);
+ 
 -- 
 1.8.5.3
 
