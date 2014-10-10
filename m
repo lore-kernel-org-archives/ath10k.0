@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XcYyR-00086J-6W
- for ath10k@lists.infradead.org; Fri, 10 Oct 2014 12:07:08 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: fix kernel panic while shutting down AP
-Date: Fri, 10 Oct 2014 17:38:27 +0530
-Message-ID: <1412942907-24760-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1Xcalp-0008Ty-Ro
+ for ath10k@lists.infradead.org; Fri, 10 Oct 2014 14:02:16 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: use bss_info as txpower source
+References: <1412940780-25360-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 10 Oct 2014 17:01:32 +0300
+In-Reply-To: <1412940780-25360-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Oct 2014 13:33:00 +0200")
+Message-ID: <87ppe0aurn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,37 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Based on GFP flag given to DMA coherent allocation, the behaviour of
-dma_free_coherent is changed. This behavioural diffrence is noticeable
-in ARM platform. If DMA memory is allocated with GFP_KERNEL, free
-coherent can not be called inside spin lock. This is causing kernel
-crash in ARM platforms. Fix this by changing GFP flag to atomic.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Cc: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> This simply changes the source for txpower setup.
+> It does not make ath10k use different txpower
+> values for different vifs.
+>
+> This will make it easier to implement chanctx in
+> ath10k in the future.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 75e0aeb..14a5944 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2839,7 +2839,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		arvif->beacon_buf = dma_zalloc_coherent(ar->dev,
- 							IEEE80211_MAX_FRAME_LEN,
- 							&arvif->beacon_paddr,
--							GFP_KERNEL);
-+							GFP_ATOMIC);
- 		if (!arvif->beacon_buf) {
- 			ret = -ENOMEM;
- 			ath10k_warn(ar, "failed to allocate beacon buffer: %d\n",
+In ath-next-test there was a conflict in ath10k_bss_info_changed().
+Please check my resolution:
+
+https://github.com/kvalo/ath/commit/86eea6fda33ce16a40f98d41c19ea4b0e157f5ba
+
 -- 
-2.1.2
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
