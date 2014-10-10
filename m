@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XcXw6-0002GO-B5
- for ath10k@lists.infradead.org; Fri, 10 Oct 2014 11:00:39 +0000
-Received: by mail-wg0-f48.google.com with SMTP id k14so3551174wgh.31
- for <ath10k@lists.infradead.org>; Fri, 10 Oct 2014 04:00:15 -0700 (PDT)
+ id 1XcYcW-0003jy-2f
+ for ath10k@lists.infradead.org; Fri, 10 Oct 2014 11:44:29 +0000
+Received: by mail-wg0-f50.google.com with SMTP id a1so3712923wgh.9
+ for <ath10k@lists.infradead.org>; Fri, 10 Oct 2014 04:44:02 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: simplify computation of mgmt rx band
-Date: Fri, 10 Oct 2014 12:49:08 +0200
-Message-Id: <1412938148-6659-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: use bss_info as txpower source
+Date: Fri, 10 Oct 2014 13:33:00 +0200
+Message-Id: <1412940780-25360-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,70 +25,162 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Using global channel won't work with chanctx. Try
-to determine the channel from the information
-provided in the wmi event itself alone. This
-should be sufficient.
+This simply changes the source for txpower setup.
+It does not make ath10k use different txpower
+values for different vifs.
+
+This will make it easier to implement chanctx in
+ath10k in the future.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 32 ++++++++++++++++----------------
- 1 file changed, 16 insertions(+), 16 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 94 ++++++++++++++++++++++++++--------
+ 2 files changed, 75 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 829fccf..ae746ce 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1114,7 +1114,6 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	struct wmi_mgmt_rx_event_v2 *ev_v2;
- 	struct wmi_mgmt_rx_hdr_v1 *ev_hdr;
- 	struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
--	struct ieee80211_channel *ch;
- 	struct ieee80211_hdr *hdr;
- 	u32 rx_status;
- 	u32 channel;
-@@ -1167,25 +1166,26 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 1ac2f14..fc9f558 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -273,6 +273,7 @@ struct ath10k_vif {
+ 	u8 force_sgi;
+ 	bool use_cts_prot;
+ 	int num_legacy_stations;
++	int txpower;
+ };
  
--	/* HW can Rx CCK rates on 5GHz. In that case phy_mode is set to
-+	/* Hardware can Rx CCK rates on 5GHz. In that case phy_mode is set to
- 	 * MODE_11B. This means phy_mode is not a reliable source for the band
--	 * of mgmt rx. */
--
--	ch = ar->scan_channel;
--	if (!ch)
--		ch = ar->rx_channel;
--
--	if (ch) {
--		status->band = ch->band;
--
--		if (phy_mode == MODE_11B &&
--		    status->band == IEEE80211_BAND_5GHZ)
--			ath10k_dbg(ar, ATH10K_DBG_MGMT, "wmi mgmt rx 11b (CCK) on 5GHz\n");
-+	 * of mgmt rx.
-+	 */
-+	if (channel >= 1 && channel <= 14) {
-+		status->band = IEEE80211_BAND_2GHZ;
-+	} else if (channel >= 36 && channel <= 165) {
-+		status->band = IEEE80211_BAND_5GHZ;
- 	} else {
--		ath10k_warn(ar, "using (unreliable) phy_mode to extract band for mgmt rx\n");
--		status->band = phy_mode_to_band(phy_mode);
-+		/* Shouldn't happen unless list of advertised channels to
-+		 * mac80211 has been changed.
-+		 */
-+		WARN_ON_ONCE(1);
-+		dev_kfree_skb(skb);
-+		return 0;
+ struct ath10k_vif_iter {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 75e0aeb..8529b54 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2688,12 +2688,68 @@ static void ath10k_config_chan(struct ath10k *ar)
+ 	ath10k_monitor_recalc(ar);
+ }
+ 
++static int ath10k_mac_txpower_setup(struct ath10k *ar, int txpower)
++{
++	int ret;
++	u32 param;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac txpower %d\n", txpower);
++
++	param = ar->wmi.pdev_param->txpower_limit2g;
++	ret = ath10k_wmi_pdev_set_param(ar, param, txpower * 2);
++	if (ret) {
++		ath10k_warn(ar, "failed to set 2g txpower %d: %d\n",
++			    txpower, ret);
++		return ret;
++	}
++
++	param = ar->wmi.pdev_param->txpower_limit5g;
++	ret = ath10k_wmi_pdev_set_param(ar, param, txpower * 2);
++	if (ret) {
++		ath10k_warn(ar, "failed to set 5g txpower %d: %d\n",
++			    txpower, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ath10k_mac_txpower_recalc(struct ath10k *ar)
++{
++	struct ath10k_vif *arvif;
++	int ret, txpower = -1;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	list_for_each_entry(arvif, &ar->arvifs, list) {
++		WARN_ON(arvif->txpower < 0);
++
++		if (txpower == -1)
++			txpower = arvif->txpower;
++		else
++			txpower = min(txpower, arvif->txpower);
++	}
++
++	if (WARN_ON(txpower == -1))
++		return -EINVAL;
++
++	ret = ath10k_mac_txpower_setup(ar, txpower);
++	if (ret) {
++		ath10k_warn(ar, "failed to setup tx power %d: %d\n",
++			    txpower, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ {
+ 	struct ath10k *ar = hw->priv;
+ 	struct ieee80211_conf *conf = &hw->conf;
+ 	int ret = 0;
+-	u32 param;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
+@@ -2717,25 +2773,6 @@ static int ath10k_config(struct ieee80211_hw *hw, u32 changed)
+ 		}
  	}
  
-+	if (phy_mode == MODE_11B && status->band == IEEE80211_BAND_5GHZ)
-+		ath10k_dbg(ar, ATH10K_DBG_MGMT, "wmi mgmt rx 11b (CCK) on 5GHz\n");
+-	if (changed & IEEE80211_CONF_CHANGE_POWER) {
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac config power %d\n",
+-			   hw->conf.power_level);
+-
+-		param = ar->wmi.pdev_param->txpower_limit2g;
+-		ret = ath10k_wmi_pdev_set_param(ar, param,
+-						hw->conf.power_level * 2);
+-		if (ret)
+-			ath10k_warn(ar, "failed to set 2g txpower %d: %d\n",
+-				    hw->conf.power_level, ret);
+-
+-		param = ar->wmi.pdev_param->txpower_limit5g;
+-		ret = ath10k_wmi_pdev_set_param(ar, param,
+-						hw->conf.power_level * 2);
+-		if (ret)
+-			ath10k_warn(ar, "failed to set 5g txpower %d: %d\n",
+-				    hw->conf.power_level, ret);
+-	}
+-
+ 	if (changed & IEEE80211_CONF_CHANGE_PS)
+ 		ath10k_config_ps(ar);
+ 
+@@ -2944,6 +2981,13 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		goto err_peer_delete;
+ 	}
+ 
++	arvif->txpower = vif->bss_conf.txpower;
++	ret = ath10k_mac_txpower_recalc(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to recalc tx power: %d\n", ret);
++		goto err_peer_delete;
++	}
 +
- 	status->freq = ieee80211_channel_to_frequency(channel, status->band);
- 	status->signal = snr + ATH10K_DEFAULT_NOISE_FLOOR;
- 	status->rate_idx = get_rate_idx(rate, status->band);
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return 0;
+ 
+@@ -3224,6 +3268,16 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		}
+ 	}
+ 
++	if (changed & BSS_CHANGED_TXPOWER) {
++		ath10k_dbg(ar, ATH10K_DBG_MAC, "mac vdev_id %i txpower %d\n",
++			   arvif->vdev_id, info->txpower);
++
++		arvif->txpower = info->txpower;
++		ret = ath10k_mac_txpower_recalc(ar);
++		if (ret)
++			ath10k_warn(ar, "failed to recalc tx power: %d\n", ret);
++	}
++
+ exit:
+ 	mutex_unlock(&ar->conf_mutex);
+ }
 -- 
 1.8.5.3
 
