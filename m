@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XcUlL-0003ly-JH
- for ath10k@lists.infradead.org; Fri, 10 Oct 2014 07:37:20 +0000
-Received: by mail-wg0-f49.google.com with SMTP id x12so3176265wgg.20
- for <ath10k@lists.infradead.org>; Fri, 10 Oct 2014 00:36:57 -0700 (PDT)
+ id 1XcWbP-0002k6-N7
+ for ath10k@lists.infradead.org; Fri, 10 Oct 2014 09:35:12 +0000
+Date: Fri, 10 Oct 2014 15:06:31 +0530
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix kernel panic while shutting down AP
+Message-ID: <20141010093629.GA31275@qca.qualcomm.com>
+References: <1412759786-10567-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <CA+BoTQ=K=F5TodrmuaEaJfErFx1=BL-bmPDrAaeMLjjb8c3fJQ@mail.gmail.com>
+ <20141008103312.GA25666@qca.qualcomm.com>
+ <CA+BoTQmVsyuxjvc_s-BC6ZwRWk3ACG0CvDYHJRnZ7OqY6W1Upw@mail.gmail.com>
+ <20141008110842.GC25666@qca.qualcomm.com>
+ <CA+BoTQ=BuSrkBxkbsShZM=Zh8uqye5u0HydpfM9roubgi0-4tQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1412842950-14098-4-git-send-email-michal.kazior@tieto.com>
-References: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
- <1412842950-14098-4-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 10 Oct 2014 09:36:57 +0200
-Message-ID: <CA+BoTQmZXuo+NkkzE++Puf19ZfRWk7DdLWwonNn7YuREryfEwA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] ath10k: make warm reset a bit safer and faster
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQ=BuSrkBxkbsShZM=Zh8uqye5u0HydpfM9roubgi0-4tQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +24,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gOSBPY3RvYmVyIDIwMTQgMTA6MjIsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGll
-dG8uY29tPiB3cm90ZToKPiBPbmUgb2YgdGhlIHByb2JsZW1zIHdpdGggd2FybSByZXNldCBJJ3Zl
-IGZvdW5kIGlzCj4gdGhhdCBpdCBtdXN0IGJlIGd1YXJhbnRlZWQgdGhhdCBjb3B5IGVuZ2luZQo+
-IHJlZ2lzdGVycyBhcmUgbm90IGJlaW5nIGFjY2Vzc2VkIHdoaWxlIGJlaW5nCj4gcmVzZXQuIE90
-aGVyd2lzZSBpbiB3b3JzdCBjYXNlIHNjZW5hcmlvIHRoZSBob3N0Cj4gbWF5IGxvY2sgdXAuCj4K
-PiBJbnN0ZWFkIG9mIHVzaW5nIHNsZWVwcyBhbmQgaG9waW5nIHRoZSBkZXZpY2UgaXMKPiBvcGVy
-YXRpb25hbCBpbiBzb21lIGFyYml0cmFyeSB0aW1lZnJhbWVzIHVzZQo+IGZpcm13YXJlIGluZGlj
-YXRpb24gcmVnaXN0ZXIuCj4KPiBBcyBhIHNpZGUgZWZmZWN0IHRoaXMgbWFrZXMgZHJpdmVyCj4g
-Ym9vdC9zdG9wL3JlY292ZXJ5IGZhc3Rlci4KPgo+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXpp
-b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgpbLi4uXQo+ICtzdGF0aWMgaW50IGF0aDEwa19w
-Y2lfd2FybV9yZXNldChzdHJ1Y3QgYXRoMTBrICphcikKPiArewo+ICsgICAgICAgaW50IHJldDsK
-PiArCj4gKyAgICAgICBhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX0JPT1QsICJib290IHdhcm0g
-cmVzZXRcbiIpOwo+Cj4gLSAgICAgICAvKiBkZWJ1ZyAqLwo+IC0gICAgICAgdmFsID0gYXRoMTBr
-X3BjaV9yZWFkMzIoYXIsIFNPQ19DT1JFX0JBU0VfQUREUkVTUyArCj4gLSAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBQQ0lFX0lOVFJfQ0FVU0VfQUREUkVTUyk7Cj4gLSAgICAgICBhdGgx
-MGtfZGJnKGFyLCBBVEgxMEtfREJHX0JPT1QsICJib290IGhvc3QgY3B1IGludHIgY2F1c2U6IDB4
-JTA4eFxuIiwKPiAtICAgICAgICAgICAgICAgICAgdmFsKTsKPiArICAgICAgIHNwaW5fbG9ja19i
-aCgmYXItPmRhdGFfbG9jayk7Cj4gKyAgICAgICBhci0+c3RhdHMuZndfd2FybV9yZXNldF9jb3Vu
-dGVyKys7Cj4gKyAgICAgICBzcGluX3VubG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4KPiAtICAg
-ICAgIHZhbCA9IGF0aDEwa19wY2lfcmVhZDMyKGFyLCBTT0NfQ09SRV9CQVNFX0FERFJFU1MgKwo+
-IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgQ1BVX0lOVFJfQUREUkVTUyk7Cj4gLSAg
-ICAgICBhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX0JPT1QsICJib290IHRhcmdldCBjcHUgaW50
-ciBjYXVzZTogMHglMDh4XG4iLAo+IC0gICAgICAgICAgICAgICAgICB2YWwpOwo+ICsgICAgICAg
-YXRoMTBrX3BjaV9pcnFfZGlzYWJsZShhcik7Cj4KPiAtICAgICAgIC8qIENQVSB3YXJtIHJlc2V0
-ICovCj4gLSAgICAgICB2YWwgPSBhdGgxMGtfcGNpX3JlYWQzMihhciwgUlRDX1NPQ19CQVNFX0FE
-RFJFU1MgKwo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgU09DX1JFU0VUX0NPTlRS
-T0xfQUREUkVTUyk7Cj4gLSAgICAgICBhdGgxMGtfcGNpX3dyaXRlMzIoYXIsIFJUQ19TT0NfQkFT
-RV9BRERSRVNTICsgU09DX1JFU0VUX0NPTlRST0xfQUREUkVTUywKPiAtICAgICAgICAgICAgICAg
-ICAgICAgICAgICB2YWwgfCBTT0NfUkVTRVRfQ09OVFJPTF9DUFVfV0FSTV9SU1RfTUFTSyk7Cj4g
-KyAgICAgICAvKiBNYWtlIHN1cmUgdGhlIHRhcmdldCBDUFUgaXMgbm90IGRvaW5nIGFueXRoaW5n
-IGRhbmdlcm91cywgZS5nLiBpZiBpdAo+ICsgICAgICAgICogd2VyZSB0byBhY2Nlc3MgY29weSBl
-bmdpbmUgd2hpbGUgaG9zdCBwZXJmb3JtcyBjb3B5IGVuZ2luZSByZXNldAo+ICsgICAgICAgICog
-dGhlbiBpdCBpcyBwb3NzaWJsZSBmb3IgdGhlIGRldmljZSB0byBjb25mdXNlIHBjaS1lIGNvbnRy
-b2xsZXIgdG8KPiArICAgICAgICAqIHRoZSBwb2ludCBvZiBicmluZ2luZyBob3N0IHN5c3RlbSB0
-byBhIGNvbXBsZXRlIHN0b3AgKGkuZS4gaGFuZykuCj4gKyAgICAgICAgKi8KPiArICAgICAgIGF0
-aDEwa19wY2lfd2FybV9yZXNldF9zaTAoYXIpOwo+ICsgICAgICAgYXRoMTBrX3BjaV93YXJtX3Jl
-c2V0X2NwdShhcik7Cj4gKyAgICAgICBhdGgxMGtfcGNpX3dhaXRfZm9yX3RhcmdldF9pbml0KGFy
-KTsKClNpbmNlIHdhcm1fcmVzZXQgbm93IGNhbGxzIHdhaXRfZm9yX3RhcmdldF9pbml0IChhbmQg
-dGh1cyBjYW4gcmVwb3J0IGEKdGFyZ2V0IHJlZ2lzdGVyIGR1bXAgb24gY3Jhc2gpIGFuZCBpcyBj
-YWxsZWQgaW4gcGNpX3Byb2JlIENFIG11c3QgYmUKaW5pdGlhbGl6ZWQgKHdoaWNoIGlzbid0IHRo
-ZSBjYXNlIGluIHRoZSBjb2RlIG5vdykuIFRoaXMgY2FuIGxlYWQgdG8Kc3lzdGVtIGNyYXNoIG9u
-IHZlcnkgZWFybHkgZmlybXdhcmUgY3Jhc2ggZHVyaW5nIHByb2JpbmcuIEt1ZG9zIHRvCkphbnVz
-eiBmb3IgZmluZGluZyB0aGlzIG91dCEKCkknbGwgcmVzcGluIGEgdjIgbGF0ZXIuCgoKTWljaGHF
-ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Wed, Oct 08, 2014 at 02:16:18PM +0200, Michal Kazior wrote:
+> On 8 October 2014 13:08, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> > On Wed, Oct 08, 2014 at 12:50:28PM +0200, Michal Kazior wrote:
+> >> On 8 October 2014 12:33, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> >> > On Wed, Oct 08, 2014 at 11:45:38AM +0200, Michal Kazior wrote:
+> >> >> On 8 October 2014 11:16, Rajkumar Manoharan <rmanohar@qti.qualcomm.com> wrote:
+> >> >> > The commit "ath10k: workaround fw beaconing bug" is freeing
+> >> >> > DMA-coherent memory in irq context which is hitting BUG ON
+> >> >> > in ARM platforms. Fix this by moving dma_free out of spin
+> >> >> > lock.
+> >> >>
+> >> >> I hardly see how moving the freeing outside the spinlock is a fix.
+> >> >>
+[...]
+> 
+> My thinking was GFP_ given to dma_alloc_coherent could impact
+> behaviour of dma_free_coherent (e.g. different kind of pages is
+> allocated so different kind of freeing will be involved) but I may be
+> wrong.
+> 
+> Can you give it a try, please?
+>
+Michal,
+
+Sorry for the delay.. Good catch. It is working after changing the GFP flag to
+atomic. Will send the updated version and remove the backtrace from
+commit log as well.
+
+Thanks for the review.
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
