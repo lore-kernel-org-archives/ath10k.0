@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XdNQp-0005dt-Fm
- for ath10k@lists.infradead.org; Sun, 12 Oct 2014 17:59:49 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: fix kernel panic while shutting down AP
-References: <1412942907-24760-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Sun, 12 Oct 2014 20:59:15 +0300
-In-Reply-To: <1412942907-24760-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Fri, 10 Oct 2014 17:38:27 +0530")
-Message-ID: <87bnphb24s.fsf@kamboji.qca.qualcomm.com>
+ id 1XdXtj-0007al-38
+ for ath10k@lists.infradead.org; Mon, 13 Oct 2014 05:10:20 +0000
+Received: by mail-wi0-f180.google.com with SMTP id em10so6359607wid.13
+ for <ath10k@lists.infradead.org>; Sun, 12 Oct 2014 22:09:50 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87ppe0aurn.fsf@kamboji.qca.qualcomm.com>
+References: <1412940780-25360-1-git-send-email-michal.kazior@tieto.com>
+ <87ppe0aurn.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 13 Oct 2014 07:09:50 +0200
+Message-ID: <CA+BoTQmgg2VvkeETQLyG-x5bqtVqDCf3PZOVbmimbXcHYfV=Ww@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: use bss_info as txpower source
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +21,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-
-> Based on GFP flag given to DMA coherent allocation, the behaviour of
-> dma_free_coherent is changed. This behavioural diffrence is noticeable
-> in ARM platform. If DMA memory is allocated with GFP_KERNEL, free
-> coherent can not be called inside spin lock. This is causing kernel
-> crash in ARM platforms. Fix this by changing GFP flag to atomic.
->
-> Cc: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-
-Thanks, applied.
-
-I modified the commit log a bit to mention the possible commit causing
-this:
-
-commit 82d7aba71541a308bc19e869f7cf7423672dee37
-Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Date:   Fri Oct 10 17:38:27 2014 +0530
-
-    ath10k: fix kernel panic while shutting down AP
-    
-    Based on GFP flag given to DMA coherent allocation, the behaviour of
-    dma_free_coherent is changed. This behavioural diffrence is noticeable
-    in ARM platform. If DMA memory is allocated with GFP_KERNEL, free
-    coherent can not be called inside spin lock. This is causing kernel
-    crash in ARM platforms. Fix this by changing GFP flag to atomic.
-    
-    This is most likely a regression from commit 64badcb6d645 ("ath10k: workaround
-    fw beaconing bug").
-    
-    Cc: Michal Kazior <michal.kazior@tieto.com>
-    Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgT2N0b2JlciAyMDE0IDE2OjAxLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNvbW0u
+Y29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3Jp
+dGVzOgo+Cj4+IFRoaXMgc2ltcGx5IGNoYW5nZXMgdGhlIHNvdXJjZSBmb3IgdHhwb3dlciBzZXR1
+cC4KPj4gSXQgZG9lcyBub3QgbWFrZSBhdGgxMGsgdXNlIGRpZmZlcmVudCB0eHBvd2VyCj4+IHZh
+bHVlcyBmb3IgZGlmZmVyZW50IHZpZnMuCj4+Cj4+IFRoaXMgd2lsbCBtYWtlIGl0IGVhc2llciB0
+byBpbXBsZW1lbnQgY2hhbmN0eCBpbgo+PiBhdGgxMGsgaW4gdGhlIGZ1dHVyZS4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBJ
+biBhdGgtbmV4dC10ZXN0IHRoZXJlIHdhcyBhIGNvbmZsaWN0IGluIGF0aDEwa19ic3NfaW5mb19j
+aGFuZ2VkKCkuCj4gUGxlYXNlIGNoZWNrIG15IHJlc29sdXRpb246Cj4KPiBodHRwczovL2dpdGh1
+Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC84NmVlYTZmZGEzM2NlMTZhNDBmOThkNDFjMTllYTRiMGUx
+NTdmNWJhCgpMb29rcyBnb29kLCB0aGFua3MhCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
