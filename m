@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xdb7R-0004tP-Jr
- for ath10k@lists.infradead.org; Mon, 13 Oct 2014 08:36:42 +0000
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>
- <CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>
-Subject: RE: ath10k firmware crash
-Date: Mon, 13 Oct 2014 09:35:05 +0200
-Message-ID: <023801cfe6b8$350c1930$9f244b90$@acksys.fr>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XdbFF-0007M3-6Z
+ for ath10k@lists.infradead.org; Mon, 13 Oct 2014 08:44:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: speed up hw recovery
+References: <1412847527-25983-1-git-send-email-michal.kazior@tieto.com>
+ <1412847527-25983-4-git-send-email-michal.kazior@tieto.com>
+ <877g049yhe.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=kKvKz5P-Buk3nOA+2f9SaJgXze7HsE0_1ARuBvU3+aw@mail.gmail.com>
+Date: Mon, 13 Oct 2014 11:44:17 +0300
+In-Reply-To: <CA+BoTQ=kKvKz5P-Buk3nOA+2f9SaJgXze7HsE0_1ARuBvU3+aw@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 13 Oct 2014 10:29:21 +0200")
+Message-ID: <8738as9x5q.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +22,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Michal Kazior' <michal.kazior@tieto.com>
-Cc: 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-CVRoYW5rcyBmb3IgeW91ciByZXBseSwKCj4gCj4gQ2FuIHlvdSB0aGVuIHByb3ZpZGUgYSBjcmFz
-aCByZWdpc3RlciBkdW1wIGZvciAxMC4xLCBwbGVhc2U/IEkgY2FuJ3QgaGVscCB5b3UKPiBtdWNo
-IHdpdGggdGhlIDYzNiBkdW1wLgo+IApZZXMgSSBjYW4sIGJ1dCB3aGVyZSBJIGZpbmQgaXQ/Cgo+
-IEFyZSB5b3UgcGVyaGFwcyB0cnlpbmcgdG8gcnVuIFNUQSB3aXRoIDRhZGRyIGJyaWRnaW5nPyBJ
-ZiBzbyB0aGVuIG1ha2Ugc3VyZQo+IHlvdSB1c2UgcmVjZW50IGF0aDEwayBhcyB0aGlzIHdhcyBr
-bm93biB0byBiZSBhIHByb2JsZW0uCj4gClllcyBJJ20gdGVzdGluZyB3aXRoIDQgYWRkciBicmlk
-Z2luZyBiZWNhdXNlIEkgbmVlZCB0byBicmlkZ2UgdGhpcyBpbnRlcmZhY2UuIEknIGxsIHRyeSB3
-aXRob3V0IHRoaXMgb3B0aW9uLgpJJ20gdGVzdGluZyB3aXRoIGNvbW1pdCBudW1iZXIgMzhlZWRh
-M2FlNmY5MGZkZTU1NDZiZGQ0OGVlNGZmMzA5MGYyMzhjMCBmcm9tIGtlcm5lbC5vcmcvcHViL3Nj
-bS9saW51eC9rZXJuZWwvZ2l0L2Zpcm1hcmUvbGludXgtZmlybXdhcmUuIEl0IGlzIHRoZSBsYXRl
-c3QgdmVyc2lvbiBpbiBvcGVud3J0LiAKCj4gQ2FuIHlvdSBhbHNvIHByb3ZpZGUgYXRoMTBrIHRy
-YWNlcyBvciBkZWJ1ZyBsb2dzLCBwbGVhc2U/Cj4gCkknbGwgc2VuZCBhIHRyYWNlLgo+IAo+ID4g
-ICAgICAgICBJcyBpdCBwb3NzaWJsZSB0byB1c2UgYXQgdGhlIHNhbWUgdGltZSBvbiAyIGRpZmZl
-cmVudCBjYXJkcyB0aGUgQVAKPiBtb2RlIGFuZCBjbGllbnQgbW9kZT8KPiAKPiBZZXMsIGl0IGlz
-IHBvc3NpYmxlLgo+IAo+IAo+IE1pY2hhxYIKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 13 October 2014 10:15, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> In some cases hw recovery was taking an absurdly
+>>> long time due to ath10k waiting for things that
+>>> would never really complete.
+>>>
+>>> Instead of waiting for inevitable timeouts poke
+>>> all completions and wakequeues and check if it's
+>>> still worth waiting.
+>>>
+>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>
+>> [...]
+>>
+>>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>>> @@ -685,6 +685,20 @@ static void ath10k_core_restart(struct work_struct *work)
+>>>  {
+>>>       struct ath10k *ar = container_of(work, struct ath10k, restart_work);
+>>>
+>>> +     set_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags);
+>>> +     barrier();
+>>
+>> Please document why the barrier is needed.
+>
+> Okay. It's just to make sure compiler doesn't re-order it (so that
+> following complete/wake_ups will be called _after_ the bit is set).
+
+Ok. Can you add a short comment to the code saying why you added the
+barrier?
+
+>>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>>> @@ -371,6 +371,11 @@ enum ath10k_dev_flags {
+>>>       /* Indicates that ath10k device is during CAC phase of DFS */
+>>>       ATH10K_CAC_RUNNING,
+>>>       ATH10K_FLAG_CORE_REGISTERED,
+>>> +
+>>> +     /* Device has crashed and needs to restart. This indicates any pending
+>>> +      * waiters should immediately cancel instead of waiting for a time out.
+>>> +      */
+>>> +     ATH10K_FLAG_CRASH_FLUSH,
+>>>  };
+>>
+>> Instead of a dev flag, should this actually be a new state to enum
+>> ath10k_state? The reason I ask, I don't see how we would use this flag
+>> with other states than with ATH10K_STATE_ON. Or is this needed because
+>> of locking?
+>
+> Locking.
+>
+> Reading/writing ar->state requires conf_mutex. The problem is waitiers
+> might be holding it so you wouldn't even be able to tell the waiters
+> to not wait anymore.
+>
+> A long term idea might involve removing conf_mutex though but I recall
+> there's a couple of problems with that when I looked at it.
+
+Makes sense. Can you add this to the commit log, please?
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
