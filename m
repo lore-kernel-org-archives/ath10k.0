@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+Received: from emh06.mail.saunalahti.fi ([62.142.5.116])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XdYT7-0004K6-7P
- for ath10k@lists.infradead.org; Mon, 13 Oct 2014 05:46:54 +0000
-Received: by mail-wi0-f182.google.com with SMTP id n3so6395391wiv.15
- for <ath10k@lists.infradead.org>; Sun, 12 Oct 2014 22:46:30 -0700 (PDT)
+ id 1XdZJa-0005sP-JV
+ for ath10k@lists.infradead.org; Mon, 13 Oct 2014 06:41:07 +0000
+Subject: [PATCH 0/3] ath10k: cal file support
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Date: Mon, 13 Oct 2014 09:40:40 +0300
+Message-ID: <20141013063929.30315.41969.stgit@potku.adurom.net>
 MIME-Version: 1.0
-In-Reply-To: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>
-References: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>
-Date: Mon, 13 Oct 2014 07:46:30 +0200
-Message-ID: <CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>
-Subject: Re: ath10k firmware crash
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +16,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Cedric VONCKEN <cedric.voncken@acksys.fr>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gMTAgT2N0b2JlciAyMDE0IDE2OjQ2LCBDZWRyaWMgVk9OQ0tFTiA8Y2VkcmljLnZvbmNrZW5A
-YWNrc3lzLmZyPiB3cm90ZToKPiAgICAgICAgIEhpIGFsbCwKPgo+ICAgICAgICAgSSdtIHRyeWlu
-ZyB0byB1c2UgYXRoMTBrIGluIGNsaWVudCBtb2RlIGFuZCBBUCBtb2RlIHdpdGggMiB3aXJlbGVz
-cyBjYXJkcyAoQXAgb24gb25lIGNhcmQgYW5kIGNsaWVudCBvbiBhbm90aGVyIGNhcmQpLgo+ICAg
-ICAgICAgVGhlIEFQIG1vZGUgd29yaywgYnV0IHRoZSBjbGllbnQgbW9kZSBhbHdheXMgY3Jhc2gu
-IFBsZWFzZSBmaW5kIGJlbG93IHRoZSBhdGgxMGsgY3Jhc2ggaW5mb3JtYXRpb24KPgo+IFsgICA3
-OS4xMzEzMDFdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0
-MTAwMDE2Ywo+IFsgICA3OS4xNDk0MjBdIGF0aDEwazogZmlybXdhcmUgdmVyc2lvbjogOTk5Ljk5
-OS4wLjYzNgo+IFsgICA3OS4xNjcyNDhdIGF0aDEwazogdGFyZ2V0IHJlZ2lzdGVyIER1bXAgTG9j
-YXRpb246IDB4MDA0MEFDMTQKPiBbICAgNzkuMTg1OTM5XSBhdGgxMGs6IHRhcmdldCBSZWdpc3Rl
-ciBEdW1wCj4gWyAgIDc5LjIwMTgwNF0gYXRoMTBrOiBbMDBdOiAweDQxMDAwMTZDIDB4MDAwMDAw
-MDAgMHgwMDlDNDUyMSAweDAwMDAwMDAwCj4gWyAgIDc5LjIyMDE4NF0gYXRoMTBrOiBbMDRdOiAw
-eDAwOUM0NTIxIDB4MDAwNjAzMzAgMHgwMDAwMDAxOSAweDAwOTU1QTAwCj4gWyAgIDc5LjIzODU2
-Nl0gYXRoMTBrOiBbMDhdOiAweDAwMDBEMENFIDB4MDAwMDAwMDAgMHgwMDQwQ0M5NCAweDAwMDAw
-MDIwCj4gWyAgIDc5LjI1Njk0NV0gYXRoMTBrOiBbMTJdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAg
-MHgwMDk1ODM2MCAweDAwOTU4MzZCCj4gWyAgIDc5LjI3NTMyN10gYXRoMTBrOiBbMTZdOiAweDgw
-OUEwOTc4IDB4MDA0MEFEOTQgMHgwMDQzOTMwNCAweDAwNDBEMDc0Cj4gWyAgIDc5LjI5MzcwNl0g
-YXRoMTBrOiBbMjBdOiAweDAwMDBGRkZGIDB4MDAwMDAwMDAgMHgwMDQxRUZCOCAweDAwMDAwMDAw
-Cj4gWyAgIDc5LjMxMjA4Nl0gYXRoMTBrOiBbMjRdOiAweDgwOUEwOTc4IDB4MDA0MEFEOTQgMHgw
-MDQzOTMwNCAweDAzNDMzODlBCj4gWyAgIDc5LjMzMDQ2Nl0gYXRoMTBrOiBbMjhdOiAweDgwOUFE
-MUEyIDB4MDA0MEFERTQgMHgwMDQzOTMwNCAweDAwNDNGNjhDCj4gWyAgIDc5LjM0ODg0NV0gYXRo
-MTBrOiBbMzJdOiAweDgwOUIwMURBIDB4MDAwMDAwMDAgMHgwMDQxMDExMCAweDAwNDE5MzdDCj4g
-WyAgIDc5LjM2NzIyNF0gYXRoMTBrOiBbMzZdOiAweDAwMDAwMDAwIDB4MDAwMDAwMDAgMHgwMDAw
-MDAwMCAweDAwMDAwMDAwCj4gWyAgIDc5LjM4NTYwNF0gYXRoMTBrOiBbNDBdOiAweDAwMDAwMDAw
-IDB4MDAwMDAwMDAgMHgwMDAwMDA3MSAweDAwNDEyNzAwCj4gWyAgIDc5LjQwMzk4NF0gYXRoMTBr
-OiBbNDRdOiAweDAwNDM5QkI4IDB4MDAwMDAwMDAgMHgwMDAwMDAwMCAweDAwNDAwMDAwCj4gWyAg
-IDc5LjQyMjM2NF0gYXRoMTBrOiBbNDhdOiAweDgwOUFFMEI0IDB4MDA0MEFFMDQgMHgwMDQwMDAw
-MCAweDAwNDNGNjhDCj4gWyAgIDc5LjQ0MDc0NF0gYXRoMTBrOiBbNTJdOiAweDAwMDAwMDAxIDB4
-MDAwMDAwMDAgMHgwMDQyMzFGMCAweDAwNDAwMDAwCj4gWyAgIDc5LjQ1OTEyNF0gYXRoMTBrOiBb
-NTZdOiAweDgwOUFFMTdFIDB4MDA0MEFFNDQgMHgwMDQwRkU2QyAweDAwNDBEMzEwCj4KPiAgICAg
-ICAgIEknbSB1c2luZyBvcGVud3J0LCBhbmQgSSBoYXZlIHRoZSBzYW1lIHByb2JsZW0gd2l0aC93
-aXRob3V0IGNvbmZpZ3VyYXRpb24gb3B0aW9uICJGaXJtd2FyZSBvcHRpbWl6ZWQgZm9yIHN0YSBv
-cGVyYXRpb24iLgoKQ2FuIHlvdSB0aGVuIHByb3ZpZGUgYSBjcmFzaCByZWdpc3RlciBkdW1wIGZv
-ciAxMC4xLCBwbGVhc2U/IEkgY2FuJ3QKaGVscCB5b3UgbXVjaCB3aXRoIHRoZSA2MzYgZHVtcC4K
-CkFyZSB5b3UgcGVyaGFwcyB0cnlpbmcgdG8gcnVuIFNUQSB3aXRoIDRhZGRyIGJyaWRnaW5nPyBJ
-ZiBzbyB0aGVuIG1ha2UKc3VyZSB5b3UgdXNlIHJlY2VudCBhdGgxMGsgYXMgdGhpcyB3YXMga25v
-d24gdG8gYmUgYSBwcm9ibGVtLgoKQ2FuIHlvdSBhbHNvIHByb3ZpZGUgYXRoMTBrIHRyYWNlcyBv
-ciBkZWJ1ZyBsb2dzLCBwbGVhc2U/CgoKPiAgICAgICAgIElzIGl0IHBvc3NpYmxlIHRvIHVzZSBh
-dCB0aGUgc2FtZSB0aW1lIG9uIDIgZGlmZmVyZW50IGNhcmRzIHRoZSBBUCBtb2RlIGFuZCBjbGll
-bnQgbW9kZT8KClllcywgaXQgaXMgcG9zc2libGUuCgoKTWljaGHFggoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+this adds support for loading calibration data from a file as discussed some
+time ago. Please review.
+
+Kalle
+
+---
+
+Kalle Valo (3):
+      ath10k: add back enum ath10k_bus
+      ath10k: refactor ath10k_init_download_firmware()
+      ath10k: retrieve calibration data from file
+
+
+ drivers/net/wireless/ath/ath10k/core.c  |  107 +++++++++++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/core.h  |   36 ++++++++++
+ drivers/net/wireless/ath/ath10k/debug.c |    5 +
+ drivers/net/wireless/ath/ath10k/hw.h    |    4 +
+ drivers/net/wireless/ath/ath10k/pci.c   |    1 
+ 5 files changed, 129 insertions(+), 24 deletions(-)
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
