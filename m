@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
+Received: from smtp-out04.msg.oleane.net ([62.161.7.2])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XdfGe-0000bj-Gi
- for ath10k@lists.infradead.org; Mon, 13 Oct 2014 13:02:29 +0000
-Received: from smtp03.msg.oleane.net (smtp03.mail.priv [172.17.20.112]) 
- by smtp-out03.msg.oleane.net with ESMTP id s9DCLwfo010633
- for <ath10k@lists.infradead.org>; Mon, 13 Oct 2014 14:21:58 +0200
+ id 1XdfSB-0005VC-FY
+ for ath10k@lists.infradead.org; Mon, 13 Oct 2014 13:14:24 +0000
+Received: from smtp06.msg.oleane.net (smtp06.mail.priv [172.17.20.115]) 
+ by smtp-out04.msg.oleane.net with ESMTP id s9DCS4fq013358
+ for <ath10k@lists.infradead.org>; Mon, 13 Oct 2014 14:28:04 +0200
 From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>	<CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>	<023801cfe6b8$350c1930$9f244b90$@acksys.fr>	<CA+BoTQkXc-VL1ixRK5KWUiE0igCxXRQyyde86TAvuKVxZhEPdg@mail.gmail.com>	<024901cfe6c6$e1905780$a4b10680$@acksys.fr>
- <CA+BoTQnQkDjkMMu5x-c69s1THf7SQfet2vsOPWs++PtyEHEeTw@mail.gmail.com>
-In-Reply-To: <CA+BoTQnQkDjkMMu5x-c69s1THf7SQfet2vsOPWs++PtyEHEeTw@mail.gmail.com>
+References: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>	<CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>	<024a01cfe6c7$5e427dd0$1ac77970$@acksys.fr>
+ <CA+BoTQkaKXNfprRwGrQq6rKOZWvANNRrcmgU-iVdw1bONTA--w@mail.gmail.com>
+In-Reply-To: <CA+BoTQkaKXNfprRwGrQq6rKOZWvANNRrcmgU-iVdw1bONTA--w@mail.gmail.com>
 Subject: RE: ath10k firmware crash
-Date: Mon, 13 Oct 2014 14:00:38 +0200
-Message-ID: <025701cfe6dd$50460240$f0d206c0$@acksys.fr>
+Date: Mon, 13 Oct 2014 14:06:51 +0200
+Message-ID: <025801cfe6de$2d4c7f70$87e57e50$@acksys.fr>
 MIME-Version: 1.0
 Content-Language: fr
 List-Id: <ath10k.lists.infradead.org>
@@ -30,16 +30,20 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: 'Michal Kazior' <michal.kazior@tieto.com>
 Cc: 'linux-wireless' <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-PiA+IEknbSB1c2luZyB0aGUgY29tcGF0IHdpcmVsZXNzIGZyb20gT3BlbndydC4KPiA+ICAgICAg
-ICAgQ29tcGF0IHdpcmVsZXNzIHZlcnNpb24gMjAxNC0wNS0yMiwgYnV0IHdlIHVwZGF0ZWQgdGhl
-Cj4gPiBmaXJtd2FyZSB3aXRoIHRoZSBsYXRlc3QgdmVyc2lvbiBwcm92aWRlZCBieSBvcGVud3J0
-IChjb21taXQgbnVtYmVyCj4gPiAzOGVlZGEzYWU2ZjkwZmRlNTU0NmJkZDQ4ZWU0ZmYzMDkwZjIz
-OGMwIGZyb20KPiA+IGtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L2Zpcm1hcmUv
-bGludXgtZmlybXdhcmUpCj4gCj4gVGhlIGZpeCBmb3IgNGFkZHIgU1RBIGJyaWRnaW5nIGlzIGlu
-IHRoZSBkcml2ZXIsIG5vdCB0aGUgZmlybXdhcmUuCj4gCj4gVGhlIGNvbXBhdCB2ZXJzaW9uIHlv
-dSdyZSB1c2luZyBkb2Vzbid0IGNvbnRhaW4gdGhlIHJlcXVpcmVkIGZpeC4gSSdtIHByZXR0eQo+
-IHN1cmUgb3BlbndydCBjb21wYXQgMjAxNC0wOS0yNiBjb250YWlucyBpdC4KPiAKT2ssIEkgd2ls
-bCB0ZXN0IHdpdGggdGhpcyB2ZXJzaW9uLiBUaGFua3MgZm9yIHlvdXIgaGVscC4KPiAKPiBNaWNo
-YcWCCgoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+PiA+Cj4gPiBIYXZlIHlvdSBhIGJlbmNobWFyayByZWZlcmVuY2Ugd2l0aCBBVEgxMEsgPyBhdCB0
+aGlzIHRpbWUgd2UgY2FuIHNlbmQKPiBhcm91bmQgNzAwIE1iaXQvcywgaXMgaXQgdGhlIG1heGlt
+dW0gb3Igd2UgY2FuIGV4cGVjdGVkIGJldHRlciA/Cj4gCj4gSWYgdGhpcyBpcyBPVEEgdGhlbiB0
+aGlzIGlzIHByZXR0eSBnb29kLiBJZiB0aGlzIGlzIGNhYmxlZCBSRiB3LyBhdHRlbnR1YXRvcgo+
+IGl0IHNob3VsZCBiZSBwb3NzaWJsZSB0byBnZXQgfjkwMG1icHMgb2YgVURQIHRyYWZmaWMgd2l0
+aCBtdWx0aXBsZSBzdHJlYW1zIG9uCj4gaXBlcmYuIEF0IGxlYXN0IHRoYXQncyB3aGF0IEkgd2Fz
+IGdldHRpbmcgb24gMTAuMSBmaXJtd2FyZSAob24gYm90aCBBUCBhbmQKPiBTVEEpIGxhc3QgdGlt
+ZSBJIGNoZWNrZWQuCj4gCj4gR2V0dGluZyBtb3JlIHRoYW4gNzAwbWJwcyBPVEEgcmVxdWlyZXMg
+QVAgYW5kIFNUQSBhbnRlbm5hIGFsaWdubWVudCB2b29kb28uCj4gCkkgZGlkIHNvbWUgdGVzdHMg
+d2l0aCBhIGxpbmtzeXMgV1JUMTkwMEFDIGFuZCBJIGhhdmUgfjk1MCBtYnBzIE9UQSBlYXNpbHku
+Cj4gCj4gTWljaGHFggo+IC0tCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQg
+dGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LXdpcmVsZXNzIiBpbgo+IHRoZSBib2R5IG9mIGEg
+bWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8g
+YXQKPiBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
