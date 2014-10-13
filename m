@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XdaZc-0000Cy-CU
- for ath10k@lists.infradead.org; Mon, 13 Oct 2014 08:01:44 +0000
+ id 1XdafU-0001wp-HA
+ for ath10k@lists.infradead.org; Mon, 13 Oct 2014 08:07:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 5/5] ath10k: replace power up/down with reset callback
-References: <1412842950-14098-1-git-send-email-michal.kazior@tieto.com>
- <1412842950-14098-6-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 13 Oct 2014 11:01:07 +0300
-In-Reply-To: <1412842950-14098-6-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 9 Oct 2014 10:22:30 +0200")
-Message-ID: <87fves9z5o.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/3] ath10k: expose hw restart via debugfs
+References: <1412847527-25983-1-git-send-email-michal.kazior@tieto.com>
+ <1412847527-25983-3-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 13 Oct 2014 11:07:14 +0300
+In-Reply-To: <1412847527-25983-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 9 Oct 2014 11:38:46 +0200")
+Message-ID: <87bnpg9yvh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,26 +29,31 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The power up/down didn't make much sense any more
-> since hif_stop already stops the device
-> compeletely. The target lifecycle was never symmetric
-> so don't bother trying to make it look like it is
-> and expose a reset hif callback instead of power
-> up/down callbacks.
+> Until now it was possible to simulate soft and
+> hard fw crashes but it wasn't possible to trigger
+> an immediately hw restart itself (without the fw
+> crash).
 >
-> This removes redundant reset calls and thus makes
-> device boot/stop/recovery a bit faster.
+> This can be useful when stress testing hw
+> restarting stability, e.g. during heavy tx/rx
+> traffic.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-About this I'm not that sure. The reason why I wanted to have power_up()
-and power_down() is the case when we need to control the target power
-via a gpio line, which I anticipate we will need soon. If you remove
-these how could we control the gpio line?
+Nice idea!
 
-Wouldn't it be the same that you just make hif_power_up() do the same as
-hif_reset() and hif_power_down() doesn't do anything (for now)? Or am I
-missing something?
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -694,7 +694,8 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
+>  		"To simulate firmware crash write one of the keywords to this file:\n"
+>  		"`soft` - this will send WMI_FORCE_FW_HANG_ASSERT to firmware if FW supports that command.\n"
+>  		"`hard` - this will send to firmware command with illegal parameters causing firmware crash.\n"
+> -		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n";
+> +		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n"
+> +		"`request` - this will simply queue hw restart without fw/hw actually crashing.\n";
+
+"request" is not really very descriptive command. Maybe call it
+"hw-restart" because that's what it really does, right?
 
 -- 
 Kalle Valo
