@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XeOvn-0003Ck-EX
- for ath10k@lists.infradead.org; Wed, 15 Oct 2014 13:48:00 +0000
-Received: from smtp28.msg.oleane.net (smtp28.mail.priv [172.17.20.150]) 
- by smtp-out03.msg.oleane.net with ESMTP id s9FDQKq4024330
- for <ath10k@lists.infradead.org>; Wed, 15 Oct 2014 15:26:20 +0200
-From: "voncken" <cedric.voncken@acksys.fr>
-References: <773DB8A82AB6A046AE0195C68612A319018C2750@sbs2003.acksys.local>	<CA+BoTQ=a8kY0CGGKHwRhk4cg=V0oimipuht6Pkc0K0x4WMMn-A@mail.gmail.com>	<024a01cfe6c7$5e427dd0$1ac77970$@acksys.fr>	<CA+BoTQkaKXNfprRwGrQq6rKOZWvANNRrcmgU-iVdw1bONTA--w@mail.gmail.com>	<025801cfe6de$2d4c7f70$87e57e50$@acksys.fr>
- <CACKGw+H1QSvAL0Ri3HT6E_rhw=DhzDwj1XEeqwjwFkzJVQpz9Q@mail.gmail.com>
-In-Reply-To: <CACKGw+H1QSvAL0Ri3HT6E_rhw=DhzDwj1XEeqwjwFkzJVQpz9Q@mail.gmail.com>
-Subject: RE: ath10k firmware crash
-Date: Wed, 15 Oct 2014 15:05:09 +0200
-Message-ID: <02f001cfe878$a64038e0$f2c0aaa0$@acksys.fr>
+ id 1XeVdt-0007of-JX
+ for ath10k@lists.infradead.org; Wed, 15 Oct 2014 20:57:58 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 3B36840CF54
+ for <ath10k@lists.infradead.org>; Wed, 15 Oct 2014 13:57:35 -0700 (PDT)
+Message-ID: <543EDFBF.3000702@candelatech.com>
+Date: Wed, 15 Oct 2014 13:57:35 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Language: fr
+Subject: Constant transmit mode?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +25,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: 'Bartosz Markowski' <bartosz.markowski@tieto.com>
-Cc: 'linux-wireless' <linux-wireless@vger.kernel.org>, 'Michal Kazior' <michal.kazior@tieto.com>, 'ath10k' <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-> > I did some tests with a linksys WRT1900AC and I have ~950 mbps OTA easily.
-> 
-> You mean ath10k (STA) VS WRT1900AC get up ~950mbps?
-> If so, could you say what's the HW, FW version you use?
-> 
-My test platform is one WRT1900AC set in bridge mode with a computer.
+Anyone know what it would take to put an ath10k NIC into
+constant transmit mode?
 
-If I use the WRT1900AC in AP mode with another computer, I have 950 mbps
-If I use the cavium octon III dev plateform + ath10k driver in AP mode, I have around 700 mbps
+Is that what the testmode patch series is addressing by any chance?
 
-I'm using the latest compat wireless (2014-09-26) from openwrt.
-The wireless card is the WLE900VX from compex or DAXA-O1 from Unex.
+Thanks,
+Ben
 
-The WRT1900AC have mimo 4x4 with 3 streams, and my wireless card have mimo 3x3 with 3 streams. Maybe that explains the difference.
-
-Cedric Voncken.
-> --
-> Bartosz
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org More majordomo info at
-> http://vger.kernel.org/majordomo-info.html
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
