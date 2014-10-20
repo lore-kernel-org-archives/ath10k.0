@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xf6b5-0007zX-B6
- for ath10k@lists.infradead.org; Fri, 17 Oct 2014 12:25:31 +0000
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Subject: Re: ath10k: calibration data through Device Tree?
-From: Kumar Gala <galak@codeaurora.org>
-In-Reply-To: <87vbnvhls4.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 17 Oct 2014 14:25:01 +0200
-Message-Id: <F0D1326B-4716-4897-8259-1591B64EB55C@codeaurora.org>
-References: <87tx3mmx4s.fsf@kamboji.qca.qualcomm.com>
- <20141002132914.GN5788@leverpostej> <87ppeamvr9.fsf@kamboji.qca.qualcomm.com>
- <542DA1F7.9090904@amacapital.net>
- <CAJ-VmomR+AzsUVqSik=ejntHHhQf_wj9kU==uCqWyk27M7Gp9w@mail.gmail.com>
- <CALCETrV_LoCJ_DHcyQ2ztyXfdH2vAF0r7OX29_nPj6gMcodBig@mail.gmail.com>
- <87vbnvhls4.fsf@kamboji.qca.qualcomm.com>
+ id 1XgC52-0001kf-Pk
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:28:59 +0000
+Received: by mail-lb0-f176.google.com with SMTP id p9so3701602lbv.7
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:28:30 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 2/6] ath10k: mask/unmask msi fw irq
+Date: Mon, 20 Oct 2014 14:14:38 +0200
+Message-Id: <1413807282-27951-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
+References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,78 +19,151 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Adrian Chadd <adrian@freebsd.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Andy Lutomirski <luto@amacapital.net>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
+This was the final missing bit to making sure the
+device doesn't assert interrupts to host.
 
-On Oct 7, 2014, at 6:44 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+This should fix possible race when target crashes
+during driver teardown.
 
-> Andy Lutomirski <luto@amacapital.net> writes:
-> =
+This also removes an early warm reset workaround
+during pci probing.
 
->> Perhaps unsurprisingly, the OpenWRT patch that enables it to work for
->> real (by shoving a file into /lib/firmware that's contains a copy of
->> data read from flash) hasn't made it upstream.  I assume that the
->> purpose of this discussion is to settle on a real solution.
-> =
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
 
-> I'm hoping to have ath10k support three different methods to get
-> calibration data:
-> =
+Notes:
+    v2:
+     * remove workaround from pci probe that used warm reset
 
-> 1) OTP (already supported)
-> =
+ drivers/net/wireless/ath/ath10k/hw.h  |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c | 53 ++++++++++++++++++++---------------
+ 2 files changed, 32 insertions(+), 22 deletions(-)
 
-> 2) Device Tree (under discussion)
-> =
-
-> 3) from a file
-> =
-
-> I'm hoping to send patches for 2) and 3) soon.
-
-
-As Arnd mentioned you would have something like:
-
-pci {   =
-
-        pcie@0 {
-                reg =3D <0 0 0 0 0>; =
-
-                #interrupt-cells =3D <1>;
-                #size-cells =3D <2>;
-                #address-cells =3D <3>;
-                device_type =3D "pci";
-
-                ath10k@0,0 {
-                        reg =3D <0x0000 0x0 0x0 0x0 0x0>;
-                        device_type =3D "pci";
-                        qcom,ath10k-calibration-data =3D [ 01 03 04 05 06 =
-=85 ];
-                };      =
-
-        };
-};
-
-On the driver side you can do something like:
-
-	struct device_node *np;
-
-	np =3D pci_device_to_OF_node(dev);
-
-than you can do normal OF calls on =91np=92.
-
-- k
-
--- =
-
-Qualcomm Innovation Center, Inc.
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5dd6551..6242319 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -289,6 +289,7 @@ struct ath10k_pktlog_hdr {
+ #define SI_RX_DATA1_OFFSET			0x00000014
+ 
+ #define CORE_CTRL_CPU_INTR_MASK			0x00002000
++#define CORE_CTRL_PCIE_REG_31_MASK		0x00000800
+ #define CORE_CTRL_ADDRESS			0x0000
+ #define PCIE_INTR_ENABLE_ADDRESS		0x0008
+ #define PCIE_INTR_CAUSE_ADDRESS			0x000c
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 6077095..5c5a9e7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1143,14 +1143,37 @@ static void ath10k_pci_hif_get_default_pipe(struct ath10k *ar,
+ 						 &dl_is_polled);
+ }
+ 
+-static void ath10k_pci_irq_disable(struct ath10k *ar)
++static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	int i;
++	u32 val;
++
++	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
++	val &= ~CORE_CTRL_PCIE_REG_31_MASK;
++
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
++}
++
++static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
++{
++	u32 val;
++
++	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
++	val |= CORE_CTRL_PCIE_REG_31_MASK;
++
++	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
++}
+ 
++static void ath10k_pci_irq_disable(struct ath10k *ar)
++{
+ 	ath10k_ce_disable_interrupts(ar);
+ 	ath10k_pci_disable_and_clear_legacy_irq(ar);
+-	/* FIXME: How to mask all MSI interrupts? */
++	ath10k_pci_irq_msi_fw_mask(ar);
++}
++
++static void ath10k_pci_irq_sync(struct ath10k *ar)
++{
++	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	int i;
+ 
+ 	for (i = 0; i < max(1, ar_pci->num_msi_intrs); i++)
+ 		synchronize_irq(ar_pci->pdev->irq + i);
+@@ -1160,7 +1183,7 @@ static void ath10k_pci_irq_enable(struct ath10k *ar)
+ {
+ 	ath10k_ce_enable_interrupts(ar);
+ 	ath10k_pci_enable_legacy_irq(ar);
+-	/* FIXME: How to unmask all MSI interrupts? */
++	ath10k_pci_irq_msi_fw_unmask(ar);
+ }
+ 
+ static int ath10k_pci_hif_start(struct ath10k *ar)
+@@ -1288,6 +1311,7 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
+ 	ath10k_pci_warm_reset(ar);
+ 
+ 	ath10k_pci_irq_disable(ar);
++	ath10k_pci_irq_sync(ar);
+ 	ath10k_pci_flush(ar);
+ }
+ 
+@@ -2285,6 +2309,7 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 	} while (time_before(jiffies, timeout));
+ 
+ 	ath10k_pci_disable_and_clear_legacy_irq(ar);
++	ath10k_pci_irq_msi_fw_mask(ar);
+ 
+ 	if (val == 0xffffffff) {
+ 		ath10k_err(ar, "failed to read device register, device is gone\n");
+@@ -2477,20 +2502,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	ath10k_pci_ce_deinit(ar);
+-
+-	ret = ath10k_ce_disable_interrupts(ar);
+-	if (ret) {
+-		ath10k_err(ar, "failed to disable copy engine interrupts: %d\n",
+-			   ret);
+-		goto err_free_ce;
+-	}
+-
+-	/* Workaround: There's no known way to mask all possible interrupts via
+-	 * device CSR. The only way to make sure device doesn't assert
+-	 * interrupts is to reset it. Interrupts are then disabled on host
+-	 * after handlers are registered.
+-	 */
+-	ath10k_pci_warm_reset(ar);
++	ath10k_pci_irq_disable(ar);
+ 
+ 	ret = ath10k_pci_init_irq(ar);
+ 	if (ret) {
+@@ -2508,9 +2520,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_deinit_irq;
+ 	}
+ 
+-	/* This shouldn't race as the device has been reset above. */
+-	ath10k_pci_irq_disable(ar);
+-
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
+-- 
+1.8.5.3
 
 
 _______________________________________________
