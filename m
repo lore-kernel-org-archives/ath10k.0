@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgCAy-0005fS-Lz
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:35:05 +0000
-Received: by mail-lb0-f180.google.com with SMTP id n15so3705364lbi.25
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:34:42 -0700 (PDT)
+ id 1XgCAx-0005fH-Rj
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:35:04 +0000
+Received: by mail-lb0-f179.google.com with SMTP id l4so3789310lbv.10
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:34:41 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/3] ath10k: expose hw restart via debugfs
-Date: Mon, 20 Oct 2014 14:22:37 +0200
-Message-Id: <1413807758-30249-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 1/3] ath10k: fix possible bmi crash
+Date: Mon, 20 Oct 2014 14:22:36 +0200
+Message-Id: <1413807758-30249-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
 References: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,50 +27,70 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Until now it was possible to simulate soft and
-hard fw crashes but it wasn't possible to trigger
-an immediately hw restart itself (without the fw
-crash).
+While testing other things I've found that CE
+items aren't cleared properly. This could lead to
+null dereferences in BMI.
 
-This can be useful when stress testing hw
-restarting stability, e.g. during heavy tx/rx
-traffic.
+To prevent that make sure CE revoking clears the
+nbytes value (which is used as a buffer completion
+indication) and memset the entire CE rings when
+(re)initializing.
+
+Also make sure to check BMI xfer pointer and print
+a splat instead of crashing the kernel.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
+ drivers/net/wireless/ath/ath10k/ce.c  | 7 +++++++
+ drivers/net/wireless/ath/ath10k/pci.c | 3 +++
+ 2 files changed, 10 insertions(+)
 
-Notes:
-    v2:
-     * s/request/hw-restart/ [Kalle]
-
- drivers/net/wireless/ath/ath10k/debug.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 0d94feb..3bc526b 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -694,7 +694,8 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
- 		"To simulate firmware crash write one of the keywords to this file:\n"
- 		"`soft` - this will send WMI_FORCE_FW_HANG_ASSERT to firmware if FW supports that command.\n"
- 		"`hard` - this will send to firmware command with illegal parameters causing firmware crash.\n"
--		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n";
-+		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n"
-+		"`hw-restart` - this will simply queue hw restart without fw/hw actually crashing.\n";
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 9b89ac1..92c1c6a 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -558,6 +558,7 @@ int ath10k_ce_revoke_recv_next(struct ath10k_ce_pipe *ce_state,
  
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
- }
-@@ -747,6 +748,10 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
- 	} else if (!strcmp(buf, "assert")) {
- 		ath10k_info(ar, "simulating firmware assert crash\n");
- 		ret = ath10k_debug_fw_assert(ar);
-+	} else if (!strcmp(buf, "hw-restart")) {
-+		ath10k_info(ar, "user requested hw restart\n");
-+		queue_work(ar->workqueue, &ar->restart_work);
-+		ret = 0;
- 	} else {
- 		ret = -EINVAL;
- 		goto exit;
+ 		/* sanity */
+ 		dest_ring->per_transfer_context[sw_index] = NULL;
++		desc->nbytes = 0;
+ 
+ 		/* Update sw_index */
+ 		sw_index = CE_RING_IDX_INCR(nentries_mask, sw_index);
+@@ -837,6 +838,10 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 
+ 	memset(src_ring->per_transfer_context, 0,
+ 	       nentries * sizeof(*src_ring->per_transfer_context));
++	memset(src_ring->base_addr_owner_space, 0,
++	       nentries * sizeof(struct ce_desc));
++	memset(src_ring->shadow_base, 0,
++	       nentries * sizeof(struct ce_desc));
+ 
+ 	src_ring->sw_index = ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
+ 	src_ring->sw_index &= src_ring->nentries_mask;
+@@ -874,6 +879,8 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 
+ 	memset(dest_ring->per_transfer_context, 0,
+ 	       nentries * sizeof(*dest_ring->per_transfer_context));
++	memset(dest_ring->base_addr_owner_space, 0,
++	       nentries * sizeof(struct ce_desc));
+ 
+ 	dest_ring->sw_index = ath10k_ce_dest_ring_read_index_get(ar, ctrl_addr);
+ 	dest_ring->sw_index &= dest_ring->nentries_mask;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index c1a2b84..8820f25 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1432,6 +1432,9 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
+ 					  &nbytes, &transfer_id, &flags))
+ 		return;
+ 
++	if (WARN_ON_ONCE(!xfer))
++		return;
++
+ 	if (!xfer->wait_for_resp) {
+ 		ath10k_warn(ar, "unexpected: BMI data received; ignoring\n");
+ 		return;
 -- 
 1.8.5.3
 
