@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
+Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgC52-0001kx-AR
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:28:59 +0000
-Received: by mail-lb0-f181.google.com with SMTP id l4so3701451lbv.40
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:28:33 -0700 (PDT)
+ id 1XgCAw-0005em-2P
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:35:02 +0000
+Received: by mail-lb0-f171.google.com with SMTP id z12so3813161lbi.30
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:34:39 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/6] ath10k: make warm reset a bit safer and faster
-Date: Mon, 20 Oct 2014 14:14:40 +0200
-Message-Id: <1413807282-27951-5-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
-References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 0/3] ath10k: speed up recovery
+Date: Mon, 20 Oct 2014 14:22:35 +0200
+Message-Id: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,171 +25,47 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-One of the problems with warm reset I've found is
-that it must be guaranteed that copy engine
-registers are not being accessed while being
-reset. Otherwise in worst case scenario the host
-may lock up.
+Patch #1 fixes a bug I've found while testing
+patches #2 and #3. It's safe to cherry-pick it in
+case patches #2 and/or #3 aren't accepted or need
+a re-spin.
 
-Instead of using sleeps and hoping the device is
-operational in some arbitrary timeframes use
-firmware indication register.
+I've mainly used patch #2 to test reset and
+recovery. It's pretty handy for (stress-)testing.
 
-As a side effect this makes driver
-boot/stop/recovery faster.
+Patch #3 should improve recovery speed in some
+cases. Notably when there's a long chain of WMI
+commands involved which take a painfully long time
+to timeout/complete if firmware crashes mid-way.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
+Note: Patches #2 and #3 depend on `ath10k: pci
+related fixes 2014-10-09`. Without the patchset
+patches #2 and #3 must not be applied. Patch #1 is
+fine though.
 
-Notes:
-    v2:
-     * fix kernel panic on early fw crash due to CE not being fully initialized [Janusz]
+v2:
+ * add additional comments [Kalle]
+ * rename new fw crash debugfs sub-command [Kalle]
+ * fix crash [Janusz]
 
- drivers/net/wireless/ath/ath10k/pci.c | 110 +++++++++++++++-------------------
- 1 file changed, 48 insertions(+), 62 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index c8cf177..54213ac 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1707,89 +1707,75 @@ static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
- 	msleep(10);
- }
- 
--static int ath10k_pci_warm_reset(struct ath10k *ar)
-+static void ath10k_pci_warm_reset_cpu(struct ath10k *ar)
- {
- 	u32 val;
- 
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
--
--	spin_lock_bh(&ar->data_lock);
--
--	ar->stats.fw_warm_reset_counter++;
--
--	spin_unlock_bh(&ar->data_lock);
--
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
--
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
--
--	/* disable pending irqs */
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_ENABLE_ADDRESS, 0);
--
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_CLR_ADDRESS, ~0);
--
--	msleep(100);
--
--	/* clear fw indicator */
- 	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, 0);
- 
--	/* clear target LF timer interrupts */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_LF_TIMER_CONTROL0_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
--			   SOC_LF_TIMER_CONTROL0_ADDRESS,
--			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+				SOC_RESET_CONTROL_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
-+			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+}
-+
-+static void ath10k_pci_warm_reset_ce(struct ath10k *ar)
-+{
-+	u32 val;
- 
--	/* reset CE */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
- 				SOC_RESET_CONTROL_ADDRESS);
-+
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val | SOC_RESET_CONTROL_CE_RST_MASK);
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
- 	msleep(10);
--
--	/* unreset CE */
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val & ~SOC_RESET_CONTROL_CE_RST_MASK);
-+}
-+
-+static void ath10k_pci_warm_reset_clear_lf(struct ath10k *ar)
-+{
-+	u32 val;
-+
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	msleep(10);
-+				SOC_LF_TIMER_CONTROL0_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
-+			   SOC_LF_TIMER_CONTROL0_ADDRESS,
-+			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+}
- 
--	ath10k_pci_warm_reset_si0(ar);
-+static int ath10k_pci_warm_reset(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
- 
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
-+	spin_lock_bh(&ar->data_lock);
-+	ar->stats.fw_warm_reset_counter++;
-+	spin_unlock_bh(&ar->data_lock);
- 
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
-+	ath10k_pci_irq_disable(ar);
- 
--	/* CPU warm reset */
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
--			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+	/* Make sure the target CPU is not doing anything dangerous, e.g. if it
-+	 * were to access copy engine while host performs copy engine reset
-+	 * then it is possible for the device to confuse pci-e controller to
-+	 * the point of bringing host system to a complete stop (i.e. hang).
-+	 */
-+	ath10k_pci_warm_reset_si0(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
-+	ath10k_pci_init_pipes(ar);
-+	ath10k_pci_wait_for_target_init(ar);
- 
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target reset state: 0x%08x\n",
--		   val);
-+	ath10k_pci_warm_reset_clear_lf(ar);
-+	ath10k_pci_warm_reset_ce(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
-+	ath10k_pci_init_pipes(ar);
- 
--	msleep(100);
-+	ret = ath10k_pci_wait_for_target_init(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wait for target init: %d\n", ret);
-+		return ret;
-+	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset complete\n");
- 
+Michal Kazior (3):
+  ath10k: fix possible bmi crash
+  ath10k: expose hw restart via debugfs
+  ath10k: speed up hw recovery
+
+ drivers/net/wireless/ath/ath10k/ce.c     |  7 +++++++
+ drivers/net/wireless/ath/ath10k/core.c   | 23 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h   |  5 +++++
+ drivers/net/wireless/ath/ath10k/debug.c  |  7 ++++++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  1 -
+ drivers/net/wireless/ath/ath10k/mac.c    | 14 ++++++++++++--
+ drivers/net/wireless/ath/ath10k/mac.h    |  1 +
+ drivers/net/wireless/ath/ath10k/pci.c    |  3 +++
+ drivers/net/wireless/ath/ath10k/txrx.c   |  3 ++-
+ drivers/net/wireless/ath/ath10k/wmi.c    |  5 ++++-
+ 10 files changed, 63 insertions(+), 6 deletions(-)
+
 -- 
 1.8.5.3
 
