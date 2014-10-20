@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgCAw-0005em-2P
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:35:02 +0000
-Received: by mail-lb0-f171.google.com with SMTP id z12so3813161lbi.30
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:34:39 -0700 (PDT)
+ id 1XgCAy-0005fS-Lz
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 12:35:05 +0000
+Received: by mail-lb0-f180.google.com with SMTP id n15so3705364lbi.25
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 05:34:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/3] ath10k: speed up recovery
-Date: Mon, 20 Oct 2014 14:22:35 +0200
-Message-Id: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 2/3] ath10k: expose hw restart via debugfs
+Date: Mon, 20 Oct 2014 14:22:37 +0200
+Message-Id: <1413807758-30249-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
+References: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +27,50 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Patch #1 fixes a bug I've found while testing
-patches #2 and #3. It's safe to cherry-pick it in
-case patches #2 and/or #3 aren't accepted or need
-a re-spin.
+Until now it was possible to simulate soft and
+hard fw crashes but it wasn't possible to trigger
+an immediately hw restart itself (without the fw
+crash).
 
-I've mainly used patch #2 to test reset and
-recovery. It's pretty handy for (stress-)testing.
+This can be useful when stress testing hw
+restarting stability, e.g. during heavy tx/rx
+traffic.
 
-Patch #3 should improve recovery speed in some
-cases. Notably when there's a long chain of WMI
-commands involved which take a painfully long time
-to timeout/complete if firmware crashes mid-way.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
 
-Note: Patches #2 and #3 depend on `ath10k: pci
-related fixes 2014-10-09`. Without the patchset
-patches #2 and #3 must not be applied. Patch #1 is
-fine though.
+Notes:
+    v2:
+     * s/request/hw-restart/ [Kalle]
 
-v2:
- * add additional comments [Kalle]
- * rename new fw crash debugfs sub-command [Kalle]
- * fix crash [Janusz]
+ drivers/net/wireless/ath/ath10k/debug.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-
-Michal Kazior (3):
-  ath10k: fix possible bmi crash
-  ath10k: expose hw restart via debugfs
-  ath10k: speed up hw recovery
-
- drivers/net/wireless/ath/ath10k/ce.c     |  7 +++++++
- drivers/net/wireless/ath/ath10k/core.c   | 23 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h   |  5 +++++
- drivers/net/wireless/ath/ath10k/debug.c  |  7 ++++++-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  1 -
- drivers/net/wireless/ath/ath10k/mac.c    | 14 ++++++++++++--
- drivers/net/wireless/ath/ath10k/mac.h    |  1 +
- drivers/net/wireless/ath/ath10k/pci.c    |  3 +++
- drivers/net/wireless/ath/ath10k/txrx.c   |  3 ++-
- drivers/net/wireless/ath/ath10k/wmi.c    |  5 ++++-
- 10 files changed, 63 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0d94feb..3bc526b 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -694,7 +694,8 @@ static ssize_t ath10k_read_simulate_fw_crash(struct file *file,
+ 		"To simulate firmware crash write one of the keywords to this file:\n"
+ 		"`soft` - this will send WMI_FORCE_FW_HANG_ASSERT to firmware if FW supports that command.\n"
+ 		"`hard` - this will send to firmware command with illegal parameters causing firmware crash.\n"
+-		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n";
++		"`assert` - this will send special illegal parameter to firmware to cause assert failure and crash.\n"
++		"`hw-restart` - this will simply queue hw restart without fw/hw actually crashing.\n";
+ 
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, strlen(buf));
+ }
+@@ -747,6 +748,10 @@ static ssize_t ath10k_write_simulate_fw_crash(struct file *file,
+ 	} else if (!strcmp(buf, "assert")) {
+ 		ath10k_info(ar, "simulating firmware assert crash\n");
+ 		ret = ath10k_debug_fw_assert(ar);
++	} else if (!strcmp(buf, "hw-restart")) {
++		ath10k_info(ar, "user requested hw restart\n");
++		queue_work(ar->workqueue, &ar->restart_work);
++		ret = 0;
+ 	} else {
+ 		ret = -EINVAL;
+ 		goto exit;
 -- 
 1.8.5.3
 
