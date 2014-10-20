@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
+Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgDQ1-0004Rn-Oj
+ id 1XgDQ0-0004OQ-Q7
  for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:42 +0000
-Received: by mail-la0-f54.google.com with SMTP id gm9so3997645lab.13
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:19 -0700 (PDT)
+Received: by mail-lb0-f169.google.com with SMTP id 10so3938610lbg.0
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:18 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 4/9] ath10k: fix rx buffer tracing
-Date: Mon, 20 Oct 2014 15:40:33 +0200
-Message-Id: <1413812438-14640-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/9] ath10k: use ieee80211 defines for crypto param lengths
+Date: Mon, 20 Oct 2014 15:40:32 +0200
+Message-Id: <1413812438-14640-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 References: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,46 +27,88 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Tracing function was called before buffers were
-unmapped from DMA.
+Use the globally defined ieee80211 values instead
+of re-defining them in the driver again.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 34 +++++++++++++++++++-------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index ca466ce..a7d29c8 100644
+index 61ff2ac..ca466ce 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -291,9 +291,6 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
- 	htt->rx_ring.fill_cnt--;
+@@ -588,41 +588,47 @@ static int ath10k_htt_rx_crypto_param_len(struct ath10k *ar,
+ 					  enum htt_rx_mpdu_encrypt_type type)
+ {
+ 	switch (type) {
++	case HTT_RX_MPDU_ENCRYPT_NONE:
++		return 0;
+ 	case HTT_RX_MPDU_ENCRYPT_WEP40:
+ 	case HTT_RX_MPDU_ENCRYPT_WEP104:
+-		return 4;
++		return IEEE80211_WEP_IV_LEN;
+ 	case HTT_RX_MPDU_ENCRYPT_TKIP_WITHOUT_MIC:
+-	case HTT_RX_MPDU_ENCRYPT_WEP128: /* not tested */
+ 	case HTT_RX_MPDU_ENCRYPT_TKIP_WPA:
+-	case HTT_RX_MPDU_ENCRYPT_WAPI: /* not tested */
++		return IEEE80211_TKIP_IV_LEN;
+ 	case HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2:
+-		return 8;
+-	case HTT_RX_MPDU_ENCRYPT_NONE:
+-		return 0;
++		return IEEE80211_CCMP_HDR_LEN;
++	case HTT_RX_MPDU_ENCRYPT_WEP128:
++	case HTT_RX_MPDU_ENCRYPT_WAPI:
++		break;
+ 	}
  
--	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
--				     skb_tailroom(msdu));
--
- 	return msdu;
+-	ath10k_warn(ar, "unknown encryption type %d\n", type);
++	ath10k_warn(ar, "unsupported encryption type %d\n", type);
+ 	return 0;
  }
  
-@@ -339,6 +336,8 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
++#define MICHAEL_MIC_LEN 8
++
+ static int ath10k_htt_rx_crypto_tail_len(struct ath10k *ar,
+ 					 enum htt_rx_mpdu_encrypt_type type)
+ {
+ 	switch (type) {
+ 	case HTT_RX_MPDU_ENCRYPT_NONE:
++		return 0;
+ 	case HTT_RX_MPDU_ENCRYPT_WEP40:
+ 	case HTT_RX_MPDU_ENCRYPT_WEP104:
+-	case HTT_RX_MPDU_ENCRYPT_WEP128:
+-	case HTT_RX_MPDU_ENCRYPT_WAPI:
+-		return 0;
++		return IEEE80211_WEP_ICV_LEN;
+ 	case HTT_RX_MPDU_ENCRYPT_TKIP_WITHOUT_MIC:
+ 	case HTT_RX_MPDU_ENCRYPT_TKIP_WPA:
+-		return 4;
++		return IEEE80211_TKIP_ICV_LEN;
+ 	case HTT_RX_MPDU_ENCRYPT_AES_CCM_WPA2:
+-		return 8;
++		return IEEE80211_CCMP_MIC_LEN;
++	case HTT_RX_MPDU_ENCRYPT_WEP128:
++	case HTT_RX_MPDU_ENCRYPT_WAPI:
++		break;
+ 	}
  
- 		ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx pop: ",
- 				msdu->data, msdu->len + skb_tailroom(msdu));
-+		trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
-+					     skb_tailroom(msdu));
+-	ath10k_warn(ar, "unknown encryption type %d\n", type);
++	ath10k_warn(ar, "unsupported encryption type %d\n", type);
+ 	return 0;
+ }
  
- 		rx_desc = (struct htt_rx_desc *)msdu->data;
+@@ -1427,7 +1433,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 	/* last fragment of TKIP frags has MIC */
+ 	if (!ieee80211_has_morefrags(hdr->frame_control) &&
+ 	    enctype == HTT_RX_MPDU_ENCRYPT_TKIP_WPA)
+-		trim += 8;
++		trim += MICHAEL_MIC_LEN;
  
-@@ -438,6 +437,8 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 			ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL,
- 					"htt rx chained: ", next->data,
- 					next->len + skb_tailroom(next));
-+			trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
-+						     skb_tailroom(msdu));
- 
- 			skb_trim(next, 0);
- 			skb_put(next, min(msdu_len, HTT_RX_BUF_SIZE));
+ 	if (trim > msdu_head->len) {
+ 		ath10k_warn(ar, "htt rx fragment: trailer longer than the frame itself? drop\n");
 -- 
 1.8.5.3
 
