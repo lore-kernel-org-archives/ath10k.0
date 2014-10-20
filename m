@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x230.google.com ([2a00:1450:4010:c03::230])
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgDPx-0004Hg-Qt
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:38 +0000
-Received: by mail-la0-f48.google.com with SMTP id gi9so3924812lab.21
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:15 -0700 (PDT)
+ id 1XgDQ0-0004JI-2e
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:40 +0000
+Received: by mail-la0-f44.google.com with SMTP id hs14so3970012lab.31
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:16 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/9] ath10k: don't drop control and null func Rx
-Date: Mon, 20 Oct 2014 15:40:30 +0200
-Message-Id: <1413812438-14640-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/9] ath10k: remove unused variable
+Date: Mon, 20 Oct 2014 15:40:31 +0200
+Message-Id: <1413812438-14640-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 References: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,30 +27,37 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-HTT_RX_IND_MPDU_STATUS_MGMT_CTRL was pretty greedy
-and because of that ath10k ended up dropping
-Control Frames as well as Null Func frames.
+The rx descriptor variable was no longer used in
+the rx handler.
 
-Reported-by: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fbb3175..63c69d8 100644
+index 63c69d8..61ff2ac 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1200,8 +1200,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
- 	}
+@@ -1230,7 +1230,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	struct ath10k *ar = htt->ar;
+ 	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
+-	struct htt_rx_desc *rxd;
+ 	enum htt_rx_mpdu_status status;
+ 	struct ieee80211_hdr *hdr;
+ 	int num_mpdu_ranges;
+@@ -1301,10 +1300,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				continue;
+ 			}
  
- 	/* Skip mgmt frames while we handle this in WMI */
--	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
--	    attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
-+	if (attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
- 		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
- 		return false;
- 	}
+-			rxd = container_of((void *)msdu_head->data,
+-					   struct htt_rx_desc,
+-					   msdu_payload);
+-
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+ 							 status,
+ 							 channel_set,
 -- 
 1.8.5.3
 
