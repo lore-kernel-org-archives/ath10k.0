@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
+Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgCjN-00083b-Vm
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:10:44 +0000
-Received: by mail-la0-f54.google.com with SMTP id gm9so3832207lab.41
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:10:14 -0700 (PDT)
+ id 1XgCjP-00084J-DN
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:10:46 +0000
+Received: by mail-lb0-f174.google.com with SMTP id p9so3796819lbv.5
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:10:15 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/7] ath10k: add sanity checks for service bmap parsing
-Date: Mon, 20 Oct 2014 14:58:40 +0200
-Message-Id: <1413809925-4352-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/7] ath10k: make wmi service bitmap non-debug
+Date: Mon, 20 Oct 2014 14:58:41 +0200
+Message-Id: <1413809925-4352-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1413809925-4352-1-git-send-email-michal.kazior@tieto.com>
 References: <1413809925-4352-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,230 +27,134 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This shouldn't really happen but take into account
-the original service bitmap length when mapping
-service ids.
+The service bitmap can be used to determine
+firmware capabilities.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c |   6 +-
- drivers/net/wireless/ath/ath10k/wmi.h | 121 +++++++++++++++++-----------------
- 2 files changed, 66 insertions(+), 61 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h  |  2 +-
+ drivers/net/wireless/ath/ath10k/debug.c | 11 +++--------
+ drivers/net/wireless/ath/ath10k/debug.h |  9 ---------
+ drivers/net/wireless/ath/ath10k/wmi.c   |  8 ++++----
+ 4 files changed, 8 insertions(+), 22 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 1ac2f14..0b08ad2 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -108,6 +108,7 @@ struct ath10k_wmi {
+ 	struct completion service_ready;
+ 	struct completion unified_ready;
+ 	wait_queue_head_t tx_credits_wq;
++	DECLARE_BITMAP(svc_map, WMI_SERVICE_MAX);
+ 	struct wmi_cmd_map *cmd;
+ 	struct wmi_vdev_param_map *vdev_param;
+ 	struct wmi_pdev_param_map *pdev_param;
+@@ -295,7 +296,6 @@ struct ath10k_debug {
+ 	struct ath10k_fw_stats fw_stats;
+ 	struct completion fw_stats_complete;
+ 	bool fw_stats_done;
+-	DECLARE_BITMAP(wmi_service_bitmap, WMI_SERVICE_MAX);
+ 
+ 	unsigned long htt_stats_mask;
+ 	struct delayed_work htt_stats_dwork;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 0d94feb..77ddbdd 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -178,13 +178,6 @@ EXPORT_SYMBOL(ath10k_warn);
+ 
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 
+-void ath10k_debug_read_service_map(struct ath10k *ar,
+-				   const void *service_map,
+-				   size_t map_size)
+-{
+-	memcpy(ar->debug.wmi_service_bitmap, service_map, map_size);
+-}
+-
+ static ssize_t ath10k_read_wmi_services(struct file *file,
+ 					char __user *user_buf,
+ 					size_t count, loff_t *ppos)
+@@ -206,8 +199,9 @@ static ssize_t ath10k_read_wmi_services(struct file *file,
+ 	if (len > buf_len)
+ 		len = buf_len;
+ 
++	spin_lock_bh(&ar->data_lock);
+ 	for (i = 0; i < WMI_SERVICE_MAX; i++) {
+-		enabled = test_bit(i, ar->debug.wmi_service_bitmap);
++		enabled = test_bit(i, ar->wmi.svc_map);
+ 		name = wmi_service_name(i);
+ 
+ 		if (!name) {
+@@ -223,6 +217,7 @@ static ssize_t ath10k_read_wmi_services(struct file *file,
+ 				 "%-40s %s\n",
+ 				 name, enabled ? "enabled" : "-");
+ 	}
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	ret_cnt = simple_read_from_buffer(user_buf, count, ppos, buf, len);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
+index 0c934a8..b7a69df 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.h
++++ b/drivers/net/wireless/ath/ath10k/debug.h
+@@ -61,9 +61,6 @@ int ath10k_debug_create(struct ath10k *ar);
+ void ath10k_debug_destroy(struct ath10k *ar);
+ int ath10k_debug_register(struct ath10k *ar);
+ void ath10k_debug_unregister(struct ath10k *ar);
+-void ath10k_debug_read_service_map(struct ath10k *ar,
+-				   const void *service_map,
+-				   size_t map_size);
+ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb);
+ struct ath10k_fw_crash_data *
+ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar);
+@@ -108,12 +105,6 @@ static inline void ath10k_debug_unregister(struct ath10k *ar)
+ {
+ }
+ 
+-static inline void ath10k_debug_read_service_map(struct ath10k *ar,
+-						 const void *service_map,
+-						 size_t map_size)
+-{
+-}
+-
+ static inline void ath10k_debug_fw_stats_process(struct ath10k *ar,
+ 						 struct sk_buff *skb)
+ {
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 45768c9..2c2e727 100644
+index 2c2e727..49887fd 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2470,10 +2470,12 @@ static void ath10k_wmi_event_service_ready(struct ath10k *ar,
+@@ -2465,16 +2465,17 @@ static void ath10k_wmi_event_service_ready(struct ath10k *ar,
+ {
+ 	struct wmi_svc_rdy_ev_arg arg = {};
+ 	u32 num_units, req_id, unit_size, num_mem_reqs, num_unit_info, i;
+-	DECLARE_BITMAP(svc_bmap, WMI_SERVICE_MAX) = {};
+ 	int ret;
  
++	memset(&ar->wmi.svc_map, 0, sizeof(ar->wmi.svc_map));
++
  	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
  		ret = ath10k_wmi_10x_pull_svc_rdy_ev(skb, &arg);
--		wmi_10x_svc_map(arg.service_map, svc_bmap);
-+		wmi_10x_svc_map(arg.service_map, svc_bmap,
-+				arg.service_map_len);
+-		wmi_10x_svc_map(arg.service_map, svc_bmap,
++		wmi_10x_svc_map(arg.service_map, ar->wmi.svc_map,
+ 				arg.service_map_len);
  	} else {
  		ret = ath10k_wmi_main_pull_svc_rdy_ev(skb, &arg);
--		wmi_main_svc_map(arg.service_map, svc_bmap);
-+		wmi_main_svc_map(arg.service_map, svc_bmap,
-+				 arg.service_map_len);
+-		wmi_main_svc_map(arg.service_map, svc_bmap,
++		wmi_main_svc_map(arg.service_map, ar->wmi.svc_map,
+ 				 arg.service_map_len);
  	}
  
- 	if (ret) {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4d16dfe..8cf178c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -222,128 +222,131 @@ static inline char *wmi_service_name(int service_id)
- #undef SVCSTR
- }
+@@ -2497,7 +2498,6 @@ static void ath10k_wmi_event_service_ready(struct ath10k *ar,
+ 	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
+ 	ar->ath_common.regulatory.current_rd = __le32_to_cpu(arg.eeprom_rd);
  
--#define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id) \
--	(__le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
-+#define WMI_SERVICE_IS_ENABLED(wmi_svc_bmap, svc_id, len) \
-+	((svc_id) < (len) && \
-+	 __le32_to_cpu((wmi_svc_bmap)[(svc_id)/(sizeof(u32))]) & \
- 	 BIT((svc_id)%(sizeof(u32))))
+-	ath10k_debug_read_service_map(ar, svc_bmap, sizeof(svc_bmap));
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_WMI, NULL, "wmi svc: ",
+ 			arg.service_map, arg.service_map_len);
  
--#define SVCMAP(x, y) \
-+#define SVCMAP(x, y, len) \
- 	do { \
--		if (WMI_SERVICE_IS_ENABLED((in), (x))) \
-+		if (WMI_SERVICE_IS_ENABLED((in), (x), (len))) \
- 			__set_bit(y, out); \
- 	} while (0)
- 
--static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out)
-+static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
-+				   size_t len)
- {
- 	SVCMAP(WMI_10X_SERVICE_BEACON_OFFLOAD,
--	       WMI_SERVICE_BEACON_OFFLOAD);
-+	       WMI_SERVICE_BEACON_OFFLOAD, len);
- 	SVCMAP(WMI_10X_SERVICE_SCAN_OFFLOAD,
--	       WMI_SERVICE_SCAN_OFFLOAD);
-+	       WMI_SERVICE_SCAN_OFFLOAD, len);
- 	SVCMAP(WMI_10X_SERVICE_ROAM_OFFLOAD,
--	       WMI_SERVICE_ROAM_OFFLOAD);
-+	       WMI_SERVICE_ROAM_OFFLOAD, len);
- 	SVCMAP(WMI_10X_SERVICE_BCN_MISS_OFFLOAD,
--	       WMI_SERVICE_BCN_MISS_OFFLOAD);
-+	       WMI_SERVICE_BCN_MISS_OFFLOAD, len);
- 	SVCMAP(WMI_10X_SERVICE_STA_PWRSAVE,
--	       WMI_SERVICE_STA_PWRSAVE);
-+	       WMI_SERVICE_STA_PWRSAVE, len);
- 	SVCMAP(WMI_10X_SERVICE_STA_ADVANCED_PWRSAVE,
--	       WMI_SERVICE_STA_ADVANCED_PWRSAVE);
-+	       WMI_SERVICE_STA_ADVANCED_PWRSAVE, len);
- 	SVCMAP(WMI_10X_SERVICE_AP_UAPSD,
--	       WMI_SERVICE_AP_UAPSD);
-+	       WMI_SERVICE_AP_UAPSD, len);
- 	SVCMAP(WMI_10X_SERVICE_AP_DFS,
--	       WMI_SERVICE_AP_DFS);
-+	       WMI_SERVICE_AP_DFS, len);
- 	SVCMAP(WMI_10X_SERVICE_11AC,
--	       WMI_SERVICE_11AC);
-+	       WMI_SERVICE_11AC, len);
- 	SVCMAP(WMI_10X_SERVICE_BLOCKACK,
--	       WMI_SERVICE_BLOCKACK);
-+	       WMI_SERVICE_BLOCKACK, len);
- 	SVCMAP(WMI_10X_SERVICE_PHYERR,
--	       WMI_SERVICE_PHYERR);
-+	       WMI_SERVICE_PHYERR, len);
- 	SVCMAP(WMI_10X_SERVICE_BCN_FILTER,
--	       WMI_SERVICE_BCN_FILTER);
-+	       WMI_SERVICE_BCN_FILTER, len);
- 	SVCMAP(WMI_10X_SERVICE_RTT,
--	       WMI_SERVICE_RTT);
-+	       WMI_SERVICE_RTT, len);
- 	SVCMAP(WMI_10X_SERVICE_RATECTRL,
--	       WMI_SERVICE_RATECTRL);
-+	       WMI_SERVICE_RATECTRL, len);
- 	SVCMAP(WMI_10X_SERVICE_WOW,
--	       WMI_SERVICE_WOW);
-+	       WMI_SERVICE_WOW, len);
- 	SVCMAP(WMI_10X_SERVICE_RATECTRL_CACHE,
--	       WMI_SERVICE_RATECTRL_CACHE);
-+	       WMI_SERVICE_RATECTRL_CACHE, len);
- 	SVCMAP(WMI_10X_SERVICE_IRAM_TIDS,
--	       WMI_SERVICE_IRAM_TIDS);
-+	       WMI_SERVICE_IRAM_TIDS, len);
- 	SVCMAP(WMI_10X_SERVICE_BURST,
--	       WMI_SERVICE_BURST);
-+	       WMI_SERVICE_BURST, len);
- 	SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_SW_SUPPORT,
--	       WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT);
-+	       WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT, len);
- 	SVCMAP(WMI_10X_SERVICE_FORCE_FW_HANG,
--	       WMI_SERVICE_FORCE_FW_HANG);
-+	       WMI_SERVICE_FORCE_FW_HANG, len);
- 	SVCMAP(WMI_10X_SERVICE_SMART_ANTENNA_HW_SUPPORT,
--	       WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT);
-+	       WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT, len);
- }
- 
--static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out)
-+static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
-+				    size_t len)
- {
- 	SVCMAP(WMI_MAIN_SERVICE_BEACON_OFFLOAD,
--	       WMI_SERVICE_BEACON_OFFLOAD);
-+	       WMI_SERVICE_BEACON_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_SCAN_OFFLOAD,
--	       WMI_SERVICE_SCAN_OFFLOAD);
-+	       WMI_SERVICE_SCAN_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_ROAM_OFFLOAD,
--	       WMI_SERVICE_ROAM_OFFLOAD);
-+	       WMI_SERVICE_ROAM_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_BCN_MISS_OFFLOAD,
--	       WMI_SERVICE_BCN_MISS_OFFLOAD);
-+	       WMI_SERVICE_BCN_MISS_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_PWRSAVE,
--	       WMI_SERVICE_STA_PWRSAVE);
-+	       WMI_SERVICE_STA_PWRSAVE, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_ADVANCED_PWRSAVE,
--	       WMI_SERVICE_STA_ADVANCED_PWRSAVE);
-+	       WMI_SERVICE_STA_ADVANCED_PWRSAVE, len);
- 	SVCMAP(WMI_MAIN_SERVICE_AP_UAPSD,
--	       WMI_SERVICE_AP_UAPSD);
-+	       WMI_SERVICE_AP_UAPSD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_AP_DFS,
--	       WMI_SERVICE_AP_DFS);
-+	       WMI_SERVICE_AP_DFS, len);
- 	SVCMAP(WMI_MAIN_SERVICE_11AC,
--	       WMI_SERVICE_11AC);
-+	       WMI_SERVICE_11AC, len);
- 	SVCMAP(WMI_MAIN_SERVICE_BLOCKACK,
--	       WMI_SERVICE_BLOCKACK);
-+	       WMI_SERVICE_BLOCKACK, len);
- 	SVCMAP(WMI_MAIN_SERVICE_PHYERR,
--	       WMI_SERVICE_PHYERR);
-+	       WMI_SERVICE_PHYERR, len);
- 	SVCMAP(WMI_MAIN_SERVICE_BCN_FILTER,
--	       WMI_SERVICE_BCN_FILTER);
-+	       WMI_SERVICE_BCN_FILTER, len);
- 	SVCMAP(WMI_MAIN_SERVICE_RTT,
--	       WMI_SERVICE_RTT);
-+	       WMI_SERVICE_RTT, len);
- 	SVCMAP(WMI_MAIN_SERVICE_RATECTRL,
--	       WMI_SERVICE_RATECTRL);
-+	       WMI_SERVICE_RATECTRL, len);
- 	SVCMAP(WMI_MAIN_SERVICE_WOW,
--	       WMI_SERVICE_WOW);
-+	       WMI_SERVICE_WOW, len);
- 	SVCMAP(WMI_MAIN_SERVICE_RATECTRL_CACHE,
--	       WMI_SERVICE_RATECTRL_CACHE);
-+	       WMI_SERVICE_RATECTRL_CACHE, len);
- 	SVCMAP(WMI_MAIN_SERVICE_IRAM_TIDS,
--	       WMI_SERVICE_IRAM_TIDS);
-+	       WMI_SERVICE_IRAM_TIDS, len);
- 	SVCMAP(WMI_MAIN_SERVICE_ARPNS_OFFLOAD,
--	       WMI_SERVICE_ARPNS_OFFLOAD);
-+	       WMI_SERVICE_ARPNS_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_NLO,
--	       WMI_SERVICE_NLO);
-+	       WMI_SERVICE_NLO, len);
- 	SVCMAP(WMI_MAIN_SERVICE_GTK_OFFLOAD,
--	       WMI_SERVICE_GTK_OFFLOAD);
-+	       WMI_SERVICE_GTK_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_SCAN_SCH,
--	       WMI_SERVICE_SCAN_SCH);
-+	       WMI_SERVICE_SCAN_SCH, len);
- 	SVCMAP(WMI_MAIN_SERVICE_CSA_OFFLOAD,
--	       WMI_SERVICE_CSA_OFFLOAD);
-+	       WMI_SERVICE_CSA_OFFLOAD, len);
- 	SVCMAP(WMI_MAIN_SERVICE_CHATTER,
--	       WMI_SERVICE_CHATTER);
-+	       WMI_SERVICE_CHATTER, len);
- 	SVCMAP(WMI_MAIN_SERVICE_COEX_FREQAVOID,
--	       WMI_SERVICE_COEX_FREQAVOID);
-+	       WMI_SERVICE_COEX_FREQAVOID, len);
- 	SVCMAP(WMI_MAIN_SERVICE_PACKET_POWER_SAVE,
--	       WMI_SERVICE_PACKET_POWER_SAVE);
-+	       WMI_SERVICE_PACKET_POWER_SAVE, len);
- 	SVCMAP(WMI_MAIN_SERVICE_FORCE_FW_HANG,
--	       WMI_SERVICE_FORCE_FW_HANG);
-+	       WMI_SERVICE_FORCE_FW_HANG, len);
- 	SVCMAP(WMI_MAIN_SERVICE_GPIO,
--	       WMI_SERVICE_GPIO);
-+	       WMI_SERVICE_GPIO, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_DTIM_PS_MODULATED_DTIM,
--	       WMI_SERVICE_STA_DTIM_PS_MODULATED_DTIM);
-+	       WMI_SERVICE_STA_DTIM_PS_MODULATED_DTIM, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG,
--	       WMI_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG);
-+	       WMI_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_UAPSD_VAR_AUTO_TRIG,
--	       WMI_SERVICE_STA_UAPSD_VAR_AUTO_TRIG);
-+	       WMI_SERVICE_STA_UAPSD_VAR_AUTO_TRIG, len);
- 	SVCMAP(WMI_MAIN_SERVICE_STA_KEEP_ALIVE,
--	       WMI_SERVICE_STA_KEEP_ALIVE);
-+	       WMI_SERVICE_STA_KEEP_ALIVE, len);
- 	SVCMAP(WMI_MAIN_SERVICE_TX_ENCAP,
--	       WMI_SERVICE_TX_ENCAP);
-+	       WMI_SERVICE_TX_ENCAP, len);
- }
- 
- #undef SVCMAP
 -- 
 1.8.5.3
 
