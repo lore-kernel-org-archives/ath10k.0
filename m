@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22b.google.com ([2a00:1450:4010:c04::22b])
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgDQ3-0004U0-7g
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:44 +0000
-Received: by mail-lb0-f171.google.com with SMTP id z12so3921005lbi.2
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:20 -0700 (PDT)
+ id 1XgDQ4-0004Uz-W4
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:45 +0000
+Received: by mail-la0-f45.google.com with SMTP id q1so4007228lam.18
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:22 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/9] ath10k: deduplicate htt rx dma unmapping
-Date: Mon, 20 Oct 2014 15:40:34 +0200
-Message-Id: <1413812438-14640-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 6/9] ath10k: don't drop frames aggressively
+Date: Mon, 20 Oct 2014 15:40:35 +0200
+Message-Id: <1413812438-14640-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 References: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,70 +27,71 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Treat non-chained and chained popping the same
-way. Also this makes netbuf pop fully symmetrical
-to (re)filling.
+There's little point in dropping, e.g. frames with
+FCS error early in ath10k.
+
+This simplifies amsdu_allowed() and gets rid of
+htt_rx_mpdu_status usage finally.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 30 +++++++++---------------------
- 1 file changed, 9 insertions(+), 21 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a7d29c8..41a2803 100644
+index 41a2803..7fa4d87 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -291,6 +291,15 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 	htt->rx_ring.sw_rd_idx.msdu_payld = idx;
- 	htt->rx_ring.fill_cnt--;
+@@ -1171,7 +1171,6 @@ static int ath10k_unchain_msdu(struct sk_buff *msdu_head)
  
-+	dma_unmap_single(htt->ar->dev,
-+			 ATH10K_SKB_CB(msdu)->paddr,
-+			 msdu->len + skb_tailroom(msdu),
-+			 DMA_FROM_DEVICE);
-+	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx netbuf pop: ",
-+			msdu->data, msdu->len + skb_tailroom(msdu));
-+	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
-+				     skb_tailroom(msdu));
-+
- 	return msdu;
- }
+ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 					struct sk_buff *head,
+-					enum htt_rx_mpdu_status status,
+ 					bool channel_set,
+ 					u32 attention)
+ {
+@@ -1200,16 +1199,6 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 		return false;
+ 	}
  
-@@ -329,16 +338,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 	while (msdu) {
- 		int last_msdu, msdu_len_invalid, msdu_chained;
- 
--		dma_unmap_single(htt->ar->dev,
--				 ATH10K_SKB_CB(msdu)->paddr,
--				 msdu->len + skb_tailroom(msdu),
--				 DMA_FROM_DEVICE);
+-	if (status != HTT_RX_IND_MPDU_STATUS_OK &&
+-	    status != HTT_RX_IND_MPDU_STATUS_TKIP_MIC_ERR &&
+-	    status != HTT_RX_IND_MPDU_STATUS_ERR_INV_PEER &&
+-	    !htt->ar->monitor_started) {
+-		ath10k_dbg(ar, ATH10K_DBG_HTT,
+-			   "htt rx ignoring frame w/ status %d\n",
+-			   status);
+-		return false;
+-	}
 -
--		ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx pop: ",
--				msdu->data, msdu->len + skb_tailroom(msdu));
--		trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
--					     skb_tailroom(msdu));
--
- 		rx_desc = (struct htt_rx_desc *)msdu->data;
+ 	if (test_bit(ATH10K_CAC_RUNNING, &htt->ar->dev_flags)) {
+ 		ath10k_dbg(ar, ATH10K_DBG_HTT,
+ 			   "htt rx CAC running\n");
+@@ -1225,7 +1214,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	struct ath10k *ar = htt->ar;
+ 	struct ieee80211_rx_status *rx_status = &htt->rx_status;
+ 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
+-	enum htt_rx_mpdu_status status;
+ 	struct ieee80211_hdr *hdr;
+ 	int num_mpdu_ranges;
+ 	u32 attention;
+@@ -1273,8 +1261,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 				num_mpdu_ranges));
  
- 		/* FIXME: we must report msdu payload since this is what caller
-@@ -429,17 +428,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 		while (msdu_chained--) {
- 			struct sk_buff *next = ath10k_htt_rx_netbuf_pop(htt);
+ 	for (i = 0; i < num_mpdu_ranges; i++) {
+-		status = mpdu_ranges[i].mpdu_range_status;
+-
+ 		for (j = 0; j < mpdu_ranges[i].mpdu_count; j++) {
+ 			struct sk_buff *msdu_head, *msdu_tail;
  
--			dma_unmap_single(htt->ar->dev,
--					 ATH10K_SKB_CB(next)->paddr,
--					 next->len + skb_tailroom(next),
--					 DMA_FROM_DEVICE);
--
--			ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL,
--					"htt rx chained: ", next->data,
--					next->len + skb_tailroom(next));
--			trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
--						     skb_tailroom(msdu));
--
- 			skb_trim(next, 0);
- 			skb_put(next, min(msdu_len, HTT_RX_BUF_SIZE));
- 			msdu_len -= next->len;
+@@ -1296,7 +1282,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			}
+ 
+ 			if (!ath10k_htt_rx_amsdu_allowed(htt, msdu_head,
+-							 status,
+ 							 channel_set,
+ 							 attention)) {
+ 				ath10k_htt_rx_free_msdu_chain(msdu_head);
 -- 
 1.8.5.3
 
