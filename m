@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from mail-la0-x230.google.com ([2a00:1450:4010:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgDPw-0004Gf-37
- for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:36 +0000
-Received: by mail-lb0-f177.google.com with SMTP id w7so3803893lbi.8
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:13 -0700 (PDT)
+ id 1XgDPx-0004Hg-Qt
+ for ath10k@lists.infradead.org; Mon, 20 Oct 2014 13:54:38 +0000
+Received: by mail-la0-f48.google.com with SMTP id gi9so3924812lab.21
+ for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 06:54:15 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/9] ath10k: htt rx fixes and clean ups
-Date: Mon, 20 Oct 2014 15:40:29 +0200
-Message-Id: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/9] ath10k: don't drop control and null func Rx
+Date: Mon, 20 Oct 2014 15:40:30 +0200
+Message-Id: <1413812438-14640-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
+References: <1413812438-14640-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +27,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+HTT_RX_IND_MPDU_STATUS_MGMT_CTRL was pretty greedy
+and because of that ath10k ended up dropping
+Control Frames as well as Null Func frames.
 
-I've found a couple of issues while reworking rx
-path.
+Reported-by: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-
-Michal Kazior (9):
-  ath10k: don't drop control and null func Rx
-  ath10k: remove unused variable
-  ath10k: use ieee80211 defines for crypto param lengths
-  ath10k: fix rx buffer tracing
-  ath10k: deduplicate htt rx dma unmapping
-  ath10k: don't drop frames aggressively
-  ath10k: add extra sanity check when popping amsdu
-  ath10k: don't forget to replenish after fragmented Rx
-  ath10k: clear htt->rx_confused on load
-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 91 ++++++++++++++------------------
- 1 file changed, 39 insertions(+), 52 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index fbb3175..63c69d8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1200,8 +1200,7 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k_htt *htt,
+ 	}
+ 
+ 	/* Skip mgmt frames while we handle this in WMI */
+-	if (status == HTT_RX_IND_MPDU_STATUS_MGMT_CTRL ||
+-	    attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
++	if (attention & RX_ATTENTION_FLAGS_MGMT_TYPE) {
+ 		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
+ 		return false;
+ 	}
 -- 
 1.8.5.3
 
