@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xga5g-0004W7-Jg
- for ath10k@lists.infradead.org; Tue, 21 Oct 2014 14:07:13 +0000
-Received: by mail-la0-f46.google.com with SMTP id gi9so1091384lab.5
- for <ath10k@lists.infradead.org>; Tue, 21 Oct 2014 07:06:44 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: remove tsf argument from rx_desc tracing
-Date: Tue, 21 Oct 2014 15:54:59 +0200
-Message-Id: <1413899700-10717-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1413899700-10717-1-git-send-email-michal.kazior@tieto.com>
-References: <1413899700-10717-1-git-send-email-michal.kazior@tieto.com>
+ id 1Xgb4u-0004tw-Oc
+ for ath10k@lists.infradead.org; Tue, 21 Oct 2014 15:10:29 +0000
+From: "Li, Yanbo" <yanbol@qti.qualcomm.com>
+Subject: RE: [PATCH v3] ath10k: Add the target register read/write and
+ memory dump debugfs interface
+Date: Tue, 21 Oct 2014 15:10:04 +0000
+Message-ID: <8F62F6322D7B2E46AD0AB51C2C2A02FD230A984B@NASANEXD01D.na.qualcomm.com>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,96 +18,107 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: "michal.kazior@tieto.com" <michal.kazior@tieto.com>
+Cc: "Balasubramanian, Senthil Kumar" <senthilb@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, ath10k-devel <ath10k-devel@qca.qualcomm.com>, "Valo,
+ Kalle" <kvalo@qca.qualcomm.com>, "dreamfly281@gmail.com" <dreamfly281@gmail.com>
 
-Fundamtenally this was wrong. Tsf is only valid
-in first MPDU of a PPDU. This means tsf value was
-wrong most of the time during heavy traffic.
-
-Also I don't see much point in exposing a
-redundant (and broken) tsf value. Userspace can
-already read it from the dumped rx descriptor
-buffer.
-
-Cc: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 4 +---
- drivers/net/wireless/ath/ath10k/trace.h  | 9 +++------
- 2 files changed, 4 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index fbb3175..d3741b4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -319,7 +319,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 	int msdu_len, msdu_chaining = 0;
- 	struct sk_buff *msdu, *next;
- 	struct htt_rx_desc *rx_desc;
--	u32 tsf;
- 
- 	lockdep_assert_held(&htt->rx_ring.lock);
- 
-@@ -451,8 +450,7 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 		last_msdu = __le32_to_cpu(rx_desc->msdu_end.info0) &
- 				RX_MSDU_END_INFO0_LAST_MSDU;
- 
--		tsf = __le32_to_cpu(rx_desc->ppdu_end.tsf_timestamp);
--		trace_ath10k_htt_rx_desc(ar, tsf, &rx_desc->attention,
-+		trace_ath10k_htt_rx_desc(ar, &rx_desc->attention,
- 					 sizeof(*rx_desc) - sizeof(u32));
- 		if (last_msdu) {
- 			msdu->next = NULL;
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 9d34e7f..2409cb5 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -282,14 +282,13 @@ TRACE_EVENT(ath10k_htt_pktlog,
- );
- 
- TRACE_EVENT(ath10k_htt_rx_desc,
--	    TP_PROTO(struct ath10k *ar, u32 tsf, void *rxdesc, u16 len),
-+	    TP_PROTO(struct ath10k *ar, void *rxdesc, u16 len),
- 
--	TP_ARGS(ar, tsf, rxdesc, len),
-+	TP_ARGS(ar, rxdesc, len),
- 
- 	TP_STRUCT__entry(
- 		__string(device, dev_name(ar->dev))
- 		__string(driver, dev_driver_string(ar->dev))
--		__field(u32, tsf)
- 		__field(u16, len)
- 		__dynamic_array(u8, rxdesc, len)
- 	),
-@@ -297,16 +296,14 @@ TRACE_EVENT(ath10k_htt_rx_desc,
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ar->dev));
- 		__assign_str(driver, dev_driver_string(ar->dev));
--		__entry->tsf = tsf;
- 		__entry->len = len;
- 		memcpy(__get_dynamic_array(rxdesc), rxdesc, len);
- 	),
- 
- 	TP_printk(
--		"%s %s %u len %hu",
-+		"%s %s len %hu",
- 		__get_str(driver),
- 		__get_str(device),
--		__entry->tsf,
- 		__entry->len
- 	 )
- );
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgTWljaGFsLA0KDQpUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuIGFuc3dlcmVkIGFzIGJlbG93
+LA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1pY2hhbCBLYXppb3Ig
+W21haWx0bzptaWNoYWwua2F6aW9yQHRpZXRvLmNvbV0NCj4gU2VudDogVHVlc2RheSwgT2N0b2Jl
+ciAyMSwgMjAxNCAyOjU2IFBNDQo+IFRvOiBMaSwgWWFuYm8NCj4gQ2M6IFZhbG8sIEthbGxlOyBh
+dGgxMGstZGV2ZWw7IEJhbGFzdWJyYW1hbmlhbiwgU2VudGhpbCBLdW1hcjsNCj4gZHJlYW1mbHky
+ODFAZ21haWwuY29tOyBsaW51eC13aXJlbGVzczsgYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcN
+Cj4gU3ViamVjdDogUmU6IFtQQVRDSCB2M10gQWRkIHRoZSB0YXJnZXQgcmVnaXN0ZXIgcmVhZC93
+cml0ZSBhbmQgbWVtb3J5IGR1bXANCj4gZGVidWdmcyBpbnRlcmZhY2UNCj4gDQo+IFlvdSdyZSBt
+aXNzaW5nICJhdGgxMGs6ICIgcHJlZml4IGluIHRoZSBwYXRjaCBzdWJqZWN0Lg0KPiANCkNoYW5n
+ZSB0aGUgc3ViamVjdCwgOikNCj4gDQo+IE9uIDIwIE9jdG9iZXIgMjAxNCAxODozOCwgWWFuYm8g
+TGkgPHlhbmJvbEBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToNCj4gPiBUaGUgZGVidWdmcyBpbnRl
+cmZhY2UgcmVnX2FkZHImcmVnX3ZhbCB1c2VkIHRvIHJlYWQgYW5kIHdyaXRlIHRoZQ0KPiA+IHRh
+cmdldCByZWdpc3Rlci4NCj4gPiBUaGUgaW50ZXJmYWNlIG1lbV9hZGRyJm1lbV92YWwgdXNlZCB0
+byBkdW1wIHRoZSB0YXJnZXIgbWVtb3J5IGFuZCBhbHNvDQo+ID4gY2FuIGJlIHVzZWQgdG8gYXNz
+aWduIHZhbHVlIHRvIHRhcmdldCBtZW1vcnkNCj4gPg0KPiA+IFRoZSBiYXNpYyB1c2FnZSBleHBs
+YWluIGFzIGJlbG93Og0KPiA+DQo+ID4gUmVnaXN0ZXIgcmVhZC93cml0ZToNCj4gPiByZWdfYWRk
+ciAgICAgICAodGhlIHJlZ2lzdGVyIGFkZHJlc3MpICAgICAgICAgICAgICAgICAgICAocmVhZCZ3
+cml0ZSkNCj4gPiByZWdfdmFsdWUgICAgICAodGhlIHJlZ2lzdGVyIHZhbHVlLCAgb3V0cHV0IGlz
+IEFTQ0lJKSAgICAocmVhZCZ3cml0ZSkNCj4gPg0KPiA+IFJlYWQgb3BlcmF0aW9uOg0KPiA+IDEu
+IFdyaXRlIHRoZSByZWcgYWRkcmVzcyB0byByZWdfYWRkcg0KPiA+ICAgIElFOiAgZWNobyAweDEw
+MDAwMCA+IHJlZ19hZGRyDQo+ID4gMi4gUmVhZCB0aGUgdmFsdWUgZnJvbSByZWdfdmFsdWUNCj4g
+PiAgICBJRTogIGNhdCByZWdfdmFsdWUNCj4gPiBXcml0ZSBvcGVyYXRpb246DQo+ID4gMS4gV3Jp
+dGUgdGhlIHJlZyBhZGRyZXNzIHRvIHJlZ19hZGRyIElFOiAgZWNobyAweDEwMDAwMCA+IHJlZ19h
+ZGRyIDIuDQo+ID4gV3JpdGUgdGhlIHZhbHVlIHRvIHRoZSByZWdfdmFsdWUgIElFOiAgZWNobyAg
+MHgyNDAwID4gcmVnX3ZhbHVlDQo+ID4NCj4gPiBUYXJnZXQgbWVtb3J5IGR1bXA6DQo+ID4gbWVt
+X2FkZHIgKHRoZSBtZW1vcnkgYWRkcmVzcyB0aGUgbGVuZ3RoIGFsc28gY2FuIHVzZWQgYXMgdGhl
+IHNlY29uZA0KPiA+IHBhcmFtZW50ZXIgYWRkcmVzcyBsZW5ndGgpICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgKHJlYWQmd3JpdGUpDQo+ID4gbWVtX3ZhbHVlICh0aGUgY29udGVudCBvZiB0
+aGUgbWVtb3J5IHdpdGggdGhlIGxlbmd0aCwgb3V0cHV0IGlzIGJpbmFyeSkNCj4gPiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIChyZWFkJndy
+aXRlKQ0KPiA+IFJlYWQgb3BlcmF0aW9uOg0KPiA+IDEuIFdyaXRlIHRoZSBhZGRyZXNzIGFuZCBs
+ZW5ndGggdG8gbWVtX2FkZHINCj4gPiAgICBJRTogIGVjaG8gMHg0MDAwMDAgMTAyNCA+IG1lbV9h
+ZGRyDQo+IA0KPiBTbyBtZW1fYWRkciBpcyBhY3R1YWxseSB1c2VkIHRvIHN0b3JlIGJvdGggX2Fk
+ZHJfIGFuZCBfbGVuZ3RoXy4gSSB0aGluayBsZW5ndGgNCj4gY291bGQgYmUgc2tpcHBlZCBhbmQg
+YmUgcmVhZCBpbXBsaWNpdGx5IGZyb20gZWFjaCByZWFkKCkgcmVxdWVzdCBhbG9uZyB3aXRoIHRo
+ZQ0KPiBvZmZzZXQuIFRoaXMgd2F5IHVzZXJzcGFjZSB3b3VsZCBiZSBhYmxlIHRvIGRldGVybWlu
+ZSByZWFkIGxlbmd0aCBvbiBkZW1hbmQsIGUuZy4NCj4gdmlhICJkZCBpZj1tZW1fdmFsdWUgYnM9
+MTAyNCBjb3VudD00IiAocmVhZCA0IEtpQiBvZiBkYXRhKS4gSWYgeW91IHdhbnQgdG8gc2VlDQo+
+IGhleCwgeW91IHdvdWxkIHBpcGUgaXQgdGhyb3VnaCAiaGV4ZHVtcCIgb3IgInh4ZCIgb3IgeW91
+ciBvdGhlciBmYXZvdXJpdGUNCj4gaGV4ZHVtcCBwcm9ncmFtLg0KPiBPciBldmVuIGJldHRlciAt
+IHlvdSBjb3VsZCBkcm9wIHRoZSBtZW1fYWRkciBhbHRvZ2V0aGVyIGFuZCBleHBlY3QgdXNlcnNw
+YWNlIHRvDQo+IHNlZWsgJiByZWFkL3dyaXRlIGRhdGEgaXQgd2FudHMgdmlhLCBlLmcuIGBkZGAg
+cHJvZ3JhbToNCj4gDQo+ICAgZGQgaWY9bWVtX3ZhbHVlIGJzPTEgY291bnQ9MTAyNCBza2lwPSQo
+cHJpbnRmICIlZCIgMHg0MDAwMDApIHwgeHhkIC1nMQ0KPiAgIGVjaG8gMHgwMTAyMDMwNCB8IHh4
+ZCAtciB8IGRkIG9mPW1lbV92YWx1ZSBicz0xIHNlZWs9JChwcmludGYgIiVkIiAweDQwMDQwMCkN
+Cj4gDQpBZ3JlZSB3aXRoIHlvdSwgdGhhdCB3aWxsIGJlIGVhc3kgdG8gYWNjZXNzIGFuZCBhdm9p
+ZCB0aGUgb25lIHZhcmlhYmxlIChtZW1fYWRkcilzdG9yZSB0d28gZGlmZmVyZW50IHZhbHVlcy4g
+DQo+IA0KPiA+IDIuIFJlYWQgdGhlIHZhbHVlIGZyb20gbWVtIHZhbHVlLCB0aGUgb3V0cHV0IGlz
+IGJpbmFyeSBmb3JtYXQNCj4gPiAgICBJRTogIGhleGR1bXAgbWVtX3ZhbHVlDQo+ID4gV3JpdGUg
+b3BlcmF0aW9uOg0KPiA+IDEuIFdyaXRlIHRoZSBzdGFydCBtZW0gYWRkcmVzcyB0byBtZW1fYWRk
+cg0KPiA+ICAgIElFOiAgZWNobyAweDQwMDAwMCA+IG1lbV9hZGRyDQo+ID4gMi4gRHVtcCB0aGUg
+YmluYXJ5IHZhbHVlIHRvIHRoZSBtZW1fdmFsdWUNCj4gPiAgICBJRTogIGVjaG8gIDB4MjQwMCA+
+IG1lbV92YWx1ZSBvciBlY2hvIDB4MjQwMCAweDM0MDAgLi4uID4gbWVtX2FkZHINCj4gPiAgICAo
+dGhlIHZhbHVlIG51bWJlciBzaG91bGQgYmUgc2VwYXJhdGVkIHdpdGggc3BhY2ViYXIpDQo+IA0K
+PiBJIGRvbid0IHJlYWxseSBsaWtlIHRoZSBpZGVhIG9mIGlucHV0IGJlaW5nIGRpZmZlcmVudCB0
+aGFuIHRoZSBvdXRwdXQsIGJ1dCBtYXliZSB0aGF0J3MNCj4ganVzdCBtZS4NCj4gDQoNCkhtbSwg
+SSB3aWxsIGltcGxlbWVudCAgYW5vdGhlciB2ZXJzaW9uIHRvIGtlZXAgdGhlIHJlYWQgYW5kIHdy
+aXRlIHVzZSB0aGUgc2FtZSBpbnRlcmZhY2UsDQp0aGUgZXh0cmEgZWZmb3J0IGlzIHRoZSB1c2Vy
+IG5lZWQgZWRpdCB0aGUgYmluYXJ5IGZpbGUgdG8gY29uc3RydWN0IHRoZSBpbnB1dCBudW1iZXIu
+DQo+IA0KPiBbLi4uXQ0KPiA+ICtzdGF0aWMgc3NpemVfdCBhdGgxMGtfbWVtX3ZhbHVlX3dyaXRl
+KHN0cnVjdCBmaWxlICpmaWxlLA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgY29uc3QgY2hhciBfX3VzZXIgKnVzZXJfYnVmLA0KPiA+ICsgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgc2l6ZV90IGNvdW50LCBsb2ZmX3QgKnBwb3MpIHsNCj4gPiAr
+ICAgICAgIHN0cnVjdCBhdGgxMGsgKmFyID0gZmlsZS0+cHJpdmF0ZV9kYXRhOw0KPiA+ICsgICAg
+ICAgdTggKmJ1ZjsNCj4gPiArICAgICAgIF9fbGUzMiAqdmFsdWU7DQo+ID4gKyAgICAgICBjaGFy
+ICpzcHRyLCAqdG9rZW47DQo+ID4gKyAgICAgICBpbnQgaSwgcmV0Ow0KPiA+ICsgICAgICAgdTMy
+IG1lbV9hZGRyOw0KPiA+ICsgICAgICAgdTMyIG1lbV92YWw7DQo+ID4gKw0KPiA+ICsgICAgICAg
+bWVtX2FkZHIgPSAgYXItPmRlYnVnLm1lbV9hZGRyOw0KPiANCj4gVGhlcmUncyBkb3VibGUgc3Bh
+Y2UgZm9sbG93aW5nICI9Ii4NCj4gDQpHb29kIGNhdGNoLg0KPiANCj4gWy4uLl0NCj4gPiArICAg
+ICAgIGkgPSAwOw0KPiA+ICsgICAgICAgd2hpbGUgKHNwdHIpIHsNCj4gPiArICAgICAgICAgICAg
+ICAgaWYgKCFzcHRyKQ0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGJyZWFrOw0KPiA+ICsN
+Cj4gPiArICAgICAgICAgICAgICAgdG9rZW4gPSBzdHJzZXAoJnNwdHIsICIgIik7DQo+ID4gKw0K
+PiA+ICsgICAgICAgICAgICAgICByZXQgPSBrc3RydG91MzIodG9rZW4sIDAsICZtZW1fdmFsKTsN
+Cj4gPiArICAgICAgICAgICAgICAgaWYgKHJldCkNCj4gPiArICAgICAgICAgICAgICAgICAgICAg
+ICBnb3RvIGVycl9mcmVlX3ZhbHVlOw0KPiA+ICsNCj4gPiArICAgICAgICAgICAgICAgdmFsdWVb
+aV0gPSBtZW1fdmFsOw0KPiA+ICsgICAgICAgICAgICAgICBpKys7DQo+ID4gKyAgICAgICB9DQo+
+ID4gKw0KPiA+ICsgICAgICAgcmV0ID0gYXRoMTBrX2hpZl9kaWFnX3dyaXRlKGFyLCBtZW1fYWRk
+ciwgKGNvbnN0IHZvaWQgKil2YWx1ZSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBpICogc2l6ZW9mKG1lbV92YWwpKTsNCj4gPiArICAgICAgIGlmIChyZXQpIHsNCj4g
+PiArICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gd3JpdGUgYWRkcmVz
+cyAweCUwOHggdmlhIGRpYWdub3NlIHdpbmRvdw0KPiBmcm9tIGRlYnVnZnM6ICVkXG4iLA0KPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBtZW1fYWRkciwgcmV0KTsNCj4gPiArICAgICAg
+ICAgICAgICAgZ290byBlcnJfZnJlZV92YWx1ZTsNCj4gPiArICAgICAgIH0NCj4gDQo+IEkgYmVs
+aWV2ZSB1c2Vyc3BhY2UgbWF5IGNhbGwgd3JpdGUoKSBtdWx0aXBsZSBudW1iZXIgb2YgdGltZXMg
+d2l0aCBkaWZmZXJlbnQgb2Zmc2V0cw0KPiBhbmQgZnJhZ21lbnQgdGhlIGRhdGEgYnJlYWtpbmcg
+aXQgaW4gdGhlIG1pZGRsZSBvZiB5b3VyIHN0cmluZyBoZXggd29yZHMuIFRoaXMNCj4gY29kZSB3
+aWxsIG1vc3QgbGlrZWx5IGZhaWwgd2l0aCBsYXJnZXIgY2h1bmtzIG9mIGRhdGEgb3IgeW91IGNh
+biB0cnkgdG8gc2ltdWxhdGUgdGhlDQo+IGZyYWdtZW50YXRpb24gd2l0aDoNCj4gDQo+ICAgZWNo
+byAweDAwMDEgMHgwMDAyIHwgZGQgYnM9MSBvZj1tZW1fdmFsdWUNCj4gDQo+IChQbGVhc2UgY29y
+cmVjdCBtZSBpZiBJJ20gd3JvbmcgOi0pDQo+IA0KTm90IGZ1bGwgdW5kZXJzdGFuZCB3aGF04oCZ
+cyB5b3UgbWVhbiwgZG8geW91IG1lYW4gdGhpcyBzZWdtZW50IG5lZWQgYmUgcHJvdGVjdCB3aXRo
+IGxvY2sgDQp0byBhdm9pZCBtdWx0aSB3cml0ZSBvcGVyYXRpb24gYWNjZXNzIHRoZSBtZW1fdmFs
+dWUgYXQgdGhlIHNhbWUgdGltZT8NCg0KPiANCj4gTWljaGHFgg0KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
