@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgTWn-0006t1-3j
- for ath10k@lists.infradead.org; Tue, 21 Oct 2014 07:06:45 +0000
+ id 1XgTxV-0004RQ-Ux
+ for ath10k@lists.infradead.org; Tue, 21 Oct 2014 07:34:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/3] ath10k: cal file support
-References: <20141013063929.30315.41969.stgit@potku.adurom.net>
-Date: Tue, 21 Oct 2014 10:06:14 +0300
-In-Reply-To: <20141013063929.30315.41969.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 13 Oct 2014 09:40:40 +0300")
-Message-ID: <8738ahzyu1.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] ath10k: assoc clean ups 2014-10-10
+References: <1412937977-5859-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 21 Oct 2014 10:33:55 +0300
+In-Reply-To: <1412937977-5859-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Oct 2014 12:46:14 +0200")
+Message-ID: <87y4s9yizg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,24 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> this adds support for loading calibration data from a file as discussed some
-> time ago. Please review.
+> This is a bunch of assoc-related clean ups.
 >
-> Kalle
 >
-> ---
->
-> Kalle Valo (3):
->       ath10k: add back enum ath10k_bus
->       ath10k: refactor ath10k_init_download_firmware()
->       ath10k: retrieve calibration data from file
+> Michal Kazior (3):
+>   ath10k: clean up assoc code
+>   ath10k: skip some commands on reassoc
+>   ath10k: clean up sta auth/assoc code
 
-All three patches applied.
+Thanks, all three applied.
 
 -- 
 Kalle Valo
