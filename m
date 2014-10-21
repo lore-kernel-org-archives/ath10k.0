@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XgTMt-0001LA-TT
- for ath10k@lists.infradead.org; Tue, 21 Oct 2014 06:56:36 +0000
-Received: by mail-wg0-f48.google.com with SMTP id k14so542698wgh.31
- for <ath10k@lists.infradead.org>; Mon, 20 Oct 2014 23:56:08 -0700 (PDT)
+ id 1XgTWn-0006t1-3j
+ for ath10k@lists.infradead.org; Tue, 21 Oct 2014 07:06:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 0/3] ath10k: cal file support
+References: <20141013063929.30315.41969.stgit@potku.adurom.net>
+Date: Tue, 21 Oct 2014 10:06:14 +0300
+In-Reply-To: <20141013063929.30315.41969.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Mon, 13 Oct 2014 09:40:40 +0300")
+Message-ID: <8738ahzyu1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1413823085-3187-1-git-send-email-yanbol@qti.qualcomm.com>
-References: <1413823085-3187-1-git-send-email-yanbol@qti.qualcomm.com>
-Date: Tue, 21 Oct 2014 08:56:08 +0200
-Message-ID: <CA+BoTQn85nV3KSVcwG7k7hBPhZqbLRyFqK54QYJuLemuNoE4mw@mail.gmail.com>
-Subject: Re: [PATCH v3] Add the target register read/write and memory dump
- debugfs interface
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,83 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qti.qualcomm.com>
-Cc: "Balasubramanian, Senthil Kumar" <senthilb@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, ath10k-devel <ath10k-devel@qca.qualcomm.com>, Kalle Valo <kvalo@qca.qualcomm.com>, dreamfly281@gmail.com
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-WW91J3JlIG1pc3NpbmcgImF0aDEwazogIiBwcmVmaXggaW4gdGhlIHBhdGNoIHN1YmplY3QuCgoK
-T24gMjAgT2N0b2JlciAyMDE0IDE4OjM4LCBZYW5ibyBMaSA8eWFuYm9sQHF0aS5xdWFsY29tbS5j
-b20+IHdyb3RlOgo+IFRoZSBkZWJ1Z2ZzIGludGVyZmFjZSByZWdfYWRkciZyZWdfdmFsIHVzZWQg
-dG8gcmVhZCBhbmQgd3JpdGUgdGhlIHRhcmdldAo+IHJlZ2lzdGVyLgo+IFRoZSBpbnRlcmZhY2Ug
-bWVtX2FkZHImbWVtX3ZhbCB1c2VkIHRvIGR1bXAgdGhlIHRhcmdlciBtZW1vcnkgYW5kIGFsc28K
-PiBjYW4gYmUgdXNlZCB0byBhc3NpZ24gdmFsdWUgdG8gdGFyZ2V0IG1lbW9yeQo+Cj4gVGhlIGJh
-c2ljIHVzYWdlIGV4cGxhaW4gYXMgYmVsb3c6Cj4KPiBSZWdpc3RlciByZWFkL3dyaXRlOgo+IHJl
-Z19hZGRyICAgICAgICh0aGUgcmVnaXN0ZXIgYWRkcmVzcykgICAgICAgICAgICAgICAgICAgIChy
-ZWFkJndyaXRlKQo+IHJlZ192YWx1ZSAgICAgICh0aGUgcmVnaXN0ZXIgdmFsdWUsICBvdXRwdXQg
-aXMgQVNDSUkpICAgIChyZWFkJndyaXRlKQo+Cj4gUmVhZCBvcGVyYXRpb246Cj4gMS4gV3JpdGUg
-dGhlIHJlZyBhZGRyZXNzIHRvIHJlZ19hZGRyCj4gICAgSUU6ICBlY2hvIDB4MTAwMDAwID4gcmVn
-X2FkZHIKPiAyLiBSZWFkIHRoZSB2YWx1ZSBmcm9tIHJlZ192YWx1ZQo+ICAgIElFOiAgY2F0IHJl
-Z192YWx1ZQo+IFdyaXRlIG9wZXJhdGlvbjoKPiAxLiBXcml0ZSB0aGUgcmVnIGFkZHJlc3MgdG8g
-cmVnX2FkZHIgSUU6ICBlY2hvIDB4MTAwMDAwID4gcmVnX2FkZHIKPiAyLiBXcml0ZSB0aGUgdmFs
-dWUgdG8gdGhlIHJlZ192YWx1ZSAgSUU6ICBlY2hvICAweDI0MDAgPiByZWdfdmFsdWUKPgo+IFRh
-cmdldCBtZW1vcnkgZHVtcDoKPiBtZW1fYWRkciAodGhlIG1lbW9yeSBhZGRyZXNzIHRoZSBsZW5n
-dGggYWxzbyBjYW4gdXNlZCBhcyB0aGUgc2Vjb25kCj4gcGFyYW1lbnRlciBhZGRyZXNzIGxlbmd0
-aCkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAocmVhZCZ3cml0ZSkKPiBtZW1fdmFsdWUg
-KHRoZSBjb250ZW50IG9mIHRoZSBtZW1vcnkgd2l0aCB0aGUgbGVuZ3RoLCBvdXRwdXQgaXMgYmlu
-YXJ5KQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKHJlYWQmd3JpdGUpCj4gUmVhZCBvcGVyYXRpb246Cj4gMS4gV3JpdGUgdGhlIGFkZHJl
-c3MgYW5kIGxlbmd0aCB0byBtZW1fYWRkcgo+ICAgIElFOiAgZWNobyAweDQwMDAwMCAxMDI0ID4g
-bWVtX2FkZHIKClNvIG1lbV9hZGRyIGlzIGFjdHVhbGx5IHVzZWQgdG8gc3RvcmUgYm90aCBfYWRk
-cl8gYW5kIF9sZW5ndGhfLiBJCnRoaW5rIGxlbmd0aCBjb3VsZCBiZSBza2lwcGVkIGFuZCBiZSBy
-ZWFkIGltcGxpY2l0bHkgZnJvbSBlYWNoIHJlYWQoKQpyZXF1ZXN0IGFsb25nIHdpdGggdGhlIG9m
-ZnNldC4gVGhpcyB3YXkgdXNlcnNwYWNlIHdvdWxkIGJlIGFibGUgdG8KZGV0ZXJtaW5lIHJlYWQg
-bGVuZ3RoIG9uIGRlbWFuZCwgZS5nLiB2aWEgImRkIGlmPW1lbV92YWx1ZSBicz0xMDI0CmNvdW50
-PTQiIChyZWFkIDQgS2lCIG9mIGRhdGEpLiBJZiB5b3Ugd2FudCB0byBzZWUgaGV4LCB5b3Ugd291
-bGQgcGlwZQppdCB0aHJvdWdoICJoZXhkdW1wIiBvciAieHhkIiBvciB5b3VyIG90aGVyIGZhdm91
-cml0ZSBoZXhkdW1wIHByb2dyYW0uCk9yIGV2ZW4gYmV0dGVyIC0geW91IGNvdWxkIGRyb3AgdGhl
-IG1lbV9hZGRyIGFsdG9nZXRoZXIgYW5kIGV4cGVjdAp1c2Vyc3BhY2UgdG8gc2VlayAmIHJlYWQv
-d3JpdGUgZGF0YSBpdCB3YW50cyB2aWEsIGUuZy4gYGRkYCBwcm9ncmFtOgoKICBkZCBpZj1tZW1f
-dmFsdWUgYnM9MSBjb3VudD0xMDI0IHNraXA9JChwcmludGYgIiVkIiAweDQwMDAwMCkgfCB4eGQg
-LWcxCiAgZWNobyAweDAxMDIwMzA0IHwgeHhkIC1yIHwgZGQgb2Y9bWVtX3ZhbHVlIGJzPTEgc2Vl
-az0kKHByaW50ZiAiJWQiIDB4NDAwNDAwKQoKCj4gMi4gUmVhZCB0aGUgdmFsdWUgZnJvbSBtZW0g
-dmFsdWUsIHRoZSBvdXRwdXQgaXMgYmluYXJ5IGZvcm1hdAo+ICAgIElFOiAgaGV4ZHVtcCBtZW1f
-dmFsdWUKPiBXcml0ZSBvcGVyYXRpb246Cj4gMS4gV3JpdGUgdGhlIHN0YXJ0IG1lbSBhZGRyZXNz
-IHRvIG1lbV9hZGRyCj4gICAgSUU6ICBlY2hvIDB4NDAwMDAwID4gbWVtX2FkZHIKPiAyLiBEdW1w
-IHRoZSBiaW5hcnkgdmFsdWUgdG8gdGhlIG1lbV92YWx1ZQo+ICAgIElFOiAgZWNobyAgMHgyNDAw
-ID4gbWVtX3ZhbHVlIG9yIGVjaG8gMHgyNDAwIDB4MzQwMCAuLi4gPiBtZW1fYWRkcgo+ICAgICh0
-aGUgdmFsdWUgbnVtYmVyIHNob3VsZCBiZSBzZXBhcmF0ZWQgd2l0aCBzcGFjZWJhcikKCkkgZG9u
-J3QgcmVhbGx5IGxpa2UgdGhlIGlkZWEgb2YgaW5wdXQgYmVpbmcgZGlmZmVyZW50IHRoYW4gdGhl
-IG91dHB1dCwKYnV0IG1heWJlIHRoYXQncyBqdXN0IG1lLgoKClsuLi5dCj4gK3N0YXRpYyBzc2l6
-ZV90IGF0aDEwa19tZW1fdmFsdWVfd3JpdGUoc3RydWN0IGZpbGUgKmZpbGUsCj4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBjaGFyIF9fdXNlciAqdXNlcl9idWYs
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplX3QgY291bnQsIGxv
-ZmZfdCAqcHBvcykKPiArewo+ICsgICAgICAgc3RydWN0IGF0aDEwayAqYXIgPSBmaWxlLT5wcml2
-YXRlX2RhdGE7Cj4gKyAgICAgICB1OCAqYnVmOwo+ICsgICAgICAgX19sZTMyICp2YWx1ZTsKPiAr
-ICAgICAgIGNoYXIgKnNwdHIsICp0b2tlbjsKPiArICAgICAgIGludCBpLCByZXQ7Cj4gKyAgICAg
-ICB1MzIgbWVtX2FkZHI7Cj4gKyAgICAgICB1MzIgbWVtX3ZhbDsKPiArCj4gKyAgICAgICBtZW1f
-YWRkciA9ICBhci0+ZGVidWcubWVtX2FkZHI7CgpUaGVyZSdzIGRvdWJsZSBzcGFjZSBmb2xsb3dp
-bmcgIj0iLgoKClsuLi5dCj4gKyAgICAgICBpID0gMDsKPiArICAgICAgIHdoaWxlIChzcHRyKSB7
-Cj4gKyAgICAgICAgICAgICAgIGlmICghc3B0cikKPiArICAgICAgICAgICAgICAgICAgICAgICBi
-cmVhazsKPiArCj4gKyAgICAgICAgICAgICAgIHRva2VuID0gc3Ryc2VwKCZzcHRyLCAiICIpOwo+
-ICsKPiArICAgICAgICAgICAgICAgcmV0ID0ga3N0cnRvdTMyKHRva2VuLCAwLCAmbWVtX3ZhbCk7
-Cj4gKyAgICAgICAgICAgICAgIGlmIChyZXQpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgZ290
-byBlcnJfZnJlZV92YWx1ZTsKPiArCj4gKyAgICAgICAgICAgICAgIHZhbHVlW2ldID0gbWVtX3Zh
-bDsKPiArICAgICAgICAgICAgICAgaSsrOwo+ICsgICAgICAgfQo+ICsKPiArICAgICAgIHJldCA9
-IGF0aDEwa19oaWZfZGlhZ193cml0ZShhciwgbWVtX2FkZHIsIChjb25zdCB2b2lkICopdmFsdWUs
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaSAqIHNpemVvZihtZW1fdmFs
-KSk7Cj4gKyAgICAgICBpZiAocmV0KSB7Cj4gKyAgICAgICAgICAgICAgIGF0aDEwa193YXJuKGFy
-LCAiZmFpbGVkIHRvIHdyaXRlIGFkZHJlc3MgMHglMDh4IHZpYSBkaWFnbm9zZSB3aW5kb3cgZnJv
-bSBkZWJ1Z2ZzOiAlZFxuIiwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgbWVtX2FkZHIs
-IHJldCk7Cj4gKyAgICAgICAgICAgICAgIGdvdG8gZXJyX2ZyZWVfdmFsdWU7Cj4gKyAgICAgICB9
-CgpJIGJlbGlldmUgdXNlcnNwYWNlIG1heSBjYWxsIHdyaXRlKCkgbXVsdGlwbGUgbnVtYmVyIG9m
-IHRpbWVzIHdpdGgKZGlmZmVyZW50IG9mZnNldHMgYW5kIGZyYWdtZW50IHRoZSBkYXRhIGJyZWFr
-aW5nIGl0IGluIHRoZSBtaWRkbGUgb2YKeW91ciBzdHJpbmcgaGV4IHdvcmRzLiBUaGlzIGNvZGUg
-d2lsbCBtb3N0IGxpa2VseSBmYWlsIHdpdGggbGFyZ2VyCmNodW5rcyBvZiBkYXRhIG9yIHlvdSBj
-YW4gdHJ5IHRvIHNpbXVsYXRlIHRoZSBmcmFnbWVudGF0aW9uIHdpdGg6CgogIGVjaG8gMHgwMDAx
-IDB4MDAwMiB8IGRkIGJzPTEgb2Y9bWVtX3ZhbHVlCgooUGxlYXNlIGNvcnJlY3QgbWUgaWYgSSdt
-IHdyb25nIDotKQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5v
-cmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> this adds support for loading calibration data from a file as discussed some
+> time ago. Please review.
+>
+> Kalle
+>
+> ---
+>
+> Kalle Valo (3):
+>       ath10k: add back enum ath10k_bus
+>       ath10k: refactor ath10k_init_download_firmware()
+>       ath10k: retrieve calibration data from file
+
+All three patches applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
