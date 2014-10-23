@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from arrakis.dune.hu ([78.24.191.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhDku-0008Oc-HJ
- for ath10k@lists.infradead.org; Thu, 23 Oct 2014 08:28:25 +0000
-Received: by mail-wi0-f170.google.com with SMTP id n3so2679147wiv.5
- for <ath10k@lists.infradead.org>; Thu, 23 Oct 2014 01:27:58 -0700 (PDT)
+ id 1XhG5Y-00011B-Uw
+ for ath10k@lists.infradead.org; Thu, 23 Oct 2014 10:57:54 +0000
+Message-ID: <5448DF0B.2090906@openwrt.org>
+Date: Thu, 23 Oct 2014 12:57:15 +0200
+From: Felix Fietkau <nbd@openwrt.org>
 MIME-Version: 1.0
-In-Reply-To: <1413807282-27951-5-git-send-email-michal.kazior@tieto.com>
-References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
- <1413807282-27951-5-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 23 Oct 2014 10:27:57 +0200
-Message-ID: <CA+BoTQ=P2XOaOsaVOj+=fEs=nGfhUCNQvDYx6qb=A=JRCnbQmg@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] ath10k: make warm reset a bit safer and faster
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: [PATCH] ath10k: add SURVEY_INFO_IN_USE for current channel on
+ survey
+References: <1413996362-44397-1-git-send-email-nbd@openwrt.org>
+ <87k33rqmwq.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87k33rqmwq.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +20,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjAgT2N0b2JlciAyMDE0IDE0OjE0LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRp
-ZXRvLmNvbT4gd3JvdGU6Cj4gT25lIG9mIHRoZSBwcm9ibGVtcyB3aXRoIHdhcm0gcmVzZXQgSSd2
-ZSBmb3VuZCBpcwo+IHRoYXQgaXQgbXVzdCBiZSBndWFyYW50ZWVkIHRoYXQgY29weSBlbmdpbmUK
-PiByZWdpc3RlcnMgYXJlIG5vdCBiZWluZyBhY2Nlc3NlZCB3aGlsZSBiZWluZwo+IHJlc2V0LiBP
-dGhlcndpc2UgaW4gd29yc3QgY2FzZSBzY2VuYXJpbyB0aGUgaG9zdAo+IG1heSBsb2NrIHVwLgo+
-Cj4gSW5zdGVhZCBvZiB1c2luZyBzbGVlcHMgYW5kIGhvcGluZyB0aGUgZGV2aWNlIGlzCj4gb3Bl
-cmF0aW9uYWwgaW4gc29tZSBhcmJpdHJhcnkgdGltZWZyYW1lcyB1c2UKPiBmaXJtd2FyZSBpbmRp
-Y2F0aW9uIHJlZ2lzdGVyLgo+Cj4gQXMgYSBzaWRlIGVmZmVjdCB0aGlzIG1ha2VzIGRyaXZlcgo+
-IGJvb3Qvc3RvcC9yZWNvdmVyeSBmYXN0ZXIuCj4KPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPiAtLS0KPgo+IE5vdGVzOgo+ICAgICB2MjoK
-PiAgICAgICogZml4IGtlcm5lbCBwYW5pYyBvbiBlYXJseSBmdyBjcmFzaCBkdWUgdG8gQ0Ugbm90
-IGJlaW5nIGZ1bGx5IGluaXRpYWxpemVkIFtKYW51c3pdCgpNYXJlayByZXBvcnRlZCBoZSBzZWVz
-IGEgbWVtb3J5IGxlYWsgYW5kIGdpdCBiaXNlY3QgYmxhbWVzIHRoaXMgcGF0Y2guClBsZWFzZSBk
-b24ndCBhcHBseSB0aGlzIHBhdGNoIHlldC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+On 2014-10-23 09:13, Kalle Valo wrote:
+> Felix Fietkau <nbd@openwrt.org> writes:
+> 
+>> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/mac.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 4670930..bc440dc 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -3975,6 +3975,9 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
+>>  
+>>  	survey->channel = &sband->channels[idx];
+>>  
+>> +	if (ar->rx_channel == survey->channel)
+>> +		survey->filled |= SURVEY_INFO_IN_USE;
+>> +
+> 
+> Why? Does this fix a visible bug? What changes from user space point of
+> view? I'm asking because I want to add something to the commit log.
+When user space requests survey info, it is useful to know which of the
+survey data refers to the channel that is currently actively being used.
+One of the use cases is getting the current channel noise for status output.
+Without this flag you would have to look up the channel separately and
+then compare it against the frequency in the survey output in user space.
+
+- Felix
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
