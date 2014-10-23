@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhJ1w-0007YR-Rk
- for ath10k@lists.infradead.org; Thu, 23 Oct 2014 14:06:21 +0000
-Received: by mail-wi0-f171.google.com with SMTP id em10so4237891wid.16
- for <ath10k@lists.infradead.org>; Thu, 23 Oct 2014 07:05:57 -0700 (PDT)
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: fix pm resume after suspend
-Date: Thu, 23 Oct 2014 16:05:49 +0200
-Message-Id: <1414073150-11593-1-git-send-email-bartosz.markowski@tieto.com>
+ id 1XhJ6b-0002U1-NZ
+ for ath10k@lists.infradead.org; Thu, 23 Oct 2014 14:11:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: remove tsf argument from rx_desc tracing
+References: <1413899700-10717-1-git-send-email-michal.kazior@tieto.com>
+ <1413899700-10717-2-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQmr=uZNeqKxoHM5sG2EU7sBfdETXvzuXkNxDjTJ9ANAbg@mail.gmail.com>
+Date: Thu, 23 Oct 2014 17:10:31 +0300
+In-Reply-To: <CA+BoTQmr=uZNeqKxoHM5sG2EU7sBfdETXvzuXkNxDjTJ9ANAbg@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 22 Oct 2014 10:46:43 +0200")
+Message-ID: <878uk6q3l4.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,103 +21,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Firmware was crashing when we were trying to warm reset it
-after suspend. This was due to the fact that target registeres
-can be accessed only if the hardware is awaken.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-This patch makes sure to awake the device also on the hif up,
-not only in case of probe call path.
+> On 21 October 2014 15:54, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Fundamtenally this was wrong. Tsf is only valid
+>> in first MPDU of a PPDU. This means tsf value was
+>
+> s/first MPDU/last MPDU/
+>
+> I must've had a brain fart when writing the commit log yesterday.
+>
+> @Kalle: Should I re-spin or will you fix it before applying?
 
-Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+No need to re-spin, I edited the commit log in ath-next-test. I also
+fixed a typo in "fundamentally".
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 86f734e..4dee319 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1858,10 +1858,16 @@ static int ath10k_pci_hif_power_up_warm(struct ath10k *ar)
- 
- static int ath10k_pci_hif_power_up(struct ath10k *ar)
- {
--	int ret;
-+	int ret = 0;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power up\n");
- 
-+	ret = ath10k_pci_wake(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to wake up target: %d\n", ret);
-+		return ret;
-+	}
-+
- 	/*
- 	 * Hardware CUS232 version 2 has some issues with cold reset and the
- 	 * preferred (and safer) way to perform a device reset is through a
-@@ -1876,7 +1882,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 			    ret);
- 
- 		if (ath10k_pci_reset_mode == ATH10K_PCI_RESET_WARM_ONLY)
--			return ret;
-+			goto err_sleep;
- 
- 		ath10k_warn(ar, "trying cold reset\n");
- 
-@@ -1884,11 +1890,15 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 		if (ret) {
- 			ath10k_err(ar, "failed to power up target using cold reset too (%d)\n",
- 				   ret);
--			return ret;
-+			goto err_sleep;
- 		}
- 	}
- 
--	return 0;
-+	return ret;
-+
-+err_sleep:
-+	ath10k_pci_sleep(ar);
-+	return ret;
- }
- 
- static void ath10k_pci_hif_power_down(struct ath10k *ar)
-@@ -1896,6 +1906,7 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power down\n");
- 
- 	ath10k_pci_warm_reset(ar);
-+	ath10k_pci_sleep(ar);
- }
- 
- #ifdef CONFIG_PM
-@@ -2513,6 +2524,8 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	/* This shouldn't race as the device has been reset above. */
- 	ath10k_pci_irq_disable(ar);
- 
-+	ath10k_pci_sleep(ar);
-+
- 	ret = ath10k_core_register(ar, chip_id);
- 	if (ret) {
- 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
-@@ -2564,7 +2577,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
- 	ath10k_pci_deinit_irq(ar);
- 	ath10k_pci_ce_deinit(ar);
- 	ath10k_pci_free_ce(ar);
--	ath10k_pci_sleep(ar);
- 	ath10k_pci_release(ar);
- 	ath10k_core_destroy(ar);
- }
+commit d75153c577ddfffa9e7438e8225dfaf564f34552
+Author: Michal Kazior <michal.kazior@tieto.com>
+Date:   Thu Oct 23 17:04:27 2014 +0300
+
+    ath10k: remove tsf argument from rx_desc tracing
+    
+    Fundamentally this was wrong. Tsf is only valid
+    in last MPDU of a PPDU. This means tsf value was
+    wrong most of the time during heavy traffic.
+    
+    Also I don't see much point in exposing a
+    redundant (and broken) tsf value. Userspace can
+    already read it from the dumped rx descriptor
+    buffer.
+    
+    Cc: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+    Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
+
 -- 
-1.8.2
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
