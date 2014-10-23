@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhIjQ-0004rw-TN
- for ath10k@lists.infradead.org; Thu, 23 Oct 2014 13:47:13 +0000
+ id 1XhIkS-00050P-Ol
+ for ath10k@lists.infradead.org; Thu, 23 Oct 2014 13:48:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/6] ath10k: pci related fixes 2014-10-09
-References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 23 Oct 2014 16:46:45 +0300
-In-Reply-To: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 20 Oct 2014 14:14:36 +0200")
-Message-ID: <87oat2q4oq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/3] ath10k: speed up recovery
+References: <1413807758-30249-1-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQkrUQ6T60qztMuBbjy=vU-4Cho+yBXS051W=fNRTgNeig@mail.gmail.com>
+Date: Thu, 23 Oct 2014 16:47:31 +0300
+In-Reply-To: <CA+BoTQkrUQ6T60qztMuBbjy=vU-4Cho+yBXS051W=fNRTgNeig@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 23 Oct 2014 15:20:28 +0200")
+Message-ID: <87k33qq4ng.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,39 +25,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> First 2 patches address some irq issues.
+> On 20 October 2014 14:22, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Patch #1 fixes a bug I've found while testing
+>> patches #2 and #3. It's safe to cherry-pick it in
+>> case patches #2 and/or #3 aren't accepted or need
+>> a re-spin.
+>>
+>> I've mainly used patch #2 to test reset and
+>> recovery. It's pretty handy for (stress-)testing.
+>>
+>> Patch #3 should improve recovery speed in some
+>> cases. Notably when there's a long chain of WMI
+>> commands involved which take a painfully long time
+>> to timeout/complete if firmware crashes mid-way.
+>>
+>> Note: Patches #2 and #3 depend on `ath10k: pci
+>> related fixes 2014-10-09`. Without the patchset
+>> patches #2 and #3 must not be applied. Patch #1 is
+>> fine though.
 >
-> Other 4 fix and cleanup device resetting.
->
-> Hopefully this will make ath10k a little more
-> robust when it comes to warm reset.
->
-> As a side effect of the changes ath10k now boots a
-> little faster (slightly over a second instead of
-> two).
->
-> v2:
->  * don't remove power_up/down [Kalle]
->  * fix CE crash [Janusz]
->  * remove irq workaround in patch #2
->
->
-> Michal Kazior (6):
->   ath10k: re-disable interrupts after target init
->   ath10k: mask/unmask msi fw irq
->   ath10k: split ce pipe init/alloc further
+> Do not apply this patchset yet, please. I need to do a minor fix in
+> the 'ath10k: fix possible bmi crash' regarding warm reset patch from
+> the other patchset.
 
-I have applied these patches.
-
->   ath10k: make warm reset a bit safer and faster
->   ath10k: split reset logic from power up
->   ath10k: don't reset chip on power_down
-
-And dropped these patches per your request.
+Ok, I'm dropping these and will wait for v3.
 
 -- 
 Kalle Valo
