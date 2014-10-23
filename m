@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhG5Y-00011B-Uw
- for ath10k@lists.infradead.org; Thu, 23 Oct 2014 10:57:54 +0000
-Message-ID: <5448DF0B.2090906@openwrt.org>
-Date: Thu, 23 Oct 2014 12:57:15 +0200
-From: Felix Fietkau <nbd@openwrt.org>
+ id 1XhIDl-0006ly-Sc
+ for ath10k@lists.infradead.org; Thu, 23 Oct 2014 13:14:30 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 4/6] ath10k: make warm reset a bit safer and faster
+References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
+ <1413807282-27951-5-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQ=P2XOaOsaVOj+=fEs=nGfhUCNQvDYx6qb=A=JRCnbQmg@mail.gmail.com>
+Date: Thu, 23 Oct 2014 16:14:00 +0300
+In-Reply-To: <CA+BoTQ=P2XOaOsaVOj+=fEs=nGfhUCNQvDYx6qb=A=JRCnbQmg@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 23 Oct 2014 10:27:57 +0200")
+Message-ID: <871tpzq67b.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: add SURVEY_INFO_IN_USE for current channel on
- survey
-References: <1413996362-44397-1-git-send-email-nbd@openwrt.org>
- <87k33rqmwq.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87k33rqmwq.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +25,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2014-10-23 09:13, Kalle Valo wrote:
-> Felix Fietkau <nbd@openwrt.org> writes:
-> 
->> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
->> ---
->>  drivers/net/wireless/ath/ath10k/mac.c | 3 +++
->>  1 file changed, 3 insertions(+)
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 20 October 2014 14:14, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> One of the problems with warm reset I've found is
+>> that it must be guaranteed that copy engine
+>> registers are not being accessed while being
+>> reset. Otherwise in worst case scenario the host
+>> may lock up.
 >>
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 4670930..bc440dc 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -3975,6 +3975,9 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
->>  
->>  	survey->channel = &sband->channels[idx];
->>  
->> +	if (ar->rx_channel == survey->channel)
->> +		survey->filled |= SURVEY_INFO_IN_USE;
->> +
-> 
-> Why? Does this fix a visible bug? What changes from user space point of
-> view? I'm asking because I want to add something to the commit log.
-When user space requests survey info, it is useful to know which of the
-survey data refers to the channel that is currently actively being used.
-One of the use cases is getting the current channel noise for status output.
-Without this flag you would have to look up the channel separately and
-then compare it against the frequency in the survey output in user space.
+>> Instead of using sleeps and hoping the device is
+>> operational in some arbitrary timeframes use
+>> firmware indication register.
+>>
+>> As a side effect this makes driver
+>> boot/stop/recovery faster.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> ---
+>>
+>> Notes:
+>>     v2:
+>>      * fix kernel panic on early fw crash due to CE not being fully initialized [Janusz]
+>
+> Marek reported he sees a memory leak and git bisect blames this patch.
+> Please don't apply this patch yet.
 
-- Felix
+Ok, thanks for letting me know. What about rest of the patches in the
+patchset? I assume it's safe to apply them.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
