@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhIVB-0006py-3w
- for ath10k@lists.infradead.org; Thu, 23 Oct 2014 13:32:30 +0000
+ id 1XhIjQ-0004rw-TN
+ for ath10k@lists.infradead.org; Thu, 23 Oct 2014 13:47:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add SURVEY_INFO_IN_USE for current channel on
- survey
-References: <1413996362-44397-1-git-send-email-nbd@openwrt.org>
- <87k33rqmwq.fsf@kamboji.qca.qualcomm.com>
- <5448DF0B.2090906@openwrt.org>
-Date: Thu, 23 Oct 2014 16:31:59 +0300
-In-Reply-To: <5448DF0B.2090906@openwrt.org> (Felix Fietkau's message of "Thu, 
- 23 Oct 2014 12:57:15 +0200")
-Message-ID: <87siieq5dc.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/6] ath10k: pci related fixes 2014-10-09
+References: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 23 Oct 2014 16:46:45 +0300
+In-Reply-To: <1413807282-27951-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 20 Oct 2014 14:14:36 +0200")
+Message-ID: <87oat2q4oq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,56 +23,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@openwrt.org>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Felix Fietkau <nbd@openwrt.org> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> On 2014-10-23 09:13, Kalle Valo wrote:
->> Felix Fietkau <nbd@openwrt.org> writes:
->> 
->>> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
->>> ---
->>>  drivers/net/wireless/ath/ath10k/mac.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>>
->>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->>> index 4670930..bc440dc 100644
->>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>> @@ -3975,6 +3975,9 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
->>>  
->>>  	survey->channel = &sband->channels[idx];
->>>  
->>> +	if (ar->rx_channel == survey->channel)
->>> +		survey->filled |= SURVEY_INFO_IN_USE;
->>> +
->> 
->> Why? Does this fix a visible bug? What changes from user space point of
->> view? I'm asking because I want to add something to the commit log.
+> First 2 patches address some irq issues.
 >
-> When user space requests survey info, it is useful to know which of the
-> survey data refers to the channel that is currently actively being used.
-> One of the use cases is getting the current channel noise for status output.
-> Without this flag you would have to look up the channel separately and
-> then compare it against the frequency in the survey output in user space.
+> Other 4 fix and cleanup device resetting.
+>
+> Hopefully this will make ath10k a little more
+> robust when it comes to warm reset.
+>
+> As a side effect of the changes ath10k now boots a
+> little faster (slightly over a second instead of
+> two).
+>
+> v2:
+>  * don't remove power_up/down [Kalle]
+>  * fix CE crash [Janusz]
+>  * remove irq workaround in patch #2
+>
+>
+> Michal Kazior (6):
+>   ath10k: re-disable interrupts after target init
+>   ath10k: mask/unmask msi fw irq
+>   ath10k: split ce pipe init/alloc further
 
-Perfect, thanks. I added this to the commit log in ath-next-test:
+I have applied these patches.
 
-commit f7528c6fca1b2ee1899069f1066012f47586a0c8
-Author: Felix Fietkau <nbd@openwrt.org>
-Date:   Wed Oct 22 18:46:02 2014 +0200
+>   ath10k: make warm reset a bit safer and faster
+>   ath10k: split reset logic from power up
+>   ath10k: don't reset chip on power_down
 
-    ath10k: add SURVEY_INFO_IN_USE for current channel on survey
-    
-    When user space requests survey info, it is useful to know which of the survey
-    data refers to the channel that is currently actively being used.  One of the
-    use cases is getting the current channel noise for status output.  Without this
-    flag you would have to look up the channel separately and then compare it
-    against the frequency in the survey output in user space.
-    
-    Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+And dropped these patches per your request.
 
 -- 
 Kalle Valo
