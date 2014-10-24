@@ -1,21 +1,9 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XhdCy-0003re-EL
- for ath10k@lists.infradead.org; Fri, 24 Oct 2014 11:39:05 +0000
-Received: by mail-wi0-f174.google.com with SMTP id q5so972026wiv.1
- for <ath10k@lists.infradead.org>; Fri, 24 Oct 2014 04:38:42 -0700 (PDT)
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Pull request: ath 20141024
+Date: Fri, 24 Oct 2014 14:44:32 +0300
+Message-ID: <87bnp1ofof.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <etPan.544a384b.74b0dc51.8406@Mac-Pro.local>
-References: <CANzpp-=opT==PUf5FhWi_cbB91+RhWk+jB7M4bfUCqh2wzQA2A@mail.gmail.com>
- <CA+BoTQmHGtO+XCRg1_jJstm+wHRQLU9sEpBRJ7U+_xO3nq7_VA@mail.gmail.com>
- <CANzpp-kV8LzPgeXHq=DHKsLSdTT+-9gjj08RXST4r3-QOtkanw@mail.gmail.com>
- <CA+BoTQn0iEYEQJ4AdO7xfRSHjX1CfO_uovPaxbtxSWQw0vPS+Q@mail.gmail.com>
- <etPan.544a384b.74b0dc51.8406@Mac-Pro.local>
-Date: Fri, 24 Oct 2014 13:38:42 +0200
-Message-ID: <CA+BoTQkxX1fhQVGx7jUkoG6NRz+EP+ZWJwAvNwqHDNv5Fw4COA@mail.gmail.com>
-Subject: Re: Change channel bandwidth without iw command
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +12,176 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjQgT2N0b2JlciAyMDE0IDEzOjMwLCBPa2h3YW4gTGVlIDxvaGxlZUBtd25sLnNudS5hYy5r
-cj4gd3JvdGU6Cj4gIEhpLAo+Cj4gVGhpcyBsaW5rZWQgaW1hZ2VzIGFyZSB0aGUgcHJpbnRlZCBl
-cnJvciBtZXNzYWdlcyB3aGVuIHRoZSBrZXJuZWwgaXMgaW4gcGFuaWMuCj4gaHR0cDovL3d3dy5t
-d25sLnNudS5hYy5rci9+b2hsZWUvMS5qcGcKPiBodHRwOi8vd3d3Lm13bmwuc251LmFjLmtyL35v
-aGxlZS8yLmpwZwoKVGhhbmtzLgoKUGFuaWMgZG9lc24ndCBzZWVtIHRvIGluY2x1ZGUgYW55dGhp
-bmcgZGlyZWN0bHkgcmVsYXRlZCB0byBhdGgxMGsKd2hpY2ggc3VnZ2VzdHMgdGhpcyBtYXkgYmUg
-c29tZSBuYXN0eSBtZW1vcnkgY29ycnVwdGlvbiBpc3N1ZS4gWW91Cm1pZ2h0IHdhbnQgdG8gZW5h
-YmxlIG1lbW9yeSBkZWJ1Z2dpbmcgd2hlbiBidWlsZGluZyBrZXJuZWwgKEtlcm5lbApIYWNraW5n
-KSAtIGhvcGVmdWxseSBpdCdsbCBnZXQgc29tZSBleHRyYSBpbmZvIGJlZm9yZSB0aGUgcGFuaWMu
-CgpIb3cgZGlkIHlvdSBjb21lIHRvIGEgY29uY2x1c2lvbiB0aGF0IGF0aDEwaydzIG1vbml0b3Ig
-dmRldiBzdG9wcGluZwphbmQgd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCkgYXJlIGludm9s
-dmVkPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0
-cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi John,
+
+here are the latest ath10k patches plus a small logging change to ath6kl
+and wil6210. Unfortunately this time there's a small conflict in
+drivers/net/wireless/ath/wil6210/wil6210.h but luckily it's easy to fix.
+Here's an example how I propose to resolve it:
+
+----------------------------------------------------------------------
+#define wil_to_ndev(i) (wil_to_wdev(i)->netdev)
+#define ndev_to_wil(n) (wdev_to_wil(n->ieee80211_ptr))
+#define wil_to_pcie_dev(i) (&i->pdev->dev)
+
+__printf(2, 3)
+void wil_dbg_trace(struct wil6210_priv *wil, const char *fmt, ...);
+__printf(2, 3)
+void wil_err(struct wil6210_priv *wil, const char *fmt, ...);
+__printf(2, 3)
+void wil_info(struct wil6210_priv *wil, const char *fmt, ...);
+#define wil_dbg(wil, fmt, arg...) do { \
+	netdev_dbg(wil_to_ndev(wil), fmt, ##arg); \
+	wil_dbg_trace(wil, fmt, ##arg); \
+} while (0)
+
+#define wil_dbg_irq(wil, fmt, arg...) wil_dbg(wil, "DBG[ IRQ]" fmt, ##arg)
+#define wil_dbg_txrx(wil, fmt, arg...) wil_dbg(wil, "DBG[TXRX]" fmt, ##arg)
+----------------------------------------------------------------------
+
+I think a lesson learned here is that I should not apply patches which
+touch wil6210 and instead ask the submitter to split the patch. Sorry
+for this.
+
+Here's a changelog for the pull request:
+
+----------------------------------------------------------------------
+Major changes are:
+
+o ethtool support (Ben)
+
+o print dev string prefix with debug hex buffers dump (Michal)
+
+o debugfs file to read calibration data from the firmware verification
+  purposes (me)
+
+o fix fw_stats debugfs file, now results are more reliable (Michal)
+
+o firmware crash counters via debugfs (Ben&me)
+
+o various tracing points to debug firmware (Rajkumar)
+
+o make it possible to provide firmware calibration data via a file (me)
+
+And we have quite a lot of smaller fixes and clean up.
+----------------------------------------------------------------------
+
+Please pull and let me know if you have any problems.
+
+Kalle
+
+----------------------------------------------------------------------
+
+The following changes since commit b25f32cb02155d68c690255ba846796a1c248fd3:
+
+  ath10k: use ether_addr_copy() (2014-09-18 10:47:03 +0300)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git tags/for-linville-20141024
+
+for you to fetch changes up to 84cbf3a7592879810f80cece6c7f736f099ab163:
+
+  ath10k: split ce pipe init/alloc further (2014-10-23 16:41:32 +0300)
+
+----------------------------------------------------------------
+Bartosz Markowski (1):
+      ath10k: advertise all possible firmware(-api) files
+
+Ben Greear (3):
+      ath10k: add firmware crash counters
+      ath10k: support ethtool stats
+      ath10k: use 64-bit vdev map
+
+Janusz Dziedzic (2):
+      ath10k: don't create bssid peer for ibss
+      ath10k: fix WMI scan command length
+
+Joe Perches (1):
+      ath: change logging functions to return void
+
+Kalle Valo (6):
+      ath10k: don't enable interrupts for the diagnostic window
+      ath10k: add diag_read() to hif ops
+      ath10k: add cal_data debugfs file
+      ath10k: add back enum ath10k_bus
+      ath10k: refactor ath10k_init_download_firmware()
+      ath10k: retrieve calibration data from file
+
+Michal Kazior (26):
+      ath10k: workaround fw beaconing bug
+      ath10k: fix tx/rx chainmask init
+      ath10k: remove unused pdev_set_channel command
+      ath10k: deduplicate wmi_channel code
+      ath10k: deduplicate host mem chunk code
+      ath10k: relocate wmi attach/deatch functions
+      ath10k: deduplicate wmi service ready logic
+      ath10k: clean up phyerr code
+      ath10k: unify wmi event function names
+      ath10k: re-work scan start command building
+      ath10k: print wmi version info
+      ath10k: dump hex bytes with dev string prefix
+      ath10k: add debug dump for pci rx
+      ath10k: split wmi stats parsing
+      ath10k: rename fw_stats related stuff
+      ath10k: request fw_stats once on open
+      ath10k: fix fw stats processing
+      ath10k: warn on unhandled htt events
+      ath10k: clean up assoc code
+      ath10k: skip some commands on reassoc
+      ath10k: clean up sta auth/assoc code
+      ath10k: simplify computation of mgmt rx band
+      ath10k: use bss_info as txpower source
+      ath10k: re-disable interrupts after target init
+      ath10k: mask/unmask msi fw irq
+      ath10k: split ce pipe init/alloc further
+
+Rajkumar Manoharan (6):
+      ath10k: add support to configure pktlog filter
+      ath10k: add tracing for ath10k_htt_pktlog
+      ath10k: add tracing for rx descriptor
+      ath10k: add tracing for tx info
+      ath10k: add tracing for frame transmission
+      ath10k: fix kernel panic while shutting down AP
+
+ drivers/net/wireless/ath/ath10k/ce.c       |   83 ++-
+ drivers/net/wireless/ath/ath10k/ce.h       |   21 +-
+ drivers/net/wireless/ath/ath10k/core.c     |  111 ++-
+ drivers/net/wireless/ath/ath10k/core.h     |   80 +-
+ drivers/net/wireless/ath/ath10k/debug.c    |  891 ++++++++++++++++------
+ drivers/net/wireless/ath/ath10k/debug.h    |   40 +-
+ drivers/net/wireless/ath/ath10k/hif.h      |   10 +
+ drivers/net/wireless/ath/ath10k/htt.h      |    2 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c   |   20 +-
+ drivers/net/wireless/ath/ath10k/htt_tx.c   |    2 +
+ drivers/net/wireless/ath/ath10k/hw.h       |   17 +-
+ drivers/net/wireless/ath/ath10k/mac.c      |  509 +++++++------
+ drivers/net/wireless/ath/ath10k/mac.h      |    1 +
+ drivers/net/wireless/ath/ath10k/pci.c      |  203 +++--
+ drivers/net/wireless/ath/ath10k/spectral.c |   34 +-
+ drivers/net/wireless/ath/ath10k/spectral.h |    8 +-
+ drivers/net/wireless/ath/ath10k/trace.h    |  163 ++++
+ drivers/net/wireless/ath/ath10k/txrx.c     |    1 +
+ drivers/net/wireless/ath/ath10k/wmi.c      | 1116 ++++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/wmi.h      |  273 ++-----
+ drivers/net/wireless/ath/ath6kl/common.h   |    2 +-
+ drivers/net/wireless/ath/ath6kl/debug.c    |   28 +-
+ drivers/net/wireless/ath/ath6kl/debug.h    |   13 +-
+ drivers/net/wireless/ath/wil6210/debug.c   |   14 +-
+ drivers/net/wireless/ath/wil6210/wil6210.h |    7 +-
+ 25 files changed, 2264 insertions(+), 1385 deletions(-)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
