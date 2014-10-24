@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xhf1K-0006sr-W4
- for ath10k@lists.infradead.org; Fri, 24 Oct 2014 13:35:11 +0000
+ id 1Xhf2H-0008Fl-M5
+ for ath10k@lists.infradead.org; Fri, 24 Oct 2014 13:36:10 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: minor htt tracing fix
-References: <1413899700-10717-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 24 Oct 2014 16:34:22 +0300
-In-Reply-To: <1413899700-10717-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 21 Oct 2014 15:54:58 +0200")
-Message-ID: <87y4s5mw0x.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add SURVEY_INFO_IN_USE for current channel on
+ survey
+References: <1413996362-44397-1-git-send-email-nbd@openwrt.org>
+Date: Fri, 24 Oct 2014 16:35:26 +0300
+In-Reply-To: <1413996362-44397-1-git-send-email-nbd@openwrt.org> (Felix
+ Fietkau's message of "Wed, 22 Oct 2014 18:46:02 +0200")
+Message-ID: <87tx2tmvz5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +24,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Felix Fietkau <nbd@openwrt.org>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Felix Fietkau <nbd@openwrt.org> writes:
 
-> I've just noticed that rx_desc tracing is somewhat
-> wrong. This attempts to fix it and since the trace
-> function prototype changes I re-use some tracing
-> code as well.
->
->
-> Michal Kazior (2):
->   ath10k: remove tsf argument from rx_desc tracing
->   ath10k: re-use trace class
+> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
 
-Thanks, both patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
