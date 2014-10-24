@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xhf2H-0008Fl-M5
- for ath10k@lists.infradead.org; Fri, 24 Oct 2014 13:36:10 +0000
+ id 1Xhf2y-00008q-3T
+ for ath10k@lists.infradead.org; Fri, 24 Oct 2014 13:36:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add SURVEY_INFO_IN_USE for current channel on
- survey
-References: <1413996362-44397-1-git-send-email-nbd@openwrt.org>
-Date: Fri, 24 Oct 2014 16:35:26 +0300
-In-Reply-To: <1413996362-44397-1-git-send-email-nbd@openwrt.org> (Felix
- Fietkau's message of "Wed, 22 Oct 2014 18:46:02 +0200")
-Message-ID: <87tx2tmvz5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: call correct function for frag threshold
+References: <1413980825-11186-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 24 Oct 2014 16:36:07 +0300
+In-Reply-To: <1413980825-11186-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 22 Oct 2014 14:27:05 +0200")
+Message-ID: <87ppdhmvy0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,12 +23,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Felix Fietkau <nbd@openwrt.org>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Felix Fietkau <nbd@openwrt.org> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+> Rts threshold was being configured instead of
+> fragmentation threshold.
+>
+> Keep in mind available firmware binaries don't
+> seem to support fragmentation anyway so this
+> doesn't fix fragmentation threshold per se.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
 
