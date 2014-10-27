@@ -1,23 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pd0-f173.google.com ([209.85.192.173])
+Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XiJr2-00041e-AT
- for ath10k@lists.infradead.org; Sun, 26 Oct 2014 09:11:19 +0000
-Received: by mail-pd0-f173.google.com with SMTP id v10so3859799pde.32
- for <ath10k@lists.infradead.org>; Sun, 26 Oct 2014 02:10:44 -0700 (PDT)
-Date: Sun, 26 Oct 2014 18:10:39 +0900
-From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Message-ID: <etPan.544cba8f.6b8b4567.764@Mac-Pro.local>
-In-Reply-To: <CA+BoTQkxX1fhQVGx7jUkoG6NRz+EP+ZWJwAvNwqHDNv5Fw4COA@mail.gmail.com>
-References: <CANzpp-=opT==PUf5FhWi_cbB91+RhWk+jB7M4bfUCqh2wzQA2A@mail.gmail.com>
- <CA+BoTQmHGtO+XCRg1_jJstm+wHRQLU9sEpBRJ7U+_xO3nq7_VA@mail.gmail.com>
- <CANzpp-kV8LzPgeXHq=DHKsLSdTT+-9gjj08RXST4r3-QOtkanw@mail.gmail.com>
- <CA+BoTQn0iEYEQJ4AdO7xfRSHjX1CfO_uovPaxbtxSWQw0vPS+Q@mail.gmail.com>
- <etPan.544a384b.74b0dc51.8406@Mac-Pro.local>
- <CA+BoTQkxX1fhQVGx7jUkoG6NRz+EP+ZWJwAvNwqHDNv5Fw4COA@mail.gmail.com>
-Subject: Re: Change channel bandwidth without iw command
-MIME-Version: 1.0
-Content-Disposition: inline
+ id 1Xiful-0007ui-Oh
+ for ath10k@lists.infradead.org; Mon, 27 Oct 2014 08:44:36 +0000
+Received: by mail-lb0-f182.google.com with SMTP id f15so4326745lbj.27
+ for <ath10k@lists.infradead.org>; Mon, 27 Oct 2014 01:44:08 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH v2] ath10k: fix pm resume after suspend
+Date: Mon, 27 Oct 2014 09:43:56 +0100
+Message-Id: <1414399436-7047-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +17,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "=?utf-8?Q?ath10k=40lists.infradead.org?=" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-wqBIaSzCoAoKVGhhbmtzIGZvciB5b3VyIGhlbHAuCgpXZSBqdXN0IGRpc2FibGUgc29tZSBmdW5j
-dGlvbnMgc3RlcCBieSBzdGVwLsKgClRoZW4gd2UgY2FuIGNvbmNsdWRlIHRoYXQgd2FpdF9mb3Jf
-Y29tcGxldGlvbl90aW1lb3V0IG1ha2VzIGtlcm5lbCBwYW5pYy7CoApXZSBndWVzcyB0aGF0IG1v
-bml0b3IgdmRldiBzdG9wcGluZyBhZnRlciByZWNlcHRpb24gb2YgYSBBY3Rpb24gZnJhbWUgcmVx
-dWlyZXMgbW9yZSB0aW1lIHRoYW4gdGhlIGNhc2Ugd2hlbiB1c2luZyBpdyBjb21tYW5kLsKgCklu
-c3RlYWQgb2Ygd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0LCB3ZSBhbHNvIHVzZSBhbHRlcm5h
-dGl2ZSBmdW5jdGlvbiwgd2FpdF9mb3JfY29tcGxldGlvbiAodXNlcyBtYXhpbXVtIHRpbWVvdXQg
-dmFsdWUpLMKgCmJ1dCB0aGUgcGFuaWMgaXMgc3RpbGwgdGhlcmUuCgpXZSBkb27igJl0IGhhdmUg
-dGhlIGV4cGVydCBvbiBrZXJuZWwgbWVtb3J5IGRlYnVnZ2luZyBmcm9tIG5vdyBvbi7CoApXZSBo
-YXZlIHRvIHN0dWR5IG1vcmUgaG93IHRvIGhhbmRsZSBpdC7CoAoKQWdhaW4sIHRoYW5rIHlvdS4K
-wqAKT2tod2FuIExlZQpTZW50IHdpdGggQWlybWFpbCAgCgrsvJzsp5AgMjAxNOuFhCAxMOyblCAy
-NOydvCDsl5DshJwg7Jik7ZuEIDg6Mzg6NDQsIE1pY2hhbCBLYXppb3IgKG1pY2hhbC5rYXppb3JA
-dGlldG8uY29tKG1haWx0bzptaWNoYWwua2F6aW9yQHRpZXRvLmNvbSkpIOyekeyEseuQqDoKCj4g
-IAoKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Firmware was crashing when we were trying to warm reset it
+after suspend. This was due to the fact that target registeres
+can be accessed only if the hardware is awaken.
+
+This patch makes sure to awake the device also on the hif up,
+not only in case of probe call.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 4a4740b..d31488b 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1877,10 +1877,16 @@ static int ath10k_pci_hif_power_up_warm(struct ath10k *ar)
+ 
+ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ {
+-	int ret;
++	int ret = 0;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power up\n");
+ 
++	ret = ath10k_pci_wake(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to wake up target: %d\n", ret);
++		return ret;
++	}
++
+ 	/*
+ 	 * Hardware CUS232 version 2 has some issues with cold reset and the
+ 	 * preferred (and safer) way to perform a device reset is through a
+@@ -1895,7 +1901,7 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 			    ret);
+ 
+ 		if (ath10k_pci_reset_mode == ATH10K_PCI_RESET_WARM_ONLY)
+-			return ret;
++			goto err_sleep;
+ 
+ 		ath10k_warn(ar, "trying cold reset\n");
+ 
+@@ -1903,11 +1909,15 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
+ 		if (ret) {
+ 			ath10k_err(ar, "failed to power up target using cold reset too (%d)\n",
+ 				   ret);
+-			return ret;
++			goto err_sleep;
+ 		}
+ 	}
+ 
+-	return 0;
++	return ret;
++
++err_sleep:
++	ath10k_pci_sleep(ar);
++	return ret;
+ }
+ 
+ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+@@ -1915,6 +1925,7 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power down\n");
+ 
+ 	ath10k_pci_warm_reset(ar);
++	ath10k_pci_sleep(ar);
+ }
+ 
+ #ifdef CONFIG_PM
+@@ -2516,6 +2527,8 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_deinit_irq;
+ 	}
+ 
++	ath10k_pci_sleep(ar);
++
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
+@@ -2567,7 +2580,6 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
+ 	ath10k_pci_deinit_irq(ar);
+ 	ath10k_pci_ce_deinit(ar);
+ 	ath10k_pci_free_pipes(ar);
+-	ath10k_pci_sleep(ar);
+ 	ath10k_pci_release(ar);
+ 	ath10k_core_destroy(ar);
+ }
+-- 
+1.8.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
