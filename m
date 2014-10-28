@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj3KE-0000qg-9U
- for ath10k@lists.infradead.org; Tue, 28 Oct 2014 09:44:27 +0000
-Received: by mail-lb0-f176.google.com with SMTP id p9so236602lbv.21
- for <ath10k@lists.infradead.org>; Tue, 28 Oct 2014 02:44:03 -0700 (PDT)
+ id 1Xj3KC-0000qb-O3
+ for ath10k@lists.infradead.org; Tue, 28 Oct 2014 09:44:25 +0000
+Received: by mail-lb0-f175.google.com with SMTP id b6so238463lbj.20
+ for <ath10k@lists.infradead.org>; Tue, 28 Oct 2014 02:44:02 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 2/4] ath10k: make warm reset a bit safer and faster
-Date: Tue, 28 Oct 2014 10:32:06 +0100
-Message-Id: <1414488728-31489-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 1/4] ath10k: change ce ring cleanup logic
+Date: Tue, 28 Oct 2014 10:32:05 +0100
+Message-Id: <1414488728-31489-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
 References: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,170 +27,167 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-One of the problems with warm reset I've found is
-that it must be guaranteed that copy engine
-registers are not being accessed while being
-reset. Otherwise in worst case scenario the host
-may lock up.
+Make ath10k_pci_init_pipes() effectively only
+alter shared target-host data.
 
-Instead of using sleeps and hoping the device is
-operational in some arbitrary timeframes use
-firmware indication register.
+The per_transfer_context is a host-only thing.
+It is necessary to preserve it's contents for a
+more robust ring cleanup.
 
-As a side effect this makes driver
-boot/stop/recovery faster.
+This is required for future warm reset fixes.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 
 Notes:
-    v2:
-     * fix kernel panic on early fw crash due to CE not being fully initialized [Janusz]
+    v3:
+     * introduced to fix memleak - warm reset will
+       reinit rings/pipes in the future so it was
+       necessary to rework how clean up of CE rings is
+       performed
 
- drivers/net/wireless/ath/ath10k/pci.c | 110 +++++++++++++++-------------------
- 1 file changed, 48 insertions(+), 62 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c  |  6 ---
+ drivers/net/wireless/ath/ath10k/pci.c | 82 ++++++++++++++++++++---------------
+ 2 files changed, 46 insertions(+), 42 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index 9b89ac1..878e1ec 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -835,9 +835,6 @@ static int ath10k_ce_init_src_ring(struct ath10k *ar,
+ 
+ 	nentries = roundup_pow_of_two(attr->src_nentries);
+ 
+-	memset(src_ring->per_transfer_context, 0,
+-	       nentries * sizeof(*src_ring->per_transfer_context));
+-
+ 	src_ring->sw_index = ath10k_ce_src_ring_read_index_get(ar, ctrl_addr);
+ 	src_ring->sw_index &= src_ring->nentries_mask;
+ 	src_ring->hw_index = src_ring->sw_index;
+@@ -872,9 +869,6 @@ static int ath10k_ce_init_dest_ring(struct ath10k *ar,
+ 
+ 	nentries = roundup_pow_of_two(attr->dest_nentries);
+ 
+-	memset(dest_ring->per_transfer_context, 0,
+-	       nentries * sizeof(*dest_ring->per_transfer_context));
+-
+ 	dest_ring->sw_index = ath10k_ce_dest_ring_read_index_get(ar, ctrl_addr);
+ 	dest_ring->sw_index &= dest_ring->nentries_mask;
+ 	dest_ring->write_index =
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index a8a3e1b..af36730 100644
+index 4a4740b..a8a3e1b 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1717,89 +1717,75 @@ static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
- 	msleep(10);
+@@ -1196,64 +1196,74 @@ static int ath10k_pci_hif_start(struct ath10k *ar)
+ 	return 0;
  }
  
--static int ath10k_pci_warm_reset(struct ath10k *ar)
-+static void ath10k_pci_warm_reset_cpu(struct ath10k *ar)
+-static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
++static void ath10k_pci_rx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
  {
- 	u32 val;
+ 	struct ath10k *ar;
+-	struct ath10k_pci *ar_pci;
+-	struct ath10k_ce_pipe *ce_hdl;
+-	u32 buf_sz;
+-	struct sk_buff *netbuf;
+-	u32 ce_data;
++	struct ath10k_ce_pipe *ce_pipe;
++	struct ath10k_ce_ring *ce_ring;
++	struct sk_buff *skb;
++	int i;
  
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
--
--	spin_lock_bh(&ar->data_lock);
--
--	ar->stats.fw_warm_reset_counter++;
--
--	spin_unlock_bh(&ar->data_lock);
--
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
--
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
--
--	/* disable pending irqs */
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_ENABLE_ADDRESS, 0);
--
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
--			   PCIE_INTR_CLR_ADDRESS, ~0);
--
--	msleep(100);
--
--	/* clear fw indicator */
- 	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, 0);
+-	buf_sz = pipe_info->buf_sz;
++	ar = pci_pipe->hif_ce_state;
++	ce_pipe = pci_pipe->ce_hdl;
++	ce_ring = ce_pipe->dest_ring;
  
--	/* clear target LF timer interrupts */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_LF_TIMER_CONTROL0_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
--			   SOC_LF_TIMER_CONTROL0_ADDRESS,
--			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+				SOC_RESET_CONTROL_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
-+			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+}
+-	/* Unused Copy Engine */
+-	if (buf_sz == 0)
++	if (!ce_ring)
+ 		return;
+ 
+-	ar = pipe_info->hif_ce_state;
+-	ar_pci = ath10k_pci_priv(ar);
+-	ce_hdl = pipe_info->ce_hdl;
++	if (!pci_pipe->buf_sz)
++		return;
+ 
+-	while (ath10k_ce_revoke_recv_next(ce_hdl, (void **)&netbuf,
+-					  &ce_data) == 0) {
+-		dma_unmap_single(ar->dev, ATH10K_SKB_CB(netbuf)->paddr,
+-				 netbuf->len + skb_tailroom(netbuf),
++	for (i = 0; i < ce_ring->nentries; i++) {
++		skb = ce_ring->per_transfer_context[i];
++		if (!skb)
++			continue;
 +
-+static void ath10k_pci_warm_reset_ce(struct ath10k *ar)
-+{
-+	u32 val;
- 
--	/* reset CE */
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
- 				SOC_RESET_CONTROL_ADDRESS);
++		ce_ring->per_transfer_context[i] = NULL;
 +
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val | SOC_RESET_CONTROL_CE_RST_MASK);
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
- 	msleep(10);
--
--	/* unreset CE */
- 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
- 			   val & ~SOC_RESET_CONTROL_CE_RST_MASK);
-+}
++		dma_unmap_single(ar->dev, ATH10K_SKB_CB(skb)->paddr,
++				 skb->len + skb_tailroom(skb),
+ 				 DMA_FROM_DEVICE);
+-		dev_kfree_skb_any(netbuf);
++		dev_kfree_skb_any(skb);
+ 	}
+ }
+ 
+-static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pipe_info)
++static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
+ {
+ 	struct ath10k *ar;
+ 	struct ath10k_pci *ar_pci;
+-	struct ath10k_ce_pipe *ce_hdl;
+-	struct sk_buff *netbuf;
+-	u32 ce_data;
+-	unsigned int nbytes;
++	struct ath10k_ce_pipe *ce_pipe;
++	struct ath10k_ce_ring *ce_ring;
++	struct ce_desc *ce_desc;
++	struct sk_buff *skb;
+ 	unsigned int id;
+-	u32 buf_sz;
++	int i;
+ 
+-	buf_sz = pipe_info->buf_sz;
++	ar = pci_pipe->hif_ce_state;
++	ar_pci = ath10k_pci_priv(ar);
++	ce_pipe = pci_pipe->ce_hdl;
++	ce_ring = ce_pipe->src_ring;
+ 
+-	/* Unused Copy Engine */
+-	if (buf_sz == 0)
++	if (!ce_ring)
+ 		return;
+ 
+-	ar = pipe_info->hif_ce_state;
+-	ar_pci = ath10k_pci_priv(ar);
+-	ce_hdl = pipe_info->ce_hdl;
++	if (!pci_pipe->buf_sz)
++		return;
+ 
+-	while (ath10k_ce_cancel_send_next(ce_hdl, (void **)&netbuf,
+-					  &ce_data, &nbytes, &id) == 0) {
+-		/* no need to call tx completion for NULL pointers */
+-		if (!netbuf)
++	ce_desc = ce_ring->shadow_base;
++	if (WARN_ON(!ce_desc))
++		return;
 +
-+static void ath10k_pci_warm_reset_clear_lf(struct ath10k *ar)
-+{
-+	u32 val;
++	for (i = 0; i < ce_ring->nentries; i++) {
++		skb = ce_ring->per_transfer_context[i];
++		if (!skb)
+ 			continue;
+ 
+-		ar_pci->msg_callbacks_current.tx_completion(ar,
+-							    netbuf,
+-							    id);
++		ce_ring->per_transfer_context[i] = NULL;
++		id = MS(__le16_to_cpu(ce_desc[i].flags),
++			CE_DESC_FLAGS_META_DATA);
 +
- 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	msleep(10);
-+				SOC_LF_TIMER_CONTROL0_ADDRESS);
-+	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
-+			   SOC_LF_TIMER_CONTROL0_ADDRESS,
-+			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
-+}
- 
--	ath10k_pci_warm_reset_si0(ar);
-+static int ath10k_pci_warm_reset(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
- 
--	/* debug */
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_CAUSE_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
--		   val);
-+	spin_lock_bh(&ar->data_lock);
-+	ar->stats.fw_warm_reset_counter++;
-+	spin_unlock_bh(&ar->data_lock);
- 
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				CPU_INTR_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
--		   val);
-+	ath10k_pci_irq_disable(ar);
- 
--	/* CPU warm reset */
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
--			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
-+	/* Make sure the target CPU is not doing anything dangerous, e.g. if it
-+	 * were to access copy engine while host performs copy engine reset
-+	 * then it is possible for the device to confuse pci-e controller to
-+	 * the point of bringing host system to a complete stop (i.e. hang).
-+	 */
-+	ath10k_pci_warm_reset_si0(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
-+	ath10k_pci_init_pipes(ar);
-+	ath10k_pci_wait_for_target_init(ar);
- 
--	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
--				SOC_RESET_CONTROL_ADDRESS);
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target reset state: 0x%08x\n",
--		   val);
-+	ath10k_pci_warm_reset_clear_lf(ar);
-+	ath10k_pci_warm_reset_ce(ar);
-+	ath10k_pci_warm_reset_cpu(ar);
-+	ath10k_pci_init_pipes(ar);
- 
--	msleep(100);
-+	ret = ath10k_pci_wait_for_target_init(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wait for target init: %d\n", ret);
-+		return ret;
-+	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset complete\n");
++		ar_pci->msg_callbacks_current.tx_completion(ar, skb, id);
+ 	}
+ }
  
 -- 
 1.8.5.3
