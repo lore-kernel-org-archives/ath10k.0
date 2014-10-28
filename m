@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xj3BL-0004OH-Ct
- for ath10k@lists.infradead.org; Tue, 28 Oct 2014 09:35:16 +0000
-Received: by mail-lb0-f182.google.com with SMTP id f15so259527lbj.13
- for <ath10k@lists.infradead.org>; Tue, 28 Oct 2014 02:34:48 -0700 (PDT)
+ id 1Xj3KE-0000qg-9U
+ for ath10k@lists.infradead.org; Tue, 28 Oct 2014 09:44:27 +0000
+Received: by mail-lb0-f176.google.com with SMTP id p9so236602lbv.21
+ for <ath10k@lists.infradead.org>; Tue, 28 Oct 2014 02:44:03 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: avoid possible deadlock with scan timeout
-Date: Tue, 28 Oct 2014 10:23:09 +0100
-Message-Id: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 2/4] ath10k: make warm reset a bit safer and faster
+Date: Tue, 28 Oct 2014 10:32:06 +0100
+Message-Id: <1414488728-31489-3-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
+References: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,101 +27,170 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This should prevent deadlock predicted by the
-following splat:
+One of the problems with warm reset I've found is
+that it must be guaranteed that copy engine
+registers are not being accessed while being
+reset. Otherwise in worst case scenario the host
+may lock up.
 
- ======================================================
- [ INFO: possible circular locking dependency detected ]
- 3.17.0-wl-ath+ #67 Not tainted
- -------------------------------------------------------
- kworker/u32:1/7230 is trying to acquire lock:
-  (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
+Instead of using sleeps and hoping the device is
+operational in some arbitrary timeframes use
+firmware indication register.
 
- but task is already holding lock:
-  ((&(&ar->scan.timeout)->work)){+.+...}, at: [<ffffffff8106dae1>] process_one_work+0x151/0x470
+As a side effect this makes driver
+boot/stop/recovery faster.
 
- which lock already depends on the new lock.
-
- the existing dependency chain (in reverse order) is:
-
- -> #1 ((&(&ar->scan.timeout)->work)){+.+...}:
-        [<ffffffff810a12e5>] lock_acquire+0x85/0x100
-        [<ffffffff8106cb4d>] flush_work+0x3d/0x270
-        [<ffffffff8106e49d>] __cancel_work_timer+0x7d/0x110
-        [<ffffffff8106e543>] cancel_delayed_work_sync+0x13/0x20
-        [<ffffffffa0409f16>] ath10k_cancel_remain_on_channel+0x36/0x60 [ath10k_core]
-        [<ffffffffa028c75c>] ieee80211_cancel_roc+0x1cc/0x2f0 [mac80211]
-        [<ffffffffa028c8a2>] ieee80211_mgmt_tx_cancel_wait+0x22/0x30 [mac80211]
-        [<ffffffffa0132288>] nl80211_tx_mgmt_cancel_wait+0xa8/0x130 [cfg80211]
-        [<ffffffff816654a5>] genl_family_rcv_msg+0x1a5/0x3c0
-        [<ffffffff81665749>] genl_rcv_msg+0x89/0xc0
-        [<ffffffff81664e91>] netlink_rcv_skb+0xb1/0xc0
-        [<ffffffff816650bc>] genl_rcv+0x2c/0x40
-        [<ffffffff8166474d>] netlink_unicast+0x18d/0x200
-        [<ffffffff81664add>] netlink_sendmsg+0x31d/0x430
-        [<ffffffff8161a9ac>] sock_sendmsg+0x9c/0xd0
-        [<ffffffff8161b469>] ___sys_sendmsg+0x389/0x3a0
-        [<ffffffff8161bed9>] __sys_sendmsg+0x49/0x90
-        [<ffffffff8161bf32>] SyS_sendmsg+0x12/0x20
-        [<ffffffff8174c456>] system_call_fastpath+0x1a/0x1f
-
- -> #0 (&ar->conf_mutex){+.+.+.}:
-        [<ffffffff810a0bde>] __lock_acquire+0x1b6e/0x1ce0
-        [<ffffffff810a12e5>] lock_acquire+0x85/0x100
-        [<ffffffff817491eb>] mutex_lock_nested+0x4b/0x370
-        [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
-        [<ffffffff8106db41>] process_one_work+0x1b1/0x470
-        [<ffffffff8106df63>] worker_thread+0x123/0x460
-        [<ffffffff81073f34>] kthread+0xe4/0x100
-        [<ffffffff8174c3ac>] ret_from_fork+0x7c/0xb0
-
- other info that might help us debug this:
-
-  Possible unsafe locking scenario:
-
-        CPU0                    CPU1
-        ----                    ----
-   lock((&(&ar->scan.timeout)->work));
-                                lock(&ar->conf_mutex);
-                                lock((&(&ar->scan.timeout)->work));
-   lock(&ar->conf_mutex);
-
-  *** DEADLOCK ***
-
-Reported-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a726107..a7236ea 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3307,9 +3307,10 @@ static void ath10k_cancel_hw_scan(struct ieee80211_hw *hw,
- 	struct ath10k *ar = hw->priv;
- 
- 	mutex_lock(&ar->conf_mutex);
--	cancel_delayed_work_sync(&ar->scan.timeout);
- 	ath10k_scan_abort(ar);
- 	mutex_unlock(&ar->conf_mutex);
-+
-+	cancel_delayed_work_sync(&ar->scan.timeout);
+Notes:
+    v2:
+     * fix kernel panic on early fw crash due to CE not being fully initialized [Janusz]
+
+ drivers/net/wireless/ath/ath10k/pci.c | 110 +++++++++++++++-------------------
+ 1 file changed, 48 insertions(+), 62 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index a8a3e1b..af36730 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1717,89 +1717,75 @@ static void ath10k_pci_warm_reset_si0(struct ath10k *ar)
+ 	msleep(10);
  }
  
- static void ath10k_set_key_h_def_keyidx(struct ath10k *ar,
-@@ -3826,10 +3827,11 @@ static int ath10k_cancel_remain_on_channel(struct ieee80211_hw *hw)
- 	struct ath10k *ar = hw->priv;
+-static int ath10k_pci_warm_reset(struct ath10k *ar)
++static void ath10k_pci_warm_reset_cpu(struct ath10k *ar)
+ {
+ 	u32 val;
  
- 	mutex_lock(&ar->conf_mutex);
--	cancel_delayed_work_sync(&ar->scan.timeout);
- 	ath10k_scan_abort(ar);
- 	mutex_unlock(&ar->conf_mutex);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
+-
+-	spin_lock_bh(&ar->data_lock);
+-
+-	ar->stats.fw_warm_reset_counter++;
+-
+-	spin_unlock_bh(&ar->data_lock);
+-
+-	/* debug */
+-	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+-				PCIE_INTR_CAUSE_ADDRESS);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
+-		   val);
+-
+-	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+-				CPU_INTR_ADDRESS);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
+-		   val);
+-
+-	/* disable pending irqs */
+-	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
+-			   PCIE_INTR_ENABLE_ADDRESS, 0);
+-
+-	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
+-			   PCIE_INTR_CLR_ADDRESS, ~0);
+-
+-	msleep(100);
+-
+-	/* clear fw indicator */
+ 	ath10k_pci_write32(ar, FW_INDICATOR_ADDRESS, 0);
  
-+	cancel_delayed_work_sync(&ar->scan.timeout);
+-	/* clear target LF timer interrupts */
+ 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+-				SOC_LF_TIMER_CONTROL0_ADDRESS);
+-	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
+-			   SOC_LF_TIMER_CONTROL0_ADDRESS,
+-			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
++				SOC_RESET_CONTROL_ADDRESS);
++	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
++			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
++}
 +
- 	return 0;
- }
++static void ath10k_pci_warm_reset_ce(struct ath10k *ar)
++{
++	u32 val;
+ 
+-	/* reset CE */
+ 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+ 				SOC_RESET_CONTROL_ADDRESS);
++
+ 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
+ 			   val | SOC_RESET_CONTROL_CE_RST_MASK);
+-	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+-				SOC_RESET_CONTROL_ADDRESS);
+ 	msleep(10);
+-
+-	/* unreset CE */
+ 	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
+ 			   val & ~SOC_RESET_CONTROL_CE_RST_MASK);
++}
++
++static void ath10k_pci_warm_reset_clear_lf(struct ath10k *ar)
++{
++	u32 val;
++
+ 	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+-				SOC_RESET_CONTROL_ADDRESS);
+-	msleep(10);
++				SOC_LF_TIMER_CONTROL0_ADDRESS);
++	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS +
++			   SOC_LF_TIMER_CONTROL0_ADDRESS,
++			   val & ~SOC_LF_TIMER_CONTROL0_ENABLE_MASK);
++}
+ 
+-	ath10k_pci_warm_reset_si0(ar);
++static int ath10k_pci_warm_reset(struct ath10k *ar)
++{
++	int ret;
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset\n");
+ 
+-	/* debug */
+-	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+-				PCIE_INTR_CAUSE_ADDRESS);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot host cpu intr cause: 0x%08x\n",
+-		   val);
++	spin_lock_bh(&ar->data_lock);
++	ar->stats.fw_warm_reset_counter++;
++	spin_unlock_bh(&ar->data_lock);
+ 
+-	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+-				CPU_INTR_ADDRESS);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target cpu intr cause: 0x%08x\n",
+-		   val);
++	ath10k_pci_irq_disable(ar);
+ 
+-	/* CPU warm reset */
+-	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+-				SOC_RESET_CONTROL_ADDRESS);
+-	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + SOC_RESET_CONTROL_ADDRESS,
+-			   val | SOC_RESET_CONTROL_CPU_WARM_RST_MASK);
++	/* Make sure the target CPU is not doing anything dangerous, e.g. if it
++	 * were to access copy engine while host performs copy engine reset
++	 * then it is possible for the device to confuse pci-e controller to
++	 * the point of bringing host system to a complete stop (i.e. hang).
++	 */
++	ath10k_pci_warm_reset_si0(ar);
++	ath10k_pci_warm_reset_cpu(ar);
++	ath10k_pci_init_pipes(ar);
++	ath10k_pci_wait_for_target_init(ar);
+ 
+-	val = ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS +
+-				SOC_RESET_CONTROL_ADDRESS);
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot target reset state: 0x%08x\n",
+-		   val);
++	ath10k_pci_warm_reset_clear_lf(ar);
++	ath10k_pci_warm_reset_ce(ar);
++	ath10k_pci_warm_reset_cpu(ar);
++	ath10k_pci_init_pipes(ar);
+ 
+-	msleep(100);
++	ret = ath10k_pci_wait_for_target_init(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to wait for target init: %d\n", ret);
++		return ret;
++	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot warm reset complete\n");
  
 -- 
 1.8.5.3
