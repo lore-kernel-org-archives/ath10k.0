@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Mon, 27 Oct 2014 14:10:10 -0400
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20141024
-Message-ID: <20141027181010.GG28300@tuxdriver.com>
-References: <87bnp1ofof.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87bnp1ofof.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xj3BL-0004OH-Ct
+ for ath10k@lists.infradead.org; Tue, 28 Oct 2014 09:35:16 +0000
+Received: by mail-lb0-f182.google.com with SMTP id f15so259527lbj.13
+ for <ath10k@lists.infradead.org>; Tue, 28 Oct 2014 02:34:48 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: avoid possible deadlock with scan timeout
+Date: Tue, 28 Oct 2014 10:23:09 +0100
+Message-Id: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,91 +17,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On Fri, Oct 24, 2014 at 02:44:32PM +0300, Kalle Valo wrote:
-> Hi John,
-> 
-> here are the latest ath10k patches plus a small logging change to ath6kl
-> and wil6210. Unfortunately this time there's a small conflict in
-> drivers/net/wireless/ath/wil6210/wil6210.h but luckily it's easy to fix.
-> Here's an example how I propose to resolve it:
-> 
-> ----------------------------------------------------------------------
-> #define wil_to_ndev(i) (wil_to_wdev(i)->netdev)
-> #define ndev_to_wil(n) (wdev_to_wil(n->ieee80211_ptr))
-> #define wil_to_pcie_dev(i) (&i->pdev->dev)
-> 
-> __printf(2, 3)
-> void wil_dbg_trace(struct wil6210_priv *wil, const char *fmt, ...);
-> __printf(2, 3)
-> void wil_err(struct wil6210_priv *wil, const char *fmt, ...);
-> __printf(2, 3)
-> void wil_info(struct wil6210_priv *wil, const char *fmt, ...);
-> #define wil_dbg(wil, fmt, arg...) do { \
-> 	netdev_dbg(wil_to_ndev(wil), fmt, ##arg); \
-> 	wil_dbg_trace(wil, fmt, ##arg); \
-> } while (0)
-> 
-> #define wil_dbg_irq(wil, fmt, arg...) wil_dbg(wil, "DBG[ IRQ]" fmt, ##arg)
-> #define wil_dbg_txrx(wil, fmt, arg...) wil_dbg(wil, "DBG[TXRX]" fmt, ##arg)
-> ----------------------------------------------------------------------
-> 
-> I think a lesson learned here is that I should not apply patches which
-> touch wil6210 and instead ask the submitter to split the patch. Sorry
-> for this.
-> 
-> Here's a changelog for the pull request:
-> 
-> ----------------------------------------------------------------------
-> Major changes are:
-> 
-> o ethtool support (Ben)
-> 
-> o print dev string prefix with debug hex buffers dump (Michal)
-> 
-> o debugfs file to read calibration data from the firmware verification
->   purposes (me)
-> 
-> o fix fw_stats debugfs file, now results are more reliable (Michal)
-> 
-> o firmware crash counters via debugfs (Ben&me)
-> 
-> o various tracing points to debug firmware (Rajkumar)
-> 
-> o make it possible to provide firmware calibration data via a file (me)
-> 
-> And we have quite a lot of smaller fixes and clean up.
-> ----------------------------------------------------------------------
-> 
-> Please pull and let me know if you have any problems.
-> 
-> Kalle
-> 
-> ----------------------------------------------------------------------
-> 
-> The following changes since commit b25f32cb02155d68c690255ba846796a1c248fd3:
-> 
->   ath10k: use ether_addr_copy() (2014-09-18 10:47:03 +0300)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git tags/for-linville-20141024
-> 
-> for you to fetch changes up to 84cbf3a7592879810f80cece6c7f736f099ab163:
-> 
->   ath10k: split ce pipe init/alloc further (2014-10-23 16:41:32 +0300)
+This should prevent deadlock predicted by the
+following splat:
 
-Pulling now...
+ ======================================================
+ [ INFO: possible circular locking dependency detected ]
+ 3.17.0-wl-ath+ #67 Not tainted
+ -------------------------------------------------------
+ kworker/u32:1/7230 is trying to acquire lock:
+  (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
 
+ but task is already holding lock:
+  ((&(&ar->scan.timeout)->work)){+.+...}, at: [<ffffffff8106dae1>] process_one_work+0x151/0x470
+
+ which lock already depends on the new lock.
+
+ the existing dependency chain (in reverse order) is:
+
+ -> #1 ((&(&ar->scan.timeout)->work)){+.+...}:
+        [<ffffffff810a12e5>] lock_acquire+0x85/0x100
+        [<ffffffff8106cb4d>] flush_work+0x3d/0x270
+        [<ffffffff8106e49d>] __cancel_work_timer+0x7d/0x110
+        [<ffffffff8106e543>] cancel_delayed_work_sync+0x13/0x20
+        [<ffffffffa0409f16>] ath10k_cancel_remain_on_channel+0x36/0x60 [ath10k_core]
+        [<ffffffffa028c75c>] ieee80211_cancel_roc+0x1cc/0x2f0 [mac80211]
+        [<ffffffffa028c8a2>] ieee80211_mgmt_tx_cancel_wait+0x22/0x30 [mac80211]
+        [<ffffffffa0132288>] nl80211_tx_mgmt_cancel_wait+0xa8/0x130 [cfg80211]
+        [<ffffffff816654a5>] genl_family_rcv_msg+0x1a5/0x3c0
+        [<ffffffff81665749>] genl_rcv_msg+0x89/0xc0
+        [<ffffffff81664e91>] netlink_rcv_skb+0xb1/0xc0
+        [<ffffffff816650bc>] genl_rcv+0x2c/0x40
+        [<ffffffff8166474d>] netlink_unicast+0x18d/0x200
+        [<ffffffff81664add>] netlink_sendmsg+0x31d/0x430
+        [<ffffffff8161a9ac>] sock_sendmsg+0x9c/0xd0
+        [<ffffffff8161b469>] ___sys_sendmsg+0x389/0x3a0
+        [<ffffffff8161bed9>] __sys_sendmsg+0x49/0x90
+        [<ffffffff8161bf32>] SyS_sendmsg+0x12/0x20
+        [<ffffffff8174c456>] system_call_fastpath+0x1a/0x1f
+
+ -> #0 (&ar->conf_mutex){+.+.+.}:
+        [<ffffffff810a0bde>] __lock_acquire+0x1b6e/0x1ce0
+        [<ffffffff810a12e5>] lock_acquire+0x85/0x100
+        [<ffffffff817491eb>] mutex_lock_nested+0x4b/0x370
+        [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
+        [<ffffffff8106db41>] process_one_work+0x1b1/0x470
+        [<ffffffff8106df63>] worker_thread+0x123/0x460
+        [<ffffffff81073f34>] kthread+0xe4/0x100
+        [<ffffffff8174c3ac>] ret_from_fork+0x7c/0xb0
+
+ other info that might help us debug this:
+
+  Possible unsafe locking scenario:
+
+        CPU0                    CPU1
+        ----                    ----
+   lock((&(&ar->scan.timeout)->work));
+                                lock(&ar->conf_mutex);
+                                lock((&(&ar->scan.timeout)->work));
+   lock(&ar->conf_mutex);
+
+  *** DEADLOCK ***
+
+Reported-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a726107..a7236ea 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3307,9 +3307,10 @@ static void ath10k_cancel_hw_scan(struct ieee80211_hw *hw,
+ 	struct ath10k *ar = hw->priv;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	cancel_delayed_work_sync(&ar->scan.timeout);
+ 	ath10k_scan_abort(ar);
+ 	mutex_unlock(&ar->conf_mutex);
++
++	cancel_delayed_work_sync(&ar->scan.timeout);
+ }
+ 
+ static void ath10k_set_key_h_def_keyidx(struct ath10k *ar,
+@@ -3826,10 +3827,11 @@ static int ath10k_cancel_remain_on_channel(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
+ 
+ 	mutex_lock(&ar->conf_mutex);
+-	cancel_delayed_work_sync(&ar->scan.timeout);
+ 	ath10k_scan_abort(ar);
+ 	mutex_unlock(&ar->conf_mutex);
+ 
++	cancel_delayed_work_sync(&ar->scan.timeout);
++
+ 	return 0;
+ }
+ 
 -- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+1.8.5.3
+
 
 _______________________________________________
 ath10k mailing list
