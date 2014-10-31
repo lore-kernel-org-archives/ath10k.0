@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xjm19-0005iu-Cb
- for ath10k@lists.infradead.org; Thu, 30 Oct 2014 09:27:44 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: handle ieee80211 header and payload tracing
- separately
-Date: Thu, 30 Oct 2014 14:58:56 +0530
-Message-ID: <1414661336-20764-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1Xjzuz-0000k8-4K
+ for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:18:18 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: avoid possible deadlock with scan timeout
+References: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 31 Oct 2014 02:17:33 +0200
+In-Reply-To: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 28 Oct 2014 10:23:09 +0100")
+Message-ID: <87ppd9drdu.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,220 +23,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-For packet log, the transmitted frame 802.11 header alone is sufficient.
-Recording entire packet is also consuming lot of disk space. To optimize
-this, tx and rx data tracepoints are splitted into header and payload
-tracepoints.
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-To record tx ieee80211 headers
+> This should prevent deadlock predicted by the
+> following splat:
+>
+>  ======================================================
+>  [ INFO: possible circular locking dependency detected ]
+>  3.17.0-wl-ath+ #67 Not tainted
+>  -------------------------------------------------------
+>  kworker/u32:1/7230 is trying to acquire lock:
+>   (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
+>
+>  but task is already holding lock:
+>   ((&(&ar->scan.timeout)->work)){+.+...}, at: [<ffffffff8106dae1>] process_one_work+0x151/0x470
+>
+>  which lock already depends on the new lock.
+>
 
-     trace-cmd record -e ath10k_tx_hdr
+[...]
 
-To record complete packets
+>   *** DEADLOCK ***
+>
+> Reported-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-     trace-cmd record -e ath10k_tx_hdr -e ath10k_tx_payload
+Thanks, applied.
 
-Cc: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
-v2: Move header len processing inside trace
- drivers/net/wireless/ath/ath10k/htt_rx.c |  4 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  3 +-
- drivers/net/wireless/ath/ath10k/trace.h  | 77 +++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c    |  7 ++-
- 4 files changed, 75 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a691fdf..52c6306 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -297,8 +297,6 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 			 DMA_FROM_DEVICE);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx netbuf pop: ",
- 			msdu->data, msdu->len + skb_tailroom(msdu));
--	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
--				     skb_tailroom(msdu));
- 
- 	return msdu;
- }
-@@ -903,6 +901,8 @@ static void ath10k_process_rx(struct ath10k *ar,
- 		   !!(status->flag & RX_FLAG_AMSDU_MORE));
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
- 			skb->data, skb->len);
-+	trace_ath10k_rx_hdr(ar, skb->data, skb->len);
-+	trace_ath10k_rx_payload(ar, skb->data, skb->len);
- 
- 	ieee80211_rx(ar->hw, skb);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b0df470..1e51249 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -564,7 +564,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		   (u32)skb_cb->paddr, vdev_id, tid);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
- 			msdu->data, msdu->len);
--	trace_ath10k_htt_tx_msdu(ar, msdu->data, msdu->len);
-+	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
-+	trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
- 
- 	sg_items[0].transfer_id = 0;
- 	sg_items[0].transfer_context = NULL;
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index b9a2ba6..919dc7e 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -341,7 +341,10 @@ TRACE_EVENT(ath10k_txrx_tx_unref,
- 	 )
- );
- 
--DECLARE_EVENT_CLASS(ath10k_data_event,
-+#define ATH10K_FRM_HDR_LEN  \
-+	ieee80211_hdrlen(((struct ieee80211_hdr *)data)->frame_control)
-+
-+DECLARE_EVENT_CLASS(ath10k_hdr_event,
- 		    TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 
- 	TP_ARGS(ar, data, len),
-@@ -350,14 +353,14 @@ DECLARE_EVENT_CLASS(ath10k_data_event,
- 		__string(device, dev_name(ar->dev))
- 		__string(driver, dev_driver_string(ar->dev))
- 		__field(size_t, len)
--		__dynamic_array(u8, data, len)
-+		__dynamic_array(u8, data, ATH10K_FRM_HDR_LEN)
- 	),
- 
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ar->dev));
- 		__assign_str(driver, dev_driver_string(ar->dev));
--		__entry->len = len;
--		memcpy(__get_dynamic_array(data), data, len);
-+		__entry->len = ATH10K_FRM_HDR_LEN;
-+		memcpy(__get_dynamic_array(data), data, __entry->len);
- 	),
- 
- 	TP_printk(
-@@ -368,30 +371,82 @@ DECLARE_EVENT_CLASS(ath10k_data_event,
- 	)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_tx_msdu,
--	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
--	     TP_ARGS(ar, data, len)
-+DECLARE_EVENT_CLASS(ath10k_payload_event,
-+		    TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+
-+	TP_ARGS(ar, data, len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(size_t, len)
-+		__dynamic_array(u8, payload, (len - ATH10K_FRM_HDR_LEN))
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->len = len - ATH10K_FRM_HDR_LEN;
-+		memcpy(__get_dynamic_array(payload),
-+		       data + ATH10K_FRM_HDR_LEN, __entry->len);
-+	),
-+
-+	TP_printk(
-+		"%s %s len %zu\n",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->len
-+	)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_rx_pop_msdu,
-+
-+DEFINE_EVENT(ath10k_hdr_event, ath10k_tx_hdr,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_wmi_mgmt_tx,
-+DEFINE_EVENT(ath10k_payload_event, ath10k_tx_payload,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_wmi_bcn_tx,
-+DEFINE_EVENT(ath10k_hdr_event, ath10k_rx_hdr,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_rx_desc,
-+DEFINE_EVENT(ath10k_payload_event, ath10k_rx_payload,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
-+
-+TRACE_EVENT(ath10k_htt_rx_desc,
-+	    TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+
-+	TP_ARGS(ar, data, len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, len)
-+		__dynamic_array(u8, rxdesc, len)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->len = len;
-+		memcpy(__get_dynamic_array(rxdesc), data, len);
-+	),
-+
-+	TP_printk(
-+		"%s %s rxdesc len %d",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->len
-+	 )
-+);
-+
- #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
- 
- /* we don't want to use include/trace/events */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ae746ce..3dcb216 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -834,7 +834,8 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
- 		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
- 		   fc & IEEE80211_FCTL_STYPE);
--	trace_ath10k_wmi_mgmt_tx(ar, skb->data, skb->len);
-+	trace_ath10k_tx_hdr(ar, skb->data, skb->len);
-+	trace_ath10k_tx_payload(ar, skb->data, skb->len);
- 
- 	/* Send the management frame buffer to the target */
- 	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->mgmt_tx_cmdid);
-@@ -1893,7 +1894,9 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 		arvif->beacon = bcn;
- 		arvif->beacon_sent = false;
- 
--		trace_ath10k_wmi_bcn_tx(ar, bcn->data, bcn->len);
-+		trace_ath10k_tx_hdr(ar, bcn->data, bcn->len);
-+		trace_ath10k_tx_payload(ar, bcn->data, bcn->len);
-+
- 		ath10k_wmi_tx_beacon_nowait(arvif);
- skip:
- 		spin_unlock_bh(&ar->data_lock);
 -- 
-2.1.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
