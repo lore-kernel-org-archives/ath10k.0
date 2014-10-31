@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xk0AP-0005ag-5J
- for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:34:13 +0000
+ id 1Xk0NR-0002UJ-Vj
+ for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:47:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 0/3] ath10k: speed up recovery
-References: <1414488878-31561-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 31 Oct 2014 02:33:44 +0200
-In-Reply-To: <1414488878-31561-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 28 Oct 2014 10:34:35 +0100")
-Message-ID: <87h9yldqmv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fix pm resume after suspend
+References: <1414399436-7047-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Fri, 31 Oct 2014 02:47:14 +0200
+In-Reply-To: <1414399436-7047-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Mon, 27 Oct 2014 09:43:56 +0100")
+Message-ID: <87d299dq0d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,38 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> Patch #1 fixes a bug I've found while testing
-> patches #2 and #3. It's safe to cherry-pick it in
-> case patches #2 and/or #3 aren't accepted or need
-> a re-spin.
+> Firmware was crashing when we were trying to warm reset it
+> after suspend. This was due to the fact that target registeres
+> can be accessed only if the hardware is awaken.
 >
-> I've mainly used patch #2 to test reset and
-> recovery. It's pretty handy for (stress-)testing.
+> This patch makes sure to awake the device also on the hif up,
+> not only in case of probe call.
 >
-> Patch #3 should improve recovery speed in some
-> cases. Notably when there's a long chain of WMI
-> commands involved which take a painfully long time
-> to timeout/complete if firmware crashes mid-way.
->
-> Note: Patches #2 and #3 depend on `ath10k: pci
-> related fixes 2014-10-09`. Without the patchset
-> patches #2 and #3 must not be applied. Patch #1 is
-> fine though.
->
-> v3:
->  * skip shadow ring cleanup in #1
->
-> Michal Kazior (3):
->   ath10k: fix possible bmi crash
->   ath10k: expose hw restart via debugfs
->   ath10k: speed up hw recovery
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, all three patches applied.
+Unfortunately this still does not apply, most likely because of Michal's
+warm reset fixes I just applied. Can you rebase one more time, please?
 
 -- 
 Kalle Valo
