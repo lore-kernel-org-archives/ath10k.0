@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xjzuz-0000k8-4K
- for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:18:18 +0000
+ id 1Xk06v-0005Ks-Pc
+ for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:30:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: avoid possible deadlock with scan timeout
-References: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 31 Oct 2014 02:17:33 +0200
-In-Reply-To: <1414488189-28625-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 28 Oct 2014 10:23:09 +0100")
-Message-ID: <87ppd9drdu.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 0/4] ath10k: pci related fixes 2014-10-09
+References: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 31 Oct 2014 02:29:51 +0200
+In-Reply-To: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 28 Oct 2014 10:32:04 +0100")
+Message-ID: <87lhnxdqtc.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,30 +28,21 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This should prevent deadlock predicted by the
-> following splat:
+> This is a partial re-spin which includes the
+> not-yet-applied patches that fix/change warm
+> reset.
 >
->  ======================================================
->  [ INFO: possible circular locking dependency detected ]
->  3.17.0-wl-ath+ #67 Not tainted
->  -------------------------------------------------------
->  kworker/u32:1/7230 is trying to acquire lock:
->   (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa040a57d>] ath10k_scan_timeout_work+0x2d/0x50 [ath10k_core]
+> v3:
+>  * change CE ring cleanup (new patch #1)
 >
->  but task is already holding lock:
->   ((&(&ar->scan.timeout)->work)){+.+...}, at: [<ffffffff8106dae1>] process_one_work+0x151/0x470
 >
->  which lock already depends on the new lock.
->
+> Michal Kazior (4):
+>   ath10k: change ce ring cleanup logic
+>   ath10k: make warm reset a bit safer and faster
+>   ath10k: split reset logic from power up
+>   ath10k: don't reset chip on power_down
 
-[...]
-
->   *** DEADLOCK ***
->
-> Reported-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-Thanks, applied.
+Thanks, all four patches applied.
 
 -- 
 Kalle Valo
