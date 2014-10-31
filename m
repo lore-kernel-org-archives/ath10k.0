@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xk06v-0005Ks-Pc
- for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:30:38 +0000
+ id 1Xk0AP-0005ag-5J
+ for ath10k@lists.infradead.org; Fri, 31 Oct 2014 00:34:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 0/4] ath10k: pci related fixes 2014-10-09
-References: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 31 Oct 2014 02:29:51 +0200
-In-Reply-To: <1414488728-31489-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 28 Oct 2014 10:32:04 +0100")
-Message-ID: <87lhnxdqtc.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 0/3] ath10k: speed up recovery
+References: <1414488878-31561-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 31 Oct 2014 02:33:44 +0200
+In-Reply-To: <1414488878-31561-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 28 Oct 2014 10:34:35 +0100")
+Message-ID: <87h9yldqmv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,21 +28,33 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This is a partial re-spin which includes the
-> not-yet-applied patches that fix/change warm
-> reset.
+> Patch #1 fixes a bug I've found while testing
+> patches #2 and #3. It's safe to cherry-pick it in
+> case patches #2 and/or #3 aren't accepted or need
+> a re-spin.
+>
+> I've mainly used patch #2 to test reset and
+> recovery. It's pretty handy for (stress-)testing.
+>
+> Patch #3 should improve recovery speed in some
+> cases. Notably when there's a long chain of WMI
+> commands involved which take a painfully long time
+> to timeout/complete if firmware crashes mid-way.
+>
+> Note: Patches #2 and #3 depend on `ath10k: pci
+> related fixes 2014-10-09`. Without the patchset
+> patches #2 and #3 must not be applied. Patch #1 is
+> fine though.
 >
 > v3:
->  * change CE ring cleanup (new patch #1)
+>  * skip shadow ring cleanup in #1
 >
->
-> Michal Kazior (4):
->   ath10k: change ce ring cleanup logic
->   ath10k: make warm reset a bit safer and faster
->   ath10k: split reset logic from power up
->   ath10k: don't reset chip on power_down
+> Michal Kazior (3):
+>   ath10k: fix possible bmi crash
+>   ath10k: expose hw restart via debugfs
+>   ath10k: speed up hw recovery
 
-Thanks, all four patches applied.
+Thanks, all three patches applied.
 
 -- 
 Kalle Valo
