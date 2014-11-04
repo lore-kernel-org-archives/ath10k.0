@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlSYF-000672-E1
- for ath10k@lists.infradead.org; Tue, 04 Nov 2014 01:04:52 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [70.89.124.249])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 3CDD040AB5B
- for <ath10k@lists.infradead.org>; Mon,  3 Nov 2014 17:04:28 -0800 (PST)
-Message-ID: <5458261C.2020700@candelatech.com>
-Date: Mon, 03 Nov 2014 17:04:28 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from s72.web-hosting.com ([198.187.29.22])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XlSZ6-0007Gi-Bd
+ for ath10k@lists.infradead.org; Tue, 04 Nov 2014 01:05:44 +0000
+From: Sujith Manoharan <sujith@msujith.org>
 MIME-Version: 1.0
-Subject: Slow connect times?
+Message-ID: <21592.9895.190054.349562@gargle.gargle.HOWL>
+Date: Tue, 4 Nov 2014 06:36:47 +0530
+Subject: Re: [ath9k-devel] Support for killer n1525
+In-Reply-To: <CAAmLN2bKERAoiAjpe-wtSC6xHEZqcNtEmPUZOpLfy03MNpYQGA@mail.gmail.com>
+References: <CAAmLN2bKERAoiAjpe-wtSC6xHEZqcNtEmPUZOpLfy03MNpYQGA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Joris Guisson <joris.guisson@gmail.com>
+Cc: ath9k-devel@lists.ath9k.org, ath10k@lists.infradead.org
 
-If I am reading my results right, it takes over 2 seconds to associate an
-ath10k station with WPA2 PSK on my systems.
+Joris Guisson wrote:
+> I recently purchased an MSI GT 72 gaming laptop with a killer n1525 wifi card
+> in it. The wifi didn't work, so I took a look at the latest kernel release
+> (3.18-rc3), and it seems there is no support in it for the card. I didn't find
+> the PCI device id (0x003e) listed in any of the atheros drivers, the only
+> killer related entries where in ath9k:
+> 
+> It may just be a matter of adding a new device ID entry in the table above, if
+> the NIC more or less works like previous killer NIC's.
 
-I was thinking this should be quite a bit faster than this...
+This card/HW is not supported by ath9k. I think work is ongoing to add
+support for this HW family to ath10k.
 
-Has anyone done any similar measurements?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Sujith
 
 _______________________________________________
 ath10k mailing list
