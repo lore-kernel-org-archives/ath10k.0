@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlfC4-0007vV-6J
- for ath10k@lists.infradead.org; Tue, 04 Nov 2014 14:34:49 +0000
-Received: by mail-lb0-f169.google.com with SMTP id 10so1057636lbg.28
- for <ath10k@lists.infradead.org>; Tue, 04 Nov 2014 06:34:27 -0800 (PST)
+ id 1XlfC5-0007ve-Af
+ for ath10k@lists.infradead.org; Tue, 04 Nov 2014 14:34:51 +0000
+Received: by mail-la0-f44.google.com with SMTP id gf13so999101lab.3
+ for <ath10k@lists.infradead.org>; Tue, 04 Nov 2014 06:34:28 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/7] ath10k: remove unused function argument
-Date: Tue,  4 Nov 2014 15:22:09 +0100
-Message-Id: <1415110931-10945-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 6/7] ath10k: use rx descriptor for ppdu status extraction
+Date: Tue,  4 Nov 2014 15:22:10 +0100
+Message-Id: <1415110931-10945-7-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
 References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,78 +27,216 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The original fix has been moved into a different
-place in the code.
+This makes it more in line with the new Rx path.
+It also makes the code more reusable because Rx
+descriptor is more accessible.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 16 +++-------------
- 1 file changed, 3 insertions(+), 13 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 137 ++++++++++++++++++++++---------
+ 1 file changed, 96 insertions(+), 41 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 6abfea7..55e4568 100644
+index 55e4568..9073a0e 100644
 --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
 +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -306,8 +306,7 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- /* return: < 0 fatal error, 0 - non chained msdu, 1 chained msdu */
- static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 				   u8 **fw_desc, int *fw_desc_len,
--				   struct sk_buff_head *amsdu,
--				   u32 *attention)
-+				   struct sk_buff_head *amsdu)
+@@ -631,23 +631,34 @@ static const u8 rx_legacy_rate_idx[] = {
+ };
+ 
+ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+-				  enum ieee80211_band band,
+-				  u8 info0, u32 info1, u32 info2,
+-				  struct ieee80211_rx_status *status)
++				  struct ieee80211_rx_status *status,
++				  struct htt_rx_desc *rxd)
  {
- 	struct ath10k *ar = htt->ar;
- 	int msdu_len, msdu_chaining = 0;
-@@ -348,11 +347,6 @@ static int ath10k_htt_rx_amsdu_pop(struct ath10k_htt *htt,
- 			return -EIO;
++	enum ieee80211_band band;
+ 	u8 cck, rate, rate_idx, bw, sgi, mcs, nss;
+ 	u8 preamble = 0;
++	u32 info1, info2, info3;
+ 
+-	/* Check if valid fields */
+-	if (!(info0 & HTT_RX_INDICATION_INFO0_START_VALID))
++	/* Band value can't be set as undefined but freq can be 0 - use that to
++	 * determine whether band is provided.
++	 *
++	 * FIXME: Perhaps this can go away if CCK rate reporting is a little
++	 * reworked?
++	 */
++	if (!status->freq)
+ 		return;
+ 
+-	preamble = MS(info1, HTT_RX_INDICATION_INFO1_PREAMBLE_TYPE);
++	band = status->band;
++	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
++	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
++	info3 = __le32_to_cpu(rxd->ppdu_start.info3);
++
++	preamble = MS(info1, RX_PPDU_START_INFO1_PREAMBLE_TYPE);
+ 
+ 	switch (preamble) {
+ 	case HTT_RX_LEGACY:
+-		cck = info0 & HTT_RX_INDICATION_INFO0_LEGACY_RATE_CCK;
+-		rate = MS(info0, HTT_RX_INDICATION_INFO0_LEGACY_RATE);
++		cck = info1 & RX_PPDU_START_INFO1_L_SIG_RATE_SELECT;
++		rate = MS(info1, RX_PPDU_START_INFO1_L_SIG_RATE);
+ 		rate_idx = 0;
+ 
+ 		if (rate < 0x08 || rate > 0x0F)
+@@ -674,11 +685,11 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 		break;
+ 	case HTT_RX_HT:
+ 	case HTT_RX_HT_WITH_TXBF:
+-		/* HT-SIG - Table 20-11 in info1 and info2 */
+-		mcs = info1 & 0x1F;
++		/* HT-SIG - Table 20-11 in info2 and info3 */
++		mcs = info2 & 0x1F;
+ 		nss = mcs >> 3;
+-		bw = (info1 >> 7) & 1;
+-		sgi = (info2 >> 7) & 1;
++		bw = (info2 >> 7) & 1;
++		sgi = (info3 >> 7) & 1;
+ 
+ 		status->rate_idx = mcs;
+ 		status->flag |= RX_FLAG_HT;
+@@ -689,12 +700,12 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+ 		break;
+ 	case HTT_RX_VHT:
+ 	case HTT_RX_VHT_WITH_TXBF:
+-		/* VHT-SIG-A1 in info 1, VHT-SIG-A2 in info2
++		/* VHT-SIG-A1 in info2, VHT-SIG-A2 in info3
+ 		   TODO check this */
+-		mcs = (info2 >> 4) & 0x0F;
+-		nss = ((info1 >> 10) & 0x07) + 1;
+-		bw = info1 & 3;
+-		sgi = info2 & 1;
++		mcs = (info3 >> 4) & 0x0F;
++		nss = ((info2 >> 10) & 0x07) + 1;
++		bw = info2 & 3;
++		sgi = info3 & 1;
+ 
+ 		status->rate_idx = mcs;
+ 		status->vht_nss = nss;
+@@ -742,6 +753,73 @@ static bool ath10k_htt_rx_h_channel(struct ath10k *ar,
+ 	return true;
+ }
+ 
++static void ath10k_htt_rx_h_signal(struct ath10k *ar,
++				   struct ieee80211_rx_status *status,
++				   struct htt_rx_desc *rxd)
++{
++	/* FIXME: Get real NF */
++	status->signal = ATH10K_DEFAULT_NOISE_FLOOR +
++			 rxd->ppdu_start.rssi_comb;
++	status->flag &= ~RX_FLAG_NO_SIGNAL_VAL;
++}
++
++static void ath10k_htt_rx_h_mactime(struct ath10k *ar,
++				    struct ieee80211_rx_status *status,
++				    struct htt_rx_desc *rxd)
++{
++	/* FIXME: TSF is known only at the end of PPDU, in the last MPDU. This
++	 * means all prior MSDUs in a PPDU are reported to mac80211 without the
++	 * TSF. Is it worth holding frames until end of PPDU is known?
++	 *
++	 * FIXME: Can we get/compute 64bit TSF?
++	 */
++	status->mactime = __le32_to_cpu(rxd->ppdu_end.tsf_timestamp);
++	status->flag |= RX_FLAG_MACTIME_END;
++}
++
++static void ath10k_htt_rx_h_ppdu(struct ath10k *ar,
++				 struct sk_buff_head *amsdu,
++				 struct ieee80211_rx_status *status)
++{
++	struct sk_buff *first;
++	struct htt_rx_desc *rxd;
++	bool is_first_ppdu;
++	bool is_last_ppdu;
++
++	if (skb_queue_empty(amsdu))
++		return;
++
++	first = skb_peek(amsdu);
++	rxd = (void *)first->data - sizeof(*rxd);
++
++	is_first_ppdu = !!(rxd->attention.flags &
++			   __cpu_to_le32(RX_ATTENTION_FLAGS_FIRST_MPDU));
++	is_last_ppdu = !!(rxd->attention.flags &
++			  __cpu_to_le32(RX_ATTENTION_FLAGS_LAST_MPDU));
++
++	if (is_first_ppdu) {
++		/* New PPDU starts so clear out the old per-PPDU status. */
++		status->freq = 0;
++		status->rate_idx = 0;
++		status->vht_nss = 0;
++		status->vht_flag &= ~RX_VHT_FLAG_80MHZ;
++		status->flag &= ~(RX_FLAG_HT |
++				  RX_FLAG_VHT |
++				  RX_FLAG_SHORT_GI |
++				  RX_FLAG_40MHZ |
++				  RX_FLAG_MACTIME_END);
++		status->flag |= RX_FLAG_NO_SIGNAL_VAL;
++
++		ath10k_htt_rx_h_signal(ar, status, rxd);
++		ath10k_htt_rx_h_channel(ar, status);
++		ath10k_htt_rx_h_rates(ar, status, rxd);
++	}
++
++	if (is_last_ppdu) {
++		ath10k_htt_rx_h_mactime(ar, status, rxd);
++	}
++}
++
+ static const char * const tid_to_ac[] = {
+ 	"BE",
+ 	"BK",
+@@ -1358,7 +1436,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 	int num_mpdu_ranges;
+ 	int fw_desc_len;
+ 	u8 *fw_desc;
+-	bool channel_set;
+ 	int i, ret, mpdu_count = 0;
+ 
+ 	lockdep_assert_held(&htt->rx_ring.lock);
+@@ -1373,29 +1450,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			     HTT_RX_INDICATION_INFO1_NUM_MPDU_RANGES);
+ 	mpdu_ranges = htt_rx_ind_get_mpdu_ranges(rx);
+ 
+-	/* Fill this once, while this is per-ppdu */
+-	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_START_VALID) {
+-		memset(rx_status, 0, sizeof(*rx_status));
+-		rx_status->signal  = ATH10K_DEFAULT_NOISE_FLOOR +
+-				     rx->ppdu.combined_rssi;
+-	}
+-
+-	if (rx->ppdu.info0 & HTT_RX_INDICATION_INFO0_END_VALID) {
+-		/* TSF available only in 32-bit */
+-		rx_status->mactime = __le32_to_cpu(rx->ppdu.tsf) & 0xffffffff;
+-		rx_status->flag |= RX_FLAG_MACTIME_END;
+-	}
+-
+-	channel_set = ath10k_htt_rx_h_channel(htt->ar, rx_status);
+-
+-	if (channel_set) {
+-		ath10k_htt_rx_h_rates(htt->ar, rx_status->band,
+-				      rx->ppdu.info0,
+-				      __le32_to_cpu(rx->ppdu.info1),
+-				      __le32_to_cpu(rx->ppdu.info2),
+-				      rx_status);
+-	}
+-
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx ind: ",
+ 			rx, sizeof(*rx) +
+ 			(sizeof(struct htt_rx_indication_mpdu_range) *
+@@ -1418,6 +1472,7 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
+ 			break;
  		}
  
--		*attention |= __le32_to_cpu(rx_desc->attention.flags) &
--					    (RX_ATTENTION_FLAGS_TKIP_MIC_ERR |
--					     RX_ATTENTION_FLAGS_DECRYPT_ERR |
--					     RX_ATTENTION_FLAGS_FCS_ERR |
--					     RX_ATTENTION_FLAGS_MGMT_TYPE);
- 		/*
- 		 * Copy the FW rx descriptor for this MSDU from the rx
- 		 * indication message into the MSDU's netbuf. HL uses the
-@@ -1362,7 +1356,6 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 	struct htt_rx_indication_mpdu_range *mpdu_ranges;
- 	struct sk_buff_head amsdu;
- 	int num_mpdu_ranges;
--	u32 attention;
- 	int fw_desc_len;
- 	u8 *fw_desc;
- 	bool channel_set;
-@@ -1412,11 +1405,9 @@ static void ath10k_htt_rx_handler(struct ath10k_htt *htt,
- 		mpdu_count += mpdu_ranges[i].mpdu_count;
- 
- 	while (mpdu_count--) {
--		attention = 0;
- 		__skb_queue_head_init(&amsdu);
- 		ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc,
--					      &fw_desc_len, &amsdu,
--					      &attention);
-+					      &fw_desc_len, &amsdu);
- 		if (ret < 0) {
- 			ath10k_warn(ar, "rx ring became corrupted: %d\n", ret);
- 			__skb_queue_purge(&amsdu);
-@@ -1445,7 +1436,6 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 	int ret;
- 	u8 *fw_desc;
- 	int fw_desc_len;
--	u32 attention = 0;
- 
- 	fw_desc_len = __le16_to_cpu(frag->fw_rx_desc_bytes);
- 	fw_desc = (u8 *)frag->fw_msdu_rx_desc;
-@@ -1454,7 +1444,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
- 
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	ret = ath10k_htt_rx_amsdu_pop(htt, &fw_desc, &fw_desc_len,
--				      &amsdu, &attention);
-+				      &amsdu);
- 	spin_unlock_bh(&htt->rx_ring.lock);
- 
- 	tasklet_schedule(&htt->rx_replenish_task);
++		ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status);
+ 		ath10k_htt_rx_h_unchain(ar, &amsdu, ret > 0);
+ 		ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
+ 		ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
 -- 
 1.8.5.3
 
