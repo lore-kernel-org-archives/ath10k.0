@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlfC5-0007uk-N6
- for ath10k@lists.infradead.org; Tue, 04 Nov 2014 14:34:51 +0000
-Received: by mail-la0-f51.google.com with SMTP id q1so976561lam.38
- for <ath10k@lists.infradead.org>; Tue, 04 Nov 2014 06:34:20 -0800 (PST)
+ id 1XlfC5-0007vn-Ai
+ for ath10k@lists.infradead.org; Tue, 04 Nov 2014 14:34:50 +0000
+Received: by mail-la0-f51.google.com with SMTP id q1so983512lam.10
+ for <ath10k@lists.infradead.org>; Tue, 04 Nov 2014 06:34:29 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/7] ath10k: rework rx path
-Date: Tue,  4 Nov 2014 15:22:04 +0100
-Message-Id: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 7/7] ath10k: report rx rate and signal for fragmented Rx
+Date: Tue,  4 Nov 2014 15:22:11 +0100
+Message-Id: <1415110931-10945-8-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
+References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +27,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Hi,
+Fragmented Rx wasn't reporting everything. With
+the reworked Rx code it's very easy to fix it.
 
-This patchset unifies rx path. Instead of
-branching for A-MSDU and MSDU cases a single
-codepath is introduced.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-This yields:
-
-   text    data     bss     dec     hex filename
-  14068       0       0   14068    36f4 before/htt_rx.o
-  13308       3       0   13311    33ff after/htt_rx.o
-
-I haven't measured any Rx performance loss in my
-setup but I may be biased. In theory this could
-reduce i-cache pressure and improve Rx throughput
-on CPU contrained systems by a few mbps.
-
-This patchset serves two purposes though:
- - clean up and unify the Rx path a bit
- - make it possible to reuse code more easily in
-   the future
-
-
-Michal Kazior (7):
-  ath10k: start using sk_buff_head
-  ath10k: simplify Rx loop
-  ath10k: refactor htt->rx_confused
-  ath10k: unify rx undecapping
-  ath10k: remove unused function argument
-  ath10k: use rx descriptor for ppdu status extraction
-  ath10k: report rx rate and signal for fragmented Rx
-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 1063 ++++++++++++++++--------------
- 1 file changed, 577 insertions(+), 486 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 9073a0e..a22e832 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1519,9 +1519,7 @@ static void ath10k_htt_rx_frag_handler(struct ath10k_htt *htt,
+ 		return;
+ 	}
+ 
+-	/* FIXME: implement signal strength */
+-	rx_status->flag |= RX_FLAG_NO_SIGNAL_VAL;
+-
++	ath10k_htt_rx_h_ppdu(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_filter(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_mpdu(ar, &amsdu, rx_status);
+ 	ath10k_htt_rx_h_deliver(ar, &amsdu, rx_status);
 -- 
 1.8.5.3
 
