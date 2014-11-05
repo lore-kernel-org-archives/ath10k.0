@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlwX9-0002BW-T1
- for ath10k@lists.infradead.org; Wed, 05 Nov 2014 09:05:45 +0000
-Received: by mail-wg0-f54.google.com with SMTP id n12so358879wgh.27
- for <ath10k@lists.infradead.org>; Wed, 05 Nov 2014 01:05:21 -0800 (PST)
+ id 1Xlx7d-0007CC-8V
+ for ath10k@lists.infradead.org; Wed, 05 Nov 2014 09:43:25 +0000
+Date: Wed, 5 Nov 2014 15:14:39 +0530
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: handle ieee80211 header and payload tracing
+ separately
+Message-ID: <20141105094437.GA21839@qca.qualcomm.com>
+References: <1414661336-20764-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <874muf7t9u.fsf@kamboji.qca.qualcomm.com>
+ <20141104051643.GA14509@qca.qualcomm.com>
+ <87k33a1lli.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <etPan.5459e16f.19495cff.8770@Mac-Pro.local>
-References: <etPan.5459e16f.19495cff.8770@Mac-Pro.local>
-Date: Wed, 5 Nov 2014 10:05:21 +0100
-Message-ID: <CA+BoTQkAGQhcdagiy_q-88HGgh8aNRNSSTF74rb6BzaBY1FwUQ@mail.gmail.com>
-Subject: Re: 11ac packet capture using Wireshark & QCA9880
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <87k33a1lli.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,45 +23,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-T24gNSBOb3ZlbWJlciAyMDE0IDA5OjM1LCBPa2h3YW4gTGVlIDxvaGxlZUBtd25sLnNudS5hYy5r
-cj4gd3JvdGU6Cj4gSGkgYWxsLAo+Cj4gV2UgaW5zdGFsbCBhIHN0YXRpb24gdG8gY2FwdHVyZSAx
-MWFjIHBhY2tldHMgdXNpbmcgd2lyZXNoYXJrLgo+IFRoZSBzdGF0aW9uIGVxdWlwcyB3aXRoIFFD
-QSA5ODgwIGFuZCBvcGVyYXRlcyAgVWJ1bnR1IChLZXJuZWwgdmVyc2lvbiAzLjE2LjEpCj4gV2Ug
-YWxzbyBpbnN0YWxsIGJhY2twb3J0ICgzLjE2LjEpIHRvIHVzZSB0aGUgZW1lcmdpbmcgYXRoMTBr
-IGRldmljZSBkcml2ZXIgYW5kIDEwLjEuNDY3LjItMSBmaXJtd2FyZS4KPgo+IEluIG91ciB0ZXN0
-YmVkLCB0aGVyZSBpcyB0aHJlZSBub2RlcywgQVAgKEFTVVMgQUM2NiksIGNsaWVudCAoUUNBOTg4
-MCkgYW5kIHRoZSBtb25pdG9yIHN0YXRpb24gKFFDQTk4ODApLgo+IFRoZSBtb25pdG9yIHN0YXRp
-b24gY2FuIGNhcHR1cmUgdGhlIHBhY2tldHMgdHJhbnNtaXR0ZWQgYnkgQVAgYnV0IG5vdCBjYXB0
-dXJlIHRoZSBwYWNrZXRzIHRyYW5zbWl0dGVkIGJ5IHRoZSBjbGllbnQuCj4gV2UgdXNlIHRoZSBz
-YW1lIHBhcmFtZXRlciBzZXR0aW5ncyAoTUNTfjAsIDEgc3RyZWFtcywgMjAgTUh6IGJhbmR3aWR0
-aCwgQkNDLCBsb25nIHByZWFtYmxlKSBvbiBib3RoIEFQIGFuZCBjbGllbnQsIHNvIHRoZXJlIG1h
-eSBiZSBubyBwYWNrZXQgZXJyb3Igb3IgbG9zcy4KPiBXZSBhbHNvIGNvbmZpcm0gdGhhdCB0aGUg
-cGFja2V0cyB0cmFuc21pdHRlZCBieSBBUCBjb250YWluIFZIVCBpbmZvcm1hdGlvbi4KPiBJbiBv
-dGhlciB3b3JkLCAgdGhlIG1vbml0b3Igc3RhdGlvbiBjYW4gY2FwdHVyZSAxMWFjIHBhY2tldHMg
-KFZIVC1QUERVKS4KPgo+IElzIHRoZXJlIGFueSByZWFzb24gd2h5IFFDQSA5ODgwIGNhbiBub3Qg
-Y2FwdHVyZSBvbmx5IHBhY2tldHMgdHJhbnNtaXR0ZWQgYnkgdGhlIGNsaWVudCBlcXVpcHBlZCB3
-aXRoIFFDQTk4ODA/CgpIbW0uLiBUaGlzIG1heSBiZSByZWxhdGVkIHRvIEEtTVNEVS4gYXRoMTBr
-J3MgbXNkdSBjaGFpbmluZyBjb2RlCmRvZXNuJ3QgaGFuZGxlIGFsbCBwb3NzaWJsZSBjYXNlcy4K
-CmF0aDEwaydzIGZpcm13YXJlIGRvZXMgQS1NU0RVIGZvciBzdXJlLiBJJ20gZ3Vlc3NpbmcgQUM2
-NiBkb2Vzbid0IGRvCml0IChvciBkb2VzIGl0IGxlc3Mgb2Z0ZW4pIC0gdGhpcyB3b3VsZCBleHBs
-YWluIHdoeSBzbmlmZmluZyBBUCAtPiBTVEEKdHJhZmZpYyB3b3JrcyB3aGlsZSBTVEEgLT4gQVAg
-ZG9lcyBub3QuCgpEbyB5b3UgdXNlIGVuY3J5cHRpb24/IENhbiB5b3UgdHJ5IHNldHRpbmcgdGhl
-IEFQIHdpdGhvdXQgZW5jcnlwdGlvbgphbmQgc2VlIGlmIHlvdSBjYW4gc25pZmYgU1RBIC0+IEFQ
-IHRyYWZmaWM/CgpBbm90aGVyIHRoaW5nIHRvIHRyeSBpcyB0byBvdmVycmlkZSBhbXNkdSBhZ2dy
-ZWdhdGlvbiBzZXR1cCBvbiB0aGUgU1RBOgogbW91bnQgLXQgZGVidWdmcyBkZWJ1ZyAvc3lzL2tl
-cm5lbC9kZWJ1ZwogZWNobyAxIDY0ID4gL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeSov
-YXRoMTBrL2h0dF9tYXhfYW1zZHVfYW1wZHUKClRoaXMgc2hvdWxkIGVmZmVjdGl2ZWx5IGRpc2Fi
-bGUgQS1NU0RVIFR4IG9uIHRoZSBhdGgxMGsgU1RBIHNvIGl0CnNob3VsZCBjaGVjayBpZiB0aGlz
-IGlzIHJlbGF0ZWQgdG8gbXNkdSBjaGFpbmluZyBhdCBhbGwuCgpJJ20gYXdhcmUgbmVpdGhlciBv
-ZiB0aGlzIGlzIGEgc29sdXRpb24uIEl0J3MgbW9yZSBvZiBhIGNvbmZpcm1hdGlvbgppZiBteSBy
-ZWFzb25pbmcgaXMgY29ycmVjdC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
-YXRoMTBrCg==
+On Wed, Nov 05, 2014 at 03:29:13AM +0200, Kalle Valo wrote:
+> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+> 
+> > On Tue, Nov 04, 2014 at 01:34:37AM +0200, Kalle Valo wrote:
+> >> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+> >> 
+> >> > -DECLARE_EVENT_CLASS(ath10k_data_event,
+> >> > +#define ATH10K_FRM_HDR_LEN  \
+> >> > +	ieee80211_hdrlen(((struct ieee80211_hdr *)data)->frame_control)
+> >> 
+> >> This macro does not look good. I would recommend to follow what Johannes
+> >> suggested:
+> >>
+> >
+> > v2 does the same. tracing functions just take ar, skb->data and skb->len.
+> > header check is handled inside tracing funtions.
+> >
+> > I do not understand your concerns. :(
+> 
+> Sorry, I was confusing. I meant that wouldn't it be better to pass the
+> skb pointer instead of skb-data and skb->len? I understood that was what
+> Johannes suggested.
+> 
+> But ATH10K_FRM_HDR_LEN is the problem. To simplify this, what if you
+> just always send the first 30 bytes (or whatever would be the max header
+> length)? Also should you check that skb->len is at least the length
+> defined by ieee80211_hdrlen()?
+>
+The goal of header & payload split is to reduce the amount of data being
+collected. Sending maximum header size always will unnecessarily
+increase the trace.dat size as hdr_size for mgmt and beacon always be 24.
+This will also increase tracing traffic when it is being collected in
+remote machine.
+
+since tracepoints are being called only after the preprocessing,
+skb->len never be lesser than 802.11 header size.
+
+The macro is defined to ease readability and reduce # of line changes.
+I originally thought of naming the macro as IEEE80211_HDR_LEN. But such
+definition does not look correct inside driver.
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
