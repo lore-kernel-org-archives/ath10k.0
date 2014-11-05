@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-pd0-f176.google.com ([209.85.192.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlpPp-0006gc-9V
- for ath10k@lists.infradead.org; Wed, 05 Nov 2014 01:29:41 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: handle ieee80211 header and payload tracing
- separately
-References: <1414661336-20764-1-git-send-email-rmanohar@qti.qualcomm.com>
- <874muf7t9u.fsf@kamboji.qca.qualcomm.com>
- <20141104051643.GA14509@qca.qualcomm.com>
-Date: Wed, 5 Nov 2014 03:29:13 +0200
-In-Reply-To: <20141104051643.GA14509@qca.qualcomm.com> (Rajkumar Manoharan's
- message of "Tue, 4 Nov 2014 10:46:45 +0530")
-Message-ID: <87k33a1lli.fsf@kamboji.qca.qualcomm.com>
+ id 1Xlw9d-00072E-7M
+ for ath10k@lists.infradead.org; Wed, 05 Nov 2014 08:41:26 +0000
+Received: by mail-pd0-f176.google.com with SMTP id ft15so327034pdb.35
+ for <ath10k@lists.infradead.org>; Wed, 05 Nov 2014 00:41:03 -0800 (PST)
+Received: from Mac-Pro.local ([147.46.243.214])
+ by mx.google.com with ESMTPSA id yt3sm2488004pbc.34.2014.11.05.00.36.00
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+ Wed, 05 Nov 2014 00:36:01 -0800 (PST)
+Date: Wed, 5 Nov 2014 17:35:59 +0900
+From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
+Message-ID: <etPan.5459e16f.19495cff.8770@Mac-Pro.local>
+Subject: 11ac packet capture using Wireshark & QCA9880
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +24,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: "=?utf-8?Q?ath10k=40lists.infradead.org?=" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-
-> On Tue, Nov 04, 2014 at 01:34:37AM +0200, Kalle Valo wrote:
->> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
->> 
->> > For packet log, the transmitted frame 802.11 header alone is sufficient.
->> > Recording entire packet is also consuming lot of disk space. To optimize
->> > this, tx and rx data tracepoints are splitted into header and payload
->> > tracepoints.
->> >  
->> > -DECLARE_EVENT_CLASS(ath10k_data_event,
->> > +#define ATH10K_FRM_HDR_LEN  \
->> > +	ieee80211_hdrlen(((struct ieee80211_hdr *)data)->frame_control)
->> 
->> This macro does not look good. I would recommend to follow what Johannes
->> suggested:
->>
->> "It would be worth hiding that inside the tracepoint's assign function,
->> so instead of passing data/len here you'd pass the full skb, or the full
->> skb data/skb len, like this:
->> 
->> ar, skb->data, skb->len
->> 
->> to both tracers. Then inside the tracer you can do the hdrlen check, and
->> that way move the code into the tracing so it's not hit when tracing is
->> disabled."
->
-> v2 does the same. tracing functions just take ar, skb->data and skb->len.
-> header check is handled inside tracing funtions.
->
-> I do not understand your concerns. :(
-
-Sorry, I was confusing. I meant that wouldn't it be better to pass the
-skb pointer instead of skb-data and skb->len? I understood that was what
-Johannes suggested.
-
-But ATH10K_FRM_HDR_LEN is the problem. To simplify this, what if you
-just always send the first 30 bytes (or whatever would be the max header
-length)? Also should you check that skb->len is at least the length
-defined by ieee80211_hdrlen()?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgYWxsLMKgCgpXZSBpbnN0YWxsIGEgc3RhdGlvbiB0byBjYXB0dXJlIDExYWMgcGFja2V0cyB1
+c2luZyB3aXJlc2hhcmsuwqAKVGhlIHN0YXRpb24gZXF1aXBzIHdpdGggUUNBIDk4ODAgYW5kIG9w
+ZXJhdGVzIMKgVWJ1bnR1IChLZXJuZWwgdmVyc2lvbiAzLjE2LjEpCldlIGFsc28gaW5zdGFsbCBi
+YWNrcG9ydCAoMy4xNi4xKSB0byB1c2UgdGhlIGVtZXJnaW5nIGF0aDEwayBkZXZpY2UgZHJpdmVy
+IGFuZCAxMC4xLjQ2Ny4yLTEgZmlybXdhcmUuwqAKCkluIG91ciB0ZXN0YmVkLCB0aGVyZSBpcyB0
+aHJlZSBub2RlcywgQVAgKEFTVVMgQUM2NiksIGNsaWVudCAoUUNBOTg4MCkgYW5kIHRoZSBtb25p
+dG9yIHN0YXRpb24gKFFDQTk4ODApLsKgClRoZSBtb25pdG9yIHN0YXRpb24gY2FuIGNhcHR1cmUg
+dGhlIHBhY2tldHMgdHJhbnNtaXR0ZWQgYnkgQVAgYnV0IG5vdCBjYXB0dXJlIHRoZSBwYWNrZXRz
+IHRyYW5zbWl0dGVkIGJ5IHRoZSBjbGllbnQuwqAKV2UgdXNlIHRoZSBzYW1lIHBhcmFtZXRlciBz
+ZXR0aW5ncyAoTUNTfjAsIDEgc3RyZWFtcywgMjAgTUh6IGJhbmR3aWR0aCwgQkNDLCBsb25nIHBy
+ZWFtYmxlKSBvbiBib3RoIEFQIGFuZCBjbGllbnQsIHNvIHRoZXJlIG1heSBiZSBubyBwYWNrZXQg
+ZXJyb3Igb3IgbG9zcy7CoApXZSBhbHNvIGNvbmZpcm0gdGhhdCB0aGUgcGFja2V0cyB0cmFuc21p
+dHRlZCBieSBBUCBjb250YWluIFZIVCBpbmZvcm1hdGlvbi7CoApJbiBvdGhlciB3b3JkLCDCoHRo
+ZSBtb25pdG9yIHN0YXRpb24gY2FuIGNhcHR1cmUgMTFhYyBwYWNrZXRzIChWSFQtUFBEVSkuwqAK
+CklzIHRoZXJlIGFueSByZWFzb24gd2h5IFFDQSA5ODgwIGNhbiBub3QgY2FwdHVyZSBvbmx5IHBh
+Y2tldHMgdHJhbnNtaXR0ZWQgYnkgdGhlIGNsaWVudCBlcXVpcHBlZCB3aXRoIFFDQTk4ODA/Cgot
+LcKgCk9raHdhbiBMZWUKU2VudCB3aXRoIEFpcm1haWwKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
