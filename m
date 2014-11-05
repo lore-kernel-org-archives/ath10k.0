@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XlkCx-0005jT-KS
- for ath10k@lists.infradead.org; Tue, 04 Nov 2014 19:56:04 +0000
-Message-ID: <54592F3E.10204@candelatech.com>
-Date: Tue, 04 Nov 2014 11:55:42 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XlpPp-0006gc-9V
+ for ath10k@lists.infradead.org; Wed, 05 Nov 2014 01:29:41 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: handle ieee80211 header and payload tracing
+ separately
+References: <1414661336-20764-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <874muf7t9u.fsf@kamboji.qca.qualcomm.com>
+ <20141104051643.GA14509@qca.qualcomm.com>
+Date: Wed, 5 Nov 2014 03:29:13 +0200
+In-Reply-To: <20141104051643.GA14509@qca.qualcomm.com> (Rajkumar Manoharan's
+ message of "Tue, 4 Nov 2014 10:46:45 +0530")
+Message-ID: <87k33a1lli.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 06/10] ath10k: use configured nss instead of max nss.
-References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
- <1411507045-18973-6-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1411507045-18973-6-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,81 +26,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-On 09/23/2014 02:17 PM, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> When re-associating a station, the nss was set back to
-> maximum value even if user had configured small number
-> of tx chains.  So, pay attention to user's config in
-> this case as well.
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-Looks like this (and probably the related patch) did not make
-it upstream yet.
+> On Tue, Nov 04, 2014 at 01:34:37AM +0200, Kalle Valo wrote:
+>> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+>> 
+>> > For packet log, the transmitted frame 802.11 header alone is sufficient.
+>> > Recording entire packet is also consuming lot of disk space. To optimize
+>> > this, tx and rx data tracepoints are splitted into header and payload
+>> > tracepoints.
+>> >  
+>> > -DECLARE_EVENT_CLASS(ath10k_data_event,
+>> > +#define ATH10K_FRM_HDR_LEN  \
+>> > +	ieee80211_hdrlen(((struct ieee80211_hdr *)data)->frame_control)
+>> 
+>> This macro does not look good. I would recommend to follow what Johannes
+>> suggested:
+>>
+>> "It would be worth hiding that inside the tracepoint's assign function,
+>> so instead of passing data/len here you'd pass the full skb, or the full
+>> skb data/skb len, like this:
+>> 
+>> ar, skb->data, skb->len
+>> 
+>> to both tracers. Then inside the tracer you can do the hdrlen check, and
+>> that way move the code into the tracing so it's not hit when tracing is
+>> disabled."
+>
+> v2 does the same. tracing functions just take ar, skb->data and skb->len.
+> header check is handled inside tracing funtions.
+>
+> I do not understand your concerns. :(
 
-Is someone waiting for more changes from me or did this just
-get lost?
+Sorry, I was confusing. I meant that wouldn't it be better to pass the
+skb pointer instead of skb-data and skb->len? I understood that was what
+Johannes suggested.
 
-Thanks,
-Ben
-
-> 
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> ---
-> 
-> v2:  No changes from v1.
-> 
->  drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index e75607d..34ec992 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4114,6 +4114,10 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
->  	u32 legacy = 0x00ff;
->  	u8 ht = 0xff, i;
->  	u16 vht = 0x3ff;
-> +	u16 nrf = ar->num_rf_chains;
-> +
-> +	if (ar->cfg_tx_chainmask)
-> +		nrf = get_nss_from_chainmask(ar->cfg_tx_chainmask);
->  
->  	switch (band) {
->  	case IEEE80211_BAND_2GHZ:
-> @@ -4129,11 +4133,11 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
->  	if (mask->control[band].legacy != legacy)
->  		return false;
->  
-> -	for (i = 0; i < ar->num_rf_chains; i++)
-> +	for (i = 0; i < nrf; i++)
->  		if (mask->control[band].ht_mcs[i] != ht)
->  			return false;
->  
-> -	for (i = 0; i < ar->num_rf_chains; i++)
-> +	for (i = 0; i < nrf; i++)
->  		if (mask->control[band].vht_mcs[i] != vht)
->  			return false;
->  
-> @@ -4384,6 +4388,9 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
->  	u8 fixed_nss = ar->num_rf_chains;
->  	u8 force_sgi;
->  
-> +	if (ar->cfg_tx_chainmask)
-> +		fixed_nss = get_nss_from_chainmask(ar->cfg_tx_chainmask);
-> +
->  	force_sgi = mask->control[band].gi;
->  	if (force_sgi == NL80211_TXRATE_FORCE_LGI)
->  		return -EINVAL;
-> 
-
+But ATH10K_FRM_HDR_LEN is the problem. To simplify this, what if you
+just always send the first 30 bytes (or whatever would be the max header
+length)? Also should you check that skb->len is at least the length
+defined by ieee80211_hdrlen()?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
