@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xm0rN-0006mk-VO
- for ath10k@lists.infradead.org; Wed, 05 Nov 2014 13:42:55 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v3] ath10k: handle ieee80211 header and payload tracing
- separately
-Date: Wed, 5 Nov 2014 19:14:31 +0530
-Message-ID: <1415195071-30250-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1Xm13O-0002iM-OL
+ for ath10k@lists.infradead.org; Wed, 05 Nov 2014 13:55:19 +0000
+Received: by mail-wi0-f179.google.com with SMTP id h11so2075019wiw.6
+ for <ath10k@lists.infradead.org>; Wed, 05 Nov 2014 05:54:54 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <etPan.5459e2d6.2ae8944a.8770@Mac-Pro.local>
+References: <etPan.5459e2d6.2ae8944a.8770@Mac-Pro.local>
+Date: Wed, 5 Nov 2014 14:54:54 +0100
+Message-ID: <CA+BoTQkJJjNG09Pp_Svpmr+4soXT8Dw1En91BrW9GnnhEFwhYg@mail.gmail.com>
+Subject: Re: Tx power setting
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,237 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-For packet log, the transmitted frame 802.11 header alone is sufficient.
-Recording entire packet is also consuming lot of disk space. To optimize
-this, tx and rx data tracepoints are splitted into header and payload
-tracepoints.
-
-To record tx ieee80211 headers
-
-     trace-cmd record -e ath10k_tx_hdr
-
-To record complete packets
-
-     trace-cmd record -e ath10k_tx_hdr -e ath10k_tx_payload
-
-Cc: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
-v2: Move header len processing inside trace
-v3: Replace ATH10K_FRM_HDR_LEN by inline function
- drivers/net/wireless/ath/ath10k/htt_rx.c |  4 +-
- drivers/net/wireless/ath/ath10k/htt_tx.c |  3 +-
- drivers/net/wireless/ath/ath10k/trace.h  | 80 +++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.c    |  7 ++-
- 4 files changed, 78 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index a691fdf..52c6306 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -297,8 +297,6 @@ static inline struct sk_buff *ath10k_htt_rx_netbuf_pop(struct ath10k_htt *htt)
- 			 DMA_FROM_DEVICE);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt rx netbuf pop: ",
- 			msdu->data, msdu->len + skb_tailroom(msdu));
--	trace_ath10k_htt_rx_pop_msdu(ar, msdu->data, msdu->len +
--				     skb_tailroom(msdu));
- 
- 	return msdu;
- }
-@@ -903,6 +901,8 @@ static void ath10k_process_rx(struct ath10k *ar,
- 		   !!(status->flag & RX_FLAG_AMSDU_MORE));
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "rx skb: ",
- 			skb->data, skb->len);
-+	trace_ath10k_rx_hdr(ar, skb->data, skb->len);
-+	trace_ath10k_rx_payload(ar, skb->data, skb->len);
- 
- 	ieee80211_rx(ar->hw, skb);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b0df470..1e51249 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -564,7 +564,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		   (u32)skb_cb->paddr, vdev_id, tid);
- 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
- 			msdu->data, msdu->len);
--	trace_ath10k_htt_tx_msdu(ar, msdu->data, msdu->len);
-+	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
-+	trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
- 
- 	sg_items[0].transfer_id = 0;
- 	sg_items[0].transfer_context = NULL;
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index b9a2ba6..ceea566 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -20,6 +20,13 @@
- #include <linux/tracepoint.h>
- #include "core.h"
- 
-+#if !defined(_TRACE_H_)
-+static inline u32 ath10k_frm_hdr_len(void *buf)
-+{
-+	return ieee80211_hdrlen(((struct ieee80211_hdr *)buf)->frame_control);
-+}
-+#endif
-+
- #define _TRACE_H_
- 
- /* create empty functions when tracing is disabled */
-@@ -341,7 +348,7 @@ TRACE_EVENT(ath10k_txrx_tx_unref,
- 	 )
- );
- 
--DECLARE_EVENT_CLASS(ath10k_data_event,
-+DECLARE_EVENT_CLASS(ath10k_hdr_event,
- 		    TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 
- 	TP_ARGS(ar, data, len),
-@@ -350,14 +357,14 @@ DECLARE_EVENT_CLASS(ath10k_data_event,
- 		__string(device, dev_name(ar->dev))
- 		__string(driver, dev_driver_string(ar->dev))
- 		__field(size_t, len)
--		__dynamic_array(u8, data, len)
-+		__dynamic_array(u8, data, ath10k_frm_hdr_len(data))
- 	),
- 
- 	TP_fast_assign(
- 		__assign_str(device, dev_name(ar->dev));
- 		__assign_str(driver, dev_driver_string(ar->dev));
--		__entry->len = len;
--		memcpy(__get_dynamic_array(data), data, len);
-+		__entry->len = ath10k_frm_hdr_len(data);
-+		memcpy(__get_dynamic_array(data), data, __entry->len);
- 	),
- 
- 	TP_printk(
-@@ -368,30 +375,81 @@ DECLARE_EVENT_CLASS(ath10k_data_event,
- 	)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_tx_msdu,
--	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
--	     TP_ARGS(ar, data, len)
-+DECLARE_EVENT_CLASS(ath10k_payload_event,
-+		    TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+
-+	TP_ARGS(ar, data, len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(size_t, len)
-+		__dynamic_array(u8, payload, (len - ath10k_frm_hdr_len(data)))
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->len = len - ath10k_frm_hdr_len(data);
-+		memcpy(__get_dynamic_array(payload),
-+		       data + ath10k_frm_hdr_len(data), __entry->len);
-+	),
-+
-+	TP_printk(
-+		"%s %s len %zu\n",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->len
-+	)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_rx_pop_msdu,
-+DEFINE_EVENT(ath10k_hdr_event, ath10k_tx_hdr,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_wmi_mgmt_tx,
-+DEFINE_EVENT(ath10k_payload_event, ath10k_tx_payload,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_wmi_bcn_tx,
-+DEFINE_EVENT(ath10k_hdr_event, ath10k_rx_hdr,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
- 
--DEFINE_EVENT(ath10k_data_event, ath10k_htt_rx_desc,
-+DEFINE_EVENT(ath10k_payload_event, ath10k_rx_payload,
- 	     TP_PROTO(struct ath10k *ar, void *data, size_t len),
- 	     TP_ARGS(ar, data, len)
- );
-+
-+TRACE_EVENT(ath10k_htt_rx_desc,
-+	    TP_PROTO(struct ath10k *ar, void *data, size_t len),
-+
-+	TP_ARGS(ar, data, len),
-+
-+	TP_STRUCT__entry(
-+		__string(device, dev_name(ar->dev))
-+		__string(driver, dev_driver_string(ar->dev))
-+		__field(u16, len)
-+		__dynamic_array(u8, rxdesc, len)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(device, dev_name(ar->dev));
-+		__assign_str(driver, dev_driver_string(ar->dev));
-+		__entry->len = len;
-+		memcpy(__get_dynamic_array(rxdesc), data, len);
-+	),
-+
-+	TP_printk(
-+		"%s %s rxdesc len %d",
-+		__get_str(driver),
-+		__get_str(device),
-+		__entry->len
-+	 )
-+);
-+
- #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
- 
- /* we don't want to use include/trace/events */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ae746ce..3dcb216 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -834,7 +834,8 @@ int ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *skb)
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi mgmt tx skb %p len %d ftype %02x stype %02x\n",
- 		   wmi_skb, wmi_skb->len, fc & IEEE80211_FCTL_FTYPE,
- 		   fc & IEEE80211_FCTL_STYPE);
--	trace_ath10k_wmi_mgmt_tx(ar, skb->data, skb->len);
-+	trace_ath10k_tx_hdr(ar, skb->data, skb->len);
-+	trace_ath10k_tx_payload(ar, skb->data, skb->len);
- 
- 	/* Send the management frame buffer to the target */
- 	ret = ath10k_wmi_cmd_send(ar, wmi_skb, ar->wmi.cmd->mgmt_tx_cmdid);
-@@ -1893,7 +1894,9 @@ static void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 		arvif->beacon = bcn;
- 		arvif->beacon_sent = false;
- 
--		trace_ath10k_wmi_bcn_tx(ar, bcn->data, bcn->len);
-+		trace_ath10k_tx_hdr(ar, bcn->data, bcn->len);
-+		trace_ath10k_tx_payload(ar, bcn->data, bcn->len);
-+
- 		ath10k_wmi_tx_beacon_nowait(arvif);
- skip:
- 		spin_unlock_bh(&ar->data_lock);
--- 
-2.1.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBOb3ZlbWJlciAyMDE0IDA5OjQxLCBPa2h3YW4gTGVlIDxvaGxlZUBtd25sLnNudS5hYy5r
+cj4gd3JvdGU6Cj4gSGksCj4KPiBXZSBhcmUgdHJ5aW5nIHRvIGNoYW5nZSB0aGUgdHggcG93ZXIg
+b2YgUUNBIDk4ODAuCj4gV2UgdXNlIDMuMTYuMSBsaW51eCBrZXJuZWwgYW5kIGJhY2twb3J0ICgz
+LjE2LjEpIHRvIHVzZSB0aGUgZW1lcmdpbmcgYXRoMTBrIGRldmljZSBkcml2ZXIgYW5kIDEwLjEu
+NDY3LjItMSBmaXJtd2FyZS4KPgo+IEhvd2V2ZXIsIHdlIGNhbiBub3QgY2hhbmdlIHRoZSB0eCBw
+b3dlciBzZXR0aW5nIChkZWZhdWx0IDAgZEJtKSBieSB1c2luZyBpdyBvciBpd2NvbmZpZyBjb21t
+YW5kcy4KCldoYXQgZG8geW91IG1lYW4gImNhbiBub3QgY2hhbmdlIi4gRG8geW91IGdldCBhbiBl
+cnJvciBtZXNzYWdlPyBXaGVyZQpkb2VzIGl0IHNheSB5b3UgaGF2ZSAwIGRCbSBhcyB0aGUgZGVm
+YXVsdD8KCgo+IEJhc2VkIG9uIG15IHVuZGVyc3RhbmRpbmcsIGlmIHdlIGNoYW5nZSB0aGUgdHgg
+cG93ZXIgdXNpbmcgdGhlIGNvbW1hbmRzLCBhdGgxMGtfY29uZmlnKCkgZnVuY3Rpb24gc2hvdWxk
+IGJlIGludm9rZWQuCj4gSG93ZXZlciwgdGhlIGZ1bmN0aW9uIGlzIG5vdCBjYWxsZWQuCj4gQW5k
+IHRoZSByZWNlaXZlZCBzaWduYWwgc3RyZW5ndGggYXQgdGhlIHJlY2VpdmVyIHNpZGUgZG9lcyBu
+b3QgY2hhbmdlLgo+Cj4gSWYgeW91IGhhdmUgYW55IGlkZWEsIHBsZWFzZSBsZXQgbWUga25vdy4K
+CkknbSB1c2luZyBmYmI1YzA0MjgwMGVjNDI0NTlhNWNjMzA3ZGVjNTY2ZDhlMzE2OTI3IGZyb20K
+Z2l0aHViLmNvbS9rdmFsby9hdGgvIChiYXNlZCBvbiAzLjE3KS4gSSBkb24ndCBzZWUgdGhlIHBy
+b2JsZW0geW91CmRlc2NyaWJlIC0gSSBjYW4gY2hhbmdlIHR4IHBvd2VkIHdpdGgsIGUuZy4gYGl3
+IHdsYW4xIHNldCB0eHBvd2VyCmZpeGVkIDEwMDBgLiBUaGUgb3RoZXIgZW5kIHJlcG9ydHMgZGlm
+ZmVyZW50IHNpZ25hbCBzdHJlbmd0aCB2YWx1ZXMKd2hlbiBJIGNoYW5nZSB0eHBvd2VyLiBDYW4g
+eW91IHJlLXRlc3Qgd2l0aCBsYXRlc3QgYXRoMTBrIGNvZGUsCnBsZWFzZT8KCgpNaWNoYcWCCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
