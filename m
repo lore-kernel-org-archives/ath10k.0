@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmjNb-0004pA-RR
- for ath10k@lists.infradead.org; Fri, 07 Nov 2014 13:15:08 +0000
+ id 1XmjNY-0004mS-4o
+ for ath10k@lists.infradead.org; Fri, 07 Nov 2014 13:15:04 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Advertise support for AP mode channel width
- changes
-Date: Fri, 7 Nov 2014 18:46:45 +0530
-Message-ID: <1415366205-11672-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: add modpram 'skip_otp' to ignore empty otp error
+ during BMI
+Date: Fri, 7 Nov 2014 18:46:44 +0530
+Message-ID: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,26 +24,44 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-This will enable AP mode to change channel width dynamically
-based on 20/40 intolerance report sent by associated client.
+This patch would help bring up wifi interface with default board
+data in case of failures in otp download. It is useful for initial
+caliberation.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a726107..d6799f4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4916,6 +4916,7 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5c23d00..2de49e4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -31,12 +31,15 @@
+ unsigned int ath10k_debug_mask;
+ static bool uart_print;
+ static unsigned int ath10k_p2p;
++static bool skip_otp;
+ module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
+ module_param(uart_print, bool, 0644);
+ module_param_named(p2p, ath10k_p2p, uint, 0644);
++module_param(skip_otp, bool, 0644);
+ MODULE_PARM_DESC(debug_mask, "Debugging mask");
+ MODULE_PARM_DESC(uart_print, "Uart target debugging");
+ MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
++MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
  
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
-+	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
- 	/*
- 	 * on LL hardware queues are managed entirely by the FW
- 	 * so we only advertise to mac we can do the queues thing
+ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+@@ -280,7 +283,7 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot otp execute result %d\n", result);
+ 
+-	if (result != 0) {
++	if (!skip_otp && result != 0) {
+ 		ath10k_err(ar, "otp calibration failed: %d", result);
+ 		return -EINVAL;
+ 	}
 -- 
 2.1.3
 
