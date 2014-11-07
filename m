@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pd0-f170.google.com ([209.85.192.170])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XmY0w-0000Sj-U2
- for ath10k@lists.infradead.org; Fri, 07 Nov 2014 01:06:59 +0000
-Received: by mail-pd0-f170.google.com with SMTP id z10so2229752pdj.15
- for <ath10k@lists.infradead.org>; Thu, 06 Nov 2014 17:06:35 -0800 (PST)
-Received: from Mac-Pro.local ([147.46.243.214])
- by mx.google.com with ESMTPSA id d15sm287554pbu.34.2014.11.06.17.06.34
- for <ath10k@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
- Thu, 06 Nov 2014 17:06:34 -0800 (PST)
-Date: Fri, 7 Nov 2014 10:06:33 +0900
-From: Okhwan Lee <ohlee@mwnl.snu.ac.kr>
-Message-ID: <etPan.545c1b19.1f16e9e8.15130@Mac-Pro.local>
-Subject: Collecting CSI information
+ id 1XmjNb-0004pA-RR
+ for ath10k@lists.infradead.org; Fri, 07 Nov 2014 13:15:08 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Advertise support for AP mode channel width
+ changes
+Date: Fri, 7 Nov 2014 18:46:45 +0530
+Message-ID: <1415366205-11672-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +19,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-wqBIaSBhbGwswqAKCkkgaGF2ZSBvbmUgcXVlc3Rpb24gYWJvdXQgZmlybXdhcmUgdXBkYXRlLiAg
-CkFzIGZhciBhcyBJIGtub3csIHRoZSBmaXJtd2FyZSBpcyBiYXNpY2FsbHkgZGlzdHJpYnV0ZWQg
-ZnJvbSB0aGUgUXVhbGNvbS1BdGhlcm9zLiAgClNvbWUgbW9kaWZpZWQgdmVyc2lvbiBvZiB0aGUg
-b2ZmaWNpYWwgZmlybXdhcmUgaXMgZGlzdHJpYnV0ZWQgZnJvbSBvcGVuIHNvdXJjZSBjb21tdW5p
-dHkuICAKCklzIHRoZXJlIGFueSBRQ0E5ODgwIGZpcm13YXJlIHdoaWNoIHN1cHBvcnRzIHRvIGNv
-bGxlY3QgYW5kIHJlcG9ydCBDU0kgaW5mb3JtYXRpb24gKG1lYXN1cmVkIGF0IFZIVC1MVEYpLCAg
-Cmxpa2UgSVdMNTMwMCBkb2VzIChodHRwOi8vZGhhbHBlcmkuZ2l0aHViLmlvL2xpbnV4LTgwMjEx
-bi1jc2l0b29sLyk/CgotLSAgCk9raHdhbiBMZWUKU2VudCB3aXRoIEFpcm1haWwKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
-c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+This will enable AP mode to change channel width dynamically
+based on 20/40 intolerance report sent by associated client.
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a726107..d6799f4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4916,6 +4916,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+ 
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
++	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+-- 
+2.1.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
