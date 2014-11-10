@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnxSD-0000jF-5x
- for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:28:58 +0000
-Message-ID: <54613C13.9010008@candelatech.com>
-Date: Mon, 10 Nov 2014 14:28:35 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-qc0-f177.google.com ([209.85.216.177])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnxXw-0004gn-Mx
+ for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:34:53 +0000
+Received: by mail-qc0-f177.google.com with SMTP id l6so6615496qcy.22
+ for <ath10k@lists.infradead.org>; Mon, 10 Nov 2014 14:34:29 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: htt rx stopped. cannot recover
+In-Reply-To: <54613C13.9010008@candelatech.com>
 References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
  <5461382B.6070607@candelatech.com>
  <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
-In-Reply-To: <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
+ <54613C13.9010008@candelatech.com>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Mon, 10 Nov 2014 14:33:59 -0800
+Message-ID: <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
+Subject: Re: htt rx stopped. cannot recover
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +27,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pushpal Sidhu <psidhu@gateworks.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 11/10/2014 02:21 PM, Pushpal Sidhu wrote:
-> On Mon, Nov 10, 2014 at 2:11 PM, Ben Greear <greearb@candelatech.com> wrote:
->>
->> You might try my 'CT' firmware?
->>
->> http://www.candelatech.com/ath10k.php
->>
->> I'd be curious to know if it helps or not...
-> 
-> I just tried the "12" firmware on the station, but to no avail.
+On Mon, Nov 10, 2014 at 2:28 PM, Ben Greear <greearb@candelatech.com> wrote:
+> Same problem, or totally not working?
 
-Same problem, or totally not working?
+Same problem. I start passing traffic through and once there is
+constant traffic of > 250mbps for several seconds, the issue occurs.
 
-Thanks,
-Ben
+I forgot to mention in my original email that traffic stops once the
+problem occurs.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+- Pushpal
 
 _______________________________________________
 ath10k mailing list
