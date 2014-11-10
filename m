@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-f177.google.com ([209.85.216.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnxXw-0004gn-Mx
- for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:34:53 +0000
-Received: by mail-qc0-f177.google.com with SMTP id l6so6615496qcy.22
- for <ath10k@lists.infradead.org>; Mon, 10 Nov 2014 14:34:29 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnxqE-0007vf-AD
+ for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:53:47 +0000
+Message-ID: <546141E2.2080309@candelatech.com>
+Date: Mon, 10 Nov 2014 14:53:22 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <54613C13.9010008@candelatech.com>
-References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
- <5461382B.6070607@candelatech.com>
- <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
- <54613C13.9010008@candelatech.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Mon, 10 Nov 2014 14:33:59 -0800
-Message-ID: <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
+Subject: Re: New ath10k CT firmware released.
+References: <545BD297.5040806@candelatech.com>
+ <545C16A5.9030106@candelatech.com>
+In-Reply-To: <545C16A5.9030106@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +23,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On Mon, Nov 10, 2014 at 2:28 PM, Ben Greear <greearb@candelatech.com> wrote:
-> Same problem, or totally not working?
+On 11/06/2014 04:47 PM, Ben Greear wrote:
+> On 11/06/2014 11:57 AM, Ben Greear wrote:
+>> I have uploaded the latest CT version of the ath10k firmware.
+>>
+>> http://www.candelatech.com/ath10k.php
+>>
+>> This firmware fixes bugs in raw-tx mode, though probably only
+>> non-encrypted frames can be sent in this manner, and it requires
+>> an out-of-tree patch from Michal Kazior to make it work:
+>>
+>> http://comments.gmane.org/gmane.linux.drivers.ath10k.devel/246
+>>
+>> This firmware also significantly improves association times when using
+>> more than one vdev.  This, requires an additional kernel patch:
+>>
+>> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=commitdiff;h=a9756b6e2efffbec4101dbe81e9d6a2c503239ff;hp=5bfa637376c352fc17c56afc7b1d2e752750162c
+> 
+> I was a bit too clever it seems....  I have to be more careful about disabling
+> the ch reservation when there are no vdevs active, I think.
+> 
+> Hope to have it fixed shortly.
 
-Same problem. I start passing traffic through and once there is
-constant traffic of > 250mbps for several seconds, the issue occurs.
+Looks like firmware was fine, so it remains unchanged.  But, the driver patch has to
+be more careful and only disable ch reservation if we currently have an active channel.
 
-I forgot to mention in my original email that traffic stops once the
-problem occurs.
+This patch (on top of the one linked above) seems to work well:
 
-- Pushpal
+http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=commitdiff;h=5ed93f05d72769b06246280d514b72d617bb9fde
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
