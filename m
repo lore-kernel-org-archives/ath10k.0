@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-f172.google.com ([209.85.216.172])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnxLT-0007Az-St
- for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:22:00 +0000
-Received: by mail-qc0-f172.google.com with SMTP id i17so6713701qcy.3
- for <ath10k@lists.infradead.org>; Mon, 10 Nov 2014 14:21:38 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XnxSD-0000jF-5x
+ for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:28:58 +0000
+Message-ID: <54613C13.9010008@candelatech.com>
+Date: Mon, 10 Nov 2014 14:28:35 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <5461382B.6070607@candelatech.com>
+Subject: Re: htt rx stopped. cannot recover
 References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
  <5461382B.6070607@candelatech.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Mon, 10 Nov 2014 14:21:08 -0800
-Message-ID: <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
+ <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
+In-Reply-To: <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +24,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Pushpal Sidhu <psidhu@gateworks.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, Nov 10, 2014 at 2:11 PM, Ben Greear <greearb@candelatech.com> wrote:
->
-> You might try my 'CT' firmware?
->
-> http://www.candelatech.com/ath10k.php
->
-> I'd be curious to know if it helps or not...
+On 11/10/2014 02:21 PM, Pushpal Sidhu wrote:
+> On Mon, Nov 10, 2014 at 2:11 PM, Ben Greear <greearb@candelatech.com> wrote:
+>>
+>> You might try my 'CT' firmware?
+>>
+>> http://www.candelatech.com/ath10k.php
+>>
+>> I'd be curious to know if it helps or not...
+> 
+> I just tried the "12" firmware on the station, but to no avail.
 
-I just tried the "12" firmware on the station, but to no avail.
+Same problem, or totally not working?
 
-- Pushpal
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
