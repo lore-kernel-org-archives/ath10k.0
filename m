@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XnxqE-0007vf-AD
- for ath10k@lists.infradead.org; Mon, 10 Nov 2014 22:53:47 +0000
-Message-ID: <546141E2.2080309@candelatech.com>
-Date: Mon, 10 Nov 2014 14:53:22 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XoRTU-0003pQ-Kw
+ for ath10k@lists.infradead.org; Wed, 12 Nov 2014 06:32:17 +0000
+Received: by mail-wi0-f171.google.com with SMTP id r20so3808850wiv.10
+ for <ath10k@lists.infradead.org>; Tue, 11 Nov 2014 22:31:50 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: New ath10k CT firmware released.
-References: <545BD297.5040806@candelatech.com>
- <545C16A5.9030106@candelatech.com>
-In-Reply-To: <545C16A5.9030106@candelatech.com>
+In-Reply-To: <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
+References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
+ <5461382B.6070607@candelatech.com>
+ <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
+ <54613C13.9010008@candelatech.com>
+ <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
+Date: Wed, 12 Nov 2014 07:31:48 +0100
+Message-ID: <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
+Subject: Re: htt rx stopped. cannot recover
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +24,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Pushpal Sidhu <psidhu@gateworks.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 11/06/2014 04:47 PM, Ben Greear wrote:
-> On 11/06/2014 11:57 AM, Ben Greear wrote:
->> I have uploaded the latest CT version of the ath10k firmware.
->>
->> http://www.candelatech.com/ath10k.php
->>
->> This firmware fixes bugs in raw-tx mode, though probably only
->> non-encrypted frames can be sent in this manner, and it requires
->> an out-of-tree patch from Michal Kazior to make it work:
->>
->> http://comments.gmane.org/gmane.linux.drivers.ath10k.devel/246
->>
->> This firmware also significantly improves association times when using
->> more than one vdev.  This, requires an additional kernel patch:
->>
->> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=commitdiff;h=a9756b6e2efffbec4101dbe81e9d6a2c503239ff;hp=5bfa637376c352fc17c56afc7b1d2e752750162c
-> 
-> I was a bit too clever it seems....  I have to be more careful about disabling
-> the ch reservation when there are no vdevs active, I think.
-> 
-> Hope to have it fixed shortly.
-
-Looks like firmware was fine, so it remains unchanged.  But, the driver patch has to
-be more careful and only disable ch reservation if we currently have an active channel.
-
-This patch (on top of the one linked above) seems to work well:
-
-http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=commitdiff;h=5ed93f05d72769b06246280d514b72d617bb9fde
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgTm92ZW1iZXIgMjAxNCAyMzozMywgUHVzaHBhbCBTaWRodSA8cHNpZGh1QGdhdGV3b3Jr
+cy5jb20+IHdyb3RlOgo+IE9uIE1vbiwgTm92IDEwLCAyMDE0IGF0IDI6MjggUE0sIEJlbiBHcmVl
+YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4gU2FtZSBwcm9ibGVtLCBvciB0
+b3RhbGx5IG5vdCB3b3JraW5nPwo+Cj4gU2FtZSBwcm9ibGVtLiBJIHN0YXJ0IHBhc3NpbmcgdHJh
+ZmZpYyB0aHJvdWdoIGFuZCBvbmNlIHRoZXJlIGlzCj4gY29uc3RhbnQgdHJhZmZpYyBvZiA+IDI1
+MG1icHMgZm9yIHNldmVyYWwgc2Vjb25kcywgdGhlIGlzc3VlIG9jY3Vycy4KPgo+IEkgZm9yZ290
+IHRvIG1lbnRpb24gaW4gbXkgb3JpZ2luYWwgZW1haWwgdGhhdCB0cmFmZmljIHN0b3BzIG9uY2Ug
+dGhlCj4gcHJvYmxlbSBvY2N1cnMuCgpUaGF0J3MgYSBzYWZldHkgbWVjaGFuaXNtIHRvIHByZXZl
+bnQgbWVtb3J5IGNvcnJ1cHRpb24gb24gdGhlIGhvc3QuClRoZSBlcnJvciB5b3Ugc2VlIGlzIG1v
+c3QgbGlrZWx5IGFuIGluZGljYXRpb24gZncvaHcgUnggcmVwb3J0aW5nCmJyb2tlLCBpLmUuIGZ3
+IHNheXMgdG8gcG9wIG1vcmUgZnJhbWVzIGZyb20gdGhlIFJ4IHJpbmcgdGhhbiBpdCBpcwpyZWFk
+eSB0byBiZSBwb3BwZWQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
