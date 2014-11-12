@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XoeGI-0001by-GD
- for ath10k@lists.infradead.org; Wed, 12 Nov 2014 20:11:31 +0000
-Received: by mail-ig0-f177.google.com with SMTP id hl2so3653209igb.4
- for <ath10k@lists.infradead.org>; Wed, 12 Nov 2014 12:11:05 -0800 (PST)
-Received: from haru.mtv.corp.google.com ([172.17.73.200])
- by mx.google.com with ESMTPSA id qp8sm8378945igb.15.2014.11.12.12.11.03
- for <ath10k@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Wed, 12 Nov 2014 12:11:04 -0800 (PST)
-From: Toshi Kikuchi <toshik@chromium.org>
-Subject: [PATCH V2] ath10k: read calibration data from Device Tree
-Date: Wed, 12 Nov 2014 12:10:56 -0800
-Message-Id: <1415823056-10876-1-git-send-email-toshik@chromium.org>
+ id 1XoeYz-00019o-Oo
+ for ath10k@lists.infradead.org; Wed, 12 Nov 2014 20:30:50 +0000
+From: "Dailey, Dave" <Dave.Dailey@spirent.com>
+Subject: Ath10k leaves AR9880 in a state that will not enumerate again when
+ CPU warm booted
+Date: Wed, 12 Nov 2014 20:30:27 +0000
+Message-ID: <21268C70AF91954BBF885CBEF2279F6D1C4658D0@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+Content-Language: en-US
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,173 +18,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-V1->V2: fixed a bug that returns an uninitialized value if the node
-is not found.
+Hello,
 
-This patch adds support for reading calibration data from Device Tree.
-It looks for the calibration data in Device Tree if it can't find it
-in a file.
+I have a wireless PCIe NIC with the AR9880 that is enumerating and working fine on the PCIe bus after a system cold boot, but after rebooting warm it doesn't show up in lspci.  We don't assert a hw reset line to the PCIe card on warm boot, but we don't see this issue with boards based on other wireless chipsets through system reboots.  Power supplies remain stable throughout the warm boot.
 
-The node for the calibration data should be defined like this:
+Is there a way to put the AR9880 in a state at reboot or module unload such that it will be recognized on the other side of a reboot?  I tried unbinding with sysfs and unloading the module, but no luck.
 
-pci {
-        pcie@0 {
-                reg = <0 0 0 0 0>;
-                #interrupt-cells = <1>;
-                #size-cells = <2>;
-                #address-cells = <3>;
-                device_type = "pci";
+This is backports-next as of 2014/09/05/.
 
-                ath10k@0,0 {
-                        reg = <0 0 0 0 0>;
-                        device_type = "pci";
-                        qcom,ath10k-calibration-data = [ 01 02 03 ... ];
-                };
-        };
-};
+Thanks for any ideas.
+Dave
 
-Change-Id: I6fe3c50fe2de9177d031a4c17bd95152372dd993
-Signed-off-by: Toshi Kikuchi <toshik@chromium.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 70 +++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/core.h |  3 ++
- 2 files changed, 72 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 5c23d00..cea978e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -17,6 +17,7 @@
- 
- #include <linux/module.h>
- #include <linux/firmware.h>
-+#include <linux/of.h>
- 
- #include "core.h"
- #include "mac.h"
-@@ -27,6 +28,7 @@
- #include "debug.h"
- #include "htt.h"
- #include "testmode.h"
-+#include "pci.h"
- 
- unsigned int ath10k_debug_mask;
- static bool uart_print;
-@@ -244,6 +246,66 @@ static int ath10k_download_cal_file(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_download_cal_dt(struct ath10k *ar)
-+{
-+	struct device_node *node;
-+	int data_len;
-+	void *data;
-+	int ret;
-+
-+	node = pci_device_to_OF_node(ath10k_pci_priv(ar)->pdev);
-+	if (!node)
-+		/* Device Tree is optional, don't print any warnings if
-+		 * there's no node for ath10k.
-+		 */
-+		return -ENOENT;
-+
-+	if (!of_get_property(node, "qcom,ath10k-calibration-data",
-+			     &data_len)) {
-+		/* The calibration data node is optional */
-+		return -ENOENT;
-+	}
-+
-+	if (data_len != QCA988X_CAL_DATA_LEN) {
-+		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
-+			    data_len);
-+		ret = -EMSGSIZE;
-+		goto out;
-+	}
-+
-+	data = kmalloc(data_len, GFP_KERNEL);
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = of_property_read_u8_array(node, "qcom,ath10k-calibration-data",
-+					data, data_len);
-+	if (ret) {
-+		ath10k_warn(ar,
-+			    "failed to read calibration data from DT: %d\n",
-+			    ret);
-+		goto out_free;
-+	}
-+
-+	ret = ath10k_download_board_data(ar, data, data_len);
-+	if (ret) {
-+		ath10k_warn(ar,
-+			    "failed to download calibration data from "
-+			    "Device Tree: %d\n",
-+			    ret);
-+		goto out_free;
-+	}
-+
-+	ret = 0;
-+
-+out_free:
-+	kfree(data);
-+
-+out:
-+	return ret;
-+}
-+
- static int ath10k_download_and_run_otp(struct ath10k *ar)
- {
- 	u32 result, address = ar->hw_params.patch_load_addr;
-@@ -657,9 +719,15 @@ static int ath10k_download_cal_data(struct ath10k *ar)
- 	}
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
--		   "boot did not find a calibration file, try OTP next: %d\n",
-+		   "boot did not find a calibration file, try DT next: %d\n",
- 		   ret);
- 
-+	ret = ath10k_download_cal_dt(ar);
-+	if (ret == 0) {
-+		ar->cal_mode = ATH10K_CAL_MODE_DT;
-+		goto done;
-+	}
-+
- 	ret = ath10k_download_and_run_otp(ar);
- 	if (ret) {
- 		ath10k_err(ar, "failed to run otp: %d\n", ret);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1e3fd10..8e89e31 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -391,6 +391,7 @@ enum ath10k_dev_flags {
- enum ath10k_cal_mode {
- 	ATH10K_CAL_MODE_FILE,
- 	ATH10K_CAL_MODE_OTP,
-+	ATH10K_CAL_MODE_DT,
- };
- 
- static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
-@@ -400,6 +401,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
- 		return "file";
- 	case ATH10K_CAL_MODE_OTP:
- 		return "otp";
-+	case ATH10K_CAL_MODE_DT:
-+		return "dt";
- 	}
- 
- 	return "unknown";
--- 
-2.1.0.rc2.206.gedb03e5
+Spirent Communications e-mail confidentiality.
+------------------------------------------------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
 
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
+
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+
+Or if within the US,
+
+Spirent Communications,
+26750 Agoura Road, Calabasas, CA, 91302, USA.
+Tel No. 1-818-676- 2300
 
 _______________________________________________
 ath10k mailing list
