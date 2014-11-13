@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xovjf-0008Rv-5Z
- for ath10k@lists.infradead.org; Thu, 13 Nov 2014 14:50:59 +0000
-Received: by mail-la0-f42.google.com with SMTP id gq15so13437699lab.15
- for <ath10k@lists.infradead.org>; Thu, 13 Nov 2014 06:50:36 -0800 (PST)
+ id 1Xovm5-0001A3-AG
+ for ath10k@lists.infradead.org; Thu, 13 Nov 2014 14:53:29 +0000
+Received: by mail-la0-f49.google.com with SMTP id ge10so13220432lab.22
+ for <ath10k@lists.infradead.org>; Thu, 13 Nov 2014 06:53:07 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CABfbVPKvcAkwY2_qywhvewVwuk4sktMsmzwdek1kdhZKhefLzA@mail.gmail.com>
+In-Reply-To: <CAJ-VmokLQsJb9qCPs3FY5FQfhBBhLoc99iyG1gnqP396WcKcSA@mail.gmail.com>
 References: <CABfbVPKXg2HiVHuEy13s2_F=xw5nxyC7r0J229LsfRgGHySCMg@mail.gmail.com>
- <CA+BoTQnzBRj5rk66RD61sRc-9mcwJFaPiAdYqrjCqOXWULHaGQ@mail.gmail.com>
- <CABfbVPKvcAkwY2_qywhvewVwuk4sktMsmzwdek1kdhZKhefLzA@mail.gmail.com>
-Date: Thu, 13 Nov 2014 09:50:36 -0500
-Message-ID: <CABfbVP+jeJOG=pmpoOFhE=+mhgWWNJ7zY6xDUPYEL0OgnqYOHQ@mail.gmail.com>
+ <CAJ-VmokLQsJb9qCPs3FY5FQfhBBhLoc99iyG1gnqP396WcKcSA@mail.gmail.com>
+Date: Thu, 13 Nov 2014 09:53:06 -0500
+Message-ID: <CABfbVPLJaHo3nde3biMYQq+RXjy2WKz2brFABMkFQ7DPsJw2oA@mail.gmail.com>
 Subject: Re: Ath10k leaves AR9880 in a state that will not enumerate again
  when CPU warm booted
 From: David Dailey <daileycrew@gmail.com>
@@ -23,29 +22,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-WWVzLCBJIGhhZCBubyBsdWNrIHdpdGggdGhhdC4KRGF2ZQoKPiBPbiBOb3YgMTMsIDIwMTQgMToz
-NyBBTSwgIk1pY2hhbCBLYXppb3IiIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+
-Cj4+IE9uIDEyIE5vdmVtYmVyIDIwMTQgMjI6MzQsIERhdmlkIERhaWxleSA8ZGFpbGV5Y3Jld0Bn
-bWFpbC5jb20+IHdyb3RlOgo+PiA+IEkgZGlzY292ZXJlZCB0aGF0IHRoaXMgaXNzdWUgc2VlbXMg
-dG8gZm9sbG93IGF0IGxlYXN0IDIgZGlmZmVyZW50Cj4+ID4gY2hpcHNldHMgKEFSOTg4MCBhbmQg
-QVI5ODkwKSBidXQgZG9lc24ndCBoYXBwZW4gd2l0aCBhdCBsZWFzdCB0d28gQkNNCj4+ID4gY2hp
-cHNldHMuICBBbmQgdGhlIGVudW1lcmF0aW9uIGZhaWxpbmcgYWZ0ZXIgYSB3YXJtIGJvb3QgZG9l
-c24ndAo+PiA+IGRlcGVuZCBvbiBhdGgxMGsgbG9hZGluZyBhdCBhbGwuICBFdmVuIHdpdGggdGhl
-IG1vZHVsZSBub3QgcHJlc2VudCBvbgo+PiA+IHRoZSBzeXN0ZW0sIHRoZSBkZXZpY2UgZG9lc24n
-dCBlbnVtZXJhdGUgYWZ0ZXIgY29sZCBib290LiAgU28gaXQKPj4gPiBhcHBlYXJzIHRoaXMgaXMg
-c29tZXRoaW5nIHVuaXF1ZSB0byB0aGUgUENJZSBjb3JlIG9uIEF0aGVyb3MsIG5vdAo+PiA+IGF0
-aDEway4gIEkgZ3Vlc3MgdGhlIG9ubHkgaG9wZSB3b3VsZCBiZSBpZiBzb21laG93IHRoZSB1bmxv
-YWQgb2YgdGhlCj4+ID4gZHJpdmVyIGNvdWxkIHJlc3RvcmUgdGhlIGNoaXBzZXQgYmFjayB0byBh
-IHN0YXRlIHdoZXJlIGl0IHdvdWxkCj4+ID4gZW51bWVyYXRlIGFnYWluLCBidXQgSSBkb24ndCBo
-YXZlIGluZm9ybWF0aW9uIG9uIHRoZSBjaGlwc2V0IGF0IHRoYXQKPj4gPiBsZXZlbC4KPj4KPj4g
-RGlkIHlvdSB0cnkgdG8gcmVzY2FuIHRoZSBwY2kgYnVzIGV4cGxpY2l0bHk/Cj4+Cj4+ICAgZWNo
-byAxIHwgc3VkbyB0ZWUgL3N5cy9idXMvcGNpL3Jlc2Nhbgo+Pgo+Pgo+PiBNaWNoYcWCCgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGlu
-ZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Yes, we have a known platform issue I mentioned where we don't assert
+any hw reset line to the PCIe slot during warm boot.  It does assert
+on cold boot.  Sounds like this issue is the same one you describe and
+unique to QCA parts.  I was hoping to get lucky and someone would know
+how to re-init the PCI block via software before reboot as a work
+around.  Thanks for the info.
+
+Dave
+
+On Wed, Nov 12, 2014 at 4:43 PM, Adrian Chadd <adrian@freebsd.org> wrote:
+> Is the length / number of card resets during a warm boot differ to cold boot?
+>
+> There's a known behavioural quirk where if the reset line isn't held
+> for long enough or there's too short a gap between one and another
+> reset assertion, the NIC doesn't fully initialise right.
+>
+>
+>
+> -a
+>
+>
+> On 12 November 2014 13:34, David Dailey <daileycrew@gmail.com> wrote:
+>> I discovered that this issue seems to follow at least 2 different
+>> chipsets (AR9880 and AR9890) but doesn't happen with at least two BCM
+>> chipsets.  And the enumeration failing after a warm boot doesn't
+>> depend on ath10k loading at all.  Even with the module not present on
+>> the system, the device doesn't enumerate after cold boot.  So it
+>> appears this is something unique to the PCIe core on Atheros, not
+>> ath10k.  I guess the only hope would be if somehow the unload of the
+>> driver could restore the chipset back to a state where it would
+>> enumerate again, but I don't have information on the chipset at that
+>> level.
+>>
+>> Dave
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
