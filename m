@@ -1,22 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qg0-f43.google.com ([209.85.192.43])
+Received: from mail-ob0-f171.google.com ([209.85.214.171])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xozmh-0002vJ-Gq
- for ath10k@lists.infradead.org; Thu, 13 Nov 2014 19:10:24 +0000
-Received: by mail-qg0-f43.google.com with SMTP id f51so11157531qge.30
- for <ath10k@lists.infradead.org>; Thu, 13 Nov 2014 11:10:01 -0800 (PST)
+ id 1Xp4S2-0005Uy-Dw
+ for ath10k@lists.infradead.org; Fri, 14 Nov 2014 00:09:22 +0000
+Received: by mail-ob0-f171.google.com with SMTP id wp18so11903223obc.30
+ for <ath10k@lists.infradead.org>; Thu, 13 Nov 2014 16:09:00 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
-References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
- <5461382B.6070607@candelatech.com>
- <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
- <54613C13.9010008@candelatech.com>
- <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
- <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
+In-Reply-To: <87zje528im.fsf@kamboji.qca.qualcomm.com>
+References: <20140910152136.12610.18499.stgit@potku.adurom.net>
+ <87zje528im.fsf@kamboji.qca.qualcomm.com>
 From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Thu, 13 Nov 2014 11:09:31 -0800
-Message-ID: <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
+Date: Thu, 13 Nov 2014 16:08:30 -0800
+Message-ID: <CAD1M061Gky-a28Rokmgyd-5x_m_h1SNmj9ZxUd4v1fP=bae35g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/2] ath10k: testmode support
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, Nov 11, 2014 at 10:31 PM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> That's a safety mechanism to prevent memory corruption on the host.
-> The error you see is most likely an indication fw/hw Rx reporting
-> broke, i.e. fw says to pop more frames from the Rx ring than it is
-> ready to be popped.
+On Thu, Sep 11, 2014 at 1:43 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>
+>> latest version of my testmode patches. Getting closer, more or less cosmetic
+>> changes this time :)
 
-So if this seems to indicate a hw/fw issue, how should I go about
-fixing it? If it's a fw issue, it just goes to show how keeping this
-particular fw closed-source is hurting this project more than anything
-in my opinion.
+While looking through this patchset (sorry it took two months), I have
+to wonder: what's this utf.bin blob? It seems in order to use
+testmode, we need this binary blob that I can't seem to find (I looked
+in linux-firmware and https://github.com/kvalo/ath10k-firmware). If,
+for whatever reason, this binary blob is not releasable, what's the
+point of adding in testmode to this driver?
 
-Has anyone else been able to recreate this problem? If not, there
-might be something else at play, but until someone else can recreate
-the issue, I can't tell exactly where the problem lies. At first I
-thought it was a 4addr mode issue, but I performed the following
-scenario and believe that it might be related to bridging.
- {lan1}<--ether-->AP<--wifi-->STA
-
-In this scenario, the AP bridges eth+wlan, with 4addr turned off (the
-STA has no bridge). When I pass traffic through from lan1 to the
-STAtion, the same issue occurs on the AP, this time with traffic above
-~220mbps TCP. Does anyone know of any specific kernel configs relating
-to bridging that I might not have enabled?
-
-I understand that stopping traffic is a safety mechanism, but is there
-a better way to handle the situation? I don't believe resetting
-hardware is the proper solution as this requires reauthentication
-(which takes time), only for the problem to remanifest itself in only
-a few seconds of passing traffic through.
-
-Thanks for any input,
-Pushpal
+- Pushpal
 
 _______________________________________________
 ath10k mailing list
