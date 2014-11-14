@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f180.google.com ([209.85.212.180])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XpCIp-0001f8-Lr
- for ath10k@lists.infradead.org; Fri, 14 Nov 2014 08:32:24 +0000
-Received: by mail-wi0-f180.google.com with SMTP id hi2so1931915wib.1
- for <ath10k@lists.infradead.org>; Fri, 14 Nov 2014 00:31:52 -0800 (PST)
+ id 1XpIVj-0005Pc-8S
+ for ath10k@lists.infradead.org; Fri, 14 Nov 2014 15:10:08 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v4 0/2] ath10k: testmode support
+References: <20140910152136.12610.18499.stgit@potku.adurom.net>
+ <87zje528im.fsf@kamboji.qca.qualcomm.com>
+ <CAD1M061Gky-a28Rokmgyd-5x_m_h1SNmj9ZxUd4v1fP=bae35g@mail.gmail.com>
+Date: Fri, 14 Nov 2014 17:09:21 +0200
+In-Reply-To: <CAD1M061Gky-a28Rokmgyd-5x_m_h1SNmj9ZxUd4v1fP=bae35g@mail.gmail.com>
+ (Pushpal Sidhu's message of "Thu, 13 Nov 2014 16:08:30 -0800")
+Message-ID: <87389lstst.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
-References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
- <5461382B.6070607@candelatech.com>
- <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
- <54613C13.9010008@candelatech.com>
- <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
- <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
- <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
-Date: Fri, 14 Nov 2014 09:31:51 +0100
-Message-ID: <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,58 +21,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Pushpal Sidhu <psidhu@gateworks.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTMgTm92ZW1iZXIgMjAxNCAyMDowOSwgUHVzaHBhbCBTaWRodSA8cHNpZGh1QGdhdGV3b3Jr
-cy5jb20+IHdyb3RlOgo+IE9uIFR1ZSwgTm92IDExLCAyMDE0IGF0IDEwOjMxIFBNLCBNaWNoYWwg
-S2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6ClsuLi5dCj4gSGFzIGFueW9u
-ZSBlbHNlIGJlZW4gYWJsZSB0byByZWNyZWF0ZSB0aGlzIHByb2JsZW0/IElmIG5vdCwgdGhlcmUK
-PiBtaWdodCBiZSBzb21ldGhpbmcgZWxzZSBhdCBwbGF5LCBidXQgdW50aWwgc29tZW9uZSBlbHNl
-IGNhbiByZWNyZWF0ZQo+IHRoZSBpc3N1ZSwgSSBjYW4ndCB0ZWxsIGV4YWN0bHkgd2hlcmUgdGhl
-IHByb2JsZW0gbGllcy4gQXQgZmlyc3QgSQo+IHRob3VnaHQgaXQgd2FzIGEgNGFkZHIgbW9kZSBp
-c3N1ZSwgYnV0IEkgcGVyZm9ybWVkIHRoZSBmb2xsb3dpbmcKPiBzY2VuYXJpbyBhbmQgYmVsaWV2
-ZSB0aGF0IGl0IG1pZ2h0IGJlIHJlbGF0ZWQgdG8gYnJpZGdpbmcuCj4gIHtsYW4xfTwtLWV0aGVy
-LS0+QVA8LS13aWZpLS0+U1RBCj4KPiBJbiB0aGlzIHNjZW5hcmlvLCB0aGUgQVAgYnJpZGdlcyBl
-dGgrd2xhbiwgd2l0aCA0YWRkciB0dXJuZWQgb2ZmICh0aGUKPiBTVEEgaGFzIG5vIGJyaWRnZSku
-IFdoZW4gSSBwYXNzIHRyYWZmaWMgdGhyb3VnaCBmcm9tIGxhbjEgdG8gdGhlCj4gU1RBdGlvbiwg
-dGhlIHNhbWUgaXNzdWUgb2NjdXJzIG9uIHRoZSBBUCwgdGhpcyB0aW1lIHdpdGggdHJhZmZpYyBh
-Ym92ZQo+IH4yMjBtYnBzIFRDUC4gRG9lcyBhbnlvbmUga25vdyBvZiBhbnkgc3BlY2lmaWMga2Vy
-bmVsIGNvbmZpZ3MgcmVsYXRpbmcKPiB0byBicmlkZ2luZyB0aGF0IEkgbWlnaHQgbm90IGhhdmUg
-ZW5hYmxlZD8KCkkndmUgdXNlZCBhdGgxMGsgQVAgaW4gYSBicmlkZ2UgbWFueSB0aW1lcyBhbmQg
-aGF2ZW4ndCBzZWVuIHRoaXMgaXNzdWUgeWV0LgoKUHV0dGluZyBhbiBpbnRlcmZhY2UgaW50byBh
-IGJyaWRnZSBlbmFibGVzIHByb21pc2N1b3VzIG1vZGUgb24gaXQuIEluCmF0aDEwayB0aGlzIGlz
-IGhhbmRsZWQgYnkgY3JlYXRpbmcgYSBtb25pdG9yIHZkZXYgdG8gaW1wbGljaXRseQppbmZsdWVu
-Y2UgUnggZmlsdGVycyBzbyB0aGF0IGh3L2Z3IHBhc3MgZXZlcnl0aGluZyB1cCB0byBob3N0LiBJ
-CnN1c3BlY3QgeW91ciBSRiBlbnZpcm9ubWVudCBtYXkgY29udGFpbiBwYXJ0aWN1bGFyIHRyYWZm
-aWMgcGF0dGVybnMKd2hpY2ggdHJpZ2dlciB0aGUgcHJvYmxlbSB3aXRoaW4gZmlybXdhcmUgY29k
-ZSByZWxhdGVkIHRvIG1vbml0b3IKdmRldi4KCllvdSBjb3VsZCB0cnkgaGFja2luZyB1cCBhdGgx
-MGsgdG8gbm90IGNyZWF0ZS9zdGFydCBtb25pdG9yIHZkZXYgYW5kCnNlZSBpZiB5b3UgY2FuIHN0
-aWxsIHJlcHJvZHVjZSB0aGUgcHJvYmxlbS4gS2VlcCBpbiBtaW5kIGJyaWRnaW5nIHdpbGwKYmUg
-Y3JpcHBsZWQgaW4gc29tZSBjYXNlcyBzaW5jZSBmaXJtd2FyZSB3b24ndCBkZWxpdmVyIHNvbWUg
-ZnJhbWVzIHRvCmF0aDEway4KClRoZXJlJ3MgYWxzbyBuZXcgV01JXzEwWF9QREVWX1BBUkFNX1JY
-X0ZJTFRFUiB0aGF0IHdhcyBpbnRyb2R1Y2VkIGluCjEwLjIuIEkgZGlkbid0IGhhdmUgdGltZSB0
-byBwbGF5IHdpdGggaXQgeWV0LiBJbiB0aGVvcnkgaXQgbWlnaHQgYmUKYWJsZSBwb3NzaWJsZSB0
-byB1c2UgaXQgaW5zdGVhZCBvZiBtb25pdG9yIHZkZXYgZm9yIHByb21pc2MgbW9kZSwgYXQKbGVh
-c3Qgd2l0aCAxMC4yLiBJJ20gbm90IHJlYWxseSBmb25kIG9mIHRoZSBpZGVhIHRob3VnaCBiZWNh
-dXNlIHRoaXMKd2lsbCBhZGQgbW9yZSBjb21wbGV4aXR5IGFuZCBkaWZmZXJlbnQgY29kZXBhdGhz
-IHRvIHRoZSBkcml2ZXIKZGVwZW5kaW5nIG9uIGZpcm13YXJlIHJldmlzaW9uLgoKCj4gSSB1bmRl
-cnN0YW5kIHRoYXQgc3RvcHBpbmcgdHJhZmZpYyBpcyBhIHNhZmV0eSBtZWNoYW5pc20sIGJ1dCBp
-cyB0aGVyZQo+IGEgYmV0dGVyIHdheSB0byBoYW5kbGUgdGhlIHNpdHVhdGlvbj8gSSBkb24ndCBi
-ZWxpZXZlIHJlc2V0dGluZwo+IGhhcmR3YXJlIGlzIHRoZSBwcm9wZXIgc29sdXRpb24gYXMgdGhp
-cyByZXF1aXJlcyByZWF1dGhlbnRpY2F0aW9uCj4gKHdoaWNoIHRha2VzIHRpbWUpLCBvbmx5IGZv
-ciB0aGUgcHJvYmxlbSB0byByZW1hbmlmZXN0IGl0c2VsZiBpbiBvbmx5Cj4gYSBmZXcgc2Vjb25k
-cyBvZiBwYXNzaW5nIHRyYWZmaWMgdGhyb3VnaC4KCkhtbS4uIE5vdyB0aGF0IEkgdGhpbmsgYWJv
-dXQgaXQsIGFmdGVyIHRoZSByZWNlbnQgUnggcmV3b3JrIGl0IG1pZ2h0CmJlIHBvc3NpYmxlIHRv
-IGNpcmN1bXZlbnQgdGhlIHByb2JsZW0uIGF0aDEwayB1c2VzIHZlcnkgbGl0dGxlIGRhdGEKZnJv
-bSBSeCBpbmRpY2F0aW9uIGV2ZW50IGFuZCBpbnN0ZWFkIFJ4IGRlc2NyaXB0b3IgaXMgdXNlZCBm
-b3IgbW9zdAp0aGluZ3MuIFBvcHBpbmcgZnVuY3Rpb24gd291bGQgbmVlZCBzb21lIGNoYW5nZXMg
-c28gdGhhdCBpdCBjYW4gYmFjawpvZmYgc2FmZWx5IGlmIGEgZnJhbWUgYnVmZmVyIGlzbid0IHJl
-YWR5LiBhdGgxMGsgd291bGQgcHJvYmFibHkgbmVlZAp0byBwb2xsIGZvciBSeCB0b28uCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Pushpal Sidhu <psidhu@gateworks.com> writes:
+
+> On Thu, Sep 11, 2014 at 1:43 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+>>
+>>> latest version of my testmode patches. Getting closer, more or less cosmetic
+>>> changes this time :)
+>
+> While looking through this patchset (sorry it took two months), I have
+> to wonder: what's this utf.bin blob? It seems in order to use
+> testmode, we need this binary blob that I can't seem to find (I looked
+> in linux-firmware and https://github.com/kvalo/ath10k-firmware). If,
+> for whatever reason, this binary blob is not releasable, what's the
+> point of adding in testmode to this driver?
+
+testmode is for functionality needed in the factory, it's not meant for
+normal users. That's why all distros should have CONFIG_NL80211_TESTMODE
+disabled.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
