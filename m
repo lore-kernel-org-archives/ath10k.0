@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XqNO3-0000GZ-SH
- for ath10k@lists.infradead.org; Mon, 17 Nov 2014 14:34:40 +0000
+ id 1XqNSd-0006W6-0B
+ for ath10k@lists.infradead.org; Mon, 17 Nov 2014 14:39:23 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 6/7] ath10k: use rx descriptor for ppdu status extraction
-References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
- <1415110931-10945-7-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 17 Nov 2014 16:33:54 +0200
-In-Reply-To: <1415110931-10945-7-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 4 Nov 2014 15:22:10 +0100")
-Message-ID: <87lhn9q4kt.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: handle ieee80211 header and payload tracing
+ separately
+References: <1415195071-30250-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 17 Nov 2014 16:38:52 +0200
+In-Reply-To: <1415195071-30250-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Wed, 5 Nov 2014 19:14:31 +0530")
+Message-ID: <87egt1q4cj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,37 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> This makes it more in line with the new Rx path.
-> It also makes the code more reusable because Rx
-> descriptor is more accessible.
+> For packet log, the transmitted frame 802.11 header alone is sufficient.
+> Recording entire packet is also consuming lot of disk space. To optimize
+> this, tx and rx data tracepoints are splitted into header and payload
+> tracepoints.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> To record tx ieee80211 headers
+>
+>      trace-cmd record -e ath10k_tx_hdr
+>
+> To record complete packets
+>
+>      trace-cmd record -e ath10k_tx_hdr -e ath10k_tx_payload
+>
+> Cc: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-This patch also had a checkpatch warning. Full patch here:
-
-https://github.com/kvalo/ath/commit/d01090f45a5891f811bfaadb9a15c7e47ef0ef26
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 41dce044e3e8..bf82cb756548 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -815,9 +815,8 @@ static void ath10k_htt_rx_h_ppdu(struct ath10k *ar,
- 		ath10k_htt_rx_h_rates(ar, status, rxd);
- 	}
- 
--	if (is_last_ppdu) {
-+	if (is_last_ppdu)
- 		ath10k_htt_rx_h_mactime(ar, status, rxd);
--	}
- }
- 
- static const char * const tid_to_ac[] = {
-
+Thanks, applied.
 
 -- 
 Kalle Valo
