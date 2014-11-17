@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XqNVO-00023p-AL
- for ath10k@lists.infradead.org; Mon, 17 Nov 2014 14:42:14 +0000
+ id 1XqNXC-0003tq-Uu
+ for ath10k@lists.infradead.org; Mon, 17 Nov 2014 14:44:07 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: add modpram 'skip_otp' to ignore empty otp
- error during BMI
+Subject: Re: [PATCH 2/2] ath10k: Advertise support for AP mode channel width
+ changes
 References: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Mon, 17 Nov 2014 16:41:47 +0200
-In-Reply-To: <1415366205-11672-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Fri, 7 Nov 2014 18:46:44 +0530")
-Message-ID: <87a93pq47o.fsf@kamboji.qca.qualcomm.com>
+ <1415366205-11672-2-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 17 Nov 2014 16:43:36 +0200
+In-Reply-To: <1415366205-11672-2-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Fri, 7 Nov 2014 18:46:45 +0530")
+Message-ID: <8761edq44n.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,47 +30,36 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> This patch would help bring up wifi interface with default board
-> data in case of failures in otp download. It is useful for initial
-> caliberation.
+> This will enable AP mode to change channel width dynamically
+> based on 20/40 intolerance report sent by associated client.
 >
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
 [...]
 
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -31,12 +31,15 @@
->  unsigned int ath10k_debug_mask;
->  static bool uart_print;
->  static unsigned int ath10k_p2p;
-> +static bool skip_otp;
->  module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
->  module_param(uart_print, bool, 0644);
->  module_param_named(p2p, ath10k_p2p, uint, 0644);
-> +module_param(skip_otp, bool, 0644);
->  MODULE_PARM_DESC(debug_mask, "Debugging mask");
->  MODULE_PARM_DESC(uart_print, "Uart target debugging");
->  MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
-> +MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -4916,6 +4916,7 @@ int ath10k_mac_register(struct ath10k *ar)
+>  	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+>  
+>  	ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
+> +	ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
+>  	/*
+>  	 * on LL hardware queues are managed entirely by the FW
+>  	 * so we only advertise to mac we can do the queues thing
 
-I added back the newlines:
+I added newline to here as well:
 
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -32,10 +32,12 @@ unsigned int ath10k_debug_mask;
- static bool uart_print;
- static unsigned int ath10k_p2p;
- static bool skip_otp;
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4928,6 +4928,7 @@ int ath10k_mac_register(struct ath10k *ar)
+ 
+        ar->hw->wiphy->flags |= WIPHY_FLAG_AP_UAPSD;
+        ar->hw->wiphy->features |= NL80211_FEATURE_AP_MODE_CHAN_WIDTH_CHANGE;
 +
- module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
- module_param(uart_print, bool, 0644);
- module_param_named(p2p, ath10k_p2p, uint, 0644);
- module_param(skip_otp, bool, 0644);
-+
- MODULE_PARM_DESC(debug_mask, "Debugging mask");
- MODULE_PARM_DESC(uart_print, "Uart target debugging");
- MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
+        /*
+         * on LL hardware queues are managed entirely by the FW
+         * so we only advertise to mac we can do the queues thing
 
 -- 
 Kalle Valo
