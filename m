@@ -1,18 +1,8 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XqNy7-0001YS-Mz
- for ath10k@lists.infradead.org; Mon, 17 Nov 2014 15:11:56 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 4/7] ath10k: unify rx undecapping
-References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
- <1415110931-10945-5-git-send-email-michal.kazior@tieto.com>
- <87ppclq4mu.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=Ws0JGsVBd2J0fe2_JqAhCVpHmNkn10CJx6BCNG-r0cg@mail.gmail.com>
-Date: Mon, 17 Nov 2014 17:11:29 +0200
-In-Reply-To: <CA+BoTQ=Ws0JGsVBd2J0fe2_JqAhCVpHmNkn10CJx6BCNG-r0cg@mail.gmail.com>
- (Michal Kazior's message of "Mon, 17 Nov 2014 15:54:23 +0100")
-Message-ID: <87vbmdoo9q.fsf@kamboji.qca.qualcomm.com>
+Subject: Pull request: ath 20141117
+Date: Mon, 17 Nov 2014 17:30:07 +0200
+Message-ID: <87r3x1oneo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,49 +16,93 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi John,
 
-> On 17 November 2014 15:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> This creates a single, common path for MSDU,
->>> A-MSDU and fragmented Rx.
->>>
->>> Hopefully this will make it easier to understand
->>> Rx path and make it easier to work with.
->>>
->>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
->>
->> This patch had few checkpatch warnings. I fixed them with the folded
->> patch and full patch here:
->>
->> https://github.com/kvalo/ath/commit/71fbd07d43e54f5f9f442bc5f2f4f9ef83aead63
->
-> Thanks!
->
-> [...]
->> @@ -1132,7 +1133,7 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
->>         bool has_fcs_err;
->>         bool has_crypto_err;
->>         bool has_tkip_err;
->> -       bool has_peer_idx_invalid;
->> +       bool has_idx_invalid;
->>         bool is_decrypted;
->
-> I don't really like the has_idx_invalid. Perhaps has_peer_err conveys
-> a bit more of the original meaning?
+new pull request again, here's the changelog:
 
-What about just peer_idx_invalid? IMHO we really don't need the has_
-prefix in that relatively small function.
+----------------------------------------------------------------------
+One ath6kl patch and rest for ath10k, but nothing really major which
+stands out. Most notable:
 
-> As much as I'd like to leave the original var name I'd like to be
-> checkpatch warning free. Sigh..
+o fix resume (Bartosz)
 
-Same here. The checkpatch is just so useful tool to keep the style
-unified.
+o firmware restart is now faster and more reliable (Michal)
+
+o it's now possible to test hardware restart functionality without
+  crashing the firmware using hw-restart parameter with
+  simulate_fw_crash debugfs file (Michal)
+
+----------------------------------------------------------------------
+
+The following changes since commit 84cbf3a7592879810f80cece6c7f736f099ab163:
+
+  ath10k: split ce pipe init/alloc further (2014-10-23 16:41:32 +0300)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git for-linville
+
+for you to fetch changes up to 9de8f26f0038133bdfb8cf847936645dab949d88:
+
+  ath10k: fix mismatched wmi api call (2014-11-17 16:48:49 +0200)
+
+----------------------------------------------------------------
+Alexey Khoroshilov (1):
+      ath6kl: remove incorrect reset_resume handler
+
+Bartosz Markowski (1):
+      ath10k: fix pm resume after suspend
+
+Felix Fietkau (1):
+      ath10k: add SURVEY_INFO_IN_USE for current channel on survey
+
+Michal Kazior (20):
+      ath10k: don't drop control and null func Rx
+      ath10k: remove unused variable
+      ath10k: use ieee80211 defines for crypto param lengths
+      ath10k: fix rx buffer tracing
+      ath10k: deduplicate htt rx dma unmapping
+      ath10k: don't drop frames aggressively
+      ath10k: add extra sanity check when popping amsdu
+      ath10k: don't forget to replenish after fragmented Rx
+      ath10k: clear htt->rx_confused on load
+      ath10k: remove tsf argument from rx_desc tracing
+      ath10k: re-use trace class
+      ath10k: call correct function for frag threshold
+      ath10k: avoid possible deadlock with scan timeout
+      ath10k: change ce ring cleanup logic
+      ath10k: make warm reset a bit safer and faster
+      ath10k: split reset logic from power up
+      ath10k: don't reset chip on power_down
+      ath10k: fix possible bmi crash
+      ath10k: expose hw restart via debugfs
+      ath10k: speed up hw recovery
+
+Peter Oh (1):
+      ath10k: fix mismatched wmi api call
+
+Rajkumar Manoharan (3):
+      ath10k: handle ieee80211 header and payload tracing separately
+      ath10k: add modpram 'skip_otp' to ignore empty otp error during BMI
+      ath10k: advertise support for AP mode channel width changes
+
+ drivers/net/wireless/ath/ath10k/ce.c     |    9 +-
+ drivers/net/wireless/ath/ath10k/core.c   |   30 ++-
+ drivers/net/wireless/ath/ath10k/core.h   |    5 +
+ drivers/net/wireless/ath/ath10k/debug.c  |    7 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   99 ++++----
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |   27 ++-
+ drivers/net/wireless/ath/ath10k/mac.h    |    1 +
+ drivers/net/wireless/ath/ath10k/pci.c    |  364 ++++++++++++++++--------------
+ drivers/net/wireless/ath/ath10k/trace.h  |  109 +++++----
+ drivers/net/wireless/ath/ath10k/txrx.c   |    3 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |   16 +-
+ drivers/net/wireless/ath/ath6kl/usb.c    |    9 -
+ 13 files changed, 388 insertions(+), 295 deletions(-)
 
 -- 
 Kalle Valo
