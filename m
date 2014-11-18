@@ -1,12 +1,24 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Mon, 17 Nov 2014 15:29:44 -0500
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20141117
-Message-ID: <20141117202944.GE3511@tuxdriver.com>
-References: <87r3x1oneo.fsf@kamboji.qca.qualcomm.com>
+Received: from mail-qc0-f170.google.com ([209.85.216.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XqXUA-0000DU-DJ
+ for ath10k@lists.infradead.org; Tue, 18 Nov 2014 01:21:39 +0000
+Received: by mail-qc0-f170.google.com with SMTP id x3so2655748qcv.29
+ for <ath10k@lists.infradead.org>; Mon, 17 Nov 2014 17:21:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87r3x1oneo.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
+References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
+ <5461382B.6070607@candelatech.com>
+ <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
+ <54613C13.9010008@candelatech.com>
+ <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
+ <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
+ <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
+ <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Mon, 17 Nov 2014 17:20:45 -0800
+Message-ID: <CAD1M0638VrB_hAqAn-H-02cjF6ivQzFBwtqs02BxgzLRdpCGsg@mail.gmail.com>
+Subject: Re: htt rx stopped. cannot recover
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +31,57 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath6kl@lists.infradead.org, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, Nov 17, 2014 at 05:30:07PM +0200, Kalle Valo wrote:
-> Hi John,
-> 
-> new pull request again, here's the changelog:
-> 
-> ----------------------------------------------------------------------
-> One ath6kl patch and rest for ath10k, but nothing really major which
-> stands out. Most notable:
-> 
-> o fix resume (Bartosz)
-> 
-> o firmware restart is now faster and more reliable (Michal)
-> 
-> o it's now possible to test hardware restart functionality without
->   crashing the firmware using hw-restart parameter with
->   simulate_fw_crash debugfs file (Michal)
-> 
-> ----------------------------------------------------------------------
-> 
-> The following changes since commit 84cbf3a7592879810f80cece6c7f736f099ab163:
-> 
->   ath10k: split ce pipe init/alloc further (2014-10-23 16:41:32 +0300)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to 9de8f26f0038133bdfb8cf847936645dab949d88:
-> 
->   ath10k: fix mismatched wmi api call (2014-11-17 16:48:49 +0200)
+On Fri, Nov 14, 2014 at 12:31 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> I've used ath10k AP in a bridge many times and haven't seen this issue yet.
 
-Pulling now...
+I just found that I can reproduce the problem passing traffic through
+from AP <-wifi-> STA with no bridging. The reason I didn't see the
+problem before is that it takes considerably longer to reproduce and I
+wasn't necessarily looking for it (65 seconds vs 5 seconds).
 
--- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
+> Putting an interface into a bridge enables promiscuous mode on it. In
+> ath10k this is handled by creating a monitor vdev to implicitly
+> influence Rx filters so that hw/fw pass everything up to host. I
+> suspect your RF environment may contain particular traffic patterns
+> which trigger the problem within firmware code related to monitor
+> vdev.
+>
+> You could try hacking up ath10k to not create/start monitor vdev and
+> see if you can still reproduce the problem. Keep in mind bridging will
+> be crippled in some cases since firmware won't deliver some frames to
+> ath10k.
+
+I've actually been using attenuators for these tests, a little more
+than 60dB on each chain and as I mentioned above, I don't believe it's
+a vdev issue due to the fact that I can reproduce this without
+bridging (which doesn't put the radio into promiscuous mode and thus
+doesn't create a monitor vdev, correct?).
+
+> Hmm.. Now that I think about it, after the recent Rx rework it might
+> be possible to circumvent the problem. ath10k uses very little data
+> from Rx indication event and instead Rx descriptor is used for most
+> things. Popping function would need some changes so that it can back
+> off safely if a frame buffer isn't ready. ath10k would probably need
+> to poll for Rx too.
+
+I saw those patches and I liked what I saw. When I tested with them in
+place, I found it failed in the same 'test' of checking for MSDU_DONE
+flag (duh, just wanted to make that clear, haha). I tried not setting
+the confused flag when the issue was hit, but eventually a kernel
+panic would occur.
+
+Something very interesting that I found was I only see this issue when
+the radio's are behind a PCIe bridge. That is, I tested on two set's
+of boards with the same CPU/structure, with the one difference that
+there is no PCIe bridge on one. I am currently running an extended
+test on the board without PCIe to see if it isn't an issue that will
+manifest itself at a later time, but as of now, it's looking like
+that's no the case. Do you have any thoughts on this?
+
+- Pushpal
 
 _______________________________________________
 ath10k mailing list
