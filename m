@@ -1,25 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xqcis-0004P9-Ib
- for ath10k@lists.infradead.org; Tue, 18 Nov 2014 06:57:11 +0000
-Received: by mail-wi0-f172.google.com with SMTP id n3so763899wiv.5
- for <ath10k@lists.infradead.org>; Mon, 17 Nov 2014 22:56:47 -0800 (PST)
+ id 1XqjIy-00073E-PQ
+ for ath10k@lists.infradead.org; Tue, 18 Nov 2014 13:58:53 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 4/7] ath10k: unify rx undecapping
+References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
+ <1415110931-10945-5-git-send-email-michal.kazior@tieto.com>
+ <87ppclq4mu.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=Ws0JGsVBd2J0fe2_JqAhCVpHmNkn10CJx6BCNG-r0cg@mail.gmail.com>
+ <87vbmdoo9q.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQm1tzJhz7HtF941z8hrkOpyCpfJhqzmx1tifVFCMo=R1A@mail.gmail.com>
+Date: Tue, 18 Nov 2014 15:58:19 +0200
+In-Reply-To: <CA+BoTQm1tzJhz7HtF941z8hrkOpyCpfJhqzmx1tifVFCMo=R1A@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 18 Nov 2014 07:46:35 +0100")
+Message-ID: <87r3x0k3us.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD1M0638VrB_hAqAn-H-02cjF6ivQzFBwtqs02BxgzLRdpCGsg@mail.gmail.com>
-References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
- <5461382B.6070607@candelatech.com>
- <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
- <54613C13.9010008@candelatech.com>
- <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
- <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
- <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
- <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
- <CAD1M0638VrB_hAqAn-H-02cjF6ivQzFBwtqs02BxgzLRdpCGsg@mail.gmail.com>
-Date: Tue, 18 Nov 2014 07:56:47 +0100
-Message-ID: <CA+BoTQkdZ52GKaGzKL_NU8TD5fCxxxiObj6RnBXk1Rz=426N7w@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,70 +24,109 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pushpal Sidhu <psidhu@gateworks.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTggTm92ZW1iZXIgMjAxNCAwMjoyMCwgUHVzaHBhbCBTaWRodSA8cHNpZGh1QGdhdGV3b3Jr
-cy5jb20+IHdyb3RlOgo+IE9uIEZyaSwgTm92IDE0LCAyMDE0IGF0IDEyOjMxIEFNLCBNaWNoYWwg
-S2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IEkndmUgdXNlZCBhdGgx
-MGsgQVAgaW4gYSBicmlkZ2UgbWFueSB0aW1lcyBhbmQgaGF2ZW4ndCBzZWVuIHRoaXMgaXNzdWUg
-eWV0Lgo+Cj4gSSBqdXN0IGZvdW5kIHRoYXQgSSBjYW4gcmVwcm9kdWNlIHRoZSBwcm9ibGVtIHBh
-c3NpbmcgdHJhZmZpYyB0aHJvdWdoCj4gZnJvbSBBUCA8LXdpZmktPiBTVEEgd2l0aCBubyBicmlk
-Z2luZy4gVGhlIHJlYXNvbiBJIGRpZG4ndCBzZWUgdGhlCj4gcHJvYmxlbSBiZWZvcmUgaXMgdGhh
-dCBpdCB0YWtlcyBjb25zaWRlcmFibHkgbG9uZ2VyIHRvIHJlcHJvZHVjZSBhbmQgSQo+IHdhc24n
-dCBuZWNlc3NhcmlseSBsb29raW5nIGZvciBpdCAoNjUgc2Vjb25kcyB2cyA1IHNlY29uZHMpLgo+
-Cj4+IFB1dHRpbmcgYW4gaW50ZXJmYWNlIGludG8gYSBicmlkZ2UgZW5hYmxlcyBwcm9taXNjdW91
-cyBtb2RlIG9uIGl0LiBJbgo+PiBhdGgxMGsgdGhpcyBpcyBoYW5kbGVkIGJ5IGNyZWF0aW5nIGEg
-bW9uaXRvciB2ZGV2IHRvIGltcGxpY2l0bHkKPj4gaW5mbHVlbmNlIFJ4IGZpbHRlcnMgc28gdGhh
-dCBody9mdyBwYXNzIGV2ZXJ5dGhpbmcgdXAgdG8gaG9zdC4gSQo+PiBzdXNwZWN0IHlvdXIgUkYg
-ZW52aXJvbm1lbnQgbWF5IGNvbnRhaW4gcGFydGljdWxhciB0cmFmZmljIHBhdHRlcm5zCj4+IHdo
-aWNoIHRyaWdnZXIgdGhlIHByb2JsZW0gd2l0aGluIGZpcm13YXJlIGNvZGUgcmVsYXRlZCB0byBt
-b25pdG9yCj4+IHZkZXYuCj4+Cj4+IFlvdSBjb3VsZCB0cnkgaGFja2luZyB1cCBhdGgxMGsgdG8g
-bm90IGNyZWF0ZS9zdGFydCBtb25pdG9yIHZkZXYgYW5kCj4+IHNlZSBpZiB5b3UgY2FuIHN0aWxs
-IHJlcHJvZHVjZSB0aGUgcHJvYmxlbS4gS2VlcCBpbiBtaW5kIGJyaWRnaW5nIHdpbGwKPj4gYmUg
-Y3JpcHBsZWQgaW4gc29tZSBjYXNlcyBzaW5jZSBmaXJtd2FyZSB3b24ndCBkZWxpdmVyIHNvbWUg
-ZnJhbWVzIHRvCj4+IGF0aDEway4KPgo+IEkndmUgYWN0dWFsbHkgYmVlbiB1c2luZyBhdHRlbnVh
-dG9ycyBmb3IgdGhlc2UgdGVzdHMsIGEgbGl0dGxlIG1vcmUKPiB0aGFuIDYwZEIgb24gZWFjaCBj
-aGFpbiBhbmQgYXMgSSBtZW50aW9uZWQgYWJvdmUsIEkgZG9uJ3QgYmVsaWV2ZSBpdCdzCj4gYSB2
-ZGV2IGlzc3VlIGR1ZSB0byB0aGUgZmFjdCB0aGF0IEkgY2FuIHJlcHJvZHVjZSB0aGlzIHdpdGhv
-dXQKPiBicmlkZ2luZyAod2hpY2ggZG9lc24ndCBwdXQgdGhlIHJhZGlvIGludG8gcHJvbWlzY3Vv
-dXMgbW9kZSBhbmQgdGh1cwo+IGRvZXNuJ3QgY3JlYXRlIGEgbW9uaXRvciB2ZGV2LCBjb3JyZWN0
-PykuCgpZb3UgY2FuIGdldCBzdXBlciBzdXJlIGFuZCB0YWtlIGEgbG9vayBpbiBkbWVzZy9zeXNs
-b2cgdG8gdmVyaWZ5IGlmCmF0aDEwaydzIHdsYW4gaW50ZXJmYWNlIGlzIGluIHByb21pc2MgbW9k
-ZSBvciBub3QuIEkgZ3Vlc3MgaXQncyBub3QKdGhvdWdoLgoKCj4+IEhtbS4uIE5vdyB0aGF0IEkg
-dGhpbmsgYWJvdXQgaXQsIGFmdGVyIHRoZSByZWNlbnQgUnggcmV3b3JrIGl0IG1pZ2h0Cj4+IGJl
-IHBvc3NpYmxlIHRvIGNpcmN1bXZlbnQgdGhlIHByb2JsZW0uIGF0aDEwayB1c2VzIHZlcnkgbGl0
-dGxlIGRhdGEKPj4gZnJvbSBSeCBpbmRpY2F0aW9uIGV2ZW50IGFuZCBpbnN0ZWFkIFJ4IGRlc2Ny
-aXB0b3IgaXMgdXNlZCBmb3IgbW9zdAo+PiB0aGluZ3MuIFBvcHBpbmcgZnVuY3Rpb24gd291bGQg
-bmVlZCBzb21lIGNoYW5nZXMgc28gdGhhdCBpdCBjYW4gYmFjawo+PiBvZmYgc2FmZWx5IGlmIGEg
-ZnJhbWUgYnVmZmVyIGlzbid0IHJlYWR5LiBhdGgxMGsgd291bGQgcHJvYmFibHkgbmVlZAo+PiB0
-byBwb2xsIGZvciBSeCB0b28uCj4KPiBJIHNhdyB0aG9zZSBwYXRjaGVzIGFuZCBJIGxpa2VkIHdo
-YXQgSSBzYXcuIFdoZW4gSSB0ZXN0ZWQgd2l0aCB0aGVtIGluCj4gcGxhY2UsIEkgZm91bmQgaXQg
-ZmFpbGVkIGluIHRoZSBzYW1lICd0ZXN0JyBvZiBjaGVja2luZyBmb3IgTVNEVV9ET05FCj4gZmxh
-ZyAoZHVoLCBqdXN0IHdhbnRlZCB0byBtYWtlIHRoYXQgY2xlYXIsIGhhaGEpLiBJIHRyaWVkIG5v
-dCBzZXR0aW5nCj4gdGhlIGNvbmZ1c2VkIGZsYWcgd2hlbiB0aGUgaXNzdWUgd2FzIGhpdCwgYnV0
-IGV2ZW50dWFsbHkgYSBrZXJuZWwKPiBwYW5pYyB3b3VsZCBvY2N1ci4KCkknbSBnbGFkIHlvdSBs
-aWtlIHRoZW0uCgpUaGUgcmVzdWx0IG9mIG5vdCBzZXR0aW5nIHRoZSBjb25mdXNlZCBmbGFnIGlu
-IHRoaXMgY2FzZSBpcyBwcmV0dHkgZXhwZWN0ZWQgOi0pCgoKPiBTb21ldGhpbmcgdmVyeSBpbnRl
-cmVzdGluZyB0aGF0IEkgZm91bmQgd2FzIEkgb25seSBzZWUgdGhpcyBpc3N1ZSB3aGVuCj4gdGhl
-IHJhZGlvJ3MgYXJlIGJlaGluZCBhIFBDSWUgYnJpZGdlLiBUaGF0IGlzLCBJIHRlc3RlZCBvbiB0
-d28gc2V0J3MKPiBvZiBib2FyZHMgd2l0aCB0aGUgc2FtZSBDUFUvc3RydWN0dXJlLCB3aXRoIHRo
-ZSBvbmUgZGlmZmVyZW5jZSB0aGF0Cj4gdGhlcmUgaXMgbm8gUENJZSBicmlkZ2Ugb24gb25lLiBJ
-IGFtIGN1cnJlbnRseSBydW5uaW5nIGFuIGV4dGVuZGVkCj4gdGVzdCBvbiB0aGUgYm9hcmQgd2l0
-aG91dCBQQ0llIHRvIHNlZSBpZiBpdCBpc24ndCBhbiBpc3N1ZSB0aGF0IHdpbGwKPiBtYW5pZmVz
-dCBpdHNlbGYgYXQgYSBsYXRlciB0aW1lLCBidXQgYXMgb2Ygbm93LCBpdCdzIGxvb2tpbmcgbGlr
-ZQo+IHRoYXQncyBubyB0aGUgY2FzZS4gRG8geW91IGhhdmUgYW55IHRob3VnaHRzIG9uIHRoaXM/
-CgpIbW0uLiBQZXJoYXBzIHRoZXJlJ3Mgc29tZSBraW5kIG9mIHJhY2UgYW5kIHRoZSBob3N0IG1h
-aW4gbWVtb3J5IGlzbid0CnVwZGF0ZWQgaW4gYSB0aW1lbHkgZmFzaGlvbj8gSW4gdGhhdCBjYXNl
-IGF0aDEwayBjb3VsZCB0cnkgdG8sIGluc3RlYWQKb2YgaW1tZWRpYXRlbGx5IHVubWFwcGluZywg
-a2VlcCBvbiBzeW5jaW5nIGRtYSB0byBjcHUgYW5kIGNoZWNraW5nIHRoZQpNU0RVX0RPTkUgYml0
-IGZvciBhIGZldyBtc2VjcyAod2hhdCBhbiB1Z2x5IHdvcmthcm91bmQuLikgYmVmb3JlIGl0CmZp
-bmFsbHkgdW5tYXBzIHRoZSBmcmFtZS4KCkkgd29uZGVyIGlmIHRoYXQncyBhIGJ1ZyBpbiBhdGgx
-MGsncyB0YXJnZXQgZGV2aWNlIFBDSWUgY29udHJvbGxlciBvcgp0aGUgUENJZSBicmlkZ2U/CgoK
-TWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
-dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 17 November 2014 16:11, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>> On 17 November 2014 15:32, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>>>> This patch had few checkpatch warnings. I fixed them with the folded
+>>>> patch and full patch here:
+>>>>
+>>>> https://github.com/kvalo/ath/commit/71fbd07d43e54f5f9f442bc5f2f4f9ef83aead63
+> [...]
+>>>> @@ -1132,7 +1133,7 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+>>>>         bool has_fcs_err;
+>>>>         bool has_crypto_err;
+>>>>         bool has_tkip_err;
+>>>> -       bool has_peer_idx_invalid;
+>>>> +       bool has_idx_invalid;
+>>>>         bool is_decrypted;
+>>>
+>>> I don't really like the has_idx_invalid. Perhaps has_peer_err conveys
+>>> a bit more of the original meaning?
+>>
+>> What about just peer_idx_invalid? IMHO we really don't need the has_
+>> prefix in that relatively small function.
+>
+> Good point but the assignment line with `peer_idx_invalid` will still
+> be over 80 chars long, no?
+
+I actually test with 83 char limit nowadays. I should add the checkpatch
+command line to the wiki.
+
+> So perhaps instead of doing `rxd->attention.flags &
+> __cpu_to_le32(FLAG)` it could be `attention =
+> __le32_to_cpu(rxd->attention.flags)` and then `attention & FLAG` ?
+> This way it shouldn't exceed the 80 char limit and var names won't
+> need to be changed. Hopefully compiler will optimize it away.
+
+That's much better and actually has a lot less calls to cpu_le32(). I
+folded the patch below.
+
+But aren't the '!!' operators useless? 'has_*' variables are booleans,
+doesn't compiler handle that automatically?
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 6f58b7f912cd..6abb3b6a348f 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1133,8 +1133,9 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+ 	bool has_fcs_err;
+ 	bool has_crypto_err;
+ 	bool has_tkip_err;
+-	bool has_idx_invalid;
++	bool has_peer_idx_invalid;
+ 	bool is_decrypted;
++	u32 attention;
+ 
+ 	if (skb_queue_empty(amsdu))
+ 		return;
+@@ -1162,14 +1163,12 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+ 	/* Some attention flags are valid only in the last MSDU. */
+ 	last = skb_peek_tail(amsdu);
+ 	rxd = (void *)last->data - sizeof(*rxd);
+-	has_fcs_err = !!(rxd->attention.flags &
+-			 __cpu_to_le32(RX_ATTENTION_FLAGS_FCS_ERR));
+-	has_crypto_err = !!(rxd->attention.flags &
+-			    __cpu_to_le32(RX_ATTENTION_FLAGS_DECRYPT_ERR));
+-	has_tkip_err = !!(rxd->attention.flags &
+-			  __cpu_to_le32(RX_ATTENTION_FLAGS_TKIP_MIC_ERR));
+-	has_idx_invalid = !!(rxd->attention.flags &
+-			     __cpu_to_le32(RX_ATTENTION_FLAGS_PEER_IDX_INVALID));
++	attention = __le32_to_cpu(rxd->attention.flags);
++
++	has_fcs_err = !!(attention & RX_ATTENTION_FLAGS_FCS_ERR);
++	has_crypto_err = !!(attention & RX_ATTENTION_FLAGS_DECRYPT_ERR);
++	has_tkip_err = !!(attention & RX_ATTENTION_FLAGS_TKIP_MIC_ERR);
++	has_peer_idx_invalid = !!(attention & RX_ATTENTION_FLAGS_PEER_IDX_INVALID);
+ 
+ 	/* Note: If hardware captures an encrypted frame that it can't decrypt,
+ 	 * e.g. due to fcs error, missing peer or invalid key data it will
+@@ -1178,7 +1177,7 @@ static void ath10k_htt_rx_h_mpdu(struct ath10k *ar,
+ 	is_decrypted = (enctype != HTT_RX_MPDU_ENCRYPT_NONE &&
+ 			!has_fcs_err &&
+ 			!has_crypto_err &&
+-			!has_idx_invalid);
++			!has_peer_idx_invalid);
+ 
+ 	/* Clear per-MPDU flags while leaving per-PPDU flags intact. */
+ 	status->flag &= ~(RX_FLAG_FAILED_FCS_CRC |
+
+
+
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
