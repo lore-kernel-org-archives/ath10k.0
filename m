@@ -1,24 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qc0-f170.google.com ([209.85.216.170])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XqXUA-0000DU-DJ
- for ath10k@lists.infradead.org; Tue, 18 Nov 2014 01:21:39 +0000
-Received: by mail-qc0-f170.google.com with SMTP id x3so2655748qcv.29
- for <ath10k@lists.infradead.org>; Mon, 17 Nov 2014 17:21:15 -0800 (PST)
+ id 1XqcZ2-00004w-RP
+ for ath10k@lists.infradead.org; Tue, 18 Nov 2014 06:47:01 +0000
+Received: by mail-wg0-f41.google.com with SMTP id y19so7508603wgg.0
+ for <ath10k@lists.infradead.org>; Mon, 17 Nov 2014 22:46:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
-References: <CAD1M060Y+3r_-J12ZqT4TqddUf9tJHKCEPJ0DhFJ1sCiXimdVw@mail.gmail.com>
- <5461382B.6070607@candelatech.com>
- <CAD1M062xcGu2EJzxaXYQt5uHyDxHpEE+FDiPB4SBirXX5ePz_A@mail.gmail.com>
- <54613C13.9010008@candelatech.com>
- <CAD1M061wRo5MqmKYy8jw9fKpraA0DFJTh4k+QNzLkayLmBttfA@mail.gmail.com>
- <CA+BoTQk7idFbyYzLxKCgmSQ=zzQTraOJ-fy5_qhDpzkueQe8KQ@mail.gmail.com>
- <CAD1M063n=WGeQRJKycvWYGMZRFN4gabM56dgeX_4tf8W8hyUKA@mail.gmail.com>
- <CA+BoTQkfPJp4tg8eR4OJDs2Cf_s0x36QYD-Yq6fTQ41c1jm6TA@mail.gmail.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Mon, 17 Nov 2014 17:20:45 -0800
-Message-ID: <CAD1M0638VrB_hAqAn-H-02cjF6ivQzFBwtqs02BxgzLRdpCGsg@mail.gmail.com>
-Subject: Re: htt rx stopped. cannot recover
+In-Reply-To: <87vbmdoo9q.fsf@kamboji.qca.qualcomm.com>
+References: <1415110931-10945-1-git-send-email-michal.kazior@tieto.com>
+ <1415110931-10945-5-git-send-email-michal.kazior@tieto.com>
+ <87ppclq4mu.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=Ws0JGsVBd2J0fe2_JqAhCVpHmNkn10CJx6BCNG-r0cg@mail.gmail.com>
+ <87vbmdoo9q.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 18 Nov 2014 07:46:35 +0100
+Message-ID: <CA+BoTQm1tzJhz7HtF941z8hrkOpyCpfJhqzmx1tifVFCMo=R1A@mail.gmail.com>
+Subject: Re: [PATCH 4/7] ath10k: unify rx undecapping
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +24,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, Nov 14, 2014 at 12:31 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
-> I've used ath10k AP in a bridge many times and haven't seen this issue yet.
-
-I just found that I can reproduce the problem passing traffic through
-from AP <-wifi-> STA with no bridging. The reason I didn't see the
-problem before is that it takes considerably longer to reproduce and I
-wasn't necessarily looking for it (65 seconds vs 5 seconds).
-
-> Putting an interface into a bridge enables promiscuous mode on it. In
-> ath10k this is handled by creating a monitor vdev to implicitly
-> influence Rx filters so that hw/fw pass everything up to host. I
-> suspect your RF environment may contain particular traffic patterns
-> which trigger the problem within firmware code related to monitor
-> vdev.
->
-> You could try hacking up ath10k to not create/start monitor vdev and
-> see if you can still reproduce the problem. Keep in mind bridging will
-> be crippled in some cases since firmware won't deliver some frames to
-> ath10k.
-
-I've actually been using attenuators for these tests, a little more
-than 60dB on each chain and as I mentioned above, I don't believe it's
-a vdev issue due to the fact that I can reproduce this without
-bridging (which doesn't put the radio into promiscuous mode and thus
-doesn't create a monitor vdev, correct?).
-
-> Hmm.. Now that I think about it, after the recent Rx rework it might
-> be possible to circumvent the problem. ath10k uses very little data
-> from Rx indication event and instead Rx descriptor is used for most
-> things. Popping function would need some changes so that it can back
-> off safely if a frame buffer isn't ready. ath10k would probably need
-> to poll for Rx too.
-
-I saw those patches and I liked what I saw. When I tested with them in
-place, I found it failed in the same 'test' of checking for MSDU_DONE
-flag (duh, just wanted to make that clear, haha). I tried not setting
-the confused flag when the issue was hit, but eventually a kernel
-panic would occur.
-
-Something very interesting that I found was I only see this issue when
-the radio's are behind a PCIe bridge. That is, I tested on two set's
-of boards with the same CPU/structure, with the one difference that
-there is no PCIe bridge on one. I am currently running an extended
-test on the board without PCIe to see if it isn't an issue that will
-manifest itself at a later time, but as of now, it's looking like
-that's no the case. Do you have any thoughts on this?
-
-- Pushpal
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgTm92ZW1iZXIgMjAxNCAxNjoxMSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPj4gT24gMTcgTm92ZW1iZXIgMjAxNCAxNTozMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNh
+LnF1YWxjb21tLmNvbT4gd3JvdGU6ClsuLi5dCj4+PiBUaGlzIHBhdGNoIGhhZCBmZXcgY2hlY2tw
+YXRjaCB3YXJuaW5ncy4gSSBmaXhlZCB0aGVtIHdpdGggdGhlIGZvbGRlZAo+Pj4gcGF0Y2ggYW5k
+IGZ1bGwgcGF0Y2ggaGVyZToKPj4+Cj4+PiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2Nv
+bW1pdC83MWZiZDA3ZDQzZTU0ZjVmOWY0NDJiYzVmMmY0ZjllZjgzYWVhZDYzClsuLi5dCj4+PiBA
+QCAtMTEzMiw3ICsxMTMzLDcgQEAgc3RhdGljIHZvaWQgYXRoMTBrX2h0dF9yeF9oX21wZHUoc3Ry
+dWN0IGF0aDEwayAqYXIsCj4+PiAgICAgICAgIGJvb2wgaGFzX2Zjc19lcnI7Cj4+PiAgICAgICAg
+IGJvb2wgaGFzX2NyeXB0b19lcnI7Cj4+PiAgICAgICAgIGJvb2wgaGFzX3RraXBfZXJyOwo+Pj4g
+LSAgICAgICBib29sIGhhc19wZWVyX2lkeF9pbnZhbGlkOwo+Pj4gKyAgICAgICBib29sIGhhc19p
+ZHhfaW52YWxpZDsKPj4+ICAgICAgICAgYm9vbCBpc19kZWNyeXB0ZWQ7Cj4+Cj4+IEkgZG9uJ3Qg
+cmVhbGx5IGxpa2UgdGhlIGhhc19pZHhfaW52YWxpZC4gUGVyaGFwcyBoYXNfcGVlcl9lcnIgY29u
+dmV5cwo+PiBhIGJpdCBtb3JlIG9mIHRoZSBvcmlnaW5hbCBtZWFuaW5nPwo+Cj4gV2hhdCBhYm91
+dCBqdXN0IHBlZXJfaWR4X2ludmFsaWQ/IElNSE8gd2UgcmVhbGx5IGRvbid0IG5lZWQgdGhlIGhh
+c18KPiBwcmVmaXggaW4gdGhhdCByZWxhdGl2ZWx5IHNtYWxsIGZ1bmN0aW9uLgoKR29vZCBwb2lu
+dCBidXQgdGhlIGFzc2lnbm1lbnQgbGluZSB3aXRoIGBwZWVyX2lkeF9pbnZhbGlkYCB3aWxsIHN0
+aWxsCmJlIG92ZXIgODAgY2hhcnMgbG9uZywgbm8/CgpTbyBwZXJoYXBzIGluc3RlYWQgb2YgZG9p
+bmcgYHJ4ZC0+YXR0ZW50aW9uLmZsYWdzICYKX19jcHVfdG9fbGUzMihGTEFHKWAgaXQgY291bGQg
+YmUgYGF0dGVudGlvbiA9Cl9fbGUzMl90b19jcHUocnhkLT5hdHRlbnRpb24uZmxhZ3MpYCBhbmQg
+dGhlbiBgYXR0ZW50aW9uICYgRkxBR2AgPwpUaGlzIHdheSBpdCBzaG91bGRuJ3QgZXhjZWVkIHRo
+ZSA4MCBjaGFyIGxpbWl0IGFuZCB2YXIgbmFtZXMgd29uJ3QKbmVlZCB0byBiZSBjaGFuZ2VkLiBI
+b3BlZnVsbHkgY29tcGlsZXIgd2lsbCBvcHRpbWl6ZSBpdCBhd2F5LgoKCk1pY2hhxYIKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
