@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XrPkk-0008Vc-Ur
- for ath10k@lists.infradead.org; Thu, 20 Nov 2014 11:18:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix mismatched wmi api call
-References: <1415935071-21422-1-git-send-email-poh@qca.qualcomm.com>
-Date: Thu, 20 Nov 2014 13:17:56 +0200
-In-Reply-To: <1415935071-21422-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Thu, 13 Nov 2014 19:17:51 -0800")
-Message-ID: <87tx1udst7.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1XrSMA-0002Gs-Kw
+ for ath10k@lists.infradead.org; Thu, 20 Nov 2014 14:05:11 +0000
+From: Sujith Manoharan <sujith@msujith.org>
+Subject: [RFC] ath10k: Fix shared WEP
+Date: Thu, 20 Nov 2014 19:36:22 +0530
+Message-Id: <1416492382-18058-1-git-send-email-sujith@msujith.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +15,131 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-> Fix to use v10.2 wmi call for firmware v10.2.
-> It turned out that peer association function was using
-> v10.1 wmi call for v10.2 firmware during code review.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+When static keys are used in shared WEP, when a
+station is associated, message 3 is sent with an
+encrypted payload. But, for subsequent
+authentications that are triggered without a
+deauth, the auth frame is decrypted by the HW. To
+handle this, check if the WEP keys have already
+been set for the peer and if so, mark the
+frame as decrypted.
 
-Thanks, applied.
+Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 25 +++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.h |  2 ++
+ drivers/net/wireless/ath/ath10k/wmi.c | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 56 insertions(+)
 
-(Actually I had applied this already on Nov 17 but forgot to reply.)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 1245ac8..e8fee46 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -179,6 +179,31 @@ static int ath10k_clear_peer_keys(struct ath10k_vif *arvif,
+ 	return first_errno;
+ }
+ 
++bool ath10k_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
++				u8 keyidx)
++{
++	struct ath10k_peer *peer;
++	int i;
++
++	/*
++	 * We don't know which vdev this peer belongs to,
++	 * since WMI doesn't give us that information.
++	 */
++	spin_lock_bh(&ar->data_lock);
++	peer = ath10k_peer_find(ar, 0, addr);
++	spin_unlock_bh(&ar->data_lock);
++
++	if (!peer)
++		return false;
++
++	for (i = 0; i < ARRAY_SIZE(peer->keys); i++) {
++		if (peer->keys[i] && peer->keys[i]->keyidx == keyidx)
++			return true;
++	}
++
++	return false;
++}
++
+ static int ath10k_clear_vdev_key(struct ath10k_vif *arvif,
+ 				 struct ieee80211_key_conf *key)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 4e3c989..f5d0a5b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -41,6 +41,8 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work);
+ void ath10k_halt(struct ath10k *ar);
+ void ath10k_mac_vif_beacon_free(struct ath10k_vif *arvif);
+ void ath10k_drain_tx(struct ath10k *ar);
++bool ath10k_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
++				u8 keyidx);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index c2bc828..8f1186e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1113,6 +1113,33 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
+ 	return rate_idx;
+ }
+ 
++static void ath10k_check_wep(struct ath10k *ar, struct sk_buff *skb,
++			     struct ieee80211_rx_status *status)
++{
++	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
++	unsigned int hdrlen;
++	bool peer_key;
++	u8 *addr, keyidx;
++
++	if (ieee80211_is_auth(hdr->frame_control) &&
++	    ieee80211_has_protected(hdr->frame_control)) {
++		hdrlen = ieee80211_hdrlen(hdr->frame_control);
++		if (skb->len < (hdrlen + 4))
++			return;
++
++		keyidx = skb->data[hdrlen + 3] >> 6;
++		addr = ieee80211_get_SA(hdr);
++		peer_key = ath10k_is_peer_wep_key_set(ar, addr, keyidx);
++
++		if (peer_key) {
++			ath10k_dbg(ar, ATH10K_DBG_MAC,
++				   "wep key present for peer: %pM\n", addr);
++			status->flag |= RX_FLAG_DECRYPTED;
++		}
++	}
++
++}
++
+ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_mgmt_rx_event_v1 *ev_v1;
+@@ -1200,6 +1227,8 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	hdr = (struct ieee80211_hdr *)skb->data;
+ 	fc = le16_to_cpu(hdr->frame_control);
+ 
++	ath10k_check_wep(ar, skb, status);
++
+ 	/* FW delivers WEP Shared Auth frame with Protected Bit set and
+ 	 * encrypted payload. However in case of PMF it delivers decrypted
+ 	 * frames with Protected Bit set. */
 -- 
-Kalle Valo
+2.1.3
+
 
 _______________________________________________
 ath10k mailing list
