@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xrlsq-0004yk-JQ
- for ath10k@lists.infradead.org; Fri, 21 Nov 2014 10:56:13 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+ id 1Xrrad-0001EA-6B
+ for ath10k@lists.infradead.org; Fri, 21 Nov 2014 17:01:47 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] Add the target register read/write and memory dump
+ debugfs interface
+References: <1416500565-29875-1-git-send-email-yanbol@qti.qualcomm.com>
+ <20141120194521.GC31881@tuxdriver.com>
+ <5b9b8ec5e5234a81be5fffcaab520d4e@nasanexm02e.na.qualcomm.com>
+Date: Fri, 21 Nov 2014 19:01:13 +0200
+In-Reply-To: <5b9b8ec5e5234a81be5fffcaab520d4e@nasanexm02e.na.qualcomm.com>
+ (Yanbo Li's message of "Fri, 21 Nov 2014 02:39:42 +0000")
+Message-ID: <87sihcbi92.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Message-ID: <21615.6810.716982.963365@gargle.gargle.HOWL>
-Date: Fri, 21 Nov 2014 16:27:30 +0530
-Subject: Re: [RFC] ath10k: Fix shared WEP
-In-Reply-To: <CA+BoTQk2fy024b5E=khSrzpUGzCL=jU_4wpxJ0AAyxmsFZuWhA@mail.gmail.com>
-References: <1416492382-18058-1-git-send-email-sujith@msujith.org>
- <CA+BoTQnyf0tvg8ngLqsoux-A9-3J46cDuJdd-V=kS24wWS4Y1A@mail.gmail.com>
- <21615.3019.437408.992893@gargle.gargle.HOWL>
- <CA+BoTQm_X3-kpJanZu=dJ3LDPqjAfnUoyBwqzgYGX3bK+H1f2g@mail.gmail.com>
- <21615.5541.120044.376524@gargle.gargle.HOWL>
- <CA+BoTQk2fy024b5E=khSrzpUGzCL=jU_4wpxJ0AAyxmsFZuWhA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,24 +26,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "Li, Yanbo" <yanbol@qti.qualcomm.com>
+Cc: "dreamfly281@gmail.com" <dreamfly281@gmail.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, "michal.kazior@tieto.com" <michal.kazior@tieto.com>
 
-Michal Kazior wrote:
-> Yes. Basically peer->keys[] should be protected by both conf_mutex and
-> data_lock if you want to modify it. If you want to read it you need
-> either one.
+"Li, Yanbo" <yanbol@qti.qualcomm.com> writes:
 
-Ok.
+>> -----Original Message-----
+>> From: John W. Linville [mailto:linville@tuxdriver.com]
+>> Sent: Friday, November 21, 2014 3:45 AM
+>> To: Li, Yanbo
+>> Cc: Valo, Kalle; dreamfly281@gmail.com; michal.kazior@tieto.com;
+>> ath10k@lists.infradead.org; linux-wireless@vger.kernel.org
+>> Subject: Re: [PATCH] Add the target register read/write and memory dump
+>> debugfs interface
+>> 
+>> The subject should start like "ath10k: ..."
+>> 
+> Resend with the prefix, please review base on the new thread.
 
-> Thanks! Looks like the `cancel_work_sync(&arvif->wep_key_work);`
-> should go _before_ `mutex_lock(&ar->conf_mutex);`.
-> 
-> I'm busy with some stuff so feel free to send a patch :-)
+Where did you send it? I can't find it.
 
-I'll send a fix after this one. Thanks for the review !
-
-Sujith
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
