@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xrk8C-0007nq-1J
- for ath10k@lists.infradead.org; Fri, 21 Nov 2014 09:03:57 +0000
-Received: by mail-wi0-f180.google.com with SMTP id n3so8086604wiv.1
- for <ath10k@lists.infradead.org>; Fri, 21 Nov 2014 01:03:30 -0800 (PST)
+ id 1Xrktk-0002TO-TW
+ for ath10k@lists.infradead.org; Fri, 21 Nov 2014 09:53:05 +0000
+From: Sujith Manoharan <sujith@msujith.org>
 MIME-Version: 1.0
-In-Reply-To: <1416492382-18058-1-git-send-email-sujith@msujith.org>
-References: <1416492382-18058-1-git-send-email-sujith@msujith.org>
-Date: Fri, 21 Nov 2014 10:03:30 +0100
-Message-ID: <CA+BoTQnyf0tvg8ngLqsoux-A9-3J46cDuJdd-V=kS24wWS4Y1A@mail.gmail.com>
+Message-ID: <21615.3019.437408.992893@gargle.gargle.HOWL>
+Date: Fri, 21 Nov 2014 15:24:19 +0530
 Subject: Re: [RFC] ath10k: Fix shared WEP
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CA+BoTQnyf0tvg8ngLqsoux-A9-3J46cDuJdd-V=kS24wWS4Y1A@mail.gmail.com>
+References: <1416492382-18058-1-git-send-email-sujith@msujith.org>
+ <CA+BoTQnyf0tvg8ngLqsoux-A9-3J46cDuJdd-V=kS24wWS4Y1A@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,98 +19,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjAgTm92ZW1iZXIgMjAxNCAxNTowNiwgU3VqaXRoIE1hbm9oYXJhbiA8c3VqaXRoQG1zdWpp
-dGgub3JnPiB3cm90ZToKPiBGcm9tOiBTdWppdGggTWFub2hhcmFuIDxjX21hbm9oYUBxY2EucXVh
-bGNvbW0uY29tPgo+Cj4gV2hlbiBzdGF0aWMga2V5cyBhcmUgdXNlZCBpbiBzaGFyZWQgV0VQLCB3
-aGVuIGEKPiBzdGF0aW9uIGlzIGFzc29jaWF0ZWQsIG1lc3NhZ2UgMyBpcyBzZW50IHdpdGggYW4K
-PiBlbmNyeXB0ZWQgcGF5bG9hZC4gQnV0LCBmb3Igc3Vic2VxdWVudAo+IGF1dGhlbnRpY2F0aW9u
-cyB0aGF0IGFyZSB0cmlnZ2VyZWQgd2l0aG91dCBhCj4gZGVhdXRoLCB0aGUgYXV0aCBmcmFtZSBp
-cyBkZWNyeXB0ZWQgYnkgdGhlIEhXLiBUbwo+IGhhbmRsZSB0aGlzLCBjaGVjayBpZiB0aGUgV0VQ
-IGtleXMgaGF2ZSBhbHJlYWR5Cj4gYmVlbiBzZXQgZm9yIHRoZSBwZWVyIGFuZCBpZiBzbywgbWFy
-ayB0aGUKPiBmcmFtZSBhcyBkZWNyeXB0ZWQuCgpJT1cgVGhpcyBmaXhlcyBhIGNvcm5lciBjYXNl
-IHdoZW4gc3RhdGlvbiByZWNvbm5lY3RzIGJ1dCBhdGgxMGsgQVAgZm9yCnNvbWUgcmVhc29uIGRp
-ZG4ndCBub3RpY2UgaXQgKGUuZy4gc3RhdGlvbiB3ZW50IG91dCBvZiByYW5nZSBhbmQgY2FtZQpi
-YWNrIGJlZm9yZSBBUCBpbmFjdGl2aXR5IHRpbWVyIGtpY2tlZCBpbiksIHJpZ2h0PyBPciBpcyB0
-aGVyZSBhbm90aGVyCnNjZW5hcmlvPyBJdCBtaWdodCBiZSBhIGdvb2QgaWRlYSB0byBpbmNsdWRl
-IHRoaXMgaW4gdGhlIGNvbW1pdCBsb2cuCgoKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvbWFjLmMKPiBpbmRleCAxMjQ1YWM4Li5lOGZlZTQ2IDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gQEAgLTE3OSw2ICsxNzksMzEgQEAgc3RhdGljIGludCBh
-dGgxMGtfY2xlYXJfcGVlcl9rZXlzKHN0cnVjdCBhdGgxMGtfdmlmICphcnZpZiwKPiAgICAgICAg
-IHJldHVybiBmaXJzdF9lcnJubzsKPiAgfQo+Cj4gK2Jvb2wgYXRoMTBrX2lzX3BlZXJfd2VwX2tl
-eV9zZXQoc3RydWN0IGF0aDEwayAqYXIsIGNvbnN0IHU4ICphZGRyLAo+ICsgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgdTgga2V5aWR4KQoKRnVuY3Rpb25zIGluIG1hYy5jIHNob3VsZCBo
-YXZlIGF0aDEwa19tYWNfIHByZWZpeC4gSSdtIGF3YXJlIG5vdCBhbGwKZnVuY3Rpb24gZm9sbG93
-IHRoaXMgcnVsZSAoYWxiZWl0IHRoZXkgc2hvdWxkKS4KCgo+ICt7Cj4gKyAgICAgICBzdHJ1Y3Qg
-YXRoMTBrX3BlZXIgKnBlZXI7Cj4gKyAgICAgICBpbnQgaTsKPiArCj4gKyAgICAgICAvKgo+ICsg
-ICAgICAgICogV2UgZG9uJ3Qga25vdyB3aGljaCB2ZGV2IHRoaXMgcGVlciBiZWxvbmdzIHRvLAo+
-ICsgICAgICAgICogc2luY2UgV01JIGRvZXNuJ3QgZ2l2ZSB1cyB0aGF0IGluZm9ybWF0aW9uLgo+
-ICsgICAgICAgICovCj4gKyAgICAgICBzcGluX2xvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwo+ICsg
-ICAgICAgcGVlciA9IGF0aDEwa19wZWVyX2ZpbmQoYXIsIDAsIGFkZHIpOwo+ICsgICAgICAgc3Bp
-bl91bmxvY2tfYmgoJmFyLT5kYXRhX2xvY2spOwoKSSBkb24ndCB0aGluayB0aGUgYWJvdmUgd2ls
-bCB3b3JrIGZvciBtQlNTLCBlLmcuIGNvbnNpZGVyIHZkZXZfaWQ9MApiZWluZyBhbiBvcGVuIG5l
-dHdvcmsgYW5kIHZkZXZfaWQ9MSBiZWluZyB3ZXAtc2hhcmVkLiBNYXliZSBpdCdzIGFib3V0CnRp
-bWUgdG8gaW50cm9kdWNlIGF0aDEwa19wZWVyX2ZpbmRfYnlfYWRkcihzdHJ1Y3QgYXRoMTBrICph
-ciwgY29uc3QgdTgKKik/CgoKPiArCj4gKyAgICAgICBpZiAoIXBlZXIpCj4gKyAgICAgICAgICAg
-ICAgIHJldHVybiBmYWxzZTsKPiArCj4gKyAgICAgICBmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0la
-RShwZWVyLT5rZXlzKTsgaSsrKSB7Cj4gKyAgICAgICAgICAgICAgIGlmIChwZWVyLT5rZXlzW2ld
-ICYmIHBlZXItPmtleXNbaV0tPmtleWlkeCA9PSBrZXlpZHgpCj4gKyAgICAgICAgICAgICAgICAg
-ICAgICAgcmV0dXJuIHRydWU7Cj4gKyAgICAgICB9CgpSZWFkIGFjY2VzcyB0byBwZWVyLT5rZXlz
-IHNob3VsZCBiZSBwcm90ZWN0ZWQgYnkgZWl0aGVyIGRhdGFfbG9jayBvcgpjb25mX211dGV4LiBP
-YnZpb3VzbHkgdGhlIGxhdHRlciBjYW4ndCBiZSB1c2VkIGJlY2F1c2UgdGhpcyBmdW5jdGlvbgp3
-aWxsIGJlIGNhbGxlZCBmcm9tIGFuIGF0b21pYyBjb250ZXh0IGxlYXZpbmcgdGhlIGRhdGFfbG9j
-ay4gVGhlCmVudGlyZSBpc19wZWVyX3dlcF9rZXlfc2V0KCkgc2hvdWxkIHJlcXVpcmUgZGF0YV9s
-b2NrIHRvIGJlIGhlbGQgd2hpbGUKaXQgaXMgY2FsbGVkIHRvIGF2b2lkIHJhY2VzLgoKT2gsIGFu
-ZCBhcHBhcmVudGx5IHRoaXMgaXMgYnVnZ3kgYW55d2F5IGJlY2F1c2UKYXRoMTBrX2luc3RhbGxf
-cGVlcl93ZXBfa2V5cygpIGlzIG9ibGl2aW91cyB0byB0aGlzLiBPb3BzLi4KCgpbLi4uXQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jIGIvZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+IGluZGV4IGMyYmM4MjguLjhmMTE4NmUg
-MTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYwo+ICsr
-KyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPiBAQCAtMTExMyw2ICsx
-MTEzLDMzIEBAIHN0YXRpYyBpbmxpbmUgdTggZ2V0X3JhdGVfaWR4KHUzMiByYXRlLCBlbnVtIGll
-ZWU4MDIxMV9iYW5kIGJhbmQpCj4gICAgICAgICByZXR1cm4gcmF0ZV9pZHg7Cj4gIH0KPgo+ICtz
-dGF0aWMgdm9pZCBhdGgxMGtfY2hlY2tfd2VwKHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tf
-YnVmZiAqc2tiLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIx
-MV9yeF9zdGF0dXMgKnN0YXR1cykKCkZ1bmN0aW9uIGluIHdtaS5jIHNob3VsZCBoYXZlIGF0aDEw
-a193bWlfIHByZWZpeC4gSSBhbHNvIGRvbid0IGxpa2UKdGhlIG5hbWUgYXMgaXQgZG9lc24ndCBj
-b252ZXkgd2hhdCBpdCBkb2VzIGluIHRoZSBzbGlnaHRlc3QuIFBlcmhhcHMKYXRoMTBrX3dtaV9t
-Z210X3J4X2hfd2VwX3JlYXV0aCgpIG9yIGF0aDEwa193bWlfaGFuZGxlX3dlcF9yZWF1dGgoKQp3
-b3VsZCBiZSBhIGJpdCBiZXR0ZXI/CgoKPiArewo+ICsgICAgICAgc3RydWN0IGllZWU4MDIxMV9o
-ZHIgKmhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKXNrYi0+ZGF0YTsKPiArICAgICAgIHVu
-c2lnbmVkIGludCBoZHJsZW47Cj4gKyAgICAgICBib29sIHBlZXJfa2V5Owo+ICsgICAgICAgdTgg
-KmFkZHIsIGtleWlkeDsKPiArCj4gKyAgICAgICBpZiAoaWVlZTgwMjExX2lzX2F1dGgoaGRyLT5m
-cmFtZV9jb250cm9sKSAmJgo+ICsgICAgICAgICAgIGllZWU4MDIxMV9oYXNfcHJvdGVjdGVkKGhk
-ci0+ZnJhbWVfY29udHJvbCkpIHsKCk15IHByZWZlcmVuY2UgaXMgdG8gdXNlIGd1YXJkcyBpbiBm
-dW5jdGlvbnMgbGlrZSB0aGVzZSwgaS5lLgogIGlmICghYXV0aCB8fCAhcHJvdGVjdGVkKSByZXR1
-cm47CmFuZCB0aGVuIGNvbnRpbnVlIHdpdGggdGhlIGNvZGUgd2l0aG91dCBleHRyYSBpbmRlbnRh
-dGlvbi4KCgo+ICsgICAgICAgICAgICAgICBoZHJsZW4gPSBpZWVlODAyMTFfaGRybGVuKGhkci0+
-ZnJhbWVfY29udHJvbCk7Cj4gKyAgICAgICAgICAgICAgIGlmIChza2ItPmxlbiA8IChoZHJsZW4g
-KyA0KSkKCkl0J3MgcHJvYmFibHkgYSBnb29kIGlkZWEgdG8gdXNlIElFRUU4MDIxMV9XRVBfSVZf
-TEVOIGluc3RlYWQgb2YgbGl0ZXJhbCA0LgoKCj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0
-dXJuOwo+ICsKPiArICAgICAgICAgICAgICAga2V5aWR4ID0gc2tiLT5kYXRhW2hkcmxlbiArIDNd
-ID4+IDY7Cj4gKyAgICAgICAgICAgICAgIGFkZHIgPSBpZWVlODAyMTFfZ2V0X1NBKGhkcik7Cj4g
-KyAgICAgICAgICAgICAgIHBlZXJfa2V5ID0gYXRoMTBrX2lzX3BlZXJfd2VwX2tleV9zZXQoYXIs
-IGFkZHIsIGtleWlkeCk7Cj4gKwo+ICsgICAgICAgICAgICAgICBpZiAocGVlcl9rZXkpIHsKCkFn
-YWluLCBJJ2QgZG8gYSBndWFyZDogYGlmICghcGVlcl9rZXkpIHJldHVybmAuIEJ1dCBJJ20ganVz
-dCBwaWNreSA6LVAKSSBsZWF2ZSB0aGUgZmluYWwgZGVjaXNpb24gdXAgdG8geW91IG9yIEthbGxl
-LgoKClsuLi5dCj4gQEAgLTEyMDAsNiArMTIyNyw4IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3dtaV9l
-dmVudF9tZ210X3J4KHN0cnVjdCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+ICAg
-ICAgICAgaGRyID0gKHN0cnVjdCBpZWVlODAyMTFfaGRyICopc2tiLT5kYXRhOwo+ICAgICAgICAg
-ZmMgPSBsZTE2X3RvX2NwdShoZHItPmZyYW1lX2NvbnRyb2wpOwo+Cj4gKyAgICAgICBhdGgxMGtf
-Y2hlY2tfd2VwKGFyLCBza2IsIHN0YXR1cyk7Cj4gKwo+ICAgICAgICAgLyogRlcgZGVsaXZlcnMg
-V0VQIFNoYXJlZCBBdXRoIGZyYW1lIHdpdGggUHJvdGVjdGVkIEJpdCBzZXQgYW5kCj4gICAgICAg
-ICAgKiBlbmNyeXB0ZWQgcGF5bG9hZC4gSG93ZXZlciBpbiBjYXNlIG9mIFBNRiBpdCBkZWxpdmVy
-cyBkZWNyeXB0ZWQKPiAgICAgICAgICAqIGZyYW1lcyB3aXRoIFByb3RlY3RlZCBCaXQgc2V0LiAq
-LwoKVGhpcyBpcyBnZXR0aW5nIGEgbGl0dGxlIG1lc3N5LiBEaWQgeW91IGNvbnNpZGVyIHRvIHNv
-bWVob3cgdW5pZnkgdGhlCnByZXZpb3VzIHdlcCBzaGFyZWQgJiBwbWYgY29kZSB3aXRoIHlvdXIg
-bmV3IGZpeD8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior wrote:
+> IOW This fixes a corner case when station reconnects but ath10k AP for
+> some reason didn't notice it (e.g. station went out of range and came
+> back before AP inactivity timer kicked in), right? Or is there another
+> scenario? It might be a good idea to include this in the commit log.
+
+The corner case is when a station changes its default key and tries
+to reassociate, but does not send a deauth first.
+
+> I don't think the above will work for mBSS, e.g. consider vdev_id=0
+> being an open network and vdev_id=1 being wep-shared. Maybe it's about
+> time to introduce ath10k_peer_find_by_addr(struct ath10k *ar, const u8
+> *)?
+
+Yep, I was aware of this. I think we can do this for a single BSS
+now and have a FIXME to address multiple BSS later. This issue
+is rarely seen in practice.
+
+> Read access to peer->keys should be protected by either data_lock or
+> conf_mutex. Obviously the latter can't be used because this function
+> will be called from an atomic context leaving the data_lock. The
+> entire is_peer_wep_key_set() should require data_lock to be held while
+> it is called to avoid races.
+> 
+> Oh, and apparently this is buggy anyway because
+> ath10k_install_peer_wep_keys() is oblivious to this. Oops..
+
+I don't think it can happen, though ? ath10k_install_peer_wep_keys()
+would be called only when a station transitions to ASSOC and message 3
+can't be received when that happens ?
+
+(But, I did see a lockdep splat when using WEP).
+
+> This is getting a little messy. Did you consider to somehow unify the
+> previous wep shared & pmf code with your new fix?
+
+For shared wep, the FW delivers the first auth frame as encrypted and
+subsequent auth frames as decrypted, so we need to differentiate them somehow...
+
+I'll address the other stylistic comments and send a v2.
+
+Sujith
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
