@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsC4p-0002uN-QA
- for ath10k@lists.infradead.org; Sat, 22 Nov 2014 14:54:20 +0000
+ id 1XsCcE-00030S-MD
+ for ath10k@lists.infradead.org; Sat, 22 Nov 2014 15:28:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: seeking further info on firmware-3
-References: <546F8053.3010003@mindchasers.com>
-Date: Sat, 22 Nov 2014 16:53:18 +0200
-In-Reply-To: <546F8053.3010003@mindchasers.com> (Robert E. Cochran's message
- of "Fri, 21 Nov 2014 13:11:31 -0500")
-Message-ID: <87h9xr8ext.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 04/10] ath10k: make firmware text debug messages more
+ verbose.
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+ <1411507045-18973-4-git-send-email-greearb@candelatech.com>
+Date: Sat, 22 Nov 2014 17:28:22 +0200
+In-Reply-To: <1411507045-18973-4-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 23 Sep 2014 14:17:19
+ -0700")
+Message-ID: <878uj38dbd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,59 +26,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Robert E. Cochran" <wifi@mindchasers.com>
-Cc: ath10k@lists.infradead.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"Robert E. Cochran" <wifi@mindchasers.com> writes:
+greearb@candelatech.com writes:
 
-> I'm testing Linux 3.18-rc5 with a QCA9880 / Compex WLE900VX.
+> From: Ben Greear <greearb@candelatech.com>
 >
-> During boot, I'm seeing complaints about not finding firmware-3.bin:
+> There are not many of these messages producted by the
+> firmware, but they are generally fairly useful, so print
+> them at info level.
 >
-> ath10k_pci 0001:03:00.0: Direct firmware load for
-> ath10k/QCA988X/hw2.0/firmware-3.bin failed with error -2
-> ath10k_pci 0001:03:00.0: could not fetch firmware file
-> ath10k/QCA988X/hw2.0/firmware-3.bin': -2
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-You can ignore this warning. ath10k is just telling (in a confusing way)
-that it could not find firmware-3.bin and will try firmware-2.bin next.
-We should clear up that warning message.
+[...]
 
-> Can someone please confirm that we should be using
-> firmware-3.bin_10.2-00082-4-2 from the 10.2 folder on
-> https://github.com/kvalo/ath10k-firmware.git
-> ?  When we use this firmware, we see the following during boot:
->
-> ath10k_pci 0001:03:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
-> 10.2-00082-4-2 api 3 htt 2.1
-> ath10k_pci 0001:03:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 1
+> --- a/drivers/net/wireless/ath/ath10k/debug.h
+> +++ b/drivers/net/wireless/ath/ath10k/debug.h
+> @@ -35,6 +35,7 @@ enum ath10k_debug_mask {
+>  	ATH10K_DBG_BMI		= 0x00000400,
+>  	ATH10K_DBG_REGULATORY	= 0x00000800,
+>  	ATH10K_DBG_TESTMODE	= 0x00001000,
+> +	ATH10K_DBG_FW_MSG	= 0x00002000,
 
-That's good. Using firmware from 10.2 branch is a good idea. But did you
-rename it to firmware-2.bin? It should be called firmware-3.bin.
+I think FW_MSG is a bit too ambiguous, so I changed this to WMI_PRINT so
+that it's closer the real event name.
 
-> If this isn't the latest & greatest firmware, then where do I find
-> firmware-3.bin?
-
-ath10k-firmware.git is the correct location to find the firmware.
-
-> And If I should be using firmware-3.bin_10.2-00082-4-2, then are there
-> some release notes available for this?
-
-Unfortunately there are no firmware release notes available.
-
-> Finally, please let me know if it's a mistake to be working with
-> firmware-3 on the 3.18 kernel.   We're performing some early
-> integration testing with this WiFi module, and it's more important to
-> get things working as an AP with hostapd than getting the latest
-> cutting edge features working.
-
-The number three in "firmware-3.bin" is just an API number, just like
-the soname in shared libraries, to make it possible to have backwards
-compatibility with the firmware releases. Instead use version string
-like "10.2-00082-4-2" to identify between firmware releases.
-
-And yes, using firmware version 10.2-00082-4-2 is the firmware version I
-recommend to use at the moment.
+Full patch: https://github.com/kvalo/ath/commit/ce4269787f4b5e538731f34cb3a7358343efaa00
 
 -- 
 Kalle Valo
