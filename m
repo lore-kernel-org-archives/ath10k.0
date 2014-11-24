@@ -1,16 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xsvch-0005ms-6c
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 15:32:19 +0000
+ id 1XswiO-0007in-Pn
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 16:42:17 +0000
+Subject: [PATCH v2 0/2] ath10k: firmware memory debugfs interface
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Add the target register access and memory dump
- debugfs interface
-References: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com>
-Date: Mon, 24 Nov 2014 17:31:51 +0200
-In-Reply-To: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com> (Yanbo
- Li's message of "Sat, 22 Nov 2014 19:48:42 +0800")
-Message-ID: <87wq6k4ntk.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 24 Nov 2014 18:41:38 +0200
+Message-ID: <20141124164037.29422.14033.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,28 +20,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qti.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Yanbo Li <yanbol@qti.qualcomm.com> writes:
+Hi,
 
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -22,6 +22,7 @@
->  #include <linux/vmalloc.h>
->  
->  #include "core.h"
-> +#include "hif.h"
->  #include "debug.h"
->  #include "hif.h"
+this is v2 of Yanbo's firmware memory debugfs interface.
 
-hif.h is now included twice.
+Changelog:
 
-Let me send a v2. I'll also try splitting the patches as then it makes
-it easier to write the commit log.
+v2:
 
--- 
-Kalle Valo
+* split patches into two
+
+* simplify the commit logs
+
+* remove extra #include "hif.h" from debug.c
+
+---
+
+Yanbo Li (2):
+      ath10k: add register access debugfs interface
+      ath10k: add memory dump debugfs interface
+
+
+ drivers/net/wireless/ath/ath10k/core.h  |    2 
+ drivers/net/wireless/ath/ath10k/debug.c |  188 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hif.h   |   37 ++++++
+ drivers/net/wireless/ath/ath10k/pci.c   |    3 
+ 4 files changed, 230 insertions(+)
+
 
 _______________________________________________
 ath10k mailing list
