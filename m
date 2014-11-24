@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XstgV-00065a-CC
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 13:28:08 +0000
-Received: by mail-wg0-f49.google.com with SMTP id x12so12121155wgg.22
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 05:27:40 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: add missing goto
-Date: Mon, 24 Nov 2014 14:15:07 +0100
-Message-Id: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
+ id 1Xsu2O-0004zM-N5
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 13:50:45 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Add the target register access and memory dump
+ debugfs interface
+References: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com>
+Date: Mon, 24 Nov 2014 15:50:07 +0200
+In-Reply-To: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com> (Yanbo
+ Li's message of "Sat, 22 Nov 2014 19:48:42 +0800")
+Message-ID: <871tos7lo0.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,42 +20,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Yanbo Li <yanbol@qti.qualcomm.com>
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
 
-This prevents warning spamming if peer creation
-fails during sta_state in some cases.
+Yanbo Li <yanbol@qti.qualcomm.com> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+> The debugfs interface reg_addr&reg_val used to read and write the target
+> register.
+> The interface mmem_val used to dump the targer memory and also can be
+> used to assign value to target memory
+>
+> The basic usage explain as below:
+>
+> Register read/write:
+> reg_addr       (the register address)                    (read&write)
+> reg_value      (the register value,  output is ASCII)    (read&write)
+>
+> Read operation:
+> 1. Write the reg address to reg_addr
+>    IE:  echo 0x100000 > reg_addr
+> 2. Read the value from reg_value
+>    IE:  cat reg_value
+> Write operation:
+> 1. Write the reg address to reg_addr IE:  echo 0x100000 > reg_addr
+> 2. Write the value to the reg_value  IE:  echo  0x2400 > reg_value
+>
+> Target memory dump:
+> mem_value (the target memory, access with the length and start address
+> 							(read&write)
+> Read operation:
+>
+> 1: Read 4K(bs*count)) from address 0x400000(bs*skip)
+> dd if=mem_value bs=4 count=1024 skip=1048576 | xxd -g1
+>
+> 2: Read 0x50000(bs*count) from address 0x400000(bs*skip)
+> dd if=mem_value bs=4 count=81920 skip=1048576 | xxd -g1
+>
+> Write operation:
+>
+> 1: Write the 0x01020304 to address 0x400400(bs*seek)
+> echo 0x01020304 | xxd -r | dd of=mem_value bs=4 seek=1048832
+>
+> 2: Read the memory and then write back after edit
+> dd if=mem_value bs=4 count=1024 skip=1048576 > tmp.bin
+> edit the tmp.bin
+> dd if=tmp.bin of=mem_value bs=4 count=4 seek=1048576
+>
+> It suggests assign the 4 align number to bs, IE, 4, 8, 16 ....
+> Cause the target memory width is 32bit
+>
+> Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1245ac8..7b5a888 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3559,9 +3559,11 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			   arvif->vdev_id, sta->addr, ar->num_peers);
- 
- 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
--		if (ret)
-+		if (ret) {
- 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
-+			goto exit;
-+		}
- 
- 		if (vif->type == NL80211_IFTYPE_STATION) {
- 			WARN_ON(arvif->is_started);
+The commit log is quite hard to read due to formatting, but I can clean
+that up.
+
+> +	spin_lock_bh(&ar->data_lock);
+> +	reg_addr = ar->debug.reg_addr;
+> +	spin_unlock_bh(&ar->data_lock);
+
+[...]
+
+> +	spin_lock_bh(&ar->data_lock);
+> +	ar->debug.reg_addr = reg_addr;
+> +	spin_unlock_bh(&ar->data_lock);
+
+[...]
+
+> +	spin_lock_bh(&ar->data_lock);
+> +	reg_addr = ar->debug.reg_addr;
+> +	spin_unlock_bh(&ar->data_lock);
+
+[...]
+
+> +	spin_lock_bh(&ar->data_lock);
+> +	reg_addr = ar->debug.reg_addr;
+> +	spin_unlock_bh(&ar->data_lock);
+
+I admit that I'm far from a locking expert, but does that make any
+difference in the functionality?
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
