@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsuuW-0006Ql-V3
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:46:41 +0000
-Received: by mail-wi0-f176.google.com with SMTP id ex7so5904462wid.9
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:46:18 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: don't drop corrupted mgmt frames
-Date: Mon, 24 Nov 2014 15:34:08 +0100
-Message-Id: <1416839648-31803-1-git-send-email-michal.kazior@tieto.com>
+ id 1XsvKF-0008Rk-Mp
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 15:13:16 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: Fix shared WEP
+References: <1416796657-24657-1-git-send-email-sujith@msujith.org>
+ <1416796657-24657-2-git-send-email-sujith@msujith.org>
+Date: Mon, 24 Nov 2014 17:12:47 +0200
+In-Reply-To: <1416796657-24657-2-git-send-email-sujith@msujith.org> (Sujith
+ Manoharan's message of "Mon, 24 Nov 2014 08:07:35 +0530")
+Message-ID: <87lhn0639s.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,84 +20,93 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Sujith Manoharan <sujith@msujith.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Some firmware revisions don't seem to deilver
-management frames with FCS error via WMI so narrow
-down the HTT rule to not drop corrupted management
-frames.
+Sujith Manoharan <sujith@msujith.org> writes:
 
-This basically increases number of frames ath10k
-reports while sniffing.
+> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+>
+> When static keys are used in shared WEP, when a
+> station is associated, message 3 is sent with an
+> encrypted payload. But, for subsequent
+> authentications that are triggered without a
+> deauth, the auth frame is decrypted by the HW.
+>
+> To handle this, check if the WEP keys have already
+> been set for the peer and if so, mark the
+> frame as decrypted. This scenario can happen
+> when a station changes its default TX key and initiates
+> a new authentication sequence.
+>
+> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 13 +++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.c    |  7 +++++--
- 2 files changed, 16 insertions(+), 4 deletions(-)
+[...]
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 75b2293..85910b2 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1381,6 +1381,8 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
- {
- 	struct sk_buff *msdu;
- 	struct htt_rx_desc *rxd;
-+	bool is_mgmt;
-+	bool has_fcs_err;
- 
- 	msdu = skb_peek(amsdu);
- 	rxd = (void *)msdu->data - sizeof(*rxd);
-@@ -1394,12 +1396,19 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
- 		return false;
- 	}
- 
-+	is_mgmt = !!(rxd->attention.flags &
-+		     __cpu_to_le32(RX_ATTENTION_FLAGS_MGMT_TYPE));
-+	has_fcs_err = !!(rxd->attention.flags &
-+			 __cpu_to_le32(RX_ATTENTION_FLAGS_FCS_ERR));
-+
- 	/* Management frames are handled via WMI events. The pros of such
- 	 * approach is that channel is explicitly provided in WMI events
- 	 * whereas HTT doesn't provide channel information for Rxed frames.
-+	 *
-+	 * However some firmware revisions don't report corrupted frames via
-+	 * WMI so don't drop them.
- 	 */
--	if (rxd->attention.flags &
--	    __cpu_to_le32(RX_ATTENTION_FLAGS_MGMT_TYPE)) {
-+	if (is_mgmt && !has_fcs_err) {
- 		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
- 		return false;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c2bc828..df948a4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1166,8 +1166,11 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		return 0;
- 	}
- 
--	if (rx_status & WMI_RX_STATUS_ERR_CRC)
--		status->flag |= RX_FLAG_FAILED_FCS_CRC;
-+	if (rx_status & WMI_RX_STATUS_ERR_CRC) {
-+		dev_kfree_skb(skb);
-+		return 0;
-+	}
-+
- 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
- 		status->flag |= RX_FLAG_MMIC_ERROR;
- 
+> +bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
+> +				    u8 keyidx)
+> +{
+> +	struct ath10k_peer *peer;
+> +	int i;
+> +
+> +	/* We don't know which vdev this peer belongs to,
+> +	 * since WMI doesn't give us that information.
+> +	 *
+> +	 * FIXME: multi-bss needs to be handled.
+> +	 */
+> +	peer = ath10k_peer_find(ar, 0, addr);
+> +	if (!peer)
+> +		return false;
+
+This requires that data_lock is taken, right? If yes, can you document
+that with lockdep_assert_held(), please?
+
+> +static void ath10k_wmi_handle_wep_reauth(struct ath10k *ar,
+> +					 struct sk_buff *skb,
+> +					 struct ieee80211_rx_status *status)
+> +{
+> +	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+> +	unsigned int hdrlen;
+> +	bool peer_key;
+> +	u8 *addr, keyidx;
+
+Some kind of comment to document what this workaround is about would be
+good to have. For example, the first paragraph from the commit log
+sounds perfect.
+
+> +
+> +	if (!ieee80211_is_auth(hdr->frame_control) ||
+> +	    !ieee80211_has_protected(hdr->frame_control))
+> +		return;
+> +
+> +	hdrlen = ieee80211_hdrlen(hdr->frame_control);
+> +	if (skb->len < (hdrlen + IEEE80211_WEP_IV_LEN))
+> +		return;
+> +
+> +	keyidx = skb->data[hdrlen + 3] >> 6;
+
+No magic numbers, please. I didn't find anything for IV internals from
+ieee80211.h, not sure if we should add them there or just use ath10k
+internal defines.
+
+> +	addr = ieee80211_get_SA(hdr);
+> +
+> +	spin_lock_bh(&ar->data_lock);
+> +	peer_key = ath10k_mac_is_peer_wep_key_set(ar, addr, keyidx);
+> +	spin_unlock_bh(&ar->data_lock);
+> +
+> +	if (peer_key) {
+> +		ath10k_dbg(ar, ATH10K_DBG_MAC,
+> +			   "wep key present for peer: %pM\n", addr);
+
+"mac wep key present for peer %pM"
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
