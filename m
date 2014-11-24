@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsuMV-0006JC-11
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:11:32 +0000
-Received: by mail-wi0-f169.google.com with SMTP id r20so9123055wiv.0
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:11:09 -0800 (PST)
+ id 1XsuMk-0006J7-0V
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:11:46 +0000
+Received: by mail-wg0-f41.google.com with SMTP id y19so12372717wgg.0
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:11:08 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: make hw roc more reliable
-Date: Mon, 24 Nov 2014 14:58:32 +0100
-Message-Id: <1416837513-13386-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
-References: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/3] ath10k: fix offchan reliability
+Date: Mon, 24 Nov 2014 14:58:31 +0100
+Message-Id: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +25,130 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-With P2P concurrency requested hw roc duration
-time can be very small. Some firmware revisions
-refuse scan requests with too small channel dwell
-time.
+New firmware revisions don't need peer creation
+when doing offchannel tx. Earlier revisions would
+queue and never release frames without a peer.
 
-This prevents messages like, e.g. with connected
-STA vif and performing P2P Find:
-
- ath10k_pci 0000:00:05.0: failed to switch to channel for roc scan
- ieee80211 phy3: failed to start next HW ROC (-110)
+This prevent new firmware revisions from stopping
+replenishing wmi-htc tx credits and improves
+reliability of offchannel tx which would sometimes
+silently fail.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- drivers/net/wireless/ath/ath10k/wmi.h | 5 +++++
- 2 files changed, 7 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.h   |  1 +
+ drivers/net/wireless/ath/ath10k/htt.h    |  4 +++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  7 ++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 29 +++++++++++++++++++++++------
+ 4 files changed, 31 insertions(+), 10 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8f86bd3..c510785 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -83,6 +83,7 @@ struct ath10k_skb_cb {
+ 
+ 	struct {
+ 		u8 tid;
++		u16 freq;
+ 		bool is_offchan;
+ 		struct ath10k_htt_txbuf *txbuf;
+ 		u32 txbuf_paddr;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 15c58e8..17ca6ac 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -126,6 +126,7 @@ enum htt_data_tx_ext_tid {
+  *                  (HL hosts manage queues on the host )
+  *       more_in_batch: only for HL hosts. indicates if more packets are
+  *                      pending. this allows target to wait and aggregate
++ *       freq: 0 means home channel of given vdev. intended for offchannel
+  */
+ struct htt_data_tx_desc {
+ 	u8 flags0; /* %HTT_DATA_TX_DESC_FLAGS0_ */
+@@ -133,7 +134,8 @@ struct htt_data_tx_desc {
+ 	__le16 len;
+ 	__le16 id;
+ 	__le32 frags_paddr;
+-	__le32 peerid;
++	__le16 peerid;
++	__le16 freq;
+ 	u8 prefetch[0]; /* start of frame, for FW classification engine */
+ } __packed;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 5b7e42f..4bc51d8 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -554,13 +554,14 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	skb_cb->htt.txbuf->cmd_tx.len = __cpu_to_le16(msdu->len);
+ 	skb_cb->htt.txbuf->cmd_tx.id = __cpu_to_le16(msdu_id);
+ 	skb_cb->htt.txbuf->cmd_tx.frags_paddr = __cpu_to_le32(frags_paddr);
+-	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le32(HTT_INVALID_PEERID);
++	skb_cb->htt.txbuf->cmd_tx.peerid = __cpu_to_le16(HTT_INVALID_PEERID);
++	skb_cb->htt.txbuf->cmd_tx.freq = __cpu_to_le16(skb_cb->htt.freq);
+ 
+ 	trace_ath10k_htt_tx(ar, msdu_id, msdu->len, vdev_id, tid);
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT,
+-		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu\n",
++		   "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
+ 		   flags0, flags1, msdu->len, msdu_id, frags_paddr,
+-		   (u32)skb_cb->paddr, vdev_id, tid);
++		   (u32)skb_cb->paddr, vdev_id, tid, skb_cb->htt.freq);
+ 	ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
+ 			msdu->data, msdu->len);
+ 	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 8deae4d..272a9d9 100644
+index 1245ac8..8deae4d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3807,6 +3807,8 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
- 	if (ret)
- 		goto exit;
+@@ -1997,6 +1997,18 @@ static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
+ 	}
+ }
  
-+	duration = max(duration, WMI_SCAN_CHAN_MIN_TIME_MSEC);
++static bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
++{
++	/* FIXME: Not really sure since when the behaviour changed. At some
++	 * point new firmware stopped requiring creation of peer entries for
++	 * offchannel tx (and actually creating them causes issues with wmi-htc
++	 * tx credit replenishment and reliability). Assuming it's at least 3.4
++	 * because that's when the `freq` was introduced to TX_FRM HTT command.
++	 */
++	return !(ar->htt.target_version_major >= 3 &&
++		 ar->htt.target_version_minor >= 4);
++}
 +
- 	memset(&arg, 0, sizeof(arg));
- 	ath10k_wmi_start_scan_init(ar, &arg);
- 	arg.vdev_id = arvif->vdev_id;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a38d788..1b7141a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -1952,6 +1952,11 @@ struct wmi_ssid_list {
- #define WLAN_SCAN_PARAMS_MAX_BSSID   4
- #define WLAN_SCAN_PARAMS_MAX_IE_LEN  256
+ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+@@ -2341,16 +2353,21 @@ static void ath10k_tx(struct ieee80211_hw *hw,
  
-+/* Values lower than this may be refused by some firmware revisions with a scan
-+ * completion with a timedout reason.
-+ */
-+#define WMI_SCAN_CHAN_MIN_TIME_MSEC 40
+ 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
+ 		spin_lock_bh(&ar->data_lock);
+-		ATH10K_SKB_CB(skb)->htt.is_offchan = true;
++		ATH10K_SKB_CB(skb)->htt.freq = ar->scan.roc_freq;
+ 		ATH10K_SKB_CB(skb)->vdev_id = ar->scan.vdev_id;
+ 		spin_unlock_bh(&ar->data_lock);
+ 
+-		ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
+-			   skb);
++		if (ath10k_mac_need_offchan_tx_work(ar)) {
++			ATH10K_SKB_CB(skb)->htt.freq = 0;
++			ATH10K_SKB_CB(skb)->htt.is_offchan = true;
+ 
+-		skb_queue_tail(&ar->offchan_tx_queue, skb);
+-		ieee80211_queue_work(hw, &ar->offchan_tx_work);
+-		return;
++			ath10k_dbg(ar, ATH10K_DBG_MAC, "queued offchannel skb %p\n",
++				   skb);
 +
- /* Scan priority numbers must be sequential, starting with 0 */
- enum wmi_scan_priority {
- 	WMI_SCAN_PRIORITY_VERY_LOW = 0,
++			skb_queue_tail(&ar->offchan_tx_queue, skb);
++			ieee80211_queue_work(hw, &ar->offchan_tx_work);
++			return;
++		}
+ 	}
+ 
+ 	ath10k_tx_htt(ar, skb);
 -- 
 1.8.5.3
 
