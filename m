@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XssH7-0006qn-Ip
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 11:57:50 +0000
-From: Vivek Natarajan <nataraja@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Do not limit RTS threshold value to 2347
-Date: Mon, 24 Nov 2014 17:27:20 +0530
-Message-ID: <1416830240-3019-1-git-send-email-nataraja@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1XstgV-00066Y-Bm
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 13:28:08 +0000
+Received: by mail-wi0-f169.google.com with SMTP id r20so8836423wiv.2
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 05:27:41 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/3] ath10k: clean up num_peers locking
+Date: Mon, 24 Nov 2014 14:15:08 +0100
+Message-Id: <1416834909-7130-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
+References: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,57 +19,79 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Increase the rts threshold from the legacy value of 2347 to support higher
-threshold limit.
+The var was supposed to be protected by data_lock
+but it wasn't so in all instances. It's actually
+not necessary to have a spinlock protected
+num_peers so drop it.
 
-Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+All instances of num_peers are already within
+conf_mutex sections so use that.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |    6 +-----
- drivers/net/wireless/ath/ath10k/wmi.h |    1 -
- 2 files changed, 1 insertion(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 8 +++-----
+ 2 files changed, 4 insertions(+), 6 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 8f86bd3..be7e50b6 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -560,7 +560,7 @@ struct ath10k {
+ 	struct list_head peers;
+ 	wait_queue_head_t peer_mapping_wq;
+ 
+-	/* number of created peers; protected by data_lock */
++	/* protected by conf_mutex */
+ 	int num_peers;
+ 
+ 	struct work_struct offchan_tx_work;
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 8b60749..61f7e22 100644
+index 7b5a888..3312e75 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -391,15 +391,11 @@ static int ath10k_mac_set_kickout(struct ath10k_vif *arvif)
+@@ -339,9 +339,8 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 			    addr, vdev_id, ret);
+ 		return ret;
+ 	}
+-	spin_lock_bh(&ar->data_lock);
++
+ 	ar->num_peers++;
+-	spin_unlock_bh(&ar->data_lock);
+ 
  	return 0;
  }
+@@ -432,9 +431,7 @@ static int ath10k_peer_delete(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 	if (ret)
+ 		return ret;
  
--static int  ath10k_mac_set_rts(struct ath10k_vif *arvif, u32 value)
-+static int ath10k_mac_set_rts(struct ath10k_vif *arvif, u32 value)
- {
- 	struct ath10k *ar = arvif->ar;
- 	u32 vdev_param;
+-	spin_lock_bh(&ar->data_lock);
+ 	ar->num_peers--;
+-	spin_unlock_bh(&ar->data_lock);
  
--	if (value != 0xFFFFFFFF)
--		value = min_t(u32, arvif->ar->hw->wiphy->rts_threshold,
--			      ATH10K_RTS_MAX);
--
- 	vdev_param = ar->wmi.vdev_param->rts_threshold;
- 	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param, value);
+ 	return 0;
  }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a38d788..8a4e779 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4547,7 +4547,6 @@ struct wmi_dbglog_cfg_cmd {
- 	__le32 config_valid;
- } __packed;
+@@ -471,8 +468,9 @@ static void ath10k_peer_cleanup_all(struct ath10k *ar)
+ 		list_del(&peer->list);
+ 		kfree(peer);
+ 	}
+-	ar->num_peers = 0;
+ 	spin_unlock_bh(&ar->data_lock);
++
++	ar->num_peers = 0;
+ }
  
--#define ATH10K_RTS_MAX		2347
- #define ATH10K_FRAGMT_THRESHOLD_MIN	540
- #define ATH10K_FRAGMT_THRESHOLD_MAX	2346
- 
+ /************************/
 -- 
-1.7.9.5
+1.8.5.3
 
 
 _______________________________________________
