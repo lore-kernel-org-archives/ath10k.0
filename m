@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xsu2O-0004zM-N5
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 13:50:45 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1XsuEn-0000QX-Kr
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:03:34 +0000
+Received: by mail-wi0-f174.google.com with SMTP id h11so5766585wiw.7
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:03:10 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <871tos7lo0.fsf@kamboji.qca.qualcomm.com>
+References: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com>
+ <871tos7lo0.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 24 Nov 2014 15:03:10 +0100
+Message-ID: <CA+BoTQmdK1fYaWmPAd4GswKR7dKErD5MA2DtrNRZLEc-dFTYLA@mail.gmail.com>
 Subject: Re: [PATCH] ath10k: Add the target register access and memory dump
  debugfs interface
-References: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com>
-Date: Mon, 24 Nov 2014 15:50:07 +0200
-In-Reply-To: <1416656922-6645-1-git-send-email-yanbol@qti.qualcomm.com> (Yanbo
- Li's message of "Sat, 22 Nov 2014 19:48:42 +0800")
-Message-ID: <871tos7lo0.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,93 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qti.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Yanbo Li <yanbol@qti.qualcomm.com>, Yanbo Li <dreamfly281@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Yanbo Li <yanbol@qti.qualcomm.com> writes:
-
-> The debugfs interface reg_addr&reg_val used to read and write the target
-> register.
-> The interface mmem_val used to dump the targer memory and also can be
-> used to assign value to target memory
->
-> The basic usage explain as below:
->
-> Register read/write:
-> reg_addr       (the register address)                    (read&write)
-> reg_value      (the register value,  output is ASCII)    (read&write)
->
-> Read operation:
-> 1. Write the reg address to reg_addr
->    IE:  echo 0x100000 > reg_addr
-> 2. Read the value from reg_value
->    IE:  cat reg_value
-> Write operation:
-> 1. Write the reg address to reg_addr IE:  echo 0x100000 > reg_addr
-> 2. Write the value to the reg_value  IE:  echo  0x2400 > reg_value
->
-> Target memory dump:
-> mem_value (the target memory, access with the length and start address
-> 							(read&write)
-> Read operation:
->
-> 1: Read 4K(bs*count)) from address 0x400000(bs*skip)
-> dd if=mem_value bs=4 count=1024 skip=1048576 | xxd -g1
->
-> 2: Read 0x50000(bs*count) from address 0x400000(bs*skip)
-> dd if=mem_value bs=4 count=81920 skip=1048576 | xxd -g1
->
-> Write operation:
->
-> 1: Write the 0x01020304 to address 0x400400(bs*seek)
-> echo 0x01020304 | xxd -r | dd of=mem_value bs=4 seek=1048832
->
-> 2: Read the memory and then write back after edit
-> dd if=mem_value bs=4 count=1024 skip=1048576 > tmp.bin
-> edit the tmp.bin
-> dd if=tmp.bin of=mem_value bs=4 count=4 seek=1048576
->
-> It suggests assign the 4 align number to bs, IE, 4, 8, 16 ....
-> Cause the target memory width is 32bit
->
-> Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
-
-The commit log is quite hard to read due to formatting, but I can clean
-that up.
-
-> +	spin_lock_bh(&ar->data_lock);
-> +	reg_addr = ar->debug.reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
-
-[...]
-
-> +	spin_lock_bh(&ar->data_lock);
-> +	ar->debug.reg_addr = reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
-
-[...]
-
-> +	spin_lock_bh(&ar->data_lock);
-> +	reg_addr = ar->debug.reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
-
-[...]
-
-> +	spin_lock_bh(&ar->data_lock);
-> +	reg_addr = ar->debug.reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
-
-I admit that I'm far from a locking expert, but does that make any
-difference in the functionality?
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgTm92ZW1iZXIgMjAxNCBhdCAxNDo1MCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
+b21tLmNvbT4gd3JvdGU6Cj4gWWFuYm8gTGkgPHlhbmJvbEBxdGkucXVhbGNvbW0uY29tPiB3cml0
+ZXM6ClsuLi5dCj4+ICsgICAgIHNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4+ICsgICAg
+IHJlZ19hZGRyID0gYXItPmRlYnVnLnJlZ19hZGRyOwo+PiArICAgICBzcGluX3VubG9ja19iaCgm
+YXItPmRhdGFfbG9jayk7Cj4KPiBbLi4uXQo+Cj4+ICsgICAgIHNwaW5fbG9ja19iaCgmYXItPmRh
+dGFfbG9jayk7Cj4+ICsgICAgIGFyLT5kZWJ1Zy5yZWdfYWRkciA9IHJlZ19hZGRyOwo+PiArICAg
+ICBzcGluX3VubG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4KPiBbLi4uXQo+Cj4+ICsgICAgIHNw
+aW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4+ICsgICAgIHJlZ19hZGRyID0gYXItPmRlYnVn
+LnJlZ19hZGRyOwo+PiArICAgICBzcGluX3VubG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4KPiBb
+Li4uXQo+Cj4+ICsgICAgIHNwaW5fbG9ja19iaCgmYXItPmRhdGFfbG9jayk7Cj4+ICsgICAgIHJl
+Z19hZGRyID0gYXItPmRlYnVnLnJlZ19hZGRyOwo+PiArICAgICBzcGluX3VubG9ja19iaCgmYXIt
+PmRhdGFfbG9jayk7Cj4KPiBJIGFkbWl0IHRoYXQgSSdtIGZhciBmcm9tIGEgbG9ja2luZyBleHBl
+cnQsIGJ1dCBkb2VzIHRoYXQgbWFrZSBhbnkKPiBkaWZmZXJlbmNlIGluIHRoZSBmdW5jdGlvbmFs
+aXR5PwoKSSBpbWFnaW5lIHJlZ19hZGRyIGNvdWxkIGVuZCB1cCBuZWVkaW5nIDIgaW5zdHJ1Y3Rp
+b25zIHRvIGJlIHNldCBvbgpzb21lIHdlaXJkIGFyY2hpdGVjdHVyZStjb21waWxlciBjb21iaW5h
+dGlvbiBpbiB3aGljaCBjYXNlIGxvY2tpbmcgaXMKZGVzaXJlZC4gV2l0aCBtdWx0aXBsZSBhY2Nl
+c3MgdG8gd3JpdGUgcmVnX2FkZHIgeW91IGNvdWxkIGVuZCB1cApyZWFkaW5nIGFuIGFkZHJlc3Mg
+dGhhdCBlaXRoZXIgaXNuJ3QgdGhlIG9sZCBub3IgdGhlIG5ldyBvbmUuIFNob3VsZApiZSBoYXJt
+bGVzcyB0aG91Z2ggYW5kIHlvdSBjb3VsZCBhcmd1ZSB0aGF0IHlvdSBzaG91bGRuJ3QgYWNjZXNz
+IHRoZQpyZWdfYWRkciBkZWJ1Z2ZzIGZpbGUgc2ltdWx0YW5lb3VzbHkgaW4gdGhlIGZpcnN0IHBs
+YWNlLiBNYXliZSBJJ20KanVzdCBvdmVyLWV4YWdnZXJhdGluZz8gOi0pCgoKTWljaGHFggoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
