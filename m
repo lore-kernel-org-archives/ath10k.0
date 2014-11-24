@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsueP-0007Sk-N9
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:30:02 +0000
-Received: by mail-wi0-f173.google.com with SMTP id r20so5832119wiv.12
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:29:40 -0800 (PST)
+ id 1XsueN-0007SS-I2
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:30:00 +0000
+Received: by mail-wg0-f41.google.com with SMTP id y19so12309723wgg.14
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:29:37 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: move uart pin config into hw_params
-Date: Mon, 24 Nov 2014 15:17:26 +0100
-Message-Id: <1416838646-18801-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
-References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
+Date: Mon, 24 Nov 2014 15:17:24 +0100
+Message-Id: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,46 +25,150 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This will make it possible to easily support
-different hardware with different uart pin
-configuration.
+This will make it easier to extend and maintain
+list of supported hardware.
+
+As a requirement this moves chip_id checking a
+little later because target_version isn't known
+until BMI can be queried.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 3 ++-
- drivers/net/wireless/ath/ath10k/core.h | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/core.c | 72 ++++++++++++++++------------------
+ drivers/net/wireless/ath/ath10k/core.h |  3 +-
+ 2 files changed, 36 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 204aa04..0bce152 100644
+index f660553..3904ce3 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -58,6 +58,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -43,11 +43,21 @@ MODULE_PARM_DESC(uart_print, "Uart target debugging");
+ MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
+ MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
+ 
++static u32 qca988x_supported_chips[] = {
++	/* QCA988X_HW_1_0_CHIP_ID_REV is not supported. It's way too buggy and
++	 * crashes because ath10k doesn't have hacks and workarounds for it.
++	 */
++
++	QCA988X_HW_2_0_CHIP_ID_REV
++};
++
+ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 	{
+ 		.id = QCA988X_HW_2_0_VERSION,
+ 		.name = "qca988x hw2.0",
  		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
- 		.supported_chips = qca988x_supported_chips,
- 		.num_supported_chips = ARRAY_SIZE(qca988x_supported_chips),
-+		.uart_pin = 7,
++		.supported_chips = qca988x_supported_chips,
++		.num_supported_chips = ARRAY_SIZE(qca988x_supported_chips),
  		.fw = {
  			.dir = QCA988X_HW_2_0_FW_DIR,
  			.fw = QCA988X_HW_2_0_FW_FILE,
-@@ -708,7 +709,7 @@ static int ath10k_init_uart(struct ath10k *ar)
- 	if (!uart_print)
- 		return 0;
+@@ -719,10 +729,26 @@ static int ath10k_init_uart(struct ath10k *ar)
+ 	return 0;
+ }
  
--	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, 7);
-+	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
- 	if (ret) {
- 		ath10k_warn(ar, "could not enable UART prints (%d)\n", ret);
- 		return ret;
++static int ath10k_core_check_chip_id(struct ath10k *ar, u32 chip_id,
++				     const struct ath10k_hw_params *hw_params)
++{
++	u32 hw_revision = MS(chip_id, SOC_CHIP_ID_REV);
++	int i;
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
++		   chip_id, hw_revision);
++
++	for (i = 0; i < hw_params->num_supported_chips; i++)
++		if (hw_params->supported_chips[i] == hw_revision)
++			return 0;
++
++	return -ENOTSUPP;
++}
++
+ static int ath10k_init_hw_params(struct ath10k *ar)
+ {
+ 	const struct ath10k_hw_params *uninitialized_var(hw_params);
+-	int i;
++	int i, ret;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
+ 		hw_params = &ath10k_hw_params_list[i];
+@@ -737,6 +763,13 @@ static int ath10k_init_hw_params(struct ath10k *ar)
+ 		return -EINVAL;
+ 	}
+ 
++	ret = ath10k_core_check_chip_id(ar, ar->chip_id, hw_params);
++	if (ret) {
++		ath10k_err(ar, "unsupported hardware %s chip_id 0x%08x\n",
++			   hw_params->name, ar->chip_id);
++		return ret;
++	}
++
+ 	ar->hw_params = *hw_params;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "Hardware name %s version 0x%x\n",
+@@ -1055,34 +1088,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 	return 0;
+ }
+ 
+-static int ath10k_core_check_chip_id(struct ath10k *ar)
+-{
+-	u32 hw_revision = MS(ar->chip_id, SOC_CHIP_ID_REV);
+-
+-	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
+-		   ar->chip_id, hw_revision);
+-
+-	/* Check that we are not using hw1.0 (some of them have same pci id
+-	 * as hw2.0) before doing anything else as ath10k crashes horribly
+-	 * due to missing hw1.0 workarounds. */
+-	switch (hw_revision) {
+-	case QCA988X_HW_1_0_CHIP_ID_REV:
+-		ath10k_err(ar, "ERROR: qca988x hw1.0 is not supported\n");
+-		return -EOPNOTSUPP;
+-
+-	case QCA988X_HW_2_0_CHIP_ID_REV:
+-		/* known hardware revision, continue normally */
+-		return 0;
+-
+-	default:
+-		ath10k_warn(ar, "Warning: hardware revision unknown (0x%x), expect problems\n",
+-			    ar->chip_id);
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static void ath10k_core_register_work(struct work_struct *work)
+ {
+ 	struct ath10k *ar = container_of(work, struct ath10k, register_work);
+@@ -1130,16 +1135,7 @@ err:
+ 
+ int ath10k_core_register(struct ath10k *ar, u32 chip_id)
+ {
+-	int status;
+-
+ 	ar->chip_id = chip_id;
+-
+-	status = ath10k_core_check_chip_id(ar);
+-	if (status) {
+-		ath10k_err(ar, "Unsupported chip id 0x%08x\n", ar->chip_id);
+-		return status;
+-	}
+-
+ 	queue_work(ar->workqueue, &ar->register_work);
+ 
+ 	return 0;
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 1cc81e8..f8dd904 100644
+index 8f86bd3..d37ffd6 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -477,6 +477,7 @@ struct ath10k {
+@@ -475,7 +475,8 @@ struct ath10k {
+ 		u32 id;
+ 		const char *name;
  		u32 patch_load_addr;
- 		const u32 *supported_chips;
- 		int num_supported_chips;
-+		int uart_pin;
+-
++		const u32 *supported_chips;
++		int num_supported_chips;
  		struct ath10k_hw_params_fw {
  			const char *dir;
  			const char *fw;
