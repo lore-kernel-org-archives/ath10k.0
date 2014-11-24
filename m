@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XswtL-00063x-Vj
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 16:53:36 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 2/2] ath10k: add memory dump debugfs interface
-References: <20141124164037.29422.14033.stgit@potku.adurom.net>
- <20141124164208.29422.76134.stgit@potku.adurom.net>
-Date: Mon, 24 Nov 2014 18:52:58 +0200
-In-Reply-To: <20141124164208.29422.76134.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 24 Nov 2014 18:42:08 +0200")
-Message-ID: <87mw7g4k2d.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XsyUl-0005zO-CR
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 18:36:19 +0000
+Message-ID: <54737A8C.40102@candelatech.com>
+Date: Mon, 24 Nov 2014 10:35:56 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k: Do not limit RTS threshold value to 2347
+References: <1416830240-3019-1-git-send-email-nataraja@qti.qualcomm.com>
+In-Reply-To: <1416830240-3019-1-git-send-email-nataraja@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,46 +22,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Cc: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+On 11/24/2014 03:57 AM, Vivek Natarajan wrote:
+> Increase the rts threshold from the legacy value of 2347 to support higher
+> threshold limit.
 
-> +	ret = copy_from_user(buf, user_buf, count);
-> +	if (ret)
-> +		goto err_free_copy;
-> +
-> +	ret = ath10k_hif_diag_write(ar, *ppos, buf, count);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to write address 0x%08x via diagnose window from debugfs: %d\n",
-> +			    (u32)(*ppos), ret);
-> +		goto err_free_copy;
-> +	}
-> +
-> +	*ppos += count;
-> +	ret = count;
-> +
-> +err_free_copy:
-> +	vfree(buf);
-> +	return ret;
+Does any firmware actually support RTS?  It didn't work last I tested
+it on 10.1.
 
-This introduces a new smatch warning:
-
-drivers/net/wireless/ath/ath10k/debug.c:1100 ath10k_mem_value_write()
-warn: maybe return -EFAULT instead of the bytes remaining?
-
-I think it should be like this:
-
-ret = copy_from_user(buf, user_buf, count);
-if (ret) {
-        ret = -EFAULT;
-	goto err_free_copy;
-}
-
-Comments?
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
