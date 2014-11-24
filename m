@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsueN-0007SS-I2
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:30:00 +0000
-Received: by mail-wg0-f41.google.com with SMTP id y19so12309723wgg.14
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:29:37 -0800 (PST)
+ id 1XsuuW-0006Ql-V3
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:46:41 +0000
+Received: by mail-wi0-f176.google.com with SMTP id ex7so5904462wid.9
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:46:18 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
-Date: Mon, 24 Nov 2014 15:17:24 +0100
-Message-Id: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: don't drop corrupted mgmt frames
+Date: Mon, 24 Nov 2014 15:34:08 +0100
+Message-Id: <1416839648-31803-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,153 +25,73 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This will make it easier to extend and maintain
-list of supported hardware.
+Some firmware revisions don't seem to deilver
+management frames with FCS error via WMI so narrow
+down the HTT rule to not drop corrupted management
+frames.
 
-As a requirement this moves chip_id checking a
-little later because target_version isn't known
-until BMI can be queried.
+This basically increases number of frames ath10k
+reports while sniffing.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 72 ++++++++++++++++------------------
- drivers/net/wireless/ath/ath10k/core.h |  3 +-
- 2 files changed, 36 insertions(+), 39 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 13 +++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.c    |  7 +++++--
+ 2 files changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f660553..3904ce3 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -43,11 +43,21 @@ MODULE_PARM_DESC(uart_print, "Uart target debugging");
- MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
- MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
- 
-+static u32 qca988x_supported_chips[] = {
-+	/* QCA988X_HW_1_0_CHIP_ID_REV is not supported. It's way too buggy and
-+	 * crashes because ath10k doesn't have hacks and workarounds for it.
-+	 */
-+
-+	QCA988X_HW_2_0_CHIP_ID_REV
-+};
-+
- static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 	{
- 		.id = QCA988X_HW_2_0_VERSION,
- 		.name = "qca988x hw2.0",
- 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
-+		.supported_chips = qca988x_supported_chips,
-+		.num_supported_chips = ARRAY_SIZE(qca988x_supported_chips),
- 		.fw = {
- 			.dir = QCA988X_HW_2_0_FW_DIR,
- 			.fw = QCA988X_HW_2_0_FW_FILE,
-@@ -719,10 +729,26 @@ static int ath10k_init_uart(struct ath10k *ar)
- 	return 0;
- }
- 
-+static int ath10k_core_check_chip_id(struct ath10k *ar, u32 chip_id,
-+				     const struct ath10k_hw_params *hw_params)
-+{
-+	u32 hw_revision = MS(chip_id, SOC_CHIP_ID_REV);
-+	int i;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
-+		   chip_id, hw_revision);
-+
-+	for (i = 0; i < hw_params->num_supported_chips; i++)
-+		if (hw_params->supported_chips[i] == hw_revision)
-+			return 0;
-+
-+	return -ENOTSUPP;
-+}
-+
- static int ath10k_init_hw_params(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 75b2293..85910b2 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1381,6 +1381,8 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
  {
- 	const struct ath10k_hw_params *uninitialized_var(hw_params);
--	int i;
-+	int i, ret;
+ 	struct sk_buff *msdu;
+ 	struct htt_rx_desc *rxd;
++	bool is_mgmt;
++	bool has_fcs_err;
  
- 	for (i = 0; i < ARRAY_SIZE(ath10k_hw_params_list); i++) {
- 		hw_params = &ath10k_hw_params_list[i];
-@@ -737,6 +763,13 @@ static int ath10k_init_hw_params(struct ath10k *ar)
- 		return -EINVAL;
+ 	msdu = skb_peek(amsdu);
+ 	rxd = (void *)msdu->data - sizeof(*rxd);
+@@ -1394,12 +1396,19 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
+ 		return false;
  	}
  
-+	ret = ath10k_core_check_chip_id(ar, ar->chip_id, hw_params);
-+	if (ret) {
-+		ath10k_err(ar, "unsupported hardware %s chip_id 0x%08x\n",
-+			   hw_params->name, ar->chip_id);
-+		return ret;
++	is_mgmt = !!(rxd->attention.flags &
++		     __cpu_to_le32(RX_ATTENTION_FLAGS_MGMT_TYPE));
++	has_fcs_err = !!(rxd->attention.flags &
++			 __cpu_to_le32(RX_ATTENTION_FLAGS_FCS_ERR));
++
+ 	/* Management frames are handled via WMI events. The pros of such
+ 	 * approach is that channel is explicitly provided in WMI events
+ 	 * whereas HTT doesn't provide channel information for Rxed frames.
++	 *
++	 * However some firmware revisions don't report corrupted frames via
++	 * WMI so don't drop them.
+ 	 */
+-	if (rxd->attention.flags &
+-	    __cpu_to_le32(RX_ATTENTION_FLAGS_MGMT_TYPE)) {
++	if (is_mgmt && !has_fcs_err) {
+ 		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx mgmt ctrl\n");
+ 		return false;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index c2bc828..df948a4 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1166,8 +1166,11 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		return 0;
+ 	}
+ 
+-	if (rx_status & WMI_RX_STATUS_ERR_CRC)
+-		status->flag |= RX_FLAG_FAILED_FCS_CRC;
++	if (rx_status & WMI_RX_STATUS_ERR_CRC) {
++		dev_kfree_skb(skb);
++		return 0;
 +	}
 +
- 	ar->hw_params = *hw_params;
+ 	if (rx_status & WMI_RX_STATUS_ERR_MIC)
+ 		status->flag |= RX_FLAG_MMIC_ERROR;
  
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "Hardware name %s version 0x%x\n",
-@@ -1055,34 +1088,6 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 	return 0;
- }
- 
--static int ath10k_core_check_chip_id(struct ath10k *ar)
--{
--	u32 hw_revision = MS(ar->chip_id, SOC_CHIP_ID_REV);
--
--	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot chip_id 0x%08x hw_revision 0x%x\n",
--		   ar->chip_id, hw_revision);
--
--	/* Check that we are not using hw1.0 (some of them have same pci id
--	 * as hw2.0) before doing anything else as ath10k crashes horribly
--	 * due to missing hw1.0 workarounds. */
--	switch (hw_revision) {
--	case QCA988X_HW_1_0_CHIP_ID_REV:
--		ath10k_err(ar, "ERROR: qca988x hw1.0 is not supported\n");
--		return -EOPNOTSUPP;
--
--	case QCA988X_HW_2_0_CHIP_ID_REV:
--		/* known hardware revision, continue normally */
--		return 0;
--
--	default:
--		ath10k_warn(ar, "Warning: hardware revision unknown (0x%x), expect problems\n",
--			    ar->chip_id);
--		return 0;
--	}
--
--	return 0;
--}
--
- static void ath10k_core_register_work(struct work_struct *work)
- {
- 	struct ath10k *ar = container_of(work, struct ath10k, register_work);
-@@ -1130,16 +1135,7 @@ err:
- 
- int ath10k_core_register(struct ath10k *ar, u32 chip_id)
- {
--	int status;
--
- 	ar->chip_id = chip_id;
--
--	status = ath10k_core_check_chip_id(ar);
--	if (status) {
--		ath10k_err(ar, "Unsupported chip id 0x%08x\n", ar->chip_id);
--		return status;
--	}
--
- 	queue_work(ar->workqueue, &ar->register_work);
- 
- 	return 0;
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8f86bd3..d37ffd6 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -475,7 +475,8 @@ struct ath10k {
- 		u32 id;
- 		const char *name;
- 		u32 patch_load_addr;
--
-+		const u32 *supported_chips;
-+		int num_supported_chips;
- 		struct ath10k_hw_params_fw {
- 			const char *dir;
- 			const char *fw;
 -- 
 1.8.5.3
 
