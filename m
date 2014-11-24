@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsjVi-00057j-Od
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 02:36:19 +0000
-From: Sujith Manoharan <sujith@msujith.org>
-Subject: [PATCH 1/3] ath10k: Fix shared WEP
-Date: Mon, 24 Nov 2014 08:07:35 +0530
-Message-Id: <1416796657-24657-2-git-send-email-sujith@msujith.org>
-In-Reply-To: <1416796657-24657-1-git-send-email-sujith@msujith.org>
-References: <1416796657-24657-1-git-send-email-sujith@msujith.org>
+ id 1Xsqaw-0008T4-RI
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 10:10:12 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: re-config ht_caps when chainmask is modified.
+References: <1411576506-11815-1-git-send-email-greearb@candelatech.com>
+ <1411576506-11815-2-git-send-email-greearb@candelatech.com>
+Date: Mon, 24 Nov 2014 12:09:42 +0200
+In-Reply-To: <1411576506-11815-2-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Wed, 24 Sep 2014 09:35:06
+ -0700")
+Message-ID: <87ioi47vvd.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,136 +21,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+Hi,
 
-When static keys are used in shared WEP, when a
-station is associated, message 3 is sent with an
-encrypted payload. But, for subsequent
-authentications that are triggered without a
-deauth, the auth frame is decrypted by the HW.
+something to clarify about mac80211 behaviour:
 
-To handle this, check if the WEP keys have already
-been set for the peer and if so, mark the
-frame as decrypted. This scenario can happen
-when a station changes its default TX key and initiates
-a new authentication sequence.
+greearb@candelatech.com writes:
 
-Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 23 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.h |  2 ++
- drivers/net/wireless/ath/ath10k/wmi.c | 33 +++++++++++++++++++++++++++++++++
- 3 files changed, 58 insertions(+)
+> This lets the mac80211 stack use the proper ht-caps when
+> negotiating with the peer.  Note that all vdevs are guaranteed
+> to be down when antenna changes, so we can set the ht_caps
+> without worrying about messing up existing stations.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1245ac8..23116c2 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -179,6 +179,29 @@ static int ath10k_clear_peer_keys(struct ath10k_vif *arvif,
- 	return first_errno;
- }
- 
-+bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
-+				    u8 keyidx)
-+{
-+	struct ath10k_peer *peer;
-+	int i;
-+
-+	/* We don't know which vdev this peer belongs to,
-+	 * since WMI doesn't give us that information.
-+	 *
-+	 * FIXME: multi-bss needs to be handled.
-+	 */
-+	peer = ath10k_peer_find(ar, 0, addr);
-+	if (!peer)
-+		return false;
-+
-+	for (i = 0; i < ARRAY_SIZE(peer->keys); i++) {
-+		if (peer->keys[i] && peer->keys[i]->keyidx == keyidx)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static int ath10k_clear_vdev_key(struct ath10k_vif *arvif,
- 				 struct ieee80211_key_conf *key)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index 4e3c989..cfa4d5d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -41,6 +41,8 @@ void ath10k_mgmt_over_wmi_tx_work(struct work_struct *work);
- void ath10k_halt(struct ath10k *ar);
- void ath10k_mac_vif_beacon_free(struct ath10k_vif *arvif);
- void ath10k_drain_tx(struct ath10k *ar);
-+bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
-+				    u8 keyidx);
- 
- static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c2bc828..a12bba4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1113,6 +1113,37 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
- 	return rate_idx;
- }
- 
-+static void ath10k_wmi_handle_wep_reauth(struct ath10k *ar,
-+					 struct sk_buff *skb,
-+					 struct ieee80211_rx_status *status)
-+{
-+	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	unsigned int hdrlen;
-+	bool peer_key;
-+	u8 *addr, keyidx;
-+
-+	if (!ieee80211_is_auth(hdr->frame_control) ||
-+	    !ieee80211_has_protected(hdr->frame_control))
-+		return;
-+
-+	hdrlen = ieee80211_hdrlen(hdr->frame_control);
-+	if (skb->len < (hdrlen + IEEE80211_WEP_IV_LEN))
-+		return;
-+
-+	keyidx = skb->data[hdrlen + 3] >> 6;
-+	addr = ieee80211_get_SA(hdr);
-+
-+	spin_lock_bh(&ar->data_lock);
-+	peer_key = ath10k_mac_is_peer_wep_key_set(ar, addr, keyidx);
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	if (peer_key) {
-+		ath10k_dbg(ar, ATH10K_DBG_MAC,
-+			   "wep key present for peer: %pM\n", addr);
-+		status->flag |= RX_FLAG_DECRYPTED;
-+	}
-+}
-+
- static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_mgmt_rx_event_v1 *ev_v1;
-@@ -1200,6 +1231,8 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 	hdr = (struct ieee80211_hdr *)skb->data;
- 	fc = le16_to_cpu(hdr->frame_control);
- 
-+	ath10k_wmi_handle_wep_reauth(ar, skb, status);
-+
- 	/* FW delivers WEP Shared Auth frame with Protected Bit set and
- 	 * encrypted payload. However in case of PMF it delivers decrypted
- 	 * frames with Protected Bit set. */
+[...]
+
+> @@ -2537,6 +2560,17 @@ static int __ath10k_set_antenna(struct ath10k *ar, u32 tx_ant, u32 rx_ant)
+>  	ar->cfg_tx_chainmask = tx_ant;
+>  	ar->cfg_rx_chainmask = rx_ant;
+>  
+> +	ht_cap = ath10k_get_ht_cap(ar, true);
+> +	vht_cap = ath10k_create_vht_cap(ar, true);
+> +
+> +	if (ar->phy_capability & WHAL_WLAN_11G_CAPABILITY)
+> +		ar->mac.sbands[IEEE80211_BAND_2GHZ].ht_cap = ht_cap;
+> +
+> +	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY) {
+> +		ar->mac.sbands[IEEE80211_BAND_5GHZ].ht_cap = ht_cap;
+> +		ar->mac.sbands[IEEE80211_BAND_5GHZ].vht_cap = vht_cap;
+> +	}
+
+So this modifies stryct wiphy::bands after we have called
+ieee80211_register_hw(). Is this something which both cfg80211 and
+mac80211 support? I didn't find the documentation mentioning anything
+about this so I got a bit worried.
+
 -- 
-2.1.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
