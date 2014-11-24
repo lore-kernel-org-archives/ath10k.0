@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsuMb-0006JO-Dv
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:11:38 +0000
-Received: by mail-wg0-f52.google.com with SMTP id a1so12305520wgh.39
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:11:10 -0800 (PST)
+ id 1XsuMV-0006JC-11
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:11:32 +0000
+Received: by mail-wi0-f169.google.com with SMTP id r20so9123055wiv.0
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:11:09 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/3] ath10k: fix offchannel cancel failures
-Date: Mon, 24 Nov 2014 14:58:33 +0100
-Message-Id: <1416837513-13386-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/3] ath10k: make hw roc more reliable
+Date: Mon, 24 Nov 2014 14:58:32 +0100
+Message-Id: <1416837513-13386-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
 References: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,33 +27,52 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-When mac80211 requests driver to cancel a hw roc
-the driver must not call the expired() callback or
-else roc will fail in some cases depending on how
-things get scheduled.
+With P2P concurrency requested hw roc duration
+time can be very small. Some firmware revisions
+refuse scan requests with too small channel dwell
+time.
+
+This prevents messages like, e.g. with connected
+STA vif and performing P2P Find:
+
+ ath10k_pci 0000:00:05.0: failed to switch to channel for roc scan
+ ieee80211 phy3: failed to start next HW ROC (-110)
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ drivers/net/wireless/ath/ath10k/wmi.h | 5 +++++
+ 2 files changed, 7 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 272a9d9..42b5982 100644
+index 8deae4d..272a9d9 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2184,10 +2184,10 @@ void __ath10k_scan_finish(struct ath10k *ar)
- 	case ATH10K_SCAN_IDLE:
- 		break;
- 	case ATH10K_SCAN_RUNNING:
--	case ATH10K_SCAN_ABORTING:
- 		if (ar->scan.is_roc)
- 			ieee80211_remain_on_channel_expired(ar->hw);
--		else
-+	case ATH10K_SCAN_ABORTING:
-+		if (!ar->scan.is_roc)
- 			ieee80211_scan_completed(ar->hw,
- 						 (ar->scan.state ==
- 						  ATH10K_SCAN_ABORTING));
+@@ -3807,6 +3807,8 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+ 	if (ret)
+ 		goto exit;
+ 
++	duration = max(duration, WMI_SCAN_CHAN_MIN_TIME_MSEC);
++
+ 	memset(&arg, 0, sizeof(arg));
+ 	ath10k_wmi_start_scan_init(ar, &arg);
+ 	arg.vdev_id = arvif->vdev_id;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index a38d788..1b7141a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1952,6 +1952,11 @@ struct wmi_ssid_list {
+ #define WLAN_SCAN_PARAMS_MAX_BSSID   4
+ #define WLAN_SCAN_PARAMS_MAX_IE_LEN  256
+ 
++/* Values lower than this may be refused by some firmware revisions with a scan
++ * completion with a timedout reason.
++ */
++#define WMI_SCAN_CHAN_MIN_TIME_MSEC 40
++
+ /* Scan priority numbers must be sequential, starting with 0 */
+ enum wmi_scan_priority {
+ 	WMI_SCAN_PRIORITY_VERY_LOW = 0,
 -- 
 1.8.5.3
 
