@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsueO-0007SZ-DB
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:30:01 +0000
-Received: by mail-wi0-f178.google.com with SMTP id hi2so5936747wib.11
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:29:38 -0800 (PST)
+ id 1XsueP-0007Sk-N9
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:30:02 +0000
+Received: by mail-wi0-f173.google.com with SMTP id r20so5832119wiv.12
+ for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:29:40 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/3] ath10k: put board size into hw_params
-Date: Mon, 24 Nov 2014 15:17:25 +0100
-Message-Id: <1416838646-18801-2-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/3] ath10k: move uart pin config into hw_params
+Date: Mon, 24 Nov 2014 15:17:26 +0100
+Message-Id: <1416838646-18801-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
 References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,61 +27,49 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This makes it easier to extend the list of
-supported hardware.
+This will make it possible to easily support
+different hardware with different uart pin
+configuration.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 8 +++++---
- drivers/net/wireless/ath/ath10k/core.h | 2 ++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 3 ++-
+ drivers/net/wireless/ath/ath10k/core.h | 1 +
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 3904ce3..204aa04 100644
+index 204aa04..0bce152 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -63,6 +63,8 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -58,6 +58,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.patch_load_addr = QCA988X_HW_2_0_PATCH_LOAD_ADDR,
+ 		.supported_chips = qca988x_supported_chips,
+ 		.num_supported_chips = ARRAY_SIZE(qca988x_supported_chips),
++		.uart_pin = 7,
+ 		.fw = {
+ 			.dir = QCA988X_HW_2_0_FW_DIR,
  			.fw = QCA988X_HW_2_0_FW_FILE,
- 			.otp = QCA988X_HW_2_0_OTP_FILE,
- 			.board = QCA988X_HW_2_0_BOARD_DATA_FILE,
-+			.board_size = QCA988X_BOARD_DATA_SZ,
-+			.board_ext_size = QCA988X_BOARD_EXT_DATA_SZ,
- 		},
- 	},
- };
-@@ -156,8 +158,8 @@ static const struct firmware *ath10k_fetch_fw_file(struct ath10k *ar,
- static int ath10k_push_board_ext_data(struct ath10k *ar, const void *data,
- 				      size_t data_len)
- {
--	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
--	u32 board_ext_data_size = QCA988X_BOARD_EXT_DATA_SZ;
-+	u32 board_data_size = ar->hw_params.fw.board_size;
-+	u32 board_ext_data_size = ar->hw_params.fw.board_ext_size;
- 	u32 board_ext_data_addr;
- 	int ret;
+@@ -708,7 +709,7 @@ static int ath10k_init_uart(struct ath10k *ar)
+ 	if (!uart_print)
+ 		return 0;
  
-@@ -203,7 +205,7 @@ static int ath10k_push_board_ext_data(struct ath10k *ar, const void *data,
- static int ath10k_download_board_data(struct ath10k *ar, const void *data,
- 				      size_t data_len)
- {
--	u32 board_data_size = QCA988X_BOARD_DATA_SZ;
-+	u32 board_data_size = ar->hw_params.fw.board_size;
- 	u32 address;
- 	int ret;
- 
+-	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, 7);
++	ret = ath10k_bmi_write32(ar, hi_dbg_uart_txpin, ar->hw_params.uart_pin);
+ 	if (ret) {
+ 		ath10k_warn(ar, "could not enable UART prints (%d)\n", ret);
+ 		return ret;
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d37ffd6..1cc81e8 100644
+index 1cc81e8..f8dd904 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -482,6 +482,8 @@ struct ath10k {
+@@ -477,6 +477,7 @@ struct ath10k {
+ 		u32 patch_load_addr;
+ 		const u32 *supported_chips;
+ 		int num_supported_chips;
++		int uart_pin;
+ 		struct ath10k_hw_params_fw {
+ 			const char *dir;
  			const char *fw;
- 			const char *otp;
- 			const char *board;
-+			size_t board_size;
-+			size_t board_ext_size;
- 		} fw;
- 	} hw_params;
- 
 -- 
 1.8.5.3
 
