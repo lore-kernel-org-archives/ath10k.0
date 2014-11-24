@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XsuS6-0000K5-5O
- for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:17:18 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so9130756wib.5
- for <ath10k@lists.infradead.org>; Mon, 24 Nov 2014 06:16:56 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: remove extra_tx_headroom
-Date: Mon, 24 Nov 2014 15:04:46 +0100
-Message-Id: <1416837886-18377-1-git-send-email-michal.kazior@tieto.com>
+ id 1XsuUH-0001Lu-2g
+ for ath10k@lists.infradead.org; Mon, 24 Nov 2014 14:19:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 04/10] ath10k: make firmware text debug messages more
+ verbose.
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+ <1411507045-18973-4-git-send-email-greearb@candelatech.com>
+Date: Mon, 24 Nov 2014 16:19:06 +0200
+In-Reply-To: <1411507045-18973-4-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 23 Sep 2014 14:17:19
+ -0700")
+Message-ID: <87sih865r9.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,41 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Comment was out-of-date. The headroom is no longer
-necessary because HTT Tx fragment list is stored
-in dma pool item associated with each sk_buff.
+greearb@candelatech.com writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 4 ----
- 1 file changed, 4 deletions(-)
+> From: Ben Greear <greearb@candelatech.com>
+>
+> There are not many of these messages producted by the
+> firmware, but they are generally fairly useful, so print
+> them at info level.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1245ac8..5bb9f83 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4905,10 +4905,6 @@ int ath10k_mac_register(struct ath10k *ar)
- 			IEEE80211_HW_AP_LINK_PS |
- 			IEEE80211_HW_SPECTRUM_MGMT;
- 
--	/* MSDU can have HTT TX fragment pushed in front. The additional 4
--	 * bytes is used for padding/alignment if necessary. */
--	ar->hw->extra_tx_headroom += sizeof(struct htt_data_tx_desc_frag)*2 + 4;
--
- 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
- 
- 	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
+Thanks, applied. Though I did change the commit log:
+
+commit 3be004c3aa4341c7c2461b37612a3a7a3323579d
+Author: Ben Greear <greearb@candelatech.com>
+Date:   Tue Sep 23 14:17:19 2014 -0700
+
+    ath10k: add ATH10K_DBG_WMI_PRINT debug level
+    
+    There are not many of these messages producted by the
+    firmware, but they are generally fairly useful, so make it easy to print them
+    with a separate debug level.
+    
+    kvalo: fix commit log, rename debug level
+    
+    Signed-off-by: Ben Greear <greearb@candelatech.com>
+    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
