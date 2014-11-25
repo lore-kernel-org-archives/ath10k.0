@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtBfs-00014D-IR
- for ath10k@lists.infradead.org; Tue, 25 Nov 2014 08:40:44 +0000
+ id 1XtBh1-0001RC-Np
+ for ath10k@lists.infradead.org; Tue, 25 Nov 2014 08:41:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: add register access debugfs interface
+Subject: Re: [PATCH v2 2/2] ath10k: add memory dump debugfs interface
 References: <20141124164037.29422.14033.stgit@potku.adurom.net>
- <20141124164159.29422.98462.stgit@potku.adurom.net>
-Date: Tue, 25 Nov 2014 10:39:55 +0200
-In-Reply-To: <20141124164159.29422.98462.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 24 Nov 2014 18:41:59 +0200")
-Message-ID: <87vbm31xno.fsf@kamboji.qca.qualcomm.com>
+ <20141124164208.29422.76134.stgit@potku.adurom.net>
+Date: Tue, 25 Nov 2014 10:41:25 +0200
+In-Reply-To: <20141124164208.29422.76134.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Mon, 24 Nov 2014 18:42:08 +0200")
+Message-ID: <87r3wr1xl6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,51 +29,64 @@ Cc: linux-wireless@vger.kernel.org
 
 Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> +static ssize_t ath10k_reg_value_read(struct file *file,
+> +static ssize_t ath10k_mem_value_read(struct file *file,
 > +				     char __user *user_buf,
 > +				     size_t count, loff_t *ppos)
 > +{
 > +	struct ath10k *ar = file->private_data;
-> +	u8 buf[48];
-> +	unsigned int len;
-> +	u32 reg_addr, reg_val;
+> +	u8 *buf;
+> +	int ret;
 > +
-> +	spin_lock_bh(&ar->data_lock);
-> +	reg_addr = ar->debug.reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
+> +	if (*ppos < 0)
+> +		return -EINVAL;
 > +
-> +	reg_val = ath10k_hif_read32(ar, reg_addr);
-> +	len = scnprintf(buf, sizeof(buf), "0x%08x:0x%08x\n", reg_addr, reg_val);
+> +	if (!count)
+> +		return 0;
 > +
-> +	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-> +}
+> +	buf = vmalloc(count);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	ret = ath10k_hif_diag_read(ar, *ppos, buf, count);
+> +	if (ret) {
+> +		ath10k_warn(ar, "failed to read address 0x%08x via diagnose window from debugfs: %d\n",
+> +			    (u32)(*ppos), ret);
+> +		goto read_err;
+> +	}
+> +
 
-I just realised that we need to check ar->state to make sure that
-firmware is running. Because of that I'll need to change the data_lock
-to conf_mutex as well.
+[...]
 
-> +static ssize_t ath10k_reg_value_write(struct file *file,
+> +static ssize_t ath10k_mem_value_write(struct file *file,
 > +				      const char __user *user_buf,
 > +				      size_t count, loff_t *ppos)
 > +{
 > +	struct ath10k *ar = file->private_data;
-> +	u32 reg_addr, reg_val;
+> +	u8 *buf;
 > +	int ret;
 > +
-> +	spin_lock_bh(&ar->data_lock);
-> +	reg_addr = ar->debug.reg_addr;
-> +	spin_unlock_bh(&ar->data_lock);
+> +	if (*ppos < 0)
+> +		return -EINVAL;
 > +
-> +	ret = kstrtou32_from_user(user_buf, count, 0, &reg_val);
+> +	if (!count)
+> +		return 0;
+> +
+> +	buf = vmalloc(count);
+> +	if (!buf)
+> +		return -ENOMEM;
+> +
+> +	ret = copy_from_user(buf, user_buf, count);
 > +	if (ret)
-> +		return ret;
+> +		goto err_free_copy;
 > +
-> +	ath10k_hif_write32(ar, reg_addr, reg_val);
-> +
-> +	return count;
-> +}
+> +	ret = ath10k_hif_diag_write(ar, *ppos, buf, count);
+> +	if (ret) {
+> +		ath10k_warn(ar, "failed to write address 0x%08x via diagnose window from debugfs: %d\n",
+> +			    (u32)(*ppos), ret);
+> +		goto err_free_copy;
+> +	}
 
-And same here as well. I'll send v3.
+In these two functions we also need to check ar->state.
 
 -- 
 Kalle Valo
