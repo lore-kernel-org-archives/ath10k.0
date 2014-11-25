@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtDIv-0000HL-AF
- for ath10k@lists.infradead.org; Tue, 25 Nov 2014 10:25:06 +0000
-Subject: [PATCH v3 2/2] ath10k: add memory dump debugfs interface
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 25 Nov 2014 12:24:48 +0200
-Message-ID: <20141125102448.3951.97429.stgit@potku.adurom.net>
-In-Reply-To: <20141125102302.3951.10641.stgit@potku.adurom.net>
-References: <20141125102302.3951.10641.stgit@potku.adurom.net>
-MIME-Version: 1.0
+ id 1XtH6j-0005FU-AP
+ for ath10k@lists.infradead.org; Tue, 25 Nov 2014 14:28:46 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so9313167wiv.5
+ for <ath10k@lists.infradead.org>; Tue, 25 Nov 2014 06:28:18 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 1/3] ath10k: add missing goto
+Date: Tue, 25 Nov 2014 15:16:03 +0100
+Message-Id: <1416924965-28216-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
+References: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,220 +19,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-From: Yanbo Li <yanbol@qti.qualcomm.com>
+This prevents warning spamming if peer creation
+fails during sta_state in some cases.
 
-Add mem_val debugfs file for dumping the firmware (target) memory and also for
-writing to the memory. The firmware memory is accessed through one file which
-uses position of the file as the firmware memory address. For example, with dd
-use skip parameter for the address.
-
-Beucase target memory width is 32 bits it's strongly recommended to use
-blocksize divisable with 4 when using this interface. For example, when using
-dd use bs=4 to set the block size to 4 and remember to divide both count and
-skip values with four.
-
-To read 4 kB chunk from address 0x400000:
-
-dd if=mem_value bs=4 count=1024 skip=1048576 | xxd -g1
-
-To write value 0x01020304 to address 0x400400:
-
-echo 0x01020304 | xxd -r | dd of=mem_value bs=4 seek=1048832
-
-To read 4 KB chunk of memory and then write back after edit:
-
-dd if=mem_value of=tmp.bin bs=4 count=1024 skip=1048576
-emacs tmp.bin
-dd if=tmp.bin of=mem_value bs=4 count=1024 seek=1048576
-
-Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c |  114 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/hif.h   |   11 +++
- drivers/net/wireless/ath/ath10k/pci.c   |    1 
- 3 files changed, 126 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index d0397d119862..ff831ca507f7 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1047,6 +1047,117 @@ static const struct file_operations fops_reg_value = {
- 	.llseek = default_llseek,
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 1245ac8..7b5a888 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3559,9 +3559,11 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			   arvif->vdev_id, sta->addr, ar->num_peers);
  
-+static ssize_t ath10k_mem_value_read(struct file *file,
-+				     char __user *user_buf,
-+				     size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	u8 *buf;
-+	int ret;
-+
-+	if (*ppos < 0)
-+		return -EINVAL;
-+
-+	if (!count)
-+		return 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	buf = vmalloc(count);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	if (ar->state != ATH10K_STATE_ON &&
-+	    ar->state != ATH10K_STATE_UTF) {
-+		ret = -ENETDOWN;
-+		goto exit;
-+	}
-+
-+	ret = ath10k_hif_diag_read(ar, *ppos, buf, count);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read address 0x%08x via diagnose window fnrom debugfs: %d\n",
-+			    (u32)(*ppos), ret);
-+		goto exit;
-+	}
-+
-+	ret = copy_to_user(user_buf, buf, count);
-+	if (ret) {
-+		ret = -EFAULT;
-+		goto exit;
-+	}
-+
-+	count -= ret;
-+	*ppos += count;
-+	ret = count;
-+
-+exit:
-+	vfree(buf);
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return ret;
-+}
-+
-+static ssize_t ath10k_mem_value_write(struct file *file,
-+				      const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	u8 *buf;
-+	int ret;
-+
-+	if (*ppos < 0)
-+		return -EINVAL;
-+
-+	if (!count)
-+		return 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	buf = vmalloc(count);
-+	if (!buf) {
-+		ret = -ENOMEM;
-+		goto exit;
-+	}
-+
-+	if (ar->state != ATH10K_STATE_ON &&
-+	    ar->state != ATH10K_STATE_UTF) {
-+		ret = -ENETDOWN;
-+		goto exit;
-+	}
-+
-+	ret = copy_from_user(buf, user_buf, count);
-+	if (ret) {
-+		ret = -EFAULT;
-+		goto exit;
-+	}
-+
-+	ret = ath10k_hif_diag_write(ar, *ppos, buf, count);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to write address 0x%08x via diagnose window from debugfs: %d\n",
-+			    (u32)(*ppos), ret);
-+		goto exit;
-+	}
-+
-+	*ppos += count;
-+	ret = count;
-+
-+exit:
-+	vfree(buf);
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return ret;
-+}
-+
-+static const struct file_operations fops_mem_value = {
-+	.read = ath10k_mem_value_read,
-+	.write = ath10k_mem_value_write,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- static int ath10k_debug_htt_stats_req(struct ath10k *ar)
- {
- 	u64 cookie;
-@@ -1754,6 +1865,9 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("reg_value", S_IRUSR | S_IWUSR,
- 			    ar->debug.debugfs_phy, ar, &fops_reg_value);
+ 		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
+-		if (ret)
++		if (ret) {
+ 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
++			goto exit;
++		}
  
-+	debugfs_create_file("mem_value", S_IRUSR | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar, &fops_mem_value);
-+
- 	debugfs_create_file("chip_id", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_chip_id);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hif.h b/drivers/net/wireless/ath/ath10k/hif.h
-index bad071906540..6ac552304546 100644
---- a/drivers/net/wireless/ath/ath10k/hif.h
-+++ b/drivers/net/wireless/ath/ath10k/hif.h
-@@ -48,6 +48,8 @@ struct ath10k_hif_ops {
- 	int (*diag_read)(struct ath10k *ar, u32 address, void *buf,
- 			 size_t buf_len);
- 
-+	int (*diag_write)(struct ath10k *ar, u32 address, const void *data,
-+			  int nbytes);
- 	/*
- 	 * API to handle HIF-specific BMI message exchanges, this API is
- 	 * synchronous and only allowed to be called from a context that
-@@ -113,6 +115,15 @@ static inline int ath10k_hif_diag_read(struct ath10k *ar, u32 address, void *buf
- 	return ar->hif.ops->diag_read(ar, address, buf, buf_len);
- }
- 
-+static inline int ath10k_hif_diag_write(struct ath10k *ar, u32 address,
-+					const void *data, int nbytes)
-+{
-+	if (!ar->hif.ops->diag_write)
-+		return -EOPNOTSUPP;
-+
-+	return ar->hif.ops->diag_write(ar, address, data, nbytes);
-+}
-+
- static inline int ath10k_hif_exchange_bmi_msg(struct ath10k *ar,
- 					      void *request, u32 request_len,
- 					      void *response, u32 *response_len)
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 328ab6c5d053..0816098af578 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1988,6 +1988,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- static const struct ath10k_hif_ops ath10k_pci_hif_ops = {
- 	.tx_sg			= ath10k_pci_hif_tx_sg,
- 	.diag_read		= ath10k_pci_hif_diag_read,
-+	.diag_write		= ath10k_pci_diag_write_mem,
- 	.exchange_bmi_msg	= ath10k_pci_hif_exchange_bmi_msg,
- 	.start			= ath10k_pci_hif_start,
- 	.stop			= ath10k_pci_hif_stop,
+ 		if (vif->type == NL80211_IFTYPE_STATION) {
+ 			WARN_ON(arvif->is_started);
+-- 
+1.8.5.3
 
 
 _______________________________________________
