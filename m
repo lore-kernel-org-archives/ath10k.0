@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtC26-00031P-6F
- for ath10k@lists.infradead.org; Tue, 25 Nov 2014 09:03:38 +0000
-Received: by mail-wi0-f182.google.com with SMTP id h11so659083wiw.3
- for <ath10k@lists.infradead.org>; Tue, 25 Nov 2014 01:03:16 -0800 (PST)
+ id 1XtC34-0004Tj-OR
+ for ath10k@lists.infradead.org; Tue, 25 Nov 2014 09:04:39 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: don't drop corrupted mgmt frames
+References: <1416839648-31803-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 25 Nov 2014 11:04:12 +0200
+In-Reply-To: <1416839648-31803-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 24 Nov 2014 15:34:08 +0100")
+Message-ID: <87egsr1wj7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87r3wr1xl6.fsf@kamboji.qca.qualcomm.com>
-References: <20141124164037.29422.14033.stgit@potku.adurom.net>
- <20141124164208.29422.76134.stgit@potku.adurom.net>
- <87r3wr1xl6.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 25 Nov 2014 10:03:16 +0100
-Message-ID: <CA+BoTQ=fc0hRr2Vad_P-wLWdKna-mzHaaFgGrYsO0KavTG7e7g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: add memory dump debugfs interface
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +19,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjUgTm92ZW1iZXIgMjAxNCBhdCAwOTo0MSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
-b21tLmNvbT4gd3JvdGU6Cj4gS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3Jp
-dGVzOgo+Cj4+ICtzdGF0aWMgc3NpemVfdCBhdGgxMGtfbWVtX3ZhbHVlX3JlYWQoc3RydWN0IGZp
-bGUgKmZpbGUsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhciBfX3Vz
-ZXIgKnVzZXJfYnVmLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNpemVf
-dCBjb3VudCwgbG9mZl90ICpwcG9zKQo+PiArewpbLi4uXQo+PiArc3RhdGljIHNzaXplX3QgYXRo
-MTBrX21lbV92YWx1ZV93cml0ZShzdHJ1Y3QgZmlsZSAqZmlsZSwKPj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgY29uc3QgY2hhciBfX3VzZXIgKnVzZXJfYnVmLAo+PiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzaXplX3QgY291bnQsIGxvZmZfdCAqcHBv
-cykKWy4uLl0KPiBJbiB0aGVzZSB0d28gZnVuY3Rpb25zIHdlIGFsc28gbmVlZCB0byBjaGVjayBh
-ci0+c3RhdGUuCgpJdCBzaG91bGQgd29yayBidXQgdGhlIHBjaV93YWtlIChJJ3ZlIG1lbnRpb25l
-ZCBpbiB0aGUgb3RoZXIgbWFpbCkgaXMKdHJpY2t5IHRob3VnaC4KCgpNaWNoYcWCCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
+> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+> @@ -1381,6 +1381,8 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
+>  {
+>  	struct sk_buff *msdu;
+>  	struct htt_rx_desc *rxd;
+> +	bool is_mgmt;
+> +	bool has_fcs_err;
+>  
+>  	msdu = skb_peek(amsdu);
+>  	rxd = (void *)msdu->data - sizeof(*rxd);
+> @@ -1394,12 +1396,19 @@ static bool ath10k_htt_rx_amsdu_allowed(struct ath10k *ar,
+>  		return false;
+>  	}
+>  
+> +	is_mgmt = !!(rxd->attention.flags &
+> +		     __cpu_to_le32(RX_ATTENTION_FLAGS_MGMT_TYPE));
+> +	has_fcs_err = !!(rxd->attention.flags &
+> +			 __cpu_to_le32(RX_ATTENTION_FLAGS_FCS_ERR));
+
+I think I asked this before in some other patch, but isn't '!!' operator
+useless here? is_mgmt is a boolean so the compiler should convert it
+correctly without '!!' anyway, right?
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
