@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xt94R-0001kX-EL
- for ath10k@lists.infradead.org; Tue, 25 Nov 2014 05:53:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: Fix shared WEP
-References: <1416796657-24657-1-git-send-email-sujith@msujith.org>
- <1416796657-24657-2-git-send-email-sujith@msujith.org>
- <87lhn0639s.fsf@kamboji.qca.qualcomm.com>
- <21620.5017.657509.251220@gargle.gargle.HOWL>
-Date: Tue, 25 Nov 2014 07:53:12 +0200
-In-Reply-To: <21620.5017.657509.251220@gargle.gargle.HOWL> (Sujith Manoharan's
- message of "Tue, 25 Nov 2014 10:58:57 +0530")
-Message-ID: <87y4qz3jxz.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+Received: from s72.web-hosting.com ([198.187.29.22])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Xt9Pt-00014M-C7
+ for ath10k@lists.infradead.org; Tue, 25 Nov 2014 06:16:01 +0000
+From: Sujith Manoharan <sujith@msujith.org>
+Subject: [PATCH v2 3/3] ath10k: Fix bug reported by lockdep
+Date: Tue, 25 Nov 2014 11:47:00 +0530
+Message-Id: <1416896220-29691-3-git-send-email-sujith@msujith.org>
+In-Reply-To: <1416896220-29691-1-git-send-email-sujith@msujith.org>
+References: <1416896220-29691-1-git-send-email-sujith@msujith.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +17,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
+From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-> Kalle Valo wrote:
->> No magic numbers, please. I didn't find anything for IV internals from
->> ieee80211.h, not sure if we should add them there or just use ath10k
->> internal defines.
->
-> We are just retrieving the keyidx from the IV - not sure adding a couple
-> of macros for "6" and "3" will make any difference.
+ath10k_tx_wep_key_work() acquires conf_mutex, so
+cancelling it when conf_mutex is already taken
+in ath10k_remove_interface() is incorrect, so
+move it outside the lock.
 
-It won't make a difference for you but it will for someone else reading
-that part of code.
+Snippet from the lockdep report:
 
-keyidx = skb->data[hdrlen + WEP_HDR_IV_LEN] >> WEP_HDR_KEY_ID_LSB;
+kernel: ======================================================
+kernel: [ INFO: possible circular locking dependency detected ]
+kernel: 3.18.0-rc5-wl-debug #34 Tainted: G           O
+kernel: -------------------------------------------------------
+kernel: hostapd/451 is trying to acquire lock:
+kernel:  ((&arvif->wep_key_work)){+.+...}, at: [<ffffffff810872d5>] flush_work+0x5/0x290
+kernel: but task is already holding lock:
+kernel:  (&ar->conf_mutex){+.+.+.}, at: [<ffffffffa0b99f00>] ath10k_remove_interface+0x40/0x290 [ath10k_core]
+kernel: which lock already depends on the new lock.
 
-versus:
+Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-keyidx = skb->data[hdrlen + 3] >> 6;
-
-(I didn't check the standard so tha names can be totally wrong.)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 01de6f3..cf1e579 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3043,10 +3043,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+ 	int ret;
+ 
+-	mutex_lock(&ar->conf_mutex);
+-
+ 	cancel_work_sync(&arvif->wep_key_work);
+ 
++	mutex_lock(&ar->conf_mutex);
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	ath10k_mac_vif_beacon_cleanup(arvif);
+ 	spin_unlock_bh(&ar->data_lock);
 -- 
-Kalle Valo
+2.1.3
+
 
 _______________________________________________
 ath10k mailing list
