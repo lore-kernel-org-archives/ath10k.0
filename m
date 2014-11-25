@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtIt8-0005sq-Cj
- for ath10k@lists.infradead.org; Tue, 25 Nov 2014 16:22:50 +0000
-Message-ID: <5474ACBF.7090905@candelatech.com>
-Date: Tue, 25 Nov 2014 08:22:23 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XtMKL-0000O9-QY
+ for ath10k@lists.infradead.org; Tue, 25 Nov 2014 20:03:10 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: add new pdev parameters for fw 10.2
+Date: Tue, 25 Nov 2014 12:02:44 -0800
+Message-ID: <1416945765-26902-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] ath10k: move create-ht-cap methods above set-antenna.
-References: <1411576506-11815-1-git-send-email-greearb@candelatech.com>
- <874mtn3dof.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <874mtn3dof.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +20,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On 11/25/2014 12:08 AM, Kalle Valo wrote:
-> greearb@candelatech.com writes:
-> 
->> From: Ben Greear <greearb@candelatech.com>
->>
->> We will need to use these in set-antenna, so move them
->> so that we do not have to define the method signatures.
->>
->> Signed-off-by: Ben Greear <greearb@candelatech.com>
-> 
-> I'm dropping these two patches. Please resend once we figure out how to
-> handle the band updated.
+New pdev paramters have been added to firmware 10.2,
+hence update wmi interfaces to sync with.
 
-It might be a while...I'm working on some other tasks these days
-and don't have time to respin ath10k patches at the moment.
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-If someone else wants to work on getting them upstream, please be
-my guest.
-
-Per Felix's comment, maybe my patches were actually OK as they are....
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index a38d788..8fa0192 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2707,6 +2707,9 @@ enum wmi_10x_pdev_param {
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_MODE,
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_BUFFER,
+ 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
++	WMI_10X_PDEV_PEER_STA_PS_STATECHG_ENABLE,
++	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
++	WMI_10X_PDEV_PARAM_CAL_PERIOD
+ };
+ 
+ struct wmi_pdev_set_param_cmd {
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.9.1
 
 
 _______________________________________________
