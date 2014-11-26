@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtWLp-0006lL-0j
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:45:21 +0000
+ id 1XtWm6-0006g1-Tx
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 07:12:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/3] ath10k: add missing goto
-References: <1416834909-7130-1-git-send-email-michal.kazior@tieto.com>
- <1416924965-28216-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 26 Nov 2014 08:44:55 +0200
-In-Reply-To: <1416924965-28216-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 25 Nov 2014 15:16:03 +0100")
-Message-ID: <87d28axxy0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: add new wmi interface of NF cal period
+References: <1416945765-26902-1-git-send-email-poh@qca.qualcomm.com>
+ <1416945765-26902-2-git-send-email-poh@qca.qualcomm.com>
+Date: Wed, 26 Nov 2014 09:12:04 +0200
+In-Reply-To: <1416945765-26902-2-git-send-email-poh@qca.qualcomm.com> (Peter
+ Oh's message of "Tue, 25 Nov 2014 12:02:45 -0800")
+Message-ID: <874mtmxwor.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,17 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Peter Oh <poh@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> This prevents warning spamming if peer creation
-> fails during sta_state in some cases.
+> Introduce a new wmi interface controls noise floor (NF) calibration
+> period via debugfs as firmware has introduced it on v10.2.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> It allows users to modify frequency of NF calibration in millisecond
+> and changes RSSI reporting frequency consequently.
+> Short calibration period will trigger more frequent NF calibration,
+> so that RSSI reported in receive frames is more realistic.
+>
+> Till now calibration was done at 30 seconds.
+>
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 
-Thanks, all three patches applied.
+There was a trivial conflict in struct ath10k_debug, please double check
+my conflict resolution:
+
+https://github.com/kvalo/ath/commit/1abcc1aa6046231a55a296ea78ab2f374f6f791b
 
 -- 
 Kalle Valo
