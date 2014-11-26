@@ -1,21 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtS8S-00027Y-Sc
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 02:15:17 +0000
-Received: by mail-wg0-f53.google.com with SMTP id l18so2415387wgh.26
- for <ath10k@lists.infradead.org>; Tue, 25 Nov 2014 18:14:52 -0800 (PST)
+ id 1XtW3G-0006rj-M2
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:26:11 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 05/10] ath10k: apply chainmask settings to vdev on
+ creation.
+References: <1411507045-18973-1-git-send-email-greearb@candelatech.com>
+ <1411507045-18973-5-git-send-email-greearb@candelatech.com>
+Date: Wed, 26 Nov 2014 08:25:37 +0200
+In-Reply-To: <1411507045-18973-5-git-send-email-greearb@candelatech.com>
+ (greearb@candelatech.com's message of "Tue, 23 Sep 2014 14:17:20
+ -0700")
+Message-ID: <87bnnuzdem.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <547531E0.6040707@candelatech.com>
-References: <547525D4.5080701@candelatech.com>
- <CAEFj9850cLVSVH=BmDNwZwEpgymRhLS2yeVGgn5gUMxkj3Wunw@mail.gmail.com>
- <54752F3E.6000704@candelatech.com>
- <CAEFj984VgP2u2ehBzmY6U=utRmKOAjxF_-bY+FPxgwxma5hu_g@mail.gmail.com>
- <547531E0.6040707@candelatech.com>
-Date: Wed, 26 Nov 2014 10:14:52 +0800
-Message-ID: <CAEFj987GH29R44GDpRUck7KLZ6M4TvKSyCpFgRaKaKub+OBoFQ@mail.gmail.com>
-Subject: Re: IBSS mode is now supported by CT firmware.
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +26,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: greearb@candelatech.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Ok. Thanks. Will take a try on this later.
+greearb@candelatech.com writes:
 
----
-ChunYeow
+> From: Ben Greear <greearb@candelatech.com>
+>
+> It appears it takes more than just setting the
+> hardware's chainmask to make things work well.  Without
+> this patch, a vdev would only use 1x1 rates when chainmask
+> was set to 0x3.
+>
+> Setting the 'nss' (number of spatial streams) on the vdev
+> helps the firmware's rate-control algorithm work properly.
+>
+> Tested on CT firmware, but probably this works (and
+> is required) on normal firmware.
+>
+> Signed-off-by: Ben Greear <greearb@candelatech.com>
+> ---
+>
+> v2:  Add warning if chainmask is set to probably-invalid configuration.
+>   Also, from a quick test, it appears you cannot even set the chainmask
+>   using 'iw' when vdevs are active.
 
-On Wed, Nov 26, 2014 at 9:50 AM, Ben Greear <greearb@candelatech.com> wrote:
-> On 11/25/2014 05:48 PM, Yeoh Chun-Yeow wrote:
->> Is this the only patch we need to enable IBSS mode?
->> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=commit;h=af9dabe5f23e2ad8f8603a5156ebe9227340e9e3
->>
->> Please advice. Thanks
->
-> Sort of, but that is patching a previous patch of mine that is not upstream.
->
-> So, you are going to have to go crawling through the code a bit
-> to find out how to do a similar action in your code base.
->
-> Thanks,
-> Ben
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+Thanks, applied.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
