@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+Received: from mail-qg0-f47.google.com ([209.85.192.47])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtXR8-0003lt-Om
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 07:54:57 +0000
-Received: by mail-wg0-f53.google.com with SMTP id l18so2922436wgh.40
- for <ath10k@lists.infradead.org>; Tue, 25 Nov 2014 23:54:30 -0800 (PST)
+ id 1XtlCv-0007bM-5N
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 22:37:10 +0000
+Received: by mail-qg0-f47.google.com with SMTP id z60so2784254qgd.34
+ for <ath10k@lists.infradead.org>; Wed, 26 Nov 2014 14:36:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
-References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
- <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 26 Nov 2014 08:54:30 +0100
-Message-ID: <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <547525D4.5080701@candelatech.com>
+References: <547525D4.5080701@candelatech.com>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Wed, 26 Nov 2014 14:36:16 -0800
+Message-ID: <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
+Subject: Re: IBSS mode is now supported by CT firmware.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +20,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMjYgTm92ZW1iZXIgMjAxNCBhdCAwODoyMSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
-b21tLmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
-IHdyaXRlczoKPgo+PiBUaGlzIHdpbGwgbWFrZSBpdCBlYXNpZXIgdG8gZXh0ZW5kIGFuZCBtYWlu
-dGFpbgo+PiBsaXN0IG9mIHN1cHBvcnRlZCBoYXJkd2FyZS4KPj4KPj4gQXMgYSByZXF1aXJlbWVu
-dCB0aGlzIG1vdmVzIGNoaXBfaWQgY2hlY2tpbmcgYQo+PiBsaXR0bGUgbGF0ZXIgYmVjYXVzZSB0
-YXJnZXRfdmVyc2lvbiBpc24ndCBrbm93bgo+PiB1bnRpbCBCTUkgY2FuIGJlIHF1ZXJpZWQuCj4+
-Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29t
-Pgo+Cj4gVGhlIHJlYXNvbiB3aHkgSSBvcmlnaW5hbGx5IGFkZGVkIHRoZSBjaGlwX2lkIGNoZWNr
-IHdhcyB0aGF0IFFDQTk4OFggaHcKPiAxLjAgZmFpbGVkIGJhZGx5IChhdGgxMGsgbWlnaHQgaGF2
-ZSBldmVuIGNyYXNoZWQsIGRvbid0IHJlbWVtYmVyCj4gYW55bW9yZSkgYW5kIEkgYWRkZWQgdGhp
-cyBjaGlwX2lkIGFzIGFuIHVnbHkgd29ya2Fyb3VuZCB0byBkZXRlY3QgaHcxLjAKPiBlYXJseS4g
-TW9zdCBsaWtlbHkgd2l0aCB0aGlzIHBhdGNoIHRoZSBwcm9ibGVtIGNvbWVzIGJhY2sgYWdhaW4u
-CgpIbW0uLiBnb29kIHBvaW50LiBJIHRoaW5rIGl0IG1vc3RseSBmYWlsZWQgZHVyaW5nIGZpcm13
-YXJlIHRyYW5zZmVyIHRvCnRhcmdldCBidXQgc2luY2UgQk1JIGFsc28gbmVlZHMgQ0UgdGhlbiBp
-dCBtaWdodCBhcyB3ZWxsIGZhaWwgbWlkLXdheS4KCgo+IEkgZG9uJ3Qga25vdyB3aGF0J3MgYSBn
-b29kIHNvbHV0aW9uLCBuZWVkIHRvIHRoaW5rIG1vcmUuIEFueSBpZGVhcz8KCkhtbS4uIEkgaGF2
-ZSBhIGNvdXBsZSBvZiBpZGVhczoKCjEuIERvbid0IHVzZSBCTUkgdG8gcmVhZCB0YXJnZXRfdmVy
-c2lvbi4gSW5zdGVhZCB1c2UgYSByZWdpc3RlcgooYXNzdW1pbmcgdGhlcmUgaXMgb25lKS4gVGhp
-cyBpbXBsaWVzIGVhY2ggdHJhbnNwb3J0ICh3ZSBoYXZlIHBjaSBvbmx5Cm5vdykgd291bGQgbmVl
-ZCB0byBiZSBhYmxlIHRvIHJlYWQgaXQgc29tZWhvdyB1bmxlc3Mgd2Ugc3VwcG9ydCBhCmZhbGxi
-YWNrIHRvIEJNSSBpZiBpdCB3YXNuJ3QgcHJlcHBlZCBieSB0aGUgdHJhbnNwb3J0LgoKMi4gSGF2
-ZSBhIGRlZGljYXRkIHBjaS1zcGVjaWZpYyBzdHJ1Y3R1cmU6Cgogc3RydWN0IGF0aDEwa19wY2lf
-c3VwcG9ydGVkX2NoaXAgewogICB1MTYgZGV2X2lkOwogICB1MzIgY2hpcF9pZDsKIH07Cgogc3Ry
-dWN0IGF0aDEwa19wY2lfc3VwcG9ydGVkX2NoaXAgYXRoMTBrX3BjaV9zdXBwb3J0ZWRfY2hpcHNb
-XSA9IHsKICAgeyBRQ0E5ODhYXzJfMF9ERVZJQ0VfSUQsIFFDQTk4OFhfSFdfMl8wX0NISVBfSURf
-UkVWIH0sCiAgIC8vIC4uLgogfTsKClByb2JhYmx5IHRoZSBzaW1wbGVzdCBhbmQgaGFzIGxlYXN0
-IGltcGFjdC4KCjMuIERvbid0IHVzZSB0YXJnZXRfdmVyc2lvbiB0byBkZWNpZGUgaHdfcGFyYW1z
-LiBVc2UgcGNpIGRldmljZSBpZAppbnN0ZWFkLiBUaGlzIGlzIGEgYml0IG9mIGEgcHJvYmxlbSBi
-ZWNhdXNlIGF0aDEwa19od19wYXJhbXNfbGlzdCBpcwppbiBjb3JlIGFuZCBpcyBzdXBwb3NlZCB0
-byBiZSB0cmFuc3BvcnQtYWdub3N0aWMgKGJ1dCBzaG91bGQgaXQgcmVhbGx5CmJlPyBJIGNhbiBp
-bWFnaW5lIHRoZW9yZXRpY2FsIHVzYiB0cmFuc3BvcnQgY291bGQgaGF2ZSBkZXZpY2VzCnJlcG9y
-dGluZyBpZGVudGljYWwgdGFyZ2V0X3ZlcnNpb24gYXMgYSBwY2kgb25lIGJ1dCB3b3VsZCBuZWVk
-CmRpZmZlcmVudCBmaXJtd2FyZSBmaWxlcyB0byBiZSB1c2VkKS4gVGhpcyBwcm9iYWJseSBuZWVk
-cyBtb3JlCnRoaW5raW5nIHRocm91Z2guCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+On Tue, Nov 25, 2014 at 4:59 PM, Ben Greear <greearb@candelatech.com> wrote:
+> I still cannot get WPA2 encryption to work, but open authentication
+> seems to work fine.  I still have a good bit more testing to do.
+> I cannot get ath9k to do encryption in IBSS mode either, so I
+> probably am mis-configuring something.
+
+I don't believe WPA2 is supported with adhoc (at least through
+wpa_supplicant). However, WPA should be and while testing your
+firmware, I found that it doesn't seem to work (They don't see each
+other and thus don't associate).
+
+I also found that, like the 999.x firmware, the rate's do not go
+higher than 54mbit/s. Is this due to the firmware not advertising
+proper rates or..?
+
+As for throughput, I get 22mbps TCP, 27.6mbps UDP with no encryption.
+
+- Pushpal
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
