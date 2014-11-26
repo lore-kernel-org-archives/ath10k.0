@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22c.google.com ([2a00:1450:400c:c00::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtRJ4-0000Oi-Fw
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 01:22:11 +0000
-Received: by mail-wg0-f44.google.com with SMTP id b13so2406261wgh.3
- for <ath10k@lists.infradead.org>; Tue, 25 Nov 2014 17:21:47 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XtRZs-0004Sp-CZ
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 01:39:33 +0000
+Message-ID: <54752F3E.6000704@candelatech.com>
+Date: Tue, 25 Nov 2014 17:39:10 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <547525D4.5080701@candelatech.com>
-References: <547525D4.5080701@candelatech.com>
-Date: Wed, 26 Nov 2014 09:21:47 +0800
-Message-ID: <CAEFj9850cLVSVH=BmDNwZwEpgymRhLS2yeVGgn5gUMxkj3Wunw@mail.gmail.com>
 Subject: Re: IBSS mode is now supported by CT firmware.
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+References: <547525D4.5080701@candelatech.com>
+ <CAEFj9850cLVSVH=BmDNwZwEpgymRhLS2yeVGgn5gUMxkj3Wunw@mail.gmail.com>
+In-Reply-To: <CAEFj9850cLVSVH=BmDNwZwEpgymRhLS2yeVGgn5gUMxkj3Wunw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +23,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On Wed, Nov 26, 2014 at 8:59 AM, Ben Greear <greearb@candelatech.com> wrote:
-> A company that wishes to remain anonymous is sponsoring my
-> effort to add IBSS (ADHOC) support to my 10.1.467 CT firmware.
->
+On 11/25/2014 05:21 PM, Yeoh Chun-Yeow wrote:
+> On Wed, Nov 26, 2014 at 8:59 AM, Ben Greear <greearb@candelatech.com> wrote:
+>> A company that wishes to remain anonymous is sponsoring my
+>> effort to add IBSS (ADHOC) support to my 10.1.467 CT firmware.
+>>
+> 
+> Great!
+> 
+>> The kernel driver must be patched to enable IBSS mode when
+>> CT firmware is detected.
+>>
+> 
+> Where can I find the patches?
 
-Great!
+My 3.17 kernel:
 
-> The kernel driver must be patched to enable IBSS mode when
-> CT firmware is detected.
->
+git clone git://dmz2.candelatech.com/linux-3.17.dev.y
 
-Where can I find the patches?
+or, browse gitweb:
 
----
-ChunYeow
+http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-3.17.dev.y/.git;a=summary
+
+
+I'll also backport to my 3.14 tree when I get a chance,
+but it is not done yet.
+
+Probably not worth trying to post for upstream inclusion
+since it needs the CT feature flag...
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
