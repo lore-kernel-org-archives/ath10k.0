@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtW5y-0007RV-DM
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:28:58 +0000
+ id 1XtW9W-0000ez-69
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:32:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: remove extra_tx_headroom
-References: <1416837886-18377-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 26 Nov 2014 08:28:32 +0200
-In-Reply-To: <1416837886-18377-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 24 Nov 2014 15:04:46 +0100")
-Message-ID: <873896zd9r.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: fix offchan reliability
+References: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 26 Nov 2014 08:32:06 +0200
+In-Reply-To: <1416837513-13386-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 24 Nov 2014 14:58:31 +0100")
+Message-ID: <87y4qyxyjd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,13 +28,18 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Comment was out-of-date. The headroom is no longer
-> necessary because HTT Tx fragment list is stored
-> in dma pool item associated with each sk_buff.
+> New firmware revisions don't need peer creation
+> when doing offchannel tx. Earlier revisions would
+> queue and never release frames without a peer.
+>
+> This prevent new firmware revisions from stopping
+> replenishing wmi-htc tx credits and improves
+> reliability of offchannel tx which would sometimes
+> silently fail.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+Thanks, all three patches applied.
 
 -- 
 Kalle Valo
