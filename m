@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtWFJ-0004pD-7o
- for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:38:37 +0000
+ id 1XtWIC-0006L6-7s
+ for ath10k@lists.infradead.org; Wed, 26 Nov 2014 06:41:36 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/3] ath10k: Fix shared WEP
-References: <1416896220-29691-1-git-send-email-sujith@msujith.org>
-Date: Wed, 26 Nov 2014 08:38:10 +0200
-In-Reply-To: <1416896220-29691-1-git-send-email-sujith@msujith.org> (Sujith
- Manoharan's message of "Tue, 25 Nov 2014 11:46:58 +0530")
-Message-ID: <87lhmyxy99.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3 0/2] ath10k: firmware memory debugfs interface
+References: <20141125102302.3951.10641.stgit@potku.adurom.net>
+Date: Wed, 26 Nov 2014 08:40:58 +0200
+In-Reply-To: <20141125102302.3951.10641.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Tue, 25 Nov 2014 12:24:23 +0200")
+Message-ID: <87h9xmxy4l.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,28 +23,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+> this is v3 of Yanbo's firmware memory debugfs interface.
 >
-> When static keys are used in shared WEP, when a
-> station is associated, message 3 is sent with an
-> encrypted payload. But, for subsequent
-> authentications that are triggered without a
-> deauth, the auth frame is decrypted by the HW.
+> Changelog:
 >
-> To handle this, check if the WEP keys have already
-> been set for the peer and if so, mark the
-> frame as decrypted. This scenario can happen
-> when a station changes its default TX key and initiates
-> a new authentication sequence.
+> v3:
 >
-> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+> * check ath10k state and return an error if firmware is not running
+>
+> * switch to use conf_mutex because using ar->state
+>
+> * fix copy_from_user() error handling
+>
+> v2:
+>
+> * split patches into two
+>
+> * simplify the commit logs
+>
+> * remove extra #include "hif.h" from debug.c
+>
+> ---
+>
+> Yanbo Li (2):
+>       ath10k: add register access debugfs interface
+>       ath10k: add memory dump debugfs interface
 
-Thanks, all three applied.
+Thanks Yanbo, both patches applied.
 
 -- 
 Kalle Valo
