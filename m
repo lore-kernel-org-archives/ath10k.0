@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtxp1-0004GC-7V
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:05:19 +0000
+ id 1Xtxsm-0006tb-VZ
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:09:13 +0000
+Subject: [PATCH v4 0/2] ath10k: device tree support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 0/2] ath10k: device tree support
-References: <20141127115922.28539.9482.stgit@potku.adurom.net>
-Date: Thu, 27 Nov 2014 14:04:53 +0200
-In-Reply-To: <20141127115922.28539.9482.stgit@potku.adurom.net> (Kalle Valo's
- message of "Thu, 27 Nov 2014 14:00:14 +0200")
-Message-ID: <87y4qwu9wa.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 27 Nov 2014 14:08:47 +0200
+Message-ID: <20141127120727.17546.61202.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,21 +21,48 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: devicetree-discuss@lists.ozlabs.org, linux-wireless@vger.kernel.org, toshik@chromium.org
+Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, toshik@chromium.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Hi,
 
-> here's ath10k device tree support which Toshi and me have been working
-> on. Please review.
->
-> Device tree maintainers: please review the bindings document
-> carefully, this is the first time I have written one.
+here's providing ath10k calibration data via device tree support which
+Toshi and me have been working on. Please review.
 
-Argh, I again used the old devicetree mailing list address. Please
-ignore this one, I'll resend using the correct address.
+Device tree maintainers: please review the bindings document
+carefully, this is the first time I have written one.
 
--- 
-Kalle Valo
+v4:
+
+* use correct devicetree mailing list address
+
+v3:
+
+* add a debug message to ath10k
+
+* write bindings file
+
+* use ar->dev.of_node instead of pci_device_to_OF_node()
+
+v2:
+
+* fixed a bug that returns an uninitialized value if the node is not
+  found
+
+---
+
+Kalle Valo (1):
+      dt: bindings: add ath10k wireless device
+
+Toshi Kikuchi (1):
+      ath10k: read calibration data from Device Tree
+
+
+ .../bindings/net/wireless/qcom,ath10k.txt          |   30 +++++++++
+ drivers/net/wireless/ath/ath10k/core.c             |   70 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h             |    3 +
+ 3 files changed, 102 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+
 
 _______________________________________________
 ath10k mailing list
