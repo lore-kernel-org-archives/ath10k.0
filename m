@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XttXL-0002OT-8U
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 07:30:48 +0000
+ id 1XttmY-0007L4-Mh
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 07:46:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
-References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
- <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
-Date: Thu, 27 Nov 2014 09:30:09 +0200
-In-Reply-To: <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
- (Michal Kazior's message of "Wed, 26 Nov 2014 08:54:30 +0100")
-Message-ID: <87ppc9umm6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH V2] ath10k: read calibration data from Device Tree
+References: <1415823056-10876-1-git-send-email-toshik@chromium.org>
+Date: Thu, 27 Nov 2014 09:46:00 +0200
+In-Reply-To: <1415823056-10876-1-git-send-email-toshik@chromium.org> (Toshi
+ Kikuchi's message of "Wed, 12 Nov 2014 12:10:56 -0800")
+Message-ID: <87lhmxulvr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,31 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Toshi Kikuchi <toshik@chromium.org>
+Cc: ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Toshi Kikuchi <toshik@chromium.org> writes:
 
-> 2. Have a dedicatd pci-specific structure:
+> V1->V2: fixed a bug that returns an uninitialized value if the node
+> is not found.
 >
->  struct ath10k_pci_supported_chip {
->    u16 dev_id;
->    u32 chip_id;
->  };
+> This patch adds support for reading calibration data from Device Tree.
+> It looks for the calibration data in Device Tree if it can't find it
+> in a file.
 >
->  struct ath10k_pci_supported_chip ath10k_pci_supported_chips[] = {
->    { QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
->    // ...
->  };
+> The node for the calibration data should be defined like this:
 >
-> Probably the simplest and has least impact.
+> pci {
+>         pcie@0 {
+>                 reg = <0 0 0 0 0>;
+>                 #interrupt-cells = <1>;
+>                 #size-cells = <2>;
+>                 #address-cells = <3>;
+>                 device_type = "pci";
+>
+>                 ath10k@0,0 {
+>                         reg = <0 0 0 0 0>;
+>                         device_type = "pci";
+>                         qcom,ath10k-calibration-data = [ 01 02 03 ... ];
+>                 };
+>         };
+> };
+>
+> Change-Id: I6fe3c50fe2de9177d031a4c17bd95152372dd993
+> Signed-off-by: Toshi Kikuchi <toshik@chromium.org>
 
-Another idea which is a variation of this:
-
-In ath10k_core_register() we iterate through ath10k_hw_params_list and
-make sure that the chip id is supported and if not, bail out. If the
-chip id is found from the array continue the registration process like
-in this patch. Basically this would be a whitelist check.
+Thanks! I'll fix some issues I found in the patch, write a bindings
+document and send it for review to the devicetree folks.
 
 -- 
 Kalle Valo
