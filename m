@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtxkk-00010h-7u
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:00:54 +0000
-Subject: [PATCH v3 0/2] ath10k: device tree support
+ id 1Xtxl0-00016u-BL
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:01:11 +0000
+Subject: [PATCH v3 2/2] ath10k: read calibration data from Device Tree
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 27 Nov 2014 14:00:14 +0200
-Message-ID: <20141127115922.28539.9482.stgit@potku.adurom.net>
+Date: Thu, 27 Nov 2014 14:00:39 +0200
+Message-ID: <20141127120039.28539.90373.stgit@potku.adurom.net>
+In-Reply-To: <20141127115922.28539.9482.stgit@potku.adurom.net>
+References: <20141127115922.28539.9482.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,41 +25,154 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: devicetree-discuss@lists.ozlabs.org, linux-wireless@vger.kernel.org, toshik@chromium.org
 
-Hi,
+From: Toshi Kikuchi <toshik@chromium.org>
 
-here's ath10k device tree support which Toshi and me have been working
-on. Please review.
+This patch adds support for reading calibration data from Device Tree.
+It looks for the calibration data in Device Tree if it can't find it
+in a file. If there's no node in Device Tree, ath10k will try to find the
+calibration data from OTP.
 
-Device tree maintainers: please review the bindings document
-carefully, this is the first time I have written one.
+The node for the calibration data should be defined like this:
 
-v3:
+pci {
+        pcie@0 {
+                reg = <0 0 0 0 0>;
+                #interrupt-cells = <1>;
+                #size-cells = <2>;
+                #address-cells = <3>;
+                device_type = "pci";
 
-* add a debug message to ath10k
+                ath10k@0,0 {
+                        reg = <0 0 0 0 0>;
+                        device_type = "pci";
+                        qcom,ath10k-calibration-data = [ 01 02 03 ... ];
+                };
+        };
+};
 
-* write bindings file
-
-* use ar->dev.of_node instead of pci_device_to_OF_node()
-
-v2:
-
-* fixed a bug that returns an uninitialized value if the node is not
-  found
-
+Signed-off-by: Toshi Kikuchi <toshik@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/core.c |   70 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h |    3 +
+ 2 files changed, 72 insertions(+), 1 deletion(-)
 
-Kalle Valo (1):
-      dt: bindings: add ath10k wireless device
-
-Toshi Kikuchi (1):
-      ath10k: read calibration data from Device Tree
-
-
- .../bindings/net/wireless/qcom,ath10k.txt          |   30 +++++++++
- drivers/net/wireless/ath/ath10k/core.c             |   70 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h             |    3 +
- 3 files changed, 102 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7762061a1944..6165f2735b35 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -17,6 +17,7 @@
+ 
+ #include <linux/module.h>
+ #include <linux/firmware.h>
++#include <linux/of.h>
+ 
+ #include "core.h"
+ #include "mac.h"
+@@ -249,6 +250,63 @@ static int ath10k_download_cal_file(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static int ath10k_download_cal_dt(struct ath10k *ar)
++{
++	struct device_node *node;
++	int data_len;
++	void *data;
++	int ret;
++
++	node = ar->dev->of_node;
++	if (!node)
++		/* Device Tree is optional, don't print any warnings if
++		 * there's no node for ath10k.
++		 */
++		return -ENOENT;
++
++	if (!of_get_property(node, "qcom,ath10k-calibration-data",
++			     &data_len)) {
++		/* The calibration data node is optional */
++		return -ENOENT;
++	}
++
++	if (data_len != QCA988X_CAL_DATA_LEN) {
++		ath10k_warn(ar, "invalid calibration data length in DT: %d\n",
++			    data_len);
++		ret = -EMSGSIZE;
++		goto out;
++	}
++
++	data = kmalloc(data_len, GFP_KERNEL);
++	if (!data) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = of_property_read_u8_array(node, "qcom,ath10k-calibration-data",
++					data, data_len);
++	if (ret) {
++		ath10k_warn(ar, "failed to read calibration data from DT: %d\n",
++			    ret);
++		goto out_free;
++	}
++
++	ret = ath10k_download_board_data(ar, data, data_len);
++	if (ret) {
++		ath10k_warn(ar, "failed to download calibration data from Device Tree: %d\n",
++			    ret);
++		goto out_free;
++	}
++
++	ret = 0;
++
++out_free:
++	kfree(data);
++
++out:
++	return ret;
++}
++
+ static int ath10k_download_and_run_otp(struct ath10k *ar)
+ {
+ 	u32 result, address = ar->hw_params.patch_load_addr;
+@@ -662,7 +720,17 @@ static int ath10k_download_cal_data(struct ath10k *ar)
+ 	}
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
+-		   "boot did not find a calibration file, try OTP next: %d\n",
++		   "boot did not find a calibration file, try DT next: %d\n",
++		   ret);
++
++	ret = ath10k_download_cal_dt(ar);
++	if (ret == 0) {
++		ar->cal_mode = ATH10K_CAL_MODE_DT;
++		goto done;
++	}
++
++	ath10k_dbg(ar, ATH10K_DBG_BOOT,
++		   "boot did not find DT entry, try OTP next: %d\n",
+ 		   ret);
+ 
+ 	ret = ath10k_download_and_run_otp(ar);
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 4a294987736c..2dd1bb05a3fc 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -400,6 +400,7 @@ enum ath10k_dev_flags {
+ enum ath10k_cal_mode {
+ 	ATH10K_CAL_MODE_FILE,
+ 	ATH10K_CAL_MODE_OTP,
++	ATH10K_CAL_MODE_DT,
+ };
+ 
+ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
+@@ -409,6 +410,8 @@ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
+ 		return "file";
+ 	case ATH10K_CAL_MODE_OTP:
+ 		return "otp";
++	case ATH10K_CAL_MODE_DT:
++		return "dt";
+ 	}
+ 
+ 	return "unknown";
 
 
 _______________________________________________
