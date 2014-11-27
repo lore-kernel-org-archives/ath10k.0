@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtxsm-0006tb-VZ
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:09:13 +0000
-Subject: [PATCH v4 0/2] ath10k: device tree support
+ id 1Xtxt8-000718-Jm
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:09:36 +0000
+Subject: [PATCH v4 1/2] dt: bindings: add ath10k wireless device
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 27 Nov 2014 14:08:47 +0200
-Message-ID: <20141127120727.17546.61202.stgit@potku.adurom.net>
+Date: Thu, 27 Nov 2014 14:08:56 +0200
+Message-ID: <20141127120856.17546.32014.stgit@potku.adurom.net>
+In-Reply-To: <20141127120727.17546.61202.stgit@potku.adurom.net>
+References: <20141127120727.17546.61202.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,45 +25,50 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, toshik@chromium.org
 
-Hi,
+Document how calibration data can be provided to ath10k via Device Tree.
 
-here's providing ath10k calibration data via device tree support which
-Toshi and me have been working on. Please review.
-
-Device tree maintainers: please review the bindings document
-carefully, this is the first time I have written one.
-
-v4:
-
-* use correct devicetree mailing list address
-
-v3:
-
-* add a debug message to ath10k
-
-* write bindings file
-
-* use ar->dev.of_node instead of pci_device_to_OF_node()
-
-v2:
-
-* fixed a bug that returns an uninitialized value if the node is not
-  found
-
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
-
-Kalle Valo (1):
-      dt: bindings: add ath10k wireless device
-
-Toshi Kikuchi (1):
-      ath10k: read calibration data from Device Tree
-
-
- .../bindings/net/wireless/qcom,ath10k.txt          |   30 +++++++++
- drivers/net/wireless/ath/ath10k/core.c             |   70 ++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/core.h             |    3 +
- 3 files changed, 102 insertions(+), 1 deletion(-)
+ .../bindings/net/wireless/qcom,ath10k.txt          |   30 ++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+
+diff --git a/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+new file mode 100644
+index 000000000000..edefc26c6204
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+@@ -0,0 +1,30 @@
++* Qualcomm Atheros ath10k wireless devices
++
++For ath10k devices the calibration data can be provided through Device
++Tree. The node is a child node of the PCI controller.
++
++Required properties:
++-compatible : Should be "qcom,ath10k"
++
++Optional properties:
++- qcom,ath10k-calibration-data : calibration data as an array, the
++				 length can vary between hw versions
++
++
++Example:
++
++pci {
++	pcie@0 {
++		reg = <0 0 0 0 0>;
++		#interrupt-cells = <1>;
++		#size-cells = <2>;
++		#address-cells = <3>;
++		device_type = "pci";
++
++		ath10k@0,0 {
++			reg = <0 0 0 0 0>;
++			device_type = "pci";
++			qcom,ath10k-calibration-data = [ 01 02 03 ... ];
++		};
++	};
++};
 
 
 _______________________________________________
