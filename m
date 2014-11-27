@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtwVJ-0007cd-Og
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 10:40:54 +0000
+ id 1Xtxkk-00010h-7u
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:00:54 +0000
+Subject: [PATCH v3 0/2] ath10k: device tree support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH V2] ath10k: read calibration data from Device Tree
-References: <1415823056-10876-1-git-send-email-toshik@chromium.org>
-Date: Thu, 27 Nov 2014 12:40:26 +0200
-In-Reply-To: <1415823056-10876-1-git-send-email-toshik@chromium.org> (Toshi
- Kikuchi's message of "Wed, 12 Nov 2014 12:10:56 -0800")
-Message-ID: <878uixudt1.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 27 Nov 2014 14:00:14 +0200
+Message-ID: <20141127115922.28539.9482.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,41 +20,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Toshi Kikuchi <toshik@chromium.org>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: devicetree-discuss@lists.ozlabs.org, linux-wireless@vger.kernel.org, toshik@chromium.org
 
-Toshi Kikuchi <toshik@chromium.org> writes:
+Hi,
 
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -27,6 +28,7 @@
->  #include "debug.h"
->  #include "htt.h"
->  #include "testmode.h"
-> +#include "pci.h"
->  
->  unsigned int ath10k_debug_mask;
->  static bool uart_print;
-> @@ -244,6 +246,66 @@ static int ath10k_download_cal_file(struct ath10k *ar)
->  	return 0;
->  }
->  
-> +static int ath10k_download_cal_dt(struct ath10k *ar)
-> +{
-> +	struct device_node *node;
-> +	int data_len;
-> +	void *data;
-> +	int ret;
-> +
-> +	node = pci_device_to_OF_node(ath10k_pci_priv(ar)->pdev);
+here's ath10k device tree support which Toshi and me have been working
+on. Please review.
 
-The problem here is that core.c cannot include pci.h, but we can get the
-same node like this:
+Device tree maintainers: please review the bindings document
+carefully, this is the first time I have written one.
 
-	node = ar->dev->of_node;
+v3:
 
--- 
-Kalle Valo
+* add a debug message to ath10k
+
+* write bindings file
+
+* use ar->dev.of_node instead of pci_device_to_OF_node()
+
+v2:
+
+* fixed a bug that returns an uninitialized value if the node is not
+  found
+
+---
+
+Kalle Valo (1):
+      dt: bindings: add ath10k wireless device
+
+Toshi Kikuchi (1):
+      ath10k: read calibration data from Device Tree
+
+
+ .../bindings/net/wireless/qcom,ath10k.txt          |   30 +++++++++
+ drivers/net/wireless/ath/ath10k/core.c             |   70 ++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/core.h             |    3 +
+ 3 files changed, 102 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/net/wireless/qcom,ath10k.txt
+
 
 _______________________________________________
 ath10k mailing list
