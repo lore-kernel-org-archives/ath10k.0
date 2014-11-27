@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XtnWL-00068L-Fb
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 01:05:22 +0000
-Received: by mail-wg0-f54.google.com with SMTP id l2so5180706wgh.27
- for <ath10k@lists.infradead.org>; Wed, 26 Nov 2014 17:04:59 -0800 (PST)
+ id 1XttXL-0002OT-8U
+ for ath10k@lists.infradead.org; Thu, 27 Nov 2014 07:30:48 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
+References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
+ <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
+Date: Thu, 27 Nov 2014 09:30:09 +0200
+In-Reply-To: <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 26 Nov 2014 08:54:30 +0100")
+Message-ID: <87ppc9umm6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
-References: <547525D4.5080701@candelatech.com>
- <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
-Date: Thu, 27 Nov 2014 09:04:59 +0800
-Message-ID: <CAEFj986B15pFo2WY_2x0VwEXBEBy+j0-nff2-B=Ff=qP66iP_w@mail.gmail.com>
-Subject: Re: IBSS mode is now supported by CT firmware.
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +25,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pushpal Sidhu <psidhu@gateworks.com>
-Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Thu, Nov 27, 2014 at 6:36 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
-> On Tue, Nov 25, 2014 at 4:59 PM, Ben Greear <greearb@candelatech.com> wrote:
->> I still cannot get WPA2 encryption to work, but open authentication
->> seems to work fine.  I still have a good bit more testing to do.
->> I cannot get ath9k to do encryption in IBSS mode either, so I
->> probably am mis-configuring something.
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> 2. Have a dedicatd pci-specific structure:
 >
-> I don't believe WPA2 is supported with adhoc (at least through
-> wpa_supplicant). However, WPA should be and while testing your
-> firmware, I found that it doesn't seem to work (They don't see each
-> other and thus don't associate).
+>  struct ath10k_pci_supported_chip {
+>    u16 dev_id;
+>    u32 chip_id;
+>  };
 >
-> I also found that, like the 999.x firmware, the rate's do not go
-> higher than 54mbit/s. Is this due to the firmware not advertising
-> proper rates or..?
+>  struct ath10k_pci_supported_chip ath10k_pci_supported_chips[] = {
+>    { QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
+>    // ...
+>  };
+>
+> Probably the simplest and has least impact.
 
-Are you joining the adhoc network in non-HT mode? Anyway, even if you
-use HT mode, the rate control is not working for 999.x firmware and
-always stuck at 6Mbps as far as I know.
+Another idea which is a variation of this:
 
------
-Chun-Yeow
+In ath10k_core_register() we iterate through ath10k_hw_params_list and
+make sure that the chip id is supported and if not, bail out. If the
+chip id is found from the array continue the registration process like
+in this patch. Basically this would be a whitelist check.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
