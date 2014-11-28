@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xtyfu-0005SD-Rc
- for ath10k@lists.infradead.org; Thu, 27 Nov 2014 12:59:59 +0000
+ id 1XuFaH-0008An-U7
+ for ath10k@lists.infradead.org; Fri, 28 Nov 2014 07:03:18 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/7] ath10k: add support for new wmi-tlv backend
-References: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 27 Nov 2014 14:59:32 +0200
-In-Reply-To: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 27 Nov 2014 10:11:14 +0100")
-Message-ID: <87ppc8u7d7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
+References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
+ <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
+ <87ppc9umm6.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=dt9fMHpCYk6ofX5W4=Ynn7C4t+vCoHHuZM1oF3Ngdtw@mail.gmail.com>
+Date: Fri, 28 Nov 2014 09:02:50 +0200
+In-Reply-To: <CA+BoTQ=dt9fMHpCYk6ofX5W4=Ynn7C4t+vCoHHuZM1oF3Ngdtw@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 27 Nov 2014 08:45:38 +0100")
+Message-ID: <87h9xju7s5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,35 +28,38 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> First 2 patches are simple fixes. Patch 3 isn't
-> strictly related to wmi-tlv but I decided to
-> include it anyway. Other patches gradually
-> implement wmi-tlv.
+> On 27 November 2014 at 08:30, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Michal Kazior <michal.kazior@tieto.com> writes:
+>>
+>>> 2. Have a dedicatd pci-specific structure:
+>>>
+>>>  struct ath10k_pci_supported_chip {
+>>>    u16 dev_id;
+>>>    u32 chip_id;
+>>>  };
+>>>
+>>>  struct ath10k_pci_supported_chip ath10k_pci_supported_chips[] = {
+>>>    { QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
+>>>    // ...
+>>>  };
+>>>
+>>> Probably the simplest and has least impact.
+>>
+>> Another idea which is a variation of this:
+>>
+>> In ath10k_core_register() we iterate through ath10k_hw_params_list and
+>> make sure that the chip id is supported and if not, bail out. If the
+>> chip id is found from the array continue the registration process like
+>> in this patch. Basically this would be a whitelist check.
 >
-> There's a bunch of false-positive checkpatch
-> warnings regarding `CHECK: No space is necessary
-> after a cast`.
->
-> v2:
->  * a lot of fixes (see notes on patch #7)
->
-> Michal Kazior (7):
->   ath10k: fix wmi svc bitmap dbg print
->   ath10k: add sanity checks for service bmap parsing
->   ath10k: make wmi service bitmap non-debug
+> This won't work because chip ids can overlap between different
+> hardware designs and you'd get false positives.
 
-These look ok and are now in ath-next-text.
-
->   ath10k: implement intermediate event args
->   ath10k: introduce wmi ops
->   ath10k: make some wmi functions public
->   ath10k: implement wmi-tlv backend
-
-I still need to look at these more carefully.
+Ah, let's forget that then.
 
 -- 
 Kalle Valo
