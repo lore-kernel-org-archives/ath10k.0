@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XuMhi-0007Dv-1f
- for ath10k@lists.infradead.org; Fri, 28 Nov 2014 14:39:27 +0000
-Received: by mail-wi0-f173.google.com with SMTP id r20so18752188wiv.6
- for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 06:39:01 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1XuOPh-0005AN-Q3
+ for ath10k@lists.infradead.org; Fri, 28 Nov 2014 16:28:58 +0000
+Message-ID: <5478A2B2.3090402@candelatech.com>
+Date: Fri, 28 Nov 2014 08:28:34 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
-References: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
- <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 28 Nov 2014 15:39:01 +0100
-Message-ID: <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 7/7] ath10k: implement wmi-tlv backend
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: IBSS mode is now supported by CT firmware.
+References: <547525D4.5080701@candelatech.com>
+ <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
+ <CAEFj986B15pFo2WY_2x0VwEXBEBy+j0-nff2-B=Ff=qP66iP_w@mail.gmail.com>
+ <CAEFj987HmrPz1vsjmckURuC4ZYT2h6MgBT6K3yQTWy3U5s+ZtQ@mail.gmail.com>
+In-Reply-To: <CAEFj987HmrPz1vsjmckURuC4ZYT2h6MgBT6K3yQTWy3U5s+ZtQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,31 +21,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Pushpal Sidhu <psidhu@gateworks.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMjcgTm92ZW1iZXIgMjAxNCBhdCAxMDoxMSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlv
-ckB0aWV0by5jb20+IHdyb3RlOgo+IExhdGVzdCBtYWluIGZpcm13YXJlIGJyYW5jaCBpbnRyb2R1
-Y2VkIGEgbmV3IFdNSQo+IEFCSSBjYWxsZWQgd21pLXRsdi4gSXQgaXMgbm90IGEgdGx2IHN0cmlj
-dGx5Cj4gc3BlYWtpbmcgYnV0IHNvbWV0aGluZyB0aGF0IHJlc2VtYmxlcyBpdCBiZWNhdXNlCj4g
-aXQgaXMgb3JkZXJlZCBhbmQgbWF5IGhhdmUgZHVwbGljYXRlIGlkIGVudHJpZXMuCj4KPiBUaGlz
-IHByZXBhcmVzIGF0aDEwayB0byBzdXBwb3J0IG5ldyBody4KPgo+IFNpZ25lZC1vZmYtYnk6IE1p
-Y2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgpbLi4uXQo+IEBAIC0yMTUsNiAr
-MjU0LDQyIEBAIHN0YXRpYyBpbmxpbmUgY2hhciAqd21pX3NlcnZpY2VfbmFtZShpbnQgc2Vydmlj
-ZV9pZCkKPiAgICAgICAgIFNWQ1NUUihXTUlfU0VSVklDRV9CVVJTVCk7Cj4gICAgICAgICBTVkNT
-VFIoV01JX1NFUlZJQ0VfU01BUlRfQU5URU5OQV9TV19TVVBQT1JUKTsKPiAgICAgICAgIFNWQ1NU
-UihXTUlfU0VSVklDRV9TTUFSVF9BTlRFTk5BX0hXX1NVUFBPUlQpOwo+ICsgICAgICAgU1ZDU1RS
-KFdNSV9TRVJWSUNFX1JPQU1fU0NBTl9PRkZMT0FEKTsKPiArICAgICAgIFNWQ1NUUihXTUlfU0VS
-VklDRV9BUF9QU19ERVRFQ1RfT1VUX09GX1NZTkMpOwo+ICsgICAgICAgU1ZDU1RSKFdNSV9TRVJW
-SUNFX0VBUkxZX1JYKTsKWy4uLl0KPiArICAgICAgIFNWQ1NUUihXTUlfU0VSVklDRV9SWF9GVUxM
-X1JFT1JERVIpOwo+ICsgICAgICAgU1ZDU1RSKFdNSV9TRVJWSUNFX0RIQ1BfT0ZGTE9BRCk7CgpJ
-J3ZlIGFkZGVkIDMgbmV3IHNlcnZpY2UgZW51bXMgaW4gdjI6CldNSV9TRVJWSUNFX1NUQV9SWF9J
-UEFfT0ZGTE9BRF9TVVBQT1JULCBXTUlfU0VSVklDRV9NRE5TX09GRkxPQUQsCldNSV9TRVJWSUNF
-X1NBUF9BVVRIX09GRkxPQUQgYnV0IGFwcGFyZW50bHkgSSBmb3Jnb3QgdG8gYWRkIFNWQ1NUUigp
-CmZvciB0aGF0Li4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+I'll investigate the rate-control logic.  I don't know enough
+about IBSS currently to know why it would use different rate-ctrl logic than
+the normal sta/ap, but hopefully I can figure it out.
+
+Can you post some details on how you configure HT20 v/s legacy mode
+for IBSS interfaces?
+
+Do you have any reason to believe the problem is in the driver or mac80211
+stack, or is this all a firmware issue?
+
+And, if anyone has a different /AC NIC that can do IBSS, I'm curious
+if ath10k will receive at higher speeds?
+
+Thanks,
+Ben
+
+
+On 11/28/2014 03:42 AM, Yeoh Chun-Yeow wrote:
+> For CT firmware, IBSS mode works, but again the Rate Control in HT20
+> mode is not working at all. It always stuck with 6Mbps Tx Rate.
+>
+> [  196.030000] ath10k_pci 0000:00:00.0: rx skb 869a5840 len 116 peer
+> 04:f0:21:0c:a5:44  ucast sn 95  rate_idx 0 vht_nss 0 freq 5180 band 1
+> flag 0x200000 fcs-err 0 mic-err 0 amsdu-more 0
+>
+> For legacy mode, rate control works. rate_idx to 7 or 54Mbps.
+>
+> [  156.070000] ath10k_pci 0000:00:00.0: rx skb 86af0900 len 116 peer
+> 04:f0:21:0c:a5:1c  ucast sn 95  rate_idx 7 vht_nss 0 freq 5180 band 1
+> flag 0x200000 fcs-err 0 mic-err 0 amsdu-more 0
+>
+> Similar to 636 firmware.
+>
+> ----
+> ChunYeow
+>
+> On Thu, Nov 27, 2014 at 9:04 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+>> On Thu, Nov 27, 2014 at 6:36 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
+>>> On Tue, Nov 25, 2014 at 4:59 PM, Ben Greear <greearb@candelatech.com> wrote:
+>>>> I still cannot get WPA2 encryption to work, but open authentication
+>>>> seems to work fine.  I still have a good bit more testing to do.
+>>>> I cannot get ath9k to do encryption in IBSS mode either, so I
+>>>> probably am mis-configuring something.
+>>>
+>>> I don't believe WPA2 is supported with adhoc (at least through
+>>> wpa_supplicant). However, WPA should be and while testing your
+>>> firmware, I found that it doesn't seem to work (They don't see each
+>>> other and thus don't associate).
+>>>
+>>> I also found that, like the 999.x firmware, the rate's do not go
+>>> higher than 54mbit/s. Is this due to the firmware not advertising
+>>> proper rates or..?
+>>
+>> Are you joining the adhoc network in non-HT mode? Anyway, even if you
+>> use HT mode, the rate control is not working for 999.x firmware and
+>> always stuck at 6Mbps as far as I know.
+>>
+>> -----
+>> Chun-Yeow
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
