@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XuJgh-0005XS-Th
- for ath10k@lists.infradead.org; Fri, 28 Nov 2014 11:26:12 +0000
-Received: by mail-wg0-f52.google.com with SMTP id a1so8597729wgh.25
- for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 03:25:44 -0800 (PST)
+ id 1XuJx6-0000vN-2l
+ for ath10k@lists.infradead.org; Fri, 28 Nov 2014 11:43:09 +0000
+Received: by mail-wi0-f174.google.com with SMTP id h11so18290783wiw.13
+ for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 03:42:44 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87d287u7fv.fsf@kamboji.qca.qualcomm.com>
-References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
- <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
- <87d287u7fv.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 28 Nov 2014 12:25:43 +0100
-Message-ID: <CA+BoTQ=0929oK8msio-zPj2v2JDZ2+3trg4QqQ-vbYJszwh0CQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CAEFj986B15pFo2WY_2x0VwEXBEBy+j0-nff2-B=Ff=qP66iP_w@mail.gmail.com>
+References: <547525D4.5080701@candelatech.com>
+ <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
+ <CAEFj986B15pFo2WY_2x0VwEXBEBy+j0-nff2-B=Ff=qP66iP_w@mail.gmail.com>
+Date: Fri, 28 Nov 2014 19:42:44 +0800
+Message-ID: <CAEFj987HmrPz1vsjmckURuC4ZYT2h6MgBT6K3yQTWy3U5s+ZtQ@mail.gmail.com>
+Subject: Re: IBSS mode is now supported by CT firmware.
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +22,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Pushpal Sidhu <psidhu@gateworks.com>
+Cc: Ben Greear <greearb@candelatech.com>, ath10k <ath10k@lists.infradead.org>
 
-T24gMjggTm92ZW1iZXIgMjAxNCBhdCAwODoxMCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
-b21tLmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
-IHdyaXRlczoKPgo+PiBIbW0uLiBJIGhhdmUgYSBjb3VwbGUgb2YgaWRlYXM6Cj4KPiBbLi4uXQo+
-Cj4+IDIuIEhhdmUgYSBkZWRpY2F0ZCBwY2ktc3BlY2lmaWMgc3RydWN0dXJlOgo+Pgo+PiAgc3Ry
-dWN0IGF0aDEwa19wY2lfc3VwcG9ydGVkX2NoaXAgewo+PiAgICB1MTYgZGV2X2lkOwo+PiAgICB1
-MzIgY2hpcF9pZDsKPj4gIH07Cj4+Cj4+ICBzdHJ1Y3QgYXRoMTBrX3BjaV9zdXBwb3J0ZWRfY2hp
-cCBhdGgxMGtfcGNpX3N1cHBvcnRlZF9jaGlwc1tdID0gewo+PiAgICB7IFFDQTk4OFhfMl8wX0RF
-VklDRV9JRCwgUUNBOTg4WF9IV18yXzBfQ0hJUF9JRF9SRVYgfSwKPj4gICAgLy8gLi4uCj4+ICB9
-Owo+Pgo+PiBQcm9iYWJseSB0aGUgc2ltcGxlc3QgYW5kIGhhcyBsZWFzdCBpbXBhY3QuCj4KPiBZ
-ZWFoLCB0aGlzIHNlZW1zIHRvIGJlIHRoZSBiZXN0LiBDYW4geW91IHNlbmQgdjI/CgpPay4gSSds
-bCBnbyB3aXRoIHRoaXMgYXBwcm9hY2ggYW5kIHBvc3QgYSB2MiB3aGVuIEknbSBkb25lLgoKCk1p
-Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+For CT firmware, IBSS mode works, but again the Rate Control in HT20
+mode is not working at all. It always stuck with 6Mbps Tx Rate.
+
+[  196.030000] ath10k_pci 0000:00:00.0: rx skb 869a5840 len 116 peer
+04:f0:21:0c:a5:44  ucast sn 95  rate_idx 0 vht_nss 0 freq 5180 band 1
+flag 0x200000 fcs-err 0 mic-err 0 amsdu-more 0
+
+For legacy mode, rate control works. rate_idx to 7 or 54Mbps.
+
+[  156.070000] ath10k_pci 0000:00:00.0: rx skb 86af0900 len 116 peer
+04:f0:21:0c:a5:1c  ucast sn 95  rate_idx 7 vht_nss 0 freq 5180 band 1
+flag 0x200000 fcs-err 0 mic-err 0 amsdu-more 0
+
+Similar to 636 firmware.
+
+----
+ChunYeow
+
+On Thu, Nov 27, 2014 at 9:04 AM, Yeoh Chun-Yeow <yeohchunyeow@gmail.com> wrote:
+> On Thu, Nov 27, 2014 at 6:36 AM, Pushpal Sidhu <psidhu@gateworks.com> wrote:
+>> On Tue, Nov 25, 2014 at 4:59 PM, Ben Greear <greearb@candelatech.com> wrote:
+>>> I still cannot get WPA2 encryption to work, but open authentication
+>>> seems to work fine.  I still have a good bit more testing to do.
+>>> I cannot get ath9k to do encryption in IBSS mode either, so I
+>>> probably am mis-configuring something.
+>>
+>> I don't believe WPA2 is supported with adhoc (at least through
+>> wpa_supplicant). However, WPA should be and while testing your
+>> firmware, I found that it doesn't seem to work (They don't see each
+>> other and thus don't associate).
+>>
+>> I also found that, like the 999.x firmware, the rate's do not go
+>> higher than 54mbit/s. Is this due to the firmware not advertising
+>> proper rates or..?
+>
+> Are you joining the adhoc network in non-HT mode? Anyway, even if you
+> use HT mode, the rate control is not working for 999.x firmware and
+> always stuck at 6Mbps as far as I know.
+>
+> -----
+> Chun-Yeow
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
