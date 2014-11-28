@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XuKYu-0004dN-0P
- for ath10k@lists.infradead.org; Fri, 28 Nov 2014 12:22:12 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 1/2] dt: bindings: add ath10k wireless device
-References: <20141127120727.17546.61202.stgit@potku.adurom.net>
- <3202372.2AaH3c4qv1@wuerfel> <87fvd3sl9c.fsf@kamboji.qca.qualcomm.com>
- <5247714.HacITJUipJ@wuerfel>
-Date: Fri, 28 Nov 2014 14:21:39 +0200
-In-Reply-To: <5247714.HacITJUipJ@wuerfel> (Arnd Bergmann's message of "Fri, 28
- Nov 2014 11:23:08 +0100")
-Message-ID: <874mtjsegc.fsf@kamboji.qca.qualcomm.com>
+ id 1XuMhi-0007Dv-1f
+ for ath10k@lists.infradead.org; Fri, 28 Nov 2014 14:39:27 +0000
+Received: by mail-wi0-f173.google.com with SMTP id r20so18752188wiv.6
+ for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 06:39:01 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
+References: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
+ <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 28 Nov 2014 15:39:01 +0100
+Message-ID: <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
+Subject: Re: [PATCH v2 7/7] ath10k: implement wmi-tlv backend
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +21,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, toshik@chromium.org, ath10k@lists.infradead.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
 
-Arnd Bergmann <arnd@arndb.de> writes:
-
-> On Friday 28 November 2014 11:54:39 Kalle Valo wrote:
->> 
->> Right now ath10k does not support that, but in the future we might want
->> to add mac address as well. We need to do some testing with the firmware
->> to make sure that we can safely change the "main" address from ath10k.
->
-> This is from Documentation/devicetree/bindings/net/ethernet.txt:
->
-> - local-mac-address: array of 6 bytes, specifies the MAC address that was
->   assigned to the network device;
-> - mac-address: array of 6 bytes, specifies the MAC address that was last used by
->   the boot program; should be used in cases where the MAC address assigned to
->   the device by the boot program is different from the "local-mac-address"
->   property;
->
-> If the address is fixed, you might still be able to use the local-mac-address
-> property to communicate the main address. Normally you only have to pass
-> the mac address in DT if the device itself doesn't know the address. Do you
-> know where the main address is stored?
-
-The ath10k main address is stored in the calibration data and the
-firmware delivers the address to ath10k.
-
-> If it's always known to the card, we don't need to pass it, and if the
-> card doesn't know it, I suspect it would be safe to change it.
-
-I suspect we can change the address afterwards, but I need to check to
-be sure.
-
->> And because of Virtual AP (mBSSID) feature we actually would need to
->> provide multiple addresses, not just one. Maybe with addr_mask like
->> struct wiphy has?
->> 
->>  * @perm_addr: permanent MAC address of this device
->>  * @addr_mask: If the device supports multiple MAC addresses by masking,
->>  *      set this to a mask with variable bits set to 1, e.g. if the last
->>  *      four bits are variable then set it to 00-00-00-00-00-0f. The actual
->>  *      variable bits shall be determined by the interfaces added, with
->>  *      interfaces not matching the mask being rejected to be brought up.
->> 
->>         /* permanent MAC address(es) */
->>         u8 perm_addr[ETH_ALEN];
->>         u8 addr_mask[ETH_ALEN];
->
-> We don't have a common binding for this yet, I think drivers that do this
-> at the moment just know how many addresses they are allowed to take.
->
-> If the mask is generally considered useful, we could probably add that to
-> the binding though.
-
-Currently ath10k supports up to 8 Virtual APs but the manufacturer can
-choose to allocate any number of MAC addresses (1-8). Something like
-addr_mask would be good way to inform ath10k what address range it has
-available.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjcgTm92ZW1iZXIgMjAxNCBhdCAxMDoxMSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlv
+ckB0aWV0by5jb20+IHdyb3RlOgo+IExhdGVzdCBtYWluIGZpcm13YXJlIGJyYW5jaCBpbnRyb2R1
+Y2VkIGEgbmV3IFdNSQo+IEFCSSBjYWxsZWQgd21pLXRsdi4gSXQgaXMgbm90IGEgdGx2IHN0cmlj
+dGx5Cj4gc3BlYWtpbmcgYnV0IHNvbWV0aGluZyB0aGF0IHJlc2VtYmxlcyBpdCBiZWNhdXNlCj4g
+aXQgaXMgb3JkZXJlZCBhbmQgbWF5IGhhdmUgZHVwbGljYXRlIGlkIGVudHJpZXMuCj4KPiBUaGlz
+IHByZXBhcmVzIGF0aDEwayB0byBzdXBwb3J0IG5ldyBody4KPgo+IFNpZ25lZC1vZmYtYnk6IE1p
+Y2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgpbLi4uXQo+IEBAIC0yMTUsNiAr
+MjU0LDQyIEBAIHN0YXRpYyBpbmxpbmUgY2hhciAqd21pX3NlcnZpY2VfbmFtZShpbnQgc2Vydmlj
+ZV9pZCkKPiAgICAgICAgIFNWQ1NUUihXTUlfU0VSVklDRV9CVVJTVCk7Cj4gICAgICAgICBTVkNT
+VFIoV01JX1NFUlZJQ0VfU01BUlRfQU5URU5OQV9TV19TVVBQT1JUKTsKPiAgICAgICAgIFNWQ1NU
+UihXTUlfU0VSVklDRV9TTUFSVF9BTlRFTk5BX0hXX1NVUFBPUlQpOwo+ICsgICAgICAgU1ZDU1RS
+KFdNSV9TRVJWSUNFX1JPQU1fU0NBTl9PRkZMT0FEKTsKPiArICAgICAgIFNWQ1NUUihXTUlfU0VS
+VklDRV9BUF9QU19ERVRFQ1RfT1VUX09GX1NZTkMpOwo+ICsgICAgICAgU1ZDU1RSKFdNSV9TRVJW
+SUNFX0VBUkxZX1JYKTsKWy4uLl0KPiArICAgICAgIFNWQ1NUUihXTUlfU0VSVklDRV9SWF9GVUxM
+X1JFT1JERVIpOwo+ICsgICAgICAgU1ZDU1RSKFdNSV9TRVJWSUNFX0RIQ1BfT0ZGTE9BRCk7CgpJ
+J3ZlIGFkZGVkIDMgbmV3IHNlcnZpY2UgZW51bXMgaW4gdjI6CldNSV9TRVJWSUNFX1NUQV9SWF9J
+UEFfT0ZGTE9BRF9TVVBQT1JULCBXTUlfU0VSVklDRV9NRE5TX09GRkxPQUQsCldNSV9TRVJWSUNF
+X1NBUF9BVVRIX09GRkxPQUQgYnV0IGFwcGFyZW50bHkgSSBmb3Jnb3QgdG8gYWRkIFNWQ1NUUigp
+CmZvciB0aGF0Li4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
