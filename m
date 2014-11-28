@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.24])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XuIiM-0005gZ-Dv
- for ath10k@lists.infradead.org; Fri, 28 Nov 2014 10:23:51 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v4 1/2] dt: bindings: add ath10k wireless device
-Date: Fri, 28 Nov 2014 11:23:08 +0100
-Message-ID: <5247714.HacITJUipJ@wuerfel>
-In-Reply-To: <87fvd3sl9c.fsf@kamboji.qca.qualcomm.com>
-References: <20141127120727.17546.61202.stgit@potku.adurom.net>
- <3202372.2AaH3c4qv1@wuerfel> <87fvd3sl9c.fsf@kamboji.qca.qualcomm.com>
+ id 1XuJgh-0005XS-Th
+ for ath10k@lists.infradead.org; Fri, 28 Nov 2014 11:26:12 +0000
+Received: by mail-wg0-f52.google.com with SMTP id a1so8597729wgh.25
+ for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 03:25:44 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <87d287u7fv.fsf@kamboji.qca.qualcomm.com>
+References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
+ <87vbm2whoz.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQ=56six2CEQ6Rzr7yMEM7UVNQ3RX9UpdgmxMEoG0+kDAA@mail.gmail.com>
+ <87d287u7fv.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 28 Nov 2014 12:25:43 +0100
+Message-ID: <CA+BoTQ=0929oK8msio-zPj2v2JDZ2+3trg4QqQ-vbYJszwh0CQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] ath10k: embed supported chip ids in hw_params
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,59 +23,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: devicetree@vger.kernel.org, linux-wireless@vger.kernel.org, toshik@chromium.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Friday 28 November 2014 11:54:39 Kalle Valo wrote:
-> 
-> Right now ath10k does not support that, but in the future we might want
-> to add mac address as well. We need to do some testing with the firmware
-> to make sure that we can safely change the "main" address from ath10k.
-
-This is from Documentation/devicetree/bindings/net/ethernet.txt:
-
-- local-mac-address: array of 6 bytes, specifies the MAC address that was
-  assigned to the network device;
-- mac-address: array of 6 bytes, specifies the MAC address that was last used by
-  the boot program; should be used in cases where the MAC address assigned to
-  the device by the boot program is different from the "local-mac-address"
-  property;
-
-If the address is fixed, you might still be able to use the local-mac-address
-property to communicate the main address. Normally you only have to pass
-the mac address in DT if the device itself doesn't know the address. Do you
-know where the main address is stored? If it's always known to the card,
-we don't need to pass it, and if the card doesn't know it, I suspect it would
-be safe to change it.
-
-> And because of Virtual AP (mBSSID) feature we actually would need to
-> provide multiple addresses, not just one. Maybe with addr_mask like
-> struct wiphy has?
-> 
->  * @perm_addr: permanent MAC address of this device
->  * @addr_mask: If the device supports multiple MAC addresses by masking,
->  *      set this to a mask with variable bits set to 1, e.g. if the last
->  *      four bits are variable then set it to 00-00-00-00-00-0f. The actual
->  *      variable bits shall be determined by the interfaces added, with
->  *      interfaces not matching the mask being rejected to be brought up.
-> 
->         /* permanent MAC address(es) */
->         u8 perm_addr[ETH_ALEN];
->         u8 addr_mask[ETH_ALEN];
-
-We don't have a common binding for this yet, I think drivers that do this
-at the moment just know how many addresses they are allowed to take.
-
-If the mask is generally considered useful, we could probably add that to
-the binding though.
-
-	Arnd
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjggTm92ZW1iZXIgMjAxNCBhdCAwODoxMCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
+b21tLmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
+IHdyaXRlczoKPgo+PiBIbW0uLiBJIGhhdmUgYSBjb3VwbGUgb2YgaWRlYXM6Cj4KPiBbLi4uXQo+
+Cj4+IDIuIEhhdmUgYSBkZWRpY2F0ZCBwY2ktc3BlY2lmaWMgc3RydWN0dXJlOgo+Pgo+PiAgc3Ry
+dWN0IGF0aDEwa19wY2lfc3VwcG9ydGVkX2NoaXAgewo+PiAgICB1MTYgZGV2X2lkOwo+PiAgICB1
+MzIgY2hpcF9pZDsKPj4gIH07Cj4+Cj4+ICBzdHJ1Y3QgYXRoMTBrX3BjaV9zdXBwb3J0ZWRfY2hp
+cCBhdGgxMGtfcGNpX3N1cHBvcnRlZF9jaGlwc1tdID0gewo+PiAgICB7IFFDQTk4OFhfMl8wX0RF
+VklDRV9JRCwgUUNBOTg4WF9IV18yXzBfQ0hJUF9JRF9SRVYgfSwKPj4gICAgLy8gLi4uCj4+ICB9
+Owo+Pgo+PiBQcm9iYWJseSB0aGUgc2ltcGxlc3QgYW5kIGhhcyBsZWFzdCBpbXBhY3QuCj4KPiBZ
+ZWFoLCB0aGlzIHNlZW1zIHRvIGJlIHRoZSBiZXN0LiBDYW4geW91IHNlbmQgdjI/CgpPay4gSSds
+bCBnbyB3aXRoIHRoaXMgYXBwcm9hY2ggYW5kIHBvc3QgYSB2MiB3aGVuIEknbSBkb25lLgoKCk1p
+Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
