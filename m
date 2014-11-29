@@ -1,15 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XuTKK-0003mn-QO
- for ath10k@lists.infradead.org; Fri, 28 Nov 2014 21:43:45 +0000
-Received: by mail-ie0-f180.google.com with SMTP id rp18so6379813iec.25
- for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 13:43:21 -0800 (PST)
-Message-ID: <5478EC76.40102@gmail.com>
-Date: Fri, 28 Nov 2014 16:43:18 -0500
-From: nick <xerofoify@gmail.com>
+ id 1XuVr0-000730-Sq
+ for ath10k@lists.infradead.org; Sat, 29 Nov 2014 00:25:39 +0000
+Received: by mail-wg0-f54.google.com with SMTP id l2so9916711wgh.13
+ for <ath10k@lists.infradead.org>; Fri, 28 Nov 2014 16:25:16 -0800 (PST)
 MIME-Version: 1.0
-Subject: Fix me in htc.c relating to skb_reserve
+In-Reply-To: <5478A2B2.3090402@candelatech.com>
+References: <547525D4.5080701@candelatech.com>
+ <CAD1M061uAfCfCnnVY1bh6kCcXXZhwOOiyww5mkU8VkxGov9DwA@mail.gmail.com>
+ <CAEFj986B15pFo2WY_2x0VwEXBEBy+j0-nff2-B=Ff=qP66iP_w@mail.gmail.com>
+ <CAEFj987HmrPz1vsjmckURuC4ZYT2h6MgBT6K3yQTWy3U5s+ZtQ@mail.gmail.com>
+ <5478A2B2.3090402@candelatech.com>
+Date: Sat, 29 Nov 2014 08:25:16 +0800
+Message-ID: <CAEFj987J63pkrWvxg_S6onTQDJuOMjo2Bc=5hnC2PzMTEWXEKQ@mail.gmail.com>
+Subject: Re: IBSS mode is now supported by CT firmware.
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +28,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linville@tuxdriver.com, ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Pushpal Sidhu <psidhu@gateworks.com>, ath10k <ath10k@lists.infradead.org>
 
-Greetings Kalle, John and others,
-I am wondering why this file is complaining about the code below, if someone can explain to me the issue I would be 
-very glad :).
- static struct sk_buff *ath10k_htc_build_tx_ctrl_skb(void *ar)
-{
-       struct sk_buff *skb;
-       struct ath10k_skb_cb *skb_cb;
+On Sat, Nov 29, 2014 at 12:28 AM, Ben Greear <greearb@candelatech.com> wrote:
+> I'll investigate the rate-control logic.  I don't know enough
+> about IBSS currently to know why it would use different rate-ctrl logic than
+> the normal sta/ap, but hopefully I can figure it out.
+>
+> Can you post some details on how you configure HT20 v/s legacy mode
+> for IBSS interfaces?
 
-       skb = dev_alloc_skb(ATH10K_HTC_CONTROL_BUFFER_SIZE);
-       if (!skb)
-               return NULL;
+Alright, this is how I configure adhoc mode.
 
-  skb_reserve(skb, 20); /* FIXME: why 20 bytes? */
-  WARN_ONCE((unsigned long)skb->data & 3, "unaligned skb");
+HT20 Mode:
+iw phy0 interface add wlan0 type adhoc
+ifconfig wlan0 1.1.1.1 netmask 255.255.255.0
+iw wlan0 ibss join adhocnet 5180 HT20
 
-  skb_cb = ATH10K_SKB_CB(skb);
-  memset(skb_cb, 0, sizeof(*skb_cb));
+Legacy Mode:
+iw phy0 interface add wlan0 type adhoc
+ifconfig wlan0 1.1.1.1 netmask 255.255.255.0
+iw wlan0 ibss join adhocnet 5180
 
-  ath10k_dbg(ar, ATH10K_DBG_HTC, "%s: skb %p\n", __func__, skb);
-  return skb;
-}
+By the way, the peer in ath10k is up in legacy mode first before
+updating the rate to HT20, triggered by drv_sta_rc_update in
+net/mac80211/ibss.c.
+
+Is EEE80211_RC_SUPP_RATES_CHANGED working correctly for ath10k?
+
+>
+> Do you have any reason to believe the problem is in the driver or mac80211
+> stack, or is this all a firmware issue?
+>
+
+Rate control is implemented in firmware, right? So it should be
+firmware issue unless we intended to use the rate control implemented
+in mac80211 (minstrel).
+
+By the way, I haven't done the testing on CT firmware. But as far as I
+know, for 363 firmware, the setting of higher fixed TX rate is
+possible if you configure HT20, such as follow:
+
+iw wlanX set bitrates legacy-5 ht-mcs-5 3 vht-mcs-5
+will setup HT, nss=1, mcs=3
+
+So I think that rate control logic in firmware is not working properly
+in IBSS mode.
+
+> And, if anyone has a different /AC NIC that can do IBSS, I'm curious
+> if ath10k will receive at higher speeds?
+>
+
+ath9k but the rate control is managed by mac80211.
+
+----
+ChunYeow
 
 _______________________________________________
 ath10k mailing list
