@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvMSK-0005Db-B1
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 08:35:40 +0000
-Received: by mail-wi0-f173.google.com with SMTP id r20so23700785wiv.12
- for <ath10k@lists.infradead.org>; Mon, 01 Dec 2014 00:35:18 -0800 (PST)
+ id 1XvQJq-0002mG-93
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 12:43:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Pull request: ath 20141201
+Date: Mon, 1 Dec 2014 14:42:41 +0200
+Message-ID: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <8761dvreui.fsf@kamboji.qca.qualcomm.com>
-References: <1416838646-18801-1-git-send-email-michal.kazior@tieto.com>
- <1417418266-21974-1-git-send-email-michal.kazior@tieto.com>
- <8761dvreui.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 1 Dec 2014 09:35:18 +0100
-Message-ID: <CA+BoTQko3rFTsZD1M4OzBRzd-oQAauMr6fPVjzvgw17n1H2uag@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] ath10k: create a chip revision whielist
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +16,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMSBEZWNlbWJlciAyMDE0IGF0IDA4OjQ3LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
-d3JpdGVzOgo+Cj4+IFRoaXMgd2lsbCBtYWtlIGl0IGVhc2llciB0byBleHRlbmQgYW5kIG1haW50
-YWluCj4+IGxpc3Qgb2Ygc3VwcG9ydGVkIGhhcmR3YXJlLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBN
-aWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPgo+IEkgZml4ZWQgYSB0eXBv
-OiBzL3doaWVsaXN0L3doaXRlbGlzdC8KCk9vcHMuIFRoYW5rcyEKCgo+PiAtLS0gYS9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiArKysgYi9kcml2ZXJzL25ldC93aXJl
-bGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+PiBAQCAtNDc5LDcgKzQ3OSw2IEBAIHN0cnVjdCBhdGgx
-MGsgewo+PiAgICAgICAgICAgICAgIHUzMiBpZDsKPj4gICAgICAgICAgICAgICBjb25zdCBjaGFy
-ICpuYW1lOwo+PiAgICAgICAgICAgICAgIHUzMiBwYXRjaF9sb2FkX2FkZHI7Cj4+IC0KPj4gICAg
-ICAgICAgICAgICBzdHJ1Y3QgYXRoMTBrX2h3X3BhcmFtc19mdyB7Cj4+ICAgICAgICAgICAgICAg
-ICAgICAgICBjb25zdCBjaGFyICpkaXI7Cj4+ICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBj
-aGFyICpmdzsKPgo+IEkgcmVtb3ZlZCB0aGlzIHVubmVjZXNzYXJ5IGNoYW5nZToKPgo+IGh0dHBz
-Oi8vZ2l0aHViLmNvbS9rdmFsby9hdGgvY29tbWl0L2JmYTdiNzk0OGFjYWY3MDYzY2Y0ZDY2NDM5
-M2I3ZjdhMWM1M2IyZTQKPgo+IEJlY2F1c2Ugb2YgbXkgY2hhbmdlIHRoZXJlIHdhcyBhbHNvIGEg
-c2ltcGxlIGNvbmZsaWN0IGluIHBhdGNoIDM6Cj4KPiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8v
-YXRoL2NvbW1pdC8zNDg3NjgzYzk0NDk1YjZlMGJiYjFmM2IxOWIzOTg3YjRjYTJmZjFmCgpBaCwg
-bXkgb3JpZ2luYWwgaW50ZW50aW9uIHdhcyB0byBldmVudHVhbGx5IHJlbW92ZSB0aGUgYmxhbmsg
-bGluZQphbG9uZyB3aXRoIHRoZXNlIHBhdGNoZXMgYnV0IHdoYXRldmVyLiBMb29rcyBnb29kIG5v
-bmV0aGVsZXNzLCB0aGFua3MhCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Hi John,
+
+here's a pull request I'm hoping still to get to 3.19. The changelog is
+below. Please let me know if you have any problems.
+
+----------------------------------------------------------------------
+Only ath10k changes this time and no major changes. Most visible are:
+
+o new debugfs interface for runtime firmware debugging (Yanbo)
+
+o fix shared WEP (Sujith)
+
+o don't rebuild whenever kernel version changes (Johannes)
+
+o lots of refactoring to make it easier to add new hw support (Michal)
+
+There's also smaller fixes and improvements with no point of listing
+here.
+
+----------------------------------------------------------------------
+
+
+The following changes since commit 47b6308b643302e642ca2a5cb6470926f7e1c428:
+
+  ath9k: Move roc completion to the offchannel timer (2014-11-17 15:32:17 -0500)
+
+are available in the git repository at:
+
+  git://github.com/kvalo/ath.git for-linville
+
+for you to fetch changes up to fe2407a889f7b6530b7e231e7c866f5c5d223657:
+
+  ath10k: simplify rx ring size/fill calculation (2014-12-01 09:29:27 +0200)
+
+----------------------------------------------------------------
+Ben Greear (3):
+      ath10k: add ATH10K_DBG_WMI_PRINT debug level
+      ath10k: apply chainmask settings to vdev on creation
+      ath10k: use configured nss instead of max nss
+
+Johannes Berg (1):
+      ath10k: don't rebuild all the time
+
+Michal Kazior (23):
+      ath10k: start using sk_buff_head
+      ath10k: simplify Rx loop
+      ath10k: refactor htt->rx_confused
+      ath10k: unify rx undecapping
+      ath10k: remove unused function argument
+      ath10k: use rx descriptor for ppdu status extraction
+      ath10k: report rx rate and signal for fragmented Rx
+      ath10k: remove extra_tx_headroom
+      ath10k: fix offchan reliability
+      ath10k: make hw roc more reliable
+      ath10k: fix offchannel cancel failures
+      ath10k: don't drop corrupted mgmt frames
+      ath10k: add missing goto
+      ath10k: clean up num_peers locking
+      ath10k: fix station count enforcement
+      ath10k: add pointer constness to traces
+      ath10k: fix wmi svc bitmap dbg print
+      ath10k: add sanity checks for service bmap parsing
+      ath10k: make wmi service bitmap non-debug
+      ath10k: remove unused callback argument from struct ath10k_hif_cb::rx_completion
+      ath10k: remove transfer_id from ath10k_hif_cb::tx_completion
+      ath10k: prevent pci tx/rx starvation
+      ath10k: simplify rx ring size/fill calculation
+
+Sujith Manoharan (3):
+      ath10k: fix shared WEP
+      ath10k: fix locking for WEP keys
+      ath10k: fix bug reported by lockdep
+
+Vivek Natarajan (1):
+      ath10k: do not limit RTS threshold value to 2347
+
+Yanbo Li (2):
+      ath10k: add register access debugfs interface
+      ath10k: add memory dump debugfs interface
+
+ drivers/net/wireless/ath/ath10k/core.c   |   13 +
+ drivers/net/wireless/ath/ath10k/core.h   |   13 +-
+ drivers/net/wireless/ath/ath10k/debug.c  |  262 ++++++-
+ drivers/net/wireless/ath/ath10k/debug.h  |   10 +-
+ drivers/net/wireless/ath/ath10k/hif.h    |   43 +-
+ drivers/net/wireless/ath/ath10k/htc.c    |   13 +-
+ drivers/net/wireless/ath/ath10k/htt.h    |    7 +-
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 1169 +++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    7 +-
+ drivers/net/wireless/ath/ath10k/hw.h     |   15 +-
+ drivers/net/wireless/ath/ath10k/mac.c    |  202 +++++-
+ drivers/net/wireless/ath/ath10k/mac.h    |    4 +
+ drivers/net/wireless/ath/ath10k/pci.c    |   28 +-
+ drivers/net/wireless/ath/ath10k/trace.h  |   31 +-
+ drivers/net/wireless/ath/ath10k/wmi.c    |   61 +-
+ drivers/net/wireless/ath/ath10k/wmi.h    |  128 ++--
+ 16 files changed, 1257 insertions(+), 749 deletions(-)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
