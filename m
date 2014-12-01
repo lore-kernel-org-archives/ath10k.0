@@ -1,17 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvRpb-0007cF-F1
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:20:04 +0000
+ id 1XvSDy-00062X-UO
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:45:15 +0000
+Subject: [PATCH v3 0/7] ath10k: add support for new wmi-tlv backend
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 7/7] ath10k: implement wmi-tlv backend
-References: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
- <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
-Date: Mon, 1 Dec 2014 16:19:23 +0200
-In-Reply-To: <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
- (Michal Kazior's message of "Fri, 28 Nov 2014 15:39:01 +0100")
-Message-ID: <87wq6bpi50.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 1 Dec 2014 16:44:42 +0200
+Message-ID: <20141201144400.18248.62714.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,57 +20,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi,
 
-> On 27 November 2014 at 10:11, Michal Kazior <michal.kazior@tieto.com> wrote:
->> Latest main firmware branch introduced a new WMI
->> ABI called wmi-tlv. It is not a tlv strictly
->> speaking but something that resembles it because
->> it is ordered and may have duplicate id entries.
->>
->> This prepares ath10k to support new hw.
->>
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> [...]
->> @@ -215,6 +254,42 @@ static inline char *wmi_service_name(int service_id)
->>         SVCSTR(WMI_SERVICE_BURST);
->>         SVCSTR(WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT);
->>         SVCSTR(WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT);
->> +       SVCSTR(WMI_SERVICE_ROAM_SCAN_OFFLOAD);
->> +       SVCSTR(WMI_SERVICE_AP_PS_DETECT_OUT_OF_SYNC);
->> +       SVCSTR(WMI_SERVICE_EARLY_RX);
-> [...]
->> +       SVCSTR(WMI_SERVICE_RX_FULL_REORDER);
->> +       SVCSTR(WMI_SERVICE_DHCP_OFFLOAD);
->
-> I've added 3 new service enums in v2:
-> WMI_SERVICE_STA_RX_IPA_OFFLOAD_SUPPORT, WMI_SERVICE_MDNS_OFFLOAD,
-> WMI_SERVICE_SAP_AUTH_OFFLOAD but apparently I forgot to add SVCSTR()
-> for that..
+here's v3 of Michal's patches to add WMI TLV interface support to
+ath10k.
 
-I added those in my not-yet-submitted v3:
+v3:
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index a31a3028a847..7d091a74d3f3 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -290,6 +290,9 @@ static inline char *wmi_service_name(int service_id)
-        SVCSTR(WMI_SERVICE_ROAM_HO_OFFLOAD);
-        SVCSTR(WMI_SERVICE_RX_FULL_REORDER);
-        SVCSTR(WMI_SERVICE_DHCP_OFFLOAD);
-+       SVCSTR(WMI_SERVICE_STA_RX_IPA_OFFLOAD_SUPPORT);
-+       SVCSTR(WMI_SERVICE_MDNS_OFFLOAD);
-+       SVCSTR(WMI_SERVICE_SAP_AUTH_OFFLOAD);
-        default:
-                return NULL;
-        }
+* add ATH10K_FW_IE_WMI_OP_VERSION
+
+* deprecate ATH10K_FW_FEATURE_WMI_10* feature flags
+
+* remove ATH10K_FW_FEATURE_WMI_TLV, functionality replaced by
+  ATH10K_FW_IE_WMI_OP_VERSION
+
+* remove struct ieee80211_iface_combination ath10k_tlv_if_comb[] & co.
+  Those can be added in a different patch.
+
+* add SVCSTR() for STA_RX_IPA_OFFLOAD_SUPPORT, MDNS_OFFLOAD and SAP_AUTH_OFFLOAD
+
+---
+
+Kalle Valo (3):
+      ath10k: create ath10k_core_init_features()
+      ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
+      ath10k: set max_num_pending_tx in ath10k_core_init_firmware_features()
+
+Michal Kazior (4):
+      ath10k: implement intermediate event args
+      ath10k: introduce wmi ops
+      ath10k: make some wmi functions public
+      ath10k: implement wmi-tlv backend
 
 
--- 
-Kalle Valo
+ drivers/net/wireless/ath/ath10k/Makefile   |    1 
+ drivers/net/wireless/ath/ath10k/ce.c       |    2 
+ drivers/net/wireless/ath/ath10k/core.c     |   62 +
+ drivers/net/wireless/ath/ath10k/core.h     |   10 
+ drivers/net/wireless/ath/ath10k/debug.c    |    1 
+ drivers/net/wireless/ath/ath10k/htt_tx.c   |    5 
+ drivers/net/wireless/ath/ath10k/hw.h       |   20 
+ drivers/net/wireless/ath/ath10k/mac.c      |    2 
+ drivers/net/wireless/ath/ath10k/spectral.c |    1 
+ drivers/net/wireless/ath/ath10k/testmode.c |    5 
+ drivers/net/wireless/ath/ath10k/wmi-ops.h  |  821 ++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c  | 2218 ++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h  | 1380 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c      | 1375 +++++++++++------
+ drivers/net/wireless/ath/ath10k/wmi.h      |  268 +++
+ 15 files changed, 5560 insertions(+), 611 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/wmi-ops.h
+ create mode 100644 drivers/net/wireless/ath/ath10k/wmi-tlv.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/wmi-tlv.h
 
 _______________________________________________
 ath10k mailing list
