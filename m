@@ -1,12 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvQJq-0002mG-93
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 12:43:10 +0000
+ id 1XvRpb-0007cF-F1
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:20:04 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Pull request: ath 20141201
-Date: Mon, 1 Dec 2014 14:42:41 +0200
-Message-ID: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 7/7] ath10k: implement wmi-tlv backend
+References: <1417079481-22255-1-git-send-email-michal.kazior@tieto.com>
+ <1417079481-22255-8-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
+Date: Mon, 1 Dec 2014 16:19:23 +0200
+In-Reply-To: <CA+BoTQn=g8-=FEEoW7Ux+p6s=EBy_3rwCP3qXWk_8ijR6jXY+Q@mail.gmail.com>
+ (Michal Kazior's message of "Fri, 28 Nov 2014 15:39:01 +0100")
+Message-ID: <87wq6bpi50.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,106 +25,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi John,
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-here's a pull request I'm hoping still to get to 3.19. The changelog is
-below. Please let me know if you have any problems.
+> On 27 November 2014 at 10:11, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Latest main firmware branch introduced a new WMI
+>> ABI called wmi-tlv. It is not a tlv strictly
+>> speaking but something that resembles it because
+>> it is ordered and may have duplicate id entries.
+>>
+>> This prepares ath10k to support new hw.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> [...]
+>> @@ -215,6 +254,42 @@ static inline char *wmi_service_name(int service_id)
+>>         SVCSTR(WMI_SERVICE_BURST);
+>>         SVCSTR(WMI_SERVICE_SMART_ANTENNA_SW_SUPPORT);
+>>         SVCSTR(WMI_SERVICE_SMART_ANTENNA_HW_SUPPORT);
+>> +       SVCSTR(WMI_SERVICE_ROAM_SCAN_OFFLOAD);
+>> +       SVCSTR(WMI_SERVICE_AP_PS_DETECT_OUT_OF_SYNC);
+>> +       SVCSTR(WMI_SERVICE_EARLY_RX);
+> [...]
+>> +       SVCSTR(WMI_SERVICE_RX_FULL_REORDER);
+>> +       SVCSTR(WMI_SERVICE_DHCP_OFFLOAD);
+>
+> I've added 3 new service enums in v2:
+> WMI_SERVICE_STA_RX_IPA_OFFLOAD_SUPPORT, WMI_SERVICE_MDNS_OFFLOAD,
+> WMI_SERVICE_SAP_AUTH_OFFLOAD but apparently I forgot to add SVCSTR()
+> for that..
 
-----------------------------------------------------------------------
-Only ath10k changes this time and no major changes. Most visible are:
+I added those in my not-yet-submitted v3:
 
-o new debugfs interface for runtime firmware debugging (Yanbo)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index a31a3028a847..7d091a74d3f3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -290,6 +290,9 @@ static inline char *wmi_service_name(int service_id)
+        SVCSTR(WMI_SERVICE_ROAM_HO_OFFLOAD);
+        SVCSTR(WMI_SERVICE_RX_FULL_REORDER);
+        SVCSTR(WMI_SERVICE_DHCP_OFFLOAD);
++       SVCSTR(WMI_SERVICE_STA_RX_IPA_OFFLOAD_SUPPORT);
++       SVCSTR(WMI_SERVICE_MDNS_OFFLOAD);
++       SVCSTR(WMI_SERVICE_SAP_AUTH_OFFLOAD);
+        default:
+                return NULL;
+        }
 
-o fix shared WEP (Sujith)
-
-o don't rebuild whenever kernel version changes (Johannes)
-
-o lots of refactoring to make it easier to add new hw support (Michal)
-
-There's also smaller fixes and improvements with no point of listing
-here.
-
-----------------------------------------------------------------------
-
-
-The following changes since commit 47b6308b643302e642ca2a5cb6470926f7e1c428:
-
-  ath9k: Move roc completion to the offchannel timer (2014-11-17 15:32:17 -0500)
-
-are available in the git repository at:
-
-  git://github.com/kvalo/ath.git for-linville
-
-for you to fetch changes up to fe2407a889f7b6530b7e231e7c866f5c5d223657:
-
-  ath10k: simplify rx ring size/fill calculation (2014-12-01 09:29:27 +0200)
-
-----------------------------------------------------------------
-Ben Greear (3):
-      ath10k: add ATH10K_DBG_WMI_PRINT debug level
-      ath10k: apply chainmask settings to vdev on creation
-      ath10k: use configured nss instead of max nss
-
-Johannes Berg (1):
-      ath10k: don't rebuild all the time
-
-Michal Kazior (23):
-      ath10k: start using sk_buff_head
-      ath10k: simplify Rx loop
-      ath10k: refactor htt->rx_confused
-      ath10k: unify rx undecapping
-      ath10k: remove unused function argument
-      ath10k: use rx descriptor for ppdu status extraction
-      ath10k: report rx rate and signal for fragmented Rx
-      ath10k: remove extra_tx_headroom
-      ath10k: fix offchan reliability
-      ath10k: make hw roc more reliable
-      ath10k: fix offchannel cancel failures
-      ath10k: don't drop corrupted mgmt frames
-      ath10k: add missing goto
-      ath10k: clean up num_peers locking
-      ath10k: fix station count enforcement
-      ath10k: add pointer constness to traces
-      ath10k: fix wmi svc bitmap dbg print
-      ath10k: add sanity checks for service bmap parsing
-      ath10k: make wmi service bitmap non-debug
-      ath10k: remove unused callback argument from struct ath10k_hif_cb::rx_completion
-      ath10k: remove transfer_id from ath10k_hif_cb::tx_completion
-      ath10k: prevent pci tx/rx starvation
-      ath10k: simplify rx ring size/fill calculation
-
-Sujith Manoharan (3):
-      ath10k: fix shared WEP
-      ath10k: fix locking for WEP keys
-      ath10k: fix bug reported by lockdep
-
-Vivek Natarajan (1):
-      ath10k: do not limit RTS threshold value to 2347
-
-Yanbo Li (2):
-      ath10k: add register access debugfs interface
-      ath10k: add memory dump debugfs interface
-
- drivers/net/wireless/ath/ath10k/core.c   |   13 +
- drivers/net/wireless/ath/ath10k/core.h   |   13 +-
- drivers/net/wireless/ath/ath10k/debug.c  |  262 ++++++-
- drivers/net/wireless/ath/ath10k/debug.h  |   10 +-
- drivers/net/wireless/ath/ath10k/hif.h    |   43 +-
- drivers/net/wireless/ath/ath10k/htc.c    |   13 +-
- drivers/net/wireless/ath/ath10k/htt.h    |    7 +-
- drivers/net/wireless/ath/ath10k/htt_rx.c | 1169 +++++++++++++++---------------
- drivers/net/wireless/ath/ath10k/htt_tx.c |    7 +-
- drivers/net/wireless/ath/ath10k/hw.h     |   15 +-
- drivers/net/wireless/ath/ath10k/mac.c    |  202 +++++-
- drivers/net/wireless/ath/ath10k/mac.h    |    4 +
- drivers/net/wireless/ath/ath10k/pci.c    |   28 +-
- drivers/net/wireless/ath/ath10k/trace.h  |   31 +-
- drivers/net/wireless/ath/ath10k/wmi.c    |   61 +-
- drivers/net/wireless/ath/ath10k/wmi.h    |  128 ++--
- 16 files changed, 1257 insertions(+), 749 deletions(-)
 
 -- 
 Kalle Valo
