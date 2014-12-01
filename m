@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvLO0-00035y-O5
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 07:27:09 +0000
+ id 1XvLPN-0003Cp-Iz
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 07:28:34 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/3] ath10k: remove callback argument
+Subject: Re: [PATCH 1/3] ath10k: remove unused callback argument
 References: <1417082978-1701-1-git-send-email-michal.kazior@tieto.com>
- <1417082978-1701-2-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 1 Dec 2014 09:26:42 +0200
-In-Reply-To: <1417082978-1701-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 27 Nov 2014 11:09:37 +0100")
-Message-ID: <87iohvrft9.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 1 Dec 2014 09:28:07 +0200
+In-Reply-To: <1417082978-1701-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 27 Nov 2014 11:09:36 +0100")
+Message-ID: <87egsjrfqw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,15 +28,12 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Pass the eid argument via skbuff control buffer.
-> This will make it possible to work with queues of
-> HTC event buffers.
+> This wasn't used since forever and there are no
+> plans on using it.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-To make the title more unique I changed the title to:
-
-ath10k: remove transfer_id from ath10k_hif_cb::tx_completion
+Thanks, all three patches applied.
 
 -- 
 Kalle Valo
