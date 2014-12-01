@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvSDy-00062X-UO
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:45:15 +0000
-Subject: [PATCH v3 0/7] ath10k: add support for new wmi-tlv backend
+ id 1XvSEL-0007NB-SX
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:45:38 +0000
+Subject: [PATCH v3 1/7] ath10k: create ath10k_core_init_features()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 1 Dec 2014 16:44:42 +0200
-Message-ID: <20141201144400.18248.62714.stgit@potku.adurom.net>
+Date: Mon, 1 Dec 2014 16:44:58 +0200
+Message-ID: <20141201144458.18248.28568.stgit@potku.adurom.net>
+In-Reply-To: <20141201144400.18248.62714.stgit@potku.adurom.net>
+References: <20141201144400.18248.62714.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,58 +25,74 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Hi,
+It's easier to manage firmware version differences when we configure them in
+one place. Rename ath10k_core_init_max_sta_count() to
+ath10k_core_init_firmware_features() and start moving most of the firmware
+version ("features") handling to that function.
 
-here's v3 of Michal's patches to add WMI TLV interface support to
-ath10k.
-
-v3:
-
-* add ATH10K_FW_IE_WMI_OP_VERSION
-
-* deprecate ATH10K_FW_FEATURE_WMI_10* feature flags
-
-* remove ATH10K_FW_FEATURE_WMI_TLV, functionality replaced by
-  ATH10K_FW_IE_WMI_OP_VERSION
-
-* remove struct ieee80211_iface_combination ath10k_tlv_if_comb[] & co.
-  Those can be added in a different patch.
-
-* add SVCSTR() for STA_RX_IPA_OFFLOAD_SUPPORT, MDNS_OFFLOAD and SAP_AUTH_OFFLOAD
-
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ drivers/net/wireless/ath/ath10k/core.c |   24 +++++++++++++++---------
+ 1 file changed, 15 insertions(+), 9 deletions(-)
 
-Kalle Valo (3):
-      ath10k: create ath10k_core_init_features()
-      ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
-      ath10k: set max_num_pending_tx in ath10k_core_init_firmware_features()
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 7762061a1944..bd6315952ad0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -582,13 +582,6 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+ 		goto err;
+ 	}
+ 
+-	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features) &&
+-	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+-		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+ 	/* now fetch the board file */
+ 	if (ar->hw_params.fw.board == NULL) {
+ 		ath10k_err(ar, "board data file not defined");
+@@ -799,8 +792,14 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+-static void ath10k_core_init_max_sta_count(struct ath10k *ar)
++static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ {
++	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features) &&
++	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
++		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well");
++		return -EINVAL;
++	}
++
+ 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+ 		ar->max_num_peers = TARGET_10X_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+@@ -808,6 +807,8 @@ static void ath10k_core_init_max_sta_count(struct ath10k *ar)
+ 		ar->max_num_peers = TARGET_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_NUM_STATIONS;
+ 	}
++
++	return 0;
+ }
+ 
+ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+@@ -1046,7 +1047,12 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	ath10k_core_init_max_sta_count(ar);
++	ret = ath10k_core_init_firmware_features(ar);
++	if (ret) {
++		ath10k_err(ar, "fatal problem with firmware features: %d\n",
++			   ret);
++		return ret;
++	}
+ 
+ 	mutex_lock(&ar->conf_mutex);
+ 
 
-Michal Kazior (4):
-      ath10k: implement intermediate event args
-      ath10k: introduce wmi ops
-      ath10k: make some wmi functions public
-      ath10k: implement wmi-tlv backend
-
-
- drivers/net/wireless/ath/ath10k/Makefile   |    1 
- drivers/net/wireless/ath/ath10k/ce.c       |    2 
- drivers/net/wireless/ath/ath10k/core.c     |   62 +
- drivers/net/wireless/ath/ath10k/core.h     |   10 
- drivers/net/wireless/ath/ath10k/debug.c    |    1 
- drivers/net/wireless/ath/ath10k/htt_tx.c   |    5 
- drivers/net/wireless/ath/ath10k/hw.h       |   20 
- drivers/net/wireless/ath/ath10k/mac.c      |    2 
- drivers/net/wireless/ath/ath10k/spectral.c |    1 
- drivers/net/wireless/ath/ath10k/testmode.c |    5 
- drivers/net/wireless/ath/ath10k/wmi-ops.h  |  821 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c  | 2218 ++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h  | 1380 +++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c      | 1375 +++++++++++------
- drivers/net/wireless/ath/ath10k/wmi.h      |  268 +++
- 15 files changed, 5560 insertions(+), 611 deletions(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/wmi-ops.h
- create mode 100644 drivers/net/wireless/ath/ath10k/wmi-tlv.c
- create mode 100644 drivers/net/wireless/ath/ath10k/wmi-tlv.h
 
 _______________________________________________
 ath10k mailing list
