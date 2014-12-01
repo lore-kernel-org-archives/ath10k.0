@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvSEL-0007NB-SX
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:45:38 +0000
-Subject: [PATCH v3 1/7] ath10k: create ath10k_core_init_features()
+ id 1XvSEM-0007NB-O4
+ for ath10k@lists.infradead.org; Mon, 01 Dec 2014 14:45:39 +0000
+Subject: [PATCH v3 3/7] ath10k: set max_num_pending_tx in
+ ath10k_core_init_firmware_features()
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 1 Dec 2014 16:44:58 +0200
-Message-ID: <20141201144458.18248.28568.stgit@potku.adurom.net>
+Date: Mon, 1 Dec 2014 16:45:34 +0200
+Message-ID: <20141201144534.18248.51909.stgit@potku.adurom.net>
 In-Reply-To: <20141201144400.18248.62714.stgit@potku.adurom.net>
 References: <20141201144400.18248.62714.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -25,72 +26,47 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-It's easier to manage firmware version differences when we configure them in
-one place. Rename ath10k_core_init_max_sta_count() to
-ath10k_core_init_firmware_features() and start moving most of the firmware
-version ("features") handling to that function.
+Better to have this in same place as other firmware interface handling.
 
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |   24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c   |    2 ++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    5 -----
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 7762061a1944..bd6315952ad0 100644
+index f8ddc8087db9..1170fd739675 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -582,13 +582,6 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
- 		goto err;
- 	}
- 
--	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features) &&
--	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
--		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well");
--		ret = -EINVAL;
--		goto err;
--	}
--
- 	/* now fetch the board file */
- 	if (ar->hw_params.fw.board == NULL) {
- 		ath10k_err(ar, "board data file not defined");
-@@ -799,8 +792,14 @@ static void ath10k_core_restart(struct work_struct *work)
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
--static void ath10k_core_init_max_sta_count(struct ath10k *ar)
-+static int ath10k_core_init_firmware_features(struct ath10k *ar)
- {
-+	if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features) &&
-+	    !test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
-+		ath10k_err(ar, "feature bits corrupted: 10.2 feature requires 10.x feature to be set as well");
-+		return -EINVAL;
-+	}
-+
- 	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
- 		ar->max_num_peers = TARGET_10X_NUM_PEERS;
- 		ar->max_num_stations = TARGET_10X_NUM_STATIONS;
-@@ -808,6 +807,8 @@ static void ath10k_core_init_max_sta_count(struct ath10k *ar)
+@@ -824,11 +824,13 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
  		ar->max_num_peers = TARGET_NUM_PEERS;
  		ar->max_num_stations = TARGET_NUM_STATIONS;
++		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 		ar->max_num_peers = TARGET_10X_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_10X_NUM_STATIONS;
++		ar->htt.max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
+ 		break;
  	}
-+
-+	return 0;
- }
  
- int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
-@@ -1046,7 +1047,12 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
- 		return ret;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 4bc51d8a14a3..a1bda41fb543 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -93,11 +93,6 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
  
--	ath10k_core_init_max_sta_count(ar);
-+	ret = ath10k_core_init_firmware_features(ar);
-+	if (ret) {
-+		ath10k_err(ar, "fatal problem with firmware features: %d\n",
-+			   ret);
-+		return ret;
-+	}
+ 	spin_lock_init(&htt->tx_lock);
  
- 	mutex_lock(&ar->conf_mutex);
+-	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, htt->ar->fw_features))
+-		htt->max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
+-	else
+-		htt->max_num_pending_tx = TARGET_NUM_MSDU_DESC;
+-
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
+ 		   htt->max_num_pending_tx);
  
 
 
