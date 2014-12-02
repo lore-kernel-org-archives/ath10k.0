@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvkQi-0001E3-ID
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 10:11:40 +0000
+ id 1XvlIo-00039P-MX
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 11:07:31 +0000
+Subject: [PATCH v2 1/2] ath10k: add new pdev parameters for fw 10.2
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Pull request: ath 20141201
-References: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
- <20141201205150.GC7266@tuxdriver.com>
-Date: Tue, 2 Dec 2014 12:10:59 +0200
-In-Reply-To: <20141201205150.GC7266@tuxdriver.com> (John W. Linville's message
- of "Mon, 1 Dec 2014 15:51:50 -0500")
-Message-ID: <87ppc2nyz0.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 2 Dec 2014 13:06:53 +0200
+Message-ID: <20141202110653.14817.30464.stgit@potku.adurom.net>
+In-Reply-To: <20141202110443.14817.85639.stgit@potku.adurom.net>
+References: <20141202110443.14817.85639.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,45 +23,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: "John W. Linville" <linville@tuxdriver.com>
+Cc: linux-wireless@vger.kernel.org
 
-"John W. Linville" <linville@tuxdriver.com> writes:
+From: Peter Oh <poh@qca.qualcomm.com>
 
-> On Mon, Dec 01, 2014 at 02:42:41PM +0200, Kalle Valo wrote:
->> Hi John,
->> 
->> here's a pull request I'm hoping still to get to 3.19. The changelog is
->> below. Please let me know if you have any problems.
->> 
->> ----------------------------------------------------------------------
->> Only ath10k changes this time and no major changes. Most visible are:
->> 
->> o new debugfs interface for runtime firmware debugging (Yanbo)
->> 
->> o fix shared WEP (Sujith)
->> 
->> o don't rebuild whenever kernel version changes (Johannes)
->> 
->> o lots of refactoring to make it easier to add new hw support (Michal)
->> 
->> There's also smaller fixes and improvements with no point of listing
->> here.
->> 
->> ----------------------------------------------------------------------
+New pdev paramters have been added to firmware 10.2,
+hence update wmi interfaces to sync with.
 
-[...]
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
-> Pulling now...
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 7d091a74d3f3..4b31da5d3c4c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2793,6 +2793,9 @@ enum wmi_10x_pdev_param {
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_MODE,
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_BUFFER,
+ 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
++	WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE,
++	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
++	WMI_10X_PDEV_PARAM_CAL_PERIOD
+ };
+ 
+ struct wmi_pdev_set_param_cmd {
 
-Thanks!
-
-ath10k list: I'm planning this to be the last pull request for 3.19. So
-anything not commited yet will go to 3.20, for example Device Tree and
-WMI TLV stuff. Which is actually a good thing, we get more time for
-testing.
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
