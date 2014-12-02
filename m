@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvlJG-0003Gk-05
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 11:07:58 +0000
-Subject: [PATCH v2 2/2] ath10k: add new wmi interface of NF cal period
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 2 Dec 2014 13:07:14 +0200
-Message-ID: <20141202110714.14817.48208.stgit@potku.adurom.net>
-In-Reply-To: <20141202110443.14817.85639.stgit@potku.adurom.net>
-References: <20141202110443.14817.85639.stgit@potku.adurom.net>
+ id 1Xvm0C-0005CF-96
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 11:52:21 +0000
+Received: by mail-wi0-f178.google.com with SMTP id em10so1186978wid.17
+ for <ath10k@lists.infradead.org>; Tue, 02 Dec 2014 03:51:58 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <20141201144507.18248.9856.stgit@potku.adurom.net>
+References: <20141201144400.18248.62714.stgit@potku.adurom.net>
+ <20141201144507.18248.9856.stgit@potku.adurom.net>
+Date: Tue, 2 Dec 2014 12:51:58 +0100
+Message-ID: <CA+BoTQm+JqCEXPQ4njxGvm-v_Typ0BDTK5g8627O_-gKiTWHZw@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,209 +21,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Peter Oh <poh@qca.qualcomm.com>
-
-Introduce a new wmi interface controls noise floor (NF) calibration
-period via debugfs as firmware has introduced it on v10.2.
-
-It allows users to modify frequency of NF calibration in millisecond
-and changes RSSI reporting frequency consequently.
-Short calibration period will trigger more frequent NF calibration,
-so that RSSI reported in receive frames is more realistic.
-
-Till now calibration was done at 30 seconds.
-
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.h    |    1 
- drivers/net/wireless/ath/ath10k/debug.c   |   80 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |    1 
- drivers/net/wireless/ath/ath10k/wmi.c     |    2 +
- drivers/net/wireless/ath/ath10k/wmi.h     |    4 +
- 5 files changed, 88 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 796ac8f3a654..1002689d8a89 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -327,6 +327,7 @@ struct ath10k_debug {
- 	u32 fw_dbglog_mask;
- 	u32 pktlog_filter;
- 	u32 reg_addr;
-+	u32 nf_cal_period;
- 
- 	u8 htt_max_amsdu;
- 	u8 htt_max_ampdu;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index c15b5774dd20..70a9599aeb7a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1608,6 +1608,73 @@ static const struct file_operations fops_cal_data = {
- 	.llseek = default_llseek,
- };
- 
-+static ssize_t ath10k_read_nf_cal_period(struct file *file,
-+					 char __user *user_buf,
-+					 size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	unsigned int len;
-+	char buf[32];
-+
-+	len = scnprintf(buf, sizeof(buf), "%d\n",
-+			ar->debug.nf_cal_period);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t ath10k_write_nf_cal_period(struct file *file,
-+					  const char __user *user_buf,
-+					  size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	unsigned long period;
-+	int ret;
-+
-+	ret = kstrtoul_from_user(user_buf, count, 0, &period);
-+	if (ret)
-+		return ret;
-+
-+	if (period > WMI_PDEV_PARAM_CAL_PERIOD_MAX)
-+		return -EINVAL;
-+
-+	/* there's no way to switch back to the firmware default */
-+	if (period == 0)
-+		return -EINVAL;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	ar->debug.nf_cal_period = period;
-+
-+	if (ar->state != ATH10K_STATE_ON) {
-+		/* firmware is not running, nothing else to do */
-+		ret = count;
-+		goto exit;
-+	}
-+
-+	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->cal_period,
-+					ar->debug.nf_cal_period);
-+	if (ret) {
-+		ath10k_warn(ar, "cal period cfg failed from debugfs: %d\n",
-+			    ret);
-+		goto exit;
-+	}
-+
-+	ret = count;
-+
-+exit:
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return ret;
-+}
-+
-+static const struct file_operations fops_nf_cal_period = {
-+	.read = ath10k_read_nf_cal_period,
-+	.write = ath10k_write_nf_cal_period,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- int ath10k_debug_start(struct ath10k *ar)
- {
- 	int ret;
-@@ -1643,6 +1710,16 @@ int ath10k_debug_start(struct ath10k *ar)
- 			ath10k_warn(ar, "failed to disable pktlog: %d\n", ret);
- 	}
- 
-+	if (ar->debug.nf_cal_period) {
-+		ret = ath10k_wmi_pdev_set_param(ar,
-+						ar->wmi.pdev_param->cal_period,
-+						ar->debug.nf_cal_period);
-+		if (ret)
-+			/* not serious */
-+			ath10k_warn(ar, "cal period cfg failed from debug start: %d\n",
-+				    ret);
-+	}
-+
- 	return ret;
- }
- 
-@@ -1881,6 +1958,9 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("cal_data", S_IRUSR, ar->debug.debugfs_phy,
- 			    ar, &fops_cal_data);
- 
-+	debugfs_create_file("nf_cal_period", S_IRUSR | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar, &fops_nf_cal_period);
-+
- 	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED)) {
- 		debugfs_create_file("dfs_simulate_radar", S_IWUSR,
- 				    ar->debug.debugfs_phy, ar,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index b21048c2a52e..1627ec58a229 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2096,6 +2096,7 @@ static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
- 	.fast_channel_reset = WMI_TLV_PDEV_PARAM_UNSUPPORTED,
- 	.burst_dur = WMI_TLV_PDEV_PARAM_BURST_DUR,
- 	.burst_enable = WMI_TLV_PDEV_PARAM_BURST_ENABLE,
-+	.cal_period = WMI_PDEV_PARAM_UNSUPPORTED,
- };
- 
- static struct wmi_vdev_param_map wmi_tlv_vdev_param_map = {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ca46146d7718..024be2b269d5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -436,6 +436,7 @@ static struct wmi_pdev_param_map wmi_pdev_param_map = {
- 	.fast_channel_reset = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.burst_dur = WMI_PDEV_PARAM_UNSUPPORTED,
- 	.burst_enable = WMI_PDEV_PARAM_UNSUPPORTED,
-+	.cal_period = WMI_PDEV_PARAM_UNSUPPORTED,
- };
- 
- static struct wmi_pdev_param_map wmi_10x_pdev_param_map = {
-@@ -488,6 +489,7 @@ static struct wmi_pdev_param_map wmi_10x_pdev_param_map = {
- 	.fast_channel_reset = WMI_10X_PDEV_PARAM_FAST_CHANNEL_RESET,
- 	.burst_dur = WMI_10X_PDEV_PARAM_BURST_DUR,
- 	.burst_enable = WMI_10X_PDEV_PARAM_BURST_ENABLE,
-+	.cal_period = WMI_10X_PDEV_PARAM_CAL_PERIOD,
- };
- 
- /* firmware 10.2 specific mappings */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 4b31da5d3c4c..97f902f03ec5 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2583,6 +2583,7 @@ struct wmi_pdev_param_map {
- 	u32 fast_channel_reset;
- 	u32 burst_dur;
- 	u32 burst_enable;
-+	u32 cal_period;
- };
- 
- #define WMI_PDEV_PARAM_UNSUPPORTED 0
-@@ -2803,6 +2804,9 @@ struct wmi_pdev_set_param_cmd {
- 	__le32 param_value;
- } __packed;
- 
-+/* valid period is 1 ~ 60000ms, unit in millisecond */
-+#define WMI_PDEV_PARAM_CAL_PERIOD_MAX 60000
-+
- struct wmi_pdev_get_tpc_config_cmd {
- 	/* parameter   */
- 	__le32 param;
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBEZWNlbWJlciAyMDE0IGF0IDE1OjQ1LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKWy4uLl0KPiBAQCAtNTYyLDYgKzU2MiwxNyBAQCBzdGF0aWMgaW50IGF0
+aDEwa19jb3JlX2ZldGNoX2Zpcm13YXJlX2FwaV9uKHN0cnVjdCBhdGgxMGsgKmFyLCBjb25zdCBj
+aGFyICpuYW1lKQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGFyLT5vdHBfbGVuID0gaWVfbGVu
+Owo+Cj4gICAgICAgICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4gKyAgICAgICAgICAgICAgIGNh
+c2UgQVRIMTBLX0ZXX0lFX1dNSV9PUF9WRVJTSU9OOgo+ICsgICAgICAgICAgICAgICAgICAgICAg
+IGlmIChpZV9sZW4gIT0gc2l6ZW9mKHUzMikpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBicmVhazsKPiArCj4gKyAgICAgICAgICAgICAgICAgICAgICAgdmVyc2lvbiA9IChfX2xl
+MzIgKilkYXRhOwo+ICsKPiArICAgICAgICAgICAgICAgICAgICAgICBhci0+d21pLm9wX3ZlcnNp
+b24gPSBsZTMyX3RvX2NwdXAodmVyc2lvbik7Cj4gKwo+ICsgICAgICAgICAgICAgICAgICAgICAg
+IGF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfQk9PVCwgImZvdW5kIGZ3IGllIHdtaSBvcCB2ZXJz
+aW9uICVkXG4iLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXItPndtaS5v
+cF92ZXJzaW9uKTsKCkhtbS4uIHdvdWxkbid0IGl0IG1ha2Ugc2Vuc2UgdG8gaGF2ZSBhIEFUSDEw
+S19GV19XTUlfT1BfVkVSU0lPTl9NQVgKKG9yIF9MQVNUKSBhbmQgdmVyaWZ5IGlmIHRoZSBJRSB2
+YWx1ZSBkb2Vzbid0IGV4Y2VlZCB0aGUgbGFzdCBrbm93bgp2YWx1ZT8gVGhpcyB3YXkgc3dpdGNo
+KCllcyB3b24ndCBuZWVkIGRlZmF1bHQgaGFuZGxlciBieSBkZXNpZ24gYW5kCnRodXMgd2UnbGwg
+Z2V0IHRoZSBiZW5lZml0IG9mIGNvbXBpbGVyIHRlbGxpbmcgdXMgYWJvdXQgdW5oYW5kbGVkCmNh
+c2VzIHdoZW4gd2UgYWRkIG5ldyBlbnVtcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
