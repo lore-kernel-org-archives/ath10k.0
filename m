@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvY5X-0005B7-UJ
- for ath10k@lists.infradead.org; Mon, 01 Dec 2014 21:00:56 +0000
-Date: Mon, 1 Dec 2014 15:51:50 -0500
-From: "John W. Linville" <linville@tuxdriver.com>
-Subject: Re: Pull request: ath 20141201
-Message-ID: <20141201205150.GC7266@tuxdriver.com>
-References: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
+ id 1Xvh6o-000615-Ue
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 06:38:51 +0000
+Received: by mail-wi0-f176.google.com with SMTP id ex7so26929847wid.15
+ for <ath10k@lists.infradead.org>; Mon, 01 Dec 2014 22:38:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <20141201144639.18248.27619.stgit@potku.adurom.net>
+References: <20141201144400.18248.62714.stgit@potku.adurom.net>
+ <20141201144639.18248.27619.stgit@potku.adurom.net>
+Date: Tue, 2 Dec 2014 07:38:26 +0100
+Message-ID: <CA+BoTQk2p54jJAxdKS3p3+YyU+6dHibyQ=sxrVpHtwMLjzuU0g@mail.gmail.com>
+Subject: Re: [PATCH v3 7/7] ath10k: implement wmi-tlv backend
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +21,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, Dec 01, 2014 at 02:42:41PM +0200, Kalle Valo wrote:
-> Hi John,
-> 
-> here's a pull request I'm hoping still to get to 3.19. The changelog is
-> below. Please let me know if you have any problems.
-> 
-> ----------------------------------------------------------------------
-> Only ath10k changes this time and no major changes. Most visible are:
-> 
-> o new debugfs interface for runtime firmware debugging (Yanbo)
-> 
-> o fix shared WEP (Sujith)
-> 
-> o don't rebuild whenever kernel version changes (Johannes)
-> 
-> o lots of refactoring to make it easier to add new hw support (Michal)
-> 
-> There's also smaller fixes and improvements with no point of listing
-> here.
-> 
-> ----------------------------------------------------------------------
-> 
-> 
-> The following changes since commit 47b6308b643302e642ca2a5cb6470926f7e1c428:
-> 
->   ath9k: Move roc completion to the offchannel timer (2014-11-17 15:32:17 -0500)
-> 
-> are available in the git repository at:
-> 
->   git://github.com/kvalo/ath.git for-linville
-> 
-> for you to fetch changes up to fe2407a889f7b6530b7e231e7c866f5c5d223657:
-> 
->   ath10k: simplify rx ring size/fill calculation (2014-12-01 09:29:27 +0200)
-
-Pulling now...
-
--- 
-John W. Linville		Someday the world will need a hero, and you
-linville@tuxdriver.com			might be all we have.  Be ready.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBEZWNlbWJlciAyMDE0IGF0IDE1OjQ2LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9jb3JlLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
+Ywo+IGluZGV4IGIxY2I5MGJiNGMxYy4uYWM3ZmJlODYwNWJjIDEwMDY0NAo+IC0tLSBhL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAtODMzLDYgKzgzMywxMSBAQCBzdGF0aWMgaW50
+IGF0aDEwa19jb3JlX2luaXRfZmlybXdhcmVfZmVhdHVyZXMoc3RydWN0IGF0aDEwayAqYXIpCj4g
+ICAgICAgICAgICAgICAgIGFyLT5tYXhfbnVtX3N0YXRpb25zID0gVEFSR0VUXzEwWF9OVU1fU1RB
+VElPTlM7Cj4gICAgICAgICAgICAgICAgIGFyLT5odHQubWF4X251bV9wZW5kaW5nX3R4ID0gVEFS
+R0VUXzEwWF9OVU1fTVNEVV9ERVNDOwo+ICAgICAgICAgICAgICAgICBicmVhazsKPiArICAgICAg
+IGNhc2UgQVRIMTBLX0ZXX1dNSV9PUF9WRVJTSU9OX1RMVjoKPiArICAgICAgICAgICAgICAgYXIt
+Pm1heF9udW1fcGVlcnMgPSBUQVJHRVRfVExWX05VTV9QRUVSUzsKPiArICAgICAgICAgICAgICAg
+YXItPm1heF9udW1fc3RhdGlvbnMgPSBUQVJHRVRfVExWX05VTV9TVEFUSU9OUzsKPiArICAgICAg
+ICAgICAgICAgYXItPmh0dC5tYXhfbnVtX3BlbmRpbmdfdHggPSBUQVJHRVRfTlVNX01TRFVfREVT
+QzsKCkp1c3QgYSBxdWljayBub3RlOiBUQVJHRVRfVExWX05VTV9NU0RVX0RFU0Mgc2hvdWxkIGJl
+IHVzZWQgZm9yCm1heF9udW1fcGVuZGluZ190eCBoZXJlLgoKCk1pY2hhxYIKCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
+YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hdGgxMGsK
