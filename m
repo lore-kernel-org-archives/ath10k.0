@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xvk9k-0005uF-7Q
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 09:54:04 +0000
+ id 1XvkQi-0001E3-ID
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 10:11:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2] ath10k: add new wmi interface of NF cal period
-References: <1416945765-26902-1-git-send-email-poh@qca.qualcomm.com>
- <1416945765-26902-2-git-send-email-poh@qca.qualcomm.com>
-Date: Tue, 2 Dec 2014 11:53:35 +0200
-In-Reply-To: <1416945765-26902-2-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Tue, 25 Nov 2014 12:02:45 -0800")
-Message-ID: <87tx1enzs0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Pull request: ath 20141201
+References: <871tojr16m.fsf@kamboji.qca.qualcomm.com>
+ <20141201205150.GC7266@tuxdriver.com>
+Date: Tue, 2 Dec 2014 12:10:59 +0200
+In-Reply-To: <20141201205150.GC7266@tuxdriver.com> (John W. Linville's message
+ of "Mon, 1 Dec 2014 15:51:50 -0500")
+Message-ID: <87ppc2nyz0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,25 +24,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: "John W. Linville" <linville@tuxdriver.com>
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+"John W. Linville" <linville@tuxdriver.com> writes:
 
-> Introduce a new wmi interface controls noise floor (NF) calibration
-> period via debugfs as firmware has introduced it on v10.2.
->
-> It allows users to modify frequency of NF calibration in millisecond
-> and changes RSSI reporting frequency consequently.
-> Short calibration period will trigger more frequent NF calibration,
-> so that RSSI reported in receive frames is more realistic.
->
-> Till now calibration was done at 30 seconds.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> On Mon, Dec 01, 2014 at 02:42:41PM +0200, Kalle Valo wrote:
+>> Hi John,
+>> 
+>> here's a pull request I'm hoping still to get to 3.19. The changelog is
+>> below. Please let me know if you have any problems.
+>> 
+>> ----------------------------------------------------------------------
+>> Only ath10k changes this time and no major changes. Most visible are:
+>> 
+>> o new debugfs interface for runtime firmware debugging (Yanbo)
+>> 
+>> o fix shared WEP (Sujith)
+>> 
+>> o don't rebuild whenever kernel version changes (Johannes)
+>> 
+>> o lots of refactoring to make it easier to add new hw support (Michal)
+>> 
+>> There's also smaller fixes and improvements with no point of listing
+>> here.
+>> 
+>> ----------------------------------------------------------------------
 
-This doesn't handle firmware retstarts in any way, let me send v2 to fix
-that.
+[...]
+
+> Pulling now...
+
+Thanks!
+
+ath10k list: I'm planning this to be the last pull request for 3.19. So
+anything not commited yet will go to 3.20, for example Device Tree and
+WMI TLV stuff. Which is actually a good thing, we get more time for
+testing.
 
 -- 
 Kalle Valo
