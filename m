@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xvhai-0000oB-QH
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 07:09:45 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 1/7] ath10k: create ath10k_core_init_features()
-References: <20141201144400.18248.62714.stgit@potku.adurom.net>
- <20141201144458.18248.28568.stgit@potku.adurom.net>
- <CA+BoTQkrqeWcr2vrd-b18HezZhyBkfvOYE3SgF39oYu54BX-Fw@mail.gmail.com>
-Date: Tue, 2 Dec 2014 09:09:06 +0200
-In-Reply-To: <CA+BoTQkrqeWcr2vrd-b18HezZhyBkfvOYE3SgF39oYu54BX-Fw@mail.gmail.com>
- (Michal Kazior's message of "Tue, 2 Dec 2014 07:58:09 +0100")
-Message-ID: <87a936plyl.fsf@kamboji.qca.qualcomm.com>
+ id 1XvipT-0002KT-GY
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 08:29:04 +0000
+Received: by mail-wi0-f180.google.com with SMTP id n3so20064584wiv.7
+ for <ath10k@lists.infradead.org>; Tue, 02 Dec 2014 00:28:36 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <20141201144507.18248.9856.stgit@potku.adurom.net>
+References: <20141201144400.18248.62714.stgit@potku.adurom.net>
+ <20141201144507.18248.9856.stgit@potku.adurom.net>
+Date: Tue, 2 Dec 2014 09:28:34 +0100
+Message-ID: <CA+BoTQ=mx2PSX2uDKrN6pk+YN0e8s8Q1xGZpe0yG-4rT+Hn25Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +21,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 1 December 2014 at 15:44, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> [...]
->>  int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
->> @@ -1046,7 +1047,12 @@ static int ath10k_core_probe_fw(struct ath10k *ar)
->>                 return ret;
->>         }
->>
->> -       ath10k_core_init_max_sta_count(ar);
->> +       ret = ath10k_core_init_firmware_features(ar);
->> +       if (ret) {
->> +               ath10k_err(ar, "fatal problem with firmware features: %d\n",
->> +                          ret);
->> +               return ret;
->
-> I think you should call ath10k_core_free_firmware_files() and
-> ath10k_hif_power_down() before returning (similar to how
-> ath10k_core_start() failure is handled).
-
-Indeed. I'll fix that in v4.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBEZWNlbWJlciAyMDE0IGF0IDE1OjQ1LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
+aAo+IGluZGV4IDUxNGMyMTkyNjNhNS4uOTJiMDRmZTczMTUxIDEwMDY0NAo+IC0tLSBhL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gKysrIGIvZHJpdmVycy9uZXQvd2ly
+ZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBAQCAtMTIwLDYgKzEyMCw3IEBAIHN0cnVjdCBhdGgx
+MGtfbWVtX2NodW5rIHsKPiAgfTsKPgo+ICBzdHJ1Y3QgYXRoMTBrX3dtaSB7Cj4gKyAgICAgICB1
+bnNpZ25lZCBpbnQgb3BfdmVyc2lvbjsKCkkgd29uZGVyIC0gY2FuJ3Qgd2UgaGF2ZSB0aGlzIGFz
+IGBlbnVtIGF0aDEwa19md193bWlfb3BfdmVyc2lvbiBvcF92ZXJzaW9uO2AgPwoKCj4gQEAgLTM3
+OCw4ICszNzksOSBAQCBlbnVtIGF0aDEwa19md19mZWF0dXJlcyB7Cj4gICAgICAgICAvKiBGaXJt
+d2FyZSBkb2VzIG5vdCBzdXBwb3J0IFAyUCAqLwo+ICAgICAgICAgQVRIMTBLX0ZXX0ZFQVRVUkVf
+Tk9fUDJQID0gMywKPgo+IC0gICAgICAgLyogRmlybXdhcmUgMTAuMiBmZWF0dXJlIGJpdC4gVGhl
+IEFUSDEwS19GV19GRUFUVVJFX1dNSV8xMFggZmVhdHVyZSBiaXQKPiAtICAgICAgICAqIGlzIHJl
+cXVpcmVkIHRvIGJlIHNldCBhcyB3ZWxsLgo+ICsgICAgICAgLyogRmlybXdhcmUgMTAuMiBmZWF0
+dXJlIGJpdC4gVGhlIEFUSDEwS19GV19GRUFUVVJFX1dNSV8xMFggZmVhdHVyZQo+ICsgICAgICAg
+ICogYml0IGlzIHJlcXVpcmVkIHRvIGJlIHNldCBhcyB3ZWxsLiBEZXByZWNhdGVkLCBkb24ndCB1
+c2UgaW4gbmV3Cj4gKyAgICAgICAgKiBjb2RlLgoKSnVzdCBvdXQgb2YgY3VyaW9zaXR5IC0gYW55
+IHBsYW5zIGhvdyBsb25nIHRoaXMgaXMgZ29pbmcgdG8gYmUKZGVwcmFjYXRlZCB1bnRpbCByZW1v
+dmVkL3JlcGxhY2VkPwoKCj4gICAgICAgICAgKi8KPiAgICAgICAgIEFUSDEwS19GV19GRUFUVVJF
+X1dNSV8xMF8yID0gNCwKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2h3LmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKPiBpbmRl
+eCBkZmVkZmQwZTBmMzQuLjA0YWFmOWFmM2NhMCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2h3LmgKPiBAQCAtNTgsNiArNTgsMTYgQEAgZW51bSBhdGgxMGtfZndfaWVfdHlwZSB7
+Cj4gICAgICAgICBBVEgxMEtfRldfSUVfRkVBVFVSRVMgPSAyLAo+ICAgICAgICAgQVRIMTBLX0ZX
+X0lFX0ZXX0lNQUdFID0gMywKPiAgICAgICAgIEFUSDEwS19GV19JRV9PVFBfSU1BR0UgPSA0LAo+
+ICsKPiArICAgICAgIC8qIFdNSSAib3BlcmF0aW9ucyIgaW50ZXJmYWNlIHZlcnNpb24sIDMyIGJp
+dCB2YWx1ZS4gU3VwcG9ydGVkIGZyb20KPiArICAgICAgICAqIEZXIEFQSSA0IGFuZCBhYm92ZS4g
+Ki8KPiArICAgICAgIEFUSDEwS19GV19JRV9XTUlfT1BfVkVSU0lPTiA9IDUsCgpIbW0uLiBzaG91
+bGRuJ3Qgd2UgYnVtcCB1cCB0aGUgZmlybXdhcmUgZmlsZW5hbWUgZnJvbSAtMyB0byAtNCBhbmQg
+dHJ5CmxvYWRpbmcgNC4uMy4uMi4uMT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYXRoMTBrCg==
