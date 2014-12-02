@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvipT-0002KT-GY
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 08:29:04 +0000
-Received: by mail-wi0-f180.google.com with SMTP id n3so20064584wiv.7
- for <ath10k@lists.infradead.org>; Tue, 02 Dec 2014 00:28:36 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20141201144507.18248.9856.stgit@potku.adurom.net>
+ id 1Xvj94-0004HY-C9
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 08:49:18 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
 References: <20141201144400.18248.62714.stgit@potku.adurom.net>
  <20141201144507.18248.9856.stgit@potku.adurom.net>
-Date: Tue, 2 Dec 2014 09:28:34 +0100
-Message-ID: <CA+BoTQ=mx2PSX2uDKrN6pk+YN0e8s8Q1xGZpe0yG-4rT+Hn25Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQ=mx2PSX2uDKrN6pk+YN0e8s8Q1xGZpe0yG-4rT+Hn25Q@mail.gmail.com>
+Date: Tue, 2 Dec 2014 10:48:46 +0200
+In-Reply-To: <CA+BoTQ=mx2PSX2uDKrN6pk+YN0e8s8Q1xGZpe0yG-4rT+Hn25Q@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 2 Dec 2014 09:28:34 +0100")
+Message-ID: <8761duphch.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +21,83 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMSBEZWNlbWJlciAyMDE0IGF0IDE1OjQ1LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9jb3JlLmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
-aAo+IGluZGV4IDUxNGMyMTkyNjNhNS4uOTJiMDRmZTczMTUxIDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gKysrIGIvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBAQCAtMTIwLDYgKzEyMCw3IEBAIHN0cnVjdCBhdGgx
-MGtfbWVtX2NodW5rIHsKPiAgfTsKPgo+ICBzdHJ1Y3QgYXRoMTBrX3dtaSB7Cj4gKyAgICAgICB1
-bnNpZ25lZCBpbnQgb3BfdmVyc2lvbjsKCkkgd29uZGVyIC0gY2FuJ3Qgd2UgaGF2ZSB0aGlzIGFz
-IGBlbnVtIGF0aDEwa19md193bWlfb3BfdmVyc2lvbiBvcF92ZXJzaW9uO2AgPwoKCj4gQEAgLTM3
-OCw4ICszNzksOSBAQCBlbnVtIGF0aDEwa19md19mZWF0dXJlcyB7Cj4gICAgICAgICAvKiBGaXJt
-d2FyZSBkb2VzIG5vdCBzdXBwb3J0IFAyUCAqLwo+ICAgICAgICAgQVRIMTBLX0ZXX0ZFQVRVUkVf
-Tk9fUDJQID0gMywKPgo+IC0gICAgICAgLyogRmlybXdhcmUgMTAuMiBmZWF0dXJlIGJpdC4gVGhl
-IEFUSDEwS19GV19GRUFUVVJFX1dNSV8xMFggZmVhdHVyZSBiaXQKPiAtICAgICAgICAqIGlzIHJl
-cXVpcmVkIHRvIGJlIHNldCBhcyB3ZWxsLgo+ICsgICAgICAgLyogRmlybXdhcmUgMTAuMiBmZWF0
-dXJlIGJpdC4gVGhlIEFUSDEwS19GV19GRUFUVVJFX1dNSV8xMFggZmVhdHVyZQo+ICsgICAgICAg
-ICogYml0IGlzIHJlcXVpcmVkIHRvIGJlIHNldCBhcyB3ZWxsLiBEZXByZWNhdGVkLCBkb24ndCB1
-c2UgaW4gbmV3Cj4gKyAgICAgICAgKiBjb2RlLgoKSnVzdCBvdXQgb2YgY3VyaW9zaXR5IC0gYW55
-IHBsYW5zIGhvdyBsb25nIHRoaXMgaXMgZ29pbmcgdG8gYmUKZGVwcmFjYXRlZCB1bnRpbCByZW1v
-dmVkL3JlcGxhY2VkPwoKCj4gICAgICAgICAgKi8KPiAgICAgICAgIEFUSDEwS19GV19GRUFUVVJF
-X1dNSV8xMF8yID0gNCwKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2h3LmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKPiBpbmRl
-eCBkZmVkZmQwZTBmMzQuLjA0YWFmOWFmM2NhMCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93
-aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2h3LmgKPiBAQCAtNTgsNiArNTgsMTYgQEAgZW51bSBhdGgxMGtfZndfaWVfdHlwZSB7
-Cj4gICAgICAgICBBVEgxMEtfRldfSUVfRkVBVFVSRVMgPSAyLAo+ICAgICAgICAgQVRIMTBLX0ZX
-X0lFX0ZXX0lNQUdFID0gMywKPiAgICAgICAgIEFUSDEwS19GV19JRV9PVFBfSU1BR0UgPSA0LAo+
-ICsKPiArICAgICAgIC8qIFdNSSAib3BlcmF0aW9ucyIgaW50ZXJmYWNlIHZlcnNpb24sIDMyIGJp
-dCB2YWx1ZS4gU3VwcG9ydGVkIGZyb20KPiArICAgICAgICAqIEZXIEFQSSA0IGFuZCBhYm92ZS4g
-Ki8KPiArICAgICAgIEFUSDEwS19GV19JRV9XTUlfT1BfVkVSU0lPTiA9IDUsCgpIbW0uLiBzaG91
-bGRuJ3Qgd2UgYnVtcCB1cCB0aGUgZmlybXdhcmUgZmlsZW5hbWUgZnJvbSAtMyB0byAtNCBhbmQg
-dHJ5CmxvYWRpbmcgNC4uMy4uMi4uMT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 1 December 2014 at 15:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+>> index 514c219263a5..92b04fe73151 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.h
+>> +++ b/drivers/net/wireless/ath/ath10k/core.h
+>> @@ -120,6 +120,7 @@ struct ath10k_mem_chunk {
+>>  };
+>>
+>>  struct ath10k_wmi {
+>> +       unsigned int op_version;
+>
+> I wonder - can't we have this as `enum ath10k_fw_wmi_op_version op_version;` ?
+
+Oh yes, I was even planning to change it but apparently forgot. Will fix
+in v4.
+
+>> @@ -378,8 +379,9 @@ enum ath10k_fw_features {
+>>         /* Firmware does not support P2P */
+>>         ATH10K_FW_FEATURE_NO_P2P = 3,
+>>
+>> -       /* Firmware 10.2 feature bit. The ATH10K_FW_FEATURE_WMI_10X feature bit
+>> -        * is required to be set as well.
+>> +       /* Firmware 10.2 feature bit. The ATH10K_FW_FEATURE_WMI_10X feature
+>> +        * bit is required to be set as well. Deprecated, don't use in new
+>> +        * code.
+>
+> Just out of curiosity - any plans how long this is going to be
+> depracated until removed/replaced?
+
+So there are two parts:
+
+1) In the driver we should not use these deprated flags with new code,
+   and preferably remove existing uses bit by bit. But for backwards
+   compatibility we will keep the flags in
+   ath10k_core_init_firmware_features() so that we can set correct
+   wmi.op_version when using firmware images which don't have
+   ATH10K_FW_IE_WMI_OP_VERSION.
+
+2) In firmware images we will continue use the deprecated flags with
+   main, 10.1 and 10.2 firmware branches, at least for the time being.
+   This makes it possible to have new firmware releases working on older
+   drivers.
+
+>> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+>> index dfedfd0e0f34..04aaf9af3ca0 100644
+>> --- a/drivers/net/wireless/ath/ath10k/hw.h
+>> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+>> @@ -58,6 +58,16 @@ enum ath10k_fw_ie_type {
+>>         ATH10K_FW_IE_FEATURES = 2,
+>>         ATH10K_FW_IE_FW_IMAGE = 3,
+>>         ATH10K_FW_IE_OTP_IMAGE = 4,
+>> +
+>> +       /* WMI "operations" interface version, 32 bit value. Supported from
+>> +        * FW API 4 and above. */
+>> +       ATH10K_FW_IE_WMI_OP_VERSION = 5,
+>
+> Hmm.. shouldn't we bump up the firmware filename from -3 to -4 and try
+> loading 4..3..2..1?
+
+I was thinking that we add FW API 4 only once we have all necessary
+changes for the new hw. For example, in case we need HTT changes as
+well.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
