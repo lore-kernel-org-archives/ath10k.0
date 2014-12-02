@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvlIo-00039P-MX
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 11:07:31 +0000
-Subject: [PATCH v2 1/2] ath10k: add new pdev parameters for fw 10.2
+ id 1XvlIU-0002n2-Rc
+ for ath10k@lists.infradead.org; Tue, 02 Dec 2014 11:07:11 +0000
+Subject: [PATCH v2 0/2] ath10k: NF calibration period debugfs file
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Tue, 2 Dec 2014 13:06:53 +0200
-Message-ID: <20141202110653.14817.30464.stgit@potku.adurom.net>
-In-Reply-To: <20141202110443.14817.85639.stgit@potku.adurom.net>
-References: <20141202110443.14817.85639.stgit@potku.adurom.net>
+Date: Tue, 2 Dec 2014 13:06:31 +0200
+Message-ID: <20141202110443.14817.85639.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,31 +23,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-From: Peter Oh <poh@qca.qualcomm.com>
+Hi,
 
-New pdev paramters have been added to firmware 10.2,
-hence update wmi interfaces to sync with.
+here are some changes I made to Peter's NF calibdation period patches. Please
+review.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+v2:
+
+* add _MAX define
+
+* support firmware restart
+
+* set cal_period in wmi_tlv_pdev_param_map
+
+* simplify ar->state check
+
+* rename debugfs file to nf_cal_period to not confuse with cal_data
+  file (which is about calibration data)
+
+* WMI_10X_PDEV_PEER_STA_PS_STATECHG_ENABLE -> WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE
+
 ---
- drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
- 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 7d091a74d3f3..4b31da5d3c4c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2793,6 +2793,9 @@ enum wmi_10x_pdev_param {
- 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_MODE,
- 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_BUFFER,
- 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
-+	WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE,
-+	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
-+	WMI_10X_PDEV_PARAM_CAL_PERIOD
- };
- 
- struct wmi_pdev_set_param_cmd {
+Peter Oh (2):
+      ath10k: add new pdev parameters for fw 10.2
+      ath10k: add new wmi interface of NF cal period
+
+
+ drivers/net/wireless/ath/ath10k/core.h    |    1 
+ drivers/net/wireless/ath/ath10k/debug.c   |   80 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |    1 
+ drivers/net/wireless/ath/ath10k/wmi.c     |    2 +
+ drivers/net/wireless/ath/ath10k/wmi.h     |    7 +++
+ 5 files changed, 91 insertions(+)
 
 
 _______________________________________________
