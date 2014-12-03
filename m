@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XvmO0-0001Aj-Ln
- for ath10k@lists.infradead.org; Tue, 02 Dec 2014 12:16:57 +0000
-Received: by mail-wi0-f175.google.com with SMTP id l15so27857188wiw.14
- for <ath10k@lists.infradead.org>; Tue, 02 Dec 2014 04:16:34 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20141201144507.18248.9856.stgit@potku.adurom.net>
+ id 1Xw3SR-0004IS-43
+ for ath10k@lists.infradead.org; Wed, 03 Dec 2014 06:30:39 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
 References: <20141201144400.18248.62714.stgit@potku.adurom.net>
  <20141201144507.18248.9856.stgit@potku.adurom.net>
-Date: Tue, 2 Dec 2014 13:16:33 +0100
-Message-ID: <CA+BoTQkXnHnMsLvRt2PnnDCAv8P8gDsJTLNFPmf+CNaDX0frfg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQkXnHnMsLvRt2PnnDCAv8P8gDsJTLNFPmf+CNaDX0frfg@mail.gmail.com>
+Date: Wed, 3 Dec 2014 08:30:05 +0200
+In-Reply-To: <CA+BoTQkXnHnMsLvRt2PnnDCAv8P8gDsJTLNFPmf+CNaDX0frfg@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 2 Dec 2014 13:16:33 +0100")
+Message-ID: <87vbltjlea.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +21,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMSBEZWNlbWJlciAyMDE0IGF0IDE1OjQ1LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKWy4uLl0KPiBAQCAtODAxLDExICs4MTIsMjQgQEAgc3RhdGljIGludCBh
-dGgxMGtfY29yZV9pbml0X2Zpcm13YXJlX2ZlYXR1cmVzKHN0cnVjdCBhdGgxMGsgKmFyKQo+ICAg
-ICAgICAgfQo+Cj4gICAgICAgICBpZiAodGVzdF9iaXQoQVRIMTBLX0ZXX0ZFQVRVUkVfV01JXzEw
-WCwgYXItPmZ3X2ZlYXR1cmVzKSkgewo+IC0gICAgICAgICAgICAgICBhci0+bWF4X251bV9wZWVy
-cyA9IFRBUkdFVF8xMFhfTlVNX1BFRVJTOwo+IC0gICAgICAgICAgICAgICBhci0+bWF4X251bV9z
-dGF0aW9ucyA9IFRBUkdFVF8xMFhfTlVNX1NUQVRJT05TOwo+ICsgICAgICAgICAgICAgICBpZiAo
-dGVzdF9iaXQoQVRIMTBLX0ZXX0ZFQVRVUkVfV01JXzEwXzIsIGFyLT5md19mZWF0dXJlcykpCj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgYXItPndtaS5vcF92ZXJzaW9uID0gQVRIMTBLX0ZXX1dN
-SV9PUF9WRVJTSU9OXzEwXzI7Cj4gKyAgICAgICAgICAgICAgIGVsc2UKPiArICAgICAgICAgICAg
-ICAgICAgICAgICBhci0+d21pLm9wX3ZlcnNpb24gPSBBVEgxMEtfRldfV01JX09QX1ZFUlNJT05f
-MTBfMTsKPiAgICAgICAgIH0gZWxzZSB7Cj4gKyAgICAgICAgICAgICAgIGFyLT53bWkub3BfdmVy
-c2lvbiA9IEFUSDEwS19GV19XTUlfT1BfVkVSU0lPTl9NQUlOOwo+ICsgICAgICAgfQoKWW91IGFs
-d2F5cyBvdmVyd3JpdGUgYXItPndtaS5vcF92ZXJzaW9uIHdpdGggTUFJTiBpZiBpdCdzIG5vdCAx
-MC54CndoaWNoIG1lYW5zIFRMViBpcy93aWlsIGJlIGVmZmVjdGl2ZWx5IG92ZXJ3cml0dGVuLgoK
-UGVyaGFwcyB0aGUgb3BfdmVyc2lvbiBlbnVtIHZhbHVlcyBzaG91bGQgc3RhcnQgd2l0aCAxIHNv
-IHRoYXQgMCBjYW4KYmUgdXNlZCBhcyAidW5zZXQiIGFuZCBvbmx5IGluIHRoYXQgY2FzZSBzaG91
-bGQgdGhlIGFib3ZlIGZhbGxiYWNrIGJlCmF0dGVtcHRlZC4KCgpBbHNvLCBJIHRoaW5rIGl0IG1p
-Z2h0IGJlIGEgZ29vZCBpZGVhIHRvIHJlc2V0IGFyLT53bWkub3BfdmVyc2lvbiBpbgphdGgxMGtf
-Y29yZV9mZXRjaF9maXJtd2FyZV9hcGlfbiAoYW5kIGFwaV8xIGFzIHdlbGwpIHNvIHRoYXQgaWYg
-YW55CmF0dGVtcHQgZmFpbHMgKGUuZy4gZHVlIHRvIElFIGJpbmFyeSBjb3JydXB0aW9uKSBhci0+
-d21pLm9wX3ZlcnNpb24KaXNuJ3QgcHJvcGFnYXRlZC9sZWZ0IHVuY2hhbmdlZCB0byBhbm90aGVy
-IGZ3IEFQSSBhdHRlbXB0LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 1 December 2014 at 15:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>> @@ -801,11 +812,24 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+>>         }
+>>
+>>         if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
+>> -               ar->max_num_peers = TARGET_10X_NUM_PEERS;
+>> -               ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+>> +               if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
+>> +                       ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_2;
+>> +               else
+>> +                       ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
+>>         } else {
+>> +               ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_MAIN;
+>> +       }
+>
+> You always overwrite ar->wmi.op_version with MAIN if it's not 10.x
+> which means TLV is/wiil be effectively overwritten.
+>
+> Perhaps the op_version enum values should start with 1 so that 0 can
+> be used as "unset" and only in that case should the above fallback be
+> attempted.
+
+That's a good idea, I'll add that.
+
+> Also, I think it might be a good idea to reset ar->wmi.op_version in
+> ath10k_core_fetch_firmware_api_n (and api_1 as well) so that if any
+> attempt fails (e.g. due to IE binary corruption) ar->wmi.op_version
+> isn't propagated/left unchanged to another fw API attempt.
+
+Yeah, we should do that. But that's an existing problem, not something
+introduced by this patchset (we have the same problem with
+ar->fw_features) . So I would like to fix that later and added it to the
+TODO list:
+
+http://wireless.kernel.org/en/users/Drivers/ath10k/todo
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
