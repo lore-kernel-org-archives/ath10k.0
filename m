@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xw3SR-0004IS-43
- for ath10k@lists.infradead.org; Wed, 03 Dec 2014 06:30:39 +0000
+ id 1Xw3UJ-0004m5-BQ
+ for ath10k@lists.infradead.org; Wed, 03 Dec 2014 06:32:35 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH v3 2/7] ath10k: add ATH10K_FW_IE_WMI_OP_VERSION
 References: <20141201144400.18248.62714.stgit@potku.adurom.net>
  <20141201144507.18248.9856.stgit@potku.adurom.net>
- <CA+BoTQkXnHnMsLvRt2PnnDCAv8P8gDsJTLNFPmf+CNaDX0frfg@mail.gmail.com>
-Date: Wed, 3 Dec 2014 08:30:05 +0200
-In-Reply-To: <CA+BoTQkXnHnMsLvRt2PnnDCAv8P8gDsJTLNFPmf+CNaDX0frfg@mail.gmail.com>
- (Michal Kazior's message of "Tue, 2 Dec 2014 13:16:33 +0100")
-Message-ID: <87vbltjlea.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQm+JqCEXPQ4njxGvm-v_Typ0BDTK5g8627O_-gKiTWHZw@mail.gmail.com>
+Date: Wed, 3 Dec 2014 08:32:09 +0200
+In-Reply-To: <CA+BoTQm+JqCEXPQ4njxGvm-v_Typ0BDTK5g8627O_-gKiTWHZw@mail.gmail.com>
+ (Michal Kazior's message of "Tue, 2 Dec 2014 12:51:58 +0100")
+Message-ID: <87r3whjlau.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -32,40 +32,28 @@ Michal Kazior <michal.kazior@tieto.com> writes:
 
 > On 1 December 2014 at 15:45, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
 > [...]
->> @@ -801,11 +812,24 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
->>         }
+>> @@ -562,6 +562,17 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+>>                         ar->otp_len = ie_len;
 >>
->>         if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
->> -               ar->max_num_peers = TARGET_10X_NUM_PEERS;
->> -               ar->max_num_stations = TARGET_10X_NUM_STATIONS;
->> +               if (test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features))
->> +                       ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_2;
->> +               else
->> +                       ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_10_1;
->>         } else {
->> +               ar->wmi.op_version = ATH10K_FW_WMI_OP_VERSION_MAIN;
->> +       }
+>>                         break;
+>> +               case ATH10K_FW_IE_WMI_OP_VERSION:
+>> +                       if (ie_len != sizeof(u32))
+>> +                               break;
+>> +
+>> +                       version = (__le32 *)data;
+>> +
+>> +                       ar->wmi.op_version = le32_to_cpup(version);
+>> +
+>> +                       ath10k_dbg(ar, ATH10K_DBG_BOOT, "found fw ie wmi op version %d\n",
+>> +                                  ar->wmi.op_version);
 >
-> You always overwrite ar->wmi.op_version with MAIN if it's not 10.x
-> which means TLV is/wiil be effectively overwritten.
->
-> Perhaps the op_version enum values should start with 1 so that 0 can
-> be used as "unset" and only in that case should the above fallback be
-> attempted.
+> Hmm.. wouldn't it make sense to have a ATH10K_FW_WMI_OP_VERSION_MAX
+> (or _LAST) and verify if the IE value doesn't exceed the last known
+> value? This way switch()es won't need default handler by design and
+> thus we'll get the benefit of compiler telling us about unhandled
+> cases when we add new enums.
 
-That's a good idea, I'll add that.
-
-> Also, I think it might be a good idea to reset ar->wmi.op_version in
-> ath10k_core_fetch_firmware_api_n (and api_1 as well) so that if any
-> attempt fails (e.g. due to IE binary corruption) ar->wmi.op_version
-> isn't propagated/left unchanged to another fw API attempt.
-
-Yeah, we should do that. But that's an existing problem, not something
-introduced by this patchset (we have the same problem with
-ar->fw_features) . So I would like to fix that later and added it to the
-TODO list:
-
-http://wireless.kernel.org/en/users/Drivers/ath10k/todo
+A good idea, I'll add that.
 
 -- 
 Kalle Valo
