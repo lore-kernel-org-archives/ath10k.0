@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail1.bemta7.messagelabs.com ([216.82.254.105])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xw9ZI-0006cW-0y
- for ath10k@lists.infradead.org; Wed, 03 Dec 2014 13:02:08 +0000
-Received: by mail-wg0-f52.google.com with SMTP id a1so19701011wgh.11
- for <ath10k@lists.infradead.org>; Wed, 03 Dec 2014 05:01:45 -0800 (PST)
+ id 1XwYLe-0008Rg-8r
+ for ath10k@lists.infradead.org; Thu, 04 Dec 2014 15:29:43 +0000
+From: Sven Eckelmann <sven@open-mesh.com>
+Subject: Re: IBSS mode is now supported by CT firmware.
+Date: Thu, 4 Dec 2014 16:28:55 +0100
+Message-ID: <78773989.kHFoMHjKGm@bentobox>
+In-Reply-To: <547CAC1E.2000709@candelatech.com>
+References: <547525D4.5080701@candelatech.com>
+ <CAD1M060=TLNR-ZFdTiwq8tAbC=2h2zsKbxyFkkL1N5pvfwLWEA@mail.gmail.com>
+ <547CAC1E.2000709@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <20141203081132.31187.53311.stgit@potku.adurom.net>
-References: <20141203080803.31187.85059.stgit@potku.adurom.net>
- <20141203081132.31187.53311.stgit@potku.adurom.net>
-Date: Wed, 3 Dec 2014 14:01:45 +0100
-Message-ID: <CA+BoTQk=EHwqAT-VFeaQS5Q55HsiycwPfE9p-8dj6v8RZyNmsg@mail.gmail.com>
-Subject: Re: [PATCH v4 8/8] ath10k: implement wmi-tlv backend
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +20,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Pushpal Sidhu <psidhu@gateworks.com>
 
-T24gMyBEZWNlbWJlciAyMDE0IGF0IDA5OjExLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9jb3JlLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUu
-Ywo+IGluZGV4IDBmNDM2OWU0ZjM1OC4uODE1ZDZlMjdhYTUzIDEwMDY0NAo+IC0tLSBhL2RyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2ly
-ZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAtODQ0LDYgKzg0NCwxMCBAQCBzdGF0aWMgaW50
-IGF0aDEwa19jb3JlX2luaXRfZmlybXdhcmVfZmVhdHVyZXMoc3RydWN0IGF0aDEwayAqYXIpCj4g
-ICAgICAgICAgICAgICAgIGFyLT5tYXhfbnVtX3N0YXRpb25zID0gVEFSR0VUXzEwWF9OVU1fU1RB
-VElPTlM7Cj4gICAgICAgICAgICAgICAgIGFyLT5odHQubWF4X251bV9wZW5kaW5nX3R4ID0gVEFS
-R0VUXzEwWF9OVU1fTVNEVV9ERVNDOwo+ICAgICAgICAgICAgICAgICBicmVhazsKPiArICAgICAg
-IGNhc2UgQVRIMTBLX0ZXX1dNSV9PUF9WRVJTSU9OX1RMVjoKPiArICAgICAgICAgICAgICAgYXIt
-Pm1heF9udW1fcGVlcnMgPSBUQVJHRVRfVExWX05VTV9QRUVSUzsKPiArICAgICAgICAgICAgICAg
-YXItPm1heF9udW1fc3RhdGlvbnMgPSBUQVJHRVRfVExWX05VTV9TVEFUSU9OUzsKPiArICAgICAg
-ICAgICAgICAgYXItPmh0dC5tYXhfbnVtX3BlbmRpbmdfdHggPSBUQVJHRVRfVExWX05VTV9NU0RV
-X0RFU0M7CgpNaXNzaW5nIGJyZWFrPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+On Monday 01 December 2014 09:57:50 Ben Greear wrote:
+> If you have time, can you see if you can get encryption working with
+> ath9k to ath9k?  I could not get that working, and I am not sure if
+> it is my supplicant setup or if I have some other bugs somewhere...
+> 
+> Please post config files if you do get it working.
+
+My wpa_supplicant config:
+
+ap_scan=2
+network={
+	mode=1
+	scan_ssid=0
+	ssid="mesh"
+	bssid=02:BA:DE:AF:FE:01
+	key_mgmt=WPA-PSK
+	proto=RSN
+	frequency=2462
+	fixed_freq=1
+	beacon_int=100
+	mcast_rate=18
+	ibss_ht_mode=HT20
+	psk="89b8e7e66900dd31b4d1fefa60ed3efb"
+}
+
+You need at least the wpa_supplicant version from 
+http://w1.fi/cgit/hostap/commit/?id=13adc57b39091dc59372efbeb614b74310dd2e02
+
+
+> And, what is ath9k to ath9k transfer rates?
+
+I don't have numbers here which I am allowed to post but it is only slightly 
+(really tiny difference when measurable at all) slower than the AP<->Sta 
+setup.
+
+But you also need an wpa_supplicant patch to enable HT-rates (together with 
+wpa_supplicant).
+
+http://lists.shmoo.com/pipermail/hostap/2012-November/026934.html
+
+Btw. I haven't tested your fw and thus cannot say if anything written above 
+would also work with ath10k.
+
+Kind regards,
+	Sven
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
