@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.bemta7.messagelabs.com ([216.82.254.105])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XwYLe-0008Rg-8r
- for ath10k@lists.infradead.org; Thu, 04 Dec 2014 15:29:43 +0000
-From: Sven Eckelmann <sven@open-mesh.com>
-Subject: Re: IBSS mode is now supported by CT firmware.
-Date: Thu, 4 Dec 2014 16:28:55 +0100
-Message-ID: <78773989.kHFoMHjKGm@bentobox>
-In-Reply-To: <547CAC1E.2000709@candelatech.com>
-References: <547525D4.5080701@candelatech.com>
- <CAD1M060=TLNR-ZFdTiwq8tAbC=2h2zsKbxyFkkL1N5pvfwLWEA@mail.gmail.com>
- <547CAC1E.2000709@candelatech.com>
+ id 1XwaLY-0007iR-4b
+ for ath10k@lists.infradead.org; Thu, 04 Dec 2014 17:37:44 +0000
+From: "Oh, Peter" <poh@qca.qualcomm.com>
+Subject: RE: [PATCH v2 1/2] ath10k: add new pdev parameters for fw 10.2
+Date: Thu, 4 Dec 2014 17:37:03 +0000
+Message-ID: <b110385ccdfb4105a56625b0ef17ab2d@NASANEXM01B.na.qualcomm.com>
+References: <20141202110443.14817.85639.stgit@potku.adurom.net>
+ <20141202110653.14817.30464.stgit@potku.adurom.net>
+In-Reply-To: <20141202110653.14817.30464.stgit@potku.adurom.net>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,54 +24,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+
+It looks good to me.
+
+Thanks,
+Peter
+
+-----Original Message-----
+From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of Kalle Valo
+Sent: Tuesday, December 02, 2014 3:07 AM
 To: ath10k@lists.infradead.org
-Cc: Ben Greear <greearb@candelatech.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Pushpal Sidhu <psidhu@gateworks.com>
+Cc: linux-wireless@vger.kernel.org
+Subject: [PATCH v2 1/2] ath10k: add new pdev parameters for fw 10.2
 
-On Monday 01 December 2014 09:57:50 Ben Greear wrote:
-> If you have time, can you see if you can get encryption working with
-> ath9k to ath9k?  I could not get that working, and I am not sure if
-> it is my supplicant setup or if I have some other bugs somewhere...
-> 
-> Please post config files if you do get it working.
+From: Peter Oh <poh@qca.qualcomm.com>
 
-My wpa_supplicant config:
+New pdev paramters have been added to firmware 10.2, hence update wmi interfaces to sync with.
 
-ap_scan=2
-network={
-	mode=1
-	scan_ssid=0
-	ssid="mesh"
-	bssid=02:BA:DE:AF:FE:01
-	key_mgmt=WPA-PSK
-	proto=RSN
-	frequency=2462
-	fixed_freq=1
-	beacon_int=100
-	mcast_rate=18
-	ibss_ht_mode=HT20
-	psk="89b8e7e66900dd31b4d1fefa60ed3efb"
-}
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.h |    3 +++
+ 1 file changed, 3 insertions(+)
 
-You need at least the wpa_supplicant version from 
-http://w1.fi/cgit/hostap/commit/?id=13adc57b39091dc59372efbeb614b74310dd2e02
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 7d091a74d3f3..4b31da5d3c4c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2793,6 +2793,9 @@ enum wmi_10x_pdev_param {
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_MODE,
+ 	WMI_10X_PDEV_PARAM_SET_MCAST2UCAST_BUFFER,
+ 	WMI_10X_PDEV_PARAM_REMOVE_MCAST2UCAST_BUFFER,
++	WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE,
++	WMI_10X_PDEV_PARAM_RTS_FIXED_RATE,
++	WMI_10X_PDEV_PARAM_CAL_PERIOD
+ };
+ 
+ struct wmi_pdev_set_param_cmd {
 
 
-> And, what is ath9k to ath9k transfer rates?
-
-I don't have numbers here which I am allowed to post but it is only slightly 
-(really tiny difference when measurable at all) slower than the AP<->Sta 
-setup.
-
-But you also need an wpa_supplicant patch to enable HT-rates (together with 
-wpa_supplicant).
-
-http://lists.shmoo.com/pipermail/hostap/2012-November/026934.html
-
-Btw. I haven't tested your fw and thus cannot say if anything written above 
-would also work with ath10k.
-
-Kind regards,
-	Sven
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
