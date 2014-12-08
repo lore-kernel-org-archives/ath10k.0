@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xy0Uv-0004Gp-AM
- for ath10k@lists.infradead.org; Mon, 08 Dec 2014 15:45:17 +0000
+ id 1Xy1wV-00008l-MI
+ for ath10k@lists.infradead.org; Mon, 08 Dec 2014 17:17:52 +0000
+Subject: [HACK PATCH 0/4] ath10k: 802.3 frame format support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/2] ath10k: NF calibration period debugfs file
-References: <20141202110443.14817.85639.stgit@potku.adurom.net>
-Date: Mon, 8 Dec 2014 17:44:10 +0200
-In-Reply-To: <20141202110443.14817.85639.stgit@potku.adurom.net> (Kalle Valo's
- message of "Tue, 2 Dec 2014 13:06:31 +0200")
-Message-ID: <87sigqywmt.fsf@kamboji.qca.qualcomm.com>
+Date: Mon, 8 Dec 2014 19:16:49 +0200
+Message-ID: <20141208170804.1001.1804.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,40 +21,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Hi,
 
-> Hi,
->
-> here are some changes I made to Peter's NF calibdation period patches. Please
-> review.
->
-> v2:
->
-> * add _MAX define
->
-> * support firmware restart
->
-> * set cal_period in wmi_tlv_pdev_param_map
->
-> * simplify ar->state check
->
-> * rename debugfs file to nf_cal_period to not confuse with cal_data
->   file (which is about calibration data)
->
-> * WMI_10X_PDEV_PEER_STA_PS_STATECHG_ENABLE -> WMI_10X_PDEV_PARAM_PEER_STA_PS_STATECHG_ENABLE
->
-> ---
->
-> Peter Oh (2):
->       ath10k: add new pdev parameters for fw 10.2
->       ath10k: add new wmi interface of NF cal period
+some time ago Michal did an experimentation to use 802.3 frame format with
+ath10k which needed some really really horrible mac80211 hacks. It would need a
+lot of work to get these upstream (if ever), but I'm sending these anyway in
+hope it would help to optimise ath10k throughput in slower devices. And who
+knows, maybe even find some bottlenecks which we are able to fix in upstream.
 
-Both patches applied. Thanks Peter.
+I took Michal's patches, rebased them and added Kconfig option to make it
+easier to experiment with and without the feature. I did only a quick test that
+ping works, but I'm sure this is broken n+1 different ways.
 
--- 
-Kalle Valo
+I would be very interested to hear any comments or findings.
+
+---
+
+Michal Kazior (4):
+      mac80211: rx
+      mac8011: tx
+      ath10k: rx
+      ath10k: tx
+
+
+ drivers/net/wireless/ath/ath10k/Kconfig  |    8 ++++++
+ drivers/net/wireless/ath/ath10k/core.h   |    6 +++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |   40 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   12 +++++++++
+ drivers/net/wireless/ath/ath10k/mac.c    |   29 ++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c    |    9 +++++++
+ include/net/mac80211.h                   |    5 ++++
+ net/mac80211/rx.c                        |   10 ++++++++
+ net/mac80211/status.c                    |    5 ++++
+ net/mac80211/tx.c                        |   15 +++++++++++
+ 10 files changed, 139 insertions(+)
+
 
 _______________________________________________
 ath10k mailing list
