@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xy1wf-0000Ds-MJ
- for ath10k@lists.infradead.org; Mon, 08 Dec 2014 17:18:02 +0000
-Subject: [HACK PATCH 3/4] ath10k: rx
+ id 1Xy1wt-0000JI-Jq
+ for ath10k@lists.infradead.org; Mon, 08 Dec 2014 17:18:16 +0000
+Subject: [HACK PATCH 4/4] ath10k: tx
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 8 Dec 2014 19:17:22 +0200
-Message-ID: <20141208171722.1001.88864.stgit@potku.adurom.net>
+Date: Mon, 8 Dec 2014 19:17:37 +0200
+Message-ID: <20141208171737.1001.63200.stgit@potku.adurom.net>
 In-Reply-To: <20141208170804.1001.1804.stgit@potku.adurom.net>
 References: <20141208170804.1001.1804.stgit@potku.adurom.net>
 MIME-Version: 1.0
@@ -29,150 +29,119 @@ From: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |    2 ++
- drivers/net/wireless/ath/ath10k/htt_rx.c |   40 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c    |    8 ++++++
- drivers/net/wireless/ath/ath10k/wmi.c    |    9 +++++++
- 4 files changed, 59 insertions(+)
+ drivers/net/wireless/ath/ath10k/Kconfig  |    8 ++++++++
+ drivers/net/wireless/ath/ath10k/core.h   |    4 ++++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |   12 ++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c    |   21 +++++++++++++++++++++
+ 4 files changed, 45 insertions(+)
 
+diff --git a/drivers/net/wireless/ath/ath10k/Kconfig b/drivers/net/wireless/ath/ath10k/Kconfig
+index 72acb822bb11..1bac2e94c3a9 100644
+--- a/drivers/net/wireless/ath/ath10k/Kconfig
++++ b/drivers/net/wireless/ath/ath10k/Kconfig
+@@ -45,3 +45,11 @@ config ATH10K_DFS_CERTIFIED
+ 	---help---
+ 	This option enables DFS support for initiating radiation on
+ 	ath10k.
++
++config ATH10K_802_3_FORMAT
++	bool "ath10k 802.3 frame format"
++	depends on ATH10K
++	default n
++	---help---
++	This option enables HIGHLY EXPERIMENTAL 802.3 frame format 
++	support in ath10k. If it breaks, you get to keep both pieces.
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 613355cc6895..f4a4d3c346aa 100644
+index f4a4d3c346aa..c5c33a56a03e 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -540,6 +540,8 @@ struct ath10k {
- 	/* current operating channel definition */
- 	struct cfg80211_chan_def chandef;
- 
-+	struct ieee80211_vif *vif;
-+
- 	unsigned long long free_vdev_map;
- 	bool monitor;
- 	int monitor_vdev_id;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 9c782a42665e..deb7e1bcb08e 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -804,6 +804,12 @@ static void ath10k_process_rx(struct ath10k *ar,
- 	trace_ath10k_rx_hdr(ar, skb->data, skb->len);
- 	trace_ath10k_rx_payload(ar, skb->data, skb->len);
+@@ -82,6 +82,10 @@ struct ath10k_skb_cb {
+ 	u8 eid;
+ 	u8 vdev_id;
  
 +#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	skb->dev = ar->vif;
-+	skb_set_mac_header(skb, 0);
-+	skb_set_network_header(skb, 0);
++	bool is_8023;
 +#endif
 +
- 	ieee80211_rx(ar->hw, skb);
- }
- 
-@@ -895,6 +901,7 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
- 	size_t hdr_len;
- 	u8 da[ETH_ALEN];
- 	u8 sa[ETH_ALEN];
-+	struct ethhdr eth;
- 
- 	/* Delivered decapped frame:
- 	 * [nwifi 802.11 header] <-- replaced with 802.11 hdr
-@@ -910,6 +917,20 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
- 	/* pull decapped header and copy SA & DA */
- 	hdr = (struct ieee80211_hdr *)msdu->data;
- 	hdr_len = ath10k_htt_rx_nwifi_hdrlen(hdr);
-+
-+#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	memcpy(eth.h_dest, ieee80211_get_DA(hdr), ETH_ALEN);
-+	memcpy(eth.h_source, ieee80211_get_SA(hdr), ETH_ALEN);
-+
-+	/* leave out snap_type as it matches h_proto */
-+	skb_pull(msdu, hdr_len + 6);
-+
-+	/* copy just source/dest; h_proto is from snap_type */
-+	memcpy(skb_push(msdu, ETH_ALEN * 2), &eth, ETH_ALEN * 2);
-+
-+	return;
-+#endif
-+
- 	ether_addr_copy(da, ieee80211_get_DA(hdr));
- 	ether_addr_copy(sa, ieee80211_get_SA(hdr));
- 	skb_pull(msdu, hdr_len);
-@@ -975,6 +996,10 @@ static void ath10k_htt_rx_h_undecap_eth(struct ath10k *ar,
- 	u8 da[ETH_ALEN];
- 	u8 sa[ETH_ALEN];
+ 	struct {
+ 		u8 tid;
+ 		u16 freq;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index a1bda41fb543..a340444bc64c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -467,11 +467,15 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	prefetch_len = min(htt->prefetch_len, msdu->len);
+ 	prefetch_len = roundup(prefetch_len, 4);
  
 +#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	return;
-+#endif
-+
- 	/* Delivered decapped frame:
- 	 * [eth header] <-- replaced with 802.11 hdr & rfc1042/llc
- 	 * [payload]
-@@ -1020,6 +1045,21 @@ static void ath10k_htt_rx_h_undecap_snap(struct ath10k *ar,
- 	 * [rfc1042/llc]
- 	 * [payload]
- 	 */
-+#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	struct amsdu_subframe_hdr *ahdr = (void *)msdu->data;
-+	struct ethhdr eth;
-+
-+	memcpy(eth.h_dest, ahdr->dst, ETH_ALEN);
-+	memcpy(eth.h_source, ahdr->src, ETH_ALEN);
-+
-+	// leave snap_type as h_proto
-+	skb_pull(msdu, sizeof(*ahdr) + 6);
-+	// copy just source/dest; h_proto is from snap_type
-+	memcpy(skb_push(msdu, ETH_ALEN * 2),
-+	       &eth, ETH_ALEN * 2);
-+
-+	return;
++	use_frags = true;
++#else
+ 	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
+ 	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
+ 	 * fragment list host driver specifies directly frame pointer. */
+ 	use_frags = htt->target_version_major < 3 ||
+ 		    !ieee80211_is_mgmt(hdr->frame_control);
 +#endif
  
- 	skb_pull(msdu, sizeof(struct amsdu_subframe_hdr));
+ 	skb_cb->htt.txbuf = dma_pool_alloc(htt->tx_pool, GFP_ATOMIC,
+ 					   &paddr);
+@@ -527,8 +531,16 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 			prefetch_len);
+ 	skb_cb->htt.txbuf->htc_hdr.flags = 0;
+ 
++#ifdef CONFIG_ATH10K_802_3_FORMAT
++	flags0 |= SM(ATH10K_HW_TXRX_ETHERNET,
++		     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
++	flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
++
++#else
++
+ 	if (!ieee80211_has_protected(hdr->frame_control))
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
++#endif
+ 
+ 	flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
  
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5475f0fbbe41..3ab09470438f 100644
+index 3ab09470438f..d7ccb0531a48 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2880,6 +2880,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	arvif->ar = ar;
- 	arvif->vif = vif;
+@@ -2364,6 +2364,23 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	struct ieee80211_key_conf *key = info->control.hw_key;
+ 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
  
 +#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	ar->vif = vif;
++	if (likely(info->is_8023)) {
++		int ret;
++
++		ATH10K_SKB_CB(skb)->vdev_id = 0;
++		ATH10K_SKB_CB(skb)->is_8023 = true;
++		ATH10K_SKB_CB(skb)->htt.is_offchan = false;
++		ATH10K_SKB_CB(skb)->htt.tid = skb->priority &
++					      IEEE80211_QOS_CTL_TAG1D_MASK;
++
++		ret = ath10k_htt_tx(&ar->htt, skb);
++		if (unlikely(ret < 0))
++			ieee80211_free_txskb(hw, skb);
++		return;
++	}
 +#endif
 +
- 	INIT_WORK(&arvif->wep_key_work, ath10k_tx_wep_key_work);
- 	INIT_LIST_HEAD(&arvif->list);
- 
-@@ -3105,6 +3109,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 
- 	mutex_lock(&ar->conf_mutex);
+ 	/* We should disable CCK RATE due to P2P */
+ 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+@@ -2372,6 +2389,10 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+ 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
  
 +#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	ar->vif = NULL;
++	ATH10K_SKB_CB(skb)->is_8023 = false;
 +#endif
 +
- 	spin_lock_bh(&ar->data_lock);
- 	ath10k_mac_vif_beacon_cleanup(arvif);
- 	spin_unlock_bh(&ar->data_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index fa486f69cce7..be70f044a53e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1319,6 +1319,15 @@ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
- 		   status->freq, status->band, status->signal,
- 		   status->rate_idx);
- 
-+#ifdef CONFIG_ATH10K_802_3_FORMAT
-+	/*
-+	 * packets from HTC come aligned to 4byte boundaries
-+	 * because they can originally come in along with a trailer
-+	 */
-+	skb_trim(skb, buf_len);
-+	skb->dev = NULL;
-+#endif
-+
- 	ieee80211_rx(ar->hw, skb);
- 	return 0;
- }
+ 	/* it makes no sense to process injected frames like that */
+ 	if (vif && vif->type != NL80211_IFTYPE_MONITOR) {
+ 		ath10k_tx_h_nwifi(hw, skb);
 
 
 _______________________________________________
