@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f170.google.com ([209.85.212.170])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XxsAn-000792-Fq
- for ath10k@lists.infradead.org; Mon, 08 Dec 2014 06:51:58 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so6233370wib.5
- for <ath10k@lists.infradead.org>; Sun, 07 Dec 2014 22:51:28 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <20141203081054.31187.10953.stgit@potku.adurom.net>
+ id 1XxsEY-0000Pp-Rk
+ for ath10k@lists.infradead.org; Mon, 08 Dec 2014 06:55:51 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v4 8/8] ath10k: implement wmi-tlv backend
 References: <20141203080803.31187.85059.stgit@potku.adurom.net>
- <20141203081054.31187.10953.stgit@potku.adurom.net>
-Date: Mon, 8 Dec 2014 07:51:28 +0100
-Message-ID: <CA+BoTQ=MbCkF11QwqCGbtPm4veFKrUmN=3dQ_zK+APeWifCRPQ@mail.gmail.com>
-Subject: Re: [PATCH v4 6/8] ath10k: introduce wmi ops
-From: Michal Kazior <michal.kazior@tieto.com>
+ <20141203081132.31187.53311.stgit@potku.adurom.net>
+ <CA+BoTQk=EHwqAT-VFeaQS5Q55HsiycwPfE9p-8dj6v8RZyNmsg@mail.gmail.com>
+Date: Mon, 8 Dec 2014 08:54:56 +0200
+In-Reply-To: <CA+BoTQk=EHwqAT-VFeaQS5Q55HsiycwPfE9p-8dj6v8RZyNmsg@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 3 Dec 2014 14:01:45 +0100")
+Message-ID: <87oare4on3.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +21,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMyBEZWNlbWJlciAyMDE0IGF0IDA5OjEwLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKWy4uLl0KPiAgaW50IGF0aDEwa193bWlfYXR0YWNoKHN0cnVjdCBhdGgx
-MGsgKmFyKQo+ICB7Cj4gLSAgICAgICBpZiAodGVzdF9iaXQoQVRIMTBLX0ZXX0ZFQVRVUkVfV01J
-XzEwWCwgYXItPmZ3X2ZlYXR1cmVzKSkgewo+IC0gICAgICAgICAgICAgICBpZiAodGVzdF9iaXQo
-QVRIMTBLX0ZXX0ZFQVRVUkVfV01JXzEwXzIsIGFyLT5md19mZWF0dXJlcykpCj4gLSAgICAgICAg
-ICAgICAgICAgICAgICAgYXItPndtaS5jbWQgPSAmd21pXzEwXzJfY21kX21hcDsKPiAtICAgICAg
-ICAgICAgICAgZWxzZQo+IC0gICAgICAgICAgICAgICAgICAgICAgIGFyLT53bWkuY21kID0gJndt
-aV8xMHhfY21kX21hcDsKPiAtCj4gKyAgICAgICBzd2l0Y2ggKGFyLT53bWkub3BfdmVyc2lvbikg
-ewo+ICsgICAgICAgY2FzZSBBVEgxMEtfRldfV01JX09QX1ZFUlNJT05fMTBfMjoKPiArICAgICAg
-ICAgICAgICAgYXItPndtaS5jbWQgPSAmd21pXzEwXzJfY21kX21hcDsKPiArICAgICAgICAgICAg
-ICAgYXItPndtaS5vcHMgPSAmd21pXzEwXzJfb3BzOwo+ICAgICAgICAgICAgICAgICBhci0+d21p
-LnZkZXZfcGFyYW0gPSAmd21pXzEweF92ZGV2X3BhcmFtX21hcDsKPiAgICAgICAgICAgICAgICAg
-YXItPndtaS5wZGV2X3BhcmFtID0gJndtaV8xMHhfcGRldl9wYXJhbV9tYXA7Cj4gLSAgICAgICB9
-IGVsc2Ugewo+ICsgICAgICAgICAgICAgICBicmVhazsKPiArICAgICAgIGNhc2UgQVRIMTBLX0ZX
-X1dNSV9PUF9WRVJTSU9OXzEwXzE6Cj4gKyAgICAgICAgICAgICAgIGFyLT53bWkuY21kID0gJndt
-aV8xMHhfY21kX21hcDsKPiArICAgICAgICAgICAgICAgYXItPndtaS5vcHMgPSAmd21pXzEwXzFf
-b3BzOwo+ICsgICAgICAgICAgICAgICBhci0+d21pLnZkZXZfcGFyYW0gPSAmd21pXzEweF92ZGV2
-X3BhcmFtX21hcDsKPiArICAgICAgICAgICAgICAgYXItPndtaS5wZGV2X3BhcmFtID0gJndtaV8x
-MHhfcGRldl9wYXJhbV9tYXA7Cj4gKyAgICAgICAgICAgICAgIGJyZWFrOwo+ICsgICAgICAgY2Fz
-ZSBBVEgxMEtfRldfV01JX09QX1ZFUlNJT05fTUFJTjoKPiAgICAgICAgICAgICAgICAgYXItPndt
-aS5jbWQgPSAmd21pX2NtZF9tYXA7Cj4gKyAgICAgICAgICAgICAgIGFyLT53bWkub3BzID0gJndt
-aV9vcHM7Cj4gICAgICAgICAgICAgICAgIGFyLT53bWkudmRldl9wYXJhbSA9ICZ3bWlfdmRldl9w
-YXJhbV9tYXA7Cj4gICAgICAgICAgICAgICAgIGFyLT53bWkucGRldl9wYXJhbSA9ICZ3bWlfcGRl
-dl9wYXJhbV9tYXA7Cj4gKyAgICAgICAgICAgICAgIGJyZWFrOwo+ICsgICAgICAgZGVmYXVsdDoK
-CkkgdGhpbmsgd2UgZG9uJ3QgbmVlZCB0aGUgYGRlZmF1bHRgIGhlcmUgbm93LCBkbyB3ZT8gSW5z
-dGVhZCBfVU5TRVQKYW5kIF9NQVggc2hvdWxkIGJlIGhhbmRsZWQuCgoKTWljaGHFggoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 3 December 2014 at 09:11, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> [...]
+>> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+>> index 0f4369e4f358..815d6e27aa53 100644
+>> --- a/drivers/net/wireless/ath/ath10k/core.c
+>> +++ b/drivers/net/wireless/ath/ath10k/core.c
+>> @@ -844,6 +844,10 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+>>                 ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+>>                 ar->htt.max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
+>>                 break;
+>> +       case ATH10K_FW_WMI_OP_VERSION_TLV:
+>> +               ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+>> +               ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+>> +               ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
+>
+> Missing break?
+
+Fixed by folding this:
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 5b33f01fcee5..577a3d76df22 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -919,6 +919,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+                ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+                ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+                ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
++               break;
+        case ATH10K_FW_WMI_OP_VERSION_UNSET:
+        case ATH10K_FW_WMI_OP_VERSION_MAX:
+                WARN_ON(1);
+
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
