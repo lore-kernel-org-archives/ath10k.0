@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Xy1wV-00008l-MI
- for ath10k@lists.infradead.org; Mon, 08 Dec 2014 17:17:52 +0000
-Subject: [HACK PATCH 0/4] ath10k: 802.3 frame format support
+ id 1Xy1wM-0008Tk-9r
+ for ath10k@lists.infradead.org; Mon, 08 Dec 2014 17:17:42 +0000
+Subject: [HACK PATCH 1/4] mac80211: rx
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 8 Dec 2014 19:16:49 +0200
-Message-ID: <20141208170804.1001.1804.stgit@potku.adurom.net>
+Date: Mon, 8 Dec 2014 19:17:04 +0200
+Message-ID: <20141208171703.1001.72668.stgit@potku.adurom.net>
+In-Reply-To: <20141208170804.1001.1804.stgit@potku.adurom.net>
+References: <20141208170804.1001.1804.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,40 +24,35 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-Hi,
+From: Michal Kazior <michal.kazior@tieto.com>
 
-some time ago Michal did an experimentation to use 802.3 frame format with
-ath10k which needed some really really horrible mac80211 hacks. It would need a
-lot of work to get these upstream (if ever), but I'm sending these anyway in
-hope it would help to optimise ath10k throughput in slower devices. And who
-knows, maybe even find some bottlenecks which we are able to fix in upstream.
-
-I took Michal's patches, rebased them and added Kconfig option to make it
-easier to experiment with and without the feature. I did only a quick test that
-ping works, but I'm sure this is broken n+1 different ways.
-
-I would be very interested to hear any comments or findings.
-
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 ---
+ net/mac80211/rx.c |   10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Michal Kazior (4):
-      mac80211: rx
-      mac8011: tx
-      ath10k: rx
-      ath10k: tx
-
-
- drivers/net/wireless/ath/ath10k/Kconfig  |    8 ++++++
- drivers/net/wireless/ath/ath10k/core.h   |    6 +++++
- drivers/net/wireless/ath/ath10k/htt_rx.c |   40 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_tx.c |   12 +++++++++
- drivers/net/wireless/ath/ath10k/mac.c    |   29 ++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c    |    9 +++++++
- include/net/mac80211.h                   |    5 ++++
- net/mac80211/rx.c                        |   10 ++++++++
- net/mac80211/status.c                    |    5 ++++
- net/mac80211/tx.c                        |   15 +++++++++++
- 10 files changed, 139 insertions(+)
+diff --git a/net/mac80211/rx.c b/net/mac80211/rx.c
+index 49c23bdf08bb..1ff1b998e336 100644
+--- a/net/mac80211/rx.c
++++ b/net/mac80211/rx.c
+@@ -3520,6 +3520,16 @@ void ieee80211_rx(struct ieee80211_hw *hw, struct sk_buff *skb)
+ 	if (WARN_ON(!local->started))
+ 		goto drop;
+ 
++#ifdef CONFIG_ATH10K_802_3_FORMAT
++	if (likely(skb->dev != NULL)) {
++		skb->dev = container_of(skb->dev, struct ieee80211_sub_if_data, vif)->dev;
++		skb->protocol = eth_type_trans(skb, skb->dev);
++		memset(skb->cb, 0, sizeof(skb->cb));
++		netif_receive_skb(skb);
++		return;
++	}
++#endif
++
+ 	if (likely(!(status->flag & RX_FLAG_FAILED_PLCP_CRC))) {
+ 		/*
+ 		 * Validate the rate, unless a PLCP error means that
 
 
 _______________________________________________
