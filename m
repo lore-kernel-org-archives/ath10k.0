@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XygdI-0007vx-8S
- for ath10k@lists.infradead.org; Wed, 10 Dec 2014 12:44:46 +0000
-Received: by mail-wi0-f179.google.com with SMTP id ex7so5006644wid.12
- for <ath10k@lists.infradead.org>; Wed, 10 Dec 2014 04:44:21 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/5] ath10k: fix STA u-APSD
-Date: Wed, 10 Dec 2014 13:31:51 +0100
-Message-Id: <1418214714-29689-3-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
-References: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
+ id 1XyjbI-0006Hx-99
+ for ath10k@lists.infradead.org; Wed, 10 Dec 2014 15:54:53 +0000
+From: Sujith Manoharan <sujith@msujith.org>
+Subject: [PATCH 3/4] ath10k: Fix no-ack frame status
+Date: Wed, 10 Dec 2014 21:26:12 +0530
+Message-Id: <1418226973-13779-3-git-send-email-sujith@msujith.org>
+In-Reply-To: <1418226973-13779-1-git-send-email-sujith@msujith.org>
+References: <1418226973-13779-1-git-send-email-sujith@msujith.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,92 +22,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-To comply with WMM-PS the device shouldn't wake up
-with a NullFunc frame pair when tx-ing. Instead PM
-bit on each tx frame should be used.
+From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-To make this work correctly firmware needs to be
-told to use a different STA PS wake threshold when
-u-APSD is enabled.
+Use the new IEEE80211_TX_STAT_NOACK_TRANSMITTED flag
+to indicate successful transmission of no-ack frames.
+This fixes multicast frame accounting.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k@lists.infradead.org
+Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 41 ++++++++++++++++++++++++++++++-----
- 1 file changed, 35 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    | 1 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 2 ++
+ drivers/net/wireless/ath/ath10k/txrx.c   | 9 +++++++--
+ 3 files changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 950322d..969d187 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1048,6 +1048,31 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
- 			    arvif->vdev_id, ret);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 1bd5545..cb74211 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1159,6 +1159,7 @@ struct htt_tx_done {
+ 	u32 msdu_id;
+ 	bool discard;
+ 	bool no_ack;
++	bool success;
+ };
  
-+static int ath10k_mac_vif_recalc_ps_wake_threshold(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	u32 param;
-+	u32 value;
-+	int ret;
-+
-+	lockdep_assert_held(&arvif->ar->conf_mutex);
-+
-+	if (arvif->u.sta.uapsd)
-+		value = WMI_STA_PS_TX_WAKE_THRESHOLD_NEVER;
-+	else
-+		value = WMI_STA_PS_TX_WAKE_THRESHOLD_ALWAYS;
-+
-+	param = WMI_STA_PS_PARAM_TX_WAKE_THRESHOLD;
-+	ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id, param, value);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit ps wake threshold %u on vdev %i: %d\n",
-+			    value, arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Review this when mac80211 gains per-interface powersave support.
-  */
-@@ -3036,14 +3061,11 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 			goto err_peer_delete;
- 		}
+ struct htt_peer_map_event {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 9c782a4..d4d082e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1476,6 +1476,7 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
+ 		tx_done.no_ack = true;
+ 		break;
+ 	case HTT_DATA_TX_STATUS_OK:
++		tx_done.success = true;
+ 		break;
+ 	case HTT_DATA_TX_STATUS_DISCARD:
+ 	case HTT_DATA_TX_STATUS_POSTPONE:
+@@ -1627,6 +1628,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
  
--		param = WMI_STA_PS_PARAM_TX_WAKE_THRESHOLD;
--		value = WMI_STA_PS_TX_WAKE_THRESHOLD_ALWAYS;
--		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
--						  param, value);
-+		ret = ath10k_mac_vif_recalc_ps_wake_threshold(arvif);
- 		if (ret) {
--			ath10k_warn(ar, "failed to set vdev %i TX wake thresh: %d\n",
-+			ath10k_warn(ar, "failed to recalc ps wake threshold on vdev %i: %d\n",
- 				    arvif->vdev_id, ret);
--			goto err_peer_delete;
-+			return ret;
- 		}
+ 		switch (status) {
+ 		case HTT_MGMT_TX_STATUS_OK:
++			tx_done.success = true;
+ 			break;
+ 		case HTT_MGMT_TX_STATUS_RETRY:
+ 			tx_done.no_ack = true;
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 7579de8..7464d82 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -55,8 +55,10 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
  
- 		param = WMI_STA_PS_PARAM_PSPOLL_COUNT;
-@@ -3818,6 +3840,13 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
- 	if (ret)
- 		ath10k_warn(ar, "failed to set rx wake param: %d\n", ret);
+ 	lockdep_assert_held(&htt->tx_lock);
  
-+	ret = ath10k_mac_vif_recalc_ps_wake_threshold(arvif);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to recalc ps wake threshold on vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
+-	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx completion msdu_id %u discard %d no_ack %d\n",
+-		   tx_done->msdu_id, !!tx_done->discard, !!tx_done->no_ack);
++	ath10k_dbg(ar, ATH10K_DBG_HTT,
++		   "htt tx completion msdu_id %u discard %d no_ack %d success %d\n",
++		   tx_done->msdu_id, !!tx_done->discard,
++		   !!tx_done->no_ack, !!tx_done->success);
+ 
+ 	if (tx_done->msdu_id >= htt->max_num_pending_tx) {
+ 		ath10k_warn(ar, "warning: msdu_id %d too big, ignoring\n",
+@@ -91,6 +93,9 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	if (tx_done->no_ack)
+ 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+ 
++	if (tx_done->success && (info->flags & IEEE80211_TX_CTL_NO_ACK))
++		info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
 +
- exit:
- 	return ret;
- }
+ 	ieee80211_tx_status(htt->ar->hw, msdu);
+ 	/* we do not own the msdu anymore */
+ 
 -- 
-1.8.5.3
+2.1.3
 
 
 _______________________________________________
