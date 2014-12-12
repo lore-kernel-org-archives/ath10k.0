@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzOo9-00089u-Ep
+ id 1XzOo9-00089n-9N
  for ath10k@lists.infradead.org; Fri, 12 Dec 2014 11:54:54 +0000
-Received: by mail-wg0-f54.google.com with SMTP id l2so8921170wgh.41
- for <ath10k@lists.infradead.org>; Fri, 12 Dec 2014 03:54:31 -0800 (PST)
+Received: by mail-wi0-f174.google.com with SMTP id h11so2226740wiw.13
+ for <ath10k@lists.infradead.org>; Fri, 12 Dec 2014 03:54:30 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/5] ath10k: improve 11b coex
-Date: Fri, 12 Dec 2014 12:41:35 +0100
-Message-Id: <1418384499-31660-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 0/5] ath10k: a bunch of STA-related fixes
+Date: Fri, 12 Dec 2014 12:41:34 +0100
+Message-Id: <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
 References: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
- <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +27,19 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Some firmware revisions need peer phymode to be
-specified as MODE_11B when associating as station
-to a 11b AP. Otherwise they can starve other
-stations.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+Michal Kazior (5):
+  ath10k: improve 11b coex
+  ath10k: fix STA u-APSD
+  ath10k: prevent invalid ps timeout config
+  ath10k: enable per-vif sta powersave
+  ath10k: advertise p2p dev support
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index fe61201..950322d 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1416,6 +1416,12 @@ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
- 	}
- }
- 
-+static bool ath10k_mac_sta_has_11g_rates(struct ieee80211_sta *sta)
-+{
-+	/* First 4 rates in ath10k_rates are CCK (11b) rates. */
-+	return sta->supp_rates[IEEE80211_BAND_2GHZ] >> 4;
-+}
-+
- static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
- 					struct ieee80211_vif *vif,
- 					struct ieee80211_sta *sta,
-@@ -1430,8 +1436,10 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
- 				phymode = MODE_11NG_HT40;
- 			else
- 				phymode = MODE_11NG_HT20;
--		} else {
-+		} else if (ath10k_mac_sta_has_11g_rates(sta)) {
- 			phymode = MODE_11G;
-+		} else {
-+			phymode = MODE_11B;
- 		}
- 
- 		break;
-@@ -4724,6 +4732,9 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
- 	CHAN5G(165, 5825, 0),
- };
- 
-+/* Note: Be careful if you re-order these. There is code which depends on this
-+ * ordering.
-+ */
- static struct ieee80211_rate ath10k_rates[] = {
- 	/* CCK */
- 	RATETAB_ENT(10,  0x82, 0),
+ drivers/net/wireless/ath/ath10k/core.c |   6 --
+ drivers/net/wireless/ath/ath10k/mac.c  | 127 ++++++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/wmi.h  |   7 ++
+ 3 files changed, 115 insertions(+), 25 deletions(-)
+
 -- 
 1.8.5.3
 
