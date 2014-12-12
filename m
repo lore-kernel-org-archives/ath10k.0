@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-f46.google.com ([74.125.82.46])
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzOoC-0008AR-D8
- for ath10k@lists.infradead.org; Fri, 12 Dec 2014 11:54:58 +0000
-Received: by mail-wg0-f46.google.com with SMTP id x13so8903302wgg.5
- for <ath10k@lists.infradead.org>; Fri, 12 Dec 2014 03:54:31 -0800 (PST)
+ id 1XzOoC-0008AM-CM
+ for ath10k@lists.infradead.org; Fri, 12 Dec 2014 11:54:57 +0000
+Received: by mail-wg0-f52.google.com with SMTP id x12so8851582wgg.11
+ for <ath10k@lists.infradead.org>; Fri, 12 Dec 2014 03:54:34 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/5] ath10k: fix STA u-APSD
-Date: Fri, 12 Dec 2014 12:41:36 +0100
-Message-Id: <1418384499-31660-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 5/5] ath10k: advertise p2p dev support
+Date: Fri, 12 Dec 2014 12:41:39 +0100
+Message-Id: <1418384499-31660-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
 References: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
  <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
@@ -28,154 +28,95 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-To comply with WMM-PS the device shouldn't wake up
-with a NullFunc frame pair when tx-ing. Instead PM
-bit on each tx frame should be used.
+Firmware doesn't allow precise tx rate control so
+P2P wasn't entirely spec compliant (it was using
+CCK rates in some cases).
 
-To make this work correctly firmware needs to be
-told to use a different STA PS wake threshold when
-u-APSD is enabled.
+The only way to make sure firmware doesn't use CCK
+rates is to have a vdev with P2P subtype used for
+scanning and tx. This can be done via a special
+dedicated P2P device interface support.
+
+This also removes the ancient hack from ath10k in
+favor of p2pdev.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
+ drivers/net/wireless/ath/ath10k/core.c |  6 ------
+ drivers/net/wireless/ath/ath10k/mac.c  | 12 +++++++++---
+ 2 files changed, 9 insertions(+), 9 deletions(-)
 
-Notes:
-    v2:
-     * fix Rx performance
-     * fix error handling (use goto instead of return)
-
- drivers/net/wireless/ath/ath10k/mac.c | 79 ++++++++++++++++++++++++++++++-----
- drivers/net/wireless/ath/ath10k/wmi.h |  7 ++++
- 2 files changed, 76 insertions(+), 10 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 577a3d7..c83f1e7 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -32,17 +32,14 @@
+ 
+ unsigned int ath10k_debug_mask;
+ static bool uart_print;
+-static unsigned int ath10k_p2p;
+ static bool skip_otp;
+ 
+ module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
+ module_param(uart_print, bool, 0644);
+-module_param_named(p2p, ath10k_p2p, uint, 0644);
+ module_param(skip_otp, bool, 0644);
+ 
+ MODULE_PARM_DESC(debug_mask, "Debugging mask");
+ MODULE_PARM_DESC(uart_print, "Uart target debugging");
+-MODULE_PARM_DESC(p2p, "Enable ath10k P2P support");
+ MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
+ 
+ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+@@ -1290,10 +1287,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 
+ 	ar->ath_common.priv = ar;
+ 	ar->ath_common.hw = ar->hw;
+-
+-	ar->p2p = !!ath10k_p2p;
+ 	ar->dev = dev;
+-
+ 	ar->hif.ops = hif_ops;
+ 	ar->hif.bus = bus;
+ 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 950322d..13c2bad 100644
+index 19ddbc6..42f6a4d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1048,6 +1048,57 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
- 			    arvif->vdev_id, ret);
- }
+@@ -2961,10 +2961,11 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	arvif->vdev_id = bit;
+ 	arvif->vdev_subtype = WMI_VDEV_SUBTYPE_NONE;
  
-+static int ath10k_mac_vif_recalc_ps_wake_threshold(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	u32 param;
-+	u32 value;
-+	int ret;
-+
-+	lockdep_assert_held(&arvif->ar->conf_mutex);
-+
-+	if (arvif->u.sta.uapsd)
-+		value = WMI_STA_PS_TX_WAKE_THRESHOLD_NEVER;
-+	else
-+		value = WMI_STA_PS_TX_WAKE_THRESHOLD_ALWAYS;
-+
-+	param = WMI_STA_PS_PARAM_TX_WAKE_THRESHOLD;
-+	ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id, param, value);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit ps wake threshold %u on vdev %i: %d\n",
-+			    value, arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_mac_vif_recalc_ps_poll_count(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	u32 param;
-+	u32 value;
-+	int ret;
-+
-+	lockdep_assert_held(&arvif->ar->conf_mutex);
-+
-+	if (arvif->u.sta.uapsd)
-+		value = WMI_STA_PS_PSPOLL_COUNT_UAPSD;
-+	else
-+		value = WMI_STA_PS_PSPOLL_COUNT_NO_MAX;
-+
-+	param = WMI_STA_PS_PARAM_PSPOLL_COUNT;
-+	ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
-+					  param, value);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit ps poll count %u on vdev %i: %d\n",
-+			    value, arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Review this when mac80211 gains per-interface powersave support.
-  */
-@@ -3036,22 +3087,16 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 			goto err_peer_delete;
- 		}
+-	if (ar->p2p)
+-		arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_DEVICE;
+-
+ 	switch (vif->type) {
++	case NL80211_IFTYPE_P2P_DEVICE:
++		arvif->vdev_type = WMI_VDEV_TYPE_STA;
++		arvif->vdev_subtype = WMI_VDEV_SUBTYPE_P2P_DEVICE;
++		break;
+ 	case NL80211_IFTYPE_UNSPECIFIED:
+ 	case NL80211_IFTYPE_STATION:
+ 		arvif->vdev_type = WMI_VDEV_TYPE_STA;
+@@ -4860,6 +4861,10 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
+ 	.types	= BIT(NL80211_IFTYPE_P2P_GO)
+ 	},
+ 	{
++	.max	= 1,
++	.types	= BIT(NL80211_IFTYPE_P2P_DEVICE)
++	},
++	{
+ 	.max	= 7,
+ 	.types	= BIT(NL80211_IFTYPE_AP)
+ 	},
+@@ -5079,6 +5084,7 @@ int ath10k_mac_register(struct ath10k *ar)
  
--		param = WMI_STA_PS_PARAM_TX_WAKE_THRESHOLD;
--		value = WMI_STA_PS_TX_WAKE_THRESHOLD_ALWAYS;
--		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
--						  param, value);
-+		ret = ath10k_mac_vif_recalc_ps_wake_threshold(arvif);
- 		if (ret) {
--			ath10k_warn(ar, "failed to set vdev %i TX wake thresh: %d\n",
-+			ath10k_warn(ar, "failed to recalc ps wake threshold on vdev %i: %d\n",
- 				    arvif->vdev_id, ret);
- 			goto err_peer_delete;
- 		}
+ 	if (!test_bit(ATH10K_FW_FEATURE_NO_P2P, ar->fw_features))
+ 		ar->hw->wiphy->interface_modes |=
++			BIT(NL80211_IFTYPE_P2P_DEVICE) |
+ 			BIT(NL80211_IFTYPE_P2P_CLIENT) |
+ 			BIT(NL80211_IFTYPE_P2P_GO);
  
--		param = WMI_STA_PS_PARAM_PSPOLL_COUNT;
--		value = WMI_STA_PS_PSPOLL_COUNT_NO_MAX;
--		ret = ath10k_wmi_set_sta_ps_param(ar, arvif->vdev_id,
--						  param, value);
-+		ret = ath10k_mac_vif_recalc_ps_poll_count(arvif);
- 		if (ret) {
--			ath10k_warn(ar, "failed to set vdev %i PSPOLL count: %d\n",
-+			ath10k_warn(ar, "failed to recalc ps poll count on vdev %i: %d\n",
- 				    arvif->vdev_id, ret);
- 			goto err_peer_delete;
- 		}
-@@ -3818,6 +3863,20 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
- 	if (ret)
- 		ath10k_warn(ar, "failed to set rx wake param: %d\n", ret);
- 
-+	ret = ath10k_mac_vif_recalc_ps_wake_threshold(arvif);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to recalc ps wake threshold on vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	ret = ath10k_mac_vif_recalc_ps_poll_count(arvif);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to recalc ps poll count on vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
- exit:
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 97f902f..ff2d076 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4015,6 +4015,13 @@ enum wmi_sta_ps_param_pspoll_count {
- 	 * Values greater than 0 indicate the maximum numer of PS-Poll frames
- 	 * FW will send before waking up.
- 	 */
-+
-+	/* When u-APSD is enabled the firmware will be very reluctant to exit
-+	 * STA PS. This could result in very poor Rx performance with STA doing
-+	 * PS-Poll for each and every buffered frame. This value is a bit
-+	 * arbitrary.
-+	 */
-+	WMI_STA_PS_PSPOLL_COUNT_UAPSD = 3,
- };
- 
- /*
 -- 
 1.8.5.3
 
