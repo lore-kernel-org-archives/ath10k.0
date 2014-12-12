@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1XzOb1-0003uF-GO
- for ath10k@lists.infradead.org; Fri, 12 Dec 2014 11:41:20 +0000
-Message-ID: <1418384444.2470.22.camel@sipsolutions.net>
-Subject: Re: [PATCH 3/4] ath10k: Fix no-ack frame status
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 12 Dec 2014 12:40:44 +0100
-In-Reply-To: <87oarazecg.fsf@kamboji.qca.qualcomm.com>
-References: <1418226973-13779-1-git-send-email-sujith@msujith.org>
- <1418226973-13779-3-git-send-email-sujith@msujith.org>
- <87oarazecg.fsf@kamboji.qca.qualcomm.com>
-Mime-Version: 1.0
+ id 1XzOo9-00089u-Ep
+ for ath10k@lists.infradead.org; Fri, 12 Dec 2014 11:54:54 +0000
+Received: by mail-wg0-f54.google.com with SMTP id l2so8921170wgh.41
+ for <ath10k@lists.infradead.org>; Fri, 12 Dec 2014 03:54:31 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 1/5] ath10k: improve 11b coex
+Date: Fri, 12 Dec 2014 12:41:35 +0100
+Message-Id: <1418384499-31660-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
+References: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
+ <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +20,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Sujith Manoharan <sujith@msujith.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On Thu, 2014-12-11 at 12:10 +0200, Kalle Valo wrote:
-> Sujith Manoharan <sujith@msujith.org> writes:
-> 
-> > From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
-> >
-> > Use the new IEEE80211_TX_STAT_NOACK_TRANSMITTED flag
-> > to indicate successful transmission of no-ack frames.
-> > This fixes multicast frame accounting.
-> >
-> > Cc: ath10k@lists.infradead.org
-> > Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
-> 
-> Johannes, are you planning to take this? Or should I take this once the
-> corresponding mac80211 patch trickles down to my tree?
+Some firmware revisions need peer phymode to be
+specified as MODE_11B when associating as station
+to a 11b AP. Otherwise they can starve other
+stations.
 
-I don't really want to take the driver patches, but I'll try to get to
-the mac80211 ones today.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-johannes
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index fe61201..950322d 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1416,6 +1416,12 @@ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
+ 	}
+ }
+ 
++static bool ath10k_mac_sta_has_11g_rates(struct ieee80211_sta *sta)
++{
++	/* First 4 rates in ath10k_rates are CCK (11b) rates. */
++	return sta->supp_rates[IEEE80211_BAND_2GHZ] >> 4;
++}
++
+ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
+ 					struct ieee80211_vif *vif,
+ 					struct ieee80211_sta *sta,
+@@ -1430,8 +1436,10 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
+ 				phymode = MODE_11NG_HT40;
+ 			else
+ 				phymode = MODE_11NG_HT20;
+-		} else {
++		} else if (ath10k_mac_sta_has_11g_rates(sta)) {
+ 			phymode = MODE_11G;
++		} else {
++			phymode = MODE_11B;
+ 		}
+ 
+ 		break;
+@@ -4724,6 +4732,9 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(165, 5825, 0),
+ };
+ 
++/* Note: Be careful if you re-order these. There is code which depends on this
++ * ordering.
++ */
+ static struct ieee80211_rate ath10k_rates[] = {
+ 	/* CCK */
+ 	RATETAB_ENT(10,  0x82, 0),
+-- 
+1.8.5.3
 
 
 _______________________________________________
