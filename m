@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0Nz7-0003Yy-8D
- for ath10k@lists.infradead.org; Mon, 15 Dec 2014 05:14:17 +0000
+ id 1Y0Nz9-0003ZE-1X
+ for ath10k@lists.infradead.org; Mon, 15 Dec 2014 05:14:19 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/5] ath10k: add wmi interface for pdev_get_temperature
-Date: Mon, 15 Dec 2014 10:41:13 +0530
-Message-ID: <1418620274-3081-5-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 5/5] ath10k: add thermal sensor device support
+Date: Mon, 15 Dec 2014 10:41:14 +0530
+Message-ID: <1418620274-3081-6-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1418620274-3081-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1418620274-3081-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,216 +25,211 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Add WMI command support for reading temperature from the target and
-corresponding WMI temperature event handler. The pdev_get_temperature
-command is currently supported in 10.2 firmware alone.
+Temperature sensor generates electrical analog voltage from temperature
+of each chain. The analog voltage is converted to digital value through
+ADC. For reading temperature values fom user space, hw monitoring device
+is used.
+
+Whenever the user requests for current temperature, the driver sends WMI
+command and wait for response. For reading temperature,
+
+cat /sys/class/ieee80211/phy*/device/hwmon/hwmon2/temp1_input
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 17 ++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 ++
- drivers/net/wireless/ath/ath10k/wmi.c     | 33 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 13 ++++++++++++
- 4 files changed, 65 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c    |  2 +
+ drivers/net/wireless/ath/ath10k/thermal.c | 83 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/thermal.h | 14 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  1 +
+ 4 files changed, 100 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index feed0fe..20e2c30 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -118,6 +118,7 @@ struct wmi_ops {
- 						   u32 period, u32 duration,
- 						   u32 next_offset,
- 						   u32 enabled);
-+	struct sk_buff *(*gen_pdev_get_temperature)(struct ath10k *ar);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2eb3f2c..ed2abc9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -840,6 +840,7 @@ static void ath10k_core_restart(struct work_struct *work)
+ 	complete_all(&ar->offchan_tx_completed);
+ 	complete_all(&ar->install_key_done);
+ 	complete_all(&ar->vdev_setup_done);
++	complete_all(&ar->thermal.wmi_sync);
+ 	wake_up(&ar->htt.empty_tx_wq);
+ 	wake_up(&ar->wmi.tx_credits_wq);
+ 	wake_up(&ar->peer_mapping_wq);
+@@ -1320,6 +1321,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 
+ 	init_completion(&ar->install_key_done);
+ 	init_completion(&ar->vdev_setup_done);
++	init_completion(&ar->thermal.wmi_sync);
+ 
+ 	INIT_DELAYED_WORK(&ar->scan.timeout, ath10k_scan_timeout_work);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index e98ce8c..d939135 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -17,6 +17,8 @@
+ #include <linux/device.h>
+ #include <linux/sysfs.h>
+ #include <linux/thermal.h>
++#include <linux/hwmon.h>
++#include <linux/hwmon-sysfs.h>
+ #include "core.h"
+ #include "debug.h"
+ #include "wmi-ops.h"
+@@ -119,9 +121,72 @@ static struct thermal_cooling_device_ops ath10k_thermal_ops = {
+ 	.set_cur_state = ath10k_thermal_set_cur_dutycycle,
  };
  
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -840,4 +841,20 @@ ath10k_wmi_pdev_set_quiet_mode(struct ath10k *ar, u32 period, u32 duration,
- 				   ar->wmi.cmd->pdev_set_quiet_mode_cmdid);
- }
- 
-+static inline int
-+ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
++static ssize_t ath10k_thermal_show_temp(struct device *dev,
++					struct device_attribute *attr,
++					char *buf)
 +{
-+	struct sk_buff *skb;
++	struct ath10k *ar = dev_get_drvdata(dev);
++	int ret, temperature;
 +
-+	if (!ar->wmi.ops->gen_pdev_get_temperature)
-+		return -EOPNOTSUPP;
++	mutex_lock(&ar->conf_mutex);
 +
-+	skb = ar->wmi.ops->gen_pdev_get_temperature(ar);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
++	/* Can't get temperature when the card is off */
++	if (ar->state != ATH10K_STATE_ON) {
++		ret = -ENETDOWN;
++		goto out;
++	}
 +
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->pdev_get_temperature_cmdid);
++	reinit_completion(&ar->thermal.wmi_sync);
++	ret = ath10k_wmi_pdev_get_temperature(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to read temperature %d\n", ret);
++		goto out;
++	}
++
++	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
++		ret = -ESHUTDOWN;
++		goto out;
++	}
++
++	ret = wait_for_completion_timeout(&ar->thermal.wmi_sync,
++					  ATH10K_THERMAL_SYNC_TIMEOUT_HZ);
++	if (ret == 0) {
++		ath10k_warn(ar, "failed to synchronize thermal read\n");
++		ret = -ETIMEDOUT;
++		goto out;
++	}
++
++	spin_lock_bh(&ar->data_lock);
++	temperature = ar->thermal.temperature;
++	spin_unlock_bh(&ar->data_lock);
++
++	ret = snprintf(buf, PAGE_SIZE, "%d", temperature);
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
++}
++
++void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature)
++{
++	spin_lock_bh(&ar->data_lock);
++	ar->thermal.temperature = temperature;
++	spin_unlock_bh(&ar->data_lock);
++	complete(&ar->thermal.wmi_sync);
++}
++
++static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, ath10k_thermal_show_temp,
++			  NULL, 0);
++
++static struct attribute *ath10k_hwmon_attrs[] = {
++	&sensor_dev_attr_temp1_input.dev_attr.attr,
++	NULL,
++};
++ATTRIBUTE_GROUPS(ath10k_hwmon);
++
+ int ath10k_thermal_register(struct ath10k *ar)
+ {
+ 	struct thermal_cooling_device *cdev;
++	struct device *hwmon_dev;
+ 	int ret;
+ 
+ 	cdev = thermal_cooling_device_register("ath10k_thermal", ar,
+@@ -141,8 +206,26 @@ int ath10k_thermal_register(struct ath10k *ar)
+ 	}
+ 
+ 	ar->thermal.cdev = cdev;
++
++	/* Do not register hwmon device when temperature reading is not
++	 * supported by firmware
++	 */
++	if (ar->wmi.op_version != ATH10K_FW_WMI_OP_VERSION_10_2_4)
++		return 0;
++
++	hwmon_dev = devm_hwmon_device_register_with_groups(ar->dev,
++							   "ath10k_hwmon", ar,
++							   ath10k_hwmon_groups);
++	if (IS_ERR(hwmon_dev)) {
++		ath10k_err(ar, "failed to register hwmon device: %ld\n",
++			   PTR_ERR(hwmon_dev));
++		ret = -EINVAL;
++		goto err_remove_link;
++	}
+ 	return 0;
+ 
++err_remove_link:
++	sysfs_remove_link(&ar->dev->kobj, "thermal_sensor");
+ err_cooling_destroy:
+ 	thermal_cooling_device_unregister(cdev);
+ 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.h b/drivers/net/wireless/ath/ath10k/thermal.h
+index e20bb87..bccc17a 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.h
++++ b/drivers/net/wireless/ath/ath10k/thermal.h
+@@ -20,17 +20,25 @@
+ #define ATH10K_QUIET_PERIOD_MIN         25
+ #define ATH10K_QUIET_START_OFFSET       10
+ #define ATH10K_QUIET_DUTY_CYCLE_MAX     70
++#define ATH10K_HWMON_NAME_LEN           15
++#define ATH10K_THERMAL_SYNC_TIMEOUT_HZ (5*HZ)
+ 
+ struct ath10k_thermal {
+ 	struct thermal_cooling_device *cdev;
++	struct completion wmi_sync;
+ 
+ 	/* protected by conf_mutex */
+ 	u32 duty_cycle;
++	/* temperature value in Celcius degree
++	 * protected by data_lock
++	 */
++	int temperature;
+ };
+ 
+ #ifdef CONFIG_THERMAL
+ int ath10k_thermal_register(struct ath10k *ar);
+ void ath10k_thermal_unregister(struct ath10k *ar);
++void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
+ #else
+ static inline int ath10k_thermal_register(struct ath10k *ar)
+ {
+@@ -40,5 +48,11 @@ static inline int ath10k_thermal_register(struct ath10k *ar)
+ static inline void ath10k_thermal_unregister(struct ath10k *ar)
+ {
+ }
++
++static inline void ath10k_thermal_event_temperature(struct ath10k *ar,
++						    int temperature)
++{
 +}
 +
  #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index e203dad..4c050ce 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2044,6 +2044,7 @@ static struct wmi_cmd_map wmi_tlv_cmd_map = {
- 	.force_fw_hang_cmdid = WMI_TLV_FORCE_FW_HANG_CMDID,
- 	.gpio_config_cmdid = WMI_TLV_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_TLV_GPIO_OUTPUT_CMDID,
-+	.pdev_get_temperature_cmdid = WMI_TLV_CMD_UNSUPPORTED,
- };
- 
- static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
-@@ -2205,6 +2206,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
- 	/* .gen_pdev_set_quiet_mode not implemented */
-+	/* .gen_pdev_get_temperature not implemented */
- };
- 
- /************/
+ #endif /* _THERMAL_ */
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index abf4c98..c32dc19 100644
+index c32dc19..f6b0de3 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -145,6 +145,7 @@ static struct wmi_cmd_map wmi_cmd_map = {
- 	.force_fw_hang_cmdid = WMI_FORCE_FW_HANG_CMDID,
- 	.gpio_config_cmdid = WMI_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_GPIO_OUTPUT_CMDID,
-+	.pdev_get_temperature_cmdid = WMI_CMD_UNSUPPORTED,
- };
+@@ -2805,6 +2805,7 @@ static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
+ 	if (WARN_ON(skb->len < sizeof(*ev)))
+ 		return -EPROTO;
  
- /* 10.X WMI cmd track */
-@@ -267,6 +268,7 @@ static struct wmi_cmd_map wmi_10x_cmd_map = {
- 	.force_fw_hang_cmdid = WMI_CMD_UNSUPPORTED,
- 	.gpio_config_cmdid = WMI_10X_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_10X_GPIO_OUTPUT_CMDID,
-+	.pdev_get_temperature_cmdid = WMI_CMD_UNSUPPORTED,
- };
- 
- /* MAIN WMI VDEV param map */
-@@ -611,6 +613,7 @@ static struct wmi_cmd_map wmi_10_2_cmd_map = {
- 	.force_fw_hang_cmdid = WMI_CMD_UNSUPPORTED,
- 	.gpio_config_cmdid = WMI_10_2_GPIO_CONFIG_CMDID,
- 	.gpio_output_cmdid = WMI_10_2_GPIO_OUTPUT_CMDID,
-+	.pdev_get_temperature_cmdid = WMI_10_2_PDEV_GET_TEMPERATURE_CMDID,
- };
- 
- void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
-@@ -2794,6 +2797,17 @@ int ath10k_wmi_event_ready(struct ath10k *ar, struct sk_buff *skb)
++	ath10k_thermal_event_temperature(ar, __le32_to_cpu(ev->temperature));
  	return 0;
  }
  
-+static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	const struct wmi_pdev_temperature_event *ev;
-+
-+	ev = (struct wmi_pdev_temperature_event *)skb->data;
-+	if (WARN_ON(skb->len < sizeof(*ev)))
-+		return -EPROTO;
-+
-+	return 0;
-+}
-+
- static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_cmd_hdr *cmd_hdr;
-@@ -3133,6 +3147,9 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_2_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
- 		break;
-+	case WMI_10_2_PDEV_TEMPERATURE_EVENTID:
-+		ath10k_wmi_event_temperature(ar, skb);
-+		break;
- 	case WMI_10_2_RTT_KEEPALIVE_EVENTID:
- 	case WMI_10_2_GPIO_INPUT_EVENTID:
- 	case WMI_10_2_PEER_RATECODE_LIST_EVENTID:
-@@ -4414,6 +4431,19 @@ ath10k_wmi_10_2_op_gen_peer_assoc(struct ath10k *ar,
- 	return skb;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_10_2_op_gen_pdev_get_temperature(struct ath10k *ar)
-+{
-+	struct sk_buff *skb;
-+
-+	skb = ath10k_wmi_alloc_skb(ar, 0);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi pdev get temperature\n");
-+	return skb;
-+}
-+
- /* This function assumes the beacon is already DMA mapped */
- static struct sk_buff *
- ath10k_wmi_op_gen_beacon_dma(struct ath10k_vif *arvif)
-@@ -4663,6 +4693,7 @@ static const struct wmi_ops wmi_ops = {
- 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-+	/* .gen_pdev_get_temperature not implemented */
- };
- 
- static const struct wmi_ops wmi_10_1_ops = {
-@@ -4674,6 +4705,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
- 	.gen_start_scan = ath10k_wmi_10x_op_gen_start_scan,
- 	.gen_peer_assoc = ath10k_wmi_10_1_op_gen_peer_assoc,
-+	/* .gen_pdev_get_temperature not implemented */
- 
- 	/* shared with main branch */
- 	.pull_scan = ath10k_wmi_op_pull_scan_ev,
-@@ -4722,6 +4754,7 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	.rx = ath10k_wmi_10_2_op_rx,
- 	.gen_init = ath10k_wmi_10_2_op_gen_init,
- 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
-+	.gen_pdev_get_temperature = ath10k_wmi_10_2_op_gen_pdev_get_temperature,
- 
- 	/* shared with 10.1 */
- 	.map_svc = wmi_10x_svc_map,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ce517bf..f26531f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -550,6 +550,7 @@ struct wmi_cmd_map {
- 	u32 force_fw_hang_cmdid;
- 	u32 gpio_config_cmdid;
- 	u32 gpio_output_cmdid;
-+	u32 pdev_get_temperature_cmdid;
- };
- 
- /*
-@@ -1154,6 +1155,11 @@ enum wmi_10_2_cmd_id {
- 	WMI_10_2_PDEV_SET_MIMOGAIN_TABLE_CMDID,
- 	WMI_10_2_PDEV_RATEPWR_TABLE_CMDID,
- 	WMI_10_2_PDEV_RATEPWR_CHAINMSK_TABLE_CMDID,
-+	WMI_10_2_PDEV_GET_INFO,
-+	WMI_10_2_VDEV_GET_INFO,
-+	WMI_10_2_VDEV_ATF_REQUEST_CMDID,
-+	WMI_10_2_PEER_ATF_REQUEST_CMDID,
-+	WMI_10_2_PDEV_GET_TEMPERATURE_CMDID,
- 	WMI_10_2_PDEV_UTF_CMDID = WMI_10_2_END_CMDID - 1,
- };
- 
-@@ -1195,6 +1201,8 @@ enum wmi_10_2_event_id {
- 	WMI_10_2_MCAST_BUF_RELEASE_EVENTID,
- 	WMI_10_2_MCAST_LIST_AGEOUT_EVENTID,
- 	WMI_10_2_WDS_PEER_EVENTID,
-+	WMI_10_2_PEER_STA_PS_STATECHG_EVENTID,
-+	WMI_10_2_PDEV_TEMPERATURE_EVENTID,
- 	WMI_10_2_PDEV_UTF_EVENTID = WMI_10_2_END_EVENTID - 1,
- };
- 
-@@ -4733,6 +4741,11 @@ struct wmi_rdy_ev_arg {
- 	const u8 *mac_addr;
- };
- 
-+struct wmi_pdev_temperature_event {
-+	/* temperature value in Celcius degree */
-+	__le32 temperature;
-+} __packed;
-+
- struct ath10k;
- struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
 -- 
 2.1.3
 
