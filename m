@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0R0q-0002NA-UT
- for ath10k@lists.infradead.org; Mon, 15 Dec 2014 08:28:17 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/4] ath10k: Fix no-ack frame status
-References: <1418226973-13779-1-git-send-email-sujith@msujith.org>
- <1418226973-13779-3-git-send-email-sujith@msujith.org>
- <87oarazecg.fsf@kamboji.qca.qualcomm.com>
- <21646.15326.159197.316821@gargle.gargle.HOWL>
-Date: Mon, 15 Dec 2014 10:27:19 +0200
-In-Reply-To: <21646.15326.159197.316821@gargle.gargle.HOWL> (Sujith
- Manoharan's message of "Mon, 15 Dec 2014 07:09:42 +0530")
-Message-ID: <87vblduxlk.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Y0UtP-0006QM-4f
+ for ath10k@lists.infradead.org; Mon, 15 Dec 2014 12:36:52 +0000
+Received: by mail-wg0-f53.google.com with SMTP id l18so14221237wgh.26
+ for <ath10k@lists.infradead.org>; Mon, 15 Dec 2014 04:36:22 -0800 (PST)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFC] ath10k: allow to use HT rates when IBSS
+Date: Mon, 15 Dec 2014 13:35:31 +0100
+Message-Id: <1418646931-6466-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +17,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
+This fix TX problem when IBSS connected and
+enabled HT rates. Before we used 6Mbps all the
+time.
 
-> Kalle Valo wrote:
->> Johannes, are you planning to take this? Or should I take this once the
->> corresponding mac80211 patch trickles down to my tree?
->
-> Kalle, can you please pick this one ? I'll rebase and send the ath9k patch
-> to John once he starts merging patches.
+Reported-by: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Yes, I'll take this patch once I have the mac80211 dependency in my
-tree. I marked the patch as "Awaiting Upstream" in patchwork so that I
-don't forget, hopefully :)
-
-https://patchwork.kernel.org/patch/5470621/
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5475f0f..d358dab 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1408,6 +1408,7 @@ static void ath10k_peer_assoc_h_qos(struct ath10k *ar,
+ 		}
+ 		break;
+ 	case WMI_VDEV_TYPE_STA:
++	case WMI_VDEV_TYPE_IBSS:
+ 		if (vif->bss_conf.qos)
+ 			arg->peer_flags |= WMI_PEER_QOS;
+ 		break;
+@@ -1635,6 +1636,17 @@ static int ath10k_station_assoc(struct ath10k *ar,
+ 		return ret;
+ 	}
+ 
++	if (arvif->vdev_type == WMI_VDEV_TYPE_IBSS) {
++		ret = ath10k_wmi_peer_set_param(ar, arvif->vdev_id, sta->addr,
++						WMI_PEER_NSS, sta->rx_nss);
++		if (ret) {
++			ath10k_warn(ar, "failed to set nss param %d for STA %pM vdet %i: %d\n",
++				    sta->rx_nss, sta->addr,
++				    arvif->vdev_id, ret);
++			return ret;
++		}
++	}
++
+ 	/* Re-assoc is run only to update supported rates for given station. It
+ 	 * doesn't make much sense to reconfigure the peer completely.
+ 	 */
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
