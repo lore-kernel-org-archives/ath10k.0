@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0mpU-0004Cz-Bu
- for ath10k@lists.infradead.org; Tue, 16 Dec 2014 07:46:00 +0000
+ id 1Y0mtH-0004od-Cz
+ for ath10k@lists.infradead.org; Tue, 16 Dec 2014 07:49:55 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/5] ath10k: add thermal cooling device support
+Subject: Re: [PATCH 1/5] ath10k: add 10.2.4 firmware support
 References: <1418620274-3081-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1418620274-3081-4-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 16 Dec 2014 09:45:32 +0200
-In-Reply-To: <1418620274-3081-4-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Mon, 15 Dec 2014 10:41:12 +0530")
-Message-ID: <87bnn4t4v7.fsf@kamboji.qca.qualcomm.com>
+ <1418620274-3081-2-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Tue, 16 Dec 2014 09:49:09 +0200
+In-Reply-To: <1418620274-3081-2-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Mon, 15 Dec 2014 10:41:10 +0530")
+Message-ID: <877fxst4p6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,57 +24,64 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: backports@vger.kernel.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
-
-A heads up for the backports project:
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Thermal cooling device support is added to control the temperature
-> by throttling the data transmission for the given duration. Throttling
-> is done using hw MAC quiet time setting. Period, duration and offset
-> from TBTT can be set up to quiet the MAC transmits for the required duty
-> cycle (% of quiet duration). The thermal device allows user to configure
-> duty cycle.
->
-> The quiet params are derived as follows.
-> 	period = max(25TU, beacon interval / number of bss)
-> 	duration = period * duty cycle / 100
->
-> Quiet mode can be disabled by setting the duty cycle to 0. The cooling
-> device can be found under /sys/class/thermal/cooling_deviceX/.
-> Corresponding soft link to this device can be found under phy folder.
->
-> /sys/class/ieee80211/phy*/device/cooling_device.
->
-> To set duty cycle as 40%,
->
-> echo 40 >/sys/class/ieee80211/phy*/device/cooling_device/cur_state
+> 10.2.4 firmware uses bitmask in wmi_resource_config to configure
+> 10.2 firmware features like airtime fairness and rx batch mode instead
+> of maintaining separete bool entry. This allows new features that can be
+> configure during init time without breaking backward compatibility.
 >
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-[...]
+Few comments. I'll deal with these and send v2.
 
-> +int ath10k_thermal_register(struct ath10k *ar)
-> +{
-> +	struct thermal_cooling_device *cdev;
-> +	int ret;
-> +
-> +	cdev = thermal_cooling_device_register("ath10k_thermal", ar,
-> +					       &ath10k_thermal_ops);
-> +
-> +	if (IS_ERR(cdev)) {
-> +		ath10k_err(ar, "failed to setup thermal device result: %ld\n",
-> +			   PTR_ERR(cdev));
-> +		return -EINVAL;
-> +	}
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -387,6 +387,11 @@ enum ath10k_fw_features {
+>  	 */
+>  	ATH10K_FW_FEATURE_WMI_10_2 = 4,
+>  
+> +	/* Firmware 10.2.4 supports bitmask in resource config to configure
+> +	 * Airtime fairness and rx batch mode
+> +	 */
+> +	ATH10K_FW_FEATURE_WMI_10_2_4 = 5,
 
-Will this break the backports build? We have the below in Makefile, is
-it enough or what's the best way to handle this?
+When we add new value to enum ath10k_fw_wmi_op_version this flag is not
+needed.
 
-+ath10k_core-$(CONFIG_THERMAL) += thermal.o
+>  	/* keep last */
+>  	ATH10K_FW_FEATURE_COUNT,
+>  };
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 809c252..892b6f0 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -72,6 +72,7 @@ enum ath10k_fw_wmi_op_version {
+>  	ATH10K_FW_WMI_OP_VERSION_10_1 = 2,
+>  	ATH10K_FW_WMI_OP_VERSION_10_2 = 3,
+>  	ATH10K_FW_WMI_OP_VERSION_TLV = 4,
+> +	ATH10K_FW_WMI_OP_VERSION_10_2_4 = 5,
+>  
+>  	/* keep last */
+>  	ATH10K_FW_WMI_OP_VERSION_MAX,
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index fa486f6..c42382c 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -4748,6 +4748,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+>  int ath10k_wmi_attach(struct ath10k *ar)
+>  {
+>  	switch (ar->wmi.op_version) {
+> +	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+>  	case ATH10K_FW_WMI_OP_VERSION_10_2:
+>  		ar->wmi.cmd = &wmi_10_2_cmd_map;
+>  		ar->wmi.ops = &wmi_10_2_ops;
 
+I think it's better to not share cmd_map/ops and instead create new ones
+for 10_2_4.
 
 -- 
 Kalle Valo
