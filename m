@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y0mLk-00005q-39
- for ath10k@lists.infradead.org; Tue, 16 Dec 2014 07:15:16 +0000
+ id 1Y0mYH-0004yM-TG
+ for ath10k@lists.infradead.org; Tue, 16 Dec 2014 07:28:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: unregister and remove frag_threshold callback
-References: <1417799786-11391-1-git-send-email-poh@qca.qualcomm.com>
-Date: Tue, 16 Dec 2014 09:14:41 +0200
-In-Reply-To: <1417799786-11391-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Fri, 5 Dec 2014 09:16:26 -0800")
-Message-ID: <87k31st6am.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/5] ath10k: a bunch of STA-related fixes
+References: <1418214714-29689-1-git-send-email-michal.kazior@tieto.com>
+ <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 16 Dec 2014 09:27:46 +0200
+In-Reply-To: <1418384499-31660-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 12 Dec 2014 12:41:34 +0100")
+Message-ID: <87fvcgt5ot.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Setting fragmentation threshold has not been supported by
-> any of firmware versions, hence unregister the callback and
-> remove the function.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> Michal Kazior (5):
+>   ath10k: improve 11b coex
+>   ath10k: fix STA u-APSD
+>   ath10k: prevent invalid ps timeout config
+>   ath10k: enable per-vif sta powersave
+>   ath10k: advertise p2p dev support
 
-Thanks, applied.
+Thanks, all five patches applied.
 
 -- 
 Kalle Valo
