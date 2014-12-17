@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1BjN-0000ud-U2
- for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:21:22 +0000
-Subject: [PATCH v2 2/8] ath10k: use wmi op version to check which iface
- combination to use
+ id 1Y1BjD-0000ss-R6
+ for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:21:12 +0000
+Subject: [PATCH v2 0/8] ath10k: Add thermal mitigation support
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 17 Dec 2014 12:20:54 +0200
-Message-ID: <20141217102054.15964.32162.stgit@potku.adurom.net>
-In-Reply-To: <20141217101755.15964.2625.stgit@potku.adurom.net>
-References: <20141217101755.15964.2625.stgit@potku.adurom.net>
+Date: Wed, 17 Dec 2014 12:20:35 +0200
+Message-ID: <20141217101755.15964.2625.stgit@potku.adurom.net>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,51 +23,56 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-ATH10K_FW_FEATURE_WMI_10X should not be used for anymore as that's
-now deprecated, instead use wmi op version.
+The following patches add thermal sensor and thermal cooling device
+support in ath10k. For sensor, hwmon interface is used. For controlling
+temperature cooling device interface is used. For thermal mitigation,
+tx throttling is done using hw MAC quiet time setting.
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+v2:
+
+* use ATH10K_FW_IE_WMI_OP_VERSION instead of a feature flag
+
+* add separate wmi mappings for 10.2.4
+
+* bump up FW API to 4
+
+* new patch: ath10k: set max_num_vdevs based on wmi op version
+
+* new patch: ath10k: use wmi op version to check which iface
+  combination to use
+
+* new patch: ath10k: print ath10k wmi op version
+
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5475f0fbbe41..4576d758d50b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5064,16 +5064,25 @@ int ath10k_mac_register(struct ath10k *ar)
- 	 */
- 	ar->hw->queues = 4;
- 
--	if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features)) {
--		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
--		ar->hw->wiphy->n_iface_combinations =
--			ARRAY_SIZE(ath10k_10x_if_comb);
--	} else {
-+	switch (ar->wmi.op_version) {
-+	case ATH10K_FW_WMI_OP_VERSION_MAIN:
-+	case ATH10K_FW_WMI_OP_VERSION_TLV:
- 		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_if_comb);
--
- 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
-+		break;
-+	case ATH10K_FW_WMI_OP_VERSION_10_1:
-+	case ATH10K_FW_WMI_OP_VERSION_10_2:
-+		ar->hw->wiphy->iface_combinations = ath10k_10x_if_comb;
-+		ar->hw->wiphy->n_iface_combinations =
-+			ARRAY_SIZE(ath10k_10x_if_comb);
-+		break;
-+	case ATH10K_FW_WMI_OP_VERSION_UNSET:
-+	case ATH10K_FW_WMI_OP_VERSION_MAX:
-+		WARN_ON(1);
-+		ret = -EINVAL;
-+		goto err_free;
- 	}
- 
- 	ar->hw->netdev_features = NETIF_F_HW_CSUM;
+Kalle Valo (3):
+      ath10k: set max_num_vdevs based on wmi op version
+      ath10k: use wmi op version to check which iface combination to use
+      ath10k: print ath10k wmi op version
 
+Rajkumar Manoharan (5):
+      ath10k: add 10.2.4 firmware support
+      ath10k: add wmi support for pdev_set_quiet_mode
+      ath10k: add thermal cooling device support
+      ath10k: add wmi interface for pdev_get_temperature
+      ath10k: add thermal sensor device support
+
+
+ drivers/net/wireless/ath/ath10k/Makefile  |    1 
+ drivers/net/wireless/ath/ath10k/core.c    |   30 ++
+ drivers/net/wireless/ath/ath10k/core.h    |    4 
+ drivers/net/wireless/ath/ath10k/debug.c   |    7 -
+ drivers/net/wireless/ath/ath10k/hw.h      |    4 
+ drivers/net/wireless/ath/ath10k/mac.c     |   22 +-
+ drivers/net/wireless/ath/ath10k/thermal.c |  238 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/thermal.h |   58 +++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |   39 +++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |    3 
+ drivers/net/wireless/ath/ath10k/wmi.c     |  355 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |   20 ++
+ 12 files changed, 764 insertions(+), 17 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/thermal.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/thermal.h
 
 _______________________________________________
 ath10k mailing list
