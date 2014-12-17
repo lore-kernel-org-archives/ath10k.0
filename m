@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Bkt-0001SV-K5
- for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:22:56 +0000
-Subject: [PATCH v2 8/8] ath10k: add thermal sensor device support
+ id 1Y1Bv7-0005vr-MK
+ for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:33:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 17 Dec 2014 12:22:26 +0200
-Message-ID: <20141217102226.15964.32919.stgit@potku.adurom.net>
-In-Reply-To: <20141217101755.15964.2625.stgit@potku.adurom.net>
-References: <20141217101755.15964.2625.stgit@potku.adurom.net>
+Subject: Re: [PATCH 2/2] ath10k: send (re)assoc peer command when NSS changed
+References: <1418719980-19753-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1418719980-19753-2-git-send-email-janusz.dziedzic@tieto.com>
+Date: Wed, 17 Dec 2014 12:32:45 +0200
+In-Reply-To: <1418719980-19753-2-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Tue, 16 Dec 2014 09:53:00 +0100")
+Message-ID: <87a92mr2gi.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,218 +24,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-Temperature sensor generates electrical analog voltage from temperature
-of each chain. The analog voltage is converted to digital value through
-ADC. For reading temperature values fom user space, hw monitoring device
-is used.
+> Assoc peer command contain information about NSS.
+> When we will get IEEE80211_RC_NSS_CHANGED we should
+> also send (re) assoc peer command to be sure firmware
+> will know about it and RC will work correctly.
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-Whenever the user requests for current temperature, the driver sends WMI
-command and wait for response. For reading temperature,
+Does this fix a user visible bug or is this something you just found
+from doing code review?
 
-cat /sys/class/ieee80211/phy*/device/hwmon/hwmon2/temp1_input
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c    |    2 +
- drivers/net/wireless/ath/ath10k/thermal.c |   83 +++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/thermal.h |   14 +++++
- drivers/net/wireless/ath/ath10k/wmi.c     |    1 
- 4 files changed, 100 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 28bfacb382f3..7d5a7b3add52 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -847,6 +847,7 @@ static void ath10k_core_restart(struct work_struct *work)
- 	complete_all(&ar->offchan_tx_completed);
- 	complete_all(&ar->install_key_done);
- 	complete_all(&ar->vdev_setup_done);
-+	complete_all(&ar->thermal.wmi_sync);
- 	wake_up(&ar->htt.empty_tx_wq);
- 	wake_up(&ar->wmi.tx_credits_wq);
- 	wake_up(&ar->peer_mapping_wq);
-@@ -1322,6 +1323,7 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 
- 	init_completion(&ar->install_key_done);
- 	init_completion(&ar->vdev_setup_done);
-+	init_completion(&ar->thermal.wmi_sync);
- 
- 	INIT_DELAYED_WORK(&ar->scan.timeout, ath10k_scan_timeout_work);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index e98ce8ce27e2..d93913538d18 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -17,6 +17,8 @@
- #include <linux/device.h>
- #include <linux/sysfs.h>
- #include <linux/thermal.h>
-+#include <linux/hwmon.h>
-+#include <linux/hwmon-sysfs.h>
- #include "core.h"
- #include "debug.h"
- #include "wmi-ops.h"
-@@ -119,9 +121,72 @@ static struct thermal_cooling_device_ops ath10k_thermal_ops = {
- 	.set_cur_state = ath10k_thermal_set_cur_dutycycle,
- };
- 
-+static ssize_t ath10k_thermal_show_temp(struct device *dev,
-+					struct device_attribute *attr,
-+					char *buf)
-+{
-+	struct ath10k *ar = dev_get_drvdata(dev);
-+	int ret, temperature;
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	/* Can't get temperature when the card is off */
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ret = -ENETDOWN;
-+		goto out;
-+	}
-+
-+	reinit_completion(&ar->thermal.wmi_sync);
-+	ret = ath10k_wmi_pdev_get_temperature(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to read temperature %d\n", ret);
-+		goto out;
-+	}
-+
-+	if (test_bit(ATH10K_FLAG_CRASH_FLUSH, &ar->dev_flags)) {
-+		ret = -ESHUTDOWN;
-+		goto out;
-+	}
-+
-+	ret = wait_for_completion_timeout(&ar->thermal.wmi_sync,
-+					  ATH10K_THERMAL_SYNC_TIMEOUT_HZ);
-+	if (ret == 0) {
-+		ath10k_warn(ar, "failed to synchronize thermal read\n");
-+		ret = -ETIMEDOUT;
-+		goto out;
-+	}
-+
-+	spin_lock_bh(&ar->data_lock);
-+	temperature = ar->thermal.temperature;
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	ret = snprintf(buf, PAGE_SIZE, "%d", temperature);
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature)
-+{
-+	spin_lock_bh(&ar->data_lock);
-+	ar->thermal.temperature = temperature;
-+	spin_unlock_bh(&ar->data_lock);
-+	complete(&ar->thermal.wmi_sync);
-+}
-+
-+static SENSOR_DEVICE_ATTR(temp1_input, S_IRUGO, ath10k_thermal_show_temp,
-+			  NULL, 0);
-+
-+static struct attribute *ath10k_hwmon_attrs[] = {
-+	&sensor_dev_attr_temp1_input.dev_attr.attr,
-+	NULL,
-+};
-+ATTRIBUTE_GROUPS(ath10k_hwmon);
-+
- int ath10k_thermal_register(struct ath10k *ar)
- {
- 	struct thermal_cooling_device *cdev;
-+	struct device *hwmon_dev;
- 	int ret;
- 
- 	cdev = thermal_cooling_device_register("ath10k_thermal", ar,
-@@ -141,8 +206,26 @@ int ath10k_thermal_register(struct ath10k *ar)
- 	}
- 
- 	ar->thermal.cdev = cdev;
-+
-+	/* Do not register hwmon device when temperature reading is not
-+	 * supported by firmware
-+	 */
-+	if (ar->wmi.op_version != ATH10K_FW_WMI_OP_VERSION_10_2_4)
-+		return 0;
-+
-+	hwmon_dev = devm_hwmon_device_register_with_groups(ar->dev,
-+							   "ath10k_hwmon", ar,
-+							   ath10k_hwmon_groups);
-+	if (IS_ERR(hwmon_dev)) {
-+		ath10k_err(ar, "failed to register hwmon device: %ld\n",
-+			   PTR_ERR(hwmon_dev));
-+		ret = -EINVAL;
-+		goto err_remove_link;
-+	}
- 	return 0;
- 
-+err_remove_link:
-+	sysfs_remove_link(&ar->dev->kobj, "thermal_sensor");
- err_cooling_destroy:
- 	thermal_cooling_device_unregister(cdev);
- 	return ret;
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.h b/drivers/net/wireless/ath/ath10k/thermal.h
-index e20bb87849ae..bccc17ae0fde 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.h
-+++ b/drivers/net/wireless/ath/ath10k/thermal.h
-@@ -20,17 +20,25 @@
- #define ATH10K_QUIET_PERIOD_MIN         25
- #define ATH10K_QUIET_START_OFFSET       10
- #define ATH10K_QUIET_DUTY_CYCLE_MAX     70
-+#define ATH10K_HWMON_NAME_LEN           15
-+#define ATH10K_THERMAL_SYNC_TIMEOUT_HZ (5*HZ)
- 
- struct ath10k_thermal {
- 	struct thermal_cooling_device *cdev;
-+	struct completion wmi_sync;
- 
- 	/* protected by conf_mutex */
- 	u32 duty_cycle;
-+	/* temperature value in Celcius degree
-+	 * protected by data_lock
-+	 */
-+	int temperature;
- };
- 
- #ifdef CONFIG_THERMAL
- int ath10k_thermal_register(struct ath10k *ar);
- void ath10k_thermal_unregister(struct ath10k *ar);
-+void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
- #else
- static inline int ath10k_thermal_register(struct ath10k *ar)
- {
-@@ -40,5 +48,11 @@ static inline int ath10k_thermal_register(struct ath10k *ar)
- static inline void ath10k_thermal_unregister(struct ath10k *ar)
- {
- }
-+
-+static inline void ath10k_thermal_event_temperature(struct ath10k *ar,
-+						    int temperature)
-+{
-+}
-+
- #endif
- #endif /* _THERMAL_ */
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c2d7ac31fd78..ac742905331b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3038,6 +3038,7 @@ static int ath10k_wmi_event_temperature(struct ath10k *ar, struct sk_buff *skb)
- 	if (WARN_ON(skb->len < sizeof(*ev)))
- 		return -EPROTO;
- 
-+	ath10k_thermal_event_temperature(ar, __le32_to_cpu(ev->temperature));
- 	return 0;
- }
- 
-
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
