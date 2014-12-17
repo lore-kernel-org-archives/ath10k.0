@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1GR0-0005iI-LR
- for ath10k@lists.infradead.org; Wed, 17 Dec 2014 15:22:44 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so17329027wib.1
+ id 1Y1GQz-0005iL-Kb
+ for ath10k@lists.infradead.org; Wed, 17 Dec 2014 15:22:43 +0000
+Received: by mail-wg0-f48.google.com with SMTP id y19so20479715wgg.21
  for <ath10k@lists.infradead.org>; Wed, 17 Dec 2014 07:22:17 -0800 (PST)
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH 4/5] ath10k: implement p2p bcn ie command
-Date: Wed, 17 Dec 2014 16:21:50 +0100
-Message-Id: <1418829711-19713-5-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH 2/5] ath10k: implement beacon template command
+Date: Wed, 17 Dec 2014 16:21:48 +0100
+Message-Id: <1418829711-19713-3-git-send-email-bartosz.markowski@tieto.com>
 In-Reply-To: <1418829711-19713-1-git-send-email-bartosz.markowski@tieto.com>
 References: <1418829711-19713-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -29,95 +29,124 @@ Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
 From: Michal Kazior <michal.kazior@tieto.com>
 
-Along beacon template host is expected to setup
-p2p information elements as well. Implement wmi
-interface for it.
+New firmware revisions may support setting beacon
+template. Implement wmi interface for it.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 17 +++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 41 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  5 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  3 +++
- 4 files changed, 66 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 23 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 65 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 12 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  3 ++
+ 4 files changed, 103 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 5eff204..8b783c0 100644
+index 1fbc520..fb12666 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -120,6 +120,8 @@ struct wmi_ops {
- 					void *prb_ies, size_t prb_ies_len);
- 	struct sk_buff *(*gen_prb_tmpl)(struct ath10k *ar, u32 vdev_id,
- 					struct sk_buff *bcn);
-+	struct sk_buff *(*gen_p2p_go_bcn_ie)(struct ath10k *ar, u32 vdev_id,
-+					     const u8 *p2p_ie);
+@@ -114,6 +114,10 @@ struct wmi_ops {
+ 	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable);
+ 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
+ 	struct sk_buff *(*gen_pktlog_disable)(struct ath10k *ar);
++	struct sk_buff *(*gen_bcn_tmpl)(struct ath10k *ar, u32 vdev_id,
++					u32 tim_ie_offset, struct sk_buff *bcn,
++					u32 prb_caps, u32 prb_erp,
++					void *prb_ies, size_t prb_ies_len);
  };
  
  int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -858,4 +860,19 @@ ath10k_wmi_prb_tmpl(struct ath10k *ar, u32 vdev_id, struct sk_buff *prb)
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->prb_tmpl_cmdid);
+@@ -818,4 +822,23 @@ ath10k_wmi_pdev_pktlog_disable(struct ath10k *ar)
+ 				   ar->wmi.cmd->pdev_pktlog_disable_cmdid);
  }
  
 +static inline int
-+ath10k_wmi_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id, const u8 *p2p_ie)
++ath10k_wmi_bcn_tmpl(struct ath10k *ar, u32 vdev_id, u32 tim_ie_offset,
++		    struct sk_buff *bcn, u32 prb_caps, u32 prb_erp,
++		    void *prb_ies, size_t prb_ies_len)
 +{
 +	struct sk_buff *skb;
 +
-+	if (!ar->wmi.ops->gen_p2p_go_bcn_ie)
++	if (!ar->wmi.ops->gen_bcn_tmpl)
 +		return -EOPNOTSUPP;
 +
-+	skb = ar->wmi.ops->gen_p2p_go_bcn_ie(ar, vdev_id, p2p_ie);
++	skb = ar->wmi.ops->gen_bcn_tmpl(ar, vdev_id, tim_ie_offset, bcn,
++					prb_caps, prb_erp, prb_ies,
++					prb_ies_len);
 +	if (IS_ERR(skb))
 +		return PTR_ERR(skb);
 +
-+	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->p2p_go_set_beacon_ie);
++	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->bcn_tmpl_cmdid);
 +}
 +
  #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 096407c..f1b4b79 100644
+index 0f7a3ae..f6ea938 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2085,6 +2085,46 @@ ath10k_wmi_tlv_op_gen_prb_tmpl(struct ath10k *ar, u32 vdev_id,
+@@ -1972,6 +1972,70 @@ ath10k_wmi_tlv_op_gen_pktlog_disable(struct ath10k *ar)
  	return skb;
  }
  
 +static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id,
-+				    const u8 *p2p_ie)
++ath10k_wmi_tlv_op_gen_bcn_tmpl(struct ath10k *ar, u32 vdev_id,
++			       u32 tim_ie_offset, struct sk_buff *bcn,
++			       u32 prb_caps, u32 prb_erp, void *prb_ies,
++			       size_t prb_ies_len)
 +{
-+	struct wmi_tlv_p2p_go_bcn_ie *cmd;
++	struct wmi_tlv_bcn_tmpl_cmd *cmd;
++	struct wmi_tlv_bcn_prb_info *info;
 +	struct wmi_tlv *tlv;
 +	struct sk_buff *skb;
 +	void *ptr;
 +	size_t len;
 +
++	if (WARN_ON(prb_ies_len > 0 && !prb_ies))
++		return ERR_PTR(-EINVAL);
++
 +	len = sizeof(*tlv) + sizeof(*cmd) +
-+	      sizeof(*tlv) + roundup(p2p_ie[1] + 2, 4);
++	      sizeof(*tlv) + sizeof(*info) + prb_ies_len +
++	      sizeof(*tlv) + roundup(bcn->len, 4);
 +	skb = ath10k_wmi_alloc_skb(ar, len);
 +	if (!skb)
 +		return ERR_PTR(-ENOMEM);
 +
 +	ptr = (void *)skb->data;
 +	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_P2P_GO_SET_BEACON_IE);
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_TMPL_CMD);
 +	tlv->len = __cpu_to_le16(sizeof(*cmd));
 +	cmd = (void *)tlv->value;
 +	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->ie_len = __cpu_to_le32(p2p_ie[1] + 2);
++	cmd->tim_ie_offset = __cpu_to_le32(tim_ie_offset);
++	cmd->buf_len = __cpu_to_le32(bcn->len);
 +
 +	ptr += sizeof(*tlv);
 +	ptr += sizeof(*cmd);
 +
++	/* FIXME: prb_ies_len should be probably aligned to 4byte boundary but
++	 * then it is then impossible to pass original ie len.
++	 * This chunk is not used yet so if setting probe resp template yields
++	 * problems with beaconing or crashes firmware look here.
++	 */
 +	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
-+	tlv->len = __cpu_to_le16(roundup(p2p_ie[1] + 2, 4));
-+	memcpy(tlv->value, p2p_ie, p2p_ie[1] + 2);
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_PRB_INFO);
++	tlv->len = __cpu_to_le16(sizeof(*info) + prb_ies_len);
++	info = (void *)tlv->value;
++	info->caps = __cpu_to_le32(prb_caps);
++	info->erp = __cpu_to_le32(prb_erp);
++	memcpy(info->ies, prb_ies, prb_ies_len);
 +
 +	ptr += sizeof(*tlv);
-+	ptr += roundup(p2p_ie[1] + 2, 4);
++	ptr += sizeof(*info);
++	ptr += prb_ies_len;
 +
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv p2p go bcn ie for vdev %i\n",
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
++	tlv->len = __cpu_to_le16(roundup(bcn->len, 4));
++	memcpy(tlv->value, bcn->data, bcn->len);
++
++	/* FIXME: Adjust TSF? */
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv bcn tmpl vdev_id %i\n",
 +		   vdev_id);
 +	return skb;
 +}
@@ -125,55 +154,62 @@ index 096407c..f1b4b79 100644
  /****************/
  /* TLV mappings */
  /****************/
-@@ -2369,6 +2409,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+@@ -2254,6 +2318,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_dbglog_cfg = ath10k_wmi_tlv_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_tlv_op_gen_pktlog_enable,
  	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
- 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
- 	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
-+	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
++	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
  };
  
  /************/
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 5772519..eb02290 100644
+index ee19353..c477365 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1404,6 +1404,11 @@ struct wmi_tlv_prb_tmpl_cmd {
- 	__le32 buf_len;
+@@ -1387,6 +1387,18 @@ struct wmi_tlv_bcn_tx_status_ev {
+ 	__le32 tx_status;
  } __packed;
  
-+struct wmi_tlv_p2p_go_bcn_ie {
++struct wmi_tlv_bcn_prb_info {
++	__le32 caps;
++	__le32 erp;
++	u8 ies[0];
++} __packed;
++
++struct wmi_tlv_bcn_tmpl_cmd {
 +	__le32 vdev_id;
-+	__le32 ie_len;
++	__le32 tim_ie_offset;
++	__le32 buf_len;
 +} __packed;
 +
  void ath10k_wmi_tlv_attach(struct ath10k *ar);
  
  #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index dc76ff8..3a055fd 100644
+index fa486f6..f75a1a3 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4640,6 +4640,7 @@ static const struct wmi_ops wmi_ops = {
+@@ -4638,6 +4638,7 @@ static const struct wmi_ops wmi_ops = {
+ 	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
  	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_bcn_tmpl not implemented */
  };
  
  static const struct wmi_ops wmi_10_1_ops = {
-@@ -4694,6 +4695,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+@@ -4690,6 +4691,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
  	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_bcn_tmpl not implemented */
  };
  
  static const struct wmi_ops wmi_10_2_ops = {
-@@ -4749,6 +4751,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+@@ -4743,6 +4745,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+ 	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
+ 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
  	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_bcn_tmpl not implemented */
  };
  
  int ath10k_wmi_attach(struct ath10k *ar)
