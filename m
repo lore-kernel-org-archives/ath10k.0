@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1Bv7-0005vr-MK
- for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:33:30 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 2/2] ath10k: send (re)assoc peer command when NSS changed
-References: <1418719980-19753-1-git-send-email-janusz.dziedzic@tieto.com>
- <1418719980-19753-2-git-send-email-janusz.dziedzic@tieto.com>
-Date: Wed, 17 Dec 2014 12:32:45 +0200
-In-Reply-To: <1418719980-19753-2-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Tue, 16 Dec 2014 09:53:00 +0100")
-Message-ID: <87a92mr2gi.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Y1C9B-0006PH-8J
+ for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:48:01 +0000
+Message-ID: <1418813252.2135.5.camel@sipsolutions.net>
+Subject: Re: [PATCH v2] mac80211: notify NSS changed when IBSS and HT
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Wed, 17 Dec 2014 11:47:32 +0100
+In-Reply-To: <1418806852-558-1-git-send-email-janusz.dziedzic@tieto.com>
+ (sfid-20141217_100158_628858_A7FE3DB6)
+References: <1418806852-558-1-git-send-email-janusz.dziedzic@tieto.com>
+ (sfid-20141217_100158_628858_A7FE3DB6)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +27,15 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+On Wed, 2014-12-17 at 10:00 +0100, Janusz Dziedzic wrote:
+> When using IBSS in HT mode, we always get NSS=1
+> in rc_update callback. Force NSS recalculation when
+> rates updated and notify driver that NSS changed.
 
-> Assoc peer command contain information about NSS.
-> When we will get IEEE80211_RC_NSS_CHANGED we should
-> also send (re) assoc peer command to be sure firmware
-> will know about it and RC will work correctly.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Applied.
 
-Does this fix a user visible bug or is this something you just found
-from doing code review?
+johannes
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
