@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1C9B-0006PH-8J
- for ath10k@lists.infradead.org; Wed, 17 Dec 2014 10:48:01 +0000
-Message-ID: <1418813252.2135.5.camel@sipsolutions.net>
-Subject: Re: [PATCH v2] mac80211: notify NSS changed when IBSS and HT
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Wed, 17 Dec 2014 11:47:32 +0100
-In-Reply-To: <1418806852-558-1-git-send-email-janusz.dziedzic@tieto.com>
- (sfid-20141217_100158_628858_A7FE3DB6)
-References: <1418806852-558-1-git-send-email-janusz.dziedzic@tieto.com>
- (sfid-20141217_100158_628858_A7FE3DB6)
-Mime-Version: 1.0
+ id 1Y1GR1-0005iE-RV
+ for ath10k@lists.infradead.org; Wed, 17 Dec 2014 15:22:45 +0000
+Received: by mail-wi0-f175.google.com with SMTP id l15so16143149wiw.8
+ for <ath10k@lists.infradead.org>; Wed, 17 Dec 2014 07:22:14 -0800 (PST)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH 0/5] ath10k: new beaconning methods for AP/GO/IBSS
+Date: Wed, 17 Dec 2014 16:21:46 +0100
+Message-Id: <1418829711-19713-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +17,36 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-On Wed, 2014-12-17 at 10:00 +0100, Janusz Dziedzic wrote:
-> When using IBSS in HT mode, we always get NSS=1
-> in rc_update callback. Force NSS recalculation when
-> rates updated and notify driver that NSS changed.
+This is a continuation of the new wmi-tlv backed series from Michal,
+preparing for a new hardware support for ath10k.
 
-Applied.
+I'm sending this for a first review round, since Michal has started
+his holiday break already.
 
-johannes
+Michal Kazior (5):
+  ath10k: implement new beacon tx status event
+  ath10k: implement beacon template command
+  ath10k: implement prb tmpl wmi command
+  ath10k: implement p2p bcn ie command
+  ath10k: implement support for ap beacon offloading
+
+ drivers/net/wireless/ath/ath10k/mac.c     | 158 +++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  57 +++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 206 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  34 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |   9 ++
+ 5 files changed, 464 insertions(+)
+
+-- 
+1.8.2
 
 
 _______________________________________________
