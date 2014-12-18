@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from dev-nolb.cloudtrax.com ([54.203.245.161])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1aiT-0006hB-03
- for ath10k@lists.infradead.org; Thu, 18 Dec 2014 13:02:05 +0000
-Message-ID: <5492CFF5.9060107@open-mesh.com>
-Date: Thu, 18 Dec 2014 14:00:37 +0100
-From: Antonio Quartulli <antonio@open-mesh.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y1fac-0005to-F5
+ for ath10k@lists.infradead.org; Thu, 18 Dec 2014 18:14:18 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: set phymode to 11b when NO_OFDM flag set
+Date: Thu, 18 Dec 2014 10:13:00 -0800
+Message-ID: <1418926380-22206-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: ath10k: fw_stats not reporting peer_stats with 10.2
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,97 +16,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8733228687112154215=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless <linux-wireless@vger.kernel.org>
+Cc: linux-wireless@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============8733228687112154215==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="bS7EkeGDAcAross6cLnKQx8giw7XjxjC3"
+phymode should use 11b only if NO_OFDM flags is set.
+Hence check up channel flag for NO_OFDM and set to
+11b.
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bS7EkeGDAcAross6cLnKQx8giw7XjxjC3
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Hello,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 42f6a4d..c68beac 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -269,7 +269,10 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
+ 	case IEEE80211_BAND_2GHZ:
+ 		switch (chandef->width) {
+ 		case NL80211_CHAN_WIDTH_20_NOHT:
+-			phymode = MODE_11G;
++			if (chandef->chan->flags & IEEE80211_CHAN_NO_OFDM)
++				phymode = MODE_11B;
++			else
++				phymode = MODE_11G;
+ 			break;
+ 		case NL80211_CHAN_WIDTH_20:
+ 			phymode = MODE_11NG_HT20;
+-- 
+1.9.1
 
-I have a device equipped with a ath10k driven wifi card, specifically:
-
-qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.2-00082-4-2 api 3 htt 2.1
-wmi 65.109.0.0 cal file
-
-
-(line grabbed from dmesg at boot time)
-
-On my device I have configured 2 AP vifs and for each of them I would
-like to read the last TX rate of the associated stations.
-
-As I've read on wireless.kernel.org this is not possible through the
-standard nl/cfg80211 interface and therefore I have been trying to read
-/sys/kernel/debug/ieee80211/phy1/ath10k/fw_stats  , but this file always
-reports "ath10k PEER stats (0)" (no peers..).
-
-I tried printing some debug messages here and there and the only useful
-information I got is that in "ath10k_wmi_10x_pull_fw_stats()" the value
-of "ev->num_peer_stats" is always 0.
-
-Is this yet another fw limitation?
-
-
-I also realized that upon station connection ath10k receives the
-WMI_10_2_PEER_RATECODE_LIST_EVENTID event but it is not handled as no
-handler is implemented. Might it be related with my problem ?
-
-
-Thanks a lot for any information you would be able to provide :)
-
-Cheers,
-
-
---=20
-Antonio Quartulli
-
-
---bS7EkeGDAcAross6cLnKQx8giw7XjxjC3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJUks/9AAoJEJgn97Bh2u9e+kAP/1ASFZyzq8XdIsDloG1fO7mK
-N0iRlIXosIkQZeoyRXOB7NuMJHaz0krdYvVs999dngiswRXnfPodJKpobaDRVoI8
-fndz0eKunLO3Ap51D2OZQ85iI+C0mMO2HWm7QlJJxpG03pAB1aE6rxEhpkq0Wq9m
-c+LWU85ADwKiQEfCX8D1DmV3aQ22eGc/Mt/7n0vw7SSG/WdNkS6enqd/HBHcrCVc
-GZ6wGtehuUnIhPIyHN8nCSXmyFmic86xsAy2neYE/y557VNAOCV6Klje8AqjsbGQ
-KgNrQYl7Ur+ejpYMUagFp8zQOPZNhZtEqQGWGX7vleYqrC8/DeWIrlV+XXRvflUS
-EAaW2YdqvxDv6VAMaVXhReAshmhwgjCf2tVLRlJf3vsBpPPW5otlqHfNqcDoePGE
-ZuVc7fN9g7COAg8sYxecnuyDunHT7ZJaDzVd7AN6EKBWbDKHJQkNHae/6SAm2cWJ
-TZ4tp1m1Bd+DwMVNs/eLnq0uz0evcxt4IKGKD3DMfYEfRC4lf0LD9eQq/3KRwg2E
-g/Blq+sATvk6fGC3uMZf2uhIZXIsgsCoweFXJb+z+rEpaFsFeao0RV0a5R8eFRfh
-bqnpfvt8MJPOam/sGQXkeh37/+N2BRKtzFS+lZJs80Lv8knJPyHAY36rZSxt1cvP
-Xr5XGDHn0lkF6C+i+OyK
-=TtAC
------END PGP SIGNATURE-----
-
---bS7EkeGDAcAross6cLnKQx8giw7XjxjC3--
-
-
---===============8733228687112154215==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8733228687112154215==--
