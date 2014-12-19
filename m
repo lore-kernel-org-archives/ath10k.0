@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y1rUW-0007gx-MD
- for ath10k@lists.infradead.org; Fri, 19 Dec 2014 06:56:49 +0000
+ id 1Y1rTr-0007fq-6Z
+ for ath10k@lists.infradead.org; Fri, 19 Dec 2014 06:56:08 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 6/8] ath10k: add support to send addba request
-Date: Fri, 19 Dec 2014 12:24:57 +0530
-Message-ID: <1418972099-5296-7-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/8] ath10k: add wmi support for addba_send
+Date: Fri, 19 Dec 2014 12:24:53 +0530
+Message-ID: <1418972099-5296-3-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1418972099-5296-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1418972099-5296-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,90 +25,124 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-This per-station debugfs entry helps to send addba request in manual
-mode. Need to pass two configuration parameters (tid, buffer size)
-as input.
-
-To send addba,
-
-echo 1 32 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-	   stations/XX:XX:XX:XX:XX:XX/addba
+Add WMI support for sending addba request. This command is meant
+for debugging purpose.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 56 +++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 19 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c     | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 49 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-index d5fca70..89e5e5a 100644
---- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -81,9 +81,65 @@ static const struct file_operations fops_aggr_mode = {
- 	.llseek = default_llseek,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index b161043..badf422 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -121,6 +121,8 @@ struct wmi_ops {
+ 	struct sk_buff *(*gen_pdev_get_temperature)(struct ath10k *ar);
+ 	struct sk_buff *(*gen_addba_clear_resp)(struct ath10k *ar, u32 vdev_id,
+ 						const u8 *mac);
++	struct sk_buff *(*gen_addba_send)(struct ath10k *ar, u32 vdev_id,
++					  const u8 *mac, u32 tid, u32 buf_size);
  };
  
-+static ssize_t ath10k_dbg_sta_write_addba(struct file *file,
-+					  const char __user *user_buf,
-+					  size_t count, loff_t *ppos)
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -875,4 +877,21 @@ ath10k_wmi_addba_clear_resp(struct ath10k *ar, u32 vdev_id, const u8 *mac)
+ 				   ar->wmi.cmd->addba_clear_resp_cmdid);
+ }
+ 
++static inline int
++ath10k_wmi_addba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
++		      u32 tid, u32 buf_size)
 +{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+	u32 tid, buf_size;
-+	int ret;
-+	char buf[64];
++	struct sk_buff *skb;
 +
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++	if (!ar->wmi.ops->gen_addba_send)
++		return -EOPNOTSUPP;
 +
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = '\0';
++	skb = ar->wmi.ops->gen_addba_send(ar, vdev_id, mac, tid, buf_size);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
 +
-+	ret = sscanf(buf, "%u %u", &tid, &buf_size);
-+	if (ret != 2) {
-+		ath10k_warn(ar, "ex: echo <tid> <buffer size> >addba\n");
-+		return -EINVAL;
-+	}
-+
-+	/* Valid TID values are 0 through 15 */
-+	if (tid > HTT_DATA_TX_EXT_TID_MGMT - 2) {
-+		ath10k_warn(ar, "Invalid TID %u\n", tid);
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&ar->conf_mutex);
-+	if ((ar->state != ATH10K_STATE_ON) ||
-+	    (arsta->aggr_mode != ATH10K_DBG_AGGR_MODE_MANUAL)) {
-+		ret = count;
-+		goto out;
-+	}
-+
-+	ret = ath10k_wmi_addba_send(ar, arsta->arvif->vdev_id, sta->addr,
-+				    tid, buf_size);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to send addba request: vdev_id %u peer %pM tid %u buf_size %u\n",
-+			    arsta->arvif->vdev_id, sta->addr, tid, buf_size);
-+	}
-+
-+	ret = count;
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
++	return ath10k_wmi_cmd_send(ar, skb,
++				   ar->wmi.cmd->addba_send_cmdid);
 +}
 +
-+static const struct file_operations fops_addba = {
-+	.write = ath10k_dbg_sta_write_addba,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
- void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			    struct ieee80211_sta *sta, struct dentry *dir)
- {
- 	debugfs_create_file("aggr_mode", S_IRUGO | S_IWUSR, dir, sta,
- 			    &fops_aggr_mode);
-+	debugfs_create_file("addba", S_IWUSR, dir, sta, &fops_addba);
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 499a779..74a0598 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2208,6 +2208,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	/* .gen_pdev_set_quiet_mode not implemented */
+ 	/* .gen_pdev_get_temperature not implemented */
+ 	/* .gen_addba_clear_resp not implemented */
++	/* .gen_addba_send not implemented */
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0053641..b118795 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4668,6 +4668,32 @@ ath10k_wmi_op_gen_addba_clear_resp(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
  }
+ 
++static struct sk_buff *
++ath10k_wmi_op_gen_addba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
++			     u32 tid, u32 buf_size)
++{
++	struct wmi_addba_send_cmd *cmd;
++	struct sk_buff *skb;
++
++	if (!mac)
++		return ERR_PTR(-EINVAL);
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	cmd = (struct wmi_addba_send_cmd *)skb->data;
++	cmd->vdev_id = __cpu_to_le32(vdev_id);
++	ether_addr_copy(cmd->peer_macaddr.addr, mac);
++	cmd->tid = __cpu_to_le32(tid);
++	cmd->buffersize = __cpu_to_le32(buf_size);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi addba send vdev_id 0x%X mac_addr %pM tid %u bufsize %u\n",
++		   vdev_id, mac, tid, buf_size);
++	return skb;
++}
++
+ static const struct wmi_ops wmi_ops = {
+ 	.rx = ath10k_wmi_op_rx,
+ 	.map_svc = wmi_main_svc_map,
+@@ -4720,6 +4746,7 @@ static const struct wmi_ops wmi_ops = {
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	/* .gen_pdev_get_temperature not implemented */
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ static const struct wmi_ops wmi_10_1_ops = {
+@@ -4775,6 +4802,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ static const struct wmi_ops wmi_10_2_ops = {
+@@ -4831,6 +4859,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
 -- 
 2.2.0
 
