@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3RLU-0001oW-3e
- for ath10k@lists.infradead.org; Tue, 23 Dec 2014 15:26:00 +0000
+ id 1Y3TUh-0003F8-OD
+ for ath10k@lists.infradead.org; Tue, 23 Dec 2014 17:43:40 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: set phymode to 11b when NO_OFDM flag set
-References: <1418926380-22206-1-git-send-email-poh@qca.qualcomm.com>
-Date: Tue, 23 Dec 2014 17:25:28 +0200
-In-Reply-To: <1418926380-22206-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Thu, 18 Dec 2014 10:13:00 -0800")
-Message-ID: <87bnmue6c7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 8/8] ath10k: add thermal sensor device support
+References: <20141217101755.15964.2625.stgit@potku.adurom.net>
+ <20141217102226.15964.32919.stgit@potku.adurom.net>
+ <5491D20F.2020202@dd-wrt.com>
+Date: Tue, 23 Dec 2014 19:43:06 +0200
+In-Reply-To: <5491D20F.2020202@dd-wrt.com> (Sebastian Gottschall's message of
+ "Wed, 17 Dec 2014 19:57:19 +0100")
+Message-ID: <87tx0mcled.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +25,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Sebastian Gottschall <s.gottschall@dd-wrt.com> writes:
 
-> phymode should use 11b only if NO_OFDM flags is set.
-> Hence check up channel flag for NO_OFDM and set to
-> 11b.
+> the whole code will not work. the firmware 10.2.4 returns op_version 3
+> so this check here fails
 >
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> if (ar->wmi.op_version != ATH10K_FW_WMI_OP_VERSION_10_2_4)
+>
+> since 5 is required
 
-Thanks, applied.
+I know, I used firmware-4.bin_10.2.4.13-2 to test this. I just didn't
+have a chance to upload it until now:
+
+https://github.com/kvalo/ath10k-firmware/tree/master/10.2.4
 
 -- 
 Kalle Valo
