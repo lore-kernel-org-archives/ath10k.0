@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3grD-0001IP-Vs
- for ath10k@lists.infradead.org; Wed, 24 Dec 2014 07:59:48 +0000
+ id 1Y3grj-0001g3-No
+ for ath10k@lists.infradead.org; Wed, 24 Dec 2014 08:00:20 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 0/8] ath10k: add per station debugfs support
-Date: Wed, 24 Dec 2014 13:29:01 +0530
-Message-ID: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 2/8] ath10k: add wmi support for addba_send
+Date: Wed, 24 Dec 2014 13:29:03 +0530
+Message-ID: <1419407949-32367-3-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,53 +25,132 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-The following patches add support for sending addba/addba response/delba
-for every station entries. These commands are purely for testing purpose.
+Add WMI support for sending addba request. This command is meant
+for debugging purpose.
 
-Before using any of the above aggregation commands, the mode should be moved
-to manual. To disable automatic aggretation in target
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 19 +++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
+ drivers/net/wireless/ath/ath10k/wmi.c     | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+)
 
-echo 1 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-        stations/XX:XX:XX:XX:XX:XX/aggr_mode
-
-Then for sending addba request,
-
-echo 1 32 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-        stations/XX:XX:XX:XX:XX:XX/addba
-
-To send addba response,
-
-echo 0 25 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-        stations/XX:XX:XX:XX:XX:XX/addba_resp
-
-And for delba,
-
-echo 0 1 37 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-        stations/XX:XX:XX:XX:XX:XX/delba
-
-v2: Rebased on top of 10.2.4 WMI ops support
-
-Rajkumar Manoharan (8):
-  ath10k: add wmi support for addba_clear_resp
-  ath10k: add wmi support for addba_send
-  ath10k: add wmi support for addba_set_resp
-  ath10k: add wmi support for delba_send
-  ath10k: Implement sta_add_debugfs
-  ath10k: add support to send addba request
-  ath10k: add support to send addba response
-  ath10k: add support to send delba
-
- drivers/net/wireless/ath/ath10k/Makefile      |   1 +
- drivers/net/wireless/ath/ath10k/core.h        |   5 +
- drivers/net/wireless/ath/ath10k/debug.h       |  11 +-
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 256 ++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c         |   3 +
- drivers/net/wireless/ath/ath10k/wmi-ops.h     |  78 ++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c     |   4 +
- drivers/net/wireless/ath/ath10k/wmi.c         | 119 ++++++++++++
- 8 files changed, 476 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/debugfs_sta.c
-
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index b161043..badf422 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -121,6 +121,8 @@ struct wmi_ops {
+ 	struct sk_buff *(*gen_pdev_get_temperature)(struct ath10k *ar);
+ 	struct sk_buff *(*gen_addba_clear_resp)(struct ath10k *ar, u32 vdev_id,
+ 						const u8 *mac);
++	struct sk_buff *(*gen_addba_send)(struct ath10k *ar, u32 vdev_id,
++					  const u8 *mac, u32 tid, u32 buf_size);
+ };
+ 
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -875,4 +877,21 @@ ath10k_wmi_addba_clear_resp(struct ath10k *ar, u32 vdev_id, const u8 *mac)
+ 				   ar->wmi.cmd->addba_clear_resp_cmdid);
+ }
+ 
++static inline int
++ath10k_wmi_addba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
++		      u32 tid, u32 buf_size)
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_addba_send)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_addba_send(ar, vdev_id, mac, tid, buf_size);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send(ar, skb,
++				   ar->wmi.cmd->addba_send_cmdid);
++}
++
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 499a779..74a0598 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2208,6 +2208,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	/* .gen_pdev_set_quiet_mode not implemented */
+ 	/* .gen_pdev_get_temperature not implemented */
+ 	/* .gen_addba_clear_resp not implemented */
++	/* .gen_addba_send not implemented */
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 4bd38a6..8103cbc 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4901,6 +4901,32 @@ ath10k_wmi_op_gen_addba_clear_resp(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_op_gen_addba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
++			     u32 tid, u32 buf_size)
++{
++	struct wmi_addba_send_cmd *cmd;
++	struct sk_buff *skb;
++
++	if (!mac)
++		return ERR_PTR(-EINVAL);
++
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	cmd = (struct wmi_addba_send_cmd *)skb->data;
++	cmd->vdev_id = __cpu_to_le32(vdev_id);
++	ether_addr_copy(cmd->peer_macaddr.addr, mac);
++	cmd->tid = __cpu_to_le32(tid);
++	cmd->buffersize = __cpu_to_le32(buf_size);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi addba send vdev_id 0x%X mac_addr %pM tid %u bufsize %u\n",
++		   vdev_id, mac, tid, buf_size);
++	return skb;
++}
++
+ static const struct wmi_ops wmi_ops = {
+ 	.rx = ath10k_wmi_op_rx,
+ 	.map_svc = wmi_main_svc_map,
+@@ -4953,6 +4979,7 @@ static const struct wmi_ops wmi_ops = {
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	/* .gen_pdev_get_temperature not implemented */
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ static const struct wmi_ops wmi_10_1_ops = {
+@@ -5008,6 +5035,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ static const struct wmi_ops wmi_10_2_ops = {
+@@ -5064,6 +5092,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ static const struct wmi_ops wmi_10_2_4_ops = {
+@@ -5120,6 +5149,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
+ 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
 -- 
 2.2.1
 
