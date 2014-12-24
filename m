@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3k3Y-0002k3-Cb
- for ath10k@lists.infradead.org; Wed, 24 Dec 2014 11:24:44 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix build error when hwmon is off
-Date: Wed, 24 Dec 2014 16:54:00 +0530
-Message-ID: <1419420240-11208-1-git-send-email-rmanohar@qti.qualcomm.com>
+Received: from vps.baanhofman.nl ([2001:41d0:52:300::107c])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y3n79-0003et-K3
+ for ath10k@lists.infradead.org; Wed, 24 Dec 2014 14:40:40 +0000
+Message-ID: <549AD03D.4070607@baanhofman.nl>
+Date: Wed, 24 Dec 2014 15:39:57 +0100
+From: Wilco Baan Hofman <wilco@baanhofman.nl>
 MIME-Version: 1.0
+Subject: Re: num_rf_chains problem
+References: <54987576.1010901@baanhofman.nl>
+ <878uhyg5v9.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878uhyg5v9.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,102 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-Place hwmon APIs inside CONFIG_HWMON switch to fix undefined
-errors when hwmon is not enabled.
+On 23/12/14 08:52, Kalle Valo wrote:
+> Wilco Baan Hofman <wilco@baanhofman.nl> writes:
+>
+>> I'm currently setting up openwrt with the latest git ath10k on the
+>> Engenius ESR1750.
+>>
+>> A couple of things are off:
+>> - My chip shipped with regdomain code 0x00
+>> - OTP calibration is missing?
+>> - DFS pattern detector is not working, possibly because of OTP missing
+>> - num_rf_chains is reported as 2, which is wrong, it should be 3.
+> Most likely the calibration data is somewhere in the host flash (a small
+> MTD partion), there are already products which do that. The size of the
+> calibration data should be 2116 bytes.
+>
+> That would explain why the OTP in the chip itself is empty.
+>
+Thanks! I have found a caldata MTD partition, but it contains quite a
+bit of data.. is there a signature I can check for the start (or end) of
+the calibration data?
 
-ERROR: "devm_hwmon_device_register_with_groups"
-[drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
-
-Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/thermal.c | 8 ++++++++
- drivers/net/wireless/ath/ath10k/thermal.h | 7 +++++--
- 2 files changed, 13 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index d939135..7e982e4 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -121,6 +121,7 @@ static struct thermal_cooling_device_ops ath10k_thermal_ops = {
- 	.set_cur_state = ath10k_thermal_set_cur_dutycycle,
- };
- 
-+#ifdef CONFIG_HWMON
- static ssize_t ath10k_thermal_show_temp(struct device *dev,
- 					struct device_attribute *attr,
- 					char *buf)
-@@ -182,11 +183,14 @@ static struct attribute *ath10k_hwmon_attrs[] = {
- 	NULL,
- };
- ATTRIBUTE_GROUPS(ath10k_hwmon);
-+#endif
- 
- int ath10k_thermal_register(struct ath10k *ar)
- {
- 	struct thermal_cooling_device *cdev;
-+#ifdef CONFIG_HWMON
- 	struct device *hwmon_dev;
-+#endif
- 	int ret;
- 
- 	cdev = thermal_cooling_device_register("ath10k_thermal", ar,
-@@ -207,6 +211,7 @@ int ath10k_thermal_register(struct ath10k *ar)
- 
- 	ar->thermal.cdev = cdev;
- 
-+#ifdef CONFIG_HWMON
- 	/* Do not register hwmon device when temperature reading is not
- 	 * supported by firmware
- 	 */
-@@ -222,10 +227,13 @@ int ath10k_thermal_register(struct ath10k *ar)
- 		ret = -EINVAL;
- 		goto err_remove_link;
- 	}
-+#endif
- 	return 0;
- 
-+#ifdef CONFIG_HWMON
- err_remove_link:
- 	sysfs_remove_link(&ar->dev->kobj, "thermal_sensor");
-+#endif
- err_cooling_destroy:
- 	thermal_cooling_device_unregister(cdev);
- 	return ret;
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.h b/drivers/net/wireless/ath/ath10k/thermal.h
-index bccc17a..9607e1a 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.h
-+++ b/drivers/net/wireless/ath/ath10k/thermal.h
-@@ -38,7 +38,6 @@ struct ath10k_thermal {
- #ifdef CONFIG_THERMAL
- int ath10k_thermal_register(struct ath10k *ar);
- void ath10k_thermal_unregister(struct ath10k *ar);
--void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
- #else
- static inline int ath10k_thermal_register(struct ath10k *ar)
- {
-@@ -49,10 +48,14 @@ static inline void ath10k_thermal_unregister(struct ath10k *ar)
- {
- }
- 
-+#endif /* CONFIG_THERMAL */
-+#ifdef CONFIG_HWMON
-+void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
-+#else
- static inline void ath10k_thermal_event_temperature(struct ath10k *ar,
- 						    int temperature)
- {
- }
- 
--#endif
-+#endif /* CONFIG_HWMON */
- #endif /* _THERMAL_ */
--- 
-2.2.1
-
+-- Wilco
 
 _______________________________________________
 ath10k mailing list
