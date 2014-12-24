@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3gsA-0002rN-1m
- for ath10k@lists.infradead.org; Wed, 24 Dec 2014 08:00:46 +0000
+ id 1Y3gsa-0002wO-FF
+ for ath10k@lists.infradead.org; Wed, 24 Dec 2014 08:01:13 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 4/8] ath10k: add wmi support for delba_send
-Date: Wed, 24 Dec 2014 13:29:05 +0530
-Message-ID: <1419407949-32367-5-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 6/8] ath10k: add support to send addba request
+Date: Wed, 24 Dec 2014 13:29:07 +0530
+Message-ID: <1419407949-32367-7-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,135 +25,90 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Add WMI support for sending delba request. This command is used for
-debugging purpose.
+This per-station debugfs entry helps to send addba request in manual
+mode. Need to pass two configuration parameters (tid, buffer size)
+as input.
+
+To send addba,
+
+echo 1 32 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
+	   stations/XX:XX:XX:XX:XX:XX/addba
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 21 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  1 +
- drivers/net/wireless/ath/ath10k/wmi.c     | 31 +++++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+)
+ drivers/net/wireless/ath/ath10k/debugfs_sta.c | 56 +++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index e8f49de..3a3d15e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -126,6 +126,9 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_addba_set_resp)(struct ath10k *ar, u32 vdev_id,
- 					      const u8 *mac, u32 tid,
- 					      u32 status);
-+	struct sk_buff *(*gen_delba_send)(struct ath10k *ar, u32 vdev_id,
-+					  const u8 *mac, u32 tid, u32 initiator,
-+					  u32 reason);
+diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+index d5fca70..89e5e5a 100644
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -81,9 +81,65 @@ static const struct file_operations fops_aggr_mode = {
+ 	.llseek = default_llseek,
  };
  
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -914,4 +917,22 @@ ath10k_wmi_addba_set_resp(struct ath10k *ar, u32 vdev_id, const u8 *mac,
- 				   ar->wmi.cmd->addba_set_resp_cmdid);
- }
- 
-+static inline int
-+ath10k_wmi_delba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
-+		      u32 tid, u32 initiator, u32 reason)
++static ssize_t ath10k_dbg_sta_write_addba(struct file *file,
++					  const char __user *user_buf,
++					  size_t count, loff_t *ppos)
 +{
-+	struct sk_buff *skb;
++	struct ieee80211_sta *sta = file->private_data;
++	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
++	struct ath10k *ar = arsta->arvif->ar;
++	u32 tid, buf_size;
++	int ret;
++	char buf[64];
 +
-+	if (!ar->wmi.ops->gen_delba_send)
-+		return -EOPNOTSUPP;
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
 +
-+	skb = ar->wmi.ops->gen_delba_send(ar, vdev_id, mac, tid, initiator,
-+					  reason);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = '\0';
 +
-+	return ath10k_wmi_cmd_send(ar, skb,
-+				   ar->wmi.cmd->delba_send_cmdid);
++	ret = sscanf(buf, "%u %u", &tid, &buf_size);
++	if (ret != 2) {
++		ath10k_warn(ar, "ex: echo <tid> <buffer size> >addba\n");
++		return -EINVAL;
++	}
++
++	/* Valid TID values are 0 through 15 */
++	if (tid > HTT_DATA_TX_EXT_TID_MGMT - 2) {
++		ath10k_warn(ar, "Invalid TID %u\n", tid);
++		return -EINVAL;
++	}
++
++	mutex_lock(&ar->conf_mutex);
++	if ((ar->state != ATH10K_STATE_ON) ||
++	    (arsta->aggr_mode != ATH10K_DBG_AGGR_MODE_MANUAL)) {
++		ret = count;
++		goto out;
++	}
++
++	ret = ath10k_wmi_addba_send(ar, arsta->arvif->vdev_id, sta->addr,
++				    tid, buf_size);
++	if (ret) {
++		ath10k_warn(ar, "failed to send addba request: vdev_id %u peer %pM tid %u buf_size %u\n",
++			    arsta->arvif->vdev_id, sta->addr, tid, buf_size);
++	}
++
++	ret = count;
++out:
++	mutex_unlock(&ar->conf_mutex);
++	return ret;
 +}
 +
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 63f9860..57d2b50 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2210,6 +2210,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	/* .gen_addba_clear_resp not implemented */
- 	/* .gen_addba_send not implemented */
- 	/* .gen_addba_set_resp not implemented */
-+	/* .gen_delba_send not implemented */
- };
- 
- /************/
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index dd17c00..26d8139 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4953,6 +4953,33 @@ ath10k_wmi_op_gen_addba_set_resp(struct ath10k *ar, u32 vdev_id, const u8 *mac,
- 	return skb;
++static const struct file_operations fops_addba = {
++	.write = ath10k_dbg_sta_write_addba,
++	.open = simple_open,
++	.owner = THIS_MODULE,
++	.llseek = default_llseek,
++};
++
+ void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
+ 			    struct ieee80211_sta *sta, struct dentry *dir)
+ {
+ 	debugfs_create_file("aggr_mode", S_IRUGO | S_IWUSR, dir, sta,
+ 			    &fops_aggr_mode);
++	debugfs_create_file("addba", S_IWUSR, dir, sta, &fops_addba);
  }
- 
-+static struct sk_buff *
-+ath10k_wmi_op_gen_delba_send(struct ath10k *ar, u32 vdev_id, const u8 *mac,
-+			     u32 tid, u32 initiator, u32 reason)
-+{
-+	struct wmi_delba_send_cmd *cmd;
-+	struct sk_buff *skb;
-+
-+	if (!mac)
-+		return ERR_PTR(-EINVAL);
-+
-+	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	cmd = (struct wmi_delba_send_cmd *)skb->data;
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	ether_addr_copy(cmd->peer_macaddr.addr, mac);
-+	cmd->tid = __cpu_to_le32(tid);
-+	cmd->initiator = __cpu_to_le32(initiator);
-+	cmd->reasoncode = __cpu_to_le32(reason);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi delba send vdev_id 0x%X mac_addr %pM tid %u initiator %u reason %u\n",
-+		   vdev_id, mac, tid, initiator, reason);
-+	return skb;
-+}
-+
- static const struct wmi_ops wmi_ops = {
- 	.rx = ath10k_wmi_op_rx,
- 	.map_svc = wmi_main_svc_map,
-@@ -5007,6 +5034,7 @@ static const struct wmi_ops wmi_ops = {
- 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
- 	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
-+	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- };
- 
- static const struct wmi_ops wmi_10_1_ops = {
-@@ -5064,6 +5092,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
- 	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
-+	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- };
- 
- static const struct wmi_ops wmi_10_2_ops = {
-@@ -5122,6 +5151,7 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
- 	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
-+	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- };
- 
- static const struct wmi_ops wmi_10_2_4_ops = {
-@@ -5180,6 +5210,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
- 	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
- 	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
-+	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
 -- 
 2.2.1
 
