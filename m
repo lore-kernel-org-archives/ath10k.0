@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3gsP-0004Qu-Ha
- for ath10k@lists.infradead.org; Wed, 24 Dec 2014 08:01:03 +0000
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y3k3Y-0002k3-Cb
+ for ath10k@lists.infradead.org; Wed, 24 Dec 2014 11:24:44 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 5/8] ath10k: Implement sta_add_debugfs
-Date: Wed, 24 Dec 2014 13:29:06 +0530
-Message-ID: <1419407949-32367-6-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix build error when hwmon is off
+Date: Wed, 24 Dec 2014 16:54:00 +0530
+Message-ID: <1419420240-11208-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,202 +23,96 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Add per station debugfs files when a station is added to mac80211's
-station list. This helps to group peer specific debugfs entries
-altogether. Right now this callback adds support to test aggregation
-procedures (addba/addba_resp/delba) manually.
+Place hwmon APIs inside CONFIG_HWMON switch to fix undefined
+errors when hwmon is not enabled.
 
-To enable automatic aggregation in target,
-echo 0 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-	stations/XX:XX:XX:XX:XX:XX/aggr_mode
+ERROR: "devm_hwmon_device_register_with_groups"
+[drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
 
-For manual mode,
-echo 1 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-	stations/XX:XX:XX:XX:XX:XX/aggr_mode
-
+Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/Makefile      |  1 +
- drivers/net/wireless/ath/ath10k/core.h        |  5 ++
- drivers/net/wireless/ath/ath10k/debug.h       | 11 +++-
- drivers/net/wireless/ath/ath10k/debugfs_sta.c | 89 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/mac.c         |  3 +
- 5 files changed, 108 insertions(+), 1 deletion(-)
- create mode 100644 drivers/net/wireless/ath/ath10k/debugfs_sta.c
+ drivers/net/wireless/ath/ath10k/thermal.c | 8 ++++++++
+ drivers/net/wireless/ath/ath10k/thermal.h | 7 +++++--
+ 2 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/Makefile b/drivers/net/wireless/ath/ath10k/Makefile
-index ffa3b1a..6c0c23e 100644
---- a/drivers/net/wireless/ath/ath10k/Makefile
-+++ b/drivers/net/wireless/ath/ath10k/Makefile
-@@ -15,6 +15,7 @@ ath10k_core-$(CONFIG_ATH10K_DEBUGFS) += spectral.o
- ath10k_core-$(CONFIG_NL80211_TESTMODE) += testmode.o
- ath10k_core-$(CONFIG_ATH10K_TRACING) += trace.o
- ath10k_core-$(CONFIG_THERMAL) += thermal.o
-+ath10k_core-$(CONFIG_MAC80211_DEBUGFS) += debugfs_sta.o
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index d939135..7e982e4 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -121,6 +121,7 @@ static struct thermal_cooling_device_ops ath10k_thermal_ops = {
+ 	.set_cur_state = ath10k_thermal_set_cur_dutycycle,
+ };
  
- obj-$(CONFIG_ATH10K_PCI) += ath10k_pci.o
- ath10k_pci-y += pci.o \
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7b6d9e4..c568612 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -239,6 +239,11 @@ struct ath10k_sta {
- 	u32 smps;
- 
- 	struct work_struct update_wk;
-+
-+#ifdef CONFIG_MAC80211_DEBUGFS
-+	/* protected by conf_mutex */
-+	bool aggr_mode;
++#ifdef CONFIG_HWMON
+ static ssize_t ath10k_thermal_show_temp(struct device *dev,
+ 					struct device_attribute *attr,
+ 					char *buf)
+@@ -182,11 +183,14 @@ static struct attribute *ath10k_hwmon_attrs[] = {
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(ath10k_hwmon);
 +#endif
- };
  
- #define ATH10K_VDEV_SETUP_TIMEOUT_HZ (5*HZ)
-diff --git a/drivers/net/wireless/ath/ath10k/debug.h b/drivers/net/wireless/ath/ath10k/debug.h
-index 1b87a5d..a12b832 100644
---- a/drivers/net/wireless/ath/ath10k/debug.h
-+++ b/drivers/net/wireless/ath/ath10k/debug.h
-@@ -48,6 +48,12 @@ enum ath10k_pktlog_filter {
- 	ATH10K_PKTLOG_ANY        = 0x00000001f,
- };
- 
-+enum ath10k_dbg_aggr_mode {
-+	ATH10K_DBG_AGGR_MODE_AUTO,
-+	ATH10K_DBG_AGGR_MODE_MANUAL,
-+	ATH10K_DBG_AGGR_MODE_MAX,
-+};
-+
- extern unsigned int ath10k_debug_mask;
- 
- __printf(2, 3) void ath10k_info(struct ath10k *ar, const char *fmt, ...);
-@@ -77,7 +83,6 @@ int ath10k_debug_get_et_sset_count(struct ieee80211_hw *hw,
- void ath10k_debug_get_et_stats(struct ieee80211_hw *hw,
- 			       struct ieee80211_vif *vif,
- 			       struct ethtool_stats *stats, u64 *data);
--
- #else
- static inline int ath10k_debug_start(struct ath10k *ar)
+ int ath10k_thermal_register(struct ath10k *ar)
  {
-@@ -129,6 +134,10 @@ ath10k_debug_get_new_fw_crash_data(struct ath10k *ar)
- #define ath10k_debug_get_et_stats NULL
- 
- #endif /* CONFIG_ATH10K_DEBUGFS */
-+#ifdef CONFIG_MAC80211_DEBUGFS
-+void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			    struct ieee80211_sta *sta, struct dentry *dir);
-+#endif /* CONFIG_MAC80211_DEBUGFS */
- 
- #ifdef CONFIG_ATH10K_DEBUG
- __printf(3, 4) void ath10k_dbg(struct ath10k *ar,
-diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-new file mode 100644
-index 0000000..d5fca70
---- /dev/null
-+++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-@@ -0,0 +1,89 @@
-+/*
-+ * Copyright (c) 2014 Qualcomm Atheros, Inc.
-+ *
-+ * Permission to use, copy, modify, and/or distribute this software for any
-+ * purpose with or without fee is hereby granted, provided that the above
-+ * copyright notice and this permission notice appear in all copies.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-+ */
-+#include <linux/utsname.h>
-+
-+#include "core.h"
-+#include "wmi-ops.h"
-+#include "debug.h"
-+
-+static ssize_t ath10k_dbg_sta_read_aggr_mode(struct file *file,
-+					     char __user *user_buf,
-+					     size_t count, loff_t *ppos)
-+{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+	char buf[32];
-+	int len = 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	len = scnprintf(buf, sizeof(buf) - len, "aggregation mode: %s\n",
-+			(arsta->aggr_mode == ATH10K_DBG_AGGR_MODE_AUTO) ?
-+			"auto" : "manual");
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
-+}
-+
-+static ssize_t ath10k_dbg_sta_write_aggr_mode(struct file *file,
-+					      const char __user *user_buf,
-+					      size_t count, loff_t *ppos)
-+{
-+	struct ieee80211_sta *sta = file->private_data;
-+	struct ath10k_sta *arsta = (struct ath10k_sta *)sta->drv_priv;
-+	struct ath10k *ar = arsta->arvif->ar;
-+	u32 aggr_mode;
-+	int ret;
-+
-+	if (kstrtouint_from_user(user_buf, count, 0, &aggr_mode))
-+		return -EINVAL;
-+
-+	if (aggr_mode >= ATH10K_DBG_AGGR_MODE_MAX)
-+		return -EINVAL;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	if ((ar->state != ATH10K_STATE_ON) ||
-+	    (aggr_mode == arsta->aggr_mode)) {
-+		ret = count;
-+		goto out;
-+	}
-+
-+	ret = ath10k_wmi_addba_clear_resp(ar, arsta->arvif->vdev_id, sta->addr);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to clear addba session ret: %d\n", ret);
-+		goto out;
-+	}
-+
-+	arsta->aggr_mode = aggr_mode;
-+out:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+static const struct file_operations fops_aggr_mode = {
-+	.read = ath10k_dbg_sta_read_aggr_mode,
-+	.write = ath10k_dbg_sta_write_aggr_mode,
-+	.open = simple_open,
-+	.owner = THIS_MODULE,
-+	.llseek = default_llseek,
-+};
-+
-+void ath10k_sta_add_debugfs(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
-+			    struct ieee80211_sta *sta, struct dentry *dir)
-+{
-+	debugfs_create_file("aggr_mode", S_IRUGO | S_IWUSR, dir, sta,
-+			    &fops_aggr_mode);
-+}
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5085f55..c7febfc 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4746,6 +4746,9 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.suspend			= ath10k_suspend,
- 	.resume				= ath10k_resume,
- #endif
-+#ifdef CONFIG_MAC80211_DEBUGFS
-+	.sta_add_debugfs		= ath10k_sta_add_debugfs,
+ 	struct thermal_cooling_device *cdev;
++#ifdef CONFIG_HWMON
+ 	struct device *hwmon_dev;
 +#endif
- };
+ 	int ret;
  
- #define RATETAB_ENT(_rate, _rateid, _flags) { \
+ 	cdev = thermal_cooling_device_register("ath10k_thermal", ar,
+@@ -207,6 +211,7 @@ int ath10k_thermal_register(struct ath10k *ar)
+ 
+ 	ar->thermal.cdev = cdev;
+ 
++#ifdef CONFIG_HWMON
+ 	/* Do not register hwmon device when temperature reading is not
+ 	 * supported by firmware
+ 	 */
+@@ -222,10 +227,13 @@ int ath10k_thermal_register(struct ath10k *ar)
+ 		ret = -EINVAL;
+ 		goto err_remove_link;
+ 	}
++#endif
+ 	return 0;
+ 
++#ifdef CONFIG_HWMON
+ err_remove_link:
+ 	sysfs_remove_link(&ar->dev->kobj, "thermal_sensor");
++#endif
+ err_cooling_destroy:
+ 	thermal_cooling_device_unregister(cdev);
+ 	return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.h b/drivers/net/wireless/ath/ath10k/thermal.h
+index bccc17a..9607e1a 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.h
++++ b/drivers/net/wireless/ath/ath10k/thermal.h
+@@ -38,7 +38,6 @@ struct ath10k_thermal {
+ #ifdef CONFIG_THERMAL
+ int ath10k_thermal_register(struct ath10k *ar);
+ void ath10k_thermal_unregister(struct ath10k *ar);
+-void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
+ #else
+ static inline int ath10k_thermal_register(struct ath10k *ar)
+ {
+@@ -49,10 +48,14 @@ static inline void ath10k_thermal_unregister(struct ath10k *ar)
+ {
+ }
+ 
++#endif /* CONFIG_THERMAL */
++#ifdef CONFIG_HWMON
++void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
++#else
+ static inline void ath10k_thermal_event_temperature(struct ath10k *ar,
+ 						    int temperature)
+ {
+ }
+ 
+-#endif
++#endif /* CONFIG_HWMON */
+ #endif /* _THERMAL_ */
 -- 
 2.2.1
 
