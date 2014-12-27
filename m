@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y3nsU-0002Rd-Sl
- for ath10k@lists.infradead.org; Wed, 24 Dec 2014 15:29:35 +0000
-From: Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH] ath: fix incorrect PPB on FCC radar type 5
-References: <1418669734-12921-1-git-send-email-poh@qca.qualcomm.com>
-Date: Wed, 24 Dec 2014 17:29:07 +0200
-In-Reply-To: <1418669734-12921-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Mon, 15 Dec 2014 10:55:34 -0800")
-Message-ID: <87sig583ss.fsf@kamboji.qca.qualcomm.com>
+ id 1Y4xIg-00055Y-2m
+ for ath10k@lists.infradead.org; Sat, 27 Dec 2014 19:45:22 +0000
+Received: by mail-lb0-f172.google.com with SMTP id z12so1691531lbi.3
+ for <ath10k@lists.infradead.org>; Sat, 27 Dec 2014 11:44:59 -0800 (PST)
 MIME-Version: 1.0
+Date: Sat, 27 Dec 2014 21:44:58 +0200
+Message-ID: <CABhs+6kTguLdmgrqQ7UUYwQyM=0iTwWU0Msxg1+_tLNhd0dFRA@mail.gmail.com>
+Subject: TX statistics
+From: Ilias Syrigos <ilias013@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +22,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Hello,
 
-> The minimum number of pulses per burst on FCC radar type 5 is 1.
-> Use this number for correct radar detection.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+I am trying to calculate the PDR (Packet Delivery Ratio) statistic
+while operating with ac wifi cards supported by ath10k driver, but
+without success.
 
-Thanks, applied to wireless-drivers-next.git.
+With ath9k driver I was able to calculate PDR through mac80211 debugFS
+stats and specifically through tx_packets counter and tx_retry_count.
 
--- 
-Kalle Valo
+However, with ath10k, firmware doesn't seem to update retry counter
+and I couldn't get relevant statistics through fw_stats.
+
+Can you suggest any other way to get tx attempts and retries in ath10k?
+
+Thank you in advance,
+Ilias
 
 _______________________________________________
 ath10k mailing list
