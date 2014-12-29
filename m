@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y5TgV-0006nt-Oo
- for ath10k@lists.infradead.org; Mon, 29 Dec 2014 06:20:08 +0000
-From: Sujith Manoharan <sujith@msujith.org>
-Subject: [PATCH] ath10k: Enable RX batching
-Date: Mon, 29 Dec 2014 11:51:24 +0530
-Message-Id: <1419834084-11859-1-git-send-email-sujith@msujith.org>
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y5e2u-0006pT-BD
+ for ath10k@lists.infradead.org; Mon, 29 Dec 2014 17:23:57 +0000
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 8/8] ath10k: fix error return code
+Date: Mon, 29 Dec 2014 18:04:43 +0100
+Message-Id: <1419872683-32709-9-git-send-email-Julia.Lawall@lip6.fr>
+In-Reply-To: <1419872683-32709-1-git-send-email-Julia.Lawall@lip6.fr>
+References: <1419872683-32709-1-git-send-email-Julia.Lawall@lip6.fr>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +22,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, netdev@vger.kernel.org
 
-From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+Return a negative error code on failure.
 
-This feature allows the FW to batch RX indications,
-reducing the rate of host interrupt generation, which
-in turn reduces CPU load. Currently, this is enabled
-only for the 10.2 firmware.
+A simplified version of the semantic match that finds this problem is as
+follows: (http://coccinelle.lip6.fr/)
 
-Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+// <smpl>
+@@
+identifier ret; expression e1,e2;
+@@
+(
+if (\(ret < 0\|ret != 0\))
+ { ... return ret; }
+|
+ret = 0
+)
+... when != ret = e1
+    when != &ret
+*if(...)
+{
+  ... when != ret = e2
+      when forall
+ return ret;
+}
+// </smpl>
+
+Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htt_tx.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index b103122..aad08a2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3710,7 +3710,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	struct wmi_init_cmd_10_2 *cmd;
- 	struct sk_buff *buf;
- 	struct wmi_resource_config_10x config = {};
--	u32 len, val;
-+	u32 len, val, features = 0;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 4bc51d8..2836f4c 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -480,8 +480,10 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
  
- 	config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
- 	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
-@@ -3764,6 +3764,9 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+ 	skb_cb->htt.txbuf = dma_pool_alloc(htt->tx_pool, GFP_ATOMIC,
+ 					   &paddr);
+-	if (!skb_cb->htt.txbuf)
++	if (!skb_cb->htt.txbuf) {
++		res = -ENOMEM;
+ 		goto err_free_msdu_id;
++	}
+ 	skb_cb->htt.txbuf_paddr = paddr;
  
- 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
- 
-+	features |= WMI_10_2_RX_BATCH_MODE;
-+	cmd->resource_config.feature_mask = __cpu_to_le32(features);
-+
- 	memcpy(&cmd->resource_config.common, &config, sizeof(config));
- 	ath10k_wmi_put_host_mem_chunks(ar, &cmd->mem_chunks);
- 
--- 
-2.2.1
+ 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
 
 
 _______________________________________________
