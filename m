@@ -1,8 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 0/8] fix error return code
-Date: Mon, 29 Dec 2014 18:04:35 +0100
-Message-Id: <1419872683-32709-1-git-send-email-Julia.Lawall@lip6.fr>
+Received: from www.osadl.org ([62.245.132.105])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y5vrP-00088S-Bk
+ for ath10k@lists.infradead.org; Tue, 30 Dec 2014 12:25:15 +0000
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Subject: [PATCH 2/4] ath10k: fixup wait_for_completion_timeout return handling
+Date: Tue, 30 Dec 2014 07:20:44 -0500
+Message-Id: <1419942046-17985-3-git-send-email-der.herr@hofr.at>
+In-Reply-To: <1419942046-17985-1-git-send-email-der.herr@hofr.at>
+References: <1419942046-17985-1-git-send-email-der.herr@hofr.at>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,164 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-arm-kernel@lists.infradead.org
-Cc: kernel-janitors@vger.kernel.org, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, ath10k@lists.infradead.org, =?UTF-8?q?S=C3=B6ren=20Brinkmann?= <soren.brinkmann@xilinx.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <der.herr@hofr.at>, Michal Kazior <michal.kazior@tieto.com>, Yanbo Li <yanbol@qti.qualcomm.com>, Ben Greear <greearb@candelatech.com>
 
-The complate semantic patch that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+wait_for_completion_timeout does not return negative values so
+"ret" handling here should check for timeout only.
 
-// <smpl>
-@ok exists@
-identifier f,ret,i;
-expression e;
-constant c;
-@@
+patch was only compile tested for x86_64_defconfig + CONFIG_ATH10K=m
 
-// identify a function that returns a negative return value at least once.
-f(...) {
-... when any
-(
-return -c@i;
-|
-ret = -c@i;
-... when != ret = e
-return ret;
-|
-if (ret < 0) { ... return ret; }
-)
-... when any
-}
+patch is against linux-next 3.19.0-rc1 -next-20141226
 
-@r exists@
-identifier ret,ok.f,fn;
-expression e1,e2,e3,e4,e5,e6,x;
-statement S,S1;
-position p1,p2,p3;
-@@
+Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-// identify a case where the return variable is set to a non-negative value
-// and then returned in error-handling code
-f(...) {
-... when any
-(
-if@p1 (\(ret < 0\|ret != 0\))
- { ... return ret; }
-|
-ret@p1 = 0
-)
-... when != \(ret = e1\|ret++\|ret--\|ret+=e1\|ret-=e1\)
-    when != &ret
-    when any
-(
- if (<+... ret = e5 ...+>) S1
-|
- if (<+... &ret ...+>) S1
-|
-if@p2(<+...x = fn(...)...+>)
- {
-  ... when != ret = e6
-      when forall
- return@p3 ret;
-}
-|
-break;
-|
-x = fn(...)
-... when != \(ret = e4\|ret++\|ret--\|ret+=e4\|ret-=e4\)
-    when != &ret
-(
- if (<+... ret = e3 ...+>) S
-|
- if (<+... &ret ...+>) S
-|
-if@p2(<+...\(x != 0\|x < 0\|x == NULL\|IS_ERR(x)\)...+>)
- {
-  ... when != ret = e2
-      when forall
- return@p3 ret;
-}
-)
-)
-... when any
-}
-
-@printer depends on r@
-position p;
-identifier ok.f,pr;
-constant char [] c;
-@@
-
-f(...) { <...pr@p(...,c,...)...> }
-
-@bad0 exists@
-identifier r.ret,ok.f,g != {ERR_PTR,IS_ERR};
-position p != printer.p;
-@@
-
-f(...) { ... when any
-g@p(...,ret,...)
-... when any
- }
-
-@bad depends on !bad0 exists@
-position r.p1,r.p2;
-statement S1,S2;
-identifier r.ret;
-expression e1;
-@@
-
-// ignore the above if there is some path where the variable is set to
-// something else
-(
-if@p1 (\(ret < 0\|ret != 0\)) S1
-|
-ret@p1 = 0
-)
-... when any
- \(ret = e1\|ret++\|ret--\|ret+=e1\|ret-=e1\|&ret\)
-... when any
-if@p2(...) S2
-
-@bad1 depends on !bad0 && !bad exists@
-position r.p2;
-statement S2;
-identifier r.ret;
-expression e1;
-constant c;
-@@
-
-ret = -c
-... when != \(ret = e1\|ret++\|ret--\|ret+=e1\|ret-=e1\)
-    when != &ret
-    when any
-if@p2(...) S2
-
-@bad2 depends on !bad0 && !bad && !bad1 exists@
-position r.p1,r.p2;
-identifier r.ret;
-expression e1;
-statement S2;
-constant c;
-@@
-
-// likewise ignore it if there has been an intervening return
-ret@p1 = 0
-... when != if (...) { ... ret = e1 ... return ret; }
-    when != if (...) { ... return -c; }
-    when any
-if@p2(...) S2
-
-
-@script:python depends on !bad0 && !bad && !bad1 && !bad2@
-p1 << r.p1;
-p2 << r.p2;
-p3 << r.p3;
-@@
-
-cocci.print_main("",p1)
-cocci.print_secs("",p2)
-cocci.print_secs("",p3)
-// </smpl>
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c400567..f9d7dbb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2151,7 +2151,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 
+ 		ret = wait_for_completion_timeout(&ar->offchan_tx_completed,
+ 						  3 * HZ);
+-		if (ret <= 0)
++		if (ret == 0)
+ 			ath10k_warn(ar, "timed out waiting for offchannel skb %p\n",
+ 				    skb);
+ 
+-- 
+1.7.10.4
 
 
 _______________________________________________
