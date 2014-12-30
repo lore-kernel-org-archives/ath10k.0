@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y62Jy-0000cG-0C
- for ath10k@lists.infradead.org; Tue, 30 Dec 2014 19:19:10 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 95CE540E9C5
- for <ath10k@lists.infradead.org>; Tue, 30 Dec 2014 11:18:48 -0800 (PST)
-Message-ID: <54A2FA97.9090601@candelatech.com>
-Date: Tue, 30 Dec 2014 11:18:47 -0800
-From: Ben Greear <greearb@candelatech.com>
+ id 1Y62h3-0007Qz-S7
+ for ath10k@lists.infradead.org; Tue, 30 Dec 2014 19:43:02 +0000
+Date: Tue, 30 Dec 2014 20:42:39 +0100
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Subject: Re: [PATCH 0/4] ath10k: a few incorrect return handling fix-up
+Message-ID: <20141230194239.GA13655@opentech.at>
+References: <1419942046-17985-1-git-send-email-der.herr@hofr.at>
+ <54A2DE7C.1050602@cogentembedded.com> <20141230182842.GA18361@opentech.at>
+ <54A2F151.6040205@cogentembedded.com>
 MIME-Version: 1.0
-Subject: Reproducible issue in hacked 3.17 kernel, CT firmware
+Content-Disposition: inline
+In-Reply-To: <54A2F151.6040205@cogentembedded.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,66 +25,65 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>, Yanbo Li <yanbol@qti.qualcomm.com>, Ben Greear <greearb@candelatech.com>
 
-yeah, so maybe not reproducible upstream, but anyway...
+On Tue, 30 Dec 2014, Sergei Shtylyov wrote:
 
-My test case is to re-associate 4 stations over and over again, with
-a scan and a 5 second sleep between iterations.  After
-a short time, something goes weird and OS is mostly hung, probably
-because important locks are held while ath10k is timing out communication
-to firmware.
+> On 12/30/2014 09:28 PM, Nicholas Mc Guire wrote:
+>
+>>>> wait_for_completion_timeout does not return negative values so the tests
+>>>> for <= 0 are not needed and the case differentiation in the error handling
+>>>> path unnecessary.
+>
+>>>     I decided to verify your statement and I saw that it seems wrong.
+>>> do_wait_for_common() can return -ERESTARTSYS and the return value gets
+>>> returned by its callers unchanged.
+>
+>> the -ERESTARTSYS only can be returned if state matches but
+>> wait_for_completion_timemout passes TASK_UNINTERRUPTIBLE
+>> so signal_pending_state will return 0 and never negativ
+>
+>> my understanding of the callchain is:
+>> wait_for_completion_timemout with TASK_UNINTERRUPTIBLE
+>>    -> wait_for_common(...TASK_UNINTERRUPTIBLE)
+>>      -> __wait_for_common(...TASK_UNINTERRUPTIBLE)
+>>        -> do_wait_for_common(...TASK_UNINTERRUPTIBLE)
+>>          -> signal_pending_state(TASK_UNINTERRUPTIBLE...)
+>
+>> static inline int signal_pending_state(long state, struct task_struct *p)
+>> {
+>>          if (!(state & (TASK_INTERRUPTIBLE | TASK_WAKEKILL)))
+>>                  return 0;
+>
+>    Right. I didn't look into TASK_UNINTERRUPTIBLE thing before sending my mail.
+>
+>> so wait_for_completion_timemout should return 0 or 1 only
+>
+>    0 or the remaining time, to be precise.
+>
 
-The last message I see from firmware is that it is deleting vdev 4.
+yup - thanks for the confirmation!
 
-I do not see any indication that firmware is crashed, but something
-is wrong, maybe mgt buffers are used up?
+>>>> patch was only compile tested x86_64_defconfig + CONFIG_ATH_CARDS=m
+>>>> CONFIG_ATH10K=m
+>
+>>>> patch is against linux-next 3.19.0-rc1 -next-20141226
+>
+>>>     Rather patches. It would have been better to send one patch instead of
+>>> 4 patches with the same name.
+>
+>> sorry for that - I had split it into separate patches as it was
+>> in different files - giving them the same name of course was a bit
+>> brain-dead.
+>
+>    You should have mentioned the modified files in the subject. But IMHO 
+> it would be better to have just one patch.
+>
+resent as a single patch as v2
 
-I'm going to debug this further, but I am curious why the logs appear
-to show that we continue sending cmds (cts_prot, for example) after the
-vdev is configured down?
-
-
-[  339.958906] sta104: deauthenticating from 04:f0:21:03:38:99 by local choice (Reason: 2=PREV_AUTH_NOT_VALID)
-[  339.958918] ath10k_pci 0000:04:00.0: mac ampdu vdev_id 4 sta 04:f0:21:03:38:99 tid 0 action 1
-[  339.958968] ath10k_pci 0000:04:00.0: wmi vdev install key idx 0 cipher 0 len 16
-[  339.959076] ath10k_pci 0000:04:00.0: mac vdev 4 peer delete 04:f0:21:03:38:99 (sta gone)
-[  339.959080] ath10k_pci 0000:04:00.0: wmi peer delete vdev_id 4 peer_addr 04:f0:21:03:38:99
-[  339.959287] ath10k_pci 0000:04:00.0: mac vdev 4 stop (disassociated
-[  339.959290] ath10k_pci 0000:04:00.0: wmi vdev stop id 0x4
-[  339.959387] ath10k_pci 0000:04:00.0: WMI_VDEV_STOPPED_EVENTID
-[  339.959405] ath10k_pci 0000:04:00.0: mac vdev 4 down
-[  339.959407] ath10k_pci 0000:04:00.0: wmi mgmt vdev down id 0x4
-[  339.959491] ath10k_pci 0000:04:00.0: mac vdev 4 cts_prot 0
-[  339.959495] ath10k_pci 0000:04:00.0: wmi vdev id 0x4 set param 43 value 0
-[  339.959499] ath10k_pci 0000:04:00.0: mac vdev 4 slot_time 1
-[  339.959501] ath10k_pci 0000:04:00.0: wmi vdev id 0x4 set param 7 value 1
-[  340.104623] ath10k_pci 0000:04:00.0: wmi event debug mesg len 144
-[  340.104645] ATH10K_DBG_BUFFER:
-[  340.104654] ath10k: [0000]: 00059396 100C2403 00000001 00000001 0043AF90 00000000 00059436 04104C1C
-[  340.104662] ath10k: [0008]: 00000000 00059437 14105C0A 009B83F4 0043874C 009B83F4 009B81D4 009B83F4
-[  340.104670] ath10k: [0016]: 00059437 0C104C30 711000BB 00422368 0043874C 00059437 0C104C30 711000BB
-[  340.104684] ath10k: [0024]: 004223A0 0043874C 00059437 0C104C30 711000BB 004223D8 0043874C 00059437
-[  340.104687] ath10k: [0032]: 08104C08 00000001 00000008
-[  340.104688] ATH10K_END
-[  342.962494] ath10k_pci 0000:04:00.0: failed to set erp slot for vdev 4: -11
-[  342.962509] ath10k_pci 0000:04:00.0: mac vdev 4 preamble 1n
-[  342.962512] ath10k_pci 0000:04:00.0: wmi vdev id 0x4 set param 8 value 1
-[  345.965900] ath10k_pci 0000:04:00.0: failed to set preamble for vdev 4: -11
-[  345.965916] ath10k_pci 0000:04:00.0: wmi pdev set wmm params
-[  348.969287] ath10k_pci 0000:04:00.0: failed to set wmm params: -11
-[  348.969307] ath10k_pci 0000:04:00.0: wmi pdev set wmm params
-[  351.972696] ath10k_pci 0000:04:00.0: failed to set wmm params: -11
-[  351.972713] ath10k_pci 0000:04:00.0: wmi pdev set wmm params
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+thx!
+hofrat
 
 _______________________________________________
 ath10k mailing list
