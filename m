@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6PSm-0004Gn-NZ
- for ath10k@lists.infradead.org; Wed, 31 Dec 2014 20:01:49 +0000
+ id 1Y6qrl-0005so-L2
+ for ath10k@lists.infradead.org; Fri, 02 Jan 2015 01:17:25 +0000
 Received: from [192.168.100.236] (unknown [50.251.239.81])
  (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
  (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 344DA40E8A2
- for <ath10k@lists.infradead.org>; Wed, 31 Dec 2014 12:01:26 -0800 (PST)
-Message-ID: <54A45615.1050401@candelatech.com>
-Date: Wed, 31 Dec 2014 12:01:25 -0800
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 7BB4040E9C7
+ for <ath10k@lists.infradead.org>; Thu,  1 Jan 2015 17:17:01 -0800 (PST)
+Message-ID: <54A5F18C.2050007@candelatech.com>
+Date: Thu, 01 Jan 2015 17:17:00 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Checking on interest in some patches...
+Subject: Firmware debug messages stopped sometime after 3.18
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +27,19 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k <ath10k@lists.infradead.org>
 
-Previously, I was at a dead end trying to get support for CT firmware features,
-expanded crash dump features, and other things accepted upstream.
+While trying to reproduce some bugs on ath10k in 3.19.0-rc2, I could not
+get any debuglog messages from the firmware.  For instance, in stock kernel
+it should print out something like this:
 
-I am working on porting my changes to the 3.19 kernel, and was curious if
-there is any change of opinion on possibly accepting at least some CT firmware
-support or the crash dump features.  If so, I'll clean up and re-post once
-I have tested them.
+ wmi event debug mesg len 28
+
+I got other wmi debug messages, so the debug level appeared correct.
+
+The message shows up as expected in stock 3.18 kernel.
+
+Was this done on purpose?
+
+I've started a bisect...should track it down directly.
 
 Thanks,
 Ben
