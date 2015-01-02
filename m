@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6wrf-0006sw-BD
- for ath10k@lists.infradead.org; Fri, 02 Jan 2015 07:41:44 +0000
+ id 1Y6wwC-0008CT-96
+ for ath10k@lists.infradead.org; Fri, 02 Jan 2015 07:46:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Fix DMA burst size
-References: <1419834066-11802-1-git-send-email-sujith@msujith.org>
-Date: Fri, 2 Jan 2015 09:41:08 +0200
-In-Reply-To: <1419834066-11802-1-git-send-email-sujith@msujith.org> (Sujith
- Manoharan's message of "Mon, 29 Dec 2014 11:51:06 +0530")
-Message-ID: <87k3156357.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Enable RX batching
+References: <1419834084-11859-1-git-send-email-sujith@msujith.org>
+Date: Fri, 2 Jan 2015 09:45:54 +0200
+In-Reply-To: <1419834084-11859-1-git-send-email-sujith@msujith.org> (Sujith
+ Manoharan's message of "Mon, 29 Dec 2014 11:51:24 +0530")
+Message-ID: <87fvbt62x9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,14 +30,38 @@ Sujith Manoharan <sujith@msujith.org> writes:
 
 > From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 >
-> A value of zero indicates that 128B is the maximum
-> DMA request size for read/writes. But PCI cards based
-> on AR9880 can support 256B, so enable this for
-> the 10.2 firmware.
+> This feature allows the FW to batch RX indications,
+> reducing the rate of host interrupt generation, which
+> in turn reduces CPU load. Currently, this is enabled
+> only for the 10.2 firmware.
 >
 > Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-Did you see any throughput improvements with this?
+Any throughput improvements?
+
+Also I simplified the patch a bit in ath-next-test:
+
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3710,7 +3710,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+        struct wmi_init_cmd_10_2 *cmd;
+        struct sk_buff *buf;
+        struct wmi_resource_config_10x config = {};
+-       u32 len, val, features = 0;
++       u32 len, val, features;
+ 
+        config.num_vdevs = __cpu_to_le32(TARGET_10X_NUM_VDEVS);
+        config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
+@@ -3764,7 +3764,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+ 
+        cmd = (struct wmi_init_cmd_10_2 *)buf->data;
+ 
+-       features |= WMI_10_2_RX_BATCH_MODE;
++       features = WMI_10_2_RX_BATCH_MODE;
+        cmd->resource_config.feature_mask = __cpu_to_le32(features);
+ 
+        memcpy(&cmd->resource_config.common, &config, sizeof(config));
+
 
 -- 
 Kalle Valo
