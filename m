@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y6qrl-0005so-L2
- for ath10k@lists.infradead.org; Fri, 02 Jan 2015 01:17:25 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 7BB4040E9C7
- for <ath10k@lists.infradead.org>; Thu,  1 Jan 2015 17:17:01 -0800 (PST)
-Message-ID: <54A5F18C.2050007@candelatech.com>
-Date: Thu, 01 Jan 2015 17:17:00 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y6wrf-0006sw-BD
+ for ath10k@lists.infradead.org; Fri, 02 Jan 2015 07:41:44 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fix DMA burst size
+References: <1419834066-11802-1-git-send-email-sujith@msujith.org>
+Date: Fri, 2 Jan 2015 09:41:08 +0200
+In-Reply-To: <1419834066-11802-1-git-send-email-sujith@msujith.org> (Sujith
+ Manoharan's message of "Mon, 29 Dec 2014 11:51:06 +0530")
+Message-ID: <87k3156357.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Firmware debug messages stopped sometime after 3.18
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +23,24 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Sujith Manoharan <sujith@msujith.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-While trying to reproduce some bugs on ath10k in 3.19.0-rc2, I could not
-get any debuglog messages from the firmware.  For instance, in stock kernel
-it should print out something like this:
+Sujith Manoharan <sujith@msujith.org> writes:
 
- wmi event debug mesg len 28
+> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+>
+> A value of zero indicates that 128B is the maximum
+> DMA request size for read/writes. But PCI cards based
+> on AR9880 can support 256B, so enable this for
+> the 10.2 firmware.
+>
+> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-I got other wmi debug messages, so the debug level appeared correct.
-
-The message shows up as expected in stock 3.18 kernel.
-
-Was this done on purpose?
-
-I've started a bisect...should track it down directly.
-
-Thanks,
-Ben
+Did you see any throughput improvements with this?
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
