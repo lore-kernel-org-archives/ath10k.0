@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
+Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8maA-0004By-71
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 09:07:15 +0000
-Received: by mail-we0-f179.google.com with SMTP id q59so769146wes.10
- for <ath10k@lists.infradead.org>; Wed, 07 Jan 2015 01:06:51 -0800 (PST)
+ id 1Y8n7X-0003UC-Fv
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 09:41:44 +0000
+Received: by mail-wi0-f180.google.com with SMTP id n3so1179464wiv.7
+ for <ath10k@lists.infradead.org>; Wed, 07 Jan 2015 01:41:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <87lhm3iusl.fsf@kamboji.qca.qualcomm.com>
-References: <1418829711-19713-1-git-send-email-bartosz.markowski@tieto.com>
- <1418829711-19713-6-git-send-email-bartosz.markowski@tieto.com>
- <87lhm3iusl.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 7 Jan 2015 10:06:51 +0100
-Message-ID: <CA+BoTQmJ3Z0LvBKb9ibpqR=YX_boMRTuvoU58-UJQt6+1mRGzg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] ath10k: implement support for ap beacon offloading
+In-Reply-To: <54AAE04A.4060000@candelatech.com>
+References: <54AAE04A.4060000@candelatech.com>
+Date: Wed, 7 Jan 2015 10:41:21 +0100
+Message-ID: <CA+BoTQkPcC2pVYe5mWnXE3CAUsZKiVpm3+r-+1UL-i36O1PbSQ@mail.gmail.com>
+Subject: Re: Clean up scan when start fails?
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,30 +24,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-T24gMTkgRGVjZW1iZXIgMjAxNCBhdCAxNToyMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
-b21tLmNvbT4gd3JvdGU6Cj4gQmFydG9zeiBNYXJrb3dza2kgPGJhcnRvc3oubWFya293c2tpQHRp
-ZXRvLmNvbT4gd3JpdGVzOgo+Cj4+IEZyb206IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JA
-dGlldG8uY29tPgo+Pgo+PiBOZXcgZmlybXdhcmUgcmV2aXNpb25zIHN1cHBvcnQgYmVhY29uIGFu
-ZCBwcm9iZQo+PiByZXNwb25zZSB0ZW1wbGF0ZXMgaW5zdGVhZC4gVGhpcyBtZWFucyBTV0JBIGV2
-ZW50cwo+PiBhcmUgbm8gbG9uZ2VyIGRlbGl2ZXJlZCBmb3IgdGhlc2UgZmlybXdhcmUKPj4gcmV2
-aXNpb25zLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
-QHRpZXRvLmNvbT4KPgo+IFsuLi5dCj4KPj4gKyAgICAgcmV0ID0gYXRoMTBrX21hY19zZXR1cF9i
-Y25fcDJwX2llKGFydmlmLCBiY24pOwo+PiArICAgICBpZiAocmV0KSB7Cj4+ICsgICAgICAgICAg
-ICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gc2V0dXAgcDJwIGdvIGJjbiBpZTogJWRcbiIs
-IHJldCk7Cj4+ICsgICAgICAgICAgICAga2ZyZWVfc2tiKGJjbik7Cj4+ICsgICAgICAgICAgICAg
-cmV0dXJuIHJldDsKPj4gKyAgICAgfQo+PiArCj4+ICsgICAgIGF0aDEwa19tYWNfcmVtb3ZlX3Zl
-bmRvcl9pZShiY24sIFdMQU5fT1VJX1dGQSwgV0xBTl9PVUlfVFlQRV9XRkFfUDJQLAo+PiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb2Zmc2V0b2Yoc3RydWN0IGllZWU4MDIxMV9t
-Z210LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdS5iZWFj
-b24udmFyaWFibGUpKTsKPgo+IEEgY29tbWVudCB3b3VsZCBiZSBuaWNlIHdoeSB5b3UgYXJlIHJl
-bW92aW5nIHRoZSBQMlAgSUUuIEkgZ3Vlc3MgYmVjYXVzZQo+IHRoZXJlJ3MgYSBkaWZmZXJlbnQg
-Y29tbWFuZCB0byBzZXQgdGhhdCBJRT8KCkNvcnJlY3QgLSBhdGgxMGtfd21pX3AycF9nb19iY25f
-aWUoKSAoY2FsbGVkIGJ5CmF0aDEwa19tYWNfc2V0dXBfYmNuX3AycF9pZSkgaXMgdGhhdCBjb21t
-YW5kLiBUaGUgcmVtb3ZhbCBhdm9pZHMKZHVwbGljYXRlIFAyUCBJRSBpbiBCZWFjb25zLiBJJ2xs
-IGFkZCBhIGNvbW1lbnQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+T24gNSBKYW51YXJ5IDIwMTUgYXQgMjA6MDQsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPiBTaG91bGQgd2UgaGF2ZSBzb21ldGhpbmcgbGlrZSB0aGlzIHRvIGNs
+ZWFuIHVwIHRoZSBzY2FuCj4gc3RhdGUgbWFjaGluZSB3aGVuIGZpcm13YXJlIGZhaWxzIHRvIHN0
+YXJ0IHRoZSBzY2FuPwo+Cj4gW2dyZWVhcmJAYmVuLWR0MiBsaW51eC0zLjE5LmRldi55XSQgZ2l0
+IGRpZmYKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWku
+YyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPiBpbmRleCA2ZTRlY2Uw
+Li45MDIwMjA0IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+d21pLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4gQEAg
+LTEwNTcsNiArMTA1Nyw3IEBAIHN0YXRpYyBpbnQgYXRoMTBrX3dtaV9ldmVudF9zY2FuKHN0cnVj
+dCBhdGgxMGsgKmFyLCBzdHJ1Y3Qgc2tfYnVmZiAqc2tiKQo+ICAgICAgICAgICAgICAgICBicmVh
+azsKPiAgICAgICAgIGNhc2UgV01JX1NDQU5fRVZFTlRfU1RBUlRfRkFJTEVEOgo+ICAgICAgICAg
+ICAgICAgICBhdGgxMGtfd2FybihhciwgInJlY2VpdmVkIHNjYW4gc3RhcnQgZmFpbHVyZSBldmVu
+dFxuIik7Cj4gKyAgICAgICAgICAgICAgIGF0aDEwa193bWlfZXZlbnRfc2Nhbl9jb21wbGV0ZWQo
+YXIpOwo+ICAgICAgICAgICAgICAgICBicmVhazsKPiAgICAgICAgIGNhc2UgV01JX1NDQU5fRVZF
+TlRfREVRVUVVRUQ6Cj4gICAgICAgICBjYXNlIFdNSV9TQ0FOX0VWRU5UX1BSRUVNUFRFRDoKCkht
+bS4uIEkgYXNzdW1lIHlvdSBzdGlsbCBnZXQgdGhlIF9TVEFSVF9GQUlMRUQgc29tZXRpbWVzPwoK
+SW4gd2hhdCBzdGF0ZSBkbyB5b3UgZ2V0IGl0PwoKSWYgeW91IGdldCBpdCBiZWZvcmUgX1NUQVJU
+RUQgeW91J2xsIGhpdCBhIHdhcm5pbmcgaW4Kc2Nhbl9jb21wbGV0ZWQoKS4gSXQgZG9lc24ndCBt
+YWtlIHNlbnNlIHRvIGNhbGwgaXQgc2luY2UgYWxsIHNjYW4KdXNlcnMgd2lsbCBmYWlsIHRvIHdh
+aXQgZm9yIGFyLT5zY2FuLnN0YXJ0ZWQgY29tcGxldGlvbiBhbmQgY2xlYW4gdXAKYW55d2F5LgoK
+SWYgeW91IGdldCBpdCBhZnRlciBfU1RBUlRFRCB0aGVuIEkgZ3Vlc3MgaXQgZG9lcyBzZW5zZSB0
+byBjbGVhbiB1cC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
