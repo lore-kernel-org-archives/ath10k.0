@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8ayD-00072h-M6
- for ath10k@lists.infradead.org; Tue, 06 Jan 2015 20:43:18 +0000
-Message-ID: <54AC48D0.9010501@candelatech.com>
-Date: Tue, 06 Jan 2015 12:42:56 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y8jAk-00005l-81
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 05:28:47 +0000
+Received: by mail-ig0-f177.google.com with SMTP id z20so779598igj.10
+ for <ath10k@lists.infradead.org>; Tue, 06 Jan 2015 21:28:18 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Firmware debug messages stopped sometime after 3.18 (bisected)
-References: <54A5F18C.2050007@candelatech.com>
- <54AB39BD.2050804@candelatech.com> <54AC40C2.9020703@candelatech.com>
-In-Reply-To: <54AC40C2.9020703@candelatech.com>
+In-Reply-To: <DB3PR04MB07635C33D735EFE6217C380FE2590@DB3PR04MB0763.eurprd04.prod.outlook.com>
+References: <DB3PR04MB07635C33D735EFE6217C380FE2590@DB3PR04MB0763.eurprd04.prod.outlook.com>
+Date: Wed, 7 Jan 2015 06:28:18 +0100
+Message-ID: <CALhHN=pwZTZ3prHjyj95X7LGHzWWC_NcrvNmdLYy0YMgTrFpfA@mail.gmail.com>
+Subject: Re: number of peers exceeded after a short time
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,125 +24,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, rmanohar@qti.qualcomm.com
+To: Conrad Kostecki <ck@conrad-kostecki.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 01/06/2015 12:08 PM, Ben Greear wrote:
-> I think I found another problem with this patch.
-> 
-> When user enables ATH10K_PKTLOG_DBG_PRINT pktlog filter, then the firmware can send
-> pkts to the CE1 pipe, which has only 512 byte message length.  firmware debuglog messages
-> can be larger than that, and so (10.1.467, at least) firmware will crash.
-> 
-> If anyone with QCA firmware source rights wants the nasty details,
-> contact me offline.
-> 
-> I will try to hack around this in my firmware, but I think this patch
-> needs some more thought and/or fixes.
+On 6 January 2015 at 21:30, Conrad Kostecki <ck@conrad-kostecki.de> wrote:
+> Hi!
+>
+> I am using hostapd 2.3 with 2x ath10k (WLE900VX, FW 10.2). Kernel is 3.18.0.
+> Four SSIDs are being broadcasted. Two directly from ath10k and another two via a vif, based on the real ath10k-interfaces.
+> Two SSIDs are using WPA2 and two other are using WPA2-Enterprise.
+>
+> This problem started for me since upgrading vom Kernel 3.17.x (FW 10.1) to Kernel 3.18.0 (FW 10.2). When I downgrade, it happens much less..
+>
+> After a very short time, about 5-15 minutes, my dmesg is beeing logged full with those messages:
+> [2055815.205855] ath10k_pci 0000:0c:00.0: number of peers exceeded: peers number 127 (max peers 127)
+> [2055818.796016] ath10k_pci 0000:0c:00.0: number of peers exceeded: peers number 127 (max peers 127)
+> [2055822.392301] ath10k_pci 0000:0c:00.0: number of peers exceeded: peers number 127 (max peers 127)
+> [...]
+>
+> How is this possible? This is my private home router. I've only a few wifi devices.
+> I've noticed, that this problem mainly happens, when my Nokia Lumia 930 tries to connect with my WPA2-Enterprise network.
+>
+> Is this a ath10k problem, which is not correctly processing the peers or hostapd?
 
-So, root cause of not getting dbglog over wmi after this patch
-is bug in 10.1.467 (and maybe other) firmware in it's dbglog code.
+I suspect Michal already fix this,
+ath10k: fix station count enforcement
 
-I have fixed that in CT firmware, and disabled pktlog ability to
-send dbglog messages to work around that crash scenario, and now
-things are working better again.
+Best use kernel from ath10k github.
 
-Upstream firmware is still going to have issues with this patch, however.
-
-Thanks,
-Ben
-
-> 
-> Thanks,
-> Ben
-> 
-> On 01/05/2015 05:26 PM, Ben Greear wrote:
->> On 01/01/2015 05:17 PM, Ben Greear wrote:
->>> While trying to reproduce some bugs on ath10k in 3.19.0-rc2, I could not
->>> get any debuglog messages from the firmware.  For instance, in stock kernel
->>> it should print out something like this:
->>>
->>>  wmi event debug mesg len 28
->>>
->>> I got other wmi debug messages, so the debug level appeared correct.
->>>
->>> The message shows up as expected in stock 3.18 kernel.
->>>
->>> Was this done on purpose?
->>>
->>> I've started a bisect...should track it down directly.
->>
->> Took a while, but bisect points to this.  If you are doing bisect
->> yourself, or playing with changes near here, you must manually apply
->> the patch below to allow scan to work.  I'll try to figure out why
->> the patch below disables firmware debuglog messages next.  I assume
->> that was not the intention?
->>
->> 90174455ae058a1dcf1f3d344a9752385803c1d8 is the first bad commit
->> commit 90174455ae058a1dcf1f3d344a9752385803c1d8
->> Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->> Date:   Fri Oct 3 08:02:33 2014 +0300
->>
->>     ath10k: add support to configure pktlog filter
->>
->>     Add support to configure packet log filters (tx, rx, rate control)
->>     via debugfs. To disable htt pktlog events set the filters to 0.
->>
->>     ex:
->>
->>     To enable pktlog for all filters
->>
->>        echo 0x1f > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
->>
->>     To disable pktlog
->>
->>        echo 0 > /sys/kernel/debug/ieee80211/phy*/ath10k/pktlog_filter
->>
->>     Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
->>     Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
->>
->> :040000 040000 1ff3b609db06d718fb22a7d8444a70e38a60ebcd 6504c0828edb532f19826167eab9ba0634b3f044 M	drivers
->>
->>
->> Patch to allow scan to work (this patch made it upstream a bit later):
->>
->> [greearb@ben-dt2 linux-bisect]$ git diff
->> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
->> index f65032f..d878fbe 100644
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -3506,10 +3506,10 @@ int ath10k_wmi_start_scan(struct ath10k *ar,
->>                 return ret;
->>
->>         if (test_bit(ATH10K_FW_FEATURE_WMI_10X, ar->fw_features))
->> -               len = sizeof(struct wmi_start_scan_cmd) +
->> +               len = sizeof(struct wmi_10x_start_scan_cmd) +
->>                       ath10k_wmi_start_scan_tlvs_len(arg);
->>         else
->> -               len = sizeof(struct wmi_10x_start_scan_cmd) +
->> +               len = sizeof(struct wmi_start_scan_cmd) +
->>                       ath10k_wmi_start_scan_tlvs_len(arg);
->>
->>         skb = ath10k_wmi_alloc_skb(ar, len);
->> [greearb@ben-dt2 linux-bisect]$
->>
->>
->> Thanks,
->> Ben
->>
->>>
->>> Thanks,
->>> Ben
->>>
->>
->>
-> 
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+BR
+Janusz
 
 _______________________________________________
 ath10k mailing list
