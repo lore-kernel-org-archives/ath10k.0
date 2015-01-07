@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8leQ-0006yX-Lt
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 08:07:36 +0000
-Received: by mail-we0-f174.google.com with SMTP id k48so691720wev.5
- for <ath10k@lists.infradead.org>; Wed, 07 Jan 2015 00:07:05 -0800 (PST)
+ id 1Y8maA-0004By-71
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 09:07:15 +0000
+Received: by mail-we0-f179.google.com with SMTP id q59so769146wes.10
+ for <ath10k@lists.infradead.org>; Wed, 07 Jan 2015 01:06:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CALhHN=pwZTZ3prHjyj95X7LGHzWWC_NcrvNmdLYy0YMgTrFpfA@mail.gmail.com>
-References: <DB3PR04MB07635C33D735EFE6217C380FE2590@DB3PR04MB0763.eurprd04.prod.outlook.com>
- <CALhHN=pwZTZ3prHjyj95X7LGHzWWC_NcrvNmdLYy0YMgTrFpfA@mail.gmail.com>
-Date: Wed, 7 Jan 2015 09:07:05 +0100
-Message-ID: <CA+BoTQnJFn2oFw5Qcpp+L0YvG6h71ZaH3T=a1e1HscK+4m_fpQ@mail.gmail.com>
-Subject: Re: number of peers exceeded after a short time
+In-Reply-To: <87lhm3iusl.fsf@kamboji.qca.qualcomm.com>
+References: <1418829711-19713-1-git-send-email-bartosz.markowski@tieto.com>
+ <1418829711-19713-6-git-send-email-bartosz.markowski@tieto.com>
+ <87lhm3iusl.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 7 Jan 2015 10:06:51 +0100
+Message-ID: <CA+BoTQmJ3Z0LvBKb9ibpqR=YX_boMRTuvoU58-UJQt6+1mRGzg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] ath10k: implement support for ap beacon offloading
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,41 +26,30 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Conrad Kostecki <ck@conrad-kostecki.de>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gNyBKYW51YXJ5IDIwMTUgYXQgMDY6MjgsIEphbnVzeiBEemllZHppYyA8amFudXN6LmR6aWVk
-emljQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gNiBKYW51YXJ5IDIwMTUgYXQgMjE6MzAsIENvbnJh
-ZCBLb3N0ZWNraSA8Y2tAY29ucmFkLWtvc3RlY2tpLmRlPiB3cm90ZToKPj4gSGkhCj4+Cj4+IEkg
-YW0gdXNpbmcgaG9zdGFwZCAyLjMgd2l0aCAyeCBhdGgxMGsgKFdMRTkwMFZYLCBGVyAxMC4yKS4g
-S2VybmVsIGlzIDMuMTguMC4KPj4gRm91ciBTU0lEcyBhcmUgYmVpbmcgYnJvYWRjYXN0ZWQuIFR3
-byBkaXJlY3RseSBmcm9tIGF0aDEwayBhbmQgYW5vdGhlciB0d28gdmlhIGEgdmlmLCBiYXNlZCBv
-biB0aGUgcmVhbCBhdGgxMGstaW50ZXJmYWNlcy4KPj4gVHdvIFNTSURzIGFyZSB1c2luZyBXUEEy
-IGFuZCB0d28gb3RoZXIgYXJlIHVzaW5nIFdQQTItRW50ZXJwcmlzZS4KPj4KPj4gVGhpcyBwcm9i
-bGVtIHN0YXJ0ZWQgZm9yIG1lIHNpbmNlIHVwZ3JhZGluZyB2b20gS2VybmVsIDMuMTcueCAoRlcg
-MTAuMSkgdG8gS2VybmVsIDMuMTguMCAoRlcgMTAuMikuIFdoZW4gSSBkb3duZ3JhZGUsIGl0IGhh
-cHBlbnMgbXVjaCBsZXNzLi4KPj4KPj4gQWZ0ZXIgYSB2ZXJ5IHNob3J0IHRpbWUsIGFib3V0IDUt
-MTUgbWludXRlcywgbXkgZG1lc2cgaXMgYmVlaW5nIGxvZ2dlZCBmdWxsIHdpdGggdGhvc2UgbWVz
-c2FnZXM6Cj4+IFsyMDU1ODE1LjIwNTg1NV0gYXRoMTBrX3BjaSAwMDAwOjBjOjAwLjA6IG51bWJl
-ciBvZiBwZWVycyBleGNlZWRlZDogcGVlcnMgbnVtYmVyIDEyNyAobWF4IHBlZXJzIDEyNykKPj4g
-WzIwNTU4MTguNzk2MDE2XSBhdGgxMGtfcGNpIDAwMDA6MGM6MDAuMDogbnVtYmVyIG9mIHBlZXJz
-IGV4Y2VlZGVkOiBwZWVycyBudW1iZXIgMTI3IChtYXggcGVlcnMgMTI3KQo+PiBbMjA1NTgyMi4z
-OTIzMDFdIGF0aDEwa19wY2kgMDAwMDowYzowMC4wOiBudW1iZXIgb2YgcGVlcnMgZXhjZWVkZWQ6
-IHBlZXJzIG51bWJlciAxMjcgKG1heCBwZWVycyAxMjcpCj4+IFsuLi5dCj4+Cj4+IEhvdyBpcyB0
-aGlzIHBvc3NpYmxlPyBUaGlzIGlzIG15IHByaXZhdGUgaG9tZSByb3V0ZXIuIEkndmUgb25seSBh
-IGZldyB3aWZpIGRldmljZXMuCj4+IEkndmUgbm90aWNlZCwgdGhhdCB0aGlzIHByb2JsZW0gbWFp
-bmx5IGhhcHBlbnMsIHdoZW4gbXkgTm9raWEgTHVtaWEgOTMwIHRyaWVzIHRvIGNvbm5lY3Qgd2l0
-aCBteSBXUEEyLUVudGVycHJpc2UgbmV0d29yay4KPj4KPj4gSXMgdGhpcyBhIGF0aDEwayBwcm9i
-bGVtLCB3aGljaCBpcyBub3QgY29ycmVjdGx5IHByb2Nlc3NpbmcgdGhlIHBlZXJzIG9yIGhvc3Rh
-cGQ/CgpJIGd1ZXNzIHRoaXMgbWlnaHQgYmUgYXRoMTBrIGlzc3VlLiBJJ2QgbG92ZSB0byBnZXQg
-bXkgaGFuZHMgb24gbG9ncwp3aXRoIGRlYnVnX21hc2s9MHhmZmZmZmYzZiAoYXRoMTBrX2NvcmUg
-cGFyYW1ldGVyKSB0aG91Z2guCgpQZXJoYXBzIEx1bWlhIHJhbmRvbWl6ZXMgaXRzIGh3IGFkZHIg
-KHRob3VnaCBJIGRvdWJ0IHRoYXQpLgoKCj4gSSBzdXNwZWN0IE1pY2hhbCBhbHJlYWR5IGZpeCB0
-aGlzLAo+IGF0aDEwazogZml4IHN0YXRpb24gY291bnQgZW5mb3JjZW1lbnQKPgo+IEJlc3QgdXNl
-IGtlcm5lbCBmcm9tIGF0aDEwayBnaXRodWIuCgpUaGUgcGF0Y2ggcmVmaW5lZCBhY2NvdW50aW5n
-IHRvIGJlIG1vcmUgYWNjdXJhdGUgc28gSSBkb24ndCB0aGluawppdCdsbCBmaXggd2hhdCBDb25y
-YWQgaXMgc2VlaW5nLiBOZXZlcnRoZWxlc3MgaXQncyBhIGdvb2QgaWRlYSB0bwpjaGVjayB1cCB3
-aXRoIGdpdGh1Yi5jb20va3ZhbG8vYXRoIG1hc3RlciBicmFuY2guCgoKTWljaGHFggoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+T24gMTkgRGVjZW1iZXIgMjAxNCBhdCAxNToyMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxj
+b21tLmNvbT4gd3JvdGU6Cj4gQmFydG9zeiBNYXJrb3dza2kgPGJhcnRvc3oubWFya293c2tpQHRp
+ZXRvLmNvbT4gd3JpdGVzOgo+Cj4+IEZyb206IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JA
+dGlldG8uY29tPgo+Pgo+PiBOZXcgZmlybXdhcmUgcmV2aXNpb25zIHN1cHBvcnQgYmVhY29uIGFu
+ZCBwcm9iZQo+PiByZXNwb25zZSB0ZW1wbGF0ZXMgaW5zdGVhZC4gVGhpcyBtZWFucyBTV0JBIGV2
+ZW50cwo+PiBhcmUgbm8gbG9uZ2VyIGRlbGl2ZXJlZCBmb3IgdGhlc2UgZmlybXdhcmUKPj4gcmV2
+aXNpb25zLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9y
+QHRpZXRvLmNvbT4KPgo+IFsuLi5dCj4KPj4gKyAgICAgcmV0ID0gYXRoMTBrX21hY19zZXR1cF9i
+Y25fcDJwX2llKGFydmlmLCBiY24pOwo+PiArICAgICBpZiAocmV0KSB7Cj4+ICsgICAgICAgICAg
+ICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8gc2V0dXAgcDJwIGdvIGJjbiBpZTogJWRcbiIs
+IHJldCk7Cj4+ICsgICAgICAgICAgICAga2ZyZWVfc2tiKGJjbik7Cj4+ICsgICAgICAgICAgICAg
+cmV0dXJuIHJldDsKPj4gKyAgICAgfQo+PiArCj4+ICsgICAgIGF0aDEwa19tYWNfcmVtb3ZlX3Zl
+bmRvcl9pZShiY24sIFdMQU5fT1VJX1dGQSwgV0xBTl9PVUlfVFlQRV9XRkFfUDJQLAo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb2Zmc2V0b2Yoc3RydWN0IGllZWU4MDIxMV9t
+Z210LAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdS5iZWFj
+b24udmFyaWFibGUpKTsKPgo+IEEgY29tbWVudCB3b3VsZCBiZSBuaWNlIHdoeSB5b3UgYXJlIHJl
+bW92aW5nIHRoZSBQMlAgSUUuIEkgZ3Vlc3MgYmVjYXVzZQo+IHRoZXJlJ3MgYSBkaWZmZXJlbnQg
+Y29tbWFuZCB0byBzZXQgdGhhdCBJRT8KCkNvcnJlY3QgLSBhdGgxMGtfd21pX3AycF9nb19iY25f
+aWUoKSAoY2FsbGVkIGJ5CmF0aDEwa19tYWNfc2V0dXBfYmNuX3AycF9pZSkgaXMgdGhhdCBjb21t
+YW5kLiBUaGUgcmVtb3ZhbCBhdm9pZHMKZHVwbGljYXRlIFAyUCBJRSBpbiBCZWFjb25zLiBJJ2xs
+IGFkZCBhIGNvbW1lbnQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
