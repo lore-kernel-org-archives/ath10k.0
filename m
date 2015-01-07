@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8sAF-0000C4-9n
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 15:04:53 +0000
-Date: Wed, 7 Jan 2015 20:34:16 +0530
-From: Rajkumar <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix build error when hwmon is off
-Message-ID: <20150107150413.GA13894@qca.qualcomm.com>
-References: <1419420240-11208-1-git-send-email-rmanohar@qti.qualcomm.com>
- <871tn6u0c5.fsf@kamboji.qca.qualcomm.com>
+ id 1Y8u2g-0004jw-Ad
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 17:05:12 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fixup wait_for_completion_timeout return
+ handling
+References: <1419968660-17404-1-git-send-email-der.herr@hofr.at>
+Date: Wed, 7 Jan 2015 19:04:36 +0200
+In-Reply-To: <1419968660-17404-1-git-send-email-der.herr@hofr.at> (Nicholas Mc
+ Guire's message of "Tue, 30 Dec 2014 14:44:20 -0500")
+Message-ID: <87sifmsesb.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <871tn6u0c5.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Ben Greear <greearb@candelatech.com>, Yanbo Li <yanbol@qca.qualcomm.com>
 
-On Wed, Jan 07, 2015 at 04:33:46PM +0200, Kalle Valo wrote:
-> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-> 
-> > Place hwmon APIs inside CONFIG_HWMON switch to fix undefined
-> > errors when hwmon is not enabled.
-> >
-> > ERROR: "devm_hwmon_device_register_with_groups"
-> > [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
-> >
-> > Reported-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> 
-> Thanks, but this has too many ifdefs for my taste. I have another idea,
-> let me send v2 shortly.
+Nicholas Mc Guire <der.herr@hofr.at> writes:
+
+> wait_for_completion_timeout does not return negative values so the tests
+> for <= 0 are not needed and the case differentiation in the error handling
+> path unnecessary.
 >
-Got you ;)
-Having seperate register/unregister APIs for hwmon ops reduce switches.
+> v2: all wait_for_completion_timeout changes in a single patch
+>
+> patch was only compile tested x86_64_defconfig + CONFIG_ATH_CARDS=m
+> CONFIG_ATH10K=m
+>
+> patch is against linux-next 3.19.0-rc1 -next-20141226
+>
+> None of the proposed cleanups are critical.
+> All changes should only be removing unreachable cases.
+>
+> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
+> ---
 
--Rajkumar
+All the comments after "v2:" should be here, under the "---" line so
+that git-am can automatically discard them.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
