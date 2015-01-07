@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8qkd-0005Bm-SW
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 13:34:21 +0000
-Message-ID: <54AD35C4.3070803@candelatech.com>
-Date: Wed, 07 Jan 2015 05:33:56 -0800
+ id 1Y8qoz-0008NP-0C
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 13:38:49 +0000
+Message-ID: <54AD36D3.7030009@candelatech.com>
+Date: Wed, 07 Jan 2015 05:38:27 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Clean up scan when start fails?
-References: <54AAE04A.4060000@candelatech.com>
- <CA+BoTQkPcC2pVYe5mWnXE3CAUsZKiVpm3+r-+1UL-i36O1PbSQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQkPcC2pVYe5mWnXE3CAUsZKiVpm3+r-+1UL-i36O1PbSQ@mail.gmail.com>
+Subject: Re: Reproducible issue in hacked 3.17 kernel, CT firmware
+References: <54A2FA97.9090601@candelatech.com>
+ <CA+BoTQnj4V8myJvQLpW+gCHBsMZ-avtB5H5Ts2XONv6q9oRbVg@mail.gmail.com>
+In-Reply-To: <CA+BoTQnj4V8myJvQLpW+gCHBsMZ-avtB5H5Ts2XONv6q9oRbVg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +19,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-CgpPbiAwMS8wNy8yMDE1IDAxOjQxIEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDUgSmFu
-dWFyeSAyMDE1IGF0IDIwOjA0LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4g
-d3JvdGU6Cj4+IFNob3VsZCB3ZSBoYXZlIHNvbWV0aGluZyBsaWtlIHRoaXMgdG8gY2xlYW4gdXAg
-dGhlIHNjYW4KPj4gc3RhdGUgbWFjaGluZSB3aGVuIGZpcm13YXJlIGZhaWxzIHRvIHN0YXJ0IHRo
-ZSBzY2FuPwo+Pgo+PiBbZ3JlZWFyYkBiZW4tZHQyIGxpbnV4LTMuMTkuZGV2LnldJCBnaXQgZGlm
-Zgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4gaW5kZXggNmU0ZWNlMC4u
-OTAyMDIwNCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
-bWkuYwo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+IEBA
-IC0xMDU3LDYgKzEwNTcsNyBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlfZXZlbnRfc2NhbihzdHJ1
-Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKPj4gICAgICAgICAgICAgICAgICBi
-cmVhazsKPj4gICAgICAgICAgY2FzZSBXTUlfU0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQ6Cj4+ICAg
-ICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJyZWNlaXZlZCBzY2FuIHN0YXJ0IGZhaWx1
-cmUgZXZlbnRcbiIpOwo+PiArICAgICAgICAgICAgICAgYXRoMTBrX3dtaV9ldmVudF9zY2FuX2Nv
-bXBsZXRlZChhcik7Cj4+ICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4+ICAgICAgICAgIGNhc2Ug
-V01JX1NDQU5fRVZFTlRfREVRVUVVRUQ6Cj4+ICAgICAgICAgIGNhc2UgV01JX1NDQU5fRVZFTlRf
-UFJFRU1QVEVEOgo+Cj4gSG1tLi4gSSBhc3N1bWUgeW91IHN0aWxsIGdldCB0aGUgX1NUQVJUX0ZB
-SUxFRCBzb21ldGltZXM/Cj4KPiBJbiB3aGF0IHN0YXRlIGRvIHlvdSBnZXQgaXQ/Cj4KPiBJZiB5
-b3UgZ2V0IGl0IGJlZm9yZSBfU1RBUlRFRCB5b3UnbGwgaGl0IGEgd2FybmluZyBpbgo+IHNjYW5f
-Y29tcGxldGVkKCkuIEl0IGRvZXNuJ3QgbWFrZSBzZW5zZSB0byBjYWxsIGl0IHNpbmNlIGFsbCBz
-Y2FuCj4gdXNlcnMgd2lsbCBmYWlsIHRvIHdhaXQgZm9yIGFyLT5zY2FuLnN0YXJ0ZWQgY29tcGxl
-dGlvbiBhbmQgY2xlYW4gdXAKPiBhbnl3YXkuCj4KPiBJZiB5b3UgZ2V0IGl0IGFmdGVyIF9TVEFS
-VEVEIHRoZW4gSSBndWVzcyBpdCBkb2VzIHNlbnNlIHRvIGNsZWFuIHVwLgoKSSBoYXZlIGEgYmV0
-dGVyIHZlcnNpb24gb2YgdGhpcyBwYXRjaCB0aGF0IEkgYW0gdGVzdGluZy4KCkkgY2FuIGdldCB0
-aGUgc2Nhbi1zdGFydC1mYWlsZWQgZXZlbiBpbiBDVCBmaXJtd2FyZSB3aGVuIGEgdmRldgpmYWls
-cyB0byBwcm9wZXJseSBzdGFydCBkdWUgdG8gZmlybXdhcmUgcmVzb3VyY2UgZXhoYXVzdGlvbiwg
-YW5kCnRoZW4gdGhlIGRyaXZlciBhc2tzIGl0IHRvIHNjYW4uCgpBdCBsZWFzdCBpbiAxMC4xLjQ2
-NyBmaXJtd2FyZSwgdGhlIHVwc3RyZWFtIGZpcm13YXJlIHdpbGwganVzdCBwYW5pYwp3aGVuIHRo
-ZSB2ZGV2IGNhbm5vdCBzdGFydCBpbiB0aGlzIGNhc2UsIHNvIEkgYW0gbm90IHN1cmUgaG93IHRv
-CnJlcHJvZHVjZSB0aGUgZXZlbnQgaW4gdXBzdHJlYW0gZmlybXdhcmUuICBTaW5jZSB0aGUgZXZl
-bnQgZXhpc3RzLApJIGRvIHRoaW5rIGl0IHNob3VsZCBiZSBwcm9wZXJseSBoYW5kbGVkIGluIHRo
-ZSBkcml2ZXIsIGhvd2V2ZXIuCgpUaGFua3MsCkJlbgoKPgo+Cj4gTWljaGHFggo+CgotLSAKQmVu
-IEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIElu
-YyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+
+
+On 01/07/2015 01:58 AM, Michal Kazior wrote:
+> On 30 December 2014 at 20:18, Ben Greear <greearb@candelatech.com> wrote:
+>> yeah, so maybe not reproducible upstream, but anyway...
+>>
+>> My test case is to re-associate 4 stations over and over again, with
+>> a scan and a 5 second sleep between iterations.  After
+>> a short time, something goes weird and OS is mostly hung, probably
+>> because important locks are held while ath10k is timing out communication
+>> to firmware.
+>>
+>> The last message I see from firmware is that it is deleting vdev 4.
+>>
+>> I do not see any indication that firmware is crashed, but something
+>> is wrong, maybe mgt buffers are used up?
+> [...]
+>> [  342.962494] ath10k_pci 0000:04:00.0: failed to set erp slot for vdev 4: -11
+>
+> -11 = -EAGAIN = out of wmi-htc tx credits. I wonder what the dbg
+> buffer is trying to say.
+>
+> Either host sent a corrupted message and clogged up firmware buffers,
+> firmware is busy processing other commands (wmi mgmt tx, wmi bcn
+> non-dma tx) or became confused/corrupted.
+
+I finally got back to debugging this yesterday, and interestingly, when
+I added dbglog calls in the firmware around the credit handling, the problem is 'fixed'.
+
+Looks like it ran overnight, where as before it would fail within a few minutes.
+
+So, maybe a race around pci memory flushing or something like that?
+
+I'll slowly back out my debug today and see what I can see.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
