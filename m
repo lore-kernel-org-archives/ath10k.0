@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8nxk-00066c-PC
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 10:35:41 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+ id 1Y8oJ5-0004uQ-Bh
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 10:57:44 +0000
+Message-ID: <54AD103B.40002@qti.qualcomm.com>
+Date: Wed, 7 Jan 2015 16:23:47 +0530
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-Message-ID: <21677.3195.451116.244389@gargle.gargle.HOWL>
-Date: Wed, 7 Jan 2015 16:07:47 +0530
 Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-In-Reply-To: <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
 References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
  <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +19,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>, Sujith Manoharan <sujith@msujith.org>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior wrote:
+
+
+On Wednesday 07 January 2015 03:44 PM, Michal Kazior wrote:
+> On 5 January 2015 at 05:39, Sujith Manoharan <sujith@msujith.org> wrote:
+>> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+>>
+>> The HTT RX ring is replenished with a maximum of 16 buffers,
+>> but this might be insufficient when RX traffic is high.
+>> Not having enough RX buffers throttles the FW, resulting
+>> in low throughput.
+>>
+>> This patch adds a module parameter to adjust the fill size
+>> based on the platform/usage.
+>
 > I don't think this should be adjustable.
 
-Why ?
+Default value of 16 causes rx ring corruption within 1 hour of stress
+testing. Increasing this limit to 1000 solves the issue, not sure what
+max value in > 16 and <= 1000 works. This lower value obviously has issues
+on some platforms.
 
-> I assume you tested this in conjunction with rx batching patch - what
-> fill level values did you use to see throughput improvement? How
-> (un)responsive was serial/ssh connection to the machine?
-
-Any value north of 128 made the console unresponsive, with
-the CPU maxed out. But 16 appears to be rather low ? Performance
-numbers are low and we end up with lots of replenish tasklets.
-
-But - the internal driver somehow manages to keep CPU usage
-down at a fill level of *1000*.
-
-I think for ath10k, the default could stay the same on low end MIPS boards
-like AP135, but on slightly more powerful boards like AP148 with dual-core
-ARM processors, performance can be boosted by increasing the fill level
-while still keeping responsiveness at a reasonable level.
-
-> I have a patch internally which removes the replenishment tasklet and
-> I wonder how will it behave with rx batching then, hmm..
-
-I tried that earlier and could see only marginal improvement. The biggest
-increase came when I replaced netif_receive_skb() with netif_rx()
-in mac80211/rx.c.
-
-Sujith
+Vasanth
 
 _______________________________________________
 ath10k mailing list
