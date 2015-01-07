@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y8oJ5-0004uQ-Bh
- for ath10k@lists.infradead.org; Wed, 07 Jan 2015 10:57:44 +0000
-Message-ID: <54AD103B.40002@qti.qualcomm.com>
-Date: Wed, 7 Jan 2015 16:23:47 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y8qkd-0005Bm-SW
+ for ath10k@lists.infradead.org; Wed, 07 Jan 2015 13:34:21 +0000
+Message-ID: <54AD35C4.3070803@candelatech.com>
+Date: Wed, 07 Jan 2015 05:33:56 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
- <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
+Subject: Re: Clean up scan when start fails?
+References: <54AAE04A.4060000@candelatech.com>
+ <CA+BoTQkPcC2pVYe5mWnXE3CAUsZKiVpm3+r-+1UL-i36O1PbSQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQkPcC2pVYe5mWnXE3CAUsZKiVpm3+r-+1UL-i36O1PbSQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +19,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Sujith Manoharan <sujith@msujith.org>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-
-
-On Wednesday 07 January 2015 03:44 PM, Michal Kazior wrote:
-> On 5 January 2015 at 05:39, Sujith Manoharan <sujith@msujith.org> wrote:
->> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
->>
->> The HTT RX ring is replenished with a maximum of 16 buffers,
->> but this might be insufficient when RX traffic is high.
->> Not having enough RX buffers throttles the FW, resulting
->> in low throughput.
->>
->> This patch adds a module parameter to adjust the fill size
->> based on the platform/usage.
->
-> I don't think this should be adjustable.
-
-Default value of 16 causes rx ring corruption within 1 hour of stress
-testing. Increasing this limit to 1000 solves the issue, not sure what
-max value in > 16 and <= 1000 works. This lower value obviously has issues
-on some platforms.
-
-Vasanth
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAwMS8wNy8yMDE1IDAxOjQxIEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDUgSmFu
+dWFyeSAyMDE1IGF0IDIwOjA0LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4g
+d3JvdGU6Cj4+IFNob3VsZCB3ZSBoYXZlIHNvbWV0aGluZyBsaWtlIHRoaXMgdG8gY2xlYW4gdXAg
+dGhlIHNjYW4KPj4gc3RhdGUgbWFjaGluZSB3aGVuIGZpcm13YXJlIGZhaWxzIHRvIHN0YXJ0IHRo
+ZSBzY2FuPwo+Pgo+PiBbZ3JlZWFyYkBiZW4tZHQyIGxpbnV4LTMuMTkuZGV2LnldJCBnaXQgZGlm
+Zgo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYyBi
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmMKPj4gaW5kZXggNmU0ZWNlMC4u
+OTAyMDIwNCAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
+bWkuYwo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCj4+IEBA
+IC0xMDU3LDYgKzEwNTcsNyBAQCBzdGF0aWMgaW50IGF0aDEwa193bWlfZXZlbnRfc2NhbihzdHJ1
+Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikKPj4gICAgICAgICAgICAgICAgICBi
+cmVhazsKPj4gICAgICAgICAgY2FzZSBXTUlfU0NBTl9FVkVOVF9TVEFSVF9GQUlMRUQ6Cj4+ICAg
+ICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJyZWNlaXZlZCBzY2FuIHN0YXJ0IGZhaWx1
+cmUgZXZlbnRcbiIpOwo+PiArICAgICAgICAgICAgICAgYXRoMTBrX3dtaV9ldmVudF9zY2FuX2Nv
+bXBsZXRlZChhcik7Cj4+ICAgICAgICAgICAgICAgICAgYnJlYWs7Cj4+ICAgICAgICAgIGNhc2Ug
+V01JX1NDQU5fRVZFTlRfREVRVUVVRUQ6Cj4+ICAgICAgICAgIGNhc2UgV01JX1NDQU5fRVZFTlRf
+UFJFRU1QVEVEOgo+Cj4gSG1tLi4gSSBhc3N1bWUgeW91IHN0aWxsIGdldCB0aGUgX1NUQVJUX0ZB
+SUxFRCBzb21ldGltZXM/Cj4KPiBJbiB3aGF0IHN0YXRlIGRvIHlvdSBnZXQgaXQ/Cj4KPiBJZiB5
+b3UgZ2V0IGl0IGJlZm9yZSBfU1RBUlRFRCB5b3UnbGwgaGl0IGEgd2FybmluZyBpbgo+IHNjYW5f
+Y29tcGxldGVkKCkuIEl0IGRvZXNuJ3QgbWFrZSBzZW5zZSB0byBjYWxsIGl0IHNpbmNlIGFsbCBz
+Y2FuCj4gdXNlcnMgd2lsbCBmYWlsIHRvIHdhaXQgZm9yIGFyLT5zY2FuLnN0YXJ0ZWQgY29tcGxl
+dGlvbiBhbmQgY2xlYW4gdXAKPiBhbnl3YXkuCj4KPiBJZiB5b3UgZ2V0IGl0IGFmdGVyIF9TVEFS
+VEVEIHRoZW4gSSBndWVzcyBpdCBkb2VzIHNlbnNlIHRvIGNsZWFuIHVwLgoKSSBoYXZlIGEgYmV0
+dGVyIHZlcnNpb24gb2YgdGhpcyBwYXRjaCB0aGF0IEkgYW0gdGVzdGluZy4KCkkgY2FuIGdldCB0
+aGUgc2Nhbi1zdGFydC1mYWlsZWQgZXZlbiBpbiBDVCBmaXJtd2FyZSB3aGVuIGEgdmRldgpmYWls
+cyB0byBwcm9wZXJseSBzdGFydCBkdWUgdG8gZmlybXdhcmUgcmVzb3VyY2UgZXhoYXVzdGlvbiwg
+YW5kCnRoZW4gdGhlIGRyaXZlciBhc2tzIGl0IHRvIHNjYW4uCgpBdCBsZWFzdCBpbiAxMC4xLjQ2
+NyBmaXJtd2FyZSwgdGhlIHVwc3RyZWFtIGZpcm13YXJlIHdpbGwganVzdCBwYW5pYwp3aGVuIHRo
+ZSB2ZGV2IGNhbm5vdCBzdGFydCBpbiB0aGlzIGNhc2UsIHNvIEkgYW0gbm90IHN1cmUgaG93IHRv
+CnJlcHJvZHVjZSB0aGUgZXZlbnQgaW4gdXBzdHJlYW0gZmlybXdhcmUuICBTaW5jZSB0aGUgZXZl
+bnQgZXhpc3RzLApJIGRvIHRoaW5rIGl0IHNob3VsZCBiZSBwcm9wZXJseSBoYW5kbGVkIGluIHRo
+ZSBkcml2ZXIsIGhvd2V2ZXIuCgpUaGFua3MsCkJlbgoKPgo+Cj4gTWljaGHFggo+CgotLSAKQmVu
+IEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIElu
+YyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
