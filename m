@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9B1l-00008H-6D
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:22 +0000
-Received: by mail-wi0-f175.google.com with SMTP id l15so2502703wiw.2
- for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:59 -0800 (PST)
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y9BI3-0007TB-QX
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:30:12 +0000
+Received: by mail-wg0-f52.google.com with SMTP id x12so2042004wgg.11
+ for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:29:50 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 5/5] ath10k: implement support for ap beacon offloading
-Date: Thu,  8 Jan 2015 12:12:30 +0100
-Message-Id: <1420715550-16017-6-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
-References: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add additional fw build version to info print
+Date: Thu,  8 Jan 2015 12:29:32 +0100
+Message-Id: <1420716572-23826-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,208 +25,72 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-New firmware revisions support beacon and probe
-response templates instead. This means SWBA events
-are no longer delivered for these firmware
-revisions.
+The wmi-tlv firmware contains additional
+versioning info. It may help reporting/debugging.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
+ drivers/net/wireless/ath/ath10k/core.h  | 4 ++++
+ drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
+ drivers/net/wireless/ath/ath10k/wmi.c   | 4 ++++
+ 3 files changed, 14 insertions(+), 2 deletions(-)
 
-Notes:
-    v2:
-     * add a comment why P2P IE is stripped from beacon template [Kalle]
-
- drivers/net/wireless/ath/ath10k/mac.c | 162 ++++++++++++++++++++++++++++++++++
- 1 file changed, 162 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5085f55..b4d4fec 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -967,6 +967,143 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
- 	return ret;
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7b6d9e4..aa12c8a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -458,6 +458,10 @@ struct ath10k {
+ 	u32 fw_version_minor;
+ 	u16 fw_version_release;
+ 	u16 fw_version_build;
++	u32 fw_build_major;
++	u32 fw_build_minor;
++	u32 fw_build_si;
++	u32 fw_build_crm;
+ 	u32 phy_capability;
+ 	u32 hw_min_tx_power;
+ 	u32 hw_max_tx_power;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 6ca2442..9a6b358 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -124,7 +124,7 @@ EXPORT_SYMBOL(ath10k_info);
  
-+static int ath10k_mac_setup_bcn_p2p_ie(struct ath10k_vif *arvif,
-+				       struct sk_buff *bcn)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	struct ieee80211_mgmt *mgmt;
-+	const u8 *p2p_ie;
-+	int ret;
-+
-+	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
-+		return 0;
-+
-+	if (arvif->vdev_subtype != WMI_VDEV_SUBTYPE_P2P_GO)
-+		return 0;
-+
-+	mgmt = (void *)bcn->data;
-+	p2p_ie = cfg80211_find_vendor_ie(WLAN_OUI_WFA, WLAN_OUI_TYPE_WFA_P2P,
-+					 mgmt->u.beacon.variable,
-+					 bcn->len - (mgmt->u.beacon.variable -
-+						     bcn->data));
-+	if (!p2p_ie)
-+		return -ENOENT;
-+
-+	ret = ath10k_wmi_p2p_go_bcn_ie(ar, arvif->vdev_id, p2p_ie);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit p2p go bcn ie for vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_mac_remove_vendor_ie(struct sk_buff *skb, unsigned int oui,
-+				       u8 oui_type, size_t ie_offset)
-+{
-+	size_t len;
-+	const u8 *next;
-+	const u8 *end;
-+	u8 *ie;
-+
-+	if (WARN_ON(skb->len < ie_offset))
-+		return -EINVAL;
-+
-+	ie = (u8 *)cfg80211_find_vendor_ie(oui, oui_type,
-+					   skb->data + ie_offset,
-+					   skb->len - ie_offset);
-+	if (!ie)
-+		return -ENOENT;
-+
-+	len = ie[1] + 2;
-+	end = skb->data + skb->len;
-+	next = ie + len;
-+
-+	if (WARN_ON(next > end))
-+		return -EINVAL;
-+
-+	memmove(ie, next, end - next);
-+	skb_trim(skb, skb->len - len);
-+
-+	return 0;
-+}
-+
-+static int ath10k_mac_setup_bcn_tmpl(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	struct ieee80211_hw *hw = ar->hw;
-+	struct ieee80211_vif *vif = arvif->vif;
-+	struct ieee80211_mutable_offsets offs = {};
-+	struct sk_buff *bcn;
-+	int ret;
-+
-+	if (!test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map))
-+		return 0;
-+
-+	bcn = ieee80211_beacon_get_template(hw, vif, &offs);
-+	if (!bcn) {
-+		ath10k_warn(ar, "failed to get beacon template from mac80211\n");
-+		return -EPERM;
-+	}
-+
-+	ret = ath10k_mac_setup_bcn_p2p_ie(arvif, bcn);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to setup p2p go bcn ie: %d\n", ret);
-+		kfree_skb(bcn);
-+		return ret;
-+	}
-+
-+	/* P2P IE is inserted by firmware automatically (as configured above)
-+	 * so remove it from the base beacon template to avoid duplicate P2P
-+	 * IEs in beacon frames.
-+	 */
-+	ath10k_mac_remove_vendor_ie(bcn, WLAN_OUI_WFA, WLAN_OUI_TYPE_WFA_P2P,
-+				    offsetof(struct ieee80211_mgmt,
-+					     u.beacon.variable));
-+
-+	ret = ath10k_wmi_bcn_tmpl(ar, arvif->vdev_id, offs.tim_offset, bcn, 0,
-+				  0, NULL, 0);
-+	kfree_skb(bcn);
-+
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit beacon template command: %d\n",
-+			    ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	struct ieee80211_hw *hw = ar->hw;
-+	struct ieee80211_vif *vif = arvif->vif;
-+	struct sk_buff *prb;
-+	int ret;
-+
-+	if (!test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map))
-+		return 0;
-+
-+	prb = ieee80211_proberesp_get(hw, vif);
-+	if (!prb) {
-+		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
-+		return -EPERM;
-+	}
-+
-+	ret = ath10k_wmi_prb_tmpl(ar, arvif->vdev_id, prb);
-+	kfree_skb(prb);
-+
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit probe resp template command: %d\n",
-+			    ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static void ath10k_control_beaconing(struct ath10k_vif *arvif,
- 				     struct ieee80211_bss_conf *info)
+ void ath10k_print_driver_info(struct ath10k *ar)
  {
-@@ -3283,6 +3420,18 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
- 		if (ret)
- 			ath10k_warn(ar, "failed to set beacon mode for vdev %d: %i\n",
- 				    arvif->vdev_id, ret);
-+
-+		ret = ath10k_mac_setup_bcn_tmpl(arvif);
-+		if (ret)
-+			ath10k_warn(ar, "failed to update beacon template: %d\n",
-+				    ret);
-+	}
-+
-+	if (changed & BSS_CHANGED_AP_PROBE_RESP) {
-+		ret = ath10k_mac_setup_prb_tmpl(arvif);
-+		if (ret)
-+			ath10k_warn(ar, "failed to setup probe resp template on vdev %i: %d\n",
-+				    arvif->vdev_id, ret);
- 	}
- 
- 	if (changed & BSS_CHANGED_BEACON_INFO) {
-@@ -5127,6 +5276,19 @@ int ath10k_mac_register(struct ath10k *ar)
- 
- 	ar->hw->max_listen_interval = ATH10K_MAX_HW_LISTEN_INTERVAL;
- 
-+	if (test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map)) {
-+		ar->hw->wiphy->flags |= WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD;
-+
-+		/* Firmware delivers WPS/P2P Probe Requests frames to driver so
-+		 * that userspace (e.g. wpa_supplicant/hostapd) can generate
-+		 * correct Probe Responses. This is more of a hack advert..
-+		 */
-+		ar->hw->wiphy->probe_resp_offload |=
-+			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_WPS |
-+			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_WPS2 |
-+			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_P2P;
-+	}
-+
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
- 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
- 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
+-	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d\n",
++	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d build %u.%u.%u.%u\n",
+ 		    ar->hw_params.name,
+ 		    ar->target_version,
+ 		    ar->chip_id,
+@@ -134,7 +134,11 @@ void ath10k_print_driver_info(struct ath10k *ar)
+ 		    ar->htt.target_version_minor,
+ 		    ar->wmi.op_version,
+ 		    ath10k_cal_mode_str(ar->cal_mode),
+-		    ar->max_num_stations);
++		    ar->max_num_stations,
++		    ar->fw_build_major,
++		    ar->fw_build_minor,
++		    ar->fw_build_si,
++		    ar->fw_build_crm);
+ 	ath10k_info(ar, "debug %d debugfs %d tracing %d dfs %d testmode %d\n",
+ 		    config_enabled(CONFIG_ATH10K_DEBUG),
+ 		    config_enabled(CONFIG_ATH10K_DEBUGFS),
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index ac74290..8c26c2a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2907,6 +2907,10 @@ void ath10k_wmi_event_service_ready(struct ath10k *ar, struct sk_buff *skb)
+ 	ar->fw_version_release =
+ 		(__le32_to_cpu(arg.sw_ver1) & 0xffff0000) >> 16;
+ 	ar->fw_version_build = (__le32_to_cpu(arg.sw_ver1) & 0x0000ffff);
++	ar->fw_build_major = (__le32_to_cpu(arg.fw_build) & 0xf0000000) >> 28;
++	ar->fw_build_minor = (__le32_to_cpu(arg.fw_build) & 0x0f000000) >> 24;
++	ar->fw_build_si = (__le32_to_cpu(arg.fw_build) & 0x00f00000) >> 20;
++	ar->fw_build_crm = (__le32_to_cpu(arg.fw_build) & 0x00007fff) >> 0;
+ 	ar->phy_capability = __le32_to_cpu(arg.phy_capab);
+ 	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
+ 	ar->ath_common.regulatory.current_rd = __le32_to_cpu(arg.eeprom_rd);
 -- 
 1.8.5.3
 
