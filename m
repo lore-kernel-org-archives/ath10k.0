@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9B1k-00008A-Bh
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:21 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so2347038wib.1
- for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:57 -0800 (PST)
+ id 1Y9B1l-00008H-6D
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:22 +0000
+Received: by mail-wi0-f175.google.com with SMTP id l15so2502703wiw.2
+ for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:59 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 4/5] ath10k: implement p2p bcn ie command
-Date: Thu,  8 Jan 2015 12:12:29 +0100
-Message-Id: <1420715550-16017-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 5/5] ath10k: implement support for ap beacon offloading
+Date: Thu,  8 Jan 2015 12:12:30 +0100
+Message-Id: <1420715550-16017-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
 References: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,154 +27,208 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Along beacon template host is expected to setup
-p2p information elements as well. Implement wmi
-interface for it.
+New firmware revisions support beacon and probe
+response templates instead. This means SWBA events
+are no longer delivered for these firmware
+revisions.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 17 +++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 41 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  5 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  3 +++
- 4 files changed, 66 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 148a44a..8e815d4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -125,6 +125,8 @@ struct wmi_ops {
- 					void *prb_ies, size_t prb_ies_len);
- 	struct sk_buff *(*gen_prb_tmpl)(struct ath10k *ar, u32 vdev_id,
- 					struct sk_buff *bcn);
-+	struct sk_buff *(*gen_p2p_go_bcn_ie)(struct ath10k *ar, u32 vdev_id,
-+					     const u8 *p2p_ie);
- };
- 
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -897,4 +899,19 @@ ath10k_wmi_prb_tmpl(struct ath10k *ar, u32 vdev_id, struct sk_buff *prb)
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->prb_tmpl_cmdid);
+Notes:
+    v2:
+     * add a comment why P2P IE is stripped from beacon template [Kalle]
+
+ drivers/net/wireless/ath/ath10k/mac.c | 162 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 162 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5085f55..b4d4fec 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -967,6 +967,143 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
+ 	return ret;
  }
  
-+static inline int
-+ath10k_wmi_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id, const u8 *p2p_ie)
++static int ath10k_mac_setup_bcn_p2p_ie(struct ath10k_vif *arvif,
++				       struct sk_buff *bcn)
 +{
-+	struct sk_buff *skb;
++	struct ath10k *ar = arvif->ar;
++	struct ieee80211_mgmt *mgmt;
++	const u8 *p2p_ie;
++	int ret;
 +
-+	if (!ar->wmi.ops->gen_p2p_go_bcn_ie)
-+		return -EOPNOTSUPP;
++	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
++		return 0;
 +
-+	skb = ar->wmi.ops->gen_p2p_go_bcn_ie(ar, vdev_id, p2p_ie);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
++	if (arvif->vdev_subtype != WMI_VDEV_SUBTYPE_P2P_GO)
++		return 0;
 +
-+	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->p2p_go_set_beacon_ie);
++	mgmt = (void *)bcn->data;
++	p2p_ie = cfg80211_find_vendor_ie(WLAN_OUI_WFA, WLAN_OUI_TYPE_WFA_P2P,
++					 mgmt->u.beacon.variable,
++					 bcn->len - (mgmt->u.beacon.variable -
++						     bcn->data));
++	if (!p2p_ie)
++		return -ENOENT;
++
++	ret = ath10k_wmi_p2p_go_bcn_ie(ar, arvif->vdev_id, p2p_ie);
++	if (ret) {
++		ath10k_warn(ar, "failed to submit p2p go bcn ie for vdev %i: %d\n",
++			    arvif->vdev_id, ret);
++		return ret;
++	}
++
++	return 0;
 +}
 +
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 1713f8c..7c4297e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2085,6 +2085,46 @@ ath10k_wmi_tlv_op_gen_prb_tmpl(struct ath10k *ar, u32 vdev_id,
- 	return skb;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id,
-+				    const u8 *p2p_ie)
++static int ath10k_mac_remove_vendor_ie(struct sk_buff *skb, unsigned int oui,
++				       u8 oui_type, size_t ie_offset)
 +{
-+	struct wmi_tlv_p2p_go_bcn_ie *cmd;
-+	struct wmi_tlv *tlv;
-+	struct sk_buff *skb;
-+	void *ptr;
 +	size_t len;
++	const u8 *next;
++	const u8 *end;
++	u8 *ie;
 +
-+	len = sizeof(*tlv) + sizeof(*cmd) +
-+	      sizeof(*tlv) + roundup(p2p_ie[1] + 2, 4);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
++	if (WARN_ON(skb->len < ie_offset))
++		return -EINVAL;
 +
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_P2P_GO_SET_BEACON_IE);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->ie_len = __cpu_to_le32(p2p_ie[1] + 2);
++	ie = (u8 *)cfg80211_find_vendor_ie(oui, oui_type,
++					   skb->data + ie_offset,
++					   skb->len - ie_offset);
++	if (!ie)
++		return -ENOENT;
 +
-+	ptr += sizeof(*tlv);
-+	ptr += sizeof(*cmd);
++	len = ie[1] + 2;
++	end = skb->data + skb->len;
++	next = ie + len;
 +
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
-+	tlv->len = __cpu_to_le16(roundup(p2p_ie[1] + 2, 4));
-+	memcpy(tlv->value, p2p_ie, p2p_ie[1] + 2);
++	if (WARN_ON(next > end))
++		return -EINVAL;
 +
-+	ptr += sizeof(*tlv);
-+	ptr += roundup(p2p_ie[1] + 2, 4);
++	memmove(ie, next, end - next);
++	skb_trim(skb, skb->len - len);
 +
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv p2p go bcn ie for vdev %i\n",
-+		   vdev_id);
-+	return skb;
++	return 0;
 +}
 +
- /****************/
- /* TLV mappings */
- /****************/
-@@ -2372,6 +2412,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	/* .gen_pdev_get_temperature not implemented */
- 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
- 	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
-+	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
- };
- 
- /************/
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 5772519..eb02290 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1404,6 +1404,11 @@ struct wmi_tlv_prb_tmpl_cmd {
- 	__le32 buf_len;
- } __packed;
- 
-+struct wmi_tlv_p2p_go_bcn_ie {
-+	__le32 vdev_id;
-+	__le32 ie_len;
-+} __packed;
++static int ath10k_mac_setup_bcn_tmpl(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++	struct ieee80211_hw *hw = ar->hw;
++	struct ieee80211_vif *vif = arvif->vif;
++	struct ieee80211_mutable_offsets offs = {};
++	struct sk_buff *bcn;
++	int ret;
 +
- void ath10k_wmi_tlv_attach(struct ath10k *ar);
++	if (!test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map))
++		return 0;
++
++	bcn = ieee80211_beacon_get_template(hw, vif, &offs);
++	if (!bcn) {
++		ath10k_warn(ar, "failed to get beacon template from mac80211\n");
++		return -EPERM;
++	}
++
++	ret = ath10k_mac_setup_bcn_p2p_ie(arvif, bcn);
++	if (ret) {
++		ath10k_warn(ar, "failed to setup p2p go bcn ie: %d\n", ret);
++		kfree_skb(bcn);
++		return ret;
++	}
++
++	/* P2P IE is inserted by firmware automatically (as configured above)
++	 * so remove it from the base beacon template to avoid duplicate P2P
++	 * IEs in beacon frames.
++	 */
++	ath10k_mac_remove_vendor_ie(bcn, WLAN_OUI_WFA, WLAN_OUI_TYPE_WFA_P2P,
++				    offsetof(struct ieee80211_mgmt,
++					     u.beacon.variable));
++
++	ret = ath10k_wmi_bcn_tmpl(ar, arvif->vdev_id, offs.tim_offset, bcn, 0,
++				  0, NULL, 0);
++	kfree_skb(bcn);
++
++	if (ret) {
++		ath10k_warn(ar, "failed to submit beacon template command: %d\n",
++			    ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int ath10k_mac_setup_prb_tmpl(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++	struct ieee80211_hw *hw = ar->hw;
++	struct ieee80211_vif *vif = arvif->vif;
++	struct sk_buff *prb;
++	int ret;
++
++	if (!test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map))
++		return 0;
++
++	prb = ieee80211_proberesp_get(hw, vif);
++	if (!prb) {
++		ath10k_warn(ar, "failed to get probe resp template from mac80211\n");
++		return -EPERM;
++	}
++
++	ret = ath10k_wmi_prb_tmpl(ar, arvif->vdev_id, prb);
++	kfree_skb(prb);
++
++	if (ret) {
++		ath10k_warn(ar, "failed to submit probe resp template command: %d\n",
++			    ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static void ath10k_control_beaconing(struct ath10k_vif *arvif,
+ 				     struct ieee80211_bss_conf *info)
+ {
+@@ -3283,6 +3420,18 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to set beacon mode for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
++
++		ret = ath10k_mac_setup_bcn_tmpl(arvif);
++		if (ret)
++			ath10k_warn(ar, "failed to update beacon template: %d\n",
++				    ret);
++	}
++
++	if (changed & BSS_CHANGED_AP_PROBE_RESP) {
++		ret = ath10k_mac_setup_prb_tmpl(arvif);
++		if (ret)
++			ath10k_warn(ar, "failed to setup probe resp template on vdev %i: %d\n",
++				    arvif->vdev_id, ret);
+ 	}
  
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 8c46de1..2a1a98f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4930,6 +4930,7 @@ static const struct wmi_ops wmi_ops = {
- 	/* .gen_pdev_get_temperature not implemented */
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
- };
+ 	if (changed & BSS_CHANGED_BEACON_INFO) {
+@@ -5127,6 +5276,19 @@ int ath10k_mac_register(struct ath10k *ar)
  
- static const struct wmi_ops wmi_10_1_ops = {
-@@ -4986,6 +4987,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
- };
+ 	ar->hw->max_listen_interval = ATH10K_MAX_HW_LISTEN_INTERVAL;
  
- static const struct wmi_ops wmi_10_2_ops = {
-@@ -5098,6 +5100,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
-+	/* .gen_p2p_go_bcn_ie not implemented */
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
++	if (test_bit(WMI_SERVICE_BEACON_OFFLOAD, ar->wmi.svc_map)) {
++		ar->hw->wiphy->flags |= WIPHY_FLAG_AP_PROBE_RESP_OFFLOAD;
++
++		/* Firmware delivers WPS/P2P Probe Requests frames to driver so
++		 * that userspace (e.g. wpa_supplicant/hostapd) can generate
++		 * correct Probe Responses. This is more of a hack advert..
++		 */
++		ar->hw->wiphy->probe_resp_offload |=
++			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_WPS |
++			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_WPS2 |
++			NL80211_PROBE_RESP_OFFLOAD_SUPPORT_P2P;
++	}
++
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_REMAIN_ON_CHANNEL;
+ 	ar->hw->wiphy->flags |= WIPHY_FLAG_HAS_CHANNEL_SWITCH;
+ 	ar->hw->wiphy->max_remain_on_channel_duration = 5000;
 -- 
 1.8.5.3
 
