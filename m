@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
- by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9B1k-0006Vu-Ux
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:23 +0000
-Received: by mail-wi0-f178.google.com with SMTP id em10so2508601wid.5
- for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:56 -0800 (PST)
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y9B7B-00081L-Qf
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:18:59 +0000
+Received: by mail-wi0-f173.google.com with SMTP id r20so2540476wiv.0
+ for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:18:35 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 3/5] ath10k: implement prb tmpl wmi command
-Date: Thu,  8 Jan 2015 12:12:28 +0100
-Message-Id: <1420715550-16017-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
-References: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: implement diag data container event
+Date: Thu,  8 Jan 2015 12:18:16 +0100
+Message-Id: <1420715897-18706-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,167 +27,197 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-New firmware revisions with beacon templates need
-probe templates as well because they don't forward
-probe requests to host at all.
+Some firmware revisions may report this event as
+part of their diagnostics.
 
-This is required for new firmware to work with
-direct probe requests (notably required by hidden
-ssid AP).
+This avoids `unknown event` warnings and adds
+tracing for the event.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 17 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 50 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  5 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  3 ++
- 4 files changed, 75 insertions(+)
+ drivers/net/wireless/ath/ath10k/trace.h   | 41 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 71 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 19 +++++++++
+ 3 files changed, 131 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 2ef75ef..148a44a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -123,6 +123,8 @@ struct wmi_ops {
- 					u32 tim_ie_offset, struct sk_buff *bcn,
- 					u32 prb_caps, u32 prb_erp,
- 					void *prb_ies, size_t prb_ies_len);
-+	struct sk_buff *(*gen_prb_tmpl)(struct ath10k *ar, u32 vdev_id,
-+					struct sk_buff *bcn);
- };
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index b289378..1c541f7 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -453,6 +453,47 @@ TRACE_EVENT(ath10k_htt_rx_desc,
+ 	 )
+ );
  
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -880,4 +882,19 @@ ath10k_wmi_bcn_tmpl(struct ath10k *ar, u32 vdev_id, u32 tim_ie_offset,
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->bcn_tmpl_cmdid);
- }
++TRACE_EVENT(ath10k_wmi_diag_container,
++	    TP_PROTO(struct ath10k *ar,
++		     u8 type,
++		     u32 timestamp,
++		     u32 code,
++		     u16 len,
++		     const void *data),
++
++	TP_ARGS(ar, type, timestamp, code, len, data),
++
++	TP_STRUCT__entry(
++		__string(device, dev_name(ar->dev))
++		__string(driver, dev_driver_string(ar->dev))
++		__field(u8, type)
++		__field(u32, timestamp)
++		__field(u32, code)
++		__field(u16, len)
++		__dynamic_array(u8, data, len)
++	),
++
++	TP_fast_assign(
++		__assign_str(device, dev_name(ar->dev));
++		__assign_str(driver, dev_driver_string(ar->dev));
++		__entry->type = type;
++		__entry->timestamp = timestamp;
++		__entry->code = code;
++		__entry->len = len;
++		memcpy(__get_dynamic_array(data), data, len);
++	),
++
++	TP_printk(
++		"%s %s diag container type %hhu timestamp %u code %u len %d",
++		__get_str(driver),
++		__get_str(device),
++		__entry->type,
++		__entry->timestamp,
++		__entry->code,
++		__entry->len
++	)
++);
++
+ #endif /* _TRACE_H_ || TRACE_HEADER_MULTI_READ*/
  
-+static inline int
-+ath10k_wmi_prb_tmpl(struct ath10k *ar, u32 vdev_id, struct sk_buff *prb)
-+{
-+	struct sk_buff *skb;
-+
-+	if (!ar->wmi.ops->gen_prb_tmpl)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->gen_prb_tmpl(ar, vdev_id, prb);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->prb_tmpl_cmdid);
-+}
-+
- #endif
+ /* we don't want to use include/trace/events */
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 11be2d5..1713f8c 100644
+index 4c050ce..46a9f50 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2036,6 +2036,55 @@ ath10k_wmi_tlv_op_gen_bcn_tmpl(struct ath10k *ar, u32 vdev_id,
- 	return skb;
- }
- 
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_prb_tmpl(struct ath10k *ar, u32 vdev_id,
-+			       struct sk_buff *prb)
-+{
-+	struct wmi_tlv_prb_tmpl_cmd *cmd;
-+	struct wmi_tlv_bcn_prb_info *info;
-+	struct wmi_tlv *tlv;
-+	struct sk_buff *skb;
-+	void *ptr;
-+	size_t len;
-+
-+	len = sizeof(*tlv) + sizeof(*cmd) +
-+	      sizeof(*tlv) + sizeof(*info) +
-+	      sizeof(*tlv) + roundup(prb->len, 4);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PRB_TMPL_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->buf_len = __cpu_to_le32(prb->len);
-+
-+	ptr += sizeof(*tlv);
-+	ptr += sizeof(*cmd);
-+
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_PRB_INFO);
-+	tlv->len = __cpu_to_le16(sizeof(*info));
-+	info = (void *)tlv->value;
-+	info->caps = 0;
-+	info->erp = 0;
-+
-+	ptr += sizeof(*tlv);
-+	ptr += sizeof(*info);
-+
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
-+	tlv->len = __cpu_to_le16(roundup(prb->len, 4));
-+	memcpy(tlv->value, prb->data, prb->len);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv prb tmpl vdev_id %i\n",
-+		   vdev_id);
-+	return skb;
-+}
-+
- /****************/
- /* TLV mappings */
- /****************/
-@@ -2322,6 +2371,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	/* .gen_pdev_set_quiet_mode not implemented */
- 	/* .gen_pdev_get_temperature not implemented */
- 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
-+	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
+@@ -58,6 +58,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
+ 		= { .min_len = sizeof(struct wlan_host_mem_req) },
+ 	[WMI_TLV_TAG_STRUCT_READY_EVENT]
+ 		= { .min_len = sizeof(struct wmi_tlv_rdy_ev) },
++	[WMI_TLV_TAG_STRUCT_DIAG_DATA_CONTAINER_EVENT]
++		= { .min_len = sizeof(struct wmi_tlv_diag_data_ev) },
  };
  
- /************/
+ static int
+@@ -156,6 +158,72 @@ static u16 ath10k_wmi_tlv_len(const void *ptr)
+ 	return __le16_to_cpu((((const struct wmi_tlv *)ptr) - 1)->len);
+ }
+ 
++/**************/
++/* TLV events */
++/**************/
++static int ath10k_wmi_tlv_event_diag_data(struct ath10k *ar,
++					  struct sk_buff *skb)
++{
++	const void **tb;
++	const struct wmi_tlv_diag_data_ev *ev;
++	const struct wmi_tlv_diag_item *item;
++	const void *data;
++	int ret, num_items, len;
++
++	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
++		return ret;
++	}
++
++	ev = tb[WMI_TLV_TAG_STRUCT_DIAG_DATA_CONTAINER_EVENT];
++	data = tb[WMI_TLV_TAG_ARRAY_BYTE];
++	if (!ev || !data) {
++		kfree(tb);
++		return -EPROTO;
++	}
++
++	num_items = __le32_to_cpu(ev->num_items);
++	len = ath10k_wmi_tlv_len(data);
++
++	while (num_items--) {
++		if (len == 0)
++			break;
++		if (len < sizeof(*item)) {
++			ath10k_warn(ar, "failed to parse diag data: can't fit item header\n");
++			break;
++		}
++
++		item = data;
++
++		if (len < sizeof(*item) + __le16_to_cpu(item->len)) {
++			ath10k_warn(ar, "failed to parse diag data: item is too long\n");
++			break;
++		}
++
++		trace_ath10k_wmi_diag_container(ar,
++						item->type,
++						__le32_to_cpu(item->timestamp),
++						__le32_to_cpu(item->code),
++						__le16_to_cpu(item->len),
++						item->payload);
++
++		len -= sizeof(*item);
++		len -= roundup(__le16_to_cpu(item->len), 4);
++
++		data += sizeof(*item);
++		data += roundup(__le16_to_cpu(item->len), 4);
++	}
++
++	if (num_items != -1 || len != 0)
++		ath10k_warn(ar, "failed to parse diag data event: num_items %d len %d\n",
++			    num_items, len);
++
++	kfree(tb);
++	return 0;
++}
++
+ /***********/
+ /* TLV ops */
+ /***********/
+@@ -268,6 +336,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_TLV_READY_EVENTID:
+ 		ath10k_wmi_event_ready(ar, skb);
+ 		break;
++	case WMI_TLV_DIAG_DATA_CONTAINER_EVENTID:
++		ath10k_wmi_tlv_event_diag_data(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index c477365..5772519 100644
+index 54ffa12..c1cde3c 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1399,6 +1399,11 @@ struct wmi_tlv_bcn_tmpl_cmd {
- 	__le32 buf_len;
+@@ -1375,6 +1375,25 @@ struct wmi_tlv_pktlog_disable {
+ 	__le32 reserved;
  } __packed;
  
-+struct wmi_tlv_prb_tmpl_cmd {
-+	__le32 vdev_id;
-+	__le32 buf_len;
++enum wmi_tlv_diag_item_type {
++	WMI_TLV_DIAG_ITEM_TYPE_FW_EVENT,
++	WMI_TLV_DIAG_ITEM_TYPE_FW_LOG,
++	WMI_TLV_DIAG_ITEM_TYPE_FW_DEBUG_MSG,
++};
++
++struct wmi_tlv_diag_item {
++	u8 type;
++	u8 reserved;
++	__le16 len;
++	__le32 timestamp;
++	__le32 code;
++	u8 payload[0];
++} __packed;
++
++struct wmi_tlv_diag_data_ev {
++	__le32 num_items;
 +} __packed;
 +
  void ath10k_wmi_tlv_attach(struct ath10k *ar);
  
  #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 491c18c..8c46de1 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4929,6 +4929,7 @@ static const struct wmi_ops wmi_ops = {
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
- 	/* .gen_pdev_get_temperature not implemented */
- 	/* .gen_bcn_tmpl not implemented */
-+	/* .gen_prb_tmpl not implemented */
- };
- 
- static const struct wmi_ops wmi_10_1_ops = {
-@@ -4984,6 +4985,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
- 	/* .gen_bcn_tmpl not implemented */
-+	/* .gen_prb_tmpl not implemented */
- };
- 
- static const struct wmi_ops wmi_10_2_ops = {
-@@ -5095,6 +5097,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
- 	/* .gen_bcn_tmpl not implemented */
-+	/* .gen_prb_tmpl not implemented */
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
 -- 
 1.8.5.3
 
