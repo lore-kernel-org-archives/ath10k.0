@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9BI3-0007TB-QX
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:30:12 +0000
-Received: by mail-wg0-f52.google.com with SMTP id x12so2042004wgg.11
- for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:29:50 -0800 (PST)
+ id 1Y9ATj-0000i2-BL
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 10:38:12 +0000
+Received: by mail-wi0-f182.google.com with SMTP id h11so2330962wiw.3
+ for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 02:37:39 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: add additional fw build version to info print
-Date: Thu,  8 Jan 2015 12:29:32 +0100
-Message-Id: <1420716572-23826-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fill max_num_vdevs for wmi-tlv
+Date: Thu,  8 Jan 2015 11:36:56 +0100
+Message-Id: <1420713416-14634-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,72 +25,29 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The wmi-tlv firmware contains additional
-versioning info. It may help reporting/debugging.
+Recent commit
+30c78167bc6536d9074aa79385a575596343bf69 ("ath10k:
+set max_num_vdevs based on wmi op version")
+skipped wmi-tlv case and left max_num_vdevs reset.
+Make sure it is properly set.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h  | 4 ++++
- drivers/net/wireless/ath/ath10k/debug.c | 8 ++++++--
- drivers/net/wireless/ath/ath10k/wmi.c   | 4 ++++
- 3 files changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7b6d9e4..aa12c8a 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -458,6 +458,10 @@ struct ath10k {
- 	u32 fw_version_minor;
- 	u16 fw_version_release;
- 	u16 fw_version_build;
-+	u32 fw_build_major;
-+	u32 fw_build_minor;
-+	u32 fw_build_si;
-+	u32 fw_build_crm;
- 	u32 phy_capability;
- 	u32 hw_min_tx_power;
- 	u32 hw_max_tx_power;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 6ca2442..9a6b358 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -124,7 +124,7 @@ EXPORT_SYMBOL(ath10k_info);
- 
- void ath10k_print_driver_info(struct ath10k *ar)
- {
--	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d\n",
-+	ath10k_info(ar, "%s (0x%08x, 0x%08x) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d build %u.%u.%u.%u\n",
- 		    ar->hw_params.name,
- 		    ar->target_version,
- 		    ar->chip_id,
-@@ -134,7 +134,11 @@ void ath10k_print_driver_info(struct ath10k *ar)
- 		    ar->htt.target_version_minor,
- 		    ar->wmi.op_version,
- 		    ath10k_cal_mode_str(ar->cal_mode),
--		    ar->max_num_stations);
-+		    ar->max_num_stations,
-+		    ar->fw_build_major,
-+		    ar->fw_build_minor,
-+		    ar->fw_build_si,
-+		    ar->fw_build_crm);
- 	ath10k_info(ar, "debug %d debugfs %d tracing %d dfs %d testmode %d\n",
- 		    config_enabled(CONFIG_ATH10K_DEBUG),
- 		    config_enabled(CONFIG_ATH10K_DEBUGFS),
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ac74290..8c26c2a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2907,6 +2907,10 @@ void ath10k_wmi_event_service_ready(struct ath10k *ar, struct sk_buff *skb)
- 	ar->fw_version_release =
- 		(__le32_to_cpu(arg.sw_ver1) & 0xffff0000) >> 16;
- 	ar->fw_version_build = (__le32_to_cpu(arg.sw_ver1) & 0x0000ffff);
-+	ar->fw_build_major = (__le32_to_cpu(arg.fw_build) & 0xf0000000) >> 28;
-+	ar->fw_build_minor = (__le32_to_cpu(arg.fw_build) & 0x0f000000) >> 24;
-+	ar->fw_build_si = (__le32_to_cpu(arg.fw_build) & 0x00f00000) >> 20;
-+	ar->fw_build_crm = (__le32_to_cpu(arg.fw_build) & 0x00007fff) >> 0;
- 	ar->phy_capability = __le32_to_cpu(arg.phy_capab);
- 	ar->num_rf_chains = __le32_to_cpu(arg.num_rf_chains);
- 	ar->ath_common.regulatory.current_rd = __le32_to_cpu(arg.eeprom_rd);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2d0671e..a546575 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -927,6 +927,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
++		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
 -- 
 1.8.5.3
 
