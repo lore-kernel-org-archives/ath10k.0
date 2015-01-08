@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9B1h-0003PX-1j
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:18 +0000
-Received: by mail-wg0-f52.google.com with SMTP id x12so1965941wgg.11
- for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:54 -0800 (PST)
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+ by merlin.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y9B1k-0006Vu-Ux
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 11:13:23 +0000
+Received: by mail-wi0-f178.google.com with SMTP id em10so2508601wid.5
+ for <ath10k@lists.infradead.org>; Thu, 08 Jan 2015 03:12:56 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 2/5] ath10k: implement beacon template command
-Date: Thu,  8 Jan 2015 12:12:27 +0100
-Message-Id: <1420715550-16017-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 3/5] ath10k: implement prb tmpl wmi command
+Date: Thu,  8 Jan 2015 12:12:28 +0100
+Message-Id: <1420715550-16017-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
 References: <1420715550-16017-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,124 +27,108 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-New firmware revisions may support setting beacon
-template. Implement wmi interface for it.
+New firmware revisions with beacon templates need
+probe templates as well because they don't forward
+probe requests to host at all.
+
+This is required for new firmware to work with
+direct probe requests (notably required by hidden
+ssid AP).
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 23 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 65 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 12 ++++++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 17 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 50 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  5 ++++
  drivers/net/wireless/ath/ath10k/wmi.c     |  3 ++
- 4 files changed, 103 insertions(+)
+ 4 files changed, 75 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 20e2c30..2ef75ef 100644
+index 2ef75ef..148a44a 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -119,6 +119,10 @@ struct wmi_ops {
- 						   u32 next_offset,
- 						   u32 enabled);
- 	struct sk_buff *(*gen_pdev_get_temperature)(struct ath10k *ar);
-+	struct sk_buff *(*gen_bcn_tmpl)(struct ath10k *ar, u32 vdev_id,
-+					u32 tim_ie_offset, struct sk_buff *bcn,
-+					u32 prb_caps, u32 prb_erp,
-+					void *prb_ies, size_t prb_ies_len);
+@@ -123,6 +123,8 @@ struct wmi_ops {
+ 					u32 tim_ie_offset, struct sk_buff *bcn,
+ 					u32 prb_caps, u32 prb_erp,
+ 					void *prb_ies, size_t prb_ies_len);
++	struct sk_buff *(*gen_prb_tmpl)(struct ath10k *ar, u32 vdev_id,
++					struct sk_buff *bcn);
  };
  
  int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -857,4 +861,23 @@ ath10k_wmi_pdev_get_temperature(struct ath10k *ar)
- 				   ar->wmi.cmd->pdev_get_temperature_cmdid);
+@@ -880,4 +882,19 @@ ath10k_wmi_bcn_tmpl(struct ath10k *ar, u32 vdev_id, u32 tim_ie_offset,
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->bcn_tmpl_cmdid);
  }
  
 +static inline int
-+ath10k_wmi_bcn_tmpl(struct ath10k *ar, u32 vdev_id, u32 tim_ie_offset,
-+		    struct sk_buff *bcn, u32 prb_caps, u32 prb_erp,
-+		    void *prb_ies, size_t prb_ies_len)
++ath10k_wmi_prb_tmpl(struct ath10k *ar, u32 vdev_id, struct sk_buff *prb)
 +{
 +	struct sk_buff *skb;
 +
-+	if (!ar->wmi.ops->gen_bcn_tmpl)
++	if (!ar->wmi.ops->gen_prb_tmpl)
 +		return -EOPNOTSUPP;
 +
-+	skb = ar->wmi.ops->gen_bcn_tmpl(ar, vdev_id, tim_ie_offset, bcn,
-+					prb_caps, prb_erp, prb_ies,
-+					prb_ies_len);
++	skb = ar->wmi.ops->gen_prb_tmpl(ar, vdev_id, prb);
 +	if (IS_ERR(skb))
 +		return PTR_ERR(skb);
 +
-+	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->bcn_tmpl_cmdid);
++	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->prb_tmpl_cmdid);
 +}
 +
  #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ae7c898..11be2d5 100644
+index 11be2d5..1713f8c 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1972,6 +1972,70 @@ ath10k_wmi_tlv_op_gen_pktlog_disable(struct ath10k *ar)
+@@ -2036,6 +2036,55 @@ ath10k_wmi_tlv_op_gen_bcn_tmpl(struct ath10k *ar, u32 vdev_id,
  	return skb;
  }
  
 +static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_bcn_tmpl(struct ath10k *ar, u32 vdev_id,
-+			       u32 tim_ie_offset, struct sk_buff *bcn,
-+			       u32 prb_caps, u32 prb_erp, void *prb_ies,
-+			       size_t prb_ies_len)
++ath10k_wmi_tlv_op_gen_prb_tmpl(struct ath10k *ar, u32 vdev_id,
++			       struct sk_buff *prb)
 +{
-+	struct wmi_tlv_bcn_tmpl_cmd *cmd;
++	struct wmi_tlv_prb_tmpl_cmd *cmd;
 +	struct wmi_tlv_bcn_prb_info *info;
 +	struct wmi_tlv *tlv;
 +	struct sk_buff *skb;
 +	void *ptr;
 +	size_t len;
 +
-+	if (WARN_ON(prb_ies_len > 0 && !prb_ies))
-+		return ERR_PTR(-EINVAL);
-+
 +	len = sizeof(*tlv) + sizeof(*cmd) +
-+	      sizeof(*tlv) + sizeof(*info) + prb_ies_len +
-+	      sizeof(*tlv) + roundup(bcn->len, 4);
++	      sizeof(*tlv) + sizeof(*info) +
++	      sizeof(*tlv) + roundup(prb->len, 4);
 +	skb = ath10k_wmi_alloc_skb(ar, len);
 +	if (!skb)
 +		return ERR_PTR(-ENOMEM);
 +
 +	ptr = (void *)skb->data;
 +	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_TMPL_CMD);
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_PRB_TMPL_CMD);
 +	tlv->len = __cpu_to_le16(sizeof(*cmd));
 +	cmd = (void *)tlv->value;
 +	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->tim_ie_offset = __cpu_to_le32(tim_ie_offset);
-+	cmd->buf_len = __cpu_to_le32(bcn->len);
++	cmd->buf_len = __cpu_to_le32(prb->len);
 +
 +	ptr += sizeof(*tlv);
 +	ptr += sizeof(*cmd);
 +
-+	/* FIXME: prb_ies_len should be probably aligned to 4byte boundary but
-+	 * then it is then impossible to pass original ie len.
-+	 * This chunk is not used yet so if setting probe resp template yields
-+	 * problems with beaconing or crashes firmware look here.
-+	 */
 +	tlv = ptr;
 +	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_PRB_INFO);
-+	tlv->len = __cpu_to_le16(sizeof(*info) + prb_ies_len);
++	tlv->len = __cpu_to_le16(sizeof(*info));
 +	info = (void *)tlv->value;
-+	info->caps = __cpu_to_le32(prb_caps);
-+	info->erp = __cpu_to_le32(prb_erp);
-+	memcpy(info->ies, prb_ies, prb_ies_len);
++	info->caps = 0;
++	info->erp = 0;
 +
 +	ptr += sizeof(*tlv);
 +	ptr += sizeof(*info);
-+	ptr += prb_ies_len;
 +
 +	tlv = ptr;
 +	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_ARRAY_BYTE);
-+	tlv->len = __cpu_to_le16(roundup(bcn->len, 4));
-+	memcpy(tlv->value, bcn->data, bcn->len);
++	tlv->len = __cpu_to_le16(roundup(prb->len, 4));
++	memcpy(tlv->value, prb->data, prb->len);
 +
-+	/* FIXME: Adjust TSF? */
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv bcn tmpl vdev_id %i\n",
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv prb tmpl vdev_id %i\n",
 +		   vdev_id);
 +	return skb;
 +}
@@ -152,31 +136,24 @@ index ae7c898..11be2d5 100644
  /****************/
  /* TLV mappings */
  /****************/
-@@ -2257,6 +2321,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_pktlog_disable = ath10k_wmi_tlv_op_gen_pktlog_disable,
+@@ -2322,6 +2371,7 @@ static const struct wmi_ops wmi_tlv_ops = {
  	/* .gen_pdev_set_quiet_mode not implemented */
  	/* .gen_pdev_get_temperature not implemented */
-+	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
+ 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
++	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
  };
  
  /************/
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index ee19353..c477365 100644
+index c477365..5772519 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1387,6 +1387,18 @@ struct wmi_tlv_bcn_tx_status_ev {
- 	__le32 tx_status;
+@@ -1399,6 +1399,11 @@ struct wmi_tlv_bcn_tmpl_cmd {
+ 	__le32 buf_len;
  } __packed;
  
-+struct wmi_tlv_bcn_prb_info {
-+	__le32 caps;
-+	__le32 erp;
-+	u8 ies[0];
-+} __packed;
-+
-+struct wmi_tlv_bcn_tmpl_cmd {
++struct wmi_tlv_prb_tmpl_cmd {
 +	__le32 vdev_id;
-+	__le32 tim_ie_offset;
 +	__le32 buf_len;
 +} __packed;
 +
@@ -184,30 +161,30 @@ index ee19353..c477365 100644
  
  #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ac74290..491c18c 100644
+index 491c18c..8c46de1 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4928,6 +4928,7 @@ static const struct wmi_ops wmi_ops = {
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+@@ -4929,6 +4929,7 @@ static const struct wmi_ops wmi_ops = {
  	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
  	/* .gen_pdev_get_temperature not implemented */
-+	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_bcn_tmpl not implemented */
++	/* .gen_prb_tmpl not implemented */
  };
  
  static const struct wmi_ops wmi_10_1_ops = {
-@@ -4982,6 +4983,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
+@@ -4984,6 +4985,7 @@ static const struct wmi_ops wmi_10_1_ops = {
  	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
  	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-+	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_bcn_tmpl not implemented */
++	/* .gen_prb_tmpl not implemented */
  };
  
  static const struct wmi_ops wmi_10_2_ops = {
-@@ -5092,6 +5094,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
+@@ -5095,6 +5097,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
  	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
  	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-+	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_bcn_tmpl not implemented */
++	/* .gen_prb_tmpl not implemented */
  };
  
  int ath10k_wmi_attach(struct ath10k *ar)
