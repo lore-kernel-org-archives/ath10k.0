@@ -1,12 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from www.osadl.org ([62.245.132.105])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9CJv-00056V-3r
- for ath10k@lists.infradead.org; Thu, 08 Jan 2015 12:36:12 +0000
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: [PATCH v3] ath10k: fixup wait_for_completion_timeout return handling
-Date: Thu,  8 Jan 2015 13:27:34 +0100
-Message-Id: <1420720054-27870-1-git-send-email-der.herr@hofr.at>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y9KZg-0004EU-8B
+ for ath10k@lists.infradead.org; Thu, 08 Jan 2015 21:25:01 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 0014240C7D4
+ for <ath10k@lists.infradead.org>; Thu,  8 Jan 2015 13:24:37 -0800 (PST)
+Message-ID: <54AEF595.9030205@candelatech.com>
+Date: Thu, 08 Jan 2015 13:24:37 -0800
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Anyone seeing tx-credits 'hang'?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,96 +21,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <der.herr@hofr.at>, Michal Kazior <michal.kazior@tieto.com>, Yanbo Li <yanbol@qti.qualcomm.com>, Ben Greear <greearb@candelatech.com>
+To: ath10k <ath10k@lists.infradead.org>
 
-wait_for_completion_timeout does not return negative values so the tests
-for <= 0 are not needed and the case differentiation in the error handling
-path unnecessary.
+I am still working on tracking down tx-credits hang, where it appears
+to the driver that firmware does not return tx credits, and the driver
+then gets lots of -11 errors from htc/wmi and will not recover (well,
+once it recovered after hanging for about 45 minutes, for reasons that are totally
+beyond me.  I do not normally wait so long).
 
-v2: all wait_for_completion_timeout changes in a single patch
-v3: patch formatting cleanups - no change of actual patch
+I am using a hacked ath10k driver and CT firmware, but I am suspicious that the problem
+is not unique to me, though I probably hit the problem much more often
+due to the types of stress tests I am running.
 
-Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
----
-patch was only compile tested x86_64_defconfig + CONFIG_ATH_CARDS=m
-CONFIG_ATH10K=m
+I have implemented a keep-alive between my driver and CT firmware,
+and firmware will assert if it does not get a message within
+about 10 seconds.  This is a wmi-message, so if we hang due to credits,
+the firmware will assert and dump a nice crash log (and host can recover).
 
-patch is against linux-next 3.19.0-rc1 -next-20141226
+One crash I looked at closely appears to show the firmware thinking it
+has returned all credits, but driver never received them.  What is more,
+it seems that the driver thought it sent one additional wmi command
+that the firmware did not receive in the wmi message handling code.
 
-None of the proposed cleanups are critical.
-All changes should only be removing unreachable cases.
+I am curious if anyone else has seen these problems (even if very rarely),
+and if anyone has done any additional debugging on what might be the issue.
 
- drivers/net/wireless/ath/ath10k/debug.c |    2 +-
- drivers/net/wireless/ath/ath10k/htc.c   |    6 ++----
- drivers/net/wireless/ath/ath10k/htt.c   |    2 +-
- drivers/net/wireless/ath/ath10k/mac.c   |    2 +-
- 4 files changed, 5 insertions(+), 7 deletions(-)
+Thanks,
+Ben
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index a716758..7e1fe93 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -373,7 +373,7 @@ static int ath10k_debug_fw_stats_request(struct ath10k *ar)
- 
- 		ret = wait_for_completion_timeout(&ar->debug.fw_stats_complete,
- 						  1*HZ);
--		if (ret <= 0)
-+		if (ret == 0)
- 			return -ETIMEDOUT;
- 
- 		spin_lock_bh(&ar->data_lock);
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index f1946a6..2fd9e18 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -703,11 +703,9 @@ int ath10k_htc_connect_service(struct ath10k_htc *htc,
- 	/* wait for response */
- 	status = wait_for_completion_timeout(&htc->ctl_resp,
- 					     ATH10K_HTC_CONN_SVC_TIMEOUT_HZ);
--	if (status <= 0) {
--		if (status == 0)
--			status = -ETIMEDOUT;
-+	if (status == 0) {
- 		ath10k_err(ar, "Service connect timeout: %d\n", status);
--		return status;
-+		return -ETIMEDOUT;
- 	}
- 
- 	/* we controlled the buffer creation, it's aligned */
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 56cb4ac..58b6fc1 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -102,7 +102,7 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
- 
- 	status = wait_for_completion_timeout(&htt->target_version_received,
- 					     HTT_TARGET_VERSION_TIMEOUT_HZ);
--	if (status <= 0) {
-+	if (status == 0) {
- 		ath10k_warn(ar, "htt version request timed out\n");
- 		return -ETIMEDOUT;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c400567..f9d7dbb 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2151,7 +2151,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 
- 		ret = wait_for_completion_timeout(&ar->offchan_tx_completed,
- 						  3 * HZ);
--		if (ret <= 0)
-+		if (ret == 0)
- 			ath10k_warn(ar, "timed out waiting for offchannel skb %p\n",
- 				    skb);
- 
 -- 
-1.7.10.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
