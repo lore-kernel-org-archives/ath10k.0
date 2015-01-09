@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22c.google.com ([2a00:1450:400c:c00::22c])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9XX9-0006VQ-2O
- for ath10k@lists.infradead.org; Fri, 09 Jan 2015 11:15:17 +0000
-Received: by mail-wg0-f44.google.com with SMTP id b13so7505631wgh.3
- for <ath10k@lists.infradead.org>; Fri, 09 Jan 2015 03:14:53 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC 7/8] ath10k: implement tx pause wmi event
-Date: Fri,  9 Jan 2015 12:14:08 +0100
-Message-Id: <1420802049-11962-8-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1420802049-11962-1-git-send-email-michal.kazior@tieto.com>
-References: <1420802049-11962-1-git-send-email-michal.kazior@tieto.com>
+ id 1Y9cC6-0001mv-Fx
+ for ath10k@lists.infradead.org; Fri, 09 Jan 2015 16:13:51 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fix build error when hwmon is off
+References: <20150107150410.17433.49263.stgit@potku.adurom.net>
+Date: Fri, 9 Jan 2015 18:13:18 +0200
+In-Reply-To: <20150107150410.17433.49263.stgit@potku.adurom.net> (Kalle Valo's
+ message of "Wed, 7 Jan 2015 17:04:10 +0200")
+Message-ID: <87ppaohqzl.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,229 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org
 
-New wmi-tlv firmware can ask host to pause certain
-tx queues. This is used to improve multi-channel
-performance.
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c     | 12 +++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 86 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h | 42 +++++++++++++++
- 3 files changed, 140 insertions(+)
+> kbuild reported a linking error:
+>
+> ERROR: "devm_hwmon_device_register_with_groups"
+> [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
+>
+> Fix it by returning early and letting the compiler to optimise out the function
+> call.
+>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9b6fab4..6e069a8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3430,6 +3430,14 @@ err:
- 	return ret;
- }
- 
-+static void ath10k_mac_vif_tx_unlock_all(struct ath10k_vif *arvif)
-+{
-+	int i;
-+
-+	for (i = 0; i < BITS_PER_LONG; i++)
-+		ath10k_mac_vif_tx_unlock(arvif, i);
-+}
-+
- static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 				    struct ieee80211_vif *vif)
- {
-@@ -3498,6 +3506,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 			ath10k_warn(ar, "failed to recalc monitor: %d\n", ret);
- 	}
- 
-+	spin_lock_bh(&ar->htt.tx_lock);
-+	ath10k_mac_vif_tx_unlock_all(arvif);
-+	spin_unlock_bh(&ar->htt.tx_lock);
-+
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ef55110..b1461ca 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -16,6 +16,7 @@
-  */
- #include "core.h"
- #include "debug.h"
-+#include "mac.h"
- #include "hw.h"
- #include "wmi.h"
- #include "wmi-ops.h"
-@@ -62,6 +63,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
- 		= { .min_len = sizeof(struct wmi_tlv_bcn_tx_status_ev) },
- 	[WMI_TLV_TAG_STRUCT_DIAG_DATA_CONTAINER_EVENT]
- 		= { .min_len = sizeof(struct wmi_tlv_diag_data_ev) },
-+	[WMI_TLV_TAG_STRUCT_TX_PAUSE_EVENT]
-+		= { .min_len = sizeof(struct wmi_tlv_tx_pause_ev) },
- };
- 
- static int
-@@ -296,6 +299,86 @@ static int ath10k_wmi_tlv_event_diag(struct ath10k *ar,
- 	return 0;
- }
- 
-+static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
-+					 struct sk_buff *skb)
-+{
-+	const void **tb;
-+	const struct wmi_tlv_tx_pause_ev *ev;
-+	int ret, vdev_id;
-+	u32 pause_id, action, vdev_map, peer_id, tid_map;
-+	struct ath10k_vif *arvif;
-+
-+	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
-+	if (IS_ERR(tb)) {
-+		ret = PTR_ERR(tb);
-+		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ev = tb[WMI_TLV_TAG_STRUCT_TX_PAUSE_EVENT];
-+	if (!ev) {
-+		kfree(tb);
-+		return -EPROTO;
-+	}
-+
-+	pause_id = __le32_to_cpu(ev->pause_id);
-+	action = __le32_to_cpu(ev->action);
-+	vdev_map = __le32_to_cpu(ev->vdev_map);
-+	peer_id = __le32_to_cpu(ev->peer_id);
-+	tid_map = __le32_to_cpu(ev->tid_map);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi tlv tx pause pause_id %u action %u vdev_map 0x%08x peer_id %u tid_map 0x%08x\n",
-+		   pause_id, action, vdev_map, peer_id, tid_map);
-+
-+	for (vdev_id = 0; vdev_map; vdev_id++) {
-+		if (!(vdev_map & BIT(vdev_id)))
-+			continue;
-+
-+		vdev_map &= ~BIT(vdev_id);
-+
-+		spin_lock_bh(&ar->htt.tx_lock);
-+		spin_lock_bh(&ar->data_lock);
-+
-+		arvif = ath10k_get_arvif(ar, vdev_id);
-+		if (!arvif) {
-+			ath10k_warn(ar, "failed to find arvif for vdev %i for tx pause event\n",
-+				    vdev_id);
-+			spin_unlock_bh(&ar->data_lock);
-+			spin_unlock_bh(&ar->htt.tx_lock);
-+			continue;
-+		}
-+
-+		/* FIXME: Some pause_id aren't vdev orinted. Instead they are
-+		 * peer_id oriented (mostly for AP mode scenarios).
-+		 */
-+		if (pause_id == WMI_TLV_TX_PAUSE_ID_MCC ||
-+		    pause_id == WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA ||
-+		    pause_id == WMI_TLV_TX_PAUSE_ID_P2P_GO_PS ||
-+		    pause_id == WMI_TLV_TX_PAUSE_ID_AP_PS ||
-+		    pause_id == WMI_TLV_TX_PAUSE_ID_IBSS_PS) {
-+			switch (action) {
-+			case WMI_TLV_TX_PAUSE_ACTION_STOP:
-+				ath10k_mac_vif_tx_lock(arvif, pause_id);
-+				break;
-+			case WMI_TLV_TX_PAUSE_ACTION_WAKE:
-+				ath10k_mac_vif_tx_unlock(arvif, pause_id);
-+				break;
-+			default:
-+				ath10k_warn(ar, "received unknown tx pause action %d on vdev %i, ignoring\n",
-+					    action, vdev_id);
-+				break;
-+			}
-+		}
-+
-+		spin_unlock_bh(&ar->data_lock);
-+		spin_unlock_bh(&ar->htt.tx_lock);
-+	}
-+
-+	kfree(tb);
-+	return 0;
-+}
-+
- /***********/
- /* TLV ops */
- /***********/
-@@ -417,6 +500,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_TLV_DIAG_EVENTID:
- 		ath10k_wmi_tlv_event_diag(ar, skb);
- 		break;
-+	case WMI_TLV_TX_PAUSE_EVENTID:
-+		ath10k_wmi_tlv_event_tx_pause(ar, skb);
-+		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
- 		break;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index c311b3c..9d61063 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1432,6 +1432,48 @@ struct wmi_tlv_adaptive_qcs {
- 	__le32 enable;
- } __packed;
- 
-+/**
-+ * wmi_tlv_tx_pause_id - firmware tx queue pause reason types
-+ *
-+ * @WMI_TLV_TX_PAUSE_ID_MCC: used for by multi-channel firmware scheduler.
-+ *		Only vdev_map is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_AP_PEER_PS: peer in AP mode is asleep.
-+ *		Only peer_id is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD: Only peer_id and tid_map are valid.
-+ * @WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA: Only vdev_map is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_P2P_GO_PS: Only vdev_map is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_STA_ADD_BA: Only peer_id and tid_map are valid.
-+ * @WMI_TLV_TX_PAUSE_ID_AP_PS: When all peers are asleep in AP mode. Only
-+ *		vdev_map is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_IBSS_PS: When all peers are asleep in IBSS mode. Only
-+ *		vdev_map is valid.
-+ * @WMI_TLV_TX_PAUSE_ID_HOST: Host itself requested tx pause.
-+ */
-+enum wmi_tlv_tx_pause_id {
-+	WMI_TLV_TX_PAUSE_ID_MCC = 1,
-+	WMI_TLV_TX_PAUSE_ID_AP_PEER_PS = 2,
-+	WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD = 3,
-+	WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA = 4,
-+	WMI_TLV_TX_PAUSE_ID_P2P_GO_PS = 5,
-+	WMI_TLV_TX_PAUSE_ID_STA_ADD_BA = 6,
-+	WMI_TLV_TX_PAUSE_ID_AP_PS = 7,
-+	WMI_TLV_TX_PAUSE_ID_IBSS_PS = 8,
-+	WMI_TLV_TX_PAUSE_ID_HOST = 21,
-+};
-+
-+enum wmi_tlv_tx_pause_action {
-+	WMI_TLV_TX_PAUSE_ACTION_STOP,
-+	WMI_TLV_TX_PAUSE_ACTION_WAKE,
-+};
-+
-+struct wmi_tlv_tx_pause_ev {
-+	__le32 pause_id;
-+	__le32 action;
-+	__le32 vdev_map;
-+	__le32 peer_id;
-+	__le32 tid_map;
-+} __packed;
-+
- void ath10k_wmi_tlv_attach(struct ath10k *ar);
- 
- #endif
+Applied to ath.git.
+
 -- 
-1.8.5.3
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
