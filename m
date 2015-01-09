@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
+Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9XX6-0006Uq-Od
- for ath10k@lists.infradead.org; Fri, 09 Jan 2015 11:15:13 +0000
-Received: by mail-we0-f177.google.com with SMTP id q59so7352390wes.8
- for <ath10k@lists.infradead.org>; Fri, 09 Jan 2015 03:14:50 -0800 (PST)
+ id 1Y9XX2-0006TV-Rz
+ for ath10k@lists.infradead.org; Fri, 09 Jan 2015 11:15:10 +0000
+Received: by mail-we0-f169.google.com with SMTP id m14so7356283wev.0
+ for <ath10k@lists.infradead.org>; Fri, 09 Jan 2015 03:14:47 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC 5/8] ath10k: protect ar->arvifs linking with data_lock
-Date: Fri,  9 Jan 2015 12:14:06 +0100
-Message-Id: <1420802049-11962-6-git-send-email-michal.kazior@tieto.com>
+Subject: [RFC 2/8] ath10k: allow empty ssid vdev config
+Date: Fri,  9 Jan 2015 12:14:03 +0100
+Message-Id: <1420802049-11962-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1420802049-11962-1-git-send-email-michal.kazior@tieto.com>
 References: <1420802049-11962-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,54 +27,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This will make it possible to iterate over
-interface list while in an atomic context,
-i.e. tasklet.
+It doesn't make much sense to reject a valid
+firmware configuration combination.
 
-Caller should still be careful with accessing
-arvif structures though.
+Since SSID isn't known early on it might make
+sense to allow driver to start vdev without SSID
+and restart it later.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 --
+ drivers/net/wireless/ath/ath10k/wmi.c     | 2 --
+ 2 files changed, 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index b175827..fed8cc9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3283,7 +3283,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index df3ddb9..ea7fe78 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1295,8 +1295,6 @@ ath10k_wmi_tlv_op_gen_vdev_start(struct ath10k *ar,
+ 	void *ptr;
+ 	u32 flags = 0;
  
- 	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
-+
-+	spin_lock_bh(&ar->data_lock);
- 	list_add(&arvif->list, &ar->arvifs);
-+	spin_unlock_bh(&ar->data_lock);
+-	if (WARN_ON(arg->ssid && arg->ssid_len == 0))
+-		return ERR_PTR(-EINVAL);
+ 	if (WARN_ON(arg->hidden_ssid && !arg->ssid))
+ 		return ERR_PTR(-EINVAL);
+ 	if (WARN_ON(arg->ssid_len > sizeof(cmd->ssid.ssid)))
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 1570feb..cf90f86 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4092,8 +4092,6 @@ ath10k_wmi_op_gen_vdev_start(struct ath10k *ar,
+ 	const char *cmdname;
+ 	u32 flags = 0;
  
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
- 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
-@@ -3400,7 +3403,9 @@ err_peer_delete:
- err_vdev_delete:
- 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
- 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
-+	spin_lock_bh(&ar->data_lock);
- 	list_del(&arvif->list);
-+	spin_unlock_bh(&ar->data_lock);
- 
- err:
- 	if (arvif->beacon_buf) {
-@@ -3435,7 +3440,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 			    arvif->vdev_id, ret);
- 
- 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
-+
-+	spin_lock_bh(&ar->data_lock);
- 	list_del(&arvif->list);
-+	spin_unlock_bh(&ar->data_lock);
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
- 		ret = ath10k_wmi_peer_delete(arvif->ar, arvif->vdev_id,
+-	if (WARN_ON(arg->ssid && arg->ssid_len == 0))
+-		return ERR_PTR(-EINVAL);
+ 	if (WARN_ON(arg->hidden_ssid && !arg->ssid))
+ 		return ERR_PTR(-EINVAL);
+ 	if (WARN_ON(arg->ssid_len > sizeof(cmd->ssid.ssid)))
 -- 
 1.8.5.3
 
