@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9dHv-0001P7-6l
- for ath10k@lists.infradead.org; Fri, 09 Jan 2015 17:23:55 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH RESEND] ath10k: Fix potential Rx ring corruption
-Date: Fri, 9 Jan 2015 22:49:46 +0530
-Message-ID: <1420823986-29503-1-git-send-email-vthiagar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Y9dxA-0001kt-CI
+ for ath10k@lists.infradead.org; Fri, 09 Jan 2015 18:06:32 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 37E5740C28A
+ for <ath10k@lists.infradead.org>; Fri,  9 Jan 2015 10:06:11 -0800 (PST)
+Message-ID: <54B01892.4080609@candelatech.com>
+Date: Fri, 09 Jan 2015 10:06:10 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Question on CE_DESC_FLAGS_META_DATA field.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +25,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-When replenishing Rx buffers driver updates the address of the
-buffer and the index of rx buffer in rx ring to the firmware.
-Change in order by CPU can cause rx ring corruption. Add memory
-barrier before updating rx buffer index to guarantee the order.
+While poking in the CE code, I notice this below.
 
-This could fix some instances of rx ring corruption due to done
-bit in rx attention flag not set.
+Shouldn't the CE_DESC_FLAGS_META_DATA_LSB be 2, and if not,
+can someone explain why?
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt_rx.c |    5 +++++
- 1 file changed, 5 insertions(+)
+[greearb@ben-dt2 ath10k]$ grep CE_DESC_FLAGS_META_DATA *h
+ce.h:#define CE_DESC_FLAGS_META_DATA_MASK 0xFFFC
+ce.h:#define CE_DESC_FLAGS_META_DATA_LSB  3
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 9c782a4..baa1c44 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -97,6 +97,11 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
- 	}
- 
- fail:
-+	/*
-+	 * Make sure the rx buffer is updated before available buffer
-+	 * index to avoid any potential rx ring corruption.
-+	 */
-+	mb();
- 	*htt->rx_ring.alloc_idx.vaddr = __cpu_to_le32(idx);
- 	return ret;
- }
+and this from core.h:
+
+#define MS(_v, _f) (((_v) & _f##_MASK) >> _f##_LSB)
+
+Thanks,
+Ben
+
 -- 
-1.7.9.5
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
