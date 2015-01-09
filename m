@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from rubidium.netdns.net ([123.100.248.134])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Y9cC6-0001mv-Fx
- for ath10k@lists.infradead.org; Fri, 09 Jan 2015 16:13:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: fix build error when hwmon is off
-References: <20150107150410.17433.49263.stgit@potku.adurom.net>
-Date: Fri, 9 Jan 2015 18:13:18 +0200
-In-Reply-To: <20150107150410.17433.49263.stgit@potku.adurom.net> (Kalle Valo's
- message of "Wed, 7 Jan 2015 17:04:10 +0200")
-Message-ID: <87ppaohqzl.fsf@kamboji.qca.qualcomm.com>
+ id 1Y9cJQ-0000N5-0m
+ for ath10k@lists.infradead.org; Fri, 09 Jan 2015 16:21:24 +0000
+Date: 10 Jan 2015 00:14:17 +0800
+Message-ID: <20150109161417.8095.qmail@rubidium.netdns.net>
+From: ty_wu@compex.com.sg
 MIME-Version: 1.0
+Subject: Re: ath10k Digest, Vol 19, Issue 13
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +22,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+I would be on leave from 12th Jan, 2015 to 23rd Jan, 2015. Email access would be limited. Please consult your respective sales person if you have technical issues, so that your requests would be appropriately answered. Sorry for any inconveniences. 
 
-> kbuild reported a linking error:
->
-> ERROR: "devm_hwmon_device_register_with_groups"
-> [drivers/net/wireless/ath/ath10k/ath10k_core.ko] undefined!
->
-> Fix it by returning early and letting the compiler to optimise out the function
-> call.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+Thanks,
+Tian Yee
 
-Applied to ath.git.
 
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
