@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YA1IU-0004Xz-GX
- for ath10k@lists.infradead.org; Sat, 10 Jan 2015 19:02:06 +0000
-Message-ID: <54B17716.40609@candelatech.com>
-Date: Sat, 10 Jan 2015 11:01:42 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from rubidium.netdns.net ([123.100.248.134])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YA2DS-0005yz-GX
+ for ath10k@lists.infradead.org; Sat, 10 Jan 2015 20:01:00 +0000
+Date: 11 Jan 2015 04:00:29 +0800
+Message-ID: <20150110200029.1424.qmail@rubidium.netdns.net>
+From: ty_wu@compex.com.sg
 MIME-Version: 1.0
-Subject: Re: [PATCH RESEND] ath10k: Fix potential Rx ring corruption
-References: <1420823986-29503-1-git-send-email-vthiagar@qti.qualcomm.com>
- <54B07420.8090600@candelatech.com>
-In-Reply-To: <54B07420.8090600@candelatech.com>
+Subject: Re: ath10k Digest, Vol 19, Issue 15
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,73 +17,18 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Well, problem is not solved after all.  Had total of 5 crashes on overnight run, must have
-all been before midnight, because that is the earliest logs I see (journald was not configured
-to use enough space...fixed for next time) and no crashes since then.
-
-Still, it is at least no worse.
-
-I wonder if similar wb() is needed in the firmware somewhere?
+I would be on leave from 12th Jan, 2015 to 23rd Jan, 2015. Email access would be limited. Please consult your respective sales person if you have technical issues, so that your requests would be appropriately answered. Sorry for any inconveniences. 
 
 Thanks,
-Ben
+Tian Yee
 
-On 01/09/2015 04:36 PM, Ben Greear wrote:
-> I added this to my tree (and a bunch more debug stuff to track
-> CE transport-ids), and I've done about 4500 station reconnects over
-> the last 2 hours and no tx-credits hang issue so far.
->
-> Could be my debugging code or that I'm getting lucky, but I'm hopeful
-> that your patch actually fixed the problem I was seeing!
->
-> Thanks,
-> Ben
->
->
-> On 01/09/2015 09:19 AM, Vasanthakumar Thiagarajan wrote:
->> When replenishing Rx buffers driver updates the address of the
->> buffer and the index of rx buffer in rx ring to the firmware.
->> Change in order by CPU can cause rx ring corruption. Add memory
->> barrier before updating rx buffer index to guarantee the order.
->>
->> This could fix some instances of rx ring corruption due to done
->> bit in rx attention flag not set.
->>
->> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/htt_rx.c |    5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> index 9c782a4..baa1c44 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -97,6 +97,11 @@ static int __ath10k_htt_rx_ring_fill_n(struct ath10k_htt *htt, int num)
->>   	}
->>
->>   fail:
->> +	/*
->> +	 * Make sure the rx buffer is updated before available buffer
->> +	 * index to avoid any potential rx ring corruption.
->> +	 */
->> +	mb();
->>   	*htt->rx_ring.alloc_idx.vaddr = __cpu_to_le32(idx);
->>   	return ret;
->>   }
->>
->
->
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
