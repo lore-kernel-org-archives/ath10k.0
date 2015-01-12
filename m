@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAkzO-0002sE-JB
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:49:27 +0000
+ id 1YAkzO-0002sO-JA
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:49:28 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
- properly.
-Date: Mon, 12 Jan 2015 10:32:37 -0800
-Message-Id: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 4/8] ath10k:  make dbglog debug messages be 'warn' level.
+Date: Mon, 12 Jan 2015 10:32:40 -0800
+Message-Id: <1421087564-10384-4-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
+References: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,76 +27,47 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-In case firmware fails to start the scan, then complete
-the start condition and clean up so that driver does not
-block on timeout.
+This only happens on firmware crash, and it appears this
+logic is not always perfect, so make sure the information
+is printed to logs at higher level.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c | 20 ++++++++++++++++++++
- 2 files changed, 31 insertions(+)
+ drivers/net/wireless/ath/ath10k/pci.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 249107d..924879f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2375,6 +2375,17 @@ static int ath10k_start_scan(struct ath10k *ar,
- 		return -ETIMEDOUT;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 0f7e845..dee0d5a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1132,9 +1132,8 @@ static void ath10k_pci_dump_dbglog(struct ath10k *ar)
+ 		return;
  	}
  
-+	/* If we failed to start the scan, return error code at
-+	 * this point.  This is probably due to some issue in the
-+	 * firmware, but no need to wedge the driver due to that...
-+	 */
-+	spin_lock_bh(&ar->data_lock);
-+	if (ar->scan.state == ATH10K_SCAN_IDLE) {
-+		spin_unlock_bh(&ar->data_lock);
-+		return -EINVAL;
-+	}
-+	spin_unlock_bh(&ar->data_lock);
-+
- 	/* Add a 200ms margin to account for event/command processing */
- 	ieee80211_queue_delayed_work(ar->hw, &ar->scan.timeout,
- 				     msecs_to_jiffies(arg->max_scan_time+200));
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 6e4ece0..203bcb9 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -916,6 +916,25 @@ static void ath10k_wmi_event_scan_started(struct ath10k *ar)
- 	}
- }
+-	ath10k_dbg(ar, ATH10K_DBG_PCI,
+-		   "debug log header, dbuf: 0x%x  dropped: %i\n",
+-		   le32_to_cpu(dbg_hdr.dbuf), le32_to_cpu(dbg_hdr.dropped));
++	ath10k_warn(ar, "debug log header, dbuf: 0x%x  dropped: %i\n",
++		    le32_to_cpu(dbg_hdr.dbuf), le32_to_cpu(dbg_hdr.dropped));
+ 	dbufp = le32_to_cpu(dbg_hdr.dbuf);
  
-+static void ath10k_wmi_event_scan_start_failed(struct ath10k *ar)
-+{
-+	lockdep_assert_held(&ar->data_lock);
-+
-+	switch (ar->scan.state) {
-+	case ATH10K_SCAN_IDLE:
-+	case ATH10K_SCAN_RUNNING:
-+	case ATH10K_SCAN_ABORTING:
-+		ath10k_warn(ar, "received scan start failed event in an invalid scan state: %s (%d)\n",
-+			    ath10k_scan_state_str(ar->scan.state),
-+			    ar->scan.state);
-+		break;
-+	case ATH10K_SCAN_STARTING:
-+		complete(&ar->scan.started);
-+		__ath10k_scan_finish(ar);
-+		break;
-+	}
-+}
-+
- static void ath10k_wmi_event_scan_completed(struct ath10k *ar)
- {
- 	lockdep_assert_held(&ar->data_lock);
-@@ -1057,6 +1076,7 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case WMI_SCAN_EVENT_START_FAILED:
- 		ath10k_warn(ar, "received scan start failure event\n");
-+		ath10k_wmi_event_scan_start_failed(ar);
- 		break;
- 	case WMI_SCAN_EVENT_DEQUEUED:
- 	case WMI_SCAN_EVENT_PREEMPTED:
+ 	/* i is for logging purposes and sanity check in case firmware buffers
+@@ -1154,11 +1153,10 @@ static void ath10k_pci_dump_dbglog(struct ath10k *ar)
+ 
+ 		len = le32_to_cpu(dbuf.length);
+ 
+-		ath10k_dbg(ar, ATH10K_DBG_PCI,
+-			   "[%i] next: 0x%x buf: 0x%x sz: %i len: %i count: %i free: %i\n",
+-			   i, le32_to_cpu(dbuf.next), le32_to_cpu(dbuf.buffer),
+-			   le32_to_cpu(dbuf.bufsize), len,
+-			   le32_to_cpu(dbuf.count), le32_to_cpu(dbuf.free));
++		ath10k_warn(ar, "[%i] next: 0x%x buf: 0x%x sz: %i len: %i count: %i free: %i\n",
++			    i, le32_to_cpu(dbuf.next), le32_to_cpu(dbuf.buffer),
++			    le32_to_cpu(dbuf.bufsize), len,
++			    le32_to_cpu(dbuf.count), le32_to_cpu(dbuf.free));
+ 		if (dbuf.buffer == 0 || len == 0)
+ 			goto next;
+ 
 -- 
 1.7.11.7
 
