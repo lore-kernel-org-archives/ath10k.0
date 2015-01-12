@@ -1,14 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAksi-0005oF-K7
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:42:34 +0000
+ id 1YAkz3-0002ge-Cp
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:49:07 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 7/8] ath10k:  start using htt/pci/ce transfer_id properly.
-Date: Mon, 12 Jan 2015 11:41:48 -0800
-Message-Id: <1421091709-19891-7-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
-References: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 3/8] ath10k: fix spelling mistakes and add details to mac
+ logging.
+Date: Mon, 12 Jan 2015 10:32:39 -0800
+Message-Id: <1421087564-10384-3-git-send-email-greearb@candelatech.com>
+In-Reply-To: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
+References: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,216 +28,55 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-Upstream firmware may ingore, but someone hacking on firmware
-can use this (and similar instrumentation on the firmware side)
-to help determine what is happening when there are communication
-issues between firmware and host.
+A bit of general cleanup to make debug messages more useful.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.c     |  1 +
- drivers/net/wireless/ath/ath10k/ce.h     |  7 +++++++
- drivers/net/wireless/ath/ath10k/htc.c    |  2 +-
- drivers/net/wireless/ath/ath10k/htc.h    |  1 +
- drivers/net/wireless/ath/ath10k/htt.h    |  1 +
- drivers/net/wireless/ath/ath10k/htt_tx.c |  6 ++++--
- drivers/net/wireless/ath/ath10k/pci.c    | 31 +++++++++++++++++++++++--------
- 7 files changed, 38 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
-index a156e6e..ecc6d0c 100644
---- a/drivers/net/wireless/ath/ath10k/ce.c
-+++ b/drivers/net/wireless/ath/ath10k/ce.c
-@@ -319,6 +319,7 @@ int ath10k_ce_send_nolock(struct ath10k_ce_pipe *ce_state,
- 		ath10k_ce_src_ring_write_index_set(ar, ctrl_addr, write_index);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 924879f..85abb8a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -604,7 +604,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
  
- 	src_ring->write_index = write_index;
-+	ce_state->last_tx_transfer_id = transfer_id;
- exit:
- 	return ret;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 617a151..f4919e9 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -120,6 +120,13 @@ struct ath10k_ce_pipe {
- 	unsigned int src_sz_max;
- 	struct ath10k_ce_ring *src_ring;
- 	struct ath10k_ce_ring *dest_ring;
-+
-+	/* Some fields used for debugging */
-+	unsigned int last_rx_transfer_id;
-+	unsigned int last_ce_send_done_transfer_id;
-+	unsigned int last_tx_transfer_id;
-+	unsigned int last_bmi_send_done_transfer_id;
-+	unsigned int last_bmi_recv_transfer_id;
- };
- 
- /* Copy Engine settable attributes */
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 16b939a..97139ce 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -160,7 +160,7 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 	if (ret)
- 		goto err_credits;
- 
--	sg_item.transfer_id = ep->eid;
-+	sg_item.transfer_id = ep->next_transfer_id++;
- 	sg_item.transfer_context = skb;
- 	sg_item.vaddr = skb->data;
- 	sg_item.paddr = skb_cb->paddr;
-diff --git a/drivers/net/wireless/ath/ath10k/htc.h b/drivers/net/wireless/ath/ath10k/htc.h
-index 527179c..db99593 100644
---- a/drivers/net/wireless/ath/ath10k/htc.h
-+++ b/drivers/net/wireless/ath/ath10k/htc.h
-@@ -316,6 +316,7 @@ struct ath10k_htc_ep {
- 	int dl_is_polled; /* call HIF to fetch rx (not implemented) */
- 
- 	u8 seq_no; /* for debugging */
-+	u16 next_transfer_id; /* for debugging */
- 	int tx_credits;
- 	int tx_credit_size;
- 	int tx_credits_per_max_message;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 4dede95..5ebf968 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -1223,6 +1223,7 @@ struct ath10k_htt {
- 	int max_throughput_mbps;
- 	u8 target_version_major;
- 	u8 target_version_minor;
-+	u16 htt_transfer_id;
- 	struct completion target_version_received;
- 
- 	struct {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index b7937b9..bd1236e 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -456,6 +456,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	dma_addr_t paddr;
- 	u32 frags_paddr;
- 	bool use_frags;
-+	unsigned int htt_transfer_id;
- 
- 	res = ath10k_htt_tx_inc_pending(htt);
- 	if (res)
-@@ -469,6 +470,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d (start)\n",
+ 			    vdev_id, ret);
+ 		return ret;
  	}
- 	msdu_id = res;
- 	htt->pending_tx[msdu_id] = msdu;
-+	htt_transfer_id = htt->htt_transfer_id++;
- 	spin_unlock_bh(&htt->tx_lock);
+@@ -651,7 +651,7 @@ static int ath10k_monitor_vdev_stop(struct ath10k *ar)
  
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
-@@ -569,7 +571,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
- 	trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret)
+-		ath10k_warn(ar, "failed to synchronise monitor vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize monitor vdev %i: %d (stop)\n",
+ 			    ar->monitor_vdev_id, ret);
  
--	sg_items[0].transfer_id = 0;
-+	sg_items[0].transfer_id = htt_transfer_id;
- 	sg_items[0].transfer_context = NULL;
- 	sg_items[0].vaddr = &skb_cb->htt.txbuf->htc_hdr;
- 	sg_items[0].paddr = skb_cb->htt.txbuf_paddr +
-@@ -578,7 +580,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 			  sizeof(skb_cb->htt.txbuf->cmd_hdr) +
- 			  sizeof(skb_cb->htt.txbuf->cmd_tx);
+ 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %i stopped\n",
+@@ -936,8 +936,8 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
  
--	sg_items[1].transfer_id = 0;
-+	sg_items[1].transfer_id = sg_items[0].transfer_id;
- 	sg_items[1].transfer_context = NULL;
- 	sg_items[1].vaddr = msdu->data;
- 	sg_items[1].paddr = skb_cb->paddr;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index dee0d5a..b35590e 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -846,11 +846,11 @@ static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
- 	struct sk_buff *skb;
- 	u32 ce_data;
- 	unsigned int nbytes;
--	unsigned int transfer_id;
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to synchronise setup for vdev %i: %d\n",
+-			    arg.vdev_id, ret);
++		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (restart %d)\n",
++			    arg.vdev_id, ret, restart);
+ 		return ret;
+ 	}
  
- 	__skb_queue_head_init(&list);
- 	while (ath10k_ce_completed_send_next(ce_state, (void **)&skb, &ce_data,
--					     &nbytes, &transfer_id) == 0) {
-+					     &nbytes,
-+					     &ce_state->last_ce_send_done_transfer_id) == 0) {
- 		/* no need to call tx completion for NULL pointers */
- 		if (skb == NULL)
- 			continue;
-@@ -874,12 +874,11 @@ static void ath10k_pci_ce_recv_data(struct ath10k_ce_pipe *ce_state)
- 	void *transfer_context;
- 	u32 ce_data;
- 	unsigned int nbytes, max_nbytes;
--	unsigned int transfer_id;
- 	unsigned int flags;
+@@ -975,7 +975,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
  
- 	__skb_queue_head_init(&list);
- 	while (ath10k_ce_completed_recv_next(ce_state, &transfer_context,
--					     &ce_data, &nbytes, &transfer_id,
-+					     &ce_data, &nbytes, &ce_state->last_rx_transfer_id,
- 					     &flags) == 0) {
- 		skb = transfer_context;
- 		max_nbytes = skb->len + skb_tailroom(skb);
-@@ -1209,6 +1208,8 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- {
- 	struct ath10k_fw_crash_data *crash_data;
- 	char uuid[50];
-+	struct ath10k_pci *pci;
-+	int i;
- 
- 	spin_lock_bh(&ar->data_lock);
- 
-@@ -1234,6 +1235,19 @@ static void ath10k_pci_fw_crashed_dump(struct ath10k *ar)
- 
- 	spin_unlock_bh(&ar->data_lock);
- 
-+	/* Print out some info on the CE pipes */
-+	pci = ath10k_pci_priv(ar);
-+	for (i = 0; i<CE_COUNT_MAX; i++) {
-+		ath10k_err(ar, "ce-pipe [%i] rx-id: %i  ce-send-done: %d tx-id: %d bmi-send-done: %d bmi-recv: %d\n",
-+			   i,
-+			   pci->ce_states[i].last_rx_transfer_id,
-+			   pci->ce_states[i].last_ce_send_done_transfer_id,
-+			   pci->ce_states[i].last_tx_transfer_id,
-+			   pci->ce_states[i].last_bmi_send_done_transfer_id,
-+			   pci->ce_states[i].last_bmi_recv_transfer_id);
-+	}
-+	ath10k_err(ar, "last htt-tx-id: %d\n", ar->htt.htt_transfer_id);
-+
- 	queue_work(ar->workqueue, &ar->restart_work);
- }
- 
-@@ -1640,10 +1654,10 @@ static void ath10k_pci_bmi_send_done(struct ath10k_ce_pipe *ce_state)
- 	struct bmi_xfer *xfer;
- 	u32 ce_data;
- 	unsigned int nbytes;
--	unsigned int transfer_id;
- 
- 	if (ath10k_ce_completed_send_next(ce_state, (void **)&xfer, &ce_data,
--					  &nbytes, &transfer_id))
-+					  &nbytes,
-+					  &ce_state->last_bmi_send_done_transfer_id))
- 		return;
- 
- 	xfer->tx_done = true;
-@@ -1655,11 +1669,12 @@ static void ath10k_pci_bmi_recv_data(struct ath10k_ce_pipe *ce_state)
- 	struct bmi_xfer *xfer;
- 	u32 ce_data;
- 	unsigned int nbytes;
--	unsigned int transfer_id;
- 	unsigned int flags;
- 
- 	if (ath10k_ce_completed_recv_next(ce_state, (void **)&xfer, &ce_data,
--					  &nbytes, &transfer_id, &flags))
-+					  &nbytes,
-+					  &ce_state->last_bmi_recv_transfer_id,
-+					  &flags))
- 		return;
- 
- 	if (WARN_ON_ONCE(!xfer))
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (stop)\n",
+ 			    arvif->vdev_id, ret);
+ 		return ret;
+ 	}
 -- 
 1.7.11.7
 
