@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAiE2-0008Vg-3D
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 16:52:23 +0000
-Message-ID: <54B3FBAF.5070608@candelatech.com>
-Date: Mon, 12 Jan 2015 08:51:59 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: Anyone seeing tx-credits 'hang'?
-References: <54AEF595.9030205@candelatech.com>
- <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
- <54B00807.9060909@candelatech.com>
- <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
+ id 1YAksP-0005Zr-91
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:42:13 +0000
+From: greearb@candelatech.com
+Subject: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
+ properly.
+Date: Mon, 12 Jan 2015 11:41:42 -0800
+Message-Id: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,78 +16,88 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
-On 01/12/2015 12:06 AM, Michal Kazior wrote:
-> On 9 January 2015 at 17:55, Ben Greear <greearb@candelatech.com> wrote:
-> [...]
->> One thing I noticed yesterday is that when the driver tries to put a
->> vdev down, the firmware will try to flush, and will delay vdev-down
->> event until fw is flushed.  I changed CT firmware to automatically
->> flush in this case, but perhaps the driver should explicitly ask
->> firmware to flush the vdev before putting it down?
-> 
-> I recall the discussion we once had. I do plan on doing a patch for
-> that, eventually.
+From: Ben Greear <greearb@candelatech.com>
 
-I this case, I am thinking to just flush a particular vdev instead
-of the entire set of vdevs.  I don't think flushing is root cause of
-my problems anyway, as I still see the issue after making my CT
-firmware flush.  I think upstream firmware might require one
-message per tid per peer, so might be an issue to generate that
-many wmi commands anyway...not sure.
+In case firmware fails to start the scan, then complete
+the start condition and clean up so that driver does not
+block on timeout.
 
->> Once the driver gets out of sync due to timeouts, the firmware
->> is likely to assert soon after if wmi hang doesn't happen because
->> firmware will think vdev is up when it is not, or vice versa.
->>
->> Also, I notice a pattern in the failure case.
->>
->> The sequence is almost always something like this:
->>
->> [lots of vdev up/down, re-associate, etc]
->>
->> vdev down (this would have timed out if I didn't put in the flush)
->>   * vdev down is usually last wmi cmd firmware receives.
->> driver tries to delete peer, that times out (firmware wmi layer never
->>   saw the command)
-> 
-> So there's a chance htc layer actually did get the buffer but for some
-> reason it decided it isn't a wmi buffer. One reason could be the
-> buffer contained garbage (e.g. due to missing barrier on host so
-> firmware could read some data from an old physical address that was
-> stored in ce descriptor item).
-> 
-> 
->> firmware reports one or two more messages to driver, and if it manages to report
->> a dbglog, that shows a tx-timeout message usually within a second of
->> the vdev down.  This happens whether or not I flush the vdev bringing it
->> down.
->>
->> At this point, one more request from driver may be sent, after that,
->> it is credit starvation.  Firmware continues to run (timers fire, etc).
->>
->> I think that firmware is also waiting on a completion event from the
->> CE layer...I plan to dig into that more today.
-> 
-> Hm.. This reminds me of issues hw1.0 had. I'd check if one of the
-> workarounds ath10k had changes anything (see
-> ath10k_ce_src_ring_write_index_set in ce.c in 5e3dd157ce).
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 11 +++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.c | 20 ++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-Thanks, I'll go take a look at this today.
-
-Ben
-
-
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 249107d..924879f 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2375,6 +2375,17 @@ static int ath10k_start_scan(struct ath10k *ar,
+ 		return -ETIMEDOUT;
+ 	}
+ 
++	/* If we failed to start the scan, return error code at
++	 * this point.  This is probably due to some issue in the
++	 * firmware, but no need to wedge the driver due to that...
++	 */
++	spin_lock_bh(&ar->data_lock);
++	if (ar->scan.state == ATH10K_SCAN_IDLE) {
++		spin_unlock_bh(&ar->data_lock);
++		return -EINVAL;
++	}
++	spin_unlock_bh(&ar->data_lock);
++
+ 	/* Add a 200ms margin to account for event/command processing */
+ 	ieee80211_queue_delayed_work(ar->hw, &ar->scan.timeout,
+ 				     msecs_to_jiffies(arg->max_scan_time+200));
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6e4ece0..203bcb9 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -916,6 +916,25 @@ static void ath10k_wmi_event_scan_started(struct ath10k *ar)
+ 	}
+ }
+ 
++static void ath10k_wmi_event_scan_start_failed(struct ath10k *ar)
++{
++	lockdep_assert_held(&ar->data_lock);
++
++	switch (ar->scan.state) {
++	case ATH10K_SCAN_IDLE:
++	case ATH10K_SCAN_RUNNING:
++	case ATH10K_SCAN_ABORTING:
++		ath10k_warn(ar, "received scan start failed event in an invalid scan state: %s (%d)\n",
++			    ath10k_scan_state_str(ar->scan.state),
++			    ar->scan.state);
++		break;
++	case ATH10K_SCAN_STARTING:
++		complete(&ar->scan.started);
++		__ath10k_scan_finish(ar);
++		break;
++	}
++}
++
+ static void ath10k_wmi_event_scan_completed(struct ath10k *ar)
+ {
+ 	lockdep_assert_held(&ar->data_lock);
+@@ -1057,6 +1076,7 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	case WMI_SCAN_EVENT_START_FAILED:
+ 		ath10k_warn(ar, "received scan start failure event\n");
++		ath10k_wmi_event_scan_start_failed(ar);
+ 		break;
+ 	case WMI_SCAN_EVENT_DEQUEUED:
+ 	case WMI_SCAN_EVENT_PREEMPTED:
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.11.7
 
 
 _______________________________________________
