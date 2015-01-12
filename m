@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAeHl-0007O0-RO
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 12:39:59 +0000
+ id 1YAeUN-0001kt-Ir
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 12:53:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: fixup wait_for_completion_timeout return
- handling
-References: <1420720054-27870-1-git-send-email-der.herr@hofr.at>
-Date: Mon, 12 Jan 2015 14:39:22 +0200
-In-Reply-To: <1420720054-27870-1-git-send-email-der.herr@hofr.at> (Nicholas Mc
- Guire's message of "Thu, 8 Jan 2015 13:27:34 +0100")
-Message-ID: <878uh8dvgl.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k Digest, Vol 19, Issue 15
+References: <20150110200029.1424.qmail@rubidium.netdns.net>
+Date: Mon, 12 Jan 2015 14:52:24 +0200
+In-Reply-To: <20150110200029.1424.qmail@rubidium.netdns.net> (ty wu's message
+ of "11 Jan 2015 04:00:29 +0800")
+Message-ID: <87zj9ocgaf.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +23,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Ben Greear <greearb@candelatech.com>, Yanbo Li <yanbol@qca.qualcomm.com>
+To: ath10k@lists.infradead.org
 
-Nicholas Mc Guire <der.herr@hofr.at> writes:
+ty_wu@compex.com.sg writes:
 
-> wait_for_completion_timeout does not return negative values so the tests
-> for <= 0 are not needed and the case differentiation in the error handling
-> path unnecessary.
->
-> v2: all wait_for_completion_timeout changes in a single patch
-> v3: patch formatting cleanups - no change of actual patch
->
-> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
-> ---
-> patch was only compile tested x86_64_defconfig + CONFIG_ATH_CARDS=m
-> CONFIG_ATH10K=m
->
-> patch is against linux-next 3.19.0-rc1 -next-20141226
->
-> None of the proposed cleanups are critical.
-> All changes should only be removing unreachable cases.
+> I would be on leave from 12th Jan, 2015 to 23rd Jan, 2015. Email
+> access would be limited. Please consult your respective sales person
+> if you have technical issues, so that your requests would be
+> appropriately answered. Sorry for any inconveniences.
 
-Sorry, I wasn't clear enough in my last email but everything related to
-v2, v3 etc should be after "---" line. I fixed this in ath-next-test
-branch and will apply your patch once kbuild has run it's tests.
+Grr. I unsubscribed this address from the list.
 
 -- 
 Kalle Valo
