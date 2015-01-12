@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAksd-0005kN-M2
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:42:28 +0000
+ id 1YAksd-0005kX-Nh
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:42:29 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 3/8] ath10k: fix spelling mistakes and add details to mac
- logging.
-Date: Mon, 12 Jan 2015 11:41:44 -0800
-Message-Id: <1421091709-19891-3-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 4/8] ath10k:  make dbglog debug messages be 'warn' level.
+Date: Mon, 12 Jan 2015 11:41:45 -0800
+Message-Id: <1421091709-19891-4-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
 References: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -28,55 +27,47 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-A bit of general cleanup to make debug messages more useful.
+This only happens on firmware crash, and it appears this
+logic is not always perfect, so make sure the information
+is printed to logs at higher level.
 
 Signed-off-by: Ben Greear <greearb@candelatech.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 924879f..85abb8a 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -604,7 +604,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
- 
- 	ret = ath10k_vdev_setup_sync(ar);
- 	if (ret) {
--		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d\n",
-+		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d (start)\n",
- 			    vdev_id, ret);
- 		return ret;
- 	}
-@@ -651,7 +651,7 @@ static int ath10k_monitor_vdev_stop(struct ath10k *ar)
- 
- 	ret = ath10k_vdev_setup_sync(ar);
- 	if (ret)
--		ath10k_warn(ar, "failed to synchronise monitor vdev %i: %d\n",
-+		ath10k_warn(ar, "failed to synchronize monitor vdev %i: %d (stop)\n",
- 			    ar->monitor_vdev_id, ret);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %i stopped\n",
-@@ -936,8 +936,8 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 
- 	ret = ath10k_vdev_setup_sync(ar);
- 	if (ret) {
--		ath10k_warn(ar, "failed to synchronise setup for vdev %i: %d\n",
--			    arg.vdev_id, ret);
-+		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (restart %d)\n",
-+			    arg.vdev_id, ret, restart);
- 		return ret;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 0f7e845..dee0d5a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1132,9 +1132,8 @@ static void ath10k_pci_dump_dbglog(struct ath10k *ar)
+ 		return;
  	}
  
-@@ -975,7 +975,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
+-	ath10k_dbg(ar, ATH10K_DBG_PCI,
+-		   "debug log header, dbuf: 0x%x  dropped: %i\n",
+-		   le32_to_cpu(dbg_hdr.dbuf), le32_to_cpu(dbg_hdr.dropped));
++	ath10k_warn(ar, "debug log header, dbuf: 0x%x  dropped: %i\n",
++		    le32_to_cpu(dbg_hdr.dbuf), le32_to_cpu(dbg_hdr.dropped));
+ 	dbufp = le32_to_cpu(dbg_hdr.dbuf);
  
- 	ret = ath10k_vdev_setup_sync(ar);
- 	if (ret) {
--		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
-+		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (stop)\n",
- 			    arvif->vdev_id, ret);
- 		return ret;
- 	}
+ 	/* i is for logging purposes and sanity check in case firmware buffers
+@@ -1154,11 +1153,10 @@ static void ath10k_pci_dump_dbglog(struct ath10k *ar)
+ 
+ 		len = le32_to_cpu(dbuf.length);
+ 
+-		ath10k_dbg(ar, ATH10K_DBG_PCI,
+-			   "[%i] next: 0x%x buf: 0x%x sz: %i len: %i count: %i free: %i\n",
+-			   i, le32_to_cpu(dbuf.next), le32_to_cpu(dbuf.buffer),
+-			   le32_to_cpu(dbuf.bufsize), len,
+-			   le32_to_cpu(dbuf.count), le32_to_cpu(dbuf.free));
++		ath10k_warn(ar, "[%i] next: 0x%x buf: 0x%x sz: %i len: %i count: %i free: %i\n",
++			    i, le32_to_cpu(dbuf.next), le32_to_cpu(dbuf.buffer),
++			    le32_to_cpu(dbuf.bufsize), len,
++			    le32_to_cpu(dbuf.count), le32_to_cpu(dbuf.free));
+ 		if (dbuf.buffer == 0 || len == 0)
+ 			goto next;
+ 
 -- 
 1.7.11.7
 
