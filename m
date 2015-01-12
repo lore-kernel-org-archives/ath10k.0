@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAdJl-0002JF-8e
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 11:37:58 +0000
+ id 1YAdOY-0004kt-6j
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 11:42:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 5/8] ath10k: Implement sta_add_debugfs
+Subject: Re: [PATCH v2 6/8] ath10k: add support to send addba request
 References: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1419407949-32367-6-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Mon, 12 Jan 2015 13:37:25 +0200
-In-Reply-To: <1419407949-32367-6-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 24 Dec 2014 13:29:06 +0530")
-Message-ID: <877fwsfcwa.fsf@kamboji.qca.qualcomm.com>
+ <1419407949-32367-7-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 12 Jan 2015 13:42:20 +0200
+In-Reply-To: <1419407949-32367-7-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Wed, 24 Dec 2014 13:29:07 +0530")
+Message-ID: <87387gfco3.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,47 +29,55 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Add per station debugfs files when a station is added to mac80211's
-> station list. This helps to group peer specific debugfs entries
-> altogether. Right now this callback adds support to test aggregation
-> procedures (addba/addba_resp/delba) manually.
+> This per-station debugfs entry helps to send addba request in manual
+> mode. Need to pass two configuration parameters (tid, buffer size)
+> as input.
 >
-> To enable automatic aggregation in target,
-> echo 0 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-> 	stations/XX:XX:XX:XX:XX:XX/aggr_mode
+> To send addba,
 >
-> For manual mode,
-> echo 1 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
-> 	stations/XX:XX:XX:XX:XX:XX/aggr_mode
+> echo 1 32 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
+> 	   stations/XX:XX:XX:XX:XX:XX/addba
 >
 > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
 [...]
 
-> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> new file mode 100644
-> index 0000000..d5fca70
-> --- /dev/null
-> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
-> @@ -0,0 +1,89 @@
-> +/*
-> + * Copyright (c) 2014 Qualcomm Atheros, Inc.
-> + *
-> + * Permission to use, copy, modify, and/or distribute this software for any
-> + * purpose with or without fee is hereby granted, provided that the above
-> + * copyright notice and this permission notice appear in all copies.
-> + *
-> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-> + */
-> +#include <linux/utsname.h>
+> +	ret = sscanf(buf, "%u %u", &tid, &buf_size);
+> +	if (ret != 2) {
+> +		ath10k_warn(ar, "ex: echo <tid> <buffer size> >addba\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Valid TID values are 0 through 15 */
+> +	if (tid > HTT_DATA_TX_EXT_TID_MGMT - 2) {
+> +		ath10k_warn(ar, "Invalid TID %u\n", tid);
+> +		return -EINVAL;
+> +	}
 
-Why include utsname.h? I don't see it used anywhere.
+It's preferred that the driver doesn't print anything based on wrong
+user input, so I removed these two warning messages:
+
+--- a/drivers/net/wireless/ath/ath10k/debugfs_sta.c
++++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+@@ -97,16 +97,12 @@ static ssize_t ath10k_dbg_sta_write_addba(struct file *file,
+        buf[sizeof(buf) - 1] = '\0';
+ 
+        ret = sscanf(buf, "%u %u", &tid, &buf_size);
+-       if (ret != 2) {
+-               ath10k_warn(ar, "ex: echo <tid> <buffer size> >addba\n");
++       if (ret != 2)
+                return -EINVAL;
+-       }
+ 
+        /* Valid TID values are 0 through 15 */
+-       if (tid > HTT_DATA_TX_EXT_TID_MGMT - 2) {
+-               ath10k_warn(ar, "Invalid TID %u\n", tid);
++       if (tid > HTT_DATA_TX_EXT_TID_MGMT - 2)
+                return -EINVAL;
+-       }
+ 
+        mutex_lock(&ar->conf_mutex);
+        if ((ar->state != ATH10K_STATE_ON) ||
 
 -- 
 Kalle Valo
