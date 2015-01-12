@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAksd-0005kJ-Ne
+ id 1YAksd-0005kN-M2
  for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:42:28 +0000
 From: greearb@candelatech.com
-Subject: [PATCH 2/8] ath10k:  add wmi-id to htc credits debugging.
-Date: Mon, 12 Jan 2015 11:41:43 -0800
-Message-Id: <1421091709-19891-2-git-send-email-greearb@candelatech.com>
+Subject: [PATCH 3/8] ath10k: fix spelling mistakes and add details to mac
+ logging.
+Date: Mon, 12 Jan 2015 11:41:44 -0800
+Message-Id: <1421091709-19891-3-git-send-email-greearb@candelatech.com>
 In-Reply-To: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
 References: <1421091709-19891-1-git-send-email-greearb@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,38 +28,55 @@ Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org
 
 From: Ben Greear <greearb@candelatech.com>
 
-This helps when trying to figure out exactly which commands
-are consuming credits when trying to debug wmi credit hangs.
----
- drivers/net/wireless/ath/ath10k/htc.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+A bit of general cleanup to make debug messages more useful.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index d56e7f6..16b939a 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -137,9 +137,18 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 			goto err_pull;
- 		}
- 		ep->tx_credits -= credits;
--		ath10k_dbg(ar, ATH10K_DBG_HTC,
--			   "htc ep %d consumed %d credits (total %d)\n",
--			   eid, credits, ep->tx_credits);
-+		if (eid == ar->wmi.eid) {
-+			struct wmi_cmd_hdr* hdr;
-+			hdr = (struct wmi_cmd_hdr*)(skb->data + sizeof(struct ath10k_htc_hdr));
-+			ath10k_dbg(ar, ATH10K_DBG_HTC,
-+				   "htc ep %d consumed %d credits (total %d, wmi-cmd 0x%x)\n",
-+				   eid, credits, ep->tx_credits, __le32_to_cpu(hdr->cmd_id));
-+		}
-+		else {
-+			ath10k_dbg(ar, ATH10K_DBG_HTC,
-+				   "htc ep %d consumed %d credits (total %d)\n",
-+				   eid, credits, ep->tx_credits);
-+		}
- 		spin_unlock_bh(&htc->tx_lock);
+Signed-off-by: Ben Greear <greearb@candelatech.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 924879f..85abb8a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -604,7 +604,7 @@ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+ 
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize setup for monitor vdev %i: %d (start)\n",
+ 			    vdev_id, ret);
+ 		return ret;
+ 	}
+@@ -651,7 +651,7 @@ static int ath10k_monitor_vdev_stop(struct ath10k *ar)
+ 
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret)
+-		ath10k_warn(ar, "failed to synchronise monitor vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize monitor vdev %i: %d (stop)\n",
+ 			    ar->monitor_vdev_id, ret);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_MAC, "mac monitor vdev %i stopped\n",
+@@ -936,8 +936,8 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
+ 
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to synchronise setup for vdev %i: %d\n",
+-			    arg.vdev_id, ret);
++		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (restart %d)\n",
++			    arg.vdev_id, ret, restart);
+ 		return ret;
  	}
  
+@@ -975,7 +975,7 @@ static int ath10k_vdev_stop(struct ath10k_vif *arvif)
+ 
+ 	ret = ath10k_vdev_setup_sync(ar);
+ 	if (ret) {
+-		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
++		ath10k_warn(ar, "failed to synchronize setup for vdev %i: %d (stop)\n",
+ 			    arvif->vdev_id, ret);
+ 		return ret;
+ 	}
 -- 
 1.7.11.7
 
