@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAl3H-0006xQ-VE
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 19:53:28 +0000
-Message-ID: <54B42622.5090404@candelatech.com>
-Date: Mon, 12 Jan 2015 11:53:06 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
- properly.
-References: <1421090992-14971-1-git-send-email-greearb@candelatech.com>
-In-Reply-To: <1421090992-14971-1-git-send-email-greearb@candelatech.com>
+Received: from charlotte.tuxdriver.com ([70.61.120.58] helo=smtp.tuxdriver.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YAmLJ-0005Ub-U7
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 21:16:10 +0000
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: [PATCH] ath10k: document switch case fall-through in
+ __ath10k_scan_finish
+Date: Mon, 12 Jan 2015 16:07:02 -0500
+Message-Id: <1421096822-28698-1-git-send-email-linville@tuxdriver.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +16,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "John W. Linville" <linville@tuxdriver.com>, ath10k@lists.infradead.org
 
-Sorry about the resends...had mail-server issue, should be resolved now.
+Add a comment for indicating that the ATH10K_SCAN_RUNNING case falls
+through to the ATH10K_SCAN_ABORTING case in __ath10k_scan_finish.  This
+will document that the lack of a break is intentional.
 
-Thanks,
-Ben
+Coverity: CID 1260017
 
-On 01/12/2015 11:29 AM, greearb@candelatech.com wrote:
-> From: Ben Greear <greearb@candelatech.com>
-> 
-> In case firmware fails to start the scan, then complete
-> the start condition and clean up so that driver does not
-> block on timeout.
+Signed-off-by: John W. Linville <linville@tuxdriver.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c4005670cba2..695222e57728 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2213,6 +2213,7 @@ void __ath10k_scan_finish(struct ath10k *ar)
+ 	case ATH10K_SCAN_RUNNING:
+ 		if (ar->scan.is_roc)
+ 			ieee80211_remain_on_channel_expired(ar->hw);
++		/* fall through */
+ 	case ATH10K_SCAN_ABORTING:
+ 		if (!ar->scan.is_roc)
+ 			ieee80211_scan_completed(ar->hw,
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.1.0
 
 
 _______________________________________________
