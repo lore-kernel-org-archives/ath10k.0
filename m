@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAa1P-0006gw-4t
- for ath10k@lists.infradead.org; Mon, 12 Jan 2015 08:06:47 +0000
-Received: by mail-we0-f176.google.com with SMTP id w61so17539898wes.7
- for <ath10k@lists.infradead.org>; Mon, 12 Jan 2015 00:06:25 -0800 (PST)
+ id 1YAdJl-0002JF-8e
+ for ath10k@lists.infradead.org; Mon, 12 Jan 2015 11:37:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 5/8] ath10k: Implement sta_add_debugfs
+References: <1419407949-32367-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1419407949-32367-6-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 12 Jan 2015 13:37:25 +0200
+In-Reply-To: <1419407949-32367-6-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Wed, 24 Dec 2014 13:29:06 +0530")
+Message-ID: <877fwsfcwa.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <54B00807.9060909@candelatech.com>
-References: <54AEF595.9030205@candelatech.com>
- <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
- <54B00807.9060909@candelatech.com>
-Date: Mon, 12 Jan 2015 09:06:25 +0100
-Message-ID: <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
-Subject: Re: Anyone seeing tx-credits 'hang'?
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +20,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gOSBKYW51YXJ5IDIwMTUgYXQgMTc6NTUsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
-Y2guY29tPiB3cm90ZToKWy4uLl0KPiBPbmUgdGhpbmcgSSBub3RpY2VkIHllc3RlcmRheSBpcyB0
-aGF0IHdoZW4gdGhlIGRyaXZlciB0cmllcyB0byBwdXQgYQo+IHZkZXYgZG93biwgdGhlIGZpcm13
-YXJlIHdpbGwgdHJ5IHRvIGZsdXNoLCBhbmQgd2lsbCBkZWxheSB2ZGV2LWRvd24KPiBldmVudCB1
-bnRpbCBmdyBpcyBmbHVzaGVkLiAgSSBjaGFuZ2VkIENUIGZpcm13YXJlIHRvIGF1dG9tYXRpY2Fs
-bHkKPiBmbHVzaCBpbiB0aGlzIGNhc2UsIGJ1dCBwZXJoYXBzIHRoZSBkcml2ZXIgc2hvdWxkIGV4
-cGxpY2l0bHkgYXNrCj4gZmlybXdhcmUgdG8gZmx1c2ggdGhlIHZkZXYgYmVmb3JlIHB1dHRpbmcg
-aXQgZG93bj8KCkkgcmVjYWxsIHRoZSBkaXNjdXNzaW9uIHdlIG9uY2UgaGFkLiBJIGRvIHBsYW4g
-b24gZG9pbmcgYSBwYXRjaCBmb3IKdGhhdCwgZXZlbnR1YWxseS4KCgo+IE9uY2UgdGhlIGRyaXZl
-ciBnZXRzIG91dCBvZiBzeW5jIGR1ZSB0byB0aW1lb3V0cywgdGhlIGZpcm13YXJlCj4gaXMgbGlr
-ZWx5IHRvIGFzc2VydCBzb29uIGFmdGVyIGlmIHdtaSBoYW5nIGRvZXNuJ3QgaGFwcGVuIGJlY2F1
-c2UKPiBmaXJtd2FyZSB3aWxsIHRoaW5rIHZkZXYgaXMgdXAgd2hlbiBpdCBpcyBub3QsIG9yIHZp
-Y2UgdmVyc2EuCj4KPiBBbHNvLCBJIG5vdGljZSBhIHBhdHRlcm4gaW4gdGhlIGZhaWx1cmUgY2Fz
-ZS4KPgo+IFRoZSBzZXF1ZW5jZSBpcyBhbG1vc3QgYWx3YXlzIHNvbWV0aGluZyBsaWtlIHRoaXM6
-Cj4KPiBbbG90cyBvZiB2ZGV2IHVwL2Rvd24sIHJlLWFzc29jaWF0ZSwgZXRjXQo+Cj4gdmRldiBk
-b3duICh0aGlzIHdvdWxkIGhhdmUgdGltZWQgb3V0IGlmIEkgZGlkbid0IHB1dCBpbiB0aGUgZmx1
-c2gpCj4gICAqIHZkZXYgZG93biBpcyB1c3VhbGx5IGxhc3Qgd21pIGNtZCBmaXJtd2FyZSByZWNl
-aXZlcy4KPiBkcml2ZXIgdHJpZXMgdG8gZGVsZXRlIHBlZXIsIHRoYXQgdGltZXMgb3V0IChmaXJt
-d2FyZSB3bWkgbGF5ZXIgbmV2ZXIKPiAgIHNhdyB0aGUgY29tbWFuZCkKClNvIHRoZXJlJ3MgYSBj
-aGFuY2UgaHRjIGxheWVyIGFjdHVhbGx5IGRpZCBnZXQgdGhlIGJ1ZmZlciBidXQgZm9yIHNvbWUK
-cmVhc29uIGl0IGRlY2lkZWQgaXQgaXNuJ3QgYSB3bWkgYnVmZmVyLiBPbmUgcmVhc29uIGNvdWxk
-IGJlIHRoZQpidWZmZXIgY29udGFpbmVkIGdhcmJhZ2UgKGUuZy4gZHVlIHRvIG1pc3NpbmcgYmFy
-cmllciBvbiBob3N0IHNvCmZpcm13YXJlIGNvdWxkIHJlYWQgc29tZSBkYXRhIGZyb20gYW4gb2xk
-IHBoeXNpY2FsIGFkZHJlc3MgdGhhdCB3YXMKc3RvcmVkIGluIGNlIGRlc2NyaXB0b3IgaXRlbSku
-CgoKPiBmaXJtd2FyZSByZXBvcnRzIG9uZSBvciB0d28gbW9yZSBtZXNzYWdlcyB0byBkcml2ZXIs
-IGFuZCBpZiBpdCBtYW5hZ2VzIHRvIHJlcG9ydAo+IGEgZGJnbG9nLCB0aGF0IHNob3dzIGEgdHgt
-dGltZW91dCBtZXNzYWdlIHVzdWFsbHkgd2l0aGluIGEgc2Vjb25kIG9mCj4gdGhlIHZkZXYgZG93
-bi4gIFRoaXMgaGFwcGVucyB3aGV0aGVyIG9yIG5vdCBJIGZsdXNoIHRoZSB2ZGV2IGJyaW5naW5n
-IGl0Cj4gZG93bi4KPgo+IEF0IHRoaXMgcG9pbnQsIG9uZSBtb3JlIHJlcXVlc3QgZnJvbSBkcml2
-ZXIgbWF5IGJlIHNlbnQsIGFmdGVyIHRoYXQsCj4gaXQgaXMgY3JlZGl0IHN0YXJ2YXRpb24uICBG
-aXJtd2FyZSBjb250aW51ZXMgdG8gcnVuICh0aW1lcnMgZmlyZSwgZXRjKS4KPgo+IEkgdGhpbmsg
-dGhhdCBmaXJtd2FyZSBpcyBhbHNvIHdhaXRpbmcgb24gYSBjb21wbGV0aW9uIGV2ZW50IGZyb20g
-dGhlCj4gQ0UgbGF5ZXIuLi5JIHBsYW4gdG8gZGlnIGludG8gdGhhdCBtb3JlIHRvZGF5LgoKSG0u
-LiBUaGlzIHJlbWluZHMgbWUgb2YgaXNzdWVzIGh3MS4wIGhhZC4gSSdkIGNoZWNrIGlmIG9uZSBv
-ZiB0aGUKd29ya2Fyb3VuZHMgYXRoMTBrIGhhZCBjaGFuZ2VzIGFueXRoaW5nIChzZWUKYXRoMTBr
-X2NlX3NyY19yaW5nX3dyaXRlX2luZGV4X3NldCBpbiBjZS5jIGluIDVlM2RkMTU3Y2UpLgoKCk1p
-Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
-aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+
+> Add per station debugfs files when a station is added to mac80211's
+> station list. This helps to group peer specific debugfs entries
+> altogether. Right now this callback adds support to test aggregation
+> procedures (addba/addba_resp/delba) manually.
+>
+> To enable automatic aggregation in target,
+> echo 0 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
+> 	stations/XX:XX:XX:XX:XX:XX/aggr_mode
+>
+> For manual mode,
+> echo 1 >/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/
+> 	stations/XX:XX:XX:XX:XX:XX/aggr_mode
+>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+
+[...]
+
+> diff --git a/drivers/net/wireless/ath/ath10k/debugfs_sta.c b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> new file mode 100644
+> index 0000000..d5fca70
+> --- /dev/null
+> +++ b/drivers/net/wireless/ath/ath10k/debugfs_sta.c
+> @@ -0,0 +1,89 @@
+> +/*
+> + * Copyright (c) 2014 Qualcomm Atheros, Inc.
+> + *
+> + * Permission to use, copy, modify, and/or distribute this software for any
+> + * purpose with or without fee is hereby granted, provided that the above
+> + * copyright notice and this permission notice appear in all copies.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+> + * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+> + * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+> + * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+> + * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+> + * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+> + * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+> + */
+> +#include <linux/utsname.h>
+
+Why include utsname.h? I don't see it used anywhere.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
