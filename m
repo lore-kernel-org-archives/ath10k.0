@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB30q-0004c5-3J
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 15:04:09 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
-Date: Tue, 13 Jan 2015 17:03:37 +0200
-In-Reply-To: <1420432796-10765-1-git-send-email-sujith@msujith.org> (Sujith
- Manoharan's message of "Mon, 5 Jan 2015 10:09:56 +0530")
-Message-ID: <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YB47o-00082c-Ll
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 16:15:25 +0000
+Message-ID: <54B54485.50803@candelatech.com>
+Date: Tue, 13 Jan 2015 08:15:01 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
+ properly.
+References: <1421090992-14971-1-git-send-email-greearb@candelatech.com>	<54B42622.5090404@candelatech.com>
+ <874mru7q5a.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <874mru7q5a.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +20,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
 
-> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+
+On 01/13/2015 05:42 AM, Kalle Valo wrote:
+> Ben Greear <greearb@candelatech.com> writes:
 >
-> The HTT RX ring is replenished with a maximum of 16 buffers,
-> but this might be insufficient when RX traffic is high.
-> Not having enough RX buffers throttles the FW, resulting
-> in low throughput.
+>> Sorry about the resends...had mail-server issue, should be resolved now.
 >
-> This patch adds a module parameter to adjust the fill size
-> based on the platform/usage.
+> So which one should I look at? Or are the patches the same in both sets?
+
+All the same.
+
+Ben
+
 >
-> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
-
-[...]
-
-> --- a/drivers/net/wireless/ath/ath10k/core.c
-> +++ b/drivers/net/wireless/ath/ath10k/core.c
-> @@ -33,14 +33,17 @@
->  unsigned int ath10k_debug_mask;
->  static bool uart_print;
->  static bool skip_otp;
-> +int htt_fill_size = ATH10K_HTT_MAX_NUM_REFILL;
->  
->  module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
->  module_param(uart_print, bool, 0644);
->  module_param(skip_otp, bool, 0644);
-> +module_param(htt_fill_size, int, 0644);
->  
->  MODULE_PARM_DESC(debug_mask, "Debugging mask");
->  MODULE_PARM_DESC(uart_print, "Uart target debugging");
->  MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
-> +MODULE_PARM_DESC(htt_fill_size, "HTT RX ring fill size");
-
-I'm not sure if I really like this path of having interfaces to
-configure driver internals. I suspect that if we add this, we will have
-even more later. It's a lot more documenting for us and more work to the
-users to understand what parameters they should use. Also this means
-that testing will be more challenging as people will use different
-values and results won't be comparable.
-
-Isn't there any other way to solve the problem? Like automatically
-changing the value somehow (no idea how) or some other means?
-
-Or if nothing else helps, a crazy idea is to have some sort of platform
-profile parameter:
-
-0 = auto
-1 = slow
-2 = fast
-3 = superfast (x86)
-
-And then we would have preset values (not just htt_fill_size) within
-ath10k and they get chosen based on the profile configured.
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
