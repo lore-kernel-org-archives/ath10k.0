@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAtu8-0007F4-RB
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 05:20:37 +0000
-Received: by mail-wi0-f170.google.com with SMTP id bs8so17905992wib.1
- for <ath10k@lists.infradead.org>; Mon, 12 Jan 2015 21:20:13 -0800 (PST)
+ id 1YAuNP-00028k-CO
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 05:50:51 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: fix hwmon temperature input units
+Date: Tue, 13 Jan 2015 11:20:07 +0530
+Message-ID: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 13 Jan 2015 13:20:13 +0800
-Message-ID: <CAEFj9873Oxo6dFoxDftdE7S14D6cNpu6Z4NTDL4hFeSFW1w7ow@mail.gmail.com>
-Subject: bcn_filter_rx_cmdid
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +20,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Hi, all
+To be compliant with the hwmon interface the unit needs to be
+millidegree Celsius. Fix that.
 
-Anyone has tried to use the "bcn_filter_rx_cmdid"? Is this working?
+Reported-by: Matthias Kaehlcke <mka@google.com>
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/thermal.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Regards,
-Chun-Yeow
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index b14ae8d..3c4a3d8 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -160,7 +160,8 @@ static ssize_t ath10k_thermal_show_temp(struct device *dev,
+ 	temperature = ar->thermal.temperature;
+ 	spin_unlock_bh(&ar->data_lock);
+ 
+-	ret = snprintf(buf, PAGE_SIZE, "%d", temperature);
++	/* display in millidegree celcius */
++	ret = snprintf(buf, PAGE_SIZE, "%d", temperature * 1000);
+ out:
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return ret;
+-- 
+2.2.1
+
 
 _______________________________________________
 ath10k mailing list
