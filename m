@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB4xn-0004Ny-0n
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 17:09:07 +0000
-Message-ID: <54B5511D.6030206@candelatech.com>
-Date: Tue, 13 Jan 2015 09:08:45 -0800
+ id 1YB6ow-00050H-Uu
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 19:08:07 +0000
+Message-ID: <54B56D00.4010401@candelatech.com>
+Date: Tue, 13 Jan 2015 11:07:44 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Checking on interest in some patches...
-References: <54A45615.1050401@candelatech.com>
- <878uh67qga.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <878uh67qga.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Anyone seeing tx-credits 'hang'?
+References: <54AEF595.9030205@candelatech.com>
+ <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
+ <54B00807.9060909@candelatech.com>
+ <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,60 +21,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 01/13/2015 05:36 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
-> 
->> Previously, I was at a dead end trying to get support for CT firmware features,
->> expanded crash dump features, and other things accepted upstream.
->>
->> I am working on porting my changes to the 3.19 kernel, and was curious if
->> there is any change of opinion on possibly accepting at least some CT firmware
->> support or the crash dump features.  If so, I'll clean up and re-post once
->> I have tested them.
-> 
-> We have now four different firmware branches to support and I fear even
-> more to come. Adding yet another branch is quite daunting from
-> maintenance point of view.
-
-No worse than the current code...and mine isn't really a new branch,
-just a few small deviations from the existing 10.1 firmware.  Even if you
-don't want some of the larger changes, it would be nice to get in some of
-the small and easy things like ibss support, lots of vdevs, maybe tx-rate
-reporting, etc.
-
-> Crash dump support is already upstream, but what's missing is porting it
-> to use Johannes' device coredump (commit 833c95456a70) and RAM dump
-> part. (And I guess we also want some sort register dump?)
-> 
-> Last year I implemented the RAM dump part, but only did some quick
-> verification and that's why I haven't submitted it yet. I think I need
-> to submit it as RFC instead of bitrotting on my hard drive.
-
-I have some well tested RAM and ROM and debuglog dump patches.  Similar
-to the patches we had worked on before.  ROM and RAM require new ie header
-on firmware, and 3.19 ath10k broke dbglog on upstream 10.1 firmware, but aside
-from that, it works great :)
-
-I have register dump supported over regular WMI api (shown in debugfs) in CT firmware,
-but it is not part of the crash dump.  At least for me, that has not
-been a problem.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDEvMTIvMjAxNSAxMjowNiBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiA5IEphbnVh
+cnkgMjAxNSBhdCAxNzo1NSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdy
+b3RlOgo+IFsuLi5dCj4+IE9uZSB0aGluZyBJIG5vdGljZWQgeWVzdGVyZGF5IGlzIHRoYXQgd2hl
+biB0aGUgZHJpdmVyIHRyaWVzIHRvIHB1dCBhCj4+IHZkZXYgZG93biwgdGhlIGZpcm13YXJlIHdp
+bGwgdHJ5IHRvIGZsdXNoLCBhbmQgd2lsbCBkZWxheSB2ZGV2LWRvd24KPj4gZXZlbnQgdW50aWwg
+ZncgaXMgZmx1c2hlZC4gIEkgY2hhbmdlZCBDVCBmaXJtd2FyZSB0byBhdXRvbWF0aWNhbGx5Cj4+
+IGZsdXNoIGluIHRoaXMgY2FzZSwgYnV0IHBlcmhhcHMgdGhlIGRyaXZlciBzaG91bGQgZXhwbGlj
+aXRseSBhc2sKPj4gZmlybXdhcmUgdG8gZmx1c2ggdGhlIHZkZXYgYmVmb3JlIHB1dHRpbmcgaXQg
+ZG93bj8KPiAKPiBJIHJlY2FsbCB0aGUgZGlzY3Vzc2lvbiB3ZSBvbmNlIGhhZC4gSSBkbyBwbGFu
+IG9uIGRvaW5nIGEgcGF0Y2ggZm9yCj4gdGhhdCwgZXZlbnR1YWxseS4KPiAKPiAKPj4gT25jZSB0
+aGUgZHJpdmVyIGdldHMgb3V0IG9mIHN5bmMgZHVlIHRvIHRpbWVvdXRzLCB0aGUgZmlybXdhcmUK
+Pj4gaXMgbGlrZWx5IHRvIGFzc2VydCBzb29uIGFmdGVyIGlmIHdtaSBoYW5nIGRvZXNuJ3QgaGFw
+cGVuIGJlY2F1c2UKPj4gZmlybXdhcmUgd2lsbCB0aGluayB2ZGV2IGlzIHVwIHdoZW4gaXQgaXMg
+bm90LCBvciB2aWNlIHZlcnNhLgo+Pgo+PiBBbHNvLCBJIG5vdGljZSBhIHBhdHRlcm4gaW4gdGhl
+IGZhaWx1cmUgY2FzZS4KPj4KPj4gVGhlIHNlcXVlbmNlIGlzIGFsbW9zdCBhbHdheXMgc29tZXRo
+aW5nIGxpa2UgdGhpczoKPj4KPj4gW2xvdHMgb2YgdmRldiB1cC9kb3duLCByZS1hc3NvY2lhdGUs
+IGV0Y10KPj4KPj4gdmRldiBkb3duICh0aGlzIHdvdWxkIGhhdmUgdGltZWQgb3V0IGlmIEkgZGlk
+bid0IHB1dCBpbiB0aGUgZmx1c2gpCj4+ICAgKiB2ZGV2IGRvd24gaXMgdXN1YWxseSBsYXN0IHdt
+aSBjbWQgZmlybXdhcmUgcmVjZWl2ZXMuCj4+IGRyaXZlciB0cmllcyB0byBkZWxldGUgcGVlciwg
+dGhhdCB0aW1lcyBvdXQgKGZpcm13YXJlIHdtaSBsYXllciBuZXZlcgo+PiAgIHNhdyB0aGUgY29t
+bWFuZCkKPiAKPiBTbyB0aGVyZSdzIGEgY2hhbmNlIGh0YyBsYXllciBhY3R1YWxseSBkaWQgZ2V0
+IHRoZSBidWZmZXIgYnV0IGZvciBzb21lCj4gcmVhc29uIGl0IGRlY2lkZWQgaXQgaXNuJ3QgYSB3
+bWkgYnVmZmVyLiBPbmUgcmVhc29uIGNvdWxkIGJlIHRoZQo+IGJ1ZmZlciBjb250YWluZWQgZ2Fy
+YmFnZSAoZS5nLiBkdWUgdG8gbWlzc2luZyBiYXJyaWVyIG9uIGhvc3Qgc28KPiBmaXJtd2FyZSBj
+b3VsZCByZWFkIHNvbWUgZGF0YSBmcm9tIGFuIG9sZCBwaHlzaWNhbCBhZGRyZXNzIHRoYXQgd2Fz
+Cj4gc3RvcmVkIGluIGNlIGRlc2NyaXB0b3IgaXRlbSkuCgpJIG1hbmFnZWQgdG8gZ2V0IHNvbWUg
+YmV0dGVyIGRlYnVnIG91dCBvZiB0aGUgZmlybXdhcmUuCgpJIGFtIGhhdmluZyBhIGhlbGwgb2Yg
+YSB0aW1lIGZpZ3VyaW5nIG91dCBob3cgdGhlIGNvZGUgZmxvd3MgdGhyb3VnaCBhbGwKb2YgdGhl
+IGNhbGxiYWNrcyAoaW4gYm90aCBmaXJtd2FyZSBhbmQgZHJpdmVyKSwgYnV0IGl0IGFwcGVhcnMg
+dGhpcyBpcyB3aGF0IGhhcHBlbmVkOgoKKEkgaGF2ZSBpbnN0cnVtZW50ZWQgdHJhbnNmZXItaWQg
+aW4gYm90aCBmaXJtd2FyZSBhbmQgZHJpdmVyKQoKZmlybXdhcmUgc2VudCB3bWkgbWVzc2FnZSB3
+aXRoIHRyYW5zZmVyLWlkIG9mIDcyLgprZXJuZWwgcmVjZWl2ZWQgdGhpcyB0cmFuc2Zlci1pZApm
+aXJtd2FyZSdzIGxhc3Qgc2VuZC1jYWxsYmFjayB0cmFuc2ZlciBJRCBpcyA3MS4KClNvLCBpdCBz
+ZWVtcyB0aGF0IGVpdGhlciBhdGgxMGsgZGlkIG5vdCBkbyB0aGUgdHJhbnNmZXItY29tcGxldGUg
+bG9naWMsCmRpZCBpdCBpbmNvcnJlY3RseSwgb3IgdGhlIGZpcm13YXJlIGRpZCBub3Qgbm90aWNl
+IGl0IHdhcyBkb25lLgoKSSBjYW5ub3QgZmluZCB3aGVyZSB0aGUgdHJhbnNmZXIgY29tcGxldGUg
+Y29kZSB0aGF0IHNob3VsZCBiZSB1cGRhdGluZwpmaXJtd2FyZSBpcyBhdC4gIElmIHlvdSBrbm93
+LCBjYW4geW91IHBvaW50IG1lIHRvIGl0PwoKVGhhbmtzLApCZW4KCj4gCj4gCj4+IGZpcm13YXJl
+IHJlcG9ydHMgb25lIG9yIHR3byBtb3JlIG1lc3NhZ2VzIHRvIGRyaXZlciwgYW5kIGlmIGl0IG1h
+bmFnZXMgdG8gcmVwb3J0Cj4+IGEgZGJnbG9nLCB0aGF0IHNob3dzIGEgdHgtdGltZW91dCBtZXNz
+YWdlIHVzdWFsbHkgd2l0aGluIGEgc2Vjb25kIG9mCj4+IHRoZSB2ZGV2IGRvd24uICBUaGlzIGhh
+cHBlbnMgd2hldGhlciBvciBub3QgSSBmbHVzaCB0aGUgdmRldiBicmluZ2luZyBpdAo+PiBkb3du
+Lgo+Pgo+PiBBdCB0aGlzIHBvaW50LCBvbmUgbW9yZSByZXF1ZXN0IGZyb20gZHJpdmVyIG1heSBi
+ZSBzZW50LCBhZnRlciB0aGF0LAo+PiBpdCBpcyBjcmVkaXQgc3RhcnZhdGlvbi4gIEZpcm13YXJl
+IGNvbnRpbnVlcyB0byBydW4gKHRpbWVycyBmaXJlLCBldGMpLgo+Pgo+PiBJIHRoaW5rIHRoYXQg
+ZmlybXdhcmUgaXMgYWxzbyB3YWl0aW5nIG9uIGEgY29tcGxldGlvbiBldmVudCBmcm9tIHRoZQo+
+PiBDRSBsYXllci4uLkkgcGxhbiB0byBkaWcgaW50byB0aGF0IG1vcmUgdG9kYXkuCj4gCj4gSG0u
+LiBUaGlzIHJlbWluZHMgbWUgb2YgaXNzdWVzIGh3MS4wIGhhZC4gSSdkIGNoZWNrIGlmIG9uZSBv
+ZiB0aGUKPiB3b3JrYXJvdW5kcyBhdGgxMGsgaGFkIGNoYW5nZXMgYW55dGhpbmcgKHNlZQo+IGF0
+aDEwa19jZV9zcmNfcmluZ193cml0ZV9pbmRleF9zZXQgaW4gY2UuYyBpbiA1ZTNkZDE1N2NlKS4K
+PiAKPiAKPiBNaWNoYcWCCj4gCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
+Y29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
