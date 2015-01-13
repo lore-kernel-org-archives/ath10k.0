@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB2IR-0006op-8t
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:18:15 +0000
+ id 1YB2Jm-0007Wx-Cl
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:19:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Remove unused variable
-References: <1420432822-10819-1-git-send-email-sujith@msujith.org>
-Date: Tue, 13 Jan 2015 16:17:40 +0200
-In-Reply-To: <1420432822-10819-1-git-send-email-sujith@msujith.org> (Sujith
- Manoharan's message of "Mon, 5 Jan 2015 10:10:22 +0530")
-Message-ID: <87lhl669yz.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fill max_num_vdevs for wmi-tlv
+References: <1420713416-14634-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 13 Jan 2015 16:19:01 +0200
+In-Reply-To: <1420713416-14634-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 8 Jan 2015 11:36:56 +0100")
+Message-ID: <87h9vu69wq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,20 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+> Recent commit
+> 30c78167bc6536d9074aa79385a575596343bf69 ("ath10k:
+> set max_num_vdevs based on wmi op version")
+> skipped wmi-tlv case and left max_num_vdevs reset.
+> Make sure it is properly set.
 >
-> htt->max_throughput_mbps is not used anywhere.
->
-> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied to ath.git. I just renamed the title to:
-
-c3ebfede463c ath10k: Remove unused htt->max_throughput_mbps
+Thanks, applied to ath.git.
 
 -- 
 Kalle Valo
