@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB2Jm-0007Wx-Cl
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:19:38 +0000
+ id 1YB2L6-0001S1-Pn
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:21:01 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fill max_num_vdevs for wmi-tlv
-References: <1420713416-14634-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 13 Jan 2015 16:19:01 +0200
-In-Reply-To: <1420713416-14634-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 8 Jan 2015 11:36:56 +0100")
-Message-ID: <87h9vu69wq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: fixup wait_for_completion_timeout return
+ handling
+References: <1420720054-27870-1-git-send-email-der.herr@hofr.at>
+Date: Tue, 13 Jan 2015 16:20:27 +0200
+In-Reply-To: <1420720054-27870-1-git-send-email-der.herr@hofr.at> (Nicholas Mc
+ Guire's message of "Thu, 8 Jan 2015 13:27:34 +0100")
+Message-ID: <87d26i69uc.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: Chun-Yeow Yeoh <yeohchunyeow@gmail.com>, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Ben Greear <greearb@candelatech.com>, Yanbo Li <yanbol@qca.qualcomm.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Nicholas Mc Guire <der.herr@hofr.at> writes:
 
-> Recent commit
-> 30c78167bc6536d9074aa79385a575596343bf69 ("ath10k:
-> set max_num_vdevs based on wmi op version")
-> skipped wmi-tlv case and left max_num_vdevs reset.
-> Make sure it is properly set.
+> wait_for_completion_timeout does not return negative values so the tests
+> for <= 0 are not needed and the case differentiation in the error handling
+> path unnecessary.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Nicholas Mc Guire <der.herr@hofr.at>
 
 Thanks, applied to ath.git.
 
