@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB2mF-0000ng-Aa
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:49:03 +0000
+ id 1YB30q-0004c5-3J
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 15:04:09 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
 References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
- <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
- <54AD103B.40002@qti.qualcomm.com>
-Date: Tue, 13 Jan 2015 16:48:29 +0200
-In-Reply-To: <54AD103B.40002@qti.qualcomm.com> (Vasanthakumar Thiagarajan's
- message of "Wed, 7 Jan 2015 16:23:47 +0530")
-Message-ID: <87vbka4tz6.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 13 Jan 2015 17:03:37 +0200
+In-Reply-To: <1420432796-10765-1-git-send-email-sujith@msujith.org> (Sujith
+ Manoharan's message of "Mon, 5 Jan 2015 10:09:56 +0530")
+Message-ID: <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,23 +23,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Cc: Sujith Manoharan <sujith@msujith.org>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Sujith Manoharan <sujith@msujith.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+Sujith Manoharan <sujith@msujith.org> writes:
 
->>> This patch adds a module parameter to adjust the fill size
->>> based on the platform/usage.
->>
->> I don't think this should be adjustable.
+> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 >
-> Default value of 16 causes rx ring corruption within 1 hour of stress
-> testing. Increasing this limit to 1000 solves the issue, not sure what
-> max value in > 16 and <= 1000 works.
+> The HTT RX ring is replenished with a maximum of 16 buffers,
+> but this might be insufficient when RX traffic is high.
+> Not having enough RX buffers throttles the FW, resulting
+> in low throughput.
+>
+> This patch adds a module parameter to adjust the fill size
+> based on the platform/usage.
+>
+> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-Does the patch below fix that issue? Or is this issue still open?
+[...]
 
-5de6dfc82f71 ath10k: Fix potential Rx ring corruption
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -33,14 +33,17 @@
+>  unsigned int ath10k_debug_mask;
+>  static bool uart_print;
+>  static bool skip_otp;
+> +int htt_fill_size = ATH10K_HTT_MAX_NUM_REFILL;
+>  
+>  module_param_named(debug_mask, ath10k_debug_mask, uint, 0644);
+>  module_param(uart_print, bool, 0644);
+>  module_param(skip_otp, bool, 0644);
+> +module_param(htt_fill_size, int, 0644);
+>  
+>  MODULE_PARM_DESC(debug_mask, "Debugging mask");
+>  MODULE_PARM_DESC(uart_print, "Uart target debugging");
+>  MODULE_PARM_DESC(skip_otp, "Skip otp failure for calibration in testmode");
+> +MODULE_PARM_DESC(htt_fill_size, "HTT RX ring fill size");
+
+I'm not sure if I really like this path of having interfaces to
+configure driver internals. I suspect that if we add this, we will have
+even more later. It's a lot more documenting for us and more work to the
+users to understand what parameters they should use. Also this means
+that testing will be more challenging as people will use different
+values and results won't be comparable.
+
+Isn't there any other way to solve the problem? Like automatically
+changing the value somehow (no idea how) or some other means?
+
+Or if nothing else helps, a crazy idea is to have some sort of platform
+profile parameter:
+
+0 = auto
+1 = slow
+2 = fast
+3 = superfast (x86)
+
+And then we would have preset values (not just htt_fill_size) within
+ath10k and they get chosen based on the profile configured.
 
 -- 
 Kalle Valo
