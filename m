@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB1eP-0001vg-Cm
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 13:36:54 +0000
+ id 1YB1kn-0004ob-EY
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 13:43:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Checking on interest in some patches...
-References: <54A45615.1050401@candelatech.com>
-Date: Tue, 13 Jan 2015 15:36:21 +0200
-In-Reply-To: <54A45615.1050401@candelatech.com> (Ben Greear's message of "Wed, 
- 31 Dec 2014 12:01:25 -0800")
-Message-ID: <878uh67qga.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
+ properly.
+References: <1421090992-14971-1-git-send-email-greearb@candelatech.com>
+ <54B42622.5090404@candelatech.com>
+Date: Tue, 13 Jan 2015 15:42:57 +0200
+In-Reply-To: <54B42622.5090404@candelatech.com> (Ben Greear's message of "Mon, 
+ 12 Jan 2015 11:53:06 -0800")
+Message-ID: <874mru7q5a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +26,13 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Ben Greear <greearb@candelatech.com> writes:
 
-> Previously, I was at a dead end trying to get support for CT firmware features,
-> expanded crash dump features, and other things accepted upstream.
->
-> I am working on porting my changes to the 3.19 kernel, and was curious if
-> there is any change of opinion on possibly accepting at least some CT firmware
-> support or the crash dump features.  If so, I'll clean up and re-post once
-> I have tested them.
+> Sorry about the resends...had mail-server issue, should be resolved now.
 
-We have now four different firmware branches to support and I fear even
-more to come. Adding yet another branch is quite daunting from
-maintenance point of view.
-
-Crash dump support is already upstream, but what's missing is porting it
-to use Johannes' device coredump (commit 833c95456a70) and RAM dump
-part. (And I guess we also want some sort register dump?)
-
-Last year I implemented the RAM dump part, but only did some quick
-verification and that's why I haven't submitted it yet. I think I need
-to submit it as RFC instead of bitrotting on my hard drive.
+So which one should I look at? Or are the patches the same in both sets?
 
 -- 
 Kalle Valo
