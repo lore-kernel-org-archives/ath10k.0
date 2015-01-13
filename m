@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB2HQ-0006KF-O5
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:17:13 +0000
+ id 1YB2IR-0006op-8t
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:18:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 8/8] ath10k: fix error return code
-References: <1419872683-32709-1-git-send-email-Julia.Lawall@lip6.fr>
- <1419872683-32709-9-git-send-email-Julia.Lawall@lip6.fr>
-Date: Tue, 13 Jan 2015 16:16:40 +0200
-In-Reply-To: <1419872683-32709-9-git-send-email-Julia.Lawall@lip6.fr> (Julia
- Lawall's message of "Mon, 29 Dec 2014 18:04:43 +0100")
-Message-ID: <87ppai6a0n.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Remove unused variable
+References: <1420432822-10819-1-git-send-email-sujith@msujith.org>
+Date: Tue, 13 Jan 2015 16:17:40 +0200
+In-Reply-To: <1420432822-10819-1-git-send-email-sujith@msujith.org> (Sujith
+ Manoharan's message of "Mon, 5 Jan 2015 10:10:22 +0530")
+Message-ID: <87lhl669yz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,39 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: kernel-janitors@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, netdev@vger.kernel.org
+To: Sujith Manoharan <sujith@msujith.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Julia Lawall <Julia.Lawall@lip6.fr> writes:
+Sujith Manoharan <sujith@msujith.org> writes:
 
-> Return a negative error code on failure.
+> From: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 >
-> A simplified version of the semantic match that finds this problem is as
-> follows: (http://coccinelle.lip6.fr/)
+> htt->max_throughput_mbps is not used anywhere.
 >
-> // <smpl>
-> @@
-> identifier ret; expression e1,e2;
-> @@
-> (
-> if (\(ret < 0\|ret != 0\))
->  { ... return ret; }
-> |
-> ret = 0
-> )
-> ... when != ret = e1
->     when != &ret
-> *if(...)
-> {
->   ... when != ret = e2
->       when forall
->  return ret;
-> }
-> // </smpl>
->
-> Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
+> Signed-off-by: Sujith Manoharan <c_manoha@qca.qualcomm.com>
 
-Thanks, applied to ath.git.
+Thanks, applied to ath.git. I just renamed the title to:
+
+c3ebfede463c ath10k: Remove unused htt->max_throughput_mbps
 
 -- 
 Kalle Valo
