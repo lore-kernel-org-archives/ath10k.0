@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YB2OL-0002n2-Oc
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:24:22 +0000
+ id 1YB2id-0005OR-PU
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 14:45:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix config_enabled check for hwmon
-References: <1421139105-32025-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 13 Jan 2015 16:23:49 +0200
-In-Reply-To: <1421139105-32025-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Tue, 13 Jan 2015 14:21:45 +0530")
-Message-ID: <874mru69oq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
+References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
+ <CA+BoTQ=HqF0vBj4chXfoY9GKcFBP8Xh37HXo5etDDZ1XCg6O4w@mail.gmail.com>
+ <21677.3195.451116.244389@gargle.gargle.HOWL>
+Date: Tue, 13 Jan 2015 16:44:42 +0200
+In-Reply-To: <21677.3195.451116.244389@gargle.gargle.HOWL> (Sujith Manoharan's
+ message of "Wed, 7 Jan 2015 16:07:47 +0530")
+Message-ID: <87zj9m4u5h.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +25,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Sujith Manoharan <sujith@msujith.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Sujith Manoharan <sujith@msujith.org> writes:
 
-> Because of wrong macro check in config_enabled, hwmon never be
-> enabled. Fix that.
+>> I have a patch internally which removes the replenishment tasklet and
+>> I wonder how will it behave with rx batching then, hmm..
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> I tried that earlier and could see only marginal improvement. The biggest
+> increase came when I replaced netif_receive_skb() with netif_rx()
+> in mac80211/rx.c.
 
-Ouch, thanks for fixing my bug. Applied to ath.git.
+Any ideas why that increases throughput?
 
 -- 
 Kalle Valo
