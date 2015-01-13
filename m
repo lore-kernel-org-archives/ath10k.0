@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YAuNP-00028k-CO
- for ath10k@lists.infradead.org; Tue, 13 Jan 2015 05:50:51 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix hwmon temperature input units
-Date: Tue, 13 Jan 2015 11:20:07 +0530
-Message-ID: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YAv4r-0007A8-T1
+ for ath10k@lists.infradead.org; Tue, 13 Jan 2015 06:35:47 +0000
+Received: by mail-wg0-f54.google.com with SMTP id z12so983582wgg.13
+ for <ath10k@lists.infradead.org>; Mon, 12 Jan 2015 22:35:23 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <CAEFj9873Oxo6dFoxDftdE7S14D6cNpu6Z4NTDL4hFeSFW1w7ow@mail.gmail.com>
+References: <CAEFj9873Oxo6dFoxDftdE7S14D6cNpu6Z4NTDL4hFeSFW1w7ow@mail.gmail.com>
+Date: Tue, 13 Jan 2015 07:35:23 +0100
+Message-ID: <CA+BoTQn=z_Bw5O6zWv+-6aa3kocNgjLbOsLKKpf_QbuPFimQqg@mail.gmail.com>
+Subject: Re: bcn_filter_rx_cmdid
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,41 +20,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-To be compliant with the hwmon interface the unit needs to be
-millidegree Celsius. Fix that.
-
-Reported-by: Matthias Kaehlcke <mka@google.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/thermal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index b14ae8d..3c4a3d8 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -160,7 +160,8 @@ static ssize_t ath10k_thermal_show_temp(struct device *dev,
- 	temperature = ar->thermal.temperature;
- 	spin_unlock_bh(&ar->data_lock);
- 
--	ret = snprintf(buf, PAGE_SIZE, "%d", temperature);
-+	/* display in millidegree celcius */
-+	ret = snprintf(buf, PAGE_SIZE, "%d", temperature * 1000);
- out:
- 	mutex_unlock(&ar->conf_mutex);
- 	return ret;
--- 
-2.2.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgSmFudWFyeSAyMDE1IGF0IDA2OjIwLCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gSGksIGFsbAo+Cj4gQW55b25lIGhhcyB0cmllZCB0byB1c2Ug
+dGhlICJiY25fZmlsdGVyX3J4X2NtZGlkIj8gSXMgdGhpcyB3b3JraW5nPwoKRnJvbSB3aGF0IEkg
+dW5kZXJzdGFuZCBjdXJyZW50bHkgYXZhaWxhYmxlIGZpcm13YXJlIGJpbmFyaWVzIGRvbid0CnN1
+cHBvcnQgdGhpcyBjb21tYW5kLgoKSSBiZWxpZXZlIFdNSV9BRERfQkNOX0ZJTFRFUl9DTURJRCBh
+bmQgV01JX1JNVl9CQ05fRklMVEVSX0NNRElEIG1pZ2h0Cndvcmsgd2l0aCB0aGUgNjM2IChpdCBh
+ZHZlcnRpc2VzIFdNSV9TRVJWSUNFX0JDTl9GSUxURVIgaW4Kd21pX3NlcnZpY2VzKSBidXQgSSBo
+YXZlbid0IHRlc3RlZCB0aGlzLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
