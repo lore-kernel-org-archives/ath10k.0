@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBKZ0-0006mH-BL
- for ath10k@lists.infradead.org; Wed, 14 Jan 2015 09:48:35 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+ id 1YBKwd-0000AH-RY
+ for ath10k@lists.infradead.org; Wed, 14 Jan 2015 10:13:00 +0000
+Received: by mail-wi0-f172.google.com with SMTP id n3so26960239wiv.5
+ for <ath10k@lists.infradead.org>; Wed, 14 Jan 2015 02:12:37 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <21686.15337.153726.847995@gargle.gargle.HOWL>
-Date: Wed, 14 Jan 2015 15:20:33 +0530
-Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-In-Reply-To: <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
+In-Reply-To: <21686.15337.153726.847995@gargle.gargle.HOWL>
 References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
  <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
  <21685.35179.110539.780864@gargle.gargle.HOWL>
  <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
+ <21686.15337.153726.847995@gargle.gargle.HOWL>
+Date: Wed, 14 Jan 2015 11:12:37 +0100
+Message-ID: <CA+BoTQkX1KFxpyiotADSaFaEea5BrmgvWLTaSRgMbKzHHP=a2Q@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +24,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Sujith Manoharan <sujith@msujith.org>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior wrote:
-> We should just fix the tx/rx processing instead. The HTT throttling
-> limit was originally introduced to deal with watchdog issues we've
-> seen on AP135. Tasklets were starving system too much.
-
-Then the fill limit restriction is a workaround for AP135
-and shouldn't be applicable for other platforms ?
-
-> I've been playing around with threaded irqs in ath10k in my tree and
-> I've seen improvement with Rx. However Tx instead becomes broken in
-> the process and I'm yet to find a definite and final answer why that
-> is the case. My suspicion is that NAPI, which is used by the ethernet
-> driver, runs in tasklets and they aren't frequent enough to trigger
-> ksoftirqd so they starve the system. The current non-threaded irq
-> approach yields more tasklet schedules for Tx and hits ksoftirqd more
-> often making it nice on userspace. If that's the case I don't really
-> have an idea how to solve this now.
-
-I haven't looked at the TX path in detail, but regarding RX, these
-were the bottlenecks:
-
-* RX batch indication.
-* HTT fill level.
-* netif_receive_skb() usage instead of netif_rx().
-
-AFAIK, the internal driver schedules only one tasklet for a CE interrupt
-and everything is done in that context, along with refilling HTT.
-ath10k has several stages: ISR -> CE tasklet -> HTT tasklet -> Replenish tasklet.
-The softirq count/load will definitely be high with so many tasklets ?
-
-Sujith
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgSmFudWFyeSAyMDE1IGF0IDEwOjUwLCBTdWppdGggTWFub2hhcmFuIDxzdWppdGhAbXN1
+aml0aC5vcmc+IHdyb3RlOgo+IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+IFdlIHNob3VsZCBqdXN0
+IGZpeCB0aGUgdHgvcnggcHJvY2Vzc2luZyBpbnN0ZWFkLiBUaGUgSFRUIHRocm90dGxpbmcKPj4g
+bGltaXQgd2FzIG9yaWdpbmFsbHkgaW50cm9kdWNlZCB0byBkZWFsIHdpdGggd2F0Y2hkb2cgaXNz
+dWVzIHdlJ3ZlCj4+IHNlZW4gb24gQVAxMzUuIFRhc2tsZXRzIHdlcmUgc3RhcnZpbmcgc3lzdGVt
+IHRvbyBtdWNoLgo+Cj4gVGhlbiB0aGUgZmlsbCBsaW1pdCByZXN0cmljdGlvbiBpcyBhIHdvcmth
+cm91bmQgZm9yIEFQMTM1Cj4gYW5kIHNob3VsZG4ndCBiZSBhcHBsaWNhYmxlIGZvciBvdGhlciBw
+bGF0Zm9ybXMgPwoKSWYgSSB3ZXJlIHRvIG5hcnJvdyBkb3duIEknZCBzYXkgYWxsIHVuaXByb2Nl
+c3NvcnMuIEFQMTM1IGlzIGp1c3QgYW4KZXhhbXBsZSB3aGVyZSB0aGUgcHJvYmxlbSBlYXNpbHkg
+b2NjdXJzIHNpbmNlIGl0IGhhcyBhbiB1bmRlcnBvd2VyZWQKY3B1IGZvciB0aGUgdGFzay4gRXZl
+biBhIG1vcmUgcG93ZXJmdWwgc2luZ2xlLWNvcmUgc3lzdGVtIHdpbGwgZ2V0CmludG8gdHJvdWJs
+ZSAtIGFsbCB5b3UgbmVlZCBpcyBhIGNvdXBsZSBleHRyYSBuZXRmaWx0ZXIgcnVsZXMsIG5hdCwK
+c29tZSBydW5uaW5nIHNlcnZpY2VzIG9yIGFkZGl0aW9uYWwgcHJvY2Vzc2luZyBoYXJkd2FyZSAo
+dXNiIGFueW9uZT8pLgoKCj4+IEkndmUgYmVlbiBwbGF5aW5nIGFyb3VuZCB3aXRoIHRocmVhZGVk
+IGlycXMgaW4gYXRoMTBrIGluIG15IHRyZWUgYW5kCj4+IEkndmUgc2VlbiBpbXByb3ZlbWVudCB3
+aXRoIFJ4LiBIb3dldmVyIFR4IGluc3RlYWQgYmVjb21lcyBicm9rZW4gaW4KPj4gdGhlIHByb2Nl
+c3MgYW5kIEknbSB5ZXQgdG8gZmluZCBhIGRlZmluaXRlIGFuZCBmaW5hbCBhbnN3ZXIgd2h5IHRo
+YXQKPj4gaXMgdGhlIGNhc2UuIE15IHN1c3BpY2lvbiBpcyB0aGF0IE5BUEksIHdoaWNoIGlzIHVz
+ZWQgYnkgdGhlIGV0aGVybmV0Cj4+IGRyaXZlciwgcnVucyBpbiB0YXNrbGV0cyBhbmQgdGhleSBh
+cmVuJ3QgZnJlcXVlbnQgZW5vdWdoIHRvIHRyaWdnZXIKPj4ga3NvZnRpcnFkIHNvIHRoZXkgc3Rh
+cnZlIHRoZSBzeXN0ZW0uIFRoZSBjdXJyZW50IG5vbi10aHJlYWRlZCBpcnEKPj4gYXBwcm9hY2gg
+eWllbGRzIG1vcmUgdGFza2xldCBzY2hlZHVsZXMgZm9yIFR4IGFuZCBoaXRzIGtzb2Z0aXJxZCBt
+b3JlCj4+IG9mdGVuIG1ha2luZyBpdCBuaWNlIG9uIHVzZXJzcGFjZS4gSWYgdGhhdCdzIHRoZSBj
+YXNlIEkgZG9uJ3QgcmVhbGx5Cj4+IGhhdmUgYW4gaWRlYSBob3cgdG8gc29sdmUgdGhpcyBub3cu
+Cj4KPiBJIGhhdmVuJ3QgbG9va2VkIGF0IHRoZSBUWCBwYXRoIGluIGRldGFpbCwgYnV0IHJlZ2Fy
+ZGluZyBSWCwgdGhlc2UKPiB3ZXJlIHRoZSBib3R0bGVuZWNrczoKPgo+ICogUlggYmF0Y2ggaW5k
+aWNhdGlvbi4KPiAqIEhUVCBmaWxsIGxldmVsLgo+ICogbmV0aWZfcmVjZWl2ZV9za2IoKSB1c2Fn
+ZSBpbnN0ZWFkIG9mIG5ldGlmX3J4KCkuCj4KPiBBRkFJSywgdGhlIGludGVybmFsIGRyaXZlciBz
+Y2hlZHVsZXMgb25seSBvbmUgdGFza2xldCBmb3IgYSBDRSBpbnRlcnJ1cHQKPiBhbmQgZXZlcnl0
+aGluZyBpcyBkb25lIGluIHRoYXQgY29udGV4dCwgYWxvbmcgd2l0aCByZWZpbGxpbmcgSFRULgo+
+IGF0aDEwayBoYXMgc2V2ZXJhbCBzdGFnZXM6IElTUiAtPiBDRSB0YXNrbGV0IC0+IEhUVCB0YXNr
+bGV0IC0+IFJlcGxlbmlzaCB0YXNrbGV0Lgo+IFRoZSBzb2Z0aXJxIGNvdW50L2xvYWQgd2lsbCBk
+ZWZpbml0ZWx5IGJlIGhpZ2ggd2l0aCBzbyBtYW55IHRhc2tsZXRzID8KCkFwcGFyZW50bHkgdGhp
+cyBpc24ndCBlbm91Z2guIEFsc28sIHRhc2tsZXRzIGFyZW4ndCBzdWJqZWN0IHRvIHJlZ3VsYXIK
+c2NoZWR1bGluZyBwb2xpY2llcyBhbmQgdGhleSBqdXN0IHN0ZWFsIHRpbWUgZnJvbSBvdGhlciB0
+aHJlYWRzLiBUaGlzCmlzIGltcG9ydGFudCBpZiB5b3UgY29uc2lkZXIgaG93IG11Y2ggdGltZSBh
+IHNpbmdsZSB0YXNrbGV0IGNhbiBydW4gLQp5b3UgY2FuIGFjdHVhbGx5IGVzdGltYXRlIHRoaXMu
+Cgo4MDBtYnBzIGlzIDEwMG1ieXRlcy9zLiBBc3N1bWUgdGhpcyBpcyB3aGF0IGhvc3Qgc3lzdGVt
+IGNhbiBoYW5kbGUgYXQgMTAwJSBjcHUuCkhUVCBSeCByaW5nIGlzIDEwMDAgZnJhbWVzIGxvbmcg
+d2hpY2ggaXMgfjEuNW1ieXRlIG9mIGRhdGEgKGFzc3VtaW5nCjE1MDBieXRlcyBmb3IgZWFjaCBw
+YWNrZXQpLgpZb3UgZXZlbnR1YWxseSBlbmQgdXAgd2l0aCBjeWNsZXMgd2hpY2ggZHJhaW4gZW50
+aXJlIGh0dCByeCByaW5nIGFuZAp0aGVuIHJlcGxlbmlzaCBpdCBpZiB5b3UgcHVzaCBtb3JlIHRy
+YWZmaWMgdGhhdCBob3N0IGNwdSBjYW4gdGFrZS4KMTAwbWJ5dGVzIC8gMS41bWJ5dGVzID0gfjY2
+cnVucy9zIHdoaWNoIGlzIH4xNW1zIGZvciBlYWNoIHRhc2tsZXQgcnVuLgpUaGF0J3MgYSBsb3Qu
+IFlvdSBtaWdodCBub3QgZ2V0IGEgY2hhbmNlIHRvIGN5Y2xlIHRocm91Z2ggYWxsIHRoZQpydW5u
+aW5nIHByb2Nlc3NlcyB0byBnaXZlIHRoZW0gdGhlaXIgdGltZXNsaWNlIGZvciBhIGZldyBzZWNv
+bmRzLi4KCklmIHlvdSBzdGFydmUgdXNlcnNwYWNlIHdoaWNoIHJ1bnMgYSB3YXRjaGRvZyBwcm9j
+ZXNzIHlvdSdsbCBlbmQgdXAKZmFpbGluZyB0byBwb2tlIHRoZSB3YXRjaGRvZyB0aW1lciBpbiBr
+ZXJuZWwgYW5kIHlvdSdsbCBnZXQgYSByZWJvb3QuCgpJJ20gc3RhcnRpbmcgdG8gdGhpbmsgdGFz
+a2xldHMgYXJlIHBsYWluIGV2aWwgZm9yIG5ldHdvcmsgZHJpdmVycyA6UAoKCk1pY2hhxYIKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
