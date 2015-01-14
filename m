@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22e.google.com ([2a00:1450:400c:c03::22e])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBKWB-0004N6-NZ
- for ath10k@lists.infradead.org; Wed, 14 Jan 2015 09:45:40 +0000
-Received: by mail-we0-f174.google.com with SMTP id k48so7694646wev.5
- for <ath10k@lists.infradead.org>; Wed, 14 Jan 2015 01:45:14 -0800 (PST)
+ id 1YBKZ0-0006mH-BL
+ for ath10k@lists.infradead.org; Wed, 14 Jan 2015 09:48:35 +0000
+From: Sujith Manoharan <sujith@msujith.org>
 MIME-Version: 1.0
-In-Reply-To: <54B56D00.4010401@candelatech.com>
-References: <54AEF595.9030205@candelatech.com>
- <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
- <54B00807.9060909@candelatech.com>
- <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
- <54B56D00.4010401@candelatech.com>
-Date: Wed, 14 Jan 2015 10:45:14 +0100
-Message-ID: <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
-Subject: Re: Anyone seeing tx-credits 'hang'?
-From: Michal Kazior <michal.kazior@tieto.com>
+Message-ID: <21686.15337.153726.847995@gargle.gargle.HOWL>
+Date: Wed, 14 Jan 2015 15:20:33 +0530
+Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
+In-Reply-To: <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
+References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
+ <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
+ <21685.35179.110539.780864@gargle.gargle.HOWL>
+ <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTMgSmFudWFyeSAyMDE1IGF0IDIwOjA3LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
-ZWNoLmNvbT4gd3JvdGU6ClsuLi5dCj4KPiBJIG1hbmFnZWQgdG8gZ2V0IHNvbWUgYmV0dGVyIGRl
-YnVnIG91dCBvZiB0aGUgZmlybXdhcmUuCj4KPiBJIGFtIGhhdmluZyBhIGhlbGwgb2YgYSB0aW1l
-IGZpZ3VyaW5nIG91dCBob3cgdGhlIGNvZGUgZmxvd3MgdGhyb3VnaCBhbGwKPiBvZiB0aGUgY2Fs
-bGJhY2tzIChpbiBib3RoIGZpcm13YXJlIGFuZCBkcml2ZXIpLCBidXQgaXQgYXBwZWFycyB0aGlz
-IGlzIHdoYXQgaGFwcGVuZWQ6Cj4KPiAoSSBoYXZlIGluc3RydW1lbnRlZCB0cmFuc2Zlci1pZCBp
-biBib3RoIGZpcm13YXJlIGFuZCBkcml2ZXIpCj4KPiBmaXJtd2FyZSBzZW50IHdtaSBtZXNzYWdl
-IHdpdGggdHJhbnNmZXItaWQgb2YgNzIuCj4ga2VybmVsIHJlY2VpdmVkIHRoaXMgdHJhbnNmZXIt
-aWQKPiBmaXJtd2FyZSdzIGxhc3Qgc2VuZC1jYWxsYmFjayB0cmFuc2ZlciBJRCBpcyA3MS4KPgo+
-IFNvLCBpdCBzZWVtcyB0aGF0IGVpdGhlciBhdGgxMGsgZGlkIG5vdCBkbyB0aGUgdHJhbnNmZXIt
-Y29tcGxldGUgbG9naWMsCj4gZGlkIGl0IGluY29ycmVjdGx5LCBvciB0aGUgZmlybXdhcmUgZGlk
-IG5vdCBub3RpY2UgaXQgd2FzIGRvbmUuCj4KPiBJIGNhbm5vdCBmaW5kIHdoZXJlIHRoZSB0cmFu
-c2ZlciBjb21wbGV0ZSBjb2RlIHRoYXQgc2hvdWxkIGJlIHVwZGF0aW5nCj4gZmlybXdhcmUgaXMg
-YXQuICBJZiB5b3Uga25vdywgY2FuIHlvdSBwb2ludCBtZSB0byBpdD8KCkkgdGhpbmsgdGhlIHNl
-bmQtY2FsbGJhY2sgc2hvdWxkIGJlIGNhbGxlZCB3aGVuIENFIGlzIHNpbXBseSBkb25lCmRvaW5n
-IGl0J3Mgc3R1ZmYuIFRoZXJlJ3Mgbm8gbmVlZCBmb3IgdGhlIG90aGVyIHNpZGUgdG8gYWNrIGFu
-eXRoaW5nCmV4cGxpY2l0bHkgKGl0IGp1c3QgbmVlZHMgdG8gaGF2ZSBhIGZyZWUgYnVmZmVyIG9u
-IGl0J3Mgc2lkZSBzbyBDRSBjYW4KY29weSBpdCBvdmVyKS4KCk9yIG1heWJlIGl0IGlzIHRoZSBI
-T1NUX0lTX0NPUFlfQ09NUExFVEVfTUFTSz8gTm90IHJlYWxseSBzdXJlLgoKCk1pY2hhxYIKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior wrote:
+> We should just fix the tx/rx processing instead. The HTT throttling
+> limit was originally introduced to deal with watchdog issues we've
+> seen on AP135. Tasklets were starving system too much.
+
+Then the fill limit restriction is a workaround for AP135
+and shouldn't be applicable for other platforms ?
+
+> I've been playing around with threaded irqs in ath10k in my tree and
+> I've seen improvement with Rx. However Tx instead becomes broken in
+> the process and I'm yet to find a definite and final answer why that
+> is the case. My suspicion is that NAPI, which is used by the ethernet
+> driver, runs in tasklets and they aren't frequent enough to trigger
+> ksoftirqd so they starve the system. The current non-threaded irq
+> approach yields more tasklet schedules for Tx and hits ksoftirqd more
+> often making it nice on userspace. If that's the case I don't really
+> have an idea how to solve this now.
+
+I haven't looked at the TX path in detail, but regarding RX, these
+were the bottlenecks:
+
+* RX batch indication.
+* HTT fill level.
+* netif_receive_skb() usage instead of netif_rx().
+
+AFAIK, the internal driver schedules only one tasklet for a CE interrupt
+and everything is done in that context, along with refilling HTT.
+ath10k has several stages: ISR -> CE tasklet -> HTT tasklet -> Replenish tasklet.
+The softirq count/load will definitely be high with so many tasklets ?
+
+Sujith
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
