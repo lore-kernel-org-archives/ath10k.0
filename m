@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBhnB-0003Vo-2r
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 10:36:46 +0000
+ id 1YBhns-0003uU-1M
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 10:37:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: document switch case fall-through in
- __ath10k_scan_finish
-References: <1421096822-28698-1-git-send-email-linville@tuxdriver.com>
-Date: Thu, 15 Jan 2015 12:36:15 +0200
-In-Reply-To: <1421096822-28698-1-git-send-email-linville@tuxdriver.com> (John
- W. Linville's message of "Mon, 12 Jan 2015 16:07:02 -0500")
-Message-ID: <87sifcxrds.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix hwmon temperature input units
+References: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Thu, 15 Jan 2015 12:36:53 +0200
+In-Reply-To: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Tue, 13 Jan 2015 11:20:07 +0530")
+Message-ID: <87oaq0xrcq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,20 +23,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-"John W. Linville" <linville@tuxdriver.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Add a comment for indicating that the ATH10K_SCAN_RUNNING case falls
-> through to the ATH10K_SCAN_ABORTING case in __ath10k_scan_finish.  This
-> will document that the lack of a break is intentional.
+> To be compliant with the hwmon interface the unit needs to be
+> millidegree Celsius. Fix that.
 >
-> Coverity: CID 1260017
->
-> Signed-off-by: John W. Linville <linville@tuxdriver.com>
+> Reported-by: Matthias Kaehlcke <mka@google.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Thanks, applied to ath.git.
+Thanks, applied.
 
 -- 
 Kalle Valo
