@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBiKA-0001RB-2K
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 11:10:52 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: add wmi-tlv debug event handling
-References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 15 Jan 2015 13:10:14 +0200
-In-Reply-To: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 8 Jan 2015 12:18:15 +0100")
-Message-ID: <87k30oxpt5.fsf@kamboji.qca.qualcomm.com>
+ id 1YBjgy-0000Cw-IG
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 12:38:29 +0000
+Received: by mail-we0-f178.google.com with SMTP id p10so14398211wes.9
+ for <ath10k@lists.infradead.org>; Thu, 15 Jan 2015 04:38:02 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <87k30oxpt5.fsf@kamboji.qca.qualcomm.com>
+References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+ <87k30oxpt5.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 15 Jan 2015 13:38:02 +0100
+Message-ID: <CA+BoTQm28YGHPi_k26Cdhn3cwRsHT8uACOoj7G0r2sHEjpkTEQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] ath10k: add wmi-tlv debug event handling
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +21,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> New wmi-tlv firmware will deliver debug messages
-> via new events.
->
-> Note: This may yield some (trivial) conflicts
-> against my beacon/presp template patchset.
-
-You were right, but bonus points for having valid parent commit ids for
-the 3-way merge! :)
-
-Applying: ath10k: implement diag data container event
-Using index info to reconstruct a base tree...
-Falling back to patching base and 3-way merge...
-Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.h
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.h
-Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.c
-CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.c
-Failed to merge in the changes.
-Patch failed at 0001 ath10k: implement diag data container event
-
-Please double check my conflict resolution in ath-next-test.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgSmFudWFyeSAyMDE1IGF0IDEyOjEwLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKWy4uLl0KPiBBcHBseWluZzogYXRoMTBrOiBpbXBsZW1lbnQgZGlhZyBk
+YXRhIGNvbnRhaW5lciBldmVudAo+IFVzaW5nIGluZGV4IGluZm8gdG8gcmVjb25zdHJ1Y3QgYSBi
+YXNlIHRyZWUuLi4KPiBGYWxsaW5nIGJhY2sgdG8gcGF0Y2hpbmcgYmFzZSBhbmQgMy13YXkgbWVy
+Z2UuLi4KPiBBdXRvLW1lcmdpbmcgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkt
+dGx2LmgKPiBDT05GTElDVCAoY29udGVudCk6IE1lcmdlIGNvbmZsaWN0IGluIGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5oCj4gQXV0by1tZXJnaW5nIGRyaXZlcnMvbmV0
+L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5jCj4gQ09ORkxJQ1QgKGNvbnRlbnQpOiBNZXJn
+ZSBjb25mbGljdCBpbiBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuYwo+
+IEZhaWxlZCB0byBtZXJnZSBpbiB0aGUgY2hhbmdlcy4KPiBQYXRjaCBmYWlsZWQgYXQgMDAwMSBh
+dGgxMGs6IGltcGxlbWVudCBkaWFnIGRhdGEgY29udGFpbmVyIGV2ZW50Cj4KPiBQbGVhc2UgZG91
+YmxlIGNoZWNrIG15IGNvbmZsaWN0IHJlc29sdXRpb24gaW4gYXRoLW5leHQtdGVzdC4KCkxvb2tz
+IGdvb2QsIHRoYW5rcyEKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cg==
