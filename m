@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBhns-0003uU-1M
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 10:37:28 +0000
+ id 1YBiKA-0001RB-2K
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 11:10:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix hwmon temperature input units
-References: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Thu, 15 Jan 2015 12:36:53 +0200
-In-Reply-To: <1421128207-28641-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Tue, 13 Jan 2015 11:20:07 +0530")
-Message-ID: <87oaq0xrcq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: add wmi-tlv debug event handling
+References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 15 Jan 2015 13:10:14 +0200
+In-Reply-To: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 8 Jan 2015 12:18:15 +0100")
+Message-ID: <87k30oxpt5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> To be compliant with the hwmon interface the unit needs to be
-> millidegree Celsius. Fix that.
+> New wmi-tlv firmware will deliver debug messages
+> via new events.
 >
-> Reported-by: Matthias Kaehlcke <mka@google.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Note: This may yield some (trivial) conflicts
+> against my beacon/presp template patchset.
 
-Thanks, applied.
+You were right, but bonus points for having valid parent commit ids for
+the 3-way merge! :)
+
+Applying: ath10k: implement diag data container event
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.h
+CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.h
+Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.c
+CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.c
+Failed to merge in the changes.
+Patch failed at 0001 ath10k: implement diag data container event
+
+Please double check my conflict resolution in ath-next-test.
 
 -- 
 Kalle Valo
