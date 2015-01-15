@@ -1,20 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBY62-0004ky-KD
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 00:15:35 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+ id 1YBZeD-0004qS-NY
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 01:54:59 +0000
+Message-ID: <54B71DB9.10608@qca.qualcomm.com>
+Date: Wed, 14 Jan 2015 17:54:01 -0800
+From: Peter Oh <poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Message-ID: <21687.1828.923192.384081@gargle.gargle.HOWL>
-Date: Thu, 15 Jan 2015 05:47:40 +0530
-Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-In-Reply-To: <CA+BoTQkX1KFxpyiotADSaFaEea5BrmgvWLTaSRgMbKzHHP=a2Q@mail.gmail.com>
-References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
- <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
- <21685.35179.110539.780864@gargle.gargle.HOWL>
- <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
- <21686.15337.153726.847995@gargle.gargle.HOWL>
- <CA+BoTQkX1KFxpyiotADSaFaEea5BrmgvWLTaSRgMbKzHHP=a2Q@mail.gmail.com>
+Subject: Re: Anyone seeing tx-credits 'hang'?
+References: <54AEF595.9030205@candelatech.com>
+ <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
+ <54B00807.9060909@candelatech.com>
+ <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
+ <54B56D00.4010401@candelatech.com>
+ <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
+ <54B6AE1E.3020900@candelatech.com> <54B6D67C.4090006@qca.qualcomm.com>
+ <54B6DE13.1080609@candelatech.com>
+In-Reply-To: <54B6DE13.1080609@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +25,91 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Michal Kazior wrote:
-> If I were to narrow down I'd say all uniprocessors. AP135 is just an
-> example where the problem easily occurs since it has an underpowered
-> cpu for the task. Even a more powerful single-core system will get
-> into trouble - all you need is a couple extra netfilter rules, nat,
-> some running services or additional processing hardware (usb anyone?).
 
-There are platforms which offload such network operations to the HW.
-AP148 is an example.
-
-> Apparently this isn't enough. Also, tasklets aren't subject to regular
-> scheduling policies and they just steal time from other threads. This
-> is important if you consider how much time a single tasklet can run -
-> you can actually estimate this.
-> 
-> 800mbps is 100mbytes/s. Assume this is what host system can handle at 100% cpu.
-> HTT Rx ring is 1000 frames long which is ~1.5mbyte of data (assuming
-> 1500bytes for each packet).
-> You eventually end up with cycles which drain entire htt rx ring and
-> then replenish it if you push more traffic that host cpu can take.
-> 100mbytes / 1.5mbytes = ~66runs/s which is ~15ms for each tasklet run.
-> That's a lot. You might not get a chance to cycle through all the
-> running processes to give them their timeslice for a few seconds..
-> 
-> If you starve userspace which runs a watchdog process you'll end up
-> failing to poke the watchdog timer in kernel and you'll get a reboot.
-> 
-> I'm starting to think tasklets are plain evil for network drivers :P
-
-Well, we need a way to lift the fill level restriction for platforms
-that can afford a higher value, until the tx/rx engine in ath10k is
-rewritten - and I don't want to carry an internal patch...
-
-Sujith
+On 01/14/2015 01:22 PM, Ben Greear wrote:
+> On 01/14/2015 12:50 PM, Peter Oh wrote:
+>> On 01/14/2015 09:57 AM, Ben Greear wrote:
+>>> On 01/14/2015 01:45 AM, Michal Kazior wrote:
+>>>> On 13 January 2015 at 20:07, Ben Greear <greearb@candelatech.com> wrote:
+>>>> [...]
+>>>>> I managed to get some better debug out of the firmware.
+>>>>>
+>>>>> I am having a hell of a time figuring out how the code flows through all
+>>>>> of the callbacks (in both firmware and driver), but it appears this is what happened:
+>>>>>
+>>>>> (I have instrumented transfer-id in both firmware and driver)
+>>>>>
+>>>>> firmware sent wmi message with transfer-id of 72.
+>>>>> kernel received this transfer-id
+>>>>> firmware's last send-callback transfer ID is 71.
+>>>>>
+>>>>> So, it seems that either ath10k did not do the transfer-complete logic,
+>>>>> did it incorrectly, or the firmware did not notice it was done.
+>>>>>
+>>>>> I cannot find where the transfer complete code that should be updating
+>>>>> firmware is at.  If you know, can you point me to it?
+>>>> I think the send-callback should be called when CE is simply done
+>>>> doing it's stuff. There's no need for the other side to ack anything
+>>>> explicitly (it just needs to have a free buffer on it's side so CE can
+>>>> copy it over).
+>>>>
+>>>> Or maybe it is the HOST_IS_COPY_COMPLETE_MASK? Not really sure.
+>>> I am now guessing that some magic IRQ happens when ath10k_ce_src_ring_write_index_set()
+>>> is called.
+>> You may already notice it, but to clarify the magic IRQ is DMA interrupts. Copy Engine is almost the same as DMA engine with channels which triggers an
+>> interrupt automatically when a DMA transfer is completed. we have registers to enable it, HOST_IE (offset 0x2c) and TARGET_IE(offset 0x24).
+>> ath10k_ce_src_ring_write_index_set (SRC_RING_WR_IND register, offset 0x3c) triggers fetching data automatically using DMA by ASIC design.
+> Yes, that makes sense, and I appreciate the extra details.
+>
+>>> I may have narrowed down the problem a bit further now.
+>>>
+>>> I printed out the ring indexes in firmware and driver when lockup
+>>> occured.  The target -> host ring ids match fine, but I notice that
+>>> it appears the firmware has pending entries in it's host -> target wmi
+>>> ring that it has not consumed.
+>>>
+>>> Maybe it missed an irq or has some related race.
+>> Since the IRQ is a DMA interrupt triggered by ASIC, all the amount of data size must be transferred to trigger the interrupt. If IRQ does not happen even after
+>> all the data transferred, then we may call it an ASIC bug otherwise it could be software issues. The corresponding status register is TARGET_IS (offset 0x28)
+>> and HOST_IS (offset 0x30), but I'm not sure which registers represent the number of bytes has been transferred. If we have this type of register, it will be
+>> easy to determine if DMA is done.
+> I found some things that look risky in the firmware CE code, but my attempts at
+> fixing them made no improvement, so I am not sure I found any real problems in
+> this area yet.  I'll be happy to send you the firmware patches for my debugging
+> efforts and such if you are interested.
+sure. I'd like to run your changes, but I cannot guarantee how much 
+efforts by when I give work on.
+>
+> As for when bytes are fully read, see this firmware method:
+>
+> CE_completed_recv_next
+>
+> At this point, I am trying to make a work-around that will force a re-read of the ring
+> buffer (basically, fake an interrupt).
+>
+>
+> Back to the original attempt at debugging this...the problem was quite easy to reproduce
+> before I started adding debugging to the firmware..and the debugging I have added is quite light on
+> run-time behaviour, so I suspect some sort of race either in software or hardware.
+>
+> Hard to pin it down though.
+>
+> Out of curiosity, are you aware of anyone hitting this type of problem with upstream
+> firmware?
+sorry, but I don't see people address this issue.
+> Thanks,
+> Ben
+>
+>
+Regards,
+Peter
 
 _______________________________________________
 ath10k mailing list
