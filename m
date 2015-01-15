@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBSCs-0008Vm-17
- for ath10k@lists.infradead.org; Wed, 14 Jan 2015 17:58:14 +0000
-Message-ID: <54B6AE1E.3020900@candelatech.com>
-Date: Wed, 14 Jan 2015 09:57:50 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from s72.web-hosting.com ([198.187.29.22])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YBY62-0004ky-KD
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 00:15:35 +0000
+From: Sujith Manoharan <sujith@msujith.org>
 MIME-Version: 1.0
-Subject: Re: Anyone seeing tx-credits 'hang'?
-References: <54AEF595.9030205@candelatech.com>
- <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
- <54B00807.9060909@candelatech.com>
- <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
- <54B56D00.4010401@candelatech.com>
- <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
+Message-ID: <21687.1828.923192.384081@gargle.gargle.HOWL>
+Date: Thu, 15 Jan 2015 05:47:40 +0530
+Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
+In-Reply-To: <CA+BoTQkX1KFxpyiotADSaFaEea5BrmgvWLTaSRgMbKzHHP=a2Q@mail.gmail.com>
+References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
+ <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
+ <21685.35179.110539.780864@gargle.gargle.HOWL>
+ <CA+BoTQmNkVKyeWB0fCFhG2MfMZYTz6Dp4+cs44Dm4HCKjTc3Zw@mail.gmail.com>
+ <21686.15337.153726.847995@gargle.gargle.HOWL>
+ <CA+BoTQkX1KFxpyiotADSaFaEea5BrmgvWLTaSRgMbKzHHP=a2Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,51 +23,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMDEvMTQvMjAxNSAwMTo0NSBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMyBKYW51
-YXJ5IDIwMTUgYXQgMjA6MDcsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3
-cm90ZToKPiBbLi4uXQo+Pgo+PiBJIG1hbmFnZWQgdG8gZ2V0IHNvbWUgYmV0dGVyIGRlYnVnIG91
-dCBvZiB0aGUgZmlybXdhcmUuCj4+Cj4+IEkgYW0gaGF2aW5nIGEgaGVsbCBvZiBhIHRpbWUgZmln
-dXJpbmcgb3V0IGhvdyB0aGUgY29kZSBmbG93cyB0aHJvdWdoIGFsbAo+PiBvZiB0aGUgY2FsbGJh
-Y2tzIChpbiBib3RoIGZpcm13YXJlIGFuZCBkcml2ZXIpLCBidXQgaXQgYXBwZWFycyB0aGlzIGlz
-IHdoYXQgaGFwcGVuZWQ6Cj4+Cj4+IChJIGhhdmUgaW5zdHJ1bWVudGVkIHRyYW5zZmVyLWlkIGlu
-IGJvdGggZmlybXdhcmUgYW5kIGRyaXZlcikKPj4KPj4gZmlybXdhcmUgc2VudCB3bWkgbWVzc2Fn
-ZSB3aXRoIHRyYW5zZmVyLWlkIG9mIDcyLgo+PiBrZXJuZWwgcmVjZWl2ZWQgdGhpcyB0cmFuc2Zl
-ci1pZAo+PiBmaXJtd2FyZSdzIGxhc3Qgc2VuZC1jYWxsYmFjayB0cmFuc2ZlciBJRCBpcyA3MS4K
-Pj4KPj4gU28sIGl0IHNlZW1zIHRoYXQgZWl0aGVyIGF0aDEwayBkaWQgbm90IGRvIHRoZSB0cmFu
-c2Zlci1jb21wbGV0ZSBsb2dpYywKPj4gZGlkIGl0IGluY29ycmVjdGx5LCBvciB0aGUgZmlybXdh
-cmUgZGlkIG5vdCBub3RpY2UgaXQgd2FzIGRvbmUuCj4+Cj4+IEkgY2Fubm90IGZpbmQgd2hlcmUg
-dGhlIHRyYW5zZmVyIGNvbXBsZXRlIGNvZGUgdGhhdCBzaG91bGQgYmUgdXBkYXRpbmcKPj4gZmly
-bXdhcmUgaXMgYXQuICBJZiB5b3Uga25vdywgY2FuIHlvdSBwb2ludCBtZSB0byBpdD8KPiAKPiBJ
-IHRoaW5rIHRoZSBzZW5kLWNhbGxiYWNrIHNob3VsZCBiZSBjYWxsZWQgd2hlbiBDRSBpcyBzaW1w
-bHkgZG9uZQo+IGRvaW5nIGl0J3Mgc3R1ZmYuIFRoZXJlJ3Mgbm8gbmVlZCBmb3IgdGhlIG90aGVy
-IHNpZGUgdG8gYWNrIGFueXRoaW5nCj4gZXhwbGljaXRseSAoaXQganVzdCBuZWVkcyB0byBoYXZl
-IGEgZnJlZSBidWZmZXIgb24gaXQncyBzaWRlIHNvIENFIGNhbgo+IGNvcHkgaXQgb3ZlcikuCj4g
-Cj4gT3IgbWF5YmUgaXQgaXMgdGhlIEhPU1RfSVNfQ09QWV9DT01QTEVURV9NQVNLPyBOb3QgcmVh
-bGx5IHN1cmUuCgpJIGFtIG5vdyBndWVzc2luZyB0aGF0IHNvbWUgbWFnaWMgSVJRIGhhcHBlbnMg
-d2hlbiBhdGgxMGtfY2Vfc3JjX3Jpbmdfd3JpdGVfaW5kZXhfc2V0KCkKaXMgY2FsbGVkLgoKSSBt
-YXkgaGF2ZSBuYXJyb3dlZCBkb3duIHRoZSBwcm9ibGVtIGEgYml0IGZ1cnRoZXIgbm93LgoKSSBw
-cmludGVkIG91dCB0aGUgcmluZyBpbmRleGVzIGluIGZpcm13YXJlIGFuZCBkcml2ZXIgd2hlbiBs
-b2NrdXAKb2NjdXJlZC4gIFRoZSB0YXJnZXQgLT4gaG9zdCByaW5nIGlkcyBtYXRjaCBmaW5lLCBi
-dXQgSSBub3RpY2UgdGhhdAppdCBhcHBlYXJzIHRoZSBmaXJtd2FyZSBoYXMgcGVuZGluZyBlbnRy
-aWVzIGluIGl0J3MgaG9zdCAtPiB0YXJnZXQgd21pCnJpbmcgdGhhdCBpdCBoYXMgbm90IGNvbnN1
-bWVkLgoKTWF5YmUgaXQgbWlzc2VkIGFuIGlycSBvciBoYXMgc29tZSByZWxhdGVkIHJhY2UuCgpJ
-J20gZ29pbmcgdG8gdHJ5IGZvcmNpbmcgYSBwb2xsIG9mIHRoZSBob3N0IC0+IHRhcmdldCB3bWkg
-cXVldWUgaW4gdGhlCmZpcm13YXJlIHdoZW4gaXQgZGV0ZWN0cyBubyB3bWkga2VlcC1hbGl2ZSBt
-ZXNzYWdlcyBhbmQgc2VlIGlmIHRoYXQga2lja3MKdGhpbmdzIGJhY2sgaW50byBhY3Rpb24sIGFu
-ZCBtYXliZSBzZWUgaWYgSSBjYW4gZmluZCBhbnkgcmVhc29uIGZvciBpdAp0byBub3QgcHJvcGVy
-bHkgaGFuZGxlIHRoZSByaW5nIGluIHRoZSBmaXJzdCBwbGFjZS4KCklmIHRoaXMgd29ya3MsIHBl
-cmhhcHMgdGhlcmUgaXMgYSB3YXkgdG8ga2ljayB0aGUgcmluZyBmcm9tIHRoZSBkcml2ZXIKc2lk
-ZS4uLm1heWJlIHNlbmQgYSB3bWkgY29tbWFuZCAoaWdub3JpbmcgcXVvdGEpIHRoYXQgaGFzIG5v
-IGFmZmVjdCwKb3Igc29tZXRoaW5nIGxpa2UgdGhhdD8KClRoYW5rcywKQmVuCgoKPiAKPiAKPiBN
-aWNoYcWCCj4gCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5k
-ZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior wrote:
+> If I were to narrow down I'd say all uniprocessors. AP135 is just an
+> example where the problem easily occurs since it has an underpowered
+> cpu for the task. Even a more powerful single-core system will get
+> into trouble - all you need is a couple extra netfilter rules, nat,
+> some running services or additional processing hardware (usb anyone?).
+
+There are platforms which offload such network operations to the HW.
+AP148 is an example.
+
+> Apparently this isn't enough. Also, tasklets aren't subject to regular
+> scheduling policies and they just steal time from other threads. This
+> is important if you consider how much time a single tasklet can run -
+> you can actually estimate this.
+> 
+> 800mbps is 100mbytes/s. Assume this is what host system can handle at 100% cpu.
+> HTT Rx ring is 1000 frames long which is ~1.5mbyte of data (assuming
+> 1500bytes for each packet).
+> You eventually end up with cycles which drain entire htt rx ring and
+> then replenish it if you push more traffic that host cpu can take.
+> 100mbytes / 1.5mbytes = ~66runs/s which is ~15ms for each tasklet run.
+> That's a lot. You might not get a chance to cycle through all the
+> running processes to give them their timeslice for a few seconds..
+> 
+> If you starve userspace which runs a watchdog process you'll end up
+> failing to poke the watchdog timer in kernel and you'll get a reboot.
+> 
+> I'm starting to think tasklets are plain evil for network drivers :P
+
+Well, we need a way to lift the fill level restriction for platforms
+that can afford a higher value, until the tx/rx engine in ath10k is
+rewritten - and I don't want to carry an internal patch...
+
+Sujith
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
