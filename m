@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from s72.web-hosting.com ([198.187.29.22])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBf1R-0001ip-Np
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 07:39:18 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1YBfAd-0006Ud-LC
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 07:48:48 +0000
+From: Sujith Manoharan <sujith@msujith.org>
+MIME-Version: 1.0
+Message-ID: <21687.29026.962216.812998@gargle.gargle.HOWL>
+Date: Thu, 15 Jan 2015 13:20:58 +0530
 Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
+In-Reply-To: <87bnm01ojf.fsf@kamboji.qca.qualcomm.com>
 References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
  <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
  <21685.35179.110539.780864@gargle.gargle.HOWL>
-Date: Thu, 15 Jan 2015 09:38:44 +0200
-In-Reply-To: <21685.35179.110539.780864@gargle.gargle.HOWL> (Sujith
- Manoharan's message of "Wed, 14 Jan 2015 02:38:59 +0530")
-Message-ID: <87bnm01ojf.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87bnm01ojf.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +25,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Sujith Manoharan <sujith@msujith.org> writes:
+Kalle Valo wrote:
+> Did you read at all what I wrote above? For example, what if we later
+> don't actually use ATH10K_HTT_MAX_NUM_REFILL anymore?
+> 
+> And the fundamental problem is that I still don't know what fill value
+> you think is the best to use here, and that means neither will the
+> users. That's why the values need to be within ath10k, not expose driver
+> internals and use some magic numbers which are not available anywhere.
 
-> Kalle Valo wrote:
->> I'm not sure if I really like this path of having interfaces to
->> configure driver internals. I suspect that if we add this, we will have
->> even more later. It's a lot more documenting for us and more work to the
->> users to understand what parameters they should use. Also this means
->> that testing will be more challenging as people will use different
->> values and results won't be comparable.
->> 
->> Isn't there any other way to solve the problem? Like automatically
->> changing the value somehow (no idea how) or some other means?
->
-> We are limiting performance by restricting the fill size. A user
-> will just use the default, which is still the same and remains
-> unchanged. But, having a way to adjust this based on the platform
-> seems reasonable to me and I think trying to change this value dynamically
-> is overkill.
+What magic numbers ?
 
-Did you read at all what I wrote above? For example, what if we later
-don't actually use ATH10K_HTT_MAX_NUM_REFILL anymore?
+How is 16 less a magic number than 128 or 96 or the original 1000 ?
 
-And the fundamental problem is that I still don't know what fill value
-you think is the best to use here, and that means neither will the
-users. That's why the values need to be within ath10k, not expose driver
-internals and use some magic numbers which are not available anywhere.
+> We are not limitting anything more. That's not any different from what
+> your patch does, just that the parameter name is different and the user
+> doesn't have direct access to the internal parameter. Let me explain a
+> bit more how that would work in this HTT fill case:
+> 
+> profile 0 (auto):
+> profile 1 (slow):
+>         htt_fill_size = ATH10K_HTT_MAX_NUM_REFILL
+>         break:
+> profile 2 (fast):
+>         htt_fill_size = 77 /* or whatever */
+>         break;
+> 
+> So in this method the user can still choose optimal settings for a
+> certain platform, I assume AP148 in this case, and not know about driver
+> internals. And if there are more parameters we need to change in the
+> future, we can use the same modparam to change that as well.
 
->> Or if nothing else helps, a crazy idea is to have some sort of platform
->> profile parameter:
->> 
->> 0 = auto
->> 1 = slow
->> 2 = fast
->> 3 = superfast (x86)
->> 
->> And then we would have preset values (not just htt_fill_size) within
->> ath10k and they get chosen based on the profile configured.
->
-> I don't think a network driver should limit its performance with
-> such profiles. Moreover, x86 can be slow too - at least, my 4 year
-> old machine is. :-)
+You seem to be fixated on some imaginary user that is going to be
+confused by a module parameter.
 
-We are not limitting anything more. That's not any different from what
-your patch does, just that the parameter name is different and the user
-doesn't have direct access to the internal parameter. Let me explain a
-bit more how that would work in this HTT fill case:
+I don't see how adding more complexity by adding profiles and such
+is going to make a user less confused.
 
-profile 0 (auto):
-profile 1 (slow):
-        htt_fill_size = ATH10K_HTT_MAX_NUM_REFILL
-        break:
-profile 2 (fast):
-        htt_fill_size = 77 /* or whatever */
-        break;
-
-So in this method the user can still choose optimal settings for a
-certain platform, I assume AP148 in this case, and not know about driver
-internals. And if there are more parameters we need to change in the
-future, we can use the same modparam to change that as well.
-
--- 
-Kalle Valo
+Sujith
 
 _______________________________________________
 ath10k mailing list
