@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YBfAd-0006Ud-LC
- for ath10k@lists.infradead.org; Thu, 15 Jan 2015 07:48:48 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+ id 1YBfAy-0006Xi-Cv
+ for ath10k@lists.infradead.org; Thu, 15 Jan 2015 07:49:09 +0000
+Received: by mail-wg0-f43.google.com with SMTP id k14so13237274wgh.2
+ for <ath10k@lists.infradead.org>; Wed, 14 Jan 2015 23:48:46 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <21687.29026.962216.812998@gargle.gargle.HOWL>
-Date: Thu, 15 Jan 2015 13:20:58 +0530
-Subject: Re: [PATCH] ath10k: Make HTT fill size configurable
-In-Reply-To: <87bnm01ojf.fsf@kamboji.qca.qualcomm.com>
-References: <1420432796-10765-1-git-send-email-sujith@msujith.org>
- <87r3uy4t9y.fsf@kamboji.qca.qualcomm.com>
- <21685.35179.110539.780864@gargle.gargle.HOWL>
- <87bnm01ojf.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <54B6AE1E.3020900@candelatech.com>
+References: <54AEF595.9030205@candelatech.com>
+ <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
+ <54B00807.9060909@candelatech.com>
+ <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
+ <54B56D00.4010401@candelatech.com>
+ <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
+ <54B6AE1E.3020900@candelatech.com>
+Date: Thu, 15 Jan 2015 08:48:46 +0100
+Message-ID: <CA+BoTQniiBEYnQYSp4H7yFQPT8sxG4kb3kiHsUB7SniyU_zorA@mail.gmail.com>
+Subject: Re: Anyone seeing tx-credits 'hang'?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +26,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Kalle Valo wrote:
-> Did you read at all what I wrote above? For example, what if we later
-> don't actually use ATH10K_HTT_MAX_NUM_REFILL anymore?
-> 
-> And the fundamental problem is that I still don't know what fill value
-> you think is the best to use here, and that means neither will the
-> users. That's why the values need to be within ath10k, not expose driver
-> internals and use some magic numbers which are not available anywhere.
-
-What magic numbers ?
-
-How is 16 less a magic number than 128 or 96 or the original 1000 ?
-
-> We are not limitting anything more. That's not any different from what
-> your patch does, just that the parameter name is different and the user
-> doesn't have direct access to the internal parameter. Let me explain a
-> bit more how that would work in this HTT fill case:
-> 
-> profile 0 (auto):
-> profile 1 (slow):
->         htt_fill_size = ATH10K_HTT_MAX_NUM_REFILL
->         break:
-> profile 2 (fast):
->         htt_fill_size = 77 /* or whatever */
->         break;
-> 
-> So in this method the user can still choose optimal settings for a
-> certain platform, I assume AP148 in this case, and not know about driver
-> internals. And if there are more parameters we need to change in the
-> future, we can use the same modparam to change that as well.
-
-You seem to be fixated on some imaginary user that is going to be
-confused by a module parameter.
-
-I don't see how adding more complexity by adding profiles and such
-is going to make a user less confused.
-
-Sujith
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgSmFudWFyeSAyMDE1IGF0IDE4OjU3LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTQvMjAxNSAwMTo0NSBBTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPj4gT24gMTMgSmFudWFyeSAyMDE1IGF0IDIwOjA3LCBCZW4gR3JlZWFyIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+IFsuLi5dCj4+Pgo+Pj4gSSBtYW5hZ2VkIHRvIGdl
+dCBzb21lIGJldHRlciBkZWJ1ZyBvdXQgb2YgdGhlIGZpcm13YXJlLgo+Pj4KPj4+IEkgYW0gaGF2
+aW5nIGEgaGVsbCBvZiBhIHRpbWUgZmlndXJpbmcgb3V0IGhvdyB0aGUgY29kZSBmbG93cyB0aHJv
+dWdoIGFsbAo+Pj4gb2YgdGhlIGNhbGxiYWNrcyAoaW4gYm90aCBmaXJtd2FyZSBhbmQgZHJpdmVy
+KSwgYnV0IGl0IGFwcGVhcnMgdGhpcyBpcyB3aGF0IGhhcHBlbmVkOgo+Pj4KPj4+IChJIGhhdmUg
+aW5zdHJ1bWVudGVkIHRyYW5zZmVyLWlkIGluIGJvdGggZmlybXdhcmUgYW5kIGRyaXZlcikKPj4+
+Cj4+PiBmaXJtd2FyZSBzZW50IHdtaSBtZXNzYWdlIHdpdGggdHJhbnNmZXItaWQgb2YgNzIuCj4+
+PiBrZXJuZWwgcmVjZWl2ZWQgdGhpcyB0cmFuc2Zlci1pZAo+Pj4gZmlybXdhcmUncyBsYXN0IHNl
+bmQtY2FsbGJhY2sgdHJhbnNmZXIgSUQgaXMgNzEuCj4+Pgo+Pj4gU28sIGl0IHNlZW1zIHRoYXQg
+ZWl0aGVyIGF0aDEwayBkaWQgbm90IGRvIHRoZSB0cmFuc2Zlci1jb21wbGV0ZSBsb2dpYywKPj4+
+IGRpZCBpdCBpbmNvcnJlY3RseSwgb3IgdGhlIGZpcm13YXJlIGRpZCBub3Qgbm90aWNlIGl0IHdh
+cyBkb25lLgo+Pj4KPj4+IEkgY2Fubm90IGZpbmQgd2hlcmUgdGhlIHRyYW5zZmVyIGNvbXBsZXRl
+IGNvZGUgdGhhdCBzaG91bGQgYmUgdXBkYXRpbmcKPj4+IGZpcm13YXJlIGlzIGF0LiAgSWYgeW91
+IGtub3csIGNhbiB5b3UgcG9pbnQgbWUgdG8gaXQ/Cj4+Cj4+IEkgdGhpbmsgdGhlIHNlbmQtY2Fs
+bGJhY2sgc2hvdWxkIGJlIGNhbGxlZCB3aGVuIENFIGlzIHNpbXBseSBkb25lCj4+IGRvaW5nIGl0
+J3Mgc3R1ZmYuIFRoZXJlJ3Mgbm8gbmVlZCBmb3IgdGhlIG90aGVyIHNpZGUgdG8gYWNrIGFueXRo
+aW5nCj4+IGV4cGxpY2l0bHkgKGl0IGp1c3QgbmVlZHMgdG8gaGF2ZSBhIGZyZWUgYnVmZmVyIG9u
+IGl0J3Mgc2lkZSBzbyBDRSBjYW4KPj4gY29weSBpdCBvdmVyKS4KPj4KPj4gT3IgbWF5YmUgaXQg
+aXMgdGhlIEhPU1RfSVNfQ09QWV9DT01QTEVURV9NQVNLPyBOb3QgcmVhbGx5IHN1cmUuCj4KPiBJ
+IGFtIG5vdyBndWVzc2luZyB0aGF0IHNvbWUgbWFnaWMgSVJRIGhhcHBlbnMgd2hlbiBhdGgxMGtf
+Y2Vfc3JjX3Jpbmdfd3JpdGVfaW5kZXhfc2V0KCkKPiBpcyBjYWxsZWQuCgpDb3JyZWN0LiBDRSBz
+aG91bGQgZ2VuZXJhdGUgYW4gaW50ZXJydXB0IChwcm92aWRlZCBpdCdzIG5vdCBtYXNrZWQgaW4K
+Q0UgcmVnaXN0ZXJzKSBvbiB0aGUgb3RoZXIgZW5kIHdoZW4gcmluZyBpbmRleCBpcyBidW1wZWQu
+CgoKPiBJIG1heSBoYXZlIG5hcnJvd2VkIGRvd24gdGhlIHByb2JsZW0gYSBiaXQgZnVydGhlciBu
+b3cuCj4KPiBJIHByaW50ZWQgb3V0IHRoZSByaW5nIGluZGV4ZXMgaW4gZmlybXdhcmUgYW5kIGRy
+aXZlciB3aGVuIGxvY2t1cAo+IG9jY3VyZWQuICBUaGUgdGFyZ2V0IC0+IGhvc3QgcmluZyBpZHMg
+bWF0Y2ggZmluZSwgYnV0IEkgbm90aWNlIHRoYXQKPiBpdCBhcHBlYXJzIHRoZSBmaXJtd2FyZSBo
+YXMgcGVuZGluZyBlbnRyaWVzIGluIGl0J3MgaG9zdCAtPiB0YXJnZXQgd21pCj4gcmluZyB0aGF0
+IGl0IGhhcyBub3QgY29uc3VtZWQuCj4KPiBNYXliZSBpdCBtaXNzZWQgYW4gaXJxIG9yIGhhcyBz
+b21lIHJlbGF0ZWQgcmFjZS4KCkhtbS4uIFRoZSBob3N0IGNhbiB0ZWxsIHRoZSB0YXJnZXQgaXQg
+d2FudHMgdHggY3JlZGl0IHVwZGF0ZSBpbiB0aGUKaHRjIGhvc3QtPnRhcmdldCBidWZmZXIuIFVw
+c3RyZWFtIGF0aDEwayBkb2VzIHRoaXMgb25seSB3aGVuIHNwZW5kaW5nCmxhc3QgdHggY3JlZGl0
+LiBZb3VyIG9ic2VydmF0aW9uIHdvdWxkIGV4cGxhaW4gd2h5IGZpcm13YXJlIGRvZXNuJ3QKc2Vu
+ZCB0eCBjcmVkaXQgdXBkYXRlIHRvIHRoZSBob3N0IC0gaXQgZGlkbid0IGdldCB0byBzZWUgdGhl
+Cm5lZWQtY3JlZGl0LXVwZGF0ZS4gRG9lcyB5b3VyIHRyZWUgbW9kaWZ5IGJlaGF2aW91ciBvZiB3
+aGVuIGlzIHNldApBVEgxMEtfSFRDX0ZMQUdfTkVFRF9DUkVESVRfVVBEQVRFIGluIGF0aDEwaz8K
+Cgo+IEknbSBnb2luZyB0byB0cnkgZm9yY2luZyBhIHBvbGwgb2YgdGhlIGhvc3QgLT4gdGFyZ2V0
+IHdtaSBxdWV1ZSBpbiB0aGUKPiBmaXJtd2FyZSB3aGVuIGl0IGRldGVjdHMgbm8gd21pIGtlZXAt
+YWxpdmUgbWVzc2FnZXMgYW5kIHNlZSBpZiB0aGF0IGtpY2tzCj4gdGhpbmdzIGJhY2sgaW50byBh
+Y3Rpb24sIGFuZCBtYXliZSBzZWUgaWYgSSBjYW4gZmluZCBhbnkgcmVhc29uIGZvciBpdAo+IHRv
+IG5vdCBwcm9wZXJseSBoYW5kbGUgdGhlIHJpbmcgaW4gdGhlIGZpcnN0IHBsYWNlLgoKRGlkIHlv
+dSB0cnkgdGhlIG9sZCB3b3JrYXJvdW5kIGF0aDEwayBoYWQgZm9yIGh3MS4wPwoKCj4gSWYgdGhp
+cyB3b3JrcywgcGVyaGFwcyB0aGVyZSBpcyBhIHdheSB0byBraWNrIHRoZSByaW5nIGZyb20gdGhl
+IGRyaXZlcgo+IHNpZGUuLi5tYXliZSBzZW5kIGEgd21pIGNvbW1hbmQgKGlnbm9yaW5nIHF1b3Rh
+KSB0aGF0IGhhcyBubyBhZmZlY3QsCj4gb3Igc29tZXRoaW5nIGxpa2UgdGhhdD8KCkkgdGhpbmsg
+dGhlIHdtaS1lY2hvIGNvdWxkIGJlIHN1aXRlZCBmb3IgdGhpcy4gSXQgcHJvYmFibHkgZG9lc24n
+dCB1c2UKYW55IGV4dHJhIHJlc291cmNlcyBzbyBvdmVyY29tbWl0aW5nIHR4LWNyZWRpdCB0byBz
+ZW5kIGl0IHNob3VsZCBiZQpzYWZlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
