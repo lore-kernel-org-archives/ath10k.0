@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x229.google.com ([2a00:1450:400c:c03::229])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YC6SI-0000X2-EN
- for ath10k@lists.infradead.org; Fri, 16 Jan 2015 12:56:51 +0000
-Received: by mail-we0-f169.google.com with SMTP id m14so20140386wev.0
- for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 04:56:24 -0800 (PST)
+ id 1YC6UR-0001PC-R2
+ for ath10k@lists.infradead.org; Fri, 16 Jan 2015 12:59:05 +0000
+Received: by mail-wi0-f174.google.com with SMTP id n3so2148203wiv.1
+ for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 04:58:41 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: change dma beacon cmd prototype
-Date: Fri, 16 Jan 2015 13:53:30 +0100
-Message-Id: <1421412811-6387-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: use idr api for msdu_ids
+Date: Fri, 16 Jan 2015 13:58:12 +0100
+Message-Id: <1421413092-6649-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,181 +25,248 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The command logic shouldn't really care about
-arvif structure.
+HTT Tx protocol uses arbitrary host assigned ids
+too associate with MSDUs when delivering
+completions.
+
+Instead of rolling out own id generation scheme
+use the tools provided in kernel.
+
+This should have little to no effect on
+performance.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 14 ++++++++++----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 20 +++++++++++---------
- drivers/net/wireless/ath/ath10k/wmi.c     | 27 +++++++++++++++++----------
- 3 files changed, 38 insertions(+), 23 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h    |  7 ++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 78 ++++++++++----------------------
+ drivers/net/wireless/ath/ath10k/txrx.c   |  9 +++-
+ 3 files changed, 35 insertions(+), 59 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 0dd49a7..129cec4 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -102,7 +102,10 @@ struct wmi_ops {
- 					 u32 value);
- 	struct sk_buff *(*gen_scan_chan_list)(struct ath10k *ar,
- 					      const struct wmi_scan_chan_list_arg *arg);
--	struct sk_buff *(*gen_beacon_dma)(struct ath10k_vif *arvif);
-+	struct sk_buff *(*gen_beacon_dma)(struct ath10k *ar, u32 vdev_id,
-+					  const void *bcn, size_t bcn_len,
-+					  u32 bcn_paddr, bool dtim_zero,
-+					  bool deliver_cab);
- 	struct sk_buff *(*gen_pdev_set_wmm)(struct ath10k *ar,
- 					    const struct wmi_pdev_set_wmm_params_arg *arg);
- 	struct sk_buff *(*gen_request_stats)(struct ath10k *ar,
-@@ -724,16 +727,19 @@ ath10k_wmi_peer_assoc(struct ath10k *ar,
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 8809b37..3c487eb 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -1251,12 +1251,11 @@ struct ath10k_htt {
+ 
+ 	unsigned int prefetch_len;
+ 
+-	/* Protects access to %pending_tx, %used_msdu_ids */
++	/* Protects access to pending_tx, num_pending_tx */
+ 	spinlock_t tx_lock;
+ 	int max_num_pending_tx;
+ 	int num_pending_tx;
+-	struct sk_buff **pending_tx;
+-	unsigned long *used_msdu_ids; /* bitmap */
++	struct idr pending_tx;
+ 	wait_queue_head_t empty_tx_wq;
+ 	struct dma_pool *tx_pool;
+ 
+@@ -1345,7 +1344,7 @@ int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
+ 				u8 max_subfrms_amsdu);
+ 
+ void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt);
+-int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt);
++int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb);
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id);
+ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *);
+ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *);
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 5c64139..2a8667e 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -56,21 +56,18 @@ exit:
+ 	return ret;
  }
  
- static inline int
--ath10k_wmi_beacon_send_ref_nowait(struct ath10k_vif *arvif)
-+ath10k_wmi_beacon_send_ref_nowait(struct ath10k *ar, u32 vdev_id,
-+				  const void *bcn, size_t bcn_len,
-+				  u32 bcn_paddr, bool dtim_zero,
-+				  bool deliver_cab)
+-int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt)
++int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb)
  {
--	struct ath10k *ar = arvif->ar;
- 	struct sk_buff *skb;
- 	int ret;
+ 	struct ath10k *ar = htt->ar;
+-	int msdu_id;
++	int ret;
  
- 	if (!ar->wmi.ops->gen_beacon_dma)
- 		return -EOPNOTSUPP;
+ 	lockdep_assert_held(&htt->tx_lock);
  
--	skb = ar->wmi.ops->gen_beacon_dma(arvif);
-+	skb = ar->wmi.ops->gen_beacon_dma(ar, vdev_id, bcn, bcn_len, bcn_paddr,
-+					  dtim_zero, deliver_cab);
- 	if (IS_ERR(skb))
- 		return PTR_ERR(skb);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 6f34fc7..f44bbf0 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1728,13 +1728,15 @@ ath10k_wmi_tlv_op_gen_scan_chan_list(struct ath10k *ar,
- }
- 
- static struct sk_buff *
--ath10k_wmi_tlv_op_gen_beacon_dma(struct ath10k_vif *arvif)
-+ath10k_wmi_tlv_op_gen_beacon_dma(struct ath10k *ar, u32 vdev_id,
-+				 const void *bcn, size_t bcn_len,
-+				 u32 bcn_paddr, bool dtim_zero,
-+				 bool deliver_cab)
+-	msdu_id = find_first_zero_bit(htt->used_msdu_ids,
+-				      htt->max_num_pending_tx);
+-	if (msdu_id == htt->max_num_pending_tx)
+-		return -ENOBUFS;
++	ret = idr_alloc(&htt->pending_tx, skb, 0, 0x10000, GFP_ATOMIC);
 +
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx alloc msdu_id %d\n", ret);
+ 
+-	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx alloc msdu_id %d\n", msdu_id);
+-	__set_bit(msdu_id, htt->used_msdu_ids);
+-	return msdu_id;
++	return ret;
+ }
+ 
+ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
+@@ -79,74 +76,53 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
+ 
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+-	if (!test_bit(msdu_id, htt->used_msdu_ids))
+-		ath10k_warn(ar, "trying to free unallocated msdu_id %d\n",
+-			    msdu_id);
+-
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx free msdu_id %hu\n", msdu_id);
+-	__clear_bit(msdu_id, htt->used_msdu_ids);
++
++	idr_remove(&htt->pending_tx, msdu_id);
+ }
+ 
+ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
  {
--	struct ath10k *ar = arvif->ar;
- 	struct wmi_bcn_tx_ref_cmd *cmd;
- 	struct wmi_tlv *tlv;
- 	struct sk_buff *skb;
--	struct sk_buff *beacon = arvif->beacon;
- 	struct ieee80211_hdr *hdr;
- 	u16 fc;
+ 	struct ath10k *ar = htt->ar;
  
-@@ -1742,24 +1744,24 @@ ath10k_wmi_tlv_op_gen_beacon_dma(struct ath10k_vif *arvif)
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
+-	spin_lock_init(&htt->tx_lock);
+-
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
+ 		   htt->max_num_pending_tx);
  
--	hdr = (struct ieee80211_hdr *)beacon->data;
-+	hdr = (struct ieee80211_hdr *)bcn;
- 	fc = le16_to_cpu(hdr->frame_control);
+-	htt->pending_tx = kzalloc(sizeof(*htt->pending_tx) *
+-				  htt->max_num_pending_tx, GFP_KERNEL);
+-	if (!htt->pending_tx)
+-		return -ENOMEM;
+-
+-	htt->used_msdu_ids = kzalloc(sizeof(unsigned long) *
+-				     BITS_TO_LONGS(htt->max_num_pending_tx),
+-				     GFP_KERNEL);
+-	if (!htt->used_msdu_ids) {
+-		kfree(htt->pending_tx);
+-		return -ENOMEM;
+-	}
++	spin_lock_init(&htt->tx_lock);
++	idr_init(&htt->pending_tx);
  
- 	tlv = (void *)skb->data;
- 	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_BCN_SEND_FROM_HOST_CMD);
- 	tlv->len = __cpu_to_le16(sizeof(*cmd));
- 	cmd = (void *)tlv->value;
--	cmd->vdev_id = __cpu_to_le32(arvif->vdev_id);
--	cmd->data_len = __cpu_to_le32(beacon->len);
--	cmd->data_ptr = __cpu_to_le32(ATH10K_SKB_CB(beacon)->paddr);
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->data_len = __cpu_to_le32(bcn_len);
-+	cmd->data_ptr = __cpu_to_le32(bcn_paddr);
- 	cmd->msdu_id = 0;
- 	cmd->frame_control = __cpu_to_le32(fc);
- 	cmd->flags = 0;
+ 	htt->tx_pool = dma_pool_create("ath10k htt tx pool", htt->ar->dev,
+ 				       sizeof(struct ath10k_htt_txbuf), 4, 0);
+ 	if (!htt->tx_pool) {
+-		kfree(htt->used_msdu_ids);
+-		kfree(htt->pending_tx);
++		idr_destroy(&htt->pending_tx);
+ 		return -ENOMEM;
+ 	}
  
--	if (ATH10K_SKB_CB(beacon)->bcn.dtim_zero)
-+	if (dtim_zero)
- 		cmd->flags |= __cpu_to_le32(WMI_BCN_TX_REF_FLAG_DTIM_ZERO);
+ 	return 0;
+ }
  
--	if (ATH10K_SKB_CB(beacon)->bcn.deliver_cab)
-+	if (deliver_cab)
- 		cmd->flags |= __cpu_to_le32(WMI_BCN_TX_REF_FLAG_DELIVER_CAB);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv beacon dma\n");
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 5fe17e8..5cc611f 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -956,6 +956,8 @@ err_pull:
- 
- static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
+-static void ath10k_htt_tx_free_pending(struct ath10k_htt *htt)
++static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
  {
-+	struct sk_buff *bcn;
-+	struct ath10k_skb_cb *cb;
- 	int ret;
+-	struct ath10k *ar = htt->ar;
++	struct ath10k *ar = ctx;
++	struct ath10k_htt *htt = &ar->htt;
+ 	struct htt_tx_done tx_done = {0};
+-	int msdu_id;
+-
+-	spin_lock_bh(&htt->tx_lock);
+-	for (msdu_id = 0; msdu_id < htt->max_num_pending_tx; msdu_id++) {
+-		if (!test_bit(msdu_id, htt->used_msdu_ids))
+-			continue;
  
- 	lockdep_assert_held(&arvif->ar->data_lock);
-@@ -966,7 +968,12 @@ static void ath10k_wmi_tx_beacon_nowait(struct ath10k_vif *arvif)
- 	if (arvif->beacon_sent)
+-		ath10k_dbg(ar, ATH10K_DBG_HTT, "force cleanup msdu_id %hu\n",
+-			   msdu_id);
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "force cleanup msdu_id %hu\n", msdu_id);
+ 
+-		tx_done.discard = 1;
+-		tx_done.msdu_id = msdu_id;
++	tx_done.discard = 1;
++	tx_done.msdu_id = msdu_id;
+ 
+-		ath10k_txrx_tx_unref(htt, &tx_done);
+-	}
++	spin_lock_bh(&htt->tx_lock);
++	ath10k_txrx_tx_unref(htt, &tx_done);
+ 	spin_unlock_bh(&htt->tx_lock);
++
++	return 0;
+ }
+ 
+ void ath10k_htt_tx_free(struct ath10k_htt *htt)
+ {
+-	ath10k_htt_tx_free_pending(htt);
+-	kfree(htt->pending_tx);
+-	kfree(htt->used_msdu_ids);
++	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
++	idr_destroy(&htt->pending_tx);
+ 	dma_pool_destroy(htt->tx_pool);
+ }
+ 
+@@ -378,13 +354,12 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	len += sizeof(cmd->mgmt_tx);
+ 
+ 	spin_lock_bh(&htt->tx_lock);
+-	res = ath10k_htt_tx_alloc_msdu_id(htt);
++	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
+ 	if (res < 0) {
+ 		spin_unlock_bh(&htt->tx_lock);
+ 		goto err_tx_dec;
+ 	}
+ 	msdu_id = res;
+-	htt->pending_tx[msdu_id] = msdu;
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
+ 	txdesc = ath10k_htc_alloc_skb(ar, len);
+@@ -423,7 +398,6 @@ err_free_txdesc:
+ 	dev_kfree_skb_any(txdesc);
+ err_free_msdu_id:
+ 	spin_lock_bh(&htt->tx_lock);
+-	htt->pending_tx[msdu_id] = NULL;
+ 	ath10k_htt_tx_free_msdu_id(htt, msdu_id);
+ 	spin_unlock_bh(&htt->tx_lock);
+ err_tx_dec:
+@@ -455,13 +429,12 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 		goto err;
+ 
+ 	spin_lock_bh(&htt->tx_lock);
+-	res = ath10k_htt_tx_alloc_msdu_id(htt);
++	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
+ 	if (res < 0) {
+ 		spin_unlock_bh(&htt->tx_lock);
+ 		goto err_tx_dec;
+ 	}
+ 	msdu_id = res;
+-	htt->pending_tx[msdu_id] = msdu;
+ 	spin_unlock_bh(&htt->tx_lock);
+ 
+ 	prefetch_len = min(htt->prefetch_len, msdu->len);
+@@ -595,7 +568,6 @@ err_free_txbuf:
+ 		      skb_cb->htt.txbuf_paddr);
+ err_free_msdu_id:
+ 	spin_lock_bh(&htt->tx_lock);
+-	htt->pending_tx[msdu_id] = NULL;
+ 	ath10k_htt_tx_free_msdu_id(htt, msdu_id);
+ 	spin_unlock_bh(&htt->tx_lock);
+ err_tx_dec:
+diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
+index 7579de8..3f00cec 100644
+--- a/drivers/net/wireless/ath/ath10k/txrx.c
++++ b/drivers/net/wireless/ath/ath10k/txrx.c
+@@ -64,7 +64,13 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
  		return;
+ 	}
  
--	ret = ath10k_wmi_beacon_send_ref_nowait(arvif);
-+	bcn = arvif->beacon;
-+	cb = ATH10K_SKB_CB(bcn);
-+	ret = ath10k_wmi_beacon_send_ref_nowait(arvif->ar, arvif->vdev_id,
-+						bcn->data, bcn->len, cb->paddr,
-+						cb->bcn.dtim_zero,
-+						cb->bcn.deliver_cab);
- 	if (ret)
- 		return;
+-	msdu = htt->pending_tx[tx_done->msdu_id];
++	msdu = idr_find(&htt->pending_tx, tx_done->msdu_id);
++	if (!msdu) {
++		ath10k_warn(ar, "received tx completion for invalid msdu_id: %d\n",
++			    tx_done->msdu_id);
++		return;
++	}
++
+ 	skb_cb = ATH10K_SKB_CB(msdu);
  
-@@ -4683,12 +4690,12 @@ ath10k_wmi_10_2_op_gen_pdev_get_temperature(struct ath10k *ar)
+ 	dma_unmap_single(dev, skb_cb->paddr, msdu->len, DMA_TO_DEVICE);
+@@ -95,7 +101,6 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
+ 	/* we do not own the msdu anymore */
  
- /* This function assumes the beacon is already DMA mapped */
- static struct sk_buff *
--ath10k_wmi_op_gen_beacon_dma(struct ath10k_vif *arvif)
-+ath10k_wmi_op_gen_beacon_dma(struct ath10k *ar, u32 vdev_id, const void *bcn,
-+			     size_t bcn_len, u32 bcn_paddr, bool dtim_zero,
-+			     bool deliver_cab)
- {
--	struct ath10k *ar = arvif->ar;
- 	struct wmi_bcn_tx_ref_cmd *cmd;
- 	struct sk_buff *skb;
--	struct sk_buff *beacon = arvif->beacon;
- 	struct ieee80211_hdr *hdr;
- 	u16 fc;
- 
-@@ -4696,22 +4703,22 @@ ath10k_wmi_op_gen_beacon_dma(struct ath10k_vif *arvif)
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
- 
--	hdr = (struct ieee80211_hdr *)beacon->data;
-+	hdr = (struct ieee80211_hdr *)bcn;
- 	fc = le16_to_cpu(hdr->frame_control);
- 
- 	cmd = (struct wmi_bcn_tx_ref_cmd *)skb->data;
--	cmd->vdev_id = __cpu_to_le32(arvif->vdev_id);
--	cmd->data_len = __cpu_to_le32(beacon->len);
--	cmd->data_ptr = __cpu_to_le32(ATH10K_SKB_CB(beacon)->paddr);
-+	cmd->vdev_id = __cpu_to_le32(vdev_id);
-+	cmd->data_len = __cpu_to_le32(bcn_len);
-+	cmd->data_ptr = __cpu_to_le32(bcn_paddr);
- 	cmd->msdu_id = 0;
- 	cmd->frame_control = __cpu_to_le32(fc);
- 	cmd->flags = 0;
- 	cmd->antenna_mask = __cpu_to_le32(WMI_BCN_TX_REF_DEF_ANTENNA);
- 
--	if (ATH10K_SKB_CB(beacon)->bcn.dtim_zero)
-+	if (dtim_zero)
- 		cmd->flags |= __cpu_to_le32(WMI_BCN_TX_REF_FLAG_DTIM_ZERO);
- 
--	if (ATH10K_SKB_CB(beacon)->bcn.deliver_cab)
-+	if (deliver_cab)
- 		cmd->flags |= __cpu_to_le32(WMI_BCN_TX_REF_FLAG_DELIVER_CAB);
- 
- 	return skb;
+ exit:
+-	htt->pending_tx[tx_done->msdu_id] = NULL;
+ 	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
+ 	__ath10k_htt_tx_dec_pending(htt);
+ 	if (htt->num_pending_tx == 0)
 -- 
 1.8.5.3
 
