@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YC6iN-0007Yw-OH
- for ath10k@lists.infradead.org; Fri, 16 Jan 2015 13:13:29 +0000
-Received: by mail-we0-f176.google.com with SMTP id w61so20133927wes.7
- for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 05:13:05 -0800 (PST)
+ id 1YC6iM-0007Yv-KL
+ for ath10k@lists.infradead.org; Fri, 16 Jan 2015 13:13:28 +0000
+Received: by mail-wg0-f51.google.com with SMTP id x12so20400286wgg.10
+ for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 05:13:04 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: fix 10.2 fw stats parsing
-Date: Fri, 16 Jan 2015 14:12:08 +0100
-Message-Id: <1421413928-7282-3-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: split fw pdev stats parsing
+Date: Fri, 16 Jan 2015 14:12:07 +0100
+Message-Id: <1421413928-7282-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1421413928-7282-1-git-send-email-michal.kazior@tieto.com>
 References: <1421413928-7282-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,257 +27,253 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, antonio@open-mesh.com
 
-Both 10.2 firmware binaries 10.2-00082-4 and
-10.2.4.20 have introduced ABI changes to fw_stats
-each. This caused fw_stats to output wrong data.
+This will make it easier to implement fw stats
+parsing for firmware 10.2.
 
-Define new structures and use them to parse the
-statistics correctly.
+This also renames a few structures for
+consistency.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 162 +++++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h |  52 +++++++++++
- 2 files changed, 212 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 117 +++++++++++++++++++---------------
+ drivers/net/wireless/ath/ath10k/wmi.h |  55 ++++++++++------
+ 2 files changed, 100 insertions(+), 72 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ce095da..fb1e2d1 100644
+index 5fe17e8..ce095da 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1871,6 +1871,164 @@ static int ath10k_wmi_10x_op_pull_fw_stats(struct ath10k *ar,
+@@ -1680,12 +1680,9 @@ int ath10k_wmi_event_debug_mesg(struct ath10k *ar, struct sk_buff *skb)
  	return 0;
  }
  
-+static int ath10k_wmi_10_2_op_pull_fw_stats(struct ath10k *ar,
-+					    struct sk_buff *skb,
-+					    struct ath10k_fw_stats *stats)
-+{
-+	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
-+	u32 num_pdev_stats;
-+	u32 num_pdev_ext_stats;
-+	u32 num_vdev_stats;
-+	u32 num_peer_stats;
-+	int i;
-+
-+	if (!skb_pull(skb, sizeof(*ev)))
-+		return -EPROTO;
-+
-+	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
-+	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
-+	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
-+	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
-+
-+	for (i = 0; i < num_pdev_stats; i++) {
-+		const struct wmi_10_2_pdev_stats *src;
-+		struct ath10k_fw_stats_pdev *dst;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+		if (!dst)
-+			continue;
-+
-+		ath10k_wmi_pull_pdev_stats_base(&src->base, dst);
-+		ath10k_wmi_pull_pdev_stats_tx(&src->tx, dst);
-+		ath10k_wmi_pull_pdev_stats_rx(&src->rx, dst);
-+		ath10k_wmi_pull_pdev_stats_extra(&src->extra, dst);
-+		/* FIXME: expose 10.2 specific values */
-+
-+		list_add_tail(&dst->list, &stats->pdevs);
-+	}
-+
-+	for (i = 0; i < num_pdev_ext_stats; i++) {
-+		const struct wmi_10_2_pdev_ext_stats *src;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		/* FIXME: expose values to userspace
-+		 *
-+		 * Note: Even though this loop seems to do nothing it is
-+		 * required to parse following sub-structures properly.
-+		 */
-+	}
-+
-+	/* fw doesn't implement vdev stats */
-+
-+	for (i = 0; i < num_peer_stats; i++) {
-+		const struct wmi_10_2_peer_stats *src;
-+		struct ath10k_fw_stats_peer *dst;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+		if (!dst)
-+			continue;
-+
-+		ath10k_wmi_pull_peer_stats(&src->old, dst);
-+
-+		dst->peer_rx_rate = __le32_to_cpu(src->peer_rx_rate);
-+		/* FIXME: expose 10.2 specific values */
-+
-+		list_add_tail(&dst->list, &stats->peers);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ath10k_wmi_10_2_4_op_pull_fw_stats(struct ath10k *ar,
-+					      struct sk_buff *skb,
-+					      struct ath10k_fw_stats *stats)
-+{
-+	const struct wmi_10_2_stats_event *ev = (void *)skb->data;
-+	u32 num_pdev_stats;
-+	u32 num_pdev_ext_stats;
-+	u32 num_vdev_stats;
-+	u32 num_peer_stats;
-+	int i;
-+
-+	if (!skb_pull(skb, sizeof(*ev)))
-+		return -EPROTO;
-+
-+	num_pdev_stats = __le32_to_cpu(ev->num_pdev_stats);
-+	num_pdev_ext_stats = __le32_to_cpu(ev->num_pdev_ext_stats);
-+	num_vdev_stats = __le32_to_cpu(ev->num_vdev_stats);
-+	num_peer_stats = __le32_to_cpu(ev->num_peer_stats);
-+
-+	for (i = 0; i < num_pdev_stats; i++) {
-+		const struct wmi_10_2_pdev_stats *src;
-+		struct ath10k_fw_stats_pdev *dst;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+		if (!dst)
-+			continue;
-+
-+		ath10k_wmi_pull_pdev_stats_base(&src->base, dst);
-+		ath10k_wmi_pull_pdev_stats_tx(&src->tx, dst);
-+		ath10k_wmi_pull_pdev_stats_rx(&src->rx, dst);
-+		ath10k_wmi_pull_pdev_stats_extra(&src->extra, dst);
-+		/* FIXME: expose 10.2 specific values */
-+
-+		list_add_tail(&dst->list, &stats->pdevs);
-+	}
-+
-+	for (i = 0; i < num_pdev_ext_stats; i++) {
-+		const struct wmi_10_2_pdev_ext_stats *src;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		/* FIXME: expose values to userspace
-+		 *
-+		 * Note: Even though this loop seems to do nothing it is
-+		 * required to parse following sub-structures properly.
-+		 */
-+	}
-+
-+	/* fw doesn't implement vdev stats */
-+
-+	for (i = 0; i < num_peer_stats; i++) {
-+		const struct wmi_10_2_4_peer_stats *src;
-+		struct ath10k_fw_stats_peer *dst;
-+
-+		src = (void *)skb->data;
-+		if (!skb_pull(skb, sizeof(*src)))
-+			return -EPROTO;
-+
-+		dst = kzalloc(sizeof(*dst), GFP_ATOMIC);
-+		if (!dst)
-+			continue;
-+
-+		ath10k_wmi_pull_peer_stats(&src->common.old, dst);
-+
-+		dst->peer_rx_rate = __le32_to_cpu(src->common.peer_rx_rate);
-+		/* FIXME: expose 10.2 specific values */
-+
-+		list_add_tail(&dst->list, &stats->peers);
-+	}
-+
-+	return 0;
-+}
-+
- void ath10k_wmi_event_update_stats(struct ath10k *ar, struct sk_buff *skb)
+-void ath10k_wmi_pull_pdev_stats(const struct wmi_pdev_stats *src,
+-				struct ath10k_fw_stats_pdev *dst)
++void ath10k_wmi_pull_pdev_stats_base(const struct wmi_pdev_stats_base *src,
++				     struct ath10k_fw_stats_pdev *dst)
  {
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_UPDATE_STATS_EVENTID\n");
-@@ -5121,6 +5279,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+-	const struct wal_dbg_tx_stats *tx = &src->wal.tx;
+-	const struct wal_dbg_rx_stats *rx = &src->wal.rx;
+-
+ 	dst->ch_noise_floor = __le32_to_cpu(src->chan_nf);
+ 	dst->tx_frame_count = __le32_to_cpu(src->tx_frame_count);
+ 	dst->rx_frame_count = __le32_to_cpu(src->rx_frame_count);
+@@ -1693,44 +1690,63 @@ void ath10k_wmi_pull_pdev_stats(const struct wmi_pdev_stats *src,
+ 	dst->cycle_count = __le32_to_cpu(src->cycle_count);
+ 	dst->phy_err_count = __le32_to_cpu(src->phy_err_count);
+ 	dst->chan_tx_power = __le32_to_cpu(src->chan_tx_pwr);
++}
  
- static const struct wmi_ops wmi_10_2_ops = {
- 	.rx = ath10k_wmi_10_2_op_rx,
-+	.pull_fw_stats = ath10k_wmi_10_2_op_pull_fw_stats,
- 	.gen_init = ath10k_wmi_10_2_op_gen_init,
- 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
- 	/* .gen_pdev_get_temperature not implemented */
-@@ -5128,7 +5287,6 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	/* shared with 10.1 */
- 	.map_svc = wmi_10x_svc_map,
- 	.pull_svc_rdy = ath10k_wmi_10x_op_pull_svc_rdy_ev,
--	.pull_fw_stats = ath10k_wmi_10x_op_pull_fw_stats,
- 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
- 	.gen_start_scan = ath10k_wmi_10x_op_gen_start_scan,
+-	dst->comp_queued = __le32_to_cpu(tx->comp_queued);
+-	dst->comp_delivered = __le32_to_cpu(tx->comp_delivered);
+-	dst->msdu_enqued = __le32_to_cpu(tx->msdu_enqued);
+-	dst->mpdu_enqued = __le32_to_cpu(tx->mpdu_enqued);
+-	dst->wmm_drop = __le32_to_cpu(tx->wmm_drop);
+-	dst->local_enqued = __le32_to_cpu(tx->local_enqued);
+-	dst->local_freed = __le32_to_cpu(tx->local_freed);
+-	dst->hw_queued = __le32_to_cpu(tx->hw_queued);
+-	dst->hw_reaped = __le32_to_cpu(tx->hw_reaped);
+-	dst->underrun = __le32_to_cpu(tx->underrun);
+-	dst->tx_abort = __le32_to_cpu(tx->tx_abort);
+-	dst->mpdus_requed = __le32_to_cpu(tx->mpdus_requed);
+-	dst->tx_ko = __le32_to_cpu(tx->tx_ko);
+-	dst->data_rc = __le32_to_cpu(tx->data_rc);
+-	dst->self_triggers = __le32_to_cpu(tx->self_triggers);
+-	dst->sw_retry_failure = __le32_to_cpu(tx->sw_retry_failure);
+-	dst->illgl_rate_phy_err = __le32_to_cpu(tx->illgl_rate_phy_err);
+-	dst->pdev_cont_xretry = __le32_to_cpu(tx->pdev_cont_xretry);
+-	dst->pdev_tx_timeout = __le32_to_cpu(tx->pdev_tx_timeout);
+-	dst->pdev_resets = __le32_to_cpu(tx->pdev_resets);
+-	dst->phy_underrun = __le32_to_cpu(tx->phy_underrun);
+-	dst->txop_ovf = __le32_to_cpu(tx->txop_ovf);
+-
+-	dst->mid_ppdu_route_change = __le32_to_cpu(rx->mid_ppdu_route_change);
+-	dst->status_rcvd = __le32_to_cpu(rx->status_rcvd);
+-	dst->r0_frags = __le32_to_cpu(rx->r0_frags);
+-	dst->r1_frags = __le32_to_cpu(rx->r1_frags);
+-	dst->r2_frags = __le32_to_cpu(rx->r2_frags);
+-	dst->r3_frags = __le32_to_cpu(rx->r3_frags);
+-	dst->htt_msdus = __le32_to_cpu(rx->htt_msdus);
+-	dst->htt_mpdus = __le32_to_cpu(rx->htt_mpdus);
+-	dst->loc_msdus = __le32_to_cpu(rx->loc_msdus);
+-	dst->loc_mpdus = __le32_to_cpu(rx->loc_mpdus);
+-	dst->oversize_amsdu = __le32_to_cpu(rx->oversize_amsdu);
+-	dst->phy_errs = __le32_to_cpu(rx->phy_errs);
+-	dst->phy_err_drop = __le32_to_cpu(rx->phy_err_drop);
+-	dst->mpdu_errs = __le32_to_cpu(rx->mpdu_errs);
++void ath10k_wmi_pull_pdev_stats_tx(const struct wmi_pdev_stats_tx *src,
++				   struct ath10k_fw_stats_pdev *dst)
++{
++	dst->comp_queued = __le32_to_cpu(src->comp_queued);
++	dst->comp_delivered = __le32_to_cpu(src->comp_delivered);
++	dst->msdu_enqued = __le32_to_cpu(src->msdu_enqued);
++	dst->mpdu_enqued = __le32_to_cpu(src->mpdu_enqued);
++	dst->wmm_drop = __le32_to_cpu(src->wmm_drop);
++	dst->local_enqued = __le32_to_cpu(src->local_enqued);
++	dst->local_freed = __le32_to_cpu(src->local_freed);
++	dst->hw_queued = __le32_to_cpu(src->hw_queued);
++	dst->hw_reaped = __le32_to_cpu(src->hw_reaped);
++	dst->underrun = __le32_to_cpu(src->underrun);
++	dst->tx_abort = __le32_to_cpu(src->tx_abort);
++	dst->mpdus_requed = __le32_to_cpu(src->mpdus_requed);
++	dst->tx_ko = __le32_to_cpu(src->tx_ko);
++	dst->data_rc = __le32_to_cpu(src->data_rc);
++	dst->self_triggers = __le32_to_cpu(src->self_triggers);
++	dst->sw_retry_failure = __le32_to_cpu(src->sw_retry_failure);
++	dst->illgl_rate_phy_err = __le32_to_cpu(src->illgl_rate_phy_err);
++	dst->pdev_cont_xretry = __le32_to_cpu(src->pdev_cont_xretry);
++	dst->pdev_tx_timeout = __le32_to_cpu(src->pdev_tx_timeout);
++	dst->pdev_resets = __le32_to_cpu(src->pdev_resets);
++	dst->phy_underrun = __le32_to_cpu(src->phy_underrun);
++	dst->txop_ovf = __le32_to_cpu(src->txop_ovf);
++}
++
++void ath10k_wmi_pull_pdev_stats_rx(const struct wmi_pdev_stats_rx *src,
++				   struct ath10k_fw_stats_pdev *dst)
++{
++	dst->mid_ppdu_route_change = __le32_to_cpu(src->mid_ppdu_route_change);
++	dst->status_rcvd = __le32_to_cpu(src->status_rcvd);
++	dst->r0_frags = __le32_to_cpu(src->r0_frags);
++	dst->r1_frags = __le32_to_cpu(src->r1_frags);
++	dst->r2_frags = __le32_to_cpu(src->r2_frags);
++	dst->r3_frags = __le32_to_cpu(src->r3_frags);
++	dst->htt_msdus = __le32_to_cpu(src->htt_msdus);
++	dst->htt_mpdus = __le32_to_cpu(src->htt_mpdus);
++	dst->loc_msdus = __le32_to_cpu(src->loc_msdus);
++	dst->loc_mpdus = __le32_to_cpu(src->loc_mpdus);
++	dst->oversize_amsdu = __le32_to_cpu(src->oversize_amsdu);
++	dst->phy_errs = __le32_to_cpu(src->phy_errs);
++	dst->phy_err_drop = __le32_to_cpu(src->phy_err_drop);
++	dst->mpdu_errs = __le32_to_cpu(src->mpdu_errs);
++}
++
++void ath10k_wmi_pull_pdev_stats_extra(const struct wmi_pdev_stats_extra *src,
++				      struct ath10k_fw_stats_pdev *dst)
++{
++	dst->ack_rx_bad = __le32_to_cpu(src->ack_rx_bad);
++	dst->rts_bad = __le32_to_cpu(src->rts_bad);
++	dst->rts_good = __le32_to_cpu(src->rts_good);
++	dst->fcs_bad = __le32_to_cpu(src->fcs_bad);
++	dst->no_beacons = __le32_to_cpu(src->no_beacons);
++	dst->mib_int_count = __le32_to_cpu(src->mib_int_count);
+ }
  
-@@ -5180,6 +5338,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
+@@ -1768,7 +1784,10 @@ static int ath10k_wmi_main_op_pull_fw_stats(struct ath10k *ar,
+ 		if (!dst)
+ 			continue;
  
- static const struct wmi_ops wmi_10_2_4_ops = {
- 	.rx = ath10k_wmi_10_2_op_rx,
-+	.pull_fw_stats = ath10k_wmi_10_2_4_op_pull_fw_stats,
- 	.gen_init = ath10k_wmi_10_2_op_gen_init,
- 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
- 	.gen_pdev_get_temperature = ath10k_wmi_10_2_op_gen_pdev_get_temperature,
-@@ -5187,7 +5346,6 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	/* shared with 10.1 */
- 	.map_svc = wmi_10x_svc_map,
- 	.pull_svc_rdy = ath10k_wmi_10x_op_pull_svc_rdy_ev,
--	.pull_fw_stats = ath10k_wmi_10x_op_pull_fw_stats,
- 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
- 	.gen_start_scan = ath10k_wmi_10x_op_gen_start_scan,
+-		ath10k_wmi_pull_pdev_stats(src, dst);
++		ath10k_wmi_pull_pdev_stats_base(&src->base, dst);
++		ath10k_wmi_pull_pdev_stats_tx(&src->tx, dst);
++		ath10k_wmi_pull_pdev_stats_rx(&src->rx, dst);
++
+ 		list_add_tail(&dst->list, &stats->pdevs);
+ 	}
  
+@@ -1820,14 +1839,10 @@ static int ath10k_wmi_10x_op_pull_fw_stats(struct ath10k *ar,
+ 		if (!dst)
+ 			continue;
+ 
+-		ath10k_wmi_pull_pdev_stats(&src->old, dst);
+-
+-		dst->ack_rx_bad = __le32_to_cpu(src->ack_rx_bad);
+-		dst->rts_bad = __le32_to_cpu(src->rts_bad);
+-		dst->rts_good = __le32_to_cpu(src->rts_good);
+-		dst->fcs_bad = __le32_to_cpu(src->fcs_bad);
+-		dst->no_beacons = __le32_to_cpu(src->no_beacons);
+-		dst->mib_int_count = __le32_to_cpu(src->mib_int_count);
++		ath10k_wmi_pull_pdev_stats_base(&src->base, dst);
++		ath10k_wmi_pull_pdev_stats_tx(&src->tx, dst);
++		ath10k_wmi_pull_pdev_stats_rx(&src->rx, dst);
++		ath10k_wmi_pull_pdev_stats_extra(&src->extra, dst);
+ 
+ 		list_add_tail(&dst->list, &stats->pdevs);
+ 	}
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 109ed62..0514b1a 100644
+index bd7f29a..109ed62 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3121,6 +3121,16 @@ struct wmi_stats_event {
- 	u8 data[0];
+@@ -2946,7 +2946,7 @@ struct wmi_pdev_set_wmm_params_arg {
+ 	struct wmi_wmm_params_arg ac_vo;
+ };
+ 
+-struct wal_dbg_tx_stats {
++struct wmi_pdev_stats_tx {
+ 	/* Num HTT cookies queued to dispatch list */
+ 	__le32 comp_queued;
+ 
+@@ -3016,7 +3016,7 @@ struct wal_dbg_tx_stats {
+ 	__le32 txop_ovf;
  } __packed;
  
-+struct wmi_10_2_stats_event {
-+	__le32 stats_id; /* %WMI_REQUEST_ */
-+	__le32 num_pdev_stats;
-+	__le32 num_pdev_ext_stats;
-+	__le32 num_vdev_stats;
-+	__le32 num_peer_stats;
-+	__le32 num_bcnflt_stats;
-+	u8 data[0];
-+} __packed;
-+
- /*
+-struct wal_dbg_rx_stats {
++struct wmi_pdev_stats_rx {
+ 	/* Cnts any change in ring routing mid-ppdu */
+ 	__le32 mid_ppdu_route_change;
+ 
+@@ -3050,17 +3050,11 @@ struct wal_dbg_rx_stats {
+ 	__le32 mpdu_errs;
+ } __packed;
+ 
+-struct wal_dbg_peer_stats {
++struct wmi_pdev_stats_peer {
+ 	/* REMOVE THIS ONCE REAL PEER STAT COUNTERS ARE ADDED */
+ 	__le32 dummy;
+ } __packed;
+ 
+-struct wal_dbg_stats {
+-	struct wal_dbg_tx_stats tx;
+-	struct wal_dbg_rx_stats rx;
+-	struct wal_dbg_peer_stats peer;
+-} __packed;
+-
+ enum wmi_stats_id {
+ 	WMI_REQUEST_PEER_STAT	= 0x01,
+ 	WMI_REQUEST_AP_STAT	= 0x02
+@@ -3131,19 +3125,24 @@ struct wmi_stats_event {
   * PDEV statistics
   * TODO: add all PDEV stats here
-@@ -3159,6 +3169,22 @@ struct wmi_10x_pdev_stats {
- 	struct wmi_pdev_stats_extra extra;
- } __packed;
- 
-+struct wmi_pdev_stats_mem {
-+	__le32 dram_free;
-+	__le32 iram_free;
+  */
++struct wmi_pdev_stats_base {
++	__le32 chan_nf;
++	__le32 tx_frame_count;
++	__le32 rx_frame_count;
++	__le32 rx_clear_count;
++	__le32 cycle_count;
++	__le32 phy_err_count;
++	__le32 chan_tx_pwr;
 +} __packed;
 +
-+struct wmi_10_2_pdev_stats {
+ struct wmi_pdev_stats {
+-	__le32 chan_nf;        /* Channel noise floor */
+-	__le32 tx_frame_count; /* TX frame count */
+-	__le32 rx_frame_count; /* RX frame count */
+-	__le32 rx_clear_count; /* rx clear count */
+-	__le32 cycle_count;    /* cycle count */
+-	__le32 phy_err_count;  /* Phy error count */
+-	__le32 chan_tx_pwr;    /* channel tx power */
+-	struct wal_dbg_stats wal; /* WAL dbg stats */
 +	struct wmi_pdev_stats_base base;
 +	struct wmi_pdev_stats_tx tx;
-+	__le32 mc_drop;
 +	struct wmi_pdev_stats_rx rx;
-+	__le32 pdev_rx_timeout;
-+	struct wmi_pdev_stats_mem mem;
++	struct wmi_pdev_stats_peer peer;
+ } __packed;
+ 
+-struct wmi_10x_pdev_stats {
+-	struct wmi_pdev_stats old;
++struct wmi_pdev_stats_extra {
+ 	__le32 ack_rx_bad;
+ 	__le32 rts_bad;
+ 	__le32 rts_good;
+@@ -3152,6 +3151,14 @@ struct wmi_10x_pdev_stats {
+ 	__le32 mib_int_count;
+ } __packed;
+ 
++struct wmi_10x_pdev_stats {
++	struct wmi_pdev_stats_base base;
++	struct wmi_pdev_stats_tx tx;
++	struct wmi_pdev_stats_rx rx;
 +	struct wmi_pdev_stats_peer peer;
 +	struct wmi_pdev_stats_extra extra;
 +} __packed;
@@ -285,39 +281,23 @@ index 109ed62..0514b1a 100644
  /*
   * VDEV statistics
   * TODO: add all VDEV stats here
-@@ -3182,6 +3208,32 @@ struct wmi_10x_peer_stats {
- 	__le32 peer_rx_rate;
- } __packed;
+@@ -4772,8 +4779,14 @@ int ath10k_wmi_cmd_send_nowait(struct ath10k *ar, struct sk_buff *skb,
+ 			       u32 cmd_id);
+ void ath10k_wmi_start_scan_init(struct ath10k *ar, struct wmi_start_scan_arg *);
  
-+struct wmi_10_2_peer_stats {
-+	struct wmi_peer_stats old;
-+	__le32 peer_rx_rate;
-+	__le32 current_per;
-+	__le32 retries;
-+	__le32 tx_rate_count;
-+	__le32 max_4ms_frame_len;
-+	__le32 total_sub_frames;
-+	__le32 tx_bytes;
-+	__le32 num_pkt_loss_overflow[4];
-+	__le32 num_pkt_loss_excess_retry[4];
-+} __packed;
-+
-+struct wmi_10_2_4_peer_stats {
-+	struct wmi_10_2_peer_stats common;
-+	__le32 unknown_value; /* FIXME: what is this word? */
-+} __packed;
-+
-+struct wmi_10_2_pdev_ext_stats {
-+	__le32 rx_rssi_comb;
-+	__le32 rx_rssi[4];
-+	__le32 rx_mcs[10];
-+	__le32 tx_mcs[10];
-+	__le32 ack_rssi;
-+} __packed;
-+
- struct wmi_vdev_create_cmd {
- 	__le32 vdev_id;
- 	__le32 vdev_type;
+-void ath10k_wmi_pull_pdev_stats(const struct wmi_pdev_stats *src,
+-				struct ath10k_fw_stats_pdev *dst);
++void ath10k_wmi_pull_pdev_stats_base(const struct wmi_pdev_stats_base *src,
++				     struct ath10k_fw_stats_pdev *dst);
++void ath10k_wmi_pull_pdev_stats_tx(const struct wmi_pdev_stats_tx *src,
++				   struct ath10k_fw_stats_pdev *dst);
++void ath10k_wmi_pull_pdev_stats_rx(const struct wmi_pdev_stats_rx *src,
++				   struct ath10k_fw_stats_pdev *dst);
++void ath10k_wmi_pull_pdev_stats_extra(const struct wmi_pdev_stats_extra *src,
++				      struct ath10k_fw_stats_pdev *dst);
+ void ath10k_wmi_pull_peer_stats(const struct wmi_peer_stats *src,
+ 				struct ath10k_fw_stats_peer *dst);
+ void ath10k_wmi_put_host_mem_chunks(struct ath10k *ar,
 -- 
 1.8.5.3
 
