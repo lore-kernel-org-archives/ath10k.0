@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
+Received: from linuxlounge.net ([2a01:4f8:d16:1fc5::2])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCAQg-0000LZ-Dg
- for ath10k@lists.infradead.org; Fri, 16 Jan 2015 17:11:27 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ id 1YCDzR-0001PQ-0n
+ for ath10k@lists.infradead.org; Fri, 16 Jan 2015 20:59:33 +0000
+Received: from [172.31.97.157] (p4FF0C043.dip0.t-ipconnect.de [79.240.192.67])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
  (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id E9DBD40D965
- for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 09:11:03 -0800 (PST)
-Message-ID: <54B94627.1080706@candelatech.com>
-Date: Fri, 16 Jan 2015 09:11:03 -0800
-From: Ben Greear <greearb@candelatech.com>
+ by linuxlounge.net (Postfix) with ESMTPSA id 4273E2DE1C7
+ for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 21:59:09 +0100 (CET)
+Message-ID: <54B97B96.4040903@darmstadt.freifunk.net>
+Date: Fri, 16 Jan 2015 21:59:02 +0100
+From: Martin Weinelt <martin@darmstadt.freifunk.net>
 MIME-Version: 1.0
-Subject: 3.17+ blocks on firmware crash, 3.19 does not..what fixed it?
+Subject: Valid Interface Combinations: IBSS + AP in parallel?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +25,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-If 3.17 kernel has lots of vdevs, and firmware crashes, there can be lots
-of timeouts due to timing out wmi commands.  3.19 appears to fix this.
+Hello,
 
-I need to backport this behaviour if possible....any idea what commit(s)
-fixed this issue?
+I wanted to kindly ask for information on ath10ks future.
 
-Thanks,
-Ben
+We, the Freifunk-Community in Germany, are currently heavily using
+ath9k, which supports IBSS + AP mode in parallel, to do meshing and
+service clients at the same time. Ath10k currently does not seem to
+support that.
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Are there any plans to include this possibility or is this out of the
+question?
 
+
+Kind regards,
+
+
+Martin Weinelt
+Freifunk-Darmstadt
 
 _______________________________________________
 ath10k mailing list
