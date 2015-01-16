@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YCA77-0002bT-Iw
- for ath10k@lists.infradead.org; Fri, 16 Jan 2015 16:51:14 +0000
-Received: by mail-la0-f46.google.com with SMTP id ge10so10132325lab.5
- for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 08:50:50 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YCAQg-0000LZ-Dg
+ for ath10k@lists.infradead.org; Fri, 16 Jan 2015 17:11:27 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id E9DBD40D965
+ for <ath10k@lists.infradead.org>; Fri, 16 Jan 2015 09:11:03 -0800 (PST)
+Message-ID: <54B94627.1080706@candelatech.com>
+Date: Fri, 16 Jan 2015 09:11:03 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CABhs+6kTguLdmgrqQ7UUYwQyM=0iTwWU0Msxg1+_tLNhd0dFRA@mail.gmail.com>
-References: <CABhs+6kTguLdmgrqQ7UUYwQyM=0iTwWU0Msxg1+_tLNhd0dFRA@mail.gmail.com>
-Date: Fri, 16 Jan 2015 18:50:49 +0200
-Message-ID: <CABhs+6nt8n04T5FcZHyQ4r79jnxYeKD7ibvTPttUARn_TX66kg@mail.gmail.com>
-Subject: Re: TX statistics
-From: Ilias Syrigos <ilias013@gmail.com>
+Subject: 3.17+ blocks on firmware crash, 3.19 does not..what fixed it?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Hello again,
+If 3.17 kernel has lots of vdevs, and firmware crashes, there can be lots
+of timeouts due to timing out wmi commands.  3.19 appears to fix this.
 
-I'm still trying to calculate the Packet Delivery Ratio statistic.
+I need to backport this behaviour if possible....any idea what commit(s)
+fixed this issue?
 
-By considering the tx_packets variable which represents the packets
-passed to ath10k driver for transmission, I thought I should be able
-to calculate the probability of successful transmission by disabling
-retransmissions.
+Thanks,
+Ben
 
-However iw set retry does not seem to work and I have neither found a
-way to do it through a hack in ath10k source code.
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
-Can you please provide me with a direction on how to do that?
-
-Thank you in advance,
-Ilias
-
-2014-12-27 21:44 GMT+02:00 Ilias Syrigos <ilias013@gmail.com>:
-> Hello,
->
-> I am trying to calculate the PDR (Packet Delivery Ratio) statistic
-> while operating with ac wifi cards supported by ath10k driver, but
-> without success.
->
-> With ath9k driver I was able to calculate PDR through mac80211 debugFS
-> stats and specifically through tx_packets counter and tx_retry_count.
->
-> However, with ath10k, firmware doesn't seem to update retry counter
-> and I couldn't get relevant statistics through fw_stats.
->
-> Can you suggest any other way to get tx attempts and retries in ath10k?
->
-> Thank you in advance,
-> Ilias
 
 _______________________________________________
 ath10k mailing list
