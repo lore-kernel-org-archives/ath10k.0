@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-wg0-x22e.google.com ([2a00:1450:400c:c00::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YD8Q8-0005u9-J6
- for ath10k@lists.infradead.org; Mon, 19 Jan 2015 09:14:53 +0000
-Received: by mail-wi0-f178.google.com with SMTP id em10so4130811wid.5
- for <ath10k@lists.infradead.org>; Mon, 19 Jan 2015 01:14:30 -0800 (PST)
+ id 1YDC9X-0001zD-IY
+ for ath10k@lists.infradead.org; Mon, 19 Jan 2015 13:14:02 +0000
+Received: by mail-wg0-f46.google.com with SMTP id x13so31669568wgg.5
+ for <ath10k@lists.infradead.org>; Mon, 19 Jan 2015 05:13:34 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFC/RFT] ath10k: enable IBSS in multi-vif
-Date: Mon, 19 Jan 2015 10:13:53 +0100
-Message-Id: <1421658833-13311-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <54B97B96.4040903@darmstadt.freifunk.net>
-References: <54B97B96.4040903@darmstadt.freifunk.net>
+Subject: [PATCH] ath10k: fix nullfunc workaround
+Date: Mon, 19 Jan 2015 14:12:57 +0100
+Message-Id: <1421673177-2245-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +23,31 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: martin@darmstadt.freifunk.net, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The 999.999.0.636 firmware seems to support
-concurrent IBSS + AP/STA. At least basic stuff
-works so enable it since some people are
-interested in this stuff.
-
-If it's broken we can fix, restrict or disable it
-later.
+The workaround couldn't work correctly because the
+802.11 header wasn't properly stripped of QoS Data
+bit so it wasn't recognized in the later parts of
+tx path as NullFunc frame and ended up in HTT Tx
+instead of HTT Mgmt Tx.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
-Hi Martin,
-
-Feel free to take this patch and run whatever case
-you had in mind. If this proves to work for you
-without any major issues (like notorious crashes,
-traffic issues and such) I guess we could try
-pulling this upstream.
-
-Make sure you use 999.999.0.636 firmware. The 10.x
-doesn't support IBSS at all.
-
-
- drivers/net/wireless/ath/ath10k/mac.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9524bc5..11170ce 100644
+index 9524bc5..82c567d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5032,6 +5032,10 @@ static const struct ieee80211_iface_limit ath10k_if_limits[] = {
- 	.max	= 7,
- 	.types	= BIT(NL80211_IFTYPE_AP)
- 	},
-+	{
-+	.max	= 1,
-+	.types	= BIT(NL80211_IFTYPE_ADHOC)
-+	},
- };
- 
- static const struct ieee80211_iface_limit ath10k_10x_if_limits[] = {
+@@ -2145,6 +2145,7 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
+ 	 * used only for CQM purposes (e.g. hostapd station keepalive ping) so
+ 	 * it is safe to downgrade to NullFunc.
+ 	 */
++	hdr = (void *)skb->data;
+ 	if (ieee80211_is_qos_nullfunc(hdr->frame_control)) {
+ 		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_STYPE_QOS_DATA);
+ 		cb->htt.tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
 -- 
 1.8.5.3
 
