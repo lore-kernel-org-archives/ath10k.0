@@ -1,21 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDVCs-0002SO-Bv
- for ath10k@lists.infradead.org; Tue, 20 Jan 2015 09:34:43 +0000
-Received: by mail-we0-f176.google.com with SMTP id w62so9402119wes.7
- for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 01:34:20 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <CA+BoTQnjfsp3pjB4OyDvbqpQQ4TbYM+NHtTeNPCrgUJWfL-d+Q@mail.gmail.com>
-References: <54B97B96.4040903@darmstadt.freifunk.net>
- <1421658833-13311-1-git-send-email-michal.kazior@tieto.com>
- <54BDDB3B.3020902@candelatech.com>
- <CAEFj984fjXUuRsNghr2Q4+397AS1TEO-K392YitUuZ5ztTF8iA@mail.gmail.com>
- <CA+BoTQnjfsp3pjB4OyDvbqpQQ4TbYM+NHtTeNPCrgUJWfL-d+Q@mail.gmail.com>
-Date: Tue, 20 Jan 2015 17:34:20 +0800
-Message-ID: <CAEFj984dM9w54GGPRNrHput3fnAn+9O4BenHJiujjk07-Vt=nw@mail.gmail.com>
-Subject: Re: [RFC/RFT] ath10k: enable IBSS in multi-vif
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+ id 1YDVzg-0004wf-EC
+ for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:25:09 +0000
+Received: by mail-wi0-f170.google.com with SMTP id em10so3682434wid.1
+ for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:24:46 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: disable sta keepalive
+Date: Tue, 20 Jan 2015 11:24:00 +0100
+Message-Id: <1421749440-10457-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
+References: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,112 +19,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Ben Greear <greearb@candelatech.com>, Martin Weinelt <martin@darmstadt.freifunk.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-WWVzLCB5b3UgYXJlIHJpZ2h0IGR1ZSB0byB0aGUgYnJpZGdpbmcgaW4gaG9zdGFwZC5jb25mLgoK
-SSB0cnkgdG8gZGlzYWJsZSBicmlkZ2luZyBhbmQgYnJpbmcgdXAgdGhlIGFkaG9jIGludGVyZmFj
-ZSB0aGVuIGZvbGxvdwpieSBBUCBpbnRlcmZhY2UgYnV0IG5vdCBzdWNjZWVkIHRvIGJyaW5nIHVw
-IHRoZSBBUCBpbnRlcmZhY2U6CgpbICA1NjAuNzkwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAu
-MDogd21pIHZkZXYgaWQgMHgxIHNldCBwYXJhbSAxIHZhbHVlIC0xClsgIDU2MC43OTAwMDBdIGF0
-aDEwa19wY2kgMDAwMDowMDowMC4wOiB3bWkgdmRldiBpZCAweDEgc2V0IHBhcmFtIDIgdmFsdWUg
-LTEKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IG1hYyB0eHBvd2VyIDAK
-WyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHdtaSBwZGV2IHNldCBwYXJh
-bSAzIHZhbHVlIDAKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHdtaSBw
-ZGV2IHNldCBwYXJhbSA0IHZhbHVlIDAKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAw
-OjAwLjA6IG1hYyBtb25pdG9yIHJlY2FsYyBzdGFydGVkPyAwIHNob3VsZD8gMApbICA1NjAuNzkw
-MDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogbWFjIHZkZXYgMSBjdHNfcHJvdCAwClsgIDU2
-MC43OTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiB3bWkgdmRldiBpZCAweDEgc2V0IHBh
-cmFtIDQ0IHZhbHVlIDAKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IG1h
-YyB2ZGV2IDEgc2xvdF90aW1lIDEKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAw
-LjA6IHdtaSB2ZGV2IGlkIDB4MSBzZXQgcGFyYW0gNyB2YWx1ZSAxClsgIDU2MC43OTAwMDBdIGF0
-aDEwa19wY2kgMDAwMDowMDowMC4wOiBtYWMgdmRldiAxIHByZWFtYmxlIDFuClsgIDU2MC43OTAw
-MDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiB3bWkgdmRldiBpZCAweDEgc2V0IHBhcmFtIDgg
-dmFsdWUgMQpbICA1NjAuNzkwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogd21pIHBkZXYg
-c2V0IHdtbSBwYXJhbXMKWyAgNTYwLjc5MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHdt
-aSBwZGV2IHNldCB3bW0gcGFyYW1zClsgIDU2MC43OTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDow
-MC4wOiB3bWkgcGRldiBzZXQgd21tIHBhcmFtcwpbICA1NjAuNzkwMDAwXSBhdGgxMGtfcGNpIDAw
-MDA6MDA6MDAuMDogd21pIHBkZXYgc2V0IHdtbSBwYXJhbXMKWyAgNTYwLjc5MDAwMF0gSVB2Njog
-QUREUkNPTkYoTkVUREVWX1VQKTogd2xhbjA6IGxpbmsgaXMgbm90IHJlYWR5ClsgIDU2MC44MDAw
-MDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBtYWMgbW9uaXRvciByZWNhbGMgc3RhcnRlZD8g
-MCBzaG91bGQ/IDAKWyAgNTYwLjgwMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHdtaSBz
-dGFydCBzY2FuClsgIDU2MC44MDAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBzY2FuIGV2
-ZW50IHN0YXJ0ZWQgdHlwZSAxCnJlYXNvbiA0IGZyZXEgNTE4MCByZXFfaWQgNDA5NjEgc2Nhbl9p
-ZCA0MDk2MCB2ZGV2X2lkIDEgc3RhdGUgc3RhcnRpbmcKKDEpClsgIDU2MC44MDAwMDBdIGF0aDEw
-a19wY2kgMDAwMDowMDowMC4wOiBzY2FuIGV2ZW50IGJzcyBjaGFubmVsIHR5cGUgNApyZWFzb24g
-NCBmcmVxIDUxODAgcmVxX2lkIDQwOTYxIHNjYW5faWQgNDA5NjAgdmRldl9pZCAxIHN0YXRlIHJ1
-bm5pbmcKKDIpClsgIDU2MC44MDAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBjaGFuIGlu
-Zm8gZXJyX2NvZGUgMCBmcmVxIDUxODAKY21kX2ZsYWdzIDEgbm9pc2VfZmxvb3IgLTEwNCByeF9j
-bGVhcl9jb3VudCAzMjM5ODE4OSBjeWNsZV9jb3VudAotNDI0Njc1MjUKWyAgNTYwLjg1MDAwMF0g
-YXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHNjYW4gZXZlbnQgZm9yZWlnbiBjaGFubmVsCnR5cGUg
-OCByZWFzb24gNCBmcmVxIDUxODAgcmVxX2lkIDQwOTYxIHNjYW5faWQgNDA5NjAgdmRldl9pZCAx
-IHN0YXRlCnJ1bm5pbmcgKDIpClsgIDU2MC44NTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4w
-OiBjaGFuIGluZm8gZXJyX2NvZGUgMCBmcmVxIDUxODAKY21kX2ZsYWdzIDAgbm9pc2VfZmxvb3Ig
-MCByeF9jbGVhcl9jb3VudCAzMjQzNjA5OCBjeWNsZV9jb3VudAotMzgwNTU4ODgKWyAgNTYxLjAw
-MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHNjYW4gZXZlbnQgYnNzIGNoYW5uZWwgdHlw
-ZSA0CnJlYXNvbiA0IGZyZXEgNTE4MCByZXFfaWQgNDA5NjEgc2Nhbl9pZCA0MDk2MCB2ZGV2X2lk
-IDEgc3RhdGUgcnVubmluZwooMikKWyAgNTYxLjAwMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAw
-LjA6IGNoYW4gaW5mbyBlcnJfY29kZSAwIGZyZXEgNTE4MApjbWRfZmxhZ3MgMSBub2lzZV9mbG9v
-ciAtMTA0IHJ4X2NsZWFyX2NvdW50IDMyNTE3ODM1IGN5Y2xlX2NvdW50Ci0yNDg1NDEyOQpbICA1
-NjEuMTEwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogc2NhbiBldmVudCBmb3JlaWduIGNo
-YW5uZWwKdHlwZSA4IHJlYXNvbiA0IGZyZXEgNTIwMCByZXFfaWQgNDA5NjEgc2Nhbl9pZCA0MDk2
-MCB2ZGV2X2lkIDEgc3RhdGUKcnVubmluZyAoMikKWyAgNTYxLjExMDAwMF0gYXRoMTBrX3BjaSAw
-MDAwOjAwOjAwLjA6IGNoYW4gaW5mbyBlcnJfY29kZSAwIGZyZXEgNTIwMApjbWRfZmxhZ3MgMCBu
-b2lzZV9mbG9vciAwIHJ4X2NsZWFyX2NvdW50IDMyNTk1NTg2IGN5Y2xlX2NvdW50Ci0xNTQ4Nzc3
-OApbICA1NjEuMjUwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogc2NhbiBldmVudCBic3Mg
-Y2hhbm5lbCB0eXBlIDQKcmVhc29uIDQgZnJlcSA1MTgwIHJlcV9pZCA0MDk2MSBzY2FuX2lkIDQw
-OTYwIHZkZXZfaWQgMSBzdGF0ZSBydW5uaW5nCigyKQpbICA1NjEuMjUwMDAwXSBhdGgxMGtfcGNp
-IDAwMDA6MDA6MDAuMDogY2hhbiBpbmZvIGVycl9jb2RlIDAgZnJlcSA1MTgwCmNtZF9mbGFncyAx
-IG5vaXNlX2Zsb29yIC0xMDQgcnhfY2xlYXJfY291bnQgMzI2NzIzODggY3ljbGVfY291bnQKLTI2
-MzY5NTMKWyAgNTYxLjMwMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHNjYW4gZXZlbnQg
-Y29tcGxldGVkIHR5cGUgMgpyZWFzb24gMCBmcmVxIDUxODAgcmVxX2lkIDQwOTYxIHNjYW5faWQg
-NDA5NjAgdmRldl9pZCAxIHN0YXRlIHJ1bm5pbmcKKDIpClsgIDU2MS42NDAwMDBdIGF0aDEwa19w
-Y2kgMDAwMDowMDowMC4wOiBtYWMgbW9uaXRvciByZWNhbGMgc3RhcnRlZD8gMCBzaG91bGQ/IDAK
-WyAgNTYxLjY0MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IHdtaSBwZWVyIGRlbGV0ZSB2
-ZGV2X2lkIDEKcGVlcl9hZGRyIDA0OmYwOjIxOjBjOmE2OjQzClsgIDU2MS42NDAwMDBdIGF0aDEw
-a19wY2kgMDAwMDowMDowMC4wOiBtYWMgdmRldiAxIGRlbGV0ZSAocmVtb3ZlIGludGVyZmFjZSkK
-WyAgNTYxLjY0MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IFdNSSB2ZGV2IGRlbGV0ZSBp
-ZCAxClsgIDU2MS42NDAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBtYWMgbW9uaXRvciBy
-ZWNhbGMgc3RhcnRlZD8gMCBzaG91bGQ/IDAKWyAgNTYxLjY1MDAwMF0gYXRoMTBrX3BjaSAwMDAw
-OjAwOjAwLjA6IG1hYyBtb25pdG9yIHJlY2FsYyBzdGFydGVkPyAwIHNob3VsZD8gMAoKLS0tLQpD
-aHVuLVllb3cKCk9uIFR1ZSwgSmFuIDIwLCAyMDE1IGF0IDU6MjEgUE0sIE1pY2hhbCBLYXppb3Ig
-PG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPiBPbiAyMCBKYW51YXJ5IDIwMTUgYXQg
-MTA6MTQsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwuY29tPiB3cm90ZToKPj4g
-RXhwZXJpZW5jZWQgZmlybXdhcmUgY3Jhc2hlZCBpbiA2MzYgZmlybXdhcmUgaW1tZWRpYXRlbHkg
-YWZ0ZXIKPj4gYnJpbmdpbmcgdXAgdGhlIEFQIGludGVyZmFjZS4KPj4KPj4gVGhlIHBhcnRpYWwg
-bG9nIGlzIGxpc3RlZCBoZXJlOgo+IFsuLi5dCj4+IFsgIDI5MS4zODAwMDBdIGF0aDEwa19wY2kg
-MDAwMDowMDowMC4wOiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgo+PiBbICAyOTEuMzgwMDAwXSBh
-dGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzAwXTogMHg0MTAwMDE2QyAweDAwMDAwMDAwCj4+IDB4
-MDA5QzQ1MjEgMHgwMDAwMDAwMAo+PiBbICAyOTEuMzkwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6
-MDAuMDogWzA0XTogMHgwMDlDNDUyMSAweDAwMDYwMzMwCj4+IDB4MDAwMDAwMTkgMHgwMDk1NUEw
-MAo+PiBbICAyOTEuNDAwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzA4XTogMHgwMDA0
-NkE0RSAweDAwMDAwMDAwCj4+IDB4MDA0MENDOTQgMHgwMDAwMDAyMAo+PiBbICAyOTEuNDEwMDAw
-XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzEyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+
-IDB4MDA5NTgzNjAgMHgwMDk1ODM2Qgo+PiBbICAyOTEuNDIwMDAwXSBhdGgxMGtfcGNpIDAwMDA6
-MDA6MDAuMDogWzE2XTogMHg4MDlBMDk3OCAweDAwNDBBRDk0Cj4+IDB4MDA0MzkzMDQgMHgwMDQw
-RDA3NAo+PiBbICAyOTEuNDIwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzIwXTogMHgw
-MDAwRkZGRiAweDAwMDAwMDAwCj4+IDB4MDA0MUI2MTggMHgwMDAwMDAwMAo+PiBbICAyOTEuNDMw
-MDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzI0XTogMHg4MDlBMDk3OCAweDAwNDBBRDk0
-Cj4+IDB4MDA0MzkzMDQgMHgxMUE5M0I3Nwo+PiBbICAyOTEuNDQwMDAwXSBhdGgxMGtfcGNpIDAw
-MDA6MDA6MDAuMDogWzI4XTogMHg4MDlBRDFBMiAweDAwNDBBREU0Cj4+IDB4MDA0MzkzMDQgMHgw
-MDQzRjY4Qwo+PiBbICAyOTEuNDUwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzMyXTog
-MHgwMDAwMDAwMSAweDAwMDAwMDAwCj4+IDB4MDAwMDAwMDAgMHgwMDQzMEQ3NAo+PiBbICAyOTEu
-NDYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzM2XTogMHgwMDAwMDAwMCAweDAwMDAw
-MDAwCj4+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+PiBbICAyOTEuNDYwMDAwXSBhdGgxMGtfcGNp
-IDAwMDA6MDA6MDAuMDogWzQwXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4+IDB4MDAwMDAwQUIg
-MHgwMDQxMjcwMAo+PiBbICAyOTEuNDcwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzQ0
-XTogMHgwMDQzOUJCOCAweDAwMDAwMDAwCj4+IDB4MDAwMDAwMDAgMHgwMDQwMDAwMAo+PiBbICAy
-OTEuNDgwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogWzQ4XTogMHg4MDlBRTBCNCAweDAw
-NDBBRTA0Cj4+IDB4MDA0MDAwMDAgMHgwMDQzRjY4Qwo+PiBbICAyOTEuNDkwMDAwXSBhdGgxMGtf
-cGNpIDAwMDA6MDA6MDAuMDogWzUyXTogMHgwMDAwMDAwMSAweDAwMDAwMDAwCj4+IDB4MDA0MjMx
-RjAgMHgwMDQwMDAwMAo+PiBbICAyOTEuNTAwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDog
-WzU2XTogMHg4MDlBRTE3RSAweDAwNDBBRTQ0Cj4+IDB4MDA0MEZFNkMgMHgwMDQwRDMxMAo+Cj4g
-WWVhaC4uIFRoaXMgaXMgbW9uaXRvciB2ZGV2IHJlbGF0ZWQgY3Jhc2ggKGR1ZSB0byBicmlkZ2lu
-Zywgbm8/KS4gSQo+IGhhdmVuJ3QgZm91bmQgYSB3YXkgYXJvdW5kIGl0Lgo+Cj4KPiBNaWNoYcWC
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
-bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Firmware revisions providing sta keepalive service
+have it enabled by default.
+
+mac80211 already does idle connection polling so
+it makes no sense to duplicate this in ath10k.
+mac80211 wouldn't even know of the offloaded
+keepalive NullFunc frames.
+
+This prevents sending out some extraneous frames
+on the air.
+
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 42 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h |  5 +++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9524bc5..3511f60 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1289,6 +1289,38 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+ 	return 0;
+ }
+ 
++static int ath10k_mac_vif_disable_keepalive(struct ath10k_vif *arvif)
++{
++	struct ath10k *ar = arvif->ar;
++	struct wmi_sta_keepalive_arg arg = {};
++	int ret;
++
++	lockdep_assert_held(&arvif->ar->conf_mutex);
++
++	if (arvif->vdev_type != WMI_VDEV_TYPE_STA)
++		return 0;
++
++	if (!test_bit(WMI_SERVICE_STA_KEEP_ALIVE, ar->wmi.svc_map))
++		return 0;
++
++	/* Some firmware revisions have a bug and ignore the `enabled` field.
++	 * Instead use the interval to disable the keepalive.
++	 */
++	arg.vdev_id = arvif->vdev_id;
++	arg.enabled = 1;
++	arg.method = WMI_STA_KEEPALIVE_METHOD_NULL_FRAME;
++	arg.interval = WMI_STA_KEEPALIVE_INTERVAL_DISABLE;
++
++	ret = ath10k_wmi_sta_keepalive(ar, &arg);
++	if (ret) {
++		ath10k_warn(ar, "failed to submit keepalive on vdev %i: %d\n",
++			    arvif->vdev_id, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ /**********************/
+ /* Station management */
+ /**********************/
+@@ -3182,6 +3214,16 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
+ 	list_add(&arvif->list, &ar->arvifs);
+ 
++	/* It makes no sense to have firmware do keepalives. mac80211 already
++	 * takes care of this with idle connection polling.
++	 */
++	ret = ath10k_mac_vif_disable_keepalive(arvif);
++	if (ret) {
++		ath10k_warn(ar, "failed to disable keepalive on vdev %i: %d\n",
++			    arvif->vdev_id, ret);
++		goto err_vdev_delete;
++	}
++
+ 	vdev_param = ar->wmi.vdev_param->def_keyid;
+ 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
+ 					arvif->def_wep_key_idx);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 99f091d..5da61e8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4581,6 +4581,11 @@ enum wmi_sta_keepalive_method {
+ 	WMI_STA_KEEPALIVE_METHOD_UNSOLICITATED_ARP_RESPONSE = 2,
+ };
+ 
++#define WMI_STA_KEEPALIVE_INTERVAL_DISABLE 0
++
++/* Firmware crashes if keepalive interval exceeds this limit */
++#define WMI_STA_KEEPALIVE_INTERVAL_MAX_SECONDS 0xffff
++
+ /* note: ip4 addresses are in network byte order, i.e. big endian */
+ struct wmi_sta_keepalive_arp_resp {
+ 	__be32 src_ip4_addr;
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
