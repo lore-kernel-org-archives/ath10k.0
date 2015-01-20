@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDVzg-0004wf-EC
- for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:25:09 +0000
-Received: by mail-wi0-f170.google.com with SMTP id em10so3682434wid.1
- for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:24:46 -0800 (PST)
+ id 1YDVzd-0004wI-NG
+ for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:25:07 +0000
+Received: by mail-we0-f171.google.com with SMTP id u56so36161098wes.2
+ for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:24:43 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: disable sta keepalive
-Date: Tue, 20 Jan 2015 11:24:00 +0100
-Message-Id: <1421749440-10457-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
-References: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: implement sta keepalive command
+Date: Tue, 20 Jan 2015 11:23:59 +0100
+Message-Id: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,100 +25,160 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Firmware revisions providing sta keepalive service
-have it enabled by default.
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-mac80211 already does idle connection polling so
-it makes no sense to duplicate this in ath10k.
-mac80211 wouldn't even know of the offloaded
-keepalive NullFunc frames.
-
-This prevents sending out some extraneous frames
-on the air.
+New wmi-tlv firmware for qca6174 has STA keepalive
+service available. The service can provide
+automatic idle connection polling via NullFunc
+frames to AP when acting as a client.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 42 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h |  5 +++++
- 2 files changed, 47 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 20 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 45 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  7 +++++
+ drivers/net/wireless/ath/ath10k/wmi.h     | 10 +++++++
+ 4 files changed, 82 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9524bc5..3511f60 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1289,6 +1289,38 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
- 	return 0;
- }
- 
-+static int ath10k_mac_vif_disable_keepalive(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	struct wmi_sta_keepalive_arg arg = {};
-+	int ret;
-+
-+	lockdep_assert_held(&arvif->ar->conf_mutex);
-+
-+	if (arvif->vdev_type != WMI_VDEV_TYPE_STA)
-+		return 0;
-+
-+	if (!test_bit(WMI_SERVICE_STA_KEEP_ALIVE, ar->wmi.svc_map))
-+		return 0;
-+
-+	/* Some firmware revisions have a bug and ignore the `enabled` field.
-+	 * Instead use the interval to disable the keepalive.
-+	 */
-+	arg.vdev_id = arvif->vdev_id;
-+	arg.enabled = 1;
-+	arg.method = WMI_STA_KEEPALIVE_METHOD_NULL_FRAME;
-+	arg.interval = WMI_STA_KEEPALIVE_INTERVAL_DISABLE;
-+
-+	ret = ath10k_wmi_sta_keepalive(ar, &arg);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to submit keepalive on vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- /**********************/
- /* Station management */
- /**********************/
-@@ -3182,6 +3214,16 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
- 	list_add(&arvif->list, &ar->arvifs);
- 
-+	/* It makes no sense to have firmware do keepalives. mac80211 already
-+	 * takes care of this with idle connection polling.
-+	 */
-+	ret = ath10k_mac_vif_disable_keepalive(arvif);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to disable keepalive on vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		goto err_vdev_delete;
-+	}
-+
- 	vdev_param = ar->wmi.vdev_param->def_keyid;
- 	ret = ath10k_wmi_vdev_set_param(ar, 0, vdev_param,
- 					arvif->def_wep_key_idx);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 99f091d..5da61e8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4581,6 +4581,11 @@ enum wmi_sta_keepalive_method {
- 	WMI_STA_KEEPALIVE_METHOD_UNSOLICITATED_ARP_RESPONSE = 2,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 0dd49a7..d430f92 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -137,6 +137,8 @@ struct wmi_ops {
+ 					struct sk_buff *bcn);
+ 	struct sk_buff *(*gen_p2p_go_bcn_ie)(struct ath10k *ar, u32 vdev_id,
+ 					     const u8 *p2p_ie);
++	struct sk_buff *(*gen_sta_keepalive)(struct ath10k *ar,
++					     const struct wmi_sta_keepalive_arg *arg);
  };
  
-+#define WMI_STA_KEEPALIVE_INTERVAL_DISABLE 0
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -992,4 +994,22 @@ ath10k_wmi_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id, const u8 *p2p_ie)
+ 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->p2p_go_set_beacon_ie);
+ }
+ 
++static inline int
++ath10k_wmi_sta_keepalive(struct ath10k *ar,
++			 const struct wmi_sta_keepalive_arg *arg)
++{
++	struct sk_buff *skb;
++	u32 cmd_id;
 +
-+/* Firmware crashes if keepalive interval exceeds this limit */
-+#define WMI_STA_KEEPALIVE_INTERVAL_MAX_SECONDS 0xffff
++	if (!ar->wmi.ops->gen_sta_keepalive)
++		return -EOPNOTSUPP;
 +
- /* note: ip4 addresses are in network byte order, i.e. big endian */
- struct wmi_sta_keepalive_arp_resp {
- 	__be32 src_ip4_addr;
++	skb = ar->wmi.ops->gen_sta_keepalive(ar, arg);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	cmd_id = ar->wmi.cmd->sta_keepalive_cmd;
++	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
++}
++
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 6f34fc7..3f1a022 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1407,6 +1407,50 @@ ath10k_wmi_tlv_op_gen_vdev_install_key(struct ath10k *ar,
+ }
+ 
+ static struct sk_buff *
++ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
++				    const struct wmi_sta_keepalive_arg *arg)
++{
++	struct wmi_tlv_sta_keepalive_cmd *cmd;
++	struct wmi_sta_keepalive_arp_resp *arp;
++	struct sk_buff *skb;
++	struct wmi_tlv *tlv;
++	void *ptr;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd) +
++	      sizeof(*tlv) + sizeof(*arp);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_STA_KEEPALIVE_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->vdev_id = __cpu_to_le32(arg->vdev_id);
++	cmd->enabled = __cpu_to_le32(arg->enabled);
++	cmd->method = __cpu_to_le32(arg->method);
++	cmd->interval = __cpu_to_le32(arg->interval);
++
++	ptr += sizeof(*tlv);
++	ptr += sizeof(*cmd);
++
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_STA_KEEPALVE_ARP_RESPONSE);
++	tlv->len = __cpu_to_le16(sizeof(*arp));
++	arp = (void *)tlv->value;
++
++	arp->src_ip4_addr = arg->src_ip4_addr;
++	arp->dest_ip4_addr = arg->dest_ip4_addr;
++	ether_addr_copy(arp->dest_mac_addr.addr, arg->dest_mac_addr);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d inverval %d\n",
++		   arg->vdev_id, arg->enabled, arg->method, arg->interval);
++	return skb;
++}
++
++static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
+ 				  const u8 peer_addr[ETH_ALEN])
+ {
+@@ -2417,6 +2461,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
+ 	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
+ 	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
++	.gen_sta_keepalive = ath10k_wmi_tlv_op_gen_sta_keepalive,
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index eb02290..ac9fb85 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1409,6 +1409,13 @@ struct wmi_tlv_p2p_go_bcn_ie {
+ 	__le32 ie_len;
+ } __packed;
+ 
++struct wmi_tlv_sta_keepalive_cmd {
++	__le32 vdev_id;
++	__le32 enabled;
++	__le32 method; /* WMI_STA_KEEPALIVE_METHOD_ */
++	__le32 interval; /* in seconds */
++} __packed;
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index bd7f29a..99f091d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4596,6 +4596,16 @@ struct wmi_sta_keepalive_cmd {
+ 	struct wmi_sta_keepalive_arp_resp arp_resp;
+ } __packed;
+ 
++struct wmi_sta_keepalive_arg {
++	u32 vdev_id;
++	u32 enabled;
++	u32 method;
++	u32 interval;
++	__be32 src_ip4_addr;
++	__be32 dest_ip4_addr;
++	const u8 dest_mac_addr[ETH_ALEN];
++};
++
+ enum wmi_force_fw_hang_type {
+ 	WMI_FORCE_FW_HANG_ASSERT = 1,
+ 	WMI_FORCE_FW_HANG_NO_DETECT,
 -- 
 1.8.5.3
 
