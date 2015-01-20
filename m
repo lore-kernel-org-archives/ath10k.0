@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDW2A-0006vF-W2
- for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:27:43 +0000
-Received: by mail-wi0-f177.google.com with SMTP id r20so14303789wiv.4
- for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:27:19 -0800 (PST)
+ id 1YDWHi-00028h-Ao
+ for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:43:47 +0000
+Received: by mail-we0-f182.google.com with SMTP id l61so11012687wev.13
+ for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:43:23 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: disable irqs after fw crash
-Date: Tue, 20 Jan 2015 11:26:43 +0100
-Message-Id: <1421749603-11424-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: remove sw encryption for pmf
+Date: Tue, 20 Jan 2015 11:42:42 +0100
+Message-Id: <1421750563-15945-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +23,35 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It makes little sense to keep handling irqs if fw
-is dead.
+From: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 
-This prevents multiple fw register dumps upon
-crash on some devices (seen on QCA6174).
+Software encryption was never necessary.
+Tested with fw 636 and fw 10.x.
 
+Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 3b40a86..fba6618 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2047,6 +2047,7 @@ static void ath10k_msi_err_tasklet(unsigned long data)
- 		return;
- 	}
- 
-+	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_fw_crashed_clear(ar);
- 	ath10k_pci_fw_crashed_dump(ar);
- }
-@@ -2116,6 +2117,7 @@ static void ath10k_pci_tasklet(unsigned long data)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 
- 	if (ath10k_pci_has_fw_crashed(ar)) {
-+		ath10k_pci_irq_disable(ar);
- 		ath10k_pci_fw_crashed_clear(ar);
- 		ath10k_pci_fw_crashed_dump(ar);
- 		return;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9524bc5..78834c3 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -58,10 +58,7 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
+ 	switch (key->cipher) {
+ 	case WLAN_CIPHER_SUITE_CCMP:
+ 		arg.key_cipher = WMI_CIPHER_AES_CCM;
+-		if (arvif->vdev_type == WMI_VDEV_TYPE_AP)
+-			key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
+-		else
+-			key->flags |= IEEE80211_KEY_FLAG_SW_MGMT_TX;
++		key->flags |= IEEE80211_KEY_FLAG_GENERATE_IV_MGMT;
+ 		break;
+ 	case WLAN_CIPHER_SUITE_TKIP:
+ 		arg.key_cipher = WMI_CIPHER_TKIP;
 -- 
 1.8.5.3
 
