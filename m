@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YDVzd-0004wI-NG
- for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:25:07 +0000
-Received: by mail-we0-f171.google.com with SMTP id u56so36161098wes.2
- for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:24:43 -0800 (PST)
+ id 1YDW0V-0006Hk-AY
+ for ath10k@lists.infradead.org; Tue, 20 Jan 2015 10:26:00 +0000
+Received: by mail-wg0-f47.google.com with SMTP id n12so6261255wgh.6
+ for <ath10k@lists.infradead.org>; Tue, 20 Jan 2015 02:25:37 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: implement sta keepalive command
-Date: Tue, 20 Jan 2015 11:23:59 +0100
-Message-Id: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: disable uapsd autotrigger
+Date: Tue, 20 Jan 2015 11:24:57 +0100
+Message-Id: <1421749497-10553-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1421749497-10553-1-git-send-email-michal.kazior@tieto.com>
+References: <1421749497-10553-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,160 +27,86 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-
-New wmi-tlv firmware for qca6174 has STA keepalive
-service available. The service can provide
-automatic idle connection polling via NullFunc
-frames to AP when acting as a client.
+Only userspace can make an educated decision when
+a trigger frame is required so make sure the
+autotrigger service is disabled.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 20 ++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 45 +++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  7 +++++
- drivers/net/wireless/ath/ath10k/wmi.h     | 10 +++++++
- 4 files changed, 82 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 0dd49a7..d430f92 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -137,6 +137,8 @@ struct wmi_ops {
- 					struct sk_buff *bcn);
- 	struct sk_buff *(*gen_p2p_go_bcn_ie)(struct ath10k *ar, u32 vdev_id,
- 					     const u8 *p2p_ie);
-+	struct sk_buff *(*gen_sta_keepalive)(struct ath10k *ar,
-+					     const struct wmi_sta_keepalive_arg *arg);
- };
- 
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -992,4 +994,22 @@ ath10k_wmi_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id, const u8 *p2p_ie)
- 	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->p2p_go_set_beacon_ie);
- }
- 
-+static inline int
-+ath10k_wmi_sta_keepalive(struct ath10k *ar,
-+			 const struct wmi_sta_keepalive_arg *arg)
-+{
-+	struct sk_buff *skb;
-+	u32 cmd_id;
-+
-+	if (!ar->wmi.ops->gen_sta_keepalive)
-+		return -EOPNOTSUPP;
-+
-+	skb = ar->wmi.ops->gen_sta_keepalive(ar, arg);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	cmd_id = ar->wmi.cmd->sta_keepalive_cmd;
-+	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
-+}
-+
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 6f34fc7..3f1a022 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1407,6 +1407,50 @@ ath10k_wmi_tlv_op_gen_vdev_install_key(struct ath10k *ar,
- }
- 
- static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
-+				    const struct wmi_sta_keepalive_arg *arg)
-+{
-+	struct wmi_tlv_sta_keepalive_cmd *cmd;
-+	struct wmi_sta_keepalive_arp_resp *arp;
-+	struct sk_buff *skb;
-+	struct wmi_tlv *tlv;
-+	void *ptr;
-+	size_t len;
-+
-+	len = sizeof(*tlv) + sizeof(*cmd) +
-+	      sizeof(*tlv) + sizeof(*arp);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_STA_KEEPALIVE_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->vdev_id = __cpu_to_le32(arg->vdev_id);
-+	cmd->enabled = __cpu_to_le32(arg->enabled);
-+	cmd->method = __cpu_to_le32(arg->method);
-+	cmd->interval = __cpu_to_le32(arg->interval);
-+
-+	ptr += sizeof(*tlv);
-+	ptr += sizeof(*cmd);
-+
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_STA_KEEPALVE_ARP_RESPONSE);
-+	tlv->len = __cpu_to_le16(sizeof(*arp));
-+	arp = (void *)tlv->value;
-+
-+	arp->src_ip4_addr = arg->src_ip4_addr;
-+	arp->dest_ip4_addr = arg->dest_ip4_addr;
-+	ether_addr_copy(arp->dest_mac_addr.addr, arg->dest_mac_addr);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv sta keepalive vdev %d enabled %d method %d inverval %d\n",
-+		   arg->vdev_id, arg->enabled, arg->method, arg->interval);
-+	return skb;
-+}
-+
-+static struct sk_buff *
- ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
- 				  const u8 peer_addr[ETH_ALEN])
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9524bc5..08e61cb 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3987,6 +3987,8 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
+ 				u16 ac, bool enable)
  {
-@@ -2417,6 +2461,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_bcn_tmpl = ath10k_wmi_tlv_op_gen_bcn_tmpl,
- 	.gen_prb_tmpl = ath10k_wmi_tlv_op_gen_prb_tmpl,
- 	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
-+	.gen_sta_keepalive = ath10k_wmi_tlv_op_gen_sta_keepalive,
- };
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	struct wmi_sta_uapsd_auto_trig_arg arg = {};
++	u32 prio = 0, acc = 0;
+ 	u32 value = 0;
+ 	int ret = 0;
  
- /************/
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index eb02290..ac9fb85 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1409,6 +1409,13 @@ struct wmi_tlv_p2p_go_bcn_ie {
- 	__le32 ie_len;
- } __packed;
+@@ -3999,18 +4001,26 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
+ 	case IEEE80211_AC_VO:
+ 		value = WMI_STA_PS_UAPSD_AC3_DELIVERY_EN |
+ 			WMI_STA_PS_UAPSD_AC3_TRIGGER_EN;
++		prio = 7;
++		acc = 3;
+ 		break;
+ 	case IEEE80211_AC_VI:
+ 		value = WMI_STA_PS_UAPSD_AC2_DELIVERY_EN |
+ 			WMI_STA_PS_UAPSD_AC2_TRIGGER_EN;
++		prio = 5;
++		acc = 2;
+ 		break;
+ 	case IEEE80211_AC_BE:
+ 		value = WMI_STA_PS_UAPSD_AC1_DELIVERY_EN |
+ 			WMI_STA_PS_UAPSD_AC1_TRIGGER_EN;
++		prio = 2;
++		acc = 1;
+ 		break;
+ 	case IEEE80211_AC_BK:
+ 		value = WMI_STA_PS_UAPSD_AC0_DELIVERY_EN |
+ 			WMI_STA_PS_UAPSD_AC0_TRIGGER_EN;
++		prio = 0;
++		acc = 0;
+ 		break;
+ 	}
  
-+struct wmi_tlv_sta_keepalive_cmd {
-+	__le32 vdev_id;
-+	__le32 enabled;
-+	__le32 method; /* WMI_STA_KEEPALIVE_METHOD_ */
-+	__le32 interval; /* in seconds */
-+} __packed;
+@@ -4052,6 +4062,29 @@ static int ath10k_conf_tx_uapsd(struct ath10k *ar, struct ieee80211_vif *vif,
+ 		return ret;
+ 	}
+ 
++	if (test_bit(WMI_SERVICE_STA_UAPSD_BASIC_AUTO_TRIG, ar->wmi.svc_map) ||
++	    test_bit(WMI_SERVICE_STA_UAPSD_VAR_AUTO_TRIG, ar->wmi.svc_map)) {
++		/* Only userspace can make an educated decision when to send
++		 * trigger frame. The following effectively disables u-UAPSD
++		 * autotrigger in firmware (which is enabled by default
++		 * provided the autotrigger service is available).
++		 */
 +
- void ath10k_wmi_tlv_attach(struct ath10k *ar);
- 
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index bd7f29a..99f091d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4596,6 +4596,16 @@ struct wmi_sta_keepalive_cmd {
- 	struct wmi_sta_keepalive_arp_resp arp_resp;
- } __packed;
- 
-+struct wmi_sta_keepalive_arg {
-+	u32 vdev_id;
-+	u32 enabled;
-+	u32 method;
-+	u32 interval;
-+	__be32 src_ip4_addr;
-+	__be32 dest_ip4_addr;
-+	const u8 dest_mac_addr[ETH_ALEN];
-+};
++		arg.wmm_ac = acc;
++		arg.user_priority = prio;
++		arg.service_interval = 0;
++		arg.suspend_interval = WMI_STA_UAPSD_MAX_INTERVAL_MSEC;
++		arg.delay_interval = WMI_STA_UAPSD_MAX_INTERVAL_MSEC;
 +
- enum wmi_force_fw_hang_type {
- 	WMI_FORCE_FW_HANG_ASSERT = 1,
- 	WMI_FORCE_FW_HANG_NO_DETECT,
++		ret = ath10k_wmi_vdev_sta_uapsd(ar, arvif->vdev_id,
++						arvif->bssid, &arg, 1);
++		if (ret) {
++			ath10k_warn(ar, "failed to set uapsd auto trigger %d\n",
++				    ret);
++			return ret;
++		}
++	}
++
+ exit:
+ 	return ret;
+ }
 -- 
 1.8.5.3
 
