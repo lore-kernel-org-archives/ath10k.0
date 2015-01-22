@@ -1,21 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YE1FP-0003Lb-FY
- for ath10k@lists.infradead.org; Wed, 21 Jan 2015 19:47:27 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 4D90940D7B5
- for <ath10k@lists.infradead.org>; Wed, 21 Jan 2015 11:47:06 -0800 (PST)
-Message-ID: <54C00239.7000008@candelatech.com>
-Date: Wed, 21 Jan 2015 11:47:05 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x235.google.com ([2a00:1450:400c:c00::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YEAzy-0007BJ-Bb
+ for ath10k@lists.infradead.org; Thu, 22 Jan 2015 06:12:11 +0000
+Received: by mail-wg0-f53.google.com with SMTP id a1so6472006wgh.12
+ for <ath10k@lists.infradead.org>; Wed, 21 Jan 2015 22:11:44 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: More than one ath10k NIC in 3.19.0-rc5?
-References: <54BECE4D.9020308@candelatech.com> <54BF0B42.7050101@dd-wrt.com>
- <54BF13AE.5010909@candelatech.com> <54BFF788.2000500@candelatech.com>
-In-Reply-To: <54BFF788.2000500@candelatech.com>
+In-Reply-To: <54BFC8EA.2000804@candelatech.com>
+References: <54AEF595.9030205@candelatech.com>
+ <CA+BoTQk86cnC1eRwqAbbnkMe7rDTvctH8o-JPvM3yT56nEes6g@mail.gmail.com>
+ <54B00807.9060909@candelatech.com>
+ <CA+BoTQ=Q-J0x1AbNNVAuwgTq1Ar8D=pki2=pWW=9upWp06h2rQ@mail.gmail.com>
+ <54B56D00.4010401@candelatech.com>
+ <CA+BoTQ=7BDPUs+B4-wBp5RRhKpvjHcTtbo=CFqj6e62rA+HnGA@mail.gmail.com>
+ <54B6AE1E.3020900@candelatech.com>
+ <CA+BoTQniiBEYnQYSp4H7yFQPT8sxG4kb3kiHsUB7SniyU_zorA@mail.gmail.com>
+ <54BDDAD9.4010405@candelatech.com>
+ <CA+BoTQkpDTxmwP9CFCzUmsSU0so2uaZswwOyM13a_6O88vrj9A@mail.gmail.com>
+ <54BFC8EA.2000804@candelatech.com>
+Date: Thu, 22 Jan 2015 07:11:44 +0100
+Message-ID: <CA+BoTQnKg5MvnK7uHMkGz_5fVvnC88osph+mZ_eTD7xm01jRrw@mail.gmail.com>
+Subject: Re: Anyone seeing tx-credits 'hang'?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +30,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On 01/21/2015 11:01 AM, Ben Greear wrote:
-> On 01/20/2015 06:49 PM, Ben Greear wrote:
->> On 01/20/2015 06:13 PM, Sebastian Gottschall wrote:
->>> Am 20.01.2015 um 22:53 schrieb Ben Greear:
->>>> I tried running a patched version of 3.19.0-rc5 kernel, and it seems to work
->>>> fine when there is one ath10k NIC in the system, but when there is two it
->>>> doesn't try to load the firmware.
->>>>
->>>> Hacked 3.17.8+ works fine.
->>>>
->>>> Anyone tried more than one ath10k NIC in 3.19 kernel?
->>>>
->>>> Thanks,
->>>> Ben
->>> standard x86 system? i just can say that with 3.18 i have big troubles with the new pci bus code introduced on several embedded devices.
->>> so maybe the reason is here?
->>
->> Standard 64-bit x86.
-> 
-> Looks like 3.19.0-rc2 is OK, -rc5 is busted.  I'll bisect...
-
-Err, no.  rc2 is busted too...sometimes first NIC loads, sometimes
-second, but not both at once....doing bigger bisect...
-
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjEgSmFudWFyeSAyMDE1IGF0IDE2OjQyLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDEvMjAvMjAxNSAxMToyMiBQTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPj4gT24gMjAgSmFudWFyeSAyMDE1IGF0IDA1OjM0LCBCZW4gR3JlZWFyIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6ClsuLi5dCj4+IE91dCBvZiBjdXJpb3NpdHkgLSB3aGF0
+IGlycSBtb2RlIGFyZSB5b3UgdXNpbmc/IFNoYXJlZCBvciBNU0k/IE9yIGRpZAo+PiB5b3UgdHJ5
+IGJvdGg/Cj4KPgo+IFByb2JhYmx5IE1TSSwgYnV0IEkgZG9uJ3QgYWN0dWFsbHkga25vdy4gIElz
+IHRoZXJlIGFuIGVhc3kgd2F5IHRvIHRlbGw/CgpXaGVuIGF0aDEwayBsb2FkcyBpdCBwcmludHMg
+aW4gdGhlIGtlcm5lbCBsb2cgZWl0aGVyOgoKIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBwY2kg
+aXJxIGxlZ2FjeSBpbnRlcnJ1cHRzIDAgaXJxX21vZGUgMCByZXNldF9tb2RlIDAKIChzaGFyZWQp
+Cm9yCiBhdGgxMGtfcGNpIDAwMDA6MDA6MDUuMDogcGNpIGlycSBtc2kgaW50ZXJydXB0cyAxIGly
+cV9tb2RlIDAgcmVzZXRfbW9kZSAwCiAoTVNJKQoKWW91IGNhbiBmb3JjZSBzaGFyZWQgaW50ZXJy
+dXB0cyBpZiB5b3UgbG9hZCBhdGgxMGtfcGNpIHdpdGggaXJxX21vZGU9MS4KCgo+Pj4gVGhlIGNv
+bWJpbmF0aW9uIG9mIFdNSSBrZWVwLWFsaXZlIG1lc3NhZ2VzIHNlbnQgZnJvbSBob3N0LCBhbmQK
+Pj4+IHRpbWVyIHRvIGNoZWNrIGZvciB0aW1lb3V0cyAoYW5kIGRvIENFIHBvbGxpbmcgYXQgaGln
+aGVyIGludGVydmFscwo+Pj4gd2hlbiB0aW1lb3V0IGlzIGRldGVjdGVkKSBhcHBlYXJzIHRvIGJl
+IGVub3VnaC4gIEkgYWxzbyBjaGVjawo+Pj4gZm9yIHRoZSBJUlEgd29ya2luZyBhZ2FpbiBhbmQg
+c3RvcCB0aGUgcG9sbGluZyBhdCB0aGF0IHRpbWUuCj4+Pgo+Pj4gSSBwbGFuIHRvIGNsZWFuIHRo
+ZSBmaXJtd2FyZSBjaGFuZ2VzIHVwIGFuZCBjb21taXQgdGhlbSB0byBteQo+Pj4gb3duIHJlcG8u
+Li5idXQgaXQgd2lsbCByZXF1aXJlIGhvc3QgY2hhbmdlcyB0byBlbmFibGUgdGhlIGtlZXAtYWxp
+dmUKPj4+IHRvIGZ1bGx5IHdvcmsgYXJvdW5kIHRoaXMgcHJvYmxlbS4gIFByb2JhYmx5IG5vbmUg
+b2YgdGhpcyB3aWxsIG1ha2UKPj4+IGl0IHVwc3RyZWFtLi4uLgo+Pgo+Pgo+PiBXZSBjb3VsZCBh
+ZGQgYSB3YXRjaGRvZyB0byBXTUkgd2hpY2ggdXNlcyB0aGUgYGVjaG9gIGNvbW1hbmQgYW5kIGxv
+b2sKPj4gYXQgZWNobyBldmVudHMgYW5kIHR4IGNyZWRpdCBjb21wbGV0aW9uIChXTUkgaXMgbm90
+aWZpZWQgYWJvdXQgdGhhdCkuCj4+IEluIGNhc2UgbmVpdGhlciBjb21lcyBpbiBpbiBhIHRpbWVs
+eSBmYXNoaW9uIChsZXRzIHNheSAxcyB3aGljaCBpcwo+PiBsZXNzIHRoYW4gV01JIGNvbW1hbmQg
+dGltZW91dCBvZiAzcykgd2Ugc3RhcnQgcG9sbGluZyB1bnRpbCB0aGluZ3MKPj4gc2V0dGxlIGRv
+d24uIFRoaXMgc2hvdWxkIHdvcmsgd2l0aCBzdGFuZGFyZCBmaXJtd2FyZSwgbm8/Cj4KPgo+IFNp
+bmNlIGl0IGlzIGZpcm13YXJlIHRoYXQgaGFzIHRvIGRvIHRoZSBDRSBwb2xsaW5nLCB0aGVuIEkg
+ZG9uJ3Qgc2VlIGFueQo+IHdheSB0byByZXNvbHZlIHRoaXMgdy9vdXQgaGFja2luZyBmaXJtd2Fy
+ZS4uYW5kIHlvdSBuZWVkIGEgbmV3IG1lc3NhZ2UgdG8KPiBzZW5kIHRvIGZpcm13YXJlIGZyb20g
+aG9zdCB0aGF0IGZpcm13YXJlIGNhbiBiZSBzdXJlIGlzIHBlcmlvZGljIHRvIHVzZQo+IGFzIGl0
+J3MgV01JIGtlZXAtYWxpdmUgdGltZXIuICBUaGF0IGlzIHdoeSBJIG1hZGUgYSBuZXcgbWVzc2Fn
+ZSB0eXBlCj4gZm9yIHRoaXMgKG90aGVyd2lzZSwgY2Fubm90IHJlYWxseSBiZSBiYWNrd2FyZHMg
+Y29tcGF0IHdpdGggb2xkIGtlcm5lbHMgdGhhdAo+IGRvIG5vdCBzZW5kIHJlZ3VsYXIga2VlcC1h
+bGl2ZXMsIGJ1dCAqbWF5KiBzZW5kIGFueSBvdGhlciB2YWxpZCBtZXNzYWdlIHR5cGUKPiBmb3IK
+PiB3aGF0ZXZlciByZWFzb24gd2hlbmV2ZXIgdGhleSB3YW50LikKCk9oLiBJIHRvdGFsbHkgbWlz
+dW5kZXJzdG9vZCB5b3UgYmVmb3JlLiBUaGFua3MgZm9yIGNsYXJ5ZmluZy4KCgpNaWNoYcWCCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
