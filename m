@@ -1,13 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YERxv-0006aP-AE
- for ath10k@lists.infradead.org; Fri, 23 Jan 2015 00:19:11 +0000
-From: Yanbo Li <yanbol@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Enable the MCS8 and MCS9 at 2.4G band
-Date: Fri, 23 Jan 2015 08:18:20 +0800
-Message-ID: <1421972300-23520-1-git-send-email-yanbol@qca.qualcomm.com>
+ id 1YEXyM-0001yu-TC
+ for ath10k@lists.infradead.org; Fri, 23 Jan 2015 06:44:11 +0000
+Received: by mail-wi0-f179.google.com with SMTP id l15so628002wiw.0
+ for <ath10k@lists.infradead.org>; Thu, 22 Jan 2015 22:43:32 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <54C166B8.7060405@candelatech.com>
+References: <54BECE4D.9020308@candelatech.com> <54BF0B42.7050101@dd-wrt.com>
+ <54BF13AE.5010909@candelatech.com>
+ <54BFF788.2000500@candelatech.com>
+ <54C00239.7000008@candelatech.com>
+ <54C166B8.7060405@candelatech.com>
+Date: Fri, 23 Jan 2015 07:43:32 +0100
+Message-ID: <CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>
+Subject: Re: More than one ath10k NIC will not load (bisected)
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,82 +24,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Yanbo Li <yanbol@qti.qualcomm.com>
-
-Enable the MCS8 and MCS9 support for 2.4G band, it will
-use these data rate with other devices having the same
-capability.
-
-Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |   14 ++++++++++++--
- drivers/net/wireless/ath/ath10k/wmi.h |    2 +-
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9524bc5..0b11c9c 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1557,6 +1557,10 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
- 		return;
- 
- 	arg->peer_flags |= WMI_PEER_VHT;
-+
-+	if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
-+		arg->peer_flags |= WMI_PEER_VHT_2G;
-+
- 	arg->peer_vht_caps = vht_cap->cap;
- 
- 	ampdu_factor = (vht_cap->cap &
-@@ -1635,7 +1639,12 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
- 
- 	switch (ar->hw->conf.chandef.chan->band) {
- 	case IEEE80211_BAND_2GHZ:
--		if (sta->ht_cap.ht_supported) {
-+		if (sta->vht_cap.vht_supported) {
-+			if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
-+				phymode = MODE_11AC_VHT40;
-+			else
-+				phymode = MODE_11AC_VHT20;
-+		} else if (sta->ht_cap.ht_supported) {
- 			if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
- 				phymode = MODE_11NG_HT40;
- 			else
-@@ -5215,7 +5224,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 		band->bitrates = ath10k_g_rates;
- 		band->ht_cap = ht_cap;
- 
--		/* vht is not supported in 2.4 GHz */
-+		/* Enable the VHT support at 2.4 GHz */
-+		band->vht_cap = vht_cap;
- 
- 		ar->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = band;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index bd7f29a..6de92e8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4430,7 +4430,7 @@ struct wmi_peer_set_q_empty_callback_cmd {
- #define WMI_PEER_SPATIAL_MUX    0x00200000
- #define WMI_PEER_VHT            0x02000000
- #define WMI_PEER_80MHZ          0x04000000
--#define WMI_PEER_PMF            0x08000000
-+#define WMI_PEER_VHT_2G         0x08000000
- 
- /*
-  * Peer rate capabilities.
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjIgSmFudWFyeSAyMDE1IGF0IDIyOjA4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4KPiBPbiAwMS8yMS8yMDE1IDExOjQ3IEFNLCBCZW4gR3JlZWFyIHdy
+b3RlOgo+PiBPbiAwMS8yMS8yMDE1IDExOjAxIEFNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4gT24g
+MDEvMjAvMjAxNSAwNjo0OSBQTSwgQmVuIEdyZWVhciB3cm90ZToKPj4+PiBPbiAwMS8yMC8yMDE1
+IDA2OjEzIFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+Pj4gQW0gMjAuMDEuMjAx
+NSB1bSAyMjo1MyBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+Pj4+PiBJIHRyaWVkIHJ1bm5pbmcgYSBw
+YXRjaGVkIHZlcnNpb24gb2YgMy4xOS4wLXJjNSBrZXJuZWwsIGFuZCBpdCBzZWVtcyB0byB3b3Jr
+Cj4+Pj4+PiBmaW5lIHdoZW4gdGhlcmUgaXMgb25lIGF0aDEwayBOSUMgaW4gdGhlIHN5c3RlbSwg
+YnV0IHdoZW4gdGhlcmUgaXMgdHdvIGl0Cj4+Pj4+PiBkb2Vzbid0IHRyeSB0byBsb2FkIHRoZSBm
+aXJtd2FyZS4KPgo+IE9rLCB0aGlzIGJpc2VjdHMgdG8gdGhpcyBjb21taXQuICBGaXJzdCAob3Ig
+c29tZXRpbWVzIHNlY29uZCkgTklDIHdpbGwgbG9hZCwKPiBidXQgdGhlIG90aGVyIG9uZSB3aWxs
+IG5vdCBsb2FkIGZpcm13YXJlLiAgTm8gb2J2aW91cyBlcnJvcnMgaW4gZG1lc2cuCgpTbyBJJ20g
+Y29uZnVzZWQuIElmIGl0IGRvZXNuJ3QgbG9hZCBmaXJtd2FyZSB0aGVuIHRoZXJlIGhhcyB0byBi
+ZSBzb21lCmVycm9yIGluIGRtZXNnLiBJZiB0aGVyZSBhcmUgbm8gZXJyb3JzIHRoZW4gaG93IGNv
+bWUgeW91IGtub3cgaXQKZG9lc24ndCBsb2FkIGZpcm13YXJlPyBJcyBpdCBiZWluZyBwcm9iZWQg
+YXQgYWxsPwoKCj4gUGxhdGZvcm0gaXMgeDg2LTY0LCBGZWRvcmEgMjAuICBOSUNTOgo+Cj4gMDM6
+MDAuMCBOZXR3b3JrIGNvbnRyb2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBOTg4eCA4MDIuMTFh
+YyBXaXJlbGVzcyBOZXR3b3JrIEFkYXB0ZXIKPiAwNDowMC4wIE5ldHdvcmsgY29udHJvbGxlcjog
+UXVhbGNvbW0gQXRoZXJvcyBRQ0E5ODh4IDgwMi4xMWFjIFdpcmVsZXNzIE5ldHdvcmsgQWRhcHRl
+cgo+Cj4KPiA3YzBmMGUzYzk3OTdlNWEwOGQxNWRhNjg4MTJmMjRlYWRhZjllODJiIGlzIHRoZSBm
+aXJzdCBiYWQgY29tbWl0Cj4gY29tbWl0IDdjMGYwZTNjOTc5N2U1YTA4ZDE1ZGE2ODgxMmYyNGVh
+ZGFmOWU4MmIKPiBBdXRob3I6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29t
+Pgo+IERhdGU6ICAgTW9uIE9jdCAyMCAxNDoxNDozOCAyMDE0ICswMjAwCj4KPiAgICAgYXRoMTBr
+OiBtYXNrL3VubWFzayBtc2kgZncgaXJxCj4KPiAgICAgVGhpcyB3YXMgdGhlIGZpbmFsIG1pc3Np
+bmcgYml0IHRvIG1ha2luZyBzdXJlIHRoZQo+ICAgICBkZXZpY2UgZG9lc24ndCBhc3NlcnQgaW50
+ZXJydXB0cyB0byBob3N0Lgo+Cj4gICAgIFRoaXMgc2hvdWxkIGZpeCBwb3NzaWJsZSByYWNlIHdo
+ZW4gdGFyZ2V0IGNyYXNoZXMKPiAgICAgZHVyaW5nIGRyaXZlciB0ZWFyZG93bi4KPgo+ICAgICBU
+aGlzIGFsc28gcmVtb3ZlcyBhbiBlYXJseSB3YXJtIHJlc2V0IHdvcmthcm91bmQKPiAgICAgZHVy
+aW5nIHBjaSBwcm9iaW5nLgo+Cj4gICAgIFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1p
+Y2hhbC5rYXppb3JAdGlldG8uY29tPgo+ICAgICBTaWduZWQtb2ZmLWJ5OiBLYWxsZSBWYWxvIDxr
+dmFsb0BxY2EucXVhbGNvbW0uY29tPgo+Cj4gOjA0MDAwMCAwNDAwMDAgZjdhYjVmZjlmN2UzNzEz
+MTE4ZGFiNmYyM2QwMmYxMTAwM2RlNmZlZiBmYTVjYjVlZTc2YmRlZTJjNjU0ZmNiOGU2YjhiMTI4
+M2MyMjViY2MyIE0gICAgICBkcml2ZXJzCgpIbW0uLiBUaGlzIHJlbW92ZXMgd2FybV9yZXNldCBp
+biBwcm9iZSBmdW5jdGlvbiBidXQgSSBmYWlsIHRvIHNlZSBob3cKdGhpcyBjb3VsZCBlbmQgdXAg
+bm90IGxvYWRpbmcgb25lIG9mIHRoZSBOSUMgKnNpbGVudGx5Kj8KCkFueXdheSB0aGVyZSdzIGEg
+cGVuZGluZyBwYXRjaCB3aGljaCBhZGRzIHRoZSByZXNldCBiYWNrOgpodHRwczovL2dpdGh1Yi5j
+b20va3ZhbG8vYXRoL2NvbW1pdC9iZGNkNmY0ZTRhYzVkMmQyYTU2ZGE0ODEzZjU2NjU1ZTZkYjBl
+ZTQ1Ci4gWW91IG1pZ2h0IHdhbnQgdG8gdHJ5IGl0IGFuZCBzZWUgaWYgaXQgaGVscHMuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
