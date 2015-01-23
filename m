@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YEOzR-00065i-Oh
- for ath10k@lists.infradead.org; Thu, 22 Jan 2015 21:08:34 +0000
-Message-ID: <54C166B8.7060405@candelatech.com>
-Date: Thu, 22 Jan 2015 13:08:08 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YERxv-0006aP-AE
+ for ath10k@lists.infradead.org; Fri, 23 Jan 2015 00:19:11 +0000
+From: Yanbo Li <yanbol@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Enable the MCS8 and MCS9 at 2.4G band
+Date: Fri, 23 Jan 2015 08:18:20 +0800
+Message-ID: <1421972300-23520-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: More than one ath10k NIC will not load (bisected)
-References: <54BECE4D.9020308@candelatech.com> <54BF0B42.7050101@dd-wrt.com>
- <54BF13AE.5010909@candelatech.com> <54BFF788.2000500@candelatech.com>
- <54C00239.7000008@candelatech.com>
-In-Reply-To: <54C00239.7000008@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +20,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>
+To: kvalo@qca.qualcomm.com
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+From: Yanbo Li <yanbol@qti.qualcomm.com>
 
-On 01/21/2015 11:47 AM, Ben Greear wrote:
-> On 01/21/2015 11:01 AM, Ben Greear wrote:
->> On 01/20/2015 06:49 PM, Ben Greear wrote:
->>> On 01/20/2015 06:13 PM, Sebastian Gottschall wrote:
->>>> Am 20.01.2015 um 22:53 schrieb Ben Greear:
->>>>> I tried running a patched version of 3.19.0-rc5 kernel, and it seems to work
->>>>> fine when there is one ath10k NIC in the system, but when there is two it
->>>>> doesn't try to load the firmware.
+Enable the MCS8 and MCS9 support for 2.4G band, it will
+use these data rate with other devices having the same
+capability.
 
-Ok, this bisects to this commit.  First (or sometimes second) NIC will load,
-but the other one will not load firmware.  No obvious errors in dmesg.
+Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c |   14 ++++++++++++--
+ drivers/net/wireless/ath/ath10k/wmi.h |    2 +-
+ 2 files changed, 13 insertions(+), 3 deletions(-)
 
-Platform is x86-64, Fedora 20.  NICS:
-
-03:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless Network Adapter
-04:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless Network Adapter
-
-
-7c0f0e3c9797e5a08d15da68812f24eadaf9e82b is the first bad commit
-commit 7c0f0e3c9797e5a08d15da68812f24eadaf9e82b
-Author: Michal Kazior <michal.kazior@tieto.com>
-Date:   Mon Oct 20 14:14:38 2014 +0200
-
-    ath10k: mask/unmask msi fw irq
-
-    This was the final missing bit to making sure the
-    device doesn't assert interrupts to host.
-
-    This should fix possible race when target crashes
-    during driver teardown.
-
-    This also removes an early warm reset workaround
-    during pci probing.
-
-    Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-:040000 040000 f7ab5ff9f7e3713118dab6f23d02f11003de6fef fa5cb5ee76bdee2c654fcb8e6b8b1283c225bcc2 M	drivers
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9524bc5..0b11c9c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1557,6 +1557,10 @@ static void ath10k_peer_assoc_h_vht(struct ath10k *ar,
+ 		return;
+ 
+ 	arg->peer_flags |= WMI_PEER_VHT;
++
++	if (ar->hw->conf.chandef.chan->band == IEEE80211_BAND_2GHZ)
++		arg->peer_flags |= WMI_PEER_VHT_2G;
++
+ 	arg->peer_vht_caps = vht_cap->cap;
+ 
+ 	ampdu_factor = (vht_cap->cap &
+@@ -1635,7 +1639,12 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
+ 
+ 	switch (ar->hw->conf.chandef.chan->band) {
+ 	case IEEE80211_BAND_2GHZ:
+-		if (sta->ht_cap.ht_supported) {
++		if (sta->vht_cap.vht_supported) {
++			if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
++				phymode = MODE_11AC_VHT40;
++			else
++				phymode = MODE_11AC_VHT20;
++		} else if (sta->ht_cap.ht_supported) {
+ 			if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
+ 				phymode = MODE_11NG_HT40;
+ 			else
+@@ -5215,7 +5224,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		band->bitrates = ath10k_g_rates;
+ 		band->ht_cap = ht_cap;
+ 
+-		/* vht is not supported in 2.4 GHz */
++		/* Enable the VHT support at 2.4 GHz */
++		band->vht_cap = vht_cap;
+ 
+ 		ar->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = band;
+ 	}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index bd7f29a..6de92e8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4430,7 +4430,7 @@ struct wmi_peer_set_q_empty_callback_cmd {
+ #define WMI_PEER_SPATIAL_MUX    0x00200000
+ #define WMI_PEER_VHT            0x02000000
+ #define WMI_PEER_80MHZ          0x04000000
+-#define WMI_PEER_PMF            0x08000000
++#define WMI_PEER_VHT_2G         0x08000000
+ 
+ /*
+  * Peer rate capabilities.
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.7.9.5
 
 
 _______________________________________________
