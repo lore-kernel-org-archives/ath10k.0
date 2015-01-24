@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YEgZO-0006Jp-0z
- for ath10k@lists.infradead.org; Fri, 23 Jan 2015 15:54:50 +0000
-Message-ID: <54C26EB3.7050805@candelatech.com>
-Date: Fri, 23 Jan 2015 07:54:27 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YF3We-00073M-I5
+ for ath10k@lists.infradead.org; Sat, 24 Jan 2015 16:25:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: fix beacon deadlock
+References: <1421412811-6387-1-git-send-email-michal.kazior@tieto.com>
+ <1421412811-6387-2-git-send-email-michal.kazior@tieto.com>
+Date: Sat, 24 Jan 2015 18:24:56 +0200
+In-Reply-To: <1421412811-6387-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 16 Jan 2015 13:53:31 +0100")
+Message-ID: <87y4osgn8n.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: More than one ath10k NIC will not load (bisected)
-References: <54BECE4D.9020308@candelatech.com>	<54BF0B42.7050101@dd-wrt.com>	<54BF13AE.5010909@candelatech.com>	<54BFF788.2000500@candelatech.com>	<54C00239.7000008@candelatech.com>	<54C166B8.7060405@candelatech.com>
- <CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>
-In-Reply-To: <CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +20,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-CgpPbiAwMS8yMi8yMDE1IDEwOjQzIFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDIyIEph
-bnVhcnkgMjAxNSBhdCAyMjowOCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+
-IHdyb3RlOgo+Pgo+PiBPbiAwMS8yMS8yMDE1IDExOjQ3IEFNLCBCZW4gR3JlZWFyIHdyb3RlOgo+
-Pj4gT24gMDEvMjEvMjAxNSAxMTowMSBBTSwgQmVuIEdyZWVhciB3cm90ZToKPj4+PiBPbiAwMS8y
-MC8yMDE1IDA2OjQ5IFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4+PiBPbiAwMS8yMC8yMDE1IDA2
-OjEzIFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+Pj4+IEFtIDIwLjAxLjIwMTUg
-dW0gMjI6NTMgc2NocmllYiBCZW4gR3JlZWFyOgo+Pj4+Pj4+IEkgdHJpZWQgcnVubmluZyBhIHBh
-dGNoZWQgdmVyc2lvbiBvZiAzLjE5LjAtcmM1IGtlcm5lbCwgYW5kIGl0IHNlZW1zIHRvIHdvcmsK
-Pj4+Pj4+PiBmaW5lIHdoZW4gdGhlcmUgaXMgb25lIGF0aDEwayBOSUMgaW4gdGhlIHN5c3RlbSwg
-YnV0IHdoZW4gdGhlcmUgaXMgdHdvIGl0Cj4+Pj4+Pj4gZG9lc24ndCB0cnkgdG8gbG9hZCB0aGUg
-ZmlybXdhcmUuCj4+Cj4+IE9rLCB0aGlzIGJpc2VjdHMgdG8gdGhpcyBjb21taXQuICBGaXJzdCAo
-b3Igc29tZXRpbWVzIHNlY29uZCkgTklDIHdpbGwgbG9hZCwKPj4gYnV0IHRoZSBvdGhlciBvbmUg
-d2lsbCBub3QgbG9hZCBmaXJtd2FyZS4gIE5vIG9idmlvdXMgZXJyb3JzIGluIGRtZXNnLgo+Cj4g
-U28gSSdtIGNvbmZ1c2VkLiBJZiBpdCBkb2Vzbid0IGxvYWQgZmlybXdhcmUgdGhlbiB0aGVyZSBo
-YXMgdG8gYmUgc29tZQo+IGVycm9yIGluIGRtZXNnLiBJZiB0aGVyZSBhcmUgbm8gZXJyb3JzIHRo
-ZW4gaG93IGNvbWUgeW91IGtub3cgaXQKPiBkb2Vzbid0IGxvYWQgZmlybXdhcmU/IElzIGl0IGJl
-aW5nIHByb2JlZCBhdCBhbGw/Cj4KPgo+PiBQbGF0Zm9ybSBpcyB4ODYtNjQsIEZlZG9yYSAyMC4g
-IE5JQ1M6Cj4+Cj4+IDAzOjAwLjAgTmV0d29yayBjb250cm9sbGVyOiBRdWFsY29tbSBBdGhlcm9z
-IFFDQTk4OHggODAyLjExYWMgV2lyZWxlc3MgTmV0d29yayBBZGFwdGVyCj4+IDA0OjAwLjAgTmV0
-d29yayBjb250cm9sbGVyOiBRdWFsY29tbSBBdGhlcm9zIFFDQTk4OHggODAyLjExYWMgV2lyZWxl
-c3MgTmV0d29yayBBZGFwdGVyCj4+Cj4+Cj4+IDdjMGYwZTNjOTc5N2U1YTA4ZDE1ZGE2ODgxMmYy
-NGVhZGFmOWU4MmIgaXMgdGhlIGZpcnN0IGJhZCBjb21taXQKPj4gY29tbWl0IDdjMGYwZTNjOTc5
-N2U1YTA4ZDE1ZGE2ODgxMmYyNGVhZGFmOWU4MmIKPj4gQXV0aG9yOiBNaWNoYWwgS2F6aW9yIDxt
-aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KPj4gRGF0ZTogICBNb24gT2N0IDIwIDE0OjE0OjM4IDIw
-MTQgKzAyMDAKPj4KPj4gICAgICBhdGgxMGs6IG1hc2svdW5tYXNrIG1zaSBmdyBpcnEKPj4KPj4g
-ICAgICBUaGlzIHdhcyB0aGUgZmluYWwgbWlzc2luZyBiaXQgdG8gbWFraW5nIHN1cmUgdGhlCj4+
-ICAgICAgZGV2aWNlIGRvZXNuJ3QgYXNzZXJ0IGludGVycnVwdHMgdG8gaG9zdC4KPj4KPj4gICAg
-ICBUaGlzIHNob3VsZCBmaXggcG9zc2libGUgcmFjZSB3aGVuIHRhcmdldCBjcmFzaGVzCj4+ICAg
-ICAgZHVyaW5nIGRyaXZlciB0ZWFyZG93bi4KPj4KPj4gICAgICBUaGlzIGFsc28gcmVtb3ZlcyBh
-biBlYXJseSB3YXJtIHJlc2V0IHdvcmthcm91bmQKPj4gICAgICBkdXJpbmcgcGNpIHByb2Jpbmcu
-Cj4+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+Cj4+ICAgICAgU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1
-YWxjb21tLmNvbT4KPj4KPj4gOjA0MDAwMCAwNDAwMDAgZjdhYjVmZjlmN2UzNzEzMTE4ZGFiNmYy
-M2QwMmYxMTAwM2RlNmZlZiBmYTVjYjVlZTc2YmRlZTJjNjU0ZmNiOGU2YjhiMTI4M2MyMjViY2My
-IE0gICAgICBkcml2ZXJzCj4KPiBIbW0uLiBUaGlzIHJlbW92ZXMgd2FybV9yZXNldCBpbiBwcm9i
-ZSBmdW5jdGlvbiBidXQgSSBmYWlsIHRvIHNlZSBob3cKPiB0aGlzIGNvdWxkIGVuZCB1cCBub3Qg
-bG9hZGluZyBvbmUgb2YgdGhlIE5JQyAqc2lsZW50bHkqPwo+Cj4gQW55d2F5IHRoZXJlJ3MgYSBw
-ZW5kaW5nIHBhdGNoIHdoaWNoIGFkZHMgdGhlIHJlc2V0IGJhY2s6Cj4gaHR0cHM6Ly9naXRodWIu
-Y29tL2t2YWxvL2F0aC9jb21taXQvYmRjZDZmNGU0YWM1ZDJkMmE1NmRhNDgxM2Y1NjY1NWU2ZGIw
-ZWU0NQo+IC4gWW91IG1pZ2h0IHdhbnQgdG8gdHJ5IGl0IGFuZCBzZWUgaWYgaXQgaGVscHMuCgpS
-ZXZlcnRpbmcgdGhlIHBhdGNoIG1hZGUgaXQgd29yayBhZ2FpbiBmb3IgbWUuCgpJIGRvbid0IHVu
-ZGVyc3RhbmQgdGhhdCBjb2RlIHdlbGwsIGJ1dCBwZXJoYXBzIHlvdSBhcmUgZGlzYWJsaW5nCmEg
-c2hhcmVkIGludGVycnVwdCB0aGF0IHNpbGVudGx5IHN0b3BzIHRoZSBzZWNvbmQgTklDIGZyb20K
-YmVpbmcgYWJsZSB0byBkbyBpdCdzIHRoaW5nPwoKRG8geW91IGhhdmUgYSBQQyB3aXRoIDIgTklD
-cyBpbiBpdCB0aGF0IHlvdSBjb3VsZCB0cnkgeW91cnNlbGY/CgpJIGNhbiBncmFiIHlvdSB0aGUg
-bG9ncyBvZiBhIGZhaWx1cmUgdG8gYm9vdCBsYXRlciB0b2RheS4KClRoYW5rcywKQmVuCgo+Cj4K
-PiBNaWNoYcWCCj4KCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2Fu
-ZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> This should fix a very rare occurrence of the following deadlock:
+>
+>   [<ffffffffa018265e>] ath10k_wmi_tx_beacons_nowait+0x1e/0x50 [ath10k_core]
+>   [<ffffffffa01829b6>] ath10k_wmi_op_ep_tx_credits+0x16/0x40 [ath10k_core]
+>   [<ffffffffa017d685>] ath10k_htc_send+0x285/0x3d0 [ath10k_core]
+>   [<ffffffffa0184b81>] ath10k_wmi_cmd_send_nowait+0x81/0x110 [ath10k_core]
+>   [<ffffffffa0184c61>] ath10k_wmi_tx_beacon_nowait.part.33+0x51/0x90 [ath10k_core]
+>   [<ffffffffa0184cd0>] ath10k_wmi_tx_beacons_iter+0x30/0x40 [ath10k_core]
+>   [<ffffffff81882246>] __iterate_active_interfaces+0xa6/0x100
+>   [<ffffffffa0184ca0>] ? ath10k_wmi_tx_beacon_nowait.part.33+0x90/0x90 [ath10k_core]
+>   [<ffffffff818822ae>] ieee80211_iterate_active_interfaces_atomic+0xe/0x10
+>   [<ffffffffa0182676>] ath10k_wmi_tx_beacons_nowait+0x36/0x50 [ath10k_core]
+>   [<ffffffffa01829b6>] ath10k_wmi_op_ep_tx_credits+0x16/0x40 [ath10k_core]
+>   [<ffffffffa017d140>] ath10k_htc_rx+0x280/0x410 [ath10k_core]
+>   [<ffffffffa01bcbf0>] ? ath10k_ce_completed_recv_next+0x60/0x80 [ath10k_pci]
+>   [<ffffffffa01bc6ab>] ath10k_pci_ce_recv_data+0x11b/0x1d0 [ath10k_pci]
+>   [<ffffffffa01bcf44>] ath10k_ce_per_engine_service+0x64/0xc0 [ath10k_pci]
+>   [<ffffffffa01bcfc2>] ath10k_ce_per_engine_service_any+0x22/0x50 [ath10k_pci]
+>   [<ffffffffa01bc4d0>] ath10k_pci_tasklet+0x30/0x90 [ath10k_pci]
+>   [<ffffffff81055a55>] tasklet_action+0xc5/0x100
+>
+> To prevent this make sure to release ar->data_lock
+> while calling to ath10k_wmi_beacon_send_ref_nowait().
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+This introduces a new warning from kbuild:
+
+tree:   git://github.com/kvalo/ath ath-next-test
+head:   59030a70b61c41268383d1406bb49fc559e0da4e
+commit: 60845cf1bc104bbec7509eb4b6c9f09a1559bfdc [104/113] ath10k: fix beacon deadlock
+
+New smatch warnings:
+drivers/net/wireless/ath/ath10k/wmi.c:969 ath10k_wmi_tx_beacon_nowait() warn: variable dereferenced before check 'bcn' (see line 967)
+
+Old smatch warnings:
+drivers/net/wireless/ath/ath10k/wmi.c:3982 ath10k_wmi_start_scan_verify() warn: this array is probably non-NULL. 'arg->ie'
+drivers/net/wireless/ath/ath10k/wmi.c:3984 ath10k_wmi_start_scan_verify() warn: this array is probably non-NULL. 'arg->channels'
+drivers/net/wireless/ath/ath10k/wmi.c:3986 ath10k_wmi_start_scan_verify() warn: this array is probably non-NULL. 'arg->ssids'
+drivers/net/wireless/ath/ath10k/wmi.c:3988 ath10k_wmi_start_scan_verify() warn: this array is probably non-NULL. 'arg->bssids'
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
