@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YFeoK-0002kb-9F
- for ath10k@lists.infradead.org; Mon, 26 Jan 2015 08:14:17 +0000
-Received: by mail-wi0-f171.google.com with SMTP id l15so8070928wiw.4
- for <ath10k@lists.infradead.org>; Mon, 26 Jan 2015 00:13:50 -0800 (PST)
+ id 1YFfgq-0003od-TY
+ for ath10k@lists.infradead.org; Mon, 26 Jan 2015 09:10:37 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: add support for qca6174
+References: <1421407237-24159-1-git-send-email-michal.kazior@tieto.com>
+ <1421407237-24159-3-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 26 Jan 2015 11:10:00 +0200
+In-Reply-To: <1421407237-24159-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 16 Jan 2015 12:20:37 +0100")
+Message-ID: <87wq49gb6f.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87y4osgn8n.fsf@kamboji.qca.qualcomm.com>
-References: <1421412811-6387-1-git-send-email-michal.kazior@tieto.com>
- <1421412811-6387-2-git-send-email-michal.kazior@tieto.com>
- <87y4osgn8n.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 26 Jan 2015 09:13:50 +0100
-Message-ID: <CA+BoTQ=L6m2nJzCRMW3QZn4CyYHZ94bK=1gk_iMk7iOGt8nEbw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ath10k: fix beacon deadlock
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,56 +20,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjQgSmFudWFyeSAyMDE1IGF0IDE3OjI0LCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
-bW0uY29tPiB3cm90ZToKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
-d3JpdGVzOgo+Cj4+IFRoaXMgc2hvdWxkIGZpeCBhIHZlcnkgcmFyZSBvY2N1cnJlbmNlIG9mIHRo
-ZSBmb2xsb3dpbmcgZGVhZGxvY2s6Cj4+Cj4+ICAgWzxmZmZmZmZmZmEwMTgyNjVlPl0gYXRoMTBr
-X3dtaV90eF9iZWFjb25zX25vd2FpdCsweDFlLzB4NTAgW2F0aDEwa19jb3JlXQo+PiAgIFs8ZmZm
-ZmZmZmZhMDE4MjliNj5dIGF0aDEwa193bWlfb3BfZXBfdHhfY3JlZGl0cysweDE2LzB4NDAgW2F0
-aDEwa19jb3JlXQo+PiAgIFs8ZmZmZmZmZmZhMDE3ZDY4NT5dIGF0aDEwa19odGNfc2VuZCsweDI4
-NS8weDNkMCBbYXRoMTBrX2NvcmVdCj4+ICAgWzxmZmZmZmZmZmEwMTg0YjgxPl0gYXRoMTBrX3dt
-aV9jbWRfc2VuZF9ub3dhaXQrMHg4MS8weDExMCBbYXRoMTBrX2NvcmVdCj4+ICAgWzxmZmZmZmZm
-ZmEwMTg0YzYxPl0gYXRoMTBrX3dtaV90eF9iZWFjb25fbm93YWl0LnBhcnQuMzMrMHg1MS8weDkw
-IFthdGgxMGtfY29yZV0KPj4gICBbPGZmZmZmZmZmYTAxODRjZDA+XSBhdGgxMGtfd21pX3R4X2Jl
-YWNvbnNfaXRlcisweDMwLzB4NDAgW2F0aDEwa19jb3JlXQo+PiAgIFs8ZmZmZmZmZmY4MTg4MjI0
-Nj5dIF9faXRlcmF0ZV9hY3RpdmVfaW50ZXJmYWNlcysweGE2LzB4MTAwCj4+ICAgWzxmZmZmZmZm
-ZmEwMTg0Y2EwPl0gPyBhdGgxMGtfd21pX3R4X2JlYWNvbl9ub3dhaXQucGFydC4zMysweDkwLzB4
-OTAgW2F0aDEwa19jb3JlXQo+PiAgIFs8ZmZmZmZmZmY4MTg4MjJhZT5dIGllZWU4MDIxMV9pdGVy
-YXRlX2FjdGl2ZV9pbnRlcmZhY2VzX2F0b21pYysweGUvMHgxMAo+PiAgIFs8ZmZmZmZmZmZhMDE4
-MjY3Nj5dIGF0aDEwa193bWlfdHhfYmVhY29uc19ub3dhaXQrMHgzNi8weDUwIFthdGgxMGtfY29y
-ZV0KPj4gICBbPGZmZmZmZmZmYTAxODI5YjY+XSBhdGgxMGtfd21pX29wX2VwX3R4X2NyZWRpdHMr
-MHgxNi8weDQwIFthdGgxMGtfY29yZV0KPj4gICBbPGZmZmZmZmZmYTAxN2QxNDA+XSBhdGgxMGtf
-aHRjX3J4KzB4MjgwLzB4NDEwIFthdGgxMGtfY29yZV0KPj4gICBbPGZmZmZmZmZmYTAxYmNiZjA+
-XSA/IGF0aDEwa19jZV9jb21wbGV0ZWRfcmVjdl9uZXh0KzB4NjAvMHg4MCBbYXRoMTBrX3BjaV0K
-Pj4gICBbPGZmZmZmZmZmYTAxYmM2YWI+XSBhdGgxMGtfcGNpX2NlX3JlY3ZfZGF0YSsweDExYi8w
-eDFkMCBbYXRoMTBrX3BjaV0KPj4gICBbPGZmZmZmZmZmYTAxYmNmNDQ+XSBhdGgxMGtfY2VfcGVy
-X2VuZ2luZV9zZXJ2aWNlKzB4NjQvMHhjMCBbYXRoMTBrX3BjaV0KPj4gICBbPGZmZmZmZmZmYTAx
-YmNmYzI+XSBhdGgxMGtfY2VfcGVyX2VuZ2luZV9zZXJ2aWNlX2FueSsweDIyLzB4NTAgW2F0aDEw
-a19wY2ldCj4+ICAgWzxmZmZmZmZmZmEwMWJjNGQwPl0gYXRoMTBrX3BjaV90YXNrbGV0KzB4MzAv
-MHg5MCBbYXRoMTBrX3BjaV0KPj4gICBbPGZmZmZmZmZmODEwNTVhNTU+XSB0YXNrbGV0X2FjdGlv
-bisweGM1LzB4MTAwCj4+Cj4+IFRvIHByZXZlbnQgdGhpcyBtYWtlIHN1cmUgdG8gcmVsZWFzZSBh
-ci0+ZGF0YV9sb2NrCj4+IHdoaWxlIGNhbGxpbmcgdG8gYXRoMTBrX3dtaV9iZWFjb25fc2VuZF9y
-ZWZfbm93YWl0KCkuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5r
-YXppb3JAdGlldG8uY29tPgo+Cj4gVGhpcyBpbnRyb2R1Y2VzIGEgbmV3IHdhcm5pbmcgZnJvbSBr
-YnVpbGQ6Cj4KPiB0cmVlOiAgIGdpdDovL2dpdGh1Yi5jb20va3ZhbG8vYXRoIGF0aC1uZXh0LXRl
-c3QKPiBoZWFkOiAgIDU5MDMwYTcwYjYxYzQxMjY4MzgzZDE0MDZiYjQ5ZmM1NTllMGRhNGUKPiBj
-b21taXQ6IDYwODQ1Y2YxYmMxMDRiYmVjNzUwOWViNGI2YzlmMDlhMTU1OWJmZGMgWzEwNC8xMTNd
-IGF0aDEwazogZml4IGJlYWNvbiBkZWFkbG9jawo+Cj4gTmV3IHNtYXRjaCB3YXJuaW5nczoKPiBk
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jOjk2OSBhdGgxMGtfd21pX3R4X2Jl
-YWNvbl9ub3dhaXQoKSB3YXJuOiB2YXJpYWJsZSBkZXJlZmVyZW5jZWQgYmVmb3JlIGNoZWNrICdi
-Y24nIChzZWUgbGluZSA5NjcpCgpGcm9tIGEgcHJhY3RpY2FsIHN0YW5kcG9pbnQgdGhlcmUgaXMg
-bm8gZGVyZWZlcmVuY2UgYmVjYXVzZSBjb250cm9sCmJ1ZmZlciBpcyBpbmxpbmVkIGluIHNrX2J1
-ZmYgYW5kIGl0IGVuZHMgdXAganVzdCBhcyBhbiBvZmZzZXQgdG8gdGhlCnNrX2J1ZmYuIEkgZ3Vl
-c3Mgc21hdGNoIGNvdWxkbid0IGZpZ3VyZSB0aGlzIG91dCBkdWUgdG8gbWFjcm9zLgoKV2hlbiBJ
-IHJ1biBzbWF0Y2ggKHRpcCkgbG9jYWxseSBpdCBkb2Vzbid0IGNvbXBsYWluIGFib3V0IHRoaXMu
-IE1heWJlCkknbSBtaXNzaW5nIHNvbWUgcGFyYW1ldGVycz8KCkknbGwgcG9zdCBhIHYyIGxhdGVy
-LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> The QCA6174 in combination with new wmi-tlv
+> firmware is capable of multi-channel, beamforming,
+> tdls and other features.
+>
+> This patch just makes it possible to boot these
+> devices and do some basic stuff. Some things may
+> not work or may be unreliable. New features will
+> be implemented later. This will be addressed
+> eventually with future patches.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+[...]
+
+> +++ b/drivers/net/wireless/ath/ath10k/hw.c
+> @@ -0,0 +1,59 @@
+> +/*
+> + * Copyright (c) 2005-2011 Atheros Communications Inc.
+> + * Copyright (c) 2011-2014 Qualcomm Atheros, Inc.
+
+I think this needs to be:
+
+Copyright (c) 2014-2015 Qualcomm Atheros, Inc.
+
+I can change that.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
