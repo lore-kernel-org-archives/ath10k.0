@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YG6yC-0006FX-3K
- for ath10k@lists.infradead.org; Tue, 27 Jan 2015 14:18:20 +0000
+ id 1YG70I-0000Fv-4m
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 14:20:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: use idr api for msdu_ids
-References: <1421413092-6649-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 27 Jan 2015 16:17:47 +0200
-In-Reply-To: <1421413092-6649-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 16 Jan 2015 13:58:12 +0100")
-Message-ID: <87twzcb94k.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix dtim period with beacon templates
+References: <1421417336-19371-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 27 Jan 2015 16:19:59 +0200
+In-Reply-To: <1421417336-19371-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 16 Jan 2015 15:08:56 +0100")
+Message-ID: <87mw54b90w.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,15 +28,12 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> HTT Tx protocol uses arbitrary host assigned ids
-> too associate with MSDUs when delivering
-> completions.
+> Firmware supporting beacon templates (i.e. wmi-tlv
+> for qca6174) doesn't implicitly take dtim period
+> from the template. Instead it requires vdev param
+> to be set accordingly.
 >
-> Instead of rolling out own id generation scheme
-> use the tools provided in kernel.
->
-> This should have little to no effect on
-> performance.
+> This fixes dtim period being stuck at 3.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
