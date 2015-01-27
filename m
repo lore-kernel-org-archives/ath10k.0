@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-ie0-x232.google.com ([2607:f8b0:4001:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YG6ZA-0004W7-Tf
- for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:52:29 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/2] ath10k: add wmi-tlv debug event handling
-References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 27 Jan 2015 15:51:53 +0200
-In-Reply-To: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 8 Jan 2015 12:18:15 +0100")
-Message-ID: <87bnlkcow6.fsf@kamboji.qca.qualcomm.com>
+ id 1YG6ch-0006EN-To
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:56:08 +0000
+Received: by mail-ie0-f178.google.com with SMTP id rp18so15161999iec.9
+ for <ath10k@lists.infradead.org>; Tue, 27 Jan 2015 05:55:47 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
+References: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
+ <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
+Date: Tue, 27 Jan 2015 14:55:47 +0100
+Message-ID: <CA+aCzhUP2YEshygMZt2ZakAxgqhQ80eUJdyOrNG=wz68kv7wAg@mail.gmail.com>
+Subject: Re: [ath10k] IBSS mode
+From: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> New wmi-tlv firmware will deliver debug messages
-> via new events.
->
-> Note: This may yield some (trivial) conflicts
-> against my beacon/presp template patchset.
->
->
-> Michal Kazior (2):
->   ath10k: implement diag data container event
->   ath10k: implement diag event
-
-Thanks, applied to ath.git.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+RGVhciBNaWNoYWwsCgpJIGhhdmUgYWxyZWFkeSB0cmllZCB0aGUgQ1QgZmlybXdhcmUuIEFzc29j
+aWF0aW9uIGJldHdlZW4gc3RhdGlvbnMKd29ya3MgYmV0dGVyLCBCdXQgdGhlIHJhdGUgY29udHJv
+bCB1cGRhdGUgaXMgc3RpbGwgYnJva2VuLgpJdCBkb2VzIG5vdCB3b3JrIGluIEhUIG1vZGUuCgoK
+U3lsdmFpbgoKMjAxNS0wMS0yNyAxNDoxOCBHTVQrMDE6MDAgTWljaGFsIEthemlvciA8bWljaGFs
+LmthemlvckB0aWV0by5jb20+Ogo+IE9uIDI3IEphbnVhcnkgMjAxNSBhdCAxNDowOCwgU3lsdmFp
+biBST0dFUiBSSUVVTklFUgo+IDxzeWx2YWluLnJvZ2VyLnJpZXVuaWVyQGdtYWlsLmNvbT4gd3Jv
+dGU6Cj4+IEkganVzdCBtYWRlIHNvbWUgdGVzdHMgd2l0aCB0aGUgYXRoMTBrIGRyaXZlciBpbiBJ
+QlNTIG1vZGUgYW5kIEkgZm91bmQKPj4gc2V2ZXJhbCBwcm9ibGVtczoKPj4KPj4gMSkgVFNGIG1h
+bmFnZW1lbnQgY2FuJ3QgYmUgZG9uZSBjb3JyZWN0bHkuIFlvdSBjYW4ndCBtYWtlIEdFVCwgU0VU
+IG9yCj4+IFJFU0VUIGFjdGlvbnMsIGJlY2F1c2Ugbm8gY29tbWFuZCBpcyBzZW50IHRvIHRoZSBm
+aXJtd2FyZS4gSG93ZXZlciB0aGUKPj4gV01JX1JUVF9UU0ZfQ01ESUQgY29tbWFuZCBleGlzdHMu
+IEkgdHJpZWQgc29tZSBjaGFuZ2VzIChzZWUgcGF0Y2gpLAo+PiBidXQgdGhleSBkaWQgbm90IHBy
+b2R1Y2UgYW55IGVmZmVjdC4KPgo+IFRoaXMgaXNuJ3QgaW1wbGVtZW50ZWQgaW4gZmlybXdhcmUg
+NjM2IGFzIGZhciBhcyBJIGtub3cuCj4KPgo+PiAyKSBSYXRlIGNvbnRyb2wgdXBkYXRlIGlzIG5v
+dCBmdW5jdGlvbmFsIGluIHRoZSBmaXJtd2FyZS4gRGF0YSByYXRlIGlzCj4+IHN0dWNrIGF0IDI1
+IE1iaXQvcyBiZXR3ZWVuIGFuIGF0aDEwayBJQlNTIHN0YXRpb24gYW5kIGFuIGF0aDlrIElCU1MK
+Pj4gc3RhdGlvbi4gSG93ZXZlciB0aGUgcmF0ZSBjb250cm9sIHVwZGF0ZSB3b3JrcyBmaW5lIGlu
+IG1hYzgwMjExIChJCj4+IGNoZWNrZWQgaXQgdGhhbmtzIHRvIElCU1MgZGVidWcgbXNnKSBhbmQg
+SUUgSFQgc2V0dGluZ3MgYXJlIGNvcnJlY3RseQo+PiB0cmFuc21pdHRlZCBvbiBib3RoIHNpZGUg
+KEkgY2hlY2tlZCBpdCB1c2luZyBhIHRoaXJkIGludGVyZmFjZSBpbgo+PiBtb25pdG9yIG1vZGUp
+LiBUaGUgYXRoMTBrX3dtaV9wZWVyX2Fzc29jIGNvbW1hbmQgZG9lcyBub3Qgc2VlbSB0byB3b3Jr
+Cj4+IGZvciByZWFzc29jIHN0YXRlIHRvIHVwZGF0ZSBkYXRhIHJhdGUuCj4KPiBKYW51c3ogaGFz
+IGRvbmUgc29tZSBwYXRjaGVzIHJlbGF0ZWQgdG8gdGhlIGh3IHJhdGUgY29udHJvbCBpc3N1ZXMK
+PiB3aXRoIElCU1MgcmVjZW50bHk6Cj4KPiAgaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aC9j
+b21taXQvNjI3ZDk4NDFlYWE2MjNlMzQ2NTdhZjdhZjBlNjI5MzgwNWUwNzg4OAo+ICBodHRwczov
+L2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC81NTg4NGMwNDVkMzFhMjljZjY5ZGI4MzMyZDEw
+NjRhMWI2MWRkMTU5Cj4KPgo+PiBDb25jbHVzaW9uOiB0aGUgZmlybXdhcmUgc2VlbXMgaW5jb21w
+bGV0ZSBmb3IgSUJTUyBtb2RlIG9wZXJhdGlvbi4gSXMKPj4gdGhlcmUgYW55IHBsYW5uZWQgZGV2
+ZWxvcG1lbnQgb24gdGhlIElCU1MgbW9kZSBpbiB0aGUgZmlybXdhcmU/Cj4+Cj4+IE5vdGU6IEkg
+ZGlkIG15IHRlc3RzIHdpdGggdGhlIGZpcm13YXJlLTIuYmluXzk5OS45OTkuMC42MzYgZmlybXdh
+cmUuCj4KPiBCZW4gaGFzIHJlY2VudGx5IGFkZGVkIElCU1Mgc3VwcG9ydCBmb3IgaGlzIDEwLjEg
+ZmlybXdhcmUgZm9yazoKPgo+ICBodHRwOi8vdGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5k
+cml2ZXJzLmF0aDEway5kZXZlbC8xMDIzL2ZvY3VzPTEwMjYKPgo+IFlvdSBtaWdodCBiZSBpbnRl
+cmVzdGVkIGluIGdpdmluZyBpdCBhIHRyeS4KPgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
