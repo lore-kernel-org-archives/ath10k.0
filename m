@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YG6Sd-0001Oj-6A
- for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:45:43 +0000
+ id 1YG6ZA-0004W7-Tf
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:52:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: First QCA6174 firmware release
-Date: Tue, 27 Jan 2015 15:45:10 +0200
-Message-ID: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/2] ath10k: add wmi-tlv debug event handling
+References: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 27 Jan 2015 15:51:53 +0200
+In-Reply-To: <1420715897-18706-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 8 Jan 2015 12:18:15 +0100")
+Message-ID: <87bnlkcow6.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,13 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-I pushed the first QCA6174 firmware release to ath10k-firmware.git:
+> New wmi-tlv firmware will deliver debug messages
+> via new events.
+>
+> Note: This may yield some (trivial) conflicts
+> against my beacon/presp template patchset.
+>
+>
+> Michal Kazior (2):
+>   ath10k: implement diag data container event
+>   ath10k: implement diag event
 
-https://github.com/kvalo/ath10k-firmware/tree/master/ath10k/QCA6174/hw3.0
+Thanks, applied to ath.git.
 
 -- 
 Kalle Valo
