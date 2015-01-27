@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YG6f1-0006jM-Ae
- for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:58:32 +0000
+ id 1YG6jZ-0000my-F0
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 14:03:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: introduce struct ath10k_skb_rxcb
-References: <1421407029-23967-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 27 Jan 2015 15:57:54 +0200
-In-Reply-To: <1421407029-23967-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 16 Jan 2015 12:17:08 +0100")
-Message-ID: <877fw8com5.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: reset chip before reading chip_id in probe
+References: <1421407237-24159-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 27 Jan 2015 16:02:19 +0200
+In-Reply-To: <1421407237-24159-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 16 Jan 2015 12:20:35 +0100")
+Message-ID: <87386wcoes.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,13 +28,15 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> It doesn't make much sense to share the
-> ath10k_skb_cb with Rx path. The Rx path doesn't
-> need to keep any mac80211's data.
+> There are some very rare cases with some hardware
+> configuration that the device doesn't init quickly
+> enough in which case reading chip_id yielded 0.
+> This caused driver to subsequently fail to setup
+> the device.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, both patches applied to ath.git.
+Thanks, all three patches applied to ath.git.
 
 -- 
 Kalle Valo
