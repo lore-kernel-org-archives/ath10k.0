@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x230.google.com ([2a00:1450:400c:c03::230])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YG62c-0003pj-2g
- for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:18:51 +0000
-Received: by mail-we0-f176.google.com with SMTP id w62so14835402wes.7
- for <ath10k@lists.infradead.org>; Tue, 27 Jan 2015 05:18:26 -0800 (PST)
+ id 1YG6Sd-0001Oj-6A
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:45:43 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: First QCA6174 firmware release
+Date: Tue, 27 Jan 2015 15:45:10 +0200
+Message-ID: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
-References: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
-Date: Tue, 27 Jan 2015 14:18:26 +0100
-Message-ID: <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
-Subject: Re: [ath10k] IBSS mode
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +16,22 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMjcgSmFudWFyeSAyMDE1IGF0IDE0OjA4LCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSCjxzeWx2
-YWluLnJvZ2VyLnJpZXVuaWVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4gSSBqdXN0IG1hZGUgc29tZSB0
-ZXN0cyB3aXRoIHRoZSBhdGgxMGsgZHJpdmVyIGluIElCU1MgbW9kZSBhbmQgSSBmb3VuZAo+IHNl
-dmVyYWwgcHJvYmxlbXM6Cj4KPiAxKSBUU0YgbWFuYWdlbWVudCBjYW4ndCBiZSBkb25lIGNvcnJl
-Y3RseS4gWW91IGNhbid0IG1ha2UgR0VULCBTRVQgb3IKPiBSRVNFVCBhY3Rpb25zLCBiZWNhdXNl
-IG5vIGNvbW1hbmQgaXMgc2VudCB0byB0aGUgZmlybXdhcmUuIEhvd2V2ZXIgdGhlCj4gV01JX1JU
-VF9UU0ZfQ01ESUQgY29tbWFuZCBleGlzdHMuIEkgdHJpZWQgc29tZSBjaGFuZ2VzIChzZWUgcGF0
-Y2gpLAo+IGJ1dCB0aGV5IGRpZCBub3QgcHJvZHVjZSBhbnkgZWZmZWN0LgoKVGhpcyBpc24ndCBp
-bXBsZW1lbnRlZCBpbiBmaXJtd2FyZSA2MzYgYXMgZmFyIGFzIEkga25vdy4KCgo+IDIpIFJhdGUg
-Y29udHJvbCB1cGRhdGUgaXMgbm90IGZ1bmN0aW9uYWwgaW4gdGhlIGZpcm13YXJlLiBEYXRhIHJh
-dGUgaXMKPiBzdHVjayBhdCAyNSBNYml0L3MgYmV0d2VlbiBhbiBhdGgxMGsgSUJTUyBzdGF0aW9u
-IGFuZCBhbiBhdGg5ayBJQlNTCj4gc3RhdGlvbi4gSG93ZXZlciB0aGUgcmF0ZSBjb250cm9sIHVw
-ZGF0ZSB3b3JrcyBmaW5lIGluIG1hYzgwMjExIChJCj4gY2hlY2tlZCBpdCB0aGFua3MgdG8gSUJT
-UyBkZWJ1ZyBtc2cpIGFuZCBJRSBIVCBzZXR0aW5ncyBhcmUgY29ycmVjdGx5Cj4gdHJhbnNtaXR0
-ZWQgb24gYm90aCBzaWRlIChJIGNoZWNrZWQgaXQgdXNpbmcgYSB0aGlyZCBpbnRlcmZhY2UgaW4K
-PiBtb25pdG9yIG1vZGUpLiBUaGUgYXRoMTBrX3dtaV9wZWVyX2Fzc29jIGNvbW1hbmQgZG9lcyBu
-b3Qgc2VlbSB0byB3b3JrCj4gZm9yIHJlYXNzb2Mgc3RhdGUgdG8gdXBkYXRlIGRhdGEgcmF0ZS4K
-CkphbnVzeiBoYXMgZG9uZSBzb21lIHBhdGNoZXMgcmVsYXRlZCB0byB0aGUgaHcgcmF0ZSBjb250
-cm9sIGlzc3Vlcwp3aXRoIElCU1MgcmVjZW50bHk6CgogaHR0cHM6Ly9naXRodWIuY29tL2t2YWxv
-L2F0aC9jb21taXQvNjI3ZDk4NDFlYWE2MjNlMzQ2NTdhZjdhZjBlNjI5MzgwNWUwNzg4OAogaHR0
-cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aC9jb21taXQvNTU4ODRjMDQ1ZDMxYTI5Y2Y2OWRiODMz
-MmQxMDY0YTFiNjFkZDE1OQoKCj4gQ29uY2x1c2lvbjogdGhlIGZpcm13YXJlIHNlZW1zIGluY29t
-cGxldGUgZm9yIElCU1MgbW9kZSBvcGVyYXRpb24uIElzCj4gdGhlcmUgYW55IHBsYW5uZWQgZGV2
-ZWxvcG1lbnQgb24gdGhlIElCU1MgbW9kZSBpbiB0aGUgZmlybXdhcmU/Cj4KPiBOb3RlOiBJIGRp
-ZCBteSB0ZXN0cyB3aXRoIHRoZSBmaXJtd2FyZS0yLmJpbl85OTkuOTk5LjAuNjM2IGZpcm13YXJl
-LgoKQmVuIGhhcyByZWNlbnRseSBhZGRlZCBJQlNTIHN1cHBvcnQgZm9yIGhpcyAxMC4xIGZpcm13
-YXJlIGZvcms6CgogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXguZHJpdmVycy5h
-dGgxMGsuZGV2ZWwvMTAyMy9mb2N1cz0xMDI2CgpZb3UgbWlnaHQgYmUgaW50ZXJlc3RlZCBpbiBn
-aXZpbmcgaXQgYSB0cnkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+Hi,
+
+I pushed the first QCA6174 firmware release to ath10k-firmware.git:
+
+https://github.com/kvalo/ath10k-firmware/tree/master/ath10k/QCA6174/hw3.0
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
