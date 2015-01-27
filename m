@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YFs8D-00008x-DO
- for ath10k@lists.infradead.org; Mon, 26 Jan 2015 22:27:41 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Replace ioread with wmb for data sync
-Date: Mon, 26 Jan 2015 14:25:18 -0800
-Message-ID: <1422311118-11320-1-git-send-email-poh@qca.qualcomm.com>
+ id 1YG5ss-0006UW-IN
+ for ath10k@lists.infradead.org; Tue, 27 Jan 2015 13:08:47 +0000
+Received: by mail-ie0-f174.google.com with SMTP id vy18so14984436iec.5
+ for <ath10k@lists.infradead.org>; Tue, 27 Jan 2015 05:08:24 -0800 (PST)
 MIME-Version: 1.0
+Date: Tue, 27 Jan 2015 14:08:24 +0100
+Message-ID: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
+Subject: [ath10k] IBSS mode
+From: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>
+Content-Type: multipart/mixed; boundary=20cf3003bc94322bbf050da1f3f0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,57 +19,147 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Using ioread() to perform data sync is excessive.
-Use compact API, wmb(), that intended to be used for the case.
-It reduces total 14 CPU clocks per interrupt.
+--20cf3003bc94322bbf050da1f3f0
+Content-Type: text/plain; charset=UTF-8
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+I just made some tests with the ath10k driver in IBSS mode and I found
+several problems:
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 3b40a86..c353a2c 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -346,10 +346,8 @@ static void ath10k_pci_disable_and_clear_legacy_irq(struct ath10k *ar)
- 	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + PCIE_INTR_CLR_ADDRESS,
- 			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
- 
--	/* IMPORTANT: this extra read transaction is required to
--	 * flush the posted write buffer. */
--	(void)ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_ENABLE_ADDRESS);
-+	/* invoke data sync barrier */
-+	wmb();
- }
- 
- static void ath10k_pci_enable_legacy_irq(struct ath10k *ar)
-@@ -358,10 +356,8 @@ static void ath10k_pci_enable_legacy_irq(struct ath10k *ar)
- 			   PCIE_INTR_ENABLE_ADDRESS,
- 			   PCIE_INTR_FIRMWARE_MASK | PCIE_INTR_CE_MASK_ALL);
- 
--	/* IMPORTANT: this extra read transaction is required to
--	 * flush the posted write buffer. */
--	(void)ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
--				PCIE_INTR_ENABLE_ADDRESS);
-+	/* invoke data sync barrier */
-+	wmb();
- }
- 
- static inline const char *ath10k_pci_get_irq_method(struct ath10k *ar)
--- 
-1.9.1
+1) TSF management can't be done correctly. You can't make GET, SET or
+RESET actions, because no command is sent to the firmware. However the
+WMI_RTT_TSF_CMDID command exists. I tried some changes (see patch),
+but they did not produce any effect.
 
+2) Rate control update is not functional in the firmware. Data rate is
+stuck at 25 Mbit/s between an ath10k IBSS station and an ath9k IBSS
+station. However the rate control update works fine in mac80211 (I
+checked it thanks to IBSS debug msg) and IE HT settings are correctly
+transmitted on both side (I checked it using a third interface in
+monitor mode). The ath10k_wmi_peer_assoc command does not seem to work
+for reassoc state to update data rate.
+
+Conclusion: the firmware seems incomplete for IBSS mode operation. Is
+there any planned development on the IBSS mode in the firmware?
+
+Note: I did my tests with the firmware-2.bin_999.999.0.636 firmware.
+
+Thank,
+Sylvain
+
+--20cf3003bc94322bbf050da1f3f0
+Content-Type: text/x-patch; charset=US-ASCII; name="992-luceor-ath10k-reset_tsf.patch"
+Content-Disposition: attachment; 
+	filename="992-luceor-ath10k-reset_tsf.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_i5fastad0
+
+LS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYworKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCkBAIC00NDY3LDYgKzQ0NjcsMTMgQEAgc3Rh
+dGljIHZvaWQgYXRoMTBrX3N0YV9yY191cGRhdGUoc3RydWN0CiAKIHN0YXRpYyB1NjQgYXRoMTBr
+X2dldF90c2Yoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsIHN0cnVjdCBpZWVlODAyMTFfdmlmICp2
+aWYpCiB7CisJc3RydWN0IGF0aDEwayAqYXIgPSBody0+cHJpdjsKKwlzdHJ1Y3QgYXRoMTBrX3Zp
+ZiAqYXJ2aWYgPSBhdGgxMGtfdmlmX3RvX2FydmlmKHZpZik7CisKKwltdXRleF9sb2NrKCZhci0+
+Y29uZl9tdXRleCk7CisJYXRoMTBrX3dtaV9nZXRfdHNmKCBhciwgYXJ2aWYtPnZkZXZfaWQsIGFy
+dmlmLT52aWYtPmFkZHIpOworCW11dGV4X3VubG9jaygmYXItPmNvbmZfbXV0ZXgpOworCiAJLyoK
+IAkgKiBGSVhNRTogUmV0dXJuIDAgZm9yIHRpbWUgYmVpbmcuIE5lZWQgdG8gZmlndXJlIG91dCB3
+aGV0aGVyIEZXCiAJICogaGFzIHRoZSBBUEkgdG8gZmV0Y2ggNjQtYml0IGxvY2FsIFRTRgpAQCAt
+NDQ3NSw2ICs0NDgyLDI3IEBAIHN0YXRpYyB1NjQgYXRoMTBrX2dldF90c2Yoc3RydWN0IGllZWU4
+MDIKIAlyZXR1cm4gMDsKIH0KIAorc3RhdGljIHZvaWQgYXRoMTBrX3NldF90c2Yoc3RydWN0IGll
+ZWU4MDIxMV9odyAqaHcsIHN0cnVjdCBpZWVlODAyMTFfdmlmICp2aWYsCisJCQkgICB1NjQgdHNm
+KQoreworCXN0cnVjdCBhdGgxMGsgKmFyID0gaHctPnByaXY7CisJc3RydWN0IGF0aDEwa192aWYg
+KmFydmlmID0gYXRoMTBrX3ZpZl90b19hcnZpZih2aWYpOworCisJbXV0ZXhfbG9jaygmYXItPmNv
+bmZfbXV0ZXgpOworCWF0aDEwa193bWlfc2V0X3RzZiggYXIsIGFydmlmLT52ZGV2X2lkLCBhcnZp
+Zi0+dmlmLT5hZGRyLCB0c2YpOworCW11dGV4X3VubG9jaygmYXItPmNvbmZfbXV0ZXgpOworfQor
+CitzdGF0aWMgdm9pZCBhdGgxMGtfcmVzZXRfdHNmKHN0cnVjdCBpZWVlODAyMTFfaHcgKmh3LCBz
+dHJ1Y3QgaWVlZTgwMjExX3ZpZiAqdmlmKQoreworCXN0cnVjdCBhdGgxMGsgKmFyID0gaHctPnBy
+aXY7CisJc3RydWN0IGF0aDEwa192aWYgKmFydmlmID0gYXRoMTBrX3ZpZl90b19hcnZpZih2aWYp
+OworCisJbXV0ZXhfbG9jaygmYXItPmNvbmZfbXV0ZXgpOworCWF0aDEwa193bWlfcmVzZXRfdHNm
+KCBhciwgYXJ2aWYtPnZkZXZfaWQsIGFydmlmLT52aWYtPmFkZHIpOworCW11dGV4X3VubG9jaygm
+YXItPmNvbmZfbXV0ZXgpOworfQorCiBzdGF0aWMgaW50IGF0aDEwa19hbXBkdV9hY3Rpb24oc3Ry
+dWN0IGllZWU4MDIxMV9odyAqaHcsCiAJCQkgICAgICAgc3RydWN0IGllZWU4MDIxMV92aWYgKnZp
+ZiwKIAkJCSAgICAgICBlbnVtIGllZWU4MDIxMV9hbXBkdV9tbG1lX2FjdGlvbiBhY3Rpb24sCkBA
+IC00NTM1LDYgKzQ1NjMsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGllZWU4MDIxMV9vcHMgYXRo
+MTBrCiAJLnNldF9iaXRyYXRlX21hc2sJCT0gYXRoMTBrX3NldF9iaXRyYXRlX21hc2ssCiAJLnN0
+YV9yY191cGRhdGUJCQk9IGF0aDEwa19zdGFfcmNfdXBkYXRlLAogCS5nZXRfdHNmCQkJPSBhdGgx
+MGtfZ2V0X3RzZiwKKwkucmVzZXRfdHNmCQkJPSBhdGgxMGtfcmVzZXRfdHNmLAorCS5zZXRfdHNm
+CQkJPSBhdGgxMGtfc2V0X3RzZiwKIAkuYW1wZHVfYWN0aW9uCQkJPSBhdGgxMGtfYW1wZHVfYWN0
+aW9uLAogCS5nZXRfZXRfc3NldF9jb3VudAkJPSBhdGgxMGtfZGVidWdfZ2V0X2V0X3NzZXRfY291
+bnQsCiAJLmdldF9ldF9zdGF0cwkJCT0gYXRoMTBrX2RlYnVnX2dldF9ldF9zdGF0cywKLS0tIGEv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuYworKysgYi9kcml2ZXJzL25ldC93
+aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jCkBAIC0xMzIyLDkgKzEzMjIsMTcgQEAgc3RhdGljIHZv
+aWQgYXRoMTBrX3dtaV9ldmVudF9lY2hvKHN0cnVjdAogCiBzdGF0aWMgaW50IGF0aDEwa193bWlf
+ZXZlbnRfZGVidWdfbWVzZyhzdHJ1Y3QgYXRoMTBrICphciwgc3RydWN0IHNrX2J1ZmYgKnNrYikK
+IHsKKwlpbnQgaTsKKwogCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfV01JLCAid21pIGV2ZW50
+IGRlYnVnIG1lc2cgbGVuICVkXG4iLAogCQkgICBza2ItPmxlbik7CiAKKwlhdGgxMGtfZGJnKGFy
+LCBBVEgxMEtfREJHX1dNSSwgIndtaSBldmVudCBkYXRhIDoiKTsKKwlmb3IgKGkgPSA0OyBpIDwg
+c2tiLT5sZW47IGkrKykgeworCQlhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX1dNSSwgIiAleCIs
+IHNrYi0+ZGF0YVtpXSk7CisJfQorCWF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfV01JLCAiXG4i
+KTsKKwogCXRyYWNlX2F0aDEwa193bWlfZGJnbG9nKGFyLCBza2ItPmRhdGEsIHNrYi0+bGVuKTsK
+IAogCXJldHVybiAwOwpAQCAtNDQxNywzICs0NDI1LDY0IEBAIHZvaWQgYXRoMTBrX3dtaV9kZXRh
+Y2goc3RydWN0IGF0aDEwayAqYXIKIAogCWFyLT53bWkubnVtX21lbV9jaHVua3MgPSAwOwogfQor
+CitpbnQgYXRoMTBrX3dtaV9zZXRfdHNmKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgdmRldl9pZCwg
+Y29uc3QgdTggKm1hYywgdTY0IHRzZikKK3sKKwlzdHJ1Y3Qgc2tfYnVmZiAqc2tiOworCXN0cnVj
+dCB3bWlfcnR0X3RzZl9jbWQgKmNtZDsKKworCXNrYiA9IGF0aDEwa193bWlfYWxsb2Nfc2tiKGFy
+LCBzaXplb2YoKmNtZCkpOworCWlmICghc2tiKQorCQlyZXR1cm4gLUVOT01FTTsKKworCWF0aDEw
+a19kYmcoYXIsIEFUSDEwS19EQkdfV01JLCAid21pIFNFVCBUU0YgJUx1XG4iLCB0c2YpOworCWNt
+ZCA9IChzdHJ1Y3Qgd21pX3J0dF90c2ZfY21kICopIHNrYi0+ZGF0YTsKKwljbWQtPnZkZXZfaWQg
+PSBfX2NwdV90b19sZTMyKHZkZXZfaWQpOworCWNtZC0+Y21kID0gV01JX1RTRl9GV19TRVQ7CisJ
+Y21kLT50c2ZfdTMyID0gY3B1X3RvX2xlMzIodHNmID4+IDMyKTsKKwljbWQtPnRzZl9sMzIgPSBj
+cHVfdG9fbGUzMih0c2YgJiAweGZmZmZmZmZmKTsKKworCWF0aDEwa19kYmcoYXIsIEFUSDEwS19E
+QkdfV01JLCAid21pIFNFVCBUU0YgJXUobCkgJXUodSlcbiIsCisJCSAgIGNtZC0+dHNmX2wzMiwg
+Y21kLT50c2ZfdTMyKTsKKworCXJldHVybiBhdGgxMGtfd21pX2NtZF9zZW5kKGFyLCBza2IsCisJ
+CQkJICAgYXItPndtaS5jbWQtPnJ0dF90c2ZfY21kaWQpOworfQorCitpbnQgYXRoMTBrX3dtaV9y
+ZXNldF90c2Yoc3RydWN0IGF0aDEwayAqYXIsIHUzMiB2ZGV2X2lkLCBjb25zdCB1OCAqbWFjKQor
+eworCXN0cnVjdCBza19idWZmICpza2I7CisJc3RydWN0IHdtaV9ydHRfdHNmX2NtZCAqY21kOwor
+CisJc2tiID0gYXRoMTBrX3dtaV9hbGxvY19za2IoYXIsIHNpemVvZigqY21kKSk7CisJaWYgKCFz
+a2IpCisJCXJldHVybiAtRU5PTUVNOworCisJYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19XTUks
+ICJ3bWkgUkVTRVQgVFNGIFxuIik7CisJY21kID0gKHN0cnVjdCB3bWlfcnR0X3RzZl9jbWQgKikg
+c2tiLT5kYXRhOworCWNtZC0+dmRldl9pZCA9IF9fY3B1X3RvX2xlMzIodmRldl9pZCk7CisJY21k
+LT5jbWQgPSBXTUlfVFNGX0ZXX1JFU0VUOworCWNtZC0+dHNmX3UzMiA9IDA7CisJY21kLT50c2Zf
+bDMyID0gMDsKKworCXJldHVybiBhdGgxMGtfd21pX2NtZF9zZW5kKGFyLCBza2IsCisJCQkJICAg
+YXItPndtaS5jbWQtPnJ0dF90c2ZfY21kaWQpOworfQorCitpbnQgYXRoMTBrX3dtaV9nZXRfdHNm
+KHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgdmRldl9pZCwgY29uc3QgdTggKm1hYykKK3sKKwlzdHJ1
+Y3Qgc2tfYnVmZiAqc2tiOworCXN0cnVjdCB3bWlfcnR0X21lYXNyZXFfY21kICpjbWQ7CisKKwlz
+a2IgPSBhdGgxMGtfd21pX2FsbG9jX3NrYihhciwgc2l6ZW9mKCpjbWQpKTsKKwlpZiAoIXNrYikK
+KwkJcmV0dXJuIC1FTk9NRU07CisKKwlhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX1dNSSwgIndt
+aSBHRVQgVFNGXG4iKTsKKwljbWQgPSAoc3RydWN0IHdtaV9ydHRfbWVhc3JlcV9jbWQgKikgc2ti
+LT5kYXRhOworCWNtZC0+dmRldl9pZCA9IF9fY3B1X3RvX2xlMzIodmRldl9pZCk7CisJY21kLT5j
+bWQgPSBXTUlfUlRUX0ZXX1RTRjsKKworCXJldHVybiBhdGgxMGtfd21pX2NtZF9zZW5kKGFyLCBz
+a2IsCisJCQkJICAgYXItPndtaS5jbWQtPnJ0dF9tZWFzcmVxX2NtZGlkKTsKK30KLS0tIGEvZHJp
+dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWkuaAorKysgYi9kcml2ZXJzL25ldC93aXJl
+bGVzcy9hdGgvYXRoMTBrL3dtaS5oCkBAIC00NTQ3LDYgKzQ1NDcsMzIgQEAgc3RydWN0IHdtaV9k
+Ymdsb2dfY2ZnX2NtZCB7CiAJX19sZTMyIGNvbmZpZ192YWxpZDsKIH0gX19wYWNrZWQ7CiAKKwor
+ZW51bSB3bWlfcnR0X2Z3X2NtZCB7CisJV01JX1JUVF9GV19SVFQgPSAxLAorCVdNSV9SVFRfRldf
+VFNGID0gMiwKK307CisKK3N0cnVjdCB3bWlfcnR0X21lYXNyZXFfY21kIHsKKwlfX2xlMzIgdmRl
+dl9pZDsKKwlfX2xlMzIgY21kOworLy8Jc3RydWN0IHdtaV9tYWNfYWRkciBtYWNhZGRyOworfSBf
+X3BhY2tlZDsKKworZW51bSB3bWlfdHNmX2Z3X2NtZCB7CisJV01JX1RTRl9GV19SRVNFVCA9IDEs
+CisJV01JX1RTRl9GV19TRVQgPSAyLAorCVdNSV9UU0ZfRldfR0VUID0gMywKK307CisKK3N0cnVj
+dCB3bWlfcnR0X3RzZl9jbWQgeworCV9fbGUzMiB2ZGV2X2lkOworCV9fbGUzMiBjbWQ7CisJX19s
+ZTMyIHRzZl9sMzI7CisJX19sZTMyIHRzZl91MzI7Cit9IF9fcGFja2VkOworCisKICNkZWZpbmUg
+QVRIMTBLX1JUU19NQVgJCTIzNDcKICNkZWZpbmUgQVRIMTBLX0ZSQUdNVF9USFJFU0hPTERfTUlO
+CTU0MAogI2RlZmluZSBBVEgxMEtfRlJBR01UX1RIUkVTSE9MRF9NQVgJMjM0NgpAQCAtNDY1Myw1
+ICs0Njc5LDggQEAgaW50IGF0aDEwa193bWlfcHVsbF9md19zdGF0cyhzdHJ1Y3QgYXRoMQogCQkJ
+ICAgICBzdHJ1Y3QgYXRoMTBrX2Z3X3N0YXRzICpzdGF0cyk7CiBpbnQgYXRoMTBrX3dtaV9wZGV2
+X3BrdGxvZ19lbmFibGUoc3RydWN0IGF0aDEwayAqYXIsIHUzMiBldl9saXN0KTsKIGludCBhdGgx
+MGtfd21pX3BkZXZfcGt0bG9nX2Rpc2FibGUoc3RydWN0IGF0aDEwayAqYXIpOworaW50IGF0aDEw
+a193bWlfc2V0X3RzZihzdHJ1Y3QgYXRoMTBrICphciwgdTMyIHZkZXZfaWQsIGNvbnN0IHU4ICpt
+YWMsIHU2NCB0c2YpOworaW50IGF0aDEwa193bWlfcmVzZXRfdHNmKHN0cnVjdCBhdGgxMGsgKmFy
+LCB1MzIgdmRldl9pZCwgY29uc3QgdTggKm1hYyk7CitpbnQgYXRoMTBrX3dtaV9nZXRfdHNmKHN0
+cnVjdCBhdGgxMGsgKmFyLCB1MzIgdmRldl9pZCwgY29uc3QgdTggKm1hYyk7CiAKICNlbmRpZiAv
+KiBfV01JX0hfICovCg==
+--20cf3003bc94322bbf050da1f3f0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--20cf3003bc94322bbf050da1f3f0--
