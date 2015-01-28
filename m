@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from mail-ig0-f182.google.com ([209.85.213.182])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGI1t-0000bs-Rp
- for ath10k@lists.infradead.org; Wed, 28 Jan 2015 02:06:55 +0000
-Received: by mail-wi0-f179.google.com with SMTP id l15so8887136wiw.0
- for <ath10k@lists.infradead.org>; Tue, 27 Jan 2015 18:06:30 -0800 (PST)
+ id 1YGKHK-0001s4-GR
+ for ath10k@lists.infradead.org; Wed, 28 Jan 2015 04:30:59 +0000
+Received: by mail-ig0-f182.google.com with SMTP id r10so8937692igi.3
+ for <ath10k@lists.infradead.org>; Tue, 27 Jan 2015 20:30:36 -0800 (PST)
+Date: Tue, 27 Jan 2015 23:30:05 -0500
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: [PATCH] ath10k: Replace ioread with wmb for data sync
+Message-ID: <20150128043005.GB24933@localhost>
+References: <1422311118-11320-1-git-send-email-poh@qca.qualcomm.com>
+ <20150127213349.GA24933@localhost>
+ <54C824DC.5080804@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <54C7B3A5.4090005@candelatech.com>
-References: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
- <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
- <CA+aCzhUP2YEshygMZt2ZakAxgqhQ80eUJdyOrNG=wz68kv7wAg@mail.gmail.com>
- <54C7B3A5.4090005@candelatech.com>
-Date: Wed, 28 Jan 2015 10:06:30 +0800
-Message-ID: <CAEFj987na1zmeoKvYsDBdk+aioDd-msaAsWWrWs=+miQz2WUyQ@mail.gmail.com>
-Subject: Re: [ath10k] IBSS mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <54C824DC.5080804@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +23,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>, ath10k <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rm9yIHRoZSByYXRlIGNvbnRyb2wgaXNzdWUsIHBsZWFzZSBtYWtlIHN1cmUgdGhhdCBzdGEtPnN0
-YS53bWUgPSB0cnVlIGluIGlic3MuYwoKUmVmZXIgdGhlIGZvbGxvd2luZzoKaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE0LURlY2VtYmVyLzAwMzk4Mi5odG1s
-CgpGb3IgQ1QgZmlybXdhcmUsIHlvdSBoYXZlIG1lbnRpb25lZCB0aGF0ICJhc3NvY2lhdGlvbiBi
-ZXR3ZWVuIHN0YXRpb25zCndvcmtzIGJldHRlciIuIENhbiB5b3UgZWxhYm9yYXRlIHRoYXQ/Cgot
-LS0tCkNodW4tWWVvdwoKT24gVHVlLCBKYW4gMjcsIDIwMTUgYXQgMTE6NDkgUE0sIEJlbiBHcmVl
-YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMDEvMjcvMjAxNSAw
-NTo1NSBBTSwgU3lsdmFpbiBST0dFUiBSSUVVTklFUiB3cm90ZToKPj4KPj4gRGVhciBNaWNoYWws
-Cj4+Cj4+IEkgaGF2ZSBhbHJlYWR5IHRyaWVkIHRoZSBDVCBmaXJtd2FyZS4gQXNzb2NpYXRpb24g
-YmV0d2VlbiBzdGF0aW9ucwo+PiB3b3JrcyBiZXR0ZXIsIEJ1dCB0aGUgcmF0ZSBjb250cm9sIHVw
-ZGF0ZSBpcyBzdGlsbCBicm9rZW4uCj4+IEl0IGRvZXMgbm90IHdvcmsgaW4gSFQgbW9kZS4KPgo+
-Cj4gUmF0ZS1jdHJsIGlzIG5vdCBhIHByb2JsZW0gd2l0aCB0aGUgZmlybXdhcmUuLi4uc29tZSB1
-c2VycyBoYXZlIHJlcG9ydGVkCj4gNzAwTWJwcyBvciBzbyBpbiBJQlNTIG1vZGUgd2l0aCBteSBm
-aXJtd2FyZS4KPgo+IEkgaGF2ZW4ndCBtYW5hZ2VkIHRvIGdldCBrZXJuZWwgYW5kIHN1cHBsaWNh
-bnQgcHJvcGVybHkgcGF0Y2hlZCBmb3IgYWxsCj4gdGhpcyB5ZXQuLmJ1dCB3aWxsIGdldCBpdCBk
-b25lIGV2ZW50dWFsbHkgKGFuZCBwYXRjaGVzIHNob3VsZCBtYWtlIGl0IHVwCj4gc3RyZWFtIHNv
-bWV0aW1lIHNvb24gdG9vIEkgdGhpbmspLgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4KPj4KPj4KPj4g
-U3lsdmFpbgo+Pgo+PiAyMDE1LTAxLTI3IDE0OjE4IEdNVCswMTowMCBNaWNoYWwgS2F6aW9yIDxt
-aWNoYWwua2F6aW9yQHRpZXRvLmNvbT46Cj4+Pgo+Pj4gT24gMjcgSmFudWFyeSAyMDE1IGF0IDE0
-OjA4LCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSCj4+PiA8c3lsdmFpbi5yb2dlci5yaWV1bmllckBn
-bWFpbC5jb20+IHdyb3RlOgo+Pj4+Cj4+Pj4gSSBqdXN0IG1hZGUgc29tZSB0ZXN0cyB3aXRoIHRo
-ZSBhdGgxMGsgZHJpdmVyIGluIElCU1MgbW9kZSBhbmQgSSBmb3VuZAo+Pj4+IHNldmVyYWwgcHJv
-YmxlbXM6Cj4+Pj4KPj4+PiAxKSBUU0YgbWFuYWdlbWVudCBjYW4ndCBiZSBkb25lIGNvcnJlY3Rs
-eS4gWW91IGNhbid0IG1ha2UgR0VULCBTRVQgb3IKPj4+PiBSRVNFVCBhY3Rpb25zLCBiZWNhdXNl
-IG5vIGNvbW1hbmQgaXMgc2VudCB0byB0aGUgZmlybXdhcmUuIEhvd2V2ZXIgdGhlCj4+Pj4gV01J
-X1JUVF9UU0ZfQ01ESUQgY29tbWFuZCBleGlzdHMuIEkgdHJpZWQgc29tZSBjaGFuZ2VzIChzZWUg
-cGF0Y2gpLAo+Pj4+IGJ1dCB0aGV5IGRpZCBub3QgcHJvZHVjZSBhbnkgZWZmZWN0Lgo+Pj4KPj4+
-Cj4+PiBUaGlzIGlzbid0IGltcGxlbWVudGVkIGluIGZpcm13YXJlIDYzNiBhcyBmYXIgYXMgSSBr
-bm93Lgo+Pj4KPj4+Cj4+Pj4gMikgUmF0ZSBjb250cm9sIHVwZGF0ZSBpcyBub3QgZnVuY3Rpb25h
-bCBpbiB0aGUgZmlybXdhcmUuIERhdGEgcmF0ZSBpcwo+Pj4+IHN0dWNrIGF0IDI1IE1iaXQvcyBi
-ZXR3ZWVuIGFuIGF0aDEwayBJQlNTIHN0YXRpb24gYW5kIGFuIGF0aDlrIElCU1MKPj4+PiBzdGF0
-aW9uLiBIb3dldmVyIHRoZSByYXRlIGNvbnRyb2wgdXBkYXRlIHdvcmtzIGZpbmUgaW4gbWFjODAy
-MTEgKEkKPj4+PiBjaGVja2VkIGl0IHRoYW5rcyB0byBJQlNTIGRlYnVnIG1zZykgYW5kIElFIEhU
-IHNldHRpbmdzIGFyZSBjb3JyZWN0bHkKPj4+PiB0cmFuc21pdHRlZCBvbiBib3RoIHNpZGUgKEkg
-Y2hlY2tlZCBpdCB1c2luZyBhIHRoaXJkIGludGVyZmFjZSBpbgo+Pj4+IG1vbml0b3IgbW9kZSku
-IFRoZSBhdGgxMGtfd21pX3BlZXJfYXNzb2MgY29tbWFuZCBkb2VzIG5vdCBzZWVtIHRvIHdvcmsK
-Pj4+PiBmb3IgcmVhc3NvYyBzdGF0ZSB0byB1cGRhdGUgZGF0YSByYXRlLgo+Pj4KPj4+Cj4+PiBK
-YW51c3ogaGFzIGRvbmUgc29tZSBwYXRjaGVzIHJlbGF0ZWQgdG8gdGhlIGh3IHJhdGUgY29udHJv
-bCBpc3N1ZXMKPj4+IHdpdGggSUJTUyByZWNlbnRseToKPj4+Cj4+Pgo+Pj4gaHR0cHM6Ly9naXRo
-dWIuY29tL2t2YWxvL2F0aC9jb21taXQvNjI3ZDk4NDFlYWE2MjNlMzQ2NTdhZjdhZjBlNjI5Mzgw
-NWUwNzg4OAo+Pj4KPj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgvY29tbWl0LzU1ODg0
-YzA0NWQzMWEyOWNmNjlkYjgzMzJkMTA2NGExYjYxZGQxNTkKPj4+Cj4+Pgo+Pj4+IENvbmNsdXNp
-b246IHRoZSBmaXJtd2FyZSBzZWVtcyBpbmNvbXBsZXRlIGZvciBJQlNTIG1vZGUgb3BlcmF0aW9u
-LiBJcwo+Pj4+IHRoZXJlIGFueSBwbGFubmVkIGRldmVsb3BtZW50IG9uIHRoZSBJQlNTIG1vZGUg
-aW4gdGhlIGZpcm13YXJlPwo+Pj4+Cj4+Pj4gTm90ZTogSSBkaWQgbXkgdGVzdHMgd2l0aCB0aGUg
-ZmlybXdhcmUtMi5iaW5fOTk5Ljk5OS4wLjYzNiBmaXJtd2FyZS4KPj4+Cj4+Pgo+Pj4gQmVuIGhh
-cyByZWNlbnRseSBhZGRlZCBJQlNTIHN1cHBvcnQgZm9yIGhpcyAxMC4xIGZpcm13YXJlIGZvcms6
-Cj4+Pgo+Pj4KPj4+IGh0dHA6Ly90aHJlYWQuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmRyaXZlcnMu
-YXRoMTBrLmRldmVsLzEwMjMvZm9jdXM9MTAyNgo+Pj4KPj4+IFlvdSBtaWdodCBiZSBpbnRlcmVz
-dGVkIGluIGdpdmluZyBpdCBhIHRyeS4KPj4+Cj4+Pgo+Pj4gTWljaGHFggo+Pgo+Pgo+PiBfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFp
-bGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Cj4KPiAtLQo+IEJlbiBHcmVl
-YXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAg
-aHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPgo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Tue, Jan 27, 2015 at 03:53:00PM -0800, Peter Oh wrote:
+> >>-	/* IMPORTANT: this extra read transaction is required to
+> >>-	 * flush the posted write buffer. */
+> >>-	(void)ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
+> >>-				PCIE_INTR_ENABLE_ADDRESS);
+> >>+	/* invoke data sync barrier */
+> >>+	wmb();
+> >>  }
+> >I am no expert in arcane PCI matters, but that looks suspicious to me.  I seem
+> >to recall wmb() only enforced ordering, and maybe not even memory-IO ordering
+> >on all platforms.  If you want to disable an irq, it really seems like you
+> >would want to flush posted writes so you know the hardware has seen it.
+> enforced ordering is happened by flush write buffer and wmb is
+> commonly used to flush write buffer.
+> so that wmb guarantees ordering by flush write buffer. That's why
+> it's called a memory barrier.
+
+Ok, sure, but I/O ordering two different writes, and ensuring device
+has seen a posted write, are related but different things, no?  So if
+you are disabling an interrupt and want to be really sure interrupts
+are off when function returns, I think you still want the read.
+
+Anyway, it's your driver, just pointing out that the "IMPORTANT"
+read might still be important to someone.
+
+-- 
+Bob Copeland %% http://bobcopeland.com/
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
