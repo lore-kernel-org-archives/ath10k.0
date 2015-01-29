@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGmKO-0003dJ-Fj
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:28:00 +0000
+ id 1YGmNt-0006QB-Rx
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:31:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix target wakeup timeout
-References: <1422290586-10955-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Thu, 29 Jan 2015 12:27:30 +0200
-In-Reply-To: <1422290586-10955-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Mon, 26 Jan 2015 22:13:06 +0530")
-Message-ID: <87mw513mr1.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:Prevent setting wrong key idx for station
+References: <1422369059-21274-1-git-send-email-senthilb@qti.qualcomm.com>
+ <54C7C3B7.4020706@candelatech.com>
+Date: Thu, 29 Jan 2015 12:31:07 +0200
+In-Reply-To: <54C7C3B7.4020706@candelatech.com> (Ben Greear's message of "Tue, 
+ 27 Jan 2015 08:58:31 -0800")
+Message-ID: <87fvat3ml0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +24,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: senthilb@qti.qualcomm.com, SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Ben Greear <greearb@candelatech.com> writes:
 
-> During drv_start/drv_stop stress testing in ARM platform,
-> sometimes target is taking more that 5ms to wake up. Similar
-> behaviour also noted during driver load and unload iterations.
-> On such cases, the wakup duration lies between 5-6ms. Hence
-> increasing pci wakup timeout 10ms to be more safer. With this
-> changes, able to complete power down/up >100 iterations without
-> any issues.
+> On 01/27/2015 06:30 AM, senthilb@qti.qualcomm.com wrote:
+>> From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+>> 
+>> Ath10k driver sets wrong default key idx that results in
+>> sending unicast frames with multicast key.
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Is this something that should be back-ported to stable releases?
 
-Thanks, applied to ath.git.
+Sure, if somebody cares about WEP that much :) 
+
+Should I add CC stable to the patch?
 
 -- 
 Kalle Valo
