@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGmAJ-0008MU-51
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:17:35 +0000
+ id 1YGmIx-0003Pu-D4
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:26:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: implement sta keepalive command
-References: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 29 Jan 2015 12:16:59 +0200
-In-Reply-To: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 20 Jan 2015 11:23:59 +0100")
-Message-ID: <87vbjp3n8k.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Enable the MCS8 and MCS9 at 2.4G band
+References: <1421972300-23520-1-git-send-email-yanbol@qca.qualcomm.com>
+Date: Thu, 29 Jan 2015 12:25:58 +0200
+In-Reply-To: <1421972300-23520-1-git-send-email-yanbol@qca.qualcomm.com>
+ (Yanbo Li's message of "Fri, 23 Jan 2015 08:18:20 +0800")
+Message-ID: <87r3ud3mtl.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Yanbo Li <yanbol@qca.qualcomm.com>
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Yanbo Li <yanbol@qca.qualcomm.com> writes:
 
-> From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> From: Yanbo Li <yanbol@qti.qualcomm.com>
 >
-> New wmi-tlv firmware for qca6174 has STA keepalive
-> service available. The service can provide
-> automatic idle connection polling via NullFunc
-> frames to AP when acting as a client.
+> Enable the MCS8 and MCS9 support for 2.4G band, it will
+> use these data rate with other devices having the same
+> capability.
 >
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Yanbo Li <yanbol@qti.qualcomm.com>
 
-Thanks, both patches applied to ath.git.
+Thanks, applied to ath.git.
 
 -- 
 Kalle Valo
