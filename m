@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGlyy-0000zV-DN
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:05:53 +0000
-Received: by mail-we0-f180.google.com with SMTP id m14so23057952wev.11
- for <ath10k@lists.infradead.org>; Thu, 29 Jan 2015 02:05:29 -0800 (PST)
+ id 1YGm7r-0006XM-M2
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:15:04 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: move wmm param storage to vif
+References: <1421657623-11706-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 29 Jan 2015 12:14:12 +0200
+In-Reply-To: <1421657623-11706-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 19 Jan 2015 09:53:41 +0100")
+Message-ID: <87zj913nd7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+aCzhVyJ8U_qEZa_bsarAEWrmkc10UvBKPZMhxnYoRAkTw7MQ@mail.gmail.com>
-References: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
- <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
- <CA+aCzhUP2YEshygMZt2ZakAxgqhQ80eUJdyOrNG=wz68kv7wAg@mail.gmail.com>
- <54C7B3A5.4090005@candelatech.com>
- <CAEFj987na1zmeoKvYsDBdk+aioDd-msaAsWWrWs=+miQz2WUyQ@mail.gmail.com>
- <CA+aCzhVyJ8U_qEZa_bsarAEWrmkc10UvBKPZMhxnYoRAkTw7MQ@mail.gmail.com>
-Date: Thu, 29 Jan 2015 18:05:29 +0800
-Message-ID: <CAEFj985rQsPs_ZdC++Qw2sGRC9rYiW4NXhq_x6M7gf97TETjjA@mail.gmail.com>
-Subject: Re: [ath10k] IBSS mode
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,84 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SGksIFN5bHZhaW4KCkFyZSB5b3UgdXNpbmcgdGhlIGRyaXZlciBmcm9tIGh0dHBzOi8vZ2l0aHVi
-LmNvbS9rdmFsby9hdGg/IE1heWJlCnRoZXJlIGFyZSBwYXRjaGVzIG1pc3NpbmcuCgotLS0KQ2h1
-bi1ZZW93CgpPbiBXZWQsIEphbiAyOCwgMjAxNSBhdCA0OjM0IFBNLCBTeWx2YWluIFJPR0VSIFJJ
-RVVOSUVSCjxzeWx2YWluLnJvZ2VyLnJpZXVuaWVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4gV2l0aCB0
-aGUgbWFpbiBmaXJtd2FyZSwgd2hlbiBzdGFydGluZyAgMiBBdGgxMGsgc3RhdGlvbnMsIHRoZSBz
-dGF0aW9ucwo+IGhhdmUgZGlmZmVyZW50IEJTU0lELiBUaGUgbWVyZ2UgaXMgbm90IGhhcHBlbmlu
-ZyBjb3JyZWN0bHkuIFRoaXMgaXMKPiBkdWUgdG8gYSBiYWQgIHNjYW4gYW5kIGEgQmFkIFRTRiBt
-YW5hZ2VtZW50Lgo+IFdpdGggQ1QgRmlybXdhcmUgVGhlIHN0YXRpb25zIHNwbGl0IGRpZG4ndCBo
-YXBwZW4uCj4KPiBTeWx2YWluCj4KPiAyMDE1LTAxLTI4IDM6MDYgR01UKzAxOjAwIFllb2ggQ2h1
-bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwuY29tPjoKPj4gRm9yIHRoZSByYXRlIGNvbnRyb2wg
-aXNzdWUsIHBsZWFzZSBtYWtlIHN1cmUgdGhhdCBzdGEtPnN0YS53bWUgPSB0cnVlIGluIGlic3Mu
-Ywo+Pgo+PiBSZWZlciB0aGUgZm9sbG93aW5nOgo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9waXBlcm1haWwvYXRoMTBrLzIwMTQtRGVjZW1iZXIvMDAzOTgyLmh0bWwKPj4KPj4gRm9yIENU
-IGZpcm13YXJlLCB5b3UgaGF2ZSBtZW50aW9uZWQgdGhhdCAiYXNzb2NpYXRpb24gYmV0d2VlbiBz
-dGF0aW9ucwo+PiB3b3JrcyBiZXR0ZXIiLiBDYW4geW91IGVsYWJvcmF0ZSB0aGF0Pwo+Pgo+PiAt
-LS0tCj4+IENodW4tWWVvdwo+Pgo+PiBPbiBUdWUsIEphbiAyNywgMjAxNSBhdCAxMTo0OSBQTSwg
-QmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBP
-biAwMS8yNy8yMDE1IDA1OjU1IEFNLCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSIHdyb3RlOgo+Pj4+
-Cj4+Pj4gRGVhciBNaWNoYWwsCj4+Pj4KPj4+PiBJIGhhdmUgYWxyZWFkeSB0cmllZCB0aGUgQ1Qg
-ZmlybXdhcmUuIEFzc29jaWF0aW9uIGJldHdlZW4gc3RhdGlvbnMKPj4+PiB3b3JrcyBiZXR0ZXIs
-IEJ1dCB0aGUgcmF0ZSBjb250cm9sIHVwZGF0ZSBpcyBzdGlsbCBicm9rZW4uCj4+Pj4gSXQgZG9l
-cyBub3Qgd29yayBpbiBIVCBtb2RlLgo+Pj4KPj4+Cj4+PiBSYXRlLWN0cmwgaXMgbm90IGEgcHJv
-YmxlbSB3aXRoIHRoZSBmaXJtd2FyZS4uLi5zb21lIHVzZXJzIGhhdmUgcmVwb3J0ZWQKPj4+IDcw
-ME1icHMgb3Igc28gaW4gSUJTUyBtb2RlIHdpdGggbXkgZmlybXdhcmUuCj4+Pgo+Pj4gSSBoYXZl
-bid0IG1hbmFnZWQgdG8gZ2V0IGtlcm5lbCBhbmQgc3VwcGxpY2FudCBwcm9wZXJseSBwYXRjaGVk
-IGZvciBhbGwKPj4+IHRoaXMgeWV0Li5idXQgd2lsbCBnZXQgaXQgZG9uZSBldmVudHVhbGx5IChh
-bmQgcGF0Y2hlcyBzaG91bGQgbWFrZSBpdCB1cAo+Pj4gc3RyZWFtIHNvbWV0aW1lIHNvb24gdG9v
-IEkgdGhpbmspLgo+Pj4KPj4+IFRoYW5rcywKPj4+IEJlbgo+Pj4KPj4+Cj4+Pj4KPj4+Pgo+Pj4+
-IFN5bHZhaW4KPj4+Pgo+Pj4+IDIwMTUtMDEtMjcgMTQ6MTggR01UKzAxOjAwIE1pY2hhbCBLYXpp
-b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPjoKPj4+Pj4KPj4+Pj4gT24gMjcgSmFudWFyeSAy
-MDE1IGF0IDE0OjA4LCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSCj4+Pj4+IDxzeWx2YWluLnJvZ2Vy
-LnJpZXVuaWVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4gSSBqdXN0IG1hZGUgc29t
-ZSB0ZXN0cyB3aXRoIHRoZSBhdGgxMGsgZHJpdmVyIGluIElCU1MgbW9kZSBhbmQgSSBmb3VuZAo+
-Pj4+Pj4gc2V2ZXJhbCBwcm9ibGVtczoKPj4+Pj4+Cj4+Pj4+PiAxKSBUU0YgbWFuYWdlbWVudCBj
-YW4ndCBiZSBkb25lIGNvcnJlY3RseS4gWW91IGNhbid0IG1ha2UgR0VULCBTRVQgb3IKPj4+Pj4+
-IFJFU0VUIGFjdGlvbnMsIGJlY2F1c2Ugbm8gY29tbWFuZCBpcyBzZW50IHRvIHRoZSBmaXJtd2Fy
-ZS4gSG93ZXZlciB0aGUKPj4+Pj4+IFdNSV9SVFRfVFNGX0NNRElEIGNvbW1hbmQgZXhpc3RzLiBJ
-IHRyaWVkIHNvbWUgY2hhbmdlcyAoc2VlIHBhdGNoKSwKPj4+Pj4+IGJ1dCB0aGV5IGRpZCBub3Qg
-cHJvZHVjZSBhbnkgZWZmZWN0Lgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBUaGlzIGlzbid0IGltcGxlbWVu
-dGVkIGluIGZpcm13YXJlIDYzNiBhcyBmYXIgYXMgSSBrbm93Lgo+Pj4+Pgo+Pj4+Pgo+Pj4+Pj4g
-MikgUmF0ZSBjb250cm9sIHVwZGF0ZSBpcyBub3QgZnVuY3Rpb25hbCBpbiB0aGUgZmlybXdhcmUu
-IERhdGEgcmF0ZSBpcwo+Pj4+Pj4gc3R1Y2sgYXQgMjUgTWJpdC9zIGJldHdlZW4gYW4gYXRoMTBr
-IElCU1Mgc3RhdGlvbiBhbmQgYW4gYXRoOWsgSUJTUwo+Pj4+Pj4gc3RhdGlvbi4gSG93ZXZlciB0
-aGUgcmF0ZSBjb250cm9sIHVwZGF0ZSB3b3JrcyBmaW5lIGluIG1hYzgwMjExIChJCj4+Pj4+PiBj
-aGVja2VkIGl0IHRoYW5rcyB0byBJQlNTIGRlYnVnIG1zZykgYW5kIElFIEhUIHNldHRpbmdzIGFy
-ZSBjb3JyZWN0bHkKPj4+Pj4+IHRyYW5zbWl0dGVkIG9uIGJvdGggc2lkZSAoSSBjaGVja2VkIGl0
-IHVzaW5nIGEgdGhpcmQgaW50ZXJmYWNlIGluCj4+Pj4+PiBtb25pdG9yIG1vZGUpLiBUaGUgYXRo
-MTBrX3dtaV9wZWVyX2Fzc29jIGNvbW1hbmQgZG9lcyBub3Qgc2VlbSB0byB3b3JrCj4+Pj4+PiBm
-b3IgcmVhc3NvYyBzdGF0ZSB0byB1cGRhdGUgZGF0YSByYXRlLgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBK
-YW51c3ogaGFzIGRvbmUgc29tZSBwYXRjaGVzIHJlbGF0ZWQgdG8gdGhlIGh3IHJhdGUgY29udHJv
-bCBpc3N1ZXMKPj4+Pj4gd2l0aCBJQlNTIHJlY2VudGx5Ogo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBodHRw
-czovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC82MjdkOTg0MWVhYTYyM2UzNDY1N2FmN2Fm
-MGU2MjkzODA1ZTA3ODg4Cj4+Pj4+Cj4+Pj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgv
-Y29tbWl0LzU1ODg0YzA0NWQzMWEyOWNmNjlkYjgzMzJkMTA2NGExYjYxZGQxNTkKPj4+Pj4KPj4+
-Pj4KPj4+Pj4+IENvbmNsdXNpb246IHRoZSBmaXJtd2FyZSBzZWVtcyBpbmNvbXBsZXRlIGZvciBJ
-QlNTIG1vZGUgb3BlcmF0aW9uLiBJcwo+Pj4+Pj4gdGhlcmUgYW55IHBsYW5uZWQgZGV2ZWxvcG1l
-bnQgb24gdGhlIElCU1MgbW9kZSBpbiB0aGUgZmlybXdhcmU/Cj4+Pj4+Pgo+Pj4+Pj4gTm90ZTog
-SSBkaWQgbXkgdGVzdHMgd2l0aCB0aGUgZmlybXdhcmUtMi5iaW5fOTk5Ljk5OS4wLjYzNiBmaXJt
-d2FyZS4KPj4+Pj4KPj4+Pj4KPj4+Pj4gQmVuIGhhcyByZWNlbnRseSBhZGRlZCBJQlNTIHN1cHBv
-cnQgZm9yIGhpcyAxMC4xIGZpcm13YXJlIGZvcms6Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IGh0dHA6Ly90
-aHJlYWQuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmRyaXZlcnMuYXRoMTBrLmRldmVsLzEwMjMvZm9j
-dXM9MTAyNgo+Pj4+Pgo+Pj4+PiBZb3UgbWlnaHQgYmUgaW50ZXJlc3RlZCBpbiBnaXZpbmcgaXQg
-YSB0cnkuCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IE1pY2hhxYIKPj4+Pgo+Pj4+Cj4+Pj4gX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+PiBhdGgxMGsgbWFpbGlu
-ZyBsaXN0Cj4+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+PiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Cj4+Pgo+Pj4gLS0KPj4+
-IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Pj4gQ2FuZGVsYSBUZWNobm9s
-b2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Pj4KPj4+Cj4+PiBfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gYXRoMTBrIG1haWxp
-bmcgbGlzdAo+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+IGh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> mac80211 already requests WMM per vif but firmware
+> wasn't able to handle this until now. However new
+> wmi-tlv firmware for qca6174 is capable of this.
+>
+> This prepares per-vif WMM param setup.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+Thanks, all three patches applied to ath.git.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
