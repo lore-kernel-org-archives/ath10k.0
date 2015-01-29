@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGoDm-0003H8-Nr
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 12:29:19 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: change dma beacon cmd prototype
-References: <1421412811-6387-1-git-send-email-michal.kazior@tieto.com>
- <1422440525-11115-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 29 Jan 2015 14:28:46 +0200
-In-Reply-To: <1422440525-11115-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 28 Jan 2015 11:22:04 +0100")
-Message-ID: <87zj9122kh.fsf@kamboji.qca.qualcomm.com>
+ id 1YGoGm-0005Ff-JT
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 12:32:25 +0000
+Date: Thu, 29 Jan 2015 18:01:47 +0530
+From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+Subject: Re: [PATCH] ath10k:Prevent setting wrong key idx for station
+Message-ID: <20150129123145.GA11854@senthilj-ThinkPad-L430>
+References: <1422369059-21274-1-git-send-email-senthilb@qti.qualcomm.com>
+ <54C7C3B7.4020706@candelatech.com>
+ <87fvat3ml0.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <87fvat3ml0.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: "Valo, Kalle" <kvalo@qca.qualcomm.com>
+Cc: "Balasubramanian, Senthil Kumar" <senthilb@qti.qualcomm.com>, Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+On Thu, Jan 29, 2015 at 04:01:07PM +0530, Valo, Kalle wrote:
+> Ben Greear <greearb@candelatech.com> writes:
+> 
+> > On 01/27/2015 06:30 AM, senthilb@qti.qualcomm.com wrote:
+> >> From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+> >> 
+> >> Ath10k driver sets wrong default key idx that results in
+> >> sending unicast frames with multicast key.
+> >
+> > Is this something that should be back-ported to stable releases?
+> 
+> Sure, if somebody cares about WEP that much :) 
+> 
+> Should I add CC stable to the patch?
+> 
+> -- 
+> Kalle Valo
 
-> The command logic shouldn't really care about
-> arvif structure.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-There was a conflict but 3-way merge automatically solved. Please check
-the result any in the pending branch.
-
--- 
-Kalle Valo
+Considering the size of the patch  and WEP alg which is least used, I dont see
+this change as  candidate for stable release backport.
 
 _______________________________________________
 ath10k mailing list
