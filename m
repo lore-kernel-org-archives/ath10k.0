@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGsJ6-0004nw-SN
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 16:51:05 +0000
-Message-ID: <54CA64E2.2050502@candelatech.com>
-Date: Thu, 29 Jan 2015 08:50:42 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-qg0-f50.google.com ([209.85.192.50])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YGvDk-0008S5-GM
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 19:57:45 +0000
+Received: by mail-qg0-f50.google.com with SMTP id f51so33382368qge.9
+ for <ath10k@lists.infradead.org>; Thu, 29 Jan 2015 11:57:22 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-3-git-send-email-michal.kazior@tieto.com>
- <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
- <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
-In-Reply-To: <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
+In-Reply-To: <CAFZrTr6VaTo0it0pjjTeUx0JebDt6ayywr=Z9gm02-7i+WkPDg@mail.gmail.com>
+References: <CAFZrTr7Cy5OA-mgNM=K4SGOy2BKmHjFVRG2_0azS0=hNKW6zew@mail.gmail.com>
+ <CALhHN=q+pL+JEC-n1bsa=WeksBKqbU336TcA3HsTKXz=7XCihQ@mail.gmail.com>
+ <CAFZrTr6VaTo0it0pjjTeUx0JebDt6ayywr=Z9gm02-7i+WkPDg@mail.gmail.com>
+Date: Thu, 29 Jan 2015 20:57:22 +0100
+Message-ID: <CAFZrTr5q9mOTP7wfgok8n9hnzF8ACt6AT7ELEdu813PWuBDvDg@mail.gmail.com>
+Subject: Fwd: Failed to start radar detection: -22 (Invalid argument)
+From: Jeremias Blendin <jeremias@blendin.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +26,122 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: YanBo <dreamfly281@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 01/28/2015 11:57 PM, Michal Kazior wrote:
-> On 29 January 2015 at 02:32, YanBo <dreamfly281@gmail.com> wrote:
->> Hi Michal,
+Sorry, forgot to add the list
+
+---------- Forwarded message ----------
+From: Jeremias Blendin <jeremias@blendin.org>
+Date: 2015-01-29 20:29 GMT+01:00
+Subject: Re: Failed to start radar detection: -22 (Invalid argument)
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+
+
+Hi,
+
+thanks for the reply. I already use the latest regulatory db. If I set
+the country to DE or EU, I do not get DFS-ETSI. Also it seems that the
+driver stays with US when I use the modprobe config for cfg80211:
+[ 2230.123217] cfg80211: Calling CRDA for country: EU
+[ 2230.424986] ath10k_pci 0000:04:00.0: irq 87 for MSI/MSI-X
+[ 2230.475776] ath10k: pci irq MSI irq_mode 0 reset_mode 0
+[ 2231.454959] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
+10.1.467.2-1 api 2 htt 2.1
+[ 2231.998004] ath: EEPROM regdomain: 0x0
+[ 2231.998009] ath: EEPROM indicates default country code should be used
+[ 2231.998012] ath: doing EEPROM country->regdmn map search
+[ 2231.998014] ath: country maps to regdmn code: 0x3a
+[ 2231.998016] ath: Country alpha2 being used: US
+[ 2231.998018] ath: Regpair used: 0x3a
+[ 2232.022444] systemd-udevd[4364]: renamed network interface wlan0 to wlan1
+[ 2233.275022] cfg80211: Calling CRDA for country: US
+[ 2233.278712] cfg80211: Regulatory domain changed to country: US
+[ 2233.278718] cfg80211:  DFS Master region: unset
+[ 2233.278720] cfg80211:   (start_freq - end_freq @ bandwidth),
+(max_antenna_gain, max_eirp), (dfs_cac_time)
+[ 2233.278724] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz),
+(N/A, 3000 mBm), (N/A)
+[ 2233.278728] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz,
+160000 KHz AUTO), (N/A, 1700 mBm), (N/A)
+[ 2233.278731] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz,
+160000 KHz AUTO), (N/A, 2300 mBm), (0 s)
+[ 2233.278734] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz),
+(N/A, 3000 mBm), (N/A)
+[ 2233.278737] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000
+KHz), (N/A, 4000 mBm), (N/A)
+
+When I use iw reg set DE this happens:
+
+# iw reg get
+country DE: DFS-UNSET
+(2400 - 2483 @ 40), (N/A, 20)
+(5150 - 5250 @ 80), (N/A, 20), NO-OUTDOOR
+(5250 - 5350 @ 80), (N/A, 20), NO-OUTDOOR, DFS
+(5470 - 5725 @ 160), (N/A, 26), DFS
+(57000 - 66000 @ 2160), (N/A, 40)
+
+Could it be that I need to change the EEPROM?
+
+Thanks!
+
+2015-01-29 6:29 GMT+01:00 Janusz Dziedzic <janusz.dziedzic@tieto.com>:
+> On 28 January 2015 at 23:59, Jeremias Blendin <jeremias@blendin.org> wrote:
+>> Hi,
 >>
->> What the conclusion about this patch, it  looks like this patch not be
->> merged into ath10K due to introduce some unstable issue, I'v got
->> another issue that when move the station enter hibernate mode. the AP
->> will continue report message like before
->> [ 3958.681293] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3959.681449] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3960.681696] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3961.681877] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3962.682080] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3963.682361] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3964.682550] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
->> [ 3965.682743] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
->> 00:03:7f:40:04:5b
-> 
-> The spurious STA kickout alone is most likely an aftermath of HTX Tx
-> credit starvation when client was detected as inactive by hostapd and
-> was subsequently disassociated. However due to starvation
-> wmi-peer-delete was never sent to firmware so fw thinks the peer is
-> still there.
-> 
-> I suppose fw should be restarted when ath10k is unable to submit a
-> configuration command like wmi-peer-delete. It doesn't make sense to
-> continue since fw-host state loses coherency and weird things can
-> start to happen (spurious sta kickout is the best known example).
-
-At least some of the tx-credits problem is in firmware, but
-regardless of that:
-
-Instead of restarting firmware in this case, maybe change the
-'wait-for-3-seconds' timeout to 3 1-second timeouts, and
-on second timeout force a flush, ignoring tx-credits if
-required?  That may not be pretty, but seems better than resetting
-firmware if it works.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+>> I am having issues to get a ath10k wifi card working and I did not
+>> find any information on the -22 error code:
+>>
+>> HT40: control channel: 52  secondary channel: 56
+>> Completing interface initialization
+>> Mode: IEEE 802.11a  Channel: 52  Frequency: 5260 MHz
+>> DFS 4 channels required radar detection
+>> DFS all channels available, (SKIP CAC): no
+>> DFS 0 chans unavailable - choose other channel: no
+>> wlan1: interface state HT_SCAN->DFS
+>> DFS start CAC on 5260 MHz
+>> wlan1: DFS-CAC-START freq=5260 chan=52 sec_chan=1, width=1, seg0=58,
+>> seg1=0, cac_time=60s
+>> nl80211: Start radar detection (CAC) 5260 MHz (ht_enabled=1,
+>> vht_enabled=1, bandwidth=80 MHz, cf1=5290 MHz, cf2=0 MHz)
+>> nl80211: Failed to start radar detection: -22 (Invalid argument)
+>> DFS start_dfs_cac() failed, -1
+>> Interface initialization failed
+>> wlan1: interface state DFS->DISABLED
+>> wlan1: AP-DISABLED
+>> ....
+>>
+>> System information:
+>> Linux kyushu 3.16.0-29-generic #39-Ubuntu SMP Mon Dec 15 22:27:29 UTC
+>> 2014 x86_64 x86_64 x86_64 GNU/Linux
+>> Firmware:
+>> [   15.060828] ath10k: pci irq MSI irq_mode 0 reset_mode 0
+>> [   16.919940] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
+>> 10.1.467.2-1 api 2 htt 2.1
+>> Country:
+>> iw reg get
+>> country DE: DFS-UNSET
+> DFS region, this is an issue. Update your regulatory database
+> (CRDA/WirelessDB) or db.txt in case you are using internal regulatory
+> from kernel.
+> You should have country DE: DFS-ETSI
+>
+> BR
+> Janusz
+>
+>> (2400 - 2483 @ 40), (N/A, 20)
+>> (5150 - 5250 @ 80), (N/A, 20), NO-OUTDOOR
+>> (5250 - 5350 @ 80), (N/A, 20), NO-OUTDOOR, DFS
+>> (5470 - 5725 @ 80), (N/A, 26), DFS
+>> (57240 - 65880 @ 2160), (N/A, 40), NO-OUTDOOR
+>>
+>> Any ideas what could be the issue?
+>>
+>> Jeremias
+>>
+>> _______________________________________________
+>> ath10k mailing list
+>> ath10k@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
