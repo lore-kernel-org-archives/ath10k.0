@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGm7r-0006XM-M2
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:15:04 +0000
+ id 1YGmAJ-0008MU-51
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:17:35 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: move wmm param storage to vif
-References: <1421657623-11706-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 29 Jan 2015 12:14:12 +0200
-In-Reply-To: <1421657623-11706-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 19 Jan 2015 09:53:41 +0100")
-Message-ID: <87zj913nd7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: implement sta keepalive command
+References: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 29 Jan 2015 12:16:59 +0200
+In-Reply-To: <1421749440-10457-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 20 Jan 2015 11:23:59 +0100")
+Message-ID: <87vbjp3n8k.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,19 +24,21 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> mac80211 already requests WMM per vif but firmware
-> wasn't able to handle this until now. However new
-> wmi-tlv firmware for qca6174 is capable of this.
+> From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 >
-> This prepares per-vif WMM param setup.
+> New wmi-tlv firmware for qca6174 has STA keepalive
+> service available. The service can provide
+> automatic idle connection polling via NullFunc
+> frames to AP when acting as a client.
 >
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, all three patches applied to ath.git.
+Thanks, both patches applied to ath.git.
 
 -- 
 Kalle Valo
