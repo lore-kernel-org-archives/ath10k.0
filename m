@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGqaL-0004fU-NX
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 15:00:46 +0000
-Message-ID: <54CA4B06.10807@candelatech.com>
-Date: Thu, 29 Jan 2015 07:00:22 -0800
+ id 1YGsJ6-0004nw-SN
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 16:51:05 +0000
+Message-ID: <54CA64E2.2050502@candelatech.com>
+Date: Thu, 29 Jan 2015 08:50:42 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k:Prevent setting wrong key idx for station
-References: <1422369059-21274-1-git-send-email-senthilb@qti.qualcomm.com>	<54C7C3B7.4020706@candelatech.com>
- <87fvat3ml0.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87fvat3ml0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-3-git-send-email-michal.kazior@tieto.com>
+ <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
+ <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
+In-Reply-To: <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +22,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: senthilb@qti.qualcomm.com, SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: YanBo <dreamfly281@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I didn't realize it was only about WEP...probably not worth bothering
-stable for just that.
+On 01/28/2015 11:57 PM, Michal Kazior wrote:
+> On 29 January 2015 at 02:32, YanBo <dreamfly281@gmail.com> wrote:
+>> Hi Michal,
+>>
+>> What the conclusion about this patch, it  looks like this patch not be
+>> merged into ath10K due to introduce some unstable issue, I'v got
+>> another issue that when move the station enter hibernate mode. the AP
+>> will continue report message like before
+>> [ 3958.681293] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3959.681449] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3960.681696] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3961.681877] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3962.682080] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3963.682361] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3964.682550] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+>> [ 3965.682743] ath10k_pci 0000:01:00.0: Spurious quick kickout for STA
+>> 00:03:7f:40:04:5b
+> 
+> The spurious STA kickout alone is most likely an aftermath of HTX Tx
+> credit starvation when client was detected as inactive by hostapd and
+> was subsequently disassociated. However due to starvation
+> wmi-peer-delete was never sent to firmware so fw thinks the peer is
+> still there.
+> 
+> I suppose fw should be restarted when ath10k is unable to submit a
+> configuration command like wmi-peer-delete. It doesn't make sense to
+> continue since fw-host state loses coherency and weird things can
+> start to happen (spurious sta kickout is the best known example).
+
+At least some of the tx-credits problem is in firmware, but
+regardless of that:
+
+Instead of restarting firmware in this case, maybe change the
+'wait-for-3-seconds' timeout to 3 1-second timeouts, and
+on second timeout force a flush, ignoring tx-credits if
+required?  That may not be pretty, but seems better than resetting
+firmware if it works.
 
 Thanks,
 Ben
 
-On 01/29/2015 02:31 AM, Kalle Valo wrote:
-> Ben Greear <greearb@candelatech.com> writes:
->
->> On 01/27/2015 06:30 AM, senthilb@qti.qualcomm.com wrote:
->>> From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
->>>
->>> Ath10k driver sets wrong default key idx that results in
->>> sending unicast frames with multicast key.
->>
->> Is this something that should be back-ported to stable releases?
->
-> Sure, if somebody cares about WEP that much :)
->
-> Should I add CC stable to the patch?
->
-
 -- 
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
