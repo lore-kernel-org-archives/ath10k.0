@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGjyz-00026k-1H
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 07:57:46 +0000
-Received: by mail-wi0-f171.google.com with SMTP id l15so22085182wiw.4
- for <ath10k@lists.infradead.org>; Wed, 28 Jan 2015 23:57:14 -0800 (PST)
+ id 1YGl4b-0000Vg-1p
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 09:07:37 +0000
+From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+Subject: [PATCH-RESEND] ath10k: add log level configuration for fw_dbglog
+Date: Thu, 29 Jan 2015 14:36:52 +0530
+Message-ID: <1422522412-10441-1-git-send-email-sjegadee@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
-References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
- <1397040531-6224-3-git-send-email-michal.kazior@tieto.com>
- <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
-Date: Thu, 29 Jan 2015 08:57:13 +0100
-Message-ID: <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
-Subject: Re: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +16,188 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: YanBo <dreamfly281@gmail.com>
-Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
 
-T24gMjkgSmFudWFyeSAyMDE1IGF0IDAyOjMyLCBZYW5CbyA8ZHJlYW1mbHkyODFAZ21haWwuY29t
-PiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiBXaGF0IHRoZSBjb25jbHVzaW9uIGFib3V0IHRoaXMg
-cGF0Y2gsIGl0ICBsb29rcyBsaWtlIHRoaXMgcGF0Y2ggbm90IGJlCj4gbWVyZ2VkIGludG8gYXRo
-MTBLIGR1ZSB0byBpbnRyb2R1Y2Ugc29tZSB1bnN0YWJsZSBpc3N1ZSwgSSd2IGdvdAo+IGFub3Ro
-ZXIgaXNzdWUgdGhhdCB3aGVuIG1vdmUgdGhlIHN0YXRpb24gZW50ZXIgaGliZXJuYXRlIG1vZGUu
-IHRoZSBBUAo+IHdpbGwgY29udGludWUgcmVwb3J0IG1lc3NhZ2UgbGlrZSBiZWZvcmUKPiBbIDM5
-NTguNjgxMjkzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291
-dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NTkuNjgxNDQ5XSBhdGgxMGtfcGNp
-IDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6
-NDA6MDQ6NWIKPiBbIDM5NjAuNjgxNjk2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlv
-dXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjEuNjgx
-ODc3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3Ig
-U1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjIuNjgyMDgwXSBhdGgxMGtfcGNpIDAwMDA6
-MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6
-NWIKPiBbIDM5NjMuNjgyMzYxXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVp
-Y2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjQuNjgyNTUwXSBh
-dGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4g
-MDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjUuNjgyNzQzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAu
-MDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKClRo
-ZSBzcHVyaW91cyBTVEEga2lja291dCBhbG9uZSBpcyBtb3N0IGxpa2VseSBhbiBhZnRlcm1hdGgg
-b2YgSFRYIFR4CmNyZWRpdCBzdGFydmF0aW9uIHdoZW4gY2xpZW50IHdhcyBkZXRlY3RlZCBhcyBp
-bmFjdGl2ZSBieSBob3N0YXBkIGFuZAp3YXMgc3Vic2VxdWVudGx5IGRpc2Fzc29jaWF0ZWQuIEhv
-d2V2ZXIgZHVlIHRvIHN0YXJ2YXRpb24Kd21pLXBlZXItZGVsZXRlIHdhcyBuZXZlciBzZW50IHRv
-IGZpcm13YXJlIHNvIGZ3IHRoaW5rcyB0aGUgcGVlciBpcwpzdGlsbCB0aGVyZS4KCkkgc3VwcG9z
-ZSBmdyBzaG91bGQgYmUgcmVzdGFydGVkIHdoZW4gYXRoMTBrIGlzIHVuYWJsZSB0byBzdWJtaXQg
-YQpjb25maWd1cmF0aW9uIGNvbW1hbmQgbGlrZSB3bWktcGVlci1kZWxldGUuIEl0IGRvZXNuJ3Qg
-bWFrZSBzZW5zZSB0bwpjb250aW51ZSBzaW5jZSBmdy1ob3N0IHN0YXRlIGxvc2VzIGNvaGVyZW5j
-eSBhbmQgd2VpcmQgdGhpbmdzIGNhbgpzdGFydCB0byBoYXBwZW4gKHNwdXJpb3VzIHN0YSBraWNr
-b3V0IGlzIHRoZSBiZXN0IGtub3duIGV4YW1wbGUpLgoKCj4gYW5kIHRoZXJlIGFyZSBhbHNvIGVy
-cm9yIG1lc3NhZ2UgbGlrZSB0aGlzIGJlIGhhcHBlbmVkIGF0IGVhcmx5IHRpbWU6Cj4KPgo+IFsg
-MTMxNi44ODMwNTNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRl
-diAwCj4KPiBbIDEzMTYuOTEyMzU3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRv
-IHRyYW5zbWl0IG1hbmFnZW1lbnQKPiBmcmFtZSB2aWEgV01JOiAtMTEKPgo+IFsgMTMxNi45ODU0
-NzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwCj4KPiBJ
-IHN1c3BlY3QgaXQgaXMgdHJpZ2dlcmVkIGFzIHlvdSBtZW50aW9uZWQgYmVjYXVzZSB0aGUgSFRD
-IFR4IGNyZWRpdHMKPiBhcmUgZHJhaW5lZAo+IHRvIDAgYW5kIG5vIG90aGVyIGNvbW1hbmRzIGNh
-biBiZSBzdWJtaXR0ZWQsICBpZiB0aGUgYW5zd2VyIGlzIHllcywKPiBJJ2QgaGVhciB5b3VyIHN1
-Z2dlc3Rpb24gYWJvdXQgd2hldGhlciB0aGlzIHBhdGNoIHN0aWxsICB3b3J0aCB0byBiZQo+IGNv
-bnRpbnVlIGltcHJvdmUgdG8gc29sdmUgc3VjaCBraW5kcyBvZiBpc3N1ZS4KClllcCwgbG9va3Mg
-bGlrZSB0aGUgc3RhcnZhdGlvbiBpc3N1ZS4KClRoZSBwcm9ibGVtIHdpdGggdGhlIHBhdGNoIGlz
-IGl0IGNyZWF0ZXMgdWdseSBsYXRlbmNpZXMuIFRoaXMgaGFzIGJlZW4KcmVwb3J0ZWQgYnkgQXZl
-cnlbMV0gKGhlIHVzZWQvdXNlcyB0aGlzIHBhdGNoIGludGVybmFsbHkgZm9yIGhpcwpwdXJwb3Nl
-cykuCgpJZGVhbGx5IG1nbXQgZnJhbWVzIHNob3VsZCBiZSBzZW50IHZpYSBIVFQuIDEwLjIgaXMg
-Y2FwYWJsZSBvZiBzZW5kaW5nCnJhdyBmcmFtZXMgdmlhIEhUVCBzbyBpdCBtaWdodCBiZSBwb3Nz
-aWJsZSB0byB1dGlsaXplIHRoYXQgYW5kIGZvcmdvCldNSSBtZ210IHR4IGZvciAxMC4yKy4gSSBk
-aWQgYSBwcm9vZi1vZi1jb25jZXB0IGZvciByYXcgdHggb24gMTAuMgpzb21lIHRpbWUgYWdvIFsy
-XSBidXQgSSdtIGhhdmVuJ3QgdGVzdGVkIGhvdyBpdCBpbnRlcmFjdHMgd2l0aApwb3dlcnNhdmUg
-YnVmZmVyaW5nLgoKClsxXTogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXguZHJp
-dmVycy5hdGgxMGsuZGV2ZWwvNjM4ClsyXTogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUu
-bGludXguZHJpdmVycy5hdGgxMGsuZGV2ZWwvMjQ2CgoKTWljaGHFggoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2F0aDEwawo=
+Introduce optional log level configuration for
+existing debugfs fw_dbglog.
+
+It allow users to configure desired log level
+for firmware debugs.
+
+To configure log level as WARN
+
+echo 0xffffffff  2 > /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
+
+Loglevel	Value
+VERBOSE		0
+INFO		1
+WARN		2
+ERR		3
+
+Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h    |  1 +
+ drivers/net/wireless/ath/ath10k/debug.c   | 30 +++++++++++++++++++++---------
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  7 ++++---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 ++--
+ drivers/net/wireless/ath/ath10k/wmi.c     |  5 +++--
+ 5 files changed, 31 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2d9f871..b4aecbd 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -345,6 +345,7 @@ struct ath10k_debug {
+
+ 	/* protected by conf_mutex */
+ 	u32 fw_dbglog_mask;
++	u32 fw_dbglog_level;
+ 	u32 pktlog_filter;
+ 	u32 reg_addr;
+ 	u32 nf_cal_period;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 42b2e49..b77c51a 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -1318,10 +1318,10 @@ static ssize_t ath10k_read_fw_dbglog(struct file *file,
+ {
+ 	struct ath10k *ar = file->private_data;
+ 	unsigned int len;
+-	char buf[32];
++	char buf[64];
+
+-	len = scnprintf(buf, sizeof(buf), "0x%08x\n",
+-			ar->debug.fw_dbglog_mask);
++	len = scnprintf(buf, sizeof(buf), "0x%08x %u\n",
++			ar->debug.fw_dbglog_mask, ar->debug.fw_dbglog_level);
+
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+ }
+@@ -1331,19 +1331,30 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
+ 				      size_t count, loff_t *ppos)
+ {
+ 	struct ath10k *ar = file->private_data;
+-	unsigned long mask;
+ 	int ret;
++	char buf[64];
++	unsigned int log_level, mask;
+
+-	ret = kstrtoul_from_user(user_buf, count, 0, &mask);
+-	if (ret)
+-		return ret;
++	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
++
++	/* make sure that buf is null terminated */
++	buf[sizeof(buf) - 1] = 0;
++
++	ret = sscanf(buf, "%x %u", &mask, &log_level);
++
++	if (!ret)
++		return -EINVAL;
+
+ 	mutex_lock(&ar->conf_mutex);
+
+ 	ar->debug.fw_dbglog_mask = mask;
++	ar->debug.fw_dbglog_level = (ret == 1) ? ATH10K_DBGLOG_LEVEL_WARN :
++				     log_level;
++
+
+ 	if (ar->state == ATH10K_STATE_ON) {
+-		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask);
++		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask,
++					    ar->debug.fw_dbglog_level);
+ 		if (ret) {
+ 			ath10k_warn(ar, "dbglog cfg failed from debugfs: %d\n",
+ 				    ret);
+@@ -1685,7 +1696,8 @@ int ath10k_debug_start(struct ath10k *ar)
+ 			    ret);
+
+ 	if (ar->debug.fw_dbglog_mask) {
+-		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask);
++		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask,
++					    ATH10K_DBGLOG_LEVEL_WARN);
+ 		if (ret)
+ 			/* not serious */
+ 			ath10k_warn(ar, "failed to enable dbglog during start: %d",
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 80bd28a..4517993 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -111,7 +111,8 @@ struct wmi_ops {
+ 					     enum wmi_force_fw_hang_type type,
+ 					     u32 delay_ms);
+ 	struct sk_buff *(*gen_mgmt_tx)(struct ath10k *ar, struct sk_buff *skb);
+-	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable);
++	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable,
++					  u32 log_level);
+ 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
+ 	struct sk_buff *(*gen_pktlog_disable)(struct ath10k *ar);
+ 	struct sk_buff *(*gen_pdev_set_quiet_mode)(struct ath10k *ar,
+@@ -821,14 +822,14 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
+ }
+
+ static inline int
+-ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable)
++ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable, u32 log_level)
+ {
+ 	struct sk_buff *skb;
+
+ 	if (!ar->wmi.ops->gen_dbglog_cfg)
+ 		return -EOPNOTSUPP;
+
+-	skb = ar->wmi.ops->gen_dbglog_cfg(ar, module_enable);
++	skb = ar->wmi.ops->gen_dbglog_cfg(ar, module_enable, log_level);
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index d3cf91dc..d3d5aea 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2044,8 +2044,8 @@ ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
+ }
+
+ static struct sk_buff *
+-ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
+-{
++ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
++				 u32 log_level) {
+ 	struct wmi_tlv_dbglog_cmd *cmd;
+ 	struct wmi_tlv *tlv;
+ 	struct sk_buff *skb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index d340361..2fa68ad 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4960,7 +4960,8 @@ ath10k_wmi_op_gen_force_fw_hang(struct ath10k *ar,
+ }
+
+ static struct sk_buff *
+-ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
++ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
++			     u32 log_level)
+ {
+ 	struct wmi_dbglog_cfg_cmd *cmd;
+ 	struct sk_buff *skb;
+@@ -4973,7 +4974,7 @@ ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
+ 	cmd = (struct wmi_dbglog_cfg_cmd *)skb->data;
+
+ 	if (module_enable) {
+-		cfg = SM(ATH10K_DBGLOG_LEVEL_VERBOSE,
++		cfg = SM(log_level,
+ 			 ATH10K_DBGLOG_CFG_LOG_LVL);
+ 	} else {
+ 		/* set back defaults, all modules with WARN level */
+--
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
