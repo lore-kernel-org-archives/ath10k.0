@@ -1,13 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-we0-x234.google.com ([2a00:1450:400c:c03::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGl4b-0000Vg-1p
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 09:07:37 +0000
-From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
-Subject: [PATCH-RESEND] ath10k: add log level configuration for fw_dbglog
-Date: Thu, 29 Jan 2015 14:36:52 +0530
-Message-ID: <1422522412-10441-1-git-send-email-sjegadee@qti.qualcomm.com>
+ id 1YGlyy-0000zV-DN
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 10:05:53 +0000
+Received: by mail-we0-f180.google.com with SMTP id m14so23057952wev.11
+ for <ath10k@lists.infradead.org>; Thu, 29 Jan 2015 02:05:29 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <CA+aCzhVyJ8U_qEZa_bsarAEWrmkc10UvBKPZMhxnYoRAkTw7MQ@mail.gmail.com>
+References: <CA+aCzhWdntL=qjstnE+YenW4bxE=D+ERKcNg+YLwOpgqBphWqg@mail.gmail.com>
+ <CA+BoTQmE782AvssBjtV1==K7HWWp7byge1RMYwWQ1vSVrBgPqA@mail.gmail.com>
+ <CA+aCzhUP2YEshygMZt2ZakAxgqhQ80eUJdyOrNG=wz68kv7wAg@mail.gmail.com>
+ <54C7B3A5.4090005@candelatech.com>
+ <CAEFj987na1zmeoKvYsDBdk+aioDd-msaAsWWrWs=+miQz2WUyQ@mail.gmail.com>
+ <CA+aCzhVyJ8U_qEZa_bsarAEWrmkc10UvBKPZMhxnYoRAkTw7MQ@mail.gmail.com>
+Date: Thu, 29 Jan 2015 18:05:29 +0800
+Message-ID: <CAEFj985rQsPs_ZdC++Qw2sGRC9rYiW4NXhq_x6M7gf97TETjjA@mail.gmail.com>
+Subject: Re: [ath10k] IBSS mode
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,188 +25,84 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+To: Sylvain ROGER RIEUNIER <sylvain.roger.rieunier@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-Introduce optional log level configuration for
-existing debugfs fw_dbglog.
-
-It allow users to configure desired log level
-for firmware debugs.
-
-To configure log level as WARN
-
-echo 0xffffffff  2 > /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
-
-Loglevel	Value
-VERBOSE		0
-INFO		1
-WARN		2
-ERR		3
-
-Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.h    |  1 +
- drivers/net/wireless/ath/ath10k/debug.c   | 30 +++++++++++++++++++++---------
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  7 ++++---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  4 ++--
- drivers/net/wireless/ath/ath10k/wmi.c     |  5 +++--
- 5 files changed, 31 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 2d9f871..b4aecbd 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -345,6 +345,7 @@ struct ath10k_debug {
-
- 	/* protected by conf_mutex */
- 	u32 fw_dbglog_mask;
-+	u32 fw_dbglog_level;
- 	u32 pktlog_filter;
- 	u32 reg_addr;
- 	u32 nf_cal_period;
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 42b2e49..b77c51a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1318,10 +1318,10 @@ static ssize_t ath10k_read_fw_dbglog(struct file *file,
- {
- 	struct ath10k *ar = file->private_data;
- 	unsigned int len;
--	char buf[32];
-+	char buf[64];
-
--	len = scnprintf(buf, sizeof(buf), "0x%08x\n",
--			ar->debug.fw_dbglog_mask);
-+	len = scnprintf(buf, sizeof(buf), "0x%08x %u\n",
-+			ar->debug.fw_dbglog_mask, ar->debug.fw_dbglog_level);
-
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
- }
-@@ -1331,19 +1331,30 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
- 				      size_t count, loff_t *ppos)
- {
- 	struct ath10k *ar = file->private_data;
--	unsigned long mask;
- 	int ret;
-+	char buf[64];
-+	unsigned int log_level, mask;
-
--	ret = kstrtoul_from_user(user_buf, count, 0, &mask);
--	if (ret)
--		return ret;
-+	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-+
-+	/* make sure that buf is null terminated */
-+	buf[sizeof(buf) - 1] = 0;
-+
-+	ret = sscanf(buf, "%x %u", &mask, &log_level);
-+
-+	if (!ret)
-+		return -EINVAL;
-
- 	mutex_lock(&ar->conf_mutex);
-
- 	ar->debug.fw_dbglog_mask = mask;
-+	ar->debug.fw_dbglog_level = (ret == 1) ? ATH10K_DBGLOG_LEVEL_WARN :
-+				     log_level;
-+
-
- 	if (ar->state == ATH10K_STATE_ON) {
--		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask);
-+		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask,
-+					    ar->debug.fw_dbglog_level);
- 		if (ret) {
- 			ath10k_warn(ar, "dbglog cfg failed from debugfs: %d\n",
- 				    ret);
-@@ -1685,7 +1696,8 @@ int ath10k_debug_start(struct ath10k *ar)
- 			    ret);
-
- 	if (ar->debug.fw_dbglog_mask) {
--		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask);
-+		ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask,
-+					    ATH10K_DBGLOG_LEVEL_WARN);
- 		if (ret)
- 			/* not serious */
- 			ath10k_warn(ar, "failed to enable dbglog during start: %d",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 80bd28a..4517993 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -111,7 +111,8 @@ struct wmi_ops {
- 					     enum wmi_force_fw_hang_type type,
- 					     u32 delay_ms);
- 	struct sk_buff *(*gen_mgmt_tx)(struct ath10k *ar, struct sk_buff *skb);
--	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable);
-+	struct sk_buff *(*gen_dbglog_cfg)(struct ath10k *ar, u32 module_enable,
-+					  u32 log_level);
- 	struct sk_buff *(*gen_pktlog_enable)(struct ath10k *ar, u32 filter);
- 	struct sk_buff *(*gen_pktlog_disable)(struct ath10k *ar);
- 	struct sk_buff *(*gen_pdev_set_quiet_mode)(struct ath10k *ar,
-@@ -821,14 +822,14 @@ ath10k_wmi_force_fw_hang(struct ath10k *ar,
- }
-
- static inline int
--ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable)
-+ath10k_wmi_dbglog_cfg(struct ath10k *ar, u32 module_enable, u32 log_level)
- {
- 	struct sk_buff *skb;
-
- 	if (!ar->wmi.ops->gen_dbglog_cfg)
- 		return -EOPNOTSUPP;
-
--	skb = ar->wmi.ops->gen_dbglog_cfg(ar, module_enable);
-+	skb = ar->wmi.ops->gen_dbglog_cfg(ar, module_enable, log_level);
- 	if (IS_ERR(skb))
- 		return PTR_ERR(skb);
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index d3cf91dc..d3d5aea 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2044,8 +2044,8 @@ ath10k_wmi_tlv_op_gen_force_fw_hang(struct ath10k *ar,
- }
-
- static struct sk_buff *
--ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
--{
-+ath10k_wmi_tlv_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
-+				 u32 log_level) {
- 	struct wmi_tlv_dbglog_cmd *cmd;
- 	struct wmi_tlv *tlv;
- 	struct sk_buff *skb;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index d340361..2fa68ad 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4960,7 +4960,8 @@ ath10k_wmi_op_gen_force_fw_hang(struct ath10k *ar,
- }
-
- static struct sk_buff *
--ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
-+ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable,
-+			     u32 log_level)
- {
- 	struct wmi_dbglog_cfg_cmd *cmd;
- 	struct sk_buff *skb;
-@@ -4973,7 +4974,7 @@ ath10k_wmi_op_gen_dbglog_cfg(struct ath10k *ar, u32 module_enable)
- 	cmd = (struct wmi_dbglog_cfg_cmd *)skb->data;
-
- 	if (module_enable) {
--		cfg = SM(ATH10K_DBGLOG_LEVEL_VERBOSE,
-+		cfg = SM(log_level,
- 			 ATH10K_DBGLOG_CFG_LOG_LVL);
- 	} else {
- 		/* set back defaults, all modules with WARN level */
---
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGksIFN5bHZhaW4KCkFyZSB5b3UgdXNpbmcgdGhlIGRyaXZlciBmcm9tIGh0dHBzOi8vZ2l0aHVi
+LmNvbS9rdmFsby9hdGg/IE1heWJlCnRoZXJlIGFyZSBwYXRjaGVzIG1pc3NpbmcuCgotLS0KQ2h1
+bi1ZZW93CgpPbiBXZWQsIEphbiAyOCwgMjAxNSBhdCA0OjM0IFBNLCBTeWx2YWluIFJPR0VSIFJJ
+RVVOSUVSCjxzeWx2YWluLnJvZ2VyLnJpZXVuaWVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4gV2l0aCB0
+aGUgbWFpbiBmaXJtd2FyZSwgd2hlbiBzdGFydGluZyAgMiBBdGgxMGsgc3RhdGlvbnMsIHRoZSBz
+dGF0aW9ucwo+IGhhdmUgZGlmZmVyZW50IEJTU0lELiBUaGUgbWVyZ2UgaXMgbm90IGhhcHBlbmlu
+ZyBjb3JyZWN0bHkuIFRoaXMgaXMKPiBkdWUgdG8gYSBiYWQgIHNjYW4gYW5kIGEgQmFkIFRTRiBt
+YW5hZ2VtZW50Lgo+IFdpdGggQ1QgRmlybXdhcmUgVGhlIHN0YXRpb25zIHNwbGl0IGRpZG4ndCBo
+YXBwZW4uCj4KPiBTeWx2YWluCj4KPiAyMDE1LTAxLTI4IDM6MDYgR01UKzAxOjAwIFllb2ggQ2h1
+bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwuY29tPjoKPj4gRm9yIHRoZSByYXRlIGNvbnRyb2wg
+aXNzdWUsIHBsZWFzZSBtYWtlIHN1cmUgdGhhdCBzdGEtPnN0YS53bWUgPSB0cnVlIGluIGlic3Mu
+Ywo+Pgo+PiBSZWZlciB0aGUgZm9sbG93aW5nOgo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9waXBlcm1haWwvYXRoMTBrLzIwMTQtRGVjZW1iZXIvMDAzOTgyLmh0bWwKPj4KPj4gRm9yIENU
+IGZpcm13YXJlLCB5b3UgaGF2ZSBtZW50aW9uZWQgdGhhdCAiYXNzb2NpYXRpb24gYmV0d2VlbiBz
+dGF0aW9ucwo+PiB3b3JrcyBiZXR0ZXIiLiBDYW4geW91IGVsYWJvcmF0ZSB0aGF0Pwo+Pgo+PiAt
+LS0tCj4+IENodW4tWWVvdwo+Pgo+PiBPbiBUdWUsIEphbiAyNywgMjAxNSBhdCAxMTo0OSBQTSwg
+QmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pj4KPj4+Cj4+PiBP
+biAwMS8yNy8yMDE1IDA1OjU1IEFNLCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSIHdyb3RlOgo+Pj4+
+Cj4+Pj4gRGVhciBNaWNoYWwsCj4+Pj4KPj4+PiBJIGhhdmUgYWxyZWFkeSB0cmllZCB0aGUgQ1Qg
+ZmlybXdhcmUuIEFzc29jaWF0aW9uIGJldHdlZW4gc3RhdGlvbnMKPj4+PiB3b3JrcyBiZXR0ZXIs
+IEJ1dCB0aGUgcmF0ZSBjb250cm9sIHVwZGF0ZSBpcyBzdGlsbCBicm9rZW4uCj4+Pj4gSXQgZG9l
+cyBub3Qgd29yayBpbiBIVCBtb2RlLgo+Pj4KPj4+Cj4+PiBSYXRlLWN0cmwgaXMgbm90IGEgcHJv
+YmxlbSB3aXRoIHRoZSBmaXJtd2FyZS4uLi5zb21lIHVzZXJzIGhhdmUgcmVwb3J0ZWQKPj4+IDcw
+ME1icHMgb3Igc28gaW4gSUJTUyBtb2RlIHdpdGggbXkgZmlybXdhcmUuCj4+Pgo+Pj4gSSBoYXZl
+bid0IG1hbmFnZWQgdG8gZ2V0IGtlcm5lbCBhbmQgc3VwcGxpY2FudCBwcm9wZXJseSBwYXRjaGVk
+IGZvciBhbGwKPj4+IHRoaXMgeWV0Li5idXQgd2lsbCBnZXQgaXQgZG9uZSBldmVudHVhbGx5IChh
+bmQgcGF0Y2hlcyBzaG91bGQgbWFrZSBpdCB1cAo+Pj4gc3RyZWFtIHNvbWV0aW1lIHNvb24gdG9v
+IEkgdGhpbmspLgo+Pj4KPj4+IFRoYW5rcywKPj4+IEJlbgo+Pj4KPj4+Cj4+Pj4KPj4+Pgo+Pj4+
+IFN5bHZhaW4KPj4+Pgo+Pj4+IDIwMTUtMDEtMjcgMTQ6MTggR01UKzAxOjAwIE1pY2hhbCBLYXpp
+b3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPjoKPj4+Pj4KPj4+Pj4gT24gMjcgSmFudWFyeSAy
+MDE1IGF0IDE0OjA4LCBTeWx2YWluIFJPR0VSIFJJRVVOSUVSCj4+Pj4+IDxzeWx2YWluLnJvZ2Vy
+LnJpZXVuaWVyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+Pj4+Pgo+Pj4+Pj4gSSBqdXN0IG1hZGUgc29t
+ZSB0ZXN0cyB3aXRoIHRoZSBhdGgxMGsgZHJpdmVyIGluIElCU1MgbW9kZSBhbmQgSSBmb3VuZAo+
+Pj4+Pj4gc2V2ZXJhbCBwcm9ibGVtczoKPj4+Pj4+Cj4+Pj4+PiAxKSBUU0YgbWFuYWdlbWVudCBj
+YW4ndCBiZSBkb25lIGNvcnJlY3RseS4gWW91IGNhbid0IG1ha2UgR0VULCBTRVQgb3IKPj4+Pj4+
+IFJFU0VUIGFjdGlvbnMsIGJlY2F1c2Ugbm8gY29tbWFuZCBpcyBzZW50IHRvIHRoZSBmaXJtd2Fy
+ZS4gSG93ZXZlciB0aGUKPj4+Pj4+IFdNSV9SVFRfVFNGX0NNRElEIGNvbW1hbmQgZXhpc3RzLiBJ
+IHRyaWVkIHNvbWUgY2hhbmdlcyAoc2VlIHBhdGNoKSwKPj4+Pj4+IGJ1dCB0aGV5IGRpZCBub3Qg
+cHJvZHVjZSBhbnkgZWZmZWN0Lgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBUaGlzIGlzbid0IGltcGxlbWVu
+dGVkIGluIGZpcm13YXJlIDYzNiBhcyBmYXIgYXMgSSBrbm93Lgo+Pj4+Pgo+Pj4+Pgo+Pj4+Pj4g
+MikgUmF0ZSBjb250cm9sIHVwZGF0ZSBpcyBub3QgZnVuY3Rpb25hbCBpbiB0aGUgZmlybXdhcmUu
+IERhdGEgcmF0ZSBpcwo+Pj4+Pj4gc3R1Y2sgYXQgMjUgTWJpdC9zIGJldHdlZW4gYW4gYXRoMTBr
+IElCU1Mgc3RhdGlvbiBhbmQgYW4gYXRoOWsgSUJTUwo+Pj4+Pj4gc3RhdGlvbi4gSG93ZXZlciB0
+aGUgcmF0ZSBjb250cm9sIHVwZGF0ZSB3b3JrcyBmaW5lIGluIG1hYzgwMjExIChJCj4+Pj4+PiBj
+aGVja2VkIGl0IHRoYW5rcyB0byBJQlNTIGRlYnVnIG1zZykgYW5kIElFIEhUIHNldHRpbmdzIGFy
+ZSBjb3JyZWN0bHkKPj4+Pj4+IHRyYW5zbWl0dGVkIG9uIGJvdGggc2lkZSAoSSBjaGVja2VkIGl0
+IHVzaW5nIGEgdGhpcmQgaW50ZXJmYWNlIGluCj4+Pj4+PiBtb25pdG9yIG1vZGUpLiBUaGUgYXRo
+MTBrX3dtaV9wZWVyX2Fzc29jIGNvbW1hbmQgZG9lcyBub3Qgc2VlbSB0byB3b3JrCj4+Pj4+PiBm
+b3IgcmVhc3NvYyBzdGF0ZSB0byB1cGRhdGUgZGF0YSByYXRlLgo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBK
+YW51c3ogaGFzIGRvbmUgc29tZSBwYXRjaGVzIHJlbGF0ZWQgdG8gdGhlIGh3IHJhdGUgY29udHJv
+bCBpc3N1ZXMKPj4+Pj4gd2l0aCBJQlNTIHJlY2VudGx5Ogo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBodHRw
+czovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC82MjdkOTg0MWVhYTYyM2UzNDY1N2FmN2Fm
+MGU2MjkzODA1ZTA3ODg4Cj4+Pj4+Cj4+Pj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgv
+Y29tbWl0LzU1ODg0YzA0NWQzMWEyOWNmNjlkYjgzMzJkMTA2NGExYjYxZGQxNTkKPj4+Pj4KPj4+
+Pj4KPj4+Pj4+IENvbmNsdXNpb246IHRoZSBmaXJtd2FyZSBzZWVtcyBpbmNvbXBsZXRlIGZvciBJ
+QlNTIG1vZGUgb3BlcmF0aW9uLiBJcwo+Pj4+Pj4gdGhlcmUgYW55IHBsYW5uZWQgZGV2ZWxvcG1l
+bnQgb24gdGhlIElCU1MgbW9kZSBpbiB0aGUgZmlybXdhcmU/Cj4+Pj4+Pgo+Pj4+Pj4gTm90ZTog
+SSBkaWQgbXkgdGVzdHMgd2l0aCB0aGUgZmlybXdhcmUtMi5iaW5fOTk5Ljk5OS4wLjYzNiBmaXJt
+d2FyZS4KPj4+Pj4KPj4+Pj4KPj4+Pj4gQmVuIGhhcyByZWNlbnRseSBhZGRlZCBJQlNTIHN1cHBv
+cnQgZm9yIGhpcyAxMC4xIGZpcm13YXJlIGZvcms6Cj4+Pj4+Cj4+Pj4+Cj4+Pj4+IGh0dHA6Ly90
+aHJlYWQuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmRyaXZlcnMuYXRoMTBrLmRldmVsLzEwMjMvZm9j
+dXM9MTAyNgo+Pj4+Pgo+Pj4+PiBZb3UgbWlnaHQgYmUgaW50ZXJlc3RlZCBpbiBnaXZpbmcgaXQg
+YSB0cnkuCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IE1pY2hhxYIKPj4+Pgo+Pj4+Cj4+Pj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+PiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0Cj4+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+PiBodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Cj4+Pgo+Pj4gLS0KPj4+
+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+Pj4gQ2FuZGVsYSBUZWNobm9s
+b2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQo+Pj4KPj4+Cj4+PiBfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4gYXRoMTBrIG1haWxp
+bmcgbGlzdAo+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
+aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
+dGluZm8vYXRoMTBrCg==
