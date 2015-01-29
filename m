@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x22a.google.com ([2607:f8b0:4001:c03::22a])
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGhfl-0000bl-0Y
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 05:29:46 +0000
-Received: by mail-ie0-f170.google.com with SMTP id y20so29435866ier.1
- for <ath10k@lists.infradead.org>; Wed, 28 Jan 2015 21:29:16 -0800 (PST)
+ id 1YGjyz-00026k-1H
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 07:57:46 +0000
+Received: by mail-wi0-f171.google.com with SMTP id l15so22085182wiw.4
+ for <ath10k@lists.infradead.org>; Wed, 28 Jan 2015 23:57:14 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAFZrTr7Cy5OA-mgNM=K4SGOy2BKmHjFVRG2_0azS0=hNKW6zew@mail.gmail.com>
-References: <CAFZrTr7Cy5OA-mgNM=K4SGOy2BKmHjFVRG2_0azS0=hNKW6zew@mail.gmail.com>
-Date: Thu, 29 Jan 2015 06:29:15 +0100
-Message-ID: <CALhHN=q+pL+JEC-n1bsa=WeksBKqbU336TcA3HsTKXz=7XCihQ@mail.gmail.com>
-Subject: Re: Failed to start radar detection: -22 (Invalid argument)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+In-Reply-To: <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
+References: <1396611464-5940-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-1-git-send-email-michal.kazior@tieto.com>
+ <1397040531-6224-3-git-send-email-michal.kazior@tieto.com>
+ <CAFuUQkiVB7DVXpBCrSy_LFMCm3CX9wPi_awq3x16FHDB2OmasA@mail.gmail.com>
+Date: Thu, 29 Jan 2015 08:57:13 +0100
+Message-ID: <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
+Subject: Re: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +23,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeremias Blendin <jeremias@blendin.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: YanBo <dreamfly281@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 28 January 2015 at 23:59, Jeremias Blendin <jeremias@blendin.org> wrote:
-> Hi,
->
-> I am having issues to get a ath10k wifi card working and I did not
-> find any information on the -22 error code:
->
-> HT40: control channel: 52  secondary channel: 56
-> Completing interface initialization
-> Mode: IEEE 802.11a  Channel: 52  Frequency: 5260 MHz
-> DFS 4 channels required radar detection
-> DFS all channels available, (SKIP CAC): no
-> DFS 0 chans unavailable - choose other channel: no
-> wlan1: interface state HT_SCAN->DFS
-> DFS start CAC on 5260 MHz
-> wlan1: DFS-CAC-START freq=5260 chan=52 sec_chan=1, width=1, seg0=58,
-> seg1=0, cac_time=60s
-> nl80211: Start radar detection (CAC) 5260 MHz (ht_enabled=1,
-> vht_enabled=1, bandwidth=80 MHz, cf1=5290 MHz, cf2=0 MHz)
-> nl80211: Failed to start radar detection: -22 (Invalid argument)
-> DFS start_dfs_cac() failed, -1
-> Interface initialization failed
-> wlan1: interface state DFS->DISABLED
-> wlan1: AP-DISABLED
-> ....
->
-> System information:
-> Linux kyushu 3.16.0-29-generic #39-Ubuntu SMP Mon Dec 15 22:27:29 UTC
-> 2014 x86_64 x86_64 x86_64 GNU/Linux
-> Firmware:
-> [   15.060828] ath10k: pci irq MSI irq_mode 0 reset_mode 0
-> [   16.919940] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
-> 10.1.467.2-1 api 2 htt 2.1
-> Country:
-> iw reg get
-> country DE: DFS-UNSET
-DFS region, this is an issue. Update your regulatory database
-(CRDA/WirelessDB) or db.txt in case you are using internal regulatory
-from kernel.
-You should have country DE: DFS-ETSI
-
-BR
-Janusz
-
-> (2400 - 2483 @ 40), (N/A, 20)
-> (5150 - 5250 @ 80), (N/A, 20), NO-OUTDOOR
-> (5250 - 5350 @ 80), (N/A, 20), NO-OUTDOOR, DFS
-> (5470 - 5725 @ 80), (N/A, 26), DFS
-> (57240 - 65880 @ 2160), (N/A, 40), NO-OUTDOOR
->
-> Any ideas what could be the issue?
->
-> Jeremias
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjkgSmFudWFyeSAyMDE1IGF0IDAyOjMyLCBZYW5CbyA8ZHJlYW1mbHkyODFAZ21haWwuY29t
+PiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiBXaGF0IHRoZSBjb25jbHVzaW9uIGFib3V0IHRoaXMg
+cGF0Y2gsIGl0ICBsb29rcyBsaWtlIHRoaXMgcGF0Y2ggbm90IGJlCj4gbWVyZ2VkIGludG8gYXRo
+MTBLIGR1ZSB0byBpbnRyb2R1Y2Ugc29tZSB1bnN0YWJsZSBpc3N1ZSwgSSd2IGdvdAo+IGFub3Ro
+ZXIgaXNzdWUgdGhhdCB3aGVuIG1vdmUgdGhlIHN0YXRpb24gZW50ZXIgaGliZXJuYXRlIG1vZGUu
+IHRoZSBBUAo+IHdpbGwgY29udGludWUgcmVwb3J0IG1lc3NhZ2UgbGlrZSBiZWZvcmUKPiBbIDM5
+NTguNjgxMjkzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291
+dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NTkuNjgxNDQ5XSBhdGgxMGtfcGNp
+IDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6
+NDA6MDQ6NWIKPiBbIDM5NjAuNjgxNjk2XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlv
+dXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjEuNjgx
+ODc3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3Ig
+U1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjIuNjgyMDgwXSBhdGgxMGtfcGNpIDAwMDA6
+MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6
+NWIKPiBbIDM5NjMuNjgyMzYxXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVp
+Y2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjQuNjgyNTUwXSBh
+dGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4g
+MDA6MDM6N2Y6NDA6MDQ6NWIKPiBbIDM5NjUuNjgyNzQzXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAu
+MDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4gMDA6MDM6N2Y6NDA6MDQ6NWIKClRo
+ZSBzcHVyaW91cyBTVEEga2lja291dCBhbG9uZSBpcyBtb3N0IGxpa2VseSBhbiBhZnRlcm1hdGgg
+b2YgSFRYIFR4CmNyZWRpdCBzdGFydmF0aW9uIHdoZW4gY2xpZW50IHdhcyBkZXRlY3RlZCBhcyBp
+bmFjdGl2ZSBieSBob3N0YXBkIGFuZAp3YXMgc3Vic2VxdWVudGx5IGRpc2Fzc29jaWF0ZWQuIEhv
+d2V2ZXIgZHVlIHRvIHN0YXJ2YXRpb24Kd21pLXBlZXItZGVsZXRlIHdhcyBuZXZlciBzZW50IHRv
+IGZpcm13YXJlIHNvIGZ3IHRoaW5rcyB0aGUgcGVlciBpcwpzdGlsbCB0aGVyZS4KCkkgc3VwcG9z
+ZSBmdyBzaG91bGQgYmUgcmVzdGFydGVkIHdoZW4gYXRoMTBrIGlzIHVuYWJsZSB0byBzdWJtaXQg
+YQpjb25maWd1cmF0aW9uIGNvbW1hbmQgbGlrZSB3bWktcGVlci1kZWxldGUuIEl0IGRvZXNuJ3Qg
+bWFrZSBzZW5zZSB0bwpjb250aW51ZSBzaW5jZSBmdy1ob3N0IHN0YXRlIGxvc2VzIGNvaGVyZW5j
+eSBhbmQgd2VpcmQgdGhpbmdzIGNhbgpzdGFydCB0byBoYXBwZW4gKHNwdXJpb3VzIHN0YSBraWNr
+b3V0IGlzIHRoZSBiZXN0IGtub3duIGV4YW1wbGUpLgoKCj4gYW5kIHRoZXJlIGFyZSBhbHNvIGVy
+cm9yIG1lc3NhZ2UgbGlrZSB0aGlzIGJlIGhhcHBlbmVkIGF0IGVhcmx5IHRpbWU6Cj4KPgo+IFsg
+MTMxNi44ODMwNTNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRl
+diAwCj4KPiBbIDEzMTYuOTEyMzU3XSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRv
+IHRyYW5zbWl0IG1hbmFnZW1lbnQKPiBmcmFtZSB2aWEgV01JOiAtMTEKPgo+IFsgMTMxNi45ODU0
+NzZdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwCj4KPiBJ
+IHN1c3BlY3QgaXQgaXMgdHJpZ2dlcmVkIGFzIHlvdSBtZW50aW9uZWQgYmVjYXVzZSB0aGUgSFRD
+IFR4IGNyZWRpdHMKPiBhcmUgZHJhaW5lZAo+IHRvIDAgYW5kIG5vIG90aGVyIGNvbW1hbmRzIGNh
+biBiZSBzdWJtaXR0ZWQsICBpZiB0aGUgYW5zd2VyIGlzIHllcywKPiBJJ2QgaGVhciB5b3VyIHN1
+Z2dlc3Rpb24gYWJvdXQgd2hldGhlciB0aGlzIHBhdGNoIHN0aWxsICB3b3J0aCB0byBiZQo+IGNv
+bnRpbnVlIGltcHJvdmUgdG8gc29sdmUgc3VjaCBraW5kcyBvZiBpc3N1ZS4KClllcCwgbG9va3Mg
+bGlrZSB0aGUgc3RhcnZhdGlvbiBpc3N1ZS4KClRoZSBwcm9ibGVtIHdpdGggdGhlIHBhdGNoIGlz
+IGl0IGNyZWF0ZXMgdWdseSBsYXRlbmNpZXMuIFRoaXMgaGFzIGJlZW4KcmVwb3J0ZWQgYnkgQXZl
+cnlbMV0gKGhlIHVzZWQvdXNlcyB0aGlzIHBhdGNoIGludGVybmFsbHkgZm9yIGhpcwpwdXJwb3Nl
+cykuCgpJZGVhbGx5IG1nbXQgZnJhbWVzIHNob3VsZCBiZSBzZW50IHZpYSBIVFQuIDEwLjIgaXMg
+Y2FwYWJsZSBvZiBzZW5kaW5nCnJhdyBmcmFtZXMgdmlhIEhUVCBzbyBpdCBtaWdodCBiZSBwb3Nz
+aWJsZSB0byB1dGlsaXplIHRoYXQgYW5kIGZvcmdvCldNSSBtZ210IHR4IGZvciAxMC4yKy4gSSBk
+aWQgYSBwcm9vZi1vZi1jb25jZXB0IGZvciByYXcgdHggb24gMTAuMgpzb21lIHRpbWUgYWdvIFsy
+XSBidXQgSSdtIGhhdmVuJ3QgdGVzdGVkIGhvdyBpdCBpbnRlcmFjdHMgd2l0aApwb3dlcnNhdmUg
+YnVmZmVyaW5nLgoKClsxXTogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXguZHJp
+dmVycy5hdGgxMGsuZGV2ZWwvNjM4ClsyXTogaHR0cDovL3RocmVhZC5nbWFuZS5vcmcvZ21hbmUu
+bGludXguZHJpdmVycy5hdGgxMGsuZGV2ZWwvMjQ2CgoKTWljaGHFggoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
