@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YGoOv-0001Fi-RJ
- for ath10k@lists.infradead.org; Thu, 29 Jan 2015 12:40:50 +0000
+ id 1YGoTM-0002xX-91
+ for ath10k@lists.infradead.org; Thu, 29 Jan 2015 12:45:24 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH-RESEND] ath10k: add log level configuration for fw_dbglog
-References: <1422522412-10441-1-git-send-email-sjegadee@qti.qualcomm.com>
-Date: Thu, 29 Jan 2015 14:40:18 +0200
-In-Reply-To: <1422522412-10441-1-git-send-email-sjegadee@qti.qualcomm.com>
- (SenthilKumar Jegadeesan's message of "Thu, 29 Jan 2015 14:36:52
- +0530")
-Message-ID: <87vbjp2219.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: enable qca6174 hw3.2
+References: <1422534273-18427-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 29 Jan 2015 14:44:49 +0200
+In-Reply-To: <1422534273-18427-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 29 Jan 2015 13:24:33 +0100")
+Message-ID: <87r3ud21tq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,82 +23,51 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Introduce optional log level configuration for
-> existing debugfs fw_dbglog.
+> The 3.2 revision has a different target BMI
+> version so it wasn't recognized by ath10k (despite
+> the chip_id rev being on the supported list
+> already).
 >
-> It allow users to configure desired log level
-> for firmware debugs.
->
-> To configure log level as WARN
->
-> echo 0xffffffff  2 > /sys/kernel/debug/ieee80211/phy0/ath10k/fw_dbglog
->
-> Loglevel	Value
-> VERBOSE		0
-> INFO		1
-> WARN		2
-> ERR		3
->
-> Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-I did cosmetic changes to the log in the pending branch.
+But uses the same binaries as hw3.0?
 
-> @@ -1331,19 +1331,30 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
->  				      size_t count, loff_t *ppos)
->  {
->  	struct ath10k *ar = file->private_data;
-> -	unsigned long mask;
->  	int ret;
-> +	char buf[64];
-> +	unsigned int log_level, mask;
->
-> -	ret = kstrtoul_from_user(user_buf, count, 0, &mask);
-> -	if (ret)
-> -		return ret;
-> +	simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf, count);
-> +
-> +	/* make sure that buf is null terminated */
-> +	buf[sizeof(buf) - 1] = 0;
-> +
-> +	ret = sscanf(buf, "%x %u", &mask, &log_level);
-> +
-> +	if (!ret)
-> +		return -EINVAL;
->
->  	mutex_lock(&ar->conf_mutex);
->
->  	ar->debug.fw_dbglog_mask = mask;
-> +	ar->debug.fw_dbglog_level = (ret == 1) ? ATH10K_DBGLOG_LEVEL_WARN :
-> +				     log_level;
+> +	{
+> +		.id = QCA6174_HW_3_2_VERSION,
+> +		.name = "qca6174 hw3.2",
+> +		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+> +		.uart_pin = 6,
+> +		.fw = {
+> +			.dir = QCA6174_HW_3_0_FW_DIR,
+> +			.fw = QCA6174_HW_3_0_FW_FILE,
+> +			.otp = QCA6174_HW_3_0_OTP_FILE,
+> +			.board = QCA6174_HW_3_0_BOARD_DATA_FILE,
+> +			.board_size = QCA6174_BOARD_DATA_SZ,
+> +			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+> +		},
+> +	},
+>  };
 
-And I simplified this a bit, please review. Full patch in pending
-branch.
+I added this in pending branch to avoid people wondering why it uses 3.0
+binaries:
 
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -1345,12 +1345,14 @@ static ssize_t ath10k_write_fw_dbglog(struct file *file,
-        if (!ret)
-                return -EINVAL;
- 
-+       if (ret == 1)
-+               /* default if user did not specify */
-+               log_level = ATH10K_DBGLOG_LEVEL_WARN;
-+
-        mutex_lock(&ar->conf_mutex);
- 
-        ar->debug.fw_dbglog_mask = mask;
--       ar->debug.fw_dbglog_level = (ret == 1) ? ATH10K_DBGLOG_LEVEL_WARN :
--                                    log_level;
--
-+       ar->debug.fw_dbglog_level = log_level;
- 
-        if (ar->state == ATH10K_STATE_ON) {
-                ret = ath10k_wmi_dbglog_cfg(ar, ar->debug.fw_dbglog_mask,
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 36a8fcf349fa..310e12bc078a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -91,6 +91,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+                .patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+                .uart_pin = 6,
+                .fw = {
++                       /* uses same binaries as hw3.0 */
+                        .dir = QCA6174_HW_3_0_FW_DIR,
+                        .fw = QCA6174_HW_3_0_FW_FILE,
+                        .otp = QCA6174_HW_3_0_OTP_FILE,
 
 
 -- 
