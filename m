@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHAx4-0007md-J3
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 12:45:35 +0000
-Message-ID: <1422621903.1919.7.camel@sipsolutions.net>
+ id 1YHB9i-00088k-8w
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 12:58:38 +0000
+Message-ID: <1422622694.1919.17.camel@sipsolutions.net>
 Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
 From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 30 Jan 2015 13:45:03 +0100
+Date: Fri, 30 Jan 2015 13:58:14 +0100
 In-Reply-To: <1422621086-28970-3-git-send-email-michal.kazior@tieto.com>
  (sfid-20150130_133341_121083_F7682B5B)
 References: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
@@ -29,23 +29,23 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, 2015-01-30 at 13:31 +0100, Michal Kazior wrote:
 
-> +	INIT_LIST_HEAD(&ar->arctxs);
->  	INIT_LIST_HEAD(&ar->arvifs);
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
 
-I'm not sure why you have an interface list, but I'd say you don't need
-either since you have enumeration APIs:
+> @@ -277,6 +282,7 @@ struct ath10k_vif {
+>  	dma_addr_t beacon_paddr;
+>  
+>  	struct ath10k *ar;
+> +	struct ath10k_chanctx *arctx;
 
-ieee80211_iterate_active_interfaces[_atomic,...]
+you also have vif->chanctx_conf pointer, which you could use
 
-and
-
-ieee80211_iter_chan_contexts_atomic
-
-:)
+ultimately it's a software architecture decision - personally I wouldn't
+want to duplicate all that data and the lists etc. in the driver when
+mac80211 has them, but that's just my opinion. :)
 
 johannes
+
 
 
 _______________________________________________
