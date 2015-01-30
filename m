@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+Received: from mail-wg0-x22c.google.com ([2a00:1450:400c:c00::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YH70m-0006UP-UF
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 08:33:10 +0000
-Received: by mail-we0-f178.google.com with SMTP id k48so25739313wev.9
- for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 00:32:40 -0800 (PST)
+ id 1YH7AR-0002V2-0P
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 08:43:07 +0000
+Received: by mail-wg0-f44.google.com with SMTP id z12so25613604wgg.3
+ for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 00:42:44 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: defer AP self-peer removal wait
-Date: Fri, 30 Jan 2015 09:31:22 +0100
-Message-Id: <1422606682-12121-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 0/7] ath10k: add multi-channel support
+Date: Fri, 30 Jan 2015 09:41:20 +0100
+Message-Id: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +25,45 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Some firmware revisions don't notify host about
-self-bss-peer removal until after associated vdev
-is deleted. This has been observed with qca6174
-WLAN.RM.2.0-00073 firmware.
+New qca6174 with wmi-tlv firmware supports
+multi-channel operation. To make use of it
+ath10k needs a few changes: implement mac80211's
+chanctx API and rework tx queue control a bit.
 
-This patch fixes AP teardown slowdowns and
-prevents delays and warnings:
+There are still rough edges (involving seldom
+beacon reports from firmware causing beacon loss
+in some cases, etc). Hopefully this will be fixed
+either in driver or firmware eventually.
 
- ath10k_pci 0000:00:05.0: failed to remove peer for AP vdev 0: -110
- ath10k_pci 0000:00:05.0: removing stale peer xx:xx:xx:xx:xx:xx from vdev_id 0
- ath10k_pci 0000:00:05.0: peer-unmap-event: unknown peer id 24
- ath10k_pci 0000:00:05.0: peer-unmap-event: unknown peer id 8
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+Changes since RFC:
+ * I've sent `ath10k: defer AP self-peer removal
+   wait` separately now because it's not really 
+   required for multi-channel per se
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 15e47f4..75f2564 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3377,9 +3377,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 	list_del(&arvif->list);
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
--		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
-+		ret = ath10k_wmi_peer_delete(arvif->ar, arvif->vdev_id,
-+					     vif->addr);
- 		if (ret)
--			ath10k_warn(ar, "failed to remove peer for AP vdev %i: %d\n",
-+			ath10k_warn(ar, "failed to submit AP self-peer removal on vdev %i: %d\n",
- 				    arvif->vdev_id, ret);
- 
- 		kfree(arvif->u.ap.noa_data);
-@@ -3393,6 +3394,21 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
- 		ath10k_warn(ar, "failed to delete WMI vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
- 
-+	/* Some firmware revisions don't notify host about self-peer removal
-+	 * until after associated vdev is deleted.
-+	 */
-+	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
-+		ret = ath10k_wait_for_peer_deleted(ar, arvif->vdev_id,
-+						   vif->addr);
-+		if (ret)
-+			ath10k_warn(ar, "failed to remove AP self-peer on vdev %i: %d\n",
-+				    arvif->vdev_id, ret);
-+
-+		spin_lock_bh(&ar->data_lock);
-+		ar->num_peers--;
-+		spin_unlock_bh(&ar->data_lock);
-+	}
-+
- 	ath10k_peer_cleanup(ar, arvif->vdev_id);
- 
- 	mutex_unlock(&ar->conf_mutex);
+
+Michal Kazior (7):
+  ath10k: allow empty ssid vdev config
+  ath10k: implement chanctx API
+  ath10k: implement adaptive qcs command
+  ath10k: protect ar->arvifs linking with data_lock
+  ath10k: rework tx queue locking
+  ath10k: implement tx pause wmi event
+  ath10k: enable multi-channel on supported devices
+
+ drivers/net/wireless/ath/ath10k/core.c    |   1 +
+ drivers/net/wireless/ath/ath10k/core.h    |  16 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |  87 +++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  11 +-
+ drivers/net/wireless/ath/ath10k/mac.c     | 672 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/mac.h     |  57 +++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  16 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 118 +++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  46 ++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  18 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |   1 +
+ 11 files changed, 958 insertions(+), 85 deletions(-)
+
 -- 
 1.8.5.3
 
