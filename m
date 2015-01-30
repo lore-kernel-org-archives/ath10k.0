@@ -1,21 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHBFW-0003bR-9D
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:04:38 +0000
-Message-ID: <1422623054.1919.18.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 30 Jan 2015 14:04:14 +0100
-In-Reply-To: <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
- (sfid-20150130_140219_266074_71EA76C0)
+ id 1YHBHK-0005ra-8f
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:06:30 +0000
+Received: by mail-wg0-f45.google.com with SMTP id x12so26762607wgg.4
+ for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 05:06:08 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1422622694.1919.17.camel@sipsolutions.net>
 References: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-3-git-send-email-michal.kazior@tieto.com>
- <1422621903.1919.7.camel@sipsolutions.net>
- <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
- (sfid-20150130_140219_266074_71EA76C0)
-Mime-Version: 1.0
+ <1422622694.1919.17.camel@sipsolutions.net>
+Date: Fri, 30 Jan 2015 14:06:08 +0100
+Message-ID: <CA+BoTQkVuDqZVCVUB6pkDKp2tZ1sgnezju6Kg48JvnS4a_LZyA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +23,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, 2015-01-30 at 14:02 +0100, Michal Kazior wrote:
-
-> I recall that at least there's one case where using these helpers is
-> impossible: drv_config() which can be called while mac80211 is already
-> holding iflist_mtx. ath10k needs to iterate over vifs and issue
-> blocking commands sometimes so it can't use atomic/rcu versions
-> either.
-
-If you wanted to use it, I wouldn't be averse to adding a locked version
-that can only be used inside a few of such callbacks. With appropriate
-lockdep warnings that would be safe enough, I think.
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzAgSmFudWFyeSAyMDE1IGF0IDEzOjU4LCBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBz
+b2x1dGlvbnMubmV0PiB3cm90ZToKPgo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL2NvcmUuaAo+Cj4+IEBAIC0yNzcsNiArMjgyLDcgQEAgc3RydWN0IGF0aDEwa192aWYg
+ewo+PiAgICAgICBkbWFfYWRkcl90IGJlYWNvbl9wYWRkcjsKPj4KPj4gICAgICAgc3RydWN0IGF0
+aDEwayAqYXI7Cj4+ICsgICAgIHN0cnVjdCBhdGgxMGtfY2hhbmN0eCAqYXJjdHg7Cj4KPiB5b3Ug
+YWxzbyBoYXZlIHZpZi0+Y2hhbmN0eF9jb25mIHBvaW50ZXIsIHdoaWNoIHlvdSBjb3VsZCB1c2UK
+Pgo+IHVsdGltYXRlbHkgaXQncyBhIHNvZnR3YXJlIGFyY2hpdGVjdHVyZSBkZWNpc2lvbiAtIHBl
+cnNvbmFsbHkgSSB3b3VsZG4ndAo+IHdhbnQgdG8gZHVwbGljYXRlIGFsbCB0aGF0IGRhdGEgYW5k
+IHRoZSBsaXN0cyBldGMuIGluIHRoZSBkcml2ZXIgd2hlbgo+IG1hYzgwMjExIGhhcyB0aGVtLCBi
+dXQgdGhhdCdzIGp1c3QgbXkgb3Bpbmlvbi4gOikKCkknbSBhIGJpdCByZWx1Y3RhbnQgdG8gZnJl
+ZWx5IHVzZSBtYWM4MDIxMSBvd25lZCBzdHJ1Y3R1cmVzIG91dCBvZgptYWM4MDIxMV9vcHMgY2Fs
+bGJhY2sgY29udGV4dCwgaS5lLiBmcm9tIGEgdGFza2xldCBmZWFyaW5nCmluY29uc2lzdGVuY2ll
+cy4gT3IgYW0gSSB3b3JyeWluZyB1bm5lY2Vzc2FyaWx5PyBJZiBzbyBJIGd1ZXNzIEknbGwKcmVk
+byB0aGlzIGFuZCB1c2UgbWFjODAyMTEncyBzdHJ1Y3R1cmVzIGRpcmVjdGx5IDotKQoKCk1pY2hh
+xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
