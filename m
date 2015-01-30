@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHAlk-0000Sp-L3
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 12:33:53 +0000
-Received: by mail-we0-f177.google.com with SMTP id l61so26820733wev.8
- for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 04:33:30 -0800 (PST)
+ id 1YHAlp-0000TC-9i
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 12:33:58 +0000
+Received: by mail-we0-f171.google.com with SMTP id k11so24484576wes.2
+ for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 04:33:35 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 0/7] ath10k: add multi-channel support
-Date: Fri, 30 Jan 2015 13:31:19 +0100
-Message-Id: <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 4/7] ath10k: protect ar->arvifs linking with data_lock
+Date: Fri, 30 Jan 2015 13:31:23 +0100
+Message-Id: <1422621086-28970-5-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
 References: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
+ <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +28,54 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-New qca6174 with wmi-tlv firmware supports
-multi-channel operation. To make use of it
-ath10k needs a few changes: implement mac80211's
-chanctx API and rework tx queue control a bit.
+This will make it possible to iterate over
+interface list while in an atomic context,
+i.e. tasklet.
 
-There are still rough edges (involving seldom
-beacon reports from firmware causing beacon loss
-in some cases, etc). Hopefully this will be fixed
-either in driver or firmware eventually.
+Caller should still be careful with accessing
+arvif structures though.
 
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Changes since RFC:
- * I've sent `ath10k: defer AP self-peer removal
-   wait` separately now because it's not really
-   required for multi-channel per se
-
-v2:
- * fix null deref after rebasing
- * fix commit log typo
-
-Michal Kazior (7):
-  ath10k: allow empty ssid vdev config
-  ath10k: implement chanctx API
-  ath10k: implement adaptive qcs command
-  ath10k: protect ar->arvifs linking with data_lock
-  ath10k: rework tx queue locking
-  ath10k: implement tx pause wmi event
-  ath10k: enable multi-channel on supported devices
-
- drivers/net/wireless/ath/ath10k/core.c    |   1 +
- drivers/net/wireless/ath/ath10k/core.h    |  16 +
- drivers/net/wireless/ath/ath10k/htt_rx.c  |  87 +++-
- drivers/net/wireless/ath/ath10k/htt_tx.c  |  11 +-
- drivers/net/wireless/ath/ath10k/mac.c     | 682 ++++++++++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/mac.h     |  57 +++
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  16 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 118 +++++-
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  46 ++
- drivers/net/wireless/ath/ath10k/wmi.c     |  18 +-
- drivers/net/wireless/ath/ath10k/wmi.h     |   1 +
- 11 files changed, 966 insertions(+), 87 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index e099479..ba66a67 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3331,7 +3331,10 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	ar->free_vdev_map &= ~(1LL << arvif->vdev_id);
++
++	spin_lock_bh(&ar->data_lock);
+ 	list_add(&arvif->list, &ar->arvifs);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	/* It makes no sense to have firmware do keepalives. mac80211 already
+ 	 * takes care of this with idle connection polling.
+@@ -3458,7 +3461,9 @@ err_peer_delete:
+ err_vdev_delete:
+ 	ath10k_wmi_vdev_delete(ar, arvif->vdev_id);
+ 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
++	spin_lock_bh(&ar->data_lock);
+ 	list_del(&arvif->list);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ err:
+ 	if (arvif->beacon_buf) {
+@@ -3493,7 +3498,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 			    arvif->vdev_id, ret);
+ 
+ 	ar->free_vdev_map |= 1LL << arvif->vdev_id;
++
++	spin_lock_bh(&ar->data_lock);
+ 	list_del(&arvif->list);
++	spin_unlock_bh(&ar->data_lock);
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+ 		ret = ath10k_peer_delete(arvif->ar, arvif->vdev_id, vif->addr);
 -- 
 1.8.5.3
 
