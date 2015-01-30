@@ -1,21 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHBLq-0000pT-FA
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:11:11 +0000
-Message-ID: <1422623446.1919.20.camel@sipsolutions.net>
-Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
-From: Johannes Berg <johannes@sipsolutions.net>
-Date: Fri, 30 Jan 2015 14:10:46 +0100
-In-Reply-To: <CA+BoTQkVuDqZVCVUB6pkDKp2tZ1sgnezju6Kg48JvnS4a_LZyA@mail.gmail.com>
- (sfid-20150130_140608_974245_7EDC71FA)
+ id 1YHBWx-0005hE-2s
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:22:39 +0000
+Received: by mail-wg0-f52.google.com with SMTP id y19so26816650wgg.11
+ for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 05:22:17 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1422623054.1919.18.camel@sipsolutions.net>
 References: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-3-git-send-email-michal.kazior@tieto.com>
- <1422622694.1919.17.camel@sipsolutions.net>
- <CA+BoTQkVuDqZVCVUB6pkDKp2tZ1sgnezju6Kg48JvnS4a_LZyA@mail.gmail.com>
- (sfid-20150130_140608_974245_7EDC71FA)
-Mime-Version: 1.0
+ <1422621903.1919.7.camel@sipsolutions.net>
+ <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
+ <1422623054.1919.18.camel@sipsolutions.net>
+Date: Fri, 30 Jan 2015 14:22:16 +0100
+Message-ID: <CA+BoTQnkqzHNWTFSc9VB4_itCK_+jC6HC8GmdMKiyrhu-Sz9Cg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +25,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Johannes Berg <johannes@sipsolutions.net>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Fri, 2015-01-30 at 14:06 +0100, Michal Kazior wrote:
-
-> I'm a bit reluctant to freely use mac80211 owned structures out of
-> mac80211_ops callback context, i.e. from a tasklet fearing
-> inconsistencies. Or am I worrying unnecessarily? If so I guess I'll
-> redo this and use mac80211's structures directly :-)
-
-Yeah that's a concern, we were just looking at something similar.
-However, I think at least with channel contexts you should be fine since
-mac80211 never really modifies them much, except for the width and # of
-chains needed?
-
-We've recently seen a similar issue with vif->bss_conf, and I'm
-considering making that an RCU-protected pointer rather than the
-embedded sub-struct, that way mac80211 can replace it atomically when
-needed. I've yet to see if that's practical though.
-
-johannes
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzAgSmFudWFyeSAyMDE1IGF0IDE0OjA0LCBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBz
+b2x1dGlvbnMubmV0PiB3cm90ZToKPiBPbiBGcmksIDIwMTUtMDEtMzAgYXQgMTQ6MDIgKzAxMDAs
+IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4KPj4gSSByZWNhbGwgdGhhdCBhdCBsZWFzdCB0aGVyZSdz
+IG9uZSBjYXNlIHdoZXJlIHVzaW5nIHRoZXNlIGhlbHBlcnMgaXMKPj4gaW1wb3NzaWJsZTogZHJ2
+X2NvbmZpZygpIHdoaWNoIGNhbiBiZSBjYWxsZWQgd2hpbGUgbWFjODAyMTEgaXMgYWxyZWFkeQo+
+PiBob2xkaW5nIGlmbGlzdF9tdHguIGF0aDEwayBuZWVkcyB0byBpdGVyYXRlIG92ZXIgdmlmcyBh
+bmQgaXNzdWUKPj4gYmxvY2tpbmcgY29tbWFuZHMgc29tZXRpbWVzIHNvIGl0IGNhbid0IHVzZSBh
+dG9taWMvcmN1IHZlcnNpb25zCj4+IGVpdGhlci4KPgo+IElmIHlvdSB3YW50ZWQgdG8gdXNlIGl0
+LCBJIHdvdWxkbid0IGJlIGF2ZXJzZSB0byBhZGRpbmcgYSBsb2NrZWQgdmVyc2lvbgo+IHRoYXQg
+Y2FuIG9ubHkgYmUgdXNlZCBpbnNpZGUgYSBmZXcgb2Ygc3VjaCBjYWxsYmFja3MuIFdpdGggYXBw
+cm9wcmlhdGUKPiBsb2NrZGVwIHdhcm5pbmdzIHRoYXQgd291bGQgYmUgc2FmZSBlbm91Z2gsIEkg
+dGhpbmsuCgpZb3UnZCBwcm9iYWJseSBoYXZlIHRvIGFkZCBxdWl0ZSBhIGZldyBtdXRleF9sb2Nr
+KGlmbGlzdF9tdHgpIGFyb3VuZApkcnZfKigpIGNhbGxzIChub3QgZGlyZWN0bHkgYnV0IHNvbWV3
+aGVyZSBhdCB0aGVpciBjYWxsIHRyZWVzKSB0bwpndWFyYW50ZWUgZHJpdmVyIGNhbiB1c2UgbG9j
+ay1mcmVlIGl0ZXJhdGUoKSB2ZXJzaW9uICh3aGljaCBkb2Vzbid0CmV4aXN0IHlldCkuIFRoaXMg
+Y291bGQgYmUgdHJpY2t5LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
+MGsK
