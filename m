@@ -1,20 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22c.google.com ([2a00:1450:400c:c00::22c])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHBDd-0002ph-I9
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:02:42 +0000
-Received: by mail-wg0-f44.google.com with SMTP id z12so26811533wgg.3
- for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 05:02:18 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1422621903.1919.7.camel@sipsolutions.net>
+ id 1YHBFW-0003bR-9D
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 13:04:38 +0000
+Message-ID: <1422623054.1919.18.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 30 Jan 2015 14:04:14 +0100
+In-Reply-To: <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
+ (sfid-20150130_140219_266074_71EA76C0)
 References: <1422607287-12289-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-1-git-send-email-michal.kazior@tieto.com>
  <1422621086-28970-3-git-send-email-michal.kazior@tieto.com>
  <1422621903.1919.7.camel@sipsolutions.net>
-Date: Fri, 30 Jan 2015 14:02:18 +0100
-Message-ID: <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] ath10k: implement chanctx API
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQkdszYWbNJcV+1dDFsaSJ3aoTuC=ORUMr_aJx7_aQmcqw@mail.gmail.com>
+ (sfid-20150130_140219_266074_71EA76C0)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +24,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMzAgSmFudWFyeSAyMDE1IGF0IDEzOjQ1LCBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBz
-b2x1dGlvbnMubmV0PiB3cm90ZToKPiBPbiBGcmksIDIwMTUtMDEtMzAgYXQgMTM6MzEgKzAxMDAs
-IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4KPj4gKyAgICAgSU5JVF9MSVNUX0hFQUQoJmFyLT5hcmN0
-eHMpOwo+PiAgICAgICBJTklUX0xJU1RfSEVBRCgmYXItPmFydmlmcyk7Cj4KPiBJJ20gbm90IHN1
-cmUgd2h5IHlvdSBoYXZlIGFuIGludGVyZmFjZSBsaXN0LCBidXQgSSdkIHNheSB5b3UgZG9uJ3Qg
-bmVlZAo+IGVpdGhlciBzaW5jZSB5b3UgaGF2ZSBlbnVtZXJhdGlvbiBBUElzOgo+Cj4gaWVlZTgw
-MjExX2l0ZXJhdGVfYWN0aXZlX2ludGVyZmFjZXNbX2F0b21pYywuLi5dCj4KPiBhbmQKPgo+IGll
-ZWU4MDIxMV9pdGVyX2NoYW5fY29udGV4dHNfYXRvbWljCj4KPiA6KQoKSSByZWNhbGwgdGhhdCBh
-dCBsZWFzdCB0aGVyZSdzIG9uZSBjYXNlIHdoZXJlIHVzaW5nIHRoZXNlIGhlbHBlcnMgaXMKaW1w
-b3NzaWJsZTogZHJ2X2NvbmZpZygpIHdoaWNoIGNhbiBiZSBjYWxsZWQgd2hpbGUgbWFjODAyMTEg
-aXMgYWxyZWFkeQpob2xkaW5nIGlmbGlzdF9tdHguIGF0aDEwayBuZWVkcyB0byBpdGVyYXRlIG92
-ZXIgdmlmcyBhbmQgaXNzdWUKYmxvY2tpbmcgY29tbWFuZHMgc29tZXRpbWVzIHNvIGl0IGNhbid0
-IHVzZSBhdG9taWMvcmN1IHZlcnNpb25zCmVpdGhlci4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+On Fri, 2015-01-30 at 14:02 +0100, Michal Kazior wrote:
+
+> I recall that at least there's one case where using these helpers is
+> impossible: drv_config() which can be called while mac80211 is already
+> holding iflist_mtx. ath10k needs to iterate over vifs and issue
+> blocking commands sometimes so it can't use atomic/rcu versions
+> either.
+
+If you wanted to use it, I wouldn't be averse to adding a locked version
+that can only be used inside a few of such callbacks. With appropriate
+lockdep warnings that would be safe enough, I think.
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
