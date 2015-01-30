@@ -1,20 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from smtp.codeaurora.org ([198.145.11.231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHFly-0007Le-1X
- for ath10k@lists.infradead.org; Fri, 30 Jan 2015 17:54:27 +0000
-Received: by mail-wg0-f41.google.com with SMTP id a1so28287203wgh.0
- for <ath10k@lists.infradead.org>; Fri, 30 Jan 2015 09:53:58 -0800 (PST)
+ id 1YHKS4-0008OR-9a
+ for ath10k@lists.infradead.org; Fri, 30 Jan 2015 22:54:13 +0000
+Message-ID: <54CC0B71.9050301@codeaurora.org>
+Date: Fri, 30 Jan 2015 14:53:37 -0800
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CAFZrTr5q9mOTP7wfgok8n9hnzF8ACt6AT7ELEdu813PWuBDvDg@mail.gmail.com>
-References: <CAFZrTr7Cy5OA-mgNM=K4SGOy2BKmHjFVRG2_0azS0=hNKW6zew@mail.gmail.com>
- <CALhHN=q+pL+JEC-n1bsa=WeksBKqbU336TcA3HsTKXz=7XCihQ@mail.gmail.com>
- <CAFZrTr6VaTo0it0pjjTeUx0JebDt6ayywr=Z9gm02-7i+WkPDg@mail.gmail.com>
- <CAFZrTr5q9mOTP7wfgok8n9hnzF8ACt6AT7ELEdu813PWuBDvDg@mail.gmail.com>
-Date: Fri, 30 Jan 2015 18:53:57 +0100
-Message-ID: <CALhHN=pmaYN8dB437W0mmxkJK_iPBC9nGv+bEQh2dsWDsyMZvQ@mail.gmail.com>
-Subject: Re: Failed to start radar detection: -22 (Invalid argument)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: Re: [PATCH] ath10k: Replace ioread with wmb for data sync
+References: <1422311118-11320-1-git-send-email-poh@qca.qualcomm.com>
+ <20150127213349.GA24933@localhost> <54C824DC.5080804@qca.qualcomm.com>
+ <20150128043005.GB24933@localhost> <54C875FD.3070101@qca.qualcomm.com>
+ (sfid-20150128_064104_435635_7E681844)
+ <1422430643.1973.1.camel@sipsolutions.net>
+In-Reply-To: <1422430643.1973.1.camel@sipsolutions.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,79 +22,99 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeremias Blendin <jeremias@blendin.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>, Peter Oh <poh@qca.qualcomm.com>
+Cc: Bob Copeland <me@bobcopeland.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 29 January 2015 at 20:57, Jeremias Blendin <jeremias@blendin.org> wrote:
-> Sorry, forgot to add the list
->
-> ---------- Forwarded message ----------
-> From: Jeremias Blendin <jeremias@blendin.org>
-> Date: 2015-01-29 20:29 GMT+01:00
-> Subject: Re: Failed to start radar detection: -22 (Invalid argument)
-> To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->
->
-> Hi,
->
-> thanks for the reply. I already use the latest regulatory db. If I set
-> the country to DE or EU, I do not get DFS-ETSI. Also it seems that the
-> driver stays with US when I use the modprobe config for cfg80211:
-> [ 2230.123217] cfg80211: Calling CRDA for country: EU
-> [ 2230.424986] ath10k_pci 0000:04:00.0: irq 87 for MSI/MSI-X
-> [ 2230.475776] ath10k: pci irq MSI irq_mode 0 reset_mode 0
-> [ 2231.454959] ath10k: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
-> 10.1.467.2-1 api 2 htt 2.1
-> [ 2231.998004] ath: EEPROM regdomain: 0x0
-> [ 2231.998009] ath: EEPROM indicates default country code should be used
-> [ 2231.998012] ath: doing EEPROM country->regdmn map search
-> [ 2231.998014] ath: country maps to regdmn code: 0x3a
-> [ 2231.998016] ath: Country alpha2 being used: US
-> [ 2231.998018] ath: Regpair used: 0x3a
-> [ 2232.022444] systemd-udevd[4364]: renamed network interface wlan0 to wlan1
-> [ 2233.275022] cfg80211: Calling CRDA for country: US
-> [ 2233.278712] cfg80211: Regulatory domain changed to country: US
-> [ 2233.278718] cfg80211:  DFS Master region: unset
-> [ 2233.278720] cfg80211:   (start_freq - end_freq @ bandwidth),
-> (max_antenna_gain, max_eirp), (dfs_cac_time)
-> [ 2233.278724] cfg80211:   (2402000 KHz - 2472000 KHz @ 40000 KHz),
-> (N/A, 3000 mBm), (N/A)
-> [ 2233.278728] cfg80211:   (5170000 KHz - 5250000 KHz @ 80000 KHz,
-> 160000 KHz AUTO), (N/A, 1700 mBm), (N/A)
-> [ 2233.278731] cfg80211:   (5250000 KHz - 5330000 KHz @ 80000 KHz,
-> 160000 KHz AUTO), (N/A, 2300 mBm), (0 s)
-> [ 2233.278734] cfg80211:   (5735000 KHz - 5835000 KHz @ 80000 KHz),
-> (N/A, 3000 mBm), (N/A)
-> [ 2233.278737] cfg80211:   (57240000 KHz - 63720000 KHz @ 2160000
-> KHz), (N/A, 4000 mBm), (N/A)
->
-> When I use iw reg set DE this happens:
->
-> # iw reg get
-> country DE: DFS-UNSET
-> (2400 - 2483 @ 40), (N/A, 20)
-> (5150 - 5250 @ 80), (N/A, 20), NO-OUTDOOR
-> (5250 - 5350 @ 80), (N/A, 20), NO-OUTDOOR, DFS
-> (5470 - 5725 @ 160), (N/A, 26), DFS
-> (57000 - 66000 @ 2160), (N/A, 40)
->
-> Could it be that I need to change the EEPROM?
->
-Try this options:
-CONFIG_ATH_REG_DYNAMIC_USER_REG_HINTS=y
-CONFIG_ATH_REG_DYNAMIC_USER_CERT_TESTING=y
+Hi,
 
-After that iw reg set should work as expected.
-One other thing could be two cards and "strange" cfg80211
-intersection. In such case try to blacklist one card and try only with
-ath10k loaded.
+On 01/27/2015 11:37 PM, Johannes Berg wrote:
+> On Tue, 2015-01-27 at 21:39 -0800, Peter Oh wrote:
+>
+>>> Ok, sure, but I/O ordering two different writes, and ensuring device
+>>> has seen a posted write, are related but different things, no?
+>> yes, they are different and wmb guarantees both.
+> No, wmb() doesn't. I'd be very surprised if it had any side effect on
+> the PCI bus even on ARM. Read Documentation/memory-barriers.txt.
+>
+> And to understand (PCI) posted writes, wikipedia helps:
+> http://en.wikipedia.org/wiki/Posted_write
+I admit that I/O ordering and posted write are looked different in 
+theory and at glance since posted write could be related cache invalidate.
+But wmb are still related to both.
+As I addressed wmb uses dsb (in arm arch) and here is the description of 
+arm architecture.
 
-BR
-Janusz
+* DSB drains write buffer.
+* DSB is architecturally defined to include all cache, TLB and branch 
+prediction maintenance operations as well as explicit memory operations
+
+These are the reasons why I mentioned wmb does both.
+
+* captured from ARMv7 Architecture Manual
+--- Notes ---
+Historically, this operation was referred to as Drain Write Buffer or 
+Data Write Barrier (DWB). From ARMv6, these
+names and the use of DWB were deprecated in favor of the new Data 
+Synchronization Barrier name and DSB
+abbreviation. DSB better reflects the functionality provided from ARMv6, 
+because DSB is architecturally defined
+to include all cache, TLB and branch prediction maintenance operations 
+as well as explicit memory operations
+
+--- A DSB completes when: ---
+? all explicit memory accesses that are observed by Pe before the DSB is 
+executed, are of the required access
+types, and are from observers in the same required shareability domain 
+as Pe, are complete for the set of
+observers in the required shareability domain.
+? if the required accesses types of the DSB is reads and writes, all 
+cache and branch predictor maintenance
+operations issued by Pe before the DSB are complete for the required 
+shareability domain.
+? if the required accesses types of the DSB is reads and writes, all TLB 
+maintenance operations issued by Pe
+before the DSB are complete for the required shareability domain.
+--------------
+
+Furthermore this is the comparison of the compiled assembly code between 
+ath10k_pci_read32 and wmb.
+
+ath10k_pci_read32()
+      bac:    e5932008     ldr    r2, [r3, #8]
+      bb0:    f57ff04f     dsb    sy
+      bb4:    e2883d52     add    r3, r8, #5248    ; 0x1480
+      bb8:    e283303c     add    r3, r3, #60    ; 0x3c
+      bbc:    e593300c     ldr    r3, [r3, #12]
+      bc0:    e2833a09     add    r3, r3, #36864    ; 0x9000
+
+wmb();
+      b9c:    f57ff04e     dsb    st
+
+ath10k_pci_read32 does register operation except dsb and there is no 
+cache invalidate related commands.
+
+So that if wmb is not enough for the purpose then ath10k_pci_read32 is 
+also not enough for that.
+
+Also refer the section "ACQUIRES VS I/O ACCESSES" in memory-barriers.txt.
+
+It gives an example with PCI bridge and introduces readl as an 
+alternative method to mmiowb which weaker form of wmb.
+
+Please give your opinion.
+> johannes
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+Regards,
+Peter
 
 _______________________________________________
 ath10k mailing list
