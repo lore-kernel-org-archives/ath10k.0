@@ -1,23 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from s72.web-hosting.com ([198.187.29.22])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YHNPa-0008Id-58
- for ath10k@lists.infradead.org; Sat, 31 Jan 2015 02:03:50 +0000
-From: Sujith Manoharan <sujith@msujith.org>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YHybT-00087L-BZ
+ for ath10k@lists.infradead.org; Sun, 01 Feb 2015 17:46:35 +0000
+Received: from [50.34.201.20] (unknown [50.34.201.20])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 6FA2140CE8E
+ for <ath10k@lists.infradead.org>; Sun,  1 Feb 2015 09:46:13 -0800 (PST)
+Message-ID: <54CE6664.9090101@candelatech.com>
+Date: Sun, 01 Feb 2015 09:46:12 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Message-ID: <21708.14493.458370.65799@gargle.gargle.HOWL>
-Date: Sat, 31 Jan 2015 07:36:21 +0530
-Subject: Re: [PATCH] ath10k: Replace ioread with wmb for data sync
-In-Reply-To: <54CC3640.2090209@codeaurora.org>
-References: <1422311118-11320-1-git-send-email-poh@qca.qualcomm.com>
- <20150127213349.GA24933@localhost>
- <54C824DC.5080804@qca.qualcomm.com>
- <20150128043005.GB24933@localhost>
- <54C875FD.3070101@qca.qualcomm.com>
- <1422430643.1973.1.camel@sipsolutions.net>
- <54CC0B71.9050301@codeaurora.org>
- <21708.11481.380046.994311@gargle.gargle.HOWL>
- <54CC3640.2090209@codeaurora.org>
+Subject: Unable to read firmware registers on crash?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +21,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, Johannes Berg <johannes@sipsolutions.net>, Bob Copeland <me@bobcopeland.com>, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Peter Oh wrote:
-> Please refer the email thread that I mentioned about other architectures.
-> (dsb is for ARM and other platforms have the equivalent instruction such 
-> as sfence, sync, mf, and dcs).
+I am trying to debug a case where firmware occasionally crashes and
+the driver cannot read any crash dump to debug problem further.
 
-Ok.
+Any idea what might be the problem and how I might could read info
+from the firmware (or hack firmware to deliver the crash info in some
+other means...maybe though a previously reserved piece of memory on
+the host??)
 
-> Also the patch is updated with 2nd patch set replacing wmb to mb.
+[147334.397148] ath10k: firmware crashed! (uuid ff405224-b2a4-493d-b619-19ad8152d190)
+[147334.404808] ath10k: hardware name qca988x hw2.0 version 0x4100016c
+[147334.411111] ath10k: firmware version: 10.1.467-ct-community-full-013
+[147334.429603] ath10k: failed to read diag value at 0x1300804: -16
+[147334.435647] ath10k: failed to read FW dump area address: -16
 
-Would be good to test this on a MIPS platform...
 
-Sujith
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
