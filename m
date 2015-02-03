@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIeRA-0000lh-Hf
- for ath10k@lists.infradead.org; Tue, 03 Feb 2015 14:26:45 +0000
-Received: by mail-we0-f172.google.com with SMTP id q59so45195600wes.3
- for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 06:26:21 -0800 (PST)
+ id 1YIguQ-0000Gx-J9
+ for ath10k@lists.infradead.org; Tue, 03 Feb 2015 17:05:07 +0000
+Received: by mail-wi0-f172.google.com with SMTP id h11so25921318wiw.5
+ for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 09:04:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <54D0D3D9.7030905@candelatech.com>
-References: <54CE6664.9090101@candelatech.com>
- <CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>
- <54CFADE3.6040102@candelatech.com>
- <CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>
- <54D0D3D9.7030905@candelatech.com>
-Date: Tue, 3 Feb 2015 15:26:20 +0100
-Message-ID: <CA+BoTQkHyEKqHJTu6rTMhZh_-s1K3=uuzcKANa5qPF4n=fzjnQ@mail.gmail.com>
-Subject: Re: Unable to read firmware registers on crash?
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
+References: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 3 Feb 2015 18:04:42 +0100
+Message-ID: <CAAmLN2an0K7vtzgkVDSJ2MJ-2bsWnpOtGmQRM_P2UkGT5zGNAw@mail.gmail.com>
+Subject: Re: First QCA6174 firmware release
+From: Joris Guisson <joris.guisson@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: ath10k@lists.infradead.org
 
-T24gMyBGZWJydWFyeSAyMDE1IGF0IDE0OjU3LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
-ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDIvMjAxNSAxMDozMSBQTSwgTWljaGFsIEthemlvciB3
-cm90ZToKPj4gT24gMiBGZWJydWFyeSAyMDE1IGF0IDE4OjAzLCBCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6ClsuLi5dCj4+PiBJZiBJIHdlcmUgdG8gdXNlIE1NSU8s
-IHdoYXQgc29ydCBvZiB0aGluZ3MgY291bGQgSSBnZXQKPj4+IGFjY2VzcyB0bz8gIEp1c3QgcmVn
-aXN0ZXJzIHlvdSB0aGluaz8gIEkgbWlnaHQgY291bGQgdHdlYWsKPj4+IHRoZSBmaXJtd2FyZSBh
-c3NlcnQgcm91dGluZSB0byBzY3JpYmJsZSB0aGUgY3Jhc2ggcmVnaXN0ZXIKPj4+IGNvbnRlbnRz
-IGludG8gYSBzcGVjaWZpYyBwbGFjZSwgcGVyaGFwcyBhIGJpdCBhdCBhIHRpbWUKPj4+IHNvIHRo
-YXQgdGhlIGhvc3QgY291bGQgcmVhZCBpdCBpZiBub3JtYWwgY3Jhc2ggZHVtcCByZWFkCj4+PiBm
-YWlscz8KPj4KPj4gSSB3YXMgdGhpbmtpbmcgdGhhdCBpbnN0ZWFkIG9mIGRvaW5nIGEgd2hpbGUg
-KDEpIHt9IGxvb3AgdG93YXJkcyB0aGUKPj4gZW5kIG9mIHRoZSBhc3NlcnQgcm91dGluZSB5b3Ug
-Y291bGQgaW5zdGVhZCBwdXQgYSBidXN5IGxvb3AgYW5kCj4+IGludHJvZHVjZSBhIHNpbXBsZSBp
-bnRlcmFjdGlvbiB3aXRoaW4gaXQgdmlhIGEgYnVuY2ggb2YgTU1JTyByZWdpc3RlcnMKPj4gdGhh
-dCBhcmUgc29mdHdhcmUgd3JpdGFibGUgKGUuZy4gc2NyYXRjaCByZWdpc3RlcnMpIGFuZCBhcmVu
-J3QgdXNlZCBieQo+PiB0aGUgTUFDIHJlbGF0ZWQgaHcuIFdpdGggdGhhdCB5b3UgY291bGQgaGF2
-ZSBhIGZhbGxiYWNrIHdheSB0bwo+PiAic3RyZWFtIiB0aGUgY3Jhc2ggZHVtcCBkYXRhIGJ5IHB1
-dHRpbmcgZWFjaCBkYXRhIHdvcmQgaW4gYSByZWdpc3Rlcgo+PiBhdCBhIHRpbWUgYW5kIGhvc3Qg
-QUNLaW5nIGVhY2ggb25lLgo+Cj4gVGhhdCBzb3VuZHMgcmVhc29uYWJsZS4gIERvIHlvdSBrbm93
-IG9mIGFueSBleGFtcGxlIGNvZGUgdGhhdCBhY2Nlc3Nlcwo+IGEgdGFyZ2V0IHJlZ2lzdGVyIG9y
-IHR3byB3aXRoIHRoZSBNTUlPIGxvZ2ljIG9uIHRoZSBob3N0PyAgSSB0aGluayBmaXJtd2FyZQo+
-IGhhcyBzb21lIGV4YW1wbGVzIG9mIGhvdwo+IHRvIGZpZGRsZSB3aXRoIHJlZ2lzdGVycywgc28g
-SSB0aGluayBJIGNhbiBtYWtlIGEgc3RhYiBhdCB0aGF0IHBhcnQuLi4uCgpGcm9tIHdoYXQgSSB1
-bmRlcnN0YW5kIHRoZSBNTUlPIHNwYWNlIGlzIHNoYXJlZCBiZXR3ZWVuIGhvc3QgYW5kCnRhcmdl
-dCBwcm9ncmFtIHNvIHRoZXJlJ3Mgbm8gbmVlZCBmb3IgYW55IHNwZWNpYWwgaGFuZGxpbmcuIFlv
-dSBjYW4KbG9vayBmb3IgRldfSU5EX0VWRU5UX1BFTkRJTkcgYW5kIEZXX0lORElDQVRPUl9BRERS
-RVNTIHVzYWdlIGJvdGggaW4KZmlybXdhcmUgYW5kIGF0aDEwayAtIGl0J3MgYWxyZWFkeSB1c2Vk
-IHRvIG5vdGlmeSBob3N0IGFib3V0IGEgY3Jhc2guCkl0IHNob3VsZCBiZSBwcmV0dHkgc3RyYWln
-aHRmb3J3YXJkLiBUaGUgaW5kaWNhdG9yIGFkZHJlc3MgaXRzZWxmCnNlZW1zIHRvIGJlIGEgc2Ny
-YXRjaCByZWdpc3RlciBhbHJlYWR5IGFuZCB0aGVyZSBhcmUgYSBmZXcgbW9yZSBzbyB5b3UKc2hv
-dWxkIGJlIGFibGUgdG8gZGVzaWduIGEgcGluZy1wb25nIHByb3RvY29sIHRvIHBhc3MgZGF0YS4K
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Where is the QCA6174 v2.1 firmware ?
+
+I'm getting these errors from the latest ath kernel:
+
+[ 1660.748740] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/cal-pci-0000:04:00.0.bin failed with error -2
+[ 1660.748767] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/QCA6174/hw2.1/firmware-4.bin failed with error -2
+[ 1660.748770] ath10k_pci 0000:04:00.0: could not fetch firmware file
+'ath10k/QCA6174/hw2.1/firmware-4.bin': -2
+[ 1660.748777] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/QCA6174/hw2.1/firmware-3.bin failed with error -2
+[ 1660.748779] ath10k_pci 0000:04:00.0: could not fetch firmware file
+'ath10k/QCA6174/hw2.1/firmware-3.bin': -2
+[ 1660.748785] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/QCA6174/hw2.1/firmware-2.bin failed with error -2
+[ 1660.748787] ath10k_pci 0000:04:00.0: could not fetch firmware file
+'ath10k/QCA6174/hw2.1/firmware-2.bin': -2
+[ 1660.748793] ath10k_pci 0000:04:00.0: Direct firmware load for
+ath10k/QCA6174/hw2.1/board.bin failed with error -2
+[ 1660.748795] ath10k_pci 0000:04:00.0: could not fetch board data (-2)
+[ 1660.748797] ath10k_pci 0000:04:00.0: could not fetch firmware files (-2)
+[ 1660.748799] ath10k_pci 0000:04:00.0: could not probe fw (-2)
+
+Seeing, that I don't have these firmware files, this is logical. So
+where can I find them ?
+
+Joris,
+
+On Tue, Jan 27, 2015 at 2:45 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Hi,
+>
+> I pushed the first QCA6174 firmware release to ath10k-firmware.git:
+>
+> https://github.com/kvalo/ath10k-firmware/tree/master/ath10k/QCA6174/hw3.0
+>
+> --
+> Kalle Valo
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
