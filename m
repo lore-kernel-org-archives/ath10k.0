@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIX28-0007YH-Fd
- for ath10k@lists.infradead.org; Tue, 03 Feb 2015 06:32:25 +0000
-Received: by mail-wg0-f47.google.com with SMTP id n12so42767101wgh.6
- for <ath10k@lists.infradead.org>; Mon, 02 Feb 2015 22:32:00 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <54CFADE3.6040102@candelatech.com>
-References: <54CE6664.9090101@candelatech.com>
- <CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>
- <54CFADE3.6040102@candelatech.com>
-Date: Tue, 3 Feb 2015 07:31:59 +0100
-Message-ID: <CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>
-Subject: Re: Unable to read firmware registers on crash?
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1YIauU-0007LW-6O
+ for ath10k@lists.infradead.org; Tue, 03 Feb 2015 10:40:47 +0000
+Received: by mail-wg0-f41.google.com with SMTP id a1so43796852wgh.0
+ for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 02:40:17 -0800 (PST)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [RFC 0/4] ath10k: add basic tdls support
+Date: Tue,  3 Feb 2015 11:41:50 +0100
+Message-Id: <1422960114-25137-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +17,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>
 
-T24gMiBGZWJydWFyeSAyMDE1IGF0IDE4OjAzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
-ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDIvMjAxNSAwNDoxMSBBTSwgTWljaGFsIEthemlvciB3
-cm90ZToKPj4gT24gMSBGZWJydWFyeSAyMDE1IGF0IDE4OjQ2LCBCZW4gR3JlZWFyIDxncmVlYXJi
-QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+PiBJIGFtIHRyeWluZyB0byBkZWJ1ZyBhIGNhc2Ug
-d2hlcmUgZmlybXdhcmUgb2NjYXNpb25hbGx5IGNyYXNoZXMgYW5kCj4+PiB0aGUgZHJpdmVyIGNh
-bm5vdCByZWFkIGFueSBjcmFzaCBkdW1wIHRvIGRlYnVnIHByb2JsZW0gZnVydGhlci4KPj4+Cj4+
-PiBBbnkgaWRlYSB3aGF0IG1pZ2h0IGJlIHRoZSBwcm9ibGVtIGFuZCBob3cgSSBtaWdodCBjb3Vs
-ZCByZWFkIGluZm8KPj4+IGZyb20gdGhlIGZpcm13YXJlIChvciBoYWNrIGZpcm13YXJlIHRvIGRl
-bGl2ZXIgdGhlIGNyYXNoIGluZm8gaW4gc29tZQo+Pj4gb3RoZXIgbWVhbnMuLi5tYXliZSB0aG91
-Z2ggYSBwcmV2aW91c2x5IHJlc2VydmVkIHBpZWNlIG9mIG1lbW9yeSBvbgo+Pj4gdGhlIGhvc3Q/
-PykKPj4+Cj4+PiBbMTQ3MzM0LjM5NzE0OF0gYXRoMTBrOiBmaXJtd2FyZSBjcmFzaGVkISAodXVp
-ZAo+Pj4gZmY0MDUyMjQtYjJhNC00OTNkLWI2MTktMTlhZDgxNTJkMTkwKQo+Pj4gWzE0NzMzNC40
-MDQ4MDhdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAw
-MDE2Ywo+Pj4gWzE0NzMzNC40MTExMTFdIGF0aDEwazogZmlybXdhcmUgdmVyc2lvbjogMTAuMS40
-NjctY3QtY29tbXVuaXR5LWZ1bGwtMDEzCj4+PiBbMTQ3MzM0LjQyOTYwM10gYXRoMTBrOiBmYWls
-ZWQgdG8gcmVhZCBkaWFnIHZhbHVlIGF0IDB4MTMwMDgwNDogLTE2Cj4+PiBbMTQ3MzM0LjQzNTY0
-N10gYXRoMTBrOiBmYWlsZWQgdG8gcmVhZCBGVyBkdW1wIGFyZWEgYWRkcmVzczogLTE2Cj4+Cj4+
-IEkgc2VlIHRoaXMgcmFyZWx5LiBNb3N0bHkgd2hlbiB0aGUgZGV2aWNlIGdvZXMgYm9ua2VycyBh
-dCB3aGljaCBwb2ludAo+PiB3YXJtIHJlc2V0IGRvZXNuJ3Qgd29yayBhbnltb3JlIGFuZCBJJ20g
-Zm9yY2VkIHRvIGVpdGhlciByaXNrIGNvbGQKPj4gcmVzZXQgY2F1c2luZyBwbGF0Zm9ybSBsb2Nr
-IHVwIG9yIHJlLWluamVjdCB0aGUgY2FyZCBpbiB0aGUgZXhwcmVzcwo+PiBjYXJkIHNsb3QuCj4+
-Cj4+IEkgaGF2ZW4ndCBwbGF5ZWQgd2l0aCB0aGlzIHNvIEkgZG9uJ3Qga25vdyBpZiBETUEgaXMg
-c3RpbGwgcG9zc2libGUKPj4gKGl0IG1pZ2h0IG5vdCkuIE1NSU8gc2hvdWxkIGJlIG9wZXJhdGlv
-bmFsIGFuZCB0aGVyZSBzaG91bGQgYmUgc29tZQo+PiBzY3JhdGNoIHJlZ2lzdGVycyBjaGlsbGlu
-ZyBhcm91bmQuLi4gOy0pCj4KPiBUbyBub3JtYWxseSByZWFkIHRoZSBjcmFzaCBkdW1wLCB3ZSBk
-byB0aGlzIG92ZXIgYSBDRSBwaXBlPwoKQ29ycmVjdC4gVGhlIENFNywgc28gY2FsbGVkIGRpYWdu
-b3N0aWMgd2luZG93LCBpcyB1c2VkLgoKCj4gU28sIGlmIElSUSBoYW5kbGVycyBhcmUgdGhvcm91
-Z2hseSBidXN0ZWQgb24gdGhlIHRhcmdldCwgdGhlbgo+IHRoYXQgY291bGQgYmUgcmVhc29uIHdo
-eSB3ZSBjYW5ub3QgcmVhZCB0aGUgY3Jhc2ggZHVtcD8KCkluY29ycmVjdC4gRnJvbSB3aGF0IEkg
-dW5kZXJzdGFuZCB0aGUgZGlhZ25vc3RpYyB3aW5kb3cgQ0UgaGFzCmJ1aWx0LWluIGxvZ2ljIGZv
-ciBmZXRjaGluZyB0YXJnZXQgUkFNIG1lbW9yeSBjaHVua3MgYXMgcGVyIGVhY2gKcmVxdWVzdC4g
-VGhpcyBtZWFucyBldmVuIGlmIHRhcmdldCBwcm9ncmFtIGhhcyBtYXNrZWQgSVJRcyBhbmQgaXMK
-cnVubmluZyBpbiBhIHdoaWxlICgxKSB7fSBob3N0IGlzIHN0aWxsIGFibGUgdG8gYWNjZXNzIGl0
-cyBtZW1vcnkuCgpJZiB5b3UncmUgdW5hYmxlIHRvIHJlYWQgdGhlIGR1bXAgaXQgbWVhbnMgdGhh
-dCBDRSBoYXMgY3Jhc2hlZAood2hhdGV2ZXIgdGhhdCBfYWN0dWFsbHlfIG1lYW5zKSBhbmQgdGh1
-cyB0aGUgYnVpbHQtaW4gbG9naWMgZm9yCmRpYWdub3N0aWMgd2luZG93cyBnb2VzIGRvd24gYXMg
-d2VsbC4gSSBuZXZlciBnb3QgYXJvdW5kIHRvIHJlY292ZXIgQ0UKY3Jhc2ggYWxvbmUgd2l0aG91
-dCByZXNvcnRpbmcgdG8gdGhlIHJpc2t5IHRhcmdldCBjb2xkIHJlc2V0LgoKCj4gSWYgSSB3ZXJl
-IHRvIHVzZSBNTUlPLCB3aGF0IHNvcnQgb2YgdGhpbmdzIGNvdWxkIEkgZ2V0Cj4gYWNjZXNzIHRv
-PyAgSnVzdCByZWdpc3RlcnMgeW91IHRoaW5rPyAgSSBtaWdodCBjb3VsZCB0d2Vhawo+IHRoZSBm
-aXJtd2FyZSBhc3NlcnQgcm91dGluZSB0byBzY3JpYmJsZSB0aGUgY3Jhc2ggcmVnaXN0ZXIKPiBj
-b250ZW50cyBpbnRvIGEgc3BlY2lmaWMgcGxhY2UsIHBlcmhhcHMgYSBiaXQgYXQgYSB0aW1lCj4g
-c28gdGhhdCB0aGUgaG9zdCBjb3VsZCByZWFkIGl0IGlmIG5vcm1hbCBjcmFzaCBkdW1wIHJlYWQK
-PiBmYWlscz8KCkkgd2FzIHRoaW5raW5nIHRoYXQgaW5zdGVhZCBvZiBkb2luZyBhIHdoaWxlICgx
-KSB7fSBsb29wIHRvd2FyZHMgdGhlCmVuZCBvZiB0aGUgYXNzZXJ0IHJvdXRpbmUgeW91IGNvdWxk
-IGluc3RlYWQgcHV0IGEgYnVzeSBsb29wIGFuZAppbnRyb2R1Y2UgYSBzaW1wbGUgaW50ZXJhY3Rp
-b24gd2l0aGluIGl0IHZpYSBhIGJ1bmNoIG9mIE1NSU8gcmVnaXN0ZXJzCnRoYXQgYXJlIHNvZnR3
-YXJlIHdyaXRhYmxlIChlLmcuIHNjcmF0Y2ggcmVnaXN0ZXJzKSBhbmQgYXJlbid0IHVzZWQgYnkK
-dGhlIE1BQyByZWxhdGVkIGh3LiBXaXRoIHRoYXQgeW91IGNvdWxkIGhhdmUgYSBmYWxsYmFjayB3
-YXkgdG8KInN0cmVhbSIgdGhlIGNyYXNoIGR1bXAgZGF0YSBieSBwdXR0aW5nIGVhY2ggZGF0YSB3
-b3JkIGluIGEgcmVnaXN0ZXIKYXQgYSB0aW1lIGFuZCBob3N0IEFDS2luZyBlYWNoIG9uZS4KCgpN
-aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+This patchset introduces tdls funtionality without tdls peer uapsd
+and tdls channel switching. Tdls is supported by qca6174 hardware
+what is indicated by firmware through supported services.
+Tdls station when authorized requires some parameters that are filled in
+by rate control initialization. Because of that this patches contains
+one patch for mac80211 which moves rate control initialization before
+calling drivers station state with transition to authorized state.
+        
+This patchset is RFC because it based on patchset from Michal:
+ath10k: add multi-channel support
+which is still under review.
+
+Marek Puzyniak (3):
+  ath10k: make peer type configurable
+  mac80211: initialize rate control earlier for tdls station
+  ath10k: introduce basic tdls functionality
+
+Michal Kazior (1):
+  ath10k: unify tx mode and dispatch
+
+ drivers/net/wireless/ath/ath10k/core.h    |   2 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |   8 -
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  30 ++--
+ drivers/net/wireless/ath/ath10k/mac.c     | 263 ++++++++++++++++++++++++++----
+ drivers/net/wireless/ath/ath10k/mac.h     |   8 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  50 +++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 156 +++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  52 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |  43 +++++
+ net/mac80211/cfg.c                        |  20 ++-
+ 11 files changed, 561 insertions(+), 74 deletions(-)
+
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
