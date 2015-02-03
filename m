@@ -1,25 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.11.231])
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIQl4-0006A8-ND
- for ath10k@lists.infradead.org; Mon, 02 Feb 2015 23:50:23 +0000
-Message-ID: <54D00D0A.6050107@codeaurora.org>
-Date: Mon, 02 Feb 2015 15:49:30 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1YIX28-0007YH-Fd
+ for ath10k@lists.infradead.org; Tue, 03 Feb 2015 06:32:25 +0000
+Received: by mail-wg0-f47.google.com with SMTP id n12so42767101wgh.6
+ for <ath10k@lists.infradead.org>; Mon, 02 Feb 2015 22:32:00 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Replace ioread with wmb for data sync
-References: <1422311118-11320-1-git-send-email-poh@qca.qualcomm.com>
- <20150127213349.GA24933@localhost> <54C824DC.5080804@qca.qualcomm.com>
- <20150128043005.GB24933@localhost> <54C875FD.3070101@qca.qualcomm.com>
- (sfid-20150128_064104_435635_7E681844)
- <1422430643.1973.1.camel@sipsolutions.net> <54CC0B71.9050301@codeaurora.org>
- <1422882133.1930.10.camel@sipsolutions.net>
- <54CFB4F4.1070807@qca.qualcomm.com>
- <1422903279.8755.1.camel@sipsolutions.net> <54CFCCCF.900@codeaurora.org>
- <1422904939.8755.3.camel@sipsolutions.net> <54CFD1D1.8060901@codeaurora.org>
- <1422906446.8755.4.camel@sipsolutions.net> <54CFF4E0.1040207@codeaurora.org>
- <54D00764.40808@gmail.com>
-In-Reply-To: <54D00764.40808@gmail.com>
+In-Reply-To: <54CFADE3.6040102@candelatech.com>
+References: <54CE6664.9090101@candelatech.com>
+ <CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>
+ <54CFADE3.6040102@candelatech.com>
+Date: Tue, 3 Feb 2015 07:31:59 +0100
+Message-ID: <CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>
+Subject: Re: Unable to read firmware registers on crash?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,95 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Florian Fainelli <f.fainelli@gmail.com>, Johannes Berg <johannes@sipsolutions.net>
-Cc: linux-wireless@vger.kernel.org, Bob Copeland <me@bobcopeland.com>, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hi Florian,
-
-Very appreciate your explanation in detail.
-
-Regards,
-Peter
-On 02/02/2015 03:25 PM, Florian Fainelli wrote:
-> On 02/02/15 14:06, Peter Oh wrote:
->> On 02/02/2015 11:47 AM, Johannes Berg wrote:
->>> On Mon, 2015-02-02 at 11:36 -0800, Peter Oh wrote:
->>>> On 02/02/2015 11:22 AM, Johannes Berg wrote:
->>>>>>> You basically have the following sequence:
->>>>>>>
->>>>>>> iowrite()
->>>>>>> ioread()
->>>>>>>
->>>>>>> If you look, you'll see that iowrite() is actually done (or should
->>> be,
->>>>>>> or perhaps with appropriate syncs) on an uncached mapping.
->>>>>> since it's mmio, iowrite will be map to write, not out which is
->>> cached
->>>>>> mapping.
->>>>>> That's why we address "posted write" here.
->>>>>> If it's un-cached mapping which is volatile, we don't even need
->>> ioread.
->>>>> No, this isn't true - "posted write" in the context of this discussion
->>>>> is about the PCIe bus. Memory writes that go through cache aren't
->>>>> referred to as "posted writes", those are just (cached) memory writes.
->>>>>
->>>>>>>      As a result,
->>>>>>> the only thing you care about here is the PCIe bus, not the CPU
->>> cache
->>>>>>> flush. And from there on that's just a question of PCIe bus
->>> semantics.
->>>>>> So how does ioread guarantee PCIe bus transaction done?
->>>>> That's how PCIe works, operations are serialized, and read() has to
->>> wait
->>>>> for a response from the device
->>>> do you know which mechanism or which instruction set makes read() wait
->>>> for a response from the device?
->>> I have no idea. I assume it's just like a DRAM read, the CPU stalls
->>> while there's no response.
->> My explanation in this thread is all about how read() guarantees the
->> wait for a response from the device, therefore why mb() - replace from
->> wmb at patch set 2 - is compatible to read().
->> Briefly speaking,
->> read() -> dsb 'st' -> cpu (actually axi master in cpu) holding axi bus
->> -> cpu post write buffer on axi bus -> axi bus (axi slave which is PCIe
->> device) signals write completion when write transactions completed in
->> write response channel ->  cpu release axi bus -> cpu program counter
->> (pc) proceeds the next to read.
->>
->> the exact same routines happen with mb().
->> mb() -> dsb 'st' -> cpu (actually axi master in cpu) holding axi bus ->
->> cpu post write buffer on axi bus -> axi bus (axi slave which is PCIe
->> device) signals write completion when write transactions completed in
->> write response channel ->  cpu release axi bus -> cpu program counter
->> (pc) proceeds the next to read.
->>
->> Since axi bus master is waiting (blocking) for write completion signal
->> from axi slave (PCIe device), this is how read() and mb() guarantee
->> write command reaches to the device.
-> PCIe writes are posted, so the only guarantee you can have by inserting
-> such barriers is that writes from CPU to the PCIe RC (targeting PCIe
-> device) is non-posted (as far as the busing between CPU and the PCIe RC
-> is concerned), but past the PCIe RC, there is no such guarantee, because
-> the PCIe specification allows for that and there is flow control, PCIe
-> switches or other things that can alter the way your PCIe device ends-up
-> being written to.
->
-> The only way to make a "portable" synchronization barrier is to do a
-> PCIe read from the same register you just wrote to, because then, the
-> PCIe RC needs to guarantee the transaction ordering on the PCIe bus itself.
->
-> You might just be lucky and/or have very good HW which ensures that the
-> ARM synchronization barriers are propagated to the memory region where
-> your PCIe device BARs are mapped from the CPU perspective, but you
-> definitively cannot rely on such assumptions, as there will be bogus HW
-> there, for which only a subsequent ioread32() will work.
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBGZWJydWFyeSAyMDE1IGF0IDE4OjAzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDIvMjAxNSAwNDoxMSBBTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPj4gT24gMSBGZWJydWFyeSAyMDE1IGF0IDE4OjQ2LCBCZW4gR3JlZWFyIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+PiBJIGFtIHRyeWluZyB0byBkZWJ1ZyBhIGNhc2Ug
+d2hlcmUgZmlybXdhcmUgb2NjYXNpb25hbGx5IGNyYXNoZXMgYW5kCj4+PiB0aGUgZHJpdmVyIGNh
+bm5vdCByZWFkIGFueSBjcmFzaCBkdW1wIHRvIGRlYnVnIHByb2JsZW0gZnVydGhlci4KPj4+Cj4+
+PiBBbnkgaWRlYSB3aGF0IG1pZ2h0IGJlIHRoZSBwcm9ibGVtIGFuZCBob3cgSSBtaWdodCBjb3Vs
+ZCByZWFkIGluZm8KPj4+IGZyb20gdGhlIGZpcm13YXJlIChvciBoYWNrIGZpcm13YXJlIHRvIGRl
+bGl2ZXIgdGhlIGNyYXNoIGluZm8gaW4gc29tZQo+Pj4gb3RoZXIgbWVhbnMuLi5tYXliZSB0aG91
+Z2ggYSBwcmV2aW91c2x5IHJlc2VydmVkIHBpZWNlIG9mIG1lbW9yeSBvbgo+Pj4gdGhlIGhvc3Q/
+PykKPj4+Cj4+PiBbMTQ3MzM0LjM5NzE0OF0gYXRoMTBrOiBmaXJtd2FyZSBjcmFzaGVkISAodXVp
+ZAo+Pj4gZmY0MDUyMjQtYjJhNC00OTNkLWI2MTktMTlhZDgxNTJkMTkwKQo+Pj4gWzE0NzMzNC40
+MDQ4MDhdIGF0aDEwazogaGFyZHdhcmUgbmFtZSBxY2E5ODh4IGh3Mi4wIHZlcnNpb24gMHg0MTAw
+MDE2Ywo+Pj4gWzE0NzMzNC40MTExMTFdIGF0aDEwazogZmlybXdhcmUgdmVyc2lvbjogMTAuMS40
+NjctY3QtY29tbXVuaXR5LWZ1bGwtMDEzCj4+PiBbMTQ3MzM0LjQyOTYwM10gYXRoMTBrOiBmYWls
+ZWQgdG8gcmVhZCBkaWFnIHZhbHVlIGF0IDB4MTMwMDgwNDogLTE2Cj4+PiBbMTQ3MzM0LjQzNTY0
+N10gYXRoMTBrOiBmYWlsZWQgdG8gcmVhZCBGVyBkdW1wIGFyZWEgYWRkcmVzczogLTE2Cj4+Cj4+
+IEkgc2VlIHRoaXMgcmFyZWx5LiBNb3N0bHkgd2hlbiB0aGUgZGV2aWNlIGdvZXMgYm9ua2VycyBh
+dCB3aGljaCBwb2ludAo+PiB3YXJtIHJlc2V0IGRvZXNuJ3Qgd29yayBhbnltb3JlIGFuZCBJJ20g
+Zm9yY2VkIHRvIGVpdGhlciByaXNrIGNvbGQKPj4gcmVzZXQgY2F1c2luZyBwbGF0Zm9ybSBsb2Nr
+IHVwIG9yIHJlLWluamVjdCB0aGUgY2FyZCBpbiB0aGUgZXhwcmVzcwo+PiBjYXJkIHNsb3QuCj4+
+Cj4+IEkgaGF2ZW4ndCBwbGF5ZWQgd2l0aCB0aGlzIHNvIEkgZG9uJ3Qga25vdyBpZiBETUEgaXMg
+c3RpbGwgcG9zc2libGUKPj4gKGl0IG1pZ2h0IG5vdCkuIE1NSU8gc2hvdWxkIGJlIG9wZXJhdGlv
+bmFsIGFuZCB0aGVyZSBzaG91bGQgYmUgc29tZQo+PiBzY3JhdGNoIHJlZ2lzdGVycyBjaGlsbGlu
+ZyBhcm91bmQuLi4gOy0pCj4KPiBUbyBub3JtYWxseSByZWFkIHRoZSBjcmFzaCBkdW1wLCB3ZSBk
+byB0aGlzIG92ZXIgYSBDRSBwaXBlPwoKQ29ycmVjdC4gVGhlIENFNywgc28gY2FsbGVkIGRpYWdu
+b3N0aWMgd2luZG93LCBpcyB1c2VkLgoKCj4gU28sIGlmIElSUSBoYW5kbGVycyBhcmUgdGhvcm91
+Z2hseSBidXN0ZWQgb24gdGhlIHRhcmdldCwgdGhlbgo+IHRoYXQgY291bGQgYmUgcmVhc29uIHdo
+eSB3ZSBjYW5ub3QgcmVhZCB0aGUgY3Jhc2ggZHVtcD8KCkluY29ycmVjdC4gRnJvbSB3aGF0IEkg
+dW5kZXJzdGFuZCB0aGUgZGlhZ25vc3RpYyB3aW5kb3cgQ0UgaGFzCmJ1aWx0LWluIGxvZ2ljIGZv
+ciBmZXRjaGluZyB0YXJnZXQgUkFNIG1lbW9yeSBjaHVua3MgYXMgcGVyIGVhY2gKcmVxdWVzdC4g
+VGhpcyBtZWFucyBldmVuIGlmIHRhcmdldCBwcm9ncmFtIGhhcyBtYXNrZWQgSVJRcyBhbmQgaXMK
+cnVubmluZyBpbiBhIHdoaWxlICgxKSB7fSBob3N0IGlzIHN0aWxsIGFibGUgdG8gYWNjZXNzIGl0
+cyBtZW1vcnkuCgpJZiB5b3UncmUgdW5hYmxlIHRvIHJlYWQgdGhlIGR1bXAgaXQgbWVhbnMgdGhh
+dCBDRSBoYXMgY3Jhc2hlZAood2hhdGV2ZXIgdGhhdCBfYWN0dWFsbHlfIG1lYW5zKSBhbmQgdGh1
+cyB0aGUgYnVpbHQtaW4gbG9naWMgZm9yCmRpYWdub3N0aWMgd2luZG93cyBnb2VzIGRvd24gYXMg
+d2VsbC4gSSBuZXZlciBnb3QgYXJvdW5kIHRvIHJlY292ZXIgQ0UKY3Jhc2ggYWxvbmUgd2l0aG91
+dCByZXNvcnRpbmcgdG8gdGhlIHJpc2t5IHRhcmdldCBjb2xkIHJlc2V0LgoKCj4gSWYgSSB3ZXJl
+IHRvIHVzZSBNTUlPLCB3aGF0IHNvcnQgb2YgdGhpbmdzIGNvdWxkIEkgZ2V0Cj4gYWNjZXNzIHRv
+PyAgSnVzdCByZWdpc3RlcnMgeW91IHRoaW5rPyAgSSBtaWdodCBjb3VsZCB0d2Vhawo+IHRoZSBm
+aXJtd2FyZSBhc3NlcnQgcm91dGluZSB0byBzY3JpYmJsZSB0aGUgY3Jhc2ggcmVnaXN0ZXIKPiBj
+b250ZW50cyBpbnRvIGEgc3BlY2lmaWMgcGxhY2UsIHBlcmhhcHMgYSBiaXQgYXQgYSB0aW1lCj4g
+c28gdGhhdCB0aGUgaG9zdCBjb3VsZCByZWFkIGl0IGlmIG5vcm1hbCBjcmFzaCBkdW1wIHJlYWQK
+PiBmYWlscz8KCkkgd2FzIHRoaW5raW5nIHRoYXQgaW5zdGVhZCBvZiBkb2luZyBhIHdoaWxlICgx
+KSB7fSBsb29wIHRvd2FyZHMgdGhlCmVuZCBvZiB0aGUgYXNzZXJ0IHJvdXRpbmUgeW91IGNvdWxk
+IGluc3RlYWQgcHV0IGEgYnVzeSBsb29wIGFuZAppbnRyb2R1Y2UgYSBzaW1wbGUgaW50ZXJhY3Rp
+b24gd2l0aGluIGl0IHZpYSBhIGJ1bmNoIG9mIE1NSU8gcmVnaXN0ZXJzCnRoYXQgYXJlIHNvZnR3
+YXJlIHdyaXRhYmxlIChlLmcuIHNjcmF0Y2ggcmVnaXN0ZXJzKSBhbmQgYXJlbid0IHVzZWQgYnkK
+dGhlIE1BQyByZWxhdGVkIGh3LiBXaXRoIHRoYXQgeW91IGNvdWxkIGhhdmUgYSBmYWxsYmFjayB3
+YXkgdG8KInN0cmVhbSIgdGhlIGNyYXNoIGR1bXAgZGF0YSBieSBwdXR0aW5nIGVhY2ggZGF0YSB3
+b3JkIGluIGEgcmVnaXN0ZXIKYXQgYSB0aW1lIGFuZCBob3N0IEFDS2luZyBlYWNoIG9uZS4KCgpN
+aWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
