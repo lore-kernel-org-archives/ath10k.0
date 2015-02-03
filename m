@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22c.google.com ([2a00:1450:400c:c03::22c])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIauW-0007OP-Cl
- for ath10k@lists.infradead.org; Tue, 03 Feb 2015 10:40:49 +0000
-Received: by mail-we0-f172.google.com with SMTP id q59so44061141wes.3
- for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 02:40:26 -0800 (PST)
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [RFC 1/4] ath10k: unify tx mode and dispatch
-Date: Tue,  3 Feb 2015 11:41:51 +0100
-Message-Id: <1422960114-25137-2-git-send-email-marek.puzyniak@tieto.com>
-In-Reply-To: <1422960114-25137-1-git-send-email-marek.puzyniak@tieto.com>
+ id 1YIcvQ-0007Qv-FE
+ for ath10k@lists.infradead.org; Tue, 03 Feb 2015 12:49:53 +0000
+Received: by mail-wg0-f50.google.com with SMTP id b13so44247650wgh.9
+ for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 04:49:22 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <1422960114-25137-5-git-send-email-marek.puzyniak@tieto.com>
 References: <1422960114-25137-1-git-send-email-marek.puzyniak@tieto.com>
+ <1422960114-25137-5-git-send-email-marek.puzyniak@tieto.com>
+Date: Tue, 3 Feb 2015 13:49:22 +0100
+Message-ID: <CA+BoTQnKvNwcCxQWQe1Ck11oTE4yGTPpV65r5D02fHbLkrvpFQ@mail.gmail.com>
+Subject: Re: [RFC 4/4] ath10k: introduce basic tdls functionality
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,360 +21,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, linux-wireless@vger.kernel.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Marek Puzyniak <marek.puzyniak@tieto.com>
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Michal Kazior <michal.kazior@tieto.com>
-
-There are a few different tx paths depending on
-firmware and frame itself.
-
-Creating a uniform decision will make it possible
-to switch between different txmode easier, both
-for testing and for future features as well.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h   |   2 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   8 --
- drivers/net/wireless/ath/ath10k/htt_tx.c |  30 ++++----
- drivers/net/wireless/ath/ath10k/mac.c    | 128 ++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/mac.h    |   8 ++
- 5 files changed, 124 insertions(+), 52 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 57c7926..884ec6c 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -82,6 +82,8 @@ struct ath10k_skb_cb {
- 	dma_addr_t paddr;
- 	u8 eid;
- 	u8 vdev_id;
-+	enum ath10k_hw_txrx_mode txmode;
-+	bool is_protected;
- 
- 	struct {
- 		u8 tid;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 08c924c..ad823c9 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -609,14 +609,6 @@ static int ath10k_htt_rx_crypto_tail_len(struct ath10k *ar,
- 	return 0;
- }
- 
--struct rfc1042_hdr {
--	u8 llc_dsap;
--	u8 llc_ssap;
--	u8 llc_ctrl;
--	u8 snap_oui[3];
--	__be16 snap_type;
--} __packed;
--
- struct amsdu_subframe_hdr {
- 	u8 dst[ETH_ALEN];
- 	u8 src[ETH_ALEN];
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 92cc6e3..e3a762c 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -424,9 +424,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	int res;
- 	u8 flags0 = 0;
- 	u16 msdu_id, flags1 = 0;
--	dma_addr_t paddr;
--	u32 frags_paddr;
--	bool use_frags;
-+	dma_addr_t paddr = 0;
-+	u32 frags_paddr = 0;
- 
- 	res = ath10k_htt_tx_inc_pending(htt);
- 	if (res)
-@@ -444,12 +443,6 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
- 	prefetch_len = roundup(prefetch_len, 4);
- 
--	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
--	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
--	 * fragment list host driver specifies directly frame pointer. */
--	use_frags = htt->target_version_major < 3 ||
--		    !ieee80211_is_mgmt(hdr->frame_control);
--
- 	skb_cb->htt.txbuf = dma_pool_alloc(htt->tx_pool, GFP_ATOMIC,
- 					   &paddr);
- 	if (!skb_cb->htt.txbuf) {
-@@ -470,7 +463,12 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	if (res)
- 		goto err_free_txbuf;
- 
--	if (likely(use_frags)) {
-+	switch (skb_cb->txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		/* pass through */
-+	case ATH10K_HW_TXRX_ETHERNET:
- 		frags = skb_cb->htt.txbuf->frags;
- 
- 		frags[0].paddr = __cpu_to_le32(skb_cb->paddr);
-@@ -478,15 +476,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		frags[1].paddr = 0;
- 		frags[1].len = 0;
- 
--		flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
--			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= SM(skb_cb->txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 
- 		frags_paddr = skb_cb->htt.txbuf_paddr;
--	} else {
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
- 		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
- 			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
- 
- 		frags_paddr = skb_cb->paddr;
-+		break;
- 	}
- 
- 	/* Normally all commands go through HTC which manages tx credits for
-@@ -512,11 +512,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 			prefetch_len);
- 	skb_cb->htt.txbuf->htc_hdr.flags = 0;
- 
--	if (!ieee80211_has_protected(hdr->frame_control))
-+	if (!skb_cb->is_protected)
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
- 
--	flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
--
- 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
- 	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
- 	flags1 |= HTT_DATA_TX_DESC_FLAGS1_CKSUM_L3_OFFLOAD;
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 7fbb9aa..c5815ce 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2460,6 +2460,43 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
- 	return 0;
- }
- 
-+static enum ath10k_hw_txrx_mode
-+ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
-+		       struct sk_buff *skb)
-+{
-+	const struct ieee80211_hdr *hdr = (void *)skb->data;
-+	__le16 fc = hdr->frame_control;
-+
-+	if (!vif || vif->type == NL80211_IFTYPE_MONITOR)
-+		return ATH10K_HW_TXRX_RAW;
-+
-+	if (ieee80211_is_mgmt(fc))
-+		return ATH10K_HW_TXRX_MGMT;
-+
-+	/* Workaround:
-+	 *
-+	 * NullFunc frames are mostly used to ping if a client or AP are still
-+	 * reachable and responsive. This implies tx status reports must be
-+	 * accurate - otherwise either mac80211 or userspace (e.g. hostapd) can
-+	 * come to a conclusion that the other end disappeared and tear down
-+	 * BSS connection or it can never disconnect from BSS/client (which is
-+	 * the case).
-+	 *
-+	 * Firmware with HTT older than 3.0 delivers incorrect tx status for
-+	 * NullFunc frames to driver. However there's a HTT Mgmt Tx command
-+	 * which seems to deliver correct tx reports for NullFunc frames. The
-+	 * downside of using it is it ignores client powersave state so it can
-+	 * end up disconnecting sleeping clients in AP mode. It should fix STA
-+	 * mode though because AP don't sleep.
-+	 */
-+	if (ar->htt.target_version_major < 3 &&
-+	    (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
-+	    !test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX, ar->fw_features))
-+		return ATH10K_HW_TXRX_MGMT;
-+
-+	return ATH10K_HW_TXRX_NATIVE_WIFI;
-+}
-+
- /* HTT Tx uses Native Wifi tx mode which expects 802.11 frames without QoS
-  * Control in the header.
-  */
-@@ -2489,6 +2526,33 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
- 	}
- }
- 
-+static void ath10k_tx_h_8023(struct sk_buff *skb)
-+{
-+	struct ieee80211_hdr *hdr;
-+	struct rfc1042_hdr *rfc1042;
-+	struct ethhdr *eth;
-+	size_t hdrlen;
-+	u8 da[ETH_ALEN];
-+	u8 sa[ETH_ALEN];
-+	__be16 type;
-+
-+	hdr = (void *)skb->data;
-+	hdrlen = ieee80211_hdrlen(hdr->frame_control);
-+	rfc1042 = (void *)skb->data + hdrlen;
-+
-+	ether_addr_copy(da, ieee80211_get_DA(hdr));
-+	ether_addr_copy(sa, ieee80211_get_SA(hdr));
-+	type = rfc1042->snap_type;
-+
-+	skb_pull(skb, hdrlen + sizeof(*rfc1042));
-+	skb_push(skb, sizeof(*eth));
-+
-+	eth = (void *)skb->data;
-+	ether_addr_copy(eth->h_dest, da);
-+	ether_addr_copy(eth->h_source, sa);
-+	eth->h_proto = type;
-+}
-+
- static void ath10k_tx_wep_key_work(struct work_struct *work)
- {
- 	struct ath10k_vif *arvif = container_of(work, struct ath10k_vif,
-@@ -2624,37 +2688,29 @@ unlock:
- 	return ret;
- }
- 
--static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
-+static void ath10k_mac_tx(struct ath10k *ar, struct sk_buff *skb)
- {
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
-+	struct ath10k_htt *htt = &ar->htt;
- 	int ret = 0;
- 
--	if (ar->htt.target_version_major >= 3) {
--		/* Since HTT 3.0 there is no separate mgmt tx command */
--		ret = ath10k_htt_tx(&ar->htt, skb);
--		goto exit;
--	}
--
--	if (ieee80211_is_mgmt(hdr->frame_control)) {
-+	switch (cb->txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		ret = ath10k_htt_tx(htt, skb);
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
- 		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
--			     ar->fw_features)) {
-+			     ar->fw_features))
- 			ret = ath10k_mac_tx_wmi_mgmt(ar, skb);
--		} else {
--			ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--		}
--	} else if (!test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
--			     ar->fw_features) &&
--		   ieee80211_is_nullfunc(hdr->frame_control)) {
--		/* FW does not report tx status properly for NullFunc frames
--		 * unless they are sent through mgmt tx path. mac80211 sends
--		 * those frames when it detects link/beacon loss and depends
--		 * on the tx status to be correct. */
--		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--	} else {
--		ret = ath10k_htt_tx(&ar->htt, skb);
-+		else if (ar->htt.target_version_major >= 3)
-+			ret = ath10k_htt_tx(htt, skb);
-+		else
-+			ret = ath10k_htt_mgmt_tx(htt, skb);
-+		break;
- 	}
- 
--exit:
- 	if (ret) {
- 		ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
- 			    ret);
-@@ -2727,7 +2783,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		ar->offchan_tx_skb = skb;
- 		spin_unlock_bh(&ar->data_lock);
- 
--		ath10k_tx_htt(ar, skb);
-+		ath10k_mac_tx(ar, skb);
- 
- 		ret = wait_for_completion_timeout(&ar->offchan_tx_completed,
- 						  3 * HZ);
-@@ -2958,6 +3014,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	struct ieee80211_vif *vif = info->control.vif;
- 	struct ieee80211_key_conf *key = info->control.hw_key;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	__le16 fc = hdr->frame_control;
- 
- 	/* We should disable CCK RATE due to P2P */
- 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
-@@ -2966,14 +3023,29 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
-+	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, skb);
-+	ATH10K_SKB_CB(skb)->is_protected = ieee80211_has_protected(fc);
- 
--	/* it makes no sense to process injected frames like that */
--	if (vif && vif->type != NL80211_IFTYPE_MONITOR) {
-+	switch (ATH10K_SKB_CB(skb)->txmode) {
-+	case ATH10K_HW_TXRX_MGMT:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		ath10k_tx_h_nwifi(hw, skb);
- 		ath10k_tx_h_update_wep_key(vif, key, skb);
- 		ath10k_tx_h_add_p2p_noa_ie(ar, vif, skb);
- 		ath10k_tx_h_seq_no(vif, skb);
- 		ath10k_tx_h_tsf_adjust(vif, skb);
-+		break;
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		ath10k_tx_h_update_wep_key(vif, key, skb);
-+		ath10k_tx_h_8023(skb);
-+		break;
-+	case ATH10K_HW_TXRX_RAW:
-+		/* FIXME: Packet injection isn't implemented. It should be
-+		 * doable with firmware 10.2 on qca988x.
-+		 */
-+		WARN_ON_ONCE(1);
-+		ieee80211_free_txskb(hw, skb);
-+		return;
- 	}
- 
- 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
-@@ -2995,7 +3067,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 		}
- 	}
- 
--	ath10k_tx_htt(ar, skb);
-+	ath10k_mac_tx(ar, skb);
- }
- 
- /* Must not be called with conf_mutex held as workers can use that also. */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index ca120dd..1e96f25 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -28,6 +28,14 @@ struct ath10k_generic_iter {
- 	int ret;
- };
- 
-+struct rfc1042_hdr {
-+	u8 llc_dsap;
-+	u8 llc_ssap;
-+	u8 llc_ctrl;
-+	u8 snap_oui[3];
-+	__be16 snap_type;
-+} __packed;
-+
- struct ath10k *ath10k_mac_create(size_t priv_size);
- void ath10k_mac_destroy(struct ath10k *ar);
- int ath10k_mac_register(struct ath10k *ar);
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBGZWJydWFyeSAyMDE1IGF0IDExOjQxLCBNYXJlayBQdXp5bmlhayA8bWFyZWsucHV6eW5p
+YWtAdGlldG8uY29tPiB3cm90ZToKWy4uLl0KPiArc3RhdGljIGludCBhdGgxMGtfZW5hYmxlX3Rk
+bHMoc3RydWN0IGF0aDEwayAqYXIsIHUzMiB2ZGV2X2lkLCBib29sIGVuYWJsZSkKCkZ1bmN0aW9u
+IGluIG1hYy5jIHNob3VsZCBoYXZlIGEgYGF0aDEwa19tYWNfYCBwcmVmaXguCgo+ICt7Cj4gKyAg
+ICAgICBpbnQgcmV0Owo+ICsgICAgICAgZW51bSB3bWlfdGRsc19zdGF0ZSBzdGF0ZSA9IFdNSV9U
+RExTX0RJU0FCTEU7Cj4gKwo+ICsgICAgICAgbG9ja2RlcF9hc3NlcnRfaGVsZCgmYXItPmNvbmZf
+bXV0ZXgpOwo+ICsKPiArICAgICAgIGlmIChlbmFibGUpCj4gKyAgICAgICAgICAgICAgIHN0YXRl
+ID0gV01JX1RETFNfRU5BQkxFX0FDVElWRTsKPiArCj4gKyAgICAgICByZXQgPSBhdGgxMGtfd21p
+X3VwZGF0ZV9md190ZGxzX3N0YXRlKGFyLCB2ZGV2X2lkLCBzdGF0ZSk7CgpBbnl3YXkgSSBzZWUg
+bGl0dGxlIHBvaW50IGluIGhhdmluZyB0aGlzIHdyYXBwZXIgZnVuY3Rpb24ganVzdCB0byBjYWxs
+CndtaSBmdW5jdGlvbj8KCgpbLi4uXQo+ICtzdGF0aWMgaW50IGF0aDEwa190ZGxzX3BlZXJfdXBk
+YXRlKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgdmRldl9pZCwKPiArICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHN0cnVjdCBpZWVlODAyMTFfc3RhICpzdGEsCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBlbnVtIHdtaV90ZGxzX3BlZXJfc3RhdGUgc3RhdGUpCgpU
+aGUgYXRoMTBrX21hY18gcHJlZml4IGlzIG1pc3Npbmc6IGF0aDEwa19tYWNfdGRsc19wZWVyX3Vw
+ZGF0ZSgpLgoKCj4gK3sKPiArICAgICAgIGludCByZXQ7Cj4gKyAgICAgICBzdHJ1Y3Qgd21pX3Rk
+bHNfcGVlcl91cGRhdGVfY21kX2FyZyBhcmc7Cj4gKyAgICAgICBzdHJ1Y3Qgd21pX3RkbHNfcGVl
+cl9jYXBhYl9hcmcgY2FwOwo+ICsgICAgICAgc3RydWN0IHdtaV9jaGFubmVsX2FyZyBjaGFuX2Fy
+ZzsKCkkgd291bGQgYHh4eCA9IHt9YCB0byBtYWtlIHRoZXNlIGFyZSB6ZXJvLWVkLiBSaWdodCBu
+b3cgeW91IHBhc3MKdW5pbml0aWFsaXplZCB2YXJzIGZyb20gdGhlIHN0YWNrLi4KCgo+ICsgICAg
+ICAgaW50IGk7Cj4gKwo+ICsgICAgICAgbG9ja2RlcF9hc3NlcnRfaGVsZCgmYXItPmNvbmZfbXV0
+ZXgpOwo+ICsKPiArICAgICAgIGFyZy52ZGV2X2lkID0gdmRldl9pZDsKPiArICAgICAgIGFyZy5w
+ZWVyX3N0YXRlID0gc3RhdGU7Cj4gKyAgICAgICBldGhlcl9hZGRyX2NvcHkoYXJnLmFkZHIsIHN0
+YS0+YWRkcik7Cj4gKwo+ICsgICAgICAgY2FwLnBlZXJfbWF4X3NwID0gc3RhLT5tYXhfc3A7Cj4g
+KyAgICAgICBjYXAucGVlcl91YXBzZF9xdWV1ZXMgPSBzdGEtPnVhcHNkX3F1ZXVlczsKPiArICAg
+ICAgIGNhcC5wZWVyX2N1cnJfb3BlcmNsYXNzID0gMDsKPiArICAgICAgIGNhcC5zZWxmX2N1cnJf
+b3BlcmNsYXNzID0gMDsKPiArICAgICAgIGNhcC5wZWVyX2NoYW5fbGVuID0gMDsKPiArICAgICAg
+IGNhcC5wZWVyX29wZXJjbGFzc19sZW4gPSAwOwo+ICsgICAgICAgY2FwLmlzX3BlZXJfcmVzcG9u
+ZGVyID0gMDsKPiArICAgICAgIGNhcC5idWZmX3N0YV9zdXBwb3J0ID0gMDsKPiArICAgICAgIGNh
+cC5vZmZfY2hhbl9zdXBwb3J0ID0gMDsKPiArICAgICAgIGNhcC5wcmVmX29mZmNoYW5fbnVtID0g
+MDsKPiArICAgICAgIGNhcC5wcmVmX29mZmNoYW5fYncgPSAwOwoKT25jZSB5b3UgYD0ge31gIGl0
+J3MgcHJvYmFibHkgcmVkdW5kYW50IHRvIHplcm8gZWFjaCBzdHJ1Y3R1cmUgbWVtYmVyIGxpa2Ug
+dGhhdC4KCgpbLi4uXQo+IEBAIC00NDYyLDYgKzQ1NTMsOCBAQCBzdGF0aWMgaW50IGF0aDEwa19z
+dGFfc3RhdGUoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICAgICAgICAgIGlmIChy
+ZXQpCj4gICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQgdG8g
+ZGVsZXRlIHBlZXIgJXBNIGZvciB2ZGV2ICVkOiAlaVxuIiwKPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBzdGEtPmFkZHIsIGFydmlmLT52ZGV2X2lkLCByZXQpOwo+ICsgICAg
+ICAgICAgICAgICBpZiAoc3RhLT50ZGxzKQo+ICsgICAgICAgICAgICAgICAgICAgICAgIGF0aDEw
+a19lbmFibGVfdGRscyhhciwgYXJ2aWYtPnZkZXZfaWQsIGZhbHNlKTsKCldoYXQgaWYgeW91IGhh
+dmUgMiBURExTIHBlZXJzPyBJZiB5b3UgZGlzY29ubmVjdCB0aGUgZmlyc3Qgb25lIHlvdSdsbApk
+aXNhYmxlIFRETFMgb24gdGhlIGVudGlyZSB2ZGV2IHdoaWxlIHRoZSBvdGhlciBwZWVyIGlzIHN0
+aWxsCmNvbm5lY3RlZC4gSSBkb24ndCB0aGluayB0aGF0J3MgZGVzaXJlZC4KClBlcmhhcHMgdGhl
+IHBlci12ZGV2IFRETFMgY29tbWFuZCBjYW4gYmUgY2FsbGVkIGluCmFkZF9pbnRlcmZhY2UoKS9y
+ZW1vdmVfaW50ZXJmYWNlKCk/IElmIHRoYXQncyBub3QgcG9zc2libGUgSSBndWVzcyB5b3UKY291
+bGQgdXNlIGllZWU4MDIxMV9pdGVyYXRlX3N0YXRpb25zX2F0b21pYygpIHRvIGxvb2sgaWYgdGhl
+cmUncyBzdGlsbAphdCBsZWFzdCBvbmUgVERMUyBwZWVyIHByZXNlbnQuCgoKPgo+ICAgICAgICAg
+ICAgICAgICBhdGgxMGtfbWFjX2RlY19udW1fc3RhdGlvbnMoYXJ2aWYpOwo+ICAgICAgICAgfSBl
+bHNlIGlmIChvbGRfc3RhdGUgPT0gSUVFRTgwMjExX1NUQV9BVVRIICYmCj4gQEAgLTQ0NzksOSAr
+NDU3MiwyOCBAQCBzdGF0aWMgaW50IGF0aDEwa19zdGFfc3RhdGUoc3RydWN0IGllZWU4MDIxMV9o
+dyAqaHcsCj4gICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQg
+dG8gYXNzb2NpYXRlIHN0YXRpb24gJXBNIGZvciB2ZGV2ICVpOiAlaVxuIiwKPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBzdGEtPmFkZHIsIGFydmlmLT52ZGV2X2lkLCByZXQp
+Owo+ICAgICAgICAgfSBlbHNlIGlmIChvbGRfc3RhdGUgPT0gSUVFRTgwMjExX1NUQV9BU1NPQyAm
+Jgo+IC0gICAgICAgICAgICAgICAgICBuZXdfc3RhdGUgPT0gSUVFRTgwMjExX1NUQV9BVVRIICYm
+Cj4gLSAgICAgICAgICAgICAgICAgICh2aWYtPnR5cGUgPT0gTkw4MDIxMV9JRlRZUEVfQVAgfHwK
+PiAtICAgICAgICAgICAgICAgICAgIHZpZi0+dHlwZSA9PSBOTDgwMjExX0lGVFlQRV9BREhPQykp
+IHsKPiArICAgICAgICAgICAgICAgICAgbmV3X3N0YXRlID09IElFRUU4MDIxMV9TVEFfQVVUSE9S
+SVpFRCAmJgo+ICsgICAgICAgICAgICAgICAgICBzdGEtPnRkbHMpIHsKPiArICAgICAgICAgICAg
+ICAgLyoKPiArICAgICAgICAgICAgICAgICogVGRscyBzdGF0aW9uIGF1dGhvcml6ZWQuCj4gKyAg
+ICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICBhdGgxMGtfZGJnKGFyLCBBVEgxMEtf
+REJHX01BQywgIm1hYyB0ZGxzIHN0YSAlcE0gYXV0aG9yaXplZFxuIiwKPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICBzdGEtPmFkZHIpOwo+ICsKPiArICAgICAgICAgICAgICAgcmV0ID0gYXRo
+MTBrX3N0YXRpb25fYXNzb2MoYXIsIHZpZiwgc3RhLCBmYWxzZSk7Cj4gKyAgICAgICAgICAgICAg
+IGlmIChyZXQpCj4gKyAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIsICJmYWls
+ZWQgdG8gYXNzb2NpYXRlIHN0YXRpb24gJXBNIGZvciB2ZGV2ICVpOiAlaVxuIiwKPiArICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGEtPmFkZHIsIGFydmlmLT52ZGV2X2lkLCBy
+ZXQpOwoKSXQncyBtZWFuaW5nbGVzcyB0byBjYWxsIHRkbHNfcGVlcl91cGRhdGUoKSBpZiBhc3Nv
+YyBmYWlsZWQuIEZyb20KcHJhY3RpY2FsIHN0YW5kcG9pbnQgZncgaXMgcHJvYmFibHkgZGVhZCBh
+dCB0aGF0IHBvaW50IGFuZCBzdWJzZXF1ZW50CmNvbW1hbmRzIHdpbGwgdGltZW91dC4gWW91IGNh
+biBgZ290byBleGl0YC4KCgpbLi4uXQo+ICtzdGF0aWMgc3RydWN0IHNrX2J1ZmYgKgo+ICthdGgx
+MGtfd21pX3Rsdl9vcF9nZW5fdXBkYXRlX2Z3X3RkbHNfc3RhdGUoc3RydWN0IGF0aDEwayAqYXIs
+IHUzMiB2ZGV2X2lkLAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBlbnVtIHdtaV90ZGxzX3N0YXRlIHN0YXRlKQo+ICt7Cj4gKyAgICAgICBzdHJ1Y3Qgd21pX3Rk
+bHNfc2V0X3N0YXRlX2NtZCAqY21kOwo+ICsgICAgICAgc3RydWN0IHdtaV90bHYgKnRsdjsKPiAr
+ICAgICAgIHN0cnVjdCBza19idWZmICpza2I7Cj4gKyAgICAgICB2b2lkICpwdHI7Cj4gKyAgICAg
+ICBzaXplX3QgbGVuOwo+ICsgICAgICAgLyogU2V0IHRvIG9wdGlvbnMgZnJvbSB3bWlfdGx2X3Rk
+bHNfb3B0aW9ucywKPiArICAgICAgICAqIGZvciBub3cgbm9uZSBvZiB0aGVuIGFyZSBlbmFibGVk
+LgoKVHlwbzogcy90aGVuL3RoZW0vCgoKPiArICAgICAgICAqLwo+ICsgICAgICAgdTMyIG9wdGlv
+bnMgPSAwOwo+ICsKPiArICAgICAgIGxlbiA9IHNpemVvZigqdGx2KSArIHNpemVvZigqY21kKTsK
+PiArICAgICAgIHNrYiA9IGF0aDEwa193bWlfYWxsb2Nfc2tiKGFyLCBzaXplb2YoKnRsdikgKyBz
+aXplb2YoKmNtZCkpOwoKV2h5IG5vdCB1c2UgYGxlbmAgZm9yIGFsbG9jX3NrYigpPwoKClsuLi5d
+Cj4gK3N0YXRpYyBzdHJ1Y3Qgc2tfYnVmZiAqCj4gK2F0aDEwa193bWlfdGx2X29wX2dlbl90ZGxz
+X3BlZXJfdXBkYXRlKHN0cnVjdCBhdGgxMGsgKmFyLAo+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIHN0cnVjdCB3bWlfdGRsc19wZWVyX3VwZGF0ZV9jbWRfYXJnICphcmcs
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IHdtaV90ZGxz
+X3BlZXJfY2FwYWJfYXJnICpjYXAsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgc3RydWN0IHdtaV9jaGFubmVsX2FyZyAqY2hhbl9hcmcpCgpDb3VsZCBiZSBjb25zdCBz
+dHJ1Y3Qgb24gdGhlc2UgX2FyZ3MuCgoKWy4uLl0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmggYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
+YXRoMTBrL3dtaS10bHYuaAo+IGluZGV4IDVmMGZlODQuLjhjMjE5ZjAgMTAwNjQ0Cj4gLS0tIGEv
+ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmgKPiArKysgYi9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS10bHYuaAo+IEBAIC0xNTE2LDYgKzE1MTYsNTgg
+QEAgc3RydWN0IHdtaV90bHZfcDJwX25vYV9ldiB7Cj4gICAgICAgICBfX2xlMzIgdmRldl9pZDsK
+PiAgfSBfX3BhY2tlZDsKPgo+ICsvKiBURExTIE9wdGlvbnMgKi8KPiArZW51bSB3bWlfdGx2X3Rk
+bHNfb3B0aW9ucyB7Cj4gKyAgICAgICBXTUlfVExWX1RETFNfT0ZGQ0hBTl9FTiA9IEJJVCgwKSwg
+LyogVERMUyBPZmYgQ2hhbm5lbCBzdXBwb3J0ICovCj4gKyAgICAgICBXTUlfVExWX1RETFNfQlVG
+RkVSX1NUQV9FTiA9IEJJVCgxKSwgLyogVERMUyBCdWZmZXIgU1RBIHN1cHBvcnQgKi8KPiArICAg
+ICAgIFdNSV9UTFZfVERMU19TTEVFUF9TVEFfRU4gPSBCSVQoMiksIC8qIFRETFMgU2xlZXAgU1RB
+IHN1cHBvcnQgKi8KClRoZXNlIGNvbW1lbnRzIHNlZW0gcmVkdW5kYW50IGFuZCBkb24ndCBpbnRy
+b2R1Y2UgYW55IGV4dHJhIGluZm8uLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
