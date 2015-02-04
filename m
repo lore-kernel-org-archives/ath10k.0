@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIrYw-0007wI-7Y
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 04:27:38 +0000
-Message-ID: <54D19FED.90102@candelatech.com>
-Date: Tue, 03 Feb 2015 20:28:29 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YIuCN-0003s9-71
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 07:16:31 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k:Prevent setting wrong key idx for station
+References: <1422369059-21274-1-git-send-email-senthilb@qti.qualcomm.com>
+Date: Wed, 4 Feb 2015 09:15:55 +0200
+In-Reply-To: <1422369059-21274-1-git-send-email-senthilb@qti.qualcomm.com>
+ (senthilb@qti.qualcomm.com's message of "Tue, 27 Jan 2015 20:00:59
+ +0530")
+Message-ID: <87egq6w3is.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Unable to read firmware registers on crash?
-References: <54CE6664.9090101@candelatech.com>	<CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>	<54CFADE3.6040102@candelatech.com>	<CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>	<54D0D3D9.7030905@candelatech.com>
- <CA+BoTQkHyEKqHJTu6rTMhZh_-s1K3=uuzcKANa5qPF4n=fzjnQ@mail.gmail.com>
- <54D195C3.7060703@candelatech.com>
-In-Reply-To: <54D195C3.7060703@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: senthilb@qti.qualcomm.com
+Cc: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-V2VsbCwgaXQgc2VlbXMgdG8gd29yayBhdCBsZWFzdCB3aGVuIEkgY3Jhc2ggaXQgbmljZWx5IHdp
-dGggdGhlCmRlYnVnZnMgZmlybXdhcmUtYXNzZXJ0IGhvb2tzLiAgVGVzdGVkIG9uIHg4Ni4uLmlm
-IEkgaGF2ZSBlbmRpYW4KaXNzdWVzLCB0aGluZ3MgbWlnaHQgZ28gcG9vcmx5IG9uIG90aGVyIHBs
-YXRmb3Jtcy4KCkhlcmUgaXMgcGF0Y2ggSSBhbSB1c2luZyBpbiBhdGgxMGsuLi4gIEkgYWRkZWQg
-c2ltaWxhciBsb2dpYyB0byB0aGUKQ1QgZmlybXdhcmUuICBOb3csIHdpbGwgaGF2ZSB0byBzZWUg
-aWYgd2UgY2FuIHJlcHJvZHVjZSB0aGUgY3Jhc2ggd2hlcmUKQ0UgdHJhbnNwb3J0IHRvdGFsbHkg
-ZmFpbHMuLi4KCmh0dHA6Ly9kbXoyLmNhbmRlbGF0ZWNoLmNvbS9naXQvZ2l0d2ViLmNnaT9wPWxp
-bnV4LTMuMTcuZGV2LnkvLmdpdDthPWNvbW1pdGRpZmY7aD01MjMzM2I4ODlmMGM4MThkMjc2NmQw
-ZDUxNGFjMzFlNWM1M2NlMGFiO2hwPTk5N2QzNjEwNWZlOTgwM2JmN2JlMGJiYjZkYmE2MTcxMGMz
-ZTgyMzIKCkNvbW1lbnRzIHdlbGNvbWUgb24gdGhlIHBhdGNoLCB0aG91Z2ggaXQgaGFzIGxpdHRs
-ZSB0byBubyBjaGFuY2Ugb2YgZXZlcgptYWtpbmcgaXQgdXBzdHJlYW0uLi4KClRoYW5rcywKQmVu
-CgoKT24gMDIvMDMvMjAxNSAwNzo0NSBQTSwgQmVuIEdyZWVhciB3cm90ZToKPiBPbiAwMi8wMy8y
-MDE1IDA2OjI2IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+PiBPbiAzIEZlYnJ1YXJ5IDIwMTUg
-YXQgMTQ6NTcsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPgo+
-Pj4gVGhhdCBzb3VuZHMgcmVhc29uYWJsZS4gIERvIHlvdSBrbm93IG9mIGFueSBleGFtcGxlIGNv
-ZGUgdGhhdCBhY2Nlc3Nlcwo+Pj4gYSB0YXJnZXQgcmVnaXN0ZXIgb3IgdHdvIHdpdGggdGhlIE1N
-SU8gbG9naWMgb24gdGhlIGhvc3Q/ICBJIHRoaW5rIGZpcm13YXJlCj4+PiBoYXMgc29tZSBleGFt
-cGxlcyBvZiBob3cKPj4+IHRvIGZpZGRsZSB3aXRoIHJlZ2lzdGVycywgc28gSSB0aGluayBJIGNh
-biBtYWtlIGEgc3RhYiBhdCB0aGF0IHBhcnQuLi4uCj4+Cj4+ICBGcm9tIHdoYXQgSSB1bmRlcnN0
-YW5kIHRoZSBNTUlPIHNwYWNlIGlzIHNoYXJlZCBiZXR3ZWVuIGhvc3QgYW5kCj4+IHRhcmdldCBw
-cm9ncmFtIHNvIHRoZXJlJ3Mgbm8gbmVlZCBmb3IgYW55IHNwZWNpYWwgaGFuZGxpbmcuIFlvdSBj
-YW4KPj4gbG9vayBmb3IgRldfSU5EX0VWRU5UX1BFTkRJTkcgYW5kIEZXX0lORElDQVRPUl9BRERS
-RVNTIHVzYWdlIGJvdGggaW4KPj4gZmlybXdhcmUgYW5kIGF0aDEwayAtIGl0J3MgYWxyZWFkeSB1
-c2VkIHRvIG5vdGlmeSBob3N0IGFib3V0IGEgY3Jhc2guCj4+IEl0IHNob3VsZCBiZSBwcmV0dHkg
-c3RyYWlnaHRmb3J3YXJkLiBUaGUgaW5kaWNhdG9yIGFkZHJlc3MgaXRzZWxmCj4+IHNlZW1zIHRv
-IGJlIGEgc2NyYXRjaCByZWdpc3RlciBhbHJlYWR5IGFuZCB0aGVyZSBhcmUgYSBmZXcgbW9yZSBz
-byB5b3UKPj4gc2hvdWxkIGJlIGFibGUgdG8gZGVzaWduIGEgcGluZy1wb25nIHByb3RvY29sIHRv
-IHBhc3MgZGF0YS4KPgo+IFdoaWxlIGltcGxlbWVudGluZyB0aGlzLCBJIHJhbiBpbnRvIGEgcXVl
-c3Rpb246Cj4KPiAgRnJvbSB3aGF0IEkgY2FuIHRlbGwsIHRoZSBhdGgxMGtfcGNpX3JlYWQzMiBh
-bmQgYXRoMTBrX3BjaV93cml0ZTMyCj4gYXJlIHRyZWF0ZWQgbGlrZSB0aGV5IHJldHVybiBhbmQg
-d3JpdGUgZGF0YSBpbiBob3N0LWJ5dGUtb3JkZXIuCj4KPiBCdXQsIGlvd3JpdGUzMiBhbmQgaW9y
-ZWFkMzIgYXJlIGRlZmluZWQgdG8gYmUgcGNpLWJ5dGUtb3JkZXIgd2hpY2gKPiBpcyBsaXR0bGUt
-ZW5kaWFuPwo+IGh0dHA6Ly9jb21tZW50cy5nbWFuZS5vcmcvZ21hbmUubGludXgua2VybmVsLzEw
-NDIzNzEKPiAob3IgaXMgdGhhdCBiYWQgaW5mbz8pCj4KPiBEbyB3ZSBuZWVkIHRvIGJlIGNvbnZl
-cnRpbmcgdmFsdWVzIHRvIGxpdHRsZS1lbmRpYW4gYmVmb3JlCj4gd3JpdGluZyB0aGVtPwo+Cj4g
-QW5kIHVwb24sIHJlYWQsIGRvIHdlIG5lZWQgdG8gY29udmVydCB0aGVtIHRvIGhvc3Qgb3JkZXI/
-Cj4KPiBJIGd1ZXNzIHdlIG11c3Qgbm90IHNpbmNlIGl0IHNlZW1zIHRoaW5ncyBtb3N0bHkgd29y
-ayBub3csIGJ1dCBJCj4gYW0gbm90IHN1cmUgd2h5IHRoYXQgaXMuLi4KPgo+IFRoYW5rcywKPiBC
-ZW4KPgo+Cj4KPj4KPj4KPj4gTWljaGHFggo+Pgo+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFy
-YkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5j
-YW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0
-dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+<senthilb@qti.qualcomm.com> writes:
+
+> From: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+>
+> Ath10k driver sets wrong default key idx that results in
+> sending unicast frames with multicast key.
+>
+> The reason for this behavior is that cached broadcast key
+> is installed for station MAC address on association. After
+> dot1x completes, unicast key is installed for station
+> MAC address. Default key idx is set to broadcast key id when
+> driver tries to send broadcast frame. This causes firmware
+> to use broadcast key id to transmit unicast frames to stations.
+>
+> Used TX_USAGE flag to set default key for stations.
+>
+> Added callback for setting unicast default idx which will be
+> invoked on every default key idx configuration.
+>
+> Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+
+Thanks, applied to ath.git.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
