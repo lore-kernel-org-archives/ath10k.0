@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJ1mt-0002F8-B2
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 15:22:43 +0000
-Message-ID: <54D23974.1070206@candelatech.com>
-Date: Wed, 04 Feb 2015 07:23:32 -0800
+ id 1YJ1ur-0007qT-7m
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 15:30:57 +0000
+Message-ID: <54D23B64.3060806@candelatech.com>
+Date: Wed, 04 Feb 2015 07:31:48 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: More than one ath10k NIC will not load (bisected)
-References: <54BECE4D.9020308@candelatech.com>	<54BF0B42.7050101@dd-wrt.com>	<54BF13AE.5010909@candelatech.com>	<54BFF788.2000500@candelatech.com>	<54C00239.7000008@candelatech.com>	<54C166B8.7060405@candelatech.com>	<CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>	<54C26EB3.7050805@candelatech.com>	<87vbjit58l.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmGWLDHGa=GkhtDaSupsY-nd5e5nUuwg6iMAN4d8WjOTA@mail.gmail.com>
-In-Reply-To: <CA+BoTQmGWLDHGa=GkhtDaSupsY-nd5e5nUuwg6iMAN4d8WjOTA@mail.gmail.com>
+Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
+ properly.
+References: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
+ <878ugeul6u.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878ugeul6u.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +24,37 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 02/04/2015 01:35 AM, Michal Kazior wrote:
-> On 4 February 2015 at 10:07, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Ben Greear <greearb@candelatech.com> writes:
+On 02/04/2015 12:37 AM, Kalle Valo wrote:
+> greearb@candelatech.com writes:
+>
+>> From: Ben Greear <greearb@candelatech.com>
 >>
->>>> Hmm.. This removes warm_reset in probe function but I fail to see how
->>>> this could end up not loading one of the NIC *silently*?
->>>>
->>>> Anyway there's a pending patch which adds the reset back:
->>>> https://github.com/kvalo/ath/commit/bdcd6f4e4ac5d2d2a56da4813f56655e6db0ee45
->>>> . You might want to try it and see if it helps.
->>>
->>> Reverting the patch made it work again for me.
->>>
->>> I don't understand that code well, but perhaps you are disabling
->>> a shared interrupt that silently stops the second NIC from
->>> being able to do it's thing?
->>>
->>> Do you have a PC with 2 NICs in it that you could try yourself?
->>>
->>> I can grab you the logs of a failure to boot later today.
+>> In case firmware fails to start the scan, then complete
+>> the start condition and clean up so that driver does not
+>> block on timeout.
 >>
->> What should we do with this one? I didn't look at the details yet, but
->> do we have any other option than to revert?
+>> Signed-off-by: Ben Greear <greearb@candelatech.com>
 >
-> I believe this is an issue in Ben's userspace (he sent me logs
-> privately) or some sort of kernel event bug. It basically looked like
-> this: both devices were detected by ath10k and both started
-> register_work. One of the devices loaded all the way while the other
-> tried to load a few non-existing firmware files and it stopped. Few
-> minutes later there was a hung task splat pointing to
-> request_firmware() called from ath10k suggesting userspace didn't
-> handle firmware request.
+> These patches are now in the pending branch.
 >
-> The "offending" patch effectively removed 200ms from probe() in
-> ath10k. This could've change timing on request_firmware() calls on
-> Ben's system. Btw. the 200ms is back again now with
-> 1a7fecb766c83dace747f42b25bbb544b00a0163 ("ath10k: reset chip before
-> reading chip_id in probe").
+> 86f50c71b224 ath10k: scan should handle scan-start-failed event properly
+> c6dde373a4bb ath10k: fix spelling mistakes and add details to mac logging
+> 198c0184d94c ath10k: fix spelling in htt code comment
+> 227822d52d26 ath10k: fix CE_DESC_FLAGS_META_DATA_LSB definition
 >
-> Marek tried running 2 qca988x on his laptop some time ago (with and
-> without the extra timing) and didn't have any issues.
+> I dropped the rest as I really would like to avoid maintaining yet
+> another firmware branch.
 
-I can retry my system with stock Fedora 20 and see if it works there.
 
-If not, then I think it still needs to be worked on...you agree?
+Thanks for applying those.
+
+I'll stop sending patches related to my firmware.
 
 Thanks,
 Ben
-
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
