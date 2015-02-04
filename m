@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIguQ-0000Gx-J9
- for ath10k@lists.infradead.org; Tue, 03 Feb 2015 17:05:07 +0000
-Received: by mail-wi0-f172.google.com with SMTP id h11so25921318wiw.5
- for <ath10k@lists.infradead.org>; Tue, 03 Feb 2015 09:04:42 -0800 (PST)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YIqsy-0006en-V7
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 03:44:18 +0000
+Message-ID: <54D195C3.7060703@candelatech.com>
+Date: Tue, 03 Feb 2015 19:45:07 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
-References: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 3 Feb 2015 18:04:42 +0100
-Message-ID: <CAAmLN2an0K7vtzgkVDSJ2MJ-2bsWnpOtGmQRM_P2UkGT5zGNAw@mail.gmail.com>
-Subject: Re: First QCA6174 firmware release
-From: Joris Guisson <joris.guisson@gmail.com>
+Subject: Re: Unable to read firmware registers on crash?
+References: <54CE6664.9090101@candelatech.com>	<CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>	<54CFADE3.6040102@candelatech.com>	<CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>	<54D0D3D9.7030905@candelatech.com>
+ <CA+BoTQkHyEKqHJTu6rTMhZh_-s1K3=uuzcKANa5qPF4n=fzjnQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQkHyEKqHJTu6rTMhZh_-s1K3=uuzcKANa5qPF4n=fzjnQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Where is the QCA6174 v2.1 firmware ?
-
-I'm getting these errors from the latest ath kernel:
-
-[ 1660.748740] ath10k_pci 0000:04:00.0: Direct firmware load for
-ath10k/cal-pci-0000:04:00.0.bin failed with error -2
-[ 1660.748767] ath10k_pci 0000:04:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/firmware-4.bin failed with error -2
-[ 1660.748770] ath10k_pci 0000:04:00.0: could not fetch firmware file
-'ath10k/QCA6174/hw2.1/firmware-4.bin': -2
-[ 1660.748777] ath10k_pci 0000:04:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/firmware-3.bin failed with error -2
-[ 1660.748779] ath10k_pci 0000:04:00.0: could not fetch firmware file
-'ath10k/QCA6174/hw2.1/firmware-3.bin': -2
-[ 1660.748785] ath10k_pci 0000:04:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/firmware-2.bin failed with error -2
-[ 1660.748787] ath10k_pci 0000:04:00.0: could not fetch firmware file
-'ath10k/QCA6174/hw2.1/firmware-2.bin': -2
-[ 1660.748793] ath10k_pci 0000:04:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/board.bin failed with error -2
-[ 1660.748795] ath10k_pci 0000:04:00.0: could not fetch board data (-2)
-[ 1660.748797] ath10k_pci 0000:04:00.0: could not fetch firmware files (-2)
-[ 1660.748799] ath10k_pci 0000:04:00.0: could not probe fw (-2)
-
-Seeing, that I don't have these firmware files, this is logical. So
-where can I find them ?
-
-Joris,
-
-On Tue, Jan 27, 2015 at 2:45 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Hi,
->
-> I pushed the first QCA6174 firmware release to ath10k-firmware.git:
->
-> https://github.com/kvalo/ath10k-firmware/tree/master/ath10k/QCA6174/hw3.0
->
-> --
-> Kalle Valo
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDIvMDMvMjAxNSAwNjoyNiBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAzIEZlYnJ1
+YXJ5IDIwMTUgYXQgMTQ6NTcsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3
+cm90ZToKCj4+IFRoYXQgc291bmRzIHJlYXNvbmFibGUuICBEbyB5b3Uga25vdyBvZiBhbnkgZXhh
+bXBsZSBjb2RlIHRoYXQgYWNjZXNzZXMKPj4gYSB0YXJnZXQgcmVnaXN0ZXIgb3IgdHdvIHdpdGgg
+dGhlIE1NSU8gbG9naWMgb24gdGhlIGhvc3Q/ICBJIHRoaW5rIGZpcm13YXJlCj4+IGhhcyBzb21l
+IGV4YW1wbGVzIG9mIGhvdwo+PiB0byBmaWRkbGUgd2l0aCByZWdpc3RlcnMsIHNvIEkgdGhpbmsg
+SSBjYW4gbWFrZSBhIHN0YWIgYXQgdGhhdCBwYXJ0Li4uLgo+Cj4gIEZyb20gd2hhdCBJIHVuZGVy
+c3RhbmQgdGhlIE1NSU8gc3BhY2UgaXMgc2hhcmVkIGJldHdlZW4gaG9zdCBhbmQKPiB0YXJnZXQg
+cHJvZ3JhbSBzbyB0aGVyZSdzIG5vIG5lZWQgZm9yIGFueSBzcGVjaWFsIGhhbmRsaW5nLiBZb3Ug
+Y2FuCj4gbG9vayBmb3IgRldfSU5EX0VWRU5UX1BFTkRJTkcgYW5kIEZXX0lORElDQVRPUl9BRERS
+RVNTIHVzYWdlIGJvdGggaW4KPiBmaXJtd2FyZSBhbmQgYXRoMTBrIC0gaXQncyBhbHJlYWR5IHVz
+ZWQgdG8gbm90aWZ5IGhvc3QgYWJvdXQgYSBjcmFzaC4KPiBJdCBzaG91bGQgYmUgcHJldHR5IHN0
+cmFpZ2h0Zm9yd2FyZC4gVGhlIGluZGljYXRvciBhZGRyZXNzIGl0c2VsZgo+IHNlZW1zIHRvIGJl
+IGEgc2NyYXRjaCByZWdpc3RlciBhbHJlYWR5IGFuZCB0aGVyZSBhcmUgYSBmZXcgbW9yZSBzbyB5
+b3UKPiBzaG91bGQgYmUgYWJsZSB0byBkZXNpZ24gYSBwaW5nLXBvbmcgcHJvdG9jb2wgdG8gcGFz
+cyBkYXRhLgoKV2hpbGUgaW1wbGVtZW50aW5nIHRoaXMsIEkgcmFuIGludG8gYSBxdWVzdGlvbjoK
+CiBGcm9tIHdoYXQgSSBjYW4gdGVsbCwgdGhlIGF0aDEwa19wY2lfcmVhZDMyIGFuZCBhdGgxMGtf
+cGNpX3dyaXRlMzIKYXJlIHRyZWF0ZWQgbGlrZSB0aGV5IHJldHVybiBhbmQgd3JpdGUgZGF0YSBp
+biBob3N0LWJ5dGUtb3JkZXIuCgpCdXQsIGlvd3JpdGUzMiBhbmQgaW9yZWFkMzIgYXJlIGRlZmlu
+ZWQgdG8gYmUgcGNpLWJ5dGUtb3JkZXIgd2hpY2gKaXMgbGl0dGxlLWVuZGlhbj8KaHR0cDovL2Nv
+bW1lbnRzLmdtYW5lLm9yZy9nbWFuZS5saW51eC5rZXJuZWwvMTA0MjM3MQoob3IgaXMgdGhhdCBi
+YWQgaW5mbz8pCgpEbyB3ZSBuZWVkIHRvIGJlIGNvbnZlcnRpbmcgdmFsdWVzIHRvIGxpdHRsZS1l
+bmRpYW4gYmVmb3JlCndyaXRpbmcgdGhlbT8KCkFuZCB1cG9uLCByZWFkLCBkbyB3ZSBuZWVkIHRv
+IGNvbnZlcnQgdGhlbSB0byBob3N0IG9yZGVyPwoKSSBndWVzcyB3ZSBtdXN0IG5vdCBzaW5jZSBp
+dCBzZWVtcyB0aGluZ3MgbW9zdGx5IHdvcmsgbm93LCBidXQgSQphbSBub3Qgc3VyZSB3aHkgdGhh
+dCBpcy4uLgoKVGhhbmtzLApCZW4KCgoKPgo+Cj4gTWljaGHFggo+CgoKLS0gCkJlbiBHcmVlYXIg
+PGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6
+Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
