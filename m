@@ -1,32 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.web.de ([212.227.15.14])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJ4mi-0000M6-A5
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 18:34:45 +0000
-Message-ID: <54D26614.2080708@users.sourceforge.net>
-Date: Wed, 04 Feb 2015 19:33:56 +0100
-From: SF Markus Elfring <elfring@users.sourceforge.net>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJ8Zy-00046S-0e
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 22:37:50 +0000
+Received: from [172.16.16.200] (unknown [12.217.161.130])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 7C17440D1BD
+ for <ath10k@lists.infradead.org>; Wed,  4 Feb 2015 14:37:28 -0800 (PST)
+Message-ID: <54D29F71.50603@candelatech.com>
+Date: Wed, 04 Feb 2015 14:38:41 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: [PATCH] ath10k: Delete unnecessary checks before the function call
- "release_firmware"
-References: <5307CAA2.8060406@users.sourceforge.net>
- <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
- <530A086E.8010901@users.sourceforge.net>
- <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
- <530A72AA.3000601@users.sourceforge.net>
- <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
- <530B5FB6.6010207@users.sourceforge.net>
- <alpine.DEB.2.10.1402241710370.2074@hadrien>
- <530C5E18.1020800@users.sourceforge.net>
- <alpine.DEB.2.10.1402251014170.2080@hadrien>
- <530CD2C4.4050903@users.sourceforge.net>
- <alpine.DEB.2.10.1402251840450.7035@hadrien>
- <530CF8FF.8080600@users.sourceforge.net>
- <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
- <530DD06F.4090703@users.sourceforge.net>
- <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
- <5317A59D.4@users.sourceforge.net>
-In-Reply-To: <5317A59D.4@users.sourceforge.net>
+Subject: station kickout
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -35,53 +21,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 4 Feb 2015 19:30:23 +0100
+In AP mode, it seems that 3.17-ish kernels (at least) always set station kickout
+to hard-coded value of 50.
 
-The release_firmware() function tests whether its argument is NULL and then
-returns immediately. Thus the test around the call is not needed.
+Is this something that should be configurable?  Maybe a module parameter
+if nothing else?
 
-This issue was detected by using the Coccinelle software.
+Thanks,
+Ben
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- drivers/net/wireless/ath/ath10k/core.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2d0671e..45171ad 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -393,16 +393,16 @@ static int ath10k_download_fw(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 
- static void ath10k_core_free_firmware_files(struct ath10k *ar)
- {
--	if (ar->board && !IS_ERR(ar->board))
-+	if (!IS_ERR(ar->board))
- 		release_firmware(ar->board);
- 
--	if (ar->otp && !IS_ERR(ar->otp))
-+	if (!IS_ERR(ar->otp))
- 		release_firmware(ar->otp);
- 
--	if (ar->firmware && !IS_ERR(ar->firmware))
-+	if (!IS_ERR(ar->firmware))
- 		release_firmware(ar->firmware);
- 
--	if (ar->cal_file && !IS_ERR(ar->cal_file))
-+	if (!IS_ERR(ar->cal_file))
- 		release_firmware(ar->cal_file);
- 
- 	ar->board = NULL;
 -- 
-2.2.2
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
