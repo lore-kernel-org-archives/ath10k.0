@@ -1,19 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mout.web.de ([212.227.15.14])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJ4S4-0006vS-KR
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 18:13:25 +0000
-Received: by mail-wi0-f169.google.com with SMTP id h11so30942715wiw.0
- for <ath10k@lists.infradead.org>; Wed, 04 Feb 2015 10:13:01 -0800 (PST)
+ id 1YJ4mi-0000M6-A5
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 18:34:45 +0000
+Message-ID: <54D26614.2080708@users.sourceforge.net>
+Date: Wed, 04 Feb 2015 19:33:56 +0100
+From: SF Markus Elfring <elfring@users.sourceforge.net>
 MIME-Version: 1.0
-In-Reply-To: <87iofhubf9.fsf@kamboji.qca.qualcomm.com>
-References: <87fvawcp7d.fsf@kamboji.qca.qualcomm.com>
- <CAAmLN2Y8L_BZbZBCvUEw_i9OJoWvzaUT6H5UsyBymaozLubcOA@mail.gmail.com>
- <87iofhubf9.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 4 Feb 2015 19:13:01 +0100
-Message-ID: <CAAmLN2Z9vkU5o_kFoxCDgYy1BnPDSAk1WXmKjv9JthHz9zpnnQ@mail.gmail.com>
-Subject: Re: First QCA6174 firmware release
-From: Joris Guisson <joris.guisson@gmail.com>
+Subject: [PATCH] ath10k: Delete unnecessary checks before the function call
+ "release_firmware"
+References: <5307CAA2.8060406@users.sourceforge.net>
+ <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+ <530A086E.8010901@users.sourceforge.net>
+ <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+ <530A72AA.3000601@users.sourceforge.net>
+ <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+ <530B5FB6.6010207@users.sourceforge.net>
+ <alpine.DEB.2.10.1402241710370.2074@hadrien>
+ <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
+In-Reply-To: <5317A59D.4@users.sourceforge.net>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,116 +39,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 
-This is what lspci -vvv says:
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 4 Feb 2015 19:30:23 +0100
 
-04:00.0 Network controller: Qualcomm Atheros Device 003e (rev 20)
-        Subsystem: Bigfoot Networks, Inc. Device 1525
-        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B- DisINTx+
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-<TAbort- <MAbort- >SERR- <PERR- INTx-
-        Latency: 0, Cache Line Size: 64 bytes
-        Interrupt: pin A routed to IRQ 31
-        Region 0: Memory at f7200000 (64-bit, non-prefetchable) [size=2M]
-        Capabilities: [40] Power Management version 3
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
-PME(D0+,D1-,D2-,D3hot+,D3cold+)
-                Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [50] MSI: Enable+ Count=8/8 Maskable+ 64bit-
-                Address: fee00518  Data: 0000
-                Masking: 00000000  Pending: 00000000
-        Capabilities: [70] Express (v2) Endpoint, MSI 00
-                DevCap: MaxPayload 256 bytes, PhantFunc 0, Latency L0s
-unlimited, L1 <64us
-                        ExtTag- AttnBtn- AttnInd- PwrInd- RBE+ FLReset-
-                DevCtl: Report errors: Correctable- Non-Fatal- Fatal-
-Unsupported-
-                        RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
-                        MaxPayload 128 bytes, MaxReadReq 512 bytes
-                DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq-
-AuxPwr+ TransPend-
-                LnkCap: Port #0, Speed 2.5GT/s, Width x1, ASPM L0s L1,
-Exit Latency L0s <4us, L1 <64us
-                        ClockPM+ Surprise- LLActRep- BwNot-
-                LnkCtl: ASPM Disabled; RCB 64 bytes Disabled- CommClk-
-                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-                LnkSta: Speed 2.5GT/s, Width x1, TrErr- Train-
-SlotClk+ DLActive- BWMgmt- ABWMgmt-
-                DevCap2: Completion Timeout: Not Supported,
-TimeoutDis+, LTR+, OBFF Via message
-                DevCtl2: Completion Timeout: 50us to 50ms,
-TimeoutDis-, LTR+, OBFF Disabled
-                LnkCtl2: Target Link Speed: 2.5GT/s, EnterCompliance- SpeedDis-
-                         Transmit Margin: Normal Operating Range,
-EnterModifiedCompliance- ComplianceSOS-
-                         Compliance De-emphasis: -6dB
-                LnkSta2: Current De-emphasis Level: -6dB,
-EqualizationComplete-, EqualizationPhase1-
-                         EqualizationPhase2-, EqualizationPhase3-,
-LinkEqualizationRequest-
-        Capabilities: [100 v2] Advanced Error Reporting
-                UESta:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UEMsk:  DLP- SDES- TLP- FCP- CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF- MalfTLP- ECRC- UnsupReq- ACSViol-
-                UESvrt: DLP+ SDES+ TLP- FCP+ CmpltTO- CmpltAbrt-
-UnxCmplt- RxOF+ MalfTLP+ ECRC- UnsupReq- ACSViol-
-                CESta:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr-
-                CEMsk:  RxErr- BadTLP- BadDLLP- Rollover- Timeout- NonFatalErr+
-                AERCap: First Error Pointer: 00, GenCap- CGenEn- ChkCap- ChkEn-
-        Capabilities: [148 v1] Virtual Channel
-                Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
-                Arb:    Fixed- WRR32- WRR64- WRR128-
-                Ctrl:   ArbSelect=Fixed
-                Status: InProgress-
-                VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-                        Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-                        Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
-                        Status: NegoPending- InProgress-
-        Capabilities: [168 v1] Device Serial Number 00-00-00-00-00-00-00-00
-        Capabilities: [178 v1] Latency Tolerance Reporting
-                Max snoop latency: 71680ns
-                Max no snoop latency: 71680ns
-        Capabilities: [180 v1] L1 PM Substates
-                L1SubCap: PCI-PM_L1.2+ PCI-PM_L1.1+ ASPM_L1.2+
-ASPM_L1.1+ L1_PM_Substates+
-                          PortCommonModeRestoreTime=50us PortTPowerOnTime=10us
-        Kernel driver in use: ath10k_pci
+The release_firmware() function tests whether its argument is NULL and then
+returns immediately. Thus the test around the call is not needed.
 
+This issue was detected by using the Coccinelle software.
 
-What other information do you need to know ?
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Where are you actually getting these firmwares from ? Are these
-firmwares just taken from windows drivers ?
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2d0671e..45171ad 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -393,16 +393,16 @@ static int ath10k_download_fw(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 
+ static void ath10k_core_free_firmware_files(struct ath10k *ar)
+ {
+-	if (ar->board && !IS_ERR(ar->board))
++	if (!IS_ERR(ar->board))
+ 		release_firmware(ar->board);
+ 
+-	if (ar->otp && !IS_ERR(ar->otp))
++	if (!IS_ERR(ar->otp))
+ 		release_firmware(ar->otp);
+ 
+-	if (ar->firmware && !IS_ERR(ar->firmware))
++	if (!IS_ERR(ar->firmware))
+ 		release_firmware(ar->firmware);
+ 
+-	if (ar->cal_file && !IS_ERR(ar->cal_file))
++	if (!IS_ERR(ar->cal_file))
+ 		release_firmware(ar->cal_file);
+ 
+ 	ar->board = NULL;
+-- 
+2.2.2
 
- I did a quick find -name '*.bin' on my windows C partition, and I found these:
-
-./Program Files/Qualcomm Atheros/Network
-Manager/11AC/eeprom_ar6320_2p1_NFA344i.bin
-./Program Files/Qualcomm Atheros/Network
-Manager/11AC/eeprom_ar6320_2p1_NFA345i.bin
-./Program Files/Qualcomm Atheros/Network
-Manager/11AC/eeprom_ar6320_2p1_NFA354xp.bin
-./Program Files/Qualcomm Atheros/Network
-Manager/11AC/eeprom_ar6320_2p1_NFA355i.bin
-./Program Files/Qualcomm Atheros/Network Manager/11AC/qca61x420.bin
-
-
-Joris,
-
-On Wed, Feb 4, 2015 at 1:08 PM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Joris Guisson <joris.guisson@gmail.com> writes:
->
->> Where is the QCA6174 v2.1 firmware ?
->
-> I only have hw3.0 and no hw2.1. Can you give me more details what kind
-> of device you are using?
->
-> --
-> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
