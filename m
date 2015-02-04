@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIuEK-0004M9-6H
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 07:18:35 +0000
+ id 1YIuFy-00054Z-1O
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 07:20:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: change dma beacon cmd prototype
-References: <1421412811-6387-1-git-send-email-michal.kazior@tieto.com>
- <1422440525-11115-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 4 Feb 2015 09:18:01 +0200
-In-Reply-To: <1422440525-11115-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 28 Jan 2015 11:22:04 +0100")
-Message-ID: <87a90uw3fa.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Use TX cksum offload only for CHECKSUM_PARTIAL
+References: <1422441092-29243-1-git-send-email-helmut.schaa@googlemail.com>
+Date: Wed, 4 Feb 2015 09:19:37 +0200
+In-Reply-To: <1422441092-29243-1-git-send-email-helmut.schaa@googlemail.com>
+ (Helmut Schaa's message of "Wed, 28 Jan 2015 11:31:32 +0100")
+Message-ID: <8761biw3cm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,17 +23,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Helmut Schaa <helmut.schaa@googlemail.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Helmut Schaa <helmut.schaa@googlemail.com> writes:
 
-> The command logic shouldn't really care about
-> arvif structure.
+> Otherwise ath10k will just checksum everything even if it did not
+> go through the TCP/IP stack (for example bridged frames). In the worst
+> case this could mean recreating the checksum for incorrect data.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Helmut Schaa <helmut.schaa@googlemail.com>
 
-Thanks, both patches applied to ath.git.
+Thanks, applied to ath.git.
 
 -- 
 Kalle Valo
