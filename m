@@ -1,18 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIy7y-0004WM-SG
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 11:28:15 +0000
-Received: by mail-we0-f182.google.com with SMTP id l61so1097654wev.13
- for <ath10k@lists.infradead.org>; Wed, 04 Feb 2015 03:27:51 -0800 (PST)
+ id 1YIyg1-0006Nx-Ne
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 12:03:27 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: More than one ath10k NIC will not load (bisected)
+References: <54BECE4D.9020308@candelatech.com> <54BF0B42.7050101@dd-wrt.com>
+ <54BF13AE.5010909@candelatech.com> <54BFF788.2000500@candelatech.com>
+ <54C00239.7000008@candelatech.com> <54C166B8.7060405@candelatech.com>
+ <CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>
+ <54C26EB3.7050805@candelatech.com>
+ <87vbjit58l.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQmGWLDHGa=GkhtDaSupsY-nd5e5nUuwg6iMAN4d8WjOTA@mail.gmail.com>
+Date: Wed, 4 Feb 2015 14:02:51 +0200
+In-Reply-To: <CA+BoTQmGWLDHGa=GkhtDaSupsY-nd5e5nUuwg6iMAN4d8WjOTA@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 4 Feb 2015 10:35:41 +0100")
+Message-ID: <87mw4tubo4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <54D1FA8F.6030804@elisanet.fi>
-References: <CA+BoTQnXPMT3xQ=kmV5hdXgffZUB=tBvVnsawvzLATajPzoYsg@mail.gmail.com>
- <54D1FA8F.6030804@elisanet.fi>
-Date: Wed, 4 Feb 2015 12:27:51 +0100
-Message-ID: <CA+BoTQkERbgJjryfvSD5nhnpGR4Xu5mu45D1i3hMUz5eae5V7A@mail.gmail.com>
-Subject: Re: Re: [RFTv2 2/5] ath10k: fix wmi-htc tx credit starvation
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +25,62 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matti Laakso <malaakso@elisanet.fi>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gNCBGZWJydWFyeSAyMDE1IGF0IDExOjU1LCBNYXR0aSBMYWFrc28gPG1hbGFha3NvQGVsaXNh
-bmV0LmZpPiB3cm90ZToKPiBPbiAyOSBKYW51YXJ5IDIwMTUgYXQgMDI6MzIsIFlhbkJvIDxkcmVh
-bWZseTI4MSBhdCBnbWFpbC5jb20+IHdyb3RlOgo+PiBIaSBNaWNoYWwsCj4+Cj4+IFdoYXQgdGhl
-IGNvbmNsdXNpb24gYWJvdXQgdGhpcyBwYXRjaCwgaXQgIGxvb2tzIGxpa2UgdGhpcyBwYXRjaCBu
-b3QgYmUKPj4gbWVyZ2VkIGludG8gYXRoMTBLIGR1ZSB0byBpbnRyb2R1Y2Ugc29tZSB1bnN0YWJs
-ZSBpc3N1ZSwgSSd2IGdvdAo+PiBhbm90aGVyIGlzc3VlIHRoYXQgd2hlbiBtb3ZlIHRoZSBzdGF0
-aW9uIGVudGVyIGhpYmVybmF0ZSBtb2RlLiB0aGUgQVAKPj4gd2lsbCBjb250aW51ZSByZXBvcnQg
-bWVzc2FnZSBsaWtlIGJlZm9yZQo+PiBbIDM5NTguNjgxMjkzXSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4+IDAwOjAzOjdmOjQwOjA0OjVi
-Cj4+IFsgMzk1OS42ODE0NDldIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTcHVyaW91cyBxdWlj
-ayBraWNrb3V0IGZvciBTVEEKPj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPj4gWyAzOTYwLjY4MTY5Nl0g
-YXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFNwdXJpb3VzIHF1aWNrIGtpY2tvdXQgZm9yIFNUQQo+
-PiAwMDowMzo3Zjo0MDowNDo1Ygo+PiBbIDM5NjEuNjgxODc3XSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4+IDAwOjAzOjdmOjQwOjA0OjVi
-Cj4+IFsgMzk2Mi42ODIwODBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTcHVyaW91cyBxdWlj
-ayBraWNrb3V0IGZvciBTVEEKPj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPj4gWyAzOTYzLjY4MjM2MV0g
-YXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFNwdXJpb3VzIHF1aWNrIGtpY2tvdXQgZm9yIFNUQQo+
-PiAwMDowMzo3Zjo0MDowNDo1Ygo+PiBbIDM5NjQuNjgyNTUwXSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBCj4+IDAwOjAzOjdmOjQwOjA0OjVi
-Cj4+IFsgMzk2NS42ODI3NDNdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBTcHVyaW91cyBxdWlj
-ayBraWNrb3V0IGZvciBTVEEKPj4gMDA6MDM6N2Y6NDA6MDQ6NWIKPgo+IFRoZSBzcHVyaW91cyBT
-VEEga2lja291dCBhbG9uZSBpcyBtb3N0IGxpa2VseSBhbiBhZnRlcm1hdGggb2YgSFRYIFR4Cj4g
-Y3JlZGl0IHN0YXJ2YXRpb24gd2hlbiBjbGllbnQgd2FzIGRldGVjdGVkIGFzIGluYWN0aXZlIGJ5
-IGhvc3RhcGQgYW5kCj4gd2FzIHN1YnNlcXVlbnRseSBkaXNhc3NvY2lhdGVkLiBIb3dldmVyIGR1
-ZSB0byBzdGFydmF0aW9uCj4gd21pLXBlZXItZGVsZXRlIHdhcyBuZXZlciBzZW50IHRvIGZpcm13
-YXJlIHNvIGZ3IHRoaW5rcyB0aGUgcGVlciBpcwo+IHN0aWxsIHRoZXJlLgo+Cj4gSSBzdXBwb3Nl
-IGZ3IHNob3VsZCBiZSByZXN0YXJ0ZWQgd2hlbiBhdGgxMGsgaXMgdW5hYmxlIHRvIHN1Ym1pdCBh
-Cj4gY29uZmlndXJhdGlvbiBjb21tYW5kIGxpa2Ugd21pLXBlZXItZGVsZXRlLiBJdCBkb2Vzbid0
-IG1ha2Ugc2Vuc2UgdG8KPiBjb250aW51ZSBzaW5jZSBmdy1ob3N0IHN0YXRlIGxvc2VzIGNvaGVy
-ZW5jeSBhbmQgd2VpcmQgdGhpbmdzIGNhbgo+IHN0YXJ0IHRvIGhhcHBlbiAoc3B1cmlvdXMgc3Rh
-IGtpY2tvdXQgaXMgdGhlIGJlc3Qga25vd24gZXhhbXBsZSkuCj4KPgo+IEhpIE1pY2hhxYIsCj4K
-PiBXZSd2ZSByZWNlaXZlZCBzb21lIGJ1ZyByZXBvcnRzIGluIE9wZW5XcnQgKGF0aDEwayBpcyBm
-cm9tIGxhc3QgTm92ZW1iZXIsCj4gZmlybXdhcmUtMy5iaW5fMTAuMi0wMDA4Mi00LTIpIGFib3V0
-IGEgc2ltaWxhciBpc3N1ZSAoc2VlIGUuZy4KPiBodHRwczovL2Rldi5vcGVud3J0Lm9yZy90aWNr
-ZXQvMTg3OTQgKSwgd2hlcmUgc3B1cmlvdXMgc3RhIGtpY2tvdXRzIGFyZQo+IHJlcG9ydGVkLCBl
-dmVudHVhbGx5IGxlYWRpbmcgdG8gIm51bWJlciBvZiBwZWVycyBleGNlZWRlZCIgYW5kIHRoZSBp
-bmFiaWxpdHkKPiB0byBjb25uZWN0IG1vcmUgY2xpZW50cy4gQWZ0ZXIgdGhpcyBoYXBwZW5zIGEg
-bmV0d29yayByZXN0YXJ0IHVzdWFsbHkgY2F1c2VzCj4gYW4gYXRoMTBrIGZpcm13YXJlIGNyYXNo
-LiBUaGUgY2xpZW50cyB0aGF0IGNhdXNlIHRoaXMgYXJlIGFsd2F5cyBtb2JpbGUKPiBkZXZpY2Vz
-IHdoaWNoIHJlZ3VsYXJseSBnbyBpbiBhbmQgb3V0IG9mIHRoZSBBUCByYW5nZS4gSW4gbXkgY2Fz
-ZSB0aGlzCj4gdXN1YWxseSBzdGFydHMgdG8gaGFwcGVuIGFmdGVyIGEgY291cGxlIG9mIGRheXMn
-IHVwdGltZS4KPgo+IERvIHlvdSB0aGluayB0aGlzIGlzIHRoZSBzYW1lIGlzc3VlPyBJcyB0aGVy
-ZSBzb21ldGhpbmcgSSBjb3VsZCBkbyB0byBoZWxwCj4gZXZlbnR1YWxseSBmaXggdGhpcz8KClRo
-ZSBjcmFzaCBjb3VsZCBiZSB1bnJlbGF0ZWQuIE90aGVyd2lzZSBpdCBmaXRzIHBlcmZlY3RseSB0
-byB0aGUgdHgKY3JlZGl0IHN0YXJ2YXRpb24gcHJvYmxlbS4KCkkgdHJpZWQgcGxheWluZyBhcm91
-bmQgd2l0aCB1c2luZyBhdGgxMGtfaHR0X3R4KCkgdG8gc2VuZCBtZ210IGZyYW1lcwpvbiAxMC4y
-IGFzIHJhdyB0eCBidXQgZmlybXdhcmUgZGlzY2FyZHMgdGhlbSBmb3Igc29tZSByZWFzb24gdGhh
-dCBJCmhhdmVuJ3QgaW52ZXN0aWdhdGVkIHlldC4KClBlcmhhcHMgaXQncyBhYm91dCB0aW1lIHdl
-IHJvbGwgb3V0IHRoZSB3b3JrYXJvdW5kLCBpLmUuIHBlcmZvcm0gZncKcmVzdGFydCBvbiB0eCBj
-cmVkaXQgdGltZW91dC4uLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> On 4 February 2015 at 10:07, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Ben Greear <greearb@candelatech.com> writes:
+>>
+>>>> Hmm.. This removes warm_reset in probe function but I fail to see how
+>>>> this could end up not loading one of the NIC *silently*?
+>>>>
+>>>> Anyway there's a pending patch which adds the reset back:
+>>>> https://github.com/kvalo/ath/commit/bdcd6f4e4ac5d2d2a56da4813f56655e6db0ee45
+>>>> . You might want to try it and see if it helps.
+>>>
+>>> Reverting the patch made it work again for me.
+>>>
+>>> I don't understand that code well, but perhaps you are disabling
+>>> a shared interrupt that silently stops the second NIC from
+>>> being able to do it's thing?
+>>>
+>>> Do you have a PC with 2 NICs in it that you could try yourself?
+>>>
+>>> I can grab you the logs of a failure to boot later today.
+>>
+>> What should we do with this one? I didn't look at the details yet, but
+>> do we have any other option than to revert?
+>
+> I believe this is an issue in Ben's userspace (he sent me logs
+> privately) or some sort of kernel event bug. It basically looked like
+> this: both devices were detected by ath10k and both started
+> register_work. One of the devices loaded all the way while the other
+> tried to load a few non-existing firmware files and it stopped. Few
+> minutes later there was a hung task splat pointing to
+> request_firmware() called from ath10k suggesting userspace didn't
+> handle firmware request.
+>
+> The "offending" patch effectively removed 200ms from probe() in
+> ath10k. This could've change timing on request_firmware() calls on
+> Ben's system. Btw. the 200ms is back again now with
+> 1a7fecb766c83dace747f42b25bbb544b00a0163 ("ath10k: reset chip before
+> reading chip_id in probe").
+>
+> Marek tried running 2 qca988x on his laptop some time ago (with and
+> without the extra timing) and didn't have any issues.
+
+Good, thanks for checking this.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
