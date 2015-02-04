@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YIvT6-0006xy-6A
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 08:37:52 +0000
+ id 1YIvfK-00056f-4P
+ for ath10k@lists.infradead.org; Wed, 04 Feb 2015 08:50:30 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
- properly.
-References: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
-Date: Wed, 4 Feb 2015 10:37:13 +0200
-In-Reply-To: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
- (greearb@candelatech.com's message of "Mon, 12 Jan 2015 10:32:37
- -0800")
-Message-ID: <878ugeul6u.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/4] ath10k: implement fw stats for wmi-tlv
+References: <1422611244-20767-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 4 Feb 2015 10:49:55 +0200
+In-Reply-To: <1422611244-20767-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 30 Jan 2015 10:47:20 +0100")
+Message-ID: <874mr2uklo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,28 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-greearb@candelatech.com writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Ben Greear <greearb@candelatech.com>
+> There are some slight differences in fw stats
+> (sic) in wmi-tlv.
 >
-> In case firmware fails to start the scan, then complete
-> the start condition and clean up so that driver does not
-> block on timeout.
+> Firmware has changed the querying scheme and no
+> longer requires the ping-pong to get all stats.
+> The patchset doesn't change this behaviour so with
+> wmi-tlv it's possible to see the following
+> warnings when reading fw stats:
 >
-> Signed-off-by: Ben Greear <greearb@candelatech.com>
+>  ath10k_pci 0000:00:06.0: received unsolicited stats update event
+>
+> The logic in ath10k still produces correct results
+> so this is harmless.
+>
+> I wonder how to deal with this in a sane way. An
+> `if (op_ver == WMI_TLV)` is a little bad but
+> having a new ar->fw_feature flag just for a debug
+> facility like this is a bit silly. Or we can just
+> drop the warning and leave a comment. Ideas?
 
-These patches are now in the pending branch.
+I think we could just remove the warning.
 
-86f50c71b224 ath10k: scan should handle scan-start-failed event properly
-c6dde373a4bb ath10k: fix spelling mistakes and add details to mac logging
-198c0184d94c ath10k: fix spelling in htt code comment
-227822d52d26 ath10k: fix CE_DESC_FLAGS_META_DATA_LSB definition
+> Michal Kazior (4):
+>   ath10k: add vdev stats processing
+>   ath10k: change request stats command prototype
+>   ath10k: add more wmi fw stat defines
+>   ath10k: implement fw stats for wmi-tlv
 
-I dropped the rest as I really would like to avoid maintaining yet
-another firmware branch.
+There was a conflict in patch 2 but 3-way merge solved it automatically.
+Please check the result in the pending branch.
 
 -- 
 Kalle Valo
