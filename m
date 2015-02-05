@@ -1,18 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJ8Zy-00046S-0e
- for ath10k@lists.infradead.org; Wed, 04 Feb 2015 22:37:50 +0000
-Received: from [172.16.16.200] (unknown [12.217.161.130])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 7C17440D1BD
- for <ath10k@lists.infradead.org>; Wed,  4 Feb 2015 14:37:28 -0800 (PST)
-Message-ID: <54D29F71.50603@candelatech.com>
-Date: Wed, 04 Feb 2015 14:38:41 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-we0-x232.google.com ([2a00:1450:400c:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJFWx-0000TP-Iq
+ for ath10k@lists.infradead.org; Thu, 05 Feb 2015 06:03:13 +0000
+Received: by mail-we0-f178.google.com with SMTP id k48so5681847wev.9
+ for <ath10k@lists.infradead.org>; Wed, 04 Feb 2015 22:02:42 -0800 (PST)
 MIME-Version: 1.0
-Subject: station kickout
+In-Reply-To: <54D23974.1070206@candelatech.com>
+References: <54BECE4D.9020308@candelatech.com> <54BF0B42.7050101@dd-wrt.com>
+ <54BF13AE.5010909@candelatech.com>
+ <54BFF788.2000500@candelatech.com>
+ <54C00239.7000008@candelatech.com>
+ <54C166B8.7060405@candelatech.com>
+ <CA+BoTQmF+z5+HW+=xis7LPSmq6sSxn2ZuiJHGM83dAAftkN_sA@mail.gmail.com>
+ <54C26EB3.7050805@candelatech.com>
+ <87vbjit58l.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQmGWLDHGa=GkhtDaSupsY-nd5e5nUuwg6iMAN4d8WjOTA@mail.gmail.com>
+ <54D23974.1070206@candelatech.com>
+Date: Thu, 5 Feb 2015 07:02:42 +0100
+Message-ID: <CA+BoTQ=O1gaxFp=8MJ4pPCD5fY+jQn8_51+3rJwe8bBKN=TUrw@mail.gmail.com>
+Subject: Re: More than one ath10k NIC will not load (bisected)
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +29,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-In AP mode, it seems that 3.17-ish kernels (at least) always set station kickout
-to hard-coded value of 50.
-
-Is this something that should be configurable?  Maybe a module parameter
-if nothing else?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBGZWJydWFyeSAyMDE1IGF0IDE2OjIzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDQvMjAxNSAwMTozNSBBTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPj4KPj4gT24gNCBGZWJydWFyeSAyMDE1IGF0IDEwOjA3LCBLYWxsZSBWYWxvIDxrdmFs
+b0BxY2EucXVhbGNvbW0uY29tPiB3cm90ZToKPj4+Cj4+PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNh
+bmRlbGF0ZWNoLmNvbT4gd3JpdGVzOgo+Pj4KPj4+Pj4gSG1tLi4gVGhpcyByZW1vdmVzIHdhcm1f
+cmVzZXQgaW4gcHJvYmUgZnVuY3Rpb24gYnV0IEkgZmFpbCB0byBzZWUgaG93Cj4+Pj4+IHRoaXMg
+Y291bGQgZW5kIHVwIG5vdCBsb2FkaW5nIG9uZSBvZiB0aGUgTklDICpzaWxlbnRseSo/Cj4+Pj4+
+Cj4+Pj4+IEFueXdheSB0aGVyZSdzIGEgcGVuZGluZyBwYXRjaCB3aGljaCBhZGRzIHRoZSByZXNl
+dCBiYWNrOgo+Pj4+Pgo+Pj4+PiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC9i
+ZGNkNmY0ZTRhYzVkMmQyYTU2ZGE0ODEzZjU2NjU1ZTZkYjBlZTQ1Cj4+Pj4+IC4gWW91IG1pZ2h0
+IHdhbnQgdG8gdHJ5IGl0IGFuZCBzZWUgaWYgaXQgaGVscHMuCj4+Pj4KPj4+Pgo+Pj4+IFJldmVy
+dGluZyB0aGUgcGF0Y2ggbWFkZSBpdCB3b3JrIGFnYWluIGZvciBtZS4KPj4+Pgo+Pj4+IEkgZG9u
+J3QgdW5kZXJzdGFuZCB0aGF0IGNvZGUgd2VsbCwgYnV0IHBlcmhhcHMgeW91IGFyZSBkaXNhYmxp
+bmcKPj4+PiBhIHNoYXJlZCBpbnRlcnJ1cHQgdGhhdCBzaWxlbnRseSBzdG9wcyB0aGUgc2Vjb25k
+IE5JQyBmcm9tCj4+Pj4gYmVpbmcgYWJsZSB0byBkbyBpdCdzIHRoaW5nPwo+Pj4+Cj4+Pj4gRG8g
+eW91IGhhdmUgYSBQQyB3aXRoIDIgTklDcyBpbiBpdCB0aGF0IHlvdSBjb3VsZCB0cnkgeW91cnNl
+bGY/Cj4+Pj4KPj4+PiBJIGNhbiBncmFiIHlvdSB0aGUgbG9ncyBvZiBhIGZhaWx1cmUgdG8gYm9v
+dCBsYXRlciB0b2RheS4KPj4+Cj4+Pgo+Pj4gV2hhdCBzaG91bGQgd2UgZG8gd2l0aCB0aGlzIG9u
+ZT8gSSBkaWRuJ3QgbG9vayBhdCB0aGUgZGV0YWlscyB5ZXQsIGJ1dAo+Pj4gZG8gd2UgaGF2ZSBh
+bnkgb3RoZXIgb3B0aW9uIHRoYW4gdG8gcmV2ZXJ0Pwo+Pgo+Pgo+PiBJIGJlbGlldmUgdGhpcyBp
+cyBhbiBpc3N1ZSBpbiBCZW4ncyB1c2Vyc3BhY2UgKGhlIHNlbnQgbWUgbG9ncwo+PiBwcml2YXRl
+bHkpIG9yIHNvbWUgc29ydCBvZiBrZXJuZWwgZXZlbnQgYnVnLiBJdCBiYXNpY2FsbHkgbG9va2Vk
+IGxpa2UKPj4gdGhpczogYm90aCBkZXZpY2VzIHdlcmUgZGV0ZWN0ZWQgYnkgYXRoMTBrIGFuZCBi
+b3RoIHN0YXJ0ZWQKPj4gcmVnaXN0ZXJfd29yay4gT25lIG9mIHRoZSBkZXZpY2VzIGxvYWRlZCBh
+bGwgdGhlIHdheSB3aGlsZSB0aGUgb3RoZXIKPj4gdHJpZWQgdG8gbG9hZCBhIGZldyBub24tZXhp
+c3RpbmcgZmlybXdhcmUgZmlsZXMgYW5kIGl0IHN0b3BwZWQuIEZldwo+PiBtaW51dGVzIGxhdGVy
+IHRoZXJlIHdhcyBhIGh1bmcgdGFzayBzcGxhdCBwb2ludGluZyB0bwo+PiByZXF1ZXN0X2Zpcm13
+YXJlKCkgY2FsbGVkIGZyb20gYXRoMTBrIHN1Z2dlc3RpbmcgdXNlcnNwYWNlIGRpZG4ndAo+PiBo
+YW5kbGUgZmlybXdhcmUgcmVxdWVzdC4KPj4KPj4gVGhlICJvZmZlbmRpbmciIHBhdGNoIGVmZmVj
+dGl2ZWx5IHJlbW92ZWQgMjAwbXMgZnJvbSBwcm9iZSgpIGluCj4+IGF0aDEway4gVGhpcyBjb3Vs
+ZCd2ZSBjaGFuZ2UgdGltaW5nIG9uIHJlcXVlc3RfZmlybXdhcmUoKSBjYWxscyBvbgo+PiBCZW4n
+cyBzeXN0ZW0uIEJ0dy4gdGhlIDIwMG1zIGlzIGJhY2sgYWdhaW4gbm93IHdpdGgKPj4gMWE3ZmVj
+Yjc2NmM4M2RhY2U3NDdmNDJiMjViYmI1NDRiMDBhMDE2MyAoImF0aDEwazogcmVzZXQgY2hpcCBi
+ZWZvcmUKPj4gcmVhZGluZyBjaGlwX2lkIGluIHByb2JlIikuCj4+Cj4+IE1hcmVrIHRyaWVkIHJ1
+bm5pbmcgMiBxY2E5ODh4IG9uIGhpcyBsYXB0b3Agc29tZSB0aW1lIGFnbyAod2l0aCBhbmQKPj4g
+d2l0aG91dCB0aGUgZXh0cmEgdGltaW5nKSBhbmQgZGlkbid0IGhhdmUgYW55IGlzc3Vlcy4KPgo+
+Cj4gSSBjYW4gcmV0cnkgbXkgc3lzdGVtIHdpdGggc3RvY2sgRmVkb3JhIDIwIGFuZCBzZWUgaWYg
+aXQgd29ya3MgdGhlcmUuCj4KPiBJZiBub3QsIHRoZW4gSSB0aGluayBpdCBzdGlsbCBuZWVkcyB0
+byBiZSB3b3JrZWQgb24uLi55b3UgYWdyZWU/CgpJbiB0aGUgZHJpdmVyPyBJJ2QgYXJndWUuIEkg
+ZG9uJ3Qgc2VlIGhvdyBhdGgxMGsgY291bGQgbWFrZQpyZXF1ZXN0X2Zpcm13YXJlKCkgaGFuZywg
+ZG8geW91PwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcK
+aHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
