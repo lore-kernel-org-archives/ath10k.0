@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx3.wp.pl ([212.77.101.9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJkIQ-0007QD-2E
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 14:54:16 +0000
-Date: Fri, 6 Feb 2015 15:53:43 +0100
-From: Jakub =?UTF-8?B?S2ljacWEc2tp?= <moorray3@wp.pl>
-Subject: Re: [PATCH v2] ath10k: Replace ioread with mb to drain write buffer
-Message-ID: <20150206155343.5fe43aa9@north>
-In-Reply-To: <20150206095846.5d46f11e@north>
-References: <7a87e5df81499e4d26a4f8bedf76ed3250a6f7bb.1422663244.git.poh@qca.qualcomm.com>
- <20150206095846.5d46f11e@north>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YJlY4-0003EK-6T
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 16:14:29 +0000
+Message-ID: <54D4E89A.7040602@candelatech.com>
+Date: Fri, 06 Feb 2015 08:15:22 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [RFT] ath10k: restart fw on tx-credit timeout
+References: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,26 +18,75 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, malaakso@elisanet.fi
 
-T24gRnJpLCA2IEZlYiAyMDE1IDA5OjU4OjQ2ICswMTAwLCBKYWt1YiBLaWNpxYRza2kgd3JvdGU6
-Cj4gT24gRnJpLCAzMCBKYW4gMjAxNSAxNjoxNDozMCAtMDgwMCwgUGV0ZXIgT2ggd3JvdGU6Cj4g
-PiBVc2luZyBpb3JlYWQoKSB0byBwZXJmb3JtIGRyYWluaW5nIHdyaXRlIGJ1ZmZlciBpcyBleGNl
-c3NpdmUuCj4gPiBVc2UgY29tcGFjdCBBUEksIG1iKCksIHRoYXQgaW50ZW5kZWQgdG8gYmUgdXNl
-ZCBmb3IgdGhlIGNhc2UuCj4gPiBJdCByZWR1Y2VzIHRvdGFsIDE0IENQVSBjbG9ja3MgcGVyIGlu
-dGVycnVwdC4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBPaCA8cG9oQHFjYS5xdWFsY29t
-bS5jb20+Cj4gCj4gSSBoYXZlIG5vIGlkZWEgd2hhdCB0aGUgY29kZSBkb2VzIGJ1dCB0aGlzIGNo
-YW5nZSBsb29rcyBzdXNwaWNpb3VzLiAKPiBVc3VhbGx5IHRoZSBwb2ludCBvZiBpb3JlYWQoKSBp
-cyB0byBmbHVzaCB0aGUgaW50ZXJjb25uZWN0IGJ1ZmZlcnMgCj4gd2hpbGUgbWIoKSBlbnN1cmVz
-IG9yZGVyaW5nIG9ubHkgZnJvbSB0aGUgQ1BVIHBlcnNwZWN0aXZlLgo+IAo+IENvdWxkIHlvdSBw
-cm92aWRlIHRoZSByZWFzb24gKndoeSogZmx1c2hpbmcgYnVmZmVycyBpcyB1bm5lY2Vzc2FyeQo+
-IGluIHRoZSBjb21taXQgbWVzc2FnZT8KCkkganVzdCBub3RpY2VkIHRoZSBkaXNjdXNzaW9uIG9u
-IHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHRoZSBwYXRjaC4KU29ycnkgYWJvdXQgdGhlIG5vaXNlLgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On 02/06/2015 04:05 AM, Michal Kazior wrote:
+> It makes little sense to continue and let
+> firmware-host state become inconsistent if a WMI
+> command can't be submitted to firmware.
+>
+> This effectively prevents after-affects of
+> tx-credit starvation bug which include spurious
+> sta kickout events and inability to associate new
+> stations after some time when acting as AP.
+>
+> This should also speed up recovery/teardown in
+> some cases when firmware stops responding for some
+> reason.
+
+I have not seen a WMI timeout since I added keep-alive
+and CE polling in my firmware, but the patch looks OK
+to me.
+
+You might add something about 'WMI' in that warning
+message to make it more clear what is not being
+responsive.  At least in my tests, I could continue
+to receive network traffic while WMI was blocked.
+
+Thanks,
+Ben
+
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/wmi.c | 8 +++++++-
+>   1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+> index aeea1c7..776b257 100644
+> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+> @@ -1045,9 +1045,15 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
+>   		(ret != -EAGAIN);
+>   	}), 3*HZ);
+>
+> -	if (ret)
+> +	if (ret) {
+>   		dev_kfree_skb_any(skb);
+>
+> +		if (ret == -EAGAIN) {
+> +			ath10k_warn(ar, "firmware unresponsive, restarting..\n");
+> +			queue_work(ar->workqueue, &ar->restart_work);
+> +		}
+> +	}
+> +
+>   	return ret;
+>   }
+>
+>
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
