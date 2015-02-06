@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
+Received: from mx3.wp.pl ([212.77.101.9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJj84-00030E-6e
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 13:39:28 +0000
-Received: by mail-we0-f173.google.com with SMTP id w55so2206027wes.4
- for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 05:39:05 -0800 (PST)
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [PATCH] ath10k: fix wmm params per vdev
-Date: Fri,  6 Feb 2015 14:41:22 +0100
-Message-Id: <1423230082-2396-1-git-send-email-marek.puzyniak@tieto.com>
+ id 1YJkIQ-0007QD-2E
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 14:54:16 +0000
+Date: Fri, 6 Feb 2015 15:53:43 +0100
+From: Jakub =?UTF-8?B?S2ljacWEc2tp?= <moorray3@wp.pl>
+Subject: Re: [PATCH v2] ath10k: Replace ioread with mb to drain write buffer
+Message-ID: <20150206155343.5fe43aa9@north>
+In-Reply-To: <20150206095846.5d46f11e@north>
+References: <7a87e5df81499e4d26a4f8bedf76ed3250a6f7bb.1422663244.git.poh@qca.qualcomm.com>
+ <20150206095846.5d46f11e@north>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,127 +19,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-During wmm tests changing wmm parameters did not change anything.
-This was because of mismatch in WMM params per vdev command.
-WMM params per vdev uses different command structure than wmm params
-per pdev command. Also txop for per vdev settings has the
-same units as provided by mac80211.
-
-Patch concerns qca6174.
-
-Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c     | 17 ++++++++---------
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 15 +++++----------
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  6 ++++++
- 3 files changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d6d2f0f..4c4f4df 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4161,13 +4161,7 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
- 	p->cwmin = params->cw_min;
- 	p->cwmax = params->cw_max;
- 	p->aifs = params->aifs;
--
--	/*
--	 * The channel time duration programmed in the HW is in absolute
--	 * microseconds, while mac80211 gives the txop in units of
--	 * 32 microseconds.
--	 */
--	p->txop = params->txop * 32;
-+	p->txop = params->txop;
- 
- 	if (ar->wmi.ops->gen_vdev_wmm_conf) {
- 		ret = ath10k_wmi_vdev_wmm_conf(ar, arvif->vdev_id,
-@@ -4178,9 +4172,14 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
- 	} else {
--		/* This won't work well with multi-interface cases but it's
--		 * better than nothing.
-+		/* When wmm params per vdev are not supported by firmware
-+		 * use per pdev params what won't work well with multi-interface
-+		 * cases but it's better than nothing. This require channel time
-+		 * duration programmed in the HW to be in absolute microseconds,
-+		 * while mac80211 gives the txop in units of 32 microseconds.
- 		 */
-+		p->txop = p->txop * 32;
-+
- 		ret = ath10k_wmi_pdev_set_wmm_params(ar, &arvif->wmm_params);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to set wmm params: %d\n", ret);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 71614ba..bdb3673 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1604,14 +1604,12 @@ ath10k_wmi_tlv_op_gen_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
- 				    const struct wmi_wmm_params_all_arg *arg)
- {
- 	struct wmi_tlv_vdev_set_wmm_cmd *cmd;
--	struct wmi_wmm_params *wmm;
- 	struct wmi_tlv *tlv;
- 	struct sk_buff *skb;
- 	size_t len;
- 	void *ptr;
- 
--	len = (sizeof(*tlv) + sizeof(*cmd)) +
--	      (4 * (sizeof(*tlv) + sizeof(*wmm)));
-+	len = sizeof(*tlv) + sizeof(*cmd);
- 	skb = ath10k_wmi_alloc_skb(ar, len);
- 	if (!skb)
- 		return ERR_PTR(-ENOMEM);
-@@ -1623,13 +1621,10 @@ ath10k_wmi_tlv_op_gen_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
- 	cmd = (void *)tlv->value;
- 	cmd->vdev_id = __cpu_to_le32(vdev_id);
- 
--	ptr += sizeof(*tlv);
--	ptr += sizeof(*cmd);
--
--	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_be);
--	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_bk);
--	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_vi);
--	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_vo);
-+	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[0].params, &arg->ac_be);
-+	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[1].params, &arg->ac_bk);
-+	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[2].params, &arg->ac_vi);
-+	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[3].params, &arg->ac_vo);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv vdev wmm conf\n");
- 	return skb;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index de68fe7..c54de47 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1302,8 +1302,14 @@ struct wmi_tlv_pdev_set_wmm_cmd {
- 	__le32 dg_type; /* no idea.. */
- } __packed;
- 
-+struct wmi_tlv_vdev_wmm_params {
-+	__le32 dummy;
-+	struct wmi_wmm_params params;
-+} __packed;
-+
- struct wmi_tlv_vdev_set_wmm_cmd {
- 	__le32 vdev_id;
-+	struct wmi_tlv_vdev_wmm_params vdev_wmm_params[4];
- } __packed;
- 
- struct wmi_tlv_phyerr_ev {
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gRnJpLCA2IEZlYiAyMDE1IDA5OjU4OjQ2ICswMTAwLCBKYWt1YiBLaWNpxYRza2kgd3JvdGU6
+Cj4gT24gRnJpLCAzMCBKYW4gMjAxNSAxNjoxNDozMCAtMDgwMCwgUGV0ZXIgT2ggd3JvdGU6Cj4g
+PiBVc2luZyBpb3JlYWQoKSB0byBwZXJmb3JtIGRyYWluaW5nIHdyaXRlIGJ1ZmZlciBpcyBleGNl
+c3NpdmUuCj4gPiBVc2UgY29tcGFjdCBBUEksIG1iKCksIHRoYXQgaW50ZW5kZWQgdG8gYmUgdXNl
+ZCBmb3IgdGhlIGNhc2UuCj4gPiBJdCByZWR1Y2VzIHRvdGFsIDE0IENQVSBjbG9ja3MgcGVyIGlu
+dGVycnVwdC4KPiA+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBQZXRlciBPaCA8cG9oQHFjYS5xdWFsY29t
+bS5jb20+Cj4gCj4gSSBoYXZlIG5vIGlkZWEgd2hhdCB0aGUgY29kZSBkb2VzIGJ1dCB0aGlzIGNo
+YW5nZSBsb29rcyBzdXNwaWNpb3VzLiAKPiBVc3VhbGx5IHRoZSBwb2ludCBvZiBpb3JlYWQoKSBp
+cyB0byBmbHVzaCB0aGUgaW50ZXJjb25uZWN0IGJ1ZmZlcnMgCj4gd2hpbGUgbWIoKSBlbnN1cmVz
+IG9yZGVyaW5nIG9ubHkgZnJvbSB0aGUgQ1BVIHBlcnNwZWN0aXZlLgo+IAo+IENvdWxkIHlvdSBw
+cm92aWRlIHRoZSByZWFzb24gKndoeSogZmx1c2hpbmcgYnVmZmVycyBpcyB1bm5lY2Vzc2FyeQo+
+IGluIHRoZSBjb21taXQgbWVzc2FnZT8KCkkganVzdCBub3RpY2VkIHRoZSBkaXNjdXNzaW9uIG9u
+IHRoZSBmaXJzdCB2ZXJzaW9uIG9mIHRoZSBwYXRjaC4KU29ycnkgYWJvdXQgdGhlIG5vaXNlLgoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
