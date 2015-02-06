@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJhdw-0004yd-U4
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 12:04:18 +0000
-Received: by mail-wi0-f178.google.com with SMTP id bs8so1869088wib.5
- for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 04:03:55 -0800 (PST)
+ id 1YJhdy-0004yk-TI
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 12:04:19 +0000
+Received: by mail-we0-f179.google.com with SMTP id u56so7739502wes.10
+ for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 04:03:56 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v3 5/7] ath10k: rework tx queue locking
-Date: Fri,  6 Feb 2015 13:02:52 +0100
-Message-Id: <1423224174-24764-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v3 7/7] ath10k: enable multi-channel on supported devices
+Date: Fri,  6 Feb 2015 13:02:54 +0100
+Message-Id: <1423224174-24764-8-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1423224174-24764-1-git-send-email-michal.kazior@tieto.com>
 References: <1423224174-24764-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,211 +27,129 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Tx queue locking was very simple until now.
-Multi-channel support will require a more flexible
-and fine grained control.
+This effectively enables multi-channel operation
+on qca6174 WLAN.RM.2.0-00073 (and possibly any
+newer firmware release for qca6174).
 
-This introduces a per-hw and per-vif (each with a
-bitmask of reasons) tx queue locking.
+This adds appopriate interface combinations and
+initializes firmware channel scheduler.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |  8 +++++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 11 ++++--
- drivers/net/wireless/ath/ath10k/mac.c    | 22 ++++++++++--
- drivers/net/wireless/ath/ath10k/mac.h    | 57 ++++++++++++++++++++++++++++++++
- 4 files changed, 93 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 81 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 80 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 6df0b56..08f0f06 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -290,6 +290,7 @@ struct ath10k_vif {
- 	enum ath10k_beacon_state beacon_state;
- 	void *beacon_buf;
- 	dma_addr_t beacon_paddr;
-+	unsigned long tx_paused; /* arbitrary values defined by target */
- 
- 	struct ath10k *ar;
- 	struct ieee80211_vif *vif;
-@@ -480,6 +481,11 @@ static inline const char *ath10k_scan_state_str(enum ath10k_scan_state state)
- 	return "unknown";
- }
- 
-+enum ath10k_tx_pause_reason {
-+	ATH10K_TX_PAUSE_Q_FULL,
-+	ATH10K_TX_PAUSE_MAX,
-+};
-+
- struct ath10k {
- 	struct ath_common ath_common;
- 	struct ieee80211_hw *hw;
-@@ -638,6 +644,8 @@ struct ath10k {
- 
- 	struct dfs_pattern_detector *dfs_detector;
- 
-+	unsigned long tx_paused; /* see ATH10K_TX_PAUSE_ */
-+
- #ifdef CONFIG_ATH10K_DEBUGFS
- 	struct ath10k_debug debug;
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index cbd2bc9..9b34e3f 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -24,9 +24,14 @@
- 
- void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
- {
-+	struct ath10k *ar = htt->ar;
-+
- 	htt->num_pending_tx--;
--	if (htt->num_pending_tx == htt->max_num_pending_tx - 1)
--		ieee80211_wake_queues(htt->ar->hw);
-+	if (htt->num_pending_tx == htt->max_num_pending_tx - 1) {
-+		spin_lock_bh(&ar->data_lock);
-+		ath10k_mac_tx_unlock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
-+		spin_unlock_bh(&ar->data_lock);
-+	}
- }
- 
- static void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
-@@ -49,7 +54,7 @@ static int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
- 
- 	htt->num_pending_tx++;
- 	if (htt->num_pending_tx == htt->max_num_pending_tx)
--		ieee80211_stop_queues(htt->ar->hw);
-+		ath10k_mac_tx_lock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
- 
- exit:
- 	spin_unlock_bh(&htt->tx_lock);
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1d7e0ae..056f94c 100644
+index c567e3c..6c1e0dc 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2821,6 +2821,7 @@ void ath10k_halt(struct ath10k *ar)
- 		ath10k_monitor_stop(ar);
- 
- 	ar->monitor_started = false;
-+	ar->tx_paused = 0;
- 
- 	ath10k_scan_finish(ar);
- 	ath10k_peer_cleanup_all(ar);
-@@ -3217,6 +3218,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	int ret = 0;
- 	u32 value;
- 	int bit;
-+	int i;
- 	u32 vdev_param;
- 
- 	vif->driver_flags |= IEEE80211_VIF_SUPPORTS_UAPSD;
-@@ -3271,6 +3273,15 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 		break;
+@@ -2969,6 +2969,15 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto err_core_stop;
  	}
  
-+	/* Using vdev_id as queue number will make it very easy to do per-vif
-+	 * tx queue locking. This shouldn't wrap due to interface combinations
-+	 * but do a modulo for correctness sake and prevent using offchannel tx
-+	 * queues for regular vif tx.
-+	 */
-+	vif->cab_queue = arvif->vdev_id % (IEEE80211_MAX_QUEUES - 1);
-+	for (i = 0; i < ARRAY_SIZE(vif->hw_queue); i++)
-+		vif->hw_queue[i] = arvif->vdev_id % (IEEE80211_MAX_QUEUES - 1);
++	if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
++		ret = ath10k_wmi_adaptive_qcs(ar, true);
++		if (ret) {
++			ath10k_warn(ar, "failed to enable adaptive qcs: %d\n",
++				    ret);
++			goto err_core_stop;
++		}
++	}
 +
- 	/* Some firmware revisions don't wait for beacon tx completion before
- 	 * sending another SWBA event. This could lead to hardware using old
- 	 * (freed) beacon data in some cases, e.g. tx credit starvation
-@@ -5775,7 +5786,8 @@ int ath10k_mac_register(struct ath10k *ar)
- 			IEEE80211_HW_AP_LINK_PS |
- 			IEEE80211_HW_SPECTRUM_MGMT |
- 			IEEE80211_HW_SW_CRYPTO_CONTROL |
--			IEEE80211_HW_WANT_MONITOR_VIF;
-+			IEEE80211_HW_WANT_MONITOR_VIF |
-+			IEEE80211_HW_QUEUE_CONTROL;
+ 	if (ar->cfg_tx_chainmask)
+ 		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
+ 				     ar->cfg_rx_chainmask);
+@@ -5596,6 +5605,64 @@ static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
+ 	},
+ };
  
- 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
- 
-@@ -5820,7 +5832,13 @@ int ath10k_mac_register(struct ath10k *ar)
- 	 * on LL hardware queues are managed entirely by the FW
- 	 * so we only advertise to mac we can do the queues thing
- 	 */
--	ar->hw->queues = 4;
-+	ar->hw->queues = IEEE80211_MAX_QUEUES;
++static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
++	{
++		.max = 2,
++		.types = BIT(NL80211_IFTYPE_STATION) |
++			 BIT(NL80211_IFTYPE_AP) |
++			 BIT(NL80211_IFTYPE_P2P_CLIENT) |
++			 BIT(NL80211_IFTYPE_P2P_GO),
++	},
++	{
++		.max = 1,
++		.types = BIT(NL80211_IFTYPE_P2P_DEVICE),
++	},
++};
 +
-+	/* vdev_ids are used as hw queue numbers. Make sure offchan tx queue is
-+	 * something that vdev_ids can't reach so that we don't stop the queue
-+	 * accidentally.
-+	 */
-+	ar->hw->offchannel_tx_hw_queue = IEEE80211_MAX_QUEUES - 1;
++static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
++	{
++		.max = 1,
++		.types = BIT(NL80211_IFTYPE_STATION),
++	},
++	{
++		.max = 1,
++		.types = BIT(NL80211_IFTYPE_ADHOC),
++	},
++};
++
++/* FIXME: This is not thouroughly tested. These combinations may over- or
++ * underestimate hw/fw capabilities.
++ */
++static struct ieee80211_iface_combination ath10k_tlv_if_comb[] = {
++	{
++		.limits = ath10k_tlv_if_limit,
++		.num_different_channels = 1,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_if_limit_ibss,
++		.num_different_channels = 1,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
++	},
++};
++
++static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
++	{
++		.limits = ath10k_tlv_if_limit,
++		.num_different_channels = 2,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
++	},
++	{
++		.limits = ath10k_tlv_if_limit_ibss,
++		.num_different_channels = 1,
++		.max_interfaces = 2,
++		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
++	},
++};
++
+ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ {
+ 	struct ieee80211_sta_vht_cap vht_cap = {0};
+@@ -5854,12 +5921,24 @@ int ath10k_mac_register(struct ath10k *ar)
  
  	switch (ar->wmi.op_version) {
  	case ATH10K_FW_WMI_OP_VERSION_MAIN:
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index 212689f..b11f1d9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -80,4 +80,61 @@ static inline void ath10k_tx_h_seq_no(struct ieee80211_vif *vif,
- 	}
- }
- 
-+static inline void ath10k_mac_tx_lock(struct ath10k *ar, int reason)
-+{
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	WARN_ON(reason >= ATH10K_TX_PAUSE_MAX);
-+	ar->tx_paused |= BIT(reason);
-+	ieee80211_stop_queues(ar->hw);
-+}
-+
-+static inline void ath10k_mac_tx_unlock(struct ath10k *ar, int reason)
-+{
-+	struct ath10k_vif *arvif;
-+
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+	lockdep_assert_held(&ar->data_lock);
-+
-+	WARN_ON(reason >= ATH10K_TX_PAUSE_MAX);
-+	ar->tx_paused &= ~BIT(reason);
-+
-+	if (ar->tx_paused)
-+		return;
-+
-+	list_for_each_entry(arvif, &ar->arvifs, list)
-+		if (!arvif->tx_paused)
-+			ieee80211_wake_queue(ar->hw, arvif->vdev_id);
-+}
-+
-+static inline void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason)
-+{
-+	struct ath10k *ar = arvif->ar;
-+
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	WARN_ON(reason >= BITS_PER_LONG);
-+	arvif->tx_paused |= BIT(reason);
-+	ieee80211_stop_queue(ar->hw, arvif->vdev_id);
-+}
-+
-+static inline void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif,
-+					    int reason)
-+{
-+	struct ath10k *ar = arvif->ar;
-+
-+	lockdep_assert_held(&ar->htt.tx_lock);
-+
-+	WARN_ON(reason >= BITS_PER_LONG);
-+	arvif->tx_paused &= ~BIT(reason);
-+
-+	if (ar->tx_paused)
-+		return;
-+
-+	if (arvif->tx_paused)
-+		return;
-+
-+	ieee80211_wake_queue(ar->hw, arvif->vdev_id);
-+}
-+
- #endif /* _MAC_H_ */
+-	case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
+ 		ar->hw->wiphy->n_iface_combinations =
+ 			ARRAY_SIZE(ath10k_if_comb);
+ 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
+ 		break;
++	case ATH10K_FW_WMI_OP_VERSION_TLV:
++		if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
++			ar->hw->wiphy->iface_combinations =
++				ath10k_tlv_qcs_if_comb;
++			ar->hw->wiphy->n_iface_combinations =
++				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
++		} else {
++			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
++			ar->hw->wiphy->n_iface_combinations =
++				ARRAY_SIZE(ath10k_tlv_if_comb);
++		}
++		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
++		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
 -- 
 1.8.5.3
 
