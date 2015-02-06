@@ -1,14 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from mail-we0-x233.google.com ([2a00:1450:400c:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJhgl-0007CZ-VW
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 12:07:12 +0000
-Received: by mail-wi0-f174.google.com with SMTP id n3so1938078wiv.1
- for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 04:06:50 -0800 (PST)
+ id 1YJht4-0003ZF-Jj
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 12:19:55 +0000
+Received: by mail-we0-f179.google.com with SMTP id u56so7818076wes.10
+ for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 04:19:33 -0800 (PST)
+MIME-Version: 1.0
+In-Reply-To: <54D19FED.90102@candelatech.com>
+References: <54CE6664.9090101@candelatech.com>
+ <CA+BoTQ=593PK2J5WVh-pPcaKApd2N08-FpvnVKUr+LK0ChaBHA@mail.gmail.com>
+ <54CFADE3.6040102@candelatech.com>
+ <CA+BoTQmV5=ssn0UoFg_fMUoc85CEUU_+PfJpEsn35Db2uOndgg@mail.gmail.com>
+ <54D0D3D9.7030905@candelatech.com>
+ <CA+BoTQkHyEKqHJTu6rTMhZh_-s1K3=uuzcKANa5qPF4n=fzjnQ@mail.gmail.com>
+ <54D195C3.7060703@candelatech.com> <54D19FED.90102@candelatech.com>
+Date: Fri, 6 Feb 2015 13:19:32 +0100
+Message-ID: <CA+BoTQ=8rVUKnAqZn1A+T6WajSzbm_s48tdiTmDETfMSQQ-SZw@mail.gmail.com>
+Subject: Re: Unable to read firmware registers on crash?
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [RFT] ath10k: restart fw on tx-credit timeout
-Date: Fri,  6 Feb 2015 13:05:54 +0100
-Message-Id: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,58 +26,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: greearb@candelatech.com, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, malaakso@elisanet.fi
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-It makes little sense to continue and let
-firmware-host state become inconsistent if a WMI
-command can't be submitted to firmware.
-
-This effectively prevents after-affects of
-tx-credit starvation bug which include spurious
-sta kickout events and inability to associate new
-stations after some time when acting as AP.
-
-This should also speed up recovery/teardown in
-some cases when firmware stops responding for some
-reason.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index aeea1c7..776b257 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1045,9 +1045,15 @@ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id)
- 		(ret != -EAGAIN);
- 	}), 3*HZ);
- 
--	if (ret)
-+	if (ret) {
- 		dev_kfree_skb_any(skb);
- 
-+		if (ret == -EAGAIN) {
-+			ath10k_warn(ar, "firmware unresponsive, restarting..\n");
-+			queue_work(ar->workqueue, &ar->restart_work);
-+		}
-+	}
-+
- 	return ret;
- }
- 
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBGZWJydWFyeSAyMDE1IGF0IDA1OjI4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gV2VsbCwgaXQgc2VlbXMgdG8gd29yayBhdCBsZWFzdCB3aGVuIEkg
+Y3Jhc2ggaXQgbmljZWx5IHdpdGggdGhlCj4gZGVidWdmcyBmaXJtd2FyZS1hc3NlcnQgaG9va3Mu
+ICBUZXN0ZWQgb24geDg2Li4uaWYgSSBoYXZlIGVuZGlhbgo+IGlzc3VlcywgdGhpbmdzIG1pZ2h0
+IGdvIHBvb3JseSBvbiBvdGhlciBwbGF0Zm9ybXMuCj4KPiBIZXJlIGlzIHBhdGNoIEkgYW0gdXNp
+bmcgaW4gYXRoMTBrLi4uICBJIGFkZGVkIHNpbWlsYXIgbG9naWMgdG8gdGhlCj4gQ1QgZmlybXdh
+cmUuICBOb3csIHdpbGwgaGF2ZSB0byBzZWUgaWYgd2UgY2FuIHJlcHJvZHVjZSB0aGUgY3Jhc2gg
+d2hlcmUKPiBDRSB0cmFuc3BvcnQgdG90YWxseSBmYWlscy4uLgoKSWYgeW91IGhhdmUgYSBzeXN0
+ZW0gY2FwYWJsZSBvZiBJT01NVSB5b3UgY2FuIGZvcmNlIENFIHRvIGFjY2VzcyBhCm5vbi1tYXBw
+ZWQgbWVtb3J5LiBZb3UgY291bGQgdHJ5IGluc2VydGluZyBhIGJvZ3VzIENFIGl0ZW0gYWRkcmVz
+cyBpbgpvbmUgb2YgaXRzIHJpbmdzLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
