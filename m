@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-we0-x22d.google.com ([2a00:1450:400c:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJins-0002Mt-7k
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 13:18:37 +0000
-Date: Fri, 6 Feb 2015 18:47:57 +0530
-From: Rajkumar <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: Bypass PLL setting on target init for QCA9888
-Message-ID: <20150206131754.GA21494@qca.qualcomm.com>
-References: <1423223238-17530-1-git-send-email-rmanohar@qti.qualcomm.com>
- <CA+BoTQnwo=yXt2-57pv97KRCjw6r=0mtRVNt0jLwaeGsEfThNg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+BoTQnwo=yXt2-57pv97KRCjw6r=0mtRVNt0jLwaeGsEfThNg@mail.gmail.com>
+ id 1YJj84-00030E-6e
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 13:39:28 +0000
+Received: by mail-we0-f173.google.com with SMTP id w55so2206027wes.4
+ for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 05:39:05 -0800 (PST)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH] ath10k: fix wmm params per vdev
+Date: Fri,  6 Feb 2015 14:41:22 +0100
+Message-Id: <1423230082-2396-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,71 +17,125 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org
 
-On Fri, Feb 06, 2015 at 12:58:40PM +0100, Michal Kazior wrote:
-> On 6 February 2015 at 12:47, Rajkumar Manoharan
-> <rmanohar@qti.qualcomm.com> wrote:
-> > Some of of qca988x solutions are having global reset issue
-> > during target initialization.
-> 
-> What kind of issue? How/when does it manifest?
->
-PCI bus error was reported before downloading the firmware. This is
-issue is very rarely observed with few qca8888 chips. Postponing PLL
-settings is solving the problem.
-> 
-> > Bypassing PLL setting before
-> > downloading firmware and letting the SoC run on REF_CLK is fixing
-> > the problem. Corresponding firmware change is also needed to set
-> > the clock source once the target is initialized. Since 10.2.4
-> > firmware is having this ROM patch, applying skip_clock_init only
-> > for 10.2.4 firmware versions.
-> 
-> Which 10.2.4? There are at least two publicly available blobs. Do all
-> of them support this? How do other firmware revisions handle setting
-> skip_clock_init to 1?
->
-Yes. 10.2.4 firmwares are having this ROM patch fix. Others firmware
-revisions do not have this ROM patch.
-> 
-> > Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> > ---
-> >  drivers/net/wireless/ath/ath10k/core.c | 14 ++++++++++++++
-> >  1 file changed, 14 insertions(+)
-> >
-> > diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-> > index 310e12b..3119192 100644
-> > --- a/drivers/net/wireless/ath/ath10k/core.c
-> > +++ b/drivers/net/wireless/ath/ath10k/core.c
-> > @@ -797,6 +797,20 @@ static int ath10k_download_cal_data(struct ath10k *ar)
-> >         ar->cal_mode = ATH10K_CAL_MODE_OTP;
-> >
-> >  done:
-> > +       if ((ar->hw_rev != ATH10K_HW_QCA988X) ||
-> > +           (ar->wmi.op_version != ATH10K_FW_WMI_OP_VERSION_10_2_4)) {
-> 
-> Maybe using fw_features is a better idea, no?
-> 
-Hmm..Anyway we are using both fw_features & wmi.op_version across
-driver. Still want to go with fw_features?
+During wmm tests changing wmm parameters did not change anything.
+This was because of mismatch in WMM params per vdev command.
+WMM params per vdev uses different command structure than wmm params
+per pdev command. Also txop for per vdev settings has the
+same units as provided by mac80211.
 
-> > +               ath10k_dbg(ar, ATH10K_DBG_BOOT,
-> > +                          "boot using calibration mode %s\n",
-> > +                          ath10k_cal_mode_str(ar->cal_mode));
-> 
-> I don't really like the idea of duplicating debug prints.
->
-Agree. Me too...:)
+Patch concerns qca6174.
 
-Thanks for the review.
+Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     | 17 ++++++++---------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 15 +++++----------
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  6 ++++++
+ 3 files changed, 19 insertions(+), 19 deletions(-)
 
--Rajkumar
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index d6d2f0f..4c4f4df 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4161,13 +4161,7 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
+ 	p->cwmin = params->cw_min;
+ 	p->cwmax = params->cw_max;
+ 	p->aifs = params->aifs;
+-
+-	/*
+-	 * The channel time duration programmed in the HW is in absolute
+-	 * microseconds, while mac80211 gives the txop in units of
+-	 * 32 microseconds.
+-	 */
+-	p->txop = params->txop * 32;
++	p->txop = params->txop;
+ 
+ 	if (ar->wmi.ops->gen_vdev_wmm_conf) {
+ 		ret = ath10k_wmi_vdev_wmm_conf(ar, arvif->vdev_id,
+@@ -4178,9 +4172,14 @@ static int ath10k_conf_tx(struct ieee80211_hw *hw,
+ 			goto exit;
+ 		}
+ 	} else {
+-		/* This won't work well with multi-interface cases but it's
+-		 * better than nothing.
++		/* When wmm params per vdev are not supported by firmware
++		 * use per pdev params what won't work well with multi-interface
++		 * cases but it's better than nothing. This require channel time
++		 * duration programmed in the HW to be in absolute microseconds,
++		 * while mac80211 gives the txop in units of 32 microseconds.
+ 		 */
++		p->txop = p->txop * 32;
++
+ 		ret = ath10k_wmi_pdev_set_wmm_params(ar, &arvif->wmm_params);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to set wmm params: %d\n", ret);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 71614ba..bdb3673 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1604,14 +1604,12 @@ ath10k_wmi_tlv_op_gen_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
+ 				    const struct wmi_wmm_params_all_arg *arg)
+ {
+ 	struct wmi_tlv_vdev_set_wmm_cmd *cmd;
+-	struct wmi_wmm_params *wmm;
+ 	struct wmi_tlv *tlv;
+ 	struct sk_buff *skb;
+ 	size_t len;
+ 	void *ptr;
+ 
+-	len = (sizeof(*tlv) + sizeof(*cmd)) +
+-	      (4 * (sizeof(*tlv) + sizeof(*wmm)));
++	len = sizeof(*tlv) + sizeof(*cmd);
+ 	skb = ath10k_wmi_alloc_skb(ar, len);
+ 	if (!skb)
+ 		return ERR_PTR(-ENOMEM);
+@@ -1623,13 +1621,10 @@ ath10k_wmi_tlv_op_gen_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
+ 	cmd = (void *)tlv->value;
+ 	cmd->vdev_id = __cpu_to_le32(vdev_id);
+ 
+-	ptr += sizeof(*tlv);
+-	ptr += sizeof(*cmd);
+-
+-	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_be);
+-	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_bk);
+-	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_vi);
+-	ptr = ath10k_wmi_tlv_put_wmm(ptr, &arg->ac_vo);
++	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[0].params, &arg->ac_be);
++	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[1].params, &arg->ac_bk);
++	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[2].params, &arg->ac_vi);
++	ath10k_wmi_set_wmm_param(&cmd->vdev_wmm_params[3].params, &arg->ac_vo);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv vdev wmm conf\n");
+ 	return skb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index de68fe7..c54de47 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1302,8 +1302,14 @@ struct wmi_tlv_pdev_set_wmm_cmd {
+ 	__le32 dg_type; /* no idea.. */
+ } __packed;
+ 
++struct wmi_tlv_vdev_wmm_params {
++	__le32 dummy;
++	struct wmi_wmm_params params;
++} __packed;
++
+ struct wmi_tlv_vdev_set_wmm_cmd {
+ 	__le32 vdev_id;
++	struct wmi_tlv_vdev_wmm_params vdev_wmm_params[4];
+ } __packed;
+ 
+ struct wmi_tlv_phyerr_ev {
+-- 
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
