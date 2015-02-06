@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJhOd-00072n-TK
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 11:48:28 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Increase copy engine entries for rx wmi
-Date: Fri, 6 Feb 2015 17:17:18 +0530
-Message-ID: <1423223238-17530-2-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YJhZ0-0003Jv-Hw
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 11:59:11 +0000
+Received: by mail-wi0-f177.google.com with SMTP id r20so1828883wiv.4
+ for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 03:58:46 -0800 (PST)
+MIME-Version: 1.0
 In-Reply-To: <1423223238-17530-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1423223238-17530-1-git-send-email-rmanohar@qti.qualcomm.com>
-MIME-Version: 1.0
+Date: Fri, 6 Feb 2015 12:58:40 +0100
+Message-ID: <CA+BoTQnwo=yXt2-57pv97KRCjw6r=0mtRVNt0jLwaeGsEfThNg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: Bypass PLL setting on target init for QCA9888
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,51 +20,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Having lower number of copy engine entries for target to host
-WMI ring is causing drops in receiving management frames. This
-issue is observed during max clients (128 clients) stress testing.
-While bursting deauthentication frames from simulated clients,
-approx. 70% of frames are getting dropped due to lower ring entries.
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e6972b0..f3174a6 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -113,7 +113,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
- 		.flags = CE_ATTR_FLAGS,
- 		.src_nentries = 0,
- 		.src_sz_max = 2048,
--		.dest_nentries = 32,
-+		.dest_nentries = 128,
- 	},
- 
- 	/* CE3: host->target WMI */
-@@ -183,7 +183,7 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
- 	{
- 		.pipenum = __cpu_to_le32(2),
- 		.pipedir = __cpu_to_le32(PIPEDIR_IN),
--		.nentries = __cpu_to_le32(32),
-+		.nentries = __cpu_to_le32(64),
- 		.nbytes_max = __cpu_to_le32(2048),
- 		.flags = __cpu_to_le32(CE_ATTR_FLAGS),
- 		.reserved = __cpu_to_le32(0),
--- 
-2.2.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBGZWJydWFyeSAyMDE1IGF0IDEyOjQ3LCBSYWprdW1hciBNYW5vaGFyYW4KPHJtYW5vaGFy
+QHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IFNvbWUgb2Ygb2YgcWNhOTg4eCBzb2x1dGlvbnMg
+YXJlIGhhdmluZyBnbG9iYWwgcmVzZXQgaXNzdWUKPiBkdXJpbmcgdGFyZ2V0IGluaXRpYWxpemF0
+aW9uLgoKV2hhdCBraW5kIG9mIGlzc3VlPyBIb3cvd2hlbiBkb2VzIGl0IG1hbmlmZXN0PwoKCj4g
+QnlwYXNzaW5nIFBMTCBzZXR0aW5nIGJlZm9yZQo+IGRvd25sb2FkaW5nIGZpcm13YXJlIGFuZCBs
+ZXR0aW5nIHRoZSBTb0MgcnVuIG9uIFJFRl9DTEsgaXMgZml4aW5nCj4gdGhlIHByb2JsZW0uIENv
+cnJlc3BvbmRpbmcgZmlybXdhcmUgY2hhbmdlIGlzIGFsc28gbmVlZGVkIHRvIHNldAo+IHRoZSBj
+bG9jayBzb3VyY2Ugb25jZSB0aGUgdGFyZ2V0IGlzIGluaXRpYWxpemVkLiBTaW5jZSAxMC4yLjQK
+PiBmaXJtd2FyZSBpcyBoYXZpbmcgdGhpcyBST00gcGF0Y2gsIGFwcGx5aW5nIHNraXBfY2xvY2tf
+aW5pdCBvbmx5Cj4gZm9yIDEwLjIuNCBmaXJtd2FyZSB2ZXJzaW9ucy4KCldoaWNoIDEwLjIuND8g
+VGhlcmUgYXJlIGF0IGxlYXN0IHR3byBwdWJsaWNseSBhdmFpbGFibGUgYmxvYnMuIERvIGFsbApv
+ZiB0aGVtIHN1cHBvcnQgdGhpcz8gSG93IGRvIG90aGVyIGZpcm13YXJlIHJldmlzaW9ucyBoYW5k
+bGUgc2V0dGluZwpza2lwX2Nsb2NrX2luaXQgdG8gMT8KCgo+IFNpZ25lZC1vZmYtYnk6IFJhamt1
+bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCAxNCArKysrKysrKysrKysrKwo+ICAx
+IGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
+L2F0aDEway9jb3JlLmMKPiBpbmRleCAzMTBlMTJiLi4zMTE5MTkyIDEwMDY0NAo+IC0tLSBhL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4gKysrIGIvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAtNzk3LDYgKzc5NywyMCBAQCBzdGF0aWMg
+aW50IGF0aDEwa19kb3dubG9hZF9jYWxfZGF0YShzdHJ1Y3QgYXRoMTBrICphcikKPiAgICAgICAg
+IGFyLT5jYWxfbW9kZSA9IEFUSDEwS19DQUxfTU9ERV9PVFA7Cj4KPiAgZG9uZToKPiArICAgICAg
+IGlmICgoYXItPmh3X3JldiAhPSBBVEgxMEtfSFdfUUNBOTg4WCkgfHwKPiArICAgICAgICAgICAo
+YXItPndtaS5vcF92ZXJzaW9uICE9IEFUSDEwS19GV19XTUlfT1BfVkVSU0lPTl8xMF8yXzQpKSB7
+CgpNYXliZSB1c2luZyBmd19mZWF0dXJlcyBpcyBhIGJldHRlciBpZGVhLCBubz8KCgo+ICsgICAg
+ICAgICAgICAgICBhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX0JPT1QsCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgICAgImJvb3QgdXNpbmcgY2FsaWJyYXRpb24gbW9kZSAlc1xuIiwKPiArICAg
+ICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfY2FsX21vZGVfc3RyKGFyLT5jYWxfbW9kZSkp
+OwoKSSBkb24ndCByZWFsbHkgbGlrZSB0aGUgaWRlYSBvZiBkdXBsaWNhdGluZyBkZWJ1ZyBwcmlu
+dHMuCgoKPiArICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gKyAgICAgICB9Cj4gKwo+ICsgICAg
+ICAgcmV0ID0gYXRoMTBrX2JtaV93cml0ZTMyKGFyLCBoaV9za2lwX2Nsb2NrX2luaXQsIDEpOwo+
+ICsgICAgICAgaWYgKHJldCkgewo+ICsgICAgICAgICAgICAgICBhdGgxMGtfZXJyKGFyLCAiY291
+bGQgbm90IHdyaXRlIHNraXBfY2xvY2tfaW5pdCAoJWQpXG4iLCByZXQpOwo+ICsgICAgICAgICAg
+ICAgICByZXR1cm4gcmV0Owo+ICsgICAgICAgfQo+ICsKPiAgICAgICAgIGF0aDEwa19kYmcoYXIs
+IEFUSDEwS19EQkdfQk9PVCwgImJvb3QgdXNpbmcgY2FsaWJyYXRpb24gbW9kZSAlc1xuIiwKPiAg
+ICAgICAgICAgICAgICAgICAgYXRoMTBrX2NhbF9tb2RlX3N0cihhci0+Y2FsX21vZGUpKTsKPiAg
+ICAgICAgIHJldHVybiAwOwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
+MGsK
