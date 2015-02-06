@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-we0-x22f.google.com ([2a00:1450:400c:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YJhZ0-0003Jv-Hw
- for ath10k@lists.infradead.org; Fri, 06 Feb 2015 11:59:11 +0000
-Received: by mail-wi0-f177.google.com with SMTP id r20so1828883wiv.4
- for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 03:58:46 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1423223238-17530-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1423223238-17530-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Fri, 6 Feb 2015 12:58:40 +0100
-Message-ID: <CA+BoTQnwo=yXt2-57pv97KRCjw6r=0mtRVNt0jLwaeGsEfThNg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] ath10k: Bypass PLL setting on target init for QCA9888
+ id 1YJhds-0004yH-Ai
+ for ath10k@lists.infradead.org; Fri, 06 Feb 2015 12:04:12 +0000
+Received: by mail-we0-f175.google.com with SMTP id p10so13283512wes.6
+ for <ath10k@lists.infradead.org>; Fri, 06 Feb 2015 04:03:50 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v3 0/7] ath10k: add multi-channel support
+Date: Fri,  6 Feb 2015 13:02:47 +0100
+Message-Id: <1423224174-24764-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +17,65 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gNiBGZWJydWFyeSAyMDE1IGF0IDEyOjQ3LCBSYWprdW1hciBNYW5vaGFyYW4KPHJtYW5vaGFy
-QHF0aS5xdWFsY29tbS5jb20+IHdyb3RlOgo+IFNvbWUgb2Ygb2YgcWNhOTg4eCBzb2x1dGlvbnMg
-YXJlIGhhdmluZyBnbG9iYWwgcmVzZXQgaXNzdWUKPiBkdXJpbmcgdGFyZ2V0IGluaXRpYWxpemF0
-aW9uLgoKV2hhdCBraW5kIG9mIGlzc3VlPyBIb3cvd2hlbiBkb2VzIGl0IG1hbmlmZXN0PwoKCj4g
-QnlwYXNzaW5nIFBMTCBzZXR0aW5nIGJlZm9yZQo+IGRvd25sb2FkaW5nIGZpcm13YXJlIGFuZCBs
-ZXR0aW5nIHRoZSBTb0MgcnVuIG9uIFJFRl9DTEsgaXMgZml4aW5nCj4gdGhlIHByb2JsZW0uIENv
-cnJlc3BvbmRpbmcgZmlybXdhcmUgY2hhbmdlIGlzIGFsc28gbmVlZGVkIHRvIHNldAo+IHRoZSBj
-bG9jayBzb3VyY2Ugb25jZSB0aGUgdGFyZ2V0IGlzIGluaXRpYWxpemVkLiBTaW5jZSAxMC4yLjQK
-PiBmaXJtd2FyZSBpcyBoYXZpbmcgdGhpcyBST00gcGF0Y2gsIGFwcGx5aW5nIHNraXBfY2xvY2tf
-aW5pdCBvbmx5Cj4gZm9yIDEwLjIuNCBmaXJtd2FyZSB2ZXJzaW9ucy4KCldoaWNoIDEwLjIuND8g
-VGhlcmUgYXJlIGF0IGxlYXN0IHR3byBwdWJsaWNseSBhdmFpbGFibGUgYmxvYnMuIERvIGFsbApv
-ZiB0aGVtIHN1cHBvcnQgdGhpcz8gSG93IGRvIG90aGVyIGZpcm13YXJlIHJldmlzaW9ucyBoYW5k
-bGUgc2V0dGluZwpza2lwX2Nsb2NrX2luaXQgdG8gMT8KCgo+IFNpZ25lZC1vZmYtYnk6IFJhamt1
-bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVy
-cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCAxNCArKysrKysrKysrKysrKwo+ICAx
-IGZpbGUgY2hhbmdlZCwgMTQgaW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9jb3JlLmMKPiBpbmRleCAzMTBlMTJiLi4zMTE5MTkyIDEwMDY0NAo+IC0tLSBhL2Ry
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4gKysrIGIvZHJpdmVycy9uZXQv
-d2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAtNzk3LDYgKzc5NywyMCBAQCBzdGF0aWMg
-aW50IGF0aDEwa19kb3dubG9hZF9jYWxfZGF0YShzdHJ1Y3QgYXRoMTBrICphcikKPiAgICAgICAg
-IGFyLT5jYWxfbW9kZSA9IEFUSDEwS19DQUxfTU9ERV9PVFA7Cj4KPiAgZG9uZToKPiArICAgICAg
-IGlmICgoYXItPmh3X3JldiAhPSBBVEgxMEtfSFdfUUNBOTg4WCkgfHwKPiArICAgICAgICAgICAo
-YXItPndtaS5vcF92ZXJzaW9uICE9IEFUSDEwS19GV19XTUlfT1BfVkVSU0lPTl8xMF8yXzQpKSB7
-CgpNYXliZSB1c2luZyBmd19mZWF0dXJlcyBpcyBhIGJldHRlciBpZGVhLCBubz8KCgo+ICsgICAg
-ICAgICAgICAgICBhdGgxMGtfZGJnKGFyLCBBVEgxMEtfREJHX0JPT1QsCj4gKyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgImJvb3QgdXNpbmcgY2FsaWJyYXRpb24gbW9kZSAlc1xuIiwKPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfY2FsX21vZGVfc3RyKGFyLT5jYWxfbW9kZSkp
-OwoKSSBkb24ndCByZWFsbHkgbGlrZSB0aGUgaWRlYSBvZiBkdXBsaWNhdGluZyBkZWJ1ZyBwcmlu
-dHMuCgoKPiArICAgICAgICAgICAgICAgcmV0dXJuIDA7Cj4gKyAgICAgICB9Cj4gKwo+ICsgICAg
-ICAgcmV0ID0gYXRoMTBrX2JtaV93cml0ZTMyKGFyLCBoaV9za2lwX2Nsb2NrX2luaXQsIDEpOwo+
-ICsgICAgICAgaWYgKHJldCkgewo+ICsgICAgICAgICAgICAgICBhdGgxMGtfZXJyKGFyLCAiY291
-bGQgbm90IHdyaXRlIHNraXBfY2xvY2tfaW5pdCAoJWQpXG4iLCByZXQpOwo+ICsgICAgICAgICAg
-ICAgICByZXR1cm4gcmV0Owo+ICsgICAgICAgfQo+ICsKPiAgICAgICAgIGF0aDEwa19kYmcoYXIs
-IEFUSDEwS19EQkdfQk9PVCwgImJvb3QgdXNpbmcgY2FsaWJyYXRpb24gbW9kZSAlc1xuIiwKPiAg
-ICAgICAgICAgICAgICAgICAgYXRoMTBrX2NhbF9tb2RlX3N0cihhci0+Y2FsX21vZGUpKTsKPiAg
-ICAgICAgIHJldHVybiAwOwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+New qca6174 with wmi-tlv firmware supports
+multi-channel operation. To make use of it
+ath10k needs a few changes: implement mac80211's
+chanctx API and rework tx queue control a bit.
+
+There are still rough edges (involving seldom
+beacon reports from firmware causing beacon loss
+in some cases, etc). Hopefully this will be fixed
+either in driver or firmware eventually.
+
+
+Changes since RFC:
+ * I've sent `ath10k: defer AP self-peer removal
+   wait` separately now because it's not really
+   required for multi-channel per se
+
+v2:
+ * fix null deref after rebasing
+ * fix commit log typo
+
+v3:
+ * remove some duplication wrt mac80211 [Johannes]
+ * small fixes
+
+
+Michal Kazior (7):
+  ath10k: allow empty ssid vdev config
+  ath10k: implement chanctx API
+  ath10k: implement adaptive qcs command
+  ath10k: protect ar->arvifs linking with data_lock
+  ath10k: rework tx queue locking
+  ath10k: implement tx pause wmi event
+  ath10k: enable multi-channel on supported devices
+
+ drivers/net/wireless/ath/ath10k/core.h    |  18 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  | 102 +++-
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  11 +-
+ drivers/net/wireless/ath/ath10k/mac.c     | 750 +++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/mac.h     |  68 +++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  16 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 118 ++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  46 ++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  18 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |   1 +
+ 10 files changed, 1024 insertions(+), 124 deletions(-)
+
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
