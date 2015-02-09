@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKhC3-000873-Dr
- for ath10k@lists.infradead.org; Mon, 09 Feb 2015 05:47:35 +0000
+ id 1YKhCG-000885-9T
+ for ath10k@lists.infradead.org; Mon, 09 Feb 2015 05:47:48 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 1/2] ath10k: Bypass PLL setting on target init for QCA9888
-Date: Mon, 9 Feb 2015 11:16:53 +0530
-Message-ID: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 2/2] ath10k: Increase copy engine entries for rx wmi
+Date: Mon, 9 Feb 2015 11:16:54 +0530
+Message-ID: <1423460814-2767-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,40 +25,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Some of of qca988x solutions are having global reset issue
-during target initialization. Bypassing PLL setting before
-downloading firmware and letting the SoC run on REF_CLK is fixing
-the problem. Corresponding firmware change is also needed to set
-the clock source once the target is initialized. Since 10.2.4
-firmware is having this ROM patch, applying skip_clock_init only
-for 10.2.4 firmware versions.
+Having lower number of copy engine entries for target to host
+WMI ring is causing drops in receiving management frames. This
+issue is observed during max clients (128 clients) stress testing.
+While bursting deauthentication frames from simulated clients,
+approx. 70% of frames are getting dropped due to lower ring entries.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/wireless/ath/ath10k/pci.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 310e12b..cd20805 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -797,6 +797,16 @@ static int ath10k_download_cal_data(struct ath10k *ar)
- 	ar->cal_mode = ATH10K_CAL_MODE_OTP;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e6972b0..f3174a6 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -113,7 +113,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.flags = CE_ATTR_FLAGS,
+ 		.src_nentries = 0,
+ 		.src_sz_max = 2048,
+-		.dest_nentries = 32,
++		.dest_nentries = 128,
+ 	},
  
- done:
-+	if ((ar->hw_rev == ATH10K_HW_QCA988X) &&
-+	    (ar->wmi.op_version == ATH10K_FW_WMI_OP_VERSION_10_2_4)) {
-+		ret = ath10k_bmi_write32(ar, hi_skip_clock_init, 1);
-+		if (ret) {
-+			ath10k_err(ar, "could not write skip_clock_init (%d)\n",
-+				   ret);
-+			return ret;
-+		}
-+	}
-+
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot using calibration mode %s\n",
- 		   ath10k_cal_mode_str(ar->cal_mode));
- 	return 0;
+ 	/* CE3: host->target WMI */
+@@ -183,7 +183,7 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+ 	{
+ 		.pipenum = __cpu_to_le32(2),
+ 		.pipedir = __cpu_to_le32(PIPEDIR_IN),
+-		.nentries = __cpu_to_le32(32),
++		.nentries = __cpu_to_le32(64),
+ 		.nbytes_max = __cpu_to_le32(2048),
+ 		.flags = __cpu_to_le32(CE_ATTR_FLAGS),
+ 		.reserved = __cpu_to_le32(0),
 -- 
 2.2.2
 
