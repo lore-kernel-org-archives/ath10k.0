@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-we0-f175.google.com ([74.125.82.175])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YKxEq-0007Br-63
- for ath10k@lists.infradead.org; Mon, 09 Feb 2015 22:55:32 +0000
-Message-ID: <54D93A88.8090609@codeaurora.org>
-Date: Mon, 09 Feb 2015 14:54:00 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1YL41L-0001qP-Mt
+ for ath10k@lists.infradead.org; Tue, 10 Feb 2015 06:10:05 +0000
+Received: by mail-we0-f175.google.com with SMTP id x3so6442189wes.6
+ for <ath10k@lists.infradead.org>; Mon, 09 Feb 2015 22:09:36 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2 2/2] ath10k: Increase copy engine entries for rx wmi
-References: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1423460814-2767-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1423460814-2767-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <54D8DA6F.7040805@candelatech.com>
+References: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>
+ <54D4E89A.7040602@candelatech.com>
+ <CA+BoTQ=HqyGKOBdOmpWOn_VjH1UTWF9nN_PE0uanaGsdeJmB6Q@mail.gmail.com>
+ <54D8DA6F.7040805@candelatech.com>
+Date: Tue, 10 Feb 2015 07:09:36 +0100
+Message-ID: <CA+BoTQk9C_7efUs6VTZrEz5ECxsvCgfA8ObrAXKjqMpTL8pggA@mail.gmail.com>
+Subject: Re: [RFT] ath10k: restart fw on tx-credit timeout
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +23,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
-
-On 02/08/2015 09:46 PM, Rajkumar Manoharan wrote:
-> Having lower number of copy engine entries for target to host
-> WMI ring is causing drops in receiving management frames. This
-> issue is observed during max clients (128 clients) stress testing.
-> While bursting deauthentication frames from simulated clients,
-> approx. 70% of frames are getting dropped due to lower ring entries.
->
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/pci.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c
-> b/drivers/net/wireless/ath/ath10k/pci.c
-> index e6972b0..f3174a6 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -113,7 +113,7 @@ static const struct ce_attr host_ce_config_wlan[] = {
->   		.flags = CE_ATTR_FLAGS,
->   		.src_nentries = 0,
->   		.src_sz_max = 2048,
-> -		.dest_nentries = 32,
-> +		.dest_nentries = 128,
->   	},
->   
->   	/* CE3: host->target WMI */
-> @@ -183,7 +183,7 @@ static const struct ce_pipe_config
-> target_ce_config_wlan[] = {
->   	{
->   		.pipenum = __cpu_to_le32(2),
->   		.pipedir = __cpu_to_le32(PIPEDIR_IN),
-> -		.nentries = __cpu_to_le32(32),
-> +		.nentries = __cpu_to_le32(64),
-Could you explain why the value of nentries are different?
->   		.nbytes_max = __cpu_to_le32(2048),
->   		.flags = __cpu_to_le32(CE_ATTR_FLAGS),
->   		.reserved = __cpu_to_le32(0),
-Thanks,
-Peter
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBGZWJydWFyeSAyMDE1IGF0IDE3OjAzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0
+ZWNoLmNvbT4gd3JvdGU6Cj4gT24gMDIvMDgvMjAxNSAxMDoyNCBQTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPj4gT24gNiBGZWJydWFyeSAyMDE1IGF0IDE3OjE1LCBCZW4gR3JlZWFyIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6ClsuLi5dCj4+PiBBdCBsZWFzdCBpbiBteSB0ZXN0cywg
+SSBjb3VsZCBjb250aW51ZQo+Pj4gdG8gcmVjZWl2ZSBuZXR3b3JrIHRyYWZmaWMgd2hpbGUgV01J
+IHdhcyBibG9ja2VkLgo+Pgo+Pgo+PiBZZWFoLiBUcmFmZmljIHdvcmtzIHdpdGggdGhlIHR4LWNy
+ZWRpdCBzdGFydmF0aW9uIGFzIHdlbGwgYnV0IHdoYXQKPj4gZ29vZCBpcyB0aGlzIGlmIHlvdSBo
+YXZlIGluY29uc2lzdGVudCBkcml2ZXItZmlybXdhcmUgc3RhdGUgYWZ0ZXIKPj4gZmFpbGluZyB0
+byBzZW5kIGEgZmV3IGNvbW1hbmRzPwo+Cj4KPiBJIGp1c3QgbWVudGlvbiBpdCBiZWNhdXNlIHNv
+bWVvbmUgZGVidWdnaW5nIHRoZSBzeXN0ZW0gbWlnaHQKPiB3b25kZXIgd2h5IHRoZSBmaXJtd2Fy
+ZSBpcyAnbG9ja2VkIHVwJyB3aGlsZSBpdCBpcyBzdGlsbCBwYXNzaW5nIHRyYWZmaWMuCgpJIG1p
+Z2h0IGFzIHdlbGwgaW5jbHVkZSB0aGlzIGluZm8gaW4gdGhlIGNvbW1pdCBsb2cuCgoKPiBJZiBp
+dCBpcyBqdXN0IHBvd2Vyc2F2ZSBpc3N1ZSwgY291bGQgeW91IGZvcmNlIChvdmVycmlkaW5nIHdt
+aSB0eC1jcmVkaXRzCj4gbGltaXQpCj4gYSBmbHVzaCBhdCB0aGUgMSBzZWNvbmQgbWFyayBhbmQg
+aG9wZSBpdCByZWNvdmVycyBieSAzIHNlY29uZCB0aW1lb3V0PwoKV2VsbCwgdGhlcmUncyBhIGNv
+dXBsZSBvZiBwcm9ibGVtcyB3aXRoIHRoYXQuCgoxKSB5b3Ugc3VnZ2VzdCB0byBjYWxsIHdtaV9m
+bHVzaCgpIHdoaWNoIGNhbGxzIHdtaV9jbWRfc2VuZCgpICp3aGlsZSoKaW4gd21pX2NtZF9zZW5k
+KCksCjIpIHlvdSdyZSBvdXQgb2YgY3JlZGl0cywgaG93IGRvIHlvdSBpbnRlbmQgdG8gc3VibWl0
+IGEgZnJhbWUsCjMpIHllcywgeW91IGNhbiBmb3JjZSBpdCwgYnV0IHRoYXQncyBzdXBlciB1Z2x5
+LAo0KSBhbmQgdGhpcyBzdGlsbCBkb2Vzbid0IGd1YXJhbnRlZSB5b3UnbGwgZ2V0IHlvdXIgdHgt
+Y3JlZGl0IGR1ZSB0bwpmaXJtd2FyZSBxdWlya2luZXNzLgoKKGJ1dCBtYXliZSB0aGUgbGF0ZXN0
+IDEwLjIuNCBiZWhhdmVzIGRpZmZlcmVudGx5PyB3aG8ga25vd3MuLikKCk15IG9yaWdpbmFsIHN0
+YWIgYXQgdGhpcyBpbnZvbHZlZCBhIHByb2FjdGl2ZSBmbHVzaGluZyBidXQgaXQgaGFkIGl0J3MK
+cHJvYmxlbXMgKGRlbGF5ZWQgbWdtdCBmcmFtZXMsIGNvdWxkIHN0aWxsIGdldCBzdHVjayBpbiBy
+YXJlIGNhc2VzKS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
+b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
