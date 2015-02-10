@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YL7UW-0003Fo-FW
- for ath10k@lists.infradead.org; Tue, 10 Feb 2015 09:52:24 +0000
-Received: by mail-wg0-f50.google.com with SMTP id l2so6129028wgh.9
- for <ath10k@lists.infradead.org>; Tue, 10 Feb 2015 01:52:01 -0800 (PST)
+ id 1YL8fm-000432-Sp
+ for ath10k@lists.infradead.org; Tue, 10 Feb 2015 11:08:07 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix wmm params per vdev
+References: <CADnKcViRWR1Ex-=QGzROQGYKNcZLMSu+mLDJ8-KhUuf=acDXdQ@mail.gmail.com>
+Date: Tue, 10 Feb 2015 13:07:31 +0200
+In-Reply-To: <CADnKcViRWR1Ex-=QGzROQGYKNcZLMSu+mLDJ8-KhUuf=acDXdQ@mail.gmail.com>
+ (Marek Puzyniak's message of "Tue, 10 Feb 2015 09:27:13 +0100")
+Message-ID: <87egpynhxo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Tue, 10 Feb 2015 17:52:01 +0800
-Message-ID: <CAEFj984bw132PpJ79ux=07JLL8mGuCieoM4R8FhChDduUm2fGg@mail.gmail.com>
-Subject: Firmware 10.2.4
-From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Marek Puzyniak <marek.puzyniak@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi, all
+Marek Puzyniak <marek.puzyniak@tieto.com> writes:
 
-What are the improvements done on fw 10.2.4 compared to 10.2 or even
-10.1? No documentation?
+> On 6 February 2015 at 14:41, Marek Puzyniak <marek.puzyniak@tieto.com> wrote:
+>> During wmm tests changing wmm parameters did not change anything.
+>> This was because of mismatch in WMM params per vdev command.
+>> WMM params per vdev uses different command structure than wmm params
+>> per pdev command. Also txop for per vdev settings has the
+>> same units as provided by mac80211.
+>>
+>> Patch concerns qca6174.
+>>
+>> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+>
+> Kalle,
+>
+> Please do not merge this patch yet. I need to clarify some side effects.
+> I will inform you about next steps.
 
-Regards,
-Chun-Yeow
+Ok, I have dropped the patch. Please resend if it's ok to apply.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
