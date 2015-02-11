@@ -1,22 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-out002.kontent.com ([81.88.40.216])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLXbb-00011I-Nw
- for ath10k@lists.infradead.org; Wed, 11 Feb 2015 13:45:28 +0000
-Received: from lnxsrvr.dreyero.de (a89-183-1-223.net-htp.de [89.183.1.223])
- (Authenticated sender: dreyero_de@smtp-out002.kontent.com)
- by smtp-out002.kontent.com (Postfix) with ESMTPA id 751041003807D
- for <ath10k@lists.infradead.org>; Wed, 11 Feb 2015 14:45:01 +0100 (CET)
-Received: from [192.168.1.122] (ip-2-205-229-64.web.vodafone.de [2.205.229.64])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by lnxsrvr.dreyero.de (Postfix) with ESMTPSA id BEBE5269151F
- for <ath10k@lists.infradead.org>; Wed, 11 Feb 2015 14:45:00 +0100 (CET)
-Message-ID: <54DB5CD8.80302@dreyero.de>
-Date: Wed, 11 Feb 2015 14:44:56 +0100
-From: Olaf Dreyer <olaf@dreyero.de>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YLfiq-0008JN-A2
+ for ath10k@lists.infradead.org; Wed, 11 Feb 2015 22:25:29 +0000
+Message-ID: <54DBD6C0.5000106@candelatech.com>
+Date: Wed, 11 Feb 2015 14:25:04 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: First QCA6174 firmware release
+Subject: Re: [RFT] ath10k: restart fw on tx-credit timeout
+References: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>
+ <54D4E89A.7040602@candelatech.com>
+ <CA+BoTQ=HqyGKOBdOmpWOn_VjH1UTWF9nN_PE0uanaGsdeJmB6Q@mail.gmail.com>
+ <54D8DA6F.7040805@candelatech.com>
+ <CA+BoTQk9C_7efUs6VTZrEz5ECxsvCgfA8ObrAXKjqMpTL8pggA@mail.gmail.com>
+ <54DA3957.10402@candelatech.com>
+In-Reply-To: <54DA3957.10402@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +27,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
-I have a new Acer Aspire VN7-591 Laptop with a Qualcom Atheros QCNF344
-wireless chip, which is shown by lspci as:
+On 02/10/2015 09:01 AM, Ben Greear wrote:
 
-Qualcomm Atheros Device 003e (rev 20)
-Subsystem: Foxconn International, Inc. Device e08e
+> I've hacked CT firmware to do a flush of all vdevs itself when it detects WMI hang.
+> I don't have a good test bed to reproduce the problem reliably, but I should know
+> after a few days if the flush works at all.  If not, then it's a moot point anyway.
 
-I have installed the linux-next kernel from today 8:00 UTC.
-I was able to load the ath10k_pci driver, but the driver complains about
-missing firmware.
-I installed a firmware from here: https://github.com/kvalo/ath10k-firmware
-under /lib/firmware/ath10k/QCA6174/hw2.1/
-But also the card is not working.
- 
-The output from dmesg is:
-[ 9360.538767] ath10k_pci 0000:07:00.0: pci irq msi interrupts 1
-irq_mode 0 reset_mode 0
-[ 9360.788588] ath10k_pci 0000:07:00.0: Direct firmware load for
-ath10k/cal-pci-0000:07:00.0.bin failed with error -2
-[ 9362.729118] ath10k_pci 0000:07:00.0: unable to write to the device
-[ 9362.729120] ath10k_pci 0000:07:00.0: failed to download normal
-firmware: -110
-[ 9362.729121] ath10k_pci 0000:07:00.0: could not init core (-110)
-[ 9362.729156] ath10k_pci 0000:07:00.0: could not probe fw (-110)
+So, this appears to at least partially work.
 
-I would like to know, as Austin Hendrix wrote it at 8 Feb 14:12 2015
-too, where can I find the firmware on the
-internet / my Windows7 partition and how can I prepare the needed files.
+But, what we notice is that when using multiple station vdevs, the system pretty much
+becomes useless if we get any significant number of stuck or slow-to-transmit management
+buffers over WMI.  Part of this is because WMI messages are sent when holding rtnl
+much of the time, I think.
 
-Many thanks,
+I would guess that an AP with lots of peers associated might have similar problems
+if peers are not ACKing packets reliably.
 
-Olaf
+Probably the only useful way to fix this is to make the firmware and driver able to
+send management frames over the normal transport like every other data packet?
+
+Any idea what it wasn't written like that to begin with?
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
