@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLtaT-0007h7-3m
- for ath10k@lists.infradead.org; Thu, 12 Feb 2015 13:13:45 +0000
-Message-ID: <54DCA6F1.90909@candelatech.com>
-Date: Thu, 12 Feb 2015 05:13:21 -0800
+ id 1YLtiC-0003BW-C0
+ for ath10k@lists.infradead.org; Thu, 12 Feb 2015 13:21:44 +0000
+Message-ID: <54DCA8D2.5090006@candelatech.com>
+Date: Thu, 12 Feb 2015 05:21:22 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Increase AST table SKID length limit
-References: <1423733322-31113-1-git-send-email-sjegadee@qti.qualcomm.com>
-In-Reply-To: <1423733322-31113-1-git-send-email-sjegadee@qti.qualcomm.com>
+Subject: Re: [RFT] ath10k: restart fw on tx-credit timeout
+References: <1423224354-24955-1-git-send-email-michal.kazior@tieto.com>	<54D4E89A.7040602@candelatech.com>	<CA+BoTQ=HqyGKOBdOmpWOn_VjH1UTWF9nN_PE0uanaGsdeJmB6Q@mail.gmail.com>	<54D8DA6F.7040805@candelatech.com>	<CA+BoTQk9C_7efUs6VTZrEz5ECxsvCgfA8ObrAXKjqMpTL8pggA@mail.gmail.com>	<54DA3957.10402@candelatech.com>	<54DBD6C0.5000106@candelatech.com>
+ <CA+BoTQ=cXL4pdLg==RVh5ARfNyC5qscthh4YJW1ufOM5=EsLyw@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=cXL4pdLg==RVh5ARfNyC5qscthh4YJW1ufOM5=EsLyw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,71 +23,67 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Matti Laakso <malaakso@elisanet.fi>
 
 
 
-On 02/12/2015 01:28 AM, SenthilKumar Jegadeesan wrote:
-> The current SKID length configuration causes firmware
-> to reject peer creation for not able to allocate
-> AST entries for peers. This issue is observed when
-> least significant 3 bytes are used ramdomly to create
-> client MAC addresses.
+On 02/11/2015 10:55 PM, Michal Kazior wrote:
+> On 11 February 2015 at 23:25, Ben Greear <greearb@candelatech.com> wrote:
+>> On 02/10/2015 09:01 AM, Ben Greear wrote:
+>>
+>>> I've hacked CT firmware to do a flush of all vdevs itself when it detects WMI hang.
+>>> I don't have a good test bed to reproduce the problem reliably, but I should know
+>>> after a few days if the flush works at all.  If not, then it's a moot point anyway.
+>>
+>> So, this appears to at least partially work.
+>>
+>> But, what we notice is that when using multiple station vdevs, the system pretty much
+>> becomes useless if we get any significant number of stuck or slow-to-transmit management
+>> buffers over WMI.  Part of this is because WMI messages are sent when holding rtnl
+>> much of the time, I think.
 >
-> AST table SKID length configuration is increased to
-> maximum value to fix this issue.
+> Most, if not all, WMI commands are sent while holding conf_mutex. This
+> lock is taken in many situations including when RTNL is held so your
+> observation isn't entirely correct but isn't wrong either.
+>
+>
+>> I would guess that an AP with lots of peers associated might have similar problems
+>> if peers are not ACKing packets reliably.
+>
+> It's not the ACKing per se. It's whether stations are asleep and
+> unresponsive or not. You could do funny DoS attacks with a single
+> ath9k card (using virtual stations) on ath10k APs now I guess :-)
 
-If your firmware is like 10.1, then probably AST length should
-really be same as config.num_peers?
+In our lab we have some setups where there should be no power-save at all,
+but still see this issue.  Unlucky (or nefarious) broken-ness in the peer can seem to
+mostly hang the local system due to the 'not entirely correct' assumption above :)
 
-10.1 firmware definitely has same or similar issue in it's
-AST table handling, for what that is worth.
+
+>> Probably the only useful way to fix this is to make the firmware and driver able to
+>> send management frames over the normal transport like every other data packet?
+>
+> Agreed. HTT should've been used for entire traffic, including management frames.
+>
+> The workaround could've been to guarantee to have only 1 wmi-mgmt-tx
+> in-flight but since tx-credits aren't replenished predictably you'll
+> end up with the patch I originally did, i.e. sleep 2*bcn intval and
+> wmi-peer-flush-tids after each unicast mgmt frame to a known station.
+
+Even assuming I have the tx-credits replenishment fixed,
+that work-around would make sending sending mgt frames to many peers
+very slow when at least a few peers are not answering quickly, right?
+
+>> Any idea what it wasn't written like that to begin with?
+>
+> Beats me.
+
+This might be something I can fix in CT firmware..but trying to kick a release out
+the door, so I think I'll put this off for a bit.
 
 Thanks,
 Ben
 
-
->
-> Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/hw.h  | 1 +
->   drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
->   2 files changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-> index 460771f..b86996e 100644
-> --- a/drivers/net/wireless/ath/ath10k/hw.h
-> +++ b/drivers/net/wireless/ath/ath10k/hw.h
-> @@ -254,6 +254,7 @@ struct ath10k_pktlog_hdr {
->
->   /* 10.2 parameters */
->   #define TARGET_10_2_DMA_BURST_SIZE		1
-> +#define TARGET_10_2_AST_SKID_LIMIT		128
->
->   /* Target specific defines for WMI-TLV firmware */
->   #define TARGET_TLV_NUM_VDEVS			3
-> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-> index aeea1c7..13290da 100644
-> --- a/drivers/net/wireless/ath/ath10k/wmi.c
-> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-> @@ -3920,7 +3920,7 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
->   	config.num_peers = __cpu_to_le32(TARGET_10X_NUM_PEERS);
->   	config.num_peer_keys = __cpu_to_le32(TARGET_10X_NUM_PEER_KEYS);
->   	config.num_tids = __cpu_to_le32(TARGET_10X_NUM_TIDS);
-> -	config.ast_skid_limit = __cpu_to_le32(TARGET_10X_AST_SKID_LIMIT);
-> +	config.ast_skid_limit = __cpu_to_le32(TARGET_10_2_AST_SKID_LIMIT);
->   	config.tx_chain_mask = __cpu_to_le32(TARGET_10X_TX_CHAIN_MASK);
->   	config.rx_chain_mask = __cpu_to_le32(TARGET_10X_RX_CHAIN_MASK);
->   	config.rx_timeout_pri_vo = __cpu_to_le32(TARGET_10X_RX_TIMEOUT_LO_PRI);
-> --
-> 1.9.1
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
 
 -- 
 Ben Greear <greearb@candelatech.com>
