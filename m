@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YM19z-0006PP-W0
- for ath10k@lists.infradead.org; Thu, 12 Feb 2015 21:18:56 +0000
+ id 1YM19w-0006Os-Fg
+ for ath10k@lists.infradead.org; Thu, 12 Feb 2015 21:18:53 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 2/3] ath10k: Update chirp value in pulse event
-Date: Thu, 12 Feb 2015 13:17:04 -0800
-Message-ID: <1423775825-19498-2-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH 3/3] ath: Enhance radar detection by looking up chirp
+Date: Thu, 12 Feb 2015 13:17:05 -0800
+Message-ID: <1423775825-19498-3-git-send-email-poh@qca.qualcomm.com>
 In-Reply-To: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
 References: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
@@ -25,28 +25,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Firmware reports chirp status in phy error event if it's detected
-and the chirp status is valuable to distinguish radar types.
-So save it to use for DFS parttern detector.
+Certain radar types such as FCC radar type 5 are using chirp
+in their pulses, hence looking up the chirp status will enhance
+to avoid false radar detection.
 
 Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/dfs_pri_detector.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 81561e4..0c06361 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2550,7 +2550,7 @@ static void ath10k_dfs_radar_report(struct ath10k *ar,
- 	pe.freq = ar->hw->conf.chandef.chan->center_freq;
- 	pe.width = width;
- 	pe.rssi = rssi;
--
-+	pe.chirp = (MS(reg0, RADAR_REPORT_REG0_PULSE_IS_CHIRP) != 0);
- 	ath10k_dbg(ar, ATH10K_DBG_REGULATORY,
- 		   "dfs add pulse freq: %d, width: %d, rssi %d, tsf: %llX\n",
- 		   pe.freq, pe.width, pe.rssi, pe.ts);
+diff --git a/drivers/net/wireless/ath/dfs_pri_detector.c b/drivers/net/wireless/ath/dfs_pri_detector.c
+index 43b6081..1b5ad19 100644
+--- a/drivers/net/wireless/ath/dfs_pri_detector.c
++++ b/drivers/net/wireless/ath/dfs_pri_detector.c
+@@ -390,6 +390,10 @@ static struct pri_sequence *pri_detector_add_pulse(struct pri_detector *de,
+ 	if ((ts - de->last_ts) < rs->max_pri_tolerance)
+ 		/* if delta to last pulse is too short, don't use this pulse */
+ 		return NULL;
++	/* radar detector spec needs chirp, but not detected */
++	if (rs->chirp && rs->chirp != event->chirp)
++		return NULL;
++
+ 	de->last_ts = ts;
+ 
+ 	max_updated_seq = pseq_handler_add_to_existing_seqs(de, ts);
 -- 
 1.9.1
 
