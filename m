@@ -1,13 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-pd0-f174.google.com ([209.85.192.174])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YLlwP-0006M6-EG
- for ath10k@lists.infradead.org; Thu, 12 Feb 2015 05:03:53 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix interrupt storm
-Date: Thu, 12 Feb 2015 10:29:22 +0530
-Message-ID: <1423717162-7788-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1YLmqc-0007MF-OA
+ for ath10k@lists.infradead.org; Thu, 12 Feb 2015 06:01:59 +0000
+Received: by pdev10 with SMTP id v10so9660477pde.7
+ for <ath10k@lists.infradead.org>; Wed, 11 Feb 2015 22:01:37 -0800 (PST)
+Received: from [192.168.1.177] (c-76-126-185-64.hsd1.ca.comcast.net.
+ [76.126.185.64])
+ by mx.google.com with ESMTPSA id qy3sm2598858pbc.4.2015.02.11.22.01.35
+ for <ath10k@lists.infradead.org>
+ (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 11 Feb 2015 22:01:36 -0800 (PST)
+Message-ID: <54DC4284.6020009@gmail.com>
+Date: Wed, 11 Feb 2015 22:04:52 -0800
+From: Austin Hendrix <namniart@gmail.com>
 MIME-Version: 1.0
+Subject: Re: First QCA6174 firmware release
+References: <54D761DC.9010001@dd-wrt.com>
+In-Reply-To: <54D761DC.9010001@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,64 +26,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Promiscuous mode is enabled when wlan interface is added to
-bridge. ath10k creates a monitor mode when promiscuous mode
-is enabled. When monitor vdev is runing along with other
-vdev(s) there is a huge number of interrupts generated
-especially in noisy condition. Fix this by not enabling
-promiscuous(monitor) mode when already a vdev is running.
-This does not change the support of virtual interface of
-type monitor along with other vdevs.
+I consider myself a fairly skilled programmer; if the format is 
+documented somewhere, I have no doubt that I can write a tool to put the 
+firmware into the proper format. Does anyone know where the firmware 
+format is documented, or do I have to go read the source for the driver 
+to figure out the firmware format?
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+The bigger question is, how can I confirm that I'm wrapping the correct 
+firmware?
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d6d2f0f..310e608 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -932,6 +932,14 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 		return ret;
- 	}
- 
-+	if (ar->filter_flags & FIF_PROMISC_IN_BSS) {
-+		ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
-+		ath10k_dbg(ar, ATH10K_DBG_MAC, "Disabling promiscuous mode when we start a vdev\n");
-+		ret = ath10k_monitor_recalc(ar);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ar->num_started_vdevs++;
- 	ath10k_recalc_radar_detection(ar);
- 
-@@ -3369,6 +3377,14 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 
- 	changed_flags &= SUPPORTED_FILTERS;
- 	*total_flags &= SUPPORTED_FILTERS;
-+	if (*total_flags & FIF_PROMISC_IN_BSS) {
-+		if (ar->num_started_vdevs) {
-+			ath10k_dbg(ar, ATH10K_DBG_MAC,
-+				   "Not enabling promiscuous mode when already a vdev is running\n");
-+			mutex_unlock(&ar->conf_mutex);
-+			return;
-+		}
-+	}
- 	ar->filter_flags = *total_flags;
- 
- 	ret = ath10k_monitor_recalc(ar);
--- 
-1.7.9.5
+I found a qca61x420.bin file (probably firmware; definitely compiled 
+code) in /Windows/System32/drivers/qca61x420.bin , but the ath10k driver 
+doesn't recognize it as firmware.
 
+Thanks,
+-Austin
 
 _______________________________________________
 ath10k mailing list
