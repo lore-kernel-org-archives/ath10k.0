@@ -1,15 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from omr-m5.mx.aol.com ([64.12.232.237])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YM1LP-00040U-PF
- for ath10k@lists.infradead.org; Thu, 12 Feb 2015 21:30:44 +0000
-Message-ID: <54DD1B18.8030803@codeaurora.org>
-Date: Thu, 12 Feb 2015 13:28:56 -0800
-From: Peter Oh <poh@codeaurora.org>
+ id 1YMAZu-0006Pe-CK
+ for ath10k@lists.infradead.org; Fri, 13 Feb 2015 07:22:19 +0000
+Received: from mtaout-aah02.mx.aol.com (mtaout-aah02.mx.aol.com [172.27.1.142])
+ by omr-m5.mx.aol.com (Outbound Mail Relay) with ESMTP id 438AE38000086
+ for <ath10k@lists.infradead.org>; Fri, 13 Feb 2015 02:21:56 -0500 (EST)
+Received: from [198.129.218.204] (dhcp-visitor-218-204.slac.stanford.edu
+ [198.129.218.204])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mtaout-aah02.mx.aol.com (MUA/Third Party Client Interface) with ESMTPSA id
+ CB31738000084
+ for <ath10k@lists.infradead.org>; Fri, 13 Feb 2015 02:21:55 -0500 (EST)
+Message-ID: <54DDA6D7.5080007@aol.com>
+Date: Thu, 12 Feb 2015 23:25:11 -0800
+From: Austin Hendrix <legotown@aol.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/3] ath: Introduce chirp parameter used by DFS
-References: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
-In-Reply-To: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
+Subject: Re: First QCA6174 firmware release
+References: <54D761DC.9010001@dd-wrt.com>	<54DC4284.6020009@gmail.com>
+ <CA+BoTQkPYE_BbDf_p1oruKHsXRH+UPE7O_ARW=mVhyYtx_tzLw@mail.gmail.com>
+In-Reply-To: <CA+BoTQkPYE_BbDf_p1oruKHsXRH+UPE7O_ARW=mVhyYtx_tzLw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,163 +29,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
 
-
-On 02/12/2015 01:17 PM, Peter Oh wrote:
-> Some of radar types such as FCC radar type 5 require
-> to look up chirp in pulse to detect genuine radar and
-> it will prevent DFS channels from false radar detection.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/dfs_pattern_detector.c | 52
-> ++++++++++++-------------
->   drivers/net/wireless/ath/dfs_pattern_detector.h |  4 ++
->   2 files changed, 30 insertions(+), 26 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c
-> b/drivers/net/wireless/ath/dfs_pattern_detector.c
-> index 3d57f87..b1de8c6 100644
-> --- a/drivers/net/wireless/ath/dfs_pattern_detector.c
-> +++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-> @@ -48,23 +48,23 @@ struct radar_types {
->   #define WIDTH_LOWER(X) ((X*(100-WIDTH_TOLERANCE)+50)/100)
->   #define WIDTH_UPPER(X) ((X*(100+WIDTH_TOLERANCE)+50)/100)
->   
-> -#define ETSI_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB)	\
-> +#define ETSI_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB, CHIRP)	\
->   {								\
->   	ID, WIDTH_LOWER(WMIN), WIDTH_UPPER(WMAX),		\
->   	(PRF2PRI(PMAX) - PRI_TOLERANCE),			\
->   	(PRF2PRI(PMIN) * PRF + PRI_TOLERANCE), PRF, PPB * PRF,	\
-> -	PPB_THRESH(PPB), PRI_TOLERANCE,				\
-> +	PPB_THRESH(PPB), PRI_TOLERANCE,	CHIRP			\
->   }
->   
->   /* radar types as defined by ETSI EN-301-893 v1.5.1 */
->   static const struct radar_detector_specs etsi_radar_ref_types_v15[] = {
-> -	ETSI_PATTERN(0,  0,  1,  700,  700, 1, 18),
-> -	ETSI_PATTERN(1,  0,  5,  200, 1000, 1, 10),
-> -	ETSI_PATTERN(2,  0, 15,  200, 1600, 1, 15),
-> -	ETSI_PATTERN(3,  0, 15, 2300, 4000, 1, 25),
-> -	ETSI_PATTERN(4, 20, 30, 2000, 4000, 1, 20),
-> -	ETSI_PATTERN(5,  0,  2,  300,  400, 3, 10),
-> -	ETSI_PATTERN(6,  0,  2,  400, 1200, 3, 15),
-> +	ETSI_PATTERN(0,  0,  1,  700,  700, 1, 18, false),
-> +	ETSI_PATTERN(1,  0,  5,  200, 1000, 1, 10, false),
-> +	ETSI_PATTERN(2,  0, 15,  200, 1600, 1, 15, false),
-> +	ETSI_PATTERN(3,  0, 15, 2300, 4000, 1, 25, false),
-> +	ETSI_PATTERN(4, 20, 30, 2000, 4000, 1, 20, false),
-> +	ETSI_PATTERN(5,  0,  2,  300,  400, 3, 10, false),
-> +	ETSI_PATTERN(6,  0,  2,  400, 1200, 3, 15, false),
->   };
->   
->   static const struct radar_types etsi_radar_types_v15 = {
-> @@ -73,21 +73,21 @@ static const struct radar_types etsi_radar_types_v15 =
-> {
->   	.radar_types		= etsi_radar_ref_types_v15,
->   };
->   
-> -#define FCC_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB)	\
-> +#define FCC_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB, CHIRP)	\
->   {								\
->   	ID, WIDTH_LOWER(WMIN), WIDTH_UPPER(WMAX),		\
->   	PMIN - PRI_TOLERANCE,					\
->   	PMAX * PRF + PRI_TOLERANCE, PRF, PPB * PRF,		\
-> -	PPB_THRESH(PPB), PRI_TOLERANCE,				\
-> +	PPB_THRESH(PPB), PRI_TOLERANCE,	CHIRP			\
->   }
->   
->   static const struct radar_detector_specs fcc_radar_ref_types[] = {
-> -	FCC_PATTERN(0, 0, 1, 1428, 1428, 1, 18),
-> -	FCC_PATTERN(1, 0, 5, 150, 230, 1, 23),
-> -	FCC_PATTERN(2, 6, 10, 200, 500, 1, 16),
-> -	FCC_PATTERN(3, 11, 20, 200, 500, 1, 12),
-> -	FCC_PATTERN(4, 50, 100, 1000, 2000, 1, 1),
-> -	FCC_PATTERN(5, 0, 1, 333, 333, 1, 9),
-> +	FCC_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
-> +	FCC_PATTERN(1, 0, 5, 150, 230, 1, 23, false),
-> +	FCC_PATTERN(2, 6, 10, 200, 500, 1, 16, false),
-> +	FCC_PATTERN(3, 11, 20, 200, 500, 1, 12, false),
-> +	FCC_PATTERN(4, 50, 100, 1000, 2000, 1, 1, true),
-> +	FCC_PATTERN(5, 0, 1, 333, 333, 1, 9, false),
->   };
->   
->   static const struct radar_types fcc_radar_types = {
-> @@ -98,15 +98,15 @@ static const struct radar_types fcc_radar_types = {
->   
->   #define JP_PATTERN FCC_PATTERN
->   static const struct radar_detector_specs jp_radar_ref_types[] = {
-> -	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18),
-> -	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18),
-> -	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18),
-> -	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18),
-> -	JP_PATTERN(4, 0, 5, 150, 230, 1, 23),
-> -	JP_PATTERN(5, 6, 10, 200, 500, 1, 16),
-> -	JP_PATTERN(6, 11, 20, 200, 500, 1, 12),
-> -	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20),
-> -	JP_PATTERN(5, 0, 1, 333, 333, 1, 9),
-> +	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
-> +	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, false),
-> +	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, false),
-> +	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, false),
-> +	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, false),
-> +	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, false),
-> +	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, false),
-> +	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, false),
-> +	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, false),
->   };
->   
->   static const struct radar_types jp_radar_types = {
-> diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.h
-> b/drivers/net/wireless/ath/dfs_pattern_detector.h
-> index dde2652..25a43d6 100644
-> --- a/drivers/net/wireless/ath/dfs_pattern_detector.h
-> +++ b/drivers/net/wireless/ath/dfs_pattern_detector.h
-> @@ -40,12 +40,14 @@ struct ath_dfs_pool_stats {
->    * @freq: channel frequency in MHz
->    * @width: pulse duration in us
->    * @rssi: rssi of radar event
-> + * @chirp: chirp detected in pulse
->    */
->   struct pulse_event {
->   	u64 ts;
->   	u16 freq;
->   	u8 width;
->   	u8 rssi;
-> +	bool chirp;
->   };
->   
->   /**
-> @@ -59,6 +61,7 @@ struct pulse_event {
->    * @ppb: pulses per bursts for this type
->    * @ppb_thresh: number of pulses required to trigger detection
->    * @max_pri_tolerance: pulse time stamp tolerance on both sides [us]
-> + * @chirp: chirp required for the radar pattern
->    */
->   struct radar_detector_specs {
->   	u8 type_id;
-> @@ -70,6 +73,7 @@ struct radar_detector_specs {
->   	u8 ppb;
->   	u8 ppb_thresh;
->   	u8 max_pri_tolerance;
-> +	bool chirp;
-Chirp is also used by Japan and ETSI, but need more test and analysis to 
-use on them, so they're not enabled at this moment, but should be good 
-to have architecturally.
->   };
->   
->   /**
-Regards,
-Peter
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDIvMTEvMjAxNSAxMDozMSBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMiBGZWJy
+dWFyeSAyMDE1IGF0IDA3OjA0LCBBdXN0aW4gSGVuZHJpeCA8bmFtbmlhcnRAZ21haWwuY29tPiB3
+cm90ZToKPj4gSSBjb25zaWRlciBteXNlbGYgYSBmYWlybHkgc2tpbGxlZCBwcm9ncmFtbWVyOyBp
+ZiB0aGUgZm9ybWF0IGlzIGRvY3VtZW50ZWQKPj4gc29tZXdoZXJlLCBJIGhhdmUgbm8gZG91YnQg
+dGhhdCBJIGNhbiB3cml0ZSBhIHRvb2wgdG8gcHV0IHRoZSBmaXJtd2FyZSBpbnRvCj4+IHRoZSBw
+cm9wZXIgZm9ybWF0LiBEb2VzIGFueW9uZSBrbm93IHdoZXJlIHRoZSBmaXJtd2FyZSBmb3JtYXQg
+aXMgZG9jdW1lbnRlZCwKPj4gb3IgZG8gSSBoYXZlIHRvIGdvIHJlYWQgdGhlIHNvdXJjZSBmb3Ig
+dGhlIGRyaXZlciB0byBmaWd1cmUgb3V0IHRoZSBmaXJtd2FyZQo+PiBmb3JtYXQ/Cj4gVGFrZSBh
+IGxvb2sgYXQgYXRoMTBrX2NvcmVfZmV0Y2hfZmlybXdhcmVfYXBpX24oKS4gWW91IGNhbiBkZXJp
+dmUgYW4KPiBlbmNvZGVyIGxvZ2ljIGZyb20gdGhpcyBlYXNpbHkuCj4KPgo+PiBUaGUgYmlnZ2Vy
+IHF1ZXN0aW9uIGlzLCBob3cgY2FuIEkgY29uZmlybSB0aGF0IEknbSB3cmFwcGluZyB0aGUgY29y
+cmVjdAo+PiBmaXJtd2FyZT8KPiBJZiBhdGgxMGsgcGFyc2VzIGl0IGxhdGVyIGFuZCBib290cyB0
+aGVuIGl0J3MgY29ycmVjdD8gOi0pCj4KPgo+PiBJIGZvdW5kIGEgcWNhNjF4NDIwLmJpbiBmaWxl
+IChwcm9iYWJseSBmaXJtd2FyZTsgZGVmaW5pdGVseSBjb21waWxlZCBjb2RlKQo+PiBpbiAvV2lu
+ZG93cy9TeXN0ZW0zMi9kcml2ZXJzL3FjYTYxeDQyMC5iaW4gLCBidXQgdGhlIGF0aDEwayBkcml2
+ZXIgZG9lc24ndAo+PiByZWNvZ25pemUgaXQgYXMgZmlybXdhcmUuCj4gVGhlIGJsb2IgeW91IGZv
+dW5kIGlzIHRoZSByYXcgYmluYXJ5IHRoYXQgaXMgcHVzaGVkIHRvIHRoZSBkZXZpY2UuCj4gYXRo
+MTBrIGV4cGVjdHMgdG8gZmluZCBpdCBpbiBhIHdyYXBwZWQgIkZXIEFQSSIgd2hpY2ggYWxzbyBj
+b250YWlucyBhbgo+IE9UUCBwcm9ncmFtLiBZb3UgYWxzbyBuZWVkIHRvIG1ha2Ugc3VyZSB0byBz
+ZXR1cCBjb3JyZWN0Cj4gZndfZmVhdHVyZXMvb3BfdmVyc2lvbiAoeW91IGNhbiBkaXNhc3NlbWJs
+ZSB0aGUgaHczLjAgd3JhcHBlciBibG9iKS4KPgo+Cj4gTWljaGHFggo+Cj4gX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0
+Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKVGhhbmtzISBJIGNhbiB3b3JrIHdpdGggdGhhdC4K
+ClRoZSBGVyBBUEkgZGF0YSBzdHJ1Y3R1cmUgaXMgcHJldHR5IHNpbXBsZSAtIEkgY2FuIHJlcHJv
+ZHVjZSBpdC4KCkxvb2tpbmcgYXQgdGhlIGZpcm13YXJlIGJsb2IgdGhhdCBJIGhhdmUsIGFuZCBj
+b21wYXJpbmcgaXQgdG8gdGhlIApleGlzdGluZyBmaXJtd2FyZS00IGltYWdlIHN1Z2dlc3RzIHRo
+YXQgaXQgY29udGFpbnMgc2V2ZXJhbCBkaWZmZXJlbnQgCmZpcm13YXJlIGltYWdlcy4gSSdtIGdv
+aW5nIHRvIHNwZW5kIHNvbWUgdGltZSB0cnlpbmcgdG8gY2hvcCBpdCB1cCBhbmQgCmZpZ3VyZSBv
+dXQgaG93IGl0J3MgbGFpZCBvdXQsIGFuZCB0aGVuIHRyeSB0byByZS1wYWNrIGl0IGFwcHJvcHJp
+YXRlbHkgCmZvciBsaW51eC4KCi1BdXN0aW4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
