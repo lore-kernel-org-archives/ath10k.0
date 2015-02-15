@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YN0jS-0002iV-MH
- for ath10k@lists.infradead.org; Sun, 15 Feb 2015 15:03:39 +0000
+ id 1YN0rU-0005n8-P6
+ for ath10k@lists.infradead.org; Sun, 15 Feb 2015 15:11:58 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/8] ath10k: scan should handle scan-start-failed event
- properly.
-References: <1421087564-10384-1-git-send-email-greearb@candelatech.com>
- <878ugeul6u.fsf@kamboji.qca.qualcomm.com>
-Date: Sun, 15 Feb 2015 17:03:10 +0200
-In-Reply-To: <878ugeul6u.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 4 Feb 2015 10:37:13 +0200")
-Message-ID: <874mqni5e9.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: defer AP self-peer removal wait
+References: <1422606682-12121-1-git-send-email-michal.kazior@tieto.com>
+Date: Sun, 15 Feb 2015 17:11:28 +0200
+In-Reply-To: <1422606682-12121-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 30 Jan 2015 09:31:22 +0100")
+Message-ID: <87zj8fgqfz.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,17 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: greearb@candelatech.com
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> These patches are now in the pending branch.
+> Some firmware revisions don't notify host about
+> self-bss-peer removal until after associated vdev
+> is deleted. This has been observed with qca6174
+> WLAN.RM.2.0-00073 firmware.
 >
-> 86f50c71b224 ath10k: scan should handle scan-start-failed event properly
-> c6dde373a4bb ath10k: fix spelling mistakes and add details to mac logging
-> 198c0184d94c ath10k: fix spelling in htt code comment
-> 227822d52d26 ath10k: fix CE_DESC_FLAGS_META_DATA_LSB definition
+> This patch fixes AP teardown slowdowns and
+> prevents delays and warnings:
+>
+>  ath10k_pci 0000:00:05.0: failed to remove peer for AP vdev 0: -110
+>  ath10k_pci 0000:00:05.0: removing stale peer xx:xx:xx:xx:xx:xx from vdev_id 0
+>  ath10k_pci 0000:00:05.0: peer-unmap-event: unknown peer id 24
+>  ath10k_pci 0000:00:05.0: peer-unmap-event: unknown peer id 8
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied to ath.git.
 
