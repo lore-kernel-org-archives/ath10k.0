@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YN0vw-000821-Nq
- for ath10k@lists.infradead.org; Sun, 15 Feb 2015 15:16:33 +0000
+ id 1YN1Ty-0006UI-Ed
+ for ath10k@lists.infradead.org; Sun, 15 Feb 2015 15:51:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add TxBF support
-References: <1422611452-21105-1-git-send-email-michal.kazior@tieto.com>
-Date: Sun, 15 Feb 2015 17:16:06 +0200
-In-Reply-To: <1422611452-21105-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 30 Jan 2015 10:50:52 +0100")
-Message-ID: <87r3trgq89.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix AP/IBSS CSA with template based fw
+References: <1423749198-11346-1-git-send-email-michal.kazior@tieto.com>
+Date: Sun, 15 Feb 2015 17:51:14 +0200
+In-Reply-To: <1423749198-11346-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 12 Feb 2015 14:53:18 +0100")
+Message-ID: <87mw4fgolp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,18 +28,33 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> If firmware advertises support for TxBF then the
-> driver has to instruct the firmware accordingly
-> during runtime. Without this patch connecting to
-> an AP with beamformer support would yield abysmal
-> Rx performance.
+> qca6174 with wmi-tlv firmware uses offloaded
+> beaconing scheme (i.e. templates). This requires a
+> little different approach when implementing CSA.
 >
-> This has been tested with wmi-tlv and qca6174
-> while acting as a STA beamformee only.
+> Add missing code to update CS count and report CSA
+> completion to mac80211. Without it channel switch
+> was never finished.
+>
+> To avoid races during interface teardown data_lock
+> has been used to protect is_up and is_started so
+> they can be compared against before scheduling
+> count down work.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
+>
+> @Kalle: I'm deferring the chanctx patchset v4
+> until this gets applied. I'd like to avoid posting
+> patches without a valid parent id and leaving you
+> with some weird conflicts and implicit depndencies
+> in the code to deal with.
 
-Thanks, applied to ath.git.
+Ok.
+
+I actually had strange conflicts already with this patch (in mac.c). As
+I'm travelling, please check my resolution from the pending branch very
+carefully. I might have done something stupid.
 
 -- 
 Kalle Valo
