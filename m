@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YNcuX-0000dm-9e
- for ath10k@lists.infradead.org; Tue, 17 Feb 2015 07:49:37 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V2 2/2] ath10k: Fix interrupt storm
-Date: Tue, 17 Feb 2015 13:13:16 +0530
-Message-ID: <1424158996-8830-2-git-send-email-vthiagar@qti.qualcomm.com>
-In-Reply-To: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1YNeNX-0003r2-Nl
+ for ath10k@lists.infradead.org; Tue, 17 Feb 2015 09:23:40 +0000
+Received: by mail-wg0-f42.google.com with SMTP id n12so17383009wgh.1
+ for <ath10k@lists.infradead.org>; Tue, 17 Feb 2015 01:23:12 -0800 (PST)
 MIME-Version: 1.0
+In-Reply-To: <1424158996-8830-2-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <1424158996-8830-2-git-send-email-vthiagar@qti.qualcomm.com>
+Date: Tue, 17 Feb 2015 10:23:12 +0100
+Message-ID: <CA+BoTQm9-VyEu3D2tR0EHJ-kh15z8WB4h-NzC6uZGCPPxM7NXA@mail.gmail.com>
+Subject: Re: [PATCH V2 2/2] ath10k: Fix interrupt storm
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,66 +21,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Promiscuous mode is enabled when wlan interface is added to
-bridge. ath10k creates a monitor mode when promiscuous mode
-is enabled. When monitor vdev is runing along with other
-vdev(s) there is a huge number of interrupts generated
-especially in noisy condition. Fix this by not enabling
-promiscuous(monitor) mode when already a vdev is running.
-This does not change the support of virtual interface of
-type monitor along with other vdevs.
-
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3b5aaa3..66cc0a8 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -969,6 +969,15 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 	ar->num_started_vdevs++;
- 	ath10k_recalc_radar_detection(ar);
- 
-+	if (ar->filter_flags & FIF_PROMISC_IN_BSS) {
-+		ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
-+		ath10k_dbg(ar, ATH10K_DBG_MAC,
-+			   "mac disabling promiscuous mode because vdev is started\n");
-+		ret = ath10k_monitor_recalc(ar);
-+		if (ret)
-+			ath10k_vdev_stop(arvif);
-+	}
-+
- 	return ret;
- }
- 
-@@ -3476,6 +3485,13 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
- 
- 	changed_flags &= SUPPORTED_FILTERS;
- 	*total_flags &= SUPPORTED_FILTERS;
-+	if (*total_flags & FIF_PROMISC_IN_BSS) {
-+		if (ar->num_started_vdevs) {
-+			ath10k_dbg(ar, ATH10K_DBG_MAC,
-+				   "mac does not enable promiscuous mode when already a vdev is running\n");
-+			*total_flags &= ~FIF_PROMISC_IN_BSS;
-+		}
-+	}
- 	ar->filter_flags = *total_flags;
- 
- 	ret = ath10k_monitor_recalc(ar);
--- 
-1.7.9.5
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgRmVicnVhcnkgMjAxNSBhdCAwODo0MywgVmFzYW50aGFrdW1hciBUaGlhZ2FyYWphbgo8
+dnRoaWFnYXJAcXRpLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gUHJvbWlzY3VvdXMgbW9kZSBpcyBl
+bmFibGVkIHdoZW4gd2xhbiBpbnRlcmZhY2UgaXMgYWRkZWQgdG8KPiBicmlkZ2UuIGF0aDEwayBj
+cmVhdGVzIGEgbW9uaXRvciBtb2RlIHdoZW4gcHJvbWlzY3VvdXMgbW9kZQo+IGlzIGVuYWJsZWQu
+IFdoZW4gbW9uaXRvciB2ZGV2IGlzIHJ1bmluZyBhbG9uZyB3aXRoIG90aGVyCj4gdmRldihzKSB0
+aGVyZSBpcyBhIGh1Z2UgbnVtYmVyIG9mIGludGVycnVwdHMgZ2VuZXJhdGVkCj4gZXNwZWNpYWxs
+eSBpbiBub2lzeSBjb25kaXRpb24uIEZpeCB0aGlzIGJ5IG5vdCBlbmFibGluZwo+IHByb21pc2N1
+b3VzKG1vbml0b3IpIG1vZGUgd2hlbiBhbHJlYWR5IGEgdmRldiBpcyBydW5uaW5nLgo+IFRoaXMg
+ZG9lcyBub3QgY2hhbmdlIHRoZSBzdXBwb3J0IG9mIHZpcnR1YWwgaW50ZXJmYWNlIG9mCj4gdHlw
+ZSBtb25pdG9yIGFsb25nIHdpdGggb3RoZXIgdmRldnMuCj4KPiBTaWduZWQtb2ZmLWJ5OiBWYXNh
+bnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPgo+IC0tLQo+
+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIHwgICAxNiArKysrKysrKysr
+KysrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCAxNiBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0tZ2l0
+IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dp
+cmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiBpbmRleCAzYjVhYWEzLi42NmNjMGE4IDEwMDY0NAo+
+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2
+ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4gQEAgLTk2OSw2ICs5NjksMTUgQEAg
+c3RhdGljIGludCBhdGgxMGtfdmRldl9zdGFydF9yZXN0YXJ0KHN0cnVjdCBhdGgxMGtfdmlmICph
+cnZpZiwgYm9vbCByZXN0YXJ0KQo+ICAgICAgICAgYXItPm51bV9zdGFydGVkX3ZkZXZzKys7Cj4g
+ICAgICAgICBhdGgxMGtfcmVjYWxjX3JhZGFyX2RldGVjdGlvbihhcik7Cj4KPiArICAgICAgIGlm
+IChhci0+ZmlsdGVyX2ZsYWdzICYgRklGX1BST01JU0NfSU5fQlNTKSB7Cj4gKyAgICAgICAgICAg
+ICAgIGFyLT5maWx0ZXJfZmxhZ3MgJj0gfkZJRl9QUk9NSVNDX0lOX0JTUzsKPiArICAgICAgICAg
+ICAgICAgYXRoMTBrX2RiZyhhciwgQVRIMTBLX0RCR19NQUMsCj4gKyAgICAgICAgICAgICAgICAg
+ICAgICAgICAgIm1hYyBkaXNhYmxpbmcgcHJvbWlzY3VvdXMgbW9kZSBiZWNhdXNlIHZkZXYgaXMg
+c3RhcnRlZFxuIik7Cj4gKyAgICAgICAgICAgICAgIHJldCA9IGF0aDEwa19tb25pdG9yX3JlY2Fs
+Yyhhcik7CgpUaGUgZW50aXJlIGxvZ2ljIHNob3VsZCBnbyB0byBhdGgxMGtfbW9uaXRvcl9yZWNh
+bGMoKS4KCkFsc28gSSdtIHByZXR0eSBzdXJlIHRoaXMgYnJlYWtzIDRhZGRyIHN0YXRpb24gYnJp
+ZGluZyBmb3IgbWFpbiA2MzYKZncuIEkgY2FuJ3QgZnVsbHkgdGVzdCB0aGlzIG5vdyB0aG91Z2gg
+KHRoZXJlIHNlZW1zIHRvIGJlIGEgcmVncmVzc2lvbgphZ2FpbnN0IGZ3IDYzNiBhbmQgaXQga2Vl
+cHMgY3Jhc2hpbmcgd2l0aCBtb25pdG9yIHZkZXYgb3ZlciBhbmQgb3ZlcgphZ2FpbikuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
