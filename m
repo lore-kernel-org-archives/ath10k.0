@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YNctb-0000GP-3N
- for ath10k@lists.infradead.org; Tue, 17 Feb 2015 07:48:39 +0000
+ id 1YNcuX-0000dm-9e
+ for ath10k@lists.infradead.org; Tue, 17 Feb 2015 07:49:37 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V2 1/2] ath10k: Move ath10k_vdev_stop() up before
- ath10k_vdev_start_restart()
-Date: Tue, 17 Feb 2015 13:13:15 +0530
-Message-ID: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH V2 2/2] ath10k: Fix interrupt storm
+Date: Tue, 17 Feb 2015 13:13:16 +0530
+Message-ID: <1424158996-8830-2-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,104 +25,54 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-This patches does not modify any functionality. Just a code move
-so that ath10k_vdev_stop() can be used in ath10k_vdev_start_restart()
-for any failure cases which involves vdev_stop().
+Promiscuous mode is enabled when wlan interface is added to
+bridge. ath10k creates a monitor mode when promiscuous mode
+is enabled. When monitor vdev is runing along with other
+vdev(s) there is a huge number of interrupts generated
+especially in noisy condition. Fix this by not enabling
+promiscuous(monitor) mode when already a vdev is running.
+This does not change the support of virtual interface of
+type monitor along with other vdevs.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
-
-V2:
-     - Call ath10k_vdev_stop() when ath10k_monitor_recalc() failed.
-       This results in code move done in patch 1.
-
- drivers/net/wireless/ath/ath10k/mac.c |   66 ++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 33 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |   16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0f39af7..3b5aaa3 100644
+index 3b5aaa3..66cc0a8 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -872,6 +872,39 @@ static void ath10k_recalc_radar_detection(struct ath10k *ar)
- 	}
+@@ -969,6 +969,15 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
+ 	ar->num_started_vdevs++;
+ 	ath10k_recalc_radar_detection(ar);
+ 
++	if (ar->filter_flags & FIF_PROMISC_IN_BSS) {
++		ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
++		ath10k_dbg(ar, ATH10K_DBG_MAC,
++			   "mac disabling promiscuous mode because vdev is started\n");
++		ret = ath10k_monitor_recalc(ar);
++		if (ret)
++			ath10k_vdev_stop(arvif);
++	}
++
+ 	return ret;
  }
  
-+static int ath10k_vdev_stop(struct ath10k_vif *arvif)
-+{
-+	struct ath10k *ar = arvif->ar;
-+	int ret;
-+
-+	lockdep_assert_held(&ar->conf_mutex);
-+
-+	reinit_completion(&ar->vdev_setup_done);
-+
-+	ret = ath10k_wmi_vdev_stop(ar, arvif->vdev_id);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to stop WMI vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	ret = ath10k_vdev_setup_sync(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to syncronise setup for vdev %i: %d\n",
-+			    arvif->vdev_id, ret);
-+		return ret;
-+	}
-+
-+	WARN_ON(ar->num_started_vdevs == 0);
-+
-+	if (ar->num_started_vdevs != 0) {
-+		ar->num_started_vdevs--;
-+		ath10k_recalc_radar_detection(ar);
-+	}
-+
-+	return ret;
-+}
-+
- static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- {
- 	struct ath10k *ar = arvif->ar;
-@@ -949,39 +982,6 @@ static int ath10k_vdev_restart(struct ath10k_vif *arvif)
- 	return ath10k_vdev_start_restart(arvif, true);
- }
+@@ -3476,6 +3485,13 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
  
--static int ath10k_vdev_stop(struct ath10k_vif *arvif)
--{
--	struct ath10k *ar = arvif->ar;
--	int ret;
--
--	lockdep_assert_held(&ar->conf_mutex);
--
--	reinit_completion(&ar->vdev_setup_done);
--
--	ret = ath10k_wmi_vdev_stop(ar, arvif->vdev_id);
--	if (ret) {
--		ath10k_warn(ar, "failed to stop WMI vdev %i: %d\n",
--			    arvif->vdev_id, ret);
--		return ret;
--	}
--
--	ret = ath10k_vdev_setup_sync(ar);
--	if (ret) {
--		ath10k_warn(ar, "failed to synchronize setup for vdev %i stop: %d\n",
--			    arvif->vdev_id, ret);
--		return ret;
--	}
--
--	WARN_ON(ar->num_started_vdevs == 0);
--
--	if (ar->num_started_vdevs != 0) {
--		ar->num_started_vdevs--;
--		ath10k_recalc_radar_detection(ar);
--	}
--
--	return ret;
--}
--
- static int ath10k_mac_setup_bcn_p2p_ie(struct ath10k_vif *arvif,
- 				       struct sk_buff *bcn)
- {
+ 	changed_flags &= SUPPORTED_FILTERS;
+ 	*total_flags &= SUPPORTED_FILTERS;
++	if (*total_flags & FIF_PROMISC_IN_BSS) {
++		if (ar->num_started_vdevs) {
++			ath10k_dbg(ar, ATH10K_DBG_MAC,
++				   "mac does not enable promiscuous mode when already a vdev is running\n");
++			*total_flags &= ~FIF_PROMISC_IN_BSS;
++		}
++	}
+ 	ar->filter_flags = *total_flags;
+ 
+ 	ret = ath10k_monitor_recalc(ar);
 -- 
 1.7.9.5
 
