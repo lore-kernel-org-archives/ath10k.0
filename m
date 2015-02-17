@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YNLd0-0008Th-Nu
- for ath10k@lists.infradead.org; Mon, 16 Feb 2015 13:22:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix AP/IBSS CSA with template based fw
-References: <1423749198-11346-1-git-send-email-michal.kazior@tieto.com>
- <87mw4fgolp.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkZJLaAYy+PnoLiFn5S3sfJujgRRkWcMqgdxJbbf3FHeQ@mail.gmail.com>
-Date: Mon, 16 Feb 2015 15:21:53 +0200
-In-Reply-To: <CA+BoTQkZJLaAYy+PnoLiFn5S3sfJujgRRkWcMqgdxJbbf3FHeQ@mail.gmail.com>
- (Michal Kazior's message of "Mon, 16 Feb 2015 07:54:17 +0100")
-Message-ID: <877fvigff2.fsf@kamboji.qca.qualcomm.com>
+ id 1YNcKG-0004hx-Um
+ for ath10k@lists.infradead.org; Tue, 17 Feb 2015 07:12:10 +0000
+Date: Tue, 17 Feb 2015 12:41:29 +0530
+From: Rajkumar <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH v2 1/2] ath10k: Bypass PLL setting on target init for
+ QCA9888
+Message-ID: <20150217071125.GA27497@qca.qualcomm.com>
+References: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +24,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+On Mon, Feb 09, 2015 at 11:16:53AM +0530, Rajkumar Manoharan wrote:
+> Some of of qca988x solutions are having global reset issue
+> during target initialization. Bypassing PLL setting before
+> downloading firmware and letting the SoC run on REF_CLK is fixing
+> the problem. Corresponding firmware change is also needed to set
+> the clock source once the target is initialized. Since 10.2.4
+> firmware is having this ROM patch, applying skip_clock_init only
+> for 10.2.4 firmware versions.
+> 
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+Kalle,
 
->> I actually had strange conflicts already with this patch (in mac.c). As
->> I'm travelling, please check my resolution from the pending branch very
->> carefully. I might have done something stupid.
->
-> There's a mistake. Only `arvif->is_up` should be protected by
-> `ar->data_lock` in ath10k_bss_assoc():
->
-> @@ -1852,7 +1901,9 @@ static void ath10k_bss_assoc(struct ieee80211_hw *hw,
->                 return;
->         }
->
-> +       spin_lock_bh(&arvif->ar->data_lock);
->         arvif->is_up = true;
-> +       spin_unlock_bh(&arvif->ar->data_lock);
->
->         /* Workaround: Some firmware revisions (tested with qca6174
+Its been pending for a while. Shall I resend this series?
 
-Thanks for catching this. I fixed it now, can you please check again?
-
--- 
-Kalle Valo
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
