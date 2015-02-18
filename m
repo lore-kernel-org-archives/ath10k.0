@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YNfwR-0003QR-RY
- for ath10k@lists.infradead.org; Tue, 17 Feb 2015 11:03:48 +0000
-Message-ID: <54E31F04.80303@qti.qualcomm.com>
-Date: Tue, 17 Feb 2015 16:29:16 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH V2 2/2] ath10k: Fix interrupt storm
-References: <1424158996-8830-1-git-send-email-vthiagar@qti.qualcomm.com>	<1424158996-8830-2-git-send-email-vthiagar@qti.qualcomm.com>
- <CA+BoTQm9-VyEu3D2tR0EHJ-kh15z8WB4h-NzC6uZGCPPxM7NXA@mail.gmail.com>
-In-Reply-To: <CA+BoTQm9-VyEu3D2tR0EHJ-kh15z8WB4h-NzC6uZGCPPxM7NXA@mail.gmail.com>
+ id 1YO3Yy-00024c-KP
+ for ath10k@lists.infradead.org; Wed, 18 Feb 2015 12:17:09 +0000
+Received: by mail-wi0-f182.google.com with SMTP id l15so1727804wiw.3
+ for <ath10k@lists.infradead.org>; Wed, 18 Feb 2015 04:16:41 -0800 (PST)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: update MODULE_FIRMWARE definitions for QCA6174
+Date: Wed, 18 Feb 2015 13:16:37 +0100
+Message-Id: <1424261797-9474-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +17,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-CgpPbiBUdWVzZGF5IDE3IEZlYnJ1YXJ5IDIwMTUgMDI6NTMgUE0sIE1pY2hhbCBLYXppb3Igd3Jv
-dGU6Cj4gT24gMTcgRmVicnVhcnkgMjAxNSBhdCAwODo0MywgVmFzYW50aGFrdW1hciBUaGlhZ2Fy
-YWphbgo+IDx2dGhpYWdhckBxdGkucXVhbGNvbW0uY29tPiB3cm90ZToKPj4gUHJvbWlzY3VvdXMg
-bW9kZSBpcyBlbmFibGVkIHdoZW4gd2xhbiBpbnRlcmZhY2UgaXMgYWRkZWQgdG8KPj4gYnJpZGdl
-LiBhdGgxMGsgY3JlYXRlcyBhIG1vbml0b3IgbW9kZSB3aGVuIHByb21pc2N1b3VzIG1vZGUKPj4g
-aXMgZW5hYmxlZC4gV2hlbiBtb25pdG9yIHZkZXYgaXMgcnVuaW5nIGFsb25nIHdpdGggb3RoZXIK
-Pj4gdmRldihzKSB0aGVyZSBpcyBhIGh1Z2UgbnVtYmVyIG9mIGludGVycnVwdHMgZ2VuZXJhdGVk
-Cj4+IGVzcGVjaWFsbHkgaW4gbm9pc3kgY29uZGl0aW9uLiBGaXggdGhpcyBieSBub3QgZW5hYmxp
-bmcKPj4gcHJvbWlzY3VvdXMobW9uaXRvcikgbW9kZSB3aGVuIGFscmVhZHkgYSB2ZGV2IGlzIHJ1
-bm5pbmcuCj4+IFRoaXMgZG9lcyBub3QgY2hhbmdlIHRoZSBzdXBwb3J0IG9mIHZpcnR1YWwgaW50
-ZXJmYWNlIG9mCj4+IHR5cGUgbW9uaXRvciBhbG9uZyB3aXRoIG90aGVyIHZkZXZzLgo+Pgo+PiBT
-aWduZWQtb2ZmLWJ5OiBWYXNhbnRoYWt1bWFyIFRoaWFnYXJhamFuIDx2dGhpYWdhckBxdGkucXVh
-bGNvbW0uY29tPgo+PiAtLS0KPj4gICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21h
-Yy5jIHwgICAxNiArKysrKysrKysrKysrKysrCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDE2IGluc2Vy
-dGlvbnMoKykKPj4KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvbWFjLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4+IGluZGV4
-IDNiNWFhYTMuLjY2Y2MwYTggMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGsvbWFjLmMKPj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9t
-YWMuYwo+PiBAQCAtOTY5LDYgKzk2OSwxNSBAQCBzdGF0aWMgaW50IGF0aDEwa192ZGV2X3N0YXJ0
-X3Jlc3RhcnQoc3RydWN0IGF0aDEwa192aWYgKmFydmlmLCBib29sIHJlc3RhcnQpCj4+ICAgICAg
-ICAgIGFyLT5udW1fc3RhcnRlZF92ZGV2cysrOwo+PiAgICAgICAgICBhdGgxMGtfcmVjYWxjX3Jh
-ZGFyX2RldGVjdGlvbihhcik7Cj4+Cj4+ICsgICAgICAgaWYgKGFyLT5maWx0ZXJfZmxhZ3MgJiBG
-SUZfUFJPTUlTQ19JTl9CU1MpIHsKPj4gKyAgICAgICAgICAgICAgIGFyLT5maWx0ZXJfZmxhZ3Mg
-Jj0gfkZJRl9QUk9NSVNDX0lOX0JTUzsKPj4gKyAgICAgICAgICAgICAgIGF0aDEwa19kYmcoYXIs
-IEFUSDEwS19EQkdfTUFDLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICAibWFjIGRpc2Fi
-bGluZyBwcm9taXNjdW91cyBtb2RlIGJlY2F1c2UgdmRldiBpcyBzdGFydGVkXG4iKTsKPj4gKyAg
-ICAgICAgICAgICAgIHJldCA9IGF0aDEwa19tb25pdG9yX3JlY2FsYyhhcik7Cj4KPiBUaGUgZW50
-aXJlIGxvZ2ljIHNob3VsZCBnbyB0byBhdGgxMGtfbW9uaXRvcl9yZWNhbGMoKS4KClN1cmUuCgo+
-Cj4gQWxzbyBJJ20gcHJldHR5IHN1cmUgdGhpcyBicmVha3MgNGFkZHIgc3RhdGlvbiBicmlkaW5n
-IGZvciBtYWluIDYzNgo+IGZ3LiBJIGNhbid0IGZ1bGx5IHRlc3QgdGhpcyBub3cgdGhvdWdoICh0
-aGVyZSBzZWVtcyB0byBiZSBhIHJlZ3Jlc3Npb24KPiBhZ2FpbnN0IGZ3IDYzNiBhbmQgaXQga2Vl
-cHMgY3Jhc2hpbmcgd2l0aCBtb25pdG9yIHZkZXYgb3ZlciBhbmQgb3Zlcgo+IGFnYWluKS4KCk9r
-LiBDYW4gd2UgbWFrZSB0aGlzIGNoYW5nZSBzcGVjaWZpYyB0byBub24tc3RhIG1vZGU/LgoKVmFz
-YW50aAo+Cj4gTWljaGHFggo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
-Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+This has been missed while adding the QCA6174 support.
+As in the last time, without advertising the firmware files
+as needed (or optional) for ath10k, these won't be built into
+ram disk for instance.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 631b026a487b..a238a141b22a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2770,7 +2770,18 @@ module_exit(ath10k_pci_exit);
+ MODULE_AUTHOR("Qualcomm Atheros");
+ MODULE_DESCRIPTION("Driver support for Atheros QCA988X PCIe devices");
+ MODULE_LICENSE("Dual BSD/GPL");
++
++/* QCA988x 2.0 firmware files */
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API2_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API3_FILE);
++MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API4_FILE);
+ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
++
++/* QCA6174 2.1 firmware files */
++MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API4_FILE);
++MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" QCA6174_HW_2_1_BOARD_DATA_FILE);
++
++/* QCA6174 3.1 firmware files */
++MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API4_FILE);
++MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" QCA6174_HW_3_0_BOARD_DATA_FILE);
+-- 
+2.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
