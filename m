@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YOABt-0006OS-By
- for ath10k@lists.infradead.org; Wed, 18 Feb 2015 19:21:48 +0000
-Message-ID: <54E4E631.70800@candelatech.com>
-Date: Wed, 18 Feb 2015 11:21:21 -0800
+ id 1YOB9m-00042i-PW
+ for ath10k@lists.infradead.org; Wed, 18 Feb 2015 20:23:39 +0000
+Message-ID: <54E4F4B4.4080904@candelatech.com>
+Date: Wed, 18 Feb 2015 12:23:16 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: ath10k number-of-peers exceeded (hacked 3.17, CT firmware)
+Subject: Re: [PATCH v2] ath10k: Increase AST table SKID length limit
+References: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
+In-Reply-To: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +22,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-One of the users of CT firmware (and my 3.17 kernel backported to their 3.14)
-reported this.  This system is also having bad WMI mgt timeout issues, and
-firmware crashed before these logs started (due to WMI tx hang), so possibly
-that is the root cause of the peer issues.  The user believes he has only
-a few stations connected to this AP.
+Have you tried testing this with 30+ stations
+associated and streaming data, and with other traffic on
+nearby channels (say, channel 1 and 6)?
 
-There may be additional patches to the driver/kernel as well..some of this looks
-a bit strange to me.
+We see bad performance drop-off when we set number-of-peers above
+100 (with CT firmware).  My kernel will set AST skid limit to number-of-peers + number-of-vdevs.
 
-I am curious if there are known bugs in the 3.17 era with peer counter
-mis-management?
+Performance is best at 32 peers or less (so skid is about 40).
 
-Feb 18 09:31:00  wlan1: AP-STA-CONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: associated (aid 8)
-Feb 18 09:31:00  kernel: [84594.723772] ath10k_pci 0000:07:00.0: state: 1 number of peers exceeded: peers number 64 (max peers 64)
-Feb 18 09:31:00  wlan1: NEW-STA-CONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: Could not add STA to kernel driver
-Feb 18 09:31:00  wlan1: AP-STA-DISCONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: Could not add STA to kernel driver
-Feb 18 09:31:00  wlan1: AUTH-RECEIVED 00:1f:3b:11:b1:25|04:f0:21:0f:3d:57|-41|9999|
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: authenticated
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: authenticated
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: associated (aid 8)
-Feb 18 09:31:00  wlan1: AP-STA-CONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: associated (aid 8)
-Feb 18 09:31:00  kernel: [84594.776796] ath10k_pci 0000:07:00.0: state: 1 number of peers exceeded: peers number 64 (max peers 64)
-Feb 18 09:31:00  wlan1: NEW-STA-CONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: Could not add STA to kernel driver
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: Could not add STA to kernel driver
-Feb 18 09:31:00  wlan1: AP-STA-DISCONNECTED 00:1f:3b:11:b1:25
-Feb 18 09:31:00  wlan1: AUTH-RECEIVED       00:1f:3b:11:b1:25|04:f0:21:0f:3d:57|-39|9999|
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: authenticated
-Feb 18 09:31:00  hostapd: wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: authenticated
-Feb 18 09:31:00  wlan1: AUTH-RECEIVED 00:21:6a:5f:3f:c2|04:f0:21:0f:3d:57|-34|9999|
-Feb 18 09:31:00  wlan1: STA 00:21:6a:5f:3f:c2 IEEE 802.11: authenticated
-Feb 18 09:31:00  hostapd: wlan1: STA 00:21:6a:5f:3f:c2 IEEE 802.11: authenticated
-Feb 18 09:31:00  wlan1: STA 00:1f:3b:11:b1:25 IEEE 802.11: associated (aid 8)
-Feb 18 09:31:00  wlan1: AP-STA-CONNECTED 00:1f:3b:11:b1:25
+I am wondering if the root cause is firmware/hardware walking the full skid-length for pkts
+from un-associated peers on same (or neighbouring) channels, or maybe unlucky hash distribution
+in existing peers?
 
 Thanks,
 Ben
+
+
+On 02/13/2015 07:36 AM, SenthilKumar Jegadeesan wrote:
+> The current SKID length configuration causes firmware
+> to reject peer creation for not able to allocate
+> AST entries for peers. This issue is observed when
+> least significant 3 bytes are used ramdomly to create
+> client MAC addresses.
+> 
+> AST table SKID length configuration is increased to
+> maximum value to fix this issue.
+> 
+> Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/hw.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+> index 460771f..7f04645 100644
+> --- a/drivers/net/wireless/ath/ath10k/hw.h
+> +++ b/drivers/net/wireless/ath/ath10k/hw.h
+> @@ -223,7 +223,7 @@ struct ath10k_pktlog_hdr {
+>  #define TARGET_10X_NUM_WDS_ENTRIES		32
+>  #define TARGET_10X_DMA_BURST_SIZE		0
+>  #define TARGET_10X_MAC_AGGR_DELIM		0
+> -#define TARGET_10X_AST_SKID_LIMIT		16
+> +#define TARGET_10X_AST_SKID_LIMIT		128
+>  #define TARGET_10X_NUM_STATIONS			128
+>  #define TARGET_10X_NUM_PEERS			((TARGET_10X_NUM_STATIONS) + \
+>  						 (TARGET_10X_NUM_VDEVS))
+> --
+> 1.9.1
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+
 
 -- 
 Ben Greear <greearb@candelatech.com>
