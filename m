@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YOVKX-00079W-T6
- for ath10k@lists.infradead.org; Thu, 19 Feb 2015 17:56:06 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: fix quiet duration configuration
-Date: Thu, 19 Feb 2015 23:25:06 +0530
-Message-ID: <1424368506-18193-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1424368506-18193-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1424368506-18193-1-git-send-email-rmanohar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YOYnt-0004IG-8F
+ for ath10k@lists.infradead.org; Thu, 19 Feb 2015 21:38:37 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 6D0BD40EA44
+ for <ath10k@lists.infradead.org>; Thu, 19 Feb 2015 13:38:09 -0800 (PST)
+Message-ID: <54E657C0.6080402@candelatech.com>
+Date: Thu, 19 Feb 2015 13:38:08 -0800
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Sending frames on monitor interface?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +25,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: ath10k <ath10k@lists.infradead.org>
 
-Duty cycle is nothing but percentage of one period in which a
-signal is active. But it is wrongly interpreted as ratio of quiet
-duration. So fix the quiet duration to the remaining percentage
-of duty cycle (active ratio).
+Do any of the firmware versions support sending (raw) frames on
+the monitor interface?
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/thermal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+It seems 10.1 just asserts if someone tries this.  I can fix at least
+some of this, but firmware seems to want a peer in order to transmit
+any packets...maybe adding self-peer to the monitor interface is
+a way to get around this?
 
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index aede750..0d89ab5 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -98,7 +98,7 @@ static int ath10k_thermal_set_cur_dutycycle(struct thermal_cooling_device *cdev,
- 	}
- 	period = max(ATH10K_QUIET_PERIOD_MIN,
- 		     (ATH10K_QUIET_PERIOD_DEFAULT / num_bss));
--	duration = (period * duty_cycle) / 100;
-+	duration = (period * (100 - duty_cycle)) / 100;
- 	enabled = duration ? 1 : 0;
- 
- 	ret = ath10k_wmi_pdev_set_quiet_mode(ar, period, duration,
+Thanks,
+Ben
+
 -- 
-2.3.0
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
