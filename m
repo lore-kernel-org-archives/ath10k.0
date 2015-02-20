@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from smtp1.spirent.com ([38.111.148.215] helo=webmail.spirent.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YOnHH-0002Q7-4f
- for ath10k@lists.infradead.org; Fri, 20 Feb 2015 13:05:55 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 3/3] ath10k: add symlink for hwmon device
-Date: Fri, 20 Feb 2015 18:34:12 +0530
-Message-ID: <1424437452-28161-3-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YOoRP-00060n-Fc
+ for ath10k@lists.infradead.org; Fri, 20 Feb 2015 14:20:27 +0000
+From: "Shu, Nick" <Nick.Shu@spirent.com>
+Subject: QosControl missing in eapol key exchanging message 
+Date: Fri, 20 Feb 2015 14:20:04 +0000
+Message-ID: <153F35912E69C446A72CF7D6417EBADE6E794104@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,47 +21,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Add symbloic link "thermal_sensors" for hwmon devices for better
-readability.
+Hi, Group:
+I'm using a mini PICe wifi AC NIC & ath10k driver to connect to a Cisco AP. Doing a WPA-PSK authentication that has a 4 way handshake.
+When I use wireshark to decode the captured wifi message (Qos Key message 2of 4 is from Sta to AP), I noticed that QoS Control section (0x0007) missing in header, that caused wireshark to not be able to decode the message.
+Does anybody knows about this? Any particular reason? Does this violate the spec for message building?
 
-/sys/class/ieee80211/phyX/device/thermal_sensors ->
-sys/class/ieee80211/phyX/device/hwmon/hwmonY
+Thanks!
+Nick Shu
+Spirent Communications e-mail confidentiality.
+------------------------------------------------------------------------
+This e-mail contains confidential and / or privileged information belonging to Spirent Communications plc, its affiliates and / or subsidiaries. If you are not the intended recipient, you are hereby notified that any disclosure, copying, distribution and / or the taking of any action based upon reliance on the contents of this transmission is strictly forbidden. If you have received this message in error please notify the sender by return e-mail and delete it from your system.
 
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/thermal.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Spirent Communications plc
+Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
+Tel No. +44 (0) 1293 767676
+Fax No. +44 (0) 1293 767677
 
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index 7c54bb1..f601e3e 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -276,6 +276,13 @@ int ath10k_thermal_register(struct ath10k *ar)
- 		ret = -EINVAL;
- 		goto err_remove_file;
- 	}
-+	ret = sysfs_create_link(&ar->dev->kobj, &hwmon_dev->kobj,
-+				"thermal_sensors");
-+	if (ret) {
-+		ath10k_err(ar, "failed to create hwmon symlink\n");
-+		goto err_remove_file;
-+	}
-+
- 	return 0;
- 
- err_remove_file:
-@@ -292,4 +299,5 @@ void ath10k_thermal_unregister(struct ath10k *ar)
- 	thermal_cooling_device_unregister(ar->thermal.cdev);
- 	sysfs_remove_link(&ar->dev->kobj, "cooling_device");
- 	sysfs_remove_file(&ar->dev->kobj, &dev_attr_quiet_period.attr);
-+	sysfs_remove_link(&ar->dev->kobj, "thermal_sensors");
- }
--- 
-2.3.0
+Registered in England Number 470893
+Registered at Northwood Park, Gatwick Road, Crawley, West Sussex, RH10 9XN, United Kingdom.
 
+Or if within the US,
+
+Spirent Communications,
+27349 Agoura Road, Calabasas, CA, 91301, USA.
+Tel No. 1-818-676- 2300
 
 _______________________________________________
 ath10k mailing list
