@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mx1.sophos.com ([145.253.124.137])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YPmeS-0005lJ-G3
- for ath10k@lists.infradead.org; Mon, 23 Feb 2015 06:37:57 +0000
-Received: by mail-wi0-f170.google.com with SMTP id hi2so17144009wib.1
- for <ath10k@lists.infradead.org>; Sun, 22 Feb 2015 22:37:34 -0800 (PST)
+ id 1YPskw-0007wK-GU
+ for ath10k@lists.infradead.org; Mon, 23 Feb 2015 13:09:03 +0000
+Received: from mx1.sophos.com (localhost.localdomain [127.0.0.1])
+ by localhost (Postfix) with SMTP id 54597762545
+ for <ath10k@lists.infradead.org>; Mon, 23 Feb 2015 13:08:26 +0000 (GMT)
+Received: from de-wie-exch3a.green.sophos (unknown [10.60.70.61])
+ by mx1.sophos.com (Postfix) with ESMTPS id 28373760021
+ for <ath10k@lists.infradead.org>; Mon, 23 Feb 2015 13:08:26 +0000 (GMT)
+Message-ID: <54EB264D.5040805@sophos.com>
+Date: Mon, 23 Feb 2015 14:08:29 +0100
+From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
 MIME-Version: 1.0
-In-Reply-To: <54E76E95.6070003@candelatech.com>
-References: <54E657C0.6080402@candelatech.com>
- <CA+BoTQn=oZ6g4J4gDNs2pnNYg4ifkhNh5S1iYS35VurnZzMTDQ@mail.gmail.com>
- <54E76E95.6070003@candelatech.com>
-Date: Mon, 23 Feb 2015 07:37:34 +0100
-Message-ID: <CA+BoTQ=sRtXhDqQMRPBKhFc4iMrqtDFsXACCv0VuRv5JevQwgg@mail.gmail.com>
-Subject: Re: Sending frames on monitor interface?
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: ath10k + INTEL_IDLE aka. cstates == firmware crash
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +22,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMjAgRmVicnVhcnkgMjAxNSBhdCAxODoyNywgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxh
-dGVjaC5jb20+IHdyb3RlOgo+IE9uIDAyLzE5LzIwMTUgMTA6NDMgUE0sIE1pY2hhbCBLYXppb3Ig
-d3JvdGU6Cj4+IE9uIDE5IEZlYnJ1YXJ5IDIwMTUgYXQgMjI6MzgsIEJlbiBHcmVlYXIgPGdyZWVh
-cmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPj4+IERvIGFueSBvZiB0aGUgZmlybXdhcmUgdmVy
-c2lvbnMgc3VwcG9ydCBzZW5kaW5nIChyYXcpIGZyYW1lcyBvbgo+Pj4gdGhlIG1vbml0b3IgaW50
-ZXJmYWNlPwo+Pj4KPj4+IEl0IHNlZW1zIDEwLjEganVzdCBhc3NlcnRzIGlmIHNvbWVvbmUgdHJp
-ZXMgdGhpcy4gIEkgY2FuIGZpeCBhdCBsZWFzdAo+Pj4gc29tZSBvZiB0aGlzLCBidXQgZmlybXdh
-cmUgc2VlbXMgdG8gd2FudCBhIHBlZXIgaW4gb3JkZXIgdG8gdHJhbnNtaXQKPj4+IGFueSBwYWNr
-ZXRzLi4ubWF5YmUgYWRkaW5nIHNlbGYtcGVlciB0byB0aGUgbW9uaXRvciBpbnRlcmZhY2UgaXMK
-Pj4+IGEgd2F5IHRvIGdldCBhcm91bmQgdGhpcz8KPj4KPj4gSnVzdCBhbiBpZGVhOiBPbmNlIHVw
-b24gYSB0aW1lIHdlIGhhZCB0byBjcmVhdGUgdGVtcG9yYXJ5IERBIHBlZXIgZm9yCj4+IG9mZmNo
-YW5uZWwgdHggKHRoZSBjb2RlIGlzIHN0aWxsIGluIGF0aDEwaykuIDEwLjEgbWlnaHQgd2FudCBz
-b21ldGhpbmcKPj4gbGlrZSB0aGF0IGFzIHdlbGwgZm9yIGRhdGEgZnJhbWVzLgo+Cj4gSSBoYWNr
-ZWQgbXkgQ1QgZmlyd21hcmUgdG8gYWxsb3cgdHJhbnNtaXQgb24gbW9uaXRvciBpbnRlcmZhY2Vz
-LCBpbmNsdWRpbmcKPiBsb2dpYyB0byBhbGxvdyBzZXR0aW5nIHVwIGEgKGZha2UpIHBlZXIgYW5k
-IHJhdGUtY3RybCBzdHJ1Y3R1cmVzLgo+Cj4gSSB0d2Vha2VkIGF0aDEwayB0byBjcmVhdGUgYSBw
-ZWVyIHdoZW4gc3RhcnRpbmcgdGhlIG1vbml0b3IgaW50ZXJmYWNlLAo+IHVzaW5nIHRoZSBsb2Nh
-bCByYWRpbydzIE1BQyBhcyB0aGUgcGVlciBhZGRyZXNzICh0aGlzIGNvdWxkIGVhc2lseSBiZSBw
-YXJ0Cj4gb2YgdGhlIHByb2JsZW0pLiAgSSBoYWNrZWQgdGhlIGZpcm13YXJlIHRvIGFsd2F5cyB1
-c2UgdGhpcyBwZWVyIG9iamVjdCB3aGVuCj4gdHJhbnNtaXR0aW5nIG9uIGEgbW9uaXRvciBpbnRl
-cmZhY2UuCj4KPiBQYWNrZXRzIG5vdyBhcHBlYXIgdG8gYmUgYWNjZXB0ZWQgZm9yIHRyYW5zbWl0
-LCBidXQgSSBkbyBub3Qgc2VlIGFueXRoaW5nIG9uCj4gdGhlIGFpci4gIEknbGwgZGlnIGludG8g
-aXQgbW9yZSBpZiBJIGZpbmQgdGltZS4uLmJ1dCBub3Qgc3VyZSBleGFjdGx5IGhvdyB1c2VmdWwK
-PiB0aGUgZmVhdHVyZSBpcyBhbnl3YXkuCgpBcmUgdGhlc2UgZnJhbWVzIHR4IGNvbXBsZXRlZCBi
-eSBmaXJtd2FyZSBvciBhcmUgdGhleSBzdHVjayBpbgpmaXJtd2FyZT8gQXJlIHlvdSB0cmFuc21p
-dHRpbmcgbndpZmkgb3IgcmF3PyBEaWQgeW91IHRyeSBteSBvbGQgUkZDCnBhdGNoWzFdIGZvciBy
-YXcgdHg/CgpbMV06IGh0dHBzOi8vd3d3Lm1haWwtYXJjaGl2ZS5jb20vYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcvbXNnMDAyNDEuaHRtbAoKQWxzbyBiZSBhd2FyZSB3aGF0IGZyYW1lcyB5b3Un
-cmUgaW5qZWN0aW5nLiAxMC4xIGRvZXNuJ3QgYWxsb3cgbWdtdApmcmFtZXMgdG8gZ28gdGhyb3Vn
-aCBIVFQgKGluIGNhc2UgeW91J3JlIHRyeWluZyB0byBmb3JjZSB0aGVtIHRocm91Z2gKSFRUIGlu
-c3RlYWQgb2YgV01JKS4KCgo+IEkgc2VlIHRoZSBjb2RlIGZvciBvZmYtY2hhbm5lbCB3b3JrIHRo
-YXQgeW91IGFyZSB0YWxraW5nIGFib3V0LiAgVGhhdCBzZWVtcyBsaWtlCj4gYSBwcmV0dHkgYXdm
-dWwgaGFjayBpZiB5b3Ugd2FudGVkIHRvIGRvIGFueSByZWFsaXN0aWMgdGhyb3VnaHB1dCwgYnV0
-IEkgYmV0IHRoYXQKPiB3aGF0ZXZlciBpc3N1ZSB0aGlzIHdvcmtzIGFyb3VuZCBpcyB0aGUgc2Ft
-ZSBpc3N1ZSB0aGF0IEkgYW0gaGF2aW5nIHRyeWluZyB0bwo+IGdldCBtb25pdG9yIFRYIHRvIHdv
-cmsuCgpUaGlzIHdhcyBtYWlubHkgZm9yIFAyUCBkaXNjb3ZlcnkvcHJvdmlzaW9uIHNvIHRocm91
-Z2hwdXQgd2FzIG5vdCBhIGNvbmNlcm4uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
-dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2F0aDEwawo=
+Hi@all,
+
+we are using the brand new QCA988x chipset based on mini-PCIe cards in our newest wifi enabled firewall appliance and we have had
+a lot of problems to get it running (Intel Rangeley platform; Intel(R) Atom(TM) CPU  C2558  @ 2.40GHz).
+The card crashed after some minutes using ath10k-driver (backports-3.19-rc1). Older versions are affected as well.
+At least down to 3.12.20. I did intensive debugging and found out, that there
+are major issues as soon as Intels processor cstates are used. This
+option is called "CONFIG_INTEL_IDLE" in kernel config. This seems to be
+a very heavy issue as it even can lead to low memory corruption and
+kernel freezes. Low memory corruption doesn't occure always; just sometimes. This makes it hard to debug.
+Also you need a multi processor system to trigger the issue.
+If you set kernel parameter "maxcpus=1" the error doesn't occure even if you enable CONFIG_INTEL_IDLE.
+Kernel output looks like this if the card stops working:
+
+
+[ 3715.145865] ath10k: failed to install key for vdev 2 peer 00:1a:8c:0a:b5:01: -11
+
+[ 3715.145876] wifi1: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-11)
+
+[ 3718.148226] ath10k: failed to install key for vdev 2 peer 00:1a:8c:0a:b5:01: -11
+
+[ 3718.148236] wifi1: failed to set key (1, ff:ff:ff:ff:ff:ff) to hardware (-11)
+
+[ 3723.152167] ath10k: failed to install key for vdev 0 peer 00:1a:8c:0a:34:01: -11
+
+[ 3723.152178] wifi0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-11)
+
+[ 3723.152185] ath10k: failed to transmit management frame via WMI: -11
+
+[ 3726.154524] ath10k: failed to install key for vdev 0 peer 00:1a:8c:0a:34:01: -11
+
+[ 3726.154535] wifi0: failed to set key (1, ff:ff:ff:ff:ff:ff) to hardware (-11)
+
+[ 3729.156884] ath10k: failed to install key for vdev 0 peer 00:0e:8e:ae:5c:1c: -11
+
+[ 3729.156890] ath10k: failed to transmit management frame via WMI: -11
+
+[ 3729.156904] wifi0: failed to remove key (0, 00:0e:8e:ae:5c:1c) from hardware (-11)
+
+[ 3732.159255] ath10k: failed to remove peer wep key 0: -11
+
+[ 3732.159265] ath10k: failed to clear all peer wep keys for vdev 0: -11
+
+[ 3732.159273] ath10k: failed to disassociate station: 00:0e:8e:ae:5c:1c vdev 0: -11
+
+[ 3732.159278] ------------[ cut here ]------------
+
+[ 3732.159317] WARNING: CPU: 1 PID: 5813 at 
+/usr/src/packages/BUILD/kernel-smp-3.12.20/modules-3.12.20/backports/net/mac80211/sta_info.c:885
+ __sta_info_destroy_part2+0x4f/0xde [mac80211]()
+
+[ 3732.159322] Modules linked in: sr_mod cdrom xt_multidev xt_connmark 
+xt_REDIRECT ipt_MASQUERADE xt_policy xt_set xt_multiport xt_addrtype 
+ip_set_hash_ip nf_nat_pptp nf_nat_proto_gre nf_nat_irc nf_nat_ftp 
+nf_conntrack_pptp nf_conntrack_proto_gre nf_conntrack_irc 
+nf_conntrack_ftp ctr aesni_intel ablk_helper cryptd lrw aes_i586 xts 
+gf128mul aes_generic ebtable_filter ebtables bridge stp llc af_packet 
+redv2_netlink(O) ip6table_ips ip6table_mangle ip6table_nat nf_nat_ipv6 
+iptable_ips iptable_mangle iptable_nat nf_nat_ipv4 nf_nat xt_NFLOG 
+xt_condition(O) xt_tcpudp xt_logmark xt_confirmed xt_owner ip6t_REJECT 
+ipt_REJECT xt_state ip_set red2(O) ip_scheduler red nfnetlink_log 
+nf_conntrack_ipv6 nf_defrag_ipv6 ip6table_filter ip6table_raw 
+nf_conntrack_ipv4 nf_defrag_ipv4 xt_conntrack iptable_filter iptable_raw
+ xt_CT nf_conntrack_netlink nfnetlink nf_conntrack ip6_tables ip_tables 
+x_tables ipv6 loop arc4 ath10k_pci(O) ath10k_core(O) mac80211(O) ath(O) 
+cfg80211(O) ehci_pci evdev igb(O) rfkill sg ehci_hcd rtc_cmos pcspkr 
+acpi_cpufreq i2c_i801 i2c_ismt button compat(O) dca sd_mod processor 
+thermal_sys hwmon edd ahci libahci libata scsi_mod hid_generic usbhid
+
+
+Sometimes but not allways there is the message "firmware crashed!" in dmesg but it doesn't matter which error message it actually is:
+The behavior is allways the same. The card stops working until reboot. Unloading/reloading of ath10k_pci, ath10k_core, ath doesn't help in this case.
+The basic problems of all error messages I saw by now is a broken link between the cards firmware and the ath10k-driver.
+Depending on the point in time this "connection loss" happens the error messages are a little bit different,
+as they are strongly connected to the current state of the driver while it is trying to talk to the cards firmware via WMI.
+
+If you try to reproduce you have to wait between 3 and 60 Minutes to see the crash. You can increase the likelyhood for crashing by increasing
+the number of wifi traffic on foreign networks at the same channel.
+I testet with four laptops that are connected to four QCA988x cards (AP-mode). This takes around 3-10 minutes to get it reproduced.
+
+If you need more information I'm at your disposal.
+
+Regards,
+Fabian Wittenberg
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
