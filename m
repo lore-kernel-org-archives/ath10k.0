@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YPEcR-0005u0-Pi
- for ath10k@lists.infradead.org; Sat, 21 Feb 2015 18:17:36 +0000
-Message-ID: <54E8CBA9.9040202@candelatech.com>
-Date: Sat, 21 Feb 2015 10:17:13 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-we0-x22b.google.com ([2a00:1450:400c:c03::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YPmUh-0002Nj-SV
+ for ath10k@lists.infradead.org; Mon, 23 Feb 2015 06:27:53 +0000
+Received: by wevk48 with SMTP id k48so16017623wev.0
+ for <ath10k@lists.infradead.org>; Sun, 22 Feb 2015 22:27:24 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: CT firmware 10.1.467-13 is released.
-References: <54E8C102.4090201@candelatech.com>
- <CAA93jw6kO7yqLFj3+EyC8HjjrkBqr3Mi_wjC+8K5vHaXBo-r9Q@mail.gmail.com>
-In-Reply-To: <CAA93jw6kO7yqLFj3+EyC8HjjrkBqr3Mi_wjC+8K5vHaXBo-r9Q@mail.gmail.com>
+In-Reply-To: <153F35912E69C446A72CF7D6417EBADE6E794104@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+References: <153F35912E69C446A72CF7D6417EBADE6E794104@SPCCOREXCMBX01.AD.SPIRENTCOM.COM>
+Date: Mon, 23 Feb 2015 07:27:24 +0100
+Message-ID: <CA+BoTQnkncT=Yk2tswp6SOfPtR1goutGbtYPUurRyj4CR5kVuw@mail.gmail.com>
+Subject: Re: QosControl missing in eapol key exchanging message
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Dave Taht <dave.taht@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: "Shu, Nick" <Nick.Shu@spirent.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 02/21/2015 09:50 AM, Dave Taht wrote:
-> On Sat, Feb 21, 2015 at 9:31 AM, Ben Greear <greearb@candelatech.com> wrote:
->> Here are the highlights:
->>
->> Add IBSS/AHDOC support.
->
-> Awesome. Does this require the candela kernel patchset?
-
-I think upstream has support, but if you want any decent throughput (HT, VHT)
-you have to be running bleeding edge kernels and hostapd
-(not sure all patches are even upstream yet..see appropriate mailing
-lists).
-
-I have backported a few patches into my kernel, but I'm not sure
-how correct or complete they are.
-
-I plan to try a little harder to get HT/VHT working in my 3.19 kernel
-sometime soon.  My 3.19 kernel patchset is also much cleaner than my
-3.17 tree, so if you want to try to cherry-pick patches, that is the
-one to use.  (It also has a lot less testing, so maybe there are issues
-yet.)
-
-> (am thinking of trying this version of the firmware on openwrt chaos
-> calmer on the tp-link archer C7 v2)
-
-That would be welcome.  If you see any firmware splats, please send logs
-my way and I should be able to decode them.
-
-Thanks,
-Ben
-
->
->> Work-around tx-credits hang due to WMI/CE lockup in firmware (requires
->> ath10k driver patches)
->> Attempt to fix a few asserts reported by users (scan code, rate-ctrl,
->> resource-mgr, etc)
->>
->> Known bugs:
->> CE transport failure assert (Only seen on IMX6 hardware at this time)
->> WMI keepalive failure, probably due to inability to send mgt frames in bad
->> RF environment.
->>
->>
->> Downloads and more info is here:
->>
->> http://www.candelatech.com/ath10k.php
->>
->> As always, I am interested to hear of users having success or otherwise with
->> this firmware.
->>
->> Thanks,
->> Ben
->>
->> --
->> Ben Greear <greearb@candelatech.com>
->> Candela Technologies Inc  http://www.candelatech.com
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->
->
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAgRmVicnVhcnkgMjAxNSBhdCAxNToyMCwgU2h1LCBOaWNrIDxOaWNrLlNodUBzcGlyZW50
+LmNvbT4gd3JvdGU6Cj4gSGksIEdyb3VwOgo+IEknbSB1c2luZyBhIG1pbmkgUElDZSB3aWZpIEFD
+IE5JQyAmIGF0aDEwayBkcml2ZXIgdG8gY29ubmVjdCB0byBhIENpc2NvIEFQLiBEb2luZyBhIFdQ
+QS1QU0sgYXV0aGVudGljYXRpb24gdGhhdCBoYXMgYSA0IHdheSBoYW5kc2hha2UuCj4gV2hlbiBJ
+IHVzZSB3aXJlc2hhcmsgdG8gZGVjb2RlIHRoZSBjYXB0dXJlZCB3aWZpIG1lc3NhZ2UgKFFvcyBL
+ZXkgbWVzc2FnZSAyb2YgNCBpcyBmcm9tIFN0YSB0byBBUCksIEkgbm90aWNlZCB0aGF0IFFvUyBD
+b250cm9sIHNlY3Rpb24gKDB4MDAwNykgbWlzc2luZyBpbiBoZWFkZXIsIHRoYXQgY2F1c2VkIHdp
+cmVzaGFyayB0byBub3QgYmUgYWJsZSB0byBkZWNvZGUgdGhlIG1lc3NhZ2UuCj4gRG9lcyBhbnli
+b2R5IGtub3dzIGFib3V0IHRoaXM/IEFueSBwYXJ0aWN1bGFyIHJlYXNvbj8gRG9lcyB0aGlzIHZp
+b2xhdGUgdGhlIHNwZWMgZm9yIG1lc3NhZ2UgYnVpbGRpbmc/CgpJIGFzc3VtZSB5b3Ugc3RhcnRl
+ZCB3aXJlc2hhcmsgb24gaG9zdCB3aXRoIGF0aDEway4gSW4gdGhhdCBjYXNlCnBhY2tldHMgdGhl
+IG1hY2hpbmUgdHJhbnNtaXRzIHdpbGwgYmUgbWFuZ2xlZC4gVGhlIHJlYXNvbiBpcyBhdGgxMGsK
+bmVlZHMgdG8gc3RyaXAgdGhlIFFvUyBDb250cm9sIGZyb20gZWFjaCBRb1MgRGF0YSBmcmFtZSBi
+ZWNhdXNlCmZpcm13YXJlIGV4cGVjdHMgdGhlIGZyYW1lIGluIHRoZSBzbyBjYWxsZWQgIk5hdGl2
+ZSBXaWZpIiBmb3JtYXQgYW5kClFvUyBpcyBkZWxpdmVyZWQgb3V0LW9mLWJhbmQgKGFzIG1ldGEg
+aW5mb3JtYXRpb24gaW4gVHggY29tbWFuZCkuCgpJIGd1ZXNzIHRoaXMgY291bGQgYmUgYSBsaXR0
+bGUgaW1wcm92ZWQgYnkgc3RyaXBwaW5nIHRoZSBRb1MgRGF0YSBiaXQKZnJvbSBGcmFtZSBUeXBl
+IHNvIHRoYXQgd2lyZXNoYXJrIGNhbiBkZWNvZGUgZnJhbWVzIHByb3Blcmx5IGF0IHRoZQpjb3N0
+IG9mIG5vdCBrbm93aW5nIHdoaWNoIGZyYW1lcyB3ZXJlIHNlbnQgYXMgUW9TIGFuZCBub24tUW9T
+IGFueW1vcmUuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
