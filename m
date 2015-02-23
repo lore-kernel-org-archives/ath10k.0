@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.sophos.com ([145.253.124.137])
+Received: from mail-we0-x231.google.com ([2a00:1450:400c:c03::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YPskw-0007wK-GU
- for ath10k@lists.infradead.org; Mon, 23 Feb 2015 13:09:03 +0000
-Received: from mx1.sophos.com (localhost.localdomain [127.0.0.1])
- by localhost (Postfix) with SMTP id 54597762545
- for <ath10k@lists.infradead.org>; Mon, 23 Feb 2015 13:08:26 +0000 (GMT)
-Received: from de-wie-exch3a.green.sophos (unknown [10.60.70.61])
- by mx1.sophos.com (Postfix) with ESMTPS id 28373760021
- for <ath10k@lists.infradead.org>; Mon, 23 Feb 2015 13:08:26 +0000 (GMT)
-Message-ID: <54EB264D.5040805@sophos.com>
-Date: Mon, 23 Feb 2015 14:08:29 +0100
-From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
+ id 1YPt7v-0008C6-6t
+ for ath10k@lists.infradead.org; Mon, 23 Feb 2015 13:32:48 +0000
+Received: by wevk48 with SMTP id k48so18162997wev.0
+ for <ath10k@lists.infradead.org>; Mon, 23 Feb 2015 05:32:25 -0800 (PST)
 MIME-Version: 1.0
-Subject: ath10k + INTEL_IDLE aka. cstates == firmware crash
+In-Reply-To: <54EB264D.5040805@sophos.com>
+References: <54EB264D.5040805@sophos.com>
+Date: Mon, 23 Feb 2015 14:32:24 +0100
+Message-ID: <CA+BoTQnaNmRs9NcXUtJddhD1SfxAy+Ct-s-hD4mvsi9cqh1eSw@mail.gmail.com>
+Subject: Re: ath10k + INTEL_IDLE aka. cstates == firmware crash
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,100 +20,87 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi@all,
-
-we are using the brand new QCA988x chipset based on mini-PCIe cards in our newest wifi enabled firewall appliance and we have had
-a lot of problems to get it running (Intel Rangeley platform; Intel(R) Atom(TM) CPU  C2558  @ 2.40GHz).
-The card crashed after some minutes using ath10k-driver (backports-3.19-rc1). Older versions are affected as well.
-At least down to 3.12.20. I did intensive debugging and found out, that there
-are major issues as soon as Intels processor cstates are used. This
-option is called "CONFIG_INTEL_IDLE" in kernel config. This seems to be
-a very heavy issue as it even can lead to low memory corruption and
-kernel freezes. Low memory corruption doesn't occure always; just sometimes. This makes it hard to debug.
-Also you need a multi processor system to trigger the issue.
-If you set kernel parameter "maxcpus=1" the error doesn't occure even if you enable CONFIG_INTEL_IDLE.
-Kernel output looks like this if the card stops working:
-
-
-[ 3715.145865] ath10k: failed to install key for vdev 2 peer 00:1a:8c:0a:b5:01: -11
-
-[ 3715.145876] wifi1: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-11)
-
-[ 3718.148226] ath10k: failed to install key for vdev 2 peer 00:1a:8c:0a:b5:01: -11
-
-[ 3718.148236] wifi1: failed to set key (1, ff:ff:ff:ff:ff:ff) to hardware (-11)
-
-[ 3723.152167] ath10k: failed to install key for vdev 0 peer 00:1a:8c:0a:34:01: -11
-
-[ 3723.152178] wifi0: failed to remove key (1, ff:ff:ff:ff:ff:ff) from hardware (-11)
-
-[ 3723.152185] ath10k: failed to transmit management frame via WMI: -11
-
-[ 3726.154524] ath10k: failed to install key for vdev 0 peer 00:1a:8c:0a:34:01: -11
-
-[ 3726.154535] wifi0: failed to set key (1, ff:ff:ff:ff:ff:ff) to hardware (-11)
-
-[ 3729.156884] ath10k: failed to install key for vdev 0 peer 00:0e:8e:ae:5c:1c: -11
-
-[ 3729.156890] ath10k: failed to transmit management frame via WMI: -11
-
-[ 3729.156904] wifi0: failed to remove key (0, 00:0e:8e:ae:5c:1c) from hardware (-11)
-
-[ 3732.159255] ath10k: failed to remove peer wep key 0: -11
-
-[ 3732.159265] ath10k: failed to clear all peer wep keys for vdev 0: -11
-
-[ 3732.159273] ath10k: failed to disassociate station: 00:0e:8e:ae:5c:1c vdev 0: -11
-
-[ 3732.159278] ------------[ cut here ]------------
-
-[ 3732.159317] WARNING: CPU: 1 PID: 5813 at 
-/usr/src/packages/BUILD/kernel-smp-3.12.20/modules-3.12.20/backports/net/mac80211/sta_info.c:885
- __sta_info_destroy_part2+0x4f/0xde [mac80211]()
-
-[ 3732.159322] Modules linked in: sr_mod cdrom xt_multidev xt_connmark 
-xt_REDIRECT ipt_MASQUERADE xt_policy xt_set xt_multiport xt_addrtype 
-ip_set_hash_ip nf_nat_pptp nf_nat_proto_gre nf_nat_irc nf_nat_ftp 
-nf_conntrack_pptp nf_conntrack_proto_gre nf_conntrack_irc 
-nf_conntrack_ftp ctr aesni_intel ablk_helper cryptd lrw aes_i586 xts 
-gf128mul aes_generic ebtable_filter ebtables bridge stp llc af_packet 
-redv2_netlink(O) ip6table_ips ip6table_mangle ip6table_nat nf_nat_ipv6 
-iptable_ips iptable_mangle iptable_nat nf_nat_ipv4 nf_nat xt_NFLOG 
-xt_condition(O) xt_tcpudp xt_logmark xt_confirmed xt_owner ip6t_REJECT 
-ipt_REJECT xt_state ip_set red2(O) ip_scheduler red nfnetlink_log 
-nf_conntrack_ipv6 nf_defrag_ipv6 ip6table_filter ip6table_raw 
-nf_conntrack_ipv4 nf_defrag_ipv4 xt_conntrack iptable_filter iptable_raw
- xt_CT nf_conntrack_netlink nfnetlink nf_conntrack ip6_tables ip_tables 
-x_tables ipv6 loop arc4 ath10k_pci(O) ath10k_core(O) mac80211(O) ath(O) 
-cfg80211(O) ehci_pci evdev igb(O) rfkill sg ehci_hcd rtc_cmos pcspkr 
-acpi_cpufreq i2c_i801 i2c_ismt button compat(O) dca sd_mod processor 
-thermal_sys hwmon edd ahci libahci libata scsi_mod hid_generic usbhid
-
-
-Sometimes but not allways there is the message "firmware crashed!" in dmesg but it doesn't matter which error message it actually is:
-The behavior is allways the same. The card stops working until reboot. Unloading/reloading of ath10k_pci, ath10k_core, ath doesn't help in this case.
-The basic problems of all error messages I saw by now is a broken link between the cards firmware and the ath10k-driver.
-Depending on the point in time this "connection loss" happens the error messages are a little bit different,
-as they are strongly connected to the current state of the driver while it is trying to talk to the cards firmware via WMI.
-
-If you try to reproduce you have to wait between 3 and 60 Minutes to see the crash. You can increase the likelyhood for crashing by increasing
-the number of wifi traffic on foreign networks at the same channel.
-I testet with four laptops that are connected to four QCA988x cards (AP-mode). This takes around 3-10 minutes to get it reproduced.
-
-If you need more information I'm at your disposal.
-
-Regards,
-Fabian Wittenberg
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgRmVicnVhcnkgMjAxNSBhdCAxNDowOCwgRmFiaWFuIFdpdHRlbmJlcmcKPEZhYmlhbi5X
+aXR0ZW5iZXJnQHNvcGhvcy5jb20+IHdyb3RlOgo+IEhpQGFsbCwKPgo+IHdlIGFyZSB1c2luZyB0
+aGUgYnJhbmQgbmV3IFFDQTk4OHggY2hpcHNldCBiYXNlZCBvbiBtaW5pLVBDSWUgY2FyZHMgaW4g
+b3VyIG5ld2VzdCB3aWZpIGVuYWJsZWQgZmlyZXdhbGwgYXBwbGlhbmNlIGFuZCB3ZSBoYXZlIGhh
+ZAo+IGEgbG90IG9mIHByb2JsZW1zIHRvIGdldCBpdCBydW5uaW5nIChJbnRlbCBSYW5nZWxleSBw
+bGF0Zm9ybTsgSW50ZWwoUikgQXRvbShUTSkgQ1BVICBDMjU1OCAgQCAyLjQwR0h6KS4KCkkgcmVj
+YWxsIG9uZSBndXkgY29tcGxhaW5lZCBoaXMgQXRvbS1iYXNlZCBsYXB0b3Agd2Fzbid0IGhhcHB5
+IHJ1bm5pbmcKYXRoMTBrIGVpdGhlciBidXQgSSB0aGluayBpdCB3YXMgc29tZSBlbGVjdHJpY2Fs
+IGluY29tcGF0aWJpbGl0eSBhbmQKdGhlIG1hY2hpbmUgZGlkbid0IGV2ZW4gUE9TVCB3aGVuIHRo
+ZSBjYXJkIHdhcyBwbHVnZ2VkIGludG8gbVBDSWUKc2xvdC4KCgo+IFRoZSBjYXJkIGNyYXNoZWQg
+YWZ0ZXIgc29tZSBtaW51dGVzIHVzaW5nIGF0aDEway1kcml2ZXIgKGJhY2twb3J0cy0zLjE5LXJj
+MSkuIE9sZGVyIHZlcnNpb25zIGFyZSBhZmZlY3RlZCBhcyB3ZWxsLgo+IEF0IGxlYXN0IGRvd24g
+dG8gMy4xMi4yMC4gSSBkaWQgaW50ZW5zaXZlIGRlYnVnZ2luZyBhbmQgZm91bmQgb3V0LCB0aGF0
+IHRoZXJlCj4gYXJlIG1ham9yIGlzc3VlcyBhcyBzb29uIGFzIEludGVscyBwcm9jZXNzb3IgY3N0
+YXRlcyBhcmUgdXNlZC4gVGhpcwo+IG9wdGlvbiBpcyBjYWxsZWQgIkNPTkZJR19JTlRFTF9JRExF
+IiBpbiBrZXJuZWwgY29uZmlnLiBUaGlzIHNlZW1zIHRvIGJlCj4gYSB2ZXJ5IGhlYXZ5IGlzc3Vl
+IGFzIGl0IGV2ZW4gY2FuIGxlYWQgdG8gbG93IG1lbW9yeSBjb3JydXB0aW9uIGFuZAo+IGtlcm5l
+bCBmcmVlemVzLiBMb3cgbWVtb3J5IGNvcnJ1cHRpb24gZG9lc24ndCBvY2N1cmUgYWx3YXlzOyBq
+dXN0IHNvbWV0aW1lcy4gVGhpcyBtYWtlcyBpdCBoYXJkIHRvIGRlYnVnLgo+IEFsc28geW91IG5l
+ZWQgYSBtdWx0aSBwcm9jZXNzb3Igc3lzdGVtIHRvIHRyaWdnZXIgdGhlIGlzc3VlLgo+IElmIHlv
+dSBzZXQga2VybmVsIHBhcmFtZXRlciAibWF4Y3B1cz0xIiB0aGUgZXJyb3IgZG9lc24ndCBvY2N1
+cmUgZXZlbiBpZiB5b3UgZW5hYmxlIENPTkZJR19JTlRFTF9JRExFLgoKVGhyb3VnaCBhIHF1aWNr
+IHNlYXJjaCBJJ3ZlIGZvdW5kIHRoaXM6CgogIGh0dHBzOi8vYnVnemlsbGEucmVkaGF0LmNvbS9z
+aG93X2J1Zy5jZ2k/aWQ9NzE1NDg1CgpJdCBsb29rcyBsaWtlIHNvbWUgQklPU2VzIGNhbiBoYXZl
+IGJ1Z2d5IEMtc3RhdGUgaGFuZGxpbmcuIE1heWJlCnRoYXQncyB0aGUgcm9vdCBjYXVzZT8gRnJv
+bSBteSBleHBlcmllbmNlIFFDQTk4OHggY2FuIGJlIHNvbWV0aW1lcwpxdWlya3kgd2hlbiBpdCBj
+b21lcyB0byBQQ0llIHNvIEkgd291bGRuJ3QgYmUgc3VycHJpc2VkIGlmIG90aGVyCmRldmljZXMg
+ZG9uJ3QgY3Jhc2guCgoKPiBLZXJuZWwgb3V0cHV0IGxvb2tzIGxpa2UgdGhpcyBpZiB0aGUgY2Fy
+ZCBzdG9wcyB3b3JraW5nOgo+Cj4KPiBbIDM3MTUuMTQ1ODY1XSBhdGgxMGs6IGZhaWxlZCB0byBp
+bnN0YWxsIGtleSBmb3IgdmRldiAyIHBlZXIgMDA6MWE6OGM6MGE6YjU6MDE6IC0xMQo+IFsgMzcx
+NS4xNDU4NzZdIHdpZmkxOiBmYWlsZWQgdG8gcmVtb3ZlIGtleSAoMSwgZmY6ZmY6ZmY6ZmY6ZmY6
+ZmYpIGZyb20gaGFyZHdhcmUgKC0xMSkKPiBbIDM3MTguMTQ4MjI2XSBhdGgxMGs6IGZhaWxlZCB0
+byBpbnN0YWxsIGtleSBmb3IgdmRldiAyIHBlZXIgMDA6MWE6OGM6MGE6YjU6MDE6IC0xMQo+IFsg
+MzcxOC4xNDgyMzZdIHdpZmkxOiBmYWlsZWQgdG8gc2V0IGtleSAoMSwgZmY6ZmY6ZmY6ZmY6ZmY6
+ZmYpIHRvIGhhcmR3YXJlICgtMTEpCj4gWyAzNzIzLjE1MjE2N10gYXRoMTBrOiBmYWlsZWQgdG8g
+aW5zdGFsbCBrZXkgZm9yIHZkZXYgMCBwZWVyIDAwOjFhOjhjOjBhOjM0OjAxOiAtMTEKPiBbIDM3
+MjMuMTUyMTc4XSB3aWZpMDogZmFpbGVkIHRvIHJlbW92ZSBrZXkgKDEsIGZmOmZmOmZmOmZmOmZm
+OmZmKSBmcm9tIGhhcmR3YXJlICgtMTEpCj4gWyAzNzIzLjE1MjE4NV0gYXRoMTBrOiBmYWlsZWQg
+dG8gdHJhbnNtaXQgbWFuYWdlbWVudCBmcmFtZSB2aWEgV01JOiAtMTEKPiBbIDM3MjYuMTU0NTI0
+XSBhdGgxMGs6IGZhaWxlZCB0byBpbnN0YWxsIGtleSBmb3IgdmRldiAwIHBlZXIgMDA6MWE6OGM6
+MGE6MzQ6MDE6IC0xMQo+IFsgMzcyNi4xNTQ1MzVdIHdpZmkwOiBmYWlsZWQgdG8gc2V0IGtleSAo
+MSwgZmY6ZmY6ZmY6ZmY6ZmY6ZmYpIHRvIGhhcmR3YXJlICgtMTEpCj4gWyAzNzI5LjE1Njg4NF0g
+YXRoMTBrOiBmYWlsZWQgdG8gaW5zdGFsbCBrZXkgZm9yIHZkZXYgMCBwZWVyIDAwOjBlOjhlOmFl
+OjVjOjFjOiAtMTEKPiBbIDM3MjkuMTU2ODkwXSBhdGgxMGs6IGZhaWxlZCB0byB0cmFuc21pdCBt
+YW5hZ2VtZW50IGZyYW1lIHZpYSBXTUk6IC0xMQo+IFsgMzcyOS4xNTY5MDRdIHdpZmkwOiBmYWls
+ZWQgdG8gcmVtb3ZlIGtleSAoMCwgMDA6MGU6OGU6YWU6NWM6MWMpIGZyb20gaGFyZHdhcmUgKC0x
+MSkKPiBbIDM3MzIuMTU5MjU1XSBhdGgxMGs6IGZhaWxlZCB0byByZW1vdmUgcGVlciB3ZXAga2V5
+IDA6IC0xMQo+IFsgMzczMi4xNTkyNjVdIGF0aDEwazogZmFpbGVkIHRvIGNsZWFyIGFsbCBwZWVy
+IHdlcCBrZXlzIGZvciB2ZGV2IDA6IC0xMQo+IFsgMzczMi4xNTkyNzNdIGF0aDEwazogZmFpbGVk
+IHRvIGRpc2Fzc29jaWF0ZSBzdGF0aW9uOiAwMDowZTo4ZTphZTo1YzoxYyB2ZGV2IDA6IC0xMQpb
+Li4uXQoKSXQgc2VlbXMgZmlybXdhcmUgc3RvcHBlZCByZXBsZW5pc2hpbmcgV01JLUhUQyBUeCBj
+cmVkaXRzLiBJdCdzIG1vc3QKbGlrZWx5IG5vdCB0aGUgbWdtdC1yZWxhdGVkIHR4IGNyZWRpdCBz
+dGFydmF0aW9uIGJ1dCBpbnN0ZWFkCmNvbW11bmljYXRpb24gd2l0aCB0aGUgZGV2aWNlIGlzIHJl
+YWxseSBicm9rZW4uCgoKPiBTb21ldGltZXMgYnV0IG5vdCBhbGx3YXlzIHRoZXJlIGlzIHRoZSBt
+ZXNzYWdlICJmaXJtd2FyZSBjcmFzaGVkISIgaW4gZG1lc2cgYnV0IGl0IGRvZXNuJ3QgbWF0dGVy
+IHdoaWNoIGVycm9yIG1lc3NhZ2UgaXQgYWN0dWFsbHkgaXM6Cj4gVGhlIGJlaGF2aW9yIGlzIGFs
+bHdheXMgdGhlIHNhbWUuIFRoZSBjYXJkIHN0b3BzIHdvcmtpbmcgdW50aWwgcmVib290LiBVbmxv
+YWRpbmcvcmVsb2FkaW5nIG9mIGF0aDEwa19wY2ksIGF0aDEwa19jb3JlLCBhdGggZG9lc24ndCBo
+ZWxwIGluIHRoaXMgY2FzZS4KPiBUaGUgYmFzaWMgcHJvYmxlbXMgb2YgYWxsIGVycm9yIG1lc3Nh
+Z2VzIEkgc2F3IGJ5IG5vdyBpcyBhIGJyb2tlbiBsaW5rIGJldHdlZW4gdGhlIGNhcmRzIGZpcm13
+YXJlIGFuZCB0aGUgYXRoMTBrLWRyaXZlci4KPiBEZXBlbmRpbmcgb24gdGhlIHBvaW50IGluIHRp
+bWUgdGhpcyAiY29ubmVjdGlvbiBsb3NzIiBoYXBwZW5zIHRoZSBlcnJvciBtZXNzYWdlcyBhcmUg
+YSBsaXR0bGUgYml0IGRpZmZlcmVudCwKPiBhcyB0aGV5IGFyZSBzdHJvbmdseSBjb25uZWN0ZWQg
+dG8gdGhlIGN1cnJlbnQgc3RhdGUgb2YgdGhlIGRyaXZlciB3aGlsZSBpdCBpcyB0cnlpbmcgdG8g
+dGFsayB0byB0aGUgY2FyZHMgZmlybXdhcmUgdmlhIFdNSS4KPgo+IElmIHlvdSB0cnkgdG8gcmVw
+cm9kdWNlIHlvdSBoYXZlIHRvIHdhaXQgYmV0d2VlbiAzIGFuZCA2MCBNaW51dGVzIHRvIHNlZSB0
+aGUgY3Jhc2guIFlvdSBjYW4gaW5jcmVhc2UgdGhlIGxpa2VseWhvb2QgZm9yIGNyYXNoaW5nIGJ5
+IGluY3JlYXNpbmcKPiB0aGUgbnVtYmVyIG9mIHdpZmkgdHJhZmZpYyBvbiBmb3JlaWduIG5ldHdv
+cmtzIGF0IHRoZSBzYW1lIGNoYW5uZWwuCj4gSSB0ZXN0ZXQgd2l0aCBmb3VyIGxhcHRvcHMgdGhh
+dCBhcmUgY29ubmVjdGVkIHRvIGZvdXIgUUNBOTg4eCBjYXJkcyAoQVAtbW9kZSkuIFRoaXMgdGFr
+ZXMgYXJvdW5kIDMtMTAgbWludXRlcyB0byBnZXQgaXQgcmVwcm9kdWNlZC4KPgo+IElmIHlvdSBu
+ZWVkIG1vcmUgaW5mb3JtYXRpb24gSSdtIGF0IHlvdXIgZGlzcG9zYWwuCgpJdCdkIGJlIG5pY2Ug
+dG8ga25vdyB3aGF0IGZpcm13YXJlIHlvdSdyZSB1c2luZy4gR2VuZXJhbGx5IEkgd291bGQKZGlz
+Y291cmFnZSBmcm9tIHVzaW5nIDk5OS45OTkuMC42MzYgYmVjYXVzZSBpdCdzIHZlcnkgb2xkLgoK
+Ck1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
