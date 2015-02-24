@@ -1,11 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YPy28-0006FA-4i
- for ath10k@lists.infradead.org; Mon, 23 Feb 2015 18:47:09 +0000
-Message-ID: <54EB7596.5010103@candelatech.com>
-Date: Mon, 23 Feb 2015 10:46:46 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mx1.sophos.com ([145.253.124.137])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQBRA-0005TN-TC
+ for ath10k@lists.infradead.org; Tue, 24 Feb 2015 09:05:55 +0000
+Received: from mx1.sophos.com (localhost.localdomain [127.0.0.1])
+ by localhost (Postfix) with SMTP id 7ACEA763D7C
+ for <ath10k@lists.infradead.org>; Tue, 24 Feb 2015 09:05:21 +0000 (GMT)
+Received: from de-wie-exch3b.green.sophos (unknown [10.60.70.62])
+ by mx1.sophos.com (Postfix) with ESMTPS id 3EF4F763D7F
+ for <ath10k@lists.infradead.org>; Tue, 24 Feb 2015 09:05:21 +0000 (GMT)
+Message-ID: <54EC3ED4.3060003@sophos.com>
+Date: Tue, 24 Feb 2015 10:05:24 +0100
+From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
 MIME-Version: 1.0
 Subject: Re: Firmware (firmware-2-ct-non-commercial-full-13.bin) and ath10k_pci
  crash
@@ -23,12 +29,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jeremias Blendin <jeremias@blendin.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 02/23/2015 10:39 AM, Jeremias Blendin wrote:
+Hi Jeremias,
+
+did you read my previous message? It could be that this is the same
+error as I already experiences. Try to disable CONFIG_INTEL_IDLE in
+kernel or use kernel parameter intel_idle.max_cstate=0.
+
+Regards,
+Fabian
+
+Am 23.02.2015 um 19:39 schrieb Jeremias Blendin:
 > Hi,
-> 
+>
 > after setting up ath10k with hostapd I only get a few minutes in
 > working state before the system crashes -- every time.
 > I tried different firmwares, they all seem to crash. I updated to a
@@ -36,33 +50,14 @@ On 02/23/2015 10:39 AM, Jeremias Blendin wrote:
 > that other people with Intel Atom processors (which mine uses) had
 > trouble, however I am not sure if both are based on the same error
 > message.
-> 
+>
 > Any hints are appreciated. I currently use the system only for setting
 > up wifi, so I could run tests if required.
-
-For this crash, the firmware crash dump cannot be read over the normal
-management channel.  If you can build & boot my 3.17.8 kernel, then it should
-be able to dump the firmware crash directly over some registers.
-
-git clone git://dmz2.candelatech.com/linux-3.17.dev.y
-
-
-I don't have a good test case to test this particular way of reading
-registers, so I'm quite interested if your system can read the crash that
-way or not...
-
-That said, your system looks quite sickly in all kinds of interesting ways,
-so not sure I'll be able to actually fix the problem (and not sure the problem
-is entirely in firmware).
-
-Thanks,
-Ben
-
-> 
+>
 > Thanks!
-> 
+>
 > Jeremias
-> 
+>
 > [   10.878947] ath10k_pci 0000:04:00.0: irq 71 for MSI/MSI-X
 > [   10.878975] ath10k_pci 0000:04:00.0: pci irq msi interrupts 1
 > irq_mode 0 reset_mode 0
@@ -285,13 +280,13 @@ Ben
 > ieee80211_sta_tear_down_BA_sessions+0x5c/0x70 [mac80211]
 > [  822.652561]  [<ffffffffc044c3e8>]
 > __sta_info_destroy_part1+0x48/0x200 [mac80211]
-> 
-> 
+>
+>
 > uname -a
 > Linux kyushu 3.18.0-13-generic #14 SMP Sun Feb 22 22:34:19 CET 2015
 > x86_64 x86_64 x86_64 GNU/Linux
-> 
-> 
+>
+>
 > cat /proc/cpuinfo
 > processor : 0
 > vendor_id : GenuineIntel
@@ -325,17 +320,11 @@ Ben
 > cache_alignment : 64
 > address sizes : 36 bits physical, 48 bits virtual
 > power management:
-> 
+>
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
