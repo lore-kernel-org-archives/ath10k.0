@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQZIY-0000ud-NN
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 10:34:36 +0000
-Received: by wghl2 with SMTP id l2so2685732wgh.9
- for <ath10k@lists.infradead.org>; Wed, 25 Feb 2015 02:34:11 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1424850911-21017-5-git-send-email-marek.puzyniak@tieto.com>
-References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
- <1424850911-21017-5-git-send-email-marek.puzyniak@tieto.com>
-Date: Wed, 25 Feb 2015 11:34:11 +0100
-Message-ID: <CA+BoTQnxD4JpXARQGzSgEvypzn9vS__rVk5JcwOvaT1zh4CtJw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] ath10k: introduce basic tdls functionality
+ id 1YQZOr-0004pD-M2
+ for ath10k@lists.infradead.org; Wed, 25 Feb 2015 10:41:06 +0000
+Received: by labhv19 with SMTP id hv19so2878967lab.10
+ for <ath10k@lists.infradead.org>; Wed, 25 Feb 2015 02:40:43 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix ap u-apsd cmd on qca6174 w/ wmi-tlv
+Date: Wed, 25 Feb 2015 11:39:36 +0100
+Message-Id: <1424860776-11668-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,103 +17,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjUgRmVicnVhcnkgMjAxNSBhdCAwODo1NSwgTWFyZWsgUHV6eW5pYWsgPG1hcmVrLnB1enlu
-aWFrQHRpZXRvLmNvbT4gd3JvdGU6ClsuLi5dCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9jb3JlLmgKPiBpbmRleCA5NGE4Nzg4Li4xNGI5OWM4IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
-bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5oCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxl
-c3MvYXRoL2F0aDEway9jb3JlLmgKPiBAQCAtNjA0LDYgKzYwNCw3IEBAIHN0cnVjdCBhdGgxMGsg
-ewo+ICAgICAgICAgLyogcHJvdGVjdGVkIGJ5IGNvbmZfbXV0ZXggKi8KPiAgICAgICAgIGludCBu
-dW1fcGVlcnM7Cj4gICAgICAgICBpbnQgbnVtX3N0YXRpb25zOwo+ICsgICAgICAgaW50IHRkbHNf
-cGVlcnM7CgpJIGRvbid0IGxpa2UgdGhlIGlkZWEgb2YgaGF2aW5nIGFub3RoZXIgdmFyIGluIGF0
-aDEwayB3aGljaCBpc24ndCBvbgpob3RwYXRoIGFuZCBjYW4gYmUgZGVyaXZlZCBmcm9tIG90aGVy
-IHN0cnVjdHVyZXMvdG9vbHMgd2UgYWxyZWFkeQpoYXZlLCBpLmUuIGllZWU4MDIxMV9pdGVyYXRl
-X3N0YXRpb25zX2F0b21pYygpLiBZb3UgY2FuIHVzZSB0aGF0IHRvCmltcGxlbWVudCBhdGgxMGtf
-bWFjX3RkbHNfbnVtX3BlZXJzKGFydmlmKS4KCgo+Cj4gICAgICAgICBpbnQgbWF4X251bV9wZWVy
-czsKPiAgICAgICAgIGludCBtYXhfbnVtX3N0YXRpb25zOwo+IGRpZmYgLS1naXQgYS9kcml2ZXJz
-L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRo
-L2F0aDEway9tYWMuYwo+IGluZGV4IDczNzg2NTYuLjIxNzIwYjggMTAwNjQ0Cj4gLS0tIGEvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiBAQCAtNTE4LDYgKzUxOCw3MyBAQCBzdGF0aWMgdm9p
-ZCBhdGgxMGtfcGVlcl9jbGVhbnVwX2FsbChzdHJ1Y3QgYXRoMTBrICphcikKPiAgICAgICAgIGFy
-LT5udW1fc3RhdGlvbnMgPSAwOwo+ICB9Cj4KPiArc3RhdGljIGludCBhdGgxMGtfbWFjX2VuYWJs
-ZV90ZGxzKHN0cnVjdCBhdGgxMGsgKmFyLCB1MzIgdmRldl9pZCwgYm9vbCBlbmFibGUpCgpXaXRo
-IG51bWJlciBvZiB0ZGxzIHBlZXJzIGJlaW5nIGRlcml2ZWQgeW91IHdvbid0IGJlIGFibGUgdG8g
-aGF2ZSB0aGlzCmtpbmQgb2YgInJlY2FsYyIgbG9naWMgYW55bW9yZS4gSSBndWVzcyB0aGF0J3Mg
-YSBnb29kIHRoaW5nLiBZb3UnbGwKbmVlZCB0byBjYWxsIGF0aDEwa193bWlfdXBkYXRlX2Z3X3Rk
-bHNfc3RhdGUoKSBleHBsaWNpdGx5IGluCmF0aDEwa19zdGFfc3RhdGUoKSBkZXBlbmRpbmcgb24g
-Y29udGV4dCBhbmQgbnVtYmVycyBvZiBwZWVycy4KCgo+ICtzdGF0aWMgaW50IGF0aDEwa19tYWNf
-dGRsc19wZWVyX3VwZGF0ZShzdHJ1Y3QgYXRoMTBrICphciwgdTMyIHZkZXZfaWQsCj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGllZWU4MDIxMV9zdGEgKnN0
-YSwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBlbnVtIHdtaV90ZGxz
-X3BlZXJfc3RhdGUgc3RhdGUpCj4gK3sKPiArICAgICAgIGludCByZXQ7Cj4gKyAgICAgICBzdHJ1
-Y3Qgd21pX3RkbHNfcGVlcl91cGRhdGVfY21kX2FyZyBhcmc7CgpJIHdvdWxkIGBhcmcgPSB7fTtg
-IHRvIG1ha2Ugc3VyZSBpdCdzIGNsZWFuLiBFdmVuIGlmIHlvdSdyZSBwb3NpdGl2ZQp5b3UgZmls
-bCBhbGwgYGFyZ2AgbWVtYmVycyBoZXJlIGl0IGxlYXZlcyBpdCBvcGVuIGZvciBidWdzIHNuZWFr
-aW5nIGluCndoZW4geW91IGV4dGVuZCB0aGUgc3RydWN0dXJlIGxhdGVyIG9uIGFuZCBmb3JnZXQg
-dG8gaW5pdCBuZXcgbWVtYmVycwpoZXJlIGFzIHdlbGwuCgoKPiArICAgICAgIHN0cnVjdCB3bWlf
-dGRsc19wZWVyX2NhcGFiX2FyZyBjYXAgPSB7fTsKPiArICAgICAgIHN0cnVjdCB3bWlfY2hhbm5l
-bF9hcmcgY2hhbl9hcmcgPSB7fTsKPiArCj4gKyAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZh
-ci0+Y29uZl9tdXRleCk7Cj4gKwo+ICsgICAgICAgYXJnLnZkZXZfaWQgPSB2ZGV2X2lkOwo+ICsg
-ICAgICAgYXJnLnBlZXJfc3RhdGUgPSBzdGF0ZTsKPiArICAgICAgIGV0aGVyX2FkZHJfY29weShh
-cmcuYWRkciwgc3RhLT5hZGRyKTsKPiArCj4gKyAgICAgICBjYXAucGVlcl9tYXhfc3AgPSBzdGEt
-Pm1heF9zcDsKPiArICAgICAgIGNhcC5wZWVyX3VhcHNkX3F1ZXVlcyA9IHN0YS0+dWFwc2RfcXVl
-dWVzOwo+ICsKPiArICAgICAgIGlmIChzdGF0ZSA9PSBXTUlfVERMU19QRUVSX1NUQVRFX0NPTk5F
-Q1RFRCkgewo+ICsgICAgICAgICAgICAgICBpZiAoIXN0YS0+dGRsc19pbml0aWF0b3IpCj4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgY2FwLmlzX3BlZXJfcmVzcG9uZGVyID0gMTsKPiArICAgICAg
-IH0KCllvdSBjYW4gcHJvYmFibHkgbWFrZSBpdCBpbnRvIGEgc2luZ2xlIGlmKCkgPwoKCj4gQEAg
-LTQwOTIsOSArNDE5MywzMCBAQCBzdGF0aWMgaW50IGF0aDEwa19zdGFfc3RhdGUoc3RydWN0IGll
-ZWU4MDIxMV9odyAqaHcsCj4gICAgICAgICAgICAgICAgICAgICAgICAgYXRoMTBrX3dhcm4oYXIs
-ICJmYWlsZWQgdG8gYXNzb2NpYXRlIHN0YXRpb24gJXBNIGZvciB2ZGV2ICVpOiAlaVxuIiwKPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdGEtPmFkZHIsIGFydmlmLT52ZGV2
-X2lkLCByZXQpOwo+ICAgICAgICAgfSBlbHNlIGlmIChvbGRfc3RhdGUgPT0gSUVFRTgwMjExX1NU
-QV9BU1NPQyAmJgo+IC0gICAgICAgICAgICAgICAgICBuZXdfc3RhdGUgPT0gSUVFRTgwMjExX1NU
-QV9BVVRIICYmCj4gLSAgICAgICAgICAgICAgICAgICh2aWYtPnR5cGUgPT0gTkw4MDIxMV9JRlRZ
-UEVfQVAgfHwKPiAtICAgICAgICAgICAgICAgICAgIHZpZi0+dHlwZSA9PSBOTDgwMjExX0lGVFlQ
-RV9BREhPQykpIHsKPiArICAgICAgICAgICAgICAgICAgbmV3X3N0YXRlID09IElFRUU4MDIxMV9T
-VEFfQVVUSE9SSVpFRCAmJgo+ICsgICAgICAgICAgICAgICAgICBzdGEtPnRkbHMpIHsKPiArICAg
-ICAgICAgICAgICAgLyoKPiArICAgICAgICAgICAgICAgICogVGRscyBzdGF0aW9uIGF1dGhvcml6
-ZWQuCj4gKyAgICAgICAgICAgICAgICAqLwo+ICsgICAgICAgICAgICAgICBhdGgxMGtfZGJnKGFy
-LCBBVEgxMEtfREJHX01BQywgIm1hYyB0ZGxzIHN0YSAlcE0gYXV0aG9yaXplZFxuIiwKPiArICAg
-ICAgICAgICAgICAgICAgICAgICAgICBzdGEtPmFkZHIpOwo+ICsKPiArICAgICAgICAgICAgICAg
-cmV0ID0gYXRoMTBrX3N0YXRpb25fYXNzb2MoYXIsIHZpZiwgc3RhLCBmYWxzZSk7Cj4gKyAgICAg
-ICAgICAgICAgIGlmIChyZXQpIHsKPiArICAgICAgICAgICAgICAgICAgICAgICBhdGgxMGtfd2Fy
-bihhciwgImZhaWxlZCB0byBhc3NvY2lhdGUgc3RhdGlvbiAlcE0gZm9yIHZkZXYgJWk6ICVpXG4i
-LAoKImZhaWxlZCB0byBhc3NvY2lhdGUgdGRscyBzdGF0aW9uLi4uLiIgd291bGQgYmUgbmljZXIg
-SSBndWVzcz8KCgo+ICtzdGF0aWMgdTMyIGF0aDEwa193bWlfdGx2X3ByZXBhcmVfcGVlcl9xb3Mo
-dTggdWFwc2RfcXVldWVzLCB1OCBzcCkKPiArewo+ICsgICAgICAgdTMyIHBlZXJfcW9zID0gMDsK
-PiArCj4gKyAgICAgICBpZiAodWFwc2RfcXVldWVzICYgSUVFRTgwMjExX1dNTV9JRV9TVEFfUU9T
-SU5GT19BQ19WTykKPiArICAgICAgICAgICAgICAgcGVlcl9xb3MgfD0gV01JX1RMVl9URExTX1BF
-RVJfUU9TX0FDX1ZPOwo+ICsgICAgICAgaWYgKHVhcHNkX3F1ZXVlcyAmIElFRUU4MDIxMV9XTU1f
-SUVfU1RBX1FPU0lORk9fQUNfVkkpCj4gKyAgICAgICAgICAgICAgIHBlZXJfcW9zIHw9IFdNSV9U
-TFZfVERMU19QRUVSX1FPU19BQ19WSTsKPiArICAgICAgIGlmICh1YXBzZF9xdWV1ZXMgJiBJRUVF
-ODAyMTFfV01NX0lFX1NUQV9RT1NJTkZPX0FDX0JLKQo+ICsgICAgICAgICAgICAgICBwZWVyX3Fv
-cyB8PSBXTUlfVExWX1RETFNfUEVFUl9RT1NfQUNfQks7Cj4gKyAgICAgICBpZiAodWFwc2RfcXVl
-dWVzICYgSUVFRTgwMjExX1dNTV9JRV9TVEFfUU9TSU5GT19BQ19CRSkKPiArICAgICAgICAgICAg
-ICAgcGVlcl9xb3MgfD0gV01JX1RMVl9URExTX1BFRVJfUU9TX0FDX0JFOwo+ICsgICAgICAgcGVl
-cl9xb3MgfD0gKHNwIDw8IFdNSV9UTFZfVERMU19QRUVSX1NQX1BPUyk7CgpwZWVyX3FvcyB8PSAo
-c3AgPDwgV01JX1RMVl9URExTX1BFRVJfU1BfU0hJRlQpOwoKT3IgZXZlbiBwcm92aWRlIF9NQVNL
-ICsgX1NISUZUIGRlZmluZXMgYW5kIHVzZSBTTS9NUyBtYWNyb3MuCgoKPiArc3RydWN0IHdtaV90
-ZGxzX3BlZXJfdXBkYXRlX2NtZF9hcmcgewo+ICsgICAgICAgdTMyIHZkZXZfaWQ7Cj4gKyAgICAg
-ICBlbnVtIHdtaV90ZGxzX3BlZXJfc3RhdGUgcGVlcl9zdGF0ZTsKPiArICAgICAgIHU4IGFkZHJb
-RVRIX0FMRU5dOwo+ICt9IF9fcGFja2VkOwoKTm8gbmVlZCB0byBwYWNrIGxvY2FsL2RyaXZlci1v
-bmx5IHN0cnVjdHVyZXMuCgoKPiArc3RydWN0IHdtaV90ZGxzX3BlZXJfY2FwYWJfYXJnIHsKPiAr
-ICAgICAgIHU4IHBlZXJfdWFwc2RfcXVldWVzOwo+ICsgICAgICAgdTggcGVlcl9tYXhfc3A7Cj4g
-KyAgICAgICB1MzIgYnVmZl9zdGFfc3VwcG9ydDsKPiArICAgICAgIHUzMiBvZmZfY2hhbl9zdXBw
-b3J0Owo+ICsgICAgICAgdTMyIHBlZXJfY3Vycl9vcGVyY2xhc3M7Cj4gKyAgICAgICB1MzIgc2Vs
-Zl9jdXJyX29wZXJjbGFzczsKPiArICAgICAgIHUzMiBwZWVyX2NoYW5fbGVuOwo+ICsgICAgICAg
-dTMyIHBlZXJfb3BlcmNsYXNzX2xlbjsKPiArICAgICAgIHU4IHBlZXJfb3BlcmNsYXNzW1dNSV9U
-RExTX01BWF9TVVBQX09QRVJfQ0xBU1NFU107Cj4gKyAgICAgICB1MzIgaXNfcGVlcl9yZXNwb25k
-ZXI7Cj4gKyAgICAgICB1MzIgcHJlZl9vZmZjaGFuX251bTsKPiArICAgICAgIHUzMiBwcmVmX29m
-ZmNoYW5fYnc7Cj4gK30gX19wYWNrZWQ7CgpObyBuZWVkIHRvIHBhY2sgbG9jYWwvZHJpdmVyLW9u
-bHkgc3RydWN0dXJlcy4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+The command was truncated so the parameter value
+was seen in fw as 0. This caused U-APSD enabled
+stations to be misconfigured and mistreated by AP.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index f34baa0..af5d858 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2032,7 +2032,7 @@ ath10k_wmi_tlv_op_gen_set_ap_ps(struct ath10k *ar, u32 vdev_id, const u8 *mac,
+ 	if (!mac)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	skb = ath10k_wmi_alloc_skb(ar, sizeof(*cmd));
++	skb = ath10k_wmi_alloc_skb(ar, sizeof(*tlv) + sizeof(*cmd));
+ 	if (!skb)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+1.8.5.3
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
