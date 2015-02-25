@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQgdY-0003qG-V8
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 18:24:45 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 49491409E87
- for <ath10k@lists.infradead.org>; Wed, 25 Feb 2015 10:24:22 -0800 (PST)
-Message-ID: <54EE1355.3010306@candelatech.com>
-Date: Wed, 25 Feb 2015 10:24:21 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x236.google.com ([2607:f8b0:4001:c05::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQi3S-0002Im-LR
+ for ath10k@lists.infradead.org; Wed, 25 Feb 2015 19:55:35 +0000
+Received: by mail-ig0-f182.google.com with SMTP id h15so8877207igd.3
+ for <ath10k@lists.infradead.org>; Wed, 25 Feb 2015 11:55:12 -0800 (PST)
 MIME-Version: 1.0
-Subject: Question on setting tx-power in ath10k.
+In-Reply-To: <54EE1355.3010306@candelatech.com>
+References: <54EE1355.3010306@candelatech.com>
+Date: Wed, 25 Feb 2015 11:55:11 -0800
+Message-ID: <CAJ-VmoncKPbb+D0Z0N9ntov71B-UX8AT2pOyvCgcH1tYAsu+kA@mail.gmail.com>
+Subject: Re: Question on setting tx-power in ath10k.
+From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +24,50 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-I have added some debugging in my CT firmware based on 10.1.467, and I have noticed
-that anything below 5db is treated as zero by the firmware.  This is due primarily to
-subtracting a fixed amount based on the NIC's configured chainmask.
+Yeah I remember this stuff. ath9k did the same thing too; it subtracts
+TX power based on 2-chain and 3-chain; assuming that the max transmit
+power in the EEPROM is actually the 3-chain value so it can get the
+per-chain transmit power.
 
-I am guessing this is not entirely correct, since at /b rates, for instance, we
-will be transmitting on only a single chain, so it does not matter how many
-chains the hardware has?
+Thing is, whenever I actually looked at the output on a spectrum
+analyser, the target power differed from what the card was rated at by
+exactly 3 and 5 dBm respectively. Grr.
 
-Anyone have any insight on how this stuff is *supposed* to work?
+In FreeBSD I look at the number of configured chains for that TX
+attempt and set the TX power cap appropriately per-packet. Grr.
 
-If you have access to firmware source, plz contact me off the mailing list
-and I can provide more details about the code that looks broken.
 
-Thanks,
-Ben
+-adrian
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+On 25 February 2015 at 10:24, Ben Greear <greearb@candelatech.com> wrote:
+> I have added some debugging in my CT firmware based on 10.1.467, and I have noticed
+> that anything below 5db is treated as zero by the firmware.  This is due primarily to
+> subtracting a fixed amount based on the NIC's configured chainmask.
+>
+> I am guessing this is not entirely correct, since at /b rates, for instance, we
+> will be transmitting on only a single chain, so it does not matter how many
+> chains the hardware has?
+>
+> Anyone have any insight on how this stuff is *supposed* to work?
+>
+> If you have access to firmware source, plz contact me off the mailing list
+> and I can provide more details about the code that looks broken.
+>
+> Thanks,
+> Ben
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
