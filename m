@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQWmq-0004i4-H4
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 07:53:42 +0000
-Received: by lbjb6 with SMTP id b6so2125824lbj.2
- for <ath10k@lists.infradead.org>; Tue, 24 Feb 2015 23:53:18 -0800 (PST)
+ id 1YQWmw-0004l7-Kr
+ for ath10k@lists.infradead.org; Wed, 25 Feb 2015 07:53:48 +0000
+Received: by labhs14 with SMTP id hs14so2137653lab.1
+ for <ath10k@lists.infradead.org>; Tue, 24 Feb 2015 23:53:23 -0800 (PST)
 From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [PATCH v2 1/4] ath10k: unify tx mode and dispatch
-Date: Wed, 25 Feb 2015 08:55:08 +0100
-Message-Id: <1424850911-21017-2-git-send-email-marek.puzyniak@tieto.com>
+Subject: [PATCH v2 2/4] ath10k: make peer type configurable
+Date: Wed, 25 Feb 2015 08:55:09 +0100
+Message-Id: <1424850911-21017-3-git-send-email-marek.puzyniak@tieto.com>
 In-Reply-To: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
 References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,375 +25,171 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, Michal Kazior <michal.kazior@tieto.com>
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, Marek Puzyniak <marek.puzyniak@tieto.com>
 
-From: Michal Kazior <michal.kazior@tieto.com>
+Peer type was hardcoded to default value.
+For future implementation it is required
+to make is configurable.
 
-There are a few different tx paths depending on
-firmware and frame itself.
-
-Creating a uniform decision will make it possible
-to switch between different txmode easier, both
-for testing and for future features as well.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h   |   2 +
- drivers/net/wireless/ath/ath10k/htt_rx.c |   8 --
- drivers/net/wireless/ath/ath10k/htt_tx.c |  30 +++---
- drivers/net/wireless/ath/ath10k/mac.c    | 155 ++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/mac.h    |   8 ++
- 5 files changed, 144 insertions(+), 59 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c     | 17 +++++++++++------
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  8 +++++---
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  5 +++--
+ drivers/net/wireless/ath/ath10k/wmi.c     |  3 ++-
+ drivers/net/wireless/ath/ath10k/wmi.h     |  6 ++++++
+ 5 files changed, 27 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d60e46f..94a8788 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -82,6 +82,8 @@ struct ath10k_skb_cb {
- 	dma_addr_t paddr;
- 	u8 eid;
- 	u8 vdev_id;
-+	enum ath10k_hw_txrx_mode txmode;
-+	bool is_protected;
- 
- 	struct {
- 		u8 tid;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index c1da44f..6d4bb5e 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -637,14 +637,6 @@ static int ath10k_htt_rx_crypto_tail_len(struct ath10k *ar,
- 	return 0;
- }
- 
--struct rfc1042_hdr {
--	u8 llc_dsap;
--	u8 llc_ssap;
--	u8 llc_ctrl;
--	u8 snap_oui[3];
--	__be16 snap_type;
--} __packed;
--
- struct amsdu_subframe_hdr {
- 	u8 dst[ETH_ALEN];
- 	u8 src[ETH_ALEN];
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index cbd2bc9..5b2c61b 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -420,9 +420,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	int res;
- 	u8 flags0 = 0;
- 	u16 msdu_id, flags1 = 0;
--	dma_addr_t paddr;
--	u32 frags_paddr;
--	bool use_frags;
-+	dma_addr_t paddr = 0;
-+	u32 frags_paddr = 0;
- 
- 	res = ath10k_htt_tx_inc_pending(htt);
- 	if (res)
-@@ -440,12 +439,6 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
- 	prefetch_len = roundup(prefetch_len, 4);
- 
--	/* Since HTT 3.0 there is no separate mgmt tx command. However in case
--	 * of mgmt tx using TX_FRM there is not tx fragment list. Instead of tx
--	 * fragment list host driver specifies directly frame pointer. */
--	use_frags = htt->target_version_major < 3 ||
--		    !ieee80211_is_mgmt(hdr->frame_control);
--
- 	skb_cb->htt.txbuf = dma_pool_alloc(htt->tx_pool, GFP_ATOMIC,
- 					   &paddr);
- 	if (!skb_cb->htt.txbuf) {
-@@ -466,7 +459,12 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	if (res)
- 		goto err_free_txbuf;
- 
--	if (likely(use_frags)) {
-+	switch (skb_cb->txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-+		/* pass through */
-+	case ATH10K_HW_TXRX_ETHERNET:
- 		frags = skb_cb->htt.txbuf->frags;
- 
- 		frags[0].paddr = __cpu_to_le32(skb_cb->paddr);
-@@ -474,15 +472,17 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 		frags[1].paddr = 0;
- 		frags[1].len = 0;
- 
--		flags0 |= SM(ATH10K_HW_TXRX_NATIVE_WIFI,
--			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= SM(skb_cb->txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
- 
- 		frags_paddr = skb_cb->htt.txbuf_paddr;
--	} else {
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
- 		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
- 			     HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
-+		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
- 
- 		frags_paddr = skb_cb->paddr;
-+		break;
- 	}
- 
- 	/* Normally all commands go through HTC which manages tx credits for
-@@ -508,11 +508,9 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 			prefetch_len);
- 	skb_cb->htt.txbuf->htc_hdr.flags = 0;
- 
--	if (!ieee80211_has_protected(hdr->frame_control))
-+	if (!skb_cb->is_protected)
- 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_NO_ENCRYPT;
- 
--	flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
--
- 	flags1 |= SM((u16)vdev_id, HTT_DATA_TX_DESC_FLAGS1_VDEV_ID);
- 	flags1 |= SM((u16)tid, HTT_DATA_TX_DESC_FLAGS1_EXT_TID);
- 	if (msdu->ip_summed == CHECKSUM_PARTIAL) {
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d6d2f0f..6d126d0 100644
+index 6d126d0..7378656 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2182,6 +2182,43 @@ static u8 ath10k_tx_h_get_vdev_id(struct ath10k *ar, struct ieee80211_vif *vif)
- 	return 0;
- }
- 
-+static enum ath10k_hw_txrx_mode
-+ath10k_tx_h_get_txmode(struct ath10k *ar, struct ieee80211_vif *vif,
-+		       struct sk_buff *skb)
-+{
-+	const struct ieee80211_hdr *hdr = (void *)skb->data;
-+	__le16 fc = hdr->frame_control;
-+
-+	if (!vif || vif->type == NL80211_IFTYPE_MONITOR)
-+		return ATH10K_HW_TXRX_RAW;
-+
-+	if (ieee80211_is_mgmt(fc))
-+		return ATH10K_HW_TXRX_MGMT;
-+
-+	/* Workaround:
-+	 *
-+	 * NullFunc frames are mostly used to ping if a client or AP are still
-+	 * reachable and responsive. This implies tx status reports must be
-+	 * accurate - otherwise either mac80211 or userspace (e.g. hostapd) can
-+	 * come to a conclusion that the other end disappeared and tear down
-+	 * BSS connection or it can never disconnect from BSS/client (which is
-+	 * the case).
-+	 *
-+	 * Firmware with HTT older than 3.0 delivers incorrect tx status for
-+	 * NullFunc frames to driver. However there's a HTT Mgmt Tx command
-+	 * which seems to deliver correct tx reports for NullFunc frames. The
-+	 * downside of using it is it ignores client powersave state so it can
-+	 * end up disconnecting sleeping clients in AP mode. It should fix STA
-+	 * mode though because AP don't sleep.
-+	 */
-+	if (ar->htt.target_version_major < 3 &&
-+	    (ieee80211_is_nullfunc(fc) || ieee80211_is_qos_nullfunc(fc)) &&
-+	    !test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX, ar->fw_features))
-+		return ATH10K_HW_TXRX_MGMT;
-+
-+	return ATH10K_HW_TXRX_NATIVE_WIFI;
-+}
-+
- /* HTT Tx uses Native Wifi tx mode which expects 802.11 frames without QoS
-  * Control in the header.
-  */
-@@ -2211,6 +2248,33 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
+@@ -364,7 +364,8 @@ static u8 ath10k_parse_mpdudensity(u8 mpdudensity)
  	}
  }
  
-+static void ath10k_tx_h_8023(struct sk_buff *skb)
-+{
-+	struct ieee80211_hdr *hdr;
-+	struct rfc1042_hdr *rfc1042;
-+	struct ethhdr *eth;
-+	size_t hdrlen;
-+	u8 da[ETH_ALEN];
-+	u8 sa[ETH_ALEN];
-+	__be16 type;
-+
-+	hdr = (void *)skb->data;
-+	hdrlen = ieee80211_hdrlen(hdr->frame_control);
-+	rfc1042 = (void *)skb->data + hdrlen;
-+
-+	ether_addr_copy(da, ieee80211_get_DA(hdr));
-+	ether_addr_copy(sa, ieee80211_get_SA(hdr));
-+	type = rfc1042->snap_type;
-+
-+	skb_pull(skb, hdrlen + sizeof(*rfc1042));
-+	skb_push(skb, sizeof(*eth));
-+
-+	eth = (void *)skb->data;
-+	ether_addr_copy(eth->h_dest, da);
-+	ether_addr_copy(eth->h_source, sa);
-+	eth->h_proto = type;
-+}
-+
- static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
- 				       struct ieee80211_vif *vif,
- 				       struct sk_buff *skb)
-@@ -2247,45 +2311,51 @@ static bool ath10k_mac_need_offchan_tx_work(struct ath10k *ar)
- 		 ar->htt.target_version_minor >= 4);
- }
- 
--static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
-+static int ath10k_mac_tx_wmi_mgmt(struct ath10k *ar, struct sk_buff *skb)
+-static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
++static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr,
++			      enum wmi_peer_type peer_type)
  {
--	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	struct sk_buff_head *q = &ar->wmi_mgmt_tx_queue;
- 	int ret = 0;
- 
--	if (ar->htt.target_version_major >= 3) {
--		/* Since HTT 3.0 there is no separate mgmt tx command */
--		ret = ath10k_htt_tx(&ar->htt, skb);
--		goto exit;
-+	spin_lock_bh(&ar->data_lock);
-+
-+	if (skb_queue_len(q) == ATH10K_MAX_NUM_MGMT_PENDING) {
-+		ath10k_warn(ar, "wmi mgmt tx queue is full\n");
-+		ret = -ENOSPC;
-+		goto unlock;
- 	}
- 
--	if (ieee80211_is_mgmt(hdr->frame_control)) {
--		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
--			     ar->fw_features)) {
--			if (skb_queue_len(&ar->wmi_mgmt_tx_queue) >=
--			    ATH10K_MAX_NUM_MGMT_PENDING) {
--				ath10k_warn(ar, "reached WMI management transmit queue limit\n");
--				ret = -EBUSY;
--				goto exit;
--			}
-+	__skb_queue_tail(q, skb);
-+	ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
- 
--			skb_queue_tail(&ar->wmi_mgmt_tx_queue, skb);
--			ieee80211_queue_work(ar->hw, &ar->wmi_mgmt_tx_work);
--		} else {
--			ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--		}
--	} else if (!test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
--			     ar->fw_features) &&
--		   ieee80211_is_nullfunc(hdr->frame_control)) {
--		/* FW does not report tx status properly for NullFunc frames
--		 * unless they are sent through mgmt tx path. mac80211 sends
--		 * those frames when it detects link/beacon loss and depends
--		 * on the tx status to be correct. */
--		ret = ath10k_htt_mgmt_tx(&ar->htt, skb);
--	} else {
--		ret = ath10k_htt_tx(&ar->htt, skb);
-+unlock:
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	return ret;
-+}
-+
-+static void ath10k_mac_tx(struct ath10k *ar, struct sk_buff *skb)
-+{
-+	struct ath10k_skb_cb *cb = ATH10K_SKB_CB(skb);
-+	struct ath10k_htt *htt = &ar->htt;
-+	int ret = 0;
-+
-+	switch (cb->txmode) {
-+	case ATH10K_HW_TXRX_RAW:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		ret = ath10k_htt_tx(htt, skb);
-+		break;
-+	case ATH10K_HW_TXRX_MGMT:
-+		if (test_bit(ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX,
-+			     ar->fw_features))
-+			ret = ath10k_mac_tx_wmi_mgmt(ar, skb);
-+		else if (ar->htt.target_version_major >= 3)
-+			ret = ath10k_htt_tx(htt, skb);
-+		else
-+			ret = ath10k_htt_mgmt_tx(htt, skb);
-+		break;
- 	}
- 
--exit:
- 	if (ret) {
- 		ath10k_warn(ar, "failed to transmit packet, dropping: %d\n",
- 			    ret);
-@@ -2358,7 +2428,7 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 		ar->offchan_tx_skb = skb;
- 		spin_unlock_bh(&ar->data_lock);
- 
--		ath10k_tx_htt(ar, skb);
-+		ath10k_mac_tx(ar, skb);
- 
- 		ret = wait_for_completion_timeout(&ar->offchan_tx_completed,
- 						  3 * HZ);
-@@ -2572,6 +2642,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
- 	struct ieee80211_vif *vif = info->control.vif;
- 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-+	__le16 fc = hdr->frame_control;
- 
- 	/* We should disable CCK RATE due to P2P */
- 	if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
-@@ -2580,12 +2651,26 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
- 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
- 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
-+	ATH10K_SKB_CB(skb)->txmode = ath10k_tx_h_get_txmode(ar, vif, skb);
-+	ATH10K_SKB_CB(skb)->is_protected = ieee80211_has_protected(fc);
- 
--	/* it makes no sense to process injected frames like that */
--	if (vif && vif->type != NL80211_IFTYPE_MONITOR) {
-+	switch (ATH10K_SKB_CB(skb)->txmode) {
-+	case ATH10K_HW_TXRX_MGMT:
-+	case ATH10K_HW_TXRX_NATIVE_WIFI:
- 		ath10k_tx_h_nwifi(hw, skb);
- 		ath10k_tx_h_add_p2p_noa_ie(ar, vif, skb);
- 		ath10k_tx_h_seq_no(vif, skb);
-+		break;
-+	case ATH10K_HW_TXRX_ETHERNET:
-+		ath10k_tx_h_8023(skb);
-+		break;
-+	case ATH10K_HW_TXRX_RAW:
-+		/* FIXME: Packet injection isn't implemented. It should be
-+		 * doable with firmware 10.2 on qca988x.
-+		 */
-+		WARN_ON_ONCE(1);
-+		ieee80211_free_txskb(hw, skb);
-+		return;
- 	}
- 
- 	if (info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) {
-@@ -2607,7 +2692,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
- 		}
- 	}
- 
--	ath10k_tx_htt(ar, skb);
-+	ath10k_mac_tx(ar, skb);
- }
- 
- /* Must not be called with conf_mutex held as workers can use that also. */
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index 6829611..7b63def 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -28,6 +28,14 @@ struct ath10k_generic_iter {
  	int ret;
- };
  
-+struct rfc1042_hdr {
-+	u8 llc_dsap;
-+	u8 llc_ssap;
-+	u8 llc_ctrl;
-+	u8 snap_oui[3];
-+	__be16 snap_type;
-+} __packed;
+@@ -373,7 +374,7 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
+ 	if (ar->num_peers >= ar->max_num_peers)
+ 		return -ENOBUFS;
+ 
+-	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
++	ret = ath10k_wmi_peer_create(ar, vdev_id, addr, peer_type);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to create wmi peer %pM on vdev %i: %i\n",
+ 			    addr, vdev_id, ret);
+@@ -1187,7 +1188,8 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
+ 		return;
+ 	}
+ 
+-	ret = ath10k_peer_create(arvif->ar, arvif->vdev_id, self_peer);
++	ret = ath10k_peer_create(arvif->ar, arvif->vdev_id, self_peer,
++				 WMI_PEER_TYPE_DEFAULT);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to create IBSS self peer %pM for vdev %d: %d\n",
+ 			    self_peer, arvif->vdev_id, ret);
+@@ -2417,7 +2419,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
+ 				   peer_addr, vdev_id);
+ 
+ 		if (!peer) {
+-			ret = ath10k_peer_create(ar, vdev_id, peer_addr);
++			ret = ath10k_peer_create(ar, vdev_id, peer_addr,
++						 WMI_PEER_TYPE_DEFAULT);
+ 			if (ret)
+ 				ath10k_warn(ar, "failed to create peer %pM on vdev %d: %d\n",
+ 					    peer_addr, vdev_id, ret);
+@@ -3300,7 +3303,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	}
+ 
+ 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
+-		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
++		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr,
++					 WMI_PEER_TYPE_DEFAULT);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to create vdev %i peer for AP: %d\n",
+ 				    arvif->vdev_id, ret);
+@@ -4023,7 +4027,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
+ 			goto exit;
+ 		}
+ 
+-		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
++		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr,
++					 WMI_PEER_TYPE_DEFAULT);
+ 		if (ret) {
+ 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
+ 				    sta->addr, arvif->vdev_id, ret);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 04dc4b9..a2cded8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -81,7 +81,8 @@ struct wmi_ops {
+ 	struct sk_buff *(*gen_vdev_wmm_conf)(struct ath10k *ar, u32 vdev_id,
+ 					     const struct wmi_wmm_params_all_arg *arg);
+ 	struct sk_buff *(*gen_peer_create)(struct ath10k *ar, u32 vdev_id,
+-					   const u8 peer_addr[ETH_ALEN]);
++					   const u8 peer_addr[ETH_ALEN],
++					   enum wmi_peer_type peer_type);
+ 	struct sk_buff *(*gen_peer_delete)(struct ath10k *ar, u32 vdev_id,
+ 					   const u8 peer_addr[ETH_ALEN]);
+ 	struct sk_buff *(*gen_peer_flush)(struct ath10k *ar, u32 vdev_id,
+@@ -625,14 +626,15 @@ ath10k_wmi_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
+ 
+ static inline int
+ ath10k_wmi_peer_create(struct ath10k *ar, u32 vdev_id,
+-		       const u8 peer_addr[ETH_ALEN])
++		       const u8 peer_addr[ETH_ALEN],
++		       enum wmi_peer_type peer_type)
+ {
+ 	struct sk_buff *skb;
+ 
+ 	if (!ar->wmi.ops->gen_peer_create)
+ 		return -EOPNOTSUPP;
+ 
+-	skb = ar->wmi.ops->gen_peer_create(ar, vdev_id, peer_addr);
++	skb = ar->wmi.ops->gen_peer_create(ar, vdev_id, peer_addr, peer_type);
+ 	if (IS_ERR(skb))
+ 		return PTR_ERR(skb);
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 71614ba..809c046 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1681,7 +1681,8 @@ ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
+ 
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
+-				  const u8 peer_addr[ETH_ALEN])
++				  const u8 peer_addr[ETH_ALEN],
++				  enum wmi_peer_type peer_type)
+ {
+ 	struct wmi_tlv_peer_create_cmd *cmd;
+ 	struct wmi_tlv *tlv;
+@@ -1696,7 +1697,7 @@ ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
+ 	tlv->len = __cpu_to_le16(sizeof(*cmd));
+ 	cmd = (void *)tlv->value;
+ 	cmd->vdev_id = __cpu_to_le32(vdev_id);
+-	cmd->peer_type = __cpu_to_le32(WMI_TLV_PEER_TYPE_DEFAULT); /* FIXME */
++	cmd->peer_type = __cpu_to_le32(peer_type);
+ 	ether_addr_copy(cmd->peer_addr.addr, peer_addr);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv peer create\n");
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index aeea1c7..b285291 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -4519,7 +4519,8 @@ ath10k_wmi_op_gen_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id,
+ 
+ static struct sk_buff *
+ ath10k_wmi_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
+-			      const u8 peer_addr[ETH_ALEN])
++			      const u8 peer_addr[ETH_ALEN],
++			      enum wmi_peer_type peer_type)
+ {
+ 	struct wmi_peer_create_cmd *cmd;
+ 	struct sk_buff *skb;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 20ce360..0ffa90a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4324,6 +4324,12 @@ struct wmi_peer_create_cmd {
+ 	struct wmi_mac_addr peer_macaddr;
+ } __packed;
+ 
++enum wmi_peer_type {
++	WMI_PEER_TYPE_DEFAULT = 0,
++	WMI_PEER_TYPE_BSS = 1,
++	WMI_PEER_TYPE_TDLS = 2,
++};
 +
- struct ath10k *ath10k_mac_create(size_t priv_size);
- void ath10k_mac_destroy(struct ath10k *ar);
- int ath10k_mac_register(struct ath10k *ar);
+ struct wmi_peer_delete_cmd {
+ 	__le32 vdev_id;
+ 	struct wmi_mac_addr peer_macaddr;
 -- 
 2.1.4
 
