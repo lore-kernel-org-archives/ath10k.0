@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQkz2-0005j7-UT
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 23:03:13 +0000
-Message-ID: <54EE549B.7090208@candelatech.com>
-Date: Wed, 25 Feb 2015 15:02:51 -0800
+ id 1YQlL5-0000rj-Ia
+ for ath10k@lists.infradead.org; Wed, 25 Feb 2015 23:26:00 +0000
+Message-ID: <54EE59F1.20805@candelatech.com>
+Date: Wed, 25 Feb 2015 15:25:37 -0800
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Question on setting tx-power in ath10k.
-References: <54EE1355.3010306@candelatech.com>
- <CAJ-VmoncKPbb+D0Z0N9ntov71B-UX8AT2pOyvCgcH1tYAsu+kA@mail.gmail.com>
- <54EE3B89.6070803@candelatech.com>
-In-Reply-To: <54EE3B89.6070803@candelatech.com>
+Subject: Re: Any idea why we cannot disable /b rates?
+References: <54ECB852.3030208@candelatech.com>
+ <54ECD482.3060003@candelatech.com>
+ <CAEFj986Z80bBioVC4Ao77ZskGGdZQA5WgdBgEzVoY4f8OBAJRQ@mail.gmail.com>
+ <54ED577A.8030003@candelatech.com>
+ <CAEFj9871qXhsVn1XmhGs6qSpcVWVjk+B-CMp1zJzf5uqyzKCUQ@mail.gmail.com>
+In-Reply-To: <CAEFj9871qXhsVn1XmhGs6qSpcVWVjk+B-CMp1zJzf5uqyzKCUQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,82 +26,68 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
+To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 Cc: ath10k <ath10k@lists.infradead.org>
 
-On 02/25/2015 01:15 PM, Ben Greear wrote:
-> On 02/25/2015 11:55 AM, Adrian Chadd wrote:
->> Yeah I remember this stuff. ath9k did the same thing too; it subtracts
->> TX power based on 2-chain and 3-chain; assuming that the max transmit
->> power in the EEPROM is actually the 3-chain value so it can get the
->> per-chain transmit power.
+On 02/25/2015 02:30 AM, Yeoh Chun-Yeow wrote:
+> On Wed, Feb 25, 2015 at 1:02 PM, Ben Greear <greearb@candelatech.com> wrote:
 >>
->> Thing is, whenever I actually looked at the output on a spectrum
->> analyser, the target power differed from what the card was rated at by
->> exactly 3 and 5 dBm respectively. Grr.
 >>
->> In FreeBSD I look at the number of configured chains for that TX
->> attempt and set the TX power cap appropriately per-packet. Grr.
+>> On 02/24/2015 06:45 PM, Yeoh Chun-Yeow wrote:
+>>>
+>>> On Wed, Feb 25, 2015 at 3:44 AM, Ben Greear <greearb@candelatech.com>
+>>> wrote:
+>>>>
+>>>> Ok, so I found the problem.  Appears that the firmware uses two different
+>>>> fixed rate-ctrl settings, one for non-data (bcast, mgt-frames, etc) and
+>>>> another
+>>>> for data frames.  The non-data one was not being set when user configured
+>>>> fixed rates, so beacons went out at 1Mbps.
+>>>>
+>>>> I updated CT firmware (beta-14) to set both data and non-data to the same
+>>>> value when the driver specifies the rates...  Seems to work...any idea
+>>>> if this is a bad idea in practice?
+>>>
+>>>
+>>> Rate control is applicable to unicast frame whether it is
+>>> management/data. Broadcast/Multicast rate is required for
+>>> management/data (usually the lowest transmission rate 5GHz is 6Mbps).
+>>>
+>>> So it is more sensible if we can configure the broadcast/multicast
+>>> rate and also disable the rate control for unicast frame by using
+>>> fixed rate.
+>>
+>>
+>> User-space API doesn't give the ability to set different fixed rates for
+>> different packet types, as far as I know.
+>>
+>> So, the current firmware just ignores the fixed rate for management and
+>> broadcast
+>> frames.
+>>
+>> My firmware change makes the fixed rate apply equally to all types of
+>> frames.
+>>
+>> Should I make my change optional for mgt/bcast , or should it always set
+>> mgt/bcast rates to the
+>> same fixed rates as data packets use?
 > 
-> We have a spectrum analyzer now, but I'm not sure if I can even force
-> the NIC to run at a specific HT or VHT rate, so not so sure how to
-> test the changes properly.
+> In iw, we have the following:
+> dev <devname> set mcast_rate <rate in Mbps>
+> dev <devname> set bitrates [legacy-<2.4|5> <legacy rate in Mbps>*]
+> [mcs-<2.4|5> <MCS index>*]
 > 
-> Either way, even if I adjust this as I am trying to do now
-> (on a per-rate basis based on number of chains that rate uses)
-> the min/max power restraints stay in place, so it should still
-> be fine as far as regulations are concerned.
-> 
-> Thanks for the info.
+> mcast-rate should be something set for broadcast/multicast frame
+> including the management and data frame. This allows us to have in
+> example beacon frame to be transmitted with higher rate from 1Mbps at
+> 2.4GHz and 6Mbps at 5GHz.
 
-I have uploaded a new beta CT firmware with this change.  If anyone has
-time to do some detailed testing on it, that would be welcome.
-
-I've added a release notes text file to the same directory as well, for
-those who have asked.
-
-http://www.candelatech.com/downloads/ath10k-fw-beta/
+Thanks...I'll try to figure out how to work this into my firmware.  But, it will
+require driver changes specific to my firmware as far as I can tell,
+so it will never make it upstream...
 
 Thanks,
 Ben
-
-
-> 
-> Ben
-> 
->>
->>
->> -adrian
->>
->> On 25 February 2015 at 10:24, Ben Greear <greearb@candelatech.com> wrote:
->>> I have added some debugging in my CT firmware based on 10.1.467, and I have noticed
->>> that anything below 5db is treated as zero by the firmware.  This is due primarily to
->>> subtracting a fixed amount based on the NIC's configured chainmask.
->>>
->>> I am guessing this is not entirely correct, since at /b rates, for instance, we
->>> will be transmitting on only a single chain, so it does not matter how many
->>> chains the hardware has?
->>>
->>> Anyone have any insight on how this stuff is *supposed* to work?
->>>
->>> If you have access to firmware source, plz contact me off the mailing list
->>> and I can provide more details about the code that looks broken.
->>>
->>> Thanks,
->>> Ben
->>>
->>> --
->>> Ben Greear <greearb@candelatech.com>
->>> Candela Technologies Inc  http://www.candelatech.com
->>>
->>>
->>> _______________________________________________
->>> ath10k mailing list
->>> ath10k@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/ath10k
->>
-> 
-> 
 
 
 -- 
