@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQU7v-00080O-PT
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 05:03:16 +0000
-Message-ID: <54ED577A.8030003@candelatech.com>
-Date: Tue, 24 Feb 2015 21:02:50 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: Any idea why we cannot disable /b rates?
-References: <54ECB852.3030208@candelatech.com>	<54ECD482.3060003@candelatech.com>
- <CAEFj986Z80bBioVC4Ao77ZskGGdZQA5WgdBgEzVoY4f8OBAJRQ@mail.gmail.com>
-In-Reply-To: <CAEFj986Z80bBioVC4Ao77ZskGGdZQA5WgdBgEzVoY4f8OBAJRQ@mail.gmail.com>
+Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQWmi-0004az-76
+ for ath10k@lists.infradead.org; Wed, 25 Feb 2015 07:53:33 +0000
+Received: by lbvp9 with SMTP id p9so2136381lbv.0
+ for <ath10k@lists.infradead.org>; Tue, 24 Feb 2015 23:53:02 -0800 (PST)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH v2 0/4] ath10k: add basic tdls support
+Date: Wed, 25 Feb 2015 08:55:07 +0100
+Message-Id: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,56 +17,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>
 
+This patchset introduces tdls funtionality without tdls peer uapsd
+and tdls channel switching. Tdls is supported by qca6174 hardware
+what is indicated by firmware through supported services.
+Tdls station when authorized requires some parameters that are filled in
+by rate control initialization. Because of that this patches contains
+one patch for mac80211 which moves rate control initialization before
+calling drivers station state with transition to authorized state.
 
+v2:
+-introduce tdls peer counter
+-minor changes after review
 
-On 02/24/2015 06:45 PM, Yeoh Chun-Yeow wrote:
-> On Wed, Feb 25, 2015 at 3:44 AM, Ben Greear <greearb@candelatech.com> wrote:
->> Ok, so I found the problem.  Appears that the firmware uses two different
->> fixed rate-ctrl settings, one for non-data (bcast, mgt-frames, etc) and another
->> for data frames.  The non-data one was not being set when user configured
->> fixed rates, so beacons went out at 1Mbps.
->>
->> I updated CT firmware (beta-14) to set both data and non-data to the same
->> value when the driver specifies the rates...  Seems to work...any idea
->> if this is a bad idea in practice?
->
-> Rate control is applicable to unicast frame whether it is
-> management/data. Broadcast/Multicast rate is required for
-> management/data (usually the lowest transmission rate 5GHz is 6Mbps).
->
-> So it is more sensible if we can configure the broadcast/multicast
-> rate and also disable the rate control for unicast frame by using
-> fixed rate.
+Marek Puzyniak (3):
+  ath10k: make peer type configurable
+  mac80211: initialize rate control earlier for tdls station
+  ath10k: introduce basic tdls functionality
 
-User-space API doesn't give the ability to set different fixed rates for
-different packet types, as far as I know.
+Michal Kazior (1):
+  ath10k: unify tx mode and dispatch
 
-So, the current firmware just ignores the fixed rate for management and broadcast
-frames.
-
-My firmware change makes the fixed rate apply equally to all types of frames.
-
-Should I make my change optional for mgt/bcast , or should it always set mgt/bcast rates to the
-same fixed rates as data packets use?
-
-Thanks,
-Ben
-
->
-> ---
-> Chun-Yeow
->
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |   8 -
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  30 ++-
+ drivers/net/wireless/ath/ath10k/mac.c     | 307 +++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/mac.h     |   8 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  50 ++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 157 ++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  52 +++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |  43 +++++
+ net/mac80211/cfg.c                        |  20 +-
+ 11 files changed, 597 insertions(+), 84 deletions(-)
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
