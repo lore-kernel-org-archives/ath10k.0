@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YQlL5-0000rj-Ia
- for ath10k@lists.infradead.org; Wed, 25 Feb 2015 23:26:00 +0000
-Message-ID: <54EE59F1.20805@candelatech.com>
-Date: Wed, 25 Feb 2015 15:25:37 -0800
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: Any idea why we cannot disable /b rates?
-References: <54ECB852.3030208@candelatech.com>
- <54ECD482.3060003@candelatech.com>
- <CAEFj986Z80bBioVC4Ao77ZskGGdZQA5WgdBgEzVoY4f8OBAJRQ@mail.gmail.com>
- <54ED577A.8030003@candelatech.com>
- <CAEFj9871qXhsVn1XmhGs6qSpcVWVjk+B-CMp1zJzf5uqyzKCUQ@mail.gmail.com>
-In-Reply-To: <CAEFj9871qXhsVn1XmhGs6qSpcVWVjk+B-CMp1zJzf5uqyzKCUQ@mail.gmail.com>
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YQvRB-00061f-8i
+ for ath10k@lists.infradead.org; Thu, 26 Feb 2015 10:12:58 +0000
+Received: by lbjb6 with SMTP id b6so9798066lbj.2
+ for <ath10k@lists.infradead.org>; Thu, 26 Feb 2015 02:12:32 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix TxBF VHT capabilities for 2+ RF-chain devices
+Date: Thu, 26 Feb 2015 11:11:22 +0100
+Message-Id: <1424945482-9765-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,77 +17,66 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 02/25/2015 02:30 AM, Yeoh Chun-Yeow wrote:
-> On Wed, Feb 25, 2015 at 1:02 PM, Ben Greear <greearb@candelatech.com> wrote:
->>
->>
->> On 02/24/2015 06:45 PM, Yeoh Chun-Yeow wrote:
->>>
->>> On Wed, Feb 25, 2015 at 3:44 AM, Ben Greear <greearb@candelatech.com>
->>> wrote:
->>>>
->>>> Ok, so I found the problem.  Appears that the firmware uses two different
->>>> fixed rate-ctrl settings, one for non-data (bcast, mgt-frames, etc) and
->>>> another
->>>> for data frames.  The non-data one was not being set when user configured
->>>> fixed rates, so beacons went out at 1Mbps.
->>>>
->>>> I updated CT firmware (beta-14) to set both data and non-data to the same
->>>> value when the driver specifies the rates...  Seems to work...any idea
->>>> if this is a bad idea in practice?
->>>
->>>
->>> Rate control is applicable to unicast frame whether it is
->>> management/data. Broadcast/Multicast rate is required for
->>> management/data (usually the lowest transmission rate 5GHz is 6Mbps).
->>>
->>> So it is more sensible if we can configure the broadcast/multicast
->>> rate and also disable the rate control for unicast frame by using
->>> fixed rate.
->>
->>
->> User-space API doesn't give the ability to set different fixed rates for
->> different packet types, as far as I know.
->>
->> So, the current firmware just ignores the fixed rate for management and
->> broadcast
->> frames.
->>
->> My firmware change makes the fixed rate apply equally to all types of
->> frames.
->>
->> Should I make my change optional for mgt/bcast , or should it always set
->> mgt/bcast rates to the
->> same fixed rates as data packets use?
-> 
-> In iw, we have the following:
-> dev <devname> set mcast_rate <rate in Mbps>
-> dev <devname> set bitrates [legacy-<2.4|5> <legacy rate in Mbps>*]
-> [mcs-<2.4|5> <MCS index>*]
-> 
-> mcast-rate should be something set for broadcast/multicast frame
-> including the management and data frame. This allows us to have in
-> example beacon frame to be transmitted with higher rate from 1Mbps at
-> 2.4GHz and 6Mbps at 5GHz.
+Firmware doesn't report a complete and
+ready-to-use vht cap. Instead the driver is
+supposed to fill in the missing bits related to
+number of chains.
 
-Thanks...I'll try to figure out how to work this into my firmware.  But, it will
-require driver changes specific to my firmware as far as I can tell,
-so it will never make it upstream...
+This effectively increases Compressed Steering
+Number and Number of Sounding Dimensions in
+AssocReq frames for devices with more than one RF
+chain and should improve TxBF performance.
 
-Thanks,
-Ben
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0f39af7..383250e 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5263,11 +5263,30 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ {
+ 	struct ieee80211_sta_vht_cap vht_cap = {0};
+ 	u16 mcs_map;
++	u32 val;
+ 	int i;
+ 
+ 	vht_cap.vht_supported = 1;
+ 	vht_cap.cap = ar->vht_cap_info;
+ 
++	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
++				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)) {
++		val = ar->num_rf_chains - 1;
++		val <<= IEEE80211_VHT_CAP_BEAMFORMEE_STS_SHIFT;
++		val &= IEEE80211_VHT_CAP_BEAMFORMEE_STS_MASK;
++
++		vht_cap.cap |= val;
++	}
++
++	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE |
++				IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE)) {
++		val = ar->num_rf_chains - 1;
++		val <<= IEEE80211_VHT_CAP_SOUNDING_DIMENSIONS_SHIFT;
++		val &= IEEE80211_VHT_CAP_SOUNDING_DIMENSIONS_MASK;
++
++		vht_cap.cap |= val;
++	}
++
+ 	mcs_map = 0;
+ 	for (i = 0; i < 8; i++) {
+ 		if (i < ar->num_rf_chains)
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.8.5.3
 
 
 _______________________________________________
