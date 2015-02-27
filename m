@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.neratec.com ([46.140.151.2])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRIQt-0006i4-SU
- for ath10k@lists.infradead.org; Fri, 27 Feb 2015 10:46:14 +0000
-Message-ID: <54F04AD5.3030406@neratec.com>
-Date: Fri, 27 Feb 2015 11:45:41 +0100
-From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath: support new FCC DFS Radar Type 1
-References: <1424902634-18275-1-git-send-email-poh@qca.qualcomm.com>
-In-Reply-To: <1424902634-18275-1-git-send-email-poh@qca.qualcomm.com>
+ id 1YRKNe-0004QV-VM
+ for ath10k@lists.infradead.org; Fri, 27 Feb 2015 12:50:59 +0000
+Message-ID: <1425041427.1960.1.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for
+ tdls station
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Fri, 27 Feb 2015 13:50:27 +0100
+In-Reply-To: <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
+ (sfid-20150225_085335_433402_71CE8ACD)
+References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
+ <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
+ (sfid-20150225_085335_433402_71CE8ACD)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,74 +26,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Marek Puzyniak <marek.puzyniak@tieto.com>, Arik Nemtsov <arikx.nemtsov@intel.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 02/25/2015 11:17 PM, Peter Oh wrote:
-> Add support for new FCC DFS rules released on August 14, 2014.
-> FCC has added a new radar type named Radar Type 1 and original
-> Radar Type 1 is renamed to Radar Type 0 in consequence.
-> In fact, the type ID does nothing to functionalities.
-> In other words, even if we re-order the IDs, DFS detection will
-> work as well, but we give the ID with matching to FCC doc.
-> 
-> By adding this support, the drivers using this DFS function are
-> able to support both of old and new FCC DFS rules simultaneously
-> without any other changes.
-> 
-> [...]
++Arik.
 
-Peter,
+It'd be nice (for me anyway) if you didn't send this in a series of
+other patches I don't care about - I only ever saw this due to
+patchwork.
 
-while trying to solve detection of the special FCC type 1 radar pattern with the
-pri_detector at hand is a valid approach, it is neither suitable nor effective.
+On Wed, 2015-02-25 at 08:55 +0100, Marek Puzyniak wrote:
+> Currently when TDLS station in driver goes from assoc
+> to authorized state it can not use rate control parameters
+> because rate control is not initialized yet. Some drivers
+> require parameters already initialized by rate control when
+> entering authorized state. It can be done by initializing
+> rate control after station transition to authorized state
+> but before notifying driver about that.
 
-It is not suitable because in the way you do, it will not reach the required
-detection probability required to pass certification. This is because you take the
-very first pri to configure its detector specs, which is way too optimistic. You
-have to consider that the detector must be able to detect properly with only 50%
-of the pulses seen. In this particular case, you would ignore a lot of type 1
-patterns, since the resulting visibility gap causes temporary false PRIs that
-won't be considered. You might want to have a look on my slides 15ff in [1] for an
-idea what needs to be handled.
+Arik, you have a similar patch handling only NSS. Does this one look
+fine to you, and would it solve the problem your other patch solved?
 
-Generally, to reach the detection probability requirements, the design of the
-PRI-detector at hand follows a full-coverage search with fast cancellation
-approach. For that, it allows collecting potential pattern candidates and a
-posteriori correction of initial assumptions. It is specifically targeting at
-radar patterns defined through PRI-ranges, where constant PRI-ranges are supported
-as special cases by setting the same values for pri_min and pri_max (as is done
-for pattern 0). With support for PRI-ranges and unique PRIs, everything needed to
-detect pattern 1 is there, but defining it as a PRI-range over all the unique 23
-PRIs is the wrong way.
+johannes
 
-The correct approach is more simple, robust, and efficient: define all those 23
-unique PRIs as sub-patterns for type 1 with individual specs. Would look like:
-
-#define TYPE1_PPB(X) ((19 * 100000) / (36 * X))
-static const struct radar_detector_specs fcc_radar_ref_types[] = {
-	FCC_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
-	FCC_PATTERN(101, 0, 1, 518, 518, 1, TYPE1_PPB(518), false),
-	FCC_PATTERN(102, 0, 1, ..., ..., 1, ..., false),
-	[...],
-	FCC_PATTERN(123, 0, 1, 3066, 3066, 1, TYPE1_PPB(3066), false),
-	FCC_PATTERN(2, 0, 5, 150, 230, 1, 23, false),
-	FCC_PATTERN(3, 6, 10, 200, 500, 1, 16, false),
-	FCC_PATTERN(4, 11, 20, 200, 500, 1, 12, false),
-	FCC_PATTERN(5, 50, 100, 1000, 2000, 1, 1, true),
-	FCC_PATTERN(6, 0, 1, 333, 333, 1, 9, false),
-};
-
-
-Hope it helps, and sorry I didn't do myself, but so far we are only working in
-ETSI domains and ignored FCC completely.
-
-
-Cheers,
-Zefir
-
-[1]
-http://linuxwireless.sipsolutions.net/attachments/en/developers/DFS/Vancouver2011-Slides-DFS.pdf
 
 _______________________________________________
 ath10k mailing list
