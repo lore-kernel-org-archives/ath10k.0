@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qa0-f54.google.com ([209.85.216.54])
+Received: from mail-qg0-f50.google.com ([209.85.192.50])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YS0Db-0004xQ-MJ
- for ath10k@lists.infradead.org; Sun, 01 Mar 2015 09:31:26 +0000
-Received: by mail-qa0-f54.google.com with SMTP id x12so18850519qac.13
- for <ath10k@lists.infradead.org>; Sun, 01 Mar 2015 01:31:01 -0800 (PST)
+ id 1YS0Fx-0005bg-Rh
+ for ath10k@lists.infradead.org; Sun, 01 Mar 2015 09:33:51 +0000
+Received: by mail-qg0-f50.google.com with SMTP id e89so20606550qgf.9
+ for <ath10k@lists.infradead.org>; Sun, 01 Mar 2015 01:33:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <54EC3ED4.3060003@sophos.com>
+In-Reply-To: <54EB7596.5010103@candelatech.com>
 References: <CAFZrTr7=jCHWHv2DsHZ_KP7zf_ve8LEkhZXxoPqwWLQZdSM+YQ@mail.gmail.com>
- <54EC3ED4.3060003@sophos.com>
-Date: Sun, 1 Mar 2015 10:31:01 +0100
-Message-ID: <CAFZrTr6YTZvxD5UC9DAzQXeadc7WEnuCgU43Y-nPdzZWEkOQ8g@mail.gmail.com>
+ <54EB7596.5010103@candelatech.com>
+Date: Sun, 1 Mar 2015 10:33:26 +0100
+Message-ID: <CAFZrTr45G3PQdi2qkkASN4rDAwW5tdTdeopwFGvG6s-hx-Ffhw@mail.gmail.com>
 Subject: Re: Firmware (firmware-2-ct-non-commercial-full-13.bin) and
  ath10k_pci crash
 From: Jeremias Blendin <jeremias@blendin.org>
@@ -26,31 +26,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
+To: Ben Greear <greearb@candelatech.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi Fabian,
+Dear Ben,
 
-I had a look at your report, but was not sure if it is the same issue.
-I now run a kernel with CONFIG_INTEL_IDLE disabled, which increases
-the time to crash greatly. The card worked for 2 days now before
-crashing. Next step: disable all cores but one.
+thanks for the hint. Unfortunately I am not able to create Ubuntu
+packages from your kernel tree (using this howto:
+https://wiki.ubuntu.com/KernelTeam/GitKernelBuild).
+I will investigate and see if I can make it work, hopefully next week.
 
 Best
 
 Jeremias
 
-2015-02-24 10:05 GMT+01:00 Fabian Wittenberg <Fabian.Wittenberg@sophos.com>:
-> Hi Jeremias,
->
-> did you read my previous message? It could be that this is the same
-> error as I already experiences. Try to disable CONFIG_INTEL_IDLE in
-> kernel or use kernel parameter intel_idle.max_cstate=0.
->
-> Regards,
-> Fabian
->
-> Am 23.02.2015 um 19:39 schrieb Jeremias Blendin:
+2015-02-23 19:46 GMT+01:00 Ben Greear <greearb@candelatech.com>:
+> On 02/23/2015 10:39 AM, Jeremias Blendin wrote:
 >> Hi,
 >>
 >> after setting up ath10k with hostapd I only get a few minutes in
@@ -63,6 +54,25 @@ Jeremias
 >>
 >> Any hints are appreciated. I currently use the system only for setting
 >> up wifi, so I could run tests if required.
+>
+> For this crash, the firmware crash dump cannot be read over the normal
+> management channel.  If you can build & boot my 3.17.8 kernel, then it should
+> be able to dump the firmware crash directly over some registers.
+>
+> git clone git://dmz2.candelatech.com/linux-3.17.dev.y
+>
+>
+> I don't have a good test case to test this particular way of reading
+> registers, so I'm quite interested if your system can read the crash that
+> way or not...
+>
+> That said, your system looks quite sickly in all kinds of interesting ways,
+> so not sure I'll be able to actually fix the problem (and not sure the problem
+> is entirely in firmware).
+>
+> Thanks,
+> Ben
+>
 >>
 >> Thanks!
 >>
@@ -335,12 +345,13 @@ Jeremias
 >> ath10k mailing list
 >> ath10k@lists.infradead.org
 >> http://lists.infradead.org/mailman/listinfo/ath10k
+>>
 >
 >
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
 _______________________________________________
 ath10k mailing list
