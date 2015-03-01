@@ -1,20 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YRlZh-0006dq-B8
- for ath10k@lists.infradead.org; Sat, 28 Feb 2015 17:53:13 +0000
-Received: from [50.34.201.20] (unknown [50.34.201.20])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id B7F6140A339
- for <ath10k@lists.infradead.org>; Sat, 28 Feb 2015 09:52:49 -0800 (PST)
-Message-ID: <54F20070.6070905@candelatech.com>
-Date: Sat, 28 Feb 2015 09:52:48 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YRz8R-0002St-GQ
+ for ath10k@lists.infradead.org; Sun, 01 Mar 2015 08:22:00 +0000
+Received: by lamq1 with SMTP id q1so1687573lam.0
+ for <ath10k@lists.infradead.org>; Sun, 01 Mar 2015 00:21:35 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: Getting a 'no-ack' tx status?
-References: <54F0FD17.2080603@candelatech.com>
-In-Reply-To: <54F0FD17.2080603@candelatech.com>
+In-Reply-To: <1425041427.1960.1.camel@sipsolutions.net>
+References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
+ <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
+ <1425041427.1960.1.camel@sipsolutions.net>
+From: Arik Nemtsov <arik@wizery.com>
+Date: Sun, 1 Mar 2015 10:21:20 +0200
+Message-ID: <CA+XVXfchZ+L1iH47S=rM04vJbjBSKA4O8TYuhEkfZuLpNb9QDA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for tdls
+ station
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +23,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Arik Nemtsov <arikx.nemtsov@intel.com>
 
-I think I managed to hack the CT firmware to return the
-tx-completion status (OK, XRETRY, DROP) when it is returning the
-tx-rate info, and patched the driver to pay attention to it...
+On Fri, Feb 27, 2015 at 2:50 PM, Johannes Berg
+<johannes@sipsolutions.net> wrote:
+> +Arik.
+>
+> It'd be nice (for me anyway) if you didn't send this in a series of
+> other patches I don't care about - I only ever saw this due to
+> patchwork.
+>
+> On Wed, 2015-02-25 at 08:55 +0100, Marek Puzyniak wrote:
+>> Currently when TDLS station in driver goes from assoc
+>> to authorized state it can not use rate control parameters
+>> because rate control is not initialized yet. Some drivers
+>> require parameters already initialized by rate control when
+>> entering authorized state. It can be done by initializing
+>> rate control after station transition to authorized state
+>> but before notifyiIEEE80211_STA_ASSOCng driver about that.
+>
+> Arik, you have a similar patch handling only NSS. Does this one look
+> fine to you, and would it solve the problem your other patch solved?
 
-A brief test showed some failed-retry counters reported by
-the mac80211 stack, so that looks promising.
+Well currently iwlmvm requires the NSS to be set before
+IEEE80211_STA_ASSOC (earlier), so this doesn't help directly.
+I could change mvm a bit to make it work, but I don't really see a
+good reason for it :)
 
-Will do some more testing when I get a chance.
+The patch looks good. Shouldn't introduce new issues (at least for iwlwifi).
 
-Thanks,
-Ben
-
-On 02/27/2015 03:26 PM, Ben Greear wrote:
-> Someone reported to me that they never see the
-> tx_done->no_ack flag set on their AP, even when stations are falling
-> off the network due to not receiving ACKs.
->
-> 	if (tx_done->no_ack)
-> 		info->flags &= ~IEEE80211_TX_STAT_ACK;
->
->
-> I am having no luck finding the corresponding code in the 10.1.467
-> firmware that would cause this to work, but maybe I am just not looking
-> in the right place.
->
-> Has anyone done any testing to see if ath10k actually reports ACK failures
-> properly back up the stack?
->
-> Thanks,
-> Ben
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Arik
 
 _______________________________________________
 ath10k mailing list
