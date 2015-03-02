@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSOay-00051X-A3
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 11:33:09 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V4 2/2] ath10k: Fix interrupt storm
-Date: Mon, 2 Mar 2015 16:58:00 +0530
-Message-ID: <1425295680-2269-2-git-send-email-vthiagar@qti.qualcomm.com>
-In-Reply-To: <1425295680-2269-1-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1425295680-2269-1-git-send-email-vthiagar@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1YSObe-0005Zi-0f
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 11:33:51 +0000
+Received: by lbdu10 with SMTP id u10so29283918lbd.7
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 03:33:26 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: implement wmi roam event
+Date: Mon,  2 Mar 2015 12:32:11 +0100
+Message-Id: <1425295932-10386-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,102 +17,274 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Promiscuous mode is enabled when wlan interface is added to
-bridge. ath10k creates a monitor mode when promiscuous mode
-is enabled. When monitor vdev is running along with other
-vdev(s) there is a huge number of interrupts generated
-especially in noisy condition. Fix this by not enabling
-promiscuous(monitor) mode when already a vdev is running.
-As disabling promiscuous mode may have issues with 4-address
-bridging in STA mode, the change is done specific to non-sta/ibss
-mode types. This does not change the support of virtual interface of
-type monitor along with other vdevs of any type.
+This can be used to implement offloaded rssi
+threshold, beacon miss or even automatic
+in-firmware BSS roaming in the future.
 
-This could fix management frame drop in fw due to unavailable
-buffers because in monitor mode device receives everything seen
-on the air. In noisy condition, disabling monitor mode helps assoc
-go through without any issue.
-
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   34 +++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 12 +++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 32 ++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  6 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c     | 55 ++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi.h     | 22 +++++++++++++
+ 5 files changed, 126 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3b5aaa3..c220c51 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -766,6 +766,26 @@ static int ath10k_monitor_stop(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index c8b64e7..f0a8b8d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -45,6 +45,8 @@ struct wmi_ops {
+ 			struct wmi_rdy_ev_arg *arg);
+ 	int (*pull_fw_stats)(struct ath10k *ar, struct sk_buff *skb,
+ 			     struct ath10k_fw_stats *stats);
++	int (*pull_roam_ev)(struct ath10k *ar, struct sk_buff *skb,
++			    struct wmi_roam_ev_arg *arg);
+ 
+ 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
+ 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
+@@ -274,6 +276,16 @@ ath10k_wmi_pull_fw_stats(struct ath10k *ar, struct sk_buff *skb,
+ }
+ 
+ static inline int
++ath10k_wmi_pull_roam_ev(struct ath10k *ar, struct sk_buff *skb,
++			struct wmi_roam_ev_arg *arg)
++{
++	if (!ar->wmi.ops->pull_roam_ev)
++		return -EOPNOTSUPP;
++
++	return ar->wmi.ops->pull_roam_ev(ar, skb, arg);
++}
++
++static inline int
+ ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ {
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index f34baa0..8cc4a38 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -62,6 +62,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
+ 		= { .min_len = sizeof(struct wmi_tlv_bcn_tx_status_ev) },
+ 	[WMI_TLV_TAG_STRUCT_DIAG_DATA_CONTAINER_EVENT]
+ 		= { .min_len = sizeof(struct wmi_tlv_diag_data_ev) },
++	[WMI_TLV_TAG_STRUCT_ROAM_EVENT]
++		= { .min_len = sizeof(struct wmi_tlv_roam_ev) },
+ };
+ 
+ static int
+@@ -1012,6 +1014,35 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
  	return 0;
  }
  
-+static bool ath10k_mac_should_disable_promisc(struct ath10k *ar)
++static int ath10k_wmi_tlv_op_pull_roam_ev(struct ath10k *ar,
++					  struct sk_buff *skb,
++					  struct wmi_roam_ev_arg *arg)
 +{
-+	struct ath10k_vif *arvif;
++	const void **tb;
++	const struct wmi_tlv_roam_ev *ev;
++	int ret;
 +
-+	if (!(ar->filter_flags & FIF_PROMISC_IN_BSS))
-+		return true;
-+
-+	if (!ar->num_started_vdevs)
-+		return false;
-+
-+	list_for_each_entry(arvif, &ar->arvifs, list)
-+		if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
-+			return false;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_MAC,
-+		   "mac disabling promiscuous mode because vdev is started\n");
-+	ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
-+	return true;
-+}
-+
- static int ath10k_monitor_recalc(struct ath10k *ar)
- {
- 	bool should_start;
-@@ -773,7 +793,7 @@ static int ath10k_monitor_recalc(struct ath10k *ar)
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	should_start = ar->monitor ||
--		       ar->filter_flags & FIF_PROMISC_IN_BSS ||
-+		       !ath10k_mac_should_disable_promisc(ar);
- 		       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
-@@ -910,7 +930,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 	struct ath10k *ar = arvif->ar;
- 	struct cfg80211_chan_def *chandef = &ar->chandef;
- 	struct wmi_vdev_start_request_arg arg = {};
--	int ret = 0;
-+	int ret = 0, ret2;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -969,6 +989,16 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 	ar->num_started_vdevs++;
- 	ath10k_recalc_radar_detection(ar);
- 
-+	ret = ath10k_monitor_recalc(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "mac failed to recalc monitor for vdev %i restart %d: %d\n",
-+			    arg.vdev_id, restart, ret);
-+		ret2 = ath10k_vdev_stop(arvif);
-+		if (ret2)
-+			ath10k_warn(ar, "mac failed to stop vdev %i restart %d: %d\n",
-+				    arg.vdev_id, restart, ret2);
++	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
++		return ret;
 +	}
 +
- 	return ret;
++	ev = tb[WMI_TLV_TAG_STRUCT_ROAM_EVENT];
++	if (!ev) {
++		kfree(tb);
++		return -EPROTO;
++	}
++
++	arg->vdev_id = ev->vdev_id;
++	arg->reason = ev->reason;
++	arg->rssi = ev->rssi;
++
++	kfree(tb);
++	return 0;
++}
++
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_pdev_suspend(struct ath10k *ar, u32 opt)
+ {
+@@ -2741,6 +2772,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.pull_svc_rdy = ath10k_wmi_tlv_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_tlv_op_pull_rdy_ev,
+ 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
++	.pull_roam_ev = ath10k_wmi_tlv_op_pull_roam_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index d7a31e1..632b813 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1448,6 +1448,12 @@ struct wmi_tlv_stats_ev {
+ 	__le32 num_chan_stats;
+ } __packed;
+ 
++struct wmi_tlv_roam_ev {
++	__le32 vdev_id;
++	__le32 reason;
++	__le32 rssi;
++} __packed;
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index c7ea77e..4bed11a 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2872,7 +2872,41 @@ void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
+ 
+ void ath10k_wmi_event_roam(struct ath10k *ar, struct sk_buff *skb)
+ {
+-	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_ROAM_EVENTID\n");
++	struct wmi_roam_ev_arg arg = {};
++	int ret;
++	u32 vdev_id;
++	u32 reason;
++	s32 rssi;
++
++	ret = ath10k_wmi_pull_roam_ev(ar, skb, &arg);
++	if (ret) {
++		ath10k_warn(ar, "failed to parse roam event: %d\n", ret);
++		return;
++	}
++
++	vdev_id = __le32_to_cpu(arg.vdev_id);
++	reason = __le32_to_cpu(arg.reason);
++	rssi = __le32_to_cpu(arg.rssi);
++	rssi += WMI_SPECTRAL_NOISE_FLOOR_REF_DEFAULT;
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi roam event vdev %u reason 0x%08x rssi %d\n",
++		   vdev_id, reason, rssi);
++
++	if (reason >= WMI_ROAM_REASON_MAX)
++		ath10k_warn(ar, "ignoring unknown roam event reason %d on vdev %i\n",
++			    reason, vdev_id);
++
++	switch (reason) {
++	case WMI_ROAM_REASON_BETTER_AP:
++	case WMI_ROAM_REASON_BEACON_MISS:
++	case WMI_ROAM_REASON_LOW_RSSI:
++	case WMI_ROAM_REASON_SUITABLE_AP_FOUND:
++	case WMI_ROAM_REASON_HO_FAILED:
++		ath10k_warn(ar, "ignoring not implemented roam event reason %d on vdev %i\n",
++			    reason, vdev_id);
++		break;
++	}
  }
  
+ void ath10k_wmi_event_profile_match(struct ath10k *ar, struct sk_buff *skb)
+@@ -3231,6 +3265,21 @@ static int ath10k_wmi_op_pull_rdy_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
++static int ath10k_wmi_op_pull_roam_ev(struct ath10k *ar, struct sk_buff *skb,
++				      struct wmi_roam_ev_arg *arg)
++{
++	struct wmi_roam_ev *ev = (void *)skb->data;
++
++	if (skb->len < sizeof(*ev))
++		return -EPROTO;
++
++	skb_pull(skb, sizeof(*ev));
++	arg->vdev_id = ev->vdev_id;
++	arg->reason = ev->reason;
++
++	return 0;
++}
++
+ int ath10k_wmi_event_ready(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_rdy_ev_arg arg = {};
+@@ -5223,6 +5272,7 @@ static const struct wmi_ops wmi_ops = {
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
+ 	.pull_fw_stats = ath10k_wmi_main_op_pull_fw_stats,
++	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+@@ -5290,6 +5340,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
+ 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+@@ -5353,6 +5404,7 @@ static const struct wmi_ops wmi_10_2_ops = {
+ 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
+ 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+@@ -5413,6 +5465,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
+ 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 28c1822..70bfb2d 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4768,6 +4768,22 @@ struct wmi_dbglog_cfg_cmd {
+ 	__le32 config_valid;
+ } __packed;
+ 
++enum wmi_roam_reason {
++	WMI_ROAM_REASON_BETTER_AP = 1,
++	WMI_ROAM_REASON_BEACON_MISS = 2,
++	WMI_ROAM_REASON_LOW_RSSI = 3,
++	WMI_ROAM_REASON_SUITABLE_AP_FOUND = 4,
++	WMI_ROAM_REASON_HO_FAILED = 5,
++
++	/* keep last */
++	WMI_ROAM_REASON_MAX,
++};
++
++struct wmi_roam_ev {
++	__le32 vdev_id;
++	__le32 reason;
++} __packed;
++
+ #define ATH10K_FRAGMT_THRESHOLD_MIN	540
+ #define ATH10K_FRAGMT_THRESHOLD_MAX	2346
+ 
+@@ -4856,6 +4872,12 @@ struct wmi_rdy_ev_arg {
+ 	const u8 *mac_addr;
+ };
+ 
++struct wmi_roam_ev_arg {
++	__le32 vdev_id;
++	__le32 reason;
++	__le32 rssi;
++};
++
+ struct wmi_pdev_temperature_event {
+ 	/* temperature value in Celcius degree */
+ 	__le32 temperature;
 -- 
-1.7.9.5
+1.8.5.3
 
 
 _______________________________________________
