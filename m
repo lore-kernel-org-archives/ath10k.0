@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSMNB-0007sm-PL
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 09:10:47 +0000
-Received: by lbdu14 with SMTP id u14so7509069lbd.0
- for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 01:10:22 -0800 (PST)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: fix some pci wake/sleep issues
-Date: Mon,  2 Mar 2015 10:09:02 +0100
-Message-Id: <1425287344-30594-1-git-send-email-michal.kazior@tieto.com>
+ id 1YSMT6-0002NK-Ho
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 09:16:53 +0000
+Message-ID: <1425287785.1906.0.camel@sipsolutions.net>
+Subject: Re: [PATCH 2/3] ath10k: always save/restore pci config space
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Mon, 02 Mar 2015 10:16:25 +0100
+In-Reply-To: <1425287344-30594-2-git-send-email-michal.kazior@tieto.com>
+ (sfid-20150302_101036_254852_C8CA7C94)
+References: <1425287344-30594-1-git-send-email-michal.kazior@tieto.com>
+ <1425287344-30594-2-git-send-email-michal.kazior@tieto.com>
+ (sfid-20150302_101036_254852_C8CA7C94)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,119 +21,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-In some cases the device ends up sleeping while
-ath10k didn't expect it to leading to reading
-garbage from registers, e.g. when shared irqs are
-used and the driver is in powered down state.
+On Mon, 2015-03-02 at 10:09 +0100, Michal Kazior wrote:
+> The check isn't really necessary and couldn't even
+> work because becase pci_restore_state() restores
+> only first 64 bytes of PCI configuration space.
+> 
+> This is necessary for future WoWLAN support.
 
-This effectively makes the device remain awake all
-the time even when all interfaces are down.
+> +	pci_save_state(pdev);
+> +	pci_disable_device(pdev);
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 37 ++++++++++++++++++++++++++++++-----
- 1 file changed, 32 insertions(+), 5 deletions(-)
+I believe the whole thing isn't necessary at all since the kernel's PCIe
+layer will take care of it.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e6972b0..cbf82ff 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -819,6 +819,21 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
- 	return -ETIMEDOUT;
- }
- 
-+/* The rule is host is forbidden from accessing device registers while it's
-+ * asleep. Currently ath10k_pci_wake() and ath10k_pci_sleep() calls aren't
-+ * balanced and the device is kept awake all the time. This is intended for a
-+ * simpler solution for the following problems:
-+ *
-+ *   * device can enter sleep during s2ram without the host knowing,
-+ *
-+ *   * irq handlers access registers which is a problem if other device asserts
-+ *     a shared irq line when ath10k is between hif_power_down() and
-+ *     hif_power_up().
-+ *
-+ * FIXME: If power consumption is a concern (and there are *real* gains) then a
-+ * refcounted wake/sleep needs to be implemented.
-+ */
-+
- static int ath10k_pci_wake(struct ath10k *ar)
- {
- 	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
-@@ -2034,8 +2049,6 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
- 	/* Currently hif_power_up performs effectively a reset and hif_stop
- 	 * resets the chip as well so there's no point in resetting here.
- 	 */
--
--	ath10k_pci_sleep(ar);
- }
- 
- #ifdef CONFIG_PM
-@@ -2048,6 +2061,8 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
- 	struct pci_dev *pdev = ar_pci->pdev;
- 	u32 val;
- 
-+	ath10k_pci_sleep(ar);
-+
- 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
- 
- 	if ((val & 0x000000ff) != 0x3) {
-@@ -2065,6 +2080,13 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct pci_dev *pdev = ar_pci->pdev;
- 	u32 val;
-+	int ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to wake device up on resume: %d\n", ret);
-+		return ret;
-+	}
- 
- 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
- 
-@@ -2083,7 +2105,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- 			pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
- 	}
- 
--	return 0;
-+	return ret;
- }
- #endif
- 
-@@ -2177,6 +2199,13 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
- {
- 	struct ath10k *ar = arg;
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	int ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wake device up on irq: %d\n", ret);
-+		return IRQ_NONE;
-+	}
- 
- 	if (ar_pci->num_msi_intrs == 0) {
- 		if (!ath10k_pci_irq_pending(ar))
-@@ -2681,8 +2710,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		goto err_sleep;
- 	}
- 
--	ath10k_pci_sleep(ar);
--
- 	ret = ath10k_core_register(ar, chip_id);
- 	if (ret) {
- 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
--- 
-1.8.5.3
+johannes
 
 
 _______________________________________________
