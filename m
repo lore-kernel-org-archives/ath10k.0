@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSPO2-0005UP-Kc
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 12:23:51 +0000
-Received: by labgd6 with SMTP id gd6so29878646lab.8
- for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 04:23:26 -0800 (PST)
+ id 1YSPO2-0005Ui-9a
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 12:23:50 +0000
+Received: by lbiz11 with SMTP id z11so3613346lbi.13
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 04:23:27 -0800 (PST)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/2] ath10k: fix some pci wake/sleep issues
-Date: Mon,  2 Mar 2015 13:22:13 +0100
-Message-Id: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v2 2/2] ath10k: save/restore pci config space properly
+Date: Mon,  2 Mar 2015 13:22:14 +0100
+Message-Id: <1425298934-12370-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
+References: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,109 +27,92 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-In some cases the device ends up sleeping while
-ath10k didn't expect it to leading to reading
-garbage from registers, e.g. when shared irqs are
-used and the driver is in powered down state.
+The check was't really necessary and couldn't even
+work to begin with because pci_restore_state()
+restores only first 64 bytes of PCI configuration
+space.
 
-This effectively makes the device remain awake all
-the time even when all interfaces are down.
+Actually the PCI subsystem takes care of this so
+there's no need for explicit calls to save PCI
+state in ath10k.
+
+This is necessary for future WoWLAN support.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 37 ++++++++++++++++++++++++++++++-----
- 1 file changed, 32 insertions(+), 5 deletions(-)
+
+Notes:
+    v2:
+     * don't call pci save/restore/enable/disable explicitly and
+       leave it to the PCI subsystem [Johannes]
+     * adjust commit message
+     * the [PATCH 3/3] is effectivelly dropped since
+       there's nothing to balance anymore
+
+ drivers/net/wireless/ath/ath10k/pci.c | 39 +++++++----------------------------
+ 1 file changed, 8 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index e6972b0..cbf82ff 100644
+index cbf82ff..a79b204 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -819,6 +819,21 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
- 	return -ETIMEDOUT;
- }
- 
-+/* The rule is host is forbidden from accessing device registers while it's
-+ * asleep. Currently ath10k_pci_wake() and ath10k_pci_sleep() calls aren't
-+ * balanced and the device is kept awake all the time. This is intended for a
-+ * simpler solution for the following problems:
-+ *
-+ *   * device can enter sleep during s2ram without the host knowing,
-+ *
-+ *   * irq handlers access registers which is a problem if other device asserts
-+ *     a shared irq line when ath10k is between hif_power_down() and
-+ *     hif_power_up().
-+ *
-+ * FIXME: If power consumption is a concern (and there are *real* gains) then a
-+ * refcounted wake/sleep needs to be implemented.
-+ */
-+
- static int ath10k_pci_wake(struct ath10k *ar)
- {
- 	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
-@@ -2034,8 +2049,6 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
- 	/* Currently hif_power_up performs effectively a reset and hif_stop
- 	 * resets the chip as well so there's no point in resetting here.
- 	 */
--
--	ath10k_pci_sleep(ar);
- }
+@@ -2053,25 +2053,10 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
  
  #ifdef CONFIG_PM
-@@ -2048,6 +2061,8 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
- 	struct pci_dev *pdev = ar_pci->pdev;
- 	u32 val;
  
-+	ath10k_pci_sleep(ar);
-+
- 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
- 
- 	if ((val & 0x000000ff) != 0x3) {
-@@ -2065,6 +2080,13 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct pci_dev *pdev = ar_pci->pdev;
- 	u32 val;
-+	int ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret) {
-+		ath10k_err(ar, "failed to wake device up on resume: %d\n", ret);
-+		return ret;
-+	}
- 
- 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
- 
-@@ -2083,7 +2105,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
- 			pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
- 	}
- 
--	return 0;
-+	return ret;
- }
- #endif
- 
-@@ -2177,6 +2199,13 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
- {
- 	struct ath10k *ar = arg;
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-+	int ret;
-+
-+	ret = ath10k_pci_wake(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wake device up on irq: %d\n", ret);
-+		return IRQ_NONE;
-+	}
- 
- 	if (ar_pci->num_msi_intrs == 0) {
- 		if (!ath10k_pci_irq_pending(ar))
-@@ -2681,8 +2710,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 		goto err_sleep;
- 	}
- 
--	ath10k_pci_sleep(ar);
+-#define ATH10K_PCI_PM_CONTROL 0x44
 -
- 	ret = ath10k_core_register(ar, chip_id);
- 	if (ret) {
- 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
+ static int ath10k_pci_hif_suspend(struct ath10k *ar)
+ {
+-	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+-	struct pci_dev *pdev = ar_pci->pdev;
+-	u32 val;
+-
+ 	ath10k_pci_sleep(ar);
+ 
+-	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
+-
+-	if ((val & 0x000000ff) != 0x3) {
+-		pci_save_state(pdev);
+-		pci_disable_device(pdev);
+-		pci_write_config_dword(pdev, ATH10K_PCI_PM_CONTROL,
+-				       (val & 0xffffff00) | 0x03);
+-	}
+-
+ 	return 0;
+ }
+ 
+@@ -2088,22 +2073,14 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 		return ret;
+ 	}
+ 
+-	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
+-
+-	if ((val & 0x000000ff) != 0) {
+-		pci_restore_state(pdev);
+-		pci_write_config_dword(pdev, ATH10K_PCI_PM_CONTROL,
+-				       val & 0xffffff00);
+-		/*
+-		 * Suspend/Resume resets the PCI configuration space,
+-		 * so we have to re-disable the RETRY_TIMEOUT register (0x41)
+-		 * to keep PCI Tx retries from interfering with C3 CPU state
+-		 */
+-		pci_read_config_dword(pdev, 0x40, &val);
+-
+-		if ((val & 0x0000ff00) != 0)
+-			pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+-	}
++	/* Suspend/Resume resets the PCI configuration space, so we have to
++	 * re-disable the RETRY_TIMEOUT register (0x41) to keep PCI Tx retries
++	 * from interfering with C3 CPU state. pci_restore_state won't help
++	 * here since it only restores the first 64 bytes pci config header.
++	 */
++	pci_read_config_dword(pdev, 0x40, &val);
++	if ((val & 0x0000ff00) != 0)
++		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+ 
+ 	return ret;
+ }
 -- 
 1.8.5.3
 
