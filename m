@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSNPe-0006Yd-4s
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 10:17:22 +0000
-Received: by wibbs8 with SMTP id bs8so13532222wib.4
- for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 02:17:00 -0800 (PST)
+ id 1YSNUX-0000RY-4c
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 10:22:25 +0000
+Message-ID: <54F438C5.802@qti.qualcomm.com>
+Date: Mon, 2 Mar 2015 15:47:41 +0530
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1425288321.1906.1.camel@sipsolutions.net>
-References: <1425287344-30594-1-git-send-email-michal.kazior@tieto.com>
- <1425287344-30594-2-git-send-email-michal.kazior@tieto.com>
- <1425287785.1906.0.camel@sipsolutions.net>
- <CA+BoTQnrS74yx=V_sPvTgzkoZeWbOBFawqXZMAv6oEhUypmoQA@mail.gmail.com>
- <1425288321.1906.1.camel@sipsolutions.net>
-Date: Mon, 2 Mar 2015 11:17:00 +0100
-Message-ID: <CA+BoTQnk8FBRwqTuq=ZAp__exwHejO1HncNhcVOASwn8+dKu=g@mail.gmail.com>
-Subject: Re: [PATCH 2/3] ath10k: always save/restore pci config space
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re:  [PATCH V3 2/2] ath10k: Fix interrupt storm
+References: <1425030606-21933-1-git-send-email-vthiagar@qti.qualcomm.com>	<1425030606-21933-2-git-send-email-vthiagar@qti.qualcomm.com>,
+ <CA+BoTQ=UFo=2Fa8FXw6JTGKkNLoG=m56py0a8AShyh3nTJ+TKQ@mail.gmail.com>
+ <1425288686058.83668@qti.qualcomm.com>
+In-Reply-To: <1425288686058.83668@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +20,153 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMiBNYXJjaCAyMDE1IGF0IDEwOjI1LCBKb2hhbm5lcyBCZXJnIDxqb2hhbm5lc0BzaXBzb2x1
-dGlvbnMubmV0PiB3cm90ZToKPiBPbiBNb24sIDIwMTUtMDMtMDIgYXQgMTA6MjMgKzAxMDAsIE1p
-Y2hhbCBLYXppb3Igd3JvdGU6Cj4KPj4gPiBJIGJlbGlldmUgdGhlIHdob2xlIHRoaW5nIGlzbid0
-IG5lY2Vzc2FyeSBhdCBhbGwgc2luY2UgdGhlIGtlcm5lbCdzIFBDSWUKPj4gPiBsYXllciB3aWxs
-IHRha2UgY2FyZSBvZiBpdC4KPj4KPj4gWW91IG1lYW4gb25seSB0aGUgcGNpX3NhdmVfc3RhdGUo
-KSBhbmQgcGNpX2Rpc2FibGVfZGV2aWNlKCkgb3IsIHRoZQo+PiByZXN1bWUgY291bnRlcnBhcnQg
-YXMgd2VsbD8gSG1tLgo+Cj4gUmVzdW1lIGFzIHdlbGwgLSBidXQgSSBiZWxpZXZlIGl0J3MgYWxs
-LW9yLW5vdGhpbmcuCj4KPj4gRWFybGllciB0aGUgcmVzdW1lIGNvdW50ZXJwYXJ0IGRpZG4ndCBk
-byBhbnkgcmVzdG9yZSBzdHVmZiBhbmQgdGhlCj4+IGRldmljZSBlbmRlZCB1cCBwcmV0dHkgY29u
-ZnVzZWQuLgo+Cj4gd2hpY2ggbWF5IGV4cGxhaW4gdGhpcy4KCkhtbS4uIEkgcmVtb3ZlZCB0aGUg
-c2F2ZS9yZXN0b3JlL2VuYWJsZS9kaXNhYmxlIGNvbXBsZXRlbHkgYW5kCnJlLXRlc3RlZC4gSXQg
-c2VlbXMgdG8gd29yayBmaW5lIGFzIHdlbGwuCgpJJ2xsIHBvc3QgYSB2MiBsYXRlciB0aGVuLiBU
-aGFua3MhCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+>
+>
+>> buffers because in monitor mode device receives everything seen
+>> on the air. In noisy condition, disabling monitor mode helps assoc
+>> go through without any issue.
+>>
+>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+>> ---
+>>   drivers/net/wireless/ath/ath10k/mac.c |   35 +++++++++++++++++++++++++++++++++
+>>   1 file changed, 35 insertions(+)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 3b5aaa3..885e984 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -766,12 +766,36 @@ static int ath10k_monitor_stop(struct ath10k *ar)
+>>          return 0;
+>>   }
+>>
+>> +static bool ath10k_disable_promisc_mode(struct ath10k *ar)
+>
+> The function name implies something that has a side-effect.
+>
+> If anything, this should be named more like:
+> ath10k_mac_should_disable_promisc() or ath10k_mac_is_promisc() (with
+> the logic inverted).
+
+Ok.
+
+>
+>
+>> +{
+>> +       struct ath10k_vif *arvif;
+>> +
+>> +       if (!ar->num_started_vdevs)
+>> +               return false;
+>> +
+>> +       list_for_each_entry(arvif, &ar->arvifs, list) {
+>
+> This means function must be called while holding conf_mutex (my MCC
+> patch adds data_lock as an option, but current upstream tree uses
+> conf_mutex only).
+
+Ok. Sure, we can fix it when we have MCC change into the tree.
+
+>
+>
+>> +               /* Disabling promiscuous mode when STA/IBSS is running */
+>> +               if (arvif->vdev_type == WMI_VDEV_TYPE_STA ||
+>> +                   arvif->vdev_type == WMI_VDEV_TYPE_IBSS)
+>
+> Wouldn't `if (arvif->vdev_type != WMI_VDEV_TYPE_AP) return false` be
+> safer? We only know this is safe for AP, right?
+
+Sure.
+
+>
+>
+>> +                       return false;
+>> +       }
+>> +
+>> +       return true;
+>> +}
+>> +
+>>   static int ath10k_monitor_recalc(struct ath10k *ar)
+>>   {
+>>          bool should_start;
+>>
+>>          lockdep_assert_held(&ar->conf_mutex);
+>>
+>> +       if ((ar->filter_flags & FIF_PROMISC_IN_BSS) &&
+>> +           ath10k_disable_promisc_mode(ar)) {
+>> +               ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
+>> +               ath10k_dbg(ar, ATH10K_DBG_MAC,
+>> +                          "mac disabling promiscuous mode because vdev is started\n");
+>> +       }
+>> +
+>
+> I don't like this. You modify filter_flags. This shouldn't be
+> happening in the recalc function. The recalc function should have only
+> a side-effect of starting/stopping monitor vdev.
+>
+> Instead:
+>
+>   should_start = ar->monitor || ath10k_mac_is_promisc() ||
+> test_bit(ATH10K_CAC_RUNNING);
+>
+> And put the promisc skipping logic in ath10k_mac_is_promisc().
+
+Right, this is much better.
+
+>
+>
+>>          should_start = ar->monitor ||
+>>                         ar->filter_flags & FIF_PROMISC_IN_BSS ||
+>>                         test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
+>> @@ -969,6 +993,10 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
+>>          ar->num_started_vdevs++;
+>>          ath10k_recalc_radar_detection(ar);
+>>
+>> +       ret = ath10k_monitor_recalc(ar);
+>> +       if (ret)
+>> +               ath10k_vdev_stop(arvif);
+>
+> You should warn here "failed to recalc monitor: %d\n". Also it'd be
+> nice if vdev_stop() was checked for error as well (but not with "ret"
+> as to not lose the original failure reason code; `ret2` is okay). A
+> warning for that is would also be desired.
+
+Sure.
+
+>
+>
+>> +
+>>          return ret;
+>>   }
+>>
+>> @@ -3476,6 +3504,13 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
+>>
+>>          changed_flags &= SUPPORTED_FILTERS;
+>>          *total_flags &= SUPPORTED_FILTERS;
+>> +       if (*total_flags & FIF_PROMISC_IN_BSS) {
+>> +               if (ar->num_started_vdevs) {
+>> +                       ath10k_dbg(ar, ATH10K_DBG_MAC,
+>> +                                  "mac does not enable promiscuous mode when already a vdev is running\n");
+>> +                       *total_flags &= ~FIF_PROMISC_IN_BSS;
+>> +               }
+>> +       }
+>
+> There's no need for that, is there? The monitor_recalc() is supposed
+> to deal with this.
+
+Right, but we may not want to create any inconsistencies between *total_flags and actual
+filters enabled in the driver?.
+
+Thanks for the review.
+
+Vasanth
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
