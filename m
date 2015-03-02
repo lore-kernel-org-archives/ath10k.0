@@ -1,15 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSPL7-0004Vi-6q
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 12:20:49 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V5 2/2] ath10k: Fix interrupt storm
-Date: Mon, 2 Mar 2015 17:45:28 +0530
-Message-ID: <1425298528-3067-2-git-send-email-vthiagar@qti.qualcomm.com>
-In-Reply-To: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1YSPO2-0005UP-Kc
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 12:23:51 +0000
+Received: by labgd6 with SMTP id gd6so29878646lab.8
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 04:23:26 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 1/2] ath10k: fix some pci wake/sleep issues
+Date: Mon,  2 Mar 2015 13:22:13 +0100
+Message-Id: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,101 +17,119 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Promiscuous mode is enabled when wlan interface is added to
-bridge. ath10k creates a monitor mode when promiscuous mode
-is enabled. When monitor vdev is running along with other
-vdev(s) there is a huge number of interrupts generated
-especially in noisy condition. Fix this by not enabling
-promiscuous(monitor) mode when already a vdev is running.
-As disabling promiscuous mode may have issues with 4-address
-bridging in STA mode, the change is done specific to non-sta/ibss
-mode types. This does not change the support of virtual interface of
-type monitor along with other vdevs of any type.
+In some cases the device ends up sleeping while
+ath10k didn't expect it to leading to reading
+garbage from registers, e.g. when shared irqs are
+used and the driver is in powered down state.
 
-This could fix management frame drop in fw due to unavailable
-buffers because in monitor mode device receives everything seen
-on the air. In noisy condition, disabling monitor mode helps assoc
-go through without any issue.
+This effectively makes the device remain awake all
+the time even when all interfaces are down.
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c |   34 +++++++++++++++++++++++++++++++--
- 1 file changed, 32 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/pci.c | 37 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 32 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 3b5aaa3..c220c51 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -766,6 +766,25 @@ static int ath10k_monitor_stop(struct ath10k *ar)
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index e6972b0..cbf82ff 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -819,6 +819,21 @@ static int ath10k_pci_wake_wait(struct ath10k *ar)
+ 	return -ETIMEDOUT;
  }
  
-+static bool ath10k_mac_should_disable_promisc(struct ath10k *ar)
-+{
-+	struct ath10k_vif *arvif;
++/* The rule is host is forbidden from accessing device registers while it's
++ * asleep. Currently ath10k_pci_wake() and ath10k_pci_sleep() calls aren't
++ * balanced and the device is kept awake all the time. This is intended for a
++ * simpler solution for the following problems:
++ *
++ *   * device can enter sleep during s2ram without the host knowing,
++ *
++ *   * irq handlers access registers which is a problem if other device asserts
++ *     a shared irq line when ath10k is between hif_power_down() and
++ *     hif_power_up().
++ *
++ * FIXME: If power consumption is a concern (and there are *real* gains) then a
++ * refcounted wake/sleep needs to be implemented.
++ */
 +
-+	if (!(ar->filter_flags & FIF_PROMISC_IN_BSS))
-+		return true;
-+
-+	if (!ar->num_started_vdevs)
-+		return false;
-+
-+	list_for_each_entry(arvif, &ar->arvifs, list)
-+		if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
-+			return false;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_MAC,
-+		   "mac disabling promiscuous mode because vdev is started\n");
-+	return true;
-+}
-+
- static int ath10k_monitor_recalc(struct ath10k *ar)
+ static int ath10k_pci_wake(struct ath10k *ar)
  {
- 	bool should_start;
-@@ -773,7 +793,7 @@ static int ath10k_monitor_recalc(struct ath10k *ar)
- 	lockdep_assert_held(&ar->conf_mutex);
- 
- 	should_start = ar->monitor ||
--		       ar->filter_flags & FIF_PROMISC_IN_BSS ||
-+		       !ath10k_mac_should_disable_promisc(ar);
- 		       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
-@@ -910,7 +930,7 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 	struct ath10k *ar = arvif->ar;
- 	struct cfg80211_chan_def *chandef = &ar->chandef;
- 	struct wmi_vdev_start_request_arg arg = {};
--	int ret = 0;
-+	int ret = 0, ret2;
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-@@ -969,6 +989,16 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
- 	ar->num_started_vdevs++;
- 	ath10k_recalc_radar_detection(ar);
- 
-+	ret = ath10k_monitor_recalc(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "mac failed to recalc monitor for vdev %i restart %d: %d\n",
-+			    arg.vdev_id, restart, ret);
-+		ret2 = ath10k_vdev_stop(arvif);
-+		if (ret2)
-+			ath10k_warn(ar, "mac failed to stop vdev %i restart %d: %d\n",
-+				    arg.vdev_id, restart, ret2);
-+	}
-+
- 	return ret;
+ 	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
+@@ -2034,8 +2049,6 @@ static void ath10k_pci_hif_power_down(struct ath10k *ar)
+ 	/* Currently hif_power_up performs effectively a reset and hif_stop
+ 	 * resets the chip as well so there's no point in resetting here.
+ 	 */
+-
+-	ath10k_pci_sleep(ar);
  }
  
+ #ifdef CONFIG_PM
+@@ -2048,6 +2061,8 @@ static int ath10k_pci_hif_suspend(struct ath10k *ar)
+ 	struct pci_dev *pdev = ar_pci->pdev;
+ 	u32 val;
+ 
++	ath10k_pci_sleep(ar);
++
+ 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
+ 
+ 	if ((val & 0x000000ff) != 0x3) {
+@@ -2065,6 +2080,13 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	struct pci_dev *pdev = ar_pci->pdev;
+ 	u32 val;
++	int ret;
++
++	ret = ath10k_pci_wake(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to wake device up on resume: %d\n", ret);
++		return ret;
++	}
+ 
+ 	pci_read_config_dword(pdev, ATH10K_PCI_PM_CONTROL, &val);
+ 
+@@ -2083,7 +2105,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
+ 			pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
+ 	}
+ 
+-	return 0;
++	return ret;
+ }
+ #endif
+ 
+@@ -2177,6 +2199,13 @@ static irqreturn_t ath10k_pci_interrupt_handler(int irq, void *arg)
+ {
+ 	struct ath10k *ar = arg;
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
++	int ret;
++
++	ret = ath10k_pci_wake(ar);
++	if (ret) {
++		ath10k_warn(ar, "failed to wake device up on irq: %d\n", ret);
++		return IRQ_NONE;
++	}
+ 
+ 	if (ar_pci->num_msi_intrs == 0) {
+ 		if (!ath10k_pci_irq_pending(ar))
+@@ -2681,8 +2710,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 		goto err_sleep;
+ 	}
+ 
+-	ath10k_pci_sleep(ar);
+-
+ 	ret = ath10k_core_register(ar, chip_id);
+ 	if (ret) {
+ 		ath10k_err(ar, "failed to register driver core: %d\n", ret);
 -- 
-1.7.9.5
+1.8.5.3
 
 
 _______________________________________________
