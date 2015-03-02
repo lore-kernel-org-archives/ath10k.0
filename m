@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSNUX-0000RY-4c
- for ath10k@lists.infradead.org; Mon, 02 Mar 2015 10:22:25 +0000
-Message-ID: <54F438C5.802@qti.qualcomm.com>
-Date: Mon, 2 Mar 2015 15:47:41 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-MIME-Version: 1.0
-Subject: Re:  [PATCH V3 2/2] ath10k: Fix interrupt storm
-References: <1425030606-21933-1-git-send-email-vthiagar@qti.qualcomm.com>	<1425030606-21933-2-git-send-email-vthiagar@qti.qualcomm.com>,
- <CA+BoTQ=UFo=2Fa8FXw6JTGKkNLoG=m56py0a8AShyh3nTJ+TKQ@mail.gmail.com>
- <1425288686058.83668@qti.qualcomm.com>
-In-Reply-To: <1425288686058.83668@qti.qualcomm.com>
+ id 1YSNV8-0000ki-Rp
+ for ath10k@lists.infradead.org; Mon, 02 Mar 2015 10:23:03 +0000
+Received: by labgf13 with SMTP id gf13so4678522lab.5
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 02:22:38 -0800 (PST)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: improve 11b coex
+Date: Mon,  2 Mar 2015 11:21:17 +0100
+Message-Id: <1425291677-1478-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,151 +17,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
->
->
->> buffers because in monitor mode device receives everything seen
->> on the air. In noisy condition, disabling monitor mode helps assoc
->> go through without any issue.
->>
->> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
->> ---
->>   drivers/net/wireless/ath/ath10k/mac.c |   35 +++++++++++++++++++++++++++++++++
->>   1 file changed, 35 insertions(+)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index 3b5aaa3..885e984 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -766,12 +766,36 @@ static int ath10k_monitor_stop(struct ath10k *ar)
->>          return 0;
->>   }
->>
->> +static bool ath10k_disable_promisc_mode(struct ath10k *ar)
->
-> The function name implies something that has a side-effect.
->
-> If anything, this should be named more like:
-> ath10k_mac_should_disable_promisc() or ath10k_mac_is_promisc() (with
-> the logic inverted).
+This improves coexistance with 11b legacy devices
+on wmi-tlv and qca6174.
 
-Ok.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->
->
->> +{
->> +       struct ath10k_vif *arvif;
->> +
->> +       if (!ar->num_started_vdevs)
->> +               return false;
->> +
->> +       list_for_each_entry(arvif, &ar->arvifs, list) {
->
-> This means function must be called while holding conf_mutex (my MCC
-> patch adds data_lock as an option, but current upstream tree uses
-> conf_mutex only).
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0f39af7..3fcd0fd 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3577,6 +3577,13 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to recalculate rts/cts prot for vdev %d: %d\n",
+ 				    arvif->vdev_id, ret);
++
++		vdev_param = ar->wmi.vdev_param->protection_mode;
++		ret = ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
++						info->use_cts_prot ? 1 : 0);
++		if (ret)
++			ath10k_warn(ar, "failed to set protection mode %d on vdev %i: %d\n",
++					info->use_cts_prot, arvif->vdev_id, ret);
+ 	}
+ 
+ 	if (changed & BSS_CHANGED_ERP_SLOT) {
+-- 
+1.8.5.3
 
-Ok. Sure, we can fix it when we have MCC change into the tree.
-
->
->
->> +               /* Disabling promiscuous mode when STA/IBSS is running */
->> +               if (arvif->vdev_type == WMI_VDEV_TYPE_STA ||
->> +                   arvif->vdev_type == WMI_VDEV_TYPE_IBSS)
->
-> Wouldn't `if (arvif->vdev_type != WMI_VDEV_TYPE_AP) return false` be
-> safer? We only know this is safe for AP, right?
-
-Sure.
-
->
->
->> +                       return false;
->> +       }
->> +
->> +       return true;
->> +}
->> +
->>   static int ath10k_monitor_recalc(struct ath10k *ar)
->>   {
->>          bool should_start;
->>
->>          lockdep_assert_held(&ar->conf_mutex);
->>
->> +       if ((ar->filter_flags & FIF_PROMISC_IN_BSS) &&
->> +           ath10k_disable_promisc_mode(ar)) {
->> +               ar->filter_flags &= ~FIF_PROMISC_IN_BSS;
->> +               ath10k_dbg(ar, ATH10K_DBG_MAC,
->> +                          "mac disabling promiscuous mode because vdev is started\n");
->> +       }
->> +
->
-> I don't like this. You modify filter_flags. This shouldn't be
-> happening in the recalc function. The recalc function should have only
-> a side-effect of starting/stopping monitor vdev.
->
-> Instead:
->
->   should_start = ar->monitor || ath10k_mac_is_promisc() ||
-> test_bit(ATH10K_CAC_RUNNING);
->
-> And put the promisc skipping logic in ath10k_mac_is_promisc().
-
-Right, this is much better.
-
->
->
->>          should_start = ar->monitor ||
->>                         ar->filter_flags & FIF_PROMISC_IN_BSS ||
->>                         test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
->> @@ -969,6 +993,10 @@ static int ath10k_vdev_start_restart(struct ath10k_vif *arvif, bool restart)
->>          ar->num_started_vdevs++;
->>          ath10k_recalc_radar_detection(ar);
->>
->> +       ret = ath10k_monitor_recalc(ar);
->> +       if (ret)
->> +               ath10k_vdev_stop(arvif);
->
-> You should warn here "failed to recalc monitor: %d\n". Also it'd be
-> nice if vdev_stop() was checked for error as well (but not with "ret"
-> as to not lose the original failure reason code; `ret2` is okay). A
-> warning for that is would also be desired.
-
-Sure.
-
->
->
->> +
->>          return ret;
->>   }
->>
->> @@ -3476,6 +3504,13 @@ static void ath10k_configure_filter(struct ieee80211_hw *hw,
->>
->>          changed_flags &= SUPPORTED_FILTERS;
->>          *total_flags &= SUPPORTED_FILTERS;
->> +       if (*total_flags & FIF_PROMISC_IN_BSS) {
->> +               if (ar->num_started_vdevs) {
->> +                       ath10k_dbg(ar, ATH10K_DBG_MAC,
->> +                                  "mac does not enable promiscuous mode when already a vdev is running\n");
->> +                       *total_flags &= ~FIF_PROMISC_IN_BSS;
->> +               }
->> +       }
->
-> There's no need for that, is there? The monitor_recalc() is supposed
-> to deal with this.
-
-Right, but we may not want to create any inconsistencies between *total_flags and actual
-filters enabled in the driver?.
-
-Thanks for the review.
-
-Vasanth
 
 _______________________________________________
 ath10k mailing list
