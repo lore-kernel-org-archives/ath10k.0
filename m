@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSr6d-0006ek-DX
- for ath10k@lists.infradead.org; Tue, 03 Mar 2015 17:59:47 +0000
-Message-ID: <54F5F678.7030202@candelatech.com>
-Date: Tue, 03 Mar 2015 09:59:20 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YSrRi-0004q0-8O
+ for ath10k@lists.infradead.org; Tue, 03 Mar 2015 18:21:31 +0000
+Received: by igkb16 with SMTP id b16so30328558igk.1
+ for <ath10k@lists.infradead.org>; Tue, 03 Mar 2015 10:21:09 -0800 (PST)
+Message-ID: <54F5FB92.6090702@gmail.com>
+Date: Tue, 03 Mar 2015 13:21:06 -0500
+From: nick <xerofoify@gmail.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] ath10k: increase station kickout threshold
-References: <1425385230-25308-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1425385230-25308-2-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1425385230-25308-2-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH] ath:Release resources for structure pointer, ar if error
+ pointing device in the function, ath10k_core_register_work
+References: <1425350171-26333-1-git-send-email-xerofoify@gmail.com>
+ <CA+BoTQnNgNd4V9FN5SON387s7XuowFSDgrFUjZTn9Qm-sJ+NbQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQnNgNd4V9FN5SON387s7XuowFSDgrFUjZTn9Qm-sJ+NbQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +22,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Network Development <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, linux-kernel@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 03/03/2015 04:20 AM, Rajkumar Manoharan wrote:
-> Since the station kickout threshold is also counting software
-> reries (Default sw count in firmware is 16), increasing the threshold
-> to try with already 20 data frames before kicking out the station.
->
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> ---
->   drivers/net/wireless/ath/ath10k/core.h | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 7cba781..5a0b7cb 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -50,8 +50,8 @@
->
->   #define ATH10K_MAX_NUM_MGMT_PENDING 128
->
-> -/* number of failed packets */
-> -#define ATH10K_KICKOUT_THRESHOLD 50
-> +/* number of failed packets (includes sw reties) */
-> +#define ATH10K_KICKOUT_THRESHOLD (20 * 16)
-
-Maybe add comment about '20 packets with 16 retries each', so that users know what
-number is what?
-
-Thanks,
-Ben
-
->
->   /*
->    * Use insanely high numbers to make sure that the firmware implementation
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAyMDE1LTAzLTAzIDAxOjQwIEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDMgTWFy
+Y2ggMjAxNSBhdCAwMzozNiwgTmljaG9sYXMgS3JhdXNlIDx4ZXJvZm9pZnlAZ21haWwuY29tPiB3
+cm90ZToKPj4gUmVsZWFzZXMgcmVzb3VyY2VzIGFuZCBkZXJlZ2lzdGVycyB0aGUgc3R1Y3R1cmUg
+cG9pbnRlciBhciBwYXNzZWQgYnkgdGhlIGNhbGxlciB0byB0aGUgZnVuY3Rpb24sIGF0aDEwa19j
+b3JlX3JlZ2lzdGVyX3dvcmsKPj4gaWYgdW5hYmxlIHRvIHByb2JlIHRoZSBzdHJ1Y3R1cmUgcG9p
+bnRlciBzdWNjZXNzZnVsbHkgd2l0aCBhIGNhbGwgdG8gYXRoMTBrX2NvcmVfcHJvYmVfZncuIEZ1
+cnRoZXIgbW9yZSBpZiB0aGlzIGhhcHBlcm5zCj4+IHdlIG11c3QgZmlyc3QganVtcCB0byB0aGUg
+bGFiZWwgZXJyIGZvciB0aGUgZ290byBzdGF0ZW1lbnQgcmVxdWlyZWQgdG8ganVtcCB0byBoYW5k
+bGUgdGhpcyBwYXJ0aWN1bGFyIGVycm9yIGluIHRoZSBmdW5jdGlvbiwKPj4gYXRoMTBrX2NvcmVf
+cmVnaXN0ZXJfd29yay4gIEFmdGVyIHdlIGFyZSBpbiB0aGUgY29ycmVjdCBlcnJvciBzZWN0aW9u
+IHdlIG11c3QgZnJlZSB0aGUgcmVzb3VyY2VzIGZvciB0aGUgc3RydWN0dXJlIHBvaW50ZXIsYXIK
+Pj4gd2l0aCBhIGNhbGwgdG8gdGhlIGZ1bmN0aW9uLCAgYXRoMTBrX2NvcmVfdW5yZWdpc3RlciB0
+byBmcmVlIHJlc291cmNlcyBhbGxvY2F0ZWQgZm9yIHRoZSBzdHJ1Y3R1cmUgcG9pbnRlcixhci4K
+Pj4KPj4gU2lnbmVkLW9mZi1ieTogTmljaG9sYXMgS3JhdXNlIDx4ZXJvZm9pZnlAZ21haWwuY29t
+Pgo+PiAtLS0KPj4gIGRyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIHwgNCAr
+LS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0pCj4+
+Cj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYyBi
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+IGluZGV4IDMxMGUxMmIu
+LjhiMmNhMjUgMTAwNjQ0Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+Y29yZS5jCj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jCj4+
+IEBAIC0xMzA3LDkgKzEzMDcsNyBAQCBlcnJfdW5yZWdpc3Rlcl9tYWM6Cj4+ICBlcnJfcmVsZWFz
+ZV9mdzoKPj4gICAgICAgICBhdGgxMGtfY29yZV9mcmVlX2Zpcm13YXJlX2ZpbGVzKGFyKTsKPj4g
+IGVycjoKPj4gLSAgICAgICAvKiBUT0RPOiBJdCdzIHByb2JhYmx5IGEgZ29vZCBpZGVhIHRvIHJl
+bGVhc2UgZGV2aWNlIGZyb20gdGhlIGRyaXZlcgo+PiAtICAgICAgICAqIGJ1dCBjYWxsaW5nIGRl
+dmljZV9yZWxlYXNlX2RyaXZlcigpIGhlcmUgd2lsbCBjYXVzZSBhIGRlYWRsb2NrLgo+PiAtICAg
+ICAgICAqLwo+PiArICAgICAgIGF0aDEwa19jb3JlX3VucmVnaXN0ZXIoYXIpOwo+PiAgICAgICAg
+IHJldHVybjsKPj4gIH0KPiAKPiBEaWQgeW91IHRlc3QgdGhpcz8gVGhpcyB3aWxsIGRlYWRsb2Nr
+LiBhdGgxMGtfY29yZV91bnJlZ2lzdGVyKCkgdHJpZXMKPiB0byBjYW5jZWwgYXItPnJlZ2lzdGVy
+X3dvcmsuIFRoaXMgd29uJ3Qgd29yayBpZiB5b3UgY2FsbCBpdCBmcm9tIHRoZQo+IHdvcmtlciBp
+dHNlbGYuIE1vcmVvdmVyIGlmIEkgaWdub3JlIHRoZSBkZWFkbG9jawo+IGF0aDEwa19jb3JlX3Vu
+cmVnaXN0ZXIoKSB3b3VsZCBkbyBub3RoaW5nIGVsc2UgaW4gdGhpcyBjb250ZXh0IGJlY2F1c2UK
+PiBBVEgxMEtfRkxBR19DT1JFX1JFR0lTVEVSRUQgd291bGRuJ3QgYmUgZXZlbiBzZXQuCj4gCj4g
+SWYgeW91J3JlIGludGVyZXN0ZWQgaW4gZGVhbGluZyB3aXRoIHRoaXMgVE9ETyBJIHN1Z2dlc3Qg
+eW91IHJlYWQKPiB0aHJvdWdoIHRoZSBvcmlnaW5hbCB0aHJlYWQgd2hpY2ggbGVkIHRvIHRoZSBj
+dXJyZW50IHN0YXRlIG9mIGFmZmFpcnM6Cj4gCj4gICBodHRwOi8vd3d3LnNwaW5pY3MubmV0L2xp
+c3RzL2xpbnV4LXdpcmVsZXNzL21zZzEyNDAwNC5odG1sCj4gCj4gCj4gTWljaGHFggo+IApNaWNo
+YWwsClRoYW5rcyBmb3IgdGhlIGluZm8gYW5kIHRoZSB0aHJlYWQgcmVsYXRlZCB0byB0aGlzIGlz
+c3VlLiBBZnRlciByZWFkaW5nIGl0IEkgd2FzIHdvbmRlcmluZyBpZiB3ZSBjYW4gdGVzdCBteQpw
+YXRjaCBvbiBhY3R1YWwgaGFyZHdhcmUgdXNpbmcgdGhpcyBkcml2ZXIgd2l0aCBteSBwYXRjaCBp
+bmNsdWRlZCBpbiBvcmRlciB0byBzZWUgd2hhdCBpc3N1ZXMgYXJlIHN0aWxsIHRoZXJlLgpJIGRv
+bid0IGhhdmUgdGhlIGhhcmR3YXJlIGx5aW5nIGFyb3VuZCBmb3IgdGhpcyBidXQgaWYgc29tZW9u
+ZSBjYW4gdGVzdCBteSBwYXRjaCBvdXQgYW5kIHNlZSB3aGVyZSB0aGVyZSBhcmUKc3RpbGwgZGVh
+ZGxvY2sgaXNzdWVzIG9yIG90aGVyIGJ1Z3MgdG8gbXkgcGF0Y2ggSSBhbSBjZXJ0YWluIEkgd2ls
+bCBiZSBhYmxlIHRvIGZpZ3VyZSB0aGlzIG91dC4KVGhhbmtzLApOaWNrClAuUy4gSSBhbSBhIHN0
+dWRlbnQgc28gbXkgYnVkZ2V0IGZvciB0ZXN0IGhhcmR3YXJlIGlzIGEgbGl0dGxlIHRoaW4uIDoo
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
