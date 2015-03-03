@@ -1,22 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ig0-x233.google.com ([2607:f8b0:4001:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSbxn-0005vt-GP
- for ath10k@lists.infradead.org; Tue, 03 Mar 2015 01:49:36 +0000
-Received: from [10.234.210.184] (qf-scl1nat.qualcomm.com [207.114.132.30])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- (Authenticated sender: poh@smtp.codeaurora.org)
- by smtp.codeaurora.org (Postfix) with ESMTPSA id E8180140A2E
- for <ath10k@lists.infradead.org>; Tue,  3 Mar 2015 01:49:13 +0000 (UTC)
-Message-ID: <54F512E0.9080701@codeaurora.org>
-Date: Mon, 02 Mar 2015 17:48:16 -0800
-From: Peter Oh <poh@codeaurora.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath: support new FCC DFS Radar Type 1
-References: <1424902634-18275-1-git-send-email-poh@qca.qualcomm.com>
- <54F04AD5.3030406@neratec.com> <54F50E61.7040608@codeaurora.org>
-In-Reply-To: <54F50E61.7040608@codeaurora.org>
+ id 1YSchL-0006Cz-94
+ for ath10k@lists.infradead.org; Tue, 03 Mar 2015 02:36:39 +0000
+Received: by igjz20 with SMTP id z20so22951168igj.4
+ for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 18:36:16 -0800 (PST)
+From: Nicholas Krause <xerofoify@gmail.com>
+Subject: [PATCH] ath:Release resources for structure pointer,
+ ar if error pointing device in the function, ath10k_core_register_work
+Date: Mon,  2 Mar 2015 21:36:11 -0500
+Message-Id: <1425350171-26333-1-git-send-email-xerofoify@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,134 +18,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
+Releases resources and deregisters the stucture pointer ar passed by the caller to the function, ath10k_core_register_work
+if unable to probe the structure pointer successfully with a call to ath10k_core_probe_fw. Further more if this happerns
+we must first jump to the label err for the goto statement required to jump to handle this particular error in the function,
+ath10k_core_register_work.  After we are in the correct error section we must free the resources for the structure pointer,ar
+with a call to the function,  ath10k_core_unregister to free resources allocated for the structure pointer,ar.
 
-On 03/02/2015 05:29 PM, Peter Oh wrote:
->
-> On 02/27/2015 02:45 AM, Zefir Kurtisi wrote:
->> On 02/25/2015 11:17 PM, Peter Oh wrote:
->>> Add support for new FCC DFS rules released on August 14, 2014.
->>> FCC has added a new radar type named Radar Type 1 and original
->>> Radar Type 1 is renamed to Radar Type 0 in consequence.
->>> In fact, the type ID does nothing to functionalities.
->>> In other words, even if we re-order the IDs, DFS detection will
->>> work as well, but we give the ID with matching to FCC doc.
->>>
->>> By adding this support, the drivers using this DFS function are
->>> able to support both of old and new FCC DFS rules simultaneously
->>> without any other changes.
->>>
->>> [...]
->> Peter,
->>
->> while trying to solve detection of the special FCC type 1 radar pattern
->> with the
->> pri_detector at hand is a valid approach, it is neither suitable nor
->> effective.
->>
->> It is not suitable because in the way you do, it will not reach the
->> required
->> detection probability required to pass certification. This is because 
->> you
->> take the
->> very first pri to configure its detector specs, which is way too
->> optimistic. You
->> have to consider that the detector must be able to detect properly with
->> only 50%
->> of the pulses seen. In this particular case, you would ignore a lot of
->> type 1
->> patterns, since the resulting visibility gap causes temporary false PRIs
->> that
->> won't be considered. You might want to have a look on my slides 15ff in
->> [1] for an
->> idea what needs to be handled.
->>
->> Generally, to reach the detection probability requirements, the 
->> design of
->> the
->> PRI-detector at hand follows a full-coverage search with fast 
->> cancellation
->> approach. For that, it allows collecting potential pattern candidates 
->> and
->> a
->> posteriori correction of initial assumptions. It is specifically 
->> targeting
->> at
->> radar patterns defined through PRI-ranges, where constant PRI-ranges are
->> supported
->> as special cases by setting the same values for pri_min and pri_max 
->> (as is
->> done
->> for pattern 0). With support for PRI-ranges and unique PRIs, everything
->> needed to
->> detect pattern 1 is there, but defining it as a PRI-range over all the
->> unique 23
->> PRIs is the wrong way.
->>
->> The correct approach is more simple, robust, and efficient: define all
->> those 23
->> unique PRIs as sub-patterns for type 1 with individual specs. Would look
->> like:
->>
->> #define TYPE1_PPB(X) ((19 * 100000) / (36 * X))
->> static const struct radar_detector_specs fcc_radar_ref_types[] = {
->>     FCC_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
->>     FCC_PATTERN(101, 0, 1, 518, 518, 1, TYPE1_PPB(518), false),
->>     FCC_PATTERN(102, 0, 1, ..., ..., 1, ..., false),
->>     [...],
->>     FCC_PATTERN(123, 0, 1, 3066, 3066, 1, TYPE1_PPB(3066), false),
->>     FCC_PATTERN(2, 0, 5, 150, 230, 1, 23, false),
->>     FCC_PATTERN(3, 6, 10, 200, 500, 1, 16, false),
->>     FCC_PATTERN(4, 11, 20, 200, 500, 1, 12, false),
->>     FCC_PATTERN(5, 50, 100, 1000, 2000, 1, 1, true),
->>     FCC_PATTERN(6, 0, 1, 333, 333, 1, 9, false),
->> };
->>
-I just remembered why I choose dynamic settings of PRI and PPB instead 
-of the simple macro definition.
-It's because of Test B requirement on Type 1 radar.
-Test B: 15 unique PRI values randomly selected within the range of 
-518-3066 usec, with a minimum increment of 1 usec, excluding PRI values 
-selected in Test A.
-Minimum number of trials on type 1 radar is 30 and 15 trials are 
-supposed to use Test B which selects any numbers between 518~3066 except 
-used at Test A stage.
-There will be 84 PPBs within the PRI range and I thought defining all 
-these numbers are not preferable.
-So I'd like to hear your feedback on this.
->>
->> Hope it helps, and sorry I didn't do myself, but so far we are only
->> working in
->> ETSI domains and ignored FCC completely.
-> Thank you Zefir for the advice and I'll review and update the code 
-> based on your comment.
->>
->> Cheers,
->> Zefir
->>
->> [1]
->> http://linuxwireless.sipsolutions.net/attachments/en/developers/DFS/Vancou 
->>
->> ver2011-Slides-DFS.pdf
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
-> Thanks,
-> Peter
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-Regards,
-Peter
+Signed-off-by: Nicholas Krause <xerofoify@gmail.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 310e12b..8b2ca25 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1307,9 +1307,7 @@ err_unregister_mac:
+ err_release_fw:
+ 	ath10k_core_free_firmware_files(ar);
+ err:
+-	/* TODO: It's probably a good idea to release device from the driver
+-	 * but calling device_release_driver() here will cause a deadlock.
+-	 */
++	ath10k_core_unregister(ar);
+ 	return;
+ }
+ 
+-- 
+2.1.0
+
 
 _______________________________________________
 ath10k mailing list
