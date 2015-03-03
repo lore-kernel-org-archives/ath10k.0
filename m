@@ -1,24 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSjjz-0002Hj-14
- for ath10k@lists.infradead.org; Tue, 03 Mar 2015 10:07:52 +0000
-Received: by lbvn10 with SMTP id n10so35986966lbv.6
- for <ath10k@lists.infradead.org>; Tue, 03 Mar 2015 02:07:28 -0800 (PST)
+ id 1YSlpB-0006om-45
+ for ath10k@lists.infradead.org; Tue, 03 Mar 2015 12:21:21 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: increase station kickout threshold
+Date: Tue, 3 Mar 2015 17:50:30 +0530
+Message-ID: <1425385230-25308-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1425385230-25308-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1425385230-25308-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1425377192.2450.34.camel@sipsolutions.net>
-References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
- <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
- <1425041427.1960.1.camel@sipsolutions.net>
- <CA+XVXfchZ+L1iH47S=rM04vJbjBSKA4O8TYuhEkfZuLpNb9QDA@mail.gmail.com>
- <1425374299.2450.18.camel@sipsolutions.net>
- <CA+XVXffHENxD3z9dTn_LC9c7Ot0Q4FgyEoHLjdeiDTFWQGuF9w@mail.gmail.com>
- <1425377192.2450.34.camel@sipsolutions.net>
-From: Arik Nemtsov <arik@wizery.com>
-Date: Tue, 3 Mar 2015 12:07:13 +0200
-Message-ID: <CA+XVXfdu2fCLXBP1VkMOX9nnoqCiH+h=pwzGAQ2KkBrf-H9MCQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for tdls
- station
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,37 +22,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Arik Nemtsov <arikx.nemtsov@intel.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-On Tue, Mar 3, 2015 at 12:06 PM, Johannes Berg
-<johannes@sipsolutions.net> wrote:
-> On Tue, 2015-03-03 at 12:02 +0200, Arik Nemtsov wrote:
->> On Tue, Mar 3, 2015 at 11:18 AM, Johannes Berg
->> <johannes@sipsolutions.net> wrote:
->> > On Sun, 2015-03-01 at 10:21 +0200, Arik Nemtsov wrote:
->> >
->> >> > Arik, you have a similar patch handling only NSS. Does this one look
->> >> > fine to you, and would it solve the problem your other patch solved?
->> >>
->> >> Well currently iwlmvm requires the NSS to be set before
->> >> IEEE80211_STA_ASSOC (earlier), so this doesn't help directly.
->> >> I could change mvm a bit to make it work, but I don't really see a
->> >> good reason for it :)
->> >>
->> >> The patch looks good. Shouldn't introduce new issues (at least for iwlwifi).
->> >
->> > Ok, thanks. Do you think it would be possible to move all of this before
->> > ASSOC?
->>
->> We can probably move his rate_control_rate_init() to assoc, since we have this:
->
-> And doing so would also address the nss problem, right? IIRC that's done
-> in the rate control init inline.
+Since the station kickout threshold is also counting software
+reries (Default sw count in firmware is 16), increasing the threshold
+to try with already 20 data frames before kicking out the station.
 
-Right.
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Arik
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7cba781..5a0b7cb 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -50,8 +50,8 @@
+ 
+ #define ATH10K_MAX_NUM_MGMT_PENDING 128
+ 
+-/* number of failed packets */
+-#define ATH10K_KICKOUT_THRESHOLD 50
++/* number of failed packets (includes sw reties) */
++#define ATH10K_KICKOUT_THRESHOLD (20 * 16)
+ 
+ /*
+  * Use insanely high numbers to make sure that the firmware implementation
+-- 
+2.3.1
+
 
 _______________________________________________
 ath10k mailing list
