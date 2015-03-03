@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+Received: from s3.sipsolutions.net ([5.9.151.49] helo=sipsolutions.net)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YSgVV-0004qZ-1O
- for ath10k@lists.infradead.org; Tue, 03 Mar 2015 06:40:42 +0000
-Received: by wesq59 with SMTP id q59so37844201wes.1
- for <ath10k@lists.infradead.org>; Mon, 02 Mar 2015 22:40:17 -0800 (PST)
-MIME-Version: 1.0
-In-Reply-To: <1425350171-26333-1-git-send-email-xerofoify@gmail.com>
-References: <1425350171-26333-1-git-send-email-xerofoify@gmail.com>
-Date: Tue, 3 Mar 2015 07:40:17 +0100
-Message-ID: <CA+BoTQnNgNd4V9FN5SON387s7XuowFSDgrFUjZTn9Qm-sJ+NbQ@mail.gmail.com>
-Subject: Re: [PATCH] ath:Release resources for structure pointer, ar if error
- pointing device in the function, ath10k_core_register_work
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1YSiyX-0000jG-DT
+ for ath10k@lists.infradead.org; Tue, 03 Mar 2015 09:18:50 +0000
+Message-ID: <1425374299.2450.18.camel@sipsolutions.net>
+Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for
+ tdls station
+From: Johannes Berg <johannes@sipsolutions.net>
+Date: Tue, 03 Mar 2015 10:18:19 +0100
+In-Reply-To: <CA+XVXfchZ+L1iH47S=rM04vJbjBSKA4O8TYuhEkfZuLpNb9QDA@mail.gmail.com>
+ (sfid-20150301_092138_211960_577091EE)
+References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
+ <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
+ <1425041427.1960.1.camel@sipsolutions.net>
+ <CA+XVXfchZ+L1iH47S=rM04vJbjBSKA4O8TYuhEkfZuLpNb9QDA@mail.gmail.com>
+ (sfid-20150301_092138_211960_577091EE)
+Mime-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +24,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Krause <xerofoify@gmail.com>
-Cc: Network Development <netdev@vger.kernel.org>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, linux-kernel@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Arik Nemtsov <arik@wizery.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org, Arik Nemtsov <arikx.nemtsov@intel.com>
 
-T24gMyBNYXJjaCAyMDE1IGF0IDAzOjM2LCBOaWNob2xhcyBLcmF1c2UgPHhlcm9mb2lmeUBnbWFp
-bC5jb20+IHdyb3RlOgo+IFJlbGVhc2VzIHJlc291cmNlcyBhbmQgZGVyZWdpc3RlcnMgdGhlIHN0
-dWN0dXJlIHBvaW50ZXIgYXIgcGFzc2VkIGJ5IHRoZSBjYWxsZXIgdG8gdGhlIGZ1bmN0aW9uLCBh
-dGgxMGtfY29yZV9yZWdpc3Rlcl93b3JrCj4gaWYgdW5hYmxlIHRvIHByb2JlIHRoZSBzdHJ1Y3R1
-cmUgcG9pbnRlciBzdWNjZXNzZnVsbHkgd2l0aCBhIGNhbGwgdG8gYXRoMTBrX2NvcmVfcHJvYmVf
-ZncuIEZ1cnRoZXIgbW9yZSBpZiB0aGlzIGhhcHBlcm5zCj4gd2UgbXVzdCBmaXJzdCBqdW1wIHRv
-IHRoZSBsYWJlbCBlcnIgZm9yIHRoZSBnb3RvIHN0YXRlbWVudCByZXF1aXJlZCB0byBqdW1wIHRv
-IGhhbmRsZSB0aGlzIHBhcnRpY3VsYXIgZXJyb3IgaW4gdGhlIGZ1bmN0aW9uLAo+IGF0aDEwa19j
-b3JlX3JlZ2lzdGVyX3dvcmsuICBBZnRlciB3ZSBhcmUgaW4gdGhlIGNvcnJlY3QgZXJyb3Igc2Vj
-dGlvbiB3ZSBtdXN0IGZyZWUgdGhlIHJlc291cmNlcyBmb3IgdGhlIHN0cnVjdHVyZSBwb2ludGVy
-LGFyCj4gd2l0aCBhIGNhbGwgdG8gdGhlIGZ1bmN0aW9uLCAgYXRoMTBrX2NvcmVfdW5yZWdpc3Rl
-ciB0byBmcmVlIHJlc291cmNlcyBhbGxvY2F0ZWQgZm9yIHRoZSBzdHJ1Y3R1cmUgcG9pbnRlcixh
-ci4KPgo+IFNpZ25lZC1vZmYtYnk6IE5pY2hvbGFzIEtyYXVzZSA8eGVyb2ZvaWZ5QGdtYWlsLmNv
-bT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMgfCA0ICst
-LS0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAzIGRlbGV0aW9ucygtKQo+Cj4g
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5jIGIvZHJp
-dmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBpbmRleCAzMTBlMTJiLi44YjJj
-YTI1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29yZS5j
-Cj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBAQCAtMTMw
-Nyw5ICsxMzA3LDcgQEAgZXJyX3VucmVnaXN0ZXJfbWFjOgo+ICBlcnJfcmVsZWFzZV9mdzoKPiAg
-ICAgICAgIGF0aDEwa19jb3JlX2ZyZWVfZmlybXdhcmVfZmlsZXMoYXIpOwo+ICBlcnI6Cj4gLSAg
-ICAgICAvKiBUT0RPOiBJdCdzIHByb2JhYmx5IGEgZ29vZCBpZGVhIHRvIHJlbGVhc2UgZGV2aWNl
-IGZyb20gdGhlIGRyaXZlcgo+IC0gICAgICAgICogYnV0IGNhbGxpbmcgZGV2aWNlX3JlbGVhc2Vf
-ZHJpdmVyKCkgaGVyZSB3aWxsIGNhdXNlIGEgZGVhZGxvY2suCj4gLSAgICAgICAgKi8KPiArICAg
-ICAgIGF0aDEwa19jb3JlX3VucmVnaXN0ZXIoYXIpOwo+ICAgICAgICAgcmV0dXJuOwo+ICB9CgpE
-aWQgeW91IHRlc3QgdGhpcz8gVGhpcyB3aWxsIGRlYWRsb2NrLiBhdGgxMGtfY29yZV91bnJlZ2lz
-dGVyKCkgdHJpZXMKdG8gY2FuY2VsIGFyLT5yZWdpc3Rlcl93b3JrLiBUaGlzIHdvbid0IHdvcmsg
-aWYgeW91IGNhbGwgaXQgZnJvbSB0aGUKd29ya2VyIGl0c2VsZi4gTW9yZW92ZXIgaWYgSSBpZ25v
-cmUgdGhlIGRlYWRsb2NrCmF0aDEwa19jb3JlX3VucmVnaXN0ZXIoKSB3b3VsZCBkbyBub3RoaW5n
-IGVsc2UgaW4gdGhpcyBjb250ZXh0IGJlY2F1c2UKQVRIMTBLX0ZMQUdfQ09SRV9SRUdJU1RFUkVE
-IHdvdWxkbid0IGJlIGV2ZW4gc2V0LgoKSWYgeW91J3JlIGludGVyZXN0ZWQgaW4gZGVhbGluZyB3
-aXRoIHRoaXMgVE9ETyBJIHN1Z2dlc3QgeW91IHJlYWQKdGhyb3VnaCB0aGUgb3JpZ2luYWwgdGhy
-ZWFkIHdoaWNoIGxlZCB0byB0aGUgY3VycmVudCBzdGF0ZSBvZiBhZmZhaXJzOgoKICBodHRwOi8v
-d3d3LnNwaW5pY3MubmV0L2xpc3RzL2xpbnV4LXdpcmVsZXNzL21zZzEyNDAwNC5odG1sCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Sun, 2015-03-01 at 10:21 +0200, Arik Nemtsov wrote:
+
+> > Arik, you have a similar patch handling only NSS. Does this one look
+> > fine to you, and would it solve the problem your other patch solved?
+> 
+> Well currently iwlmvm requires the NSS to be set before
+> IEEE80211_STA_ASSOC (earlier), so this doesn't help directly.
+> I could change mvm a bit to make it work, but I don't really see a
+> good reason for it :)
+> 
+> The patch looks good. Shouldn't introduce new issues (at least for iwlwifi).
+
+Ok, thanks. Do you think it would be possible to move all of this before
+ASSOC?
+
+(if not, why not, and how is it that we have valid NSS if we don't have
+the remaining data valid?)
+
+johannes
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
