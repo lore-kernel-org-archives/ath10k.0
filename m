@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YT3A3-0003Ss-Br
- for ath10k@lists.infradead.org; Wed, 04 Mar 2015 06:52:03 +0000
+ id 1YT39l-0003N8-Il
+ for ath10k@lists.infradead.org; Wed, 04 Mar 2015 06:51:46 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v2 1/2] ath10k: fix rts profile for second rate series
-Date: Wed, 4 Mar 2015 12:20:46 +0530
-Message-ID: <1425451847-14505-1-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH v2 2/2] ath10k: increase station kickout threshold
+Date: Wed, 4 Mar 2015 12:20:47 +0530
+Message-ID: <1425451847-14505-2-git-send-email-rmanohar@qti.qualcomm.com>
+In-Reply-To: <1425451847-14505-1-git-send-email-rmanohar@qti.qualcomm.com>
+References: <1425451847-14505-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,40 +25,30 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-By default rts protection is enabled in firmware for the second
-rateset. Currently ath10k selects RTS profile (only for software
-retries), when legacy stations are associated or asked by mac80211.
-On congested environment, when AP is running in HT/VHT mode and
-there are no legacy clients associated, this will impact the
-robustness. Also enabling RTS protection only for second rateset will
-not impact performance on clear environment. Fix that.
+Since the station kickout threshold is also counting software
+reries (Default sw count in firmware is 16), increasing the threshold
+to try with atleast 20 data frames before kicking out the station.
 
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 84a243e..37141b3 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -798,12 +798,14 @@ static int ath10k_recalc_rtscts_prot(struct ath10k_vif *arvif)
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7cba781..e43c453 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -50,8 +50,8 @@
  
- 	vdev_param = ar->wmi.vdev_param->enable_rtscts;
+ #define ATH10K_MAX_NUM_MGMT_PENDING 128
  
--	if (arvif->use_cts_prot || arvif->num_legacy_stations > 0)
--		rts_cts |= SM(WMI_RTSCTS_ENABLED, WMI_RTSCTS_SET);
-+	rts_cts |= SM(WMI_RTSCTS_ENABLED, WMI_RTSCTS_SET);
+-/* number of failed packets */
+-#define ATH10K_KICKOUT_THRESHOLD 50
++/* number of failed packets (20 packets with 16 sw reties each) */
++#define ATH10K_KICKOUT_THRESHOLD (20 * 16)
  
- 	if (arvif->num_legacy_stations > 0)
- 		rts_cts |= SM(WMI_RTSCTS_ACROSS_SW_RETRIES,
- 			      WMI_RTSCTS_PROFILE);
-+	else
-+		rts_cts |= SM(WMI_RTSCTS_FOR_SECOND_RATESERIES,
-+			      WMI_RTSCTS_PROFILE);
- 
- 	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id, vdev_param,
- 					 rts_cts);
+ /*
+  * Use insanely high numbers to make sure that the firmware implementation
 -- 
 2.3.1
 
