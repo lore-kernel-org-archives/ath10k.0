@@ -1,27 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22c.google.com ([2607:f8b0:4001:c05::22c])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YT6i0-0004kC-8K
- for ath10k@lists.infradead.org; Wed, 04 Mar 2015 10:39:21 +0000
-Received: by igdh15 with SMTP id h15so35404077igd.4
- for <ath10k@lists.infradead.org>; Wed, 04 Mar 2015 02:38:57 -0800 (PST)
+ id 1YT84k-00007c-Rz
+ for ath10k@lists.infradead.org; Wed, 04 Mar 2015 12:06:55 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Delete unnecessary checks before the function
+ call "release_firmware"
+References: <5307CAA2.8060406@users.sourceforge.net>
+ <alpine.DEB.2.02.1402212321410.2043@localhost6.localdomain6>
+ <530A086E.8010901@users.sourceforge.net>
+ <alpine.DEB.2.02.1402231635510.1985@localhost6.localdomain6>
+ <530A72AA.3000601@users.sourceforge.net>
+ <alpine.DEB.2.02.1402240658210.2090@localhost6.localdomain6>
+ <530B5FB6.6010207@users.sourceforge.net>
+ <alpine.DEB.2.10.1402241710370.2074@hadrien>
+ <530C5E18.1020800@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251014170.2080@hadrien>
+ <530CD2C4.4050903@users.sourceforge.net>
+ <alpine.DEB.2.10.1402251840450.7035@hadrien>
+ <530CF8FF.8080600@users.sourceforge.net>
+ <alpine.DEB.2.02.1402252117150.2047@localhost6.localdomain6>
+ <530DD06F.4090703@users.sourceforge.net>
+ <alpine.DEB.2.02.1402262129250.2221@localhost6.localdomain6>
+ <5317A59D.4@users.sourceforge.net>
+ <54D26614.2080708@users.sourceforge.net>
+Date: Wed, 4 Mar 2015 14:06:21 +0200
+In-Reply-To: <54D26614.2080708@users.sourceforge.net> (SF Markus Elfring's
+ message of "Wed, 04 Feb 2015 19:33:56 +0100")
+Message-ID: <87twy16k76.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+XVXfdnTATvbPSkHmGSyMF5d++OmYySskD7D50YvH-wf4eM=w@mail.gmail.com>
-References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
- <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
- <1425041427.1960.1.camel@sipsolutions.net>
- <CA+XVXfchZ+L1iH47S=rM04vJbjBSKA4O8TYuhEkfZuLpNb9QDA@mail.gmail.com>
- <1425374299.2450.18.camel@sipsolutions.net>
- <CA+XVXffHENxD3z9dTn_LC9c7Ot0Q4FgyEoHLjdeiDTFWQGuF9w@mail.gmail.com>
- <1425377192.2450.34.camel@sipsolutions.net>
- <CA+XVXfdu2fCLXBP1VkMOX9nnoqCiH+h=pwzGAQ2KkBrf-H9MCQ@mail.gmail.com>
- <1425456998.1810.3.camel@sipsolutions.net>
- <CA+XVXfdnTATvbPSkHmGSyMF5d++OmYySskD7D50YvH-wf4eM=w@mail.gmail.com>
-Date: Wed, 4 Mar 2015 11:38:57 +0100
-Message-ID: <CADnKcVjWiHi1RsYwiE6buMduq19i3A5qt8w93VLz6dRg-qLOLQ@mail.gmail.com>
-Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for tdls
- station
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,20 +41,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arik Nemtsov <arik@wizery.com>
-Cc: Johannes Berg <johannes@sipsolutions.net>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Arik Nemtsov <arikx.nemtsov@intel.com>
+To: SF Markus Elfring <elfring@users.sourceforge.net>
+Cc: linux-wireless@vger.kernel.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, ath10k@lists.infradead.org, Julia Lawall <julia.lawall@lip6.fr>
 
-On 4 March 2015 at 11:04, Arik Nemtsov <arik@wizery.com> wrote:
-> I can do it, but I'll probably only get to it next week.
+SF Markus Elfring <elfring@users.sourceforge.net> writes:
 
-I will try to prepare patch this week, if not I will wait for Arik's
-proposition.
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 4 Feb 2015 19:30:23 +0100
+>
+> The release_firmware() function tests whether its argument is NULL and then
+> returns immediately. Thus the test around the call is not needed.
+>
+> This issue was detected by using the Coccinelle software.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
-For ath10k rate control need to be initialised before moving to
-STA_AUTHORIZED, so initialising rate control before STA_ASSOC is
-perfectly fine.
+Thanks, applied to ath.git.
 
-Marek
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
