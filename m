@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YT9YH-0008B7-JF
- for ath10k@lists.infradead.org; Wed, 04 Mar 2015 13:41:30 +0000
+ id 1YTAoE-0000lf-Nb
+ for ath10k@lists.infradead.org; Wed, 04 Mar 2015 15:02:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: workaround qca6174 sta powersave issue
-References: <1423830616-7516-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 4 Mar 2015 15:40:58 +0200
-In-Reply-To: <1423830616-7516-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 13 Feb 2015 13:30:15 +0100")
-Message-ID: <87h9u07udx.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 3/4] mac80211: initialize rate control earlier for tdls
+ station
+References: <1424850911-21017-1-git-send-email-marek.puzyniak@tieto.com>
+ <1424850911-21017-4-git-send-email-marek.puzyniak@tieto.com>
+ <1425041427.1960.1.camel@sipsolutions.net>
+Date: Wed, 4 Mar 2015 17:01:29 +0200
+In-Reply-To: <1425041427.1960.1.camel@sipsolutions.net> (Johannes Berg's
+ message of "Fri, 27 Feb 2015 13:50:27 +0100")
+Message-ID: <878ufc7qnq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,21 +26,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Arik Nemtsov <arikx.nemtsov@intel.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Johannes Berg <johannes@sipsolutions.net> writes:
 
-> qca6184 WLAN.RM.2.0-00073 has a bug in sta
-> powersave state machine and requires peer param to
-> be poked to enable the powersave.
+> +Arik.
 >
-> Calling this unconditionally should be safe for
-> other chips/firmwares.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> It'd be nice (for me anyway) if you didn't send this in a series of
+> other patches I don't care about - I only ever saw this due to
+> patchwork.
 
-Thanks, both patches applied.
+Yes, mac80211 and driver patches need to be sent in separate series. I
+will drop this series for now, please resend ath10k patches separetely.
+
+AND please clearly document what mac80211 patches the ath10k patches
+depend on.
 
 -- 
 Kalle Valo
