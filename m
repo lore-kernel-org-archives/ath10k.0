@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTWGj-00052V-1F
- for ath10k@lists.infradead.org; Thu, 05 Mar 2015 13:56:56 +0000
+ id 1YTWHU-0005LV-62
+ for ath10k@lists.infradead.org; Thu, 05 Mar 2015 13:57:44 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath: Introduce chirp parameter used by DFS
-References: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
-Date: Thu, 5 Mar 2015 15:56:20 +0200
-In-Reply-To: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Thu, 12 Feb 2015 13:17:03 -0800")
-Message-ID: <87k2yv4kfv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: Increase AST table SKID length limit
+References: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
+Date: Thu, 5 Mar 2015 15:57:09 +0200
+In-Reply-To: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
+ (SenthilKumar Jegadeesan's message of "Fri, 13 Feb 2015 21:06:16
+ +0530")
+Message-ID: <87fv9j4kei.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
+To: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com> writes:
 
-> Some of radar types such as FCC radar type 5 require
-> to look up chirp in pulse to detect genuine radar and
-> it will prevent DFS channels from false radar detection.
+> The current SKID length configuration causes firmware
+> to reject peer creation for not able to allocate
+> AST entries for peers. This issue is observed when
+> least significant 3 bytes are used ramdomly to create
+> client MAC addresses.
 >
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> AST table SKID length configuration is increased to
+> maximum value to fix this issue.
+>
+> Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
 
-Thanks, all three patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
