@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTWES-00037t-HW
- for ath10k@lists.infradead.org; Thu, 05 Mar 2015 13:54:36 +0000
+ id 1YTWGj-00052V-1F
+ for ath10k@lists.infradead.org; Thu, 05 Mar 2015 13:56:56 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 2/2] ath10k: Increase copy engine entries for rx wmi
-References: <1423460814-2767-1-git-send-email-rmanohar@qti.qualcomm.com>
- <1423460814-2767-2-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Thu, 5 Mar 2015 15:53:58 +0200
-In-Reply-To: <1423460814-2767-2-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Mon, 9 Feb 2015 11:16:54 +0530")
-Message-ID: <87oao74kjt.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath: Introduce chirp parameter used by DFS
+References: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com>
+Date: Thu, 5 Mar 2015 15:56:20 +0200
+In-Reply-To: <1423775825-19498-1-git-send-email-poh@qca.qualcomm.com> (Peter
+ Oh's message of "Thu, 12 Feb 2015 13:17:03 -0800")
+Message-ID: <87k2yv4kfv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,20 +23,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Peter Oh <poh@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> Having lower number of copy engine entries for target to host
-> WMI ring is causing drops in receiving management frames. This
-> issue is observed during max clients (128 clients) stress testing.
-> While bursting deauthentication frames from simulated clients,
-> approx. 70% of frames are getting dropped due to lower ring entries.
+> Some of radar types such as FCC radar type 5 require
+> to look up chirp in pulse to detect genuine radar and
+> it will prevent DFS channels from false radar detection.
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 
-Thanks, patch 2 applied.
+Thanks, all three patches applied.
 
 -- 
 Kalle Valo
