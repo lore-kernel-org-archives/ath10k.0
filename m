@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YTWHU-0005LV-62
- for ath10k@lists.infradead.org; Thu, 05 Mar 2015 13:57:44 +0000
+ id 1YTWYD-0006xb-Lh
+ for ath10k@lists.infradead.org; Thu, 05 Mar 2015 14:15:01 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: Increase AST table SKID length limit
-References: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
-Date: Thu, 5 Mar 2015 15:57:09 +0200
-In-Reply-To: <1423841776-16288-1-git-send-email-sjegadee@qti.qualcomm.com>
- (SenthilKumar Jegadeesan's message of "Fri, 13 Feb 2015 21:06:16
+Subject: Re: [PATCH] ath10k: Enable encrytion of ADDBA request in PMF
+ configuration
+References: <1425118689-32553-1-git-send-email-sjegadee@qti.qualcomm.com>
+Date: Thu, 5 Mar 2015 16:14:26 +0200
+In-Reply-To: <1425118689-32553-1-git-send-email-sjegadee@qti.qualcomm.com>
+ (SenthilKumar Jegadeesan's message of "Sat, 28 Feb 2015 15:48:09
  +0530")
-Message-ID: <87fv9j4kei.fsf@kamboji.qca.qualcomm.com>
+Message-ID: <87bnk74jlp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,18 +30,19 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com> writes:
 
-> The current SKID length configuration causes firmware
-> to reject peer creation for not able to allocate
-> AST entries for peers. This issue is observed when
-> least significant 3 bytes are used ramdomly to create
-> client MAC addresses.
+> In HT mode, firmware is not encrypting ADDBA request as PMF
+> configuration is not set in peer flags during association.
 >
-> AST table SKID length configuration is increased to
-> maximum value to fix this issue.
+> Set peer flags for MFP enabled station in ath10k driver.
+>
+> Implemented abstraction layer for peer flags.
+>
+> This change depends on mac80211 patch "[PATCH] mac80211: send
+> station PMF configuration to driver".
 >
 > Signed-off-by: SenthilKumar Jegadeesan <sjegadee@qti.qualcomm.com>
 
-Thanks, applied.
+Typo in the title "encrytion".
 
 -- 
 Kalle Valo
