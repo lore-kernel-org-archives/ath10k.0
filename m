@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YThFq-0005Gx-6Q
- for ath10k@lists.infradead.org; Fri, 06 Mar 2015 01:40:42 +0000
-Message-ID: <54F90585.7060705@candelatech.com>
-Date: Thu, 05 Mar 2015 17:40:21 -0800
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YTmsA-0006SG-S5
+ for ath10k@lists.infradead.org; Fri, 06 Mar 2015 07:40:39 +0000
+Date: Fri, 6 Mar 2015 13:09:44 +0530
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: fix quiet duration configuration
+Message-ID: <20150306073936.GA3982@qca.qualcomm.com>
+References: <1424368506-18193-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1424368506-18193-2-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Firmware (firmware-2-ct-non-commercial-full-13.bin) and ath10k_pci
- crash
-References: <CAFZrTr7=jCHWHv2DsHZ_KP7zf_ve8LEkhZXxoPqwWLQZdSM+YQ@mail.gmail.com>	<54EB7596.5010103@candelatech.com>
- <CAFZrTr7N34vhhd_BFQBYf==dwSTNVrh_jncVXYFxFxZAaUOW1A@mail.gmail.com>
- <54F6025B.3010306@candelatech.com> <54F82115.4050100@aoifes.com>
-In-Reply-To: <54F82115.4050100@aoifes.com>
+Content-Disposition: inline
+In-Reply-To: <1424368506-18193-2-git-send-email-rmanohar@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +20,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jose Antonio Delgado Alfonso <jose.delgado@aoifes.com>, Jeremias Blendin <jeremias@blendin.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: mka@google.com, linux-wireless@vger.kernel.org
 
-On 03/05/2015 01:25 AM, Jose Antonio Delgado Alfonso wrote:
-> See attached the patches I made to fix that issue
+On Thu, Feb 19, 2015 at 11:25:06PM +0530, Rajkumar Manoharan wrote:
+> Duty cycle is nothing but percentage of one period in which a
+> signal is active. But it is wrongly interpreted as ratio of quiet
+> duration. So fix the quiet duration to the remaining percentage
+> of duty cycle (active ratio).
+> 
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ---
+Kalle,
 
-A modified version of this has been pushed to my 3.17 tree.
+Please drop this change as it breaks the user space interface. Will send
+updated patch ASAP. Sorry for the inconvenience.
 
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+-Rajkumar
 
 _______________________________________________
 ath10k mailing list
