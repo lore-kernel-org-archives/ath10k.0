@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YU9Yy-0001lI-H4
- for ath10k@lists.infradead.org; Sat, 07 Mar 2015 07:54:21 +0000
+ id 1YU9aI-0003Dd-4T
+ for ath10k@lists.infradead.org; Sat, 07 Mar 2015 07:55:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: increase duty cycle maximum limit
-References: <1424368506-18193-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Sat, 7 Mar 2015 09:53:51 +0200
-In-Reply-To: <1424368506-18193-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Thu, 19 Feb 2015 23:25:05 +0530")
-Message-ID: <87a8zp1bw0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix ap u-apsd cmd on qca6174 w/ wmi-tlv
+References: <1424860776-11668-1-git-send-email-michal.kazior@tieto.com>
+Date: Sat, 7 Mar 2015 09:55:13 +0200
+In-Reply-To: <1424860776-11668-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 25 Feb 2015 11:39:36 +0100")
+Message-ID: <8761ad1btq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +23,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Allow user to configure the duty cycle upto 100%. Since thermal
-> mitigation algorithm is running in user space, remove the driver
-> level limitation and let the user to control the temperature.
+> The command was truncated so the parameter value
+> was seen in fw as 0. This caused U-APSD enabled
+> stations to be misconfigured and mistreated by AP.
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, patch 1 applied. And I dropped patch 2 as you requested.
+Thanks, applied.
 
 -- 
 Kalle Valo
