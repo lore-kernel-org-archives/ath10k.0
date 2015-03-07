@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YU9jH-0006tG-IH
- for ath10k@lists.infradead.org; Sat, 07 Mar 2015 08:05:00 +0000
+ id 1YU9mS-0000Rw-Td
+ for ath10k@lists.infradead.org; Sat, 07 Mar 2015 08:08:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH V5 1/2] ath10k: Move ath10k_vdev_stop() up before
- ath10k_vdev_start_restart()
-References: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
-Date: Sat, 7 Mar 2015 10:04:29 +0200
-In-Reply-To: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
- (Vasanthakumar Thiagarajan's message of "Mon, 2 Mar 2015 17:45:27
- +0530")
-Message-ID: <87oao5z10y.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/2] ath10k: fix some pci wake/sleep issues
+References: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
+Date: Sat, 7 Mar 2015 10:07:47 +0200
+In-Reply-To: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 2 Mar 2015 13:22:13 +0100")
+Message-ID: <87k2ytz0vg.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,18 +23,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This patches does not modify any functionality. Just a code move
-> so that ath10k_vdev_stop() can be used in ath10k_vdev_start_restart()
-> for any failure cases which involves vdev_stop().
+> In some cases the device ends up sleeping while
+> ath10k didn't expect it to leading to reading
+> garbage from registers, e.g. when shared irqs are
+> used and the driver is in powered down state.
 >
-> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+> This effectively makes the device remain awake all
+> the time even when all interfaces are down.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, both patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
