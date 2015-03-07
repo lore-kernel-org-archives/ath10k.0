@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YU9mS-0000Rw-Td
- for ath10k@lists.infradead.org; Sat, 07 Mar 2015 08:08:17 +0000
+ id 1YU9bh-0003fq-Ga
+ for ath10k@lists.infradead.org; Sat, 07 Mar 2015 07:57:09 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: fix some pci wake/sleep issues
-References: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
-Date: Sat, 7 Mar 2015 10:07:47 +0200
-In-Reply-To: <1425298934-12370-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 2 Mar 2015 13:22:13 +0100")
-Message-ID: <87k2ytz0vg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix TxBF VHT capabilities for 2+ RF-chain devices
+References: <1424945482-9765-1-git-send-email-michal.kazior@tieto.com>
+Date: Sat, 7 Mar 2015 09:56:39 +0200
+In-Reply-To: <1424945482-9765-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 26 Feb 2015 11:11:22 +0100")
+Message-ID: <871tl11brc.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,13 +28,15 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> In some cases the device ends up sleeping while
-> ath10k didn't expect it to leading to reading
-> garbage from registers, e.g. when shared irqs are
-> used and the driver is in powered down state.
+> Firmware doesn't report a complete and
+> ready-to-use vht cap. Instead the driver is
+> supposed to fill in the missing bits related to
+> number of chains.
 >
-> This effectively makes the device remain awake all
-> the time even when all interfaces are down.
+> This effectively increases Compressed Steering
+> Number and Number of Sounding Dimensions in
+> AssocReq frames for devices with more than one RF
+> chain and should improve TxBF performance.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
