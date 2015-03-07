@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YU9ik-0006Wa-2n
- for ath10k@lists.infradead.org; Sat, 07 Mar 2015 08:04:26 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 4/4] ath10k: cache throttle state when device is down
-Date: Sat, 7 Mar 2015 13:33:00 +0530
-Message-ID: <1425715380-11200-4-git-send-email-rmanohar@qti.qualcomm.com>
-In-Reply-To: <1425715380-11200-1-git-send-email-rmanohar@qti.qualcomm.com>
-References: <1425715380-11200-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YU9jH-0006tG-IH
+ for ath10k@lists.infradead.org; Sat, 07 Mar 2015 08:05:00 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH V5 1/2] ath10k: Move ath10k_vdev_stop() up before
+ ath10k_vdev_start_restart()
+References: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
+Date: Sat, 7 Mar 2015 10:04:29 +0200
+In-Reply-To: <1425298528-3067-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Mon, 2 Mar 2015 17:45:27
+ +0530")
+Message-ID: <87oao5z10y.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,54 +25,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Allow driver to cache the throttle state when the devie is not
-yet started. Configure the cached throttle state while powering
-up the device. Since thermal daemon is unaware of the up/down cycle,
-it assumes that device is throttled.
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-Reported-by: Matthias Kaehlcke <mka@google.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/thermal.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+> This patches does not modify any functionality. Just a code move
+> so that ath10k_vdev_stop() can be used in ath10k_vdev_start_restart()
+> for any failure cases which involves vdev_stop().
+>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index 7aef064..3720c86 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -52,19 +52,19 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
- 	struct ath10k *ar = cdev->devdata;
- 	int ret = 0;
- 
-+	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
-+		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
-+			    throttle_state, ATH10K_THERMAL_THROTTLE_MAX);
-+		return -EINVAL;
-+	}
- 	mutex_lock(&ar->conf_mutex);
-+	ar->thermal.throttle_state = throttle_state;
-+
- 	if (ar->state != ATH10K_STATE_ON) {
- 		ret = -ENETDOWN;
- 		goto out;
- 	}
- 
--	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
--		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
--			    throttle_state, ATH10K_THERMAL_THROTTLE_MAX);
--		ret = -EINVAL;
--		goto out;
--	}
--	ar->thermal.throttle_state = throttle_state;
- 	ath10k_thermal_set_throttling(ar);
- out:
- 	mutex_unlock(&ar->conf_mutex);
+Thanks, both patches applied.
+
 -- 
-2.3.1
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
