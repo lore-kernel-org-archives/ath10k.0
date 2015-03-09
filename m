@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUsYZ-0007HP-Hp
- for ath10k@lists.infradead.org; Mon, 09 Mar 2015 07:56:59 +0000
-Received: by labhs14 with SMTP id hs14so69129669lab.4
- for <ath10k@lists.infradead.org>; Mon, 09 Mar 2015 00:56:33 -0700 (PDT)
+ id 1YUsYZ-0007Fv-6y
+ for ath10k@lists.infradead.org; Mon, 09 Mar 2015 07:56:58 +0000
+Received: by labgq15 with SMTP id gq15so15154435lab.13
+ for <ath10k@lists.infradead.org>; Mon, 09 Mar 2015 00:56:29 -0700 (PDT)
 From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH 4/4] ath10k: add WOW patterns support
-Date: Mon,  9 Mar 2015 08:55:20 +0100
-Message-Id: <1425887720-11466-4-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1425887720-11466-1-git-send-email-janusz.dziedzic@tieto.com>
-References: <1425887720-11466-1-git-send-email-janusz.dziedzic@tieto.com>
+Subject: [PATCH 1/4] ath10k: add WMI support for WOW
+Date: Mon,  9 Mar 2015 08:55:17 +0100
+Message-Id: <1425887720-11466-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,170 +25,467 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-Add patterns support for WOW.
+Add WMI support for WOW like enable,
+wakeup events and host wakeup indication.
 
 Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c    |  1 +
- drivers/net/wireless/ath/ath10k/hw.h      |  1 +
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  2 +-
- drivers/net/wireless/ath/ath10k/wmi.h     |  4 +++
- drivers/net/wireless/ath/ath10k/wow.c     | 47 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wow.h     |  2 ++
- 6 files changed, 55 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  70 +++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 116 +++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  21 +++++
+ drivers/net/wireless/ath/ath10k/wmi.h     | 144 ++++++++++++++++++++++++++++++
+ 4 files changed, 349 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index e7fc531..02da72e 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -972,6 +972,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
- 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
- 		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
-+		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7f04645..22c993d 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -263,6 +263,7 @@ struct ath10k_pktlog_hdr {
- 						 2)
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
-+#define TARGET_TLV_NUM_WOW_PATTERNS		22
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index c8b64e7..1dee6ed 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -45,6 +45,8 @@ struct wmi_ops {
+ 			struct wmi_rdy_ev_arg *arg);
+ 	int (*pull_fw_stats)(struct ath10k *ar, struct sk_buff *skb,
+ 			     struct ath10k_fw_stats *stats);
++	int (*pull_wow_event)(struct ath10k *ar, struct sk_buff *skb,
++			      struct wmi_wow_ev_arg *arg);
  
- /* Number of Copy Engines supported */
- #define CE_COUNT 8
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 0c38b5e..f90747e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1278,7 +1278,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->num_tdls_conn_table_entries = __cpu_to_le32(0x20);
- 	cfg->beacon_tx_offload_max_vdev = __cpu_to_le32(2);
- 	cfg->num_multicast_filter_entries = __cpu_to_le32(5);
--	cfg->num_wow_filters = __cpu_to_le32(0x16);
-+	cfg->num_wow_filters = __cpu_to_le32(ar->wow.max_num_patterns);
- 	cfg->num_keep_alive_pattern = __cpu_to_le32(6);
- 	cfg->keep_alive_pattern_size = __cpu_to_le32(0);
- 	cfg->max_tdls_concurrent_sleep_sta = __cpu_to_le32(1);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 9ea8e09..3b6f39d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5006,6 +5006,10 @@ struct wmi_wow_ev_arg {
- 	u32 data_len;
+ 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
+ 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
+@@ -148,6 +150,11 @@ struct wmi_ops {
+ 					      u32 num_ac);
+ 	struct sk_buff *(*gen_sta_keepalive)(struct ath10k *ar,
+ 					     const struct wmi_sta_keepalive_arg *arg);
++	struct sk_buff *(*gen_wow_enable)(struct ath10k *ar);
++	struct sk_buff *(*gen_wow_add_wakeup_event)(struct ath10k *ar, u32 vdev_id,
++						    enum wmi_wow_wakeup_event event,
++						    u32 enable);
++	struct sk_buff *(*gen_wow_host_wakeup_ind)(struct ath10k *ar);
  };
  
-+#define WOW_MIN_PATTERN_SIZE	1
-+#define WOW_MAX_PATTERN_SIZE	148
-+#define WOW_MAX_PKT_OFFSET	128
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -274,6 +281,16 @@ ath10k_wmi_pull_fw_stats(struct ath10k *ar, struct sk_buff *skb,
+ }
+ 
+ static inline int
++ath10k_wmi_pull_wow_event(struct ath10k *ar, struct sk_buff *skb,
++			  struct wmi_wow_ev_arg *arg)
++{
++	if (!ar->wmi.ops->pull_wow_event)
++		return -EOPNOTSUPP;
++
++	return ar->wmi.ops->pull_wow_event(ar, skb, arg);
++}
++
++static inline int
+ ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ {
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
+@@ -1060,4 +1077,57 @@ ath10k_wmi_sta_keepalive(struct ath10k *ar,
+ 	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
+ }
+ 
++static inline int
++ath10k_wmi_wow_enable(struct ath10k *ar)
++{
++	struct sk_buff *skb;
++	u32 cmd_id;
++
++	if (!ar->wmi.ops->gen_wow_enable)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_wow_enable(ar);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	cmd_id = ar->wmi.cmd->wow_enable_cmdid;
++	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
++}
++
++static inline int
++ath10k_wmi_wow_add_wakeup_event(struct ath10k *ar, u32 vdev_id,
++				enum wmi_wow_wakeup_event event,
++				u32 enable)
++{
++	struct sk_buff *skb;
++	u32 cmd_id;
++
++	if (!ar->wmi.ops->gen_wow_add_wakeup_event)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_wow_add_wakeup_event(ar, vdev_id, event, enable);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	cmd_id = ar->wmi.cmd->wow_enable_disable_wake_event_cmdid;
++	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
++}
++
++static inline int
++ath10k_wmi_wow_host_wakeup_ind(struct ath10k *ar)
++{
++	struct sk_buff *skb;
++	u32 cmd_id;
++
++	if (!ar->wmi.ops->gen_wow_host_wakeup_ind)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_wow_host_wakeup_ind(ar);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	cmd_id = ar->wmi.cmd->wow_hostwakeup_from_sleep_cmdid;
++	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
++}
++
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 939d86b..409db3e 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -33,9 +33,9 @@ struct wmi_tlv_policy {
+ 
+ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
+ 	[WMI_TLV_TAG_ARRAY_BYTE]
+-		= { .min_len = sizeof(u8) },
++		= { .min_len = 0 },
+ 	[WMI_TLV_TAG_ARRAY_UINT32]
+-		= { .min_len = sizeof(u32) },
++		= { .min_len = 0 },
+ 	[WMI_TLV_TAG_STRUCT_SCAN_EVENT]
+ 		= { .min_len = sizeof(struct wmi_scan_event) },
+ 	[WMI_TLV_TAG_STRUCT_MGMT_RX_HDR]
+@@ -66,6 +66,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
+ 		= { .min_len = sizeof(struct wmi_tlv_diag_data_ev) },
+ 	[WMI_TLV_TAG_STRUCT_P2P_NOA_EVENT]
+ 		= { .min_len = sizeof(struct wmi_tlv_p2p_noa_ev) },
++	[WMI_TLV_TAG_STRUCT_WOW_EVENT_INFO]
++		= { .min_len = sizeof(struct wmi_tlv_wow_event_info) },
+ };
+ 
+ static int
+@@ -1061,6 +1063,36 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++static int
++ath10k_wmi_tlv_op_pull_wow_ev(struct ath10k *ar, struct sk_buff *skb,
++			      struct wmi_wow_ev_arg *arg)
++{
++	const void **tb;
++	const struct wmi_tlv_wow_event_info *ev;
++	int ret;
++
++	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
++		return ret;
++	}
++
++	ev = tb[WMI_TLV_TAG_STRUCT_WOW_EVENT_INFO];
++	if (!ev) {
++		kfree(tb);
++		return -EPROTO;
++	}
++
++	arg->vdev_id = __le32_to_cpu(ev->vdev_id);
++	arg->flag = __le32_to_cpu(ev->flag);
++	arg->wake_reason = __le32_to_cpu(ev->wake_reason);
++	arg->data_len = __le32_to_cpu(ev->data_len);
++
++	kfree(tb);
++	return 0;
++}
++
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_pdev_suspend(struct ath10k *ar, u32 opt)
+ {
+@@ -2534,6 +2566,82 @@ ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_wow_enable(struct ath10k *ar)
++{
++	struct wmi_tlv_wow_enable_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (struct wmi_tlv *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_WOW_ENABLE_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++
++	cmd->enable = __cpu_to_le32(1);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv wow enable\n");
++	return skb;
++}
++
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_wow_add_wakeup_event(struct ath10k *ar,
++					   u32 vdev_id,
++					   enum wmi_wow_wakeup_event event,
++					   u32 enable)
++{
++	struct wmi_tlv_wow_add_del_event_cmd *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (struct wmi_tlv *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_WOW_ADD_DEL_EVT_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++
++	cmd->vdev_id = __cpu_to_le32(vdev_id);
++	cmd->is_add = __cpu_to_le32(enable);
++	cmd->event_bitmap = __cpu_to_le32(1 << event);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv wow add wakeup event %s enable %d vdev_id %d\n",
++		   wow_wakeup_event(event), enable, vdev_id);
++	return skb;
++}
++
++static struct sk_buff *
++ath10k_wmi_tlv_gen_wow_host_wakeup_ind(struct ath10k *ar)
++{
++	struct wmi_tlv_wow_host_wakeup_ind *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	tlv = (struct wmi_tlv *)skb->data;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_WOW_HOSTWAKEUP_FROM_SLEEP_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv wow host wakeup ind\n");
++	return skb;
++}
++
+ /****************/
+ /* TLV mappings */
+ /****************/
+@@ -2785,6 +2893,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.pull_svc_rdy = ath10k_wmi_tlv_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_tlv_op_pull_rdy_ev,
+ 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
++	.pull_wow_event = ath10k_wmi_tlv_op_pull_wow_ev,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
+@@ -2830,6 +2939,9 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
+ 	.gen_vdev_sta_uapsd = ath10k_wmi_tlv_op_gen_vdev_sta_uapsd,
+ 	.gen_sta_keepalive = ath10k_wmi_tlv_op_gen_sta_keepalive,
++	.gen_wow_enable = ath10k_wmi_tlv_op_gen_wow_enable,
++	.gen_wow_add_wakeup_event = ath10k_wmi_tlv_op_gen_wow_add_wakeup_event,
++	.gen_wow_host_wakeup_ind = ath10k_wmi_tlv_gen_wow_host_wakeup_ind,
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index f4a626fd..f8754a3 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1458,6 +1458,27 @@ struct wmi_tlv_p2p_noa_ev {
+ 	__le32 vdev_id;
+ } __packed;
+ 
++struct wmi_tlv_wow_add_del_event_cmd {
++	__le32 vdev_id;
++	__le32 is_add;
++	__le32 event_bitmap;
++} __packed;
++
++struct wmi_tlv_wow_enable_cmd {
++	__le32 enable;
++} __packed;
++
++struct wmi_tlv_wow_host_wakeup_ind {
++	__le32 reserved;
++} __packed;
++
++struct wmi_tlv_wow_event_info {
++	__le32 vdev_id;
++	__le32 flag;
++	__le32 wake_reason;
++	__le32 data_len;
++} __packed;
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index adf935b..9ea8e09 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -4862,6 +4862,150 @@ struct wmi_pdev_temperature_event {
+ 	__le32 temperature;
+ } __packed;
+ 
++/* WOW structures */
++enum wmi_wow_wakeup_event {
++	WOW_BMISS_EVENT = 0,
++	WOW_BETTER_AP_EVENT,
++	WOW_DEAUTH_RECVD_EVENT,
++	WOW_MAGIC_PKT_RECVD_EVENT,
++	WOW_GTK_ERR_EVENT,
++	WOW_FOURWAY_HSHAKE_EVENT,
++	WOW_EAPOL_RECVD_EVENT,
++	WOW_NLO_DETECTED_EVENT,
++	WOW_DISASSOC_RECVD_EVENT,
++	WOW_PATTERN_MATCH_EVENT,
++	WOW_CSA_IE_EVENT,
++	WOW_PROBE_REQ_WPS_IE_EVENT,
++	WOW_AUTH_REQ_EVENT,
++	WOW_ASSOC_REQ_EVENT,
++	WOW_HTT_EVENT,
++	WOW_RA_MATCH_EVENT,
++	WOW_HOST_AUTO_SHUTDOWN_EVENT,
++	WOW_IOAC_MAGIC_EVENT,
++	WOW_IOAC_SHORT_EVENT,
++	WOW_IOAC_EXTEND_EVENT,
++	WOW_IOAC_TIMER_EVENT,
++	WOW_DFS_PHYERR_RADAR_EVENT,
++	WOW_BEACON_EVENT,
++	WOW_CLIENT_KICKOUT_EVENT,
++	WOW_EVENT_MAX,
++};
++
++#define C2S(x) case x: return #x
++
++static inline const char *wow_wakeup_event(enum wmi_wow_wakeup_event ev)
++{
++	switch (ev) {
++	C2S(WOW_BMISS_EVENT);
++	C2S(WOW_BETTER_AP_EVENT);
++	C2S(WOW_DEAUTH_RECVD_EVENT);
++	C2S(WOW_MAGIC_PKT_RECVD_EVENT);
++	C2S(WOW_GTK_ERR_EVENT);
++	C2S(WOW_FOURWAY_HSHAKE_EVENT);
++	C2S(WOW_EAPOL_RECVD_EVENT);
++	C2S(WOW_NLO_DETECTED_EVENT);
++	C2S(WOW_DISASSOC_RECVD_EVENT);
++	C2S(WOW_PATTERN_MATCH_EVENT);
++	C2S(WOW_CSA_IE_EVENT);
++	C2S(WOW_PROBE_REQ_WPS_IE_EVENT);
++	C2S(WOW_AUTH_REQ_EVENT);
++	C2S(WOW_ASSOC_REQ_EVENT);
++	C2S(WOW_HTT_EVENT);
++	C2S(WOW_RA_MATCH_EVENT);
++	C2S(WOW_HOST_AUTO_SHUTDOWN_EVENT);
++	C2S(WOW_IOAC_MAGIC_EVENT);
++	C2S(WOW_IOAC_SHORT_EVENT);
++	C2S(WOW_IOAC_EXTEND_EVENT);
++	C2S(WOW_IOAC_TIMER_EVENT);
++	C2S(WOW_DFS_PHYERR_RADAR_EVENT);
++	C2S(WOW_BEACON_EVENT);
++	C2S(WOW_CLIENT_KICKOUT_EVENT);
++	C2S(WOW_EVENT_MAX);
++	default:
++		return NULL;
++	}
++}
++
++enum wmi_wow_wake_reason {
++	WOW_REASON_UNSPECIFIED = -1,
++	WOW_REASON_NLOD = 0,
++	WOW_REASON_AP_ASSOC_LOST,
++	WOW_REASON_LOW_RSSI,
++	WOW_REASON_DEAUTH_RECVD,
++	WOW_REASON_DISASSOC_RECVD,
++	WOW_REASON_GTK_HS_ERR,
++	WOW_REASON_EAP_REQ,
++	WOW_REASON_FOURWAY_HS_RECV,
++	WOW_REASON_TIMER_INTR_RECV,
++	WOW_REASON_PATTERN_MATCH_FOUND,
++	WOW_REASON_RECV_MAGIC_PATTERN,
++	WOW_REASON_P2P_DISC,
++	WOW_REASON_WLAN_HB,
++	WOW_REASON_CSA_EVENT,
++	WOW_REASON_PROBE_REQ_WPS_IE_RECV,
++	WOW_REASON_AUTH_REQ_RECV,
++	WOW_REASON_ASSOC_REQ_RECV,
++	WOW_REASON_HTT_EVENT,
++	WOW_REASON_RA_MATCH,
++	WOW_REASON_HOST_AUTO_SHUTDOWN,
++	WOW_REASON_IOAC_MAGIC_EVENT,
++	WOW_REASON_IOAC_SHORT_EVENT,
++	WOW_REASON_IOAC_EXTEND_EVENT,
++	WOW_REASON_IOAC_TIMER_EVENT,
++	WOW_REASON_ROAM_HO,
++	WOW_REASON_DFS_PHYERR_RADADR_EVENT,
++	WOW_REASON_BEACON_RECV,
++	WOW_REASON_CLIENT_KICKOUT_EVENT,
++	WOW_REASON_DEBUG_TEST = 0xFF,
++};
++
++static inline const char *wow_reason(enum wmi_wow_wake_reason reason)
++{
++	switch (reason) {
++	C2S(WOW_REASON_UNSPECIFIED);
++	C2S(WOW_REASON_NLOD);
++	C2S(WOW_REASON_AP_ASSOC_LOST);
++	C2S(WOW_REASON_LOW_RSSI);
++	C2S(WOW_REASON_DEAUTH_RECVD);
++	C2S(WOW_REASON_DISASSOC_RECVD);
++	C2S(WOW_REASON_GTK_HS_ERR);
++	C2S(WOW_REASON_EAP_REQ);
++	C2S(WOW_REASON_FOURWAY_HS_RECV);
++	C2S(WOW_REASON_TIMER_INTR_RECV);
++	C2S(WOW_REASON_PATTERN_MATCH_FOUND);
++	C2S(WOW_REASON_RECV_MAGIC_PATTERN);
++	C2S(WOW_REASON_P2P_DISC);
++	C2S(WOW_REASON_WLAN_HB);
++	C2S(WOW_REASON_CSA_EVENT);
++	C2S(WOW_REASON_PROBE_REQ_WPS_IE_RECV);
++	C2S(WOW_REASON_AUTH_REQ_RECV);
++	C2S(WOW_REASON_ASSOC_REQ_RECV);
++	C2S(WOW_REASON_HTT_EVENT);
++	C2S(WOW_REASON_RA_MATCH);
++	C2S(WOW_REASON_HOST_AUTO_SHUTDOWN);
++	C2S(WOW_REASON_IOAC_MAGIC_EVENT);
++	C2S(WOW_REASON_IOAC_SHORT_EVENT);
++	C2S(WOW_REASON_IOAC_EXTEND_EVENT);
++	C2S(WOW_REASON_IOAC_TIMER_EVENT);
++	C2S(WOW_REASON_ROAM_HO);
++	C2S(WOW_REASON_DFS_PHYERR_RADADR_EVENT);
++	C2S(WOW_REASON_BEACON_RECV);
++	C2S(WOW_REASON_CLIENT_KICKOUT_EVENT);
++	C2S(WOW_REASON_DEBUG_TEST);
++	default:
++		return NULL;
++	}
++}
++
++#undef C2S
++
++struct wmi_wow_ev_arg {
++	u32 vdev_id;
++	u32 flag;
++	enum wmi_wow_wake_reason wake_reason;
++	u32 data_len;
++};
 +
  struct ath10k;
  struct ath10k_vif;
  struct ath10k_fw_stats_pdev;
-diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
-index c566881..c9746c1 100644
---- a/drivers/net/wireless/ath/ath10k/wow.c
-+++ b/drivers/net/wireless/ath/ath10k/wow.c
-@@ -26,6 +26,9 @@
- static const struct wiphy_wowlan_support ath10k_wowlan_support = {
- 	.flags = WIPHY_WOWLAN_DISCONNECT |
- 		 WIPHY_WOWLAN_MAGIC_PKT,
-+	.pattern_min_len = WOW_MIN_PATTERN_SIZE,
-+	.pattern_max_len = WOW_MAX_PATTERN_SIZE,
-+	.max_pkt_offset = WOW_MAX_PKT_OFFSET,
- };
- 
- static int ath10k_wow_vif_cleanup(struct ath10k_vif *arvif)
-@@ -42,6 +45,15 @@ static int ath10k_wow_vif_cleanup(struct ath10k_vif *arvif)
- 		}
- 	}
- 
-+	for (i = 0; i < ar->wow.max_num_patterns; i++) {
-+		ret = ath10k_wmi_wow_del_pattern(ar, arvif->vdev_id, i);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to delete wow pattern %d for vdev %i: %d\n",
-+				    i, arvif->vdev_id, ret);
-+			return ret;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -70,6 +82,8 @@ static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 	int ret, i;
- 	unsigned long wow_mask = 0;
- 	struct ath10k *ar = arvif->ar;
-+	const struct cfg80211_pkt_pattern *patterns = wowlan->patterns;
-+	int pattern_id = 0;
- 
- 	/* Setup requested WOW features */
- 	switch (arvif->vdev_type) {
-@@ -100,6 +114,35 @@ static int ath10k_vif_wow_set_wakeups(struct ath10k_vif *arvif,
- 		break;
- 	}
- 
-+	for (i = 0; i < wowlan->n_patterns; i++) {
-+		u8 bitmask[WOW_MAX_PATTERN_SIZE] = {};
-+		int j;
-+
-+		if (patterns[i].pattern_len > WOW_MAX_PATTERN_SIZE)
-+			continue;
-+
-+		/* convert bytemask to bitmask */
-+		for (j = 0; j < patterns[i].pattern_len; j++)
-+			if (patterns[i].mask[j / 8] & BIT(j % 8))
-+				bitmask[j] = 0xff;
-+
-+		ret = ath10k_wmi_wow_add_pattern(ar, arvif->vdev_id,
-+						 pattern_id,
-+						 patterns[i].pattern,
-+						 bitmask,
-+						 patterns[i].pattern_len,
-+						 patterns[i].pkt_offset);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to add pattern %i to vdev %i: %d\n",
-+				    pattern_id,
-+				    arvif->vdev_id, ret);
-+			return ret;
-+		}
-+
-+		pattern_id++;
-+		__set_bit(WOW_PATTERN_MATCH_EVENT, &wow_mask);
-+	}
-+
- 	for (i = 0; i < WOW_EVENT_MAX; i++) {
- 		if (!test_bit(i, &wow_mask))
- 			continue;
-@@ -272,7 +315,9 @@ int ath10k_wow_init(struct ieee80211_hw *hw)
- 	if (WARN_ON(!test_bit(WMI_SERVICE_WOW, ar->wmi.svc_map)))
- 		return -EINVAL;
- 
--	ar->hw->wiphy->wowlan = &ath10k_wowlan_support;
-+	ar->wow.wowlan_support = ath10k_wowlan_support;
-+	ar->wow.wowlan_support.n_patterns = ar->wow.max_num_patterns;
-+	ar->hw->wiphy->wowlan = &ar->wow.wowlan_support;
- 
- 	return 0;
- }
-diff --git a/drivers/net/wireless/ath/ath10k/wow.h b/drivers/net/wireless/ath/ath10k/wow.h
-index 32b724a..a051f1b 100644
---- a/drivers/net/wireless/ath/ath10k/wow.h
-+++ b/drivers/net/wireless/ath/ath10k/wow.h
-@@ -17,7 +17,9 @@
- #define _WOW_H_
- 
- struct ath10k_wow {
-+	u32 max_num_patterns;
- 	struct completion wakeup_completed;
-+	struct wiphy_wowlan_support wowlan_support;
- };
- 
- #ifdef CONFIG_PM
 -- 
 1.9.1
 
