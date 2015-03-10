@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x229.google.com ([2607:f8b0:4001:c05::229])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVKJ0-0000aI-9N
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 13:34:45 +0000
-Received: by igbhn18 with SMTP id hn18so30542017igb.2
- for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 06:34:21 -0700 (PDT)
+ id 1YVM5i-0002PE-LC
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 15:29:07 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 2/2] ath10k: add hw connection monitor support
+References: <87fv9hyz2r.fsf@kamboji.qca.qualcomm.com>
+ <1425908197-16118-1-git-send-email-michal.kazior@tieto.com>
+ <1425908197-16118-2-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 10 Mar 2015 17:28:32 +0200
+In-Reply-To: <1425908197-16118-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 9 Mar 2015 14:36:37 +0100")
+Message-ID: <87twxsyiqn.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1425994145-15574-1-git-send-email-bartosz.markowski@tieto.com>
-References: <1425994145-15574-1-git-send-email-bartosz.markowski@tieto.com>
-Date: Tue, 10 Mar 2015 14:34:21 +0100
-Message-ID: <CACKGw+EwoQ+moMosjVXWCvxvnUo3kK3gz3HCJ8-ruRcjT7JUmQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +25,38 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On 10 March 2015 at 14:29, Bartosz Markowski
-<bartosz.markowski@tieto.com> wrote:
-> While testing with older supplicant, .drv_set_key() was failing due to
-> higher than ath10k firmware could handle key_index (WMI_MAX_KEY_INDEX == 3).
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-I've sent a v2 (I forgot the ammend the missing semicolon).
+> Some firmware revisions (e.g. qca6174 with fw73)
+> don't deliver beacons to host reliably. This
+> causes random disconnects even in perfect
+> conditions. This is most visible with
+> multi-channel operation.
+>
+> All available firmware revisions seem to support
+> beacon miss offloading so there shouldn't be any
+> problems.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-> --
-> wpa_driver_nl80211_set_key: ifindex=15 alg=4 addr=0x7f02b129fbe3 key_idx=4 set_tx=0 seq_len=6 key_len=16
->     broadcast key
-> nl80211: set_key failed; err=-22 Invalid argument)
-> wlan0: WPA: Failed to configure IGTK to the driver
-> wlan0: RSN: Failed to configure IGTK
-> --
->
-> In order to fix this case (PMF: AES-CMAC/IGTK) force the AES_CMAC cipher to
-> be handled by software.
->
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 1138f4f8923f..2264c06361b1 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -66,8 +66,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
->                 arg.key_cipher = WMI_CIPHER_WEP;
->                 break;
->         case WLAN_CIPHER_SUITE_AES_CMAC:
-> -               /* this one needs to be done in software */
-> -               return 1;
-> +               WARN_ON(1)
-> +               return -EINVAL;
->         default:
->                 ath10k_warn(ar, "cipher %d is not supported\n", key->cipher);
->                 return -EOPNOTSUPP;
-> @@ -3995,6 +3995,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
->         int ret = 0;
->         u32 flags = 0;
->
-> +       /* this one needs to be done in software */
-> +       if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
-> +               return 1;
+[...]
+
+> @@ -2139,6 +2208,8 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
+>  	spin_lock_bh(&arvif->ar->data_lock);
+>  	arvif->is_up = false;
+>  	spin_unlock_bh(&arvif->ar->data_lock);
 > +
->         if (key->keyidx > WMI_MAX_KEY_INDEX)
->                 return -ENOSPC;
->
-> --
-> 2.1.2
->
+> +	cancel_delayed_work_sync(&arvif->connection_loss_work);
+>  }
 
-
+There was a simple conflict here, please check the pending branch for my
+resolution.
 
 -- 
-Bartosz
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
