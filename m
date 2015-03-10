@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVHIH-0008VS-S6
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 10:21:47 +0000
-Received: by widfb4 with SMTP id fb4so17524846wid.0
- for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 03:21:15 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1425905138-9966-4-git-send-email-marek.puzyniak@tieto.com>
-References: <1425905138-9966-1-git-send-email-marek.puzyniak@tieto.com>
- <1425905138-9966-4-git-send-email-marek.puzyniak@tieto.com>
-Date: Tue, 10 Mar 2015 11:21:14 +0100
-Message-ID: <CA+BoTQnhnUwXkfk7ZGJW_sVsvbohYKs-2JxSXwzYz0TScGiSFw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] ath10k: introduce basic tdls functionality
-From: Michal Kazior <michal.kazior@tieto.com>
+ id 1YVKEB-0006u2-6Z
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 13:29:44 +0000
+Received: by lbiz11 with SMTP id z11so1703794lbi.3
+ for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 06:29:14 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
+Date: Tue, 10 Mar 2015 14:29:05 +0100
+Message-Id: <1425994145-15574-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +17,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-T24gOSBNYXJjaCAyMDE1IGF0IDEzOjQ1LCBNYXJlayBQdXp5bmlhayA8bWFyZWsucHV6eW5pYWtA
-dGlldG8uY29tPiB3cm90ZToKPiBUaGlzIHBhdGNoIGFkZHMgZnVuY3Rpb25zIHRvIGVuYWJsZS9k
-aXNhYmxlIHRkbHMKPiBhbmQgdG8gY29uZmlndXJlIHRkbHMgcGVlciBzdGF0aW9uIGZvciB0bHYg
-YmFzZWQgZmlybXdhcmUuCj4gVGRscyBwZWVyIHVhcHNkIGFuZCB0ZGxzIGNoYW5uZWwgc3dpdGNo
-aW5nIGFyZSBub3Qgc3VwcG9ydGVkLgo+IFRyYW5zbWl0dGluZyB0ZGxzIGRhdGEgZnJhbWVzIHdv
-cmtzIG9ubHkgZm9yIGV0aGVybmV0Cj4gdHlwZSBmcmFtZXMsIHRoYXQncyB3aHkgZGF0YSBhZGRy
-ZXNzZWQgdG8gdGRscyBzdGEKPiBpcyBpbiBldGhlcm5ldCBmb3JtYXQuCj4KPiBUZGxzIGZ1bmN0
-aW9uYWxpdHkgZm9yIGF0aDEwayByZXF1aXJlcyBjaGFuZ2VzIGluIG1hYzgwMjExCj4gcHJvdmlk
-ZWQgaW4gcGF0Y2g6Cj4gbWFjODAyMTE6IGluaXRpYWxpemUgcmF0ZSBjb250cm9sIGVhcmxpZXIg
-Zm9yIHRkbHMgc3RhdGlvbgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFs
-LmthemlvckB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgS3dhY3p5bnNraSA8bWFy
-ZWsua3dhY3p5bnNraUB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgUHV6eW5pYWsg
-PG1hcmVrLnB1enluaWFrQHRpZXRvLmNvbT4KPiAtLS0KWy4uLl0KCkN1cnJlbnRseSB0aGUgcGF0
-Y2ggZG9lc24ndCBhY2NvdW50IGZvciB0aGUgbnVtYmVyIG9mIGNvbm5lY3RlZCBURExTCnN0YXRp
-b24gcHJvcGVybHkuIFRoaXMgY2FuIGxlYWQgdG8gZmlybXdhcmUgY3Jhc2ggd2hlbiBudW1iZXIg
-b2YKYWxsb3dlZCBzdGF0aW9uIHBlZXJzIGlzIGV4Y2VlZGVkOgoKPiBhdGgxMGtfcGNpIDAwMDA6
-MDQ6MDAuMCBtYWMgdmRldiAwIHBlZXIgY3JlYXRlIDY4Ojk0OjIzOmM2OjFmOjMzIChuZXcgc3Rh
-KSBzdGEgMSAvIDMyIHBlZXIgMzMgLyAzNwo+IFsuLi5dCj4gYXRoMTBrX3BjaSAwMDAwOjA0OjAw
-LjAgZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQgNGY2NTIzNzgtYzY2ZC00M2ZmLTk4OWQtMDBmMzc2
-ZmYxMWRjKQoKCkZ1bmN0aW9uIGF0aDEwa19tYWNfe2luYyxkZWN9X251bV9zdGF0aW9ucygpIG5l
-ZWQgdG8gYmUgZml4ZWQgc28gdGhhdAphci0+bnVtX3N0YXRpb25zICh0aGUgZm9sbG93aW5nIHdh
-cyAqbm90KiB0ZXN0ZWQpLCBlLmcuOgoKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9tYWMuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCkBA
-IC00NDExLDE0ICs0NDExLDE0IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19zdGFfcmNfdXBkYXRlX3dr
-KHN0cnVjdAp3b3JrX3N0cnVjdCAqd2spCiAgICAgICAgbXV0ZXhfdW5sb2NrKCZhci0+Y29uZl9t
-dXRleCk7CiB9Cgotc3RhdGljIGludCBhdGgxMGtfbWFjX2luY19udW1fc3RhdGlvbnMoc3RydWN0
-IGF0aDEwa192aWYgKmFydmlmKQorc3RhdGljIGludCBhdGgxMGtfbWFjX2luY19udW1fc3RhdGlv
-bnMoc3RydWN0IGF0aDEwa192aWYgKmFydmlmLAorICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqc3RhKQogewogICAgICAgIHN0cnVjdCBh
-dGgxMGsgKmFyID0gYXJ2aWYtPmFyOwoKICAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+
-Y29uZl9tdXRleCk7CgotICAgICAgIGlmIChhcnZpZi0+dmRldl90eXBlICE9IFdNSV9WREVWX1RZ
-UEVfQVAgJiYKLSAgICAgICAgICAgYXJ2aWYtPnZkZXZfdHlwZSAhPSBXTUlfVkRFVl9UWVBFX0lC
-U1MpCisgICAgICAgaWYgKGFydmlmLT52ZGV2X3R5cGUgPT0gV01JX1ZERVZfVFlQRV9TVEEgJiYg
-IXN0YS0+dGRscykKICAgICAgICAgICAgICAgIHJldHVybiAwOwoKICAgICAgICBpZiAoYXItPm51
-bV9zdGF0aW9ucyA+PSBhci0+bWF4X251bV9zdGF0aW9ucykKQEAgLTQ0MzUsOCArNDQzNSw3IEBA
-IHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfZGVjX251bV9zdGF0aW9ucyhzdHJ1Y3QKYXRoMTBrX3Zp
-ZiAqYXJ2aWYpCgogICAgICAgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5jb25mX211dGV4KTsK
-Ci0gICAgICAgaWYgKGFydmlmLT52ZGV2X3R5cGUgIT0gV01JX1ZERVZfVFlQRV9BUCAmJgotICAg
-ICAgICAgICBhcnZpZi0+dmRldl90eXBlICE9IFdNSV9WREVWX1RZUEVfSUJTUykKKyAgICAgICBp
-ZiAoYXJ2aWYtPnZkZXZfdHlwZSA9PSBXTUlfVkRFVl9UWVBFX1NUQSAmJiAhc3RhLT50ZGxzKQog
-ICAgICAgICAgICAgICAgcmV0dXJuOwoKICAgICAgICBhci0+bnVtX3N0YXRpb25zLS07CgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+While testing with older supplicant, .drv_set_key() was failing due to
+higher than ath10k firmware could handle key_index (WMI_MAX_KEY_INDEX == 3).
+
+--
+wpa_driver_nl80211_set_key: ifindex=15 alg=4 addr=0x7f02b129fbe3 key_idx=4 set_tx=0 seq_len=6 key_len=16
+    broadcast key
+nl80211: set_key failed; err=-22 Invalid argument)
+wlan0: WPA: Failed to configure IGTK to the driver
+wlan0: RSN: Failed to configure IGTK
+--
+
+In order to fix this case (PMF: AES-CMAC/IGTK) force the AES_CMAC cipher to
+be handled by software.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 1138f4f8923f..2264c06361b1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -66,8 +66,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
+ 		arg.key_cipher = WMI_CIPHER_WEP;
+ 		break;
+ 	case WLAN_CIPHER_SUITE_AES_CMAC:
+-		/* this one needs to be done in software */
+-		return 1;
++		WARN_ON(1)
++		return -EINVAL;
+ 	default:
+ 		ath10k_warn(ar, "cipher %d is not supported\n", key->cipher);
+ 		return -EOPNOTSUPP;
+@@ -3995,6 +3995,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 	int ret = 0;
+ 	u32 flags = 0;
+ 
++	/* this one needs to be done in software */
++	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
++		return 1;
++
+ 	if (key->keyidx > WMI_MAX_KEY_INDEX)
+ 		return -ENOSPC;
+ 
+-- 
+2.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
