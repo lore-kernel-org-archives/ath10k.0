@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVMby-0000J3-W7
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 16:02:28 +0000
-Message-ID: <54FF157C.7090208@candelatech.com>
-Date: Tue, 10 Mar 2015 09:02:04 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVN7a-0004dC-Rk
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 16:35:10 +0000
+Received: by igbhl2 with SMTP id hl2so32725115igb.3
+ for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 09:34:45 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
-References: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
-In-Reply-To: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
+In-Reply-To: <87h9tsyhin.fsf@kamboji.qca.qualcomm.com>
+References: <1424802385-23017-1-git-send-email-mka@chromium.org>
+ <87h9tsyhin.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 10 Mar 2015 09:34:45 -0700
+Message-ID: <CAKZ8rEORH_otB59-tZKW90gYpPy7bS-9nhe4t=bMpzu81g39dw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Remove trace about getting temperature
+From: Matthias Kaehlcke <mka@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,74 +25,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bartosz Markowski <bartosz.markowski@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-On 03/10/2015 06:32 AM, Bartosz Markowski wrote:
-> While testing with older supplicant, .drv_set_key() was failing due to
-> higher than ath10k firmware could handle key_index (WMI_MAX_KEY_INDEX == 3).
-> 
-> --
-> wpa_driver_nl80211_set_key: ifindex=15 alg=4 addr=0x7f02b129fbe3 key_idx=4 set_tx=0 seq_len=6 key_len=16
->     broadcast key
-> nl80211: set_key failed; err=-22 Invalid argument)
-> wlan0: WPA: Failed to configure IGTK to the driver
-> wlan0: RSN: Failed to configure IGTK
-> --
-> 
-> In order to fix this case (PMF: AES-CMAC/IGTK) force the AES_CMAC cipher to
-> be handled by software.
+On Tue, Mar 10, 2015 at 8:54 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Matthias Kaehlcke <mka@chromium.org> writes:
+>
+>> When ath10k debugging is enabled this trace generates a log entry
+>> every time the chip temperature is read. On systems polling the
+>> temperature this clutters the log with entries which aren't
+>> particularly useful. Remove this trace.
+>>
+>> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/wmi.c | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+>> index aeea1c7..1c86984 100644
+>> --- a/drivers/net/wireless/ath/ath10k/wmi.c
+>> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
+>> @@ -4881,7 +4881,6 @@ ath10k_wmi_10_2_op_gen_pdev_get_temperature(struct ath10k *ar)
+>>       if (!skb)
+>>               return ERR_PTR(-ENOMEM);
+>>
+>> -     ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi pdev get temperature\n");
+>>       return skb;
+>
+> I'm worried that this is dangerous, as that means that not all WMI
+> commands will be in debug and something might be missed because of that.
 
-How did you get firmware to allow the host to do the encryption?
+I see your concern
 
-Every time I've tried such a thing I end up with either nothing or garbage on
-the air.
+> Isn't there any other way? Like implementing ath10k_dbg_ratelimit()? Or
+> adding a new log level?
 
-Or this this particular type of encryption treated differently by the
-firmware?
-
-Thanks,
-Ben
-
-> 
-> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 1138f4f8923f..5a3129010951 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -66,8 +66,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
->  		arg.key_cipher = WMI_CIPHER_WEP;
->  		break;
->  	case WLAN_CIPHER_SUITE_AES_CMAC:
-> -		/* this one needs to be done in software */
-> -		return 1;
-> +		WARN_ON(1);
-> +		return -EINVAL;
->  	default:
->  		ath10k_warn(ar, "cipher %d is not supported\n", key->cipher);
->  		return -EOPNOTSUPP;
-> @@ -3995,6 +3995,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
->  	int ret = 0;
->  	u32 flags = 0;
->  
-> +	/* this one needs to be done in software */
-> +	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
-> +		return 1;
-> +
->  	if (key->keyidx > WMI_MAX_KEY_INDEX)
->  		return -ENOSPC;
->  
-> 
-
+Switching to dynamic debugging (dev_dbg, ...) could be an option.
+Debug messages would be disabled by default but can be enabled at
+runtime
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
+Matthias Kaehlcke | Software Engineer | mka@google.com
 
 _______________________________________________
 ath10k mailing list
