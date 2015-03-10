@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVMZS-0005wn-Qb
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 15:59:51 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/4] ath10k: Fix interpretation of cooling device state
-References: <1425715380-11200-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Tue, 10 Mar 2015 17:59:19 +0200
-In-Reply-To: <1425715380-11200-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Sat, 7 Mar 2015 13:32:57 +0530")
-Message-ID: <87d24gyhbc.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVMby-0000J3-W7
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 16:02:28 +0000
+Message-ID: <54FF157C.7090208@candelatech.com>
+Date: Tue, 10 Mar 2015 09:02:04 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
+References: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
+In-Reply-To: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +22,74 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: Matthias Kaehlcke <mka@google.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+On 03/10/2015 06:32 AM, Bartosz Markowski wrote:
+> While testing with older supplicant, .drv_set_key() was failing due to
+> higher than ath10k firmware could handle key_index (WMI_MAX_KEY_INDEX == 3).
+> 
+> --
+> wpa_driver_nl80211_set_key: ifindex=15 alg=4 addr=0x7f02b129fbe3 key_idx=4 set_tx=0 seq_len=6 key_len=16
+>     broadcast key
+> nl80211: set_key failed; err=-22 Invalid argument)
+> wlan0: WPA: Failed to configure IGTK to the driver
+> wlan0: RSN: Failed to configure IGTK
+> --
+> 
+> In order to fix this case (PMF: AES-CMAC/IGTK) force the AES_CMAC cipher to
+> be handled by software.
 
-> Setting the sysfs attribute ends up configuring the duty cycle,
-> but the interface through which the attribute is exposed
-> (cooling_device) is for setting the throttle/cooling state. This
-> is confusing the user. Hence renaming the cooling device interfaces
-> for better readability.
->
-> Cc: Matthias Kaehlcke <mka@google.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+How did you get firmware to allow the host to do the encryption?
 
-The four patches don't apply for some reason, please rebase.
+Every time I've tried such a thing I end up with either nothing or garbage on
+the air.
+
+Or this this particular type of encryption treated differently by the
+firmware?
+
+Thanks,
+Ben
+
+> 
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 1138f4f8923f..5a3129010951 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -66,8 +66,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
+>  		arg.key_cipher = WMI_CIPHER_WEP;
+>  		break;
+>  	case WLAN_CIPHER_SUITE_AES_CMAC:
+> -		/* this one needs to be done in software */
+> -		return 1;
+> +		WARN_ON(1);
+> +		return -EINVAL;
+>  	default:
+>  		ath10k_warn(ar, "cipher %d is not supported\n", key->cipher);
+>  		return -EOPNOTSUPP;
+> @@ -3995,6 +3995,10 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+>  	int ret = 0;
+>  	u32 flags = 0;
+>  
+> +	/* this one needs to be done in software */
+> +	if (key->cipher == WLAN_CIPHER_SUITE_AES_CMAC)
+> +		return 1;
+> +
+>  	if (key->keyidx > WMI_MAX_KEY_INDEX)
+>  		return -ENOSPC;
+>  
+> 
+
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
