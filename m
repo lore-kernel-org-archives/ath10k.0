@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVKEB-0006u2-6Z
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 13:29:44 +0000
-Received: by lbiz11 with SMTP id z11so1703794lbi.3
- for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 06:29:14 -0700 (PDT)
+ id 1YVKHA-0000Cj-8I
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 13:32:48 +0000
+Received: by labmn12 with SMTP id mn12so1664862lab.8
+ for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 06:32:25 -0700 (PDT)
 From: Bartosz Markowski <bartosz.markowski@tieto.com>
-Subject: [PATCH] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
-Date: Tue, 10 Mar 2015 14:29:05 +0100
-Message-Id: <1425994145-15574-1-git-send-email-bartosz.markowski@tieto.com>
+Subject: [PATCH v2] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
+Date: Tue, 10 Mar 2015 14:32:19 +0100
+Message-Id: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -45,7 +45,7 @@ Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1138f4f8923f..2264c06361b1 100644
+index 1138f4f8923f..5a3129010951 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
 @@ -66,8 +66,8 @@ static int ath10k_send_key(struct ath10k_vif *arvif,
@@ -54,7 +54,7 @@ index 1138f4f8923f..2264c06361b1 100644
  	case WLAN_CIPHER_SUITE_AES_CMAC:
 -		/* this one needs to be done in software */
 -		return 1;
-+		WARN_ON(1)
++		WARN_ON(1);
 +		return -EINVAL;
  	default:
  		ath10k_warn(ar, "cipher %d is not supported\n", key->cipher);
