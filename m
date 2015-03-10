@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVM5i-0002PE-LC
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 15:29:07 +0000
+ id 1YVMGY-00038F-WB
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 15:40:19 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 2/2] ath10k: add hw connection monitor support
-References: <87fv9hyz2r.fsf@kamboji.qca.qualcomm.com>
- <1425908197-16118-1-git-send-email-michal.kazior@tieto.com>
- <1425908197-16118-2-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 10 Mar 2015 17:28:32 +0200
-In-Reply-To: <1425908197-16118-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 9 Mar 2015 14:36:37 +0100")
-Message-ID: <87twxsyiqn.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 3/3] ath10k: add symlink for hwmon device
+References: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <1424437452-28161-3-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Tue, 10 Mar 2015 17:39:46 +0200
+In-Reply-To: <1424437452-28161-3-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Fri, 20 Feb 2015 18:34:12 +0530")
+Message-ID: <87pp8gyi7x.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,35 +24,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> Some firmware revisions (e.g. qca6174 with fw73)
-> don't deliver beacons to host reliably. This
-> causes random disconnects even in perfect
-> conditions. This is most visible with
-> multi-channel operation.
+> Add symbloic link "thermal_sensors" for hwmon devices for better
+> readability.
 >
-> All available firmware revisions seem to support
-> beacon miss offloading so there shouldn't be any
-> problems.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> /sys/class/ieee80211/phyX/device/thermal_sensors ->
+> sys/class/ieee80211/phyX/device/hwmon/hwmonY
 
-[...]
-
-> @@ -2139,6 +2208,8 @@ static void ath10k_bss_disassoc(struct ieee80211_hw *hw,
->  	spin_lock_bh(&arvif->ar->data_lock);
->  	arvif->is_up = false;
->  	spin_unlock_bh(&arvif->ar->data_lock);
-> +
-> +	cancel_delayed_work_sync(&arvif->connection_loss_work);
->  }
-
-There was a simple conflict here, please check the pending branch for my
-resolution.
+I don't get it, how does that improve readability? Also I don't see any
+other driver doing this, so isn't this just some private hack and not a
+proper generic interface?
 
 -- 
 Kalle Valo
