@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YUxtz-0000rW-64
- for ath10k@lists.infradead.org; Mon, 09 Mar 2015 13:39:27 +0000
-Received: by labmn12 with SMTP id mn12so3815426lab.8
- for <ath10k@lists.infradead.org>; Mon, 09 Mar 2015 06:39:01 -0700 (PDT)
+ id 1YVHIH-0008VS-S6
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 10:21:47 +0000
+Received: by widfb4 with SMTP id fb4so17524846wid.0
+ for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 03:21:15 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1425905138-9966-4-git-send-email-marek.puzyniak@tieto.com>
+References: <1425905138-9966-1-git-send-email-marek.puzyniak@tieto.com>
+ <1425905138-9966-4-git-send-email-marek.puzyniak@tieto.com>
+Date: Tue, 10 Mar 2015 11:21:14 +0100
+Message-ID: <CA+BoTQnhnUwXkfk7ZGJW_sVsvbohYKs-2JxSXwzYz0TScGiSFw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] ath10k: introduce basic tdls functionality
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v2 1/2] ath10k: implement wmi roam event
-Date: Mon,  9 Mar 2015 14:36:36 +0100
-Message-Id: <1425908197-16118-1-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <87fv9hyz2r.fsf@kamboji.qca.qualcomm.com>
-References: <87fv9hyz2r.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,282 +21,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Marek Puzyniak <marek.puzyniak@tieto.com>
+Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-This can be used to implement offloaded rssi
-threshold, beacon miss or even automatic
-in-firmware BSS roaming in the future.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
-
-Notes:
-    v2:
-     * rebased
-
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 12 +++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 32 ++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  6 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 55 ++++++++++++++++++++++++++++++-
- drivers/net/wireless/ath/ath10k/wmi.h     | 22 +++++++++++++
- 5 files changed, 126 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index c8b64e7..f0a8b8d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -45,6 +45,8 @@ struct wmi_ops {
- 			struct wmi_rdy_ev_arg *arg);
- 	int (*pull_fw_stats)(struct ath10k *ar, struct sk_buff *skb,
- 			     struct ath10k_fw_stats *stats);
-+	int (*pull_roam_ev)(struct ath10k *ar, struct sk_buff *skb,
-+			    struct wmi_roam_ev_arg *arg);
- 
- 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
- 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
-@@ -274,6 +276,16 @@ ath10k_wmi_pull_fw_stats(struct ath10k *ar, struct sk_buff *skb,
- }
- 
- static inline int
-+ath10k_wmi_pull_roam_ev(struct ath10k *ar, struct sk_buff *skb,
-+			struct wmi_roam_ev_arg *arg)
-+{
-+	if (!ar->wmi.ops->pull_roam_ev)
-+		return -EOPNOTSUPP;
-+
-+	return ar->wmi.ops->pull_roam_ev(ar, skb, arg);
-+}
-+
-+static inline int
- ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
- {
- 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(msdu);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 939d86b..531d87b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -66,6 +66,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
- 		= { .min_len = sizeof(struct wmi_tlv_diag_data_ev) },
- 	[WMI_TLV_TAG_STRUCT_P2P_NOA_EVENT]
- 		= { .min_len = sizeof(struct wmi_tlv_p2p_noa_ev) },
-+	[WMI_TLV_TAG_STRUCT_ROAM_EVENT]
-+		= { .min_len = sizeof(struct wmi_tlv_roam_ev) },
- };
- 
- static int
-@@ -1061,6 +1063,35 @@ static int ath10k_wmi_tlv_op_pull_fw_stats(struct ath10k *ar,
- 	return 0;
- }
- 
-+static int ath10k_wmi_tlv_op_pull_roam_ev(struct ath10k *ar,
-+					  struct sk_buff *skb,
-+					  struct wmi_roam_ev_arg *arg)
-+{
-+	const void **tb;
-+	const struct wmi_tlv_roam_ev *ev;
-+	int ret;
-+
-+	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
-+	if (IS_ERR(tb)) {
-+		ret = PTR_ERR(tb);
-+		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ev = tb[WMI_TLV_TAG_STRUCT_ROAM_EVENT];
-+	if (!ev) {
-+		kfree(tb);
-+		return -EPROTO;
-+	}
-+
-+	arg->vdev_id = ev->vdev_id;
-+	arg->reason = ev->reason;
-+	arg->rssi = ev->rssi;
-+
-+	kfree(tb);
-+	return 0;
-+}
-+
- static struct sk_buff *
- ath10k_wmi_tlv_op_gen_pdev_suspend(struct ath10k *ar, u32 opt)
- {
-@@ -2785,6 +2816,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.pull_svc_rdy = ath10k_wmi_tlv_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_tlv_op_pull_rdy_ev,
- 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
-+	.pull_roam_ev = ath10k_wmi_tlv_op_pull_roam_ev,
- 
- 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index f4a626fd..06b37b2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1458,6 +1458,12 @@ struct wmi_tlv_p2p_noa_ev {
- 	__le32 vdev_id;
- } __packed;
- 
-+struct wmi_tlv_roam_ev {
-+	__le32 vdev_id;
-+	__le32 reason;
-+	__le32 rssi;
-+} __packed;
-+
- void ath10k_wmi_tlv_attach(struct ath10k *ar);
- 
- #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 29aef7e..58719d8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2789,7 +2789,41 @@ void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
- 
- void ath10k_wmi_event_roam(struct ath10k *ar, struct sk_buff *skb)
- {
--	ath10k_dbg(ar, ATH10K_DBG_WMI, "WMI_ROAM_EVENTID\n");
-+	struct wmi_roam_ev_arg arg = {};
-+	int ret;
-+	u32 vdev_id;
-+	u32 reason;
-+	s32 rssi;
-+
-+	ret = ath10k_wmi_pull_roam_ev(ar, skb, &arg);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to parse roam event: %d\n", ret);
-+		return;
-+	}
-+
-+	vdev_id = __le32_to_cpu(arg.vdev_id);
-+	reason = __le32_to_cpu(arg.reason);
-+	rssi = __le32_to_cpu(arg.rssi);
-+	rssi += WMI_SPECTRAL_NOISE_FLOOR_REF_DEFAULT;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI,
-+		   "wmi roam event vdev %u reason 0x%08x rssi %d\n",
-+		   vdev_id, reason, rssi);
-+
-+	if (reason >= WMI_ROAM_REASON_MAX)
-+		ath10k_warn(ar, "ignoring unknown roam event reason %d on vdev %i\n",
-+			    reason, vdev_id);
-+
-+	switch (reason) {
-+	case WMI_ROAM_REASON_BETTER_AP:
-+	case WMI_ROAM_REASON_BEACON_MISS:
-+	case WMI_ROAM_REASON_LOW_RSSI:
-+	case WMI_ROAM_REASON_SUITABLE_AP_FOUND:
-+	case WMI_ROAM_REASON_HO_FAILED:
-+		ath10k_warn(ar, "ignoring not implemented roam event reason %d on vdev %i\n",
-+			    reason, vdev_id);
-+		break;
-+	}
- }
- 
- void ath10k_wmi_event_profile_match(struct ath10k *ar, struct sk_buff *skb)
-@@ -3148,6 +3182,21 @@ static int ath10k_wmi_op_pull_rdy_ev(struct ath10k *ar, struct sk_buff *skb,
- 	return 0;
- }
- 
-+static int ath10k_wmi_op_pull_roam_ev(struct ath10k *ar, struct sk_buff *skb,
-+				      struct wmi_roam_ev_arg *arg)
-+{
-+	struct wmi_roam_ev *ev = (void *)skb->data;
-+
-+	if (skb->len < sizeof(*ev))
-+		return -EPROTO;
-+
-+	skb_pull(skb, sizeof(*ev));
-+	arg->vdev_id = ev->vdev_id;
-+	arg->reason = ev->reason;
-+
-+	return 0;
-+}
-+
- int ath10k_wmi_event_ready(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_rdy_ev_arg arg = {};
-@@ -5140,6 +5189,7 @@ static const struct wmi_ops wmi_ops = {
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
- 	.pull_fw_stats = ath10k_wmi_main_op_pull_fw_stats,
-+	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-@@ -5207,6 +5257,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
- 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-@@ -5270,6 +5321,7 @@ static const struct wmi_ops wmi_10_2_ops = {
- 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
- 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-@@ -5330,6 +5382,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	.pull_swba = ath10k_wmi_op_pull_swba_ev,
- 	.pull_phyerr = ath10k_wmi_op_pull_phyerr_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+	.pull_roam_ev = ath10k_wmi_op_pull_roam_ev,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index adf935b..938e652 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4769,6 +4769,22 @@ struct wmi_dbglog_cfg_cmd {
- 	__le32 config_valid;
- } __packed;
- 
-+enum wmi_roam_reason {
-+	WMI_ROAM_REASON_BETTER_AP = 1,
-+	WMI_ROAM_REASON_BEACON_MISS = 2,
-+	WMI_ROAM_REASON_LOW_RSSI = 3,
-+	WMI_ROAM_REASON_SUITABLE_AP_FOUND = 4,
-+	WMI_ROAM_REASON_HO_FAILED = 5,
-+
-+	/* keep last */
-+	WMI_ROAM_REASON_MAX,
-+};
-+
-+struct wmi_roam_ev {
-+	__le32 vdev_id;
-+	__le32 reason;
-+} __packed;
-+
- #define ATH10K_FRAGMT_THRESHOLD_MIN	540
- #define ATH10K_FRAGMT_THRESHOLD_MAX	2346
- 
-@@ -4857,6 +4873,12 @@ struct wmi_rdy_ev_arg {
- 	const u8 *mac_addr;
- };
- 
-+struct wmi_roam_ev_arg {
-+	__le32 vdev_id;
-+	__le32 reason;
-+	__le32 rssi;
-+};
-+
- struct wmi_pdev_temperature_event {
- 	/* temperature value in Celcius degree */
- 	__le32 temperature;
--- 
-1.8.5.3
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBNYXJjaCAyMDE1IGF0IDEzOjQ1LCBNYXJlayBQdXp5bmlhayA8bWFyZWsucHV6eW5pYWtA
+dGlldG8uY29tPiB3cm90ZToKPiBUaGlzIHBhdGNoIGFkZHMgZnVuY3Rpb25zIHRvIGVuYWJsZS9k
+aXNhYmxlIHRkbHMKPiBhbmQgdG8gY29uZmlndXJlIHRkbHMgcGVlciBzdGF0aW9uIGZvciB0bHYg
+YmFzZWQgZmlybXdhcmUuCj4gVGRscyBwZWVyIHVhcHNkIGFuZCB0ZGxzIGNoYW5uZWwgc3dpdGNo
+aW5nIGFyZSBub3Qgc3VwcG9ydGVkLgo+IFRyYW5zbWl0dGluZyB0ZGxzIGRhdGEgZnJhbWVzIHdv
+cmtzIG9ubHkgZm9yIGV0aGVybmV0Cj4gdHlwZSBmcmFtZXMsIHRoYXQncyB3aHkgZGF0YSBhZGRy
+ZXNzZWQgdG8gdGRscyBzdGEKPiBpcyBpbiBldGhlcm5ldCBmb3JtYXQuCj4KPiBUZGxzIGZ1bmN0
+aW9uYWxpdHkgZm9yIGF0aDEwayByZXF1aXJlcyBjaGFuZ2VzIGluIG1hYzgwMjExCj4gcHJvdmlk
+ZWQgaW4gcGF0Y2g6Cj4gbWFjODAyMTE6IGluaXRpYWxpemUgcmF0ZSBjb250cm9sIGVhcmxpZXIg
+Zm9yIHRkbHMgc3RhdGlvbgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFs
+LmthemlvckB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgS3dhY3p5bnNraSA8bWFy
+ZWsua3dhY3p5bnNraUB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgUHV6eW5pYWsg
+PG1hcmVrLnB1enluaWFrQHRpZXRvLmNvbT4KPiAtLS0KWy4uLl0KCkN1cnJlbnRseSB0aGUgcGF0
+Y2ggZG9lc24ndCBhY2NvdW50IGZvciB0aGUgbnVtYmVyIG9mIGNvbm5lY3RlZCBURExTCnN0YXRp
+b24gcHJvcGVybHkuIFRoaXMgY2FuIGxlYWQgdG8gZmlybXdhcmUgY3Jhc2ggd2hlbiBudW1iZXIg
+b2YKYWxsb3dlZCBzdGF0aW9uIHBlZXJzIGlzIGV4Y2VlZGVkOgoKPiBhdGgxMGtfcGNpIDAwMDA6
+MDQ6MDAuMCBtYWMgdmRldiAwIHBlZXIgY3JlYXRlIDY4Ojk0OjIzOmM2OjFmOjMzIChuZXcgc3Rh
+KSBzdGEgMSAvIDMyIHBlZXIgMzMgLyAzNwo+IFsuLi5dCj4gYXRoMTBrX3BjaSAwMDAwOjA0OjAw
+LjAgZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQgNGY2NTIzNzgtYzY2ZC00M2ZmLTk4OWQtMDBmMzc2
+ZmYxMWRjKQoKCkZ1bmN0aW9uIGF0aDEwa19tYWNfe2luYyxkZWN9X251bV9zdGF0aW9ucygpIG5l
+ZWQgdG8gYmUgZml4ZWQgc28gdGhhdAphci0+bnVtX3N0YXRpb25zICh0aGUgZm9sbG93aW5nIHdh
+cyAqbm90KiB0ZXN0ZWQpLCBlLmcuOgoKLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
+aDEway9tYWMuYworKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCkBA
+IC00NDExLDE0ICs0NDExLDE0IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19zdGFfcmNfdXBkYXRlX3dr
+KHN0cnVjdAp3b3JrX3N0cnVjdCAqd2spCiAgICAgICAgbXV0ZXhfdW5sb2NrKCZhci0+Y29uZl9t
+dXRleCk7CiB9Cgotc3RhdGljIGludCBhdGgxMGtfbWFjX2luY19udW1fc3RhdGlvbnMoc3RydWN0
+IGF0aDEwa192aWYgKmFydmlmKQorc3RhdGljIGludCBhdGgxMGtfbWFjX2luY19udW1fc3RhdGlv
+bnMoc3RydWN0IGF0aDEwa192aWYgKmFydmlmLAorICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBzdHJ1Y3QgaWVlZTgwMjExX3N0YSAqc3RhKQogewogICAgICAgIHN0cnVjdCBh
+dGgxMGsgKmFyID0gYXJ2aWYtPmFyOwoKICAgICAgICBsb2NrZGVwX2Fzc2VydF9oZWxkKCZhci0+
+Y29uZl9tdXRleCk7CgotICAgICAgIGlmIChhcnZpZi0+dmRldl90eXBlICE9IFdNSV9WREVWX1RZ
+UEVfQVAgJiYKLSAgICAgICAgICAgYXJ2aWYtPnZkZXZfdHlwZSAhPSBXTUlfVkRFVl9UWVBFX0lC
+U1MpCisgICAgICAgaWYgKGFydmlmLT52ZGV2X3R5cGUgPT0gV01JX1ZERVZfVFlQRV9TVEEgJiYg
+IXN0YS0+dGRscykKICAgICAgICAgICAgICAgIHJldHVybiAwOwoKICAgICAgICBpZiAoYXItPm51
+bV9zdGF0aW9ucyA+PSBhci0+bWF4X251bV9zdGF0aW9ucykKQEAgLTQ0MzUsOCArNDQzNSw3IEBA
+IHN0YXRpYyB2b2lkIGF0aDEwa19tYWNfZGVjX251bV9zdGF0aW9ucyhzdHJ1Y3QKYXRoMTBrX3Zp
+ZiAqYXJ2aWYpCgogICAgICAgIGxvY2tkZXBfYXNzZXJ0X2hlbGQoJmFyLT5jb25mX211dGV4KTsK
+Ci0gICAgICAgaWYgKGFydmlmLT52ZGV2X3R5cGUgIT0gV01JX1ZERVZfVFlQRV9BUCAmJgotICAg
+ICAgICAgICBhcnZpZi0+dmRldl90eXBlICE9IFdNSV9WREVWX1RZUEVfSUJTUykKKyAgICAgICBp
+ZiAoYXJ2aWYtPnZkZXZfdHlwZSA9PSBXTUlfVkRFVl9UWVBFX1NUQSAmJiAhc3RhLT50ZGxzKQog
+ICAgICAgICAgICAgICAgcmV0dXJuOwoKICAgICAgICBhci0+bnVtX3N0YXRpb25zLS07CgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
