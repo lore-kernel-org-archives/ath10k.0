@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVNPy-0008Lb-0Y
- for ath10k@lists.infradead.org; Tue, 10 Mar 2015 16:54:06 +0000
-Date: Tue, 10 Mar 2015 22:23:24 +0530
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: add sysfs entry to configure quiet period
-Message-ID: <20150310165323.GB11700@qca.qualcomm.com>
-References: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
- <87lhj4yi0x.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVNuq-0005Xy-Q5
+ for ath10k@lists.infradead.org; Tue, 10 Mar 2015 17:26:01 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 58DC440A5CB
+ for <ath10k@lists.infradead.org>; Tue, 10 Mar 2015 10:25:39 -0700 (PDT)
+Message-ID: <54FF2912.4030909@candelatech.com>
+Date: Tue, 10 Mar 2015 10:25:38 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87lhj4yi0x.fsf@kamboji.qca.qualcomm.com>
+Subject: ath10k and 802.11s support?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +25,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Tue, Mar 10, 2015 at 05:43:58PM +0200, Kalle Valo wrote:
-> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-> 
-> > Add support to configure quiet period via sysfs entry. This will
-> > be helpful to experiment different quiet period values along with
-> > different duty cycle ratio.
-> >
-> > To configure quiet period as 30ms,
-> >
-> > echo 30 >/sys/class/ieee80211/phyX/device/quiet_period
-> 
-> What's the justification? To me this looks like an ugly driver private
-> hack. Why can't you use nl80211 or something else?
+Anyone know what it would take to get ath10k to support
+802.11s?
 
-As this is purely for testing purpose to play around with different
-quiet period along with various throttling state, sysfs entry is used
-instead of netlink testmode command. Instead of debugfs, sysfs entry is
-selected to align with existing thermal interface. 
+As you know, I'm not above modifying ath10k firmware, but
+I also do not have a huge amount of time to put into this,
+so if changes needed are extensive, then probably I cannot
+do it now...
 
--Rajkumar
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
