@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x234.google.com ([2a00:1450:4010:c03::234])
+Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVggE-0001Ye-8i
- for ath10k@lists.infradead.org; Wed, 11 Mar 2015 13:28:11 +0000
-Received: by lams18 with SMTP id s18so8789585lam.2
- for <ath10k@lists.infradead.org>; Wed, 11 Mar 2015 06:27:46 -0700 (PDT)
+ id 1YVgrW-000556-IM
+ for ath10k@lists.infradead.org; Wed, 11 Mar 2015 13:39:53 +0000
+Received: by lbjb6 with SMTP id b6so8836673lbj.9
+ for <ath10k@lists.infradead.org>; Wed, 11 Mar 2015 06:39:26 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: strip qos data bit always
-Date: Wed, 11 Mar 2015 14:25:26 +0100
-Message-Id: <1426080326-14764-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: protect driver from unsolicited htc ep0 events
+Date: Wed, 11 Mar 2015 14:37:11 +0100
+Message-Id: <1426081031-15296-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,63 +25,57 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-NativeWifi tx mode expects QoS Data frames to be
-delivered as Data frames with QoS part (e.g. tid)
-being delievered out-of-band in fw tx command.
+Some firmware revisions (tested with qca6174
+rm2.0-00088) deliver unsolicited unknown (kind of
+garbled) HTC ep0 event to host in some cases.
 
-The QoS bit wasn't stripped before submitting to
-firmware.
+This issue was mainly observed with both qca988x
+and qca6174 being installed on a single host
+system. During driver probing if qca6174 booting
+sequences were somehow deferred (e.g. by qca988x
+implicitly making some resources busy presumably)
+the unsolicited event would came around 1s after
+ATH10K_HTC_MSG_READY_ID was delivered to host for
+qca6174.
 
-Stripping fixes two known problems:
+The unsolicited event would confuse driver and
+cause HTT initialization (and subsequently
+driver probing) to fail.
 
- * qca6174 IOT with some APs, e.g.
-   Cisco AIR-AP 1252 (which would crash after
-   ath10k association). Some ath9k APs would
-   crash as well.
-
- * sniffing own tx frames via radiotap because,
-   e.g. wireshark was seeing QoS bit set but
-   since QoS Control was stripped in ath10k it
-   would parse beginning of LLC/SNAP
-
-From debugability point of view this removes the
-ability to distinguish QoS from non-QoS frames
-when sniffing own tx via radiotap. On the other
-hand frames can be now parsed correctly without
-special software modification.
+Make the ep0 event processing more robust. The
+event will still be caught but instead will
+only generate a warning now.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/htc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 1138f4f..625e2cb 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2463,16 +2463,15 @@ static void ath10k_tx_h_nwifi(struct ieee80211_hw *hw, struct sk_buff *skb)
- 		skb->data, (void *)qos_ctl - (void *)skb->data);
- 	skb_pull(skb, IEEE80211_QOS_CTL_LEN);
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index 2fd9e18..d33d5c4 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -414,7 +414,8 @@ static int ath10k_htc_rx_completion_handler(struct ath10k *ar,
+ 		struct ath10k_htc_msg *msg = (struct ath10k_htc_msg *)skb->data;
  
--	/* Fw/Hw generates a corrupted QoS Control Field for QoS NullFunc
--	 * frames. Powersave is handled by the fw/hw so QoS NyllFunc frames are
--	 * used only for CQM purposes (e.g. hostapd station keepalive ping) so
--	 * it is safe to downgrade to NullFunc.
-+	/* Some firmware revisions don't handle sending QoS NullFunc well.
-+	 * These frames are mainly used for CQM purposes so it doesn't really
-+	 * matter whether QoS NullFunc or NullFunc are sent.
- 	 */
- 	hdr = (void *)skb->data;
--	if (ieee80211_is_qos_nullfunc(hdr->frame_control)) {
--		hdr->frame_control &= ~__cpu_to_le16(IEEE80211_STYPE_QOS_DATA);
-+	if (ieee80211_is_qos_nullfunc(hdr->frame_control))
- 		cb->htt.tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
--	}
-+
-+	hdr->frame_control &= ~__cpu_to_le16(IEEE80211_STYPE_QOS_DATA);
- }
- 
- static void ath10k_tx_h_add_p2p_noa_ie(struct ath10k *ar,
+ 		switch (__le16_to_cpu(msg->hdr.message_id)) {
+-		default:
++		case ATH10K_HTC_MSG_READY_ID:
++		case ATH10K_HTC_MSG_CONNECT_SERVICE_RESP_ID:
+ 			/* handle HTC control message */
+ 			if (completion_done(&htc->ctl_resp)) {
+ 				/*
+@@ -438,6 +439,10 @@ static int ath10k_htc_rx_completion_handler(struct ath10k *ar,
+ 			break;
+ 		case ATH10K_HTC_MSG_SEND_SUSPEND_COMPLETE:
+ 			htc->htc_ops.target_send_suspend_complete(ar);
++			break;
++		default:
++			ath10k_warn(ar, "ignoring unsolicited htc ep0 event\n");
++			break;
+ 		}
+ 		goto out;
+ 	}
 -- 
 1.8.5.3
 
