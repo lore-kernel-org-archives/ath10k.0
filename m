@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVd1N-0003Xd-Bm
- for ath10k@lists.infradead.org; Wed, 11 Mar 2015 09:33:46 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: fix htt t2h message conflicts among firmware revisions
-Date: Wed, 11 Mar 2015 15:03:02 +0530
-Message-ID: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YVfuu-0002TX-1R
+ for ath10k@lists.infradead.org; Wed, 11 Mar 2015 12:39:17 +0000
+Received: by igdh15 with SMTP id h15so39077065igd.4
+ for <ath10k@lists.infradead.org>; Wed, 11 Mar 2015 05:38:49 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1425905138-9966-1-git-send-email-marek.puzyniak@tieto.com>
+References: <1425905138-9966-1-git-send-email-marek.puzyniak@tieto.com>
+Date: Wed, 11 Mar 2015 13:38:49 +0100
+Message-ID: <CADnKcVi-we6TSPMNgboS5B9ead7Xiv+tukNZhEiboN+Eb_x6Vg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/3] ath10k: add basic tdls support
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,348 +24,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Target to host HTT messages are conflicting between 10.x and other
-firmware revisions. By maintaining separate HTT T2H tables for each
-firmware revisions (main, 10x and tlv) similar to WMI abstraction,
-solves the conflicts.
+On 9 March 2015 at 13:45, Marek Puzyniak <marek.puzyniak@tieto.com> wrote:
+> This patchset introduces tdls funtionality without tdls peer uapsd
+> and tdls channel switching. Tdls is supported by qca6174 hardware
+> what is indicated by firmware through supported services.
+[...]
+> Marek Puzyniak (2):
+>   ath10k: make peer type configurable
+>   ath10k: introduce basic tdls functionality
+>
+> Michal Kazior (1):
+>   ath10k: unify tx mode and dispatch
+[...]
 
-Cc: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/htt.c    | 100 ++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.h    | 129 ++++++++++++++++++++++++-------
- drivers/net/wireless/ath/ath10k/htt_rx.c |  20 +++--
- 3 files changed, 215 insertions(+), 34 deletions(-)
+Kalle, please drop this patchset. I will send new version.
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 4f59ab9..7afca0c 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -22,6 +22,86 @@
- #include "core.h"
- #include "debug.h"
- 
-+static const enum htt_t2h_msg_type htt_main_t2h_msg_types[] = {
-+	[HTT_MAIN_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_IND] = HTT_T2H_MSG_TYPE_RX_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_FLUSH] = HTT_T2H_MSG_TYPE_RX_FLUSH,
-+	[HTT_MAIN_T2H_MSG_TYPE_PEER_MAP] = HTT_T2H_MSG_TYPE_PEER_MAP,
-+	[HTT_MAIN_T2H_MSG_TYPE_PEER_UNMAP] = HTT_T2H_MSG_TYPE_PEER_UNMAP,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_ADDBA] = HTT_T2H_MSG_TYPE_RX_ADDBA,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_DELBA] = HTT_T2H_MSG_TYPE_RX_DELBA,
-+	[HTT_MAIN_T2H_MSG_TYPE_TX_COMPL_IND] = HTT_T2H_MSG_TYPE_TX_COMPL_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_PKTLOG] = HTT_T2H_MSG_TYPE_PKTLOG,
-+	[HTT_MAIN_T2H_MSG_TYPE_STATS_CONF] = HTT_T2H_MSG_TYPE_STATS_CONF,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_FRAG_IND] = HTT_T2H_MSG_TYPE_RX_FRAG_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_SEC_IND] = HTT_T2H_MSG_TYPE_SEC_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_TX_INSPECT_IND] =
-+		HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_MGMT_TX_COMPL_IND] =
-+		HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
-+	[HTT_MAIN_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND] =
-+		HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_PN_IND] = HTT_T2H_MSG_TYPE_RX_PN_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND] =
-+		HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND,
-+	[HTT_MAIN_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
-+};
-+
-+static const enum htt_t2h_msg_type htt_10x_t2h_msg_types[] = {
-+	[HTT_10X_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
-+	[HTT_10X_T2H_MSG_TYPE_RX_IND] = HTT_T2H_MSG_TYPE_RX_IND,
-+	[HTT_10X_T2H_MSG_TYPE_RX_FLUSH] = HTT_T2H_MSG_TYPE_RX_FLUSH,
-+	[HTT_10X_T2H_MSG_TYPE_PEER_MAP] = HTT_T2H_MSG_TYPE_PEER_MAP,
-+	[HTT_10X_T2H_MSG_TYPE_PEER_UNMAP] = HTT_T2H_MSG_TYPE_PEER_UNMAP,
-+	[HTT_10X_T2H_MSG_TYPE_RX_ADDBA] = HTT_T2H_MSG_TYPE_RX_ADDBA,
-+	[HTT_10X_T2H_MSG_TYPE_RX_DELBA] = HTT_T2H_MSG_TYPE_RX_DELBA,
-+	[HTT_10X_T2H_MSG_TYPE_TX_COMPL_IND] = HTT_T2H_MSG_TYPE_TX_COMPL_IND,
-+	[HTT_10X_T2H_MSG_TYPE_PKTLOG] = HTT_T2H_MSG_TYPE_PKTLOG,
-+	[HTT_10X_T2H_MSG_TYPE_STATS_CONF] = HTT_T2H_MSG_TYPE_STATS_CONF,
-+	[HTT_10X_T2H_MSG_TYPE_RX_FRAG_IND] = HTT_T2H_MSG_TYPE_RX_FRAG_IND,
-+	[HTT_10X_T2H_MSG_TYPE_SEC_IND] = HTT_T2H_MSG_TYPE_SEC_IND,
-+	[HTT_10X_T2H_MSG_TYPE_RC_UPDATE_IND] = HTT_T2H_MSG_TYPE_RC_UPDATE_IND,
-+	[HTT_10X_T2H_MSG_TYPE_TX_INSPECT_IND] = HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
-+	[HTT_10X_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
-+	[HTT_10X_T2H_MSG_TYPE_CHAN_CHANGE] = HTT_T2H_MSG_TYPE_CHAN_CHANGE,
-+	[HTT_10X_T2H_MSG_TYPE_AGGR_CONF] = HTT_T2H_MSG_TYPE_AGGR_CONF,
-+	[HTT_10X_T2H_MSG_TYPE_STATS_NOUPLOAD] = HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
-+	[HTT_10X_T2H_MSG_TYPE_MGMT_TX_COMPL_IND] =
-+		HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
-+};
-+
-+static const enum htt_t2h_msg_type htt_tlv_t2h_msg_types[] = {
-+	[HTT_TLV_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_IND] = HTT_T2H_MSG_TYPE_RX_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_FLUSH] = HTT_T2H_MSG_TYPE_RX_FLUSH,
-+	[HTT_TLV_T2H_MSG_TYPE_PEER_MAP] = HTT_T2H_MSG_TYPE_PEER_MAP,
-+	[HTT_TLV_T2H_MSG_TYPE_PEER_UNMAP] = HTT_T2H_MSG_TYPE_PEER_UNMAP,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_ADDBA] = HTT_T2H_MSG_TYPE_RX_ADDBA,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_DELBA] = HTT_T2H_MSG_TYPE_RX_DELBA,
-+	[HTT_TLV_T2H_MSG_TYPE_TX_COMPL_IND] = HTT_T2H_MSG_TYPE_TX_COMPL_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_PKTLOG] = HTT_T2H_MSG_TYPE_PKTLOG,
-+	[HTT_TLV_T2H_MSG_TYPE_STATS_CONF] = HTT_T2H_MSG_TYPE_STATS_CONF,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_FRAG_IND] = HTT_T2H_MSG_TYPE_RX_FRAG_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_SEC_IND] = HTT_T2H_MSG_TYPE_SEC_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_RC_UPDATE_IND] = HTT_T2H_MSG_TYPE_RC_UPDATE_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_TX_INSPECT_IND] = HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_MGMT_TX_COMPL_IND] =
-+		HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
-+	[HTT_TLV_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND] =
-+		HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_PN_IND] = HTT_T2H_MSG_TYPE_RX_PN_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND] =
-+		HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND] =
-+		HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND,
-+	[HTT_TLV_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE] =
-+		HTT_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE,
-+	[HTT_TLV_T2H_MSG_TYPE_CHAN_CHANGE] = HTT_T2H_MSG_TYPE_CHAN_CHANGE,
-+	[HTT_TLV_T2H_MSG_TYPE_RX_OFLD_PKT_ERR] =
-+		HTT_T2H_MSG_TYPE_RX_OFLD_PKT_ERR,
-+	[HTT_TLV_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
-+};
-+
- int ath10k_htt_connect(struct ath10k_htt *htt)
- {
- 	struct ath10k_htc_svc_conn_req conn_req;
-@@ -66,6 +146,26 @@ int ath10k_htt_init(struct ath10k *ar)
- 		8 + /* llc snap */
- 		2; /* ip4 dscp or ip6 priority */
- 
-+	switch (ar->wmi.op_version) {
-+	case ATH10K_FW_WMI_OP_VERSION_MAIN:
-+		ar->htt.t2h_msg_types = htt_main_t2h_msg_types;
-+		ar->htt.t2h_msg_types_max = HTT_MAIN_T2H_NUM_MSGS;
-+		break;
-+	case ATH10K_FW_WMI_OP_VERSION_10_1:
-+	case ATH10K_FW_WMI_OP_VERSION_10_2:
-+	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
-+		ar->htt.t2h_msg_types = htt_10x_t2h_msg_types;
-+		ar->htt.t2h_msg_types_max = HTT_10X_T2H_NUM_MSGS;
-+		break;
-+	case ATH10K_FW_WMI_OP_VERSION_TLV:
-+		ar->htt.t2h_msg_types = htt_tlv_t2h_msg_types;
-+		ar->htt.t2h_msg_types_max = HTT_TLV_T2H_NUM_MSGS;
-+		break;
-+	case ATH10K_FW_WMI_OP_VERSION_UNSET:
-+	case ATH10K_FW_WMI_OP_VERSION_MAX:
-+		WARN_ON(1);
-+		return -EINVAL;
-+	}
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 874bf44..87a1f25 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -271,39 +271,111 @@ enum htt_mgmt_tx_status {
- 
- /*=== target -> host messages ===============================================*/
- 
--enum htt_t2h_msg_type {
--	HTT_T2H_MSG_TYPE_VERSION_CONF		= 0x0,
--	HTT_T2H_MSG_TYPE_RX_IND			= 0x1,
--	HTT_T2H_MSG_TYPE_RX_FLUSH		= 0x2,
--	HTT_T2H_MSG_TYPE_PEER_MAP		= 0x3,
--	HTT_T2H_MSG_TYPE_PEER_UNMAP		= 0x4,
--	HTT_T2H_MSG_TYPE_RX_ADDBA		= 0x5,
--	HTT_T2H_MSG_TYPE_RX_DELBA		= 0x6,
--	HTT_T2H_MSG_TYPE_TX_COMPL_IND		= 0x7,
--	HTT_T2H_MSG_TYPE_PKTLOG			= 0x8,
--	HTT_T2H_MSG_TYPE_STATS_CONF		= 0x9,
--	HTT_T2H_MSG_TYPE_RX_FRAG_IND		= 0xa,
--	HTT_T2H_MSG_TYPE_SEC_IND		= 0xb,
--	HTT_T2H_MSG_TYPE_RC_UPDATE_IND		= 0xc,
--	HTT_T2H_MSG_TYPE_TX_INSPECT_IND		= 0xd,
--	HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION	= 0xe,
--	HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND	= 0xf,
--	HTT_T2H_MSG_TYPE_RX_PN_IND		= 0x10,
--	HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND = 0x11,
--	HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND	= 0x12,
-+enum htt_main_t2h_msg_type {
-+	HTT_MAIN_T2H_MSG_TYPE_VERSION_CONF             = 0x0,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_IND                   = 0x1,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_FLUSH                 = 0x2,
-+	HTT_MAIN_T2H_MSG_TYPE_PEER_MAP                 = 0x3,
-+	HTT_MAIN_T2H_MSG_TYPE_PEER_UNMAP               = 0x4,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_ADDBA                 = 0x5,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_DELBA                 = 0x6,
-+	HTT_MAIN_T2H_MSG_TYPE_TX_COMPL_IND             = 0x7,
-+	HTT_MAIN_T2H_MSG_TYPE_PKTLOG                   = 0x8,
-+	HTT_MAIN_T2H_MSG_TYPE_STATS_CONF               = 0x9,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_FRAG_IND              = 0xa,
-+	HTT_MAIN_T2H_MSG_TYPE_SEC_IND                  = 0xb,
-+	HTT_MAIN_T2H_MSG_TYPE_TX_INSPECT_IND           = 0xd,
-+	HTT_MAIN_T2H_MSG_TYPE_MGMT_TX_COMPL_IND        = 0xe,
-+	HTT_MAIN_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND     = 0xf,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_PN_IND                = 0x10,
-+	HTT_MAIN_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND   = 0x11,
-+	HTT_MAIN_T2H_MSG_TYPE_TEST,
-+	/* keep this last */
-+	HTT_MAIN_T2H_NUM_MSGS
-+};
-+
-+enum htt_10x_t2h_msg_type {
-+	HTT_10X_T2H_MSG_TYPE_VERSION_CONF              = 0x0,
-+	HTT_10X_T2H_MSG_TYPE_RX_IND                    = 0x1,
-+	HTT_10X_T2H_MSG_TYPE_RX_FLUSH                  = 0x2,
-+	HTT_10X_T2H_MSG_TYPE_PEER_MAP                  = 0x3,
-+	HTT_10X_T2H_MSG_TYPE_PEER_UNMAP                = 0x4,
-+	HTT_10X_T2H_MSG_TYPE_RX_ADDBA                  = 0x5,
-+	HTT_10X_T2H_MSG_TYPE_RX_DELBA                  = 0x6,
-+	HTT_10X_T2H_MSG_TYPE_TX_COMPL_IND              = 0x7,
-+	HTT_10X_T2H_MSG_TYPE_PKTLOG                    = 0x8,
-+	HTT_10X_T2H_MSG_TYPE_STATS_CONF                = 0x9,
-+	HTT_10X_T2H_MSG_TYPE_RX_FRAG_IND               = 0xa,
-+	HTT_10X_T2H_MSG_TYPE_SEC_IND                   = 0xb,
-+	HTT_10X_T2H_MSG_TYPE_RC_UPDATE_IND             = 0xc,
-+	HTT_10X_T2H_MSG_TYPE_TX_INSPECT_IND            = 0xd,
-+	HTT_10X_T2H_MSG_TYPE_TEST                      = 0xe,
-+	HTT_10X_T2H_MSG_TYPE_CHAN_CHANGE               = 0xf,
-+	HTT_10X_T2H_MSG_TYPE_AGGR_CONF                 = 0x11,
-+	HTT_10X_T2H_MSG_TYPE_STATS_NOUPLOAD            = 0x12,
-+	HTT_10X_T2H_MSG_TYPE_MGMT_TX_COMPL_IND         = 0x13,
-+	/* keep this last */
-+	HTT_10X_T2H_NUM_MSGS
-+};
-+
-+enum htt_tlv_t2h_msg_type {
-+	HTT_TLV_T2H_MSG_TYPE_VERSION_CONF              = 0x0,
-+	HTT_TLV_T2H_MSG_TYPE_RX_IND                    = 0x1,
-+	HTT_TLV_T2H_MSG_TYPE_RX_FLUSH                  = 0x2,
-+	HTT_TLV_T2H_MSG_TYPE_PEER_MAP                  = 0x3,
-+	HTT_TLV_T2H_MSG_TYPE_PEER_UNMAP                = 0x4,
-+	HTT_TLV_T2H_MSG_TYPE_RX_ADDBA                  = 0x5,
-+	HTT_TLV_T2H_MSG_TYPE_RX_DELBA                  = 0x6,
-+	HTT_TLV_T2H_MSG_TYPE_TX_COMPL_IND              = 0x7,
-+	HTT_TLV_T2H_MSG_TYPE_PKTLOG                    = 0x8,
-+	HTT_TLV_T2H_MSG_TYPE_STATS_CONF                = 0x9,
-+	HTT_TLV_T2H_MSG_TYPE_RX_FRAG_IND               = 0xa,
-+	HTT_TLV_T2H_MSG_TYPE_SEC_IND                   = 0xb,
-+	HTT_TLV_T2H_MSG_TYPE_RC_UPDATE_IND             = 0xc, /* deprecated */
-+	HTT_TLV_T2H_MSG_TYPE_TX_INSPECT_IND            = 0xd,
-+	HTT_TLV_T2H_MSG_TYPE_MGMT_TX_COMPL_IND         = 0xe,
-+	HTT_TLV_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND      = 0xf,
-+	HTT_TLV_T2H_MSG_TYPE_RX_PN_IND                 = 0x10,
-+	HTT_TLV_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND    = 0x11,
-+	HTT_TLV_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND       = 0x12,
- 	/* 0x13 reservd */
--	HTT_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE	= 0x14,
-+	HTT_TLV_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE       = 0x14,
-+	HTT_TLV_T2H_MSG_TYPE_CHAN_CHANGE               = 0x15,
-+	HTT_TLV_T2H_MSG_TYPE_RX_OFLD_PKT_ERR           = 0x16,
-+	HTT_TLV_T2H_MSG_TYPE_TEST,
-+	/* keep this last */
-+	HTT_TLV_T2H_NUM_MSGS
-+};
- 
--	/* FIXME: Do not depend on this event id. Numbering of this event id is
--	 * broken across different firmware revisions and HTT version fails to
--	 * indicate this.
--	 */
-+enum htt_t2h_msg_type {
-+	HTT_T2H_MSG_TYPE_VERSION_CONF,
-+	HTT_T2H_MSG_TYPE_RX_IND,
-+	HTT_T2H_MSG_TYPE_RX_FLUSH,
-+	HTT_T2H_MSG_TYPE_PEER_MAP,
-+	HTT_T2H_MSG_TYPE_PEER_UNMAP,
-+	HTT_T2H_MSG_TYPE_RX_ADDBA,
-+	HTT_T2H_MSG_TYPE_RX_DELBA,
-+	HTT_T2H_MSG_TYPE_TX_COMPL_IND,
-+	HTT_T2H_MSG_TYPE_PKTLOG,
-+	HTT_T2H_MSG_TYPE_STATS_CONF,
-+	HTT_T2H_MSG_TYPE_RX_FRAG_IND,
-+	HTT_T2H_MSG_TYPE_SEC_IND,
-+	HTT_T2H_MSG_TYPE_RC_UPDATE_IND,
-+	HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
-+	HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
-+	HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND,
-+	HTT_T2H_MSG_TYPE_RX_PN_IND,
-+	HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND,
-+	HTT_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND,
-+	HTT_T2H_MSG_TYPE_WDI_IPA_OP_RESPONSE,
-+	HTT_T2H_MSG_TYPE_CHAN_CHANGE,
-+	HTT_T2H_MSG_TYPE_RX_OFLD_PKT_ERR,
-+	HTT_T2H_MSG_TYPE_AGGR_CONF,
-+	HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
- 	HTT_T2H_MSG_TYPE_TEST,
--
- 	/* keep this last */
- 	HTT_T2H_NUM_MSGS
- };
--
- /*
-  * htt_resp_hdr - header for target-to-host messages
-  *
-@@ -1249,6 +1321,9 @@ struct ath10k_htt {
- 	u8 target_version_minor;
- 	struct completion target_version_received;
- 
-+	const enum htt_t2h_msg_type *t2h_msg_types;
-+	u32 t2h_msg_types_max;
-+
- 	struct {
- 		/*
- 		 * Ring of network buffer objects - This ring is
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 01a2b38..21e9253 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1892,6 +1892,7 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct ath10k_htt *htt = &ar->htt;
- 	struct htt_resp *resp = (struct htt_resp *)skb->data;
-+	enum htt_t2h_msg_type type;
- 
- 	/* confirm alignment */
- 	if (!IS_ALIGNED((unsigned long)skb->data, 4))
-@@ -1899,7 +1900,16 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx, msg_type: 0x%0X\n",
- 		   resp->hdr.msg_type);
--	switch (resp->hdr.msg_type) {
-+
-+	if (resp->hdr.msg_type >= ar->htt.t2h_msg_types_max) {
-+		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt rx, unsupported msg_type: 0x%0X\n max: 0x%0X",
-+			   resp->hdr.msg_type, ar->htt.t2h_msg_types_max);
-+		dev_kfree_skb_any(skb);
-+		return;
-+	}
-+	type = ar->htt.t2h_msg_types[resp->hdr.msg_type];
-+
-+	switch (type) {
- 	case HTT_T2H_MSG_TYPE_VERSION_CONF: {
- 		htt->target_version_major = resp->ver_resp.major;
- 		htt->target_version_minor = resp->ver_resp.minor;
-@@ -1976,7 +1986,6 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_TEST:
--		/* FIX THIS */
- 		break;
- 	case HTT_T2H_MSG_TYPE_STATS_CONF:
- 		trace_ath10k_htt_stats(ar, skb->data, skb->len);
-@@ -2018,11 +2027,8 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	}
- 	case HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND:
--		/* FIXME: This WMI-TLV event is overlapping with 10.2
--		 * CHAN_CHANGE - both being 0xF. Neither is being used in
--		 * practice so no immediate action is necessary. Nevertheless
--		 * HTT may need an abstraction layer like WMI has one day.
--		 */
-+		break;
-+	case HTT_T2H_MSG_TYPE_CHAN_CHANGE:
- 		break;
- 	default:
- 		ath10k_warn(ar, "htt event (%d) not handled\n",
--- 
-2.3.2
-
+Thanks,
+Marek
 
 _______________________________________________
 ath10k mailing list
