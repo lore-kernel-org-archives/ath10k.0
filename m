@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-f181.google.com ([209.85.217.181])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVnFx-0008BL-7q
- for ath10k@lists.infradead.org; Wed, 11 Mar 2015 20:29:30 +0000
-Received: by lbdu10 with SMTP id u10so11519350lbd.4
- for <ath10k@lists.infradead.org>; Wed, 11 Mar 2015 13:29:06 -0700 (PDT)
-Message-ID: <5500A58F.3040904@cogentembedded.com>
-Date: Wed, 11 Mar 2015 23:29:03 +0300
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+ id 1YVq19-0006Tc-Fy
+ for ath10k@lists.infradead.org; Wed, 11 Mar 2015 23:26:24 +0000
+Received: by widex7 with SMTP id ex7so15919225wid.1
+ for <ath10k@lists.infradead.org>; Wed, 11 Mar 2015 16:26:00 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH RFC v2] ath10k: move code from parameter list into a
- function
-References: <1426100519-20636-1-git-send-email-hofrat@osadl.org>
-In-Reply-To: <1426100519-20636-1-git-send-email-hofrat@osadl.org>
+In-Reply-To: <54FF2912.4030909@candelatech.com>
+References: <54FF2912.4030909@candelatech.com>
+Date: Wed, 11 Mar 2015 23:26:00 +0000
+Message-ID: <CAEFj9848iE7Sy5+g6Bvqe+EiExx=xgyxJ12ZeyyXWCAB8btFKA@mail.gmail.com>
+Subject: Re: ath10k and 802.11s support?
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +20,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Mc Guire <hofrat@osadl.org>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Jeff Haran <Jeff.Haran@citrix.com>, Valdis.Kletnieks@vt.edu, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Pat Erley <pat-lkml@erley.org>, Bj??rn Mork <bjorn@mork.no>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hello.
+Hi, Ben
 
-On 03/11/2015 10:01 PM, Nicholas Mc Guire wrote:
+I have forwarded my email two years ago related to fw supporting 802.11s.
 
-> Putting code into the parameter list of wait_event_timeout() might be
-> legal C-code but not really readable - the "inline" code is simply
-> moved into a function and that passed to wait_event_timeout() as the
-> condition. As wait_event_timeout will always return >= 0 the following
-> timeout check is fixed up to  ret == 0 .
+-----
+Chun-Yeow
 
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-[...]
+---------- Forwarded message ----------
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
+Date: Mon, Mar 3, 2014 at 10:21 AM
+Subject: Mesh Support in ath10k
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index e8cc19f..a7a12cc 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -4463,11 +4463,25 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
->   	return ret;
->   }
+
+Hi, Kalle Valo
+
+Currently, I am investigating the possibility of putting mesh or o11s
+support in ath10k by utilizing the adhoc mode available in ath10k.
+
+I have compiled the following issues that need to address to enable
+the mesh support:
+
+1. Beacon Filtering
+Currenly, adhoc mode only allowed the beacon with the BSSID set by the
+ath10k_wmi_vdev_up to pass to mac80211. Continuous background scanning
+may not be good since we need to receive the beacon for
+synchronization purpose.  FYI, mesh uses the BSSID similar to its own
+vif mac addr.
+
+2. QoS Data Frame for broadcast data frame
+Currently, only non-QoS data allowed for broadcast frame as I observed.
+
+3. QoS Control Field, no stripped off
+We need to set the bit-8 of QoS control field to indicate the presence
+of mesh control field.
+
+I believe that we need to have some changes on the Firmware to make this work.
+
+Please kindly let me know is that possible to make arrangement of FW changes.
+
+Thanks
+
+Regards,
+Chun-Yeow
+
+
+On Tue, Mar 10, 2015 at 5:25 PM, Ben Greear <greearb@candelatech.com> wrote:
+> Anyone know what it would take to get ath10k to support
+> 802.11s?
 >
-> +static bool check_htt_state(struct ath10k *ar, bool *skip)
-> +{
-> +	bool empty;
-> +
-> +	spin_lock_bh(&ar->htt.tx_lock);
-> +	empty = (ar->htt.num_pending_tx == 0);
-> +	spin_unlock_bh(&ar->htt.tx_lock);
-> +
-> +	*skip = (ar->state == ATH10K_STATE_WEDGED) ||
-> +		test_bit(ATH10K_FLAG_CRASH_FLUSH,
-> +			 &ar->dev_flags);
-> +	return (empty || *skip);
-
-    Parens not needed here.
-
-[...]
-
-WBR, Sergei
-
+> As you know, I'm not above modifying ath10k firmware, but
+> I also do not have a huge amount of time to put into this,
+> so if changes needed are extensive, then probably I cannot
+> do it now...
+>
+> Thanks,
+> Ben
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
