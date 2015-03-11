@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YVl8d-0003fF-FU
- for ath10k@lists.infradead.org; Wed, 11 Mar 2015 18:13:49 +0000
-Date: Wed, 11 Mar 2015 19:13:12 +0100
-From: Nicholas Mc Guire <der.herr@hofr.at>
+Received: from canardo.mork.no ([2001:4641::1])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YVlIv-0001xH-G6
+ for ath10k@lists.infradead.org; Wed, 11 Mar 2015 18:24:27 +0000
+From: =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
 Subject: Re: [PATCH 1/2 RFC] ath10k: move code out of the parameter list
-Message-ID: <20150311181312.GA15885@opentech.at>
 References: <1426094369-10213-1-git-send-email-hofrat@osadl.org>
- <55007E35.4010804@erley.org>
+Date: Wed, 11 Mar 2015 19:09:39 +0100
+In-Reply-To: <1426094369-10213-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Wed, 11 Mar 2015 13:19:29 -0400")
+Message-ID: <87h9tr4d98.fsf@nemi.mork.no>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <55007E35.4010804@erley.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,121 +19,70 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Pat Erley <pat-lkml@erley.org>
-Cc: Valdis.Kletnieks@vt.edu, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>, Nicholas Mc Guire <hofrat@osadl.org>, Bj??rn Mork <bjorn@mork.no>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: Valdis.Kletnieks@vt.edu, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Kalle Valo <kvalo@qca.qualcomm.com>
 
-On Wed, 11 Mar 2015, Pat Erley wrote:
-
-> On 03/11/2015 12:19 PM, Nicholas Mc Guire wrote:
->> Putting code into the parameter list of wait_event_timeout() might be
->> legal C-code but not really readable - the "inline" code is simply
->> moved into a function and that passed to wait_event_timeout() as the
->> condition.
->>
->> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
->> ---
->>
->> Thanks to Bjorn Mork <bjorn@mork.no> for clarifying my initial confusion !
->>
->> Patch was only compile tested with x86_64_defconfig + CONFIG_ATH_CARDS=m,
->> CONFIG_ATH10K=m
->>
->> Patch is against 4.0-rc3 (localversion-next is -next-20150311)
->>
->>   drivers/net/wireless/ath/ath10k/mac.c |   32 ++++++++++++++++++--------------
->>   1 file changed, 18 insertions(+), 14 deletions(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->> index e8cc19f..7b27d99 100644
->> --- a/drivers/net/wireless/ath/ath10k/mac.c
->> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->> @@ -4463,11 +4463,25 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
->>   	return ret;
->>   }
->>
->> +static bool check_htt_state(struct ath10k *ar, bool skip)
->> +{
->> +	bool empty;
->> +
->> +	spin_lock_bh(&ar->htt.tx_lock);
->> +	empty = (ar->htt.num_pending_tx == 0);
->> +	spin_unlock_bh(&ar->htt.tx_lock);
->> +
->> +	skip = (ar->state == ATH10K_STATE_WEDGED) ||
->> +		test_bit(ATH10K_FLAG_CRASH_FLUSH,
->> +			 &ar->dev_flags);
->> +	return (empty || skip);
->> +}
->> +
->>   static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
->>   			 u32 queues, bool drop)
->>   {
->>   	struct ath10k *ar = hw->priv;
->> -	bool skip;
->> +	bool skip = false;
->>   	int ret;
->>
->>   	/* mac80211 doesn't care if we really xmit queued frames or not
->> @@ -4480,19 +4494,9 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
->>   	if (ar->state == ATH10K_STATE_WEDGED)
->>   		goto skip;
->>
->> -	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
->> -			bool empty;
->> -
->> -			spin_lock_bh(&ar->htt.tx_lock);
->> -			empty = (ar->htt.num_pending_tx == 0);
->> -			spin_unlock_bh(&ar->htt.tx_lock);
->> -
->> -			skip = (ar->state == ATH10K_STATE_WEDGED) ||
->> -			       test_bit(ATH10K_FLAG_CRASH_FLUSH,
->> -					&ar->dev_flags);
->> -
->> -			(empty || skip);
->> -		}), ATH10K_FLUSH_TIMEOUT_HZ);
->> +	ret = wait_event_timeout(ar->htt.empty_tx_wq,
->> +				 check_htt_state(ar, skip),
->> +				 ATH10K_FLUSH_TIMEOUT_HZ);
->>
->>   	if (ret <= 0 || skip)
->>   		ath10k_warn(ar, "failed to flush transmit queue (skip %i ar-state %i): %i\n",
->>
->
-> Doesn't this change not assign to 'skip' in the calling function?  So  
-> you'd want to make it:
->
-> static bool check_htt_state(struct ath10k *ar, bool *skip)
-> {
-> 	bool empty;
->
-> 	spin_lock_bh(&ar->htt.tx_lock);
-> 	empty = (ar->htt.num_pending_tx == 0);
-> 	spin_unlock_bh(&ar->htt.tx_lock);
->
-> 	*skip = (ar->state == ATH10K_STATE_WEDGED) ||
-> 		test_bit(ATH10K_FLAG_CRASH_FLUSH,
-> 			 &ar->dev_flags);
-> 	return (empty || *skip);
-> }
->
-> ret = wait_event_timeout(ar->htt.empty_tx_wq,
-> 				 check_htt_state(ar, &skip),
-> 				 ATH10K_FLUSH_TIMEOUT_HZ);
->
-> To preserve the previous behavior?
-
-yup - thats a bit braindead on my side - as skip is used later to evaluate 
-the status call by value is buggy here. Will fix that up once I know if
-the principle approach to this cleanup is ok.
-
-thx!
-hofrat
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+TmljaG9sYXMgTWMgR3VpcmUgPGhvZnJhdEBvc2FkbC5vcmc+IHdyaXRlczoKCj4gUHV0dGluZyBj
+b2RlIGludG8gdGhlIHBhcmFtZXRlciBsaXN0IG9mIHdhaXRfZXZlbnRfdGltZW91dCgpIG1pZ2h0
+IGJlIAo+IGxlZ2FsIEMtY29kZSBidXQgbm90IHJlYWxseSByZWFkYWJsZSAtIHRoZSAiaW5saW5l
+IiBjb2RlIGlzIHNpbXBseQo+IG1vdmVkIGludG8gYSBmdW5jdGlvbiBhbmQgdGhhdCBwYXNzZWQg
+dG8gd2FpdF9ldmVudF90aW1lb3V0KCkgYXMgdGhlCj4gY29uZGl0aW9uLgo+Cj4gU2lnbmVkLW9m
+Zi1ieTogTmljaG9sYXMgTWMgR3VpcmUgPGhvZnJhdEBvc2FkbC5vcmc+Cj4gLS0tCj4KPiBUaGFu
+a3MgdG8gQmpvcm4gTW9yayA8Ympvcm5AbW9yay5ubz4gZm9yIGNsYXJpZnlpbmcgbXkgaW5pdGlh
+bCBjb25mdXNpb24gIQo+Cj4gUGF0Y2ggd2FzIG9ubHkgY29tcGlsZSB0ZXN0ZWQgd2l0aCB4ODZf
+NjRfZGVmY29uZmlnICsgQ09ORklHX0FUSF9DQVJEUz1tLAo+IENPTkZJR19BVEgxMEs9bQo+Cj4g
+UGF0Y2ggaXMgYWdhaW5zdCA0LjAtcmMzIChsb2NhbHZlcnNpb24tbmV4dCBpcyAtbmV4dC0yMDE1
+MDMxMSkKPgo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jIHwgICAzMiAr
+KysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5z
+ZXJ0aW9ucygrKSwgMTQgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQv
+d2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvbWFjLmMKPiBpbmRleCBlOGNjMTlmLi43YjI3ZDk5IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMv
+bmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL21hYy5jCj4gQEAgLTQ0NjMsMTEgKzQ0NjMsMjUgQEAgc3RhdGljIGludCBh
+dGgxMGtfc2V0X3J0c190aHJlc2hvbGQoc3RydWN0IGllZWU4MDIxMV9odyAqaHcsIHUzMiB2YWx1
+ZSkKPiAgCXJldHVybiByZXQ7Cj4gIH0KPiAgCj4gK3N0YXRpYyBib29sIGNoZWNrX2h0dF9zdGF0
+ZShzdHJ1Y3QgYXRoMTBrICphciwgYm9vbCBza2lwKQo+ICt7Cj4gKwlib29sIGVtcHR5Owo+ICsK
+PiArCXNwaW5fbG9ja19iaCgmYXItPmh0dC50eF9sb2NrKTsKPiArCWVtcHR5ID0gKGFyLT5odHQu
+bnVtX3BlbmRpbmdfdHggPT0gMCk7Cj4gKwlzcGluX3VubG9ja19iaCgmYXItPmh0dC50eF9sb2Nr
+KTsKPiArCj4gKwlza2lwID0gKGFyLT5zdGF0ZSA9PSBBVEgxMEtfU1RBVEVfV0VER0VEKSB8fAo+
+ICsJCXRlc3RfYml0KEFUSDEwS19GTEFHX0NSQVNIX0ZMVVNILAo+ICsJCQkgJmFyLT5kZXZfZmxh
+Z3MpOwo+ICsJcmV0dXJuIChlbXB0eSB8fCBza2lwKTsKPiArfQoKClRoZXJlIGlzIG5vIHZhbHVl
+IGluIHRoZSAic2tpcCIgaW5wdXQgYXJndW1lbnQgaGVyZS4gIEl0IGNvdWxkIGp1c3QgYXMKd2Vs
+bCBiZSBhIGxvY2FsIHZhcmlhYmxlLgoKCj4gIHN0YXRpYyB2b2lkIGF0aDEwa19mbHVzaChzdHJ1
+Y3QgaWVlZTgwMjExX2h3ICpodywgc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZiwKPiAgCQkJIHUz
+MiBxdWV1ZXMsIGJvb2wgZHJvcCkKPiAgewo+ICAJc3RydWN0IGF0aDEwayAqYXIgPSBody0+cHJp
+djsKPiAtCWJvb2wgc2tpcDsKPiArCWJvb2wgc2tpcCA9IGZhbHNlOwo+ICAJaW50IHJldDsKPiAg
+Cj4gIAkvKiBtYWM4MDIxMSBkb2Vzbid0IGNhcmUgaWYgd2UgcmVhbGx5IHhtaXQgcXVldWVkIGZy
+YW1lcyBvciBub3QKPiBAQCAtNDQ4MCwxOSArNDQ5NCw5IEBAIHN0YXRpYyB2b2lkIGF0aDEwa19m
+bHVzaChzdHJ1Y3QgaWVlZTgwMjExX2h3ICpodywgc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZiwK
+PiAgCWlmIChhci0+c3RhdGUgPT0gQVRIMTBLX1NUQVRFX1dFREdFRCkKPiAgCQlnb3RvIHNraXA7
+Cj4gIAo+IC0JcmV0ID0gd2FpdF9ldmVudF90aW1lb3V0KGFyLT5odHQuZW1wdHlfdHhfd3EsICh7
+Cj4gLQkJCWJvb2wgZW1wdHk7Cj4gLQo+IC0JCQlzcGluX2xvY2tfYmgoJmFyLT5odHQudHhfbG9j
+ayk7Cj4gLQkJCWVtcHR5ID0gKGFyLT5odHQubnVtX3BlbmRpbmdfdHggPT0gMCk7Cj4gLQkJCXNw
+aW5fdW5sb2NrX2JoKCZhci0+aHR0LnR4X2xvY2spOwo+IC0KPiAtCQkJc2tpcCA9IChhci0+c3Rh
+dGUgPT0gQVRIMTBLX1NUQVRFX1dFREdFRCkgfHwKPiAtCQkJICAgICAgIHRlc3RfYml0KEFUSDEw
+S19GTEFHX0NSQVNIX0ZMVVNILAo+IC0JCQkJCSZhci0+ZGV2X2ZsYWdzKTsKPiAtCj4gLQkJCShl
+bXB0eSB8fCBza2lwKTsKPiAtCQl9KSwgQVRIMTBLX0ZMVVNIX1RJTUVPVVRfSFopOwo+ICsJcmV0
+ID0gd2FpdF9ldmVudF90aW1lb3V0KGFyLT5odHQuZW1wdHlfdHhfd3EsCj4gKwkJCQkgY2hlY2tf
+aHR0X3N0YXRlKGFyLCBza2lwKSwKPiArCQkJCSBBVEgxMEtfRkxVU0hfVElNRU9VVF9IWik7Cj4g
+IAo+ICAJaWYgKHJldCA8PSAwIHx8IHNraXApCj4gIAkJYXRoMTBrX3dhcm4oYXIsICJmYWlsZWQg
+dG8gZmx1c2ggdHJhbnNtaXQgcXVldWUgKHNraXAgJWkgYXItc3RhdGUgJWkpOiAlaVxuIiwKCgpX
+aGljaCBpcyB3aHkgdGhpcyB3b24ndCB3b3JrLiAgVGhlIGNoZWNrX2h0dF9zdGF0ZSgpIGZ1bmN0
+aW9uIHdvbid0CnVwZGF0ZSB0aGUgInNraXAiIHZhcmlhYmxlLCBzbyBpdCBpcyBhbHdheXMgZmFs
+c2UgaGVyZS4gVGhlIHRlc3Qgbm93CmZhaWxzIHRvIGRldGVjdCBhbnkgb2YgdGhlIHR3byAic2tp
+cCBjb25kaXRpb25zIi4gIE5vdCByZWFsbHkgYSBiaWcKcHJvYmxlbSBvZiBjb3Vyc2UsIGFzIGl0
+IG9ubHkgbWFza3MgYSB3YXJuaW5nLiAgQnV0IHN0aWxsOiBZb3VyIGF0dGVtcHQKdG8gY2xlYW4g
+dXAgaGFzIGNoYW5nZWQgdGhlIGJlaGF2aW91ciBpbiBhbiB1bmludGVudGlvbmFsIHdheS4KCkkn
+ZCBzdWdnZXN0IHRvIGxlYXZlIHRoaXMgYWxvbmUgYXMgaXQgaXMuICBUaGUgZXhpc3RpbmcgY29k
+ZSBpcyByZWFsbHkKZmluZS4gQW5kIHRlc3RpbmcgdGhlc2Ugb2RkIGNvcm5lciBjYXNlcyBpcyBw
+cm9iYWJseSBkaWZmaWN1bHQsIGV2ZW4gZm9yCnNvbWVvbmUgd2l0aCB0aGUgYWN0dWFsIGhhcmR3
+YXJlLiAgSSBoYXZlIG5vIGlkZWEgd2hhdCB3aWxsIHRyaWdnZXIgdGhlCkFUSDEwS19GTEFHX0NS
+QVNIX0ZMVVNIIGZsYWcgZm9yIGV4YW1wbGUuLgoKSXQncyBiZXR0ZXIgdG8gbG9vayBpbnRvIHNv
+bWUgcmVhbCBidWcsIHdoZXJlIHlvdSBhcmUgYWJsZSB0byB2ZXJpZnkgYQpmaXguCgoKCkJqw7hy
+bgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
+IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
+cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
