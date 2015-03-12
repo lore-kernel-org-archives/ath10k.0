@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW30g-0006WH-Cb
- for ath10k@lists.infradead.org; Thu, 12 Mar 2015 13:18:46 +0000
+ id 1YW33s-0001hN-Mp
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2015 13:22:05 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Remove trace about getting temperature
-References: <1424802385-23017-1-git-send-email-mka@chromium.org>
- <87h9tsyhin.fsf@kamboji.qca.qualcomm.com>
- <CAKZ8rEOVf4q_i7at=h3PiwwGDNeuiEL467wFCOwADwd0BhtbCw@mail.gmail.com>
-Date: Thu, 12 Mar 2015 15:17:51 +0200
-In-Reply-To: <CAKZ8rEOVf4q_i7at=h3PiwwGDNeuiEL467wFCOwADwd0BhtbCw@mail.gmail.com>
- (Matthias Kaehlcke's message of "Tue, 10 Mar 2015 09:24:52 -0700")
-Message-ID: <87d24euzgg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/3] ath10k: add sysfs entry to configure quiet period
+References: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <87lhj4yi0x.fsf@kamboji.qca.qualcomm.com>
+ <20150310165323.GB11700@qca.qualcomm.com>
+Date: Thu, 12 Mar 2015 15:21:34 +0200
+In-Reply-To: <20150310165323.GB11700@qca.qualcomm.com> (Rajkumar Manoharan's
+ message of "Tue, 10 Mar 2015 22:23:24 +0530")
+Message-ID: <874mpquza9.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,34 +25,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthias Kaehlcke <mka@google.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Matthias Kaehlcke <mka@google.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
->     > -     ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi pdev get temperature\n");
->     >       return skb;
+> On Tue, Mar 10, 2015 at 05:43:58PM +0200, Kalle Valo wrote:
+>> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+>> 
+>> > Add support to configure quiet period via sysfs entry. This will
+>> > be helpful to experiment different quiet period values along with
+>> > different duty cycle ratio.
+>> >
+>> > To configure quiet period as 30ms,
+>> >
+>> > echo 30 >/sys/class/ieee80211/phyX/device/quiet_period
+>> 
+>> What's the justification? To me this looks like an ugly driver private
+>> hack. Why can't you use nl80211 or something else?
 >
->     I'm worried that this is dangerous, as that means that not all WMI
->     commands will be in debug and something might be missed because of that.
->
->
-> I see your concern
->  
->
->     Isn't there any other way? Like implementing ath10k_dbg_ratelimit()? Or
->     adding a new log level?
->
->
-> Switching to dynamic debugging (dev_dbg, ...) could be an option. Debug
-> messages would be disabled by default but can be enabled at runtime
+> As this is purely for testing purpose to play around with different
+> quiet period along with various throttling state, sysfs entry is used
+> instead of netlink testmode command. Instead of debugfs, sysfs entry is
+> selected to align with existing thermal interface. 
 
-I don't really like dynamic debugging framework as it's not really
-convenient with bigger drivers like ath10k. Is it possible to add
-support for dynamic debugging without sacrificing the current debug
-functionality, especially setting debug levels via debug_mask
-parameters?
-
+Please correct me if I'm wrong, but I consider sysfs as a stable user
+space interface. It's not meant for random testing stuff.
 
 -- 
 Kalle Valo
