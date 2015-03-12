@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW2II-0007iA-TZ
- for ath10k@lists.infradead.org; Thu, 12 Mar 2015 12:32:55 +0000
+ id 1YW2Mj-000439-AP
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2015 12:37:29 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix CAC regression
-References: <1425907255-14083-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 12 Mar 2015 14:32:20 +0200
-In-Reply-To: <1425907255-14083-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 9 Mar 2015 14:20:55 +0100")
-Message-ID: <87y4n2v1kb.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix WPA crypto
+References: <1425907457-15118-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 12 Mar 2015 14:36:57 +0200
+In-Reply-To: <1425907457-15118-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 9 Mar 2015 14:24:17 +0100")
+Message-ID: <87twxqv1cm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,15 +28,16 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Patch `ath10k: fix interrupt storm` introduced a
-> regression. The condition responsible for bringing
-> up monitor vdev was broken and it was never
-> started for CAC so effectivelly CAC would not
-> detect radar pulses.
+> My recent patch `ath10k: fix broken traffic for
+> 802.1x in client mode` introduced a regression on
+> WPA crypto. All keys were treated as if they were
+> WEP which resulted in WPA being incorrectly
+> installed to fw/hw and subsequently no traffic.
 >
+> Reported-by: Marek Puzyniak <marek.puzyniak@tieto.com>
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied. I just added the commit id to the commit log.
+Thanks, applied. But I added the commit id to the log.
 
 -- 
 Kalle Valo
