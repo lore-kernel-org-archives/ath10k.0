@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW2gN-0007gD-3P
- for ath10k@lists.infradead.org; Thu, 12 Mar 2015 12:57:47 +0000
+ id 1YW2ib-00018i-4V
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2015 13:00:08 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: implement wmi roam event
-References: <87fv9hyz2r.fsf@kamboji.qca.qualcomm.com>
- <1425908197-16118-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 12 Mar 2015 14:57:17 +0200
-In-Reply-To: <1425908197-16118-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 9 Mar 2015 14:36:36 +0100")
-Message-ID: <87pp8ev0eq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: fix PMG by using AES-CMAC/IGTK software crypto
+References: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Thu, 12 Mar 2015 14:59:32 +0200
+In-Reply-To: <1425994339-15864-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Tue, 10 Mar 2015 14:32:19 +0100")
+Message-ID: <87lhj2v0az.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,18 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> This can be used to implement offloaded rssi
-> threshold, beacon miss or even automatic
-> in-firmware BSS roaming in the future.
+> While testing with older supplicant, .drv_set_key() was failing due to
+> higher than ath10k firmware could handle key_index (WMI_MAX_KEY_INDEX == 3).
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> --
+> wpa_driver_nl80211_set_key: ifindex=15 alg=4 addr=0x7f02b129fbe3 key_idx=4 set_tx=0 seq_len=6 key_len=16
+>     broadcast key
+> nl80211: set_key failed; err=-22 Invalid argument)
+> wlan0: WPA: Failed to configure IGTK to the driver
+> wlan0: RSN: Failed to configure IGTK
+> --
+>
+> In order to fix this case (PMF: AES-CMAC/IGTK) force the AES_CMAC cipher to
+> be handled by software.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, both patches applied.
+Thanks, applied. I just did s/PMG/PMF/.
 
 -- 
 Kalle Valo
