@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YW33s-0001hN-Mp
- for ath10k@lists.infradead.org; Thu, 12 Mar 2015 13:22:05 +0000
+ id 1YW32w-0000sX-0e
+ for ath10k@lists.infradead.org; Thu, 12 Mar 2015 13:21:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/3] ath10k: add sysfs entry to configure quiet period
+Subject: Re: [PATCH 3/3] ath10k: add symlink for hwmon device
 References: <1424437452-28161-1-git-send-email-rmanohar@qti.qualcomm.com>
- <87lhj4yi0x.fsf@kamboji.qca.qualcomm.com>
- <20150310165323.GB11700@qca.qualcomm.com>
-Date: Thu, 12 Mar 2015 15:21:34 +0200
-In-Reply-To: <20150310165323.GB11700@qca.qualcomm.com> (Rajkumar Manoharan's
- message of "Tue, 10 Mar 2015 22:23:24 +0530")
-Message-ID: <874mpquza9.fsf@kamboji.qca.qualcomm.com>
+ <1424437452-28161-3-git-send-email-rmanohar@qti.qualcomm.com>
+ <87pp8gyi7x.fsf@kamboji.qca.qualcomm.com>
+ <20150310164223.GA11700@qca.qualcomm.com>
+Date: Thu, 12 Mar 2015 15:20:33 +0200
+In-Reply-To: <20150310164223.GA11700@qca.qualcomm.com> (Rajkumar Manoharan's
+ message of "Tue, 10 Mar 2015 22:12:26 +0530")
+Message-ID: <878uf2uzby.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -30,27 +31,27 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> On Tue, Mar 10, 2015 at 05:43:58PM +0200, Kalle Valo wrote:
+> On Tue, Mar 10, 2015 at 05:39:46PM +0200, Kalle Valo wrote:
 >> Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 >> 
->> > Add support to configure quiet period via sysfs entry. This will
->> > be helpful to experiment different quiet period values along with
->> > different duty cycle ratio.
+>> > Add symbloic link "thermal_sensors" for hwmon devices for better
+>> > readability.
 >> >
->> > To configure quiet period as 30ms,
->> >
->> > echo 30 >/sys/class/ieee80211/phyX/device/quiet_period
+>> > /sys/class/ieee80211/phyX/device/thermal_sensors ->
+>> > sys/class/ieee80211/phyX/device/hwmon/hwmonY
 >> 
->> What's the justification? To me this looks like an ugly driver private
->> hack. Why can't you use nl80211 or something else?
+>> I don't get it, how does that improve readability? Also I don't see any
+>> other driver doing this, so isn't this just some private hack and not a
+>> proper generic interface?
 >
-> As this is purely for testing purpose to play around with different
-> quiet period along with various throttling state, sysfs entry is used
-> instead of netlink testmode command. Instead of debugfs, sysfs entry is
-> selected to align with existing thermal interface. 
+> The patch is providing same level access to monitoring device similar to
+> cooling device.
+>
+> cooling_device -> ../../../../../virtual/thermal/cooling_deviceX
+> thermal_sensors -> hwmon/hwmonX
 
-Please correct me if I'm wrong, but I consider sysfs as a stable user
-space interface. It's not meant for random testing stuff.
+Is this documented somewhere? We cannot just start inventing sysfs
+interfaces on our own.
 
 -- 
 Kalle Valo
