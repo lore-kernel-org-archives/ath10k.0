@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.com ([74.208.4.200])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWRVt-0002YA-Jc
- for ath10k@lists.infradead.org; Fri, 13 Mar 2015 15:28:38 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YWRwu-00086q-8S
+ for ath10k@lists.infradead.org; Fri, 13 Mar 2015 15:56:33 +0000
+Message-ID: <55030897.4050606@candelatech.com>
+Date: Fri, 13 Mar 2015 08:56:07 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Message-ID: <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
-From: "Jason H" <jhihn@gmx.com>
-Subject: Re: QCA6174 hw2.1?
-Date: Fri, 13 Mar 2015 16:28:05 +0100
-In-Reply-To: <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
-References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>,
- <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
+Subject: Re: Specific tx rates with ath10k
+References: <5501DAF7.1000800@candelatech.com>
+ <20150313103721.13586092dzqt9w41@horde.inescporto.pt>
+In-Reply-To: <20150313103721.13586092dzqt9w41@horde.inescporto.pt>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +19,109 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: =?ISO-8859-1?Q?M=E1rio_Lopes?= <mjlopes@inescporto.pt>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+
+On 03/13/2015 02:37 AM, M=E1rio Lopes wrote:
+> Hi.
+> =
+
+> You can change to fixed bitrate for all types of traffic for 802.11g/a mo=
+des, even on ath10k:
+> for 2.4 GHz @ 54 Mbit/s - iw dev wiface set bitrates legacy-2.4 54
+> for 5 GHz @ 54 Mbit/s - iw dev wiface set bitrates legacy-5 54
+
+Have you actually tried this with an ath10k AP and seen that beacons
+and broadcast go out at 54Mbps?
+
+If so, please let me know what firmware version you are using.
+
+> Setting fixed speed for HT and VHT modes currently only takes effect on u=
+nicast traffic, I would like that this could be applied to other types of t=
+raffic in a
+> future ath9k/ath10k driver.
+
+I know beacons won't go out at HT speeds, at least not with the
+logic that I tried in the firmware...but I have not checked to
+see if my patch allows setting broadcast to HT speeds....
+
+Thanks,
+Ben
+
+> =
+
+> =
+
+> Quoting Ben Greear <greearb@candelatech.com>:
+> =
+
+>> Ath10k firmware gives ability to set specific fixed rate-control rates
+>> for beacons/mgt, multicast, broadcast, and regular traffic.
+>>
+>> The ath10k driver only sets regular traffic currently.
+>>
+>> I had previously hacked my firmware to just set all rate types when
+>> ath10k driver requested to set the rate.
+>>
+>> But, that is not what my customer needs.
+>>
+>> So, I am now planning to add some debugfs entries to allow users to set
+>> beacon/mgt, multicast and broadcast rates individually (I don't have tim=
+e or interest
+>> right now to try patching things top to bottom to try to get this feature
+>> into mac80211 stack or 'iw').
+>>
+>> My question is, for when user just runs a command like this:
+>>
+>> ./local/sbin/iw dev vap1 set bitrates legacy-2.4 6 ht-mcs-2.4
+>>
+>> What is the desired behaviour?
+>>
+>> Set all rates (beacons/mgt, bcast, multicast, regular) to the same
+>> fixed speed, or just a certain subset of these traffic types?
+>>
+>> I can make my firmware do whatever combination is required, and then
+>> users can over-ride the values by using debugfs.....
+>>
+>> As a note, ath10k firmware will NOT send beacons at HT speeds, so
+>> if you fix an HT rate, then firmware will ignore that for the beacons/mgt
+>> ratecontrol type.
+>>
+>> Thanks,
+>> Ben
+>>
+>> -- =
+
+>> Ben Greear <greearb@candelatech.com>
+>> Candela Technologies Inc  http://www.candelatech.com
+>>
+>> -- =
+
+>> To unsubscribe from this list: send the line "unsubscribe linux-wireless=
+" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+> =
+
+> =
+
+> =
+
+> ----------------------------------------------------------------
+> This message was sent using IMP, the Internet Messaging Program.
+> =
 
 
-> On 13 March 2015 at 04:39,  <jhihn@gmx.com> wrote:
-> > I went through the archives, and the  wiki but I still wasn't sure...
-> > I have a shiny new Lenovo z70, kernel 4.0-rc1/3.  Dmesg reports failures for loading  firmware in /lib/firmware/ath10k/QCA6174/hw2.1/...
-> > So I found the firmware Git repo,  but it seems to be missing hw2.1. I even symlinked 2.1 to  3.0, no dice.
-> 
-> You can't use hw3 firmware for hw2 hardware.
-> 
-> The problem is there's no publicly available ath10k firmware for hw2 hardware..
-> 
-> 
-> > I don't dual boot and this is a laptop  so I'm looking to get  my WiFi working.  Any pointers are appreciated.  Thanks.
-> 
-> You could try building hw2 firmware ath10k binary yourself. You need
-> to fetch athwlan.bin from Windows driver, extract otp image from hw3
-> firmware ath10k binary and then re-assemble both into hw3 firmware for
-> ath10k. The ath10k binary blob is a tag-length-value format and can be
-> understood by looking at ath10k_core_fetch_firmware_api_n().
-> 
-> Nobody seems to have tried this yet though.
 
+-- =
 
-I installed WINE and attempted to install the driver from lenono on my non-lenovo with working wifi. The install failed (expected) but not before it extracted the actual driver installer images (expected). Parsing through an .inf file, and navigating my way through the sections, I end up at a section specifying eeprom_ar6320_2p1_NFA354xp.bin and qca61x420.bin as the firmware files. I have these files.
-
-However I am now diverging from your instructions considerably. Also I don't know why I would want to reassemble into 3.0 when my system is looking for 2.1? I don't know what an 'otp image' is? I think I understand the part about the ath10k format though.
-
-Could you update your instructions to suit the new information at hand? 
-
-
-Thanks again
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
