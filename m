@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWSOC-0007Qp-Bx
- for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:24:45 +0000
-Date: Fri, 13 Mar 2015 17:24:09 +0100
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH 2/3 RFC] ath10k: wmi: match wait_for_completion_timeout
- return type
-Message-ID: <20150313162409.GA5939@opentech.at>
-References: <1426175362-8640-1-git-send-email-hofrat@osadl.org>
- <87bnjwrhse.fsf@kamboji.qca.qualcomm.com>
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YWSeA-0008D7-Vp
+ for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:41:15 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/4] ath10k: add WMI support for WOW
+References: <1425887720-11466-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Fri, 13 Mar 2015 18:40:44 +0200
+In-Reply-To: <1425887720-11466-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Mon, 9 Mar 2015 08:55:17 +0100")
+Message-ID: <877fukrgtv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87bnjwrhse.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +23,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Fri, 13 Mar 2015, Kalle Valo wrote:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Nicholas Mc Guire <hofrat@osadl.org> writes:
-> 
-> > Return type of wait_for_completion_timeout is unsigned long not int.
-> > An appropriately named unsigned long is added and the assignments fixed up.
-> > Rather than returning 0 (timeout) or a more or less random remaining time
-> > (completion success) this return 0 or 1 which also resolves the type of the
-> > functions being int.
-> >
-> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> 
-> Why does patch 2 in this patchset have RFC in the title but patches 1
-> and 3 not? That just makes me confused, I can't tell what you want me to
-> do with the patches. Normally I just drop all patches (or patchsets)
-> which have RFC, and that's what I'm going to do now.
-> 
-> To save everyone's time, when submitting something please state clearly
-> what's your intention.
+> Add WMI support for WOW like enable,
+> wakeup events and host wakeup indication.
 >
-ok - was simply unsure about the proposed change 
-and 1 was a trivial cleanup (which should have been 
-sent out as a seperate patch and not part of a series - my mistake)
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-Will fix this up and repost it.
+Patch 1 had quite a few conflicts, please check carefully my resolution
+in the pending branch.
 
-sorry for the screwup - no intent to wast anybodies time.
+Applying: ath10k: add WMI support for WOW
+Using index info to reconstruct a base tree...
+Falling back to patching base and 3-way merge...
+Auto-merging drivers/net/wireless/ath/ath10k/wmi.h
+Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.h
+CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.h
+Auto-merging drivers/net/wireless/ath/ath10k/wmi-tlv.c
+CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.c
+Auto-merging drivers/net/wireless/ath/ath10k/wmi-ops.h
+CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-ops.h
+Failed to merge in the changes.
+Patch failed at 0001 ath10k: add WMI support for WOW
 
-thx!
-hofrat
- 
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
