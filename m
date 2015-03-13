@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWS8w-0000Mj-Gn
- for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:08:59 +0000
+ id 1YWSKR-0004Cf-Ud
+ for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:20:52 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3 0/3] ath10k: add basic tdls support
-References: <1425905138-9966-1-git-send-email-marek.puzyniak@tieto.com>
- <CADnKcVi-we6TSPMNgboS5B9ead7Xiv+tukNZhEiboN+Eb_x6Vg@mail.gmail.com>
-Date: Fri, 13 Mar 2015 18:08:24 +0200
-In-Reply-To: <CADnKcVi-we6TSPMNgboS5B9ead7Xiv+tukNZhEiboN+Eb_x6Vg@mail.gmail.com>
- (Marek Puzyniak's message of "Wed, 11 Mar 2015 13:38:49 +0100")
-Message-ID: <87fv98ribr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/3 RFC] ath10k: wmi: match wait_for_completion_timeout
+ return type
+References: <1426175362-8640-1-git-send-email-hofrat@osadl.org>
+Date: Fri, 13 Mar 2015 18:20:01 +0200
+In-Reply-To: <1426175362-8640-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Thu, 12 Mar 2015 11:49:22 -0400")
+Message-ID: <87bnjwrhse.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,27 +24,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Nicholas Mc Guire <hofrat@osadl.org> writes:
 
-> On 9 March 2015 at 13:45, Marek Puzyniak <marek.puzyniak@tieto.com> wrote:
->> This patchset introduces tdls funtionality without tdls peer uapsd
->> and tdls channel switching. Tdls is supported by qca6174 hardware
->> what is indicated by firmware through supported services.
-> [...]
->> Marek Puzyniak (2):
->>   ath10k: make peer type configurable
->>   ath10k: introduce basic tdls functionality
->>
->> Michal Kazior (1):
->>   ath10k: unify tx mode and dispatch
-> [...]
+> Return type of wait_for_completion_timeout is unsigned long not int.
+> An appropriately named unsigned long is added and the assignments fixed up.
+> Rather than returning 0 (timeout) or a more or less random remaining time
+> (completion success) this return 0 or 1 which also resolves the type of the
+> functions being int.
 >
-> Kalle, please drop this patchset. I will send new version.
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-Ok, dropped.
+Why does patch 2 in this patchset have RFC in the title but patches 1
+and 3 not? That just makes me confused, I can't tell what you want me to
+do with the patches. Normally I just drop all patches (or patchsets)
+which have RFC, and that's what I'm going to do now.
+
+To save everyone's time, when submitting something please state clearly
+what's your intention.
 
 -- 
 Kalle Valo
