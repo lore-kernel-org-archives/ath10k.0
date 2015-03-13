@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWSla-00045l-0O
- for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:48:54 +0000
+ id 1YWSoU-0006IK-Em
+ for ath10k@lists.infradead.org; Fri, 13 Mar 2015 16:51:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: move driver state check before setting throttle
-References: <1426097094-6225-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Fri, 13 Mar 2015 18:48:21 +0200
-In-Reply-To: <1426097094-6225-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 11 Mar 2015 23:34:54 +0530")
-Message-ID: <873858rgh6.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: match wait_for_completion_timeout return type
+References: <1426094076-10134-1-git-send-email-hofrat@osadl.org>
+Date: Fri, 13 Mar 2015 18:51:21 +0200
+In-Reply-To: <1426094076-10134-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Wed, 11 Mar 2015 13:14:36 -0400")
+Message-ID: <87y4n0q1rq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +23,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
+Nicholas Mc Guire <hofrat@osadl.org> writes:
 
-> Since thermal daemon is unaware of the device state, it might
-> try to adjust the throttle state when the device is powered down.
-> So the driver caches the value and will configure it while
-> powering up the target. The cached value will be programed later
-> once the device is brought up. In such case, returning error
-> status is confusing and misleading the user application. Hence
-> moving the driver state check before sending wmi command to target.
+> Return type of wait_for_completion_timeout is unsigned long not int.
+> An appropriately named unsigned long is added and the assignments fixed up.
 >
-> Reported-by: Matthias Kaehlcke <mka@google.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-What tree do you use as the baseline? Three-way merge doesn't work as
-sha1 ids are not found:
+Doesn't apply:
 
-Applying: ath10k: move driver state check before setting throttle
-fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/thermal.c).
+Applying: ath10k: match wait_for_completion_timeout return type
+fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/mac.c).
 Repository lacks necessary blobs to fall back on 3-way merge.
 Cannot fall back to three-way merge.
-Patch failed at 0001 ath10k: move driver state check before setting throttle
+Patch failed at 0001 ath10k: match wait_for_completion_timeout return type
 
 -- 
 Kalle Valo
