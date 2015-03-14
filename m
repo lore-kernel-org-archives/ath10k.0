@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from www.osadl.org ([62.245.132.105])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWiZn-0007G9-GR
- for ath10k@lists.infradead.org; Sat, 14 Mar 2015 09:41:48 +0000
+ id 1YWiZx-0007GC-6N
+ for ath10k@lists.infradead.org; Sat, 14 Mar 2015 09:41:57 +0000
 From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ath10k: debug: match wait_for_completion_timeout return type
-Date: Sat, 14 Mar 2015 05:37:10 -0400
-Message-Id: <1426325830-19740-1-git-send-email-hofrat@osadl.org>
+Subject: [PATCH] ath10k: thermal: match wait_for_completion_timeout return type
+Date: Sat, 14 Mar 2015 05:37:22 -0400
+Message-Id: <1426325842-19774-1-git-send-email-hofrat@osadl.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,7 +25,6 @@ Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.ke
 
 Return type of wait_for_completion_timeout is unsigned long not int.
 An appropriately named unsigned long is added and the assignments fixed up.
-Missing spaces 1*HZ -> 1 * HZ were also added along the way.
 
 Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
@@ -35,42 +34,34 @@ CONFIG_ATH10K=m
 
 Patch is against 4.0-rc3 (localversion-next is -next-20150313)
 
- drivers/net/wireless/ath/ath10k/debug.c |   11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/thermal.c |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 301081d..a252774 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -380,12 +380,12 @@ unlock:
- 
- static int ath10k_debug_fw_stats_request(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index aede750..dfa7c93 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -127,6 +127,7 @@ static ssize_t ath10k_thermal_show_temp(struct device *dev,
  {
--	unsigned long timeout;
-+	unsigned long timeout, time_left;
- 	int ret;
+ 	struct ath10k *ar = dev_get_drvdata(dev);
+ 	int ret, temperature;
++	unsigned long time_left;
  
- 	lockdep_assert_held(&ar->conf_mutex);
+ 	mutex_lock(&ar->conf_mutex);
  
--	timeout = jiffies + msecs_to_jiffies(1*HZ);
-+	timeout = jiffies + msecs_to_jiffies(1 * HZ);
+@@ -148,9 +149,9 @@ static ssize_t ath10k_thermal_show_temp(struct device *dev,
+ 		goto out;
+ 	}
  
- 	ath10k_debug_fw_stats_reset(ar);
- 
-@@ -404,9 +404,10 @@ static int ath10k_debug_fw_stats_request(struct ath10k *ar)
- 			return ret;
- 		}
- 
--		ret = wait_for_completion_timeout(&ar->debug.fw_stats_complete,
--						  1*HZ);
--		if (ret == 0)
-+		time_left =
-+		wait_for_completion_timeout(&ar->debug.fw_stats_complete,
-+					    1 * HZ);
-+		if (!time_left)
- 			return -ETIMEDOUT;
- 
- 		spin_lock_bh(&ar->data_lock);
+-	ret = wait_for_completion_timeout(&ar->thermal.wmi_sync,
+-					  ATH10K_THERMAL_SYNC_TIMEOUT_HZ);
+-	if (ret == 0) {
++	time_left = wait_for_completion_timeout(&ar->thermal.wmi_sync,
++						ATH10K_THERMAL_SYNC_TIMEOUT_HZ);
++	if (!time_left) {
+ 		ath10k_warn(ar, "failed to synchronize thermal read\n");
+ 		ret = -ETIMEDOUT;
+ 		goto out;
 -- 
 1.7.10.4
 
