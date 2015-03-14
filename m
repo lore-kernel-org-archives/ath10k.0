@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from www.osadl.org ([62.245.132.105])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWhv6-0001uS-Qi
- for ath10k@lists.infradead.org; Sat, 14 Mar 2015 08:59:45 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH 2/2] ath10k: core: harmonize error case handling in
- ath10k_core_start
-Date: Sat, 14 Mar 2015 04:55:13 -0400
-Message-Id: <1426323313-1344-1-git-send-email-hofrat@osadl.org>
+Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YWhvN-0001uV-Es
+ for ath10k@lists.infradead.org; Sat, 14 Mar 2015 09:00:02 +0000
+Date: Sat, 14 Mar 2015 09:59:38 +0100
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Subject: Re: [PATCH 2/3 RFC] ath10k: wmi: match wait_for_completion_timeout
+ return type
+Message-ID: <20150314085938.GA13323@opentech.at>
+References: <1426175362-8640-1-git-send-email-hofrat@osadl.org>
+ <CA+BoTQ=VYkOcKBjBuLsJcDjPNevTD2UFxVfB1uimRr=9uBO4Fw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQ=VYkOcKBjBuLsJcDjPNevTD2UFxVfB1uimRr=9uBO4Fw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,58 +21,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Nicholas Mc Guire <hofrat@osadl.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Network Development <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, linux-kernel@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>, Nicholas Mc Guire <hofrat@osadl.org>
 
-All of the bringup/init functions called in ath10k_core_start return 0 on
-success and != 0 on failure - ath10k_wmi_wait_for_service_ready and
-ath10k_wmi_wait_for_unified_ready were adjusted to fit this model and the
-call sites here fixed up accordingly. 
+On Fri, 13 Mar 2015, Michal Kazior wrote:
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+> On 12 March 2015 at 16:49, Nicholas Mc Guire <hofrat@osadl.org> wrote:
+> > Return type of wait_for_completion_timeout is unsigned long not int.
+> > An appropriately named unsigned long is added and the assignments fixed up.
+> > Rather than returning 0 (timeout) or a more or less random remaining time
+> > (completion success) this return 0 or 1 which also resolves the type of the
+> > functions being int.
+> >
+> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> > ---
+> >
+> > Checking the call-sites of ath10k_wmi_wait_for_unified_ready and
+> > ath10k_wmi_wait_for_service_ready the positive return value (remaining
+> > time in jiffies) is never passed up the call-chain nor used so it is
+> > cleaner to treat this like a boolean success/fail only (actually the two
+> > functions should probably be of type bool - but that does not seem to be
+> > common practice in the ath10k code base)
+> 
+> It'd make sense to have these functions return 0 or -ETIMEDOUT. In
+> that case both call sites would need to be adjusted to treat "< 0" or
+> "!x" as an error (instead of the current "<= 0") condition and not set
+> -ETIMEDOUT themselves.
+>
+looking at the call sites in ath10k_core_start more or less 
+all other initialization calls will treate 0 as success and
+!=0 as failure so this is the cleaner solution. as its all
+now
 
-Patch was only compile tested with x86_64_defconfig + CONFIG_ATH_CARDS=m,
-CONFIG_ATH10K=m
+status = call()
+if(status)
+ 	error
 
-Patch is against 4.0-rc3 (localversion-next is -next-20150313)
+patch just posted.
 
- drivers/net/wireless/ath/ath10k/core.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c0e454b..e97069f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1080,9 +1080,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 
- 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
- 		status = ath10k_wmi_wait_for_service_ready(ar);
--		if (status <= 0) {
-+		if (status) {
- 			ath10k_warn(ar, "wmi service ready event not received");
--			status = -ETIMEDOUT;
- 			goto err_hif_stop;
- 		}
- 	}
-@@ -1098,9 +1097,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	}
- 
- 	status = ath10k_wmi_wait_for_unified_ready(ar);
--	if (status <= 0) {
-+	if (status) {
- 		ath10k_err(ar, "wmi unified ready event not received\n");
--		status = -ETIMEDOUT;
- 		goto err_hif_stop;
- 	}
- 
--- 
-1.7.10.4
+thx!
+hofrat
 
 
 _______________________________________________
