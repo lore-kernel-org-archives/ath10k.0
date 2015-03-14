@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from www.osadl.org ([62.245.132.105])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YWhv6-0001uR-Qh
- for ath10k@lists.infradead.org; Sat, 14 Mar 2015 08:59:46 +0000
+ id 1YWiZn-0007G9-GR
+ for ath10k@lists.infradead.org; Sat, 14 Mar 2015 09:41:48 +0000
 From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH 1/2] ath10k: wmi: match wait_for_completion_timeout return type
-Date: Sat, 14 Mar 2015 04:55:02 -0400
-Message-Id: <1426323302-1310-1-git-send-email-hofrat@osadl.org>
+Subject: [PATCH] ath10k: debug: match wait_for_completion_timeout return type
+Date: Sat, 14 Mar 2015 05:37:10 -0400
+Message-Id: <1426325830-19740-1-git-send-email-hofrat@osadl.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +21,56 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Nicholas Mc Guire <hofrat@osadl.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>
 
-return type of wait_for_completion_timeout is unsigned long not int. This
-patch adjusts the type and name of the return variable and adjusts the 
-success/fail values to match those used at the call site in ath10k_core_start
+Return type of wait_for_completion_timeout is unsigned long not int.
+An appropriately named unsigned long is added and the assignments fixed up.
+Missing spaces 1*HZ -> 1 * HZ were also added along the way.
 
 Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 ---
-
-Adjustment of return values was proposed by Michal Kazior
-<michal.kazior@tieto.com> - thanks!
 
 Patch was only compile tested with x86_64_defconfig + CONFIG_ATH_CARDS=m,
 CONFIG_ATH10K=m
 
 Patch is against 4.0-rc3 (localversion-next is -next-20150313)
 
- drivers/net/wireless/ath/ath10k/wmi.c |   20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c7ea77e..65e495d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -884,20 +884,24 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 301081d..a252774 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -380,12 +380,12 @@ unlock:
  
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
+ static int ath10k_debug_fw_stats_request(struct ath10k *ar)
  {
--	int ret;
-+	unsigned long time_left;
+-	unsigned long timeout;
++	unsigned long timeout, time_left;
+ 	int ret;
  
--	ret = wait_for_completion_timeout(&ar->wmi.service_ready,
--					  WMI_SERVICE_READY_TIMEOUT_HZ);
--	return ret;
-+	time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
-+						WMI_SERVICE_READY_TIMEOUT_HZ);
-+	if (!time_left)
-+		return -ETIMEDOUT;
-+	return 0;
- }
+ 	lockdep_assert_held(&ar->conf_mutex);
  
- int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar)
- {
--	int ret;
-+	unsigned long time_left;
+-	timeout = jiffies + msecs_to_jiffies(1*HZ);
++	timeout = jiffies + msecs_to_jiffies(1 * HZ);
  
--	ret = wait_for_completion_timeout(&ar->wmi.unified_ready,
--					  WMI_UNIFIED_READY_TIMEOUT_HZ);
--	return ret;
-+	time_left = wait_for_completion_timeout(&ar->wmi.unified_ready,
-+						WMI_UNIFIED_READY_TIMEOUT_HZ);
-+	if (!time_left)
-+		return -ETIMEDOUT;
-+	return 0;
- }
+ 	ath10k_debug_fw_stats_reset(ar);
  
- struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len)
+@@ -404,9 +404,10 @@ static int ath10k_debug_fw_stats_request(struct ath10k *ar)
+ 			return ret;
+ 		}
+ 
+-		ret = wait_for_completion_timeout(&ar->debug.fw_stats_complete,
+-						  1*HZ);
+-		if (ret == 0)
++		time_left =
++		wait_for_completion_timeout(&ar->debug.fw_stats_complete,
++					    1 * HZ);
++		if (!time_left)
+ 			return -ETIMEDOUT;
+ 
+ 		spin_lock_bh(&ar->data_lock);
 -- 
 1.7.10.4
 
