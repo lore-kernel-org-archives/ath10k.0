@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Fri, 13 Mar 2015 16:47:30 -0400
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] ath10k: add firmware 10.2.4.45 as firmware-4.bin
-Message-ID: <20150313204730.GA30928@merlin.infradead.org>
-References: <1426160112-4261-1-git-send-email-kvalo@qca.qualcomm.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1426160112-4261-1-git-send-email-kvalo@qca.qualcomm.com>
+Received: from www.osadl.org ([62.245.132.105])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YWhv6-0001uS-Qi
+ for ath10k@lists.infradead.org; Sat, 14 Mar 2015 08:59:45 +0000
+From: Nicholas Mc Guire <hofrat@osadl.org>
+Subject: [PATCH 2/2] ath10k: core: harmonize error case handling in
+ ath10k_core_start
+Date: Sat, 14 Mar 2015 04:55:13 -0400
+Message-Id: <1426323313-1344-1-git-send-email-hofrat@osadl.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,33 +16,59 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-firmware@kernel.org
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Nicholas Mc Guire <hofrat@osadl.org>
 
-On Thu, Mar 12, 2015 at 01:35:12PM +0200, Kalle Valo wrote:
-> This is the latest firmware from 10.2.4 firmware branch.
-> 
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+All of the bringup/init functions called in ath10k_core_start return 0 on
+success and != 0 on failure - ath10k_wmi_wait_for_service_ready and
+ath10k_wmi_wait_for_unified_ready were adjusted to fit this model and the
+call sites here fixed up accordingly. 
 
-Pardon my ignorance... It looks like your driver needs more than just
-firmware-4.bin... How are distros supposed to use this? Symlink it into
-firmware.bin which it seems the driver looks for?
+Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+---
 
---Kyle
+Patch was only compile tested with x86_64_defconfig + CONFIG_ATH_CARDS=m,
+CONFIG_ATH10K=m
 
-> ---
->  LICENSE.QualcommAtheros_ath10k                    |   47 ++++
->  WHENCE                                            |    9 +
->  ath10k/QCA988X/hw2.0/firmware-4.bin               |  Bin 0 -> 241892 bytes
->  ath10k/QCA988X/hw2.0/notice_ath10k_firmware-4.txt |  301 +++++++++++++++++++++
->  4 files changed, 357 insertions(+)
->  create mode 100644 LICENSE.QualcommAtheros_ath10k
->  create mode 100644 ath10k/QCA988X/hw2.0/firmware-4.bin
->  create mode 100644 ath10k/QCA988X/hw2.0/notice_ath10k_firmware-4.txt
+Patch is against 4.0-rc3 (localversion-next is -next-20150313)
+
+ drivers/net/wireless/ath/ath10k/core.c |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c0e454b..e97069f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1080,9 +1080,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 
+ 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
+ 		status = ath10k_wmi_wait_for_service_ready(ar);
+-		if (status <= 0) {
++		if (status) {
+ 			ath10k_warn(ar, "wmi service ready event not received");
+-			status = -ETIMEDOUT;
+ 			goto err_hif_stop;
+ 		}
+ 	}
+@@ -1098,9 +1097,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 	}
+ 
+ 	status = ath10k_wmi_wait_for_unified_ready(ar);
+-	if (status <= 0) {
++	if (status) {
+ 		ath10k_err(ar, "wmi unified ready event not received\n");
+-		status = -ETIMEDOUT;
+ 		goto err_hif_stop;
+ 	}
+ 
+-- 
+1.7.10.4
+
 
 _______________________________________________
 ath10k mailing list
