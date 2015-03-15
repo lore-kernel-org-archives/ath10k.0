@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXA8s-0007bE-Ev
+ id 1YXA8s-0007bF-6I
  for ath10k@lists.infradead.org; Sun, 15 Mar 2015 15:07:51 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 2/6] ath10k: Fix interpretation of cooling device state
-Date: Sun, 15 Mar 2015 20:36:21 +0530
-Message-ID: <1426431985-16332-3-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 3/6] ath10k: configure thermal throttle while powering up
+Date: Sun, 15 Mar 2015 20:36:22 +0530
+Message-ID: <1426431985-16332-4-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -23,131 +23,127 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Matthias Kaehlcke <mka@google.com>, linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Setting the sysfs attribute ends up configuring the duty cycle,
-but the interface through which the attribute is exposed
-(cooling_device) is for setting the throttle/cooling state. This
-is confusing the user. Hence renaming the cooling device interfaces
-for better readability.
+Thermal throttling is not handled in software restart and device
+bootup. Also it needs to be configured whenever quiet period got
+updated. Fix that.
 
-Cc: Matthias Kaehlcke <mka@google.com>
+Reported-by: Matthias Kaehlcke <mka@google.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/thermal.c | 35 +++++++++++++++++--------------
- drivers/net/wireless/ath/ath10k/thermal.h |  4 ++--
- 2 files changed, 21 insertions(+), 18 deletions(-)
+ drivers/net/wireless/ath/ath10k/debug.c   |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c     |  1 +
+ drivers/net/wireless/ath/ath10k/thermal.c | 34 +++++++++++++++++++------------
+ drivers/net/wireless/ath/ath10k/thermal.h |  5 +++++
+ 4 files changed, 28 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index d3fd2ab..dc0ebf3 100644
---- a/drivers/net/wireless/ath/ath10k/thermal.c
-+++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -46,28 +46,31 @@ static int ath10k_thermal_get_active_vifs(struct ath10k *ar,
- 	return count;
- }
- 
--static int ath10k_thermal_get_max_dutycycle(struct thermal_cooling_device *cdev,
--					    unsigned long *state)
-+static int
-+ath10k_thermal_get_max_throttle_state(struct thermal_cooling_device *cdev,
-+				      unsigned long *state)
- {
--	*state = ATH10K_QUIET_DUTY_CYCLE_MAX;
-+	*state = ATH10K_THERMAL_THROTTLE_MAX;
- 
- 	return 0;
- }
- 
--static int ath10k_thermal_get_cur_dutycycle(struct thermal_cooling_device *cdev,
--					    unsigned long *state)
-+static int
-+ath10k_thermal_get_cur_throttle_state(struct thermal_cooling_device *cdev,
-+				      unsigned long *state)
- {
- 	struct ath10k *ar = cdev->devdata;
- 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 812365c..d684edf 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2008,6 +2008,7 @@ static ssize_t ath10k_write_quiet_period(struct file *file,
+ 	}
  	mutex_lock(&ar->conf_mutex);
--	*state = ar->thermal.duty_cycle;
-+	*state = ar->thermal.throttle_state;
+ 	ar->thermal.quiet_period = period;
++	ath10k_thermal_set_throttling(ar);
  	mutex_unlock(&ar->conf_mutex);
  
- 	return 0;
- }
+ 	return count;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a2302bf..5cb0cb6 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3159,6 +3159,7 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 	ath10k_regd_update(ar);
  
--static int ath10k_thermal_set_cur_dutycycle(struct thermal_cooling_device *cdev,
--					    unsigned long duty_cycle)
-+static int
-+ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
-+				      unsigned long throttle_state)
+ 	ath10k_spectral_start(ar);
++	ath10k_thermal_set_throttling(ar);
+ 
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index dc0ebf3..8640f41 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -73,7 +73,6 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
+ 				      unsigned long throttle_state)
  {
  	struct ath10k *ar = cdev->devdata;
- 	u32 period, duration, enabled;
-@@ -79,9 +82,9 @@ static int ath10k_thermal_set_cur_dutycycle(struct thermal_cooling_device *cdev,
- 		goto out;
- 	}
+-	u32 period, duration, enabled;
+ 	int num_bss, ret = 0;
  
--	if (duty_cycle > ATH10K_QUIET_DUTY_CYCLE_MAX) {
--		ath10k_warn(ar, "duty cycle %ld is exceeding the limit %d\n",
--			    duty_cycle, ATH10K_QUIET_DUTY_CYCLE_MAX);
-+	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
-+		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
-+			    throttle_state, ATH10K_THERMAL_THROTTLE_MAX);
- 		ret = -EINVAL;
+ 	mutex_lock(&ar->conf_mutex);
+@@ -99,19 +98,8 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
+ 		ret = -ENETDOWN;
  		goto out;
  	}
-@@ -97,7 +100,7 @@ static int ath10k_thermal_set_cur_dutycycle(struct thermal_cooling_device *cdev,
- 		goto out;
- 	}
- 	period = ar->thermal.quiet_period;
--	duration = (period * duty_cycle) / 100;
-+	duration = (period * throttle_state) / 100;
- 	enabled = duration ? 1 : 0;
- 
- 	ret = ath10k_wmi_pdev_set_quiet_mode(ar, period, duration,
-@@ -108,16 +111,16 @@ static int ath10k_thermal_set_cur_dutycycle(struct thermal_cooling_device *cdev,
- 			    period, duration, enabled, ret);
- 		goto out;
- 	}
--	ar->thermal.duty_cycle = duty_cycle;
-+	ar->thermal.throttle_state = throttle_state;
+-	period = ar->thermal.quiet_period;
+-	duration = (period * throttle_state) / 100;
+-	enabled = duration ? 1 : 0;
+-
+-	ret = ath10k_wmi_pdev_set_quiet_mode(ar, period, duration,
+-					     ATH10K_QUIET_START_OFFSET,
+-					     enabled);
+-	if (ret) {
+-		ath10k_warn(ar, "failed to set quiet mode period %u duarion %u enabled %u ret %d\n",
+-			    period, duration, enabled, ret);
+-		goto out;
+-	}
+ 	ar->thermal.throttle_state = throttle_state;
++	ath10k_thermal_set_throttling(ar);
  out:
  	mutex_unlock(&ar->conf_mutex);
  	return ret;
- }
- 
- static struct thermal_cooling_device_ops ath10k_thermal_ops = {
--	.get_max_state = ath10k_thermal_get_max_dutycycle,
--	.get_cur_state = ath10k_thermal_get_cur_dutycycle,
--	.set_cur_state = ath10k_thermal_set_cur_dutycycle,
-+	.get_max_state = ath10k_thermal_get_max_throttle_state,
-+	.get_cur_state = ath10k_thermal_get_cur_throttle_state,
-+	.set_cur_state = ath10k_thermal_set_cur_throttle_state,
+@@ -186,6 +174,26 @@ static struct attribute *ath10k_hwmon_attrs[] = {
  };
+ ATTRIBUTE_GROUPS(ath10k_hwmon);
  
- static ssize_t ath10k_thermal_show_temp(struct device *dev,
++void ath10k_thermal_set_throttling(struct ath10k *ar)
++{
++	u32 period, duration, enabled;
++	int ret;
++
++	lockdep_assert_held(&ar->conf_mutex);
++
++	period = ar->thermal.quiet_period;
++	duration = (period * ar->thermal.throttle_state) / 100;
++	enabled = duration ? 1 : 0;
++
++	ret = ath10k_wmi_pdev_set_quiet_mode(ar, period, duration,
++					     ATH10K_QUIET_START_OFFSET,
++					     enabled);
++	if (ret) {
++		ath10k_warn(ar, "failed to set quiet mode period %u duarion %u enabled %u ret %d\n",
++			    period, duration, enabled, ret);
++	}
++}
++
+ int ath10k_thermal_register(struct ath10k *ar)
+ {
+ 	struct thermal_cooling_device *cdev;
 diff --git a/drivers/net/wireless/ath/ath10k/thermal.h b/drivers/net/wireless/ath/ath10k/thermal.h
-index 050f41d..5728010 100644
+index 5728010..b610ea5 100644
 --- a/drivers/net/wireless/ath/ath10k/thermal.h
 +++ b/drivers/net/wireless/ath/ath10k/thermal.h
-@@ -19,16 +19,16 @@
- #define ATH10K_QUIET_PERIOD_DEFAULT     100
- #define ATH10K_QUIET_PERIOD_MIN         25
- #define ATH10K_QUIET_START_OFFSET       10
--#define ATH10K_QUIET_DUTY_CYCLE_MAX     100
- #define ATH10K_HWMON_NAME_LEN           15
- #define ATH10K_THERMAL_SYNC_TIMEOUT_HZ (5*HZ)
-+#define ATH10K_THERMAL_THROTTLE_MAX     100
+@@ -40,6 +40,7 @@ struct ath10k_thermal {
+ int ath10k_thermal_register(struct ath10k *ar);
+ void ath10k_thermal_unregister(struct ath10k *ar);
+ void ath10k_thermal_event_temperature(struct ath10k *ar, int temperature);
++void ath10k_thermal_set_throttling(struct ath10k *ar);
+ #else
+ static inline int ath10k_thermal_register(struct ath10k *ar)
+ {
+@@ -55,5 +56,9 @@ static inline void ath10k_thermal_event_temperature(struct ath10k *ar,
+ {
+ }
  
- struct ath10k_thermal {
- 	struct thermal_cooling_device *cdev;
- 	struct completion wmi_sync;
- 
- 	/* protected by conf_mutex */
--	u32 duty_cycle;
-+	u32 throttle_state;
- 	u32 quiet_period;
- 	/* temperature value in Celcius degree
- 	 * protected by data_lock
++static inline void ath10k_thermal_set_throttling(struct ath10k *ar)
++{
++}
++
+ #endif
+ #endif /* _THERMAL_ */
 -- 
 2.3.2
 
