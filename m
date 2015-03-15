@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXA9L-0007jY-Fj
- for ath10k@lists.infradead.org; Sun, 15 Mar 2015 15:08:19 +0000
+ id 1YXA9V-0007oY-Fj
+ for ath10k@lists.infradead.org; Sun, 15 Mar 2015 15:08:29 +0000
 From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH 5/6] ath10k: cache throttle state when device is down
-Date: Sun, 15 Mar 2015 20:36:24 +0530
-Message-ID: <1426431985-16332-6-git-send-email-rmanohar@qti.qualcomm.com>
+Subject: [PATCH 6/6] ath10k: move driver state check before setting throttle
+Date: Sun, 15 Mar 2015 20:36:25 +0530
+Message-ID: <1426431985-16332-7-git-send-email-rmanohar@qti.qualcomm.com>
 In-Reply-To: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
 References: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,48 +25,60 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Allow driver to cache the throttle state when the devie is not
-yet started. Configure the cached throttle state while powering
-up the device. Since thermal daemon is unaware of the up/down cycle,
-it assumes that device is throttled.
+Since thermal daemon is unaware of the device state, it might
+try to adjust the throttle state when the device is powered down.
+So the driver caches the value and will configure it while
+powering up the target. The cached value will be programed later
+once the device is brought up. In such case, returning error
+status is confusing and misleading the user application. Hence
+moving the driver state check before sending wmi command to target.
 
 Reported-by: Matthias Kaehlcke <mka@google.com>
 Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/thermal.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/net/wireless/ath/ath10k/thermal.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
-index 604ea00..0b4cd3f 100644
+index 0b4cd3f..c48c71d 100644
 --- a/drivers/net/wireless/ath/ath10k/thermal.c
 +++ b/drivers/net/wireless/ath/ath10k/thermal.c
-@@ -52,19 +52,19 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
+@@ -50,7 +50,6 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
+ 				      unsigned long throttle_state)
+ {
  	struct ath10k *ar = cdev->devdata;
- 	int ret = 0;
+-	int ret = 0;
  
-+	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
-+		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
-+			    throttle_state, ATH10K_THERMAL_THROTTLE_MAX);
-+		return -EINVAL;
-+	}
- 	mutex_lock(&ar->conf_mutex);
-+	ar->thermal.throttle_state = throttle_state;
-+
- 	if (ar->state != ATH10K_STATE_ON) {
- 		ret = -ENETDOWN;
- 		goto out;
+ 	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
+ 		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
+@@ -59,16 +58,9 @@ ath10k_thermal_set_cur_throttle_state(struct thermal_cooling_device *cdev,
  	}
- 
--	if (throttle_state > ATH10K_THERMAL_THROTTLE_MAX) {
--		ath10k_warn(ar, "throttle state %ld is exceeding the limit %d\n",
--			    throttle_state, ATH10K_THERMAL_THROTTLE_MAX);
--		ret = -EINVAL;
+ 	mutex_lock(&ar->conf_mutex);
+ 	ar->thermal.throttle_state = throttle_state;
+-
+-	if (ar->state != ATH10K_STATE_ON) {
+-		ret = -ENETDOWN;
 -		goto out;
 -	}
--	ar->thermal.throttle_state = throttle_state;
+-
  	ath10k_thermal_set_throttling(ar);
- out:
+-out:
  	mutex_unlock(&ar->conf_mutex);
+-	return ret;
++	return 0;
+ }
+ 
+ static struct thermal_cooling_device_ops ath10k_thermal_ops = {
+@@ -147,6 +139,9 @@ void ath10k_thermal_set_throttling(struct ath10k *ar)
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	if (ar->state != ATH10K_STATE_ON)
++		return;
++
+ 	period = ar->thermal.quiet_period;
+ 	duration = (period * ar->thermal.throttle_state) / 100;
+ 	enabled = duration ? 1 : 0;
 -- 
 2.3.2
 
