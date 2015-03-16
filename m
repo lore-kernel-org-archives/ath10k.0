@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from www.osadl.org ([62.245.132.105])
+Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXQmQ-0002b7-MW
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 08:53:47 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ath10k: harmonize error case handling in ath10k_core_start
-Date: Mon, 16 Mar 2015 04:48:57 -0400
-Message-Id: <1426495737-18691-1-git-send-email-hofrat@osadl.org>
+ id 1YXQy1-0007dg-1I
+ for ath10k@lists.infradead.org; Mon, 16 Mar 2015 09:05:46 +0000
+Received: by wifj2 with SMTP id j2so37193467wif.1
+ for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 02:05:21 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
+ <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
+ <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+Date: Mon, 16 Mar 2015 10:05:20 +0100
+Message-ID: <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,106 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Michal Kazior <michal.kazior@tieto.com>, Nicholas Mc Guire <hofrat@osadl.org>
+To: Jason H <jhihn@gmx.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-All of the bringup/init functions called in ath10k_core_start return 0 
-on success and != 0 on failure. ath10k_wmi_wait_for_service_ready(),
-ath10k_wmi_wait_for_unified_ready() and their call sites were adjusted
-to fit this model.
-The return type of wait_for_completion_timeout is unsigned long not int so
-ath10k_wmi_wait_for_service_ready() and ath10k_wmi_wait_for_unified_ready()
-were fixed up accordingly.
-
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
-
-This was initially in two separate patches which were joined as suggested
-by Sergei Shtylyov <sergei.shtylyov@cogentembedded.com> to ensure that it
-will not break bisection - thanks!
-
-Patch was only compile test with x86_64_defconfig + CONFIG_ATH_CARDS=m,
-CONFIG_ATH10K=m
-
-Patch is against 4.0-rc3 (localversion-next is -next-20150316)
-
- drivers/net/wireless/ath/ath10k/core.c |    6 ++----
- drivers/net/wireless/ath/ath10k/wmi.c  |   20 ++++++++++++--------
- 2 files changed, 14 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index c0e454b..e97069f 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1080,9 +1080,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 
- 	if (mode == ATH10K_FIRMWARE_MODE_NORMAL) {
- 		status = ath10k_wmi_wait_for_service_ready(ar);
--		if (status <= 0) {
-+		if (status) {
- 			ath10k_warn(ar, "wmi service ready event not received");
--			status = -ETIMEDOUT;
- 			goto err_hif_stop;
- 		}
- 	}
-@@ -1098,9 +1097,8 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	}
- 
- 	status = ath10k_wmi_wait_for_unified_ready(ar);
--	if (status <= 0) {
-+	if (status) {
- 		ath10k_err(ar, "wmi unified ready event not received\n");
--		status = -ETIMEDOUT;
- 		goto err_hif_stop;
- 	}
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index c7ea77e..19ed27a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -884,20 +884,24 @@ void ath10k_wmi_put_wmi_channel(struct wmi_channel *ch,
- 
- int ath10k_wmi_wait_for_service_ready(struct ath10k *ar)
- {
--	int ret;
-+	unsigned long time_left;
- 
--	ret = wait_for_completion_timeout(&ar->wmi.service_ready,
--					  WMI_SERVICE_READY_TIMEOUT_HZ);
--	return ret;
-+	time_left = wait_for_completion_timeout(&ar->wmi.service_ready,
-+						WMI_SERVICE_READY_TIMEOUT_HZ);
-+	if (!time_left)
-+		return -ETIMEDOUT;
-+	return 0;
- }
- 
- int ath10k_wmi_wait_for_unified_ready(struct ath10k *ar)
- {
--	int ret;
-+	unsigned long time_left;
- 
--	ret = wait_for_completion_timeout(&ar->wmi.unified_ready,
--					  WMI_UNIFIED_READY_TIMEOUT_HZ);
--	return ret;
-+	time_left = wait_for_completion_timeout(&ar->wmi.unified_ready,
-+						WMI_UNIFIED_READY_TIMEOUT_HZ);
-+	if (!time_left)
-+		return -ETIMEDOUT;
-+	return 0;
- }
- 
- struct sk_buff *ath10k_wmi_alloc_skb(struct ath10k *ar, u32 len)
--- 
-1.7.10.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTMgTWFyY2ggMjAxNSBhdCAxNjoyOCwgSmFzb24gSCA8amhpaG5AZ214LmNvbT4gd3JvdGU6
+Cj4KPj4gT24gMTMgTWFyY2ggMjAxNSBhdCAwNDozOSwgIDxqaGlobkBnbXguY29tPiB3cm90ZToK
+Pj4gPiBJIHdlbnQgdGhyb3VnaCB0aGUgYXJjaGl2ZXMsIGFuZCB0aGUgIHdpa2kgYnV0IEkgc3Rp
+bGwgd2Fzbid0IHN1cmUuLi4KPj4gPiBJIGhhdmUgYSBzaGlueSBuZXcgTGVub3ZvIHo3MCwga2Vy
+bmVsIDQuMC1yYzEvMy4gIERtZXNnIHJlcG9ydHMgZmFpbHVyZXMgZm9yIGxvYWRpbmcgIGZpcm13
+YXJlIGluIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvLi4uCj4+ID4gU28gSSBm
+b3VuZCB0aGUgZmlybXdhcmUgR2l0IHJlcG8sICBidXQgaXQgc2VlbXMgdG8gYmUgbWlzc2luZyBo
+dzIuMS4gSSBldmVuIHN5bWxpbmtlZCAyLjEgdG8gIDMuMCwgbm8gZGljZS4KPj4KPj4gWW91IGNh
+bid0IHVzZSBodzMgZmlybXdhcmUgZm9yIGh3MiBoYXJkd2FyZS4KPj4KPj4gVGhlIHByb2JsZW0g
+aXMgdGhlcmUncyBubyBwdWJsaWNseSBhdmFpbGFibGUgYXRoMTBrIGZpcm13YXJlIGZvciBodzIg
+aGFyZHdhcmUuLgo+Pgo+Pgo+PiA+IEkgZG9uJ3QgZHVhbCBib290IGFuZCB0aGlzIGlzIGEgbGFw
+dG9wICBzbyBJJ20gbG9va2luZyB0byBnZXQgIG15IFdpRmkgd29ya2luZy4gIEFueSBwb2ludGVy
+cyBhcmUgYXBwcmVjaWF0ZWQuICBUaGFua3MuCj4+Cj4+IFlvdSBjb3VsZCB0cnkgYnVpbGRpbmcg
+aHcyIGZpcm13YXJlIGF0aDEwayBiaW5hcnkgeW91cnNlbGYuIFlvdSBuZWVkCj4+IHRvIGZldGNo
+IGF0aHdsYW4uYmluIGZyb20gV2luZG93cyBkcml2ZXIsIGV4dHJhY3Qgb3RwIGltYWdlIGZyb20g
+aHczCj4+IGZpcm13YXJlIGF0aDEwayBiaW5hcnkgYW5kIHRoZW4gcmUtYXNzZW1ibGUgYm90aCBp
+bnRvIGh3MyBmaXJtd2FyZSBmb3IKPj4gYXRoMTBrLiBUaGUgYXRoMTBrIGJpbmFyeSBibG9iIGlz
+IGEgdGFnLWxlbmd0aC12YWx1ZSBmb3JtYXQgYW5kIGNhbiBiZQo+PiB1bmRlcnN0b29kIGJ5IGxv
+b2tpbmcgYXQgYXRoMTBrX2NvcmVfZmV0Y2hfZmlybXdhcmVfYXBpX24oKS4KPj4KPj4gTm9ib2R5
+IHNlZW1zIHRvIGhhdmUgdHJpZWQgdGhpcyB5ZXQgdGhvdWdoLgo+Cj4KPiBJIGluc3RhbGxlZCBX
+SU5FIGFuZCBhdHRlbXB0ZWQgdG8gaW5zdGFsbCB0aGUgZHJpdmVyIGZyb20gbGVub25vIG9uIG15
+IG5vbi1sZW5vdm8gd2l0aCB3b3JraW5nIHdpZmkuIFRoZSBpbnN0YWxsIGZhaWxlZCAoZXhwZWN0
+ZWQpIGJ1dCBub3QgYmVmb3JlIGl0IGV4dHJhY3RlZCB0aGUgYWN0dWFsIGRyaXZlciBpbnN0YWxs
+ZXIgaW1hZ2VzIChleHBlY3RlZCkuIFBhcnNpbmcgdGhyb3VnaCBhbiAuaW5mIGZpbGUsIGFuZCBu
+YXZpZ2F0aW5nIG15IHdheSB0aHJvdWdoIHRoZSBzZWN0aW9ucywgSSBlbmQgdXAgYXQgYSBzZWN0
+aW9uIHNwZWNpZnlpbmcgZWVwcm9tX2FyNjMyMF8ycDFfTkZBMzU0eHAuYmluIGFuZCBxY2E2MXg0
+MjAuYmluIGFzIHRoZSBmaXJtd2FyZSBmaWxlcy4gSSBoYXZlIHRoZXNlIGZpbGVzLgoKQXdlc29t
+ZS4KCmVlcHJvbV9hcjYzMjBfMnAxX05GQTM1NHhwLmJpbiBsb29rcyBsaWtlIGEgYm9hcmQuYmlu
+LgpxY2E2MXg0MjAuYmluIGxvb2tzIGxpa2UgbWFpbiBwcm9ncmFtIGJpbmFyeS4KCgo+IEhvd2V2
+ZXIgSSBhbSBub3cgZGl2ZXJnaW5nIGZyb20geW91ciBpbnN0cnVjdGlvbnMgY29uc2lkZXJhYmx5
+LiBBbHNvIEkgZG9uJ3Qga25vdyB3aHkgSSB3b3VsZCB3YW50IHRvIHJlYXNzZW1ibGUgaW50byAz
+LjAgd2hlbiBteSBzeXN0ZW0gaXMgbG9va2luZyBmb3IgMi4xPwoKVHlwby9taW5kIGRlcnAgOi0p
+IEkgb2J2aW91c2x5IG1lYW50IDIuMS4KCgo+IEkgZG9uJ3Qga25vdyB3aGF0IGFuICdvdHAgaW1h
+Z2UnIGlzPyBJIHRoaW5rIEkgdW5kZXJzdGFuZCB0aGUgcGFydCBhYm91dCB0aGUgYXRoMTBrIGZv
+cm1hdCB0aG91Z2guCgpPVFAgaXMgYSBjYWxpYnJhdGlvbiByZWxhdGVkIHByb2dyYW0gd2hpY2gg
+aXMgcnVuIG9uIGRldmljZSBiZWZvcmUKcnVubmluZyBtYWluIHByb2dyYW0uIEl0J3MgZW1iZWRk
+ZWQgaW5zaWRlIGF0aDEwayBGVyBBUEkgYmxvYi4KCgo+IENvdWxkIHlvdSB1cGRhdGUgeW91ciBp
+bnN0cnVjdGlvbnMgdG8gc3VpdCB0aGUgbmV3IGluZm9ybWF0aW9uIGF0IGhhbmQ/CgpodHRwczov
+L2dpc3QuZ2l0aHViLmNvbS9rYXppa2N6L2M5NzBjYmYzYTg2M2ViYmM0NDk1Cmh0dHBzOi8vZ2lz
+dC5naXRodWIuY29tL2themlrY3ovNjQzMTNiOWUyNDcwNjYwZmFhZTEKCkhlcmUgYXJlIHR3byBz
+aW1wbGUgYW5kIGNydWRlIHRvb2xzIEkgaGF2ZSB0byBkZWFsIHdpdGggYXRoMTBrIEZXIEFQSQpi
+bG9icy4gVXNlIHdpdGggY2FyZS4KCllvdSBjYW4gdXNlIHRoZSBkaXNhc3NlbWJsZS5weSB0byBl
+eHRyYWN0IHRoZSBvdHAuYmluIGZyb20gaHczIGF0aDEwawpGVyBBUEkgYmxvYjoKCiAgcHl0aG9u
+IGRpc2Fzc2VtYmxlLnB5IDwgL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBNjE3NC9odzMuMC9maXJt
+d2FyZS00LmJpbgoKVGhlbiB5b3UgY2FuIHVzZSB0aGUgYXNzZW1ibGUucHkgdG8gZ2VuZXJhdGUg
+aHcyLjEgYXRoMTBrIEZXIEFCSSBibG9iOgoKICBta2RpciAtcCAvbGliL2Zpcm13YXJlL2F0aDEw
+ay9RQ0E2MTc0L2h3Mi4xLwogIHB5dGhvbiBhc3NlbWJsZS5weSBraWxsZXIxMjUyLXRlc3RmdyAw
+IHBhdGgvdG8vcWNhNjF4NDIwLmJpbgpwYXRoL3RvL290cC5iaW4gNCA+IC9saWIvZmlybXdhcmUv
+YXRoMTBrL1FDQTYxNzQvaHcyLjEvZmlybXdhcmUtNC5iaW4KICBjcCBwYXRoL3RvL2VlcHJvbV9h
+cjYzMjBfMnAxX05GQTM1NHhwLmJpbgovbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3Mi4x
+L2JvYXJkLmJpbgoKKG1pbmQgdGhlIGVtYWlsIGxpbmUgd3JhcHBpbmcpCgoKTWljaGHFggoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
