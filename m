@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXU7A-0000Gz-Sg
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 12:27:25 +0000
-Received: from prime.localnet (p4FFE55C7.dip0.t-ipconnect.de [79.254.85.199])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by mail.mail.packetmixer.de (Postfix) with ESMTPSA id C13C019000A
- for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 13:19:38 +0100 (CET)
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: ath10k tx99-like test mode?
-Date: Mon, 16 Mar 2015 13:21:05 +0100
-Message-ID: <1934267.DCC3TFggkK@prime>
+ id 1YXViX-0001Hy-LT
+ for ath10k@lists.infradead.org; Mon, 16 Mar 2015 14:10:06 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: match wait_for_completion_timeout return type
+References: <1426094076-10134-1-git-send-email-hofrat@osadl.org>
+ <87y4n0q1rq.fsf@kamboji.qca.qualcomm.com>
+ <20150313173405.GB9934@opentech.at>
+Date: Mon, 16 Mar 2015 16:09:35 +0200
+In-Reply-To: <20150313173405.GB9934@opentech.at> (Nicholas Mc Guire's message
+ of "Fri, 13 Mar 2015 18:34:05 +0100")
+Message-ID: <87a8zdowyo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,54 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8253233205450676945=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Nicholas Mc Guire <der.herr@hofr.at>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>
 
+Nicholas Mc Guire <der.herr@hofr.at> writes:
 
---===============8253233205450676945==
-Content-Type: multipart/signed; boundary="nextPart3526992.MG4GzSY1Vh"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+> On Fri, 13 Mar 2015, Kalle Valo wrote:
+>
+>> Nicholas Mc Guire <hofrat@osadl.org> writes:
+>> 
+>> > Return type of wait_for_completion_timeout is unsigned long not int.
+>> > An appropriately named unsigned long is added and the assignments fixed up.
+>> >
+>> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+>> 
+>> Doesn't apply:
+>> 
+>> Applying: ath10k: match wait_for_completion_timeout return type
+>> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/mac.c).
+>> Repository lacks necessary blobs to fall back on 3-way merge.
+>> Cannot fall back to three-way merge.
+>> Patch failed at 0001 ath10k: match wait_for_completion_timeout return type
+>>
+> sorry - no idea how I managed that - checking it.
+>
+> Will fix it up and repost.
 
+Did you use master branch from ath.git repository? ath10k is in quite
+active development so if you use something else there's a substantial
+risk that the patch will not apply.
 
---nextPart3526992.MG4GzSY1Vh
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/sources
 
-Hi,
-
-is there a test mode for ath10k where one can set different legacy/MCS rates to 
-test output power levels in a lab? We used tx99 on ath9k for that purpose, is 
-there an equivalent feature in ath10k as well?
-
-Thanks!
-    Simon
---nextPart3526992.MG4GzSY1Vh
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iEYEABECAAYFAlUGyrYACgkQrzg/fFk7axaJBwCfb7ELaTEmJyLpp3P8OpTKOJLz
-1WcAn3YwBNINkopBKWmA4aqHNwKq6h1K
-=DeJE
------END PGP SIGNATURE-----
-
---nextPart3526992.MG4GzSY1Vh--
-
-
-
---===============8253233205450676945==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============8253233205450676945==--
