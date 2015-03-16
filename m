@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from hofr.at ([212.69.189.236] helo=mail.hofr.at)
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXVut-0007pb-L8
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 14:22:52 +0000
-Date: Mon, 16 Mar 2015 15:22:20 +0100
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH] ath10k: match wait_for_completion_timeout return type
-Message-ID: <20150316142220.GA30229@opentech.at>
-References: <1426094076-10134-1-git-send-email-hofrat@osadl.org>
- <87y4n0q1rq.fsf@kamboji.qca.qualcomm.com> <20150313173405.GB9934@opentech.at>
- <87a8zdowyo.fsf@kamboji.qca.qualcomm.com>
+ id 1YXWZA-0000VM-QW
+ for ath10k@lists.infradead.org; Mon, 16 Mar 2015 15:04:29 +0000
+Message-ID: <5506F0E5.2000205@candelatech.com>
+Date: Mon, 16 Mar 2015 08:04:05 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87a8zdowyo.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k tx99-like test mode?
+References: <1934267.DCC3TFggkK@prime>
+In-Reply-To: <1934267.DCC3TFggkK@prime>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +18,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>
+To: Simon Wunderlich <sw@simonwunderlich.de>, ath10k@lists.infradead.org
 
-On Mon, 16 Mar 2015, Kalle Valo wrote:
-
-> Nicholas Mc Guire <der.herr@hofr.at> writes:
-> 
-> > On Fri, 13 Mar 2015, Kalle Valo wrote:
-> >
-> >> Nicholas Mc Guire <hofrat@osadl.org> writes:
-> >> 
-> >> > Return type of wait_for_completion_timeout is unsigned long not int.
-> >> > An appropriately named unsigned long is added and the assignments fixed up.
-> >> >
-> >> > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
-> >> 
-> >> Doesn't apply:
-> >> 
-> >> Applying: ath10k: match wait_for_completion_timeout return type
-> >> fatal: sha1 information is lacking or useless (drivers/net/wireless/ath/ath10k/mac.c).
-> >> Repository lacks necessary blobs to fall back on 3-way merge.
-> >> Cannot fall back to three-way merge.
-> >> Patch failed at 0001 ath10k: match wait_for_completion_timeout return type
-> >>
-> > sorry - no idea how I managed that - checking it.
-> >
-> > Will fix it up and repost.
-> 
-> Did you use master branch from ath.git repository? ath10k is in quite
-> active development so if you use something else there's a substantial
-> risk that the patch will not apply.
-> 
-> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/sources
+On 03/16/2015 05:21 AM, Simon Wunderlich wrote:
+> Hi,
 >
-no I was using linux-next - will switch to that branch for the
-ath10k related cleanups (although the one I posted today was the
-last from the completion fixup in ath10k - a few more in ath9k
-left).
+> is there a test mode for ath10k where one can set different legacy/MCS rates to
+> test output power levels in a lab? We used tx99 on ath9k for that purpose, is
+> there an equivalent feature in ath10k as well?
 
-The failure of this patch was though due to a bad fix of a 
-checkpatch warning - I alligned the original code rather than 
-the replacement - updated my procedure so that re-applying the
-patch is the final check before sending out.
+My firmware and driver changes have recently given the ability to set
+fixed rates for all types of traffic.
 
-thx!
-hofrat
+Only caveat so far as that mgt frames (beacons and such) cannot be set
+to HT or VHT rates.
+
+Stock firmware should be able to set all but mgt rates (bcast, ucast, mcast) with a firmware
+update, but stock firmware does not support setting mgt rate from what I can tell.
+
+Maybe not quite as good as what you can do with ath9k, but perhaps good enough?
+
+Thanks,
+Ben
+
+>
+> Thanks!
+>      Simon
+>
+>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
+>
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
