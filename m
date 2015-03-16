@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from gateway11.websitewelcome.com ([69.56.195.21])
+Received: from mail-wg0-f49.google.com ([74.125.82.49])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXbzp-0002N0-Fm
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 20:52:22 +0000
-Received: from gator4158.hostgator.com (gator4158.hostgator.com
- [108.167.133.14])
- by gateway11.websitewelcome.com (Postfix) with ESMTP id 5737CAD492166
- for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 14:51:59 -0600 (CST)
-Received: from [64.114.87.10] (port=37114 helo=W7PC)
- by gator4158.hostgator.com with esmtpsa (TLSv1:AES256-SHA:256)
- (Exim 4.82) (envelope-from <mrex@tranzeo.com>) id 1YXbzS-0007JC-II
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 15:51:58 -0500
-From: <mrex@tranzeo.com>
-Subject: Re: ath10k tx99-like test mode?
-Date: Mon, 16 Mar 2015 13:51:56 -0700
-Message-ID: <023401d0602b$0b3139a0$2193ace0$@tranzeo.com>
+ id 1YXc9N-0002MQ-LC
+ for ath10k@lists.infradead.org; Mon, 16 Mar 2015 21:02:14 +0000
+Received: by wggv3 with SMTP id v3so50056282wgg.1
+ for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 14:01:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Language: en-ca
+In-Reply-To: <1934267.DCC3TFggkK@prime>
+References: <1934267.DCC3TFggkK@prime>
+From: Pushpal Sidhu <psidhu@gateworks.com>
+Date: Mon, 16 Mar 2015 14:01:19 -0700
+Message-ID: <CAD1M0607YjHHN+cO6=20enKAdpGSutc_GR60Fp_hfdU5qGPYnw@mail.gmail.com>
+Subject: Re: ath10k tx99-like test mode?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +20,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Simon Wunderlich <sw@simonwunderlich.de>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Ben,
+On Mon, Mar 16, 2015 at 5:21 AM, Simon Wunderlich <sw@simonwunderlich.de> wrote:
+> is there a test mode for ath10k where one can set different legacy/MCS rates to
+> test output power levels in a lab? We used tx99 on ath9k for that purpose, is
+> there an equivalent feature in ath10k as well?
 
-The tx99 feature has the benefit of not needing any client or traffic to be
-passed for a power meter to measure.=A0 So it=92s incredibly fast to test
-different rates and output power than having to wait for client to
-re-associate, pass traffic and adjust power meter to duty cycle (depending
-on how fancy the meter is).=A0 This is more applicable for calibration and
-evaluation than for adaption or protocol testing.
+Simon,
 
-Tx99 is better suited for calibration and FCC certification testing and not
-for testing things like adaptive modulation or what happens when mixed
-modulations are enabled.=A0 It cuts down on lab certification test time and
-complexity (lab engineers test a different wireless widget every day and not
-familiar with webGUI=92s and config settings, etc).=A0 Tx99 often was more =
-=91raw=92
-and didn=92t behave the same as adaptive modulation algorithm, probably more
-so with more streams than 1 and 11b/g/n.
+I've asked about this before since a 'testmode' was added to ath10k
+several months ago, but was pretty much shot down. However, there's a
+nifty tool called wperf (https://github.com/anyfi/wperf) that might
+accomplish what you're after. I've yet to try it, but it does seem
+promising since you'll hopefully be able to use UDP traffic to inject
+frames into the air, though I'm not sure how the firmware will react.
 
-So having a feature that can just output raw frames at full duty cycle at a
-specific rate and output power without client would be highly beneficial for
-lab testing and reduce test time and complexity for radio validation.
-
-Best regards,
-Mike
-
+- Pushpal
 
 _______________________________________________
 ath10k mailing list
