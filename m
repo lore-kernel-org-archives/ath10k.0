@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
+ helo=mail.mail.packetmixer.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXQy1-0007dg-1I
- for ath10k@lists.infradead.org; Mon, 16 Mar 2015 09:05:46 +0000
-Received: by wifj2 with SMTP id j2so37193467wif.1
- for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 02:05:21 -0700 (PDT)
+ id 1YXU7A-0000Gz-Sg
+ for ath10k@lists.infradead.org; Mon, 16 Mar 2015 12:27:25 +0000
+Received: from prime.localnet (p4FFE55C7.dip0.t-ipconnect.de [79.254.85.199])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail.mail.packetmixer.de (Postfix) with ESMTPSA id C13C019000A
+ for <ath10k@lists.infradead.org>; Mon, 16 Mar 2015 13:19:38 +0100 (CET)
+From: Simon Wunderlich <sw@simonwunderlich.de>
+Subject: ath10k tx99-like test mode?
+Date: Mon, 16 Mar 2015 13:21:05 +0100
+Message-ID: <1934267.DCC3TFggkK@prime>
 MIME-Version: 1.0
-In-Reply-To: <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
-References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
- <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
- <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
-Date: Mon, 16 Mar 2015 10:05:20 +0100
-Message-ID: <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
-Subject: Re: QCA6174 hw2.1?
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,64 +22,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============8253233205450676945=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jason H <jhihn@gmx.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMTMgTWFyY2ggMjAxNSBhdCAxNjoyOCwgSmFzb24gSCA8amhpaG5AZ214LmNvbT4gd3JvdGU6
-Cj4KPj4gT24gMTMgTWFyY2ggMjAxNSBhdCAwNDozOSwgIDxqaGlobkBnbXguY29tPiB3cm90ZToK
-Pj4gPiBJIHdlbnQgdGhyb3VnaCB0aGUgYXJjaGl2ZXMsIGFuZCB0aGUgIHdpa2kgYnV0IEkgc3Rp
-bGwgd2Fzbid0IHN1cmUuLi4KPj4gPiBJIGhhdmUgYSBzaGlueSBuZXcgTGVub3ZvIHo3MCwga2Vy
-bmVsIDQuMC1yYzEvMy4gIERtZXNnIHJlcG9ydHMgZmFpbHVyZXMgZm9yIGxvYWRpbmcgIGZpcm13
-YXJlIGluIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvLi4uCj4+ID4gU28gSSBm
-b3VuZCB0aGUgZmlybXdhcmUgR2l0IHJlcG8sICBidXQgaXQgc2VlbXMgdG8gYmUgbWlzc2luZyBo
-dzIuMS4gSSBldmVuIHN5bWxpbmtlZCAyLjEgdG8gIDMuMCwgbm8gZGljZS4KPj4KPj4gWW91IGNh
-bid0IHVzZSBodzMgZmlybXdhcmUgZm9yIGh3MiBoYXJkd2FyZS4KPj4KPj4gVGhlIHByb2JsZW0g
-aXMgdGhlcmUncyBubyBwdWJsaWNseSBhdmFpbGFibGUgYXRoMTBrIGZpcm13YXJlIGZvciBodzIg
-aGFyZHdhcmUuLgo+Pgo+Pgo+PiA+IEkgZG9uJ3QgZHVhbCBib290IGFuZCB0aGlzIGlzIGEgbGFw
-dG9wICBzbyBJJ20gbG9va2luZyB0byBnZXQgIG15IFdpRmkgd29ya2luZy4gIEFueSBwb2ludGVy
-cyBhcmUgYXBwcmVjaWF0ZWQuICBUaGFua3MuCj4+Cj4+IFlvdSBjb3VsZCB0cnkgYnVpbGRpbmcg
-aHcyIGZpcm13YXJlIGF0aDEwayBiaW5hcnkgeW91cnNlbGYuIFlvdSBuZWVkCj4+IHRvIGZldGNo
-IGF0aHdsYW4uYmluIGZyb20gV2luZG93cyBkcml2ZXIsIGV4dHJhY3Qgb3RwIGltYWdlIGZyb20g
-aHczCj4+IGZpcm13YXJlIGF0aDEwayBiaW5hcnkgYW5kIHRoZW4gcmUtYXNzZW1ibGUgYm90aCBp
-bnRvIGh3MyBmaXJtd2FyZSBmb3IKPj4gYXRoMTBrLiBUaGUgYXRoMTBrIGJpbmFyeSBibG9iIGlz
-IGEgdGFnLWxlbmd0aC12YWx1ZSBmb3JtYXQgYW5kIGNhbiBiZQo+PiB1bmRlcnN0b29kIGJ5IGxv
-b2tpbmcgYXQgYXRoMTBrX2NvcmVfZmV0Y2hfZmlybXdhcmVfYXBpX24oKS4KPj4KPj4gTm9ib2R5
-IHNlZW1zIHRvIGhhdmUgdHJpZWQgdGhpcyB5ZXQgdGhvdWdoLgo+Cj4KPiBJIGluc3RhbGxlZCBX
-SU5FIGFuZCBhdHRlbXB0ZWQgdG8gaW5zdGFsbCB0aGUgZHJpdmVyIGZyb20gbGVub25vIG9uIG15
-IG5vbi1sZW5vdm8gd2l0aCB3b3JraW5nIHdpZmkuIFRoZSBpbnN0YWxsIGZhaWxlZCAoZXhwZWN0
-ZWQpIGJ1dCBub3QgYmVmb3JlIGl0IGV4dHJhY3RlZCB0aGUgYWN0dWFsIGRyaXZlciBpbnN0YWxs
-ZXIgaW1hZ2VzIChleHBlY3RlZCkuIFBhcnNpbmcgdGhyb3VnaCBhbiAuaW5mIGZpbGUsIGFuZCBu
-YXZpZ2F0aW5nIG15IHdheSB0aHJvdWdoIHRoZSBzZWN0aW9ucywgSSBlbmQgdXAgYXQgYSBzZWN0
-aW9uIHNwZWNpZnlpbmcgZWVwcm9tX2FyNjMyMF8ycDFfTkZBMzU0eHAuYmluIGFuZCBxY2E2MXg0
-MjAuYmluIGFzIHRoZSBmaXJtd2FyZSBmaWxlcy4gSSBoYXZlIHRoZXNlIGZpbGVzLgoKQXdlc29t
-ZS4KCmVlcHJvbV9hcjYzMjBfMnAxX05GQTM1NHhwLmJpbiBsb29rcyBsaWtlIGEgYm9hcmQuYmlu
-LgpxY2E2MXg0MjAuYmluIGxvb2tzIGxpa2UgbWFpbiBwcm9ncmFtIGJpbmFyeS4KCgo+IEhvd2V2
-ZXIgSSBhbSBub3cgZGl2ZXJnaW5nIGZyb20geW91ciBpbnN0cnVjdGlvbnMgY29uc2lkZXJhYmx5
-LiBBbHNvIEkgZG9uJ3Qga25vdyB3aHkgSSB3b3VsZCB3YW50IHRvIHJlYXNzZW1ibGUgaW50byAz
-LjAgd2hlbiBteSBzeXN0ZW0gaXMgbG9va2luZyBmb3IgMi4xPwoKVHlwby9taW5kIGRlcnAgOi0p
-IEkgb2J2aW91c2x5IG1lYW50IDIuMS4KCgo+IEkgZG9uJ3Qga25vdyB3aGF0IGFuICdvdHAgaW1h
-Z2UnIGlzPyBJIHRoaW5rIEkgdW5kZXJzdGFuZCB0aGUgcGFydCBhYm91dCB0aGUgYXRoMTBrIGZv
-cm1hdCB0aG91Z2guCgpPVFAgaXMgYSBjYWxpYnJhdGlvbiByZWxhdGVkIHByb2dyYW0gd2hpY2gg
-aXMgcnVuIG9uIGRldmljZSBiZWZvcmUKcnVubmluZyBtYWluIHByb2dyYW0uIEl0J3MgZW1iZWRk
-ZWQgaW5zaWRlIGF0aDEwayBGVyBBUEkgYmxvYi4KCgo+IENvdWxkIHlvdSB1cGRhdGUgeW91ciBp
-bnN0cnVjdGlvbnMgdG8gc3VpdCB0aGUgbmV3IGluZm9ybWF0aW9uIGF0IGhhbmQ/CgpodHRwczov
-L2dpc3QuZ2l0aHViLmNvbS9rYXppa2N6L2M5NzBjYmYzYTg2M2ViYmM0NDk1Cmh0dHBzOi8vZ2lz
-dC5naXRodWIuY29tL2themlrY3ovNjQzMTNiOWUyNDcwNjYwZmFhZTEKCkhlcmUgYXJlIHR3byBz
-aW1wbGUgYW5kIGNydWRlIHRvb2xzIEkgaGF2ZSB0byBkZWFsIHdpdGggYXRoMTBrIEZXIEFQSQpi
-bG9icy4gVXNlIHdpdGggY2FyZS4KCllvdSBjYW4gdXNlIHRoZSBkaXNhc3NlbWJsZS5weSB0byBl
-eHRyYWN0IHRoZSBvdHAuYmluIGZyb20gaHczIGF0aDEwawpGVyBBUEkgYmxvYjoKCiAgcHl0aG9u
-IGRpc2Fzc2VtYmxlLnB5IDwgL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBNjE3NC9odzMuMC9maXJt
-d2FyZS00LmJpbgoKVGhlbiB5b3UgY2FuIHVzZSB0aGUgYXNzZW1ibGUucHkgdG8gZ2VuZXJhdGUg
-aHcyLjEgYXRoMTBrIEZXIEFCSSBibG9iOgoKICBta2RpciAtcCAvbGliL2Zpcm13YXJlL2F0aDEw
-ay9RQ0E2MTc0L2h3Mi4xLwogIHB5dGhvbiBhc3NlbWJsZS5weSBraWxsZXIxMjUyLXRlc3RmdyAw
-IHBhdGgvdG8vcWNhNjF4NDIwLmJpbgpwYXRoL3RvL290cC5iaW4gNCA+IC9saWIvZmlybXdhcmUv
-YXRoMTBrL1FDQTYxNzQvaHcyLjEvZmlybXdhcmUtNC5iaW4KICBjcCBwYXRoL3RvL2VlcHJvbV9h
-cjYzMjBfMnAxX05GQTM1NHhwLmJpbgovbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3Mi4x
-L2JvYXJkLmJpbgoKKG1pbmQgdGhlIGVtYWlsIGxpbmUgd3JhcHBpbmcpCgoKTWljaGHFggoKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
-bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+--===============8253233205450676945==
+Content-Type: multipart/signed; boundary="nextPart3526992.MG4GzSY1Vh"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+
+
+--nextPart3526992.MG4GzSY1Vh
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Hi,
+
+is there a test mode for ath10k where one can set different legacy/MCS rates to 
+test output power levels in a lab? We used tx99 on ath9k for that purpose, is 
+there an equivalent feature in ath10k as well?
+
+Thanks!
+    Simon
+--nextPart3526992.MG4GzSY1Vh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEABECAAYFAlUGyrYACgkQrzg/fFk7axaJBwCfb7ELaTEmJyLpp3P8OpTKOJLz
+1WcAn3YwBNINkopBKWmA4aqHNwKq6h1K
+=DeJE
+-----END PGP SIGNATURE-----
+
+--nextPart3526992.MG4GzSY1Vh--
+
+
+
+--===============8253233205450676945==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============8253233205450676945==--
