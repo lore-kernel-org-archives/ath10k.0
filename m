@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
+Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXqgx-0007o3-K6
- for ath10k@lists.infradead.org; Tue, 17 Mar 2015 12:33:53 +0000
-Received: by lbcgn8 with SMTP id gn8so5773515lbc.2
- for <ath10k@lists.infradead.org>; Tue, 17 Mar 2015 05:33:28 -0700 (PDT)
+ id 1YXqgu-0007n2-OI
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2015 12:33:51 +0000
+Received: by lamx15 with SMTP id x15so7110251lam.3
+ for <ath10k@lists.infradead.org>; Tue, 17 Mar 2015 05:33:24 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 7/7] ath10k: allocate fw resources for iface combinations
-Date: Tue, 17 Mar 2015 12:30:48 +0000
-Message-Id: <1426595448-1630-8-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 3/7] ath10k: implement adaptive qcs command
+Date: Tue, 17 Mar 2015 12:30:44 +0000
+Message-Id: <1426595448-1630-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
 References: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,74 +27,160 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The number of 3 vdevs wasn't enough to handle the
-worst case for interface combinations in practice.
-
-wpa_supplicant may need up to 4 vifs to have 2
-vifs actually connected, i.e. p2pdev + client + 2x
-p2p (either p2p client or p2p go).
-
-This fixes worst case warning:
-
-  Free vdev map is empty, no more interfaces allowed.
-
-This keeps the ability to associate 32 stations in
-AP mode at the cost of not being able to guarantee
-that under all circumstances, i.e. some
-combinations may consume additional fw peer
-entries for internal purposes leaving less
-resource for stations in AP mode.
+This command will be used to configure
+multi-channel scheduler in firmware.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h      | 6 ++----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 8 ++++----
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 30 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  3 +++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  1 +
+ 5 files changed, 54 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7f04645..904ce48 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -256,11 +256,9 @@ struct ath10k_pktlog_hdr {
- #define TARGET_10_2_DMA_BURST_SIZE		1
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index f0a8b8d..3c8325c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -150,6 +150,7 @@ struct wmi_ops {
+ 					      u32 num_ac);
+ 	struct sk_buff *(*gen_sta_keepalive)(struct ath10k *ar,
+ 					     const struct wmi_sta_keepalive_arg *arg);
++	struct sk_buff *(*gen_adaptive_qcs)(struct ath10k *ar, bool enable);
+ };
  
- /* Target specific defines for WMI-TLV firmware */
--#define TARGET_TLV_NUM_VDEVS			3
-+#define TARGET_TLV_NUM_VDEVS			4
- #define TARGET_TLV_NUM_STATIONS			32
--#define TARGET_TLV_NUM_PEERS			((TARGET_TLV_NUM_STATIONS) + \
--						 (TARGET_TLV_NUM_VDEVS) + \
--						 2)
-+#define TARGET_TLV_NUM_PEERS			35
- #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -1072,4 +1073,19 @@ ath10k_wmi_sta_keepalive(struct ath10k *ar,
+ 	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
+ }
  
++static inline int
++ath10k_wmi_adaptive_qcs(struct ath10k *ar, bool enable)
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_adaptive_qcs)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_adaptive_qcs(ar, enable);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->adaptive_qcs_cmdid);
++}
++
+ #endif
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 45f8431..d92fedf 100644
+index fa3eb1b..a359a7e 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1286,8 +1286,8 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->num_peers = __cpu_to_le32(TARGET_TLV_NUM_PEERS);
+@@ -2561,6 +2561,34 @@ ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
+ }
  
- 	if (test_bit(WMI_SERVICE_RX_FULL_REORDER, ar->wmi.svc_map)) {
--		cfg->num_offload_peers = __cpu_to_le32(3);
--		cfg->num_offload_reorder_bufs = __cpu_to_le32(3);
-+		cfg->num_offload_peers = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
-+		cfg->num_offload_reorder_bufs = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
- 	} else {
- 		cfg->num_offload_peers = __cpu_to_le32(0);
- 		cfg->num_offload_reorder_bufs = __cpu_to_le32(0);
-@@ -1304,8 +1304,8 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
- 	cfg->rx_timeout_pri[3] = __cpu_to_le32(0x28);
- 	cfg->rx_decap_mode = __cpu_to_le32(1);
- 	cfg->scan_max_pending_reqs = __cpu_to_le32(4);
--	cfg->bmiss_offload_max_vdev = __cpu_to_le32(3);
--	cfg->roam_offload_max_vdev = __cpu_to_le32(3);
-+	cfg->bmiss_offload_max_vdev = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
-+	cfg->roam_offload_max_vdev = __cpu_to_le32(TARGET_TLV_NUM_VDEVS);
- 	cfg->roam_offload_max_ap_profiles = __cpu_to_le32(8);
- 	cfg->num_mcast_groups = __cpu_to_le32(0);
- 	cfg->num_mcast_table_elems = __cpu_to_le32(0);
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_adaptive_qcs(struct ath10k *ar, bool enable)
++{
++	struct wmi_tlv_adaptive_qcs *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++	void *ptr;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_RESMGR_ADAPTIVE_OCS_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->enable = __cpu_to_le32(enable ? 1 : 0);
++
++	ptr += sizeof(*tlv);
++	ptr += sizeof(*cmd);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv adaptive qcs %d\n", enable);
++	return skb;
++}
++
+ /****************/
+ /* TLV mappings */
+ /****************/
+@@ -2685,6 +2713,7 @@ static struct wmi_cmd_map wmi_tlv_cmd_map = {
+ 	.gpio_output_cmdid = WMI_TLV_GPIO_OUTPUT_CMDID,
+ 	.pdev_get_temperature_cmdid = WMI_TLV_CMD_UNSUPPORTED,
+ 	.vdev_set_wmm_params_cmdid = WMI_TLV_VDEV_SET_WMM_PARAMS_CMDID,
++	.adaptive_qcs_cmdid = WMI_TLV_RESMGR_ADAPTIVE_OCS_CMDID,
+ };
+ 
+ static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
+@@ -2858,6 +2887,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
+ 	.gen_vdev_sta_uapsd = ath10k_wmi_tlv_op_gen_vdev_sta_uapsd,
+ 	.gen_sta_keepalive = ath10k_wmi_tlv_op_gen_sta_keepalive,
++	.gen_adaptive_qcs = ath10k_wmi_tlv_op_gen_adaptive_qcs,
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index 06b37b2..1b373f2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1464,6 +1464,10 @@ struct wmi_tlv_roam_ev {
+ 	__le32 rssi;
+ } __packed;
+ 
++struct wmi_tlv_adaptive_qcs {
++	__le32 enable;
++} __packed;
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index eb66fc4..34412ee 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5249,6 +5249,7 @@ static const struct wmi_ops wmi_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ static const struct wmi_ops wmi_10_1_ops = {
+@@ -5312,6 +5313,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ static const struct wmi_ops wmi_10_2_ops = {
+@@ -5436,6 +5438,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 938e652..714c211 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -552,6 +552,7 @@ struct wmi_cmd_map {
+ 	u32 gpio_output_cmdid;
+ 	u32 pdev_get_temperature_cmdid;
+ 	u32 vdev_set_wmm_params_cmdid;
++	u32 adaptive_qcs_cmdid;
+ };
+ 
+ /*
 -- 
 2.1.4
 
