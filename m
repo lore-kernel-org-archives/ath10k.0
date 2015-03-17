@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from packetmixer.de ([2001:4d88:2000:24::c0de]
- helo=mail.mail.packetmixer.de)
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXpA3-0006hC-4A
- for ath10k@lists.infradead.org; Tue, 17 Mar 2015 10:55:48 +0000
-From: Simon Wunderlich <sw@simonwunderlich.de>
-Subject: Re: Re: ath10k tx99-like test mode?
-Date: Tue, 17 Mar 2015 11:55:20 +0100
-Message-ID: <2304748.x6roc8kqQi@prime>
-In-Reply-To: <55074946.2040200@candelatech.com>
-References: <023401d0602b$0b3139a0$2193ace0$@tranzeo.com>
- <55074946.2040200@candelatech.com>
-MIME-Version: 1.0
+ id 1YXqgv-0007nD-K1
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2015 12:33:53 +0000
+Received: by lbbsy1 with SMTP id sy1so5799613lbb.1
+ for <ath10k@lists.infradead.org>; Tue, 17 Mar 2015 05:33:25 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v4 4/7] ath10k: rework tx queue locking
+Date: Tue, 17 Mar 2015 12:30:45 +0000
+Message-Id: <1426595448-1630-5-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
+References: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,116 +19,244 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3942276126526667709=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: mrex@tranzeo.com, Ben Greear <greearb@candelatech.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
+Tx queue locking was very simple until now.
+Multi-channel support will require a more flexible
+and fine grained control.
 
---===============3942276126526667709==
-Content-Type: multipart/signed; boundary="nextPart1443342.rreJWml4ht"; micalg="pgp-sha1"; protocol="application/pgp-signature"
+This introduces a per-hw and per-vif (each with a
+bitmask of reasons) tx queue locking.
 
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
 
---nextPart1443342.rreJWml4ht
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="windows-1252"
+Notes:
+    v4:
+     * use ieee80211_iterate_active_interfaces_atomic() instead of ar->arvifs
 
-On Monday 16 March 2015 14:21:10 Ben Greear wrote:
-> On 03/16/2015 01:51 PM, mrex@tranzeo.com wrote:
-> > Ben,
-> >=20
-> > The tx99 feature has the benefit of not needing any client or traff=
-ic to
-> > be
-> > passed for a power meter to measure.  So it=92s incredibly fast to =
-test
-> > different rates and output power than having to wait for client to
-> > re-associate, pass traffic and adjust power meter to duty cycle (de=
-pending
-> > on how fancy the meter is).  This is more applicable for calibratio=
-n and
-> > evaluation than for adaption or protocol testing.
-> >=20
-> > Tx99 is better suited for calibration and FCC certification testing=
- and
-> > not
-> > for testing things like adaptive modulation or what happens when mi=
-xed
-> > modulations are enabled.  It cuts down on lab certification test ti=
-me and
-> > complexity (lab engineers test a different wireless widget every da=
-y and
-> > not familiar with webGUI=92s and config settings, etc).  Tx99 often=
- was
-> > more =91raw=92 and didn=92t behave the same as adaptive modulation =
-algorithm,
-> > probably more so with more streams than 1 and 11b/g/n.
-> >=20
-> > So having a feature that can just output raw frames at full duty cy=
-cle at
-> > a
-> > specific rate and output power without client would be highly benef=
-icial
-> > for lab testing and reduce test time and complexity for radio valid=
-ation.
-> I tried to get ath10k firmware to send raw frames on a monitor interf=
-ace,
-> but it seems it requires a peer of some sort before it will send fram=
-es,
-> and I had no real luck.
->=20
-> I'm imagine there is some way to make firmware able to do this, but I=
- don't
-> know how to do that at this time.
+ drivers/net/wireless/ath/ath10k/core.h   |  8 +++
+ drivers/net/wireless/ath/ath10k/htt_tx.c |  4 +-
+ drivers/net/wireless/ath/ath10k/mac.c    | 88 +++++++++++++++++++++++++++++++-
+ drivers/net/wireless/ath/ath10k/mac.h    |  5 ++
+ 4 files changed, 101 insertions(+), 4 deletions(-)
 
-Thanks for all the input so far!
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d54e12d..b99871a 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -311,6 +311,7 @@ struct ath10k_vif {
+ 	enum ath10k_beacon_state beacon_state;
+ 	void *beacon_buf;
+ 	dma_addr_t beacon_paddr;
++	unsigned long tx_paused; /* arbitrary values defined by target */
+ 
+ 	struct ath10k *ar;
+ 	struct ieee80211_vif *vif;
+@@ -510,6 +511,11 @@ static inline const char *ath10k_scan_state_str(enum ath10k_scan_state state)
+ 	return "unknown";
+ }
+ 
++enum ath10k_tx_pause_reason {
++	ATH10K_TX_PAUSE_Q_FULL,
++	ATH10K_TX_PAUSE_MAX,
++};
++
+ struct ath10k {
+ 	struct ath_common ath_common;
+ 	struct ieee80211_hw *hw;
+@@ -668,6 +674,8 @@ struct ath10k {
+ 
+ 	struct dfs_pattern_detector *dfs_detector;
+ 
++	unsigned long tx_paused; /* see ATH10K_TX_PAUSE_ */
++
+ #ifdef CONFIG_ATH10K_DEBUGFS
+ 	struct ath10k_debug debug;
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index cbd2bc9..c67b385 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -26,7 +26,7 @@ void __ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+ {
+ 	htt->num_pending_tx--;
+ 	if (htt->num_pending_tx == htt->max_num_pending_tx - 1)
+-		ieee80211_wake_queues(htt->ar->hw);
++		ath10k_mac_tx_unlock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
+ }
+ 
+ static void ath10k_htt_tx_dec_pending(struct ath10k_htt *htt)
+@@ -49,7 +49,7 @@ static int ath10k_htt_tx_inc_pending(struct ath10k_htt *htt)
+ 
+ 	htt->num_pending_tx++;
+ 	if (htt->num_pending_tx == htt->max_num_pending_tx)
+-		ieee80211_stop_queues(htt->ar->hw);
++		ath10k_mac_tx_lock(htt->ar, ATH10K_TX_PAUSE_Q_FULL);
+ 
+ exit:
+ 	spin_unlock_bh(&htt->tx_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 8b64313..185be19 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2707,6 +2707,72 @@ static void ath10k_reg_notifier(struct wiphy *wiphy,
+ /* TX handlers */
+ /***************/
+ 
++void ath10k_mac_tx_lock(struct ath10k *ar, int reason)
++{
++	lockdep_assert_held(&ar->htt.tx_lock);
++
++	WARN_ON(reason >= ATH10K_TX_PAUSE_MAX);
++	ar->tx_paused |= BIT(reason);
++	ieee80211_stop_queues(ar->hw);
++}
++
++static void ath10k_mac_tx_unlock_iter(void *data, u8 *mac,
++				      struct ieee80211_vif *vif)
++{
++	struct ath10k *ar = data;
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++
++	if (arvif->tx_paused)
++		return;
++
++	ieee80211_wake_queue(ar->hw, arvif->vdev_id);
++}
++
++void ath10k_mac_tx_unlock(struct ath10k *ar, int reason)
++{
++	lockdep_assert_held(&ar->htt.tx_lock);
++
++	WARN_ON(reason >= ATH10K_TX_PAUSE_MAX);
++	ar->tx_paused &= ~BIT(reason);
++
++	if (ar->tx_paused)
++		return;
++
++	ieee80211_iterate_active_interfaces_atomic(ar->hw,
++						   IEEE80211_IFACE_ITER_RESUME_ALL,
++						   ath10k_mac_tx_unlock_iter,
++						   ar);
++}
++
++void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason)
++{
++	struct ath10k *ar = arvif->ar;
++
++	lockdep_assert_held(&ar->htt.tx_lock);
++
++	WARN_ON(reason >= BITS_PER_LONG);
++	arvif->tx_paused |= BIT(reason);
++	ieee80211_stop_queue(ar->hw, arvif->vdev_id);
++}
++
++void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason)
++{
++	struct ath10k *ar = arvif->ar;
++
++	lockdep_assert_held(&ar->htt.tx_lock);
++
++	WARN_ON(reason >= BITS_PER_LONG);
++	arvif->tx_paused &= ~BIT(reason);
++
++	if (ar->tx_paused)
++		return;
++
++	if (arvif->tx_paused)
++		return;
++
++	ieee80211_wake_queue(ar->hw, arvif->vdev_id);
++}
++
+ static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
+ {
+ 	if (ieee80211_is_mgmt(hdr->frame_control))
+@@ -3200,6 +3266,7 @@ void ath10k_halt(struct ath10k *ar)
+ 		ath10k_monitor_stop(ar);
+ 
+ 	ar->monitor_started = false;
++	ar->tx_paused = 0;
+ 
+ 	ath10k_scan_finish(ar);
+ 	ath10k_peer_cleanup_all(ar);
+@@ -3609,6 +3676,7 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 	int ret = 0;
+ 	u32 value;
+ 	int bit;
++	int i;
+ 	u32 vdev_param;
+ 
+ 	vif->driver_flags |= IEEE80211_VIF_SUPPORTS_UAPSD;
+@@ -3666,6 +3734,15 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		break;
+ 	}
+ 
++	/* Using vdev_id as queue number will make it very easy to do per-vif
++	 * tx queue locking. This shouldn't wrap due to interface combinations
++	 * but do a modulo for correctness sake and prevent using offchannel tx
++	 * queues for regular vif tx.
++	 */
++	vif->cab_queue = arvif->vdev_id % (IEEE80211_MAX_QUEUES - 1);
++	for (i = 0; i < ARRAY_SIZE(vif->hw_queue); i++)
++		vif->hw_queue[i] = arvif->vdev_id % (IEEE80211_MAX_QUEUES - 1);
++
+ 	/* Some firmware revisions don't wait for beacon tx completion before
+ 	 * sending another SWBA event. This could lead to hardware using old
+ 	 * (freed) beacon data in some cases, e.g. tx credit starvation
+@@ -6261,7 +6338,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			IEEE80211_HW_SW_CRYPTO_CONTROL |
+ 			IEEE80211_HW_CONNECTION_MONITOR |
+ 			IEEE80211_HW_WANT_MONITOR_VIF |
+-			IEEE80211_HW_CHANCTX_STA_CSA;
++			IEEE80211_HW_CHANCTX_STA_CSA |
++			IEEE80211_HW_QUEUE_CONTROL;
+ 
+ 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
+ 
+@@ -6306,7 +6384,13 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
+ 	 */
+-	ar->hw->queues = 4;
++	ar->hw->queues = IEEE80211_MAX_QUEUES;
++
++	/* vdev_ids are used as hw queue numbers. Make sure offchan tx queue is
++	 * something that vdev_ids can't reach so that we don't stop the queue
++	 * accidentally.
++	 */
++	ar->hw->offchannel_tx_hw_queue = IEEE80211_MAX_QUEUES - 1;
+ 
+ 	switch (ar->wmi.op_version) {
+ 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 0f2061a..9d3d9e75 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -48,6 +48,11 @@ bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
+ void ath10k_mac_handle_beacon(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_mac_handle_beacon_miss(struct ath10k *ar, u32 vdev_id);
+ 
++void ath10k_mac_tx_lock(struct ath10k *ar, int reason);
++void ath10k_mac_tx_unlock(struct ath10k *ar, int reason);
++void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason);
++void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason);
++
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+ 	return (struct ath10k_vif *)vif->drv_priv;
+-- 
+2.1.4
 
-It is probably not too hard to implement a packet generating logic like=
- in=20
-ath9k/tx99 for ath10k to remove the dependency on an external tool.
-
-However the firmware question is a more tricky one, and we can't easily=
- change=20
-that - we will not operate with a peer in the lab after all. We can try=
- to go=20
-with mcast frames and see what duty cycle we can achieve.
-
- Ben, your firmware allows to set HT and VHT rates on mcast frames too,=
- right?
-
-Is the QCA driver supporting this test? I guess they could need it as w=
-ell. :)
-
-Thanks again,
-    Simon
-
---nextPart1443342.rreJWml4ht
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iEYEABECAAYFAlUICBgACgkQrzg/fFk7axboQwCg2Dq2vQzbsrghTpfIAxdtCXd+
-k3cAoMuufjBYYzjSZ/V7zYXgboGq7h8Q
-=zMOV
------END PGP SIGNATURE-----
-
---nextPart1443342.rreJWml4ht--
-
-
-
---===============3942276126526667709==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============3942276126526667709==--
