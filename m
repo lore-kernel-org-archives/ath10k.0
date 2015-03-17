@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YXqgu-0007n2-OI
- for ath10k@lists.infradead.org; Tue, 17 Mar 2015 12:33:51 +0000
-Received: by lamx15 with SMTP id x15so7110251lam.3
- for <ath10k@lists.infradead.org>; Tue, 17 Mar 2015 05:33:24 -0700 (PDT)
+ id 1YXqgw-0007nH-W5
+ for ath10k@lists.infradead.org; Tue, 17 Mar 2015 12:33:55 +0000
+Received: by labjg1 with SMTP id jg1so7101299lab.2
+ for <ath10k@lists.infradead.org>; Tue, 17 Mar 2015 05:33:26 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v4 3/7] ath10k: implement adaptive qcs command
-Date: Tue, 17 Mar 2015 12:30:44 +0000
-Message-Id: <1426595448-1630-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v4 5/7] ath10k: implement tx pause wmi event
+Date: Tue, 17 Mar 2015 12:30:46 +0000
+Message-Id: <1426595448-1630-6-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
 References: <1426595448-1630-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,160 +27,314 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This command will be used to configure
-multi-channel scheduler in firmware.
+qca6174 wmi-tlv firmware defines a new wmi event
+for host tx pausing (i.e. stop/wake tx queues).
+
+Map these events to ath10k/mac80211 tx queue
+control.
+
+This is important for multi-channel throughput
+performance.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 16 ++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 30 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.h |  4 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  3 +++
- drivers/net/wireless/ath/ath10k/wmi.h     |  1 +
- 5 files changed, 54 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index f0a8b8d..3c8325c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -150,6 +150,7 @@ struct wmi_ops {
- 					      u32 num_ac);
- 	struct sk_buff *(*gen_sta_keepalive)(struct ath10k *ar,
- 					     const struct wmi_sta_keepalive_arg *arg);
-+	struct sk_buff *(*gen_adaptive_qcs)(struct ath10k *ar, bool enable);
- };
+Notes:
+    v2:
+     * s/thourghput/throughput/ in commit log
+    
+    v4:
+     * use ieee80211_iterate_active_interfaces_atomic() instead of ar->arvifs
+
+ drivers/net/wireless/ath/ath10k/mac.c     | 90 +++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.h     |  8 +++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 48 +++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h | 42 +++++++++++++++
+ 4 files changed, 188 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 185be19..e6b0746 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -28,6 +28,7 @@
+ #include "txrx.h"
+ #include "testmode.h"
+ #include "wmi.h"
++#include "wmi-tlv.h"
+ #include "wmi-ops.h"
  
- int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
-@@ -1072,4 +1073,19 @@ ath10k_wmi_sta_keepalive(struct ath10k *ar,
- 	return ath10k_wmi_cmd_send(ar, skb, cmd_id);
+ /**********/
+@@ -2773,6 +2774,83 @@ void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason)
+ 	ieee80211_wake_queue(ar->hw, arvif->vdev_id);
  }
  
-+static inline int
-+ath10k_wmi_adaptive_qcs(struct ath10k *ar, bool enable)
++static void ath10k_mac_vif_handle_tx_pause(struct ath10k_vif *arvif,
++					   enum wmi_tlv_tx_pause_id pause_id,
++					   enum wmi_tlv_tx_pause_action action)
 +{
-+	struct sk_buff *skb;
++	struct ath10k *ar = arvif->ar;
 +
-+	if (!ar->wmi.ops->gen_adaptive_qcs)
-+		return -EOPNOTSUPP;
++	lockdep_assert_held(&ar->htt.tx_lock);
 +
-+	skb = ar->wmi.ops->gen_adaptive_qcs(ar, enable);
-+	if (IS_ERR(skb))
-+		return PTR_ERR(skb);
-+
-+	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->adaptive_qcs_cmdid);
++	switch (pause_id) {
++	case WMI_TLV_TX_PAUSE_ID_MCC:
++	case WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA:
++	case WMI_TLV_TX_PAUSE_ID_P2P_GO_PS:
++	case WMI_TLV_TX_PAUSE_ID_AP_PS:
++	case WMI_TLV_TX_PAUSE_ID_IBSS_PS:
++		switch (action) {
++		case WMI_TLV_TX_PAUSE_ACTION_STOP:
++			ath10k_mac_vif_tx_lock(arvif, pause_id);
++			break;
++		case WMI_TLV_TX_PAUSE_ACTION_WAKE:
++			ath10k_mac_vif_tx_unlock(arvif, pause_id);
++			break;
++		default:
++			ath10k_warn(ar, "received unknown tx pause action %d on vdev %i, ignoring\n",
++				    action, arvif->vdev_id);
++			break;
++		}
++		break;
++	case WMI_TLV_TX_PAUSE_ID_AP_PEER_PS:
++	case WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD:
++	case WMI_TLV_TX_PAUSE_ID_STA_ADD_BA:
++	case WMI_TLV_TX_PAUSE_ID_HOST:
++	default:
++		/* FIXME: Some pause_ids aren't vdev specific. Instead they
++		 * target peer_id and tid. Implementing these could improve
++		 * traffic scheduling fairness across multiple connected
++		 * stations in AP/IBSS modes.
++		 */
++		ath10k_dbg(ar, ATH10K_DBG_MAC,
++			   "mac ignoring unsupported tx pause vdev %i id %d\n",
++			   arvif->vdev_id, pause_id);
++		break;
++	}
 +}
 +
- #endif
++struct ath10k_mac_tx_pause {
++	u32 vdev_id;
++	enum wmi_tlv_tx_pause_id pause_id;
++	enum wmi_tlv_tx_pause_action action;
++};
++
++static void ath10k_mac_handle_tx_pause_iter(void *data, u8 *mac,
++					    struct ieee80211_vif *vif)
++{
++	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	struct ath10k_mac_tx_pause *arg = data;
++
++	ath10k_mac_vif_handle_tx_pause(arvif, arg->pause_id, arg->action);
++}
++
++void ath10k_mac_handle_tx_pause(struct ath10k *ar, u32 vdev_id,
++				enum wmi_tlv_tx_pause_id pause_id,
++				enum wmi_tlv_tx_pause_action action)
++{
++	struct ath10k_mac_tx_pause arg = {
++		.vdev_id = vdev_id,
++		.pause_id = pause_id,
++		.action = action,
++	};
++
++	spin_lock_bh(&ar->htt.tx_lock);
++	ieee80211_iterate_active_interfaces_atomic(ar->hw,
++						   IEEE80211_IFACE_ITER_RESUME_ALL,
++						   ath10k_mac_handle_tx_pause_iter,
++						   &arg);
++	spin_unlock_bh(&ar->htt.tx_lock);
++}
++
+ static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
+ {
+ 	if (ieee80211_is_mgmt(hdr->frame_control))
+@@ -3920,6 +3998,14 @@ err:
+ 	return ret;
+ }
+ 
++static void ath10k_mac_vif_tx_unlock_all(struct ath10k_vif *arvif)
++{
++	int i;
++
++	for (i = 0; i < BITS_PER_LONG; i++)
++		ath10k_mac_vif_tx_unlock(arvif, i);
++}
++
+ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 				    struct ieee80211_vif *vif)
+ {
+@@ -3986,6 +4072,10 @@ static void ath10k_remove_interface(struct ieee80211_hw *hw,
+ 			ath10k_warn(ar, "failed to recalc monitor: %d\n", ret);
+ 	}
+ 
++	spin_lock_bh(&ar->htt.tx_lock);
++	ath10k_mac_vif_tx_unlock_all(arvif);
++	spin_unlock_bh(&ar->htt.tx_lock);
++
+ 	mutex_unlock(&ar->conf_mutex);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index 9d3d9e75..94928ea 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -23,6 +23,9 @@
+ 
+ #define WEP_KEYID_SHIFT 6
+ 
++enum wmi_tlv_tx_pause_id;
++enum wmi_tlv_tx_pause_action;
++
+ struct ath10k_generic_iter {
+ 	struct ath10k *ar;
+ 	int ret;
+@@ -45,8 +48,13 @@ void ath10k_mac_vif_beacon_free(struct ath10k_vif *arvif);
+ void ath10k_drain_tx(struct ath10k *ar);
+ bool ath10k_mac_is_peer_wep_key_set(struct ath10k *ar, const u8 *addr,
+ 				    u8 keyidx);
++
+ void ath10k_mac_handle_beacon(struct ath10k *ar, struct sk_buff *skb);
+ void ath10k_mac_handle_beacon_miss(struct ath10k *ar, u32 vdev_id);
++void ath10k_mac_handle_tx_pause(struct ath10k *ar, u32 vdev_id,
++				enum wmi_tlv_tx_pause_id pause_id,
++				enum wmi_tlv_tx_pause_action action);
++
+ 
+ void ath10k_mac_tx_lock(struct ath10k *ar, int reason);
+ void ath10k_mac_tx_unlock(struct ath10k *ar, int reason);
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index fa3eb1b..a359a7e 100644
+index a359a7e..45f8431 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -2561,6 +2561,34 @@ ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie(struct ath10k *ar, u32 vdev_id,
- 	return skb;
- }
+@@ -16,6 +16,7 @@
+  */
+ #include "core.h"
+ #include "debug.h"
++#include "mac.h"
+ #include "hw.h"
+ #include "mac.h"
+ #include "wmi.h"
+@@ -68,6 +69,8 @@ static const struct wmi_tlv_policy wmi_tlv_policies[] = {
+ 		= { .min_len = sizeof(struct wmi_tlv_p2p_noa_ev) },
+ 	[WMI_TLV_TAG_STRUCT_ROAM_EVENT]
+ 		= { .min_len = sizeof(struct wmi_tlv_roam_ev) },
++	[WMI_TLV_TAG_STRUCT_TX_PAUSE_EVENT]
++		= { .min_len = sizeof(struct wmi_tlv_tx_pause_ev) },
+ };
  
-+static struct sk_buff *
-+ath10k_wmi_tlv_op_gen_adaptive_qcs(struct ath10k *ar, bool enable)
-+{
-+	struct wmi_tlv_adaptive_qcs *cmd;
-+	struct wmi_tlv *tlv;
-+	struct sk_buff *skb;
-+	void *ptr;
-+	size_t len;
-+
-+	len = sizeof(*tlv) + sizeof(*cmd);
-+	skb = ath10k_wmi_alloc_skb(ar, len);
-+	if (!skb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ptr = (void *)skb->data;
-+	tlv = ptr;
-+	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_RESMGR_ADAPTIVE_OCS_CMD);
-+	tlv->len = __cpu_to_le16(sizeof(*cmd));
-+	cmd = (void *)tlv->value;
-+	cmd->enable = __cpu_to_le32(enable ? 1 : 0);
-+
-+	ptr += sizeof(*tlv);
-+	ptr += sizeof(*cmd);
-+
-+	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv adaptive qcs %d\n", enable);
-+	return skb;
+ static int
+@@ -337,6 +340,48 @@ static int ath10k_wmi_tlv_event_p2p_noa(struct ath10k *ar,
+ 		   vdev_id, noa->num_descriptors);
+ 
+ 	ath10k_p2p_noa_update_by_vdev_id(ar, vdev_id, noa);
++	kfree(tb);
++	return 0;
 +}
 +
- /****************/
- /* TLV mappings */
- /****************/
-@@ -2685,6 +2713,7 @@ static struct wmi_cmd_map wmi_tlv_cmd_map = {
- 	.gpio_output_cmdid = WMI_TLV_GPIO_OUTPUT_CMDID,
- 	.pdev_get_temperature_cmdid = WMI_TLV_CMD_UNSUPPORTED,
- 	.vdev_set_wmm_params_cmdid = WMI_TLV_VDEV_SET_WMM_PARAMS_CMDID,
-+	.adaptive_qcs_cmdid = WMI_TLV_RESMGR_ADAPTIVE_OCS_CMDID,
- };
++static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
++					 struct sk_buff *skb)
++{
++	const void **tb;
++	const struct wmi_tlv_tx_pause_ev *ev;
++	int ret, vdev_id;
++	u32 pause_id, action, vdev_map, peer_id, tid_map;
++
++	tb = ath10k_wmi_tlv_parse_alloc(ar, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath10k_warn(ar, "failed to parse tlv: %d\n", ret);
++		return ret;
++	}
++
++	ev = tb[WMI_TLV_TAG_STRUCT_TX_PAUSE_EVENT];
++	if (!ev) {
++		kfree(tb);
++		return -EPROTO;
++	}
++
++	pause_id = __le32_to_cpu(ev->pause_id);
++	action = __le32_to_cpu(ev->action);
++	vdev_map = __le32_to_cpu(ev->vdev_map);
++	peer_id = __le32_to_cpu(ev->peer_id);
++	tid_map = __le32_to_cpu(ev->tid_map);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI,
++		   "wmi tlv tx pause pause_id %u action %u vdev_map 0x%08x peer_id %u tid_map 0x%08x\n",
++		   pause_id, action, vdev_map, peer_id, tid_map);
++
++	for (vdev_id = 0; vdev_map; vdev_id++) {
++		if (!(vdev_map & BIT(vdev_id)))
++			continue;
++
++		vdev_map &= ~BIT(vdev_id);
++		ath10k_mac_handle_tx_pause(ar, vdev_id, pause_id, action);
++	}
  
- static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
-@@ -2858,6 +2887,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.gen_p2p_go_bcn_ie = ath10k_wmi_tlv_op_gen_p2p_go_bcn_ie,
- 	.gen_vdev_sta_uapsd = ath10k_wmi_tlv_op_gen_vdev_sta_uapsd,
- 	.gen_sta_keepalive = ath10k_wmi_tlv_op_gen_sta_keepalive,
-+	.gen_adaptive_qcs = ath10k_wmi_tlv_op_gen_adaptive_qcs,
- };
- 
- /************/
+ 	kfree(tb);
+ 	return 0;
+@@ -466,6 +511,9 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_TLV_P2P_NOA_EVENTID:
+ 		ath10k_wmi_tlv_event_p2p_noa(ar, skb);
+ 		break;
++	case WMI_TLV_TX_PAUSE_EVENTID:
++		ath10k_wmi_tlv_event_tx_pause(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-index 06b37b2..1b373f2 100644
+index 1b373f2..56f178a 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
-@@ -1464,6 +1464,10 @@ struct wmi_tlv_roam_ev {
- 	__le32 rssi;
+@@ -1468,6 +1468,48 @@ struct wmi_tlv_adaptive_qcs {
+ 	__le32 enable;
  } __packed;
  
-+struct wmi_tlv_adaptive_qcs {
-+	__le32 enable;
++/**
++ * wmi_tlv_tx_pause_id - firmware tx queue pause reason types
++ *
++ * @WMI_TLV_TX_PAUSE_ID_MCC: used for by multi-channel firmware scheduler.
++ *		Only vdev_map is valid.
++ * @WMI_TLV_TX_PAUSE_ID_AP_PEER_PS: peer in AP mode is asleep.
++ *		Only peer_id is valid.
++ * @WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD: Only peer_id and tid_map are valid.
++ * @WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA: Only vdev_map is valid.
++ * @WMI_TLV_TX_PAUSE_ID_P2P_GO_PS: Only vdev_map is valid.
++ * @WMI_TLV_TX_PAUSE_ID_STA_ADD_BA: Only peer_id and tid_map are valid.
++ * @WMI_TLV_TX_PAUSE_ID_AP_PS: When all peers are asleep in AP mode. Only
++ *		vdev_map is valid.
++ * @WMI_TLV_TX_PAUSE_ID_IBSS_PS: When all peers are asleep in IBSS mode. Only
++ *		vdev_map is valid.
++ * @WMI_TLV_TX_PAUSE_ID_HOST: Host itself requested tx pause.
++ */
++enum wmi_tlv_tx_pause_id {
++	WMI_TLV_TX_PAUSE_ID_MCC = 1,
++	WMI_TLV_TX_PAUSE_ID_AP_PEER_PS = 2,
++	WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD = 3,
++	WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA = 4,
++	WMI_TLV_TX_PAUSE_ID_P2P_GO_PS = 5,
++	WMI_TLV_TX_PAUSE_ID_STA_ADD_BA = 6,
++	WMI_TLV_TX_PAUSE_ID_AP_PS = 7,
++	WMI_TLV_TX_PAUSE_ID_IBSS_PS = 8,
++	WMI_TLV_TX_PAUSE_ID_HOST = 21,
++};
++
++enum wmi_tlv_tx_pause_action {
++	WMI_TLV_TX_PAUSE_ACTION_STOP,
++	WMI_TLV_TX_PAUSE_ACTION_WAKE,
++};
++
++struct wmi_tlv_tx_pause_ev {
++	__le32 pause_id;
++	__le32 action;
++	__le32 vdev_map;
++	__le32 peer_id;
++	__le32 tid_map;
 +} __packed;
 +
  void ath10k_wmi_tlv_attach(struct ath10k *ar);
  
  #endif
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index eb66fc4..34412ee 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -5249,6 +5249,7 @@ static const struct wmi_ops wmi_ops = {
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-+	/* .gen_adaptive_qcs not implemented */
- };
- 
- static const struct wmi_ops wmi_10_1_ops = {
-@@ -5312,6 +5313,7 @@ static const struct wmi_ops wmi_10_1_ops = {
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-+	/* .gen_adaptive_qcs not implemented */
- };
- 
- static const struct wmi_ops wmi_10_2_ops = {
-@@ -5436,6 +5438,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- 	/* .gen_bcn_tmpl not implemented */
- 	/* .gen_prb_tmpl not implemented */
- 	/* .gen_p2p_go_bcn_ie not implemented */
-+	/* .gen_adaptive_qcs not implemented */
- };
- 
- int ath10k_wmi_attach(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 938e652..714c211 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -552,6 +552,7 @@ struct wmi_cmd_map {
- 	u32 gpio_output_cmdid;
- 	u32 pdev_get_temperature_cmdid;
- 	u32 vdev_set_wmm_params_cmdid;
-+	u32 adaptive_qcs_cmdid;
- };
- 
- /*
 -- 
 2.1.4
 
