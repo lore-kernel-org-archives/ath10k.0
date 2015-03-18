@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Date: Wed, 18 Mar 2015 13:24:09 -0400
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [PATCH] ath10k: add firmware 10.2.4.45 as firmware-4.bin
-Message-ID: <20150318172409.GC30928@merlin.infradead.org>
-References: <1426160112-4261-1-git-send-email-kvalo@qca.qualcomm.com>
- <20150313204730.GA30928@merlin.infradead.org>
- <87lhiuofx7.fsf@kamboji.qca.qualcomm.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYIts-0001pK-42
+ for ath10k@lists.infradead.org; Wed, 18 Mar 2015 18:41:04 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: enable channel 144 on 5GHz band
+Date: Wed, 18 Mar 2015 11:39:18 -0700
+Message-ID: <1426703958-8005-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <87lhiuofx7.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,28 +20,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Kyle McMartin <kyle@infradead.org>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, linux-firmware@kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Wed, Mar 18, 2015 at 10:42:12AM +0200, Kalle Valo wrote:
-> Kyle McMartin <kyle@infradead.org> writes:
-> 
-> > On Thu, Mar 12, 2015 at 01:35:12PM +0200, Kalle Valo wrote:
-> >> This is the latest firmware from 10.2.4 firmware branch.
-> >> 
-> >> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-> >
-> > Pardon my ignorance... It looks like your driver needs more than just
-> > firmware-4.bin... How are distros supposed to use this? Symlink it into
-> > firmware.bin which it seems the driver looks for?
-> 
-> The current version of ath10k uses firmware-4.bin. Distros should not
-> create symlinks or anything like that.
-> 
+Enable channel 144 on 5GHz band since 802.11ac introduced it.
 
-Ah, groovy, ok, applied.
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks, Kyle
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 341f3c8..56de3dc 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -5480,6 +5480,7 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(132, 5660, 0),
+ 	CHAN5G(136, 5680, 0),
+ 	CHAN5G(140, 5700, 0),
++	CHAN5G(144, 5720, 0),
+ 	CHAN5G(149, 5745, 0),
+ 	CHAN5G(153, 5765, 0),
+ 	CHAN5G(157, 5785, 0),
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
