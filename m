@@ -1,21 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYXT7-0000Vr-Os
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 10:14:26 +0000
-Received: by wibdy8 with SMTP id dy8so113286157wib.0
- for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 03:14:03 -0700 (PDT)
+ id 1YYYJj-00011u-Kn
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 11:08:49 +0000
+From: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Subject: [PATCH v2 1/2] ath10k: enable Adaptive Noise Immunity (ANI) by default
+Date: Thu, 19 Mar 2015 16:37:59 +0530
+Message-ID: <1426763280-11284-1-git-send-email-arnagara@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
-References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
- <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
- <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 19 Mar 2015 11:14:00 +0100
-Message-ID: <CA+BoTQkZ-dZUq0Uqy0uAUNxzz0uZtWB4sWwsZod3Wysn_a_YoQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
- revisions
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,45 +16,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-T24gMTkgTWFyY2ggMjAxNSBhdCAxMDozMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
-aXRlczoKPgo+Pj4gV2hlbiBJIHdhcyBhZGRpbmcgV01JX09QX1ZFUlNJT04sIG15IGlkZWEgd2Fz
-IHRoYXQgd2Ugd2lsbCBhZGQgc2ltaWxhcgo+Pj4gdmVyc2lvbiBmb3IgSFRUIGFzIHdlbGwgb25j
-ZSB3ZSBuZWVkIGl0LiBCdXQgSSBndWVzcyB0aGlzIGlzIGdvb2QgZW5vdWdoCj4+PiBmb3Igbm93
-LCB3ZSBjYW4gYWRkIEhUVF9PUF9WRVJTSU9OIGxhdGVyIGlmIG1vcmUgY2hhbmdlcyBhcmUgbmVl
-ZGVkLgo+Pgo+PiBNYXliZSBpdCBzaG91bGQgYmUgcmVuYW1lZCB0byBPUF9WRVJTSU9OIChkcm9w
-IHRoZSBXTUlfKSBvciBCUkFOQ0hfSUQKPj4gb3Igc29tZXRoaW5nIGVsc2U/Cj4+Cj4+IEl0J3Mg
-bm90IGxpa2UgSFRUIHdhc24ndCBkaXZlcmdpbmcuIEl0IHdhcy4gSG93ZXZlciBvbmx5IFdNSSBB
-Qkkgd2FzCj4+IHNlZWluZyBtYWpvciBicmVha2FnZSB0aGF0IG5lZWRlZCB0YWtpbmcgY2FyZSBv
-Zi4gSFRUIGNoYW5nZXMgd2VyZQo+PiBzbWFsbCBlbm91Z2ggYW5kIGNvdWxkIGJlIGlnbm9yZWQg
-dW50aWwgbm93Lgo+Cj4gSSdtIGEgYml0IHdvcnJpZWQgdGhhdCBoYXZpbmcgb25lIGlkIGZvciBl
-dmVyeXRoaW5nIHdpbGwgYmUgbW9yZQo+IGRpZmZpY3VsdCB0byBtYWludGFpbiwgdGhhdCdzIHdo
-eSBJIGNyZWF0ZWQgV01JX09QX1ZFUlNJT04gaW4gdGhlIGZpcnN0Cj4gcGxhY2UuIElNSE8gaXQn
-cyBsb3QgY2xlYW5lciBjb2Rld2lzZSB0byBoYXZlIG9uZSBpZCBmb3IgV01JIGludGVyZmFjZQo+
-IGFuZCBvbmUgaWQgZm9yIEhUVCAoZWcuIEhUVF9PUF9WRVJTSU9OKS4gV2hhdCBkbyB5b3UgdGhp
-bms/CgpDdXJyZW50bHkgYm90aCBXTUkgYW5kIEhUVCBzZWVtIHRvIGJlIGRldmVsb3BlZCBpbiB0
-YW5kZW0gd2l0aGluIHRoZWlyCm93biBicmFuY2hlcy4gSFRUX09QX1ZFUlNJT04gd291bGQgbWFr
-ZSBzZW5zZSBpZiB5b3UgYXNzdW1lIEhUVC9XTUkKZGV2ZWxvcG1lbnQgd2lsbCBiZSBkZXZlbG9w
-ZWQgaW4gcGFyYWxsZWwgYnJhbmNoZXMuCgpXb3VsZCB0aGF0IGV2ZW4gbWFrZSBzZW5zZSBmcm9t
-IF9hbnlfIHBlcnNwZWN0aXZlPyBDdXJyZW50IGJyYW5jaGluZwptb2RlbCBzZWVtcyB0byBiZSBi
-YXNlZCBvbiBwZXItcHVycG9zZSBicmFuY2hpbmcgYW5kIGlzb2xhdGlvbi4gVGhlCnRoaW5raW5n
-IGJlaGluZCB0aGlzIG1pZ2h0IGJlIHRoaXMgYWxsb3dzIGJldHRlciBwYXJhbGxlbGl6YXRpb24g
-b2YKZWZmb3J0cyBiZXR3ZWVuIHRlYW1zIGFuZCB0YXNrcy4gSWYgbXkgYXNzZXJ0aW9uIGlzIGNv
-cnJlY3QgdGhlbiBib3RoCm1hc3Rlci1iZS1hbGwgYnJhbmNoaW5nIGFuZCBpbmRlcGVuZGVudCBX
-TUkvSFRUIGJyYW5jaGluZyBzdGFuZHMgaW4KY29uZmxpY3Qgd2l0aCB0aGUgcGVyLXB1cnBvc2Ug
-YnJhbmNoIGlzb2xhdGlvbiBzbyBhIHNpbmdsZQpPUF9WRVJTSU9OL0JSQU5DSF9JRCBzaG91bGQg
-c3VmZmljZSBmb3IgYXRoMTBrLgoKV2l0aCB0aGlzIGh0dCBjb25mbGljdCBwYXRjaCBXTUlfT1Bf
-VkVSU0lPTiBpcyBhbHJlYWR5IGJlaW5nIHRyZWF0ZWQKYXMgT1BfVkVSU0lPTiBlZmZlY3RpdmVs
-eSAoYW5kIHRodXMgY2hhbmdlIHRoZSBtZWFuaW5nIG9mIGl0KS4KCldvdWxkIGl0IGJlIG11Y2gg
-b2YgYSBwcm9ibGVtIHRvIHJlLXJlbmFtZSBPUF9WRVJTSU9OIGFuZCBpbnRyb2R1Y2UKSFRUX09Q
-X1ZFUlNJT04gbGF0ZXI/IEhtbS4uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
-aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2F0aDEwawo=
+ANI helps to improve connectvity and performance in a noisy environment.
+Enabling this feature would help the user experience a better and stable
+wireless connection in a noisy environmnet. This feature is currently not
+enabled for ath10k. Enable this feature by default.
+
+Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+---
+v2:
+Update commit log (Kalle Valo)
+
+ drivers/net/wireless/ath/ath10k/mac.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 0f39af7..380d4b1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2896,6 +2896,14 @@ static int ath10k_start(struct ieee80211_hw *hw)
+ 		goto err_core_stop;
+ 	}
+ 
++	ret = ath10k_wmi_pdev_set_param(ar,
++					ar->wmi.pdev_param->ani_enable, 1);
++	if (ret) {
++		ath10k_warn(ar, "failed to enable ani by default: %d\n",
++			    ret);
++		goto err_core_stop;
++	}
++
+ 	ar->num_started_vdevs = 0;
+ 	ath10k_regd_update(ar);
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
