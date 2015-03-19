@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYVoU-0005V8-MF
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 08:28:23 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
+ id 1YYW10-0003Mo-Vi
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 08:41:20 +0000
+Received: by wgbcc7 with SMTP id cc7so55962705wgb.0
+ for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 01:40:40 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
+References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 19 Mar 2015 09:40:39 +0100
+Message-ID: <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
 Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
  revisions
-References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Thu, 19 Mar 2015 10:27:52 +0200
-In-Reply-To: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 11 Mar 2015 15:03:02 +0530")
-Message-ID: <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,82 +22,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
-
-> Target to host HTT messages are conflicting between 10.x and other
-> firmware revisions. By maintaining separate HTT T2H tables for each
-> firmware revisions (main, 10x and tlv) similar to WMI abstraction,
-> solves the conflicts.
->
-> Cc: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-
-So this is needed to get managements frames over HTT working, right?
-It's good to mention that in the commit log, does this look ok:
-
-Author: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Date:   Wed Mar 11 15:03:02 2015 +0530
-
-    ath10k: fix htt t2h message conflicts among firmware revisions
-    
-    Target to host HTT messages are conflicting between 10.x and other
-    firmware revisions. By maintaining separate HTT T2H tables for each
-    firmware revisions (main, 10x and tlv) similar to WMI abstraction,
-    solves the conflicts.
-    
-    This fix is needed to get management frames over HTT (ie.
-    ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX disabled) working with 10.2.4.48-2 firmware.
-    Otherwise there will be unknown htt events and nothing works:
-    
-    [30087.438343] ath10k_pci 0000:02:00.0: htt event (19) not handled
-    [30087.448691] ath10k_pci 0000:02:00.0: htt event (19) not handled
-    [30149.032974] ath10k_pci 0000:02:00.0: htt event (19) not handled
-    
-    Cc: Michal Kazior <michal.kazior@tieto.com>
-    Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-    Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
-
-> @@ -66,6 +146,26 @@ int ath10k_htt_init(struct ath10k *ar)
->  		8 + /* llc snap */
->  		2; /* ip4 dscp or ip6 priority */
->  
-> +	switch (ar->wmi.op_version) {
-> +	case ATH10K_FW_WMI_OP_VERSION_MAIN:
-> +		ar->htt.t2h_msg_types = htt_main_t2h_msg_types;
-> +		ar->htt.t2h_msg_types_max = HTT_MAIN_T2H_NUM_MSGS;
-> +		break;
-> +	case ATH10K_FW_WMI_OP_VERSION_10_1:
-> +	case ATH10K_FW_WMI_OP_VERSION_10_2:
-> +	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
-> +		ar->htt.t2h_msg_types = htt_10x_t2h_msg_types;
-> +		ar->htt.t2h_msg_types_max = HTT_10X_T2H_NUM_MSGS;
-> +		break;
-> +	case ATH10K_FW_WMI_OP_VERSION_TLV:
-> +		ar->htt.t2h_msg_types = htt_tlv_t2h_msg_types;
-> +		ar->htt.t2h_msg_types_max = HTT_TLV_T2H_NUM_MSGS;
-> +		break;
-> +	case ATH10K_FW_WMI_OP_VERSION_UNSET:
-> +	case ATH10K_FW_WMI_OP_VERSION_MAX:
-> +		WARN_ON(1);
-> +		return -EINVAL;
-> +	}
->  	return 0;
-
-When I was adding WMI_OP_VERSION, my idea was that we will add similar
-version for HTT as well once we need it. But I guess this is good enough
-for now, we can add HTT_OP_VERSION later if more changes are needed.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgTWFyY2ggMjAxNSBhdCAwOToyNywgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBxdGkucXVhbGNvbW0u
+Y29tPiB3cml0ZXM6Cj4KPj4gVGFyZ2V0IHRvIGhvc3QgSFRUIG1lc3NhZ2VzIGFyZSBjb25mbGlj
+dGluZyBiZXR3ZWVuIDEwLnggYW5kIG90aGVyCj4+IGZpcm13YXJlIHJldmlzaW9ucy4gQnkgbWFp
+bnRhaW5pbmcgc2VwYXJhdGUgSFRUIFQySCB0YWJsZXMgZm9yIGVhY2gKPj4gZmlybXdhcmUgcmV2
+aXNpb25zIChtYWluLCAxMHggYW5kIHRsdikgc2ltaWxhciB0byBXTUkgYWJzdHJhY3Rpb24sCj4+
+IHNvbHZlcyB0aGUgY29uZmxpY3RzLgo+Pgo+PiBDYzogTWljaGFsIEthemlvciA8bWljaGFsLmth
+emlvckB0aWV0by5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1h
+bm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPgo+IFNvIHRoaXMgaXMgbmVlZGVkIHRvIGdldCBtYW5h
+Z2VtZW50cyBmcmFtZXMgb3ZlciBIVFQgd29ya2luZywgcmlnaHQ/Cj4gSXQncyBnb29kIHRvIG1l
+bnRpb24gdGhhdCBpbiB0aGUgY29tbWl0IGxvZywgZG9lcyB0aGlzIGxvb2sgb2s6Cj4KPiBBdXRo
+b3I6IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPiBEYXRl
+OiAgIFdlZCBNYXIgMTEgMTU6MDM6MDIgMjAxNSArMDUzMAo+Cj4gICAgIGF0aDEwazogZml4IGh0
+dCB0MmggbWVzc2FnZSBjb25mbGljdHMgYW1vbmcgZmlybXdhcmUgcmV2aXNpb25zCj4KPiAgICAg
+VGFyZ2V0IHRvIGhvc3QgSFRUIG1lc3NhZ2VzIGFyZSBjb25mbGljdGluZyBiZXR3ZWVuIDEwLngg
+YW5kIG90aGVyCj4gICAgIGZpcm13YXJlIHJldmlzaW9ucy4gQnkgbWFpbnRhaW5pbmcgc2VwYXJh
+dGUgSFRUIFQySCB0YWJsZXMgZm9yIGVhY2gKPiAgICAgZmlybXdhcmUgcmV2aXNpb25zIChtYWlu
+LCAxMHggYW5kIHRsdikgc2ltaWxhciB0byBXTUkgYWJzdHJhY3Rpb24sCj4gICAgIHNvbHZlcyB0
+aGUgY29uZmxpY3RzLgo+Cj4gICAgIFRoaXMgZml4IGlzIG5lZWRlZCB0byBnZXQgbWFuYWdlbWVu
+dCBmcmFtZXMgb3ZlciBIVFQgKGllLgo+ICAgICBBVEgxMEtfRldfRkVBVFVSRV9IQVNfV01JX01H
+TVRfVFggZGlzYWJsZWQpIHdvcmtpbmcgd2l0aCAxMC4yLjQuNDgtMiBmaXJtd2FyZS4KPiAgICAg
+T3RoZXJ3aXNlIHRoZXJlIHdpbGwgYmUgdW5rbm93biBodHQgZXZlbnRzIGFuZCBub3RoaW5nIHdv
+cmtzOgo+Cj4gICAgIFszMDA4Ny40MzgzNDNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBodHQg
+ZXZlbnQgKDE5KSBub3QgaGFuZGxlZAo+ICAgICBbMzAwODcuNDQ4NjkxXSBhdGgxMGtfcGNpIDAw
+MDA6MDI6MDAuMDogaHR0IGV2ZW50ICgxOSkgbm90IGhhbmRsZWQKPiAgICAgWzMwMTQ5LjAzMjk3
+NF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGh0dCBldmVudCAoMTkpIG5vdCBoYW5kbGVkClsu
+Li5dCj4KPiBXaGVuIEkgd2FzIGFkZGluZyBXTUlfT1BfVkVSU0lPTiwgbXkgaWRlYSB3YXMgdGhh
+dCB3ZSB3aWxsIGFkZCBzaW1pbGFyCj4gdmVyc2lvbiBmb3IgSFRUIGFzIHdlbGwgb25jZSB3ZSBu
+ZWVkIGl0LiBCdXQgSSBndWVzcyB0aGlzIGlzIGdvb2QgZW5vdWdoCj4gZm9yIG5vdywgd2UgY2Fu
+IGFkZCBIVFRfT1BfVkVSU0lPTiBsYXRlciBpZiBtb3JlIGNoYW5nZXMgYXJlIG5lZWRlZC4KCk1h
+eWJlIGl0IHNob3VsZCBiZSByZW5hbWVkIHRvIE9QX1ZFUlNJT04gKGRyb3AgdGhlIFdNSV8pIG9y
+IEJSQU5DSF9JRApvciBzb21ldGhpbmcgZWxzZT8KCkl0J3Mgbm90IGxpa2UgSFRUIHdhc24ndCBk
+aXZlcmdpbmcuIEl0IHdhcy4gSG93ZXZlciBvbmx5IFdNSSBBQkkgd2FzCnNlZWluZyBtYWpvciBi
+cmVha2FnZSB0aGF0IG5lZWRlZCB0YWtpbmcgY2FyZSBvZi4gSFRUIGNoYW5nZXMgd2VyZQpzbWFs
+bCBlbm91Z2ggYW5kIGNvdWxkIGJlIGlnbm9yZWQgdW50aWwgbm93LgoKUGVyaGFwcyB0aGUgcmVu
+YW1lIGNvdWxkIGJlIGFjY29tcGFuaWVkIGJ5IEZXIEFQSSBidW1wIHRvIDU/CgoKTWljaGHFggoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
