@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx2.sophos.com ([145.253.124.138])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYWdZ-0003Kp-Hl
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 09:21:10 +0000
-Date: Thu, 19 Mar 2015 10:20:35 +0100
-From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
+ id 1YYWpE-00007v-3e
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 09:33:13 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
+ revisions
+References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
+ <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
+ <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
+Date: Thu, 19 Mar 2015 11:32:37 +0200
+In-Reply-To: <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
+ (Michal Kazior's message of "Thu, 19 Mar 2015 09:40:39 +0100")
+Message-ID: <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: ath10k + INTEL_IDLE aka. cstates == firmware crash
-References: <54EB264D.5040805@sophos.com>	<CA+BoTQnaNmRs9NcXUtJddhD1SfxAy+Ct-s-hD4mvsi9cqh1eSw@mail.gmail.com>	<54EB2ED5.8040104@sophos.com>	<CA+BoTQm01wMzdB1-1V6OE=oNRuCcrrAoRU5LtxYiQt+TmSEfxA@mail.gmail.com>	<54EB3C30.60302@sophos.com>
- <CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>
-In-Reply-To: <CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>
-Message-ID: <8ab73bee-735c-4140-a050-e52fb2afd5b5@DE-WIE-EXCH3A.green.sophos>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +22,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgTWljaGFsLAoKdGhhbmsgeW91IGZvciB0aGUgcGF0Y2guIFVuZm9ydHVuYXRlbHkgSSBkaWRu
-J3QgaGFkIHRpbWUgdW50aWwgeWVzdGVyZGF5CnRvIHRlc3QgaXQuClRoaXMgcGF0Y2ggaGFzIG5l
-YXJseSBubyBpbmZsdWVuY2UgaW4gdGhlIHJlcG9ydGVkIGJlaGF2aW91ci4gQXMgc29vbiBhcwpJ
-IGVuYWJsZSBpbnRlbF9pZGxlCnRoZSBmaXJtd2FyZSBzdG9wcyB3b3JraW5nLgpXZSBhbHNvIGRp
-ZCBldmVuIG1vcmUgaW50ZW5zZSB0ZXN0aW5nIGFuZCBmaWd1cmVkIG91dCB0aGF0IGV2ZW4gd2l0
-aApkaXNhYmxlZCBpbnRlbF9pZGxlCnNvbWV0aW1lcyB0aGUgY2FyZCBzdG9wcyB3b3JraW5nIGlu
-IEFQIG1vZGUgYWZ0ZXIgYSBsb25nIHRpbWUgcGVyaW9kIG9yCnB1dHRpbmcgcmVhbGx5IGhlYXZ5
-IGxvYWQuCk5vcm1hbGx5IFNXQkEgb3ZlcnJ1bnMgYXJlIHJlcG9ydGVkIHNsaWdodGx5IGJlZm9y
-ZSB0aGUgY2FyZHMKc3RvcHMgcmVzcG9uZGluZy4KCklmIHdlIGRpc2FibGUKCkNPTkZJR19JUlFf
-RE9NQUlOPW4KQ09ORklHX0lSUV9ET01BSU5fREVCVUc9bgpDT05GSUdfUE1fUlVOVElNRT1uCgp0
-aGUgY3Jhc2ggc3RpbGwgb2NjdXJlIGFmdGVyIDEtMyBkYXlzIGJ1dCB0aGUgY2FyZCBpcyBmdXJ0
-aGVyIHdvcmtpbmcuCgpBdCB0aGUgbW9tZW50IHdlIGFyZSBpbnZhc3RpZ2F0aW5nIHRoZSBiZWhh
-dmlvciB3aXRoIGRpc2FibGVkCmhpYmVybmF0aW9uIGFuZCBjcHVfaWRsZS4KRm9yIG5vdyBpdCBz
-ZWVtcyB0byB3b3JrLiBCdXQgdGhpcyBjb3VsZCBjaGFuZ2UgaW4gdGhlIG5leHQgZGF5cy4uLgoK
-VGhpcyBwcm9ibGVtIGRyaXZlcyBtZSByZWFsbHkgY3JhenkuCgpSZWdhcmRzLApGYWJpYW4KCgpB
-bSAwMi4wMy4yMDE1IHVtIDEzOjIwIHNjaHJpZWIgTWljaGFsIEthemlvcjoKPiBPbiAyMyBGZWJy
-dWFyeSAyMDE1IGF0IDE1OjQxLCBGYWJpYW4gV2l0dGVuYmVyZwo+IDxGYWJpYW4uV2l0dGVuYmVy
-Z0Bzb3Bob3MuY29tPiB3cm90ZToKPj4gSGkgTWljaGFsLAo+Pgo+PiBJIGFscmVhZHkgZGlkIHRo
-aXMgYXBwcm9hY2guIFRoaXMgd29ya3MgZmluZSBhbmQgaXMgdGhlIGN1cnJlbnQKPj4gd29ya2Fy
-b3VuZCB0byBnZXQgdGhlIHByb2R1Y3Qgb3V0LCBidXQgSSB3b3VsZCBsaWtlIHRvIGtub3cgd2hh
-dCB0aGUKPj4gYmFzaWMgcHJvYmxlbSBpcy4KPj4gVGhlIHBvd2VyIGNvbnN1bXB0aW9uIGluY3Jl
-YXNlcyBieSB+MS4yNVcgb24gaWRsZSBkZXZpY2VzIGlmIHlvdSBkaXNhYmxlCj4+IGNzdGF0ZXMu
-IFRoaXMgaXMgbm90IGEgcmVhbCBwcm9ibGVtIGJ1dCBhIGxvdyBtZW0gY29ycnVwdGlvbiBpcyBv
-bmUuCj4+IFNvIEkgYXNzdW1lIGEgYnVnIGluIHRoZSBhdGgxMGstZHJpdmVyL2Zpcm13YXJlLgo+
-IEhpIEZhYmlhbiwKPgo+IENhbiB5b3UgdHJ5IHRoZSBmb2xsb3dpbmcgZGlmZiB3aXRoIF9JTlRF
-TF9JRExFPXksIHBsZWFzZT8KPgo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
-MGsvcGNpLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4g
-QEAgLTI1MzEsNiArMjUzMSwxMSBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfY2xhaW0oc3RydWN0
-IGF0aDEwayAqYXIpCj4KPiAgICAgICAgIHBjaV9zZXRfbWFzdGVyKHBkZXYpOwo+Cj4gKyAgICAg
-ICAvKiBEaXNhYmxlIFJFVFJZX1RJTUVPVVQgcmVnaXN0ZXIgdG8gcHJldmVudCBQQ0kgVHggcmV0
-cmllcyBmcm9tCj4gKyAgICAgICAgKiBpbnRlcmZlcmluZyB3aXRoIEMzIENQVSBzdGF0ZS4KPiAr
-ICAgICAgICAqLwo+ICsgICAgICAgcGNpX3dyaXRlX2NvbmZpZ19ieXRlKHBkZXYsIDB4NDEsIDAp
-Owo+ICsKPiAgICAgICAgIC8qIFdvcmthcm91bmQ6IERpc2FibGUgQVNQTSAqLwo+ICAgICAgICAg
-cGNpX3JlYWRfY29uZmlnX2R3b3JkKHBkZXYsIDB4ODAsICZsY3JfdmFsKTsKPiAgICAgICAgIHBj
-aV93cml0ZV9jb25maWdfZHdvcmQocGRldiwgMHg4MCwgKGxjcl92YWwgJiAweGZmZmZmZjAwKSk7
-Cj4KPgo+IE1pY2hhxYIKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
-dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+>> When I was adding WMI_OP_VERSION, my idea was that we will add similar
+>> version for HTT as well once we need it. But I guess this is good enough
+>> for now, we can add HTT_OP_VERSION later if more changes are needed.
+>
+> Maybe it should be renamed to OP_VERSION (drop the WMI_) or BRANCH_ID
+> or something else?
+>
+> It's not like HTT wasn't diverging. It was. However only WMI ABI was
+> seeing major breakage that needed taking care of. HTT changes were
+> small enough and could be ignored until now.
+
+I'm a bit worried that having one id for everything will be more
+difficult to maintain, that's why I created WMI_OP_VERSION in the first
+place. IMHO it's lot cleaner codewise to have one id for WMI interface
+and one id for HTT (eg. HTT_OP_VERSION). What do you think?
+
+> Perhaps the rename could be accompanied by FW API bump to 5?
+
+Maybe not the rename, but yeah, something should be decided before the
+bump up.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
