@@ -1,27 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x230.google.com ([2607:f8b0:4001:c05::230])
+Received: from mail-we0-f179.google.com ([74.125.82.179])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYdEB-0008Nq-B8
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 16:23:23 +0000
-Received: by igcau2 with SMTP id au2so13796136igc.1
- for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 09:23:02 -0700 (PDT)
+ id 1YYdtw-0006E6-1p
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 17:06:33 +0000
+Received: by weop45 with SMTP id p45so62618438weo.0
+ for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 10:06:08 -0700 (PDT)
+From: Simon Wunderlich <simon@open-mesh.com>
+Subject: IBSS support in ath10k - our test results and questions
+Date: Thu, 19 Mar 2015 18:06:05 +0100
+Message-ID: <2680922.jiTnlqor3W@prime>
 MIME-Version: 1.0
-In-Reply-To: <550AF6CC.6060906@sophos.com>
-References: <54EB264D.5040805@sophos.com>
- <CA+BoTQnaNmRs9NcXUtJddhD1SfxAy+Ct-s-hD4mvsi9cqh1eSw@mail.gmail.com>
- <54EB2ED5.8040104@sophos.com>
- <CA+BoTQm01wMzdB1-1V6OE=oNRuCcrrAoRU5LtxYiQt+TmSEfxA@mail.gmail.com>
- <54EB3C30.60302@sophos.com>
- <CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>
- <8ab73bee-735c-4140-a050-e52fb2afd5b5@DE-WIE-EXCH3A.green.sophos>
- <CAJ-VmonNygdZHU9+aUMh47_hjsRtrEqhH5wvgEWoQepPQh9DhQ@mail.gmail.com>
- <550AF1D6.80907@sophos.com>
- <CAJ-Vmo=UEQ+MjZ+tgq9=ED5ca3f=Jb+9iBbs2LDN6zLsEPO94Q@mail.gmail.com>
- <550AF6CC.6060906@sophos.com>
-Date: Thu, 19 Mar 2015 09:23:01 -0700
-Message-ID: <CAJ-Vmomu3jx9mbU7UZ8bUcyPwwx3Eq=t+sGwQ2=2_0C_XG5v-g@mail.gmail.com>
-Subject: Re: ath10k + INTEL_IDLE aka. cstates == firmware crash
-From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,25 +22,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: sven@open-mesh.com, marek@open-mesh.com
 
-On 19 March 2015 at 09:18, Fabian Wittenberg
-<Fabian.Wittenberg@sophos.com> wrote:
-> I don't have them either even though we have a NDA with QCA.
-> There seem to be several NDA steps at QCA. It's really hard to get these
-> papers.
-> It's a pain in the but...
+Hi ath10k devs,
 
-So do I.
+since there has been quite a bit of progress on IBSS in ath10k, we've been 
+trying to integrate it into our OpenWRT based firmware and test it. Since there 
+seems to be many people interested, I'd like to share our status and also ask 
+for comments and support on current issues:
 
-I may have to drive down the road again and try to have lunch with the
-MAC team...
+ * Our test was based on Ben Greears firmware v 13, OpenWRT rev 44654 and 
+various patches (see details below at [1])
+ * We can set up IBSS networks without problems, at least without IBSS/RSN 
+encryption
+ * AP+IBSS simultaneously works somewhat, but with quirks
+ * We see low throughput when communicating via IBSS between 2x ath10k or 1x 
+ath9k + 1x ath10k (~30 MiBit/s). With HT we would have expected ~150 MBit/s, 
+with VHT even more.
+ * We tracked down the reason to be aggregation not working - ath10k never 
+sends ADDBA, and also does not respond to ADDBAs sent by ath9k
+ * Aggregation works just fine in AP mode in ath10k
+
+Therefore, I'd like to know if anyone has experience with Bens firmware and 
+IBSS mode and can point us to existing issues/fixes, or recommend versions to 
+test which are supposed to work. We had to add various VHT patches by hand, so 
+we wonder if anyone had success with that yet, but even the HT performance is 
+far from satisfactory.
+
+Note that we also tried firmware 999.999.0.636 firmware and got better 
+performance (70-90 MBit/s), but since it does not properly support AP it's not 
+an option for us.
+
+There are also a few other issues (IBSS/RSN not working - ath10k firmware does 
+not seem to support software encryption properly ; IBSS+AP has spurious AP 
+issues with a lot of packetloss), but that would be a topic for another time. 
+Maybe we are just missing the right versions here ... :)
+
+Thanks!!
+    Simon
 
 
 
+[1] Our components and software versions:
+ * the devices were ath9k 2x2 (HT40), ath10k 2x2 (VHT80)
+ * Ben Greears firmware 13 (all variants)
+ * OpenWrt 44654
+ * all ath10k patches between f3660a25c4ff15c10c197930b5e039311a25b477
+   (master-2014-11-04) and v3.19
+ * patches from git://dmz2.candelatech.com/linux-3.19.dev.y starting with
+   3.19 and ending at lf-5.3.1 (patches for NFS, PCI, igb, ARM, hwmon,
+   configs, ath9k, neigh, cifs, aesni, hwsim and vlan were dropped)
+ * some patches to work around build errors in Ben Greears patches
+ * a revert of "ath10k: Request OTP to return debug code." because it didn't
+   work with his firmware on the target platform
+ * patch "cfg80211: add extensible feature flag attribute"
+ * patch "cfg80211: add VHT support for IBSS"
+ * patch "mac80211: IBSS fix scan request"
+ * Revert "mac80211: notify NSS changed when IBSS and HT"
+   (required to update to the latest available patch)
+ * "mac80211: notify NSS changed when IBSS and HT"
+   (from http://mid.gmane.org/1418806852-558-1-git-send-email-janusz.dziedzic@tieto.com )
 
--adrian
+Most likely not relevant because it is just for the VHT support in IBSS
+and the problem was already there before adding these patches
+
+ * "mac80211: ibss refactor ieee80211_rx_bss_info"
+ * "mac80211: tdls: disentangle HT supported conditions"
+ * "mac80211: TDLS: support VHT between peers"
+ * "mac80211: add VHT support for IBSS"
+ * a patch to synchronize include/uapi/linux/nl80211.h with the version
+   shipped by iw from OpenWrt 44654
+ * a patch in ath10k to enable NL80211_EXT_FEATURE_VHT_IBSS
+ * a patch to disable SMPS STATIC to get multiple chains HT MCS rates
+   when communicating with ath9k
+ * a patch to set a VHT channel when using "ibss join"
+ * some patches to test things like encryption, trace wmi, ...
+ * some patches to automatically install the CT community firmware using
+   OpenWrt
 
 _______________________________________________
 ath10k mailing list
