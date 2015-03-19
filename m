@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mx2.sophos.com ([145.253.124.138])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYWaf-0001X7-Ki
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 09:18:10 +0000
-Subject: [PATCH] ath10k: bump up FW API to 5
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Thu, 19 Mar 2015 11:17:40 +0200
-Message-ID: <20150319091740.21481.55203.stgit@potku.adurom.net>
+ id 1YYWdZ-0003Kp-Hl
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 09:21:10 +0000
+Date: Thu, 19 Mar 2015 10:20:35 +0100
+From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
 MIME-Version: 1.0
+Subject: Re: ath10k + INTEL_IDLE aka. cstates == firmware crash
+References: <54EB264D.5040805@sophos.com>	<CA+BoTQnaNmRs9NcXUtJddhD1SfxAy+Ct-s-hD4mvsi9cqh1eSw@mail.gmail.com>	<54EB2ED5.8040104@sophos.com>	<CA+BoTQm01wMzdB1-1V6OE=oNRuCcrrAoRU5LtxYiQt+TmSEfxA@mail.gmail.com>	<54EB3C30.60302@sophos.com>
+ <CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>
+In-Reply-To: <CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>
+Message-ID: <8ab73bee-735c-4140-a050-e52fb2afd5b5@DE-WIE-EXCH3A.green.sophos>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,74 +19,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Firmware 10.2.4.48-2 now supports management frames over HTT feature and has
-ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX. But as 10.2.4 branch has conflicting HTT ids
-patch "ath10k: fix htt t2h message conflicts among firmware revisions" is
-needed to fix the issue. Older ath10k versions don't have that fix and to maintain
-backwards compatibility we need bump up the FW API to 5 not break older
-versions.
-
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    7 +++++++
- drivers/net/wireless/ath/ath10k/hw.h   |    3 +++
- drivers/net/wireless/ath/ath10k/pci.c  |    1 +
- 3 files changed, 11 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 02da72ec99cf..8c68aa81c8f6 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -730,6 +730,13 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
- 	/* calibration file is optional, don't check for any errors */
- 	ath10k_fetch_cal_file(ar);
- 
-+	ar->fw_api = 5;
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
-+
-+	ret = ath10k_core_fetch_firmware_api_n(ar, ATH10K_FW_API5_FILE);
-+	if (ret == 0)
-+		goto success;
-+
- 	ar->fw_api = 4;
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 22c993d4fdfc..d0177c05d952 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -78,6 +78,9 @@ enum qca6174_chip_id_rev {
- /* added support for ATH10K_FW_IE_WMI_OP_VERSION */
- #define ATH10K_FW_API4_FILE		"firmware-4.bin"
- 
-+/* HTT id conflict fix for management frames over HTT */
-+#define ATH10K_FW_API5_FILE		"firmware-5.bin"
-+
- #define ATH10K_FW_UTF_FILE		"utf.bin"
- 
- /* includes also the null byte */
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index b4aacfad4b24..262a84f67f62 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2780,6 +2780,7 @@ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API2_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API3_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API4_FILE);
-+MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API5_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
- 
- /* QCA6174 2.1 firmware files */
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgTWljaGFsLAoKdGhhbmsgeW91IGZvciB0aGUgcGF0Y2guIFVuZm9ydHVuYXRlbHkgSSBkaWRu
+J3QgaGFkIHRpbWUgdW50aWwgeWVzdGVyZGF5CnRvIHRlc3QgaXQuClRoaXMgcGF0Y2ggaGFzIG5l
+YXJseSBubyBpbmZsdWVuY2UgaW4gdGhlIHJlcG9ydGVkIGJlaGF2aW91ci4gQXMgc29vbiBhcwpJ
+IGVuYWJsZSBpbnRlbF9pZGxlCnRoZSBmaXJtd2FyZSBzdG9wcyB3b3JraW5nLgpXZSBhbHNvIGRp
+ZCBldmVuIG1vcmUgaW50ZW5zZSB0ZXN0aW5nIGFuZCBmaWd1cmVkIG91dCB0aGF0IGV2ZW4gd2l0
+aApkaXNhYmxlZCBpbnRlbF9pZGxlCnNvbWV0aW1lcyB0aGUgY2FyZCBzdG9wcyB3b3JraW5nIGlu
+IEFQIG1vZGUgYWZ0ZXIgYSBsb25nIHRpbWUgcGVyaW9kIG9yCnB1dHRpbmcgcmVhbGx5IGhlYXZ5
+IGxvYWQuCk5vcm1hbGx5IFNXQkEgb3ZlcnJ1bnMgYXJlIHJlcG9ydGVkIHNsaWdodGx5IGJlZm9y
+ZSB0aGUgY2FyZHMKc3RvcHMgcmVzcG9uZGluZy4KCklmIHdlIGRpc2FibGUKCkNPTkZJR19JUlFf
+RE9NQUlOPW4KQ09ORklHX0lSUV9ET01BSU5fREVCVUc9bgpDT05GSUdfUE1fUlVOVElNRT1uCgp0
+aGUgY3Jhc2ggc3RpbGwgb2NjdXJlIGFmdGVyIDEtMyBkYXlzIGJ1dCB0aGUgY2FyZCBpcyBmdXJ0
+aGVyIHdvcmtpbmcuCgpBdCB0aGUgbW9tZW50IHdlIGFyZSBpbnZhc3RpZ2F0aW5nIHRoZSBiZWhh
+dmlvciB3aXRoIGRpc2FibGVkCmhpYmVybmF0aW9uIGFuZCBjcHVfaWRsZS4KRm9yIG5vdyBpdCBz
+ZWVtcyB0byB3b3JrLiBCdXQgdGhpcyBjb3VsZCBjaGFuZ2UgaW4gdGhlIG5leHQgZGF5cy4uLgoK
+VGhpcyBwcm9ibGVtIGRyaXZlcyBtZSByZWFsbHkgY3JhenkuCgpSZWdhcmRzLApGYWJpYW4KCgpB
+bSAwMi4wMy4yMDE1IHVtIDEzOjIwIHNjaHJpZWIgTWljaGFsIEthemlvcjoKPiBPbiAyMyBGZWJy
+dWFyeSAyMDE1IGF0IDE1OjQxLCBGYWJpYW4gV2l0dGVuYmVyZwo+IDxGYWJpYW4uV2l0dGVuYmVy
+Z0Bzb3Bob3MuY29tPiB3cm90ZToKPj4gSGkgTWljaGFsLAo+Pgo+PiBJIGFscmVhZHkgZGlkIHRo
+aXMgYXBwcm9hY2guIFRoaXMgd29ya3MgZmluZSBhbmQgaXMgdGhlIGN1cnJlbnQKPj4gd29ya2Fy
+b3VuZCB0byBnZXQgdGhlIHByb2R1Y3Qgb3V0LCBidXQgSSB3b3VsZCBsaWtlIHRvIGtub3cgd2hh
+dCB0aGUKPj4gYmFzaWMgcHJvYmxlbSBpcy4KPj4gVGhlIHBvd2VyIGNvbnN1bXB0aW9uIGluY3Jl
+YXNlcyBieSB+MS4yNVcgb24gaWRsZSBkZXZpY2VzIGlmIHlvdSBkaXNhYmxlCj4+IGNzdGF0ZXMu
+IFRoaXMgaXMgbm90IGEgcmVhbCBwcm9ibGVtIGJ1dCBhIGxvdyBtZW0gY29ycnVwdGlvbiBpcyBv
+bmUuCj4+IFNvIEkgYXNzdW1lIGEgYnVnIGluIHRoZSBhdGgxMGstZHJpdmVyL2Zpcm13YXJlLgo+
+IEhpIEZhYmlhbiwKPgo+IENhbiB5b3UgdHJ5IHRoZSBmb2xsb3dpbmcgZGlmZiB3aXRoIF9JTlRF
+TF9JRExFPXksIHBsZWFzZT8KPgo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgx
+MGsvcGNpLmMKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4g
+QEAgLTI1MzEsNiArMjUzMSwxMSBAQCBzdGF0aWMgaW50IGF0aDEwa19wY2lfY2xhaW0oc3RydWN0
+IGF0aDEwayAqYXIpCj4KPiAgICAgICAgIHBjaV9zZXRfbWFzdGVyKHBkZXYpOwo+Cj4gKyAgICAg
+ICAvKiBEaXNhYmxlIFJFVFJZX1RJTUVPVVQgcmVnaXN0ZXIgdG8gcHJldmVudCBQQ0kgVHggcmV0
+cmllcyBmcm9tCj4gKyAgICAgICAgKiBpbnRlcmZlcmluZyB3aXRoIEMzIENQVSBzdGF0ZS4KPiAr
+ICAgICAgICAqLwo+ICsgICAgICAgcGNpX3dyaXRlX2NvbmZpZ19ieXRlKHBkZXYsIDB4NDEsIDAp
+Owo+ICsKPiAgICAgICAgIC8qIFdvcmthcm91bmQ6IERpc2FibGUgQVNQTSAqLwo+ICAgICAgICAg
+cGNpX3JlYWRfY29uZmlnX2R3b3JkKHBkZXYsIDB4ODAsICZsY3JfdmFsKTsKPiAgICAgICAgIHBj
+aV93cml0ZV9jb25maWdfZHdvcmQocGRldiwgMHg4MCwgKGxjcl92YWwgJiAweGZmZmZmZjAwKSk7
+Cj4KPgo+IE1pY2hhxYIKCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
