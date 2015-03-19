@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYW10-0003Mo-Vi
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 08:41:20 +0000
-Received: by wgbcc7 with SMTP id cc7so55962705wgb.0
- for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 01:40:40 -0700 (PDT)
+ id 1YYW7M-0007nA-Ru
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 08:47:53 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: enable ANI by default
+References: <1426701700-21974-1-git-send-email-arnagara@qti.qualcomm.com>
+ <874mphl6jc.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 19 Mar 2015 10:47:22 +0200
+In-Reply-To: <874mphl6jc.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Thu, 19 Mar 2015 10:45:27 +0200")
+Message-ID: <87zj79jrvp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
-References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
- <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 19 Mar 2015 09:40:39 +0100
-Message-ID: <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
- revisions
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +20,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMTkgTWFyY2ggMjAxNSBhdCAwOToyNywgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gUmFqa3VtYXIgTWFub2hhcmFuIDxybWFub2hhckBxdGkucXVhbGNvbW0u
-Y29tPiB3cml0ZXM6Cj4KPj4gVGFyZ2V0IHRvIGhvc3QgSFRUIG1lc3NhZ2VzIGFyZSBjb25mbGlj
-dGluZyBiZXR3ZWVuIDEwLnggYW5kIG90aGVyCj4+IGZpcm13YXJlIHJldmlzaW9ucy4gQnkgbWFp
-bnRhaW5pbmcgc2VwYXJhdGUgSFRUIFQySCB0YWJsZXMgZm9yIGVhY2gKPj4gZmlybXdhcmUgcmV2
-aXNpb25zIChtYWluLCAxMHggYW5kIHRsdikgc2ltaWxhciB0byBXTUkgYWJzdHJhY3Rpb24sCj4+
-IHNvbHZlcyB0aGUgY29uZmxpY3RzLgo+Pgo+PiBDYzogTWljaGFsIEthemlvciA8bWljaGFsLmth
-emlvckB0aWV0by5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1h
-bm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPgo+IFNvIHRoaXMgaXMgbmVlZGVkIHRvIGdldCBtYW5h
-Z2VtZW50cyBmcmFtZXMgb3ZlciBIVFQgd29ya2luZywgcmlnaHQ/Cj4gSXQncyBnb29kIHRvIG1l
-bnRpb24gdGhhdCBpbiB0aGUgY29tbWl0IGxvZywgZG9lcyB0aGlzIGxvb2sgb2s6Cj4KPiBBdXRo
-b3I6IFJhamt1bWFyIE1hbm9oYXJhbiA8cm1hbm9oYXJAcXRpLnF1YWxjb21tLmNvbT4KPiBEYXRl
-OiAgIFdlZCBNYXIgMTEgMTU6MDM6MDIgMjAxNSArMDUzMAo+Cj4gICAgIGF0aDEwazogZml4IGh0
-dCB0MmggbWVzc2FnZSBjb25mbGljdHMgYW1vbmcgZmlybXdhcmUgcmV2aXNpb25zCj4KPiAgICAg
-VGFyZ2V0IHRvIGhvc3QgSFRUIG1lc3NhZ2VzIGFyZSBjb25mbGljdGluZyBiZXR3ZWVuIDEwLngg
-YW5kIG90aGVyCj4gICAgIGZpcm13YXJlIHJldmlzaW9ucy4gQnkgbWFpbnRhaW5pbmcgc2VwYXJh
-dGUgSFRUIFQySCB0YWJsZXMgZm9yIGVhY2gKPiAgICAgZmlybXdhcmUgcmV2aXNpb25zIChtYWlu
-LCAxMHggYW5kIHRsdikgc2ltaWxhciB0byBXTUkgYWJzdHJhY3Rpb24sCj4gICAgIHNvbHZlcyB0
-aGUgY29uZmxpY3RzLgo+Cj4gICAgIFRoaXMgZml4IGlzIG5lZWRlZCB0byBnZXQgbWFuYWdlbWVu
-dCBmcmFtZXMgb3ZlciBIVFQgKGllLgo+ICAgICBBVEgxMEtfRldfRkVBVFVSRV9IQVNfV01JX01H
-TVRfVFggZGlzYWJsZWQpIHdvcmtpbmcgd2l0aCAxMC4yLjQuNDgtMiBmaXJtd2FyZS4KPiAgICAg
-T3RoZXJ3aXNlIHRoZXJlIHdpbGwgYmUgdW5rbm93biBodHQgZXZlbnRzIGFuZCBub3RoaW5nIHdv
-cmtzOgo+Cj4gICAgIFszMDA4Ny40MzgzNDNdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBodHQg
-ZXZlbnQgKDE5KSBub3QgaGFuZGxlZAo+ICAgICBbMzAwODcuNDQ4NjkxXSBhdGgxMGtfcGNpIDAw
-MDA6MDI6MDAuMDogaHR0IGV2ZW50ICgxOSkgbm90IGhhbmRsZWQKPiAgICAgWzMwMTQ5LjAzMjk3
-NF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGh0dCBldmVudCAoMTkpIG5vdCBoYW5kbGVkClsu
-Li5dCj4KPiBXaGVuIEkgd2FzIGFkZGluZyBXTUlfT1BfVkVSU0lPTiwgbXkgaWRlYSB3YXMgdGhh
-dCB3ZSB3aWxsIGFkZCBzaW1pbGFyCj4gdmVyc2lvbiBmb3IgSFRUIGFzIHdlbGwgb25jZSB3ZSBu
-ZWVkIGl0LiBCdXQgSSBndWVzcyB0aGlzIGlzIGdvb2QgZW5vdWdoCj4gZm9yIG5vdywgd2UgY2Fu
-IGFkZCBIVFRfT1BfVkVSU0lPTiBsYXRlciBpZiBtb3JlIGNoYW5nZXMgYXJlIG5lZWRlZC4KCk1h
-eWJlIGl0IHNob3VsZCBiZSByZW5hbWVkIHRvIE9QX1ZFUlNJT04gKGRyb3AgdGhlIFdNSV8pIG9y
-IEJSQU5DSF9JRApvciBzb21ldGhpbmcgZWxzZT8KCkl0J3Mgbm90IGxpa2UgSFRUIHdhc24ndCBk
-aXZlcmdpbmcuIEl0IHdhcy4gSG93ZXZlciBvbmx5IFdNSSBBQkkgd2FzCnNlZWluZyBtYWpvciBi
-cmVha2FnZSB0aGF0IG5lZWRlZCB0YWtpbmcgY2FyZSBvZi4gSFRUIGNoYW5nZXMgd2VyZQpzbWFs
-bCBlbm91Z2ggYW5kIGNvdWxkIGJlIGlnbm9yZWQgdW50aWwgbm93LgoKUGVyaGFwcyB0aGUgcmVu
-YW1lIGNvdWxkIGJlIGFjY29tcGFuaWVkIGJ5IEZXIEFQSSBidW1wIHRvIDU/CgoKTWljaGHFggoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+> Ashok Raj Nagarajan <arnagara@qti.qualcomm.com> writes:
+>
+>> ANI is currently not enabled by default. Enable this feature by default.
+>>
+>> Signed-off-by: Ashok Raj Nagarajan <arnagara@qti.qualcomm.com>
+>
+> You did not send this to ath10k list (and CC linux-wireless). Check the
+> instructions here:
+>
+> https://wireless.wiki.kernel.org/en/users/drivers/ath10k/sources#submitting_patches
+>
+> Also the commit log doesn't tell anything. What is ANI and why should it
+> be enabled? What bug does this fix (if any)? How will the user see the
+> difference after this patch is applied?
+>
+> As a rule of thumb, the commit log should tell any engineer (even one
+> who is not familiar with ath10k) how the behaviour changes after the
+> patch is applied. Think of your target group being distro maintainers,
+> ath10k users, kernel subsystem maintainers etc. No company internal
+> jargon or anything like that, write in plain english so that everyone
+> understand.
+
+I also forgot to CC ath10k list.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
