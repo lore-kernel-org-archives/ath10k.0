@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYWpE-00007v-3e
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 09:33:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
- revisions
+ id 1YYXT7-0000Vr-Os
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 10:14:26 +0000
+Received: by wibdy8 with SMTP id dy8so113286157wib.0
+ for <ath10k@lists.infradead.org>; Thu, 19 Mar 2015 03:14:03 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
 References: <1426066382-481-1-git-send-email-rmanohar@qti.qualcomm.com>
  <878uetl7cn.fsf@kamboji.qca.qualcomm.com>
  <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
-Date: Thu, 19 Mar 2015 11:32:37 +0200
-In-Reply-To: <CA+BoTQmcdiy3u8cvYYRueSoQxGzYf9Suf4dy8HpLG6UaQzJzZQ@mail.gmail.com>
- (Michal Kazior's message of "Thu, 19 Mar 2015 09:40:39 +0100")
-Message-ID: <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ <87r3sljpsa.fsf@kamboji.qca.qualcomm.com>
+Date: Thu, 19 Mar 2015 11:14:00 +0100
+Message-ID: <CA+BoTQkZ-dZUq0Uqy0uAUNxzz0uZtWB4sWwsZod3Wysn_a_YoQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix htt t2h message conflicts among firmware
+ revisions
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +24,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless <linux-wireless@vger.kernel.org>, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
->> When I was adding WMI_OP_VERSION, my idea was that we will add similar
->> version for HTT as well once we need it. But I guess this is good enough
->> for now, we can add HTT_OP_VERSION later if more changes are needed.
->
-> Maybe it should be renamed to OP_VERSION (drop the WMI_) or BRANCH_ID
-> or something else?
->
-> It's not like HTT wasn't diverging. It was. However only WMI ABI was
-> seeing major breakage that needed taking care of. HTT changes were
-> small enough and could be ignored until now.
-
-I'm a bit worried that having one id for everything will be more
-difficult to maintain, that's why I created WMI_OP_VERSION in the first
-place. IMHO it's lot cleaner codewise to have one id for WMI interface
-and one id for HTT (eg. HTT_OP_VERSION). What do you think?
-
-> Perhaps the rename could be accompanied by FW API bump to 5?
-
-Maybe not the rename, but yeah, something should be decided before the
-bump up.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTkgTWFyY2ggMjAxNSBhdCAxMDozMiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPgo+Pj4gV2hlbiBJIHdhcyBhZGRpbmcgV01JX09QX1ZFUlNJT04sIG15IGlkZWEgd2Fz
+IHRoYXQgd2Ugd2lsbCBhZGQgc2ltaWxhcgo+Pj4gdmVyc2lvbiBmb3IgSFRUIGFzIHdlbGwgb25j
+ZSB3ZSBuZWVkIGl0LiBCdXQgSSBndWVzcyB0aGlzIGlzIGdvb2QgZW5vdWdoCj4+PiBmb3Igbm93
+LCB3ZSBjYW4gYWRkIEhUVF9PUF9WRVJTSU9OIGxhdGVyIGlmIG1vcmUgY2hhbmdlcyBhcmUgbmVl
+ZGVkLgo+Pgo+PiBNYXliZSBpdCBzaG91bGQgYmUgcmVuYW1lZCB0byBPUF9WRVJTSU9OIChkcm9w
+IHRoZSBXTUlfKSBvciBCUkFOQ0hfSUQKPj4gb3Igc29tZXRoaW5nIGVsc2U/Cj4+Cj4+IEl0J3Mg
+bm90IGxpa2UgSFRUIHdhc24ndCBkaXZlcmdpbmcuIEl0IHdhcy4gSG93ZXZlciBvbmx5IFdNSSBB
+Qkkgd2FzCj4+IHNlZWluZyBtYWpvciBicmVha2FnZSB0aGF0IG5lZWRlZCB0YWtpbmcgY2FyZSBv
+Zi4gSFRUIGNoYW5nZXMgd2VyZQo+PiBzbWFsbCBlbm91Z2ggYW5kIGNvdWxkIGJlIGlnbm9yZWQg
+dW50aWwgbm93Lgo+Cj4gSSdtIGEgYml0IHdvcnJpZWQgdGhhdCBoYXZpbmcgb25lIGlkIGZvciBl
+dmVyeXRoaW5nIHdpbGwgYmUgbW9yZQo+IGRpZmZpY3VsdCB0byBtYWludGFpbiwgdGhhdCdzIHdo
+eSBJIGNyZWF0ZWQgV01JX09QX1ZFUlNJT04gaW4gdGhlIGZpcnN0Cj4gcGxhY2UuIElNSE8gaXQn
+cyBsb3QgY2xlYW5lciBjb2Rld2lzZSB0byBoYXZlIG9uZSBpZCBmb3IgV01JIGludGVyZmFjZQo+
+IGFuZCBvbmUgaWQgZm9yIEhUVCAoZWcuIEhUVF9PUF9WRVJTSU9OKS4gV2hhdCBkbyB5b3UgdGhp
+bms/CgpDdXJyZW50bHkgYm90aCBXTUkgYW5kIEhUVCBzZWVtIHRvIGJlIGRldmVsb3BlZCBpbiB0
+YW5kZW0gd2l0aGluIHRoZWlyCm93biBicmFuY2hlcy4gSFRUX09QX1ZFUlNJT04gd291bGQgbWFr
+ZSBzZW5zZSBpZiB5b3UgYXNzdW1lIEhUVC9XTUkKZGV2ZWxvcG1lbnQgd2lsbCBiZSBkZXZlbG9w
+ZWQgaW4gcGFyYWxsZWwgYnJhbmNoZXMuCgpXb3VsZCB0aGF0IGV2ZW4gbWFrZSBzZW5zZSBmcm9t
+IF9hbnlfIHBlcnNwZWN0aXZlPyBDdXJyZW50IGJyYW5jaGluZwptb2RlbCBzZWVtcyB0byBiZSBi
+YXNlZCBvbiBwZXItcHVycG9zZSBicmFuY2hpbmcgYW5kIGlzb2xhdGlvbi4gVGhlCnRoaW5raW5n
+IGJlaGluZCB0aGlzIG1pZ2h0IGJlIHRoaXMgYWxsb3dzIGJldHRlciBwYXJhbGxlbGl6YXRpb24g
+b2YKZWZmb3J0cyBiZXR3ZWVuIHRlYW1zIGFuZCB0YXNrcy4gSWYgbXkgYXNzZXJ0aW9uIGlzIGNv
+cnJlY3QgdGhlbiBib3RoCm1hc3Rlci1iZS1hbGwgYnJhbmNoaW5nIGFuZCBpbmRlcGVuZGVudCBX
+TUkvSFRUIGJyYW5jaGluZyBzdGFuZHMgaW4KY29uZmxpY3Qgd2l0aCB0aGUgcGVyLXB1cnBvc2Ug
+YnJhbmNoIGlzb2xhdGlvbiBzbyBhIHNpbmdsZQpPUF9WRVJTSU9OL0JSQU5DSF9JRCBzaG91bGQg
+c3VmZmljZSBmb3IgYXRoMTBrLgoKV2l0aCB0aGlzIGh0dCBjb25mbGljdCBwYXRjaCBXTUlfT1Bf
+VkVSU0lPTiBpcyBhbHJlYWR5IGJlaW5nIHRyZWF0ZWQKYXMgT1BfVkVSU0lPTiBlZmZlY3RpdmVs
+eSAoYW5kIHRodXMgY2hhbmdlIHRoZSBtZWFuaW5nIG9mIGl0KS4KCldvdWxkIGl0IGJlIG11Y2gg
+b2YgYSBwcm9ibGVtIHRvIHJlLXJlbmFtZSBPUF9WRVJTSU9OIGFuZCBpbnRyb2R1Y2UKSFRUX09Q
+X1ZFUlNJT04gbGF0ZXI/IEhtbS4uCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
