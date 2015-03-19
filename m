@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYatx-0002oc-4r
- for ath10k@lists.infradead.org; Thu, 19 Mar 2015 13:54:21 +0000
+ id 1YYavl-0004Vj-CV
+ for ath10k@lists.infradead.org; Thu, 19 Mar 2015 13:56:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: protect driver from unsolicited htc ep0 events
-References: <1426081031-15296-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 19 Mar 2015 15:53:50 +0200
-In-Reply-To: <1426081031-15296-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 11 Mar 2015 14:37:11 +0100")
-Message-ID: <87wq2dhz4h.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: setup maximum number of supported stations
+References: <1426162301-27066-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Thu, 19 Mar 2015 15:55:43 +0200
+In-Reply-To: <1426162301-27066-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Thu, 12 Mar 2015 13:11:41 +0100")
+Message-ID: <87sid1hz1c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,33 +23,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> Some firmware revisions (tested with qca6174
-> rm2.0-00088) deliver unsolicited unknown (kind of
-> garbled) HTC ep0 event to host in some cases.
+> Setup maximum number of associated stations supported in
+> AP/P2P_GO mode.
 >
-> This issue was mainly observed with both qca988x
-> and qca6174 being installed on a single host
-> system. During driver probing if qca6174 booting
-> sequences were somehow deferred (e.g. by qca988x
-> implicitly making some resources busy presumably)
-> the unsolicited event would came around 1s after
-> ATH10K_HTC_MSG_READY_ID was delivered to host for
-> qca6174.
+> This allow hostapd/wpa_supplicant to play with that limit
+> and set more information (eg. P2P group limit bit for P2P_GO).
 >
-> The unsolicited event would confuse driver and
-> cause HTT initialization (and subsequently
-> driver probing) to fail.
->
-> Make the ep0 event processing more robust. The
-> event will still be caught but instead will
-> only generate a warning now.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
 Thanks, applied.
 
