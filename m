@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYxQI-0006ce-OM
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 13:57:15 +0000
-Received: by lbbsy1 with SMTP id sy1so75917845lbb.1
- for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 06:56:52 -0700 (PDT)
+ id 1YYxQG-0006bh-1V
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 13:57:13 +0000
+Received: by lbblx11 with SMTP id lx11so53749160lbb.3
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 06:56:48 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 4/9] ath10k: add hw rate definitions
-Date: Fri, 20 Mar 2015 13:54:10 +0000
-Message-Id: <1426859655-11797-5-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/9] ath10k: move rate definitions to file start
+Date: Fri, 20 Mar 2015 13:54:07 +0000
+Message-Id: <1426859655-11797-2-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
 References: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,92 +27,103 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Prepare defines for future use.
+Prepare the code for future changes so that new
+code can refer to rate-related stuff without
+forward declarations.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt.h     |  1 +
- drivers/net/wireless/ath/ath10k/hw.h      | 21 +++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/rx_desc.h | 22 ++++++++++++++++++++++
- 3 files changed, 44 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 63 ++++++++++++++++++-----------------
+ 1 file changed, 32 insertions(+), 31 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 874bf44..923d173 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -25,6 +25,7 @@
- #include <net/mac80211.h>
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 1214a3b..456d671 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -30,6 +30,38 @@
+ #include "wmi.h"
+ #include "wmi-ops.h"
  
- #include "htc.h"
-+#include "hw.h"
- #include "rx_desc.h"
- 
- enum htt_dbg_stats_type {
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 7f04645..70c6ed9 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -180,6 +180,27 @@ struct ath10k_pktlog_hdr {
- 	u8 payload[0];
- } __packed;
- 
-+enum ath10k_hw_rate_ofdm {
-+	ATH10K_HW_RATE_OFDM_48M = 0,
-+	ATH10K_HW_RATE_OFDM_24M,
-+	ATH10K_HW_RATE_OFDM_12M,
-+	ATH10K_HW_RATE_OFDM_6M,
-+	ATH10K_HW_RATE_OFDM_54M,
-+	ATH10K_HW_RATE_OFDM_36M,
-+	ATH10K_HW_RATE_OFDM_18M,
-+	ATH10K_HW_RATE_OFDM_9M,
++/*********/
++/* Rates */
++/*********/
++
++#define RATETAB_ENT(_rate, _rateid, _flags) { \
++	.bitrate		= (_rate), \
++	.flags			= (_flags), \
++	.hw_value		= (_rateid), \
++}
++
++static struct ieee80211_rate ath10k_rates[] = {
++	/* CCK */
++	RATETAB_ENT(10,  0x82, 0),
++	RATETAB_ENT(20,  0x84, 0),
++	RATETAB_ENT(55,  0x8b, 0),
++	RATETAB_ENT(110, 0x96, 0),
++	/* OFDM */
++	RATETAB_ENT(60,  0x0c, 0),
++	RATETAB_ENT(90,  0x12, 0),
++	RATETAB_ENT(120, 0x18, 0),
++	RATETAB_ENT(180, 0x24, 0),
++	RATETAB_ENT(240, 0x30, 0),
++	RATETAB_ENT(360, 0x48, 0),
++	RATETAB_ENT(480, 0x60, 0),
++	RATETAB_ENT(540, 0x6c, 0),
 +};
 +
-+enum ath10k_hw_rate_cck {
-+	ATH10K_HW_RATE_CCK_LP_11M = 0,
-+	ATH10K_HW_RATE_CCK_LP_5_5M,
-+	ATH10K_HW_RATE_CCK_LP_2M,
-+	ATH10K_HW_RATE_CCK_LP_1M,
-+	ATH10K_HW_RATE_CCK_SP_11M,
-+	ATH10K_HW_RATE_CCK_SP_5_5M,
-+	ATH10K_HW_RATE_CCK_SP_2M,
-+};
++#define ath10k_a_rates (ath10k_rates + 4)
++#define ath10k_a_rates_size (ARRAY_SIZE(ath10k_rates) - 4)
++#define ath10k_g_rates (ath10k_rates + 0)
++#define ath10k_g_rates_size (ARRAY_SIZE(ath10k_rates))
 +
- /* Target specific defines for MAIN firmware */
- #define TARGET_NUM_VDEVS			8
- #define TARGET_NUM_PEER_AST			2
-diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
-index e9cc778..492b5a5 100644
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -661,6 +661,28 @@ struct rx_msdu_end {
- #define RX_PPDU_START_INFO5_SERVICE_MASK 0x0000ffff
- #define RX_PPDU_START_INFO5_SERVICE_LSB  0
+ /**********/
+ /* Crypto */
+ /**********/
+@@ -5420,12 +5452,6 @@ static const struct ieee80211_ops ath10k_ops = {
+ #endif
+ };
  
-+/* No idea what this flag means. It seems to be always set in rate. */
-+#define RX_PPDU_START_RATE_FLAG BIT(3)
-+
-+enum rx_ppdu_start_rate {
-+	RX_PPDU_START_RATE_OFDM_48M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_48M,
-+	RX_PPDU_START_RATE_OFDM_24M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_24M,
-+	RX_PPDU_START_RATE_OFDM_12M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_12M,
-+	RX_PPDU_START_RATE_OFDM_6M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_6M,
-+	RX_PPDU_START_RATE_OFDM_54M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_54M,
-+	RX_PPDU_START_RATE_OFDM_36M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_36M,
-+	RX_PPDU_START_RATE_OFDM_18M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_18M,
-+	RX_PPDU_START_RATE_OFDM_9M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_9M,
-+
-+	RX_PPDU_START_RATE_CCK_LP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_11M,
-+	RX_PPDU_START_RATE_CCK_LP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_5_5M,
-+	RX_PPDU_START_RATE_CCK_LP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_2M,
-+	RX_PPDU_START_RATE_CCK_LP_1M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_1M,
-+	RX_PPDU_START_RATE_CCK_SP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_11M,
-+	RX_PPDU_START_RATE_CCK_SP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_5_5M,
-+	RX_PPDU_START_RATE_CCK_SP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_2M,
-+};
-+
- struct rx_ppdu_start {
- 	struct {
- 		u8 pri20_mhz;
+-#define RATETAB_ENT(_rate, _rateid, _flags) { \
+-	.bitrate		= (_rate), \
+-	.flags			= (_flags), \
+-	.hw_value		= (_rateid), \
+-}
+-
+ #define CHAN2G(_channel, _freq, _flags) { \
+ 	.band			= IEEE80211_BAND_2GHZ, \
+ 	.hw_value		= (_channel), \
+@@ -5488,31 +5514,6 @@ static const struct ieee80211_channel ath10k_5ghz_channels[] = {
+ 	CHAN5G(165, 5825, 0),
+ };
+ 
+-/* Note: Be careful if you re-order these. There is code which depends on this
+- * ordering.
+- */
+-static struct ieee80211_rate ath10k_rates[] = {
+-	/* CCK */
+-	RATETAB_ENT(10,  0x82, 0),
+-	RATETAB_ENT(20,  0x84, 0),
+-	RATETAB_ENT(55,  0x8b, 0),
+-	RATETAB_ENT(110, 0x96, 0),
+-	/* OFDM */
+-	RATETAB_ENT(60,  0x0c, 0),
+-	RATETAB_ENT(90,  0x12, 0),
+-	RATETAB_ENT(120, 0x18, 0),
+-	RATETAB_ENT(180, 0x24, 0),
+-	RATETAB_ENT(240, 0x30, 0),
+-	RATETAB_ENT(360, 0x48, 0),
+-	RATETAB_ENT(480, 0x60, 0),
+-	RATETAB_ENT(540, 0x6c, 0),
+-};
+-
+-#define ath10k_a_rates (ath10k_rates + 4)
+-#define ath10k_a_rates_size (ARRAY_SIZE(ath10k_rates) - 4)
+-#define ath10k_g_rates (ath10k_rates + 0)
+-#define ath10k_g_rates_size (ARRAY_SIZE(ath10k_rates))
+-
+ struct ath10k *ath10k_mac_create(size_t priv_size)
+ {
+ 	struct ieee80211_hw *hw;
 -- 
 2.1.4
 
