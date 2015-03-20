@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYxQH-0006cF-A9
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 13:57:14 +0000
-Received: by labjg1 with SMTP id jg1so87650065lab.2
- for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 06:56:51 -0700 (PDT)
+ id 1YYxQI-0006ce-OM
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 13:57:15 +0000
+Received: by lbbsy1 with SMTP id sy1so75917845lbb.1
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 06:56:52 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/9] ath10k: drop RATETAB_ENT macro
-Date: Fri, 20 Mar 2015 13:54:09 +0000
-Message-Id: <1426859655-11797-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 4/9] ath10k: add hw rate definitions
+Date: Fri, 20 Mar 2015 13:54:10 +0000
+Message-Id: <1426859655-11797-5-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
 References: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,59 +27,92 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-It was superfluous and confusing. It's better to
-define the structure explicitly.
+Prepare defines for future use.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 31 +++++++++++++------------------
- 1 file changed, 13 insertions(+), 18 deletions(-)
+ drivers/net/wireless/ath/ath10k/htt.h     |  1 +
+ drivers/net/wireless/ath/ath10k/hw.h      | 21 +++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 22 ++++++++++++++++++++++
+ 3 files changed, 44 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5721196..f4e76e7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -34,27 +34,22 @@
- /* Rates */
- /*********/
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 874bf44..923d173 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -25,6 +25,7 @@
+ #include <net/mac80211.h>
  
--#define RATETAB_ENT(_rate, _rateid, _flags) { \
--	.bitrate		= (_rate), \
--	.flags			= (_flags), \
--	.hw_value		= (_rateid), \
--}
--
- static struct ieee80211_rate ath10k_rates[] = {
- 	/* CCK */
--	RATETAB_ENT(10,  0, 0),
--	RATETAB_ENT(20,  0, 0),
--	RATETAB_ENT(55,  0, 0),
--	RATETAB_ENT(110, 0, 0),
-+	{ .bitrate = 10 },
-+	{ .bitrate = 20 },
-+	{ .bitrate = 55 },
-+	{ .bitrate = 110 },
+ #include "htc.h"
++#include "hw.h"
+ #include "rx_desc.h"
+ 
+ enum htt_dbg_stats_type {
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7f04645..70c6ed9 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -180,6 +180,27 @@ struct ath10k_pktlog_hdr {
+ 	u8 payload[0];
+ } __packed;
+ 
++enum ath10k_hw_rate_ofdm {
++	ATH10K_HW_RATE_OFDM_48M = 0,
++	ATH10K_HW_RATE_OFDM_24M,
++	ATH10K_HW_RATE_OFDM_12M,
++	ATH10K_HW_RATE_OFDM_6M,
++	ATH10K_HW_RATE_OFDM_54M,
++	ATH10K_HW_RATE_OFDM_36M,
++	ATH10K_HW_RATE_OFDM_18M,
++	ATH10K_HW_RATE_OFDM_9M,
++};
 +
- 	/* OFDM */
--	RATETAB_ENT(60,  0, 0),
--	RATETAB_ENT(90,  0, 0),
--	RATETAB_ENT(120, 0, 0),
--	RATETAB_ENT(180, 0, 0),
--	RATETAB_ENT(240, 0, 0),
--	RATETAB_ENT(360, 0, 0),
--	RATETAB_ENT(480, 0, 0),
--	RATETAB_ENT(540, 0, 0),
-+	{ .bitrate = 60 },
-+	{ .bitrate = 90 },
-+	{ .bitrate = 120 },
-+	{ .bitrate = 180 },
-+	{ .bitrate = 240 },
-+	{ .bitrate = 360 },
-+	{ .bitrate = 480 },
-+	{ .bitrate = 540 },
- };
++enum ath10k_hw_rate_cck {
++	ATH10K_HW_RATE_CCK_LP_11M = 0,
++	ATH10K_HW_RATE_CCK_LP_5_5M,
++	ATH10K_HW_RATE_CCK_LP_2M,
++	ATH10K_HW_RATE_CCK_LP_1M,
++	ATH10K_HW_RATE_CCK_SP_11M,
++	ATH10K_HW_RATE_CCK_SP_5_5M,
++	ATH10K_HW_RATE_CCK_SP_2M,
++};
++
+ /* Target specific defines for MAIN firmware */
+ #define TARGET_NUM_VDEVS			8
+ #define TARGET_NUM_PEER_AST			2
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index e9cc778..492b5a5 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -661,6 +661,28 @@ struct rx_msdu_end {
+ #define RX_PPDU_START_INFO5_SERVICE_MASK 0x0000ffff
+ #define RX_PPDU_START_INFO5_SERVICE_LSB  0
  
- #define ath10k_a_rates (ath10k_rates + 4)
++/* No idea what this flag means. It seems to be always set in rate. */
++#define RX_PPDU_START_RATE_FLAG BIT(3)
++
++enum rx_ppdu_start_rate {
++	RX_PPDU_START_RATE_OFDM_48M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_48M,
++	RX_PPDU_START_RATE_OFDM_24M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_24M,
++	RX_PPDU_START_RATE_OFDM_12M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_12M,
++	RX_PPDU_START_RATE_OFDM_6M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_6M,
++	RX_PPDU_START_RATE_OFDM_54M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_54M,
++	RX_PPDU_START_RATE_OFDM_36M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_36M,
++	RX_PPDU_START_RATE_OFDM_18M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_18M,
++	RX_PPDU_START_RATE_OFDM_9M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_OFDM_9M,
++
++	RX_PPDU_START_RATE_CCK_LP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_11M,
++	RX_PPDU_START_RATE_CCK_LP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_5_5M,
++	RX_PPDU_START_RATE_CCK_LP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_2M,
++	RX_PPDU_START_RATE_CCK_LP_1M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_LP_1M,
++	RX_PPDU_START_RATE_CCK_SP_11M  = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_11M,
++	RX_PPDU_START_RATE_CCK_SP_5_5M = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_5_5M,
++	RX_PPDU_START_RATE_CCK_SP_2M   = RX_PPDU_START_RATE_FLAG | ATH10K_HW_RATE_CCK_SP_2M,
++};
++
+ struct rx_ppdu_start {
+ 	struct {
+ 		u8 pri20_mhz;
 -- 
 2.1.4
 
