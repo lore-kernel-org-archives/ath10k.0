@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYyvN-0006H9-Fm
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 15:33:26 +0000
-Message-ID: <550C3D97.50307@candelatech.com>
-Date: Fri, 20 Mar 2015 08:32:39 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YYzIL-0001g4-IR
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 15:57:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: unknown qca6164 model 0x0041
+References: <201503191317.16541.arnd@arndb.de>
+ <CA+BoTQn=Pi-hxmCV4TijgFr8W-26=s+juG+UQ1vhPXfUhi4ERQ@mail.gmail.com>
+ <201503191431.38540.arnd@arndb.de>
+Date: Fri, 20 Mar 2015 17:56:33 +0200
+In-Reply-To: <201503191431.38540.arnd@arndb.de> (Arnd Bergmann's message of
+ "Thu, 19 Mar 2015 14:31:38 +0100")
+Message-ID: <877fubfyry.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: IBSS support in ath10k - our test results and questions
-References: <2680922.jiTnlqor3W@prime> <550B425A.7090505@candelatech.com>
- <1799837.1jGie9QosO@prime>
-In-Reply-To: <1799837.1jGie9QosO@prime>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +25,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Simon Wunderlich <simon@open-mesh.com>
-Cc: sven@open-mesh.com, marek@open-mesh.com, ath10k@lists.infradead.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 03/20/2015 07:26 AM, Simon Wunderlich wrote:
-> On Thursday 19 March 2015 14:40:42 Ben Greear wrote:
->> On 03/19/2015 10:06 AM, Simon Wunderlich wrote:
->>> [...]
->>>  * We see low throughput when communicating via IBSS between 2x ath10k or
->>>  1x
->>>
->>> ath9k + 1x ath10k (~30 MiBit/s). With HT we would have expected ~150
->>> MBit/s, with VHT even more.
->>
->> Do you see this problem with only an IBSS interface?  In other words, is my
->> firmware worse at this than stock 999.x firmware in same configuration?
-> 
-> Yes, we used your firmware with only one IBSS interface. And yes, in our tests 
-> your firmware performed worse - with stock 999.x firmware we saw 70-90 Mbit/s, 
-> which was also not great, but way better. Also in that case we saw that 
-> aggregation was enabled.
-> 
-> The AP+IBSS concurrently was another test.
-> 
-> As also mentioned originally, 999.x firmware is not an option for us since we 
-> will eventually need AP and IBSS at the same time.
-> 
->>
->> Thanks for all the details...  Sounds like you have done more testing on
->> this than I have for sure.
-> 
-> We want to integrate IBSS mode into products, so we have to test thoroughly. 
-> :)
-> 
-> If you also want to focus on IBSS, we would be happy to collaborate and test.
+Arnd Bergmann <arnd@arndb.de> writes:
 
-I am doing some work-for-hire in this area, so it's important for me to
-make my firmware work as well as possible with IBSS.  For those not purchasing
-support, helping to test my firmware changes and providing driver/kernel/whatever
-open-source patches and help will be payment enough for me.
+> On Thursday 19 March 2015, Michal Kazior wrote:
+>> On 19 March 2015 at 13:17, Arnd Bergmann <arnd@arndb.de> wrote:
+>> > Hi,
+>> >
+>> > I just got a Lenovo Yoga 3 11" Laptop that came with a NFA345 wifi module that
+>> > is allegedly using a qca6164 chip. The Windows driver calls it a 61x4 version 20
+>> > device and the PCI ID is 168c:0041, which is different from the device ID
+>> > that was just added to ath10k as QCA6174_2_1_DEVICE_ID (168c:003e).
+>> >
+>> > Does anyone have more information about this device and about how hard it would
+>> > be to add support to the driver? Is there a chance that it might just work by
+>> > adding the IDs or is it something rather different?
+>> 
+>> "version 20 device" strongly suggests this is a hw2.1 device.
+>> Currently there's only ath10k firmware for hw3.0 chips available. You
+>> can look through ath10k mailing list for discussions on qca6174 hw2.1
+>> (qca6164 is basically 1x1 instead of 2x2 from what I understand).
+>> 
+>> If not for the firmware confusion adding support to the driver is
+>> probably as trivial as just adding the new pci device id to the
+>> supported list.
+>
+> Ok, I see. I still have Windows on the machine, so I can probably
+> manage to extract the blob and also build a patched kernel once I'm
+> able to install a working environment on the laptop.
 
-I'll go look to see if I can find any block-ack related code I might have missed
-when porting the IBSS support forward from the 999.x firmware.
-
-Thanks,
-Ben
-
->>
->> In case you have a public kernel tree available somewhere with all your
->> patches, that might help speed up someone's attempt to reproduce this?
-> 
-> We currently don't have it. I'll ask if we can publish it. Our work was based 
-> on a backports release on the mac80211 package in OpenWRT, though, so don't 
-> expect a kernel tree. :)
-> 
-> Thanks, 
->     Simon
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
-
+I'm internally trying to sort out the firmware problem but that will
+probably take some time. I or Michal will send mail once we have
+something newsworthy.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
