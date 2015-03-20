@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYzIL-0001g4-IR
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 15:57:10 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: unknown qca6164 model 0x0041
-References: <201503191317.16541.arnd@arndb.de>
- <CA+BoTQn=Pi-hxmCV4TijgFr8W-26=s+juG+UQ1vhPXfUhi4ERQ@mail.gmail.com>
- <201503191431.38540.arnd@arndb.de>
-Date: Fri, 20 Mar 2015 17:56:33 +0200
-In-Reply-To: <201503191431.38540.arnd@arndb.de> (Arnd Bergmann's message of
- "Thu, 19 Mar 2015 14:31:38 +0100")
-Message-ID: <877fubfyry.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1YZ1mC-00071C-Qy
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 18:36:13 +0000
+Received: by lbcgn8 with SMTP id gn8so81447838lbc.2
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 11:35:43 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [RFC] ath10k: IBSS allow to use RSN
+Date: Fri, 20 Mar 2015 19:35:23 +0100
+Message-Id: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,47 +17,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, greearb@candelatech.com
 
-Arnd Bergmann <arnd@arndb.de> writes:
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 
-> On Thursday 19 March 2015, Michal Kazior wrote:
->> On 19 March 2015 at 13:17, Arnd Bergmann <arnd@arndb.de> wrote:
->> > Hi,
->> >
->> > I just got a Lenovo Yoga 3 11" Laptop that came with a NFA345 wifi module that
->> > is allegedly using a qca6164 chip. The Windows driver calls it a 61x4 version 20
->> > device and the PCI ID is 168c:0041, which is different from the device ID
->> > that was just added to ath10k as QCA6174_2_1_DEVICE_ID (168c:003e).
->> >
->> > Does anyone have more information about this device and about how hard it would
->> > be to add support to the driver? Is there a chance that it might just work by
->> > adding the IDs or is it something rather different?
->> 
->> "version 20 device" strongly suggests this is a hw2.1 device.
->> Currently there's only ath10k firmware for hw3.0 chips available. You
->> can look through ath10k mailing list for discussions on qca6174 hw2.1
->> (qca6164 is basically 1x1 instead of 2x2 from what I understand).
->> 
->> If not for the firmware confusion adding support to the driver is
->> probably as trivial as just adding the new pci device id to the
->> supported list.
->
-> Ok, I see. I still have Windows on the machine, so I can probably
-> manage to extract the blob and also build a patched kernel once I'm
-> able to install a working environment on the laptop.
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I'm internally trying to sort out the firmware problem but that will
-probably take some time. I or Michal will send mail once we have
-something newsworthy.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 39c60f5..ebecfe9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6541,11 +6541,13 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			IEEE80211_HW_SPECTRUM_MGMT |
+ 			IEEE80211_HW_SW_CRYPTO_CONTROL |
+ 			IEEE80211_HW_CONNECTION_MONITOR |
++			IEEE80211_HW_SUPPORTS_PER_STA_GTK |
+ 			IEEE80211_HW_WANT_MONITOR_VIF |
+ 			IEEE80211_HW_CHANCTX_STA_CSA |
+ 			IEEE80211_HW_QUEUE_CONTROL;
+ 
+ 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
++	ar->hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
+ 
+ 	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
+ 		ar->hw->wiphy->features |= NL80211_FEATURE_DYNAMIC_SMPS;
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
