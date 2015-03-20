@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZ1mC-00071C-Qy
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 18:36:13 +0000
-Received: by lbcgn8 with SMTP id gn8so81447838lbc.2
- for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 11:35:43 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [RFC] ath10k: IBSS allow to use RSN
-Date: Fri, 20 Mar 2015 19:35:23 +0100
-Message-Id: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YZ4kr-0007Bt-DU
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 21:46:57 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 91FDD40B2CD
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 14:46:33 -0700 (PDT)
+Message-ID: <550C9539.50805@candelatech.com>
+Date: Fri, 20 Mar 2015 14:46:33 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Repeated firmware crash when admin down.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,40 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, greearb@candelatech.com
+To: ath10k <ath10k@lists.infradead.org>
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Someone reported this bug to me.  It is repeatable on various firmware,
+including my own and official QCA firmware.
 
----
- drivers/net/wireless/ath/ath10k/mac.c | 2 ++
- 1 file changed, 2 insertions(+)
+I am not certain of the hardware platform, but I think it might be a Ventana
+imx6 board.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 39c60f5..ebecfe9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6541,11 +6541,13 @@ int ath10k_mac_register(struct ath10k *ar)
- 			IEEE80211_HW_SPECTRUM_MGMT |
- 			IEEE80211_HW_SW_CRYPTO_CONTROL |
- 			IEEE80211_HW_CONNECTION_MONITOR |
-+			IEEE80211_HW_SUPPORTS_PER_STA_GTK |
- 			IEEE80211_HW_WANT_MONITOR_VIF |
- 			IEEE80211_HW_CHANCTX_STA_CSA |
- 			IEEE80211_HW_QUEUE_CONTROL;
- 
- 	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
-+	ar->hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
- 
- 	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
- 		ar->hw->wiphy->features |= NL80211_FEATURE_DYNAMIC_SMPS;
+Kernel is based on 3.19-mumble.
+
+I cannot reproduce on x86 (but testing on 3.17 kernel and different flavour of
+Linux, so who knows.)
+
+They simply admin-down wlanX, and then the firmware crashes over and over.
+They cannot get any register dump.
+When they admin up the interface, the crashes stop and system resumes normally.
+
+I had them try it with my firmware and a driver patch
+which will attempt to do ping-pong register dump
+over pci register reads in case the firmware's normal PCI messaging transport
+is down, but the register value always reads as '0xdeadbeef'.
+
+Driver patch is linked below, 'val' is 0xdeadbeef after the million read attempts.
+
+(Need a few additional patches to define CT firmware flag and such, but you can
+ see the logic easily enough.)
+http://dmz2.candelatech.com/?p=linux-3.17.dev.y/.git;a=commit;h=52333b889f0c818d2766d0d514ac31e5c53ce0ab
+
+Any ideas what might be the problem?
+
+Thanks,
+Ben
+
 -- 
-1.9.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
