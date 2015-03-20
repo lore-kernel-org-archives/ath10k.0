@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx1.sophos.com ([145.253.124.137])
+Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYuST-0004QQ-35
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 10:47:17 +0000
-Message-ID: <550BFA96.3030105@sophos.com>
-Date: Fri, 20 Mar 2015 11:46:46 +0100
-From: Fabian Wittenberg <Fabian.Wittenberg@sophos.com>
-MIME-Version: 1.0
-Subject: Re: ath10k + INTEL_IDLE aka. cstates == firmware crash
-References: <54EB264D.5040805@sophos.com>	<CA+BoTQnaNmRs9NcXUtJddhD1SfxAy+Ct-s-hD4mvsi9cqh1eSw@mail.gmail.com>	<54EB2ED5.8040104@sophos.com>	<CA+BoTQm01wMzdB1-1V6OE=oNRuCcrrAoRU5LtxYiQt+TmSEfxA@mail.gmail.com>	<54EB3C30.60302@sophos.com>	<CA+BoTQkQq5RG4dDBf0whxBfe5yNvjSb-57AYfoDWeHk-CuZvAw@mail.gmail.com>	<8ab73bee-735c-4140-a050-e52fb2afd5b5@DE-WIE-EXCH3A.green.sophos>	<CAJ-VmonNygdZHU9+aUMh47_hjsRtrEqhH5wvgEWoQepPQh9DhQ@mail.gmail.com>	<550AF1D6.80907@sophos.com>
- <CAJ-Vmo=UEQ+MjZ+tgq9=ED5ca3f=Jb+9iBbs2LDN6zLsEPO94Q@mail.gmail.com>
-In-Reply-To: <CAJ-Vmo=UEQ+MjZ+tgq9=ED5ca3f=Jb+9iBbs2LDN6zLsEPO94Q@mail.gmail.com>
+ id 1YYufX-0003aZ-0R
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 11:00:48 +0000
+Received: by lbbrr9 with SMTP id rr9so8031873lbb.0
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 04:00:23 -0700 (PDT)
+From: Marek Puzyniak <marek.puzyniak@tieto.com>
+Subject: [PATCH v4 0/6] ath10k: add basic tdls support
+Date: Fri, 20 Mar 2015 12:02:53 +0100
+Message-Id: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,62 +17,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Adrian Chadd <adrian@freebsd.org>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>
 
-Today we encountered a similar issue on a QCA9558 as well.
-However its really rare to see it on this chipset.
-This is a SoC with MIPS architecture. Widely used on access points.
-I really think you could be right with your quess.
-But that should be a QCA task as its really related to their h/w.
-We are using backports/ath10k for the PCI card and the SoC.
+This patchset introduces tdls funtionality without tdls peer uapsd
+and tdls channel switching. Tdls is supported by qca6174 hardware 
+what is indicated by firmware through supported services.
+Tdls station when authorized requires some parameters that are filled in 
+by rate control initialization. Rate control for tdls is initialized
+at proper time in mac80211 patch:
+mac80211: initialize rate control earlier for tdls station
 
-Regards,
-Fabian
+So tdls funtionality implemented by this patchset depends on 
+mac80211: initialize rate control earlier for tdls station
 
-Am 19.03.2015 um 17:05 schrieb Adrian Chadd:
-> On 19 March 2015 at 08:57, Fabian Wittenberg
-> <Fabian.Wittenberg@sophos.com> wrote:
->> Yes, I guessed something like that but this should be a firmwarebug :-\
->> I'm quiet surprized that nowbody else has this problem!?
->> There are so many configuration constellations that trigger this...
-> The sleep depth / time that a socket-sleep state can take to wakeup to
-> do DMA is highly variable. It's based on chipset, BIOS and sleep
-> settings.
->
-> IIRC the ath10k firmware wasn't really debugged with hostap-on-intel
-> as a supported option, with all the varying things there. So yeah,
-> someone with more detailed DMA/PCIe bridge documentation for QCA988x
-> is going to have to dig into the DMA register settings to see what's
-> going on. Maybe it's just exceeding the transaction timeout and that
-> should be easy to fix.
->
-> (I currently don't have all of the register documentation for the
-> QCA988x as I do for the pre-11ac chips.)
->
->
-> adrian
->
->> Fabian
->>
->> Am 19.03.2015 um 16:44 schrieb Adrian Chadd:
->>> It's possible that you're entering a sleep state, the whole socket +
->>> dram controller is going to sleep, and the latency that the wakeup
->>> causes is confusing the firmware and/or DMA engine.
->>>
->>>
->>>
->>> -adrian
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
+v2:
+-introduce tdls peer counter
+-minor changes after review
 
+v3:
+-more minor changes after review
+-replace tdls peer counter variable by iterate station function
+
+v4:
+-provide functions for counting tdls station per vif and tdls vifs
+-handle maximum number of tdls vifs
+-split code into more patches
+
+Marek Puzyniak (5):
+  ath10k: make peer type configurable
+  ath10k: store max tdls vdevs that fw can handle
+  ath10k: update station counting
+  ath10k: add wmi support for tdls
+  ath10k: introduce basic tdls functionality
+
+Michal Kazior (1):
+  ath10k: unify tx mode and dispatch
+
+ drivers/net/wireless/ath/ath10k/core.c    |   1 +
+ drivers/net/wireless/ath/ath10k/core.h    |   3 +
+ drivers/net/wireless/ath/ath10k/htt_rx.c  |   8 -
+ drivers/net/wireless/ath/ath10k/htt_tx.c  |  30 ++-
+ drivers/net/wireless/ath/ath10k/hw.h      |   1 +
+ drivers/net/wireless/ath/ath10k/mac.c     | 391 +++++++++++++++++++++++++-----
+ drivers/net/wireless/ath/ath10k/mac.h     |   8 +
+ drivers/net/wireless/ath/ath10k/wmi-ops.h |  50 +++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 160 +++++++++++-
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  53 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |   3 +-
+ drivers/net/wireless/ath/ath10k/wmi.h     |  43 ++++
+ 12 files changed, 664 insertions(+), 87 deletions(-)
+
+-- 
+2.1.4
 
 
 _______________________________________________
