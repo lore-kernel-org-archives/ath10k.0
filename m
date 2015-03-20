@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x234.google.com ([2a00:1450:4010:c03::234])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YYufl-0003fl-4i
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 11:01:02 +0000
-Received: by labe2 with SMTP id e2so8695388lab.3
- for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 04:00:38 -0700 (PDT)
+ id 1YYufn-0003hr-45
+ for ath10k@lists.infradead.org; Fri, 20 Mar 2015 11:01:03 +0000
+Received: by lbbrr9 with SMTP id rr9so8037722lbb.0
+ for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 04:00:43 -0700 (PDT)
 From: Marek Puzyniak <marek.puzyniak@tieto.com>
-Subject: [PATCH v4 2/6] ath10k: make peer type configurable
-Date: Fri, 20 Mar 2015 12:02:55 +0100
-Message-Id: <1426849379-7562-3-git-send-email-marek.puzyniak@tieto.com>
+Subject: [PATCH v4 3/6] ath10k: store max tdls vdevs that fw can handle
+Date: Fri, 20 Mar 2015 12:02:56 +0100
+Message-Id: <1426849379-7562-4-git-send-email-marek.puzyniak@tieto.com>
 In-Reply-To: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
 References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -25,171 +25,69 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, Marek Puzyniak <marek.puzyniak@tieto.com>
+Cc: Marek Puzyniak <marek.puzyniak@tieto.com>
 
-Peer type was hardcoded to default value.
-For future implementation it is required
-to make is configurable.
+Currently number of tdls vdevs supported by firmware
+is hardcoded. For future usage it is stored in ath10k
+structure based on defined value.
 
 Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     | 17 +++++++++++------
- drivers/net/wireless/ath/ath10k/wmi-ops.h |  8 +++++---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  5 +++--
- drivers/net/wireless/ath/ath10k/wmi.c     |  3 ++-
- drivers/net/wireless/ath/ath10k/wmi.h     |  6 ++++++
- 5 files changed, 27 insertions(+), 12 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c    | 1 +
+ drivers/net/wireless/ath/ath10k/core.h    | 1 +
+ drivers/net/wireless/ath/ath10k/hw.h      | 1 +
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 2 +-
+ 4 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 6b07ef6..866c948 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -428,7 +428,8 @@ static u8 ath10k_parse_mpdudensity(u8 mpdudensity)
- 	}
- }
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c0e454b..47a3c55 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -971,6 +971,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
++		ar->max_num_tdls_vdevs = TARGET_TLV_NUM_TDLS_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index b07d883..7d4f9c9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -638,6 +638,7 @@ struct ath10k {
+ 	int max_num_peers;
+ 	int max_num_stations;
+ 	int max_num_vdevs;
++	int max_num_tdls_vdevs;
  
--static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
-+static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr,
-+			      enum wmi_peer_type peer_type)
- {
- 	int ret;
- 
-@@ -437,7 +438,7 @@ static int ath10k_peer_create(struct ath10k *ar, u32 vdev_id, const u8 *addr)
- 	if (ar->num_peers >= ar->max_num_peers)
- 		return -ENOBUFS;
- 
--	ret = ath10k_wmi_peer_create(ar, vdev_id, addr);
-+	ret = ath10k_wmi_peer_create(ar, vdev_id, addr, peer_type);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to create wmi peer %pM on vdev %i: %i\n",
- 			    addr, vdev_id, ret);
-@@ -1288,7 +1289,8 @@ static void ath10k_control_ibss(struct ath10k_vif *arvif,
- 		return;
- 	}
- 
--	ret = ath10k_peer_create(arvif->ar, arvif->vdev_id, self_peer);
-+	ret = ath10k_peer_create(arvif->ar, arvif->vdev_id, self_peer,
-+				 WMI_PEER_TYPE_DEFAULT);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to create IBSS self peer %pM for vdev %d: %d\n",
- 			    self_peer, arvif->vdev_id, ret);
-@@ -2753,7 +2755,8 @@ void ath10k_offchan_tx_work(struct work_struct *work)
- 				   peer_addr, vdev_id);
- 
- 		if (!peer) {
--			ret = ath10k_peer_create(ar, vdev_id, peer_addr);
-+			ret = ath10k_peer_create(ar, vdev_id, peer_addr,
-+						 WMI_PEER_TYPE_DEFAULT);
- 			if (ret)
- 				ath10k_warn(ar, "failed to create peer %pM on vdev %d: %d\n",
- 					    peer_addr, vdev_id, ret);
-@@ -3660,7 +3663,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
- 	}
- 
- 	if (arvif->vdev_type == WMI_VDEV_TYPE_AP) {
--		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr);
-+		ret = ath10k_peer_create(ar, arvif->vdev_id, vif->addr,
-+					 WMI_PEER_TYPE_DEFAULT);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to create vdev %i peer for AP: %d\n",
- 				    arvif->vdev_id, ret);
-@@ -4456,7 +4460,8 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
- 			goto exit;
- 		}
- 
--		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr);
-+		ret = ath10k_peer_create(ar, arvif->vdev_id, sta->addr,
-+					 WMI_PEER_TYPE_DEFAULT);
- 		if (ret) {
- 			ath10k_warn(ar, "failed to add peer %pM for vdev %d when adding a new sta: %i\n",
- 				    sta->addr, arvif->vdev_id, ret);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index f0a8b8d..28d042c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -83,7 +83,8 @@ struct wmi_ops {
- 	struct sk_buff *(*gen_vdev_wmm_conf)(struct ath10k *ar, u32 vdev_id,
- 					     const struct wmi_wmm_params_all_arg *arg);
- 	struct sk_buff *(*gen_peer_create)(struct ath10k *ar, u32 vdev_id,
--					   const u8 peer_addr[ETH_ALEN]);
-+					   const u8 peer_addr[ETH_ALEN],
-+					   enum wmi_peer_type peer_type);
- 	struct sk_buff *(*gen_peer_delete)(struct ath10k *ar, u32 vdev_id,
- 					   const u8 peer_addr[ETH_ALEN]);
- 	struct sk_buff *(*gen_peer_flush)(struct ath10k *ar, u32 vdev_id,
-@@ -636,14 +637,15 @@ ath10k_wmi_vdev_wmm_conf(struct ath10k *ar, u32 vdev_id,
- 
- static inline int
- ath10k_wmi_peer_create(struct ath10k *ar, u32 vdev_id,
--		       const u8 peer_addr[ETH_ALEN])
-+		       const u8 peer_addr[ETH_ALEN],
-+		       enum wmi_peer_type peer_type)
- {
- 	struct sk_buff *skb;
- 
- 	if (!ar->wmi.ops->gen_peer_create)
- 		return -EOPNOTSUPP;
- 
--	skb = ar->wmi.ops->gen_peer_create(ar, vdev_id, peer_addr);
-+	skb = ar->wmi.ops->gen_peer_create(ar, vdev_id, peer_addr, peer_type);
- 	if (IS_ERR(skb))
- 		return PTR_ERR(skb);
+ 	struct work_struct offchan_tx_work;
+ 	struct sk_buff_head offchan_tx_queue;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 7f04645..3ae2dbf 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -261,6 +261,7 @@ struct ath10k_pktlog_hdr {
+ #define TARGET_TLV_NUM_PEERS			((TARGET_TLV_NUM_STATIONS) + \
+ 						 (TARGET_TLV_NUM_VDEVS) + \
+ 						 2)
++#define TARGET_TLV_NUM_TDLS_VDEVS		1
+ #define TARGET_TLV_NUM_TIDS			((TARGET_TLV_NUM_PEERS) * 2)
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
  
 diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 3eec042..a65e11b 100644
+index a65e11b..80e882b 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1860,7 +1860,8 @@ ath10k_wmi_tlv_op_gen_sta_keepalive(struct ath10k *ar,
- 
- static struct sk_buff *
- ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
--				  const u8 peer_addr[ETH_ALEN])
-+				  const u8 peer_addr[ETH_ALEN],
-+				  enum wmi_peer_type peer_type)
- {
- 	struct wmi_tlv_peer_create_cmd *cmd;
- 	struct wmi_tlv *tlv;
-@@ -1875,7 +1876,7 @@ ath10k_wmi_tlv_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
- 	tlv->len = __cpu_to_le16(sizeof(*cmd));
- 	cmd = (void *)tlv->value;
- 	cmd->vdev_id = __cpu_to_le32(vdev_id);
--	cmd->peer_type = __cpu_to_le32(WMI_TLV_PEER_TYPE_DEFAULT); /* FIXME */
-+	cmd->peer_type = __cpu_to_le32(peer_type);
- 	ether_addr_copy(cmd->peer_addr.addr, peer_addr);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv peer create\n");
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 54430a1..e78dd2b 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4510,7 +4510,8 @@ ath10k_wmi_op_gen_vdev_spectral_enable(struct ath10k *ar, u32 vdev_id,
- 
- static struct sk_buff *
- ath10k_wmi_op_gen_peer_create(struct ath10k *ar, u32 vdev_id,
--			      const u8 peer_addr[ETH_ALEN])
-+			      const u8 peer_addr[ETH_ALEN],
-+			      enum wmi_peer_type peer_type)
- {
- 	struct wmi_peer_create_cmd *cmd;
- 	struct sk_buff *skb;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 938e652..3dddd47 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4333,6 +4333,12 @@ struct wmi_peer_create_cmd {
- 	struct wmi_mac_addr peer_macaddr;
- } __packed;
- 
-+enum wmi_peer_type {
-+	WMI_PEER_TYPE_DEFAULT = 0,
-+	WMI_PEER_TYPE_BSS = 1,
-+	WMI_PEER_TYPE_TDLS = 2,
-+};
-+
- struct wmi_peer_delete_cmd {
- 	__le32 vdev_id;
- 	struct wmi_mac_addr peer_macaddr;
+@@ -1271,7 +1271,7 @@ static struct sk_buff *ath10k_wmi_tlv_op_gen_init(struct ath10k *ar)
+ 	cfg->gtk_offload_max_vdev = __cpu_to_le32(2);
+ 	cfg->num_msdu_desc = __cpu_to_le32(TARGET_TLV_NUM_MSDU_DESC);
+ 	cfg->max_frag_entries = __cpu_to_le32(2);
+-	cfg->num_tdls_vdevs = __cpu_to_le32(1);
++	cfg->num_tdls_vdevs = __cpu_to_le32(TARGET_TLV_NUM_TDLS_VDEVS);
+ 	cfg->num_tdls_conn_table_entries = __cpu_to_le32(0x20);
+ 	cfg->beacon_tx_offload_max_vdev = __cpu_to_le32(2);
+ 	cfg->num_multicast_filter_entries = __cpu_to_le32(5);
 -- 
 2.1.4
 
