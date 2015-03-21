@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZ4kr-0007Bt-DU
- for ath10k@lists.infradead.org; Fri, 20 Mar 2015 21:46:57 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 91FDD40B2CD
- for <ath10k@lists.infradead.org>; Fri, 20 Mar 2015 14:46:33 -0700 (PDT)
-Message-ID: <550C9539.50805@candelatech.com>
-Date: Fri, 20 Mar 2015 14:46:33 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mout.gmx.net ([212.227.15.18])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YZQ3p-0006nO-G9
+ for ath10k@lists.infradead.org; Sat, 21 Mar 2015 20:31:58 +0000
 MIME-Version: 1.0
-Subject: Repeated firmware crash when admin down.
+Message-ID: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>
+From: jhihn@gmx.com
+Subject: Re: Re: QCA6174 hw2.1?
+Date: Sat, 21 Mar 2015 21:31:28 +0100
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +16,81 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Someone reported this bug to me.  It is repeatable on various firmware,
-including my own and official QCA firmware.
-
-I am not certain of the hardware platform, but I think it might be a Ventana
-imx6 board.
-
-Kernel is based on 3.19-mumble.
-
-I cannot reproduce on x86 (but testing on 3.17 kernel and different flavour of
-Linux, so who knows.)
-
-They simply admin-down wlanX, and then the firmware crashes over and over.
-They cannot get any register dump.
-When they admin up the interface, the crashes stop and system resumes normally.
-
-I had them try it with my firmware and a driver patch
-which will attempt to do ping-pong register dump
-over pci register reads in case the firmware's normal PCI messaging transport
-is down, but the register value always reads as '0xdeadbeef'.
-
-Driver patch is linked below, 'val' is 0xdeadbeef after the million read attempts.
-
-(Need a few additional patches to define CT firmware flag and such, but you can
- see the logic easily enough.)
-http://dmz2.candelatech.com/?p=linux-3.17.dev.y/.git;a=commit;h=52333b889f0c818d2766d0d514ac31e5c53ce0ab
-
-Any ideas what might be the problem?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+aXMgdGhlcmUgYW55d2F5IHlvdSBjb3VsZCBwcm9jZXNzIHRoZXNlIGZpbGVzIGZvciBtZT8uIEkg
+d291bGQgYmUgd2lsbGluZyB0byBzZW5kIHlvdSB0aGUgZmlsZXMgYW5kIGdvIHRocm91Z2ggc29t
+ZSBiYWNrIGFuZCBmb3J0aCBvZiBmZWVkYmFjayBhbmQgd2hhdG5vdC4gVGhlIGlzc3VlIGlzIEkg
+anVzdCBkb24ndCB0aGluayBJIGhhdmUgdGhlIHRpbWUgb3IgdGhlIGV4cGVydGlzZSB0byBkZXZv
+dGUgdG8gdGhpcy4gSG93ZXZlciBJIGludmVzdGlnYXRlZCBleGNoYW5naW5nICB0aGUgbGFwdG9w
+IHRvIGdldCBhICBMaW51eCBjb21wYXRpYmxlIG9uZSwgYnV0IGl0cyBnb2luZyB0byBjb3N0IG1l
+IG1vbmV5IGZvciB0aGUgcmVzdG9ja2luZyBmZWUuIE9uIHRvcCBvZiB0aGF0IHRoZSBuZXh0IHVz
+ZXIgb2YgdGhpcyBsYXB0b3Agd2lsbCBiZSBkaXNncnVudGxlZCB3aGVuIHRoZXkgZmluZCBhIG5v
+biB3b3JraW5nIGNvcHkgb2YgTGludXggb24gaXQuIEkgaW52ZXN0aWdhdGVkIGdldHRpbmcgdGhl
+IHJlc3RvcmUgY2QgYnV0IExlbm92bydzIGNoYXJnaW5nICQ3MCBmb3IgdGhlIG1lZGlhLiBTbyBp
+ZiB5b3UgY291bGQgaGVscCBJIHdvdWxkIHJlYWxseSBhcHByZWNpYXRlIGl0IGJlY2F1c2UgdGhp
+cyBpcyB0aGUgbGFzdCB0aGluZyB0aGF0IEkgbmVlZCB0byBnZXQgd29ya2luZyBidXQgSSByZWFs
+bHkgbmVlZCBpdC4KCmFuZCB3ZSBjb3VsZCBhbHNvIGdldCB0aGlzIGNoaXBzZXQgc3VwcG9ydGVk
+LiBJIHNhdyBJIHdhc24ndCB0aGUgb25seSBvbmUgbG9va2luZyBmb3IgTGludXggc3VwcG9ydCBm
+b3IgdGhpcyBkcml2ZXIuIAoKIFRoYW5rIHlvdS4KCi0tLS0tT3JpZ2luYWwgbWVzc2FnZS0tLS0t
+ClNlbnQ6IE1vbmRheSwgMTYgTWFyY2ggMjAxNSBhdCAxMDowNToyMApGcm9tOiAiTWljaGFsIEth
+emlvciIgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgpUbzogIkphc29uIEgiIDxqaGlobkBnbXgu
+Y29tPgpTdWJqZWN0OiBSZTogUUNBNjE3NCBodzIuMT8KT24gMTMgTWFyY2ggMjAxNSBhdCAxNjoy
+OCwgSmFzb24gSCA8amhpaG5AZ214LmNvbT4gd3JvdGU6Cj4KPj4gT24gMTMgTWFyY2ggMjAxNSBh
+dCAwNDozOSwgIDxqaGlobkBnbXguY29tPiB3cm90ZToKPj4gPiBJIHdlbnQgdGhyb3VnaCB0aGUg
+YXJjaGl2ZXMsIGFuZCB0aGUgIHdpa2kgYnV0IEkgc3RpbGwgd2Fzbid0IHN1cmUuLi4KPj4gPiBJ
+IGhhdmUgYSBzaGlueSBuZXcgTGVub3ZvIHo3MCwga2VybmVsIDQuMC1yYzEvMy4gIERtZXNnIHJl
+cG9ydHMgZmFpbHVyZXMgZm9yIGxvYWRpbmcgIGZpcm13YXJlIGluIC9saWIvZmlybXdhcmUvYXRo
+MTBrL1FDQTYxNzQvaHcyLjEvLi4uCj4+ID4gU28gSSBmb3VuZCB0aGUgZmlybXdhcmUgR2l0IHJl
+cG8sICBidXQgaXQgc2VlbXMgdG8gYmUgbWlzc2luZyBodzIuMS4gSSBldmVuIHN5bWxpbmtlZCAy
+LjEgdG8gIDMuMCwgbm8gZGljZS4KPj4KPj4gWW91IGNhbid0IHVzZSBodzMgZmlybXdhcmUgZm9y
+IGh3MiBoYXJkd2FyZS4KPj4KPj4gVGhlIHByb2JsZW0gaXMgdGhlcmUncyBubyBwdWJsaWNseSBh
+dmFpbGFibGUgYXRoMTBrIGZpcm13YXJlIGZvciBodzIgaGFyZHdhcmUuLgo+Pgo+Pgo+PiA+IEkg
+ZG9uJ3QgZHVhbCBib290IGFuZCB0aGlzIGlzIGEgbGFwdG9wICBzbyBJJ20gbG9va2luZyB0byBn
+ZXQgIG15IFdpRmkgd29ya2luZy4gIEFueSBwb2ludGVycyBhcmUgYXBwcmVjaWF0ZWQuICBUaGFu
+a3MuCj4+Cj4+IFlvdSBjb3VsZCB0cnkgYnVpbGRpbmcgaHcyIGZpcm13YXJlIGF0aDEwayBiaW5h
+cnkgeW91cnNlbGYuIFlvdSBuZWVkCj4+IHRvIGZldGNoIGF0aHdsYW4uYmluIGZyb20gV2luZG93
+cyBkcml2ZXIsIGV4dHJhY3Qgb3RwIGltYWdlIGZyb20gaHczCj4+IGZpcm13YXJlIGF0aDEwayBi
+aW5hcnkgYW5kIHRoZW4gcmUtYXNzZW1ibGUgYm90aCBpbnRvIGh3MyBmaXJtd2FyZSBmb3IKPj4g
+YXRoMTBrLiBUaGUgYXRoMTBrIGJpbmFyeSBibG9iIGlzIGEgdGFnLWxlbmd0aC12YWx1ZSBmb3Jt
+YXQgYW5kIGNhbiBiZQo+PiB1bmRlcnN0b29kIGJ5IGxvb2tpbmcgYXQgYXRoMTBrX2NvcmVfZmV0
+Y2hfZmlybXdhcmVfYXBpX24oKS4KPj4KPj4gTm9ib2R5IHNlZW1zIHRvIGhhdmUgdHJpZWQgdGhp
+cyB5ZXQgdGhvdWdoLgo+Cj4KPiBJIGluc3RhbGxlZCBXSU5FIGFuZCBhdHRlbXB0ZWQgdG8gaW5z
+dGFsbCB0aGUgZHJpdmVyIGZyb20gbGVub25vIG9uIG15IG5vbi1sZW5vdm8gd2l0aCB3b3JraW5n
+IHdpZmkuIFRoZSBpbnN0YWxsIGZhaWxlZCAoZXhwZWN0ZWQpIGJ1dCBub3QgYmVmb3JlIGl0IGV4
+dHJhY3RlZCB0aGUgYWN0dWFsIGRyaXZlciBpbnN0YWxsZXIgaW1hZ2VzIChleHBlY3RlZCkuIFBh
+cnNpbmcgdGhyb3VnaCBhbiAuaW5mIGZpbGUsIGFuZCBuYXZpZ2F0aW5nIG15IHdheSB0aHJvdWdo
+IHRoZSBzZWN0aW9ucywgSSBlbmQgdXAgYXQgYSBzZWN0aW9uIHNwZWNpZnlpbmcgZWVwcm9tX2Fy
+NjMyMF8ycDFfTkZBMzU0eHAuYmluIGFuZCBxY2E2MXg0MjAuYmluIGFzIHRoZSBmaXJtd2FyZSBm
+aWxlcy4gSSBoYXZlIHRoZXNlIGZpbGVzLgoKQXdlc29tZS4KCmVlcHJvbV9hcjYzMjBfMnAxX05G
+QTM1NHhwLmJpbiBsb29rcyBsaWtlIGEgYm9hcmQuYmluLgpxY2E2MXg0MjAuYmluIGxvb2tzIGxp
+a2UgbWFpbiBwcm9ncmFtIGJpbmFyeS4KCgo+IEhvd2V2ZXIgSSBhbSBub3cgZGl2ZXJnaW5nIGZy
+b20geW91ciBpbnN0cnVjdGlvbnMgY29uc2lkZXJhYmx5LiBBbHNvIEkgZG9uJ3Qga25vdyB3aHkg
+SSB3b3VsZCB3YW50IHRvIHJlYXNzZW1ibGUgaW50byAzLjAgd2hlbiBteSBzeXN0ZW0gaXMgbG9v
+a2luZyBmb3IgMi4xPwoKVHlwby9taW5kIGRlcnAgOi0pIEkgb2J2aW91c2x5IG1lYW50IDIuMS4K
+Cgo+IEkgZG9uJ3Qga25vdyB3aGF0IGFuICdvdHAgaW1hZ2UnIGlzPyBJIHRoaW5rIEkgdW5kZXJz
+dGFuZCB0aGUgcGFydCBhYm91dCB0aGUgYXRoMTBrIGZvcm1hdCB0aG91Z2guCgpPVFAgaXMgYSBj
+YWxpYnJhdGlvbiByZWxhdGVkIHByb2dyYW0gd2hpY2ggaXMgcnVuIG9uIGRldmljZSBiZWZvcmUK
+cnVubmluZyBtYWluIHByb2dyYW0uIEl0J3MgZW1iZWRkZWQgaW5zaWRlIGF0aDEwayBGVyBBUEkg
+YmxvYi4KCgo+IENvdWxkIHlvdSB1cGRhdGUgeW91ciBpbnN0cnVjdGlvbnMgdG8gc3VpdCB0aGUg
+bmV3IGluZm9ybWF0aW9uIGF0IGhhbmQ/CgpodHRwczovL2dpc3QuZ2l0aHViLmNvbS9rYXppa2N6
+L2M5NzBjYmYzYTg2M2ViYmM0NDk1Cmh0dHBzOi8vZ2lzdC5naXRodWIuY29tL2themlrY3ovNjQz
+MTNiOWUyNDcwNjYwZmFhZTEKCkhlcmUgYXJlIHR3byBzaW1wbGUgYW5kIGNydWRlIHRvb2xzIEkg
+aGF2ZSB0byBkZWFsIHdpdGggYXRoMTBrIEZXIEFQSQpibG9icy4gVXNlIHdpdGggY2FyZS4KCllv
+dSBjYW4gdXNlIHRoZSBkaXNhc3NlbWJsZS5weSB0byBleHRyYWN0IHRoZSBvdHAuYmluIGZyb20g
+aHczIGF0aDEwawpGVyBBUEkgYmxvYjoKCiAgcHl0aG9uIGRpc2Fzc2VtYmxlLnB5IDwgL2xpYi9m
+aXJtd2FyZS9hdGgxMGsvUUNBNjE3NC9odzMuMC9maXJtd2FyZS00LmJpbgoKVGhlbiB5b3UgY2Fu
+IHVzZSB0aGUgYXNzZW1ibGUucHkgdG8gZ2VuZXJhdGUgaHcyLjEgYXRoMTBrIEZXIEFCSSBibG9i
+OgoKICBta2RpciAtcCAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3Mi4xLwogIHB5dGhv
+biBhc3NlbWJsZS5weSBraWxsZXIxMjUyLXRlc3RmdyAwIHBhdGgvdG8vcWNhNjF4NDIwLmJpbgpw
+YXRoL3RvL290cC5iaW4gNCA+IC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvZmly
+bXdhcmUtNC5iaW4KICBjcCBwYXRoL3RvL2VlcHJvbV9hcjYzMjBfMnAxX05GQTM1NHhwLmJpbgov
+bGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3Mi4xL2JvYXJkLmJpbgoKKG1pbmQgdGhlIGVt
+YWlsIGxpbmUgd3JhcHBpbmcpCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
+cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo=
