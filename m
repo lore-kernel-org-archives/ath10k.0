@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ya4gF-00079f-Hi
- for ath10k@lists.infradead.org; Mon, 23 Mar 2015 15:54:22 +0000
+ id 1Ya4nN-0003i5-Vq
+ for ath10k@lists.infradead.org; Mon, 23 Mar 2015 16:01:43 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 5/6] ath10k: add wmi support for tdls
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
-Date: Mon, 23 Mar 2015 17:53:50 +0200
-In-Reply-To: <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Fri, 20 Mar 2015 12:02:58 +0100")
-Message-ID: <87pp7zd81d.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: share board file loading code across FW APIs
+References: <1427114301-18886-1-git-send-email-michal.kazior@tieto.com>
+ <1427114301-18886-2-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 23 Mar 2015 18:01:08 +0200
+In-Reply-To: <1427114301-18886-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 23 Mar 2015 12:38:20 +0000")
+Message-ID: <87lhind7p7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,24 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> As a part of tdls implementation introduce
-> tdls related wmi data structures, constant
-> values and functions.
+> There's no need to implement the same thing twice.
+> Reduce code duplication.
 >
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-This patch had non-trivial conflicts, please check carefully my
-resolution in the pending branch.
+[...]
 
-  CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi.h
-  CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.h
-  CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.c
-  CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-ops.h
+> @@ -730,6 +716,12 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+>  	/* calibration file is optional, don't check for any errors */
+>  	ath10k_fetch_cal_file(ar);
+>  
+> +	ret = ath10k_core_fetch_board_file(ar);
+> +	if (ret) {
+> +		ath10k_err(ar, "failed to fetch board file: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+>  	ar->fw_api = 4;
+>  	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
+
+There was a conflict here, please check the resolution in the pending
+branch.
 
 -- 
 Kalle Valo
