@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZyx1-0002JN-Ne
- for ath10k@lists.infradead.org; Mon, 23 Mar 2015 09:47:17 +0000
-Received: by lbcmq2 with SMTP id mq2so4085205lbc.0
- for <ath10k@lists.infradead.org>; Mon, 23 Mar 2015 02:46:52 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CADnKcVhZah4it3EQWrj6ZKb7vYZ6S3-FtNzPZs6_05GBAQtkvA@mail.gmail.com>
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
- <CA+XVXfdsHo4cm580oqCwd9SZQGrdkPgw_b+ipUVCDhkDupL0tw@mail.gmail.com>
- <CA+BoTQ=fcbYokNgrmLpjgPPpUXkP02QQQRN-Y52CHwrY1+JHJA@mail.gmail.com>
- <CADnKcVhZah4it3EQWrj6ZKb7vYZ6S3-FtNzPZs6_05GBAQtkvA@mail.gmail.com>
-From: Arik Nemtsov <arik@wizery.com>
-Date: Mon, 23 Mar 2015 11:46:36 +0200
-Message-ID: <CA+XVXff=ExovNTovdVP9Hw58HFhx_cRg4ijsp7ETz7b5eAY4Gg@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] ath10k: add wmi support for tdls
+ id 1YZz9q-0007b9-S9
+ for ath10k@lists.infradead.org; Mon, 23 Mar 2015 10:00:31 +0000
+Received: by lbcmq2 with SMTP id mq2so4295020lbc.0
+ for <ath10k@lists.infradead.org>; Mon, 23 Mar 2015 03:00:09 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix aid setup in station mode
+Date: Mon, 23 Mar 2015 09:57:28 +0000
+Message-Id: <1427104648-5681-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,52 +17,53 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gTW9uLCBNYXIgMjMsIDIwMTUgYXQgMTA6NTkgQU0sIE1hcmVrIFB1enluaWFrCjxtYXJlay5w
-dXp5bmlha0B0aWV0by5jb20+IHdyb3RlOgo+IE9uIDIzIE1hcmNoIDIwMTUgYXQgMDk6MDksIE1p
-Y2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4gT24gMjIgTWFy
-Y2ggMjAxNSBhdCAwODo0OSwgQXJpayBOZW10c292IDxhcmlrQHdpemVyeS5jb20+IHdyb3RlOgo+
-Pj4gT24gRnJpLCBNYXIgMjAsIDIwMTUgYXQgMTowMiBQTSwgTWFyZWsgUHV6eW5pYWsKPj4+IDxt
-YXJlay5wdXp5bmlha0B0aWV0by5jb20+IHdyb3RlOgo+Pj4+IEFzIGEgcGFydCBvZiB0ZGxzIGlt
-cGxlbWVudGF0aW9uIGludHJvZHVjZQo+Pj4+IHRkbHMgcmVsYXRlZCB3bWkgZGF0YSBzdHJ1Y3R1
-cmVzLCBjb25zdGFudAo+Pj4+IHZhbHVlcyBhbmQgZnVuY3Rpb25zLgo+Pj4+Cj4+Pj4gU2lnbmVk
-LW9mZi1ieTogTWFyZWsgUHV6eW5pYWsgPG1hcmVrLnB1enluaWFrQHRpZXRvLmNvbT4KPj4+PiAt
-LS0KPj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktb3BzLmggfCAgNDIg
-KysrKysrKysKPj4+PiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktdGx2LmMg
-fCAxNTMgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4+Pj4gIGRyaXZlcnMvbmV0L3dp
-cmVsZXNzL2F0aC9hdGgxMGsvd21pLXRsdi5oIHwgIDUzICsrKysrKysrKysrCj4+Pj4gIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLmggICAgIHwgIDM3ICsrKysrKysrCj4+Pj4g
-IDQgZmlsZXMgY2hhbmdlZCwgMjg1IGluc2VydGlvbnMoKykKPj4+IFsuLi5dCj4+Pj4gKwo+Pj4+
-ICsgICAgICAgY21kID0gKHZvaWQgKil0bHYtPnZhbHVlOwo+Pj4+ICsgICAgICAgY21kLT52ZGV2
-X2lkID0gX19jcHVfdG9fbGUzMih2ZGV2X2lkKTsKPj4+PiArICAgICAgIGNtZC0+c3RhdGUgPSBf
-X2NwdV90b19sZTMyKHN0YXRlKTsKPj4+PiArICAgICAgIGNtZC0+bm90aWZpY2F0aW9uX2ludGVy
-dmFsX21zID0gX19jcHVfdG9fbGUzMig1MDAwKTsKPj4+PiArICAgICAgIGNtZC0+dHhfZGlzY292
-ZXJ5X3RocmVzaG9sZCA9IF9fY3B1X3RvX2xlMzIoMTAwKTsKPj4+PiArICAgICAgIGNtZC0+dHhf
-dGVhcmRvd25fdGhyZXNob2xkID0gX19jcHVfdG9fbGUzMig1KTsKPj4+PiArICAgICAgIGNtZC0+
-cnNzaV90ZWFyZG93bl90aHJlc2hvbGQgPSBfX2NwdV90b19sZTMyKC03NSk7Cj4+Pj4gKyAgICAg
-ICBjbWQtPnJzc2lfZGVsdGEgPSBfX2NwdV90b19sZTMyKC0yMCk7Cj4+Pj4gKyAgICAgICBjbWQt
-PnRkbHNfb3B0aW9ucyA9IF9fY3B1X3RvX2xlMzIob3B0aW9ucyk7Cj4+Pj4gKyAgICAgICBjbWQt
-PnRkbHNfcGVlcl90cmFmZmljX2luZF93aW5kb3cgPSBfX2NwdV90b19sZTMyKDIpOwo+Pj4+ICsg
-ICAgICAgY21kLT50ZGxzX3BlZXJfdHJhZmZpY19yZXNwb25zZV90aW1lb3V0X21zID0gX19jcHVf
-dG9fbGUzMig1MDAwKTsKPj4+PiArICAgICAgIGNtZC0+dGRsc19wdWFwc2RfbWFzayA9IF9fY3B1
-X3RvX2xlMzIoMHhmKTsKPj4+PiArICAgICAgIGNtZC0+dGRsc19wdWFwc2RfaW5hY3Rpdml0eV90
-aW1lX21zID0gX19jcHVfdG9fbGUzMigwKTsKPj4+PiArICAgICAgIGNtZC0+dGRsc19wdWFwc2Rf
-cnhfZnJhbWVfdGhyZXNob2xkID0gX19jcHVfdG9fbGUzMigxMCk7Cj4+Pgo+Pj4gRG8gdGhlIGFi
-b3ZlIGxpbmVzIGFzc3VtZSBhbGwgVERMUyBwZWVycyBzdXBwb3J0IFRETFMgYnVmZmVyLXN0YQo+
-Pj4gKHdoaWNoIGlzIHJlcXVpcmVkIGZvciBwZWVyIFVBUFNEKT8gRXNwZWNpYWxseSB0aGUgdmFs
-dWUgb2YKPj4+IHRkbHNfcHVhcHNkX21hc2suCj4KPiBOby4gVGhlIGZ1bmN0aW9uIHlvdSByZWZm
-ZXIgdG8gY29uZmlndXJlcyBkZXZpY2UgaXRzZWxmIG5vdCBURExTCj4gcGVlcnMuIEN1cnJlbnRs
-eSB0ZGxzIHBlZXIgdWFwc2QgYnVmZmVyIHN0YSBpcyBub3QgaW1wbGVtZW50ZWQgYXMKPiBNaWNo
-YcWCIHdyb3RlLgoKSWYgdGhlIGRldmljZSBjb25maWd1cmVzIFVBUFNEIHF1ZXVlcyBmb3IgaXRz
-ZWxmLCB0aGVuIGl0IHJlcXVpcmVzCmJ1ZmZlci1zdGEgc3VwcG9ydCBmcm9tIGl0cyBwZWVyLCBu
-b3QgZnJvbSBpdHNlbGYuCkJ1dCB5b3UndmUgcmVhc3N1cmVkIG1lIHlvdSBkb24ndCByZXF1aXJl
-IHRoaXMgZnJvbSB0aGUgcGVlciwgYXMgaXQKd291bGQgaHVydCBhdGgxMGsgdnMuIGF0aDEwayBU
-RExTIGNvbm5lY3Rpb25zLgoKQXJpawoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+While debugging something else I noticed AID was
+set to 0. This could lead to powersave issues in
+station mode. Maybe this isn't really necessary
+but set it properly just to be sure.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 506e886..f2b4a49 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -1605,12 +1605,18 @@ static void ath10k_peer_assoc_h_basic(struct ath10k *ar,
+ 				      struct wmi_peer_assoc_complete_arg *arg)
+ {
+ 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
++	u32 aid;
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	if (vif->type == NL80211_IFTYPE_STATION)
++		aid = vif->bss_conf.aid;
++	else
++		aid = sta->aid;
++
+ 	ether_addr_copy(arg->addr, sta->addr);
+ 	arg->vdev_id = arvif->vdev_id;
+-	arg->peer_aid = sta->aid;
++	arg->peer_aid = aid;
+ 	arg->peer_flags |= WMI_PEER_AUTH;
+ 	arg->peer_listen_intval = ath10k_peer_assoc_h_listen_intval(ar, vif);
+ 	arg->peer_num_spatial_streams = 1;
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
