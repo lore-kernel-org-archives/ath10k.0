@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ya41h-0002RZ-UV
- for ath10k@lists.infradead.org; Mon, 23 Mar 2015 15:12:27 +0000
+ id 1Ya47R-0005zu-Oo
+ for ath10k@lists.infradead.org; Mon, 23 Mar 2015 15:18:22 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: fix rts profile for second rate series
-References: <1425451847-14505-1-git-send-email-rmanohar@qti.qualcomm.com>
-Date: Mon, 23 Mar 2015 17:11:52 +0200
-In-Reply-To: <1425451847-14505-1-git-send-email-rmanohar@qti.qualcomm.com>
- (Rajkumar Manoharan's message of "Wed, 4 Mar 2015 12:20:46 +0530")
-Message-ID: <87bnjjeojr.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/6] ath10k: thermal mitigation fixes
+References: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Mon, 23 Mar 2015 17:17:49 +0200
+In-Reply-To: <1426431985-16332-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Sun, 15 Mar 2015 20:36:19 +0530")
+Message-ID: <877fu7eo9u.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,17 +28,19 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> By default rts protection is enabled in firmware for the second
-> rateset. Currently ath10k selects RTS profile (only for software
-> retries), when legacy stations are associated or asked by mac80211.
-> On congested environment, when AP is running in HT/VHT mode and
-> there are no legacy clients associated, this will impact the
-> robustness. Also enabling RTS protection only for second rateset will
-> not impact performance on clear environment. Fix that.
+> Here are few enhancements in thermal throttling that allows
+> user to control throttling state and quiet period. Also enables
+> throttling for station mode. These patches are rebased on latest TOT.
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Rajkumar Manoharan (6):
+>   ath10k: add debugfs entry to configure quiet period
+>   ath10k: Fix interpretation of cooling device state
+>   ath10k: configure thermal throttle while powering up
+>   ath10k: do not restrict thermal throttling to ap mode
+>   ath10k: cache throttle state when device is down
+>   ath10k: move driver state check before setting throttle
 
-Thanks, both patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
