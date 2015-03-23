@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YZaeF-0004dp-7K
- for ath10k@lists.infradead.org; Sun, 22 Mar 2015 07:50:16 +0000
-Received: by lbbug6 with SMTP id ug6so5554789lbb.3
- for <ath10k@lists.infradead.org>; Sun, 22 Mar 2015 00:49:51 -0700 (PDT)
+ id 1YZvzw-0007kw-93
+ for ath10k@lists.infradead.org; Mon, 23 Mar 2015 06:38:05 +0000
+Received: by wixw10 with SMTP id w10so28948470wix.0
+ for <ath10k@lists.infradead.org>; Sun, 22 Mar 2015 23:37:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
-From: Arik Nemtsov <arik@wizery.com>
-Date: Sun, 22 Mar 2015 09:49:36 +0200
-Message-ID: <CA+XVXfdsHo4cm580oqCwd9SZQGrdkPgw_b+ipUVCDhkDupL0tw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/6] ath10k: add wmi support for tdls
+In-Reply-To: <550C9539.50805@candelatech.com>
+References: <550C9539.50805@candelatech.com>
+Date: Mon, 23 Mar 2015 07:37:38 +0100
+Message-ID: <CA+BoTQk8Xz_mv=626rHYRT7gaVYCqfwuCP8ZSSx7gUWO898oMw@mail.gmail.com>
+Subject: Re: Repeated firmware crash when admin down.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,57 +20,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-On Fri, Mar 20, 2015 at 1:02 PM, Marek Puzyniak
-<marek.puzyniak@tieto.com> wrote:
-> As a part of tdls implementation introduce
-> tdls related wmi data structures, constant
-> values and functions.
->
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-> ---
->  drivers/net/wireless/ath/ath10k/wmi-ops.h |  42 ++++++++
->  drivers/net/wireless/ath/ath10k/wmi-tlv.c | 153 ++++++++++++++++++++++++++++++
->  drivers/net/wireless/ath/ath10k/wmi-tlv.h |  53 +++++++++++
->  drivers/net/wireless/ath/ath10k/wmi.h     |  37 ++++++++
->  4 files changed, 285 insertions(+)
-[...]
-> +
-> +       cmd = (void *)tlv->value;
-> +       cmd->vdev_id = __cpu_to_le32(vdev_id);
-> +       cmd->state = __cpu_to_le32(state);
-> +       cmd->notification_interval_ms = __cpu_to_le32(5000);
-> +       cmd->tx_discovery_threshold = __cpu_to_le32(100);
-> +       cmd->tx_teardown_threshold = __cpu_to_le32(5);
-> +       cmd->rssi_teardown_threshold = __cpu_to_le32(-75);
-> +       cmd->rssi_delta = __cpu_to_le32(-20);
-> +       cmd->tdls_options = __cpu_to_le32(options);
-> +       cmd->tdls_peer_traffic_ind_window = __cpu_to_le32(2);
-> +       cmd->tdls_peer_traffic_response_timeout_ms = __cpu_to_le32(5000);
-> +       cmd->tdls_puapsd_mask = __cpu_to_le32(0xf);
-> +       cmd->tdls_puapsd_inactivity_time_ms = __cpu_to_le32(0);
-> +       cmd->tdls_puapsd_rx_frame_threshold = __cpu_to_le32(10);
-
-Do the above lines assume all TDLS peers support TDLS buffer-sta
-(which is required for peer UAPSD)? Especially the value of
-tdls_puapsd_mask.
-I can assure you not all peers support this :) For instance iwlwifi
-does not (for now).
-
-But I might be misinterpreting this - perhaps there some other code in
-the driver/FW that checks the peer's extended-capabilities IE for
-buffer-sta support (bit 28)?
-That would be the best option.
-
-Arik
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjAgTWFyY2ggMjAxNSBhdCAyMjo0NiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IFNvbWVvbmUgcmVwb3J0ZWQgdGhpcyBidWcgdG8gbWUuICBJdCBpcyBy
+ZXBlYXRhYmxlIG9uIHZhcmlvdXMgZmlybXdhcmUsCj4gaW5jbHVkaW5nIG15IG93biBhbmQgb2Zm
+aWNpYWwgUUNBIGZpcm13YXJlLgo+Cj4gSSBhbSBub3QgY2VydGFpbiBvZiB0aGUgaGFyZHdhcmUg
+cGxhdGZvcm0sIGJ1dCBJIHRoaW5rIGl0IG1pZ2h0IGJlIGEgVmVudGFuYQo+IGlteDYgYm9hcmQu
+Cj4KPiBLZXJuZWwgaXMgYmFzZWQgb24gMy4xOS1tdW1ibGUuCj4KPiBJIGNhbm5vdCByZXByb2R1
+Y2Ugb24geDg2IChidXQgdGVzdGluZyBvbiAzLjE3IGtlcm5lbCBhbmQgZGlmZmVyZW50IGZsYXZv
+dXIgb2YKPiBMaW51eCwgc28gd2hvIGtub3dzLikKPgo+IFRoZXkgc2ltcGx5IGFkbWluLWRvd24g
+d2xhblgsIGFuZCB0aGVuIHRoZSBmaXJtd2FyZSBjcmFzaGVzIG92ZXIgYW5kIG92ZXIuCj4gVGhl
+eSBjYW5ub3QgZ2V0IGFueSByZWdpc3RlciBkdW1wLgo+IFdoZW4gdGhleSBhZG1pbiB1cCB0aGUg
+aW50ZXJmYWNlLCB0aGUgY3Jhc2hlcyBzdG9wIGFuZCBzeXN0ZW0gcmVzdW1lcyBub3JtYWxseS4K
+Pgo+IEkgaGFkIHRoZW0gdHJ5IGl0IHdpdGggbXkgZmlybXdhcmUgYW5kIGEgZHJpdmVyIHBhdGNo
+Cj4gd2hpY2ggd2lsbCBhdHRlbXB0IHRvIGRvIHBpbmctcG9uZyByZWdpc3RlciBkdW1wCj4gb3Zl
+ciBwY2kgcmVnaXN0ZXIgcmVhZHMgaW4gY2FzZSB0aGUgZmlybXdhcmUncyBub3JtYWwgUENJIG1l
+c3NhZ2luZyB0cmFuc3BvcnQKPiBpcyBkb3duLCBidXQgdGhlIHJlZ2lzdGVyIHZhbHVlIGFsd2F5
+cyByZWFkcyBhcyAnMHhkZWFkYmVlZicuCj4KPiBEcml2ZXIgcGF0Y2ggaXMgbGlua2VkIGJlbG93
+LCAndmFsJyBpcyAweGRlYWRiZWVmIGFmdGVyIHRoZSBtaWxsaW9uIHJlYWQgYXR0ZW1wdHMuCgpJ
+ZiB5b3UgcmVhZCBNTUlPIHJlZ2lzdGVycyB3aGlsZSB0aGUgZGV2aWNlIHNsZWVwcyB5b3UgZ2V0
+IDB4ZGVhZGJlZWYuCkkndmUgcmVjZW50bHkgcG9zdGVkIGEgcGF0Y2ggd2hpY2ggc2hvdWxkIGZp
+eCBzb21lIG9mIHRoZXNlWzFdLgoKSSdtIGd1ZXNzaW5nIHRoZSBpbXg2IGJvYXJkIGNvdWxkIGJl
+IHVzaW5nIHNoYXJlZCBpcnEgYW5kIHRoZSBsaW5lIGlzCnNoYXJlZCB3aXRoIHNvbWUgb3RoZXIg
+KGFjdGl2ZSkgZGV2aWNlKHMpLiBUaGlzIHdvdWxkIGxlYWQgdG8gY2hlY2tpbmcKcmVnaXN0ZXJz
+IGluIGF0aDEwayBhZnRlciBhdGgxMGtfcGNpX3NsZWVwKCkuIEluIHRoYXQgY2FzZSBteSBwYXRj
+aApzaG91bGQgYmUgc3VmZmljaWVudC4KClsxXTogaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0
+aC9jb21taXQvMzIwZTE0YjhkYjUxYTJkNjM1ODk3ZDUyMWRiNGU1Yzc5YzNhODM5MAoKCk1pY2hh
+xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
