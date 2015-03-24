@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
+Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YaO91-0000aF-4f
- for ath10k@lists.infradead.org; Tue, 24 Mar 2015 12:41:20 +0000
-Received: by laae1 with SMTP id e1so26155669laa.2
- for <ath10k@lists.infradead.org>; Tue, 24 Mar 2015 05:40:50 -0700 (PDT)
+ id 1YaOAw-0000oA-A6
+ for ath10k@lists.infradead.org; Tue, 24 Mar 2015 12:43:19 +0000
+Received: by labto5 with SMTP id to5so50622026lab.0
+ for <ath10k@lists.infradead.org>; Tue, 24 Mar 2015 05:42:55 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix survey reporting
-Date: Tue, 24 Mar 2015 12:38:11 +0000
-Message-Id: <1427200691-7109-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: don't call quiet mode if it's not implemented
+Date: Tue, 24 Mar 2015 12:40:17 +0000
+Message-Id: <1427200817-7407-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +25,36 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Number of channels is stored in a separate macro
-in a header file and channel list is constructed
-independently. The macro is used to define survey
-array.
+qca6174 and wmi-tlv doesn't have quiet mode
+implemented. Don't even attempt to call it. This
+fixes a warning when bringing first interface up:
 
-This fixes a recent regression introduced after
-adding support for 144 channel. The regression
-would lead to a warning and incomplete survey data
-on channel 165:
+  failed to set quiet mode period 100 duarion 0 enabled 0 ret -95
 
-  chan info: invalid frequency 5825 (idx 38 out of bounds)
-
-Also make sure to enforce the sizes and avoid this
-kind of problem in the future.
-
-Fixes: 4a7898fed5f3 ("ath10k: enable channel 144 on 5GHz band")
+Fixes: 8515b5c79a54 ("ath10k: configure thermal throttle while powering up")
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
 
 Notes:
     (based on pending branch)
 
- drivers/net/wireless/ath/ath10k/core.h | 2 +-
- drivers/net/wireless/ath/ath10k/mac.c  | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/thermal.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index d50408822f39..7fa171fa55e3 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -45,7 +45,7 @@
- #define WMI_READY_TIMEOUT (5 * HZ)
- #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
- #define ATH10K_CONNECTION_LOSS_HZ (3*HZ)
--#define ATH10K_NUM_CHANS 38
-+#define ATH10K_NUM_CHANS 39
+diff --git a/drivers/net/wireless/ath/ath10k/thermal.c b/drivers/net/wireless/ath/ath10k/thermal.c
+index 01bae867cae9..1a899d70dc5d 100644
+--- a/drivers/net/wireless/ath/ath10k/thermal.c
++++ b/drivers/net/wireless/ath/ath10k/thermal.c
+@@ -140,6 +140,9 @@ void ath10k_thermal_set_throttling(struct ath10k *ar)
  
- /* Antenna noise floor */
- #define ATH10K_DEFAULT_NOISE_FLOOR -95
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 5f9705deb430..75cc304d32d4 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6014,6 +6014,10 @@ int ath10k_mac_register(struct ath10k *ar)
- 	ht_cap = ath10k_get_ht_cap(ar);
- 	vht_cap = ath10k_create_vht_cap(ar);
+ 	lockdep_assert_held(&ar->conf_mutex);
  
-+	BUILD_BUG_ON((ARRAY_SIZE(ath10k_2ghz_channels) +
-+		      ARRAY_SIZE(ath10k_5ghz_channels)) !=
-+		     ATH10K_NUM_CHANS);
++	if (!ar->wmi.ops->gen_pdev_set_quiet_mode)
++		return;
 +
- 	if (ar->phy_capability & WHAL_WLAN_11G_CAPABILITY) {
- 		channels = kmemdup(ath10k_2ghz_channels,
- 				   sizeof(ath10k_2ghz_channels),
+ 	if (ar->state != ATH10K_STATE_ON)
+ 		return;
+ 
 -- 
 2.1.4
 
