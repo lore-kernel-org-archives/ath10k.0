@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YaCkE-00013P-T5
- for ath10k@lists.infradead.org; Tue, 24 Mar 2015 00:30:59 +0000
-Message-ID: <5510B02B.9030503@candelatech.com>
-Date: Mon, 23 Mar 2015 17:30:35 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-we0-x236.google.com ([2a00:1450:400c:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YaItY-00073X-Bg
+ for ath10k@lists.infradead.org; Tue, 24 Mar 2015 07:05:01 +0000
+Received: by wetk59 with SMTP id k59so155864601wet.3
+ for <ath10k@lists.infradead.org>; Tue, 24 Mar 2015 00:04:31 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Repeated firmware crash when admin down.
-References: <550C9539.50805@candelatech.com>
- <CA+BoTQk8Xz_mv=626rHYRT7gaVYCqfwuCP8ZSSx7gUWO898oMw@mail.gmail.com>
-In-Reply-To: <CA+BoTQk8Xz_mv=626rHYRT7gaVYCqfwuCP8ZSSx7gUWO898oMw@mail.gmail.com>
+In-Reply-To: <87lhind7p7.fsf@kamboji.qca.qualcomm.com>
+References: <1427114301-18886-1-git-send-email-michal.kazior@tieto.com>
+ <1427114301-18886-2-git-send-email-michal.kazior@tieto.com>
+ <87lhind7p7.fsf@kamboji.qca.qualcomm.com>
+Date: Tue, 24 Mar 2015 08:04:31 +0100
+Message-ID: <CA+BoTQkdkNTpcyUoZ=RDNW7jsKeRpJjJt7sHruZ1QBGh8ujJSQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: share board file loading code across FW APIs
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +22,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-VGhlIHVzZXIgcmVwb3J0cyB0aGlzIGRvZXMgaW5kZWVkIGZpeCB0aGUgcHJvYmxlbS4KClRoYW5r
-cywKQmVuCgpPbiAwMy8yMi8yMDE1IDExOjM3IFBNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9u
-IDIwIE1hcmNoIDIwMTUgYXQgMjI6NDYsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
-Y29tPiB3cm90ZToKPj4gU29tZW9uZSByZXBvcnRlZCB0aGlzIGJ1ZyB0byBtZS4gIEl0IGlzIHJl
-cGVhdGFibGUgb24gdmFyaW91cyBmaXJtd2FyZSwKPj4gaW5jbHVkaW5nIG15IG93biBhbmQgb2Zm
-aWNpYWwgUUNBIGZpcm13YXJlLgo+Pgo+PiBJIGFtIG5vdCBjZXJ0YWluIG9mIHRoZSBoYXJkd2Fy
-ZSBwbGF0Zm9ybSwgYnV0IEkgdGhpbmsgaXQgbWlnaHQgYmUgYSBWZW50YW5hCj4+IGlteDYgYm9h
-cmQuCj4+Cj4+IEtlcm5lbCBpcyBiYXNlZCBvbiAzLjE5LW11bWJsZS4KPj4KPj4gSSBjYW5ub3Qg
-cmVwcm9kdWNlIG9uIHg4NiAoYnV0IHRlc3Rpbmcgb24gMy4xNyBrZXJuZWwgYW5kIGRpZmZlcmVu
-dCBmbGF2b3VyIG9mCj4+IExpbnV4LCBzbyB3aG8ga25vd3MuKQo+Pgo+PiBUaGV5IHNpbXBseSBh
-ZG1pbi1kb3duIHdsYW5YLCBhbmQgdGhlbiB0aGUgZmlybXdhcmUgY3Jhc2hlcyBvdmVyIGFuZCBv
-dmVyLgo+PiBUaGV5IGNhbm5vdCBnZXQgYW55IHJlZ2lzdGVyIGR1bXAuCj4+IFdoZW4gdGhleSBh
-ZG1pbiB1cCB0aGUgaW50ZXJmYWNlLCB0aGUgY3Jhc2hlcyBzdG9wIGFuZCBzeXN0ZW0gcmVzdW1l
-cyBub3JtYWxseS4KPj4KPj4gSSBoYWQgdGhlbSB0cnkgaXQgd2l0aCBteSBmaXJtd2FyZSBhbmQg
-YSBkcml2ZXIgcGF0Y2gKPj4gd2hpY2ggd2lsbCBhdHRlbXB0IHRvIGRvIHBpbmctcG9uZyByZWdp
-c3RlciBkdW1wCj4+IG92ZXIgcGNpIHJlZ2lzdGVyIHJlYWRzIGluIGNhc2UgdGhlIGZpcm13YXJl
-J3Mgbm9ybWFsIFBDSSBtZXNzYWdpbmcgdHJhbnNwb3J0Cj4+IGlzIGRvd24sIGJ1dCB0aGUgcmVn
-aXN0ZXIgdmFsdWUgYWx3YXlzIHJlYWRzIGFzICcweGRlYWRiZWVmJy4KPj4KPj4gRHJpdmVyIHBh
-dGNoIGlzIGxpbmtlZCBiZWxvdywgJ3ZhbCcgaXMgMHhkZWFkYmVlZiBhZnRlciB0aGUgbWlsbGlv
-biByZWFkIGF0dGVtcHRzLgo+Cj4gSWYgeW91IHJlYWQgTU1JTyByZWdpc3RlcnMgd2hpbGUgdGhl
-IGRldmljZSBzbGVlcHMgeW91IGdldCAweGRlYWRiZWVmLgo+IEkndmUgcmVjZW50bHkgcG9zdGVk
-IGEgcGF0Y2ggd2hpY2ggc2hvdWxkIGZpeCBzb21lIG9mIHRoZXNlWzFdLgo+Cj4gSSdtIGd1ZXNz
-aW5nIHRoZSBpbXg2IGJvYXJkIGNvdWxkIGJlIHVzaW5nIHNoYXJlZCBpcnEgYW5kIHRoZSBsaW5l
-IGlzCj4gc2hhcmVkIHdpdGggc29tZSBvdGhlciAoYWN0aXZlKSBkZXZpY2UocykuIFRoaXMgd291
-bGQgbGVhZCB0byBjaGVja2luZwo+IHJlZ2lzdGVycyBpbiBhdGgxMGsgYWZ0ZXIgYXRoMTBrX3Bj
-aV9zbGVlcCgpLiBJbiB0aGF0IGNhc2UgbXkgcGF0Y2gKPiBzaG91bGQgYmUgc3VmZmljaWVudC4K
-Pgo+IFsxXTogaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aC9jb21taXQvMzIwZTE0YjhkYjUx
-YTJkNjM1ODk3ZDUyMWRiNGU1Yzc5YzNhODM5MAo+Cj4KPiBNaWNoYcWCCj4KCi0tIApCZW4gR3Jl
-ZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBo
-dHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+T24gMjMgTWFyY2ggMjAxNSBhdCAxNzowMSwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPgo+PiBUaGVyZSdzIG5vIG5lZWQgdG8gaW1wbGVtZW50IHRoZSBzYW1lIHRoaW5nIHR3
+aWNlLgo+PiBSZWR1Y2UgY29kZSBkdXBsaWNhdGlvbi4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWlj
+aGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBbLi4uXQo+Cj4+IEBAIC03
+MzAsNiArNzE2LDEyIEBAIHN0YXRpYyBpbnQgYXRoMTBrX2NvcmVfZmV0Y2hfZmlybXdhcmVfZmls
+ZXMoc3RydWN0IGF0aDEwayAqYXIpCj4+ICAgICAgIC8qIGNhbGlicmF0aW9uIGZpbGUgaXMgb3B0
+aW9uYWwsIGRvbid0IGNoZWNrIGZvciBhbnkgZXJyb3JzICovCj4+ICAgICAgIGF0aDEwa19mZXRj
+aF9jYWxfZmlsZShhcik7Cj4+Cj4+ICsgICAgIHJldCA9IGF0aDEwa19jb3JlX2ZldGNoX2JvYXJk
+X2ZpbGUoYXIpOwo+PiArICAgICBpZiAocmV0KSB7Cj4+ICsgICAgICAgICAgICAgYXRoMTBrX2Vy
+cihhciwgImZhaWxlZCB0byBmZXRjaCBib2FyZCBmaWxlOiAlZFxuIiwgcmV0KTsKPj4gKyAgICAg
+ICAgICAgICByZXR1cm4gcmV0Owo+PiArICAgICB9Cj4+ICsKPj4gICAgICAgYXItPmZ3X2FwaSA9
+IDQ7Cj4+ICAgICAgIGF0aDEwa19kYmcoYXIsIEFUSDEwS19EQkdfQk9PVCwgInRyeWluZyBmdyBh
+cGkgJWRcbiIsIGFyLT5md19hcGkpOwo+Cj4gVGhlcmUgd2FzIGEgY29uZmxpY3QgaGVyZSwgcGxl
+YXNlIGNoZWNrIHRoZSByZXNvbHV0aW9uIGluIHRoZSBwZW5kaW5nCj4gYnJhbmNoLgoKTG9va3Mg
+Z29vZCwgdGhhbmtzIQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
