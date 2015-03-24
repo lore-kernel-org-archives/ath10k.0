@@ -1,19 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YaKY8-0004Zg-Qb
- for ath10k@lists.infradead.org; Tue, 24 Mar 2015 08:51:01 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 5/6] ath10k: add wmi support for tdls
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- <1426849379-7562-6-git-send-email-marek.puzyniak@tieto.com>
- <87pp7zd81d.fsf@kamboji.qca.qualcomm.com>
- <CADnKcVizKNOJwhc9a=XfPUZfEM3V+QJ59sK0oorWK-b3jeKRyA@mail.gmail.com>
-Date: Tue, 24 Mar 2015 10:50:28 +0200
-In-Reply-To: <CADnKcVizKNOJwhc9a=XfPUZfEM3V+QJ59sK0oorWK-b3jeKRyA@mail.gmail.com>
- (Marek Puzyniak's message of "Tue, 24 Mar 2015 03:33:28 -0400")
-Message-ID: <874mpadbjf.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1YaO91-0000aF-4f
+ for ath10k@lists.infradead.org; Tue, 24 Mar 2015 12:41:20 +0000
+Received: by laae1 with SMTP id e1so26155669laa.2
+ for <ath10k@lists.infradead.org>; Tue, 24 Mar 2015 05:40:50 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix survey reporting
+Date: Tue, 24 Mar 2015 12:38:11 +0000
+Message-Id: <1427200691-7109-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,44 +17,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Number of channels is stored in a separate macro
+in a header file and channel list is constructed
+independently. The macro is used to define survey
+array.
 
-> On 23 March 2015 at 11:53, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Marek Puzyniak <marek.puzyniak@tieto.com> writes:
->>
->>> As a part of tdls implementation introduce
->>> tdls related wmi data structures, constant
->>> values and functions.
->>>
->>> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
->>
->> This patch had non-trivial conflicts, please check carefully my
->> resolution in the pending branch.
->>
->>   CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi.h
->>   CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.h
->>   CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-tlv.c
->>   CONFLICT (content): Merge conflict in drivers/net/wireless/ath/ath10k/wmi-ops.h
->>
->> --
->> Kalle Valo
->
-> It looks OK, but there is one small thing in file
-> drivers/net/wireless/ath/ath10k/wmi-tlv.c.
-> There are two new lines between functions ath10k_wmi_tlv_op_gen_tdls_peer_update
-> and ath10k_wmi_tlv_op_gen_wow_enable.
+This fixes a recent regression introduced after
+adding support for 144 channel. The regression
+would lead to a warning and incomplete survey data
+on channel 165:
 
-Thanks, fixed now.
+  chan info: invalid frequency 5825 (idx 38 out of bounds)
 
+Also make sure to enforce the sizes and avoid this
+kind of problem in the future.
+
+Fixes: 4a7898fed5f3 ("ath10k: enable channel 144 on 5GHz band")
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+
+Notes:
+    (based on pending branch)
+
+ drivers/net/wireless/ath/ath10k/core.h | 2 +-
+ drivers/net/wireless/ath/ath10k/mac.c  | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index d50408822f39..7fa171fa55e3 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -45,7 +45,7 @@
+ #define WMI_READY_TIMEOUT (5 * HZ)
+ #define ATH10K_FLUSH_TIMEOUT_HZ (5*HZ)
+ #define ATH10K_CONNECTION_LOSS_HZ (3*HZ)
+-#define ATH10K_NUM_CHANS 38
++#define ATH10K_NUM_CHANS 39
+ 
+ /* Antenna noise floor */
+ #define ATH10K_DEFAULT_NOISE_FLOOR -95
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 5f9705deb430..75cc304d32d4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6014,6 +6014,10 @@ int ath10k_mac_register(struct ath10k *ar)
+ 	ht_cap = ath10k_get_ht_cap(ar);
+ 	vht_cap = ath10k_create_vht_cap(ar);
+ 
++	BUILD_BUG_ON((ARRAY_SIZE(ath10k_2ghz_channels) +
++		      ARRAY_SIZE(ath10k_5ghz_channels)) !=
++		     ATH10K_NUM_CHANS);
++
+ 	if (ar->phy_capability & WHAL_WLAN_11G_CAPABILITY) {
+ 		channels = kmemdup(ath10k_2ghz_channels,
+ 				   sizeof(ath10k_2ghz_channels),
 -- 
-Kalle Valo
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
