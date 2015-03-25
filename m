@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YajFX-0004ep-Ke
- for ath10k@lists.infradead.org; Wed, 25 Mar 2015 11:13:28 +0000
-Subject: [PATCH v2 2/2] ath10k: bump up FW API to 5
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Wed, 25 Mar 2015 13:12:42 +0200
-Message-ID: <20150325111242.30133.15132.stgit@x230>
-In-Reply-To: <20150325110835.30133.509.stgit@x230>
-References: <20150325110835.30133.509.stgit@x230>
+Received: from mailsrv5-bkp2.dondominio.net ([37.152.88.47]
+ helo=mailsrv5.dondominio.com)
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YanJY-0001eD-U9
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2015 15:34:01 +0000
+Message-ID: <5512D58B.6030204@aoifes.com>
+Date: Wed, 25 Mar 2015 16:34:35 +0100
+From: Jose Antonio Delgado Alfonso <jose.delgado@aoifes.com>
 MIME-Version: 1.0
+Subject: Re: Dynamic channel Access
+References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
+ <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
+ <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
+ <55128DF0.6010109@aoifes.com>
+In-Reply-To: <55128DF0.6010109@aoifes.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +26,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Firmware 10.2.4.48-3 now supports management frames over HTT feature and has
-ATH10K_FW_FEATURE_HAS_WMI_MGMT_TX. But as 10.2.4 branch has conflicting HTT ids
-patch "ath10k: add ATH10K_FW_IE_HTT_OP_VERSION" is needed to fix the issue.
-Older ath10k versions don't have support that support and to maintain backwards
-compatibility we need bump up the FW API to 5 not break older versions.
+Hi all,
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    7 +++++++
- drivers/net/wireless/ath/ath10k/hw.h   |    3 +++
- drivers/net/wireless/ath/ath10k/pci.c  |    1 +
- 3 files changed, 11 insertions(+)
+I would like to ask Qualcomm's collaborators about this topic.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index f4f91b230af0..81c02b566255 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -741,6 +741,13 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
- 	/* calibration file is optional, don't check for any errors */
- 	ath10k_fetch_cal_file(ar);
- 
-+	ar->fw_api = 5;
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
-+
-+	ret = ath10k_core_fetch_firmware_api_n(ar, ATH10K_FW_API5_FILE);
-+	if (ret == 0)
-+		goto success;
-+
- 	ar->fw_api = 4;
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index ec6eb401ea29..a40b7be010fa 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -78,6 +78,9 @@ enum qca6174_chip_id_rev {
- /* added support for ATH10K_FW_IE_WMI_OP_VERSION */
- #define ATH10K_FW_API4_FILE		"firmware-4.bin"
- 
-+/* HTT id conflict fix for management frames over HTT */
-+#define ATH10K_FW_API5_FILE		"firmware-5.bin"
-+
- #define ATH10K_FW_UTF_FILE		"utf.bin"
- 
- /* includes also the null byte */
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index b4aacfad4b24..262a84f67f62 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2780,6 +2780,7 @@ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_FW_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API2_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API3_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API4_FILE);
-+MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" ATH10K_FW_API5_FILE);
- MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
- 
- /* QCA6174 2.1 firmware files */
+We are trying to certify a AP product which uses QCA988x radio module.
+We are using the ath10k driver (kernel v3.17.8) and firmware from Ben
+Greear. We are trying to pass the Dynamic Channel test, which consists
+in setting the radio at 80MHz and, at the same time, setting other
+signal in the secondary channel. So far, the radio module does not
+reduce the bandwidth and remains transmitting at 80MHz.
+
+Please, Does someone know if Dynamic Channel Access is really supported
+by ath10k driver in newest kernel versions?
+Or, does it also depends on the firmware version?
+
+Thanks in advance.
+
+Regards,
+Jose Delgado
 
 
 _______________________________________________
