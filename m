@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YagVj-0008MW-Iq
- for ath10k@lists.infradead.org; Wed, 25 Mar 2015 08:18:01 +0000
-Received: by lbcgn8 with SMTP id gn8so11843298lbc.2
- for <ath10k@lists.infradead.org>; Wed, 25 Mar 2015 01:17:28 -0700 (PDT)
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Subject: [PATCH] ath10k: disable burst mode
-Date: Wed, 25 Mar 2015 09:14:51 +0100
-Message-Id: <1427271291-31683-1-git-send-email-janusz.dziedzic@tieto.com>
+Received: from mailsrv5-bkp2.dondominio.net ([37.152.88.47]
+ helo=mailsrv5.dondominio.com)
+ by casper.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YaiYU-0004oL-C8
+ for ath10k@lists.infradead.org; Wed, 25 Mar 2015 10:29:00 +0000
+Message-ID: <55128DF0.6010109@aoifes.com>
+Date: Wed, 25 Mar 2015 11:29:04 +0100
+From: Jose Antonio Delgado Alfonso <jose.delgado@aoifes.com>
+MIME-Version: 1.0
+Subject: Re: Dynamic channel Access
+References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
+ <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
+ <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
+In-Reply-To: <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,57 +21,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7778997216594177004=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Firmwares that indicate BURST_SERVICE as enabled
-could overwrite some wmm parameters (eg. txop).
-This could lead IOT and balancing issues.
-Hence disable this by default.
+This is an OpenPGP/MIME encrypted message (RFC 4880 and 3156)
+--===============7778997216594177004==
+Content-Type: multipart/encrypted;
+ protocol="application/pgp-encrypted";
+ boundary="TlfSAeCjc718GftiejwQm7DvJtG0uiui1"
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+This is an OpenPGP/MIME encrypted message (RFC 4880 and 3156)
+--TlfSAeCjc718GftiejwQm7DvJtG0uiui1
+Content-Type: application/pgp-encrypted
+Content-Description: PGP/MIME version identification
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 75dcd3a..b0d550b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3079,6 +3079,7 @@ static int ath10k_set_antenna(struct ieee80211_hw *hw, u32 tx_ant, u32 rx_ant)
- static int ath10k_start(struct ieee80211_hw *hw)
- {
- 	struct ath10k *ar = hw->priv;
-+	u32 burst_enable;
- 	int ret = 0;
- 
- 	/*
-@@ -3133,6 +3134,15 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		goto err_core_stop;
- 	}
- 
-+	if (test_bit(WMI_SERVICE_BURST, ar->wmi.svc_map)) {
-+		burst_enable = ar->wmi.pdev_param->burst_enable;
-+		ret = ath10k_wmi_pdev_set_param(ar, burst_enable, 0);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to disable burst: %d\n", ret);
-+			goto err_core_stop;
-+		}
-+	}
-+
- 	if (ar->cfg_tx_chainmask)
- 		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
- 				     ar->cfg_rx_chainmask);
--- 
-1.9.1
+Version: 1
 
+--TlfSAeCjc718GftiejwQm7DvJtG0uiui1
+Content-Type: application/octet-stream; name="encrypted.asc"
+Content-Description: OpenPGP encrypted message
+Content-Disposition: inline; filename="encrypted.asc"
+
+-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2
+
+hQIMA/WKeHNkPy/rARAAy3Wa0FGij6Jj3IaiRVoz51gvN7R5R/uWbsazXwmwHsXO
+QsoMDZ0XIy2b9vzV1OJNw+/mPO6u3CIRe51CAZaVq1+vgb5KBBwGlG9iFrbgtrFT
+/paRkPqfI8q2jyLAr1YP3kKWxemjaZGdlrKGI4GvAu91g9UlXmPRlLZHDYqRFoud
+VT/Ka11JgbhNPul11+lmlPWFdHUEURrutJYKGGfL/k9D2lcBd+rkyI5A7r5bpltz
+uzJJuDfLJJvT9x/iVzY+wq7IhTE+vSUvjLkXbaQQ3ipe8kJl2lM6zUEC4PguVHT9
+10FK6t2Upbp+PkiEHijkrr2YAyHVY51639o8uKxwdAdErrHIU8Tn4QLdVkh940YI
+2CSk6EA+ufQD2eYyik8GpBO3U0vAY5DIPBPFd4HE5SlwieuK8qcDutd+DG3E7+qC
++902D3ucW6dwRnB8+65N4/y/sn8kwLHOYwtpSY8EV7JlzvBwSJgC0NyKrHHKvN/a
+Nwy76f94z5JQ7uKNDzQVdmhp9KCf/3eqSJrIb5s78tvn2tnTIoMU3Mw4X0a7H5WT
+mbv98oIvsB933sqi6JvOvbxnflWw4Px5gDLbFpklW2q+LiPOQ9GKK3jkSUbjAPyF
+GYIXxk9/0nXKjmtG+cjoU3Tvz4JeL4W0jkltead4I5sCVG6grwAWD4ZqOCShY07S
+6QE+t/OF1IkyLX6Rn0TOTZrUg17yCddzuB21bqKcKWaPJt7b+v6jhqnvXNKEbEqs
+Lj/N7nTjX16QNlldh4C/4dsSWexijCnEYrnk9l0MXvOv+a6/FRF5i/tn0QAbGIuz
+XEGrwBRqlCoeRazZPM+Z5/EcKgK8dEG8ajpFutkLy5jp0QIV0eQiSA9otdoYcnl8
+dBK3fI61M4Foxh7VvNMc5MVF0wT+j9L81QuTCQIXdh73wNuAL8qIzY5KMj8Oqqlq
+WHiCMQuIIgxrszkwSTMmyyFoAZukft1iephy7rXN/zX3njkiOdNXl+8wevD+5Wr7
+EBve/vfe27kQzMMuKqaEodiRTCL5GHxhVHqxSYqC9AjQOaYP56nDmh6OHIIlnN8n
+UItme+hpLykMHbD9vKwl2S4L4igRvto5mSBWGnk18C1e4ZRw2nuko3te0vNpteh2
+ZGhdsSwyia8zAwg7quzJ9VPncHnaQEln+YsDnzW4mpRwf1zZYWQJV4nXk7sD9tzc
+zIv7lCT+NYv1neg19imX8NBRR88bzSjwFhsP18zWc4JnpnQmbYgV+ZWoHDn5ta11
+Az69WrF87ZNB0Xwfnnm95VZO0ux7iuP9DTbHMFU+xCBcew/hW8e4scrxszlvJb5D
+yYtyXpKSoX4dabGZpX1myailE+l0mx+W9+zVmwc4crTnwMvTGR2F3Fi46W8KgfV9
+SVCbHFLgQyKMZSs3oWQabG+07OGhwN1VezoLwjSu5f4Z1KEPgOv/ZETOVv1CA7Nw
+cfFdNgy7Xk2JSPpjV16dMwUt/31ERoPlFyctAHftJdwN9UbW2KT67ebH9DJ2AJ9C
+tPXpve2EOW1/tIE+q00YyW4DLX/pUTiTF7zmlFw6+trF0HWpjOd2F4B6nDA2VqVp
+ispIGvQK9DwarqMh+/5c+zk7GkMWlL09q056Y55NcPpqNWKdtPxt7plVd5UOpeZd
+QuODdy6WjYmJFdRnKXnIra9ZD67dyD37r72pBEKwWjPAX3fLKNQA/9gCRCnX22n3
+fqnDExzZhPVP7WLJqnDctZ5FygP4W6VXPZsyt4Oxocec/xef7rNE3iq1eBUks+tv
+b+vG/zQ3Hf1k8ByN1xfW5FUp9uJ7fyAyd/ynxdK6r50nYmAEOqh0kYWndRbabNak
+hz+9LVjuGrtzKPcxdVrRTTcvyYj8YEcja5dz9z10Hmz7wTavNaNkxgvR+fOpyQ==
+=4tco
+-----END PGP MESSAGE-----
+
+--TlfSAeCjc718GftiejwQm7DvJtG0uiui1--
+
+
+--===============7778997216594177004==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============7778997216594177004==--
