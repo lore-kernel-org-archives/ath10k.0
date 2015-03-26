@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
+Received: from mail-la0-x22c.google.com ([2a00:1450:4010:c03::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yb4g7-0003Ao-SK
- for ath10k@lists.infradead.org; Thu, 26 Mar 2015 10:06:21 +0000
-Received: by labto5 with SMTP id to5so41470525lab.0
- for <ath10k@lists.infradead.org>; Thu, 26 Mar 2015 03:05:57 -0700 (PDT)
+ id 1Yb5uZ-0006vA-NO
+ for ath10k@lists.infradead.org; Thu, 26 Mar 2015 11:25:21 +0000
+Received: by labto5 with SMTP id to5so42922496lab.0
+ for <ath10k@lists.infradead.org>; Thu, 26 Mar 2015 04:24:56 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix insufficient tracing buffer size
-Date: Thu, 26 Mar 2015 10:03:22 +0000
-Message-Id: <1427364202-25235-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: replenish htc tx credits always
+Date: Thu, 26 Mar 2015 11:22:23 +0000
+Message-Id: <1427368943-29526-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +25,61 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Some trace messages were truncated and a kernel
-splat could be seen in the log:
+There's always at most 2 credits and it makes
+little sense to set the
+ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE flag
+conditionally.
 
-  WARNING: CPU: 3 PID: 0 at /devel/src/linux/drivers/net/wireless/ath/ath10k/./trace.h:114 ftrace_raw_event_ath10k_log_dbg+0x20e/0x220 [ath10k_core]()
-  Modules linked in: ath10k_pci(O) ath10k_core(O) ath iwldvm iwlwifi [last unloaded: iwlwifi]
-  CPU: 3 PID: 0 Comm: swapper/3 Tainted: G        W  O    4.0.0-rc3-wl-ath+ #703
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.7.5-20140531_083030-gandalf 04/01/2014
-   ffffffffa01d4cb0 ffff88001fd83998 ffffffff8191b86c ffffffff81e3b718
-   0000000000000000 ffff88001fd839d8 ffffffff8105573a ffff88001c0a5528
-   ffff88001bea9ae0 ffff88001c3dd940 00000000000d0018 ffff88001fd83a80
-  Call Trace:
-   <IRQ>  [<ffffffff8191b86c>] dump_stack+0x45/0x57
-   [<ffffffff8105573a>] warn_slowpath_common+0x8a/0xc0
-   [<ffffffff8105582a>] warn_slowpath_null+0x1a/0x20
-   [<ffffffffa01c61fe>] ftrace_raw_event_ath10k_log_dbg+0x20e/0x220 [ath10k_core]
-   [<ffffffffa01aaa6b>] ath10k_dbg+0xbb/0xd0 [ath10k_core]
-   [<ffffffff810eed89>] ? trace_clock_local+0x9/0x10
-   [<ffffffffa01bd069>] ath10k_wmi_event_service_ready+0x479/0x520 [ath10k_core]
-   [<ffffffff810fdf90>] ? trace_buffer_unlock_commit+0x50/0x60
-   [<ffffffffa01c2113>] ath10k_wmi_tlv_op_rx+0x6b3/0x8b0 [ath10k_core]
+This seems to fix some random issues with tx
+credit starvation on WLAN.RM.2.0-00073 I've been
+seeing. Note: this isn't related to wmi mgmt tx.
 
-This could be reproduced with:
-
-  trace-cmd record -e ath10k
-  ifconfig wlan0 down
-  ifconfig wlan0 up
-
-Fixes: 5c01aa3de918 ("ath10k: deduplicate wmi service ready logic")
-Fixes: ca996ec56608 ("ath10k: implement wmi-tlv backend")
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/trace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/htc.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
-index 5407887380ab..71dfcd96354b 100644
---- a/drivers/net/wireless/ath/ath10k/trace.h
-+++ b/drivers/net/wireless/ath/ath10k/trace.h
-@@ -46,7 +46,7 @@ static inline void trace_ ## name(proto) {}
- #undef TRACE_SYSTEM
- #define TRACE_SYSTEM ath10k
+diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
+index d33d5c4397f6..0eab8a2ffefe 100644
+--- a/drivers/net/wireless/ath/ath10k/htc.c
++++ b/drivers/net/wireless/ath/ath10k/htc.c
+@@ -86,21 +86,6 @@ static void ath10k_htc_notify_tx_completion(struct ath10k_htc_ep *ep,
+ 	ep->ep_ops.ep_tx_complete(ep->htc->ar, skb);
+ }
  
--#define ATH10K_MSG_MAX 200
-+#define ATH10K_MSG_MAX 400
+-/* assumes tx_lock is held */
+-static bool ath10k_htc_ep_need_credit_update(struct ath10k_htc_ep *ep)
+-{
+-	struct ath10k *ar = ep->htc->ar;
+-
+-	if (!ep->tx_credit_flow_enabled)
+-		return false;
+-	if (ep->tx_credits >= ep->tx_credits_per_max_message)
+-		return false;
+-
+-	ath10k_dbg(ar, ATH10K_DBG_HTC, "HTC: endpoint %d needs credit update\n",
+-		   ep->eid);
+-	return true;
+-}
+-
+ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 				      struct sk_buff *skb)
+ {
+@@ -111,13 +96,10 @@ static void ath10k_htc_prepare_tx_skb(struct ath10k_htc_ep *ep,
+ 	hdr->eid = ep->eid;
+ 	hdr->len = __cpu_to_le16(skb->len - sizeof(*hdr));
+ 	hdr->flags = 0;
++	hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
  
- DECLARE_EVENT_CLASS(ath10k_log_event,
- 	TP_PROTO(struct ath10k *ar, struct va_format *vaf),
+ 	spin_lock_bh(&ep->htc->tx_lock);
+ 	hdr->seq_no = ep->seq_no++;
+-
+-	if (ath10k_htc_ep_need_credit_update(ep))
+-		hdr->flags |= ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE;
+-
+ 	spin_unlock_bh(&ep->htc->tx_lock);
+ }
+ 
 -- 
 2.1.4
 
