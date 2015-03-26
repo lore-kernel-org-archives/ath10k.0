@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailsrv5-bkp2.dondominio.net ([37.152.88.47]
- helo=mailsrv5.dondominio.com)
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yb4AS-0000tD-99
- for ath10k@lists.infradead.org; Thu, 26 Mar 2015 09:33:38 +0000
-Message-ID: <5513D29E.2080601@aoifes.com>
-Date: Thu, 26 Mar 2015 10:34:22 +0100
-From: Jose Antonio Delgado Alfonso <jose.delgado@aoifes.com>
-MIME-Version: 1.0
-Subject: Re: Dynamic channel Access
-References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
- <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
- <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
- <55128DF0.6010109@aoifes.com> <5512D58B.6030204@aoifes.com>
- <CA+BoTQkabNNya7QW3GukcCoRcm9AfL2Vd2STMQSs9y0wRuivgA@mail.gmail.com>
-In-Reply-To: <CA+BoTQkabNNya7QW3GukcCoRcm9AfL2Vd2STMQSs9y0wRuivgA@mail.gmail.com>
+Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yb4aI-0007U3-U8
+ for ath10k@lists.infradead.org; Thu, 26 Mar 2015 10:00:19 +0000
+Received: by lbcgn8 with SMTP id gn8so36874153lbc.2
+ for <ath10k@lists.infradead.org>; Thu, 26 Mar 2015 02:59:56 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: clear htt.freq
+Date: Thu, 26 Mar 2015 09:57:07 +0000
+Message-Id: <1427363827-24125-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,42 +17,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjYvMDMvMTUgMDc6MzAsIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMjUgTWFyY2ggMjAx
-NSBhdCAxNjozNCwgSm9zZSBBbnRvbmlvIERlbGdhZG8gQWxmb25zbwo+IDxqb3NlLmRlbGdhZG9A
-YW9pZmVzLmNvbT4gd3JvdGU6Cj4+IEhpIGFsbCwKPj4KPj4gSSB3b3VsZCBsaWtlIHRvIGFzayBR
-dWFsY29tbSdzIGNvbGxhYm9yYXRvcnMgYWJvdXQgdGhpcyB0b3BpYy4KPj4KPj4gV2UgYXJlIHRy
-eWluZyB0byBjZXJ0aWZ5IGEgQVAgcHJvZHVjdCB3aGljaCB1c2VzIFFDQTk4OHggcmFkaW8gbW9k
-dWxlLgo+PiBXZSBhcmUgdXNpbmcgdGhlIGF0aDEwayBkcml2ZXIgKGtlcm5lbCB2My4xNy44KSBh
-bmQgZmlybXdhcmUgZnJvbSBCZW4KPj4gR3JlZWFyLiBXZSBhcmUgdHJ5aW5nIHRvIHBhc3MgdGhl
-IER5bmFtaWMgQ2hhbm5lbCB0ZXN0LCB3aGljaCBjb25zaXN0cwo+PiBpbiBzZXR0aW5nIHRoZSBy
-YWRpbyBhdCA4ME1IeiBhbmQsIGF0IHRoZSBzYW1lIHRpbWUsIHNldHRpbmcgb3RoZXIKPj4gc2ln
-bmFsIGluIHRoZSBzZWNvbmRhcnkgY2hhbm5lbC4gU28gZmFyLCB0aGUgcmFkaW8gbW9kdWxlIGRv
-ZXMgbm90Cj4+IHJlZHVjZSB0aGUgYmFuZHdpZHRoIGFuZCByZW1haW5zIHRyYW5zbWl0dGluZyBh
-dCA4ME1Iei4KPj4KPj4gUGxlYXNlLCBEb2VzIHNvbWVvbmUga25vdyBpZiBEeW5hbWljIENoYW5u
-ZWwgQWNjZXNzIGlzIHJlYWxseSBzdXBwb3J0ZWQKPj4gYnkgYXRoMTBrIGRyaXZlciBpbiBuZXdl
-c3Qga2VybmVsIHZlcnNpb25zPwo+IFlvdSBoYXZlbid0IHJlYWxseSBkZWZpbmVkIHdoYXQga2lu
-ZCBvZiAib3RoZXIgc2lnbmFsIiB5b3Ugc2V0IHVwLgo+IGF0aDEwayBzZXRzL2VuYWJsZXMgZHlu
-YW1pY19idyB3bWkgcGFyYW1ldGVyIGluIGF0aDEwa19zdGFydCgpLiBGcm9tCj4gd2hhdCBJIGtu
-b3cgZHluYW1pY19idyBkb2VzIGVuYWJsZSBmdy9odyB0byBkb3duZ3JhZGUgdHJhZmZpYyBmcm9t
-Cj4gODBNSHogdG8gNDBNSHogaW4gY2FzZSB0aGVyZSdzIG90aGVyIDgwMi4xMSB0cmFmZmljIG9u
-IHRoZSBzdWJiYW5kCj4gaGFwcGVuaW5nIGF0IGxlYXN0IG9uIDEwLjEuNDY3IC0gbm90IHN1cmUg
-YWJvdXQgbm9uLTgwMi4xMSB0cmFmZmljLiBJCj4gc3VwcG9zZSBuZXdlciBmaXJtd2FyZSByZXZp
-c2lvbnMgZG8gdGhhdCB0b28uIEknbSBub3Qgc3VyZSBhYm91dAo+IDk5OS45OTkuMC42MzYgdGhv
-dWdoLgo+Cj4KPiBNaWNoYcWCCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCkkgdGVzdGVkIHdpdGggb3RoZXIgQVAgYW5kIGFsc28gd2l0aCBhIHNpZ25hbCBnZW5lcmF0
-b3IgZW1pdHRpbmcgYSBmbGF0Cm5vaXNlIG9mIDIwIE1IeiBjb250aW51b3VzbHkuCgpJIHdpbGwg
-Y2hlY2sgaG93IGZ1bmN0aW9uIGF0aDEwa19zdGFydCBpcyBpbXBsZW1lbnRlZCBpbiBteSBrZXJu
-ZWwgdHJlZQphbmQgaWYgdGhhdCBwYXJhbWV0ZXIgaXMgcmVhbGx5IGVuYWJsZWQgb24gbXkgc2V0
-dXAuCgpUaGFua3MuCgpKb3NlIEEuIERlbGdhZG8KCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+If htt.freq isn't cleared and contains garbage fw
+may discard tx packets. Prevent this from
+happening by clearing htt.freq properly.
+
+Possible manifestation of the problem could be not
+being able to send auth request/response frames on
+firmware with HTT >= 3.4 (when freq param was
+introduced), e.g. on qca6174.
+
+Fixes: 8d6d36243610 ("ath10k: fix offchan reliability")
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9b8313dcb888..36a244187b9c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2927,6 +2927,7 @@ static void ath10k_tx(struct ieee80211_hw *hw,
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+ 
+ 	ATH10K_SKB_CB(skb)->htt.is_offchan = false;
++	ATH10K_SKB_CB(skb)->htt.freq = 0;
+ 	ATH10K_SKB_CB(skb)->htt.tid = ath10k_tx_h_get_tid(hdr);
+ 	ATH10K_SKB_CB(skb)->vdev_id = ath10k_tx_h_get_vdev_id(ar, vif);
+ 
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
