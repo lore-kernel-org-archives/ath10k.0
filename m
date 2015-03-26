@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yb1KC-0005FU-B3
- for ath10k@lists.infradead.org; Thu, 26 Mar 2015 06:31:29 +0000
-Received: by wiaa2 with SMTP id a2so8220003wia.0
- for <ath10k@lists.infradead.org>; Wed, 25 Mar 2015 23:31:00 -0700 (PDT)
+ id 1Yb45K-0004tA-MY
+ for ath10k@lists.infradead.org; Thu, 26 Mar 2015 09:28:19 +0000
+Received: by wgdm6 with SMTP id m6so57292981wgd.2
+ for <ath10k@lists.infradead.org>; Thu, 26 Mar 2015 02:27:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <5512D58B.6030204@aoifes.com>
-References: <CADxDmp50X2XnBjfk5qJKRH-n=1Cwagmjb_XyD+RJ4AgpPh-kjQ@mail.gmail.com>
- <CAEFj985wmiPwnF7rM1qCcO2K3X2yC_onO0AAMfm=9ytwpChzgg@mail.gmail.com>
- <etPan.542e8df5.6b8b4567.117@Okhwanui-Mac-mini.local>
- <55128DF0.6010109@aoifes.com> <5512D58B.6030204@aoifes.com>
-Date: Thu, 26 Mar 2015 07:30:59 +0100
-Message-ID: <CA+BoTQkabNNya7QW3GukcCoRcm9AfL2Vd2STMQSs9y0wRuivgA@mail.gmail.com>
-Subject: Re: Dynamic channel Access
+In-Reply-To: <1426849379-7562-2-git-send-email-marek.puzyniak@tieto.com>
+References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
+ <1426849379-7562-2-git-send-email-marek.puzyniak@tieto.com>
+Date: Thu, 26 Mar 2015 10:27:52 +0100
+Message-ID: <CA+BoTQm74JDvMk=G2Hot7h4v4gU4gRh8JH0K=1yhMa_UGQ4e0A@mail.gmail.com>
+Subject: Re: [PATCH v4 1/6] ath10k: unify tx mode and dispatch
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,29 +25,19 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jose Antonio Delgado Alfonso <jose.delgado@aoifes.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Marek Puzyniak <marek.puzyniak@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjUgTWFyY2ggMjAxNSBhdCAxNjozNCwgSm9zZSBBbnRvbmlvIERlbGdhZG8gQWxmb25zbwo8
-am9zZS5kZWxnYWRvQGFvaWZlcy5jb20+IHdyb3RlOgo+IEhpIGFsbCwKPgo+IEkgd291bGQgbGlr
-ZSB0byBhc2sgUXVhbGNvbW0ncyBjb2xsYWJvcmF0b3JzIGFib3V0IHRoaXMgdG9waWMuCj4KPiBX
-ZSBhcmUgdHJ5aW5nIHRvIGNlcnRpZnkgYSBBUCBwcm9kdWN0IHdoaWNoIHVzZXMgUUNBOTg4eCBy
-YWRpbyBtb2R1bGUuCj4gV2UgYXJlIHVzaW5nIHRoZSBhdGgxMGsgZHJpdmVyIChrZXJuZWwgdjMu
-MTcuOCkgYW5kIGZpcm13YXJlIGZyb20gQmVuCj4gR3JlZWFyLiBXZSBhcmUgdHJ5aW5nIHRvIHBh
-c3MgdGhlIER5bmFtaWMgQ2hhbm5lbCB0ZXN0LCB3aGljaCBjb25zaXN0cwo+IGluIHNldHRpbmcg
-dGhlIHJhZGlvIGF0IDgwTUh6IGFuZCwgYXQgdGhlIHNhbWUgdGltZSwgc2V0dGluZyBvdGhlcgo+
-IHNpZ25hbCBpbiB0aGUgc2Vjb25kYXJ5IGNoYW5uZWwuIFNvIGZhciwgdGhlIHJhZGlvIG1vZHVs
-ZSBkb2VzIG5vdAo+IHJlZHVjZSB0aGUgYmFuZHdpZHRoIGFuZCByZW1haW5zIHRyYW5zbWl0dGlu
-ZyBhdCA4ME1Iei4KPgo+IFBsZWFzZSwgRG9lcyBzb21lb25lIGtub3cgaWYgRHluYW1pYyBDaGFu
-bmVsIEFjY2VzcyBpcyByZWFsbHkgc3VwcG9ydGVkCj4gYnkgYXRoMTBrIGRyaXZlciBpbiBuZXdl
-c3Qga2VybmVsIHZlcnNpb25zPwoKWW91IGhhdmVuJ3QgcmVhbGx5IGRlZmluZWQgd2hhdCBraW5k
-IG9mICJvdGhlciBzaWduYWwiIHlvdSBzZXQgdXAuCmF0aDEwayBzZXRzL2VuYWJsZXMgZHluYW1p
-Y19idyB3bWkgcGFyYW1ldGVyIGluIGF0aDEwa19zdGFydCgpLiBGcm9tCndoYXQgSSBrbm93IGR5
-bmFtaWNfYncgZG9lcyBlbmFibGUgZncvaHcgdG8gZG93bmdyYWRlIHRyYWZmaWMgZnJvbQo4ME1I
-eiB0byA0ME1IeiBpbiBjYXNlIHRoZXJlJ3Mgb3RoZXIgODAyLjExIHRyYWZmaWMgb24gdGhlIHN1
-YmJhbmQKaGFwcGVuaW5nIGF0IGxlYXN0IG9uIDEwLjEuNDY3IC0gbm90IHN1cmUgYWJvdXQgbm9u
-LTgwMi4xMSB0cmFmZmljLiBJCnN1cHBvc2UgbmV3ZXIgZmlybXdhcmUgcmV2aXNpb25zIGRvIHRo
-YXQgdG9vLiBJJ20gbm90IHN1cmUgYWJvdXQKOTk5Ljk5OS4wLjYzNiB0aG91Z2guCgoKTWljaGHF
-ggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBr
-IG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+T24gMjAgTWFyY2ggMjAxNSBhdCAxMjowMiwgTWFyZWsgUHV6eW5pYWsgPG1hcmVrLnB1enluaWFr
+QHRpZXRvLmNvbT4gd3JvdGU6Cj4gRnJvbTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
+aWV0by5jb20+Cj4KPiBUaGVyZSBhcmUgYSBmZXcgZGlmZmVyZW50IHR4IHBhdGhzIGRlcGVuZGlu
+ZyBvbgo+IGZpcm13YXJlIGFuZCBmcmFtZSBpdHNlbGYuCj4KPiBDcmVhdGluZyBhIHVuaWZvcm0g
+ZGVjaXNpb24gd2lsbCBtYWtlIGl0IHBvc3NpYmxlCj4gdG8gc3dpdGNoIGJldHdlZW4gZGlmZmVy
+ZW50IHR4bW9kZSBlYXNpZXIsIGJvdGgKPiBmb3IgdGVzdGluZyBhbmQgZm9yIGZ1dHVyZSBmZWF0
+dXJlcyBhcyB3ZWxsLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmth
+emlvckB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogTWFyZWsgUHV6eW5pYWsgPG1hcmVrLnB1
+enluaWFrQHRpZXRvLmNvbT4KWy4uLl0KClRoaXMgcGF0Y2ggYXBwYXJlbnRseSBicmVha3MgQVAg
+b3BlcmF0aW9uLiBJIG5lZWQgdG8gaW52ZXN0aWdhdGUgdGhpcy4KCgpNaWNoYcWCCgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
+aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
+L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
