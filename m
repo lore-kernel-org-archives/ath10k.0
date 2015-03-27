@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbPZl-0005GY-9m
+ id 1YbPZl-0005GL-6O
  for ath10k@lists.infradead.org; Fri, 27 Mar 2015 08:25:10 +0000
-Received: by lagg8 with SMTP id g8so64691259lag.1
- for <ath10k@lists.infradead.org>; Fri, 27 Mar 2015 01:24:43 -0700 (PDT)
+Received: by lagg8 with SMTP id g8so64690957lag.1
+ for <ath10k@lists.infradead.org>; Fri, 27 Mar 2015 01:24:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: fix static wep with more than 1 key in client mode
-Date: Fri, 27 Mar 2015 08:21:56 +0000
-Message-Id: <1427444516-974-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1427444516-974-1-git-send-email-michal.kazior@tieto.com>
-References: <1427444516-974-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: fix arvif->wep_keys clearing
+Date: Fri, 27 Mar 2015 08:21:55 +0000
+Message-Id: <1427444516-974-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,95 +25,51 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-The default keyidx callback may be called after
-more than 1 key is installed. This led to only 1
-WEP key being reinstalled only. This caused Rxed
-traffic encrypted with other WEP keys to be
-dropped in client mode.
+The variable should be cleared regardless of
+whether there's a peer associated with the key or
+not.
+
+This fixes case when user first associates with 2
+WEP keys and then disconnects and connects with 1
+WEP key. This resulted in WEP key count being 2 in
+the driver leading to default keyidx fixup
+failure.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 45 +++++++++++++++++++----------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 9d873900257d..3baea2b671dd 100644
+index 9b8313dcb888..9d873900257d 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -259,41 +259,44 @@ static int ath10k_clear_vdev_key(struct ath10k_vif *arvif,
- 	return first_errno;
- }
+@@ -4101,6 +4101,13 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
  
--static int ath10k_mac_vif_sta_fix_wep_key(struct ath10k_vif *arvif)
-+static int ath10k_mac_vif_sta_fix_wep_key(struct ath10k_vif *arvif, int keyidx)
- {
- 	struct ath10k *ar = arvif->ar;
- 	enum nl80211_iftype iftype = arvif->vif->type;
- 	struct ieee80211_key_conf *key;
--	u32 flags = 0;
--	int num = 0;
--	int i;
-+	u32 flags;
- 	int ret;
-+	int i;
+ 	key->hw_key_idx = key->keyidx;
  
- 	lockdep_assert_held(&ar->conf_mutex);
++	if (is_wep) {
++		if (cmd == SET_KEY)
++			arvif->wep_keys[key->keyidx] = key;
++		else
++			arvif->wep_keys[key->keyidx] = NULL;
++	}
++
+ 	/* the peer should not disappear in mid-way (unless FW goes awry) since
+ 	 * we already hold conf_mutex. we just make sure its there now. */
+ 	spin_lock_bh(&ar->data_lock);
+@@ -4126,11 +4133,6 @@ static int ath10k_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
+ 		flags |= WMI_KEY_GROUP;
  
- 	if (iftype != NL80211_IFTYPE_STATION)
- 		return 0;
- 
-+	if (keyidx < 0)
-+		return 0;
-+
- 	for (i = 0; i < ARRAY_SIZE(arvif->wep_keys); i++) {
--		if (arvif->wep_keys[i]) {
--			key = arvif->wep_keys[i];
--			++num;
-+		if (!arvif->wep_keys[i])
-+			continue;
-+
-+		key = arvif->wep_keys[i];
-+
-+		flags = 0;
-+		flags |= WMI_KEY_PAIRWISE;
-+
-+		if (key->keyidx == keyidx)
-+			flags |= WMI_KEY_TX_USAGE;
-+
-+		ret = ath10k_install_key(arvif, key, SET_KEY, arvif->bssid,
-+					 flags);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to install key %i on vdev %i: %d\n",
-+				    key->keyidx, arvif->vdev_id, ret);
-+			return ret;
- 		}
- 	}
- 
--	if (num != 1)
--		return 0;
+ 	if (is_wep) {
+-		if (cmd == SET_KEY)
+-			arvif->wep_keys[key->keyidx] = key;
+-		else
+-			arvif->wep_keys[key->keyidx] = NULL;
 -
--	flags |= WMI_KEY_PAIRWISE;
--	flags |= WMI_KEY_TX_USAGE;
--
--	ret = ath10k_install_key(arvif, key, SET_KEY, arvif->bssid, flags);
--	if (ret) {
--		ath10k_warn(ar, "failed to install key %i on vdev %i: %d\n",
--			    key->keyidx, arvif->vdev_id, ret);
--		return ret;
--	}
--
- 	return 0;
- }
+ 		if (cmd == DISABLE_KEY)
+ 			ath10k_clear_vdev_key(arvif, key);
  
-@@ -4227,7 +4230,7 @@ static void ath10k_set_default_unicast_key(struct ieee80211_hw *hw,
- 
- 	arvif->def_wep_key_idx = keyidx;
- 
--	ret = ath10k_mac_vif_sta_fix_wep_key(arvif);
-+	ret = ath10k_mac_vif_sta_fix_wep_key(arvif, keyidx);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to fix sta wep key on vdev %i: %d\n",
- 			    arvif->vdev_id, ret);
 -- 
 2.1.4
 
