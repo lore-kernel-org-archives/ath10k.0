@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbXd1-0001BO-GJ
- for ath10k@lists.infradead.org; Fri, 27 Mar 2015 17:01:04 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath: use PRI value given by spec for fixed PRI
-Date: Fri, 27 Mar 2015 09:59:50 -0700
-Message-ID: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
+ id 1YbXvH-0002LR-6l
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2015 17:19:55 +0000
+From: Yanbo Li <yanbol@qca.qualcomm.com>
+Subject: [PATCH] ath10k: Change the fw stats access mask
+Date: Fri, 27 Mar 2015 10:18:00 -0700
+Message-ID: <1427476680-5532-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,51 +20,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: kvalo@qca.qualcomm.com
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
 
-PRI value is used as divider when DFS detector analyzes candidate
-radar pulses.
-If PRI deviation is big from its origin PRI, DFS detector could miss
-valid radar reports since HW often misses detecting radar pulses and
-causes long interval value of pulses.
+This fix the regerssion introduced after "ath10k_wmi_requests_stats()
+call to use more stat bits", both the 10.2.X FW and community FW 10.1.X
+will return time out when access the fw_stats with the STAT_VDEV and
+STAT_PDEV. Add the condition to use different fw_stats mask for different
+FW versions.
 
-For instance from practical results, if runtime PRI is calculated as
-1431 for fixed PRI value of 1428 and delta timestamp logs 15719,
-the modular remainder will be 1409 and the delta between the remainder
-and runtime PRI is 22 that is bigger than PRI tolerance which is 16.
-As a result this radar report will be ignored even though it's valid.
+Fixes:7777d8c7ef6f("ath10k: implement fw stats for wmi-tlv")
+Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
 
-By using spec defined PRI for fixed PRI, we can correct this error.
-
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/dfs_pri_detector.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/dfs_pri_detector.c b/drivers/net/wireless/ath/dfs_pri_detector.c
-index 1b5ad19..fef459a 100644
---- a/drivers/net/wireless/ath/dfs_pri_detector.c
-+++ b/drivers/net/wireless/ath/dfs_pri_detector.c
-@@ -25,6 +25,8 @@ struct ath_dfs_pool_stats global_dfs_pool_stats = {};
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index c0e454bb6a8d..e1db4d018e90 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -958,6 +958,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_stations = TARGET_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
++		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
++			WMI_STAT_PEER;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+@@ -966,12 +968,15 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_stations = TARGET_10X_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
++		ar->fw_stats_req_mask = WMI_STAT_PEER;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+ 		ar->max_num_stations = TARGET_TLV_NUM_STATIONS;
+ 		ar->max_num_vdevs = TARGET_TLV_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_TLV_NUM_MSDU_DESC;
++		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
++			WMI_STAT_PEER;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index cfd37a6e8931..1545a37c6360 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -514,6 +514,7 @@ struct ath10k {
+ 	u32 fw_version_minor;
+ 	u16 fw_version_release;
+ 	u16 fw_version_build;
++	u32 fw_stats_req_mask;
+ 	u32 phy_capability;
+ 	u32 hw_min_tx_power;
+ 	u32 hw_max_tx_power;
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 51cf536fd014..544c22e0a1d8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -395,10 +395,7 @@ static int ath10k_debug_fw_stats_request(struct ath10k *ar)
  
- #define DFS_POOL_STAT_INC(c) (global_dfs_pool_stats.c++)
- #define DFS_POOL_STAT_DEC(c) (global_dfs_pool_stats.c--)
-+#define GET_PRI_TO_USE(MIN, MAX, RUNTIME) \
-+	(MIN + 16 == MAX - 16 ? MIN + 16 : RUNTIME)
+ 		reinit_completion(&ar->debug.fw_stats_complete);
  
- /**
-  * struct pulse_elem - elements in pulse queue
-@@ -243,7 +245,8 @@ static bool pseq_handler_create_sequences(struct pri_detector *pde,
- 		ps.count_falses = 0;
- 		ps.first_ts = p->ts;
- 		ps.last_ts = ts;
--		ps.pri = ts - p->ts;
-+		ps.pri = GET_PRI_TO_USE(pde->rs->pri_min,
-+			pde->rs->pri_max, ts - p->ts);
- 		ps.dur = ps.pri * (pde->rs->ppb - 1)
- 				+ 2 * pde->rs->max_pri_tolerance;
- 
+-		ret = ath10k_wmi_request_stats(ar,
+-					       WMI_STAT_PDEV |
+-					       WMI_STAT_VDEV |
+-					       WMI_STAT_PEER);
++		ret = ath10k_wmi_request_stats(ar, ar->fw_stats_req_mask);
+ 		if (ret) {
+ 			ath10k_warn(ar, "could not request stats (%d)\n", ret);
+ 			return ret;
 -- 
 1.9.1
 
