@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x231.google.com ([2607:f8b0:4001:c03::231])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YbVL5-0004O4-ER
- for ath10k@lists.infradead.org; Fri, 27 Mar 2015 14:34:24 +0000
-Received: by iedfl3 with SMTP id fl3so80706953ied.1
- for <ath10k@lists.infradead.org>; Fri, 27 Mar 2015 07:33:56 -0700 (PDT)
+ id 1YbXd1-0001BO-GJ
+ for ath10k@lists.infradead.org; Fri, 27 Mar 2015 17:01:04 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath: use PRI value given by spec for fixed PRI
+Date: Fri, 27 Mar 2015 09:59:50 -0700
+Message-ID: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <1426849379-7562-7-git-send-email-marek.puzyniak@tieto.com>
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- <1426849379-7562-7-git-send-email-marek.puzyniak@tieto.com>
-Date: Fri, 27 Mar 2015 10:33:56 -0400
-Message-ID: <CADnKcVhg8ZVD8Nn7pqjtCUWWOiO_8Zp7-U0zaMh4FKL-pj3bLg@mail.gmail.com>
-Subject: Re: [PATCH v4 6/6] ath10k: introduce basic tdls functionality
-From: Marek Puzyniak <marek.puzyniak@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,64 +20,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Marek Kwaczynski <marek.kwaczynski@tieto.com>, Marek Puzyniak <marek.puzyniak@tieto.com>, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Hi Kalle,
+PRI value is used as divider when DFS detector analyzes candidate
+radar pulses.
+If PRI deviation is big from its origin PRI, DFS detector could miss
+valid radar reports since HW often misses detecting radar pulses and
+causes long interval value of pulses.
 
-On 20 March 2015 at 07:02, Marek Puzyniak <marek.puzyniak@tieto.com> wrote:
-> This patch introduces tdls without tdls peer uapsd
-> and tdls channel switching.
-> Transmitting tdls data frames works only for ethernet
-> type frames, that's why data addressed to tdls sta
-> is in ethernet format.
->
-> This patch depends on:
-> mac80211: initialize rate control earlier for tdls station
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> Signed-off-by: Marek Kwaczynski <marek.kwaczynski@tieto.com>
-> Signed-off-by: Marek Puzyniak <marek.puzyniak@tieto.com>
-> ---
-[...]
+For instance from practical results, if runtime PRI is calculated as
+1431 for fixed PRI value of 1428 and delta timestamp logs 15719,
+the modular remainder will be 1409 and the delta between the remainder
+and runtime PRI is 22 that is bigger than PRI tolerance which is 16.
+As a result this radar report will be ignored even though it's valid.
 
-> +static int ath10_mac_tdls_vifs_count(struct ieee80211_hw *hw)
-[...]
-> +               num_tdls_vifs = ath10_mac_tdls_vifs_count(hw);
-[...]
+By using spec defined PRI for fixed PRI, we can correct this error.
 
-I found typo in my patch. This can be fixed by
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/dfs_pri_detector.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c
-b/drivers/net/wireless/ath/ath10k/mac.c
-index 4e2be87..5eb6c98 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4613,7 +4613,7 @@ static void ath10k_mac_tdls_vifs_count_iter(void
-*data, u8 *mac,
-                (*num_tdls_vifs)++;
- }
+diff --git a/drivers/net/wireless/ath/dfs_pri_detector.c b/drivers/net/wireless/ath/dfs_pri_detector.c
+index 1b5ad19..fef459a 100644
+--- a/drivers/net/wireless/ath/dfs_pri_detector.c
++++ b/drivers/net/wireless/ath/dfs_pri_detector.c
+@@ -25,6 +25,8 @@ struct ath_dfs_pool_stats global_dfs_pool_stats = {};
+ 
+ #define DFS_POOL_STAT_INC(c) (global_dfs_pool_stats.c++)
+ #define DFS_POOL_STAT_DEC(c) (global_dfs_pool_stats.c--)
++#define GET_PRI_TO_USE(MIN, MAX, RUNTIME) \
++	(MIN + 16 == MAX - 16 ? MIN + 16 : RUNTIME)
+ 
+ /**
+  * struct pulse_elem - elements in pulse queue
+@@ -243,7 +245,8 @@ static bool pseq_handler_create_sequences(struct pri_detector *pde,
+ 		ps.count_falses = 0;
+ 		ps.first_ts = p->ts;
+ 		ps.last_ts = ts;
+-		ps.pri = ts - p->ts;
++		ps.pri = GET_PRI_TO_USE(pde->rs->pri_min,
++			pde->rs->pri_max, ts - p->ts);
+ 		ps.dur = ps.pri * (pde->rs->ppb - 1)
+ 				+ 2 * pde->rs->max_pri_tolerance;
+ 
+-- 
+1.9.1
 
--static int ath10_mac_tdls_vifs_count(struct ieee80211_hw *hw)
-+static int ath10k_mac_tdls_vifs_count(struct ieee80211_hw *hw)
- {
-        int num_tdls_vifs = 0;
-
-@@ -4704,7 +4704,7 @@ static int ath10k_sta_state(struct ieee80211_hw *hw,
-                        goto exit;
-
-                num_tdls_stations = ath10k_mac_tdls_vif_stations_count(hw, vif);
--               num_tdls_vifs = ath10_mac_tdls_vifs_count(hw);
-+               num_tdls_vifs = ath10k_mac_tdls_vifs_count(hw);
-
-                if (num_tdls_vifs >= ar->max_num_tdls_vdevs &&
-                    num_tdls_stations == 0) {
-
-
-Should I resend this patch or whole patch-set, or maybe it can be
-handled in another way.
-
-Marek
 
 _______________________________________________
 ath10k mailing list
