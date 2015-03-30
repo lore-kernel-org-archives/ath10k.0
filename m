@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcYjn-0006S8-7t
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 12:24:17 +0000
+ id 1YcZTS-0005zm-RH
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 13:11:27 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix aid setup in station mode
-References: <1427104648-5681-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 30 Mar 2015 15:23:44 +0300
-In-Reply-To: <1427104648-5681-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 23 Mar 2015 09:57:28 +0000")
-Message-ID: <87vbhi4qsv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v5 2/7] ath10k: implement chanctx API
+References: <1427200993-7550-1-git-send-email-michal.kazior@tieto.com>
+ <1427200993-7550-3-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 30 Mar 2015 16:10:56 +0300
+In-Reply-To: <1427200993-7550-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 24 Mar 2015 12:43:08 +0000")
+Message-ID: <87mw2u4om7.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,14 +29,35 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> While debugging something else I noticed AID was
-> set to 0. This could lead to powersave issues in
-> station mode. Maybe this isn't really necessary
-> but set it properly just to be sure.
+> The chanctx API will allow ath10k to support
+> multi-channel operation.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+[...]
+
+> @@ -1754,13 +1945,19 @@ static void ath10k_peer_assoc_h_crypto(struct ath10k *ar,
+>  				       struct wmi_peer_assoc_complete_arg *arg)
+>  {
+>  	struct ieee80211_bss_conf *info = &vif->bss_conf;
+> +	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
+> +	struct ath10k_chanctx *arctx;
+>  	struct cfg80211_bss *bss;
+>  	const u8 *rsnie = NULL;
+>  	const u8 *wpaie = NULL;
+>  
+>  	lockdep_assert_held(&ar->conf_mutex);
+>  
+> -	bss = cfg80211_get_bss(ar->hw->wiphy, ar->hw->conf.chandef.chan,
+> +	arctx = ath10k_mac_vif_ctx(arvif);
+> +	if (WARN_ON(!arctx))
+> +		return;
+> +
+> +	bss = cfg80211_get_bss(ar->hw->wiphy, arctx->conf.def.chan,
+>  			       info->bssid, NULL, 0, 0, 0);
+
+As I had to pull mac80211-next for TDLS there was a conflict here.
+Please check the pending branch for my conflict resolution.
 
 -- 
 Kalle Valo
