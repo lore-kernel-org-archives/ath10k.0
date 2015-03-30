@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ob0-x233.google.com ([2607:f8b0:4003:c01::233])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YceGL-0002mg-IM
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 18:18:14 +0000
-Received: by obbps3 with SMTP id ps3so19448675obb.3
- for <ath10k@lists.infradead.org>; Mon, 30 Mar 2015 11:17:51 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ycgwx-0000vo-9T
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 21:10:23 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 2E7D240A626
+ for <ath10k@lists.infradead.org>; Mon, 30 Mar 2015 14:09:58 -0700 (PDT)
+Message-ID: <5519BBA5.7080704@candelatech.com>
+Date: Mon, 30 Mar 2015 14:09:57 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <87ego64nny.fsf@kamboji.qca.qualcomm.com>
-References: <1427476680-5532-1-git-send-email-yanbol@qca.qualcomm.com>
- <87ego64nny.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 30 Mar 2015 11:17:51 -0700
-Message-ID: <CAFuUQkhKrU0VDki49VLYoeppXJZXxU--v0kykfgUGZSr_ywgwA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Change the fw stats access mask
-From: YanBo <dreamfly281@gmail.com>
+Subject: Question on ar->max_num_vdevs and WMI ops config.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +25,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Yanbo Li <yanbol@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-On Mon, Mar 30, 2015 at 6:31 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
-> Yanbo Li <yanbol@qca.qualcomm.com> writes:
->
->> This fix the regerssion introduced after "ath10k_wmi_requests_stats()
->> call to use more stat bits", both the 10.2.X FW and community FW 10.1.X
->> will return time out when access the fw_stats with the STAT_VDEV and
->> STAT_PDEV. Add the condition to use different fw_stats mask for different
->> FW versions.
->>
->> Fixes:7777d8c7ef6f("ath10k: implement fw stats for wmi-tlv")
->> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
->
-> There was a trivial conflict, please check my resolution in the pending
-> branch.
->
-Checked, looks well,  Thanks
+I'm porting forward my changes to the 4.0-rc6 kernel, and I notice
+something a bit confusing to me.
 
-BR /Yanbo
+It seems some upstream patch has added ar->max_num_vdevs and some related
+fields.
+
+But, in places like this:
+
+static struct sk_buff *ath10k_wmi_op_gen_init(struct ath10k *ar)
+{
+	struct wmi_init_cmd *cmd;
+	struct sk_buff *buf;
+	struct wmi_resource_config config = {};
+	u32 len, val;
+
+	config.num_vdevs = __cpu_to_le32(TARGET_NUM_VDEVS);
+	config.num_peers = __cpu_to_le32(TARGET_NUM_PEERS);
+	config.num_offload_peers = __cpu_to_le32(TARGET_NUM_OFFLOAD_PEERS);
+
+
+We are still using constants instead of ar->max_num_vdevs.
+
+Was this done on purpose for some reason?
+
+It will make my patches to support CT features a bit cleaner if we use the
+values stored in ar->max_num_vdevs etc.
+
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
