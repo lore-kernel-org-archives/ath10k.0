@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcZxK-0002PH-TE
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 13:42:19 +0000
+ id 1YccQ8-0007H7-1o
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 16:20:12 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 3/4] ath10k: Fix no-ack frame status
-References: <1418226973-13779-1-git-send-email-sujith@msujith.org>
- <1418226973-13779-3-git-send-email-sujith@msujith.org>
- <87oarazecg.fsf@kamboji.qca.qualcomm.com>
- <21646.15326.159197.316821@gargle.gargle.HOWL>
- <87vblduxlk.fsf@kamboji.qca.qualcomm.com>
-Date: Mon, 30 Mar 2015 16:41:48 +0300
-In-Reply-To: <87vblduxlk.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Mon, 15 Dec 2014 10:27:19 +0200")
-Message-ID: <87a8yu4n6r.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 2/2] ath10k: implement more versatile set_bitrate_mask
+References: <1427201836-7741-1-git-send-email-michal.kazior@tieto.com>
+ <1427201836-7741-3-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 30 Mar 2015 19:19:38 +0300
+In-Reply-To: <1427201836-7741-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 24 Mar 2015 12:57:16 +0000")
+Message-ID: <87mw2u31b8.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -27,29 +24,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sujith Manoharan <sujith@msujith.org>
-Cc: Johannes Berg <johannes@sipsolutions.net>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-(Discussion from last December)
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> Sujith Manoharan <sujith@msujith.org> writes:
+> Until now only a single fixed tx rate or nss was
+> allowed to be set.
 >
->> Kalle Valo wrote:
->>> Johannes, are you planning to take this? Or should I take this once the
->>> corresponding mac80211 patch trickles down to my tree?
->>
->> Kalle, can you please pick this one ? I'll rebase and send the ath9k patch
->> to John once he starts merging patches.
+> The patch attempts to improve this by allowing
+> most bitrate masks. The limitation is VHT MCS
+> rates cannot be expressed separately and only the
+> following VHT MCS ranges are supported: none, 0-7,
+> 0-8, and 0-9.
 >
-> Yes, I'll take this patch once I have the mac80211 dependency in my
-> tree. I marked the patch as "Awaiting Upstream" in patchwork so that I
-> don't forget, hopefully :)
+> This keeps the old behaviour when requesting
+> single tx rate or single nss. The new bitrate mask
+> logic is only applied to other cases that would
+> return -EINVAL until now.
 >
-> https://patchwork.kernel.org/patch/5470621/
+> Depending on firmware revisions some combinations
+> may crash firmware so use with care, please.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Naturally I did forget this :) But the patch is in pending branch now.
+kbuild reported:
+
+drivers/net/wireless/ath/ath10k/mac.c:2163 ath10k_peer_assoc_h_ht() warn: buffer overflow 'vht_mcs_mask' 8 <= 9
 
 -- 
 Kalle Valo
