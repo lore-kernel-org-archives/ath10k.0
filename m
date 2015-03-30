@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcYTJ-0004Zb-3n
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 12:07:13 +0000
+ id 1YcYfW-00042f-Jm
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 12:19:51 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 0/6] ath10k: add basic tdls support
-References: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
-Date: Mon, 30 Mar 2015 15:06:43 +0300
-In-Reply-To: <1426849379-7562-1-git-send-email-marek.puzyniak@tieto.com>
- (Marek Puzyniak's message of "Fri, 20 Mar 2015 12:02:53 +0100")
-Message-ID: <874mp2665o.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/9] ath10k: cleanups 2015-03-20
+References: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 30 Mar 2015 15:19:19 +0300
+In-Reply-To: <1426859655-11797-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 20 Mar 2015 13:54:06 +0000")
+Message-ID: <87zj6u4r08.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,62 +23,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marek Puzyniak <marek.puzyniak@tieto.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Marek Puzyniak <marek.puzyniak@tieto.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This patchset introduces tdls funtionality without tdls peer uapsd
-> and tdls channel switching. Tdls is supported by qca6174 hardware 
-> what is indicated by firmware through supported services.
-> Tdls station when authorized requires some parameters that are filled in 
-> by rate control initialization. Rate control for tdls is initialized
-> at proper time in mac80211 patch:
-> mac80211: initialize rate control earlier for tdls station
+> Here's a bunch of cleanups and fixes associated
+> with tx/rx rate code.
 >
-> So tdls funtionality implemented by this patchset depends on 
-> mac80211: initialize rate control earlier for tdls station
+> Feel free to squash some of the patches if you
+> think it makes sense or let me know which ones you
+> want me to squash.
 >
-> v2:
-> -introduce tdls peer counter
-> -minor changes after review
+> There are a few checkpatch warnings for going over
+> 80 chars. I decided to leave them be to avoid code
+> wrapping which would make the code less readable
+> than it is now in my opinion.
 >
-> v3:
-> -more minor changes after review
-> -replace tdls peer counter variable by iterate station function
->
-> v4:
-> -provide functions for counting tdls station per vif and tdls vifs
-> -handle maximum number of tdls vifs
-> -split code into more patches
->
-> Marek Puzyniak (5):
->   ath10k: make peer type configurable
->   ath10k: store max tdls vdevs that fw can handle
->   ath10k: update station counting
->   ath10k: add wmi support for tdls
->   ath10k: introduce basic tdls functionality
->
-> Michal Kazior (1):
->   ath10k: unify tx mode and dispatch
+> I have 2 more patches for .set_bitrate_mask()
+> callback which depend on this patchset. Once you
+> apply this patchset to your `pending` branch let
+> me know, please, so I can push the rest with git
+> indexes your git repo will recognize.
 
-Thanks, all applied.
+Sorry, I had missed this comment and didn't realise to tell you when I
+applied the patches to pending branch. The bad part with patchwork is
+that it doesn't show the cover letter at all :(
 
-For the record, I had to pull mac80211-next to ath-next to solve the
-dependency:
+> Michal Kazior (9):
+>   ath10k: move rate definitions to file start
+>   ath10k: derive rate from bitrate
+>   ath10k: drop RATETAB_ENT macro
+>   ath10k: add hw rate definitions
+>   ath10k: use hw rate definitions for fixed rate
+>   ath10k: simplify fixed rate selection
+>   ath10k: rework legacy rx rate decoding
+>   ath10k: deduplicate bitrate to rate idx conversion
+>   ath10k: document ofdm/5ghz rate offset with a macro
 
-commit 23d6660d7f0feacb4c0e24c5cb8f29674aa38567
-Merge: 53513c302f35 5d8325ecb9c2
-Author: Kalle Valo <kvalo@qca.qualcomm.com>
-Date:   Mon Mar 30 10:07:12 2015 +0300
-
-    Merge mac80211-next into ath-next
-    
-    Patch "ath10k: introduce basic tdls functionality" depends on this mac80211
-    patch:
-    
-    c23e31cf7b55 mac80211: initialize rate control earlier for tdls station
-
+Thanks, all patches applied.
 
 -- 
 Kalle Valo
