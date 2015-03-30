@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcXfE-00021S-45
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 11:15:29 +0000
-Subject: [PATCH] ath10k: fix HTT op backwards compatibility for QCA6174
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 30 Mar 2015 14:14:28 +0300
-Message-ID: <20150330111428.22198.36611.stgit@potku.adurom.net>
+ id 1YcXpk-0007OH-5b
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 11:26:21 +0000
+Received: by wgbdm7 with SMTP id dm7so64372040wgb.1
+ for <ath10k@lists.infradead.org>; Mon, 30 Mar 2015 04:25:57 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20150330111428.22198.36611.stgit@potku.adurom.net>
+References: <20150330111428.22198.36611.stgit@potku.adurom.net>
+Date: Mon, 30 Mar 2015 13:25:56 +0200
+Message-ID: <CA+BoTQ=s4M9jt46ta1OKp0vAG6wZvZmbBjPU_kmJYr3F6zuB1A@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: fix HTT op backwards compatibility for QCA6174
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,81 +20,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Commit 8348db298496 ("ath10k: add ATH10K_FW_IE_HTT_OP_VERSION") broke QCA6174
-receive side as the HTT ids from ATH10K_FW_HTT_OP_VERSION_MAIN don't have
-HTT_TLV_T2H_MSG_TYPE_RX_IN_ORD_PADDR_IND set. Fix this by adding a backwards
-compatibility code which sets HTT op version if it's not set by the firmare
-image.
-
-Fixes: 8348db298496 ("ath10k: add ATH10K_FW_IE_HTT_OP_VERSION")
-Reported-by: Michal Kazior <michal.kazior@tieto.com>
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |   23 +++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.c  |    2 +-
- 2 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 1c74585d9256..47f7e7116448 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -998,6 +998,29 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		return -EINVAL;
- 	}
- 
-+	/* Backwards compatibility for firmwares without
-+	 * ATH10K_FW_IE_HTT_OP_VERSION.
-+	 */
-+	if (ar->htt.op_version == ATH10K_FW_HTT_OP_VERSION_UNSET) {
-+		switch (ar->wmi.op_version) {
-+		case ATH10K_FW_WMI_OP_VERSION_MAIN:
-+			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_MAIN;
-+			break;
-+		case ATH10K_FW_WMI_OP_VERSION_10_1:
-+		case ATH10K_FW_WMI_OP_VERSION_10_2:
-+		case ATH10K_FW_WMI_OP_VERSION_10_2_4:
-+			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_10_1;
-+			break;
-+		case ATH10K_FW_WMI_OP_VERSION_TLV:
-+			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
-+			break;
-+		case ATH10K_FW_WMI_OP_VERSION_UNSET:
-+		case ATH10K_FW_WMI_OP_VERSION_MAX:
-+			WARN_ON(1);
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index f782d76c3886..6da6ef26143a 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -156,11 +156,11 @@ int ath10k_htt_init(struct ath10k *ar)
- 		ar->htt.t2h_msg_types_max = HTT_TLV_T2H_NUM_MSGS;
- 		break;
- 	case ATH10K_FW_HTT_OP_VERSION_MAIN:
--	case ATH10K_FW_HTT_OP_VERSION_UNSET:
- 		ar->htt.t2h_msg_types = htt_main_t2h_msg_types;
- 		ar->htt.t2h_msg_types_max = HTT_MAIN_T2H_NUM_MSGS;
- 		break;
- 	case ATH10K_FW_HTT_OP_VERSION_MAX:
-+	case ATH10K_FW_HTT_OP_VERSION_UNSET:
- 		WARN_ON(1);
- 		return -EINVAL;
- 	}
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzAgTWFyY2ggMjAxNSBhdCAxMzoxNCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gQ29tbWl0IDgzNDhkYjI5ODQ5NiAoImF0aDEwazogYWRkIEFUSDEwS19G
+V19JRV9IVFRfT1BfVkVSU0lPTiIpIGJyb2tlIFFDQTYxNzQKPiByZWNlaXZlIHNpZGUgYXMgdGhl
+IEhUVCBpZHMgZnJvbSBBVEgxMEtfRldfSFRUX09QX1ZFUlNJT05fTUFJTiBkb24ndCBoYXZlCj4g
+SFRUX1RMVl9UMkhfTVNHX1RZUEVfUlhfSU5fT1JEX1BBRERSX0lORCBzZXQuIEZpeCB0aGlzIGJ5
+IGFkZGluZyBhIGJhY2t3YXJkcwo+IGNvbXBhdGliaWxpdHkgY29kZSB3aGljaCBzZXRzIEhUVCBv
+cCB2ZXJzaW9uIGlmIGl0J3Mgbm90IHNldCBieSB0aGUgZmlybWFyZQoKcy9maXJtYXJlL2Zpcm13
+YXJlLwoKCj4gaW1hZ2UuCj4KPiBGaXhlczogODM0OGRiMjk4NDk2ICgiYXRoMTBrOiBhZGQgQVRI
+MTBLX0ZXX0lFX0hUVF9PUF9WRVJTSU9OIikKPiBSZXBvcnRlZC1ieTogTWljaGFsIEthemlvciA8
+bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4gU2lnbmVkLW9mZi1ieTogS2FsbGUgVmFsbyA8a3Zh
+bG9AcWNhLnF1YWxjb21tLmNvbT4KClRlc3RlZC1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmth
+emlvckB0aWV0by5jb20+CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
+ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
+awo=
