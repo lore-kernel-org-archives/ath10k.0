@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.neratec.com ([46.140.151.2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcT7Z-0004mj-Kn
- for ath10k@lists.infradead.org; Mon, 30 Mar 2015 06:24:26 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 0/2] ath10k: add ATH10K_FW_IE_HTT_OP_VERSION
-References: <20150325110835.30133.509.stgit@x230>
-Date: Mon, 30 Mar 2015 09:23:51 +0300
-In-Reply-To: <20150325110835.30133.509.stgit@x230> (Kalle Valo's message of
- "Wed, 25 Mar 2015 13:12:13 +0200")
-Message-ID: <87619j6m14.fsf@kamboji.qca.qualcomm.com>
+ id 1YcWQA-0005sd-3f
+ for ath10k@lists.infradead.org; Mon, 30 Mar 2015 09:55:51 +0000
+Message-ID: <55191D89.2000300@neratec.com>
+Date: Mon, 30 Mar 2015 11:55:21 +0200
+From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
+References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +22,84 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+On 03/27/2015 05:59 PM, Peter Oh wrote:
+> PRI value is used as divider when DFS detector analyzes candidate
+> radar pulses.
+> If PRI deviation is big from its origin PRI, DFS detector could miss
+> valid radar reports since HW often misses detecting radar pulses and
+> causes long interval value of pulses.
+> 
+> For instance from practical results, if runtime PRI is calculated as
+> 1431 for fixed PRI value of 1428 and delta timestamp logs 15719,
+> the modular remainder will be 1409 and the delta between the remainder
+> and runtime PRI is 22 that is bigger than PRI tolerance which is 16.
+> As a result this radar report will be ignored even though it's valid.
+> 
+> By using spec defined PRI for fixed PRI, we can correct this error.
+> 
+Hm, not sure if this is a generic solution or 10k specific.
 
-> My proposal how to solve the differences between HTT interfaces by adding
-> ATH10K_FW_IE_HTT_OP_VERSION. Based on Rajkumar's "ath10k: fix htt t2h message
-> conflicts among firmware revisions", I just added the new IE and bumped up the
-> FW API.
->
-> For now only compile tested, I will run proper tests later.
->
+As stated in the source code
+/*
+ * tolerated deviation of radar time stamp in usecs on both sides
+ * TODO: this might need to be HW-dependent
+ */
+#define PRI_TOLERANCE	16
+
+the pri tolerance is assumed to be potentially dependent on used HW. The comment
+in fact was noted when the detector was written to become generally usable by any
+HW out there, before it became Atheros specific.
+
+From my measurements, the ath9k is far within the given pri tolerance, i.e. if you
+continuously feed ETSI pattern 0 over a signal generator, it reports PRIs very
+accurately at 1428us (or multiples thereof). Even under heavy load the jitter of
+those reported values is within +/- 3us. With that, the ath9k (9580 more
+specifically) is already more accurate than the given tolerance - increasing it
+further would harm its operability.
+
+The pri tolerance does not only help fine-tuning detection performance, but also
+heavily defines whether DFS channels are usable or not (afair, it is the most
+significant parameter to reduce false positives). That's why I believe we need to
+be very cautious when changing it to fix / improve minor issues.
+
+Therefore, if your measurements with 10k reveal that it needs a higher tolerance,
+it should be made HW dependent and defined individually for 9k and 10k.
+
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 > ---
->
-> Kalle Valo (1):
->       ath10k: bump up FW API to 5
->
-> Rajkumar Manoharan (1):
->       ath10k: add ATH10K_FW_IE_HTT_OP_VERSION
+>  drivers/net/wireless/ath/dfs_pri_detector.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/wireless/ath/dfs_pri_detector.c b/drivers/net/wireless/ath/dfs_pri_detector.c
+> index 1b5ad19..fef459a 100644
+> --- a/drivers/net/wireless/ath/dfs_pri_detector.c
+> +++ b/drivers/net/wireless/ath/dfs_pri_detector.c
+> @@ -25,6 +25,8 @@ struct ath_dfs_pool_stats global_dfs_pool_stats = {};
+>  
+>  #define DFS_POOL_STAT_INC(c) (global_dfs_pool_stats.c++)
+>  #define DFS_POOL_STAT_DEC(c) (global_dfs_pool_stats.c--)
+> +#define GET_PRI_TO_USE(MIN, MAX, RUNTIME) \
+> +	(MIN + 16 == MAX - 16 ? MIN + 16 : RUNTIME)
+>  
+/* in case of single PRI patterns, take nominal PRI */
+#define GET_PRI_TO_USE(MIN, MAX, RUNTIME) \
+	((MAX - MIN) == 2 * PRI_TOLERANCE) ? MIN + PRI_TOLERANCE : RUNTIME)
 
-Applied.
 
--- 
-Kalle Valo
+If timestamp jitter is an issue for 10k, you might also want to consider adjusting
+the assumed PRI with every pulse you add to a series. Initially I had it
+implemented that way that the PRI was re-calculated continuously to minimize the
+variance between nominal and measured pattern. But for the 9k and its accurate
+timestamping that turned out to be a lot of calculation for almost no gain and was
+dropped.
+
+
+Cheers,
+Zefir
+
 
 _______________________________________________
 ath10k mailing list
