@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd0jq-0003y1-JG
- for ath10k@lists.infradead.org; Tue, 31 Mar 2015 18:18:11 +0000
+ id 1Yd0jn-0003y1-Ct
+ for ath10k@lists.infradead.org; Tue, 31 Mar 2015 18:18:10 +0000
 From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 1/2] ath: define JP DFS patterns separated from FCC
-Date: Tue, 31 Mar 2015 11:16:24 -0700
-Message-ID: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
+Subject: [PATCH 2/2] ath: lower JP W53 band DFS detection threshold around 30%
+Date: Tue, 31 Mar 2015 11:16:25 -0700
+Message-ID: <1427825785-21389-2-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
+References: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,69 +25,32 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Separate Japan's DFS pattern from FCC to control PPB threshold.
-
-Currently all the radar detectors use the same threshold rate at
-50%, but it's not able to achieve if data traffic rate is higher
-than 40% because WLAN baseband used by ath9k and ath10k often fails
-detecting radar pulses, so that SW cannot get enough radar reports
-to achieve the rate.
-
-Since Japan's W53 band requires 50% data traffic during its DFS
-test we need to apply different threshold rate than others on it.
-Hence define its own pattern to give flexibility to threshold rate.
+Japan's W53 band requires 50% data traffic during its DFS test,
+but WLAN baseband used by ath9k and ath10k is not able to achieve
+current threshold rate, 50%, under the data traffic rate.
+In other words, HW occasionally fails detecting radar pulses,
+so that SW cannot get enough radar reports to achieve the rate.
 
 Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 ---
- drivers/net/wireless/ath/dfs_pattern_detector.c | 27 ++++++++++++++++---------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
-index b1de8c6..8d1e082 100644
+index 8d1e082..7ad1932 100644
 --- a/drivers/net/wireless/ath/dfs_pattern_detector.c
 +++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-@@ -42,6 +42,7 @@ struct radar_types {
- /* percentage on ppb threshold to trigger detection */
- #define MIN_PPB_THRESH	50
- #define PPB_THRESH(PPB) ((PPB * MIN_PPB_THRESH + 50) / 100)
-+#define PPB_THRESH_JP(PPB, RATE) ((PPB * RATE + 100 - RATE) / 100)
- #define PRF2PRI(PRF) ((1000000 + PRF / 2) / PRF)
- /* percentage of pulse width tolerance */
- #define WIDTH_TOLERANCE 5
-@@ -96,17 +97,23 @@ static const struct radar_types fcc_radar_types = {
- 	.radar_types		= fcc_radar_ref_types,
- };
- 
--#define JP_PATTERN FCC_PATTERN
-+#define JP_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB, RATE, CHIRP)	\
-+{								\
-+	ID, WIDTH_LOWER(WMIN), WIDTH_UPPER(WMAX),		\
-+	PMIN - PRI_TOLERANCE,					\
-+	PMAX * PRF + PRI_TOLERANCE, PRF, PPB * PRF,		\
-+	PPB_THRESH_JP(PPB, RATE), PRI_TOLERANCE, CHIRP	\
-+}
+@@ -105,8 +105,8 @@ static const struct radar_types fcc_radar_types = {
+ 	PPB_THRESH_JP(PPB, RATE), PRI_TOLERANCE, CHIRP	\
+ }
  static const struct radar_detector_specs jp_radar_ref_types[] = {
--	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
--	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, false),
--	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, false),
--	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, false),
--	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, false),
--	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, false),
--	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, false),
--	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, false),
--	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, false),
-+	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 50, false),
-+	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 50, false),
-+	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
-+	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
-+	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
-+	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, 50, false),
-+	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, 50, false),
-+	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, 50, false),
-+	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, 50, false),
- };
- 
- static const struct radar_types jp_radar_types = {
+-	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 50, false),
+-	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 50, false),
++	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 29, false),
++	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 29, false),
+ 	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
+ 	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
+ 	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
 -- 
 1.9.1
 
