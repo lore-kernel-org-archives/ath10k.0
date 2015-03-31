@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from mail-la0-x22f.google.com ([2a00:1450:4010:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YctUC-0007OV-8N
+ id 1YctUA-0007O9-9H
  for ath10k@lists.infradead.org; Tue, 31 Mar 2015 10:33:35 +0000
-Received: by lboc7 with SMTP id c7so9039084lbo.1
- for <ath10k@lists.infradead.org>; Tue, 31 Mar 2015 03:33:10 -0700 (PDT)
+Received: by labe2 with SMTP id e2so9176472lab.3
+ for <ath10k@lists.infradead.org>; Tue, 31 Mar 2015 03:33:06 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH v6 6/7] ath10k: enable multi-channel on supported devices
-Date: Tue, 31 Mar 2015 10:26:25 +0000
-Message-Id: <1427797586-5132-7-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH v6 3/7] ath10k: implement adaptive qcs command
+Date: Tue, 31 Mar 2015 10:26:22 +0000
+Message-Id: <1427797586-5132-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1427797586-5132-1-git-send-email-michal.kazior@tieto.com>
 References: <1427797586-5132-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,134 +27,160 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This effectively enables multi-channel operation
-on qca6174 WLAN.RM.2.0-00073 (and possibly any
-newer firmware release for qca6174).
-
-This adds appopriate interface combinations and
-initializes firmware channel scheduler.
+This command will be used to configure
+multi-channel scheduler in firmware.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 16 ++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 30 ++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.h |  4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  3 +++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  1 +
+ 5 files changed, 54 insertions(+)
 
-Notes:
-    v5:
-     * fix combination definition: increase vif limit from 2 to 3
-
- drivers/net/wireless/ath/ath10k/mac.c | 81 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 80 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index a0d93e857d61..78eee48c8608 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3733,6 +3733,15 @@ static int ath10k_start(struct ieee80211_hw *hw)
- 		goto err_core_stop;
- 	}
- 
-+	if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
-+		ret = ath10k_wmi_adaptive_qcs(ar, true);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to enable adaptive qcs: %d\n",
-+				    ret);
-+			goto err_core_stop;
-+		}
-+	}
-+
- 	if (ar->cfg_tx_chainmask)
- 		__ath10k_set_antenna(ar, ar->cfg_tx_chainmask,
- 				     ar->cfg_rx_chainmask);
-@@ -6485,6 +6494,64 @@ static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
- 	},
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 5d7bbec17b53..47fe2e756bec 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -173,6 +173,7 @@ struct wmi_ops {
+ 						const struct wmi_tdls_peer_update_cmd_arg *arg,
+ 						const struct wmi_tdls_peer_capab_arg *cap,
+ 						const struct wmi_channel_arg *chan);
++	struct sk_buff *(*gen_adaptive_qcs)(struct ath10k *ar, bool enable);
  };
  
-+static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
-+	{
-+		.max = 2,
-+		.types = BIT(NL80211_IFTYPE_STATION) |
-+			 BIT(NL80211_IFTYPE_AP) |
-+			 BIT(NL80211_IFTYPE_P2P_CLIENT) |
-+			 BIT(NL80211_IFTYPE_P2P_GO),
-+	},
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_P2P_DEVICE),
-+	},
-+};
-+
-+static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_STATION),
-+	},
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_ADHOC),
-+	},
-+};
-+
-+/* FIXME: This is not thouroughly tested. These combinations may over- or
-+ * underestimate hw/fw capabilities.
-+ */
-+static struct ieee80211_iface_combination ath10k_tlv_if_comb[] = {
-+	{
-+		.limits = ath10k_tlv_if_limit,
-+		.num_different_channels = 1,
-+		.max_interfaces = 3,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
-+	},
-+	{
-+		.limits = ath10k_tlv_if_limit_ibss,
-+		.num_different_channels = 1,
-+		.max_interfaces = 2,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
-+	},
-+};
-+
-+static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
-+	{
-+		.limits = ath10k_tlv_if_limit,
-+		.num_different_channels = 2,
-+		.max_interfaces = 3,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
-+	},
-+	{
-+		.limits = ath10k_tlv_if_limit_ibss,
-+		.num_different_channels = 1,
-+		.max_interfaces = 2,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit_ibss),
-+	},
-+};
-+
- static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- {
- 	struct ieee80211_sta_vht_cap vht_cap = {0};
-@@ -6775,12 +6842,24 @@ int ath10k_mac_register(struct ath10k *ar)
+ int ath10k_wmi_cmd_send(struct ath10k *ar, struct sk_buff *skb, u32 cmd_id);
+@@ -1232,4 +1233,19 @@ ath10k_wmi_tdls_peer_update(struct ath10k *ar,
+ 				   ar->wmi.cmd->tdls_peer_update_cmdid);
+ }
  
- 	switch (ar->wmi.op_version) {
- 	case ATH10K_FW_WMI_OP_VERSION_MAIN:
--	case ATH10K_FW_WMI_OP_VERSION_TLV:
- 		ar->hw->wiphy->iface_combinations = ath10k_if_comb;
- 		ar->hw->wiphy->n_iface_combinations =
- 			ARRAY_SIZE(ath10k_if_comb);
- 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
- 		break;
-+	case ATH10K_FW_WMI_OP_VERSION_TLV:
-+		if (test_bit(WMI_SERVICE_ADAPTIVE_OCS, ar->wmi.svc_map)) {
-+			ar->hw->wiphy->iface_combinations =
-+				ath10k_tlv_qcs_if_comb;
-+			ar->hw->wiphy->n_iface_combinations =
-+				ARRAY_SIZE(ath10k_tlv_qcs_if_comb);
-+		} else {
-+			ar->hw->wiphy->iface_combinations = ath10k_tlv_if_comb;
-+			ar->hw->wiphy->n_iface_combinations =
-+				ARRAY_SIZE(ath10k_tlv_if_comb);
-+		}
-+		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
-+		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_1:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2:
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
++static inline int
++ath10k_wmi_adaptive_qcs(struct ath10k *ar, bool enable)
++{
++	struct sk_buff *skb;
++
++	if (!ar->wmi.ops->gen_adaptive_qcs)
++		return -EOPNOTSUPP;
++
++	skb = ar->wmi.ops->gen_adaptive_qcs(ar, enable);
++	if (IS_ERR(skb))
++		return PTR_ERR(skb);
++
++	return ath10k_wmi_cmd_send(ar, skb, ar->wmi.cmd->adaptive_qcs_cmdid);
++}
++
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index ac3b4fd5b752..28cab0777ef1 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -2947,6 +2947,34 @@ ath10k_wmi_tlv_op_gen_wow_del_pattern(struct ath10k *ar, u32 vdev_id,
+ 	return skb;
+ }
+ 
++static struct sk_buff *
++ath10k_wmi_tlv_op_gen_adaptive_qcs(struct ath10k *ar, bool enable)
++{
++	struct wmi_tlv_adaptive_qcs *cmd;
++	struct wmi_tlv *tlv;
++	struct sk_buff *skb;
++	void *ptr;
++	size_t len;
++
++	len = sizeof(*tlv) + sizeof(*cmd);
++	skb = ath10k_wmi_alloc_skb(ar, len);
++	if (!skb)
++		return ERR_PTR(-ENOMEM);
++
++	ptr = (void *)skb->data;
++	tlv = ptr;
++	tlv->tag = __cpu_to_le16(WMI_TLV_TAG_STRUCT_RESMGR_ADAPTIVE_OCS_CMD);
++	tlv->len = __cpu_to_le16(sizeof(*cmd));
++	cmd = (void *)tlv->value;
++	cmd->enable = __cpu_to_le32(enable ? 1 : 0);
++
++	ptr += sizeof(*tlv);
++	ptr += sizeof(*cmd);
++
++	ath10k_dbg(ar, ATH10K_DBG_WMI, "wmi tlv adaptive qcs %d\n", enable);
++	return skb;
++}
++
+ /****************/
+ /* TLV mappings */
+ /****************/
+@@ -3073,6 +3101,7 @@ static struct wmi_cmd_map wmi_tlv_cmd_map = {
+ 	.vdev_set_wmm_params_cmdid = WMI_TLV_VDEV_SET_WMM_PARAMS_CMDID,
+ 	.tdls_set_state_cmdid = WMI_TLV_TDLS_SET_STATE_CMDID,
+ 	.tdls_peer_update_cmdid = WMI_TLV_TDLS_PEER_UPDATE_CMDID,
++	.adaptive_qcs_cmdid = WMI_TLV_RESMGR_ADAPTIVE_OCS_CMDID,
+ };
+ 
+ static struct wmi_pdev_param_map wmi_tlv_pdev_param_map = {
+@@ -3254,6 +3283,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.gen_wow_del_pattern = ath10k_wmi_tlv_op_gen_wow_del_pattern,
+ 	.gen_update_fw_tdls_state = ath10k_wmi_tlv_op_gen_update_fw_tdls_state,
+ 	.gen_tdls_peer_update = ath10k_wmi_tlv_op_gen_tdls_peer_update,
++	.gen_adaptive_qcs = ath10k_wmi_tlv_op_gen_adaptive_qcs,
+ };
+ 
+ /************/
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.h b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+index f65b6148cc77..8d41492f3aff 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.h
+@@ -1576,6 +1576,10 @@ struct wmi_tdls_peer_capab {
+ 	__le32 pref_offchan_bw;
+ } __packed;
+ 
++struct wmi_tlv_adaptive_qcs {
++	__le32 enable;
++} __packed;
++
+ void ath10k_wmi_tlv_attach(struct ath10k *ar);
+ 
+ #endif
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index c0716a162c3e..6106b2c2c299 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5208,6 +5208,7 @@ static const struct wmi_ops wmi_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ static const struct wmi_ops wmi_10_1_ops = {
+@@ -5271,6 +5272,7 @@ static const struct wmi_ops wmi_10_1_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ static const struct wmi_ops wmi_10_2_ops = {
+@@ -5395,6 +5397,7 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ 	/* .gen_bcn_tmpl not implemented */
+ 	/* .gen_prb_tmpl not implemented */
+ 	/* .gen_p2p_go_bcn_ie not implemented */
++	/* .gen_adaptive_qcs not implemented */
+ };
+ 
+ int ath10k_wmi_attach(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 00b5799c5cdb..d0942b0a4326 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -554,6 +554,7 @@ struct wmi_cmd_map {
+ 	u32 vdev_set_wmm_params_cmdid;
+ 	u32 tdls_set_state_cmdid;
+ 	u32 tdls_peer_update_cmdid;
++	u32 adaptive_qcs_cmdid;
+ };
+ 
+ /*
 -- 
 2.1.4
 
