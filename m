@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd0jn-0003y1-Ct
- for ath10k@lists.infradead.org; Tue, 31 Mar 2015 18:18:10 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 2/2] ath: lower JP W53 band DFS detection threshold around 30%
-Date: Tue, 31 Mar 2015 11:16:25 -0700
-Message-ID: <1427825785-21389-2-git-send-email-poh@qca.qualcomm.com>
-In-Reply-To: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
-References: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yd4pf-0001ZM-8r
+ for ath10k@lists.infradead.org; Tue, 31 Mar 2015 22:40:28 +0000
+Message-ID: <551B2243.2060609@candelatech.com>
+Date: Tue, 31 Mar 2015 15:40:03 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [RFC] ath10k: IBSS allow to use RSN
+References: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
+In-Reply-To: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +22,52 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: ath10k@lists.infradead.org
 
-Japan's W53 band requires 50% data traffic during its DFS test,
-but WLAN baseband used by ath9k and ath10k is not able to achieve
-current threshold rate, 50%, under the data traffic rate.
-In other words, HW occasionally fails detecting radar pulses,
-so that SW cannot get enough radar reports to achieve the rate.
+I tried this on my CT firmware, hacked into a 4.0 kernel,
+but it does not work for me.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/dfs_pattern_detector.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+(I tried configuring WPA2 IBSS interfaces, but they cannot pass traffic).
 
-diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
-index 8d1e082..7ad1932 100644
---- a/drivers/net/wireless/ath/dfs_pattern_detector.c
-+++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-@@ -105,8 +105,8 @@ static const struct radar_types fcc_radar_types = {
- 	PPB_THRESH_JP(PPB, RATE), PRI_TOLERANCE, CHIRP	\
- }
- static const struct radar_detector_specs jp_radar_ref_types[] = {
--	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 50, false),
--	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 50, false),
-+	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 29, false),
-+	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 29, false),
- 	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
- 	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
- 	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
+Could still be something on my side though..I never managed to get
+ath9k to do IBSS + WPA2 either, though haven't tried that again lately.
+
+Thanks,
+Ben
+
+
+On 03/20/2015 11:35 AM, Janusz Dziedzic wrote:
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> 
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 39c60f5..ebecfe9 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -6541,11 +6541,13 @@ int ath10k_mac_register(struct ath10k *ar)
+>  			IEEE80211_HW_SPECTRUM_MGMT |
+>  			IEEE80211_HW_SW_CRYPTO_CONTROL |
+>  			IEEE80211_HW_CONNECTION_MONITOR |
+> +			IEEE80211_HW_SUPPORTS_PER_STA_GTK |
+>  			IEEE80211_HW_WANT_MONITOR_VIF |
+>  			IEEE80211_HW_CHANCTX_STA_CSA |
+>  			IEEE80211_HW_QUEUE_CONTROL;
+>  
+>  	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
+> +	ar->hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
+>  
+>  	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
+>  		ar->hw->wiphy->features |= NL80211_FEATURE_DYNAMIC_SMPS;
+> 
+
+
 -- 
-1.9.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
