@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd4pf-0001ZM-8r
- for ath10k@lists.infradead.org; Tue, 31 Mar 2015 22:40:28 +0000
-Message-ID: <551B2243.2060609@candelatech.com>
-Date: Tue, 31 Mar 2015 15:40:03 -0700
+ id 1Yd56F-0003S7-BE
+ for ath10k@lists.infradead.org; Tue, 31 Mar 2015 22:57:36 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 7FD1A40E9D0
+ for <ath10k@lists.infradead.org>; Tue, 31 Mar 2015 15:57:14 -0700 (PDT)
+Message-ID: <551B264A.8040700@candelatech.com>
+Date: Tue, 31 Mar 2015 15:57:14 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [RFC] ath10k: IBSS allow to use RSN
-References: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
-In-Reply-To: <1426876523-5337-1-git-send-email-janusz.dziedzic@tieto.com>
+Subject: 4.0 kernel with CT firmware support is now available.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,48 +25,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-I tried this on my CT firmware, hacked into a 4.0 kernel,
-but it does not work for me.
+This kernel is only very lightly tested at this point.
 
-(I tried configuring WPA2 IBSS interfaces, but they cannot pass traffic).
+But, for those wanting to use CT firmware's extra features on
+a 4.0 kernel, it may be useful:
 
-Could still be something on my side though..I never managed to get
-ath9k to do IBSS + WPA2 either, though haven't tried that again lately.
+git clone git://dmz2.candelatech.com/linux-4.0.dev.y
+
+http://dmz2.candelatech.com/?p=linux-4.0.dev.y/.git;a=summary
+
+My current plan is to focus on 4.0 instead of 3.19,
+so 3.19 will probably not be updated further.
+
+Note that I rebase this often against Linus's tree (and backports
+when those happen).
 
 Thanks,
 Ben
-
-
-On 03/20/2015 11:35 AM, Janusz Dziedzic wrote:
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-> 
-> ---
->  drivers/net/wireless/ath/ath10k/mac.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index 39c60f5..ebecfe9 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -6541,11 +6541,13 @@ int ath10k_mac_register(struct ath10k *ar)
->  			IEEE80211_HW_SPECTRUM_MGMT |
->  			IEEE80211_HW_SW_CRYPTO_CONTROL |
->  			IEEE80211_HW_CONNECTION_MONITOR |
-> +			IEEE80211_HW_SUPPORTS_PER_STA_GTK |
->  			IEEE80211_HW_WANT_MONITOR_VIF |
->  			IEEE80211_HW_CHANCTX_STA_CSA |
->  			IEEE80211_HW_QUEUE_CONTROL;
->  
->  	ar->hw->wiphy->features |= NL80211_FEATURE_STATIC_SMPS;
-> +	ar->hw->wiphy->flags |= WIPHY_FLAG_IBSS_RSN;
->  
->  	if (ar->ht_cap_info & WMI_HT_CAP_DYNAMIC_SMPS)
->  		ar->hw->wiphy->features |= NL80211_FEATURE_DYNAMIC_SMPS;
-> 
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
