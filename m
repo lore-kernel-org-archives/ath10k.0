@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YcuGK-0007lK-NU
- for ath10k@lists.infradead.org; Tue, 31 Mar 2015 11:23:17 +0000
-Received: by lboc7 with SMTP id c7so9867048lbo.1
- for <ath10k@lists.infradead.org>; Tue, 31 Mar 2015 04:22:53 -0700 (PDT)
+ id 1Yd0jq-0003y1-JG
+ for ath10k@lists.infradead.org; Tue, 31 Mar 2015 18:18:11 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH 1/2] ath: define JP DFS patterns separated from FCC
+Date: Tue, 31 Mar 2015 11:16:24 -0700
+Message-ID: <1427825785-21389-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87iodi4oex.fsf@kamboji.qca.qualcomm.com>
-References: <1427271291-31683-1-git-send-email-janusz.dziedzic@tieto.com>
- <87iodi4oex.fsf@kamboji.qca.qualcomm.com>
-Date: Tue, 31 Mar 2015 13:22:53 +0200
-Message-ID: <CAFED-jmARkKvUemR-rOT8JG2nZad3ctm674QGUqcSXeFw32zqQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: disable burst mode
-From: Janusz Dziedzic <janusz.dziedzic@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +20,75 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-2015-03-30 15:15 GMT+02:00 Kalle Valo <kvalo@qca.qualcomm.com>:
-> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->
->> Firmwares that indicate BURST_SERVICE as enabled
->> could overwrite some wmm parameters (eg. txop).
->> This could lead IOT and balancing issues.
->> Hence disable this by default.
->>
->> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->
-> There was a trivial conflict, please check my resolution in the pending
-> branch.
->
-Looks good. Thanks
+Separate Japan's DFS pattern from FCC to control PPB threshold.
 
-BR
-Janusz
+Currently all the radar detectors use the same threshold rate at
+50%, but it's not able to achieve if data traffic rate is higher
+than 40% because WLAN baseband used by ath9k and ath10k often fails
+detecting radar pulses, so that SW cannot get enough radar reports
+to achieve the rate.
+
+Since Japan's W53 band requires 50% data traffic during its DFS
+test we need to apply different threshold rate than others on it.
+Hence define its own pattern to give flexibility to threshold rate.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/dfs_pattern_detector.c | 27 ++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
+index b1de8c6..8d1e082 100644
+--- a/drivers/net/wireless/ath/dfs_pattern_detector.c
++++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
+@@ -42,6 +42,7 @@ struct radar_types {
+ /* percentage on ppb threshold to trigger detection */
+ #define MIN_PPB_THRESH	50
+ #define PPB_THRESH(PPB) ((PPB * MIN_PPB_THRESH + 50) / 100)
++#define PPB_THRESH_JP(PPB, RATE) ((PPB * RATE + 100 - RATE) / 100)
+ #define PRF2PRI(PRF) ((1000000 + PRF / 2) / PRF)
+ /* percentage of pulse width tolerance */
+ #define WIDTH_TOLERANCE 5
+@@ -96,17 +97,23 @@ static const struct radar_types fcc_radar_types = {
+ 	.radar_types		= fcc_radar_ref_types,
+ };
+ 
+-#define JP_PATTERN FCC_PATTERN
++#define JP_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB, RATE, CHIRP)	\
++{								\
++	ID, WIDTH_LOWER(WMIN), WIDTH_UPPER(WMAX),		\
++	PMIN - PRI_TOLERANCE,					\
++	PMAX * PRF + PRI_TOLERANCE, PRF, PPB * PRF,		\
++	PPB_THRESH_JP(PPB, RATE), PRI_TOLERANCE, CHIRP	\
++}
+ static const struct radar_detector_specs jp_radar_ref_types[] = {
+-	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
+-	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, false),
+-	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, false),
+-	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, false),
+-	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, false),
+-	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, false),
+-	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, false),
+-	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, false),
+-	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, false),
++	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 50, false),
++	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 50, false),
++	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
++	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
++	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
++	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, 50, false),
++	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, 50, false),
++	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, 50, false),
++	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, 50, false),
+ };
+ 
+ static const struct radar_types jp_radar_types = {
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
