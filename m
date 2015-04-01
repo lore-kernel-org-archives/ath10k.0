@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.neratec.com ([46.140.151.2])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdFWA-000310-Oh
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 10:05:04 +0000
-Message-ID: <551BC2B1.3030002@neratec.com>
-Date: Wed, 01 Apr 2015 12:04:33 +0200
-From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+ id 1YdHuu-0006ao-H9
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 12:38:45 +0000
+Received: by widdi4 with SMTP id di4so43223009wid.0
+ for <ath10k@lists.infradead.org>; Wed, 01 Apr 2015 05:38:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
-References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
- <55191D89.2000300@neratec.com> <55198EA4.1010101@codeaurora.org>
-In-Reply-To: <55198EA4.1010101@codeaurora.org>
+In-Reply-To: <1427798961-7334-3-git-send-email-michal.kazior@tieto.com>
+References: <1427798961-7334-1-git-send-email-michal.kazior@tieto.com>
+ <1427798961-7334-3-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 1 Apr 2015 14:38:13 +0200
+Message-ID: <CA+BoTQmhEf3fZSo2FPFbXa=Uc4ia0Sg2SD89gceyc8O+jVJeUg@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] ath10k: implement more versatile set_bitrate_mask
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,52 +21,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
 
-On 03/30/2015 07:57 PM, Peter Oh wrote:
-> 
-> On 03/30/2015 02:55 AM, Zefir Kurtisi wrote:
->> [...]
->> That's why I believe we need to
->> be very cautious when changing it to fix / improve minor issues.
-> This patch is not for minor fix.
-> Current DFS detector fails on Japan W53 band which requires at least 50% of data
-> traffic during DFS certificate.
-> So this patch should apply to both of 9k and 10k.
-
-That is the core of my concern: you add changes to fix FCC/JP, which at the same
-time also affects ETSI.
-
-Our company (and maybe others) got ath9k certified for ETSI, and any potential
-change to the detector relevant for that domain would essentially require to
-re-certify.
-
-There were several patches lately added to the detector that were isolated to
-specific domains (like the recent updates for FCC pattern 1) which I knew won't
-affect the ETSI detector performance, since they touched only the FCC
-configuration but not the algorithm itself. This patch does, and that's why I need
-to point out that doing so might void certification efforts out there.
-
-Unfortunately, I have no good idea how to cope with it. Freezing the driver at the
-certified state is no option, since we all want to evolve. Having multiple copies
-of the detector for each regulatory domain would be an option (and essentially
-will happen since FCC/JP can't be covered by PRI detectors only), but gives
-unacceptable code duplication. Ideally we would fully separate algorithm from
-configuration and leave the algorithm untouched ever after, not sure how doable,
-though.
-
-
-As for your patch at hand, I tested it for ETSI and it does not change detector
-performance, therefore (please replace 16 with PRI_TOLERANCE in the macro)
-
-Acked-by: Zefir Kurtisi <zefir.kurtisi@neratec.com>
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzEgTWFyY2ggMjAxNSBhdCAxMjo0OSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
+aWV0by5jb20+IHdyb3RlOgo+IFVudGlsIG5vdyBvbmx5IGEgc2luZ2xlIGZpeGVkIHR4IHJhdGUg
+b3IgbnNzIHdhcwo+IGFsbG93ZWQgdG8gYmUgc2V0Lgo+Cj4gVGhlIHBhdGNoIGF0dGVtcHRzIHRv
+IGltcHJvdmUgdGhpcyBieSBhbGxvd2luZwo+IG1vc3QgYml0cmF0ZSBtYXNrcy4gVGhlIGxpbWl0
+YXRpb24gaXMgVkhUIE1DUwo+IHJhdGVzIGNhbm5vdCBiZSBleHByZXNzZWQgc2VwYXJhdGVseSBh
+bmQgb25seSB0aGUKPiBmb2xsb3dpbmcgVkhUIE1DUyByYW5nZXMgYXJlIHN1cHBvcnRlZDogbm9u
+ZSwgMC03LAo+IDAtOCwgYW5kIDAtOS4KPgo+IFRoaXMga2VlcHMgdGhlIG9sZCBiZWhhdmlvdXIg
+d2hlbiByZXF1ZXN0aW5nCj4gc2luZ2xlIHR4IHJhdGUgb3Igc2luZ2xlIG5zcy4gVGhlIG5ldyBi
+aXRyYXRlIG1hc2sKPiBsb2dpYyBpcyBvbmx5IGFwcGxpZWQgdG8gb3RoZXIgY2FzZXMgdGhhdCB3
+b3VsZAo+IHJldHVybiAtRUlOVkFMIHVudGlsIG5vdy4KPgo+IERlcGVuZGluZyBvbiBmaXJtd2Fy
+ZSByZXZpc2lvbnMgc29tZSBjb21iaW5hdGlvbnMKPiBtYXkgY3Jhc2ggZmlybXdhcmUgc28gdXNl
+IHdpdGggY2FyZSwgcGxlYXNlLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWlj
+aGFsLmthemlvckB0aWV0by5jb20+Cj4gLS0tCgpIaSBLYWxsZSwKCkRyb3AgdGhpcyBwYXRjaCAo
+WzIvMl0pIGZvciBub3csIHBsZWFzZS4gSXQgbG9va3MgbGlrZSBpdCBkb2Vzbid0IHdvcmsKd2Vs
+bCB3aXRoIGNyeXB0byBuZXR3b3Jrcy4gSSdsbCBuZWVkIHRvIHJld29yayB0aGlzLiBUaGUgWzEv
+Ml0gaXMgZmluZQphcyBpdCBpcyB0aG91Z2guCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
