@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail.neratec.com ([46.140.151.2])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yd5rT-0005QV-Gp
- for ath10k@lists.infradead.org; Tue, 31 Mar 2015 23:46:24 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v2 1/2] ath: define JP DFS patterns separated from FCC
-Date: Tue, 31 Mar 2015 16:44:42 -0700
-Message-ID: <413e207292d5c52cd621912762e6d4a40a8dfc48.1427845453.git.poh@qca.qualcomm.com>
+ id 1YdFWA-000310-Oh
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 10:05:04 +0000
+Message-ID: <551BC2B1.3030002@neratec.com>
+Date: Wed, 01 Apr 2015 12:04:33 +0200
+From: Zefir Kurtisi <zefir.kurtisi@neratec.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
+References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
+ <55191D89.2000300@neratec.com> <55198EA4.1010101@codeaurora.org>
+In-Reply-To: <55198EA4.1010101@codeaurora.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,77 +23,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Peter Oh <poh@codeaurora.org>, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Separate Japan's DFS pattern from FCC to control PPB threshold.
+On 03/30/2015 07:57 PM, Peter Oh wrote:
+> 
+> On 03/30/2015 02:55 AM, Zefir Kurtisi wrote:
+>> [...]
+>> That's why I believe we need to
+>> be very cautious when changing it to fix / improve minor issues.
+> This patch is not for minor fix.
+> Current DFS detector fails on Japan W53 band which requires at least 50% of data
+> traffic during DFS certificate.
+> So this patch should apply to both of 9k and 10k.
 
-Currently all the radar detectors use the same threshold rate at
-50%, but it's not able to achieve if data traffic rate is higher
-than 40% because WLAN baseband used by ath9k and ath10k often fails
-detecting radar pulses, so that SW cannot get enough radar reports
-to achieve the rate.
+That is the core of my concern: you add changes to fix FCC/JP, which at the same
+time also affects ETSI.
 
-Since Japan's W53 band requires 50% data traffic during its DFS
-test we need to apply different threshold rate than others on it.
-Hence define its own pattern to give flexibility to threshold rate.
+Our company (and maybe others) got ath9k certified for ETSI, and any potential
+change to the detector relevant for that domain would essentially require to
+re-certify.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/dfs_pattern_detector.c | 29 +++++++++++++++----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+There were several patches lately added to the detector that were isolated to
+specific domains (like the recent updates for FCC pattern 1) which I knew won't
+affect the ETSI detector performance, since they touched only the FCC
+configuration but not the algorithm itself. This patch does, and that's why I need
+to point out that doing so might void certification efforts out there.
 
-diff --git a/drivers/net/wireless/ath/dfs_pattern_detector.c b/drivers/net/wireless/ath/dfs_pattern_detector.c
-index b1de8c6..2d4ad45 100644
---- a/drivers/net/wireless/ath/dfs_pattern_detector.c
-+++ b/drivers/net/wireless/ath/dfs_pattern_detector.c
-@@ -41,7 +41,8 @@ struct radar_types {
- 
- /* percentage on ppb threshold to trigger detection */
- #define MIN_PPB_THRESH	50
--#define PPB_THRESH(PPB) ((PPB * MIN_PPB_THRESH + 50) / 100)
-+#define PPB_THRESH_RATE(PPB, RATE) ((PPB * RATE + 100 - RATE) / 100)
-+#define PPB_THRESH(PPB) PPB_THRESH_RATE(PPB, MIN_PPB_THRESH)
- #define PRF2PRI(PRF) ((1000000 + PRF / 2) / PRF)
- /* percentage of pulse width tolerance */
- #define WIDTH_TOLERANCE 5
-@@ -96,17 +97,23 @@ static const struct radar_types fcc_radar_types = {
- 	.radar_types		= fcc_radar_ref_types,
- };
- 
--#define JP_PATTERN FCC_PATTERN
-+#define JP_PATTERN(ID, WMIN, WMAX, PMIN, PMAX, PRF, PPB, RATE, CHIRP)	\
-+{								\
-+	ID, WIDTH_LOWER(WMIN), WIDTH_UPPER(WMAX),		\
-+	PMIN - PRI_TOLERANCE,					\
-+	PMAX * PRF + PRI_TOLERANCE, PRF, PPB * PRF,		\
-+	PPB_THRESH_RATE(PPB, RATE), PRI_TOLERANCE, CHIRP	\
-+}
- static const struct radar_detector_specs jp_radar_ref_types[] = {
--	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, false),
--	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, false),
--	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, false),
--	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, false),
--	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, false),
--	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, false),
--	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, false),
--	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, false),
--	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, false),
-+	JP_PATTERN(0, 0, 1, 1428, 1428, 1, 18, 50, false),
-+	JP_PATTERN(1, 2, 3, 3846, 3846, 1, 18, 50, false),
-+	JP_PATTERN(2, 0, 1, 1388, 1388, 1, 18, 50, false),
-+	JP_PATTERN(3, 1, 2, 4000, 4000, 1, 18, 50, false),
-+	JP_PATTERN(4, 0, 5, 150, 230, 1, 23, 50, false),
-+	JP_PATTERN(5, 6, 10, 200, 500, 1, 16, 50, false),
-+	JP_PATTERN(6, 11, 20, 200, 500, 1, 12, 50, false),
-+	JP_PATTERN(7, 50, 100, 1000, 2000, 1, 20, 50, false),
-+	JP_PATTERN(5, 0, 1, 333, 333, 1, 9, 50, false),
- };
- 
- static const struct radar_types jp_radar_types = {
--- 
-1.9.1
+Unfortunately, I have no good idea how to cope with it. Freezing the driver at the
+certified state is no option, since we all want to evolve. Having multiple copies
+of the detector for each regulatory domain would be an option (and essentially
+will happen since FCC/JP can't be covered by PRI detectors only), but gives
+unacceptable code duplication. Ideally we would fully separate algorithm from
+configuration and leave the algorithm untouched ever after, not sure how doable,
+though.
 
+
+As for your patch at hand, I tested it for ETSI and it does not change detector
+performance, therefore (please replace 16 with PRI_TOLERANCE in the macro)
+
+Acked-by: Zefir Kurtisi <zefir.kurtisi@neratec.com>
 
 _______________________________________________
 ath10k mailing list
