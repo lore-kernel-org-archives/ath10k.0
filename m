@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdMGD-0000c5-KH
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:17:02 +0000
+ id 1YdMGz-00012a-BP
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:17:49 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: debug: match wait_for_completion_timeout return
+Subject: Re: [PATCH] ath10k: thermal: match wait_for_completion_timeout return
  type
-References: <1426325830-19740-1-git-send-email-hofrat@osadl.org>
-Date: Wed, 1 Apr 2015 20:16:24 +0300
-In-Reply-To: <1426325830-19740-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
- Guire's message of "Sat, 14 Mar 2015 05:37:10 -0400")
-Message-ID: <87619fzs47.fsf@kamboji.qca.qualcomm.com>
+References: <1426325842-19774-1-git-send-email-hofrat@osadl.org>
+Date: Wed, 1 Apr 2015 20:17:18 +0300
+In-Reply-To: <1426325842-19774-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Sat, 14 Mar 2015 05:37:22 -0400")
+Message-ID: <871tk3zs2p.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -31,7 +31,6 @@ Nicholas Mc Guire <hofrat@osadl.org> writes:
 
 > Return type of wait_for_completion_timeout is unsigned long not int.
 > An appropriately named unsigned long is added and the assignments fixed up.
-> Missing spaces 1*HZ -> 1 * HZ were also added along the way.
 >
 > Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
