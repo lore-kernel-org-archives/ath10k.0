@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from mout.gmx.com ([74.208.4.200])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdHuu-0006ao-H9
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 12:38:45 +0000
-Received: by widdi4 with SMTP id di4so43223009wid.0
- for <ath10k@lists.infradead.org>; Wed, 01 Apr 2015 05:38:13 -0700 (PDT)
+ id 1YdJWE-0002Bj-Ut
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 14:21:24 +0000
 MIME-Version: 1.0
-In-Reply-To: <1427798961-7334-3-git-send-email-michal.kazior@tieto.com>
-References: <1427798961-7334-1-git-send-email-michal.kazior@tieto.com>
- <1427798961-7334-3-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 1 Apr 2015 14:38:13 +0200
-Message-ID: <CA+BoTQmhEf3fZSo2FPFbXa=Uc4ia0Sg2SD89gceyc8O+jVJeUg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] ath10k: implement more versatile set_bitrate_mask
-From: Michal Kazior <michal.kazior@tieto.com>
+Message-ID: <trinity-9d575602-c6d3-49a6-9c64-0370c705f590-1427898046917@3capp-mailcom-lxa02>
+From: "Jason H" <jhihn@gmx.com>
+Subject: Re: Re: QCA6174 hw2.1?
+Date: Wed, 1 Apr 2015 16:20:47 +0200
+In-Reply-To: <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
+References: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>, 
+ <CA+BoTQkAckpbgTKg=9+ea5Me0m9=FO3aMU=qYHmX0Y96KubKeA@mail.gmail.com>,
+ <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +20,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Jason H <jhihn@gmx.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMzEgTWFyY2ggMjAxNSBhdCAxMjo0OSwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyb3RlOgo+IFVudGlsIG5vdyBvbmx5IGEgc2luZ2xlIGZpeGVkIHR4IHJhdGUg
-b3IgbnNzIHdhcwo+IGFsbG93ZWQgdG8gYmUgc2V0Lgo+Cj4gVGhlIHBhdGNoIGF0dGVtcHRzIHRv
-IGltcHJvdmUgdGhpcyBieSBhbGxvd2luZwo+IG1vc3QgYml0cmF0ZSBtYXNrcy4gVGhlIGxpbWl0
-YXRpb24gaXMgVkhUIE1DUwo+IHJhdGVzIGNhbm5vdCBiZSBleHByZXNzZWQgc2VwYXJhdGVseSBh
-bmQgb25seSB0aGUKPiBmb2xsb3dpbmcgVkhUIE1DUyByYW5nZXMgYXJlIHN1cHBvcnRlZDogbm9u
-ZSwgMC03LAo+IDAtOCwgYW5kIDAtOS4KPgo+IFRoaXMga2VlcHMgdGhlIG9sZCBiZWhhdmlvdXIg
-d2hlbiByZXF1ZXN0aW5nCj4gc2luZ2xlIHR4IHJhdGUgb3Igc2luZ2xlIG5zcy4gVGhlIG5ldyBi
-aXRyYXRlIG1hc2sKPiBsb2dpYyBpcyBvbmx5IGFwcGxpZWQgdG8gb3RoZXIgY2FzZXMgdGhhdCB3
-b3VsZAo+IHJldHVybiAtRUlOVkFMIHVudGlsIG5vdy4KPgo+IERlcGVuZGluZyBvbiBmaXJtd2Fy
-ZSByZXZpc2lvbnMgc29tZSBjb21iaW5hdGlvbnMKPiBtYXkgY3Jhc2ggZmlybXdhcmUgc28gdXNl
-IHdpdGggY2FyZSwgcGxlYXNlLgo+Cj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEthemlvciA8bWlj
-aGFsLmthemlvckB0aWV0by5jb20+Cj4gLS0tCgpIaSBLYWxsZSwKCkRyb3AgdGhpcyBwYXRjaCAo
-WzIvMl0pIGZvciBub3csIHBsZWFzZS4gSXQgbG9va3MgbGlrZSBpdCBkb2Vzbid0IHdvcmsKd2Vs
-bCB3aXRoIGNyeXB0byBuZXR3b3Jrcy4gSSdsbCBuZWVkIHRvIHJld29yayB0aGlzLiBUaGUgWzEv
-Ml0gaXMgZmluZQphcyBpdCBpcyB0aG91Z2guCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+
+
+> Sent: Monday, March 23, 2015 at 9:57 AM
+> > Sent: Monday, March 23, 2015 at 4:23 AM
+> >
+> > On 21 March 2015 at 21:31,  <jhihn@gmx.com> wrote:
+> > > is there anyway you could process these files for me?. I would be willing to send you the files and go through some back and forth of feedback and whatnot. The issue is I just don't think I have the time or the expertise to devote to this. However I investigated exchanging  the laptop to get a  Linux compatible one, but its going to cost me money for the restocking fee. On top of that the next user of this laptop will be disgruntled when they find a non working copy of Linux on it. I investigated getting the restore cd but Lenovo's charging $70 for the media. So if you could help I would really appreciate it because this is the last thing that I need to get working but I really need it.
+> > >
+> > > and we could also get this chipset supported. I saw I wasn't the only one looking for Linux support for this driver.
+> > 
+> > Thanks for willing to help. However I finally got my hands on the
+> > Killer 1525 card. I tried playing with it but I couldn't get ath10k to
+> > work with it yet.
+> > 
+> > There's some firmware crash issue that needs investigating. Kalle's
+> > doing his best to sort this out internally.
+> > 
+> > Hopefully we'll get this working soon and we'll let everyone know on
+> > the mailing list. I can understand your situation very well. I know it
+> > sucks.
+> > 
+> 
+> 
+> Thanks however in my investigation, this was not the same as the "Killer" card.
+
+Any updates to QCA6174? 
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
