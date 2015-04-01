@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.com ([74.208.4.200])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdJWE-0002Bj-Ut
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 14:21:24 +0000
+ id 1YdM9L-00049M-K7
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:09:56 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 2/2] ath10k: implement more versatile set_bitrate_mask
+References: <1427798961-7334-1-git-send-email-michal.kazior@tieto.com>
+ <1427798961-7334-3-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQmhEf3fZSo2FPFbXa=Uc4ia0Sg2SD89gceyc8O+jVJeUg@mail.gmail.com>
+Date: Wed, 1 Apr 2015 20:09:23 +0300
+In-Reply-To: <CA+BoTQmhEf3fZSo2FPFbXa=Uc4ia0Sg2SD89gceyc8O+jVJeUg@mail.gmail.com>
+ (Michal Kazior's message of "Wed, 1 Apr 2015 14:38:13 +0200")
+Message-ID: <87iodfzsfw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Message-ID: <trinity-9d575602-c6d3-49a6-9c64-0370c705f590-1427898046917@3capp-mailcom-lxa02>
-From: "Jason H" <jhihn@gmx.com>
-Subject: Re: Re: QCA6174 hw2.1?
-Date: Wed, 1 Apr 2015 16:20:47 +0200
-In-Reply-To: <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
-References: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>, 
- <CA+BoTQkAckpbgTKg=9+ea5Me0m9=FO3aMU=qYHmX0Y96KubKeA@mail.gmail.com>,
- <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +25,42 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jason H <jhihn@gmx.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
+Michal Kazior <michal.kazior@tieto.com> writes:
 
+> On 31 March 2015 at 12:49, Michal Kazior <michal.kazior@tieto.com> wrote:
+>> Until now only a single fixed tx rate or nss was
+>> allowed to be set.
+>>
+>> The patch attempts to improve this by allowing
+>> most bitrate masks. The limitation is VHT MCS
+>> rates cannot be expressed separately and only the
+>> following VHT MCS ranges are supported: none, 0-7,
+>> 0-8, and 0-9.
+>>
+>> This keeps the old behaviour when requesting
+>> single tx rate or single nss. The new bitrate mask
+>> logic is only applied to other cases that would
+>> return -EINVAL until now.
+>>
+>> Depending on firmware revisions some combinations
+>> may crash firmware so use with care, please.
+>>
+>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>> ---
+>
+> Hi Kalle,
+>
+> Drop this patch ([2/2]) for now, please. It looks like it doesn't work
+> well with crypto networks. I'll need to rework this. The [1/2] is fine
+> as it is though.
 
-> Sent: Monday, March 23, 2015 at 9:57 AM
-> > Sent: Monday, March 23, 2015 at 4:23 AM
-> >
-> > On 21 March 2015 at 21:31,  <jhihn@gmx.com> wrote:
-> > > is there anyway you could process these files for me?. I would be willing to send you the files and go through some back and forth of feedback and whatnot. The issue is I just don't think I have the time or the expertise to devote to this. However I investigated exchanging  the laptop to get a  Linux compatible one, but its going to cost me money for the restocking fee. On top of that the next user of this laptop will be disgruntled when they find a non working copy of Linux on it. I investigated getting the restore cd but Lenovo's charging $70 for the media. So if you could help I would really appreciate it because this is the last thing that I need to get working but I really need it.
-> > >
-> > > and we could also get this chipset supported. I saw I wasn't the only one looking for Linux support for this driver.
-> > 
-> > Thanks for willing to help. However I finally got my hands on the
-> > Killer 1525 card. I tried playing with it but I couldn't get ath10k to
-> > work with it yet.
-> > 
-> > There's some firmware crash issue that needs investigating. Kalle's
-> > doing his best to sort this out internally.
-> > 
-> > Hopefully we'll get this working soon and we'll let everyone know on
-> > the mailing list. I can understand your situation very well. I know it
-> > sucks.
-> > 
-> 
-> 
-> Thanks however in my investigation, this was not the same as the "Killer" card.
+Ok, patch 2 dropped.
 
-Any updates to QCA6174? 
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
