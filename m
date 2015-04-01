@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdMK0-0003Nx-BN
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:20:56 +0000
+ id 1YdMLz-00047X-FQ
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:23:00 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix survey reporting
-References: <1427200691-7109-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 1 Apr 2015 20:20:47 +0300
-In-Reply-To: <1427200691-7109-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 24 Mar 2015 12:38:11 +0000")
-Message-ID: <87oan7ydcg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: don't call quiet mode if it's not implemented
+References: <1427200817-7407-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 1 Apr 2015 20:22:29 +0300
+In-Reply-To: <1427200817-7407-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 24 Mar 2015 12:40:17 +0000")
+Message-ID: <87k2xvyd9m.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,22 +28,13 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Number of channels is stored in a separate macro
-> in a header file and channel list is constructed
-> independently. The macro is used to define survey
-> array.
+> qca6174 and wmi-tlv doesn't have quiet mode
+> implemented. Don't even attempt to call it. This
+> fixes a warning when bringing first interface up:
 >
-> This fixes a recent regression introduced after
-> adding support for 144 channel. The regression
-> would lead to a warning and incomplete survey data
-> on channel 165:
+>   failed to set quiet mode period 100 duarion 0 enabled 0 ret -95
 >
->   chan info: invalid frequency 5825 (idx 38 out of bounds)
->
-> Also make sure to enforce the sizes and avoid this
-> kind of problem in the future.
->
-> Fixes: 4a7898fed5f3 ("ath10k: enable channel 144 on 5GHz band")
+> Fixes: 8515b5c79a54 ("ath10k: configure thermal throttle while powering up")
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
