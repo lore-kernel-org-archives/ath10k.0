@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YdMWA-0002F8-Ap
- for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:33:30 +0000
+ id 1YdMXU-00038x-BL
+ for ath10k@lists.infradead.org; Wed, 01 Apr 2015 17:34:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v6 0/7] ath10k: add multi-channel support
-References: <1427797586-5132-1-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 1 Apr 2015 20:32:54 +0300
-In-Reply-To: <1427797586-5132-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Tue, 31 Mar 2015 10:26:19 +0000")
-Message-ID: <878uebycs9.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/2] ath10k: improve set_bitrate_mask
+References: <1427798961-7334-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 1 Apr 2015 20:34:20 +0300
+In-Reply-To: <1427798961-7334-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 31 Mar 2015 10:49:19 +0000")
+Message-ID: <874mozycpv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,56 +28,30 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> New qca6174 with wmi-tlv firmware supports
-> multi-channel operation. To make use of it
-> ath10k needs a few changes: implement mac80211's
-> chanctx API and rework tx queue control a bit.
+> This makes set_bitrate_mask more flexible by
+> allowing more than applying simple single rate or
+> max nss limits.
 >
->
-> Changes since RFC:
->  * I've sent `ath10k: defer AP self-peer removal
->    wait` separately now because it's not really
->    required for multi-channel per se
+> This still isn't ideal and VHT MCSs can't be set
+> separately (only a few range-options are allowed).
 >
 > v2:
->  * fix null deref after rebasing
->  * fix commit log typo
+>  * fix ouf-of-bounds
+>  * rebased to master branch + multi-channel patches
 >
-> v3:
->  * remove some duplication wrt mac80211 [Johannes]
->  * small fixes
+> This will not apply cleanly without multi-channel
+> support and conflict resolution will be
+> non-trivial.
 >
-> v4:
->  * rebased
->  * fix STA CSA
->  * drop ar->arvifs data_lock protection patch
->  * drop ar->arvifs for vif iteration in favour of
->    ieee80211_iterate_active_interfaces()
->  * small refactor in monitor recalc
->  * add a patch to fix fw resource allocation for
->    multi-vif/chan
 >
-> v5:
->  * rebased on top of pending branch
->  * 12 char commit ids
->  * increase vif limit to 3 in ifcombs
->
-> v6:
->  * fix rcu locking
->  * rebased on master branch
->    (mind the cfg80211_get_bss conflict when
->     applying to pending branch)
->
-> Michal Kazior (7):
->   ath10k: allow empty ssid vdev config
->   ath10k: implement chanctx API
->   ath10k: implement adaptive qcs command
->   ath10k: rework tx queue locking
->   ath10k: implement tx pause wmi event
->   ath10k: enable multi-channel on supported devices
->   ath10k: allocate fw resources for iface combinations
+> Michal Kazior (2):
+>   ath10k: clean up set_bitrate_mask handling
 
-Thanks, all seven patches applied.
+Thanks, this patch applied.
+
+>   ath10k: implement more versatile set_bitrate_mask
+
+This patch dropped as requested.
 
 -- 
 Kalle Valo
