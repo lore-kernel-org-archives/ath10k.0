@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.com ([74.208.4.200])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfUkm-0005Lo-OO
- for ath10k@lists.infradead.org; Tue, 07 Apr 2015 14:45:25 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YfasO-0007ZZ-7i
+ for ath10k@lists.infradead.org; Tue, 07 Apr 2015 21:17:40 +0000
+Message-ID: <55244959.6080408@candelatech.com>
+Date: Tue, 07 Apr 2015 14:17:13 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Message-ID: <trinity-b17ca295-ac0b-4117-bf4d-daa1653254fc-1428417877122@3capp-mailcom-lxa05>
-From: "Jason H" <jhihn@gmx.com>
-Subject: Re: Re: QCA6174 hw2.1?
-Date: Tue, 7 Apr 2015 16:44:37 +0200
-In-Reply-To: <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
-References: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>, 
- <CA+BoTQkAckpbgTKg=9+ea5Me0m9=FO3aMU=qYHmX0Y96KubKeA@mail.gmail.com>,
- <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>
+Subject: Re: IBSS support in ath10k - our test results and questions
+References: <2680922.jiTnlqor3W@prime> <550B425A.7090505@candelatech.com>
+ <CALhHN=qch721dGPWWjmBb15qwH8gGQprafUEK+XjYu0ajm-tZw@mail.gmail.com>
+In-Reply-To: <CALhHN=qch721dGPWWjmBb15qwH8gGQprafUEK+XjYu0ajm-tZw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +23,43 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jason H <jhihn@gmx.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: Simon Wunderlich <simon@open-mesh.com>, sven@open-mesh.com, marek@open-mesh.com, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Just checking in. Any updates for the QCA6174?
+On 03/19/2015 11:44 PM, Janusz Dziedzic wrote:
+> On 19 March 2015 at 22:40, Ben Greear <greearb@candelatech.com> wrote:
 
-> Sent: Monday, March 23, 2015 at 9:57 AM
-> From: "Jason H" <jhihn@gmx.com>
-> To: "Michal Kazior" <michal.kazior@tieto.com>
-> Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-> Subject: Re: Re: QCA6174 hw2.1?
->
-> 
-> 
-> > Sent: Monday, March 23, 2015 at 4:23 AM
-> > From: "Michal Kazior" <michal.kazior@tieto.com>
-> > To: "Jason H" <jhihn@gmx.com>
-> > Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-> > Subject: Re: Re: QCA6174 hw2.1?
-> >
-> > On 21 March 2015 at 21:31,  <jhihn@gmx.com> wrote:
-> > > is there anyway you could process these files for me?. I would be willing to send you the files and go through some back and forth of feedback and whatnot. The issue is I just don't think I have the time or the expertise to devote to this. However I investigated exchanging  the laptop to get a  Linux compatible one, but its going to cost me money for the restocking fee. On top of that the next user of this laptop will be disgruntled when they find a non working copy of Linux on it. I investigated getting the restore cd but Lenovo's charging $70 for the media. So if you could help I would really appreciate it because this is the last thing that I need to get working but I really need it.
-> > >
-> > > and we could also get this chipset supported. I saw I wasn't the only one looking for Linux support for this driver.
-> > 
-> > Thanks for willing to help. However I finally got my hands on the
-> > Killer 1525 card. I tried playing with it but I couldn't get ath10k to
-> > work with it yet.
-> > 
-> > There's some firmware crash issue that needs investigating. Kalle's
-> > doing his best to sort this out internally.
-> > 
-> > Hopefully we'll get this working soon and we'll let everyone know on
-> > the mailing list. I can understand your situation very well. I know it
-> > sucks.
-> > 
-> 
-> 
-> Thanks however in my investigation, this was not the same as the "Killer" card.
-> 
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
+> Regarding IBSS/RSN and 636 firmware, this works sometimes (ath10k
+> patch required here).
+> But in case this don't work firmware don't send EAPOL frames - I think
+> this is main problem ...
+
+I've been trying to figure out IBSS + RSN in my firmware.
+
+It seems in my FW I was never (or at least rarely) sending the EAPOL
+frames.  I found a way around this, but now I see 1/4 go out fine,
+but 2/4 reports MIC errors.  I don't think my work-around is to blame,
+but it could be.  Also not sure why my work-around is required (or at least
+why STA/AP mode works w/out the hack.)
+
+A big part of my problem is that I don't actually know how IBSS + RSN
+is supposed to work.
+
+If someone has time to clue me in on that, I might make faster progress
+(or progress at all) on supporting IBSS + RSN on ath10k.
+
+In particular, I am curious when what type of key is supposed to
+be set at which stages...and for instance, what is supposed to happen
+between the 1/4 message and the 2/4 message (are keys supposed to be set?)
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
