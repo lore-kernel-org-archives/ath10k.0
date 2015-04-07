@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YfasO-0007ZZ-7i
- for ath10k@lists.infradead.org; Tue, 07 Apr 2015 21:17:40 +0000
-Message-ID: <55244959.6080408@candelatech.com>
-Date: Tue, 07 Apr 2015 14:17:13 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ob0-x232.google.com ([2607:f8b0:4003:c01::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yfatn-00084U-NB
+ for ath10k@lists.infradead.org; Tue, 07 Apr 2015 21:19:08 +0000
+Received: by obbgh1 with SMTP id gh1so104577813obb.1
+ for <ath10k@lists.infradead.org>; Tue, 07 Apr 2015 14:18:46 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: IBSS support in ath10k - our test results and questions
-References: <2680922.jiTnlqor3W@prime> <550B425A.7090505@candelatech.com>
- <CALhHN=qch721dGPWWjmBb15qwH8gGQprafUEK+XjYu0ajm-tZw@mail.gmail.com>
-In-Reply-To: <CALhHN=qch721dGPWWjmBb15qwH8gGQprafUEK+XjYu0ajm-tZw@mail.gmail.com>
+Date: Tue, 7 Apr 2015 17:18:46 -0400
+Message-ID: <CAJs-zoZHwhgf4d=SioPSpcEjjof8SJC-e6rRnyghKJd8FwcmQg@mail.gmail.com>
+Subject: [PATCH] ath10k: match wait_for_completion_timeout return type
+From: Will <will.pearse@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +22,21 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: Simon Wunderlich <simon@open-mesh.com>, sven@open-mesh.com, marek@open-mesh.com, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 03/19/2015 11:44 PM, Janusz Dziedzic wrote:
-> On 19 March 2015 at 22:40, Ben Greear <greearb@candelatech.com> wrote:
+Hello,
 
-> Regarding IBSS/RSN and 636 firmware, this works sometimes (ath10k
-> patch required here).
-> But in case this don't work firmware don't send EAPOL frames - I think
-> this is main problem ...
+Sorry to bother you all, but I'm one of a few people affected by the
+problem described in this thread (which is also on launchpad;
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1383184).
 
-I've been trying to figure out IBSS + RSN in my firmware.
+Is there anything I can do to help things along? Whether it be testing
+or (...if someone pointed me in the right direction...) coding, I'd
+like to help out, and so maybe get my wi-fi card working :D
 
-It seems in my FW I was never (or at least rarely) sending the EAPOL
-frames.  I found a way around this, but now I see 1/4 go out fine,
-but 2/4 reports MIC errors.  I don't think my work-around is to blame,
-but it could be.  Also not sure why my work-around is required (or at least
-why STA/AP mode works w/out the hack.)
+Thanks!
 
-A big part of my problem is that I don't actually know how IBSS + RSN
-is supposed to work.
-
-If someone has time to clue me in on that, I might make faster progress
-(or progress at all) on supporting IBSS + RSN on ath10k.
-
-In particular, I am curious when what type of key is supposed to
-be set at which stages...and for instance, what is supposed to happen
-between the 1/4 message and the 2/4 message (are keys supposed to be set?)
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Will
 
 _______________________________________________
 ath10k mailing list
