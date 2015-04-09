@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgB73-0005ME-OV
- for ath10k@lists.infradead.org; Thu, 09 Apr 2015 11:59:14 +0000
+ id 1YgBDR-0004F0-B4
+ for ath10k@lists.infradead.org; Thu, 09 Apr 2015 12:05:53 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: replenish htc tx credits always
-References: <1427368943-29526-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 9 Apr 2015 14:58:54 +0300
-In-Reply-To: <1427368943-29526-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 26 Mar 2015 11:22:23 +0000")
-Message-ID: <874mopfr7l.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: fix arvif->wep_keys clearing
+References: <1427444516-974-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 9 Apr 2015 15:05:22 +0300
+In-Reply-To: <1427444516-974-1-git-send-email-michal.kazior@tieto.com> (Michal
+ Kazior's message of "Fri, 27 Mar 2015 08:21:55 +0000")
+Message-ID: <87zj6heccd.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,18 +28,19 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> There's always at most 2 credits and it makes
-> little sense to set the
-> ATH10K_HTC_FLAG_NEED_CREDIT_UPDATE flag
-> conditionally.
+> The variable should be cleared regardless of
+> whether there's a peer associated with the key or
+> not.
 >
-> This seems to fix some random issues with tx
-> credit starvation on WLAN.RM.2.0-00073 I've been
-> seeing. Note: this isn't related to wmi mgmt tx.
+> This fixes case when user first associates with 2
+> WEP keys and then disconnects and connects with 1
+> WEP key. This resulted in WEP key count being 2 in
+> the driver leading to default keyidx fixup
+> failure.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+Thanks, both patches applied.
 
 -- 
 Kalle Valo
