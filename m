@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yggvs-0004v9-2u
- for ath10k@lists.infradead.org; Fri, 10 Apr 2015 21:57:48 +0000
-Message-ID: <55284744.80105@candelatech.com>
-Date: Fri, 10 Apr 2015 14:57:24 -0700
+ id 1YgiPs-0005dc-6F
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2015 23:32:52 +0000
+Message-ID: <55285D8D.6070703@candelatech.com>
+Date: Fri, 10 Apr 2015 16:32:29 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 4/4] ath10k: enable ibss-rsn
-References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
- <1428672203-8604-5-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1428672203-8604-5-git-send-email-michal.kazior@tieto.com>
+Subject: CT ath10k firmware now supports IBSS + RSN
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,75 +20,79 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-On 04/10/2015 06:23 AM, Michal Kazior wrote:
-> From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-> 
-> With latest additions to the driver it seems
-> viable to enable support for IBSS-RSN.
-> 
-> It seems to work on QCA988X and 999.999.0.636 but
-> is a bit slow to exchange RSN keys for some
-> reason. This may be a firmware quirk or ath10k is
-> missing something. Nevertheless it makes sense to
-> finally enable IBSS-RSN in ath10k even if somewhat
-> handicapped.
-> 
-> QCA6174 firmware doesn't seem to be able to Tx
-> EAPOL frames at all now (they get stuck in hw
-> queues for some reason) so it never gets to set
-> the keys in driver. It's fairly safe to assume that
-> once this is fixed IBSS-RSN will work with QCA6174
-> firmware without any additional changes. Hence no
-> special handling for advertising
-> IEEE80211_HW_SUPPORTS_PER_STA_GTK and
-> WIPHY_FLAG_IBSS_RSN is done now.
+First, thanks to everyone that helped me with questions,
+QCA/Tieto's upstream patches, etc.
 
-With your patches (though not certain they are all needed on my firmware
-now), and this patch below, my 10.1 system seems to be doing IBSS + RSN properly.
+This needs more testing, but it appears to at least mostly work.
 
-In case you are seeing any issues with small packets on your IBSS systems, I would
-be curious to know your results if you gave this patch a try.
+I am using this 4.0 related kernel.  I think only the last 3 patches
+are IBSS specific, but possibly there are others that matter as well.
 
-Without this, I see runt frames received on the peer (ARP responses in this particular case).
+http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
 
-I was also seeing similarly corrupted EAPOL frames from what I can tell.
+Firmware binaries and release notes are here:
+http://www.candelatech.com/downloads/ath10k-fw-beta/
 
-I don't really know why this is required, or if it is required for more than just
-IBSS + RSN at this point.
+I'm using a very recent wpa_supplicant..upstream should work I think,
+but I am using this one:
 
-[greearb@ben-dt2 ath10k]$ git diff
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index d3add01..853bf55 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2631,6 +2631,19 @@ static void ath10k_tx(struct ieee80211_hw *hw,
-        struct ieee80211_vif *vif = info->control.vif;
-        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+https://github.com/greearb/hostap-ct/tree/master/hostapd
 
-+
-+       if (vif && vif->type == NL80211_IFTYPE_ADHOC) {
-+               static int my_zlen = 78;
-+               /* This nasty little hack fixes IBSS + RSN with small
-+                * frames frames (ARP, etc) on 10.1 (CT) firmware.
-+                * Shouldn't hurt any firmware, and may help other as well. --Ben
-+                */
-+               if (skb->len < my_zlen) {
-+                       if (skb_put_padto(skb, my_zlen))
-+                               return; /* skb was consumed by skb_padto on error */
-+               }
-+       }
-+
-        /* We should disable CCK RATE due to P2P */
-        if (info->flags & IEEE80211_TX_CTL_NO_CCK_RATE)
-                ath10k_dbg(ar, ATH10K_DBG_MAC, "IEEE80211_TX_CTL_NO_CCK_RATE\n");
+supplicant needs to have this enabled, among other things:
 
+CONFIG_IBSS_RSN=y
+
+
+I suspect there are lingering bugs, perhaps in supplicant, as it seems to take
+a few tries for the 4-way to happen properly, and I have to re-start hostapd
+on each side each time I associate.
+
+My supplicant config files look like this (you can comment out any options
+your supplicant doesn't know about...I have a few extra features not specifically
+related to IBSS in my hostapd tree)
+
+ctrl_interface=/var/run/wpa_supplicant
+fast_reauth=1
+concurrent_assoc_ok=1
+scan_cur_freq=1
+min_scan_gap=5
+freq_list=5180
+
+bss_max_count=2000
+network={
+    ssid="ota-ibss-ssid"
+    disable_ht=0
+    disable_vht=0
+    ieee80211w=0
+    disable_ht40=1
+    disable_sgi=0
+    ht_mcs=""
+    disable_max_amsdu=-1
+    ampdu_factor=-1
+    ampdu_density=-1
+    freq_list=5180
+    fixed_freq=1
+
+    mode=1
+    frequency=5180
+    proto=RSN
+    key_mgmt=WPA-PSK
+    #psk="ben-ota-passwd"
+    psk=fc29b6edf32abd7a9818af3c94b2aa5364c785eee33ed3df11605a3db8f905bc
+    pairwise=CCMP
+    group=CCMP
+    proactive_key_caching=0
+
+}
+
+
+I'm curious to know if anyone tries it out.
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
