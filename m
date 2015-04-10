@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail-la0-x230.google.com ([2a00:1450:4010:c03::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgZ1T-0001qk-5I
+ id 1YgZ1T-0001rE-5J
  for ath10k@lists.infradead.org; Fri, 10 Apr 2015 13:31:04 +0000
-Received: by layy10 with SMTP id y10so13319467lay.0
- for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:30:41 -0700 (PDT)
+Received: by lagv1 with SMTP id v1so13247663lag.3
+ for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:30:42 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 0/4] ath10k: ibss crypto fixes
-Date: Fri, 10 Apr 2015 13:23:19 +0000
-Message-Id: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 1/4] ath10k: don't use reassoc flag
+Date: Fri, 10 Apr 2015 13:23:20 +0000
+Message-Id: <1428672203-8604-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,33 +27,28 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-I've mainly tested this on kvalo/pending branch.
-Currently master branch contains 0f611d28fc2e
-("mac80211: count interfaces correctly for
-combination checks") which breaks IBSS in
-wpa_supplicant due to P2P Device and interface
-combinations. This has been pointed out in the
-following thread:
+Firmware actually re-creates peer entry when
+reassoc flag is set. This is undesired and could
+cause trouble with IBSS crypto-wise. This is also
+important for upcomming bitrate mask improvement.
 
- [1]: http://thread.gmane.org/gmane.linux.kernel.wireless.general/135570/focus=136643
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-If someone's interested in running ath10k IBSS
-make sure to use kernel prior to 4.0, revert the
-mentioned mac80211 patch or apply wpa_supplicant
-workaround patch from [1].
-
-
-Janusz Dziedzic (1):
-  ath10k: enable ibss-rsn
-
-Michal Kazior (3):
-  ath10k: don't use reassoc flag
-  ath10k: fix multiple key static wep with ibss
-  ath10k: set def key idx for ibss
-
- drivers/net/wireless/ath/ath10k/mac.c | 44 +++++++++++++++++++++++++++++------
- 1 file changed, 37 insertions(+), 7 deletions(-)
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index a7a84f52b8b4..6664bcc9ba88 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2593,7 +2593,6 @@ static int ath10k_station_assoc(struct ath10k *ar,
+ 		return ret;
+ 	}
+ 
+-	peer_arg.peer_reassoc = reassoc;
+ 	ret = ath10k_wmi_peer_assoc(ar, &peer_arg);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to run peer assoc for STA %pM vdev %i: %d\n",
 -- 
 2.1.4
 
