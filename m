@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x234.google.com ([2a00:1450:4010:c03::234])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgZ1X-0001su-PE
- for ath10k@lists.infradead.org; Fri, 10 Apr 2015 13:31:08 +0000
-Received: by layy10 with SMTP id y10so13320986lay.0
- for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:30:45 -0700 (PDT)
+ id 1YgZ1W-0001sJ-G4
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2015 13:31:07 +0000
+Received: by lbbqq2 with SMTP id qq2so13668121lbb.3
+ for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:30:43 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 3/4] ath10k: set def key idx for ibss
-Date: Fri, 10 Apr 2015 13:23:22 +0000
-Message-Id: <1428672203-8604-4-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/4] ath10k: fix multiple key static wep with ibss
+Date: Fri, 10 Apr 2015 13:23:21 +0000
+Message-Id: <1428672203-8604-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
 References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,43 +27,76 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Some time ago there was a weird issue with AP
-using wrong multicast keys and generating
-corrupted traffic on 10.1 firmware.
+Apparently firmware requires both pairwise and
+groupwise keys to be installed per-peer for static
+WEP in IBSS. This wasn't necessary for AP mode
+(and installing both doesn't seem to break AP
+mode thus there's no special handling).
 
-Apparently a very similar problem applies for
-IBSS-RSN on 999.999.0.636.
+Also there seems to be some kind of issue with
+mapping tx/rx keys in firmware properly which
+resulted in wrong keys being used and broken
+communication between devices.
 
-ath10k doesn't have IBSS-RSN enabled yet. This
-patch is a prerequisite to support it.
+It can be argued the vdev param part is more of a
+workaround than a real fix. However I couldn't
+figure out how to fix this differently. It works
+and isn't super ugly.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 93f753cb839a..9428d75d0d76 100644
+index 6664bcc9ba88..93f753cb839a 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -4691,10 +4691,14 @@ static void ath10k_set_key_h_def_keyidx(struct ath10k *ar,
- 	 * frames with multi-vif APs. This is not required for main firmware
- 	 * branch (e.g. 636).
- 	 *
--	 * FIXME: This has been tested only in AP. It remains unknown if this
--	 * is required for multi-vif STA interfaces on 10.1 */
-+	 * This is also needed for 636 fw for IBSS-RSN to work more reliably.
+@@ -230,9 +230,13 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 		flags = 0;
+ 		flags |= WMI_KEY_PAIRWISE;
+ 
+-		/* set TX_USAGE flag for default key id */
+-		if (arvif->def_wep_key_idx == i)
+-			flags |= WMI_KEY_TX_USAGE;
++		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
++					 addr, flags);
++		if (ret)
++			return ret;
++
++		flags = 0;
++		flags |= WMI_KEY_GROUP;
+ 
+ 		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
+ 					 addr, flags);
+@@ -244,6 +248,27 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 		spin_unlock_bh(&ar->data_lock);
+ 	}
+ 
++	/* In some cases (notably with static WEP IBSS with multiple keys)
++	 * multicast Tx becomes broken. Both pairwise and groupwise keys are
++	 * installed already. Using WMI_KEY_TX_USAGE in different combinations
++	 * didn't seem help. Using def_keyid vdev parameter seems to be
++	 * effective so use that.
 +	 *
-+	 * FIXME: It remains unknown if this is required for multi-vif STA
-+	 * interfaces on 10.1.
++	 * FIXME: Revisit. Perhaps this can be done in a less hacky way.
 +	 */
++	if (arvif->def_wep_key_idx == -1)
++		return 0;
++
++	ret = ath10k_wmi_vdev_set_param(arvif->ar,
++					arvif->vdev_id,
++					arvif->ar->wmi.vdev_param->def_keyid,
++					arvif->def_wep_key_idx);
++	if (ret) {
++		ath10k_warn(ar, "failed to re-set def wpa key idxon vdev %i: %d\n",
++			    arvif->vdev_id, ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
  
--	if (arvif->vdev_type != WMI_VDEV_TYPE_AP)
-+	if (arvif->vdev_type != WMI_VDEV_TYPE_AP &&
-+	    arvif->vdev_type != WMI_VDEV_TYPE_IBSS)
- 		return;
- 
- 	if (key->cipher == WLAN_CIPHER_SUITE_WEP40)
 -- 
 2.1.4
 
