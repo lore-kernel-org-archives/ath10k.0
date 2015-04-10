@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail-la0-x22e.google.com ([2a00:1450:4010:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YgYbw-0006AO-1D
- for ath10k@lists.infradead.org; Fri, 10 Apr 2015 13:04:41 +0000
-Received: by labbd9 with SMTP id bd9so12730211lab.2
- for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:04:16 -0700 (PDT)
+ id 1YgYcr-0007ak-3d
+ for ath10k@lists.infradead.org; Fri, 10 Apr 2015 13:05:38 +0000
+Received: by laat2 with SMTP id t2so12776794laa.1
+ for <ath10k@lists.infradead.org>; Fri, 10 Apr 2015 06:05:13 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix error handling in pci_probe
-Date: Fri, 10 Apr 2015 13:01:27 +0000
-Message-Id: <1428670887-7533-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add extra check for frame tracing
+Date: Fri, 10 Apr 2015 13:02:28 +0000
+Message-Id: <1428670948-7665-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +25,84 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-If chip_id wasn't recognized clean up code wasn't
-executed properly. It would skip freeing memory
-causing a leak and irqs causing possibly MSI
-warning splats later or even kernel crashes.
+Frames are logged via tracing in two slices:
+header and payload, separately. This is done for
+performance reasons when one wants to, e.g.
+analyse metadata only of frames only.
 
-Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+If for some reason device delivered a frame buffer
+which was sized below what 802.11 header implied
+tracing logic would blow doing an invalid memory
+accesses.
+
+I've hit this problem when running IBSS on QCA988X
+with 999.999.0.636 and tracing at the same time.
+
+Fixes: 5ce8e7fdcc7a ("ath10k: handle ieee80211 header and payload tracing separately")
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/trace.h | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 262a84f67f62..1f770ac28df4 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2684,7 +2684,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	if (!ath10k_pci_chip_is_supported(pdev->device, chip_id)) {
- 		ath10k_err(ar, "device %04x with chip_id %08x isn't supported\n",
- 			   pdev->device, chip_id);
--		goto err_sleep;
-+		goto err_free_irq;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/trace.h b/drivers/net/wireless/ath/ath10k/trace.h
+index 71dfcd96354b..71bdb368813d 100644
+--- a/drivers/net/wireless/ath/ath10k/trace.h
++++ b/drivers/net/wireless/ath/ath10k/trace.h
+@@ -21,11 +21,16 @@
+ #include "core.h"
  
- 	ret = ath10k_core_register(ar, chip_id);
+ #if !defined(_TRACE_H_)
+-static inline u32 ath10k_frm_hdr_len(const void *buf)
++static inline u32 ath10k_frm_hdr_len(const void *buf, size_t len)
+ {
+ 	const struct ieee80211_hdr *hdr = buf;
+ 
+-	return ieee80211_hdrlen(hdr->frame_control);
++	/* In some rare cases (e.g. fcs error) device reports frame buffer
++	 * shorter than what frame header implies (e.g. len = 0). The buffer
++	 * can still be accessed so do a simple min() to guarantee caller
++	 * doesn't get value greater than len.
++	 */
++	return min_t(u32, len, ieee80211_hdrlen(hdr->frame_control));
+ }
+ #endif
+ 
+@@ -360,13 +365,13 @@ DECLARE_EVENT_CLASS(ath10k_hdr_event,
+ 		__string(device, dev_name(ar->dev))
+ 		__string(driver, dev_driver_string(ar->dev))
+ 		__field(size_t, len)
+-		__dynamic_array(u8, data, ath10k_frm_hdr_len(data))
++		__dynamic_array(u8, data, ath10k_frm_hdr_len(data, len))
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__assign_str(device, dev_name(ar->dev));
+ 		__assign_str(driver, dev_driver_string(ar->dev));
+-		__entry->len = ath10k_frm_hdr_len(data);
++		__entry->len = ath10k_frm_hdr_len(data, len);
+ 		memcpy(__get_dynamic_array(data), data, __entry->len);
+ 	),
+ 
+@@ -387,15 +392,16 @@ DECLARE_EVENT_CLASS(ath10k_payload_event,
+ 		__string(device, dev_name(ar->dev))
+ 		__string(driver, dev_driver_string(ar->dev))
+ 		__field(size_t, len)
+-		__dynamic_array(u8, payload, (len - ath10k_frm_hdr_len(data)))
++		__dynamic_array(u8, payload, (len -
++					      ath10k_frm_hdr_len(data, len)))
+ 	),
+ 
+ 	TP_fast_assign(
+ 		__assign_str(device, dev_name(ar->dev));
+ 		__assign_str(driver, dev_driver_string(ar->dev));
+-		__entry->len = len - ath10k_frm_hdr_len(data);
++		__entry->len = len - ath10k_frm_hdr_len(data, len);
+ 		memcpy(__get_dynamic_array(payload),
+-		       data + ath10k_frm_hdr_len(data), __entry->len);
++		       data + ath10k_frm_hdr_len(data, len), __entry->len);
+ 	),
+ 
+ 	TP_printk(
 -- 
 2.1.4
 
