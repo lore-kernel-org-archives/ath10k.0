@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhZwi-0000R5-UN
- for ath10k@lists.infradead.org; Mon, 13 Apr 2015 08:42:21 +0000
-Received: by wiax7 with SMTP id x7so59075392wia.0
- for <ath10k@lists.infradead.org>; Mon, 13 Apr 2015 01:41:57 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YhiMZ-0005hy-2s
+ for ath10k@lists.infradead.org; Mon, 13 Apr 2015 17:41:35 +0000
+Message-ID: <552BFFB8.6030301@candelatech.com>
+Date: Mon, 13 Apr 2015 10:41:12 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <1428672203-8604-5-git-send-email-michal.kazior@tieto.com>
-References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
- <1428672203-8604-5-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 13 Apr 2015 10:41:57 +0200
-Message-ID: <CA+BoTQmdJOYzYgfZq68tqr4G+PJKSvOvWRiDp=esMzv1vuS+jw@mail.gmail.com>
-Subject: Re: [PATCH 4/4] ath10k: enable ibss-rsn
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: CT ath10k firmware now supports IBSS + RSN
+References: <55285D8D.6070703@candelatech.com>
+In-Reply-To: <55285D8D.6070703@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +18,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k <ath10k@lists.infradead.org>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMTAgQXByaWwgMjAxNSBhdCAxNToyMywgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyb3RlOgo+IEZyb206IEphbnVzeiBEemllZHppYyA8amFudXN6LmR6aWVkemlj
-QHRpZXRvLmNvbT4KPgo+IFdpdGggbGF0ZXN0IGFkZGl0aW9ucyB0byB0aGUgZHJpdmVyIGl0IHNl
-ZW1zCj4gdmlhYmxlIHRvIGVuYWJsZSBzdXBwb3J0IGZvciBJQlNTLVJTTi4KPgo+IEl0IHNlZW1z
-IHRvIHdvcmsgb24gUUNBOTg4WCBhbmQgOTk5Ljk5OS4wLjYzNiBidXQKPiBpcyBhIGJpdCBzbG93
-IHRvIGV4Y2hhbmdlIFJTTiBrZXlzIGZvciBzb21lCj4gcmVhc29uLiBUaGlzIG1heSBiZSBhIGZp
-cm13YXJlIHF1aXJrIG9yIGF0aDEwayBpcwo+IG1pc3Npbmcgc29tZXRoaW5nLiBOZXZlcnRoZWxl
-c3MgaXQgbWFrZXMgc2Vuc2UgdG8KPiBmaW5hbGx5IGVuYWJsZSBJQlNTLVJTTiBpbiBhdGgxMGsg
-ZXZlbiBpZiBzb21ld2hhdAo+IGhhbmRpY2FwcGVkLgo+Cj4gUUNBNjE3NCBmaXJtd2FyZSBkb2Vz
-bid0IHNlZW0gdG8gYmUgYWJsZSB0byBUeAo+IEVBUE9MIGZyYW1lcyBhdCBhbGwgbm93ICh0aGV5
-IGdldCBzdHVjayBpbiBodwo+IHF1ZXVlcyBmb3Igc29tZSByZWFzb24pIHNvIGl0IG5ldmVyIGdl
-dHMgdG8gc2V0Cj4gdGhlIGtleXMgaW4gZHJpdmVyLiBJdCdzIGZhaXJseSBzYWZlIHRvIGFzc3Vt
-ZSB0aGF0Cj4gb25jZSB0aGlzIGlzIGZpeGVkIElCU1MtUlNOIHdpbGwgd29yayB3aXRoIFFDQTYx
-NzQKPiBmaXJtd2FyZSB3aXRob3V0IGFueSBhZGRpdGlvbmFsIGNoYW5nZXMuIEhlbmNlIG5vCj4g
-c3BlY2lhbCBoYW5kbGluZyBmb3IgYWR2ZXJ0aXNpbmcKPiBJRUVFODAyMTFfSFdfU1VQUE9SVFNf
-UEVSX1NUQV9HVEsgYW5kCj4gV0lQSFlfRkxBR19JQlNTX1JTTiBpcyBkb25lIG5vdy4KCkFzIGEg
-bWF0dGVyIG9mIGZhY3QgUUNBNjE3NCBmaXJtd2FyZSBkb2VzIHNlZW0gdG8gd29yayB3aXRoIElC
-U1MgYXMKd2VsbC4gSSBqdXN0IGZvdW5kIG91dCAoYnkgYWNjaWRlbnQsIGFmdGVyIGxlYXZpbmcg
-YSBmYWlsZWQgdGVzdCBzZXR1cApmb3IgYSB3aGlsZSkgdGhhdCBhZnRlciBhcHByb3guIDMwMCBz
-ZWNvbmRzIGZpcm13YXJlIGRpc2NhcmRzIGFsbApzdHVjayBFQVBPTCBmcmFtZXMgYW5kIHN0YXJ0
-cyBzZW5kaW5nIHN1YnNlcXVlbnQgb25lcyBwcm9wZXJseS4gS2V5cwpnZXRzIGV4Y2hhbmdlZCwg
-aW5zdGFsbGVkIGFuZCB0cmFmZmljIHNlZW1zIHRvIHdvcmsgZmluZSB3aXRoIHRoaXMKcGF0Y2hz
-ZXQuIEkgc3VwcG9zZSB0aGlzIHdhcnJhbnRzIGFuIHVwZGF0ZWQgY29tbWl0IGxvZy4KCgpNaWNo
-YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Looks like I have some more work to do.  For any moderately large frames,
+I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
+was working around a more serious issue...
+
+Thanks,
+Ben
+
+On 04/10/2015 04:32 PM, Ben Greear wrote:
+> First, thanks to everyone that helped me with questions,
+> QCA/Tieto's upstream patches, etc.
+> 
+> This needs more testing, but it appears to at least mostly work.
+> 
+> I am using this 4.0 related kernel.  I think only the last 3 patches
+> are IBSS specific, but possibly there are others that matter as well.
+> 
+> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
+> 
+> Firmware binaries and release notes are here:
+> http://www.candelatech.com/downloads/ath10k-fw-beta/
+> 
+> I'm using a very recent wpa_supplicant..upstream should work I think,
+> but I am using this one:
+> 
+> https://github.com/greearb/hostap-ct/tree/master/hostapd
+> 
+> supplicant needs to have this enabled, among other things:
+> 
+> CONFIG_IBSS_RSN=y
+> 
+> 
+> I suspect there are lingering bugs, perhaps in supplicant, as it seems to take
+> a few tries for the 4-way to happen properly, and I have to re-start hostapd
+> on each side each time I associate.
+> 
+> My supplicant config files look like this (you can comment out any options
+> your supplicant doesn't know about...I have a few extra features not specifically
+> related to IBSS in my hostapd tree)
+> 
+> ctrl_interface=/var/run/wpa_supplicant
+> fast_reauth=1
+> concurrent_assoc_ok=1
+> scan_cur_freq=1
+> min_scan_gap=5
+> freq_list=5180
+> 
+> bss_max_count=2000
+> network={
+>     ssid="ota-ibss-ssid"
+>     disable_ht=0
+>     disable_vht=0
+>     ieee80211w=0
+>     disable_ht40=1
+>     disable_sgi=0
+>     ht_mcs=""
+>     disable_max_amsdu=-1
+>     ampdu_factor=-1
+>     ampdu_density=-1
+>     freq_list=5180
+>     fixed_freq=1
+> 
+>     mode=1
+>     frequency=5180
+>     proto=RSN
+>     key_mgmt=WPA-PSK
+>     #psk="ben-ota-passwd"
+>     psk=fc29b6edf32abd7a9818af3c94b2aa5364c785eee33ed3df11605a3db8f905bc
+>     pairwise=CCMP
+>     group=CCMP
+>     proactive_key_caching=0
+> 
+> }
+> 
+> 
+> I'm curious to know if anyone tries it out.
+> 
+> Thanks,
+> Ben
+> 
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
