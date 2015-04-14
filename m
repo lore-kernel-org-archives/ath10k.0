@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhoR5-0007EV-DW
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 00:10:40 +0000
-Message-ID: <552C5AE9.4050304@candelatech.com>
-Date: Mon, 13 Apr 2015 17:10:17 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mout.gmx.com ([74.208.4.201])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YhorZ-0000MY-Vd
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 00:38:03 +0000
 MIME-Version: 1.0
-Subject: Re: CT ath10k firmware now supports IBSS + RSN
-References: <55285D8D.6070703@candelatech.com>
- <552BFFB8.6030301@candelatech.com>
-In-Reply-To: <552BFFB8.6030301@candelatech.com>
+Message-ID: <trinity-d69b60ae-f27f-4610-b5dc-0d358d929eb0-1428971834225@3capp-mailcom-lxa15>
+From: "Jason H" <jhihn@gmx.com>
+Subject: Re: Re: QCA6174 hw2.1?
+Date: Tue, 14 Apr 2015 02:37:14 +0200
+In-Reply-To: <trinity-b17ca295-ac0b-4117-bf4d-daa1653254fc-1428417877122@3capp-mailcom-lxa05>
+References: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>, 
+ <CA+BoTQkAckpbgTKg=9+ea5Me0m9=FO3aMU=qYHmX0Y96KubKeA@mail.gmail.com>,
+ <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>,
+ <trinity-b17ca295-ac0b-4117-bf4d-daa1653254fc-1428417877122@3capp-mailcom-lxa05>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,106 +25,61 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
-Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Jason H <jhihn@gmx.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 04/13/2015 10:41 AM, Ben Greear wrote:
-> Looks like I have some more work to do.  For any moderately large frames,
-> I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
-> was working around a more serious issue...
+Checking in again. Could I get the QCA6174 /2.1hw firmware made faster if I "sponsored" it?
 
-A better-tested version of kernel and firmware is uploaded now.
 
-Looks like I needed to add a hack to firmware to bump pkt-size by
-16 for IBSS + RSN encrypted frames.  Not sure exactly why, but seems
-to work in light testing.
-
-I removed the skb-padto hack from the kernel, and kernel is rebased on
-top of official 4.0 now.
-
-Thanks,
-Ben
-
-> On 04/10/2015 04:32 PM, Ben Greear wrote:
->> First, thanks to everyone that helped me with questions,
->> QCA/Tieto's upstream patches, etc.
->>
->> This needs more testing, but it appears to at least mostly work.
->>
->> I am using this 4.0 related kernel.  I think only the last 3 patches
->> are IBSS specific, but possibly there are others that matter as well.
->>
->> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
->>
->> Firmware binaries and release notes are here:
->> http://www.candelatech.com/downloads/ath10k-fw-beta/
->>
->> I'm using a very recent wpa_supplicant..upstream should work I think,
->> but I am using this one:
->>
->> https://github.com/greearb/hostap-ct/tree/master/hostapd
->>
->> supplicant needs to have this enabled, among other things:
->>
->> CONFIG_IBSS_RSN=y
->>
->>
->> I suspect there are lingering bugs, perhaps in supplicant, as it seems to take
->> a few tries for the 4-way to happen properly, and I have to re-start hostapd
->> on each side each time I associate.
->>
->> My supplicant config files look like this (you can comment out any options
->> your supplicant doesn't know about...I have a few extra features not specifically
->> related to IBSS in my hostapd tree)
->>
->> ctrl_interface=/var/run/wpa_supplicant
->> fast_reauth=1
->> concurrent_assoc_ok=1
->> scan_cur_freq=1
->> min_scan_gap=5
->> freq_list=5180
->>
->> bss_max_count=2000
->> network={
->>     ssid="ota-ibss-ssid"
->>     disable_ht=0
->>     disable_vht=0
->>     ieee80211w=0
->>     disable_ht40=1
->>     disable_sgi=0
->>     ht_mcs=""
->>     disable_max_amsdu=-1
->>     ampdu_factor=-1
->>     ampdu_density=-1
->>     freq_list=5180
->>     fixed_freq=1
->>
->>     mode=1
->>     frequency=5180
->>     proto=RSN
->>     key_mgmt=WPA-PSK
->>     #psk="ben-ota-passwd"
->>     psk=fc29b6edf32abd7a9818af3c94b2aa5364c785eee33ed3df11605a3db8f905bc
->>     pairwise=CCMP
->>     group=CCMP
->>     proactive_key_caching=0
->>
->> }
->>
->>
->> I'm curious to know if anyone tries it out.
->>
->> Thanks,
->> Ben
->>
+> Sent: Tuesday, April 07, 2015 at 10:44 AM
+> From: "Jason H" <jhihn@gmx.com>
+> To: "Jason H" <jhihn@gmx.com>
+> Cc: "Michal Kazior" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+> Subject: Re: Re: QCA6174 hw2.1?
+>
+> Just checking in. Any updates for the QCA6174?
 > 
+> > Sent: Monday, March 23, 2015 at 9:57 AM
+> > From: "Jason H" <jhihn@gmx.com>
+> > To: "Michal Kazior" <michal.kazior@tieto.com>
+> > Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+> > Subject: Re: Re: QCA6174 hw2.1?
+> >
+> > 
+> > 
+> > > Sent: Monday, March 23, 2015 at 4:23 AM
+> > > From: "Michal Kazior" <michal.kazior@tieto.com>
+> > > To: "Jason H" <jhihn@gmx.com>
+> > > Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+> > > Subject: Re: Re: QCA6174 hw2.1?
+> > >
+> > > On 21 March 2015 at 21:31,  <jhihn@gmx.com> wrote:
+> > > > is there anyway you could process these files for me?. I would be willing to send you the files and go through some back and forth of feedback and whatnot. The issue is I just don't think I have the time or the expertise to devote to this. However I investigated exchanging  the laptop to get a  Linux compatible one, but its going to cost me money for the restocking fee. On top of that the next user of this laptop will be disgruntled when they find a non working copy of Linux on it. I investigated getting the restore cd but Lenovo's charging $70 for the media. So if you could help I would really appreciate it because this is the last thing that I need to get working but I really need it.
+> > > >
+> > > > and we could also get this chipset supported. I saw I wasn't the only one looking for Linux support for this driver.
+> > > 
+> > > Thanks for willing to help. However I finally got my hands on the
+> > > Killer 1525 card. I tried playing with it but I couldn't get ath10k to
+> > > work with it yet.
+> > > 
+> > > There's some firmware crash issue that needs investigating. Kalle's
+> > > doing his best to sort this out internally.
+> > > 
+> > > Hopefully we'll get this working soon and we'll let everyone know on
+> > > the mailing list. I can understand your situation very well. I know it
+> > > sucks.
+> > > 
+> > 
+> > 
+> > Thanks however in my investigation, this was not the same as the "Killer" card.
+> > 
+> > 
+> > _______________________________________________
+> > ath10k mailing list
+> > ath10k@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/ath10k
+> > 
 > 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
 
 _______________________________________________
 ath10k mailing list
