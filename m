@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yi2Lk-0003rh-By
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 15:02:08 +0000
-Message-ID: <552D2BD5.7050204@candelatech.com>
-Date: Tue, 14 Apr 2015 08:01:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yi5Cu-00012O-5t
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 18:05:09 +0000
+Received: by iebrs15 with SMTP id rs15so21750195ieb.3
+ for <ath10k@lists.infradead.org>; Tue, 14 Apr 2015 11:04:46 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: CT ath10k firmware now supports IBSS + RSN
-References: <55285D8D.6070703@candelatech.com>	<552BFFB8.6030301@candelatech.com>	<552C5AE9.4050304@candelatech.com>
- <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
+References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
+ <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
+Date: Tue, 14 Apr 2015 14:04:46 -0400
+Message-ID: <CAOt_L3-cv7npPmWdheLjhXBiiOQRjC=GYoEZw2OSwgf-kEsUWg@mail.gmail.com>
+Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
+From: Amato Carbonara <acarbonara13@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,61 +21,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 04/13/2015 10:34 PM, Michal Kazior wrote:
-> On 14 April 2015 at 02:10, Ben Greear <greearb@candelatech.com> wrote:
->> On 04/13/2015 10:41 AM, Ben Greear wrote:
->>> Looks like I have some more work to do.  For any moderately large frames,
->>> I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
->>> was working around a more serious issue...
->>
->> A better-tested version of kernel and firmware is uploaded now.
->>
->> Looks like I needed to add a hack to firmware to bump pkt-size by
->> 16 for IBSS + RSN encrypted frames.  Not sure exactly why, but seems
->> to work in light testing.
->>
->> I removed the skb-padto hack from the kernel, and kernel is rebased on
->> top of official 4.0 now.
->
-> Hmm.. Maybe this is related to MMIC. Maybe frame fragment length must
-> be different from frame length (ath10k_htt_tx(),
-> htt_data_tx_desc_frag)? Perhaps a similar hack as with RAW txmode[1]
-> needs to be applied..?
->
->
-> [1]: https://www.mail-archive.com/ath10k@lists.infradead.org/msg00241.html
-
-This IBSS+RSN hack could be done in the kernel, but if my firmware is the only thing that
-needs it, then it is more convenient for me to hack firmware than have it
-incompatible with upstream drivers.
-
-If you do find similar problems with other firmware, then certainly a driver
-patch is welcome, and I will back out my firmware hack accordingly.
-
-And, it would be nice if someone put some version if your raw-tx patch upstream.
-I can also adjust length for raw pkts in firmware too, but again, in many cases
-it is better to be similarly broken to existing firmware than to be technically
-correct but break compatibility with the driver.  If I ever get a 'ct-firmware'
-feature flag upstream, then we could of course do the changes to take advantage
-of my firmwares differences as needed.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGVsbG8gTWljaGFsLAogIEkgd2FzIGFibGUgdG8gZGVjcnlwdCBhbGwgdHJhZmZpYyB0eXBlcyAo
+MTFhLCAxMW4gYXQgMjBNSHosIDExbiBhdAo0ME1IeiBhbmQgMTFhYyBhdCA4ME1IeikgdXNpbmcg
+dGhlIDEwLjEuNDY3LjItMSBmaXJtd2FyZSBvbiB0aGUKUUNBOTg4MCBjaGlwc2V0LiAgVGhlIHBy
+b2JsZW0gd2FzIG5vdCB3aXRoIFdpcmVzaGFyay4gIEkgaGFkIHRvCmluc3RhbGwgYmFja3BvcnRz
+IGZvciB0aGUgYXQxMGsgZHJpdmVycyB0byBtYWtlIGl0IHdvcmsuICBQcm9jZWR1cmVzCmFyZSBk
+b2N1bWVudGVkIGhlcmU6Cmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
+L0RyaXZlcnMvYXRoMTBrL2JhY2twb3J0cwoKVGhhbmsgeW91IGZvciB5b3VyIGhlbHAsCkFtYXRv
+CgpPbiBUdWUsIEFwciAxNCwgMjAxNSBhdCAxOjM4IEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwu
+a2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gNiBBcHJpbCAyMDE1IGF0IDIxOjQ5LCBBbWF0
+byBDYXJib25hcmEgPGFjYXJib25hcmExM0BnbWFpbC5jb20+IHdyb3RlOgo+PiBIZWxsbywKPj4g
+ICBJIGhhdmUgaW5zdGFsbGVkIGEgV2lGaSBhZGFwdGVyIHdpdGggdGhlIFF1YWxjb21tLUF0aGVy
+b3MgUUNBLTk4ODAKPj4gY2hpcHNldCB1c2luZyB0aGUgYXQxMGsgZHJpdmVycy4gIEkgYW0gdXNp
+bmcgdGhpcyBXaUZpIGFkYXB0ZXIgdG8KPj4gY2FwdHVyZSBXTEFOIHRyYWZmaWMuICBUaGUgcmVj
+b21tZW5kZWQgZmlybXdhcmUgZm9yIGNhcHR1cmluZyBXaUZpCj4+IHRyYWZmaWMgaXMgMTAuMS40
+NjcuMi0xIHBlciB0aGUgd2Vic2l0ZS4gIFNlZSBmb2xsb3dpbmcgbGluazoKPj4gaHR0cHM6Ly93
+aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgxMGsvbW9uaXRvcgo+
+Cj4gR2VuZXJhbGx5IHRoZSAxMC54IGxpbmUgaXMgcHJlZmVycmVkIGZvciBzbmlmZmluZy4gWW91
+IGNvdWxkIGFsc28gdHJ5IDEwLjIuNC4KPgo+Cj4+IEkgaGF2ZSBzdWNjZXNzZnVsbHkgaW5zdGFs
+bGVkIHRoZSBhYm92ZSBmaXJtd2FyZSBhbmQgaGF2ZSBiZWVuIHVzaW5nCj4+IHRoZSBhZGFwdGVy
+L2RyaXZlciB0byBjYXB0dXJlIGFuZCBkZWNyeXB0IGFsbCA4MDIuMTFhYyB0cmFmZmljLgo+PiBI
+b3dldmVyLCBJIGhhdmUgbm90aWNlZCBzb21lIHN0cmFuZ2UgYmVoYXZpb3Igd2hlbiB0cnlpbmcg
+dG8gZGVjcnlwdAo+PiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2ggYXM6Cj4+ICAgMSkgODAy
+LjExYSA9IG5vdCBhYmxlIHRvIGRlY3J5cHQgYW55IHRyYWZmaWMKPj4gICAyKSA4MDIuMTFuIGF0
+IDIwTUh6ID0gYWJsZSB0byBkZWNyeXB0IG9ubHkgcGFydGlhbCB0cmFmZmljCj4+ICAgMykgODAy
+LjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwgdHJhZmZpYwo+Pgo+
+PiBJIGhhdmUgdHJpZWQgdXNpbmcgdGhlIGRpZmZlcmVudCAiaXciIGFuZCAiaXdjb25maWciIGNv
+bW1hbmRzIHRvIHNldAo+PiB0aGUgZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3aWR0aCAoZm9y
+IGV4YW1wbGUsIGl3IGRldiB3bGFuMSBzZXQKPj4gZnJlcSA1MTgwIEhUMjApLiAgSGFzIGFueW9u
+ZSBlbHNlIHNlZW4gdGhpcyBpc3N1ZSBvZiBub3QgYmVpbmcgYWJsZSB0bwo+PiBkZWNyeXB0IGFs
+bC9zb21lIG9mIHRoZSBXaUZpIHRyYWZmaWM/Cj4KPiBgaXdjb25maWdgIGlzIGFuIG9sZCBwcm9n
+cmFtLiBZb3Ugc2hvdWxkbid0IHVzZSBpdC4gSnVzdCBzdGljayB3aXRoIGBpd2AuCj4KPiBUbyBk
+ZWNyeXB0IHRyYWZmaWMgeW91IG5lZWQgdG8gc2VlIGtleWluZyBoYW5kc2hha2UgKGJvdGggYWZ0
+ZXIKPiBhc3NvY2lhdGlvbiBhbmQgbGF0ZXIgZm9yIGVhY2ggcmVrZXlpbmcpLiBJZiBzbmlmZmVy
+IG1pc3NlcyB0aGF0IHlvdQo+IHdvbid0IGJlIGFibGUgdG8gZGVjaXBoZXIgZGF0YSBlaXRoZXIg
+ZnJvbSB0aGUgc3RhcnQgb3IgeW91J2xsIHN0b3AKPiBiZWluZyBhYmxlIHRvIGRlY3J5cHQgbXVs
+dGljYXN0IGRhdGEgYWZ0ZXIgR1RLIHJla2V5aW5nLgo+Cj4gQW5vdGhlciB0aGluZyBpcyBJJ3Zl
+IGhhZCBudW1lcm91cyByYW5kb20gcHJvYmxlbXMgd2l0aCB3aXJlc2hhcmsKPiByZWZ1c2luZyB0
+byBkZWNyeXB0IGZyYW1lcyByZWxpYWJseS4gSSByZWNhbGwgc29tZSBvbGRlciB2ZXJzaW9uIHdv
+dWxkCj4gZ2V0IHN0dWNrIGFuZCBuZWVkIHRoZSBrZXkgY29uZmlndXJhdGlvbiAoaW4gcHJlZmVy
+ZW5jZXMgd2luZG93KSB0byBiZQo+IHJlLWFwcGxpZWQgb3IgdGhlIGRlY3J5cHQgY2hlY2tib3gg
+dG8gYmUgcmUtY2hlY2tlZC4gWU1NVi4KPgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
+bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2F0aDEwawo=
