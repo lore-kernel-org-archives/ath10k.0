@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x234.google.com ([2607:f8b0:4001:c03::234])
+Received: from mail-vn0-x22b.google.com ([2607:f8b0:400c:c0f::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yi5Cu-00012O-5t
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 18:05:09 +0000
-Received: by iebrs15 with SMTP id rs15so21750195ieb.3
- for <ath10k@lists.infradead.org>; Tue, 14 Apr 2015 11:04:46 -0700 (PDT)
+ id 1Yi9ai-00043v-QC
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 22:46:02 +0000
+Received: by vnbg7 with SMTP id g7so9212816vnb.10
+ for <ath10k@lists.infradead.org>; Tue, 14 Apr 2015 15:45:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
-References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
- <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
-Date: Tue, 14 Apr 2015 14:04:46 -0400
-Message-ID: <CAOt_L3-cv7npPmWdheLjhXBiiOQRjC=GYoEZw2OSwgf-kEsUWg@mail.gmail.com>
-Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
-From: Amato Carbonara <acarbonara13@gmail.com>
+In-Reply-To: <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
+References: <1428911141-6534-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
+Date: Tue, 14 Apr 2015 15:45:38 -0700
+Message-ID: <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
+Subject: Re: [RFC 2/2] ath10k: don't disable PS when not connected
+From: YanBo <dreamfly281@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,54 +21,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-SGVsbG8gTWljaGFsLAogIEkgd2FzIGFibGUgdG8gZGVjcnlwdCBhbGwgdHJhZmZpYyB0eXBlcyAo
-MTFhLCAxMW4gYXQgMjBNSHosIDExbiBhdAo0ME1IeiBhbmQgMTFhYyBhdCA4ME1IeikgdXNpbmcg
-dGhlIDEwLjEuNDY3LjItMSBmaXJtd2FyZSBvbiB0aGUKUUNBOTg4MCBjaGlwc2V0LiAgVGhlIHBy
-b2JsZW0gd2FzIG5vdCB3aXRoIFdpcmVzaGFyay4gIEkgaGFkIHRvCmluc3RhbGwgYmFja3BvcnRz
-IGZvciB0aGUgYXQxMGsgZHJpdmVycyB0byBtYWtlIGl0IHdvcmsuICBQcm9jZWR1cmVzCmFyZSBk
-b2N1bWVudGVkIGhlcmU6Cmh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJz
-L0RyaXZlcnMvYXRoMTBrL2JhY2twb3J0cwoKVGhhbmsgeW91IGZvciB5b3VyIGhlbHAsCkFtYXRv
-CgpPbiBUdWUsIEFwciAxNCwgMjAxNSBhdCAxOjM4IEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwu
-a2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4gT24gNiBBcHJpbCAyMDE1IGF0IDIxOjQ5LCBBbWF0
-byBDYXJib25hcmEgPGFjYXJib25hcmExM0BnbWFpbC5jb20+IHdyb3RlOgo+PiBIZWxsbywKPj4g
-ICBJIGhhdmUgaW5zdGFsbGVkIGEgV2lGaSBhZGFwdGVyIHdpdGggdGhlIFF1YWxjb21tLUF0aGVy
-b3MgUUNBLTk4ODAKPj4gY2hpcHNldCB1c2luZyB0aGUgYXQxMGsgZHJpdmVycy4gIEkgYW0gdXNp
-bmcgdGhpcyBXaUZpIGFkYXB0ZXIgdG8KPj4gY2FwdHVyZSBXTEFOIHRyYWZmaWMuICBUaGUgcmVj
-b21tZW5kZWQgZmlybXdhcmUgZm9yIGNhcHR1cmluZyBXaUZpCj4+IHRyYWZmaWMgaXMgMTAuMS40
-NjcuMi0xIHBlciB0aGUgd2Vic2l0ZS4gIFNlZSBmb2xsb3dpbmcgbGluazoKPj4gaHR0cHM6Ly93
-aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgxMGsvbW9uaXRvcgo+
-Cj4gR2VuZXJhbGx5IHRoZSAxMC54IGxpbmUgaXMgcHJlZmVycmVkIGZvciBzbmlmZmluZy4gWW91
-IGNvdWxkIGFsc28gdHJ5IDEwLjIuNC4KPgo+Cj4+IEkgaGF2ZSBzdWNjZXNzZnVsbHkgaW5zdGFs
-bGVkIHRoZSBhYm92ZSBmaXJtd2FyZSBhbmQgaGF2ZSBiZWVuIHVzaW5nCj4+IHRoZSBhZGFwdGVy
-L2RyaXZlciB0byBjYXB0dXJlIGFuZCBkZWNyeXB0IGFsbCA4MDIuMTFhYyB0cmFmZmljLgo+PiBI
-b3dldmVyLCBJIGhhdmUgbm90aWNlZCBzb21lIHN0cmFuZ2UgYmVoYXZpb3Igd2hlbiB0cnlpbmcg
-dG8gZGVjcnlwdAo+PiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2ggYXM6Cj4+ICAgMSkgODAy
-LjExYSA9IG5vdCBhYmxlIHRvIGRlY3J5cHQgYW55IHRyYWZmaWMKPj4gICAyKSA4MDIuMTFuIGF0
-IDIwTUh6ID0gYWJsZSB0byBkZWNyeXB0IG9ubHkgcGFydGlhbCB0cmFmZmljCj4+ICAgMykgODAy
-LjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwgdHJhZmZpYwo+Pgo+
-PiBJIGhhdmUgdHJpZWQgdXNpbmcgdGhlIGRpZmZlcmVudCAiaXciIGFuZCAiaXdjb25maWciIGNv
-bW1hbmRzIHRvIHNldAo+PiB0aGUgZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3aWR0aCAoZm9y
-IGV4YW1wbGUsIGl3IGRldiB3bGFuMSBzZXQKPj4gZnJlcSA1MTgwIEhUMjApLiAgSGFzIGFueW9u
-ZSBlbHNlIHNlZW4gdGhpcyBpc3N1ZSBvZiBub3QgYmVpbmcgYWJsZSB0bwo+PiBkZWNyeXB0IGFs
-bC9zb21lIG9mIHRoZSBXaUZpIHRyYWZmaWM/Cj4KPiBgaXdjb25maWdgIGlzIGFuIG9sZCBwcm9n
-cmFtLiBZb3Ugc2hvdWxkbid0IHVzZSBpdC4gSnVzdCBzdGljayB3aXRoIGBpd2AuCj4KPiBUbyBk
-ZWNyeXB0IHRyYWZmaWMgeW91IG5lZWQgdG8gc2VlIGtleWluZyBoYW5kc2hha2UgKGJvdGggYWZ0
-ZXIKPiBhc3NvY2lhdGlvbiBhbmQgbGF0ZXIgZm9yIGVhY2ggcmVrZXlpbmcpLiBJZiBzbmlmZmVy
-IG1pc3NlcyB0aGF0IHlvdQo+IHdvbid0IGJlIGFibGUgdG8gZGVjaXBoZXIgZGF0YSBlaXRoZXIg
-ZnJvbSB0aGUgc3RhcnQgb3IgeW91J2xsIHN0b3AKPiBiZWluZyBhYmxlIHRvIGRlY3J5cHQgbXVs
-dGljYXN0IGRhdGEgYWZ0ZXIgR1RLIHJla2V5aW5nLgo+Cj4gQW5vdGhlciB0aGluZyBpcyBJJ3Zl
-IGhhZCBudW1lcm91cyByYW5kb20gcHJvYmxlbXMgd2l0aCB3aXJlc2hhcmsKPiByZWZ1c2luZyB0
-byBkZWNyeXB0IGZyYW1lcyByZWxpYWJseS4gSSByZWNhbGwgc29tZSBvbGRlciB2ZXJzaW9uIHdv
-dWxkCj4gZ2V0IHN0dWNrIGFuZCBuZWVkIHRoZSBrZXkgY29uZmlndXJhdGlvbiAoaW4gcHJlZmVy
-ZW5jZXMgd2luZG93KSB0byBiZQo+IHJlLWFwcGxpZWQgb3IgdGhlIGRlY3J5cHQgY2hlY2tib3gg
-dG8gYmUgcmUtY2hlY2tlZC4gWU1NVi4KPgo+Cj4gTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+On Mon, Apr 13, 2015 at 12:45 AM, Janusz Dziedzic
+<janusz.dziedzic@tieto.com> wrote:
+> Don't disable PS while we are not connected.
+> In other case we will get higher power consumption.
+>
+> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 52c5b1f..b896dd4 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -1730,7 +1730,13 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+>                 enable_ps = false;
+>         }
+>
+> -       if (enable_ps) {
+> +       if (!arvif->is_started) {
+> +               /* enable power save mode while not connected,
+> +                * in other case after iface up we will get
+> +                * higher power consumption - firmware design
+> +                */
+> +               psmode = WMI_STA_PS_MODE_ENABLED;
+> +       } else if (enable_ps) {
+>                 psmode = WMI_STA_PS_MODE_ENABLED;
+>                 param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
+>
+> --
+
+What the expectation behavior after we enable the
+WMI_STA_PS_MODE_ENABLED at Idle status?
+Is there any effect for TX or RX chain after set it?
+
+BR /Yanbo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
