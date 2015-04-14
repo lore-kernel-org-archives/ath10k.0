@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhiiN-0000Jr-3o
- for ath10k@lists.infradead.org; Mon, 13 Apr 2015 18:04:07 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v2] ath10k: use MAC clock rate same as FW uses for survey
- accuracy
-Date: Mon, 13 Apr 2015 11:01:20 -0700
-Message-ID: <6a113cdb1b0dbbb6d98ab6b363b4912474c32bac.1428701627.git.poh@qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YhoR5-0007EV-DW
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 00:10:40 +0000
+Message-ID: <552C5AE9.4050304@candelatech.com>
+Date: Mon, 13 Apr 2015 17:10:17 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: CT ath10k firmware now supports IBSS + RSN
+References: <55285D8D.6070703@candelatech.com>
+ <552BFFB8.6030301@candelatech.com>
+In-Reply-To: <552BFFB8.6030301@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +23,105 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-WLAN survey data provides several informative values on each channels
-such as noise, active time, transmit time, and etc.
-Regarding the channel activity time data, it is reported from firmware
-in different form which is number of cycles instead of time itself.
-Hence host driver converts it to time unit by dividing it by clock rate
-that is used at baseband MAC.
+On 04/13/2015 10:41 AM, Ben Greear wrote:
+> Looks like I have some more work to do.  For any moderately large frames,
+> I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
+> was working around a more serious issue...
 
-Using difference clock rate from that actual HW is using will result in
-inaccurate survey data. For instance, channel active time can be reported
-with bigger than 150ms even though we set Dwell time to 150ms.
-Therefore set the clock rate to 88000 (88 MHz) which is ath10k baseband
-MAC is using.
+A better-tested version of kernel and firmware is uploaded now.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Looks like I needed to add a hack to firmware to bump pkt-size by
+16 for IBSS + RSN encrypted frames.  Not sure exactly why, but seems
+to work in light testing.
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index d0942b0..2c03496 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -4653,9 +4653,7 @@ struct wmi_peer_sta_kickout_event {
- } __packed;
- 
- #define WMI_CHAN_INFO_FLAG_COMPLETE BIT(0)
--
--/* FIXME: empirically extrapolated */
--#define WMI_CHAN_INFO_MSEC(x) ((x) / 76595)
-+#define WMI_CHAN_INFO_MSEC(x) ((x) / 88000)
- 
- /* Beacon filter wmi command info */
- #define BCN_FLT_MAX_SUPPORTED_IES	256
+I removed the skb-padto hack from the kernel, and kernel is rebased on
+top of official 4.0 now.
+
+Thanks,
+Ben
+
+> On 04/10/2015 04:32 PM, Ben Greear wrote:
+>> First, thanks to everyone that helped me with questions,
+>> QCA/Tieto's upstream patches, etc.
+>>
+>> This needs more testing, but it appears to at least mostly work.
+>>
+>> I am using this 4.0 related kernel.  I think only the last 3 patches
+>> are IBSS specific, but possibly there are others that matter as well.
+>>
+>> http://dmz2.candelatech.com/git/gitweb.cgi?p=linux-4.0.dev.y/.git;a=summary
+>>
+>> Firmware binaries and release notes are here:
+>> http://www.candelatech.com/downloads/ath10k-fw-beta/
+>>
+>> I'm using a very recent wpa_supplicant..upstream should work I think,
+>> but I am using this one:
+>>
+>> https://github.com/greearb/hostap-ct/tree/master/hostapd
+>>
+>> supplicant needs to have this enabled, among other things:
+>>
+>> CONFIG_IBSS_RSN=y
+>>
+>>
+>> I suspect there are lingering bugs, perhaps in supplicant, as it seems to take
+>> a few tries for the 4-way to happen properly, and I have to re-start hostapd
+>> on each side each time I associate.
+>>
+>> My supplicant config files look like this (you can comment out any options
+>> your supplicant doesn't know about...I have a few extra features not specifically
+>> related to IBSS in my hostapd tree)
+>>
+>> ctrl_interface=/var/run/wpa_supplicant
+>> fast_reauth=1
+>> concurrent_assoc_ok=1
+>> scan_cur_freq=1
+>> min_scan_gap=5
+>> freq_list=5180
+>>
+>> bss_max_count=2000
+>> network={
+>>     ssid="ota-ibss-ssid"
+>>     disable_ht=0
+>>     disable_vht=0
+>>     ieee80211w=0
+>>     disable_ht40=1
+>>     disable_sgi=0
+>>     ht_mcs=""
+>>     disable_max_amsdu=-1
+>>     ampdu_factor=-1
+>>     ampdu_density=-1
+>>     freq_list=5180
+>>     fixed_freq=1
+>>
+>>     mode=1
+>>     frequency=5180
+>>     proto=RSN
+>>     key_mgmt=WPA-PSK
+>>     #psk="ben-ota-passwd"
+>>     psk=fc29b6edf32abd7a9818af3c94b2aa5364c785eee33ed3df11605a3db8f905bc
+>>     pairwise=CCMP
+>>     group=CCMP
+>>     proactive_key_caching=0
+>>
+>> }
+>>
+>>
+>> I'm curious to know if anyone tries it out.
+>>
+>> Thanks,
+>> Ben
+>>
+> 
+> 
+
+
 -- 
-1.9.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
