@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.com ([74.208.4.201])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhorZ-0000MY-Vd
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 00:38:03 +0000
+ id 1YhtVG-0005y3-S1
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 05:35:20 +0000
+Received: by widdi4 with SMTP id di4so98774590wid.0
+ for <ath10k@lists.infradead.org>; Mon, 13 Apr 2015 22:34:53 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-d69b60ae-f27f-4610-b5dc-0d358d929eb0-1428971834225@3capp-mailcom-lxa15>
-From: "Jason H" <jhihn@gmx.com>
-Subject: Re: Re: QCA6174 hw2.1?
-Date: Tue, 14 Apr 2015 02:37:14 +0200
-In-Reply-To: <trinity-b17ca295-ac0b-4117-bf4d-daa1653254fc-1428417877122@3capp-mailcom-lxa05>
-References: <trinity-78717edb-041b-4b77-8173-d7ba2ac3aeea-1426969886147@msvc024>, 
- <CA+BoTQkAckpbgTKg=9+ea5Me0m9=FO3aMU=qYHmX0Y96KubKeA@mail.gmail.com>,
- <trinity-b1ca9c09-4b5d-4cd4-8a8b-bd61df2a40c4-1427119021325@3capp-mailcom-lxa02>,
- <trinity-b17ca295-ac0b-4117-bf4d-daa1653254fc-1428417877122@3capp-mailcom-lxa05>
+In-Reply-To: <552C5AE9.4050304@candelatech.com>
+References: <55285D8D.6070703@candelatech.com>
+ <552BFFB8.6030301@candelatech.com>
+ <552C5AE9.4050304@candelatech.com>
+Date: Tue, 14 Apr 2015 07:34:53 +0200
+Message-ID: <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
+Subject: Re: CT ath10k firmware now supports IBSS + RSN
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,67 +22,30 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jason H <jhihn@gmx.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Checking in again. Could I get the QCA6174 /2.1hw firmware made faster if I "sponsored" it?
-
-
-> Sent: Tuesday, April 07, 2015 at 10:44 AM
-> From: "Jason H" <jhihn@gmx.com>
-> To: "Jason H" <jhihn@gmx.com>
-> Cc: "Michal Kazior" <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-> Subject: Re: Re: QCA6174 hw2.1?
->
-> Just checking in. Any updates for the QCA6174?
-> 
-> > Sent: Monday, March 23, 2015 at 9:57 AM
-> > From: "Jason H" <jhihn@gmx.com>
-> > To: "Michal Kazior" <michal.kazior@tieto.com>
-> > Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-> > Subject: Re: Re: QCA6174 hw2.1?
-> >
-> > 
-> > 
-> > > Sent: Monday, March 23, 2015 at 4:23 AM
-> > > From: "Michal Kazior" <michal.kazior@tieto.com>
-> > > To: "Jason H" <jhihn@gmx.com>
-> > > Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
-> > > Subject: Re: Re: QCA6174 hw2.1?
-> > >
-> > > On 21 March 2015 at 21:31,  <jhihn@gmx.com> wrote:
-> > > > is there anyway you could process these files for me?. I would be willing to send you the files and go through some back and forth of feedback and whatnot. The issue is I just don't think I have the time or the expertise to devote to this. However I investigated exchanging  the laptop to get a  Linux compatible one, but its going to cost me money for the restocking fee. On top of that the next user of this laptop will be disgruntled when they find a non working copy of Linux on it. I investigated getting the restore cd but Lenovo's charging $70 for the media. So if you could help I would really appreciate it because this is the last thing that I need to get working but I really need it.
-> > > >
-> > > > and we could also get this chipset supported. I saw I wasn't the only one looking for Linux support for this driver.
-> > > 
-> > > Thanks for willing to help. However I finally got my hands on the
-> > > Killer 1525 card. I tried playing with it but I couldn't get ath10k to
-> > > work with it yet.
-> > > 
-> > > There's some firmware crash issue that needs investigating. Kalle's
-> > > doing his best to sort this out internally.
-> > > 
-> > > Hopefully we'll get this working soon and we'll let everyone know on
-> > > the mailing list. I can understand your situation very well. I know it
-> > > sucks.
-> > > 
-> > 
-> > 
-> > Thanks however in my investigation, this was not the same as the "Killer" card.
-> > 
-> > 
-> > _______________________________________________
-> > ath10k mailing list
-> > ath10k@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/ath10k
-> > 
-> 
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgQXByaWwgMjAxNSBhdCAwMjoxMCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
+aC5jb20+IHdyb3RlOgo+IE9uIDA0LzEzLzIwMTUgMTA6NDEgQU0sIEJlbiBHcmVlYXIgd3JvdGU6
+Cj4+IExvb2tzIGxpa2UgSSBoYXZlIHNvbWUgbW9yZSB3b3JrIHRvIGRvLiAgRm9yIGFueSBtb2Rl
+cmF0ZWx5IGxhcmdlIGZyYW1lcywKPj4gSSBhbSBub3cgZHJvcHBpbmcgdGhlIGxhc3QgMTYgYnl0
+ZXMuICBMb29rcyBsaWtlIHRoZSBza2JfcHV0X3BhZHRvIGxvZ2ljCj4+IHdhcyB3b3JraW5nIGFy
+b3VuZCBhIG1vcmUgc2VyaW91cyBpc3N1ZS4uLgo+Cj4gQSBiZXR0ZXItdGVzdGVkIHZlcnNpb24g
+b2Yga2VybmVsIGFuZCBmaXJtd2FyZSBpcyB1cGxvYWRlZCBub3cuCj4KPiBMb29rcyBsaWtlIEkg
+bmVlZGVkIHRvIGFkZCBhIGhhY2sgdG8gZmlybXdhcmUgdG8gYnVtcCBwa3Qtc2l6ZSBieQo+IDE2
+IGZvciBJQlNTICsgUlNOIGVuY3J5cHRlZCBmcmFtZXMuICBOb3Qgc3VyZSBleGFjdGx5IHdoeSwg
+YnV0IHNlZW1zCj4gdG8gd29yayBpbiBsaWdodCB0ZXN0aW5nLgo+Cj4gSSByZW1vdmVkIHRoZSBz
+a2ItcGFkdG8gaGFjayBmcm9tIHRoZSBrZXJuZWwsIGFuZCBrZXJuZWwgaXMgcmViYXNlZCBvbgo+
+IHRvcCBvZiBvZmZpY2lhbCA0LjAgbm93LgoKSG1tLi4gTWF5YmUgdGhpcyBpcyByZWxhdGVkIHRv
+IE1NSUMuIE1heWJlIGZyYW1lIGZyYWdtZW50IGxlbmd0aCBtdXN0CmJlIGRpZmZlcmVudCBmcm9t
+IGZyYW1lIGxlbmd0aCAoYXRoMTBrX2h0dF90eCgpLApodHRfZGF0YV90eF9kZXNjX2ZyYWcpPyBQ
+ZXJoYXBzIGEgc2ltaWxhciBoYWNrIGFzIHdpdGggUkFXIHR4bW9kZVsxXQpuZWVkcyB0byBiZSBh
+cHBsaWVkLi4/CgoKWzFdOiBodHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0
+cy5pbmZyYWRlYWQub3JnL21zZzAwMjQxLmh0bWwKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
