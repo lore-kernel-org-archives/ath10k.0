@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhtYI-0007yO-Eq
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 05:38:27 +0000
-Received: by wiax7 with SMTP id x7so80017335wia.0
- for <ath10k@lists.infradead.org>; Mon, 13 Apr 2015 22:38:03 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yi2Lk-0003rh-By
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 15:02:08 +0000
+Message-ID: <552D2BD5.7050204@candelatech.com>
+Date: Tue, 14 Apr 2015 08:01:41 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
-References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
-Date: Tue, 14 Apr 2015 07:38:03 +0200
-Message-ID: <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
-Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: CT ath10k firmware now supports IBSS + RSN
+References: <55285D8D.6070703@candelatech.com>	<552BFFB8.6030301@candelatech.com>	<552C5AE9.4050304@candelatech.com>
+ <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,44 +19,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Amato Carbonara <acarbonara13@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-T24gNiBBcHJpbCAyMDE1IGF0IDIxOjQ5LCBBbWF0byBDYXJib25hcmEgPGFjYXJib25hcmExM0Bn
-bWFpbC5jb20+IHdyb3RlOgo+IEhlbGxvLAo+ICAgSSBoYXZlIGluc3RhbGxlZCBhIFdpRmkgYWRh
-cHRlciB3aXRoIHRoZSBRdWFsY29tbS1BdGhlcm9zIFFDQS05ODgwCj4gY2hpcHNldCB1c2luZyB0
-aGUgYXQxMGsgZHJpdmVycy4gIEkgYW0gdXNpbmcgdGhpcyBXaUZpIGFkYXB0ZXIgdG8KPiBjYXB0
-dXJlIFdMQU4gdHJhZmZpYy4gIFRoZSByZWNvbW1lbmRlZCBmaXJtd2FyZSBmb3IgY2FwdHVyaW5n
-IFdpRmkKPiB0cmFmZmljIGlzIDEwLjEuNDY3LjItMSBwZXIgdGhlIHdlYnNpdGUuICBTZWUgZm9s
-bG93aW5nIGxpbms6Cj4gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMv
-ZHJpdmVycy9hdGgxMGsvbW9uaXRvcgoKR2VuZXJhbGx5IHRoZSAxMC54IGxpbmUgaXMgcHJlZmVy
-cmVkIGZvciBzbmlmZmluZy4gWW91IGNvdWxkIGFsc28gdHJ5IDEwLjIuNC4KCgo+IEkgaGF2ZSBz
-dWNjZXNzZnVsbHkgaW5zdGFsbGVkIHRoZSBhYm92ZSBmaXJtd2FyZSBhbmQgaGF2ZSBiZWVuIHVz
-aW5nCj4gdGhlIGFkYXB0ZXIvZHJpdmVyIHRvIGNhcHR1cmUgYW5kIGRlY3J5cHQgYWxsIDgwMi4x
-MWFjIHRyYWZmaWMuCj4gSG93ZXZlciwgSSBoYXZlIG5vdGljZWQgc29tZSBzdHJhbmdlIGJlaGF2
-aW9yIHdoZW4gdHJ5aW5nIHRvIGRlY3J5cHQKPiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2gg
-YXM6Cj4gICAxKSA4MDIuMTFhID0gbm90IGFibGUgdG8gZGVjcnlwdCBhbnkgdHJhZmZpYwo+ICAg
-MikgODAyLjExbiBhdCAyME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwgdHJhZmZp
-Ywo+ICAgMykgODAyLjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwg
-dHJhZmZpYwo+Cj4gSSBoYXZlIHRyaWVkIHVzaW5nIHRoZSBkaWZmZXJlbnQgIml3IiBhbmQgIml3
-Y29uZmlnIiBjb21tYW5kcyB0byBzZXQKPiB0aGUgZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3
-aWR0aCAoZm9yIGV4YW1wbGUsIGl3IGRldiB3bGFuMSBzZXQKPiBmcmVxIDUxODAgSFQyMCkuICBI
-YXMgYW55b25lIGVsc2Ugc2VlbiB0aGlzIGlzc3VlIG9mIG5vdCBiZWluZyBhYmxlIHRvCj4gZGVj
-cnlwdCBhbGwvc29tZSBvZiB0aGUgV2lGaSB0cmFmZmljPwoKYGl3Y29uZmlnYCBpcyBhbiBvbGQg
-cHJvZ3JhbS4gWW91IHNob3VsZG4ndCB1c2UgaXQuIEp1c3Qgc3RpY2sgd2l0aCBgaXdgLgoKVG8g
-ZGVjcnlwdCB0cmFmZmljIHlvdSBuZWVkIHRvIHNlZSBrZXlpbmcgaGFuZHNoYWtlIChib3RoIGFm
-dGVyCmFzc29jaWF0aW9uIGFuZCBsYXRlciBmb3IgZWFjaCByZWtleWluZykuIElmIHNuaWZmZXIg
-bWlzc2VzIHRoYXQgeW91Cndvbid0IGJlIGFibGUgdG8gZGVjaXBoZXIgZGF0YSBlaXRoZXIgZnJv
-bSB0aGUgc3RhcnQgb3IgeW91J2xsIHN0b3AKYmVpbmcgYWJsZSB0byBkZWNyeXB0IG11bHRpY2Fz
-dCBkYXRhIGFmdGVyIEdUSyByZWtleWluZy4KCkFub3RoZXIgdGhpbmcgaXMgSSd2ZSBoYWQgbnVt
-ZXJvdXMgcmFuZG9tIHByb2JsZW1zIHdpdGggd2lyZXNoYXJrCnJlZnVzaW5nIHRvIGRlY3J5cHQg
-ZnJhbWVzIHJlbGlhYmx5LiBJIHJlY2FsbCBzb21lIG9sZGVyIHZlcnNpb24gd291bGQKZ2V0IHN0
-dWNrIGFuZCBuZWVkIHRoZSBrZXkgY29uZmlndXJhdGlvbiAoaW4gcHJlZmVyZW5jZXMgd2luZG93
-KSB0byBiZQpyZS1hcHBsaWVkIG9yIHRoZSBkZWNyeXB0IGNoZWNrYm94IHRvIGJlIHJlLWNoZWNr
-ZWQuIFlNTVYuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+
+On 04/13/2015 10:34 PM, Michal Kazior wrote:
+> On 14 April 2015 at 02:10, Ben Greear <greearb@candelatech.com> wrote:
+>> On 04/13/2015 10:41 AM, Ben Greear wrote:
+>>> Looks like I have some more work to do.  For any moderately large frames,
+>>> I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
+>>> was working around a more serious issue...
+>>
+>> A better-tested version of kernel and firmware is uploaded now.
+>>
+>> Looks like I needed to add a hack to firmware to bump pkt-size by
+>> 16 for IBSS + RSN encrypted frames.  Not sure exactly why, but seems
+>> to work in light testing.
+>>
+>> I removed the skb-padto hack from the kernel, and kernel is rebased on
+>> top of official 4.0 now.
+>
+> Hmm.. Maybe this is related to MMIC. Maybe frame fragment length must
+> be different from frame length (ath10k_htt_tx(),
+> htt_data_tx_desc_frag)? Perhaps a similar hack as with RAW txmode[1]
+> needs to be applied..?
+>
+>
+> [1]: https://www.mail-archive.com/ath10k@lists.infradead.org/msg00241.html
+
+This IBSS+RSN hack could be done in the kernel, but if my firmware is the only thing that
+needs it, then it is more convenient for me to hack firmware than have it
+incompatible with upstream drivers.
+
+If you do find similar problems with other firmware, then certainly a driver
+patch is welcome, and I will back out my firmware hack accordingly.
+
+And, it would be nice if someone put some version if your raw-tx patch upstream.
+I can also adjust length for raw pkts in firmware too, but again, in many cases
+it is better to be similarly broken to existing firmware than to be technically
+correct but break compatibility with the driver.  If I ever get a 'ct-firmware'
+feature flag upstream, then we could of course do the changes to take advantage
+of my firmwares differences as needed.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
