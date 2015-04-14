@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YhtVG-0005y3-S1
- for ath10k@lists.infradead.org; Tue, 14 Apr 2015 05:35:20 +0000
-Received: by widdi4 with SMTP id di4so98774590wid.0
- for <ath10k@lists.infradead.org>; Mon, 13 Apr 2015 22:34:53 -0700 (PDT)
+ id 1YhtYI-0007yO-Eq
+ for ath10k@lists.infradead.org; Tue, 14 Apr 2015 05:38:27 +0000
+Received: by wiax7 with SMTP id x7so80017335wia.0
+ for <ath10k@lists.infradead.org>; Mon, 13 Apr 2015 22:38:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <552C5AE9.4050304@candelatech.com>
-References: <55285D8D.6070703@candelatech.com>
- <552BFFB8.6030301@candelatech.com>
- <552C5AE9.4050304@candelatech.com>
-Date: Tue, 14 Apr 2015 07:34:53 +0200
-Message-ID: <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
-Subject: Re: CT ath10k firmware now supports IBSS + RSN
+In-Reply-To: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
+References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
+Date: Tue, 14 Apr 2015 07:38:03 +0200
+Message-ID: <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
+Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,26 +24,40 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Amato Carbonara <acarbonara13@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTQgQXByaWwgMjAxNSBhdCAwMjoxMCwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVj
-aC5jb20+IHdyb3RlOgo+IE9uIDA0LzEzLzIwMTUgMTA6NDEgQU0sIEJlbiBHcmVlYXIgd3JvdGU6
-Cj4+IExvb2tzIGxpa2UgSSBoYXZlIHNvbWUgbW9yZSB3b3JrIHRvIGRvLiAgRm9yIGFueSBtb2Rl
-cmF0ZWx5IGxhcmdlIGZyYW1lcywKPj4gSSBhbSBub3cgZHJvcHBpbmcgdGhlIGxhc3QgMTYgYnl0
-ZXMuICBMb29rcyBsaWtlIHRoZSBza2JfcHV0X3BhZHRvIGxvZ2ljCj4+IHdhcyB3b3JraW5nIGFy
-b3VuZCBhIG1vcmUgc2VyaW91cyBpc3N1ZS4uLgo+Cj4gQSBiZXR0ZXItdGVzdGVkIHZlcnNpb24g
-b2Yga2VybmVsIGFuZCBmaXJtd2FyZSBpcyB1cGxvYWRlZCBub3cuCj4KPiBMb29rcyBsaWtlIEkg
-bmVlZGVkIHRvIGFkZCBhIGhhY2sgdG8gZmlybXdhcmUgdG8gYnVtcCBwa3Qtc2l6ZSBieQo+IDE2
-IGZvciBJQlNTICsgUlNOIGVuY3J5cHRlZCBmcmFtZXMuICBOb3Qgc3VyZSBleGFjdGx5IHdoeSwg
-YnV0IHNlZW1zCj4gdG8gd29yayBpbiBsaWdodCB0ZXN0aW5nLgo+Cj4gSSByZW1vdmVkIHRoZSBz
-a2ItcGFkdG8gaGFjayBmcm9tIHRoZSBrZXJuZWwsIGFuZCBrZXJuZWwgaXMgcmViYXNlZCBvbgo+
-IHRvcCBvZiBvZmZpY2lhbCA0LjAgbm93LgoKSG1tLi4gTWF5YmUgdGhpcyBpcyByZWxhdGVkIHRv
-IE1NSUMuIE1heWJlIGZyYW1lIGZyYWdtZW50IGxlbmd0aCBtdXN0CmJlIGRpZmZlcmVudCBmcm9t
-IGZyYW1lIGxlbmd0aCAoYXRoMTBrX2h0dF90eCgpLApodHRfZGF0YV90eF9kZXNjX2ZyYWcpPyBQ
-ZXJoYXBzIGEgc2ltaWxhciBoYWNrIGFzIHdpdGggUkFXIHR4bW9kZVsxXQpuZWVkcyB0byBiZSBh
-cHBsaWVkLi4/CgoKWzFdOiBodHRwczovL3d3dy5tYWlsLWFyY2hpdmUuY29tL2F0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnL21zZzAwMjQxLmh0bWwKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+T24gNiBBcHJpbCAyMDE1IGF0IDIxOjQ5LCBBbWF0byBDYXJib25hcmEgPGFjYXJib25hcmExM0Bn
+bWFpbC5jb20+IHdyb3RlOgo+IEhlbGxvLAo+ICAgSSBoYXZlIGluc3RhbGxlZCBhIFdpRmkgYWRh
+cHRlciB3aXRoIHRoZSBRdWFsY29tbS1BdGhlcm9zIFFDQS05ODgwCj4gY2hpcHNldCB1c2luZyB0
+aGUgYXQxMGsgZHJpdmVycy4gIEkgYW0gdXNpbmcgdGhpcyBXaUZpIGFkYXB0ZXIgdG8KPiBjYXB0
+dXJlIFdMQU4gdHJhZmZpYy4gIFRoZSByZWNvbW1lbmRlZCBmaXJtd2FyZSBmb3IgY2FwdHVyaW5n
+IFdpRmkKPiB0cmFmZmljIGlzIDEwLjEuNDY3LjItMSBwZXIgdGhlIHdlYnNpdGUuICBTZWUgZm9s
+bG93aW5nIGxpbms6Cj4gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMv
+ZHJpdmVycy9hdGgxMGsvbW9uaXRvcgoKR2VuZXJhbGx5IHRoZSAxMC54IGxpbmUgaXMgcHJlZmVy
+cmVkIGZvciBzbmlmZmluZy4gWW91IGNvdWxkIGFsc28gdHJ5IDEwLjIuNC4KCgo+IEkgaGF2ZSBz
+dWNjZXNzZnVsbHkgaW5zdGFsbGVkIHRoZSBhYm92ZSBmaXJtd2FyZSBhbmQgaGF2ZSBiZWVuIHVz
+aW5nCj4gdGhlIGFkYXB0ZXIvZHJpdmVyIHRvIGNhcHR1cmUgYW5kIGRlY3J5cHQgYWxsIDgwMi4x
+MWFjIHRyYWZmaWMuCj4gSG93ZXZlciwgSSBoYXZlIG5vdGljZWQgc29tZSBzdHJhbmdlIGJlaGF2
+aW9yIHdoZW4gdHJ5aW5nIHRvIGRlY3J5cHQKPiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2gg
+YXM6Cj4gICAxKSA4MDIuMTFhID0gbm90IGFibGUgdG8gZGVjcnlwdCBhbnkgdHJhZmZpYwo+ICAg
+MikgODAyLjExbiBhdCAyME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwgdHJhZmZp
+Ywo+ICAgMykgODAyLjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwg
+dHJhZmZpYwo+Cj4gSSBoYXZlIHRyaWVkIHVzaW5nIHRoZSBkaWZmZXJlbnQgIml3IiBhbmQgIml3
+Y29uZmlnIiBjb21tYW5kcyB0byBzZXQKPiB0aGUgZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3
+aWR0aCAoZm9yIGV4YW1wbGUsIGl3IGRldiB3bGFuMSBzZXQKPiBmcmVxIDUxODAgSFQyMCkuICBI
+YXMgYW55b25lIGVsc2Ugc2VlbiB0aGlzIGlzc3VlIG9mIG5vdCBiZWluZyBhYmxlIHRvCj4gZGVj
+cnlwdCBhbGwvc29tZSBvZiB0aGUgV2lGaSB0cmFmZmljPwoKYGl3Y29uZmlnYCBpcyBhbiBvbGQg
+cHJvZ3JhbS4gWW91IHNob3VsZG4ndCB1c2UgaXQuIEp1c3Qgc3RpY2sgd2l0aCBgaXdgLgoKVG8g
+ZGVjcnlwdCB0cmFmZmljIHlvdSBuZWVkIHRvIHNlZSBrZXlpbmcgaGFuZHNoYWtlIChib3RoIGFm
+dGVyCmFzc29jaWF0aW9uIGFuZCBsYXRlciBmb3IgZWFjaCByZWtleWluZykuIElmIHNuaWZmZXIg
+bWlzc2VzIHRoYXQgeW91Cndvbid0IGJlIGFibGUgdG8gZGVjaXBoZXIgZGF0YSBlaXRoZXIgZnJv
+bSB0aGUgc3RhcnQgb3IgeW91J2xsIHN0b3AKYmVpbmcgYWJsZSB0byBkZWNyeXB0IG11bHRpY2Fz
+dCBkYXRhIGFmdGVyIEdUSyByZWtleWluZy4KCkFub3RoZXIgdGhpbmcgaXMgSSd2ZSBoYWQgbnVt
+ZXJvdXMgcmFuZG9tIHByb2JsZW1zIHdpdGggd2lyZXNoYXJrCnJlZnVzaW5nIHRvIGRlY3J5cHQg
+ZnJhbWVzIHJlbGlhYmx5LiBJIHJlY2FsbCBzb21lIG9sZGVyIHZlcnNpb24gd291bGQKZ2V0IHN0
+dWNrIGFuZCBuZWVkIHRoZSBrZXkgY29uZmlndXJhdGlvbiAoaW4gcHJlZmVyZW5jZXMgd2luZG93
+KSB0byBiZQpyZS1hcHBsaWVkIG9yIHRoZSBkZWNyeXB0IGNoZWNrYm94IHRvIGJlIHJlLWNoZWNr
+ZWQuIFlNTVYuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
