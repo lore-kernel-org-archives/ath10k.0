@@ -1,24 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-yk0-x236.google.com ([2607:f8b0:4002:c07::236])
+Received: from mail-vn0-x22e.google.com ([2607:f8b0:400c:c0f::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YiPzJ-0007nw-9G
- for ath10k@lists.infradead.org; Wed, 15 Apr 2015 16:16:30 +0000
-Received: by ykft189 with SMTP id t189so2568266ykf.1
- for <ath10k@lists.infradead.org>; Wed, 15 Apr 2015 09:16:07 -0700 (PDT)
+ id 1YiQpc-00086N-66
+ for ath10k@lists.infradead.org; Wed, 15 Apr 2015 17:10:33 +0000
+Received: by vnbf1 with SMTP id f1so17541775vnb.5
+ for <ath10k@lists.infradead.org>; Wed, 15 Apr 2015 10:10:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <552E86BA.9000206@candelatech.com>
-References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
- <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
- <CAOt_L3-cv7npPmWdheLjhXBiiOQRjC=GYoEZw2OSwgf-kEsUWg@mail.gmail.com>
- <552DAE9D.7090405@candelatech.com>
- <CAOt_L3_FG53W5xK1csb=+VXDy2wdW-V3nbg8mtFaHarEOdkLCg@mail.gmail.com>
- <552E7C91.5030607@candelatech.com>
- <CAOt_L3_nN-U41wm+=Skb7RixZr=8x-Y_VEO1vEQohFDJMa66fg@mail.gmail.com>
- <552E86BA.9000206@candelatech.com>
-Date: Wed, 15 Apr 2015 09:16:07 -0700
-Message-ID: <CAJ-VmokKsw0qZw0Bs_6kxVbdxkH4SZsOhR7xEd2Wfevj9j3-0g@mail.gmail.com>
-Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
-From: Adrian Chadd <adrian@freebsd.org>
+In-Reply-To: <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
+References: <1428911141-6534-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
+ <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
+ <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
+Date: Wed, 15 Apr 2015 10:10:09 -0700
+Message-ID: <CAFuUQkieJ0CC83wPFm=c_gA5a6OzdbWBF-0EaDL0N=nNAsU2_g@mail.gmail.com>
+Subject: Re: [RFC 2/2] ath10k: don't disable PS when not connected
+From: YanBo <dreamfly281@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,126 +23,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Amato Carbonara <acarbonara13@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Michal Kazior <michal.kazior@tieto.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SUlSQywgdGhleSdyZSB0aHJvd24gdG8gdGhlIGludGVybmFsIGZpcm13YXJlIHF1ZXVlIGZvciBz
-b2Z0d2FyZSBwcm9jZXNzaW5nLgoKCgotYWRyaWFuCgoKT24gMTUgQXByaWwgMjAxNSBhdCAwODo0
-MSwgQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+IE9uIDA0LzE1
-LzIwMTUgMDg6MDcgQU0sIEFtYXRvIENhcmJvbmFyYSB3cm90ZToKPj4gSGkgQmVuLAo+PiAgIEkg
-cGVyZm9ybWVkIG15IGNhcHR1cmVzIHdoZW4gdGhlIFdpRmkgYWRhcHRlciBydW5uaW5nIHRoZSBh
-dGgxMGsgd2FzCj4+IG5vdCBjb25uZWN0ZWQgdG8gdGhlIFdpRmkgbmV0d29yay4gIEluIG90aGVy
-IHdvcmRzLCB0aGUgY2FwdHVyZSBzaG93cwo+PiB0cmFmZmljIGJldHdlZW4gMiBkaWZmZXJlbnQg
-ZGV2aWNlcy4gIFRoZSBhdGgxMGsgZGV2aWNlIGlzIGluCj4+IHByb21pc2N1b3VzIG1vZGUgYW5k
-IGNhcHR1cmluZyBhbGwgdGhlIHRyYWZmaWMgYmV0d2VlbiB0aGUgZGV2aWNlcy4KPgo+IFllcywg
-SSBkaWQgdGhlIHNhbWUsIGFuZCBzdGlsbCBubyBCbG9ja0FjayBhY3Rpb24gZnJhbWVzIGFyZSBj
-YXB0dXJlZC4KPgo+IEZpcm13YXJlIGhhcyBzcGVjaWFsIGhhbmRsaW5nIGZvciB0aGVzZSBmcmFt
-ZXMsIHNvIHByb2JhYmx5IGl0IGVhdHMKPiB0aGVtIGJlZm9yZSBwYXNzaW5nIG9uIHRvIHRoZSBo
-b3N0Lgo+Cj4gVGhhbmtzLAo+IEJlbgo+Cj4+Cj4+IE9uIFdlZCwgQXByIDE1LCAyMDE1IGF0IDEw
-OjU4IEFNLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4+Pgo+
-Pj4KPj4+IE9uIDA0LzE1LzIwMTUgMDc6MjggQU0sIEFtYXRvIENhcmJvbmFyYSB3cm90ZToKPj4+
-Pgo+Pj4+IEhpIEJlbiwKPj4+PiAgICBJIGhhdmUgZG9uZSBudW1lcm91cyBjYXB0dXJlcyB1c2lu
-ZyB0aGUgYXRoMTBrIGRyaXZlciBvbiBkaWZmZXJlbnQKPj4+PiA4MDIuMTEgdmFyaWFudCBuZXR3
-b3Jrcywgc3BlY2lmaWNhbGx5IDgwMi4xMW4gKDIwTUh6IGFuZCA0ME1IeikgYW5kCj4+Pj4gODAy
-LjExYWMuICBJbiBhbGwgdGhlc2UgY2FwdHVyZXMsIEkgaGF2ZSBjYXB0dXJlZCB0aGUgQmxvY2st
-QWNrIGZyYW1lcwo+Pj4+IChXaXJlc2hhcmsgZmlsdGVyIHdsYW4uZmMudHlwZV9zdWJ0eXBlID09
-IDB4MDAxOSksIGJ1dCBkbyBub3Qgc2VlIGFueQo+Pj4+IEJsb2NrLUFDSyBSZXF1ZXN0IG9yIFJl
-c3BvbnNlIGZyYW1lcy4gIEluIGZhY3QsIG5vbmUgb2YgbXkgY2FwdHVyZXMKPj4+PiB1c2luZyB0
-aGUgYXRoMTBrIGRyaXZlcnMgc2hvdyBhbnkgQWN0aW9uIGZyYW1lcyAoV2lyZXNoYXJrIGZpbHRl
-cgo+Pj4+IHdsYW4uZmMudHlwZV9zdWJ0eXBlID09IDB4MDAwZCkuICBUaGlzIGlzIHZlcnkgcGVj
-dWxpYXIgc2luY2UgdGhlIElFRUUKPj4+PiBzcGVjaWZpY2F0aW9uIDgwMi4xMS0yMDEyIHNlY3Rp
-b24gOS4yMS4yIHN0YXRlczogIklmIHRoZSBpbnRlbmRlZAo+Pj4+IHJlY2lwaWVudCBTVEEgaXMg
-Y2FwYWJsZSBvZiBwYXJ0aWNpcGF0aW5nLCB0aGUgb3JpZ2luYXRvciBzZW5kcyBhbgo+Pj4+IEFE
-REJBIFJlcXVlc3QgZnJhbWUiLiAgVGhlcmVmb3IsIHRoZSBBRERCQSBtdXN0IGJlIHNlbnQgaW4g
-b3JkZXIgZm9yCj4+Pj4gQmxvY2stQWNrcyB0byBvY2N1ci4gIEkgaGF2ZSBhbHNvIG5vdGljZWQg
-bWlzc2luZyBBc3NvY2lhdGlvbiBSZXNwb25zZQo+Pj4+IGZyYW1lcyBmcm9tIHRoZSBTVEEuCj4+
-Pj4KPj4+PiBDdXJyZW50bHksIEkgYW0gdXNpbmcgZmlybXdhcmUgMTAuMS40NjcuMi0xIHRvIHBl
-cmZvcm0gbXkgY2FwdHVyZXMuCj4+Pgo+Pj4KPj4+IEkgdGhpbmsgdGhlIGF0aDEwayBmaXJtd2Fy
-ZSBtdXN0IGp1c3QgY29uc3VtZSB0aGUgYmxvY2stYWNrIHJlcXVlc3QvcmVzcG9uc2UKPj4+IGZy
-YW1lcyBpbnRlcm5hbGx5IGFuZAo+Pj4gbmV2ZXIgc2VuZCB0aGVtIHVwIHRvIHRoZSBob3N0LiAg
-SXQgZG9lcyBzZW5kIGFuIGh0dCBtZXNzYWdlIGFib3V0IGJsb2NrYWNrCj4+PiBjb250cm9sIG1l
-c3NhZ2VzIGJlaW5nCj4+PiByZWNlaXZlZC4KPj4+Cj4+PiBQcm9iYWJseSBzb21ldGhpbmcgSSBj
-b3VsZCBmaXggaW4gbXkgMTAuMSBmaXJtd2FyZS4uLmJ1dCBmaXJzdCBJIG5lZWQgdG8KPj4+IGZp
-Z3VyZSBvdXQgd2h5IGF0aDlrIChtYWM4MDIxMSBzdGFjaywgYWN0dWFsbHkpIGlnbm9yZXMgdGhl
-IGJsb2NrLWFjawo+Pj4gbWVzc2FnZXMgdGhhdCBteSBpYnNzIGF0aDEwawo+Pj4gaW50ZXJmYWNl
-IHNlbmRzLi4uLgo+Pj4KPj4+IFRoYW5rcywKPj4+IEJlbgo+Pj4KPj4+Cj4+Pj4KPj4+PiBIYXMg
-YW55b25lIGVsc2UgdHJpZWQgdXNpbmcgYSBkaWZmZXJlbnQgZmlybXdhcmUgdmVyc2lvbiwgZm9y
-IGV4YW1wbGUKPj4+PiAxMC4yLjQsIHRvIHBlcmZvcm0gV2lGaSBjYXB0dXJlcz8KPj4+Pgo+Pj4+
-IE9uIFR1ZSwgQXByIDE0LCAyMDE1IGF0IDg6MTkgUE0sIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2Fu
-ZGVsYXRlY2guY29tPgo+Pj4+IHdyb3RlOgo+Pj4+Pgo+Pj4+PiBPdXQgb2YgY3VyaW9zaXR5LCBo
-YXZlIHlvdSBiZWVuIGFibGUgdG8gY2FwdHVyZSBBY3Rpb24gZnJhbWVzCj4+Pj4+IChzcGVjaWZp
-Y2FsbHksCj4+Pj4+IGJsb2NrLWFjayBhZGQvZGVsIGZyYW1lcykgd2l0aCBhdGgxMGs/ICBJIGp1
-c3Qgd2FzdGVkIGEgbGFyZ2UgYW1vdW50IG9mCj4+Pj4+IHRpbWUgd29uZGVyaW5nCj4+Pj4+IHdo
-eSB0aGUgZnJhbWVzIGFyZSBub3Qgc2Vlbi4uLmJ1dCBhdGg5ayBtb25pdG9yIHBvcnQgc2VlcyB0
-aGVtIGp1c3QgZmluZS4KPj4+Pj4KPj4+Pj4gVGhhbmtzLAo+Pj4+PiBCZW4KPj4+Pj4KPj4+Pj4K
-Pj4+Pj4gT24gMDQvMTQvMjAxNSAxMTowNCBBTSwgQW1hdG8gQ2FyYm9uYXJhIHdyb3RlOgo+Pj4+
-Pj4KPj4+Pj4+IEhlbGxvIE1pY2hhbCwKPj4+Pj4+ICAgIEkgd2FzIGFibGUgdG8gZGVjcnlwdCBh
-bGwgdHJhZmZpYyB0eXBlcyAoMTFhLCAxMW4gYXQgMjBNSHosIDExbiBhdAo+Pj4+Pj4gNDBNSHog
-YW5kIDExYWMgYXQgODBNSHopIHVzaW5nIHRoZSAxMC4xLjQ2Ny4yLTEgZmlybXdhcmUgb24gdGhl
-Cj4+Pj4+PiBRQ0E5ODgwIGNoaXBzZXQuICBUaGUgcHJvYmxlbSB3YXMgbm90IHdpdGggV2lyZXNo
-YXJrLiAgSSBoYWQgdG8KPj4+Pj4+IGluc3RhbGwgYmFja3BvcnRzIGZvciB0aGUgYXQxMGsgZHJp
-dmVycyB0byBtYWtlIGl0IHdvcmsuICBQcm9jZWR1cmVzCj4+Pj4+PiBhcmUgZG9jdW1lbnRlZCBo
-ZXJlOgo+Pj4+Pj4gaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvRHJp
-dmVycy9hdGgxMGsvYmFja3BvcnRzCj4+Pj4+Pgo+Pj4+Pj4gVGhhbmsgeW91IGZvciB5b3VyIGhl
-bHAsCj4+Pj4+PiBBbWF0bwo+Pj4+Pj4KPj4+Pj4+IE9uIFR1ZSwgQXByIDE0LCAyMDE1IGF0IDE6
-MzggQU0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPgo+Pj4+Pj4gd3Jv
-dGU6Cj4+Pj4+Pj4KPj4+Pj4+PiBPbiA2IEFwcmlsIDIwMTUgYXQgMjE6NDksIEFtYXRvIENhcmJv
-bmFyYSA8YWNhcmJvbmFyYTEzQGdtYWlsLmNvbT4KPj4+Pj4+PiB3cm90ZToKPj4+Pj4+Pj4KPj4+
-Pj4+Pj4gSGVsbG8sCj4+Pj4+Pj4+ICAgIEkgaGF2ZSBpbnN0YWxsZWQgYSBXaUZpIGFkYXB0ZXIg
-d2l0aCB0aGUgUXVhbGNvbW0tQXRoZXJvcyBRQ0EtOTg4MAo+Pj4+Pj4+PiBjaGlwc2V0IHVzaW5n
-IHRoZSBhdDEwayBkcml2ZXJzLiAgSSBhbSB1c2luZyB0aGlzIFdpRmkgYWRhcHRlciB0bwo+Pj4+
-Pj4+PiBjYXB0dXJlIFdMQU4gdHJhZmZpYy4gIFRoZSByZWNvbW1lbmRlZCBmaXJtd2FyZSBmb3Ig
-Y2FwdHVyaW5nIFdpRmkKPj4+Pj4+Pj4gdHJhZmZpYyBpcyAxMC4xLjQ2Ny4yLTEgcGVyIHRoZSB3
-ZWJzaXRlLiAgU2VlIGZvbGxvd2luZyBsaW5rOgo+Pj4+Pj4+PiBodHRwczovL3dpcmVsZXNzLndp
-a2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9tb25pdG9yCj4+Pj4+Pj4KPj4+
-Pj4+Pgo+Pj4+Pj4+IEdlbmVyYWxseSB0aGUgMTAueCBsaW5lIGlzIHByZWZlcnJlZCBmb3Igc25p
-ZmZpbmcuIFlvdSBjb3VsZCBhbHNvIHRyeQo+Pj4+Pj4+IDEwLjIuNC4KPj4+Pj4+Pgo+Pj4+Pj4+
-Cj4+Pj4+Pj4+IEkgaGF2ZSBzdWNjZXNzZnVsbHkgaW5zdGFsbGVkIHRoZSBhYm92ZSBmaXJtd2Fy
-ZSBhbmQgaGF2ZSBiZWVuIHVzaW5nCj4+Pj4+Pj4+IHRoZSBhZGFwdGVyL2RyaXZlciB0byBjYXB0
-dXJlIGFuZCBkZWNyeXB0IGFsbCA4MDIuMTFhYyB0cmFmZmljLgo+Pj4+Pj4+PiBIb3dldmVyLCBJ
-IGhhdmUgbm90aWNlZCBzb21lIHN0cmFuZ2UgYmVoYXZpb3Igd2hlbiB0cnlpbmcgdG8gZGVjcnlw
-dAo+Pj4+Pj4+PiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2ggYXM6Cj4+Pj4+Pj4+ICAgIDEp
-IDgwMi4xMWEgPSBub3QgYWJsZSB0byBkZWNyeXB0IGFueSB0cmFmZmljCj4+Pj4+Pj4+ICAgIDIp
-IDgwMi4xMW4gYXQgMjBNSHogPSBhYmxlIHRvIGRlY3J5cHQgb25seSBwYXJ0aWFsIHRyYWZmaWMK
-Pj4+Pj4+Pj4gICAgMykgODAyLjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBh
-cnRpYWwgdHJhZmZpYwo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBJIGhhdmUgdHJpZWQgdXNpbmcgdGhlIGRp
-ZmZlcmVudCAiaXciIGFuZCAiaXdjb25maWciIGNvbW1hbmRzIHRvIHNldAo+Pj4+Pj4+PiB0aGUg
-ZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3aWR0aCAoZm9yIGV4YW1wbGUsIGl3IGRldiB3bGFu
-MSBzZXQKPj4+Pj4+Pj4gZnJlcSA1MTgwIEhUMjApLiAgSGFzIGFueW9uZSBlbHNlIHNlZW4gdGhp
-cyBpc3N1ZSBvZiBub3QgYmVpbmcgYWJsZSB0bwo+Pj4+Pj4+PiBkZWNyeXB0IGFsbC9zb21lIG9m
-IHRoZSBXaUZpIHRyYWZmaWM/Cj4+Pj4+Pj4KPj4+Pj4+Pgo+Pj4+Pj4+IGBpd2NvbmZpZ2AgaXMg
-YW4gb2xkIHByb2dyYW0uIFlvdSBzaG91bGRuJ3QgdXNlIGl0LiBKdXN0IHN0aWNrIHdpdGgKPj4+
-Pj4+PiBgaXdgLgo+Pj4+Pj4+Cj4+Pj4+Pj4gVG8gZGVjcnlwdCB0cmFmZmljIHlvdSBuZWVkIHRv
-IHNlZSBrZXlpbmcgaGFuZHNoYWtlIChib3RoIGFmdGVyCj4+Pj4+Pj4gYXNzb2NpYXRpb24gYW5k
-IGxhdGVyIGZvciBlYWNoIHJla2V5aW5nKS4gSWYgc25pZmZlciBtaXNzZXMgdGhhdCB5b3UKPj4+
-Pj4+PiB3b24ndCBiZSBhYmxlIHRvIGRlY2lwaGVyIGRhdGEgZWl0aGVyIGZyb20gdGhlIHN0YXJ0
-IG9yIHlvdSdsbCBzdG9wCj4+Pj4+Pj4gYmVpbmcgYWJsZSB0byBkZWNyeXB0IG11bHRpY2FzdCBk
-YXRhIGFmdGVyIEdUSyByZWtleWluZy4KPj4+Pj4+Pgo+Pj4+Pj4+IEFub3RoZXIgdGhpbmcgaXMg
-SSd2ZSBoYWQgbnVtZXJvdXMgcmFuZG9tIHByb2JsZW1zIHdpdGggd2lyZXNoYXJrCj4+Pj4+Pj4g
-cmVmdXNpbmcgdG8gZGVjcnlwdCBmcmFtZXMgcmVsaWFibHkuIEkgcmVjYWxsIHNvbWUgb2xkZXIg
-dmVyc2lvbiB3b3VsZAo+Pj4+Pj4+IGdldCBzdHVjayBhbmQgbmVlZCB0aGUga2V5IGNvbmZpZ3Vy
-YXRpb24gKGluIHByZWZlcmVuY2VzIHdpbmRvdykgdG8gYmUKPj4+Pj4+PiByZS1hcHBsaWVkIG9y
-IHRoZSBkZWNyeXB0IGNoZWNrYm94IHRvIGJlIHJlLWNoZWNrZWQuIFlNTVYuCj4+Pj4+Pj4KPj4+
-Pj4+Pgo+Pj4+Pj4+IE1pY2hhxYIKPj4+Pj4+Cj4+Pj4+Pgo+Pj4+Pj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+Pj4+IGF0aDEwayBtYWlsaW5nIGxp
-c3QKPj4+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+Pj4+PiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Pj4KPj4+Pj4KPj4+Pj4K
-Pj4+Pj4gLS0KPj4+Pj4gQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+Cj4+Pj4+
-IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPj4+
-Pj4KPj4+Pgo+Pj4+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsKPj4+Pgo+Pj4KPj4+IC0tCj4+PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPj4+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5j
-b20KPj4KPgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBD
-YW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCj4KPgo+
-IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gYXRoMTBr
-IG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
-QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hdGgxMGsK
+On Tue, Apr 14, 2015 at 10:00 PM, Janusz Dziedzic
+<janusz.dziedzic@tieto.com> wrote:
+> On 15 April 2015 at 00:45, YanBo <dreamfly281@gmail.com> wrote:
+>> On Mon, Apr 13, 2015 at 12:45 AM, Janusz Dziedzic
+>> <janusz.dziedzic@tieto.com> wrote:
+>>> Don't disable PS while we are not connected.
+>>> In other case we will get higher power consumption.
+>>>
+>>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+>>> ---
+>>>  drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
+>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>>> index 52c5b1f..b896dd4 100644
+>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>> @@ -1730,7 +1730,13 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+>>>                 enable_ps = false;
+>>>         }
+>>>
+>>> -       if (enable_ps) {
+>>> +       if (!arvif->is_started) {
+>>> +               /* enable power save mode while not connected,
+>>> +                * in other case after iface up we will get
+>>> +                * higher power consumption - firmware design
+>>> +                */
+>>> +               psmode = WMI_STA_PS_MODE_ENABLED;
+>>> +       } else if (enable_ps) {
+>>>                 psmode = WMI_STA_PS_MODE_ENABLED;
+>>>                 param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
+>>>
+>>> --
+>>
+>> What the expectation behavior after we enable the
+>> WMI_STA_PS_MODE_ENABLED at Idle status?
+>> Is there any effect for TX or RX chain after set it?
+>>
+>
+> First I think that WMI_STA_PS_MODE_ENABLED is important only when we
+> are connected.
+> But, I see current consumption drop in my test environtment from 88mA
+> to 33mA when:
+> 1) load driver, iface up
+> 2) disconnect network, iface down, iface up
+> So, seems WMI_STA_PS_MODE_ENABLED do something more in FW (not only
+> standard PS enable/disable when
+> connected to AP). Probably someone from FW team should answer that, if
+> that is a feature or a bug.
+>
+I guess the chip enter Idle  mode power save  after set this,  did you
+run the the
+test on QCA61XX or QCA 98XX?   Can it still auto scan to get all the APs around
+it, cause for IMPS mode it will only looks in its existing profile
+list and sends a probe request,
+with SSID specified in profile for what I know
+
+BR /Yanbo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
