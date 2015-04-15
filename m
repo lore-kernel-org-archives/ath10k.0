@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vn0-x22e.google.com ([2607:f8b0:400c:c0f::22e])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YiQpc-00086N-66
- for ath10k@lists.infradead.org; Wed, 15 Apr 2015 17:10:33 +0000
-Received: by vnbf1 with SMTP id f1so17541775vnb.5
- for <ath10k@lists.infradead.org>; Wed, 15 Apr 2015 10:10:09 -0700 (PDT)
+ id 1YiQsJ-0000IY-N1
+ for ath10k@lists.infradead.org; Wed, 15 Apr 2015 17:13:20 +0000
+Message-ID: <552E9B7C.5080109@codeaurora.org>
+Date: Wed, 15 Apr 2015 10:10:20 -0700
+From: Peter Oh <poh@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
-References: <1428911141-6534-1-git-send-email-janusz.dziedzic@tieto.com>
- <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
- <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
- <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
-Date: Wed, 15 Apr 2015 10:10:09 -0700
-Message-ID: <CAFuUQkieJ0CC83wPFm=c_gA5a6OzdbWBF-0EaDL0N=nNAsU2_g@mail.gmail.com>
-Subject: Re: [RFC 2/2] ath10k: don't disable PS when not connected
-From: YanBo <dreamfly281@gmail.com>
+Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
+References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
+ <55191D89.2000300@neratec.com> <55198EA4.1010101@codeaurora.org>
+ <551BC2B1.3030002@neratec.com> <551C5C51.8010109@codeaurora.org>
+ <87fv817ecp.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <87fv817ecp.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +21,35 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org, Zefir Kurtisi <zefir.kurtisi@neratec.com>
 
-On Tue, Apr 14, 2015 at 10:00 PM, Janusz Dziedzic
-<janusz.dziedzic@tieto.com> wrote:
-> On 15 April 2015 at 00:45, YanBo <dreamfly281@gmail.com> wrote:
->> On Mon, Apr 13, 2015 at 12:45 AM, Janusz Dziedzic
->> <janusz.dziedzic@tieto.com> wrote:
->>> Don't disable PS while we are not connected.
->>> In other case we will get higher power consumption.
->>>
->>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
->>> ---
->>>  drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
->>>  1 file changed, 7 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->>> index 52c5b1f..b896dd4 100644
->>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>> @@ -1730,7 +1730,13 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
->>>                 enable_ps = false;
->>>         }
->>>
->>> -       if (enable_ps) {
->>> +       if (!arvif->is_started) {
->>> +               /* enable power save mode while not connected,
->>> +                * in other case after iface up we will get
->>> +                * higher power consumption - firmware design
->>> +                */
->>> +               psmode = WMI_STA_PS_MODE_ENABLED;
->>> +       } else if (enable_ps) {
->>>                 psmode = WMI_STA_PS_MODE_ENABLED;
->>>                 param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
->>>
->>> --
->>
->> What the expectation behavior after we enable the
->> WMI_STA_PS_MODE_ENABLED at Idle status?
->> Is there any effect for TX or RX chain after set it?
->>
->
-> First I think that WMI_STA_PS_MODE_ENABLED is important only when we
-> are connected.
-> But, I see current consumption drop in my test environtment from 88mA
-> to 33mA when:
-> 1) load driver, iface up
-> 2) disconnect network, iface down, iface up
-> So, seems WMI_STA_PS_MODE_ENABLED do something more in FW (not only
-> standard PS enable/disable when
-> connected to AP). Probably someone from FW team should answer that, if
-> that is a feature or a bug.
->
-I guess the chip enter Idle  mode power save  after set this,  did you
-run the the
-test on QCA61XX or QCA 98XX?   Can it still auto scan to get all the APs around
-it, cause for IMPS mode it will only looks in its existing profile
-list and sends a probe request,
-with SSID specified in profile for what I know
 
-BR /Yanbo
+On 04/15/2015 05:41 AM, Kalle Valo wrote:
+> Peter Oh <poh@codeaurora.org> writes:
+>
+>>> As for your patch at hand, I tested it for ETSI and it does not
+>>> change detector performance,
+>> The patch is useful when there are many missing pulses within a burst.
+>> It happens almost every time when channel loading rate is higher than
+>> 40%, but around 30% channel loading does not miss pulses that much.
+>>
+>>> therefore (please replace 16 with PRI_TOLERANCE in the macro)
+>> I'll do.
+>>
+>>> Acked-by: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+> So what's the conclusion? Should I wait for v2 or is this good to
+> commit? I didn't quite get Zefir's comment about PRI_TOLERANCE above.
+>
+Please wait for 2nd patches. I'll prepare the patches that do not void 
+this current products certificate.
+
+Regards,
+Peter
 
 _______________________________________________
 ath10k mailing list
