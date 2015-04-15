@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YiB3k-0002x9-38
- for ath10k@lists.infradead.org; Wed, 15 Apr 2015 00:20:05 +0000
-Message-ID: <552DAE9D.7090405@candelatech.com>
-Date: Tue, 14 Apr 2015 17:19:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YiFRa-0005d8-17
+ for ath10k@lists.infradead.org; Wed, 15 Apr 2015 05:00:58 +0000
+Received: by iget9 with SMTP id t9so88881456ige.1
+ for <ath10k@lists.infradead.org>; Tue, 14 Apr 2015 22:00:33 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Using ath10k for WiFi capturing non-11ac traffic
-References: <CAOt_L393JBszKfVNTaXnM3xdRA=D-WOeaSk9KsnxkxsS49syCw@mail.gmail.com>
- <CA+BoTQmh2zQRpzq2=d9KKQy_Zn7TAFa3qL-LeaRZJ8e6Xheo6g@mail.gmail.com>
- <CAOt_L3-cv7npPmWdheLjhXBiiOQRjC=GYoEZw2OSwgf-kEsUWg@mail.gmail.com>
-In-Reply-To: <CAOt_L3-cv7npPmWdheLjhXBiiOQRjC=GYoEZw2OSwgf-kEsUWg@mail.gmail.com>
+In-Reply-To: <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
+References: <1428911141-6534-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
+ <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
+Date: Wed, 15 Apr 2015 07:00:32 +0200
+Message-ID: <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
+Subject: Re: [RFC 2/2] ath10k: don't disable PS when not connected
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,65 +22,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Amato Carbonara <acarbonara13@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: YanBo <dreamfly281@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T3V0IG9mIGN1cmlvc2l0eSwgaGF2ZSB5b3UgYmVlbiBhYmxlIHRvIGNhcHR1cmUgQWN0aW9uIGZy
-YW1lcyAoc3BlY2lmaWNhbGx5LApibG9jay1hY2sgYWRkL2RlbCBmcmFtZXMpIHdpdGggYXRoMTBr
-PyAgSSBqdXN0IHdhc3RlZCBhIGxhcmdlIGFtb3VudCBvZiB0aW1lIHdvbmRlcmluZwp3aHkgdGhl
-IGZyYW1lcyBhcmUgbm90IHNlZW4uLi5idXQgYXRoOWsgbW9uaXRvciBwb3J0IHNlZXMgdGhlbSBq
-dXN0IGZpbmUuCgpUaGFua3MsCkJlbgoKCk9uIDA0LzE0LzIwMTUgMTE6MDQgQU0sIEFtYXRvIENh
-cmJvbmFyYSB3cm90ZToKPiBIZWxsbyBNaWNoYWwsCj4gICBJIHdhcyBhYmxlIHRvIGRlY3J5cHQg
-YWxsIHRyYWZmaWMgdHlwZXMgKDExYSwgMTFuIGF0IDIwTUh6LCAxMW4gYXQKPiA0ME1IeiBhbmQg
-MTFhYyBhdCA4ME1IeikgdXNpbmcgdGhlIDEwLjEuNDY3LjItMSBmaXJtd2FyZSBvbiB0aGUKPiBR
-Q0E5ODgwIGNoaXBzZXQuICBUaGUgcHJvYmxlbSB3YXMgbm90IHdpdGggV2lyZXNoYXJrLiAgSSBo
-YWQgdG8KPiBpbnN0YWxsIGJhY2twb3J0cyBmb3IgdGhlIGF0MTBrIGRyaXZlcnMgdG8gbWFrZSBp
-dCB3b3JrLiAgUHJvY2VkdXJlcwo+IGFyZSBkb2N1bWVudGVkIGhlcmU6Cj4gaHR0cHM6Ly93aXJl
-bGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvRHJpdmVycy9hdGgxMGsvYmFja3BvcnRzCj4g
-Cj4gVGhhbmsgeW91IGZvciB5b3VyIGhlbHAsCj4gQW1hdG8KPiAKPiBPbiBUdWUsIEFwciAxNCwg
-MjAxNSBhdCAxOjM4IEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4g
-d3JvdGU6Cj4+IE9uIDYgQXByaWwgMjAxNSBhdCAyMTo0OSwgQW1hdG8gQ2FyYm9uYXJhIDxhY2Fy
-Ym9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPj4+IEhlbGxvLAo+Pj4gICBJIGhhdmUgaW5zdGFs
-bGVkIGEgV2lGaSBhZGFwdGVyIHdpdGggdGhlIFF1YWxjb21tLUF0aGVyb3MgUUNBLTk4ODAKPj4+
-IGNoaXBzZXQgdXNpbmcgdGhlIGF0MTBrIGRyaXZlcnMuICBJIGFtIHVzaW5nIHRoaXMgV2lGaSBh
-ZGFwdGVyIHRvCj4+PiBjYXB0dXJlIFdMQU4gdHJhZmZpYy4gIFRoZSByZWNvbW1lbmRlZCBmaXJt
-d2FyZSBmb3IgY2FwdHVyaW5nIFdpRmkKPj4+IHRyYWZmaWMgaXMgMTAuMS40NjcuMi0xIHBlciB0
-aGUgd2Vic2l0ZS4gIFNlZSBmb2xsb3dpbmcgbGluazoKPj4+IGh0dHBzOi8vd2lyZWxlc3Mud2lr
-aS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL21vbml0b3IKPj4KPj4gR2VuZXJh
-bGx5IHRoZSAxMC54IGxpbmUgaXMgcHJlZmVycmVkIGZvciBzbmlmZmluZy4gWW91IGNvdWxkIGFs
-c28gdHJ5IDEwLjIuNC4KPj4KPj4KPj4+IEkgaGF2ZSBzdWNjZXNzZnVsbHkgaW5zdGFsbGVkIHRo
-ZSBhYm92ZSBmaXJtd2FyZSBhbmQgaGF2ZSBiZWVuIHVzaW5nCj4+PiB0aGUgYWRhcHRlci9kcml2
-ZXIgdG8gY2FwdHVyZSBhbmQgZGVjcnlwdCBhbGwgODAyLjExYWMgdHJhZmZpYy4KPj4+IEhvd2V2
-ZXIsIEkgaGF2ZSBub3RpY2VkIHNvbWUgc3RyYW5nZSBiZWhhdmlvciB3aGVuIHRyeWluZyB0byBk
-ZWNyeXB0Cj4+PiBvdGhlciB0eXBlcyBvZiB0cmFmZmljIHN1Y2ggYXM6Cj4+PiAgIDEpIDgwMi4x
-MWEgPSBub3QgYWJsZSB0byBkZWNyeXB0IGFueSB0cmFmZmljCj4+PiAgIDIpIDgwMi4xMW4gYXQg
-MjBNSHogPSBhYmxlIHRvIGRlY3J5cHQgb25seSBwYXJ0aWFsIHRyYWZmaWMKPj4+ICAgMykgODAy
-LjExbiBhdCA0ME1IeiA9IGFibGUgdG8gZGVjcnlwdCBvbmx5IHBhcnRpYWwgdHJhZmZpYwo+Pj4K
-Pj4+IEkgaGF2ZSB0cmllZCB1c2luZyB0aGUgZGlmZmVyZW50ICJpdyIgYW5kICJpd2NvbmZpZyIg
-Y29tbWFuZHMgdG8gc2V0Cj4+PiB0aGUgZnJlcXVlbmN5IGFuZCBjaGFubmVsIGJhbmR3aWR0aCAo
-Zm9yIGV4YW1wbGUsIGl3IGRldiB3bGFuMSBzZXQKPj4+IGZyZXEgNTE4MCBIVDIwKS4gIEhhcyBh
-bnlvbmUgZWxzZSBzZWVuIHRoaXMgaXNzdWUgb2Ygbm90IGJlaW5nIGFibGUgdG8KPj4+IGRlY3J5
-cHQgYWxsL3NvbWUgb2YgdGhlIFdpRmkgdHJhZmZpYz8KPj4KPj4gYGl3Y29uZmlnYCBpcyBhbiBv
-bGQgcHJvZ3JhbS4gWW91IHNob3VsZG4ndCB1c2UgaXQuIEp1c3Qgc3RpY2sgd2l0aCBgaXdgLgo+
-Pgo+PiBUbyBkZWNyeXB0IHRyYWZmaWMgeW91IG5lZWQgdG8gc2VlIGtleWluZyBoYW5kc2hha2Ug
-KGJvdGggYWZ0ZXIKPj4gYXNzb2NpYXRpb24gYW5kIGxhdGVyIGZvciBlYWNoIHJla2V5aW5nKS4g
-SWYgc25pZmZlciBtaXNzZXMgdGhhdCB5b3UKPj4gd29uJ3QgYmUgYWJsZSB0byBkZWNpcGhlciBk
-YXRhIGVpdGhlciBmcm9tIHRoZSBzdGFydCBvciB5b3UnbGwgc3RvcAo+PiBiZWluZyBhYmxlIHRv
-IGRlY3J5cHQgbXVsdGljYXN0IGRhdGEgYWZ0ZXIgR1RLIHJla2V5aW5nLgo+Pgo+PiBBbm90aGVy
-IHRoaW5nIGlzIEkndmUgaGFkIG51bWVyb3VzIHJhbmRvbSBwcm9ibGVtcyB3aXRoIHdpcmVzaGFy
-awo+PiByZWZ1c2luZyB0byBkZWNyeXB0IGZyYW1lcyByZWxpYWJseS4gSSByZWNhbGwgc29tZSBv
-bGRlciB2ZXJzaW9uIHdvdWxkCj4+IGdldCBzdHVjayBhbmQgbmVlZCB0aGUga2V5IGNvbmZpZ3Vy
-YXRpb24gKGluIHByZWZlcmVuY2VzIHdpbmRvdykgdG8gYmUKPj4gcmUtYXBwbGllZCBvciB0aGUg
-ZGVjcnlwdCBjaGVja2JveCB0byBiZSByZS1jaGVja2VkLiBZTU1WLgo+Pgo+Pgo+PiBNaWNoYcWC
-Cj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBh
-dGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+IAoKCi0tIApCZW4g
-R3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5j
-ICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+On 15 April 2015 at 00:45, YanBo <dreamfly281@gmail.com> wrote:
+> On Mon, Apr 13, 2015 at 12:45 AM, Janusz Dziedzic
+> <janusz.dziedzic@tieto.com> wrote:
+>> Don't disable PS while we are not connected.
+>> In other case we will get higher power consumption.
+>>
+>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+>> ---
+>>  drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
+>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>> index 52c5b1f..b896dd4 100644
+>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>> @@ -1730,7 +1730,13 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+>>                 enable_ps = false;
+>>         }
+>>
+>> -       if (enable_ps) {
+>> +       if (!arvif->is_started) {
+>> +               /* enable power save mode while not connected,
+>> +                * in other case after iface up we will get
+>> +                * higher power consumption - firmware design
+>> +                */
+>> +               psmode = WMI_STA_PS_MODE_ENABLED;
+>> +       } else if (enable_ps) {
+>>                 psmode = WMI_STA_PS_MODE_ENABLED;
+>>                 param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
+>>
+>> --
+>
+> What the expectation behavior after we enable the
+> WMI_STA_PS_MODE_ENABLED at Idle status?
+> Is there any effect for TX or RX chain after set it?
+>
+
+First I think that WMI_STA_PS_MODE_ENABLED is important only when we
+are connected.
+But, I see current consumption drop in my test environtment from 88mA
+to 33mA when:
+1) load driver, iface up
+2) disconnect network, iface down, iface up
+So, seems WMI_STA_PS_MODE_ENABLED do something more in FW (not only
+standard PS enable/disable when
+connected to AP). Probably someone from FW team should answer that, if
+that is a feature or a bug.
+
+BTW.
+Patch don't change behavior we had before, when we are connected. We
+can enable/disable PS using iw.
+
+BR
+Janusz
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
