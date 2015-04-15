@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YiMeD-0006Yn-4J
- for ath10k@lists.infradead.org; Wed, 15 Apr 2015 12:42:30 +0000
+ id 1YiMyV-0006Z1-AG
+ for ath10k@lists.infradead.org; Wed, 15 Apr 2015 13:03:31 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
-References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
- <55191D89.2000300@neratec.com> <55198EA4.1010101@codeaurora.org>
- <551BC2B1.3030002@neratec.com> <551C5C51.8010109@codeaurora.org>
-Date: Wed, 15 Apr 2015 15:41:58 +0300
-In-Reply-To: <551C5C51.8010109@codeaurora.org> (Peter Oh's message of "Wed, 01
- Apr 2015 14:00:01 -0700")
-Message-ID: <87fv817ecp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/4] ath10k: ibss crypto fixes
+References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 15 Apr 2015 16:02:56 +0300
+In-Reply-To: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:23:19 +0000")
+Message-ID: <87bnip7ddr.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,26 +23,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, Peter Oh <poh@qca.qualcomm.com>, Zefir Kurtisi <zefir.kurtisi@neratec.com>
+To: Michal Kazior <michal.kazior@tieto.com>, janusz.dziedzic@tieto.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@codeaurora.org> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
->> As for your patch at hand, I tested it for ETSI and it does not
->> change detector performance,
+> I've mainly tested this on kvalo/pending branch.
+> Currently master branch contains 0f611d28fc2e
+> ("mac80211: count interfaces correctly for
+> combination checks") which breaks IBSS in
+> wpa_supplicant due to P2P Device and interface
+> combinations. This has been pointed out in the
+> following thread:
 >
-> The patch is useful when there are many missing pulses within a burst.
-> It happens almost every time when channel loading rate is higher than
-> 40%, but around 30% channel loading does not miss pulses that much.
+>  [1]: http://thread.gmane.org/gmane.linux.kernel.wireless.general/135570/focus=136643
 >
->> therefore (please replace 16 with PRI_TOLERANCE in the macro)
->
-> I'll do.
->
->> Acked-by: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+> If someone's interested in running ath10k IBSS
+> make sure to use kernel prior to 4.0, revert the
+> mentioned mac80211 patch or apply wpa_supplicant
+> workaround patch from [1].
 
-So what's the conclusion? Should I wait for v2 or is this good to
-commit? I didn't quite get Zefir's comment about PRI_TOLERANCE above.
+Is this IBSS regression fixed now or what's the status?
 
 -- 
 Kalle Valo
