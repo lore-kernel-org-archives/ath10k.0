@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YiVE9-0005MU-Oh
- for ath10k@lists.infradead.org; Wed, 15 Apr 2015 21:52:10 +0000
-Message-ID: <552EDD71.2070207@candelatech.com>
-Date: Wed, 15 Apr 2015 14:51:45 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YibX2-0005tp-7I
+ for ath10k@lists.infradead.org; Thu, 16 Apr 2015 04:36:05 +0000
+Received: by wiun10 with SMTP id n10so82737107wiu.1
+ for <ath10k@lists.infradead.org>; Wed, 15 Apr 2015 21:35:38 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: CT ath10k firmware now supports IBSS + RSN
-References: <55285D8D.6070703@candelatech.com>	<552BFFB8.6030301@candelatech.com>	<552C5AE9.4050304@candelatech.com>
- <CA+BoTQ=C0xxDifiiQVbyBe=OHYUjzHcu49mULJpU+=2SNCZ-dQ@mail.gmail.com>
- <552D2BD5.7050204@candelatech.com>
-In-Reply-To: <552D2BD5.7050204@candelatech.com>
+In-Reply-To: <CAFuUQkieJ0CC83wPFm=c_gA5a6OzdbWBF-0EaDL0N=nNAsU2_g@mail.gmail.com>
+References: <1428911141-6534-1-git-send-email-janusz.dziedzic@tieto.com>
+ <1428911141-6534-2-git-send-email-janusz.dziedzic@tieto.com>
+ <CAFuUQkhQeCwP098DH7_R4mNCvrJ7WxdT7wnHi52DSOKm8c0k1Q@mail.gmail.com>
+ <CALhHN=pefUssihniviRiBWg+EU2wYp3excwodJBDt1+H0tiiHQ@mail.gmail.com>
+ <CAFuUQkieJ0CC83wPFm=c_gA5a6OzdbWBF-0EaDL0N=nNAsU2_g@mail.gmail.com>
+Date: Thu, 16 Apr 2015 06:35:38 +0200
+Message-ID: <CALhHN=pDDwx=AA=wnkbqrckXCu4JnBvJ=iDv=6MNrygVc73fNw@mail.gmail.com>
+Subject: Re: [RFC 2/2] ath10k: don't disable PS when not connected
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,84 +28,95 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: YanBo <dreamfly281@gmail.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I have uploaded a new firmware.
-
-http://www.candelatech.com/downloads/ath10k-fw-beta/
-
-It fixes IBSS blockack (firmware was mis-configuring the BSSID, so
-blockacks were sent to wrong BSS address and were not processed when
-received).
-
-I also disabled AMSDU for IBSS stations, which significantly improves
-performance in my ath10k <-> ath10k IBSS test.  I do not know why this
-is needed.
-
-There is still a bug:  I cannot get ath10k <-> ath10k to do IBSS + RSN.
-
-I can get ath9k <-> ath10k IBSS + RSN to work,
-and open IBSS ath10k <-> ath10k works.
-
-I am taking a break on IBSS + RSN for a while.
-
-Thanks,
-Ben
-
-
-
-
-On 04/14/2015 08:01 AM, Ben Greear wrote:
-> 
-> 
-> On 04/13/2015 10:34 PM, Michal Kazior wrote:
->> On 14 April 2015 at 02:10, Ben Greear <greearb@candelatech.com> wrote:
->>> On 04/13/2015 10:41 AM, Ben Greear wrote:
->>>> Looks like I have some more work to do.  For any moderately large frames,
->>>> I am now dropping the last 16 bytes.  Looks like the skb_put_padto logic
->>>> was working around a more serious issue...
+On 15 April 2015 at 19:10, YanBo <dreamfly281@gmail.com> wrote:
+> On Tue, Apr 14, 2015 at 10:00 PM, Janusz Dziedzic
+> <janusz.dziedzic@tieto.com> wrote:
+>> On 15 April 2015 at 00:45, YanBo <dreamfly281@gmail.com> wrote:
+>>> On Mon, Apr 13, 2015 at 12:45 AM, Janusz Dziedzic
+>>> <janusz.dziedzic@tieto.com> wrote:
+>>>> Don't disable PS while we are not connected.
+>>>> In other case we will get higher power consumption.
+>>>>
+>>>> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+>>>> ---
+>>>>  drivers/net/wireless/ath/ath10k/mac.c | 8 +++++++-
+>>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+>>>> index 52c5b1f..b896dd4 100644
+>>>> --- a/drivers/net/wireless/ath/ath10k/mac.c
+>>>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+>>>> @@ -1730,7 +1730,13 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+>>>>                 enable_ps = false;
+>>>>         }
+>>>>
+>>>> -       if (enable_ps) {
+>>>> +       if (!arvif->is_started) {
+>>>> +               /* enable power save mode while not connected,
+>>>> +                * in other case after iface up we will get
+>>>> +                * higher power consumption - firmware design
+>>>> +                */
+>>>> +               psmode = WMI_STA_PS_MODE_ENABLED;
+>>>> +       } else if (enable_ps) {
+>>>>                 psmode = WMI_STA_PS_MODE_ENABLED;
+>>>>                 param = WMI_STA_PS_PARAM_INACTIVITY_TIME;
+>>>>
+>>>> --
 >>>
->>> A better-tested version of kernel and firmware is uploaded now.
+>>> What the expectation behavior after we enable the
+>>> WMI_STA_PS_MODE_ENABLED at Idle status?
+>>> Is there any effect for TX or RX chain after set it?
 >>>
->>> Looks like I needed to add a hack to firmware to bump pkt-size by
->>> 16 for IBSS + RSN encrypted frames.  Not sure exactly why, but seems
->>> to work in light testing.
->>>
->>> I removed the skb-padto hack from the kernel, and kernel is rebased on
->>> top of official 4.0 now.
 >>
->> Hmm.. Maybe this is related to MMIC. Maybe frame fragment length must
->> be different from frame length (ath10k_htt_tx(),
->> htt_data_tx_desc_frag)? Perhaps a similar hack as with RAW txmode[1]
->> needs to be applied..?
+>> First I think that WMI_STA_PS_MODE_ENABLED is important only when we
+>> are connected.
+>> But, I see current consumption drop in my test environtment from 88mA
+>> to 33mA when:
+>> 1) load driver, iface up
+>> 2) disconnect network, iface down, iface up
+>> So, seems WMI_STA_PS_MODE_ENABLED do something more in FW (not only
+>> standard PS enable/disable when
+>> connected to AP). Probably someone from FW team should answer that, if
+>> that is a feature or a bug.
 >>
->>
->> [1]: https://www.mail-archive.com/ath10k@lists.infradead.org/msg00241.html
-> 
-> This IBSS+RSN hack could be done in the kernel, but if my firmware is the only thing that
-> needs it, then it is more convenient for me to hack firmware than have it
-> incompatible with upstream drivers.
-> 
-> If you do find similar problems with other firmware, then certainly a driver
-> patch is welcome, and I will back out my firmware hack accordingly.
-> 
-> And, it would be nice if someone put some version if your raw-tx patch upstream.
-> I can also adjust length for raw pkts in firmware too, but again, in many cases
-> it is better to be similarly broken to existing firmware than to be technically
-> correct but break compatibility with the driver.  If I ever get a 'ct-firmware'
-> feature flag upstream, then we could of course do the changes to take advantage
-> of my firmwares differences as needed.
-> 
-> Thanks,
-> Ben
-> 
+> I guess the chip enter Idle  mode power save  after set this,  did you
+> run the the
+> test on QCA61XX or QCA 98XX?   Can it still auto scan to get all the APs around
+> it, cause for IMPS mode it will only looks in its existing profile
+> list and sends a probe request,
+> with SSID specified in profile for what I know
+>
+I see iw scan works correctly after iface up (same scan results like ath9k):
 
+In my laptop I have 3 cards
+wlan0 - ath9k
+wlan1 - QCA9888
+wlan4 - QCA6174
 
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+janusz@dell6430:~$ sudo iw wlan0 scan dump|grep SSID |wc -l
+0
+janusz@dell6430:~$ sudo iw wlan0 scan |grep SSID| wc -l
+21
+janusz@dell6430:~$ sudo ifconfig wlan0 down
 
+janusz@dell6430:~$ sudo iw wlan1 scan dump|grep SSID|wc -l
+0
+janusz@dell6430:~$ sudo iw wlan1 scan |grep SSID|wc -l
+21
+janusz@dell6430:~$ sudo ifconfig wlan1 down
+
+janusz@dell6430:~$ sudo iw wlan4 scan dump|grep SSID|wc -l
+0
+janusz@dell6430:~$ sudo iw wlan4 scan |grep SSID|wc -l
+22
+
+Should I run any other scan tests?
+
+BR
+Janusz
 
 _______________________________________________
 ath10k mailing list
