@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yj0k8-0003Xv-1X
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 07:31:17 +0000
-Received: by wiax7 with SMTP id x7so27685327wia.0
- for <ath10k@lists.infradead.org>; Fri, 17 Apr 2015 00:30:51 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <87618v44jv.fsf@kamboji.qca.qualcomm.com>
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- <87618v44jv.fsf@kamboji.qca.qualcomm.com>
-Date: Fri, 17 Apr 2015 09:30:51 +0200
-Message-ID: <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
+ id 1Yj2UL-0000Kc-04
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 09:23:06 +0000
+Received: by laat2 with SMTP id t2so75590146laa.1
+ for <ath10k@lists.infradead.org>; Fri, 17 Apr 2015 02:22:40 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH v2 1/2] ath10k: share board file loading code across FW APIs
+Date: Fri, 17 Apr 2015 09:19:16 +0000
+Message-Id: <1429262357-25139-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +17,127 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTcgQXByaWwgMjAxNSBhdCAwOTowNiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
-aXRlczoKPgo+PiBVbnRpbCBub3cgb25seSBhIHNpbmdsZSBmaXhlZCB0eCByYXRlIG9yIG5zcyB3
-YXMKPj4gYWxsb3dlZCB0byBiZSBzZXQuCj4+Cj4+IFRoZSBwYXRjaCBhdHRlbXB0cyB0byBpbXBy
-b3ZlIHRoaXMgYnkgYWxsb3dpbmcKPj4gbW9zdCBiaXRyYXRlIG1hc2tzLiBUaGUgbGltaXRhdGlv
-biBpcyBWSFQgTUNTCj4+IHJhdGVzIGNhbm5vdCBiZSBleHByZXNzZWQgc2VwYXJhdGVseSB1c2lu
-Zwo+PiBleGlzdGluZyBmaXJtd2FyZSBpbnRlcmZhY2VzIGFuZCBvbmx5IHRoZQo+PiBmb2xsb3dp
-bmcgVkhUIE1DUyByYW5nZXMgYXJlIHN1cHBvcnRlZDogbm9uZSwgMC03LAo+PiAwLTgsIGFuZCAw
-LTkuCj4+Cj4+IFRoaXMga2VlcHMgdGhlIG9sZCBiZWhhdmlvdXIgd2hlbiByZXF1ZXN0aW5nCj4+
-IHNpbmdsZSB0eCByYXRlIG9yIHNpbmdsZSBuc3MuIFRoZSBuZXcgYml0cmF0ZSBtYXNrCj4+IGxv
-Z2ljIGlzIG9ubHkgYXBwbGllZCB0byBvdGhlciBjYXNlcyB0aGF0IHdvdWxkCj4+IHJldHVybiAt
-RUlOVkFMIHVudGlsIG5vdy4KPj4KPj4gRGVwZW5kaW5nIG9uIGZpcm13YXJlIHJldmlzaW9ucyBz
-b21lIGNvbWJpbmF0aW9ucwo+PiBtYXkgY3Jhc2ggZmlybXdhcmUgc28gdXNlIHdpdGggY2FyZSwg
-cGxlYXNlLgo+Pgo+PiBUaGlzIGRlcGVuZHMgb24gImF0aDEwazogZG9uJ3QgdXNlIHJlYXNzb2Mg
-ZmxhZyIuCj4+IFdpdGhvdXQgaXQga2V5IGNhY2hlIHdvdWxkIGVmZmVjdGl2ZWx5IGJlCj4+IGlu
-dmFsaWRhdGVkIHVwb24gYml0cmF0ZSBjaGFuZ2UgbGVhZGluZyB0bwo+PiBjb21tdW5pY2F0aW9u
-IGJlaW5nIG5vIGxvbmdlciBwb3NzaWJsZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEth
-emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUbyByZWR1Y2Ugc3VwcG9ydCBxdWVz
-dGlvbnMgZnJvbSB0aGUgdXNlcnMgaXQgd291bGQgYmUgbmljZSB0byBnaXZlIGZldwo+IGdvb2Qg
-ZXhhbXBsZXMgaG93IHRvIHVzZSB0aGlzIHdpdGggaXcuIEFuZCBhbHNvIGl0IG1ha2VzIGl0IGVh
-c2llciB0bwo+IHRlc3QgdGhlIHBhdGNoLiBJZiB5b3UgY291bGQgc2VuZCBzb21ldGhpbmcgSSBj
-YW4gYWRkIGl0IHRvIHRoZSBjb21taXQKPiBsb2cuCgpTaG91bGQgd29yazoKCiAgaXcgd2xhbjAg
-c2V0IGJpdHJhdGVzIGxlZ2FjeSAxIDYgMTIgaHQtbWNzIDEgMiAzCiAgaXcgd2xhbjAgc2V0IGJp
-dHJhdGVzIGxlZ2FjeS01IG1jcy01IDcgOCA5CiAgaXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2Fj
-eS01IDI0IGh0LW1jcy01IHZodC1tY3MtNSAxOjAtOQoKV29uJ3Qgd29yazoKCiAgaXcgd2xhbjAg
-c2V0IGJpdHJhdGVzIGxlZ2FjeS01IGh0LW1jcy01IHZodC1tY3MtNSAxOjAtNQogIGl3IHdsYW4w
-IHNldCBiaXRyYXRlcyB2aHQtbWNzLTUgMjo3LTkKCihub3RlIHRoZSBpbnZhbGlkIFZIVCBNQ1Mg
-cmFuZ2VzKQoKR2VuZXJhbGx5IHRoZSBwYXRjaCByZW1vdmVzIGEgbG90IG9mIGxpbWl0YXRpb25z
-IGZyb20gJ3NldCBiaXRyYXRlcycKYXRoMTBrIGhhZC4gQmVmb3JlIGl0IHdhcyBwb3NzaWJsZSB0
-byBkbyBvbmx5IHRoaW5ncyBhcyBkZXNjcmliZWQgaW4KNTFhYjFhMGEwOWE4ICgiYXRoMTBrOiBh
-ZGQgc2V0X2JpdHJhdGVfbWFzayBjYWxsYmFjayIpLgoKClsuLi5dCj4+ICsgICAgICAgICAgICAg
-ZGVmYXVsdDoKPj4gKyAgICAgICAgICAgICAgICAgICAgIC8qIHNlZSBhdGgxMGtfbWFjX2Nhbl9z
-ZXRfYml0cmF0ZV9tYXNrKCkgKi8KPj4gKyAgICAgICAgICAgICAgICAgICAgIFdBUk5fT04oMSk7
-Cj4+ICsgICAgICAgICAgICAgICAgICAgICAvKiBmYWxsIHRocm91Z2ggKi8KPj4gKyAgICAgICAg
-ICAgICBjYXNlIC0xOgo+PiArICAgICAgICAgICAgICAgICAgICAgbWNzID0gSUVFRTgwMjExX1ZI
-VF9NQ1NfTk9UX1NVUFBPUlRFRDsgYnJlYWs7Cj4+ICsgICAgICAgICAgICAgY2FzZSA3Ogo+PiAr
-ICAgICAgICAgICAgICAgICAgICAgbWNzID0gSUVFRTgwMjExX1ZIVF9NQ1NfU1VQUE9SVF8wXzc7
-IGJyZWFrOwo+PiArICAgICAgICAgICAgIGNhc2UgODoKPj4gKyAgICAgICAgICAgICAgICAgICAg
-IG1jcyA9IElFRUU4MDIxMV9WSFRfTUNTX1NVUFBPUlRfMF84OyBicmVhazsKPj4gKyAgICAgICAg
-ICAgICBjYXNlIDk6Cj4+ICsgICAgICAgICAgICAgICAgICAgICBtY3MgPSBJRUVFODAyMTFfVkhU
-X01DU19TVVBQT1JUXzBfOTsgYnJlYWs7Cj4+ICsgICAgICAgICAgICAgfQo+Cj4gSSBtb3ZlZCB0
-aGUgYnJlYWtzIGludG8gdGhlaXIgb3duIGxpbmVzLCBJIHRoaW5rIHRoYXQganVzdCBlYXNpZXIg
-dG8KPiByZWFkLiBUaGlzIGlzIHRoZSBkaWZmOgpbc25pcF0KCkknbSBva2F5IHdpdGggdGhpcy4K
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+There's no need to implement the same thing twice.
+Reduce code duplication.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 68 +++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2d64926c8228..70f5b7acc411 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -482,6 +482,30 @@ static int ath10k_fetch_cal_file(struct ath10k *ar)
+ 	return 0;
+ }
+ 
++static int ath10k_core_fetch_board_file(struct ath10k *ar)
++{
++	int ret;
++
++	if (!ar->hw_params.fw.board) {
++		ath10k_err(ar, "failed to find board file fw entry\n");
++		return -EINVAL;
++	}
++
++	ar->board = ath10k_fetch_fw_file(ar,
++					 ar->hw_params.fw.dir,
++					 ar->hw_params.fw.board);
++	if (IS_ERR(ar->board)) {
++		ret = PTR_ERR(ar->board);
++		ath10k_err(ar, "failed to fetch board data: %d\n", ret);
++		return ret;
++	}
++
++	ar->board_data = ar->board->data;
++	ar->board_len = ar->board->size;
++
++	return 0;
++}
++
+ static int ath10k_core_fetch_firmware_api_1(struct ath10k *ar)
+ {
+ 	int ret = 0;
+@@ -491,23 +515,6 @@ static int ath10k_core_fetch_firmware_api_1(struct ath10k *ar)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (ar->hw_params.fw.board == NULL) {
+-		ath10k_err(ar, "board data file not defined");
+-		return -EINVAL;
+-	}
+-
+-	ar->board = ath10k_fetch_fw_file(ar,
+-					 ar->hw_params.fw.dir,
+-					 ar->hw_params.fw.board);
+-	if (IS_ERR(ar->board)) {
+-		ret = PTR_ERR(ar->board);
+-		ath10k_err(ar, "could not fetch board data (%d)\n", ret);
+-		goto err;
+-	}
+-
+-	ar->board_data = ar->board->data;
+-	ar->board_len = ar->board->size;
+-
+ 	ar->firmware = ath10k_fetch_fw_file(ar,
+ 					    ar->hw_params.fw.dir,
+ 					    ar->hw_params.fw.fw);
+@@ -706,27 +713,6 @@ static int ath10k_core_fetch_firmware_api_n(struct ath10k *ar, const char *name)
+ 		goto err;
+ 	}
+ 
+-	/* now fetch the board file */
+-	if (ar->hw_params.fw.board == NULL) {
+-		ath10k_err(ar, "board data file not defined");
+-		ret = -EINVAL;
+-		goto err;
+-	}
+-
+-	ar->board = ath10k_fetch_fw_file(ar,
+-					 ar->hw_params.fw.dir,
+-					 ar->hw_params.fw.board);
+-	if (IS_ERR(ar->board)) {
+-		ret = PTR_ERR(ar->board);
+-		ath10k_err(ar, "could not fetch board data '%s/%s' (%d)\n",
+-			   ar->hw_params.fw.dir, ar->hw_params.fw.board,
+-			   ret);
+-		goto err;
+-	}
+-
+-	ar->board_data = ar->board->data;
+-	ar->board_len = ar->board->size;
+-
+ 	return 0;
+ 
+ err:
+@@ -741,6 +727,12 @@ static int ath10k_core_fetch_firmware_files(struct ath10k *ar)
+ 	/* calibration file is optional, don't check for any errors */
+ 	ath10k_fetch_cal_file(ar);
+ 
++	ret = ath10k_core_fetch_board_file(ar);
++	if (ret) {
++		ath10k_err(ar, "failed to fetch board file: %d\n", ret);
++		return ret;
++	}
++
+ 	ar->fw_api = 5;
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "trying fw api %d\n", ar->fw_api);
+ 
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
