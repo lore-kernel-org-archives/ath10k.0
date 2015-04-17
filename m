@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yizqb-0001Pw-C1
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:33:54 +0000
+ id 1Yizri-0001YQ-LU
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:35:03 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix error handling in pci_probe
-References: <1428670887-7533-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 17 Apr 2015 09:33:21 +0300
-In-Reply-To: <1428670887-7533-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:01:27 +0000")
-Message-ID: <87vbgv4632.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add extra check for frame tracing
+References: <1428670948-7665-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 17 Apr 2015 09:34:32 +0300
+In-Reply-To: <1428670948-7665-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:02:28 +0000")
+Message-ID: <87r3rj4613.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,12 +28,20 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> If chip_id wasn't recognized clean up code wasn't
-> executed properly. It would skip freeing memory
-> causing a leak and irqs causing possibly MSI
-> warning splats later or even kernel crashes.
+> Frames are logged via tracing in two slices:
+> header and payload, separately. This is done for
+> performance reasons when one wants to, e.g.
+> analyse metadata only of frames only.
 >
-> Fixes: 1a7fecb766c8 ("ath10k: reset chip before reading chip_id in probe")
+> If for some reason device delivered a frame buffer
+> which was sized below what 802.11 header implied
+> tracing logic would blow doing an invalid memory
+> accesses.
+>
+> I've hit this problem when running IBSS on QCA988X
+> with 999.999.0.636 and tracing at the same time.
+>
+> Fixes: 5ce8e7fdcc7a ("ath10k: handle ieee80211 header and payload tracing separately")
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
