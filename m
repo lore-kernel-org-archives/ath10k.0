@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yj0Md-0006e8-2J
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 07:06:59 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 17 Apr 2015 10:06:28 +0300
-In-Reply-To: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:32:52 +0000")
-Message-ID: <87618v44jv.fsf@kamboji.qca.qualcomm.com>
+ id 1Yj0k8-0003Xv-1X
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 07:31:17 +0000
+Received: by wiax7 with SMTP id x7so27685327wia.0
+ for <ath10k@lists.infradead.org>; Fri, 17 Apr 2015 00:30:51 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <87618v44jv.fsf@kamboji.qca.qualcomm.com>
+References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
+ <87618v44jv.fsf@kamboji.qca.qualcomm.com>
+Date: Fri, 17 Apr 2015 09:30:51 +0200
+Message-ID: <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,119 +21,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> Until now only a single fixed tx rate or nss was
-> allowed to be set.
->
-> The patch attempts to improve this by allowing
-> most bitrate masks. The limitation is VHT MCS
-> rates cannot be expressed separately using
-> existing firmware interfaces and only the
-> following VHT MCS ranges are supported: none, 0-7,
-> 0-8, and 0-9.
->
-> This keeps the old behaviour when requesting
-> single tx rate or single nss. The new bitrate mask
-> logic is only applied to other cases that would
-> return -EINVAL until now.
->
-> Depending on firmware revisions some combinations
-> may crash firmware so use with care, please.
->
-> This depends on "ath10k: don't use reassoc flag".
-> Without it key cache would effectively be
-> invalidated upon bitrate change leading to
-> communication being no longer possible.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-To reduce support questions from the users it would be nice to give few
-good examples how to use this with iw. And also it makes it easier to
-test the patch. If you could send something I can add it to the commit
-log.
-
-> +static u16
-> +ath10k_peer_assoc_h_vht_limit(u16 tx_mcs_set,
-> +			      const u16 vht_mcs_limit[NL80211_VHT_NSS_MAX])
-> +{
-> +	int idx_limit;
-> +	int nss;
-> +	u16 mcs_map;
-> +	u16 mcs;
-> +
-> +	for (nss = 0; nss < NL80211_VHT_NSS_MAX; nss++) {
-> +		mcs_map = ath10k_mac_get_max_vht_mcs_map(tx_mcs_set, nss) &
-> +			  vht_mcs_limit[nss];
-> +
-> +		if (mcs_map)
-> +			idx_limit = fls(mcs_map) - 1;
-> +		else
-> +			idx_limit = -1;
-> +
-> +		switch (idx_limit) {
-> +		case 0: /* fall through */
-> +		case 1: /* fall through */
-> +		case 2: /* fall through */
-> +		case 3: /* fall through */
-> +		case 4: /* fall through */
-> +		case 5: /* fall through */
-> +		case 6: /* fall through */
-> +		default:
-> +			/* see ath10k_mac_can_set_bitrate_mask() */
-> +			WARN_ON(1);
-> +			/* fall through */
-> +		case -1:
-> +			mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED; break;
-> +		case 7:
-> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_7; break;
-> +		case 8:
-> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_8; break;
-> +		case 9:
-> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_9; break;
-> +		}
-
-I moved the breaks into their own lines, I think that just easier to
-read. This is the diff:
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index ace273f7ec73..069f399e4c25 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2277,13 +2277,17 @@ ath10k_peer_assoc_h_vht_limit(u16 tx_mcs_set,
-                        WARN_ON(1);
-                        /* fall through */
-                case -1:
--                       mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED; break;
-+                       mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED;
-+                       break;
-                case 7:
--                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_7; break;
-+                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_7;
-+                       break;
-                case 8:
--                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_8; break;
-+                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_8;
-+                       break;
-                case 9:
--                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_9; break;
-+                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_9;
-+                       break;
-                }
- 
-                tx_mcs_set &= ~(0x3 << (nss * 2));
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgQXByaWwgMjAxNSBhdCAwOTowNiwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT4gd3JvdGU6Cj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdy
+aXRlczoKPgo+PiBVbnRpbCBub3cgb25seSBhIHNpbmdsZSBmaXhlZCB0eCByYXRlIG9yIG5zcyB3
+YXMKPj4gYWxsb3dlZCB0byBiZSBzZXQuCj4+Cj4+IFRoZSBwYXRjaCBhdHRlbXB0cyB0byBpbXBy
+b3ZlIHRoaXMgYnkgYWxsb3dpbmcKPj4gbW9zdCBiaXRyYXRlIG1hc2tzLiBUaGUgbGltaXRhdGlv
+biBpcyBWSFQgTUNTCj4+IHJhdGVzIGNhbm5vdCBiZSBleHByZXNzZWQgc2VwYXJhdGVseSB1c2lu
+Zwo+PiBleGlzdGluZyBmaXJtd2FyZSBpbnRlcmZhY2VzIGFuZCBvbmx5IHRoZQo+PiBmb2xsb3dp
+bmcgVkhUIE1DUyByYW5nZXMgYXJlIHN1cHBvcnRlZDogbm9uZSwgMC03LAo+PiAwLTgsIGFuZCAw
+LTkuCj4+Cj4+IFRoaXMga2VlcHMgdGhlIG9sZCBiZWhhdmlvdXIgd2hlbiByZXF1ZXN0aW5nCj4+
+IHNpbmdsZSB0eCByYXRlIG9yIHNpbmdsZSBuc3MuIFRoZSBuZXcgYml0cmF0ZSBtYXNrCj4+IGxv
+Z2ljIGlzIG9ubHkgYXBwbGllZCB0byBvdGhlciBjYXNlcyB0aGF0IHdvdWxkCj4+IHJldHVybiAt
+RUlOVkFMIHVudGlsIG5vdy4KPj4KPj4gRGVwZW5kaW5nIG9uIGZpcm13YXJlIHJldmlzaW9ucyBz
+b21lIGNvbWJpbmF0aW9ucwo+PiBtYXkgY3Jhc2ggZmlybXdhcmUgc28gdXNlIHdpdGggY2FyZSwg
+cGxlYXNlLgo+Pgo+PiBUaGlzIGRlcGVuZHMgb24gImF0aDEwazogZG9uJ3QgdXNlIHJlYXNzb2Mg
+ZmxhZyIuCj4+IFdpdGhvdXQgaXQga2V5IGNhY2hlIHdvdWxkIGVmZmVjdGl2ZWx5IGJlCj4+IGlu
+dmFsaWRhdGVkIHVwb24gYml0cmF0ZSBjaGFuZ2UgbGVhZGluZyB0bwo+PiBjb21tdW5pY2F0aW9u
+IGJlaW5nIG5vIGxvbmdlciBwb3NzaWJsZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTWljaGFsIEth
+emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Cj4KPiBUbyByZWR1Y2Ugc3VwcG9ydCBxdWVz
+dGlvbnMgZnJvbSB0aGUgdXNlcnMgaXQgd291bGQgYmUgbmljZSB0byBnaXZlIGZldwo+IGdvb2Qg
+ZXhhbXBsZXMgaG93IHRvIHVzZSB0aGlzIHdpdGggaXcuIEFuZCBhbHNvIGl0IG1ha2VzIGl0IGVh
+c2llciB0bwo+IHRlc3QgdGhlIHBhdGNoLiBJZiB5b3UgY291bGQgc2VuZCBzb21ldGhpbmcgSSBj
+YW4gYWRkIGl0IHRvIHRoZSBjb21taXQKPiBsb2cuCgpTaG91bGQgd29yazoKCiAgaXcgd2xhbjAg
+c2V0IGJpdHJhdGVzIGxlZ2FjeSAxIDYgMTIgaHQtbWNzIDEgMiAzCiAgaXcgd2xhbjAgc2V0IGJp
+dHJhdGVzIGxlZ2FjeS01IG1jcy01IDcgOCA5CiAgaXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2Fj
+eS01IDI0IGh0LW1jcy01IHZodC1tY3MtNSAxOjAtOQoKV29uJ3Qgd29yazoKCiAgaXcgd2xhbjAg
+c2V0IGJpdHJhdGVzIGxlZ2FjeS01IGh0LW1jcy01IHZodC1tY3MtNSAxOjAtNQogIGl3IHdsYW4w
+IHNldCBiaXRyYXRlcyB2aHQtbWNzLTUgMjo3LTkKCihub3RlIHRoZSBpbnZhbGlkIFZIVCBNQ1Mg
+cmFuZ2VzKQoKR2VuZXJhbGx5IHRoZSBwYXRjaCByZW1vdmVzIGEgbG90IG9mIGxpbWl0YXRpb25z
+IGZyb20gJ3NldCBiaXRyYXRlcycKYXRoMTBrIGhhZC4gQmVmb3JlIGl0IHdhcyBwb3NzaWJsZSB0
+byBkbyBvbmx5IHRoaW5ncyBhcyBkZXNjcmliZWQgaW4KNTFhYjFhMGEwOWE4ICgiYXRoMTBrOiBh
+ZGQgc2V0X2JpdHJhdGVfbWFzayBjYWxsYmFjayIpLgoKClsuLi5dCj4+ICsgICAgICAgICAgICAg
+ZGVmYXVsdDoKPj4gKyAgICAgICAgICAgICAgICAgICAgIC8qIHNlZSBhdGgxMGtfbWFjX2Nhbl9z
+ZXRfYml0cmF0ZV9tYXNrKCkgKi8KPj4gKyAgICAgICAgICAgICAgICAgICAgIFdBUk5fT04oMSk7
+Cj4+ICsgICAgICAgICAgICAgICAgICAgICAvKiBmYWxsIHRocm91Z2ggKi8KPj4gKyAgICAgICAg
+ICAgICBjYXNlIC0xOgo+PiArICAgICAgICAgICAgICAgICAgICAgbWNzID0gSUVFRTgwMjExX1ZI
+VF9NQ1NfTk9UX1NVUFBPUlRFRDsgYnJlYWs7Cj4+ICsgICAgICAgICAgICAgY2FzZSA3Ogo+PiAr
+ICAgICAgICAgICAgICAgICAgICAgbWNzID0gSUVFRTgwMjExX1ZIVF9NQ1NfU1VQUE9SVF8wXzc7
+IGJyZWFrOwo+PiArICAgICAgICAgICAgIGNhc2UgODoKPj4gKyAgICAgICAgICAgICAgICAgICAg
+IG1jcyA9IElFRUU4MDIxMV9WSFRfTUNTX1NVUFBPUlRfMF84OyBicmVhazsKPj4gKyAgICAgICAg
+ICAgICBjYXNlIDk6Cj4+ICsgICAgICAgICAgICAgICAgICAgICBtY3MgPSBJRUVFODAyMTFfVkhU
+X01DU19TVVBQT1JUXzBfOTsgYnJlYWs7Cj4+ICsgICAgICAgICAgICAgfQo+Cj4gSSBtb3ZlZCB0
+aGUgYnJlYWtzIGludG8gdGhlaXIgb3duIGxpbmVzLCBJIHRoaW5rIHRoYXQganVzdCBlYXNpZXIg
+dG8KPiByZWFkLiBUaGlzIGlzIHRoZSBkaWZmOgpbc25pcF0KCkknbSBva2F5IHdpdGggdGhpcy4K
+CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
