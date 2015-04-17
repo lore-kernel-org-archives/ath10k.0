@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yizuz-0003VF-HN
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:38:26 +0000
+ id 1Yj01c-0006Gj-5l
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:45:16 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/4] ath10k: ibss crypto fixes
-References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 17 Apr 2015 09:37:51 +0300
-In-Reply-To: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:23:19 +0000")
-Message-ID: <87iocv45vk.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: use MAC clock rate same as FW uses for survey
+ accuracy
+References: <6a113cdb1b0dbbb6d98ab6b363b4912474c32bac.1428701627.git.poh@qca.qualcomm.com>
+Date: Fri, 17 Apr 2015 09:44:43 +0300
+In-Reply-To: <6a113cdb1b0dbbb6d98ab6b363b4912474c32bac.1428701627.git.poh@qca.qualcomm.com>
+ (Peter Oh's message of "Mon, 13 Apr 2015 11:01:20 -0700")
+Message-ID: <87egnj45k4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,36 +24,27 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Peter Oh <poh@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Peter Oh <poh@qca.qualcomm.com> writes:
 
-> I've mainly tested this on kvalo/pending branch.
-> Currently master branch contains 0f611d28fc2e
-> ("mac80211: count interfaces correctly for
-> combination checks") which breaks IBSS in
-> wpa_supplicant due to P2P Device and interface
-> combinations. This has been pointed out in the
-> following thread:
+> WLAN survey data provides several informative values on each channels
+> such as noise, active time, transmit time, and etc.
+> Regarding the channel activity time data, it is reported from firmware
+> in different form which is number of cycles instead of time itself.
+> Hence host driver converts it to time unit by dividing it by clock rate
+> that is used at baseband MAC.
 >
->  [1]: http://thread.gmane.org/gmane.linux.kernel.wireless.general/135570/focus=136643
+> Using difference clock rate from that actual HW is using will result in
+> inaccurate survey data. For instance, channel active time can be reported
+> with bigger than 150ms even though we set Dwell time to 150ms.
+> Therefore set the clock rate to 88000 (88 MHz) which is ath10k baseband
+> MAC is using.
 >
-> If someone's interested in running ath10k IBSS
-> make sure to use kernel prior to 4.0, revert the
-> mentioned mac80211 patch or apply wpa_supplicant
-> workaround patch from [1].
->
->
-> Janusz Dziedzic (1):
->   ath10k: enable ibss-rsn
->
-> Michal Kazior (3):
->   ath10k: don't use reassoc flag
->   ath10k: fix multiple key static wep with ibss
->   ath10k: set def key idx for ibss
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
 
-Thanks, all four patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
