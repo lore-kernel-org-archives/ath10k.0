@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yizri-0001YQ-LU
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:35:03 +0000
+ id 1YizsY-0002mW-6g
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:35:54 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add extra check for frame tracing
-References: <1428670948-7665-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 17 Apr 2015 09:34:32 +0300
-In-Reply-To: <1428670948-7665-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:02:28 +0000")
-Message-ID: <87r3rj4613.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: change static wep key handling for client mode
+References: <1428671158-8159-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 17 Apr 2015 09:35:23 +0300
+In-Reply-To: <1428671158-8159-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:05:58 +0000")
+Message-ID: <87mw2745zo.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,20 +28,19 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Frames are logged via tracing in two slices:
-> header and payload, separately. This is done for
-> performance reasons when one wants to, e.g.
-> analyse metadata only of frames only.
+> mac80211 sets static WEP keys as groupwise while
+> firmware requires them to be installed twice as
+> both pairwise and groupwise.
 >
-> If for some reason device delivered a frame buffer
-> which was sized below what 802.11 header implied
-> tracing logic would blow doing an invalid memory
-> accesses.
+> Until now these keys were installed once as
+> pairwise only and, due to that special handling,
+> needed additional tricks to support 802.1x as
+> well.
 >
-> I've hit this problem when running IBSS on QCA988X
-> with 999.999.0.636 and tracing at the same time.
+> Without this patch in some cases (when AP and
+> ath10k client use different default tx keys)
+> multicast communication was broken.
 >
-> Fixes: 5ce8e7fdcc7a ("ath10k: handle ieee80211 header and payload tracing separately")
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
