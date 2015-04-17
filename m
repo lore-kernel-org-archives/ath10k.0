@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YizsY-0002mW-6g
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:35:54 +0000
+ id 1Yizuz-0003VF-HN
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:38:26 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: change static wep key handling for client mode
-References: <1428671158-8159-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 17 Apr 2015 09:35:23 +0300
-In-Reply-To: <1428671158-8159-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:05:58 +0000")
-Message-ID: <87mw2745zo.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 0/4] ath10k: ibss crypto fixes
+References: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 17 Apr 2015 09:37:51 +0300
+In-Reply-To: <1428672203-8604-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:23:19 +0000")
+Message-ID: <87iocv45vk.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,22 +28,31 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> mac80211 sets static WEP keys as groupwise while
-> firmware requires them to be installed twice as
-> both pairwise and groupwise.
+> I've mainly tested this on kvalo/pending branch.
+> Currently master branch contains 0f611d28fc2e
+> ("mac80211: count interfaces correctly for
+> combination checks") which breaks IBSS in
+> wpa_supplicant due to P2P Device and interface
+> combinations. This has been pointed out in the
+> following thread:
 >
-> Until now these keys were installed once as
-> pairwise only and, due to that special handling,
-> needed additional tricks to support 802.1x as
-> well.
+>  [1]: http://thread.gmane.org/gmane.linux.kernel.wireless.general/135570/focus=136643
 >
-> Without this patch in some cases (when AP and
-> ath10k client use different default tx keys)
-> multicast communication was broken.
+> If someone's interested in running ath10k IBSS
+> make sure to use kernel prior to 4.0, revert the
+> mentioned mac80211 patch or apply wpa_supplicant
+> workaround patch from [1].
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>
+> Janusz Dziedzic (1):
+>   ath10k: enable ibss-rsn
+>
+> Michal Kazior (3):
+>   ath10k: don't use reassoc flag
+>   ath10k: fix multiple key static wep with ibss
+>   ath10k: set def key idx for ibss
 
-Thanks, applied.
+Thanks, all four patches applied.
 
 -- 
 Kalle Valo
