@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yj02c-0007ef-Kt
- for ath10k@lists.infradead.org; Fri, 17 Apr 2015 06:46:19 +0000
+ id 1Yj0Md-0006e8-2J
+ for ath10k@lists.infradead.org; Fri, 17 Apr 2015 07:06:59 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: Add the WMI Air Time Fairness service define
-References: <1427739246-2734-1-git-send-email-yanbol@qca.qualcomm.com>
-Date: Fri, 17 Apr 2015 09:45:45 +0300
-In-Reply-To: <1427739246-2734-1-git-send-email-yanbol@qca.qualcomm.com> (Yanbo
- Li's message of "Mon, 30 Mar 2015 11:14:05 -0700")
-Message-ID: <87a8y745ie.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
+References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 17 Apr 2015 10:06:28 +0300
+In-Reply-To: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:32:52 +0000")
+Message-ID: <87618v44jv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,110 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qca.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yanbo Li <yanbol@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> Add the FW ATF (Air Time Fairness) service define to keep consistent
-> with 10.2 FW capability
+> Until now only a single fixed tx rate or nss was
+> allowed to be set.
 >
-> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+> The patch attempts to improve this by allowing
+> most bitrate masks. The limitation is VHT MCS
+> rates cannot be expressed separately using
+> existing firmware interfaces and only the
+> following VHT MCS ranges are supported: none, 0-7,
+> 0-8, and 0-9.
+>
+> This keeps the old behaviour when requesting
+> single tx rate or single nss. The new bitrate mask
+> logic is only applied to other cases that would
+> return -EINVAL until now.
+>
+> Depending on firmware revisions some combinations
+> may crash firmware so use with care, please.
+>
+> This depends on "ath10k: don't use reassoc flag".
+> Without it key cache would effectively be
+> invalidated upon bitrate change leading to
+> communication being no longer possible.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, both patches applied.
+To reduce support questions from the users it would be nice to give few
+good examples how to use this with iw. And also it makes it easier to
+test the patch. If you could send something I can add it to the commit
+log.
+
+> +static u16
+> +ath10k_peer_assoc_h_vht_limit(u16 tx_mcs_set,
+> +			      const u16 vht_mcs_limit[NL80211_VHT_NSS_MAX])
+> +{
+> +	int idx_limit;
+> +	int nss;
+> +	u16 mcs_map;
+> +	u16 mcs;
+> +
+> +	for (nss = 0; nss < NL80211_VHT_NSS_MAX; nss++) {
+> +		mcs_map = ath10k_mac_get_max_vht_mcs_map(tx_mcs_set, nss) &
+> +			  vht_mcs_limit[nss];
+> +
+> +		if (mcs_map)
+> +			idx_limit = fls(mcs_map) - 1;
+> +		else
+> +			idx_limit = -1;
+> +
+> +		switch (idx_limit) {
+> +		case 0: /* fall through */
+> +		case 1: /* fall through */
+> +		case 2: /* fall through */
+> +		case 3: /* fall through */
+> +		case 4: /* fall through */
+> +		case 5: /* fall through */
+> +		case 6: /* fall through */
+> +		default:
+> +			/* see ath10k_mac_can_set_bitrate_mask() */
+> +			WARN_ON(1);
+> +			/* fall through */
+> +		case -1:
+> +			mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED; break;
+> +		case 7:
+> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_7; break;
+> +		case 8:
+> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_8; break;
+> +		case 9:
+> +			mcs = IEEE80211_VHT_MCS_SUPPORT_0_9; break;
+> +		}
+
+I moved the breaks into their own lines, I think that just easier to
+read. This is the diff:
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index ace273f7ec73..069f399e4c25 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2277,13 +2277,17 @@ ath10k_peer_assoc_h_vht_limit(u16 tx_mcs_set,
+                        WARN_ON(1);
+                        /* fall through */
+                case -1:
+-                       mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED; break;
++                       mcs = IEEE80211_VHT_MCS_NOT_SUPPORTED;
++                       break;
+                case 7:
+-                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_7; break;
++                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_7;
++                       break;
+                case 8:
+-                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_8; break;
++                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_8;
++                       break;
+                case 9:
+-                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_9; break;
++                       mcs = IEEE80211_VHT_MCS_SUPPORT_0_9;
++                       break;
+                }
+ 
+                tx_mcs_set &= ~(0x3 << (nss * 2));
 
 -- 
 Kalle Valo
