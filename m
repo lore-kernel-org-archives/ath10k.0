@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YkZjY-0005vj-EE
- for ath10k@lists.infradead.org; Tue, 21 Apr 2015 15:05:09 +0000
+ id 1Ykc7B-00087a-Bc
+ for ath10k@lists.infradead.org; Tue, 21 Apr 2015 17:37:42 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- <87618v44jv.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
-Date: Tue, 21 Apr 2015 18:04:15 +0300
-In-Reply-To: <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
- (Michal Kazior's message of "Fri, 17 Apr 2015 09:30:51 +0200")
-Message-ID: <87vbgpzfo0.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/2] ath10k: share board file loading code across FW
+ APIs
+References: <1429262357-25139-1-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 21 Apr 2015 20:37:10 +0300
+In-Reply-To: <1429262357-25139-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 17 Apr 2015 09:19:16 +0000")
+Message-ID: <87fv7tz8l5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,29 +25,16 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
->> To reduce support questions from the users it would be nice to give few
->> good examples how to use this with iw. And also it makes it easier to
->> test the patch. If you could send something I can add it to the commit
->> log.
+> There's no need to implement the same thing twice.
+> Reduce code duplication.
 >
-> Should work:
->
->   iw wlan0 set bitrates legacy 1 6 12 ht-mcs 1 2 3
->   iw wlan0 set bitrates legacy-5 mcs-5 7 8 9
->   iw wlan0 set bitrates legacy-5 24 ht-mcs-5 vht-mcs-5 1:0-9
->
-> Won't work:
->
->   iw wlan0 set bitrates legacy-5 ht-mcs-5 vht-mcs-5 1:0-5
->   iw wlan0 set bitrates vht-mcs-5 2:7-9
->
-> (note the invalid VHT MCS ranges)
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, I added these to the commit log.
+Thanks, both patches applied.
 
 -- 
 Kalle Valo
