@@ -1,21 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-ie0-x22e.google.com ([2607:f8b0:4001:c03::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YkpA4-00019W-17
- for ath10k@lists.infradead.org; Wed, 22 Apr 2015 07:33:33 +0000
-Received: by wicmx19 with SMTP id mx19so79958158wic.1
- for <ath10k@lists.infradead.org>; Wed, 22 Apr 2015 00:33:07 -0700 (PDT)
+ id 1Yl13X-0004Sv-I4
+ for ath10k@lists.infradead.org; Wed, 22 Apr 2015 20:15:36 +0000
+Received: by iebrs15 with SMTP id rs15so46416409ieb.3
+ for <ath10k@lists.infradead.org>; Wed, 22 Apr 2015 13:15:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87383szni2.fsf@kamboji.qca.qualcomm.com>
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- <87618v44jv.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
- <87vbgpzfo0.fsf@kamboji.qca.qualcomm.com>
- <87383szni2.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 22 Apr 2015 09:33:06 +0200
-Message-ID: <CA+BoTQkao3kNSCfqi5KdroHL+iHH2fYjZP=oDShjD2VEOM1KnQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 22 Apr 2015 16:15:12 -0400
+Message-ID: <CAOt_L38ntK_iE9UNbU_GYLHmhWJYaBbKkc6Ow_hC=o7VSD_7mg@mail.gmail.com>
+Subject: Upgrade firmware of QCA-9880
+From: Amato Carbonara <acarbonara13@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +18,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-T24gMjIgQXByaWwgMjAxNSBhdCAwODoyNywgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
-LmNvbT4gd3JvdGU6Cj4gS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JpdGVz
-Ogo+Cj4+IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cml0ZXM6Cj4+
-Cj4+Pj4gVG8gcmVkdWNlIHN1cHBvcnQgcXVlc3Rpb25zIGZyb20gdGhlIHVzZXJzIGl0IHdvdWxk
-IGJlIG5pY2UgdG8gZ2l2ZSBmZXcKPj4+PiBnb29kIGV4YW1wbGVzIGhvdyB0byB1c2UgdGhpcyB3
-aXRoIGl3LiBBbmQgYWxzbyBpdCBtYWtlcyBpdCBlYXNpZXIgdG8KPj4+PiB0ZXN0IHRoZSBwYXRj
-aC4gSWYgeW91IGNvdWxkIHNlbmQgc29tZXRoaW5nIEkgY2FuIGFkZCBpdCB0byB0aGUgY29tbWl0
-Cj4+Pj4gbG9nLgo+Pj4KPj4+IFNob3VsZCB3b3JrOgo+Pj4KPj4+ICAgaXcgd2xhbjAgc2V0IGJp
-dHJhdGVzIGxlZ2FjeSAxIDYgMTIgaHQtbWNzIDEgMiAzCj4+PiAgIGl3IHdsYW4wIHNldCBiaXRy
-YXRlcyBsZWdhY3ktNSBtY3MtNSA3IDggOQoKT2gsIEkganVzdCBub3RpY2VkIEkgdHlwbydlZDog
-cy9tY3MtNS9odC1tY3MtNS8uCgoKPj4+ICAgaXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2FjeS01
-IDI0IGh0LW1jcy01IHZodC1tY3MtNSAxOjAtOQo+Pj4KPj4+IFdvbid0IHdvcms6Cj4+Pgo+Pj4g
-ICBpdyB3bGFuMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgaHQtbWNzLTUgdmh0LW1jcy01IDE6MC01
-Cj4+PiAgIGl3IHdsYW4wIHNldCBiaXRyYXRlcyB2aHQtbWNzLTUgMjo3LTkKPj4+Cj4+PiAobm90
-ZSB0aGUgaW52YWxpZCBWSFQgTUNTIHJhbmdlcykKPj4KPj4gVGhhbmtzLCBJIGFkZGVkIHRoZXNl
-IHRvIHRoZSBjb21taXQgbG9nLgo+Cj4gQWN0dWFsbHksIEkgaGFkIHNvbWUgcHJvYmxlbXM6Cj4K
-PiAjIGl3IHdsYW4wIHNldCBiaXRyYXRlcyBsZWdhY3ktMi40IDEgNiAxMiBodC1tY3MtMi40IDEg
-MiAzCj4gY29tbWFuZCBmYWlsZWQ6IEludmFsaWQgYXJndW1lbnQgKC0yMikKPiAjIGl3IHdsYW4w
-IHNldCBiaXRyYXRlcyBsZWdhY3ktNSAxIDYgMTIgaHQtbWNzLTUgMSAyIDMKPiBjb21tYW5kIGZh
-aWxlZDogSW52YWxpZCBhcmd1bWVudCAoLTIyKQoKVGhlcmUncyBubyAxbWJwcyAoQ0NLKSBvbiA1
-R0h6LiBJZiB5b3UgcmVtb3ZlIHRoZSAiMSIgZnJvbSBsZWdhY3ktNSBpdApzaG91bGQgd29yay4K
-Cgo+ICMgaXcgd2xhbjAgc2V0IGJpdHJhdGVzIGxlZ2FjeS01IHZodC1tY3MtNSA3IDggOQo+IGNv
-bW1hbmQgZmFpbGVkOiBJbnZhbGlkIGFyZ3VtZW50ICgtMjIpCgpUaGVyZSdzIGEgY291cGxlIG9m
-IHByb2JsZW1zIGhlcmU6CgogKiBUaGUgc3ludGF4IGZvciBWSFQgTUNTIGlzIGRpZmZlcmVudDog
-dmh0LW1jcy08Mi40fDU+CjxOU1M6TUNTeCxNQ1N5Li4uIHwgTlNTOk1DU3gtTUNTeT4qCiAgIFlv
-dSB1c2VkIHN5bnRheCBmcm9tIEhUIE1DUzogaHQtbWNzLTwyLjR8NT4gPE1DUyBpbmRleD4qCiAg
-IFRoZSBjb3JyZWN0IHdheSB0byBleHByZXNzIHRoaXMgd291bGQgYmU6CiAgICAgIGl3IHdsYW4w
-IHNldCBiaXRyYXRlcyBsZWdhY3ktNSB2aHQtbWNzLTUgMTo3LDgsOQogICBvcgogICAgICBpdyB3
-bGFuMCBzZXQgYml0cmF0ZXMgbGVnYWN5LTUgdmh0LW1jcy01IDE6Ny05CiAgIGFzc3VtaW5nIHlv
-dSB3YW50ZWQgTlNTPTEgKFZIVCBNQ1MgZG9uJ3QgaW1wbHkgTlNTIGp1c3QgbGlrZSBIVCBNQ1Mg
-ZG8pCgoqIEFzIHBlciBjb21taXQgbG9nIHlvdSBjYW4ndCB1c2UganVzdCBhbnkgVkhUIE1DUzsg
-eW91J3JlIGxpbWl0ZWQgdG8Kbm9uZSwgMC03LCAwLTgsIDAtOS4gWW91IGNhbiBzZXQgYSAqc2lu
-Z2xlKiBWSFQgTUNTIGFzIHBlcgo1MWFiMWEwYTA5YTggKCJhdGgxMGs6IGFkZCBzZXRfYml0cmF0
-ZV9tYXNrIGNhbGxiYWNrIikgdGhvdWdoLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+I am currently running:
+driver=ath10k_pci driverversion=3.13.0-49-generic firmware=10.1.467.2-1
+
+I would like to update the firmware to 10.2.4 (latest release).  I am
+unable to update the software by copying the file
+"firmware-4.bin_10.2.4.48" from
+https://github.com/kvalo/ath10k-firmware/tree/master/10.2.4
+
+I copy the file from github into /lib/firmware/ath10k/QCA988X/hw2.0/
+
+I have kept the original file name, changed it to "firmware-4.bin" and
+also changed it to "firmware-2.bin" but the firmware does not upgrade
+to 10.2.4
+
+Can you please assist in telling me how I go from 10.1.467.2-1 to 10.2.4?
+
+Thank you,
+Amato
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
