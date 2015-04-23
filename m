@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from edge10.ethz.ch ([82.130.75.186])
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YlIs2-0005z4-OY
- for ath10k@lists.infradead.org; Thu, 23 Apr 2015 15:16:55 +0000
-From: "Costa Molero  Edgar" <cedgar@student.ethz.ch>
-Subject: Modifing and installing ath10k driver for kernel 4.0
-Date: Thu, 23 Apr 2015 15:16:31 +0000
-Message-ID: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
-Content-Language: ca-ES
+ id 1YlMXj-0002CD-16
+ for ath10k@lists.infradead.org; Thu, 23 Apr 2015 19:12:11 +0000
+Received: by igbyr2 with SMTP id yr2so32722012igb.0
+ for <ath10k@lists.infradead.org>; Thu, 23 Apr 2015 12:11:49 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAH1sOKXs3Hv6kYGSU+EKkgyusuTFF2BtWx52Shjp=G_G9ZPbUQ@mail.gmail.com>
+References: <CAOt_L38ntK_iE9UNbU_GYLHmhWJYaBbKkc6Ow_hC=o7VSD_7mg@mail.gmail.com>
+ <CA+BoTQ=+pxnd_S1p-AE1ovMGubbwtAEAH1LVmjFND1EuzG7hAw@mail.gmail.com>
+ <CAOt_L391ZBncREtznWWoPNrfKS1YMGjF-x6Jm=Afb0T-c2mozQ@mail.gmail.com>
+ <CAH1sOKXs3Hv6kYGSU+EKkgyusuTFF2BtWx52Shjp=G_G9ZPbUQ@mail.gmail.com>
+Date: Thu, 23 Apr 2015 15:11:49 -0400
+Message-ID: <CAOt_L3-iuET+O0HqhPzy9rnzGJT-e2Q_v1g+dB9G+H6R1MHuoA@mail.gmail.com>
+Subject: Re: Upgrade firmware of QCA-9880
+From: Amato Carbonara <acarbonara13@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,28 +23,54 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: bharath yadav <uddandibharath7@gmail.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-Hi all,
-
-In order to use the latest firmware version (10.2.4.48) for my access point  I installed the kernel version 4.0 in my Ubuntu 14.04 LTS laptop.
-
-The problem is that with the ath10k driver it comes the option debug is not enabled, and my domain regulatory database do not allow me to use 80Mhz channels.
-
-Before upgrading the kernel, I was using the latest backports release 3.19-r1-1-1. To install that driver I downloaded it then I enabled all the configuration options I needed for my project (debug, debugfs, etc) and I also modified the regulatory database by changing the content of the file /net/wireless/db.txt.
-
-I never compiled a linux kernel. And therefore I don't quite understand what should I do know to modify the current driver version. (I just want to change the db.txt file and enable debug) Then I want to compile the driver and install it. Could some one give me some hints ?
-
-Should not the driver source code be located at that  directory ? /usr/src/linux-headers-4.0.0-040000-generic/drivers/net/wireless/ath/ath10k# , and also the db.txt located here :/usr/src/linux-headers-4.0.0-040000-generic/net/wireless# .
-
-Sorry for the long question and hope someone can guide me a little bit.
-
-Edgar
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VGhlIGJpbiBmaWxlcyBleGlzdCBhdDoKaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1m
+aXJtd2FyZS90cmVlL21hc3RlcgoKRGlyZWN0aW9ucyB0byBpbnN0YWxsIHRoZSBkcml2ZXJzIGV4
+aXN0IGF0OgpodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJz
+L2F0aDEway9maXJtd2FyZQoKSSBob3BlIHRoYXQgaGVscHMuCgpPbiBUaHUsIEFwciAyMywgMjAx
+NSBhdCAxOjMzIFBNLCBiaGFyYXRoIHlhZGF2Cjx1ZGRhbmRpYmhhcmF0aDdAZ21haWwuY29tPiB3
+cm90ZToKPiBIaS4sCj4KPiAgICBIb3cgdG8gYnVpbGQgYXRoMTBrIGRyaXZlciBmcm9tIGtlcm5l
+bCB2ZXJzaW9uIDQuMCAsSSBnb3QgY29uZnVzZWQgd2l0aAo+IHRoYXQgaXQgaXMgc29tZSB3aGF0
+IGRpZmZlcmVudCBmcm9tIG90aGVyIHN0YWJsZSByZWxlYXNlcyBpZiBydW4gbWFrZSBpdCBpcwo+
+IGNyZWF0aW5nIHNvbWUgaW1hZ2UudGhlcmUgaXMgbm8gZGVmY29uZmlnIG9wdGlvbiBhdmFpbGFi
+bGUgaW4gdGhhdAo+Cj4gUGxlYXNlIHRlbGwgbWUgaG93IHRvIGJ1aWxkIGF0aDEwayBmcm9tIGtl
+cm5lbCA0LjAgaSBhbSBuZXcgdG8gbGludXgKPgo+IFRoYW5rcwo+Cj4gT24gVGh1LCBBcHIgMjMs
+IDIwMTUgYXQgODoyMSBQTSwgQW1hdG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29t
+Pgo+IHdyb3RlOgo+Pgo+PiBUaGFuayB5b3UhICBJIHVwZ3JhZGVkIHRvIGtlcm5lbCA0LjAgYW5k
+IHN1Y2Nlc3NmdWxseSBpbnN0YWxsZWQKPj4gZmlybXdhcmUgMTAuMi40LjQ4Cj4+Cj4+IE9uIFRo
+dSwgQXByIDIzLCAyMDE1IGF0IDE6MjMgQU0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JA
+dGlldG8uY29tPgo+PiB3cm90ZToKPj4gPiBPbiAyMiBBcHJpbCAyMDE1IGF0IDIyOjE1LCBBbWF0
+byBDYXJib25hcmEgPGFjYXJib25hcmExM0BnbWFpbC5jb20+Cj4+ID4gd3JvdGU6Cj4+ID4+IEkg
+YW0gY3VycmVudGx5IHJ1bm5pbmc6Cj4+ID4+IGRyaXZlcj1hdGgxMGtfcGNpIGRyaXZlcnZlcnNp
+b249My4xMy4wLTQ5LWdlbmVyaWMgZmlybXdhcmU9MTAuMS40NjcuMi0xCj4+ID4+Cj4+ID4+IEkg
+d291bGQgbGlrZSB0byB1cGRhdGUgdGhlIGZpcm13YXJlIHRvIDEwLjIuNCAobGF0ZXN0IHJlbGVh
+c2UpLiAgSSBhbQo+PiA+PiB1bmFibGUgdG8gdXBkYXRlIHRoZSBzb2Z0d2FyZSBieSBjb3B5aW5n
+IHRoZSBmaWxlCj4+ID4+ICJmaXJtd2FyZS00LmJpbl8xMC4yLjQuNDgiIGZyb20KPj4gPj4gaHR0
+cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS90cmVlL21hc3Rlci8xMC4yLjQK
+Pj4gPj4KPj4gPj4gSSBjb3B5IHRoZSBmaWxlIGZyb20gZ2l0aHViIGludG8gL2xpYi9maXJtd2Fy
+ZS9hdGgxMGsvUUNBOTg4WC9odzIuMC8KPj4gPj4KPj4gPj4gSSBoYXZlIGtlcHQgdGhlIG9yaWdp
+bmFsIGZpbGUgbmFtZSwgY2hhbmdlZCBpdCB0byAiZmlybXdhcmUtNC5iaW4iIGFuZAo+PiA+PiBh
+bHNvIGNoYW5nZWQgaXQgdG8gImZpcm13YXJlLTIuYmluIiBidXQgdGhlIGZpcm13YXJlIGRvZXMg
+bm90IHVwZ3JhZGUKPj4gPj4gdG8gMTAuMi40Cj4+ID4KPj4gPiAxMC4yLjQgdXNlcyBhIGRpZmZl
+cmVudCBmaXJtd2FyZSBmaWxlbmFtZSBmb3IgYSByZWFzb24uCj4+ID4KPj4gPiAxMC4yLjQgaGFz
+IHNvbWUgQUJJIGRpZmZlcmVuY2VzIGNvbXBhcmVkIHRvIDEwLjEgYW5kIHRoZSBkcml2ZXIgbXVz
+dAo+PiA+IGJlIGF3YXJlIG9mIHRoZW0gaW4gb3JkZXIgdG8gYmUgYWJsZSB0byB1c2UgaXQuIFlv
+dSBzZWVtIHRvIGhhdmUKPj4gPiBrZXJuZWwgMy4xMyAob3IgYXQgbGVhc3QgYXRoMTBrIGZyb20g
+dGhhdCBrZXJuZWwgcmVsZWFzZSBmb3IgdGhhdAo+PiA+IG1hdHRlcikuIFRoaXMgaXMgcHJldHR5
+IGFuY2llbnQuIElmIHlvdSB3YW50IHRvIHJ1biAxMC4yLjQgeW91IG5lZWQgdG8KPj4gPiBzd2l0
+Y2ggdG8ga2VybmVsIHZlcnNpb24gNC4wIGF0IGxlYXN0Lgo+PiA+Cj4+ID4gSW4gY2FzZSB5b3Un
+cmUgaW50ZXJlc3RlZCB0aGUgb2xkZXIgMTAuMgo+PiA+IChodHRwczovL2dpdGh1Yi5jb20va3Zh
+bG8vYXRoMTBrLWZpcm13YXJlL3RyZWUvbWFzdGVyLzEwLjIpIHJlcXVpcmVzCj4+ID4ga2VybmVs
+IDMuMTggYXQgbGVhc3QuCj4+ID4KPj4gPgo+PiA+IE1pY2hhxYIKPj4KPj4gX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4gYXRoMTBrIG1haWxpbmcgbGlz
+dAo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Cj4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
