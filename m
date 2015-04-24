@@ -1,21 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YleeH-00011J-EB
- for ath10k@lists.infradead.org; Fri, 24 Apr 2015 14:32:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- <87618v44jv.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQnNNKF7riAgcVj1LupABAGodm751jxOUuZgam8u=wthUA@mail.gmail.com>
- <87vbgpzfo0.fsf@kamboji.qca.qualcomm.com>
- <87383szni2.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkao3kNSCfqi5KdroHL+iHH2fYjZP=oDShjD2VEOM1KnQ@mail.gmail.com>
-Date: Fri, 24 Apr 2015 17:31:36 +0300
-In-Reply-To: <CA+BoTQkao3kNSCfqi5KdroHL+iHH2fYjZP=oDShjD2VEOM1KnQ@mail.gmail.com>
- (Michal Kazior's message of "Wed, 22 Apr 2015 09:33:06 +0200")
-Message-ID: <87fv7ptx6f.fsf@kamboji.qca.qualcomm.com>
+ id 1YlhpT-0005wm-9k
+ for ath10k@lists.infradead.org; Fri, 24 Apr 2015 17:55:56 +0000
+Received: by wiax7 with SMTP id x7so40263572wia.0
+ for <ath10k@lists.infradead.org>; Fri, 24 Apr 2015 10:55:32 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <20150424125055.GA27722@localhost>
+References: <20150424125055.GA27722@localhost>
+Date: Sat, 25 Apr 2015 01:55:32 +0800
+Message-ID: <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
+Subject: Re: attempting mesh on ath10k
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,89 +24,99 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Bob Copeland <me@bobcopeland.com>, Ben Greear <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Hi, Bob
 
-> On 22 April 2015 at 08:27, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Kalle Valo <kvalo@qca.qualcomm.com> writes:
->>
->>> Michal Kazior <michal.kazior@tieto.com> writes:
->>>
->>>>> To reduce support questions from the users it would be nice to give few
->>>>> good examples how to use this with iw. And also it makes it easier to
->>>>> test the patch. If you could send something I can add it to the commit
->>>>> log.
->>>>
->>>> Should work:
->>>>
->>>>   iw wlan0 set bitrates legacy 1 6 12 ht-mcs 1 2 3
->>>>   iw wlan0 set bitrates legacy-5 mcs-5 7 8 9
+I have tried converting the "adhoc" mode on the
+firmware-2.bin_999.999.0.636 as mesh interface.
+
+You can find my patches here:
+https://github.com/chunyeow/ath/commits/mesh
+
+But probably too many workaround and won't be able to interoperate
+with other mesh interface.
+
+I have also found out the immediate crashes when peer mesh STA is
+added by the firmware if using "AP" mode.
+https://github.com/chunyeow/ath/commit/c09a7ef83a5912d1965756b9ce4c9a22ae1dcf08
+
+Hi, Ben
+
+You have any updates on CT firmware to support the mesh mode?
+
+Please advice. Thanks
+
+---
+Chun-Yeow
+
+
+On Fri, Apr 24, 2015 at 8:50 PM, Bob Copeland <me@bobcopeland.com> wrote:
+> Hi all,
 >
-> Oh, I just noticed I typo'ed: s/mcs-5/ht-mcs-5/.
+> I have played around a little bit with the raw mode patches trying to
+> get mesh working on ath10k.  I've hacked the driver slightly to use an
+> AP vif in the firmware in "mesh" mode, which seems to produce proper looking
+> beacons over the air.
 >
+> However, when I bring up a second mesh node, the ath10k device crashes
+> upon trying to send the first mesh peering action frame.  Here's what
+> dmesg looks like:
 >
->>>>   iw wlan0 set bitrates legacy-5 24 ht-mcs-5 vht-mcs-5 1:0-9
->>>>
->>>> Won't work:
->>>>
->>>>   iw wlan0 set bitrates legacy-5 ht-mcs-5 vht-mcs-5 1:0-5
->>>>   iw wlan0 set bitrates vht-mcs-5 2:7-9
->>>>
->>>> (note the invalid VHT MCS ranges)
->>>
->>> Thanks, I added these to the commit log.
->>
->> Actually, I had some problems:
->>
->> # iw wlan0 set bitrates legacy-2.4 1 6 12 ht-mcs-2.4 1 2 3
->> command failed: Invalid argument (-22)
->> # iw wlan0 set bitrates legacy-5 1 6 12 ht-mcs-5 1 2 3
->> command failed: Invalid argument (-22)
+> [   43.860000] ath10k_pci 0000:01:00.0: wmi event debug mesg len 140
+> [   44.310000] XXX trying to create peer 00:03:7f:10:4e:2d
+> [   44.310000] ath10k_pci 0000:01:00.0: wmi peer create vdev_id 0 peer_addr 00:03:7f:10:4e:2d
+> [   44.320000] XXX sending WMI cmd 36892
+> [   44.320000] XXX sending WMI cmd nowait 36892
+> [   44.330000] XXX waiting for peer create 00:03:7f:10:4e:2d
+> [   44.330000] XXX peer 00:03:7f:10:4e:2d added
+> [   44.340000] ath10k_pci 0000:01:00.0: wmi peer assoc vdev 0 addr 00:03:7f:10:4e:2d (new)
+> [   44.350000] XXX sending WMI cmd 36896
+> [   44.350000] XXX sending WMI cmd nowait 36896
+> [   44.350000] ath10k_pci 0000:01:00.0: received event id 36891 not implemented
+> [   44.360000] mesh: sending popen to 00:03:7f:10:4e:2d
+> [   44.380000] ath10k_pci 0000:01:00.0: wmi mgmt tx skb 86fb4e40 len 84 ftype 00 stype d0
+> [   44.390000] XXX sending WMI cmd 36905
+> [   44.390000] XXX sending WMI cmd nowait 36905
+> [   44.390000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid 839037ff-ad03-4442-9114-f99e03204c
+> [   44.400000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.2-00082-4-2 a
+> [   44.410000] ath10k_pci 0000:01:00.0: debug 1 debugfs 1 tracing 0 dfs 1 testmode 1
+> [   44.420000] ath10k_pci 0000:01:00.0: firmware register dump:
+> [   44.430000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3 0x009A98BE 0x00955B31
+> [   44.440000] ath10k_pci 0000:01:00.0: [04]: 0x009A98BE 0x00060330 0x0000001E 0x00000B00
+> [   44.440000] ath10k_pci 0000:01:00.0: [08]: 0x00447730 0x009C3014 0x00446970 0x00000078
+> [   44.450000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0xFFFFFFFF 0x00958360 0x0095836B
+> [   44.460000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x009A6CCF 0x00000000 0x00000000
+> [   44.470000] ath10k_pci 0000:01:00.0: [20]: 0x409A98BE 0x0040AB14 0x0040FAA8 0x0043E677
+> [   44.480000] ath10k_pci 0000:01:00.0: [24]: 0x809A9958 0x0040AB74 0x0043E7CC 0xC09A98BE
+> [   44.480000] ath10k_pci 0000:01:00.0: [28]: 0x8099F2E9 0x0040AB94 0x009C3014 0x0040AD04
+> [   44.490000] ath10k_pci 0000:01:00.0: [32]: 0x8098933F 0x0040ABB4 0x0043D0D8 0x0040AD04
+> [   44.500000] ath10k_pci 0000:01:00.0: [36]: 0x809B38C0 0x0040ABD4 0x009C3014 0x0043D0D8
+> [   44.510000] ath10k_pci 0000:01:00.0: [40]: 0x809AFD68 0x0040AD94 0x00400000 0x00416688
+> [   44.520000] ath10k_pci 0000:01:00.0: [44]: 0x809BDA75 0x0040ADE4 0x0040AE08 0x00411D44
+> [   44.520000] ath10k_pci 0000:01:00.0: [48]: 0x809486FA 0x0040AE04 0x00000001 0x00000000
+> [   44.530000] ath10k_pci 0000:01:00.0: [52]: 0x80948E2C 0x0040AEA4 0x0041E424 0x00412350
+> [   44.540000] ath10k_pci 0000:01:00.0: [56]: 0x809BCF0D 0x0040AEC4 0x0041E424 0x00000001
 >
-> There's no 1mbps (CCK) on 5GHz. If you remove the "1" from legacy-5 it
-> should work.
-
-I fixed the commit now to:
-
-----------------------------------------------------------------------
-These work:
-
-  iw wlan0 set bitrates legacy-5 6 12 ht-mcs-5 1 2 3
-  iw wlan0 set bitrates legacy-5 ht-mcs-5 7 8 9
-  iw wlan0 set bitrates legacy-5 24 ht-mcs-5 vht-mcs-5 1:0-9
-
-These won't work:
-
-  iw wlan0 set bitrates legacy-5 ht-mcs-5 vht-mcs-5 1:0-5
-  iw wlan0 set bitrates vht-mcs-5 2:7-9
-
-(note the invalid VHT MCS ranges)
-----------------------------------------------------------------------
-
->> # iw wlan0 set bitrates legacy-5 vht-mcs-5 7 8 9
->> command failed: Invalid argument (-22)
+> My hacky compat-wireless snapshot is over here, any suggestions on what to
+> try next to debug further are welcome:
 >
-> There's a couple of problems here:
+>     https://github.com/bcopeland/ath10k-mesh
 >
->  * The syntax for VHT MCS is different: vht-mcs-<2.4|5>
-> <NSS:MCSx,MCSy... | NSS:MCSx-MCSy>*
->    You used syntax from HT MCS: ht-mcs-<2.4|5> <MCS index>*
->    The correct way to express this would be:
->       iw wlan0 set bitrates legacy-5 vht-mcs-5 1:7,8,9
->    or
->       iw wlan0 set bitrates legacy-5 vht-mcs-5 1:7-9
->    assuming you wanted NSS=1 (VHT MCS don't imply NSS just like HT MCS do)
+> [Also I tried skipping the mgmt tx datapath and use normal datapath,
+> as seen in the final patch, but that doesn't change things, it crashes
+> either way.]
 >
-> * As per commit log you can't use just any VHT MCS; you're limited to
-> none, 0-7, 0-8, 0-9. You can set a *single* VHT MCS as per
-> 51ab1a0a09a8 ("ath10k: add set_bitrate_mask callback") though.
-
-Thanks, I understand better now.
-
--- 
-Kalle Valo
+> Maybe I'm not setting up peers correctly or something like that?
+>
+> --
+> Bob Copeland %% http://bobcopeland.com/
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
