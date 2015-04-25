@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ylp1Y-0005T8-6g
- for ath10k@lists.infradead.org; Sat, 25 Apr 2015 01:36:53 +0000
-Message-ID: <553AEFFA.6010709@candelatech.com>
-Date: Fri, 24 Apr 2015 18:38:02 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-f170.google.com ([209.85.213.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ylr4d-0005dx-TG
+ for ath10k@lists.infradead.org; Sat, 25 Apr 2015 03:48:12 +0000
+Received: by igbpi8 with SMTP id pi8so39362728igb.0
+ for <ath10k@lists.infradead.org>; Fri, 24 Apr 2015 20:47:49 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: attempting mesh on ath10k
-References: <20150424125055.GA27722@localhost>
- <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
-In-Reply-To: <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
+In-Reply-To: <loom.20150425T025815-684@post.gmane.org>
+References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
+ <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
+ <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+ <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
+ <loom.20150425T025815-684@post.gmane.org>
+From: Corin Lawson <me@corinlawson.com.au>
+Date: Sat, 25 Apr 2015 13:47:29 +1000
+Message-ID: <CAJAVYN208PQpnt5oQPi1hdYW71WMVJReBNSY-OqZ9aCb0yuiaA@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,131 +24,124 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, Bob Copeland <me@bobcopeland.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-On 04/24/2015 10:55 AM, Yeoh Chun-Yeow wrote:
-> Hi, Bob
->
-> I have tried converting the "adhoc" mode on the
-> firmware-2.bin_999.999.0.636 as mesh interface.
->
-> You can find my patches here:
-> https://github.com/chunyeow/ath/commits/mesh
->
-> But probably too many workaround and won't be able to interoperate
-> with other mesh interface.
->
-> I have also found out the immediate crashes when peer mesh STA is
-> added by the firmware if using "AP" mode.
-> https://github.com/chunyeow/ath/commit/c09a7ef83a5912d1965756b9ce4c9a22ae1dcf08
->
-> Hi, Ben
->
-> You have any updates on CT firmware to support the mesh mode?
->
-> Please advice. Thanks
+Hi Gabriele,
 
-I have IBSS support working, and at least non-encrypted raw transmit
-can work in my firmware, though raw tx requires Michal's RFC patch
-he posted some time ago.
+I have had success with eeprom_ar6320_2p1_NFA344i.bin.
 
-Don't know about mesh, but if you can crash my firmware, please send
-me the debug info and I'll see if I can figure out why.
+I am also using Gentoo (but v3.19.3) but I have also applied these
+patches/commits:
 
-I am not sure raw tx with encryption is possible...and at the least,
-it is probably not something I'll attempt to do for fun anytime soon.
+- http://permalink.gmane.org/gmane.linux.kernel.wireless.general/137030
+- https://github.com/kvalo/ath/commit/d63955b33b3bee45d784ffdfafeb93076c765660
 
-Thanks,
-Ben
+Also, I didn't use that disassemble.py script, I used:
 
+- https://gist.github.com/kazikcz/8e5845ad84ca251aa295
 
+I also had problems with calibration, I had to pass skip_otp=y to the module:
+
+    $ cat /etc/modprobe.d/ath10k.conf
+    options ath10k_core skip_otp=y
+
+FWIW:
+
+    $ lspci -vs 05:00.0
+    05:00.0 Network controller: Qualcomm Atheros Device 003e (rev 20)
+            Subsystem: Bigfoot Networks, Inc. Device 1525
+            Flags: bus master, fast devsel, latency 0, IRQ 31
+            Memory at f7800000 (64-bit, non-prefetchable) [size=2M]
+            Capabilities: <access denied>
+            Kernel driver in use: ath10k_pci
+            Kernel modules: ath10k_pci
+
+I give a huge thanks to the individuals on this mailing list for
+helping me; I'm just happy to give back where I can :)
+
+I would interested in knowing from where you got your drivers/board
+files. I had to download mine from my laptop manufacturer's (MSI)
+website.
+
+Note: I understand that ath10k doesn't support encryption yet. But I
+haven't successfully been able to connect to my open AP as yet...
+
+Cheers,
+Corin
+
+On Sat, Apr 25, 2015 at 11:15 AM, Gabriele Martino <g.martino@gmx.com> wrote:
 >
-> ---
-> Chun-Yeow
+> Michal Kazior <michal.kazior <at> tieto.com> writes:
 >
+> >
+> > https://gist.github.com/kazikcz/c970cbf3a863ebbc4495
+> > https://gist.github.com/kazikcz/64313b9e2470660faae1
+> >
+> > Here are two simple and crude tools I have to deal with ath10k FW API
+> > blobs. Use with care.
+> >
+> > You can use the disassemble.py to extract the otp.bin from hw3 ath10k
+> > FW API blob:
+> >
+> >   python disassemble.py < /lib/firmware/ath10k/QCA6174/hw3.0/firmware-4.bin
+> >
+> > Then you can use the assemble.py to generate hw2.1 ath10k FW ABI blob:
+> >
+> >   mkdir -p /lib/firmware/ath10k/QCA6174/hw2.1/
+> >   python assemble.py killer1252-testfw 0 path/to/qca61x420.bin
+> > path/to/otp.bin 4 > /lib/firmware/ath10k/QCA6174/hw2.1/firmware-4.bin
+> >   cp path/to/eeprom_ar6320_2p1_NFA354xp.bin
+> > /lib/firmware/ath10k/QCA6174/hw2.1/board.bin
+> >
+> > (mind the email line wrapping)
+> >
 >
-> On Fri, Apr 24, 2015 at 8:50 PM, Bob Copeland <me@bobcopeland.com> wrote:
->> Hi all,
->>
->> I have played around a little bit with the raw mode patches trying to
->> get mesh working on ath10k.  I've hacked the driver slightly to use an
->> AP vif in the firmware in "mesh" mode, which seems to produce proper looking
->> beacons over the air.
->>
->> However, when I bring up a second mesh node, the ath10k device crashes
->> upon trying to send the first mesh peering action frame.  Here's what
->> dmesg looks like:
->>
->> [   43.860000] ath10k_pci 0000:01:00.0: wmi event debug mesg len 140
->> [   44.310000] XXX trying to create peer 00:03:7f:10:4e:2d
->> [   44.310000] ath10k_pci 0000:01:00.0: wmi peer create vdev_id 0 peer_addr 00:03:7f:10:4e:2d
->> [   44.320000] XXX sending WMI cmd 36892
->> [   44.320000] XXX sending WMI cmd nowait 36892
->> [   44.330000] XXX waiting for peer create 00:03:7f:10:4e:2d
->> [   44.330000] XXX peer 00:03:7f:10:4e:2d added
->> [   44.340000] ath10k_pci 0000:01:00.0: wmi peer assoc vdev 0 addr 00:03:7f:10:4e:2d (new)
->> [   44.350000] XXX sending WMI cmd 36896
->> [   44.350000] XXX sending WMI cmd nowait 36896
->> [   44.350000] ath10k_pci 0000:01:00.0: received event id 36891 not implemented
->> [   44.360000] mesh: sending popen to 00:03:7f:10:4e:2d
->> [   44.380000] ath10k_pci 0000:01:00.0: wmi mgmt tx skb 86fb4e40 len 84 ftype 00 stype d0
->> [   44.390000] XXX sending WMI cmd 36905
->> [   44.390000] XXX sending WMI cmd nowait 36905
->> [   44.390000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid 839037ff-ad03-4442-9114-f99e03204c
->> [   44.400000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.2-00082-4-2 a
->> [   44.410000] ath10k_pci 0000:01:00.0: debug 1 debugfs 1 tracing 0 dfs 1 testmode 1
->> [   44.420000] ath10k_pci 0000:01:00.0: firmware register dump:
->> [   44.430000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3 0x009A98BE 0x00955B31
->> [   44.440000] ath10k_pci 0000:01:00.0: [04]: 0x009A98BE 0x00060330 0x0000001E 0x00000B00
->> [   44.440000] ath10k_pci 0000:01:00.0: [08]: 0x00447730 0x009C3014 0x00446970 0x00000078
->> [   44.450000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0xFFFFFFFF 0x00958360 0x0095836B
->> [   44.460000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x009A6CCF 0x00000000 0x00000000
->> [   44.470000] ath10k_pci 0000:01:00.0: [20]: 0x409A98BE 0x0040AB14 0x0040FAA8 0x0043E677
->> [   44.480000] ath10k_pci 0000:01:00.0: [24]: 0x809A9958 0x0040AB74 0x0043E7CC 0xC09A98BE
->> [   44.480000] ath10k_pci 0000:01:00.0: [28]: 0x8099F2E9 0x0040AB94 0x009C3014 0x0040AD04
->> [   44.490000] ath10k_pci 0000:01:00.0: [32]: 0x8098933F 0x0040ABB4 0x0043D0D8 0x0040AD04
->> [   44.500000] ath10k_pci 0000:01:00.0: [36]: 0x809B38C0 0x0040ABD4 0x009C3014 0x0043D0D8
->> [   44.510000] ath10k_pci 0000:01:00.0: [40]: 0x809AFD68 0x0040AD94 0x00400000 0x00416688
->> [   44.520000] ath10k_pci 0000:01:00.0: [44]: 0x809BDA75 0x0040ADE4 0x0040AE08 0x00411D44
->> [   44.520000] ath10k_pci 0000:01:00.0: [48]: 0x809486FA 0x0040AE04 0x00000001 0x00000000
->> [   44.530000] ath10k_pci 0000:01:00.0: [52]: 0x80948E2C 0x0040AEA4 0x0041E424 0x00412350
->> [   44.540000] ath10k_pci 0000:01:00.0: [56]: 0x809BCF0D 0x0040AEC4 0x0041E424 0x00000001
->>
->> My hacky compat-wireless snapshot is over here, any suggestions on what to
->> try next to debug further are welcome:
->>
->>      https://github.com/bcopeland/ath10k-mesh
->>
->> [Also I tried skipping the mgmt tx datapath and use normal datapath,
->> as seen in the final patch, but that doesn't change things, it crashes
->> either way.]
->>
->> Maybe I'm not setting up peers correctly or something like that?
->>
->> --
->> Bob Copeland %% http://bobcopeland.com/
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
+> I'm trying to generate the blob, but I found two big issues.
+> The first: I have too many board files, which one should I use?
+> eeprom_ar6320_2p1_NFA324i_5.bin
+> eeprom_ar6320_2p1_NFA344i.bin
+> eeprom_ar6320_2p1_NFA344i_highTX.bin
+> eeprom_ar6320_2p1_NFA345i.bin
+> eeprom_ar6320_2p1_NFA345i_highTX.bin
+> eeprom_ar6320_2p1_NFA354xp.bin
+> eeprom_ar6320_2p1_NFA355i.bin
+> eeprom_qca9377_1p0_NFA435_olpc.bin
+>
+> The controller is a
+> "Qualcomm Atheros QCA6174 802.11ac Wireless Network Adapter (rev 20)"
+> declared as Killer N1525 on Alienware 15.
+>
+> Whatever, I can try them one by one later.
+> I picked up the first and built the firmware blob.
+> But here's the second issue: it wants the calibration data.
+>
+> [    2.067447] ath10k_pci 0000:03:00.0: enabling device (0000 -> 0002)
+> [    2.068679] ath10k_pci 0000:03:00.0: pci irq msi-x interrupts 8 irq_mode
+> 0 reset_mode 0
+> [    2.215280] ath10k_pci 0000:03:00.0: Direct firmware load for ath10k/cal-pci-
+> 0000:03:00.0.bin failed with error -2
+> [    2.924276] ath3k: probe of 1-9:1.0 failed with error -22
+> [    2.924299] usbcore: registered new interface driver ath3k
+> [    3.289023] ath10k_pci 0000:03:00.0: unable to write to the device
+> [    3.289026] ath10k_pci 0000:03:00.0: failed to download normal firmware: -110
+> [    3.289052] ath10k_pci 0000:03:00.0: could not init core (-110)
+> [    3.289099] ath10k_pci 0000:03:00.0: could not probe fw (-110)
+>
+> How can I generate the cal-pci-0000:03:00.0.bin file?
+> I'm using the 4.0.0-gentoo kernel on x86_64.
+>
+> Regards,
+> Gabriele
+>
 >
 > _______________________________________________
 > ath10k mailing list
 > ath10k@lists.infradead.org
 > http://lists.infradead.org/mailman/listinfo/ath10k
->
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
 
 _______________________________________________
 ath10k mailing list
