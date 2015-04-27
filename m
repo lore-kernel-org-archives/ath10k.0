@@ -1,17 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
+Received: from mail-ie0-f180.google.com ([209.85.223.180])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymgp9-0001Mz-TX
- for ath10k@lists.infradead.org; Mon, 27 Apr 2015 11:03:43 +0000
-Received: by wgin8 with SMTP id n8so111612848wgi.0
- for <ath10k@lists.infradead.org>; Mon, 27 Apr 2015 04:03:11 -0700 (PDT)
+ id 1Ymiey-0007km-G0
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2015 13:01:17 +0000
+Received: by iejt8 with SMTP id t8so125149346iej.2
+ for <ath10k@lists.infradead.org>; Mon, 27 Apr 2015 06:00:52 -0700 (PDT)
+Date: Mon, 27 Apr 2015 09:00:16 -0400
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: attempting mesh on ath10k
+Message-ID: <20150427130016.GA28926@localhost>
+References: <20150424125055.GA27722@localhost>
+ <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
+ <553AEFFA.6010709@candelatech.com>
+ <20150426141552.GA25938@localhost>
 MIME-Version: 1.0
-In-Reply-To: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
-References: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
-Date: Mon, 27 Apr 2015 13:03:11 +0200
-Message-ID: <CA+BoTQmGCnAepE0OWEiO1ASrLEbsmrKqf2zS-s2WpAbkhX4vaw@mail.gmail.com>
-Subject: Re: Modifing and installing ath10k driver for kernel 4.0
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
+In-Reply-To: <20150426141552.GA25938@localhost>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +24,38 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Costa Molero Edgar <cedgar@student.ethz.ch>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjMgQXByaWwgMjAxNSBhdCAxNzoxNiwgQ29zdGEgTW9sZXJvICBFZGdhciA8Y2VkZ2FyQHN0
-dWRlbnQuZXRoei5jaD4gd3JvdGU6Cj4gSGkgYWxsLAo+Cj4gSW4gb3JkZXIgdG8gdXNlIHRoZSBs
-YXRlc3QgZmlybXdhcmUgdmVyc2lvbiAoMTAuMi40LjQ4KSBmb3IgbXkgYWNjZXNzIHBvaW50ICBJ
-IGluc3RhbGxlZCB0aGUga2VybmVsIHZlcnNpb24gNC4wIGluIG15IFVidW50dSAxNC4wNCBMVFMg
-bGFwdG9wLgo+Cj4gVGhlIHByb2JsZW0gaXMgdGhhdCB3aXRoIHRoZSBhdGgxMGsgZHJpdmVyIGl0
-IGNvbWVzIHRoZSBvcHRpb24gZGVidWcgaXMgbm90IGVuYWJsZWQsIGFuZCBteSBkb21haW4gcmVn
-dWxhdG9yeSBkYXRhYmFzZSBkbyBub3QgYWxsb3cgbWUgdG8gdXNlIDgwTWh6IGNoYW5uZWxzLgo+
-Cj4gQmVmb3JlIHVwZ3JhZGluZyB0aGUga2VybmVsLCBJIHdhcyB1c2luZyB0aGUgbGF0ZXN0IGJh
-Y2twb3J0cyByZWxlYXNlIDMuMTktcjEtMS0xLiBUbyBpbnN0YWxsIHRoYXQgZHJpdmVyIEkgZG93
-bmxvYWRlZCBpdCB0aGVuIEkgZW5hYmxlZCBhbGwgdGhlIGNvbmZpZ3VyYXRpb24gb3B0aW9ucyBJ
-IG5lZWRlZCBmb3IgbXkgcHJvamVjdCAoZGVidWcsIGRlYnVnZnMsIGV0YykgYW5kIEkgYWxzbyBt
-b2RpZmllZCB0aGUgcmVndWxhdG9yeSBkYXRhYmFzZSBieSBjaGFuZ2luZyB0aGUgY29udGVudCBv
-ZiB0aGUgZmlsZSAvbmV0L3dpcmVsZXNzL2RiLnR4dC4KPgo+IEkgbmV2ZXIgY29tcGlsZWQgYSBs
-aW51eCBrZXJuZWwuIEFuZCB0aGVyZWZvcmUgSSBkb24ndCBxdWl0ZSB1bmRlcnN0YW5kIHdoYXQg
-c2hvdWxkIEkgZG8ga25vdyB0byBtb2RpZnkgdGhlIGN1cnJlbnQgZHJpdmVyIHZlcnNpb24uIChJ
-IGp1c3Qgd2FudCB0byBjaGFuZ2UgdGhlIGRiLnR4dCBmaWxlIGFuZCBlbmFibGUgZGVidWcpIFRo
-ZW4gSSB3YW50IHRvIGNvbXBpbGUgdGhlIGRyaXZlciBhbmQgaW5zdGFsbCBpdC4gQ291bGQgc29t
-ZSBvbmUgZ2l2ZSBtZSBzb21lIGhpbnRzID8KPgo+IFNob3VsZCBub3QgdGhlIGRyaXZlciBzb3Vy
-Y2UgY29kZSBiZSBsb2NhdGVkIGF0IHRoYXQgIGRpcmVjdG9yeSA/IC91c3Ivc3JjL2xpbnV4LWhl
-YWRlcnMtNC4wLjAtMDQwMDAwLWdlbmVyaWMvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ayMgLCBhbmQgYWxzbyB0aGUgZGIudHh0IGxvY2F0ZWQgaGVyZSA6L3Vzci9zcmMvbGludXgtaGVh
-ZGVycy00LjAuMC0wNDAwMDAtZ2VuZXJpYy9uZXQvd2lyZWxlc3MjIC4KClRoaXMgZGlyZWN0b3J5
-LCBhcyB0aGUgcGF0aCBuYW1lIGltcGxpZXMsIGNvbnRhaW5zIGp1c3Qga2VybmVsCmhlYWRlcnMu
-IFRoZXNlIGFyZSBnZW5lcmFsbHkgdXNlZCB3aGZvciBjb21waWxpbmcgREtNUyAoYWRkaXRpb25h
-bApvdXQtb2YtdHJlZSBtb2R1bGVzLCBlLmcuIG52aWRpYSBncHUgYmxvYikuCgpJZiB5b3Ugd2Fu
-dCB0byBjb21waWxlIGFuIGVudGlyZSBrZXJuZWwgSSBzdWdnZXN0IHlvdSBsb29rIGludG8geW91
-cgpkaXN0cm8gd2lraS4gQWxsIGRpc3Ryb3MgaGF2ZSBkaWZmZXJlbnQgd2F5cyBvZiBkb2luZyB0
-aGluZ3MgaWYgeW91CndhbnQgdG8ga2VlcCB5b3VyIGluc3RhbGxhdGlvbiBjbGVhbi4KCllvdSBj
-YW4gc3RpbGwgdXNlIGJhY2twb3J0cyB0aG91Z2guIEFsbCB5b3UgbmVlZCBpcyB0byBidWlsZCBi
-YWNrcG9ydHMKcGFja2FnZSB5b3Vyc2VsZlsxXSBmcm9tIHdoYXRldmVyIGtlcm5lbCB0cmVlIHlv
-dSBkZXNpcmUsIGUuZy4KZ2l0aHViLmNvbS9rdmFsby9hdGggaW5zdGVhZCBvZiB1c2luZyB0aGUg
-cHJlLWJ1aWx0IG9uZS4KClsxXTogaHR0cHM6Ly9iYWNrcG9ydHMud2lraS5rZXJuZWwub3JnL2lu
-ZGV4LnBocC9Eb2N1bWVudGF0aW9uL2JhY2twb3J0cy9oYWNraW5nCgoKTWljaGHFggoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
-bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Sun, Apr 26, 2015 at 10:15:52AM -0400, Bob Copeland wrote:
+> So, progress!
+> 
+> There's still an issue with datapath -- while it looks like we can establish
+> plinks, I couldn't get unicast traffic flowing even if manually setting up
+> mpaths and arp table entries.  I haven't yet got all of my 5 ghz capable gear
+> in the same room to monitor and see where the problem lies.
+
+Now I had a chance to monitor it, and in so doing, rediscovered this patch of
+Chun-Yeow's:
+
+http://lists.infradead.org/pipermail/ath10k/2014-September/003206.html
+
+In fact my broadcasts were truncated and the above change makes the broadcast
+ARPs look correct over the air.  The (non-ath10k) target mesh STA replies with
+broadcast PREQ but that is not received / processed / replied-to by the
+ath10k device.
+
+Perhaps there is a BSSID filter enabled or something like that (in mesh
+there's no BSSID, just individual addresses on group addressed frames).
+
+-- 
+Bob Copeland %% http://bobcopeland.com/
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
