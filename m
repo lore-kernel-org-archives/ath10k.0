@@ -1,18 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x236.google.com ([2a00:1450:400c:c00::236])
+Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymbgv-0004cZ-8n
- for ath10k@lists.infradead.org; Mon, 27 Apr 2015 05:34:50 +0000
-Received: by wgyo15 with SMTP id o15so103736061wgy.2
- for <ath10k@lists.infradead.org>; Sun, 26 Apr 2015 22:34:27 -0700 (PDT)
+ id 1Ymbue-00023M-Rn
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2015 05:49:01 +0000
+Received: by lagv1 with SMTP id v1so71876853lag.3
+ for <ath10k@lists.infradead.org>; Sun, 26 Apr 2015 22:48:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <loom.20150425T202151-34@post.gmane.org>
-References: <54DB5CD8.80302@dreyero.de>
- <loom.20150425T202151-34@post.gmane.org>
-Date: Mon, 27 Apr 2015 07:34:27 +0200
-Message-ID: <CA+BoTQm5Z4QWkouK_D54y8zmz7F3XTCn3j8cFiKhj0K6xKA=tQ@mail.gmail.com>
-Subject: Re: First QCA6174 firmware release
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Mon, 27 Apr 2015 11:18:39 +0530
+Message-ID: <CABHL29Hq8e+sgyfqtN-EbEpM1cC9XF_bO3F_rj68Piq-kKg4=w@mail.gmail.com>
+Subject: Tips to debug Firmware crash
+From: Venkat Ch <venkatch@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,53 +18,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Oscar Rydberg <oscarrydberg@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjUgQXByaWwgMjAxNSBhdCAyMDoyMiwgT3NjYXIgUnlkYmVyZyA8b3NjYXJyeWRiZXJnQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4gT2xhZiBEcmV5ZXIgPG9sYWYgPGF0PiBkcmV5ZXJvLmRlPiB3cml0
-ZXM6Cj4KPj4KPj4gSSBoYXZlIGEgbmV3IEFjZXIgQXNwaXJlIFZONy01OTEgTGFwdG9wIHdpdGgg
-YSBRdWFsY29tIEF0aGVyb3MKPiBRQ05GMzQ0Cj4+IHdpcmVsZXNzIGNoaXAsIHdoaWNoIGlzIHNo
-b3duIGJ5IGxzcGNpIGFzOgo+Pgo+PiBRdWFsY29tbSBBdGhlcm9zIERldmljZSAwMDNlIChyZXYg
-MjApCj4+IFN1YnN5c3RlbTogRm94Y29ubiBJbnRlcm5hdGlvbmFsLCBJbmMuIERldmljZSBlMDhl
-Cj4+Cj4+IEkgaGF2ZSBpbnN0YWxsZWQgdGhlIGxpbnV4LW5leHQga2VybmVsIGZyb20gdG9kYXkg
-ODowMCBVVEMuCj4+IEkgd2FzIGFibGUgdG8gbG9hZCB0aGUgYXRoMTBrX3BjaSBkcml2ZXIsIGJ1
-dCB0aGUgZHJpdmVyIGNvbXBsYWlucwo+IGFib3V0Cj4+IG1pc3NpbmcgZmlybXdhcmUuCj4+IEkg
-aW5zdGFsbGVkIGEgZmlybXdhcmUgZnJvbSBoZXJlOiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8v
-YXRoMTBrLQo+IGZpcm13YXJlCj4+IHVuZGVyIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQv
-aHcyLjEvCj4+IEJ1dCBhbHNvIHRoZSBjYXJkIGlzIG5vdCB3b3JraW5nLgo+Pgo+PiBUaGUgb3V0
-cHV0IGZyb20gZG1lc2cgaXM6Cj4+IFsgOTM2MC41Mzg3NjddIGF0aDEwa19wY2kgMDAwMDowNzow
-MC4wOiBwY2kgaXJxIG1zaSBpbnRlcnJ1cHRzIDEKPj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAK
-Pj4gWyA5MzYwLjc4ODU4OF0gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IERpcmVjdCBmaXJtd2Fy
-ZSBsb2FkIGZvcgo+PiBhdGgxMGsvY2FsLXBjaS0wMDAwOjA3OjAwLjAuYmluIGZhaWxlZCB3aXRo
-IGVycm9yIC0yCj4+IFsgOTM2Mi43MjkxMThdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiB1bmFi
-bGUgdG8gd3JpdGUgdG8gdGhlCj4gZGV2aWNlCj4+IFsgOTM2Mi43MjkxMjBdIGF0aDEwa19wY2kg
-MDAwMDowNzowMC4wOiBmYWlsZWQgdG8gZG93bmxvYWQgbm9ybWFsCj4+IGZpcm13YXJlOiAtMTEw
-Cj4+IFsgOTM2Mi43MjkxMjFdIGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBjb3VsZCBub3QgaW5p
-dCBjb3JlICgtMTEwKQo+PiBbIDkzNjIuNzI5MTU2XSBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDog
-Y291bGQgbm90IHByb2JlIGZ3ICgtMTEwKQo+Pgo+PiBJIHdvdWxkIGxpa2UgdG8ga25vdywgYXMg
-QXVzdGluIEhlbmRyaXggd3JvdGUgaXQgYXQgOCBGZWIgMTQ6MTIKPiAyMDE1Cj4+IHRvbywgd2hl
-cmUgY2FuIEkgZmluZCB0aGUgZmlybXdhcmUgb24gdGhlCj4+IGludGVybmV0IC8gbXkgV2luZG93
-czcgcGFydGl0aW9uIGFuZCBob3cgY2FuIEkgcHJlcGFyZSB0aGUgbmVlZGVkCj4gZmlsZXMuCj4+
-Cj4+IE1hbnkgdGhhbmtzLAo+Pgo+PiBPbGFmCj4+Cj4KPiBIaSBkaWQgeW91IGFkdmFuY2UgYW55
-dGhpbmcgb24gdGhpcz8KPgo+IFRyeWluZyB0byBydW4gYSBRQ0E2MTY0IGNhcmQgbXlzZWxmIG9u
-IGEgTGVub3ZvIDMtMTQgbGFwdG9wLgo+IFNlbXMgSSd2ZSBnb3R0ZW4gYXMgZmFyIGFzIHlvdS4K
-PiBQcmVwYXJlZCBBdGgxMGsgaHcyLjEgYm9hcmQuYmluIGFuZCBmaXJtd2FyZS00LmJpbiBmb3Ig
-aHcyLjEgdXNpbmcKPiB3aW5kb3dzIGJpbmFyeSBkcml2ZXIuIChBbmQgYXNzZW1ibGUucHksIGRp
-c2Fzc2VtYmxlLnB5IHRvb2xzIGxpbmtlZAo+IGVsc2V3aGVyZSkKPgo+IEJvYXJkLmJpbiBzZWVt
-cyB0byBsb2FkIGFuZCBleGVjdXRlIGZpbmUuIEJ1dCBhZnRlciB0aGF0IHdoZW4KPiBsb2FkaW5n
-IGZpcm13YXJlLTQuYmluLCBpdCBlbmRzIHVwIHdpdGggVW5hYmxlIHRvIHdyaXRlIHRvIHRoZQo+
-IGRldmljZS4KPgo+IEkgc2VlIGl0IHN0YXJ0cyBzZW5kaW5nIGZpcm13YXJlLTQuYmluIGFuZCBm
-aXJzdCAyNTYgYnl0ZXMgY2Vfc2VuZAo+IGZpbmUuCj4gMm5kIGNlX3NlbmQgMjU2IGJ5dGVzIHNl
-ZW0gdG8gYWxzbyBjZV9zZW5kIGZpbmUsIGhvd2V2ZXIgYWZ0ZXIgdGhhdAo+IGJtaV93YWl0IHRp
-bWVzIG91dC4gKC0xMTApCgpZb3UncmUgbW9zdCBsaWtlbHkgdHJ5aW5nIHRvIHB1c2ggc29tZXRo
-aW5nIHRoYXQgaXNuJ3QgYW4gYWN0dWFsCmZpcm13YXJlIGJsb2IgdG8gdGhlIGRldmljZS4gWW91
-IG1pZ2h0IGJlIGludGVyZXN0ZWQgaW4gdGhlIG90aGVyCnRocmVhZDogaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUFwcmlsLzAwNTA3Mi5odG1sCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi All,
+
+  I am an active developer of Atheros drivers for the last 10 years. I
+have been working on QCA 10.2.2 driver for the last few months and
+trying to understand the architecture of this offloading model. Though
+this forum is nothing to do with Atheros provided drivers, I took the
+liberty of posting the question to see if Ath10k community could help
+me. Sorry if I violated any guidelines.
+
+There is some problem at firmware level about which I am clueless.
+Whenever there is a crash in firmware the 5GHz interface goes down
+completely and there will not be any transmissions or receptions from
+the interface from then. What all I see on the console is  some log
+message "Target Asserted" . I don't get any stack trace to see in
+which function it crashed.
+
+ Can any of you please let me know if there is a way to dump the stack
+trace and debug the firmware crash?
+
+
+Thanks & Regards
+Venkat
+
+
+-- 
+If you rest, you rust
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
