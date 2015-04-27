@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymel7-0007dm-8V
- for ath10k@lists.infradead.org; Mon, 27 Apr 2015 08:51:22 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
-References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 27 Apr 2015 11:50:47 +0300
-In-Reply-To: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Fri, 10 Apr 2015 13:32:52 +0000")
-Message-ID: <878udeq7iw.fsf@kamboji.qca.qualcomm.com>
+ id 1Ymgp9-0001Mz-TX
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2015 11:03:43 +0000
+Received: by wgin8 with SMTP id n8so111612848wgi.0
+ for <ath10k@lists.infradead.org>; Mon, 27 Apr 2015 04:03:11 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
+References: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
+Date: Mon, 27 Apr 2015 13:03:11 +0200
+Message-ID: <CA+BoTQmGCnAepE0OWEiO1ASrLEbsmrKqf2zS-s2WpAbkhX4vaw@mail.gmail.com>
+Subject: Re: Modifing and installing ath10k driver for kernel 4.0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Costa Molero Edgar <cedgar@student.ethz.ch>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> Until now only a single fixed tx rate or nss was
-> allowed to be set.
->
-> The patch attempts to improve this by allowing
-> most bitrate masks. The limitation is VHT MCS
-> rates cannot be expressed separately using
-> existing firmware interfaces and only the
-> following VHT MCS ranges are supported: none, 0-7,
-> 0-8, and 0-9.
->
-> This keeps the old behaviour when requesting
-> single tx rate or single nss. The new bitrate mask
-> logic is only applied to other cases that would
-> return -EINVAL until now.
->
-> Depending on firmware revisions some combinations
-> may crash firmware so use with care, please.
->
-> This depends on "ath10k: don't use reassoc flag".
-> Without it key cache would effectively be
-> invalidated upon bitrate change leading to
-> communication being no longer possible.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-
-Thanks, applied.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgQXByaWwgMjAxNSBhdCAxNzoxNiwgQ29zdGEgTW9sZXJvICBFZGdhciA8Y2VkZ2FyQHN0
+dWRlbnQuZXRoei5jaD4gd3JvdGU6Cj4gSGkgYWxsLAo+Cj4gSW4gb3JkZXIgdG8gdXNlIHRoZSBs
+YXRlc3QgZmlybXdhcmUgdmVyc2lvbiAoMTAuMi40LjQ4KSBmb3IgbXkgYWNjZXNzIHBvaW50ICBJ
+IGluc3RhbGxlZCB0aGUga2VybmVsIHZlcnNpb24gNC4wIGluIG15IFVidW50dSAxNC4wNCBMVFMg
+bGFwdG9wLgo+Cj4gVGhlIHByb2JsZW0gaXMgdGhhdCB3aXRoIHRoZSBhdGgxMGsgZHJpdmVyIGl0
+IGNvbWVzIHRoZSBvcHRpb24gZGVidWcgaXMgbm90IGVuYWJsZWQsIGFuZCBteSBkb21haW4gcmVn
+dWxhdG9yeSBkYXRhYmFzZSBkbyBub3QgYWxsb3cgbWUgdG8gdXNlIDgwTWh6IGNoYW5uZWxzLgo+
+Cj4gQmVmb3JlIHVwZ3JhZGluZyB0aGUga2VybmVsLCBJIHdhcyB1c2luZyB0aGUgbGF0ZXN0IGJh
+Y2twb3J0cyByZWxlYXNlIDMuMTktcjEtMS0xLiBUbyBpbnN0YWxsIHRoYXQgZHJpdmVyIEkgZG93
+bmxvYWRlZCBpdCB0aGVuIEkgZW5hYmxlZCBhbGwgdGhlIGNvbmZpZ3VyYXRpb24gb3B0aW9ucyBJ
+IG5lZWRlZCBmb3IgbXkgcHJvamVjdCAoZGVidWcsIGRlYnVnZnMsIGV0YykgYW5kIEkgYWxzbyBt
+b2RpZmllZCB0aGUgcmVndWxhdG9yeSBkYXRhYmFzZSBieSBjaGFuZ2luZyB0aGUgY29udGVudCBv
+ZiB0aGUgZmlsZSAvbmV0L3dpcmVsZXNzL2RiLnR4dC4KPgo+IEkgbmV2ZXIgY29tcGlsZWQgYSBs
+aW51eCBrZXJuZWwuIEFuZCB0aGVyZWZvcmUgSSBkb24ndCBxdWl0ZSB1bmRlcnN0YW5kIHdoYXQg
+c2hvdWxkIEkgZG8ga25vdyB0byBtb2RpZnkgdGhlIGN1cnJlbnQgZHJpdmVyIHZlcnNpb24uIChJ
+IGp1c3Qgd2FudCB0byBjaGFuZ2UgdGhlIGRiLnR4dCBmaWxlIGFuZCBlbmFibGUgZGVidWcpIFRo
+ZW4gSSB3YW50IHRvIGNvbXBpbGUgdGhlIGRyaXZlciBhbmQgaW5zdGFsbCBpdC4gQ291bGQgc29t
+ZSBvbmUgZ2l2ZSBtZSBzb21lIGhpbnRzID8KPgo+IFNob3VsZCBub3QgdGhlIGRyaXZlciBzb3Vy
+Y2UgY29kZSBiZSBsb2NhdGVkIGF0IHRoYXQgIGRpcmVjdG9yeSA/IC91c3Ivc3JjL2xpbnV4LWhl
+YWRlcnMtNC4wLjAtMDQwMDAwLWdlbmVyaWMvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
+ayMgLCBhbmQgYWxzbyB0aGUgZGIudHh0IGxvY2F0ZWQgaGVyZSA6L3Vzci9zcmMvbGludXgtaGVh
+ZGVycy00LjAuMC0wNDAwMDAtZ2VuZXJpYy9uZXQvd2lyZWxlc3MjIC4KClRoaXMgZGlyZWN0b3J5
+LCBhcyB0aGUgcGF0aCBuYW1lIGltcGxpZXMsIGNvbnRhaW5zIGp1c3Qga2VybmVsCmhlYWRlcnMu
+IFRoZXNlIGFyZSBnZW5lcmFsbHkgdXNlZCB3aGZvciBjb21waWxpbmcgREtNUyAoYWRkaXRpb25h
+bApvdXQtb2YtdHJlZSBtb2R1bGVzLCBlLmcuIG52aWRpYSBncHUgYmxvYikuCgpJZiB5b3Ugd2Fu
+dCB0byBjb21waWxlIGFuIGVudGlyZSBrZXJuZWwgSSBzdWdnZXN0IHlvdSBsb29rIGludG8geW91
+cgpkaXN0cm8gd2lraS4gQWxsIGRpc3Ryb3MgaGF2ZSBkaWZmZXJlbnQgd2F5cyBvZiBkb2luZyB0
+aGluZ3MgaWYgeW91CndhbnQgdG8ga2VlcCB5b3VyIGluc3RhbGxhdGlvbiBjbGVhbi4KCllvdSBj
+YW4gc3RpbGwgdXNlIGJhY2twb3J0cyB0aG91Z2guIEFsbCB5b3UgbmVlZCBpcyB0byBidWlsZCBi
+YWNrcG9ydHMKcGFja2FnZSB5b3Vyc2VsZlsxXSBmcm9tIHdoYXRldmVyIGtlcm5lbCB0cmVlIHlv
+dSBkZXNpcmUsIGUuZy4KZ2l0aHViLmNvbS9rdmFsby9hdGggaW5zdGVhZCBvZiB1c2luZyB0aGUg
+cHJlLWJ1aWx0IG9uZS4KClsxXTogaHR0cHM6Ly9iYWNrcG9ydHMud2lraS5rZXJuZWwub3JnL2lu
+ZGV4LnBocC9Eb2N1bWVudGF0aW9uL2JhY2twb3J0cy9oYWNraW5nCgoKTWljaGHFggoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcg
+bGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
