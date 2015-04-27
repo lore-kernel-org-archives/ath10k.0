@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x235.google.com ([2a00:1450:4010:c03::235])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymbue-00023M-Rn
- for ath10k@lists.infradead.org; Mon, 27 Apr 2015 05:49:01 +0000
-Received: by lagv1 with SMTP id v1so71876853lag.3
- for <ath10k@lists.infradead.org>; Sun, 26 Apr 2015 22:48:39 -0700 (PDT)
+ id 1Ymel7-0007dm-8V
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2015 08:51:22 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: implement more versatile set_bitrate_mask
+References: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 27 Apr 2015 11:50:47 +0300
+In-Reply-To: <1428672772-9275-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 10 Apr 2015 13:32:52 +0000")
+Message-ID: <878udeq7iw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Date: Mon, 27 Apr 2015 11:18:39 +0530
-Message-ID: <CABHL29Hq8e+sgyfqtN-EbEpM1cC9XF_bO3F_rj68Piq-kKg4=w@mail.gmail.com>
-Subject: Tips to debug Firmware crash
-From: Venkat Ch <venkatch@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +23,40 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi All,
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-  I am an active developer of Atheros drivers for the last 10 years. I
-have been working on QCA 10.2.2 driver for the last few months and
-trying to understand the architecture of this offloading model. Though
-this forum is nothing to do with Atheros provided drivers, I took the
-liberty of posting the question to see if Ath10k community could help
-me. Sorry if I violated any guidelines.
+> Until now only a single fixed tx rate or nss was
+> allowed to be set.
+>
+> The patch attempts to improve this by allowing
+> most bitrate masks. The limitation is VHT MCS
+> rates cannot be expressed separately using
+> existing firmware interfaces and only the
+> following VHT MCS ranges are supported: none, 0-7,
+> 0-8, and 0-9.
+>
+> This keeps the old behaviour when requesting
+> single tx rate or single nss. The new bitrate mask
+> logic is only applied to other cases that would
+> return -EINVAL until now.
+>
+> Depending on firmware revisions some combinations
+> may crash firmware so use with care, please.
+>
+> This depends on "ath10k: don't use reassoc flag".
+> Without it key cache would effectively be
+> invalidated upon bitrate change leading to
+> communication being no longer possible.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-There is some problem at firmware level about which I am clueless.
-Whenever there is a crash in firmware the 5GHz interface goes down
-completely and there will not be any transmissions or receptions from
-the interface from then. What all I see on the console is  some log
-message "Target Asserted" . I don't get any stack trace to see in
-which function it crashed.
-
- Can any of you please let me know if there is a way to dump the stack
-trace and debug the firmware crash?
-
-
-Thanks & Regards
-Venkat
-
+Thanks, applied.
 
 -- 
-If you rest, you rust
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
