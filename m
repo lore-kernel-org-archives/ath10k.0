@@ -1,13 +1,27 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mout.gmx.net ([212.227.15.15])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ymjy7-0005NT-Pa
- for ath10k@lists.infradead.org; Mon, 27 Apr 2015 14:25:08 +0000
-Subject: [PATCH] ath10k: add ATH10K_FW_FEATURE_IGNORE_OTP_RESULT
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Date: Mon, 27 Apr 2015 17:24:38 +0300
-Message-ID: <20150427142438.25600.26537.stgit@potku.adurom.net>
+ id 1Ymkae-000061-Jv
+ for ath10k@lists.infradead.org; Mon, 27 Apr 2015 15:04:57 +0000
+Received: from [192.168.0.21] ([80.206.126.150]) by mail.gmx.com (mrgmx002)
+ with ESMTPSA (Nemesis) id 0MDyil-1YW0mX3BD5-00HQak for
+ <ath10k@lists.infradead.org>; Mon, 27 Apr 2015 17:04:31 +0200
+Message-ID: <553E5011.2050404@gmx.com>
+Date: Mon, 27 Apr 2015 17:04:49 +0200
+From: Gabriele Martino <g.martino@gmx.com>
 MIME-Version: 1.0
+Subject: Re: QCA6174 hw2.1?
+References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
+ <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
+ <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+ <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
+ <loom.20150425T025815-684@post.gmane.org>
+ <CAJAVYN208PQpnt5oQPi1hdYW71WMVJReBNSY-OqZ9aCb0yuiaA@mail.gmail.com>
+ <553B8F89.4040908@gmx.com>
+ <CAJAVYN1XKYdGqx4pzg3C9kSxj6_qwr4raoDJm7e+VLy1P=dsdw@mail.gmail.com>
+ <553CF1EE.50807@gmx.com> <553D8112.2050300@gmx.com>
+ <CA+-y_t-L5tAYRfT5+WzbB_EvZbWDO3hys9GD8Ms7fFhT_9cy_Q@mail.gmail.com>
+In-Reply-To: <CA+-y_t-L5tAYRfT5+WzbB_EvZbWDO3hys9GD8Ms7fFhT_9cy_Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +35,34 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
 
-qca6174 otp binary seems to always return an error to the host, even if the
-calibration succeeded. Add a firmware feature flag to detect if the firmware
-image which have this problem and workaround the issue in ath10k by ignoring
-the error code.
+On 27/04/2015 16:00, Moritz Morawietz wrote:
+> Hi!
+>
+> I have the same problems with my card (also a Killer N1525). It seems
+> you've done it, but i can't figure out how.
+>
+> Do i need to build and use kvalo's kernel, or is it enough to build
+> the modules ath10k_core & ath10k_pci?
+> I'm a bit afraid of compiling the whole kernel ^^
+> output of uname -a:
+> Linux companion 4.0.0-2-ARCH #1 SMP PREEMPT Tue Apr 14 07:14:46 CEST
+> 2015 x86_64 GNU/Linux
+The modules should be enough. Tell us if it works.
+Compiling a whole kernel isn't too hard if you already have a working
+configuration.
 
-I was also considering making this hw specific flag but as this is strictly a
-firmware issue it's best to handle this via a firmware feature flag so that it
-will be easy to disable the workaround.
+> I have the disassembly.py, but cannot find the dissect.py, can you
+> provide the link? Or, even better, the assembled files?
+I won't upload the assembled files now, I don't know if I can get
+licensing issues.
+You can find the dissect.py script here:
+http://lists.infradead.org/pipermail/ath10k/2015-April/005074.html
 
-Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c |    4 +++-
- drivers/net/wireless/ath/ath10k/core.h |    3 +++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+Good luck!
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 987b266278a8..bcccae19325d 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -387,7 +387,9 @@ static int ath10k_download_and_run_otp(struct ath10k *ar)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot otp execute result %d\n", result);
- 
--	if (!skip_otp && result != 0) {
-+	if (!(skip_otp || test_bit(ATH10K_FW_FEATURE_IGNORE_OTP_RESULT,
-+				   ar->fw_features))
-+	    && result != 0) {
- 		ath10k_err(ar, "otp calibration failed: %d", result);
- 		return -EINVAL;
- 	}
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8444adf42195..827b3d79ed0c 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -460,6 +460,9 @@ enum ath10k_fw_features {
- 	 */
- 	ATH10K_FW_FEATURE_WOWLAN_SUPPORT = 6,
- 
-+	/* Don't trust error code from otp.bin */
-+	ATH10K_FW_FEATURE_IGNORE_OTP_RESULT,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
+Regards,
+Gabriele
 
 
 _______________________________________________
