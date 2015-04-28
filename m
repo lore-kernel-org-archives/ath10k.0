@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yn6o9-0003ME-4E
- for ath10k@lists.infradead.org; Tue, 28 Apr 2015 14:48:22 +0000
-Message-ID: <553F9D9C.9080004@candelatech.com>
-Date: Tue, 28 Apr 2015 07:47:56 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yn77w-0005jJ-GP
+ for ath10k@lists.infradead.org; Tue, 28 Apr 2015 15:08:50 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: Modifing and installing ath10k driver for kernel 4.0
+References: <BB63CF2605733841BD56CD9C38AC1F7E1E678CA8@MBX23.d.ethz.ch>
+ <CA+BoTQmGCnAepE0OWEiO1ASrLEbsmrKqf2zS-s2WpAbkhX4vaw@mail.gmail.com>
+Date: Tue, 28 Apr 2015 18:08:16 +0300
+In-Reply-To: <CA+BoTQmGCnAepE0OWEiO1ASrLEbsmrKqf2zS-s2WpAbkhX4vaw@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 27 Apr 2015 13:03:11 +0200")
+Message-ID: <87383k70kf.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: attempting mesh on ath10k
-References: <20150424125055.GA27722@localhost>
- <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
- <20150428124116.GC4527@localhost>
- <CAEFj987sVTAn8ABk70AhtDcr2wA+RTH6eXKtgOk26h=pZ5A-JA@mail.gmail.com>
- <20150428125748.GE4527@localhost>
-In-Reply-To: <20150428125748.GE4527@localhost>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +20,27 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>, Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Costa Molero Edgar <cedgar@student.ethz.ch>
 
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-
-On 04/28/2015 05:57 AM, Bob Copeland wrote:
-> On Tue, Apr 28, 2015 at 08:50:01PM +0800, Chun-Yeow Yeoh wrote:
->> Great works, Bob.
->>
->> Which AP firmware that you have tested with?
+> You can still use backports though. All you need is to build backports
+> package yourself[1] from whatever kernel tree you desire, e.g.
+> github.com/kvalo/ath instead of using the pre-built one.
 >
-> That is with:
->
-> [   16.670000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
-> 0x043202ff) fw 10.2.4.45 api 4 htt 2.1 wmi 5 cal otp max_sta 128
->
-> I think it should work with CT too.  I need to go back and validate
-> that, and also make sure I can repro the AID crash on CT.  A confounding
-> factor is that every time I build new drivers for OpenWRT, it overwrites
-> the firmware again...
+> [1]: https://backports.wiki.kernel.org/index.php/Documentation/backports/hacking
 
+I also wrote something about ath10k and backports:
 
-If you feel adventurous, and want to apply some of my ath10k patches,
-I have a way to dump some of the interesting registers in CT firmware,
-including the rx-filter register.
-
-Maybe I can figure out what needs to be twiddled w/out having to add
-a monitor device.
-
-I could also potentially add a vdev type or flag for mesh interface,
-but that would definitely require driver hacks to enable the new
-flag and it would not be compatible with other upstream firmware.
-
-Thanks,
-Ben
+https://wireless.wiki.kernel.org/en/users/drivers/ath10k/backports
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
