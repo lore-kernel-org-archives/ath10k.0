@@ -1,13 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YoIF9-00008H-LD
- for ath10k@lists.infradead.org; Fri, 01 May 2015 21:13:08 +0000
-From: Yanbo Li <yanbol@qca.qualcomm.com>
-Subject: [PATCH] ath10k: Debugfs entry to enable/disable BTC feature
-Date: Fri, 1 May 2015 14:10:59 -0700
-Message-ID: <1430514659-11743-1-git-send-email-yanbol@qca.qualcomm.com>
+ id 1YoJlW-0005Vb-34
+ for ath10k@lists.infradead.org; Fri, 01 May 2015 22:50:39 +0000
+Received: by lbbuc2 with SMTP id uc2so72761641lbb.2
+ for <ath10k@lists.infradead.org>; Fri, 01 May 2015 15:50:15 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAMCCUbgLvvHYy4FLnPW4Vf44uX5T_3++3XGSP8=qAzzu1R4f4Q@mail.gmail.com>
+References: <CAMCCUbj4jEuU9i9s_z-9m=WTW1tSxbKa9Qp9ttWM184w3zWgbA@mail.gmail.com>
+ <5543A152.5050801@candelatech.com>
+ <CAMCCUbgVs6WComKHvdmLVb=quQ9WE7PcBrgZmXCURhYJVrZXFA@mail.gmail.com>
+ <5543AA43.7050106@candelatech.com>
+ <CAMCCUbg+eKsgPLa5b83UO5YJy3k=tOfoMW7-AR8vfsyPx-nV1g@mail.gmail.com>
+ <5543B066.2090706@candelatech.com>
+ <CAMCCUbgLvvHYy4FLnPW4Vf44uX5T_3++3XGSP8=qAzzu1R4f4Q@mail.gmail.com>
+Date: Sat, 2 May 2015 00:50:15 +0200
+Message-ID: <CAMCCUbiSjCVxtVPtMUWKoV_zfpyaK8FvcuvwrLu9YDMn8QMNSA@mail.gmail.com>
+Subject: Re: Which Firmware to use for STA (999.x crashes...)
+From: richard mayers <richard.mayers92@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,119 +30,249 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-As some radio have no connection with BT modules, enable the BTC feature
-will has some side effect if the radio's GPIO connect with any other HW
-modules. Add the control switcher "btc_feature" at debugfs and set the
-feature as disable by default to avoid such case.
+I found a combination that seems to work quite well. Kernel 3.16,
+drivers backported from next-20150424, and as a firmware the candela
+one.
 
-To enable this feature, execute:
-echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-To disable:
-echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+However now I had appeared another problem. I can not read the content
+of the file fw_stats. (/sys/kernel/debug/ieee80211/ath10k/). When I
+tried to read it says :
 
-Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+fw_stats: Connection timed out.
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 8444adf42195..6852e7fc5d5f 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -720,6 +720,8 @@ struct ath10k {
- 		u32 fw_cold_reset_counter;
- 	} stats;
- 
-+	bool btc_feature;
-+
- 	struct ath10k_thermal thermal;
- 	struct ath10k_wow wow;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 8fa606a9c4dd..d686aff2e0cc 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2092,6 +2092,54 @@ static const struct file_operations fops_quiet_period = {
- 	.open = simple_open
- };
- 
-+static ssize_t ath10k_write_btc_feature(struct file *file,
-+					const char __user *ubuf,
-+					size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[32];
-+	size_t buf_size;
-+	bool val;
-+
-+	buf_size = min(count, (sizeof(buf) - 1));
-+	if (copy_from_user(buf, ubuf, buf_size))
-+		return -EFAULT;
-+
-+	buf[buf_size] = '\0';
-+	if (strtobool(buf, &val) != 0) {
-+		ath10k_warn(ar, "Wrong BTC feature setting\n");
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&ar->conf_mutex);
-+	ar->btc_feature = val;
-+	queue_work(ar->workqueue, &ar->restart_work);
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return count;
-+}
-+
-+static ssize_t ath10k_read_btc_feature(struct file *file, char __user *ubuf,
-+				       size_t count, loff_t *ppos)
-+{
-+	char buf[32];
-+	struct ath10k *ar = file->private_data;
-+	int len = 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	len = scnprintf(buf, sizeof(buf) - len, "%d\n",
-+			ar->btc_feature);
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
-+}
-+
-+static const struct file_operations fops_btc_feature = {
-+	.read = ath10k_read_btc_feature,
-+	.write = ath10k_write_btc_feature,
-+	.open = simple_open
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
-@@ -2195,6 +2243,8 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
- 			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
- 
-+	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar, &fops_btc_feature);
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index ebaa096cf200..0d46168fbbb3 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3933,7 +3933,8 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
- 
- 	features = WMI_10_2_RX_BATCH_MODE;
--	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
-+	if (ar->btc_feature &&
-+	    test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
- 		features |= WMI_10_2_COEX_GPIO;
- 	cmd->resource_config.feature_mask = __cpu_to_le32(features);
- 
--- 
-1.9.1
+Dmesg :
 
+ath10k_pci 0000:0c:00.0: failed to request fw stats: -110.
+
+I remember that I had the same problem with the first firmware I had
+but I never had this problem with the candela firmware.
+
+Could it be the backported driver?
+
+Richard.
+
+2015-05-01 19:30 GMT+02:00 richard mayers <richard.mayers92@gmail.com>:
+> I will you let know if I find differences between kernels and driver
+> versions. So far as I said at the first message my best achievement
+> was with candela firmware, kernel 3.16 and backported driver 3.19.
+>
+> The traffic generator uses around 30%, so I guess its sufficient !
+>
+> Richard
+>
+> 2015-05-01 18:57 GMT+02:00 Ben Greear <greearb@candelatech.com>:
+>> On 05/01/2015 09:43 AM, richard mayers wrote:
+>>> I meant kernel. In the web page it says that:
+>>
+>> CT firmware should work fine with upstream kernels.  The extra benefits
+>> you might get from our modified kernels should be feature related and not performance
+>> related.  I'd be interested if you found differences in throughput using
+>> various kernels...
+>>
+>> My 4.0 tree is buggy in at least some configurations..I'm working on bisecting it now,
+>> but I would stick with our 3.17 tree for now if you are using our kernels.
+>>
+>>> To take advantage of all of the CT firmware features, please consider
+>>> using one of these kernels. Both kernels are rebased fairly often to
+>>> keep all CT patches at the top of the git changelog.
+>>>
+>>> For this measurements I am actually using old laptops. I started the
+>>> experiments with a board running OpenWrt, but the results were quite
+>>> bad. So I thought that was due to the CPU and I moved to laptops,
+>>> however I tried all the lenovo laptops I had at my disposition and
+>>> none of them were listing the network card (a lot of people had the
+>>> same problem with ). Finally, I found that the cards were recognized
+>>> in old Dell laptops, they have a dual core 1.66Ghz, Do you think is
+>>> that enough ?  I will also try to modify the sockets buffers.
+>>>
+>>> I read a paper were they report throughputs of 800-900 Mbit/s using
+>>> the same network card and running the tests in normal environments.
+>>
+>> We have seen 950Mbps on one golden Netlink AP, but cannot reliably
+>> reproduce that good throughput.
+>>
+>> Your CPU is probably sufficient...but you might check 'top'
+>> to make sure your traffic generator is not at 100% CPU.
+>>
+>> Thanks,
+>> Ben
+>>
+>>>
+>>> Thanks !
+>>>
+>>> Richard
+>>>
+>>> 2015-05-01 18:30 GMT+02:00 Ben Greear <greearb@candelatech.com>:
+>>>> On 05/01/2015 09:21 AM, richard mayers wrote:
+>>>>> Sorry for not providing details, I wanted to focus more in the
+>>>>> firmware crash. Therefore you recommend me to use the Candela
+>>>>> firmware. If I just want to run throughput, delay, and fairness
+>>>>> measurements do you think is okay not using the kernel provided by
+>>>>> them ?.
+>>>>
+>>>>
+>>>> You mean firmware not provided by them?
+>>>>
+>>>> I'd be happy to see comparisons between my CT firmware and others,
+>>>> but if official firmware just crashes, then I guess you cannot do
+>>>> that.
+>>>>
+>>>> If you can crash CT firmware, let me know...I have a chance of
+>>>> fixing it.  I have no chance of fixing upstream firmware, but
+>>>> maybe you can get some help from QCA folks.
+>>>>
+>>>> With UDP, we often see > 700Mbps throughput, but most of these
+>>>> types of tests we do in isolation chambers cabled up.
+>>>>
+>>>> Over-the-air is probably more like 600Mbps in a clean environment.
+>>>>
+>>>> You typically have to increase kernel socket buffers to get best
+>>>> throughput, and CPU on the host starts to matter at those speeds
+>>>> as well.
+>>>>
+>>>> Antenna matter a lot...just play around with it.
+>>>>
+>>>> Thanks,
+>>>> Ben
+>>>>
+>>>>>
+>>>>> Anyway, for the throughput I do as follows:
+>>>>>
+>>>>> Tool : Iperf. (iperf -c server_ip -b 1000M -i 1)
+>>>>> Protocol : UDP
+>>>>> Channel : Over the air, with three antennas.
+>>>>> AP: hostapd, channel 149, 80Mhz. With the same kernel, driver,
+>>>>> firmware, and NIC than the Station.
+>>>>> STA: I get the maximum throughput with MCS = 5/6, when I go further to
+>>>>> 7-9 the throughput drops dramatically to 50Mbit/s.
+>>>>>
+>>>>> I think the antennas should be separated each other 12 cm, I am wrong
+>>>>> ? can this have a high impact on the throughput ?
+>>>>>
+>>>>> Richard
+>>>>>
+>>>>> 2015-05-01 17:52 GMT+02:00 Ben Greear <greearb@candelatech.com>:
+>>>>>> Candela firmware should work just fine for stations.
+>>>>>>
+>>>>>> And, when reporting throughput, you should also provide details
+>>>>>> about how you tested (tool, protocol, over-the-air or not, AP
+>>>>>> involved, etc).
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Ben
+>>>>>>
+>>>>>>
+>>>>>> On 05/01/2015 08:38 AM, richard mayers wrote:
+>>>>>>> Hi everyone!
+>>>>>>>
+>>>>>>> I need to do some 802.11ac measurements. For that I am using the
+>>>>>>> Compex wle900vx.
+>>>>>>>
+>>>>>>> I had a set up in which everything was working quite well, however I
+>>>>>>> had a maximum throughput of 380Mbits/s ( with all the debug options
+>>>>>>> enabled )
+>>>>>>>
+>>>>>>> In this first set up I had been using ubuntu 14.04 LTS, kernel version
+>>>>>>> 3.16, for the driver I used the latest stable backport (3.19) and
+>>>>>>> finally as a firmware the commercial firmware from Candela Tech
+>>>>>>> (latest version) in both the AP and STA.
+>>>>>>>
+>>>>>>> However, I read in the wiki that the latest firmware version for AP is
+>>>>>>> the 10.2.4.48, and the Stations should use 999.999.0.63. For this
+>>>>>>> second set up I changed almost everything:
+>>>>>>>
+>>>>>>> - Upgraded kernel to 4.0.1
+>>>>>>> - Backported drivers from the git Modinfo output -> (backported from
+>>>>>>> Linux (v3.2-rc1-243765-ga2ff7c6) using backports
+>>>>>>> backports-20150424-2-g982)
+>>>>>>>
+>>>>>>> AP : 10.2.4.48 firmware
+>>>>>>> STA : Following the wiki : 999.999.0.63
+>>>>>>>
+>>>>>>> During boot the firmware is loaded without any problem:
+>>>>>>>
+>>>>>>> ath10k_pci 0000:0c:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw
+>>>>>>> 999.999.0.636 api 2 htt 2.1 wmi 1 cal otp max_sta 16
+>>>>>>>
+>>>>>>> However when I associate with the AP, the firmware crashes.
+>>>>>>>
+>>>>>>> [11831.954992] ath10k_pci 0000:0c:00.0: firmware crashed! (uuid n/a)
+>>>>>>> [11831.955031] ath10k_pci 0000:0c:00.0: qca988x hw2.0 (0x4100016c,
+>>>>>>> 0x043202ff) fw 999.999.0.636 api 2 htt 2.1 wmi 1 cal otp max_sta 16
+>>>>>>> [11831.955039] ath10k_pci 0000:0c:00.0: debug 0 debugfs 0 tracing 0
+>>>>>>> dfs 0 testmode 0
+>>>>>>> [11831.957059] ath10k_pci 0000:0c:00.0: firmware register dump:
+>>>>>>> [11831.957068] ath10k_pci 0000:0c:00.0: [00]: 0x4100016C 0x00000000
+>>>>>>> 0x009C4521 0x00000000
+>>>>>>> [11831.957076] ath10k_pci 0000:0c:00.0: [04]: 0x009C4521 0x00060530
+>>>>>>> 0x00000019 0x00955A00
+>>>>>>> [11831.957084] ath10k_pci 0000:0c:00.0: [08]: 0x00306862 0x00000000
+>>>>>>> 0x0040CC94 0x00000020
+>>>>>>> [11831.957091] ath10k_pci 0000:0c:00.0: [12]: 0x00000000 0x00000000
+>>>>>>> 0x00958360 0x0095836B
+>>>>>>> [11831.957098] ath10k_pci 0000:0c:00.0: [16]: 0x80991091 0x0040AD94
+>>>>>>> 0x0043155C 0x00000000
+>>>>>>> [11831.957106] ath10k_pci 0000:0c:00.0: [20]: 0x0000FFFF 0x00000000
+>>>>>>> 0x0043155C 0x00000000
+>>>>>>> [11831.957114] ath10k_pci 0000:0c:00.0: [24]: 0x809A0978 0x0040AD94
+>>>>>>> 0x00439484 0xC1A18834
+>>>>>>> [11831.957121] ath10k_pci 0000:0c:00.0: [28]: 0x809AD1A2 0x0040ADE4
+>>>>>>> 0x00439484 0x0043FB1C
+>>>>>>> [11831.957129] ath10k_pci 0000:0c:00.0: [32]: 0x809B35A3 0x0000001A
+>>>>>>> 0x00440A50 0x0000000E
+>>>>>>> [11831.957136] ath10k_pci 0000:0c:00.0: [36]: 0x00000000 0x00000000
+>>>>>>> 0x00000000 0x00000000
+>>>>>>> [11831.957143] ath10k_pci 0000:0c:00.0: [40]: 0x00000000 0x00000000
+>>>>>>> 0x00000000 0x00000094
+>>>>>>> [11831.957151] ath10k_pci 0000:0c:00.0: [44]: 0x00439DC8 0x00000000
+>>>>>>> 0x00000000 0x00400000
+>>>>>>> [11831.957158] ath10k_pci 0000:0c:00.0: [48]: 0x809AE0B4 0x0040AE04
+>>>>>>> 0x00400000 0x0043FB1C
+>>>>>>> [11831.957166] ath10k_pci 0000:0c:00.0: [52]: 0x00000001 0x00000000
+>>>>>>> 0x00423410 0x00400000
+>>>>>>> [11831.957173] ath10k_pci 0000:0c:00.0: [56]: 0x809AE17E 0x0040AE44
+>>>>>>> 0x0040FE6C 0x0040D310
+>>>>>>> [11832.046908] ath10k_pci 0000:0c:00.0: failed to synchronize monitor
+>>>>>>> vdev 1 stop: -108
+>>>>>>> [11832.046915] ath10k_pci 0000:0c:00.0: failed to stop monitor vdev: -108
+>>>>>>>
+>>>>>>>  I have seen that in the past a lot of people had problems with this
+>>>>>>> firmware but since years have passed maybe the way of solving have
+>>>>>>> evolved.
+>>>>>>>
+>>>>>>> Apart from that I also got the 00:03:07:12:34:56 MAC address issue.
+>>>>>>>
+>>>>>>> Any ideas guys? Should I use the candelatech firmware for the stations ?
+>>>>>>> Richard
+>>>>>>>
+>>>>>>> _______________________________________________
+>>>>>>> ath10k mailing list
+>>>>>>> ath10k@lists.infradead.org
+>>>>>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> --
+>>>>>> Ben Greear <greearb@candelatech.com>
+>>>>>> Candela Technologies Inc  http://www.candelatech.com
+>>>>>>
+>>>>>
+>>>>
+>>>>
+>>>> --
+>>>> Ben Greear <greearb@candelatech.com>
+>>>> Candela Technologies Inc  http://www.candelatech.com
+>>>>
+>>>
+>>
+>>
+>> --
+>> Ben Greear <greearb@candelatech.com>
+>> Candela Technologies Inc  http://www.candelatech.com
+>>
 
 _______________________________________________
 ath10k mailing list
