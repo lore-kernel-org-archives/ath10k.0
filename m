@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpKau-0008Tm-M9
- for ath10k@lists.infradead.org; Mon, 04 May 2015 17:55:53 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add ATH10K_FW_FEATURE_IGNORE_OTP_RESULT
-References: <20150427142438.25600.26537.stgit@potku.adurom.net>
-Date: Mon, 4 May 2015 20:55:01 +0300
-In-Reply-To: <20150427142438.25600.26537.stgit@potku.adurom.net> (Kalle Valo's
- message of "Mon, 27 Apr 2015 17:24:38 +0300")
-Message-ID: <874mnsw7m2.fsf@kamboji.qca.qualcomm.com>
+ id 1YpL4C-0005aL-A5
+ for ath10k@lists.infradead.org; Mon, 04 May 2015 18:26:08 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: increase relay buffer size of spectral scan
+Date: Mon, 4 May 2015 11:21:24 -0700
+Message-ID: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,23 +23,50 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Spectral scan supported by ath10k has capability to monitor and report
+through whole bands and channels, but current buffer size is too small
+to save reported spectral scan data.
+This results in dropping 5G channel reports at all when dual band card
+is used, so that users are not able to analyze spectral environments.
+Hence increase the buffer size to fix the problem.
 
-> qca6174 otp binary seems to always return an error to the host, even if the
-> calibration succeeded. Add a firmware feature flag to detect if the firmware
-> image which have this problem and workaround the issue in ath10k by ignoring
-> the error code.
->
-> I was also considering making this hw specific flag but as this is strictly a
-> firmware issue it's best to handle this via a firmware feature flag so that it
-> will be easy to disable the workaround.
->
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+A spectral data size is vary based on the number of bins, so the unit
+buffer size, 1140, is chose to minimize relay buffer fragmentation.
 
-Applied.
+The total buffer size is also chose in tradeoff with spectral scan
+support vs. kernel memory consumption.
+Since theoretical maximum buffer size, 9.5MB, can be consumed with
+512 bins in dual bands, we target to cover up to 128 bins for all
+channels in dual bands and due to the buffer size limitation,
+spectral scan with bin number bigger than 128 needs to be run on
+single band each.
 
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/spectral.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
+index d22addf..8dcd424 100644
+--- a/drivers/net/wireless/ath/ath10k/spectral.c
++++ b/drivers/net/wireless/ath/ath10k/spectral.c
+@@ -519,9 +519,12 @@ int ath10k_spectral_vif_stop(struct ath10k_vif *arvif)
+ 
+ int ath10k_spectral_create(struct ath10k *ar)
+ {
++	/* The buffer size covers whole channels in dual bands up to 128 bins.
++	 * Scan with bigger than 128 bins needs to be run on single band each.
++	 */
+ 	ar->spectral.rfs_chan_spec_scan = relay_open("spectral_scan",
+ 						     ar->debug.debugfs_phy,
+-						     1024, 256,
++						     1140, 2500,
+ 						     &rfs_spec_scan_cb, NULL);
+ 	debugfs_create_file("spectral_scan_ctl",
+ 			    S_IRUSR | S_IWUSR,
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
