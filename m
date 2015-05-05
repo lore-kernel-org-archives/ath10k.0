@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpL4C-0005aL-A5
- for ath10k@lists.infradead.org; Mon, 04 May 2015 18:26:08 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH] ath10k: increase relay buffer size of spectral scan
-Date: Mon, 4 May 2015 11:21:24 -0700
-Message-ID: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com>
+ id 1YpV39-0002nY-Bi
+ for ath10k@lists.infradead.org; Tue, 05 May 2015 05:05:44 +0000
+Received: by wizk4 with SMTP id k4so145018516wiz.1
+ for <ath10k@lists.infradead.org>; Mon, 04 May 2015 22:05:13 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <554273C1.7050203@gmail.com>
+References: <554273C1.7050203@gmail.com>
+Date: Tue, 5 May 2015 07:05:12 +0200
+Message-ID: <CA+BoTQnRLAawnyW5D67OTAtUJF=TH2+7ZyYy5FOi+0j_1+CQ_w@mail.gmail.com>
+Subject: Re: Rate marked as a VHT rate but data is invalid: MCS: 10, NSS: 2
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,59 +20,114 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: mindfsck <mindfsck@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Spectral scan supported by ath10k has capability to monitor and report
-through whole bands and channels, but current buffer size is too small
-to save reported spectral scan data.
-This results in dropping 5G channel reports at all when dual band card
-is used, so that users are not able to analyze spectral environments.
-Hence increase the buffer size to fix the problem.
-
-A spectral data size is vary based on the number of bins, so the unit
-buffer size, 1140, is chose to minimize relay buffer fragmentation.
-
-The total buffer size is also chose in tradeoff with spectral scan
-support vs. kernel memory consumption.
-Since theoretical maximum buffer size, 9.5MB, can be consumed with
-512 bins in dual bands, we target to cover up to 128 bins for all
-channels in dual bands and due to the buffer size limitation,
-spectral scan with bin number bigger than 128 needs to be run on
-single band each.
-
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/spectral.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-index d22addf..8dcd424 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.c
-+++ b/drivers/net/wireless/ath/ath10k/spectral.c
-@@ -519,9 +519,12 @@ int ath10k_spectral_vif_stop(struct ath10k_vif *arvif)
- 
- int ath10k_spectral_create(struct ath10k *ar)
- {
-+	/* The buffer size covers whole channels in dual bands up to 128 bins.
-+	 * Scan with bigger than 128 bins needs to be run on single band each.
-+	 */
- 	ar->spectral.rfs_chan_spec_scan = relay_open("spectral_scan",
- 						     ar->debug.debugfs_phy,
--						     1024, 256,
-+						     1140, 2500,
- 						     &rfs_spec_scan_cb, NULL);
- 	debugfs_create_file("spectral_scan_ctl",
- 			    S_IRUSR | S_IWUSR,
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMzAgQXByaWwgMjAxNSBhdCAyMDoyNiwgbWluZGZzY2sgPG1pbmRmc2NrQGdtYWlsLmNvbT4g
+d3JvdGU6Cj4gSGVsbG8sCj4KPiBJIGdvdCBteSBCcm9hZGNvbSBjYXJkIHNvbWVob3cgd29ya2lu
+ZyBhbHdheXMgZm9yIGEgaGFuZGZ1bCBzZWNvbmRzCj4gZm9sbG93aW5nIHRoaXMgZ3VpZGU6Cj4g
+aHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvdWJ1bnR1Lytzb3VyY2UvbGludXgvK2J1Zy8xMzgz
+MTg0L2NvbW1lbnRzLzExNQoKSSB0aGluayB5b3UgbWVhbiBRdWFsY29tbSBBdGhlcm9zIGNhcmQu
+CgoKPgo+IFNvIGZpcnN0IG9mIGFsbCBhIGJpZyB0aGFuayB5b3UhIDopCj4KPiBXaGVuIEkgZ29v
+Z2xlZCBteSBwcm9ibGVtICh0aGlzIGVtYWlscycgc3ViamVjdCBsaW5lKSBJIGZvdW5kIG1vc3Rs
+eSBhdGg5awo+IGZyb20gMjAxMy4uLgo+IE1heWJlIHNvbWVvbmUgaGVyZSBjYW4gcG9pbnQgbWUg
+dG8gYSBmaXggb3Igd29ya2Fyb3VuZCAoaWYgYXZhaWxhYmxlKT8KPiBJIGNhbiBjaGFuZ2Uga2Vy
+bmVsIGNvZGUsIGFwcGx5IHBhdGNoZXMsIHRlc3QgdGhpbmdzIGV0Yy4KPgo+IEhlcmUgaXMgdGhl
+IGtlcm5lbCBsb2c6Cj4gLS0KPiBbICAgIDUuMzE5MTc1XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
+MDogcGNpIGlycSBtc2kteCBpbnRlcnJ1cHRzIDggaXJxX21vZGUKPiAwIHJlc2V0X21vZGUgMAo+
+IFsgICAgNS41MDU1MjNdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBEaXJlY3QgZmlybXdhcmUg
+bG9hZCBmb3IKPiBhdGgxMGsvY2FsLXBjaS0wMDAwOjAzOjAwLjAuYmluIGZhaWxlZCB3aXRoIGVy
+cm9yIC0yCj4gWyAgICA1LjUwNTc3M10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IERpcmVjdCBm
+aXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9RQ0E2MTc0L2h3Mi4xL2JvYXJkLXBjaS0xNjhjOjAw
+M2U6MTFhZDowODA0LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFsgICAgNS41MDU3NzVdIGF0
+aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gbG9hZCBzcGVjIGJvYXJkIGZpbGUsCj4g
+ZmFsbGluZyBiYWNrIHRvIGdlbmVyaWM6IC0yCj4gWyAgICA1LjUwNTk0Nl0gYXRoMTBrX3BjaSAw
+MDAwOjAzOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9RQ0E2MTc0L2h3
+Mi4xL2Zpcm13YXJlLTUuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAgICA1LjUwNTk0OF0g
+YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGNvdWxkIG5vdCBmZXRjaCBmaXJtd2FyZSBmaWxlCj4g
+J2F0aDEway9RQ0E2MTc0L2h3Mi4xL2Zpcm13YXJlLTUuYmluJzogLTIKPgo+IC4uLgo+Cj4gWyAg
+IDEwLjMxNTUwNV0gYWhjaSAwMDAwOjAwOjFmLjI6IHBvcnQgZG9lcyBub3Qgc3VwcG9ydCBkZXZp
+Y2Ugc2xlZXAKPiBbICAgMTQuMzE0MTY1XSB3bGFuMTogYXV0aGVudGljYXRlIHdpdGggMDA6MWI6
+MmY6NjE6YjU6ZTgKPiBbICAgMTQuMzkxMzUxXSB3bGFuMTogc2VuZCBhdXRoIHRvIDAwOjFiOjJm
+OjYxOmI1OmU4ICh0cnkgMS8zKQo+IFsgICAxNC4zOTMwNzVdIHdsYW4xOiBhdXRoZW50aWNhdGVk
+Cj4gWyAgIDE0LjM5MzIzMl0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjAgd2xhbjE6IGRpc2FibGlu
+ZyBIVCBhcyBXTU0vUW9TIGlzIG5vdAo+IHN1cHBvcnRlZCBieSB0aGUgQVAKPiBbICAgMTQuMzkz
+MjM1XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMCB3bGFuMTogZGlzYWJsaW5nIFZIVCBhcyBXTU0v
+UW9TIGlzCj4gbm90IHN1cHBvcnRlZCBieSB0aGUgQVAKPiBbICAgMTQuMzk0ODAzXSB3bGFuMTog
+YXNzb2NpYXRlIHdpdGggMDA6MWI6MmY6NjE6YjU6ZTggKHRyeSAxLzMpCj4gWyAgIDE0LjM5NzI4
+NF0gd2xhbjE6IFJYIEFzc29jUmVzcCBmcm9tIDAwOjFiOjJmOjYxOmI1OmU4IChjYXBhYj0weDQz
+MQo+IHN0YXR1cz0wIGFpZD0zKQo+IFsgICAxNC40MjA2NzldIHdsYW4xOiBhc3NvY2lhdGVkCj4g
+WyAgIDE0LjQyMDcwOV0gSVB2NjogQUREUkNPTkYoTkVUREVWX0NIQU5HRSk6IHdsYW4xOiBsaW5r
+IGJlY29tZXMgcmVhZHkKPiBbICAgMTQuNTUyNDk0XSAtLS0tLS0tLS0tLS1bIGN1dCBoZXJlIF0t
+LS0tLS0tLS0tLS0KPiBbICAgMTQuNTUyNTIwXSBXQVJOSU5HOiBDUFU6IDIgUElEOiAwIGF0IG5l
+dC9tYWM4MDIxMS9yeC5jOjM1NzgKPiBpZWVlODAyMTFfcngrMHgyNmMvMHg5NDAgW21hYzgwMjEx
+XSgpCj4gWyAgIDE0LjU1MjUyMl0gUmF0ZSBtYXJrZWQgYXMgYSBWSFQgcmF0ZSBidXQgZGF0YSBp
+cyBpbnZhbGlkOiBNQ1M6IDEwLCBOU1M6Cj4gMgoKRWl0aGVyIGF0aDEwayBkb2Vzbid0IHBhcnNl
+IFZIVC1TSUcgcHJvcGVybHkgb3IgZmlybXdhcmUgcmVwb3J0cwppbnZhbGlkIFZIVC1TSUcgZmll
+bGQuIENhbid0IHNheSBtdWNoIHdpdGhvdXQgZGVidWcgbG9ncy4KCgpbLi4uXQo+IFsgIDIxMC42
+OTY2MjRdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+
+IDE0Y2E5NzQ0LTcxNzEtNDM2NS05NjEyLTNmNWVkZTMwY2JlYykKPiBbICAyMTAuNjk2NjM1XSBh
+dGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogcWNhNjE3NCBodzIuMSAoMHgwNTAxMDAwMCwKPiAweDAw
+MzQwNWZmLCAxNjhjOjAwM2U6MTFhZDowODA0IGZhbGxiYWNrKSBmdyBraWxsZXItbjE1MjUtZncg
+YXBpIDQgaHR0IDMuMAo+IHdtaSA0IGNhbCBvdHAgbWF4X3N0YSAzMgo+IFsgIDIxMC42OTY2Mzdd
+IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZz
+IDAKPiB0ZXN0bW9kZSAwCj4gWyAgMjEwLjY5ODY0N10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6
+IGZpcm13YXJlIHJlZ2lzdGVyIGR1bXA6Cj4gWyAgMjEwLjY5ODY0OF0gYXRoMTBrX3BjaSAwMDAw
+OjAzOjAwLjA6IFswMF06IDB4MDUwMTAwMDAgMHgwMDAwMDAwMAo+IDB4MDA5OUJGQUEgMHgwMDAw
+MDAwMAo+IFsgIDIxMC42OTg2NTBdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBbMDRdOiAweDAw
+MDAwMDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAyMTAuNjk4NjUx
+XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzA4XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4g
+MHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWyAgMjEwLjY5ODY1Ml0gYXRoMTBrX3BjaSAwMDAwOjAz
+OjAwLjA6IFsxMl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAw
+MAo+IFsgIDIxMC42OTg2NTNdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBbMTZdOiAweDAwMDAw
+MDAwIDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDA5OUJGQUEKPiBbICAyMTAuNjk4NjU1XSBh
+dGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzIwXTogMHgwMDAwMDAwMCAweDAwNDAxOEYwCj4gMHgw
+MDAwMDAwMCAweDAwMDAwMDAwCj4gWyAgMjEwLjY5ODY1Nl0gYXRoMTBrX3BjaSAwMDAwOjAzOjAw
+LjA6IFsyNF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+
+IFsgIDIxMC42OTg2NTddIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBbMjhdOiAweDAwMDAwMDAw
+IDB4MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAyMTAuNjk4NjU4XSBhdGgx
+MGtfcGNpIDAwMDA6MDM6MDAuMDogWzMyXTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAw
+MDAwMCAweDAwMDAwMDAwCj4gWyAgMjEwLjY5ODY1OV0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6
+IFszNl06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsg
+IDIxMC42OTg2NjBdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBbNDBdOiAweDAwMDAwMDAwIDB4
+MDAwMDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAyMTAuNjk4NjYxXSBhdGgxMGtf
+cGNpIDAwMDA6MDM6MDAuMDogWzQ0XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAw
+MCAweDAwMDAwMDAwCj4gWyAgMjEwLjY5ODY2M10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFs0
+OF06IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IDB4MDAwMDAwMDAgMHgwMDAwMDAwMAo+IFsgIDIx
+MC42OTg2NjRdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBbNTJdOiAweDAwMDAwMDAwIDB4MDAw
+MDAwMDAKPiAweDAwMDAwMDAwIDB4MDAwMDAwMDAKPiBbICAyMTAuNjk4NjY1XSBhdGgxMGtfcGNp
+IDAwMDA6MDM6MDAuMDogWzU2XTogMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gMHgwMDAwMDAwMCAw
+eDAwMDAwMDAwCj4gWyAgMjEwLjc0MjE4NV0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRldmlj
+ZSBoYXMgY3Jhc2hlZCBkdXJpbmcgaW5pdAo+IFsgIDIxMC43NjYyMTZdIGF0aDEwa19wY2kgMDAw
+MDowMzowMC4wOiBkZXZpY2UgaGFzIGNyYXNoZWQgZHVyaW5nIGluaXQKPiBbICAyMTAuNzY2MjE4
+XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdhaXQgZm9yIHRhcmdldCBpbml0
+OiAtNzAKPiBbICAyMTAuNzY2NjUwXSBpZWVlODAyMTEgcGh5MDogSGFyZHdhcmUgcmVzdGFydCB3
+YXMgcmVxdWVzdGVkCj4gWyAgMjEwLjc2NjY2M10gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZh
+aWxlZCB0byBzeW5jaHJvbml6ZSBtb25pdG9yIHZkZXYgMQo+IHN0b3A6IC0xMDgKPiBbICAyMTAu
+NzY2NjY0XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHN0b3AgbW9uaXRvciB2
+ZGV2OiAtMTA4Cj4gWyAgMjEwLjgwNjMyMl0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRldmlj
+ZSBoYXMgY3Jhc2hlZCBkdXJpbmcgaW5pdAo+IFsgIDIxMC44MzAzMjRdIGF0aDEwa19wY2kgMDAw
+MDowMzowMC4wOiBkZXZpY2UgaGFzIGNyYXNoZWQgZHVyaW5nIGluaXQKPiBbICAyMTAuODMwMzI3
+XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHdhaXQgZm9yIHRhcmdldCBpbml0
+OiAtNzAKPiBbICAyMTIuMjI3OTA1XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZGV2aWNlIHN1
+Y2Nlc3NmdWxseSByZWNvdmVyZWQKPiBbICAyMTYuMjMyMTc5XSBhdGgxMGtfcGNpIDAwMDA6MDM6
+MDAuMDogZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQKPiA5YzIzZDRkZS00NDIwLTQ2MzItODY2NS02
+MmUzYTcwNzYyNzYpCj4gWyAgMjE2LjIzMjE5MF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHFj
+YTYxNzQgaHcyLjEgKDB4MDUwMTAwMDAsCj4gMHgwMDM0MDVmZiwgMTY4YzowMDNlOjExYWQ6MDgw
+NCBmYWxsYmFjaykgZncga2lsbGVyLW4xNTI1LWZ3IGFwaSA0IGh0dCAzLjAKPiB3bWkgNCBjYWwg
+b3RwIG1heF9zdGEgMzIKPiBbICAyMTYuMjMyMTkyXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
+ZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAxIGRmcyAwCj4gdGVzdG1vZGUgMAo+IFsgIDIxNi4y
+MzQxOTddIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgoK
+RWl0aGVyIGRldmljZSByZXNldCBkaWRuJ3QgcmVzZXQgaXQgZW50aXJlbHkgb3IgdGhlcmUncyBh
+IHJlY3VycmluZwpjb25kaXRpb24gaW4gZHJpdmVyIHdoaWNoIGxlYWRzIHRvIHRoZSBjcmFzaC4g
+V2l0aG91dCBkZWJ1ZyBsb2dzIEkKY2FuJ3QgaGVscCBtdWNoLiBZb3UnbGwgbmVlZCB0byBjb21w
+aWxlIGF0aDEwayB3aXRoIGRlYnVnIGVuYWJsZWQgYW5kCmdhdGhlciB0cmFjZXMgd2l0aCBgdHJh
+Y2UtY21kYCBbMV0uCgoKWzFdOiBodHRwczovL3dpcmVsZXNzLndpa2kua2VybmVsLm9yZy9lbi91
+c2Vycy9kcml2ZXJzL2F0aDEway9kZWJ1ZyN0cmFjaW5nCgoKTWljaGHFggoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
