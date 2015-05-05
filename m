@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ypat6-0007yf-GV
- for ath10k@lists.infradead.org; Tue, 05 May 2015 11:19:45 +0000
-Received: by wizk4 with SMTP id k4so156171865wiz.1
- for <ath10k@lists.infradead.org>; Tue, 05 May 2015 04:19:22 -0700 (PDT)
+ id 1Ypc0b-00043f-Vg
+ for ath10k@lists.infradead.org; Tue, 05 May 2015 12:31:37 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix survey information reporting
+Date: Tue, 5 May 2015 18:00:48 +0530
+Message-ID: <1430829048-22549-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAEFj984qhw4wjgCUtdGY_XLX491fhfD67ZaxRO8sHjpnYQiUQg@mail.gmail.com>
-References: <CAEFj9871+uootjCDVNBEKSYiDJzdRcMLkWe=bKdmxKDKBCBbKA@mail.gmail.com>
- <CAEFj986ReYLUyqabqm8wosr_NGsofzGU8OWQvke23BCiqX_b_g@mail.gmail.com>
- <CA+BoTQmsNMiKDDFkK9A_g0Zf-4rOzU-1P9HCgpaBEfod8kYZbA@mail.gmail.com>
- <CAEFj984kq-Gs=Yam564QfSs8pPNVjjcv7SQLtcTLih43HOp84Q@mail.gmail.com>
- <CA+BoTQ=uSuZnKcpXmVB9CnCuRcROKxdRAdLkEHcXMdyERfKqwA@mail.gmail.com>
- <CAEFj984qhw4wjgCUtdGY_XLX491fhfD67ZaxRO8sHjpnYQiUQg@mail.gmail.com>
-Date: Tue, 5 May 2015 13:19:22 +0200
-Message-ID: <CA+BoTQmfJYd6uE8mPDvD54FQf6cwjDKN5aaURPVfXejUypL2Dg@mail.gmail.com>
-Subject: Re: Compex WLE900N5-23
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,61 +16,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-T24gNSBNYXkgMjAxNSBhdCAxMzoxMSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFp
-bC5jb20+IHdyb3RlOgo+IFdoYXQgdG8gYmUgc2V0IGZvciAiVkVSU0lPTl9TVFJJTkcgREVDSU1B
-TF9CSVRNQVNLX09GX0ZFQVRVUkVTIiBmb3IgYXNzZW1ibHk/Cj4KPiBJIHJhbiBpbnRvIHRoaXMg
-ZXJyb3IgIkluZGV4RXJyb3I6IGxpc3QgaW5kZXggb3V0IG9mIHJhbmdlIiBkdXJpbmcgYXNzZW1i
-bHkuCgpJIHRoaW5rIHRoZSBmb2xsb3dpbmcgc2hvdWxkIHdvcms6CgogIHB5dGhvbiBhc3NlbWJs
-ZS5weSAxMC4yLXRlc3QgMTIgZnctZnJvbS0xMC4yLmJpbiBvdHAtZnJvbS0xMC4xLmJpbiA1Cgp3
-bWktbWdtdC10eCA9IEJJVCgyKSA9IDQKbm8tcDJwID0gQklUKDMpID0gOAoKSGVuY2UgYDEyYCBm
-b3IgZmVhdHVyZXMuCgpJZiB5b3UgYXNzZW1ibGUgMTAuMi40IHdtaS1vcCBtdXN0IGJlIDUuIElm
-IHlvdSB1c2UgMTAuMi0wMDA4MiB3bWktb3AgbXVzdCBiZSAzLgoKCk1pY2hhxYIKCgo+IC0tLQo+
-IENodW4tWWVvdwo+Cj4gT24gVHVlLCBNYXkgNSwgMjAxNSBhdCAyOjQ5IFBNLCBNaWNoYWwgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDUgTWF5IDIwMTUgYXQg
-MDc6NTYsIFllb2ggQ2h1bi1ZZW93IDx5ZW9oY2h1bnllb3dAZ21haWwuY29tPiB3cm90ZToKPj4+
-IFllcywgdGhpcyBpcyB0aGUgbGF0ZXN0IGZpcm13YXJlIHRoYXQgSSBoYXZlIHRyaWVkOgo+Pj4K
-Pj4+IGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBxY2E5ODh4IGh3Mi4wICgweDQxMDAwMTZjLCAw
-eDA0MzIwMmZmKSBmdwo+Pj4gMTAuMi40LjQ4IGFwaSA0IGh0dCAyLjEgd21pIDUgY2FsIG90cCBt
-YXhfc3RhIDEyOAo+Pj4KPj4+IEJ1dCBzdGlsbCB0aGUgc2FtZSwgZmlybXdhcmUgY3Jhc2hlZDoK
-Pj4+IFsgIDE1NC45MjAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gdG8g
-cmVxdWVzdCBtb25pdG9yCj4+PiB2ZGV2IDEgc3RvcDogLTExCj4+PiBbICAxNTkuOTIwMDAwXSBh
-dGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHN5bmNocm9uaXplIG1vbml0b3IKPj4+
-IHZkZXYgMSBzdG9wOiAtMTQ1Cj4+PiBbICAxNTkuOTIwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6
-MDAuMDogZmFpbGVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2OiAtMTQ1Cj4+PiBbICAxNTkuOTMwMDAw
-XSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHJlY2FsYyBtb250aW9yOiAtMTQ1
-Cj4+PiBbICAxNjIuOTQwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHN0
-b3AgV01JIHZkZXYgMDogLTExCj4+PiBbICAxNjUuOTQwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6
-MDAuMDogZmFpbGVkIHRvIHB1dCBkb3duIG1vbml0b3IgdmRldiAxOiAtMTEKPj4+IFsgIDE2OC45
-NDAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gdG8gcmVxdWVzdCBtb25p
-dG9yCj4+PiB2ZGV2IDEgc3RvcDogLTExCj4+PiBbICAxNzMuOTQwMDAwXSBhdGgxMGtfcGNpIDAw
-MDA6MDA6MDAuMDogZmFpbGVkIHRvIHN5bmNocm9uaXplIG1vbml0b3IKPj4+IHZkZXYgMSBzdG9w
-OiAtMTQ1Cj4+PiBbICAxNzMuOTQwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVk
-IHRvIHN0b3AgbW9uaXRvciB2ZGV2OiAtMTQ1Cj4+PiBbICAxNzYuOTUwMDAwXSBhdGgxMGtfcGNp
-IDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHB1dCBkb3duIG1vbml0b3IgdmRldiAxOiAtMTEKPj4+
-IFsgIDE3OS45NTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gdG8gcmVx
-dWVzdCBtb25pdG9yCj4+PiB2ZGV2IDEgc3RvcDogLTExCj4+PiBbICAxODQuOTUwMDAwXSBhdGgx
-MGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHN5bmNocm9uaXplIG1vbml0b3IKPj4+IHZk
-ZXYgMSBzdG9wOiAtMTQ1Cj4+PiBbICAxODQuOTUwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAu
-MDogZmFpbGVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2OiAtMTQ1Cj4+PiBbICAxODcuOTYwMDAwXSBh
-dGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHN1Ym1pdCBBUCBzZWxmLXBlZXIKPj4+
-IHJlbW92YWwgb24gdmRldiAwOiAtMTEKPj4+IFsgIDE5MC45NjAwMDBdIGF0aDEwa19wY2kgMDAw
-MDowMDowMC4wOiBmYWlsZWQgdG8gZGVsZXRlIFdNSSB2ZGV2IDA6IC0xMQo+Pj4gWyAgMTkzLjk2
-MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byByZW1vdmUgQVAgc2VsZi1w
-ZWVyCj4+PiBvbiB2ZGV2IDA6IC0xNDUKPj4+IFsgIDE5My45NjAwMDBdIGF0aDEwa19wY2kgMDAw
-MDowMDowMC4wOiByZW1vdmluZyBzdGFsZSBwZWVyCj4+PiAwNDpmMDoyMTowYzphNToxNyBmcm9t
-IHZkZXZfaWQgMAo+Pj4gWyAgMTk2Ljk3MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZh
-aWxlZCB0byBwdXQgZG93biBtb25pdG9yIHZkZXYgMTogLTExCj4+Cj4+IEhtbS4uIENhbiB5b3Ug
-dHJ5IHRvIHJlcGFjayBmaXJtd2FyZSBhbmQgY29tYmluZSBtYWluIGJpbmFyeSBmcm9tIDEwLjIK
-Pj4gYW5kIG90cCBmcm9tIDEwLjEgYW5kIHRlc3QgdGhhdD8gWW91IGNhbiB1c2UgdGhlc2UgdG9v
-bHM6Cj4+Cj4+ICBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9rYXppa2N6LzY0MzEzYjllMjQ3MDY2
-MGZhYWUxCj4+ICBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9rYXppa2N6L2M5NzBjYmYzYTg2M2Vi
-YmM0NDk1Cj4+Cj4+Cj4+IE1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
-ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Rx clear count reported in wmi_chan_info_event is actually channel_busy_count
+not rx_frame_count. Send rx_clear_count through time_busy of survey_info
+and set SURVEY_INFO_TIME_BUSY in filled.
+
+iw wlan0 survey dump
+
+urvey data from wlan0
+        frequency:                      5180 MHz [in use]
+        noise:                          -103 dBm
+        channel active time:            150 ms
+        channel busy time:              22 ms
+Survey data from wlan0
+        frequency:                      5200 MHz
+        noise:                          -102 dBm
+        channel active time:            146 ms
+        channel busy time:              0 ms
+
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index ebaa096..0fabe68 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -1645,10 +1645,10 @@ void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
+ 
+ 		survey = &ar->survey[idx];
+ 		survey->time = WMI_CHAN_INFO_MSEC(cycle_count);
+-		survey->time_rx = WMI_CHAN_INFO_MSEC(rx_clear_count);
++		survey->time_busy = WMI_CHAN_INFO_MSEC(rx_clear_count);
+ 		survey->noise = noise_floor;
+ 		survey->filled = SURVEY_INFO_TIME |
+-				 SURVEY_INFO_TIME_RX |
++				 SURVEY_INFO_TIME_BUSY |
+ 				 SURVEY_INFO_NOISE_DBM;
+ 	}
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
