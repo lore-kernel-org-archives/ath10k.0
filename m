@@ -1,15 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail1.g8.pair.com ([66.39.4.88])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YphKO-0002Id-S8
- for ath10k@lists.infradead.org; Tue, 05 May 2015 18:12:22 +0000
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2098\))
-Subject: Re: Getting RSSI per antenna.
-From: Michael Ney <neym@vorklift.com>
-In-Reply-To: <BB63CF2605733841BD56CD9C38AC1F7E1F34E56E@MBX13.d.ethz.ch>
-Date: Tue, 5 May 2015 14:11:46 -0400
-Message-Id: <DB59F61F-8BFD-48C3-AD4C-BA566E5EC6AB@vorklift.com>
-References: <BB63CF2605733841BD56CD9C38AC1F7E1F34E56E@MBX13.d.ethz.ch>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YplR3-0002uR-1j
+ for ath10k@lists.infradead.org; Tue, 05 May 2015 22:35:29 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 982C740B2CD
+ for <ath10k@lists.infradead.org>; Tue,  5 May 2015 15:35:04 -0700 (PDT)
+Message-ID: <55494598.2060603@candelatech.com>
+Date: Tue, 05 May 2015 15:35:04 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: htt_rx questions in 4.0 kernel.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +25,37 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Costa Molero Edgar <cedgar@student.ethz.ch>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-Check the rx_ppdu_start structure in rx_desc.h. The per-antenna values are populated by the firmware into the rx descripter (verified), which is parsed in the function "ath10k_htt_rx_h_signal" in htt_rx.c. You would need to implement something similar to the method in the "ath9k_cmn_process_rssi" function from ath9k's common.c. Once you do that, you should be able to view the per-antenna RSSI in any tool that can parse the radiotap header such as wireshark, but you won't see it in iw or iwconfig. Also, you shouldn't be using iwconfig. It's deprecated.
+I am slowly tracking down problems with receiving data frames
+on 3.19 and higher kernels, when using my rx-sw-crypt patch
+and CT firmware.
+
+I think the main thing my patch is changing in this case is that
+the frames are received in raw mode with this patch enabled.
+
+Hard to do a bisect, because the rx logic changed so much and I
+have to apply fairly tricky patches to make my feature work, but
+3.18 and earlier seem to work fine, and 3.19 and 4.0 does not.
+
+Latest clue appears to be that ARP frames are received fine (data
+contents looks right), but the stack fails the is_data() check.
+
+While poking at this further, I noticed that ath10k_htt_rx_h_undecap
+defines 'hdr' and assigns it, but never uses it.
+
+I also do not see the first_hdr used when decapping raw
+frames.
+
+Maybe that is part of the problem?
+
+Thanks,
+Ben
 
 
-> On May 5, 2015, at 1:30 PM, Costa Molero Edgar <cedgar@student.ethz.ch> wrote:
-> 
-> Hi guys,
-> 
-> Is there anyway I can get a separate RSSI for each one of the antennas ? I guess that the signal level reported by iwconfig is a combination, so it should be a way to get them separately. Is that functionality implemented or if not could some one tell me which variables from the driver contain that information ?
-> 
-> Thank you very much,
-> 
-> Rfhst
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
