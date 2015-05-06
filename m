@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YplR3-0002uR-1j
- for ath10k@lists.infradead.org; Tue, 05 May 2015 22:35:29 +0000
+ id 1YpnUT-0000tt-Ak
+ for ath10k@lists.infradead.org; Wed, 06 May 2015 00:47:10 +0000
 Received: from [192.168.100.236] (unknown [50.251.239.81])
  (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
  (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 982C740B2CD
- for <ath10k@lists.infradead.org>; Tue,  5 May 2015 15:35:04 -0700 (PDT)
-Message-ID: <55494598.2060603@candelatech.com>
-Date: Tue, 05 May 2015 15:35:04 -0700
+ by mail2.candelatech.com (Postfix) with ESMTPSA id F281740B2CD
+ for <ath10k@lists.infradead.org>; Tue,  5 May 2015 17:46:47 -0700 (PDT)
+Message-ID: <55496477.50909@candelatech.com>
+Date: Tue, 05 May 2015 17:46:47 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: htt_rx questions in 4.0 kernel.
+Subject: Anyone tried ANQP query with ath10k?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +27,16 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k <ath10k@lists.infradead.org>
 
-I am slowly tracking down problems with receiving data frames
-on 3.19 and higher kernels, when using my rx-sw-crypt patch
-and CT firmware.
+I have what I believe is an identical setup, except that one station
+is on ath9k, and another is on ath10k.  The ath9k can query ANQP
+just fine.  When sniffing, I never even see any ANQP queries go out
+for the ath10k station.
 
-I think the main thing my patch is changing in this case is that
-the frames are received in raw mode with this patch enabled.
-
-Hard to do a bisect, because the rx logic changed so much and I
-have to apply fairly tricky patches to make my feature work, but
-3.18 and earlier seem to work fine, and 3.19 and 4.0 does not.
-
-Latest clue appears to be that ARP frames are received fine (data
-contents looks right), but the stack fails the is_data() check.
-
-While poking at this further, I noticed that ath10k_htt_rx_h_undecap
-defines 'hdr' and assigns it, but never uses it.
-
-I also do not see the first_hdr used when decapping raw
-frames.
-
-Maybe that is part of the problem?
+Maybe I still have misconfiguration...I'm curious if anyone has tried
+this?
 
 Thanks,
 Ben
-
 
 -- 
 Ben Greear <greearb@candelatech.com>
