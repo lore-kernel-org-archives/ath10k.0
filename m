@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YpwjT-0005EA-Nx
- for ath10k@lists.infradead.org; Wed, 06 May 2015 10:39:16 +0000
-Message-ID: <5549EF46.10104@dd-wrt.com>
-Date: Wed, 06 May 2015 12:39:02 +0200
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+ id 1YpxAS-0004g5-IM
+ for ath10k@lists.infradead.org; Wed, 06 May 2015 11:07:09 +0000
+Received: by wizk4 with SMTP id k4so197449897wiz.1
+ for <ath10k@lists.infradead.org>; Wed, 06 May 2015 04:06:44 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <5549EF46.10104@dd-wrt.com>
 References: <55494598.2060603@candelatech.com>
-In-Reply-To: <55494598.2060603@candelatech.com>
-Subject: changing hw address of ath10k card
+	<5549EF46.10104@dd-wrt.com>
+Date: Wed, 6 May 2015 13:06:44 +0200
+Message-ID: <CA+BoTQk7LdGqj96=0__UkHHBKNXt+4KUoNjq2ep0BmEvNeXaZQ@mail.gmail.com>
+Subject: Re: changing hw address of ath10k card
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +21,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello
-
-I recently stumbled across a problem in ath10k. while developing on 
-embedded wireless routers
-i found a device which uses a ar988x card using a card embedded board 
-eeprom. the problem is there is no way to override
-the cards hardware/mac address, which is required on that device since 
-it uses just a fake mac on that board data.
-is there any way/trick available to deal with that problem?
-
-Sebastian
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBNYXkgMjAxNSBhdCAxMjozOSwgU2ViYXN0aWFuIEdvdHRzY2hhbGwgPHMuZ290dHNjaGFs
+bEBkZC13cnQuY29tPiB3cm90ZToKPiBIZWxsbwoKSGksCgoKPiBJIHJlY2VudGx5IHN0dW1ibGVk
+IGFjcm9zcyBhIHByb2JsZW0gaW4gYXRoMTBrLiB3aGlsZSBkZXZlbG9waW5nIG9uIGVtYmVkZGVk
+Cj4gd2lyZWxlc3Mgcm91dGVycwo+IGkgZm91bmQgYSBkZXZpY2Ugd2hpY2ggdXNlcyBhIGFyOTg4
+eCBjYXJkIHVzaW5nIGEgY2FyZCBlbWJlZGRlZCBib2FyZAo+IGVlcHJvbS4gdGhlIHByb2JsZW0g
+aXMgdGhlcmUgaXMgbm8gd2F5IHRvIG92ZXJyaWRlCj4gdGhlIGNhcmRzIGhhcmR3YXJlL21hYyBh
+ZGRyZXNzLCB3aGljaCBpcyByZXF1aXJlZCBvbiB0aGF0IGRldmljZSBzaW5jZSBpdAo+IHVzZXMg
+anVzdCBhIGZha2UgbWFjIG9uIHRoYXQgYm9hcmQgZGF0YS4KCklmIGRldmljZSBjb250YWlucyB2
+YWxpZCBFRVBST00gZGF0YSB0aGVuIGJvdGggY2FsaWJyYXRpb24gYW5kIG1hYwphZGRyZXNzIGlz
+IHJlYWQgdXNpbmcgT1RQLiBJbiB0aGF0IGNhc2UgYSBtZXJlIGZha2UgYm9hcmQgdGVtcGxhdGUK
+YmluYXJ5IGlzIHVzZWQgYnkgdGhlIGRyaXZlciAodGhlIGRlZmF1bHQgYm9hcmQuYmluKS4KCklm
+IGRldmljZSBjb250YWlucyBubyB2YWxpZCBFRVBST00sIHdoaWNoIGlzIHRoZSBjYXNlIGZvciBt
+YW55IHJvdXRlcnMKb3V0IGluIHRoZSB3aWxkIGUuZy4gVFAtTGluayBBcmNoZXIgQzUvQzcsIHlv
+dSBtdXN0IHByb3ZpZGUgYSBjb21wbGV0ZQpib2FyZCBkYXRhLiBPbiByb3V0ZXJzIHRoaXMgZGF0
+YSBpcyBvZnRlbiBzdG9yZWQgb24gTkFORC9GbGFzaApwYXJ0aXRpb25zLiBPcGVuV1JUIGRvZXMg
+aGFuZGxlIHRoaXMgYW5kIGV4dHJhY3RzIGNhbGlicmF0aW9uIGRhdGEKZmlsZS4gSWYgeW91IGZh
+aWwgdG8gcHJvdmlkZSB0aGF0IGFuZCBhdHRlbXB0IHRvIHVzZSB0aGUgZGVmYXVsdApib2FyZC5i
+aW4geW91J2xsIGdldCBoYXJkY29kZWQgbWFjIGFuZCBUeC9SeCBwZXJmb3JtYW5jZSB3aWxsIGJl
+IHZlcnkKcG9vciBtb3N0IGxpa2VseS4KCklmIGF0aDEwayBhc3NpZ25zIDAwOjAzOjA3OjEyOjM0
+OjU2IG1hYyBhZGRyZXNzIHRvIHRoZSBpbnRlcmZhY2UgdGhlbgp5b3UndmUgbW9zdCBsaWtlbHkg
+cHJvdmlkZWQgYSBmYWtlIGJvYXJkIHRlbXBsYXRlIGFuZCB0aGUgZGV2aWNlCmRvZXNuJ3QgaGF2
+ZSBhIHZhbGlkIEVFUFJPTSBkYXRhLiBBcmUgeW91IHVzaW5nIHNraXBfb3RwIG1vZHVsZQpwYXJh
+bWV0ZXIgYnkgYW55IGNoYW5jZSBvciBvdGhlciBoYWNrcy9jdXN0b20gcGF0Y2hlcyBvbiBhdGgx
+MGs/CgoKPiBpcyB0aGVyZSBhbnkgd2F5L3RyaWNrIGF2YWlsYWJsZSB0byBkZWFsIHdpdGggdGhh
+dCBwcm9ibGVtPwoKWW91IGNhbiBhbHdheXMgY2hhbmdlIHRoZSBtYWMgYWRkcmVzcyB2aWEgYGlw
+YCBvciBgaWZjb25maWdgIGNvbW1hbmRzCmFmdGVyIGludGVyZmFjZSBpcyBjcmVhdGVkIGJ1dCB0
+aGF0J3MgcHJvYmFibHkgbm90IHdoYXQgeW91IHJlYWxseQp3YW50LgoKCk1pY2hhxYIKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5n
+IGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
