@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yq0pF-0002GK-Vt
- for ath10k@lists.infradead.org; Wed, 06 May 2015 15:01:30 +0000
-Received: by lbbqq2 with SMTP id qq2so9662591lbb.3
- for <ath10k@lists.infradead.org>; Wed, 06 May 2015 08:01:06 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yq1Wp-0004gL-Uf
+ for ath10k@lists.infradead.org; Wed, 06 May 2015 15:46:33 +0000
+Message-ID: <554A3741.7040306@candelatech.com>
+Date: Wed, 06 May 2015 08:46:09 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Date: Wed, 6 May 2015 17:01:06 +0200
-Message-ID: <CAMCCUbgZRhNCWTQkspCuRdCTQy6SpmihEKFHfY8ija4+zYTLiw@mail.gmail.com>
-Subject: Cannot achieve throughput higher than 460Mbps using CT firmware and
- 3x3 ath10k
-From: richard mayers <richard.mayers92@gmail.com>
-Content-Type: multipart/mixed; boundary=089e0160b7be878ff805156b10cc
+Subject: Re: Cannot achieve throughput higher than 460Mbps using CT firmware
+ and 3x3 ath10k
+References: <CAMCCUbgZRhNCWTQkspCuRdCTQy6SpmihEKFHfY8ija4+zYTLiw@mail.gmail.com>
+ <CABkMH_qT-xf4bROnnwRc=+wS9rOY6m-PMU63ertdUH-6X_jGVg@mail.gmail.com>
+In-Reply-To: <CABkMH_qT-xf4bROnnwRc=+wS9rOY6m-PMU63ertdUH-6X_jGVg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org, Ben Greear <greearb@candelatech.com>
+To: Tomasz Skapski <tomasz.skapski@tieto.com>
+Cc: richard mayers <richard.mayers92@gmail.com>, ath10k@lists.infradead.org
 
---089e0160b7be878ff805156b10cc
-Content-Type: text/plain; charset=UTF-8
-
-Hi all,
-
-The maximum throughput I get with the following set up is around
-460-470Mbits/s when using MCS 6, 80MHz channel and 3 spatial streams.
-However, when I try MCS 7, the throughput drops to 200Mbits/s, and
-when I use 8 or 9 it goes to 0. The signal level is -11dBm which I
-guess is quite good.
-
-Do you have any indications of what I do wrong and cannot get 600Mbps
-throughput, as mention in previous messages in this list? Any help is
-highly appreciated.
-
-My set up is as follows:
-
-- STA: compex wle900vx (QCA988x), ubuntu 14.04 LTS, dell dual core
-1.66ghz, kernel version 3.16, driver backport 4.0.1 and as a firmware
-the commercial firmware from Candela Tech (
-10.4.467-ct-com-full-013-b5b14a).
-
-- AP: Has the same set up, but is running hostapd with the
-configuration file that you can find attached.
-
-- I tried with many distances, but to make it easier now I have them
-placed 50cm from each other (with no obstacles in between), with
-3-antenna array and each antenna separated 12 cm from each other.
-
-- For the throughput tests I use iperf (UDP). I run the server in the
-AP, and the client in the station (upload). Command used in the client
-: "iperf -c <IP> -i 1 -b 600m -S 0x08".
-
-I also tried different drivers, kernels, firmware, distances between
-STA and AP, kernel sockets buffers, etc.. But I can not get better
-results.
-
---089e0160b7be878ff805156b10cc
-Content-Type: application/octet-stream; name="hostapd80.conf"
-Content-Disposition: attachment; filename="hostapd80.conf"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_i9cu4yfq0
-
-ZHJpdmVyPW5sODAyMTEKbG9nZ2VyX3N5c2xvZz0xMjcKbG9nZ2VyX3N5c2xvZ19sZXZlbD0yCmxv
-Z2dlcl9zdGRvdXQ9MTI3CmxvZ2dlcl9zdGRvdXRfbGV2ZWw9Mgpod19tb2RlPWEKY2hhbm5lbD0x
-NDkKCmllZWU4MDIxMW49MQpodF9jYXBhYj1bSFQ0MCtdW0xEUENdW1NIT1JULUdJLTIwXVtTSE9S
-VC1HSS00MF1bVFgtU1RCQ11bUlgtU1RCQzFdW01BWC1BTVNEVS03OTM1XVtEU1NTX0NDSy00MF0K
-dmh0X29wZXJfY2h3aWR0aD0xCnZodF9vcGVyX2NlbnRyX2ZyZXFfc2VnMF9pZHg9MTU1CmllZWU4
-MDIxMWFjPTEKdmh0X2NhcGFiPVtSWExEUENdW1NIT1JULUdJLTgwXVtUWC1TVEJDLTJCWTFdW1JY
-LUFOVEVOTkEtUEFUVEVSTl1bVFgtQU5URU5OQS1QQVRURVJOXVtSWC1TVEJDMV1bTUFYLU1QRFUt
-MTE0NTRdW01BWC1BLU1QRFUtTEVOLUVYUDddCgppbnRlcmZhY2U9d2xhbjQKY3RybF9pbnRlcmZh
-Y2U9L3Zhci9ydW4vaG9zdGFwZApkaXNhc3NvY19sb3dfYWNrPTEKcHJlYW1ibGU9MQp3bW1fZW5h
-YmxlZD0xCmlnbm9yZV9icm9hZGNhc3Rfc3NpZD0wCnVhcHNkX2FkdmVydGlzZW1lbnRfZW5hYmxl
-ZD0xCmF1dGhfYWxncz0xCndwYT0wCnNzaWQ9d2lyZWxlc3NBQwpic3NpZD0wNDpmMDoyMToxMTpl
-Njo3NgoK
---089e0160b7be878ff805156b10cc
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---089e0160b7be878ff805156b10cc--
+T24gMDUvMDYvMjAxNSAwODoxOSBBTSwgVG9tYXN6IFNrYXBza2kgd3JvdGU6Cj4gSGksCj4gCj4g
+SSBhbSBzdXJlIHRoYXQgaXQgZG9lcyBub3Qgc29sdmUgeW91ciBwcm9ibGVtIHdpdGggTUNTIDgg
+YW5kIDksIGJ1dCB0byBnZXQgYmV0dGVyIHRocm91Z2hwdXQgdXNpbmcgaXBlcmYsIHJ1biBmZXcg
+c3RyZWFtcyBpbiBwYXJhbGxlbDogLVAgWC4KPiAKPiBlZzoKPiBpcGVyZiAtYyA8SVA+IC1pMSAt
+dSAtYiAyMDBNIC1QNAoKTGFyZ2VyIGtlcm5lbCBidWZmZXIgc2l6ZXMgKDFNQiwgZm9yIGluc3Rh
+bmNlKSwgYW5kIGxhcmdlciBQRFUgd3JpdGVzICg5ayBvciBtYXliZSAyNGspIG1pZ2h0IGhlbHAg
+YXMgd2VsbC4KClRoZXJlIGlzIHNvbWUgd2lmaSB0dW5pbmcgaW5mbyBoZXJlLi4udGhlIGRldGFp
+bHMgYXJlIG1vc3RseSByZWxhdGluZyB0byBvdXIKdHJhZmZpYyBnZW5lcmF0b3IsIGJ1dCB0aGUg
+Z2VuZXJhbCBpZGVhIGFwcGxpZXMgdG8gaXBlcmYgYW5kIG90aGVyCnRyYWZmaWMgZ2VuZXJhdG9y
+cyBhcyB3ZWxsLi4uCgpodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9sZl93aWZpX3BlcmYucGhw
+CgoKVGhhbmtzLApCZW4KCj4gCj4gCj4gCj4gCj4gUmVnYXJkcywKPiBUb21hc3ogU2vEhXBza2kK
+PiAKPiBPbiA2IE1heSAyMDE1IGF0IDE3OjAxLCByaWNoYXJkIG1heWVycyA8cmljaGFyZC5tYXll
+cnM5MkBnbWFpbC5jb20gPG1haWx0bzpyaWNoYXJkLm1heWVyczkyQGdtYWlsLmNvbT4+IHdyb3Rl
+Ogo+IAo+ICAgICBIaSBhbGwsCj4gCj4gICAgIFRoZSBtYXhpbXVtIHRocm91Z2hwdXQgSSBnZXQg
+d2l0aCB0aGUgZm9sbG93aW5nIHNldCB1cCBpcyBhcm91bmQKPiAgICAgNDYwLTQ3ME1iaXRzL3Mg
+d2hlbiB1c2luZyBNQ1MgNiwgODBNSHogY2hhbm5lbCBhbmQgMyBzcGF0aWFsIHN0cmVhbXMuCj4g
+ICAgIEhvd2V2ZXIsIHdoZW4gSSB0cnkgTUNTIDcsIHRoZSB0aHJvdWdocHV0IGRyb3BzIHRvIDIw
+ME1iaXRzL3MsIGFuZAo+ICAgICB3aGVuIEkgdXNlIDggb3IgOSBpdCBnb2VzIHRvIDAuIFRoZSBz
+aWduYWwgbGV2ZWwgaXMgLTExZEJtIHdoaWNoIEkKPiAgICAgZ3Vlc3MgaXMgcXVpdGUgZ29vZC4K
+PiAKPiAgICAgRG8geW91IGhhdmUgYW55IGluZGljYXRpb25zIG9mIHdoYXQgSSBkbyB3cm9uZyBh
+bmQgY2Fubm90IGdldCA2MDBNYnBzCj4gICAgIHRocm91Z2hwdXQsIGFzIG1lbnRpb24gaW4gcHJl
+dmlvdXMgbWVzc2FnZXMgaW4gdGhpcyBsaXN0PyBBbnkgaGVscCBpcwo+ICAgICBoaWdobHkgYXBw
+cmVjaWF0ZWQuCj4gCj4gICAgIE15IHNldCB1cCBpcyBhcyBmb2xsb3dzOgo+IAo+ICAgICAtIFNU
+QTogY29tcGV4IHdsZTkwMHZ4IChRQ0E5ODh4KSwgdWJ1bnR1IDE0LjA0IExUUywgZGVsbCBkdWFs
+IGNvcmUKPiAgICAgMS42Nmdoeiwga2VybmVsIHZlcnNpb24gMy4xNiwgZHJpdmVyIGJhY2twb3J0
+IDQuMC4xIGFuZCBhcyBhIGZpcm13YXJlCj4gICAgIHRoZSBjb21tZXJjaWFsIGZpcm13YXJlIGZy
+b20gQ2FuZGVsYSBUZWNoICgKPiAgICAgMTAuNC40NjctY3QtY29tLWZ1bGwtMDEzLWI1YjE0YSku
+Cj4gCj4gICAgIC0gQVA6IEhhcyB0aGUgc2FtZSBzZXQgdXAsIGJ1dCBpcyBydW5uaW5nIGhvc3Rh
+cGQgd2l0aCB0aGUKPiAgICAgY29uZmlndXJhdGlvbiBmaWxlIHRoYXQgeW91IGNhbiBmaW5kIGF0
+dGFjaGVkLgo+IAo+ICAgICAtIEkgdHJpZWQgd2l0aCBtYW55IGRpc3RhbmNlcywgYnV0IHRvIG1h
+a2UgaXQgZWFzaWVyIG5vdyBJIGhhdmUgdGhlbQo+ICAgICBwbGFjZWQgNTBjbSBmcm9tIGVhY2gg
+b3RoZXIgKHdpdGggbm8gb2JzdGFjbGVzIGluIGJldHdlZW4pLCB3aXRoCj4gICAgIDMtYW50ZW5u
+YSBhcnJheSBhbmQgZWFjaCBhbnRlbm5hIHNlcGFyYXRlZCAxMiBjbSBmcm9tIGVhY2ggb3RoZXIu
+Cj4gCj4gICAgIC0gRm9yIHRoZSB0aHJvdWdocHV0IHRlc3RzIEkgdXNlIGlwZXJmIChVRFApLiBJ
+IHJ1biB0aGUgc2VydmVyIGluIHRoZQo+ICAgICBBUCwgYW5kIHRoZSBjbGllbnQgaW4gdGhlIHN0
+YXRpb24gKHVwbG9hZCkuIENvbW1hbmQgdXNlZCBpbiB0aGUgY2xpZW50Cj4gICAgIDogImlwZXJm
+IC1jIDxJUD4gLWkgMSAtYiA2MDBtIC1TIDB4MDgiLgo+IAo+ICAgICBJIGFsc28gdHJpZWQgZGlm
+ZmVyZW50IGRyaXZlcnMsIGtlcm5lbHMsIGZpcm13YXJlLCBkaXN0YW5jZXMgYmV0d2Vlbgo+ICAg
+ICBTVEEgYW5kIEFQLCBrZXJuZWwgc29ja2V0cyBidWZmZXJzLCBldGMuLiBCdXQgSSBjYW4gbm90
+IGdldCBiZXR0ZXIKPiAgICAgcmVzdWx0cy4KPiAKPiAgICAgX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KPiAgICAgYXRoMTBrIG1haWxpbmcgbGlzdAo+ICAg
+ICBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZyA8bWFpbHRvOmF0aDEwa0BsaXN0cy5pbmZyYWRl
+YWQub3JnPgo+ICAgICBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo+IAo+IAoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4K
+Q2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
+aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
+ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
