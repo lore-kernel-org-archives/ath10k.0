@@ -1,13 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqJ5m-0005p8-Vc
- for ath10k@lists.infradead.org; Thu, 07 May 2015 10:31:47 +0000
-From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-Subject: [PATCH v3] ath10k: Bypass PLL setting on target init for QCA9888
-Date: Thu, 7 May 2015 16:01:03 +0530
-Message-ID: <1430994663-30006-1-git-send-email-rmanohar@qti.qualcomm.com>
+ id 1YqJTn-0005cM-HL
+ for ath10k@lists.infradead.org; Thu, 07 May 2015 10:56:37 +0000
+Received: by wizk4 with SMTP id k4so237476195wiz.1
+ for <ath10k@lists.infradead.org>; Thu, 07 May 2015 03:56:12 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQnbjy0qP5R6UVURgG4mCAmt=fQLS+O27rSXYPM=3Vg0-w@mail.gmail.com>
+References: <CAEFj9871+uootjCDVNBEKSYiDJzdRcMLkWe=bKdmxKDKBCBbKA@mail.gmail.com>
+ <CAEFj986ReYLUyqabqm8wosr_NGsofzGU8OWQvke23BCiqX_b_g@mail.gmail.com>
+ <CA+BoTQmsNMiKDDFkK9A_g0Zf-4rOzU-1P9HCgpaBEfod8kYZbA@mail.gmail.com>
+ <CAEFj984kq-Gs=Yam564QfSs8pPNVjjcv7SQLtcTLih43HOp84Q@mail.gmail.com>
+ <CA+BoTQ=uSuZnKcpXmVB9CnCuRcROKxdRAdLkEHcXMdyERfKqwA@mail.gmail.com>
+ <CAEFj984qhw4wjgCUtdGY_XLX491fhfD67ZaxRO8sHjpnYQiUQg@mail.gmail.com>
+ <CA+BoTQmfJYd6uE8mPDvD54FQf6cwjDKN5aaURPVfXejUypL2Dg@mail.gmail.com>
+ <CAEFj987J0iBV4oyyRrKrgDGEzr2rKpkd7nE2x8G76D18AkXCbA@mail.gmail.com>
+ <CA+BoTQnbjy0qP5R6UVURgG4mCAmt=fQLS+O27rSXYPM=3Vg0-w@mail.gmail.com>
+Date: Thu, 7 May 2015 18:56:12 +0800
+Message-ID: <CAEFj987MnWFE0eF77akvEx44RD8UAWiHb_-1+XovVV9B8ee3Hw@mail.gmail.com>
+Subject: Re: Compex WLE900N5-23
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,52 +28,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Some of of qca988x solutions are having global reset issue
-during target initialization. Bypassing PLL setting before
-downloading firmware and letting the SoC run on REF_CLK is fixing
-the problem. Corresponding firmware change is also needed to set
-the clock source once the target is initialized. Since 10.2.4
-firmware is having this ROM patch, applying skip_clock_init only
-for 10.2.4 firmware versions.
-
-Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index bcccae1..cb34619 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1084,6 +1084,16 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
- 	if (status)
- 		goto err;
- 
-+	if ((ar->hw_rev == ATH10K_HW_QCA988X) &&
-+	    (ar->wmi.op_version == ATH10K_FW_WMI_OP_VERSION_10_2_4)) {
-+		status = ath10k_bmi_write32(ar, hi_skip_clock_init, 1);
-+		if (status) {
-+			ath10k_err(ar, "could not write skip_clock_init (%d)\n",
-+				   status);
-+			goto err;
-+		}
-+	}
-+
- 	status = ath10k_download_fw(ar, mode);
- 	if (status)
- 		goto err;
--- 
-2.3.7
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBoYXZlIGFsc28gdGVzdGVkIHdpdGggQ29tcGV4IFdMRTkwMFZYIGFuZCAxMC4yIGZpcm13YXJl
+IGFsc28gY3Jhc2hlZAppbiBteSBlbWJlZGRlZCBib2FyZC4KCi0tLS0KQ2h1bi1ZZW93CgpPbiBX
+ZWQsIE1heSA2LCAyMDE1IGF0IDE6NDEgUE0sIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JA
+dGlldG8uY29tPiB3cm90ZToKPiBPbiA2IE1heSAyMDE1IGF0IDA0OjMxLCBZZW9oIENodW4tWWVv
+dyA8eWVvaGNodW55ZW93QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IE5vdCB3b3JraW5nIGFzIHdlbGws
+IGZpcm13YXJlIGNyYXNoZWQuCj4+Cj4+IFsgICA1Ni4yNTAwMDBdIGF0aDEwa19wY2kgMDAwMDow
+MDowMC4wOiBxY2E5ODh4IGh3Mi4wICgweDQxMDAwMTZjLAo+PiAweDA0MzIwMmZmKSBmdyBmdy0x
+MC4yLW90cC0xMC4xIGFwaSA0IGh0dCAyLjEgd21pIDUgY2FsIG90cCBtYXhfc3RhCj4+IDEyOAo+
+PiBbICAgNTYuMjYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZGVidWcgMSBkZWJ1Z2Zz
+IDEgdHJhY2luZyAwCj4+IGRmcyAxIHRlc3Rtb2RlIDEKPj4gWyAgIDU2LjI4MDAwMF0gYXRoMTBr
+X3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byByZWFkIGRpYWcgdmFsdWUgYXQKPj4gMHgxMDEw
+MDgwNDogLTE2Cj4+IFsgICA1Ni4yOTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWls
+ZWQgdG8gZ2V0IG1lbWNweSBoaQo+PiBhZGRyZXNzIGZvciBmaXJtd2FyZSBhZGRyZXNzIDQ6IC0x
+Ngo+PiBbICAgNTYuMzAwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHJl
+YWQgZmlybXdhcmUgZHVtcCBhcmVhOiAtMTYKPj4gWyAgIDU2LjQwMDAwMF0gaWVlZTgwMjExIHBo
+eTA6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJlcXVlc3RlZAo+PiBbICAgNTYuNDAwMDAwXSBhdGgx
+MGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHRvIHJlcXVlc3QgbW9uaXRvcgo+PiB2ZGV2
+IDEgc3RvcDogLTE0Mwo+PiBbICAgNTYuNDEwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDog
+ZmFpbGVkIHRvIHN5bmNocm9uaXplIG1vbml0b3IKPj4gdmRldiAxIHN0b3A6IC0xNDMKPj4gWyAg
+IDU2LjQyMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBzdG9wIG1vbml0
+b3IgdmRldjogLTE0Mwo+PiBbICAgNTYuNjMwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDog
+ZmFpbGVkIHRvIHJlYWQgZGlhZyB2YWx1ZSBhdAo+PiAweDEwMTAwODAwOiAtMTYKPj4gWyAgIDU2
+LjY0MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBwb2tlIGNvcHkgZW5n
+aW5lOiAtMTYKPj4gWyAgIDU2Ljc1MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxl
+ZCB0byByZWFkIGRpYWcgdmFsdWUgYXQKPj4gMHgxMDEwMDgwMDogLTE2Cj4+IFsgICA1Ni43NjAw
+MDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gcG9rZSBjb3B5IGVuZ2luZTog
+LTE2Cj4+IFsgICA1Ni44NzAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8g
+cmVhZCBkaWFnIHZhbHVlIGF0Cj4+IDB4MTAxMDA4MDA6IC0xNgo+Pgo+PiAuLi4uCj4+Cj4+IFsg
+IDEzOC43NDAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gdG8gcmVxdWVz
+dCBtb25pdG9yCj4+IHZkZXYgMSBzdG9wOiAtMTQzCj4+IFsgIDEzOC43NTAwMDBdIGF0aDEwa19w
+Y2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gc3luY2hyb25pemUgbW9uaXRvcgo+PiB2ZGV2IDEg
+c3RvcDogLTE0Mwo+PiBbICAxMzguNzYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFp
+bGVkIHRvIHN0b3AgbW9uaXRvciB2ZGV2OiAtMTQzCj4+IFsgIDEzOC45NzAwMDBdIGF0aDEwa19w
+Y2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gcmVhZCBkaWFnIHZhbHVlIGF0Cj4+IDB4MTAxMDA4
+MDA6IC0xNgo+PiBbICAxMzguOTgwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVk
+IHRvIHBva2UgY29weSBlbmdpbmU6IC0xNgo+PiBbICAxMzkuMDkwMDAwXSBhdGgxMGtfcGNpIDAw
+MDA6MDA6MDAuMDogZmFpbGVkIHRvIHJlYWQgZGlhZyB2YWx1ZSBhdAo+PiAweDEwMTAwODAwOiAt
+MTYKPj4gWyAgMTQxLjM4MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGRldmljZSBzdWNj
+ZXNzZnVsbHkgcmVjb3ZlcmVkCj4+IFsgIDE0MS43NTAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDow
+MC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+PiBjOTVjODM2ZS1iNGIzLTQwZDYtYmJhYy1k
+MThlYjQ5OTJiMTApCj4+IFsgIDE0MS43NjAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBx
+Y2E5ODh4IGh3Mi4wICgweDQxMDAwMTZjLAo+PiAweDA0MzIwMmZmKSBmdyBmdy0xMC4yLW90cC0x
+MC4xIGFwaSA0IGh0dCAyLjEgd21pIDUgY2FsIG90cCBtYXhfc3RhCj4+IDEyOAo+Cj4gVGhhbmtz
+IGZvciBjaGVja2luZy4gU28gdGhlIHByb2JsZW0gb25seSBoYXBwZW5zIHdpdGggQ29tcGV4Cj4g
+V0xFOTAwTjUtMjMgYW5kIG90aGVyIFFDQTk4OFgncyB5b3UgaGF2ZSB3b3JrIGZpbmUgd2l0aCAx
+MC4yIC0gaXMgdGhhdAo+IGNvcnJlY3Q/Cj4KPgo+IE1pY2hhxYIKPgo+Cj4+IC0tLS0KPj4gQ2h1
+bi1ZZW93Cj4+Cj4+IE9uIFR1ZSwgTWF5IDUsIDIwMTUgYXQgNzoxOSBQTSwgTWljaGFsIEthemlv
+ciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+Pj4gT24gNSBNYXkgMjAxNSBhdCAx
+MzoxMSwgWWVvaCBDaHVuLVllb3cgPHllb2hjaHVueWVvd0BnbWFpbC5jb20+IHdyb3RlOgo+Pj4+
+IFdoYXQgdG8gYmUgc2V0IGZvciAiVkVSU0lPTl9TVFJJTkcgREVDSU1BTF9CSVRNQVNLX09GX0ZF
+QVRVUkVTIiBmb3IgYXNzZW1ibHk/Cj4+Pj4KPj4+PiBJIHJhbiBpbnRvIHRoaXMgZXJyb3IgIklu
+ZGV4RXJyb3I6IGxpc3QgaW5kZXggb3V0IG9mIHJhbmdlIiBkdXJpbmcgYXNzZW1ibHkuCj4+Pgo+
+Pj4gSSB0aGluayB0aGUgZm9sbG93aW5nIHNob3VsZCB3b3JrOgo+Pj4KPj4+ICAgcHl0aG9uIGFz
+c2VtYmxlLnB5IDEwLjItdGVzdCAxMiBmdy1mcm9tLTEwLjIuYmluIG90cC1mcm9tLTEwLjEuYmlu
+IDUKPj4+Cj4+PiB3bWktbWdtdC10eCA9IEJJVCgyKSA9IDQKPj4+IG5vLXAycCA9IEJJVCgzKSA9
+IDgKPj4+Cj4+PiBIZW5jZSBgMTJgIGZvciBmZWF0dXJlcy4KPj4+Cj4+PiBJZiB5b3UgYXNzZW1i
+bGUgMTAuMi40IHdtaS1vcCBtdXN0IGJlIDUuIElmIHlvdSB1c2UgMTAuMi0wMDA4MiB3bWktb3Ag
+bXVzdCBiZSAzLgo+Pj4KPj4+Cj4+PiBNaWNoYcWCCj4+Pgo+Pj4KPj4+PiAtLS0KPj4+PiBDaHVu
+LVllb3cKPj4+Pgo+Pj4+IE9uIFR1ZSwgTWF5IDUsIDIwMTUgYXQgMjo0OSBQTSwgTWljaGFsIEth
+emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+Pj4+PiBPbiA1IE1heSAyMDE1
+IGF0IDA3OjU2LCBZZW9oIENodW4tWWVvdyA8eWVvaGNodW55ZW93QGdtYWlsLmNvbT4gd3JvdGU6
+Cj4+Pj4+PiBZZXMsIHRoaXMgaXMgdGhlIGxhdGVzdCBmaXJtd2FyZSB0aGF0IEkgaGF2ZSB0cmll
+ZDoKPj4+Pj4+Cj4+Pj4+PiBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcWNhOTg4eCBodzIuMCAo
+MHg0MTAwMDE2YywgMHgwNDMyMDJmZikgZncKPj4+Pj4+IDEwLjIuNC40OCBhcGkgNCBodHQgMi4x
+IHdtaSA1IGNhbCBvdHAgbWF4X3N0YSAxMjgKPj4+Pj4+Cj4+Pj4+PiBCdXQgc3RpbGwgdGhlIHNh
+bWUsIGZpcm13YXJlIGNyYXNoZWQ6Cj4+Pj4+PiBbICAxNTQuOTIwMDAwXSBhdGgxMGtfcGNpIDAw
+MDA6MDA6MDAuMDogZmFpbGVkIHRvIHRvIHJlcXVlc3QgbW9uaXRvcgo+Pj4+Pj4gdmRldiAxIHN0
+b3A6IC0xMQo+Pj4+Pj4gWyAgMTU5LjkyMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZh
+aWxlZCB0byBzeW5jaHJvbml6ZSBtb25pdG9yCj4+Pj4+PiB2ZGV2IDEgc3RvcDogLTE0NQo+Pj4+
+Pj4gWyAgMTU5LjkyMDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBzdG9w
+IG1vbml0b3IgdmRldjogLTE0NQo+Pj4+Pj4gWyAgMTU5LjkzMDAwMF0gYXRoMTBrX3BjaSAwMDAw
+OjAwOjAwLjA6IGZhaWxlZCB0byByZWNhbGMgbW9udGlvcjogLTE0NQo+Pj4+Pj4gWyAgMTYyLjk0
+MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBzdG9wIFdNSSB2ZGV2IDA6
+IC0xMQo+Pj4+Pj4gWyAgMTY1Ljk0MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxl
+ZCB0byBwdXQgZG93biBtb25pdG9yIHZkZXYgMTogLTExCj4+Pj4+PiBbICAxNjguOTQwMDAwXSBh
+dGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIHRvIHJlcXVlc3QgbW9uaXRvcgo+Pj4+
+Pj4gdmRldiAxIHN0b3A6IC0xMQo+Pj4+Pj4gWyAgMTczLjk0MDAwMF0gYXRoMTBrX3BjaSAwMDAw
+OjAwOjAwLjA6IGZhaWxlZCB0byBzeW5jaHJvbml6ZSBtb25pdG9yCj4+Pj4+PiB2ZGV2IDEgc3Rv
+cDogLTE0NQo+Pj4+Pj4gWyAgMTczLjk0MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZh
+aWxlZCB0byBzdG9wIG1vbml0b3IgdmRldjogLTE0NQo+Pj4+Pj4gWyAgMTc2Ljk1MDAwMF0gYXRo
+MTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBwdXQgZG93biBtb25pdG9yIHZkZXYgMTog
+LTExCj4+Pj4+PiBbICAxNzkuOTUwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVk
+IHRvIHRvIHJlcXVlc3QgbW9uaXRvcgo+Pj4+Pj4gdmRldiAxIHN0b3A6IC0xMQo+Pj4+Pj4gWyAg
+MTg0Ljk1MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBzeW5jaHJvbml6
+ZSBtb25pdG9yCj4+Pj4+PiB2ZGV2IDEgc3RvcDogLTE0NQo+Pj4+Pj4gWyAgMTg0Ljk1MDAwMF0g
+YXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0byBzdG9wIG1vbml0b3IgdmRldjogLTE0
+NQo+Pj4+Pj4gWyAgMTg3Ljk2MDAwMF0gYXRoMTBrX3BjaSAwMDAwOjAwOjAwLjA6IGZhaWxlZCB0
+byBzdWJtaXQgQVAgc2VsZi1wZWVyCj4+Pj4+PiByZW1vdmFsIG9uIHZkZXYgMDogLTExCj4+Pj4+
+PiBbICAxOTAuOTYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogZmFpbGVkIHRvIGRlbGV0
+ZSBXTUkgdmRldiAwOiAtMTEKPj4+Pj4+IFsgIDE5My45NjAwMDBdIGF0aDEwa19wY2kgMDAwMDow
+MDowMC4wOiBmYWlsZWQgdG8gcmVtb3ZlIEFQIHNlbGYtcGVlcgo+Pj4+Pj4gb24gdmRldiAwOiAt
+MTQ1Cj4+Pj4+PiBbICAxOTMuOTYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDA6MDAuMDogcmVtb3Zp
+bmcgc3RhbGUgcGVlcgo+Pj4+Pj4gMDQ6ZjA6MjE6MGM6YTU6MTcgZnJvbSB2ZGV2X2lkIDAKPj4+
+Pj4+IFsgIDE5Ni45NzAwMDBdIGF0aDEwa19wY2kgMDAwMDowMDowMC4wOiBmYWlsZWQgdG8gcHV0
+IGRvd24gbW9uaXRvciB2ZGV2IDE6IC0xMQo+Pj4+Pgo+Pj4+PiBIbW0uLiBDYW4geW91IHRyeSB0
+byByZXBhY2sgZmlybXdhcmUgYW5kIGNvbWJpbmUgbWFpbiBiaW5hcnkgZnJvbSAxMC4yCj4+Pj4+
+IGFuZCBvdHAgZnJvbSAxMC4xIGFuZCB0ZXN0IHRoYXQ/IFlvdSBjYW4gdXNlIHRoZXNlIHRvb2xz
+Ogo+Pj4+Pgo+Pj4+PiAgaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20va2F6aWtjei82NDMxM2I5ZTI0
+NzA2NjBmYWFlMQo+Pj4+PiAgaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20va2F6aWtjei9jOTcwY2Jm
+M2E4NjNlYmJjNDQ5NQo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
