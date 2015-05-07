@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqFSX-0005p8-M0
- for ath10k@lists.infradead.org; Thu, 07 May 2015 06:39:02 +0000
-Received: by widdi4 with SMTP id di4so47564383wid.0
- for <ath10k@lists.infradead.org>; Wed, 06 May 2015 23:38:39 -0700 (PDT)
+ id 1YqGbY-0000nY-SZ
+ for ath10k@lists.infradead.org; Thu, 07 May 2015 07:52:25 +0000
+Received: by layy10 with SMTP id y10so24645310lay.0
+ for <ath10k@lists.infradead.org>; Thu, 07 May 2015 00:52:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <554A6096.1090501@gmail.com>
-References: <554273C1.7050203@gmail.com>
- <CA+BoTQnRLAawnyW5D67OTAtUJF=TH2+7ZyYy5FOi+0j_1+CQ_w@mail.gmail.com>
- <554A5CAF.7040105@gmail.com> <554A6096.1090501@gmail.com>
-Date: Thu, 7 May 2015 08:38:39 +0200
-Message-ID: <CA+BoTQ=T6_pUtMA84dN9KXjqD9YZuFZ3YCdEQr+x8TsQKqnm4Q@mail.gmail.com>
-Subject: Re: Rate marked as a VHT rate but data is invalid: MCS: 10, NSS: 2
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CAMCCUbgLheuDmqBb7yDp4zQ5Mxy4xfTUDYKSx8hF3OR6ATRf0w@mail.gmail.com>
+References: <CAMCCUbgZRhNCWTQkspCuRdCTQy6SpmihEKFHfY8ija4+zYTLiw@mail.gmail.com>
+ <CA+BoTQm74g1jQL11fGvH=1O3zH11864P3=GJy80wYJCPBnYoBA@mail.gmail.com>
+ <CAMCCUbgLheuDmqBb7yDp4zQ5Mxy4xfTUDYKSx8hF3OR6ATRf0w@mail.gmail.com>
+Date: Thu, 7 May 2015 09:52:02 +0200
+Message-ID: <CAMCCUbhgc6f3kXNy5ESXahA5ypbPBH5dCrYcdp4atEUz9msD4w@mail.gmail.com>
+Subject: Fwd: Cannot achieve throughput higher than 460Mbps using CT firmware
+ and 3x3 ath10k
+From: richard mayers <richard.mayers92@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +27,33 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: mindfsck <mindfsck@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gNiBNYXkgMjAxNSBhdCAyMDo0MiwgbWluZGZzY2sgPG1pbmRmc2NrQGdtYWlsLmNvbT4gd3Jv
-dGU6Cj4gQlRXIC0gYWZ0ZXIgbXkgbGFzdCBtYWlsLCBJIGxlZnQgdGhlIGxhcHRvcCBhcyBpcyBh
-bmQgdGFsa2VkIDEwbWluIHdpdGggbXkKPiB3aWZlLgo+IFN1ZGRlbmx5IG15IHJpZ2h0IHBvY2tl
-dCB0cm91c2VyIGdvdCBob3QuCj4gVGhlcmUgaXMgYSBNb3RvIEcgbW9iaWxlIGluc2lkZSB1bmhh
-cHBpbHkgY29ubmVjdGluZyB0byBteSBBUCBhbmQKPiBkaXNjb25uZWN0aW5nIGFnYWluIGFsbCB0
-aGUgdGltZSB0byBubyBlbmQgOi0pCj4gSSBuZXZlciBzYXcgdGhpcyBiZWhhdmlvciBiZWZvcmUs
-IGl0IGhhcHBlbnMgb25seSB3aGVuIHJ1bm5pbmcgdGhpcyBhdGgxMGsKPiBtYXN0ZXIga2VybmVs
-IDstKQoKSSBjYW4ndCB0ZWxsIHlvdSBtdWNoIHdpdGhvdXQgYW55IGxvZ3MgZnJvbSB0aGUgQVAg
-b3IgdGhlIHBob25lLiBMb2dzCmZyb20gYXRoMTBrIGRldmljZSBpdHNlbGYgbWlnaHQgYmUgaW5z
-dWZmaWNpZW50IHRvIGFuYWx5emUgdGhpcwpwcm9ibGVtLgoKV2hhdCBBUCBpcyB0aGlzPyBDYW4g
-eW91IHBlcmhhcHMgZ2V0IGxvZ2NhdCBsb2dzIGZyb20gdGhlIHBob25lPwoKCk1pY2hhxYIKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+LS0tLS0tLS0tLSBGb3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0tCkZyb206IHJpY2hhcmQgbWF5
+ZXJzIDxyaWNoYXJkLm1heWVyczkyQGdtYWlsLmNvbT4KRGF0ZTogMjAxNS0wNS0wNyA5OjUxIEdN
+VCswMjowMApTdWJqZWN0OiBSZTogQ2Fubm90IGFjaGlldmUgdGhyb3VnaHB1dCBoaWdoZXIgdGhh
+biA0NjBNYnBzIHVzaW5nIENUCmZpcm13YXJlIGFuZCAzeDMgYXRoMTBrClRvOiBNaWNoYWwgS2F6
+aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KCgpIaSwKClllcywgd2l0aCBvbmx5IG9uZSBz
+cGF0aWFsIHN0cmVhbSBJIGNhbiB1c2UgTUNTOSBhbmQgSSBnZXQgMjkwTWJwcwptb3JlIG9yIGxl
+c3MsIHRoZW4gd2l0aCAyIHNwYXRpYWwgc3RyZWFtcyBJIGNhbiBhbHNvIHVzZSBNQ1MgOCwgYnV0
+IGFzCkkgc2FpZCB3aXRoIDMgc3RyZWFtcyAgSSBvbmx5IGdldCBhICJnb29kIHRocm91Z2hwdXQi
+IHdpdGggIE1DNi4KClJpY2hhcmQKCjIwMTUtMDUtMDcgNzo0NyBHTVQrMDI6MDAgTWljaGFsIEth
+emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Ogo+IE9uIDYgTWF5IDIwMTUgYXQgMTc6MDEs
+IHJpY2hhcmQgbWF5ZXJzIDxyaWNoYXJkLm1heWVyczkyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhp
+IGFsbCwKPj4KPj4gVGhlIG1heGltdW0gdGhyb3VnaHB1dCBJIGdldCB3aXRoIHRoZSBmb2xsb3dp
+bmcgc2V0IHVwIGlzIGFyb3VuZAo+PiA0NjAtNDcwTWJpdHMvcyB3aGVuIHVzaW5nIE1DUyA2LCA4
+ME1IeiBjaGFubmVsIGFuZCAzIHNwYXRpYWwgc3RyZWFtcy4KPj4gSG93ZXZlciwgd2hlbiBJIHRy
+eSBNQ1MgNywgdGhlIHRocm91Z2hwdXQgZHJvcHMgdG8gMjAwTWJpdHMvcywgYW5kCj4+IHdoZW4g
+SSB1c2UgOCBvciA5IGl0IGdvZXMgdG8gMC4gVGhlIHNpZ25hbCBsZXZlbCBpcyAtMTFkQm0gd2hp
+Y2ggSQo+PiBndWVzcyBpcyBxdWl0ZSBnb29kLgo+Cj4gSG1tLi4gRnJvbSBteSBleHBlcmllbmNl
+IHRvbyBzdHJvbmcgc2lnbmFsIGNhbiBkZWdyYWRlIHBlcmZvcm1hbmNlCj4gd2l0aCBxY2E5ODh4
+LiBZb3UgY291bGQgdHJ5IHJlZHVjaW5nIGl0IHZpYSBgaXdgLiBZb3UgY291bGQgYWxzbyB0cnkK
+PiBjaGVja2luZyBpZiB1c2luZyBvbmx5IDIgc3BhdGlhbCBzdHJlYW1zIGFsc28geWllbGRzIHBy
+b2JsZW1zIHdpdGgKPiBNQ1M4IGFuZCBNQ1M5Lgo+Cj4gQW50ZW5uYSB0aGVtc2VsdmVzIG1pZ2h0
+IGJlIHRoZSBwcm9ibGVtIGFzIHdlbGwuIFN0cm9uZyBzaWduYWwgZG9lc24ndAo+IG1lYW4gZ29v
+ZCBzaWduYWwgcXVhbGl0eS4gSWYgeW91ciBhbnRlbm5hIGNvbm5lY3RvciBpcyBkYW1hZ2VkIG9y
+Cj4gYW50ZW5uYSBpcyBvZiBwb29yIHF1YWxpdHkgeW91IG1pZ2h0IGVuZCB1cCBub3QgYmVpbmcg
+YWJsZSB0byB1c2UKPiBoaWdoZXN0IE1DUyByYXRlcy4KPgo+Cj4gTWljaGHFggoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
