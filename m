@@ -1,20 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22d.google.com ([2a00:1450:4010:c03::22d])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqGbY-0000nY-SZ
- for ath10k@lists.infradead.org; Thu, 07 May 2015 07:52:25 +0000
-Received: by layy10 with SMTP id y10so24645310lay.0
- for <ath10k@lists.infradead.org>; Thu, 07 May 2015 00:52:02 -0700 (PDT)
+ id 1YqJ5m-0005p8-Vc
+ for ath10k@lists.infradead.org; Thu, 07 May 2015 10:31:47 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH v3] ath10k: Bypass PLL setting on target init for QCA9888
+Date: Thu, 7 May 2015 16:01:03 +0530
+Message-ID: <1430994663-30006-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMCCUbgLheuDmqBb7yDp4zQ5Mxy4xfTUDYKSx8hF3OR6ATRf0w@mail.gmail.com>
-References: <CAMCCUbgZRhNCWTQkspCuRdCTQy6SpmihEKFHfY8ija4+zYTLiw@mail.gmail.com>
- <CA+BoTQm74g1jQL11fGvH=1O3zH11864P3=GJy80wYJCPBnYoBA@mail.gmail.com>
- <CAMCCUbgLheuDmqBb7yDp4zQ5Mxy4xfTUDYKSx8hF3OR6ATRf0w@mail.gmail.com>
-Date: Thu, 7 May 2015 09:52:02 +0200
-Message-ID: <CAMCCUbhgc6f3kXNy5ESXahA5ypbPBH5dCrYcdp4atEUz9msD4w@mail.gmail.com>
-Subject: Fwd: Cannot achieve throughput higher than 460Mbps using CT firmware
- and 3x3 ath10k
-From: richard mayers <richard.mayers92@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +16,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-LS0tLS0tLS0tLSBGb3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0tCkZyb206IHJpY2hhcmQgbWF5
-ZXJzIDxyaWNoYXJkLm1heWVyczkyQGdtYWlsLmNvbT4KRGF0ZTogMjAxNS0wNS0wNyA5OjUxIEdN
-VCswMjowMApTdWJqZWN0OiBSZTogQ2Fubm90IGFjaGlldmUgdGhyb3VnaHB1dCBoaWdoZXIgdGhh
-biA0NjBNYnBzIHVzaW5nIENUCmZpcm13YXJlIGFuZCAzeDMgYXRoMTBrClRvOiBNaWNoYWwgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4KCgpIaSwKClllcywgd2l0aCBvbmx5IG9uZSBz
-cGF0aWFsIHN0cmVhbSBJIGNhbiB1c2UgTUNTOSBhbmQgSSBnZXQgMjkwTWJwcwptb3JlIG9yIGxl
-c3MsIHRoZW4gd2l0aCAyIHNwYXRpYWwgc3RyZWFtcyBJIGNhbiBhbHNvIHVzZSBNQ1MgOCwgYnV0
-IGFzCkkgc2FpZCB3aXRoIDMgc3RyZWFtcyAgSSBvbmx5IGdldCBhICJnb29kIHRocm91Z2hwdXQi
-IHdpdGggIE1DNi4KClJpY2hhcmQKCjIwMTUtMDUtMDcgNzo0NyBHTVQrMDI6MDAgTWljaGFsIEth
-emlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+Ogo+IE9uIDYgTWF5IDIwMTUgYXQgMTc6MDEs
-IHJpY2hhcmQgbWF5ZXJzIDxyaWNoYXJkLm1heWVyczkyQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhp
-IGFsbCwKPj4KPj4gVGhlIG1heGltdW0gdGhyb3VnaHB1dCBJIGdldCB3aXRoIHRoZSBmb2xsb3dp
-bmcgc2V0IHVwIGlzIGFyb3VuZAo+PiA0NjAtNDcwTWJpdHMvcyB3aGVuIHVzaW5nIE1DUyA2LCA4
-ME1IeiBjaGFubmVsIGFuZCAzIHNwYXRpYWwgc3RyZWFtcy4KPj4gSG93ZXZlciwgd2hlbiBJIHRy
-eSBNQ1MgNywgdGhlIHRocm91Z2hwdXQgZHJvcHMgdG8gMjAwTWJpdHMvcywgYW5kCj4+IHdoZW4g
-SSB1c2UgOCBvciA5IGl0IGdvZXMgdG8gMC4gVGhlIHNpZ25hbCBsZXZlbCBpcyAtMTFkQm0gd2hp
-Y2ggSQo+PiBndWVzcyBpcyBxdWl0ZSBnb29kLgo+Cj4gSG1tLi4gRnJvbSBteSBleHBlcmllbmNl
-IHRvbyBzdHJvbmcgc2lnbmFsIGNhbiBkZWdyYWRlIHBlcmZvcm1hbmNlCj4gd2l0aCBxY2E5ODh4
-LiBZb3UgY291bGQgdHJ5IHJlZHVjaW5nIGl0IHZpYSBgaXdgLiBZb3UgY291bGQgYWxzbyB0cnkK
-PiBjaGVja2luZyBpZiB1c2luZyBvbmx5IDIgc3BhdGlhbCBzdHJlYW1zIGFsc28geWllbGRzIHBy
-b2JsZW1zIHdpdGgKPiBNQ1M4IGFuZCBNQ1M5Lgo+Cj4gQW50ZW5uYSB0aGVtc2VsdmVzIG1pZ2h0
-IGJlIHRoZSBwcm9ibGVtIGFzIHdlbGwuIFN0cm9uZyBzaWduYWwgZG9lc24ndAo+IG1lYW4gZ29v
-ZCBzaWduYWwgcXVhbGl0eS4gSWYgeW91ciBhbnRlbm5hIGNvbm5lY3RvciBpcyBkYW1hZ2VkIG9y
-Cj4gYW50ZW5uYSBpcyBvZiBwb29yIHF1YWxpdHkgeW91IG1pZ2h0IGVuZCB1cCBub3QgYmVpbmcg
-YWJsZSB0byB1c2UKPiBoaWdoZXN0IE1DUyByYXRlcy4KPgo+Cj4gTWljaGHFggoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Some of of qca988x solutions are having global reset issue
+during target initialization. Bypassing PLL setting before
+downloading firmware and letting the SoC run on REF_CLK is fixing
+the problem. Corresponding firmware change is also needed to set
+the clock source once the target is initialized. Since 10.2.4
+firmware is having this ROM patch, applying skip_clock_init only
+for 10.2.4 firmware versions.
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index bcccae1..cb34619 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1084,6 +1084,16 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+ 	if (status)
+ 		goto err;
+ 
++	if ((ar->hw_rev == ATH10K_HW_QCA988X) &&
++	    (ar->wmi.op_version == ATH10K_FW_WMI_OP_VERSION_10_2_4)) {
++		status = ath10k_bmi_write32(ar, hi_skip_clock_init, 1);
++		if (status) {
++			ath10k_err(ar, "could not write skip_clock_init (%d)\n",
++				   status);
++			goto err;
++		}
++	}
++
+ 	status = ath10k_download_fw(ar, mode);
+ 	if (status)
+ 		goto err;
+-- 
+2.3.7
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
