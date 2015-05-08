@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqePQ-0000Kf-59
- for ath10k@lists.infradead.org; Fri, 08 May 2015 09:17:29 +0000
-Received: by lbcga7 with SMTP id ga7so49053450lbc.1
- for <ath10k@lists.infradead.org>; Fri, 08 May 2015 02:17:00 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: enable ASPM
-Date: Fri,  8 May 2015 09:13:06 +0000
-Message-Id: <1431076388-24800-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1431076388-24800-1-git-send-email-michal.kazior@tieto.com>
-References: <1431076388-24800-1-git-send-email-michal.kazior@tieto.com>
+ id 1YqgsP-0007Eg-1T
+ for ath10k@lists.infradead.org; Fri, 08 May 2015 11:55:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx,
+ nohwcrypt module param for raw tx injection, sw crypto support.
+References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
+Date: Fri, 8 May 2015 14:54:58 +0300
+In-Reply-To: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
+ (Liu CF's message of "Tue, 5 May 2015 18:06:46 -0700")
+Message-ID: <873837qo6l.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,110 +20,117 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Liu CF/TW <cfliu.tw@gmail.com>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Hi David,
 
-It is actually safe to enable ASPM after the
-device is booted up.
+"Liu CF/TW" <cfliu.tw@gmail.com> writes:
 
-This reduces power drain of QCA61X4 when driver is
-simply loaded (no interface is up) from 31mA to
-14mA. QCA988X wasn't measured but doesn't seem to
-regress in any other way.
+>  - ath10k:   add rawtxrx param for 10.2+ firmware to support sw, hw crypto
+>              engine and raw Tx injection.
+>  - mac80211: Add IEEE80211_KEY_FLAG_RESERVE_TAILROOM support for TKIP and
+>              CCMP required by ath10k and add per BSS(vif) based sw_crypto
+>              control.
 
-Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 15 ++++++++++-----
- drivers/net/wireless/ath/ath10k/pci.h |  6 ++++++
- 2 files changed, 16 insertions(+), 5 deletions(-)
+This patch has few major problems. First of all, ath10k and mac80211
+changes should be in separate patches. Secondly the patch is whitespace
+damaged, I recommend using git-send-email to avoid that.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 969a1231800e..8be07c653b2d 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1227,11 +1227,15 @@ static void ath10k_pci_irq_enable(struct ath10k *ar)
- 
- static int ath10k_pci_hif_start(struct ath10k *ar)
- {
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif start\n");
- 
- 	ath10k_pci_irq_enable(ar);
- 	ath10k_pci_rx_post(ar);
- 
-+	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-+				   ar_pci->link_ctl);
-+
- 	return 0;
- }
- 
-@@ -1981,6 +1985,7 @@ static int ath10k_pci_chip_reset(struct ath10k *ar)
- 
- static int ath10k_pci_hif_power_up(struct ath10k *ar)
- {
-+	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power up\n");
-@@ -1991,6 +1996,11 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 		return ret;
- 	}
- 
-+	pcie_capability_read_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-+				  &ar_pci->link_ctl);
-+	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-+				   ar_pci->link_ctl & ~PCI_EXP_LNKCTL_ASPMC);
-+
- 	/*
- 	 * Bring the target up cleanly.
- 	 *
-@@ -2502,7 +2512,6 @@ static int ath10k_pci_claim(struct ath10k *ar)
- {
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	struct pci_dev *pdev = ar_pci->pdev;
--	u32 lcr_val;
- 	int ret;
- 
- 	pci_set_drvdata(pdev, ar);
-@@ -2536,10 +2545,6 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 
- 	pci_set_master(pdev);
- 
--	/* Workaround: Disable ASPM */
--	pci_read_config_dword(pdev, 0x80, &lcr_val);
--	pci_write_config_dword(pdev, 0x80, (lcr_val & 0xffffff00));
--
- 	/* Arrange for access to Target SoC registers. */
- 	ar_pci->mem = pci_iomap(pdev, BAR_NUM, 0);
- 	if (!ar_pci->mem) {
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index bddf54320160..ee2173d61257 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -185,6 +185,12 @@ struct ath10k_pci {
- 	/* Map CE id to ce_state */
- 	struct ath10k_ce_pipe ce_states[CE_COUNT_MAX];
- 	struct timer_list rx_post_retry;
-+
-+	/* Due to HW quirks it is recommended to disable ASPM during device
-+	 * bootup. To do that the original PCI-E Link Control is stored before
-+	 * device bootup is executed and re-programmed later.
-+	 */
-+	u16 link_ctl;
- };
- 
- static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
+And there's just too much feature changes in one patch, it's usually
+better to split the features into separate patches. For example, you
+could first add a simple raw mode support to ath10k (ie. the bare
+minimum needed to get the feature) and then adding more advanced
+features per patch.
+
+> This change enables the raw Tx/Rx feature in ath10k 10.2+ firmware with a
+> module parameter 'rawtxrx'. With rawtxrx=1, the ath10k hardware crypto
+> engine could be optionally skipped to support use cases such as enabling
+> mac80211 sw crypto engine, user level crypto engine, raw Tx frame
+> injection.
+
+Lots of people, especially in Qualcomm, seem to call this feature as
+"raw mode". Would it be more descriptive to name the module paramer as
+'rawmode'?
+
+> Testing: used QCA988x hw 2.0 with 10.2 firmware.
+>
+> ath10k    ath10k     nl80211
+> rawtxrx   nohwcrypt  SW_CRYPTO
+> param     param      attribute    Testing Status
+> -------   ---------  ---------    ---------------------------------
+>    0          0           -         HW CCMP/TKIP tested ok.
+>    0          1           -         Not supported by ath10k hw.
+>    1          0           -         HW CCMP/TKIP tested ok.
+>    1          0           0         BSS 1 tested HW CCMP/TKIP ok.
+>    1          0           1         BSS 2 can bypass HW engine.
+>                                     - mac80211 SW crypto tested ok.
+>                                     - raw Tx frame injection tested ok.
+>    1          1           -         HW crypto globally disabled.
+>                                     - mac80211 SW crypto tested ok.
+>                                     - raw Tx frame injection tested ok.
+
+I wonder does it make any sense to have nohwcrypt parameter? Especially
+if ath10k doesn't support case rawtxrx=0 and nohwcrypt=1. One
+possibility I came up is to have multiple values for rawtxrx, for
+example is rawtxrx=1 means HW crypt enabled and rawtxrx=2 HW crypt
+disabled. Ideas welcome.
+
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -31,16 +31,22 @@
+>  #include "wmi-ops.h"
+>
+>  unsigned int ath10k_debug_mask;
+> +bool ath10k_modparam_nohwcrypt;
+> +bool ath10k_modparam_rawtxrx;
+
+Instead of making these public I would prefer to set a flag in struct
+ath10k, for example dev_flags.
+
+> ath10k_core_init_firmware_features(struct ath10k *ar)
+>   return -EINVAL;
+>   }
+>
+> + if ((ath10k_modparam_rawtxrx || ath10k_modparam_nohwcrypt) &&
+> +    !test_bit(ATH10K_FW_FEATURE_WMI_10_2, ar->fw_features)) {
+> + ath10k_err(ar, "rawtxrx mode supported only in 10.2+ firmware");
+> + return -EINVAL;
+> + }
+
+I think we should add a flag to enum ath10k_fw_features and check for
+that.
+
+> diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+> index 241220c..cdfa8a8 100644
+> --- a/include/uapi/linux/nl80211.h
+> +++ b/include/uapi/linux/nl80211.h
+> @@ -1761,6 +1761,9 @@ enum nl80211_commands {
+>   * @NL80211_ATTR_REG_INDOOR: flag attribute, if set indicates that the device
+>   *      is operating in an indoor environment.
+>   *
+> + * @NL80211_ATTR_SW_CRYPTO: use software crypto instead of hardware crypto for
+> + * the BSS.
+> + *
+>   * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+>   * @NL80211_ATTR_MAX: highest attribute number currently defined
+>   * @__NL80211_ATTR_AFTER_LAST: internal use
+> @@ -2130,6 +2133,8 @@ enum nl80211_attrs {
+>
+>   NL80211_ATTR_REG_INDOOR,
+>
+> + NL80211_ATTR_SW_CRYPTO,
+
+Like I said above, nl80211/cfg80211/mac80211 changes need to be in
+separate patches. And I suspect that the changes of getting this
+accepted is low. Maybe a debugfs is a better choise?
+
 -- 
-2.1.4
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
