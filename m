@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp.codeaurora.org ([198.145.29.96])
+Received: from mail-ob0-x22c.google.com ([2607:f8b0:4003:c01::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YqmXP-00068D-HI
- for ath10k@lists.infradead.org; Fri, 08 May 2015 17:58:17 +0000
-Message-ID: <554CF805.1050602@codeaurora.org>
-Date: Fri, 08 May 2015 10:53:09 -0700
-From: Peter Oh <poh@codeaurora.org>
+ id 1YrYH5-00014s-AY
+ for ath10k@lists.infradead.org; Sun, 10 May 2015 20:56:36 +0000
+Received: by obblk2 with SMTP id lk2so87483389obb.0
+ for <ath10k@lists.infradead.org>; Sun, 10 May 2015 13:56:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/3] ath10k: enable pci soc powersaving
-References: <1431076388-24800-1-git-send-email-michal.kazior@tieto.com>
- <1431076388-24800-4-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1431076388-24800-4-git-send-email-michal.kazior@tieto.com>
+Date: Sun, 10 May 2015 16:56:13 -0400
+Message-ID: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
+Subject: Ath10 firmware crashing in Monitor mode(Sniffer mode)
+From: s prasad <sprasad.kandregula@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,649 +18,201 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Hi,
-On 05/08/2015 02:13 AM, Michal Kazior wrote:
-> By using SOC_WAKE register it is possible to bring
-> down power consumption of QCA61X4 from 36mA to
-> 16mA when associated and idle.
->
-> Currently the sleep threshold/grace period is at a
-> very conservative value of 60ms.
->
-> Contrary to QCA61X4 the QCA988X firmware doesn't
-> have Rx/beacon filtering available for client mode
-> and SWBA events are used for beaconing in AP/IBSS
-> so the SoC needs to be woken up at least every
-> ~100ms in most cases. This means that QCA988X
-> is at a disadvantage and the power consumption
-> won't drop as much as for QCA61X4.
->
-> Due to putting irq-safe spinlocks on every MMIO
-> read/write it is expected this can cause a little
-> performance regression on some systems. I haven't
-> done any thorough measurements but some of my
-> tests don't show any extreme degradation.
->
-> The patch removes some explicit pci_wake calls
-> that were added in 320e14b8db51aa ("ath10k: fix
-> some pci wake/sleep issues"). This is safe because
-> all MMIO accesses are now wrapped and the device
-> is woken up automatically if necessary.
->
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
-> ---
->   drivers/net/wireless/ath/ath10k/debug.h  |   1 +
->   drivers/net/wireless/ath/ath10k/htt_rx.c |   1 +
->   drivers/net/wireless/ath/ath10k/pci.c    | 304
-> ++++++++++++++++++++++---------
->   drivers/net/wireless/ath/ath10k/pci.h    |  91 +++++----
->   4 files changed, 262 insertions(+), 135 deletions(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/debug.h
-> b/drivers/net/wireless/ath/ath10k/debug.h
-> index a12b8323f9f1..53bd6a19eab6 100644
-> --- a/drivers/net/wireless/ath/ath10k/debug.h
-> +++ b/drivers/net/wireless/ath/ath10k/debug.h
-> @@ -36,6 +36,7 @@ enum ath10k_debug_mask {
->   	ATH10K_DBG_REGULATORY	= 0x00000800,
->   	ATH10K_DBG_TESTMODE	= 0x00001000,
->   	ATH10K_DBG_WMI_PRINT	= 0x00002000,
-> +	ATH10K_DBG_PCI_PS	= 0x00004000,
->   	ATH10K_DBG_ANY		= 0xffffffff,
->   };
->   
-> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> index b26e32f42656..889262b07d19 100644
-> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-> @@ -22,6 +22,7 @@
->   #include "debug.h"
->   #include "trace.h"
->   #include "mac.h"
-> +#include "hif.h"
->   
-Is it necessary change?
->   #include <linux/log2.h>
->   
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.c
-> b/drivers/net/wireless/ath/ath10k/pci.c
-> index 8be07c653b2d..17a060e8efa2 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.c
-> +++ b/drivers/net/wireless/ath/ath10k/pci.c
-> @@ -330,6 +330,205 @@ static const struct service_to_pipe
-> target_service_to_ce_map_wlan[] = {
->   	},
->   };
->   
-> +static bool ath10k_pci_is_awake(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	u32 val = ioread32(ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
-> +			   RTC_STATE_ADDRESS);
-> +
-> +	return RTC_STATE_V_GET(val) == RTC_STATE_V_ON;
-> +}
-> +
-> +static void __ath10k_pci_wake(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +
-> +	lockdep_assert_held(&ar_pci->ps_lock);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps wake reg refcount %lu
-> awake %d\n",
-> +		   ar_pci->ps_wake_refcount, ar_pci->ps_awake);
-> +
-> +	iowrite32(PCIE_SOC_WAKE_V_MASK,
-> +		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
-> +		  PCIE_SOC_WAKE_ADDRESS);
-> +}
-> +
-> +static void __ath10k_pci_sleep(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +
-> +	lockdep_assert_held(&ar_pci->ps_lock);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps sleep reg refcount %lu
-> awake %d\n",
-> +		   ar_pci->ps_wake_refcount, ar_pci->ps_awake);
-> +
-> +	iowrite32(PCIE_SOC_WAKE_RESET,
-> +		  ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS +
-> +		  PCIE_SOC_WAKE_ADDRESS);
-> +	ar_pci->ps_awake = false;
-> +}
-> +
-> +static int ath10k_pci_wake_wait(struct ath10k *ar)
-> +{
-> +	int tot_delay = 0;
-> +	int curr_delay = 5;
-> +
-> +	while (tot_delay < PCIE_WAKE_TIMEOUT) {
-> +		if (ath10k_pci_is_awake(ar))
-> +			return 0;
-> +
-> +		udelay(curr_delay);
-> +		tot_delay += curr_delay;
-> +
-> +		if (curr_delay < 50)
-> +			curr_delay += 5;
-> +	}
-> +
-> +	return -ETIMEDOUT;
-> +}
-> +
-> +static int ath10k_pci_wake(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	unsigned long flags;
-> +	int ret = 0;
-> +
-> +	spin_lock_irqsave(&ar_pci->ps_lock, flags);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps wake refcount %lu awake
-> %d\n",
-> +		   ar_pci->ps_wake_refcount, ar_pci->ps_awake);
-> +
-> +	/* This function can be called very frequently. To avoid excessive
-> +	 * CPU stalls for MMIO reads use a cache var to hold the device
-> state.
-> +	 */
-> +	if (!ar_pci->ps_awake) {
-> +		__ath10k_pci_wake(ar);
-> +
-> +		ret = ath10k_pci_wake_wait(ar);
-> +		if (ret == 0)
-> +			ar_pci->ps_awake = true;
-> +	}
-> +
-> +	if (ret == 0) {
-> +		ar_pci->ps_wake_refcount++;
-> +		WARN_ON(ar_pci->ps_wake_refcount == 0);
-> +	}
-> +
-> +	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
-> +
-> +	return ret;
-> +}
-> +
-> +static void ath10k_pci_sleep(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&ar_pci->ps_lock, flags);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps sleep refcount %lu awake
-> %d\n",
-> +		   ar_pci->ps_wake_refcount, ar_pci->ps_awake);
-> +
-> +	if (WARN_ON(ar_pci->ps_wake_refcount == 0))
-> +		goto skip;
-> +
-> +	ar_pci->ps_wake_refcount--;
-> +
-> +	mod_timer(&ar_pci->ps_timer, jiffies +
-> +		  msecs_to_jiffies(ATH10K_PCI_SLEEP_GRACE_PERIOD_MSEC));
-> +
-> +skip:
-> +	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
-> +}
-> +
-> +static void ath10k_pci_ps_timer(unsigned long ptr)
-> +{
-> +	struct ath10k *ar = (void *)ptr;
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&ar_pci->ps_lock, flags);
-> +
-> +	ath10k_dbg(ar, ATH10K_DBG_PCI_PS, "pci ps timer refcount %lu awake
-> %d\n",
-> +		   ar_pci->ps_wake_refcount, ar_pci->ps_awake);
-> +
-> +	if (ar_pci->ps_wake_refcount > 0)
-> +		goto skip;
-> +
-> +	__ath10k_pci_sleep(ar);
-> +
-> +skip:
-> +	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
-> +}
-> +
-> +static void ath10k_pci_sleep_sync(struct ath10k *ar)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	unsigned long flags;
-> +
-> +	del_timer_sync(&ar_pci->ps_timer);
-> +
-> +	spin_lock_irqsave(&ar_pci->ps_lock, flags);
-> +	WARN_ON(ar_pci->ps_wake_refcount > 0);
-> +	__ath10k_pci_sleep(ar);
-> +	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
-> +}
-> +
-> +void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	int ret;
-> +
-> +	ret = ath10k_pci_wake(ar);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to wake target for write32 of
-> 0x%08x at 0x%08x: %d\n",
-> +			    value, offset, ret);
-> +		return;
-> +	}
-> +
-> +	iowrite32(value, ar_pci->mem + offset);
-> +	ath10k_pci_sleep(ar);
-> +}
-> +
-> +u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
-> +{
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	u32 val;
-> +	int ret;
-> +
-> +	ret = ath10k_pci_wake(ar);
-> +	if (ret) {
-> +		ath10k_warn(ar, "failed to wake target for read32 at
-> 0x%08x: %d\n",
-> +			    offset, ret);
-> +		return 0xffffffff;
-> +	}
-> +
-> +	val = ioread32(ar_pci->mem + offset);
-> +	ath10k_pci_sleep(ar);
-> +
-> +	return val;
-> +}
-> +
-> +u32 ath10k_pci_soc_read32(struct ath10k *ar, u32 addr)
-> +{
-> +	return ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS + addr);
-> +}
-> +
-> +void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val)
-> +{
-> +	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + addr, val);
-> +}
-> +
-> +u32 ath10k_pci_reg_read32(struct ath10k *ar, u32 addr)
-> +{
-> +	return ath10k_pci_read32(ar, PCIE_LOCAL_BASE_ADDRESS + addr);
-> +}
-> +
-> +void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr, u32 val)
-> +{
-> +	ath10k_pci_write32(ar, PCIE_LOCAL_BASE_ADDRESS + addr, val);
-> +}
-> +
->   static bool ath10k_pci_irq_pending(struct ath10k *ar)
->   {
->   	u32 cause;
-> @@ -793,60 +992,6 @@ static int ath10k_pci_diag_write32(struct ath10k *ar,
-> u32 address, u32 value)
->   	return ath10k_pci_diag_write_mem(ar, address, &val, sizeof(val));
->   }
->   
-> -static bool ath10k_pci_is_awake(struct ath10k *ar)
-> -{
-> -	u32 val = ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS);
-> -
-> -	return RTC_STATE_V_GET(val) == RTC_STATE_V_ON;
-> -}
-> -
-> -static int ath10k_pci_wake_wait(struct ath10k *ar)
-> -{
-> -	int tot_delay = 0;
-> -	int curr_delay = 5;
-> -
-> -	while (tot_delay < PCIE_WAKE_TIMEOUT) {
-> -		if (ath10k_pci_is_awake(ar))
-> -			return 0;
-> -
-> -		udelay(curr_delay);
-> -		tot_delay += curr_delay;
-> -
-> -		if (curr_delay < 50)
-> -			curr_delay += 5;
-> -	}
-> -
-> -	return -ETIMEDOUT;
-> -}
-> -
-> -/* The rule is host is forbidden from accessing device registers while
-> it's
-> - * asleep. Currently ath10k_pci_wake() and ath10k_pci_sleep() calls
-> aren't
-> - * balanced and the device is kept awake all the time. This is intended
-> for a
-> - * simpler solution for the following problems:
-> - *
-> - *   * device can enter sleep during s2ram without the host knowing,
-> - *
-> - *   * irq handlers access registers which is a problem if other device
-> asserts
-> - *     a shared irq line when ath10k is between hif_power_down() and
-> - *     hif_power_up().
-> - *
-> - * FIXME: If power consumption is a concern (and there are *real* gains)
-> then a
-> - * refcounted wake/sleep needs to be implemented.
-> - */
-> -
-> -static int ath10k_pci_wake(struct ath10k *ar)
-> -{
-> -	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
-> -			       PCIE_SOC_WAKE_V_MASK);
-> -	return ath10k_pci_wake_wait(ar);
-> -}
-> -
-> -static void ath10k_pci_sleep(struct ath10k *ar)
-> -{
-> -	ath10k_pci_reg_write32(ar, PCIE_SOC_WAKE_ADDRESS,
-> -			       PCIE_SOC_WAKE_RESET);
-> -}
-> -
->   /* Called by lower (CE) layer when a send to Target completes. */
->   static void ath10k_pci_ce_send_done(struct ath10k_ce_pipe *ce_state)
->   {
-> @@ -1348,6 +1493,9 @@ static void ath10k_pci_flush(struct ath10k *ar)
->   
->   static void ath10k_pci_hif_stop(struct ath10k *ar)
->   {
-> +	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> +	unsigned long flags;
-> +
->   	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif stop\n");
->   
->   	/* Most likely the device has HTT Rx ring configured. The only way
-> to
-> @@ -1366,6 +1514,10 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
->   	ath10k_pci_irq_disable(ar);
->   	ath10k_pci_irq_sync(ar);
->   	ath10k_pci_flush(ar);
-> +
-> +	spin_lock_irqsave(&ar_pci->ps_lock, flags);
-> +	WARN_ON(ar_pci->ps_wake_refcount > 0);
-> +	spin_unlock_irqrestore(&ar_pci->ps_lock, flags);
->   }
->   
->   static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
-> @@ -1990,12 +2142,6 @@ static int ath10k_pci_hif_power_up(struct ath10k
-> *ar)
->   
->   	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power up\n");
->   
-> -	ret = ath10k_pci_wake(ar);
-> -	if (ret) {
-> -		ath10k_err(ar, "failed to wake up target: %d\n", ret);
-> -		return ret;
-> -	}
-> -
->   	pcie_capability_read_word(ar_pci->pdev, PCI_EXP_LNKCTL,
->   				  &ar_pci->link_ctl);
->   	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
-> @@ -2047,7 +2193,6 @@ err_ce:
->   	ath10k_pci_ce_deinit(ar);
->   
->   err_sleep:
-> -	ath10k_pci_sleep(ar);
->   	return ret;
->   }
->   
-> @@ -2064,7 +2209,12 @@ static void ath10k_pci_hif_power_down(struct ath10k
-> *ar)
->   
->   static int ath10k_pci_hif_suspend(struct ath10k *ar)
->   {
-> -	ath10k_pci_sleep(ar);
-> +	/* The grace timer can still be counting down and ar->ps_awake be
-> true.
-> +	 * It is known that the device may be asleep after resuming
-> regardless
-> +	 * of the SoC powersave state before suspending. Hence make sure
-> the
-> +	 * device is asleep before proceeding.
-> +	 */
-> +	ath10k_pci_sleep_sync(ar);
->   
->   	return 0;
->   }
-> @@ -2074,13 +2224,6 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
->   	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
->   	struct pci_dev *pdev = ar_pci->pdev;
->   	u32 val;
-> -	int ret;
-> -
-> -	ret = ath10k_pci_wake(ar);
-> -	if (ret) {
-> -		ath10k_err(ar, "failed to wake device up on resume: %d\n",
-> ret);
-> -		return ret;
-> -	}
->   
->   	/* Suspend/Resume resets the PCI configuration space, so we have
-> to
->   	 * re-disable the RETRY_TIMEOUT register (0x41) to keep PCI Tx
-> retries
-> @@ -2091,7 +2234,7 @@ static int ath10k_pci_hif_resume(struct ath10k *ar)
->   	if ((val & 0x0000ff00) != 0)
->   		pci_write_config_dword(pdev, 0x40, val & 0xffff00ff);
->   
-> -	return ret;
-> +	return 0;
->   }
->   #endif
->   
-> @@ -2185,13 +2328,6 @@ static irqreturn_t ath10k_pci_interrupt_handler(int
-> irq, void *arg)
->   {
->   	struct ath10k *ar = arg;
->   	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -	int ret;
-> -
-> -	ret = ath10k_pci_wake(ar);
-> -	if (ret) {
-> -		ath10k_warn(ar, "failed to wake device up on irq: %d\n",
-> ret);
-> -		return IRQ_NONE;
-> -	}
->   
->   	if (ar_pci->num_msi_intrs == 0) {
->   		if (!ath10k_pci_irq_pending(ar))
-> @@ -2638,8 +2774,12 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
->   			  pdev->subsystem_vendor, pdev->subsystem_device);
->   
->   	spin_lock_init(&ar_pci->ce_lock);
-> +	spin_lock_init(&ar_pci->ps_lock);
-> +
->   	setup_timer(&ar_pci->rx_post_retry, ath10k_pci_rx_replenish_retry,
->   		    (unsigned long)ar);
-> +	setup_timer(&ar_pci->ps_timer, ath10k_pci_ps_timer,
-> +		    (unsigned long)ar);
->   
->   	ret = ath10k_pci_claim(ar);
->   	if (ret) {
-> @@ -2647,12 +2787,6 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
->   		goto err_core_destroy;
->   	}
->   
-> -	ret = ath10k_pci_wake(ar);
-> -	if (ret) {
-> -		ath10k_err(ar, "failed to wake up: %d\n", ret);
-> -		goto err_release;
-> -	}
-> -
->   	ret = ath10k_pci_alloc_pipes(ar);
->   	if (ret) {
->   		ath10k_err(ar, "failed to allocate copy engine pipes:
-> %d\n",
-> @@ -2716,9 +2850,6 @@ err_free_pipes:
->   	ath10k_pci_free_pipes(ar);
->   
->   err_sleep:
-> -	ath10k_pci_sleep(ar);
-> -
-> -err_release:
->   	ath10k_pci_release(ar);
->   
->   err_core_destroy:
-> @@ -2748,6 +2879,7 @@ static void ath10k_pci_remove(struct pci_dev *pdev)
->   	ath10k_pci_deinit_irq(ar);
->   	ath10k_pci_ce_deinit(ar);
->   	ath10k_pci_free_pipes(ar);
-> +	ath10k_pci_sleep_sync(ar);
->   	ath10k_pci_release(ar);
->   	ath10k_core_destroy(ar);
->   }
-> diff --git a/drivers/net/wireless/ath/ath10k/pci.h
-> b/drivers/net/wireless/ath/ath10k/pci.h
-> index ee2173d61257..d7696ddc03c4 100644
-> --- a/drivers/net/wireless/ath/ath10k/pci.h
-> +++ b/drivers/net/wireless/ath/ath10k/pci.h
-> @@ -191,6 +191,35 @@ struct ath10k_pci {
->   	 * device bootup is executed and re-programmed later.
->   	 */
->   	u16 link_ctl;
-> +
-> +	/* Protects ps_awake and ps_wake_refcount */
-> +	spinlock_t ps_lock;
-> +
-> +	/* The device has a special powersave-oriented register. When
-> device is
-> +	 * considered asleep it drains less power and driver is forbidden
-> from
-> +	 * accessing most MMIO registers. If host were to access them
-> without
-> +	 * waking up the device might scribble over host memory or return
-> +	 * 0xdeadbeef readouts.
-> +	 */
-> +	unsigned long ps_wake_refcount;
-> +
-> +	/* Waking up takes some time (up to 2ms in some cases) so it can
-> be bad
-> +	 * for latency. To mitigate this the device isn't immediately
-> allowed
-> +	 * to sleep after all references are undone - instead there's a
-> grace
-> +	 * period after which the powersave register is updated unless
-> some
-> +	 * activity to/from device happened in the meantime.
-> +	 *
-> +	 * Also see comments on ATH10K_PCI_SLEEP_GRACE_PERIOD_MSEC.
-> +	 */
-> +	struct timer_list ps_timer;
-> +
-> +	/* MMIO registers are used to communicate with the device. With
-> +	 * intensive traffic accessing powersave register would be a bit
-> +	 * wasteful overhead and would needlessly stall CPU. It is far
-> more
-> +	 * efficient to rely on a variable in RAM and update it only upon
-> +	 * powersave register state changes.
-> +	 */
-> +	bool ps_awake;
->   };
->   
->   static inline struct ath10k_pci *ath10k_pci_priv(struct ath10k *ar)
-> @@ -215,61 +244,25 @@ static inline struct ath10k_pci
-> *ath10k_pci_priv(struct ath10k *ar)
->    * for this device; but that's not guaranteed.
->    */
->   #define TARG_CPU_SPACE_TO_CE_SPACE(ar, pci_addr, addr)			\
-> -	(((ioread32((pci_addr)+(SOC_CORE_BASE_ADDRESS|			\
-> +	(((ath10k_pci_read32(ar, (SOC_CORE_BASE_ADDRESS |		\
->   	  CORE_CTRL_ADDRESS)) & 0x7ff) << 21) |				\
->   	 0x100000 | ((addr) & 0xfffff))
->   
->   /* Wait up to this many Ms for a Diagnostic Access CE operation to
-> complete */
->   #define DIAG_ACCESS_CE_TIMEOUT_MS 10
->   
-> -/* Target exposes its registers for direct access. However before host
-> can
-> - * access them it needs to make sure the target is awake
-> (ath10k_pci_wake,
-> - * ath10k_pci_wake_wait, ath10k_pci_is_awake). Once target is awake it
-> won't go
-> - * to sleep unless host tells it to (ath10k_pci_sleep).
-> - *
-> - * If host tries to access target registers without waking it up it can
-> - * scribble over host memory.
-> - *
-> - * If target is asleep waking it up may take up to even 2ms.
-> +void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value);
-> +void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr, u32 val);
-> +void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr, u32 val);
-> +
-> +u32 ath10k_pci_read32(struct ath10k *ar, u32 offset);
-> +u32 ath10k_pci_soc_read32(struct ath10k *ar, u32 addr);
-> +u32 ath10k_pci_reg_read32(struct ath10k *ar, u32 addr);
-> +
-> +/* QCA6174 is known to have Tx/Rx issues when SOC_WAKE register is poked
-> too
-> + * frequently. To avoid this put SoC to sleep after a very conservative
-> grace
-> + * period. Adjust with great care.
->    */
-> -
-> -static inline void ath10k_pci_write32(struct ath10k *ar, u32 offset,
-> -				      u32 value)
-> -{
-> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -
-> -	iowrite32(value, ar_pci->mem + offset);
-> -}
-> -
-> -static inline u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
-> -{
-> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -
-> -	return ioread32(ar_pci->mem + offset);
-> -}
-> -
-> -static inline u32 ath10k_pci_soc_read32(struct ath10k *ar, u32 addr)
-> -{
-> -	return ath10k_pci_read32(ar, RTC_SOC_BASE_ADDRESS + addr);
-> -}
-> -
-> -static inline void ath10k_pci_soc_write32(struct ath10k *ar, u32 addr,
-> u32 val)
-> -{
-> -	ath10k_pci_write32(ar, RTC_SOC_BASE_ADDRESS + addr, val);
-> -}
-> -
-> -static inline u32 ath10k_pci_reg_read32(struct ath10k *ar, u32 addr)
-> -{
-> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -
-> -	return ioread32(ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS + addr);
-> -}
-> -
-> -static inline void ath10k_pci_reg_write32(struct ath10k *ar, u32 addr,
-> u32 val)
-> -{
-> -	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
-> -
-> -	iowrite32(val, ar_pci->mem + PCIE_LOCAL_BASE_ADDRESS + addr);
-> -}
-> +#define ATH10K_PCI_SLEEP_GRACE_PERIOD_MSEC 60
->   
->   #endif /* _PCI_H_ */
-Thanks,
-Peter
+
+When we are trying to send De-authentication  packets using
+aireplay-ng(aircrack tools) firmware getting crashed in sniffer mode.
+
+Kernel: "3.18.1"
+Drivers: "compat-wireless-2015-03-09"
+
+Please find given below logs:
+
+[791495.150000] ath10k_pci: Unknown symbol ath10k_warn (err 0)
+[791495.160000] ath10k_pci: Unknown symbol ath10k_err (err 0)
+[791495.170000] ath10k_pci: Unknown symbol ath10k_print_driver_info (err 0)
+[791495.170000] ath10k_pci: Unknown symbol
+ath10k_debug_get_new_fw_crash_data (err 0)
+[791495.180000] ath10k_pci: Unknown symbol ath10k_core_create (err 0)
+[791495.190000] ath10k_pci: Unknown symbol ath10k_core_destroy (err 0)
+[791495.190000] ath10k_pci: Unknown symbol ath10k_core_register (err 0)
+[791495.200000] ath10k_pci: Unknown symbol ath10k_info (err 0)
+[791495.210000] ath10k_pci: Unknown symbol ath10k_core_unregister (err 0)
+[791504.600000] ath10k_pci 0000:01:00.0: pci irq legacy interrupts 0
+irq_mode 0 reset_mode 0
+[791504.820000] ath10k_pci 0000:01:00.0: Direct firmware load for
+ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+[791504.830000] ath10k_pci 0000:01:00.0: Falling back to user helper
+[791504.900000] firmware ath10k!cal-pci-0000:01:00.0.bin:
+firmware_loading_store: map pages failed
+[791505.060000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+board.bin contents
+[791505.910000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+[791505.920000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+dfs 1 testmode 1
+[791506.030000] ath: EEPROM regdomain: 0x0
+[791506.030000] ath: EEPROM indicates default country code should be used
+[791506.030000] ath: doing EEPROM country->regdmn map search
+[791506.030000] ath: country maps to regdmn code: 0x3a
+[791506.030000] ath: Country alpha2 being used: US
+[791506.030000] ath: Regpair used: 0x3a
+[791551.530000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+board.bin contents
+[791718.130000] device wlan1 entered promiscuous mode
+[791718.340000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+b4593209-111f-446c-a134-120ce3b2e37d)
+[791718.350000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+[791718.360000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+dfs 1 testmode 1
+[791718.370000] ath10k_pci 0000:01:00.0: firmware register dump:
+[791718.380000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+0x0099A132 0x00955B31
+[791718.380000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+0x0000001E 0x00000005
+[791718.390000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+0x004159AC 0x00002D00
+[791718.400000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+0x00958018 0x00958027
+[791718.410000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+0x00000000 0x00000000
+[791718.420000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+0x00400000 0x4987F39C
+[791718.420000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+0x00000001 0xC099A132
+[791718.430000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+0x0043DD84 0x00000002
+[791718.440000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+0x00400000 0x004159AC
+[791718.450000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+0x0040AE48 0x0041116C
+[791718.460000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+0x00000001 0x00000000
+[791718.470000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+0x0041D728 0x00411778
+[791718.470000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+0x0041D728 0x00000001
+[791718.480000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+0x00000010 0x00403AC0
+[791718.490000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+0x00400000 0x00000000
+[791718.600000] ieee80211 phy3: Hardware restart was requested
+[791718.600000] ath10k_pci 0000:01:00.0: failed to to request monitor
+vdev 0 stop: -143
+[791718.610000] ath10k_pci 0000:01:00.0: failed to synchronize monitor
+vdev 0 stop: -143
+[791718.620000] ath10k_pci 0000:01:00.0: failed to stop monitor vdev: -143
+[791718.970000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+board.bin contents
+[791719.820000] ath10k_pci 0000:01:00.0: device successfully recovered
+[791719.900000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+7c004867-7f8c-411f-83a8-b4aa69da1ee8)
+[791719.910000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+[791719.920000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+dfs 1 testmode 1
+[791719.930000] ath10k_pci 0000:01:00.0: firmware register dump:
+[791719.930000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+0x0099A132 0x00955B31
+[791719.940000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+0x0000001E 0x00000005
+[791719.950000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+0x004159AC 0x00002D00
+[791719.960000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+0x00958018 0x00958027
+[791719.970000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+0x00000000 0x00000000
+[791719.970000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+0x00400000 0xDF7BC310
+[791719.980000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+0x00000001 0xC099A132
+[791719.990000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+0x0043DD84 0x00000002
+[791720.000000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+0x00400000 0x004159AC
+[791720.010000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+0x0040AE48 0x0041116C
+[791720.010000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+0x00000001 0x00000000
+[791720.020000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+0x0041D728 0x00411778
+[791720.030000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+0x0041D728 0x00000001
+[791720.040000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+0x00000010 0x00403AC0
+[791720.050000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+0x00400000 0x00000000
+[791723.140000] ath10k_pci 0000:01:00.0: failed to transmit management
+frame via WMI: -143
+[791723.240000] ieee80211 phy3: Hardware restart was requested
+[791723.240000] ath10k_pci 0000:01:00.0: failed to put down monitor vdev 0: -143
+[791723.250000] ath10k_pci 0000:01:00.0: failed to to request monitor
+vdev 0 stop: -143
+[791723.260000] ath10k_pci 0000:01:00.0: failed to synchronize monitor
+vdev 0 stop: -143
+[791723.260000] ath10k_pci 0000:01:00.0: failed to stop monitor vdev: -143
+[791723.620000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+board.bin contents
+[791724.470000] ath10k_pci 0000:01:00.0: device successfully recovered
+[791724.580000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+521f6876-093d-4741-a3c4-33bc85470260)
+[791724.590000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+[791724.600000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+dfs 1 testmode 1
+[791724.610000] ath10k_pci 0000:01:00.0: firmware register dump:
+[791724.620000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+0x0099A132 0x00955B31
+[791724.630000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+0x0000001E 0x00000005
+[791724.640000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+0x004159AC 0x00002D00
+[791724.640000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+0x00958018 0x00958027
+[791724.650000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+0x00000000 0x00000000
+[791724.660000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+0x00400000 0x4987F39C
+[791724.670000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+0x00000001 0xC099A132
+[791724.680000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+0x0043DD84 0x00000002
+[791724.680000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+0x00400000 0x004159AC
+[791724.690000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+0x0040AE48 0x0041116C
+[791724.700000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+0x00000001 0x00000000
+[791724.710000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+0x0041D728 0x00411778
+[791724.720000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+0x0041D728 0x00000001
+[791724.720000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+0x00000010 0x00403AC0
+[791724.730000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+0x00400000 0x00000000
+[791732.500000] ath10k_pci 0000:01:00.0: failed to transmit management
+frame via WMI: -143
+[791732.600000] ieee80211 phy3: Hardware restart was requested
+[791732.600000] ath10k_pci 0000:01:00.0: failed to put down monitor vdev 0: -143
+[791732.610000] ath10k_pci 0000:01:00.0: failed to to request monitor
+vdev 0 stop: -143
+[791733.020000] ath10k_warn: 2 callbacks suppressed
+[791733.020000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+board.bin contents
+[791733.880000] ath10k_pci 0000:01:00.0: device successfully recovered
+
+
+
+Please let me know if any further information required.
 
 _______________________________________________
 ath10k mailing list
