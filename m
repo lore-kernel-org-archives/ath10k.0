@@ -1,19 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrlZw-0004yo-Dl
- for ath10k@lists.infradead.org; Mon, 11 May 2015 11:08:57 +0000
-Received: by wiun10 with SMTP id n10so91894513wiu.1
- for <ath10k@lists.infradead.org>; Mon, 11 May 2015 04:08:31 -0700 (PDT)
+ id 1Yrma5-0005Y3-Mo
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 12:13:10 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx,
+ nohwcrypt module param for raw tx injection, sw crypto support.
+References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
+ <873837qo6l.fsf@kamboji.qca.qualcomm.com>
+ <554CE438.5000208@candelatech.com>
+ <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
+Date: Mon, 11 May 2015 15:12:37 +0300
+In-Reply-To: <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
+ (Liu CF's message of "Fri, 8 May 2015 10:35:19 -0700")
+Message-ID: <871tinjosq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
-References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
- <CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>
- <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
-Date: Mon, 11 May 2015 13:08:31 +0200
-Message-ID: <CA+BoTQ=Qpws=928TZe22Ds-UO_qQJ2Om+=DW=VUNUS59o1BQAA@mail.gmail.com>
-Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,88 +23,52 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: s prasad <sprasad.kandregula@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Liu CF/TW <cfliu.tw@gmail.com>
+Cc: Ben Greear <greearb@candelatech.com>, linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTEgTWF5IDIwMTUgYXQgMTI6NTEsIHMgcHJhc2FkIDxzcHJhc2FkLmthbmRyZWd1bGFAZ21h
-aWwuY29tPiB3cm90ZToKPiBIaSwKPgo+IE9uIE1vbiwgTWF5IDExLCAyMDE1IGF0IDE6NTAgQU0s
-IE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3cm90ZToKPj4gT24gMTAg
-TWF5IDIwMTUgYXQgMjI6NTYsIHMgcHJhc2FkIDxzcHJhc2FkLmthbmRyZWd1bGFAZ21haWwuY29t
-PiB3cm90ZToKPj4+IEhpLAo+Pj4KPj4+IFdoZW4gd2UgYXJlIHRyeWluZyB0byBzZW5kIERlLWF1
-dGhlbnRpY2F0aW9uICBwYWNrZXRzIHVzaW5nCj4+PiBhaXJlcGxheS1uZyhhaXJjcmFjayB0b29s
-cykgZmlybXdhcmUgZ2V0dGluZyBjcmFzaGVkIGluIHNuaWZmZXIgbW9kZS4KPj4+Cj4+PiBLZXJu
-ZWw6ICIzLjE4LjEiCj4+PiBEcml2ZXJzOiAiY29tcGF0LXdpcmVsZXNzLTIwMTUtMDMtMDkiCj4+
-Pgo+Pj4gUGxlYXNlIGZpbmQgZ2l2ZW4gYmVsb3cgbG9nczoKPj4+Cj4+PiBbNzkxNDk1LjE1MDAw
-MF0gYXRoMTBrX3BjaTogVW5rbm93biBzeW1ib2wgYXRoMTBrX3dhcm4gKGVyciAwKQo+Pj4gWzc5
-MTQ5NS4xNjAwMDBdIGF0aDEwa19wY2k6IFVua25vd24gc3ltYm9sIGF0aDEwa19lcnIgKGVyciAw
-KQo+Pj4gWzc5MTQ5NS4xNzAwMDBdIGF0aDEwa19wY2k6IFVua25vd24gc3ltYm9sIGF0aDEwa19w
-cmludF9kcml2ZXJfaW5mbyAoZXJyIDApCj4+PiBbNzkxNDk1LjE3MDAwMF0gYXRoMTBrX3BjaTog
-VW5rbm93biBzeW1ib2wKPj4+IGF0aDEwa19kZWJ1Z19nZXRfbmV3X2Z3X2NyYXNoX2RhdGEgKGVy
-ciAwKQo+Pj4gWzc5MTQ5NS4xODAwMDBdIGF0aDEwa19wY2k6IFVua25vd24gc3ltYm9sIGF0aDEw
-a19jb3JlX2NyZWF0ZSAoZXJyIDApCj4+PiBbNzkxNDk1LjE5MDAwMF0gYXRoMTBrX3BjaTogVW5r
-bm93biBzeW1ib2wgYXRoMTBrX2NvcmVfZGVzdHJveSAoZXJyIDApCj4+PiBbNzkxNDk1LjE5MDAw
-MF0gYXRoMTBrX3BjaTogVW5rbm93biBzeW1ib2wgYXRoMTBrX2NvcmVfcmVnaXN0ZXIgKGVyciAw
-KQo+Pj4gWzc5MTQ5NS4yMDAwMDBdIGF0aDEwa19wY2k6IFVua25vd24gc3ltYm9sIGF0aDEwa19p
-bmZvIChlcnIgMCkKPj4+IFs3OTE0OTUuMjEwMDAwXSBhdGgxMGtfcGNpOiBVbmtub3duIHN5bWJv
-bCBhdGgxMGtfY29yZV91bnJlZ2lzdGVyIChlcnIgMCkKPj4+IFs3OTE1MDQuNjAwMDAwXSBhdGgx
-MGtfcGNpIDAwMDA6MDE6MDAuMDogcGNpIGlycSBsZWdhY3kgaW50ZXJydXB0cyAwCj4+PiBpcnFf
-bW9kZSAwIHJlc2V0X21vZGUgMAo+Pj4gWzc5MTUwNC44MjAwMDBdIGF0aDEwa19wY2kgMDAwMDow
-MTowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPj4+IGF0aDEway9jYWwtcGNpLTAwMDA6
-MDE6MDAuMC5iaW4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPj4+IFs3OTE1MDQuODMwMDAwXSBhdGgx
-MGtfcGNpIDAwMDA6MDE6MDAuMDogRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyCj4+PiBbNzkx
-NTA0LjkwMDAwMF0gZmlybXdhcmUgYXRoMTBrIWNhbC1wY2ktMDAwMDowMTowMC4wLmJpbjoKPj4+
-IGZpcm13YXJlX2xvYWRpbmdfc3RvcmU6IG1hcCBwYWdlcyBmYWlsZWQKPj4+IFs3OTE1MDUuMDYw
-MDAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogb3RwIHN0cmVhbSBpcyBlbXB0eSwgdXNpbmcK
-Pj4+IGJvYXJkLmJpbiBjb250ZW50cwo+Pgo+PiBZb3UncmUgcHJvYmFibHkgdXNpbmcgT3BlbldS
-VCwgYXJlbid0IHlvdT8gQXJlIHlvdSBwb3NpdGl2ZSB5b3UgaGF2ZQo+PiBwcm9wZXIgYm9hcmQu
-YmluLCBpLmUuIGJhc2VkIG9mIE5BTkQgZmxhc2ggcGFydGl0aW9uIGNvbnRhaW5pbmcKPj4gY2Fs
-aWJyYXRpb24gZGF0YT8KPj4KPj4KPgo+IFllcyBJIGFtIHVzaW5nIE9wZW5XcnQKPiBJIGdvdCBi
-b2FyZC5iaW4gZnJvbSB0aGUgZm9sbG93aW5nIGdpdCBwYXRoOgo+IGh0dHBzOi8vZ2l0aHViLmNv
-bS9rdmFsby9hdGgxMGstZmlybXdhcmUvdHJlZS9tYXN0ZXIvYXRoMTBrL1FDQTk4OFgvaHcyLjAv
-Cj4KPiBBYm91dCBib2FyZC5iaW4sIGNoZWNrZWQgbWQ1c3VtIG9mIGJvdGggT3BlbldydCBhbmQg
-ZnJvbSBhYm92ZSBnaXQKPiBwYXRoLCBib3RoIGhhdmUgc2FtZSBtZDVzdW0uCgpUaGlzIGlzIHRo
-ZSB3cm9uZyB3YXkgdG8gZG8gaXQuIFlvdSdyZSB1c2luZyB5b3VyIGNhcmQgd2l0aG91dCBjb3Jy
-ZWN0CmNhbGlicmF0aW9uIGRhdGEuIE5vIHdvbmRlciBpdCBjcmFzaGVzLiBJIGJldCB5b3UgaGF2
-ZSBhCjAwOjAzOjA3OjEyOjM0OjU2IG1hYyBhZGRyZXNzIG9uIHlvdXIgYXRoMTBrIHdsYW4gaW50
-ZXJmYWNlLgoKWW91IG5lZWQgdG8gZXh0cmFjdCBib2FyZC5iaW4gZnJvbSBOQU5EIGZsYXNoIG9m
-IHRoZSByb3V0ZXIgeW91IGhhdmUuCk9wZW5XUlQgZG9lcyB0aGlzIGF1dG9tYXRpY2FsbHkgZm9y
-IHNvbWUgZGV2aWNlcyAoZS5nLiBUUC1MaW5rIEFyY2hlcgpDNS9DNykgYXMgZmFyIGFzIEkga25v
-dy4gWW91IHNob3VsZCBlaXRoZXIgYWxsb3cgT3BlbldSVCB0byBleHRyYWN0CnRoZSBmaWxlIGl0
-c2VsZiAocHJvYmFibHkgZGVsZXRpbmcgdGhlIGV4aXN0aW5nIGJvYXJkLmJpbiBhbmQKcmVib290
-aW5nIHRoZSBzeXN0ZW0pIG9yIGxvb2sgYXQgc2NyaXB0IHJlc3BvbnNpYmxlIGZvciB0aGF0IGFu
-ZCBkbyBpdAp5b3Vyc2VsZi4KCgo+Pj4gWzc5MTUwNS45MTAwMDBdIGF0aDEwa19wY2kgMDAwMDow
-MTowMC4wOiBxY2E5ODh4IGh3Mi4wICgweDQxMDAwMTZjLAo+Pj4gMHgwNDMyMDJmZikgZncgMTAu
-MS40NjcuMi0xIGFwaSA0IGh0dCAyLjEgd21pIDIgY2FsIG90cCBtYXhfc3RhIDEyOAo+Pj4gWzc5
-MTUwNS45MjAwMDBdIGF0aDEwa19wY2kgMDAwMDowMTowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0
-cmFjaW5nIDAKPj4+IGRmcyAxIHRlc3Rtb2RlIDEKPj4+IFs3OTE1MDYuMDMwMDAwXSBhdGg6IEVF
-UFJPTSByZWdkb21haW46IDB4MAo+Pj4gWzc5MTUwNi4wMzAwMDBdIGF0aDogRUVQUk9NIGluZGlj
-YXRlcyBkZWZhdWx0IGNvdW50cnkgY29kZSBzaG91bGQgYmUgdXNlZAo+Pj4gWzc5MTUwNi4wMzAw
-MDBdIGF0aDogZG9pbmcgRUVQUk9NIGNvdW50cnktPnJlZ2RtbiBtYXAgc2VhcmNoCj4+PiBbNzkx
-NTA2LjAzMDAwMF0gYXRoOiBjb3VudHJ5IG1hcHMgdG8gcmVnZG1uIGNvZGU6IDB4M2EKPj4+IFs3
-OTE1MDYuMDMwMDAwXSBhdGg6IENvdW50cnkgYWxwaGEyIGJlaW5nIHVzZWQ6IFVTCj4+PiBbNzkx
-NTA2LjAzMDAwMF0gYXRoOiBSZWdwYWlyIHVzZWQ6IDB4M2EKPj4+IFs3OTE1NTEuNTMwMDAwXSBh
-dGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogb3RwIHN0cmVhbSBpcyBlbXB0eSwgdXNpbmcKPj4+IGJv
-YXJkLmJpbiBjb250ZW50cwo+Pj4gWzc5MTcxOC4xMzAwMDBdIGRldmljZSB3bGFuMSBlbnRlcmVk
-IHByb21pc2N1b3VzIG1vZGUKPj4+IFs3OTE3MTguMzQwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQKPj4+IGI0NTkzMjA5LTExMWYtNDQ2Yy1hMTM0
-LTEyMGNlM2IyZTM3ZCkKPj4+IFs3OTE3MTguMzUwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAu
-MDogcWNhOTg4eCBodzIuMCAoMHg0MTAwMDE2YywKPj4+IDB4MDQzMjAyZmYpIGZ3IDEwLjEuNDY3
-LjItMSBhcGkgNCBodHQgMi4xIHdtaSAyIGNhbCBvdHAgbWF4X3N0YSAxMjgKPj4+IFs3OTE3MTgu
-MzYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2lu
-ZyAwCj4+PiBkZnMgMSB0ZXN0bW9kZSAxCj4+IFsuLi5dCj4+PiBQbGVhc2UgbGV0IG1lIGtub3cg
-aWYgYW55IGZ1cnRoZXIgaW5mb3JtYXRpb24gcmVxdWlyZWQuCj4+Cj4+IENhbiB5b3UgZ2V0IGRl
-YnVnIGxvZ3Mgb3IgdHJhY2VzLCBwbGVhc2U/Cj4+Cj4KPiBTdXJlLCB3aWxsIHNlbmQgdGhlbSwg
-SWYgcG9zc2libGUgbWF5IEkga25vdyBob3cgdG8gZW5hYmxlIGRlYnVnIGxvZ3Mgb3IgdHJhY2Vz
-LgoKaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVycy9hdGgx
-MGsvZGVidWcjdHJhY2luZwoKRnJvbSB0aGUgZHJpdmVyIGluZm8gc3RyaW5nIGl0IGxvb2tzIHlv
-dSdsbCBuZWVkIHRvIHJlY29tcGlsZSB0aGUgZHJpdmVyLgoKCj4+IERvZXMgMTAuMi0wMDA4MiBv
-ciAxMC4yLjQueHggY3Jhc2ggYXMgd2VsbD8KPgo+IFdpbGwgY2hlY2sgYW5kIGxldCB5b3Uga25v
-dy4KCkJlZm9yZSB5b3Ugc3RhcnQgZ2V0dGluZyB0cmFjZXMgb3IgdGVzdGluZyAxMC4yIGZpcm13
-YXJlIG1ha2Ugc3VyZSB5b3UKZml4IHlvdXIgYm9hcmQuYmluIGZpcnN0LCBwbGVhc2UuCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+"Liu CF/TW" <cfliu.tw@gmail.com> writes:
+
+>>> I wonder does it make any sense to have nohwcrypt parameter? Especially
+>>> if ath10k doesn't support case rawtxrx=0 and nohwcrypt=1. One
+>>> possibility I came up is to have multiple values for rawtxrx, for
+>>> example is rawtxrx=1 means HW crypt enabled and rawtxrx=2 HW crypt
+>>> disabled. Ideas welcome.
+>
+> Indeed. I picked nohwcrypt because it seems to be the convention in
+> previous Atheros drivers for this feature.
+
+Yeah, but I don't think we need to follow that in ath10k. Especially not
+until we get SW encryption working in all cases.
+
+> In this case, I will drop nohwcrypt and do as you suggested.
+>
+> rawmode = 0: Raw mode disabled. Use the default native WiFi mode. In
+> this mode, only HW crypto is supported.
+> rawmode = 1: Use Raw rx decap + raw tx encap mode. Supports both SW
+> and HW crypto.
+> rawmode = 2: Same as 1, but with HW crypto engine globally disabled.
+
+I would guess that HW crypto globally disabled (value 2 above) will be
+more popular, right? So would it make sense to reverse the values and
+use value 1 for that?
+
+> When rawmode = 1, I want a further per BSS control to make some BSS
+> use HW crypto and some BSS bypass HW crypto.
+> For those BSS that have HW crypto bypassed, their data frames may come
+> from either the normal wlan interfaces (therefore mac80211 sw crypto
+> used), or from monitor interfaces (therefore Tx injected frames
+> already encrypted + Rx frames still encrypted)
+
+Ok, we need to think how to configure this. Maybe a debugfs interface?
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
