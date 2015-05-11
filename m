@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x230.google.com ([2a00:1450:400c:c00::230])
+Received: from ns2.inescn.pt ([192.35.246.20] helo=trubo.inescn.pt)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrgqM-0002my-1y
- for ath10k@lists.infradead.org; Mon, 11 May 2015 06:05:35 +0000
-Received: by wgin8 with SMTP id n8so117856951wgi.0
- for <ath10k@lists.infradead.org>; Sun, 10 May 2015 23:05:10 -0700 (PDT)
+ id 1YrjS5-0002yf-8a
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 08:52:44 +0000
+Message-ID: <20150511105204.112340biso205wvo@webmail.inescporto.pt>
+Date: Mon, 11 May 2015 10:52:04 +0200
+From: =?iso-8859-1?b?TeFyaW8=?= Lopes <mjlopes@inesctec.pt>
+Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
+References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
+In-Reply-To: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1431093663-15206-1-git-send-email-c_mpubbi@qti.qualcomm.com>
-References: <1431093663-15206-1-git-send-email-c_mpubbi@qti.qualcomm.com>
-Date: Mon, 11 May 2015 08:05:10 +0200
-Message-ID: <CA+BoTQ=480Wg4WmL0eBZ7CS9aVHjH8Lt-2x-FzAuGwsAuNA8-w@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: new debugfs interface to enable adaptive CCA
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,67 +19,235 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"; DelSp="Yes"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mpubbi@qti.qualcomm.com
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: s prasad <sprasad.kandregula@gmail.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, ath10k@lists.infradead.org
 
-T24gOCBNYXkgMjAxNSBhdCAxNjowMSwgIDxjX21wdWJiaUBxdGkucXVhbGNvbW0uY29tPiB3cm90
-ZToKPiBGcm9tOiBNYW5pa2FudGEgUHViYmlzZXR0eSA8Y19tcHViYmlAcXRpLnF1YWxjb21tLmNv
-bT4KPgo+IEZvciBkZXZpY2VzIHdvcmtpbmcgaW4gMi40IEdIeiB0byBiZSBFVFNJIGNvbXBsaWFu
-dCwKPiBpdCBpcyByZXF1aXJlZCB0byBzdXBwb3J0IGFkYXB0aXZlIENDQS4gU29tZSBmaXJtd2Fy
-ZXMKPiBzdXBwb3J0IGFkYXB0aXZlIENDQSBhbmQgaXMgZGlzYWJsZWQgYnkgZGVmYXVsdC4KPgo+
-IFRoZSBwYXRjaCBpcyBhbiBhdHRlbXB0IHRvIGFkZCBhIG5ldyBkZWJ1Z2ZzIGludGVyZmFjZSB0
-byBlbmFibGUKPiBhZGFwdGl2ZSBjY2Egb24gc3VwcG9ydGVkIGZpcm13YXJlcy4gU3VwcG9ydCBm
-b3IgdGhpcyBmZWF0dXJlIGlzCj4gYWR2ZXJ0aXNlZCB3aXRoIGEgbmV3IGZpcm13YXJlIGZlYXR1
-cmUgZmxhZy4KCkkgZ3Vlc3MgdGhpcyBzaG91bGQgYmUgY29uZmlndXJlZCBhdXRvbWF0aWNhbGx5
-IGRlcGVuZGluZyBvbiBERlMKZG9tYWluLiBZb3UgY2FuJ3QgZXhwZWN0IHVzZXJzIHRvIGNvbmZp
-Z3VyZSB0aGVpciBkZXZpY2VzIHZpYSBkZWJ1Z2ZzLApjYW4geW91PyBUaGlzIHNob3VsZCBqdXN0
-IHdvcmsuCgoKPiBTaWduZWQtb2ZmLWJ5OiBNYW5pa2FudGEgUHViYmlzZXR0eSA8Y19tcHViYmlA
-cXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9jb3JlLmggICAgfCAgOSArKysrLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9kZWJ1Zy5jICAgfCA1MiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gIGRyaXZl
-cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvd21pLW9wcy5oIHwgMjEgKysrKysrKysrKysrKwo+
-ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5jICAgICB8IDMxICsrKysrKysr
-KysrKysrKysrKwo+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS5oICAgICB8
-IDEwICsrKysrKwo+ICA1IGZpbGVzIGNoYW5nZWQsIDEyMSBpbnNlcnRpb25zKCspLCAyIGRlbGV0
-aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-Y29yZS5oIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPiBpbmRleCA4
-MjdiM2Q3Li44OTE3NmYxIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvY29yZS5oCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3Jl
-LmgKPiBAQCAtNDYxLDEwICs0NjEsMTMgQEAgZW51bSBhdGgxMGtfZndfZmVhdHVyZXMgewo+ICAg
-ICAgICAgQVRIMTBLX0ZXX0ZFQVRVUkVfV09XTEFOX1NVUFBPUlQgPSA2LAo+Cj4gICAgICAgICAv
-KiBEb24ndCB0cnVzdCBlcnJvciBjb2RlIGZyb20gb3RwLmJpbiAqLwo+IC0gICAgICAgQVRIMTBL
-X0ZXX0ZFQVRVUkVfSUdOT1JFX09UUF9SRVNVTFQsCj4gKyAgICAgICBBVEgxMEtfRldfRkVBVFVS
-RV9JR05PUkVfT1RQX1JFU1VMVCA9IDcsCj4gKwo+ICsgICAgICAgLyogRmlybXdhcmUgaGFzIHN1
-cHBvcnQgZm9yIGFkYXB0aXZlIENDQSAqLwo+ICsgICAgICAgQVRIMTBLX0ZXX0ZFQVRVUkVfSEFT
-X0FEQVBUSVZFX0NDQSA9IDgsCj4KPiAgICAgICAgIC8qIGtlZXAgbGFzdCAqLwo+IC0gICAgICAg
-QVRIMTBLX0ZXX0ZFQVRVUkVfQ09VTlQsCj4gKyAgICAgICBBVEgxMEtfRldfRkVBVFVSRV9DT1VO
-VAoKVGhlcmUncyBubyBuZWVkIHRvIHJlbW92ZSB0aGUgY29tbWEsIGlzIHRoZXJlPwoKCj4gIH07
-Cj4KPiAgZW51bSBhdGgxMGtfZGV2X2ZsYWdzIHsKPiBAQCAtNzI2LDYgKzcyOSw4IEBAIHN0cnVj
-dCBhdGgxMGsgewo+ICAgICAgICAgc3RydWN0IGF0aDEwa190aGVybWFsIHRoZXJtYWw7Cj4gICAg
-ICAgICBzdHJ1Y3QgYXRoMTBrX3dvdyB3b3c7Cj4KPiArICAgICAgIGJvb2wgYXRoMTBrX2FkYXB0
-aXZlX2NjYV9lbmFibGU7Cj4gKwoKTWF5YmUganVzdCBhZGFwdGl2ZV9jY2E/CgoKWy4uLl0KPiBk
-aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93bWktb3BzLmggYi9k
-cml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS1vcHMuaAo+IGluZGV4IDQ3ZmUyZTcu
-LmViNzk5MWUgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway93
-bWktb3BzLmgKPiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3dtaS1vcHMu
-aAo+IEBAIC0xNzQsNiArMTc0LDEwIEBAIHN0cnVjdCB3bWlfb3BzIHsKPiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qgd21pX3RkbHNf
-cGVlcl9jYXBhYl9hcmcgKmNhcCwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBjb25zdCBzdHJ1Y3Qgd21pX2NoYW5uZWxfYXJnICpjaGFuKTsKPiAgICAg
-ICAgIHN0cnVjdCBza19idWZmICooKmdlbl9hZGFwdGl2ZV9xY3MpKHN0cnVjdCBhdGgxMGsgKmFy
-LCBib29sIGVuYWJsZSk7Cj4gKyAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqKCpnZW5fcGRldl9lbmFi
-bGVfYWRhcHRpdmVfY2NhKShzdHJ1Y3QgYXRoMTBrICphciwKPiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHU4IGVuYWJsZSwKPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGludCBkZXRl
-Y3RfbGV2ZWwsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICB1MzIgZGV0ZWN0X21hcmdpbik7CgpJJ20ganVzdCBwaWNreSBoZXJlIC0gYnV0
-IHlvdSBjb3VsZCBwcm9iYWJseSB1c2UgInMzMiIgZm9yIHNpZ25lZAp2YWx1ZXMgaW5zdGVhZCBv
-ZiAiaW50Ii4gVGhpcyB3YXkgZnVuY3Rpb24gYXJndW1lbnQgdHlwZXMgd291bGQgYmUKbW9yZSB1
-bmlmaWVkL2NvbnNpc3RlbnQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Hello all.
+
+I have the same issue on OpenWRT, when using horst for sniffer mode,  =
+
+but different behaviour, reported here:  =
+
+https://dev.openwrt.org/ticket/15738
+
+
+BR,
+M=E1rio Lopes.
+
+
+
+Quoting s prasad <sprasad.kandregula@gmail.com>:
+
+> Hi,
+>
+> When we are trying to send De-authentication  packets using
+> aireplay-ng(aircrack tools) firmware getting crashed in sniffer mode.
+>
+> Kernel: "3.18.1"
+> Drivers: "compat-wireless-2015-03-09"
+>
+> Please find given below logs:
+>
+> [791495.150000] ath10k_pci: Unknown symbol ath10k_warn (err 0)
+> [791495.160000] ath10k_pci: Unknown symbol ath10k_err (err 0)
+> [791495.170000] ath10k_pci: Unknown symbol ath10k_print_driver_info (err =
+0)
+> [791495.170000] ath10k_pci: Unknown symbol
+> ath10k_debug_get_new_fw_crash_data (err 0)
+> [791495.180000] ath10k_pci: Unknown symbol ath10k_core_create (err 0)
+> [791495.190000] ath10k_pci: Unknown symbol ath10k_core_destroy (err 0)
+> [791495.190000] ath10k_pci: Unknown symbol ath10k_core_register (err 0)
+> [791495.200000] ath10k_pci: Unknown symbol ath10k_info (err 0)
+> [791495.210000] ath10k_pci: Unknown symbol ath10k_core_unregister (err 0)
+> [791504.600000] ath10k_pci 0000:01:00.0: pci irq legacy interrupts 0
+> irq_mode 0 reset_mode 0
+> [791504.820000] ath10k_pci 0000:01:00.0: Direct firmware load for
+> ath10k/cal-pci-0000:01:00.0.bin failed with error -2
+> [791504.830000] ath10k_pci 0000:01:00.0: Falling back to user helper
+> [791504.900000] firmware ath10k!cal-pci-0000:01:00.0.bin:
+> firmware_loading_store: map pages failed
+> [791505.060000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+> board.bin contents
+> [791505.910000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+> 0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+> [791505.920000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+> dfs 1 testmode 1
+> [791506.030000] ath: EEPROM regdomain: 0x0
+> [791506.030000] ath: EEPROM indicates default country code should be used
+> [791506.030000] ath: doing EEPROM country->regdmn map search
+> [791506.030000] ath: country maps to regdmn code: 0x3a
+> [791506.030000] ath: Country alpha2 being used: US
+> [791506.030000] ath: Regpair used: 0x3a
+> [791551.530000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+> board.bin contents
+> [791718.130000] device wlan1 entered promiscuous mode
+> [791718.340000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+> b4593209-111f-446c-a134-120ce3b2e37d)
+> [791718.350000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+> 0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+> [791718.360000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+> dfs 1 testmode 1
+> [791718.370000] ath10k_pci 0000:01:00.0: firmware register dump:
+> [791718.380000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+> 0x0099A132 0x00955B31
+> [791718.380000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+> 0x0000001E 0x00000005
+> [791718.390000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+> 0x004159AC 0x00002D00
+> [791718.400000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+> 0x00958018 0x00958027
+> [791718.410000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+> 0x00000000 0x00000000
+> [791718.420000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+> 0x00400000 0x4987F39C
+> [791718.420000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+> 0x00000001 0xC099A132
+> [791718.430000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+> 0x0043DD84 0x00000002
+> [791718.440000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+> 0x00400000 0x004159AC
+> [791718.450000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+> 0x0040AE48 0x0041116C
+> [791718.460000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+> 0x00000001 0x00000000
+> [791718.470000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+> 0x0041D728 0x00411778
+> [791718.470000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+> 0x0041D728 0x00000001
+> [791718.480000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+> 0x00000010 0x00403AC0
+> [791718.490000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+> 0x00400000 0x00000000
+> [791718.600000] ieee80211 phy3: Hardware restart was requested
+> [791718.600000] ath10k_pci 0000:01:00.0: failed to to request monitor
+> vdev 0 stop: -143
+> [791718.610000] ath10k_pci 0000:01:00.0: failed to synchronize monitor
+> vdev 0 stop: -143
+> [791718.620000] ath10k_pci 0000:01:00.0: failed to stop monitor vdev: -143
+> [791718.970000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+> board.bin contents
+> [791719.820000] ath10k_pci 0000:01:00.0: device successfully recovered
+> [791719.900000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+> 7c004867-7f8c-411f-83a8-b4aa69da1ee8)
+> [791719.910000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+> 0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+> [791719.920000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+> dfs 1 testmode 1
+> [791719.930000] ath10k_pci 0000:01:00.0: firmware register dump:
+> [791719.930000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+> 0x0099A132 0x00955B31
+> [791719.940000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+> 0x0000001E 0x00000005
+> [791719.950000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+> 0x004159AC 0x00002D00
+> [791719.960000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+> 0x00958018 0x00958027
+> [791719.970000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+> 0x00000000 0x00000000
+> [791719.970000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+> 0x00400000 0xDF7BC310
+> [791719.980000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+> 0x00000001 0xC099A132
+> [791719.990000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+> 0x0043DD84 0x00000002
+> [791720.000000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+> 0x00400000 0x004159AC
+> [791720.010000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+> 0x0040AE48 0x0041116C
+> [791720.010000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+> 0x00000001 0x00000000
+> [791720.020000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+> 0x0041D728 0x00411778
+> [791720.030000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+> 0x0041D728 0x00000001
+> [791720.040000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+> 0x00000010 0x00403AC0
+> [791720.050000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+> 0x00400000 0x00000000
+> [791723.140000] ath10k_pci 0000:01:00.0: failed to transmit management
+> frame via WMI: -143
+> [791723.240000] ieee80211 phy3: Hardware restart was requested
+> [791723.240000] ath10k_pci 0000:01:00.0: failed to put down monitor  =
+
+> vdev 0: -143
+> [791723.250000] ath10k_pci 0000:01:00.0: failed to to request monitor
+> vdev 0 stop: -143
+> [791723.260000] ath10k_pci 0000:01:00.0: failed to synchronize monitor
+> vdev 0 stop: -143
+> [791723.260000] ath10k_pci 0000:01:00.0: failed to stop monitor vdev: -143
+> [791723.620000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+> board.bin contents
+> [791724.470000] ath10k_pci 0000:01:00.0: device successfully recovered
+> [791724.580000] ath10k_pci 0000:01:00.0: firmware crashed! (uuid
+> 521f6876-093d-4741-a3c4-33bc85470260)
+> [791724.590000] ath10k_pci 0000:01:00.0: qca988x hw2.0 (0x4100016c,
+> 0x043202ff) fw 10.1.467.2-1 api 4 htt 2.1 wmi 2 cal otp max_sta 128
+> [791724.600000] ath10k_pci 0000:01:00.0: debug 0 debugfs 1 tracing 0
+> dfs 1 testmode 1
+> [791724.610000] ath10k_pci 0000:01:00.0: firmware register dump:
+> [791724.620000] ath10k_pci 0000:01:00.0: [00]: 0x4100016C 0x000015B3
+> 0x0099A132 0x00955B31
+> [791724.630000] ath10k_pci 0000:01:00.0: [04]: 0x0099A132 0x00060730
+> 0x0000001E 0x00000005
+> [791724.640000] ath10k_pci 0000:01:00.0: [08]: 0x0043DD84 0x00000000
+> 0x004159AC 0x00002D00
+> [791724.640000] ath10k_pci 0000:01:00.0: [12]: 0x00000009 0x00000004
+> 0x00958018 0x00958027
+> [791724.650000] ath10k_pci 0000:01:00.0: [16]: 0x00958080 0x0094085D
+> 0x00000000 0x00000000
+> [791724.660000] ath10k_pci 0000:01:00.0: [20]: 0x4099A132 0x0040AD14
+> 0x00400000 0x4987F39C
+> [791724.670000] ath10k_pci 0000:01:00.0: [24]: 0x8099A22E 0x0040AD74
+> 0x00000001 0xC099A132
+> [791724.680000] ath10k_pci 0000:01:00.0: [28]: 0x809AB96B 0x0040AD94
+> 0x0043DD84 0x00000002
+> [791724.680000] ath10k_pci 0000:01:00.0: [32]: 0x809A80FA 0x0040ADD4
+> 0x00400000 0x004159AC
+> [791724.690000] ath10k_pci 0000:01:00.0: [36]: 0x809A7885 0x0040AE24
+> 0x0040AE48 0x0041116C
+> [791724.700000] ath10k_pci 0000:01:00.0: [40]: 0x809486FA 0x0040AE44
+> 0x00000001 0x00000000
+> [791724.710000] ath10k_pci 0000:01:00.0: [44]: 0x80948E2C 0x0040AEA4
+> 0x0041D728 0x00411778
+> [791724.720000] ath10k_pci 0000:01:00.0: [48]: 0x80942EB3 0x0040AEC4
+> 0x0041D728 0x00000001
+> [791724.720000] ath10k_pci 0000:01:00.0: [52]: 0x80940F18 0x0040AF14
+> 0x00000010 0x00403AC0
+> [791724.730000] ath10k_pci 0000:01:00.0: [56]: 0x80940EEA 0x0040AF44
+> 0x00400000 0x00000000
+> [791732.500000] ath10k_pci 0000:01:00.0: failed to transmit management
+> frame via WMI: -143
+> [791732.600000] ieee80211 phy3: Hardware restart was requested
+> [791732.600000] ath10k_pci 0000:01:00.0: failed to put down monitor  =
+
+> vdev 0: -143
+> [791732.610000] ath10k_pci 0000:01:00.0: failed to to request monitor
+> vdev 0 stop: -143
+> [791733.020000] ath10k_warn: 2 callbacks suppressed
+> [791733.020000] ath10k_pci 0000:01:00.0: otp stream is empty, using
+> board.bin contents
+> [791733.880000] ath10k_pci 0000:01:00.0: device successfully recovered
+>
+>
+>
+> Please let me know if any further information required.
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-wireless"=
+ in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
