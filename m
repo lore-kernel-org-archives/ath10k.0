@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrqP9-0004BS-JH
- for ath10k@lists.infradead.org; Mon, 11 May 2015 16:18:08 +0000
-Message-ID: <5550D629.2090501@candelatech.com>
-Date: Mon, 11 May 2015 09:17:45 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mout.gmx.net ([212.227.17.22])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yrs9g-0005JG-LV
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 18:10:19 +0000
+Received: from [192.168.69.6] ([82.50.138.75]) by mail.gmx.com (mrgmx103) with
+ ESMTPSA (Nemesis) id 0MMTZa-1YrJuw2ghS-008Lxe for
+ <ath10k@lists.infradead.org>; Mon, 11 May 2015 20:09:53 +0200
+Message-ID: <5550F07E.7010701@gmx.com>
+Date: Mon, 11 May 2015 20:10:06 +0200
+From: Gabriele Martino <g.martino@gmx.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx, nohwcrypt module param
- for raw tx injection, sw crypto support.
-References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
- <873837qo6l.fsf@kamboji.qca.qualcomm.com> <554CE438.5000208@candelatech.com>
- <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
- <871tinjosq.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <871tinjosq.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: ath10k: freeze after disconnection on killer1525
+References: <5550A5A4.8080908@gmx.com>
+ <CA+BoTQk0Lca7mUfELjeHSbY_fiExTopga9J74khnOPkzEU01Xg@mail.gmail.com>
+In-Reply-To: <CA+BoTQk0Lca7mUfELjeHSbY_fiExTopga9J74khnOPkzEU01Xg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,66 +26,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Liu CF/TW <cfliu.tw@gmail.com>, linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-On 05/11/2015 05:12 AM, Kalle Valo wrote:
-> "Liu CF/TW" <cfliu.tw@gmail.com> writes:
-> 
->>>> I wonder does it make any sense to have nohwcrypt parameter? Especially
->>>> if ath10k doesn't support case rawtxrx=0 and nohwcrypt=1. One
->>>> possibility I came up is to have multiple values for rawtxrx, for
->>>> example is rawtxrx=1 means HW crypt enabled and rawtxrx=2 HW crypt
->>>> disabled. Ideas welcome.
+On 11/05/2015 15:30, Michal Kazior wrote:
+> On 11 May 2015 at 14:50, Gabriele Martino <g.martino@gmx.com> wrote:
+>> Hi,
+>> I'm using a Killer 1525 with hw2.1 firmware, and sometimes it stop working.
+>> I can get it working again disconnecting and reconnecting, but sometimes
+>> on disconnection it freezes for a long time:
 >>
->> Indeed. I picked nohwcrypt because it seems to be the convention in
->> previous Atheros drivers for this feature.
-> 
-> Yeah, but I don't think we need to follow that in ath10k. Especially not
-> until we get SW encryption working in all cases.
+>> [ 2740.035190] dmar: DRHD: handling fault status reg 2
+>> [ 2740.035195] dmar: DMAR:[DMA Read] Request device [03:00.0] fault addr
+>> ffbeb000
+>>                DMAR:[fault reason 06] PTE Read access is not
+>> set
+> This looks like DMA tx pool memory address. I suspect
+> firmware/hardware tried to access memory which was already unmapped by
+> ath10k.
+>
+> If you're feeling lucky you could disable IOMMU - this should prevent
+> from crashing and disconnecting. However this is hardly a solution
+> unless you're okay with the device reading random memory and doing
+> *stuff* with it (plaintext password from RAM sent on the air, anyone?
+> :-)
+This seems even worse than the problem itself :-)
+Other ideas? Should I provide other logs?
 
-What do you mean 'all cases'?  Many upstream firmware builds will just
-crash if you try raw tx, regardless of any encryption options.
-
-
->> In this case, I will drop nohwcrypt and do as you suggested.
->>
->> rawmode = 0: Raw mode disabled. Use the default native WiFi mode. In
->> this mode, only HW crypto is supported.
->> rawmode = 1: Use Raw rx decap + raw tx encap mode. Supports both SW
->> and HW crypto.
->> rawmode = 2: Same as 1, but with HW crypto engine globally disabled.
-> 
-> I would guess that HW crypto globally disabled (value 2 above) will be
-> more popular, right? So would it make sense to reverse the values and
-> use value 1 for that?
-
-You are combining multiple different (but related) things into a single
-enum.  Maybe make it a bitfield instead so that new combinations can be
-added later w/out making such a mess in the code?
-
-
->> When rawmode = 1, I want a further per BSS control to make some BSS
->> use HW crypto and some BSS bypass HW crypto.
->> For those BSS that have HW crypto bypassed, their data frames may come
->> from either the normal wlan interfaces (therefore mac80211 sw crypto
->> used), or from monitor interfaces (therefore Tx injected frames
->> already encrypted + Rx frames still encrypted)
-> 
-> Ok, we need to think how to configure this. Maybe a debugfs interface?
-
-I'm curious the order of operations...seems like you will have to create
-and start using the BSS before you get access to it in debugfs?  Or are you
-going to create a table of mac-addresses or something like that?
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Regards,
+Gabriele
 
 _______________________________________________
 ath10k mailing list
