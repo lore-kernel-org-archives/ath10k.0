@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrslG-0001hN-Fl
- for ath10k@lists.infradead.org; Mon, 11 May 2015 18:49:07 +0000
-Message-ID: <5550F98C.5080603@candelatech.com>
-Date: Mon, 11 May 2015 11:48:44 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from edge20.ethz.ch ([82.130.99.26])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YrsrV-0005Zp-Je
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 18:55:35 +0000
+From: "Costa Molero  Edgar" <cedgar@student.ethz.ch>
+Subject: RE: CT firmware crashes randomly
+Date: Mon, 11 May 2015 18:55:07 +0000
+Message-ID: <BB63CF2605733841BD56CD9C38AC1F7E23966694@MBX13.d.ethz.ch>
+References: <BB63CF2605733841BD56CD9C38AC1F7E2396567F@MBX13.d.ethz.ch>,
+ <5550F98C.5080603@candelatech.com>
+In-Reply-To: <5550F98C.5080603@candelatech.com>
+Content-Language: ca-ES
 MIME-Version: 1.0
-Subject: Re: CT firmware crashes randomly
-References: <BB63CF2605733841BD56CD9C38AC1F7E2396567F@MBX13.d.ethz.ch>
-In-Reply-To: <BB63CF2605733841BD56CD9C38AC1F7E2396567F@MBX13.d.ethz.ch>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +24,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Costa Molero Edgar <cedgar@student.ethz.ch>
+To: Ben Greear <greearb@candelatech.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+
+Do you know how can I reset fw_stats content without the "hw-reset" ? If there is a way I will definitely use it instead of making the firmware crash.
+________________________________________
+De: Ben Greear [greearb@candelatech.com]
+Enviat el: dilluns, 11 / maig / 2015 20:48
+Per a: Costa Molero  Edgar
+A/c: ath10k@lists.infradead.org
+Tema: Re: CT firmware crashes randomly
 
 On 05/11/2015 11:37 AM, Costa Molero Edgar wrote:
 > Hi,
-> 
-> I am running some tests using a wle900vx nic, and the commercial firmware CT 10.4.467-ct-com-full-013-b5b14. 
-> 
-> For the tests I am modifying the transmission rates and number of spatial streams I use. MCS 0-9, SS 1-3 ("iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 x:y). 
-> Every time I modify the transmission rate I disconnect and connect from the Access Point. Then I found that if I want to reset the values of "fw_stats" file I need to reload the firmware, or I can do a (echo "hw-restart" > simulate_fw_crash). 
+>
+> I am running some tests using a wle900vx nic, and the commercial firmware CT 10.4.467-ct-com-full-013-b5b14.
+>
+> For the tests I am modifying the transmission rates and number of spatial streams I use. MCS 0-9, SS 1-3 ("iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 x:y).
+> Every time I modify the transmission rate I disconnect and connect from the Access Point. Then I found that if I want to reset the values of "fw_stats" file I need to reload the firmware, or I can do a (echo "hw-restart" > simulate_fw_crash).
 
 I think you should find a better way to
 clear the stats...like snapshot the values and then just calculate the differences in
 your script.
 
-> The test should take around 4-6h but some times randomly the script I am running is not able to set bit rates anymore. (-22 error). When this happen the script tries to reload the ath10k driver (modprobe -r ath10k + modprobe ath10k). But after that I can not connect to the access point anymore until I reboot the computer.  Could it be because I do "hw-restart" too many times?. 
-> 
->  
+> The test should take around 4-6h but some times randomly the script I am running is not able to set bit rates anymore. (-22 error). When this happen the script tries to reload the ath10k driver (modprobe -r ath10k + modprobe ath10k). But after that I can not connect to the access point anymore until I reboot the computer.  Could it be because I do "hw-restart" too many times?.
+>
+>
 > Here a slice of dmesg : at the end you will see that I restart it several times. (However, in the part you can not see I was doing the same as well)
-> 
+>
 > [   17.248265] ath10k_pci 0000:0c:00.0: irq 43 for MSI/MSI-X
 > [   17.248297] ath10k_pci 0000:0c:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
 > [   17.945015] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
@@ -78,10 +88,9 @@ Thanks,
 Ben
 
 
--- 
+--
 Ben Greear <greearb@candelatech.com>
 Candela Technologies Inc  http://www.candelatech.com
-
 
 _______________________________________________
 ath10k mailing list
