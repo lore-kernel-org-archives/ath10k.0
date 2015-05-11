@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrnnJ-000399-01
- for ath10k@lists.infradead.org; Mon, 11 May 2015 13:30:54 +0000
-Received: by widdi4 with SMTP id di4so96474420wid.0
- for <ath10k@lists.infradead.org>; Mon, 11 May 2015 06:30:27 -0700 (PDT)
+ id 1YrpEK-0008RZ-Ml
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 15:02:53 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: increase relay buffer size of spectral scan
+References: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com>
+Date: Mon, 11 May 2015 18:02:09 +0300
+In-Reply-To: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com> (Peter
+ Oh's message of "Mon, 4 May 2015 11:21:24 -0700")
+Message-ID: <878ucvi2dq.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <5550A5A4.8080908@gmx.com>
-References: <5550A5A4.8080908@gmx.com>
-Date: Mon, 11 May 2015 15:30:27 +0200
-Message-ID: <CA+BoTQk0Lca7mUfELjeHSbY_fiExTopga9J74khnOPkzEU01Xg@mail.gmail.com>
-Subject: Re: ath10k: freeze after disconnection on killer1525
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +19,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Gabriele Martino <g.martino@gmx.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMTEgTWF5IDIwMTUgYXQgMTQ6NTAsIEdhYnJpZWxlIE1hcnRpbm8gPGcubWFydGlub0BnbXgu
-Y29tPiB3cm90ZToKPiBIaSwKPiBJJ20gdXNpbmcgYSBLaWxsZXIgMTUyNSB3aXRoIGh3Mi4xIGZp
-cm13YXJlLCBhbmQgc29tZXRpbWVzIGl0IHN0b3Agd29ya2luZy4KPiBJIGNhbiBnZXQgaXQgd29y
-a2luZyBhZ2FpbiBkaXNjb25uZWN0aW5nIGFuZCByZWNvbm5lY3RpbmcsIGJ1dCBzb21ldGltZXMK
-PiBvbiBkaXNjb25uZWN0aW9uIGl0IGZyZWV6ZXMgZm9yIGEgbG9uZyB0aW1lOgo+Cj4gWyAyNzQw
-LjAzNTE5MF0gZG1hcjogRFJIRDogaGFuZGxpbmcgZmF1bHQgc3RhdHVzIHJlZyAyCj4gWyAyNzQw
-LjAzNTE5NV0gZG1hcjogRE1BUjpbRE1BIFJlYWRdIFJlcXVlc3QgZGV2aWNlIFswMzowMC4wXSBm
-YXVsdCBhZGRyCj4gZmZiZWIwMDAKPiAgICAgICAgICAgICAgICBETUFSOltmYXVsdCByZWFzb24g
-MDZdIFBURSBSZWFkIGFjY2VzcyBpcyBub3QKPiBzZXQKClRoaXMgbG9va3MgbGlrZSBETUEgdHgg
-cG9vbCBtZW1vcnkgYWRkcmVzcy4gSSBzdXNwZWN0CmZpcm13YXJlL2hhcmR3YXJlIHRyaWVkIHRv
-IGFjY2VzcyBtZW1vcnkgd2hpY2ggd2FzIGFscmVhZHkgdW5tYXBwZWQgYnkKYXRoMTBrLgoKSWYg
-eW91J3JlIGZlZWxpbmcgbHVja3kgeW91IGNvdWxkIGRpc2FibGUgSU9NTVUgLSB0aGlzIHNob3Vs
-ZCBwcmV2ZW50CmZyb20gY3Jhc2hpbmcgYW5kIGRpc2Nvbm5lY3RpbmcuIEhvd2V2ZXIgdGhpcyBp
-cyBoYXJkbHkgYSBzb2x1dGlvbgp1bmxlc3MgeW91J3JlIG9rYXkgd2l0aCB0aGUgZGV2aWNlIHJl
-YWRpbmcgcmFuZG9tIG1lbW9yeSBhbmQgZG9pbmcKKnN0dWZmKiB3aXRoIGl0IChwbGFpbnRleHQg
-cGFzc3dvcmQgZnJvbSBSQU0gc2VudCBvbiB0aGUgYWlyLCBhbnlvbmU/CjotKQoKCj4gWyAyNzk3
-Ljk3OTE0M10gd2xwM3MwOiBkZWF1dGhlbnRpY2F0aW5nIGZyb20gNjQ6MzE6NTA6ZTk6MWM6NzEg
-YnkgbG9jYWwKPiBjaG9pY2UgKFJlYXNvbjogMz1ERUFVVEhfTEVBVklORykKPiBbIDI4MDAuOTc5
-MDMwXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHNldCBQUyBNb2RlIDAgZm9y
-IHZkZXYKPiAwOiAtMTEKPiBbIDI4MDAuOTc5MDM0XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
-ZmFpbGVkIHRvIHNldHVwIHBvd2Vyc2F2ZTogLTExCj4gWyAyODAwLjk3OTAzNV0gYXRoMTBrX3Bj
-aSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byBzZXR1cCBwcyBvbiB2ZGV2IDA6IC0xMQo+IFsgMjgw
-NS45NzkwMjVdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBmYWlsZWQgdG8gZmx1c2ggdHJhbnNt
-aXQgcXVldWUKPiAoc2tpcCAwIGFyLXN0YXRlIDEpOiAwCj4gWyAyODA4Ljk3OTA3Ml0gYXRoMTBr
-X3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byBpbnN0YWxsIGtleSBmb3IgdmRldiAwCj4gcGVl
-ciA2NDozMTo1MDplOToxYzo3MTogLTExClsuLi5dCj4gV2hlbiBpdCBmcmVlemVzLCBJIGNhbid0
-IHVzZSBhbnkgY29tbWFuZCBsaWtlIGlmY29uZmlnLCBpd2NvbmZpZywKPiBldGh0b29sICh0aGV5
-IHNpdCB0aGVyZSB1bnRpbCB0aGUgZnJlZXplIGVuZHMsIGN0cmwrYyBpcyB1c2VsZXNzKS4KPiBJ
-IGNhbid0IGV2ZW4gcm1tb2QgdGhlIGF0aDEwa19wY2kuIEFmdGVyIGFib3V0IGEgbWludXRlLCBp
-dCB3b3JrcyBhZ2Fpbgo+IGFuZCB0aGUgZnJlZXplZCBjb21tYW5kcyBhcmUgZXhlY3V0ZWQuCgpZ
-b3UncmUgZXhwZXJpZW5jaW5nIHRoZSBmcmVlemUgYmVjYXVzZSB0aGVyZSdzIGEgbG90IG9mIGNv
-bW1hbmQKZmxvdy9zZXF1ZW5jZXMgcGVuZGluZyB1cG9uIGRldmljZSBjcmFzaC4gTW9zdCBvZiB0
-aGVtIHJlcXVpcmUgbG9ja3MKc28gaXQgYWxsIHNlcmlhbGl6ZXMgaW50byBhIHZlcnkgbG9uZyBz
-ZXF1ZW5jZS4gQ29tYmluZWQgd2l0aCBSVE5MCmhlcmUgYW5kIHRoZXJlIHlvdSBjYW4gZ2V0IGEg
-bWFqb3IgbGFnIG9uIHRoZSBlbnRpcmUgbmV0d29ya2luZwpzdWJzeXN0ZW0uCgpJIGd1ZXNzIHRo
-aXMgY291bGQgYmUgaW1wcm92ZWQgYnV0IGZpcnN0IGFuZCBmb3JlbW9zdCBkZXZpY2Ugc2hvdWxk
-bid0CmJlIGNyYXNoaW5nIGp1c3QgbGlrZSB0aGF0LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+Peter Oh <poh@qca.qualcomm.com> writes:
+
+> Spectral scan supported by ath10k has capability to monitor and report
+> through whole bands and channels, but current buffer size is too small
+> to save reported spectral scan data.
+> This results in dropping 5G channel reports at all when dual band card
+> is used, so that users are not able to analyze spectral environments.
+> Hence increase the buffer size to fix the problem.
+>
+> A spectral data size is vary based on the number of bins, so the unit
+> buffer size, 1140, is chose to minimize relay buffer fragmentation.
+>
+> The total buffer size is also chose in tradeoff with spectral scan
+> support vs. kernel memory consumption.
+> Since theoretical maximum buffer size, 9.5MB, can be consumed with
+> 512 bins in dual bands, we target to cover up to 128 bins for all
+> channels in dual bands and due to the buffer size limitation,
+> spectral scan with bin number bigger than 128 needs to be run on
+> single band each.
+>
+> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+
+Thanks, applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
