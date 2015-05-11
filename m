@@ -1,16 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YrpEK-0008RZ-Ml
- for ath10k@lists.infradead.org; Mon, 11 May 2015 15:02:53 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: increase relay buffer size of spectral scan
-References: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com>
-Date: Mon, 11 May 2015 18:02:09 +0300
-In-Reply-To: <1430763684-1630-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Mon, 4 May 2015 11:21:24 -0700")
-Message-ID: <878ucvi2dq.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YrqP9-0004BS-JH
+ for ath10k@lists.infradead.org; Mon, 11 May 2015 16:18:08 +0000
+Message-ID: <5550D629.2090501@candelatech.com>
+Date: Mon, 11 May 2015 09:17:45 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx, nohwcrypt module param
+ for raw tx injection, sw crypto support.
+References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
+ <873837qo6l.fsf@kamboji.qca.qualcomm.com> <554CE438.5000208@candelatech.com>
+ <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
+ <871tinjosq.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <871tinjosq.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +26,66 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Liu CF/TW <cfliu.tw@gmail.com>, linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+On 05/11/2015 05:12 AM, Kalle Valo wrote:
+> "Liu CF/TW" <cfliu.tw@gmail.com> writes:
+> 
+>>>> I wonder does it make any sense to have nohwcrypt parameter? Especially
+>>>> if ath10k doesn't support case rawtxrx=0 and nohwcrypt=1. One
+>>>> possibility I came up is to have multiple values for rawtxrx, for
+>>>> example is rawtxrx=1 means HW crypt enabled and rawtxrx=2 HW crypt
+>>>> disabled. Ideas welcome.
+>>
+>> Indeed. I picked nohwcrypt because it seems to be the convention in
+>> previous Atheros drivers for this feature.
+> 
+> Yeah, but I don't think we need to follow that in ath10k. Especially not
+> until we get SW encryption working in all cases.
 
-> Spectral scan supported by ath10k has capability to monitor and report
-> through whole bands and channels, but current buffer size is too small
-> to save reported spectral scan data.
-> This results in dropping 5G channel reports at all when dual band card
-> is used, so that users are not able to analyze spectral environments.
-> Hence increase the buffer size to fix the problem.
->
-> A spectral data size is vary based on the number of bins, so the unit
-> buffer size, 1140, is chose to minimize relay buffer fragmentation.
->
-> The total buffer size is also chose in tradeoff with spectral scan
-> support vs. kernel memory consumption.
-> Since theoretical maximum buffer size, 9.5MB, can be consumed with
-> 512 bins in dual bands, we target to cover up to 128 bins for all
-> channels in dual bands and due to the buffer size limitation,
-> spectral scan with bin number bigger than 128 needs to be run on
-> single band each.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+What do you mean 'all cases'?  Many upstream firmware builds will just
+crash if you try raw tx, regardless of any encryption options.
 
-Thanks, applied.
+
+>> In this case, I will drop nohwcrypt and do as you suggested.
+>>
+>> rawmode = 0: Raw mode disabled. Use the default native WiFi mode. In
+>> this mode, only HW crypto is supported.
+>> rawmode = 1: Use Raw rx decap + raw tx encap mode. Supports both SW
+>> and HW crypto.
+>> rawmode = 2: Same as 1, but with HW crypto engine globally disabled.
+> 
+> I would guess that HW crypto globally disabled (value 2 above) will be
+> more popular, right? So would it make sense to reverse the values and
+> use value 1 for that?
+
+You are combining multiple different (but related) things into a single
+enum.  Maybe make it a bitfield instead so that new combinations can be
+added later w/out making such a mess in the code?
+
+
+>> When rawmode = 1, I want a further per BSS control to make some BSS
+>> use HW crypto and some BSS bypass HW crypto.
+>> For those BSS that have HW crypto bypassed, their data frames may come
+>> from either the normal wlan interfaces (therefore mac80211 sw crypto
+>> used), or from monitor interfaces (therefore Tx injected frames
+>> already encrypted + Rx frames still encrypted)
+> 
+> Ok, we need to think how to configure this. Maybe a debugfs interface?
+
+I'm curious the order of operations...seems like you will have to create
+and start using the BSS before you get access to it in debugfs?  Or are you
+going to create a table of mac-addresses or something like that?
+
+Thanks,
+Ben
+
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
