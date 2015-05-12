@@ -1,18 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsFxj-0000fC-1I
- for ath10k@lists.infradead.org; Tue, 12 May 2015 19:35:34 +0000
-Message-ID: <55525666.9060900@candelatech.com>
-Date: Tue, 12 May 2015 12:37:10 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ie0-x236.google.com ([2607:f8b0:4001:c03::236])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YsIve-0000cF-3f
+ for ath10k@lists.infradead.org; Tue, 12 May 2015 22:45:34 +0000
+Received: by iebpz10 with SMTP id pz10so16008982ieb.2
+ for <ath10k@lists.infradead.org>; Tue, 12 May 2015 15:45:10 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: ath10k: freeze after disconnection on killer1525
-References: <5550A5A4.8080908@gmx.com>
- <CA+BoTQk0Lca7mUfELjeHSbY_fiExTopga9J74khnOPkzEU01Xg@mail.gmail.com>
- <55511C61.9010907@candelatech.com>
- <CA+BoTQ=Br17+JnPupqiW7ankkWzGjk_dkQOJgCAR+qmVDyPtkQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQ=Br17+JnPupqiW7ankkWzGjk_dkQOJgCAR+qmVDyPtkQ@mail.gmail.com>
+In-Reply-To: <5550D629.2090501@candelatech.com>
+References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
+ <873837qo6l.fsf@kamboji.qca.qualcomm.com> <554CE438.5000208@candelatech.com>
+ <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
+ <871tinjosq.fsf@kamboji.qca.qualcomm.com> <5550D629.2090501@candelatech.com>
+From: "Liu CF/TW" <cfliu.tw@gmail.com>
+Date: Tue, 12 May 2015 15:44:29 -0700
+Message-ID: <CAG5N3qE6nA2oEhR5Zk8sS331-ycM+jZLBy2BeGPX0ueHqvJ6Kg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx, nohwcrypt module param for
+ raw tx injection, sw crypto support.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,76 +24,126 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Gabriele Martino <g.martino@gmx.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 05/11/2015 09:52 PM, Michal Kazior wrote:
-> On 11 May 2015 at 23:17, Ben Greear <greearb@candelatech.com> wrote:
->> On 05/11/2015 06:30 AM, Michal Kazior wrote:
->>> On 11 May 2015 at 14:50, Gabriele Martino <g.martino@gmx.com> wrote:
->>>> Hi,
->>>> I'm using a Killer 1525 with hw2.1 firmware, and sometimes it stop working.
->>>> I can get it working again disconnecting and reconnecting, but sometimes
->>>> on disconnection it freezes for a long time:
->>>>
->>>> [ 2740.035190] dmar: DRHD: handling fault status reg 2
->>>> [ 2740.035195] dmar: DMAR:[DMA Read] Request device [03:00.0] fault addr
->>>> ffbeb000
->>>>                 DMAR:[fault reason 06] PTE Read access is not
->>>> set
+I am going to propose just one single module parameter control: enc_mode
+
+- enc_mode = 0: Use HW crypto (default),
+
+  Driver behavior:
+     - ath10k driver uses native WiFi mode for both Tx/Rx.
+     - ath10k driver configures key to HW.
+     Given HW key descriptor is configured, mac80211 would offload Tx
+encryption to HW and only do Rx decryption (by mac80211) if HW failed
+to do it.
+
+  Use case:
+      - The only mode current driver supports to date.
+      - The CT firmware special use case should fall into this
+category where firmware overrides the ath10k driver setting to force
+Rx fallback to SW decryption (in mac80211).
+         (From Ben's description, I believe CT FW overrides the global
+Rx decap mode=raw mode  + mangle the HW Rx descriptor to skip HW
+decryption)
+
+- enc_mode = 1: Use SW crypto.
+
+  Driver behavior:
+     - ath10k driver uses raw encap mode for both Tx/Rx
+     - ath10k driver doesn't configure actual key to HW but program
+CLEAR key context to bypass HW.
+     This is the classic nohwcrypt=1 mode. Only SW crypto is enabled globally.
+  Use case:
+     - NEW: Full SW crypto on both Tx/Rx.
+     - NEW: raw injected Tx frame. If encryption required, would use
+mac80211 SW crypto.
+
+- enc_mode = 2: Supports both HW and SW crypto simultaneously.
+
+  Driver behavior:
+     - ath10k driver uses raw encap mode for both Tx/Rx
+     - ath10k driver configures key to HW only if the per BSS config
+enables it (either via debugfs or nl80211 attribute, TBD)
+       If HW key is configured, use HW crypto. Otherwise, use SW crypto.
+
+  Use case:
+    - NEW: raw injected Tx frame. If encryption is required, could
+support both SW or HW crypto (by the per BSS config)
+    - NEW: some BSS could use HW crypto with no performance hit while
+some BSS could bypass HW crypto (ex: CAPWAP like split-MAC encrypted
+frames)
+
+Ben, in this case, as long as enc_mode == 0, your FW should continue
+to work. I will add a new FW feature TX_RAW_ENCAP_SUPPORTED, and fail
+at module load time if enc_mode !=0 and FW doesn't support it. Would
+this address your concerns?
+
+David.
+
+
+On Mon, May 11, 2015 at 9:17 AM, Ben Greear <greearb@candelatech.com> wrote:
+> On 05/11/2015 05:12 AM, Kalle Valo wrote:
+>> "Liu CF/TW" <cfliu.tw@gmail.com> writes:
+>>
+>>>>> I wonder does it make any sense to have nohwcrypt parameter? Especially
+>>>>> if ath10k doesn't support case rawtxrx=0 and nohwcrypt=1. One
+>>>>> possibility I came up is to have multiple values for rawtxrx, for
+>>>>> example is rawtxrx=1 means HW crypt enabled and rawtxrx=2 HW crypt
+>>>>> disabled. Ideas welcome.
 >>>
->>> This looks like DMA tx pool memory address. I suspect
->>> firmware/hardware tried to access memory which was already unmapped by
->>> ath10k.
+>>> Indeed. I picked nohwcrypt because it seems to be the convention in
+>>> previous Atheros drivers for this feature.
+>>
+>> Yeah, but I don't think we need to follow that in ath10k. Especially not
+>> until we get SW encryption working in all cases.
+>
+> What do you mean 'all cases'?  Many upstream firmware builds will just
+> crash if you try raw tx, regardless of any encryption options.
+>
+>
+>>> In this case, I will drop nohwcrypt and do as you suggested.
 >>>
->>> If you're feeling lucky you could disable IOMMU - this should prevent
->>> from crashing and disconnecting. However this is hardly a solution
->>> unless you're okay with the device reading random memory and doing
->>> *stuff* with it (plaintext password from RAM sent on the air, anyone?
->>> :-)
+>>> rawmode = 0: Raw mode disabled. Use the default native WiFi mode. In
+>>> this mode, only HW crypto is supported.
+>>> rawmode = 1: Use Raw rx decap + raw tx encap mode. Supports both SW
+>>> and HW crypto.
+>>> rawmode = 2: Same as 1, but with HW crypto engine globally disabled.
 >>
->> I don't actually see a firmware crash here.  This looks a bit like the problem
->> I hit where the WMI transport basically hangs, but the firmware does not actually
->> crash.  (I don't remember seeing any DMAR issues in my case, not sure if
->> that is significant or not.)
+>> I would guess that HW crypto globally disabled (value 2 above) will be
+>> more popular, right? So would it make sense to reverse the values and
+>> use value 1 for that?
 >
-> Firmware won't necessarily crash. I guess it depends on IOMMU
-> controller whether the device will actually crash per se and qca6174
-> is a little more forgiving against faulted host memory access. qca988x
-> tends to just crash outright if it gets a DMAR fault.
-
-So the FW is just wedged in this case, and will not crash nor actually
-handle commands properly?  That sounds like the worst of any possible
-combination!
-
-I guess one would need to hack ath10k to detect the repeated WMI timeouts and then
-attempt to restart the NIC?
-
->> I added some keep-alive messages, busy polling, and firmware watchdog logic
->> to my kernel and firmware that seem to have effectively worked around
->> this problem.
->>
->> My kernels also have work-arounds for the hangs (FW watchdog will kill truly hung
->> firmware in about 5 seconds and then system should recover normally).
->>
->> Gabriele:  If you want to try my 3.17 kernel and CT firmware I'm curious to
->> see logs if you see similar problems.
+> You are combining multiple different (but related) things into a single
+> enum.  Maybe make it a bitfield instead so that new combinations can be
+> added later w/out making such a mess in the code?
 >
-> He's using qca6174, not qca988x. Your firmware does not apply in this case.
-
-Ahh, my bad.  Thanks for clarifying.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+>
+>>> When rawmode = 1, I want a further per BSS control to make some BSS
+>>> use HW crypto and some BSS bypass HW crypto.
+>>> For those BSS that have HW crypto bypassed, their data frames may come
+>>> from either the normal wlan interfaces (therefore mac80211 sw crypto
+>>> used), or from monitor interfaces (therefore Tx injected frames
+>>> already encrypted + Rx frames still encrypted)
+>>
+>> Ok, we need to think how to configure this. Maybe a debugfs interface?
+>
+> I'm curious the order of operations...seems like you will have to create
+> and start using the BSS before you get access to it in debugfs?  Or are you
+> going to create a table of mac-addresses or something like that?
+>
+> Thanks,
+> Ben
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
+>
 
 _______________________________________________
 ath10k mailing list
