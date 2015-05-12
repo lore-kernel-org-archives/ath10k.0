@@ -1,25 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x234.google.com ([2607:f8b0:4003:c06::234])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsBno-0000VQ-RH
- for ath10k@lists.infradead.org; Tue, 12 May 2015 15:09:02 +0000
-Received: by oica37 with SMTP id a37so8348497oic.0
- for <ath10k@lists.infradead.org>; Tue, 12 May 2015 08:08:38 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YsFxj-0000fC-1I
+ for ath10k@lists.infradead.org; Tue, 12 May 2015 19:35:34 +0000
+Message-ID: <55525666.9060900@candelatech.com>
+Date: Tue, 12 May 2015 12:37:10 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <55521102.9020306@candelatech.com>
-References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
- <CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>
- <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
- <CA+BoTQ=Qpws=928TZe22Ds-UO_qQJ2Om+=DW=VUNUS59o1BQAA@mail.gmail.com>
- <CAJa-X96KPw6dY0pK1zc8UD4TdQcG0KuA3m6DSueVVyK-VPhn9g@mail.gmail.com>
- <CA+BoTQ=bqHPrdgGVfSfdJa5vobDBRdxRwMR_wJzUj4Z9WjotoQ@mail.gmail.com>
- <CAJa-X945Xvn0jHQVcKn-pyYQVNpxXnqjOH_VHJv8pVwR4kFXcw@mail.gmail.com>
- <CA+BoTQmLFGAn2z=E3J1C2qfNP34v57B7-rtALUQhNXrHqJeA6Q@mail.gmail.com>
- <55521102.9020306@candelatech.com>
-Date: Tue, 12 May 2015 11:08:38 -0400
-Message-ID: <CAJa-X95YSnEB1EVHm99ab_mj8W3=m0OdKCCsGnYVUr_9hSz=0Q@mail.gmail.com>
-Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
-From: s prasad <sprasad.kandregula@gmail.com>
+Subject: Re: ath10k: freeze after disconnection on killer1525
+References: <5550A5A4.8080908@gmx.com>
+ <CA+BoTQk0Lca7mUfELjeHSbY_fiExTopga9J74khnOPkzEU01Xg@mail.gmail.com>
+ <55511C61.9010907@candelatech.com>
+ <CA+BoTQ=Br17+JnPupqiW7ankkWzGjk_dkQOJgCAR+qmVDyPtkQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=Br17+JnPupqiW7ankkWzGjk_dkQOJgCAR+qmVDyPtkQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,47 +21,78 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Gabriele Martino <g.martino@gmx.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-VGhhbmsgeW91IEJlbiAsIE1pY2hhbCBhbmQgS2FsbGUuCgpQbGVhc2UgbGV0IHVzIGtub3cgaWYg
-eW91IGZpbmQgYW55LgoKVGhhbmsgeW91IHNvIG11Y2guCgpSZWdhcmRzLApTIFByYXNhZAoKT24g
-VHVlLCBNYXkgMTIsIDIwMTUgYXQgMTA6NDEgQU0sIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVs
-YXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMDUvMTIvMjAxNSAwMzoxNCBBTSwgTWljaGFsIEth
-emlvciB3cm90ZToKPj4KPj4gT24gMTIgTWF5IDIwMTUgYXQgMTE6MzEsIHMgcHJhc2FkIDxzcHJh
-c2FkLmthbmRyZWd1bGFAZ21haWwuY29tPiB3cm90ZToKPj4+Cj4+PiBNYXkgSSBrbm93LCBpcyB0
-aGlzIGZpcm13YXJlIG9yIGRyaXZlciBjb25zdHJhaW50Pwo+Pj4gSWYgc29tZWJvZHkgaGF2ZSBw
-YXRjaCBmb3IgdGhpcywgYW0gcmVhZHkgdG8gdGVzdCBpdC4KPj4KPj4KPj4gU2hvcnQgYW5zd2Vy
-OiBUaGVyZSdzIG5vdGhpbmcsIHlldC4KPj4KPj4gTG9uZyBhbnN3ZXI6Cj4+Cj4+ICBGcm9tIHdo
-YXQgSSBrbm93IG9mZmljaWFsIGZpcm13YXJlIGRvZXNuJ3Qgc3VwcG9ydCBpbmplY3RpbmcgcGFj
-a2V0cwo+PiB2aWEgbW9uaXRvciB2ZGV2LiBUaGlzIGlzIGEgZmlybXdhcmUgbGltaXRhdGlvbi4K
-Pj4KPj4gQSB3YXkgYXJvdW5kIHRoaXMgbWF5IGJlIGNyZWF0aW5nIGFuZCB1c2luZyBhbiBhZGRp
-dGlvbmFsIHZkZXYsIGUuZy4KPj4gQVAuIFRoaXMgd2lsbCBiZSByYXRoZXIgdWdseSBidXQgbWF5
-IHdvcmsuIFRoZXJlJ3Mgbm8gcGF0Y2ggZm9yIGl0Lgo+Pgo+PiBBbiBhbHRlcm5hdGl2ZSB3b3Vs
-ZCBiZSB0byBhc2sgQmVuIHRvIG1vZGlmeSBoaXMgQ1QtZmlybXdhcmUgYnJhbmNoLgo+Cj4KPiBJ
-IGdhdmUgdGhpcyBhIGRlY2VudCB0cnkgYSBtb250aCBvciB0d28gYWdvLCBhbmQgaGFkIG5vIGx1
-Y2suICBUaGUgaGFyZHdhcmUKPiAoZnJvbSB3aGF0IEkgY2FuIHRlbGwpLCBqdXN0IHdpbGwgbm90
-IHNlbmQgYSBmcmFtZSB0byBhbiB1bmtub3duIHBlZXIuCj4KPiBJIG5vdGljZWQgdGhlIG90aGVy
-IGRheSB0aGF0IEFOUVAgd2lsbCBub3Qgd29yayBvbiBhdGgxMGssIGFuZCBJIHN1c3BlY3QKPiBz
-aW1pbGFyIGlzc3Vlcy4uc28gSSB3aWxsIGJlIGluIHRoYXQgY29kZSBhZ2Fpbi4gIE1heWJlIEkn
-bGwgbGVhcm4KPiBob3cgdG8gdHJpY2sgaXQgaW50byBzZW5kaW5nIGFyYml0cmFyeSBmcmFtZXMu
-Cj4KPiBBbGwgdGhhdCBzYWlkLCB0aGVyZSBpcyBubyB3YXkgdG8gc3BlY2lmeSByYXRlLWN0cmwg
-aW5mbyBvbiBhIHBlci1wa3QKPiBiYXNpcyB3aGVuIGluamVjdGluZyBmcmFtZXMsIHNvIEkgZG9u
-J3Qga25vdyB3aGF0IGdvb2QgaW5qZWN0aW5nIGZyYW1lcwo+IG9uIGEgbWd0IGRldmljZSB3aWxs
-IGFjY29tcGxpc2guCj4KPiBUaGFua3MsCj4gQmVuCj4KPj4gQWxzbyB0aGVyZSdzIGEgcHJvYmxl
-bSB3aXRoIHN1Ym1pdHRpbmcgcmF3IDgwMi4xMSBmcmFtZXMgdG8gZmlybXdhcmUuCj4+IFRoZXJl
-J3Mgc29tZSB3b3JrIG9uZ29pbmcgWzFdLgo+Pgo+PiBbMV06IGh0dHA6Ly9saXN0cy5pbmZyYWRl
-YWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNS1NYXkvMDA1MTQ0Lmh0bWwKPj4KPj4KPj4gTWlj
-aGHFggo+PiAtLQo+PiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGlu
-ZSAidW5zdWJzY3JpYmUgbGludXgtd2lyZWxlc3MiCj4+IGluCj4+IHRoZSBib2R5IG9mIGEgbWVz
-c2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCj4+IE1vcmUgbWFqb3Jkb21vIGluZm8g
-YXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbAo+Pgo+Cj4gLS0K
-PiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KPiBDYW5kZWxhIFRlY2hub2xv
-Z2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKCi0tIApTIFByYXNhZCBLYW5k
-cmVndWxhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
-dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
-cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On 05/11/2015 09:52 PM, Michal Kazior wrote:
+> On 11 May 2015 at 23:17, Ben Greear <greearb@candelatech.com> wrote:
+>> On 05/11/2015 06:30 AM, Michal Kazior wrote:
+>>> On 11 May 2015 at 14:50, Gabriele Martino <g.martino@gmx.com> wrote:
+>>>> Hi,
+>>>> I'm using a Killer 1525 with hw2.1 firmware, and sometimes it stop working.
+>>>> I can get it working again disconnecting and reconnecting, but sometimes
+>>>> on disconnection it freezes for a long time:
+>>>>
+>>>> [ 2740.035190] dmar: DRHD: handling fault status reg 2
+>>>> [ 2740.035195] dmar: DMAR:[DMA Read] Request device [03:00.0] fault addr
+>>>> ffbeb000
+>>>>                 DMAR:[fault reason 06] PTE Read access is not
+>>>> set
+>>>
+>>> This looks like DMA tx pool memory address. I suspect
+>>> firmware/hardware tried to access memory which was already unmapped by
+>>> ath10k.
+>>>
+>>> If you're feeling lucky you could disable IOMMU - this should prevent
+>>> from crashing and disconnecting. However this is hardly a solution
+>>> unless you're okay with the device reading random memory and doing
+>>> *stuff* with it (plaintext password from RAM sent on the air, anyone?
+>>> :-)
+>>
+>> I don't actually see a firmware crash here.  This looks a bit like the problem
+>> I hit where the WMI transport basically hangs, but the firmware does not actually
+>> crash.  (I don't remember seeing any DMAR issues in my case, not sure if
+>> that is significant or not.)
+>
+> Firmware won't necessarily crash. I guess it depends on IOMMU
+> controller whether the device will actually crash per se and qca6174
+> is a little more forgiving against faulted host memory access. qca988x
+> tends to just crash outright if it gets a DMAR fault.
+
+So the FW is just wedged in this case, and will not crash nor actually
+handle commands properly?  That sounds like the worst of any possible
+combination!
+
+I guess one would need to hack ath10k to detect the repeated WMI timeouts and then
+attempt to restart the NIC?
+
+>> I added some keep-alive messages, busy polling, and firmware watchdog logic
+>> to my kernel and firmware that seem to have effectively worked around
+>> this problem.
+>>
+>> My kernels also have work-arounds for the hangs (FW watchdog will kill truly hung
+>> firmware in about 5 seconds and then system should recover normally).
+>>
+>> Gabriele:  If you want to try my 3.17 kernel and CT firmware I'm curious to
+>> see logs if you see similar problems.
+>
+> He's using qca6174, not qca988x. Your firmware does not apply in this case.
+
+Ahh, my bad.  Thanks for clarifying.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
