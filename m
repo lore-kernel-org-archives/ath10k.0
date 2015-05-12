@@ -1,23 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Ys9h2-0003jv-TV
- for ath10k@lists.infradead.org; Tue, 12 May 2015 12:53:53 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
-References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
- <CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>
- <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
- <CA+BoTQ=Qpws=928TZe22Ds-UO_qQJ2Om+=DW=VUNUS59o1BQAA@mail.gmail.com>
- <CAJa-X96KPw6dY0pK1zc8UD4TdQcG0KuA3m6DSueVVyK-VPhn9g@mail.gmail.com>
- <CA+BoTQ=bqHPrdgGVfSfdJa5vobDBRdxRwMR_wJzUj4Z9WjotoQ@mail.gmail.com>
- <87iobygf96.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkduFA78B70hyn9FNbyKX_Yd=9cH9notfEC93Owm9sRSg@mail.gmail.com>
-Date: Tue, 12 May 2015 15:53:22 +0300
-In-Reply-To: <CA+BoTQkduFA78B70hyn9FNbyKX_Yd=9cH9notfEC93Owm9sRSg@mail.gmail.com>
- (Michal Kazior's message of "Tue, 12 May 2015 14:34:57 +0200")
-Message-ID: <87bnhqgdod.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YsBNB-0005rI-0m
+ for ath10k@lists.infradead.org; Tue, 12 May 2015 14:41:29 +0000
+Message-ID: <55521102.9020306@candelatech.com>
+Date: Tue, 12 May 2015 07:41:06 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
+References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>	<CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>	<CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>	<CA+BoTQ=Qpws=928TZe22Ds-UO_qQJ2Om+=DW=VUNUS59o1BQAA@mail.gmail.com>	<CAJa-X96KPw6dY0pK1zc8UD4TdQcG0KuA3m6DSueVVyK-VPhn9g@mail.gmail.com>	<CA+BoTQ=bqHPrdgGVfSfdJa5vobDBRdxRwMR_wJzUj4Z9WjotoQ@mail.gmail.com>	<CAJa-X945Xvn0jHQVcKn-pyYQVNpxXnqjOH_VHJv8pVwR4kFXcw@mail.gmail.com>
+ <CA+BoTQmLFGAn2z=E3J1C2qfNP34v57B7-rtALUQhNXrHqJeA6Q@mail.gmail.com>
+In-Reply-To: <CA+BoTQmLFGAn2z=E3J1C2qfNP34v57B7-rtALUQhNXrHqJeA6Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +19,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, s prasad <sprasad.kandregula@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>, s prasad <sprasad.kandregula@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
-> On 12 May 2015 at 14:19, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Michal Kazior <michal.kazior@tieto.com> writes:
->>
->>> On 11 May 2015 at 23:27, s prasad <sprasad.kandregula@gmail.com> wrote:
->>>> Tested as you suggested, however didn't help. Please find attached log
->>>> files for each firmware type.
->>>>
->>>> While executing following commands in sequence, captured dmesg. I hope
->>>> those logs will help. If not please let me know.
->>>
->>> Thanks!
->>>
->>> Apparently I've missed from your original email the fact that you're
->>> trying to inject packets. This isn't supported in ath10k.
->>
->> IMHO we should somehow warn the user or prevent that happening. Is there
->> a way to do that?
->
-> We could add an extra condition in ath10k_tx() to drop/free packets
-> immediately and warn if an injection attempt is made.
-
-Yeah, that would be really good to have.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAwNS8xMi8yMDE1IDAzOjE0IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDEyIE1h
+eSAyMDE1IGF0IDExOjMxLCBzIHByYXNhZCA8c3ByYXNhZC5rYW5kcmVndWxhQGdtYWlsLmNvbT4g
+d3JvdGU6Cj4+IE1heSBJIGtub3csIGlzIHRoaXMgZmlybXdhcmUgb3IgZHJpdmVyIGNvbnN0cmFp
+bnQ/Cj4+IElmIHNvbWVib2R5IGhhdmUgcGF0Y2ggZm9yIHRoaXMsIGFtIHJlYWR5IHRvIHRlc3Qg
+aXQuCj4KPiBTaG9ydCBhbnN3ZXI6IFRoZXJlJ3Mgbm90aGluZywgeWV0Lgo+Cj4gTG9uZyBhbnN3
+ZXI6Cj4KPiAgRnJvbSB3aGF0IEkga25vdyBvZmZpY2lhbCBmaXJtd2FyZSBkb2Vzbid0IHN1cHBv
+cnQgaW5qZWN0aW5nIHBhY2tldHMKPiB2aWEgbW9uaXRvciB2ZGV2LiBUaGlzIGlzIGEgZmlybXdh
+cmUgbGltaXRhdGlvbi4KPgo+IEEgd2F5IGFyb3VuZCB0aGlzIG1heSBiZSBjcmVhdGluZyBhbmQg
+dXNpbmcgYW4gYWRkaXRpb25hbCB2ZGV2LCBlLmcuCj4gQVAuIFRoaXMgd2lsbCBiZSByYXRoZXIg
+dWdseSBidXQgbWF5IHdvcmsuIFRoZXJlJ3Mgbm8gcGF0Y2ggZm9yIGl0Lgo+Cj4gQW4gYWx0ZXJu
+YXRpdmUgd291bGQgYmUgdG8gYXNrIEJlbiB0byBtb2RpZnkgaGlzIENULWZpcm13YXJlIGJyYW5j
+aC4KCkkgZ2F2ZSB0aGlzIGEgZGVjZW50IHRyeSBhIG1vbnRoIG9yIHR3byBhZ28sIGFuZCBoYWQg
+bm8gbHVjay4gIFRoZSBoYXJkd2FyZQooZnJvbSB3aGF0IEkgY2FuIHRlbGwpLCBqdXN0IHdpbGwg
+bm90IHNlbmQgYSBmcmFtZSB0byBhbiB1bmtub3duIHBlZXIuCgpJIG5vdGljZWQgdGhlIG90aGVy
+IGRheSB0aGF0IEFOUVAgd2lsbCBub3Qgd29yayBvbiBhdGgxMGssIGFuZCBJIHN1c3BlY3QKc2lt
+aWxhciBpc3N1ZXMuLnNvIEkgd2lsbCBiZSBpbiB0aGF0IGNvZGUgYWdhaW4uICBNYXliZSBJJ2xs
+IGxlYXJuCmhvdyB0byB0cmljayBpdCBpbnRvIHNlbmRpbmcgYXJiaXRyYXJ5IGZyYW1lcy4KCkFs
+bCB0aGF0IHNhaWQsIHRoZXJlIGlzIG5vIHdheSB0byBzcGVjaWZ5IHJhdGUtY3RybCBpbmZvIG9u
+IGEgcGVyLXBrdApiYXNpcyB3aGVuIGluamVjdGluZyBmcmFtZXMsIHNvIEkgZG9uJ3Qga25vdyB3
+aGF0IGdvb2QgaW5qZWN0aW5nIGZyYW1lcwpvbiBhIG1ndCBkZXZpY2Ugd2lsbCBhY2NvbXBsaXNo
+LgoKVGhhbmtzLApCZW4KCj4gQWxzbyB0aGVyZSdzIGEgcHJvYmxlbSB3aXRoIHN1Ym1pdHRpbmcg
+cmF3IDgwMi4xMSBmcmFtZXMgdG8gZmlybXdhcmUuCj4gVGhlcmUncyBzb21lIHdvcmsgb25nb2lu
+ZyBbMV0uCj4KPiBbMV06IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgx
+MGsvMjAxNS1NYXkvMDA1MTQ0Lmh0bWwKPgo+Cj4gTWljaGHFggo+IC0tCj4gVG8gdW5zdWJzY3Jp
+YmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIGxpbnV4LXdpcmVs
+ZXNzIiBpbgo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwu
+b3JnCj4gTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpv
+cmRvbW8taW5mby5odG1sCj4KCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
+aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
