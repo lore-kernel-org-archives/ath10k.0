@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x229.google.com ([2607:f8b0:4001:c03::229])
+Received: from edge20.ethz.ch ([82.130.99.26])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsJBv-0000nu-Oe
- for ath10k@lists.infradead.org; Tue, 12 May 2015 23:02:24 +0000
-Received: by iebpz10 with SMTP id pz10so16314229ieb.2
- for <ath10k@lists.infradead.org>; Tue, 12 May 2015 16:02:02 -0700 (PDT)
+ id 1YsbwS-000238-Pn
+ for ath10k@lists.infradead.org; Wed, 13 May 2015 19:03:42 +0000
+From: "Costa Molero  Edgar" <cedgar@student.ethz.ch>
+Subject: RE: CT firmware crashes randomly
+Date: Wed, 13 May 2015 19:03:00 +0000
+Message-ID: <BB63CF2605733841BD56CD9C38AC1F7E2396670D@MBX13.d.ethz.ch>
+References: <BB63CF2605733841BD56CD9C38AC1F7E2396567F@MBX13.d.ethz.ch>,
+ <5550F98C.5080603@candelatech.com>
+ <BB63CF2605733841BD56CD9C38AC1F7E23966694@MBX13.d.ethz.ch>,
+ <5550FB6F.5080605@candelatech.com>
+In-Reply-To: <5550FB6F.5080605@candelatech.com>
+Content-Language: ca-ES
 MIME-Version: 1.0
-In-Reply-To: <CAG5N3qE6nA2oEhR5Zk8sS331-ycM+jZLBy2BeGPX0ueHqvJ6Kg@mail.gmail.com>
-References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
- <873837qo6l.fsf@kamboji.qca.qualcomm.com> <554CE438.5000208@candelatech.com>
- <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
- <871tinjosq.fsf@kamboji.qca.qualcomm.com> <5550D629.2090501@candelatech.com>
- <CAG5N3qE6nA2oEhR5Zk8sS331-ycM+jZLBy2BeGPX0ueHqvJ6Kg@mail.gmail.com>
-From: "Liu CF/TW" <cfliu.tw@gmail.com>
-Date: Tue, 12 May 2015 16:01:21 -0700
-Message-ID: <CAG5N3qHCRL8m1wJ4xVauK+4rBoLVsPra5Rx5c+5bHUuXPZR8Pg@mail.gmail.com>
-Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx, nohwcrypt module param for
- raw tx injection, sw crypto support.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,74 +27,100 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Ben Greear <greearb@candelatech.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tue, May 12, 2015 at 3:44 PM, Liu CF/TW <cfliu.tw@gmail.com> wrote:
-> I am going to propose just one single module parameter control: enc_mode
+It seems that forcing the firmware to restart was the problem. During the last to days It did not crashed... I will keep my fingers crossed hahaha!
+
+Edgar
+________________________________________
+De: Ben Greear [greearb@candelatech.com]
+Enviat el: dilluns, 11 / maig / 2015 20:56
+Per a: Costa Molero  Edgar
+A/c: ath10k@lists.infradead.org
+Tema: Re: CT firmware crashes randomly
+
+On 05/11/2015 11:55 AM, Costa Molero Edgar wrote:
+> Do you know how can I reset fw_stats content without the "hw-reset" ? If there is a way I will definitely use it instead of making the firmware crash.
+
+No, but you can store the values and calculate the differences.
+
+You can also admin down all station/ap interfaces, and when you start them
+again I think the firmware will be restarted (but more gracefully that
+just causing FW to crash).
+
+Thanks,
+Ben
+
+> ________________________________________
+> De: Ben Greear [greearb@candelatech.com]
+> Enviat el: dilluns, 11 / maig / 2015 20:48
+> Per a: Costa Molero  Edgar
+> A/c: ath10k@lists.infradead.org
+> Tema: Re: CT firmware crashes randomly
 >
-> - enc_mode = 0: Use HW crypto (default),
+> On 05/11/2015 11:37 AM, Costa Molero Edgar wrote:
+>> Hi,
+>>
+>> I am running some tests using a wle900vx nic, and the commercial firmware CT 10.4.467-ct-com-full-013-b5b14.
+>>
+>> For the tests I am modifying the transmission rates and number of spatial streams I use. MCS 0-9, SS 1-3 ("iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 x:y).
+>> Every time I modify the transmission rate I disconnect and connect from the Access Point. Then I found that if I want to reset the values of "fw_stats" file I need to reload the firmware, or I can do a (echo "hw-restart" > simulate_fw_crash).
 >
->   Driver behavior:
->      - ath10k driver uses native WiFi mode for both Tx/Rx.
->      - ath10k driver configures key to HW.
->      Given HW key descriptor is configured, mac80211 would offload Tx
-> encryption to HW and only do Rx decryption (by mac80211) if HW failed
-> to do it.
+> I think you should find a better way to
+> clear the stats...like snapshot the values and then just calculate the differences in
+> your script.
+>
+>> The test should take around 4-6h but some times randomly the script I am running is not able to set bit rates anymore. (-22 error). When this happen the script tries to reload the ath10k driver (modprobe -r ath10k + modprobe ath10k). But after that I can not connect to the access point anymore until I reboot the computer.  Could it be because I do "hw-restart" too many times?.
+>>
+>>
+>> Here a slice of dmesg : at the end you will see that I restart it several times. (However, in the part you can not see I was doing the same as well)
+>>
+>> [   17.248265] ath10k_pci 0000:0c:00.0: irq 43 for MSI/MSI-X
+>> [   17.248297] ath10k_pci 0000:0c:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+>> [   17.945015] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
+>> [   17.945020] ath10k_pci 0000:0c:00.0: Falling back to user helper
+>> [   18.243890] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
+>> [   18.243899] ath10k_pci 0000:0c:00.0: Falling back to user helper
+>> [   18.244959] ath10k_pci 0000:0c:00.0: could not fetch firmware file 'ath10k/QCA988X/hw2.0/firmware-4.bin': -12
+>> [   18.244999] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
+>> [   18.245003] ath10k_pci 0000:0c:00.0: Falling back to user helper
+>> [   18.246260] ath10k_pci 0000:0c:00.0: could not fetch firmware file 'ath10k/QCA988X/hw2.0/firmware-3.bin': -12
+>> [   19.444502] ath10k_pci 0000:0c:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.1.467-ct-com-full-013-b5b14a api 2 htt 2.1 wmi 2 cal otp max_sta 128
+>> [   19.444509] ath10k_pci 0000:0c:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 0
+>> [  149.913555] ath10k_pci 0000:0c:00.0: user requested hw restart
+>> [  151.026791] ath10k_pci 0000:0c:00.0: device successfully recovered
+>> [  154.925661] WARNING: CPU: 0 PID: 2365 at /home/wimo/backports_kernel3.16/backports-4.0.1-1/drivers/net/wireless/ath/ath10k/htt_rx.c:968 ath10k_htt_rx_h_mpdu.isra.39+0x699/0x710 [ath10k_core]()
+>> [  154.925665] Modules linked in: rfcomm bnep bluetooth 6lowpan_iphc arc4 carl9170(OE) dell_wmi sparse_keymap gpio_ich ath10k_pci(OE) dell_laptop pcmcia ath10k_core(OE) coretemp dcdbas kvm ath(OE) mac80211(OE) joydev yenta_socket serio_raw pcmcia_rsrc pcmcia_core cfg80211(OE) compat(OE) wmi snd_hda_codec_idt snd_hda_codec_generic mac_hid i915 drm_kms_helper irda crc_ccitt snd_hda_intel drm snd_hda_controller snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_seq_midi_event lpc_ich video snd_rawmidi i2c_algo_bit snd_seq snd_seq_device snd_timer snd soundcore shpchp parport_pc ppdev lp parport psmouse firewire_ohci b44 firewire_core crc_itu_t ssb pata_acpi mii
+>> [  154.925844]  [<ffffffffc0852b69>] ath10k_htt_rx_h_mpdu.isra.39+0x699/0x710 [ath10k_core]
+>> [  154.925865]  [<ffffffffc08533ff>] ? ath10k_htt_rx_h_ppdu+0x1ef/0x240 [ath10k_core]
+>> [  154.925879]  [<ffffffffc0854051>] ath10k_htt_txrx_compl_task+0x391/0xde0 [ath10k_core]
+>> [  155.044138] ath10k_pci 0000:0c:00.0: rx ring became corrupted: -5
+>
+> That is interesting...I don't think I've seen that rx-ring issue in any of my testing, but we
+> also do not see many firmware crashes in our testing.
+>
+> Possibly this is a driver issue, or maybe it exposes some firmware issue.
+>
+> Either way, I suggest to fix your script to not have to crash or restart the firmware.
+>
+> If you do get un-requested firmware crashes, please send me full crash log, which
+> should have a register dump from the firmware so I can decode where the crash
+> happens...
+>
+> Thanks,
+> Ben
+>
+>
+> --
+> Ben Greear <greearb@candelatech.com>
+> Candela Technologies Inc  http://www.candelatech.com
 >
 
-Recap. Should be: "Given HW key descriptor is configured, Tx
-encryption and Rx decryption would be both done by HW."
 
-Note: Due to HW limitation, SW crypto can't be done in native WiFi mode.
-Transmit already encrypted frames requires raw mode.
-Bypass encrypted frame for SW for decryption in native Wifi mode is
-possible, but requires reinserting QoS header on per frame basis which
-is tedious.
+--
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
->   Use case:
->       - The only mode current driver supports to date.
->       - The CT firmware special use case should fall into this
-> category where firmware overrides the ath10k driver setting to force
-> Rx fallback to SW decryption (in mac80211).
->          (From Ben's description, I believe CT FW overrides the global
-> Rx decap mode=raw mode  + mangle the HW Rx descriptor to skip HW
-> decryption)
->
-> - enc_mode = 1: Use SW crypto.
->
->   Driver behavior:
->      - ath10k driver uses raw encap mode for both Tx/Rx
->      - ath10k driver doesn't configure actual key to HW but program
-> CLEAR key context to bypass HW.
->      This is the classic nohwcrypt=1 mode. Only SW crypto is enabled globally.
->   Use case:
->      - NEW: Full SW crypto on both Tx/Rx.
->      - NEW: raw injected Tx frame. If encryption required, would use
-> mac80211 SW crypto.
->
-> - enc_mode = 2: Supports both HW and SW crypto simultaneously.
->
->   Driver behavior:
->      - ath10k driver uses raw encap mode for both Tx/Rx
->      - ath10k driver configures key to HW only if the per BSS config
-> enables it (either via debugfs or nl80211 attribute, TBD)
->        If HW key is configured, use HW crypto. Otherwise, use SW crypto.
->
->   Use case:
->     - NEW: raw injected Tx frame. If encryption is required, could
-> support both SW or HW crypto (by the per BSS config)
->     - NEW: some BSS could use HW crypto with no performance hit while
-> some BSS could bypass HW crypto (ex: CAPWAP like split-MAC encrypted
-> frames)
->
-> Ben, in this case, as long as enc_mode == 0, your FW should continue
-> to work. I will add a new FW feature TX_RAW_ENCAP_SUPPORTED, and fail
-> at module load time if enc_mode !=0 and FW doesn't support it. Would
-> this address your concerns?
->
-> David.
->
->
 
 _______________________________________________
 ath10k mailing list
