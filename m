@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from edge20.ethz.ch ([82.130.99.26])
+Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsbwS-000238-Pn
- for ath10k@lists.infradead.org; Wed, 13 May 2015 19:03:42 +0000
-From: "Costa Molero  Edgar" <cedgar@student.ethz.ch>
-Subject: RE: CT firmware crashes randomly
-Date: Wed, 13 May 2015 19:03:00 +0000
-Message-ID: <BB63CF2605733841BD56CD9C38AC1F7E2396670D@MBX13.d.ethz.ch>
-References: <BB63CF2605733841BD56CD9C38AC1F7E2396567F@MBX13.d.ethz.ch>,
- <5550F98C.5080603@candelatech.com>
- <BB63CF2605733841BD56CD9C38AC1F7E23966694@MBX13.d.ethz.ch>,
- <5550FB6F.5080605@candelatech.com>
-In-Reply-To: <5550FB6F.5080605@candelatech.com>
-Content-Language: ca-ES
+ id 1YsiOh-0005nj-L7
+ for ath10k@lists.infradead.org; Thu, 14 May 2015 01:57:16 +0000
+Received: by wgin8 with SMTP id n8so60336208wgi.0
+ for <ath10k@lists.infradead.org>; Wed, 13 May 2015 18:56:52 -0700 (PDT)
 MIME-Version: 1.0
+Date: Wed, 13 May 2015 18:56:51 -0700
+Message-ID: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
+Subject: [PATCH] ath10k: handle cycle count wrap around
+From: Srinivasa Duvvuri <sduvvuri@google.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,101 +22,85 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-It seems that forcing the firmware to restart was the problem. During the last to days It did not crashed... I will keep my fingers crossed hahaha!
+When the cycle counts part of wmi_ch_info_ev_arg reach max value of
+0xffffffff The HW/FW right shifts all the counters by 1 . The cycle
+count will be reset to 0x7fffffff and starts counting from 0x7fffffff.
+At the same time all the other counters will also have their values
+right shifted by 1 (divided by 2). There is no way to handle this odd
+wrap around. Detect and ignore the wrap around case.
+This change has 2 parts.
 
-Edgar
-________________________________________
-De: Ben Greear [greearb@candelatech.com]
-Enviat el: dilluns, 11 / maig / 2015 20:56
-Per a: Costa Molero  Edgar
-A/c: ath10k@lists.infradead.org
-Tema: Re: CT firmware crashes randomly
+ 1) Ignore all the cycle counts , if the cycle count field wraps around.
+ 2) With HW frequency of 88MHz the cycle count wraps around every 24
+seconds. the survey_last_cycle_count saved will become stale with in
+24 seconds. Reset it to 0 at every scan start.
 
-On 05/11/2015 11:55 AM, Costa Molero Edgar wrote:
-> Do you know how can I reset fw_stats content without the "hw-reset" ? If there is a way I will definitely use it instead of making the firmware crash.
+Signed-off-by: Srinivasa Duvvuri <sduvvuri@chromium.org>
 
-No, but you can store the values and calculate the differences.
+diff --git a/drivers/net/wireless-3.18/ath/ath10k/wmi.c
+b/drivers/net/wireless-3.18/ath/ath10k/wmi.c
+index 720b6eb..09616bb 100644
+--- a/drivers/net/wireless-3.18/ath/ath10k/wmi.c
++++ b/drivers/net/wireless-3.18/ath/ath10k/wmi.c
+@@ -1158,6 +1158,8 @@
+  complete(&ar->scan.started);
+  break;
+  }
++ /* reset the last cycle count as the last cycle count is stale from
+last scan. */
++ ar->survey_last_cycle_count = 0;
+ }
 
-You can also admin down all station/ap interfaces, and when you start them
-again I think the firmware will be restarted (but more gracefully that
-just causing FW to crash).
+ static void ath10k_wmi_event_scan_start_failed(struct ath10k *ar)
+@@ -1716,21 +1718,36 @@
+  goto exit;
+  }
 
-Thanks,
-Ben
+- if (cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE) {
++ if (cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE && ar->survey_last_cycle_count) {
+  /* During scanning chan info is reported twice for each
+- * visited channel. The reported cycle count is global
++ * visited channel. The reported cycle count is global
+  * and per-channel cycle count must be calculated */
 
-> ________________________________________
-> De: Ben Greear [greearb@candelatech.com]
-> Enviat el: dilluns, 11 / maig / 2015 20:48
-> Per a: Costa Molero  Edgar
-> A/c: ath10k@lists.infradead.org
-> Tema: Re: CT firmware crashes randomly
->
-> On 05/11/2015 11:37 AM, Costa Molero Edgar wrote:
->> Hi,
->>
->> I am running some tests using a wle900vx nic, and the commercial firmware CT 10.4.467-ct-com-full-013-b5b14.
->>
->> For the tests I am modifying the transmission rates and number of spatial streams I use. MCS 0-9, SS 1-3 ("iw wlanX set bitrates legacy-5 ht-mcs-5 vht-mcs-5 x:y).
->> Every time I modify the transmission rate I disconnect and connect from the Access Point. Then I found that if I want to reset the values of "fw_stats" file I need to reload the firmware, or I can do a (echo "hw-restart" > simulate_fw_crash).
->
-> I think you should find a better way to
-> clear the stats...like snapshot the values and then just calculate the differences in
-> your script.
->
->> The test should take around 4-6h but some times randomly the script I am running is not able to set bit rates anymore. (-22 error). When this happen the script tries to reload the ath10k driver (modprobe -r ath10k + modprobe ath10k). But after that I can not connect to the access point anymore until I reboot the computer.  Could it be because I do "hw-restart" too many times?.
->>
->>
->> Here a slice of dmesg : at the end you will see that I restart it several times. (However, in the part you can not see I was doing the same as well)
->>
->> [   17.248265] ath10k_pci 0000:0c:00.0: irq 43 for MSI/MSI-X
->> [   17.248297] ath10k_pci 0000:0c:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
->> [   17.945015] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
->> [   17.945020] ath10k_pci 0000:0c:00.0: Falling back to user helper
->> [   18.243890] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
->> [   18.243899] ath10k_pci 0000:0c:00.0: Falling back to user helper
->> [   18.244959] ath10k_pci 0000:0c:00.0: could not fetch firmware file 'ath10k/QCA988X/hw2.0/firmware-4.bin': -12
->> [   18.244999] ath10k_pci 0000:0c:00.0: Direct firmware load failed with error -2
->> [   18.245003] ath10k_pci 0000:0c:00.0: Falling back to user helper
->> [   18.246260] ath10k_pci 0000:0c:00.0: could not fetch firmware file 'ath10k/QCA988X/hw2.0/firmware-3.bin': -12
->> [   19.444502] ath10k_pci 0000:0c:00.0: qca988x hw2.0 (0x4100016c, 0x043202ff) fw 10.1.467-ct-com-full-013-b5b14a api 2 htt 2.1 wmi 2 cal otp max_sta 128
->> [   19.444509] ath10k_pci 0000:0c:00.0: debug 1 debugfs 1 tracing 0 dfs 0 testmode 0
->> [  149.913555] ath10k_pci 0000:0c:00.0: user requested hw restart
->> [  151.026791] ath10k_pci 0000:0c:00.0: device successfully recovered
->> [  154.925661] WARNING: CPU: 0 PID: 2365 at /home/wimo/backports_kernel3.16/backports-4.0.1-1/drivers/net/wireless/ath/ath10k/htt_rx.c:968 ath10k_htt_rx_h_mpdu.isra.39+0x699/0x710 [ath10k_core]()
->> [  154.925665] Modules linked in: rfcomm bnep bluetooth 6lowpan_iphc arc4 carl9170(OE) dell_wmi sparse_keymap gpio_ich ath10k_pci(OE) dell_laptop pcmcia ath10k_core(OE) coretemp dcdbas kvm ath(OE) mac80211(OE) joydev yenta_socket serio_raw pcmcia_rsrc pcmcia_core cfg80211(OE) compat(OE) wmi snd_hda_codec_idt snd_hda_codec_generic mac_hid i915 drm_kms_helper irda crc_ccitt snd_hda_intel drm snd_hda_controller snd_hda_codec snd_hwdep snd_pcm snd_seq_midi snd_seq_midi_event lpc_ich video snd_rawmidi i2c_algo_bit snd_seq snd_seq_device snd_timer snd soundcore shpchp parport_pc ppdev lp parport psmouse firewire_ohci b44 firewire_core crc_itu_t ssb pata_acpi mii
->> [  154.925844]  [<ffffffffc0852b69>] ath10k_htt_rx_h_mpdu.isra.39+0x699/0x710 [ath10k_core]
->> [  154.925865]  [<ffffffffc08533ff>] ? ath10k_htt_rx_h_ppdu+0x1ef/0x240 [ath10k_core]
->> [  154.925879]  [<ffffffffc0854051>] ath10k_htt_txrx_compl_task+0x391/0xde0 [ath10k_core]
->> [  155.044138] ath10k_pci 0000:0c:00.0: rx ring became corrupted: -5
->
-> That is interesting...I don't think I've seen that rx-ring issue in any of my testing, but we
-> also do not see many firmware crashes in our testing.
->
-> Possibly this is a driver issue, or maybe it exposes some firmware issue.
->
-> Either way, I suggest to fix your script to not have to crash or restart the firmware.
->
-> If you do get un-requested firmware crashes, please send me full crash log, which
-> should have a register dump from the firmware so I can decode where the crash
-> happens...
->
-> Thanks,
-> Ben
->
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
+- cycle_count -= ar->survey_last_cycle_count;
+- rx_clear_count -= ar->survey_last_rx_clear_count;
+-
+  survey = &ar->survey[idx];
+- survey->channel_time = WMI_CHAN_INFO_MSEC(cycle_count);
+- survey->channel_time_rx = WMI_CHAN_INFO_MSEC(rx_clear_count);
++
++ if (cycle_count  <  ar->survey_last_cycle_count) {
++ /*
++  * Ignore the wrapped arust_cycnd data. When the total cycle count
++  * wraps around, FW/HW will right shift all the counts
++  * (including total cycle counts) by 1.The cycle counts wrap around
++  * every 24 seconds. To handle this wrap around behavior,
++  * we need the value of each counter at the time of wrap around which
++  * FW does not provide. For now ignore the data.
++  */
++ survey->filled &= ~(SURVEY_INFO_CHANNEL_TIME |
++    SURVEY_INFO_CHANNEL_TIME_BUSY);
++ } else {
++ cycle_count -= ar->survey_last_cycle_count;
++ rx_clear_count -= ar->survey_last_rx_clear_count;
++
++ survey->channel_time = WMI_CHAN_INFO_MSEC(cycle_count);
++ /* the rx_clear_count count indicates the busy time */
++ survey->channel_time_busy = WMI_CHAN_INFO_MSEC(rx_clear_count);
++ survey->filled = SURVEY_INFO_CHANNEL_TIME |
++ SURVEY_INFO_CHANNEL_TIME_BUSY;
++ }
+  survey->noise = noise_floor;
+- survey->filled = SURVEY_INFO_CHANNEL_TIME |
+- SURVEY_INFO_CHANNEL_TIME_RX |
+- SURVEY_INFO_NOISE_DBM;
++ survey->filled |= SURVEY_INFO_NOISE_DBM;
+  }
 
-
---
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+  ar->survey_last_rx_clear_count = rx_clear_count;
 
 _______________________________________________
 ath10k mailing list
