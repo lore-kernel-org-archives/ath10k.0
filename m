@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yslf4-0007Xa-2r
- for ath10k@lists.infradead.org; Thu, 14 May 2015 05:26:23 +0000
-Received: by wicnf17 with SMTP id nf17so80428449wic.1
- for <ath10k@lists.infradead.org>; Wed, 13 May 2015 22:25:54 -0700 (PDT)
+ id 1YspEo-0001DR-A0
+ for ath10k@lists.infradead.org; Thu, 14 May 2015 09:15:31 +0000
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Add debugfs support to configure beacon tx mode
+Date: Thu, 14 May 2015 14:44:45 +0530
+Message-ID: <1431594885-32346-1-git-send-email-rmanohar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
-References: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
-Date: Thu, 14 May 2015 07:25:53 +0200
-Message-ID: <CA+BoTQmHKfwQJjfe_6weOgFvNJeo=Zf_DLHQV_AK+Xbx2uWP=Q@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: handle cycle count wrap around
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,72 +16,188 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Srinivasa Duvvuri <sduvvuri@google.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-T24gMTQgTWF5IDIwMTUgYXQgMDM6NTYsIFNyaW5pdmFzYSBEdXZ2dXJpIDxzZHV2dnVyaUBnb29n
-bGUuY29tPiB3cm90ZToKPiBXaGVuIHRoZSBjeWNsZSBjb3VudHMgcGFydCBvZiB3bWlfY2hfaW5m
-b19ldl9hcmcgcmVhY2ggbWF4IHZhbHVlIG9mCj4gMHhmZmZmZmZmZiBUaGUgSFcvRlcgcmlnaHQg
-c2hpZnRzIGFsbCB0aGUgY291bnRlcnMgYnkgMSAuIFRoZSBjeWNsZQo+IGNvdW50IHdpbGwgYmUg
-cmVzZXQgdG8gMHg3ZmZmZmZmZiBhbmQgc3RhcnRzIGNvdW50aW5nIGZyb20gMHg3ZmZmZmZmZi4K
-PiBBdCB0aGUgc2FtZSB0aW1lIGFsbCB0aGUgb3RoZXIgY291bnRlcnMgd2lsbCBhbHNvIGhhdmUg
-dGhlaXIgdmFsdWVzCj4gcmlnaHQgc2hpZnRlZCBieSAxIChkaXZpZGVkIGJ5IDIpLiBUaGVyZSBp
-cyBubyB3YXkgdG8gaGFuZGxlIHRoaXMgb2RkCj4gd3JhcCBhcm91bmQuIERldGVjdCBhbmQgaWdu
-b3JlIHRoZSB3cmFwIGFyb3VuZCBjYXNlLgo+IFRoaXMgY2hhbmdlIGhhcyAyIHBhcnRzLgo+Cj4g
-IDEpIElnbm9yZSBhbGwgdGhlIGN5Y2xlIGNvdW50cyAsIGlmIHRoZSBjeWNsZSBjb3VudCBmaWVs
-ZCB3cmFwcyBhcm91bmQuCj4gIDIpIFdpdGggSFcgZnJlcXVlbmN5IG9mIDg4TUh6IHRoZSBjeWNs
-ZSBjb3VudCB3cmFwcyBhcm91bmQgZXZlcnkgMjQKPiBzZWNvbmRzLiB0aGUgc3VydmV5X2xhc3Rf
-Y3ljbGVfY291bnQgc2F2ZWQgd2lsbCBiZWNvbWUgc3RhbGUgd2l0aCBpbgo+IDI0IHNlY29uZHMu
-IFJlc2V0IGl0IHRvIDAgYXQgZXZlcnkgc2NhbiBzdGFydC4KClNvIHdoYXQgZG9lcyBpdCBmaXgg
-ZnJvbSBhIHVzZXIgcGVyc3BlY3RpdmU/CgoKPgo+IFNpZ25lZC1vZmYtYnk6IFNyaW5pdmFzYSBE
-dXZ2dXJpIDxzZHV2dnVyaUBjaHJvbWl1bS5vcmc+Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
-ZXQvd2lyZWxlc3MtMy4xOC9hdGgvYXRoMTBrL3dtaS5jCj4gYi9kcml2ZXJzL25ldC93aXJlbGVz
-cy0zLjE4L2F0aC9hdGgxMGsvd21pLmMKPiBpbmRleCA3MjBiNmViLi4wOTYxNmJiIDEwMDY0NAo+
-IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRoL2F0aDEway93bWkuYwo+ICsrKyBi
-L2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRoL2F0aDEway93bWkuYwoKVGhpcyBkb2Vzbid0
-IGxvb2sgbGlrZSBhbiB1cHN0cmVhbSBrZXJuZWwgcGF0Y2guIFJlYmFzZSBpdCBmb3IKZ2l0aHVi
-LmNvbS9rdmFsby9hdGgsIHBsZWFzZS4KCgo+IEBAIC0xMTU4LDYgKzExNTgsOCBAQAo+ICAgY29t
-cGxldGUoJmFyLT5zY2FuLnN0YXJ0ZWQpOwo+ICAgYnJlYWs7Cj4gICB9Cj4gKyAvKiByZXNldCB0
-aGUgbGFzdCBjeWNsZSBjb3VudCBhcyB0aGUgbGFzdCBjeWNsZSBjb3VudCBpcyBzdGFsZSBmcm9t
-Cj4gbGFzdCBzY2FuLiAqLwo+ICsgYXItPnN1cnZleV9sYXN0X2N5Y2xlX2NvdW50ID0gMDsKPiAg
-fQo+Cj4gIHN0YXRpYyB2b2lkIGF0aDEwa193bWlfZXZlbnRfc2Nhbl9zdGFydF9mYWlsZWQoc3Ry
-dWN0IGF0aDEwayAqYXIpCj4gQEAgLTE3MTYsMjEgKzE3MTgsMzYgQEAKPiAgIGdvdG8gZXhpdDsK
-PiAgIH0KPgo+IC0gaWYgKGNtZF9mbGFncyAmIFdNSV9DSEFOX0lORk9fRkxBR19DT01QTEVURSkg
-ewo+ICsgaWYgKGNtZF9mbGFncyAmIFdNSV9DSEFOX0lORk9fRkxBR19DT01QTEVURSAmJiBhci0+
-c3VydmV5X2xhc3RfY3ljbGVfY291bnQpIHsKCkNoYW5uZWwgaW5mbyBldmVudHMgY29tZSBpbiBw
-YWlyczogd2l0aG91dCBhbmQgd2l0aCBGTEFHX0NPTVBMRVRFCnJlc3BlY3RpdmVseS4gVGh1cyBp
-dCBpcyBwb2ludGxlc3MgdG8gcmVzZXQKYGFyLT5zdXJ2ZXlfbGFzdF9jeWNsZV9jb3VudGAgYW5k
-IGl0J3MgcG9pbnRsZXNzIHRvIHVzZSBpdCBpbiB0aGlzCmNvbmRpdGlvbi4KCgo+ICAgLyogRHVy
-aW5nIHNjYW5uaW5nIGNoYW4gaW5mbyBpcyByZXBvcnRlZCB0d2ljZSBmb3IgZWFjaAo+IC0gKiB2
-aXNpdGVkIGNoYW5uZWwuIFRoZSByZXBvcnRlZCBjeWNsZSBjb3VudCBpcyBnbG9iYWwKPiArICog
-dmlzaXRlZCBjaGFubmVsLiBUaGUgcmVwb3J0ZWQgY3ljbGUgY291bnQgaXMgZ2xvYmFsCj4gICAq
-IGFuZCBwZXItY2hhbm5lbCBjeWNsZSBjb3VudCBtdXN0IGJlIGNhbGN1bGF0ZWQgKi8KPgo+IC0g
-Y3ljbGVfY291bnQgLT0gYXItPnN1cnZleV9sYXN0X2N5Y2xlX2NvdW50Owo+IC0gcnhfY2xlYXJf
-Y291bnQgLT0gYXItPnN1cnZleV9sYXN0X3J4X2NsZWFyX2NvdW50Owo+IC0KPiAgIHN1cnZleSA9
-ICZhci0+c3VydmV5W2lkeF07Cj4gLSBzdXJ2ZXktPmNoYW5uZWxfdGltZSA9IFdNSV9DSEFOX0lO
-Rk9fTVNFQyhjeWNsZV9jb3VudCk7Cj4gLSBzdXJ2ZXktPmNoYW5uZWxfdGltZV9yeCA9IFdNSV9D
-SEFOX0lORk9fTVNFQyhyeF9jbGVhcl9jb3VudCk7Cj4gKwo+ICsgaWYgKGN5Y2xlX2NvdW50ICA8
-ICBhci0+c3VydmV5X2xhc3RfY3ljbGVfY291bnQpIHsKPiArIC8qCj4gKyAgKiBJZ25vcmUgdGhl
-IHdyYXBwZWQgYXIgdXN0X2N5Y25kIGRhdGEuIFdoZW4gdGhlIHRvdGFsIGN5Y2xlIGNvdW50Cj4g
-KyAgKiB3cmFwcyBhcm91bmQsIEZXL0hXIHdpbGwgcmlnaHQgc2hpZnQgYWxsIHRoZSBjb3VudHMK
-PiArICAqIChpbmNsdWRpbmcgdG90YWwgY3ljbGUgY291bnRzKSBieSAxLlRoZSBjeWNsZSBjb3Vu
-dHMgd3JhcCBhcm91bmQKPiArICAqIGV2ZXJ5IDI0IHNlY29uZHMuIFRvIGhhbmRsZSB0aGlzIHdy
-YXAgYXJvdW5kIGJlaGF2aW9yLAo+ICsgICogd2UgbmVlZCB0aGUgdmFsdWUgb2YgZWFjaCBjb3Vu
-dGVyIGF0IHRoZSB0aW1lIG9mIHdyYXAgYXJvdW5kIHdoaWNoCj4gKyAgKiBGVyBkb2VzIG5vdCBw
-cm92aWRlLiBGb3Igbm93IGlnbm9yZSB0aGUgZGF0YS4KPiArICAqLwoKSWYgeW91IHJlYWxseSB0
-aGluayBhYm91dCBpdCwgdGhpcyBjYW4gYmUgY2FsY3VsYXRlZC4KCkNoYW5uZWwgdmlzaXQgc2hv
-dWxkbid0IGJlIGxvbmdlciB0aGFuIDI0cywgbm90IGV2ZW4gMTJzLiBJdCdzIG1vc3RseQoyMC0x
-MDBtcyBmb3IgaHdfc2NhbiBhbmQgdXAgdG8gNXMgaW4gb2ZmY2hhbm5lbCAod2hpY2ggaXMgcmFy
-ZQphbnl3YXkpLgoKSGVuY2UgeW91IGNhbiBkZXRlY3QgdGhlIHdyYXAgYXJvdW5kIEFORCBjYWxj
-dWxhdGUgdGhlIGFjdHVhbCB0aW1lIGRpZmZlcmVuY2UuCgpZb3VyIHBhdGNoIHNlZW1zIGxpa2Ug
-aXQncyB3aGl0ZXNwYWNlLWRhbWFnZWQuIFBsZWFzZSB1c2UgZ2l0IHNlbmQtZW1haWwuCgpBbHNv
-IGZpeCBzdHlsaW5nIGlzc3VlcywgcGxlYXNlIC0geW91IGhhdmUgdHlwbyBpbiB0aGUgY29tbWVu
-dCwgbW9kaWZ5CmEgY29tbWVudCBsaW5lIG5lZWRsZXNzbHksIGV4Y2VlZCA4MCBjaGFycyBpbiBs
-aW5lIGFuZCB1c2UgbXVsdGlwbGUKc3BhY2VzIGJldHdlZW4gb3BlcmF0b3IgYDxgLgoKCk1pY2hh
-xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
-ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
-ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Introduce debugfs entry to select beacon tx mode to
+staggered or bursted mode. In staggered mode, software beacon
+alert will be evenly distributed for each beaconing interfaces
+by (beacon intval / number of vif). In bursted mode, batch of
+beacons will be sent out as batch at beacon interval.
+
+By default, staggered mode is selected.
+
+To select bursted mode
+
+echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/beacon_tx_mode
+
+For staggered mode,
+
+echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/beacon_tx_mode
+
+Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  |  1 +
+ drivers/net/wireless/ath/ath10k/debug.c | 60 +++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/mac.c   |  9 ++---
+ drivers/net/wireless/ath/ath10k/mac.h   |  1 +
+ 4 files changed, 67 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 827b3d7..be85b1f 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -394,6 +394,7 @@ struct ath10k_debug {
+ 	u8 htt_max_ampdu;
+ 
+ 	struct ath10k_fw_crash_data *fw_crash_data;
++	enum wmi_beacon_gen_mode beacon_tx_mode;
+ };
+ 
+ enum ath10k_state {
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 8fa606a..de63465 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -24,6 +24,7 @@
+ #include "debug.h"
+ #include "hif.h"
+ #include "wmi-ops.h"
++#include "mac.h"
+ 
+ /* ms */
+ #define ATH10K_DEBUG_HTT_STATS_INTERVAL 1000
+@@ -1885,6 +1886,7 @@ int ath10k_debug_start(struct ath10k *ar)
+ 			ath10k_warn(ar, "cal period cfg failed from debug start: %d\n",
+ 				    ret);
+ 	}
++	ar->debug.beacon_tx_mode = WMI_BEACON_STAGGERED_MODE;
+ 
+ 	return ret;
+ }
+@@ -2092,6 +2094,61 @@ static const struct file_operations fops_quiet_period = {
+ 	.open = simple_open
+ };
+ 
++static ssize_t ath10k_write_beacon_tx_mode(struct file *file,
++					   const char __user *ubuf,
++					   size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	u32 beacon_tx_mode;
++	int ret;
++
++	if (kstrtouint_from_user(ubuf, count, 0, &beacon_tx_mode))
++		return -EINVAL;
++
++	if (beacon_tx_mode > WMI_BEACON_BURST_MODE) {
++		ath10k_warn(ar, "Invalid beaconing mode configured: %d\n",
++			    beacon_tx_mode);
++		return -EINVAL;
++	}
++	mutex_lock(&ar->conf_mutex);
++	ret = ath10k_wmi_pdev_set_param(ar, ar->wmi.pdev_param->beacon_tx_mode,
++					beacon_tx_mode);
++	if (ret) {
++		ath10k_warn(ar, "failed to set beacon tx mode: %d\n", ret);
++		mutex_unlock(&ar->conf_mutex);
++		return ret;
++	}
++
++	ath10k_mac_chan_reconfigure(ar);
++	ar->debug.beacon_tx_mode = beacon_tx_mode;
++	mutex_unlock(&ar->conf_mutex);
++
++	return count;
++}
++
++static ssize_t ath10k_read_beacon_tx_mode(struct file *file, char __user *ubuf,
++					  size_t count, loff_t *ppos)
++{
++	char buf[100];
++	struct ath10k *ar = file->private_data;
++	int len = 0;
++
++	mutex_lock(&ar->conf_mutex);
++	len = scnprintf(buf + len, sizeof(buf) - len,
++			"available beaconing modes: 0 - staggered 1 - bursted\n");
++	len += scnprintf(buf + len, sizeof(buf) - len, "current mode: %s\n",
++			 (ar->debug.beacon_tx_mode) ? "bursted" : "staggered");
++	mutex_unlock(&ar->conf_mutex);
++
++	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
++}
++
++static const struct file_operations fops_beacon_tx_mode = {
++	.read = ath10k_read_beacon_tx_mode,
++	.write = ath10k_write_beacon_tx_mode,
++	.open = simple_open
++};
++
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+ 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+@@ -2195,6 +2252,9 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
+ 			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
+ 
++	debugfs_create_file("beacon_tx_mode", S_IRUGO | S_IWUSR,
++			    ar->debug.debugfs_phy, ar, &fops_beacon_tx_mode);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 425dbe2..898b821 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3969,7 +3969,7 @@ static int ath10k_config_ps(struct ath10k *ar)
+ 	return ret;
+ }
+ 
+-static void ath10k_mac_chan_reconfigure(struct ath10k *ar)
++void ath10k_mac_chan_reconfigure(struct ath10k *ar)
+ {
+ 	struct ath10k_vif *arvif;
+ 	struct cfg80211_chan_def def;
+@@ -4556,12 +4556,13 @@ static void ath10k_bss_info_changed(struct ieee80211_hw *hw,
+ 
+ 	if (changed & BSS_CHANGED_BEACON) {
+ 		ath10k_dbg(ar, ATH10K_DBG_MAC,
+-			   "vdev %d set beacon tx mode to staggered\n",
+-			   arvif->vdev_id);
++			   "vdev %d set beacon tx mode to %s\n",
++			   arvif->vdev_id,
++			   ar->debug.beacon_tx_mode ? "bursted" : "staggered");
+ 
+ 		pdev_param = ar->wmi.pdev_param->beacon_tx_mode;
+ 		ret = ath10k_wmi_pdev_set_param(ar, pdev_param,
+-						WMI_BEACON_STAGGERED_MODE);
++						ar->debug.beacon_tx_mode);
+ 		if (ret)
+ 			ath10k_warn(ar, "failed to set beacon mode for vdev %d: %i\n",
+ 				    arvif->vdev_id, ret);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
+index b291f06..a765ae8 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.h
++++ b/drivers/net/wireless/ath/ath10k/mac.h
+@@ -74,6 +74,7 @@ void ath10k_mac_tx_lock(struct ath10k *ar, int reason);
+ void ath10k_mac_tx_unlock(struct ath10k *ar, int reason);
+ void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason);
+ void ath10k_mac_vif_tx_unlock(struct ath10k_vif *arvif, int reason);
++void ath10k_mac_chan_reconfigure(struct ath10k *ar);
+ 
+ static inline struct ath10k_vif *ath10k_vif_to_arvif(struct ieee80211_vif *vif)
+ {
+-- 
+2.4.0
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
