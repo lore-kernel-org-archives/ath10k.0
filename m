@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x229.google.com ([2a00:1450:400c:c00::229])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YsiOh-0005nj-L7
- for ath10k@lists.infradead.org; Thu, 14 May 2015 01:57:16 +0000
-Received: by wgin8 with SMTP id n8so60336208wgi.0
- for <ath10k@lists.infradead.org>; Wed, 13 May 2015 18:56:52 -0700 (PDT)
+ id 1Yslf4-0007Xa-2r
+ for ath10k@lists.infradead.org; Thu, 14 May 2015 05:26:23 +0000
+Received: by wicnf17 with SMTP id nf17so80428449wic.1
+ for <ath10k@lists.infradead.org>; Wed, 13 May 2015 22:25:54 -0700 (PDT)
 MIME-Version: 1.0
-Date: Wed, 13 May 2015 18:56:51 -0700
-Message-ID: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
-Subject: [PATCH] ath10k: handle cycle count wrap around
-From: Srinivasa Duvvuri <sduvvuri@google.com>
+In-Reply-To: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
+References: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
+Date: Thu, 14 May 2015 07:25:53 +0200
+Message-ID: <CA+BoTQmHKfwQJjfe_6weOgFvNJeo=Zf_DLHQV_AK+Xbx2uWP=Q@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: handle cycle count wrap around
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,91 +20,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Srinivasa Duvvuri <sduvvuri@google.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-When the cycle counts part of wmi_ch_info_ev_arg reach max value of
-0xffffffff The HW/FW right shifts all the counters by 1 . The cycle
-count will be reset to 0x7fffffff and starts counting from 0x7fffffff.
-At the same time all the other counters will also have their values
-right shifted by 1 (divided by 2). There is no way to handle this odd
-wrap around. Detect and ignore the wrap around case.
-This change has 2 parts.
-
- 1) Ignore all the cycle counts , if the cycle count field wraps around.
- 2) With HW frequency of 88MHz the cycle count wraps around every 24
-seconds. the survey_last_cycle_count saved will become stale with in
-24 seconds. Reset it to 0 at every scan start.
-
-Signed-off-by: Srinivasa Duvvuri <sduvvuri@chromium.org>
-
-diff --git a/drivers/net/wireless-3.18/ath/ath10k/wmi.c
-b/drivers/net/wireless-3.18/ath/ath10k/wmi.c
-index 720b6eb..09616bb 100644
---- a/drivers/net/wireless-3.18/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless-3.18/ath/ath10k/wmi.c
-@@ -1158,6 +1158,8 @@
-  complete(&ar->scan.started);
-  break;
-  }
-+ /* reset the last cycle count as the last cycle count is stale from
-last scan. */
-+ ar->survey_last_cycle_count = 0;
- }
-
- static void ath10k_wmi_event_scan_start_failed(struct ath10k *ar)
-@@ -1716,21 +1718,36 @@
-  goto exit;
-  }
-
-- if (cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE) {
-+ if (cmd_flags & WMI_CHAN_INFO_FLAG_COMPLETE && ar->survey_last_cycle_count) {
-  /* During scanning chan info is reported twice for each
-- * visited channel. The reported cycle count is global
-+ * visited channel. The reported cycle count is global
-  * and per-channel cycle count must be calculated */
-
-- cycle_count -= ar->survey_last_cycle_count;
-- rx_clear_count -= ar->survey_last_rx_clear_count;
--
-  survey = &ar->survey[idx];
-- survey->channel_time = WMI_CHAN_INFO_MSEC(cycle_count);
-- survey->channel_time_rx = WMI_CHAN_INFO_MSEC(rx_clear_count);
-+
-+ if (cycle_count  <  ar->survey_last_cycle_count) {
-+ /*
-+  * Ignore the wrapped arust_cycnd data. When the total cycle count
-+  * wraps around, FW/HW will right shift all the counts
-+  * (including total cycle counts) by 1.The cycle counts wrap around
-+  * every 24 seconds. To handle this wrap around behavior,
-+  * we need the value of each counter at the time of wrap around which
-+  * FW does not provide. For now ignore the data.
-+  */
-+ survey->filled &= ~(SURVEY_INFO_CHANNEL_TIME |
-+    SURVEY_INFO_CHANNEL_TIME_BUSY);
-+ } else {
-+ cycle_count -= ar->survey_last_cycle_count;
-+ rx_clear_count -= ar->survey_last_rx_clear_count;
-+
-+ survey->channel_time = WMI_CHAN_INFO_MSEC(cycle_count);
-+ /* the rx_clear_count count indicates the busy time */
-+ survey->channel_time_busy = WMI_CHAN_INFO_MSEC(rx_clear_count);
-+ survey->filled = SURVEY_INFO_CHANNEL_TIME |
-+ SURVEY_INFO_CHANNEL_TIME_BUSY;
-+ }
-  survey->noise = noise_floor;
-- survey->filled = SURVEY_INFO_CHANNEL_TIME |
-- SURVEY_INFO_CHANNEL_TIME_RX |
-- SURVEY_INFO_NOISE_DBM;
-+ survey->filled |= SURVEY_INFO_NOISE_DBM;
-  }
-
-  ar->survey_last_rx_clear_count = rx_clear_count;
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgTWF5IDIwMTUgYXQgMDM6NTYsIFNyaW5pdmFzYSBEdXZ2dXJpIDxzZHV2dnVyaUBnb29n
+bGUuY29tPiB3cm90ZToKPiBXaGVuIHRoZSBjeWNsZSBjb3VudHMgcGFydCBvZiB3bWlfY2hfaW5m
+b19ldl9hcmcgcmVhY2ggbWF4IHZhbHVlIG9mCj4gMHhmZmZmZmZmZiBUaGUgSFcvRlcgcmlnaHQg
+c2hpZnRzIGFsbCB0aGUgY291bnRlcnMgYnkgMSAuIFRoZSBjeWNsZQo+IGNvdW50IHdpbGwgYmUg
+cmVzZXQgdG8gMHg3ZmZmZmZmZiBhbmQgc3RhcnRzIGNvdW50aW5nIGZyb20gMHg3ZmZmZmZmZi4K
+PiBBdCB0aGUgc2FtZSB0aW1lIGFsbCB0aGUgb3RoZXIgY291bnRlcnMgd2lsbCBhbHNvIGhhdmUg
+dGhlaXIgdmFsdWVzCj4gcmlnaHQgc2hpZnRlZCBieSAxIChkaXZpZGVkIGJ5IDIpLiBUaGVyZSBp
+cyBubyB3YXkgdG8gaGFuZGxlIHRoaXMgb2RkCj4gd3JhcCBhcm91bmQuIERldGVjdCBhbmQgaWdu
+b3JlIHRoZSB3cmFwIGFyb3VuZCBjYXNlLgo+IFRoaXMgY2hhbmdlIGhhcyAyIHBhcnRzLgo+Cj4g
+IDEpIElnbm9yZSBhbGwgdGhlIGN5Y2xlIGNvdW50cyAsIGlmIHRoZSBjeWNsZSBjb3VudCBmaWVs
+ZCB3cmFwcyBhcm91bmQuCj4gIDIpIFdpdGggSFcgZnJlcXVlbmN5IG9mIDg4TUh6IHRoZSBjeWNs
+ZSBjb3VudCB3cmFwcyBhcm91bmQgZXZlcnkgMjQKPiBzZWNvbmRzLiB0aGUgc3VydmV5X2xhc3Rf
+Y3ljbGVfY291bnQgc2F2ZWQgd2lsbCBiZWNvbWUgc3RhbGUgd2l0aCBpbgo+IDI0IHNlY29uZHMu
+IFJlc2V0IGl0IHRvIDAgYXQgZXZlcnkgc2NhbiBzdGFydC4KClNvIHdoYXQgZG9lcyBpdCBmaXgg
+ZnJvbSBhIHVzZXIgcGVyc3BlY3RpdmU/CgoKPgo+IFNpZ25lZC1vZmYtYnk6IFNyaW5pdmFzYSBE
+dXZ2dXJpIDxzZHV2dnVyaUBjaHJvbWl1bS5vcmc+Cj4KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9u
+ZXQvd2lyZWxlc3MtMy4xOC9hdGgvYXRoMTBrL3dtaS5jCj4gYi9kcml2ZXJzL25ldC93aXJlbGVz
+cy0zLjE4L2F0aC9hdGgxMGsvd21pLmMKPiBpbmRleCA3MjBiNmViLi4wOTYxNmJiIDEwMDY0NAo+
+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRoL2F0aDEway93bWkuYwo+ICsrKyBi
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRoL2F0aDEway93bWkuYwoKVGhpcyBkb2Vzbid0
+IGxvb2sgbGlrZSBhbiB1cHN0cmVhbSBrZXJuZWwgcGF0Y2guIFJlYmFzZSBpdCBmb3IKZ2l0aHVi
+LmNvbS9rdmFsby9hdGgsIHBsZWFzZS4KCgo+IEBAIC0xMTU4LDYgKzExNTgsOCBAQAo+ICAgY29t
+cGxldGUoJmFyLT5zY2FuLnN0YXJ0ZWQpOwo+ICAgYnJlYWs7Cj4gICB9Cj4gKyAvKiByZXNldCB0
+aGUgbGFzdCBjeWNsZSBjb3VudCBhcyB0aGUgbGFzdCBjeWNsZSBjb3VudCBpcyBzdGFsZSBmcm9t
+Cj4gbGFzdCBzY2FuLiAqLwo+ICsgYXItPnN1cnZleV9sYXN0X2N5Y2xlX2NvdW50ID0gMDsKPiAg
+fQo+Cj4gIHN0YXRpYyB2b2lkIGF0aDEwa193bWlfZXZlbnRfc2Nhbl9zdGFydF9mYWlsZWQoc3Ry
+dWN0IGF0aDEwayAqYXIpCj4gQEAgLTE3MTYsMjEgKzE3MTgsMzYgQEAKPiAgIGdvdG8gZXhpdDsK
+PiAgIH0KPgo+IC0gaWYgKGNtZF9mbGFncyAmIFdNSV9DSEFOX0lORk9fRkxBR19DT01QTEVURSkg
+ewo+ICsgaWYgKGNtZF9mbGFncyAmIFdNSV9DSEFOX0lORk9fRkxBR19DT01QTEVURSAmJiBhci0+
+c3VydmV5X2xhc3RfY3ljbGVfY291bnQpIHsKCkNoYW5uZWwgaW5mbyBldmVudHMgY29tZSBpbiBw
+YWlyczogd2l0aG91dCBhbmQgd2l0aCBGTEFHX0NPTVBMRVRFCnJlc3BlY3RpdmVseS4gVGh1cyBp
+dCBpcyBwb2ludGxlc3MgdG8gcmVzZXQKYGFyLT5zdXJ2ZXlfbGFzdF9jeWNsZV9jb3VudGAgYW5k
+IGl0J3MgcG9pbnRsZXNzIHRvIHVzZSBpdCBpbiB0aGlzCmNvbmRpdGlvbi4KCgo+ICAgLyogRHVy
+aW5nIHNjYW5uaW5nIGNoYW4gaW5mbyBpcyByZXBvcnRlZCB0d2ljZSBmb3IgZWFjaAo+IC0gKiB2
+aXNpdGVkIGNoYW5uZWwuIFRoZSByZXBvcnRlZCBjeWNsZSBjb3VudCBpcyBnbG9iYWwKPiArICog
+dmlzaXRlZCBjaGFubmVsLiBUaGUgcmVwb3J0ZWQgY3ljbGUgY291bnQgaXMgZ2xvYmFsCj4gICAq
+IGFuZCBwZXItY2hhbm5lbCBjeWNsZSBjb3VudCBtdXN0IGJlIGNhbGN1bGF0ZWQgKi8KPgo+IC0g
+Y3ljbGVfY291bnQgLT0gYXItPnN1cnZleV9sYXN0X2N5Y2xlX2NvdW50Owo+IC0gcnhfY2xlYXJf
+Y291bnQgLT0gYXItPnN1cnZleV9sYXN0X3J4X2NsZWFyX2NvdW50Owo+IC0KPiAgIHN1cnZleSA9
+ICZhci0+c3VydmV5W2lkeF07Cj4gLSBzdXJ2ZXktPmNoYW5uZWxfdGltZSA9IFdNSV9DSEFOX0lO
+Rk9fTVNFQyhjeWNsZV9jb3VudCk7Cj4gLSBzdXJ2ZXktPmNoYW5uZWxfdGltZV9yeCA9IFdNSV9D
+SEFOX0lORk9fTVNFQyhyeF9jbGVhcl9jb3VudCk7Cj4gKwo+ICsgaWYgKGN5Y2xlX2NvdW50ICA8
+ICBhci0+c3VydmV5X2xhc3RfY3ljbGVfY291bnQpIHsKPiArIC8qCj4gKyAgKiBJZ25vcmUgdGhl
+IHdyYXBwZWQgYXIgdXN0X2N5Y25kIGRhdGEuIFdoZW4gdGhlIHRvdGFsIGN5Y2xlIGNvdW50Cj4g
+KyAgKiB3cmFwcyBhcm91bmQsIEZXL0hXIHdpbGwgcmlnaHQgc2hpZnQgYWxsIHRoZSBjb3VudHMK
+PiArICAqIChpbmNsdWRpbmcgdG90YWwgY3ljbGUgY291bnRzKSBieSAxLlRoZSBjeWNsZSBjb3Vu
+dHMgd3JhcCBhcm91bmQKPiArICAqIGV2ZXJ5IDI0IHNlY29uZHMuIFRvIGhhbmRsZSB0aGlzIHdy
+YXAgYXJvdW5kIGJlaGF2aW9yLAo+ICsgICogd2UgbmVlZCB0aGUgdmFsdWUgb2YgZWFjaCBjb3Vu
+dGVyIGF0IHRoZSB0aW1lIG9mIHdyYXAgYXJvdW5kIHdoaWNoCj4gKyAgKiBGVyBkb2VzIG5vdCBw
+cm92aWRlLiBGb3Igbm93IGlnbm9yZSB0aGUgZGF0YS4KPiArICAqLwoKSWYgeW91IHJlYWxseSB0
+aGluayBhYm91dCBpdCwgdGhpcyBjYW4gYmUgY2FsY3VsYXRlZC4KCkNoYW5uZWwgdmlzaXQgc2hv
+dWxkbid0IGJlIGxvbmdlciB0aGFuIDI0cywgbm90IGV2ZW4gMTJzLiBJdCdzIG1vc3RseQoyMC0x
+MDBtcyBmb3IgaHdfc2NhbiBhbmQgdXAgdG8gNXMgaW4gb2ZmY2hhbm5lbCAod2hpY2ggaXMgcmFy
+ZQphbnl3YXkpLgoKSGVuY2UgeW91IGNhbiBkZXRlY3QgdGhlIHdyYXAgYXJvdW5kIEFORCBjYWxj
+dWxhdGUgdGhlIGFjdHVhbCB0aW1lIGRpZmZlcmVuY2UuCgpZb3VyIHBhdGNoIHNlZW1zIGxpa2Ug
+aXQncyB3aGl0ZXNwYWNlLWRhbWFnZWQuIFBsZWFzZSB1c2UgZ2l0IHNlbmQtZW1haWwuCgpBbHNv
+IGZpeCBzdHlsaW5nIGlzc3VlcywgcGxlYXNlIC0geW91IGhhdmUgdHlwbyBpbiB0aGUgY29tbWVu
+dCwgbW9kaWZ5CmEgY29tbWVudCBsaW5lIG5lZWRsZXNzbHksIGV4Y2VlZCA4MCBjaGFycyBpbiBs
+aW5lIGFuZCB1c2UgbXVsdGlwbGUKc3BhY2VzIGJldHdlZW4gb3BlcmF0b3IgYDxgLgoKCk1pY2hh
+xYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEw
+ayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmlu
+ZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
