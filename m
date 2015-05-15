@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yt0Uh-0004Oz-Gs
- for ath10k@lists.infradead.org; Thu, 14 May 2015 21:16:40 +0000
-Message-ID: <555510A1.2040607@candelatech.com>
-Date: Thu, 14 May 2015 14:16:17 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x234.google.com ([2a00:1450:400c:c00::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yt8XE-0007mm-Kv
+ for ath10k@lists.infradead.org; Fri, 15 May 2015 05:51:50 +0000
+Received: by wguv19 with SMTP id v19so38569425wgu.1
+ for <ath10k@lists.infradead.org>; Thu, 14 May 2015 22:51:19 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k/mac80211: add rawtxrx, nohwcrypt module param
- for raw tx injection, sw crypto support.
-References: <CAG5N3qG7090vB6XoUaQSHvQw7GpE+gXvJAbKrv7def3nV0OFJw@mail.gmail.com>
- <873837qo6l.fsf@kamboji.qca.qualcomm.com> <554CE438.5000208@candelatech.com>
- <CAG5N3qFB=yZJYSokUqF2=eNcS5SoCOntOyan6_OuahtFF5r=Bw@mail.gmail.com>
- <871tinjosq.fsf@kamboji.qca.qualcomm.com> <5550D629.2090501@candelatech.com>
- <CAG5N3qE6nA2oEhR5Zk8sS331-ycM+jZLBy2BeGPX0ueHqvJ6Kg@mail.gmail.com>
- <87oalnchwb.fsf@kamboji.qca.qualcomm.com>
- <CAG5N3qGJ9jREnNaLF6ik+Z6xOjQTnZ3dZXUW_ODV8iapMWE5mg@mail.gmail.com>
-In-Reply-To: <CAG5N3qGJ9jREnNaLF6ik+Z6xOjQTnZ3dZXUW_ODV8iapMWE5mg@mail.gmail.com>
+In-Reply-To: <CACZoB697UW-nB0imwUxOn5_2F=7rGb6uJ4NVcfnJZpLYhj=enQ@mail.gmail.com>
+References: <CACZoB6_jCMQM8t9GRVOsGOhWM-ySMkZXTtbgypYAFzjm1i8Lkw@mail.gmail.com>
+ <CA+BoTQmHKfwQJjfe_6weOgFvNJeo=Zf_DLHQV_AK+Xbx2uWP=Q@mail.gmail.com>
+ <CACZoB697UW-nB0imwUxOn5_2F=7rGb6uJ4NVcfnJZpLYhj=enQ@mail.gmail.com>
+Date: Fri, 15 May 2015 07:51:18 +0200
+Message-ID: <CA+BoTQk_sg0pR+msL7jPAG8t+AUYx672pxupKeFGJEHcHiYUmw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: handle cycle count wrap around
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,69 +22,136 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Liu CF/TW <cfliu.tw@gmail.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Srinivasa Duvvuri <sduvvuri@google.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 05/14/2015 12:35 PM, Liu CF/TW wrote:
-> On Thu, May 14, 2015 at 8:12 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> "Liu CF/TW" <cfliu.tw@gmail.com> writes:
->>
->>> I am going to propose just one single module parameter control: enc_mode
->>>
->>> - enc_mode = 0: Use HW crypto (default),
->>>
->>>    Driver behavior:
->>>       - ath10k driver uses native WiFi mode for both Tx/Rx.
->>>       - ath10k driver configures key to HW.
->>>       Given HW key descriptor is configured, mac80211 would offload Tx
->>> encryption to HW and only do Rx decryption (by mac80211) if HW failed
->>> to do it.
->>
->> But isn't the point here to use 802.11 frames ("raw mode")? Then why
->> name the module paramater as enc_mode? I think that's confusing.
->>
->> And to me enc_mode doesn't tell much, my first thought was "encoding
->> mode". Wouldn't cryptmode tell more to the user?
->>
->>
->
-> Thanks for the suggestion. Yes, crypt_mode is better. I didn't mean
-> "enc({ap, oding})_mode" but "enc(ryption)_mode"
->
-> IMO, the new use cases enabled by the change are sw crypto support and
-> raw Tx frame injection (to bypass hw crypto if already encrypted).
-> Therefore I suggest use "crypt_mode" as module param so it's clear one
-> only needs to set it if sw crypto is desired.
->
-> "raw_mode" itself as a module param doesn't mean much to user, it
-> doesn't say what new use cases are supported. After all, both native
-> wifi and raw mode supports HW crypto.
->
-> In Ben's use case, driver that loads CT firmware can continue to run
-> without setting anything (default crypt_mode=0 means use HW crypto)
-> and FW continues its magic to enable Rx SW crypto fallback.  At some
-> point when CT firmware implements the FW feature
-> TX_RAW_ENCAP_SUPPORTED, all the crypt_modes=0,1,2 also works there.
-
-This fine for me.  I'll just keep using my patch that enables nohwcrypt
-module option to enable my own rx-sw-crypt feature.  If I ever
-get raw-tx working for encrypted packets I'll set that flag in
-my firmware as you suggest.
-
-Thanks,
-Ben
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgTWF5IDIwMTUgYXQgMjA6NDAsIFNyaW5pdmFzYSBEdXZ2dXJpIDxzZHV2dnVyaUBnb29n
+bGUuY29tPiB3cm90ZToKPiBPbiBXZWQsIE1heSAxMywgMjAxNSBhdCAxMDoyNSBQTSwgTWljaGFs
+IEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBPbiAxNCBNYXkgMjAx
+NSBhdCAwMzo1NiwgU3Jpbml2YXNhIER1dnZ1cmkgPHNkdXZ2dXJpQGdvb2dsZS5jb20+IHdyb3Rl
+Ogo+Pj4gV2hlbiB0aGUgY3ljbGUgY291bnRzIHBhcnQgb2Ygd21pX2NoX2luZm9fZXZfYXJnIHJl
+YWNoIG1heCB2YWx1ZSBvZgo+Pj4gMHhmZmZmZmZmZiBUaGUgSFcvRlcgcmlnaHQgc2hpZnRzIGFs
+bCB0aGUgY291bnRlcnMgYnkgMSAuIFRoZSBjeWNsZQo+Pj4gY291bnQgd2lsbCBiZSByZXNldCB0
+byAweDdmZmZmZmZmIGFuZCBzdGFydHMgY291bnRpbmcgZnJvbSAweDdmZmZmZmZmLgo+Pj4gQXQg
+dGhlIHNhbWUgdGltZSBhbGwgdGhlIG90aGVyIGNvdW50ZXJzIHdpbGwgYWxzbyBoYXZlIHRoZWly
+IHZhbHVlcwo+Pj4gcmlnaHQgc2hpZnRlZCBieSAxIChkaXZpZGVkIGJ5IDIpLiBUaGVyZSBpcyBu
+byB3YXkgdG8gaGFuZGxlIHRoaXMgb2RkCj4+PiB3cmFwIGFyb3VuZC4gRGV0ZWN0IGFuZCBpZ25v
+cmUgdGhlIHdyYXAgYXJvdW5kIGNhc2UuCj4+PiBUaGlzIGNoYW5nZSBoYXMgMiBwYXJ0cy4KPj4+
+Cj4+PiAgMSkgSWdub3JlIGFsbCB0aGUgY3ljbGUgY291bnRzICwgaWYgdGhlIGN5Y2xlIGNvdW50
+IGZpZWxkIHdyYXBzIGFyb3VuZC4KPj4+ICAyKSBXaXRoIEhXIGZyZXF1ZW5jeSBvZiA4OE1IeiB0
+aGUgY3ljbGUgY291bnQgd3JhcHMgYXJvdW5kIGV2ZXJ5IDI0Cj4+PiBzZWNvbmRzLiB0aGUgc3Vy
+dmV5X2xhc3RfY3ljbGVfY291bnQgc2F2ZWQgd2lsbCBiZWNvbWUgc3RhbGUgd2l0aCBpbgo+Pj4g
+MjQgc2Vjb25kcy4gUmVzZXQgaXQgdG8gMCBhdCBldmVyeSBzY2FuIHN0YXJ0Lgo+Pgo+PiBTbyB3
+aGF0IGRvZXMgaXQgZml4IGZyb20gYSB1c2VyIHBlcnNwZWN0aXZlPwo+Cj4gVXNlciBnZXRzIGEg
+cmVhbGx5IGxhcmdlL2luY29ycmVjdCB2YWx1ZSBhdCByYW5kb20gdGltZXMgd2hlbiBoZSBkdW1w
+cwo+ICB0aGUgc3VydmV5IGRhdGEKPiB1c2luZyBpdyBkZXYgd2xhbjAgc3VydmV5IGR1bXAKClRo
+aXMgc2hvdWxkIGJlIHB1dCBpbiB0aGUgY29tbWl0IGxvZyBzbyBhbnlvbmUgcmVhZGluZyBpdCB3
+aWxsCnVuZGVyc3RhbmQgd2hhdCB0aGlzIHBhdGNoIGZpeGVzIGZyb20gdGhlIHVzZXIgcG9pbnQg
+b2Ygdmlldy4KCgo+Pj4gU2lnbmVkLW9mZi1ieTogU3Jpbml2YXNhIER1dnZ1cmkgPHNkdXZ2dXJp
+QGNocm9taXVtLm9yZz4KPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mt
+My4xOC9hdGgvYXRoMTBrL3dtaS5jCj4+PiBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRo
+L2F0aDEway93bWkuYwo+Pj4gaW5kZXggNzIwYjZlYi4uMDk2MTZiYiAxMDA2NDQKPj4+IC0tLSBh
+L2RyaXZlcnMvbmV0L3dpcmVsZXNzLTMuMTgvYXRoL2F0aDEway93bWkuYwo+Pj4gKysrIGIvZHJp
+dmVycy9uZXQvd2lyZWxlc3MtMy4xOC9hdGgvYXRoMTBrL3dtaS5jCj4+Cj4+IFRoaXMgZG9lc24n
+dCBsb29rIGxpa2UgYW4gdXBzdHJlYW0ga2VybmVsIHBhdGNoLiBSZWJhc2UgaXQgZm9yCj4+IGdp
+dGh1Yi5jb20va3ZhbG8vYXRoLCBwbGVhc2UuCj4+Cj4+Cj4+PiBAQCAtMTE1OCw2ICsxMTU4LDgg
+QEAKPj4+ICAgY29tcGxldGUoJmFyLT5zY2FuLnN0YXJ0ZWQpOwo+Pj4gICBicmVhazsKPj4+ICAg
+fQo+Pj4gKyAvKiByZXNldCB0aGUgbGFzdCBjeWNsZSBjb3VudCBhcyB0aGUgbGFzdCBjeWNsZSBj
+b3VudCBpcyBzdGFsZSBmcm9tCj4+PiBsYXN0IHNjYW4uICovCj4+PiArIGFyLT5zdXJ2ZXlfbGFz
+dF9jeWNsZV9jb3VudCA9IDA7Cj4+PiAgfQo+Pj4KPj4+ICBzdGF0aWMgdm9pZCBhdGgxMGtfd21p
+X2V2ZW50X3NjYW5fc3RhcnRfZmFpbGVkKHN0cnVjdCBhdGgxMGsgKmFyKQo+Pj4gQEAgLTE3MTYs
+MjEgKzE3MTgsMzYgQEAKPj4+ICAgZ290byBleGl0Owo+Pj4gICB9Cj4+Pgo+Pj4gLSBpZiAoY21k
+X2ZsYWdzICYgV01JX0NIQU5fSU5GT19GTEFHX0NPTVBMRVRFKSB7Cj4+PiArIGlmIChjbWRfZmxh
+Z3MgJiBXTUlfQ0hBTl9JTkZPX0ZMQUdfQ09NUExFVEUgJiYgYXItPnN1cnZleV9sYXN0X2N5Y2xl
+X2NvdW50KSB7Cj4+Cj4+IENoYW5uZWwgaW5mbyBldmVudHMgY29tZSBpbiBwYWlyczogd2l0aG91
+dCBhbmQgd2l0aCBGTEFHX0NPTVBMRVRFCj4+IHJlc3BlY3RpdmVseS4gVGh1cyBpdCBpcyBwb2lu
+dGxlc3MgdG8gcmVzZXQKPj4gYGFyLT5zdXJ2ZXlfbGFzdF9jeWNsZV9jb3VudGAgYW5kIGl0J3Mg
+cG9pbnRsZXNzIHRvIHVzZSBpdCBpbiB0aGlzCj4+IGNvbmRpdGlvbi4KPgo+IFlvdSBhcmUgcmln
+aHQsIHRoaXMgY2hlY2sgc2VlbXMgdG8gYmUgbm90IHVzZWZ1bCwgYnV0IGl0IGFkZHJlc3NlcyBv
+bmUKPiBjYXNlIHdoZXJlIGJldHdlZW4gMiBzY2Fucwo+IEZXIGdlbmVyYXRlcyAyIGV2ZW50cyBi
+YWNrIHRvIGJhY2sgd2l0aCBXTUlfQ0hBTl9JTkZPX0ZMQUdfQ09NUExFVEUgZmxhZyBzZXQuCj4g
+IGhlcmUgaXMgaG93IHRoZSBldmVudHMgYXJlIGdlbmVyYXRlZCBmcm9tIEZXIHdpdGggMiBzY2Fu
+cyBpc3N1ZWQgIC4KPgo+ICBzY2FuIHJlcSAxIHRvIEZXLgo+ICBzY2FuIHN0YXJ0ZWQgIGV2ZW50
+IGZyb20gRlcuCj4gIHNjYW4gYnNzX2NoYW5uZWwgIGV2ZW50IGZyb20gRlcgLgo+ICBjaGFuIGlu
+Zm8gZXZlbnQgKCBXTUlfQ0hBTl9JTkZPX0VWRU5USUQgKSBmcm9tIEZXIHdpdGgKPiBXTUlfQ0hB
+Tl9JTkZPX0ZMQUdfQ09NUExFVEUgZmxhZyBzZXQuCj4gIHNjYW4gZm9yZWlnbiBjaGFubmVsIGV2
+ZW50IGZyb20gRlcKPiAgY2hhbiBpbmZvIGV2ZW50ICggV01JX0NIQU5fSU5GT19FVkVOVElEICkg
+ZnJvbSBGVyB3aXRoCj4gV01JX0NIQU5fSU5GT19GTEFHX0NPTVBMRVRFIGZsYWcgY2xlYXJlZC4K
+PiAgc2NhbiBic3NfY2hhbm5lbCAgZXZlbnQgZnJvbSBGVyAuCj4gIGNoYW4gaW5mbyBldmVudCAo
+IFdNSV9DSEFOX0lORk9fRVZFTlRJRCApIGZyb20gRlcgd2l0aAo+IFdNSV9DSEFOX0lORk9fRkxB
+R19DT01QTEVURSBmbGFnIHNldC4KPiAgIC4uLi4uLgo+ICAgLi4uLi4uCj4gIHNjYW4gZm9yZWln
+biBjaGFubmVsIGV2ZW50IGZyb20gRlcKPiAgY2hhbiBpbmZvIGV2ZW50ICggV01JX0NIQU5fSU5G
+T19FVkVOVElEICkgZnJvbSBGVyB3aXRoCj4gV01JX0NIQU5fSU5GT19GTEFHX0NPTVBMRVRFIGZs
+YWcgY2xlYXJlZC4KPiAgc2NhbiBic3NfY2hhbm5lbCAgZXZlbnQgZnJvbSBGVyAuCj4gIGNoYW4g
+aW5mbyBldmVudCAoIFdNSV9DSEFOX0lORk9fRVZFTlRJRCApIGZyb20gRlcgd2l0aAo+IFdNSV9D
+SEFOX0lORk9fRkxBR19DT01QTEVURSBmbGFnIHNldC4KPiAgc2NhbiBldmVudCBjb21wbGV0ZWQu
+Cj4KPgo+ICAgc2NhbiByZXEgMiB0byBGVwo+ICAgc2NhbiBzdGFydGVkICBldmVudCBmcm9tIEZX
+Lgo+ICAgc2NhbiBic3NfY2hhbm5lbCAgZXZlbnQgZnJvbSBGVyAuCj4gICBjaGFuIGluZm8gZXZl
+bnQgKCBXTUlfQ0hBTl9JTkZPX0VWRU5USUQgKSBmcm9tIEZXIHdpdGgKPiBXTUlfQ0hBTl9JTkZP
+X0ZMQUdfQ09NUExFVEUgZmxhZyBzZXQuCj4gICAuLi4uLi4uLi4uLi4KPiAgIC4uLi4uLi4uLi4u
+Lgo+Cj4KPiBGcm9tIHRoZSBldmVudHMgYWJvdmUgdGhlcmUgaXMgb25lIGNoYW4gaW5mbyBldmVu
+dCBmcm9tIEZXIHdpdGggdGhlCj4gY29tcGxldGUgZmxhZyBhdCB0aGUgZW5kIG9mIGZpcnN0IHNj
+YW4KPiBhbmQgIG9uZSBjaGFuIGluZm8gZXZlbnQgIGZyb20gRlcgYXQgdGhlIGJlZ2lubmluZyBv
+ZiBzZWNvbmQgc2Nhbi4gVGhlCj4gbG9naWMgaW4gYXRoMTBrIGNvbXB1dGVzIHRoZQo+IGRpZmZl
+cmVuY2UgYmV0d2VlbiB0aGUgMiBldmVudHMgLiBEZXBlbmRpbmcgdXBvbiB0aGUgdGltZSBhdCB3
+aGljaCB0aGUKPiBzZWNvbmQgc2NhbiBpcyBpc3N1ZWQgLCB0aGUgSFcgY3ljbGUKPiBjb3VudCBj
+b3VsZCBoYXZlIHJvbGxlZCBvdmVyIHNldmVyYWwgdGltZXMuIHRoZSBjaGVjayBhYm92ZSBpZ25v
+cmVzCj4gdGhlIGZpcnN0IGNoYW4gaW5mbyBldmVudC4KPgo+IEFsdGVybmF0aXZlbHkgd2UgY2Fu
+IGZpeCB0aGUgRlcgdG8gbm90IGdlbmVyYXRlIGZpcnN0IGJzcyBjaGFuIGV2ZW50Cj4gYW5kIHRo
+ZSBjb3JyZXNwb25kaW5nIGNoYW4gaW5mbyBldmVudC4KPiBJIGd1ZXNzIHRoZSBpZGVhIG9mIGhh
+dmluZyBhIGJzcyBjaGFuIGV2ZW50IGF0IHRoZSBiZWdpbm5pbmcgYW5kIGVuZAo+IG9mIHNjYW4g
+Zm9sbG93ZWQgYnkgdGhlIGNoYW4KPiBpbmZvIGV2ZW50IGlzIHRvIHByb3ZpZGUgdGhlIHN1cnZl
+eSAgZGF0YSBvbiBic3MgY2hhbm5lbCBiZXR3ZWVuIHRoZQo+IHNjYW5zLiBTaW5jZSB0aGVzZSBj
+b3VudGVycyB3cmFwCj4gYXJvdW5kIGV2ZXJ5IDI0IHNlY29uZHMsICB0aGUgZGlmZmVyZW5jZSBp
+cyBub3QgZ29pbmcgdG8gYmUgcmVsaWFibGUgYW55IHdheS4KCk9oLiBJJ3ZlIG5ldmVyIG5vdGlj
+ZWQgdGhhdC4gSSBndWVzcyB0aGF0J3MgYmVjYXVzZSBJJ3ZlIG1vc3RseSB0ZXN0ZWQKc3VydmV5
+IHdpdGggYGl3IHNjYW5gIHdoaWNoIHNjYW5zIGFsbCBjaGFubmVscyBpbmNsdWRpbmcgQlNTIGNo
+YW5uZWwuCk90aGVyd2lzZSB0aGlzIHByb2JsZW0gZG9lc24ndCBtYW5pZmVzdCBiZWNhdXNlIEJT
+Uy1yZWxhdGVkIGNoYW4taW5mbwpwYWlyIGlzIG92ZXJ3cml0dGVuIGJ5IHN1YnNlcXVlbnQgZm9y
+ZWlnbi1yZWxhdGVkIGNoYW4taW5mby4KCgo+Pj4gICAvKiBEdXJpbmcgc2Nhbm5pbmcgY2hhbiBp
+bmZvIGlzIHJlcG9ydGVkIHR3aWNlIGZvciBlYWNoCj4+PiAtICogdmlzaXRlZCBjaGFubmVsLiBU
+aGUgcmVwb3J0ZWQgY3ljbGUgY291bnQgaXMgZ2xvYmFsCj4+PiArICogdmlzaXRlZCBjaGFubmVs
+LiBUaGUgcmVwb3J0ZWQgY3ljbGUgY291bnQgaXMgZ2xvYmFsCj4+PiAgICogYW5kIHBlci1jaGFu
+bmVsIGN5Y2xlIGNvdW50IG11c3QgYmUgY2FsY3VsYXRlZCAqLwo+Pj4KPj4+IC0gY3ljbGVfY291
+bnQgLT0gYXItPnN1cnZleV9sYXN0X2N5Y2xlX2NvdW50Owo+Pj4gLSByeF9jbGVhcl9jb3VudCAt
+PSBhci0+c3VydmV5X2xhc3RfcnhfY2xlYXJfY291bnQ7Cj4+PiAtCj4+PiAgIHN1cnZleSA9ICZh
+ci0+c3VydmV5W2lkeF07Cj4+PiAtIHN1cnZleS0+Y2hhbm5lbF90aW1lID0gV01JX0NIQU5fSU5G
+T19NU0VDKGN5Y2xlX2NvdW50KTsKPj4+IC0gc3VydmV5LT5jaGFubmVsX3RpbWVfcnggPSBXTUlf
+Q0hBTl9JTkZPX01TRUMocnhfY2xlYXJfY291bnQpOwo+Pj4gKwo+Pj4gKyBpZiAoY3ljbGVfY291
+bnQgIDwgIGFyLT5zdXJ2ZXlfbGFzdF9jeWNsZV9jb3VudCkgewo+Pj4gKyAvKgo+Pj4gKyAgKiBJ
+Z25vcmUgdGhlIHdyYXBwZWQgYXIgdXN0X2N5Y25kIGRhdGEuIFdoZW4gdGhlIHRvdGFsIGN5Y2xl
+IGNvdW50Cj4+PiArICAqIHdyYXBzIGFyb3VuZCwgRlcvSFcgd2lsbCByaWdodCBzaGlmdCBhbGwg
+dGhlIGNvdW50cwo+Pj4gKyAgKiAoaW5jbHVkaW5nIHRvdGFsIGN5Y2xlIGNvdW50cykgYnkgMS5U
+aGUgY3ljbGUgY291bnRzIHdyYXAgYXJvdW5kCj4+PiArICAqIGV2ZXJ5IDI0IHNlY29uZHMuIFRv
+IGhhbmRsZSB0aGlzIHdyYXAgYXJvdW5kIGJlaGF2aW9yLAo+Pj4gKyAgKiB3ZSBuZWVkIHRoZSB2
+YWx1ZSBvZiBlYWNoIGNvdW50ZXIgYXQgdGhlIHRpbWUgb2Ygd3JhcCBhcm91bmQgd2hpY2gKPj4+
+ICsgICogRlcgZG9lcyBub3QgcHJvdmlkZS4gRm9yIG5vdyBpZ25vcmUgdGhlIGRhdGEuCj4+PiAr
+ICAqLwo+Pgo+PiBJZiB5b3UgcmVhbGx5IHRoaW5rIGFib3V0IGl0LCB0aGlzIGNhbiBiZSBjYWxj
+dWxhdGVkLgo+Pgo+PiBDaGFubmVsIHZpc2l0IHNob3VsZG4ndCBiZSBsb25nZXIgdGhhbiAyNHMs
+IG5vdCBldmVuIDEycy4gSXQncyBtb3N0bHkKPj4gMjAtMTAwbXMgZm9yIGh3X3NjYW4gYW5kIHVw
+IHRvIDVzIGluIG9mZmNoYW5uZWwgKHdoaWNoIGlzIHJhcmUKPj4gYW55d2F5KS4KPj4KPj4gSGVu
+Y2UgeW91IGNhbiBkZXRlY3QgdGhlIHdyYXAgYXJvdW5kIEFORCBjYWxjdWxhdGUgdGhlIGFjdHVh
+bCB0aW1lIGRpZmZlcmVuY2UuCj4KPiBUaGVzZSBGVyBjb3VudGVycyBpbmNyZW1lbnQgY29udGlu
+dW91c2x5IGFuZCBhbHNvIGFjcm9zcyBjaGFubmVsCj4gY2hhbmdlcyBhbmQgYmV0d2VlbiBzY2Fu
+cy4KPiBTbyB3cmFwIGFyb3VuZCBjYW4gaGFwcGVuICBhbnkgdGltZS4KCkZvciBmb3JlaWduLWNo
+YW5uZWwgdmlzaXRzIHRoaXMgY2FuIGJlIGVhc2lseSBjYWxjdWxhdGVkIHNpbmNlIHRoZXkKYXJl
+IG5ldmVyIGxvbmdlciB0aGFuIHRoZSB3cmFwYXJvdW5kIHRpbWUuCgpCU1MtY2hhbm5lbCB2aXNp
+dHMgKG9yIGJldHdlZW4tc2NhbnMgaWYgeW91IHdpbGwpIHNob3VsZCBiZSBqdXN0CmRpc2NhcmRl
+ZCB0aG91Z2ggYXMgeW91IHN1Z2dlc3RlZC4gSSdtIG5vdCBmb25kIG9mIHJlLXVzaW5nCmFyLT5z
+dXJ2ZXlfbGFzdF9jeWNsZV9jb3VudCB0aG91Z2ggYmVjYXVzZSBpdCBhbHdheXMgc3RvcmVzIGEg
+dmFsdWUKYW5kIDAgaXMganVzdCBvbmUgb2YgdGhlbS4gQWRkaW5nIGEgc3BlY2lhbCBtZWFuaW5n
+IHRvIDAgbG9va3MgdWdseSB0bwptZS4gSSB3b3VsZCBzdWdnZXN0IGEgZGVkaWNhdGVkIHZhciB3
+aGljaCB0cmFja3Mgd2hldGhlciBjaGFuX2luZm8KZXZlbnQgd2l0aG91dCBfRkxBR19DT01QTEVU
+RSBjYW1lIGluLiBTb21ldGhpbmcgYWxvbmcgdGhlIGxvZ2ljIG9mOgoKIGV2ZW50X2NoYW5faW5m
+bygpOgogIC4uLgogIGlmIChmbGFncyAmIENPTVBMRVRFKSB7CiAgICAgaWYgKGFyLT5jaF9pbmZv
+X2Nhbl9wcm9jZXNzKQogICAgICAgIHVwZGF0ZShhci0+c3VydmV5KTsKCiAgICAgYXItPmNoX2lu
+Zm9fY2FuX3Byb2Nlc3MgPSBmYWxzZTsKICB9IGVsc2UgewogICAgIGFyLT5jaF9pbmZvX2Nhbl9w
+cm9jZXNzID0gdHJ1ZTsKICB9CgpUaGlzIGNsZWFubHkgZW5mb3JjZXMgdGhlIGV4cGVjdGF0aW9u
+IHRoYXQgd2FzIGFzc3VtZWQgYmVmb3JlLCBpLmUuCnRoYXQgY2hfaW5mbyBjb21lcyBpbiBwYWly
+cyBhbHdheXMuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
+ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
