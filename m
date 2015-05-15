@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mx02.posteo.de ([89.146.194.165])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YtCX3-0001oV-20
- for ath10k@lists.infradead.org; Fri, 15 May 2015 10:07:54 +0000
-Received: from dovecot03.posteo.de (unknown [185.67.36.28])
- by mx02.posteo.de (Postfix) with ESMTPS id 84FD925A3DCF
- for <ath10k@lists.infradead.org>; Fri, 15 May 2015 12:07:17 +0200 (CEST)
-Received: from mail.posteo.de (localhost [127.0.0.1])
- by dovecot03.posteo.de (Postfix) with ESMTPSA id 3lp5513KQgz5vMp
- for <ath10k@lists.infradead.org>; Fri, 15 May 2015 12:07:14 +0200 (CEST)
-Message-ID: <5555C551.5090508@posteo.org>
-Date: Fri, 15 May 2015 12:07:13 +0200
-From: Brummfax <brummfax@posteo.org>
+ id 1YtCok-00031X-7X
+ for ath10k@lists.infradead.org; Fri, 15 May 2015 10:26:11 +0000
+Received: by wicmx19 with SMTP id mx19so56121285wic.0
+ for <ath10k@lists.infradead.org>; Fri, 15 May 2015 03:25:48 -0700 (PDT)
 MIME-Version: 1.0
-Subject: ath20k blocks other devices
+In-Reply-To: <5555C551.5090508@posteo.org>
+References: <5555C551.5090508@posteo.org>
+Date: Fri, 15 May 2015 12:25:48 +0200
+Message-ID: <CA+BoTQmec+JqancO6Q5FWtAXN1iUo7TazLTipnmoynqndvdp7Q@mail.gmail.com>
+Subject: Re: ath20k blocks other devices
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,65 +20,68 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Brummfax <brummfax@posteo.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi everybody,
-
-I bought a new Acer Aspire VN7-571G for my parents. As the new QCA6174
-Qualcomm Atheros Wifi/bluetooth (also known as QCNFA344) device is in
-use, I could not use Wifi with the usual Ubuntu 15.04 installation.
-Following
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1383184/comments/115 I
-compiled the new kernel with the ath10k driver and everything worked
-nicely at home with my Fritzbox 7490 router using the 5GHz band. At my
-parents place with a Fritzbox 3170 router I encounter the following
-problem. As soon as Ubuntu is connected to Wifi (using the 2,4 GHz band
-as there is no 5GHz band), other devices cannot connect to Wifi anymore.
-The ath10k driver blocks all other devices (Smartphones running Android,
-iPads) except for my personal laptop with a standard Ubuntu 14.10 system
-which can connect to Wifi for a couple of minutes before being
-disconnected as well. I can connect again but  will loose the connection
-after a couple of minutes. I've also installed Windows 8.1 on the Acer
-Aspire, and if I connect to Wifi using Windows, these problems
-disappear, i.e. all other devices can also connect to Wifi without any
-problems. I've also not seen these problems at home which could be
-related to the fact that the Acer Aspire was using the 5GHz band while
-the other devices where using the 2,4GHz band.
-
-
-Running "cat /var/log/syslog | grep ath10k" after installation, I got 3
-errors because of missing firmware:
-/lib/firmware/ath10k/QCA6174/hw2.1/board-pci-168c:003e:105b:e08e.bin
-/lib/firmware/ath10k/QCA6174/hw2.1/firmware-5.bin
-lib/firmware/ath10k/cal-pci-0000:03:00.0.bin
-
-The first two messages disappeared after running
-sudo cp board.bin  board-pci-168c:003e:105b:e08e.bin
-sudo cp firmware-4.bin firmware-5.bin
-in the /lib/firmware/ath10k/QCA6174/hw2.1-directory. I could even delete
-board.bin and firmware-4.bin without loosing Wifi connectivity. At the
-moment these files are still there, but seem to be useless. Nevertheless
-"modinfo ath10k_pci" shows that only board.bin and firmware-4.bin from
-the hw2.1-directory are used. Very strange! I use the firmware extracted
-from my Windows installation using firmware provided by Acer's support
-page.
-
-
-Any help would be appreciated!
-Best wishes,
-Sven
-
-
-PS: Bluetooth is still not working even though its turned on and shown
-as active. But I can't send or receive files.
- 
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgTWF5IDIwMTUgYXQgMTI6MDcsIEJydW1tZmF4IDxicnVtbWZheEBwb3N0ZW8ub3JnPiB3
+cm90ZToKPiBIaSBldmVyeWJvZHksCj4KPiBJIGJvdWdodCBhIG5ldyBBY2VyIEFzcGlyZSBWTjct
+NTcxRyBmb3IgbXkgcGFyZW50cy4gQXMgdGhlIG5ldyBRQ0E2MTc0Cj4gUXVhbGNvbW0gQXRoZXJv
+cyBXaWZpL2JsdWV0b290aCAoYWxzbyBrbm93biBhcyBRQ05GQTM0NCkgZGV2aWNlIGlzIGluCj4g
+dXNlLCBJIGNvdWxkIG5vdCB1c2UgV2lmaSB3aXRoIHRoZSB1c3VhbCBVYnVudHUgMTUuMDQgaW5z
+dGFsbGF0aW9uLgo+IEZvbGxvd2luZwo+IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50
+dS8rc291cmNlL2xpbnV4LytidWcvMTM4MzE4NC9jb21tZW50cy8xMTUgSQo+IGNvbXBpbGVkIHRo
+ZSBuZXcga2VybmVsIHdpdGggdGhlIGF0aDEwayBkcml2ZXIgYW5kIGV2ZXJ5dGhpbmcgd29ya2Vk
+Cj4gbmljZWx5IGF0IGhvbWUgd2l0aCBteSBGcml0emJveCA3NDkwIHJvdXRlciB1c2luZyB0aGUg
+NUdIeiBiYW5kLiBBdCBteQo+IHBhcmVudHMgcGxhY2Ugd2l0aCBhIEZyaXR6Ym94IDMxNzAgcm91
+dGVyIEkgZW5jb3VudGVyIHRoZSBmb2xsb3dpbmcKPiBwcm9ibGVtLiBBcyBzb29uIGFzIFVidW50
+dSBpcyBjb25uZWN0ZWQgdG8gV2lmaSAodXNpbmcgdGhlIDIsNCBHSHogYmFuZAo+IGFzIHRoZXJl
+IGlzIG5vIDVHSHogYmFuZCksIG90aGVyIGRldmljZXMgY2Fubm90IGNvbm5lY3QgdG8gV2lmaSBh
+bnltb3JlLgo+IFRoZSBhdGgxMGsgZHJpdmVyIGJsb2NrcyBhbGwgb3RoZXIgZGV2aWNlcyAoU21h
+cnRwaG9uZXMgcnVubmluZyBBbmRyb2lkLAo+IGlQYWRzKSBleGNlcHQgZm9yIG15IHBlcnNvbmFs
+IGxhcHRvcCB3aXRoIGEgc3RhbmRhcmQgVWJ1bnR1IDE0LjEwIHN5c3RlbQo+IHdoaWNoIGNhbiBj
+b25uZWN0IHRvIFdpZmkgZm9yIGEgY291cGxlIG9mIG1pbnV0ZXMgYmVmb3JlIGJlaW5nCj4gZGlz
+Y29ubmVjdGVkIGFzIHdlbGwuIEkgY2FuIGNvbm5lY3QgYWdhaW4gYnV0ICB3aWxsIGxvb3NlIHRo
+ZSBjb25uZWN0aW9uCj4gYWZ0ZXIgYSBjb3VwbGUgb2YgbWludXRlcy4gSSd2ZSBhbHNvIGluc3Rh
+bGxlZCBXaW5kb3dzIDguMSBvbiB0aGUgQWNlcgo+IEFzcGlyZSwgYW5kIGlmIEkgY29ubmVjdCB0
+byBXaWZpIHVzaW5nIFdpbmRvd3MsIHRoZXNlIHByb2JsZW1zCj4gZGlzYXBwZWFyLCBpLmUuIGFs
+bCBvdGhlciBkZXZpY2VzIGNhbiBhbHNvIGNvbm5lY3QgdG8gV2lmaSB3aXRob3V0IGFueQo+IHBy
+b2JsZW1zLiBJJ3ZlIGFsc28gbm90IHNlZW4gdGhlc2UgcHJvYmxlbXMgYXQgaG9tZSB3aGljaCBj
+b3VsZCBiZQo+IHJlbGF0ZWQgdG8gdGhlIGZhY3QgdGhhdCB0aGUgQWNlciBBc3BpcmUgd2FzIHVz
+aW5nIHRoZSA1R0h6IGJhbmQgd2hpbGUKPiB0aGUgb3RoZXIgZGV2aWNlcyB3aGVyZSB1c2luZyB0
+aGUgMiw0R0h6IGJhbmQuCgpDYW4geW91IGdldCBzb21lIHNuaWZmIGxvZ3MgYW5kIHBvc3NpYmx5
+IHdwYV9zdXBwbGljYW50IHZlcmJvc2UgbG9ncwpmcm9tLCBlLmcuIGFub3RoZXIgbGludXgtYmFz
+ZWQgY2xpZW50PyBBdCB0aGlzIHBvaW50IEkgZG9uJ3QgaGF2ZSBhbnkKZGF0YSB0byBkcmF3IGNv
+bmNsdXNpb25zIGZyb20uIElzIHRoZSBuZXR3b3JrIGVuY3J5cHRlZD8gQ2FuIHlvdSB0cnkKc2Vl
+aW5nIGlmIG9wZW4gbmV0d29yayBhbHNvIHlpZWxkcyB0aGUgc2FtZSBiZWhhdmlvdXI/CgpMb2dz
+L3RyYWNlcyBmcm9tIGF0aDEwayBjbGllbnQgaXRzZWxmIHdvdWxkIGJlIGFsc28gaGVscGZ1bC4g
+WW91IGNhbgpyZWFkIG1vcmUgYWJvdXQgZ2V0dGluZyB0aGVzZSBoZXJlOgpodHRwczovL3dpcmVs
+ZXNzLndpa2kua2VybmVsLm9yZy9lbi91c2Vycy9kcml2ZXJzL2F0aDEway9kZWJ1ZyN0cmFjaW5n
+CgoKPiBSdW5uaW5nICJjYXQgL3Zhci9sb2cvc3lzbG9nIHwgZ3JlcCBhdGgxMGsiIGFmdGVyIGlu
+c3RhbGxhdGlvbiwgSSBnb3QgMwo+IGVycm9ycyBiZWNhdXNlIG9mIG1pc3NpbmcgZmlybXdhcmU6
+Cj4gL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBNjE3NC9odzIuMS9ib2FyZC1wY2ktMTY4YzowMDNl
+OjEwNWI6ZTA4ZS5iaW4KPiAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E2MTc0L2h3Mi4xL2Zpcm13
+YXJlLTUuYmluCj4gbGliL2Zpcm13YXJlL2F0aDEway9jYWwtcGNpLTAwMDA6MDM6MDAuMC5iaW4K
+Pgo+IFRoZSBmaXJzdCB0d28gbWVzc2FnZXMgZGlzYXBwZWFyZWQgYWZ0ZXIgcnVubmluZwo+IHN1
+ZG8gY3AgYm9hcmQuYmluICBib2FyZC1wY2ktMTY4YzowMDNlOjEwNWI6ZTA4ZS5iaW4KPiBzdWRv
+IGNwIGZpcm13YXJlLTQuYmluIGZpcm13YXJlLTUuYmluCj4gaW4gdGhlIC9saWIvZmlybXdhcmUv
+YXRoMTBrL1FDQTYxNzQvaHcyLjEtZGlyZWN0b3J5LiBJIGNvdWxkIGV2ZW4gZGVsZXRlCj4gYm9h
+cmQuYmluIGFuZCBmaXJtd2FyZS00LmJpbiB3aXRob3V0IGxvb3NpbmcgV2lmaSBjb25uZWN0aXZp
+dHkuIEF0IHRoZQo+IG1vbWVudCB0aGVzZSBmaWxlcyBhcmUgc3RpbGwgdGhlcmUsIGJ1dCBzZWVt
+IHRvIGJlIHVzZWxlc3MuIE5ldmVydGhlbGVzcwo+ICJtb2RpbmZvIGF0aDEwa19wY2kiIHNob3dz
+IHRoYXQgb25seSBib2FyZC5iaW4gYW5kIGZpcm13YXJlLTQuYmluIGZyb20KPiB0aGUgaHcyLjEt
+ZGlyZWN0b3J5IGFyZSB1c2VkLiBWZXJ5IHN0cmFuZ2UhIEkgdXNlIHRoZSBmaXJtd2FyZSBleHRy
+YWN0ZWQKPiBmcm9tIG15IFdpbmRvd3MgaW5zdGFsbGF0aW9uIHVzaW5nIGZpcm13YXJlIHByb3Zp
+ZGVkIGJ5IEFjZXIncyBzdXBwb3J0Cj4gcGFnZS4KClRoZXJlJ3MgYSBzbGlnaHQgYnVnIGluIGZp
+cm13YXJlIGZpbGUgYWR2ZXJ0aXNlbWVudCBpbiBhdGgxMGtfcGNpCmhlbmNlIG1vZGluZm8gdGVs
+bHMgeW91IGZpcm13YXJlLTQuYmluIGlzIHRoZSBsYXRlc3Qgc3VwcG9ydCBmb3IKcWNhNjE3NCB3
+aGlsZSBmaXJtd2FyZS01LmJpbiBmb3IgcWNhOTg4eC4gVGhpcyBpcyBpbmNvcnJlY3QgLSBib3Ro
+CmNoaXBzIHN1cHBvcnQgZmlybXdhcmUtNS5iaW4gaW4gdGhlIGF0aDEwayBnaXQgbWFzdGVyIGJy
+YW5jaC4gYXRoMTBrCnRyaWVzIHRvIGxvYWQgbmV3ZXIgZmlybXdhcmUgYmluYXJpZXMgZmlyc3Qg
+YW5kIGZhbGxzIGJhY2sgdG8gb2xkZXIuCk5vdGhpbmcgdG8gd29ycnkgYWJvdXQgbm93IHRob3Vn
+aC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6
+Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
