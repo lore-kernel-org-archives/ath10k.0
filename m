@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YuSZa-0001BY-GU
- for ath10k@lists.infradead.org; Mon, 18 May 2015 21:27:43 +0000
-Message-ID: <555A5938.9080706@candelatech.com>
-Date: Mon, 18 May 2015 14:27:20 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Poor TCP performance with ath10k in 4.0 kernel, again.
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YugM1-0000sg-Gh
+ for ath10k@lists.infradead.org; Tue, 19 May 2015 12:10:42 +0000
+Received: by wicmc15 with SMTP id mc15so114392425wic.1
+ for <ath10k@lists.infradead.org>; Tue, 19 May 2015 05:10:07 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add new 4addr related fw_feature
+Date: Tue, 19 May 2015 14:09:34 +0200
+Message-Id: <1432037374-26339-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,71 +17,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Disclosure: I am working with a patched 4.0 kernel, patched ath10k driver, and
-patched (CT) ath10k firmware.  Traffic generator is of our own making.
+Some firmware revisions pad 4th hw address in
+Native Wifi Rx decap. This is the case with 10.x
+and it was assumed that this is true for all
+firmware images.
 
-First, this general problem has been reported before, but the
-work-arounds previously suggested do not fully resolve my problems.
+However QCA988X with 999.999.0.636 and QCA61X4
+with WLAN.RM.2.0-00088 don't have the padding.
+Hence add a feature flag indicating that the
+padding isn't present so firmware images can
+advertise it appropriately. This way driver will
+behave as it was before with old firmware blobs
+and doesn't cause any regressions from user
+perspective.
 
-The basic issue is that when the sending socket is directly on top
-of a wifi interface (ath10k driver), then TCP throughput sucks.
+Effectively this patch enables QCA988X with
+999.999.0.636 and QCA61X4 with WLAN.RM.2.0-00088
+to set up client bridging provided user has an
+updated firmware blob.
 
-For instance, if AP interface sends to station, with 10 concurrent
-TCP streams, I see about 426Mbps.  With 100 streams, I see total throughput
-of 750Mbps.  These were maybe 10-30 second tests that I did.
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h   |  5 +++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 14 ++++++++++----
+ 2 files changed, 15 insertions(+), 4 deletions(-)
 
-Interestingly, a single stream connection performs very poorly at first,
-but at least in one test, it eventually ran quite fast.  It is too
-complicated to describe in words, but the graph is here:
-
-http://www.candelatech.com/downloads/single-tcp-4.0.pdf
-
-The 10-stream test did not go above about 450Mbps even after running for more than
-1 minute, and it was fairly stable around the 450Mbps range after the first few seconds.
-
-100-stream test shows nice stable aggregate throughput:
-
-http://www.candelatech.com/downloads/100-tcp-4.0.pdf
-
-I have tweaked the kernel tcp_limit_output_bytes setting
-(tested at 1024k too, did not make any significant difference).
-
-# cat /proc/sys/net/ipv4/tcp_limit_output_bytes
-2048000
-
-I have tried forcing TCP send/rcv buffers to be 1MB and 2MB, but that
-did not make obvious difference except that it started at the maximum
-rate very quickly instead of taking a few seconds to train up to full speed.
-
-If I run a single-stream TCP test, sending on eth1 (Intel 1G NIC)
-through the AP machine, then single stream download is about 540 Mbps, and ramps up
-quickly.  So, the AP can definitely send the needed amount of TCP packets.
-
-UDP throughput in download direction, single stream, is about 770Mbps, regardless
-of whether I originate the socket on the AP or if I pass it through the AP.
-send/recv bufs are set to 1MB for UDP sockets.
-
-The 3.17 kernel shows similar behaviour, and the 3.14 kernel is a lot better
-for TCP traffic.
-
-Are there tweaks other than tcp_limit_output_bytes that might
-improve this behaviour?
-
-I will be happy to grab captures or provide any other debugging info
-that someone thinks will be helpful.
-
-Thanks,
-Ben
-
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 827b3d79ed0c..70fcdc9c2758 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -463,6 +463,11 @@ enum ath10k_fw_features {
+ 	/* Don't trust error code from otp.bin */
+ 	ATH10K_FW_FEATURE_IGNORE_OTP_RESULT,
+ 
++	/* Some firmware revisions pad 4th hw address to 4 byte boundary making
++	 * it 8 bytes long in Native Wifi Rx decap.
++	 */
++	ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING,
++
+ 	/* keep last */
+ 	ATH10K_FW_FEATURE_COUNT,
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index b26e32f42656..89eb16b30fc4 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -965,10 +965,16 @@ static void ath10k_process_rx(struct ath10k *ar,
+ 	ieee80211_rx(ar->hw, skb);
+ }
+ 
+-static int ath10k_htt_rx_nwifi_hdrlen(struct ieee80211_hdr *hdr)
++static int ath10k_htt_rx_nwifi_hdrlen(struct ath10k *ar,
++				      struct ieee80211_hdr *hdr)
+ {
+-	/* nwifi header is padded to 4 bytes. this fixes 4addr rx */
+-	return round_up(ieee80211_hdrlen(hdr->frame_control), 4);
++	int len = ieee80211_hdrlen(hdr->frame_control);
++
++	if (!test_bit(ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING,
++		      ar->fw_features))
++		len = round_up(len, 4);
++
++	return len;
+ }
+ 
+ static void ath10k_htt_rx_h_undecap_raw(struct ath10k *ar,
+@@ -1067,7 +1073,7 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
+ 
+ 	/* pull decapped header and copy SA & DA */
+ 	hdr = (struct ieee80211_hdr *)msdu->data;
+-	hdr_len = ath10k_htt_rx_nwifi_hdrlen(hdr);
++	hdr_len = ath10k_htt_rx_nwifi_hdrlen(ar, hdr);
+ 	ether_addr_copy(da, ieee80211_get_DA(hdr));
+ 	ether_addr_copy(sa, ieee80211_get_SA(hdr));
+ 	skb_pull(msdu, hdr_len);
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+2.1.4
 
 
 _______________________________________________
