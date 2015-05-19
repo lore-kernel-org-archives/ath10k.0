@@ -1,14 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YugM1-0000sg-Gh
- for ath10k@lists.infradead.org; Tue, 19 May 2015 12:10:42 +0000
-Received: by wicmc15 with SMTP id mc15so114392425wic.1
- for <ath10k@lists.infradead.org>; Tue, 19 May 2015 05:10:07 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: add new 4addr related fw_feature
-Date: Tue, 19 May 2015 14:09:34 +0200
-Message-Id: <1432037374-26339-1-git-send-email-michal.kazior@tieto.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1YumR6-0003Tk-8z
+ for ath10k@lists.infradead.org; Tue, 19 May 2015 18:40:16 +0000
+Message-ID: <555B8376.3090600@candelatech.com>
+Date: Tue, 19 May 2015 11:39:50 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: ath10k 10.1 firmware cannot do ANQP queries
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,90 +16,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-Some firmware revisions pad 4th hw address in
-Native Wifi Rx decap. This is the case with 10.x
-and it was assumed that this is true for all
-firmware images.
+I took some time to debug this in my 10.1 CT firmware.
 
-However QCA988X with 999.999.0.636 and QCA61X4
-with WLAN.RM.2.0-00088 don't have the padding.
-Hence add a feature flag indicating that the
-padding isn't present so firmware images can
-advertise it appropriately. This way driver will
-behave as it was before with old firmware blobs
-and doesn't cause any regressions from user
-perspective.
+It appears that the problem is the ANQP queries may be destined
+for APs that the station is not currently connected to.  So, the
+firmware cannot find the peer, and then it just fails to put the
+management frame on the air.
 
-Effectively this patch enables QCA988X with
-999.999.0.636 and QCA61X4 with WLAN.RM.2.0-00088
-to set up client bridging provided user has an
-updated firmware blob.
+I have fixed my CT firmware to use the 'bss-peer' when the real peer
+for a mgt-frame cannot be found.  That appears to work.
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/core.h   |  5 +++++
- drivers/net/wireless/ath/ath10k/htt_rx.c | 14 ++++++++++----
- 2 files changed, 15 insertions(+), 4 deletions(-)
+Unless upstream firmware does something similar, I think ANQP
+(GAS) queries are going to remain broken on ath10k.  I am not
+sure of any sane way to do a work-around in the driver, unless
+you want to add fake peers and then make them go away sometime
+later (when you assume the mgt frame has been properly put on the air).
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 827b3d79ed0c..70fcdc9c2758 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -463,6 +463,11 @@ enum ath10k_fw_features {
- 	/* Don't trust error code from otp.bin */
- 	ATH10K_FW_FEATURE_IGNORE_OTP_RESULT,
- 
-+	/* Some firmware revisions pad 4th hw address to 4 byte boundary making
-+	 * it 8 bytes long in Native Wifi Rx decap.
-+	 */
-+	ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING,
-+
- 	/* keep last */
- 	ATH10K_FW_FEATURE_COUNT,
- };
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index b26e32f42656..89eb16b30fc4 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -965,10 +965,16 @@ static void ath10k_process_rx(struct ath10k *ar,
- 	ieee80211_rx(ar->hw, skb);
- }
- 
--static int ath10k_htt_rx_nwifi_hdrlen(struct ieee80211_hdr *hdr)
-+static int ath10k_htt_rx_nwifi_hdrlen(struct ath10k *ar,
-+				      struct ieee80211_hdr *hdr)
- {
--	/* nwifi header is padded to 4 bytes. this fixes 4addr rx */
--	return round_up(ieee80211_hdrlen(hdr->frame_control), 4);
-+	int len = ieee80211_hdrlen(hdr->frame_control);
-+
-+	if (!test_bit(ATH10K_FW_FEATURE_NO_NWIFI_DECAP_4ADDR_PADDING,
-+		      ar->fw_features))
-+		len = round_up(len, 4);
-+
-+	return len;
- }
- 
- static void ath10k_htt_rx_h_undecap_raw(struct ath10k *ar,
-@@ -1067,7 +1073,7 @@ static void ath10k_htt_rx_h_undecap_nwifi(struct ath10k *ar,
- 
- 	/* pull decapped header and copy SA & DA */
- 	hdr = (struct ieee80211_hdr *)msdu->data;
--	hdr_len = ath10k_htt_rx_nwifi_hdrlen(hdr);
-+	hdr_len = ath10k_htt_rx_nwifi_hdrlen(ar, hdr);
- 	ether_addr_copy(da, ieee80211_get_DA(hdr));
- 	ether_addr_copy(sa, ieee80211_get_SA(hdr));
- 	skb_pull(msdu, hdr_len);
+A simple test case is to use recent wpa_cli:
+
+> anqp_get 00:0e:8e:f8:73:96 1
+OK
+<3>GAS-QUERY-START addr=00:0e:8e:f8:73:96 dialog_token=0 freq=5180
+<3>GAS-QUERY-DONE addr=00:0e:8e:f8:73:96 dialog_token=0 freq=5180 status_code=0 result=SUCCESS
+<3>ANQP-QUERY-DONE addr=00:0e:8e:f8:73:96 result=SUCCESS
+>
+
+That MAC addr is an AP that the station is NOT connected to.  Even if you
+have no ANQP support in the AP, this should still put a packet on
+the air I believe...so you should be able to do simple testing with
+a sniffer.
+
+Thanks,
+Ben
+
 -- 
-2.1.4
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
