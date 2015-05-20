@@ -1,16 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mout.gmx.com ([74.208.4.201])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yv3Kp-0008Ix-GS
- for ath10k@lists.infradead.org; Wed, 20 May 2015 12:42:56 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: handle cycle count wrap around
-References: <CACZoB699sLr1gu1qSM1N01FQ5RNX41wDoOeCYd6A+sjyDRRU0A@mail.gmail.com>
-Date: Wed, 20 May 2015 15:42:27 +0300
-In-Reply-To: <CACZoB699sLr1gu1qSM1N01FQ5RNX41wDoOeCYd6A+sjyDRRU0A@mail.gmail.com>
- (Srinivasa Duvvuri's message of "Fri, 15 May 2015 15:29:49 -0700")
-Message-ID: <87iobna098.fsf@kamboji.qca.qualcomm.com>
+ id 1Yv5kz-00054D-6C
+ for ath10k@lists.infradead.org; Wed, 20 May 2015 15:18:06 +0000
 MIME-Version: 1.0
+Message-ID: <trinity-93dbb5d1-5337-4f4f-bb4f-4ad93c3ef3a6-1432135053019@3capp-mailcom-lxa14>
+From: "Jason H" <jhihn@gmx.com>
+Subject: Re: QCA6174 hw2.1?
+Date: Wed, 20 May 2015 17:17:33 +0200
+In-Reply-To: <CA+-y_t9Zq649otKN3B6tYrJ6_By7H3PEMtB4=aEeDXEG9C=1Rw@mail.gmail.com>
+References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
+ <CA+BoTQnGQC9sy_Qhiv4peeRsF2dY+2yd12GTgJpyRhrgMTg+Yw@mail.gmail.com>
+ <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+ <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
+ <loom.20150425T025815-684@post.gmane.org>
+ <CAJAVYN208PQpnt5oQPi1hdYW71WMVJReBNSY-OqZ9aCb0yuiaA@mail.gmail.com>
+ <553B8F89.4040908@gmx.com>
+ <CAJAVYN1XKYdGqx4pzg3C9kSxj6_qwr4raoDJm7e+VLy1P=dsdw@mail.gmail.com>
+ <553CF1EE.50807@gmx.com> <553D8112.2050300@gmx.com>
+ <CA+-y_t-L5tAYRfT5+WzbB_EvZbWDO3hys9GD8Ms7fFhT_9cy_Q@mail.gmail.com>
+ <553E5011.2050404@gmx.com>
+ <CAJAVYN2WGEwrajUKFOpYPC7YWnovSs3pmQfjmP74hfwW-epJ2Q@mail.gmail.com>
+ <CA+-y_t8pm+GPEaKX6cYta-Q4kiAd6mFKLO37nmS6pwPV63_VyA@mail.gmail.com>
+ <5541722A.2060109@gmx.com>,
+ <CA+-y_t9Zq649otKN3B6tYrJ6_By7H3PEMtB4=aEeDXEG9C=1Rw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,54 +32,90 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Srinivasa Duvvuri <sduvvuri@chromium.org>
+To: Moritz Morawietz <moritz.morawietz@informatik.uni-oldenburg.de>
 Cc: ath10k@lists.infradead.org
 
-Srinivasa Duvvuri <sduvvuri@chromium.org> writes:
-
-> This patch addresses
->  couple of issues related to survey data that results   in a random/large
->  values in the out put of iw dev wlan0 surevey dump.
->
->   These are the 2 changes that address the issue.
->
->   1) Handle Cycle count wrap around.
->      When the cycle counts part of wmi_ch_info_ev_arg reach max value of
->      0xffffffff. The HW/FW right shifts all the counteirs by 1 . The cycle
->      count will be reset to 0x7fffffff and starts counting from 0x7fffffff and
->      the other counters will have their value right shifted by 1 (divided by 2).
->      There is no way to handle this odd wrap around. Detect and ignore the wrap
->      around case.
->
->   2) Handle Back to back channel info events from FW with
->      WMI_CHAN_INFO_FLAG_COMPLETE.
->      Between 2 scans FW sends back to back events with
->      WMI_CHAN_INFO_FLAG_COMPLETE flag set. One at the end of first scan
->      and the second at the beginning of scan. Depending on the time
->      between 2 scans , the cycle counts could have wrapped around several
->      timesi. Fix is detect and to ignore such events.
->
-> Signed-off-by: Srinivasa Duvvuri <sduvvuri@chromium.org>
-
-Please CC linux-wireless when sending ath10k patches.
-
-Did you use git-send-email? There seems to be some kind of corruption:
-
-patch -p1 < srini-1.mbox 
-patching file drivers/net/wireless/ath/ath10k/core.h
-Hunk #1 FAILED at 688.
-1 out of 1 hunk FAILED -- saving rejects to file drivers/net/wireless/ath/ath10k/core.h.rej
-patching file drivers/net/wireless/ath/ath10k/wmi.c
-patch: **** malformed patch at line 131: *ar, struct sk_buff *skb)
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SSBqdXN0IHdhbnRlZCB0byBjaGVjayBpbiBhbmQgc2VlIHdoYXQgdGhlIHN0YXR1cyBvZiBzdXBw
+b3J0IHdhcyBmb3IgdGhpcyBoYXJkd2FyZS4gSSBzYXcgYSBmZXcgbWVzc2FnZXMgc2luY2UgSSBs
+YXN0IHBvc3RlZC4KSSBhbHNvIG5lZWQgTGludXggNCBrZXJuZWwgZm9yIG90aGVyIGlzc3VlcyB3
+aXRoIHRoZSBoYXJkd2FyZS4gCgpUaGFua3MhCgoKPiBTZW50OiBUaHVyc2RheSwgQXByaWwgMzAs
+IDIwMTUgYXQgOTowMyBBTQo+IEZyb206ICJNb3JpdHogTW9yYXdpZXR6IiA8bW9yaXR6Lm1vcmF3
+aWV0ekBpbmZvcm1hdGlrLnVuaS1vbGRlbmJ1cmcuZGU+Cj4gVG86IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4gU3ViamVjdDogUmU6IFFDQTYxNzQgaHcyLjE/Cj4KPiBJIHVzZWQgIDQuMC4w
+LTIuIEFsc28gaSBoYWQgb25lIGtlcm5lbCBidWlsZCB3aGVyZSBpdCB3b3JrZWQsIGJ1dCwKPiBi
+ZWNhdXNlIEkgZGlkbid0IGtuZXcgdGhhdCB5b3UgaGF2ZSB0byBpbnN0YWxsIG52aWRpYSBkcml2
+ZXJzIGFnYWluLCBJCj4gZGVsZXRldCBpdC4gSSBhbSBub3Qgc3VyZSBob3cgaSBkaWQgaXQsIHNv
+IEknbSBjdXJyZW50bHkgdHJ5aW5nIGFnYWluLgo+IE1heWJlIEkgbmVlZCB0byB1bmRlcnN0YW5k
+IHRoZSBwYXRjaGluZyBtZWNoYW5pc21zLCBndWVzcyB0aGF0IHdvdWxkCj4gaGVscCA6RCBJIGRp
+ZCBzb21ldGhpbmcgd2l0aCBnaXTigKYKPiAKPiBUaGFuayB5b3UgYSBsb3QgZm9yIHlvdXIgaGVs
+cCBzbyBmYXIhCj4gCj4gMjAxNS0wNC0zMCAyOjA3IEdNVCswMjowMCBHYWJyaWVsZSBNYXJ0aW5v
+IDxnLm1hcnRpbm9AZ214LmNvbT46Cj4gPiBPbiAyOC8wNC8yMDE1IDEzOjU1LCBNb3JpdHogTW9y
+YXdpZXR6IHdyb3RlOgo+ID4+IE1hbnkgdGhhbmtzIGZvciB5b3VyIGZhc3QgaGVscCEKPiA+Pgo+
+ID4+IEkndmUgbWFkZSBzb21lIHByb2dyZXNzLCBidXQgcmFuIGludG8gb3RoZXIgcHJvYmxlbXMu
+Cj4gPj4gSWYgaSBjb21waWxlIGF0aDEwX3BjaSwgYXRoMTBrX2NvcmUgYW5kIGF0aCBmcm9tIGt2
+YWxvJ3MgdHJlZSBhbmQgbG9hZAo+ID4+IHRoZW0sIGkgZ2V0IGZvbGxvd2luZyBkbWVzZyBvdXRw
+dXQ6Cj4gPj4KPiA+PiBbICAgIDIuOTgwNDQ4XSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZW5h
+YmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpCj4gPj4gWyAgICAyLjk4MDc1MF0gYXRoMTBrX3Bj
+aSAwMDAwOjA2OjAwLjA6IHBjaSBpcnEgbXNpLXggaW50ZXJydXB0cyA4Cj4gPj4gaXJxX21vZGUg
+MCByZXNldF9tb2RlIDAKPiA+PiBbICAgIDMuMTU4ODYwXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAu
+MDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gPj4gYXRoMTBrL2NhbC1wY2ktMDAwMDowNjow
+MC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+ID4+IFsgICAgMy4xNTk2MTFdIGF0aDEwa19w
+Y2kgMDAwMDowNjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiA+PiBhdGgxMGsvUUNB
+NjE3NC9odzIuMS9ib2FyZC1wY2ktMTY4YzowMDNlOjFhNTY6MTUyNS5iaW4gZmFpbGVkIHdpdGgK
+PiA+PiBlcnJvciAtMgo+ID4+IFsgICAgMy4xNTk2MTNdIGF0aDEwa19wY2kgMDAwMDowNjowMC4w
+OiBmYWlsZWQgdG8gbG9hZCBzcGVjIGJvYXJkCj4gPj4gZmlsZSwgZmFsbGluZyBiYWNrIHRvIGdl
+bmVyaWM6IC0yCj4gPj4gWyAgICAzLjE1OTkyMl0gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IERp
+cmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+ID4+IGF0aDEway9RQ0E2MTc0L2h3Mi4xL2Zpcm13YXJl
+LTUuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gPj4gWyAgICAzLjE1OTkyNF0gYXRoMTBrX3Bj
+aSAwMDAwOjA2OjAwLjA6IGNvdWxkIG5vdCBmZXRjaCBmaXJtd2FyZSBmaWxlCj4gPj4gJ2F0aDEw
+ay9RQ0E2MTc0L2h3Mi4xL2Zpcm13YXJlLTUuYmluJzogLTIKPiA+PiBbICAgIDQuMzYwOTQ2XSBh
+dGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogcWNhNjE3NCBodzIuMSAoMHgwNTAxMDAwMCwKPiA+PiAw
+eDAwMzQwNWZmLCAxNjhjOjAwM2U6MWE1NjoxNTI1IGZhbGxiYWNrKSBmdyBraWxsZXItbjE1MjUt
+ZncgYXBpIDQgaHR0Cj4gPj4gMy4xIHdtaSA0IGNhbCBvdHAgbWF4X3N0YSAzMgo+ID4+IFsgICAg
+NC4zNjA5NTBdIGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBkZWJ1ZyAxIGRlYnVnZnMgMSB0cmFj
+aW5nIDEKPiA+PiBkZnMgMCB0ZXN0bW9kZSAwCj4gPj4gWyAgICA0LjQzMDA2OF0gYXRoOiBFRVBS
+T00gcmVnZG9tYWluOiAweDZjCj4gPj4gWyAgICA0LjQzMDA3MF0gYXRoOiBFRVBST00gaW5kaWNh
+dGVzIHdlIHNob3VsZCBleHBlY3QgYSBkaXJlY3QgcmVncGFpciBtYXAKPiA+PiBbICAgIDQuNDMw
+MDcyXSBhdGg6IENvdW50cnkgYWxwaGEyIGJlaW5nIHVzZWQ6IDAwCj4gPj4gWyAgICA0LjQzMDA3
+Ml0gYXRoOiBSZWdwYWlyIHVzZWQ6IDB4NmMKPiA+PiBbICAgIDQuNDMwMDc4XSBhdGgxMGtfcGNp
+IDAwMDA6MDY6MDAuMDogZmFpbGVkIHRvIHJlZ2lzdGVyIGllZWU4MDIxMTogLTIyCj4gPj4gWyAg
+ICA0LjQzMDA5N10gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGNvdWxkIG5vdCByZWdpc3RlciB0
+byBtYWM4MDIxMSAoLTIyKQo+ID4+Cj4gPj4gU28gSSBjb21waWxlZCBtYWM4MDIxMSwgYW5kIHRy
+aWVkIHRvIGxvYWQgaXQuIFdoYXQgaSBnZXQgaXMgYSBsb2FkIG9mCj4gPj4gdGhhdCBtZXNzYWdl
+czoKPiA+Pgo+ID4+IFsgIDIyNi44MTI0OTRdIG1hYzgwMjExOiBVbmtub3duIHN5bWJvbCBjZmc4
+MDIxMV9jcW1fcnNzaV9ub3RpZnkgKGVyciAtMjIpCj4gPj4gWyAgMjI2LjgxMjQ5N10gbWFjODAy
+MTE6IGRpc2FncmVlcyBhYm91dCB2ZXJzaW9uIG9mIHN5bWJvbCBjZmc4MDIxMV9hdXRoX3RpbWVv
+dXQKPiA+PiBbICAyMjYuODEyNDk3XSBtYWM4MDIxMTogVW5rbm93biBzeW1ib2wgY2ZnODAyMTFf
+YXV0aF90aW1lb3V0IChlcnIgLTIyKQo+ID4+IFsgIDIyNi44MTI0OThdIG1hYzgwMjExOiBkaXNh
+Z3JlZXMgYWJvdXQgdmVyc2lvbiBvZiBzeW1ib2wKPiA+PiBjZmc4MDIxMV9yeF91bnByb3RfbWxt
+ZV9tZ210Cj4gPj4gWyAgMjI2LjgxMjQ5OV0gbWFjODAyMTE6IFVua25vd24gc3ltYm9sIGNmZzgw
+MjExX3J4X3VucHJvdF9tbG1lX21nbXQgKGVyciAtMjIpCj4gPj4KPiA+PiBCZWNhdXNlIG1hYzgw
+MjExIGRlcGVuZHMgb24gY2ZnODAyMTEsIGkgY29tcGlsaWVkIGFuZCB0ZXN0ZWQgaXQuIFRoZQo+
+ID4+IGVycm9yIG1lc3NhZ2VzIHJlZHVjZWQgdG8KPiA+Pgo+ID4+IFsgIDYzMi4yMDg4NDldIG1h
+YzgwMjExOiBVbmtub3duIHN5bWJvbCByaGFzaHRhYmxlX2luc2VydF9yZWhhc2ggKGVyciAwKQo+
+ID4+IFsgIDYzMi4yMDg4ODFdIG1hYzgwMjExOiBVbmtub3duIHN5bWJvbCByaGFzaHRhYmxlX2lu
+c2VydF9zbG93IChlcnIgMCkKPiA+Pgo+ID4+IEtub3cgSSdtIHN0dWNrLiBJJ2xsIHRyeSB0byBj
+b21waWxlIGFuZCB1c2UgdGhlIHdob2xlIGtlcm5lbCAoaXQncwo+ID4+IGNvbXBpbGluZyByaWdo
+dCBub3cpLCBidXQgd291bGQgcHJlZmVyIHRvIGp1c3QgY2hhbmdlIHRoZSBtb2R1bGVzLgo+ID4g
+SSBjb3VsZCBmaW5kIHNvbWUgcmVmZXJlbmNlcyB0byAicmhhc2h0YWJsZV9pbnNlcnRfcmVoYXNo
+IiB3aXRoIGdyZXA6Cj4gPiAvdXNyL3NyYy9saW51eC9saWIvcmhhc2h0YWJsZS5jOmludCByaGFz
+aHRhYmxlX2luc2VydF9yZWhhc2goc3RydWN0Cj4gPiByaGFzaHRhYmxlICpodCkKPiA+IC91c3Iv
+c3JjL2xpbnV4L2xpYi9yaGFzaHRhYmxlLmM6RVhQT1JUX1NZTUJPTF9HUEwocmhhc2h0YWJsZV9p
+bnNlcnRfcmVoYXNoKTsKPiA+Cj4gPiBUaGlzIGZpbGUgaXMgcHJlc2VudCBpbiAzLjE4LjExIGtl
+cm5lbCAoSSBkb24ndCBoYXZlIG9sZGVyIHNvdXJjZXMgb24KPiA+IHRoaXMgbGFwdG9wKS4KPiA+
+IFdoaWNoIGRpc3RyaWJ1dGlvbiBhbmQga2VybmVsIGFyZSB5b3UgdXNpbmc/Cj4gPiBZb3UgYXJl
+IGNvbXBpbGluZyA0LjAgKC0+IDMuMjApIG1vZHVsZXMsIHNvIHlvdSdyZSBsaWtlbHkgdG8gZ2V0
+IHN0cmFuZ2UKPiA+IGlzc3VlcyBpZiB5b3VyIGtlcm5lbCBpcyB0b28gb2xkLgo+ID4KPiA+IFJl
+Z2FyZHMsCj4gPiBHYWJyaWVsZQo+ID4KPiA+Cj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwo+ID4gYXRoMTBrIG1haWxpbmcgbGlzdAo+ID4gYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKPiA+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawo+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
