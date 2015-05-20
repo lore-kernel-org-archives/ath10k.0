@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yuqr2-0001yZ-I9
- for ath10k@lists.infradead.org; Tue, 19 May 2015 23:23:21 +0000
-Message-ID: <555BC5D2.3090802@candelatech.com>
-Date: Tue, 19 May 2015 16:22:58 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yv3Kp-0008Ix-GS
+ for ath10k@lists.infradead.org; Wed, 20 May 2015 12:42:56 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: handle cycle count wrap around
+References: <CACZoB699sLr1gu1qSM1N01FQ5RNX41wDoOeCYd6A+sjyDRRU0A@mail.gmail.com>
+Date: Wed, 20 May 2015 15:42:27 +0300
+In-Reply-To: <CACZoB699sLr1gu1qSM1N01FQ5RNX41wDoOeCYd6A+sjyDRRU0A@mail.gmail.com>
+ (Srinivasa Duvvuri's message of "Fri, 15 May 2015 15:29:49 -0700")
+Message-ID: <87iobna098.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: Poor TCP performance with ath10k in 4.0 kernel, again.
-References: <555A5938.9080706@candelatech.com>
-In-Reply-To: <555A5938.9080706@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +23,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>, netdev <netdev@vger.kernel.org>
+To: Srinivasa Duvvuri <sduvvuri@chromium.org>
+Cc: ath10k@lists.infradead.org
 
-Additional info & pkt capture at bottom...
+Srinivasa Duvvuri <sduvvuri@chromium.org> writes:
 
+> This patch addresses
+>  couple of issues related to survey data that results   in a random/large
+>  values in the out put of iw dev wlan0 surevey dump.
+>
+>   These are the 2 changes that address the issue.
+>
+>   1) Handle Cycle count wrap around.
+>      When the cycle counts part of wmi_ch_info_ev_arg reach max value of
+>      0xffffffff. The HW/FW right shifts all the counteirs by 1 . The cycle
+>      count will be reset to 0x7fffffff and starts counting from 0x7fffffff and
+>      the other counters will have their value right shifted by 1 (divided by 2).
+>      There is no way to handle this odd wrap around. Detect and ignore the wrap
+>      around case.
+>
+>   2) Handle Back to back channel info events from FW with
+>      WMI_CHAN_INFO_FLAG_COMPLETE.
+>      Between 2 scans FW sends back to back events with
+>      WMI_CHAN_INFO_FLAG_COMPLETE flag set. One at the end of first scan
+>      and the second at the beginning of scan. Depending on the time
+>      between 2 scans , the cycle counts could have wrapped around several
+>      timesi. Fix is detect and to ignore such events.
+>
+> Signed-off-by: Srinivasa Duvvuri <sduvvuri@chromium.org>
 
-On 05/18/2015 02:27 PM, Ben Greear wrote:
-> Disclosure: I am working with a patched 4.0 kernel, patched ath10k driver, and
-> patched (CT) ath10k firmware.  Traffic generator is of our own making.
-> 
-> First, this general problem has been reported before, but the
-> work-arounds previously suggested do not fully resolve my problems.
-> 
-> The basic issue is that when the sending socket is directly on top
-> of a wifi interface (ath10k driver), then TCP throughput sucks.
-> 
-> For instance, if AP interface sends to station, with 10 concurrent
-> TCP streams, I see about 426Mbps.  With 100 streams, I see total throughput
-> of 750Mbps.  These were maybe 10-30 second tests that I did.
-> 
-> Interestingly, a single stream connection performs very poorly at first,
-> but at least in one test, it eventually ran quite fast.  It is too
-> complicated to describe in words, but the graph is here:
-> 
-> http://www.candelatech.com/downloads/single-tcp-4.0.pdf
-> 
-> The 10-stream test did not go above about 450Mbps even after running for more than
-> 1 minute, and it was fairly stable around the 450Mbps range after the first few seconds.
-> 
-> 100-stream test shows nice stable aggregate throughput:
-> 
-> http://www.candelatech.com/downloads/100-tcp-4.0.pdf
-> 
-> I have tweaked the kernel tcp_limit_output_bytes setting
-> (tested at 1024k too, did not make any significant difference).
-> 
-> # cat /proc/sys/net/ipv4/tcp_limit_output_bytes
-> 2048000
-> 
-> I have tried forcing TCP send/rcv buffers to be 1MB and 2MB, but that
-> did not make obvious difference except that it started at the maximum
-> rate very quickly instead of taking a few seconds to train up to full speed.
-> 
-> If I run a single-stream TCP test, sending on eth1 (Intel 1G NIC)
-> through the AP machine, then single stream download is about 540 Mbps, and ramps up
-> quickly.  So, the AP can definitely send the needed amount of TCP packets.
-> 
-> UDP throughput in download direction, single stream, is about 770Mbps, regardless
-> of whether I originate the socket on the AP or if I pass it through the AP.
-> send/recv bufs are set to 1MB for UDP sockets.
-> 
-> The 3.17 kernel shows similar behaviour, and the 3.14 kernel is a lot better
-> for TCP traffic.
-> 
-> Are there tweaks other than tcp_limit_output_bytes that might
-> improve this behaviour?
-> 
-> I will be happy to grab captures or provide any other debugging info
-> that someone thinks will be helpful.
-> 
-> Thanks,
-> Ben
+Please CC linux-wireless when sending ath10k patches.
 
+Did you use git-send-email? There seems to be some kind of corruption:
 
-Here is a capture for the single stream vap -> station test case.
-
-http://www.candelatech.com/downloads/vap-to-sta-1-stream.pcap.bz2
-
-It starts fairly slow, and manages up to around 440Mbps before it plateaus.
-
-
-
-The qdisc is pfifo_fast (this is Fedora 19 system).  The interface being used for
-this test is 'vap1'.  This is the sender system.
-
-[root@ct523-1ac-lr201408006507 tmp]# tc qdisc
-qdisc pfifo_fast 0: dev eth0 root refcnt 2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev eth1 root refcnt 2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc mq 0: dev wlan0 root
-qdisc pfifo_fast 0: dev wlan0 parent :1 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev wlan0 parent :2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev wlan0 parent :3 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev wlan0 parent :4 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc mq 0: dev vap1 root
-qdisc pfifo_fast 0: dev vap1 parent :1 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev vap1 parent :2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev vap1 parent :3 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-qdisc pfifo_fast 0: dev vap1 parent :4 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
-
-
-Thanks,
-Ben
-
-
+patch -p1 < srini-1.mbox 
+patching file drivers/net/wireless/ath/ath10k/core.h
+Hunk #1 FAILED at 688.
+1 out of 1 hunk FAILED -- saving rejects to file drivers/net/wireless/ath/ath10k/core.h.rej
+patching file drivers/net/wireless/ath/ath10k/wmi.c
+patch: **** malformed patch at line 131: *ar, struct sk_buff *skb)
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
