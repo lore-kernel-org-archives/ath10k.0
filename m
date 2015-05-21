@@ -1,17 +1,33 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mout.gmx.net ([212.227.17.20])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YvL5v-0000gR-4a
- for ath10k@lists.infradead.org; Thu, 21 May 2015 07:40:44 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] amth10k: fix promisc handling
-References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
-Date: Thu, 21 May 2015 10:40:04 +0300
-In-Reply-To: <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
- (Michal Kazior's message of "Thu, 21 May 2015 07:40:38 +0200")
-Message-ID: <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
+ id 1YvNid-00025u-EV
+ for ath10k@lists.infradead.org; Thu, 21 May 2015 10:28:52 +0000
+Received: from [192.168.0.21] ([80.206.126.150]) by mail.gmx.com (mrgmx102)
+ with ESMTPSA (Nemesis) id 0LrqNe-1ZIwDP2sXe-013h8m for
+ <ath10k@lists.infradead.org>; Thu, 21 May 2015 12:28:26 +0200
+Message-ID: <555DB358.30209@gmx.com>
+Date: Thu, 21 May 2015 12:28:40 +0200
+From: Gabriele Martino <g.martino@gmx.com>
 MIME-Version: 1.0
+Subject: Re: QCA6174 hw2.1?
+References: <trinity-d51578c9-4e28-4805-b58e-fdd5388949da-1426217948333@msvc-mesg-gmx002>
+ <trinity-2097dd2e-b8b3-40c5-9eed-c0dc7d8690af-1426260485155@3capp-mailcom-lxa11>
+ <CA+BoTQnKJE0w0SZrh-p2KaKe62t4=cRLnjeKu+t9aeE+LFce-w@mail.gmail.com>
+ <loom.20150425T025815-684@post.gmane.org>
+ <CAJAVYN208PQpnt5oQPi1hdYW71WMVJReBNSY-OqZ9aCb0yuiaA@mail.gmail.com>
+ <553B8F89.4040908@gmx.com>
+ <CAJAVYN1XKYdGqx4pzg3C9kSxj6_qwr4raoDJm7e+VLy1P=dsdw@mail.gmail.com>
+ <553CF1EE.50807@gmx.com> <553D8112.2050300@gmx.com>
+ <CA+-y_t-L5tAYRfT5+WzbB_EvZbWDO3hys9GD8Ms7fFhT_9cy_Q@mail.gmail.com>
+ <553E5011.2050404@gmx.com>
+ <CAJAVYN2WGEwrajUKFOpYPC7YWnovSs3pmQfjmP74hfwW-epJ2Q@mail.gmail.com>
+ <CA+-y_t8pm+GPEaKX6cYta-Q4kiAd6mFKLO37nmS6pwPV63_VyA@mail.gmail.com>
+ <5541722A.2060109@gmx.com>
+ <CA+-y_t9Zq649otKN3B6tYrJ6_By7H3PEMtB4=aEeDXEG9C=1Rw@mail.gmail.com>
+ <trinity-93dbb5d1-5337-4f4f-bb4f-4ad93c3ef3a6-1432135053019@3capp-mailcom-lxa14>
+ <CAJHYP3gLAyoB771WJh0gzpZkmRHfm1E7h38ZsnU2ZnxQX8kcSQ@mail.gmail.com>
+In-Reply-To: <CAJHYP3gLAyoB771WJh0gzpZkmRHfm1E7h38ZsnU2ZnxQX8kcSQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +40,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, "John W. Linville" <linville@tuxdriver.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-Adding John as this involved wireless-testing
+I'm using the kvalo's kernel (4.1-rc3) without the patch, sometimes the
+adapter loses connection but it's bearable.
+I'll try that patch later. Killer N1525 on Alienware 15.
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+OT: Anton, does the headphone jack work correctly on your Alienware 15?
+I sent a patch to the ALSA team about that.
 
-> On 12 May 2015 at 14:45, Michal Kazior <michal.kazior@tieto.com> wrote:
->> Patch df1404650ccb ("mac80211: remove support for
->> IFF_PROMISC") removed promiscuous flag propagation
->> to drivers.
->>
->> However the patch was designed against ath10k
->> without 548462133d98 ("ath10k: fix interrupt
->> storm").
->>
->> After merge the code drifted into being no longer
->> correct and due to monitor vdev being
->> overzealously started caused IBSS to crash on
->> 999.999.0.636 for QCA988X (this firmware revision
->> is known to have issues with monitor vdev).
->>
->> This patch keeps expectations of commit
->> 548462133d98 (i.e. reduce irq storm by not
->> enabling monitor vdev for AP) and doesn't break
->> existing (known) setups that imply promiscuous
->> mode on network interfaces.
->>
->> Contrary to what it looks like 548462133d98
->> functionality is not reverted since the intention
->> was a subset of what df1404650ccb did.
->>
->> Fixes: c17c997d5613 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next")
->> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+On 21/05/2015 07:29, Anton Romanov wrote:
+> Works fine for me with this patch
+> https://patchwork.kernel.org/patch/6387631/  at least
+> I am currently using self-extracted firmware but the one in the pr for
+> ath10k-firmware worked fine as well iirc.
+> I'm using that on Alienware 15 laptop with "Killer N1525"
 >
-> Apparently this also fixes some weird issues with qca6174 hw2.1 notably:
->  - ath10k causing disconnecting of other devices in a BSS
->  - random Fw crashes
->
-> Both problems started to happen because c17c997d5613 enabled monitor
-> vdev by default on STA interfaces. It seems that qca6174 hw2.1
-> firmware has issues similar to those of qca988x 999.999.0.636
-> regarding monitor vdev opration.
->
-> Also, I've made a typo in the subject.
->
-> I'll post v2 with subject fixed and extended commit log later.
+> On Wed, May 20, 2015 at 8:17 AM, Jason H <jhihn@gmx.com> wrote:
+>> I just wanted to check in and see what the status of support was for this hardware. I saw a few messages since I last posted.
+>> I also need Linux 4 kernel for other issues with the hardware.
+>>
+>> Thanks!
 
-Keep in mind that c17c997d5613 is actually from wireless-testing.git
-which means that it will never go to wireless-drivers-next.git nor to
-net-next.git. So the merge conflict bug is purely in
-wireless-testing.git and in master branch of ath.git (but not in
-ath-next branch!).
-
-I think John should apply your v2 patch once you send it. But if you
-have something which should be fixed in ath-next remember to send that
-in a separate patch so that I can apply that directly to ath-next.
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
