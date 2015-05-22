@@ -1,24 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x229.google.com ([2a00:1450:4010:c04::229])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YviKB-0003XW-44
- for ath10k@lists.infradead.org; Fri, 22 May 2015 08:29:00 +0000
-Received: by lbbuc2 with SMTP id uc2so7847759lbb.2
- for <ath10k@lists.infradead.org>; Fri, 22 May 2015 01:28:36 -0700 (PDT)
+ id 1YvkPq-0005Fi-3a
+ for ath10k@lists.infradead.org; Fri, 22 May 2015 10:42:58 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/3] ath10k: improve power efficiency
+References: <1431076388-24800-1-git-send-email-michal.kazior@tieto.com>
+ <1431941898-13591-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 22 May 2015 13:41:57 +0300
+In-Reply-To: <1431941898-13591-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Mon, 18 May 2015 09:38:15 +0000")
+Message-ID: <87bnhc6gi2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJHYP3jwpg8tm5a2AhPv=KfpT1V_EUCJtPwdbji59puM48_9KQ@mail.gmail.com>
-References: <5555C551.5090508@posteo.org>
- <CA+BoTQmec+JqancO6Q5FWtAXN1iUo7TazLTipnmoynqndvdp7Q@mail.gmail.com>
- <CAP7Qh-zq6gT=0kPi29PrmntbysWVkLgJqfyzxk3WfrndmE7GHQ@mail.gmail.com>
- <CAJHYP3iSHYbqRqmb_MeXq199o71pDtANRuohKUaMUj5spR-ZCg@mail.gmail.com>
- <CAP7Qh-x2qHhNGsVjtU73WuvRo2L4No40z-jnMN=eZS-Wk+EQBg@mail.gmail.com>
- <CAP7Qh-wGhsemvyV0NkEXOziYodt2sUd2egCf+=Gwi3+pHmJ_qQ@mail.gmail.com>
- <CA+BoTQ=ovYAmkyS367b37DL2wmLhOQStU4urEh2Ou668W8Jdhw@mail.gmail.com>
- <CAJHYP3jwpg8tm5a2AhPv=KfpT1V_EUCJtPwdbji59puM48_9KQ@mail.gmail.com>
-Date: Fri, 22 May 2015 09:28:36 +0100
-Message-ID: <CAP7Qh-yGkuCOuWFmp-7qeV37b-taqpqJTws1ZTGc-iRMx3WqCw@mail.gmail.com>
-Subject: Re: ath20k blocks other devices
-From: Eduardo Costa <eu@ejcosta.info>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,10 +25,42 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Problem solved with this patch!
-Many thanks.
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> Some measurements for QCA61X4:
+>
+>             Loaded    Started   Associated
+> Unpatched    31mA      88mA       43mA
+> Patched      14mA      15mA       23mA
+>
+> Loaded = module loaded, driver bound, no interface
+>          is running
+>
+> Started = Loaded, but one client interface is
+>           running, not associated
+>
+> Associated = Started, but associated to an AP as
+>              client
+>
+> Note: Unpatched was consuming more power when
+> Started than when Associated. This is no mistake.
+>
+> I didn't have a way to measure QCA988X.
+>
+>
+> Janusz Dziedzic (2):
+>   ath10k: enable ASPM
+>   ath10k: fix idle power consumption
+>
+> Michal Kazior (1):
+>   ath10k: enable pci soc powersaving
+
+Thanks, all three applied.
+
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
