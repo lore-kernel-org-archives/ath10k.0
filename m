@@ -1,19 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YwwZS-0006qK-2l
- for ath10k@lists.infradead.org; Mon, 25 May 2015 17:53:50 +0000
-Message-ID: <55636198.8020802@candelatech.com>
-Date: Mon, 25 May 2015 10:53:28 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: request: ACK timing setting required
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Ywxwa-0006n2-It
+ for ath10k@lists.infradead.org; Mon, 25 May 2015 19:21:49 +0000
 References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
  <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
  <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
  <87oal83kv4.fsf@kamboji.qca.qualcomm.com> <5563577E.4020208@dd-wrt.com>
  <5563584A.80604@candelatech.com> <55636088.1080506@dd-wrt.com>
-In-Reply-To: <55636088.1080506@dd-wrt.com>
+ <55636198.8020802@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <55637637.8020103@dd-wrt.com>
+Date: Mon, 25 May 2015 21:21:27 +0200
+MIME-Version: 1.0
+In-Reply-To: <55636198.8020802@candelatech.com>
+Subject: Re: request: ACK timing setting required
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +28,43 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
 
-
-
-On 05/25/2015 10:48 AM, Sebastian Gottschall wrote:
-> Am 25.05.2015 um 19:13 schrieb Ben Greear:
->>
->>
->> On 05/25/2015 10:10 AM, Sebastian Gottschall wrote:
->>> Hello
+Am 25.05.2015 um 19:53 schrieb Ben Greear:
+>
+>
+> On 05/25/2015 10:48 AM, Sebastian Gottschall wrote:
+>> Am 25.05.2015 um 19:13 schrieb Ben Greear:
 >>>
->>> could it be possible to add a ACK timing feature to the ath10k firmware (QCA9880 internal register 0x8014, mask 0x3FFF)
->>
->> You just need ability to set this register to some value?
->>
->> If so, probably something I could add to CT firmware, at least.
->>
-> not alone. this register is rewritten on each reset (channel change etc.) so it needs to be correct handled.
-> yes. just writing and handling the ack value would be enough. the math behind is no problem.
-> otherwise its impossible todo long range links with ath10k. (LSDK based firmware from compex do support this feature unlike ath10k)
+>>>
+>>> On 05/25/2015 10:10 AM, Sebastian Gottschall wrote:
+>>>> Hello
+>>>>
+>>>> could it be possible to add a ACK timing feature to the ath10k 
+>>>> firmware (QCA9880 internal register 0x8014, mask 0x3FFF)
+>>>
+>>> You just need ability to set this register to some value?
+>>>
+>>> If so, probably something I could add to CT firmware, at least.
+>>>
+>> not alone. this register is rewritten on each reset (channel change 
+>> etc.) so it needs to be correct handled.
+>> yes. just writing and handling the ack value would be enough. the 
+>> math behind is no problem.
+>> otherwise its impossible todo long range links with ath10k. (LSDK 
+>> based firmware from compex do support this feature unlike ath10k)
+>
+> I'll see if I can add this to my firmware, probably will be a few days 
+> before I can get
+> time to work on it.  Will post to list when I have a FW build ready 
+> for testing.
+do you plan to bring up your codebase to 10.2.4 with api 5 one time?
+or is the code already up to date, just using the old api?
+>
+> Thanks,
+> Ben
+>
 
-I'll see if I can add this to my firmware, probably will be a few days before I can get
-time to work on it.  Will post to list when I have a FW build ready for testing.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
