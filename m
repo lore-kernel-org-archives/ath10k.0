@@ -1,9 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yx1Mc-0003pl-PV
- for ath10k@lists.infradead.org; Mon, 25 May 2015 23:00:55 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Yx20z-0000GL-7l
+ for ath10k@lists.infradead.org; Mon, 25 May 2015 23:42:37 +0000
+Message-ID: <5563B357.9060309@candelatech.com>
+Date: Mon, 25 May 2015 16:42:15 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: possible memory leak or memory waste
 References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
  <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
  <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
@@ -11,13 +15,8 @@ References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
  <5563584A.80604@candelatech.com> <55636088.1080506@dd-wrt.com>
  <55636198.8020802@candelatech.com> <55637637.8020103@dd-wrt.com>
  <556378E3.7050707@candelatech.com> <55639395.6070207@dd-wrt.com>
- <5563A491.8070701@candelatech.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <5563A990.5000606@dd-wrt.com>
-Date: Tue, 26 May 2015 01:00:32 +0200
-MIME-Version: 1.0
-In-Reply-To: <5563A491.8070701@candelatech.com>
-Subject: Re: possible memory leak or memory waste
+ <5563A491.8070701@candelatech.com> <5563A990.5000606@dd-wrt.com>
+In-Reply-To: <5563A990.5000606@dd-wrt.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,67 +29,79 @@ Content-Transfer-Encoding: 7bit
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, ath10k@lists.infradead.org
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>, ath10k@lists.infradead.org
 
-Am 26.05.2015 um 00:39 schrieb Ben Greear:
-> Default firmware has a hard-coded minimum number of tx buffers (somewhere
-> more than 1k buffers I think).  Maybe driver is allocating all this
-> memory somehow?
->
-> If you do one-way traffic tests (udp), I wonder if you can tell if it 
-> is tx
-> or rx that consumes the memory?
-its tx. i have a ethernet over ip tunnel running on that link and i 
-broadcast iptv in that way. (its my way to convert multicast to unicast)
-the  tunnel itself is rfc ethernet over ip, which is somewhat like udp. 
-so connectionless protocol
+Can you test with ath9k to make sure it is actually ath10k related?
 
-Sebastian
+And/or try traffic in RX direction only to see if that still uses
+lots of memory?
+
+Does memory come back after you just stop traffic (w/out stopping
+hostapd)?
+
+Thanks,
+Ben
+
+
+On 05/25/2015 04:00 PM, Sebastian Gottschall wrote:
+> Am 26.05.2015 um 00:39 schrieb Ben Greear:
+>> Default firmware has a hard-coded minimum number of tx buffers (somewhere
+>> more than 1k buffers I think).  Maybe driver is allocating all this
+>> memory somehow?
+>>
+>> If you do one-way traffic tests (udp), I wonder if you can tell if it is tx
+>> or rx that consumes the memory?
+> its tx. i have a ethernet over ip tunnel running on that link and i broadcast iptv in that way. (its my way to convert multicast to unicast)
+> the  tunnel itself is rfc ethernet over ip, which is somewhat like udp. so connectionless protocol
 >
-> CT firmware can be configured to use any multiple-of-8 amount of tx
-> buffers, though I have not tested below around 600.
->
-> Thanks,
-> Ben
->
-> On 05/25/2015 02:26 PM, Sebastian Gottschall wrote:
->> today using the latest testing driver, i found out the memory 
->> consumption is unbelievable high.
->> my router here has 64 mb ram. this ram is fully taken after some 
->> minutes by ath10k. but only if data flow present.
+> Sebastian
 >>
->> here the results of "free" after some minutes
->> root@DD-WRT:~# free
->> total         used         free       shared      buffers
->> Mem:         61636        58752         2884            0 2600
->> -/+ buffers:              56152         5484
->> Swap:            0            0            0
+>> CT firmware can be configured to use any multiple-of-8 amount of tx
+>> buffers, though I have not tested below around 600.
 >>
+>> Thanks,
+>> Ben
 >>
->> now i terminate hostapd which controls the ath10k chipset
->>
->>
->> root@DD-WRT:~# kill 902
->> root@DD-WRT:~# free
->> total         used         free       shared      buffers
->> Mem:         61636        23212        38424            0 2416
->> -/+ buffers:              20796        40840
->> Swap:            0            0            0
->>
->>
->> you see the difference?
->>
->>
->> regards,
->> Sebastian Gottschall
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
+>> On 05/25/2015 02:26 PM, Sebastian Gottschall wrote:
+>>> today using the latest testing driver, i found out the memory consumption is unbelievable high.
+>>> my router here has 64 mb ram. this ram is fully taken after some minutes by ath10k. but only if data flow present.
+>>>
+>>> here the results of "free" after some minutes
+>>> root@DD-WRT:~# free
+>>> total         used         free       shared      buffers
+>>> Mem:         61636        58752         2884            0 2600
+>>> -/+ buffers:              56152         5484
+>>> Swap:            0            0            0
+>>>
+>>>
+>>> now i terminate hostapd which controls the ath10k chipset
+>>>
+>>>
+>>> root@DD-WRT:~# kill 902
+>>> root@DD-WRT:~# free
+>>> total         used         free       shared      buffers
+>>> Mem:         61636        23212        38424            0 2416
+>>> -/+ buffers:              20796        40840
+>>> Swap:            0            0            0
+>>>
+>>>
+>>> you see the difference?
+>>>
+>>>
+>>> regards,
+>>> Sebastian Gottschall
+>>>
+>>> _______________________________________________
+>>> ath10k mailing list
+>>> ath10k@lists.infradead.org
+>>> http://lists.infradead.org/mailman/listinfo/ath10k
+>>>
 >>
 >
 
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
