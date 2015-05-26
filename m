@@ -1,30 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from mail-wg0-x22d.google.com ([2a00:1450:400c:c00::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxB3p-0002uz-JS
- for ath10k@lists.infradead.org; Tue, 26 May 2015 09:22:10 +0000
-Received: by wifw1 with SMTP id w1so22760325wif.0
- for <ath10k@lists.infradead.org>; Tue, 26 May 2015 02:21:47 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <556430DF.8030709@dd-wrt.com>
-References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
- <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
- <87oal83kv4.fsf@kamboji.qca.qualcomm.com>
- <5563577E.4020208@dd-wrt.com> <5563584A.80604@candelatech.com>
- <55636088.1080506@dd-wrt.com> <55636198.8020802@candelatech.com>
- <55637637.8020103@dd-wrt.com> <556378E3.7050707@candelatech.com>
- <55639395.6070207@dd-wrt.com> <5563A491.8070701@candelatech.com>
- <5563A990.5000606@dd-wrt.com> <5563B357.9060309@candelatech.com>
- <5563B934.5050306@dd-wrt.com>
- <CA+BoTQmmjnyei4LGzEU9=68QkgGY6Rn08X8=TP7R6qQBzvMAEQ@mail.gmail.com>
- <55641F6D.2040703@dd-wrt.com>
- <CA+BoTQmxPx4o8Xtazv2m-m25bQay4yy5g=3DXq-vsg27yoLd4w@mail.gmail.com>
- <556430DF.8030709@dd-wrt.com>
-Date: Tue, 26 May 2015 11:21:47 +0200
-Message-ID: <CA+BoTQ=8jy8t2Bb1b2kokYMmwJtydtroerNjFtVtt5tLUaVTjQ@mail.gmail.com>
-Subject: Re: possible memory leak or memory waste
+ id 1YxCk8-0008SP-Ah
+ for ath10k@lists.infradead.org; Tue, 26 May 2015 11:09:57 +0000
+Received: by wghq2 with SMTP id q2so93740197wgh.1
+ for <ath10k@lists.infradead.org>; Tue, 26 May 2015 04:09:31 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add missing firmware declarations
+Date: Tue, 26 May 2015 13:09:22 +0200
+Message-Id: <1432638562-12954-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,91 +17,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMjYgTWF5IDIwMTUgYXQgMTA6MzcsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hh
-bGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4gQW0gMjYuMDUuMjAxNSB1bSAxMDoyNiBzY2hyaWViIE1p
-Y2hhbCBLYXppb3I6Cj4+Cj4+IE9uIDI2IE1heSAyMDE1IGF0IDA5OjIzLCBTZWJhc3RpYW4gR290
-dHNjaGFsbCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+Cj4+IHdyb3RlOgpbLi4uXQo+PiBEbyB5
-b3Ugc2VlIE9PTXM/IFdoYXQgc3RhYmlsaXR5IGlzc3VlcyBhcmUgd2UgdGFsa2luZyBhYm91dD8K
-Pj4KPj4gRGlkIHlvdSB0cnkgc3RyZXNzaW5nIHRoZSBzeXN0ZW0gYnkgYWN0dWFsbHkgdHJ5aW5n
-IHRvIGNvbnN1bWUgbWVtb3J5Cj4+IHVudGlsIGl0J3MgcnVuIG91dCB0byBzZWUgaG93IG11Y2gg
-bWVtb3J5IGlzIF9yZWFsbHlfIGxlZnQgZm9yIHRoZQo+PiBzeXN0ZW0gdG8gdXNlPwo+Cj4gbm8u
-IHRoZSBvcmlnaW5hbCBkbGluay1kaXI4NTkgZmlybXdhcmUgYmFzZWQgb24gcWNhIGxzZGssIGRv
-ZXMgbm90IHByb3ZpZGUKPiBvb20ncwo+IGJ1dCB3aXRoIGF0aDEwayBpIHdhcyBhYmxlIHRvIGNy
-YXNoIG15IGRldmljZSwgc2luY2UgaXQgd2FzIHJ1bm5pbmcgb3V0IG9mCj4gbWVtb3J5LgoKSG93
-IGRpZCBpdCBjcmFzaCwgaS5lLiBkaWQgeW91IG1hbmFnZSB0byBnZXQgYSBjYWxsIHRyYWNlPyBJ
-ZiBub3QsIGNhbgp5b3UgY29ubmVjdCBVQVJUIHRvIHRoZSBzeXN0ZW0gYW5kIGdldCBvbmUsIHBs
-ZWFzZT8KCgo+IGFuZCBpIGRvbnQgbmVlZCB0byBzdHJlc3MgdGhlIHN5c3RlbS4gcnVubmluZyB3
-aXRoIG9uZSBzaW5nbGUgY2xpZW50IGFuZCA4Cj4gbWJpdCB0eCBmbG93IGlzIGVub3VnaCB0byBq
-dXN0IGhhdmUgMiBtYiByYW0gZnJlZSBvbiBhIDY0IG1iIHN5c3RlbQoKIDEuIElzIHRoZSByb3V0
-ZXIgYWN0aW5nIGFzIGFuIGVuZHBvaW50IGluIHRoZSB0cmFmZmljIG9yIGEgYnJpZGdlPwogMi4g
-U28gZG9lcyBpdCBjcmFzaCBvciBpcyBmcmVlIG1lbW9yeSBqdXN0IGxvdyBkdXJpbmcgdHJhZmZp
-Yz8gSXQncwpub3QgY2xlYXIgdG8gbWUuCgoKPj4+IHNvIGl0IGRvZXNudCBtYWtlIG11Y2ggc2Vu
-c2UgdG8gZ28gb24gaGVyZSBpbiB0aGlzIHdheS4KPj4+IHRoaXMgcmVzb3VyY2UgcHJvYmxlbSBt
-dXN0IGJlIHNvbHZlZC4gYWJvdXQgNTAgTUIgaXMgcmVhbGx5IHRvbyBtdWNoLgo+Pgo+PiBJIGRv
-bid0IHNlZSB0aGlzIG11Y2ggbWVtb3J5IGJlaW5nIHVzZWQgd2l0aCBhdGgxMGsgaW4gbXkgeDg2
-XzY0Cj4+IHZpcnR1YWwgbWFjaGluZSBldmVuIHdpdGggYGZyZWVgLiBJIHNlZSB+MTBNQiBvZiBs
-ZXNzICJmcmVlIiBtZW1vcnkKPj4gYWZ0ZXIgc3RhcnRpbmcgaG9zdGFwZCBhbmQgcnVubmluZyB0
-cmFmZmljIGZvciBzb21lIHRpbWUgdnMgbm8gaG9zdGFwZAo+PiBhbmQgYXRoMTBrIHN0b3BwZWQu
-Cj4KPiB5b3Ugd29udCBzZWUgdGhlIG1lbW9yeSB0YWtlbiB0aGF0IGVhc3kgYW5kIHlvdXIgeDY0
-IHN5c3RlbSBoYXMgbGlrZWxseSBhbG90Cj4gb2YgcmFtLCBzbyB5b3UgZG9udCBub3RpY2UgdGhh
-dCA1MCBtYiBhcmUganVzdCB0YWtlbiBieSBhdGgxMGsuCgpUaGUgYW1vdW50IG9mIG1lbW9yeSBp
-biBhIHZpcnR1YWwgbWFjaGluZSBkb2Vzbid0IG1hdHRlci4gSWYgYW55dGhpbmcKSSBzaG91bGQg
-YmUgc2VlaW5nIF9tb3JlXyBtZW1vcnkgYmVpbmcgY29uc3VtZWQgc2luY2Uga2VybmVsIHNob3Vs
-ZCBiZQptb3JlIHJlbGF4ZWQgZHVlIHRvIHNtYWxsZXIgbWVtb3J5IHByZXNzdXJlLgoKSSBoYXZl
-IGEgdmVyeSBiYXJlIFZNIGlmIHlvdSdyZSBpbXBseWluZyBJIGhhdmUgYSBsb3Qgb2YgYmFja2dy
-b3VuZCBub2lzZS4KCklmIHlvdSdyZSBzdGlsbCBkb3VidGluZyBoZXJlJ3MgYSBjb3VwbGUgb2Yg
-cHJpbnRvdXRzIChJJ3ZlIHJ1biBteSBWTQp3aXRoIDY0TUIgb2YgUkFNOyBzb21lIG9mIGl0IGlz
-IG9idmlvdXNseSByZXNlcnZlZCBhbmQgdW5yZWFjaGFibGUpOgoKdXNlciBwcm9jZXNzZXM6Cj4g
-ICAgIDEgPyAgICAgICAgUyAgICAgIDA6MDEgL2Jpbi9zaCAvaW5pdAo+ICAxMTg5ID8gICAgICAg
-IFNzICAgICAwOjAwIHVkZXZkIC0tZGFlbW9uCj4gIDE0NzEgPyAgICAgICAgU3MgICAgIDA6MDAg
-L3Vzci9zYmluL3NzaGQKPiAgMTUzMCB0dHlTMCAgICBTcysgICAgMDowMCAvYmluL2xvZ2luIC1m
-Cj4gIDE1MzMgdHR5UzAgICAgUysgICAgIDA6MDAgIFxfIC1yYwo+ICAxNTY0IHR0eVMwICAgIFIr
-ICAgICAwOjAwICAgICAgXF8gcHMgZmF4CihldmVyeXRoaW5nIGVsc2UgaXMga2VybmVsIHRocmVh
-ZHMpCgphZnRlciBib290IChhdGgxMGsgbW9kdWxlIGxvYWRlZCBhbmQgcHJvYmVkKToKPiAgICAg
-ICAgICAgICAgdG90YWwgICAgICAgdXNlZCAgICAgICBmcmVlICAgICBzaGFyZWQgICAgYnVmZmVy
-cyAgICAgY2FjaGVkCj4gTWVtOiAgICAgICAgIDQ2OTI4ICAgICAgMzM4MDggICAgICAxMzEyMCAg
-ICAgICAgMTUyICAgICAgICAgIDAgICAgICAgNTE1Ngo+IC0vKyBidWZmZXJzL2NhY2hlOiAgICAg
-IDI4NjUyICAgICAgMTgyNzYKPiBTd2FwOiAgICAgICAgICAgIDAgICAgICAgICAgMCAgICAgICAg
-ICAwCgpob3N0YWQraXBlcmY6Cj4gICAgICAgICAgICAgIHRvdGFsICAgICAgIHVzZWQgICAgICAg
-ZnJlZSAgICAgc2hhcmVkICAgIGJ1ZmZlcnMgICAgIGNhY2hlZAo+IE1lbTogICAgICAgICA0Njky
-OCAgICAgIDQ0NjcyICAgICAgIDIyNTYgICAgICAgIDQ0MCAgICAgICAgICAwICAgICAgIDI5NTIK
-PiAtLysgYnVmZmVycy9jYWNoZTogICAgICA0MTcyMCAgICAgICA1MjA4Cj4gU3dhcDogICAgICAg
-ICAgICAwICAgICAgICAgIDAgICAgICAgICAgMAoKaG9zdGFwZCAobm8gaXBlcmYpOgo+ICAgICAg
-ICAgICAgICB0b3RhbCAgICAgICB1c2VkICAgICAgIGZyZWUgICAgIHNoYXJlZCAgICBidWZmZXJz
-ICAgICBjYWNoZWQKPiBNZW06ICAgICAgICAgNDY5MjggICAgICA0MjQzNiAgICAgICA0NDkyICAg
-ICAgICA1MDAgICAgICAgICAgMCAgICAgICAyNzg0Cj4gLS8rIGJ1ZmZlcnMvY2FjaGU6ICAgICAg
-Mzk2NTIgICAgICAgNzI3Ngo+IFN3YXA6ICAgICAgICAgICAgMCAgICAgICAgICAwICAgICAgICAg
-IDAKCmhvc3RhcGQgc3RvcHBlZDoKPiAgICAgICAgICAgICAgdG90YWwgICAgICAgdXNlZCAgICAg
-ICBmcmVlICAgICBzaGFyZWQgICAgYnVmZmVycyAgICAgY2FjaGVkCj4gTWVtOiAgICAgICAgIDQ2
-OTI4ICAgICAgMzIyMjAgICAgICAxNDcwOCAgICAgICAgMzg4ICAgICAgICAgIDAgICAgICAgMjYw
-NAo+IC0vKyBidWZmZXJzL2NhY2hlOiAgICAgIDI5NjE2ICAgICAgMTczMTIKPiBTd2FwOiAgICAg
-ICAgICAgIDAgICAgICAgICAgMCAgICAgICAgICAwCgphdGgxMGtfcGNpIGFuZCBhdGgxMGtfY29y
-ZSB1bmxvYWRlZDoKPiAgICAgICAgICAgICAgdG90YWwgICAgICAgdXNlZCAgICAgICBmcmVlICAg
-ICBzaGFyZWQgICAgYnVmZmVycyAgICAgY2FjaGVkCj4gTWVtOiAgICAgICAgIDQ2OTI4ICAgICAg
-Mjg1NTIgICAgICAxODM3NiAgICAgICAgMTQ0ICAgICAgICAgIDAgICAgICAgNDcxMgo+IC0vKyBi
-dWZmZXJzL2NhY2hlOiAgICAgIDIzODQwICAgICAgMjMwODgKPiBTd2FwOiAgICAgICAgICAgIDAg
-ICAgICAgICAgMCAgICAgICAgICAwCgpXaGlsZSBydW5uaW5nIGlwZXJmIEkgd2FzIGFibGUgdG8g
-Z2V0IDQwMG1icHMrIG9mIFVEUCB0cmFmZmljIHdpdGgKYW5vdGhlciAyeDIgMTFhYyBkZXZpY2Ug
-d2l0aG91dCBtdWNoIHRyb3VibGUuCgpEbyBub3RlOiBUaGUgVk0gaXMgcnVubmluZyBhIGdsaWJj
-IGJhc2VkIHN5c3RlbSBhbmQgaGFzIGtlcm5lbCBhbmQKbW9kdWxlcyB3aXRoIGZ1bGwgZGVidWdn
-aW5nIGhlbmNlIHRoZSBoaWdoIGJhc2UgbWVtb3J5IHVzYWdlLiBZZXQgaXQKc3RpbGwgbWFuYWdl
-cyB0byB3b3JrIGp1c3QgZmluZS4KCgo+IGlmIHlvdSBraWxsIHRoZSBob3N0YXBkIHByb2Nlc3Mg
-b2YgYXRoMTBrLCB5b3Ugd2lsbCBzZWUgdGhlIGRpZmZlcmVuY2UKPiBsaWtlbGx5Lgo+IG9uZSBw
-b2ludCBoZXJlIHJhaXNlZCB1cCwgaXMgdGhhdCBxY2EgaXMgYXdhcmUgb2YgaGlnaCBtZW1vcnkg
-Y29uc3VtcHRpb24KPiB3aXRoIHZhcCdzCj4gbXkgZXhhbXBsZSBoYXMgMiB2YXAncy4gaSBhbHJl
-YWR5IHByb3ZpZGVkIGEgY29uZmlnIGZpbGUgZm9yIGhvc3RhcGQgb24gdGhpcwo+IG1haWxpbmcg
-bGlzdAoKWW91IG11c3QgYmUgYXdhcmUgeW91IGNhbid0IGNvbXBhcmUgYXRoMTBrIHRvIExTREsg
-YXBwbGVzIHRvIGFwcGxlcy4KVGhlaXIgUVNESyBpbmNsdWRlcyBrZXJuZWwgY3VzdG9taXphdGlv
-bnMgd2hpY2ggbWFrZXMgaXQgbmVhcmx5CmltcG9zc2libGUgdG8gY29tcGFyZS4gVGhleSBtYXkg
-aGF2ZSBzb21lIGZpeGVzIGZvciB0aGUgcGxhdGZvcm0KaXRzZWxmIHRoYXQgaGF2ZW4ndCBiZWVu
-IHVwc3RyZWFtZWQgZm9yIHdoYXQgaXQncyB3b3J0aC4KCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+This could lead userspace initram images getting
+built without necessary firmware files included
+leading to probing failures of ath10k on boot with
+QCA61X4.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 969a1231800e..d88be9f8c2d3 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2790,8 +2790,10 @@ MODULE_FIRMWARE(QCA988X_HW_2_0_FW_DIR "/" QCA988X_HW_2_0_BOARD_DATA_FILE);
+ 
+ /* QCA6174 2.1 firmware files */
+ MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API4_FILE);
++MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" ATH10K_FW_API5_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_2_1_FW_DIR "/" QCA6174_HW_2_1_BOARD_DATA_FILE);
+ 
+ /* QCA6174 3.1 firmware files */
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API4_FILE);
++MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" ATH10K_FW_API5_FILE);
+ MODULE_FIRMWARE(QCA6174_HW_3_0_FW_DIR "/" QCA6174_HW_3_0_BOARD_DATA_FILE);
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
