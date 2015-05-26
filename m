@@ -1,26 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yx7dk-0007NC-NA
- for ath10k@lists.infradead.org; Tue, 26 May 2015 05:43:02 +0000
-Received: by wifw1 with SMTP id w1so16694342wif.0
- for <ath10k@lists.infradead.org>; Mon, 25 May 2015 22:42:35 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <5563B934.5050306@dd-wrt.com>
-References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
- <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
- <87oal83kv4.fsf@kamboji.qca.qualcomm.com>
- <5563577E.4020208@dd-wrt.com> <5563584A.80604@candelatech.com>
- <55636088.1080506@dd-wrt.com> <55636198.8020802@candelatech.com>
+ id 1Yx8ER-0006OC-LH
+ for ath10k@lists.infradead.org; Tue, 26 May 2015 06:20:56 +0000
+Date: Tue, 26 May 2015 11:50:13 +0530
+From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Subject: Re: possible memory leak or memory waste
+Message-ID: <20150526062009.GA14525@qca.qualcomm.com>
+References: <55636088.1080506@dd-wrt.com> <55636198.8020802@candelatech.com>
  <55637637.8020103@dd-wrt.com> <556378E3.7050707@candelatech.com>
  <55639395.6070207@dd-wrt.com> <5563A491.8070701@candelatech.com>
  <5563A990.5000606@dd-wrt.com> <5563B357.9060309@candelatech.com>
  <5563B934.5050306@dd-wrt.com>
-Date: Tue, 26 May 2015 07:42:35 +0200
-Message-ID: <CA+BoTQmmjnyei4LGzEU9=68QkgGY6Rn08X8=TP7R6qQBzvMAEQ@mail.gmail.com>
-Subject: Re: possible memory leak or memory waste
-From: Michal Kazior <michal.kazior@tieto.com>
+ <CA+BoTQmmjnyei4LGzEU9=68QkgGY6Rn08X8=TP7R6qQBzvMAEQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQmmjnyei4LGzEU9=68QkgGY6Rn08X8=TP7R6qQBzvMAEQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -29,93 +24,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-T24gMjYgTWF5IDIwMTUgYXQgMDI6MDcsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hh
-bGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4gQW0gMjYuMDUuMjAxNSB1bSAwMTo0MiBzY2hyaWViIEJl
-biBHcmVlYXI6Cj4+Cj4+IENhbiB5b3UgdGVzdCB3aXRoIGF0aDlrIHRvIG1ha2Ugc3VyZSBpdCBp
-cyBhY3R1YWxseSBhdGgxMGsgcmVsYXRlZD8KPgo+IGFscmVhZHkgdGVzdGVkLiB0aGlzIGRldmlj
-ZSBoYXMgMiBjaGlwc2V0cy4gb25lIGlzIGF0aDlrIGJhc2VkIGFuZCB0aGUKPiBzZWNvbmQgaXMg
-YXRoMTBrIGJhc2VkLiA6LSkKPiBvbmx5IGlmIGkga2lsbCB0aGUgaG9zdGFwZCBwcm9jZXNzIHdo
-aWNoIGNvbnRyb2xzIGF0aDEway4gdGhlIG1lbW9yeSB3YXN0ZQo+IGlzIGdvbmUKCktlZXAgaW4g
-bWluZCB0aGF0IGhvc3RhcGQgaXRzZWxmIHJlcXVpcmVzIG1lbW9yeSB0byBmdW5jdGlvbiBhcyB3
-ZWxsLgpFYWNoIHByb2Nlc3MgKGFuZCB0aHJlYWQpIG5lZWQgc29tZSBpbnRlcm5hbCBrZXJuZWwg
-bWVtb3J5IChzdGFjaywgZXQKYWwpLgoKCj4+IEFuZC9vciB0cnkgdHJhZmZpYyBpbiBSWCBkaXJl
-Y3Rpb24gb25seSB0byBzZWUgaWYgdGhhdCBzdGlsbCB1c2VzCj4+IGxvdHMgb2YgbWVtb3J5Pwo+
-Cj4KPj4KPj4gRG9lcyBtZW1vcnkgY29tZSBiYWNrIGFmdGVyIHlvdSBqdXN0IHN0b3AgdHJhZmZp
-YyAody9vdXQgc3RvcHBpbmcKPj4gaG9zdGFwZCk/Cj4KPiB5ZXMuIHNsb3dseS4gaXRzIGZsdWN0
-dWF0aW5nLiBzbyBzb21ldGltZXMgdGhlcmUgaXMgMzAgbWIgZnJlZSBhZ2FpbiBhbmQKPiBzZWNv
-bmRzIGxhdGVyIGp1c3QgMiBtYi4gc28gdmVyeSBoZWF2eSBjaGFuZ2VzLiBvbiBiaWdnZXIgcm91
-dGVycyB3aXRoIG1vcmUKPiB0aGFuIDY0IG1iIChpIGhhdmUgYSBzZWNvbmQgaGVyZSB3aXRoIDEy
-OCBtYikKPiB0aGUgdG90YWwgY29uc3VtcHRpb24gc3RhYmlsaXplcyBhdCA0NSAtIDUwIG1iIGZv
-ciB0aGUgZHJpdmVyIG9ubHkgd2hpY2ggaXMKPiBzdGlsbCB0b28gbXVjaCBmb3Igc3VyZS4gIHNv
-IGl0IG1heSBub3QgYSBsZWFrLiBidXQgYXRoMTBrIG9yIHRoZSBmaXJtd2FyZQo+IGlzIHdhc3Rp
-bmcgdG9vIG11Y2ggbWVtb3J5IGZvciBlbWJlZGRlZCBkZXZpY2VzCj4gYW5kIGFyOTg4MCBpcyBq
-dXN0IHVzZWQgb24gZW1iZWRkZWQgZGV2aWNlcyBhbG1vc3QKClVzaW5nIGBmcmVlYCBpcyBhIHBy
-ZXR0eSBwb29yIHdheSBvZiBhc3Nlc3NpbmcgbWVtb3J5IHVzYWdlIG9mIGEKa2VybmVsIGRyaXZl
-ci4gSXQgcmVwb3J0cyBob3cgbXVjaCB0aGUgT1MgaGFzIG1lbW9yeSBhdmFpbGFibGUgdG8KdXNl
-cnNwYWNlIGltbWVkaWF0ZWx5IChrZXJuZWwgcmVjeWNsZXMgc29tZSBtZW1vcnkgZm9yIHBlcmZv
-cm1hbmNlCnJlYXNvbnMsIGUuZy4gU0xBQiBkb2VzIGl0KS4gVGhlcmUncyBhIGxvdCBvZiBtZXRh
-ZGF0YSB0b28gc28gd2hhdCB5b3UKYWN0dWFsbHkgc2VlIGlzIG1hbnkgb3RoZXIgdGhpbmdzIHRo
-YXQgaW52b2x2ZSBhdGgxMGsgYmVpbmcgdXNlZC4KClRoZSBkcml2ZXIgaXRzZWxmIHNob3VsZCBi
-ZSBjb25zdW1pbmcgYXJvdW5kIDVNQiBvZiBtZW1vcnkgYXQgaWRsZQooaW50ZXJmYWNlIHVwLCBu
-byBzaWduaWZpY2FudCB0cmFmZmljKS4gTW9zdCBvZiB0aGlzIGdvZXMgZm9yIHRoZSBSeApyaW5n
-IHdoaWNoIGhhcyAxMDIzKjE5MjAgYnl0ZXMgKCsvLSBhbGxvY2F0aW9uIGFuZCBtZXRhZGF0YSB3
-YXN0ZSkuClRoZW4gdGhlcmUncyBhIGJ1bmNoIG9mIENFIGJ1ZmZlcnMgYXMgd2VsbCB3aGljaCB0
-YWtlIHVwIHNvbWUgbWVtb3J5Cih1c2VkIGZvciBkcml2ZXItZmlybXdhcmUgY29tbXVuaWNhdGlv
-biksIGUuZy4gMjA0OCo1MTIgKyAyMDQ4KjEyOAooSFRUIGFuZCBXTUksIGJvdGggdGFyZ2V0LT5o
-b3N0KS4KCldoZW4gVHhpbmcgaXQgbWF5IGVhdCB1cCBhZGRpdGlvbmFsIDE0MjQgKiAoTVNEVSBz
-aXplICsKc2l6ZW9mKHNrYnVmZikpLiBOb3RlIHRoYXQgVHggcXVldWVzIGNhbiBiZSBsb25nZXIg
-LSBkcml2ZXIgaXNuJ3QKYXdhcmUgb2YgcWRpc2NzIGFuZCB0aG9zZSBjYW4gc3RvcmUgZnJhbWVz
-IGFzIHdlbGwuCgoxMWFjIHN1cHBvcnRzIGZyYW1lIGFnZ3JlZ2F0ZXMgZ29pbmcgdXAgdG8gMU1C
-IHNvIHRoZXNlIHF1ZXVlcyBwcmV0dHkKbXVjaCBuZWVkIHRvIGJlIHRoaXMgbG9uZyBpZiB5b3Ug
-d2FudCB0byBiZSBhYmxlIHRvIGdldCBoaWdoZXN0CnBvc3NpYmxlIHRocm91Z2hwdXQuCgoKTWlj
-aGHFggoKPgo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+Pgo+PiBPbiAwNS8yNS8yMDE1IDA0OjAw
-IFBNLCBTZWJhc3RpYW4gR290dHNjaGFsbCB3cm90ZToKPj4+Cj4+PiBBbSAyNi4wNS4yMDE1IHVt
-IDAwOjM5IHNjaHJpZWIgQmVuIEdyZWVhcjoKPj4+Pgo+Pj4+IERlZmF1bHQgZmlybXdhcmUgaGFz
-IGEgaGFyZC1jb2RlZCBtaW5pbXVtIG51bWJlciBvZiB0eCBidWZmZXJzCj4+Pj4gKHNvbWV3aGVy
-ZQo+Pj4+IG1vcmUgdGhhbiAxayBidWZmZXJzIEkgdGhpbmspLiAgTWF5YmUgZHJpdmVyIGlzIGFs
-bG9jYXRpbmcgYWxsIHRoaXMKPj4+PiBtZW1vcnkgc29tZWhvdz8KPj4+Pgo+Pj4+IElmIHlvdSBk
-byBvbmUtd2F5IHRyYWZmaWMgdGVzdHMgKHVkcCksIEkgd29uZGVyIGlmIHlvdSBjYW4gdGVsbCBp
-ZiBpdCBpcwo+Pj4+IHR4Cj4+Pj4gb3IgcnggdGhhdCBjb25zdW1lcyB0aGUgbWVtb3J5Pwo+Pj4K
-Pj4+IGl0cyB0eC4gaSBoYXZlIGEgZXRoZXJuZXQgb3ZlciBpcCB0dW5uZWwgcnVubmluZyBvbiB0
-aGF0IGxpbmsgYW5kIGkKPj4+IGJyb2FkY2FzdCBpcHR2IGluIHRoYXQgd2F5LiAoaXRzIG15IHdh
-eSB0byBjb252ZXJ0IG11bHRpY2FzdCB0byB1bmljYXN0KQo+Pj4gdGhlICB0dW5uZWwgaXRzZWxm
-IGlzIHJmYyBldGhlcm5ldCBvdmVyIGlwLCB3aGljaCBpcyBzb21ld2hhdCBsaWtlIHVkcC4KPj4+
-IHNvIGNvbm5lY3Rpb25sZXNzIHByb3RvY29sCj4+Pgo+Pj4gU2ViYXN0aWFuCj4+Pj4KPj4+Pgo+
-Pj4+IENUIGZpcm13YXJlIGNhbiBiZSBjb25maWd1cmVkIHRvIHVzZSBhbnkgbXVsdGlwbGUtb2Yt
-OCBhbW91bnQgb2YgdHgKPj4+PiBidWZmZXJzLCB0aG91Z2ggSSBoYXZlIG5vdCB0ZXN0ZWQgYmVs
-b3cgYXJvdW5kIDYwMC4KPj4+Pgo+Pj4+IFRoYW5rcywKPj4+PiBCZW4KPj4+Pgo+Pj4+IE9uIDA1
-LzI1LzIwMTUgMDI6MjYgUE0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+Pj4+Pgo+Pj4+
-PiB0b2RheSB1c2luZyB0aGUgbGF0ZXN0IHRlc3RpbmcgZHJpdmVyLCBpIGZvdW5kIG91dCB0aGUg
-bWVtb3J5Cj4+Pj4+IGNvbnN1bXB0aW9uIGlzIHVuYmVsaWV2YWJsZSBoaWdoLgo+Pj4+PiBteSBy
-b3V0ZXIgaGVyZSBoYXMgNjQgbWIgcmFtLiB0aGlzIHJhbSBpcyBmdWxseSB0YWtlbiBhZnRlciBz
-b21lCj4+Pj4+IG1pbnV0ZXMgYnkgYXRoMTBrLiBidXQgb25seSBpZiBkYXRhIGZsb3cgcHJlc2Vu
-dC4KPj4+Pj4KPj4+Pj4gaGVyZSB0aGUgcmVzdWx0cyBvZiAiZnJlZSIgYWZ0ZXIgc29tZSBtaW51
-dGVzCj4+Pj4+IHJvb3RAREQtV1JUOn4jIGZyZWUKPj4+Pj4gdG90YWwgICAgICAgICB1c2VkICAg
-ICAgICAgZnJlZSAgICAgICBzaGFyZWQgICAgICBidWZmZXJzCj4+Pj4+IE1lbTogICAgICAgICA2
-MTYzNiAgICAgICAgNTg3NTIgICAgICAgICAyODg0ICAgICAgICAgICAgMCAyNjAwCj4+Pj4+IC0v
-KyBidWZmZXJzOiAgICAgICAgICAgICAgNTYxNTIgICAgICAgICA1NDg0Cj4+Pj4+IFN3YXA6ICAg
-ICAgICAgICAgMCAgICAgICAgICAgIDAgICAgICAgICAgICAwCj4+Pj4+Cj4+Pj4+Cj4+Pj4+IG5v
-dyBpIHRlcm1pbmF0ZSBob3N0YXBkIHdoaWNoIGNvbnRyb2xzIHRoZSBhdGgxMGsgY2hpcHNldAo+
-Pj4+Pgo+Pj4+Pgo+Pj4+PiByb290QERELVdSVDp+IyBraWxsIDkwMgo+Pj4+PiByb290QERELVdS
-VDp+IyBmcmVlCj4+Pj4+IHRvdGFsICAgICAgICAgdXNlZCAgICAgICAgIGZyZWUgICAgICAgc2hh
-cmVkICAgICAgYnVmZmVycwo+Pj4+PiBNZW06ICAgICAgICAgNjE2MzYgICAgICAgIDIzMjEyICAg
-ICAgICAzODQyNCAgICAgICAgICAgIDAgMjQxNgo+Pj4+PiAtLysgYnVmZmVyczogICAgICAgICAg
-ICAgIDIwNzk2ICAgICAgICA0MDg0MAo+Pj4+PiBTd2FwOiAgICAgICAgICAgIDAgICAgICAgICAg
-ICAwICAgICAgICAgICAgMAo+Pj4+Pgo+Pj4+Pgo+Pj4+PiB5b3Ugc2VlIHRoZSBkaWZmZXJlbmNl
-Pwo+Pj4+Pgo+Pj4+Pgo+Pj4+PiByZWdhcmRzLAo+Pj4+PiBTZWJhc3RpYW4gR290dHNjaGFsbAo+
-Pj4+Pgo+Pj4+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+Pj4+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4+Pj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCj4+Pj4+Cj4+Pj4KPj4+Cj4+Cj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnCj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Tue, May 26, 2015 at 07:42:35AM +0200, Michal Kazior wrote:
+> On 26 May 2015 at 02:07, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
+> > Am 26.05.2015 um 01:42 schrieb Ben Greear:
+> >>
+> >> Can you test with ath9k to make sure it is actually ath10k related?
+> >
+> > already tested. this device has 2 chipsets. one is ath9k based and the
+> > second is ath10k based. :-)
+> > only if i kill the hostapd process which controls ath10k. the memory waste
+> > is gone
+> 
+> Keep in mind that hostapd itself requires memory to function as well.
+> Each process (and thread) need some internal kernel memory (stack, et
+> al).
+>
+Have seen simialar issue long hours run in mbssid mode with multi-client.
+Killing hostapd regains memory.
+
+[<c021dd44>] (unwind_backtrace) from [<c021ae0c>] (show_stack+0x10/0x14)
+[<c021ae0c>] (show_stack) from [<c0336b9c>] (dump_stack+0x88/0xcc)
+[<c0336b9c>] (dump_stack) from [<c0279804>] (dump_header.isra.11+0x64/0x178)
+[<c0279804>] (dump_header.isra.11) from [<c0279b10>] (oom_kill_process+0x70/0x384)
+[<c0279b10>] (oom_kill_process) from [<c027a2a0>] (out_of_memory+0x2d4/0x304)
+[<c027a2a0>] (out_of_memory) from [<c027d180>] (__alloc_pages_nodemask+0x608/0x664)
+[<c027d180>] (__alloc_pages_nodemask) from [<c0278780>] (filemap_fault+0x1f8/0x390)
+[<c0278780>] (filemap_fault) from [<c028f45c>] (__do_fault+0xa4/0x42c)
+[<c028f45c>] (__do_fault) from [<c0292494>] (handle_mm_fault+0x230/0x7b0)
+[<c0292494>] (handle_mm_fault) from [<c021f70c>] (do_page_fault+0x114/0x26c)
+[<c021f70c>] (do_page_fault) from [<c0208440>] (do_PrefetchAbort+0x34/0x98)
+
+Need to check whether it is a regression or not.
+
+-Rajkumar
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
