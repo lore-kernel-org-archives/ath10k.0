@@ -1,22 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yx9Fs-0005t5-46
- for ath10k@lists.infradead.org; Tue, 26 May 2015 07:26:29 +0000
-References: <55636088.1080506@dd-wrt.com> <55636198.8020802@candelatech.com>
+ id 1YxABz-0007qz-Kd
+ for ath10k@lists.infradead.org; Tue, 26 May 2015 08:26:33 +0000
+Received: by wicmx19 with SMTP id mx19so57386157wic.0
+ for <ath10k@lists.infradead.org>; Tue, 26 May 2015 01:26:02 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <55641F6D.2040703@dd-wrt.com>
+References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
+ <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
+ <87oal83kv4.fsf@kamboji.qca.qualcomm.com>
+ <5563577E.4020208@dd-wrt.com> <5563584A.80604@candelatech.com>
+ <55636088.1080506@dd-wrt.com> <55636198.8020802@candelatech.com>
  <55637637.8020103@dd-wrt.com> <556378E3.7050707@candelatech.com>
  <55639395.6070207@dd-wrt.com> <5563A491.8070701@candelatech.com>
  <5563A990.5000606@dd-wrt.com> <5563B357.9060309@candelatech.com>
  <5563B934.5050306@dd-wrt.com>
  <CA+BoTQmmjnyei4LGzEU9=68QkgGY6Rn08X8=TP7R6qQBzvMAEQ@mail.gmail.com>
- <20150526062009.GA14525@qca.qualcomm.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <55642010.2070902@dd-wrt.com>
-Date: Tue, 26 May 2015 09:26:08 +0200
-MIME-Version: 1.0
-In-Reply-To: <20150526062009.GA14525@qca.qualcomm.com>
+ <55641F6D.2040703@dd-wrt.com>
+Date: Tue, 26 May 2015 10:26:02 +0200
+Message-ID: <CA+BoTQmxPx4o8Xtazv2m-m25bQay4yy5g=3DXq-vsg27yoLd4w@mail.gmail.com>
 Subject: Re: possible memory leak or memory waste
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,153 +31,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
 Cc: Ben Greear <greearb@candelatech.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-good point. ath10k is configured with one additional vap for me. but not 
-multi client.
-both vap's are running in ap mode. let me send you my hostapd config here.
-passphrases has been masked
-
-
-driver=nl80211
-ctrl_interface=/var/run/hostapd
-wmm_ac_bk_cwmin=4
-wmm_ac_bk_cwmax=10
-wmm_ac_bk_aifs=7
-wmm_ac_bk_txop_limit=0
-wmm_ac_bk_acm=0
-wmm_ac_be_aifs=3
-wmm_ac_be_cwmin=4
-wmm_ac_be_cwmax=10
-wmm_ac_be_acm=0
-wmm_ac_vi_aifs=2
-wmm_ac_vi_cwmin=3
-wmm_ac_vi_cwmax=4
-wmm_ac_vi_txop_limit=94
-wmm_ac_vi_acm=0
-wmm_ac_vo_aifs=2
-wmm_ac_vo_cwmin=2
-wmm_ac_vo_cwmax=3
-wmm_ac_vo_txop_limit=47
-wmm_ac_vo_acm=0
-tx_queue_data3_aifs=7
-tx_queue_data3_cwmin=15
-tx_queue_data3_cwmax=1023
-tx_queue_data3_burst=0
-tx_queue_data2_aifs=3
-tx_queue_data2_cwmin=15
-tx_queue_data2_cwmax=63
-tx_queue_data1_aifs=1
-tx_queue_data1_cwmin=7
-tx_queue_data1_cwmax=15
-tx_queue_data1_burst=3.0
-tx_queue_data0_aifs=1
-tx_queue_data0_cwmin=3
-tx_queue_data0_cwmax=7
-tx_queue_data0_burst=1.5
-country_code=DE
-tx_queue_data2_burst=2.0
-wmm_ac_be_txop_limit=64
-ieee80211n=1
-dynamic_ht40=0
-ht_capab=[HT40+][LDPC][SHORT-GI-20][SHORT-GI-40][TX-STBC][RX-STBC1][DSSS_CCK-40]
-vht_capab=[RXLDPC][SHORT-GI-80][TX-STBC-2BY1][RX-STBC1][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN][MAX-MPDU-11454][MAX-A-MPDU-LEN-EXP7]
-ieee80211ac=1
-vht_oper_chwidth=1
-vht_oper_centr_freq_seg0_idx=106
-hw_mode=a
-channel=100
-frequency=5500
-beacon_int=100
-
-dtim_period=2
-
-interface=ath1
-disassoc_low_ack=1
-wds_sta=1
-wmm_enabled=1
-bssid=E8:CC:18:FF:E0:A4
-ignore_broadcast_ssid=0
-max_num_sta=256
-ssid=dd-wrt-NA-5
-bridge=br0
-logger_syslog=-1
-logger_syslog_level=2
-logger_stdout=-1
-logger_stdout_level=2
-dump_file=/tmp/hostapd.dump
-eapol_version=1
-eapol_key_index_workaround=0
-wpa=2
-wpa_passphrase=***********
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=CCMP
-wpa_group_rekey=3600
-
-
-bss=ath1.1
-disassoc_low_ack=1
-wmm_enabled=1
-bssid=EA:CC:18:FF:E0:A4
-ignore_broadcast_ssid=0
-max_num_sta=256
-ssid=dd-wrt-TV
-bridge=br0
-logger_syslog=-1
-logger_syslog_level=2
-logger_stdout=-1
-logger_stdout_level=2
-dump_file=/tmp/hostapd.dump
-eapol_version=1
-eapol_key_index_workaround=0
-wpa=2
-wpa_passphrase=************
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=CCMP
-wpa_group_rekey=3600
-
-
-
-Am 26.05.2015 um 08:20 schrieb Rajkumar Manoharan:
-> On Tue, May 26, 2015 at 07:42:35AM +0200, Michal Kazior wrote:
->> On 26 May 2015 at 02:07, Sebastian Gottschall <s.gottschall@dd-wrt.com> wrote:
->>> Am 26.05.2015 um 01:42 schrieb Ben Greear:
->>>> Can you test with ath9k to make sure it is actually ath10k related?
->>> already tested. this device has 2 chipsets. one is ath9k based and the
->>> second is ath10k based. :-)
->>> only if i kill the hostapd process which controls ath10k. the memory waste
->>> is gone
->> Keep in mind that hostapd itself requires memory to function as well.
->> Each process (and thread) need some internal kernel memory (stack, et
->> al).
->>
-> Have seen simialar issue long hours run in mbssid mode with multi-client.
-> Killing hostapd regains memory.
->
-> [<c021dd44>] (unwind_backtrace) from [<c021ae0c>] (show_stack+0x10/0x14)
-> [<c021ae0c>] (show_stack) from [<c0336b9c>] (dump_stack+0x88/0xcc)
-> [<c0336b9c>] (dump_stack) from [<c0279804>] (dump_header.isra.11+0x64/0x178)
-> [<c0279804>] (dump_header.isra.11) from [<c0279b10>] (oom_kill_process+0x70/0x384)
-> [<c0279b10>] (oom_kill_process) from [<c027a2a0>] (out_of_memory+0x2d4/0x304)
-> [<c027a2a0>] (out_of_memory) from [<c027d180>] (__alloc_pages_nodemask+0x608/0x664)
-> [<c027d180>] (__alloc_pages_nodemask) from [<c0278780>] (filemap_fault+0x1f8/0x390)
-> [<c0278780>] (filemap_fault) from [<c028f45c>] (__do_fault+0xa4/0x42c)
-> [<c028f45c>] (__do_fault) from [<c0292494>] (handle_mm_fault+0x230/0x7b0)
-> [<c0292494>] (handle_mm_fault) from [<c021f70c>] (do_page_fault+0x114/0x26c)
-> [<c021f70c>] (do_page_fault) from [<c0208440>] (do_PrefetchAbort+0x34/0x98)
->
-> Need to check whether it is a regression or not.
->
-> -Rajkumar
->
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjYgTWF5IDIwMTUgYXQgMDk6MjMsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRzY2hh
+bGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4gQW0gMjYuMDUuMjAxNSB1bSAwNzo0MiBzY2hyaWViIE1p
+Y2hhbCBLYXppb3I6ClsuLi5dCj4+IFRoZSBkcml2ZXIgaXRzZWxmIHNob3VsZCBiZSBjb25zdW1p
+bmcgYXJvdW5kIDVNQiBvZiBtZW1vcnkgYXQgaWRsZQo+PiAoaW50ZXJmYWNlIHVwLCBubyBzaWdu
+aWZpY2FudCB0cmFmZmljKS4gTW9zdCBvZiB0aGlzIGdvZXMgZm9yIHRoZSBSeAo+PiByaW5nIHdo
+aWNoIGhhcyAxMDIzKjE5MjAgYnl0ZXMgKCsvLSBhbGxvY2F0aW9uIGFuZCBtZXRhZGF0YSB3YXN0
+ZSkuCj4+IFRoZW4gdGhlcmUncyBhIGJ1bmNoIG9mIENFIGJ1ZmZlcnMgYXMgd2VsbCB3aGljaCB0
+YWtlIHVwIHNvbWUgbWVtb3J5Cj4+ICh1c2VkIGZvciBkcml2ZXItZmlybXdhcmUgY29tbXVuaWNh
+dGlvbiksIGUuZy4gMjA0OCo1MTIgKyAyMDQ4KjEyOAo+PiAoSFRUIGFuZCBXTUksIGJvdGggdGFy
+Z2V0LT5ob3N0KS4KPj4KPj4gV2hlbiBUeGluZyBpdCBtYXkgZWF0IHVwIGFkZGl0aW9uYWwgMTQy
+NCAqIChNU0RVIHNpemUgKwo+PiBzaXplb2Yoc2tidWZmKSkuIE5vdGUgdGhhdCBUeCBxdWV1ZXMg
+Y2FuIGJlIGxvbmdlciAtIGRyaXZlciBpc24ndAo+PiBhd2FyZSBvZiBxZGlzY3MgYW5kIHRob3Nl
+IGNhbiBzdG9yZSBmcmFtZXMgYXMgd2VsbC4KPj4KPj4gMTFhYyBzdXBwb3J0cyBmcmFtZSBhZ2dy
+ZWdhdGVzIGdvaW5nIHVwIHRvIDFNQiBzbyB0aGVzZSBxdWV1ZXMgcHJldHR5Cj4+IG11Y2ggbmVl
+ZCB0byBiZSB0aGlzIGxvbmcgaWYgeW91IHdhbnQgdG8gYmUgYWJsZSB0byBnZXQgaGlnaGVzdAo+
+PiBwb3NzaWJsZSB0aHJvdWdocHV0Lgo+Cj4geWVzLiBidXQgYXRoMTBrIGhhcyBpdHMgbWFpbiB1
+c2FnZSBvbiBlbWJlZGRlZCBkZXZpY2VzLiBhdCBsZWFzdCBmb3IgQVI5ODgwCj4gY2hpcHNldHMK
+CkknbSBhd2FyZSBvZiB0aGF0LgoKCj4gc2luY2UgdGhlcmUgaXMgbm90IGV2ZW4gYSB3aW5kb3dz
+IGRyaXZlciBhdmFpbGFibGUgZm9yIEFSOTg4MC4KPiBzbyBub3cgY29uc2lkZXIgdGhhdCBhdGgx
+MGsgaXMgbm90IGFibGUgdG8gcnVuIG9uIGRldmljZXMgd2l0aCBnb29kCj4gc3RhYmlsaXR5LCB3
+aGVyZSB0aGUgUUNBIExTREsgRHJpdmVyCj4gZG9lcyBub3Qgc2VlbSB0byBoYXZlIHRoYXQgYmln
+IHJlc291cmNlIHByb2JsZW0uCgpEaWQgeW91IG1lYXN1cmUgTFNESyB0aGUgc2FtZSB3YXkgd2l0
+aGluIHNhbWUgY29uZGl0aW9ucz8gU2FtZSBsaWJjLApzYW1lIGtlcm5lbCwgZXRjPwoKRG8geW91
+IHNlZSBPT01zPyBXaGF0IHN0YWJpbGl0eSBpc3N1ZXMgYXJlIHdlIHRhbGtpbmcgYWJvdXQ/CgpE
+aWQgeW91IHRyeSBzdHJlc3NpbmcgdGhlIHN5c3RlbSBieSBhY3R1YWxseSB0cnlpbmcgdG8gY29u
+c3VtZSBtZW1vcnkKdW50aWwgaXQncyBydW4gb3V0IHRvIHNlZSBob3cgbXVjaCBtZW1vcnkgaXMg
+X3JlYWxseV8gbGVmdCBmb3IgdGhlCnN5c3RlbSB0byB1c2U/CgoKPiBzbyBpdCBkb2VzbnQgbWFr
+ZSBtdWNoIHNlbnNlIHRvIGdvIG9uIGhlcmUgaW4gdGhpcyB3YXkuCj4gdGhpcyByZXNvdXJjZSBw
+cm9ibGVtIG11c3QgYmUgc29sdmVkLiBhYm91dCA1MCBNQiBpcyByZWFsbHkgdG9vIG11Y2guCgpJ
+IGRvbid0IHNlZSB0aGlzIG11Y2ggbWVtb3J5IGJlaW5nIHVzZWQgd2l0aCBhdGgxMGsgaW4gbXkg
+eDg2XzY0CnZpcnR1YWwgbWFjaGluZSBldmVuIHdpdGggYGZyZWVgLiBJIHNlZSB+MTBNQiBvZiBs
+ZXNzICJmcmVlIiBtZW1vcnkKYWZ0ZXIgc3RhcnRpbmcgaG9zdGFwZCBhbmQgcnVubmluZyB0cmFm
+ZmljIGZvciBzb21lIHRpbWUgdnMgbm8gaG9zdGFwZAphbmQgYXRoMTBrIHN0b3BwZWQuCgpJIGRv
+bid0IGV2ZW4gc2VlIGhvdyBhdGgxMGsgY291bGQgdGFrZSA1ME1CIGRpcmVjdGx5LiBQZXJoYXBz
+IHRoZXJlJ3MKc29tZSBsYXp5IG1lbW9yeSByZWN5Y2xpbmcgZ29pbmcgb24gaW4gdGhlIHN5c3Rl
+bT8gTWF5YmUgbW9yZSBtZW1vcnkKaXMgZWZmZWN0aXZlbHkgY29uc3VtZWQgKGNvbXBhcmVkIHRv
+IGF0aDlrKSBkdWUgdG8gYWxpZ25tZW50CnJlcXVpcmVtZW50cyBvciBtZW1vcnkgcGFnaW5nICh3
+aGljaCBiZWNvbWUgbW9yZSBhcHBhcmVudCB3aXRoCmluY3JlYXNlZCBudW1iZXIgb2YgYWxsb2Nh
+dGlvbnMpPwoKCk1pY2hhxYIKCj4KPgo+IFNlYmFzdGlhbgo+Cj4+Cj4+Cj4+IE1pY2hhxYIKPj4K
+Pj4+PiBUaGFua3MsCj4+Pj4gQmVuCj4+Pj4KPj4+Pgo+Pj4+IE9uIDA1LzI1LzIwMTUgMDQ6MDAg
+UE0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+Pj4+Pgo+Pj4+PiBBbSAyNi4wNS4yMDE1
+IHVtIDAwOjM5IHNjaHJpZWIgQmVuIEdyZWVhcjoKPj4+Pj4+Cj4+Pj4+PiBEZWZhdWx0IGZpcm13
+YXJlIGhhcyBhIGhhcmQtY29kZWQgbWluaW11bSBudW1iZXIgb2YgdHggYnVmZmVycwo+Pj4+Pj4g
+KHNvbWV3aGVyZQo+Pj4+Pj4gbW9yZSB0aGFuIDFrIGJ1ZmZlcnMgSSB0aGluaykuICBNYXliZSBk
+cml2ZXIgaXMgYWxsb2NhdGluZyBhbGwgdGhpcwo+Pj4+Pj4gbWVtb3J5IHNvbWVob3c/Cj4+Pj4+
+Pgo+Pj4+Pj4gSWYgeW91IGRvIG9uZS13YXkgdHJhZmZpYyB0ZXN0cyAodWRwKSwgSSB3b25kZXIg
+aWYgeW91IGNhbiB0ZWxsIGlmIGl0Cj4+Pj4+PiBpcwo+Pj4+Pj4gdHgKPj4+Pj4+IG9yIHJ4IHRo
+YXQgY29uc3VtZXMgdGhlIG1lbW9yeT8KPj4+Pj4KPj4+Pj4gaXRzIHR4LiBpIGhhdmUgYSBldGhl
+cm5ldCBvdmVyIGlwIHR1bm5lbCBydW5uaW5nIG9uIHRoYXQgbGluayBhbmQgaQo+Pj4+PiBicm9h
+ZGNhc3QgaXB0diBpbiB0aGF0IHdheS4gKGl0cyBteSB3YXkgdG8gY29udmVydCBtdWx0aWNhc3Qg
+dG8KPj4+Pj4gdW5pY2FzdCkKPj4+Pj4gdGhlICB0dW5uZWwgaXRzZWxmIGlzIHJmYyBldGhlcm5l
+dCBvdmVyIGlwLCB3aGljaCBpcyBzb21ld2hhdCBsaWtlIHVkcC4KPj4+Pj4gc28gY29ubmVjdGlv
+bmxlc3MgcHJvdG9jb2wKPj4+Pj4KPj4+Pj4gU2ViYXN0aWFuCj4+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+
+IENUIGZpcm13YXJlIGNhbiBiZSBjb25maWd1cmVkIHRvIHVzZSBhbnkgbXVsdGlwbGUtb2YtOCBh
+bW91bnQgb2YgdHgKPj4+Pj4+IGJ1ZmZlcnMsIHRob3VnaCBJIGhhdmUgbm90IHRlc3RlZCBiZWxv
+dyBhcm91bmQgNjAwLgo+Pj4+Pj4KPj4+Pj4+IFRoYW5rcywKPj4+Pj4+IEJlbgo+Pj4+Pj4KPj4+
+Pj4+IE9uIDA1LzI1LzIwMTUgMDI6MjYgUE0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgo+
+Pj4+Pj4+Cj4+Pj4+Pj4gdG9kYXkgdXNpbmcgdGhlIGxhdGVzdCB0ZXN0aW5nIGRyaXZlciwgaSBm
+b3VuZCBvdXQgdGhlIG1lbW9yeQo+Pj4+Pj4+IGNvbnN1bXB0aW9uIGlzIHVuYmVsaWV2YWJsZSBo
+aWdoLgo+Pj4+Pj4+IG15IHJvdXRlciBoZXJlIGhhcyA2NCBtYiByYW0uIHRoaXMgcmFtIGlzIGZ1
+bGx5IHRha2VuIGFmdGVyIHNvbWUKPj4+Pj4+PiBtaW51dGVzIGJ5IGF0aDEway4gYnV0IG9ubHkg
+aWYgZGF0YSBmbG93IHByZXNlbnQuCj4+Pj4+Pj4KPj4+Pj4+PiBoZXJlIHRoZSByZXN1bHRzIG9m
+ICJmcmVlIiBhZnRlciBzb21lIG1pbnV0ZXMKPj4+Pj4+PiByb290QERELVdSVDp+IyBmcmVlCj4+
+Pj4+Pj4gdG90YWwgICAgICAgICB1c2VkICAgICAgICAgZnJlZSAgICAgICBzaGFyZWQgICAgICBi
+dWZmZXJzCj4+Pj4+Pj4gTWVtOiAgICAgICAgIDYxNjM2ICAgICAgICA1ODc1MiAgICAgICAgIDI4
+ODQgICAgICAgICAgICAwIDI2MDAKPj4+Pj4+PiAtLysgYnVmZmVyczogICAgICAgICAgICAgIDU2
+MTUyICAgICAgICAgNTQ4NAo+Pj4+Pj4+IFN3YXA6ICAgICAgICAgICAgMCAgICAgICAgICAgIDAg
+ICAgICAgICAgICAwCj4+Pj4+Pj4KPj4+Pj4+Pgo+Pj4+Pj4+IG5vdyBpIHRlcm1pbmF0ZSBob3N0
+YXBkIHdoaWNoIGNvbnRyb2xzIHRoZSBhdGgxMGsgY2hpcHNldAo+Pj4+Pj4+Cj4+Pj4+Pj4KPj4+
+Pj4+PiByb290QERELVdSVDp+IyBraWxsIDkwMgo+Pj4+Pj4+IHJvb3RAREQtV1JUOn4jIGZyZWUK
+Pj4+Pj4+PiB0b3RhbCAgICAgICAgIHVzZWQgICAgICAgICBmcmVlICAgICAgIHNoYXJlZCAgICAg
+IGJ1ZmZlcnMKPj4+Pj4+PiBNZW06ICAgICAgICAgNjE2MzYgICAgICAgIDIzMjEyICAgICAgICAz
+ODQyNCAgICAgICAgICAgIDAgMjQxNgo+Pj4+Pj4+IC0vKyBidWZmZXJzOiAgICAgICAgICAgICAg
+MjA3OTYgICAgICAgIDQwODQwCj4+Pj4+Pj4gU3dhcDogICAgICAgICAgICAwICAgICAgICAgICAg
+MCAgICAgICAgICAgIDAKPj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4geW91IHNlZSB0aGUgZGlmZmVy
+ZW5jZT8KPj4+Pj4+Pgo+Pj4+Pj4+Cj4+Pj4+Pj4gcmVnYXJkcywKPj4+Pj4+PiBTZWJhc3RpYW4g
+R290dHNjaGFsbAo+Pj4+Pj4+Cj4+Pj4+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPj4+Pj4+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+Pj4+Pj4gYXRo
+MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+Pj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Pj4+Cj4+Pgo+Pj4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4+IGF0aDEwayBtYWlsaW5nIGxpc3QK
+Pj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+PiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Cj4KCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
