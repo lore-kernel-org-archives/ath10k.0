@@ -1,25 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x231.google.com ([2607:f8b0:4001:c05::231])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxZJl-0000lL-Lp
- for ath10k@lists.infradead.org; Wed, 27 May 2015 11:16:14 +0000
-Received: by igbyr2 with SMTP id yr2so81967942igb.0
- for <ath10k@lists.infradead.org>; Wed, 27 May 2015 04:15:52 -0700 (PDT)
+ id 1Yxatp-0000zz-7y
+ for ath10k@lists.infradead.org; Wed, 27 May 2015 12:57:33 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Debugfs entry to enable/disable BTC feature
+References: <1430514659-11743-1-git-send-email-yanbol@qca.qualcomm.com>
+Date: Wed, 27 May 2015 15:56:57 +0300
+In-Reply-To: <1430514659-11743-1-git-send-email-yanbol@qca.qualcomm.com>
+ (Yanbo Li's message of "Fri, 1 May 2015 14:10:59 -0700")
+Message-ID: <871ti218me.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20150527111211.GC6216@localhost>
-References: <20150424125055.GA27722@localhost>
- <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
- <553AEFFA.6010709@candelatech.com>
- <20150426141552.GA25938@localhost>
- <20150427130016.GA28926@localhost>
- <CA+BoTQmrboeJOw0J67PWkbjteh38xrWntivvBKSWY1MBQ=B6Dg@mail.gmail.com>
- <20150428122554.GA4527@localhost>
- <CACKGw+Hict+GwUQMvUph7U0Oanr-jEgLfWJyODxh_S-OG54GUg@mail.gmail.com>
- <20150527111211.GC6216@localhost>
-Date: Wed, 27 May 2015 13:15:52 +0200
-Message-ID: <CACKGw+GhqxuZm9vfXcOaoOaK3h3bQSv=5BrzG=hE9ATUDuZ42A@mail.gmail.com>
-Subject: Re: attempting mesh on ath10k
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +23,82 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Yanbo Li <yanbol@qca.qualcomm.com>
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
 
-On 27 May 2015 at 13:12, Bob Copeland <me@bobcopeland.com> wrote:
-> On Wed, May 27, 2015 at 08:51:05AM +0200, Bartosz Markowski wrote:
+Yanbo Li <yanbol@qca.qualcomm.com> writes:
 
-[...]
-
->> Are there any plans to push this work upstream?
+> As some radio have no connection with BT modules, enable the BTC feature
+> will has some side effect if the radio's GPIO connect with any other HW
+> modules. Add the control switcher "btc_feature" at debugfs and set the
+> feature as disable by default to avoid such case.
 >
-> Hi Bartosz,
->
-> Yes, I plan to upstream it.  I'm waiting on a hardware to arrive so I can
-> implement VHT mesh with two ath10k chips; once that's in and working I'll
-> clean it up and submit.
+> To enable this feature, execute:
+> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+> To disable:
+> echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
 
-Great! Thanks for your effort.
+I suspect "BTC" does not really tell much for most of the people and
+acronyms should be always spelled out at least once.
+
+> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+> index 8444adf42195..6852e7fc5d5f 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.h
+> +++ b/drivers/net/wireless/ath/ath10k/core.h
+> @@ -720,6 +720,8 @@ struct ath10k {
+>  		u32 fw_cold_reset_counter;
+>  	} stats;
+>  
+> +	bool btc_feature;
+
+Could we use ar->dev_flags instead?
+
+> +static ssize_t ath10k_write_btc_feature(struct file *file,
+> +					const char __user *ubuf,
+> +					size_t count, loff_t *ppos)
+> +{
+> +	struct ath10k *ar = file->private_data;
+> +	char buf[32];
+> +	size_t buf_size;
+> +	bool val;
+> +
+> +	buf_size = min(count, (sizeof(buf) - 1));
+> +	if (copy_from_user(buf, ubuf, buf_size))
+> +		return -EFAULT;
+> +
+> +	buf[buf_size] = '\0';
+> +	if (strtobool(buf, &val) != 0) {
+> +		ath10k_warn(ar, "Wrong BTC feature setting\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	mutex_lock(&ar->conf_mutex);
+> +	ar->btc_feature = val;
+> +	queue_work(ar->workqueue, &ar->restart_work);
+> +	mutex_unlock(&ar->conf_mutex);
+
+Shouldn't we test ATH10K_STATE_ON first?
+
+>  int ath10k_debug_create(struct ath10k *ar)
+>  {
+>  	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+> @@ -2195,6 +2243,8 @@ int ath10k_debug_register(struct ath10k *ar)
+>  	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
+>  			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
+>  
+> +	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
+> +			    ar->debug.debugfs_phy, ar,
+> &fops_btc_feature);
+
+At least some of the other drivers use term btcoex for this, I think we
+should be consistent and use the same.
+
+I can do the changes and send v2 for this.
 
 -- 
-Bartosz
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
