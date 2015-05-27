@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yxatp-0000zz-7y
- for ath10k@lists.infradead.org; Wed, 27 May 2015 12:57:33 +0000
+ id 1Yxbql-00030a-S1
+ for ath10k@lists.infradead.org; Wed, 27 May 2015 13:58:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Debugfs entry to enable/disable BTC feature
-References: <1430514659-11743-1-git-send-email-yanbol@qca.qualcomm.com>
-Date: Wed, 27 May 2015 15:56:57 +0300
-In-Reply-To: <1430514659-11743-1-git-send-email-yanbol@qca.qualcomm.com>
- (Yanbo Li's message of "Fri, 1 May 2015 14:10:59 -0700")
-Message-ID: <871ti218me.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: Bypass PLL setting on target init for QCA9888
+References: <1430994663-30006-1-git-send-email-rmanohar@qti.qualcomm.com>
+Date: Wed, 27 May 2015 16:57:49 +0300
+In-Reply-To: <1430994663-30006-1-git-send-email-rmanohar@qti.qualcomm.com>
+ (Rajkumar Manoharan's message of "Thu, 7 May 2015 16:01:03 +0530")
+Message-ID: <87mw0qyvfm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,79 +23,44 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Yanbo Li <yanbol@qca.qualcomm.com>
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, michal.kazior@tieto.com, ath10k@lists.infradead.org
+To: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Yanbo Li <yanbol@qca.qualcomm.com> writes:
+Rajkumar Manoharan <rmanohar@qti.qualcomm.com> writes:
 
-> As some radio have no connection with BT modules, enable the BTC feature
-> will has some side effect if the radio's GPIO connect with any other HW
-> modules. Add the control switcher "btc_feature" at debugfs and set the
-> feature as disable by default to avoid such case.
+> Some of of qca988x solutions are having global reset issue
+> during target initialization. Bypassing PLL setting before
+> downloading firmware and letting the SoC run on REF_CLK is fixing
+> the problem. Corresponding firmware change is also needed to set
+> the clock source once the target is initialized. Since 10.2.4
+> firmware is having this ROM patch, applying skip_clock_init only
+> for 10.2.4 firmware versions.
 >
-> To enable this feature, execute:
-> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-> To disable:
-> echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-
-I suspect "BTC" does not really tell much for most of the people and
-acronyms should be always spelled out at least once.
-
-> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> ---
+>  drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 >
-> diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-> index 8444adf42195..6852e7fc5d5f 100644
-> --- a/drivers/net/wireless/ath/ath10k/core.h
-> +++ b/drivers/net/wireless/ath/ath10k/core.h
-> @@ -720,6 +720,8 @@ struct ath10k {
->  		u32 fw_cold_reset_counter;
->  	} stats;
+> diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+> index bcccae1..cb34619 100644
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1084,6 +1084,16 @@ int ath10k_core_start(struct ath10k *ar, enum ath10k_firmware_mode mode)
+>  	if (status)
+>  		goto err;
 >  
-> +	bool btc_feature;
-
-Could we use ar->dev_flags instead?
-
-> +static ssize_t ath10k_write_btc_feature(struct file *file,
-> +					const char __user *ubuf,
-> +					size_t count, loff_t *ppos)
-> +{
-> +	struct ath10k *ar = file->private_data;
-> +	char buf[32];
-> +	size_t buf_size;
-> +	bool val;
-> +
-> +	buf_size = min(count, (sizeof(buf) - 1));
-> +	if (copy_from_user(buf, ubuf, buf_size))
-> +		return -EFAULT;
-> +
-> +	buf[buf_size] = '\0';
-> +	if (strtobool(buf, &val) != 0) {
-> +		ath10k_warn(ar, "Wrong BTC feature setting\n");
-> +		return -EINVAL;
+> +	if ((ar->hw_rev == ATH10K_HW_QCA988X) &&
+> +	    (ar->wmi.op_version == ATH10K_FW_WMI_OP_VERSION_10_2_4)) {
+> +		status = ath10k_bmi_write32(ar, hi_skip_clock_init, 1);
+> +		if (status) {
+> +			ath10k_err(ar, "could not write skip_clock_init (%d)\n",
+> +				   status);
+> +			goto err;
+> +		}
 > +	}
-> +
-> +	mutex_lock(&ar->conf_mutex);
-> +	ar->btc_feature = val;
-> +	queue_work(ar->workqueue, &ar->restart_work);
-> +	mutex_unlock(&ar->conf_mutex);
 
-Shouldn't we test ATH10K_STATE_ON first?
-
->  int ath10k_debug_create(struct ath10k *ar)
->  {
->  	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
-> @@ -2195,6 +2243,8 @@ int ath10k_debug_register(struct ath10k *ar)
->  	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
->  			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
->  
-> +	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
-> +			    ar->debug.debugfs_phy, ar,
-> &fops_btc_feature);
-
-At least some of the other drivers use term btcoex for this, I think we
-should be consistent and use the same.
-
-I can do the changes and send v2 for this.
+I think it's better to use enum ath10k_fw_features for this as that
+gives more flexibility how to enable this.
 
 -- 
 Kalle Valo
