@@ -1,23 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ie0-x22d.google.com ([2607:f8b0:4001:c03::22d])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YxVBf-0002r4-CK
- for ath10k@lists.infradead.org; Wed, 27 May 2015 06:51:36 +0000
-Received: by iepj10 with SMTP id j10so6624031iep.3
- for <ath10k@lists.infradead.org>; Tue, 26 May 2015 23:51:07 -0700 (PDT)
+ id 1YxYX4-000392-19
+ for ath10k@lists.infradead.org; Wed, 27 May 2015 10:25:54 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] amth10k: fix promisc handling
+References: <1431434736-7077-1-git-send-email-michal.kazior@tieto.com>
+ <CA+BoTQ=dzJS447Gx+XAXPT6gZDDKZ__6scbxe0QC-iMA47bZmQ@mail.gmail.com>
+ <874mn68jl7.fsf@kamboji.qca.qualcomm.com>
+ <87oal83kv4.fsf@kamboji.qca.qualcomm.com>
+Date: Wed, 27 May 2015 13:25:21 +0300
+In-Reply-To: <87oal83kv4.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
+ of "Mon, 25 May 2015 15:25:03 +0300")
+Message-ID: <87egm21fn2.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <20150428122554.GA4527@localhost>
-References: <20150424125055.GA27722@localhost>
- <CAEFj986N0UnCnzFWLTd=MkSWRU0jOG36N4SVepkmXPnaLX__0g@mail.gmail.com>
- <553AEFFA.6010709@candelatech.com>
- <20150426141552.GA25938@localhost>
- <20150427130016.GA28926@localhost>
- <CA+BoTQmrboeJOw0J67PWkbjteh38xrWntivvBKSWY1MBQ=B6Dg@mail.gmail.com>
- <20150428122554.GA4527@localhost>
-Date: Wed, 27 May 2015 08:51:05 +0200
-Message-ID: <CACKGw+Hict+GwUQMvUph7U0Oanr-jEgLfWJyODxh_S-OG54GUg@mail.gmail.com>
-Subject: Re: attempting mesh on ath10k
-From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +26,47 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "John W. Linville" <linville@tuxdriver.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 28 April 2015 at 14:25, Bob Copeland <me@bobcopeland.com> wrote:
-> On Tue, Apr 28, 2015 at 07:47:40AM +0200, Michal Kazior wrote:
->> > Perhaps there is a BSSID filter enabled or something like that (in mesh
->> > there's no BSSID, just individual addresses on group addressed frames).
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
+
+>>>> Fixes: c17c997d5613 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/kvalo/wireless-drivers-next")
+>>>> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+>>>
+>>> Apparently this also fixes some weird issues with qca6174 hw2.1 notably:
+>>>  - ath10k causing disconnecting of other devices in a BSS
+>>>  - random Fw crashes
+>>>
+>>> Both problems started to happen because c17c997d5613 enabled monitor
+>>> vdev by default on STA interfaces. It seems that qca6174 hw2.1
+>>> firmware has issues similar to those of qca988x 999.999.0.636
+>>> regarding monitor vdev opration.
+>>>
+>>> Also, I've made a typo in the subject.
+>>>
+>>> I'll post v2 with subject fixed and extended commit log later.
 >>
->> In that case try creating a monitor interface and bring it up. This
->> should prompt ath10k to create monitor vdev and subsequently disable
->> most Rx filters in firmware.
+>> Keep in mind that c17c997d5613 is actually from wireless-testing.git
+>> which means that it will never go to wireless-drivers-next.git nor to
+>> net-next.git. So the merge conflict bug is purely in
+>> wireless-testing.git and in master branch of ath.git (but not in
+>> ath-next branch!).
+>>
+>> I think John should apply your v2 patch once you send it. But if you
+>> have something which should be fixed in ath-next remember to send that
+>> in a separate patch so that I can apply that directly to ath-next.
+>
+> Actually now that Dave pulled my pull request the issue is fixed in
+> wireless-drivers-next already. So once John pulls from
+> wireless-drivers-next and makes sure that ath10k is 100% identical in
+> both trees the issue should be sorted out and no need for extra patches.
 
-Are there any plans to push this work upstream?
-
-Regards,
-Bartosz
+John now fixed this in wireless-testing, thanks John. And I now updated
+ath.git master branch so it should be ok as well. Please let me know if
+there are still problems.
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
