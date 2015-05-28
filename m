@@ -1,18 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yy0zo-0002O2-7N
- for ath10k@lists.infradead.org; Thu, 28 May 2015 16:49:28 +0000
-Received: by igbhj9 with SMTP id hj9so119553352igb.1
- for <ath10k@lists.infradead.org>; Thu, 28 May 2015 09:49:04 -0700 (PDT)
+ id 1Yy3NX-0001Op-2e
+ for ath10k@lists.infradead.org; Thu, 28 May 2015 19:22:07 +0000
+From: Yanbo Li <yanbol@qca.qualcomm.com>
+Subject: [PATCH v2] ath10k: Debugfs entry to enable/disable WLAN&Blutooth
+ Coexist feature
+Date: Thu, 28 May 2015 12:19:05 -0700
+Message-ID: <1432840745-21725-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <55672169.8080209@candelatech.com>
-References: <CAJ-VmonBGgLdLy8KQwYt81+2tfMYzw+OY+VMSCmGy315wUP+EQ@mail.gmail.com>
- <55672169.8080209@candelatech.com>
-Date: Thu, 28 May 2015 09:49:04 -0700
-Message-ID: <CAJ-VmompEZGTE5AEgdotx13SO-9-2kRsfqZDpaR-5R=41Xtf7g@mail.gmail.com>
-Subject: Re: compiling decode_ath10k.cc with clang/llvm
-From: Adrian Chadd <adrian@freebsd.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,77 +21,121 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com
+Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Aw damn, sorry!
+As some radio have no connection with BT modules, enable the WLAN/Bluetooth
+coexist(BTC) feature will has some side effect if the radio's GPIO connect
+with any other HW modules. Add the control switcher "btc_feature" at
+debugfs and set the feature as disable by default to avoid such case.
 
-Thanks,
+To enable this feature, execute:
+echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+To disable:
+echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
 
+Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 70fcdc9c2758..4a84e17016c9 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -728,6 +728,8 @@ struct ath10k {
+ 		u32 fw_cold_reset_counter;
+ 	} stats;
+ 
++	bool btc_feature;
++
+ 	struct ath10k_thermal thermal;
+ 	struct ath10k_wow wow;
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 8fa606a9c4dd..820a12bc0dd8 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2092,6 +2092,56 @@ static const struct file_operations fops_quiet_period = {
+ 	.open = simple_open
+ };
+ 
++static ssize_t ath10k_write_btc_feature(struct file *file,
++					const char __user *ubuf,
++					size_t count, loff_t *ppos)
++{
++	struct ath10k *ar = file->private_data;
++	char buf[32];
++	size_t buf_size;
++	bool val;
++
++	buf_size = min(count, (sizeof(buf) - 1));
++	if (copy_from_user(buf, ubuf, buf_size))
++		return -EFAULT;
++
++	buf[buf_size] = '\0';
++	if (strtobool(buf, &val) != 0) {
++		ath10k_warn(ar, "Wrong BTC feature setting\n");
++		return -EINVAL;
++	}
++
++	mutex_lock(&ar->conf_mutex);
++	if (val != ar->btc_feature) {
++		ar->btc_feature = val;
++		queue_work(ar->workqueue, &ar->restart_work);
++	}
++	mutex_unlock(&ar->conf_mutex);
++
++	return count;
++}
++
++static ssize_t ath10k_read_btc_feature(struct file *file, char __user *ubuf,
++				       size_t count, loff_t *ppos)
++{
++	char buf[32];
++	struct ath10k *ar = file->private_data;
++	int len = 0;
++
++	mutex_lock(&ar->conf_mutex);
++	len = scnprintf(buf, sizeof(buf) - len, "%d\n",
++			ar->btc_feature);
++	mutex_unlock(&ar->conf_mutex);
++
++	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
++}
++
++static const struct file_operations fops_btc_feature = {
++	.read = ath10k_read_btc_feature,
++	.write = ath10k_write_btc_feature,
++	.open = simple_open
++};
++
+ int ath10k_debug_create(struct ath10k *ar)
+ {
+ 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
+@@ -2195,6 +2245,8 @@ int ath10k_debug_register(struct ath10k *ar)
+ 	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
+ 			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
+ 
++	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
++			    ar->debug.debugfs_phy, ar, &fops_btc_feature);
+ 	return 0;
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0fabe689179c..e3c880230ee6 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3933,7 +3933,8 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+ 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
+ 
+ 	features = WMI_10_2_RX_BATCH_MODE;
+-	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
++	if (ar->btc_feature &&
++	    test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
+ 		features |= WMI_10_2_COEX_GPIO;
+ 	cmd->resource_config.feature_mask = __cpu_to_le32(features);
+ 
+-- 
+1.9.1
 
--adrian
-
-
-On 28 May 2015 at 07:08, Ben Greear <greearb@candelatech.com> wrote:
-> That is from my private tree, so list cannot help you...
->
-> Looks like real bugs...I'll make attempt at fixing it.
->
-> Thanks,
-> Ben
->
->
->
-> On 05/27/2015 11:43 PM, Adrian Chadd wrote:
->>
->> Hi,
->>
->> I'm doing firmware bringup on freebsd, and I've hit a snag with
->> decode_ath10k.cc:
->>
->> Suspended
->> adrian@lucy-11i386:~/git/dev.qualcomm.com/greaarb/ath10k-firmware %
->> ./BUILDME.sh
->> decode_ath10k.cc:1266:28: error: use of logical '&&' with constant
->> operand [-Werror,-Wconstant-logical-operand]
->>               (ps_reg >> 8) && 0xf, (ps_reg >> 16) & 0x3, !!(ps_reg >>
->> 18));
->>                             ^  ~~~
->> decode_ath10k.cc:1266:28: note: use '&' for a bitwise operation
->>               (ps_reg >> 8) && 0xf, (ps_reg >> 16) & 0x3, !!(ps_reg >>
->> 18));
->>                             ^~
->>                             &
->> decode_ath10k.cc:1266:28: note: remove constant to silence this warning
->>               (ps_reg >> 8) && 0xf, (ps_reg >> 16) & 0x3, !!(ps_reg >>
->> 18));
->>                            ~^~~~~~
->> decode_ath10k.cc:1407:37: error: comparison of unsigned expression >=
->> 0 is always true [-Werror,-Wtautological-compare]
->>                          if ((sp_idx >= 0) && (sp_idx < len)) {
->>                               ~~~~~~ ^  ~
->> decode_ath10k.cc:2019:23: error: format specifies type 'unsigned
->> short' but the argument has type 'unsigned char' [-Werror,-Wformat]
->>        printf("%02hx", header.uuid[i]);
->>                ~~~~~   ^~~~~~~~~~~~~~
->>                %02hhx
->>
->> .. would someone who can use the firmware try fixing the source and
->> see if it still does the right thing?
->>
->>
->> -a
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
