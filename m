@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yy3NX-0001Op-2e
- for ath10k@lists.infradead.org; Thu, 28 May 2015 19:22:07 +0000
+ id 1Yy3RJ-000466-It
+ for ath10k@lists.infradead.org; Thu, 28 May 2015 19:26:02 +0000
 From: Yanbo Li <yanbol@qca.qualcomm.com>
-Subject: [PATCH v2] ath10k: Debugfs entry to enable/disable WLAN&Blutooth
- Coexist feature
-Date: Thu, 28 May 2015 12:19:05 -0700
-Message-ID: <1432840745-21725-1-git-send-email-yanbol@qca.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Ignore the adjacent radio's activity when
+ surveying a channel
+Date: Thu, 28 May 2015 12:23:06 -0700
+Message-ID: <1432840986-21918-2-git-send-email-yanbol@qca.qualcomm.com>
+In-Reply-To: <1432840986-21918-1-git-send-email-yanbol@qca.qualcomm.com>
+References: <1432840986-21918-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,115 +26,125 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: kvalo@qca.qualcomm.com
 Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-As some radio have no connection with BT modules, enable the WLAN/Bluetooth
-coexist(BTC) feature will has some side effect if the radio's GPIO connect
-with any other HW modules. Add the control switcher "btc_feature" at
-debugfs and set the feature as disable by default to avoid such case.
+The overall goal for a scanning radio is to evaluate the outside radio
+environment. Some platforms integrate several radios together. When one radio
+wants to survey the current channel, the adjacent radio's activity will make
+this survey result inaccurate. the switcher can be used to enable the FW to
+ignore the survey time slot when the adjacent radio is active, especially for
+TX. This skipped scan approach will make the survey result more accurate.
+
+This technique requires a precondition that the scanning and adjacent radio
+have some physical connection to make them aware of each other's activity from
+within the FW layer, and the FW claimed supporting this capability.
 
 To enable this feature, execute:
-echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-To disable:
-echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+echo 2 > /sys/kernel/debug/ieee80211/phyX/ath10k/adjacent_wlan_interfrc
+
+Then run the survey scan and dump the stastics:
+iw dev wifiX survey dump
+The TX&RX counter showed already deducted the time slot be interfered
+
+To check whether the feature is enabled, execute:
+cat /sys/kernel/debug/ieee80211/phyX/ath10k/adjacent_wlan_interfrc
+INTERFRC DETECT FOR SURVEY SCAN: Enable/Disable
 
 Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.h  | 1 +
+ drivers/net/wireless/ath/ath10k/debug.c | 4 ++++
+ drivers/net/wireless/ath/ath10k/wmi.c   | 5 +++++
+ drivers/net/wireless/ath/ath10k/wmi.h   | 7 +++++++
+ 4 files changed, 17 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 70fcdc9c2758..4a84e17016c9 100644
+index fb0e8521fc45..164160aaf8a7 100644
 --- a/drivers/net/wireless/ath/ath10k/core.h
 +++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -728,6 +728,8 @@ struct ath10k {
- 		u32 fw_cold_reset_counter;
- 	} stats;
+@@ -491,6 +491,7 @@ enum ath10k_cal_mode {
  
-+	bool btc_feature;
-+
- 	struct ath10k_thermal thermal;
- 	struct ath10k_wow wow;
- 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 8fa606a9c4dd..820a12bc0dd8 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2092,6 +2092,56 @@ static const struct file_operations fops_quiet_period = {
- 	.open = simple_open
+ enum ath10k_wlan_interfrc_mask {
+ 	ATH10K_SPECTRAL_INTERFRC	= 0x00000001,
++	ATH10K_SURVEY_INTERFRC		= 0x00000002,
  };
  
-+static ssize_t ath10k_write_btc_feature(struct file *file,
-+					const char __user *ubuf,
-+					size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[32];
-+	size_t buf_size;
-+	bool val;
-+
-+	buf_size = min(count, (sizeof(buf) - 1));
-+	if (copy_from_user(buf, ubuf, buf_size))
-+		return -EFAULT;
-+
-+	buf[buf_size] = '\0';
-+	if (strtobool(buf, &val) != 0) {
-+		ath10k_warn(ar, "Wrong BTC feature setting\n");
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&ar->conf_mutex);
-+	if (val != ar->btc_feature) {
-+		ar->btc_feature = val;
-+		queue_work(ar->workqueue, &ar->restart_work);
-+	}
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return count;
-+}
-+
-+static ssize_t ath10k_read_btc_feature(struct file *file, char __user *ubuf,
-+				       size_t count, loff_t *ppos)
-+{
-+	char buf[32];
-+	struct ath10k *ar = file->private_data;
-+	int len = 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	len = scnprintf(buf, sizeof(buf) - len, "%d\n",
-+			ar->btc_feature);
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
-+}
-+
-+static const struct file_operations fops_btc_feature = {
-+	.read = ath10k_read_btc_feature,
-+	.write = ath10k_write_btc_feature,
-+	.open = simple_open
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
-@@ -2195,6 +2245,8 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
- 			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
+ static inline const char *ath10k_cal_mode_str(enum ath10k_cal_mode mode)
+diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+index 534dfb8ada95..3051cbaebc74 100644
+--- a/drivers/net/wireless/ath/ath10k/debug.c
++++ b/drivers/net/wireless/ath/ath10k/debug.c
+@@ -2190,6 +2190,10 @@ static ssize_t ath10k_read_adjacent_wlan_interfrc(struct file *file,
+ 			 interfrc_5g);
+ 	len += scnprintf(buf + len, buf_len - len, "2G INTERFRC: %d\n",
+ 			 interfrc_2g);
++	len += scnprintf(buf + len, buf_len - len,
++			 "INTERFRC DETECT FOR SURVEY SCAN: %s\n",
++			 ar->wlan_interfrc_mask & ATH10K_SURVEY_INTERFRC ?
++			 "Enable" : "Disable");
  
-+	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar, &fops_btc_feature);
- 	return 0;
- }
+ 	mutex_unlock(&ar->conf_mutex);
  
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 0fabe689179c..e3c880230ee6 100644
+index 1fb850817589..dbd394422905 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3933,7 +3933,8 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
+@@ -3942,6 +3942,11 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
+ 		      ar->wmi.svc_map)))
+ 		features |= WMI_10_2_ADJ_RADIO_SPECTRAL_INTERFRC;
  
- 	features = WMI_10_2_RX_BATCH_MODE;
--	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
-+	if (ar->btc_feature &&
-+	    test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
- 		features |= WMI_10_2_COEX_GPIO;
++	if ((ar->wlan_interfrc_mask & ATH10K_SURVEY_INTERFRC) &&
++	    (test_bit(WMI_SERVICE_ADJ_RADIO_SURVEY_INTERFRC, ar->wmi.svc_map)))
++		features |= WMI_10_2_ADJ_RADIO_SURVEY_INTERFRC;
++
++
  	cmd->resource_config.feature_mask = __cpu_to_le32(features);
  
+ 	memcpy(&cmd->resource_config.common, &config, sizeof(config));
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 36bb0768d87f..7cbad1932bf5 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -151,6 +151,7 @@ enum wmi_service {
+ 	WMI_SERVICE_ATF,
+ 	WMI_SERVICE_COEX_GPIO,
+ 	WMI_SERVICE_ADJ_RADIO_SPECTRAL_INTERFRC,
++	WMI_SERVICE_ADJ_RADIO_SURVEY_INTERFRC,
+ 
+ 	/* keep last */
+ 	WMI_SERVICE_MAX,
+@@ -183,6 +184,7 @@ enum wmi_10x_service {
+ 	WMI_10X_SERVICE_ATF,
+ 	WMI_10X_SERVICE_COEX_GPIO,
+ 	WMI_10X_SERVICE_ADJ_RADIO_SPECTRAL_INTERFRC,
++	WMI_10X_SERVICE_ADJ_RADIO_SURVEY_INTERFRC,
+ };
+ 
+ enum wmi_main_service {
+@@ -302,6 +304,7 @@ static inline char *wmi_service_name(int service_id)
+ 	SVCSTR(WMI_SERVICE_ATF);
+ 	SVCSTR(WMI_SERVICE_COEX_GPIO);
+ 	SVCSTR(WMI_SERVICE_ADJ_RADIO_SPECTRAL_INTERFRC);
++	SVCSTR(WMI_SERVICE_ADJ_RADIO_SURVEY_INTERFRC);
+ 
+ 	default:
+ 		return NULL;
+@@ -372,6 +375,9 @@ static inline void wmi_10x_svc_map(const __le32 *in, unsigned long *out,
+ 	       WMI_SERVICE_COEX_GPIO, len);
+ 	SVCMAP(WMI_10X_SERVICE_ADJ_RADIO_SPECTRAL_INTERFRC,
+ 	       WMI_SERVICE_ADJ_RADIO_SPECTRAL_INTERFRC, len);
++	SVCMAP(WMI_10X_SERVICE_ADJ_RADIO_SURVEY_INTERFRC,
++	       WMI_SERVICE_ADJ_RADIO_SURVEY_INTERFRC, len);
++
+ }
+ 
+ static inline void wmi_main_svc_map(const __le32 *in, unsigned long *out,
+@@ -1973,6 +1979,7 @@ enum wmi_10_2_feature_mask {
+ 	WMI_10_2_ATF_CONFIG    = BIT(1),
+ 	WMI_10_2_COEX_GPIO     = BIT(3),
+ 	WMI_10_2_ADJ_RADIO_SPECTRAL_INTERFRC	= BIT(4),
++	WMI_10_2_ADJ_RADIO_SURVEY_INTERFRC	= BIT(5),
+ };
+ 
+ struct wmi_resource_config_10_2 {
 -- 
 1.9.1
 
