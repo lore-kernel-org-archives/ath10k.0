@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YyLU2-0003M1-NN
- for ath10k@lists.infradead.org; Fri, 29 May 2015 14:42:03 +0000
+ id 1YyLW2-0003jO-49
+ for ath10k@lists.infradead.org; Fri, 29 May 2015 14:44:06 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4 1/3] ath10k: move cycle_count macro
-In-Reply-To: <1432555579-18347-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 25 May 2015 14:06:17 +0200")
-References: <1432282693-4553-1-git-send-email-michal.kazior@tieto.com>
- <1432555579-18347-1-git-send-email-michal.kazior@tieto.com>
-Date: Fri, 29 May 2015 17:41:14 +0300
-Message-ID: <87vbfbwinp.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add missing firmware declarations
+References: <1432638562-12954-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 29 May 2015 17:43:32 +0300
+In-Reply-To: <1432638562-12954-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Tue, 26 May 2015 13:09:22 +0200")
+Message-ID: <87r3pzwijv.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,13 +28,14 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> The macro isn't WMI specific. Instead it is
-> related to hardware chip so move the macro
-> accordingly. While at it document the magic value.
+> This could lead userspace initram images getting
+> built without necessary firmware files included
+> leading to probing failures of ath10k on boot with
+> QCA61X4.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, all three applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
