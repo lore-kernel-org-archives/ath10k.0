@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzK06-0007hs-E0
- for ath10k@lists.infradead.org; Mon, 01 Jun 2015 07:19:10 +0000
+ id 1YzK5x-0001EH-8S
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2015 07:25:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v4] ath10k: bypass PLL setting on target init for QCA9888
-References: <1432736253-30040-1-git-send-email-kvalo@qca.qualcomm.com>
-Date: Mon, 1 Jun 2015 10:18:44 +0300
-In-Reply-To: <1432736253-30040-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
- Valo's message of "Wed, 27 May 2015 17:17:33 +0300")
-Message-ID: <87r3pvvquj.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix possible ps sleep crash
+References: <1432877724-8256-1-git-send-email-michal.kazior@tieto.com>
+Date: Mon, 1 Jun 2015 10:24:44 +0300
+In-Reply-To: <1432877724-8256-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Fri, 29 May 2015 07:35:24 +0200")
+Message-ID: <87mw0jvqkj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,23 +23,32 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Michal Kazior <michal.kazior@tieto.com> writes:
 
-> From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> If probing failed pci sleep timer could remain
+> running and trigger after ath10k structures were
+> freed causing invalid pointer dereference:
 >
-> Some of of qca988x solutions are having global reset issue
-> during target initialization. Bypassing PLL setting before
-> downloading firmware and letting the SoC run on REF_CLK is fixing
-> the problem. Corresponding firmware change is also needed to set
-> the clock source once the target is initialized. Since 10.2.4
-> firmware is having this ROM patch, applying skip_clock_init only
-> for 10.2.4 firmware versions.
+>  BUG: unable to handle kernel paging request at ffffc90001c80004
+>  IP: [<ffffffff81354728>] iowrite32+0x38/0x40
+>  ...
+>  Call Trace:
+>   <IRQ>
+>   [<ffffffffa00da048>] ? __ath10k_pci_sleep+0x48/0x60 [ath10k_pci]
+>   [<ffffffffa00da44e>] ath10k_pci_ps_timer+0x5e/0x80 [ath10k_pci]
+>   [<ffffffff810b210e>] call_timer_fn+0x3e/0x120
+>   [<ffffffffa00da3f0>] ? ath10k_pci_wake+0x150/0x150 [ath10k_pci]
+>   [<ffffffff810b3d11>] run_timer_softirq+0x201/0x2e0
+>   [<ffffffff8105d73f>] __do_softirq+0xaf/0x290
+>   [<ffffffff8105da95>] irq_exit+0x95/0xa0
+>   [<ffffffff81950406>] smp_apic_timer_interrupt+0x46/0x60
+>   [<ffffffff8194e77e>] apic_timer_interrupt+0x6e/0x80
 >
-> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
-> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
+> Fixes: 77258d409ce4 ("ath10k: enable pci soc powersaving")
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
 Thanks, applied.
 
