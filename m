@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzJKs-0007C4-EA
- for ath10k@lists.infradead.org; Mon, 01 Jun 2015 06:36:35 +0000
-Received: by wizo1 with SMTP id o1so91414940wiz.1
- for <ath10k@lists.infradead.org>; Sun, 31 May 2015 23:36:07 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CAOiWkA_i8mSx_DtW-Z8mdSiqMZcUXJp0nwCrZGkEZDWBUb3cVg@mail.gmail.com>
-References: <CAOiWkA_i8mSx_DtW-Z8mdSiqMZcUXJp0nwCrZGkEZDWBUb3cVg@mail.gmail.com>
-Date: Mon, 1 Jun 2015 08:36:06 +0200
-Message-ID: <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
+ id 1YzJut-0004a9-Hu
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2015 07:13:48 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
 Subject: Re: system hang with backports-20150511/20150525
-From: Michal Kazior <michal.kazior@tieto.com>
+References: <CAOiWkA_i8mSx_DtW-Z8mdSiqMZcUXJp0nwCrZGkEZDWBUb3cVg@mail.gmail.com>
+ <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
+Date: Mon, 1 Jun 2015 10:13:20 +0300
+In-Reply-To: <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
+ (Michal Kazior's message of "Mon, 1 Jun 2015 08:36:06 +0200")
+Message-ID: <87vbf7vr3j.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marty Faltesek <mfaltesek@google.com>
-Cc: Martin Faltesek <martin.faltesek@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Martin Faltesek <martin.faltesek@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Marty Faltesek <mfaltesek@google.com>
 
-K2F0aDEwayBsaXN0CgpPbiAxIEp1bmUgMjAxNSBhdCAwMzozNywgTWFydHkgRmFsdGVzZWsgPG1m
-YWx0ZXNla0Bnb29nbGUuY29tPiB3cm90ZToKPiBTdGFydGluZyB3aXRoIGJhY2twb3J0cy0yMDE1
-MDUxMSwgYW5kIGNvbnRpbnVpbmcgd2l0aAo+IGJhY2twb3J0cy0yMDE1MDUyNSwgd2Ugc2VlIGZy
-ZXF1ZW50IHN5c3RlbSBoYW5ncy4gYmFja3BvcnRzLTIwMTUwNDI0Cj4gaGFkIG5vIGlzc3VlLgoK
-SSBkb24ndCBzZWUgc3VjaCBiaW5hcnkgcmVsZWFzZXMgb24KaHR0cHM6Ly9iYWNrcG9ydHMud2lr
-aS5rZXJuZWwub3JnL2luZGV4LnBocC9NYWluX1BhZ2UKSGVuY2UgSSBkb24ndCBrbm93IHdoYXQg
-a2VybmVsIHlvdSd2ZSBiYWNrcG9ydGVkIHRoZSBkcml2ZXJzIGZyb20gYW5kCkkgY2FuJ3QgY29t
-cGFyZSBhbnl0aGluZy4KCkNhbiB5b3UgcHJvdmlkZSBtb3JlIGRldGFpbHMsIHBsZWFzZT8KCgo+
-IEFmdGVyIHRoZSBmcmVlemUsIHRoZSBjb25zb2xlIGlzIG5vbi1yZXNwb25zaXZlLCBhcyB3ZWxs
-IGFzIHRoZQo+IG5ldHdvcmsgc3RhY2sgKHNzaC9waW5nIGRvZXMgbm90IHdvcmspLiBVc2luZyBz
-eXNycSwgSSBjYW4gc2VlIGxvZwo+IG1lc3NhZ2VzIGNvbnRpbnVpbmcgZnJvbSBhdGgxMGtfcGNp
-IGFmdGVyIHRoZSBmcmVlemUsIGFsb25nIHdpdGggc29tZQo+IG90aGVyIHRocmVhZHMgYXMgd2Vs
-bC4KCllvdSBwcm9iYWJseSByZWZlciB0bzoKClsgMTAyNi45NTE2NDNdIGF0aDEwa19wY2kgMDAw
-MDowMTowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLApza2lwcGVkIG9sZCBiZWFjb24KWyAx
-MDI2Ljk1MTY3NF0gYXRoMTBrX3BjaSAwMDAwOjAxOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2
-IDAsCnNraXBwZWQgb2xkIGJlYWNvbgpbIDEwMjYuOTUxNjk4XSBhdGgxMGtfcGNpIDAwMDA6MDE6
-MDAuMDogU1dCQSBvdmVycnVuIG9uIHZkZXYgMCwKc2tpcHBlZCBvbGQgYmVhY29uCgpXaGF0J3Mg
-cHV6emxpbmcgdG8gbWUgYXJlIHRoZXNlIHRpbWVzdGFtcHMuIFNXQkEgZXZlbnRzIGFyZSBnZW5l
-cmF0ZWQKYnkgZmlybXdhcmUgKGFuZCBzZW50IHRvIGhvc3QpIGV2ZXJ5IGJlYWNvbiBpbnRlcnZh
-bCB3aGljaCBpcyB+MTAwbXMKaW4gbW9zdCBjYXNlcy4gSW4geW91ciBjYXNlIGhvd2V2ZXIgSSBj
-YW4gc2VlIGEgYnVyc3Qgb2YgYXQgbGVhc3QgMTAKU1dCQSBldmVudHMgd2l0aGluIDFtcy4gRWl0
-aGVyIHRvcChpcnEpIG9yIGJvdHRvbSh0YXNrbGV0KSBnb3Qgc3R1Y2sKZm9yIHNvbWUgdGltZS4K
-Ckl0IGNvdWxkIGJlIHVzZWZ1bCBpZiB5b3UgY291bGQgZW5hYmxlIGF0aDEwayBkZWJ1Z2dpbmcg
-d2l0aApkZWJ1Z19tYXNrPTB4ZmZmZmZmM2YgKHRoaXMgY291bGQgZ2VuZXJhdGUgYSBsb3Qgb2Yg
-bWVzc2FnZXMgaWYgeW91J3JlCnJ1bm5pbmcgdHJhZmZpYyB0aHJvdWdoIGF0aDEwaykuCgoKPiBt
-YWM4MDIxMS9hdGgxMGsvY2ZnODAyMTEgYXJlIHRoZSBvbmx5IG1vZHVsZXMgaW4gdXNlIGZyb20g
-YmFja3BvcnRzLAo+IHNvIGl0IHNlZW1zIGxpa2UgYSBkZWFkbG9jayAgY291bGQgcG9zc2libHkg
-YmUgd2l0aCBtYWM4MDIxMSBvcgo+IGF0aDEway4KPgo+IExPQ0tERVAgZGlkbid0IHJldmVhbCBh
-bnl0aGluZy4KCllvdSBtaWdodCB3YW50IHRvIHRyeSB0dW5lIC9wcm9jL3N5cy9rZXJuZWwvaHVu
-Z190YXNrX3RpbWVvdXRfc2Vjcwpkb3duIChlLmcuIDUgb3IgMTAgc2Vjb25kcykgYW5kIHNlZSB3
-aGF0IGhhcHBlbnMgd2hlbiB5b3UgaGl0IHRoZQpwcm9ibGVtLgoKCj4gVXNpbmcgYSAzLjIuMjYg
-a2VybmVsIG9uIEFSTS4gQVAgbW9kZS4gTm8gZW5jcnlwdGlvbi4KPgo+IEkndmUgY29sbGVjdGVk
-IGZ0cmFjZSBldmVudHMgZm9yIHNjaGVkIG1hYzgwMjExIG5ldCBuYXBpIGNmZzgwMjExCj4gd29y
-a3F1ZXVlLCB3aGljaCBhcmUgaW5jbHVkZWQgaW4gdGhlIGRtZXNnIHlvdSBjYW4gZmluZCBoZXJl
-IGJlY2F1c2UKPiBvZiBpdHMgc2l6ZToKPgo+IGh0dHA6Ly90aW55dXJsLmNvbS9kbWVzZy1mdHJh
-Y2UKPgo+IEluIHRoZSBsb2dzLCB0aGUgbGFzdCB0aW1lc3RhbXAgdGhhdCBteSB0ZXN0IHNjcmlw
-dCB3cm90ZSBpczoKPgo+IFsgMTAyMS4yOTE0OTVdIGhiZWF0MDM1Mgo+Cj4gSSd2ZSBjYXB0dXJl
-ZCAgZnRyYWNlIGV2ZW50cyBiZWZvcmUgYW5kIGFmdGVyIDEwMjEuMjkxNDk1LgoKWW91ciBkbWVz
-ZyBsb29rcyByZWFsbHkgbWVzc3kgYW5kIEknbSB3b3JyaWVkIGlmIFNXQkEgZXZlbnRzIHJlYWxs
-eQpjYW1lIGluIGEgYnVyc3Qgb3Igbm90LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
-c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hdGgxMGsK
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> +ath10k list
+>
+> On 1 June 2015 at 03:37, Marty Faltesek <mfaltesek@google.com> wrote:
+>> Starting with backports-20150511, and continuing with
+>> backports-20150525, we see frequent system hangs. backports-20150424
+>> had no issue.
+>
+> I don't see such binary releases on
+> https://backports.wiki.kernel.org/index.php/Main_Page
+> Hence I don't know what kernel you've backported the drivers from and
+> I can't compare anything.
+>
+> Can you provide more details, please?
+
+I suspect it's from here:
+
+https://www.kernel.org/pub/linux/kernel/projects/backports/2015/05/25/
+
+The backports project pages are a bit confusing and that location is
+hard to find.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
