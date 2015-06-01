@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzJut-0004a9-Hu
- for ath10k@lists.infradead.org; Mon, 01 Jun 2015 07:13:48 +0000
+ id 1YzK06-0007hs-E0
+ for ath10k@lists.infradead.org; Mon, 01 Jun 2015 07:19:10 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: system hang with backports-20150511/20150525
-References: <CAOiWkA_i8mSx_DtW-Z8mdSiqMZcUXJp0nwCrZGkEZDWBUb3cVg@mail.gmail.com>
- <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
-Date: Mon, 1 Jun 2015 10:13:20 +0300
-In-Reply-To: <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
- (Michal Kazior's message of "Mon, 1 Jun 2015 08:36:06 +0200")
-Message-ID: <87vbf7vr3j.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v4] ath10k: bypass PLL setting on target init for QCA9888
+References: <1432736253-30040-1-git-send-email-kvalo@qca.qualcomm.com>
+Date: Mon, 1 Jun 2015 10:18:44 +0300
+In-Reply-To: <1432736253-30040-1-git-send-email-kvalo@qca.qualcomm.com> (Kalle
+ Valo's message of "Wed, 27 May 2015 17:17:33 +0300")
+Message-ID: <87r3pvvquj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,31 +23,25 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Martin Faltesek <martin.faltesek@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Marty Faltesek <mfaltesek@google.com>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Kalle Valo <kvalo@qca.qualcomm.com> writes:
 
-> +ath10k list
+> From: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
 >
-> On 1 June 2015 at 03:37, Marty Faltesek <mfaltesek@google.com> wrote:
->> Starting with backports-20150511, and continuing with
->> backports-20150525, we see frequent system hangs. backports-20150424
->> had no issue.
+> Some of of qca988x solutions are having global reset issue
+> during target initialization. Bypassing PLL setting before
+> downloading firmware and letting the SoC run on REF_CLK is fixing
+> the problem. Corresponding firmware change is also needed to set
+> the clock source once the target is initialized. Since 10.2.4
+> firmware is having this ROM patch, applying skip_clock_init only
+> for 10.2.4 firmware versions.
 >
-> I don't see such binary releases on
-> https://backports.wiki.kernel.org/index.php/Main_Page
-> Hence I don't know what kernel you've backported the drivers from and
-> I can't compare anything.
->
-> Can you provide more details, please?
+> Signed-off-by: Rajkumar Manoharan <rmanohar@qti.qualcomm.com>
+> Signed-off-by: Kalle Valo <kvalo@qca.qualcomm.com>
 
-I suspect it's from here:
-
-https://www.kernel.org/pub/linux/kernel/projects/backports/2015/05/25/
-
-The backports project pages are a bit confusing and that location is
-hard to find.
+Thanks, applied.
 
 -- 
 Kalle Valo
