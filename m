@@ -1,21 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x233.google.com ([2a00:1450:400c:c00::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yzecn-0005D8-PK
- for ath10k@lists.infradead.org; Tue, 02 Jun 2015 05:20:30 +0000
-Received: by wgbgq6 with SMTP id gq6so130593980wgb.3
- for <ath10k@lists.infradead.org>; Mon, 01 Jun 2015 22:20:05 -0700 (PDT)
+ id 1YzgPr-0001wu-VG
+ for ath10k@lists.infradead.org; Tue, 02 Jun 2015 07:15:16 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH] ath10k: remove unused variable 'id' in
+ ath10k_pci_tx_pipe_cleanup()
+Date: Tue, 2 Jun 2015 12:44:27 +0530
+Message-ID: <1433229267-11314-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAOiWkA8GepFEd2+47g_SfFFk5GuMOGCLkwwyZhj9MxchFgXxbA@mail.gmail.com>
-References: <CAOiWkA_i8mSx_DtW-Z8mdSiqMZcUXJp0nwCrZGkEZDWBUb3cVg@mail.gmail.com>
- <CA+BoTQnfXGLSvbx+hLfi_2w90-LgC3Uba0ZcO+Pt7J3FcEE9wg@mail.gmail.com>
- <87vbf7vr3j.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQmmm6NA2Lb5TB9rSiXYWWarGLGaE5KFJW0_aaqz1YwR3g@mail.gmail.com>
- <CAOiWkA8GepFEd2+47g_SfFFk5GuMOGCLkwwyZhj9MxchFgXxbA@mail.gmail.com>
-Date: Tue, 2 Jun 2015 07:20:05 +0200
-Message-ID: <CA+BoTQnDUtpjTJ41xodmrx0eXUny-KBMyF8JiCgeMCUJXegzkg@mail.gmail.com>
-Subject: Re: system hang with backports-20150511/20150525
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,60 +17,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Marty Faltesek <mfaltesek@google.com>
-Cc: Martin Faltesek <martin.faltesek@gmail.com>, Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gMSBKdW5lIDIwMTUgYXQgMjE6NDIsIE1hcnR5IEZhbHRlc2VrIDxtZmFsdGVzZWtAZ29vZ2xl
-LmNvbT4gd3JvdGU6Cj4gSSBkaXNhYmxlZCBJRUVFODAyMTFfSFdfU1VQUE9SVF9GQVNUX1hNSVQg
-YmVmb3JlLCBhbmQgc3RpbGwgc2F3IHRoZQo+IGhhbmcuIEkgcmVwZWF0ZWQgdG9kYXkgdG8gY29u
-ZmlybS4KClRoYW5rcyBmb3IgY2hlY2tpbmcuCgoKPiBJIGFkZGVkIHRoZSBleHRyYSBhdGgxMGsg
-ZGVidWcgZmxhZ3MgeW91IHJlcXVlc3RlZCwgYW5kIGl0IGNhdXNlcyBhCj4gc3lzdGVtIHJlc2V0
-IHdpdGhvdXQgYW55IG1lc3NhZ2VzLCB2ZXJ5IHNvb24gYWZ0ZXIgdGhlIGxhc3QgaGJlYXQKPiB0
-aW1lc3RhbXAuIEkndmUgdXBsb2FkZWQgIGxvZyAiY3Jhc2guNi4xLjE1LjEzLjQ2IiB0bwo+IGh0
-dHA6Ly90aW55dXJsLmNvbS9kbWVzZy1mdHJhY2UuCgpJIGd1ZXNzIHNlcmlhbCBjb25zb2xlIGdh
-dmUgdXAgd2hpY2ggaXNuJ3QgcmVhbGx5IHN1cnByaXNpbmcgOiggVGhhbmtzCmZvciBjaGVja2lu
-ZyBhbnl3YXkuCgoKPiBBbnkgYWR2aWNlIG9uIGhvdyB0byBiaXNlY3Qgd2hlbiB1c2luZyBiYWNr
-cG9ydHM/CgpTdXJlLiBHZW5lcmFsbHkgeW91J2xsIG5lZWQgdG8gZG8gdGhlIGJpc2VjdCBvbiB5
-b3VyIGxpbnV4LW5leHQgdHJlZQp3aGljaCB5b3UgdXNlIHRvIGdlbmVyYXRlIGJhY2twb3J0czoK
-CiBnaXQgY2xvbmUgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0
-L2JhY2twb3J0cy9iYWNrcG9ydHMuZ2l0CiBnaXQgY2xvbmUgZ2l0Oi8vZ2l0Lmtlcm5lbC5vcmcv
-cHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L25leHQvbGludXgtbmV4dC5naXQKIGNkIGxpbnV4LW5l
-eHQKIGdpdCBiaXNlY3Qgc3RhcnQKIGdpdCBiaXNlY3QgZ29vZCBhM2RhMGZiNgogZ2l0IGJpc2Vj
-dCBiYWQgZjE3MTA3YwogIyByZXBlYXQ6CiBjZCAuLi9iYWNrcG9ydHMKIC4vZ2VudHJlZS5weSAt
-LWNsZWFuIC0tZ2l0LXJldmlzaW9uIEhFQUQgLi4vbGludXgtbmV4dCAuLi9iYWNrcG9ydHMtb3V0
-cHV0LwogY2QgLi4vYmFja3BvcnRzLW91dHB1dAogIyBjb25maWd1cmUsIG1ha2UsIHRlc3QKIGNk
-IC4uL2xpbnV4LW5leHQKIGdpdCBiaXNlY3QgPGdvb2R8YmFkPiAjICJnb29kIiBpZiBwcm9ibGVt
-IGRvZXNuJ3QgcmVwcm9kdWNlLCAiYmFkIiBpZiBpdCBkb2VzCiAjIGdvdG8gcmVwZWF0CgoKTWlj
-aGHFggoKCgoKPgo+IE9uIE1vbiwgSnVuIDEsIDIwMTUgYXQgNDoyNyBBTSwgTWljaGFsIEthemlv
-ciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBPbiAxIEp1bmUgMjAxNSBhdCAw
-OToxMywgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4+PiBNaWNo
-YWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JpdGVzOgo+Pj4KPj4+PiArYXRo
-MTBrIGxpc3QKPj4+Pgo+Pj4+IE9uIDEgSnVuZSAyMDE1IGF0IDAzOjM3LCBNYXJ0eSBGYWx0ZXNl
-ayA8bWZhbHRlc2VrQGdvb2dsZS5jb20+IHdyb3RlOgo+Pj4+PiBTdGFydGluZyB3aXRoIGJhY2tw
-b3J0cy0yMDE1MDUxMSwgYW5kIGNvbnRpbnVpbmcgd2l0aAo+Pj4+PiBiYWNrcG9ydHMtMjAxNTA1
-MjUsIHdlIHNlZSBmcmVxdWVudCBzeXN0ZW0gaGFuZ3MuIGJhY2twb3J0cy0yMDE1MDQyNAo+Pj4+
-PiBoYWQgbm8gaXNzdWUuCj4+Pj4KPj4+PiBJIGRvbid0IHNlZSBzdWNoIGJpbmFyeSByZWxlYXNl
-cyBvbgo+Pj4+IGh0dHBzOi8vYmFja3BvcnRzLndpa2kua2VybmVsLm9yZy9pbmRleC5waHAvTWFp
-bl9QYWdlCj4+Pj4gSGVuY2UgSSBkb24ndCBrbm93IHdoYXQga2VybmVsIHlvdSd2ZSBiYWNrcG9y
-dGVkIHRoZSBkcml2ZXJzIGZyb20gYW5kCj4+Pj4gSSBjYW4ndCBjb21wYXJlIGFueXRoaW5nLgo+
-Pj4+Cj4+Pj4gQ2FuIHlvdSBwcm92aWRlIG1vcmUgZGV0YWlscywgcGxlYXNlPwo+Pj4KPj4+IEkg
-c3VzcGVjdCBpdCdzIGZyb20gaGVyZToKPj4+Cj4+PiBodHRwczovL3d3dy5rZXJuZWwub3JnL3B1
-Yi9saW51eC9rZXJuZWwvcHJvamVjdHMvYmFja3BvcnRzLzIwMTUvMDUvMjUvCj4+Pgo+Pj4gVGhl
-IGJhY2twb3J0cyBwcm9qZWN0IHBhZ2VzIGFyZSBhIGJpdCBjb25mdXNpbmcgYW5kIHRoYXQgbG9j
-YXRpb24gaXMKPj4+IGhhcmQgdG8gZmluZC4KPj4KPj4gT2gsIHRoYW5rcyEKPj4KPj4gSG1tLi4g
-VGhlcmUgd2FzIGEgdG9uIG9mIGNoYW5nZXMgYmV0d2VlbiAyMDE1MDQyNCBhbmQgMjAxNTA1MTEu
-IEZvcgo+PiBvbmUsIGF0aDEwayBzdGFydGVkIHRvIHVzZSBjaGFuY3R4IEFQSSBhbmQgRkFTVF9Y
-TUlULiBCdXQgaXQncyBub3QgYQo+PiBnaXZlbiB0aGVzZSB0d28gYXJlIHRvIGJsYW1lLgo+Pgo+
-PiBUaGUgbGF0dGVyIGNhbiBiZSBlYXNpbHkgZGlzYWJsZWQgYnkgcmVtb3ZpbmcKPj4gSUVFRTgw
-MjExX0hXX1NVUFBPUlRfRkFTVF9YTUlUIGZyb20gYXItPmh3LT5mbGFncyBpbiBhdGgxMGsncyBt
-YWMuYy4KPj4gVGhlIGZvcm1lci4uIG5vdCBzbyBlYXN5LiBJJ2QgYmUgYXdlc29tZSBpZiB5b3Ug
-Y291bGQgZG8gYSBnaXQgYmlzZWN0Lgo+PiBUaGUgY29tbWl0IGlkcyBhcmUgYTNkYTBmYjYoZ29v
-ZCkgZjE3MTA3YyhiYWQpICh5b3UgbmVlZCBsaW51eC1uZXh0Cj4+IGdpdCByZXBvIGluY2x1ZGlu
-ZyBpdHMgdGFncyBmb3IgdGhlc2UgaWRzIHRvIGJlIHJlc29sdmFibGUpLgo+Pgo+Pgo+PiBNaWNo
-YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
-MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
-bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+mete_data is extracted from ce descriptor and stored in variable 'id'.
+later, id is not used anywhere in the same function.
+
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c |    3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 969a123..bbc349a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -1275,7 +1275,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
+ 	struct ath10k_ce_ring *ce_ring;
+ 	struct ce_desc *ce_desc;
+ 	struct sk_buff *skb;
+-	unsigned int id;
+ 	int i;
+ 
+ 	ar = pci_pipe->hif_ce_state;
+@@ -1299,8 +1298,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
+ 			continue;
+ 
+ 		ce_ring->per_transfer_context[i] = NULL;
+-		id = MS(__le16_to_cpu(ce_desc[i].flags),
+-			CE_DESC_FLAGS_META_DATA);
+ 
+ 		ar_pci->msg_callbacks_current.tx_completion(ar, skb);
+ 	}
+-- 
+1.7.10.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
