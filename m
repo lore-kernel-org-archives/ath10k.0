@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mx3.wp.pl ([212.77.101.10])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Yzgiu-0005c9-Qq
- for ath10k@lists.infradead.org; Tue, 02 Jun 2015 07:34:57 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH v2] ath10k: remove unused variable 'id' in
- ath10k_pci_tx_pipe_cleanup()
-Date: Tue, 2 Jun 2015 13:04:15 +0530
-Message-ID: <1433230455-11644-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1YzifU-00059n-MZ
+ for ath10k@lists.infradead.org; Tue, 02 Jun 2015 09:39:33 +0000
+Date: Tue, 2 Jun 2015 11:39:01 +0200
+From: Jakub =?UTF-8?B?S2ljacWEc2tp?= <moorray3@wp.pl>
+Subject: Re: [PATCH v2] ath10k: Debugfs entry to enable/disable
+ WLAN&Blutooth Coexist feature
+Message-ID: <20150602113901.2da3542d@north>
+In-Reply-To: <1432840745-21725-1-git-send-email-yanbol@qca.qualcomm.com>
+References: <1432840745-21725-1-git-send-email-yanbol@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,49 +23,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
+To: Yanbo Li <yanbol@qca.qualcomm.com>
+Cc: dreamfly281@gmail.com, kvalo@qca.qualcomm.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-mete_data is extracted from ce descriptor and stored in variable 'id'.
-later, id is not used anywhere in the same function.
+On Thu, 28 May 2015 12:19:05 -0700, Yanbo Li wrote:
+> As some radio have no connection with BT modules, enable the WLAN/Bluetooth
+> coexist(BTC) feature will has some side effect if the radio's GPIO connect
+> with any other HW modules. Add the control switcher "btc_feature" at
+> debugfs and set the feature as disable by default to avoid such case.
+>
+> To enable this feature, execute:
+> echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+> To disable:
+> echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+> 
+> Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
 
-Fixes: d84a512dca23 ("ath10k: remove transfer_id from
-ath10k_hif_cb::tx_completion")
+IMHO common API for disabling/enabling btcoex is something we would all
+benefit from and easy enough to implement properly.  Burying it in
+driver-specific debugfs is less than appropriate.
 
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
-
-V2 changes:
-  - added original commit msg detail in commit log which 
-    introduced this unused variable.
-
- drivers/net/wireless/ath/ath10k/pci.c |    3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 969a123..bbc349a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1275,7 +1275,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 	struct ath10k_ce_ring *ce_ring;
- 	struct ce_desc *ce_desc;
- 	struct sk_buff *skb;
--	unsigned int id;
- 	int i;
- 
- 	ar = pci_pipe->hif_ce_state;
-@@ -1299,8 +1298,6 @@ static void ath10k_pci_tx_pipe_cleanup(struct ath10k_pci_pipe *pci_pipe)
- 			continue;
- 
- 		ce_ring->per_transfer_context[i] = NULL;
--		id = MS(__le16_to_cpu(ce_desc[i].flags),
--			CE_DESC_FLAGS_META_DATA);
- 
- 		ar_pci->msg_callbacks_current.tx_completion(ar, skb);
- 	}
--- 
-1.7.10.4
-
+I seem to recall there were plans to discuss btcoex at one of the
+linux-wireless summits.  If the consensus was to leave it in debugfs
+then I apologize for the noise ;)
 
 _______________________________________________
 ath10k mailing list
