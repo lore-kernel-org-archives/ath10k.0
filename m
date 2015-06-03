@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wg0-x22a.google.com ([2a00:1450:400c:c00::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1YzwO1-0006Wv-CD
- for ath10k@lists.infradead.org; Wed, 03 Jun 2015 00:18:26 +0000
-From: "Li, Yanbo" <yanbol@qca.qualcomm.com>
-Subject: RE: [PATCH v2] ath10k: Debugfs entry to enable/disable WLAN&Blutooth
- Coexist feature
-Date: Wed, 3 Jun 2015 00:18:01 +0000
-Message-ID: <641f79bf066d48b1b79f21a24eb0d0e2@nasanexm02e.na.qualcomm.com>
-References: <1432840745-21725-1-git-send-email-yanbol@qca.qualcomm.com>
- <20150602113901.2da3542d@north>
-In-Reply-To: <20150602113901.2da3542d@north>
-Content-Language: en-US
+ id 1Z00r9-00075r-Gv
+ for ath10k@lists.infradead.org; Wed, 03 Jun 2015 05:04:49 +0000
+Received: by wgme6 with SMTP id e6so156157677wgm.2
+ for <ath10k@lists.infradead.org>; Tue, 02 Jun 2015 22:04:23 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAG5N3qHRtYMkKj=HcuF_Jg0-f8MxqVnEVm55jMNt=1xC_PhLUw@mail.gmail.com>
+References: <1433187843-20698-1-git-send-email-cfliu.tw@gmail.com>
+ <CA+BoTQmhEUegGBLHv6-CZHAhAQdJUUVSRXs6S5kTW82fLFA5hQ@mail.gmail.com>
+ <CAG5N3qHRtYMkKj=HcuF_Jg0-f8MxqVnEVm55jMNt=1xC_PhLUw@mail.gmail.com>
+Date: Wed, 3 Jun 2015 07:04:23 +0200
+Message-ID: <CA+BoTQk+SGtFHwTMJ6c-Qzu-5NFaLTeX5Bsa_38mHiqLrxWOPw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: add cryptmode param to support sw crypto and
+ raw tx injection.
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,60 +23,102 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?iso-8859-2?Q?Jakub_Kici=F1ski?= <moorray3@wp.pl>
-Cc: "dreamfly281@gmail.com" <dreamfly281@gmail.com>, "Valo,
- Kalle" <kvalo@qca.qualcomm.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Liu CF/TW <cfliu.tw@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-> -----Original Message-----
-> From: Jakub Kici=F1ski [mailto:moorray3@wp.pl]
-> Sent: Tuesday, June 02, 2015 2:39 AM
-> To: Li, Yanbo
-> Cc: Valo, Kalle; dreamfly281@gmail.com; ath10k@lists.infradead.org; linux-
-> wireless@vger.kernel.org
-> Subject: Re: [PATCH v2] ath10k: Debugfs entry to enable/disable
-> WLAN&Blutooth Coexist feature
-> =
-
-> On Thu, 28 May 2015 12:19:05 -0700, Yanbo Li wrote:
-> > As some radio have no connection with BT modules, enable the
-> > WLAN/Bluetooth
-> > coexist(BTC) feature will has some side effect if the radio's GPIO
-> > connect with any other HW modules. Add the control switcher
-> > "btc_feature" at debugfs and set the feature as disable by default to a=
-void
-> such case.
-> >
-> > To enable this feature, execute:
-> > echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-> > To disable:
-> > echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-> >
-> > Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
-> =
-
-> IMHO common API for disabling/enabling btcoex is something we would all
-> benefit from and easy enough to implement properly.  Burying it in driver-
-> specific debugfs is less than appropriate.
-> =
-
-> I seem to recall there were plans to discuss btcoex at one of the linux-
-> wireless summits.  If the consensus was to leave it in debugfs then I
-> apologize for the noise ;)
-
-Thanks for your comments, agree with a general BTcoex interface will be goo=
-d for lots of wlan chip/driver. =
-
-It worth to be consider to implement such framework in future.
-
-BR /Yanbo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMiBKdW5lIDIwMTUgYXQgMjA6MjEsIExpdSBDRi9UVyA8Y2ZsaXUudHdAZ21haWwuY29tPiB3
+cm90ZToKPiBPbiBUdWUsIEp1biAyLCAyMDE1IGF0IDEyOjE3IEFNLCBNaWNoYWwgS2F6aW9yIDxt
+aWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6Cj4+IE9uIDEgSnVuZSAyMDE1IGF0IDIxOjQ0
+LCBEYXZpZCBMaXUgPGNmbGl1LnR3QGdtYWlsLmNvbT4gd3JvdGU6Cj4+IFsuLi5dCj4+PiAtLS0g
+YS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuaAo+Pj4gKysrIGIvZHJpdmVy
+cy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmgKPj4+IEBAIC05MSw2ICs5MSw3IEBAIHN0
+cnVjdCBhdGgxMGtfc2tiX2NiIHsKPj4+ICAgICAgICAgICAgICAgICB1OCB0aWQ7Cj4+PiAgICAg
+ICAgICAgICAgICAgdTE2IGZyZXE7Cj4+PiAgICAgICAgICAgICAgICAgYm9vbCBpc19vZmZjaGFu
+Owo+Pj4gKyAgICAgICAgICAgICAgIGJvb2wgbm9od2NyeXB0Owo+Pj4gICAgICAgICAgICAgICAg
+IHN0cnVjdCBhdGgxMGtfaHR0X3R4YnVmICp0eGJ1ZjsKPj4+ICAgICAgICAgICAgICAgICB1MzIg
+dHhidWZfcGFkZHI7Cj4+PiAgICAgICAgIH0gX19wYWNrZWQgaHR0Owo+Pj4gQEAgLTM0OSw2ICsz
+NTAsNyBAQCBzdHJ1Y3QgYXRoMTBrX3ZpZiB7Cj4+PiAgICAgICAgIH0gdTsKPj4+Cj4+PiAgICAg
+ICAgIGJvb2wgdXNlX2N0c19wcm90Owo+Pj4gKyAgICAgICBib29sIG5vaHdjcnlwdDsKPj4KPj4g
+U28gdGhpcyBpcyBhIGJpdCBjb25mdXNpbmcuIFRoaXMgaXMgdXNlZCBvbmx5IGZvciB0eCBwb2xp
+Y3kgb25seSwKPj4gcmlnaHQ/IEl0IHNob3VsZCBiZSBuYW1lZCBhY2NvcmRpbmdseSB0aGVuLiBU
+aGUgb3RoZXIgbm9od2NyeXB0IGluCj4+IHNrYl9jYiBwcmV0dHkgbXVjaCBpbXBsaWVzIFR4IGFs
+cmVhZHkuCj4+Cj4KPiBObywgaXQncyBhbHNvIGZvciBSeC4KPiBJbiB0aGlzIHBhdGNoLCBpbiBt
+YWMuYywgaWYgYXJ2aWYtPm5vaHdjcnlwdCBpcyBzZXQsIGF0aDEwa19zZW5kX2tleSgpCj4gd29u
+J3QgaW5zdGFsbCB0aGUgYWN0dWFsIGtleSB0byBoYXJkd2FyZSwgYnV0IGEgY2xlYXIga2V5IGlz
+Cj4gaW5zdGFsbGVkLiBUaGlzIG1ha2VzIGFsbCBtYXRjaGluZyBTVEEncyBlbmNyeXB0ZWQgZnJh
+bWUgcGFzc3Rocm91Z2gKPiBIVyBhbmQgbWFjODAyMTEgY2FuIHRha2UgY2FyZSBvZiBkZWNyeXB0
+aW9uIGxhdGVyIGluIGhvc3QuCj4gKGluIHBhdGNoIFYyIEkgd2lsbCB0YWtlIGNhcmUgb2YgdGhl
+IElFRUU4MDIxMV9IV19TV19DUllQVE9fQ09OVFJPTCBzZXR0aW5nKQoKQWgsIHlvdSdyZSByaWdo
+dC4gSSd2ZSBtaXNzZWQgdGhhdCBzb21laG93LgoKCj4+IFsuLi5dCj4+PiBAQCAtNDg0LDYgKzQ5
+MSwxMiBAQCBlbnVtIGF0aDEwa19kZXZfZmxhZ3Mgewo+Pj4gICAgICAgICAgKiB3YWl0ZXJzIHNo
+b3VsZCBpbW1lZGlhdGVseSBjYW5jZWwgaW5zdGVhZCBvZiB3YWl0aW5nIGZvciBhIHRpbWUgb3V0
+Lgo+Pj4gICAgICAgICAgKi8KPj4+ICAgICAgICAgQVRIMTBLX0ZMQUdfQ1JBU0hfRkxVU0gsCj4+
+PiArCj4+PiArICAgICAgIC8qIFVzZSBSYXcgbW9kZSBmb3IgVHggYW5kIFJ4ICovCj4+PiArICAg
+ICAgIEFUSDEwS19SQVdfTU9ERSwKPj4+ICsKPj4+ICsgICAgICAgLyogRGlzYWJsZSBIVyBjcnlw
+dG8gZW5naW5lICovCj4+PiArICAgICAgIEFUSDEwS19IV19DUllQVE9fRElTQUJMRUQsCj4+Cj4+
+IFlvdSdyZSBtaXNzaW5nIHRoZSBfRkxBRyBwcmVmaXguIEFsc28gdGhpcyBpc24ndCBkb2N1bWVu
+dGVkIHdlbGwKPj4gZW5vdWdoLiBSQVdfTU9ERSBpbXBsaWVzIHN3IGNyeXB0byByeCwgbm8/IFBl
+cmhhcHMgYSBtb3JlIGZpbmUgZ3JhaW5lZAo+PiBhcHByb2FjaCB3b3VsZCBiZSBiZXR0ZXI6Cj4K
+PiBUaGFua3MuIFdpbGwgZml4Lgo+Cj4gUmF3IG1vZGUgZG9lc24ndCBpbXBseSBTVyBjcnlwdG8g
+b25seS4KPiBJbmRlZWQgUmF3IG1vZGUgaXMgdGhlIG9ubHkgd2F5IHRvIGdldCBzdyBjcnlwdG8g
+c3VwcG9ydCwgYnV0IGl0IGFsc28KPiBzdXBwb3J0cyBIVyBjcnlwdG8uCj4gSSBqdXN0IHRlc3Rl
+ZCBib3RoIEhXL1NXIGNyeXB0byBjYXNlcyB3b3JraW5nIGZpbmUgaW4gcmF3IG1vZGUuCj4KPiBT
+byBteSBwbGFuIGZvciB0aGUgbmV3IGNyeXB0bW9kZSBwYXJhbWV0ZXIgaGFzIDMgdmFsdWVzOgo+
+Cj4gICAgICAgIDAgICAgVXNlIEhXIGNyeXB0byBlbmdpbmUgb25seS4gVGhpcyB1c2VzIG5hdGl2
+ZSBXaUZpIG1vZGUgVHgvUnggZW5jYXAKPgo+ICAgICAgICAxICAgIFVzZSBTVyBjcnlwdG8gZW5n
+aW5lIG9ubHkuIFRoaXMgdXNlcyByYXcgbW9kZSBUeC9SeCBlbmNhcAo+Cj4gICAgICAgIDIgICAg
+U3VwcG9ydHMgYm90aCBTVyAmIEhXIGNyeXB0byBlbmdpbmUuIFRoaXMgdXNlcyByYXcgbW9kZSBU
+eC9SeCBlbmNhcC4KPgo+IE9uY2UgdGhpcyBwYXRjaCBpcyBpbiwgSSBndWVzcyBwZW9wbGUgd291
+bGQgb25seSB1c2UgY3J5cHRtb2RlPTAgb3IgMS4KPiBGb3IgY3J5cHRtb2RlPTIsIEkgaGF2ZSBz
+dWJzZXF1ZW50IGNoYW5nZXMgdG8gYWxsb3cgcGVyIEJTUyBiYXNlZAo+IGNvbnRyb2wgb2YgSFcv
+U1cgY3J5cHRvIHNlbGVjdGlvbi4KPiBQbGFuIGlzIHRvIG1ha2UgbWFrZSBhcnZpZi0+bm9od2Ny
+eXB0IGNvbmZpZ3VyYWJsZSB2aWEgZGVidWdmcyBvcgo+IG5sODAyMTEgKHN1YmplY3QgdG8gcmV2
+aWV3IGZlZWRiYWNrKQo+Cj4+Cj4+ICBBVEgxMEtfRkxBR19SQVdfVFgsCj4+ICBBVEgxMEtfRkxB
+R19SQVdfUlgsCj4+ICBBVEgxMEtfRkxBR19TV19UWF9DUllQVE8sCj4+ICBBVEgxMEtfRkxBR19T
+V19SWF9DUllQVE8sCj4+Cj4+IE9idmlvdXNseSBub3QgYWxsIGNvbWJpbmF0aW9ucyBhcmUgdmFs
+aWQvZG9hYmxlIGJ1dCBJIHRoaW5rIHRoaXMgd2lsbAo+PiBtYWtlIHRoZSBjb2RlIGxvb2sgbW9y
+ZSBvYnZpb3VzLgo+Pgo+Cj4gVGhhdCB3b3VsZCBiZSB0b28gbWFueSBmbGFncyBhbmQgdG9vIGNv
+bXBsZXguCj4gSSdkIHN1Z2dlc3Qga2VlcCB0aGUgcHJvcG9zZWQgQVRIMTBLX1JBV19NT0RFIGFu
+ZCBBVEgxMEtfSFdfQ1JZUFRPX0RJU0FCTEVELgo+IExldCdzIG1ha2UgVHgvUnggSFcgY3J5cHRv
+IGFsd2F5cyBib3RoIGVuYWJsZWQgb3IgYm90aCBkaXNhYmxlZCBBRkEKPiBkcml2ZXIgaXMgY29u
+Y2VybmVkLgoKT2theS4gVGhpcyBzdWdnZXN0aW9uIHdhcyBiYXNlZCBvbiBteSBpbmNvcnJlY3Qg
+aW50ZXJwcmV0YXRpb24gb2YgeW91cgpwYXRjaCB3cnQgYXJ2aWYtPm5vaHdjcnlwdC4KCgo+Pj4g
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaCBiL2RyaXZl
+cnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaAo+Pj4gaW5kZXggODVjY2EyOS4uMzdmZDJm
+ODMgMTAwNjQ0Cj4+PiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2h3LmgK
+Pj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvaHcuaAo+Pj4gQEAgLTI5
+Niw3ICsyOTYsNyBAQCBlbnVtIGF0aDEwa19od19yYXRlX2NjayB7Cj4+PiAgI2RlZmluZSBUQVJH
+RVRfMTBYX1JYX1NLSVBfREVGUkFHX1RJTUVPVVRfRFVQX0RFVEVDVElPTl9DSEVDSyAxCj4+PiAg
+I2RlZmluZSBUQVJHRVRfMTBYX1ZPV19DT05GSUcgICAgICAgICAgICAgICAgICAwCj4+PiAgI2Rl
+ZmluZSBUQVJHRVRfMTBYX05VTV9NU0RVX0RFU0MgICAgICAgICAgICAgICAoMTAyNCArIDQwMCkK
+Pj4+IC0jZGVmaW5lIFRBUkdFVF8xMFhfTUFYX0ZSQUdfRU5UUklFUyAgICAgICAgICAgIDAKPj4+
+ICsjZGVmaW5lIFRBUkdFVF8xMFhfTUFYX0ZSQUdfRU5UUklFUyAgICAgICAgICAgIDEwCj4+Cj4+
+IFRoaXMgaXMgcHJvYmFibHkgZW5vdWdoIGF0ICIyIiAoYXRoMTBrIGRvZXNuJ3Qgc2VuZCBtb3Jl
+IHRoYW4gMiB0eAo+PiBmcmFnbWVudHMgbm93KS4gSSBhc3N1bWUgZncgY3Jhc2hlcyB3aXRoIHJh
+dyB0eCBpZiB0aGlzIGlzbid0IGZpeGVkLAo+PiBjb3JyZWN0Pwo+Pgo+PiBTaWRlbm90ZTogSSBn
+dWVzcyBUQVJHRVRfTUFYX0ZSQUdfRU5UUklFUyBjb3VsZCBiZSBmaXhlZCBhcyB3ZWxsLiBJdAo+
+PiBtaWdodCBtYWtlIHNlbnNlIGZvciBRQ0E2MVg0IGh3Mi4xIHdoaWNoIHN0aWxsIHVzZXMgdGhl
+IG9sZCBSeAo+PiBpbmRpY2F0aW9uIGV2ZW50IGFuZCBtaWdodCBiZSBhYmxlIHRvIGRvIHJhdyB0
+eHJ4ICsgc3djcnlwdG8uIEJ1dCBJJ20KPj4gYSBiaXQgcmVsdWN0YW50IHRvIGNoYW5nZSB0aGlz
+IHdpdGhvdXQgYW55IHRlc3RpbmcuCj4+Cj4KPiBTdXJlLiBJIGNoYW5nZSBpdCB0byAxMCBiZWNh
+dXNlIHRoZSBkb2N1bWVudCBJIGdvdCBmcm9tIFFDQSBzYXlzIHNvLgo+IFNpbmNlIHRoaXMgaXMg
+YSBnbG9iYWwgc2V0dGluZywgSSB3aWxsIHJlbW92ZSB0aGlzIGFuZCBrZWVwIGl0ID0wIGZvcgo+
+IG5vdyBzbyBpdCBkb2Vzbid0IGFmZmVjdCBleGlzdGluZyBIVyBiYXNlZCBkYXRhcGF0aC4KClN1
+cmUuIEkgcmVjYWxsIDEwLnggb24gUUNBOTg4WCBpc24ndCByZWFsbHkgcGlja3kgb24gdGhpcyB2
+YWx1ZS4KUUNBNjFYNCB3aXRoIHdtaS10bHYgb24gdGhlIG90aGVyIGhhbmQgbmVlZHMgYW4gYWRl
+cXVhdGUgdmFsdWUgZm9yCnRoaXMgY29uZmlndXJhdGlvbiBwYXJhbWV0ZXIgb3IgaXQnbGwgY3Jh
+c2ggaG9ycmlibHkuCgoKPiBQZXIgUUNBLCB0aGUgbWFpbiBpc3N1ZSBub3QgY2hhbmdpbmcgdGhp
+cyB3b3VsZCBiZSBTVyBjcnlwdG8gdGhlbgo+IHdvbid0IGJlIGFibGUgdG8gaGFuZGxlIGxhcmdl
+IFJ4IEFNU0RVLgo+IFdoZW4gSFcgaXMgbm90IGRvaW5nIFJ4IGRlY3J5cHRpb24sIHRoZSB3aG9s
+ZSBBTVNEVSBuZWVkcyB0byBiZSBETUEgdG8KPiBob3N0IGZvciBTVyBiYXNlZCBkZWNyeXB0aW9u
+ICYgQU1TRFUgc3ViZnJhbWUgZGVhZ2dyZWdhdGlvbi4KCkhtbS4uIEZyb20gd2hhdCBJIGtub3cg
+dGhpcyBzZXR0aW5nIHJlZmVycyB0byB0aGUgbWF4IG51bWJlciBvZiBUeApmcmFnbWVudHMgdGhh
+dCBjYW4gYmUgc3VibWl0dGVkIHZpYSBIVFQgVFhfRlJNIGNvbW1hbmQgZXZlbnR1YWxseSB0bwpI
+VyBNQUMsIG5vdCBSeCBmcmFnbWVudHMuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlz
+dHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2F0aDEwawo=
