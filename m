@@ -1,14 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z05jv-0004UW-JX
- for ath10k@lists.infradead.org; Wed, 03 Jun 2015 10:17:41 +0000
-Received: by wibut5 with SMTP id ut5so97175567wib.1
- for <ath10k@lists.infradead.org>; Wed, 03 Jun 2015 03:17:15 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/3] ath10k: fix ar->rx_channel updating logic
-Date: Wed,  3 Jun 2015 12:16:54 +0200
-Message-Id: <1433326616-23279-1-git-send-email-michal.kazior@tieto.com>
+Received: from smtp-out03.msg.oleane.net ([62.161.7.1])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0BEL-0003QV-2k
+ for ath10k@lists.infradead.org; Wed, 03 Jun 2015 16:09:26 +0000
+Received: from smtp08.msg.oleane.net (smtp08.mail.priv [172.17.20.117]) 
+ by smtp-out03.msg.oleane.net with ESMTP id t53Fk4gl016920
+ for <ath10k@lists.infradead.org>; Wed, 3 Jun 2015 17:46:04 +0200
+Received: from acksys.fr ([195.6.104.67]) (authenticated)
+ by smtp08.msg.oleane.net (MTA) with ESMTP id t53FOooA005534
+ for <ath10k@lists.infradead.org>; Wed, 3 Jun 2015 17:24:50 +0200
+Content-class: urn:content-classes:message
+Subject: ATH10K and VLAN
+Date: Wed, 3 Jun 2015 17:24:50 +0200
+Message-ID: <773DB8A82AB6A046AE0195C68612A31901A71F98@sbs2003.acksys.local>
+MIME-Version: 1.0
+From: "Cedric VONCKEN" <cedric.voncken@acksys.fr>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,109 +23,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Channel contexts aren't iterable until after
-they've been added to the driver. The code assumed
-otherwise.
+	I'm testing to send a VLAN frame through ATH10K device.
+	I'm using compat wireless 2015-03-09 from openWRT. The ATH10K firmware use=
+d is 10.2.4.45
 
-This problem could result in:
+	My test platform is:
+		Pc1 : IP 10.101.4.3 (without VLAN)
+			VLAN 1 : IP 192.168.5.1
 
- * rx_channel being NULL and forcing Rx path to go
-   the slow way to get channel on QCA988X,
+		Equipment in AP mode. The netdev is bridged with eth0
 
- * report incorrect channel when running
-   multi-channel on QCA61X4 hw2.1,
+		Equipment in client mode with WDS mode enables. The client is connected t=
+o the AP. The netdev is bridged with eth0.
+		AP and client use ATH10K wireless card.
 
- * report incorrect channel after AP channel
-   switch.
+		PC2: IP 10.101.4.4 (without VLAN)
+			VLAN 1 : IP 192.168.5.2
 
-Fixes: 500ff9f9389d ("ath10k: implement chanctx API")
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+		The PC1 is connected to the equipment in AP mode and the PC2 is connected=
+ to the equipment in client mode.
+	=
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index f4de71721f7d..fe53b1f5e6c9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6144,7 +6144,10 @@ static int ath10k_ampdu_action(struct ieee80211_hw *hw,
- }
- 
- static void
--ath10k_mac_update_rx_channel(struct ath10k *ar)
-+ath10k_mac_update_rx_channel(struct ath10k *ar,
-+			     struct ieee80211_chanctx_conf *ctx,
-+			     struct ieee80211_vif_chanctx_switch *vifs,
-+			     int n_vifs)
- {
- 	struct cfg80211_chan_def *def = NULL;
- 
-@@ -6154,6 +6157,9 @@ ath10k_mac_update_rx_channel(struct ath10k *ar)
- 	lockdep_assert_held(&ar->conf_mutex);
- 	lockdep_assert_held(&ar->data_lock);
- 
-+	WARN_ON(ctx && vifs);
-+	WARN_ON(vifs && n_vifs != 1);
-+
- 	/* FIXME: Sort of an optimization and a workaround. Peers and vifs are
- 	 * on a linked list now. Doing a lookup peer -> vif -> chanctx for each
- 	 * ppdu on Rx may reduce performance on low-end systems. It should be
-@@ -6165,11 +6171,17 @@ ath10k_mac_update_rx_channel(struct ath10k *ar)
- 	 * affected much.
- 	 */
- 	rcu_read_lock();
--	if (ath10k_mac_num_chanctxs(ar) == 1) {
-+	if (!ctx && ath10k_mac_num_chanctxs(ar) == 1) {
- 		ieee80211_iter_chan_contexts_atomic(ar->hw,
- 					ath10k_mac_get_any_chandef_iter,
- 					&def);
-+
-+		if (vifs)
-+			def = &vifs[0].new_ctx->def;
-+
- 		ar->rx_channel = def->chan;
-+	} else if (ctx && ath10k_mac_num_chanctxs(ar) == 0) {
-+		ar->rx_channel = ctx->def.chan;
- 	} else {
- 		ar->rx_channel = NULL;
- 	}
-@@ -6204,7 +6216,7 @@ ath10k_mac_op_add_chanctx(struct ieee80211_hw *hw,
- 
- 	spin_lock_bh(&ar->data_lock);
- 	ath10k_mac_chan_ctx_init(ar, arctx, ctx);
--	ath10k_mac_update_rx_channel(ar);
-+	ath10k_mac_update_rx_channel(ar, ctx, NULL, 0);
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	ath10k_recalc_radar_detection(ar);
-@@ -6228,7 +6240,7 @@ ath10k_mac_op_remove_chanctx(struct ieee80211_hw *hw,
- 	mutex_lock(&ar->conf_mutex);
- 
- 	spin_lock_bh(&ar->data_lock);
--	ath10k_mac_update_rx_channel(ar);
-+	ath10k_mac_update_rx_channel(ar, NULL, NULL, 0);
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	ath10k_recalc_radar_detection(ar);
-@@ -6413,7 +6425,7 @@ ath10k_mac_op_switch_vif_chanctx(struct ieee80211_hw *hw,
- 		 */
- 		arctx_old->conf = *vifs[i].new_ctx;
- 	}
--	ath10k_mac_update_rx_channel(ar);
-+	ath10k_mac_update_rx_channel(ar, NULL, vifs, n_vifs);
- 	spin_unlock_bh(&ar->data_lock);
- 
- 	/* FIXME: Reconfigure only affected vifs */
--- 
-2.1.4
+
+	I can ping from PC1 to PC2 without vlan (ping 10.101.4.4).
+	I cannot ping from PC1 to PC2 with VLAN.
+	With tcpdump I checked the vlan frame is sent to the netdev but this frame=
+ is not send to the air.
+
+	Is it possible to send a VLAN frame through ATH10K? If no, is it a driver =
+limitation or firmware limitation?
+		=
+
+	Thanks for your help.
+
+C=E9dric.
+
 
 
 _______________________________________________
