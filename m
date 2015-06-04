@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.gmx.com ([74.208.4.201])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0cRF-0004Ds-2S
- for ath10k@lists.infradead.org; Thu, 04 Jun 2015 21:12:34 +0000
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0dN8-0006Zf-Ep
+ for ath10k@lists.infradead.org; Thu, 04 Jun 2015 22:12:22 +0000
+Message-ID: <5570CD2F.4040604@candelatech.com>
+Date: Thu, 04 Jun 2015 15:11:59 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Message-ID: <trinity-461097b2-68cb-4d23-90e2-933c8561f23a-1433452326111@3capp-mailcom-lxa06>
-From: "Jason H" <jhihn@gmx.com>
-Subject: Re: QCA6174 hw2.1 firmware, take two?
-Date: Thu, 4 Jun 2015 23:12:06 +0200
-In-Reply-To: <CAMQd7mbwo13QSd6_mreVzubw0EAHep1KsTH6ut3ZDtGS7pSvYQ@mail.gmail.com>
-References: <CAMQd7maBxv_AeVZfkdMCri1C0Vq+nU8Jc386FU1LGUrPX0+gpA@mail.gmail.com>, 
- <CAMQd7mbwo13QSd6_mreVzubw0EAHep1KsTH6ut3ZDtGS7pSvYQ@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: new debugfs interface to enable adaptive CCA
+References: <1431093663-15206-1-git-send-email-c_mpubbi@qti.qualcomm.com>
+ <CA+BoTQ=480Wg4WmL0eBZ7CS9aVHjH8Lt-2x-FzAuGwsAuNA8-w@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=480Wg4WmL0eBZ7CS9aVHjH8Lt-2x-FzAuGwsAuNA8-w@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,96 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Enrico Tagliavini <enrico.tagliavini@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: c_mpubbi@qti.qualcomm.com, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Glad to see I'm not the only one with this card!
+Is there any way to make this work on a 10.1 firmware, even if that means
+manually poking registers through debugfs?
 
-What are the blockages to getting this properly supported? I figure he kernel patch has to work it's way though the maintainers, but are there any restrictions with publishing the firmware for the linux driver?
+I have a user of CT firmware that would really like Adaptive CCA to
+work, so if I can just get some clues as to what needs setting,
+I can write up an API that works with my 10.1 firmware...
+
+Thanks,
+Ben
 
 
-> Sent: Thursday, June 04, 2015 at 1:22 PM
-> From: "Enrico Tagliavini" <enrico.tagliavini@gmail.com>
-> To: ath10k@lists.infradead.org
-> Subject: Re: QCA6174 hw2.1 firmware, take two?
->
-> Hi again,
+On 05/10/2015 11:05 PM, Michal Kazior wrote:
+> On 8 May 2015 at 16:01,  <c_mpubbi@qti.qualcomm.com> wrote:
+>> From: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
+>>
+>> For devices working in 2.4 GHz to be ETSI compliant,
+>> it is required to support adaptive CCA. Some firmwares
+>> support adaptive CCA and is disabled by default.
+>>
+>> The patch is an attempt to add a new debugfs interface to enable
+>> adaptive cca on supported firmwares. Support for this feature is
+>> advertised with a new firmware feature flag.
 > 
-> ok this was dumb.... I forgot to assemble back the firmware and I
-> realized it just after sending out the previous email (that's why the
-> driver was complaining about the invalid magic).
-> 
-> Sorry for the noise, I apologize.
-> 
-> Hope to see this fixed in upstream Linux kernel soon.
-> 
-> Best regards.
-> 
-> Enrico.
-> 
-> 
-> P.S.: this is another Alienware 15 like Gabriele's. I think they all
-> ship with such a WiFi. Just pointing it out since Dell now is even
-> shyly suggesting to try out Linux
-> https://twitter.com/DellCaresPRO/status/603780236531081216 (not on
-> Alienware, but still...)
-> 
-> On 4 June 2015 at 19:03, Enrico Tagliavini <enrico.tagliavini@gmail.com> wrote:
-> > Hi there,
-> >
-> > Just got the following device
-> >
-> > enrico@alientux ~ $ lspci -nn | grep QCA
-> > 03:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac
-> > Wireless Network Adapter [168c:003e] (rev 20)
-> >
-> > And discovered there is no firmware available for it. I looked already
-> > at the April thread about it, but didn't managed to get it working.
-> > This is on Fedora 22, kernel 4.0.4.
-> >
-> > I used dissect.py from here
-> > https://gist.github.com/kazikcz/8e5845ad84ca251aa295 to generate the
-> > firmware image from my Windows installation:
-> > $ cat /windows/Windows/System32/DriverStore/FileRepository/netathrx.inf_amd64_481f6e2b133b287d/qca61x420.bin
-> > | ./dissect.py
-> >
-> > but I have no clue if that is actually the correct file. For sure it's
-> > the only one containing "qca" end ending in ".bin" alongside
-> > eeprom_qca9377_1p0_NFA435_olpc.bin which I used as board.bin.
-> >
-> > Unfortunately when trying those I get
-> > root@alientux ~ # dmesg | grep ath
-> > [   18.518677] ath10k_pci 0000:03:00.0: enabling device (0000 -> 0002)
-> > [   18.519124] ath10k_pci 0000:03:00.0: pci irq msi-x interrupts 8
-> > irq_mode 0 reset_mode 0
-> > [   18.667191] ath10k_pci 0000:03:00.0: Direct firmware load for
-> > ath10k/cal-pci-0000:03:00.0.bin failed with error -2
-> > [   18.668652] ath10k_pci 0000:03:00.0: invalid firmware magic
-> > [   18.668791] ath10k_pci 0000:03:00.0: invalid firmware magic
-> > [   18.670086] ath10k_pci 0000:03:00.0: invalid firmware magic
-> > [   18.670265] ath10k_pci 0000:03:00.0: Direct firmware load for
-> > ath10k/QCA6174/hw2.1/firmware.bin failed with error -2
-> > [   18.670267] ath10k_pci 0000:03:00.0: could not fetch firmware (-2)
-> > [   18.670269] ath10k_pci 0000:03:00.0: could not fetch firmware files (-2)
-> > [   18.670271] ath10k_pci 0000:03:00.0: could not probe fw (-2)
-> >
-> > No idea where to go from here. I'm currently not sure if I want to try
-> > kvalo sources. Don't get me wrong but if I have to apply a patch to
-> > the official Linux source tree that's ok, but switching to the
-> > development tree is not what I was looking forward for this machine.
-> > Can 4.1 help instead? I'm afraid it might now since I can see the fix
-> > for the firmware crash is still not included.
-> >
-> > Thank you for the help.
-> > Best regards.
-> >
-> > Enrico
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-> 
+> I guess this should be configured automatically depending on DFS
+> domain. You can't expect users to configure their devices via debugfs,
+> can you? This should just work.
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
