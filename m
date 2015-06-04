@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22d.google.com ([2607:f8b0:4001:c05::22d])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0Yi0-0004It-4x
- for ath10k@lists.infradead.org; Thu, 04 Jun 2015 17:13:36 +0000
-Received: by igbzc4 with SMTP id zc4so13758294igb.0
- for <ath10k@lists.infradead.org>; Thu, 04 Jun 2015 10:13:13 -0700 (PDT)
+ id 1Z0YrQ-0002Ly-5e
+ for ath10k@lists.infradead.org; Thu, 04 Jun 2015 17:23:20 +0000
+Received: by wifw1 with SMTP id w1so66175059wif.0
+ for <ath10k@lists.infradead.org>; Thu, 04 Jun 2015 10:22:58 -0700 (PDT)
 MIME-Version: 1.0
 In-Reply-To: <CAMQd7maBxv_AeVZfkdMCri1C0Vq+nU8Jc386FU1LGUrPX0+gpA@mail.gmail.com>
 References: <CAMQd7maBxv_AeVZfkdMCri1C0Vq+nU8Jc386FU1LGUrPX0+gpA@mail.gmail.com>
-Date: Thu, 4 Jun 2015 10:13:13 -0700
-Message-ID: <CAJ-VmomRnB76qFJ2MxD2mYo25-jD=F130shvNsXgQeeAfm9ufA@mail.gmail.com>
+Date: Thu, 4 Jun 2015 19:22:58 +0200
+Message-ID: <CAMQd7mbwo13QSd6_mreVzubw0EAHep1KsTH6ut3ZDtGS7pSvYQ@mail.gmail.com>
 Subject: Re: QCA6174 hw2.1 firmware, take two?
-From: Adrian Chadd <adrian@freebsd.org>
+From: Enrico Tagliavini <enrico.tagliavini@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +24,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Enrico Tagliavini <enrico.tagliavini@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-hi,
+Hi again,
 
-It's beeliner - they went and .. "changed" how they're doing firmware
-releases and the firmware API. It's hopefully going to be more
-structured and backwards-compatible. this time.
+ok this was dumb.... I forgot to assemble back the firmware and I
+realized it just after sending out the previous email (that's why the
+driver was complaining about the invalid magic).
 
-I don't know if/when there are plans for beeliner ath10k support. I'm
-still trying to get the QCA988x firmware building for me so I can jump
-back into development there.
+Sorry for the noise, I apologize.
 
-Does anyone know more about plans for supporting beeliner and the
-updated firmware APIs?
+Hope to see this fixed in upstream Linux kernel soon.
 
+Best regards.
 
+Enrico.
 
 
--adrian
+P.S.: this is another Alienware 15 like Gabriele's. I think they all
+ship with such a WiFi. Just pointing it out since Dell now is even
+shyly suggesting to try out Linux
+https://twitter.com/DellCaresPRO/status/603780236531081216 (not on
+Alienware, but still...)
 
-
-On 4 June 2015 at 10:03, Enrico Tagliavini <enrico.tagliavini@gmail.com> wrote:
+On 4 June 2015 at 19:03, Enrico Tagliavini <enrico.tagliavini@gmail.com> wrote:
 > Hi there,
 >
 > Just got the following device
@@ -96,11 +97,6 @@ On 4 June 2015 at 10:03, Enrico Tagliavini <enrico.tagliavini@gmail.com> wrote:
 > Best regards.
 >
 > Enrico
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
 
 _______________________________________________
 ath10k mailing list
