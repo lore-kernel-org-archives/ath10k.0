@@ -1,18 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-ob0-x235.google.com ([2607:f8b0:4003:c01::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0veh-0003ON-LH
- for ath10k@lists.infradead.org; Fri, 05 Jun 2015 17:43:44 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: add cryptmode param to support sw crypto and
- raw tx injection.
-References: <1433383018-47335-1-git-send-email-cfliu.tw@gmail.com>
- <CAG5N3qFZdQ5roH-OJWoo4UqSSv4864Uz5xRrepOpvEO_Upjyzw@mail.gmail.com>
-Date: Fri, 5 Jun 2015 20:43:11 +0300
-In-Reply-To: <CAG5N3qFZdQ5roH-OJWoo4UqSSv4864Uz5xRrepOpvEO_Upjyzw@mail.gmail.com>
- (Liu CF's message of "Thu, 4 Jun 2015 10:53:14 -0700")
-Message-ID: <87r3pqnj9s.fsf@kamboji.qca.qualcomm.com>
+ id 1Z0x1A-0005tb-HX
+ for ath10k@lists.infradead.org; Fri, 05 Jun 2015 19:11:01 +0000
+Received: by obcej4 with SMTP id ej4so10026206obc.0
+ for <ath10k@lists.infradead.org>; Fri, 05 Jun 2015 12:10:36 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <5571D903.7060203@candelatech.com>
+References: <1430829048-22549-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <5571D903.7060203@candelatech.com>
+Date: Fri, 5 Jun 2015 12:10:36 -0700
+Message-ID: <CAFuUQkjP18E6fjvgZMayJYiEQtpjVUAKb+_zDmS3yBfi-QF8Cg@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix survey information reporting
+From: YanBo <dreamfly281@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +25,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Liu CF/TW <cfliu.tw@gmail.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-"Liu CF/TW" <cfliu.tw@gmail.com> writes:
+On Fri, Jun 5, 2015 at 10:14 AM, Ben Greear <greearb@candelatech.com> wrote:
+> I applied these and some other related patches to my hacked-upon 4.0.4, but
+> I am seeing some inconsistencies between how ath10k and ath9k
+> reports survey info.  I am using my CT firmware based on 10.1.
+>
+> ath9k reports ever-increasing counters for the channel time
+> and busy time.
+>
+> With ath10k, it reports the same values until I do a scan
+> again, and even then, it is not additive.
+>
+> First, should the value only update when we do a scan?
+>
+> And second, should ath10k report ever increasing totals
+> to match ath9k behaviour?
+>
 
-> Kalle et al. Please ignore this patch and review the new email with
-> subject line changed with [PATCH V2] highlighted. Looks like only by
-> doing so would it start a new thread in the ML.
-> That patch is exactly the same as the last one in this thread. I
-> updated the commit message with more testing details.
+It should be match with ath9k, but the ath10k doesn't accumulate the
+survey count at currently code,
+I drafted a patch to fix this issue, will send to public mailist soon.
 
-If you send a new version of the patch, please increase the version
-number so that it's easy to find the latest patch. "v2" vs "V2" is just
-confusing, so just mark the new patch as v3. It's not like we are
-running out of version numbers or anything like that.
-
--- 
-Kalle Valo
+BR /Yanbo
 
 _______________________________________________
 ath10k mailing list
