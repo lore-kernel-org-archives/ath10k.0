@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0y57-0000OB-Qb
- for ath10k@lists.infradead.org; Fri, 05 Jun 2015 20:19:10 +0000
-Message-ID: <55720425.2050604@candelatech.com>
-Date: Fri, 05 Jun 2015 13:18:45 -0700
-From: Ben Greear <greearb@candelatech.com>
-MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: Fix survey information reporting
-References: <1430829048-22549-1-git-send-email-vthiagar@qti.qualcomm.com>
- <5571D903.7060203@candelatech.com>
- <CAFuUQkjP18E6fjvgZMayJYiEQtpjVUAKb+_zDmS3yBfi-QF8Cg@mail.gmail.com>
- <5571F70D.4020101@candelatech.com>
-In-Reply-To: <5571F70D.4020101@candelatech.com>
+Received: from mail-qk0-x22a.google.com ([2607:f8b0:400d:c09::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0y9n-0001oi-2l
+ for ath10k@lists.infradead.org; Fri, 05 Jun 2015 20:24:00 +0000
+Received: by qkx62 with SMTP id 62so46304802qkx.3
+ for <ath10k@lists.infradead.org>; Fri, 05 Jun 2015 13:23:37 -0700 (PDT)
+Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3055\))
+Subject: Re: Warnings/errors in use with a QCA989x card
+From: Matthew Robbetts <wingfeathera@gmail.com>
+In-Reply-To: <5571C5A6.4080809@candelatech.com>
+Date: Fri, 5 Jun 2015 13:23:32 -0700
+Message-Id: <D2EAFA34-5630-4BCF-BAC5-54D678B5A3B3@gmail.com>
+References: <D38B2BA4-0B08-4B7B-A295-E95D1CF3FDBB@gmail.com>
+ <CA+BoTQm735L-TQ0ZjSZ2gHud_AwvP+kZAh+Wc4iQtaGSiC2GLw@mail.gmail.com>
+ <5571C5A6.4080809@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,105 +22,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: YanBo <dreamfly281@gmail.com>
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I think the wrapping might be even more weird that previously suspected.  Here is output from my
-system.
-
-It looks to me that when cycle count overflows, it right-shifts all of these
-counters one bit.  Clever, I guess, but surely a pain in the ass to deal with!
-
-
-while true; do cat /debug/ieee80211/wiphy0/ath10k/fw_stats|head -10|tail -4; date; echo;sleep 1; done
-....
-                TX frame count  131810463
-                RX frame count 2326362883
-                RX clear count 2542947851
-                   Cycle count 4180338939
-Fri Jun  5 13:13:48 PDT 2015
-
-                TX frame count  134407497
-                RX frame count 2374518035
-                RX clear count 2595337341
-                   Cycle count 4269010333
-Fri Jun  5 13:13:49 PDT 2015
-
-                TX frame count   69523007
-                RX frame count 1229973316
-                RX clear count 1344131636
-                   Cycle count 2210412416
-Fri Jun  5 13:13:50 PDT 2015
-
-                TX frame count   72305753
-                RX frame count 1280184579
-                RX clear count 1398937635
-                   Cycle count 2299234941
-Fri Jun  5 13:13:51 PDT 2015
-
-                TX frame count   75050021
-                RX frame count 1330205664
-                RX clear count 1453548082
-                   Cycle count 2387901854
-Fri Jun  5 13:13:52 PDT 2015
-
-
-Thanks,
-Ben
-
-
-On 06/05/2015 12:22 PM, Ben Greear wrote:
-> On 06/05/2015 12:10 PM, YanBo wrote:
->> On Fri, Jun 5, 2015 at 10:14 AM, Ben Greear <greearb@candelatech.com> wrote:
->>> I applied these and some other related patches to my hacked-upon 4.0.4, but
->>> I am seeing some inconsistencies between how ath10k and ath9k
->>> reports survey info.  I am using my CT firmware based on 10.1.
->>>
->>> ath9k reports ever-increasing counters for the channel time
->>> and busy time.
->>>
->>> With ath10k, it reports the same values until I do a scan
->>> again, and even then, it is not additive.
->>>
->>> First, should the value only update when we do a scan?
->>>
->>> And second, should ath10k report ever increasing totals
->>> to match ath9k behaviour?
->>>
->>
->> It should be match with ath9k, but the ath10k doesn't accumulate the
->> survey count at currently code,
->> I drafted a patch to fix this issue, will send to public mailist soon.
-> 
-> I notice you can get current cycle stats out of the pdev stats as well,
-> and those update every time you ask firmware for stats.
-> 
-> It won't be 100% accurate because you don't know when firmware
-> was off-channel or not, but I guess it will be better for me than
-> nothing.  I certainly don't want to be scanning all the time,
-> but grabbing firmware stats already happens when you get ethtool
-> stats, so as long as I poll often enough to catch wraps, I think it
-> will be good enough.
-> 
-> I guess to get really accurate values, one would have to hack the
-> firmware to keep its own accumulated stats and properly deal with
-> channel changes.
-> 
-> Thanks,
-> Ben
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQmVuLAoKCj4gT24gSnVuIDUsIDIwMTUsIGF0IDA4OjUyLCBCZW4gR3JlZWFyIDxncmVlYXJi
+QGNhbmRlbGF0ZWNoLmNvbT4gd3JvdGU6Cj4gCj4gT24gMDYvMDQvMjAxNSAxMDoxNyBQTSwgTWlj
+aGFsIEthemlvciB3cm90ZToKPj4gT24gNSBKdW5lIDIwMTUgYXQgMDM6NTIsIE1hdHRoZXcgUm9i
+YmV0dHMgPHdpbmdmZWF0aGVyYUBnbWFpbC5jb20+IHdyb3RlOgo+IAo+Pj4gW1RodSBKdW4gIDQg
+MTE6MDc6MDggMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2
+ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6MDggMjAxNV0g
+YXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQg
+b2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6MDggMjAxNV0gYXRoMTBrX3BjaSAwMDAw
+OjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4g
+W1RodSBKdW4gIDQgMTE6MDc6MDggMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEg
+b3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6
+MDc6MDggMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2
+IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6MDggMjAxNV0gYXRo
+MTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xk
+IGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6MDkgMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAy
+OjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1Ro
+dSBKdW4gIDQgMTE6MDc6MDkgMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3Zl
+cnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6
+MDkgMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAs
+IHNraXBwZWQgb2xkIGJlYWNvbgo+Pj4gW1RodSBKdW4gIDQgMTE6MDc6MDkgMjAxNV0gYXRoMTBr
+X3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byB0cmFuc21pdCBtYW5hZ2VtZW50IGZyYW1lIHZp
+YSBXTUk6IC0xMQo+Pj4gW1RodSBKdW4gIDQgMTI6MDU6MzIgMjAxNV0gYXRoMTBrX3dhcm46IDE5
+IGNhbGxiYWNrcyBzdXBwcmVzc2VkCj4+PiBbVGh1IEp1biAgNCAxMjowNTozMiAyMDE1XSBhdGgx
+MGtfcGNpIDAwMDA6MDI6MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBIDA0OmRi
+OjU2OmUxOjY1OjJmCj4+PiBbVGh1IEp1biAgNCAxMjo1NTo1NCAyMDE1XSBkZXZpY2Ugd2xwMnMw
+IGxlZnQgcHJvbWlzY3VvdXMgbW9kZQo+PiAKPj4gVGhpcyBpcyB0aGUgZHJlYWRlZCB0eCBjcmVk
+aXQgc3RhcnZhdGlvbi4KPiAKPiBJIGhhdmUgc29tZSBmaXhlcyBhbmQgd29yay1hcm91bmRzIHJl
+bGF0ZWQgdG8gdGhpcyBpc3N1ZSBpbiBteSBrZXJuZWxzIGFuZCBDVCBmaXJtd2FyZS4KPiAKPiBQ
+b3NzaWJseSBpdCB3b3VsZCB3b3JrIGJldHRlciBmb3IgeW91Ogo+IAo+IGh0dHA6Ly93d3cuY2Fu
+ZGVsYXRlY2guY29tL2F0aDEway5waHAKPiAKPiBUaGUgYmV0YS0xNCBmaXJtd2FyZSBpcyBwcm9i
+YWJseSBiZXN0IGF0IHRoaXMgcG9pbnQuLkknbGwgcHJvbW90ZSBpdCB0byBvZmZpY2lhbAo+IHJl
+bGVhc2Ugc29vbi4KCk9oLCB0aGF04oCZcyBpbnRlcmVzdGluZy4gSeKAmW0gbm90IGZhbWlsaWFy
+IHdpdGggdGhlIHN0cnVjdHVyZSBvZiB0aGUgZGV2ZWxvcG1lbnQgZm9yIHRoaXMgZHJpdmVyL2hh
+cmR3YXJlIOKAlCBpcyB5b3VyIHdvcmsgaW50ZW5kZWQgZm9yIHVwc3RyZWFtLCBvciBhcmUgeW91
+IGluIHRoZSBidXNpbmVzcyBvZiBzdXBwb3J0aW5nIGN1c3RvbSBoYXJkd2FyZSBhbmQgc3VjaD8K
+CkkgbWlnaHQgZ2l2ZSB0aGlzIGEgdHJ5IHdoZW4gSSBnZXQgc29tZSBzcGFyZSB0aW1lLiBUaGFu
+a3MgZm9yIHlvdXIgd29yayEKCgoKCj4+IEluIHNvbWUgY2FzZXMgaWYgZGlzYXNzb2MrZGVhdXRo
+IGlzIHNlbnQgYW5kIHRhcmdldCBzdGF0aW9uIGlzIGFzbGVlcAo+PiBhbmQgdW5yZXNwb25zaXZl
+IGl0J2xsIGNhdXNlIGZpcm13YXJlIHRvIHN0YWxsIGNhdXNpbmcgYXRoMTBrIHRpbWVvdXRzCj4+
+IGR1cmluZyBzdGFfc3RhdGUgc3RhdGlvbiByZW1vdmFsLiBEdWUgdG8gaW5zdWZmaWNpZW50IGNy
+ZWRpdHMgYmVhY29ucwo+PiBjYW4ndCBiZSBzZW50IGZvciB+MTAgc2Vjb25kcywgc3RhX3N0YXRl
+IHN0YXRpb24gcmVtb3ZhbCBmYWlscyBjYXVzaW5nCj4+IG1hYzgwMjExIGNhbGwgdHJhY2Ugc3Bs
+YXQgYW5kIGxhdGVyIHNwdXJpb3VzIGtpY2tvdXQgZXZlbnRzIGJlY2F1c2UKPj4gcGVlciB3YXMg
+bmV2ZXIgcmVtb3ZlZCBmcm9tIGZpcm13YXJlLgo+PiAKPj4gVGhlcmUncyBubyBlYXN5L3NhbmUg
+Zml4IGZvciB0aGF0LCB5ZXQuCj4gCj4gSSB0aG91Z2h0IHRoZSBuZXdlciB1cHN0cmVhbSBmaXJt
+d2FyZSBoYWQKPiBzdXBwb3J0IGZvciBtZ3QgZnJhbWVzIG92ZXIgbm9ybWFsIHBhY2tldCB0cmFu
+c3BvcnQgaW5zdGVhZCBvZiBvdmVyCj4gdGhlIFdNSSBtYW5hZ2VtZW50IGludGVyZmFjZT8gIFdv
+dWxkbid0IHRoYXQgZml4IHRoaW5ncz8KPiAKPiBUaGFua3MsCj4gQmVuCj4gCj4+IAo+PiBZb3Ug
+Y2FuIHJlYWQgbW9yZSBvbiB0aGUgc3ViamVjdDoKPj4gCj4+IGh0dHA6Ly90aHJlYWQuZ21hbmUu
+b3JnL2dtYW5lLmxpbnV4Lmtlcm5lbC53aXJlbGVzcy5nZW5lcmFsLzEyMTk1NAo+PiBodHRwOi8v
+dGhyZWFkLmdtYW5lLm9yZy9nbWFuZS5saW51eC5kcml2ZXJzLmF0aDEway5kZXZlbC82MzgKPj4g
+Cj4+IAo+PiBNaWNoYcWCCj4+IAo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8v
+YXRoMTBrCj4+IAo+IAo+IAo+IC0tIAo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
+Y29tPgo+IENhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5j
+b20KPiAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
