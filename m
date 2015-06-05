@@ -1,18 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z0yOo-0000cM-KY
- for ath10k@lists.infradead.org; Fri, 05 Jun 2015 20:39:31 +0000
-Message-ID: <557208EC.6000707@candelatech.com>
-Date: Fri, 05 Jun 2015 13:39:08 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ob0-x22b.google.com ([2607:f8b0:4003:c01::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z0yhu-0000MZ-3J
+ for ath10k@lists.infradead.org; Fri, 05 Jun 2015 20:59:15 +0000
+Received: by obbir4 with SMTP id ir4so20793253obb.1
+ for <ath10k@lists.infradead.org>; Fri, 05 Jun 2015 13:58:52 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Warnings/errors in use with a QCA989x card
-References: <D38B2BA4-0B08-4B7B-A295-E95D1CF3FDBB@gmail.com>
- <CA+BoTQm735L-TQ0ZjSZ2gHud_AwvP+kZAh+Wc4iQtaGSiC2GLw@mail.gmail.com>
- <5571C5A6.4080809@candelatech.com>
- <D2EAFA34-5630-4BCF-BAC5-54D678B5A3B3@gmail.com>
-In-Reply-To: <D2EAFA34-5630-4BCF-BAC5-54D678B5A3B3@gmail.com>
+In-Reply-To: <5571F70D.4020101@candelatech.com>
+References: <1430829048-22549-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <5571D903.7060203@candelatech.com>
+ <CAFuUQkjP18E6fjvgZMayJYiEQtpjVUAKb+_zDmS3yBfi-QF8Cg@mail.gmail.com>
+ <5571F70D.4020101@candelatech.com>
+Date: Fri, 5 Jun 2015 13:58:52 -0700
+Message-ID: <CAFuUQki+BF-WDHLbjsPCmF2jieYPHR8t-q4vG34ZEfkSE7QFiA@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Fix survey information reporting
+From: YanBo <dreamfly281@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,34 +23,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Matthew Robbetts <wingfeathera@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
 
-T24gMDYvMDUvMjAxNSAwMToyMyBQTSwgTWF0dGhldyBSb2JiZXR0cyB3cm90ZToKPiBIaSBCZW4s
-Cj4gCj4gCj4+IE9uIEp1biA1LCAyMDE1LCBhdCAwODo1MiwgQmVuIEdyZWVhciA8Z3JlZWFyYkBj
-YW5kZWxhdGVjaC5jb20+IHdyb3RlOgo+Pgo+PiBPbiAwNi8wNC8yMDE1IDEwOjE3IFBNLCBNaWNo
-YWwgS2F6aW9yIHdyb3RlOgo+Pj4gT24gNSBKdW5lIDIwMTUgYXQgMDM6NTIsIE1hdHRoZXcgUm9i
-YmV0dHMgPHdpbmdmZWF0aGVyYUBnbWFpbC5jb20+IHdyb3RlOgoKPj4+IFRoaXMgaXMgdGhlIGRy
-ZWFkZWQgdHggY3JlZGl0IHN0YXJ2YXRpb24uCj4+Cj4+IEkgaGF2ZSBzb21lIGZpeGVzIGFuZCB3
-b3JrLWFyb3VuZHMgcmVsYXRlZCB0byB0aGlzIGlzc3VlIGluIG15IGtlcm5lbHMgYW5kIENUIGZp
-cm13YXJlLgo+Pgo+PiBQb3NzaWJseSBpdCB3b3VsZCB3b3JrIGJldHRlciBmb3IgeW91Ogo+Pgo+
-PiBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbS9hdGgxMGsucGhwCj4+Cj4+IFRoZSBiZXRhLTE0
-IGZpcm13YXJlIGlzIHByb2JhYmx5IGJlc3QgYXQgdGhpcyBwb2ludC4uSSdsbCBwcm9tb3RlIGl0
-IHRvIG9mZmljaWFsCj4+IHJlbGVhc2Ugc29vbi4KPiAKPiBPaCwgdGhhdOKAmXMgaW50ZXJlc3Rp
-bmcuIEnigJltIG5vdCBmYW1pbGlhciB3aXRoIHRoZSBzdHJ1Y3R1cmUgb2YgdGhlIGRldmVsb3Bt
-ZW50IGZvciB0aGlzIGRyaXZlci9oYXJkd2FyZSDigJQgaXMgeW91ciB3b3JrIGludGVuZGVkIGZv
-ciB1cHN0cmVhbSwgb3IgYXJlIHlvdSBpbiB0aGUgYnVzaW5lc3Mgb2Ygc3VwcG9ydGluZyBjdXN0
-b20gaGFyZHdhcmUgYW5kIHN1Y2g/Cj4gCj4gSSBtaWdodCBnaXZlIHRoaXMgYSB0cnkgd2hlbiBJ
-IGdldCBzb21lIHNwYXJlIHRpbWUuIFRoYW5rcyBmb3IgeW91ciB3b3JrIQoKSSdtIGluIHRoZSBi
-dXNpbmVzcywgYnV0IEkgZ2l2ZSB0aGUgY29tbXVuaXR5IHZlcnNpb24gYXdheSBmb3IgZnJlZS4K
-CkkgaGF2ZSBubyB3YXkgdG8gZ2V0IG15IGZpcm13YXJlIGNoYW5nZXMgdXBzdHJlYW0sIG5vciBh
-bnkgbGludXggZHJpdmVyIGNoYW5nZXMKdGhhdCBhcmUgb25seSBzdXBwb3J0ZWQgYnkgZmlybXdh
-cmUuCgpUaGFua3MsCkJlbgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29t
-PgpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1h
-aWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Fri, Jun 5, 2015 at 12:22 PM, Ben Greear <greearb@candelatech.com> wrote:
+> On 06/05/2015 12:10 PM, YanBo wrote:
+>> On Fri, Jun 5, 2015 at 10:14 AM, Ben Greear <greearb@candelatech.com> wrote:
+>>> I applied these and some other related patches to my hacked-upon 4.0.4, but
+>>> I am seeing some inconsistencies between how ath10k and ath9k
+>>> reports survey info.  I am using my CT firmware based on 10.1.
+>>>
+>>> ath9k reports ever-increasing counters for the channel time
+>>> and busy time.
+>>>
+>>> With ath10k, it reports the same values until I do a scan
+>>> again, and even then, it is not additive.
+>>>
+>>> First, should the value only update when we do a scan?
+>>>
+>>> And second, should ath10k report ever increasing totals
+>>> to match ath9k behaviour?
+>>>
+>>
+>> It should be match with ath9k, but the ath10k doesn't accumulate the
+>> survey count at currently code,
+>> I drafted a patch to fix this issue, will send to public mailist soon.
+>
+> I notice you can get current cycle stats out of the pdev stats as well,
+> and those update every time you ask firmware for stats.
+>
+> It won't be 100% accurate because you don't know when firmware
+> was off-channel or not, but I guess it will be better for me than
+> nothing.  I certainly don't want to be scanning all the time,
+> but grabbing firmware stats already happens when you get ethtool
+> stats, so as long as I poll often enough to catch wraps, I think it
+> will be good enough.
+>
+> I guess to get really accurate values, one would have to hack the
+> firmware to keep its own accumulated stats and properly deal with
+> channel changes.
+>
+
+The new FW (from 10.2.4.70 IIRC)  add an new WMI interface to supply such
+kinds of count.
+
+BR /Yanbo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
