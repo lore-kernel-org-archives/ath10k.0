@@ -1,18 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mailout09.t-online.de ([194.25.134.84])
+Received: from mail-qg0-x22a.google.com ([2607:f8b0:400d:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1e4L-0008VU-S7
- for ath10k@lists.infradead.org; Sun, 07 Jun 2015 17:09:11 +0000
-Received: from fwd40.aul.t-online.de (fwd40.aul.t-online.de [172.20.26.139])
- by mailout09.t-online.de (Postfix) with SMTP id B833624C6AB
- for <ath10k@lists.infradead.org>; Sun,  7 Jun 2015 19:08:41 +0200 (CEST)
-From: Gregor Plata <gregor.plata@t-online.de>
-Subject: Re: QCA6174 hw2.1 firmware, take two?
-Date: Sun, 07 Jun 2015 19:08:36 +0200
-Message-ID: <2128694.iEsF7A6qyf@gregors>
-In-Reply-To: <CAMQd7maBxv_AeVZfkdMCri1C0Vq+nU8Jc386FU1LGUrPX0+gpA@mail.gmail.com>
-References: <CAMQd7maBxv_AeVZfkdMCri1C0Vq+nU8Jc386FU1LGUrPX0+gpA@mail.gmail.com>
-MIME-Version: 1.0
+ id 1Z1hR5-0001Px-KS
+ for ath10k@lists.infradead.org; Sun, 07 Jun 2015 20:44:52 +0000
+Received: by qgfa66 with SMTP id a66so8017670qgf.0
+ for <ath10k@lists.infradead.org>; Sun, 07 Jun 2015 13:44:27 -0700 (PDT)
+Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3055\))
+Subject: Re: Warnings/errors in use with a QCA989x card
+From: Matthew Robbetts <wingfeathera@gmail.com>
+In-Reply-To: <87sia5lzdh.fsf@kamboji.qca.qualcomm.com>
+Date: Sun, 7 Jun 2015 13:44:19 -0700
+Message-Id: <6508F063-8E71-4381-AB87-88CFC37D34ED@gmail.com>
+References: <D38B2BA4-0B08-4B7B-A295-E95D1CF3FDBB@gmail.com>
+ <CA+BoTQm735L-TQ0ZjSZ2gHud_AwvP+kZAh+Wc4iQtaGSiC2GLw@mail.gmail.com>
+ <87sia5lzdh.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,84 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi all,
-
-the solution described in the bug report 
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1383184 (comment #150) 
-works perfectly for me. Wi-fi is stable without any drops and the 4.1.0-rc6-
-wl-ath kernel doesn't cause any  issues but the wi-fi performance comes only 
-to about 35%-40% of the performance on windows on the same machine downloading 
-the same file from the same server .
-
-best regards
-Gregor
-
-Am Donnerstag, 4. Juni 2015, 19:03:55 schrieb Enrico Tagliavini:
-> Hi there,
-> 
-> Just got the following device
-> 
-> enrico@alientux ~ $ lspci -nn | grep QCA
-> 03:00.0 Network controller [0280]: Qualcomm Atheros QCA6174 802.11ac
-> Wireless Network Adapter [168c:003e] (rev 20)
-> 
-> And discovered there is no firmware available for it. I looked already
-> at the April thread about it, but didn't managed to get it working.
-> This is on Fedora 22, kernel 4.0.4.
-> 
-> I used dissect.py from here
-> https://gist.github.com/kazikcz/8e5845ad84ca251aa295 to generate the
-> firmware image from my Windows installation:
-> $ cat
-> /windows/Windows/System32/DriverStore/FileRepository/netathrx.inf_amd64_481
-> f6e2b133b287d/qca61x420.bin
-> | ./dissect.py
-> 
-> but I have no clue if that is actually the correct file. For sure it's
-> the only one containing "qca" end ending in ".bin" alongside
-> eeprom_qca9377_1p0_NFA435_olpc.bin which I used as board.bin.
-> 
-> Unfortunately when trying those I get
-> root@alientux ~ # dmesg | grep ath
-> [   18.518677] ath10k_pci 0000:03:00.0: enabling device (0000 -> 0002)
-> [   18.519124] ath10k_pci 0000:03:00.0: pci irq msi-x interrupts 8
-> irq_mode 0 reset_mode 0
-> [   18.667191] ath10k_pci 0000:03:00.0: Direct firmware load for
-> ath10k/cal-pci-0000:03:00.0.bin failed with error -2
-> [   18.668652] ath10k_pci 0000:03:00.0: invalid firmware magic
-> [   18.668791] ath10k_pci 0000:03:00.0: invalid firmware magic
-> [   18.670086] ath10k_pci 0000:03:00.0: invalid firmware magic
-> [   18.670265] ath10k_pci 0000:03:00.0: Direct firmware load for
-> ath10k/QCA6174/hw2.1/firmware.bin failed with error -2
-> [   18.670267] ath10k_pci 0000:03:00.0: could not fetch firmware (-2)
-> [   18.670269] ath10k_pci 0000:03:00.0: could not fetch firmware files (-2)
-> [   18.670271] ath10k_pci 0000:03:00.0: could not probe fw (-2)
-> 
-> No idea where to go from here. I'm currently not sure if I want to try
-> kvalo sources. Don't get me wrong but if I have to apply a patch to
-> the official Linux source tree that's ok, but switching to the
-> development tree is not what I was looking forward for this machine.
-> Can 4.1 help instead? I'm afraid it might now since I can see the fix
-> for the firmware crash is still not included.
-> 
-> Thank you for the help.
-> Best regards.
-> 
-> Enrico
-> 
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+Cj4gT24gSnVuIDYsIDIwMTUsIGF0IDA2OjUwLCBLYWxsZSBWYWxvIDxrdmFsb0BxY2EucXVhbGNv
+bW0uY29tPiB3cm90ZToKPiAKPiBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNv
+bT4gd3JpdGVzOgo+IAo+PiBUaGlzIGlzIHRoZSBkcmVhZGVkIHR4IGNyZWRpdCBzdGFydmF0aW9u
+Lgo+PiAKPj4gSW4gc29tZSBjYXNlcyBpZiBkaXNhc3NvYytkZWF1dGggaXMgc2VudCBhbmQgdGFy
+Z2V0IHN0YXRpb24gaXMgYXNsZWVwCj4+IGFuZCB1bnJlc3BvbnNpdmUgaXQnbGwgY2F1c2UgZmly
+bXdhcmUgdG8gc3RhbGwgY2F1c2luZyBhdGgxMGsgdGltZW91dHMKPj4gZHVyaW5nIHN0YV9zdGF0
+ZSBzdGF0aW9uIHJlbW92YWwuIER1ZSB0byBpbnN1ZmZpY2llbnQgY3JlZGl0cyBiZWFjb25zCj4+
+IGNhbid0IGJlIHNlbnQgZm9yIH4xMCBzZWNvbmRzLCBzdGFfc3RhdGUgc3RhdGlvbiByZW1vdmFs
+IGZhaWxzIGNhdXNpbmcKPj4gbWFjODAyMTEgY2FsbCB0cmFjZSBzcGxhdCBhbmQgbGF0ZXIgc3B1
+cmlvdXMga2lja291dCBldmVudHMgYmVjYXVzZQo+PiBwZWVyIHdhcyBuZXZlciByZW1vdmVkIGZy
+b20gZmlybXdhcmUuCj4+IAo+PiBUaGVyZSdzIG5vIGVhc3kvc2FuZSBmaXggZm9yIHRoYXQsIHll
+dC4KPj4gCj4+IFlvdSBjYW4gcmVhZCBtb3JlIG9uIHRoZSBzdWJqZWN0Ogo+PiAKPj4gaHR0cDov
+L3RocmVhZC5nbWFuZS5vcmcvZ21hbmUubGludXgua2VybmVsLndpcmVsZXNzLmdlbmVyYWwvMTIx
+OTU0Cj4+IGh0dHA6Ly90aHJlYWQuZ21hbmUub3JnL2dtYW5lLmxpbnV4LmRyaXZlcnMuYXRoMTBr
+LmRldmVsLzYzOAo+IAo+IFNob3VsZCB3ZSB3cml0ZSBhbiBlbnRyeSB0byB0aGUgRkFRIGFib3V0
+IHRoaXM/CgpGcm9tIG15IHBlcnNwZWN0aXZlIGFzIGEgdXNlciwgdGhpcyB3b3VsZCBoYXZlIGJl
+ZW4gdmVyeSB1c2VmdWwuIFRvIG15IHVuZGVyc3RhbmRpbmcsIGFuZCB0cmFuc2xhdGVkIGJsdW50
+bHksIEFQIG1vZGUgb24gdGhpcyBoYXJkd2FyZSBpcyBub3Qgc3VwcG9ydGVkOyBJIHdvdWxkIGhh
+dmUgYmVlbiBoYXBweSB0byBrbm93IHRoYXQgYmVmb3JlIGJ1eWluZyB0aGlzIHJhdGhlciBleHBl
+bnNpdmUgY2FyZCA6KQoKQXJlIHlvdSBhYmxlIChvciB3aWxsaW5nISkgdG8gY29tbWVudCBhbnkg
+ZnVydGhlciBob3cg4oCUIGZyb20gYSBoaWdoIGxldmVsIOKAlCB0aGlzIHByb2JsZW0gY2FuIGV4
+aXN0PyBJZiAibm8gc29sdXRpb24gaXMga25vd24iIHJpZ2h0IG5vdywgaXQgaW1wbGllcyB0aGF0
+IHRoZXJlIGlzIGEgZGlmZmljdWx0eSBhdCB0aGUgYXJjaGl0ZWN0dXJhbCBsZXZlbC4gQW5kIHRo
+ZSBjb252ZXJzYXRpb25zIE1pY2hhbCBsaW5rZWQgbWUgdG8gYXJlIG92ZXIgYSB5ZWFyIG9sZCwg
+c28gdGhlcmUgbXVzdCBiZSBzb21lIHJlYWwgZGlmZmljdWx0eSBoZXJlLiBCdXQsIHRoaXMgcHJv
+YmxlbSBzZWVtcyB0byBwcmV2ZW50IGFuIGVudGlyZSBnZW5lcmF0aW9uIG9mIGhhcmR3YXJlIGZy
+b20gcGVyZm9ybWluZyBpbiB3aGF0IGlzIHN1cmVseSBvbmUgb2YgaXRzIG1haW4gaW50ZW5kZWQg
+dXNlLWNhc2VzIQoKSG93IGRvZXMgb3RoZXIsIGZ1bmN0aW9uaW5nLCA4MDIuMTFhYyBoYXJkd2Fy
+ZSBoYW5kbGUgdGhpcyBzYW1lIGNpcmN1bXN0YW5jZSBvZiBkaXNhcHBlYXJpbmcsIHNsZWVwaW5n
+IHN0YXRpb25zPwoKUmVnYXJkcywKTWF0dAoKPiAtLSAKPiBLYWxsZSBWYWxvCgoKX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
+dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
+YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
