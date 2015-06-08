@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from mga11.intel.com ([192.55.52.93])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1u7U-0000wq-Fp
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 10:17:29 +0000
-Date: Mon, 8 Jun 2015 18:16:37 +0800
+ id 1Z1u7U-0000wd-9g
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 10:17:28 +0000
+Date: Mon, 8 Jun 2015 18:16:38 +0800
 From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [ath6kl:pending 13/20] drivers/net/wireless/ath/ath10k/core.c:34:14:
- sparse: symbol 'ath10k_cryptmode_param' was not declared. Should it be
- static?
-Message-ID: <201506081858.50qhbeJJ%fengguang.wu@intel.com>
+Subject: [PATCH ath6kl] ath10k: ath10k_cryptmode_param can be static
+Message-ID: <20150608101638.GA42919@roam>
+References: <201506081858.50qhbeJJ%fengguang.wu@intel.com>
 MIME-Version: 1.0
 Content-Disposition: inline
+In-Reply-To: <201506081858.50qhbeJJ%fengguang.wu@intel.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +26,25 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Liu CF/TW <cfliu.tw@gmail.com>
 Cc: "Kalle Valo <kvalo@adurom.com> Kalle Valo" <kvalo@adurom.com>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-tree:   git://github.com/kvalo/ath pending
-head:   b05648495f19ba2cff2662ec06e059f4d3ef70a5
-commit: 1c5277383bef3c7c9fc73c33d3dea4255e4919b6 [13/20] ath10k: add 'cryptmode' param to support raw tx injection and sw crypto.
-reproduce:
-  # apt-get install sparse
-  git checkout 1c5277383bef3c7c9fc73c33d3dea4255e4919b6
-  make ARCH=x86_64 allmodconfig
-  make C=1 CF=-D__CHECK_ENDIAN__
 
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/net/wireless/ath/ath10k/core.c:34:14: sparse: symbol 'ath10k_cryptmode_param' was not declared. Should it be static?
-
-Please review and possibly fold the followup patch.
-
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-http://lists.01.org/mailman/listinfo/kbuild                 Intel Corporation
+ core.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index a81c7a7..b674573 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -31,7 +31,7 @@
+ #include "wmi-ops.h"
+ 
+ unsigned int ath10k_debug_mask;
+-unsigned int ath10k_cryptmode_param;
++static unsigned int ath10k_cryptmode_param;
+ static bool uart_print;
+ static bool skip_otp;
+ 
 
 _______________________________________________
 ath10k mailing list
