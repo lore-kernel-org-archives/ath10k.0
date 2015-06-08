@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1yGB-0003Qp-SV
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 14:42:44 +0000
+ id 1Z1yMh-0006XZ-SX
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 14:49:28 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: Warnings/errors in use with a QCA989x card
-References: <D38B2BA4-0B08-4B7B-A295-E95D1CF3FDBB@gmail.com>
- <CA+BoTQm735L-TQ0ZjSZ2gHud_AwvP+kZAh+Wc4iQtaGSiC2GLw@mail.gmail.com>
- <87sia5lzdh.fsf@kamboji.qca.qualcomm.com>
- <CA+BoTQkbsuy_zaw+Rg8n3j4b5JCqu3URMivKTPFZFUMEq3fxww@mail.gmail.com>
-Date: Mon, 8 Jun 2015 17:42:17 +0300
-In-Reply-To: <CA+BoTQkbsuy_zaw+Rg8n3j4b5JCqu3URMivKTPFZFUMEq3fxww@mail.gmail.com>
- (Michal Kazior's message of "Mon, 8 Jun 2015 09:23:27 +0200")
-Message-ID: <87y4jugt2u.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH V2] ath10k: add 'cryptmode' param to support raw tx
+ injection and sw crypto.
+References: <1433440033-49570-1-git-send-email-cfliu.tw@gmail.com>
+Date: Mon, 8 Jun 2015 17:49:01 +0300
+In-Reply-To: <1433440033-49570-1-git-send-email-cfliu.tw@gmail.com> (Liu CF's
+ message of "Thu, 4 Jun 2015 10:47:13 -0700")
+Message-ID: <87twuigsrm.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,23 +24,48 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Matthew Robbetts <wingfeathera@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Liu CF/TW <cfliu.tw@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Liu CF/TW <cfliu.tw@gmail.com> writes:
 
-> I think it'd make more sense to actually update the recommended
-> firmware revision. Currently it's still the 10.1.467 in your git. It's
-> pretty confusing if you ask me. There's a ton of untested 10.2.4
-> images. How does a user know which one to use?
+> This change supports bypassing HW crypto engine by enabling raw Rx/Tx mode.
+> This will enable use cases such as sw crypto and raw tx injection.
+> This change introduces a new module param 'cryptmode'.
+>
+> cryptmode:
+>
+>  0    Use HW crypto engine. Use native WiFi mode Tx/Rx encap
+>
+>  1    Use SW crypto engine. Use raw mode Tx/Rx encap
+>
+>  2    Supports both SW & HW crypto engine. Use raw mode Tx/Rx encap.
+>
+> Testing: used QCA988x hw 2.0 with firmware-4.bin_10.2.4.48 with backports-20150424
+> (Skipped ATH10K_FW_FEATURE_RAW_MODE_SUPPORT check in core.c within this patch. 
+>  Since none of the existing QCA official firmware has the feature bit set yet)
+>
+>  ath10k
+>  cryptmode
+>  param      Testing Status
+>  -------    ---------------------------------
+>     0       HW CCMP/TKIP tested ok.
+>             Note: HW crypto bypass not supported by ath10k hw in native WiFi
+>             mode.
+>
+>     1       - mac80211 SW crypto tested ok.
+>             - raw Tx frame injection tested ok.
+>
+>     2       HW CCMP/TKIP tested ok.
+>             SW CCMP/TKIP tested ok.
+>             Tested raw Tx encrypted frame injection ok.
+>
+> Signed-off-by: Liu CF/TW <cfliu.tw@gmail.com>
 
-Yeah, that's a mess and I should fix it. At the same time we should
-reorganise the git repo entirely so that we can cleanly support various
-hardware familes like qca6174. Any ideas how to do that?
+Kbuild bot found a sparse warning:
 
-And my recommendation is to use the latest firmware version from 10.2.4
-branch which at this time is 10.2.4.70-2. I would be queries to receive
-feedback how it works for people.
+>> drivers/net/wireless/ath/ath10k/core.c:34:14: sparse: symbol 'ath10k_cryptmode_param' was not declared. Should it be static?
+
 
 -- 
 Kalle Valo
