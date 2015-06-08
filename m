@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1yX7-0002q7-1o
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 15:00:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH V2] ath10k: add 'cryptmode' param to support raw tx
- injection and sw crypto.
-References: <1433440033-49570-1-git-send-email-cfliu.tw@gmail.com>
-Date: Mon, 8 Jun 2015 17:59:40 +0300
-In-Reply-To: <1433440033-49570-1-git-send-email-cfliu.tw@gmail.com> (Liu CF's
- message of "Thu, 4 Jun 2015 10:47:13 -0700")
-Message-ID: <87pp56gs9v.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z1zeR-0002qn-AD
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 16:11:51 +0000
+Received: from [192.168.100.236] (unknown [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 78B7E40A9E6
+ for <ath10k@lists.infradead.org>; Mon,  8 Jun 2015 09:11:29 -0700 (PDT)
+Message-ID: <5575BEB1.4010706@candelatech.com>
+Date: Mon, 08 Jun 2015 09:11:29 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Does the reg_addr/reg_value reading work?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +25,36 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Liu CF/TW <cfliu.tw@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-Liu CF/TW <cfliu.tw@gmail.com> writes:
+I am not getting expected values when I try to read registers
+through the ath10k reg_addr/reg_value API.
 
-> This change supports bypassing HW crypto engine by enabling raw Rx/Tx mode.
-> This will enable use cases such as sw crypto and raw tx injection.
-> This change introduces a new module param 'cryptmode'.
+For instance, I tried reading a particular register 0x80e0
+(as defined in the firmware), and I get a zero value.  With a different
+API that I wrote to dump some specific registers over the WMI API,
+I get the expected value.
 
-Please use full words, eg. sw -> software, hw -> hardware
+# echo 0x80e0 > /debug/ieee80211/wiphy0/ath10k/reg_addr
+# cat /debug/ieee80211/wiphy0/ath10k/reg_value
+0x000080e0:0x00000000
+# cat /debug/ieee80211/wiphy0/ath10k/fw_regs
 
-> cryptmode:
->
->  0    Use HW crypto engine. Use native WiFi mode Tx/Rx encap
+   ath10k Target Register Dump
+             =================
 
-"Use hardware crypto engine with native Wi-Fi mode TX/RX encapsulation
-to the firmware"
+           MAC-FILTER-ADDR-L32 0xd7ffffff
+...
 
->  1    Use SW crypto engine. Use raw mode Tx/Rx encap
+Is there some trick I am missing?
 
-"Use sofware crypto engine from mac80211 with raw mode TX/RX
-encapsulation to the firmware"
-
->  2    Supports both SW & HW crypto engine. Use raw mode Tx/Rx encap.
-
-It's not clear how to use this. How does the user choose between SW or
-HW crypto modes? Please document that fully in the commit log.
-
->  ath10k
->  cryptmode
->  param      Testing Status
->  -------    ---------------------------------
->     0       HW CCMP/TKIP tested ok.
->             Note: HW crypto bypass not supported by ath10k hw in native WiFi
->             mode.
-
-What's "HW crypto bypass"? Please write the commit log so that everyone
-can understand it.
-
->     1       - mac80211 SW crypto tested ok.
->             - raw Tx frame injection tested ok.
-
-What does "mac80211 SW crypto tested ok" exactly mean?
-
->     2       HW CCMP/TKIP tested ok.
->             SW CCMP/TKIP tested ok.
-
-How were the HW and SW modes chosen?
-
->             Tested raw Tx encrypted frame injection ok.
-
-With HW or SW crypto mode?
+Thanks,
+Ben
 
 -- 
-Kalle Valo
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
