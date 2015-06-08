@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga11.intel.com ([192.55.52.93])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1u7U-0000wd-9g
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 10:17:28 +0000
-Date: Mon, 8 Jun 2015 18:16:38 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [PATCH ath6kl] ath10k: ath10k_cryptmode_param can be static
-Message-ID: <20150608101638.GA42919@roam>
-References: <201506081858.50qhbeJJ%fengguang.wu@intel.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <201506081858.50qhbeJJ%fengguang.wu@intel.com>
+Received: from mail-wg0-x22f.google.com ([2a00:1450:400c:c00::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z1v9n-00087p-JO
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 11:23:56 +0000
+Received: by wgez8 with SMTP id z8so100589125wge.0
+ for <ath10k@lists.infradead.org>; Mon, 08 Jun 2015 04:23:33 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: prevent memory leak in wmi rx ops
+Date: Mon,  8 Jun 2015 13:23:27 +0200
+Message-Id: <1433762607-28854-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +17,94 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Liu CF/TW <cfliu.tw@gmail.com>
-Cc: "Kalle Valo <kvalo@adurom.com> Kalle Valo" <kvalo@adurom.com>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
+Found during code review. This was pretty much
+impossible to happen but better safe than sorry.
 
-Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 ++-
+ drivers/net/wireless/ath/ath10k/wmi.c     | 8 +++++---
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index a81c7a7..b674573 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -31,7 +31,7 @@
- #include "wmi-ops.h"
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 563fde73623c..8fdba3865c96 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -402,7 +402,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
  
- unsigned int ath10k_debug_mask;
--unsigned int ath10k_cryptmode_param;
-+static unsigned int ath10k_cryptmode_param;
- static bool uart_print;
- static bool skip_otp;
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+-		return;
++		goto out;
  
+ 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+ 
+@@ -521,6 +521,7 @@ static void ath10k_wmi_tlv_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 
++out:
+ 	dev_kfree_skb(skb);
+ }
+ 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 77220b0f0e89..c2e86edfd66f 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3222,7 +3222,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+ 
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+-		return;
++		goto out;
+ 
+ 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+ 
+@@ -3326,6 +3326,7 @@ static void ath10k_wmi_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 
++out:
+ 	dev_kfree_skb(skb);
+ }
+ 
+@@ -3339,7 +3340,7 @@ static void ath10k_wmi_10_1_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+ 
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+-		return;
++		goto out;
+ 
+ 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+ 
+@@ -3462,7 +3463,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
+ 
+ 	if (skb_pull(skb, sizeof(struct wmi_cmd_hdr)) == NULL)
+-		return;
++		goto out;
+ 
+ 	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
+ 
+@@ -3570,6 +3571,7 @@ static void ath10k_wmi_10_2_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	}
+ 
++out:
+ 	dev_kfree_skb(skb);
+ }
+ 
+-- 
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
