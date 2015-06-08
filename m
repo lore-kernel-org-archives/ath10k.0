@@ -1,17 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wg0-x232.google.com ([2a00:1450:400c:c00::232])
+Received: from mail-wg0-x231.google.com ([2a00:1450:400c:c00::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z1psx-000423-0c
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 05:46:11 +0000
-Received: by wgez8 with SMTP id z8so93832617wge.0
- for <ath10k@lists.infradead.org>; Sun, 07 Jun 2015 22:45:48 -0700 (PDT)
+ id 1Z1rKF-00032h-1v
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 07:18:28 +0000
+Received: by wgv5 with SMTP id 5so95403624wgv.1
+ for <ath10k@lists.infradead.org>; Mon, 08 Jun 2015 00:18:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <557460CE.5060400@lanada.kaist.ac.kr>
-References: <557460CE.5060400@lanada.kaist.ac.kr>
-Date: Mon, 8 Jun 2015 07:45:48 +0200
-Message-ID: <CALhHN=qMbakDmAyWPPPgzEuDpkseW6P2s+EVt4ep78d+UMPObg@mail.gmail.com>
-Subject: Re: Configuring ath10k device driver supporting 802.11ac and IBSS
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+In-Reply-To: <5571C5A6.4080809@candelatech.com>
+References: <D38B2BA4-0B08-4B7B-A295-E95D1CF3FDBB@gmail.com>
+ <CA+BoTQm735L-TQ0ZjSZ2gHud_AwvP+kZAh+Wc4iQtaGSiC2GLw@mail.gmail.com>
+ <5571C5A6.4080809@candelatech.com>
+Date: Mon, 8 Jun 2015 09:18:01 +0200
+Message-ID: <CA+BoTQnVin4Aj0MXhVwuX=nmHDsZo_xr-jF4zwLp+1-hExL2zQ@mail.gmail.com>
+Subject: Re: Warnings/errors in use with a QCA989x card
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,60 +22,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sangwoo Moon <swmoon@lanada.kaist.ac.kr>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Matthew Robbetts <wingfeathera@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 7 June 2015 at 17:18, Sangwoo Moon <swmoon@lanada.kaist.ac.kr> wrote:
-> Hello,
->
-> I am currently trying to configure ath10k device
-> to support 802.11ac VHT functionality in IBSS mode.
->
-> I am using Qualcomm Atheros QCA988x 802.11ac network adapter
-> in Gigabyte M1405 laptop.
-> I am using Ubuntu 14.04.2 (kernel version 3.16.0-30-generic) as
-> main operating system, and using backports-3.16-rc1-1 as
-> ath10k device driver.
->
-> As far as I know, I can use iw to configure a WLAN interface
-> into IBSS mode (ad-hoc mode),
-> and hostapd to configure the interface enabling 802.11ac VHT
-> functionalities.
->
-> However, what I want to do is enabling 802.11ac VHT features, in
-> IBSS mode.
->
-> After series of searching, I could not find any solutions to
-> neither turn on VHT mode in iw nor using IBSS mode in hostapd.
-> I used the latest version of iw (4.1) and hostapd (2.4) trying to solve this
-> issue.
-> I also installed the latest wireless-regdb-2015.06.05 to mitigate
-> the regulatory issue in frequency band selection.
->
-> Is there anyone who can help with this issue?
-> Thanks in advance.
-Apply [PATCH] ath10k: enable VHT for IBSS.
-Next configure ibss from wpa_supplicant.
-Check iw wlanX info if bw=80MHz used.
-
-I think iw don't support VHT yet, so wpa_supplicant is best choice here.
-
-BR
-Janusz
-
-> Best regards,
-> --Sangwoo Moon
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBKdW5lIDIwMTUgYXQgMTc6NTIsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
+Y29tPiB3cm90ZToKPiBPbiAwNi8wNC8yMDE1IDEwOjE3IFBNLCBNaWNoYWwgS2F6aW9yIHdyb3Rl
+Ogo+PiBPbiA1IEp1bmUgMjAxNSBhdCAwMzo1MiwgTWF0dGhldyBSb2JiZXR0cyA8d2luZ2ZlYXRo
+ZXJhQGdtYWlsLmNvbT4gd3JvdGU6Cj4KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0
+aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9s
+ZCBiZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDow
+MjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFjb24KPj4+IFtU
+aHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92
+ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3
+OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAw
+LCBza2lwcGVkIG9sZCBiZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0aDEw
+a19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBi
+ZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjow
+MC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFjb24KPj4+IFtUaHUg
+SnVuICA0IDExOjA3OjA5IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJy
+dW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA5
+IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBz
+a2lwcGVkIG9sZCBiZWFjb24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA5IDIwMTVdIGF0aDEwa19w
+Y2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFj
+b24KPj4+IFtUaHUgSnVuICA0IDExOjA3OjA5IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4w
+OiBmYWlsZWQgdG8gdHJhbnNtaXQgbWFuYWdlbWVudCBmcmFtZSB2aWEgV01JOiAtMTEKPj4+IFtU
+aHUgSnVuICA0IDEyOjA1OjMyIDIwMTVdIGF0aDEwa193YXJuOiAxOSBjYWxsYmFja3Mgc3VwcHJl
+c3NlZAo+Pj4gW1RodSBKdW4gIDQgMTI6MDU6MzIgMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAw
+LjA6IFNwdXJpb3VzIHF1aWNrIGtpY2tvdXQgZm9yIFNUQSAwNDpkYjo1NjplMTo2NToyZgo+Pj4g
+W1RodSBKdW4gIDQgMTI6NTU6NTQgMjAxNV0gZGV2aWNlIHdscDJzMCBsZWZ0IHByb21pc2N1b3Vz
+IG1vZGUKPj4KPj4gVGhpcyBpcyB0aGUgZHJlYWRlZCB0eCBjcmVkaXQgc3RhcnZhdGlvbi4KPgo+
+IEkgaGF2ZSBzb21lIGZpeGVzIGFuZCB3b3JrLWFyb3VuZHMgcmVsYXRlZCB0byB0aGlzIGlzc3Vl
+IGluIG15IGtlcm5lbHMgYW5kIENUIGZpcm13YXJlLgo+Cj4gUG9zc2libHkgaXQgd291bGQgd29y
+ayBiZXR0ZXIgZm9yIHlvdToKPgo+IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEway5w
+aHAKPgo+IFRoZSBiZXRhLTE0IGZpcm13YXJlIGlzIHByb2JhYmx5IGJlc3QgYXQgdGhpcyBwb2lu
+dC4uSSdsbCBwcm9tb3RlIGl0IHRvIG9mZmljaWFsCj4gcmVsZWFzZSBzb29uLgo+Cj4+IEluIHNv
+bWUgY2FzZXMgaWYgZGlzYXNzb2MrZGVhdXRoIGlzIHNlbnQgYW5kIHRhcmdldCBzdGF0aW9uIGlz
+IGFzbGVlcAo+PiBhbmQgdW5yZXNwb25zaXZlIGl0J2xsIGNhdXNlIGZpcm13YXJlIHRvIHN0YWxs
+IGNhdXNpbmcgYXRoMTBrIHRpbWVvdXRzCj4+IGR1cmluZyBzdGFfc3RhdGUgc3RhdGlvbiByZW1v
+dmFsLiBEdWUgdG8gaW5zdWZmaWNpZW50IGNyZWRpdHMgYmVhY29ucwo+PiBjYW4ndCBiZSBzZW50
+IGZvciB+MTAgc2Vjb25kcywgc3RhX3N0YXRlIHN0YXRpb24gcmVtb3ZhbCBmYWlscyBjYXVzaW5n
+Cj4+IG1hYzgwMjExIGNhbGwgdHJhY2Ugc3BsYXQgYW5kIGxhdGVyIHNwdXJpb3VzIGtpY2tvdXQg
+ZXZlbnRzIGJlY2F1c2UKPj4gcGVlciB3YXMgbmV2ZXIgcmVtb3ZlZCBmcm9tIGZpcm13YXJlLgo+
+Pgo+PiBUaGVyZSdzIG5vIGVhc3kvc2FuZSBmaXggZm9yIHRoYXQsIHlldC4KPgo+IEkgdGhvdWdo
+dCB0aGUgbmV3ZXIgdXBzdHJlYW0gZmlybXdhcmUgaGFkCj4gc3VwcG9ydCBmb3IgbWd0IGZyYW1l
+cyBvdmVyIG5vcm1hbCBwYWNrZXQgdHJhbnNwb3J0IGluc3RlYWQgb2Ygb3Zlcgo+IHRoZSBXTUkg
+bWFuYWdlbWVudCBpbnRlcmZhY2U/ICBXb3VsZG4ndCB0aGF0IGZpeCB0aGluZ3M/CgpJIGJlbGll
+dmUgdGhpcyB3YXMvaXMgc3VwcG9zZWQgdG8gYmUgYXZhaWxhYmxlIGluIHNvbWUgcmVjZW50IDEw
+LjIuNApidWlsZHMuIEkgdGhpbmsgMTAuMi40LjQ4IHdhcyBmaXJzdCBzdXBwb3NlZCB0byBzdXBw
+b3J0IGl0IGJ1dCBJIHNlZQp0aGUgYXZhaWxhYmxlICJzdGFibGUiIGZ3IGFwaSBibG9iIHN0aWxs
+IGFkdmVydGlzZXMgaGFzLXdtaS1tZ210LXR4LgpUaGUgMTAuMi40LjQ4LTIgZnJvbSB1bnRlc3Rl
+ZC8gb24gdGhlIG90aGVyIGhhbmQgZG9lc24ndCBhZHZlcnRpc2UgdGhlCmJpdCBzbyBJIGd1ZXNz
+IGl0IHVzZXMgdGhlIEhUVCBwYXRoIGZvciBtYW5hZ2VtZW50IGZyYW1lcyB3aGljaCBzaG91bGQK
+cHJldmVudCB0aGUgdHggY3JlZGl0IHN0YXJ2YXRpb24gcHJvYmxlbS4KCkBNYXR0aGV3OiBDYW4g
+eW91IHRyeSBydW5uaW5nIDEwLjIuNC40OC0yIGZyb20gMTAuMi40L3VudGVzdGVkLyBACmdpdGh1
+Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlIGFuZCBzZWUgaWYgaXQgaGVscHMgeW91LCBwbGVh
+c2U/CgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
