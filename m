@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z24Ra-0001un-G3
- for ath10k@lists.infradead.org; Mon, 08 Jun 2015 21:18:54 +0000
-Message-ID: <557606A8.4010106@candelatech.com>
-Date: Mon, 08 Jun 2015 14:18:32 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z24W2-0003vh-N7
+ for ath10k@lists.infradead.org; Mon, 08 Jun 2015 21:23:31 +0000
+References: <5575BEB1.4010706@candelatech.com> <5575C6E4.6050809@dd-wrt.com>
+ <5575F0E2.202@candelatech.com> <5575F4EE.9010700@candelatech.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <557607BD.2040608@dd-wrt.com>
+Date: Mon, 8 Jun 2015 23:23:09 +0200
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: new debugfs interface to enable adaptive CCA
-References: <1431093663-15206-1-git-send-email-c_mpubbi@qti.qualcomm.com>
- <CA+BoTQ=480Wg4WmL0eBZ7CS9aVHjH8Lt-2x-FzAuGwsAuNA8-w@mail.gmail.com>
- <5570CD2F.4040604@candelatech.com>
-In-Reply-To: <5570CD2F.4040604@candelatech.com>
+In-Reply-To: <5575F4EE.9010700@candelatech.com>
+Subject: Re: Does the reg_addr/reg_value reading work?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,53 +20,64 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: c_mpubbi@qti.qualcomm.com
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: ath10k@lists.infradead.org
 
-Is there any publicly available firmware binary that supports this feature,
-even if one has to force the feature flag?
-
-Thanks,
-Ben
-
-On 06/04/2015 03:11 PM, Ben Greear wrote:
-> Is there any way to make this work on a 10.1 firmware, even if that means
-> manually poking registers through debugfs?
-> 
-> I have a user of CT firmware that would really like Adaptive CCA to
-> work, so if I can just get some clues as to what needs setting,
-> I can write up an API that works with my 10.1 firmware...
-> 
+Am 08.06.2015 um 22:02 schrieb Ben Greear:
+> On 06/08/2015 12:45 PM, Ben Greear wrote:
+>> On 06/08/2015 09:46 AM, Sebastian Gottschall wrote:
+>>> Am 08.06.2015 um 18:11 schrieb Ben Greear:
+>>>> I am not getting expected values when I try to read registers
+>>>> through the ath10k reg_addr/reg_value API.
+>>>>
+>>>> For instance, I tried reading a particular register 0x80e0
+>>>> (as defined in the firmware), and I get a zero value.  With a different
+>>>> API that I wrote to dump some specific registers over the WMI API,
+>>>> I get the expected value.
+>>>>
+>>>> # echo 0x80e0 > /debug/ieee80211/wiphy0/ath10k/reg_addr
+>>>> # cat /debug/ieee80211/wiphy0/ath10k/reg_value
+>>>> 0x000080e0:0x00000000
+>>>> # cat /debug/ieee80211/wiphy0/ath10k/fw_regs
+>>>>
+>>>>      ath10k Target Register Dump
+>>>>                =================
+>>>>
+>>>>              MAC-FILTER-ADDR-L32 0xd7ffffff
+>>>> ...
+>>>>
+>>>> Is there some trick I am missing?
+>>> 0x20000 offset makes the voodoo. you will find this offset within your firmware source too. take a look at the preconfigured register tables. these contain
+>>> already the ack,slot etc. settings.
+>>> but with a special macro surrounding it which defines that offset
+>>>
+>>> echo 0x2080e0 > /debug/ieee80211/wiphy0/ath10k/reg_addr
+>> This crashes my kernel....I instrumented the place that crashed in ath10k/pci.h:
+>>
+>> [  100.676013] ath10k-pci-read32: ar ffff88020279ae20  ar_pci ffff88020279df08  offset: 0x2080e0
+>> [  100.676016]   ar_pci->mem: 0xffffc90019c80000
+>> [  100.676031] BUG: unable to handle kernel paging request at ffffc90019e880e0
+>> [  100.681752] IP: [<ffffffff81364ad4>] ioread32+0x9/0x2f
+>>
+>> Have you tried this on a 10.1.467 firmware?
+>>
+>> And, what kernel?  I'm trying 4.0.4+
+> I was using the wrong address value..it should be 0x280e0.  Maybe the driver should still keep us from
+> crashing the whole kernel (while holding locks!), but at least it works when I put in
+> the right value.
+now that you say it. i see it too. but playing direct register writes 
+can always lead to problematic scenarios. its a debug register. from my 
+oppinion, a debug register should allow
+whatever is possible. even crashing something. its like using /dev/kmem
+>
 > Thanks,
 > Ben
-> 
-> 
-> On 05/10/2015 11:05 PM, Michal Kazior wrote:
->> On 8 May 2015 at 16:01,  <c_mpubbi@qti.qualcomm.com> wrote:
->>> From: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
->>>
->>> For devices working in 2.4 GHz to be ETSI compliant,
->>> it is required to support adaptive CCA. Some firmwares
->>> support adaptive CCA and is disabled by default.
->>>
->>> The patch is an attempt to add a new debugfs interface to enable
->>> adaptive cca on supported firmwares. Support for this feature is
->>> advertised with a new firmware feature flag.
->>
->> I guess this should be configured automatically depending on DFS
->> domain. You can't expect users to configure their devices via debugfs,
->> can you? This should just work.
-> 
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+>
+>
 
 
 _______________________________________________
