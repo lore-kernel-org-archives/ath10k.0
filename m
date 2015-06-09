@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2H82-0004xW-Rd
- for ath10k@lists.infradead.org; Tue, 09 Jun 2015 10:51:35 +0000
+ id 1Z2H9h-0005KG-0k
+ for ath10k@lists.infradead.org; Tue, 09 Jun 2015 10:53:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: prevent memory leak in wmi rx ops
-References: <1433762607-28854-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 9 Jun 2015 13:51:08 +0300
-In-Reply-To: <1433762607-28854-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Mon, 8 Jun 2015 13:23:27 +0200")
-Message-ID: <87sia1f943.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: free wmi mgmt event skb when parsing fails
+References: <1433150613-5662-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Tue, 9 Jun 2015 13:52:47 +0300
+In-Reply-To: <1433150613-5662-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Mon, 1 Jun 2015 14:53:33 +0530")
+Message-ID: <87oakpf91c.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,15 +23,16 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Raja Mani <rmani@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> Found during code review. This was pretty much
-> impossible to happen but better safe than sorry.
+> When wmi mgmt event function fails to parse given skb,
+> it should be freed on failure condition to avoid memory
+> leaks. Found this during the code review.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
 Thanks, applied.
 
