@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2QCh-0001wn-Km
- for ath10k@lists.infradead.org; Tue, 09 Jun 2015 20:33:00 +0000
-From: Yanbo Li <yanbol@qca.qualcomm.com>
-Subject: [PATCH v3] ath10k: Debugfs entry to enable/disable WLAN&Blutooth
- Coexist feature
-Date: Tue, 9 Jun 2015 13:29:46 -0700
-Message-ID: <1433881786-30354-1-git-send-email-yanbol@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1Z2YMH-0001Aa-B8
+ for ath10k@lists.infradead.org; Wed, 10 Jun 2015 05:15:26 +0000
+Received: by wigg3 with SMTP id g3so35854701wig.1
+ for <ath10k@lists.infradead.org>; Tue, 09 Jun 2015 22:14:57 -0700 (PDT)
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Subject: [PATCH v2] ath10k: enable VHT for IBSS
+Date: Wed, 10 Jun 2015 07:14:44 +0200
+Message-Id: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,150 +17,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: dreamfly281@gmail.com, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless@vger.kernel.org
 
-As some radio have no connection with BT modules, enable the WLAN/Bluetooth
-coexist(BTC) feature will has some side effect if the radio's GPIO connect
-with any other HW modules. Add the control switcher "btc_feature" at
-debugfs and set the feature as disable by default to avoid such case.
+Enable VHT support for IBSS, while mac80211/cfg80211 and
+wpa_supplicant already support this.
 
-The FW support this feature since 10.2.4.54 on 2G-only board, dual band
-or 5G boards don't support the feature
+In my test env, ath10k 2x2 I get:
+(udp) ath10k-1 >>>> ath10k-2 (server) -  speed: 419 Mbits/sec
+(tcp) ath10k-1 >>>> ath10k-2 (server) -  speed: 404 Mbits/sec
 
-To enable this feature, execute:
-echo 1 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
-To disable:
-echo 0 > /sys/kernel/debug/ieee80211/phyX/ath10k/btc_feature
+During tests I used wpa_supplicant (current version), which
+already support IBSS VHT, and choose highest available BW.
 
-Signed-off-by: Yanbo Li <yanbol@qca.qualcomm.com>
+Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 ---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Notes:
- V3:
- * using dev_flags
- * check state on before restart
- * Add the FW version and limitation support this feature
-
- drivers/net/wireless/ath/ath10k/core.h  |  2 +
- drivers/net/wireless/ath/ath10k/debug.c | 65 +++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.c   |  3 +-
- 3 files changed, 69 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 87376b3283f5..7fc2034ce53d 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -481,6 +481,8 @@ enum ath10k_dev_flags {
- 	 * waiters should immediately cancel instead of waiting for a time out.
- 	 */
- 	ATH10K_FLAG_CRASH_FLUSH,
-+	/* Flag for enable the BT/WLAN coexist */
-+	ATH10K_FLAG_BTCOEX_ENABLE
- };
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f4de717..14a8f25 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6949,6 +6949,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		goto err_free;
+ 	}
  
- enum ath10k_cal_mode {
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 8fa606a9c4dd..a5da7c96d81a 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -2092,6 +2092,69 @@ static const struct file_operations fops_quiet_period = {
- 	.open = simple_open
- };
- 
-+static ssize_t ath10k_write_btc_feature(struct file *file,
-+					const char __user *ubuf,
-+					size_t count, loff_t *ppos)
-+{
-+	struct ath10k *ar = file->private_data;
-+	char buf[32];
-+	size_t buf_size;
-+	bool val;
-+	int ret;
++	wiphy_ext_feature_set(ar->hw->wiphy, NL80211_EXT_FEATURE_VHT_IBSS);
 +
-+	buf_size = min(count, (sizeof(buf) - 1));
-+	if (copy_from_user(buf, ubuf, buf_size))
-+		return -EFAULT;
-+
-+	buf[buf_size] = '\0';
-+	if (strtobool(buf, &val) != 0) {
-+		ath10k_warn(ar, "Wrong BTcoex feature setting\n");
-+		return -EINVAL;
-+	}
-+
-+	mutex_lock(&ar->conf_mutex);
-+
-+	if (ar->state != ATH10K_STATE_ON) {
-+		ret = -ENETDOWN;
-+		goto err_unlock;
-+	}
-+
-+	if (val != test_bit(ATH10K_FLAG_BTCOEX_ENABLE, &ar->dev_flags)) {
-+		if (val)
-+			set_bit(ATH10K_FLAG_BTCOEX_ENABLE, &ar->dev_flags);
-+		else
-+			clear_bit(ATH10K_FLAG_BTCOEX_ENABLE, &ar->dev_flags);
-+		queue_work(ar->workqueue, &ar->restart_work);
-+	}
-+
-+	ret = count;
-+
-+err_unlock:
-+	mutex_unlock(&ar->conf_mutex);
-+	return ret;
-+}
-+
-+static ssize_t ath10k_read_btc_feature(struct file *file, char __user *ubuf,
-+				       size_t count, loff_t *ppos)
-+{
-+	char buf[32];
-+	struct ath10k *ar = file->private_data;
-+	int len = 0;
-+
-+	mutex_lock(&ar->conf_mutex);
-+	len = scnprintf(buf, sizeof(buf) - len, "%d\n",
-+			test_bit(ATH10K_FLAG_BTCOEX_ENABLE, &ar->dev_flags));
-+	mutex_unlock(&ar->conf_mutex);
-+
-+	return simple_read_from_buffer(ubuf, count, ppos, buf, len);
-+}
-+
-+static const struct file_operations fops_btc_feature = {
-+	.read = ath10k_read_btc_feature,
-+	.write = ath10k_write_btc_feature,
-+	.open = simple_open
-+};
-+
- int ath10k_debug_create(struct ath10k *ar)
- {
- 	ar->debug.fw_crash_data = vzalloc(sizeof(*ar->debug.fw_crash_data));
-@@ -2195,6 +2258,8 @@ int ath10k_debug_register(struct ath10k *ar)
- 	debugfs_create_file("quiet_period", S_IRUGO | S_IWUSR,
- 			    ar->debug.debugfs_phy, ar, &fops_quiet_period);
- 
-+	debugfs_create_file("btc_feature", S_IRUGO | S_IWUSR,
-+			    ar->debug.debugfs_phy, ar, &fops_btc_feature);
- 	return 0;
- }
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 77220b0f0e89..98e0b087d080 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3936,7 +3936,8 @@ static struct sk_buff *ath10k_wmi_10_2_op_gen_init(struct ath10k *ar)
- 	cmd = (struct wmi_init_cmd_10_2 *)buf->data;
- 
- 	features = WMI_10_2_RX_BATCH_MODE;
--	if (test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
-+	if (test_bit(ATH10K_FLAG_BTCOEX_ENABLE, &ar->dev_flags) &&
-+	    test_bit(WMI_SERVICE_COEX_GPIO, ar->wmi.svc_map))
- 		features |= WMI_10_2_COEX_GPIO;
- 	cmd->resource_config.feature_mask = __cpu_to_le32(features);
- 
+ 	/*
+ 	 * on LL hardware queues are managed entirely by the FW
+ 	 * so we only advertise to mac we can do the queues thing
 -- 
 1.9.1
 
