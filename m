@@ -1,12 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from www.osadl.org ([62.245.132.105])
+Received: from mail-ie0-x244.google.com ([2607:f8b0:4001:c03::244])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z35JH-0006Pl-5P
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 16:26:32 +0000
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ath10k: mac: remove unreachable negative return check
-Date: Thu, 11 Jun 2015 18:17:41 +0200
-Message-Id: <1434039461-24899-1-git-send-email-hofrat@osadl.org>
+ id 1Z37TF-0000w8-DN
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 18:44:58 +0000
+Received: by ierx19 with SMTP id x19so4226246ier.0
+ for <ath10k@lists.infradead.org>; Thu, 11 Jun 2015 11:44:35 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <87vbeubb24.fsf@kamboji.qca.qualcomm.com>
+References: <1433812382-10287-1-git-send-email-cfliu.tw@gmail.com>
+ <87vbeubb24.fsf@kamboji.qca.qualcomm.com>
+From: "Liu CF/TW" <cfliu.tw@gmail.com>
+Date: Thu, 11 Jun 2015 11:43:55 -0700
+Message-ID: <CAG5N3qEfcFegKo_hc+oDxA85igEJqv9E42BEPd63iRksJw7b5Q@mail.gmail.com>
+Subject: Re: [PATCH v3] ath10k: add 'cryptmode' param to support raw tx
+ injection and software crypto
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -15,69 +22,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org, Nicholas Mc Guire <hofrat@osadl.org>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-wait_event_timeout(), introduced in 'commit 5e3dd157d7e7 ("ath10k: mac80211
-driver for Qualcomm Atheros 802.11ac CQA98xx devices")' never returns < 0
-so the only failure condition to be checked is ==0 (timeout). Further the
-return type is long not int - an appropriately named variable is added 
-and the assignments fixed up.
+On Thu, Jun 11, 2015 at 6:59 AM, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+> Liu CF/TW <cfliu.tw@gmail.com> writes:
+>
+>> This change supports hardware crypto engine bypass by enabling raw
+>> Rx/Tx encap mode. This enables use cases such as software crypto and raw
+>> tx injection. This change introduces a new module param 'cryptmode'.
+>>
+>> cryptmode:
+>>
+>>   0: Use hardware crypto engine globally with native Wi-Fi mode TX/RX
+>>      encapsulation to the firmware. This is the default mode.
+>>   1: Use sofware crypto engine globally with raw mode TX/RX encapsulation
+>>      to the firmware.
+>
+> These two values are ok.
+>
+>>   2: Supports both hardware and software crypto with raw mode TX/RX
+>>      encapsulation to the firmware. By default hardware crypto engine is
+>>      used. To use software crypto in this mode, set the per ath10k_vif
+>>      'nohwcrypt' flag value to True.*
+>>      *) The patch for setting vif specific 'nohwcrypt' flag when
+>>         cryptmode=2 would be a separate patch to mac80211.
+>
+> But this the problematic one. I cannot apply something to ath10k until
+> Johannes applies the mac80211 part. Didn't I mention this already
+> earlier? At least I was supposed to do that.
+>
 
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+Yes I already removed those mac80211 dependent changes in v3. So this
+patch doesn't really depend on any mac80211 change.
 
-Patch was compile tested with x86_64_defconfig + CONFIG_ATH_CARD=y
-CONFIG_ATH10K=m
 
-Patch is against 4.1-rc7 (localversion-next is -next-20150611)
+> And most importantly does Johannes even agree with the approach? IIRC he
+> was pretty reluctant about configuring the crypto mode via nl80211.
+>
+> I suggest splitting the patch into two: patch 1 adding support for
+> cryptmode values 0 and 1, patch 2 adding support for cryptmode 2. That
+> way we can commit patch 1 early and see what we can do with patch 2.
 
- drivers/net/wireless/ath/ath10k/mac.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+Thanks. Will do in v4.
+Removing cryptmode=2 is just a enum change. No additional changes in
+the business logic required.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0ed422a..cc67de9 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5643,7 +5643,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- {
- 	struct ath10k *ar = hw->priv;
- 	bool skip;
--	int ret;
-+	long time_left;
- 
- 	/* mac80211 doesn't care if we really xmit queued frames or not
- 	 * we'll collect those frames either way if we stop/delete vdevs */
-@@ -5655,7 +5655,7 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 	if (ar->state == ATH10K_STATE_WEDGED)
- 		goto skip;
- 
--	ret = wait_event_timeout(ar->htt.empty_tx_wq, ({
-+	time_left = wait_event_timeout(ar->htt.empty_tx_wq, ({
- 			bool empty;
- 
- 			spin_lock_bh(&ar->htt.tx_lock);
-@@ -5669,9 +5669,9 @@ static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			(empty || skip);
- 		}), ATH10K_FLUSH_TIMEOUT_HZ);
- 
--	if (ret <= 0 || skip)
--		ath10k_warn(ar, "failed to flush transmit queue (skip %i ar-state %i): %i\n",
--			    skip, ar->state, ret);
-+	if (time_left == 0 || skip)
-+		ath10k_warn(ar, "failed to flush transmit queue (skip %i ar-state %i): %ld\n",
-+			    skip, ar->state, time_left);
- 
- skip:
- 	mutex_unlock(&ar->conf_mutex);
--- 
-1.7.10.4
+After your review of v1, I have implemented knobs in both mac80211's
+debugfs and nl80211. I will send an RFC to mac80211 ML to see which
+one they prefer.
 
+>
+> --
+> Kalle Valo
 
 _______________________________________________
 ath10k mailing list
