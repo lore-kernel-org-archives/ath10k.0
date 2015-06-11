@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2mfd-0006Eg-GO
- for ath10k@lists.infradead.org; Wed, 10 Jun 2015 20:32:22 +0000
-Message-ID: <55789EBF.2060501@candelatech.com>
-Date: Wed, 10 Jun 2015 13:31:59 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wg0-x22b.google.com ([2a00:1450:400c:c00::22b])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z2u77-0002FM-4l
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 04:29:14 +0000
+Received: by wgme6 with SMTP id e6so47479004wgm.2
+ for <ath10k@lists.infradead.org>; Wed, 10 Jun 2015 21:28:44 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Anyone tried ath10k AP with 40Mhz operation?
+In-Reply-To: <911fece613ad9dd7975e53ac808fd495@lanada.kaist.ac.kr>
+References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
+ <911fece613ad9dd7975e53ac808fd495@lanada.kaist.ac.kr>
+Date: Thu, 11 Jun 2015 06:28:43 +0200
+Message-ID: <CALhHN=qf=frYc2iLQWs5AyJncxACa3fuBeXChE7_K+rTS8w7VQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,116 +21,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: Sangwoo Moon <swmoon@lanada.kaist.ac.kr>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I'm trying this hostapd config file.  Beacons seem OK, and station
-associates.  Station puts DHCP Discover on the air (using 20Mhz according
-to wireshark).  AP reads this, and thinks it is sending a DHCP response back,
-but sniffer never shows DHCP response on the air.
-
-Kernel is 4.0.4+, ath10k firmware is CT firmware, 10.1.467 based.
-
-I am curious if anyone else has tried to do this?
-
-Thanks,
-Ben
-
-interface=vap50
-driver=nl80211
-logger_syslog=-1
-logger_syslog_level=2
-logger_stdout=-1
-logger_stdout_level=2
-ctrl_interface=/var/run/hostapd
-ctrl_interface_group=0
-ssid=ben-ota-2a
-bssid=04:f0:21:98:d2:34
-country_code=US
-ieee80211d=0
-ieee80211h=0
-ieee80211w=0
-hw_mode=a
-ieee80211n=1
-ieee80211ac=1
-beacon_int=240
-dtim_period=2
-max_num_sta=2007
-rts_threshold=2347
-fragm_threshold=2346
-preamble=0
-macaddr_acl=0
-auth_algs=1
-ignore_broadcast_ssid=0
-# Enable HT modes if you want 300Mbps+ throughput.
-#ht_capab=[HT20][HT40-][HT40+][GF][SHORT-GI-20][SHORT-GI-40]
-#         [TX-STBC][RX-STBC123][MAX-AMSDU-7935][DSSS_CCK-40][PSMP][LSIG-TXOP-PROT]
-ht_capab=[HT20][HT40+][SHORT-GI-40][SHORT-GI-20]
-vht_capab=[MAX-MPDU-11454][RXLDPC][TX-STBC-2BY1][RX-STBC-1][MAX-A-MPDU-LEN-EXP0][RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]
-wmm_enabled=1
-wmm_ac_bk_cwmin=4
-wmm_ac_bk_cwmax=10
-wmm_ac_bk_aifs=7
-wmm_ac_bk_txop_limit=0
-wmm_ac_bk_acm=0
-wmm_ac_be_aifs=3
-wmm_ac_be_cwmin=4
-wmm_ac_be_cwmax=10
-wmm_ac_be_txop_limit=0
-wmm_ac_be_acm=0
-wmm_ac_vi_aifs=2
-wmm_ac_vi_cwmin=3
-wmm_ac_vi_cwmax=4
-wmm_ac_vi_txop_limit=94
-wmm_ac_vi_acm=0
-wmm_ac_vo_aifs=2
-wmm_ac_vo_cwmin=2
-wmm_ac_vo_cwmax=3
-wmm_ac_vo_txop_limit=47
-wmm_ac_vo_acm=0
-### TX queue parameters
-tx_queue_data3_aifs=7
-tx_queue_data3_cwmin=15
-tx_queue_data3_cwmax=1023
-tx_queue_data3_burst=0
-tx_queue_data2_aifs=3
-tx_queue_data2_cwmin=15
-tx_queue_data2_cwmax=63
-tx_queue_data2_burst=0
-tx_queue_data1_aifs=1
-tx_queue_data1_cwmin=7
-tx_queue_data1_cwmax=15
-tx_queue_data1_burst=3.0
-tx_queue_data0_aifs=1
-tx_queue_data0_cwmin=3
-tx_queue_data0_cwmax=7
-tx_queue_data0_burst=1.5
-vht_oper_centr_freq_seg0_idx=38
-vht_oper_chwidth=0
-channel=36
-supported_rates=10 20 55 110 60 90 120 180 240 360 480 540
-ieee8021x=0
-eapol_key_index_workaround=0
-eap_server=0
-own_ip_addr=127.0.0.1
-
-# Error emulation settings.
-ignore_probe_probability=0.000000
-ignore_auth_probability=0.000000
-ignore_assoc_probability=0.000000
-ignore_reassoc_probability=0.000000
-corrupt_gtk_rekey_mic_probability=0.000000
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgSnVuZSAyMDE1IGF0IDIwOjA0LCBTYW5nd29vIE1vb24gPHN3bW9vbkBsYW5hZGEua2Fp
+c3QuYWMua3I+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gVGhhbmtzIG11Y2ggZm9yIHlvdXIgaGVscC4K
+PiBIb3dldmVyLCBJIGhhdmUgbG9va2VkIGF0IG15IGRyaXZlciBjb2RlIGFuZAo+IGRpZCBub3Qg
+ZmluZCBhbnkgaW1wbGVtZW50YXRpb25zIHN1Y2ggYXMgd2lwaHlfZXh0X2ZlYXR1cmVfc2V0KCkK
+PiBvciBOTDgwMjExX0VYVF9GRUFUVVJFX1ZIVF9JQlNTLgo+IEl0IHNlZW1zIG5vdCBzaW1wbGUg
+dG8gYXBwbHkgeW91ciBwYXRjaCBpbnRvIG15IHZlcnNpb24gb2YgYXRoMTBrIGRldmljZQo+IGRy
+aXZlci4KPiBJIGFtIGN1cnJlbnRseSB1c2luZyBiYWNrcG9ydHMtMy4xNi1yYzEtMSBmb3IgYXRo
+MTBrIGRldmljZSBkcml2ZXIgY29kZQo+IGluIG9yZGVyIHRvIG1hdGNoIHRoZSBrZXJuZWwgdmVy
+c2lvbiB2My4xNiBmb3IgVWJ1bnR1IDE0LjA0LjAyLgo+CllvdSBjYW4gdXNlIG5ld2VzdCBiYWNr
+cG9ydHMgd2l0aCBvbGRlciBrZXJuZWwgKG5ldwptYWM4MDIxMS9jZmc4MDIxMS9kcml2ZXJzIHdp
+dGggb2xkIGtlcm5lbCkuCgpPciB5b3UgY2FuIGJ1aWxkIGFuZCBpbnN0YWxsIG5ldyBrZXJuZWwg
+Zm9yIFVidW50dS4KSSBhbSB1c2luZyBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoCgpCUgpK
+YW51c3oKCj4gQ291bGQgeW91IHRlbGwgbWUgdGhlIHZlcnNpb24gb2Yga2VybmVsIGFuZCBhdGgx
+MGsgZGV2aWNlIGRyaXZlciBvZiB5b3VyCj4gdGVzdCBjb25maWd1cmF0aW9uPwo+IE9yIGlzIHRo
+ZXJlIGFueSB3YXkgdG8gYXBwbHkgeW91ciB2ZXJzaW9uIG9mIHBhdGNoIGNvZGUgaW50byBsaW51
+eCBrZXJuZWwKPiB2My4xNj8KPiAoSSBleHBlY3QgdGhlIHZlcnNpb24gd2lsbCBiZSBtdWNoIG1v
+cmUgcmVjZW50IG9uZSB0aGFuIG1pbmUpCj4KPiBUaGFua3MsCj4gLS1TYW5nd29vIE1vb24KPgo+
+IDIwMTUtMDYtMTAgMTQ6MTTsl5AgSmFudXN6IER6aWVkemlj7J20KOqwgCkg7J6R7ISx7ZWcIOuC
+tOyaqToKPgo+PiBFbmFibGUgVkhUIHN1cHBvcnQgZm9yIElCU1MsIHdoaWxlIG1hYzgwMjExL2Nm
+ZzgwMjExIGFuZAo+PiB3cGFfc3VwcGxpY2FudCBhbHJlYWR5IHN1cHBvcnQgdGhpcy4KPj4KPj4g
+SW4gbXkgdGVzdCBlbnYsIGF0aDEwayAyeDIgSSBnZXQ6Cj4+ICh1ZHApIGF0aDEway0xID4+Pj4g
+YXRoMTBrLTIgKHNlcnZlcikgLSAgc3BlZWQ6IDQxOSBNYml0cy9zZWMKPj4gKHRjcCkgYXRoMTBr
+LTEgPj4+PiBhdGgxMGstMiAoc2VydmVyKSAtICBzcGVlZDogNDA0IE1iaXRzL3NlYwo+Pgo+PiBE
+dXJpbmcgdGVzdHMgSSB1c2VkIHdwYV9zdXBwbGljYW50IChjdXJyZW50IHZlcnNpb24pLCB3aGlj
+aAo+PiBhbHJlYWR5IHN1cHBvcnQgSUJTUyBWSFQsIGFuZCBjaG9vc2UgaGlnaGVzdCBhdmFpbGFi
+bGUgQlcuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEphbnVzeiBEemllZHppYyA8amFudXN6LmR6aWVk
+emljQHRpZXRvLmNvbT4KPj4gLS0tCj4+ICBkcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBr
+L21hYy5jIHwgMiArKwo+PiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+Pgo+PiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwo+PiBiL2Ry
+aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKPj4gaW5kZXggZjRkZTcxNy4uMTRh
+OGYyNSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMu
+Ywo+PiArKysgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL21hYy5jCj4+IEBAIC02
+OTQ5LDYgKzY5NDksOCBAQCBpbnQgYXRoMTBrX21hY19yZWdpc3RlcihzdHJ1Y3QgYXRoMTBrICph
+cikKPj4gICAgICAgICAgICAgICAgIGdvdG8gZXJyX2ZyZWU7Cj4+ICAgICAgICAgfQo+Pgo+PiAr
+ICAgICAgIHdpcGh5X2V4dF9mZWF0dXJlX3NldChhci0+aHctPndpcGh5LAo+PiBOTDgwMjExX0VY
+VF9GRUFUVVJFX1ZIVF9JQlNTKTsKPj4gKwo+PiAgICAgICAgIC8qCj4+ICAgICAgICAgICogb24g
+TEwgaGFyZHdhcmUgcXVldWVzIGFyZSBtYW5hZ2VkIGVudGlyZWx5IGJ5IHRoZSBGVwo+PiAgICAg
+ICAgICAqIHNvIHdlIG9ubHkgYWR2ZXJ0aXNlIHRvIG1hYyB3ZSBjYW4gZG8gdGhlIHF1ZXVlcyB0
+aGluZwo+Cj4KPiAtLQo+IFNhbmd3b28gTW9vbiwgUGguRC4gQ2FuZGlkYXRlCj4gRGVwdC4gb2Yg
+RUUsIEtBSVNULCBLb3JlYQo+IChPZmZpY2UpICs4Mi00Mi0zNTAtNTQ4NiwgTjEtIzgxOQo+IChF
+LW1haWwpIHN3bW9vbiBhdCBsYW5hZGEua2Fpc3QuYWMua3IKPiAoVVJMKSBodHRwOi8vbGFuYWRh
+LmthaXN0LmFjLmtyCj4gR3dhaGFuZ25vIDMzNSwgWXVzZW9uZy1HdSBEYWVqZW9uLCBTLiBLb3Jl
+YSAzMDUtNzAxCj4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
