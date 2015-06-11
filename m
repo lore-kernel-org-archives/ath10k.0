@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z335c-0003h5-Pp
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 14:04:18 +0000
+ id 1Z33HB-00032H-TM
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 14:16:14 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v3] ath10k: add 'cryptmode' param to support raw tx
- injection and software crypto
-References: <1433812382-10287-1-git-send-email-cfliu.tw@gmail.com>
-Date: Thu, 11 Jun 2015 17:03:40 +0300
-In-Reply-To: <1433812382-10287-1-git-send-email-cfliu.tw@gmail.com> (Liu CF's
- message of "Mon, 8 Jun 2015 18:13:02 -0700")
-Message-ID: <87r3pibav7.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
+References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
+Date: Thu, 11 Jun 2015 17:15:42 +0300
+In-Reply-To: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
+ (Janusz Dziedzic's message of "Wed, 10 Jun 2015 07:14:44 +0200")
+Message-ID: <87mw06bab5.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,43 +23,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Liu CF/TW <cfliu.tw@gmail.com>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Liu CF/TW <cfliu.tw@gmail.com> writes:
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
 
-> This change supports hardware crypto engine bypass by enabling raw
-> Rx/Tx encap mode. This enables use cases such as software crypto and raw
-> tx injection. This change introduces a new module param 'cryptmode'.
+> Enable VHT support for IBSS, while mac80211/cfg80211 and
+> wpa_supplicant already support this.
+>
+> In my test env, ath10k 2x2 I get:
+> (udp) ath10k-1 >>>> ath10k-2 (server) -  speed: 419 Mbits/sec
+> (tcp) ath10k-1 >>>> ath10k-2 (server) -  speed: 404 Mbits/sec
 
-[...]
+What hw and firmware version? Do you expect this to work with both
+qca988x and qca6174?
 
-> --- a/drivers/net/wireless/ath/ath10k/debug.c
-> +++ b/drivers/net/wireless/ath/ath10k/debug.c
-> @@ -124,7 +124,7 @@ EXPORT_SYMBOL(ath10k_info);
->  
->  void ath10k_print_driver_info(struct ath10k *ar)
->  {
-> -	ath10k_info(ar, "%s (0x%08x, 0x%08x%s%s%s) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d\n",
-> +	ath10k_info(ar, "%s (0x%08x, 0x%08x%s%s%s) fw %s api %d htt %d.%d wmi %d cal %s max_sta %d flags 0x%lu\n",
->  		    ar->hw_params.name,
->  		    ar->target_version,
->  		    ar->chip_id,
-> @@ -138,7 +138,8 @@ void ath10k_print_driver_info(struct ath10k *ar)
->  		    ar->htt.target_version_minor,
->  		    ar->wmi.op_version,
->  		    ath10k_cal_mode_str(ar->cal_mode),
-> -		    ar->max_num_stations);
-> +		    ar->max_num_stations,
-> +		    ar->dev_flags);
+Oh, we should still add ATH10K_FW_FEATURE_NO_ADHOC so that we can
+disable ad-hoc on 10.x firmwares. Anyone have some spare time to cook up
+a patch?
 
-What's the goal here? Printing a bitmap in hex is just gibberish, people
-would always have to count the bits etc to get anything useful
-information out from that print.
+> During tests I used wpa_supplicant (current version)
 
-I would prefer the messages in more readable format. For example, if
-idea is to show if cryptmode is enabled or not can't we just directly
-print that like with format "cryptmode %d"?
+Better to say "current git version" (if that's what you mean).
 
 -- 
 Kalle Valo
