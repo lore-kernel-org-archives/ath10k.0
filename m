@@ -1,14 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-yk0-x232.google.com ([2607:f8b0:4002:c07::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2x9X-0001Jh-TG
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 07:43:56 +0000
-Received: by wibut5 with SMTP id ut5so66861767wib.1
- for <ath10k@lists.infradead.org>; Thu, 11 Jun 2015 00:43:33 -0700 (PDT)
+ id 1Z2xBD-0003Xu-U8
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 07:45:40 +0000
+Received: by ykfl8 with SMTP id l8so33578194ykf.1
+ for <ath10k@lists.infradead.org>; Thu, 11 Jun 2015 00:45:15 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <557608ED.7070200@candelatech.com>
+References: <5575BEB1.4010706@candelatech.com> <5575C6E4.6050809@dd-wrt.com>
+ <5575F0E2.202@candelatech.com> <5575F4EE.9010700@candelatech.com>
+ <557607BD.2040608@dd-wrt.com> <557608ED.7070200@candelatech.com>
+Date: Thu, 11 Jun 2015 09:45:15 +0200
+Message-ID: <CA+BoTQmsRffFsL3+X0v+hPG=E5THBpxk94CdYLHEOtb-vFVFcw@mail.gmail.com>
+Subject: Re: Does the reg_addr/reg_value reading work?
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: prevent debugfs mmio access crash kernel
-Date: Thu, 11 Jun 2015 09:43:14 +0200
-Message-Id: <1434008594-6726-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,98 +22,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-It was possible to force an out of bounds MMIO
-read/write via debugfs. E.g. on QCA988X this could
-be triggered with:
-
- echo 0x2080e0 | tee /sys/kernel/debug/ieee80211/*/ath10k/reg_addr
- cat /sys/kernel/debug/ieee80211/*/ath10k/reg_value
-
- BUG: unable to handle kernel paging request at ffffc90001e080e0
- IP: [<ffffffff8135c860>] ioread32+0x40/0x50
- ...
- Call Trace:
-  [<ffffffffa00d0c7f>] ? ath10k_pci_read32+0x4f/0x70 [ath10k_pci]
-  [<ffffffffa0080f50>] ath10k_reg_value_read+0x90/0xf0 [ath10k_core]
-  [<ffffffff8115c2c1>] ? handle_mm_fault+0xa91/0x1050
-  [<ffffffff81189758>] __vfs_read+0x28/0xe0
-  [<ffffffff812e4694>] ? security_file_permission+0x84/0xa0
-  [<ffffffff81189ce3>] ? rw_verify_area+0x53/0x100
-  [<ffffffff81189e1a>] vfs_read+0x8a/0x140
-  [<ffffffff8118acb9>] SyS_read+0x49/0xb0
-  [<ffffffff8104e39c>] ? trace_do_page_fault+0x3c/0xc0
-  [<ffffffff8196596e>] system_call_fastpath+0x12/0x71
-
-Reported-by: Ben Greear <greearb@candelatech.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 13 +++++++++++++
- drivers/net/wireless/ath/ath10k/pci.h |  1 +
- 2 files changed, 14 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 9da36c764d3b..1843d31fbda7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -479,6 +479,12 @@ void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
- 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
- 	int ret;
- 
-+	if (unlikely(offset + sizeof(value) > ar_pci->mem_len)) {
-+		ath10k_warn(ar, "refusing to write mmio out of bounds at 0x%08x - 0x%08zx (max 0x%08zx)\n",
-+			    offset, offset + sizeof(value), ar_pci->mem_len);
-+		return;
-+	}
-+
- 	ret = ath10k_pci_wake(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to wake target for write32 of 0x%08x at 0x%08x: %d\n",
-@@ -496,6 +502,12 @@ u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
- 	u32 val;
- 	int ret;
- 
-+	if (unlikely(offset + sizeof(val) > ar_pci->mem_len)) {
-+		ath10k_warn(ar, "refusing to read mmio out of bounds at 0x%08x - 0x%08zx (max 0x%08zx)\n",
-+			    offset, offset + sizeof(val), ar_pci->mem_len);
-+		return 0;
-+	}
-+
- 	ret = ath10k_pci_wake(ar);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to wake target for read32 at 0x%08x: %d\n",
-@@ -2682,6 +2694,7 @@ static int ath10k_pci_claim(struct ath10k *ar)
- 	pci_set_master(pdev);
- 
- 	/* Arrange for access to Target SoC registers. */
-+	ar_pci->mem_len = pci_resource_len(pdev, BAR_NUM);
- 	ar_pci->mem = pci_iomap(pdev, BAR_NUM, 0);
- 	if (!ar_pci->mem) {
- 		ath10k_err(ar, "failed to iomap BAR%d\n", BAR_NUM);
-diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
-index d7696ddc03c4..eea0a0170b00 100644
---- a/drivers/net/wireless/ath/ath10k/pci.h
-+++ b/drivers/net/wireless/ath/ath10k/pci.h
-@@ -162,6 +162,7 @@ struct ath10k_pci {
- 	struct device *dev;
- 	struct ath10k *ar;
- 	void __iomem *mem;
-+	size_t mem_len;
- 
- 	/*
- 	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOCBKdW5lIDIwMTUgYXQgMjM6MjgsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2gu
+Y29tPiB3cm90ZToKPiBPbiAwNi8wOC8yMDE1IDAyOjIzIFBNLCBTZWJhc3RpYW4gR290dHNjaGFs
+bCB3cm90ZToKPj4gQW0gMDguMDYuMjAxNSB1bSAyMjowMiBzY2hyaWViIEJlbiBHcmVlYXI6Cj4+
+PiBPbiAwNi8wOC8yMDE1IDEyOjQ1IFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4+IE9uIDA2LzA4
+LzIwMTUgMDk6NDYgQU0sIFNlYmFzdGlhbiBHb3R0c2NoYWxsIHdyb3RlOgpbLi4uXQo+Pj4+PiBl
+Y2hvIDB4MjA4MGUwID4gL2RlYnVnL2llZWU4MDIxMS93aXBoeTAvYXRoMTBrL3JlZ19hZGRyCj4+
+Pj4gVGhpcyBjcmFzaGVzIG15IGtlcm5lbC4uLi5JIGluc3RydW1lbnRlZCB0aGUgcGxhY2UgdGhh
+dCBjcmFzaGVkIGluIGF0aDEway9wY2kuaDoKPj4+Pgo+Pj4+IFsgIDEwMC42NzYwMTNdIGF0aDEw
+ay1wY2ktcmVhZDMyOiBhciBmZmZmODgwMjAyNzlhZTIwICBhcl9wY2kgZmZmZjg4MDIwMjc5ZGYw
+OCAgb2Zmc2V0OiAweDIwODBlMAo+Pj4+IFsgIDEwMC42NzYwMTZdICAgYXJfcGNpLT5tZW06IDB4
+ZmZmZmM5MDAxOWM4MDAwMAo+Pj4+IFsgIDEwMC42NzYwMzFdIEJVRzogdW5hYmxlIHRvIGhhbmRs
+ZSBrZXJuZWwgcGFnaW5nIHJlcXVlc3QgYXQgZmZmZmM5MDAxOWU4ODBlMAo+Pj4+IFsgIDEwMC42
+ODE3NTJdIElQOiBbPGZmZmZmZmZmODEzNjRhZDQ+XSBpb3JlYWQzMisweDkvMHgyZgo+Pj4+Cj4+
+Pj4gSGF2ZSB5b3UgdHJpZWQgdGhpcyBvbiBhIDEwLjEuNDY3IGZpcm13YXJlPwo+Pj4+Cj4+Pj4g
+QW5kLCB3aGF0IGtlcm5lbD8gIEknbSB0cnlpbmcgNC4wLjQrCj4+PiBJIHdhcyB1c2luZyB0aGUg
+d3JvbmcgYWRkcmVzcyB2YWx1ZS4uaXQgc2hvdWxkIGJlIDB4MjgwZTAuICBNYXliZSB0aGUgZHJp
+dmVyIHNob3VsZCBzdGlsbCBrZWVwIHVzIGZyb20KPj4+IGNyYXNoaW5nIHRoZSB3aG9sZSBrZXJu
+ZWwgKHdoaWxlIGhvbGRpbmcgbG9ja3MhKSwgYnV0IGF0IGxlYXN0IGl0IHdvcmtzIHdoZW4gSSBw
+dXQgaW4KPj4+IHRoZSByaWdodCB2YWx1ZS4KPj4gbm93IHRoYXQgeW91IHNheSBpdC4gaSBzZWUg
+aXQgdG9vLiBidXQgcGxheWluZyBkaXJlY3QgcmVnaXN0ZXIgd3JpdGVzIGNhbiBhbHdheXMgbGVh
+ZCB0byBwcm9ibGVtYXRpYyBzY2VuYXJpb3MuIGl0cyBhIGRlYnVnIHJlZ2lzdGVyLiBmcm9tIG15
+IG9wcGluaW9uLCBhIGRlYnVnCj4+IHJlZ2lzdGVyIHNob3VsZCBhbGxvdwo+PiB3aGF0ZXZlciBp
+cyBwb3NzaWJsZS4gZXZlbiBjcmFzaGluZyBzb21ldGhpbmcuIGl0cyBsaWtlIHVzaW5nIC9kZXYv
+a21lbQo+Cj4gSSBhbSBndWVzc2luZyB0aGUgZHJpdmVyIGtub3dzIHRoZSBwY2kgYWRkcmVzcyBz
+cGFjZSB0aGF0IGlzIGF2YWlsYWJsZS4uaXQgY291bGQgcHJvYmFibHkKPiBqdXN0IGxpbWl0IGFu
+eSBhY2Nlc3Mgb3V0c2lkZSB0aG9zZSBib3VuZHMgc2luY2UgdGhleSBjYW4gbmV2ZXIgd29yayBh
+bnl3YXkuCj4KPiBBbnl3YXksIEknbGwgbGV0IHNvbWVvbmUgZWxzZSBkZWFsIHdpdGggaXQgaWYg
+dGhleSB3YW50LgoKWWVwLiBJJ3ZlIGp1c3Qgc2VudCBhIHBhdGNoIGZvciByZXZpZXcgd2hpY2gg
+aW50cm9kdWNlcyBhIHNhbml0eSBjaGVjawp0byBwcmV2ZW50IG91dCBvZiBib3VuZHMgTU1JTyBh
+Y2Nlc3MuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
