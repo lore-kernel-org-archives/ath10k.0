@@ -1,24 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x234.google.com ([2a00:1450:400c:c05::234])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2xx1-0004i1-E4
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 08:35:04 +0000
-Received: by wibdq8 with SMTP id dq8so2884744wib.1
- for <ath10k@lists.infradead.org>; Thu, 11 Jun 2015 01:34:39 -0700 (PDT)
+ id 1Z31vb-0007KG-8T
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 12:49:54 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH] ath10k: remove unused variable hdr in
+ ath10k_htt_rx_h_undecap()
+Date: Thu, 11 Jun 2015 18:18:47 +0530
+Message-ID: <1434026927-11698-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <021101d09fac$563cf090$02b6d1b0$@acksys.fr>
-References: <01eb01d09f64$fd522730$f7f67590$@acksys.fr>
- <CA+BoTQnehkYETptdaw4VsqKmhAampJ9_Zm_bNfH6PwGX7SqRww@mail.gmail.com>
- <01f701d09f71$47ae9910$d70bcb30$@acksys.fr>
- <CA+BoTQkQyTbgctPOTSvLH76+YKkjvYySJSYtGszJ3TT35-uXQQ@mail.gmail.com>
- <01fb01d09f7c$d6bdfa00$8439ee00$@acksys.fr>
- <CA+BoTQkBPkNPCX2YJSvSBbcGe_4RT3Ua_54MVmSMwUyWef-gzA@mail.gmail.com>
- <CA+BoTQmkV9Pg9pMiVarhj_peSPFCBZykMJDx_sZ0HbQ-4NUmdA@mail.gmail.com>
- <021101d09fac$563cf090$02b6d1b0$@acksys.fr>
-Date: Thu, 11 Jun 2015 10:34:39 +0200
-Message-ID: <CA+BoTQ=oNea1mb4mayG6E6tZ1KLp8wZrBkL5VriW-814+rk8bA@mail.gmail.com>
-Subject: Re: ATH10K and VLAN : Frame with VLAN tag are not sent
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,86 +17,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: voncken <cedric.voncken@acksys.fr>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gNSBKdW5lIDIwMTUgYXQgMTg6MjYsIHZvbmNrZW4gPGNlZHJpYy52b25ja2VuQGFja3N5cy5m
-cj4gd3JvdGU6Cj4+ID4+PiBbLi4uXQo+PiA+Pj4gPj4gSSBzZWUgbm8gcmVhc29uIHdoeSB0aGlz
-IHNob3VsZCBmYWlsLiBUaGUgZG90MXEgZW5jYXBzdWxhdGlvbgo+PiA+Pj4gPj4gc2hvdWxkbid0
-IGluZmx1ZW5jZSBob3cgZmlybXdhcmUgYmVoYXZlcy4uIGJ1dCBtYXliZSBJJ20gd3JvbmcuCj4+
-ID4+PiA+Pgo+PiA+Pj4gPj4gSXQncyBzdGlsbCB1bmNsZWFyIHRvIG1lIHdoYXQgeW91ciB0b3Bv
-bG9neSBsb29rcyBsaWtlLiBQZXJoYXBzCj4+ID4+PiA+PiB5b3UncmUgaGF2aW5nIHByb2JsZW0g
-d2l0aCBlbnZpcm9ubWVudGFsIGNvbmZpZ3VyYXRpb24gaXRzZWxmPwo+PiA+Pj4gPj4gRGlkIHlv
-dSB0cnkgb3RoZXIgV2ktRmkgZGV2aWNlIChlLmcuIGF0aDlrKSBpbnN0ZWFkIG9mIGF0aDEwaz8K
-Pj4gPj4+ID4gWWVzIEkgdGVzdGVkIHdpdGggYXRoOWsgd2lyZWxlc3MgY2FyZCwgdGhlIHNhbWUg
-Y29uZmlndXJhdGlvbgo+PiB3b3Jrcy4KPj4gPj4+ID4KPj4gPj4+ID4gSSBkaWQgYW4gaW50ZXJl
-c3RpbmcgdGVzdC4gV2l0aCBvc3RpbmF0byBzb2Z0d2FyZSBJIGdlbmVyYXRlIGFuCj4+ID4+PiA+
-IElDTVAKPj4gPj4+IGZyYW1lIHdpdGhvdXQgdmxhbiB0YWcuIEkgY2hhbmdlZCB0aGUgZXRoZXJ0
-eXBlIGluIHRoZSBmcmFtZS4KPj4gPj4+ID4gSSB0cmllZCB3aXRoIHRoZSBldGhlcnR5cGUgMHg4
-MDAgKElQKSwgMHg4MDEsIDB4ODg5MiAoUFJPRklORVQpLAo+PiA+Pj4gPiAweDgxMDAKPj4gPj4+
-IChkb3QxcSksIDB4MDYwMC4gQWxsIGZyYW1lcyBhcmUgc2VudCBleGNlcHQgd2hlbiB0aGUgZXRo
-ZXJ0eXBlIGlzCj4+ID4+PiBzZXQgdG8gMHg4MTAwLiBJdCBzZWVtcyB0aGUgZmlybXdhcmUgZG8g
-bm90IGFjY2VwdCB0aGUgZXRoZXJ0eXBlCj4+IDB4ODEwMC4KPj4gPj4+Cj4+ID4+PiBJbnRlcmVz
-dGluZy4gVGhpcyBtYXkgc3VnZ2VzdCBmaXJtd2FyZSBhY3R1YWxseSBkb2Vzbid0IGhhbmRsZSBk
-b3QxcQo+PiA+Pj4gVkxBTiB0YWdnaW5nIHByb3Blcmx5IGluIE5XaWZpIFR4IGVuY2FwIG1vZGUu
-IENhbiB5b3UgdHJ5IGNoYW5naW5nCj4+ID4+PiBpdCB0byA4MDIuMyBlbmNhcCBhbmQgcmUtdGVz
-dCwgcGxlYXNlPwo+PiA+Pj4KPj4gPj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvbWFjLmMKPj4gPj4+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
-bWFjLmMKPj4gPj4+IEBAIC0zMTcyLDcgKzMxNzIsNyBAQCBhdGgxMGtfdHhfaF9nZXRfdHhtb2Rl
-KHN0cnVjdCBhdGgxMGsgKmFyLAo+PiA+Pj4gc3RydWN0IGllZWU4MDIxMV92aWYgKnZpZiwKPj4g
-Pj4+ICAgICAgICAgaWYgKGllZWU4MDIxMV9pc19kYXRhX3ByZXNlbnQoZmMpICYmIHN0YSAmJiBz
-dGEtPnRkbHMpCj4+ID4+PiAgICAgICAgICAgICAgICAgcmV0dXJuIEFUSDEwS19IV19UWFJYX0VU
-SEVSTkVUOwo+PiA+Pj4KPj4gPj4+IC0gICAgICAgcmV0dXJuIEFUSDEwS19IV19UWFJYX05BVElW
-RV9XSUZJOwo+PiA+Pj4gKyAgICAgICByZXR1cm4gQVRIMTBLX0hXX1RYUlhfRVRIRVJORVQ7Cj4+
-ID4+PiAgfQo+PiA+Pj4KPj4gPj4+IE5vdGU6IFlvdXIgYmFja3BvcnRzIG1heSBub3QgaGF2ZSB0
-aGUgbmVjZXNzYXJ5IGNvZGUuLiBJbiB3aGljaCBjYXNlCj4+ID4+PiBpdCdsbCBiZSBkaWZmaWN1
-bHQgdG8gZG8gdGhpcyB0aGUgZWFzeSB3YXkuIElmIHRoYXQncyB0aGUgY2FzZSBJCj4+ID4+PiBz
-dWdnZXN0IHlvdSBnZXQgbGF0ZXN0IGJhY2twb3J0cyBvciBnZW5lcmF0ZSB0aGVtIHlvdXJzZWxm
-IGZyb20gdGhlCj4+ID4+PiBsYXRlc3Qga3ZhbG8vYXRoIG1hc3Rlci4KPj4gPj4gSSB3aWxsIHRy
-eSB0byBjaGFuZ2UgbXkgYmFja3BvcnQuIEJ1dCBpdCBpcyBub3QgZWFzeSwgYmVjYXVzZSBJIG5l
-ZWQKPj4gdG8gdXNlIGEgY3Jvc3MtY29tcGlsZXIuIEZyb20gb3BlbndydCB3ZWJzaXRlIEkgY2Fu
-IGRvd25sb2FkIGEgYmFja3BvcnQKPj4gMjAxNS0wNS0wOC4gSSB3aWxsIHRyeSB0byBpbnRlZ3Jh
-dGUgaXQuCj4+ID4+Cj4+ID4+IERvIHlvdSBrbm93IGhvdyBJIGNhbiBnZW5lcmF0ZSBhIHRhciBm
-aWxlIGZvciBvcGVud3J0IGZyb20ga2FsZSBnaXQKPj4gaHViPwo+PiA+Cj4+ID4gVGhhdCdzIG5v
-bi10cml2aWFsIGFzIGZhciBhcyBJIHVuZGVyc3RhbmQuIFlvdSBjb3VsZCB0cnkgZ2VuZXJhdGlu
-ZyBhCj4+ID4gcXVpbHQgcGF0Y2ggaW4gb3BlbndydCB0byB1cGRhdGUgYXRoMTBrLiBFaXRoZXIg
-c29tZSBzb3J0IG9mIG1hbnVhbAo+PiA+IGNoZXJyeS1waWNraW5nIG9mIHRoZSB0eG1vZGUgcGF0
-Y2ggZm9yIGF0aDEwayBvciBjcmVhdGUgYSBwYXJ0aWFsIGRpZmYKPj4gPiAoZS5nLiBvbmx5IGRy
-aXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGspIGJldHdlZW4gb3BlbndydCBiYWNrcG9ydHMK
-Pj4gPiBhbmQga3ZhbG8vYXRoIGdlbmVyYXRlZCBiYWNrcG9ydHMuCj4+Cj4+IEkndmUgbWFuYWdl
-ZCB0byByZXByb2R1Y2UgeW91ciBwcm9ibGVtIGluIG15IHNldHVwLgo+Pgo+PiBXaXRoIE5XaWZp
-IFR4ZWQgZnJhbWVzIHdpdGggZG90MVEgVkxBTiB0YWdnaW5nIGFyZW4ndCBldmVuIHNlbnQgT1RB
-IGFuZAo+PiBhcmUgcmVwb3J0ZWQgYXMgbm90IGFja2VkIGJ5IGZpcm13YXJlLgo+Pgo+PiBXaGVu
-IEkgY2hhbmdlZCB0aGUgVHggZW5jYXAgbW9kZSB0byA4MDIuMyAoZXRoZXJuZXQpIEkgY2FuIHNl
-ZSBmcmFtZXMgT1RBCj4+IGJ1dCB0aGV5IGFyZSBjb3JydXB0ZWQgM2FkZHIgZnJhbWVzIHdpdGgg
-aW52YWxpZCBTQS9EQSBhZGRyZXNzZXMuCj4+IEknbSBndWVzc2luZyB0aGlzIGlzIGJlY2F1c2Ug
-ZmlybXdhcmUgZXhwZWN0cyBleHBsaWNpdAo+PiBXTUlfUEVFUl9BRERfV0RTX0VOVFJZX0NNRElE
-IHRvIGJlIGlzc3VlZCB3aGVuIHRyeWluZyB0b28gdXNlIDgwMi4zIFR4Cj4+IGVuY2FwIHdpdGgg
-NGFkZHIgZnJhbWVzLgo+Pgo+IEluIG15IGNvbXBhdCwgSSBpbnRhZ3JhdGVkIHRoZSBmdW5jdGlv
-biBhdGgxMGtfdHhfaF9nZXRfdHhtb2RlIChJIGRvbid0IG5vdCBpZiBpdCBpcyBzdWZmaWNpZW50
-KS4gVGhlIGZyYW1lIHNlZW1zIGJlIGZvcm13YXJkZWQgKGluIHdpcmVzaGFyayBJIGNhbiBzZWUg
-YW4gZW5jYXBzdWxlZCBFdGhlcm5ldCBmcmFtZSkuIEkgd2lsbCB3b3JrIHRvIGZpbmQgd2hlcmUg
-SSBuZWVkIHRvIGFkZCB0aGUgZmxhZyBXTUlfUEVFUl9BRERfV0RTX0VOVFJZX0NNRElELgoKSSd2
-ZSBiZWVuIHBsYXlpbmcgd2l0aCBnZXR0aW5nIDRhZGRyICsgODAyLjFxIHRvIHdvcmsuIFRoZSBt
-YWluCnByb2JsZW0gaXMgbWFjODAyMTEgZG9lc24ndCB0ZWxsIGlmIGFuIGludGVyZmFjZS9wZWVy
-IGlzIDRhZGRyIHNvCmRyaXZlciBpcyBmb3JjZWQgdG8gaW5zcGVjdCBlYWNoIFR4IGZyYW1lIGFu
-ZCBpbmZlciB0aGUgYWRkcmVzc2luZwptb2RlLiBUaGlzIGlzbid0IHZlcnkgZWZmaWNpZW50IGFu
-ZCBpcyBwcmV0dHkgdWdseS4KCkkgd2FzIG9ubHkgYWJsZSB0byBnZXQgU1RBKzRhZGRyKzgwMi4x
-cSB0byB3b3JrIHdpdGggc29tZSBoYWNrcy4gSQpkaWRuJ3QgZ2V0IEFQKzRhZGRyKzgwMi4xcSB0
-byB3b3JrIHlldC4KClBlcmhhcHMgYSBtdWNoIGJldHRlciBzb2x1dGlvbiB0byB5b3VyIHByb2Js
-ZW0gd2lsbCBiZSB0byB1c2Ugd29yawpkb25lIGJ5IERhdmlkLCBzZWUgdGhlIFJBVy9zdyBjcnlw
-dG8gcGF0Y2ggdGhyZWFkOgogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0
-aDEway8yMDE1LUp1bmUvMDA1MzkzLmh0bWwKCllvdSBtaWdodCBub3QgYmUgaW50ZXJlc3RlZCBp
-biB0aGUgc3cgY3J5cHRvIHBlciBzZSwgYnV0IHRoZSBSQVcgVHgKZW5jYXAgdGhhdCBjb21lcyB3
-aXRoIGl0IGlzIHByb21pc2luZyBhbmQgaWYgdGhlIHBhdGNoIGdvZXMgaW4gKG9yIGlmCnlvdSBh
-cHBseSBpdCBtYW51YWxseSkgeW91IHNob3VsZCBiZSBhYmxlIHRvIGdldCB5b3VyIFZMQU4gdGFn
-Z2luZyB0bwp3b3JrICh3aXRoIGNyeXB0bW9kZT0xIGF0aDEwa19jb3JlIHBhcmFtZXRlcikgbm93
-IGF0IHRoZSBjb3N0IG9mIHNvbWUKQ1BVIHdhc3RlIGFuZCBzbG93ZXIgcGVyZm9ybWFuY2UgKG5v
-IEEtTVNEVSB3aXRoIFJBVyBUeCBlbmNhcCkuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+Just found this during code review.
+
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 89eb16b..7399e45 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1201,7 +1201,6 @@ static void ath10k_htt_rx_h_undecap(struct ath10k *ar,
+ {
+ 	struct htt_rx_desc *rxd;
+ 	enum rx_msdu_decap_format decap;
+-	struct ieee80211_hdr *hdr;
+ 
+ 	/* First msdu's decapped header:
+ 	 * [802.11 header] <-- padded to 4 bytes long
+@@ -1215,7 +1214,6 @@ static void ath10k_htt_rx_h_undecap(struct ath10k *ar,
+ 	 */
+ 
+ 	rxd = (void *)msdu->data - sizeof(*rxd);
+-	hdr = (void *)rxd->rx_hdr_status;
+ 	decap = MS(__le32_to_cpu(rxd->msdu_start.info1),
+ 		   RX_MSDU_START_INFO1_DECAP_FORMAT);
+ 
+-- 
+1.8.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
