@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z2wO0-0001iZ-A7
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 06:54:51 +0000
-Received: by wifx6 with SMTP id x6so703148wif.0
- for <ath10k@lists.infradead.org>; Wed, 10 Jun 2015 23:54:25 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <55789EBF.2060501@candelatech.com>
-References: <55789EBF.2060501@candelatech.com>
-Date: Thu, 11 Jun 2015 08:54:25 +0200
-Message-ID: <CA+BoTQmWmrkCjTkq9R9qXZBqq=ynNKdsgn4uLNAucetXy39GRQ@mail.gmail.com>
-Subject: Re: Anyone tried ath10k AP with 40Mhz operation?
+ id 1Z2x9X-0001Jh-TG
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 07:43:56 +0000
+Received: by wibut5 with SMTP id ut5so66861767wib.1
+ for <ath10k@lists.infradead.org>; Thu, 11 Jun 2015 00:43:33 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: prevent debugfs mmio access crash kernel
+Date: Thu, 11 Jun 2015 09:43:14 +0200
+Message-Id: <1434008594-6726-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +17,98 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gMTAgSnVuZSAyMDE1IGF0IDIyOjMxLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4gSSdtIHRyeWluZyB0aGlzIGhvc3RhcGQgY29uZmlnIGZpbGUuICBCZWFj
-b25zIHNlZW0gT0ssIGFuZCBzdGF0aW9uCj4gYXNzb2NpYXRlcy4gIFN0YXRpb24gcHV0cyBESENQ
-IERpc2NvdmVyIG9uIHRoZSBhaXIgKHVzaW5nIDIwTWh6IGFjY29yZGluZwo+IHRvIHdpcmVzaGFy
-aykuICBBUCByZWFkcyB0aGlzLCBhbmQgdGhpbmtzIGl0IGlzIHNlbmRpbmcgYSBESENQIHJlc3Bv
-bnNlIGJhY2ssCj4gYnV0IHNuaWZmZXIgbmV2ZXIgc2hvd3MgREhDUCByZXNwb25zZSBvbiB0aGUg
-YWlyLgoKSXMgdGhlIE1TRFUgY2FycnlpbmcgREhDUCByZXNwIGNvbXBsZXRlZCB3aXRoICJvayIg
-c3RhdHVzPyBPciBpcyBpdAptYXliZSBuby1hY2sgb3IgZGlzY2FyZGVkPwoKCj4gS2VybmVsIGlz
-IDQuMC40KywgYXRoMTBrIGZpcm13YXJlIGlzIENUIGZpcm13YXJlLCAxMC4xLjQ2NyBiYXNlZC4K
-Pgo+IEkgYW0gY3VyaW91cyBpZiBhbnlvbmUgZWxzZSBoYXMgdHJpZWQgdG8gZG8gdGhpcz8KPgo+
-IFRoYW5rcywKPiBCZW4KPgo+IGludGVyZmFjZT12YXA1MAo+IGRyaXZlcj1ubDgwMjExCj4gbG9n
-Z2VyX3N5c2xvZz0tMQo+IGxvZ2dlcl9zeXNsb2dfbGV2ZWw9Mgo+IGxvZ2dlcl9zdGRvdXQ9LTEK
-PiBsb2dnZXJfc3Rkb3V0X2xldmVsPTIKPiBjdHJsX2ludGVyZmFjZT0vdmFyL3J1bi9ob3N0YXBk
-Cj4gY3RybF9pbnRlcmZhY2VfZ3JvdXA9MAo+IHNzaWQ9YmVuLW90YS0yYQpbLi4uXQoKV29ya3Mg
-Zm9yIG1lIG9uIGM3YjM5ZmRlYjQ3OWE3OTU2YTNjNDE2MzhkNTI3MTk2Y2UyOTVmZGQKKGdpdGh1
-Yi5jb20va3ZhbG8vYXRoKSB3aXRoCiBBUDogcWNhOTg4eCBodzIuMCwgMTAuMS40NjcuMi0xCiBT
-VEE6IHFjYTYxNzQgaHcyLjIgKGl0cyBhIDJ4MiksCgpJIHRlc3QgYnkgdXNpbmcgaXA2IHBpbmcg
-b24gZWFjaCBwb3NzaWJsZSBlbmRwb2ludCBwYWlyIChhcC0+c3RhLApzdGEtPmFwKS4gSSBmbHVz
-aCBhcnAvbmVpZ2ggdGFibGVzIG9uIGFsbCBlbmRwb2ludHMgYmVmb3JlIGVhY2ggcGluZwpzbyBi
-b3RoIG11bHRpY2FzdCBhbmQgdW5pY2FzdCBpcyB0ZXN0ZWQuCgpXaXRoaW4gdGhlIHNhbWUgcXVp
-Y2stbi1kaXJ0eSBPVEEgZW52IEkgZ2V0IHRoZSBmb2xsb3dpbmcgVURQIChpcGVyZiAtUDUpOgoK
-IEhUNDAgKGllZWU4MDIxMWFjPTApOgogIHFjYTYxNzQgLT4gcWNhOTg4eCAgMjI4LjM4MyBtYnBz
-CiAgcWNhOTg4eCAtPiBxY2E2MTc0ICAyMzguNTI4IG1icHMKCiBWSFQ0MCAoeW91ciBjb25maWcp
-OgogIHFjYTYxNzQgLT4gcWNhOTg4eCAgMjM0LjY0ICBtYnBzCiAgcWNhOTg4eCAtPiBxY2E2MTc0
-ICAyOTguNzIzIG1icHMKCiBWSFQ4MCAodmh0X29wZXJfY2VudHJfZnJlcV9zZWcwX2lkeD00NCwg
-dmh0X29wZXJfY2h3aWR0aD0xKQogIHFjYTYxNzQgLT4gcWNhOTg4eCAgMzc3LjA5MiBtYnBzCiAg
-cWNhOTg4eCAtPiBxY2E2MTc0ICA0ODMuMjg3IG1icHMKCgpNaWNoYcWCCgpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
-aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
-YW4vbGlzdGluZm8vYXRoMTBrCg==
+It was possible to force an out of bounds MMIO
+read/write via debugfs. E.g. on QCA988X this could
+be triggered with:
+
+ echo 0x2080e0 | tee /sys/kernel/debug/ieee80211/*/ath10k/reg_addr
+ cat /sys/kernel/debug/ieee80211/*/ath10k/reg_value
+
+ BUG: unable to handle kernel paging request at ffffc90001e080e0
+ IP: [<ffffffff8135c860>] ioread32+0x40/0x50
+ ...
+ Call Trace:
+  [<ffffffffa00d0c7f>] ? ath10k_pci_read32+0x4f/0x70 [ath10k_pci]
+  [<ffffffffa0080f50>] ath10k_reg_value_read+0x90/0xf0 [ath10k_core]
+  [<ffffffff8115c2c1>] ? handle_mm_fault+0xa91/0x1050
+  [<ffffffff81189758>] __vfs_read+0x28/0xe0
+  [<ffffffff812e4694>] ? security_file_permission+0x84/0xa0
+  [<ffffffff81189ce3>] ? rw_verify_area+0x53/0x100
+  [<ffffffff81189e1a>] vfs_read+0x8a/0x140
+  [<ffffffff8118acb9>] SyS_read+0x49/0xb0
+  [<ffffffff8104e39c>] ? trace_do_page_fault+0x3c/0xc0
+  [<ffffffff8196596e>] system_call_fastpath+0x12/0x71
+
+Reported-by: Ben Greear <greearb@candelatech.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 13 +++++++++++++
+ drivers/net/wireless/ath/ath10k/pci.h |  1 +
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 9da36c764d3b..1843d31fbda7 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -479,6 +479,12 @@ void ath10k_pci_write32(struct ath10k *ar, u32 offset, u32 value)
+ 	struct ath10k_pci *ar_pci = ath10k_pci_priv(ar);
+ 	int ret;
+ 
++	if (unlikely(offset + sizeof(value) > ar_pci->mem_len)) {
++		ath10k_warn(ar, "refusing to write mmio out of bounds at 0x%08x - 0x%08zx (max 0x%08zx)\n",
++			    offset, offset + sizeof(value), ar_pci->mem_len);
++		return;
++	}
++
+ 	ret = ath10k_pci_wake(ar);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to wake target for write32 of 0x%08x at 0x%08x: %d\n",
+@@ -496,6 +502,12 @@ u32 ath10k_pci_read32(struct ath10k *ar, u32 offset)
+ 	u32 val;
+ 	int ret;
+ 
++	if (unlikely(offset + sizeof(val) > ar_pci->mem_len)) {
++		ath10k_warn(ar, "refusing to read mmio out of bounds at 0x%08x - 0x%08zx (max 0x%08zx)\n",
++			    offset, offset + sizeof(val), ar_pci->mem_len);
++		return 0;
++	}
++
+ 	ret = ath10k_pci_wake(ar);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to wake target for read32 at 0x%08x: %d\n",
+@@ -2682,6 +2694,7 @@ static int ath10k_pci_claim(struct ath10k *ar)
+ 	pci_set_master(pdev);
+ 
+ 	/* Arrange for access to Target SoC registers. */
++	ar_pci->mem_len = pci_resource_len(pdev, BAR_NUM);
+ 	ar_pci->mem = pci_iomap(pdev, BAR_NUM, 0);
+ 	if (!ar_pci->mem) {
+ 		ath10k_err(ar, "failed to iomap BAR%d\n", BAR_NUM);
+diff --git a/drivers/net/wireless/ath/ath10k/pci.h b/drivers/net/wireless/ath/ath10k/pci.h
+index d7696ddc03c4..eea0a0170b00 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.h
++++ b/drivers/net/wireless/ath/ath10k/pci.h
+@@ -162,6 +162,7 @@ struct ath10k_pci {
+ 	struct device *dev;
+ 	struct ath10k *ar;
+ 	void __iomem *mem;
++	size_t mem_len;
+ 
+ 	/*
+ 	 * Number of MSI interrupts granted, 0 --> using legacy PCI line
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
