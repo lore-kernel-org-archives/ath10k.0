@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z32Ug-000245-LR
- for ath10k@lists.infradead.org; Thu, 11 Jun 2015 13:26:07 +0000
-Message-ID: <55798C58.9020600@candelatech.com>
-Date: Thu, 11 Jun 2015 06:25:44 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z331Z-0001Uf-A1
+ for ath10k@lists.infradead.org; Thu, 11 Jun 2015 14:00:06 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v3] ath10k: add 'cryptmode' param to support raw tx
+ injection and software crypto
+References: <1433812382-10287-1-git-send-email-cfliu.tw@gmail.com>
+Date: Thu, 11 Jun 2015 16:59:31 +0300
+In-Reply-To: <1433812382-10287-1-git-send-email-cfliu.tw@gmail.com> (Liu CF's
+ message of "Mon, 8 Jun 2015 18:13:02 -0700")
+Message-ID: <87vbeubb24.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
-References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>	<911fece613ad9dd7975e53ac808fd495@lanada.kaist.ac.kr>	<CALhHN=qf=frYc2iLQWs5AyJncxACa3fuBeXChE7_K+rTS8w7VQ@mail.gmail.com>	<4e93e535617121ba802385eef13b9ef7@lanada.kaist.ac.kr>
- <CAFED-jkdYZaKiEY9RWHTh0+MthbsQri8EhmQZ1j-tjcvzjSVdg@mail.gmail.com>
-In-Reply-To: <CAFED-jkdYZaKiEY9RWHTh0+MthbsQri8EhmQZ1j-tjcvzjSVdg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +20,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@gmail.com>, Sangwoo Moon <swmoon@lanada.kaist.ac.kr>
-Cc: Janusz Dziedzic <janusz.dziedzic@tieto.com>, linux-wireless <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Liu CF/TW <cfliu.tw@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
+Liu CF/TW <cfliu.tw@gmail.com> writes:
 
-
-On 06/10/2015 11:33 PM, Janusz Dziedzic wrote:
-> 2015-06-11 8:32 GMT+02:00 Sangwoo Moon <swmoon@lanada.kaist.ac.kr>:
->> Hello,
->>
->> I have successfully installed the latest version of ath10k driver from
->> backports.
->>
->> However, I have some difficulties on configuring wpa_supplicant for IBSS VHT
->> mode.
->> Looked at wpa_supplicant configuration file, but I couldn't found any option
->> related to explicit setting VHT (though I've found disable_vht instead)
->>
->> Sorry for annoying questions, but can you help this out?
->> At least you could let me know your configuration of wpa_supplicant.
->>
-> supplicant by default setup wildest BW, no special parameter required
-> for IBSS VHT
+> This change supports hardware crypto engine bypass by enabling raw
+> Rx/Tx encap mode. This enables use cases such as software crypto and raw
+> tx injection. This change introduces a new module param 'cryptmode'.
 >
-> network = {
->      ssid="ibss"
->      mode=1
->      key_mgmt=NONE
->      frequency=5180
-> }
+> cryptmode:
 >
-> Just use latest version of wpa_supplicant.
-> next check you have 80MHz BW
-> iw wlan0 info
+>   0: Use hardware crypto engine globally with native Wi-Fi mode TX/RX
+>      encapsulation to the firmware. This is the default mode.
+>   1: Use sofware crypto engine globally with raw mode TX/RX encapsulation
+>      to the firmware.
 
-Make sure you compile supplicant with this option enabled:
+These two values are ok.
 
-CONFIG_IBSS_RSN=y
+>   2: Supports both hardware and software crypto with raw mode TX/RX
+>      encapsulation to the firmware. By default hardware crypto engine is
+>      used. To use software crypto in this mode, set the per ath10k_vif
+>      'nohwcrypt' flag value to True.*
+>      *) The patch for setting vif specific 'nohwcrypt' flag when
+>         cryptmode=2 would be a separate patch to mac80211.
 
-I think only particular firmware versions are doing to do IBSS as well.
+But this the problematic one. I cannot apply something to ath10k until
+Johannes applies the mac80211 part. Didn't I mention this already
+earlier? At least I was supposed to do that.
 
-Thanks,
-Ben
+And most importantly does Johannes even agree with the approach? IIRC he
+was pretty reluctant about configuring the crypto mode via nl80211.
 
+I suggest splitting the patch into two: patch 1 adding support for
+cryptmode values 0 and 1, patch 2 adding support for cryptmode 2. That
+way we can commit patch 1 early and see what we can do with patch 2.
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
