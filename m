@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from torres.puc.rediris.es ([2001:720:418:ca00::9])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3Mc9-0007ky-Ut
- for ath10k@lists.infradead.org; Fri, 12 Jun 2015 10:55:11 +0000
-Received: from [84.88.62.208] (helo=leo)
- by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <jbaranda@cttc.es>) id 1Z3Mbj-0002DD-Gi
- for ath10k@lists.infradead.org; Fri, 12 Jun 2015 12:54:44 +0200
-Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id 725B41FF9D
- for <ath10k@lists.infradead.org>; Fri, 12 Jun 2015 12:54:40 +0200 (CEST)
-Message-ID: <557ABA73.7030200@cttc.es>
-Date: Fri, 12 Jun 2015 12:54:43 +0200
-From: Jorge Baranda <jbaranda@cttc.es>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z3P1e-0001ex-6Q
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2015 13:29:38 +0000
+Message-ID: <557ADEAB.80504@candelatech.com>
+Date: Fri, 12 Jun 2015 06:29:15 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Using ath10k in ad-hoc mode
+Subject: Re: Question on beacon-miss offloading.
+References: <5579F87F.4070601@candelatech.com>	<557A1BE9.7070305@candelatech.com>
+ <CA+BoTQkLyaP-2sHiu7Wn-ZzGj2JnZs4qzQKGu7PiTtUy4d9xLQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQkLyaP-2sHiu7Wn-ZzGj2JnZs4qzQKGu7PiTtUy4d9xLQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,59 +19,69 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-
-Dear all,
-
-Recently I have bought some compex 802.11ac cards and I would like to =
-
-communicate them creating a adhoc network. The initial setup would be to =
-
-have three pc's in a "line" 1-2-3 and perform ping 1 to 3 passing =
-
-through the 2 pc.
-
-I have read in the mailing list that the adhoc mode is possible using =
-
-the candela firmware, isn't it?
-I am a newbie working with ath10k driver and, I would like to know if =
-
-someone could help me or provide hints/material on how to configure =
-
-these cards to work in the adhoc mode and making possible to ping =
-
-between them.
-I suppose this process would be done in two steps:
-1)configure cards to work in adhoc mode.
-2)configure routes and paths in the card.
-
-I've trying to look for this in the mailing list but I have found =
-
-confusing information, so any hint will be welcome.
-
-Thank you very much for your time and attention,
-
-With kind regards,
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
 
 
--- =
+On 06/11/2015 11:03 PM, Michal Kazior wrote:
+> On 12 June 2015 at 01:38, Ben Greear <greearb@candelatech.com> wrote:
+>> On 06/11/2015 02:07 PM, Ben Greear wrote:
+>>> In my ath10k CT firmware, I am disabling the beacon-miss offloading
+>>> to save space and because it will not work with lots of virtual
+>>> stations.
+>>>
+>>> But, it must be that I need some way to tell the stack that this
+>>> feature is not enabled, because when suddenly kill my AP, then
+>>> the ath10k station connected to it shows endless 'beacon loss' events
+>>> in 'iw events' output, but it never actually loses connection.
+>>>
+>>> Stock firmware works fine, so probably I just need to disable
+>>> some feature flag when registering the ath10k hardware
+>>> when using CT firmware.
+>>>
+>>> With stock firmware, I see a quick dissassociation due to inactivity.
+>>>
+>>> I am having poor luck finding how a driver tells the stack
+>>> it has beacon miss offload or not, so, does anyone know how
+>>> this is controlled?
+>>
+>> I still am not sure why stock firmware works, but it appears
+>> the reason mine is failing is that the ACK status for mgt frames
+>> is always set to TRUE since the ath10k wmi-mgt-tx API is so
+>> lame.  So, mac80211 does a probe, ath10k lies and says it was
+>> acked, and mac80211 then things all is well for another few
+>> seconds.
+>
+> mac80211 shouldn't do a Probe Req to an AP on beacon loss because
+> ath10k advertises it supports tx-status report. Hence mac80211 should
+> use NullFunc frames which shouldn't go through wmi-mgmt-tx but htt
+> tx-frm.
+>
+> But then again: NullFunc status reporting via htt tx-frm was broken on
+> 10.1 if memory serves right. I believe it was fixed in 10.2 or 10.2.4.
+>
+> This problem has been effectively obscured on stock 10.1 by the
+> offloaded beacon miss.
 
-Jorge Baranda
-Research Engineer, MSc
-jorge.baranda@cttc.es
+For what it's worth, I looked at the 4.0.4 ath10k yesterday, and it appears it
+ignores the message that the 10.1 firmware sends when beacon loss happens
+anyway.  Maybe I misread the firmware code..it's a pile of indirection.
 
-Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
-Av. Carl Friedrich Gauss, 7
-08860 Castelldefels, Barcelona (Spain)
-Tel: +34 93 645 29 00  Ext: 2171
-Fax. +34 93 645 29 01
-www.cttc.es
+Do you know how the firmware is supposed to signal beacon loss to
+the host (from the host's perspective).
 
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
