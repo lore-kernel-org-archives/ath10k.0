@@ -1,16 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3PFk-0000vT-8e
- for ath10k@lists.infradead.org; Fri, 12 Jun 2015 13:44:12 +0000
-Message-ID: <557AE216.5020105@candelatech.com>
-Date: Fri, 12 Jun 2015 06:43:50 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x22a.google.com ([2607:f8b0:4001:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z3Pfm-000670-11
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2015 14:11:06 +0000
+Received: by igbpi8 with SMTP id pi8so12863307igb.1
+ for <ath10k@lists.infradead.org>; Fri, 12 Jun 2015 07:10:44 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: ath10k fw_stats rx_frame/rx_clear counters
-References: <CAH3pVZP4KNrRSUqfLk1dEOGVTBZK27VOWMVBfL1+49ygC8oOTQ@mail.gmail.com>
- <CA+BoTQkjfiO-hZe+ngvRe0NCK=GroTMCeXuNNn9eb+BnRq+MJg@mail.gmail.com>
-In-Reply-To: <CA+BoTQkjfiO-hZe+ngvRe0NCK=GroTMCeXuNNn9eb+BnRq+MJg@mail.gmail.com>
+In-Reply-To: <557ADEAB.80504@candelatech.com>
+References: <5579F87F.4070601@candelatech.com>
+ <557A1BE9.7070305@candelatech.com>
+ <CA+BoTQkLyaP-2sHiu7Wn-ZzGj2JnZs4qzQKGu7PiTtUy4d9xLQ@mail.gmail.com>
+ <557ADEAB.80504@candelatech.com>
+From: Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date: Fri, 12 Jun 2015 19:40:23 +0530
+Message-ID: <CABPxzYK6LWZW1JWoBBTs_QPWtupU17Pr7w3J-H6=QD1Xd5uLrg@mail.gmail.com>
+Subject: Re: Question on beacon-miss offloading.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,55 +23,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, Sergey Naumov <sknaumov@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, ath10k <ath10k@lists.infradead.org>
 
-CgpPbiAwNi8xMi8yMDE1IDEyOjE2IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDExIEp1
-bmUgMjAxNSBhdCAyMzo0OSwgU2VyZ2V5IE5hdW1vdiA8c2tuYXVtb3ZAZ21haWwuY29tPiB3cm90
-ZToKPj4gSGkgYWxsLgo+Pgo+PiBJJ20gdXNpbmcgYmFycmllciBicmVha2VyIE9wZW5XUlQgb24g
-VFAtbGluayBBcmNoZXIgQzcgdjIuMCByb3V0ZXIgYW5kCj4+IGxvb2tpbmcgYXQgL3N5cy9rZXJu
-ZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvYXRoMTBrL2Z3X3N0YXRzIGNvbnRlbnQuCj4+IEFzIGZh
-ciBhcyBJIHVuZGVyc3RhbmQgIlJYIGZyYW1lIiBhY2NvdW50cyBqdXN0IHJ4IG9mIG91ciBhbmQg
-YWxsIHRoZQo+PiBvdGhlciBBUHMgb24gdGhlIHNhbWUgY2hhbm5lbCwgd2hpbGUgIlJYIGNsZWFy
-IiBhbHNvIGFjY291bnRzIHR4IG9mCj4+IG91ciBBUCBhbmQgbm9uLXdpZmkgaW50ZXJmZXJlbmNl
-Lgo+PiBBdCBsZWFzdCBpdCBpcyB0cnVlIGZvciBhdGg5ayB3aXRoIDIuNEdIeiBjaGlwIG9uIHRo
-ZSBzYW1lIHJvdXRlciwKPj4gd2hlcmUgImNoYW5uZWwgYnVzeSB0aW1lIiBmcm9tIHN1cnZleSBy
-ZXBvcnQgaXMgYWx3YXlzIGdyZWF0ZXIgdGhhbgo+PiAiY2hhbm5lbCByZWNlaXZlIHRpbWUiLgo+
-Pgo+PiBCdXQgZm9yIGF0aDEwayBJIHNlZSB0aGF0IHdpdGggYWJzZW5zZSBvZiB0aGUgdHJhZmZp
-YyB0by9mcm9tIG91ciBBUCwKPj4gIlJYIGZyYW1lIiByZWdpc3RlciB2YWx1ZSBpcyBhbHdheXMg
-aW5jcmVhc2VkIGEgbGl0dGxlIGJpdCBtb3JlIHRoYW4gYQo+PiB2YWx1ZSBvZiAiUlggY2xlYXIi
-IHJlZ2lzdGVyLCBhbmQgaXQgaXMgc3RyYW5nZS4KPj4KPj4gRG8geW91IGtub3cgd2hhdCBjb3Vs
-ZCBiZSBhIHJlYXNvbj8KPgo+IFdoYXQgaXMgdGhlIGludGVydmFsIHlvdSdyZSBwb2xsaW5nIHRo
-ZSB2YWx1ZXMgYXQ/IFRoZXJlJ3MgYSBidWdneSAyNAo+IHNlY29uZCB3cmFwYXJvdW5kIG9uIHRo
-ZXNlIGN5Y2xlIGNvdW50IHJlbGF0ZWQgc3RhdHMuIE1heWJlIHlvdSdyZQo+IGhpdHRpbmcgdGhh
-dC4uCgpIZXJlIGlzIGEgbGluayB0byBteSBwcmV2aW91cyBlbWFpbCBvbiB0aGUgd3JhcHBpbmcg
-aXNzdWUuLml0IGlzIG5vdCAqanVzdCoKYSBtYXR0ZXIgb2YgcG9sbGluZyBtb3JlIG9mdGVuOgoK
-aHR0cHM6Ly93d3cubWFyYy5pbmZvLz9sPWxpbnV4LXdpcmVsZXNzJm09MTQzMzUzOTIwOTA5MTQ3
-Jnc9MgoKQWZ0ZXIgZGVhbGluZyB3aXRoIHRoaXMsIEkgc2VlIGV4cGVjdGVkIHJlc3VsdHMgd2hl
-biB1c2luZyAxMC4xLjQ2NyBiYXNlZApmaXJtd2FyZSAoYm90aCBDVCBhbmQgc3RvY2spLgoKSSBh
-bSB1c2luZyBXTEU5MDBWWCBOSUMsIG15IDQuMC40KyBrZXJuZWwuCgpUaGFua3MsCkJlbgoKPgo+
-IEFub3RoZXIgaWRlYS9ndWVzcyBpcyB0aGF0IGZpcm13YXJlIGRvZXNuJ3QgcmVhZCB0aGVzZSB2
-YWx1ZXMKPiBhdG9taWNhbGx5IChJIHJlY2FsbCBhdGg5ayBsb2NrcyBDQyB2YWx1ZXMgdmlhIGNv
-bnRyb2wgcmVnaXN0ZXIgYmVmb3JlCj4gcmVhZGluZyB0aGVtKSBhbmQgaXQgZW5kcyB1cCB3aXRo
-IGluY29uc2lzdGVudCByZXN1bHRzLgo+Cj4KPj4gUC5TLiBJIHRyaWVkIG5ldyBDaGFvcyBDYWxt
-ZXIgUkMxIE9wZW5XUlQgcmVsZWFzZSB3aXRoIHVwZGF0ZWQgYXRoMTBrCj4+IGRyaXZlciBhbmQg
-YmluYXJ5IGZpcm13YXJlIGFuZCB0aGVyZSB0aGVzZSBsb3ctbGV2ZWwgc3RhdHMgYXJlCj4+IHVu
-YXZhaWFibGUgKGZpbGUgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvYXRoMTBrL2Z3
-X3N0YXRzCj4+IGV4aXN0cyBidXQgcmVhZCByZXR1cm5zIGVycm9yKS4KPgo+IFRoZSBmaXJtd2Fy
-ZSBzdGF0cyBpbnRlcmZhY2UgaGFzIGEgdmVyeSBjbHVua3kgYW5kIHVuc3RhYmxlIEFCSS4gSXQn
-cwo+IGJyb2tlbiBvZnRlbiBieSBmaXJtd2FyZSB1cGRhdGVzIGFuZCByZW1haW5zIHNvIHVudGls
-IHNvbWVvbmUKPiBub3RpY2VzLi4KPgo+IENhbiB5b3UgcHJvdmlkZSBtb3JlIGRldGFpbHMsIHBs
-ZWFzZToKPiAgIC0gd2hpY2ggcmV2aXNpb24gb2YgQ0MgeW91J3JlIHVzaW5nLAo+ICAgLSB3aGF0
-IGF0aDEwayBmaXJtd2FyZSB2ZXJzaW9uIGlzIHVzZWQsCj4gICAtIHdoYXQgY29tcGF0IHBhY2th
-Z2UgdmVyc2lvbiBhdGgxMGsgaXMgZnJvbS4KPgo+Cj4gTWljaGHFggo+Cj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0
-Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5k
-ZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxh
-dGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
-c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+On Fri, Jun 12, 2015 at 6:59 PM, Ben Greear <greearb@candelatech.com> wrote:
+>
+>
+> On 06/11/2015 11:03 PM, Michal Kazior wrote:
+>>
+>> On 12 June 2015 at 01:38, Ben Greear <greearb@candelatech.com> wrote:
+>>>
+>>> On 06/11/2015 02:07 PM, Ben Greear wrote:
+>>>>
+>>>> In my ath10k CT firmware, I am disabling the beacon-miss offloading
+>>>> to save space and because it will not work with lots of virtual
+>>>> stations.
+>>>>
+>>>> But, it must be that I need some way to tell the stack that this
+>>>> feature is not enabled, because when suddenly kill my AP, then
+>>>> the ath10k station connected to it shows endless 'beacon loss' events
+>>>> in 'iw events' output, but it never actually loses connection.
+>>>>
+>>>> Stock firmware works fine, so probably I just need to disable
+>>>> some feature flag when registering the ath10k hardware
+>>>> when using CT firmware.
+>>>>
+>>>> With stock firmware, I see a quick dissassociation due to inactivity.
+>>>>
+>>>> I am having poor luck finding how a driver tells the stack
+>>>> it has beacon miss offload or not, so, does anyone know how
+>>>> this is controlled?
+>>>
+>>>
+>>> I still am not sure why stock firmware works, but it appears
+>>> the reason mine is failing is that the ACK status for mgt frames
+>>> is always set to TRUE since the ath10k wmi-mgt-tx API is so
+>>> lame.  So, mac80211 does a probe, ath10k lies and says it was
+>>> acked, and mac80211 then things all is well for another few
+>>> seconds.
+>>
+>>
+>> mac80211 shouldn't do a Probe Req to an AP on beacon loss because
+>> ath10k advertises it supports tx-status report. Hence mac80211 should
+>> use NullFunc frames which shouldn't go through wmi-mgmt-tx but htt
+>> tx-frm.
+>>
+>> But then again: NullFunc status reporting via htt tx-frm was broken on
+>> 10.1 if memory serves right. I believe it was fixed in 10.2 or 10.2.4.
+>>
+>> This problem has been effectively obscured on stock 10.1 by the
+>> offloaded beacon miss.
+>
+>
+> For what it's worth, I looked at the 4.0.4 ath10k yesterday, and it appears
+> it
+> ignores the message that the 10.1 firmware sends when beacon loss happens
+> anyway.  Maybe I misread the firmware code..it's a pile of indirection.
+>
+> Do you know how the firmware is supposed to signal beacon loss to
+> the host (from the host's perspective).
+
+Normally driver would advertise IEEE80211_HW_CONNECTION_MONITOR
+to disable mac80211 from tracking connection. and driver should call
+ieee80211_beacon_loss up on receiving beacon loss event from FW
+which triggers disconnection in mac80211.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
