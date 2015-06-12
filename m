@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3P5n-0004tr-Hx
- for ath10k@lists.infradead.org; Fri, 12 Jun 2015 13:33:55 +0000
-Message-ID: <557ADFAD.5080004@candelatech.com>
-Date: Fri, 12 Jun 2015 06:33:33 -0700
+ id 1Z3PFk-0000vT-8e
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2015 13:44:12 +0000
+Message-ID: <557AE216.5020105@candelatech.com>
+Date: Fri, 12 Jun 2015 06:43:50 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
-References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
- <87mw06bab5.fsf@kamboji.qca.qualcomm.com>
- <CALhHN=pD+ROqjhYOXsjb7Dc=XGp+YZy6w445ipC4cOGOYUEA3g@mail.gmail.com>
-In-Reply-To: <CALhHN=pD+ROqjhYOXsjb7Dc=XGp+YZy6w445ipC4cOGOYUEA3g@mail.gmail.com>
+Subject: Re: ath10k fw_stats rx_frame/rx_clear counters
+References: <CAH3pVZP4KNrRSUqfLk1dEOGVTBZK27VOWMVBfL1+49ygC8oOTQ@mail.gmail.com>
+ <CA+BoTQkjfiO-hZe+ngvRe0NCK=GroTMCeXuNNn9eb+BnRq+MJg@mail.gmail.com>
+In-Reply-To: <CA+BoTQkjfiO-hZe+ngvRe0NCK=GroTMCeXuNNn9eb+BnRq+MJg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +19,55 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>, Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>, Sergey Naumov <sknaumov@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 06/11/2015 10:12 PM, Janusz Dziedzic wrote:
-> On 11 June 2015 at 16:15, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
->> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
->>
->>> Enable VHT support for IBSS, while mac80211/cfg80211 and
->>> wpa_supplicant already support this.
->>>
->>> In my test env, ath10k 2x2 I get:
->>> (udp) ath10k-1 >>>> ath10k-2 (server) -  speed: 419 Mbits/sec
->>> (tcp) ath10k-1 >>>> ath10k-2 (server) -  speed: 404 Mbits/sec
->>
->> What hw and firmware version? Do you expect this to work with both
->> qca988x and qca6174?
->>
-> Results are for qca9888x.
-> But IBSS (VHT IBSS) works correctly also with qca6174 FW.
->
->> Oh, we should still add ATH10K_FW_FEATURE_NO_ADHOC so that we can
->> disable ad-hoc on 10.x firmwares. Anyone have some spare time to cook up
->> a patch?
->>
-> I am not sure we need this, while we add
-> ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC)
-> only for main and tlv version. Seems we already cover 10.x case correctly.
-
-If you give me some way to advertise my CT 10.1 firmware supports ADHOC
-mode in the upstream driver then there will be one more firmware
-variant that works with IBSS in stock kernels....
-
-Maybe a feature flag 'ATH10K_FW_FEATURE_SUPPORTS_ADHOC' ?  You can special case
-older firmware that is known to support ADHOC but has no feature
-flag for it.  And new firmware could add the feature flag as needed.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+CgpPbiAwNi8xMi8yMDE1IDEyOjE2IEFNLCBNaWNoYWwgS2F6aW9yIHdyb3RlOgo+IE9uIDExIEp1
+bmUgMjAxNSBhdCAyMzo0OSwgU2VyZ2V5IE5hdW1vdiA8c2tuYXVtb3ZAZ21haWwuY29tPiB3cm90
+ZToKPj4gSGkgYWxsLgo+Pgo+PiBJJ20gdXNpbmcgYmFycmllciBicmVha2VyIE9wZW5XUlQgb24g
+VFAtbGluayBBcmNoZXIgQzcgdjIuMCByb3V0ZXIgYW5kCj4+IGxvb2tpbmcgYXQgL3N5cy9rZXJu
+ZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvYXRoMTBrL2Z3X3N0YXRzIGNvbnRlbnQuCj4+IEFzIGZh
+ciBhcyBJIHVuZGVyc3RhbmQgIlJYIGZyYW1lIiBhY2NvdW50cyBqdXN0IHJ4IG9mIG91ciBhbmQg
+YWxsIHRoZQo+PiBvdGhlciBBUHMgb24gdGhlIHNhbWUgY2hhbm5lbCwgd2hpbGUgIlJYIGNsZWFy
+IiBhbHNvIGFjY291bnRzIHR4IG9mCj4+IG91ciBBUCBhbmQgbm9uLXdpZmkgaW50ZXJmZXJlbmNl
+Lgo+PiBBdCBsZWFzdCBpdCBpcyB0cnVlIGZvciBhdGg5ayB3aXRoIDIuNEdIeiBjaGlwIG9uIHRo
+ZSBzYW1lIHJvdXRlciwKPj4gd2hlcmUgImNoYW5uZWwgYnVzeSB0aW1lIiBmcm9tIHN1cnZleSBy
+ZXBvcnQgaXMgYWx3YXlzIGdyZWF0ZXIgdGhhbgo+PiAiY2hhbm5lbCByZWNlaXZlIHRpbWUiLgo+
+Pgo+PiBCdXQgZm9yIGF0aDEwayBJIHNlZSB0aGF0IHdpdGggYWJzZW5zZSBvZiB0aGUgdHJhZmZp
+YyB0by9mcm9tIG91ciBBUCwKPj4gIlJYIGZyYW1lIiByZWdpc3RlciB2YWx1ZSBpcyBhbHdheXMg
+aW5jcmVhc2VkIGEgbGl0dGxlIGJpdCBtb3JlIHRoYW4gYQo+PiB2YWx1ZSBvZiAiUlggY2xlYXIi
+IHJlZ2lzdGVyLCBhbmQgaXQgaXMgc3RyYW5nZS4KPj4KPj4gRG8geW91IGtub3cgd2hhdCBjb3Vs
+ZCBiZSBhIHJlYXNvbj8KPgo+IFdoYXQgaXMgdGhlIGludGVydmFsIHlvdSdyZSBwb2xsaW5nIHRo
+ZSB2YWx1ZXMgYXQ/IFRoZXJlJ3MgYSBidWdneSAyNAo+IHNlY29uZCB3cmFwYXJvdW5kIG9uIHRo
+ZXNlIGN5Y2xlIGNvdW50IHJlbGF0ZWQgc3RhdHMuIE1heWJlIHlvdSdyZQo+IGhpdHRpbmcgdGhh
+dC4uCgpIZXJlIGlzIGEgbGluayB0byBteSBwcmV2aW91cyBlbWFpbCBvbiB0aGUgd3JhcHBpbmcg
+aXNzdWUuLml0IGlzIG5vdCAqanVzdCoKYSBtYXR0ZXIgb2YgcG9sbGluZyBtb3JlIG9mdGVuOgoK
+aHR0cHM6Ly93d3cubWFyYy5pbmZvLz9sPWxpbnV4LXdpcmVsZXNzJm09MTQzMzUzOTIwOTA5MTQ3
+Jnc9MgoKQWZ0ZXIgZGVhbGluZyB3aXRoIHRoaXMsIEkgc2VlIGV4cGVjdGVkIHJlc3VsdHMgd2hl
+biB1c2luZyAxMC4xLjQ2NyBiYXNlZApmaXJtd2FyZSAoYm90aCBDVCBhbmQgc3RvY2spLgoKSSBh
+bSB1c2luZyBXTEU5MDBWWCBOSUMsIG15IDQuMC40KyBrZXJuZWwuCgpUaGFua3MsCkJlbgoKPgo+
+IEFub3RoZXIgaWRlYS9ndWVzcyBpcyB0aGF0IGZpcm13YXJlIGRvZXNuJ3QgcmVhZCB0aGVzZSB2
+YWx1ZXMKPiBhdG9taWNhbGx5IChJIHJlY2FsbCBhdGg5ayBsb2NrcyBDQyB2YWx1ZXMgdmlhIGNv
+bnRyb2wgcmVnaXN0ZXIgYmVmb3JlCj4gcmVhZGluZyB0aGVtKSBhbmQgaXQgZW5kcyB1cCB3aXRo
+IGluY29uc2lzdGVudCByZXN1bHRzLgo+Cj4KPj4gUC5TLiBJIHRyaWVkIG5ldyBDaGFvcyBDYWxt
+ZXIgUkMxIE9wZW5XUlQgcmVsZWFzZSB3aXRoIHVwZGF0ZWQgYXRoMTBrCj4+IGRyaXZlciBhbmQg
+YmluYXJ5IGZpcm13YXJlIGFuZCB0aGVyZSB0aGVzZSBsb3ctbGV2ZWwgc3RhdHMgYXJlCj4+IHVu
+YXZhaWFibGUgKGZpbGUgL3N5cy9rZXJuZWwvZGVidWcvaWVlZTgwMjExL3BoeTAvYXRoMTBrL2Z3
+X3N0YXRzCj4+IGV4aXN0cyBidXQgcmVhZCByZXR1cm5zIGVycm9yKS4KPgo+IFRoZSBmaXJtd2Fy
+ZSBzdGF0cyBpbnRlcmZhY2UgaGFzIGEgdmVyeSBjbHVua3kgYW5kIHVuc3RhYmxlIEFCSS4gSXQn
+cwo+IGJyb2tlbiBvZnRlbiBieSBmaXJtd2FyZSB1cGRhdGVzIGFuZCByZW1haW5zIHNvIHVudGls
+IHNvbWVvbmUKPiBub3RpY2VzLi4KPgo+IENhbiB5b3UgcHJvdmlkZSBtb3JlIGRldGFpbHMsIHBs
+ZWFzZToKPiAgIC0gd2hpY2ggcmV2aXNpb24gb2YgQ0MgeW91J3JlIHVzaW5nLAo+ICAgLSB3aGF0
+IGF0aDEwayBmaXJtd2FyZSB2ZXJzaW9uIGlzIHVzZWQsCj4gICAtIHdoYXQgY29tcGF0IHBhY2th
+Z2UgdmVyc2lvbiBhdGgxMGsgaXMgZnJvbS4KPgo+Cj4gTWljaGHFggo+Cj4gX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0
+Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+CgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5k
+ZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxh
+dGVjaC5jb20KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xp
+c3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
