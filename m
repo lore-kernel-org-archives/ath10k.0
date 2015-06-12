@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from torres.puc.rediris.es ([2001:720:418:ca00::9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z3JDQ-0006Q0-CB
- for ath10k@lists.infradead.org; Fri, 12 Jun 2015 07:17:26 +0000
-Received: by wigg3 with SMTP id g3so8060726wig.1
- for <ath10k@lists.infradead.org>; Fri, 12 Jun 2015 00:16:56 -0700 (PDT)
+ id 1Z3Mc9-0007ky-Ut
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2015 10:55:11 +0000
+Received: from [84.88.62.208] (helo=leo)
+ by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+ (Exim 4.80) (envelope-from <jbaranda@cttc.es>) id 1Z3Mbj-0002DD-Gi
+ for ath10k@lists.infradead.org; Fri, 12 Jun 2015 12:54:44 +0200
+Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
+ (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by leo (Postfix) with ESMTPSA id 725B41FF9D
+ for <ath10k@lists.infradead.org>; Fri, 12 Jun 2015 12:54:40 +0200 (CEST)
+Message-ID: <557ABA73.7030200@cttc.es>
+Date: Fri, 12 Jun 2015 12:54:43 +0200
+From: Jorge Baranda <jbaranda@cttc.es>
 MIME-Version: 1.0
-In-Reply-To: <CAH3pVZP4KNrRSUqfLk1dEOGVTBZK27VOWMVBfL1+49ygC8oOTQ@mail.gmail.com>
-References: <CAH3pVZP4KNrRSUqfLk1dEOGVTBZK27VOWMVBfL1+49ygC8oOTQ@mail.gmail.com>
-Date: Fri, 12 Jun 2015 09:16:56 +0200
-Message-ID: <CA+BoTQkjfiO-hZe+ngvRe0NCK=GroTMCeXuNNn9eb+BnRq+MJg@mail.gmail.com>
-Subject: Re: ath10k fw_stats rx_frame/rx_clear counters
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Using ath10k in ad-hoc mode
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +25,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Sergey Naumov <sknaumov@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMTEgSnVuZSAyMDE1IGF0IDIzOjQ5LCBTZXJnZXkgTmF1bW92IDxza25hdW1vdkBnbWFpbC5j
-b20+IHdyb3RlOgo+IEhpIGFsbC4KPgo+IEknbSB1c2luZyBiYXJyaWVyIGJyZWFrZXIgT3BlbldS
-VCBvbiBUUC1saW5rIEFyY2hlciBDNyB2Mi4wIHJvdXRlciBhbmQKPiBsb29raW5nIGF0IC9zeXMv
-a2VybmVsL2RlYnVnL2llZWU4MDIxMS9waHkwL2F0aDEway9md19zdGF0cyBjb250ZW50Lgo+IEFz
-IGZhciBhcyBJIHVuZGVyc3RhbmQgIlJYIGZyYW1lIiBhY2NvdW50cyBqdXN0IHJ4IG9mIG91ciBh
-bmQgYWxsIHRoZQo+IG90aGVyIEFQcyBvbiB0aGUgc2FtZSBjaGFubmVsLCB3aGlsZSAiUlggY2xl
-YXIiIGFsc28gYWNjb3VudHMgdHggb2YKPiBvdXIgQVAgYW5kIG5vbi13aWZpIGludGVyZmVyZW5j
-ZS4KPiBBdCBsZWFzdCBpdCBpcyB0cnVlIGZvciBhdGg5ayB3aXRoIDIuNEdIeiBjaGlwIG9uIHRo
-ZSBzYW1lIHJvdXRlciwKPiB3aGVyZSAiY2hhbm5lbCBidXN5IHRpbWUiIGZyb20gc3VydmV5IHJl
-cG9ydCBpcyBhbHdheXMgZ3JlYXRlciB0aGFuCj4gImNoYW5uZWwgcmVjZWl2ZSB0aW1lIi4KPgo+
-IEJ1dCBmb3IgYXRoMTBrIEkgc2VlIHRoYXQgd2l0aCBhYnNlbnNlIG9mIHRoZSB0cmFmZmljIHRv
-L2Zyb20gb3VyIEFQLAo+ICJSWCBmcmFtZSIgcmVnaXN0ZXIgdmFsdWUgaXMgYWx3YXlzIGluY3Jl
-YXNlZCBhIGxpdHRsZSBiaXQgbW9yZSB0aGFuIGEKPiB2YWx1ZSBvZiAiUlggY2xlYXIiIHJlZ2lz
-dGVyLCBhbmQgaXQgaXMgc3RyYW5nZS4KPgo+IERvIHlvdSBrbm93IHdoYXQgY291bGQgYmUgYSBy
-ZWFzb24/CgpXaGF0IGlzIHRoZSBpbnRlcnZhbCB5b3UncmUgcG9sbGluZyB0aGUgdmFsdWVzIGF0
-PyBUaGVyZSdzIGEgYnVnZ3kgMjQKc2Vjb25kIHdyYXBhcm91bmQgb24gdGhlc2UgY3ljbGUgY291
-bnQgcmVsYXRlZCBzdGF0cy4gTWF5YmUgeW91J3JlCmhpdHRpbmcgdGhhdC4uCgpBbm90aGVyIGlk
-ZWEvZ3Vlc3MgaXMgdGhhdCBmaXJtd2FyZSBkb2Vzbid0IHJlYWQgdGhlc2UgdmFsdWVzCmF0b21p
-Y2FsbHkgKEkgcmVjYWxsIGF0aDlrIGxvY2tzIENDIHZhbHVlcyB2aWEgY29udHJvbCByZWdpc3Rl
-ciBiZWZvcmUKcmVhZGluZyB0aGVtKSBhbmQgaXQgZW5kcyB1cCB3aXRoIGluY29uc2lzdGVudCBy
-ZXN1bHRzLgoKCj4gUC5TLiBJIHRyaWVkIG5ldyBDaGFvcyBDYWxtZXIgUkMxIE9wZW5XUlQgcmVs
-ZWFzZSB3aXRoIHVwZGF0ZWQgYXRoMTBrCj4gZHJpdmVyIGFuZCBiaW5hcnkgZmlybXdhcmUgYW5k
-IHRoZXJlIHRoZXNlIGxvdy1sZXZlbCBzdGF0cyBhcmUKPiB1bmF2YWlhYmxlIChmaWxlIC9zeXMv
-a2VybmVsL2RlYnVnL2llZWU4MDIxMS9waHkwL2F0aDEway9md19zdGF0cwo+IGV4aXN0cyBidXQg
-cmVhZCByZXR1cm5zIGVycm9yKS4KClRoZSBmaXJtd2FyZSBzdGF0cyBpbnRlcmZhY2UgaGFzIGEg
-dmVyeSBjbHVua3kgYW5kIHVuc3RhYmxlIEFCSS4gSXQncwpicm9rZW4gb2Z0ZW4gYnkgZmlybXdh
-cmUgdXBkYXRlcyBhbmQgcmVtYWlucyBzbyB1bnRpbCBzb21lb25lCm5vdGljZXMuLgoKQ2FuIHlv
-dSBwcm92aWRlIG1vcmUgZGV0YWlscywgcGxlYXNlOgogLSB3aGljaCByZXZpc2lvbiBvZiBDQyB5
-b3UncmUgdXNpbmcsCiAtIHdoYXQgYXRoMTBrIGZpcm13YXJlIHZlcnNpb24gaXMgdXNlZCwKIC0g
-d2hhdCBjb21wYXQgcGFja2FnZSB2ZXJzaW9uIGF0aDEwayBpcyBmcm9tLgoKCk1pY2hhxYIKCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWls
-aW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVh
-ZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Dear all,
+
+Recently I have bought some compex 802.11ac cards and I would like to =
+
+communicate them creating a adhoc network. The initial setup would be to =
+
+have three pc's in a "line" 1-2-3 and perform ping 1 to 3 passing =
+
+through the 2 pc.
+
+I have read in the mailing list that the adhoc mode is possible using =
+
+the candela firmware, isn't it?
+I am a newbie working with ath10k driver and, I would like to know if =
+
+someone could help me or provide hints/material on how to configure =
+
+these cards to work in the adhoc mode and making possible to ping =
+
+between them.
+I suppose this process would be done in two steps:
+1)configure cards to work in adhoc mode.
+2)configure routes and paths in the card.
+
+I've trying to look for this in the mailing list but I have found =
+
+confusing information, so any hint will be welcome.
+
+Thank you very much for your time and attention,
+
+With kind regards,
+
+
+
+-- =
+
+Jorge Baranda
+Research Engineer, MSc
+jorge.baranda@cttc.es
+
+Centre Tecnol=F2gic de Telecomunicacions de Catalunya (CTTC)
+Av. Carl Friedrich Gauss, 7
+08860 Castelldefels, Barcelona (Spain)
+Tel: +34 93 645 29 00  Ext: 2171
+Fax. +34 93 645 29 01
+www.cttc.es
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
