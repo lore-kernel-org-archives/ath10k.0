@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4N4Z-0004W1-Qz
- for ath10k@lists.infradead.org; Mon, 15 Jun 2015 05:36:40 +0000
-Received: by wiga1 with SMTP id a1so65371350wig.0
- for <ath10k@lists.infradead.org>; Sun, 14 Jun 2015 22:36:12 -0700 (PDT)
+ id 1Z4TYg-0005yN-7v
+ for ath10k@lists.infradead.org; Mon, 15 Jun 2015 12:32:11 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
+References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
+ <87mw06bab5.fsf@kamboji.qca.qualcomm.com>
+ <CALhHN=pD+ROqjhYOXsjb7Dc=XGp+YZy6w445ipC4cOGOYUEA3g@mail.gmail.com>
+Date: Mon, 15 Jun 2015 15:31:41 +0300
+In-Reply-To: <CALhHN=pD+ROqjhYOXsjb7Dc=XGp+YZy6w445ipC4cOGOYUEA3g@mail.gmail.com>
+ (Janusz Dziedzic's message of "Fri, 12 Jun 2015 07:12:05 +0200")
+Message-ID: <87pp4x9mqa.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <557AFC9D.3020109@candelatech.com>
-References: <5579F87F.4070601@candelatech.com>
- <557A1BE9.7070305@candelatech.com>
- <CA+BoTQkLyaP-2sHiu7Wn-ZzGj2JnZs4qzQKGu7PiTtUy4d9xLQ@mail.gmail.com>
- <557AFC9D.3020109@candelatech.com>
-Date: Mon, 15 Jun 2015 07:36:11 +0200
-Message-ID: <CA+BoTQkn+Ro1+=PPe=1aHT519jW3BtF+Mmspy+kQftufpUiTPA@mail.gmail.com>
-Subject: Re: Question on beacon-miss offloading.
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +21,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+Cc: linux-wireless@vger.kernel.org, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMTIgSnVuZSAyMDE1IGF0IDE3OjM3LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
-LmNvbT4gd3JvdGU6Cj4gT24gMDYvMTEvMjAxNSAxMTowMyBQTSwgTWljaGFsIEthemlvciB3cm90
-ZToKPj4gT24gMTIgSnVuZSAyMDE1IGF0IDAxOjM4LCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRl
-bGF0ZWNoLmNvbT4gd3JvdGU6Cj4+PiBPbiAwNi8xMS8yMDE1IDAyOjA3IFBNLCBCZW4gR3JlZWFy
-IHdyb3RlOgo+Pj4+IEluIG15IGF0aDEwayBDVCBmaXJtd2FyZSwgSSBhbSBkaXNhYmxpbmcgdGhl
-IGJlYWNvbi1taXNzIG9mZmxvYWRpbmcKPj4+PiB0byBzYXZlIHNwYWNlIGFuZCBiZWNhdXNlIGl0
-IHdpbGwgbm90IHdvcmsgd2l0aCBsb3RzIG9mIHZpcnR1YWwKPj4+PiBzdGF0aW9ucy4KPj4+Pgo+
-Pj4+IEJ1dCwgaXQgbXVzdCBiZSB0aGF0IEkgbmVlZCBzb21lIHdheSB0byB0ZWxsIHRoZSBzdGFj
-ayB0aGF0IHRoaXMKPj4+PiBmZWF0dXJlIGlzIG5vdCBlbmFibGVkLCBiZWNhdXNlIHdoZW4gc3Vk
-ZGVubHkga2lsbCBteSBBUCwgdGhlbgo+Pj4+IHRoZSBhdGgxMGsgc3RhdGlvbiBjb25uZWN0ZWQg
-dG8gaXQgc2hvd3MgZW5kbGVzcyAnYmVhY29uIGxvc3MnIGV2ZW50cwo+Pj4+IGluICdpdyBldmVu
-dHMnIG91dHB1dCwgYnV0IGl0IG5ldmVyIGFjdHVhbGx5IGxvc2VzIGNvbm5lY3Rpb24uCj4+Pj4K
-Pj4+PiBTdG9jayBmaXJtd2FyZSB3b3JrcyBmaW5lLCBzbyBwcm9iYWJseSBJIGp1c3QgbmVlZCB0
-byBkaXNhYmxlCj4+Pj4gc29tZSBmZWF0dXJlIGZsYWcgd2hlbiByZWdpc3RlcmluZyB0aGUgYXRo
-MTBrIGhhcmR3YXJlCj4+Pj4gd2hlbiB1c2luZyBDVCBmaXJtd2FyZS4KPj4+Pgo+Pj4+IFdpdGgg
-c3RvY2sgZmlybXdhcmUsIEkgc2VlIGEgcXVpY2sgZGlzc2Fzc29jaWF0aW9uIGR1ZSB0byBpbmFj
-dGl2aXR5Lgo+Pj4+Cj4+Pj4gSSBhbSBoYXZpbmcgcG9vciBsdWNrIGZpbmRpbmcgaG93IGEgZHJp
-dmVyIHRlbGxzIHRoZSBzdGFjawo+Pj4+IGl0IGhhcyBiZWFjb24gbWlzcyBvZmZsb2FkIG9yIG5v
-dCwgc28sIGRvZXMgYW55b25lIGtub3cgaG93Cj4+Pj4gdGhpcyBpcyBjb250cm9sbGVkPwo+Pj4K
-Pj4+IEkgc3RpbGwgYW0gbm90IHN1cmUgd2h5IHN0b2NrIGZpcm13YXJlIHdvcmtzLCBidXQgaXQg
-YXBwZWFycwo+Pj4gdGhlIHJlYXNvbiBtaW5lIGlzIGZhaWxpbmcgaXMgdGhhdCB0aGUgQUNLIHN0
-YXR1cyBmb3IgbWd0IGZyYW1lcwo+Pj4gaXMgYWx3YXlzIHNldCB0byBUUlVFIHNpbmNlIHRoZSBh
-dGgxMGsgd21pLW1ndC10eCBBUEkgaXMgc28KPj4+IGxhbWUuICBTbywgbWFjODAyMTEgZG9lcyBh
-IHByb2JlLCBhdGgxMGsgbGllcyBhbmQgc2F5cyBpdCB3YXMKPj4+IGFja2VkLCBhbmQgbWFjODAy
-MTEgdGhlbiB0aGluZ3MgYWxsIGlzIHdlbGwgZm9yIGFub3RoZXIgZmV3Cj4+PiBzZWNvbmRzLgo+
-Pgo+PiBtYWM4MDIxMSBzaG91bGRuJ3QgZG8gYSBQcm9iZSBSZXEgdG8gYW4gQVAgb24gYmVhY29u
-IGxvc3MgYmVjYXVzZQo+PiBhdGgxMGsgYWR2ZXJ0aXNlcyBpdCBzdXBwb3J0cyB0eC1zdGF0dXMg
-cmVwb3J0LiBIZW5jZSBtYWM4MDIxMSBzaG91bGQKPj4gdXNlIE51bGxGdW5jIGZyYW1lcyB3aGlj
-aCBzaG91bGRuJ3QgZ28gdGhyb3VnaCB3bWktbWdtdC10eCBidXQgaHR0Cj4+IHR4LWZybS4KPj4K
-Pj4gQnV0IHRoZW4gYWdhaW46IE51bGxGdW5jIHN0YXR1cyByZXBvcnRpbmcgdmlhIGh0dCB0eC1m
-cm0gd2FzIGJyb2tlbiBvbgo+PiAxMC4xIGlmIG1lbW9yeSBzZXJ2ZXMgcmlnaHQuIEkgYmVsaWV2
-ZSBpdCB3YXMgZml4ZWQgaW4gMTAuMiBvciAxMC4yLjQuCj4+Cj4+IFRoaXMgcHJvYmxlbSBoYXMg
-YmVlbiBlZmZlY3RpdmVseSBvYnNjdXJlZCBvbiBzdG9jayAxMC4xIGJ5IHRoZQo+PiBvZmZsb2Fk
-ZWQgYmVhY29uIG1pc3MuCj4KPiBUaGFua3MgZm9yIHRoZSBoaW50LiAgSSB3YXMgYWJsZSB0byBm
-aXggbXkgZmlybXdhcmUgdG8gcHJvcGVybHkKPiByZXR1cm4gaHR0IHR4IHN0YXR1cywgYW5kIG5v
-dyBpdCBhcHBlYXJzIHRvIHdvcmsgcHJvcGVybHkuCj4KPiBBIHF1aWNrIHRocm91Z2hwdXQgdGVz
-dCB3b3JrcyBhcyB3ZWxsLCBzbyBob3BlZnVsbHkgbm8gcmVncmVzc2lvbnMuCj4KPiBJIGd1ZXNz
-IHRoZSBOdWxGdW5jIHJlbGF0ZWQgY29tbWVudCBpcyBpbmNvcnJlY3QgZm9yIDEwLjEgc3RvY2sg
-ZmlybXdhcmU/Cj4KPiBNYXliZSBzb21lIG90aGVycz8KPgo+IHN0YXRpYyB2b2lkIGF0aDEwa190
-eF9odHQoc3RydWN0IGF0aDEwayAqYXIsIHN0cnVjdCBza19idWZmICpza2IpCj4gewo+ICAgICAg
-ICAgc3RydWN0IGllZWU4MDIxMV9oZHIgKmhkciA9IChzdHJ1Y3QgaWVlZTgwMjExX2hkciAqKXNr
-Yi0+ZGF0YTsKPiAgICAgICAgIGludCByZXQgPSAwOwo+Cj4gICAgICAgICBpZiAoYXItPmh0dC50
-YXJnZXRfdmVyc2lvbl9tYWpvciA+PSAzKSB7Cj4gICAgICAgICAgICAgICAgIC8qIFNpbmNlIEhU
-VCAzLjAgdGhlcmUgaXMgbm8gc2VwYXJhdGUgbWdtdCB0eCBjb21tYW5kICovCj4gICAgICAgICAg
-ICAgICAgIHJldCA9IGF0aDEwa19odHRfdHgoJmFyLT5odHQsIHNrYik7Cj4gICAgICAgICAgICAg
-ICAgIGdvdG8gZXhpdDsKPiAgICAgICAgIH0KPgo+ICAgICAgICAgaWYgKGllZWU4MDIxMV9pc19t
-Z210KGhkci0+ZnJhbWVfY29udHJvbCkpIHsKPiAgICAgICAgICAgICAgICAgaWYgKHRlc3RfYml0
-KEFUSDEwS19GV19GRUFUVVJFX0hBU19XTUlfTUdNVF9UWCwKPiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIGFyLT5md19mZWF0dXJlcykpIHsKPiAgICAgICAgICAgICAgICAgICAgICAgICBp
-ZiAoc2tiX3F1ZXVlX2xlbigmYXItPndtaV9tZ210X3R4X3F1ZXVlKSA+PQo+ICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICBBVEgxMEtfTUFYX05VTV9NR01UX1BFTkRJTkcpIHsKPiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIGF0aDEwa193YXJuKGFyLCAicmVhY2hlZCBXTUkgbWFu
-YWdlbWVudCB0cmFuc21pdCBxdWV1ZSBsaW1pdFxuIik7Cj4gICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICByZXQgPSAtRUJVU1k7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBnb3RvIGV4aXQ7Cj4gICAgICAgICAgICAgICAgICAgICAgICAgfQo+Cj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgc2tiX3F1ZXVlX3RhaWwoJmFyLT53bWlfbWdtdF90eF9xdWV1ZSwgc2tiKTsK
-PiAgICAgICAgICAgICAgICAgICAgICAgICBpZWVlODAyMTFfcXVldWVfd29yayhhci0+aHcsICZh
-ci0+d21pX21nbXRfdHhfd29yayk7Cj4gICAgICAgICAgICAgICAgIH0gZWxzZSB7Cj4gICAgICAg
-ICAgICAgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX2h0dF9tZ210X3R4KCZhci0+aHR0LCBza2Ip
-Owo+ICAgICAgICAgICAgICAgICB9Cj4gICAgICAgICB9IGVsc2UgaWYgKCF0ZXN0X2JpdChBVEgx
-MEtfRldfRkVBVFVSRV9IQVNfV01JX01HTVRfVFgsCj4gICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBhci0+ZndfZmVhdHVyZXMpICYmCj4gICAgICAgICAgICAgICAgICAgIGllZWU4MDIxMV9p
-c19udWxsZnVuYyhoZHItPmZyYW1lX2NvbnRyb2wpKSB7Cj4gICAgICAgICAgICAgICAgIC8qIEZX
-IGRvZXMgbm90IHJlcG9ydCB0eCBzdGF0dXMgcHJvcGVybHkgZm9yIE51bGxGdW5jIGZyYW1lcwo+
-ICAgICAgICAgICAgICAgICAgKiB1bmxlc3MgdGhleSBhcmUgc2VudCB0aHJvdWdoIG1nbXQgdHgg
-cGF0aC4gbWFjODAyMTEgc2VuZHMKPiAgICAgICAgICAgICAgICAgICogdGhvc2UgZnJhbWVzIHdo
-ZW4gaXQgZGV0ZWN0cyBsaW5rL2JlYWNvbiBsb3NzIGFuZCBkZXBlbmRzCj4gICAgICAgICAgICAg
-ICAgICAqIG9uIHRoZSB0eCBzdGF0dXMgdG8gYmUgY29ycmVjdC4gKi8KPiAgICAgICAgICAgICAg
-ICAgcmV0ID0gYXRoMTBrX2h0dF9tZ210X3R4KCZhci0+aHR0LCBza2IpOwo+ICAgICAgICAgfSBl
-bHNlIHsKPiAgICAgICAgICAgICAgICAgcmV0ID0gYXRoMTBrX2h0dF90eCgmYXItPmh0dCwgc2ti
-KTsKPiAgICAgICAgIH0KClRoZSBOdWxsRnVuYyB3b3JrYXJvdW5kIHdhcyBvcmlnaW5hbGx5IGRv
-bmUgZm9yIDk5OS45OTkuMC42MzYgYnV0CnNob3VsZCBiZSB0cnVlIGZvciAxMC4xIGFzIHdlbGwg
-d2l0aCB0aGUgc29sZSBleGNlcHRpb24gdGhlIGxhdHRlcgpkb2Vzbid0IGhhdmUgaHR0LW1nbXQt
-dHggdG8gd29ya2Fyb3VuZCB0aGUgcHJvYmxlbS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
-a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
-bGlzdGluZm8vYXRoMTBrCg==
+Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+
+> On 11 June 2015 at 16:15, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+>>
+>>> Enable VHT support for IBSS, while mac80211/cfg80211 and
+>>> wpa_supplicant already support this.
+>>>
+>>> In my test env, ath10k 2x2 I get:
+>>> (udp) ath10k-1 >>>> ath10k-2 (server) -  speed: 419 Mbits/sec
+>>> (tcp) ath10k-1 >>>> ath10k-2 (server) -  speed: 404 Mbits/sec
+>>
+>> What hw and firmware version? Do you expect this to work with both
+>> qca988x and qca6174?
+>
+> Results are for qca9888x.
+> But IBSS (VHT IBSS) works correctly also with qca6174 FW.
+
+Ok, thanks. I added this info to the commit log in the pending branch.
+
+>> Oh, we should still add ATH10K_FW_FEATURE_NO_ADHOC so that we can
+>> disable ad-hoc on 10.x firmwares. Anyone have some spare time to cook up
+>> a patch?
+>>
+> I am not sure we need this, while we add
+> ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC)
+> only for main and tlv version. Seems we already cover 10.x case correctly.
+
+Ah, I had forgotten that. Good that we have that.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
