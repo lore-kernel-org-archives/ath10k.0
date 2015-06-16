@@ -1,17 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from nm.newmedia-net.de ([217.113.179.122]
+ helo=webmail.newmedia-net.de)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4nvc-0006MX-Dj
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:17:13 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: txrx: remove unreachable negative return check
- and fixup type
-References: <1434039489-24934-1-git-send-email-hofrat@osadl.org>
-Date: Tue, 16 Jun 2015 13:16:23 +0300
-In-Reply-To: <1434039489-24934-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
- Guire's message of "Thu, 11 Jun 2015 18:18:09 +0200")
-Message-ID: <87616o7ybs.fsf@kamboji.qca.qualcomm.com>
+ id 1Z4p0i-0002fG-M4
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 11:26:34 +0000
+References: <1434008594-6726-1-git-send-email-michal.kazior@tieto.com>
+ <87ioao7yjm.fsf@kamboji.qca.qualcomm.com>
+From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Message-ID: <558007D1.1020709@dd-wrt.com>
+Date: Tue, 16 Jun 2015 13:26:09 +0200
 MIME-Version: 1.0
+In-Reply-To: <87ioao7yjm.fsf@kamboji.qca.qualcomm.com>
+Subject: repeater mode not working
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +20,18 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
 
-Nicholas Mc Guire <hofrat@osadl.org> writes:
+Hello
 
-> wait_event_timeout(), introduced in 'commit 5e3dd157d7e7 ("ath10k: mac80211
-> driver for Qualcomm Atheros 802.11ac CQA98xx devices")' never returns < 0
-> so the only failure condition to be checked is == 0 (timeout). Further the
-> return type is long not int - an appropriately named variable is added
-> and the assignments fixed up.
->
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+did someone notice that configurations like
+sta + vap do not work with ath10k? is there a fix expected for that problem?
 
-Thanks, applied.
-
--- 
-Kalle Valo
+Sebastian
 
 _______________________________________________
 ath10k mailing list
