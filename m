@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jq4-0003WI-P4
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:55:13 +0000
+ id 1Z4jpp-0003SK-Os
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:54:58 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 4/8] ath10k: add scan support for 10.4 fw
-Date: Tue, 16 Jun 2015 11:23:11 +0530
-Message-ID: <1434433995-8451-5-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 3/8] ath10k: enable vdev and peer related operations for 10.4
+ fw
+Date: Tue, 16 Jun 2015 11:23:10 +0530
+Message-ID: <1434433995-8451-4-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,136 +26,113 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Existing non 10.4 firmware scan related events and commands are
-matching with 10.4 firmware (except chan info event). Link general
-start scan,stop scan, scan channel list configuration functions
-to 10.4 wmi function table and add a new handler to parse 10.4
-specific chan info event.
+Most of existing vdev and peer related functions (vdev create,
+vdev delete, vdev start, peer create, peer delete, peer flush, etc)
+are reusable for 10.4 firmware. Link those general vdev and peer
+functions to 10.4 wmi function table.
 
-10.4 firmware has extra scan completion reason
-WMI_SCAN_REASON_INTERNAL_FAILURE compared to previous firmware
-versions. This is added in scan completion reason enum.
+Existing general pktlog enable/disable, dbglog configuration functions
+are reusable for 10.4 and add them also in wmi function table.
+
+Also handle few wmi events (sevice rdy, echo, dbg msg, tbtt offset
+update, dbg print) in ath10k_wmi_10_4_op_rx(). wow event is not
+applicable in 10.4 firmware, have it under not implemented print.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 35 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h | 14 ++++++++++++++
- 2 files changed, 49 insertions(+)
+ drivers/net/wireless/ath/ath10k/wmi.c | 62 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index da21597..00201eb 100644
+index bbcc943..da21597 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -1837,6 +1837,8 @@ ath10k_wmi_event_scan_type_str(enum wmi_scan_event_type type,
- 			return "completed [preempted]";
- 		case WMI_SCAN_REASON_TIMEDOUT:
- 			return "completed [timedout]";
-+		case WMI_SCAN_REASON_INTERNAL_FAILURE:
-+			return "completed [internal err]";
- 		case WMI_SCAN_REASON_MAX:
- 			break;
- 		}
-@@ -2232,6 +2234,28 @@ static int ath10k_wmi_op_pull_ch_info_ev(struct ath10k *ar, struct sk_buff *skb,
- 	return 0;
- }
- 
-+static int ath10k_wmi_10_4_op_pull_ch_info_ev(struct ath10k *ar,
-+					      struct sk_buff *skb,
-+					      struct wmi_ch_info_ev_arg *arg)
-+{
-+	struct wmi_10_4_chan_info_event *ev = (void *)skb->data;
-+
-+	if (skb->len < sizeof(*ev))
-+		return -EPROTO;
-+
-+	skb_pull(skb, sizeof(*ev));
-+	arg->err_code = ev->err_code;
-+	arg->freq = ev->freq;
-+	arg->cmd_flags = ev->cmd_flags;
-+	arg->noise_floor = ev->noise_floor;
-+	arg->rx_clear_count = ev->rx_clear_count;
-+	arg->cycle_count = ev->cycle_count;
-+	arg->chan_tx_pwr_range = ev->chan_tx_pwr_range;
-+	arg->chan_tx_pwr_tp = ev->chan_tx_pwr_tp;
-+
-+	return 0;
-+}
-+
- void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_ch_info_ev_arg arg = {};
-@@ -4341,6 +4365,12 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_4_SERVICE_READY_EVENTID:
- 		ath10k_wmi_event_service_ready(ar, skb);
- 		break;
-+	case WMI_10_4_SCAN_EVENTID:
-+		ath10k_wmi_event_scan(ar, skb);
+@@ -4332,12 +4332,40 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_mgmt_rx(ar, skb);
+ 		/* mgmt_rx() owns the skb now! */
+ 		return;
++	case WMI_10_4_ECHO_EVENTID:
++		ath10k_wmi_event_echo(ar, skb);
 +		break;
-+	case WMI_10_4_CHAN_INFO_EVENTID:
-+		ath10k_wmi_event_chan_info(ar, skb);
++	case WMI_10_4_DEBUG_MESG_EVENTID:
++		ath10k_wmi_event_debug_mesg(ar, skb);
++		break;
++	case WMI_10_4_SERVICE_READY_EVENTID:
++		ath10k_wmi_event_service_ready(ar, skb);
 +		break;
  	case WMI_10_4_READY_EVENTID:
  		ath10k_wmi_event_ready(ar, skb);
  		break;
-@@ -6296,7 +6326,10 @@ static const struct wmi_ops wmi_10_2_4_ops = {
- static const struct wmi_ops wmi_10_4_ops = {
++	case WMI_10_4_PEER_STA_KICKOUT_EVENTID:
++		ath10k_wmi_event_peer_sta_kickout(ar, skb);
++		break;
+ 	case WMI_10_4_HOST_SWBA_EVENTID:
+ 		ath10k_wmi_event_host_swba(ar, skb);
+ 		break;
++	case WMI_10_4_TBTTOFFSET_UPDATE_EVENTID:
++		ath10k_wmi_event_tbttoffset_update(ar, skb);
++		break;
++	case WMI_10_4_DEBUG_PRINT_EVENTID:
++		ath10k_wmi_event_debug_print(ar, skb);
++		break;
++	case WMI_10_4_VDEV_START_RESP_EVENTID:
++		ath10k_wmi_event_vdev_start_resp(ar, skb);
++		break;
++	case WMI_10_4_VDEV_STOPPED_EVENTID:
++		ath10k_wmi_event_vdev_stopped(ar, skb);
++		break;
++	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
++		ath10k_dbg(ar, ATH10K_DBG_WMI,
++			   "received event id %d not implemented\n", id);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -6269,10 +6297,44 @@ static const struct wmi_ops wmi_10_4_ops = {
  	.rx = ath10k_wmi_10_4_op_rx,
  	.map_svc = wmi_10_4_svc_map,
-+
-+	.pull_scan = ath10k_wmi_op_pull_scan_ev,
  	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
-+	.pull_ch_info = ath10k_wmi_10_4_op_pull_ch_info_ev,
- 	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
- 	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
++	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
++	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
  	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
-@@ -6308,6 +6341,8 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
- 	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
- 	.gen_init = ath10k_wmi_10_4_op_gen_init,
-+	.gen_start_scan = ath10k_wmi_op_gen_start_scan,
-+	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
- 	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
- 	.gen_vdev_delete = ath10k_wmi_op_gen_vdev_delete,
- 	.gen_vdev_start = ath10k_wmi_op_gen_vdev_start,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index df66581..90c872c 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2850,6 +2850,7 @@ enum wmi_scan_completion_reason {
- 	WMI_SCAN_REASON_CANCELLED,
- 	WMI_SCAN_REASON_PREEMPTED,
- 	WMI_SCAN_REASON_TIMEDOUT,
-+	WMI_SCAN_REASON_INTERNAL_FAILURE,
- 	WMI_SCAN_REASON_MAX,
- };
- 
-@@ -5497,6 +5498,17 @@ struct wmi_chan_info_event {
- 	__le32 cycle_count;
- } __packed;
- 
-+struct wmi_10_4_chan_info_event {
-+	__le32 err_code;
-+	__le32 freq;
-+	__le32 cmd_flags;
-+	__le32 noise_floor;
-+	__le32 rx_clear_count;
-+	__le32 cycle_count;
-+	__le32 chan_tx_pwr_range;
-+	__le32 chan_tx_pwr_tp;
-+} __packed;
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
 +
- struct wmi_peer_sta_kickout_event {
- 	struct wmi_mac_addr peer_macaddr;
- } __packed;
-@@ -5677,6 +5689,8 @@ struct wmi_ch_info_ev_arg {
- 	__le32 noise_floor;
- 	__le32 rx_clear_count;
- 	__le32 cycle_count;
-+	__le32 chan_tx_pwr_range;
-+	__le32 chan_tx_pwr_tp;
++	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
++	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
++	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
++	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
+ 	.gen_init = ath10k_wmi_10_4_op_gen_init,
++	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
++	.gen_vdev_delete = ath10k_wmi_op_gen_vdev_delete,
++	.gen_vdev_start = ath10k_wmi_op_gen_vdev_start,
++	.gen_vdev_stop = ath10k_wmi_op_gen_vdev_stop,
++	.gen_vdev_up = ath10k_wmi_op_gen_vdev_up,
++	.gen_vdev_down = ath10k_wmi_op_gen_vdev_down,
++	.gen_vdev_set_param = ath10k_wmi_op_gen_vdev_set_param,
++	.gen_vdev_install_key = ath10k_wmi_op_gen_vdev_install_key,
++	.gen_peer_create = ath10k_wmi_op_gen_peer_create,
++	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
++	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
++	.gen_peer_set_param = ath10k_wmi_op_gen_peer_set_param,
++	.gen_set_psmode = ath10k_wmi_op_gen_set_psmode,
++	.gen_set_sta_ps = ath10k_wmi_op_gen_set_sta_ps,
++	.gen_set_ap_ps = ath10k_wmi_op_gen_set_ap_ps,
++	.gen_scan_chan_list = ath10k_wmi_op_gen_scan_chan_list,
++	.gen_beacon_dma = ath10k_wmi_op_gen_beacon_dma,
++	.gen_pdev_set_wmm = ath10k_wmi_op_gen_pdev_set_wmm,
++	.gen_force_fw_hang = ath10k_wmi_op_gen_force_fw_hang,
++	.gen_mgmt_tx = ath10k_wmi_op_gen_mgmt_tx,
++	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
++	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
++	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
++	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
++
++	/* shared with 10.2 */
++	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
  };
  
- struct wmi_vdev_start_ev_arg {
+ int ath10k_wmi_attach(struct ath10k *ar)
 -- 
 1.8.1.2
 
