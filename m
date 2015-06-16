@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jpf-0003PQ-Or
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:54:48 +0000
+ id 1Z4jq4-0003WI-P4
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:55:13 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 2/8] ath10k: handle 10.4 firmware wmi swba event
-Date: Tue, 16 Jun 2015 11:23:09 +0530
-Message-ID: <1434433995-8451-3-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 4/8] ath10k: add scan support for 10.4 fw
+Date: Tue, 16 Jun 2015 11:23:11 +0530
+Message-ID: <1434433995-8451-5-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,187 +25,136 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-10.4 firmware swba event payload has space to accommodate upto
-512 client traffic indication info & one p2p noa descriptor.
-It's is not matching with exiting swba event format defined for
-non 10.4 firmware. Non 10.4 firmware swba event format is designed
-to support only upto only 128 client and four p2p notice of absence
-descriptor.
+Existing non 10.4 firmware scan related events and commands are
+matching with 10.4 firmware (except chan info event). Link general
+start scan,stop scan, scan channel list configuration functions
+to 10.4 wmi function table and add a new handler to parse 10.4
+specific chan info event.
 
-following changes are done in this patch to enable ath10k to handle
-10.4 firmware swba event,
-
- - link generic ath10k_wmi_event_host_swba() to handle 10.4 swba
-   event in 10.4 wmi rx handler.
-
- - add 10.4 specific swba event structure wmi_10_4_host_swba_event.
-
- - new function ath10k_wmi_10_4_op_pull_swba_ev() to parse
-   10.4 swba event.
-
- - increase tim_bitmap[] size in ath10k_vif to 64 to hold 512 station
-   power save state.
+10.4 firmware has extra scan completion reason
+WMI_SCAN_REASON_INTERNAL_FAILURE compared to previous firmware
+versions. This is added in scan completion reason enum.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.h |  4 +--
- drivers/net/wireless/ath/ath10k/wmi.c  | 61 ++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h  | 41 +++++++++++++++++++++++
- 3 files changed, 104 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 35 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h | 14 ++++++++++++++
+ 2 files changed, 49 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 7c2ffb3..7721548 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -360,8 +360,8 @@ struct ath10k_vif {
- 			u32 uapsd;
- 		} sta;
- 		struct {
--			/* 127 stations; wmi limit */
--			u8 tim_bitmap[16];
-+			/* 512 stations */
-+			u8 tim_bitmap[64];
- 			u8 tim_len;
- 			u32 ssid_len;
- 			u8 ssid[IEEE80211_MAX_SSID_LEN];
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 793d7c21..bbcc943 100644
+index da21597..00201eb 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2944,6 +2944,63 @@ static int ath10k_wmi_op_pull_swba_ev(struct ath10k *ar, struct sk_buff *skb,
+@@ -1837,6 +1837,8 @@ ath10k_wmi_event_scan_type_str(enum wmi_scan_event_type type,
+ 			return "completed [preempted]";
+ 		case WMI_SCAN_REASON_TIMEDOUT:
+ 			return "completed [timedout]";
++		case WMI_SCAN_REASON_INTERNAL_FAILURE:
++			return "completed [internal err]";
+ 		case WMI_SCAN_REASON_MAX:
+ 			break;
+ 		}
+@@ -2232,6 +2234,28 @@ static int ath10k_wmi_op_pull_ch_info_ev(struct ath10k *ar, struct sk_buff *skb,
  	return 0;
  }
  
-+static int ath10k_wmi_10_4_op_pull_swba_ev(struct ath10k *ar,
-+					   struct sk_buff *skb,
-+					   struct wmi_swba_ev_arg *arg)
++static int ath10k_wmi_10_4_op_pull_ch_info_ev(struct ath10k *ar,
++					      struct sk_buff *skb,
++					      struct wmi_ch_info_ev_arg *arg)
 +{
-+	struct wmi_10_4_host_swba_event *ev = (void *)skb->data;
-+	u32 map, tim_len;
-+	size_t i;
++	struct wmi_10_4_chan_info_event *ev = (void *)skb->data;
 +
 +	if (skb->len < sizeof(*ev))
 +		return -EPROTO;
 +
 +	skb_pull(skb, sizeof(*ev));
-+	arg->vdev_map = ev->vdev_map;
-+
-+	for (i = 0, map = __le32_to_cpu(ev->vdev_map); map; map >>= 1) {
-+		if (!(map & BIT(0)))
-+			continue;
-+
-+		/* If this happens there were some changes in firmware and
-+		 * ath10k should update the max size of tim_info array.
-+		 */
-+		if (WARN_ON_ONCE(i == ARRAY_SIZE(arg->tim_info)))
-+			break;
-+
-+		if (__le32_to_cpu(ev->bcn_info[i].tim_info.tim_len) >
-+		      sizeof(ev->bcn_info[i].tim_info.tim_bitmap)) {
-+			ath10k_warn(ar, "refusing to parse invalid swba structure\n");
-+			return -EPROTO;
-+		}
-+
-+		tim_len = __le32_to_cpu(ev->bcn_info[i].tim_info.tim_len);
-+		if (tim_len) {
-+			/* Exclude 4 byte guard length */
-+			tim_len -= 4;
-+			arg->tim_info[i].tim_len = __cpu_to_le32(tim_len);
-+		} else {
-+			arg->tim_info[i].tim_len = 0;
-+		}
-+
-+		arg->tim_info[i].tim_mcast = ev->bcn_info[i].tim_info.tim_mcast;
-+		arg->tim_info[i].tim_bitmap =
-+				ev->bcn_info[i].tim_info.tim_bitmap;
-+		arg->tim_info[i].tim_changed =
-+				ev->bcn_info[i].tim_info.tim_changed;
-+		arg->tim_info[i].tim_num_ps_pending =
-+				ev->bcn_info[i].tim_info.tim_num_ps_pending;
-+
-+		/* 10.4 firmware doesn't have p2p support. notice of absence
-+		 * info can be ignored for now.
-+		 */
-+
-+		i++;
-+	}
++	arg->err_code = ev->err_code;
++	arg->freq = ev->freq;
++	arg->cmd_flags = ev->cmd_flags;
++	arg->noise_floor = ev->noise_floor;
++	arg->rx_clear_count = ev->rx_clear_count;
++	arg->cycle_count = ev->cycle_count;
++	arg->chan_tx_pwr_range = ev->chan_tx_pwr_range;
++	arg->chan_tx_pwr_tp = ev->chan_tx_pwr_tp;
 +
 +	return 0;
 +}
 +
- void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
  {
- 	struct wmi_swba_ev_arg arg = {};
-@@ -4278,6 +4335,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	struct wmi_ch_info_ev_arg arg = {};
+@@ -4341,6 +4365,12 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_10_4_SERVICE_READY_EVENTID:
+ 		ath10k_wmi_event_service_ready(ar, skb);
+ 		break;
++	case WMI_10_4_SCAN_EVENTID:
++		ath10k_wmi_event_scan(ar, skb);
++		break;
++	case WMI_10_4_CHAN_INFO_EVENTID:
++		ath10k_wmi_event_chan_info(ar, skb);
++		break;
  	case WMI_10_4_READY_EVENTID:
  		ath10k_wmi_event_ready(ar, skb);
  		break;
-+	case WMI_10_4_HOST_SWBA_EVENTID:
-+		ath10k_wmi_event_host_swba(ar, skb);
-+		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
- 		break;
-@@ -6209,6 +6269,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+@@ -6296,7 +6326,10 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ static const struct wmi_ops wmi_10_4_ops = {
  	.rx = ath10k_wmi_10_4_op_rx,
  	.map_svc = wmi_10_4_svc_map,
++
++	.pull_scan = ath10k_wmi_op_pull_scan_ev,
  	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
-+	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.pull_ch_info = ath10k_wmi_10_4_op_pull_ch_info_ev,
+ 	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
+ 	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
+ 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
+@@ -6308,6 +6341,8 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
+ 	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
  	.gen_init = ath10k_wmi_10_4_op_gen_init,
++	.gen_start_scan = ath10k_wmi_op_gen_start_scan,
++	.gen_stop_scan = ath10k_wmi_op_gen_stop_scan,
+ 	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
+ 	.gen_vdev_delete = ath10k_wmi_op_gen_vdev_delete,
+ 	.gen_vdev_start = ath10k_wmi_op_gen_vdev_start,
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index e63f68c..df66581 100644
+index df66581..90c872c 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -5132,6 +5132,47 @@ struct wmi_host_swba_event {
- 	struct wmi_bcn_info bcn_info[0];
+@@ -2850,6 +2850,7 @@ enum wmi_scan_completion_reason {
+ 	WMI_SCAN_REASON_CANCELLED,
+ 	WMI_SCAN_REASON_PREEMPTED,
+ 	WMI_SCAN_REASON_TIMEDOUT,
++	WMI_SCAN_REASON_INTERNAL_FAILURE,
+ 	WMI_SCAN_REASON_MAX,
+ };
+ 
+@@ -5497,6 +5498,17 @@ struct wmi_chan_info_event {
+ 	__le32 cycle_count;
  } __packed;
  
-+/* 16 words = 512 client + 1 word = for guard */
-+#define WMI_10_4_TIM_BITMAP_ARRAY_SIZE 17
-+
-+struct wmi_10_4_tim_info {
-+	__le32 tim_len;
-+	__le32 tim_mcast;
-+	__le32 tim_bitmap[WMI_10_4_TIM_BITMAP_ARRAY_SIZE];
-+	__le32 tim_changed;
-+	__le32 tim_num_ps_pending;
++struct wmi_10_4_chan_info_event {
++	__le32 err_code;
++	__le32 freq;
++	__le32 cmd_flags;
++	__le32 noise_floor;
++	__le32 rx_clear_count;
++	__le32 cycle_count;
++	__le32 chan_tx_pwr_range;
++	__le32 chan_tx_pwr_tp;
 +} __packed;
 +
-+#define WMI_10_4_P2P_MAX_NOA_DESCRIPTORS 1
-+
-+struct wmi_10_4_p2p_noa_info {
-+	/* Bit 0 - Flag to indicate an update in NOA schedule
-+	 * Bits 7-1 - Reserved
-+	 */
-+	u8 changed;
-+	/* NOA index */
-+	u8 index;
-+	/* Bit 0 - Opp PS state of the AP
-+	 * Bits 1-7 - Ctwindow in TUs
-+	 */
-+	u8 ctwindow_oppps;
-+	/* Number of NOA descriptors */
-+	u8 num_descriptors;
-+
-+	struct wmi_p2p_noa_descriptor
-+		noa_descriptors[WMI_10_4_P2P_MAX_NOA_DESCRIPTORS];
-+} __packed;
-+
-+struct wmi_10_4_bcn_info {
-+	struct wmi_10_4_tim_info tim_info;
-+	struct wmi_10_4_p2p_noa_info p2p_noa_info;
-+} __packed;
-+
-+struct wmi_10_4_host_swba_event {
-+	__le32 vdev_map;
-+	struct wmi_10_4_bcn_info bcn_info[0];
-+} __packed;
-+
- #define WMI_MAX_AP_VDEV 16
+ struct wmi_peer_sta_kickout_event {
+ 	struct wmi_mac_addr peer_macaddr;
+ } __packed;
+@@ -5677,6 +5689,8 @@ struct wmi_ch_info_ev_arg {
+ 	__le32 noise_floor;
+ 	__le32 rx_clear_count;
+ 	__le32 cycle_count;
++	__le32 chan_tx_pwr_range;
++	__le32 chan_tx_pwr_tp;
+ };
  
- struct wmi_tbtt_offset_event {
+ struct wmi_vdev_start_ev_arg {
 -- 
 1.8.1.2
 
