@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jBa-00031S-Bb
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:13:23 +0000
+ id 1Z4jBY-00031S-CE
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:13:20 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 02/10] ath10k: Add new reg_address/mask to hw register table
-Date: Tue, 16 Jun 2015 10:42:14 +0530
-Message-ID: <1434431542-14724-3-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 01/10] ath10k: Add a table to store hw specific values
+Date: Tue, 16 Jun 2015 10:42:13 +0530
+Message-ID: <1434431542-14724-2-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,126 +25,118 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Add more register address and mask which can be different
-for newer chip to hw_reg table.
+This is to prepare ath10k to support newer chip set.
+Values like CE_COUNT, MSI_ASSIGN_CE_MAX and
+RTC_STATE_V_ON can be different for different
+chips.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.h |  6 ++++--
- drivers/net/wireless/ath/ath10k/hw.c | 22 ++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/hw.h | 17 ++++++++++++-----
- 3 files changed, 34 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c |  2 ++
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/hw.c   | 14 ++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h   | 18 +++++++++++++++---
+ 4 files changed, 32 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 0eddb20..93939de 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -423,8 +423,10 @@ static inline u32 ath10k_ce_base_address(struct ath10k *ar, unsigned int ce_id)
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 59496a9..2a17664 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1470,9 +1470,11 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 	switch (hw_rev) {
+ 	case ATH10K_HW_QCA988X:
+ 		ar->regs = &qca988x_regs;
++		ar->hw_values = &qca988x_values;
+ 		break;
+ 	case ATH10K_HW_QCA6174:
+ 		ar->regs = &qca6174_regs;
++		ar->hw_values = &qca6174_values;
+ 		break;
+ 	default:
+ 		ath10k_err(ar, "unsupported core hardware revision %d\n",
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 78094f2..ae92f64 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -560,6 +560,7 @@ struct ath10k {
+ 	struct completion target_suspend;
  
- #define CE_RING_IDX_INCR(nentries_mask, idx) (((idx) + 1) & (nentries_mask))
- 
--#define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_LSB		8
--#define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_MASK		0x0000ff00
-+#define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_LSB \
-+				ar->regs->ce_wrap_intr_sum_host_msi_lsb
-+#define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_MASK \
-+				ar->regs->ce_wrap_intr_sum_host_msi_mask
- #define CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_GET(x) \
- 	(((x) & CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_MASK) >> \
- 		CE_WRAPPER_INTERRUPT_SUMMARY_HOST_MSI_LSB)
+ 	const struct ath10k_hw_regs *regs;
++	const struct ath10k_hw_values *hw_values;
+ 	struct ath10k_bmi bmi;
+ 	struct ath10k_wmi wmi;
+ 	struct ath10k_htc htc;
 diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 48bcd2c..cb09867 100644
+index 5997f00..48bcd2c 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.c
 +++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -34,8 +34,15 @@ const struct ath10k_hw_regs qca988x_regs = {
- 	.ce7_base_address		= 0x00059000,
- 	.soc_reset_control_si0_rst_mask	= 0x00000001,
- 	.soc_reset_control_ce_rst_mask	= 0x00040000,
--	.soc_chip_id_address		= 0x00ec,
--	.scratch_3_address		= 0x0030,
-+	.soc_chip_id_address		= 0x000000ec,
-+	.scratch_3_address		= 0x00000030,
-+	.fw_indicator_address		= 0x00009030,
-+	.pcie_local_base_address	= 0x00080000,
-+	.ce_wrap_intr_sum_host_msi_lsb	= 0x00000008,
-+	.ce_wrap_intr_sum_host_msi_mask	= 0x0000ff00,
-+	.pcie_intr_fw_mask		= 0x00000400,
-+	.pcie_intr_ce_mask_all		= 0x0007f800,
-+	.pcie_intr_clr_address		= 0x00000014,
+@@ -58,6 +58,20 @@ const struct ath10k_hw_regs qca6174_regs = {
+ 	.scratch_3_address			= 0x0028,
  };
  
- const struct ath10k_hw_regs qca6174_regs = {
-@@ -54,8 +61,15 @@ const struct ath10k_hw_regs qca6174_regs = {
- 	.ce7_base_address			= 0x00036000,
- 	.soc_reset_control_si0_rst_mask		= 0x00000000,
- 	.soc_reset_control_ce_rst_mask		= 0x00000001,
--	.soc_chip_id_address			= 0x000f0,
--	.scratch_3_address			= 0x0028,
-+	.soc_chip_id_address			= 0x000000f0,
-+	.scratch_3_address			= 0x00000028,
-+	.fw_indicator_address			= 0x00009028,
-+	.pcie_local_base_address		= 0x00080000,
-+	.ce_wrap_intr_sum_host_msi_lsb		= 0x00000008,
-+	.ce_wrap_intr_sum_host_msi_mask		= 0x0000ff00,
-+	.pcie_intr_fw_mask			= 0x00000400,
-+	.pcie_intr_ce_mask_all			= 0x0007f800,
-+	.pcie_intr_clr_address			= 0x00000014,
- };
- 
- const struct ath10k_hw_values qca988x_values = {
++const struct ath10k_hw_values qca988x_values = {
++	.rtc_state_val_on		= 3,
++	.ce_count			= 8,
++	.msi_assign_ce_max		= 7,
++	.num_target_ce_config_wlan	= 7,
++};
++
++const struct ath10k_hw_values qca6174_values = {
++	.rtc_state_val_on		= 3,
++	.ce_count			= 8,
++	.msi_assign_ce_max		= 7,
++	.num_target_ce_config_wlan	= 7,
++};
++
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev)
+ {
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index b218388..5d04317 100644
+index 85cca29..b218388 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -164,6 +164,13 @@ struct ath10k_hw_regs {
- 	u32 soc_reset_control_ce_rst_mask;
- 	u32 soc_chip_id_address;
- 	u32 scratch_3_address;
-+	u32 fw_indicator_address;
-+	u32 pcie_local_base_address;
-+	u32 ce_wrap_intr_sum_host_msi_lsb;
-+	u32 ce_wrap_intr_sum_host_msi_mask;
-+	u32 pcie_intr_fw_mask;
-+	u32 pcie_intr_ce_mask_all;
-+	u32 pcie_intr_clr_address;
- };
- 
+@@ -169,6 +169,16 @@ struct ath10k_hw_regs {
  extern const struct ath10k_hw_regs qca988x_regs;
-@@ -386,7 +393,7 @@ enum ath10k_hw_rate_cck {
- #define CE7_BASE_ADDRESS			ar->regs->ce7_base_address
- #define DBI_BASE_ADDRESS			0x00060000
- #define WLAN_ANALOG_INTF_PCIE_BASE_ADDRESS	0x0006c000
--#define PCIE_LOCAL_BASE_ADDRESS			0x00080000
-+#define PCIE_LOCAL_BASE_ADDRESS		ar->regs->pcie_local_base_address
+ extern const struct ath10k_hw_regs qca6174_regs;
  
- #define SOC_RESET_CONTROL_ADDRESS		0x00000000
- #define SOC_RESET_CONTROL_OFFSET		0x00000000
-@@ -460,7 +467,7 @@ enum ath10k_hw_rate_cck {
- #define CORE_CTRL_ADDRESS			0x0000
- #define PCIE_INTR_ENABLE_ADDRESS		0x0008
- #define PCIE_INTR_CAUSE_ADDRESS			0x000c
--#define PCIE_INTR_CLR_ADDRESS			0x0014
-+#define PCIE_INTR_CLR_ADDRESS			ar->regs->pcie_intr_clr_address
- #define SCRATCH_3_ADDRESS			ar->regs->scratch_3_address
- #define CPU_INTR_ADDRESS			0x0010
++struct ath10k_hw_values {
++	u32 rtc_state_val_on;
++	u8 ce_count;
++	u8 msi_assign_ce_max;
++	u8 num_target_ce_config_wlan;
++};
++
++extern const struct ath10k_hw_values qca988x_values;
++extern const struct ath10k_hw_values qca6174_values;
++
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
  
-@@ -468,13 +475,13 @@ enum ath10k_hw_rate_cck {
- #define CCNT_TO_MSEC(x) ((x) / 88000)
+@@ -310,8 +320,10 @@ enum ath10k_hw_rate_cck {
+ #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
+ #define TARGET_TLV_NUM_WOW_PATTERNS		22
  
- /* Firmware indications to the Host via SCRATCH_3 register. */
--#define FW_INDICATOR_ADDRESS	(SOC_CORE_BASE_ADDRESS + SCRATCH_3_ADDRESS)
-+#define FW_INDICATOR_ADDRESS			ar->regs->fw_indicator_address
- #define FW_IND_EVENT_PENDING			1
- #define FW_IND_INITIALIZED			2
++#define NUM_TARGET_CE_CONFIG_WLAN ar->hw_values->num_target_ce_config_wlan
++
+ /* Number of Copy Engines supported */
+-#define CE_COUNT 8
++#define CE_COUNT ar->hw_values->ce_count
  
- /* HOST_REG interrupt from firmware */
--#define PCIE_INTR_FIRMWARE_MASK			0x00000400
--#define PCIE_INTR_CE_MASK_ALL			0x0007f800
-+#define PCIE_INTR_FIRMWARE_MASK			ar->regs->pcie_intr_fw_mask
-+#define PCIE_INTR_CE_MASK_ALL			ar->regs->pcie_intr_ce_mask_all
+ /*
+  * Total number of PCIe MSI interrupts requested for all interrupt sources.
+@@ -335,10 +347,10 @@ enum ath10k_hw_rate_cck {
  
- #define DRAM_BASE_ADDRESS			0x00400000
+ /* MSIs for Copy Engines */
+ #define MSI_ASSIGN_CE_INITIAL	1
+-#define MSI_ASSIGN_CE_MAX	7
++#define MSI_ASSIGN_CE_MAX	ar->hw_values->msi_assign_ce_max
  
+ /* as of IP3.7.1 */
+-#define RTC_STATE_V_ON				3
++#define RTC_STATE_V_ON				ar->hw_values->rtc_state_val_on
+ 
+ #define RTC_STATE_COLD_RESET_MASK		ar->regs->rtc_state_cold_reset_mask
+ #define RTC_STATE_V_LSB				0
 -- 
 1.9.1
 
