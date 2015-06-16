@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jCJ-0003so-V0
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:14:08 +0000
+ id 1Z4jCE-0003VE-EJ
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:14:03 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 04/10] ath10k: Copy Engine related changes for QCA99X0
-Date: Tue, 16 Jun 2015 10:42:16 +0530
-Message-ID: <1434431542-14724-5-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 03/10] ath10k: Add hw register/values for QCA99X0 chip
+Date: Tue, 16 Jun 2015 10:42:15 +0530
+Message-ID: <1434431542-14724-4-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,146 +25,224 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-QCA99X0 supports upto 12 Copy engines. Host and target
-CE configuration table is updated to support new copy engine
-pipes. This also fixes the assumption of diagnostic CE by making
-CE_7 as the one instead of CE_COUNT - 1.
+This is to prepare the driver for QCA99X0 chip support.
+This commit adds hw_params, hw register table and hw_values
+table for QCA99X0 chip. Please note this is only a partial patch adding
+support for QCA99X0, so the device id is not yet added to pci device
+table.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/ce.h  |  2 +-
- drivers/net/wireless/ath/ath10k/hw.h  |  3 ++
- drivers/net/wireless/ath/ath10k/pci.c | 69 ++++++++++++++++++++++++++++++++++-
- 3 files changed, 71 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c      | 18 ++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.c        | 44 +++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/hw.h        | 18 ++++++++++++
+ drivers/net/wireless/ath/ath10k/pci.c       |  5 ++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |  3 ++
+ 5 files changed, 88 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
-index 93939de..bb4b8f3 100644
---- a/drivers/net/wireless/ath/ath10k/ce.h
-+++ b/drivers/net/wireless/ath/ath10k/ce.h
-@@ -21,7 +21,7 @@
- #include "hif.h"
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2a17664..de85ec8 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -101,6 +101,20 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 			.board_ext_size = QCA6174_BOARD_EXT_DATA_SZ,
+ 		},
+ 	},
++	{
++		.id = QCA99X0_HW_2_0_DEV_VERSION,
++		.name = "qca99x0 hw2.0",
++		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
++		.uart_pin = 7,
++		.fw = {
++			.dir = QCA99X0_HW_2_0_FW_DIR,
++			.fw = QCA99X0_HW_2_0_FW_FILE,
++			.otp = QCA99X0_HW_2_0_OTP_FILE,
++			.board = QCA99X0_HW_2_0_BOARD_DATA_FILE,
++			.board_size = QCA99X0_BOARD_DATA_SZ,
++			.board_ext_size = QCA99X0_BOARD_EXT_DATA_SZ,
++		},
++	},
+ };
  
- /* Maximum number of Copy Engine's supported */
--#define CE_COUNT_MAX 8
-+#define CE_COUNT_MAX 12
- #define CE_HTT_H2T_MSG_SRC_NENTRIES 4096
+ static void ath10k_send_suspend_complete(struct ath10k *ar)
+@@ -1476,6 +1490,10 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+ 		ar->regs = &qca6174_regs;
+ 		ar->hw_values = &qca6174_values;
+ 		break;
++	case ATH10K_HW_QCA99X0:
++		ar->regs = &qca99x0_regs;
++		ar->hw_values = &qca99x0_values;
++		break;
+ 	default:
+ 		ath10k_err(ar, "unsupported core hardware revision %d\n",
+ 			   hw_rev);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index cb09867..e5fe33d9 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -72,6 +72,43 @@ const struct ath10k_hw_regs qca6174_regs = {
+ 	.pcie_intr_clr_address			= 0x00000014,
+ };
  
- /* Descriptor rings must be aligned to this boundary */
++const struct ath10k_hw_regs qca99x0_regs = {
++	.rtc_state_cold_reset_mask		= 0x00000400,
++	.rtc_soc_base_address			= 0x00080000,
++	.rtc_wmac_base_address			= 0x00000000,
++	.soc_core_base_address			= 0x00082000,
++	.ce_wrapper_base_address		= 0x0004d000,
++	.ce0_base_address			= 0x0004a000,
++	.ce1_base_address			= 0x0004a400,
++	.ce2_base_address			= 0x0004a800,
++	.ce3_base_address			= 0x0004ac00,
++	.ce4_base_address			= 0x0004b000,
++	.ce5_base_address			= 0x0004b400,
++	.ce6_base_address			= 0x0004b800,
++	.ce7_base_address			= 0x0004bc00,
++	/* Note: qca99x0 supports upto 12 Copy Engines. Other than address of
++	 * CE0 and CE1 no other copy engine is directly referred in the code.
++	 * It is not really neccessary to assign address for newly supported
++	 * CEs in this address table.
++	 *	Copy Engine		Address
++	 *	CE8			0x0004c000
++	 *	CE9			0x0004c400
++	 *	CE10			0x0004c800
++	 *	CE11			0x0004cc00
++	 */
++	.soc_reset_control_si0_rst_mask		= 0x00000001,
++	.soc_reset_control_ce_rst_mask		= 0x00000100,
++	.soc_chip_id_address			= 0x000000ec,
++	.scratch_3_address			= 0x00040050,
++	.fw_indicator_address			= 0x00040050,
++	.pcie_local_base_address		= 0x00000000,
++	.ce_wrap_intr_sum_host_msi_lsb		= 0x0000000c,
++	.ce_wrap_intr_sum_host_msi_mask		= 0x00fff000,
++	.pcie_intr_fw_mask			= 0x00100000,
++	.pcie_intr_ce_mask_all			= 0x000fff00,
++	.pcie_intr_clr_address			= 0x00000010,
++};
++
+ const struct ath10k_hw_values qca988x_values = {
+ 	.rtc_state_val_on		= 3,
+ 	.ce_count			= 8,
+@@ -86,6 +123,13 @@ const struct ath10k_hw_values qca6174_values = {
+ 	.num_target_ce_config_wlan	= 7,
+ };
+ 
++const struct ath10k_hw_values qca99x0_values = {
++	.rtc_state_val_on		= 5,
++	.ce_count			= 12,
++	.msi_assign_ce_max		= 12,
++	.num_target_ce_config_wlan	= 10,
++};
++
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev)
+ {
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 76caeab..5819659 100644
+index 5d04317..76caeab 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -343,6 +343,9 @@ enum ath10k_hw_rate_cck {
- #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
- #define TARGET_TLV_NUM_WOW_PATTERNS		22
+@@ -72,6 +72,18 @@ enum qca6174_chip_id_rev {
+ #define QCA6174_HW_3_0_BOARD_DATA_FILE	"board.bin"
+ #define QCA6174_HW_3_0_PATCH_LOAD_ADDR	0x1234
  
-+/* Diagnostic Window */
-+#define CE_DIAG_PIPE	7
++/* QCA99X0 1.0 definitions (unsupported) */
++#define QCA99X0_HW_1_0_CHIP_ID_REV     0x0
 +
- #define NUM_TARGET_CE_CONFIG_WLAN ar->hw_values->num_target_ce_config_wlan
++/* QCA99X0 2.0 definitions */
++#define QCA99X0_HW_2_0_DEV_VERSION     0x01000000
++#define QCA99X0_HW_2_0_CHIP_ID_REV     0x1
++#define QCA99X0_HW_2_0_FW_DIR          ATH10K_FW_DIR "/QCA99X0/hw2.0"
++#define QCA99X0_HW_2_0_FW_FILE         "firmware.bin"
++#define QCA99X0_HW_2_0_OTP_FILE        "otp.bin"
++#define QCA99X0_HW_2_0_BOARD_DATA_FILE "board.bin"
++#define QCA99X0_HW_2_0_PATCH_LOAD_ADDR	0x1234
++
+ #define ATH10K_FW_API2_FILE		"firmware-2.bin"
+ #define ATH10K_FW_API3_FILE		"firmware-3.bin"
  
- /* Number of Copy Engines supported */
+@@ -144,6 +156,7 @@ enum ath10k_fw_htt_op_version {
+ enum ath10k_hw_rev {
+ 	ATH10K_HW_QCA988X,
+ 	ATH10K_HW_QCA6174,
++	ATH10K_HW_QCA99X0,
+ };
+ 
+ struct ath10k_hw_regs {
+@@ -175,6 +188,7 @@ struct ath10k_hw_regs {
+ 
+ extern const struct ath10k_hw_regs qca988x_regs;
+ extern const struct ath10k_hw_regs qca6174_regs;
++extern const struct ath10k_hw_regs qca99x0_regs;
+ 
+ struct ath10k_hw_values {
+ 	u32 rtc_state_val_on;
+@@ -185,12 +199,14 @@ struct ath10k_hw_values {
+ 
+ extern const struct ath10k_hw_values qca988x_values;
+ extern const struct ath10k_hw_values qca6174_values;
++extern const struct ath10k_hw_values qca99x0_values;
+ 
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
+ 
+ #define QCA_REV_988X(ar) ((ar)->hw_rev == ATH10K_HW_QCA988X)
+ #define QCA_REV_6174(ar) ((ar)->hw_rev == ATH10K_HW_QCA6174)
++#define QCA_REV_99X0(ar) ((ar)->hw_rev == ATH10K_HW_QCA99X0)
+ 
+ /* Known pecularities:
+  *  - current FW doesn't support raw rx mode (last tested v599)
+@@ -485,6 +501,8 @@ enum ath10k_hw_rate_cck {
+ 
+ #define DRAM_BASE_ADDRESS			0x00400000
+ 
++#define PCIE_BAR_REG_ADDRESS			0x40030
++
+ #define MISSING 0
+ 
+ #define SYSTEM_SLEEP_OFFSET			SOC_SYSTEM_SLEEP_OFFSET
 diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 190f7f3..980390a 100644
+index ea656e0..190f7f3 100644
 --- a/drivers/net/wireless/ath/ath10k/pci.c
 +++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -156,6 +156,38 @@ static const struct ce_attr host_ce_config_wlan[] = {
- 		.src_sz_max = DIAG_TRANSFER_LIMIT,
- 		.dest_nentries = 2,
- 	},
-+
-+	/* CE8: target->host pktlog */
-+	{
-+		.flags = CE_ATTR_FLAGS,
-+		.src_nentries = 0,
-+		.src_sz_max = 2048,
-+		.dest_nentries = 128,
-+	},
-+
-+	/* CE9 target autonomous qcache memcpy */
-+	{
-+		.flags = CE_ATTR_FLAGS,
-+		.src_nentries = 0,
-+		.src_sz_max = 0,
-+		.dest_nentries = 0,
-+	},
-+
-+	/* CE10: target autonomous hif memcpy */
-+	{
-+		.flags = CE_ATTR_FLAGS,
-+		.src_nentries = 0,
-+		.src_sz_max = 0,
-+		.dest_nentries = 0,
-+	},
-+
-+	/* CE11: target autonomous hif memcpy */
-+	{
-+		.flags = CE_ATTR_FLAGS,
-+		.src_nentries = 0,
-+		.src_sz_max = 0,
-+		.dest_nentries = 0,
-+	},
- };
+@@ -59,6 +59,7 @@ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
  
- /* Target firmware's Copy Engine configuration. */
-@@ -233,6 +265,38 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
- 	},
+ #define QCA988X_2_0_DEVICE_ID	(0x003c)
+ #define QCA6174_2_1_DEVICE_ID	(0x003e)
++#define QCA99X0_2_0_DEVICE_ID	(0x0040)
  
- 	/* CE7 used only by Host */
-+	{
-+		.pipenum = __cpu_to_le32(7),
-+		.pipedir = __cpu_to_le32(PIPEDIR_INOUT),
-+		.nentries = __cpu_to_le32(0),
-+		.nbytes_max = __cpu_to_le32(0),
-+		.flags = __cpu_to_le32(0),
-+		.reserved = __cpu_to_le32(0),
-+	},
+ static const struct pci_device_id ath10k_pci_id_table[] = {
+ 	{ PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V2 */
+@@ -1687,6 +1688,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
+ 
+ 	switch (ar_pci->pdev->device) {
+ 	case QCA988X_2_0_DEVICE_ID:
++	case QCA99X0_2_0_DEVICE_ID:
+ 		return 1;
+ 	case QCA6174_2_1_DEVICE_ID:
+ 		switch (MS(ar->chip_id, SOC_CHIP_ID_REV)) {
+@@ -2745,6 +2747,9 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
+ 	case QCA6174_2_1_DEVICE_ID:
+ 		hw_rev = ATH10K_HW_QCA6174;
+ 		break;
++	case QCA99X0_2_0_DEVICE_ID:
++		hw_rev = ATH10K_HW_QCA99X0;
++		break;
+ 	default:
+ 		WARN_ON(1);
+ 		return -ENOTSUPP;
+diff --git a/drivers/net/wireless/ath/ath10k/targaddrs.h b/drivers/net/wireless/ath/ath10k/targaddrs.h
+index a417aae..768bef6 100644
+--- a/drivers/net/wireless/ath/ath10k/targaddrs.h
++++ b/drivers/net/wireless/ath/ath10k/targaddrs.h
+@@ -450,4 +450,7 @@ Fw Mode/SubMode Mask
+ #define QCA6174_BOARD_DATA_SZ     8192
+ #define QCA6174_BOARD_EXT_DATA_SZ 0
+ 
++#define QCA99X0_BOARD_DATA_SZ	  12288
++#define QCA99X0_BOARD_EXT_DATA_SZ 0
 +
-+	/* CE8 target->host packtlog */
-+	{
-+		.pipenum = __cpu_to_le32(8),
-+		.pipedir = __cpu_to_le32(PIPEDIR_IN),
-+		.nentries = __cpu_to_le32(64),
-+		.nbytes_max = __cpu_to_le32(2048),
-+		.flags = __cpu_to_le32(CE_ATTR_FLAGS | CE_ATTR_DIS_INTR),
-+		.reserved = __cpu_to_le32(0),
-+	},
-+
-+	/* CE9 target autonomous qcache memcpy */
-+	{
-+		.pipenum = __cpu_to_le32(9),
-+		.pipedir = __cpu_to_le32(PIPEDIR_INOUT),
-+		.nentries = __cpu_to_le32(32),
-+		.nbytes_max = __cpu_to_le32(2048),
-+		.flags = __cpu_to_le32(CE_ATTR_FLAGS | CE_ATTR_DIS_INTR),
-+		.reserved = __cpu_to_le32(0),
-+	},
-+
-+	/* It not necessary to send target wlan configuration for CE10 & CE11
-+	 * as these CEs are not actively used in target.
-+	 */
- };
- 
- /*
-@@ -1759,7 +1823,8 @@ static int ath10k_pci_init_config(struct ath10k *ar)
- 
- 	ret = ath10k_pci_diag_write_mem(ar, pipe_cfg_targ_addr,
- 					target_ce_config_wlan,
--					sizeof(target_ce_config_wlan));
-+					sizeof(struct ce_pipe_config) *
-+					NUM_TARGET_CE_CONFIG_WLAN);
- 
- 	if (ret != 0) {
- 		ath10k_err(ar, "Failed to write pipe cfg: %d\n", ret);
-@@ -1873,7 +1938,7 @@ static int ath10k_pci_alloc_pipes(struct ath10k *ar)
- 		}
- 
- 		/* Last CE is Diagnostic Window */
--		if (i == CE_COUNT - 1) {
-+		if (i == CE_DIAG_PIPE) {
- 			ar_pci->ce_diag = pipe->ce_hdl;
- 			continue;
- 		}
+ #endif /* __TARGADDRS_H__ */
 -- 
 1.9.1
 
