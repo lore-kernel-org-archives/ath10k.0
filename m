@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jqN-0004jT-V1
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:55:33 +0000
+ id 1Z4jqs-00051x-MG
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:56:03 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 5/8] ath10k: add 10.4 fw specific htt msg definitions
-Date: Tue, 16 Jun 2015 11:23:12 +0530
-Message-ID: <1434433995-8451-6-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 7/8] ath10k: set max spatial stream to 4 for 10.4 fw
+Date: Tue, 16 Jun 2015 11:23:14 +0530
+Message-ID: <1434433995-8451-8-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,168 +25,97 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-New htt event table is added for 10.4 firmware. New htt event
-HTT_T2H_MSG_TYPE_EN_STATS is available only in 10.4, adding this
-to generic htt event table.
+10.4 fw supports upto 4 spatial stream. Limit max spatial
+stream to 4 for 10.4 firmware and to 3 for non 10.4 firmware.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c   |  3 +++
- drivers/net/wireless/ath/ath10k/htt.c    | 35 ++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt.h    | 30 +++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/htt_rx.c |  3 +++
- drivers/net/wireless/ath/ath10k/hw.h     |  2 ++
- 5 files changed, 73 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 4 ++++
+ drivers/net/wireless/ath/ath10k/core.h | 1 +
+ drivers/net/wireless/ath/ath10k/wmi.c  | 6 +++---
+ drivers/net/wireless/ath/ath10k/wmi.h  | 3 ++-
+ 4 files changed, 10 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 4e762d0..23e855c 100644
+index 23e855c..e9f2bf9f 100644
 --- a/drivers/net/wireless/ath/ath10k/core.c
 +++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1318,6 +1318,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
- 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
- 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
-+		ar->htt.max_num_pending_tx = TARGET_10_4_NUM_MSDU_DESC;
+@@ -1292,6 +1292,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->htt.max_num_pending_tx = TARGET_NUM_MSDU_DESC;
+ 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
+ 			WMI_STAT_PEER;
++		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_1:
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2:
+@@ -1301,6 +1302,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->max_num_vdevs = TARGET_10X_NUM_VDEVS;
+ 		ar->htt.max_num_pending_tx = TARGET_10X_NUM_MSDU_DESC;
  		ar->fw_stats_req_mask = WMI_STAT_PEER;
++		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 		ar->max_num_peers = TARGET_TLV_NUM_PEERS;
+@@ -1311,6 +1313,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->wow.max_num_patterns = TARGET_TLV_NUM_WOW_PATTERNS;
+ 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
+ 			WMI_STAT_PEER;
++		ar->max_spatial_stream = WMI_MAX_SPATIAL_STREAM;
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_4:
+ 		ar->max_num_peers = TARGET_10_4_NUM_PEERS;
+@@ -1320,6 +1323,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
+ 		ar->htt.max_num_pending_tx = TARGET_10_4_NUM_MSDU_DESC;
+ 		ar->fw_stats_req_mask = WMI_STAT_PEER;
++		ar->max_spatial_stream = WMI_10_4_MAX_SPATIAL_STREAM;
  		break;
  	case ATH10K_FW_WMI_OP_VERSION_UNSET:
-@@ -1343,6 +1344,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
- 			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
- 			break;
- 		case ATH10K_FW_WMI_OP_VERSION_10_4:
-+			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_10_4;
-+			break;
- 		case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 		case ATH10K_FW_WMI_OP_VERSION_MAX:
- 			WARN_ON(1);
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 6da6ef2..2bb9acc 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -102,6 +102,37 @@ static const enum htt_t2h_msg_type htt_tlv_t2h_msg_types[] = {
- 	[HTT_TLV_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
- };
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 7721548..8647ca3 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -578,6 +578,7 @@ struct ath10k {
+ 	u32 ht_cap_info;
+ 	u32 vht_cap_info;
+ 	u32 num_rf_chains;
++	u32 max_spatial_stream;
+ 	/* protected by conf_mutex */
+ 	bool ani_enabled;
  
-+static const enum htt_t2h_msg_type htt_10_4_t2h_msg_types[] = {
-+	[HTT_10_4_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_IND] = HTT_T2H_MSG_TYPE_RX_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_FLUSH] = HTT_T2H_MSG_TYPE_RX_FLUSH,
-+	[HTT_10_4_T2H_MSG_TYPE_PEER_MAP] = HTT_T2H_MSG_TYPE_PEER_MAP,
-+	[HTT_10_4_T2H_MSG_TYPE_PEER_UNMAP] = HTT_T2H_MSG_TYPE_PEER_UNMAP,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_ADDBA] = HTT_T2H_MSG_TYPE_RX_ADDBA,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_DELBA] = HTT_T2H_MSG_TYPE_RX_DELBA,
-+	[HTT_10_4_T2H_MSG_TYPE_TX_COMPL_IND] = HTT_T2H_MSG_TYPE_TX_COMPL_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_PKTLOG] = HTT_T2H_MSG_TYPE_PKTLOG,
-+	[HTT_10_4_T2H_MSG_TYPE_STATS_CONF] = HTT_T2H_MSG_TYPE_STATS_CONF,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_FRAG_IND] = HTT_T2H_MSG_TYPE_RX_FRAG_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_SEC_IND] = HTT_T2H_MSG_TYPE_SEC_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_RC_UPDATE_IND] = HTT_T2H_MSG_TYPE_RC_UPDATE_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_TX_INSPECT_IND] =
-+				HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_MGMT_TX_COMPL_IND] =
-+				HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
-+	[HTT_10_4_T2H_MSG_TYPE_CHAN_CHANGE] = HTT_T2H_MSG_TYPE_CHAN_CHANGE,
-+	[HTT_10_4_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND] =
-+				HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_PN_IND] = HTT_T2H_MSG_TYPE_RX_PN_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND] =
-+				HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND,
-+	[HTT_10_4_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
-+	[HTT_10_4_T2H_MSG_TYPE_EN_STATS] = HTT_T2H_MSG_TYPE_EN_STATS,
-+	[HTT_10_4_T2H_MSG_TYPE_AGGR_CONF] = HTT_T2H_MSG_TYPE_AGGR_CONF,
-+	[HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD] =
-+				HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
-+};
-+
- int ath10k_htt_connect(struct ath10k_htt *htt)
- {
- 	struct ath10k_htc_svc_conn_req conn_req;
-@@ -147,6 +178,10 @@ int ath10k_htt_init(struct ath10k *ar)
- 		2; /* ip4 dscp or ip6 priority */
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 00201eb..2f81ff2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3818,10 +3818,10 @@ void ath10k_wmi_event_service_ready(struct ath10k *ar, struct sk_buff *skb)
+ 	if (ar->fw_api == 1 && ar->fw_version_build > 636)
+ 		set_bit(ATH10K_FW_FEATURE_EXT_WMI_MGMT_RX, ar->fw_features);
  
- 	switch (ar->htt.op_version) {
-+	case ATH10K_FW_HTT_OP_VERSION_10_4:
-+		ar->htt.t2h_msg_types = htt_10_4_t2h_msg_types;
-+		ar->htt.t2h_msg_types_max = HTT_10_4_T2H_NUM_MSGS;
-+		break;
- 	case ATH10K_FW_HTT_OP_VERSION_10_1:
- 		ar->htt.t2h_msg_types = htt_10x_t2h_msg_types;
- 		ar->htt.t2h_msg_types_max = HTT_10X_T2H_NUM_MSGS;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 7e8a0d8..2a2ba12 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -349,6 +349,35 @@ enum htt_tlv_t2h_msg_type {
- 	HTT_TLV_T2H_NUM_MSGS
- };
+-	if (ar->num_rf_chains > WMI_MAX_SPATIAL_STREAM) {
++	if (ar->num_rf_chains > ar->max_spatial_stream) {
+ 		ath10k_warn(ar, "hardware advertises support for more spatial streams than it should (%d > %d)\n",
+-			    ar->num_rf_chains, WMI_MAX_SPATIAL_STREAM);
+-		ar->num_rf_chains = WMI_MAX_SPATIAL_STREAM;
++			    ar->num_rf_chains, ar->max_spatial_stream);
++		ar->num_rf_chains = ar->max_spatial_stream;
+ 	}
  
-+enum htt_10_4_t2h_msg_type {
-+	HTT_10_4_T2H_MSG_TYPE_VERSION_CONF           = 0x0,
-+	HTT_10_4_T2H_MSG_TYPE_RX_IND                 = 0x1,
-+	HTT_10_4_T2H_MSG_TYPE_RX_FLUSH               = 0x2,
-+	HTT_10_4_T2H_MSG_TYPE_PEER_MAP               = 0x3,
-+	HTT_10_4_T2H_MSG_TYPE_PEER_UNMAP             = 0x4,
-+	HTT_10_4_T2H_MSG_TYPE_RX_ADDBA               = 0x5,
-+	HTT_10_4_T2H_MSG_TYPE_RX_DELBA               = 0x6,
-+	HTT_10_4_T2H_MSG_TYPE_TX_COMPL_IND           = 0x7,
-+	HTT_10_4_T2H_MSG_TYPE_PKTLOG                 = 0x8,
-+	HTT_10_4_T2H_MSG_TYPE_STATS_CONF             = 0x9,
-+	HTT_10_4_T2H_MSG_TYPE_RX_FRAG_IND            = 0xa,
-+	HTT_10_4_T2H_MSG_TYPE_SEC_IND                = 0xb,
-+	HTT_10_4_T2H_MSG_TYPE_RC_UPDATE_IND          = 0xc,
-+	HTT_10_4_T2H_MSG_TYPE_TX_INSPECT_IND         = 0xd,
-+	HTT_10_4_T2H_MSG_TYPE_MGMT_TX_COMPL_IND      = 0xe,
-+	HTT_10_4_T2H_MSG_TYPE_CHAN_CHANGE            = 0xf,
-+	HTT_10_4_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND   = 0x10,
-+	HTT_10_4_T2H_MSG_TYPE_RX_PN_IND              = 0x11,
-+	HTT_10_4_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND = 0x12,
-+	HTT_10_4_T2H_MSG_TYPE_TEST                   = 0x13,
-+	HTT_10_4_T2H_MSG_TYPE_EN_STATS               = 0x14,
-+	HTT_10_4_T2H_MSG_TYPE_AGGR_CONF              = 0x15,
-+	/* 0x16, 0x17 are reserved */
-+	HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD         = 0x18,
-+	/* keep this last */
-+	HTT_10_4_T2H_NUM_MSGS
-+};
-+
- enum htt_t2h_msg_type {
- 	HTT_T2H_MSG_TYPE_VERSION_CONF,
- 	HTT_T2H_MSG_TYPE_RX_IND,
-@@ -375,6 +404,7 @@ enum htt_t2h_msg_type {
- 	HTT_T2H_MSG_TYPE_AGGR_CONF,
- 	HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
- 	HTT_T2H_MSG_TYPE_TEST,
-+	HTT_T2H_MSG_TYPE_EN_STATS,
- 	/* keep this last */
- 	HTT_T2H_NUM_MSGS
- };
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 89eb16b..43c8f65 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -2074,6 +2074,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 		break;
- 	case HTT_T2H_MSG_TYPE_CHAN_CHANGE:
- 		break;
-+	case HTT_T2H_MSG_TYPE_EN_STATS:
-+		ath10k_warn(ar, "htt event enhanced stats not implemented\n");
-+		break;
- 	default:
- 		ath10k_warn(ar, "htt event (%d) not handled\n",
- 			    resp->hdr.msg_type);
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 799ab8a..aee9e33 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -153,6 +153,8 @@ enum ath10k_fw_htt_op_version {
+ 	ar->supp_tx_chainmask = (1 << ar->num_rf_chains) - 1;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 90c872c..aa9b313 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -1702,7 +1702,8 @@ enum wmi_channel_change_cause {
+ /* Indicate reason for channel switch */
+ #define WMI_CHANNEL_CHANGE_CAUSE_CSA (1 << 13)
  
- 	ATH10K_FW_HTT_OP_VERSION_TLV = 3,
+-#define WMI_MAX_SPATIAL_STREAM   3
++#define WMI_MAX_SPATIAL_STREAM        3 /* default max ss */
++#define WMI_10_4_MAX_SPATIAL_STREAM   4
  
-+	ATH10K_FW_HTT_OP_VERSION_10_4 = 4,
-+
- 	/* keep last */
- 	ATH10K_FW_HTT_OP_VERSION_MAX,
- };
+ /* HT Capabilities*/
+ #define WMI_HT_CAP_ENABLED                0x0001   /* HT Enabled/ disabled */
 -- 
 1.8.1.2
 
