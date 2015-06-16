@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jqc-0004p8-O2
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:55:47 +0000
+ id 1Z4jqN-0004jT-V1
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:55:33 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 6/8] ath10k: advertise 10.4 fw ap and sta iface combination to
- mac80211
-Date: Tue, 16 Jun 2015 11:23:13 +0530
-Message-ID: <1434433995-8451-7-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 5/8] ath10k: add 10.4 fw specific htt msg definitions
+Date: Tue, 16 Jun 2015 11:23:12 +0530
+Message-ID: <1434433995-8451-6-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434433995-8451-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,63 +25,168 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-10.4 fw supports upto 16 interface in ap mode and 1 interface
-in station mode, overall total interfaces supported are 16
-interfaces. Populate this limit in wiphy->iface_combinations.
+New htt event table is added for 10.4 firmware. New htt event
+HTT_T2H_MSG_TYPE_EN_STATS is available only in 10.4, adding this
+to generic htt event table.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c   |  3 +++
+ drivers/net/wireless/ath/ath10k/htt.c    | 35 ++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt.h    | 30 +++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/htt_rx.c |  3 +++
+ drivers/net/wireless/ath/ath10k/hw.h     |  2 ++
+ 5 files changed, 73 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 187e524..3c5d2b0 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6620,6 +6620,33 @@ static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
- 	},
- };
- 
-+static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_STATION),
-+	},
-+	{
-+		.max	= 16,
-+		.types	= BIT(NL80211_IFTYPE_AP)
-+	},
-+};
-+
-+static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
-+	{
-+		.limits = ath10k_10_4_if_limits,
-+		.n_limits = ARRAY_SIZE(ath10k_10_4_if_limits),
-+		.max_interfaces = 16,
-+		.num_different_channels = 1,
-+		.beacon_int_infra_match = true,
-+#ifdef CONFIG_ATH10K_DFS_CERTIFIED
-+		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
-+					BIT(NL80211_CHAN_WIDTH_20) |
-+					BIT(NL80211_CHAN_WIDTH_40) |
-+					BIT(NL80211_CHAN_WIDTH_80),
-+#endif
-+	},
-+};
-+
- static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
- {
- 	struct ieee80211_sta_vht_cap vht_cap = {0};
-@@ -6942,6 +6969,9 @@ int ath10k_mac_register(struct ath10k *ar)
- 			ARRAY_SIZE(ath10k_10x_if_comb);
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
-+		ar->hw->wiphy->iface_combinations = ath10k_10_4_if_comb;
-+		ar->hw->wiphy->n_iface_combinations =
-+			ARRAY_SIZE(ath10k_10_4_if_comb);
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 4e762d0..23e855c 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1318,6 +1318,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->num_active_peers = TARGET_10_4_ACTIVE_PEERS;
+ 		ar->max_num_vdevs = TARGET_10_4_NUM_VDEVS;
+ 		ar->num_tids = TARGET_10_4_TGT_NUM_TIDS;
++		ar->htt.max_num_pending_tx = TARGET_10_4_NUM_MSDU_DESC;
+ 		ar->fw_stats_req_mask = WMI_STAT_PEER;
  		break;
  	case ATH10K_FW_WMI_OP_VERSION_UNSET:
- 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+@@ -1343,6 +1344,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
+ 			break;
+ 		case ATH10K_FW_WMI_OP_VERSION_10_4:
++			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_10_4;
++			break;
+ 		case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 		case ATH10K_FW_WMI_OP_VERSION_MAX:
+ 			WARN_ON(1);
+diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
+index 6da6ef2..2bb9acc 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.c
++++ b/drivers/net/wireless/ath/ath10k/htt.c
+@@ -102,6 +102,37 @@ static const enum htt_t2h_msg_type htt_tlv_t2h_msg_types[] = {
+ 	[HTT_TLV_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
+ };
+ 
++static const enum htt_t2h_msg_type htt_10_4_t2h_msg_types[] = {
++	[HTT_10_4_T2H_MSG_TYPE_VERSION_CONF] = HTT_T2H_MSG_TYPE_VERSION_CONF,
++	[HTT_10_4_T2H_MSG_TYPE_RX_IND] = HTT_T2H_MSG_TYPE_RX_IND,
++	[HTT_10_4_T2H_MSG_TYPE_RX_FLUSH] = HTT_T2H_MSG_TYPE_RX_FLUSH,
++	[HTT_10_4_T2H_MSG_TYPE_PEER_MAP] = HTT_T2H_MSG_TYPE_PEER_MAP,
++	[HTT_10_4_T2H_MSG_TYPE_PEER_UNMAP] = HTT_T2H_MSG_TYPE_PEER_UNMAP,
++	[HTT_10_4_T2H_MSG_TYPE_RX_ADDBA] = HTT_T2H_MSG_TYPE_RX_ADDBA,
++	[HTT_10_4_T2H_MSG_TYPE_RX_DELBA] = HTT_T2H_MSG_TYPE_RX_DELBA,
++	[HTT_10_4_T2H_MSG_TYPE_TX_COMPL_IND] = HTT_T2H_MSG_TYPE_TX_COMPL_IND,
++	[HTT_10_4_T2H_MSG_TYPE_PKTLOG] = HTT_T2H_MSG_TYPE_PKTLOG,
++	[HTT_10_4_T2H_MSG_TYPE_STATS_CONF] = HTT_T2H_MSG_TYPE_STATS_CONF,
++	[HTT_10_4_T2H_MSG_TYPE_RX_FRAG_IND] = HTT_T2H_MSG_TYPE_RX_FRAG_IND,
++	[HTT_10_4_T2H_MSG_TYPE_SEC_IND] = HTT_T2H_MSG_TYPE_SEC_IND,
++	[HTT_10_4_T2H_MSG_TYPE_RC_UPDATE_IND] = HTT_T2H_MSG_TYPE_RC_UPDATE_IND,
++	[HTT_10_4_T2H_MSG_TYPE_TX_INSPECT_IND] =
++				HTT_T2H_MSG_TYPE_TX_INSPECT_IND,
++	[HTT_10_4_T2H_MSG_TYPE_MGMT_TX_COMPL_IND] =
++				HTT_T2H_MSG_TYPE_MGMT_TX_COMPLETION,
++	[HTT_10_4_T2H_MSG_TYPE_CHAN_CHANGE] = HTT_T2H_MSG_TYPE_CHAN_CHANGE,
++	[HTT_10_4_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND] =
++				HTT_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND,
++	[HTT_10_4_T2H_MSG_TYPE_RX_PN_IND] = HTT_T2H_MSG_TYPE_RX_PN_IND,
++	[HTT_10_4_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND] =
++				HTT_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND,
++	[HTT_10_4_T2H_MSG_TYPE_TEST] = HTT_T2H_MSG_TYPE_TEST,
++	[HTT_10_4_T2H_MSG_TYPE_EN_STATS] = HTT_T2H_MSG_TYPE_EN_STATS,
++	[HTT_10_4_T2H_MSG_TYPE_AGGR_CONF] = HTT_T2H_MSG_TYPE_AGGR_CONF,
++	[HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD] =
++				HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
++};
++
+ int ath10k_htt_connect(struct ath10k_htt *htt)
+ {
+ 	struct ath10k_htc_svc_conn_req conn_req;
+@@ -147,6 +178,10 @@ int ath10k_htt_init(struct ath10k *ar)
+ 		2; /* ip4 dscp or ip6 priority */
+ 
+ 	switch (ar->htt.op_version) {
++	case ATH10K_FW_HTT_OP_VERSION_10_4:
++		ar->htt.t2h_msg_types = htt_10_4_t2h_msg_types;
++		ar->htt.t2h_msg_types_max = HTT_10_4_T2H_NUM_MSGS;
++		break;
+ 	case ATH10K_FW_HTT_OP_VERSION_10_1:
+ 		ar->htt.t2h_msg_types = htt_10x_t2h_msg_types;
+ 		ar->htt.t2h_msg_types_max = HTT_10X_T2H_NUM_MSGS;
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 7e8a0d8..2a2ba12 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -349,6 +349,35 @@ enum htt_tlv_t2h_msg_type {
+ 	HTT_TLV_T2H_NUM_MSGS
+ };
+ 
++enum htt_10_4_t2h_msg_type {
++	HTT_10_4_T2H_MSG_TYPE_VERSION_CONF           = 0x0,
++	HTT_10_4_T2H_MSG_TYPE_RX_IND                 = 0x1,
++	HTT_10_4_T2H_MSG_TYPE_RX_FLUSH               = 0x2,
++	HTT_10_4_T2H_MSG_TYPE_PEER_MAP               = 0x3,
++	HTT_10_4_T2H_MSG_TYPE_PEER_UNMAP             = 0x4,
++	HTT_10_4_T2H_MSG_TYPE_RX_ADDBA               = 0x5,
++	HTT_10_4_T2H_MSG_TYPE_RX_DELBA               = 0x6,
++	HTT_10_4_T2H_MSG_TYPE_TX_COMPL_IND           = 0x7,
++	HTT_10_4_T2H_MSG_TYPE_PKTLOG                 = 0x8,
++	HTT_10_4_T2H_MSG_TYPE_STATS_CONF             = 0x9,
++	HTT_10_4_T2H_MSG_TYPE_RX_FRAG_IND            = 0xa,
++	HTT_10_4_T2H_MSG_TYPE_SEC_IND                = 0xb,
++	HTT_10_4_T2H_MSG_TYPE_RC_UPDATE_IND          = 0xc,
++	HTT_10_4_T2H_MSG_TYPE_TX_INSPECT_IND         = 0xd,
++	HTT_10_4_T2H_MSG_TYPE_MGMT_TX_COMPL_IND      = 0xe,
++	HTT_10_4_T2H_MSG_TYPE_CHAN_CHANGE            = 0xf,
++	HTT_10_4_T2H_MSG_TYPE_TX_CREDIT_UPDATE_IND   = 0x10,
++	HTT_10_4_T2H_MSG_TYPE_RX_PN_IND              = 0x11,
++	HTT_10_4_T2H_MSG_TYPE_RX_OFFLOAD_DELIVER_IND = 0x12,
++	HTT_10_4_T2H_MSG_TYPE_TEST                   = 0x13,
++	HTT_10_4_T2H_MSG_TYPE_EN_STATS               = 0x14,
++	HTT_10_4_T2H_MSG_TYPE_AGGR_CONF              = 0x15,
++	/* 0x16, 0x17 are reserved */
++	HTT_10_4_T2H_MSG_TYPE_STATS_NOUPLOAD         = 0x18,
++	/* keep this last */
++	HTT_10_4_T2H_NUM_MSGS
++};
++
+ enum htt_t2h_msg_type {
+ 	HTT_T2H_MSG_TYPE_VERSION_CONF,
+ 	HTT_T2H_MSG_TYPE_RX_IND,
+@@ -375,6 +404,7 @@ enum htt_t2h_msg_type {
+ 	HTT_T2H_MSG_TYPE_AGGR_CONF,
+ 	HTT_T2H_MSG_TYPE_STATS_NOUPLOAD,
+ 	HTT_T2H_MSG_TYPE_TEST,
++	HTT_T2H_MSG_TYPE_EN_STATS,
+ 	/* keep this last */
+ 	HTT_T2H_NUM_MSGS
+ };
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 89eb16b..43c8f65 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -2074,6 +2074,9 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+ 		break;
+ 	case HTT_T2H_MSG_TYPE_CHAN_CHANGE:
+ 		break;
++	case HTT_T2H_MSG_TYPE_EN_STATS:
++		ath10k_warn(ar, "htt event enhanced stats not implemented\n");
++		break;
+ 	default:
+ 		ath10k_warn(ar, "htt event (%d) not handled\n",
+ 			    resp->hdr.msg_type);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 799ab8a..aee9e33 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -153,6 +153,8 @@ enum ath10k_fw_htt_op_version {
+ 
+ 	ATH10K_FW_HTT_OP_VERSION_TLV = 3,
+ 
++	ATH10K_FW_HTT_OP_VERSION_10_4 = 4,
++
+ 	/* keep last */
+ 	ATH10K_FW_HTT_OP_VERSION_MAX,
+ };
 -- 
 1.8.1.2
 
