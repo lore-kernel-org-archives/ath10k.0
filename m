@@ -1,18 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4byS-00044O-2e
- for ath10k@lists.infradead.org; Mon, 15 Jun 2015 21:31:21 +0000
-Received: from [192.168.100.236] (unknown [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 8B31F40B4B8
- for <ath10k@lists.infradead.org>; Mon, 15 Jun 2015 14:30:58 -0700 (PDT)
-Message-ID: <557F4412.7000105@candelatech.com>
-Date: Mon, 15 Jun 2015 14:30:58 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z4jBL-00030w-Ot
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:13:08 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH 00/10] Add QCA99X0 support
+Date: Tue, 16 Jun 2015 10:42:12 +0530
+Message-ID: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-Subject: Updated CT firmware uploaded.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,53 +20,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Changes since last email of this nature:
+This patch set adds changes for QCA99X0 chip in pci probe,
+Copy Engine init and firmware downloads. Since it is still
+work in progress the support for this chip is not yet
+advertised in pci device table.
 
-Fixed firmware to pay attention to the non-standard TIDS in
-station mode.  This allows host to properly request
-HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST and have it actually work.
+Vasanthakumar Thiagarajan (10):
+  ath10k: Add a table to store hw specific values
+  ath10k: Add new reg_address/mask to hw register table
+  ath10k: Add hw register/values for QCA99X0 chip
+  ath10k: Copy Engine related changes for QCA99X0
+  ath10k: Make target cpu address to CE address conversion chip specific
+  ath10k: Add chip reset sequence for QCA99X0
+  ath10k: Extend CE src desc flags for interrupt indication
+  ath10k: Fix BMI communication timeout for QCA99X0
+  ath10k: Add support for code swap
+  ath10k: Add BMI param value to execute otp to hw_param
 
-This fixes the station disconnect regressions we saw in the last
-firmware beta.
-
-You may need this (below) patch to your kernel as well.  Or, maybe this problem
-only happened when using our CT kernel due to some other private patches
-we carry.  I don't do much testing on stock kernels, but please do report
-any problems or success on whatever kernels you use.
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-
-index 3199445..29851d2 100644 (file)
-
-
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1916,6 +1916,9 @@ static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
-        if (ieee80211_is_mgmt(hdr->frame_control))
-                return HTT_DATA_TX_EXT_TID_MGMT;
-
-+       if (ieee80211_is_nullfunc(hdr->frame_control))
-+               return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
-+
-        if (!ieee80211_is_data_qos(hdr->frame_control))
-                return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
-
-
-And note:  For anyone doing IBSS/ADHOC with my firmware, please use
-the beta builds until I can do an official version-14 release.
-
-http://www.candelatech.com/ath10k.php
-
-http://www.candelatech.com/downloads/ath10k-fw-beta/
-
-Thanks,
-Ben
+ drivers/net/wireless/ath/ath10k/Makefile    |   3 +-
+ drivers/net/wireless/ath/ath10k/bmi.h       |   2 +-
+ drivers/net/wireless/ath/ath10k/ce.c        |   1 +
+ drivers/net/wireless/ath/ath10k/ce.h        |  17 ++-
+ drivers/net/wireless/ath/ath10k/core.c      |  52 ++++++-
+ drivers/net/wireless/ath/ath10k/core.h      |   9 ++
+ drivers/net/wireless/ath/ath10k/hw.c        |  86 +++++++++++-
+ drivers/net/wireless/ath/ath10k/hw.h        |  61 ++++++--
+ drivers/net/wireless/ath/ath10k/pci.c       | 180 ++++++++++++++++++++++--
+ drivers/net/wireless/ath/ath10k/pci.h       |  12 --
+ drivers/net/wireless/ath/ath10k/swap.c      | 208 ++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/swap.h      |  72 ++++++++++
+ drivers/net/wireless/ath/ath10k/targaddrs.h |   3 +
+ 13 files changed, 659 insertions(+), 47 deletions(-)
+ create mode 100644 drivers/net/wireless/ath/ath10k/swap.c
+ create mode 100644 drivers/net/wireless/ath/ath10k/swap.h
 
 -- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
+1.9.1
 
 
 _______________________________________________
