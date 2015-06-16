@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jij-0000Wo-I3
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:47:38 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 05/10] ath10k: add 10.4 fw wmi vdev cmd ids
-Date: Tue, 16 Jun 2015 11:15:18 +0530
-Message-ID: <1434433523-8357-6-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1434433523-8357-1-git-send-email-rmani@qti.qualcomm.com>
-References: <1434433523-8357-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1Z4jiu-0000YY-LU
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:47:49 +0000
+Received: by wifx6 with SMTP id x6so8236642wif.0
+ for <ath10k@lists.infradead.org>; Mon, 15 Jun 2015 22:47:25 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAOt_L3_dnEWrkZMcyKJPvZyTUWQDzte=oQXpxw00AY8HZUtdFw@mail.gmail.com>
+References: <CAOt_L3_dnEWrkZMcyKJPvZyTUWQDzte=oQXpxw00AY8HZUtdFw@mail.gmail.com>
+Date: Tue, 16 Jun 2015 07:47:25 +0200
+Message-ID: <CA+BoTQ=U-ygKTHPn-bGkttjZcLfZmR78ZyuXDuQzTvPTT9RVSg@mail.gmail.com>
+Subject: Re: Survey dump and spectral scan
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,309 +20,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+To: Amato Carbonara <acarbonara13@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Include 10.4 firmware wmi vdev cmd id and make up wmi vdev map
-table wmi_10_4_vdev_param_map and also update non 10.4 firmware
-vdev cmd map table with newly added vdev cmd id specifically for
-10.4 firmware as unsupported.
-
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  15 ++++
- drivers/net/wireless/ath/ath10k/wmi.c     | 120 ++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  83 +++++++++++++++++++++
- 3 files changed, 218 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 8fdba38..df8ac2e 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -3262,6 +3262,21 @@ static struct wmi_vdev_param_map wmi_tlv_vdev_param_map = {
- 	.tx_encap_type = WMI_TLV_VDEV_PARAM_TX_ENCAP_TYPE,
- 	.ap_detect_out_of_sync_sleeping_sta_time_secs =
- 					WMI_TLV_VDEV_PARAM_UNSUPPORTED,
-+	.rc_num_retries = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.cabq_maxdur = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.mfptest_set = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht_sgimask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht80_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_enable = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_tgt_bmiss_num = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_bmiss_sample_cycle = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_slop_step = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_init_slop = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_pause = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.proxy_sta = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.meru_vc = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.rx_decap_type = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.bw_nss_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
- };
- 
- static const struct wmi_ops wmi_tlv_ops = {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 51b5d3c..9aa6989 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -719,6 +719,21 @@ static struct wmi_vdev_param_map wmi_vdev_param_map = {
- 	.tx_encap_type = WMI_VDEV_PARAM_TX_ENCAP_TYPE,
- 	.ap_detect_out_of_sync_sleeping_sta_time_secs =
- 					WMI_VDEV_PARAM_UNSUPPORTED,
-+	.rc_num_retries = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.cabq_maxdur = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.mfptest_set = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht_sgimask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht80_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_enable = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_tgt_bmiss_num = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_bmiss_sample_cycle = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_slop_step = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_init_slop = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_pause = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.proxy_sta = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.meru_vc = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.rx_decap_type = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.bw_nss_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
- };
- 
- /* 10.X WMI VDEV param map */
-@@ -778,6 +793,21 @@ static struct wmi_vdev_param_map wmi_10x_vdev_param_map = {
- 	.tx_encap_type = WMI_VDEV_PARAM_UNSUPPORTED,
- 	.ap_detect_out_of_sync_sleeping_sta_time_secs =
- 		WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
-+	.rc_num_retries = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.cabq_maxdur = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.mfptest_set = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht_sgimask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht80_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_enable = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_tgt_bmiss_num = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_bmiss_sample_cycle = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_slop_step = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_init_slop = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_pause = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.proxy_sta = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.meru_vc = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.rx_decap_type = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.bw_nss_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
- };
- 
- static struct wmi_vdev_param_map wmi_10_2_4_vdev_param_map = {
-@@ -836,6 +866,95 @@ static struct wmi_vdev_param_map wmi_10_2_4_vdev_param_map = {
- 	.tx_encap_type = WMI_VDEV_PARAM_UNSUPPORTED,
- 	.ap_detect_out_of_sync_sleeping_sta_time_secs =
- 		WMI_10X_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
-+	.rc_num_retries = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.cabq_maxdur = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.mfptest_set = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht_sgimask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.vht80_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_enable = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_tgt_bmiss_num = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_bmiss_sample_cycle = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_slop_step = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_init_slop = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.early_rx_adjust_pause = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.proxy_sta = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.meru_vc = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.rx_decap_type = WMI_VDEV_PARAM_UNSUPPORTED,
-+	.bw_nss_ratemask = WMI_VDEV_PARAM_UNSUPPORTED,
-+};
-+
-+static struct wmi_vdev_param_map wmi_10_4_vdev_param_map = {
-+	.rts_threshold = WMI_10_4_VDEV_PARAM_RTS_THRESHOLD,
-+	.fragmentation_threshold = WMI_10_4_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
-+	.beacon_interval = WMI_10_4_VDEV_PARAM_BEACON_INTERVAL,
-+	.listen_interval = WMI_10_4_VDEV_PARAM_LISTEN_INTERVAL,
-+	.multicast_rate = WMI_10_4_VDEV_PARAM_MULTICAST_RATE,
-+	.mgmt_tx_rate = WMI_10_4_VDEV_PARAM_MGMT_TX_RATE,
-+	.slot_time = WMI_10_4_VDEV_PARAM_SLOT_TIME,
-+	.preamble = WMI_10_4_VDEV_PARAM_PREAMBLE,
-+	.swba_time = WMI_10_4_VDEV_PARAM_SWBA_TIME,
-+	.wmi_vdev_stats_update_period = WMI_10_4_VDEV_STATS_UPDATE_PERIOD,
-+	.wmi_vdev_pwrsave_ageout_time = WMI_10_4_VDEV_PWRSAVE_AGEOUT_TIME,
-+	.wmi_vdev_host_swba_interval = WMI_10_4_VDEV_HOST_SWBA_INTERVAL,
-+	.dtim_period = WMI_10_4_VDEV_PARAM_DTIM_PERIOD,
-+	.wmi_vdev_oc_scheduler_air_time_limit =
-+	       WMI_10_4_VDEV_OC_SCHEDULER_AIR_TIME_LIMIT,
-+	.wds = WMI_10_4_VDEV_PARAM_WDS,
-+	.atim_window = WMI_10_4_VDEV_PARAM_ATIM_WINDOW,
-+	.bmiss_count_max = WMI_10_4_VDEV_PARAM_BMISS_COUNT_MAX,
-+	.bmiss_first_bcnt = WMI_10_4_VDEV_PARAM_BMISS_FIRST_BCNT,
-+	.bmiss_final_bcnt = WMI_10_4_VDEV_PARAM_BMISS_FINAL_BCNT,
-+	.feature_wmm = WMI_10_4_VDEV_PARAM_FEATURE_WMM,
-+	.chwidth = WMI_10_4_VDEV_PARAM_CHWIDTH,
-+	.chextoffset = WMI_10_4_VDEV_PARAM_CHEXTOFFSET,
-+	.disable_htprotection = WMI_10_4_VDEV_PARAM_DISABLE_HTPROTECTION,
-+	.sta_quickkickout = WMI_10_4_VDEV_PARAM_STA_QUICKKICKOUT,
-+	.mgmt_rate = WMI_10_4_VDEV_PARAM_MGMT_RATE,
-+	.protection_mode = WMI_10_4_VDEV_PARAM_PROTECTION_MODE,
-+	.fixed_rate = WMI_10_4_VDEV_PARAM_FIXED_RATE,
-+	.sgi = WMI_10_4_VDEV_PARAM_SGI,
-+	.ldpc = WMI_10_4_VDEV_PARAM_LDPC,
-+	.tx_stbc = WMI_10_4_VDEV_PARAM_TX_STBC,
-+	.rx_stbc = WMI_10_4_VDEV_PARAM_RX_STBC,
-+	.intra_bss_fwd = WMI_10_4_VDEV_PARAM_INTRA_BSS_FWD,
-+	.def_keyid = WMI_10_4_VDEV_PARAM_DEF_KEYID,
-+	.nss = WMI_10_4_VDEV_PARAM_NSS,
-+	.bcast_data_rate = WMI_10_4_VDEV_PARAM_BCAST_DATA_RATE,
-+	.mcast_data_rate = WMI_10_4_VDEV_PARAM_MCAST_DATA_RATE,
-+	.mcast_indicate = WMI_10_4_VDEV_PARAM_MCAST_INDICATE,
-+	.dhcp_indicate = WMI_10_4_VDEV_PARAM_DHCP_INDICATE,
-+	.unknown_dest_indicate = WMI_10_4_VDEV_PARAM_UNKNOWN_DEST_INDICATE,
-+	.ap_keepalive_min_idle_inactive_time_secs =
-+	       WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS,
-+	.ap_keepalive_max_idle_inactive_time_secs =
-+	       WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS,
-+	.ap_keepalive_max_unresponsive_time_secs =
-+	       WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS,
-+	.ap_enable_nawds = WMI_10_4_VDEV_PARAM_AP_ENABLE_NAWDS,
-+	.mcast2ucast_set = WMI_10_4_VDEV_PARAM_MCAST2UCAST_SET,
-+	.enable_rtscts = WMI_10_4_VDEV_PARAM_ENABLE_RTSCTS,
-+	.txbf = WMI_10_4_VDEV_PARAM_TXBF,
-+	.packet_powersave = WMI_10_4_VDEV_PARAM_PACKET_POWERSAVE,
-+	.drop_unencry = WMI_10_4_VDEV_PARAM_DROP_UNENCRY,
-+	.tx_encap_type = WMI_10_4_VDEV_PARAM_TX_ENCAP_TYPE,
-+	.ap_detect_out_of_sync_sleeping_sta_time_secs =
-+	       WMI_10_4_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
-+	.rc_num_retries = WMI_10_4_VDEV_PARAM_RC_NUM_RETRIES,
-+	.cabq_maxdur = WMI_10_4_VDEV_PARAM_CABQ_MAXDUR,
-+	.mfptest_set = WMI_10_4_VDEV_PARAM_MFPTEST_SET,
-+	.vht_sgimask = WMI_10_4_VDEV_PARAM_VHT_SGIMASK,
-+	.vht80_ratemask = WMI_10_4_VDEV_PARAM_VHT80_RATEMASK,
-+	.early_rx_adjust_enable = WMI_10_4_VDEV_PARAM_EARLY_RX_ADJUST_ENABLE,
-+	.early_rx_tgt_bmiss_num = WMI_10_4_VDEV_PARAM_EARLY_RX_TGT_BMISS_NUM,
-+	.early_rx_bmiss_sample_cycle =
-+	       WMI_10_4_VDEV_PARAM_EARLY_RX_BMISS_SAMPLE_CYCLE,
-+	.early_rx_slop_step = WMI_10_4_VDEV_PARAM_EARLY_RX_SLOP_STEP,
-+	.early_rx_init_slop = WMI_10_4_VDEV_PARAM_EARLY_RX_INIT_SLOP,
-+	.early_rx_adjust_pause = WMI_10_4_VDEV_PARAM_EARLY_RX_ADJUST_PAUSE,
-+	.proxy_sta = WMI_10_4_VDEV_PARAM_PROXY_STA,
-+	.meru_vc = WMI_10_4_VDEV_PARAM_MERU_VC,
-+	.rx_decap_type = WMI_10_4_VDEV_PARAM_RX_DECAP_TYPE,
-+	.bw_nss_ratemask = WMI_10_4_VDEV_PARAM_BW_NSS_RATEMASK,
- };
- 
- static struct wmi_pdev_param_map wmi_pdev_param_map = {
-@@ -5721,6 +5840,7 @@ int ath10k_wmi_attach(struct ath10k *ar)
- 	case ATH10K_FW_WMI_OP_VERSION_10_4:
- 		ar->wmi.ops = &wmi_10_4_ops;
- 		ar->wmi.cmd = &wmi_10_4_cmd_map;
-+		ar->wmi.vdev_param = &wmi_10_4_vdev_param_map;
- 		break;
- 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
- 		ar->wmi.cmd = &wmi_10_2_4_cmd_map;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 8919684..ea74cd0 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -3859,6 +3859,21 @@ struct wmi_vdev_param_map {
- 	u32 drop_unencry;
- 	u32 tx_encap_type;
- 	u32 ap_detect_out_of_sync_sleeping_sta_time_secs;
-+	u32 rc_num_retries;
-+	u32 cabq_maxdur;
-+	u32 mfptest_set;
-+	u32 vht_sgimask;
-+	u32 vht80_ratemask;
-+	u32 early_rx_adjust_enable;
-+	u32 early_rx_tgt_bmiss_num;
-+	u32 early_rx_bmiss_sample_cycle;
-+	u32 early_rx_slop_step;
-+	u32 early_rx_init_slop;
-+	u32 early_rx_adjust_pause;
-+	u32 proxy_sta;
-+	u32 meru_vc;
-+	u32 rx_decap_type;
-+	u32 bw_nss_ratemask;
- };
- 
- #define WMI_VDEV_PARAM_UNSUPPORTED 0
-@@ -4117,6 +4132,74 @@ enum wmi_10x_vdev_param {
- 	WMI_10X_VDEV_PARAM_VHT80_RATEMASK,
- };
- 
-+enum wmi_10_4_vdev_param {
-+	WMI_10_4_VDEV_PARAM_RTS_THRESHOLD = 0x1,
-+	WMI_10_4_VDEV_PARAM_FRAGMENTATION_THRESHOLD,
-+	WMI_10_4_VDEV_PARAM_BEACON_INTERVAL,
-+	WMI_10_4_VDEV_PARAM_LISTEN_INTERVAL,
-+	WMI_10_4_VDEV_PARAM_MULTICAST_RATE,
-+	WMI_10_4_VDEV_PARAM_MGMT_TX_RATE,
-+	WMI_10_4_VDEV_PARAM_SLOT_TIME,
-+	WMI_10_4_VDEV_PARAM_PREAMBLE,
-+	WMI_10_4_VDEV_PARAM_SWBA_TIME,
-+	WMI_10_4_VDEV_STATS_UPDATE_PERIOD,
-+	WMI_10_4_VDEV_PWRSAVE_AGEOUT_TIME,
-+	WMI_10_4_VDEV_HOST_SWBA_INTERVAL,
-+	WMI_10_4_VDEV_PARAM_DTIM_PERIOD,
-+	WMI_10_4_VDEV_OC_SCHEDULER_AIR_TIME_LIMIT,
-+	WMI_10_4_VDEV_PARAM_WDS,
-+	WMI_10_4_VDEV_PARAM_ATIM_WINDOW,
-+	WMI_10_4_VDEV_PARAM_BMISS_COUNT_MAX,
-+	WMI_10_4_VDEV_PARAM_BMISS_FIRST_BCNT,
-+	WMI_10_4_VDEV_PARAM_BMISS_FINAL_BCNT,
-+	WMI_10_4_VDEV_PARAM_FEATURE_WMM,
-+	WMI_10_4_VDEV_PARAM_CHWIDTH,
-+	WMI_10_4_VDEV_PARAM_CHEXTOFFSET,
-+	WMI_10_4_VDEV_PARAM_DISABLE_HTPROTECTION,
-+	WMI_10_4_VDEV_PARAM_STA_QUICKKICKOUT,
-+	WMI_10_4_VDEV_PARAM_MGMT_RATE,
-+	WMI_10_4_VDEV_PARAM_PROTECTION_MODE,
-+	WMI_10_4_VDEV_PARAM_FIXED_RATE,
-+	WMI_10_4_VDEV_PARAM_SGI,
-+	WMI_10_4_VDEV_PARAM_LDPC,
-+	WMI_10_4_VDEV_PARAM_TX_STBC,
-+	WMI_10_4_VDEV_PARAM_RX_STBC,
-+	WMI_10_4_VDEV_PARAM_INTRA_BSS_FWD,
-+	WMI_10_4_VDEV_PARAM_DEF_KEYID,
-+	WMI_10_4_VDEV_PARAM_NSS,
-+	WMI_10_4_VDEV_PARAM_BCAST_DATA_RATE,
-+	WMI_10_4_VDEV_PARAM_MCAST_DATA_RATE,
-+	WMI_10_4_VDEV_PARAM_MCAST_INDICATE,
-+	WMI_10_4_VDEV_PARAM_DHCP_INDICATE,
-+	WMI_10_4_VDEV_PARAM_UNKNOWN_DEST_INDICATE,
-+	WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MIN_IDLE_INACTIVE_TIME_SECS,
-+	WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MAX_IDLE_INACTIVE_TIME_SECS,
-+	WMI_10_4_VDEV_PARAM_AP_KEEPALIVE_MAX_UNRESPONSIVE_TIME_SECS,
-+	WMI_10_4_VDEV_PARAM_AP_ENABLE_NAWDS,
-+	WMI_10_4_VDEV_PARAM_MCAST2UCAST_SET,
-+	WMI_10_4_VDEV_PARAM_ENABLE_RTSCTS,
-+	WMI_10_4_VDEV_PARAM_RC_NUM_RETRIES,
-+	WMI_10_4_VDEV_PARAM_TXBF,
-+	WMI_10_4_VDEV_PARAM_PACKET_POWERSAVE,
-+	WMI_10_4_VDEV_PARAM_DROP_UNENCRY,
-+	WMI_10_4_VDEV_PARAM_TX_ENCAP_TYPE,
-+	WMI_10_4_VDEV_PARAM_AP_DETECT_OUT_OF_SYNC_SLEEPING_STA_TIME_SECS,
-+	WMI_10_4_VDEV_PARAM_CABQ_MAXDUR,
-+	WMI_10_4_VDEV_PARAM_MFPTEST_SET,
-+	WMI_10_4_VDEV_PARAM_VHT_SGIMASK,
-+	WMI_10_4_VDEV_PARAM_VHT80_RATEMASK,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_ADJUST_ENABLE,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_TGT_BMISS_NUM,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_BMISS_SAMPLE_CYCLE,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_SLOP_STEP,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_INIT_SLOP,
-+	WMI_10_4_VDEV_PARAM_EARLY_RX_ADJUST_PAUSE,
-+	WMI_10_4_VDEV_PARAM_PROXY_STA,
-+	WMI_10_4_VDEV_PARAM_MERU_VC,
-+	WMI_10_4_VDEV_PARAM_RX_DECAP_TYPE,
-+	WMI_10_4_VDEV_PARAM_BW_NSS_RATEMASK,
-+};
-+
- #define WMI_VDEV_PARAM_TXBF_SU_TX_BFEE BIT(0)
- #define WMI_VDEV_PARAM_TXBF_MU_TX_BFEE BIT(1)
- #define WMI_VDEV_PARAM_TXBF_SU_TX_BFER BIT(2)
--- 
-1.8.1.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTUgSnVuZSAyMDE1IGF0IDE3OjQ2LCBBbWF0byBDYXJib25hcmEgPGFjYXJib25hcmExM0Bn
+bWFpbC5jb20+IHdyb3RlOgo+IERvZXMgYW55b25lIGhhdmUgYW55IGV4cGVyaWVuY2Ugd2l0aCBl
+aXRoZXIgb2YgdGhlc2UgY29tbWFuZHMgd2l0aCBhdGgxMGs6Cj4gMS4gaXcgd2xhbjAgc3VydmV5
+IGR1bXAKPiAyLiBzcGVjdHJhbCBzY2FuOgo+IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwu
+b3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL3NwZWN0cmFsCj4KPiBJIGFtIHJ1bm5pbmcgYXRo
+MTBrIGZpcm13YXJlIHZlcnNpb24gMTAuMi40LjQ4IG9uIGEgUUNBLTk4ODAgY2hpcHNldC4KPiBL
+ZXJuZWwgdmVyc2lvbiA0LjAKPgo+IFNwZWNpZmljIHF1ZXN0aW9uczoKPiAxLiBTdXJ2ZXkgZHVt
+cDoKPiAgICAgYSkgRG8gSSBoYXZlIHRvIGJlIGFzc29jaWF0ZWQvY29ubmVjdGVkIHRvIGFuIEFQ
+IG9uIGEgc3BlY2lmaWMKPiBjaGFubmVsIGluIG9yZGVyIHRvIHJlY2VpdmUgdGhlIGNvcnJlY3Qg
+aW5mb3JtYXRpb24/CgpZb3UgZG9uJ3QgbmVlZCB0byBiZSBhc3NvY2lhdGVkLiBDdXJyZW50IGlt
+cGxlbWVudGF0aW9uIHJlc2V0cyBhbmQKcmVmcmVzaGVzIHN1cnZleSBkdW1wIHN0YXRzIG9uIGVh
+Y2ggc2Nhbi4KCgo+ICAgICBiKSBJIHVuZGVyc3RhbmQgdGhlIGFjdGl2ZSB0aW1lIGlzIHRoZSBh
+bW91bnQgb2YgdGltZSB0aGUgY2hhbm5lbAo+IGlzIGJ1c3kuICBXaGF0IGlzIHRoZSByZWNlaXZl
+IHRpbWU/CgpUaGUgJ2FjdGl2ZSB0aW1lJyBpcyB0aGUgYW1vdW50IG9mIHRpbWUgc3BlbnQgb24g
+Z2l2ZW4gY2hhbm5lbC4KVGhlICdyZWNlaXZlIHRpbWUnIGlzIHRoZSBhbW91bnQgb2YgdGltZSBz
+cGVudCBvbiByZWNlaXZpbmcgdmFsaWQKODAyLjExIHRyYWZmaWMuCgpGWUk6IFJlY2VudCBhdGgx
+MGsgZG9lc24ndCByZXBvcnQgJ3JlY2VpdmUgdGltZScgYW55bW9yZS4gSW5zdGVhZCBpdApyZXBv
+cnRzICdidXN5IHRpbWUnCihodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoL2NvbW1pdC8yYzJk
+MmZhZmUyMTY1Mjc4OTQzN2U1YTFhOGIyNzcwYTQ1YWRjMjU5KQoKCj4gMi4gU3BlY3RyYWwgc2Nh
+biA9IEluIHRoZSBsaW5rIHByb3ZpZGVkLCB0aGUgZm9sbG93aW5nIGlzIHN0YXRlZDoKPiAieW91
+IGNhbiB1c2UgdGhlIGZvbGxvd2luZyBjb21tYW5kcyB3aGlsZSBoYXZpbmcgYW4gb3BlbiBjb25u
+ZWN0aW9uCj4gKGUuZy4gcnVubmluZyBhbiBBUCkiCj4gRG9lcyB0aGlzIG1lYW4gdGhlIGFkYXB0
+ZXIgbmVlZHMgdG8gYmUgaW4gQVAgbW9kZT8KCkkgaGF2ZW4ndCByZWFsbHkgdXNlZCBzcGVjdHJh
+bCBzY2FuIG9uIGF0aDEwayBtdWNoIGJ1dCBJIHRoaW5rIGl0CnNob3VsZCB3b3JrIHdpdGhvdXQg
+YW4gQVAgdmlmIGFzIHdlbGwuIEl0IG1pZ2h0IHJlcG9ydCBvbmx5IDIwTUh6CnNhbXBsZXMgdGhv
+dWdoLiBXaXRoIEFQIHZpZiB5b3Ugc2hvdWxkIGJlIGFibGUgdG8gZ2F0aGVyIDQwIG9yIDgwTUh6
+CnNhbXBsZXMgYnkgYWRqdXN0aW5nIHRoZSBjaGFuZGVmIG9wZXJhdGlvbiB3aWR0aC4KCgpNaWNo
+YcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgx
+MGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
