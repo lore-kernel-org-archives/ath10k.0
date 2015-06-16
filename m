@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4no0-0006aY-PE
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:09:21 +0000
+ id 1Z4nu4-00054X-KD
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:15:37 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: dump fw features during probing
-References: <1433765734-646-1-git-send-email-michal.kazior@tieto.com>
-Date: Tue, 16 Jun 2015 13:08:50 +0300
-In-Reply-To: <1433765734-646-1-git-send-email-michal.kazior@tieto.com> (Michal
- Kazior's message of "Mon, 8 Jun 2015 14:15:33 +0200")
-Message-ID: <87r3pc7yod.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: mac: remove unreachable negative return check
+References: <1434039461-24899-1-git-send-email-hofrat@osadl.org>
+Date: Tue, 16 Jun 2015 13:14:46 +0300
+In-Reply-To: <1434039461-24899-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Thu, 11 Jun 2015 18:17:41 +0200")
+Message-ID: <87a8w07yeh.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,17 +23,20 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Nicholas Mc Guire <hofrat@osadl.org> writes:
 
-> This should help when analysing problems from
-> users and spot fw api blob problems easier.
+> wait_event_timeout(), introduced in 'commit 5e3dd157d7e7 ("ath10k: mac80211
+> driver for Qualcomm Atheros 802.11ac CQA98xx devices")' never returns < 0
+> so the only failure condition to be checked is ==0 (timeout). Further the
+> return type is long not int - an appropriately named variable is added 
+> and the assignments fixed up.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
-Thanks, both patches applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
