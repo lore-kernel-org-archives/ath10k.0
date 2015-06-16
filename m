@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jjl-0000xd-TV
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:48:42 +0000
+ id 1Z4jk2-00013V-Vt
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:48:59 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 09/10] ath10k: adjust default peer limits if qcache enabled in
- 10.4 fw
-Date: Tue, 16 Jun 2015 11:15:22 +0530
-Message-ID: <1434433523-8357-10-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 10/10] ath10k: handle 10.4 fw wmi ready event
+Date: Tue, 16 Jun 2015 11:15:23 +0530
+Message-ID: <1434433523-8357-11-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434433523-8357-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434433523-8357-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,99 +25,37 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-10.4 firmware supports upto 512 clients when qcache feature is enabled.
-Make adjustment on default max peer count, active peers, number of tid in
-such case to meet qcache requirement. 10.4 fw has extra unit info flag
-NUM_UNITS_IS_NUM_ACTIVE_PEERS which is also handled in this patch.
+Reuse existing function ath10k_wmi_op_pull_rdy_ev()
+to parse WMI_10_4_READY_EVENTID and handle the same
+event in ath10k_wmi_10_4_op_rx().
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h  |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.c | 27 +++++++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/wmi.h |  5 +++--
- 3 files changed, 32 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index d76b52a..799ab8a 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -361,6 +361,12 @@ enum ath10k_hw_rate_cck {
- #define TARGET_10_4_NUM_PEERS			((TARGET_10_4_NUM_STATIONS) + \
- 						 (TARGET_10_4_NUM_VDEVS))
- #define TARGET_10_4_ACTIVE_PEERS		0
-+
-+/* TODO: increase qcache max client limit to 512 after
-+ * testing with 512 client.
-+ */
-+#define TARGET_10_4_NUM_QCACHE_PEERS_MAX	256
-+#define TARGET_10_4_QCACHE_ACTIVE_PEERS		50
- #define TARGET_10_4_NUM_OFFLOAD_PEERS		0
- #define TARGET_10_4_NUM_OFFLOAD_REORDER_BUFFS	0
- #define TARGET_10_4_NUM_PEER_KEYS		2
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 07231c2..e5d948e 100644
+index e5d948e..8d4ff3e 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3740,20 +3740,39 @@ void ath10k_wmi_event_service_ready(struct ath10k *ar, struct sk_buff *skb)
+@@ -4252,6 +4252,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 		ath10k_wmi_event_mgmt_rx(ar, skb);
+ 		/* mgmt_rx() owns the skb now! */
  		return;
- 	}
++	case WMI_10_4_READY_EVENTID:
++		ath10k_wmi_event_ready(ar, skb);
++		break;
+ 	default:
+ 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
+ 		break;
+@@ -6184,6 +6187,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.map_svc = wmi_10_4_svc_map,
+ 	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
++	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
+ 	.gen_init = ath10k_wmi_10_4_op_gen_init,
+ };
  
-+	if (test_bit(WMI_SERVICE_PEER_CACHING, ar->wmi.svc_map)) {
-+		ar->max_num_peers = TARGET_10_4_NUM_QCACHE_PEERS_MAX +
-+				    TARGET_10_4_NUM_VDEVS;
-+		ar->num_active_peers = TARGET_10_4_QCACHE_ACTIVE_PEERS +
-+				       TARGET_10_4_NUM_VDEVS;
-+		ar->num_tids = ar->num_active_peers * 2;
-+		ar->max_num_stations = TARGET_10_4_NUM_QCACHE_PEERS_MAX;
-+	}
-+
-+	/* TODO: Adjust max peer count for cases like WMI_SERVICE_RATECTRL_CACHE
-+	 * and WMI_SERVICE_IRAM_TIDS, etc.
-+	 */
-+
- 	for (i = 0; i < num_mem_reqs; ++i) {
- 		req_id = __le32_to_cpu(arg.mem_reqs[i]->req_id);
- 		num_units = __le32_to_cpu(arg.mem_reqs[i]->num_units);
- 		unit_size = __le32_to_cpu(arg.mem_reqs[i]->unit_size);
- 		num_unit_info = __le32_to_cpu(arg.mem_reqs[i]->num_unit_info);
- 
--		if (num_unit_info & NUM_UNITS_IS_NUM_PEERS)
-+		if (num_unit_info & NUM_UNITS_IS_NUM_ACTIVE_PEERS) {
-+			if (ar->num_active_peers)
-+				num_units = ar->num_active_peers + 1;
-+			else
-+				num_units = ar->max_num_peers + 1;
-+		} else if (num_unit_info & NUM_UNITS_IS_NUM_PEERS) {
- 			/* number of units to allocate is number of
- 			 * peers, 1 extra for self peer on target */
- 			/* this needs to be tied, host and target
- 			 * can get out of sync */
--			num_units = TARGET_10X_NUM_PEERS + 1;
--		else if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS)
--			num_units = TARGET_10X_NUM_VDEVS + 1;
-+			num_units = ar->max_num_peers + 1;
-+		} else if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS) {
-+			num_units = ar->max_num_vdevs + 1;
-+		}
- 
- 		ath10k_dbg(ar, ATH10K_DBG_WMI,
- 			   "wmi mem_req_id %d num_units %d num_unit_info %d unit size %d actual units %d\n",
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 5e67c27..1371c8a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2332,8 +2332,9 @@ struct wmi_resource_config_10_2 {
- 	__le32 feature_mask;
- } __packed;
- 
--#define NUM_UNITS_IS_NUM_VDEVS   0x1
--#define NUM_UNITS_IS_NUM_PEERS   0x2
-+#define NUM_UNITS_IS_NUM_VDEVS         BIT(0)
-+#define NUM_UNITS_IS_NUM_PEERS         BIT(1)
-+#define NUM_UNITS_IS_NUM_ACTIVE_PEERS  BIT(2)
- 
- struct wmi_resource_config_10_4 {
- 	/* Number of virtual devices (VAPs) to support */
 -- 
 1.8.1.2
 
