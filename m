@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4nu4-00054X-KD
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:15:37 +0000
+ id 1Z4nra-0001xA-Tf
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:13:03 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: mac: remove unreachable negative return check
-References: <1434039461-24899-1-git-send-email-hofrat@osadl.org>
-Date: Tue, 16 Jun 2015 13:14:46 +0300
-In-Reply-To: <1434039461-24899-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
- Guire's message of "Thu, 11 Jun 2015 18:17:41 +0200")
-Message-ID: <87a8w07yeh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: remove unused variable hdr in
+ ath10k_htt_rx_h_undecap()
+References: <1434026927-11698-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Tue, 16 Jun 2015 13:12:35 +0300
+In-Reply-To: <1434026927-11698-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Thu, 11 Jun 2015 18:18:47 +0530")
+Message-ID: <87eglc7yi4.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,18 +24,14 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
+To: Raja Mani <rmani@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Nicholas Mc Guire <hofrat@osadl.org> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> wait_event_timeout(), introduced in 'commit 5e3dd157d7e7 ("ath10k: mac80211
-> driver for Qualcomm Atheros 802.11ac CQA98xx devices")' never returns < 0
-> so the only failure condition to be checked is ==0 (timeout). Further the
-> return type is long not int - an appropriately named variable is added 
-> and the assignments fixed up.
+> Just found this during code review.
 >
-> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
 Thanks, applied.
 
