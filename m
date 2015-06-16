@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4npf-0000fN-Nl
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:11:04 +0000
+ id 1Z4nvc-0006MX-Dj
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 10:17:13 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2] ath10k: enable VHT for IBSS
-References: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
-Date: Tue, 16 Jun 2015 13:10:35 +0300
-In-Reply-To: <1433913284-18444-1-git-send-email-janusz.dziedzic@tieto.com>
- (Janusz Dziedzic's message of "Wed, 10 Jun 2015 07:14:44 +0200")
-Message-ID: <87mw007ylg.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: txrx: remove unreachable negative return check
+ and fixup type
+References: <1434039489-24934-1-git-send-email-hofrat@osadl.org>
+Date: Tue, 16 Jun 2015 13:16:23 +0300
+In-Reply-To: <1434039489-24934-1-git-send-email-hofrat@osadl.org> (Nicholas Mc
+ Guire's message of "Thu, 11 Jun 2015 18:18:09 +0200")
+Message-ID: <87616o7ybs.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,22 +24,18 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Janusz Dziedzic <janusz.dziedzic@tieto.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, ath10k@lists.infradead.org
 
-Janusz Dziedzic <janusz.dziedzic@tieto.com> writes:
+Nicholas Mc Guire <hofrat@osadl.org> writes:
 
-> Enable VHT support for IBSS, while mac80211/cfg80211 and
-> wpa_supplicant already support this.
+> wait_event_timeout(), introduced in 'commit 5e3dd157d7e7 ("ath10k: mac80211
+> driver for Qualcomm Atheros 802.11ac CQA98xx devices")' never returns < 0
+> so the only failure condition to be checked is == 0 (timeout). Further the
+> return type is long not int - an appropriately named variable is added
+> and the assignments fixed up.
 >
-> In my test env, ath10k 2x2 I get:
-> (udp) ath10k-1 >>>> ath10k-2 (server) -  speed: 419 Mbits/sec
-> (tcp) ath10k-1 >>>> ath10k-2 (server) -  speed: 404 Mbits/sec
->
-> During tests I used wpa_supplicant (current version), which
-> already support IBSS VHT, and choose highest available BW.
->
-> Signed-off-by: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+> Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
 
 Thanks, applied.
 
