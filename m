@@ -1,12 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4jBY-00031S-CE
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:13:20 +0000
+ id 1Z4jCJ-0003so-V0
+ for ath10k@lists.infradead.org; Tue, 16 Jun 2015 05:14:08 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 01/10] ath10k: Add a table to store hw specific values
-Date: Tue, 16 Jun 2015 10:42:13 +0530
-Message-ID: <1434431542-14724-2-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 04/10] ath10k: Copy Engine related changes for QCA99X0
+Date: Tue, 16 Jun 2015 10:42:16 +0530
+Message-ID: <1434431542-14724-5-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1434431542-14724-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,118 +25,146 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-This is to prepare ath10k to support newer chip set.
-Values like CE_COUNT, MSI_ASSIGN_CE_MAX and
-RTC_STATE_V_ON can be different for different
-chips.
+QCA99X0 supports upto 12 Copy engines. Host and target
+CE configuration table is updated to support new copy engine
+pipes. This also fixes the assumption of diagnostic CE by making
+CE_7 as the one instead of CE_COUNT - 1.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c |  2 ++
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/hw.c   | 14 ++++++++++++++
- drivers/net/wireless/ath/ath10k/hw.h   | 18 +++++++++++++++---
- 4 files changed, 32 insertions(+), 3 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.h  |  2 +-
+ drivers/net/wireless/ath/ath10k/hw.h  |  3 ++
+ drivers/net/wireless/ath/ath10k/pci.c | 69 ++++++++++++++++++++++++++++++++++-
+ 3 files changed, 71 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 59496a9..2a17664 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -1470,9 +1470,11 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	switch (hw_rev) {
- 	case ATH10K_HW_QCA988X:
- 		ar->regs = &qca988x_regs;
-+		ar->hw_values = &qca988x_values;
- 		break;
- 	case ATH10K_HW_QCA6174:
- 		ar->regs = &qca6174_regs;
-+		ar->hw_values = &qca6174_values;
- 		break;
- 	default:
- 		ath10k_err(ar, "unsupported core hardware revision %d\n",
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 78094f2..ae92f64 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -560,6 +560,7 @@ struct ath10k {
- 	struct completion target_suspend;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index 93939de..bb4b8f3 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -21,7 +21,7 @@
+ #include "hif.h"
  
- 	const struct ath10k_hw_regs *regs;
-+	const struct ath10k_hw_values *hw_values;
- 	struct ath10k_bmi bmi;
- 	struct ath10k_wmi wmi;
- 	struct ath10k_htc htc;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index 5997f00..48bcd2c 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -58,6 +58,20 @@ const struct ath10k_hw_regs qca6174_regs = {
- 	.scratch_3_address			= 0x0028,
- };
+ /* Maximum number of Copy Engine's supported */
+-#define CE_COUNT_MAX 8
++#define CE_COUNT_MAX 12
+ #define CE_HTT_H2T_MSG_SRC_NENTRIES 4096
  
-+const struct ath10k_hw_values qca988x_values = {
-+	.rtc_state_val_on		= 3,
-+	.ce_count			= 8,
-+	.msi_assign_ce_max		= 7,
-+	.num_target_ce_config_wlan	= 7,
-+};
-+
-+const struct ath10k_hw_values qca6174_values = {
-+	.rtc_state_val_on		= 3,
-+	.ce_count			= 8,
-+	.msi_assign_ce_max		= 7,
-+	.num_target_ce_config_wlan	= 7,
-+};
-+
- void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev)
- {
+ /* Descriptor rings must be aligned to this boundary */
 diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 85cca29..b218388 100644
+index 76caeab..5819659 100644
 --- a/drivers/net/wireless/ath/ath10k/hw.h
 +++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -169,6 +169,16 @@ struct ath10k_hw_regs {
- extern const struct ath10k_hw_regs qca988x_regs;
- extern const struct ath10k_hw_regs qca6174_regs;
- 
-+struct ath10k_hw_values {
-+	u32 rtc_state_val_on;
-+	u8 ce_count;
-+	u8 msi_assign_ce_max;
-+	u8 num_target_ce_config_wlan;
-+};
-+
-+extern const struct ath10k_hw_values qca988x_values;
-+extern const struct ath10k_hw_values qca6174_values;
-+
- void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 				u32 cc, u32 rcc, u32 cc_prev, u32 rcc_prev);
- 
-@@ -310,8 +320,10 @@ enum ath10k_hw_rate_cck {
+@@ -343,6 +343,9 @@ enum ath10k_hw_rate_cck {
  #define TARGET_TLV_NUM_MSDU_DESC		(1024 + 32)
  #define TARGET_TLV_NUM_WOW_PATTERNS		22
  
-+#define NUM_TARGET_CE_CONFIG_WLAN ar->hw_values->num_target_ce_config_wlan
++/* Diagnostic Window */
++#define CE_DIAG_PIPE	7
 +
+ #define NUM_TARGET_CE_CONFIG_WLAN ar->hw_values->num_target_ce_config_wlan
+ 
  /* Number of Copy Engines supported */
--#define CE_COUNT 8
-+#define CE_COUNT ar->hw_values->ce_count
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 190f7f3..980390a 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -156,6 +156,38 @@ static const struct ce_attr host_ce_config_wlan[] = {
+ 		.src_sz_max = DIAG_TRANSFER_LIMIT,
+ 		.dest_nentries = 2,
+ 	},
++
++	/* CE8: target->host pktlog */
++	{
++		.flags = CE_ATTR_FLAGS,
++		.src_nentries = 0,
++		.src_sz_max = 2048,
++		.dest_nentries = 128,
++	},
++
++	/* CE9 target autonomous qcache memcpy */
++	{
++		.flags = CE_ATTR_FLAGS,
++		.src_nentries = 0,
++		.src_sz_max = 0,
++		.dest_nentries = 0,
++	},
++
++	/* CE10: target autonomous hif memcpy */
++	{
++		.flags = CE_ATTR_FLAGS,
++		.src_nentries = 0,
++		.src_sz_max = 0,
++		.dest_nentries = 0,
++	},
++
++	/* CE11: target autonomous hif memcpy */
++	{
++		.flags = CE_ATTR_FLAGS,
++		.src_nentries = 0,
++		.src_sz_max = 0,
++		.dest_nentries = 0,
++	},
+ };
+ 
+ /* Target firmware's Copy Engine configuration. */
+@@ -233,6 +265,38 @@ static const struct ce_pipe_config target_ce_config_wlan[] = {
+ 	},
+ 
+ 	/* CE7 used only by Host */
++	{
++		.pipenum = __cpu_to_le32(7),
++		.pipedir = __cpu_to_le32(PIPEDIR_INOUT),
++		.nentries = __cpu_to_le32(0),
++		.nbytes_max = __cpu_to_le32(0),
++		.flags = __cpu_to_le32(0),
++		.reserved = __cpu_to_le32(0),
++	},
++
++	/* CE8 target->host packtlog */
++	{
++		.pipenum = __cpu_to_le32(8),
++		.pipedir = __cpu_to_le32(PIPEDIR_IN),
++		.nentries = __cpu_to_le32(64),
++		.nbytes_max = __cpu_to_le32(2048),
++		.flags = __cpu_to_le32(CE_ATTR_FLAGS | CE_ATTR_DIS_INTR),
++		.reserved = __cpu_to_le32(0),
++	},
++
++	/* CE9 target autonomous qcache memcpy */
++	{
++		.pipenum = __cpu_to_le32(9),
++		.pipedir = __cpu_to_le32(PIPEDIR_INOUT),
++		.nentries = __cpu_to_le32(32),
++		.nbytes_max = __cpu_to_le32(2048),
++		.flags = __cpu_to_le32(CE_ATTR_FLAGS | CE_ATTR_DIS_INTR),
++		.reserved = __cpu_to_le32(0),
++	},
++
++	/* It not necessary to send target wlan configuration for CE10 & CE11
++	 * as these CEs are not actively used in target.
++	 */
+ };
  
  /*
-  * Total number of PCIe MSI interrupts requested for all interrupt sources.
-@@ -335,10 +347,10 @@ enum ath10k_hw_rate_cck {
+@@ -1759,7 +1823,8 @@ static int ath10k_pci_init_config(struct ath10k *ar)
  
- /* MSIs for Copy Engines */
- #define MSI_ASSIGN_CE_INITIAL	1
--#define MSI_ASSIGN_CE_MAX	7
-+#define MSI_ASSIGN_CE_MAX	ar->hw_values->msi_assign_ce_max
+ 	ret = ath10k_pci_diag_write_mem(ar, pipe_cfg_targ_addr,
+ 					target_ce_config_wlan,
+-					sizeof(target_ce_config_wlan));
++					sizeof(struct ce_pipe_config) *
++					NUM_TARGET_CE_CONFIG_WLAN);
  
- /* as of IP3.7.1 */
--#define RTC_STATE_V_ON				3
-+#define RTC_STATE_V_ON				ar->hw_values->rtc_state_val_on
+ 	if (ret != 0) {
+ 		ath10k_err(ar, "Failed to write pipe cfg: %d\n", ret);
+@@ -1873,7 +1938,7 @@ static int ath10k_pci_alloc_pipes(struct ath10k *ar)
+ 		}
  
- #define RTC_STATE_COLD_RESET_MASK		ar->regs->rtc_state_cold_reset_mask
- #define RTC_STATE_V_LSB				0
+ 		/* Last CE is Diagnostic Window */
+-		if (i == CE_COUNT - 1) {
++		if (i == CE_DIAG_PIPE) {
+ 			ar_pci->ce_diag = pipe->ce_hdl;
+ 			continue;
+ 		}
 -- 
 1.9.1
 
