@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z4zwX-0004z9-4r
- for ath10k@lists.infradead.org; Tue, 16 Jun 2015 23:06:57 +0000
-Message-ID: <5580ABFB.4090309@candelatech.com>
-Date: Tue, 16 Jun 2015 16:06:35 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z55s1-0004Fq-3J
+ for ath10k@lists.infradead.org; Wed, 17 Jun 2015 05:26:42 +0000
+Received: by wiga1 with SMTP id a1so127485600wig.0
+ for <ath10k@lists.infradead.org>; Tue, 16 Jun 2015 22:26:16 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Question on beacon-miss offloading.
-References: <5579F87F.4070601@candelatech.com>
- <557A1BE9.7070305@candelatech.com>
- <CA+BoTQkLyaP-2sHiu7Wn-ZzGj2JnZs4qzQKGu7PiTtUy4d9xLQ@mail.gmail.com>
- <557AFC9D.3020109@candelatech.com>
- <CA+BoTQkn+Ro1+=PPe=1aHT519jW3BtF+Mmspy+kQftufpUiTPA@mail.gmail.com>
- <557EF0B0.7070008@candelatech.com> <557F2B43.8060409@candelatech.com>
- <CA+BoTQ=jYu2BV1rkaLwF_d5ZdDgsiws0TrWE7NGXmRsz8hMFVA@mail.gmail.com>
- <55809B3E.10300@candelatech.com>
-In-Reply-To: <55809B3E.10300@candelatech.com>
+In-Reply-To: <558007D1.1020709@dd-wrt.com>
+References: <1434008594-6726-1-git-send-email-michal.kazior@tieto.com>
+ <87ioao7yjm.fsf@kamboji.qca.qualcomm.com>
+ <558007D1.1020709@dd-wrt.com>
+Date: Wed, 17 Jun 2015 07:26:16 +0200
+Message-ID: <CA+BoTQ=oWFvnVoD0e4ZKVR=7bphxF9vaHM0L1MN8v5Wxq4jy0A@mail.gmail.com>
+Subject: Re: repeater mode not working
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +22,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 06/16/2015 02:55 PM, Ben Greear wrote:
-> On 06/15/2015 10:29 PM, Michal Kazior wrote:
-> 
->>> This patch below (with firmware fix to make it actually pay attention
->>> to this special TID in station mode), fixes the null-func to be non-qos
->>> frames and get immediate ack.  This in turn seems to fix the disconnect
->>> issue I was facing, though I need to test some more to be sure.
->>>
->>> This seem reasonable, maybe even for upstream?
->>>
->>> [greearb@ben-dt2 ath10k]$ git diff
->>> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
->>> index 6ca48e3..610447e 100644
->>> --- a/drivers/net/wireless/ath/ath10k/mac.c
->>> +++ b/drivers/net/wireless/ath/ath10k/mac.c
->>> @@ -2213,6 +2213,9 @@ static u8 ath10k_tx_h_get_tid(struct ieee80211_hdr *hdr)
->>>         if (ieee80211_is_mgmt(hdr->frame_control))
->>>                 return HTT_DATA_TX_EXT_TID_MGMT;
->>>
->>> +       if (ieee80211_is_nullfunc(hdr->frame_control))
->>> +               return HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
->>> +
->>
->> That's weird.. QoS NullFunc frames are already converted to non-QoS
->> frames, see ath10k_tx_h_nwifi():
-> 
-> True, but the 4.0.4 kernel sends down non-qos null-func frames as far
-> as I can tell, at least when doing connection probing.
-> 
-> In my case, my kernel was sending non-qos nullfunc frame to firmware, but then
-> firmware stuck it on BE queue and made it QoS.
-
-Stock 4.0.4 and stock firmware-2.bin have the same 'nullfunc sent as qos and no immediate ack' bug,
-so it must be something that was fixed or changed between 4.0.4 and the 4.1.x ath tree.
-
-Thanks,
-Ben
-
->>         /* Some firmware revisions don't handle sending QoS NullFunc well.
->>          * These frames are mainly used for CQM purposes so it doesn't really
->>          * matter whether QoS NullFunc or NullFunc are sent.
->>          */
->>         hdr = (void *)skb->data;
->>         if (ieee80211_is_qos_nullfunc(hdr->frame_control))
->>                 cb->htt.tid = HTT_DATA_TX_EXT_TID_NON_QOS_MCAST_BCAST;
->>
->> Or is it that ath10k_tx_h_get_tid() has a bug that ends up assigning
->> an invalid tid for non-QoS NullFunc frames? If so I guess your patch
->> would be okay with some comments/commit-log explaining why/what was
->> wrong.
-> 
-> I tried very recent upstream ath kernel, and stock firmware-2.bin, and it
-> seems to generate null-func frames fine.  I'll go back at look at my
-> recent FW and kernel changes in more detail now that I understand the problem
-> better and see if I can figure out what is going on...
-> 
-> Thanks,
-> Ben
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTYgSnVuZSAyMDE1IGF0IDEzOjI2LCBTZWJhc3RpYW4gR290dHNjaGFsbCA8cy5nb3R0c2No
+YWxsQGRkLXdydC5jb20+IHdyb3RlOgo+IEhlbGxvCgpIZWxsbywKCgo+IGRpZCBzb21lb25lIG5v
+dGljZSB0aGF0IGNvbmZpZ3VyYXRpb25zIGxpa2UKPiBzdGEgKyB2YXAgZG8gbm90IHdvcmsgd2l0
+aCBhdGgxMGs/IGlzIHRoZXJlIGEgZml4IGV4cGVjdGVkIGZvciB0aGF0IHByb2JsZW0/CgpJJ20g
+Z3Vlc3NpbmcgeW91J3JlIHVzaW5nIGZpcm13YXJlIDEwLnggb24gUUNBOTg4WC4gVGhpcyBmaXJt
+d2FyZQpicmFuY2ggaGFzIG11bHRpLXZpZiBlbmFibGVkIG9ubHkgZm9yIG11bHRpLWJzcyBBUC4g
+WW91IGNvdWxkIGhhY2sgdXAKYXRoMTBrIHRvIGFsbG93IG1vcmUgYW5kIHJ1biBzb21lIHRlc3Rz
+LiBJZiBpdCB3b3JrcyBmb3IgeW91IHJlbGlhYmx5CnlvdSBjYW4gdHJ5IHN1Ym1pdHRpbmcgYSBw
+YXRjaCBjaGFuZ2luZyB0aGUgY3VycmVudCBpbnRlcmZhY2UKY29tYmluYXRpb25zLgoKSW4gdGhl
+IG1lYW50aW1lIC0gZmlybXdhcmUgOTk5Ljk5OS4wLjYzNiBkb2VzIHN1cHBvcnQgYXArc3RhIGJ1
+dCB0aGlzCmlzIGEgcHJldHR5IG9sZCBmaXJtd2FyZSB3aXRoIG90aGVyIHF1aXJrcyBzbyBZTU1W
+LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
+L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
