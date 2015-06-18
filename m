@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z5TrV-0005Uq-EZ
- for ath10k@lists.infradead.org; Thu, 18 Jun 2015 07:03:46 +0000
+ id 1Z5Tro-0005dU-Dp
+ for ath10k@lists.infradead.org; Thu, 18 Jun 2015 07:04:04 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V2 06/10] ath10k: Add chip reset sequence for QCA99X0
-Date: Thu, 18 Jun 2015 12:31:06 +0530
-Message-ID: <1434610870-5505-7-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH V2 07/10] ath10k: Extend CE src desc flags for interrupt
+ indication
+Date: Thu, 18 Jun 2015 12:31:07 +0530
+Message-ID: <1434610870-5505-8-git-send-email-vthiagar@qti.qualcomm.com>
 In-Reply-To: <1434610870-5505-1-git-send-email-vthiagar@qti.qualcomm.com>
 References: <1434610870-5505-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -25,155 +26,97 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-QCA99X0 supports only cold reset. Also, made
-ath10k_pci_irq_msi_fw_mask() and ath10k_pci_irq_msi_fw_unmask()
-non-99X0 specific till we get proper register configuration
-to mask/unmask irq/MSI.
+QCA99X0 uses two new copy engine src desc flags for interrupt
+indication. Bit_2 is to mark if host interrupt is disabled after
+processing the current desc and bit_3 is to mark if target interrupt
+is diabled after the processing of current descriptor.
+CE_DESC_FLAGS_META_DATA_MASK and CE_DESC_FLAGS_META_DATA_LSB are based
+on the target type.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/pci.c | 81 ++++++++++++++++++++++++++++++-----
- 1 file changed, 71 insertions(+), 10 deletions(-)
+ drivers/net/wireless/ath/ath10k/ce.c | 1 +
+ drivers/net/wireless/ath/ath10k/ce.h | 9 +++++++--
+ drivers/net/wireless/ath/ath10k/hw.c | 6 ++++++
+ drivers/net/wireless/ath/ath10k/hw.h | 2 ++
+ 4 files changed, 16 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index df7d74e..1b4634a 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -82,7 +82,7 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 
- static void ath10k_pci_buffer_cleanup(struct ath10k *ar);
- static int ath10k_pci_cold_reset(struct ath10k *ar);
--static int ath10k_pci_warm_reset(struct ath10k *ar);
-+static int ath10k_pci_safe_chip_reset(struct ath10k *ar);
- static int ath10k_pci_wait_for_target_init(struct ath10k *ar);
- static int ath10k_pci_init_irq(struct ath10k *ar);
- static int ath10k_pci_deinit_irq(struct ath10k *ar);
-@@ -91,6 +91,7 @@ static void ath10k_pci_free_irq(struct ath10k *ar);
- static int ath10k_pci_bmi_wait(struct ath10k_ce_pipe *tx_pipe,
- 			       struct ath10k_ce_pipe *rx_pipe,
- 			       struct bmi_xfer *xfer);
-+static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar);
- 
- static const struct ce_attr host_ce_config_wlan[] = {
- 	/* CE0: host->target HTC control and raw streams */
-@@ -1427,20 +1428,42 @@ static void ath10k_pci_irq_msi_fw_mask(struct ath10k *ar)
+diff --git a/drivers/net/wireless/ath/ath10k/ce.c b/drivers/net/wireless/ath/ath10k/ce.c
+index e508c65..cf28fbe 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.c
++++ b/drivers/net/wireless/ath/ath10k/ce.c
+@@ -452,6 +452,7 @@ int ath10k_ce_completed_recv_next_nolock(struct ath10k_ce_pipe *ce_state,
  {
- 	u32 val;
+ 	struct ath10k_ce_ring *dest_ring = ce_state->dest_ring;
+ 	unsigned int nentries_mask = dest_ring->nentries_mask;
++	struct ath10k *ar = ce_state->ar;
+ 	unsigned int sw_index = dest_ring->sw_index;
  
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
--	val &= ~CORE_CTRL_PCIE_REG_31_MASK;
--
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
-+	switch (ar->hw_rev) {
-+	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA6174:
-+		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-+					CORE_CTRL_ADDRESS);
-+		val &= ~CORE_CTRL_PCIE_REG_31_MASK;
-+		ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
-+				   CORE_CTRL_ADDRESS, val);
-+		break;
-+	case ATH10K_HW_QCA99X0:
-+		/* TODO: Find appropriate register configuration for QCA99X0
-+		 *  to mask irq/MSI.
-+		 */
-+		 break;
-+	}
- }
+ 	struct ce_desc *base = dest_ring->base_addr_owner_space;
+diff --git a/drivers/net/wireless/ath/ath10k/ce.h b/drivers/net/wireless/ath/ath10k/ce.h
+index bb4b8f3..5c903e15 100644
+--- a/drivers/net/wireless/ath/ath10k/ce.h
++++ b/drivers/net/wireless/ath/ath10k/ce.h
+@@ -38,8 +38,13 @@ struct ath10k_ce_pipe;
  
- static void ath10k_pci_irq_msi_fw_unmask(struct ath10k *ar)
- {
- 	u32 val;
+ #define CE_DESC_FLAGS_GATHER         (1 << 0)
+ #define CE_DESC_FLAGS_BYTE_SWAP      (1 << 1)
+-#define CE_DESC_FLAGS_META_DATA_MASK 0xFFFC
+-#define CE_DESC_FLAGS_META_DATA_LSB  2
++
++/* Following desc flags are used in QCA99X0 */
++#define CE_DESC_FLAGS_HOST_INT_DIS	(1 << 2)
++#define CE_DESC_FLAGS_TGT_INT_DIS	(1 << 3)
++
++#define CE_DESC_FLAGS_META_DATA_MASK ar->hw_values->ce_desc_meta_data_mask
++#define CE_DESC_FLAGS_META_DATA_LSB  ar->hw_values->ce_desc_meta_data_lsb
  
--	val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS);
--	val |= CORE_CTRL_PCIE_REG_31_MASK;
--
--	ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS + CORE_CTRL_ADDRESS, val);
-+	switch (ar->hw_rev) {
-+	case ATH10K_HW_QCA988X:
-+	case ATH10K_HW_QCA6174:
-+		val = ath10k_pci_read32(ar, SOC_CORE_BASE_ADDRESS +
-+					CORE_CTRL_ADDRESS);
-+		val |= CORE_CTRL_PCIE_REG_31_MASK;
-+		ath10k_pci_write32(ar, SOC_CORE_BASE_ADDRESS +
-+				   CORE_CTRL_ADDRESS, val);
-+		break;
-+	case ATH10K_HW_QCA99X0:
-+		/* TODO: Find appropriate register configuration for QCA99X0
-+		 *  to unmask irq/MSI.
-+		 */
-+		break;
-+	}
- }
+ struct ce_desc {
+ 	__le32 addr;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index e5fe33d9..1414e1f 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -114,6 +114,8 @@ const struct ath10k_hw_values qca988x_values = {
+ 	.ce_count			= 8,
+ 	.msi_assign_ce_max		= 7,
+ 	.num_target_ce_config_wlan	= 7,
++	.ce_desc_meta_data_mask		= 0xFFFC,
++	.ce_desc_meta_data_lsb		= 2,
+ };
  
- static void ath10k_pci_irq_disable(struct ath10k *ar)
-@@ -1602,7 +1625,7 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 	 * masked. To prevent the device from asserting the interrupt reset it
- 	 * before proceeding with cleanup.
- 	 */
--	ath10k_pci_warm_reset(ar);
-+	ath10k_pci_safe_chip_reset(ar);
+ const struct ath10k_hw_values qca6174_values = {
+@@ -121,6 +123,8 @@ const struct ath10k_hw_values qca6174_values = {
+ 	.ce_count			= 8,
+ 	.msi_assign_ce_max		= 7,
+ 	.num_target_ce_config_wlan	= 7,
++	.ce_desc_meta_data_mask		= 0xFFFC,
++	.ce_desc_meta_data_lsb		= 2,
+ };
  
- 	ath10k_pci_irq_disable(ar);
- 	ath10k_pci_irq_sync(ar);
-@@ -2114,6 +2137,18 @@ static int ath10k_pci_warm_reset(struct ath10k *ar)
- 	return 0;
- }
+ const struct ath10k_hw_values qca99x0_values = {
+@@ -128,6 +132,8 @@ const struct ath10k_hw_values qca99x0_values = {
+ 	.ce_count			= 12,
+ 	.msi_assign_ce_max		= 12,
+ 	.num_target_ce_config_wlan	= 10,
++	.ce_desc_meta_data_mask		= 0xFFF0,
++	.ce_desc_meta_data_lsb		= 4,
+ };
  
-+static int ath10k_pci_safe_chip_reset(struct ath10k *ar)
-+{
-+	if (QCA_REV_988X(ar) || QCA_REV_6174(ar)) {
-+		return ath10k_pci_warm_reset(ar);
-+	} else if (QCA_REV_99X0(ar)) {
-+		ath10k_pci_irq_disable(ar);
-+		return ath10k_pci_qca99x0_chip_reset(ar);
-+	} else {
-+		return -ENOTSUPP;
-+	}
-+}
-+
- static int ath10k_pci_qca988x_chip_reset(struct ath10k *ar)
- {
- 	int i, ret;
-@@ -2220,12 +2255,38 @@ static int ath10k_pci_qca6174_chip_reset(struct ath10k *ar)
- 	return 0;
- }
+ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 5819659..35cd8ca 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -195,6 +195,8 @@ struct ath10k_hw_values {
+ 	u8 ce_count;
+ 	u8 msi_assign_ce_max;
+ 	u8 num_target_ce_config_wlan;
++	u16 ce_desc_meta_data_mask;
++	u8 ce_desc_meta_data_lsb;
+ };
  
-+static int ath10k_pci_qca99x0_chip_reset(struct ath10k *ar)
-+{
-+	int ret;
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot qca99x0 chip reset\n");
-+
-+	ret = ath10k_pci_cold_reset(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to cold reset: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = ath10k_pci_wait_for_target_init(ar);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to wait for target after cold reset: %d\n",
-+			    ret);
-+		return ret;
-+	}
-+
-+	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot qca99x0 chip reset complete (cold)\n");
-+
-+	return 0;
-+}
-+
- static int ath10k_pci_chip_reset(struct ath10k *ar)
- {
- 	if (QCA_REV_988X(ar))
- 		return ath10k_pci_qca988x_chip_reset(ar);
- 	else if (QCA_REV_6174(ar))
- 		return ath10k_pci_qca6174_chip_reset(ar);
-+	else if (QCA_REV_99X0(ar))
-+		return ath10k_pci_qca99x0_chip_reset(ar);
- 	else
- 		return -ENOTSUPP;
- }
+ extern const struct ath10k_hw_values qca988x_values;
 -- 
 1.9.1
 
