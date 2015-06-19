@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from ns1.17960.lgv.host ([69.162.107.50])
+Received: from bl4ckb0x.de ([5.9.63.241])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z5rcs-0006R1-9r
- for ath10k@lists.infradead.org; Fri, 19 Jun 2015 08:26:14 +0000
-Received: from express by ns1.17960.lgv.host with local (Exim 4.85)
- (envelope-from <express@ns1.17960.lgv.host>) id 1Z5qy0-0007ER-RW
- for ath10k@lists.infradead.org; Fri, 19 Jun 2015 04:44:00 -0300
-Subject: Pay for driving on toll road, invoice #00000650185
-Date: Fri, 19 Jun 2015 07:44:00 +0000
-From: "E-ZPass Support" <richard.morrison@ns1.17960.lgv.host>
-Message-ID: <efa5134a976f4e48f7d208bcf0d162ff@ns1.17960.lgv.host>
+ id 1Z5ugg-0007sY-OB
+ for ath10k@lists.infradead.org; Fri, 19 Jun 2015 11:42:25 +0000
+Received: from mail.bl4ckb0x.com (bl4ckb0x.de
+ [IPv6:2a01:4f8:161:64ec:5:9:63:241])
+ by bl4ckb0x.de (Postfix) with ESMTPSA id F2B671F400F1
+ for <ath10k@lists.infradead.org>; Fri, 19 Jun 2015 13:41:55 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_549c827bb09ccdc2d23f2c96ae132cab"
-Content-Transfer-Encoding: 8bit
+Date: Fri, 19 Jun 2015 13:41:55 +0200
+From: Conrad Kostecki <ck+ath10k@bl4ckb0x.de>
+Subject: Firmware sometimes crashing
+Message-ID: <3b21f415743af0507ea089d6b7be83b1@bl4ckb0x.de>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,74 +20,123 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: E-ZPass Support <richard.morrison@ns1.17960.lgv.host>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
---b1_549c827bb09ccdc2d23f2c96ae132cab
-Content-Type: text/plain; charset=us-ascii
+Hi!
+I am still having many problems with kernel 4.0.x and my two ath10k 
+cards.
+With Kernel 3.19 and older FW, those problems are gone..
 
-Notice to Appear,
+After a fresh start, I have to try a few times,
+until finally my cards come up or fail to be started.
 
-You have a unpaid bill for using toll road.
-You are kindly asked to service your debt in the shortest time possible.
+With "start", I mean, that the interface cannot be set UP.
 
-You can review the invoice in the attachment.
+[...]
+nl80211: Supported cipher 00-0f-ac:1
+nl80211: Supported cipher 00-0f-ac:5
+nl80211: Supported cipher 00-0f-ac:2
+nl80211: Supported cipher 00-0f-ac:4
+nl80211: Supported cipher 00-0f-ac:6
+nl80211: Using driver-based off-channel TX
+nl80211: interface wlp7s0 in phy phy0
+nl80211: Set mode ifindex 7 iftype 3 (AP)
+nl80211: Failed to set interface 7 to mode 3: -16 (Device or resource 
+busy)
+nl80211: Try mode change after setting interface down
+nl80211: Set mode ifindex 7 iftype 3 (AP)
+nl80211: Mode change succeeded while interface is down
+Could not set interface wlp7s0 flags (UP): Resource temporarily 
+unavailable
+nl80211: Failed to set interface up after switching mode
+nl80211: Interface mode change to 3 from 3 failed
+nl80211: Could not configure driver mode
+nl80211: deinit ifname=wlp7s0 disabled_11b_rates=0
+nl80211: Remove monitor interface: refcount=0
+nl80211: Remove beacon (ifindex=7)
+netlink: Operstate: ifindex=7 linkmode=0 (kernel-control), operstate=6 
+(IF_OPER_UP)
+nl80211: Set mode ifindex 7 iftype 2 (STATION)
+nl80211: Teardown AP(wlp7s0) - device_ap_sme=0 use_monitor=0
+nl80211 driver initialization failed.
+[...]
 
-Kind regards,
-Richard Morrison,
-E-ZPass Agent.
+Logs only show:
+[511574.240052] ath10k_pci 0000:07:00.0: failed to set kickout threshold 
+on vdev 0: -11
+[511574.240060] ath10k_pci 0000:07:00.0: failed to set vdev 0 kickout 
+parameters: -11
+[511583.240060] ath10k_pci 0000:07:00.0: could not suspend target (-11)
 
+After running 1-2 days, I am getting a lot of:
+[511195.093208] ath10k_pci 0000:07:00.0: Spurious quick kickout for STA 
+xx:xx:xx:32:ac:4d
+[511195.093216] ath10k_pci 0000:07:00.0: Spurious quick kickout for STA 
+xx:xx:xx:57:07:1a
+[511201.093527] ath10k_warn: 2 callbacks suppressed
 
---b1_549c827bb09ccdc2d23f2c96ae132cab
-Content-Type: application/zip; name="00000650185.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=00000650185.zip
+After stopping hostapd, the firmware is sometimes crashing:
+[511207.691108] ath10k_pci 0000:07:00.0: removing stale peer 
+d8:75:33:57:07:1a from vdev_id 0
+[511207.691121] ath10k_pci 0000:07:00.0: removing stale peer 
+10:68:3f:32:ac:4d from vdev_id 0
+[511207.691139] ath10k_pci 0000:07:00.0: received addba event for 
+invalid peer_id: 195
+[511207.691181] ath10k_pci 0000:07:00.0: peer-unmap-event: unknown peer 
+id 195
+[511207.691454] ath10k_pci 0000:07:00.0: firmware crashed! (uuid n/a)
+[511207.691464] ath10k_pci 0000:07:00.0: qca988x hw2.0 (0x4100016c, 
+0x043202ff) fw 10.2-00082-4-2 api 4 htt 2.1 wmi 3 cal otp max_sta 128
+[511207.691469] ath10k_pci 0000:07:00.0: debug 0 debugfs 0 tracing 0 dfs 
+1 testmode 0
+[511207.693497] ath10k_pci 0000:07:00.0: firmware register dump:
+[511207.693503] ath10k_pci 0000:07:00.0: [00]: 0x4100016C 0x000015B3 
+0x009979A3 0x00955B31
+[511207.693509] ath10k_pci 0000:07:00.0: [04]: 0x009979A3 0x00060330 
+0x00000017 0x00000000
+[511207.693514] ath10k_pci 0000:07:00.0: [08]: 0x0041FDA4 0x0041FA54 
+0x00448370 0x004483C0
+[511207.693519] ath10k_pci 0000:07:00.0: [12]: 0x00000009 0x00000000 
+0x00958360 0x0095836B
+[511207.693525] ath10k_pci 0000:07:00.0: [16]: 0x00958080 0x0094085D 
+0x00000000 0x00000000
+[511207.693530] ath10k_pci 0000:07:00.0: [20]: 0x409979A3 0x0040AC44 
+0x00000000 0x573375D8
+[511207.693536] ath10k_pci 0000:07:00.0: [24]: 0x8099F6E7 0x0040ACA4 
+0x00000000 0xC09979A3
+[511207.693541] ath10k_pci 0000:07:00.0: [28]: 0x8099E0A3 0x0040ACC4 
+0x0043D0D8 0x0043DB98
+[511207.693546] ath10k_pci 0000:07:00.0: [32]: 0x8099F8E6 0x0040ACE4 
+0x0043D0D8 0x00000000
+[511207.693552] ath10k_pci 0000:07:00.0: [36]: 0x809B38C0 0x0040AD14 
+0x00009011 0x0040F258
+[511207.693557] ath10k_pci 0000:07:00.0: [40]: 0x809AFD68 0x0040AD94 
+0x00400000 0x004166A8
+[511207.693562] ath10k_pci 0000:07:00.0: [44]: 0x809BDA75 0x0040ADE4 
+0x0040AE08 0x00411D44
+[511207.693567] ath10k_pci 0000:07:00.0: [48]: 0x809486FA 0x0040AE04 
+0x00000001 0x00000000
+[511207.693573] ath10k_pci 0000:07:00.0: [52]: 0x80948E2C 0x0040AEA4 
+0x0041E424 0x00412350
+[511207.693578] ath10k_pci 0000:07:00.0: [56]: 0x809BCF0D 0x0040AEC4 
+0x0041E424 0x00000001
+[511207.693643] ath10k_pci 0000:07:00.0: could not suspend target (-108)
+[511207.781887] ath10k_pci 0000:07:00.0: cannot restart a device that 
+hasn't been started
 
-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
-SwUGAAAAAAEAAQBAAAAApgYAAAAA
+The problem seems not to be hostap,
+as simple commands like ifconfig up/down are also not working and can 
+(not always!) crash firmware.
 
+Any Ideas?
 
---b1_549c827bb09ccdc2d23f2c96ae132cab
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Conrad
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---b1_549c827bb09ccdc2d23f2c96ae132cab--
