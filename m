@@ -1,17 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z6u9U-0001jW-IH
- for ath10k@lists.infradead.org; Mon, 22 Jun 2015 05:20:13 +0000
-Received: by wicnd19 with SMTP id nd19so65273773wic.1
- for <ath10k@lists.infradead.org>; Sun, 21 Jun 2015 22:19:48 -0700 (PDT)
+ id 1Z72ue-0004Yu-9l
+ for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:41:28 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH v2 01/10] ath10k: include new wmi op version for 10.4 fw
+Date: Mon, 22 Jun 2015 20:10:09 +0530
+Message-ID: <1434984018-24057-2-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1434984018-24057-1-git-send-email-rmani@qti.qualcomm.com>
+References: <1434984018-24057-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CABhs+6kp5KEtwUrE3xdDRz9pQ_An27bf5Hs46mg3pBNVw0rg6g@mail.gmail.com>
-References: <CABhs+6kp5KEtwUrE3xdDRz9pQ_An27bf5Hs46mg3pBNVw0rg6g@mail.gmail.com>
-Date: Mon, 22 Jun 2015 07:19:48 +0200
-Message-ID: <CA+BoTQnnC_ysVw_rgYyP52eB0nRs7tZ3W7HEeyD=7i957BLSRg@mail.gmail.com>
-Subject: Re: Problem with iw set bitrate in ath10k
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +18,89 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ilias Syrigos <ilias013@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-T24gMjAgSnVuZSAyMDE1IGF0IDAwOjAxLCBJbGlhcyBTeXJpZ29zIDxpbGlhczAxM0BnbWFpbC5j
-b20+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gSSdtIHRyeWluZyB0byBmaXggdGhlIGJpdHJhdGUgd2l0
-aCB0aGUgaXcgc2V0IGJpdHJhdGVzIGNvbW1hbmQuCj4KPiBNb3JlIHNwZWNpZmljYWxseSwgSSB3
-YW50IHRvIHVzZSBzaW5nbGUgc3RyZWFtIHJhdGVzIChuc3M9MSkgYW5kIGxldAo+IHRoZSBkcml2
-ZXIgY2hvb3NlIHRoZSBtY3MuIFNvLCBJIHVzZToKPgo+IGl3IHdsYW4wIHNldCBiaXRyYXRlcyBs
-ZWdhY3ktNSBodC1tY3MtNSB2aHQtbWNzLTUgMTowLTkKPgo+IFdpdGggdGhpcyBzZXR0aW5nIEkg
-b2JzZXJ2ZSBzdWNjZXNzZnVsIHRyYW5zbWlzc2lvbnMgd2l0aCBuc3M9MiBhbmQKPiByYXRlX2lu
-ZGV4PTksIHRocm91Z2ggbW9uaXRvciBtb2RlIGF0IHRoZSByZWNlaXZpbmcgbm9kZSwgYW5kIGlw
-ZXJmCj4gdGhyb3VnaHB1dCBvZiAzMDAgTWJwcy4KPgo+IFdoeSBpcyBuc3Mgbm90IGZpeGVkIHRv
-IDE/CgpUaGF0J3MgaW50ZXJlc3RpbmcuIEFyZSB5b3UgYXNzb2NpYXRlZCBpbiBWSFQgb3IgSFQg
-bW9kZT8gQ2FuIHlvdSBnZXQKc29tZSBsb2dzLCBwbGVhc2U/IFsxXSAodHJhY2VzIHByZWZlcnJl
-ZCkKClsxXTogaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVy
-cy9hdGgxMGsvZGVidWcKCkdlbmVyYWxseSBmaXJtd2FyZSByYXRlLWNvbnRyb2wgaXMgcmVhbGx5
-IHBpY2t5IHdoZW4gaXQgY29tZXMgdG8KY29uZmlndXJhdGlvbi4gSSByZWNhbGwgSSBoYWQgb2Jz
-ZXJ2ZWQgc29tZSBxdWlya2luZXNzIHdoZW4gSSB3YXMKd29ya2luZyBvbiBleHRlbmRpbmcgdGhl
-IHNldF9iaXRyYXRlX21hc2sgY2FsbGJhY2suCgoKPiBNb3Jlb3ZlciwgYmVmb3JlIHVzaW5nIHRo
-ZSBpdyBjb21tYW5kIHRvIGZpeCB0aGUgcmF0ZSwgZHJpdmVyIHVzZXMKPiBuc3M9MiBhbmQgcmF0
-ZV9pbmRleD00Lgo+Cj4gU2hvdWxkbid0IGhhdmUgYmVlbiBhbHNvIDI6OSAobnNzPTIsIHJhdGVf
-aW5kZXg9OSk/Cj4KPiBJbiBhZGRpdGlvbiwgd2hlbiBJIG1hbnVhbGx5IGZpeCB0aGUgcmF0ZSB3
-aXRoIHRoZToKPgo+IGl3IHdsYW4wIHNldCBiaXRyYXRlcyBsZWdhY3ktNSBodC1tY3MtNSB2aHQt
-bWNzLTUgMjo5ICBvciBldmVuIDI6OAo+Cj4gSSBjYW5ub3QgcmVjZWl2ZSBhbnl0aGluZyBhbmQg
-SSBub3RpY2UgdG9vIG1hbnkgZmNzIGVycm9ycy4KClZIVCByYXRlcyA4IGFuZCA5IGNhbiBiZSBw
-cmV0dHkgZGVtYW5kaW5nIHdoZW4gaXQgY29tZXMgdG8gc2lnbmFsCnF1YWxpdHkuIFlvdSBtaWdo
-dCBuZWVkIHRvIGNoYW5nZSBhbnRlbm5hIHBvc2l0aW9uaW5nIG9uIGJvdGggcmVjZWl2ZXIKYW5k
-IHRyYW5zbWl0dGVkIGRldmljZXMgdG8gZ2V0IGl0IHdvcmtpbmcuCgoKPiBJJ20gb25seSBhYmxl
-IHRvIHJlY2VpdmUgYXQgdGhlIGZpeGVkIDI6Ny4KPgo+IEknbSB1c2luZyB0aGUgbGF0ZXN0IGRl
-dmVsb3BtZW50IGRyaXZlciBhbmQgdGhlIGxhdGVzdCBmaXJtd2FyZS01LgoKVGhpcyBpc24ndCBm
-aXJtd2FyZSB2ZXJzaW9uIHBlciBzZS4gVGhpcyBpcyBqdXN0IGFuIEFCSSB3cmFwcGVyCnZlcnNp
-b24gYW5kIGRvZXNuJ3QgaW1wbHkgZmlybXdhcmUgcmV2aXNpb24uIFRha2UgYSBsb29rIGF0IGRt
-ZXNnLApwbGVhc2UuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+qca99X0 chip uses firmware version 10.4. Define a new macro
+ATH10K_FW_WMI_OP_VERSION_10_4 for 10.4 firmware and include
+in switch cases where ATH10K_FW_WMI_OP_VERSION_* is used
+to avoid compilation error.
+
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/core.c | 2 ++
+ drivers/net/wireless/ath/ath10k/hw.h   | 1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 2 ++
+ drivers/net/wireless/ath/ath10k/wmi.c  | 2 ++
+ 4 files changed, 7 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 80f38b5..5e8d8af 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1115,6 +1115,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		ar->fw_stats_req_mask = WMI_STAT_PDEV | WMI_STAT_VDEV |
+ 			WMI_STAT_PEER;
+ 		break;
++	case ATH10K_FW_WMI_OP_VERSION_10_4:
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+ 		WARN_ON(1);
+@@ -1137,6 +1138,7 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+ 		case ATH10K_FW_WMI_OP_VERSION_TLV:
+ 			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
+ 			break;
++		case ATH10K_FW_WMI_OP_VERSION_10_4:
+ 		case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 		case ATH10K_FW_WMI_OP_VERSION_MAX:
+ 			WARN_ON(1);
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index 3e27781..b0c89b4 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -137,6 +137,7 @@ enum ath10k_fw_wmi_op_version {
+ 	ATH10K_FW_WMI_OP_VERSION_10_2 = 3,
+ 	ATH10K_FW_WMI_OP_VERSION_TLV = 4,
+ 	ATH10K_FW_WMI_OP_VERSION_10_2_4 = 5,
++	ATH10K_FW_WMI_OP_VERSION_10_4 = 6,
+ 
+ 	/* keep last */
+ 	ATH10K_FW_WMI_OP_VERSION_MAX,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 2ec2b0b..f9989d1 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6943,6 +6943,8 @@ int ath10k_mac_register(struct ath10k *ar)
+ 		ar->hw->wiphy->n_iface_combinations =
+ 			ARRAY_SIZE(ath10k_10x_if_comb);
+ 		break;
++	case ATH10K_FW_WMI_OP_VERSION_10_4:
++		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
+ 		WARN_ON(1);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 6c046c2..b32bb68 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -5415,6 +5415,8 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ int ath10k_wmi_attach(struct ath10k *ar)
+ {
+ 	switch (ar->wmi.op_version) {
++	case ATH10K_FW_WMI_OP_VERSION_10_4:
++		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_2_4:
+ 		ar->wmi.cmd = &wmi_10_2_4_cmd_map;
+ 		ar->wmi.ops = &wmi_10_2_4_ops;
+-- 
+1.8.1.2
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
