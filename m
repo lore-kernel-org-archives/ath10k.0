@@ -1,13 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z736i-0003OL-4E
- for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:53:57 +0000
+ id 1Z737U-0003g7-1H
+ for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:54:44 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH v2 3/8] ath10k: enable vdev and peer related operations for
- 10.4 fw
-Date: Mon, 22 Jun 2015 20:22:22 +0530
-Message-ID: <1434984747-24294-4-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH v2 6/8] ath10k: advertise 10.4 fw ap and sta iface combination
+ to mac80211
+Date: Mon, 22 Jun 2015 20:22:25 +0530
+Message-ID: <1434984747-24294-7-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,113 +26,63 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-Most of existing vdev and peer related functions (vdev create,
-vdev delete, vdev start, peer create, peer delete, peer flush, etc)
-are reusable for 10.4 firmware. Link those general vdev and peer
-functions to 10.4 wmi function table.
-
-Existing general pktlog enable/disable, dbglog configuration functions
-are reusable for 10.4 and add them also in wmi function table.
-
-Also handle few wmi events (sevice rdy, echo, dbg msg, tbtt offset
-update, dbg print) in ath10k_wmi_10_4_op_rx(). wow event is not
-applicable in 10.4 firmware, have it under not implemented print.
+10.4 fw supports upto 16 interface in ap mode and 1 interface
+in station mode, overall total interfaces supported are 16
+interfaces. Populate this limit in wiphy->iface_combinations.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 62 +++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 48ea442..c4d777d 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -4418,12 +4418,40 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 		ath10k_wmi_event_mgmt_rx(ar, skb);
- 		/* mgmt_rx() owns the skb now! */
- 		return;
-+	case WMI_10_4_ECHO_EVENTID:
-+		ath10k_wmi_event_echo(ar, skb);
-+		break;
-+	case WMI_10_4_DEBUG_MESG_EVENTID:
-+		ath10k_wmi_event_debug_mesg(ar, skb);
-+		break;
-+	case WMI_10_4_SERVICE_READY_EVENTID:
-+		ath10k_wmi_event_service_ready(ar, skb);
-+		break;
- 	case WMI_10_4_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
- 		break;
-+	case WMI_10_4_PEER_STA_KICKOUT_EVENTID:
-+		ath10k_wmi_event_peer_sta_kickout(ar, skb);
-+		break;
- 	case WMI_10_4_HOST_SWBA_EVENTID:
- 		ath10k_wmi_event_host_swba(ar, skb);
- 		break;
-+	case WMI_10_4_TBTTOFFSET_UPDATE_EVENTID:
-+		ath10k_wmi_event_tbttoffset_update(ar, skb);
-+		break;
-+	case WMI_10_4_DEBUG_PRINT_EVENTID:
-+		ath10k_wmi_event_debug_print(ar, skb);
-+		break;
-+	case WMI_10_4_VDEV_START_RESP_EVENTID:
-+		ath10k_wmi_event_vdev_start_resp(ar, skb);
-+		break;
-+	case WMI_10_4_VDEV_STOPPED_EVENTID:
-+		ath10k_wmi_event_vdev_stopped(ar, skb);
-+		break;
-+	case WMI_10_4_WOW_WAKEUP_HOST_EVENTID:
-+		ath10k_dbg(ar, ATH10K_DBG_WMI,
-+			   "received event id %d not implemented\n", id);
-+		break;
- 	default:
- 		ath10k_warn(ar, "Unknown eventid: %d\n", id);
- 		break;
-@@ -6355,10 +6383,44 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.rx = ath10k_wmi_10_4_op_rx,
- 	.map_svc = wmi_10_4_svc_map,
- 	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
-+	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
-+	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
- 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+
-+	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
-+	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-+	.gen_pdev_set_rd = ath10k_wmi_10x_op_gen_pdev_set_rd,
-+	.gen_pdev_set_param = ath10k_wmi_op_gen_pdev_set_param,
- 	.gen_init = ath10k_wmi_10_4_op_gen_init,
-+	.gen_vdev_create = ath10k_wmi_op_gen_vdev_create,
-+	.gen_vdev_delete = ath10k_wmi_op_gen_vdev_delete,
-+	.gen_vdev_start = ath10k_wmi_op_gen_vdev_start,
-+	.gen_vdev_stop = ath10k_wmi_op_gen_vdev_stop,
-+	.gen_vdev_up = ath10k_wmi_op_gen_vdev_up,
-+	.gen_vdev_down = ath10k_wmi_op_gen_vdev_down,
-+	.gen_vdev_set_param = ath10k_wmi_op_gen_vdev_set_param,
-+	.gen_vdev_install_key = ath10k_wmi_op_gen_vdev_install_key,
-+	.gen_peer_create = ath10k_wmi_op_gen_peer_create,
-+	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
-+	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
-+	.gen_peer_set_param = ath10k_wmi_op_gen_peer_set_param,
-+	.gen_set_psmode = ath10k_wmi_op_gen_set_psmode,
-+	.gen_set_sta_ps = ath10k_wmi_op_gen_set_sta_ps,
-+	.gen_set_ap_ps = ath10k_wmi_op_gen_set_ap_ps,
-+	.gen_scan_chan_list = ath10k_wmi_op_gen_scan_chan_list,
-+	.gen_beacon_dma = ath10k_wmi_op_gen_beacon_dma,
-+	.gen_pdev_set_wmm = ath10k_wmi_op_gen_pdev_set_wmm,
-+	.gen_force_fw_hang = ath10k_wmi_op_gen_force_fw_hang,
-+	.gen_mgmt_tx = ath10k_wmi_op_gen_mgmt_tx,
-+	.gen_dbglog_cfg = ath10k_wmi_op_gen_dbglog_cfg,
-+	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
-+	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
-+	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-+
-+	/* shared with 10.2 */
-+	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index f9989d1..bbdf7a9 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -6620,6 +6620,33 @@ static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
+ 	},
  };
  
- int ath10k_wmi_attach(struct ath10k *ar)
++static const struct ieee80211_iface_limit ath10k_10_4_if_limits[] = {
++	{
++		.max = 1,
++		.types = BIT(NL80211_IFTYPE_STATION),
++	},
++	{
++		.max	= 16,
++		.types	= BIT(NL80211_IFTYPE_AP)
++	},
++};
++
++static const struct ieee80211_iface_combination ath10k_10_4_if_comb[] = {
++	{
++		.limits = ath10k_10_4_if_limits,
++		.n_limits = ARRAY_SIZE(ath10k_10_4_if_limits),
++		.max_interfaces = 16,
++		.num_different_channels = 1,
++		.beacon_int_infra_match = true,
++#ifdef CONFIG_ATH10K_DFS_CERTIFIED
++		.radar_detect_widths =	BIT(NL80211_CHAN_WIDTH_20_NOHT) |
++					BIT(NL80211_CHAN_WIDTH_20) |
++					BIT(NL80211_CHAN_WIDTH_40) |
++					BIT(NL80211_CHAN_WIDTH_80),
++#endif
++	},
++};
++
+ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ {
+ 	struct ieee80211_sta_vht_cap vht_cap = {0};
+@@ -6944,6 +6971,9 @@ int ath10k_mac_register(struct ath10k *ar)
+ 			ARRAY_SIZE(ath10k_10x_if_comb);
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_10_4:
++		ar->hw->wiphy->iface_combinations = ath10k_10_4_if_comb;
++		ar->hw->wiphy->n_iface_combinations =
++			ARRAY_SIZE(ath10k_10_4_if_comb);
+ 		break;
+ 	case ATH10K_FW_WMI_OP_VERSION_UNSET:
+ 	case ATH10K_FW_WMI_OP_VERSION_MAX:
 -- 
 1.8.1.2
 
