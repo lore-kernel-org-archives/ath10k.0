@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from vs16.mail.saunalahti.fi ([62.142.117.197])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z737v-0003rk-9K
- for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:55:12 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH v2 8/8] ath10k: configure frag desc memory to target for
- qca99X0
-Date: Mon, 22 Jun 2015 20:22:27 +0530
-Message-ID: <1434984747-24294-9-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
-References: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1Z763W-0000Xf-UF
+ for ath10k@lists.infradead.org; Mon, 22 Jun 2015 18:02:52 +0000
+Message-ID: <55884DAE.7070701@elisanet.fi>
+Date: Mon, 22 Jun 2015 21:02:22 +0300
+From: Matti Laakso <malaakso@elisanet.fi>
 MIME-Version: 1.0
+Subject: Re: Re: Warnings/errors in use with a QCA989x card
+References: <CA+BoTQnVin4Aj0MXhVwuX=nmHDsZo_xr-jF4zwLp+1-hExL2zQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQnVin4Aj0MXhVwuX=nmHDsZo_xr-jF4zwLp+1-hExL2zQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,242 +18,73 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+Cc: wingfeathera@gmail.com
 
-Pre qca99X0 chipsets follows the model where dynamically allocate
-memory for frag desc on getting new skb for TX. But, this is not
-going to be the case in qca99X0. It expects frag desc memory to be
-allocated at boot time and let the driver to reuse allocated memory
-after every TX completion. So there won't be any dynamic frag memory
-memory allocation in qca99X0 during data transmission.
-
-qca99X0 hardware doesn't need fragment desc address to be programmed
-in msdu descriptor for every data transaction. It needs to know only
-starting address of fragment descriptor at the time of the boot.
-During data transmission, qca99X0 hardware can retrieve corresponding
-frag addr by adding programmed frag desc base addr + msdu id.
-
-Allocate continuous fragment descriptor memory (same size as number of
-descriptor) at the time of target initialization and configure allocated
-dma address to the target via HTT_H2T_MSG_TYPE_FRAG_DESC_BANK_CFG.
-
-How this is allocated continuous memory is going to be used is not
-covered in this patch. It just allocates memory and hand over to firmware.
-If we don't do it at init time, qca99X0 will stall when firmware tries
-to do TX.
-
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/core.c   |  1 +
- drivers/net/wireless/ath/ath10k/core.h   |  6 +++
- drivers/net/wireless/ath/ath10k/htt.c    |  4 ++
- drivers/net/wireless/ath/ath10k/htt.h    | 11 +++++
- drivers/net/wireless/ath/ath10k/htt_tx.c | 76 +++++++++++++++++++++++++++++++-
- 5 files changed, 96 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 3c8d5c5..be5f01c 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -111,6 +111,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.patch_load_addr = QCA99X0_HW_2_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 7,
- 		.otp_exe_param = 0x00000700,
-+		.continuous_frag_desc = true,
- 		.fw = {
- 			.dir = QCA99X0_HW_2_0_FW_DIR,
- 			.fw = QCA99X0_HW_2_0_FW_FILE,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index f0811d0..2e5c935 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -582,6 +582,12 @@ struct ath10k {
- 		 */
- 		bool has_shifted_cc_wraparound;
- 
-+		/* Some of chip expects fragment descriptor to be continuous
-+		 * memory for any TX operation. Set continuous_frag_desc flag
-+		 * for the hardware which have such requirement.
-+		 */
-+		bool continuous_frag_desc;
-+
- 		struct ath10k_hw_params_fw {
- 			const char *dir;
- 			const char *fw;
-diff --git a/drivers/net/wireless/ath/ath10k/htt.c b/drivers/net/wireless/ath/ath10k/htt.c
-index 6f71f94..4474c3e 100644
---- a/drivers/net/wireless/ath/ath10k/htt.c
-+++ b/drivers/net/wireless/ath/ath10k/htt.c
-@@ -249,5 +249,9 @@ int ath10k_htt_setup(struct ath10k_htt *htt)
- 	if (status)
- 		return status;
- 
-+	status = ath10k_htt_send_frag_desc_bank_cfg(htt);
-+	if (status)
-+		return status;
-+
- 	return ath10k_htt_send_rx_ring_cfg_ll(htt);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
-index 8e64ace..8bdf1e7 100644
---- a/drivers/net/wireless/ath/ath10k/htt.h
-+++ b/drivers/net/wireless/ath/ath10k/htt.h
-@@ -87,6 +87,11 @@ struct htt_data_tx_desc_frag {
- 	__le32 len;
- } __packed;
- 
-+struct htt_msdu_ext_desc {
-+	__le32 tso_flag[4];
-+	struct htt_data_tx_desc_frag frags[6];
-+};
-+
- enum htt_data_tx_desc_flags0 {
- 	HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT = 1 << 0,
- 	HTT_DATA_TX_DESC_FLAGS0_NO_AGGR         = 1 << 1,
-@@ -1466,6 +1471,11 @@ struct ath10k_htt {
- 
- 	/* rx_status template */
- 	struct ieee80211_rx_status rx_status;
-+
-+	struct {
-+		dma_addr_t paddr;
-+		struct htt_msdu_ext_desc *vaddr;
-+	} frag_desc;
- };
- 
- #define RX_HTT_HDR_STATUS_LEN 64
-@@ -1533,6 +1543,7 @@ void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb);
- void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb);
- int ath10k_htt_h2t_ver_req_msg(struct ath10k_htt *htt);
- int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie);
-+int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt);
- int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt);
- int ath10k_htt_h2t_aggr_cfg_msg(struct ath10k_htt *htt,
- 				u8 max_subfrms_ampdu,
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a60ef7d..148d5b6 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -84,6 +84,7 @@ void ath10k_htt_tx_free_msdu_id(struct ath10k_htt *htt, u16 msdu_id)
- int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
-+	int ret, size;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "htt tx max num pending tx %d\n",
- 		   htt->max_num_pending_tx);
-@@ -94,11 +95,31 @@ int ath10k_htt_tx_alloc(struct ath10k_htt *htt)
- 	htt->tx_pool = dma_pool_create("ath10k htt tx pool", htt->ar->dev,
- 				       sizeof(struct ath10k_htt_txbuf), 4, 0);
- 	if (!htt->tx_pool) {
--		idr_destroy(&htt->pending_tx);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto free_idr_pending_tx;
-+	}
-+
-+	if (!ar->hw_params.continuous_frag_desc)
-+		goto skip_frag_desc_alloc;
-+
-+	size = htt->max_num_pending_tx * sizeof(struct htt_msdu_ext_desc);
-+	htt->frag_desc.vaddr = dma_alloc_coherent(ar->dev, size,
-+						  &htt->frag_desc.paddr,
-+						  GFP_DMA);
-+	if (!htt->frag_desc.vaddr) {
-+		ath10k_warn(ar, "failed to alloc fragment desc memory\n");
-+		ret = -ENOMEM;
-+		goto free_tx_pool;
- 	}
- 
-+skip_frag_desc_alloc:
- 	return 0;
-+
-+free_tx_pool:
-+	dma_pool_destroy(htt->tx_pool);
-+free_idr_pending_tx:
-+	idr_destroy(&htt->pending_tx);
-+	return ret;
- }
- 
- static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
-@@ -121,9 +142,18 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
- 
- void ath10k_htt_tx_free(struct ath10k_htt *htt)
- {
-+	int size;
-+
- 	idr_for_each(&htt->pending_tx, ath10k_htt_tx_clean_up_pending, htt->ar);
- 	idr_destroy(&htt->pending_tx);
- 	dma_pool_destroy(htt->tx_pool);
-+
-+	if (htt->frag_desc.vaddr) {
-+		size = htt->max_num_pending_tx *
-+				  sizeof(struct htt_msdu_ext_desc);
-+		dma_free_coherent(htt->ar->dev, size, htt->frag_desc.vaddr,
-+				  htt->frag_desc.paddr);
-+	}
- }
- 
- void ath10k_htt_htc_tx_complete(struct ath10k *ar, struct sk_buff *skb)
-@@ -201,6 +231,48 @@ int ath10k_htt_h2t_stats_req(struct ath10k_htt *htt, u8 mask, u64 cookie)
- 	return 0;
- }
- 
-+int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
-+{
-+	struct ath10k *ar = htt->ar;
-+	struct sk_buff *skb;
-+	struct htt_cmd *cmd;
-+	int ret, size;
-+
-+	if (!ar->hw_params.continuous_frag_desc)
-+		return 0;
-+
-+	if (!htt->frag_desc.paddr) {
-+		ath10k_warn(ar, "invalid frag desc memory\n");
-+		return -EINVAL;
-+	}
-+
-+	size = sizeof(cmd->hdr) + sizeof(cmd->frag_desc_bank_cfg);
-+	skb = ath10k_htc_alloc_skb(ar, size);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	skb_put(skb, size);
-+	cmd = (struct htt_cmd *)skb->data;
-+	cmd->hdr.msg_type = HTT_H2T_MSG_TYPE_FRAG_DESC_BANK_CFG;
-+	cmd->frag_desc_bank_cfg.info = 0;
-+	cmd->frag_desc_bank_cfg.num_banks = 1;
-+	cmd->frag_desc_bank_cfg.desc_size = sizeof(struct htt_msdu_ext_desc);
-+	cmd->frag_desc_bank_cfg.bank_base_addrs[0] =
-+				__cpu_to_le32(htt->frag_desc.paddr);
-+	cmd->frag_desc_bank_cfg.bank_id[0].bank_max_id =
-+				__cpu_to_le16(htt->max_num_pending_tx - 1);
-+
-+	ret = ath10k_htc_send(&htt->ar->htc, htt->eid, skb);
-+	if (ret) {
-+		ath10k_warn(ar, "failed to send frag desc bank cfg request: %d\n",
-+			    ret);
-+		dev_kfree_skb_any(skb);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- int ath10k_htt_send_rx_ring_cfg_ll(struct ath10k_htt *htt)
- {
- 	struct ath10k *ar = htt->ar;
--- 
-1.8.1.2
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+PiBPbiA1IEp1bmUgMjAxNSBhdCAxNzo1MiwgQmVuIEdyZWVhciA8Z3JlZWFyYiBhdCBjYW5kZWxh
+dGVjaC5jb20gPGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrPj4gd3JvdGU6Cj4gPi8gT24gMDYvMDQvMjAxNSAxMDoxNyBQTSwgTWljaGFsIEthemlvciB3
+cm90ZToKPiAvPj4vIE9uIDUgSnVuZSAyMDE1IGF0IDAzOjUyLCBNYXR0aGV3IFJvYmJldHRzIDx3
+aW5nZmVhdGhlcmEgYXQgZ21haWwuY29tIDxodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwaz4+IHdyb3RlOgo+IC8+Lwo+IC8+Pj4vIFtUaHUgSnVuICA0IDEx
+OjA3OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRl
+diAwLCBza2lwcGVkIG9sZCBiZWFjb24KPiAvPj4+LyBbVGh1IEp1biAgNCAxMTowNzowOCAyMDE1
+XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogU1dCQSBvdmVycnVuIG9uIHZkZXYgMCwgc2tpcHBl
+ZCBvbGQgYmVhY29uCj4gLz4+Pi8gW1RodSBKdW4gIDQgMTE6MDc6MDggMjAxNV0gYXRoMTBrX3Bj
+aSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNv
+bgo+IC8+Pj4vIFtUaHUgSnVuICA0IDExOjA3OjA4IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjow
+MC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lwcGVkIG9sZCBiZWFjb24KPiAvPj4+LyBb
+VGh1IEp1biAgNCAxMTowNzowOCAyMDE1XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogU1dCQSBv
+dmVycnVuIG9uIHZkZXYgMCwgc2tpcHBlZCBvbGQgYmVhY29uCj4gLz4+Pi8gW1RodSBKdW4gIDQg
+MTE6MDc6MDggMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2
+ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+IC8+Pj4vIFtUaHUgSnVuICA0IDExOjA3OjA5IDIw
+MTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBTV0JBIG92ZXJydW4gb24gdmRldiAwLCBza2lw
+cGVkIG9sZCBiZWFjb24KPiAvPj4+LyBbVGh1IEp1biAgNCAxMTowNzowOSAyMDE1XSBhdGgxMGtf
+cGNpIDAwMDA6MDI6MDAuMDogU1dCQSBvdmVycnVuIG9uIHZkZXYgMCwgc2tpcHBlZCBvbGQgYmVh
+Y29uCj4gLz4+Pi8gW1RodSBKdW4gIDQgMTE6MDc6MDkgMjAxNV0gYXRoMTBrX3BjaSAwMDAwOjAy
+OjAwLjA6IFNXQkEgb3ZlcnJ1biBvbiB2ZGV2IDAsIHNraXBwZWQgb2xkIGJlYWNvbgo+IC8+Pj4v
+IFtUaHUgSnVuICA0IDExOjA3OjA5IDIwMTVdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWls
+ZWQgdG8gdHJhbnNtaXQgbWFuYWdlbWVudCBmcmFtZSB2aWEgV01JOiAtMTEKPiAvPj4+LyBbVGh1
+IEp1biAgNCAxMjowNTozMiAyMDE1XSBhdGgxMGtfd2FybjogMTkgY2FsbGJhY2tzIHN1cHByZXNz
+ZWQKPiAvPj4+LyBbVGh1IEp1biAgNCAxMjowNTozMiAyMDE1XSBhdGgxMGtfcGNpIDAwMDA6MDI6
+MDAuMDogU3B1cmlvdXMgcXVpY2sga2lja291dCBmb3IgU1RBIDA0OmRiOjU2OmUxOjY1OjJmCj4g
+Lz4+Pi8gW1RodSBKdW4gIDQgMTI6NTU6NTQgMjAxNV0gZGV2aWNlIHdscDJzMCBsZWZ0IHByb21p
+c2N1b3VzIG1vZGUKPiAvPj4vCj4gLz4+LyBUaGlzIGlzIHRoZSBkcmVhZGVkIHR4IGNyZWRpdCBz
+dGFydmF0aW9uLgo+IC8+Lwo+IC8+LyBJIGhhdmUgc29tZSBmaXhlcyBhbmQgd29yay1hcm91bmRz
+IHJlbGF0ZWQgdG8gdGhpcyBpc3N1ZSBpbiBteSBrZXJuZWxzIGFuZCBDVCBmaXJtd2FyZS4KPiAv
+Pi8KPiAvPi8gUG9zc2libHkgaXQgd291bGQgd29yayBiZXR0ZXIgZm9yIHlvdToKPiAvPi8KPiAv
+Pi8gaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20vYXRoMTBrLnBocAo+IC8+Lwo+IC8+LyBUaGUg
+YmV0YS0xNCBmaXJtd2FyZSBpcyBwcm9iYWJseSBiZXN0IGF0IHRoaXMgcG9pbnQuLkknbGwgcHJv
+bW90ZSBpdCB0byBvZmZpY2lhbAo+IC8+LyByZWxlYXNlIHNvb24uCj4gLz4vCj4gLz4+LyBJbiBz
+b21lIGNhc2VzIGlmIGRpc2Fzc29jK2RlYXV0aCBpcyBzZW50IGFuZCB0YXJnZXQgc3RhdGlvbiBp
+cyBhc2xlZXAKPiAvPj4vIGFuZCB1bnJlc3BvbnNpdmUgaXQnbGwgY2F1c2UgZmlybXdhcmUgdG8g
+c3RhbGwgY2F1c2luZyBhdGgxMGsgdGltZW91dHMKPiAvPj4vIGR1cmluZyBzdGFfc3RhdGUgc3Rh
+dGlvbiByZW1vdmFsLiBEdWUgdG8gaW5zdWZmaWNpZW50IGNyZWRpdHMgYmVhY29ucwo+IC8+Pi8g
+Y2FuJ3QgYmUgc2VudCBmb3IgfjEwIHNlY29uZHMsIHN0YV9zdGF0ZSBzdGF0aW9uIHJlbW92YWwg
+ZmFpbHMgY2F1c2luZwo+IC8+Pi8gbWFjODAyMTEgY2FsbCB0cmFjZSBzcGxhdCBhbmQgbGF0ZXIg
+c3B1cmlvdXMga2lja291dCBldmVudHMgYmVjYXVzZQo+IC8+Pi8gcGVlciB3YXMgbmV2ZXIgcmVt
+b3ZlZCBmcm9tIGZpcm13YXJlLgo+IC8+Pi8KPiAvPj4vIFRoZXJlJ3Mgbm8gZWFzeS9zYW5lIGZp
+eCBmb3IgdGhhdCwgeWV0Lgo+IC8+Lwo+IC8+LyBJIHRob3VnaHQgdGhlIG5ld2VyIHVwc3RyZWFt
+IGZpcm13YXJlIGhhZAo+IC8+LyBzdXBwb3J0IGZvciBtZ3QgZnJhbWVzIG92ZXIgbm9ybWFsIHBh
+Y2tldCB0cmFuc3BvcnQgaW5zdGVhZCBvZiBvdmVyCj4gLz4vIHRoZSBXTUkgbWFuYWdlbWVudCBp
+bnRlcmZhY2U/ICBXb3VsZG4ndCB0aGF0IGZpeCB0aGluZ3M/Cj4gLwo+IEkgYmVsaWV2ZSB0aGlz
+IHdhcy9pcyBzdXBwb3NlZCB0byBiZSBhdmFpbGFibGUgaW4gc29tZSByZWNlbnQgMTAuMi40Cj4g
+YnVpbGRzLiBJIHRoaW5rIDEwLjIuNC40OCB3YXMgZmlyc3Qgc3VwcG9zZWQgdG8gc3VwcG9ydCBp
+dCBidXQgSSBzZWUKPiB0aGUgYXZhaWxhYmxlICJzdGFibGUiIGZ3IGFwaSBibG9iIHN0aWxsIGFk
+dmVydGlzZXMgaGFzLXdtaS1tZ210LXR4Lgo+IFRoZSAxMC4yLjQuNDgtMiBmcm9tIHVudGVzdGVk
+LyBvbiB0aGUgb3RoZXIgaGFuZCBkb2Vzbid0IGFkdmVydGlzZSB0aGUKPiBiaXQgc28gSSBndWVz
+cyBpdCB1c2VzIHRoZSBIVFQgcGF0aCBmb3IgbWFuYWdlbWVudCBmcmFtZXMgd2hpY2ggc2hvdWxk
+Cj4gcHJldmVudCB0aGUgdHggY3JlZGl0IHN0YXJ2YXRpb24gcHJvYmxlbS4KPgo+IEBNYXR0aGV3
+OiBDYW4geW91IHRyeSBydW5uaW5nIDEwLjIuNC40OC0yIGZyb20gMTAuMi40L3VudGVzdGVkLyBA
+Cj4gZ2l0aHViLmNvbS9rdmFsby9hdGgxMGstZmlybXdhcmUgYW5kIHNlZSBpZiBpdCBoZWxwcyB5
+b3UsIHBsZWFzZT8KPgo+Cj4gTWljaGHFggoKSSBjYW4gY29uZmlybSB0aGF0IHdpdGggdHdvIHdl
+ZWsncyB1c2Ugb2YgMTAuMi40LjcwLTIgSSd2ZSBub3Qgc2Vlbgp0aGVzZSBwcm9ibGVtcyBhbnkg
+bW9yZS4gVGhpcyBpcyBvbiBPcGVuV3J0IHdpdGggY2hlcnJ5IHBpY2tlZCBwYXRjaGVzCnRvIGVu
+YWJsZSBGVyBBUEkgNSAod2hpY2ggSSB3aWxsIHBvc3QgdG8gT3BlbldydCBtYWlsaW5nIGxpc3Qg
+c2hvcnRseSkuCgpNYXR0aQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpo
+dHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
