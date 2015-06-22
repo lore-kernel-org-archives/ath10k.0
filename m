@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from spookie.pmneo.de ([176.9.134.37])
- by merlin.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z6tWS-0004n3-Tr
- for ath10k@lists.infradead.org; Mon, 22 Jun 2015 04:39:53 +0000
-Subject: Shipment delivery problem #00000243203
-Date: Mon, 22 Jun 2015 06:38:57 +0200
-From: "FedEx International Ground" <clifton.romano@spookie.pmneo.de>
-Message-ID: <ad8da1b2a955822ae4eb0c905369481c@spookie.pmneo.de>
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1Z6u9U-0001jW-IH
+ for ath10k@lists.infradead.org; Mon, 22 Jun 2015 05:20:13 +0000
+Received: by wicnd19 with SMTP id nd19so65273773wic.1
+ for <ath10k@lists.infradead.org>; Sun, 21 Jun 2015 22:19:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_2025acd8d9501ad4cd9862b4896a102b"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABhs+6kp5KEtwUrE3xdDRz9pQ_An27bf5Hs46mg3pBNVw0rg6g@mail.gmail.com>
+References: <CABhs+6kp5KEtwUrE3xdDRz9pQ_An27bf5Hs46mg3pBNVw0rg6g@mail.gmail.com>
+Date: Mon, 22 Jun 2015 07:19:48 +0200
+Message-ID: <CA+BoTQnnC_ysVw_rgYyP52eB0nRs7tZ3W7HEeyD=7i957BLSRg@mail.gmail.com>
+Subject: Re: Problem with iw set bitrate in ath10k
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,73 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: FedEx International Ground <clifton.romano@spookie.pmneo.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Ilias Syrigos <ilias013@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
---b1_2025acd8d9501ad4cd9862b4896a102b
-Content-Type: text/plain; charset=us-ascii
-
-Dear Customer,
-
-We could not deliver your parcel.
-Please, open email attachment to print shipment label.
-
-Warm regards,
-Clifton Romano,
-Operation Agent.
-
-
---b1_2025acd8d9501ad4cd9862b4896a102b
-Content-Type: application/zip; name="FedEx_ID_00000243203.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=FedEx_ID_00000243203.zip
-
-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
-AAA=
-
-
---b1_2025acd8d9501ad4cd9862b4896a102b
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---b1_2025acd8d9501ad4cd9862b4896a102b--
+T24gMjAgSnVuZSAyMDE1IGF0IDAwOjAxLCBJbGlhcyBTeXJpZ29zIDxpbGlhczAxM0BnbWFpbC5j
+b20+IHdyb3RlOgo+IEhlbGxvLAo+Cj4gSSdtIHRyeWluZyB0byBmaXggdGhlIGJpdHJhdGUgd2l0
+aCB0aGUgaXcgc2V0IGJpdHJhdGVzIGNvbW1hbmQuCj4KPiBNb3JlIHNwZWNpZmljYWxseSwgSSB3
+YW50IHRvIHVzZSBzaW5nbGUgc3RyZWFtIHJhdGVzIChuc3M9MSkgYW5kIGxldAo+IHRoZSBkcml2
+ZXIgY2hvb3NlIHRoZSBtY3MuIFNvLCBJIHVzZToKPgo+IGl3IHdsYW4wIHNldCBiaXRyYXRlcyBs
+ZWdhY3ktNSBodC1tY3MtNSB2aHQtbWNzLTUgMTowLTkKPgo+IFdpdGggdGhpcyBzZXR0aW5nIEkg
+b2JzZXJ2ZSBzdWNjZXNzZnVsIHRyYW5zbWlzc2lvbnMgd2l0aCBuc3M9MiBhbmQKPiByYXRlX2lu
+ZGV4PTksIHRocm91Z2ggbW9uaXRvciBtb2RlIGF0IHRoZSByZWNlaXZpbmcgbm9kZSwgYW5kIGlw
+ZXJmCj4gdGhyb3VnaHB1dCBvZiAzMDAgTWJwcy4KPgo+IFdoeSBpcyBuc3Mgbm90IGZpeGVkIHRv
+IDE/CgpUaGF0J3MgaW50ZXJlc3RpbmcuIEFyZSB5b3UgYXNzb2NpYXRlZCBpbiBWSFQgb3IgSFQg
+bW9kZT8gQ2FuIHlvdSBnZXQKc29tZSBsb2dzLCBwbGVhc2U/IFsxXSAodHJhY2VzIHByZWZlcnJl
+ZCkKClsxXTogaHR0cHM6Ly93aXJlbGVzcy53aWtpLmtlcm5lbC5vcmcvZW4vdXNlcnMvZHJpdmVy
+cy9hdGgxMGsvZGVidWcKCkdlbmVyYWxseSBmaXJtd2FyZSByYXRlLWNvbnRyb2wgaXMgcmVhbGx5
+IHBpY2t5IHdoZW4gaXQgY29tZXMgdG8KY29uZmlndXJhdGlvbi4gSSByZWNhbGwgSSBoYWQgb2Jz
+ZXJ2ZWQgc29tZSBxdWlya2luZXNzIHdoZW4gSSB3YXMKd29ya2luZyBvbiBleHRlbmRpbmcgdGhl
+IHNldF9iaXRyYXRlX21hc2sgY2FsbGJhY2suCgoKPiBNb3Jlb3ZlciwgYmVmb3JlIHVzaW5nIHRo
+ZSBpdyBjb21tYW5kIHRvIGZpeCB0aGUgcmF0ZSwgZHJpdmVyIHVzZXMKPiBuc3M9MiBhbmQgcmF0
+ZV9pbmRleD00Lgo+Cj4gU2hvdWxkbid0IGhhdmUgYmVlbiBhbHNvIDI6OSAobnNzPTIsIHJhdGVf
+aW5kZXg9OSk/Cj4KPiBJbiBhZGRpdGlvbiwgd2hlbiBJIG1hbnVhbGx5IGZpeCB0aGUgcmF0ZSB3
+aXRoIHRoZToKPgo+IGl3IHdsYW4wIHNldCBiaXRyYXRlcyBsZWdhY3ktNSBodC1tY3MtNSB2aHQt
+bWNzLTUgMjo5ICBvciBldmVuIDI6OAo+Cj4gSSBjYW5ub3QgcmVjZWl2ZSBhbnl0aGluZyBhbmQg
+SSBub3RpY2UgdG9vIG1hbnkgZmNzIGVycm9ycy4KClZIVCByYXRlcyA4IGFuZCA5IGNhbiBiZSBw
+cmV0dHkgZGVtYW5kaW5nIHdoZW4gaXQgY29tZXMgdG8gc2lnbmFsCnF1YWxpdHkuIFlvdSBtaWdo
+dCBuZWVkIHRvIGNoYW5nZSBhbnRlbm5hIHBvc2l0aW9uaW5nIG9uIGJvdGggcmVjZWl2ZXIKYW5k
+IHRyYW5zbWl0dGVkIGRldmljZXMgdG8gZ2V0IGl0IHdvcmtpbmcuCgoKPiBJJ20gb25seSBhYmxl
+IHRvIHJlY2VpdmUgYXQgdGhlIGZpeGVkIDI6Ny4KPgo+IEknbSB1c2luZyB0aGUgbGF0ZXN0IGRl
+dmVsb3BtZW50IGRyaXZlciBhbmQgdGhlIGxhdGVzdCBmaXJtd2FyZS01LgoKVGhpcyBpc24ndCBm
+aXJtd2FyZSB2ZXJzaW9uIHBlciBzZS4gVGhpcyBpcyBqdXN0IGFuIEFCSSB3cmFwcGVyCnZlcnNp
+b24gYW5kIGRvZXNuJ3QgaW1wbHkgZmlybXdhcmUgcmV2aXNpb24uIFRha2UgYSBsb29rIGF0IGRt
+ZXNnLApwbGVhc2UuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
