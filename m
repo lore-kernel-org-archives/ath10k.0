@@ -1,13 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z72wA-0005Pg-Vp
- for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:43:03 +0000
+ id 1Z72wH-0005XA-8X
+ for ath10k@lists.infradead.org; Mon, 22 Jun 2015 14:43:10 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH v2 09/10] ath10k: adjust default peer limits if qcache enabled
- in 10.4 fw
-Date: Mon, 22 Jun 2015 20:10:17 +0530
-Message-ID: <1434984018-24057-10-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH v2 08/10] ath10k: handle 10.4 fw wmi mgmt rx event
+Date: Mon, 22 Jun 2015 20:10:16 +0530
+Message-ID: <1434984018-24057-9-git-send-email-rmani@qti.qualcomm.com>
 In-Reply-To: <1434984018-24057-1-git-send-email-rmani@qti.qualcomm.com>
 References: <1434984018-24057-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
@@ -26,99 +25,139 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-10.4 firmware supports upto 512 clients when qcache feature is enabled.
-Make adjustment on default max peer count, active peers, number of tid in
-such case to meet qcache requirement. 10.4 fw has extra unit info flag
-NUM_UNITS_IS_NUM_ACTIVE_PEERS which is also handled in this patch.
+10.4 firmware wmi mgmt rx event format differs from non 10.4
+firmware and changing existing wmi mgmt rx event parsing function
+ath10k_wmi_op_pull_mgmt_rx_ev() for 10.4 would add more complex.
+
+This patch adds new function to receive any wmi rx event from
+10.4 firmware and also introduce new function to parse wmi mgmt
+rx event.
+
+In addition, fw main branch service rdy event parsing function
+is linked in wmi ops table.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/hw.h  |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.c | 27 +++++++++++++++++++++++----
- drivers/net/wireless/ath/ath10k/wmi.h |  5 +++--
- 3 files changed, 32 insertions(+), 6 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 64 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h | 15 ++++++++
+ 2 files changed, 79 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index 52fc024..568c5ea5 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -360,6 +360,12 @@ enum ath10k_hw_rate_cck {
- #define TARGET_10_4_NUM_PEERS			((TARGET_10_4_NUM_STATIONS) + \
- 						 (TARGET_10_4_NUM_VDEVS))
- #define TARGET_10_4_ACTIVE_PEERS		0
-+
-+/* TODO: increase qcache max client limit to 512 after
-+ * testing with 512 client.
-+ */
-+#define TARGET_10_4_NUM_QCACHE_PEERS_MAX	256
-+#define TARGET_10_4_QCACHE_ACTIVE_PEERS		50
- #define TARGET_10_4_NUM_OFFLOAD_PEERS		0
- #define TARGET_10_4_NUM_OFFLOAD_REORDER_BUFFS	0
- #define TARGET_10_4_NUM_PEER_KEYS		2
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 9502032..62ea0bc 100644
+index 6c51b20..9502032 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.c
 +++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3826,20 +3826,39 @@ void ath10k_wmi_event_service_ready(struct ath10k *ar, struct sk_buff *skb)
- 		return;
- 	}
+@@ -2124,6 +2124,40 @@ static int ath10k_wmi_op_pull_mgmt_rx_ev(struct ath10k *ar, struct sk_buff *skb,
+ 	return 0;
+ }
  
-+	if (test_bit(WMI_SERVICE_PEER_CACHING, ar->wmi.svc_map)) {
-+		ar->max_num_peers = TARGET_10_4_NUM_QCACHE_PEERS_MAX +
-+				    TARGET_10_4_NUM_VDEVS;
-+		ar->num_active_peers = TARGET_10_4_QCACHE_ACTIVE_PEERS +
-+				       TARGET_10_4_NUM_VDEVS;
-+		ar->num_tids = ar->num_active_peers * 2;
-+		ar->max_num_stations = TARGET_10_4_NUM_QCACHE_PEERS_MAX;
++static int ath10k_wmi_10_4_op_pull_mgmt_rx_ev(struct ath10k *ar,
++					      struct sk_buff *skb,
++					      struct wmi_mgmt_rx_ev_arg *arg)
++{
++	struct wmi_10_4_mgmt_rx_event *ev;
++	struct wmi_10_4_mgmt_rx_hdr *ev_hdr;
++	size_t pull_len;
++	u32 msdu_len;
++
++	ev = (struct wmi_10_4_mgmt_rx_event *)skb->data;
++	ev_hdr = &ev->hdr;
++	pull_len = sizeof(*ev);
++
++	if (skb->len < pull_len)
++		return -EPROTO;
++
++	skb_pull(skb, pull_len);
++	arg->channel = ev_hdr->channel;
++	arg->buf_len = ev_hdr->buf_len;
++	arg->status = ev_hdr->status;
++	arg->snr = ev_hdr->snr;
++	arg->phy_mode = ev_hdr->phy_mode;
++	arg->rate = ev_hdr->rate;
++
++	msdu_len = __le32_to_cpu(arg->buf_len);
++	if (skb->len < msdu_len)
++		return -EPROTO;
++
++	/* Make sure bytes added for padding are removed. */
++	skb_trim(skb, msdu_len);
++
++	return 0;
++}
++
+ int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_mgmt_rx_ev_arg arg = {};
+@@ -4267,6 +4301,33 @@ out:
+ 	dev_kfree_skb(skb);
+ }
+ 
++static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
++{
++	struct wmi_cmd_hdr *cmd_hdr;
++	enum wmi_10_4_event_id id;
++
++	cmd_hdr = (struct wmi_cmd_hdr *)skb->data;
++	id = MS(__le32_to_cpu(cmd_hdr->cmd_id), WMI_CMD_HDR_CMD_ID);
++
++	if (!skb_pull(skb, sizeof(struct wmi_cmd_hdr)))
++		goto out;
++
++	trace_ath10k_wmi_event(ar, id, skb->data, skb->len);
++
++	switch (id) {
++	case WMI_10_4_MGMT_RX_EVENTID:
++		ath10k_wmi_event_mgmt_rx(ar, skb);
++		/* mgmt_rx() owns the skb now! */
++		return;
++	default:
++		ath10k_warn(ar, "Unknown eventid: %d\n", id);
++		break;
 +	}
 +
-+	/* TODO: Adjust max peer count for cases like WMI_SERVICE_RATECTRL_CACHE
-+	 * and WMI_SERVICE_IRAM_TIDS, etc.
-+	 */
++out:
++	dev_kfree_skb(skb);
++}
 +
- 	for (i = 0; i < num_mem_reqs; ++i) {
- 		req_id = __le32_to_cpu(arg.mem_reqs[i]->req_id);
- 		num_units = __le32_to_cpu(arg.mem_reqs[i]->num_units);
- 		unit_size = __le32_to_cpu(arg.mem_reqs[i]->unit_size);
- 		num_unit_info = __le32_to_cpu(arg.mem_reqs[i]->num_unit_info);
+ static void ath10k_wmi_process_rx(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	int ret;
+@@ -6186,7 +6247,10 @@ static const struct wmi_ops wmi_10_2_4_ops = {
+ };
  
--		if (num_unit_info & NUM_UNITS_IS_NUM_PEERS)
-+		if (num_unit_info & NUM_UNITS_IS_NUM_ACTIVE_PEERS) {
-+			if (ar->num_active_peers)
-+				num_units = ar->num_active_peers + 1;
-+			else
-+				num_units = ar->max_num_peers + 1;
-+		} else if (num_unit_info & NUM_UNITS_IS_NUM_PEERS) {
- 			/* number of units to allocate is number of
- 			 * peers, 1 extra for self peer on target */
- 			/* this needs to be tied, host and target
- 			 * can get out of sync */
--			num_units = TARGET_10X_NUM_PEERS + 1;
--		else if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS)
--			num_units = TARGET_10X_NUM_VDEVS + 1;
-+			num_units = ar->max_num_peers + 1;
-+		} else if (num_unit_info & NUM_UNITS_IS_NUM_VDEVS) {
-+			num_units = ar->max_num_vdevs + 1;
-+		}
+ static const struct wmi_ops wmi_10_4_ops = {
++	.rx = ath10k_wmi_10_4_op_rx,
+ 	.map_svc = wmi_10_4_svc_map,
++	.pull_mgmt_rx = ath10k_wmi_10_4_op_pull_mgmt_rx_ev,
++	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.gen_init = ath10k_wmi_10_4_op_gen_init,
+ };
  
- 		ath10k_dbg(ar, ATH10K_DBG_WMI,
- 			   "wmi mem_req_id %d num_units %d num_unit_info %d unit size %d actual units %d\n",
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index b1bec03..b1e4932 100644
+index dbb9f1c..b1bec03 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2377,8 +2377,9 @@ struct wmi_resource_config_10_2 {
- 	__le32 feature_mask;
+@@ -2947,6 +2947,21 @@ struct wmi_mgmt_rx_event_v2 {
+ 	u8 buf[0];
  } __packed;
  
--#define NUM_UNITS_IS_NUM_VDEVS   0x1
--#define NUM_UNITS_IS_NUM_PEERS   0x2
-+#define NUM_UNITS_IS_NUM_VDEVS         BIT(0)
-+#define NUM_UNITS_IS_NUM_PEERS         BIT(1)
-+#define NUM_UNITS_IS_NUM_ACTIVE_PEERS  BIT(2)
- 
- struct wmi_resource_config_10_4 {
- 	/* Number of virtual devices (VAPs) to support */
++struct wmi_10_4_mgmt_rx_hdr {
++	__le32 channel;
++	__le32 snr;
++	    u8 rssi_ctl[4];
++	__le32 rate;
++	__le32 phy_mode;
++	__le32 buf_len;
++	__le32 status;
++} __packed;
++
++struct wmi_10_4_mgmt_rx_event {
++	struct wmi_10_4_mgmt_rx_hdr hdr;
++	u8 buf[0];
++} __packed;
++
+ #define WMI_RX_STATUS_OK			0x00
+ #define WMI_RX_STATUS_ERR_CRC			0x01
+ #define WMI_RX_STATUS_ERR_DECRYPT		0x08
 -- 
 1.8.1.2
 
