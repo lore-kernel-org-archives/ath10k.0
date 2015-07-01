@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAG2P-0007tJ-B3
- for ath10k@lists.infradead.org; Wed, 01 Jul 2015 11:18:45 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/8] ath10k: enhance swba event handler to adapt
- different size tim bitmap
-References: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
- <1434984747-24294-2-git-send-email-rmani@qti.qualcomm.com>
- <87h9poxjvs.fsf@kamboji.qca.qualcomm.com>
- <87d20cxjc0.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 1 Jul 2015 14:18:15 +0300
-In-Reply-To: <87d20cxjc0.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Wed, 1 Jul 2015 13:28:47 +0300")
-Message-ID: <87zj3gw2h4.fsf@kamboji.qca.qualcomm.com>
+ id 1ZAGTt-00030r-SR
+ for ath10k@lists.infradead.org; Wed, 01 Jul 2015 11:47:10 +0000
+Message-ID: <5593D314.1080600@qti.qualcomm.com>
+Date: Wed, 1 Jul 2015 17:16:28 +0530
+From: rmani <rmani@qti.qualcomm.com>
 MIME-Version: 1.0
+Subject: Re: [PATCH v2 5/8] ath10k: add 10.4 fw specific htt msg definitions
+References: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
+ <1434984747-24294-6-git-send-email-rmani@qti.qualcomm.com>
+ <878ub0xiv1.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <878ub0xiv1.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +20,61 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
-
-> Kalle Valo <kvalo@qca.qualcomm.com> writes:
+On 07/01/2015 04:08 PM, Kalle Valo wrote:
+> Raja Mani <rmani@qti.qualcomm.com> writes:
 >
->>>  	/* if next SWBA has no tim_changed the tim_bitmap is garbage.
->>>  	 * we must copy the bitmap upon change and reuse it later */
->>>  	if (__le32_to_cpu(tim_info->tim_changed)) {
->>>  		int i;
->>>  
->>> -		BUILD_BUG_ON(sizeof(arvif->u.ap.tim_bitmap) !=
->>> -			     sizeof(tim_info->tim_bitmap));
->>> +		WARN_ON(sizeof(arvif->u.ap.tim_bitmap) < tim_len);
+>> New htt event table is added for 10.4 firmware. Following new htt
+>> events are available only 10.4. adding this to generic htt event
+>> table,
+>> 	HTT_T2H_MSG_TYPE_EN_STATS,
+>> 	HTT_T2H_MSG_TYPE_TX_FETCH_IND,
+>> 	HTT_T2H_MSG_TYPE_TX_FETCH_CONF,
+>> 	HTT_T2H_MSG_TYPE_TX_LOW_LATENCY_IND
 >>
->> I'm worried that this WARN_ON() spams too much so I changed it to:
->>
->> --- a/drivers/net/wireless/ath/ath10k/wmi.c
->> +++ b/drivers/net/wireless/ath/ath10k/wmi.c
->> @@ -2893,7 +2893,7 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
->>         if (__le32_to_cpu(tim_info->tim_changed)) {
->>                 int i;
->>  
->> -               WARN_ON(sizeof(arvif->u.ap.tim_bitmap) < tim_len);
->> +               WARN_ON_ONCE(sizeof(arvif->u.ap.tim_bitmap) < tim_len);
->>  
->>                 for (i = 0; i < tim_len; i++) {
->>                         t = tim_info->tim_bitmap[i / 4];
+>> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 >
-> Actually I got more worried about this. If tim_len >
-> sizeof(arvif->u.ap.tim_bitmap) don't we read out of bounds? So we should
-> actually add return for that case or am I missing something?
+> [...]
 >
-> Full code:
+>> @@ -1146,6 +1147,8 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+>>   			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
+>>   			break;
+>>   		case ATH10K_FW_WMI_OP_VERSION_10_4:
+>> +			ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_10_4;
+>> +			break;
+>>   		case ATH10K_FW_WMI_OP_VERSION_UNSET:
+>>   		case ATH10K_FW_WMI_OP_VERSION_MAX:
+>>   			WARN_ON(1);
 >
-> 		WARN_ON_ONCE(sizeof(arvif->u.ap.tim_bitmap) < tim_len);
+> So this switch block is only to support older firmware versions which do
+> not have ATH10K_FW_IE_HTT_OP_VERSION yet. 10.4 firmware will always have
+> it set so we don't need to have any backwards compatibility code for
+> 10.4. I changed this part with the diff below. Please review.
 >
-> 		for (i = 0; i < tim_len; i++) {
-> 			t = tim_info->tim_bitmap[i / 4];
-> 			v = __le32_to_cpu(t);
-> 			arvif->u.ap.tim_bitmap[i] = (v >> ((i % 4) * 8)) & 0xFF;
-> 		}
+> --- a/drivers/net/wireless/ath/ath10k/core.c
+> +++ b/drivers/net/wireless/ath/ath10k/core.c
+> @@ -1147,8 +1147,6 @@ static int ath10k_core_init_firmware_features(struct ath10k *ar)
+>                          ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_TLV;
+>                          break;
+>                  case ATH10K_FW_WMI_OP_VERSION_10_4:
+> -                       ar->htt.op_version = ATH10K_FW_HTT_OP_VERSION_10_4;
+> -                       break;
+>                  case ATH10K_FW_WMI_OP_VERSION_UNSET:
+>                  case ATH10K_FW_WMI_OP_VERSION_MAX:
+>                          WARN_ON(1);
+>
 
-I talked with Raja and I changed this now to:
+As you suggested, we can ignore htt op version assignment here and use
+what comes in firmware IE. I am fine with this change.
 
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -2893,7 +2893,11 @@ static void ath10k_wmi_update_tim(struct ath10k *ar,
-        if (__le32_to_cpu(tim_info->tim_changed)) {
-                int i;
- 
--               WARN_ON_ONCE(sizeof(arvif->u.ap.tim_bitmap) < tim_len);
-+               if (sizeof(arvif->u.ap.tim_bitmap) < tim_len) {
-+                       ath10k_warn(ar, "SWBA TIM field is too big (%d), truncated it to %d",
-+                                   tim_len, sizeof(arvif->u.ap.tim_bitmap));
-+                       tim_len = sizeof(arvif->u.ap.tim_bitmap);
-+               }
- 
-                for (i = 0; i < tim_len; i++) {
-                        t = tim_info->tim_bitmap[i / 4];
-
--- 
-Kalle Valo
+--
+Raja
 
 _______________________________________________
 ath10k mailing list
