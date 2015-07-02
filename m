@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAezS-0005fN-Pq
- for ath10k@lists.infradead.org; Thu, 02 Jul 2015 13:57:23 +0000
-Message-ID: <5595432C.9030202@candelatech.com>
-Date: Thu, 02 Jul 2015 06:57:00 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZAiem-0000Np-V3
+ for ath10k@lists.infradead.org; Thu, 02 Jul 2015 17:52:17 +0000
+Received: by igcur8 with SMTP id ur8so125211911igc.0
+ for <ath10k@lists.infradead.org>; Thu, 02 Jul 2015 10:51:55 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: ath10k: firmware crash after setting promiscous mode
-References: <55951DF8.6000708@cttc.cat>
- <CA+BoTQnfaYsXKc8dpiR4r9pd=K88P8mTNB1pJetQgN-n2HkhYw@mail.gmail.com>
-In-Reply-To: <CA+BoTQnfaYsXKc8dpiR4r9pd=K88P8mTNB1pJetQgN-n2HkhYw@mail.gmail.com>
+Date: Thu, 2 Jul 2015 13:51:55 -0400
+Message-ID: <CAOt_L39x93N4pMEXYEOh-L1vTEiDLMj9fijUoCT-E5Vmp9Ve0g@mail.gmail.com>
+Subject: Trying to upgrade to latest ath10k driver version
+From: Amato Carbonara <acarbonara13@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +18,31 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?= <jose.nunez@cttc.cat>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-T24gMDcvMDIvMjAxNSAwNToxMCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAyIEp1bHkg
-MjAxNSBhdCAxMzoxOCwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIgo+IDxqb3NlLm51
-bmV6QGN0dGMuY2F0PiB3cm90ZToKPj4gSGkgYWxsLAo+PiBJJ20gdHJ5aW5nIHRvIHVzZSBhbiBh
-dGgxMGsgaW4gSUJTUyBtb2RlIHdpdGggMiB3aXJlbGVzcyBjYXJkcyBiYXNlZCBvbgo+PiBxY2E5
-ODh4IC4gSSdkIGxpa2UgdG8gYmUgYWJsZSB0byBwdXQgdGhlIHdpcmVsZXNzIGNhcmRzIGluIHBy
-b21pc2N1b3VzIG1vZGUKPj4gKGlmY29uZmlnIHdsYW5YIHByb21pc2MpLiBXaGVuIEkgcHV0IHRo
-ZSB3aXJlbGVzcyBjYXJkcyBpbiBwcm9taXNjdW91cyBtb2RlLAo+PiB0aGUgZmlybXdhcmUgY3Jh
-c2hlcy4gSGFzIGFueW9uZSB0cmllZCB0aGlzPwo+Pgo+PiBLZXJuZWwgaXMgNC4xIGFuZCAgZmly
-bXdhcmUgaXMgOTk5Ljk5OS4wLjYzNi4gUGxlYXNlIGZpbmQgYmVsb3cgdGhlIGF0aDEwawo+PiBj
-cmFzaCBpbmZvOgo+IAo+IFRoYXQncyB3ZWlyZC4gSSBiZWxpZXZlIHByb21pc2MgZmxhZyBpcyBu
-byBsb25nZXIgcHJvcGFnYXRlZCBieQo+IG1hYzgwMjExIHRvIGl0cyBkcml2ZXJzIChlLmcuIGF0
-aDEwaykuCj4gCj4gCj4+IFsxNDk0MC4xMTU2MDddIGF0aDEwa19wY2kgMDAwMDowYzowMC4wOiBm
-aXJtd2FyZSBjcmFzaGVkISAodXVpZAo+PiAxZjkyN2IxYS1kMTQ4LTQ1Y2UtODNmOC1kZjNiYTIz
-ZmI0NzMpCj4+IFsxNDk0MC4xMTU2MjZdIGF0aDEwa19wY2kgMDAwMDowYzowMC4wOiBxY2E5ODh4
-IGh3Mi4wICgweDQxMDAwMTZjLAo+PiAweDA0MzIwMmZmKSBmdyA5OTkuOTk5LjAuNjM2IGFwaSA0
-IGh0dCAyLjEgd21pIDEgY2FsIG90cCBtYXhfc3RhIDE2Cj4+IFsxNDk0MC4xMTU2MzJdIGF0aDEw
-a19wY2kgMDAwMDowYzowMC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIDEgZGZzIDAKPj4g
-dGVzdG1vZGUgMAo+PiBbMTQ5NDAuMTE3NjMzXSBhdGgxMGtfcGNpIDAwMDA6MGM6MDAuMDogZmly
-bXdhcmUgcmVnaXN0ZXIgZHVtcDoKPj4gWzE0OTQwLjExNzY0MF0gYXRoMTBrX3BjaSAwMDAwOjBj
-OjAwLjA6IFswMF06IDB4NDEwMDAxNkMgMHgwMDAwMDAwMAo+PiAweDAwOUM0NTIxIDB4MDAwMDAw
-MDAKPj4gWzE0OTQwLjExNzY0Nl0gYXRoMTBrX3BjaSAwMDAwOjBjOjAwLjA6IFswNF06IDB4MDA5
-QzQ1MjEgMHgwMDA2MDMzMAo+PiAweDAwMDAwMDE5IDB4MDA5NTVBMDAKPiBbLi4uXQo+IAo+IElm
-IHlvdSBsb29rIHRocm91Z2ggdGhlIGxpc3QgeW91J2xsIGZpbmQgc2ltaWxhciByZXBvcnRzIHdp
-dGggdGhlIHNhbWUKPiByZWdpc3RlciBkdW1wIHZhbHVlcy4KPiAKPiBGaXJtd2FyZSA5OTkuOTk5
-LjAuNjM2IGhhcyBicm9rZW4gbW9uaXRvciB2ZGV2IHN1cHBvcnQgaW4gZmlybXdhcmUgYW5kCj4g
-b2Z0ZW4gY3Jhc2hlcyB3aGVuIG9uZSB0cmllcyB0byB1c2UgaXQgKHdoaWNoIGlzIGltcGxpZWQg
-YnkgcHJvbWlzYwo+IG1vZGUgaW4gb2xkZXIga2VybmVscyBvciBhIHJ1bm5pbmcgbW9uaXRvciB2
-aWYpLgo+IAo+IFlvdSBtaWdodCBiZSBpbnRlcmVzdGVkIGluIHVzaW5nIENUIGZpcm13YXJlIGJy
-YW5jaFsxXS4gQmVuIGhhcyBhZGRlZAo+IElCU1Mgc3VwcG9ydCByZWNlbnRseSBhbmQgc2luY2Ug
-aXQncyAxMC4xIGJhc2VkIGl0IGhhcyBhIHdvcmtpbmcKPiBtb25pdG9yIHZkZXYgc3VwcG9ydC4K
-PiAKPiBbMV06IGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tL2F0aDEway5waHAKCk1ha2Ugc3Vy
-ZSB5b3UgZ2V0IHRoZSBiZXRhIGJ1aWxkIGZvciBiZXN0IElCU1Mgc3VwcG9ydDoKCmh0dHA6Ly93
-d3cuY2FuZGVsYXRlY2guY29tL2Rvd25sb2Fkcy9hdGgxMGstZnctYmV0YS8KClRoYW5rcywKQmVu
-Cgo+IAo+IAo+IE1pY2hhxYIKPiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCj4gCgoKLS0gCkJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgpDYW5kZWxh
-IFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29tCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlz
-dAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hello,
+I am trying to upgrade my ath10k driver version to the latest version:
+10.2.4.70.2
+I am downloading the binary file from the following github location:
+https://github.com/kvalo/ath10k-firmware/tree/master/10.2.4/untested
+
+However, after placing the binary file in the directory
+/lib/firmware/ath10k/QCA988X/hw2.0  the driver version remains at the
+old version (10.2.4.48).  When I download the file from github, I
+changed the name of the driver file from firmware-5.bin_10.2.4.70.2 to
+firmware-5.bin
+
+
+I have tried using kernel version 4.0, 4.1.0 and 4.1.1 but the ath10k
+driver fails to upgrade to 10.2.4.70.2
+
+Any suggestions?
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
