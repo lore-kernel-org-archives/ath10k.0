@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAPtu-0006qs-7J
- for ath10k@lists.infradead.org; Wed, 01 Jul 2015 21:50:39 +0000
-Received: by wiwl6 with SMTP id l6so178294096wiw.0
- for <ath10k@lists.infradead.org>; Wed, 01 Jul 2015 14:50:14 -0700 (PDT)
+ id 1ZAXOz-0007HV-EM
+ for ath10k@lists.infradead.org; Thu, 02 Jul 2015 05:51:14 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH v2 0/8] add beacon and htt msg support for 10.4 firmware
+References: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Thu, 2 Jul 2015 08:50:44 +0300
+In-Reply-To: <1434984747-24294-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Mon, 22 Jun 2015 20:22:19 +0530")
+Message-ID: <87k2uj151n.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <5594343C.1050802@candelatech.com>
-References: <5594343C.1050802@candelatech.com>
-From: Pushpal Sidhu <psidhu@gateworks.com>
-Date: Wed, 1 Jul 2015 14:49:45 -0700
-Message-ID: <CAD1M061-UOFoGgS4J_nSLoSRG7WxOFCHb=5fi6-2knXt7d02Pw@mail.gmail.com>
-Subject: Re: ath10k on 4.9 band?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +23,41 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: Raja Mani <rmani@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Ben,
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-On Wed, Jul 1, 2015 at 11:41 AM, Ben Greear <greearb@candelatech.com> wrote:
-> Anyone know what it would take to make ath10k work on the 4.9Ghz band?
+> This is the continuation of earlier patch set posted for adding 10.4 wmi support.
+> This patch series covers following items w.r.t 10.4 firmware,
 >
-> Thanks,
-> Ben
+>         - Enhance existing swba event handler to handle variable size tim bitmap
+>           and add support to handle 10.4 swba event.
+>         - Enable pdev, vdev, peer related wmi operations like create, delete, etc.
+>         - Includes scan support.
+>         - Add 10.4 specific htt msg.
+>         - Advertise 10.4 iface combination to mac80211.
+>         - Adjust max ss and initialize continuous frag descriptor memory
+>
+> v2 changes:
+>        - rebased on top of "introduce wmi support for qca99x0" patch series.
+>        - updated htt msg definitions as per stable 10.4 firmware.
+>        - synced scan related info as per stable 10.4 firmware.
+>
+> Raja Mani (8):
+>   ath10k: enhance swba event handler to adapt different size tim bitmap
+>   ath10k: handle 10.4 firmware wmi swba event
+>   ath10k: enable vdev and peer related operations for 10.4 fw
+>   ath10k: add scan support for 10.4 fw
+>   ath10k: add 10.4 fw specific htt msg definitions
+>   ath10k: advertise 10.4 fw ap and sta iface combination to mac80211
+>   ath10k: set max spatial stream to 4 for 10.4 fw
+>   ath10k: configure frag desc memory to target for qca99X0
 
-Yes. First you have to update your regulatory database to allow for
-4.9GHz in whatever country you're wanting (wireless/db.txt). Then you
-update ath10k driver to add the channels.
+Thanks, applied.
 
-Update core.h to increase the number of channels allowed. Then update
-mac.c and add the 4.9 frequencies to the 5ghz_channels struct.
-Depending on the radio's EEPROMs regulatory restrictions, you'll have
-to hack up wireless/ath/regd.c as well. I haven't done this in several
-months, but I don't think that anything in the ath10k driver has
-changed enough to modify my instructions.
-
-- Pushpal
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
