@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-x22e.google.com ([2607:f8b0:4001:c05::22e])
+Received: from mail-pa0-x232.google.com ([2607:f8b0:400e:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAiem-0000Np-V3
- for ath10k@lists.infradead.org; Thu, 02 Jul 2015 17:52:17 +0000
-Received: by igcur8 with SMTP id ur8so125211911igc.0
- for <ath10k@lists.infradead.org>; Thu, 02 Jul 2015 10:51:55 -0700 (PDT)
-MIME-Version: 1.0
-Date: Thu, 2 Jul 2015 13:51:55 -0400
-Message-ID: <CAOt_L39x93N4pMEXYEOh-L1vTEiDLMj9fijUoCT-E5Vmp9Ve0g@mail.gmail.com>
-Subject: Trying to upgrade to latest ath10k driver version
-From: Amato Carbonara <acarbonara13@gmail.com>
+ id 1ZAixY-0001hI-4E
+ for ath10k@lists.infradead.org; Thu, 02 Jul 2015 18:11:40 +0000
+Received: by pabvl15 with SMTP id vl15so44141101pab.1
+ for <ath10k@lists.infradead.org>; Thu, 02 Jul 2015 11:11:18 -0700 (PDT)
+Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3065\))
+Subject: Re: Trying to upgrade to latest ath10k driver version
+From: Matthew Robbetts <wingfeathera@gmail.com>
+In-Reply-To: <CAOt_L39x93N4pMEXYEOh-L1vTEiDLMj9fijUoCT-E5Vmp9Ve0g@mail.gmail.com>
+Date: Thu, 2 Jul 2015 11:11:13 -0700
+Message-Id: <585C4830-2F35-44F5-BCD5-0BA9B5DD9B79@gmail.com>
+References: <CAOt_L39x93N4pMEXYEOh-L1vTEiDLMj9fijUoCT-E5Vmp9Ve0g@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -18,31 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Amato Carbonara <acarbonara13@gmail.com>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hello,
-I am trying to upgrade my ath10k driver version to the latest version:
-10.2.4.70.2
-I am downloading the binary file from the following github location:
-https://github.com/kvalo/ath10k-firmware/tree/master/10.2.4/untested
-
-However, after placing the binary file in the directory
-/lib/firmware/ath10k/QCA988X/hw2.0  the driver version remains at the
-old version (10.2.4.48).  When I download the file from github, I
-changed the name of the driver file from firmware-5.bin_10.2.4.70.2 to
-firmware-5.bin
-
-
-I have tried using kernel version 4.0, 4.1.0 and 4.1.1 but the ath10k
-driver fails to upgrade to 10.2.4.70.2
-
-Any suggestions?
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQW1hdG8sCgo+IE9uIEp1bCAyLCAyMDE1LCBhdCAxMDo1MSwgQW1hdG8gQ2FyYm9uYXJhIDxh
+Y2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90ZToKPiAKPiBIZWxsbywKPiBJIGFtIHRyeWluZyB0
+byB1cGdyYWRlIG15IGF0aDEwayBkcml2ZXIgdmVyc2lvbiB0byB0aGUgbGF0ZXN0IHZlcnNpb246
+Cj4gMTAuMi40LjcwLjIKPiBJIGFtIGRvd25sb2FkaW5nIHRoZSBiaW5hcnkgZmlsZSBmcm9tIHRo
+ZSBmb2xsb3dpbmcgZ2l0aHViIGxvY2F0aW9uOgo+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9h
+dGgxMGstZmlybXdhcmUvdHJlZS9tYXN0ZXIvMTAuMi40L3VudGVzdGVkCgpUbyBiZSBjbGVhciwg
+dGhlIGZpbGUgeW914oCZcmUgZGVzY3JpYmluZyBpc27igJl0IHRoZSBkcml2ZXIgYnV0IHRoZSBi
+aW5hcnkgZmlybXdhcmUgYmxvYi4gVGhlIGRyaXZlciAoYXRoMTBrKSBpcyBvcGVuLXNvdXJjZSBh
+bmQgcGFydCBvZiB0aGUga2VybmVsLCBhbmQgd2lsbCBuZWVkIHRvIGJlIHJlYnVpbHQgaW4gb3Jk
+ZXIgdG8gYmUgdXBncmFkZWQuCgo+IEhvd2V2ZXIsIGFmdGVyIHBsYWNpbmcgdGhlIGJpbmFyeSBm
+aWxlIGluIHRoZSBkaXJlY3RvcnkKPiAvbGliL2Zpcm13YXJlL2F0aDEway9RQ0E5ODhYL2h3Mi4w
+ICB0aGUgZHJpdmVyIHZlcnNpb24gcmVtYWlucyBhdCB0aGUKPiBvbGQgdmVyc2lvbiAoMTAuMi40
+LjQ4KS4gIAoKSSBkbyBub3QgYmVsaWV2ZSB0aGF0IG1lcmVseSBwbGFjaW5nIHRoZSBmaWxlIGlu
+IHRoaXMgZGlyZWN0b3J5IGlzIHN1ZmZpY2llbnQuIFlvdSB3aWxsIG5lZWQgdG8gYnVpbGQgYSBu
+ZXcga2VybmVsIChvciBhdCBsZWFzdCwgcmVidWlsZCB0aGUgZHJpdmVyIGlmIGl0IGlzIGEgbW9k
+dWxlKSB3aXRoIHRoYXQgbmV3IGZpcm13YXJlIGZpbGUgcmVmZXJlbmNlZCBpbiB0aGUgY29uZmln
+dXJhdGlvbi4KCgo+IFdoZW4gSSBkb3dubG9hZCB0aGUgZmlsZSBmcm9tIGdpdGh1YiwgSQo+IGNo
+YW5nZWQgdGhlIG5hbWUgb2YgdGhlIGRyaXZlciBmaWxlIGZyb20gZmlybXdhcmUtNS5iaW5fMTAu
+Mi40LjcwLjIgdG8KPiBmaXJtd2FyZS01LmJpbgoKVGhpcyByZW5hbWluZyBpcyBjb3JyZWN0LiBI
+b3dldmVyLCB0aGVyZSBpcyBhbm90aGVyIGlzc3VlLCBpbiB0aGF0IHRoZSBmaXJtd2FyZSB2ZXJz
+aW9uIHlvdSBtZW50aW9uIGlzIG5vdCBzdXBwb3J0ZWQgeWV0IGJ5IHRoZSBhdGgxMGsgZHJpdmVy
+IHRoYXQgc2hpcHMgaW4gYW55IHJlbGVhc2VkIGtlcm5lbC4gSSBiZWxpZXZlIGl0IHdpbGwgYmUg
+dXNlZCBpbiB0aGUgNC4yIGtlcm5lbCwgYnV0IHRoZXkgaGF2ZW7igJl0IGN1dCB0aGUgZmlyc3Qg
+UkMgeWV0LgoKSWYgeW91IGRvbuKAmXQgdG8gd2FpdCBmb3IgYSA0LjIga2VybmVsLCB5b3UgY2Fu
+IGJ1aWxkIGt2YWxv4oCZcyBkZXZlbG9wbWVudCBrZXJuZWwgYnJhbmNoLCB3aGljaCBzaG91bGQg
+aGF2ZSB0aGUgbmVjZXNzYXJ5IGNoYW5nZXMgaW4gaXQsIGZyb206Cmh0dHBzOi8vZ2l0aHViLmNv
+bS9rdmFsby9hdGgKCihQZW9wbGUgd2hvIGFjdHVhbGx5IG5vdyB3aGF0IHRoZXnigJlyZSBkb2lu
+ZywgcGxlYXNlIGNvcnJlY3QgbWUgaWYgSeKAmW0gd3JvbmchKQoKClRoYW5rcywKTWF0dAoKCj4g
+SSBoYXZlIHRyaWVkIHVzaW5nIGtlcm5lbCB2ZXJzaW9uIDQuMCwgNC4xLjAgYW5kIDQuMS4xIGJ1
+dCB0aGUgYXRoMTBrCj4gZHJpdmVyIGZhaWxzIHRvIHVwZ3JhZGUgdG8gMTAuMi40LjcwLjIKPiAK
+PiBBbnkgc3VnZ2VzdGlvbnM/Cj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJh
+ZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
+aDEwawoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
