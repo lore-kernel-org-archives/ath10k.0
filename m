@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from torres.puc.rediris.es ([2001:720:418:ca00::9])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAy2c-00051j-Om
- for ath10k@lists.infradead.org; Fri, 03 Jul 2015 10:17:55 +0000
-Received: from [84.88.62.208] (helo=leo)
- by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <jose.nunez@cttc.cat>) id 1ZAy2E-00037X-4k
- for ath10k@lists.infradead.org; Fri, 03 Jul 2015 12:17:30 +0200
-Received: from [10.1.16.14] (pcjnunez.cttc.es [10.1.16.14])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id D5CFC1FDBD
- for <ath10k@lists.infradead.org>; Fri,  3 Jul 2015 12:17:25 +0200 (CEST)
-Message-ID: <55966139.3090603@cttc.cat>
-Date: Fri, 03 Jul 2015 12:17:29 +0200
-From: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?=
- <jose.nunez@cttc.cat>
+ id 1ZAyTt-0003Bi-4R
+ for ath10k@lists.infradead.org; Fri, 03 Jul 2015 10:46:06 +0000
+Received: by wibdq8 with SMTP id dq8so96835235wib.1
+ for <ath10k@lists.infradead.org>; Fri, 03 Jul 2015 03:45:43 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Question on bssid mask with ath10k
+In-Reply-To: <55966139.3090603@cttc.cat>
+References: <55966139.3090603@cttc.cat>
+Date: Fri, 3 Jul 2015 12:45:43 +0200
+Message-ID: <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
+Subject: Re: Question on bssid mask with ath10k
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +20,28 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: =?UTF-8?B?Sm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQyk=?= <jose.nunez@cttc.cat>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I'm trying to set BSSID mask in ath10k so that data packets with spoofed 
-mac destination address can be received (and not dropped) by the card.
-
-Apparently the way bssid mask is managed has changed from ath5k and 
-ath9k since there are not  "ath5k_hw_set_bssid_mask" or 
-"ath9k_htc_set_mac_bssid_mask"  kind of functions.
-
-Anyone tried this?
-
-Jose
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBKdWx5IDIwMTUgYXQgMTI6MTcsICJKb3NlIE7DusOxZXotTWFydMOtbmV6IChDVFRDKSIK
+PGpvc2UubnVuZXpAY3R0Yy5jYXQ+IHdyb3RlOgo+IEknbSB0cnlpbmcgdG8gc2V0IEJTU0lEIG1h
+c2sgaW4gYXRoMTBrIHNvIHRoYXQgZGF0YSBwYWNrZXRzIHdpdGggc3Bvb2ZlZCBtYWMKPiBkZXN0
+aW5hdGlvbiBhZGRyZXNzIGNhbiBiZSByZWNlaXZlZCAoYW5kIG5vdCBkcm9wcGVkKSBieSB0aGUg
+Y2FyZC4KPgo+IEFwcGFyZW50bHkgdGhlIHdheSBic3NpZCBtYXNrIGlzIG1hbmFnZWQgaGFzIGNo
+YW5nZWQgZnJvbSBhdGg1ayBhbmQgYXRoOWsKPiBzaW5jZSB0aGVyZSBhcmUgbm90ICAiYXRoNWtf
+aHdfc2V0X2Jzc2lkX21hc2siIG9yCj4gImF0aDlrX2h0Y19zZXRfbWFjX2Jzc2lkX21hc2siICBr
+aW5kIG9mIGZ1bmN0aW9ucy4KPgo+IEFueW9uZSB0cmllZCB0aGlzPwoKVGhlcmUncyBubyBleHBs
+aWNpdCBjb250cm9sIG92ZXIgUnggZmlsdGVycyBpbiBhdGgxMGsgdGhhdCBJIGtub3cgb2YuClRo
+aXMgaXMgYWJzdHJhY3RlZCBhd2F5IGJ5IG90aGVyIGZpcm13YXJlIGhpZ2hlci1sZXZlbCBjb21t
+YW5kcy4gT25lCndheSB0byBpbmZsdWVuY2UgUnggZmlsdGVyIChhbmQgQlNTSUQgbWFzaykgaXMg
+dG8gc3RhcnQgYSBtb25pdG9yIHZkZXYKaW4gZmlybXdhcmUuIFRoaXMgYXBwYXJlbnRseSB3b3Jr
+c1sxXSBidXQgNjM2IHdpbGwgY3Jhc2ggb24geW91IGFnYWluCmlmIHlvdSBkbyB0aGF0LiBZb3Un
+bGwgbmVlZCBCZW4ncyBDVCBmaXJtd2FyZS4KClsxXTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5v
+cmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUFwcmlsLzAwNTA5NS5odG1sCgoKTWljaGHFggoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxp
+bmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFk
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
