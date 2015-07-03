@@ -1,13 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from torres.puc.rediris.es ([2001:720:418:ca00::9])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAuH7-0001i7-FC
- for ath10k@lists.infradead.org; Fri, 03 Jul 2015 06:16:38 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Delay device access after cold reset
-Date: Fri, 3 Jul 2015 11:45:42 +0530
-Message-ID: <1435904142-30295-1-git-send-email-vthiagar@qti.qualcomm.com>
+ id 1ZAy2c-00051j-Om
+ for ath10k@lists.infradead.org; Fri, 03 Jul 2015 10:17:55 +0000
+Received: from [84.88.62.208] (helo=leo)
+ by torres.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+ (Exim 4.80) (envelope-from <jose.nunez@cttc.cat>) id 1ZAy2E-00037X-4k
+ for ath10k@lists.infradead.org; Fri, 03 Jul 2015 12:17:30 +0200
+Received: from [10.1.16.14] (pcjnunez.cttc.es [10.1.16.14])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by leo (Postfix) with ESMTPSA id D5CFC1FDBD
+ for <ath10k@lists.infradead.org>; Fri,  3 Jul 2015 12:17:25 +0200 (CEST)
+Message-ID: <55966139.3090603@cttc.cat>
+Date: Fri, 03 Jul 2015 12:17:29 +0200
+From: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?=
+ <jose.nunez@cttc.cat>
 MIME-Version: 1.0
+Subject: Question on bssid mask with ath10k
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,71 +26,23 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-It is observed that during cold reset pcie access right
-after a write operation to SOC_GLOBAL_RESET_ADDRESS causes
-Data Bus Error and system hard lockup. The reason
-for bus error is that pcie needs some time to get
-back to stable state for any transaction during cold reset. Add
-delay of 20 msecs after write of SOC_GLOBAL_RESET_ADDRESS
-to fix this issue.
+I'm trying to set BSSID mask in ath10k so that data packets with spoofed 
+mac destination address can be received (and not dropped) by the card.
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
+Apparently the way bssid mask is managed has changed from ath5k and 
+ath9k since there are not  "ath5k_hw_set_bssid_mask" or 
+"ath9k_htc_set_mac_bssid_mask"  kind of functions.
 
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 1b4634a..130746b 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2761,7 +2761,6 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 
- static int ath10k_pci_cold_reset(struct ath10k *ar)
- {
--	int i;
- 	u32 val;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset\n");
-@@ -2777,23 +2776,18 @@ static int ath10k_pci_cold_reset(struct ath10k *ar)
- 	val |= 1;
- 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
- 
--	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
--		if (ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
--					  RTC_STATE_COLD_RESET_MASK)
--			break;
--		msleep(1);
--	}
-+	/* After writing into SOC_GLOBAL_RESET to put device into
-+	 * reset and pulling out of reset pcie may not be stable
-+	 * for any immediate pcie register access and cause bus error,
-+	 * add delay before any pcie access request to fix this issue.
-+	 */
-+	msleep(20);
- 
- 	/* Pull Target, including PCIe, out of RESET. */
- 	val &= ~1;
- 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
- 
--	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
--		if (!(ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
--					    RTC_STATE_COLD_RESET_MASK))
--			break;
--		msleep(1);
--	}
-+	msleep(20);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset complete\n");
- 
--- 
-1.9.1
+Anyone tried this?
+
+Jose
+
 
 
 _______________________________________________
