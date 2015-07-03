@@ -1,19 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZAkS7-0005r0-T1
- for ath10k@lists.infradead.org; Thu, 02 Jul 2015 19:47:20 +0000
-Received: by pacws9 with SMTP id ws9so45905842pac.0
- for <ath10k@lists.infradead.org>; Thu, 02 Jul 2015 12:46:57 -0700 (PDT)
-Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3065\))
-Subject: Re: Trying to upgrade to latest ath10k driver version
-From: Matthew Robbetts <wingfeathera@gmail.com>
-In-Reply-To: <CAOt_L3_Q7cct9Jkpqs7RA7m3zDySzY+E+d+kP3SOb4B0FSqjig@mail.gmail.com>
-Date: Thu, 2 Jul 2015 12:46:52 -0700
-Message-Id: <EA05AA23-06C4-4F0E-9E06-858C8BDAA874@gmail.com>
-References: <CAOt_L39x93N4pMEXYEOh-L1vTEiDLMj9fijUoCT-E5Vmp9Ve0g@mail.gmail.com>
- <585C4830-2F35-44F5-BCD5-0BA9B5DD9B79@gmail.com>
- <CAOt_L3_Q7cct9Jkpqs7RA7m3zDySzY+E+d+kP3SOb4B0FSqjig@mail.gmail.com>
+ id 1ZAuH7-0001i7-FC
+ for ath10k@lists.infradead.org; Fri, 03 Jul 2015 06:16:38 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Delay device access after cold reset
+Date: Fri, 3 Jul 2015 11:45:42 +0530
+Message-ID: <1435904142-30295-1-git-send-email-vthiagar@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +16,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Amato Carbonara <acarbonara13@gmail.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Cj4gT24gSnVsIDIsIDIwMTUsIGF0IDEyOjEyLCBBbWF0byBDYXJib25hcmEgPGFjYXJib25hcmEx
-M0BnbWFpbC5jb20+IHdyb3RlOgo+IAo+IFdoYXQgaXMgdGhlIGxhdGVzdCBiaW5hcnkgZmlybXdh
-cmUgc3VwcG9ydGVkIGluIGtlcm5lbCB2ZXJzaW9uIDQuMS4xPwoKSSB0aGluayB0aGF0IDQuMS4x
-IG9ubHkgc3VwcG9ydHMgZmlybXdhcmUgd2l0aCB0aGUgdjQgQVBJLiBUaGF0IHdvdWxkIGJlIHVw
-IHRvIDEwLjIuNC40OCAoaS5lLiwgYWxsIHRoZSBvbmVzIGluIE5PVCBpbiB0aGUg4oCcdW50ZXN0
-ZWTigJ0gZm9sZGVyKS4gSeKAmW0gdXNpbmcgdGhpcyBmaXJtd2FyZSB3aXRoIG15IDQuMC40IGtl
-cm5lbCByaWdodCBub3csIGF0IGxlYXN0LgoKWW91IHNob3VsZCBvZiBjb3Vyc2UgcmVuYW1lIHRo
-ZXNlIGZpcm13YXJlcyB0byBmaXJtd2FyZS00LmJpbiB3aGVuIHlvdSB1c2UgdGhlbS4KCgo+IE9u
-IFRodSwgSnVsIDIsIDIwMTUgYXQgMjoxMSBQTSwgTWF0dGhldyBSb2JiZXR0cyA8d2luZ2ZlYXRo
-ZXJhQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhpIEFtYXRvLAo+PiAKPj4+IE9uIEp1bCAyLCAyMDE1
-LCBhdCAxMDo1MSwgQW1hdG8gQ2FyYm9uYXJhIDxhY2FyYm9uYXJhMTNAZ21haWwuY29tPiB3cm90
-ZToKPj4+IAo+Pj4gSGVsbG8sCj4+PiBJIGFtIHRyeWluZyB0byB1cGdyYWRlIG15IGF0aDEwayBk
-cml2ZXIgdmVyc2lvbiB0byB0aGUgbGF0ZXN0IHZlcnNpb246Cj4+PiAxMC4yLjQuNzAuMgo+Pj4g
-SSBhbSBkb3dubG9hZGluZyB0aGUgYmluYXJ5IGZpbGUgZnJvbSB0aGUgZm9sbG93aW5nIGdpdGh1
-YiBsb2NhdGlvbjoKPj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9rdmFsby9hdGgxMGstZmlybXdhcmUv
-dHJlZS9tYXN0ZXIvMTAuMi40L3VudGVzdGVkCj4+IAo+PiBUbyBiZSBjbGVhciwgdGhlIGZpbGUg
-eW914oCZcmUgZGVzY3JpYmluZyBpc27igJl0IHRoZSBkcml2ZXIgYnV0IHRoZSBiaW5hcnkgZmly
-bXdhcmUgYmxvYi4gVGhlIGRyaXZlciAoYXRoMTBrKSBpcyBvcGVuLXNvdXJjZSBhbmQgcGFydCBv
-ZiB0aGUga2VybmVsLCBhbmQgd2lsbCBuZWVkIHRvIGJlIHJlYnVpbHQgaW4gb3JkZXIgdG8gYmUg
-dXBncmFkZWQuCj4+IAo+Pj4gSG93ZXZlciwgYWZ0ZXIgcGxhY2luZyB0aGUgYmluYXJ5IGZpbGUg
-aW4gdGhlIGRpcmVjdG9yeQo+Pj4gL2xpYi9maXJtd2FyZS9hdGgxMGsvUUNBOTg4WC9odzIuMCAg
-dGhlIGRyaXZlciB2ZXJzaW9uIHJlbWFpbnMgYXQgdGhlCj4+PiBvbGQgdmVyc2lvbiAoMTAuMi40
-LjQ4KS4KPj4gCj4+IEkgZG8gbm90IGJlbGlldmUgdGhhdCBtZXJlbHkgcGxhY2luZyB0aGUgZmls
-ZSBpbiB0aGlzIGRpcmVjdG9yeSBpcyBzdWZmaWNpZW50LiBZb3Ugd2lsbCBuZWVkIHRvIGJ1aWxk
-IGEgbmV3IGtlcm5lbCAob3IgYXQgbGVhc3QsIHJlYnVpbGQgdGhlIGRyaXZlciBpZiBpdCBpcyBh
-IG1vZHVsZSkgd2l0aCB0aGF0IG5ldyBmaXJtd2FyZSBmaWxlIHJlZmVyZW5jZWQgaW4gdGhlIGNv
-bmZpZ3VyYXRpb24uCj4+IAo+PiAKPj4+IFdoZW4gSSBkb3dubG9hZCB0aGUgZmlsZSBmcm9tIGdp
-dGh1YiwgSQo+Pj4gY2hhbmdlZCB0aGUgbmFtZSBvZiB0aGUgZHJpdmVyIGZpbGUgZnJvbSBmaXJt
-d2FyZS01LmJpbl8xMC4yLjQuNzAuMiB0bwo+Pj4gZmlybXdhcmUtNS5iaW4KPj4gCj4+IFRoaXMg
-cmVuYW1pbmcgaXMgY29ycmVjdC4gSG93ZXZlciwgdGhlcmUgaXMgYW5vdGhlciBpc3N1ZSwgaW4g
-dGhhdCB0aGUgZmlybXdhcmUgdmVyc2lvbiB5b3UgbWVudGlvbiBpcyBub3Qgc3VwcG9ydGVkIHll
-dCBieSB0aGUgYXRoMTBrIGRyaXZlciB0aGF0IHNoaXBzIGluIGFueSByZWxlYXNlZCBrZXJuZWwu
-IEkgYmVsaWV2ZSBpdCB3aWxsIGJlIHVzZWQgaW4gdGhlIDQuMiBrZXJuZWwsIGJ1dCB0aGV5IGhh
-dmVu4oCZdCBjdXQgdGhlIGZpcnN0IFJDIHlldC4KPj4gCj4+IElmIHlvdSBkb27igJl0IHRvIHdh
-aXQgZm9yIGEgNC4yIGtlcm5lbCwgeW91IGNhbiBidWlsZCBrdmFsb+KAmXMgZGV2ZWxvcG1lbnQg
-a2VybmVsIGJyYW5jaCwgd2hpY2ggc2hvdWxkIGhhdmUgdGhlIG5lY2Vzc2FyeSBjaGFuZ2VzIGlu
-IGl0LCBmcm9tOgo+PiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoCj4+IAo+PiAoUGVvcGxl
-IHdobyBhY3R1YWxseSBub3cgd2hhdCB0aGV54oCZcmUgZG9pbmcsIHBsZWFzZSBjb3JyZWN0IG1l
-IGlmIEnigJltIHdyb25nISkKPj4gCj4+IAo+PiBUaGFua3MsCj4+IE1hdHQKPj4gCj4+IAo+Pj4g
-SSBoYXZlIHRyaWVkIHVzaW5nIGtlcm5lbCB2ZXJzaW9uIDQuMCwgNC4xLjAgYW5kIDQuMS4xIGJ1
-dCB0aGUgYXRoMTBrCj4+PiBkcml2ZXIgZmFpbHMgdG8gdXBncmFkZSB0byAxMC4yLjQuNzAuMgo+
-Pj4gCj4+PiBBbnkgc3VnZ2VzdGlvbnM/Cj4+PiAKPj4+IF9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCj4+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+PiBhdGgx
-MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4gaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsKPj4gCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+It is observed that during cold reset pcie access right
+after a write operation to SOC_GLOBAL_RESET_ADDRESS causes
+Data Bus Error and system hard lockup. The reason
+for bus error is that pcie needs some time to get
+back to stable state for any transaction during cold reset. Add
+delay of 20 msecs after write of SOC_GLOBAL_RESET_ADDRESS
+to fix this issue.
+
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/pci.c | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
+index 1b4634a..130746b 100644
+--- a/drivers/net/wireless/ath/ath10k/pci.c
++++ b/drivers/net/wireless/ath/ath10k/pci.c
+@@ -2761,7 +2761,6 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
+ 
+ static int ath10k_pci_cold_reset(struct ath10k *ar)
+ {
+-	int i;
+ 	u32 val;
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset\n");
+@@ -2777,23 +2776,18 @@ static int ath10k_pci_cold_reset(struct ath10k *ar)
+ 	val |= 1;
+ 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
+ 
+-	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
+-		if (ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
+-					  RTC_STATE_COLD_RESET_MASK)
+-			break;
+-		msleep(1);
+-	}
++	/* After writing into SOC_GLOBAL_RESET to put device into
++	 * reset and pulling out of reset pcie may not be stable
++	 * for any immediate pcie register access and cause bus error,
++	 * add delay before any pcie access request to fix this issue.
++	 */
++	msleep(20);
+ 
+ 	/* Pull Target, including PCIe, out of RESET. */
+ 	val &= ~1;
+ 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
+ 
+-	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
+-		if (!(ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
+-					    RTC_STATE_COLD_RESET_MASK))
+-			break;
+-		msleep(1);
+-	}
++	msleep(20);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset complete\n");
+ 
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
