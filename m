@@ -1,20 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZC9S2-0003Go-Ts
- for ath10k@lists.infradead.org; Mon, 06 Jul 2015 16:41:03 +0000
-Message-ID: <559AAF89.6040905@candelatech.com>
-Date: Mon, 06 Jul 2015 09:40:41 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-ig0-f172.google.com ([209.85.213.172])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZCDtl-0007OY-SJ
+ for ath10k@lists.infradead.org; Mon, 06 Jul 2015 21:25:58 +0000
+Received: by igcqs7 with SMTP id qs7so19546954igc.0
+ for <ath10k@lists.infradead.org>; Mon, 06 Jul 2015 14:25:36 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Question on bssid mask with ath10k
-References: <55966139.3090603@cttc.cat>
- <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
- <559A8140.7020000@cttc.cat> <559A8511.6060406@candelatech.com>
- <559A8882.8060609@cttc.cat> <559A91A6.8020207@candelatech.com>
- <559A980B.6090901@cttc.cat> <559A9A4E.5030700@candelatech.com>
- <559AA36E.3000302@cttc.cat>
-In-Reply-To: <559AA36E.3000302@cttc.cat>
+Date: Mon, 6 Jul 2015 14:25:36 -0700
+Message-ID: <CAN+ZWYEK5TpXVsQom5RBxZ1=XCGn9Cq47w1rQdonWNx-ec88vA@mail.gmail.com>
+Subject: Re: attempting mesh on ath10k
+From: Freddy Lee <flee@cococorp.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,121 +18,113 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?= <jose.nunez@cttc.cat>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: me@bobcopeland.com
+Cc: ath10k@lists.infradead.org
 
-T24gMDcvMDYvMjAxNSAwODo0OSBBTSwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIiB3
-cm90ZToKPiAKPiAKPiBPbiAwNy8wNi8yMDE1IDA1OjEwIFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+
-PiBPbiAwNy8wNi8yMDE1IDA4OjAwIEFNLCAiSm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQyki
-IHdyb3RlOgo+Pj4gSGksCj4+PiB0aGUgcmVhc29uIGZvciBzdGFydGluZyBhIHZpcnR1YWwgZGV2
-aWNlIGluIG1vbml0b3IgbW9kZSBpcyB0byBpbmZ1ZW5jZSBSeCBmaWx0ZXJzIGluIGZpcm13YXJl
-IGFzIHBvaW50ZWQgb3V0IGluIFsxXS4gVGhlIGdvYWwgaXMgdG8gY29uZmlndXJlIHRoZSB3aXJl
-bGVzcwo+Pj4gZGV2aWNlIGluIGFkaG9jIG1vZGUgc28gdGhhdCBpdCBjYW4gcmVjZWl2ZSBhbmQg
-c2VuZCBwYWNrZXRzIGNvbnRhaW5pbmcgYW55IG1hYyBkZXN0aW5hdGlvbiBhZGRyZXNzLgo+Pj4K
-Pj4+IFsxXSBodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUt
-QXByaWwvMDA1MDk1Lmh0bWwKPj4KPj4gQlNTSUQgbWFzayBpcyBub3QgeW91ciBtYWluIHByb2Js
-ZW0gSSB0aGluay4gIEl0IGlzIHByaW1hcmlseSB1c2VkIHRvCj4+IGRlYWwgd2l0aCBtdWx0aXBs
-ZSB2aXJ0dWFsIGRldmljZXMgKGFwLCBTVEEsIElCU1MpLiAgUFJPTUlTQyB3aWxsIGVmZmVjdGl2
-ZWx5Cj4+IGp1c3QgZGlzYWJsZSB0aGUgQlNTSUQgbWFzayBzbyB0aGF0IGFsbCAobW9zdCwgcmVh
-bGx5Li5tb25pdG9yIG1vZGUgaXMgbm90IHBlcmZlY3QKPj4gZm9yIGF0aDEwaykgZnJhbWVzIGFy
-ZSBwYXNzZWQgdXAgdGhlIHN0YWNrIHRvIHRoZSBob3N0Lgo+Pgo+PiBUaGUgZmlybXdhcmUgd2ls
-bCBub3Qgc2VuZCBwYWNrZXRzIHRvIGRlc3RpbmF0aW9ucyB0aGF0IGl0IGRvZXMgbm90IGhhdmUg
-YSBwZWVyCj4+IG9iamVjdCBmb3IsIHNvIHlvdSB3aWxsIG5vdCBiZSBhYmxlIHRvIHRyYW5zbWl0
-IHRvIGFyYml0cmFyeSBkZXN0aW5hdGlvbnMuCj4+Cj4+IEFESE9DIHdpbGwgY3JlYXRlIHBlZXIg
-b2JqZWN0cyBhcyBpdCBhc3NvY2lhdGVzIHdpdGggbmV3IHBlZXJzLCBzbyBtYXliZSB5b3UKPj4g
-ZG8gbm90IGFjdHVhbGx5IG5lZWQgJ2FueSBtYWMgZGVzdGluYXRpb24gYWRkcmVzcyc/Cj4+Cj4+
-IEkgaGF2ZSBzb21lIGJ1Z3MgdG8gdHJhY2sgZG93biByZWxhdGluZyB0byBzb21lIC4xMXIgYW5k
-L29yIEFOUVAgZmFpbHVyZXMgdGhhdCB3ZSBzZWUKPj4gaW4gc29tZSBvZiBvdXIgdGVzdHMuLi5w
-b3NzaWJseSBJJ2xsIGZpZ3VyZSBvdXQgaG93IHRvIHNlbmQgdG8gYXJiaXRyYXJ5IGRlc3RpbmF0
-aW9ucwo+PiB3aGlsZSBmaXhpbmcgdGhpcy4KPj4KPj4gYXRoMTBrIGlzIGZ1bGwgb2Ygc3VidGxl
-IGFuZCBub3Qtc28tc3VidGxlIGxpbWl0YXRpb25zLiAgSSB0aGluayBmb3IgYmVzdCBzdXBwb3J0
-IHlvdSBzaG91bGQgc3BlbGwgb3V0Cj4+IHlvdXIgcmVhbCBnb2FscyBhbmQgdXNlIGNhc2VzIGlu
-IGRldGFpbCBpbnN0ZWFkIG9mIHRyeWluZyB0byB0aGluayBvZiBhdGgxMGsgYXMganVzdCBhIGZh
-c3Rlcgo+PiB2ZXJzaW9uIG9mIGF0aDlrLgo+IAo+IFdlbGwsIHRoZSBnb2FsIGlzIHRvIHVzZSBv
-ZiA4MDIuMTFhYyBjYXJkcyBhY3RpbmcgYXMgcG9ydHMgb2YgdmlydHVhbCBzd2l0Y2hlcyBzdWNo
-IGFzIHhEUGQgWzFdLiAgQSBwcmltYXJ5IHVzZSBjYXNlIEknbSB0ZXN0aW5nIGlzIHRvIHNlbmQg
-dHJhZmZpYyBiZXR3ZWVuIHR3bwo+IGhvc3RzIGNvbm5lY3RlZCB0aHJvdWdoIHR3byB2aXJ0dWFs
-IHN3aXRjaGVzLiBWaXJ0dWFsIHN3aXRjaGVzIGFyZSBpbnN0YWxsZWQgb24gZGlmZmVyZW50IG5v
-ZGVzIGFuZCBhcmUgd2lyZWxlc3NseSBpbnRlcmNvbm5lY3RlZCB0aHJvdWdoIHR3byA4MDIuMTFh
-YyBjYXJkcy4gCj4gRWFjaCBvZiB0aGVzZSBjYXJkcyBpcyBhY3RpbmcgYXMgYSB3aXJlbGVzcyBw
-b3J0IGluIGVhY2ggdmlydHVhbCBzd2l0Y2guCj4gCj4gVG8gcmVjZWl2ZSBhbmQgc2VuZCBhbnkg
-dHJhZmZpYyBpbiB0aGUgdmlydHVhbCBzd2l0Y2hlcyBJIG5lZWQgUFJPTUlTQyBlbmFibGVkIGlu
-IHRoZSB3aXJlbGVzcyBwb3J0cyBidXQgY2FyZHMgYXJlIGRyb3BwaW5nIHBhY2tldHMgdGhhdCBh
-cmUgbm90IGRpcmVjdGVkIHRvCj4gdGhlaXIgTUFDIGRzdCBhZGRyZXNzIG9mIHRoZSB3aXJlbGVz
-cyBwb3J0cy4KCk1heWJlIGhhdmUgdGhlIHR3byB3aXJlbGVzcyBOSUNzIHRhbGsgdG8gZWFjaCBv
-dGhlciB1c2luZyBJQlNTLCBhbmQgdGhlbiBlbmNhcHN1bGF0ZSB0aGUKYnJpZGdlZCBmcmFtZXMg
-aW5zaWRlIG9mIHRoZSB3aWZpIHBhY2tldHMgdXNpbmcgc29tZSBoYWNrIG9mIGEgVlBOIG9yIHNv
-bWV0aGluZyBsaWtlIHRoYXQ/CgpQUk9NSVNDIG1vZGUgaW4gQ1QgZmlybXdhcmUgc2hvdWxkIGFs
-bG93IFJYIG9mIGZyYW1lcywgYnV0IEkgZG9uJ3QgdGhpbmsgdGhlcmUgaXMgYW55CndheSB0byBU
-WCB0aGUgZnJhbWVzIGFzIHlvdSBhcmUgdHJ5aW5nIHRvIGRvLgoKVGhhbmtzLApCZW4KCj4gCj4g
-SG9wZSB0aGF0IGdpdmVzIHNvbWUgY29udGV4dCB0byB1bmRlcnN0YW5kIHRoZSBwcm9ibGVtIEkn
-bSBmYWNpbmcuCj4gCj4gWzFdIGh0dHA6Ly94ZHBkLm9yZy8KPiAKPiBUaGFua3MsCj4gSm9zZQo+
-IAo+Pgo+PiBUaGFua3MsCj4+IEJlbgo+Pgo+Pj4KPj4+Cj4+PiBUaHgsCj4+PiBKb3NlCj4+Pgo+
-Pj4gT24gMDcvMDYvMjAxNSAwNDozMyBQTSwgQmVuIEdyZWVhciB3cm90ZToKPj4+PiBPbiAwNy8w
-Ni8yMDE1IDA2OjU0IEFNLCAiSm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQykiIHdyb3RlOgo+
-Pj4+PiBUaGFua3MgZm9yIHlvdXIgYW5zd2VyLiBNeSBnb2FsIHdhcyB0byBjcmVhdGUgYSBtb25p
-dG9yIGludGVyZmFjZSAobW9uMikgYW5kIGFub3RoZXIgKHdsYW4yKSBpbiBpYnNzIG1vZGUgYXNz
-b2NpYXRlZCB0byB0aGUgc2FtZSBwaHlzaWNhbCBkZXZpY2UuIFRoaXMgaXMgdGhlCj4+Pj4+IGNv
-bW1hbmQgSSB0cmllZCB0byBjcmVhdGUgYSB2aXJ0dWFsIGludGVyZmFjZSBhc3NvY2lhdGVkIHRv
-IHBoeTAgaW4gbW9uaXRvciBtb2RlOgo+Pj4+Pgo+Pj4+PiBpdyBwaHkgcGh5MCBpbnRlcmZhY2Ug
-YWRkIG1vbmkyIHR5cGUgbW9uaXRvcgo+Pj4+Cj4+Pj4gVGhhdCBsb29rcyByaWdodC4uLnRoYXQg
-Y29tbWFuZCB3b3JrcyBmb3IgbWUuICBNYXliZSB5b3UgYWxyZWFkeSBoYWQKPj4+PiBtb25pMiBj
-cmVhdGVkIGluY29ycmVjdGx5PyAgVHJ5IHN0YXJ0aW5nIGZyb20gZnJlc2ggcmVib290IG9yIGRy
-aXZlcgo+Pj4+IHJlbG9hZD8KPj4+Pgo+Pj4+IEFsc28sIHlvdSBzaG91bGQgbm90IGFjdHVhbGx5
-IG5lZWQgYSBtb25pdG9yIGRldiB0byBoYXZlIENUIGZpcm13YXJlIHdvcmsKPj4+PiBwcm9wZXJs
-eS4uLmJ1dCBvZiBjb3Vyc2UgaWYgeW91IHdhbnQgdG8gc25pZmYgZnJhbWVzLCBpdCBjYW4gYmUg
-dXNlZnVsLgo+Pj4+Cj4+Pj4gVGhhbmtzLAo+Pj4+IEJlbgo+Pj4+Cj4+Pj4+Cj4+Pj4+IEFzIHlv
-dSBtZW50aW9uZWQgaXQgaXMgc29tZWhvdyBjb25maWd1cmVkIGFzICJtYW5hZ2VkIiBhbmQgbm90
-IGFzIG1vbml0b3IuIEFueSBpZGVhcz8KPj4+Pj4KPj4+Pj4gSm9zZQo+Pj4+Pgo+Pj4+PiBPbiAw
-Ny8wNi8yMDE1IDAzOjM5IFBNLCBCZW4gR3JlZWFyIHdyb3RlOgo+Pj4+Pj4gT24gMDcvMDYvMjAx
-NSAwNjoyMyBBTSwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIiB3cm90ZToKPj4+Pj4+
-PiBIaSwKPj4+Pj4+PiBJIHVwZ3JhZGVkIHRvIENUIGtlcm5lbCBhbmQgZmlybXdhcmUuIE5vdyBJ
-IGhhdmU6IEtlcm5lbCBpcyA0LjAuNCBmcm9tIENUIGFuZCBGaXJtd2FyZSBpcyAxMC4xLjQ2Ny1j
-dC1jb20tZnVsbC0wMTQtOTZkNTQzCj4+Pj4+Pj4gSG93ZXZlciBJIGNhbm5vdCBicmluZyB1cCB0
-d28gdmlydGFsIGludGVyZmFjZXMgYXNzb2NpYXRlZCB0byBvbmUgcGh5c2ljYWwgZGV2aWNlLgo+
-Pj4+Pj4+Cj4+Pj4+Pj4gVGhlIG91dHB1dCBvZiAiaXcgZGV2IiBjb21tYW5kOgo+Pj4+Pj4+Cj4+
-Pj4+Pj4gcGh5IzEKPj4+Pj4+PiAgICAgIEludGVyZmFjZSBtb25pMgo+Pj4+Pj4+ICAgICAgICAg
-IGlmaW5kZXggOQo+Pj4+Pj4+ICAgICAgICAgIHdkZXYgMHgxMDAwMDAwMDIKPj4+Pj4+PiAgICAg
-ICAgICBhZGRyIDA0OmYwOjIxOjE4OjI2OmE1Cj4+Pj4+Pj4gICAgICAgICAgdHlwZSBtYW5hZ2Vk
-Cj4+Pj4+Pgo+Pj4+Pj4gSXQgaXMgdHlwZSBtYW5hZ2VkLi4ueW91IGNyZWF0ZWQgdGhpcyB3cm9u
-ZyBzb21laG93Lgo+Pj4+Pj4KPj4+Pj4+IElmIHlvdSB3YW50IHRvIGJyaW5nIHVwIG1vcmUgdGhh
-biBvbmUgbWFuYWdlZCBpbnRlcmZhY2UsIHlvdSBoYXZlIHRvCj4+Pj4+PiBjaGFuZ2UgdGhlIE1B
-QyBhZGRyZXNzIGZpcnN0IHNvIHRoYXQgdGhleSBhcmUgdW5pcXVlLgo+Pj4+Pj4KPj4+Pj4+IFRo
-YW5rcywKPj4+Pj4+IEJlbgo+Pj4+Pj4KPj4+Pj4+Cj4+Pj4+Pj4gICAgICBJbnRlcmZhY2Ugd2xh
-bjIKPj4+Pj4+PiAgICAgICAgICBpZmluZGV4IDcKPj4+Pj4+PiAgICAgICAgICB3ZGV2IDB4MTAw
-MDAwMDAxCj4+Pj4+Pj4gICAgICAgICAgYWRkciAwNDpmMDoyMToxODoyNjphNQo+Pj4+Pj4+ICAg
-ICAgICAgIHR5cGUgSUJTUwo+Pj4+Pj4+Cj4+Pj4+Pj4gVGhpcyBpcyB0aGUgZXJyb3Igc2hvd24g
-d2hlbiBJIHRyeSB0byBicmluZyB1cCBtb25pMiBpbnRlcmZhY2UgKGlmY29uZmlnIG1vbmkyIHVw
-KTogIlNJT0NTSUZGTEFHUzogTmFtZSBub3QgdW5pcXVlIG9uIG5ldHdvcmsiCj4+Pj4+Pj4KPj4+
-Pj4+Pgo+Pj4+Pj4+IEpvc2UKPj4+Pj4+Pgo+Pj4+Pj4+IE9uIDA3LzAzLzIwMTUgMTI6NDUgUE0s
-IE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4+Pj4+Pj4+IE9uIDMgSnVseSAyMDE1IGF0IDEyOjE3LCAi
-Sm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQykiCj4+Pj4+Pj4+IDxqb3NlLm51bmV6QGN0dGMu
-Y2F0PiB3cm90ZToKPj4+Pj4+Pj4+IEknbSB0cnlpbmcgdG8gc2V0IEJTU0lEIG1hc2sgaW4gYXRo
-MTBrIHNvIHRoYXQgZGF0YSBwYWNrZXRzIHdpdGggc3Bvb2ZlZCBtYWMKPj4+Pj4+Pj4+IGRlc3Rp
-bmF0aW9uIGFkZHJlc3MgY2FuIGJlIHJlY2VpdmVkIChhbmQgbm90IGRyb3BwZWQpIGJ5IHRoZSBj
-YXJkLgo+Pj4+Pj4+Pj4KPj4+Pj4+Pj4+IEFwcGFyZW50bHkgdGhlIHdheSBic3NpZCBtYXNrIGlz
-IG1hbmFnZWQgaGFzIGNoYW5nZWQgZnJvbSBhdGg1ayBhbmQgYXRoOWsKPj4+Pj4+Pj4+IHNpbmNl
-IHRoZXJlIGFyZSBub3QgICJhdGg1a19od19zZXRfYnNzaWRfbWFzayIgb3IKPj4+Pj4+Pj4+ICJh
-dGg5a19odGNfc2V0X21hY19ic3NpZF9tYXNrIiAga2luZCBvZiBmdW5jdGlvbnMuCj4+Pj4+Pj4+
-Pgo+Pj4+Pj4+Pj4gQW55b25lIHRyaWVkIHRoaXM/Cj4+Pj4+Pj4+IFRoZXJlJ3Mgbm8gZXhwbGlj
-aXQgY29udHJvbCBvdmVyIFJ4IGZpbHRlcnMgaW4gYXRoMTBrIHRoYXQgSSBrbm93IG9mLgo+Pj4+
-Pj4+PiBUaGlzIGlzIGFic3RyYWN0ZWQgYXdheSBieSBvdGhlciBmaXJtd2FyZSBoaWdoZXItbGV2
-ZWwgY29tbWFuZHMuIE9uZQo+Pj4+Pj4+PiB3YXkgdG8gaW5mbHVlbmNlIFJ4IGZpbHRlciAoYW5k
-IEJTU0lEIG1hc2spIGlzIHRvIHN0YXJ0IGEgbW9uaXRvciB2ZGV2Cj4+Pj4+Pj4+IGluIGZpcm13
-YXJlLiBUaGlzIGFwcGFyZW50bHkgd29ya3NbMV0gYnV0IDYzNiB3aWxsIGNyYXNoIG9uIHlvdSBh
-Z2Fpbgo+Pj4+Pj4+PiBpZiB5b3UgZG8gdGhhdC4gWW91J2xsIG5lZWQgQmVuJ3MgQ1QgZmlybXdh
-cmUuCj4+Pj4+Pj4+Cj4+Pj4+Pj4+IFsxXTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlw
-ZXJtYWlsL2F0aDEway8yMDE1LUFwcmlsLzAwNTA5NS5odG1sCj4+Pj4+Pj4+Cj4+Pj4+Pj4+Cj4+
-Pj4+Pj4+IE1pY2hhxYIKPj4+Pj4+Pj4KPj4+Pj4+Pj4gX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KPj4+Pj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlzdAo+Pj4+
-Pj4+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+Pj4+Pj4+PiBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo+Pj4+Pj4+Cj4+Pj4+Pgo+Pj4+Pj4K
-Pj4+Pj4KPj4+Pgo+Pj4+Cj4+Pgo+Pgo+Pgo+IAoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNh
-bmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRl
-bGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+Hi Bob,
+
+I applied the mesh fix to OpenWRT (r45590 and r62020). It works great
+(thanks, Bob!), but with a potentially unforeseen consequence: When an
+Archer C7 with these changes is configured to be a 5GHz AP, clients
+are unable to connect normally. Experiments show that the client is
+registered as a station, but pings don't complete (in many cases, not
+even DHCP completes). Tested clients include one commercial phone
+(Samsung Galaxy S5 running Lollipop) and another Archer C7.
+
+Without these changes, these same clients can connect to the AP all day long.
+
+Below are sections of verbose output of an access point test script
+both without and with the mesh fix.
+======= Without ath10k mesh fix =======
++ iw dev wlan0 station dump
+Station 30:b5:c2:b2:69:14 (on wlan0)
+        inactive time:  1390 ms
+        rx bytes:       1106
+        rx packets:     3
+        tx bytes:       1168
+        tx packets:     4
+        tx retries:     0
+        tx failed:      0
+        signal:         -31 dBm
+        signal avg:     -32 dBm
+        tx bitrate:     6.0 MBit/s
+        rx bitrate:     156.0 MBit/s VHT-MCS 5 VHT-NSS 3
+        authorized:     yes
+        authenticated:  yes
+        preamble:       long
+        WMM/WME:        yes
+        MFP:            no
+        TDLS peer:      no
++ cat /tmp/dhcp.leases
++ dhcp_lease=1434658717 30:b5:c2:b2:69:14 192.168.1.104 * *
++ cut -d  -f 3
++ echo 1434658717 30:b5:c2:b2:69:14 192.168.1.104 bcopeland_test.sh
+bcopeland_test.sh
++ ip=192.168.1.104
++ echo Client IP = 192.168.1.104
+Client IP = 192.168.1.104
++ ping -c 10 192.168.1.104
+PING 192.168.1.104 (192.168.1.104) 56(84) bytes of data.
+64 bytes from 192.168.1.104: icmp_req=1 ttl=64 time=1.50 ms
+64 bytes from 192.168.1.104: icmp_req=2 ttl=64 time=0.673 ms
+64 bytes from 192.168.1.104: icmp_req=3 ttl=64 time=0.888 ms
+64 bytes from 192.168.1.104: icmp_req=4 ttl=64 time=0.694 ms
+64 bytes from 192.168.1.104: icmp_req=5 ttl=64 time=0.662 ms
+64 bytes from 192.168.1.104: icmp_req=6 ttl=64 time=0.670 ms
+64 bytes from 192.168.1.104: icmp_req=7 ttl=64 time=0.664 ms
+64 bytes from 192.168.1.104: icmp_req=8 ttl=64 time=0.759 ms
+64 bytes from 192.168.1.104: icmp_req=9 ttl=64 time=1.29 ms
+64 bytes from 192.168.1.104: icmp_req=10 ttl=64 time=0.665 ms
+
+--- 192.168.1.104 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9003ms
+rtt min/avg/max/mdev = 0.662/0.847/1.508/0.290 ms
+
+======= With ath10k mesh fix =======
++ iw dev wlan0 station dump
+Station 30:b5:c2:b2:69:14 (on wlan0)
+        inactive time:  2560 ms
+        rx bytes:       382
+        rx packets:     1
+        tx bytes:       444
+        tx packets:     2
+        tx retries:     0
+        tx failed:      0
+        signal:         -29 dBm
+        signal avg:     -33 dBm
+        tx bitrate:     6.0 MBit/s
+        rx bitrate:     156.0 MBit/s VHT-MCS 5 VHT-NSS 3
+        authorized:     yes
+        authenticated:  yes
+        preamble:       long
+        WMM/WME:        yes
+        MFP:            no
+        TDLS peer:      no
++ cat /tmp/dhcp.leases
++ dhcp_lease=
++ cut -d  -f 3
++ echo
++ ip=
++ echo Client IP =
+Client IP =
++ ping -c 10
+Usage: ping [-LRUbdfnqrvVaAD] [-c count] [-i interval] [-w deadline]
+            [-p pattern] [-s packetsize] [-t ttl] [-I interface]
+            [-M pmtudisc-hint] [-m mark] [-S sndbuf]
+            [-T tstamp-options] [-Q tos] [hop1 ...] destination
+
+Does this work on your end? If not, is there a patch that will fix it?
+Please advise.
+
+Thanks in advance,
+
+Freddy Lee
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
