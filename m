@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from marchena.puc.rediris.es ([2001:720:418:ca00::4])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZC7tB-0004qx-Nb
- for ath10k@lists.infradead.org; Mon, 06 Jul 2015 15:00:58 +0000
-Message-ID: <559A980B.6090901@cttc.cat>
-Date: Mon, 06 Jul 2015 17:00:27 +0200
-From: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?=
- <jose.nunez@cttc.cat>
+Received: from server14-mail.hostwhitelabel.com ([104.152.168.114]
+ helo=server14.hostwhitelabel.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZC7x8-0004UX-Gv
+ for ath10k@lists.infradead.org; Mon, 06 Jul 2015 15:05:03 +0000
+Received: from [50.106.40.168] (port=48038 helo=andromeda.localnet)
+ by server14.hostwhitelabel.com with esmtpsa
+ (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.85)
+ (envelope-from <CACook@quantum-sci.com>) id 1ZC7wp-000slJ-7J
+ for ath10k@lists.infradead.org; Mon, 06 Jul 2015 11:04:43 -0400
+From: CACook@quantum-sci.com
+Subject: Buss Reset Problem
+Date: Mon, 06 Jul 2015 08:04:39 -0700
+Message-ID: <3969592.crxpsBTBQa@andromeda>
 MIME-Version: 1.0
-Subject: Re: Question on bssid mask with ath10k
-References: <55966139.3090603@cttc.cat>
- <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
- <559A8140.7020000@cttc.cat> <559A8511.6060406@candelatech.com>
- <559A8882.8060609@cttc.cat> <559A91A6.8020207@candelatech.com>
-In-Reply-To: <559A91A6.8020207@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,75 +22,34 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
 
-SGksCnRoZSByZWFzb24gZm9yIHN0YXJ0aW5nIGEgdmlydHVhbCBkZXZpY2UgaW4gbW9uaXRvciBt
-b2RlIGlzIHRvIGluZnVlbmNlIApSeCBmaWx0ZXJzIGluIGZpcm13YXJlIGFzIHBvaW50ZWQgb3V0
-IGluIFsxXS4gVGhlIGdvYWwgaXMgdG8gY29uZmlndXJlIAp0aGUgd2lyZWxlc3MgZGV2aWNlIGlu
-IGFkaG9jIG1vZGUgc28gdGhhdCBpdCBjYW4gcmVjZWl2ZSBhbmQgc2VuZCAKcGFja2V0cyBjb250
-YWluaW5nIGFueSBtYWMgZGVzdGluYXRpb24gYWRkcmVzcy4KClsxXSBodHRwOi8vbGlzdHMuaW5m
-cmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUtQXByaWwvMDA1MDk1Lmh0bWwKCgpUaHgs
-Ckpvc2UKCk9uIDA3LzA2LzIwMTUgMDQ6MzMgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4gT24gMDcv
-MDYvMjAxNSAwNjo1NCBBTSwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIiB3cm90ZToK
-Pj4gVGhhbmtzIGZvciB5b3VyIGFuc3dlci4gTXkgZ29hbCB3YXMgdG8gY3JlYXRlIGEgbW9uaXRv
-ciBpbnRlcmZhY2UgCj4+IChtb24yKSBhbmQgYW5vdGhlciAod2xhbjIpIGluIGlic3MgbW9kZSBh
-c3NvY2lhdGVkIHRvIHRoZSBzYW1lIAo+PiBwaHlzaWNhbCBkZXZpY2UuIFRoaXMgaXMgdGhlCj4+
-IGNvbW1hbmQgSSB0cmllZCB0byBjcmVhdGUgYSB2aXJ0dWFsIGludGVyZmFjZSBhc3NvY2lhdGVk
-IHRvIHBoeTAgaW4gCj4+IG1vbml0b3IgbW9kZToKPj4KPj4gaXcgcGh5IHBoeTAgaW50ZXJmYWNl
-IGFkZCBtb25pMiB0eXBlIG1vbml0b3IKPgo+IFRoYXQgbG9va3MgcmlnaHQuLi50aGF0IGNvbW1h
-bmQgd29ya3MgZm9yIG1lLiAgTWF5YmUgeW91IGFscmVhZHkgaGFkCj4gbW9uaTIgY3JlYXRlZCBp
-bmNvcnJlY3RseT8gIFRyeSBzdGFydGluZyBmcm9tIGZyZXNoIHJlYm9vdCBvciBkcml2ZXIKPiBy
-ZWxvYWQ/Cj4KPiBBbHNvLCB5b3Ugc2hvdWxkIG5vdCBhY3R1YWxseSBuZWVkIGEgbW9uaXRvciBk
-ZXYgdG8gaGF2ZSBDVCBmaXJtd2FyZSB3b3JrCj4gcHJvcGVybHkuLi5idXQgb2YgY291cnNlIGlm
-IHlvdSB3YW50IHRvIHNuaWZmIGZyYW1lcywgaXQgY2FuIGJlIHVzZWZ1bC4KPgo+IFRoYW5rcywK
-PiBCZW4KPgo+Pgo+PiBBcyB5b3UgbWVudGlvbmVkIGl0IGlzIHNvbWVob3cgY29uZmlndXJlZCBh
-cyAibWFuYWdlZCIgYW5kIG5vdCBhcyAKPj4gbW9uaXRvci4gQW55IGlkZWFzPwo+Pgo+PiBKb3Nl
-Cj4+Cj4+IE9uIDA3LzA2LzIwMTUgMDM6MzkgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+PiBPbiAw
-Ny8wNi8yMDE1IDA2OjIzIEFNLCAiSm9zZSBOw7rDsWV6LU1hcnTDrW5leiAoQ1RUQykiIHdyb3Rl
-Ogo+Pj4+IEhpLAo+Pj4+IEkgdXBncmFkZWQgdG8gQ1Qga2VybmVsIGFuZCBmaXJtd2FyZS4gTm93
-IEkgaGF2ZTogS2VybmVsIGlzIDQuMC40IAo+Pj4+IGZyb20gQ1QgYW5kIEZpcm13YXJlIGlzIDEw
-LjEuNDY3LWN0LWNvbS1mdWxsLTAxNC05NmQ1NDMKPj4+PiBIb3dldmVyIEkgY2Fubm90IGJyaW5n
-IHVwIHR3byB2aXJ0YWwgaW50ZXJmYWNlcyBhc3NvY2lhdGVkIHRvIG9uZSAKPj4+PiBwaHlzaWNh
-bCBkZXZpY2UuCj4+Pj4KPj4+PiBUaGUgb3V0cHV0IG9mICJpdyBkZXYiIGNvbW1hbmQ6Cj4+Pj4K
-Pj4+PiBwaHkjMQo+Pj4+ICAgICAgSW50ZXJmYWNlIG1vbmkyCj4+Pj4gICAgICAgICAgaWZpbmRl
-eCA5Cj4+Pj4gICAgICAgICAgd2RldiAweDEwMDAwMDAwMgo+Pj4+ICAgICAgICAgIGFkZHIgMDQ6
-ZjA6MjE6MTg6MjY6YTUKPj4+PiAgICAgICAgICB0eXBlIG1hbmFnZWQKPj4+Cj4+PiBJdCBpcyB0
-eXBlIG1hbmFnZWQuLi55b3UgY3JlYXRlZCB0aGlzIHdyb25nIHNvbWVob3cuCj4+Pgo+Pj4gSWYg
-eW91IHdhbnQgdG8gYnJpbmcgdXAgbW9yZSB0aGFuIG9uZSBtYW5hZ2VkIGludGVyZmFjZSwgeW91
-IGhhdmUgdG8KPj4+IGNoYW5nZSB0aGUgTUFDIGFkZHJlc3MgZmlyc3Qgc28gdGhhdCB0aGV5IGFy
-ZSB1bmlxdWUuCj4+Pgo+Pj4gVGhhbmtzLAo+Pj4gQmVuCj4+Pgo+Pj4KPj4+PiAgICAgIEludGVy
-ZmFjZSB3bGFuMgo+Pj4+ICAgICAgICAgIGlmaW5kZXggNwo+Pj4+ICAgICAgICAgIHdkZXYgMHgx
-MDAwMDAwMDEKPj4+PiAgICAgICAgICBhZGRyIDA0OmYwOjIxOjE4OjI2OmE1Cj4+Pj4gICAgICAg
-ICAgdHlwZSBJQlNTCj4+Pj4KPj4+PiBUaGlzIGlzIHRoZSBlcnJvciBzaG93biB3aGVuIEkgdHJ5
-IHRvIGJyaW5nIHVwIG1vbmkyIGludGVyZmFjZSAKPj4+PiAoaWZjb25maWcgbW9uaTIgdXApOiAi
-U0lPQ1NJRkZMQUdTOiBOYW1lIG5vdCB1bmlxdWUgb24gbmV0d29yayIKPj4+Pgo+Pj4+Cj4+Pj4g
-Sm9zZQo+Pj4+Cj4+Pj4gT24gMDcvMDMvMjAxNSAxMjo0NSBQTSwgTWljaGFsIEthemlvciB3cm90
-ZToKPj4+Pj4gT24gMyBKdWx5IDIwMTUgYXQgMTI6MTcsICJKb3NlIE7DusOxZXotTWFydMOtbmV6
-IChDVFRDKSIKPj4+Pj4gPGpvc2UubnVuZXpAY3R0Yy5jYXQ+IHdyb3RlOgo+Pj4+Pj4gSSdtIHRy
-eWluZyB0byBzZXQgQlNTSUQgbWFzayBpbiBhdGgxMGsgc28gdGhhdCBkYXRhIHBhY2tldHMgd2l0
-aCAKPj4+Pj4+IHNwb29mZWQgbWFjCj4+Pj4+PiBkZXN0aW5hdGlvbiBhZGRyZXNzIGNhbiBiZSBy
-ZWNlaXZlZCAoYW5kIG5vdCBkcm9wcGVkKSBieSB0aGUgY2FyZC4KPj4+Pj4+Cj4+Pj4+PiBBcHBh
-cmVudGx5IHRoZSB3YXkgYnNzaWQgbWFzayBpcyBtYW5hZ2VkIGhhcyBjaGFuZ2VkIGZyb20gYXRo
-NWsgCj4+Pj4+PiBhbmQgYXRoOWsKPj4+Pj4+IHNpbmNlIHRoZXJlIGFyZSBub3QgICJhdGg1a19o
-d19zZXRfYnNzaWRfbWFzayIgb3IKPj4+Pj4+ICJhdGg5a19odGNfc2V0X21hY19ic3NpZF9tYXNr
-IiAga2luZCBvZiBmdW5jdGlvbnMuCj4+Pj4+Pgo+Pj4+Pj4gQW55b25lIHRyaWVkIHRoaXM/Cj4+
-Pj4+IFRoZXJlJ3Mgbm8gZXhwbGljaXQgY29udHJvbCBvdmVyIFJ4IGZpbHRlcnMgaW4gYXRoMTBr
-IHRoYXQgSSBrbm93IG9mLgo+Pj4+PiBUaGlzIGlzIGFic3RyYWN0ZWQgYXdheSBieSBvdGhlciBm
-aXJtd2FyZSBoaWdoZXItbGV2ZWwgY29tbWFuZHMuIE9uZQo+Pj4+PiB3YXkgdG8gaW5mbHVlbmNl
-IFJ4IGZpbHRlciAoYW5kIEJTU0lEIG1hc2spIGlzIHRvIHN0YXJ0IGEgbW9uaXRvciAKPj4+Pj4g
-dmRldgo+Pj4+PiBpbiBmaXJtd2FyZS4gVGhpcyBhcHBhcmVudGx5IHdvcmtzWzFdIGJ1dCA2MzYg
-d2lsbCBjcmFzaCBvbiB5b3UgYWdhaW4KPj4+Pj4gaWYgeW91IGRvIHRoYXQuIFlvdSdsbCBuZWVk
-IEJlbidzIENUIGZpcm13YXJlLgo+Pj4+Pgo+Pj4+PiBbMV06IAo+Pj4+PiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUtQXByaWwvMDA1MDk1Lmh0bWwKPj4+
-Pj4KPj4+Pj4KPj4+Pj4gTWljaGHFggo+Pj4+Pgo+Pj4+PiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+Pj4+
-IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4+Pj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQu
-b3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Pj4KPj4+Cj4+Pgo+Pgo+Cj4KCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBs
-aXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3Jn
-L21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+
+CPU: Intel(R) Xeon(R) CPU E3-1265L v3 @ 2.50GHz
+KVM: qemu-kvm-1.5.3-86.el7_1.2.x86_64
+Kernel: 4.1.1-1.el7.elrepo.x86_64, and kernel-3.10.0-229.7.2.el7.x86_64
+Host & Guest: CentOS 7.1
+Using virt-manager-1.1.0-12.el7.noarch to create, configure, and start guest
+I am trying to do a PCI passthrough of a QCA988X wifi card. It's a Doodle Labs military-grade 802.11ac miniPCI card. This card configures nicely on the host, and seems to pass through to the KVM guest, but early in the boot of the guest it says "Unknown header type" at the wifi's bus address. And sure enough, lspci -vv on the host then shows:
+        !!! Unknown header type 7f
+        Kernel driver in use: vfio-pci
+It seems to be the buss reset problem, as outlined here:
+http://www.gossamer-threads.com/lists/linux/kernel/2054846
+ 
+... Except my card locks up on boot of the KVM guest.
+ 
+When I logged a bug at QEMU (https://bugs.launchpad.net/qemu/+bug/1471583), Alex suggested I add to the patch:
+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
+ 
+... So I am in the process of trying that now.
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
