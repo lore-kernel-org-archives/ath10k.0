@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from 69-64-71-35.dedicated.abac.net ([69.64.71.35]
- helo=ct101.iwayvietnam.com)
+Received: from marchena.puc.rediris.es ([2001:720:418:ca00::4])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZBTpl-0003Mq-Uz
- for ath10k@lists.infradead.org; Sat, 04 Jul 2015 20:14:46 +0000
-Received: from ct101.iwayvietnam.com (ct101.iwayvietnam.com [127.0.0.1])
- by ct101.iwayvietnam.com (8.13.1/8.13.1) with ESMTP id t64JLwlG003796
- for <ath10k@lists.infradead.org>; Sat, 4 Jul 2015 12:22:01 -0700
-Subject: Problems with item delivery, n.000902742
-Date: Sat, 4 Jul 2015 12:21:48 -0700
-From: "FedEx International Ground"
- <bobby.becker@69-64-71-35.dedicated.abac.net>
-Message-ID: <1bad0fd5c22458f5df7987d276af15de@69-64-71-35.dedicated.abac.net>
+ id 1ZC6N6-0007CB-TE
+ for ath10k@lists.infradead.org; Mon, 06 Jul 2015 13:23:45 +0000
+Message-ID: <559A8140.7020000@cttc.cat>
+Date: Mon, 06 Jul 2015 15:23:12 +0200
+From: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?=
+ <jose.nunez@cttc.cat>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="b1_c2596f7cf4dc82699c82815d06980ca2"
-Content-Transfer-Encoding: 8bit
+Subject: Re: Question on bssid mask with ath10k
+References: <55966139.3090603@cttc.cat>
+ <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
+In-Reply-To: <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +20,49 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Reply-To: FedEx International Ground
- <bobby.becker@69-64-71-35.dedicated.abac.net>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
---b1_c2596f7cf4dc82699c82815d06980ca2
-Content-Type: text/plain; charset=us-ascii
-
-Dear Customer,
-
-We could not deliver your item.
-Shipment Label is attached to email.
-
-Warm regards,
-Bobby Becker,
-FedEx Support Manager.
-
-
---b1_c2596f7cf4dc82699c82815d06980ca2
-Content-Type: application/zip; name="FedEx_000902742.zip"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=FedEx_000902742.zip
-
-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
-AJQGAAAAAA==
-
-
---b1_c2596f7cf4dc82699c82815d06980ca2
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
-
---b1_c2596f7cf4dc82699c82815d06980ca2--
+SGksCkkgdXBncmFkZWQgdG8gQ1Qga2VybmVsIGFuZCBmaXJtd2FyZS4gTm93IEkgaGF2ZTogS2Vy
+bmVsIGlzIDQuMC40IGZyb20gCkNUIGFuZCBGaXJtd2FyZSBpcyAxMC4xLjQ2Ny1jdC1jb20tZnVs
+bC0wMTQtOTZkNTQzCkhvd2V2ZXIgSSBjYW5ub3QgYnJpbmcgdXAgdHdvIHZpcnRhbCBpbnRlcmZh
+Y2VzIGFzc29jaWF0ZWQgdG8gb25lIApwaHlzaWNhbCBkZXZpY2UuCgpUaGUgb3V0cHV0IG9mICJp
+dyBkZXYiIGNvbW1hbmQ6CgpwaHkjMQogICAgIEludGVyZmFjZSBtb25pMgogICAgICAgICBpZmlu
+ZGV4IDkKICAgICAgICAgd2RldiAweDEwMDAwMDAwMgogICAgICAgICBhZGRyIDA0OmYwOjIxOjE4
+OjI2OmE1CiAgICAgICAgIHR5cGUgbWFuYWdlZAogICAgIEludGVyZmFjZSB3bGFuMgogICAgICAg
+ICBpZmluZGV4IDcKICAgICAgICAgd2RldiAweDEwMDAwMDAwMQogICAgICAgICBhZGRyIDA0OmYw
+OjIxOjE4OjI2OmE1CiAgICAgICAgIHR5cGUgSUJTUwoKVGhpcyBpcyB0aGUgZXJyb3Igc2hvd24g
+d2hlbiBJIHRyeSB0byBicmluZyB1cCBtb25pMiBpbnRlcmZhY2UgKGlmY29uZmlnIAptb25pMiB1
+cCk6ICJTSU9DU0lGRkxBR1M6IE5hbWUgbm90IHVuaXF1ZSBvbiBuZXR3b3JrIgoKCkpvc2UKCk9u
+IDA3LzAzLzIwMTUgMTI6NDUgUE0sIE1pY2hhbCBLYXppb3Igd3JvdGU6Cj4gT24gMyBKdWx5IDIw
+MTUgYXQgMTI6MTcsICJKb3NlIE7DusOxZXotTWFydMOtbmV6IChDVFRDKSIKPiA8am9zZS5udW5l
+ekBjdHRjLmNhdD4gd3JvdGU6Cj4+IEknbSB0cnlpbmcgdG8gc2V0IEJTU0lEIG1hc2sgaW4gYXRo
+MTBrIHNvIHRoYXQgZGF0YSBwYWNrZXRzIHdpdGggc3Bvb2ZlZCBtYWMKPj4gZGVzdGluYXRpb24g
+YWRkcmVzcyBjYW4gYmUgcmVjZWl2ZWQgKGFuZCBub3QgZHJvcHBlZCkgYnkgdGhlIGNhcmQuCj4+
+Cj4+IEFwcGFyZW50bHkgdGhlIHdheSBic3NpZCBtYXNrIGlzIG1hbmFnZWQgaGFzIGNoYW5nZWQg
+ZnJvbSBhdGg1ayBhbmQgYXRoOWsKPj4gc2luY2UgdGhlcmUgYXJlIG5vdCAgImF0aDVrX2h3X3Nl
+dF9ic3NpZF9tYXNrIiBvcgo+PiAiYXRoOWtfaHRjX3NldF9tYWNfYnNzaWRfbWFzayIgIGtpbmQg
+b2YgZnVuY3Rpb25zLgo+Pgo+PiBBbnlvbmUgdHJpZWQgdGhpcz8KPiBUaGVyZSdzIG5vIGV4cGxp
+Y2l0IGNvbnRyb2wgb3ZlciBSeCBmaWx0ZXJzIGluIGF0aDEwayB0aGF0IEkga25vdyBvZi4KPiBU
+aGlzIGlzIGFic3RyYWN0ZWQgYXdheSBieSBvdGhlciBmaXJtd2FyZSBoaWdoZXItbGV2ZWwgY29t
+bWFuZHMuIE9uZQo+IHdheSB0byBpbmZsdWVuY2UgUnggZmlsdGVyIChhbmQgQlNTSUQgbWFzaykg
+aXMgdG8gc3RhcnQgYSBtb25pdG9yIHZkZXYKPiBpbiBmaXJtd2FyZS4gVGhpcyBhcHBhcmVudGx5
+IHdvcmtzWzFdIGJ1dCA2MzYgd2lsbCBjcmFzaCBvbiB5b3UgYWdhaW4KPiBpZiB5b3UgZG8gdGhh
+dC4gWW91J2xsIG5lZWQgQmVuJ3MgQ1QgZmlybXdhcmUuCj4KPiBbMV06IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNS1BcHJpbC8wMDUwOTUuaHRtbAo+Cj4K
+PiBNaWNoYcWCCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwo+
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCgotLSAK
+Sm9zZSBOw7rDsWV6LU1hcnTDrW5leiwgUGhEClJlc2VhcmNoZXIgICAgICAgICAgICAgICBlbWFp
+bDogam9zZS5udW5lekBjdHRjLmNhdApDT01ORVQgRGl2aXNpb24gICAgIFdlYjogaHR0cDovL25l
+dHdvcmtzLmN0dGMuY2F0CgpDZW50cmUgVGVjbm9sw7JnaWMgZGUgVGVsZWNvbXVuaWNhY2lvbnMg
+ZGUgQ2F0YWx1bnlhIChDVFRDKQpQYXJjIE1lZGl0ZXJyYW5pIGRlIGxhIFRlY25vbG9naWEKQXYu
+IENhcmwgRnJpZWRyaWNoIEdhdXNzLCA3ICAgICAgICAgICAgICAgIFBoLjorMzQgOTM2NDUyOTI3
+CjA4ODYwIENhc3RlbGxkZWZlbHMgLSBCYXJjZWxvbmEgICAgICAgICAgICBGYXg6ICszNCA5MzY0
+NTI5MDEKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwph
+dGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0
+cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
