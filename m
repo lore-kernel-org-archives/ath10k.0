@@ -1,19 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from server14-mail.hostwhitelabel.com ([104.152.168.114]
- helo=server14.hostwhitelabel.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZC7x8-0004UX-Gv
- for ath10k@lists.infradead.org; Mon, 06 Jul 2015 15:05:03 +0000
-Received: from [50.106.40.168] (port=48038 helo=andromeda.localnet)
- by server14.hostwhitelabel.com with esmtpsa
- (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.85)
- (envelope-from <CACook@quantum-sci.com>) id 1ZC7wp-000slJ-7J
- for ath10k@lists.infradead.org; Mon, 06 Jul 2015 11:04:43 -0400
-From: CACook@quantum-sci.com
-Subject: Buss Reset Problem
-Date: Mon, 06 Jul 2015 08:04:39 -0700
-Message-ID: <3969592.crxpsBTBQa@andromeda>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZC82N-0000vb-S0
+ for ath10k@lists.infradead.org; Mon, 06 Jul 2015 15:10:28 +0000
+Message-ID: <559A9A4E.5030700@candelatech.com>
+Date: Mon, 06 Jul 2015 08:10:06 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: Re: Question on bssid mask with ath10k
+References: <55966139.3090603@cttc.cat>
+ <CA+BoTQ=7tXKdr6QoWiaWWVvGScfWkc5+BR0HYN0Odo6KDRAHMw@mail.gmail.com>
+ <559A8140.7020000@cttc.cat> <559A8511.6060406@candelatech.com>
+ <559A8882.8060609@cttc.cat> <559A91A6.8020207@candelatech.com>
+ <559A980B.6090901@cttc.cat>
+In-Reply-To: <559A980B.6090901@cttc.cat>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +22,96 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: =?UTF-8?B?Ikpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIg==?= <jose.nunez@cttc.cat>, Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-CPU: Intel(R) Xeon(R) CPU E3-1265L v3 @ 2.50GHz
-KVM: qemu-kvm-1.5.3-86.el7_1.2.x86_64
-Kernel: 4.1.1-1.el7.elrepo.x86_64, and kernel-3.10.0-229.7.2.el7.x86_64
-Host & Guest: CentOS 7.1
-Using virt-manager-1.1.0-12.el7.noarch to create, configure, and start guest
-I am trying to do a PCI passthrough of a QCA988X wifi card. It's a Doodle Labs military-grade 802.11ac miniPCI card. This card configures nicely on the host, and seems to pass through to the KVM guest, but early in the boot of the guest it says "Unknown header type" at the wifi's bus address. And sure enough, lspci -vv on the host then shows:
-        !!! Unknown header type 7f
-        Kernel driver in use: vfio-pci
-It seems to be the buss reset problem, as outlined here:
-http://www.gossamer-threads.com/lists/linux/kernel/2054846
- 
-... Except my card locks up on boot of the KVM guest.
- 
-When I logged a bug at QEMU (https://bugs.launchpad.net/qemu/+bug/1471583), Alex suggested I add to the patch:
-DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
- 
-... So I am in the process of trying that now.
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDcvMDYvMjAxNSAwODowMCBBTSwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIiB3
+cm90ZToKPiBIaSwKPiB0aGUgcmVhc29uIGZvciBzdGFydGluZyBhIHZpcnR1YWwgZGV2aWNlIGlu
+IG1vbml0b3IgbW9kZSBpcyB0byBpbmZ1ZW5jZSBSeCBmaWx0ZXJzIGluIGZpcm13YXJlIGFzIHBv
+aW50ZWQgb3V0IGluIFsxXS4gVGhlIGdvYWwgaXMgdG8gY29uZmlndXJlIHRoZSB3aXJlbGVzcwo+
+IGRldmljZSBpbiBhZGhvYyBtb2RlIHNvIHRoYXQgaXQgY2FuIHJlY2VpdmUgYW5kIHNlbmQgcGFj
+a2V0cyBjb250YWluaW5nIGFueSBtYWMgZGVzdGluYXRpb24gYWRkcmVzcy4KPgo+IFsxXSBodHRw
+Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUtQXByaWwvMDA1MDk1
+Lmh0bWwKCkJTU0lEIG1hc2sgaXMgbm90IHlvdXIgbWFpbiBwcm9ibGVtIEkgdGhpbmsuICBJdCBp
+cyBwcmltYXJpbHkgdXNlZCB0bwpkZWFsIHdpdGggbXVsdGlwbGUgdmlydHVhbCBkZXZpY2VzIChh
+cCwgU1RBLCBJQlNTKS4gIFBST01JU0Mgd2lsbCBlZmZlY3RpdmVseQpqdXN0IGRpc2FibGUgdGhl
+IEJTU0lEIG1hc2sgc28gdGhhdCBhbGwgKG1vc3QsIHJlYWxseS4ubW9uaXRvciBtb2RlIGlzIG5v
+dCBwZXJmZWN0CmZvciBhdGgxMGspIGZyYW1lcyBhcmUgcGFzc2VkIHVwIHRoZSBzdGFjayB0byB0
+aGUgaG9zdC4KClRoZSBmaXJtd2FyZSB3aWxsIG5vdCBzZW5kIHBhY2tldHMgdG8gZGVzdGluYXRp
+b25zIHRoYXQgaXQgZG9lcyBub3QgaGF2ZSBhIHBlZXIKb2JqZWN0IGZvciwgc28geW91IHdpbGwg
+bm90IGJlIGFibGUgdG8gdHJhbnNtaXQgdG8gYXJiaXRyYXJ5IGRlc3RpbmF0aW9ucy4KCkFESE9D
+IHdpbGwgY3JlYXRlIHBlZXIgb2JqZWN0cyBhcyBpdCBhc3NvY2lhdGVzIHdpdGggbmV3IHBlZXJz
+LCBzbyBtYXliZSB5b3UKZG8gbm90IGFjdHVhbGx5IG5lZWQgJ2FueSBtYWMgZGVzdGluYXRpb24g
+YWRkcmVzcyc/CgpJIGhhdmUgc29tZSBidWdzIHRvIHRyYWNrIGRvd24gcmVsYXRpbmcgdG8gc29t
+ZSAuMTFyIGFuZC9vciBBTlFQIGZhaWx1cmVzIHRoYXQgd2Ugc2VlCmluIHNvbWUgb2Ygb3VyIHRl
+c3RzLi4ucG9zc2libHkgSSdsbCBmaWd1cmUgb3V0IGhvdyB0byBzZW5kIHRvIGFyYml0cmFyeSBk
+ZXN0aW5hdGlvbnMKd2hpbGUgZml4aW5nIHRoaXMuCgphdGgxMGsgaXMgZnVsbCBvZiBzdWJ0bGUg
+YW5kIG5vdC1zby1zdWJ0bGUgbGltaXRhdGlvbnMuICBJIHRoaW5rIGZvciBiZXN0IHN1cHBvcnQg
+eW91IHNob3VsZCBzcGVsbCBvdXQKeW91ciByZWFsIGdvYWxzIGFuZCB1c2UgY2FzZXMgaW4gZGV0
+YWlsIGluc3RlYWQgb2YgdHJ5aW5nIHRvIHRoaW5rIG9mIGF0aDEwayBhcyBqdXN0IGEgZmFzdGVy
+CnZlcnNpb24gb2YgYXRoOWsuCgpUaGFua3MsCkJlbgoKPgo+Cj4gVGh4LAo+IEpvc2UKPgo+IE9u
+IDA3LzA2LzIwMTUgMDQ6MzMgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+IE9uIDA3LzA2LzIwMTUg
+MDY6NTQgQU0sICJKb3NlIE7DusOxZXotTWFydMOtbmV6IChDVFRDKSIgd3JvdGU6Cj4+PiBUaGFu
+a3MgZm9yIHlvdXIgYW5zd2VyLiBNeSBnb2FsIHdhcyB0byBjcmVhdGUgYSBtb25pdG9yIGludGVy
+ZmFjZSAobW9uMikgYW5kIGFub3RoZXIgKHdsYW4yKSBpbiBpYnNzIG1vZGUgYXNzb2NpYXRlZCB0
+byB0aGUgc2FtZSBwaHlzaWNhbCBkZXZpY2UuIFRoaXMgaXMgdGhlCj4+PiBjb21tYW5kIEkgdHJp
+ZWQgdG8gY3JlYXRlIGEgdmlydHVhbCBpbnRlcmZhY2UgYXNzb2NpYXRlZCB0byBwaHkwIGluIG1v
+bml0b3IgbW9kZToKPj4+Cj4+PiBpdyBwaHkgcGh5MCBpbnRlcmZhY2UgYWRkIG1vbmkyIHR5cGUg
+bW9uaXRvcgo+Pgo+PiBUaGF0IGxvb2tzIHJpZ2h0Li4udGhhdCBjb21tYW5kIHdvcmtzIGZvciBt
+ZS4gIE1heWJlIHlvdSBhbHJlYWR5IGhhZAo+PiBtb25pMiBjcmVhdGVkIGluY29ycmVjdGx5PyAg
+VHJ5IHN0YXJ0aW5nIGZyb20gZnJlc2ggcmVib290IG9yIGRyaXZlcgo+PiByZWxvYWQ/Cj4+Cj4+
+IEFsc28sIHlvdSBzaG91bGQgbm90IGFjdHVhbGx5IG5lZWQgYSBtb25pdG9yIGRldiB0byBoYXZl
+IENUIGZpcm13YXJlIHdvcmsKPj4gcHJvcGVybHkuLi5idXQgb2YgY291cnNlIGlmIHlvdSB3YW50
+IHRvIHNuaWZmIGZyYW1lcywgaXQgY2FuIGJlIHVzZWZ1bC4KPj4KPj4gVGhhbmtzLAo+PiBCZW4K
+Pj4KPj4+Cj4+PiBBcyB5b3UgbWVudGlvbmVkIGl0IGlzIHNvbWVob3cgY29uZmlndXJlZCBhcyAi
+bWFuYWdlZCIgYW5kIG5vdCBhcyBtb25pdG9yLiBBbnkgaWRlYXM/Cj4+Pgo+Pj4gSm9zZQo+Pj4K
+Pj4+IE9uIDA3LzA2LzIwMTUgMDM6MzkgUE0sIEJlbiBHcmVlYXIgd3JvdGU6Cj4+Pj4gT24gMDcv
+MDYvMjAxNSAwNjoyMyBBTSwgIkpvc2UgTsO6w7Flei1NYXJ0w61uZXogKENUVEMpIiB3cm90ZToK
+Pj4+Pj4gSGksCj4+Pj4+IEkgdXBncmFkZWQgdG8gQ1Qga2VybmVsIGFuZCBmaXJtd2FyZS4gTm93
+IEkgaGF2ZTogS2VybmVsIGlzIDQuMC40IGZyb20gQ1QgYW5kIEZpcm13YXJlIGlzIDEwLjEuNDY3
+LWN0LWNvbS1mdWxsLTAxNC05NmQ1NDMKPj4+Pj4gSG93ZXZlciBJIGNhbm5vdCBicmluZyB1cCB0
+d28gdmlydGFsIGludGVyZmFjZXMgYXNzb2NpYXRlZCB0byBvbmUgcGh5c2ljYWwgZGV2aWNlLgo+
+Pj4+Pgo+Pj4+PiBUaGUgb3V0cHV0IG9mICJpdyBkZXYiIGNvbW1hbmQ6Cj4+Pj4+Cj4+Pj4+IHBo
+eSMxCj4+Pj4+ICAgICAgSW50ZXJmYWNlIG1vbmkyCj4+Pj4+ICAgICAgICAgIGlmaW5kZXggOQo+
+Pj4+PiAgICAgICAgICB3ZGV2IDB4MTAwMDAwMDAyCj4+Pj4+ICAgICAgICAgIGFkZHIgMDQ6ZjA6
+MjE6MTg6MjY6YTUKPj4+Pj4gICAgICAgICAgdHlwZSBtYW5hZ2VkCj4+Pj4KPj4+PiBJdCBpcyB0
+eXBlIG1hbmFnZWQuLi55b3UgY3JlYXRlZCB0aGlzIHdyb25nIHNvbWVob3cuCj4+Pj4KPj4+PiBJ
+ZiB5b3Ugd2FudCB0byBicmluZyB1cCBtb3JlIHRoYW4gb25lIG1hbmFnZWQgaW50ZXJmYWNlLCB5
+b3UgaGF2ZSB0bwo+Pj4+IGNoYW5nZSB0aGUgTUFDIGFkZHJlc3MgZmlyc3Qgc28gdGhhdCB0aGV5
+IGFyZSB1bmlxdWUuCj4+Pj4KPj4+PiBUaGFua3MsCj4+Pj4gQmVuCj4+Pj4KPj4+Pgo+Pj4+PiAg
+ICAgIEludGVyZmFjZSB3bGFuMgo+Pj4+PiAgICAgICAgICBpZmluZGV4IDcKPj4+Pj4gICAgICAg
+ICAgd2RldiAweDEwMDAwMDAwMQo+Pj4+PiAgICAgICAgICBhZGRyIDA0OmYwOjIxOjE4OjI2OmE1
+Cj4+Pj4+ICAgICAgICAgIHR5cGUgSUJTUwo+Pj4+Pgo+Pj4+PiBUaGlzIGlzIHRoZSBlcnJvciBz
+aG93biB3aGVuIEkgdHJ5IHRvIGJyaW5nIHVwIG1vbmkyIGludGVyZmFjZSAoaWZjb25maWcgbW9u
+aTIgdXApOiAiU0lPQ1NJRkZMQUdTOiBOYW1lIG5vdCB1bmlxdWUgb24gbmV0d29yayIKPj4+Pj4K
+Pj4+Pj4KPj4+Pj4gSm9zZQo+Pj4+Pgo+Pj4+PiBPbiAwNy8wMy8yMDE1IDEyOjQ1IFBNLCBNaWNo
+YWwgS2F6aW9yIHdyb3RlOgo+Pj4+Pj4gT24gMyBKdWx5IDIwMTUgYXQgMTI6MTcsICJKb3NlIE7D
+usOxZXotTWFydMOtbmV6IChDVFRDKSIKPj4+Pj4+IDxqb3NlLm51bmV6QGN0dGMuY2F0PiB3cm90
+ZToKPj4+Pj4+PiBJJ20gdHJ5aW5nIHRvIHNldCBCU1NJRCBtYXNrIGluIGF0aDEwayBzbyB0aGF0
+IGRhdGEgcGFja2V0cyB3aXRoIHNwb29mZWQgbWFjCj4+Pj4+Pj4gZGVzdGluYXRpb24gYWRkcmVz
+cyBjYW4gYmUgcmVjZWl2ZWQgKGFuZCBub3QgZHJvcHBlZCkgYnkgdGhlIGNhcmQuCj4+Pj4+Pj4K
+Pj4+Pj4+PiBBcHBhcmVudGx5IHRoZSB3YXkgYnNzaWQgbWFzayBpcyBtYW5hZ2VkIGhhcyBjaGFu
+Z2VkIGZyb20gYXRoNWsgYW5kIGF0aDlrCj4+Pj4+Pj4gc2luY2UgdGhlcmUgYXJlIG5vdCAgImF0
+aDVrX2h3X3NldF9ic3NpZF9tYXNrIiBvcgo+Pj4+Pj4+ICJhdGg5a19odGNfc2V0X21hY19ic3Np
+ZF9tYXNrIiAga2luZCBvZiBmdW5jdGlvbnMuCj4+Pj4+Pj4KPj4+Pj4+PiBBbnlvbmUgdHJpZWQg
+dGhpcz8KPj4+Pj4+IFRoZXJlJ3Mgbm8gZXhwbGljaXQgY29udHJvbCBvdmVyIFJ4IGZpbHRlcnMg
+aW4gYXRoMTBrIHRoYXQgSSBrbm93IG9mLgo+Pj4+Pj4gVGhpcyBpcyBhYnN0cmFjdGVkIGF3YXkg
+Ynkgb3RoZXIgZmlybXdhcmUgaGlnaGVyLWxldmVsIGNvbW1hbmRzLiBPbmUKPj4+Pj4+IHdheSB0
+byBpbmZsdWVuY2UgUnggZmlsdGVyIChhbmQgQlNTSUQgbWFzaykgaXMgdG8gc3RhcnQgYSBtb25p
+dG9yIHZkZXYKPj4+Pj4+IGluIGZpcm13YXJlLiBUaGlzIGFwcGFyZW50bHkgd29ya3NbMV0gYnV0
+IDYzNiB3aWxsIGNyYXNoIG9uIHlvdSBhZ2Fpbgo+Pj4+Pj4gaWYgeW91IGRvIHRoYXQuIFlvdSds
+bCBuZWVkIEJlbidzIENUIGZpcm13YXJlLgo+Pj4+Pj4KPj4+Pj4+IFsxXTogaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUFwcmlsLzAwNTA5NS5odG1sCj4+
+Pj4+Pgo+Pj4+Pj4KPj4+Pj4+IE1pY2hhxYIKPj4+Pj4+Cj4+Pj4+PiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+Pj4+Pj4gYXRoMTBrIG1haWxpbmcgbGlz
+dAo+Pj4+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPj4+Pj4+IGh0dHA6Ly9saXN0cy5p
+bmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCj4+Pj4+Cj4+Pj4KPj4+Pgo+Pj4K
+Pj4KPj4KPgoKCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVs
+YSBUZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxp
+c3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
