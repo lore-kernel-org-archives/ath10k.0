@@ -1,19 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-f179.google.com ([209.85.213.179])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCELn-0001Hc-9x
- for ath10k@lists.infradead.org; Mon, 06 Jul 2015 21:54:55 +0000
-Received: by igrv9 with SMTP id v9so126505265igr.1
- for <ath10k@lists.infradead.org>; Mon, 06 Jul 2015 14:54:32 -0700 (PDT)
-Date: Mon, 6 Jul 2015 17:54:29 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: attempting mesh on ath10k
-Message-ID: <20150706215429.GG23012@localhost>
-References: <CAN+ZWYEK5TpXVsQom5RBxZ1=XCGn9Cq47w1rQdonWNx-ec88vA@mail.gmail.com>
- <20150706214921.GF23012@localhost>
+ id 1ZCW5i-0005QW-7m
+ for ath10k@lists.infradead.org; Tue, 07 Jul 2015 16:51:30 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH 2/3] ath10k: redefine rx_ppdu_end_common structure to cover
+ qca99x0
+Date: Tue, 7 Jul 2015 09:47:55 -0700
+Message-ID: <1436287676-25767-3-git-send-email-poh@qca.qualcomm.com>
+In-Reply-To: <1436287676-25767-1-git-send-email-poh@qca.qualcomm.com>
+References: <1436287676-25767-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150706214921.GF23012@localhost>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +23,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Freddy Lee <flee@cococorp.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-On Mon, Jul 06, 2015 at 05:49:21PM -0400, Bob Copeland wrote:
-> Some basic tests with TCP iperf using 2 ath10k devices and a couple
-> of ath9k devices:
-> 
->    2-node VHT mesh:
->    4-node linear multihop HT20 (ath9k -> ath10k -> ath9k -> ath10k):
+rx_ppdu_end_common structure is valid for both of qca998x and
+qca6174, but not for qca99x0 since it has new additional members.
+Hence update the common structure to cover qca99x0 as well.
 
-Obviously these tests are as yet incomplete :)
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/rx_desc.h | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
+index 492b5a5..6cb078d 100644
+--- a/drivers/net/wireless/ath/ath10k/rx_desc.h
++++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
+@@ -891,13 +891,13 @@ struct rx_ppdu_end_common {
+ 	__le32 evm_p15;
+ 	__le32 tsf_timestamp;
+ 	__le32 wb_timestamp;
+-	u8 locationing_timestamp;
+-	u8 phy_err_code;
+-	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
+-	__le32 info0; /* %RX_PPDU_END_INFO0_ */
+ } __packed;
+ 
+ struct rx_ppdu_end_qca988x {
++	u8 locationing_timestamp;
++	u8 phy_err_code;
++	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
++	__le32 info0; /* %RX_PPDU_END_INFO0_ */
+ 	__le16 bb_length;
+ 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
+ } __packed;
+@@ -909,6 +909,10 @@ struct rx_ppdu_end_qca988x {
+ #define RX_PPDU_END_RTT_NORMAL_MODE            BIT(31)
+ 
+ struct rx_ppdu_end_qca6174 {
++	u8 locationing_timestamp;
++	u8 phy_err_code;
++	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
++	__le32 info0; /* %RX_PPDU_END_INFO0_ */
+ 	__le32 rtt; /* %RX_PPDU_END_RTT_ */
+ 	__le16 bb_length;
+ 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
 -- 
-Bob Copeland %% http://bobcopeland.com/
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
