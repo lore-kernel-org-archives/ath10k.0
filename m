@@ -1,12 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from server14-mail.hostwhitelabel.com ([104.152.168.114]
+ helo=server14.hostwhitelabel.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZCW5h-0005QW-OR
- for ath10k@lists.infradead.org; Tue, 07 Jul 2015 16:51:30 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH 0/3] ath10k: update data path to support QCA99X0
-Date: Tue, 7 Jul 2015 09:47:53 -0700
-Message-ID: <1436287676-25767-1-git-send-email-poh@qca.qualcomm.com>
+ id 1ZCWNl-00041M-0l
+ for ath10k@lists.infradead.org; Tue, 07 Jul 2015 17:10:09 +0000
+From: CACook@quantum-sci.com
+Subject: Re: [PATCH 3/3] ath10k: add support for qca99x0 Rx descriptors
+Date: Tue, 07 Jul 2015 10:09:38 -0700
+Message-ID: <2345251.lpvZM96hbt@andromeda>
+In-Reply-To: <1436287676-25767-4-git-send-email-poh@qca.qualcomm.com>
+References: <1436287676-25767-1-git-send-email-poh@qca.qualcomm.com>
+ <1436287676-25767-4-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,25 +25,17 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Peter Oh <poh@qca.qualcomm.com>
 
-This patch series update ath10k HTT Tx/Rx path to support
-QCA99X0 chip and make it able to run data traffic on both of
-Tx and Rx path.
+On Tuesday 07 July 2015 9:47:56 Peter Oh wrote:
+> QCA99X0 chip has an extra 4 bytes in rx_msdu_start,
+> 20 bytes in rx_msdu_end and 20 bytes in rx_ppdu_end structure
+> which are used in htt_rx_desc and HTT Rx ring offset setup.
+> This is necessary for correct Rx for QCA99X0 or Rx descriptors
+> will be overwritten and corrupted.
 
-Peter Oh (3):
-  ath10k: update tx path to support QCA99X0
-  ath10k: redefine rx_ppdu_end_common structure to cover qca99x0
-  ath10k: add support for qca99x0 Rx descriptors
+Will this be in the most recent git, to support the QCA9880?
 
- drivers/net/wireless/ath/ath10k/htt.h     |  13 ++-
- drivers/net/wireless/ath/ath10k/htt_rx.c  |  24 ++--
- drivers/net/wireless/ath/ath10k/htt_tx.c  |  29 +++--
- drivers/net/wireless/ath/ath10k/rx_desc.h | 175 ++++++++++++++++++++++++++++--
- 4 files changed, 212 insertions(+), 29 deletions(-)
-
--- 
-1.9.1
 
 
 _______________________________________________
