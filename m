@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x236.google.com ([2a00:1450:4010:c04::236])
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZD9hc-0004HQ-6n
- for ath10k@lists.infradead.org; Thu, 09 Jul 2015 11:09:17 +0000
-Received: by lbbpo10 with SMTP id po10so72928077lbb.3
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 04:08:52 -0700 (PDT)
+ id 1ZD9ha-0004GS-Vh
+ for ath10k@lists.infradead.org; Thu, 09 Jul 2015 11:09:15 +0000
+Received: by lblf12 with SMTP id f12so3424692lbl.2
+ for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 04:08:50 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 5/6] ath10k: fix per-vif queue locking
-Date: Thu,  9 Jul 2015 13:08:38 +0200
-Message-Id: <1436440119-30231-6-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 3/6] ath10k: fix hw roc expiration notifcation
+Date: Thu,  9 Jul 2015 13:08:36 +0200
+Message-Id: <1436440119-30231-4-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
 References: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,154 +27,75 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Whenever any vdev was supposed to be paused all Tx
-queues were stopped (except offchannel) instead of
-only these associated with the given vdev.
+The expiration function must not be called when
+roc is explicitly cancelled by mac80211. However
+since fcf9844636be ("ath10k: fix hw roc
+expiration") the notification was never sent when
+roc actually expired.
 
-This caused subtle issues with
-multi-channel/multi-vif scenarios, e.g.
-authentication of station vif could sometimes fail
-depending on fw tx pause request timing.
+This fixes some P2P connection setup issues.
 
-Fixes: b4aa539dd8f2 ("ath10k: implement tx pause wmi event")
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     | 47 +++++++++----------------------
- drivers/net/wireless/ath/ath10k/mac.h     |  6 ++--
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 32 +++++++++++++++++----
- 3 files changed, 44 insertions(+), 41 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.h |  1 +
+ drivers/net/wireless/ath/ath10k/mac.c  | 12 +++++++++---
+ 2 files changed, 10 insertions(+), 3 deletions(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 2e5c935579c4..78e07051b897 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -633,6 +633,7 @@ struct ath10k {
+ 		bool is_roc;
+ 		int vdev_id;
+ 		int roc_freq;
++		bool roc_notify;
+ 	} scan;
+ 
+ 	struct {
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index e25e6a8f44a5..0ef568c36db9 100644
+index 115889cb0ff6..a060b7708f4a 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -3034,38 +3034,16 @@ static void ath10k_mac_vif_handle_tx_pause(struct ath10k_vif *arvif,
- 
- 	lockdep_assert_held(&ar->htt.tx_lock);
- 
--	switch (pause_id) {
--	case WMI_TLV_TX_PAUSE_ID_MCC:
--	case WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA:
--	case WMI_TLV_TX_PAUSE_ID_P2P_GO_PS:
--	case WMI_TLV_TX_PAUSE_ID_AP_PS:
--	case WMI_TLV_TX_PAUSE_ID_IBSS_PS:
--		switch (action) {
--		case WMI_TLV_TX_PAUSE_ACTION_STOP:
--			ath10k_mac_vif_tx_lock(arvif, pause_id);
--			break;
--		case WMI_TLV_TX_PAUSE_ACTION_WAKE:
--			ath10k_mac_vif_tx_unlock(arvif, pause_id);
--			break;
--		default:
--			ath10k_warn(ar, "received unknown tx pause action %d on vdev %i, ignoring\n",
--				    action, arvif->vdev_id);
--			break;
--		}
-+	switch (action) {
-+	case WMI_TLV_TX_PAUSE_ACTION_STOP:
-+		ath10k_mac_vif_tx_lock(arvif, pause_id);
-+		break;
-+	case WMI_TLV_TX_PAUSE_ACTION_WAKE:
-+		ath10k_mac_vif_tx_unlock(arvif, pause_id);
+@@ -3449,14 +3449,13 @@ void __ath10k_scan_finish(struct ath10k *ar)
+ 	case ATH10K_SCAN_IDLE:
  		break;
--	case WMI_TLV_TX_PAUSE_ID_AP_PEER_PS:
--	case WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD:
--	case WMI_TLV_TX_PAUSE_ID_STA_ADD_BA:
--	case WMI_TLV_TX_PAUSE_ID_HOST:
- 	default:
--		/* FIXME: Some pause_ids aren't vdev specific. Instead they
--		 * target peer_id and tid. Implementing these could improve
--		 * traffic scheduling fairness across multiple connected
--		 * stations in AP/IBSS modes.
--		 */
--		ath10k_dbg(ar, ATH10K_DBG_MAC,
--			   "mac ignoring unsupported tx pause vdev %i id %d\n",
--			   arvif->vdev_id, pause_id);
-+		ath10k_warn(ar, "received unknown tx pause action %d on vdev %i, ignoring\n",
-+			    action, arvif->vdev_id);
+ 	case ATH10K_SCAN_RUNNING:
+-		if (ar->scan.is_roc)
+-			ieee80211_remain_on_channel_expired(ar->hw);
+-		/* fall through */
+ 	case ATH10K_SCAN_ABORTING:
+ 		if (!ar->scan.is_roc)
+ 			ieee80211_scan_completed(ar->hw,
+ 						 (ar->scan.state ==
+ 						  ATH10K_SCAN_ABORTING));
++		else if (ar->scan.roc_notify)
++			ieee80211_remain_on_channel_expired(ar->hw);
+ 		/* fall through */
+ 	case ATH10K_SCAN_STARTING:
+ 		ar->scan.state = ATH10K_SCAN_IDLE;
+@@ -5459,6 +5458,7 @@ static int ath10k_remain_on_channel(struct ieee80211_hw *hw,
+ 		ar->scan.is_roc = true;
+ 		ar->scan.vdev_id = arvif->vdev_id;
+ 		ar->scan.roc_freq = chan->center_freq;
++		ar->scan.roc_notify = true;
+ 		ret = 0;
  		break;
- 	}
- }
-@@ -3082,12 +3060,15 @@ static void ath10k_mac_handle_tx_pause_iter(void *data, u8 *mac,
- 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
- 	struct ath10k_mac_tx_pause *arg = data;
+ 	case ATH10K_SCAN_STARTING:
+@@ -5522,7 +5522,13 @@ static int ath10k_cancel_remain_on_channel(struct ieee80211_hw *hw)
+ 	struct ath10k *ar = hw->priv;
  
-+	if (arvif->vdev_id != arg->vdev_id)
-+		return;
+ 	mutex_lock(&ar->conf_mutex);
 +
- 	ath10k_mac_vif_handle_tx_pause(arvif, arg->pause_id, arg->action);
- }
++	spin_lock_bh(&ar->data_lock);
++	ar->scan.roc_notify = false;
++	spin_unlock_bh(&ar->data_lock);
++
+ 	ath10k_scan_abort(ar);
++
+ 	mutex_unlock(&ar->conf_mutex);
  
--void ath10k_mac_handle_tx_pause(struct ath10k *ar, u32 vdev_id,
--				enum wmi_tlv_tx_pause_id pause_id,
--				enum wmi_tlv_tx_pause_action action)
-+void ath10k_mac_handle_tx_pause_vdev(struct ath10k *ar, u32 vdev_id,
-+				     enum wmi_tlv_tx_pause_id pause_id,
-+				     enum wmi_tlv_tx_pause_action action)
- {
- 	struct ath10k_mac_tx_pause arg = {
- 		.vdev_id = vdev_id,
-diff --git a/drivers/net/wireless/ath/ath10k/mac.h b/drivers/net/wireless/ath/ath10k/mac.h
-index b291f063705c..e3cefe4c7cfd 100644
---- a/drivers/net/wireless/ath/ath10k/mac.h
-+++ b/drivers/net/wireless/ath/ath10k/mac.h
-@@ -61,9 +61,9 @@ int ath10k_mac_vif_chan(struct ieee80211_vif *vif,
- 
- void ath10k_mac_handle_beacon(struct ath10k *ar, struct sk_buff *skb);
- void ath10k_mac_handle_beacon_miss(struct ath10k *ar, u32 vdev_id);
--void ath10k_mac_handle_tx_pause(struct ath10k *ar, u32 vdev_id,
--				enum wmi_tlv_tx_pause_id pause_id,
--				enum wmi_tlv_tx_pause_action action);
-+void ath10k_mac_handle_tx_pause_vdev(struct ath10k *ar, u32 vdev_id,
-+				     enum wmi_tlv_tx_pause_id pause_id,
-+				     enum wmi_tlv_tx_pause_action action);
- 
- u8 ath10k_mac_hw_rate_to_idx(const struct ieee80211_supported_band *sband,
- 			     u8 hw_rate);
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index ced35a1e0675..4189d4a90ce0 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -377,12 +377,34 @@ static int ath10k_wmi_tlv_event_tx_pause(struct ath10k *ar,
- 		   "wmi tlv tx pause pause_id %u action %u vdev_map 0x%08x peer_id %u tid_map 0x%08x\n",
- 		   pause_id, action, vdev_map, peer_id, tid_map);
- 
--	for (vdev_id = 0; vdev_map; vdev_id++) {
--		if (!(vdev_map & BIT(vdev_id)))
--			continue;
-+	switch (pause_id) {
-+	case WMI_TLV_TX_PAUSE_ID_MCC:
-+	case WMI_TLV_TX_PAUSE_ID_P2P_CLI_NOA:
-+	case WMI_TLV_TX_PAUSE_ID_P2P_GO_PS:
-+	case WMI_TLV_TX_PAUSE_ID_AP_PS:
-+	case WMI_TLV_TX_PAUSE_ID_IBSS_PS:
-+		for (vdev_id = 0; vdev_map; vdev_id++) {
-+			if (!(vdev_map & BIT(vdev_id)))
-+				continue;
- 
--		vdev_map &= ~BIT(vdev_id);
--		ath10k_mac_handle_tx_pause(ar, vdev_id, pause_id, action);
-+			vdev_map &= ~BIT(vdev_id);
-+			ath10k_mac_handle_tx_pause_vdev(ar, vdev_id, pause_id,
-+							action);
-+		}
-+		break;
-+	case WMI_TLV_TX_PAUSE_ID_AP_PEER_PS:
-+	case WMI_TLV_TX_PAUSE_ID_AP_PEER_UAPSD:
-+	case WMI_TLV_TX_PAUSE_ID_STA_ADD_BA:
-+	case WMI_TLV_TX_PAUSE_ID_HOST:
-+		ath10k_dbg(ar, ATH10K_DBG_MAC,
-+			   "mac ignoring unsupported tx pause id %d\n",
-+			   pause_id);
-+		break;
-+	default:
-+		ath10k_dbg(ar, ATH10K_DBG_MAC,
-+			   "mac ignoring unknown tx pause vdev %d\n",
-+			   pause_id);
-+		break;
- 	}
- 
- 	kfree(tb);
+ 	cancel_delayed_work_sync(&ar->scan.timeout);
 -- 
 2.1.4
 
