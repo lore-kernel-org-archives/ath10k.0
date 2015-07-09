@@ -1,15 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZD7Xf-0007jc-64
- for ath10k@lists.infradead.org; Thu, 09 Jul 2015 08:50:51 +0000
+ id 1ZD7XZ-0007jM-Se
+ for ath10k@lists.infradead.org; Thu, 09 Jul 2015 08:50:46 +0000
 From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: free collected fw stats memory if .pull_fw_stats
- fails
-Date: Thu, 9 Jul 2015 14:19:43 +0530
-Message-ID: <1436431783-10691-2-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1436431783-10691-1-git-send-email-rmani@qti.qualcomm.com>
-References: <1436431783-10691-1-git-send-email-rmani@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: ensure pktlog disable cmd reaches fw before pdev
+ suspend
+Date: Thu, 9 Jul 2015 14:19:42 +0530
+Message-ID: <1436431783-10691-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -26,37 +24,39 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-If .pull_fw_stats() fails for some reason while processing
-fw stats event, collected pdev/vdev/peer stats just before
-the failure should be freed. This is unlikely to happen,
-just code review catch.
+Found incorrect sequence in ath10k_core_stop() where wmi pktlog
+disable cmd is passed from ath10k_debug_stop() to firmware
+immediately after wmi pdev suspend cmd. Firmware will not accept
+any wmi cmd after receiving wmi pdev suspend cmd.
+
+Fix this issue in ath10k_core_stop() by moving ath10k_debug_stop()
+just before sending pdev suspend cmd. So that pktlog disable cmd
+will get passed before pdev suspend cmd.
 
 Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath10k/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index edf6047..fc6852c 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -321,7 +321,7 @@ void ath10k_debug_fw_stats_process(struct ath10k *ar, struct sk_buff *skb)
- 	ret = ath10k_wmi_pull_fw_stats(ar, skb, &stats);
- 	if (ret) {
- 		ath10k_warn(ar, "failed to pull fw stats: %d\n", ret);
--		goto unlock;
-+		goto free;
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index f79fa6c..6d19d3d 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -1368,13 +1368,13 @@ int ath10k_wait_for_suspend(struct ath10k *ar, u32 suspend_opt)
+ void ath10k_core_stop(struct ath10k *ar)
+ {
+ 	lockdep_assert_held(&ar->conf_mutex);
++	ath10k_debug_stop(ar);
  
- 	/* Stat data may exceed htc-wmi buffer limit. In such case firmware
-@@ -384,7 +384,6 @@ free:
- 	ath10k_debug_fw_stats_vdevs_free(&stats.vdevs);
- 	ath10k_debug_fw_stats_peers_free(&stats.peers);
+ 	/* try to suspend target */
+ 	if (ar->state != ATH10K_STATE_RESTARTING &&
+ 	    ar->state != ATH10K_STATE_UTF)
+ 		ath10k_wait_for_suspend(ar, WMI_PDEV_SUSPEND_AND_DISABLE_INTR);
  
--unlock:
- 	spin_unlock_bh(&ar->data_lock);
- }
- 
+-	ath10k_debug_stop(ar);
+ 	ath10k_hif_stop(ar);
+ 	ath10k_htt_tx_free(&ar->htt);
+ 	ath10k_htt_rx_free(&ar->htt);
 -- 
 1.8.1.2
 
