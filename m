@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x22e.google.com ([2a00:1450:4010:c04::22e])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZD9hb-0004He-En
+ id 1ZD9hb-0004G7-2k
  for ath10k@lists.infradead.org; Thu, 09 Jul 2015 11:09:16 +0000
-Received: by lbzd8 with SMTP id d8so27595447lbz.0
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 04:08:53 -0700 (PDT)
+Received: by lbnk3 with SMTP id k3so72934530lbn.1
+ for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 04:08:49 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 6/6] ath10k: tweak interface combinations
-Date: Thu,  9 Jul 2015 13:08:39 +0200
-Message-Id: <1436440119-30231-7-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/6] ath10k: limit multi-vif ps more aggresivelly
+Date: Thu,  9 Jul 2015 13:08:35 +0200
+Message-Id: <1436440119-30231-3-git-send-email-michal.kazior@tieto.com>
 In-Reply-To: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
 References: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,91 +27,53 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Concurrent AP/GO operation on different channels
-isn't really supported well by the firmware so
-it's better to remove it from being advertised.
+Further testing proved that multi-channel AP+STA
+on QCA6174 with RM.2.0-00088 should have powersave
+force-disabled to avoid beacon misses/skipping on
+either side which in turn could disrupt
+communication.
 
-Also tune the way station and p2p client interface
-limits are expressed to allow station + 2x p2p
-client or station + p2p client + p2p go.
+Since AP never has arvif->ps don't even bother
+checking it. Other combinations may be broken as
+well so disallow powersave with multivif outright
+unless firmware advertises otherwise.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 39 ++++++++++++++++++++++++++++++-----
- 1 file changed, 34 insertions(+), 5 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 0ef568c36db9..c41b34843a82 100644
+index 63c59593494e..115889cb0ff6 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6557,8 +6557,11 @@ static const struct ieee80211_iface_combination ath10k_10x_if_comb[] = {
- static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
- 	{
- 		.max = 2,
--		.types = BIT(NL80211_IFTYPE_STATION) |
--			 BIT(NL80211_IFTYPE_AP) |
-+		.types = BIT(NL80211_IFTYPE_STATION),
-+	},
-+	{
-+		.max = 2,
-+		.types = BIT(NL80211_IFTYPE_AP) |
- 			 BIT(NL80211_IFTYPE_P2P_CLIENT) |
- 			 BIT(NL80211_IFTYPE_P2P_GO),
- 	},
-@@ -6568,6 +6571,26 @@ static const struct ieee80211_iface_limit ath10k_tlv_if_limit[] = {
- 	},
- };
+@@ -1668,7 +1668,7 @@ static int ath10k_mac_vif_recalc_ps_poll_count(struct ath10k_vif *arvif)
+ 	return 0;
+ }
  
-+static const struct ieee80211_iface_limit ath10k_tlv_qcs_if_limit[] = {
-+	{
-+		.max = 2,
-+		.types = BIT(NL80211_IFTYPE_STATION),
-+	},
-+	{
-+		.max = 2,
-+		.types = BIT(NL80211_IFTYPE_P2P_CLIENT),
-+	},
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_AP) |
-+			 BIT(NL80211_IFTYPE_P2P_GO),
-+	},
-+	{
-+		.max = 1,
-+		.types = BIT(NL80211_IFTYPE_P2P_DEVICE),
-+	},
-+};
-+
- static const struct ieee80211_iface_limit ath10k_tlv_if_limit_ibss[] = {
- 	{
- 		.max = 1,
-@@ -6586,7 +6609,7 @@ static struct ieee80211_iface_combination ath10k_tlv_if_comb[] = {
- 	{
- 		.limits = ath10k_tlv_if_limit,
- 		.num_different_channels = 1,
--		.max_interfaces = 3,
-+		.max_interfaces = 4,
- 		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
- 	},
- 	{
-@@ -6600,9 +6623,15 @@ static struct ieee80211_iface_combination ath10k_tlv_if_comb[] = {
- static struct ieee80211_iface_combination ath10k_tlv_qcs_if_comb[] = {
- 	{
- 		.limits = ath10k_tlv_if_limit,
-+		.num_different_channels = 1,
-+		.max_interfaces = 4,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
-+	},
-+	{
-+		.limits = ath10k_tlv_qcs_if_limit,
- 		.num_different_channels = 2,
--		.max_interfaces = 3,
--		.n_limits = ARRAY_SIZE(ath10k_tlv_if_limit),
-+		.max_interfaces = 4,
-+		.n_limits = ARRAY_SIZE(ath10k_tlv_qcs_if_limit),
- 	},
- 	{
- 		.limits = ath10k_tlv_if_limit_ibss,
+-static int ath10k_mac_ps_vif_count(struct ath10k *ar)
++static int ath10k_mac_num_vifs_started(struct ath10k *ar)
+ {
+ 	struct ath10k_vif *arvif;
+ 	int num = 0;
+@@ -1676,7 +1676,7 @@ static int ath10k_mac_ps_vif_count(struct ath10k *ar)
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
+ 	list_for_each_entry(arvif, &ar->arvifs, list)
+-		if (arvif->ps)
++		if (arvif->is_started)
+ 			num++;
+ 
+ 	return num;
+@@ -1700,7 +1700,7 @@ static int ath10k_mac_vif_setup_ps(struct ath10k_vif *arvif)
+ 
+ 	enable_ps = arvif->ps;
+ 
+-	if (enable_ps && ath10k_mac_ps_vif_count(ar) > 1 &&
++	if (enable_ps && ath10k_mac_num_vifs_started(ar) > 1 &&
+ 	    !test_bit(ATH10K_FW_FEATURE_MULTI_VIF_PS_SUPPORT,
+ 		      ar->fw_features)) {
+ 		ath10k_warn(ar, "refusing to enable ps on vdev %i: not supported by fw\n",
 -- 
 2.1.4
 
