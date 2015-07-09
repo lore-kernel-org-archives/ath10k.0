@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from server14-mail.hostwhitelabel.com ([104.152.168.114]
+ helo=server14.hostwhitelabel.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDCAX-0007in-1X
- for ath10k@lists.infradead.org; Thu, 09 Jul 2015 13:47:17 +0000
-Received: by wicmv11 with SMTP id mv11so1741838wic.1
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 06:46:55 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <3319636.gBuGFxuZFH@andromeda>
-References: <3969592.crxpsBTBQa@andromeda>
-	<3319636.gBuGFxuZFH@andromeda>
-Date: Thu, 9 Jul 2015 15:46:55 +0200
-Message-ID: <CA+BoTQk1jn=jBNXhrCxy2s=6BzLW=jjTxBk+2Ha+y-PbFQkkMQ@mail.gmail.com>
+ id 1ZDCYW-00048K-Tv
+ for ath10k@lists.infradead.org; Thu, 09 Jul 2015 14:12:05 +0000
+From: CACook@quantum-sci.com
 Subject: Re: Buss Reset Problem
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Thu, 09 Jul 2015 07:11:41 -0700
+Message-ID: <2921819.TX9FEibvXY@andromeda>
+In-Reply-To: <CA+BoTQk1jn=jBNXhrCxy2s=6BzLW=jjTxBk+2Ha+y-PbFQkkMQ@mail.gmail.com>
+References: <3969592.crxpsBTBQa@andromeda> <3319636.gBuGFxuZFH@andromeda>
+ <CA+BoTQk1jn=jBNXhrCxy2s=6BzLW=jjTxBk+2Ha+y-PbFQkkMQ@mail.gmail.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +20,37 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: CACook@quantum-sci.com
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gOSBKdWx5IDIwMTUgYXQgMTU6MzMsICA8Q0FDb29rQHF1YW50dW0tc2NpLmNvbT4gd3JvdGU6
-Cj4gT24gTW9uZGF5IDA2IEp1bHkgMjAxNSA4OjA0OjM5IENBQ29va0BxdWFudHVtLXNjaS5jb20g
-d3JvdGU6Cj4+Cj4+IENQVTogSW50ZWwoUikgWGVvbihSKSBDUFUgRTMtMTI2NUwgdjMgQCAyLjUw
-R0h6Cj4+IEtWTTogcWVtdS1rdm0tMS41LjMtODYuZWw3XzEuMi54ODZfNjQKPj4gS2VybmVsOiA0
-LjEuMS0xLmVsNy5lbHJlcG8ueDg2XzY0LCBhbmQga2VybmVsLTMuMTAuMC0yMjkuNy4yLmVsNy54
-ODZfNjQKPj4gSG9zdCAmIEd1ZXN0OiBDZW50T1MgNy4xCj4+IFVzaW5nIHZpcnQtbWFuYWdlci0x
-LjEuMC0xMi5lbDcubm9hcmNoIHRvIGNyZWF0ZSwgY29uZmlndXJlLCBhbmQgc3RhcnQgZ3Vlc3QK
-Pj4gSSBhbSB0cnlpbmcgdG8gZG8gYSBQQ0kgcGFzc3Rocm91Z2ggb2YgYSBRQ0E5ODhYIHdpZmkg
-Y2FyZC4gSXQncyBhIERvb2RsZSBMYWJzIG1pbGl0YXJ5LWdyYWRlIDgwMi4xMWFjIG1pbmlQQ0kg
-Y2FyZC4gVGhpcyBjYXJkIGNvbmZpZ3VyZXMgbmljZWx5IG9uIHRoZSBob3N0LCBhbmQgc2VlbXMg
-dG8gcGFzcyB0aHJvdWdoIHRvIHRoZSBLVk0gZ3Vlc3QsIGJ1dCBlYXJseSBpbiB0aGUgYm9vdCBv
-ZiB0aGUgZ3Vlc3QgaXQgc2F5cyAiVW5rbm93biBoZWFkZXIgdHlwZSIgYXQgdGhlIHdpZmkncyBi
-dXMgYWRkcmVzcy4gQW5kIHN1cmUgZW5vdWdoLCBsc3BjaSAtdnYgb24gdGhlIGhvc3QgdGhlbiBz
-aG93czoKPj4gICAgICAgICAhISEgVW5rbm93biBoZWFkZXIgdHlwZSA3Zgo+PiAgICAgICAgIEtl
-cm5lbCBkcml2ZXIgaW4gdXNlOiB2ZmlvLXBjaQo+PiBJdCBzZWVtcyB0byBiZSB0aGUgYnVzcyBy
-ZXNldCBwcm9ibGVtLCBhcyBvdXRsaW5lZCBoZXJlOgo+PiBodHRwOi8vd3d3Lmdvc3NhbWVyLXRo
-cmVhZHMuY29tL2xpc3RzL2xpbnV4L2tlcm5lbC8yMDU0ODQ2Cj4+Cj4+IC4uLiBFeGNlcHQgbXkg
-Y2FyZCBsb2NrcyB1cCBvbiBib290IG9mIHRoZSBLVk0gZ3Vlc3QuCj4+Cj4+IFdoZW4gSSBsb2dn
-ZWQgYSBidWcgYXQgUUVNVSAoaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvcWVtdS8rYnVnLzE0
-NzE1ODMpLCBBbGV4IHN1Z2dlc3RlZCBJIGFkZCB0byB0aGUgcGF0Y2g6Cj4+IERFQ0xBUkVfUENJ
-X0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzYywgcXVpcmtfbm9fYnVz
-X3Jlc2V0KTsKPj4KPj4gLi4uIFNvIEkgYW0gaW4gdGhlIHByb2Nlc3Mgb2YgdHJ5aW5nIHRoYXQg
-bm93Lgo+Cj4gU28gdGhhdCdzIGl0IGZvciB0aGUgRG9vZGxlIExhYnMgQUNFLURCLTMuICBJdCB3
-ZW50IGJhY2sgeWVzdGVyZGF5IC0tIGRvZXNuJ3Qgd29yayB3aXRoIExpbnV4LgoKSSB0aGluayBz
-b21lb25lIGNvbXBsYWluZWQgdGhleSBjb3VsZG4ndCBnZXQgYW4gWEIgZGVzaWduIHRvIHdvcmsg
-b24Kc29tZSBvZiB0aGVpciBQQ0ktRSBob3N0cyAoc29tZSBBdG9tIGxhcHRvcCBldmVuIHJlZnVz
-ZWQgdG8gUE9TVCB3aXRoCnRoZSBjYXJkIGlmIEkgcmVjYWxsIGNvcnJlY3RseSkuIEFwcGFyZW50
-bHkgdGhlcmUncyBhbiBlbGVjdHJpY2FsCnF1aXJrIC0gb3IgYXQgbGVhc3QgdGhhdCB3YXMgdG8g
-Y29uY2x1c2lvbiBiYWNrIHRoZW4uCgoKPiBJdCdzIG5vdCB0aGUgYnVzcyByZXNldCBwcm9ibGVt
-IGFzIEkgcGF0Y2hlZCBxdWlya3MuYy4KCkkgd29uZGVyIGhvdyBtdWNoIHJlbGF0ZWQgdGhpcyBj
-b3VsZCBiZSB0byBEYXRhIEJ1cyBFcnJvciBhdGgxMGsgc2Vlcwp3aGVuIGRvaW5nIGNvbGQgcmVz
-ZXRzIHNvbWV0aW1lcy4gTWF5YmUgaXQncyBnb29kIHRvIGhhdmUgdGhlIHF1aXJrCmZpeHVwIG5v
-bmV0aGVsZXNzPyBCdXQgSSdtIG5vIFBDSSBleHBlcnQgc28gd2hhdCBkbyBJIGtub3cuCgoKTWlj
-aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
-MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+On Thursday 09 July 2015 15:46:55 Michal Kazior wrote:
+> > So that's it for the Doodle Labs ACE-DB-3.  It went back yesterday -- doesn't work with Linux.
+> 
+> I think someone complained they couldn't get an XB design to work on
+> some of their PCI-E hosts (some Atom laptop even refused to POST with
+> the card if I recall correctly). Apparently there's an electrical
+> quirk - or at least that was to conclusion back then.
+> 
+> 
+> > It's not the buss reset problem as I patched quirks.c.
+> 
+> I wonder how much related this could be to Data Bus Error ath10k sees
+> when doing cold resets sometimes. Maybe it's good to have the quirk
+> fixup nonetheless? But I'm no PCI expert so what do I know.
+
+Yes the problem is very early in boot.  In KVM guest almost right after Grub it says that PCIe address does not exist (or is not accessible), and sure enough I check it on the host and it's flipped to "Invalid header".  I have to reboot the _host_ to get the card back then.
+
+The card has good specs but Doodle doesn't care about this problem, and I just don't have time to uselessly fiddle with it.
+
+
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
