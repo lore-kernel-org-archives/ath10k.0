@@ -1,21 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from server14-mail.hostwhitelabel.com ([104.152.168.114]
- helo=server14.hostwhitelabel.com)
+Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDBxV-00083N-KU
- for ath10k@lists.infradead.org; Thu, 09 Jul 2015 13:33:50 +0000
-Received: from [50.106.40.168] (port=36312 helo=andromeda.localnet)
- by server14.hostwhitelabel.com with esmtpsa
- (TLSv1.2:DHE-RSA-AES256-GCM-SHA384:256) (Exim 4.85)
- (envelope-from <CACook@quantum-sci.com>) id 1ZDBx4-000zIo-LX
- for ath10k@lists.infradead.org; Thu, 09 Jul 2015 09:33:22 -0400
-From: CACook@quantum-sci.com
-Subject: Re: Buss Reset Problem
-Date: Thu, 09 Jul 2015 06:33:21 -0700
-Message-ID: <3319636.gBuGFxuZFH@andromeda>
-In-Reply-To: <3969592.crxpsBTBQa@andromeda>
-References: <3969592.crxpsBTBQa@andromeda>
+ id 1ZDCAX-0007in-1X
+ for ath10k@lists.infradead.org; Thu, 09 Jul 2015 13:47:17 +0000
+Received: by wicmv11 with SMTP id mv11so1741838wic.1
+ for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 06:46:55 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <3319636.gBuGFxuZFH@andromeda>
+References: <3969592.crxpsBTBQa@andromeda>
+	<3319636.gBuGFxuZFH@andromeda>
+Date: Thu, 9 Jul 2015 15:46:55 +0200
+Message-ID: <CA+BoTQk1jn=jBNXhrCxy2s=6BzLW=jjTxBk+2Ha+y-PbFQkkMQ@mail.gmail.com>
+Subject: Re: Buss Reset Problem
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +21,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: CACook@quantum-sci.com
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Monday 06 July 2015 8:04:39 CACook@quantum-sci.com wrote:
-> 
-> CPU: Intel(R) Xeon(R) CPU E3-1265L v3 @ 2.50GHz
-> KVM: qemu-kvm-1.5.3-86.el7_1.2.x86_64
-> Kernel: 4.1.1-1.el7.elrepo.x86_64, and kernel-3.10.0-229.7.2.el7.x86_64
-> Host & Guest: CentOS 7.1
-> Using virt-manager-1.1.0-12.el7.noarch to create, configure, and start guest
-> I am trying to do a PCI passthrough of a QCA988X wifi card. It's a Doodle Labs military-grade 802.11ac miniPCI card. This card configures nicely on the host, and seems to pass through to the KVM guest, but early in the boot of the guest it says "Unknown header type" at the wifi's bus address. And sure enough, lspci -vv on the host then shows:
->         !!! Unknown header type 7f
->         Kernel driver in use: vfio-pci
-> It seems to be the buss reset problem, as outlined here:
-> http://www.gossamer-threads.com/lists/linux/kernel/2054846
->  
-> ... Except my card locks up on boot of the KVM guest.
->  
-> When I logged a bug at QEMU (https://bugs.launchpad.net/qemu/+bug/1471583), Alex suggested I add to the patch:
-> DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_ATHEROS, 0x003c, quirk_no_bus_reset);
->  
-> ... So I am in the process of trying that now.
-
-So that's it for the Doodle Labs ACE-DB-3.  It went back yesterday -- doesn't work with Linux.
-
-It's not the buss reset problem as I patched quirks.c.
-
-
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gOSBKdWx5IDIwMTUgYXQgMTU6MzMsICA8Q0FDb29rQHF1YW50dW0tc2NpLmNvbT4gd3JvdGU6
+Cj4gT24gTW9uZGF5IDA2IEp1bHkgMjAxNSA4OjA0OjM5IENBQ29va0BxdWFudHVtLXNjaS5jb20g
+d3JvdGU6Cj4+Cj4+IENQVTogSW50ZWwoUikgWGVvbihSKSBDUFUgRTMtMTI2NUwgdjMgQCAyLjUw
+R0h6Cj4+IEtWTTogcWVtdS1rdm0tMS41LjMtODYuZWw3XzEuMi54ODZfNjQKPj4gS2VybmVsOiA0
+LjEuMS0xLmVsNy5lbHJlcG8ueDg2XzY0LCBhbmQga2VybmVsLTMuMTAuMC0yMjkuNy4yLmVsNy54
+ODZfNjQKPj4gSG9zdCAmIEd1ZXN0OiBDZW50T1MgNy4xCj4+IFVzaW5nIHZpcnQtbWFuYWdlci0x
+LjEuMC0xMi5lbDcubm9hcmNoIHRvIGNyZWF0ZSwgY29uZmlndXJlLCBhbmQgc3RhcnQgZ3Vlc3QK
+Pj4gSSBhbSB0cnlpbmcgdG8gZG8gYSBQQ0kgcGFzc3Rocm91Z2ggb2YgYSBRQ0E5ODhYIHdpZmkg
+Y2FyZC4gSXQncyBhIERvb2RsZSBMYWJzIG1pbGl0YXJ5LWdyYWRlIDgwMi4xMWFjIG1pbmlQQ0kg
+Y2FyZC4gVGhpcyBjYXJkIGNvbmZpZ3VyZXMgbmljZWx5IG9uIHRoZSBob3N0LCBhbmQgc2VlbXMg
+dG8gcGFzcyB0aHJvdWdoIHRvIHRoZSBLVk0gZ3Vlc3QsIGJ1dCBlYXJseSBpbiB0aGUgYm9vdCBv
+ZiB0aGUgZ3Vlc3QgaXQgc2F5cyAiVW5rbm93biBoZWFkZXIgdHlwZSIgYXQgdGhlIHdpZmkncyBi
+dXMgYWRkcmVzcy4gQW5kIHN1cmUgZW5vdWdoLCBsc3BjaSAtdnYgb24gdGhlIGhvc3QgdGhlbiBz
+aG93czoKPj4gICAgICAgICAhISEgVW5rbm93biBoZWFkZXIgdHlwZSA3Zgo+PiAgICAgICAgIEtl
+cm5lbCBkcml2ZXIgaW4gdXNlOiB2ZmlvLXBjaQo+PiBJdCBzZWVtcyB0byBiZSB0aGUgYnVzcyBy
+ZXNldCBwcm9ibGVtLCBhcyBvdXRsaW5lZCBoZXJlOgo+PiBodHRwOi8vd3d3Lmdvc3NhbWVyLXRo
+cmVhZHMuY29tL2xpc3RzL2xpbnV4L2tlcm5lbC8yMDU0ODQ2Cj4+Cj4+IC4uLiBFeGNlcHQgbXkg
+Y2FyZCBsb2NrcyB1cCBvbiBib290IG9mIHRoZSBLVk0gZ3Vlc3QuCj4+Cj4+IFdoZW4gSSBsb2dn
+ZWQgYSBidWcgYXQgUUVNVSAoaHR0cHM6Ly9idWdzLmxhdW5jaHBhZC5uZXQvcWVtdS8rYnVnLzE0
+NzE1ODMpLCBBbGV4IHN1Z2dlc3RlZCBJIGFkZCB0byB0aGUgcGF0Y2g6Cj4+IERFQ0xBUkVfUENJ
+X0ZJWFVQX0hFQURFUihQQ0lfVkVORE9SX0lEX0FUSEVST1MsIDB4MDAzYywgcXVpcmtfbm9fYnVz
+X3Jlc2V0KTsKPj4KPj4gLi4uIFNvIEkgYW0gaW4gdGhlIHByb2Nlc3Mgb2YgdHJ5aW5nIHRoYXQg
+bm93Lgo+Cj4gU28gdGhhdCdzIGl0IGZvciB0aGUgRG9vZGxlIExhYnMgQUNFLURCLTMuICBJdCB3
+ZW50IGJhY2sgeWVzdGVyZGF5IC0tIGRvZXNuJ3Qgd29yayB3aXRoIExpbnV4LgoKSSB0aGluayBz
+b21lb25lIGNvbXBsYWluZWQgdGhleSBjb3VsZG4ndCBnZXQgYW4gWEIgZGVzaWduIHRvIHdvcmsg
+b24Kc29tZSBvZiB0aGVpciBQQ0ktRSBob3N0cyAoc29tZSBBdG9tIGxhcHRvcCBldmVuIHJlZnVz
+ZWQgdG8gUE9TVCB3aXRoCnRoZSBjYXJkIGlmIEkgcmVjYWxsIGNvcnJlY3RseSkuIEFwcGFyZW50
+bHkgdGhlcmUncyBhbiBlbGVjdHJpY2FsCnF1aXJrIC0gb3IgYXQgbGVhc3QgdGhhdCB3YXMgdG8g
+Y29uY2x1c2lvbiBiYWNrIHRoZW4uCgoKPiBJdCdzIG5vdCB0aGUgYnVzcyByZXNldCBwcm9ibGVt
+IGFzIEkgcGF0Y2hlZCBxdWlya3MuYy4KCkkgd29uZGVyIGhvdyBtdWNoIHJlbGF0ZWQgdGhpcyBj
+b3VsZCBiZSB0byBEYXRhIEJ1cyBFcnJvciBhdGgxMGsgc2Vlcwp3aGVuIGRvaW5nIGNvbGQgcmVz
+ZXRzIHNvbWV0aW1lcy4gTWF5YmUgaXQncyBnb29kIHRvIGhhdmUgdGhlIHF1aXJrCmZpeHVwIG5v
+bmV0aGVsZXNzPyBCdXQgSSdtIG5vIFBDSSBleHBlcnQgc28gd2hhdCBkbyBJIGtub3cuCgoKTWlj
+aGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRo
+MTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
