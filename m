@@ -1,13 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDUC2-0007yJ-9y
- for ath10k@lists.infradead.org; Fri, 10 Jul 2015 09:02:02 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH V2] ath10k: Delay device access after cold reset
-Date: Fri, 10 Jul 2015 14:31:20 +0530
-Message-ID: <1436518880-9638-1-git-send-email-vthiagar@qti.qualcomm.com>
+Received: from mga09.intel.com ([134.134.136.24])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZDW86-0002tg-1D
+ for ath10k@lists.infradead.org; Fri, 10 Jul 2015 11:06:06 +0000
+Date: Fri, 10 Jul 2015 19:05:23 +0800
+From: kbuild test robot <fengguang.wu@intel.com>
+Subject: [ath6kl:pending 103/106]
+ drivers/net/wireless/ath/ath10k/htt_tx.c:547:52: sparse: incorrect type in
+ assignment (different base types)
+Message-ID: <201507101921.R3vdET4K%fengguang.wu@intel.com>
 MIME-Version: 1.0
+Content-Disposition: inline
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,73 +23,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Peter Oh <poh@qca.qualcomm.com>
+Cc: "Kalle Valo <kvalo@adurom.com> Kalle Valo" <kvalo@adurom.com>, kbuild-all@01.org, ath10k@lists.infradead.org
 
-It is observed that during cold reset pcie access right
-after a write operation to SOC_GLOBAL_RESET_ADDRESS causes
-Data Bus Error and system hard lockup. The reason
-for bus error is that pcie needs some time to get
-back to stable state for any transaction during cold reset. Add
-delay of 20 msecs after write of SOC_GLOBAL_RESET_ADDRESS
-to fix this issue. This patch is tested on QCA988X. This is
-also tested on QCA99X0 which is WIP.
+tree:   git://github.com/kvalo/ath pending
+head:   ffa9360e591071b5c97fb8f764f4a07ffe2a3418
+commit: 5fbf48040b661c9ee65b7a4bbf12012fa85be4cc [103/106] ath10k: update tx path to support QCA99X0
+reproduce:
+  # apt-get install sparse
+  git checkout 5fbf48040b661c9ee65b7a4bbf12012fa85be4cc
+  make ARCH=x86_64 allmodconfig
+  make C=1 CF=-D__CHECK_ENDIAN__
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+
+sparse warnings: (new ones prefixed by >>)
+
+>> drivers/net/wireless/ath/ath10k/htt_tx.c:547:52: sparse: incorrect type in assignment (different base types)
+   drivers/net/wireless/ath/ath10k/htt_tx.c:547:52:    expected restricted __le16 [usertype] len_16
+   drivers/net/wireless/ath/ath10k/htt_tx.c:547:52:    got restricted __le32 [usertype] <noident>
+
+vim +547 drivers/net/wireless/ath/ath10k/htt_tx.c
+
+   531					       DMA_TO_DEVICE);
+   532		res = dma_mapping_error(dev, skb_cb->paddr);
+   533		if (res)
+   534			goto err_free_txbuf;
+   535	
+   536		switch (skb_cb->txmode) {
+   537		case ATH10K_HW_TXRX_RAW:
+   538		case ATH10K_HW_TXRX_NATIVE_WIFI:
+   539			flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
+   540			/* pass through */
+   541		case ATH10K_HW_TXRX_ETHERNET:
+   542			if (ar->hw_params.continuous_frag_desc) {
+   543				frags = (struct htt_data_tx_desc_frag *)
+   544					&htt->frag_desc.vaddr[msdu_id].frags;
+   545				frags[0].tword_addr.paddr_lo = __cpu_to_le32(skb_cb->paddr);
+   546				frags[0].tword_addr.paddr_hi = 0;
+ > 547				frags[0].tword_addr.len_16 = __cpu_to_le32(msdu->len);
+   548				frags[1].tword_addr.paddr_lo = 0;
+   549				frags[1].tword_addr.paddr_hi = 0;
+   550	
+   551				frags_paddr =  htt->frag_desc.paddr +
+   552					(sizeof(struct htt_msdu_ext_desc) * msdu_id);
+   553			} else {
+   554				frags = skb_cb->htt.txbuf->frags;
+   555				frags[0].dword_addr.paddr = __cpu_to_le32(skb_cb->paddr);
+
 ---
-
-V2:
-	- Include tested hw in commit log.
-
- drivers/net/wireless/ath/ath10k/pci.c | 20 +++++++-------------
- 1 file changed, 7 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 1b4634a..130746b 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -2761,7 +2761,6 @@ static int ath10k_pci_wait_for_target_init(struct ath10k *ar)
- 
- static int ath10k_pci_cold_reset(struct ath10k *ar)
- {
--	int i;
- 	u32 val;
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset\n");
-@@ -2777,23 +2776,18 @@ static int ath10k_pci_cold_reset(struct ath10k *ar)
- 	val |= 1;
- 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
- 
--	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
--		if (ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
--					  RTC_STATE_COLD_RESET_MASK)
--			break;
--		msleep(1);
--	}
-+	/* After writing into SOC_GLOBAL_RESET to put device into
-+	 * reset and pulling out of reset pcie may not be stable
-+	 * for any immediate pcie register access and cause bus error,
-+	 * add delay before any pcie access request to fix this issue.
-+	 */
-+	msleep(20);
- 
- 	/* Pull Target, including PCIe, out of RESET. */
- 	val &= ~1;
- 	ath10k_pci_reg_write32(ar, SOC_GLOBAL_RESET_ADDRESS, val);
- 
--	for (i = 0; i < ATH_PCI_RESET_WAIT_MAX; i++) {
--		if (!(ath10k_pci_reg_read32(ar, RTC_STATE_ADDRESS) &
--					    RTC_STATE_COLD_RESET_MASK))
--			break;
--		msleep(1);
--	}
-+	msleep(20);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot cold reset complete\n");
- 
--- 
-1.9.1
-
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
 _______________________________________________
 ath10k mailing list
