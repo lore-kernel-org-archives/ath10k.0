@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDRB2-00056e-JD
- for ath10k@lists.infradead.org; Fri, 10 Jul 2015 05:48:49 +0000
-Received: by wiga1 with SMTP id a1so5963830wig.0
- for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 22:48:27 -0700 (PDT)
+ id 1ZDTzj-0007RV-Pa
+ for ath10k@lists.infradead.org; Fri, 10 Jul 2015 08:49:20 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Delay device access after cold reset
+References: <1435904142-30295-1-git-send-email-vthiagar@qti.qualcomm.com>
+Date: Fri, 10 Jul 2015 11:48:51 +0300
+In-Reply-To: <1435904142-30295-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Fri, 3 Jul 2015 11:45:42
+ +0530")
+Message-ID: <87pp40wg7g.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <2921819.TX9FEibvXY@andromeda>
-References: <3969592.crxpsBTBQa@andromeda> <3319636.gBuGFxuZFH@andromeda>
- <CA+BoTQk1jn=jBNXhrCxy2s=6BzLW=jjTxBk+2Ha+y-PbFQkkMQ@mail.gmail.com>
- <2921819.TX9FEibvXY@andromeda>
-Date: Fri, 10 Jul 2015 07:48:26 +0200
-Message-ID: <CA+BoTQmwTjhf+Y+WToBP4dSbgMGpZWM-=cyeGDLft1vyyE-YFA@mail.gmail.com>
-Subject: Re: Buss Reset Problem
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +20,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: CACook@quantum-sci.com
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gOSBKdWx5IDIwMTUgYXQgMTY6MTEsICA8Q0FDb29rQHF1YW50dW0tc2NpLmNvbT4gd3JvdGU6
-Cj4gT24gVGh1cnNkYXkgMDkgSnVseSAyMDE1IDE1OjQ2OjU1IE1pY2hhbCBLYXppb3Igd3JvdGU6
-Cj4+ID4gU28gdGhhdCdzIGl0IGZvciB0aGUgRG9vZGxlIExhYnMgQUNFLURCLTMuICBJdCB3ZW50
-IGJhY2sgeWVzdGVyZGF5IC0tIGRvZXNuJ3Qgd29yayB3aXRoIExpbnV4Lgo+Pgo+PiBJIHRoaW5r
-IHNvbWVvbmUgY29tcGxhaW5lZCB0aGV5IGNvdWxkbid0IGdldCBhbiBYQiBkZXNpZ24gdG8gd29y
-ayBvbgo+PiBzb21lIG9mIHRoZWlyIFBDSS1FIGhvc3RzIChzb21lIEF0b20gbGFwdG9wIGV2ZW4g
-cmVmdXNlZCB0byBQT1NUIHdpdGgKPj4gdGhlIGNhcmQgaWYgSSByZWNhbGwgY29ycmVjdGx5KS4g
-QXBwYXJlbnRseSB0aGVyZSdzIGFuIGVsZWN0cmljYWwKPj4gcXVpcmsgLSBvciBhdCBsZWFzdCB0
-aGF0IHdhcyB0byBjb25jbHVzaW9uIGJhY2sgdGhlbi4KPj4KPj4KPj4gPiBJdCdzIG5vdCB0aGUg
-YnVzcyByZXNldCBwcm9ibGVtIGFzIEkgcGF0Y2hlZCBxdWlya3MuYy4KPj4KPj4gSSB3b25kZXIg
-aG93IG11Y2ggcmVsYXRlZCB0aGlzIGNvdWxkIGJlIHRvIERhdGEgQnVzIEVycm9yIGF0aDEwayBz
-ZWVzCj4+IHdoZW4gZG9pbmcgY29sZCByZXNldHMgc29tZXRpbWVzLiBNYXliZSBpdCdzIGdvb2Qg
-dG8gaGF2ZSB0aGUgcXVpcmsKPj4gZml4dXAgbm9uZXRoZWxlc3M/IEJ1dCBJJ20gbm8gUENJIGV4
-cGVydCBzbyB3aGF0IGRvIEkga25vdy4KPgo+IFllcyB0aGUgcHJvYmxlbSBpcyB2ZXJ5IGVhcmx5
-IGluIGJvb3QuICBJbiBLVk0gZ3Vlc3QgYWxtb3N0IHJpZ2h0IGFmdGVyIEdydWIgaXQgc2F5cyB0
-aGF0IFBDSWUgYWRkcmVzcyBkb2VzIG5vdCBleGlzdCAob3IgaXMgbm90IGFjY2Vzc2libGUpLCBh
-bmQgc3VyZSBlbm91Z2ggSSBjaGVjayBpdCBvbiB0aGUgaG9zdCBhbmQgaXQncyBmbGlwcGVkIHRv
-ICJJbnZhbGlkIGhlYWRlciIuICBJIGhhdmUgdG8gcmVib290IHRoZSBfaG9zdF8gdG8gZ2V0IHRo
-ZSBjYXJkIGJhY2sgdGhlbi4KCkkgd29uZGVyIGhvdyBtdWNoIHRoaXMgaXMgZmF1bHQgb2YgdGhl
-IGNhcmQgYW5kIHRoZSBJT01NVSBhbmQvb3IgdmZpbyBpdHNlbGYuCgpJJ3ZlIGJlZW4gdXNpbmcg
-cGNpLXN0dWIgYW5kIHFlbXUncyBwY2ktYXNzaWduIHRvIHZpcnR1YWxpemUgYXRoMTBrCmZvciBx
-dWl0ZSBzb21lIHRpbWUgbm93LiBJdCBkb2VzIGhlcnAtZGVycCBvbiBtZSBvY2Nhc2lvbmFsbHkg
-YnV0Cm5ldmVyKiBkaWQgaXQgcmVxdWlyZSBtZSB0byByZWJvb3QgdGhlIGhvc3QuCgpJIGJyaWVm
-bHkgdHJpZWQgdG8gdXNlIHZmaW8gYnV0IGl0IHdhc24ndCB3b3JraW5nIHdlbGwgZm9yIG1lIChj
-YW4ndApyZW1lbWJlciB0aGUgZGV0YWlscykuCgoqIFRoZSBjb2xkIHJlc2V0IHByb2JsZW0gY2Fu
-IGhhcmQgbG9jay11cCB0aGUgaG9zdCBzb21ldGltZXMuIElmIHlvdQpsb2FkIGF0aDEwa19wY2kg
-d2l0aCByZXNldF9tb2RlPTEgYm90aCBvbiBob3N0IGFuZCBndWVzdCB0aGVuIGl0CmRvZXNuJ3Qg
-cmVxdWlyZSByZWJvb3RzIG9mIGFueSBzb3J0cy4KCgo+Cj4gVGhlIGNhcmQgaGFzIGdvb2Qgc3Bl
-Y3MgYnV0IERvb2RsZSBkb2Vzbid0IGNhcmUgYWJvdXQgdGhpcyBwcm9ibGVtLCBhbmQgSSBqdXN0
-IGRvbid0IGhhdmUgdGltZSB0byB1c2VsZXNzbHkgZmlkZGxlIHdpdGggaXQuCgpTb3JyeSB0byBo
-ZWFyIHRoYXQuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
+
+> It is observed that during cold reset pcie access right
+> after a write operation to SOC_GLOBAL_RESET_ADDRESS causes
+> Data Bus Error and system hard lockup. The reason
+> for bus error is that pcie needs some time to get
+> back to stable state for any transaction during cold reset. Add
+> delay of 20 msecs after write of SOC_GLOBAL_RESET_ADDRESS
+> to fix this issue.
+>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+
+On what devices did you test this? That should be documented in the
+commit log.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
