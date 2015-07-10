@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mga09.intel.com ([134.134.136.24])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDW86-0002tg-1D
- for ath10k@lists.infradead.org; Fri, 10 Jul 2015 11:06:06 +0000
-Date: Fri, 10 Jul 2015 19:05:23 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [ath6kl:pending 103/106]
- drivers/net/wireless/ath/ath10k/htt_tx.c:547:52: sparse: incorrect type in
- assignment (different base types)
-Message-ID: <201507101921.R3vdET4K%fengguang.wu@intel.com>
+ id 1ZDY7h-0000ni-RJ
+ for ath10k@lists.infradead.org; Fri, 10 Jul 2015 13:13:50 +0000
+Message-ID: <559FC4F4.5020008@candelatech.com>
+Date: Fri, 10 Jul 2015 06:13:24 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
+Subject: Re: How is AP supposed to handle power-save packets from peer?
+References: <559F0BEF.4000808@candelatech.com>
+ <CA+BoTQm-e__mFFPBpr+Lphe3BGs+m3EaLZkn1DE2nz8EkKHT6Q@mail.gmail.com>
+In-Reply-To: <CA+BoTQm-e__mFFPBpr+Lphe3BGs+m3EaLZkn1DE2nz8EkKHT6Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,62 +19,74 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
-Cc: "Kalle Valo <kvalo@adurom.com> Kalle Valo" <kvalo@adurom.com>, kbuild-all@01.org, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-tree:   git://github.com/kvalo/ath pending
-head:   ffa9360e591071b5c97fb8f764f4a07ffe2a3418
-commit: 5fbf48040b661c9ee65b7a4bbf12012fa85be4cc [103/106] ath10k: update tx path to support QCA99X0
-reproduce:
-  # apt-get install sparse
-  git checkout 5fbf48040b661c9ee65b7a4bbf12012fa85be4cc
-  make ARCH=x86_64 allmodconfig
-  make C=1 CF=-D__CHECK_ENDIAN__
-
-
-sparse warnings: (new ones prefixed by >>)
-
->> drivers/net/wireless/ath/ath10k/htt_tx.c:547:52: sparse: incorrect type in assignment (different base types)
-   drivers/net/wireless/ath/ath10k/htt_tx.c:547:52:    expected restricted __le16 [usertype] len_16
-   drivers/net/wireless/ath/ath10k/htt_tx.c:547:52:    got restricted __le32 [usertype] <noident>
-
-vim +547 drivers/net/wireless/ath/ath10k/htt_tx.c
-
-   531					       DMA_TO_DEVICE);
-   532		res = dma_mapping_error(dev, skb_cb->paddr);
-   533		if (res)
-   534			goto err_free_txbuf;
-   535	
-   536		switch (skb_cb->txmode) {
-   537		case ATH10K_HW_TXRX_RAW:
-   538		case ATH10K_HW_TXRX_NATIVE_WIFI:
-   539			flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
-   540			/* pass through */
-   541		case ATH10K_HW_TXRX_ETHERNET:
-   542			if (ar->hw_params.continuous_frag_desc) {
-   543				frags = (struct htt_data_tx_desc_frag *)
-   544					&htt->frag_desc.vaddr[msdu_id].frags;
-   545				frags[0].tword_addr.paddr_lo = __cpu_to_le32(skb_cb->paddr);
-   546				frags[0].tword_addr.paddr_hi = 0;
- > 547				frags[0].tword_addr.len_16 = __cpu_to_le32(msdu->len);
-   548				frags[1].tword_addr.paddr_lo = 0;
-   549				frags[1].tword_addr.paddr_hi = 0;
-   550	
-   551				frags_paddr =  htt->frag_desc.paddr +
-   552					(sizeof(struct htt_msdu_ext_desc) * msdu_id);
-   553			} else {
-   554				frags = skb_cb->htt.txbuf->frags;
-   555				frags[0].dword_addr.paddr = __cpu_to_le32(skb_cb->paddr);
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDcvMDkvMjAxNSAxMDoyMCBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMCBKdWx5
+IDIwMTUgYXQgMDI6MDMsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90
+ZToKPj4gU3VwcG9zZSBvbmUgaXMgZG9pbmcgaGVhdnkgZG93bmxvYWQgKEFQIC0+IHBlZXIgdHJh
+ZmZpYyksIGFuZCB0aGVyZSBhcmUgbG90cyBvZiBmcmFtZXMgaW4gdGhlCj4+IE5JQydzIHR4IGJ1
+ZmZlcnMgKGF0aDEwayBmaXJtd2FyZSwgaW4gdGhpcyBjYXNlKS4KPj4KPj4gVGhlbiwgcGVlciBz
+ZW5kcyBhIHBvd2VyLXNhdmUgcGt0IHRlbGxpbmcgQVAgaXQgaXMgZ29pbmcgb2ZmLWNoYW5uZWwg
+b3Igb3RoZXJ3aXNlCj4+IHdpbGwgYmUgdW5hdmFpbGFibGUuCj4KPiBJIGFzc3VtZSB5b3UncmUg
+ZXhwbG9yaW5nIHRoZSB3b3JzdC1jYXNlIHNjZW5hcmlvIHdoZW4gYWxsIHR4IGJ1ZmZlcnMKPiBh
+cmUgY29uc3VtZWQgYW5kIHBlZXIgZ29lcyB0byBzbGVlcCwgYW0gSSBjb3JyZWN0PwoKRXZlbiBp
+ZiBub3QgYWJzb2x1dGVseSBhbGwuLi5zZWVtcyBsaWtlIHdlIHNob3VsZCBmbHVzaCB0aGVtIHF1
+aWNrIGFuZApsZXQgdGhlIE9TIGRvIHRoZSBidWZmZXJpbmcgYnkgaGF2aW5nIGl0IHJlLXNlbmQg
+d2hlbiBQUyBpcyBkaXNhYmxlZAphZ2Fpbi4gIEEgZmV3IHN0YXRpb25zIGluIFBTIGNvdWxkIHF1
+aWNrbHkgZWF0IGFsbCBmaXJtd2FyZSB0eCBidWZmZXJzLCBub3QgZXZlbgppbmNsdWRpbmcgdGhl
+IHdtaS1tZ3QtZnJhbWUgaXNzdWUuICBJJ3ZlIGZpeGVkIHRoZSB0eC1zdGF0dXMgaW4gbXkgQ1Qg
+ZmlybXdhcmUgbm93Li4uY291bGQgcG9zc2libHkKYWRkIGFub3RoZXIgdHgtc3RhdHVzIChsaWtl
+IHR4LWRyb3BwZWQtUFMpIHRvIGJldHRlciBkZWFsIHdpdGggdGhpcz8gIEkgdGhpbmsKSSBtYXkg
+dHJ5IHRvIG1ha2UgbXkgZmlybXdhcmUgYWJsZSB0byB0cmFuc21pdCBtZ3QgZnJhbWVzIG92ZXIg
+aHR0IGFzIHdlbGwsCndoaWNoIHNob3VsZCBoZWxwIHdpdGggc29tZSBvZiB0aGlzIGFzIHdlbGwu
+CgpJbiBjdXJyZW50IHRlc3RpbmcsIGl0IGFjdHVhbGx5IHNlZW1zIGxpa2UgYXRoMTBrIGZpcm13
+YXJlIChvciBtYXliZSBoaWdoZXIgdXApIGlzIGNvbXBsZXRlbHkKaWdub3JpbmcgdGhlIFBTIGJp
+dC4uYnV0IEkgaGF2ZSBhIGxvdCBtb3JlIGRlYnVnZ2luZyB0byBkbyBiZWZvcmUgSSdtCmNlcnRh
+aW4gb2YgdGhpcy4gIFBvc3NpYmx5IHBlZXIgaXMgYmVpbmcgZG9kZ3kuCgoKPj4gV2hhdCBpcyB0
+aGUgYXBwcm9wcmlhdGUgYmVoYXZpb3VyIGZyb20gdGhlIEFQPyAgQ2FuIHRoZSBmaXJtd2FyZSBq
+dXN0IGRyb3AgYWxsIHRob3NlIHR4IGZyYW1lcyB0bwo+PiBtYWtlIHJvb20gdG8gaGFuZGxlIG90
+aGVyIHN0YXRpb25zPyAgTWF5YmUgcmVwb3J0IEFDSyBmYWlsdXJlIGFuZCBob3BlIHRoZSB1cHBl
+ciBsZXZlbCBzdGFja3MKPj4gcmV0cmFuc21pdCBhcyBhcHByb3ByaWF0ZT8KPj4KPj4gT3IsIGlz
+IHRoZSBob3N0IHN1cHBvc2VkIHRvIGZsdXNoIHRoZSBwZWVyJ3MgcGFja2V0cyB0byBjbGVhciBv
+dXQgdGhlIGZyYW1lcz8KPj4KPj4gT3IsIGlzIGZpcm13YXJlIHNvbWVob3cgc3VwcG9zZWQgdG8g
+a2VlcCBhbGwgdGhlIGZyYW1lcyBmb3Igd2hlbiB0aGUgcGVlciBjb21lcyBiYWNrPwo+Cj4gRmly
+bXdhcmUgd2lsbCBrZWVwIGZyYW1lcyBidWZmZXJlZCB1bnRpbCBzdGF0aW9uIHdha2VzIHVwIGFn
+YWluLgo+Cj4gVGhlcmUncyBhIHRpbWVvdXQgdG8gZGV0ZWN0IHN0YWxlIHN0YXRpb25zIGFzIGZh
+ciBhcyBJJ20gYXdhcmUgYW5kIHRoZQo+IGRlZmF1bHQgdmFsdWUgaXMgMTBzIChzb3VuZHMgZmFt
+aWxpYXI/IHRoaXMgZ29lcyBiYWNrIHRvIG1nbXQgdHgvCj4gY3JlZGl0IHN0YXJ2YXRpb24pLiBU
+aGlzIG1ha2VzIHRvIGhhbmRsZSBzdGF0aW9ucyB0aGF0IGdvIHRvIHNsZWVwIGFuZAo+IHRoZW4g
+b3V0IG9mIHJhbmdlL2F3YXkuIEFQIGRvZXNuJ3QgbmVlZCB0byBrZWVwIGZyYW1lcyBidWZmZXJl
+ZCB0aWxsCj4gdGhlIGVuZCBvZiB0aW1lLiBPbmNlIHRoZSB0aW1lb3V0IGlzIGhpdCBmaXJtd2Fy
+ZSBzdG9wcyBjYXJpbmcgYWJvdXQKPiBzdGF0aW9uJ3MgbGFzdCBzZWVuIHNsZWVwIHN0YXRlIHRy
+YW5zaXRpb24gYW5kIG1hcmtzIGl0IGFzIGF3YWtlIGFuZAo+IGp1c3Qgc2VuZHMgZnJhbWVzIHRv
+IGl0ICh3aXRoIHRvbnMgb2YgcmV0cmFuc21pdHMgaWYgaXQncyByZWFsbHkgbm90Cj4gdGhlcmUg
+YW55bW9yZSBzaW5jZSB0aGVyZSdkIGJlIG5vb25lIHRvIEFDSykgLSBpbiB3aGljaCBjYXNlIHlv
+dSdsbAo+IGdldCBub19hY2s9MSBpbiB0eCBzdGF0dXMuCgpXZSBkbyBzZWUgbG90cyBvZiBuby1h
+Y2ssIGhhZCB0byB0ZWxsIGhvc3RhcGQgdG8gaWdub3JlIG5vYWNrIGZhaWx1cmVzCm9yIGNvbm5l
+Y3Rpb24gdG8gcGVlciB3YXMgbG9zdC4gIEJ1dCwgcGVlciBzaG91bGQgbm90IGhhdmUgYmVlbiBn
+b25lIGZvcgoxMCsgc2Vjb25kcyBpbiB0aGlzIGNhc2UuCgpUaGF0IHNlZW1zIGxpa2UgYSBob3Jy
+aWJsZSB3YXN0ZSBvZiB0aW1lIHJldHJhbnNtaXR0aW5nIHBhY2tldHMsIGJ5IHRoZSB3YXkuCgo+
+Cj4gU2VlOiBXTUlfMTBYX1ZERVZfUEFSQU1fQVBfREVURUNUX09VVF9PRl9TWU5DX1NMRUVQSU5H
+X1NUQV9USU1FX1NFQ1MKPgo+IElkZWFsbHkgdGhlcmUgc2hvdWxkIGJlIGxpdHRsZSB0byBubyBi
+dWZmZXIgYmxvYXQgYnV0IGl0J3MgZGlmZmljdWx0Cj4gdG8gZG8gdGhhdCBjb25zaWRlcmluZyBh
+Z2dyZWdhdGlvbiBzaXplcyBvZiAxMWFjLi4KCkF0aDEwayB3aWxsIG5vdCBhZ2dyZWdhdGUgbW9y
+ZSB0aGFuIGFib3V0IDMwIGZyYW1lcyBhcyBmYXIgYXMgSSBjYW4gdGVsbCwKKG1heWJlIDMgdGlt
+ZXMgdGhhdCBpZiBhbXNkdSBpcyBoYXBwZW5pbmcgYXMgd2VsbD8pLiAgU3RhbmRhcmQgZHJpdmVy
+IGlzIHVzaW5nCm1vcmUgdGhhbiAxMDAwIGJ1ZmZlcnMsIGFuZCBzdG9jayBmaXJtd2FyZSB3b24n
+dCBldmVuIGxldCB5b3UgY29uZmlndXJlIHRoaXMKdG8gYmUgc21hbGxlciB0aGFuIGFib3V0IDEw
+MjQgKHRob3VnaCBtYXliZSBkcml2ZXIgY291bGQgc3RpbGwgdXNlIGxlc3MKYW5kIGZpcm13YXJl
+IHdvdWxkbid0IGNhcmUsIG5vdCBzdXJlKS4KQnV0IGZpeGluZyBidWZmZXIgYmxvYXQgaW4gYXRo
+MTBrIGlzIG5vdCBteSBwcmltYXJ5IGNvbmNlcm4gYXQgdGhlIG1vbWVudC4KClRoYW5rcywKQmVu
+Cgo+Cj4KPiBNaWNoYcWCCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwo+IGF0aDEwayBtYWlsaW5nIGxpc3QKPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFk
+Lm9yZwo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
+Cj4KCgotLSAKQmVuIEdyZWVhciA8Z3JlZWFyYkBjYW5kZWxhdGVjaC5jb20+CkNhbmRlbGEgVGVj
+aG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0
+aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxt
+YW4vbGlzdGluZm8vYXRoMTBrCg==
