@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDLnh-0003TX-Jf
- for ath10k@lists.infradead.org; Fri, 10 Jul 2015 00:04:21 +0000
-Message-ID: <559F0BEF.4000808@candelatech.com>
-Date: Thu, 09 Jul 2015 17:03:59 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZDQjm-0000Ij-Ow
+ for ath10k@lists.infradead.org; Fri, 10 Jul 2015 05:20:39 +0000
+Received: by wiga1 with SMTP id a1so5591304wig.0
+ for <ath10k@lists.infradead.org>; Thu, 09 Jul 2015 22:20:13 -0700 (PDT)
 MIME-Version: 1.0
-Subject: How is AP supposed to handle power-save packets from peer?
+In-Reply-To: <559F0BEF.4000808@candelatech.com>
+References: <559F0BEF.4000808@candelatech.com>
+Date: Fri, 10 Jul 2015 07:20:13 +0200
+Message-ID: <CA+BoTQm-e__mFFPBpr+Lphe3BGs+m3EaLZkn1DE2nz8EkKHT6Q@mail.gmail.com>
+Subject: Re: How is AP supposed to handle power-save packets from peer?
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,35 +20,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-Suppose one is doing heavy download (AP -> peer traffic), and there are lots of frames in the
-NIC's tx buffers (ath10k firmware, in this case).
-
-Then, peer sends a power-save pkt telling AP it is going off-channel or otherwise
-will be unavailable.
-
-What is the appropriate behaviour from the AP?  Can the firmware just drop all those tx frames to
-make room to handle other stations?  Maybe report ACK failure and hope the upper level stacks
-retransmit as appropriate?
-
-Or, is the host supposed to flush the peer's packets to clear out the frames?
-
-Or, is firmware somehow supposed to keep all the frames for when the peer comes back?
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgSnVseSAyMDE1IGF0IDAyOjAzLCBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNo
+LmNvbT4gd3JvdGU6Cj4gU3VwcG9zZSBvbmUgaXMgZG9pbmcgaGVhdnkgZG93bmxvYWQgKEFQIC0+
+IHBlZXIgdHJhZmZpYyksIGFuZCB0aGVyZSBhcmUgbG90cyBvZiBmcmFtZXMgaW4gdGhlCj4gTklD
+J3MgdHggYnVmZmVycyAoYXRoMTBrIGZpcm13YXJlLCBpbiB0aGlzIGNhc2UpLgo+Cj4gVGhlbiwg
+cGVlciBzZW5kcyBhIHBvd2VyLXNhdmUgcGt0IHRlbGxpbmcgQVAgaXQgaXMgZ29pbmcgb2ZmLWNo
+YW5uZWwgb3Igb3RoZXJ3aXNlCj4gd2lsbCBiZSB1bmF2YWlsYWJsZS4KCkkgYXNzdW1lIHlvdSdy
+ZSBleHBsb3JpbmcgdGhlIHdvcnN0LWNhc2Ugc2NlbmFyaW8gd2hlbiBhbGwgdHggYnVmZmVycwph
+cmUgY29uc3VtZWQgYW5kIHBlZXIgZ29lcyB0byBzbGVlcCwgYW0gSSBjb3JyZWN0PwoKCj4KPiBX
+aGF0IGlzIHRoZSBhcHByb3ByaWF0ZSBiZWhhdmlvdXIgZnJvbSB0aGUgQVA/ICBDYW4gdGhlIGZp
+cm13YXJlIGp1c3QgZHJvcCBhbGwgdGhvc2UgdHggZnJhbWVzIHRvCj4gbWFrZSByb29tIHRvIGhh
+bmRsZSBvdGhlciBzdGF0aW9ucz8gIE1heWJlIHJlcG9ydCBBQ0sgZmFpbHVyZSBhbmQgaG9wZSB0
+aGUgdXBwZXIgbGV2ZWwgc3RhY2tzCj4gcmV0cmFuc21pdCBhcyBhcHByb3ByaWF0ZT8KPgo+IE9y
+LCBpcyB0aGUgaG9zdCBzdXBwb3NlZCB0byBmbHVzaCB0aGUgcGVlcidzIHBhY2tldHMgdG8gY2xl
+YXIgb3V0IHRoZSBmcmFtZXM/Cj4KPiBPciwgaXMgZmlybXdhcmUgc29tZWhvdyBzdXBwb3NlZCB0
+byBrZWVwIGFsbCB0aGUgZnJhbWVzIGZvciB3aGVuIHRoZSBwZWVyIGNvbWVzIGJhY2s/CgpGaXJt
+d2FyZSB3aWxsIGtlZXAgZnJhbWVzIGJ1ZmZlcmVkIHVudGlsIHN0YXRpb24gd2FrZXMgdXAgYWdh
+aW4uCgpUaGVyZSdzIGEgdGltZW91dCB0byBkZXRlY3Qgc3RhbGUgc3RhdGlvbnMgYXMgZmFyIGFz
+IEknbSBhd2FyZSBhbmQgdGhlCmRlZmF1bHQgdmFsdWUgaXMgMTBzIChzb3VuZHMgZmFtaWxpYXI/
+IHRoaXMgZ29lcyBiYWNrIHRvIG1nbXQgdHgvCmNyZWRpdCBzdGFydmF0aW9uKS4gVGhpcyBtYWtl
+cyB0byBoYW5kbGUgc3RhdGlvbnMgdGhhdCBnbyB0byBzbGVlcCBhbmQKdGhlbiBvdXQgb2YgcmFu
+Z2UvYXdheS4gQVAgZG9lc24ndCBuZWVkIHRvIGtlZXAgZnJhbWVzIGJ1ZmZlcmVkIHRpbGwKdGhl
+IGVuZCBvZiB0aW1lLiBPbmNlIHRoZSB0aW1lb3V0IGlzIGhpdCBmaXJtd2FyZSBzdG9wcyBjYXJp
+bmcgYWJvdXQKc3RhdGlvbidzIGxhc3Qgc2VlbiBzbGVlcCBzdGF0ZSB0cmFuc2l0aW9uIGFuZCBt
+YXJrcyBpdCBhcyBhd2FrZSBhbmQKanVzdCBzZW5kcyBmcmFtZXMgdG8gaXQgKHdpdGggdG9ucyBv
+ZiByZXRyYW5zbWl0cyBpZiBpdCdzIHJlYWxseSBub3QKdGhlcmUgYW55bW9yZSBzaW5jZSB0aGVy
+ZSdkIGJlIG5vb25lIHRvIEFDSykgLSBpbiB3aGljaCBjYXNlIHlvdSdsbApnZXQgbm9fYWNrPTEg
+aW4gdHggc3RhdHVzLgoKU2VlOiBXTUlfMTBYX1ZERVZfUEFSQU1fQVBfREVURUNUX09VVF9PRl9T
+WU5DX1NMRUVQSU5HX1NUQV9USU1FX1NFQ1MKCklkZWFsbHkgdGhlcmUgc2hvdWxkIGJlIGxpdHRs
+ZSB0byBubyBidWZmZXIgYmxvYXQgYnV0IGl0J3MgZGlmZmljdWx0CnRvIGRvIHRoYXQgY29uc2lk
+ZXJpbmcgYWdncmVnYXRpb24gc2l6ZXMgb2YgMTFhYy4uCgoKTWljaGHFggoKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
+dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2F0aDEwawo=
