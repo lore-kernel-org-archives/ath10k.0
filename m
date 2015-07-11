@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZDxTU-00077k-Vd
- for ath10k@lists.infradead.org; Sat, 11 Jul 2015 16:18:01 +0000
+ id 1ZDxVg-0007KU-Sh
+ for ath10k@lists.infradead.org; Sat, 11 Jul 2015 16:20:17 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 0/6] ath10k: random fixes 2015-07-09
-References: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
-Date: Sat, 11 Jul 2015 19:17:34 +0300
-In-Reply-To: <1436440119-30231-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 9 Jul 2015 13:08:33 +0200")
-Message-ID: <87a8v2wtwh.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix QCA61X4 boot up
+References: <1435930429-3970-1-git-send-email-bartosz.markowski@tieto.com>
+Date: Sat, 11 Jul 2015 19:19:50 +0300
+In-Reply-To: <1435930429-3970-1-git-send-email-bartosz.markowski@tieto.com>
+ (Bartosz Markowski's message of "Fri, 3 Jul 2015 15:33:49 +0200")
+Message-ID: <87615qwtsp.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,29 +23,30 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Bartosz Markowski <bartosz.markowski@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Bartosz Markowski <bartosz.markowski@tieto.com> writes:
 
-> I've done most of the patches while testing P2P
-> but they aren't limited to that scope.
+> commit "a521ee983d312db7 ath10k: Add new reg_address/mask to hw register
+> table" commit has broken the QCA61x4 support, by providing wrong
+> fw_indicator_address, which shall be 0x0003a028 instead of 0x00009028.
 >
-> There are no inter-dependencies within the patchset
-> so single patches should be easily cherry-pickable
-> in case, e.g. some patches raise concerns or are
-> decided to be dropped during review.
+> User experience was a failing boot up sequence (crashing device during
+> initialization)
 >
+> [  181.663874] ath10k_pci 0000:02:00.0: enabling device (0000 -> 0002)
+> [  181.664787] ath10k_pci 0000:02:00.0: pci irq msi-x interrupts 8 irq_mode 0 reset_mode 0
+> [  181.688886] ath10k_pci 0000:02:00.0: device has crashed during init
+> [  181.688897] ath10k_pci 0000:02:00.0: failed to wait for target after cold reset: -70
+> [  181.688902] ath10k_pci 0000:02:00.0: failed to reset chip: -70
+> [  181.689774] ath10k_pci: probe of 0000:02:00.0 failed with error -70
 >
-> Michal Kazior (6):
->   ath10k: don't set cck/ofdm scan flags
->   ath10k: limit multi-vif ps more aggresivelly
->   ath10k: fix hw roc expiration notifcation
->   ath10k: update vdev ps state on start
->   ath10k: fix per-vif queue locking
->   ath10k: tweak interface combinations
+> Fix it by updating the address with correct value.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Thanks, all six applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
