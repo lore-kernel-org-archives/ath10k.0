@@ -1,28 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-ig0-f177.google.com ([209.85.213.177])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZESmq-00075V-Jq
- for ath10k@lists.infradead.org; Mon, 13 Jul 2015 01:44:05 +0000
-Received: by igvi1 with SMTP id i1so22172641igv.1
- for <ath10k@lists.infradead.org>; Sun, 12 Jul 2015 18:43:42 -0700 (PDT)
-Received: from hash ([2001:470:1d:6db:230:48ff:fe9d:9c89])
- by smtp.gmail.com with ESMTPSA id 15sm376981iop.3.2015.07.12.18.43.40
- for <ath10k@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 12 Jul 2015 18:43:40 -0700 (PDT)
-Received: from bob by hash with local (Exim 4.84)
- (envelope-from <me@bobcopeland.com>) id 1ZESmL-0003jT-P7
- for ath10k@lists.infradead.org; Sun, 12 Jul 2015 21:43:33 -0400
-Date: Sun, 12 Jul 2015 21:43:33 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: attempting mesh on ath10k
-Message-ID: <20150713014333.GA14152@localhost>
-References: <CAN+ZWYEK5TpXVsQom5RBxZ1=XCGn9Cq47w1rQdonWNx-ec88vA@mail.gmail.com>
- <20150706214921.GF23012@localhost>
- <20150712142532.GA24495@localhost>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZEVU0-00084j-Aq
+ for ath10k@lists.infradead.org; Mon, 13 Jul 2015 04:36:48 +0000
+Received: from [192.168.1.108] (c-67-168-92-223.hsd1.wa.comcast.net
+ [67.168.92.223])
+ (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 457A640A339
+ for <ath10k@lists.infradead.org>; Sun, 12 Jul 2015 21:36:21 -0700 (PDT)
+Message-ID: <55A34044.1060009@candelatech.com>
+Date: Sun, 12 Jul 2015 21:36:20 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150712142532.GA24495@localhost>
+Subject: Making 10.1.467 based CT firmware do mgt-over-htt
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,44 +22,119 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: ath10k <ath10k@lists.infradead.org>
 
-[trimmed CC to list]
+I have been working on making my CT firmware able to do mgt frames
+over the normal HTT transport instead of over wmi.  This should significantly
+improve APs that are trying to deal with stations going out of range.
 
-On Sun, Jul 12, 2015 at 10:25:32AM -0400, Bob Copeland wrote:
-> It looks like unicast self-protected action frames (peering) works fine, but
-> broadcast multihop action frames (PREQs) never go over the air.  Does
-> this sound familiar to anyone?
+A fairly trivial change in the firmware lets ath10k in station mode associate in both
+OPEN and WPA2 (I did not test further at this time).
 
-Actually, it's any group addressed frame.  I tried playing with various
-values for htt_data_tx_ext_tid as well as just using the tid on the frame
-(in mesh group addressed frames still have a qos header with tid=0).
+But, on the AP side, this same change ends up with probe responses going
+out with 10 bytes missing from the end of the frame.  If I simply do a skb_put(foo, 10)
+before sending to firmware, then AP mode works (OPEN, against ath9k AP).
 
-[  662.170000] XXX htt tx completion msdu_id 0 discard 0 no_ack 0 success 1
-[  662.470000] XXX tx seq: 264 txmode 0
-[  662.470000] XXX htt tx flags0 5 flags1 3136 len 39 id 0 frags_paddr 07337028, msdu_paddr 06513e2e vdev 0 tid 17 freq 0
-[  662.480000] XXX htt tx completion msdu_id 0 discard 0 no_ack 0 success 1
-[  662.600000] XXX tx seq: 265 txmode 0
-[  662.600000] XXX htt tx flags0 5 flags1 2048 len 156 id 0 frags_paddr 07337028, msdu_paddr 06932028 vdev 0 tid 0 freq 0
-[  662.620000] XXX tx seq: 266 txmode 0
-[  662.620000] XXX htt tx flags0 5 flags1 2048 len 116 id 1 frags_paddr 07337000, msdu_paddr 06921028 vdev 0 tid 0 freq 0
-[  662.630000] XXX htt tx completion msdu_id 0 discard 0 no_ack 1 success 0
-[  662.640000] XXX htt tx completion msdu_id 1 discard 0 no_ack 1 success 0
-[  663.090000] XXX tx seq: 267 txmode 0
+But, this skb_put() breaks the station (OS crashed and rebooted).
 
-The 'success 1' ones are unicast, the success 0 are mcast (in this case
-using the frame's tid, otherwise it would be 16.)
+I can probably find a particular set of logic that puts or does not put
+the 10 extra bytes accordingly, but I am curious if anyone knows any reason
+that AP mode frames are different.  I did find some code
+in firmware that basically subtracts 10 bytes from length:
+len -= (sizeof(struct ieee80211_frame) - WAL_DE_ETHR_HDR_LEN))
 
-Kind of odd that it's not working, since my earlier snapshot worked...
-I guess at worst I can bisect compat-wireless versions but that will
-take some time.
+This happens for all native wifi pkts though.  Is there some reason why a
+probe response (and maybe other mgt frames?) would not be built for native
+wifi?
+
+use_frags in htt_tx.c will be TRUE in my case, because htt version is 2.2 in
+my firmware.
+
+My driver patch looks like this currently:
+
+
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index c2c1f2d..d291121 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -570,6 +570,7 @@ struct ath10k {
+         DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
+
+         bool p2p;
++       bool all_pkts_htt; /* target has no separate mgmt tx command? */
+
+         struct {
+                 enum ath10k_bus bus;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index 815f7fc..a07ce92 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -1932,6 +1932,15 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
+         case HTT_T2H_MSG_TYPE_VERSION_CONF: {
+                 htt->target_version_major = resp->ver_resp.major;
+                 htt->target_version_minor = resp->ver_resp.minor;
++
++               if ((htt->target_version_major >= 3) ||
++                   /* CT firmware with HTT-MGT */
++                   (htt->target_version_major == 2 &&
++                    htt->target_version_minor == 2))
++                       ar->all_pkts_htt = true;
++               else
++                       ar->all_pkts_htt = false;
++
+                 complete(&htt->target_version_received);
+                 break;
+         }
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 2f3f7e0..850eb72 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -459,6 +459,10 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+         }
+         skb_cb->htt.txbuf_paddr = paddr;
+
++       if (ieee80211_is_mgmt(hdr->frame_control)) {
++               skb_put(msdu, 10);
++       }
++
+         if ((ieee80211_is_action(hdr->frame_control) ||
+              ieee80211_is_deauth(hdr->frame_control) ||
+              ieee80211_is_disassoc(hdr->frame_control)) &&
+@@ -546,7 +550,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+                    "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
+                    flags0, flags1, skb_len, msdu_id, frags_paddr,
+                    (u32)skb_cb->paddr, vdev_id, tid, skb_cb->htt.freq);
+-       ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
++       ath10k_dbg_dump(ar, ATH10K_DBG_HTT /*_DUMP*/, NULL, "htt tx msdu: ",
+                         msdu->data, skb_len);
+         trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
+         trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index c4ad1dc..ee7be8b 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2309,7 +2309,7 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
+         struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+         int ret = 0;
+
+-       if (ar->htt.target_version_major >= 3) {
++       if (ar->all_pkts_htt) {
+                 /* Since HTT 3.0 there is no separate mgmt tx command */
+                 ret = ath10k_htt_tx(&ar->htt, skb);
+                 goto exit;
+
+
+Thanks,
+Ben
 
 -- 
-Bob Copeland %% http://bobcopeland.com/
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
 
 _______________________________________________
 ath10k mailing list
