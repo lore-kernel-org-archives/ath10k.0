@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZEent-0005tk-5V
- for ath10k@lists.infradead.org; Mon, 13 Jul 2015 14:33:57 +0000
-Message-ID: <55A3CC3E.20502@candelatech.com>
-Date: Mon, 13 Jul 2015 07:33:34 -0700
+ id 1ZEgkA-0002o7-5A
+ for ath10k@lists.infradead.org; Mon, 13 Jul 2015 16:38:15 +0000
+Message-ID: <55A3E960.9060808@candelatech.com>
+Date: Mon, 13 Jul 2015 09:37:52 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: Making 10.1.467 based CT firmware do mgt-over-htt
-References: <55A34044.1060009@candelatech.com>
- <CA+BoTQnyaZYkhq4waqEsHcoupBO4ppsub7BqU-XXY+a5qEApQQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQnyaZYkhq4waqEsHcoupBO4ppsub7BqU-XXY+a5qEApQQ@mail.gmail.com>
+Subject: Re: How is AP supposed to handle power-save packets from peer?
+References: <559F0BEF.4000808@candelatech.com>
+ <CA+BoTQm-e__mFFPBpr+Lphe3BGs+m3EaLZkn1DE2nz8EkKHT6Q@mail.gmail.com>
+ <559FC4F4.5020008@candelatech.com>
+ <CA+BoTQmGwDkJJuGxZOq2id=7=+4SbasYV7stHA-aRAS9-N=BJg@mail.gmail.com>
+In-Reply-To: <CA+BoTQmGwDkJJuGxZOq2id=7=+4SbasYV7stHA-aRAS9-N=BJg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,119 +21,155 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: ath10k <ath10k@lists.infradead.org>
+Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On 07/12/2015 11:04 PM, Michal Kazior wrote:
-> On 13 July 2015 at 06:36, Ben Greear <greearb@candelatech.com> wrote:
->> I have been working on making my CT firmware able to do mgt frames
->> over the normal HTT transport instead of over wmi.  This should
->> significantly
->> improve APs that are trying to deal with stations going out of range.
->>
->> A fairly trivial change in the firmware lets ath10k in station mode
->> associate in both
->> OPEN and WPA2 (I did not test further at this time).
->>
->> But, on the AP side, this same change ends up with probe responses going
->> out with 10 bytes missing from the end of the frame.  If I simply do a
->> skb_put(foo, 10)
->> before sending to firmware, then AP mode works (OPEN, against ath9k AP).
->>
->> But, this skb_put() breaks the station (OS crashed and rebooted).
->>
->> I can probably find a particular set of logic that puts or does not put
->> the 10 extra bytes accordingly, but I am curious if anyone knows any reason
->> that AP mode frames are different.  I did find some code
->> in firmware that basically subtracts 10 bytes from length:
->> len -= (sizeof(struct ieee80211_frame) - WAL_DE_ETHR_HDR_LEN))
->>
->> This happens for all native wifi pkts though.  Is there some reason why a
->> probe response (and maybe other mgt frames?) would not be built for native
->> wifi?
->>
->> use_frags in htt_tx.c will be TRUE in my case, because htt version is 2.2 in
->> my firmware.
->
-> Perhaps that is the problem right there? HTT 3.0 doesn't use tx frags
-> for mgmt frames. I didn't investigate the reason but I recall someone
-> saying that there are some issues with tx frags for mgmt frames..
-
-Yeah, but I am not sure what that would be at this point.  Possibly this was
-just laziness on part of firmware or some other hack.  If someone does know
-this reason, I'm interested in learning it.
-
->> My driver patch looks like this currently:
->>
->>
->> diff --git a/drivers/net/wireless/ath/ath10k/core.h
->> b/drivers/net/wireless/ath/ath10k/core.h
->> index c2c1f2d..d291121 100644
->> --- a/drivers/net/wireless/ath/ath10k/core.h
->> +++ b/drivers/net/wireless/ath/ath10k/core.h
->> @@ -570,6 +570,7 @@ struct ath10k {
->>          DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
->>
->>          bool p2p;
->> +       bool all_pkts_htt; /* target has no separate mgmt tx command? */
->
-> I don't like this idea.
->
-> Perhaps we should instead introduce a new IE to explicitly describe
-> what command should be used for mgmt tx? We'd have at least 3 values
-> to express: wmi_mgmt_tx, htt_mgmt_tx, htt_tx.
-
-I think it is better to calculate these booleans once instead of doing the
-work each time in the hot path.  I would assume this would be more efficient,
-and also it keeps the hacks to determine the booleans out of the
-generic code.
-
-
->>          struct {
->>                  enum ath10k_bus bus;
->> diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> index 815f7fc..a07ce92 100644
->> --- a/drivers/net/wireless/ath/ath10k/htt_rx.c
->> +++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
->> @@ -1932,6 +1932,15 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar,
->> struct sk_buff *skb)
->>          case HTT_T2H_MSG_TYPE_VERSION_CONF: {
->>                  htt->target_version_major = resp->ver_resp.major;
->>                  htt->target_version_minor = resp->ver_resp.minor;
->> +
->> +               if ((htt->target_version_major >= 3) ||
->> +                   /* CT firmware with HTT-MGT */
->> +                   (htt->target_version_major == 2 &&
->> +                    htt->target_version_minor == 2))
->> +                       ar->all_pkts_htt = true;
->> +               else
->> +                       ar->all_pkts_htt = false;
->> +
->
-> I wouldn't rely on HTT versioning...
-
-The code is already doing similar things.  Adding IEs are just as risky for me
-because CT firmware hacks will not be accepted upstream and IEs tend to collide
-since I cannot reserve enums.
-
-Either way, I suspect there will not be upstream support for my firmware, but
-if I can get any related code upstream that makes my patches smaller, then I
-consider that a gain.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMDcvMTMvMjAxNSAwMTowNSBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPiBPbiAxMCBKdWx5
+IDIwMTUgYXQgMTU6MTMsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90
+ZToKPj4gT24gMDcvMDkvMjAxNSAxMDoyMCBQTSwgTWljaGFsIEthemlvciB3cm90ZToKPj4+Cj4+
+PiBPbiAxMCBKdWx5IDIwMTUgYXQgMDI6MDMsIEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRl
+Y2guY29tPiB3cm90ZToKPj4+Pgo+Pj4+IFN1cHBvc2Ugb25lIGlzIGRvaW5nIGhlYXZ5IGRvd25s
+b2FkIChBUCAtPiBwZWVyIHRyYWZmaWMpLCBhbmQgdGhlcmUgYXJlCj4+Pj4gbG90cyBvZiBmcmFt
+ZXMgaW4gdGhlCj4+Pj4gTklDJ3MgdHggYnVmZmVycyAoYXRoMTBrIGZpcm13YXJlLCBpbiB0aGlz
+IGNhc2UpLgo+Pj4+Cj4+Pj4gVGhlbiwgcGVlciBzZW5kcyBhIHBvd2VyLXNhdmUgcGt0IHRlbGxp
+bmcgQVAgaXQgaXMgZ29pbmcgb2ZmLWNoYW5uZWwgb3IKPj4+PiBvdGhlcndpc2UKPj4+PiB3aWxs
+IGJlIHVuYXZhaWxhYmxlLgo+Pj4KPj4+Cj4+PiBJIGFzc3VtZSB5b3UncmUgZXhwbG9yaW5nIHRo
+ZSB3b3JzdC1jYXNlIHNjZW5hcmlvIHdoZW4gYWxsIHR4IGJ1ZmZlcnMKPj4+IGFyZSBjb25zdW1l
+ZCBhbmQgcGVlciBnb2VzIHRvIHNsZWVwLCBhbSBJIGNvcnJlY3Q/Cj4+Cj4+Cj4+IEV2ZW4gaWYg
+bm90IGFic29sdXRlbHkgYWxsLi4uc2VlbXMgbGlrZSB3ZSBzaG91bGQgZmx1c2ggdGhlbSBxdWlj
+ayBhbmQKPj4gbGV0IHRoZSBPUyBkbyB0aGUgYnVmZmVyaW5nIGJ5IGhhdmluZyBpdCByZS1zZW5k
+IHdoZW4gUFMgaXMgZGlzYWJsZWQKPj4gYWdhaW4uICBBIGZldyBzdGF0aW9ucyBpbiBQUyBjb3Vs
+ZCBxdWlja2x5IGVhdCBhbGwgZmlybXdhcmUgdHggYnVmZmVycywgbm90Cj4+IGV2ZW4KPj4gaW5j
+bHVkaW5nIHRoZSB3bWktbWd0LWZyYW1lIGlzc3VlLiAgSSd2ZSBmaXhlZCB0aGUgdHgtc3RhdHVz
+IGluIG15IENUCj4+IGZpcm13YXJlIG5vdy4uLmNvdWxkIHBvc3NpYmx5Cj4+IGFkZCBhbm90aGVy
+IHR4LXN0YXR1cyAobGlrZSB0eC1kcm9wcGVkLVBTKSB0byBiZXR0ZXIgZGVhbCB3aXRoIHRoaXM/
+ICBJCj4+IHRoaW5rCj4+IEkgbWF5IHRyeSB0byBtYWtlIG15IGZpcm13YXJlIGFibGUgdG8gdHJh
+bnNtaXQgbWd0IGZyYW1lcyBvdmVyIGh0dCBhcyB3ZWxsLAo+PiB3aGljaCBzaG91bGQgaGVscCB3
+aXRoIHNvbWUgb2YgdGhpcyBhcyB3ZWxsLgo+IAo+IEhtbS4uIEkgZ3Vlc3MgeW91J2QgbmVlZCB0
+byBlaXRoZXIgcmUtaW1wbGVtZW50IHBlci1zdGEgYnVmZmVyaW5nIGluCj4gYXRoMTBrIG9yIG1h
+a2UgYXRoMTBrIHVzZSBtYWM4MDIxMSdzIGltcGxlbWVudGF0aW9uIGZvciBBUCBQUy4gRWl0aGVy
+Cj4gd2F5IEkgdGhpbmsgaXQgbWlnaHQgYmUgcHJldHR5IHRyaWNreS4gVGhlIGxhdHRlciB3aWxs
+IG5lZWQgTnVsbEZ1bmMKPiBmcmFtZXMgYW5kIFBTLVBvbGxzIHRvIGJlIHJlcG9ydGVkIHRvIG1h
+YzgwMjExLiBJJ20gbm90IHN1cmUgaWYgdGhlc2UKPiBnZXQgZGVsaXZlcmVkIHdpdGhvdXQgbW9u
+aXRvciB2ZGV2LiBFdmVuIGlmIHRoZXkgYXJlIGl0IHdvdWxkIHdvcmsKPiB3aXRoIFFDQTk4OFgg
+YW5kIDEwLngvNjM2IG9ubHkuIFFDQTYxN1g0IGh3My54KyBoYXMgRnVsbCBSeCBvZmZsb2FkCj4g
+YW5kIGlzIGluY2FwYWJsZSBvZiBhY3RpbmcgYXMgYSBtb25pdG9yIGVmZmVjdGl2ZWx5IChpdCBk
+b2Vzbid0IHJlcG9ydAo+IHRvbnMgb2YgZnJhbWUgdHlwZXMpLiBBbmQgdGhlcmUncyBRQ0E5OVgw
+IG9uIHRoZSBob3Jpem9uIHdoaWNoIEkgZG9uJ3QKPiBrbm93IG11Y2ggYWJvdXQgeWV0LgoKSSBz
+dXNwZWN0IHRoaXMgc29ydCBvZiB0aGluZyB3aWxsIHJlcXVpcmUgYXQgbGVhc3Qgc29tZSBmaXJt
+d2FyZSBjaGFuZ2VzLApzbyBJIGFtIG5vdCBwbGFubmluZyB0byBnbyBvdXQgb2YgbXkgd2F5IHRv
+IGhhY2sgYXJvdW5kIHVwc3RyZWFtIGZpcm13YXJlCmxpbWl0YXRpb25zIGlmIEkgY2FuIGZpeCBD
+VCBmaXJtd2FyZSBkbyB0byBpdCBiZXR0ZXIuCgpJIHRoaW5rIGl0IHdvdWxkIGJlIGVhc3kgZW5v
+dWdoIHRvIG1vZGlmeSBmaXJtd2FyZSB0byBtYWtlIGl0IHBhc3MKc29tZSBleHRyYSBmcmFtZXMg
+dXAgdGhlIHN0YWNrLgoKQXQgbGVhc3QgYXMgcm91Z2ggb3V0bGluZSwgZG9lcyB0aGlzIHNlZW0g
+bGlrZSBpdCBjb3VsZCB3b3JrOgoKMSkgIFBhc3MgTnVsbEZ1bmMgJiBQUyBQb2xsIGZyYW1lcyB1
+cCB0byBob3N0CgoyKSAgUmlwIG91dCBhbGwgb2YgdGhlIHBvd2VyLXNhdmUgc3VwcG9ydCBpbiB0
+aGUgZmlybXdhcmUuCgozKSAgSW1wbGVtZW50IGEgJ2ZsdXNoLXBlZXItcHMnIEFQSSB0aGF0IGxl
+dHMgaG9zdCB0ZWxsIGZpcm13YXJlCnRvIGRpc2NhcmQgYW55IHBlbmRpbmcgZnJhbWVzIGZvciBh
+IHBhcnRpY3VsYXIgcGVlciwgYW5kIGhhdmUgZmlybXdhcmUKdXNlIGEgbmV3IHR4IHN0YXR1cyAn
+VFhfRElTQ0FSRF9QUycuICBJIGRvbid0IHRoaW5rIHdlIGNhbiByZXVzZQp0aGUgcGxhaW4gJ0RJ
+U0NBUkQnIHR4LXN0YXR1cyBzaW5jZSBpdCAqaXMqIHVzZWQgZm9yIGF0IGxlYXN0IGEgZmV3CnRo
+aW5ncywgYW5kIHNvIGhvc3Qgd291bGQgaGF2ZSBhIGhhcmQgdGltZSBrbm93aW5nIGhvdyB0byBo
+YW5kbGUKdGhhdCByeCBjb2RlIHByb3Blcmx5LgoKNCkgIFNvbWVob3cgbGV0IG1hYzgwMjExIHN0
+YWNrIGtub3cgdGhhdCB0aGUgVFhfRElTQ0FSRF9QUyBmcmFtZXMgYXJlCnRvIGJlIHJldHJpZWQg
+dy9vdXQgZGVjcmVtZW50aW5nIHRoZSByZXRyeSBjb3VudGVyIG9uY2UgUFMgbG9naWMgZGljdGF0
+ZXMKZnJhbWVzIGNhbiBiZSBzZW50IGFnYWluLgoKPiAKPiBJJ20gbm90IHN1cmUgYnV0IGZsdXNo
+ZWQgZnJhbWVzIGNvdWxkIGJlIHJlcG9ydGVkIGFzICJkaXNjYXJkIi4gSWYKPiB0aGF0IHdlcmUg
+dGhlIGNhc2Ugd2UgY291bGQgcHJvYmFibHkgdXNlIHRoYXQgaW5zdGVhZCBvZiBhIGN1c3RvbQo+
+IHR4LWRyb3BwZWQtcHMuICJkaXNjYXJkIiBpcyByYXRoZXIgcmFyZSBhbmQgaGFwcGVucyBpbiBz
+b21lIGNvcm5lcgo+IGNhc2VzIGZyb20gd2hhdCBJJ3ZlIHNlZW4gc28gZmFyIChtaXNzaW5nIHBl
+ZXIgZW50cmllcywgYm9ndXMgZnJhbWVzLAo+IGV0Yykgb25seS4KPiAKPiBJdCdkIGJlIGdyZWF0
+IGlmIGFsbCBhdGgxMGsgaHcvZncgcmV2aXNpb25zIGNhbiBiZW5lZml0LgoKTWF5YmUgaWYgSSBj
+YW4gaW1wbGVtZW50IGl0IGluIENUIGZpcm13YXJlLCBzb21lb25lIHVwc3RyZWFtCndpbGwgYmUg
+d2lsbGluZyB0byBhY2NlcHQgc2ltaWxhciBmaXJtd2FyZSBjaGFuZ2VzIGludG8gdGhlCm9mZmlj
+aWFsIGZpcm13YXJlLiAgT3IgaWYgbm90LCB0aGUgYWx0ZXJuYXRpdmUgZmlybXdhcmUgd2lsbAph
+dCBsZWFzdCBnaXZlIHVzZXJzIG1vcmUgb3B0aW9ucy4KCj4+IEluIGN1cnJlbnQgdGVzdGluZywg
+aXQgYWN0dWFsbHkgc2VlbXMgbGlrZSBhdGgxMGsgZmlybXdhcmUgKG9yIG1heWJlIGhpZ2hlcgo+
+PiB1cCkgaXMgY29tcGxldGVseQo+PiBpZ25vcmluZyB0aGUgUFMgYml0Li5idXQgSSBoYXZlIGEg
+bG90IG1vcmUgZGVidWdnaW5nIHRvIGRvIGJlZm9yZSBJJ20KPj4gY2VydGFpbiBvZiB0aGlzLiAg
+UG9zc2libHkgcGVlciBpcyBiZWluZyBkb2RneS4KPiAKPiBDYW4geW91IGVsYWJvcmF0ZSBtb3Jl
+LCBwbGVhc2U/IFdoYXQgZG8geW91IG1lYW4gJ2lnbm9yZXMgUFMgYml0Jz8KPiBXb3VsZG4ndCB0
+aGF0IG1ha2UgYSB0b3RhbCBtZXNzIHdpdGggdHJhZmZpYz8KCkZ1cnRoZXIgZGVidWdnaW5nIHNo
+b3dlZCB0aGF0IHRoZSBwZWVyIHdlbnQgaW50byBQUyBhbmQgc3RheWVkIHRoYXQKd2F5IGZvciBh
+Ym91dCA0IHNlY29uZHMuICBUaGVuLCBhdGgxMGsgcmVwb3J0ZWQgbG90cyBvZiB0eC1mYWlsdXJl
+cwooYW5kIGEgc25pZmYgc2hvd2VkIGxvdHMgb2YgcmV0cmllZCBmcmFtZXMgb24gdGhlIGFpciBh
+dCB0aGF0IHRpbWUpLiAgSSBkaWQgbm90IHNlZQp0aGF0IHNwZWNpYWwgJ3BlZXItcHMtb3V0LW9m
+LXN5bmMnIG1lc3NhZ2UgZnJvbSB0aGUgZmlybXdhcmUsIHNvIHNvbWV0aGluZwplbHNlIHdhcyBj
+YXVzaW5nIHRob3NlIGZyYW1lcyB0byBzdGFydCBhZ2FpbiwgaXQgc2VlbXMuCgpJIGRlY2lkZWQg
+dG8gc3BlbmQgc29tZSBlZmZvcnQgb24gbWd0LW92ZXItaHR0IGZpcnN0LCB0aGVuIHdpbGwgbG9v
+ayBpbnRvCnRoaXMgaXNzdWUgbW9yZSBjbG9zZWx5LgoKPj4+PiBXaGF0IGlzIHRoZSBhcHByb3By
+aWF0ZSBiZWhhdmlvdXIgZnJvbSB0aGUgQVA/ICBDYW4gdGhlIGZpcm13YXJlIGp1c3QKPj4+PiBk
+cm9wIGFsbCB0aG9zZSB0eCBmcmFtZXMgdG8KPj4+PiBtYWtlIHJvb20gdG8gaGFuZGxlIG90aGVy
+IHN0YXRpb25zPyAgTWF5YmUgcmVwb3J0IEFDSyBmYWlsdXJlIGFuZCBob3BlCj4+Pj4gdGhlIHVw
+cGVyIGxldmVsIHN0YWNrcwo+Pj4+IHJldHJhbnNtaXQgYXMgYXBwcm9wcmlhdGU/Cj4+Pj4KPj4+
+PiBPciwgaXMgdGhlIGhvc3Qgc3VwcG9zZWQgdG8gZmx1c2ggdGhlIHBlZXIncyBwYWNrZXRzIHRv
+IGNsZWFyIG91dCB0aGUKPj4+PiBmcmFtZXM/Cj4+Pj4KPj4+PiBPciwgaXMgZmlybXdhcmUgc29t
+ZWhvdyBzdXBwb3NlZCB0byBrZWVwIGFsbCB0aGUgZnJhbWVzIGZvciB3aGVuIHRoZSBwZWVyCj4+
+Pj4gY29tZXMgYmFjaz8KPj4+Cj4+Pgo+Pj4gRmlybXdhcmUgd2lsbCBrZWVwIGZyYW1lcyBidWZm
+ZXJlZCB1bnRpbCBzdGF0aW9uIHdha2VzIHVwIGFnYWluLgo+Pj4KPj4+IFRoZXJlJ3MgYSB0aW1l
+b3V0IHRvIGRldGVjdCBzdGFsZSBzdGF0aW9ucyBhcyBmYXIgYXMgSSdtIGF3YXJlIGFuZCB0aGUK
+Pj4+IGRlZmF1bHQgdmFsdWUgaXMgMTBzIChzb3VuZHMgZmFtaWxpYXI/IHRoaXMgZ29lcyBiYWNr
+IHRvIG1nbXQgdHgvCj4+PiBjcmVkaXQgc3RhcnZhdGlvbikuIFRoaXMgbWFrZXMgdG8gaGFuZGxl
+IHN0YXRpb25zIHRoYXQgZ28gdG8gc2xlZXAgYW5kCj4+PiB0aGVuIG91dCBvZiByYW5nZS9hd2F5
+LiBBUCBkb2Vzbid0IG5lZWQgdG8ga2VlcCBmcmFtZXMgYnVmZmVyZWQgdGlsbAo+Pj4gdGhlIGVu
+ZCBvZiB0aW1lLiBPbmNlIHRoZSB0aW1lb3V0IGlzIGhpdCBmaXJtd2FyZSBzdG9wcyBjYXJpbmcg
+YWJvdXQKPj4+IHN0YXRpb24ncyBsYXN0IHNlZW4gc2xlZXAgc3RhdGUgdHJhbnNpdGlvbiBhbmQg
+bWFya3MgaXQgYXMgYXdha2UgYW5kCj4+PiBqdXN0IHNlbmRzIGZyYW1lcyB0byBpdCAod2l0aCB0
+b25zIG9mIHJldHJhbnNtaXRzIGlmIGl0J3MgcmVhbGx5IG5vdAo+Pj4gdGhlcmUgYW55bW9yZSBz
+aW5jZSB0aGVyZSdkIGJlIG5vb25lIHRvIEFDSykgLSBpbiB3aGljaCBjYXNlIHlvdSdsbAo+Pj4g
+Z2V0IG5vX2Fjaz0xIGluIHR4IHN0YXR1cy4KPj4KPj4KPj4gV2UgZG8gc2VlIGxvdHMgb2Ygbm8t
+YWNrLCBoYWQgdG8gdGVsbCBob3N0YXBkIHRvIGlnbm9yZSBub2FjayBmYWlsdXJlcwo+PiBvciBj
+b25uZWN0aW9uIHRvIHBlZXIgd2FzIGxvc3QuICBCdXQsIHBlZXIgc2hvdWxkIG5vdCBoYXZlIGJl
+ZW4gZ29uZSBmb3IKPj4gMTArIHNlY29uZHMgaW4gdGhpcyBjYXNlLgo+IAo+IEkgdGhpbmsgSSd2
+ZSBzZWVuIHNvbWUgZGlmZmVyZW5jZXMgYmV0d2VlbiBmZXcgZmlybXdhcmUgcmV2aXNpb25zIG92
+ZXIKPiB0aW1lIChJIGRpZG4ndCB0cmFjayBpdCB0aG91Z2gpLiBZb3UgbWlnaHQgd2FudCB0byBp
+bnNwZWN0IFR4Cj4gZGVzY3JpcHRvcnMgY2FyZWZ1bGx5IGluIGZ3IGFuZCBjb21wYXJlIHRoZW0g
+dG8gd2hhdCBpcyByZXBvcnRlZCB2aWEKPiBIVFQgVHguCgpJIHNwZW50IHNvbWUgZWZmb3J0IGF1
+ZGl0aW5nIHRoZSB0eC1zdGF0dXMgaW4gQ1QgZmlybXdhcmUsIHNvIEkgdGhpbmsKaXQgaXMgcHJv
+cGVyIG5vdy4gIEkgY291bGQgYmUgd3JvbmcsIGhvd2V2ZXIuLi4KCj4+Cj4+IFRoYXQgc2VlbXMg
+bGlrZSBhIGhvcnJpYmxlIHdhc3RlIG9mIHRpbWUgcmV0cmFuc21pdHRpbmcgcGFja2V0cywgYnkg
+dGhlIHdheS4KPiAKPiBJJ20gZ3Vlc3NpbmcgdGhlIGFib3ZlIGNvdmVycyBzb21lIHNvcnQgb2Yg
+YSByYXJlIGNvcm5lciBjYXNlLi4KClllcywgSSB0aGluayBzby4gIEknbGwgaHVudCBpdCBkb3du
+IGV2ZW50dWFsbHkgaWYgYWxsIGdvZXMgYWNjb3JkaW5nCnRvIHBsYW4uCgo+Pj4gU2VlOiBXTUlf
+MTBYX1ZERVZfUEFSQU1fQVBfREVURUNUX09VVF9PRl9TWU5DX1NMRUVQSU5HX1NUQV9USU1FX1NF
+Q1MKPj4+Cj4+PiBJZGVhbGx5IHRoZXJlIHNob3VsZCBiZSBsaXR0bGUgdG8gbm8gYnVmZmVyIGJs
+b2F0IGJ1dCBpdCdzIGRpZmZpY3VsdAo+Pj4gdG8gZG8gdGhhdCBjb25zaWRlcmluZyBhZ2dyZWdh
+dGlvbiBzaXplcyBvZiAxMWFjLi4KPj4KPj4KPj4gQXRoMTBrIHdpbGwgbm90IGFnZ3JlZ2F0ZSBt
+b3JlIHRoYW4gYWJvdXQgMzAgZnJhbWVzIGFzIGZhciBhcyBJIGNhbiB0ZWxsLAo+PiAobWF5YmUg
+MyB0aW1lcyB0aGF0IGlmIGFtc2R1IGlzIGhhcHBlbmluZyBhcyB3ZWxsPykuICBTdGFuZGFyZCBk
+cml2ZXIgaXMKPj4gdXNpbmcKPj4gbW9yZSB0aGFuIDEwMDAgYnVmZmVycywgYW5kIHN0b2NrIGZp
+cm13YXJlIHdvbid0IGV2ZW4gbGV0IHlvdSBjb25maWd1cmUgdGhpcwo+PiB0byBiZSBzbWFsbGVy
+IHRoYW4gYWJvdXQgMTAyNCAodGhvdWdoIG1heWJlIGRyaXZlciBjb3VsZCBzdGlsbCB1c2UgbGVz
+cwo+PiBhbmQgZmlybXdhcmUgd291bGRuJ3QgY2FyZSwgbm90IHN1cmUpLgo+IAo+IEkgdGhpbmsg
+aXQnZCBiZSBtb3JlIGFjY3VyYXRlIHRvIHNheSAxMC4xIChzaW5jZSB0aGF0J3Mgd2hhdCB5b3Ug
+dXNlCj4gbWFpbmx5LCByaWdodD8pIGRvZXNuJ3QgYWdncmVnYXRlIG1vcmUgdGhhbiAzMCBmcmFt
+ZXMuIFRoZXJlJ3MgMTAuMiwKPiAxMC4yLjQsIDYzNiwgYW5kIHRoZW4gdGhlcmUncyBxY2E2MXg0
+IHdpdGggYW5vdGhlciBmaXJtd2FyZSBicmFuY2guCj4gYXRoMTBrIGRvZXNuJ3QgcmVhbGx5IGhh
+dmUgbXVjaCB0byB0ZWxsIGluIGFnZ3JlZ2F0aW9uLgo+IAo+IDExYWMgYWdncmVnYXRpb24gY2Fu
+IGJlIGFzIGJpZyBhcyAxTUJ5dGUgYXMgZmFyIGFzIEkgY2FuIHJlbWVtYmVyLgo+IFRoaXMgbWVh
+bnMgaXQncyBpbmhlcmVudGx5IHRyaWNreSB0byBhdm9pZCBidWZmZXIgYmxvYXQgYW5kIGtlZXAg
+bWF4Cj4gdGhyb3VnaHB1dCB3aXRoIHdpZmkgLSB0aGF0J3Mgd2hhdCBJIG9yaWdpbmFsbHkgbWVh
+bnQuCgpFdmVuIGlmIGl0ICpjYW4qIGJlIGxhcmdlciwgbWF5YmUgdGhlcmUgaXMgbm8gcmVhc29u
+IHRvIGFjdHVhbGx5IGRvIHRoaXMKaW4gcHJhY3RpY2U/ICBGb3IgaW5zdGFuY2UsIGlmIHBlZXJz
+IGdvaW5nIHRvIHNsZWVwIGFuZCBnb2luZyBvdXQgb2YgcmFuZ2UKKG9yIGNyYXBwaW5nIHVwIHRo
+ZWlyIG93biBQUyBzdGF0ZSBkdWUgdG8gYnVncyBvciBtYWxpY2lvdXMgaW50ZW50KSBjYW4gZWZm
+ZWN0aXZlbHkgbGl2ZS1sb2NrCmFuIEFQIGZvciBldmVyeW9uZSBlbHNlLCB0aGF0IHNlZW1zIGxp
+a2UgYSBtdWNoIG1vcmUgc2VyaW91cyBidWcKdGhhbiBzbGlnaHRseSBzbG93ZXIgcGVyZm9ybWFu
+Y2Ugd2l0aCB0aGUgbGltaXRlZCBjYXNlcyB3aGVyZSB5b3UgY2FuIGFjdHVhbGx5CnVzZSB2ZXJ5
+IGxhcmdlIGFnZ3JlZ2F0aW9ucy4KCkZvciBhIGNvbW1vbiBjYXNlIHdoZXJlIHlvdSBoYXZlIG1h
+bnkgc3RhdGlvbnMgY29ubmVjdGVkIHRvIGFuIEFQLCBkb2luZyB3b3JrCnRvIGdpdmUgZWFjaCBz
+dGF0aW9uIGEgbW9kZXN0IHNpemVkIGFnZ3JlZ2F0aW9uIG9wcG9ydHVuaXR5IGlzIGdvaW5nIHRv
+IGRvIHdheQptb3JlIGdvb2QgdGhhbiBtYWtpbmcgb25lIHN0YXRpb24gdmVyeSBmYXN0LCBJIHRo
+aW5rLgoKVGhhbmtzIGZvciBhbGwgdGhlIGNvbW1lbnRzIGFuZCB0aG91Z2h0cyEKCkJlbgoKCj4+
+IEJ1dCBmaXhpbmcgYnVmZmVyIGJsb2F0IGluIGF0aDEwayBpcyBub3QgbXkgcHJpbWFyeSBjb25j
+ZXJuIGF0IHRoZSBtb21lbnQuCj4gCj4gU3VyZS4gTm9uZXRoZWxlc3MgeW91ciBwcm9ibGVtICpp
+cyogcmVsYXRlZCB0byBidWZmZXIgYmxvYXQuCj4gCj4gCj4gTWljaGHFggo+IAoKCi0tIApCZW4g
+R3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBUZWNobm9sb2dpZXMgSW5j
+ICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
+ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+dGgxMGsK
