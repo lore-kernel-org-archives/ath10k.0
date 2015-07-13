@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZEVU0-00084j-Aq
- for ath10k@lists.infradead.org; Mon, 13 Jul 2015 04:36:48 +0000
-Received: from [192.168.1.108] (c-67-168-92-223.hsd1.wa.comcast.net
- [67.168.92.223])
- (using TLSv1.2 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 457A640A339
- for <ath10k@lists.infradead.org>; Sun, 12 Jul 2015 21:36:21 -0700 (PDT)
-Message-ID: <55A34044.1060009@candelatech.com>
-Date: Sun, 12 Jul 2015 21:36:20 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZEWk6-0006zp-Mz
+ for ath10k@lists.infradead.org; Mon, 13 Jul 2015 05:57:31 +0000
+Received: by widjy10 with SMTP id jy10so58952078wid.1
+ for <ath10k@lists.infradead.org>; Sun, 12 Jul 2015 22:57:03 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Making 10.1.467 based CT firmware do mgt-over-htt
+In-Reply-To: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+Date: Mon, 13 Jul 2015 07:57:03 +0200
+Message-ID: <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
+Subject: Re: AP mode firmware crash on QCA9880-BR4A
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,121 +20,72 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I have been working on making my CT firmware able to do mgt frames
-over the normal HTT transport instead of over wmi.  This should significantly
-improve APs that are trying to deal with stations going out of range.
-
-A fairly trivial change in the firmware lets ath10k in station mode associate in both
-OPEN and WPA2 (I did not test further at this time).
-
-But, on the AP side, this same change ends up with probe responses going
-out with 10 bytes missing from the end of the frame.  If I simply do a skb_put(foo, 10)
-before sending to firmware, then AP mode works (OPEN, against ath9k AP).
-
-But, this skb_put() breaks the station (OS crashed and rebooted).
-
-I can probably find a particular set of logic that puts or does not put
-the 10 extra bytes accordingly, but I am curious if anyone knows any reason
-that AP mode frames are different.  I did find some code
-in firmware that basically subtracts 10 bytes from length:
-len -= (sizeof(struct ieee80211_frame) - WAL_DE_ETHR_HDR_LEN))
-
-This happens for all native wifi pkts though.  Is there some reason why a
-probe response (and maybe other mgt frames?) would not be built for native
-wifi?
-
-use_frags in htt_tx.c will be TRUE in my case, because htt version is 2.2 in
-my firmware.
-
-My driver patch looks like this currently:
-
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c2c1f2d..d291121 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -570,6 +570,7 @@ struct ath10k {
-         DECLARE_BITMAP(fw_features, ATH10K_FW_FEATURE_COUNT);
-
-         bool p2p;
-+       bool all_pkts_htt; /* target has no separate mgmt tx command? */
-
-         struct {
-                 enum ath10k_bus bus;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 815f7fc..a07ce92 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1932,6 +1932,15 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
-         case HTT_T2H_MSG_TYPE_VERSION_CONF: {
-                 htt->target_version_major = resp->ver_resp.major;
-                 htt->target_version_minor = resp->ver_resp.minor;
-+
-+               if ((htt->target_version_major >= 3) ||
-+                   /* CT firmware with HTT-MGT */
-+                   (htt->target_version_major == 2 &&
-+                    htt->target_version_minor == 2))
-+                       ar->all_pkts_htt = true;
-+               else
-+                       ar->all_pkts_htt = false;
-+
-                 complete(&htt->target_version_received);
-                 break;
-         }
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 2f3f7e0..850eb72 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -459,6 +459,10 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
-         }
-         skb_cb->htt.txbuf_paddr = paddr;
-
-+       if (ieee80211_is_mgmt(hdr->frame_control)) {
-+               skb_put(msdu, 10);
-+       }
-+
-         if ((ieee80211_is_action(hdr->frame_control) ||
-              ieee80211_is_deauth(hdr->frame_control) ||
-              ieee80211_is_disassoc(hdr->frame_control)) &&
-@@ -546,7 +550,7 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
-                    "htt tx flags0 %hhu flags1 %hu len %d id %hu frags_paddr %08x, msdu_paddr %08x vdev %hhu tid %hhu freq %hu\n",
-                    flags0, flags1, skb_len, msdu_id, frags_paddr,
-                    (u32)skb_cb->paddr, vdev_id, tid, skb_cb->htt.freq);
--       ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL, "htt tx msdu: ",
-+       ath10k_dbg_dump(ar, ATH10K_DBG_HTT /*_DUMP*/, NULL, "htt tx msdu: ",
-                         msdu->data, skb_len);
-         trace_ath10k_tx_hdr(ar, msdu->data, msdu->len);
-         trace_ath10k_tx_payload(ar, msdu->data, msdu->len);
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index c4ad1dc..ee7be8b 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2309,7 +2309,7 @@ static void ath10k_tx_htt(struct ath10k *ar, struct sk_buff *skb)
-         struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-         int ret = 0;
-
--       if (ar->htt.target_version_major >= 3) {
-+       if (ar->all_pkts_htt) {
-                 /* Since HTT 3.0 there is no separate mgmt tx command */
-                 ret = ath10k_htt_tx(&ar->htt, skb);
-                 goto exit;
-
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTIgSnVseSAyMDE1IGF0IDIyOjA1LCBNYXJ0aW4gQmx1bWVuc3RpbmdsCjxtYXJ0aW4uYmx1
+bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tPiB3cm90ZToKPiBIZWxsbywKPgo+IEkgaGF2ZSB0d28g
+ZGV2aWNlcyB3aXRoIGNoaXBzIHRoYXQgYXJlIHN1cHBvcnRlZCBieSBhdGgxMGsuCj4gT25lIHVz
+ZXMgYSBRQ0E5ODgwLUJSNEEsIHRoZSBvdGhlciBoYXMgYSBRQ0E5NTU4LUFUNEEuCj4KPiBUaGUg
+ZGV2aWNlIHdpdGggUUNBOTU1OC1BVDRBIGlzIHdvcmtpbmcgZmluZS4KPiBIb3dldmVyLCB0aGUg
+b3RoZXIgb25lIGlzIGV4cGVyaWVuY2luZyBmaXJtd2FyZSBjcmFzaGVzLgo+IFlvdSBjYW4gZmlu
+ZCB0aGUgZG1lc2cgb3V0cHV0IGJlbG93IGFuZCBoZXJlOiBbMF0uCj4KPiBUaG9zZSBjcmFzaGVz
+IGFyZSBmaXJtd2FyZSByZWxhdGVkLiBIZXJlIGlzIHdoYXQgSSBoYXZlIHRlc3RlZCBvbiBRQ0E5
+ODgwLUJSNEE6Cj4gLSBmaXJtd2FyZS0yLmJpbl8xMC4xLjQ2Ny5iaW4gaXMgTk9UIGNyYXNoaW5n
+Cj4gLSBmaXJtd2FyZS0zLmJpbl8xMC4yLjIuMzkuYmluIGlzIGNyYXNoaW5nCj4gLSBmaXJtd2Fy
+ZS00LmJpbl8xMC4yLjQuYmluIGlzIGFsc28gY3Jhc2hpbmcKPiAtIGZpcm13YXJlLTUuYmluXzEw
+LjIuNC43MC0yIGlzIGNyYXNoaW5nIGFzIHdlbGwKPgo+IEFzIGEgc2lkZS1ub3RlOiBCb3RoIGRl
+dmljZXMgYXJlIHJ1bm5pbmcgT3BlbldydC4KPiBJIGFtIHByZXR0eSBzdXJlIHRoYXQgbXkgY2Fs
+ZGF0YSBpcyBjb3JyZWN0IG9uIGJvdGggZGV2aWNlcy4KPiBBbHNvIEkgYW0gbm90IHRoZSBvbmx5
+IG9uZSBhZmZlY3RlZCBieSB0aGlzIGJ1Zywgc2VlIFsxXQoKVGhhbmtzIGZvciB0ZXN0aW5nIGFu
+ZCByZXBvcnRpbmcgaXQgYmFjayB0byB1cHN0cmVhbSA7LSkgSSByYXJlbHkgbG9vawphdCBPcGVu
+V1JUIGJ1Z2xpc3QuCgoKPgo+IFBsZWFzZSBsZXQgbWUga25vdyBpZiBtb3JlIGluZm9ybWF0aW9u
+IGlzIHJlcXVpcmVkLgoKSXQgaXMgYWx3YXlzIGdvb2QgdG8gc2VlIGVpdGhlciBkZWJ1Z3Mgb3Ig
+dHJhY2VzIHRvIGtub3cgd2hhdCBoYXBwZW5lZApiZWZvcmUgYSBjcmFzaC4gWW91ciBidWlsZCBk
+b2Vzbid0IHNlZW0gdG8gY29udGFpbiBlaXRoZXIgYXQgdGhlCm1vbWVudCB0aG91Z2guCgoKPgo+
+Cj4gUmVnYXJkcywKPiBNYXJ0aW4KPgo+IFswXSBodHRwczovL3Bhc3RlLmtkZS5vcmcvcHpjYXV3
+ZHBiCj4gWzFdIGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL3RpY2tldC8xOTE2Nwo+Cj4KPiBbICAg
+MTEuNTQ0MDAwXSBMb2FkaW5nIG1vZHVsZXMgYmFja3BvcnRlZCBmcm9tIExpbnV4IHZlcnNpb24K
+PiBtYXN0ZXItMjAxNS0wNi0yMi0wLWc0NzMyYzkyCj4gWyAgIDExLjU1MjAwMF0gQmFja3BvcnQg
+Z2VuZXJhdGVkIGJ5IGJhY2twb3J0cy5naXQgYmFja3BvcnRzLTIwMTUwNjI2LTAtZ2MxYTQxNjgK
+Ckkgc2VlIHlvdSdyZSB1c2luZyBhIHByZXR0eSByZWNlbnQgb3BlbndydCBzbmFwc2hvdC4KCkJ5
+IGxvb2tpbmcgYXQgU1ZOIGNoYW5nZXNldHMgSSBjYW4gc2VlIHRoYXQgb3RwIGJ5cGFzcyBwYXRj
+aCBoYXMgYmVlbgpyZW1vdmVkWzFdIGluIGZhdm91ciBvZiBjYWxkYXRhIGFwcHJvYWNoWzJdLiBX
+aXRoIHRoaXMgT1RQIGlzIG5vdCBldmVuCmV4ZWN1dGVkLiBJZiBJIGFzc3VtZSB0aGUgY2FsZGF0
+YSBleHRyYWN0ZWQgZnJvbSBmbGFzaCBwYXJ0aXRpb24gaXNuJ3QKY29tcGxldGUgdGhlbiBpdCBj
+b3VsZCBsZWFkIHRvIGZpcm13YXJlIGNyYXNoLgoKWzFdOiBodHRwczovL2Rldi5vcGVud3J0Lm9y
+Zy9jaGFuZ2VzZXQvNDYyNDUKWzJdOiBodHRwczovL2Rldi5vcGVud3J0Lm9yZy9jaGFuZ2VzZXQv
+NDYyNDQKCkNhbiB5b3UgcGxlYXNlIHRyeSBkbyB0aGUgZm9sbG93aW5nOgoKIGNkIC9saWIvZmly
+bXdhcmUvYXRoMTBrL1FDQTk4OFgvaHcyLjAvCiBtdiBjYWxkYXRhLmJpbiBib2FyZC5iaW4KIHJt
+bW9kIGF0aDEwa19wY2kKIGVjaG8gMSA+IC9zeXMvbW9kdWxlL2F0aDEwa19jb3JlL3BhcmFtZXRl
+cnMvc2tpcF9vdHAKIG1vZHByb2JlIGF0aDEwa19wY2kKIHdpZmkKCihub3QgdGVzdGVkOyBjb3Vs
+ZCBpbmNsdWRlIHR5cG9zL2Vycm9ycyBidXQgc2hvdWxkIGJlIGVub3VnaCBmb3IgeW91CnRvIGdl
+dCB0aGUgaWRlYSkKCgpbLi4uXQo+IFsgICAyOC45NTIwMDBdIGF0aDEwa19wY2kgMDAwMDowMjow
+MC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+IGFkYmE0NzkzLTVkMTEtNDAwMi1iM2FjLTli
+ZTM3NTkyZGIyZSkKPiBbICAgMjguOTYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcWNh
+OTg4eCBodzIuMCAoMHg0MTAwMDE2YywKPiAweDA0MzIwMmZmKSBmdyAxMC4yLjQuNzAtMiBhcGkg
+NSBodHQgMi4xIHdtaSA1IGNhbCBmaWxlIG1heF9zdGEgMTI4Cj4gWyAgIDI4Ljk3MjAwMF0gYXRo
+MTBrX3BjaSAwMDAwOjAyOjAwLjA6IGRlYnVnIDEgZGVidWdmcyAxIHRyYWNpbmcgMAo+IGRmcyAx
+IHRlc3Rtb2RlIDEKPiBbICAgMjguOTkyMDAwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogZmFp
+bGVkIHRvIHJlYWQgZGlhZyB2YWx1ZSBhdAo+IDB4MWMxMDA4MDQ6IC0xNgo+IFsgICAyOC45OTYw
+MDBdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8gZ2V0IG1lbWNweSBoaQo+IGFk
+ZHJlc3MgZm9yIGZpcm13YXJlIGFkZHJlc3MgNDogLTE2Cj4gWyAgIDI5LjAwNDAwMF0gYXRoMTBr
+X3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byByZWFkIGZpcm13YXJlIGR1bXAgYXJlYTogLTE2
+Cj4gWyAgIDI5LjEwMDAwMF0gaWVlZTgwMjExIHBoeTA6IEhhcmR3YXJlIHJlc3RhcnQgd2FzIHJl
+cXVlc3RlZAo+IFsgICAyOS4zMDQwMDBdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBmYWlsZWQg
+dG8gcmVhZCBkaWFnIHZhbHVlIGF0Cj4gMHgxYzEwMDgwMDogLTE2Cj4gWyAgIDI5LjMwODAwMF0g
+YXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byBwb2tlIGNvcHkgZW5naW5lOiAtMTYK
+PiBbICAgMjkuNDI4MDAwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogZmFpbGVkIHRvIHJlYWQg
+ZGlhZyB2YWx1ZSBhdAo+IDB4MWMxMDA4MDA6IC0xNgo+IFsgICAyOS40MzIwMDBdIGF0aDEwa19w
+Y2kgMDAwMDowMjowMC4wOiBmYWlsZWQgdG8gcG9rZSBjb3B5IGVuZ2luZTogLTE2Cj4gWyAgIDI5
+LjU1NjAwMF0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IGZhaWxlZCB0byByZWFkIGRpYWcgdmFs
+dWUgYXQKPiAweDFjMTAwODAwOiAtMTYKPiBbICAgMjkuNTYwMDAwXSBhdGgxMGtfcGNpIDAwMDA6
+MDI6MDAuMDogZmFpbGVkIHRvIHBva2UgY29weSBlbmdpbmU6IC0xNgoKVGhpcyBsb29rcyBoYWly
+eS4gRGV2aWNlIGNyYXNoZXMgc28gaGFyZCBpdCdzIGltcG9zc2libGUgdG8gcmVhZCBvdXQKdGhl
+IGNyYXNoIGR1bXAuLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVh
+ZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
