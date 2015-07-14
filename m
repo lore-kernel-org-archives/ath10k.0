@@ -1,22 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from nm.newmedia-net.de ([217.113.179.122]
- helo=webmail.newmedia-net.de)
+Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZF1DG-0006aR-19
- for ath10k@lists.infradead.org; Tue, 14 Jul 2015 14:29:39 +0000
-References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
- <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
- <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
- <55A44244.9000109@dd-wrt.com>
- <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
- <55A4E1FC.9000005@dd-wrt.com>
- <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
-From: Sebastian Gottschall <s.gottschall@dd-wrt.com>
-Message-ID: <55A51CD6.6090808@dd-wrt.com>
-Date: Tue, 14 Jul 2015 16:29:42 +0200
+ id 1ZF41E-0005S1-32
+ for ath10k@lists.infradead.org; Tue, 14 Jul 2015 17:29:24 +0000
+Received: by oige126 with SMTP id e126so11357664oig.0
+ for <ath10k@lists.infradead.org>; Tue, 14 Jul 2015 10:29:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
-Subject: Re: AP mode firmware crash on QCA9880-BR4A
+Date: Tue, 14 Jul 2015 14:29:03 -0300
+Message-ID: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
+Subject: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT Chaos
+ Chalmer RC2)
+From: Fernando S <fsclavo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +19,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To: ath10k@lists.infradead.org
 
-eG8ganVzdCByZXZlcnQgdGhhdCBjb21taXQgYW5kIHRlc3QgYWdhaW4uIG9rYXkuIGkgd2lsbCBk
-byB0aGF0IHRoYXQgZXZlbmluZwoKQW0gMTQuMDcuMjAxNSB1bSAxMjo1MCBzY2hyaWViIE1pY2hh
-bCBLYXppb3I6Cj4gKyBhdGgxMGsgbGlzdCBiYWNrLCBtYXJ0aW4KPgo+IE1ha2Ugc3VyZSB0byBy
-ZXBseSB0byBldmVyeW9uZSBuZXh0IHRpbWUgYW5kIG5vdCBqdXN0IG1lLCBwbGVhc2UgOy0pCj4K
-PiBPbiAxNCBKdWx5IDIwMTUgYXQgMTI6MTgsIFNlYmFzdGlhbiBHb3R0c2NoYWxsIDxzLmdvdHRz
-Y2hhbGxAZGQtd3J0LmNvbT4gd3JvdGU6Cj4+IEFtIDE0LjA3LjIwMTUgdW0gMDc6NDUgc2Nocmll
-YiBNaWNoYWwgS2F6aW9yOgo+Pj4gT24gMTQgSnVseSAyMDE1IGF0IDAwOjU3LCBTZWJhc3RpYW4g
-R290dHNjaGFsbCA8cy5nb3R0c2NoYWxsQGRkLXdydC5jb20+Cj4+PiB3cm90ZToKPj4+PiB5b3Ug
-Y2FuIHJlcHJvZHVjZSB0aGlzIGlzc3VlIHdpdGggYSBzdGFuZGFyZCBjb21wZXggd2xlIDYwMHYg
-Y2FyZC4gaXRzIGEKPj4+PiBvbgo+Pj4+IGJvYXJkIGVlcHJvbSBjYXJkLiBzbyBjYWxpYnJhdGlv
-biBpc3N1ZXMgd2lsbCBub3Qgb2NjdXIuCj4+Pj4gYnV0IHRoaXMgY2FyZCB3aWxsIGFsc28gY3Jh
-c2ggd2l0aCByZWNlbnQgZmlybXdhcmVzIG9uIGFueSBwbGF0Zm9ybS4gYnV0Cj4+Pj4gKGFuZCBu
-b3cgdGhlIGJpZyB0aGluZykgaXQgd2lsbCBvbmx5IGhhcHBlbiBpbiBhcCBtb2RlLgo+Pj4+IGlm
-IHlvdSBpbml0aWFsaXplIGl0IGluIHN0YXRpb24gbW9kZSwgaXQgd2lsbCB3b3JrCj4+PiBUaGF0
-J3MgaW50ZXJlc3RpbmcuIERpZCB0aGUgY2FyZCBldmVyIHdvcmsgYXMgQVAgd2l0aCBhdGgxMGsg
-Zm9yIHlvdT8KPj4+IEJ5ICJhbnkgcGxhdGZvcm0iIHlvdSBtZWFuIHlvdSB0ZXN0ZWQgb24gYm90
-aCBsaXR0bGUtIGFuZCBiaWctIGVuZGlhbgo+Pj4gbWFjaGluZXM/Cj4+IHllcy4gd2l0aCBvbGRl
-ciBmaXJtd2FyZXMgOi0pCj4gSSBhc3N1bWUgaXQncyB0aGUgc2FtZSBhcyBNYXJ0aW4uCj4KPiBE
-byB5b3UgZ3V5cyBrbm93IGlmIDEwLjItMDAwODJbMV0gY3Jhc2hlcyBhcyB3ZWxsPwo+Cj4gWzFd
-OiBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL2Jsb2IvbWFzdGVyLzEw
-LjIvZmlybXdhcmUtMy5iaW5fMTAuMi0wMDA4Mi00LTIKPgo+Cj4+IHRlc3RlZCBvbiBBUjcxWFgg
-KE1JUFMgQkUpICwgR2F0ZXdvcmtzIFZlbnRhbmEgKCBBUk0gTGl0dGxlIGVuZGlhbiksIGFuZAo+
-PiBHYXRld29ya3MgTGFndW5hICggQVJNIExpdHRsZSBFbmRpYW4pCj4+Cj4+IGFsbCAzIGRldmlj
-ZXMgY3Jhc2ggdGhlIGZpcm13YXJlLiAsIGUKPiBUaGFua3MgZm9yIHRoZSBkZXRhaWxzLgo+Cj4K
-Pj4+IE15IGN1cnJlbnQgZ3Vlc3MgaXMgdGhpcyBjb3VsZCBoYXZlIHNvbWV0aGluZyB0byBkbyB3
-aXRoIEFQIGJlYWNvbmluZwo+Pj4gLSBpZiBpdCB3YXMgdG8gZ2V0IGFuIGludmFsaWQgZG1hIHBv
-aW50ZXIgaXQgY291bGQgY3Jhc2ggdGhlIGRldmljZSBzbwo+Pj4gaGFyZCBhcyB0byBlZmZlY3Rp
-dmVseSBwcmV2ZW50IGhvc3QgZnJvbSBhY2Nlc3NpbmcgcmVnaXN0ZXIgZHVtcAo+Pj4gbWVtb3J5
-Lgo+PiBidXQgd2hhdHMgdGhlIGRpZmZlcmVuY2U/IHNvbWUgY2FyZHMgd29yayBhbmQgc29tZSBh
-cmUgbm90LiBzbyBzb21ldGhpbmcgaW4KPj4gdGhlIG90cCBtdXN0IGJlIGxpa2VsbHkgcmVzcG9u
-c2libGUgZm9yIGNyYXNoaW5nIHRoZSBmaXJtd2FyZS4KPj4ganVzdCBhIGd1ZXNzCj4gSSBjYW4g
-aW1hZ2luZSBmaXJtd2FyZSBjb3VsZCBleGVjdXRlIHNvbWUgY29kZSBiYXNlZCBvbiBib2FyZCBk
-YXRhIG9yCj4gZGV2aWNlIHNwZWNpZmljIGJpdHMgd2hpY2ggZG8gZXh0cmEgcHJlcGFyYXRpb25z
-IG9uIGJlYWNvbiBwYXRoIGFuZAo+IHdoaWNoIHByZXNlbmNlIG9yIGxhY2sgb2YgY291bGQgcHJv
-bXB0IGEgY3Jhc2guIFRoaXMgaXMgbWVyZWx5IGEKPiBzcGVjdWxhdGlvbiBvbiBteSBwYXJ0Lgo+
-Cj4gVGhlIE9UUCBtb3N0IGxpa2VseSBpc24ndCB0aGUgcHJvYmxlbSBiZWNhdXNlIC0gYXMgcHJv
-dmVuIGJ5IE1hcnRpbiAtCj4gdGhlIGNyYXNoIG9jY3VycyB3aXRoIGNhbGRhdGEgYXQgYXBwYXJl
-bnRseSBzYW1lIHNwb3QgYXMgd2hlbgo+IGJvYXJkK290cC4gV2hlbiBjYWxkYXRhIGlzIHVzZWQg
-ZHJpdmVyIGRvZXMgbm90IGV4ZWN1dGUgT1RQIHByb2dyYW0gYXQKPiBhbGwuIE1heWJlIGNhbGRh
-dGEgaXRzZWxmIGlzIG1pc2ludGVycHJldGVkIGJ5IG5ld2VyIGZpcm13YXJlPwo+Cj4gSWYgc29t
-ZW9uZSBpcyBicmF2ZSBlbm91Z2ggd2l0aCBzcGFyZSB0aW1lIG9uZSBjb3VsZCBhdHRlbXB0IHRv
-Cj4gcmUtaW1wbGVtZW50IHRoZSBvbGQgYnktY29weSBiZWFjb25pbmcgKHdoaWNoIGNvcGllcyBl
-bnRpcmUgYmVhY29uCj4gZnJhbWUgaW50byBXTUkgY29tbWFuZCBpbnN0ZWFkIG9mIHBhc3Npbmcg
-anVzdCBkbWEgcG9pbnRlcjsgc2VlIFsyXQo+IGZvciByZWZlcmVuY2UpIHRvIHNlZSBpZiBpdCBt
-YWtlcyBhbnkgZGlmZmVyZW5jZS4gSWYgdGhhdCBoZWxwcyBpdAo+IHdvdWxkIGltcGx5IHRoZSBj
-cmFzaCBpcyBpbmRlZWQgcmVsYXRlZCB0byBkbWEgYmVhY29uaW5nLiBJZiBpdAo+IGRvZXNuJ3Qg
-aXQgd291bGQgcHJvdmUgbm90aGluZyB0aG91Z2guCj4KPiBbMl06IGh0dHBzOi8vZ2l0aHViLmNv
-bS9rdmFsby9hdGgvY29tbWl0Lzc0OGFmYzQ3MzUzNjFlMjFhZDY1NWMwZGMwMjFlYTNhYWVlYjNl
-ZmQKPgo+Cj4gTWljaGHFggo+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+I'm having dropouts on my TP-Link Archer C7, 2.4Ghz Wlan runs perfect,
+but 5Ghz is unstable (my laptop and my Ipad 4 loss connection after a
+couple of minutes, specially on heavy traffic).
+Looking on router's log, I found:
+
+Thu Jul 9 20:51:32 2015 daemon.info hostapd: wlan0: STA
+01:02:03:04:05:06 IEEE 802.11: disconnected due to excessive missing
+ACKs Thu Jul 9 20:52:02 2015 daemon.info hostapd: wlan0: STA
+01:02:03:04:05:06 IEEE 802.11: deauthenticated due to inactivity
+(timer DEAUTH/REMOVE)
+
+
+And on client side:
+
+Jul 9 20:51:05 laptop wpa_supplicant[1011]: wlan0:
+CTRL-EVENT-DISCONNECTED bssid=30:30:30:30:30:30 reason=7 Jul 9
+20:51:05 laptop NetworkManager[861]: <warn> Connection disconnected
+(reason 7)
+A little search on Google show me some old bugs, apparently resolved
+and only on ath9k (2.4Ghz): maybe the same issue is present on ath10k
+(5Ghz)?
+
+Please let me know if I can help to debug this issue.
+
+Thanks and regards.
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
