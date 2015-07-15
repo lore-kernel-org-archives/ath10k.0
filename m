@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x231.google.com ([2607:f8b0:4003:c06::231])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZF41E-0005S1-32
- for ath10k@lists.infradead.org; Tue, 14 Jul 2015 17:29:24 +0000
-Received: by oige126 with SMTP id e126so11357664oig.0
- for <ath10k@lists.infradead.org>; Tue, 14 Jul 2015 10:29:03 -0700 (PDT)
+ id 1ZFGpO-0007ga-LY
+ for ath10k@lists.infradead.org; Wed, 15 Jul 2015 07:10:03 +0000
+Received: by wiga1 with SMTP id a1so119614807wig.0
+ for <ath10k@lists.infradead.org>; Wed, 15 Jul 2015 00:09:39 -0700 (PDT)
 MIME-Version: 1.0
-Date: Tue, 14 Jul 2015 14:29:03 -0300
-Message-ID: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
-Subject: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT Chaos
- Chalmer RC2)
-From: Fernando S <fsclavo@gmail.com>
+In-Reply-To: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
+References: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
+Date: Wed, 15 Jul 2015 09:09:38 +0200
+Message-ID: <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
+Subject: Re: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT
+ Chaos Chalmer RC2)
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +21,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Fernando S <fsclavo@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I'm having dropouts on my TP-Link Archer C7, 2.4Ghz Wlan runs perfect,
-but 5Ghz is unstable (my laptop and my Ipad 4 loss connection after a
-couple of minutes, specially on heavy traffic).
-Looking on router's log, I found:
-
-Thu Jul 9 20:51:32 2015 daemon.info hostapd: wlan0: STA
-01:02:03:04:05:06 IEEE 802.11: disconnected due to excessive missing
-ACKs Thu Jul 9 20:52:02 2015 daemon.info hostapd: wlan0: STA
-01:02:03:04:05:06 IEEE 802.11: deauthenticated due to inactivity
-(timer DEAUTH/REMOVE)
-
-
-And on client side:
-
-Jul 9 20:51:05 laptop wpa_supplicant[1011]: wlan0:
-CTRL-EVENT-DISCONNECTED bssid=30:30:30:30:30:30 reason=7 Jul 9
-20:51:05 laptop NetworkManager[861]: <warn> Connection disconnected
-(reason 7)
-A little search on Google show me some old bugs, apparently resolved
-and only on ath9k (2.4Ghz): maybe the same issue is present on ath10k
-(5Ghz)?
-
-Please let me know if I can help to debug this issue.
-
-Thanks and regards.
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTQgSnVseSAyMDE1IGF0IDE5OjI5LCBGZXJuYW5kbyBTIDxmc2NsYXZvQGdtYWlsLmNvbT4g
+d3JvdGU6Cj4gSSdtIGhhdmluZyBkcm9wb3V0cyBvbiBteSBUUC1MaW5rIEFyY2hlciBDNywgMi40
+R2h6IFdsYW4gcnVucyBwZXJmZWN0LAo+IGJ1dCA1R2h6IGlzIHVuc3RhYmxlIChteSBsYXB0b3Ag
+YW5kIG15IElwYWQgNCBsb3NzIGNvbm5lY3Rpb24gYWZ0ZXIgYQo+IGNvdXBsZSBvZiBtaW51dGVz
+LCBzcGVjaWFsbHkgb24gaGVhdnkgdHJhZmZpYykuCj4gTG9va2luZyBvbiByb3V0ZXIncyBsb2cs
+IEkgZm91bmQ6Cj4KPiBUaHUgSnVsIDkgMjA6NTE6MzIgMjAxNSBkYWVtb24uaW5mbyBob3N0YXBk
+OiB3bGFuMDogU1RBCj4gMDE6MDI6MDM6MDQ6MDU6MDYgSUVFRSA4MDIuMTE6IGRpc2Nvbm5lY3Rl
+ZCBkdWUgdG8gZXhjZXNzaXZlIG1pc3NpbmcKPiBBQ0tzIFRodSBKdWwgOSAyMDo1MjowMiAyMDE1
+IGRhZW1vbi5pbmZvIGhvc3RhcGQ6IHdsYW4wOiBTVEEKPiAwMTowMjowMzowNDowNTowNiBJRUVF
+IDgwMi4xMTogZGVhdXRoZW50aWNhdGVkIGR1ZSB0byBpbmFjdGl2aXR5Cj4gKHRpbWVyIERFQVVU
+SC9SRU1PVkUpCgpIbW0uLiBUaGlzIG1lYW5zIHRoZXJlIGhhZCB0byBiZSBhIHBlZXIga2lja291
+dCBldmVudCBnZW5lcmF0ZWQgaW4KZmlybXdhcmUgYW5kIHlvdXIgaG9zdGFwZCBpcyBjb25maWd1
+cmVkIHRvIGhhbmRsZSBsb3ctYWNrIGV2ZW50cyBhcwpkaXNhc3NvYyB0cmlnZ2Vycy4KCkJlbiBy
+ZWNlbnRseSByYWlzZWQgYSBwcm9ibGVtIGNvbmNlcm5pbmcgQUNLIHByb2JsZW1zIFsxXS4gUGVy
+aGFwcwp0aGF0J3Mgb25lIG9mIHRoZSBtYW5pZmVzdGF0aW9ucy4KCllvdSBjb3VsZCBqdXN0IHRy
+eSBkaXNhYmxpbmcgdGhlIGBkaXNhc3NvY19sb3dfYWNrYCBvcHRpb24gaW4gaG9zdGFwZC4KU3Rh
+dGlvbnMgd2lsbCBzdGlsbCBiZSBkaXNhc3NvY2lhdGVkIHdoZW4gdGhleSBnbyBvdXQgb2YgcmFu
+Z2UgYW5kCmRvbid0IHJlc3BvbmQgdG8gTnVsbEZ1bmMgZnJhbWVzIHBpbmdzIGFmdGVyIGEgZmV3
+IG1pbnV0ZXMgb2YgaWRsaW5nCihmcm9tIEFQIHBvaW50IG9mIHZpZXcpLgoKWzFdOiBodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUtSnVseS8wMDU2MTguaHRt
+bAoKCj4gQW5kIG9uIGNsaWVudCBzaWRlOgo+Cj4gSnVsIDkgMjA6NTE6MDUgbGFwdG9wIHdwYV9z
+dXBwbGljYW50WzEwMTFdOiB3bGFuMDoKPiBDVFJMLUVWRU5ULURJU0NPTk5FQ1RFRCBic3NpZD0z
+MDozMDozMDozMDozMDozMCByZWFzb249NyBKdWwgOQo+IDIwOjUxOjA1IGxhcHRvcCBOZXR3b3Jr
+TWFuYWdlcls4NjFdOiA8d2Fybj4gQ29ubmVjdGlvbiBkaXNjb25uZWN0ZWQKPiAocmVhc29uIDcp
+Cj4gQSBsaXR0bGUgc2VhcmNoIG9uIEdvb2dsZSBzaG93IG1lIHNvbWUgb2xkIGJ1Z3MsIGFwcGFy
+ZW50bHkgcmVzb2x2ZWQKPiBhbmQgb25seSBvbiBhdGg5ayAoMi40R2h6KTogbWF5YmUgdGhlIHNh
+bWUgaXNzdWUgaXMgcHJlc2VudCBvbiBhdGgxMGsKPiAoNUdoeik/Cj4KPiBQbGVhc2UgbGV0IG1l
+IGtub3cgaWYgSSBjYW4gaGVscCB0byBkZWJ1ZyB0aGlzIGlzc3VlLgoKQ2FuIHlvdSBwb2ludCB0
+byB0aGUgYXRoOWsgdGhyZWFkL3BhdGNoZXMsIHBsZWFzZT8KCgpNaWNoYcWCCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0
+CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
