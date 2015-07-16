@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-oi0-x232.google.com ([2607:f8b0:4003:c06::232])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFSPQ-0002iJ-1s
- for ath10k@lists.infradead.org; Wed, 15 Jul 2015 19:32:00 +0000
-Received: by oiab3 with SMTP id b3so35676759oia.1
- for <ath10k@lists.infradead.org>; Wed, 15 Jul 2015 12:31:38 -0700 (PDT)
+ id 1ZFYUk-0001Ck-GR
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2015 02:01:55 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH v3 1/3] ath10k: update tx path to support QCA99X0
+Date: Wed, 15 Jul 2015 19:01:19 -0700
+Message-ID: <c18ecae7443c5a2667e6ad6dc2146a7f43cb26a4.1437011880.git.poh@qca.qualcomm.com>
+In-Reply-To: <cover.1437011880.git.poh@qca.qualcomm.com>
+References: <cover.1437011880.git.poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
-References: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
- <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
-Date: Wed, 15 Jul 2015 16:31:37 -0300
-Message-ID: <CAHoN2qGxR93+3dSLwPu_Aq8A61pT++YLqvwg1nhbQihMkBtM2Q@mail.gmail.com>
-Subject: Re: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT
- Chaos Chalmer RC2)
-From: Fernando S <fsclavo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +18,115 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-U2FtZSBzdWdnZXN0aW9uIHdhcyBwb3N0ZWQgb24gT3BlbndydCBmb3J1bSAoZGlzYWJsZQpkaXNh
-c3NvY19sb3dfYWNrKSwgSSdsbCB0cnkgaXQsIGRvIHNvbWUgc3RyZXNzIHRlc3QgYW5kIGNvbWUg
-YmFjayB3aXRoCnJlc3VsdHMuCgpIZXJlIGFyZSB0d28gbGlua3MgdG8gT3BlbndydCBmb3J1bSB0
-aHJlYWRzIHJlbGF0ZWQgdG8gdGhpcyBwcm9ibGVtOgoKaHR0cHM6Ly9mb3J1bS5vcGVud3J0Lm9y
-Zy92aWV3dG9waWMucGhwP2lkPTQzMTg4Cmh0dHBzOi8vZm9ydW0ub3BlbndydC5vcmcvdmlld3Rv
-cGljLnBocD9waWQ9MjI4NzM4CgpBbmQgdHdvIHRpY2tldHMgd2l0aCBzb21lIG1vcmUgaW5mb3Jt
-YXRpb246CgpodHRwczovL2Rldi5vcGVud3J0Lm9yZy90aWNrZXQvMTIzNzIKaHR0cHM6Ly9kZXYu
-b3BlbndydC5vcmcvdGlja2V0LzE1NDY0CgoKMjAxNS0wNy0xNSA0OjA5IEdNVC0wMzowMCBNaWNo
-YWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT46Cj4gT24gMTQgSnVseSAyMDE1IGF0
-IDE5OjI5LCBGZXJuYW5kbyBTIDxmc2NsYXZvQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEknbSBoYXZp
-bmcgZHJvcG91dHMgb24gbXkgVFAtTGluayBBcmNoZXIgQzcsIDIuNEdoeiBXbGFuIHJ1bnMgcGVy
-ZmVjdCwKPj4gYnV0IDVHaHogaXMgdW5zdGFibGUgKG15IGxhcHRvcCBhbmQgbXkgSXBhZCA0IGxv
-c3MgY29ubmVjdGlvbiBhZnRlciBhCj4+IGNvdXBsZSBvZiBtaW51dGVzLCBzcGVjaWFsbHkgb24g
-aGVhdnkgdHJhZmZpYykuCj4+IExvb2tpbmcgb24gcm91dGVyJ3MgbG9nLCBJIGZvdW5kOgo+Pgo+
-PiBUaHUgSnVsIDkgMjA6NTE6MzIgMjAxNSBkYWVtb24uaW5mbyBob3N0YXBkOiB3bGFuMDogU1RB
-Cj4+IDAxOjAyOjAzOjA0OjA1OjA2IElFRUUgODAyLjExOiBkaXNjb25uZWN0ZWQgZHVlIHRvIGV4
-Y2Vzc2l2ZSBtaXNzaW5nCj4+IEFDS3MgVGh1IEp1bCA5IDIwOjUyOjAyIDIwMTUgZGFlbW9uLmlu
-Zm8gaG9zdGFwZDogd2xhbjA6IFNUQQo+PiAwMTowMjowMzowNDowNTowNiBJRUVFIDgwMi4xMTog
-ZGVhdXRoZW50aWNhdGVkIGR1ZSB0byBpbmFjdGl2aXR5Cj4+ICh0aW1lciBERUFVVEgvUkVNT1ZF
-KQo+Cj4gSG1tLi4gVGhpcyBtZWFucyB0aGVyZSBoYWQgdG8gYmUgYSBwZWVyIGtpY2tvdXQgZXZl
-bnQgZ2VuZXJhdGVkIGluCj4gZmlybXdhcmUgYW5kIHlvdXIgaG9zdGFwZCBpcyBjb25maWd1cmVk
-IHRvIGhhbmRsZSBsb3ctYWNrIGV2ZW50cyBhcwo+IGRpc2Fzc29jIHRyaWdnZXJzLgo+Cj4gQmVu
-IHJlY2VudGx5IHJhaXNlZCBhIHByb2JsZW0gY29uY2VybmluZyBBQ0sgcHJvYmxlbXMgWzFdLiBQ
-ZXJoYXBzCj4gdGhhdCdzIG9uZSBvZiB0aGUgbWFuaWZlc3RhdGlvbnMuCj4KPiBZb3UgY291bGQg
-anVzdCB0cnkgZGlzYWJsaW5nIHRoZSBgZGlzYXNzb2NfbG93X2Fja2Agb3B0aW9uIGluIGhvc3Rh
-cGQuCj4gU3RhdGlvbnMgd2lsbCBzdGlsbCBiZSBkaXNhc3NvY2lhdGVkIHdoZW4gdGhleSBnbyBv
-dXQgb2YgcmFuZ2UgYW5kCj4gZG9uJ3QgcmVzcG9uZCB0byBOdWxsRnVuYyBmcmFtZXMgcGluZ3Mg
-YWZ0ZXIgYSBmZXcgbWludXRlcyBvZiBpZGxpbmcKPiAoZnJvbSBBUCBwb2ludCBvZiB2aWV3KS4K
-Pgo+IFsxXTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1
-LUp1bHkvMDA1NjE4Lmh0bWwKPgo+Cj4+IEFuZCBvbiBjbGllbnQgc2lkZToKPj4KPj4gSnVsIDkg
-MjA6NTE6MDUgbGFwdG9wIHdwYV9zdXBwbGljYW50WzEwMTFdOiB3bGFuMDoKPj4gQ1RSTC1FVkVO
-VC1ESVNDT05ORUNURUQgYnNzaWQ9MzA6MzA6MzA6MzA6MzA6MzAgcmVhc29uPTcgSnVsIDkKPj4g
-MjA6NTE6MDUgbGFwdG9wIE5ldHdvcmtNYW5hZ2VyWzg2MV06IDx3YXJuPiBDb25uZWN0aW9uIGRp
-c2Nvbm5lY3RlZAo+PiAocmVhc29uIDcpCj4+IEEgbGl0dGxlIHNlYXJjaCBvbiBHb29nbGUgc2hv
-dyBtZSBzb21lIG9sZCBidWdzLCBhcHBhcmVudGx5IHJlc29sdmVkCj4+IGFuZCBvbmx5IG9uIGF0
-aDlrICgyLjRHaHopOiBtYXliZSB0aGUgc2FtZSBpc3N1ZSBpcyBwcmVzZW50IG9uIGF0aDEwawo+
-PiAoNUdoeik/Cj4+Cj4+IFBsZWFzZSBsZXQgbWUga25vdyBpZiBJIGNhbiBoZWxwIHRvIGRlYnVn
-IHRoaXMgaXNzdWUuCj4KPiBDYW4geW91IHBvaW50IHRvIHRoZSBhdGg5ayB0aHJlYWQvcGF0Y2hl
-cywgcGxlYXNlPwo+Cj4KPiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRl
-YWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cg==
+Since QCA99X0 uses fragmentation descriptor differently from
+other ones on tx path, we need to handle it separately.
+
+QCA99X0 is using 48 bits for address and 16 bits for length
+out of 2 dword and each values have to be programmed by frag
+desc base addr + msdu id, so that hardware can retrieve
+corresponding frag data.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt.h    | 13 +++++++++++--
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 31 +++++++++++++++++++++++--------
+ 2 files changed, 34 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt.h b/drivers/net/wireless/ath/ath10k/htt.h
+index 8bdf1e7..e31cd74 100644
+--- a/drivers/net/wireless/ath/ath10k/htt.h
++++ b/drivers/net/wireless/ath/ath10k/htt.h
+@@ -83,8 +83,17 @@ struct htt_ver_req {
+  * around the mask + shift defs.
+  */
+ struct htt_data_tx_desc_frag {
+-	__le32 paddr;
+-	__le32 len;
++	union {
++		struct double_word_addr {
++			__le32 paddr;
++			__le32 len;
++		} __packed dword_addr;
++		struct triple_word_addr {
++			__le32 paddr_lo;
++			__le16 paddr_hi;
++			__le16 len_16;
++		} __packed tword_addr;
++	} __packed;
+ } __packed;
+ 
+ struct htt_msdu_ext_desc {
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 148d5b6..c49ecff 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -63,7 +63,8 @@ int ath10k_htt_tx_alloc_msdu_id(struct ath10k_htt *htt, struct sk_buff *skb)
+ 
+ 	lockdep_assert_held(&htt->tx_lock);
+ 
+-	ret = idr_alloc(&htt->pending_tx, skb, 0, 0x10000, GFP_ATOMIC);
++	ret = idr_alloc(&htt->pending_tx, skb, 0,
++			htt->max_num_pending_tx, GFP_ATOMIC);
+ 
+ 	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx alloc msdu_id %d\n", ret);
+ 
+@@ -259,6 +260,7 @@ int ath10k_htt_send_frag_desc_bank_cfg(struct ath10k_htt *htt)
+ 	cmd->frag_desc_bank_cfg.desc_size = sizeof(struct htt_msdu_ext_desc);
+ 	cmd->frag_desc_bank_cfg.bank_base_addrs[0] =
+ 				__cpu_to_le32(htt->frag_desc.paddr);
++	cmd->frag_desc_bank_cfg.bank_id[0].bank_min_id = 0;
+ 	cmd->frag_desc_bank_cfg.bank_id[0].bank_max_id =
+ 				__cpu_to_le16(htt->max_num_pending_tx - 1);
+ 
+@@ -537,16 +539,29 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 		flags0 |= HTT_DATA_TX_DESC_FLAGS0_MAC_HDR_PRESENT;
+ 		/* pass through */
+ 	case ATH10K_HW_TXRX_ETHERNET:
+-		frags = skb_cb->htt.txbuf->frags;
++		if (ar->hw_params.continuous_frag_desc) {
++			frags = (struct htt_data_tx_desc_frag *)
++				&htt->frag_desc.vaddr[msdu_id].frags;
++			frags[0].tword_addr.paddr_lo =
++				__cpu_to_le32(skb_cb->paddr);
++			frags[0].tword_addr.paddr_hi = 0;
++			frags[0].tword_addr.len_16 = __cpu_to_le16(msdu->len);
++			frags[1].tword_addr.paddr_lo = 0;
++			frags[1].tword_addr.paddr_hi = 0;
+ 
+-		frags[0].paddr = __cpu_to_le32(skb_cb->paddr);
+-		frags[0].len = __cpu_to_le32(msdu->len);
+-		frags[1].paddr = 0;
+-		frags[1].len = 0;
++			frags_paddr =  htt->frag_desc.paddr +
++				(sizeof(struct htt_msdu_ext_desc) * msdu_id);
++		} else {
++			frags = skb_cb->htt.txbuf->frags;
++			frags[0].dword_addr.paddr =
++				__cpu_to_le32(skb_cb->paddr);
++			frags[0].dword_addr.len = __cpu_to_le32(msdu->len);
++			frags[1].dword_addr.paddr = 0;
++			frags[1].dword_addr.len = 0;
+ 
++			frags_paddr = skb_cb->htt.txbuf_paddr;
++		}
+ 		flags0 |= SM(skb_cb->txmode, HTT_DATA_TX_DESC_FLAGS0_PKT_TYPE);
+-
+-		frags_paddr = skb_cb->htt.txbuf_paddr;
+ 		break;
+ 	case ATH10K_HW_TXRX_MGMT:
+ 		flags0 |= SM(ATH10K_HW_TXRX_MGMT,
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
