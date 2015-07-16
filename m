@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mailout4.samsung.com ([203.254.224.34])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFYUl-0001Ck-87
- for ath10k@lists.infradead.org; Thu, 16 Jul 2015 02:01:55 +0000
-From: Peter Oh <poh@qca.qualcomm.com>
-Subject: [PATCH v3 2/3] ath10k: redefine rx_ppdu_end_common structure to cover
- qca99x0
-Date: Wed, 15 Jul 2015 19:01:20 -0700
-Message-ID: <378147cac1ea1c963173360837080dfcc9af7ba5.1437011880.git.poh@qca.qualcomm.com>
-In-Reply-To: <cover.1437011880.git.poh@qca.qualcomm.com>
-References: <cover.1437011880.git.poh@qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ZFaHf-0002eL-Ra
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2015 03:56:33 +0000
+Received: from epcpsbgr5.samsung.com
+ (u145.gpu120.samsung.co.kr [203.254.230.145])
+ by mailout4.samsung.com (Oracle Communications Messaging Server 7.0.5.31.0
+ 64bit (built May  5 2014))
+ with ESMTP id <0NRK00X93AXJNA30@mailout4.samsung.com> for
+ ath10k@lists.infradead.org; Thu, 16 Jul 2015 12:56:07 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Subject: [PATCH 1/1] ath10k: fixing wrong initialization of struct channel
+Date: Thu, 16 Jul 2015 09:25:33 +0530
+Message-id: <1437018933-25832-1-git-send-email-maninder1.s@samsung.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org
+To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org, linux-wireless@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Maninder Singh <maninder1.s@samsung.com>, pankaj.m@samsung.com
 
-rx_ppdu_end_common structure is valid for both of qca998x and
-qca6174, but not for qca99x0 since it has new additional members.
-Hence update the common structure to cover qca99x0 as well.
+chandef is initialized with NULL and on the very next line,
+we are using it to get channel, which is not correct.
 
-Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+channel should be initialized after obtaining chandef.
+
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
 ---
- drivers/net/wireless/ath/ath10k/rx_desc.h | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/rx_desc.h b/drivers/net/wireless/ath/ath10k/rx_desc.h
-index 492b5a5..6cb078d 100644
---- a/drivers/net/wireless/ath/ath10k/rx_desc.h
-+++ b/drivers/net/wireless/ath/ath10k/rx_desc.h
-@@ -891,13 +891,13 @@ struct rx_ppdu_end_common {
- 	__le32 evm_p15;
- 	__le32 tsf_timestamp;
- 	__le32 wb_timestamp;
--	u8 locationing_timestamp;
--	u8 phy_err_code;
--	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
--	__le32 info0; /* %RX_PPDU_END_INFO0_ */
- } __packed;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 218b6af..3d196b5 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -836,7 +836,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+ static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+ {
+ 	struct cfg80211_chan_def *chandef = NULL;
+-	struct ieee80211_channel *channel = chandef->chan;
++	struct ieee80211_channel *channel = NULL;
+ 	struct wmi_vdev_start_request_arg arg = {};
+ 	int ret = 0;
  
- struct rx_ppdu_end_qca988x {
-+	u8 locationing_timestamp;
-+	u8 phy_err_code;
-+	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
-+	__le32 info0; /* %RX_PPDU_END_INFO0_ */
- 	__le16 bb_length;
- 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
- } __packed;
-@@ -909,6 +909,10 @@ struct rx_ppdu_end_qca988x {
- #define RX_PPDU_END_RTT_NORMAL_MODE            BIT(31)
- 
- struct rx_ppdu_end_qca6174 {
-+	u8 locationing_timestamp;
-+	u8 phy_err_code;
-+	__le16 flags; /* %RX_PPDU_END_FLAGS_ */
-+	__le32 info0; /* %RX_PPDU_END_INFO0_ */
- 	__le32 rtt; /* %RX_PPDU_END_RTT_ */
- 	__le16 bb_length;
- 	__le16 info1; /* %RX_PPDU_END_INFO1_ */
 -- 
-1.9.1
+1.7.9.5
 
 
 _______________________________________________
