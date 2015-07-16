@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from mail-am1on0070.outbound.protection.outlook.com ([157.56.112.70]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZFbwD-00021S-9J
- for ath10k@lists.infradead.org; Thu, 16 Jul 2015 05:42:30 +0000
-Received: by wibud3 with SMTP id ud3so5806357wib.0
- for <ath10k@lists.infradead.org>; Wed, 15 Jul 2015 22:42:00 -0700 (PDT)
+ id 1ZFoz7-0003ER-CV
+ for ath10k@lists.infradead.org; Thu, 16 Jul 2015 19:38:22 +0000
+From: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+Subject: [PATCH] ath10k Suppress 'failed to process fft' warning messages.
+Date: Thu, 16 Jul 2015 20:37:24 +0100
+Message-ID: <1437075444-6779-1-git-send-email-kevin@darbyshire-bryant.me.uk>
 MIME-Version: 1.0
-In-Reply-To: <CAHoN2qGxR93+3dSLwPu_Aq8A61pT++YLqvwg1nhbQihMkBtM2Q@mail.gmail.com>
-References: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
- <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
- <CAHoN2qGxR93+3dSLwPu_Aq8A61pT++YLqvwg1nhbQihMkBtM2Q@mail.gmail.com>
-Date: Thu, 16 Jul 2015 07:42:00 +0200
-Message-ID: <CA+BoTQn2mvXcGcTY8wxtfC1EkHuUKNeY0wdPGV25FG45jpRnJg@mail.gmail.com>
-Subject: Re: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT
- Chaos Chalmer RC2)
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +17,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fernando S <fsclavo@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
 
-T24gMTUgSnVseSAyMDE1IGF0IDIxOjMxLCBGZXJuYW5kbyBTIDxmc2NsYXZvQGdtYWlsLmNvbT4g
-d3JvdGU6Cj4gU2FtZSBzdWdnZXN0aW9uIHdhcyBwb3N0ZWQgb24gT3BlbndydCBmb3J1bSAoZGlz
-YWJsZQo+IGRpc2Fzc29jX2xvd19hY2spLCBJJ2xsIHRyeSBpdCwgZG8gc29tZSBzdHJlc3MgdGVz
-dCBhbmQgY29tZSBiYWNrIHdpdGgKPiByZXN1bHRzLgo+Cj4gSGVyZSBhcmUgdHdvIGxpbmtzIHRv
-IE9wZW53cnQgZm9ydW0gdGhyZWFkcyByZWxhdGVkIHRvIHRoaXMgcHJvYmxlbToKPgo+IGh0dHBz
-Oi8vZm9ydW0ub3BlbndydC5vcmcvdmlld3RvcGljLnBocD9pZD00MzE4OAo+IGh0dHBzOi8vZm9y
-dW0ub3BlbndydC5vcmcvdmlld3RvcGljLnBocD9waWQ9MjI4NzM4Cj4KPiBBbmQgdHdvIHRpY2tl
-dHMgd2l0aCBzb21lIG1vcmUgaW5mb3JtYXRpb246Cj4KPiBodHRwczovL2Rldi5vcGVud3J0Lm9y
-Zy90aWNrZXQvMTIzNzIKClRoaXMgc2VlbXMgdG8gYmUgcmVsYXRlZCB0byBBTkkuIEkgZ3Vlc3Mg
-eW91IGNvdWxkIHRyeSBzdGFydCB0aGUKYXRoMTBrIEFQIGFuZCBpc3N1ZToKCiBlY2hvIDAgPiAv
-c3lzL2tlcm5lbC9kZWJ1Zy9pZWVlODAyMTEvcGh5Ki9hdGgxMGsvYW5pX2VuYWJsZQoKWW91IGNh
-biBjaGVjayB0aGUgY3VycmVudCBzdGF0ZSBvZiB0aGUgc2V0dGluZyBieSByZWFkaW5nIHRoZSBm
-aWxlIG9idmlvdXNseS4KCgo+IGh0dHBzOi8vZGV2Lm9wZW53cnQub3JnL3RpY2tldC8xNTQ2NAoK
-VGhpcyBvbmUgaXMgcmVsYXRlZCB0byBzb2Z0d2FyZSBBLU1QRFUgc3VwcG9ydCBpbiBhdGg5ay4g
-YXRoMTBrCm9mZmxvYWRzIFR4IGFnZ3JlZ2F0aW9uIHRvIGZpcm13YXJlIHNvIHRoaXMgYnVnIGRv
-ZXNuJ3QgcmVhbGx5IGFwcGx5LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmlu
-ZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-dGgxMGsK
+When using DFS channels on Ath10k kernel log has warning message 'failed
+to process fft', typically when under medium/heavy traffic.  Ticket
+https://dev.openwrt.org/ticket/19316 discusses and concludes messages
+are harmless.  They do still contribute to log noise, so this patch
+enables them only in driver debug mode.
+
+Signed-off-by: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0791a43..1435614 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3498,7 +3498,7 @@ void ath10k_wmi_event_spectral_scan(struct ath10k *ar,
+ 							  fftr, fftr_len,
+ 							  tsf);
+ 			if (res < 0) {
+-				ath10k_warn(ar, "failed to process fft report: %d\n",
++				ath10k_dbg(ar, ATH10K_DBG_WMI, "failed to process fft report: %d\n",
+ 					    res);
+ 				return;
+ 			}
+-- 
+1.9.1
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
