@@ -1,12 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHADQ-00069h-Jz
- for ath10k@lists.infradead.org; Mon, 20 Jul 2015 12:30:41 +0000
+ id 1ZHADg-0006DZ-FO
+ for ath10k@lists.infradead.org; Mon, 20 Jul 2015 12:30:57 +0000
 From: Vivek Natarajan <nataraja@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Support different txbf configuration schemes
-Date: Mon, 20 Jul 2015 18:00:00 +0530
-Message-ID: <1437395401-2765-1-git-send-email-nataraja@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Enable MU MIMO txbf support for QCA99X0
+Date: Mon, 20 Jul 2015 18:00:01 +0530
+Message-ID: <1437395401-2765-2-git-send-email-nataraja@qti.qualcomm.com>
+In-Reply-To: <1437395401-2765-1-git-send-email-nataraja@qti.qualcomm.com>
+References: <1437395401-2765-1-git-send-email-nataraja@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -22,129 +24,93 @@ Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-qca61x4 uses the vdev param as a sole sufficient configuration
-for txbf while qca99x0 enables txbf during peer assoc by
-combining the vdev param value with peer assoc's vht capabilities
-
-This patch gets the appropriate txbf configuration scheme
-before passing the wmi command to enable the same in the firmware.
+This patch enables MU-MIMO transmit beamforming support
+for QCA99X0 chipsets.
 
 Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c     |  3 +++
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  6 ++++++
- 5 files changed, 31 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 44 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h |  5 ++++
+ 2 files changed, 49 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 524a894..0b31331 100644
+index 0b31331..bfaeabb 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2523,6 +2523,9 @@ static int ath10k_mac_vif_recalc_txbf(struct ath10k *ar,
- 	u32 param;
- 	u32 value;
+@@ -4063,6 +4063,43 @@ static u32 get_nss_from_chainmask(u16 chain_mask)
+ 	return 1;
+ }
  
-+	if (ath10k_wmi_get_txbf_conf_scheme(ar) != WMI_TXBF_CONF_AFTER_ASSOC)
++static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
++{
++	u32 value = 0;
++	struct ath10k *ar = arvif->ar;
++
++	if (ath10k_wmi_get_txbf_conf_scheme(ar) != WMI_TXBF_CONF_BEFORE_ASSOC)
 +		return 0;
 +
- 	if (!(ar->vht_cap_info &
- 	      (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
- 	       IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE |
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 04fe9d6..e1073cf 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -49,6 +49,7 @@ struct wmi_ops {
- 			    struct wmi_roam_ev_arg *arg);
- 	int (*pull_wow_event)(struct ath10k *ar, struct sk_buff *skb,
- 			      struct wmi_wow_ev_arg *arg);
-+	enum wmi_txbf_conf (*get_txbf_conf_scheme)(struct ath10k *ar);
- 
- 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
- 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
-@@ -340,6 +341,15 @@ ath10k_wmi_pull_wow_event(struct ath10k *ar, struct sk_buff *skb,
- 	return ar->wmi.ops->pull_wow_event(ar, skb, arg);
- }
- 
-+static inline enum wmi_txbf_conf
-+ath10k_wmi_get_txbf_conf_scheme(struct ath10k *ar)
-+{
-+	if (!ar->wmi.ops->get_txbf_conf_scheme)
-+		return WMI_TXBF_CONF_UNSUPPORTED;
++	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
++				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE))
++		value |= SM((ar->num_rf_chains - 1), WMI_TXBF_STS_CAP_OFFSET);
 +
-+	return ar->wmi.ops->get_txbf_conf_scheme(ar);
++	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE |
++				IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE))
++		value |= SM((ar->num_rf_chains - 1), WMI_BF_SOUND_DIM_OFFSET);
++
++	if (!value)
++		return 0;
++
++	if (ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE)
++		value |= WMI_VDEV_PARAM_TXBF_SU_TX_BFER;
++
++	if (ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE)
++		value |= (WMI_VDEV_PARAM_TXBF_MU_TX_BFER |
++			  WMI_VDEV_PARAM_TXBF_SU_TX_BFER);
++
++	if (ar->vht_cap_info & IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE)
++		value |= WMI_VDEV_PARAM_TXBF_SU_TX_BFEE;
++
++	if (ar->vht_cap_info & IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)
++		value |= (WMI_VDEV_PARAM_TXBF_MU_TX_BFEE |
++			  WMI_VDEV_PARAM_TXBF_SU_TX_BFEE);
++
++	return ath10k_wmi_vdev_set_param(ar, arvif->vdev_id,
++					 ar->wmi.vdev_param->txbf, value);
 +}
 +
- static inline int
- ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 8540c70..195fe39 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1257,6 +1257,11 @@ ath10k_wmi_tlv_op_gen_pdev_set_rd(struct ath10k *ar,
- 	return skb;
- }
+ /*
+  * TODO:
+  * Figure out how to handle WMI_VDEV_SUBTYPE_P2P_DEVICE,
+@@ -4281,6 +4318,13 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		}
+ 	}
  
-+static enum wmi_txbf_conf ath10k_wmi_tlv_txbf_conf_scheme(struct ath10k *ar)
-+{
-+        return WMI_TXBF_CONF_AFTER_ASSOC;
-+}
++	ret = ath10k_mac_set_txbf_conf(arvif);
++	if (ret) {
++		ath10k_warn(ar, "failed to set txbf for vdev %d: %d\n",
++				arvif->vdev_id, ret);
++		goto err_peer_delete;
++	}
 +
- static struct sk_buff *
- ath10k_wmi_tlv_op_gen_pdev_set_param(struct ath10k *ar, u32 param_id,
- 				     u32 param_value)
-@@ -3386,6 +3391,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
- 	.pull_roam_ev = ath10k_wmi_tlv_op_pull_roam_ev,
- 	.pull_wow_event = ath10k_wmi_tlv_op_pull_wow_ev,
-+	.get_txbf_conf_scheme = ath10k_wmi_tlv_txbf_conf_scheme,
- 
- 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 4a1f13b..4cd5599 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3153,6 +3153,11 @@ static int ath10k_wmi_10_4_op_pull_swba_ev(struct ath10k *ar,
- 	return 0;
- }
- 
-+static enum wmi_txbf_conf ath10k_wmi_10_4_txbf_conf_scheme(struct ath10k *ar)
-+{
-+	return WMI_TXBF_CONF_BEFORE_ASSOC;
-+}
-+
- void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_swba_ev_arg arg = {};
-@@ -6803,6 +6808,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+	.get_txbf_conf_scheme = ath10k_wmi_10_4_txbf_conf_scheme,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+ 	ret = ath10k_mac_set_rts(arvif, ar->hw->wiphy->rts_threshold);
+ 	if (ret) {
+ 		ath10k_warn(ar, "failed to set rts threshold for vdev %d: %d\n",
 diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index ce69c9a..0a41ec4 100644
+index 0a41ec4..a544292 100644
 --- a/drivers/net/wireless/ath/ath10k/wmi.h
 +++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6115,6 +6115,12 @@ struct wmi_pdev_set_cca_detect_params {
- 	__le32 cca_detect_margin;
- } __packed;
+@@ -4637,6 +4637,11 @@ enum wmi_10_4_vdev_param {
+ #define WMI_VDEV_PARAM_TXBF_SU_TX_BFER BIT(2)
+ #define WMI_VDEV_PARAM_TXBF_MU_TX_BFER BIT(3)
  
-+enum wmi_txbf_conf {
-+	WMI_TXBF_CONF_UNSUPPORTED,
-+	WMI_TXBF_CONF_BEFORE_ASSOC,
-+	WMI_TXBF_CONF_AFTER_ASSOC,
-+};
++#define WMI_TXBF_STS_CAP_OFFSET_LSB	4
++#define WMI_TXBF_STS_CAP_OFFSET_MASK	0xf0
++#define WMI_BF_SOUND_DIM_OFFSET_LSB	8
++#define WMI_BF_SOUND_DIM_OFFSET_MASK	0xf00
 +
- struct ath10k;
- struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
+ /* slot time long */
+ #define WMI_VDEV_SLOT_TIME_LONG		0x1
+ /* slot time short */
 -- 
 1.9.1
 
