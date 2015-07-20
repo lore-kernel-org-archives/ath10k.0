@@ -1,22 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-am1on0080.outbound.protection.outlook.com ([157.56.112.80]
- helo=emea01-am1-obe.outbound.protection.outlook.com)
+Received: from mail-db3on0073.outbound.protection.outlook.com ([157.55.234.73]
+ helo=emea01-db3-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZH6Po-0001md-Qi
- for ath10k@lists.infradead.org; Mon, 20 Jul 2015 08:27:13 +0000
-Message-ID: <55ACB0B9.10603@darbyshire-bryant.me.uk>
-Date: Mon, 20 Jul 2015 09:26:33 +0100
+ id 1ZH6RR-0002Xs-JX
+ for ath10k@lists.infradead.org; Mon, 20 Jul 2015 08:28:54 +0000
+Message-ID: <55ACB11C.8020302@darbyshire-bryant.me.uk>
+Date: Mon, 20 Jul 2015 09:28:12 +0100
 From: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
 MIME-Version: 1.0
-Subject: Re: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT
- Chaos Chalmer RC2)
-References: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
- <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
- <CAHoN2qGxR93+3dSLwPu_Aq8A61pT++YLqvwg1nhbQihMkBtM2Q@mail.gmail.com>
- <CA+BoTQn2mvXcGcTY8wxtfC1EkHuUKNeY0wdPGV25FG45jpRnJg@mail.gmail.com>
- <9E540875-1690-4F05-B3D1-E9476C1690A7@gmail.com>
- <CA+BoTQn63U81C-4rSXUf26gTYpribCQQNyoF=P16OHi5JOcaUQ@mail.gmail.com>
-In-Reply-To: <CA+BoTQn63U81C-4rSXUf26gTYpribCQQNyoF=P16OHi5JOcaUQ@mail.gmail.com>
+Subject: Re: ath10k list: problems with gmail
+References: <87wpxvti9r.fsf@kamboji.qca.qualcomm.com>
+ <CAMQd7mZEE8hZPrHKVfBGFyGD56ovaCe37+wnGJk=eUQgeGqpVQ@mail.gmail.com>
+In-Reply-To: <CAMQd7mZEE8hZPrHKVfBGFyGD56ovaCe37+wnGJk=eUQgeGqpVQ@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +20,51 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============2185463408619540202=="
+Content-Type: multipart/mixed; boundary="===============3586160594461883238=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
---===============2185463408619540202==
+--===============3586160594461883238==
 Content-Type: multipart/signed; protocol="application/pkcs7-signature";
-	micalg=sha1; boundary="------------ms030909040502080202000204"
+	micalg=sha1; boundary="------------ms010806020704070005070502"
 
---------------ms030909040502080202000204
-Content-Type: text/plain; charset=utf-8
+--------------ms010806020704070005070502
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: quoted-printable
 
-On 20/07/15 06:02, Michal Kazior wrote:
-> On 19 July 2015 at 05:04,  <fsclavo@gmail.com> wrote:
->> Michal, do you know how to enable debug? Because I haven't that file, =
-the directory with some other files exists, but there is not one called "=
-ani_enable".
->> I suspect some debugging option not enabled on firmware/driver.
-> You need to enable mac80211 debugfs and ath debug options in OpenWRTs
-> menuconfig.
+On 20/07/15 09:05, Enrico Tagliavini wrote:
+> I can confirm this, I got this email one month ago
 >
+> Your membership in the mailing list ath10k has been disabled due to
+> excessive bounces The last bounce received from you was dated
+> 23-Jun-2015.  You will not get any more messages from this list until
+> you re-enable your membership.
 >
-If it helps, menuconfig:
+> I think google anti spam service is going a little bit creative, I
+> found quite a few false positive and not only from kernel related
+> mailing lists recently.
+>
+> On 20 July 2015 at 09:12, Kalle Valo <kvalo@qca.qualcomm.com> wrote:
+>> Hi,
+>>
+>> I noticed that on Tue, 14 Jul 2015 09:00:04 -0700 for some reason lots=
 
-Kernel modules -> Wireless drivers -> kmod-ath -> Atheros wireless debugg=
-ing
+>> of gmail users got suddenly unsubcribed from the ath10k list, maybe du=
+e
+>> to a problem with gmail servers? So if you use gmail better to check
+>> your subcription status.
+>>
+>> --
+>> Kalle Valo
+>>
+>> _
+
+Linus has been expressing his displeasure with gmail recently too ;-)
 
 
-Kevin
 
-
---------------ms030909040502080202000204
+--------------ms010806020704070005070502
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -132,7 +139,7 @@ ggTdMIIE2QIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4x
 KzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMT
 L1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBAgMOckow
 CQYFKw4DAhoFAKCCAh0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUx
-DxcNMTUwNzIwMDgyNjM0WjAjBgkqhkiG9w0BCQQxFgQU5u7ouoZfqpD8u6zkFo88GDXMvokw
+DxcNMTUwNzIwMDgyODEyWjAjBgkqhkiG9w0BCQQxFgQUsbrkPqQANupg2EqAhmGmZtW5Pb0w
 bAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMH
 MA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIB
 KDCBpQYJKwYBBAGCNxAEMYGXMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRD
@@ -141,21 +148,21 @@ MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQg
 Q0ECAw5ySjCBpwYLKoZIhvcNAQkQAgsxgZeggZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQK
 Ew1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBT
 aWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRl
-IENsaWVudCBDQQIDDnJKMA0GCSqGSIb3DQEBAQUABIICAIszoYOOHJiR8df4WfUIhPt6B1Oj
-oXbP+lS00iJPeAm9+ESj+Ojm9/reJI5Ba3IbQkx4xkkkxTcvw4bGbP2TcIZztzK8SoJz50Is
-vNh75V30PZ2NLazPwWVtLgUVoPQbWLAvMlwigXyJTFwDxIPxkWT33uzfV3dUgAbFotjoZMK9
-l8mOtJ9LhW/n3TVRcYcAAhn7IK7EMuVmjs+2cTY6SuuiNwTY2Tloa7GGunP44j81JO/ObWuB
-a600wVwpWrIrJpCfDCFkWfypkh8d/87N0y35DWrZo+U9RsMHbkDUzmZt+fhBCJzfdqyiBqv0
-0xdmnvwGJgcfbfmFr736alAOyhOBa2YFjFygu3t5eZiHs4ULICaVgqVRzOzzw3emPQHkU8RA
-2WUsyZ2+KVnwKvE/jcFk69PT1XzyZJdY/GyvYQs096gguwqd+XhwLG00pFWwT+wD/Nb9OG4i
-Dy1XCgHXI5geo5196orFUMJs12MPqTym2+LCA7jsHS1ZItV5R7vW0DzWDt52zf1bLFH2yAVP
-mB8RCYFDt+uxXjvqTmwAuSQO6Q1G6wXiyyyLP+dDMOswi7s2w9OYQDwReYkDuYvndn7i3QCr
-V7aREwclPRtVaWFnQXFIO2wIunPfiP82Za+HQHnCjvSn8eYWZs6pYHR95Aps0hQpHQRXxbua
-AVsXFCigAAAAAAAA
---------------ms030909040502080202000204--
+IENsaWVudCBDQQIDDnJKMA0GCSqGSIb3DQEBAQUABIICACjtYL3NTfUO/JAbVAJiDgHRjcyZ
+HrhFqkDPeloPyZ6g79e0T/RiXZnhEGGWXF0bHiRfQeYT5+eabtr5IEnNd/6o4tDFmiL+BkuD
+03dXFXYlwN2KAnn+Oy3exHirkOH7AuyrTkLvNiuNCBLI5BPihU6huP52l1HV4crGAUnkkvpY
+IV20fEF0sfsvduHoJFo8nX4YOZTOaucAy3YogYVO3Wyil/agyYYvOwK+5pr0IdkjKPGUGDfD
+o8Het8ZKHAzctQbVnzfQKEQMrvoNpk+Ew4KP4VzhMmhi9eKW0g5Uzw4XUjDX84aocIfHJaxx
+W6BpUNStMH1YVrEIG1Wpzl0C62/TJx6b4ks4MTVsQvxitbmhU+AAjegR2tqGyLKx4ylvlb1X
+YFUmr6fhpb7eIhZ9cghw4pNwKA8ro185a2g6ym734KZAYRCQRl+e1ps2wfyiJZpSqBtlZvA/
+FitM8qAQ8dFb/knp8n7xe3fr9ZalDN0urJaXKzyfZvmOE/Qr+xp8BM7uBRq2kwIVnflU45JU
+jeT2qzuNbfkpRHV+yKhbATL4lqjrVZgXxv6eC6oNjh6lxq9iJ2S3AQbQKYQrYin67HFR1Ew4
+1dCj/GNBurhDwpUK2DNgLehjCar4K2Ps9WT61+KJ1KUuMJ5KSXwEIQSkg0uwlQRvIXy+wvsl
+xyaYI338AAAAAAAA
+--------------ms010806020704070005070502--
 
 
---===============2185463408619540202==
+--===============3586160594461883238==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -166,4 +173,4 @@ ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
 
---===============2185463408619540202==--
+--===============3586160594461883238==--
