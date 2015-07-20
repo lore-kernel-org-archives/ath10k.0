@@ -1,22 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZH3Dz-0004gv-2Z
- for ath10k@lists.infradead.org; Mon, 20 Jul 2015 05:02:48 +0000
-Received: by wibxm9 with SMTP id xm9so81613642wib.0
- for <ath10k@lists.infradead.org>; Sun, 19 Jul 2015 22:02:21 -0700 (PDT)
+ id 1ZH5FW-0006Hy-6y
+ for ath10k@lists.infradead.org; Mon, 20 Jul 2015 07:12:30 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: ath10k list: problems with gmail
+Date: Mon, 20 Jul 2015 10:12:00 +0300
+Message-ID: <87wpxvti9r.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <9E540875-1690-4F05-B3D1-E9476C1690A7@gmail.com>
-References: <CAHoN2qHYgiD2=9YGOxk=qBKb1rYAuo-m8js+T-NvGHh6KwsBww@mail.gmail.com>
- <CA+BoTQ=tv82xtUPXQwRp3C6pV6PfvTEtkWvmMObsSro0hm8CSg@mail.gmail.com>
- <CAHoN2qGxR93+3dSLwPu_Aq8A61pT++YLqvwg1nhbQihMkBtM2Q@mail.gmail.com>
- <CA+BoTQn2mvXcGcTY8wxtfC1EkHuUKNeY0wdPGV25FG45jpRnJg@mail.gmail.com>
- <9E540875-1690-4F05-B3D1-E9476C1690A7@gmail.com>
-Date: Mon, 20 Jul 2015 07:02:21 +0200
-Message-ID: <CA+BoTQn63U81C-4rSXUf26gTYpribCQQNyoF=P16OHi5JOcaUQ@mail.gmail.com>
-Subject: Re: Disconnected due to excessive missing ACKs on Ath10k (OpenWRT
- Chaos Chalmer RC2)
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +16,24 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Fernando S <fsclavo@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-T24gMTkgSnVseSAyMDE1IGF0IDA1OjA0LCAgPGZzY2xhdm9AZ21haWwuY29tPiB3cm90ZToKPiBN
-aWNoYWwsIGRvIHlvdSBrbm93IGhvdyB0byBlbmFibGUgZGVidWc/IEJlY2F1c2UgSSBoYXZlbid0
-IHRoYXQgZmlsZSwgdGhlIGRpcmVjdG9yeSB3aXRoIHNvbWUgb3RoZXIgZmlsZXMgZXhpc3RzLCBi
-dXQgdGhlcmUgaXMgbm90IG9uZSBjYWxsZWQgImFuaV9lbmFibGUiLgo+IEkgc3VzcGVjdCBzb21l
-IGRlYnVnZ2luZyBvcHRpb24gbm90IGVuYWJsZWQgb24gZmlybXdhcmUvZHJpdmVyLgoKWW91IG5l
-ZWQgdG8gZW5hYmxlIG1hYzgwMjExIGRlYnVnZnMgYW5kIGF0aCBkZWJ1ZyBvcHRpb25zIGluIE9w
-ZW5XUlRzCm1lbnVjb25maWcuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5m
-cmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0
-aDEwawo=
+Hi,
+
+I noticed that on Tue, 14 Jul 2015 09:00:04 -0700 for some reason lots
+of gmail users got suddenly unsubcribed from the ath10k list, maybe due
+to a problem with gmail servers? So if you use gmail better to check
+your subcription status.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
