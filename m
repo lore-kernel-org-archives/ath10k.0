@@ -1,26 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
+Received: from mail-ig0-f177.google.com ([209.85.213.177])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHBFT-0001O1-Iv
- for ath10k@lists.infradead.org; Mon, 20 Jul 2015 13:36:52 +0000
-Received: by lblf12 with SMTP id f12so95322074lbl.2
- for <ath10k@lists.infradead.org>; Mon, 20 Jul 2015 06:36:29 -0700 (PDT)
+ id 1ZHBZm-0001PH-Aa
+ for ath10k@lists.infradead.org; Mon, 20 Jul 2015 13:57:50 +0000
+Received: by igbpg9 with SMTP id pg9so37846259igb.0
+ for <ath10k@lists.infradead.org>; Mon, 20 Jul 2015 06:57:28 -0700 (PDT)
+Date: Mon, 20 Jul 2015 09:57:16 -0400
+From: Bob Copeland <me@bobcopeland.com>
+Subject: Re: attempting mesh on ath10k
+Message-ID: <20150720135716.GB9714@localhost>
+References: <CAN+ZWYEK5TpXVsQom5RBxZ1=XCGn9Cq47w1rQdonWNx-ec88vA@mail.gmail.com>
+ <20150706214921.GF23012@localhost>
+ <20150712142532.GA24495@localhost>
+ <20150713014333.GA14152@localhost>
+ <CA+BoTQnSJWGq-Pq2aRLvOC9_ieR5GyYk=BoZsNLsszfYPZ-6+Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
-References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
- <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
- <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
- <55A44244.9000109@dd-wrt.com>
- <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
- <55A4E1FC.9000005@dd-wrt.com>
- <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
- <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
- <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
- <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date: Mon, 20 Jul 2015 15:36:09 +0200
-Message-ID: <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
-Subject: Re: AP mode firmware crash on QCA9880-BR4A
+Content-Disposition: inline
+In-Reply-To: <CA+BoTQnSJWGq-Pq2aRLvOC9_ieR5GyYk=BoZsNLsszfYPZ-6+Q@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,22 +30,25 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Mon, Jul 20, 2015 at 2:06 PM, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->> I'd recommend using traces[1] instead as they won't suffer from this
->> problem. Kernel log buffer isn't big enough to debug everything with
->> mere prints.
-I managed to get a trace earlier. The output is quite big so I am not
-attaching it to this email.
-You can find the result with firmware 10.2.4.70-2 here: [0]
+On Mon, Jul 13, 2015 at 10:13:59AM +0200, Michal Kazior wrote:
+> On 13 July 2015 at 03:43, Bob Copeland <me@bobcopeland.com> wrote:
+> > Actually, it's any group addressed frame.  I tried playing with various
+> > values for htt_data_tx_ext_tid as well as just using the tid on the frame
+> > (in mesh group addressed frames still have a qos header with tid=0).
+> 
+> Just a quick question: did you try applying the sw crypto/raw mode
+> patch[1] and using it for mesh?
+> 
+> [1]: https://patchwork.kernel.org/patch/6600721/
 
+I gave this a try and still no luck.  But I have working and non-working
+snapshots with only a few months of changes between them so I can bisect
+it.
 
-Regards,
-Martin
-
-[0] https://dl.dropboxusercontent.com/u/26940713/tmp/ath10k-trace-fw-10.2.4.70-2.tar.xz
+-- 
+Bob Copeland %% http://bobcopeland.com/
 
 _______________________________________________
 ath10k mailing list
