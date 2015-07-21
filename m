@@ -1,16 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-am1on0071.outbound.protection.outlook.com ([157.56.112.71]
+ helo=emea01-am1-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHWIX-00050p-9f
- for ath10k@lists.infradead.org; Tue, 21 Jul 2015 12:05:25 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k Suppress 'failed to process fft' warning messages.
-References: <1437075444-6779-1-git-send-email-kevin@darbyshire-bryant.me.uk>
-Date: Tue, 21 Jul 2015 15:04:36 +0300
-In-Reply-To: <1437075444-6779-1-git-send-email-kevin@darbyshire-bryant.me.uk>
- (Kevin Darbyshire-Bryant's message of "Thu, 16 Jul 2015 20:37:24
- +0100")
-Message-ID: <87bnf5ogx7.fsf@kamboji.qca.qualcomm.com>
+ id 1ZHYtJ-0000Gj-UO
+ for ath10k@lists.infradead.org; Tue, 21 Jul 2015 14:51:34 +0000
+From: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+Subject: [PATCH] ath10k: suppress 'failed to process fft' warning messages.
+Date: Tue, 21 Jul 2015 15:50:15 +0100
+Message-ID: <1437490215-11214-1-git-send-email-kevin@darbyshire-bryant.me.uk>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +21,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>, linux-wireless@vger.kernel.org
 
-Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk> writes:
+When using DFS channels on Ath10k, kernel log has repeated warning message
+'failed to process fft: -22' typically under medium/heavy traffic.
 
-> When using DFS channels on Ath10k kernel log has warning message 'failed
-> to process fft', typically when under medium/heavy traffic.  Ticket
-> https://dev.openwrt.org/ticket/19316 discusses and concludes messages
-> are harmless.  They do still contribute to log noise, so this patch
-> enables them only in driver debug mode.
->
-> Signed-off-by: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+This patch switches the warnings to driver debug (WMI events) mode only
+thus reducing log file noise.
 
-Don't reference to a discussion somewhere else with a link, instead
-summarise the discussion in the commit log.
+DFS and spectral scan share underlying HW mechanisms and enabling one
+(DFS) enables the other (spectral scan) as far as event reporting from
+firmware to driver is concerned. Spectral scan events take no part in
+processing of DFS radar pulses which are delivered as distinct events,
+so the fft (spectral event) warning is harmless and DFS interference
+detection/protection still occurs.
 
-And please change the title to: ath10k: suppress 'failed to process fft'
-warning messages. Also please CC linux-wireless list as instructed here:
+Symptoms seen & fix tested in both debug & non-debug modes on TP-Link
+Archer C7 v2 platform.
 
-https://wireless.wiki.kernel.org/en/users/drivers/ath10k/sources#submitting_patches
+Signed-off-by: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 0791a43..1435614 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3498,7 +3498,7 @@ void ath10k_wmi_event_spectral_scan(struct ath10k *ar,
+ 							  fftr, fftr_len,
+ 							  tsf);
+ 			if (res < 0) {
+-				ath10k_warn(ar, "failed to process fft report: %d\n",
++				ath10k_dbg(ar, ATH10K_DBG_WMI, "failed to process fft report: %d\n",
+ 					    res);
+ 				return;
+ 			}
 -- 
-Kalle Valo
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
