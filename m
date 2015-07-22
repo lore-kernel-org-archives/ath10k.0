@@ -1,17 +1,28 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-lb0-x233.google.com ([2a00:1450:4010:c04::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZHoly-0001sM-TF
- for ath10k@lists.infradead.org; Wed, 22 Jul 2015 07:49:03 +0000
-Received: by wibud3 with SMTP id ud3so158928230wib.0
- for <ath10k@lists.infradead.org>; Wed, 22 Jul 2015 00:48:41 -0700 (PDT)
+ id 1ZHvPG-0004yL-4G
+ for ath10k@lists.infradead.org; Wed, 22 Jul 2015 14:54:02 +0000
+Received: by lbbzr7 with SMTP id zr7so138498809lbb.1
+ for <ath10k@lists.infradead.org>; Wed, 22 Jul 2015 07:53:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJUS3XmLr0qHHRtZndkus03ueYBCPLiv=Oc=FBpowx8BYYB5WA@mail.gmail.com>
-References: <CAJUS3XmLr0qHHRtZndkus03ueYBCPLiv=Oc=FBpowx8BYYB5WA@mail.gmail.com>
-Date: Wed, 22 Jul 2015 09:48:41 +0200
-Message-ID: <CA+BoTQmbns=N34bj3_E9=awvwu0oQBeSRj0tBqhgRRXfCX90Xw@mail.gmail.com>
-Subject: Re: reading fw_stats: Connection timed out
-From: Michal Kazior <michal.kazior@tieto.com>
+In-Reply-To: <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
+References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+ <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
+ <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
+ <55A44244.9000109@dd-wrt.com>
+ <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
+ <55A4E1FC.9000005@dd-wrt.com>
+ <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
+ <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
+ <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
+ <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
+ <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
+ <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Wed, 22 Jul 2015 16:53:18 +0200
+Message-ID: <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
+Subject: Re: AP mode firmware crash on QCA9880-BR4A
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +31,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Martin Hicks <mort@bork.org>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-T24gMTcgSnVseSAyMDE1IGF0IDE2OjIyLCBNYXJ0aW4gSGlja3MgPG1vcnRAYm9yay5vcmc+IHdy
-b3RlOgo+IEhpLAo+Cj4gSSd2ZSBiZWVuIHRlc3Rpbmcgd2l0aCBRQ0E5ODh4IGNhcmRzIChQQ0kg
-SUQgMTY4YzowMDNjKSBhbmQgaWYgSSB0cnkKPiB0byByZWFkIHRoZSBmd19zdGF0cyBmaWxlIEkg
-Z2V0ICJDb25uZWN0aW9uIHRpbWVkIG91dCIuICBJdCBkb2VzIHNlZW0KPiB0byB3b3JrIG9uIHg4
-NiwgYnV0IGZhaWxzIG9uIFBQQyBhbmQgTUlQUy4gIFRoaXMgbWFrZXMgbWUgc3VzcGVjdCBhbgo+
-IGVuZGlhbm5lc3MgaXNzdWUgc29tZXdoZXJlLgo+Cj4gSSBzZXQgZGVidWdfbWFzayB0byAweDQz
-MiBhbmQgd2hlbiBJIGNhdCBmd19zdGF0cyBJIHNlZSBtYW55LCBtYW55IG9mCj4gdGhlIGZvbGxv
-d2luZyBtZXNzYWdlczoKPgo+IFs3Mjk3NS45NjU1NTRdIGF0aDEwa19wY2kgMDAwMDowMTowMC4w
-OiB3bWkgcmVxdWVzdCBzdGF0cyAweDAwMDAwMDBkCj4gWzcyOTc1Ljk2NTYxNF0gYXRoMTBrX3Bj
-aSAwMDAwOjAxOjAwLjA6IFdNSV9VUERBVEVfU1RBVFNfRVZFTlRJRAo+Cj4gZm9sbG93ZWQgYnk6
-Cj4KPiBbNzI5NzUuOTY1NzAwXSBhdGgxMGtfcGNpIDAwMDA6MDE6MDAuMDogZmFpbGVkIHRvIHJl
-cXVlc3QgZncgc3RhdHM6IC0xMTAKPgo+IE9uIGEgMzItYml0IHBvd2VycGMgRnJlZXNjYWxlIENQ
-VS4gIFJ1bm5pbmcgbGludXggNC4xLjAga2VybmVsLgo+Cj4gWzczMTQzLjc2MDk2M10gYXRoMTBr
-X3BjaSAwMDAwOjAxOjAwLjA6IHFjYTk4OHggaHcyLjAgKDB4NDEwMDAxNmMsCj4gMHgwNDMyMjJm
-ZikgZncgMTAuMi40LjQ4IGFwaSA0IGh0dCAyLjEgd21pIDUgY2FsIG90cCBtYXhfc3RhIDEyOAo+
-IFRoZSB3aXJlbGVzcyBjYXJkIGlzIHJ1bm5pbmcgaW4gc3RhdGlvbiBtb2RlLgo+Cj4gQW55IGlk
-ZWFzIG9uIHdoZXJlIHRoaXMgcHJvYmxlbSBtaWdodCBiZT8gIEFueSBvdGhlciBpbmZvcm1hdGlv
-biBJIGNhbiBwcm92aWRlPwoKQ2FuIHlvdSBwcm92aWRlIHRyYWNlcyBvciBmdWxsIGRlYnVnIGhl
-eGR1bXBzIChkZWJ1Z19tYXNrPTB4ZmZmZmZmZmYpLApwbGVhc2U/IERvZXMgZndfc3RhdHMgd29y
-ayBmb3IgeW91IG9uIDEwLjEuNDY3PwoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
-LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hdGgxMGsK
+Hi Michal,
+
+On Wed, Jul 22, 2015 at 9:47 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> Note: It's better to post trace.dat. It contains more useful data -
+> `trace-cmd report` doesn't decode, e.g. hexdumps unless you have extra
+> plugins.
+OK, noted. Do you still need trace.dat (I forgot to save that, but I
+can obtain a new trace if required)?
+
+> Anyway, I'm running out of ideas. You could make ath10k ignore SWBA
+> events (i.e. not send beacon commands) and see what happens.
+First of all: thanks for looking into this!
+Can you be a bit more specific regarding ignoring SWBA events? Can I
+simply make ath10k_wmi_event_host_swba a no-op?
+
+
+Regards,
+Martin
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
