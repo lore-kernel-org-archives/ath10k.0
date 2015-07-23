@@ -1,14 +1,29 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qk0-x22d.google.com ([2607:f8b0:400d:c09::22d])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZI0nD-0007g6-Ci
- for ath10k@lists.infradead.org; Wed, 22 Jul 2015 20:39:08 +0000
-Received: by qkbm65 with SMTP id m65so107057252qkb.2
- for <ath10k@lists.infradead.org>; Wed, 22 Jul 2015 13:38:45 -0700 (PDT)
-From: Marty Faltesek <mfaltesek@google.com>
-Subject: [PATCH v2] ath10k: Improve performance by reducing tx_lock contention.
-Date: Wed, 22 Jul 2015 16:38:24 -0400
-Message-Id: <1437597504-25554-1-git-send-email-mfaltesek@google.com>
+ id 1ZI9PW-0004wN-L5
+ for ath10k@lists.infradead.org; Thu, 23 Jul 2015 05:51:15 +0000
+Received: by wibxm9 with SMTP id xm9so192085307wib.0
+ for <ath10k@lists.infradead.org>; Wed, 22 Jul 2015 22:50:50 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
+References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+ <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
+ <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
+ <55A44244.9000109@dd-wrt.com>
+ <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
+ <55A4E1FC.9000005@dd-wrt.com>
+ <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
+ <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
+ <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
+ <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
+ <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
+ <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
+ <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
+Date: Thu, 23 Jul 2015 07:50:50 +0200
+Message-ID: <CA+BoTQnsB5qNVVzcyOR9YGA9sd4Rs+zQ-OeT2Q73YX33gu2NeQ@mail.gmail.com>
+Subject: Re: AP mode firmware crash on QCA9880-BR4A
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,181 +32,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, dgentry@google.com, apenwarr@google.com
+To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-From: Qi Zhou <qizhou@google.com>
-
-During tx completion, tx_lock is held for longer than required, preventing
-efficient refill of htt->pending_tx. Refactor the code so that only MSDU
-related operations are protected by the lock.
-
-Improves downstream performance on a dual-core ARM Freescale LS1024A
-(f.k.a. Mindspeed Comcerto 2000) AP with a 3x3 client from 495 to 580 Mbps.
-Other CPU bound multicore systems may also benefit.
-
-Signed-off-by: Denton Gentry <dgentry@google.com>
-Signed-off-by: Avery Pennarun <apenwarr@google.com>
-[mfaltesek@google.com: removed conflicting code for tracking msdu_ids.]
-Signed-off-by: Marty Faltesek <mfaltesek@google.com>
-
----
- drivers/net/wireless/ath/ath10k/htt_rx.c | 12 ++----------
- drivers/net/wireless/ath/ath10k/htt_tx.c |  8 ++------
- drivers/net/wireless/ath/ath10k/txrx.c   | 17 ++++++++---------
- 3 files changed, 12 insertions(+), 25 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 89eb16b..79e68fa 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -1633,8 +1633,6 @@ static void ath10k_htt_rx_frm_tx_compl(struct ath10k *ar,
- 	__le16 msdu_id;
- 	int i;
- 
--	lockdep_assert_held(&htt->tx_lock);
--
- 	switch (status) {
- 	case HTT_DATA_TX_STATUS_NO_ACK:
- 		tx_done.no_ack = true;
-@@ -2000,15 +1998,11 @@ void ath10k_htt_t2h_msg_handler(struct ath10k *ar, struct sk_buff *skb)
- 			break;
- 		}
- 
--		spin_lock_bh(&htt->tx_lock);
- 		ath10k_txrx_tx_unref(htt, &tx_done);
--		spin_unlock_bh(&htt->tx_lock);
- 		break;
- 	}
- 	case HTT_T2H_MSG_TYPE_TX_COMPL_IND:
--		spin_lock_bh(&htt->tx_lock);
--		__skb_queue_tail(&htt->tx_compl_q, skb);
--		spin_unlock_bh(&htt->tx_lock);
-+		skb_queue_tail(&htt->tx_compl_q, skb);
- 		tasklet_schedule(&htt->txrx_compl_task);
- 		return;
- 	case HTT_T2H_MSG_TYPE_SEC_IND: {
-@@ -2093,12 +2087,10 @@ static void ath10k_htt_txrx_compl_task(unsigned long ptr)
- 	struct htt_resp *resp;
- 	struct sk_buff *skb;
- 
--	spin_lock_bh(&htt->tx_lock);
--	while ((skb = __skb_dequeue(&htt->tx_compl_q))) {
-+	while ((skb = skb_dequeue(&htt->tx_compl_q))) {
- 		ath10k_htt_rx_frm_tx_compl(htt->ar, skb);
- 		dev_kfree_skb_any(skb);
- 	}
--	spin_unlock_bh(&htt->tx_lock);
- 
- 	spin_lock_bh(&htt->rx_ring.lock);
- 	while ((skb = __skb_dequeue(&htt->rx_compl_q))) {
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index a60ef7d..262d657 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -112,9 +112,7 @@ static int ath10k_htt_tx_clean_up_pending(int msdu_id, void *skb, void *ctx)
- 	tx_done.discard = 1;
- 	tx_done.msdu_id = msdu_id;
- 
--	spin_lock_bh(&htt->tx_lock);
- 	ath10k_txrx_tx_unref(htt, &tx_done);
--	spin_unlock_bh(&htt->tx_lock);
- 
- 	return 0;
- }
-@@ -355,12 +353,11 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 
- 	spin_lock_bh(&htt->tx_lock);
- 	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
-+	spin_unlock_bh(&htt->tx_lock);
- 	if (res < 0) {
--		spin_unlock_bh(&htt->tx_lock);
- 		goto err_tx_dec;
- 	}
- 	msdu_id = res;
--	spin_unlock_bh(&htt->tx_lock);
- 
- 	txdesc = ath10k_htc_alloc_skb(ar, len);
- 	if (!txdesc) {
-@@ -429,12 +426,11 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 
- 	spin_lock_bh(&htt->tx_lock);
- 	res = ath10k_htt_tx_alloc_msdu_id(htt, msdu);
-+	spin_unlock_bh(&htt->tx_lock);
- 	if (res < 0) {
--		spin_unlock_bh(&htt->tx_lock);
- 		goto err_tx_dec;
- 	}
- 	msdu_id = res;
--	spin_unlock_bh(&htt->tx_lock);
- 
- 	prefetch_len = min(htt->prefetch_len, msdu->len);
- 	prefetch_len = roundup(prefetch_len, 4);
-diff --git a/drivers/net/wireless/ath/ath10k/txrx.c b/drivers/net/wireless/ath/ath10k/txrx.c
-index 826500b..40a8083 100644
---- a/drivers/net/wireless/ath/ath10k/txrx.c
-+++ b/drivers/net/wireless/ath/ath10k/txrx.c
-@@ -53,8 +53,6 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 	struct ath10k_skb_cb *skb_cb;
- 	struct sk_buff *msdu;
- 
--	lockdep_assert_held(&htt->tx_lock);
--
- 	ath10k_dbg(ar, ATH10K_DBG_HTT,
- 		   "htt tx completion msdu_id %u discard %d no_ack %d success %d\n",
- 		   tx_done->msdu_id, !!tx_done->discard,
-@@ -66,12 +64,19 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 		return;
- 	}
- 
-+	spin_lock_bh(&htt->tx_lock);
- 	msdu = idr_find(&htt->pending_tx, tx_done->msdu_id);
- 	if (!msdu) {
- 		ath10k_warn(ar, "received tx completion for invalid msdu_id: %d\n",
- 			    tx_done->msdu_id);
-+		spin_unlock_bh(&htt->tx_lock);
- 		return;
- 	}
-+	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
-+	__ath10k_htt_tx_dec_pending(htt);
-+	if (htt->num_pending_tx == 0)
-+		wake_up(&htt->empty_tx_wq);
-+	spin_unlock_bh(&htt->tx_lock);
- 
- 	skb_cb = ATH10K_SKB_CB(msdu);
- 
-@@ -90,7 +95,7 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- 	if (tx_done->discard) {
- 		ieee80211_free_txskb(htt->ar->hw, msdu);
--		goto exit;
-+		return;
- 	}
- 
- 	if (!(info->flags & IEEE80211_TX_CTL_NO_ACK))
-@@ -104,12 +109,6 @@ void ath10k_txrx_tx_unref(struct ath10k_htt *htt,
- 
- 	ieee80211_tx_status(htt->ar->hw, msdu);
- 	/* we do not own the msdu anymore */
--
--exit:
--	ath10k_htt_tx_free_msdu_id(htt, tx_done->msdu_id);
--	__ath10k_htt_tx_dec_pending(htt);
--	if (htt->num_pending_tx == 0)
--		wake_up(&htt->empty_tx_wq);
- }
- 
- struct ath10k_peer *ath10k_peer_find(struct ath10k *ar, int vdev_id,
--- 
-2.4.3.573.g4eafbef
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjIgSnVseSAyMDE1IGF0IDE2OjUzLCBNYXJ0aW4gQmx1bWVuc3RpbmdsCjxtYXJ0aW4uYmx1
+bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tPiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiBPbiBXZWQs
+IEp1bCAyMiwgMjAxNSBhdCA5OjQ3IEFNLCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRp
+ZXRvLmNvbT4gd3JvdGU6Cj4+IE5vdGU6IEl0J3MgYmV0dGVyIHRvIHBvc3QgdHJhY2UuZGF0LiBJ
+dCBjb250YWlucyBtb3JlIHVzZWZ1bCBkYXRhIC0KPj4gYHRyYWNlLWNtZCByZXBvcnRgIGRvZXNu
+J3QgZGVjb2RlLCBlLmcuIGhleGR1bXBzIHVubGVzcyB5b3UgaGF2ZSBleHRyYQo+PiBwbHVnaW5z
+Lgo+IE9LLCBub3RlZC4gRG8geW91IHN0aWxsIG5lZWQgdHJhY2UuZGF0IChJIGZvcmdvdCB0byBz
+YXZlIHRoYXQsIGJ1dCBJCj4gY2FuIG9idGFpbiBhIG5ldyB0cmFjZSBpZiByZXF1aXJlZCk/CgpO
+byBuZWVkIGZvciB0cmFjZXMgbm93LCB0aGFua3MgOy0pIFdlJ3JlIGJhY2sgdG8gZ3Vlc3N3b3Jr
+LgoKCj4+IEFueXdheSwgSSdtIHJ1bm5pbmcgb3V0IG9mIGlkZWFzLiBZb3UgY291bGQgbWFrZSBh
+dGgxMGsgaWdub3JlIFNXQkEKPj4gZXZlbnRzIChpLmUuIG5vdCBzZW5kIGJlYWNvbiBjb21tYW5k
+cykgYW5kIHNlZSB3aGF0IGhhcHBlbnMuCj4gRmlyc3Qgb2YgYWxsOiB0aGFua3MgZm9yIGxvb2tp
+bmcgaW50byB0aGlzIQo+IENhbiB5b3UgYmUgYSBiaXQgbW9yZSBzcGVjaWZpYyByZWdhcmRpbmcg
+aWdub3JpbmcgU1dCQSBldmVudHM/IENhbiBJCj4gc2ltcGx5IG1ha2UgYXRoMTBrX3dtaV9ldmVu
+dF9ob3N0X3N3YmEgYSBuby1vcD8KClllcywgdGhpcyBzaG91bGQgYmUgZW5vdWdoLiBZb3UnbGwg
+d2FudCB0byBhZGQva2VlcCBhIHByaW50IHRvIGtub3cKaG93IG1hbnkgU1dCQSBldmVudCBjb21l
+IGluIHRob3VnaC4gUGVyaGFwcyBub3Qgc3VibWl0dGluZyBiZWFjb25zCndpbGwgcHJldmVudCB0
+aGUgY3Jhc2ggb3IgaXQnbGwgcG9zdHBvbmUgaXQgdW50aWwgYWZ0ZXIgbW9yZSBTV0JBCmV2ZW50
+cyBhcmUgZGVsaXZlcmVkIHRoYW4gYmVmb3JlLgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBr
+QGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hdGgxMGsK
