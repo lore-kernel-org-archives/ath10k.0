@@ -1,26 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIHNb-0005jt-PB
- for ath10k@lists.infradead.org; Thu, 23 Jul 2015 14:21:48 +0000
-Received: by wibud3 with SMTP id ud3so26669097wib.1
- for <ath10k@lists.infradead.org>; Thu, 23 Jul 2015 07:21:24 -0700 (PDT)
-Subject: Re: QCA6174 hw2.1 on Clevo P750ZM
-References: <55B0A037.8070102@gmail.com>
- <CA+BoTQmvAgeCoHoTvc7XOGcr7x7x49gcJ9WC9t9jo8MjjHNMBg@mail.gmail.com>
- <55B0AA27.2060205@gmail.com>
- <CA+BoTQm-BHp9Gi550xte6F=cK3snYXRK0r=g=9vOn-Y2jde-hQ@mail.gmail.com>
- <55B0B4E7.7040106@gmail.com>
- <CA+BoTQkffQ0UdhF7hvNVaNxtDsOUJLz2qi3vMLp+BM5EsKbk6A@mail.gmail.com>
- <55B0BDD3.4080103@gmail.com>
- <CA+BoTQmceF3xitMz1p6WFp3FVnOme4kpQaK=9ouAjyK4zwbvnQ@mail.gmail.com>
- <55B0C416.90903@gmail.com> <55B0F007.7050408@gmail.com>
- <87oaj3gedw.fsf@kamboji.qca.qualcomm.com>
-From: Alexandre Maloteaux <a.maloteaux@gmail.com>
-Message-ID: <55B0F854.4060404@gmail.com>
-Date: Thu, 23 Jul 2015 15:21:08 +0100
+ id 1ZIPzY-00064v-1I
+ for ath10k@lists.infradead.org; Thu, 23 Jul 2015 23:33:32 +0000
+From: Peter Oh <poh@qca.qualcomm.com>
+Subject: [PATCH] ath10k: initialize msdu ext. descriptor before use
+Date: Thu, 23 Jul 2015 16:32:06 -0700
+Message-ID: <1437694326-31977-1-git-send-email-poh@qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <87oaj3gedw.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +20,53 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-> What's happening with the features string here? What might cause that?
+Initial QCA99X0 support has a known issue with TCP Tx throughput.
+All other path such as UDP Tx/Rx and TCP Rx meet their expectation
+(> 900Mbps), but TCP Tx marked as low as 5Mbps when single pair is
+used on iperf.
 
-I used the sumdog binaries from github,maybe this is related. I ll try
-with my own firmware-4.bin from dissect/assemble and board.bin from
-clevo driver and i ll report if i get the same string
+The root cause is turned out because TSO flag is not initialized
+properly so that firmware configures TSO in wrong way.
+TSO flags in msdu extension descriptor is required to be reset
+to indicate firmware there is no TSO is enabled, otherwise it
+could act as TSO is enabled which causes huge throughput drop.
 
-On 07/23/2015 03:03 PM, Kalle Valo wrote:
-> Alexandre Maloteaux <a.maloteaux@gmail.com> writes:
->
->> 0x003405ff, 168c:003e:1a56:1525 fallback) fw killer-n1525-fw api 4
->> htt-ver 3.0 wmi-op 4 htt-op 3 cal otp max-sta 32 features
->> \xffffff80\xffffffd4\xffffffa8\xfffffff9\xffffff88\xffffffff\xffffffff
-> What's happening with the features string here? What might cause that?
->
+In fact, it's enough by resetting TSO flags only to prevent the
+unexpected behavior, but initializing whole msdu ext. descriptor
+will help to clear uncertainty of firmware could bring on as it
+constantly updated.
+
+Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index c49ecff..1c61c17 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -540,14 +540,14 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 		/* pass through */
+ 	case ATH10K_HW_TXRX_ETHERNET:
+ 		if (ar->hw_params.continuous_frag_desc) {
++			memset(&htt->frag_desc.vaddr[msdu_id], 0,
++			       sizeof(struct htt_msdu_ext_desc));
+ 			frags = (struct htt_data_tx_desc_frag *)
+ 				&htt->frag_desc.vaddr[msdu_id].frags;
+ 			frags[0].tword_addr.paddr_lo =
+ 				__cpu_to_le32(skb_cb->paddr);
+ 			frags[0].tword_addr.paddr_hi = 0;
+ 			frags[0].tword_addr.len_16 = __cpu_to_le16(msdu->len);
+-			frags[1].tword_addr.paddr_lo = 0;
+-			frags[1].tword_addr.paddr_hi = 0;
+ 
+ 			frags_paddr =  htt->frag_desc.paddr +
+ 				(sizeof(struct htt_msdu_ext_desc) * msdu_id);
+-- 
+1.9.1
 
 
 _______________________________________________
