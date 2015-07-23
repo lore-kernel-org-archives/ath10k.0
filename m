@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x236.google.com ([2a00:1450:400c:c05::236])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIBVn-0004L0-Lq
- for ath10k@lists.infradead.org; Thu, 23 Jul 2015 08:05:52 +0000
-Received: by wicgb10 with SMTP id gb10so131082325wic.1
- for <ath10k@lists.infradead.org>; Thu, 23 Jul 2015 01:05:29 -0700 (PDT)
-Received: from [192.168.118.24] ([197.231.66.149])
- by smtp.googlemail.com with ESMTPSA id pf4sm6213538wjb.23.2015.07.23.01.05.28
- for <ath10k@lists.infradead.org>
- (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 23 Jul 2015 01:05:28 -0700 (PDT)
-From: Alexandre Maloteaux <a.maloteaux@gmail.com>
-Subject: QCA6174 hw2.1 on Clevo P750ZM
-Message-ID: <55B0A037.8070102@gmail.com>
-Date: Thu, 23 Jul 2015 09:05:11 +0100
+ id 1ZIBlM-0002LA-HH
+ for ath10k@lists.infradead.org; Thu, 23 Jul 2015 08:21:57 +0000
+Received: by wibxm9 with SMTP id xm9so196968192wib.0
+ for <ath10k@lists.infradead.org>; Thu, 23 Jul 2015 01:21:34 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <55B0A037.8070102@gmail.com>
+References: <55B0A037.8070102@gmail.com>
+Date: Thu, 23 Jul 2015 10:21:33 +0200
+Message-ID: <CA+BoTQmvAgeCoHoTvc7XOGcr7x7x49gcJ9WC9t9jo8MjjHNMBg@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1 on Clevo P750ZM
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,153 +20,104 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Alexandre Maloteaux <a.maloteaux@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi
-
-I just received a Clevo P750ZM (eurocom P5 pro) with a QCA6174
-
-06:00.0 Network controller: Qualcomm Atheros QCA6174 802.11ac Wireless
-Network Adapter (rev 20)
-
-Hi have tested the dissect/assemble procedure  described here :
-
-https://www.mail-archive.com/ath10k@lists.infradead.org/msg02283.html
-https://askubuntu.com/questions/546813/killer-n1525-with-ubuntu-14-10
-
-Im on Arch and i have tested with the Eurocom Drivers
-(http://downloads.eurocom.com/support/drivers/zip/260/260_KillerWLAN_W864.zip)
-and the sumdog blobs  (https://github.com/sumdog/ath10k-firmware.git)
-directly on those 3 firmwares
-Arch official : 4.1.2-2-ARCH
-kvalo master : 4.2.0-rc3
-kvalo qca branch : 4.1.0-rc6
-
-I have a different issue for each kernel and i have tested with all
-board.bin available but none worked :
-
-ARCH official issue :
-
-[   15.794214] ath10k_pci 0000:06:00.0: enabling device (0000 -> 0002)
-[   15.794528] ath10k_pci 0000:06:00.0: pci irq msi-x interrupts 8
-irq_mode 0 reset_mode 0
-[   15.973369] ath10k_pci 0000:06:00.0: Direct firmware load for
-ath10k/cal-pci-0000:06:00.0.bin failed with error -2
-[   17.152098] ath10k_pci 0000:06:00.0: firmware crashed! (uuid
-845cf3fa-05bd-4eed-873b-763f94de2e76)
-[   17.152101] ath10k_pci 0000:06:00.0: qca6174 hw2.1 (0x05010000,
-0x003405ff) fw killer-n1525-fw api 4 htt 0.0 wmi 4 cal otp max_sta 32
-[   17.152103] ath10k_pci 0000:06:00.0: debug 0 debugfs 1 tracing 0 dfs
-0 testmode 0
-[   17.154123] ath10k_pci 0000:06:00.0: firmware register dump:
-[   17.154124] ath10k_pci 0000:06:00.0: [00]: 0x05010000 0x000015B3
-0x0095186B 0x00955B31
-[   17.154125] ath10k_pci 0000:06:00.0: [04]: 0x0095186B 0x00060130
-0x00000010 0x0040AF04
-[   17.154126] ath10k_pci 0000:06:00.0: [08]: 0x00000018 0x00000001
-0x00000001 0x00412250
-[   17.154127] ath10k_pci 0000:06:00.0: [12]: 0x00000009 0x00000000
-0x0096C09C 0x0096C0A7
-[   17.154128] ath10k_pci 0000:06:00.0: [16]: 0x0096BDBC 0x0092C07A
-0x00000000 0x00000000
-[   17.154128] ath10k_pci 0000:06:00.0: [20]: 0x4095186B 0x0040E160
-0x0041F82C 0x00000001
-[   17.154129] ath10k_pci 0000:06:00.0: [24]: 0x80936238 0x0040E1C0
-0x00000000 0xC095186B
-[   17.154130] ath10k_pci 0000:06:00.0: [28]: 0x80936361 0x0040E1E0
-0x00000000 0x0041C8DC
-[   17.154131] ath10k_pci 0000:06:00.0: [32]: 0x80934A67 0x0040E200
-0x00436DF0 0x0040E250
-[   17.154132] ath10k_pci 0000:06:00.0: [36]: 0x809A5DC2 0x0040E250
-0x004275C0 0x00000001
-[   17.154133] ath10k_pci 0000:06:00.0: [40]: 0x809A5E1A 0x0040E290
-0x00426F50 0x00000004
-[   17.154133] ath10k_pci 0000:06:00.0: [44]: 0x809A5EFA 0x0040E2B0
-0x00426F50 0x0041C8DC
-[   17.154134] ath10k_pci 0000:06:00.0: [48]: 0x800A0909 0x0040E2D0
-0x00426F50 0x004275B0
-[   17.154135] ath10k_pci 0000:06:00.0: [52]: 0x800A024A 0x0040E2F0
-0x0041ABB0 0x00420420
-[   17.154136] ath10k_pci 0000:06:00.0: [56]: 0x809287D9 0x0040E310
-0x00000000 0x00400000
-[   18.144916] ath10k_pci 0000:06:00.0: failed to receive control
-response completion, polling..
-[   19.146522] ath10k_pci 0000:06:00.0: ctl_resp never came in (-110)
-[   19.146525] ath10k_pci 0000:06:00.0: failed to connect to HTC: -110
-[   19.217113] ath10k_pci 0000:06:00.0: could not init core (-110)
-[   19.217137] ath10k_pci 0000:06:00.0: could not probe fw (-110)
-[   19.227008] ath10k_pci 0000:06:00.0: cannot restart a device that
-hasn't been started
-
-
-kvalo master :
-
-[    0.000000] Linux version 4.2.0-rc3-wl-ath-KVALO-ATH-MASTER+
-(root@z1kadev) (gcc version 5.1.0 (GCC) ) #2 SMP PREEMPT Tue Jul 21
-15:07:02 WAT 2015
-[   12.381604] systemd[1]: cups.path: Cannot add dependency job,
-ignoring: Unit cups.path failed to load: No such file or directory.
-[   12.595610] ath3k: probe of 3-7:1.0 failed with error -22
-[   12.595637] usbcore: registered new interface driver ath3k
-[   12.627163] ath10k_pci 0000:06:00.0: enabling device (0000 -> 0002)
-[   12.627915] ath10k_pci 0000:06:00.0: pci irq msi-x interrupts 8
-irq_mode 0 reset_mode 0
-[   12.822155] ath10k_pci 0000:06:00.0: Direct firmware load for
-ath10k/cal-pci-0000:06:00.0.bin failed with error -2
-[   12.822158] ath10k_pci 0000:06:00.0: Falling back to user helper
-[   72.915990] ath10k_pci 0000:06:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/board-pci-168c:003e:1a56:1525.bin failed with error -2
-[   72.915993] ath10k_pci 0000:06:00.0: Falling back to user helper
-[  133.010331] ath10k_pci 0000:06:00.0: failed to load spec board file,
-falling back to generic: -11
-[  133.010647] ath10k_pci 0000:06:00.0: Direct firmware load for
-ath10k/QCA6174/hw2.1/firmware-5.bin failed with error -2
-[  133.010649] ath10k_pci 0000:06:00.0: Falling back to user helper
-[  193.105501] ath10k_pci 0000:06:00.0: could not fetch firmware file
-'ath10k/QCA6174/hw2.1/firmware-5.bin': -11
-[  194.276201] ath10k_pci 0000:06:00.0: received unsolicited fw crash
-interrupt
-[  194.276209] ath10k_pci 0000:06:00.0: received unsolicited fw crash
-interrupt
-[  195.275581] ath10k_pci 0000:06:00.0: failed to receive control
-response completion, polling..
-[  195.275699] ath10k_pci 0000:06:00.0: received unsolicited fw crash
-interrupt
-[  196.277176] ath10k_pci 0000:06:00.0: Service connect timeout
-[  196.277179] ath10k_pci 0000:06:00.0: failed to connect htt (-110)
-[  196.347791] ath10k_pci 0000:06:00.0: could not init core (-110)
-[  196.347819] ath10k_pci 0000:06:00.0: could not probe fw (-110)
-
-kvalo qca branch :
-
-[  386.639108] ath10k_pci 0000:06:00.0: failed to receive initialized
-event from target: b8600448
-[  386.639110] ath10k_pci 0000:06:00.0: failed to wait for target after
-cold reset: -110
-[  386.639110] ath10k_pci 0000:06:00.0: failed to reset chip: -110
-[  386.639203] ath10k_pci: probe of 0000:06:00.0 failed with error -110
-[  419.547152] ath10k_pci 0000:06:00.0: pci irq msi-x interrupts 8
-irq_mode 0 reset_mode 0
-[  422.565998] ath10k_pci 0000:06:00.0: failed to receive initialized
-event from target: b8600448
-[  422.566000] ath10k_pci 0000:06:00.0: failed to wait for target after
-cold reset: -110
-[  422.566001] ath10k_pci 0000:06:00.0: failed to reset chip: -110
-[  422.566096] ath10k_pci: probe of 0000:06:00.0 failed with error -110
-
-im getting only the cal issue  on the kvalo master if i copy
-firmware-4.bin to firmware-5.bin. If i copy fw-1.bin from dissect.py to
-cal-pci-0000:06:00.0.bin . I m getting the issue with the official arch...
-
-Hope somebody can help
-
-Best Regards
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjMgSnVseSAyMDE1IGF0IDEwOjA1LCBBbGV4YW5kcmUgTWFsb3RlYXV4IDxhLm1hbG90ZWF1
+eEBnbWFpbC5jb20+IHdyb3RlOgo+IEhpCj4KPiBJIGp1c3QgcmVjZWl2ZWQgYSBDbGV2byBQNzUw
+Wk0gKGV1cm9jb20gUDUgcHJvKSB3aXRoIGEgUUNBNjE3NAo+Cj4gMDY6MDAuMCBOZXR3b3JrIGNv
+bnRyb2xsZXI6IFF1YWxjb21tIEF0aGVyb3MgUUNBNjE3NCA4MDIuMTFhYyBXaXJlbGVzcwo+IE5l
+dHdvcmsgQWRhcHRlciAocmV2IDIwKQo+Cj4gSGkgaGF2ZSB0ZXN0ZWQgdGhlIGRpc3NlY3QvYXNz
+ZW1ibGUgcHJvY2VkdXJlICBkZXNjcmliZWQgaGVyZSA6Cj4KPiBodHRwczovL3d3dy5tYWlsLWFy
+Y2hpdmUuY29tL2F0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnL21zZzAyMjgzLmh0bWwKPiBodHRw
+czovL2Fza3VidW50dS5jb20vcXVlc3Rpb25zLzU0NjgxMy9raWxsZXItbjE1MjUtd2l0aC11YnVu
+dHUtMTQtMTAKClRoZXJlJ3MgYW4gdW5vZmZpY2lhbCBpbWFnZSB0aGF0J3MgbHlpbmcgaW4gYSBw
+dWxsIHJlcXVlc3Qgb24KZ2l0aHViWzFdIHlvdSBjb3VsZCB1c2UuIEl0IHByb2JhYmx5IG5lZWRz
+IHNraXBfb3RwIHBhcmFtZXRlciB0byBiZQp1c2VkLgoKCj4KPiBJbSBvbiBBcmNoIGFuZCBpIGhh
+dmUgdGVzdGVkIHdpdGggdGhlIEV1cm9jb20gRHJpdmVycwo+IChodHRwOi8vZG93bmxvYWRzLmV1
+cm9jb20uY29tL3N1cHBvcnQvZHJpdmVycy96aXAvMjYwLzI2MF9LaWxsZXJXTEFOX1c4NjQuemlw
+KQo+IGFuZCB0aGUgc3VtZG9nIGJsb2JzICAoaHR0cHM6Ly9naXRodWIuY29tL3N1bWRvZy9hdGgx
+MGstZmlybXdhcmUuZ2l0KQo+IGRpcmVjdGx5IG9uIHRob3NlIDMgZmlybXdhcmVzCj4gQXJjaCBv
+ZmZpY2lhbCA6IDQuMS4yLTItQVJDSAo+IGt2YWxvIG1hc3RlciA6IDQuMi4wLXJjMwo+IGt2YWxv
+IHFjYSBicmFuY2ggOiA0LjEuMC1yYzYKPgo+IEkgaGF2ZSBhIGRpZmZlcmVudCBpc3N1ZSBmb3Ig
+ZWFjaCBrZXJuZWwgYW5kIGkgaGF2ZSB0ZXN0ZWQgd2l0aCBhbGwKPiBib2FyZC5iaW4gYXZhaWxh
+YmxlIGJ1dCBub25lIHdvcmtlZCA6Cj4KPiBBUkNIIG9mZmljaWFsIGlzc3VlIDoKW3NuaXBdCgpU
+aGlzIHdvbid0IHdvcmsuIDQuMSBkb2Vzbid0IGNvbnRhaW4gdGhlIG5lY2Vzc2FyeSBwYXRjaFsy
+XS4KCgo+IGt2YWxvIG1hc3RlciA6Cj4KPiBbICAgIDAuMDAwMDAwXSBMaW51eCB2ZXJzaW9uIDQu
+Mi4wLXJjMy13bC1hdGgtS1ZBTE8tQVRILU1BU1RFUisKPiAocm9vdEB6MWthZGV2KSAoZ2NjIHZl
+cnNpb24gNS4xLjAgKEdDQykgKSAjMiBTTVAgUFJFRU1QVCBUdWUgSnVsIDIxCj4gMTU6MDc6MDIg
+V0FUIDIwMTUKPiBbICAgMTIuMzgxNjA0XSBzeXN0ZW1kWzFdOiBjdXBzLnBhdGg6IENhbm5vdCBh
+ZGQgZGVwZW5kZW5jeSBqb2IsCj4gaWdub3Jpbmc6IFVuaXQgY3Vwcy5wYXRoIGZhaWxlZCB0byBs
+b2FkOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5Lgo+IFsgICAxMi41OTU2MTBdIGF0aDNrOiBw
+cm9iZSBvZiAzLTc6MS4wIGZhaWxlZCB3aXRoIGVycm9yIC0yMgo+IFsgICAxMi41OTU2MzddIHVz
+YmNvcmU6IHJlZ2lzdGVyZWQgbmV3IGludGVyZmFjZSBkcml2ZXIgYXRoM2sKPiBbICAgMTIuNjI3
+MTYzXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+IDAw
+MDIpCj4gWyAgIDEyLjYyNzkxNV0gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IHBjaSBpcnEgbXNp
+LXggaW50ZXJydXB0cyA4Cj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPiBbICAgMTIuODIyMTU1
+XSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogRGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRo
+MTBrL2NhbC1wY2ktMDAwMDowNjowMC4wLmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFsgICAx
+Mi44MjIxNThdIGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBo
+ZWxwZXIKPiBbICAgNzIuOTE1OTkwXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogRGlyZWN0IGZp
+cm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL1FDQTYxNzQvaHcyLjEvYm9hcmQtcGNpLTE2OGM6MDAz
+ZToxYTU2OjE1MjUuYmluIGZhaWxlZCB3aXRoIGVycm9yIC0yCj4gWyAgIDcyLjkxNTk5M10gYXRo
+MTBrX3BjaSAwMDAwOjA2OjAwLjA6IEZhbGxpbmcgYmFjayB0byB1c2VyIGhlbHBlcgo+IFsgIDEz
+My4wMTAzMzFdIGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBmYWlsZWQgdG8gbG9hZCBzcGVjIGJv
+YXJkIGZpbGUsCj4gZmFsbGluZyBiYWNrIHRvIGdlbmVyaWM6IC0xMQo+IFsgIDEzMy4wMTA2NDdd
+IGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IKPiBhdGgx
+MGsvUUNBNjE3NC9odzIuMS9maXJtd2FyZS01LmJpbiBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFsg
+IDEzMy4wMTA2NDldIGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNl
+ciBoZWxwZXIKPiBbICAxOTMuMTA1NTAxXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogY291bGQg
+bm90IGZldGNoIGZpcm13YXJlIGZpbGUKPiAnYXRoMTBrL1FDQTYxNzQvaHcyLjEvZmlybXdhcmUt
+NS5iaW4nOiAtMTEKPiBbICAxOTQuMjc2MjAxXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogcmVj
+ZWl2ZWQgdW5zb2xpY2l0ZWQgZncgY3Jhc2gKPiBpbnRlcnJ1cHQKPiBbICAxOTQuMjc2MjA5XSBh
+dGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogcmVjZWl2ZWQgdW5zb2xpY2l0ZWQgZncgY3Jhc2gKPiBp
+bnRlcnJ1cHQKPiBbICAxOTUuMjc1NTgxXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZmFpbGVk
+IHRvIHJlY2VpdmUgY29udHJvbAo+IHJlc3BvbnNlIGNvbXBsZXRpb24sIHBvbGxpbmcuLgo+IFsg
+IDE5NS4yNzU2OTldIGF0aDEwa19wY2kgMDAwMDowNjowMC4wOiByZWNlaXZlZCB1bnNvbGljaXRl
+ZCBmdyBjcmFzaAo+IGludGVycnVwdAoKVGhpcyBsb29rcyBpbnRlcmVzdGluZy4gQ2FuIHlvdSBw
+bGVhc2U6Cgogcm1tb2QgYXRoMTBrX3BjaQogbW9kcHJvYmUgYXRoMTBrX3BjaSBpcnFfbW9kZT0x
+CgpNc2kgcmFuZ2UgaGFuZGxpbmcgY291bGQgYmUgYnJva2VuIG9uIHRoaXMgaHcuIElmIHNvIHdl
+J2xsIG5lZWQgdG8gYmxhY2tsaXN0IGl0LgoKCj4gWyAgMTk2LjI3NzE3Nl0gYXRoMTBrX3BjaSAw
+MDAwOjA2OjAwLjA6IFNlcnZpY2UgY29ubmVjdCB0aW1lb3V0Cj4gWyAgMTk2LjI3NzE3OV0gYXRo
+MTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZhaWxlZCB0byBjb25uZWN0IGh0dCAoLTExMCkKPiBbICAx
+OTYuMzQ3NzkxXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogY291bGQgbm90IGluaXQgY29yZSAo
+LTExMCkKPiBbICAxOTYuMzQ3ODE5XSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogY291bGQgbm90
+IHByb2JlIGZ3ICgtMTEwKQo+Cj4ga3ZhbG8gcWNhIGJyYW5jaCA6Cj4KPiBbICAzODYuNjM5MTA4
+XSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZmFpbGVkIHRvIHJlY2VpdmUgaW5pdGlhbGl6ZWQK
+PiBldmVudCBmcm9tIHRhcmdldDogYjg2MDA0NDgKPiBbICAzODYuNjM5MTEwXSBhdGgxMGtfcGNp
+IDAwMDA6MDY6MDAuMDogZmFpbGVkIHRvIHdhaXQgZm9yIHRhcmdldCBhZnRlcgo+IGNvbGQgcmVz
+ZXQ6IC0xMTAKPiBbICAzODYuNjM5MTEwXSBhdGgxMGtfcGNpIDAwMDA6MDY6MDAuMDogZmFpbGVk
+IHRvIHJlc2V0IGNoaXA6IC0xMTAKPiBbICAzODYuNjM5MjAzXSBhdGgxMGtfcGNpOiBwcm9iZSBv
+ZiAwMDAwOjA2OjAwLjAgZmFpbGVkIHdpdGggZXJyb3IgLTExMAo+IFsgIDQxOS41NDcxNTJdIGF0
+aDEwa19wY2kgMDAwMDowNjowMC4wOiBwY2kgaXJxIG1zaS14IGludGVycnVwdHMgOAo+IGlycV9t
+b2RlIDAgcmVzZXRfbW9kZSAwCj4gWyAgNDIyLjU2NTk5OF0gYXRoMTBrX3BjaSAwMDAwOjA2OjAw
+LjA6IGZhaWxlZCB0byByZWNlaXZlIGluaXRpYWxpemVkCj4gZXZlbnQgZnJvbSB0YXJnZXQ6IGI4
+NjAwNDQ4Cj4gWyAgNDIyLjU2NjAwMF0gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZhaWxlZCB0
+byB3YWl0IGZvciB0YXJnZXQgYWZ0ZXIKPiBjb2xkIHJlc2V0OiAtMTEwCj4gWyAgNDIyLjU2NjAw
+MV0gYXRoMTBrX3BjaSAwMDAwOjA2OjAwLjA6IGZhaWxlZCB0byByZXNldCBjaGlwOiAtMTEwCj4g
+WyAgNDIyLjU2NjA5Nl0gYXRoMTBrX3BjaTogcHJvYmUgb2YgMDAwMDowNjowMC4wIGZhaWxlZCB3
+aXRoIGVycm9yIC0xMTAKPgo+IGltIGdldHRpbmcgb25seSB0aGUgY2FsIGlzc3VlICBvbiB0aGUg
+a3ZhbG8gbWFzdGVyIGlmIGkgY29weQo+IGZpcm13YXJlLTQuYmluIHRvIGZpcm13YXJlLTUuYmlu
+LgoKRG9uJ3QganVzdCBnbyBhYm91dCByZW5hbWluZyBmaXJtd2FyZSBmaWxlbmFtZXMgbGlrZSB0
+aGF0LCBwbGVhc2UuCkl0J3MgdXNlZCB0byBwcmV2ZW50IG9sZGVyIGF0aDEwayB1c2luZyBuZXdl
+ciBmaXJtd2FyZSBpbWFnZXMgd2hpY2ggaXQKd291bGRuJ3QgaGFuZGxlIGFueXdheS4KCgo+IElm
+IGkgY29weSBmdy0xLmJpbiBmcm9tIGRpc3NlY3QucHkgdG8KPiBjYWwtcGNpLTAwMDA6MDY6MDAu
+MC5iaW4gLiBJIG0gZ2V0dGluZyB0aGUgaXNzdWUgd2l0aCB0aGUgb2ZmaWNpYWwgYXJjaC4uLgoK
+VWhtLCB0aGF0J3Mgd3JvbmcuIERvbid0IHVzZSBjYWwtcGNpLXh4eCB1bmxlc3MgeW91IGtub3cg
+d2hhdCB5b3UncmUgZG9pbmcuCgpmdy0xIGFuZCBmdy0yIGZyb20gZGlzc2VjdCBhcmUgb3RwIGFu
+ZCBtYWluIHByb2dyYW0gYmluYXJpZXMuCmNhbC1wY2kteHh4IGlzIGp1c3QgY2FsaWJyYXRpb24g
+ZGF0YSBibG9iLiBUaGlzIGlzIHNvbWV0aGluZyBlbnRpcmVseQplbHNlLgoKSWYgeW91IHNlZSBP
+VFAgZmFpbHVyZSB5b3UgbmVlZCB0byBlaXRoZXIgc2V0IHVwIGFkZXF1YXRlIGZ3X2ZlYXR1cmUK
+ZmxhZyBpbiB0aGUgZmlybXdhcmUtWC5iaW4gb3IgcGFzcyBza2lwX290cD15IHBhcmFtZXRlciB3
+aGlsZSBwcm9iaW5nCmF0aDEwa19jb3JlIG1vZHVsZS4KCgpbMV06IGh0dHBzOi8vZ2l0aHViLmNv
+bS9rdmFsby9hdGgxMGstZmlybXdhcmUvcHVsbC8yClsyXTogaHR0cHM6Ly9naXQua2VybmVsLm9y
+Zy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9kcml2ZXJz
+L25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jP2lkPTExYTAwMmVmYmFhN2ZiZDlmNmU2MTY2
+OTVhYjQyYWE5ZjFjYWYwNjAKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
