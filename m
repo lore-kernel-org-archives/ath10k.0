@@ -1,16 +1,26 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x231.google.com ([2a00:1450:400c:c05::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZIY5P-0000tD-0X
- for ath10k@lists.infradead.org; Fri, 24 Jul 2015 08:12:07 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: Extend struct htt_mgmt_tx_dec for qca99x0
-References: <1437456121-7800-1-git-send-email-rmani@qti.qualcomm.com>
-Date: Fri, 24 Jul 2015 11:11:20 +0300
-In-Reply-To: <1437456121-7800-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Tue, 21 Jul 2015 10:52:00 +0530")
-Message-ID: <871tfyf00n.fsf@kamboji.qca.qualcomm.com>
+ id 1ZIZWH-00018u-AM
+ for ath10k@lists.infradead.org; Fri, 24 Jul 2015 09:43:58 +0000
+Received: by wibxm9 with SMTP id xm9so20096449wib.1
+ for <ath10k@lists.infradead.org>; Fri, 24 Jul 2015 02:43:33 -0700 (PDT)
+Subject: Re: QCA6174 hw2.1 on Clevo P750ZM
+References: <55B0A037.8070102@gmail.com>
+ <CA+BoTQmvAgeCoHoTvc7XOGcr7x7x49gcJ9WC9t9jo8MjjHNMBg@mail.gmail.com>
+ <55B0AA27.2060205@gmail.com>
+ <CA+BoTQm-BHp9Gi550xte6F=cK3snYXRK0r=g=9vOn-Y2jde-hQ@mail.gmail.com>
+ <55B0B4E7.7040106@gmail.com>
+ <CA+BoTQkffQ0UdhF7hvNVaNxtDsOUJLz2qi3vMLp+BM5EsKbk6A@mail.gmail.com>
+ <55B0BDD3.4080103@gmail.com>
+ <CA+BoTQmceF3xitMz1p6WFp3FVnOme4kpQaK=9ouAjyK4zwbvnQ@mail.gmail.com>
+ <55B0C416.90903@gmail.com> <55B0F007.7050408@gmail.com>
+ <87oaj3gedw.fsf@kamboji.qca.qualcomm.com>
+From: Alexandre Maloteaux <a.maloteaux@gmail.com>
+Message-ID: <55B216D0.5090600@gmail.com>
+Date: Fri, 24 Jul 2015 11:43:28 +0100
 MIME-Version: 1.0
+In-Reply-To: <87oaj3gedw.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +33,63 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: Kalle Valo <kvalo@qca.qualcomm.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Raja Mani <rmani@qti.qualcomm.com> writes:
+Hi i would like to test with other board.bin but i m facing the  timeout
+issue. Each time the ath10k_pci module fail with a firmware there is a
+timeout of 1 minute before testing the next one. Any idea what could help ?
 
-> HTT_H2T_MSG_TYPE_MGMT_TX msg in 10.4 firmware carries additional
-> 4 byte in htt_mgmt_tx_desc where it tells to firmware that at what
-> rate mgmt frame has to go out in the air. It's an optional parameter,
-> setting this field to zero will force firmware to choose auto rate
-> and send the frame out.
+[Fri Jul 24 11:10:02 2015] ath10k_pci 0000:06:00.0: pci irq legacy
+interrupts 0 irq_mode 1 reset_mode 0
+[Fri Jul 24 11:10:03 2015] ath10k_pci 0000:06:00.0: Direct firmware load
+for ath10k/cal-pci-0000:06:00.0.bin failed with error -2
+[Fri Jul 24 11:10:03 2015] ath10k_pci 0000:06:00.0: Falling back to user
+helper
+[Fri Jul 24 11:11:03 2015] ath10k_pci 0000:06:00.0: Direct firmware load
+for ath10k/QCA6174/hw2.1/firmware-5.bin failed with error -2
+[Fri Jul 24 11:11:03 2015] ath10k_pci 0000:06:00.0: Falling back to user
+helper
+[Fri Jul 24 11:12:03 2015] ath10k_pci 0000:06:00.0: could not fetch
+firmware file 'ath10k/QCA6174/hw2.1/firmware-5.bin': -11
+[Fri Jul 24 11:12:04 2015] ath10k_pci 0000:06:00.0: qca6174 hw2.1
+(0x05010000, 0x003405ff, 168c:003e:1a56:1525) fw killer-n1525-fw api 4
+htt-ver 3.0 wmi-op 4 htt-op 3 cal otp max-sta 32 features
+\xffffff80\xffffff94\xfffffff8\xffffff96\xffffff88\xffffffff\xffffffff
+[Fri Jul 24 11:12:04 2015] ath10k_pci 0000:06:00.0: debug 1 debugfs 1
+tracing 1 dfs 0 testmode 0
+[Fri Jul 24 11:12:04 2015] ath: EEPROM regdomain: 0x6c
+[Fri Jul 24 11:12:04 2015] ath: EEPROM indicates we should expect a
+direct regpair map
+[Fri Jul 24 11:12:04 2015] ath: Country alpha2 being used: 00
+[Fri Jul 24 11:12:04 2015] ath: Regpair used: 0x6c
+[Fri Jul 24 11:12:04 2015] ath10k_pci 0000:06:00.0 wlp6s0: renamed from
+wlan0
+[Fri Jul 24 11:14:42 2015] ath10k_pci 0000:06:00.0: no channel
+configured; ignoring frame(s)!
+[Fri Jul 24 11:19:57 2015] ath10k_pci 0000:06:00.0: no channel
+configured; ignoring frame(s)!
+[Fri Jul 24 11:21:00 2015] ath10k_pci 0000:06:00.0: no channel
+configured; ignoring frame(s)!
+[Fri Jul 24 11:21:00 2015] ath10k_pci 0000:06:00.0: no channel
+configured; ignoring frame(s)!
+[Fri Jul 24 11:34:54 2015] CPU: 2 PID: 14153 Comm: hexchat Tainted:
+P           O    4.2.0-rc3-wl-ath-KVALO-ATH-MASTER+ #4
+[Fri Jul 24 11:34:54 2015]  [<ffffffff8156b3ee>]
+entry_SYSCALL_64_fastpath+0x12/0x71
+[Fri Jul 24 11:37:50 2015] ath10k_pci 0000:06:00.0: no channel
+configured; ignoring frame(s)!
+
+
+On 07/23/2015 03:03 PM, Kalle Valo wrote:
+> Alexandre Maloteaux <a.maloteaux@gmail.com> writes:
 >
-> Those 4 byte info is missed out in the current code and 10.4 firmware
-> ended up reading some junk in those 4 byte and sometime malfunctioning.
+>> 0x003405ff, 168c:003e:1a56:1525 fallback) fw killer-n1525-fw api 4
+>> htt-ver 3.0 wmi-op 4 htt-op 3 cal otp max-sta 32 features
+>> \xffffff80\xffffffd4\xffffffa8\xfffffff9\xffffff88\xffffffff\xffffffff
+> What's happening with the features string here? What might cause that?
 >
-> Fix it by adding 4 byte in struct htt_mgmt_tx_desc. Non 10.4 firmware
-> will not process those four byte. So, adding 4 byte at the end of
-> struct htt_mgmt_tx_desc will not create any impact on other chipset.
->
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
-Thanks, applied.
-
--- 
-Kalle Valo
 
 _______________________________________________
 ath10k mailing list
