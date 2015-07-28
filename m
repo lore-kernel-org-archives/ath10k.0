@@ -1,16 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJxBH-0004Vr-GB
- for ath10k@lists.infradead.org; Tue, 28 Jul 2015 05:11:59 +0000
-Message-ID: <55B70EEF.9070205@qti.qualcomm.com>
-Date: Tue, 28 Jul 2015 10:41:11 +0530
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZK2ct-0003Jw-TX
+ for ath10k@lists.infradead.org; Tue, 28 Jul 2015 11:00:53 +0000
+Received: by wibxm9 with SMTP id xm9so151506621wib.0
+ for <ath10k@lists.infradead.org>; Tue, 28 Jul 2015 04:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [PATCH] ath10k: remove NULL ptr deref in variable init of
- ath10k_monitor_vdev_start
-References: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
-In-Reply-To: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
+In-Reply-To: <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
+References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
+ <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
+Date: Tue, 28 Jul 2015 13:00:27 +0200
+Message-ID: <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
+From: Enrico Tagliavini <enrico.tagliavini@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,50 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "John W. Linville" <linville@tuxdriver.com>, linux-wireless@vger.kernel.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tuesday 28 July 2015 12:52 AM, John W. Linville wrote:
-> In ath10k_monitor_vdev_start, chandef is initialized to NULL and then
-> channel is immediately thereafter initialized to chandef->chan (i.e.
-> NULL->chan).  This appears to be some sort of cut-n-paste error, since
-> the same assignment is done later (i.e. after chandef has been properly
-> assigned to a non-NULL value).  So, let's just remove this "brown paper
-> bag" typo/thinko... :-)
->
-> Coverity CID #1309505
->
-> Signed-off-by: John W. Linville <linville@tuxdriver.com>
-> ---
->   drivers/net/wireless/ath/ath10k/mac.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-> index c9a7d5b5dffc..2823222dea92 100644
-> --- a/drivers/net/wireless/ath/ath10k/mac.c
-> +++ b/drivers/net/wireless/ath/ath10k/mac.c
-> @@ -836,7 +836,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
->   static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
->   {
->   	struct cfg80211_chan_def *chandef = NULL;
-> -	struct ieee80211_channel *channel = chandef->chan;
-> +	struct ieee80211_channel *channel;
->   	struct wmi_vdev_start_request_arg arg = {};
->   	int ret = 0;
->
-
-There is a similar change integrated recently, 
-https://github.com/kvalo/ath/commit/19be9e9a7ac7e6050eab426283d2a87593cf6e82 .
-
-Vasanth
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgTWljaGFsLAoKdGhpcyBpcyB0aGUgZG1lc2cgb3V0cHV0IGZyb20gYSBib290IHdpdGgga2Vy
+bmVsIDQuMS4yIHdpdGggcGF0Y2ggdG8KbWFrZSB0aGUgZmlybXdhcmUgbG9hZCBbMV0KCkp1bCAy
+NiAxMDowNzo0MiBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19wY2kK
+MDAwMDowMzowMC4wOiBlbmFibGluZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikKSnVsIDI2IDEwOjA3
+OjQyIGFsaWVudHV4LnNhdXJpc2lhbW9ub2kub3JnIGtlcm5lbDogYXRoMTBrX3BjaQowMDAwOjAz
+OjAwLjA6IHBjaSBpcnEgbXNpLXggaW50ZXJydXB0cyA4IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAw
+Ckp1bCAyNiAxMDowNzo0MiBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEw
+a19wY2kKMDAwMDowMzowMC4wOiBEaXJlY3QgZmlybXdhcmUgbG9hZCBmb3IgYXRoMTBrL2NhbC1w
+Y2ktMDAwMDowMzowMC4wLmJpbgpmYWlsZWQgd2l0aCBlcnJvciAtMgpKdWwgMjYgMTA6MDc6NDQg
+YWxpZW50dXguc2F1cmlzaWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNpCjAwMDA6MDM6MDAu
+MDogcWNhNjE3NCBodzIuMSAoMHgwNTAxMDAwMCwgMHgwMDM0MDVmZikgZncKa2lsbGVyLW4xNTI1
+LWZ3IGFwaSA0IGh0dCAzLjAgd21pIDQgY2FsIG90cCBtYXhfc3RhIDMyCkp1bCAyNiAxMDowNzo0
+NCBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19wY2kKMDAwMDowMzow
+MC4wOiBkZWJ1ZyAwIGRlYnVnZnMgMSB0cmFjaW5nIDAgZGZzIDAgdGVzdG1vZGUgMApKdWwgMjYg
+MTA6MDc6NDQgYWxpZW50dXguc2F1cmlzaWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNpCjAw
+MDA6MDM6MDAuMCB3bHAzczA6IHJlbmFtZWQgZnJvbSB3bGFuMAoKSSBzYXcgdGhlIHJlcG9ydCB5
+b3UgbWVudGlvbmVkIChJJ20gc3Vic2NyaWJlZCB0byBhdGgxMGsgYW5kIHRyeSB0bwprZWVwIGl0
+IHVwIHdpdGggaXQpLiBOb3QgYmVpbmcgZXhwZXJ0IGF0IGFsbCBJIHdhcyBub3Qgc3VyZSBpdCB3
+YXMgdGhlCnNhbWUgb3Igbm90LiBBbHNvIHRoZXJlIHNlZW1zIHRvIGJlIGEgZGlmZmVyZW5jZSB0
+aGF0IHdpdGggaXJxX21vZGU9MQpmb3IgbWUgaXQganVzdCB3b3JrcyBsaWtlIGJlZm9yZS4KClsx
+XSBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC9zdGFibGUvbGlu
+dXgtc3RhYmxlLmdpdC9jb21taXQvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9wY2ku
+Yz9pZD0xMWEwMDJlZmJhYTdmYmQ5ZjZlNjE2Njk1YWI0MmFhOWYxY2FmMDYwCgpPbiAyOCBKdWx5
+IDIwMTUgYXQgMDY6MzEsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGlldG8uY29tPiB3
+cm90ZToKPiBPbiAyNyBKdWx5IDIwMTUgYXQgMjI6MDgsIEVucmljbyBUYWdsaWF2aW5pIDxlbnJp
+Y28udGFnbGlhdmluaUBnbWFpbC5jb20+IHdyb3RlOgo+PiBIZWxsbyB0aGVyZSwKPj4KPj4gSSBn
+YXZlIDQuMiByYzMgYSBzaG90IGFuZCBJIGRpc2NvdmVyZWQgdGhlIHdpcmVsZXNzIHdhcyBub3Qg
+d29ya2luZwo+PiBhbnltb3JlIHdpdGggaXQuIEkgdHJpZWQgYWRkaW5nIGlycV9tb2RlPTEgYWxv
+bmdzaWRlIHNraXBfb3RwPXkgaW4KPj4gYXRoMTBrX2NvcmUgKEkgYXNzdW1lIHlvdSBuZWVkIGZ3
+IGFwaSA1IHRvIHJlbW92ZSB0aGlzLCBpcyB0aGF0Cj4+IGNvcnJlY3Q/LCBJIHN0aWxsIGhhdmUg
+ZncgNCBvbmx5KS4KPj4KPj4gTG9hZGluZyB3aXRoIGlycV9tb2RlPTAKPj4KPj4gWyAgIDIxLjEz
+MDIyNF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAw
+MDAyKQo+PiBbICAgMjEuMTMwNzM0XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogcGNpIGlycSBt
+c2kteCBpbnRlcnJ1cHRzIDgKPj4gaXJxX21vZGUgMCByZXNldF9tb2RlIDAKPgo+IFRoZXJlIHdh
+cyBhbHJlYWR5IGEgc2ltaWxhciByZXBvcnRbMV0uIEp1c3QgZm9yIHRoZSByZWNvcmQ6IHdoYXQK
+PiBudW1iZXIgb2YgaW50ZXJydXB0cyBkaWQgeW91IGhhdmUgYmVmb3JlIDQuMi1yYzM/IEkgYXNz
+dW1lIGl0IHdhcyAicGNpCj4gaXJxIG1zaSBpbnRlcnJ1cHRzIDEgaXJxX21vZGUgMCByZXNldF9t
+b2RlIDAiLgo+Cj4gTXkgc3VzcGljaW9uIGlzIHRoYXQgZWl0aGVyIHRoZSBmaXJtd2FyZSBpcyBi
+dWdneSBhbmQgZG9lc24ndCBwbGF5Cj4gd2VsbCB3aXRoIG11bHRpcGxlIE1TSSBpbnRlcnJ1cHRz
+IG9yIHRoZSBNU0kgaW50ZXJydXB0IGJlaGF2aW91cgo+IGNoYW5nZWQgc2lnbmlmaWNhbnRseSAo
+Y29tcGFyZWQgdG8gcWNhOTg4eCkgYW5kIHRoaXMgcmVtYWluZWQgaGlkZGVuCj4gYmVjYXVzZSBu
+b3QgYW4gYXdmdWwgbG90IG9mIG1hY2hpbmVzIHNlZW1lZCB0byBoYXZlIHByb3ZpZGVkIG1vcmUg
+dGhhbgo+IDEgbXNpIGludGVycnVwdCBmb3IgYXRoMTBrLgo+Cj4gWzFdOiBodHRwOi8vbGlzdHMu
+aW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIwMTUtSnVseS8wMDU2OTUuaHRtbAo+Cj4K
+PiBNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
