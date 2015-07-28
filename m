@@ -1,22 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK79u-0005vN-MK
- for ath10k@lists.infradead.org; Tue, 28 Jul 2015 15:51:15 +0000
-Received: by wicgb10 with SMTP id gb10so162932033wic.1
- for <ath10k@lists.infradead.org>; Tue, 28 Jul 2015 08:50:53 -0700 (PDT)
+ id 1ZK7fd-0006b3-52
+ for ath10k@lists.infradead.org; Tue, 28 Jul 2015 16:24:01 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: remove NULL ptr deref in variable init of
+ ath10k_monitor_vdev_start
+References: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
+ <55B70EEF.9070205@qti.qualcomm.com>
+ <20150728143124.GB17081@tuxdriver.com>
+Date: Tue, 28 Jul 2015 19:23:25 +0300
+In-Reply-To: <20150728143124.GB17081@tuxdriver.com> (John W. Linville's
+ message of "Tue, 28 Jul 2015 10:31:25 -0400")
+Message-ID: <87a8ug8d4y.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <55B79BE8.6020705@gmail.com>
-References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
- <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
- <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
- <CA+BoTQkA0k1RBwzKFchcWebuWUmdoaqvaAq4BRz2o3C-GGUCog@mail.gmail.com>
- <CAMQd7ma7hehYLBf-5hUD0sViUwWGX8vy7ENXuBi8Q49F88A45Q@mail.gmail.com>
- <55B79BE8.6020705@gmail.com>
-Date: Tue, 28 Jul 2015 17:50:53 +0200
-Message-ID: <CAMQd7mYX+xYerN6tsSSLUjtfz5x8THPKKt6zok3qedJ9DfZXdw@mail.gmail.com>
-Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
-From: Enrico Tagliavini <enrico.tagliavini@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,98 +22,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Alexandre Maloteaux <a.maloteaux@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: "John W. Linville" <linville@tuxdriver.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-SGkgQWxleGFuZHJlLAoKSSB0aGluayB5b3UgaGF2ZSBhIGRpZmZlcmVudCBpc3N1ZS4gSW4gbXkg
-Y2FzZSBpdCBkb2Vzbid0IHRha2UgbG9uZyB0bwpsb2FkIHRoZSBmaXJtd2FyZS4gSXQgd29ya3Mg
-Zm9yIG1lIGFzIHdlbGwgd2l0aCBpcnFfbW9kZT0xLCBob3dldmVyCnRoaXMgd2FzIG5vdCBuZWVk
-ZWQgd2l0aCB0aGUgcHJldmlvdXMga2VybmVsICg0LjEuMiBhcyBwcm92aWRlZCBieQpmZWRvcmEg
-dXBkYXRlcy10ZXN0aW5nIHJlcG8pLiBBbHNvIE1pY2hhxYIgc2VlcyBhIHByb2JsZW0gd2l0aCBt
-eQpzeXN0ZW0uCgpJIHNob3VsZCBhbHNvIG1lbnRpb24gSSBtYWRlIG15IGZpcm13YXJlIGZyb20g
-dGhlIFdpbmRvd3MgZHJpdmVyIHdpdGgKZGlzc2VjdC5weS4gSSBhc3N1bWUgdGhpcyBpcyBjb3Jy
-ZWN0IHNpbmNlIGl0IHdvcmtlZCBmb3IgYW4gb2xkZXIKa2VybmVsLCBidXQgSSBhY3R1YWxseSBo
-YXZlIG5vIGlkZWEuIEFuZCBJIGFsc28gaGF2ZSBubyBpZGVhIGhvdyB0bwpnZW5lcmF0ZSB0aGUg
-Zncgd2l0aCBBUEkgNSAoaWYgdGhpcyBtYWtlcyBhbnkgZGlmZmVyZW5jZSwgYnV0IHNpbmNlIGl0
-CndhcyBub3QgbWVudGlvbmVkIGFscmVhZHkgSSBzdXBwb3NlIGl0IGRvZXMgbm90KS4KClRoYW5r
-IHlvdSBhbnl3YXkgOikKCk9uIDI4IEp1bHkgMjAxNSBhdCAxNzoxMiwgQWxleGFuZHJlIE1hbG90
-ZWF1eCA8YS5tYWxvdGVhdXhAZ21haWwuY29tPiB3cm90ZToKPiBIaSBFbnJpY28KPgo+IEkgaGFk
-IHRoZSBzYW1lIGlzc3VlIGEgZmV3IGRheXMgYWdvIG9uIGFuIEV1cm9jb20gUDUgUHJvLgo+IEkg
-bWFuYWdlIHRvIGdldCBpdCB3b3JraW5nIHdpdGggdGhlIGhlbHAgb2YgbWljaGFsICBieSBjb21w
-aWxpbmcgdGhlCj4ga3ZhbG8ga2VybmVsIG1hc3RlciBicmFuY2ggOiBodHRwczovL2dpdGh1Yi5j
-b20va3ZhbG8vYXRoCj4KPiBBbmQgdGhlbiB1c2luZyB0aGlzIGF0aDEway5jb25mIGZpbGUgaW4g
-L2V0Yy9tb2Rwcm9iZS5kCj4KPiBvcHRpb25zIGF0aDEwa19jb3JlIHNraXBfb3RwPXkKPiBvcHRp
-b25zIGF0aDEwa19wY2kgIGlycV9tb2RlPTEKPgo+IEl0IHdvcmtzIG9uIG15IGFyY2hsaW51eCBz
-eXN0ZW0gYnV0IGZpcm13YXJlIGxvYWRpbmcgdGFrZSAxIG1pbnV0ZQo+IGJldHdlZW4gZWFjaCBy
-ZXRyeSwgc28gaXQgdGFrZXMgMiBtaW51dGVzIHRvIGdldCB0aGUgY2FyZCB1cCBhbmQKPiBydW5u
-aW5nLiBJIGhhdmUgbm90IHlldCBmb3VuZCBhIHNvbHV0aW9uIHRvIHRoaXMgaXNzdWUuCj4KPiBC
-ZXN0IFJlZ2FyZHMKPgo+IE9uIDA3LzI4LzIwMTUgMDM6NTcgUE0sIEVucmljbyBUYWdsaWF2aW5p
-IHdyb3RlOgo+PiBJIHdhcyB0ZXN0aW5nIHRoZSBrZXJuZWwgZnJvbSBGZWRvcmEgcmF3aGlkZSB0
-byB0ZXN0IHNvbWUgaXNzdWUKPj4gcmVsYXRlZCB0byB0aGUgc291bmQgY2FyZC4gU28gdGhpcyBp
-cyA0LjIgcmMzIGFzIHJlbGVhc2VkIGJ5IExpbnVzCj4+IHBsdXMgc29tZSBGZWRvcmEgcGF0Y2gu
-IE5vdGhpbmcgcmVsYXRlZCB0byBhdGgxMGsgYXMgZmFyIGFzIEkgY2FuIHNlZS4KPj4KPj4gQmlz
-ZWN0aW5nIHdvdWxkIHJlcXVpcmUgYSBsb3Qgb2YgdGltZS4gSSdtIGRvaW5nIHRoZSBmdWxsIFJQ
-TSBwYWNrYWdlLCBmZQo+PiBpbmNsdWRpbmcgbW9kdWxlcyBzaWduYXR1cmUgYW5kIHNvIG9uIGFu
-ZCBJJ20gZG9pbmcgdGhpcyBpbiBteSBmcmVlCj4+IHRpbWUuVGhpcyB3b250IHdvcmsgZm9yIGJp
-c2VjdGluZy4gSSBoYXZlIHRvIHNldHVwIHNvbWV0aGluZyBlbHNlLiBJcwo+PiBpdCBvayBpZiBJ
-IHJlc3RyaWN0IHRoZSBiaXNlY3Qgb24gdGhlIGF0aDEwayB0cmVlPyBUaGF0IGhhcyBlbm91Z2gK
-Pj4gY29tbWl0IGFscmVhZHkgdG8gYmVnaW4gd2l0aCwgcGx1cyBJJ20gZ29pbmcgdG8gYmUgb24g
-dGhlIHJvYWQgaW4gbGVzcwo+PiB0aGFuIHR3byB3ZWVrcy4KPj4KPj4gT24gMjggSnVseSAyMDE1
-IGF0IDEzOjI2LCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT4gd3JvdGU6
-Cj4+PiBPbiAyOCBKdWx5IDIwMTUgYXQgMTM6MDAsIEVucmljbyBUYWdsaWF2aW5pIDxlbnJpY28u
-dGFnbGlhdmluaUBnbWFpbC5jb20+IHdyb3RlOgo+Pj4+IEhpIE1pY2hhbCwKPj4+Pgo+Pj4+IHRo
-aXMgaXMgdGhlIGRtZXNnIG91dHB1dCBmcm9tIGEgYm9vdCB3aXRoIGtlcm5lbCA0LjEuMiB3aXRo
-IHBhdGNoIHRvCj4+Pj4gbWFrZSB0aGUgZmlybXdhcmUgbG9hZCBbMV0KPj4+Pgo+Pj4+IEp1bCAy
-NiAxMDowNzo0MiBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19wY2kK
-Pj4+PiAwMDAwOjAzOjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+Pj4+IEp1
-bCAyNiAxMDowNzo0MiBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19w
-Y2kKPj4+PiAwMDAwOjAzOjAwLjA6IHBjaSBpcnEgbXNpLXggaW50ZXJydXB0cyA4IGlycV9tb2Rl
-IDAgcmVzZXRfbW9kZSAwCj4+Pj4gSnVsIDI2IDEwOjA3OjQyIGFsaWVudHV4LnNhdXJpc2lhbW9u
-b2kub3JnIGtlcm5lbDogYXRoMTBrX3BjaQo+Pj4+IDAwMDA6MDM6MDAuMDogRGlyZWN0IGZpcm13
-YXJlIGxvYWQgZm9yIGF0aDEway9jYWwtcGNpLTAwMDA6MDM6MDAuMC5iaW4KPj4+PiBmYWlsZWQg
-d2l0aCBlcnJvciAtMgo+Pj4+IEp1bCAyNiAxMDowNzo0NCBhbGllbnR1eC5zYXVyaXNpYW1vbm9p
-Lm9yZyBrZXJuZWw6IGF0aDEwa19wY2kKPj4+PiAwMDAwOjAzOjAwLjA6IHFjYTYxNzQgaHcyLjEg
-KDB4MDUwMTAwMDAsIDB4MDAzNDA1ZmYpIGZ3Cj4+Pj4ga2lsbGVyLW4xNTI1LWZ3IGFwaSA0IGh0
-dCAzLjAgd21pIDQgY2FsIG90cCBtYXhfc3RhIDMyCj4+Pj4gSnVsIDI2IDEwOjA3OjQ0IGFsaWVu
-dHV4LnNhdXJpc2lhbW9ub2kub3JnIGtlcm5lbDogYXRoMTBrX3BjaQo+Pj4+IDAwMDA6MDM6MDAu
-MDogZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwIGRmcyAwIHRlc3Rtb2RlIDAKPj4+PiBKdWwg
-MjYgMTA6MDc6NDQgYWxpZW50dXguc2F1cmlzaWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNp
-Cj4+Pj4gMDAwMDowMzowMC4wIHdscDNzMDogcmVuYW1lZCBmcm9tIHdsYW4wCj4+Pj4KPj4+PiBJ
-IHNhdyB0aGUgcmVwb3J0IHlvdSBtZW50aW9uZWQgKEknbSBzdWJzY3JpYmVkIHRvIGF0aDEwayBh
-bmQgdHJ5IHRvCj4+Pj4ga2VlcCBpdCB1cCB3aXRoIGl0KS4gTm90IGJlaW5nIGV4cGVydCBhdCBh
-bGwgSSB3YXMgbm90IHN1cmUgaXQgd2FzIHRoZQo+Pj4+IHNhbWUgb3Igbm90LiBBbHNvIHRoZXJl
-IHNlZW1zIHRvIGJlIGEgZGlmZmVyZW5jZSB0aGF0IHdpdGggaXJxX21vZGU9MQo+Pj4+IGZvciBt
-ZSBpdCBqdXN0IHdvcmtzIGxpa2UgYmVmb3JlLgo+Pj4gSSdtIHF1aXRlIHB1enpsZWQgd2l0aCB0
-aGUgYWJvdmUgcHJpbnRvdXQuIFNvIGVpdGhlciB0aGVyZSdzIHNvbWUKPj4+IHdlaXJkIHJlZ3Jl
-c3Npb24gZWl0aGVyIGluIGRyaXZlciBvciB0aGUgcGNpIHN1YnN5c3RlbS4gSXQncyBnb29kIHlv
-dQo+Pj4gcG9zdGVkIDstKQo+Pj4KPj4+IEp1c3QgdG8gYmUgY2xlYXI6IHdlcmUgeW91IHVzaW5n
-IDQuMi1yYzMgYXMgaW4gZnJvbSBMaW51cycgdHJlZSBvciBLYWxsZSdzIHRyZWU/Cj4+Pgo+Pj4g
-QXNraW5nIGZvciBhIGBnaXQgYmlzZWN0YCBpcyBwcm9iYWJseSBhIGJpdCBleGNlc3NpdmUgLSBi
-dXQgaXQgd291bGQKPj4+IGhlbHAgYSBsb3QuIEkgZ3Vlc3MgeW91J2QgaGF2ZSB0byBtYW51YWxs
-eSBjaGVycnktcGljayBxY2E2MTc0IGh3MiBmaXgKPj4+IFsxXSB3aGlsZSBiaXNlY3RpbmcuCj4+
-Pgo+Pj4gSWYgYmlzZWN0IGlzIHRvbyBtdWNoIEkgZ3Vlc3MgeW91IGNvdWxkIHRyeSByZXZlcnRp
-bmcgKGluIG9yZGVyKToKPj4+ICBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2Vy
-bmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29tbWl0L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0
-aC9hdGgxMGs/aWQ9MGJjYmJlNjc5YjY2ZmVlMWI1NmRlZjVjYjMwYmZiNGY2MTZiMTEyNwo+Pj4g
-IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xp
-bnV4LmdpdC9jb21taXQvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEwaz9pZD03NmQ4NzBl
-ZDA5YWIzNDE1NDQ1NGIxYWRiODIzYWU3NWYxNzNjMmQyCj4+PiAgaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9jZ2l0L2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9kcml2
-ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrP2lkPTc3MjU4ZDQwOWNlNDU4OTAxMDRlM2RhMTFk
-MDI2MTQwMmM0OWFlZTEKPj4+Cj4+PiBJJ20gc2hvb3RpbmcgYmxpbmQgaGVyZSB0aG91Z2guCj4+
-Pgo+Pj4+IFsxXSBodHRwczovL2dpdC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC9z
-dGFibGUvbGludXgtc3RhYmxlLmdpdC9jb21taXQvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0
-aDEway9wY2kuYz9pZD0xMWEwMDJlZmJhYTdmYmQ5ZjZlNjE2Njk1YWI0MmFhOWYxY2FmMDYwCj4+
-Pgo+Pj4gTWljaGHFggo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwo+PiBhdGgxMGsgbWFpbGluZyBsaXN0Cj4+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCj4+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBr
-Cj4KPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-YXRoMTBrIG1haWxpbmcgbGlzdAo+IGF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCj4gaHR0cDov
-L2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+"John W. Linville" <linville@tuxdriver.com> writes:
+
+> On Tue, Jul 28, 2015 at 10:41:11AM +0530, Vasanthakumar Thiagarajan wrote:
+>> On Tuesday 28 July 2015 12:52 AM, John W. Linville wrote:
+>> >In ath10k_monitor_vdev_start, chandef is initialized to NULL and then
+>> >channel is immediately thereafter initialized to chandef->chan (i.e.
+>> >NULL->chan).  This appears to be some sort of cut-n-paste error, since
+>> >the same assignment is done later (i.e. after chandef has been properly
+>> >assigned to a non-NULL value).  So, let's just remove this "brown paper
+>> >bag" typo/thinko... :-)
+>> >
+>> >Coverity CID #1309505
+>> >
+>> >Signed-off-by: John W. Linville <linville@tuxdriver.com>
+
+[...]
+
+>> There is a similar change integrated recently,
+>> https://github.com/kvalo/ath/commit/19be9e9a7ac7e6050eab426283d2a87593cf6e82
+>
+> OK.  I don't see much point in the NULL assignment for channel, but the main
+> point is to avoide the chandef->chan part.
+
+Yeah, that was an oversight in my review. Want to send a patch to fix
+that? :)
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
