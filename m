@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22d.google.com ([2a00:1450:400c:c05::22d])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZJwYT-0003ZZ-9R
- for ath10k@lists.infradead.org; Tue, 28 Jul 2015 04:31:54 +0000
-Received: by wibxm9 with SMTP id xm9so138963124wib.0
- for <ath10k@lists.infradead.org>; Mon, 27 Jul 2015 21:31:27 -0700 (PDT)
+ id 1ZJxBH-0004Vr-GB
+ for ath10k@lists.infradead.org; Tue, 28 Jul 2015 05:11:59 +0000
+Message-ID: <55B70EEF.9070205@qti.qualcomm.com>
+Date: Tue, 28 Jul 2015 10:41:11 +0530
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
-References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
-Date: Tue, 28 Jul 2015 06:31:27 +0200
-Message-ID: <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
-Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: [PATCH] ath10k: remove NULL ptr deref in variable init of
+ ath10k_monitor_vdev_start
+References: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
+In-Reply-To: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,32 +19,50 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Enrico Tagliavini <enrico.tagliavini@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "John W. Linville" <linville@tuxdriver.com>, linux-wireless@vger.kernel.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, ath10k@lists.infradead.org
 
-T24gMjcgSnVseSAyMDE1IGF0IDIyOjA4LCBFbnJpY28gVGFnbGlhdmluaSA8ZW5yaWNvLnRhZ2xp
-YXZpbmlAZ21haWwuY29tPiB3cm90ZToKPiBIZWxsbyB0aGVyZSwKPgo+IEkgZ2F2ZSA0LjIgcmMz
-IGEgc2hvdCBhbmQgSSBkaXNjb3ZlcmVkIHRoZSB3aXJlbGVzcyB3YXMgbm90IHdvcmtpbmcKPiBh
-bnltb3JlIHdpdGggaXQuIEkgdHJpZWQgYWRkaW5nIGlycV9tb2RlPTEgYWxvbmdzaWRlIHNraXBf
-b3RwPXkgaW4KPiBhdGgxMGtfY29yZSAoSSBhc3N1bWUgeW91IG5lZWQgZncgYXBpIDUgdG8gcmVt
-b3ZlIHRoaXMsIGlzIHRoYXQKPiBjb3JyZWN0PywgSSBzdGlsbCBoYXZlIGZ3IDQgb25seSkuCj4K
-PiBMb2FkaW5nIHdpdGggaXJxX21vZGU9MAo+Cj4gWyAgIDIxLjEzMDIyNF0gYXRoMTBrX3BjaSAw
-MDAwOjAzOjAwLjA6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+IFsgICAyMS4xMzA3
-MzRdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBwY2kgaXJxIG1zaS14IGludGVycnVwdHMgOAo+
-IGlycV9tb2RlIDAgcmVzZXRfbW9kZSAwCgpUaGVyZSB3YXMgYWxyZWFkeSBhIHNpbWlsYXIgcmVw
-b3J0WzFdLiBKdXN0IGZvciB0aGUgcmVjb3JkOiB3aGF0Cm51bWJlciBvZiBpbnRlcnJ1cHRzIGRp
-ZCB5b3UgaGF2ZSBiZWZvcmUgNC4yLXJjMz8gSSBhc3N1bWUgaXQgd2FzICJwY2kKaXJxIG1zaSBp
-bnRlcnJ1cHRzIDEgaXJxX21vZGUgMCByZXNldF9tb2RlIDAiLgoKTXkgc3VzcGljaW9uIGlzIHRo
-YXQgZWl0aGVyIHRoZSBmaXJtd2FyZSBpcyBidWdneSBhbmQgZG9lc24ndCBwbGF5CndlbGwgd2l0
-aCBtdWx0aXBsZSBNU0kgaW50ZXJydXB0cyBvciB0aGUgTVNJIGludGVycnVwdCBiZWhhdmlvdXIK
-Y2hhbmdlZCBzaWduaWZpY2FudGx5IChjb21wYXJlZCB0byBxY2E5ODh4KSBhbmQgdGhpcyByZW1h
-aW5lZCBoaWRkZW4KYmVjYXVzZSBub3QgYW4gYXdmdWwgbG90IG9mIG1hY2hpbmVzIHNlZW1lZCB0
-byBoYXZlIHByb3ZpZGVkIG1vcmUgdGhhbgoxIG1zaSBpbnRlcnJ1cHQgZm9yIGF0aDEway4KClsx
-XTogaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvcGlwZXJtYWlsL2F0aDEway8yMDE1LUp1bHkv
-MDA1Njk1Lmh0bWwKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+On Tuesday 28 July 2015 12:52 AM, John W. Linville wrote:
+> In ath10k_monitor_vdev_start, chandef is initialized to NULL and then
+> channel is immediately thereafter initialized to chandef->chan (i.e.
+> NULL->chan).  This appears to be some sort of cut-n-paste error, since
+> the same assignment is done later (i.e. after chandef has been properly
+> assigned to a non-NULL value).  So, let's just remove this "brown paper
+> bag" typo/thinko... :-)
+>
+> Coverity CID #1309505
+>
+> Signed-off-by: John W. Linville <linville@tuxdriver.com>
+> ---
+>   drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index c9a7d5b5dffc..2823222dea92 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -836,7 +836,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+>   static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+>   {
+>   	struct cfg80211_chan_def *chandef = NULL;
+> -	struct ieee80211_channel *channel = chandef->chan;
+> +	struct ieee80211_channel *channel;
+>   	struct wmi_vdev_start_request_arg arg = {};
+>   	int ret = 0;
+>
+
+There is a similar change integrated recently, 
+https://github.com/kvalo/ath/commit/19be9e9a7ac7e6050eab426283d2a87593cf6e82 .
+
+Vasanth
+
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
