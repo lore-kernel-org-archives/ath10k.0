@@ -1,19 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x229.google.com ([2a00:1450:400c:c05::229])
+Received: from mail-bl2on0068.outbound.protection.outlook.com ([65.55.169.68]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK32L-000087-N6
- for ath10k@lists.infradead.org; Tue, 28 Jul 2015 11:27:10 +0000
-Received: by wicgb10 with SMTP id gb10so151980636wic.1
- for <ath10k@lists.infradead.org>; Tue, 28 Jul 2015 04:26:47 -0700 (PDT)
+ id 1ZK3t8-0001YN-WD
+ for ath10k@lists.infradead.org; Tue, 28 Jul 2015 12:21:43 +0000
+From: Jussi Haakana <jussi.haakana@7signal.com>
+Subject: Monitor mode TX retry reporting
+Date: Tue, 28 Jul 2015 12:21:19 +0000
+Message-ID: <CY1PR0201MB07293EE8CB1375DF298F1E8EA98D0@CY1PR0201MB0729.namprd02.prod.outlook.com>
+Content-Language: en-US
 MIME-Version: 1.0
-In-Reply-To: <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
-References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
- <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
- <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
-Date: Tue, 28 Jul 2015 13:26:47 +0200
-Message-ID: <CA+BoTQkA0k1RBwzKFchcWebuWUmdoaqvaAq4BRz2o3C-GGUCog@mail.gmail.com>
-Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,55 +18,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Enrico Tagliavini <enrico.tagliavini@gmail.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjggSnVseSAyMDE1IGF0IDEzOjAwLCBFbnJpY28gVGFnbGlhdmluaSA8ZW5yaWNvLnRhZ2xp
-YXZpbmlAZ21haWwuY29tPiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiB0aGlzIGlzIHRoZSBkbWVz
-ZyBvdXRwdXQgZnJvbSBhIGJvb3Qgd2l0aCBrZXJuZWwgNC4xLjIgd2l0aCBwYXRjaCB0bwo+IG1h
-a2UgdGhlIGZpcm13YXJlIGxvYWQgWzFdCj4KPiBKdWwgMjYgMTA6MDc6NDIgYWxpZW50dXguc2F1
-cmlzaWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNpCj4gMDAwMDowMzowMC4wOiBlbmFibGlu
-ZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikKPiBKdWwgMjYgMTA6MDc6NDIgYWxpZW50dXguc2F1cmlz
-aWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNpCj4gMDAwMDowMzowMC4wOiBwY2kgaXJxIG1z
-aS14IGludGVycnVwdHMgOCBpcnFfbW9kZSAwIHJlc2V0X21vZGUgMAo+IEp1bCAyNiAxMDowNzo0
-MiBhbGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19wY2kKPiAwMDAwOjAz
-OjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvciBhdGgxMGsvY2FsLXBjaS0wMDAwOjAzOjAw
-LjAuYmluCj4gZmFpbGVkIHdpdGggZXJyb3IgLTIKPiBKdWwgMjYgMTA6MDc6NDQgYWxpZW50dXgu
-c2F1cmlzaWFtb25vaS5vcmcga2VybmVsOiBhdGgxMGtfcGNpCj4gMDAwMDowMzowMC4wOiBxY2E2
-MTc0IGh3Mi4xICgweDA1MDEwMDAwLCAweDAwMzQwNWZmKSBmdwo+IGtpbGxlci1uMTUyNS1mdyBh
-cGkgNCBodHQgMy4wIHdtaSA0IGNhbCBvdHAgbWF4X3N0YSAzMgo+IEp1bCAyNiAxMDowNzo0NCBh
-bGllbnR1eC5zYXVyaXNpYW1vbm9pLm9yZyBrZXJuZWw6IGF0aDEwa19wY2kKPiAwMDAwOjAzOjAw
-LjA6IGRlYnVnIDAgZGVidWdmcyAxIHRyYWNpbmcgMCBkZnMgMCB0ZXN0bW9kZSAwCj4gSnVsIDI2
-IDEwOjA3OjQ0IGFsaWVudHV4LnNhdXJpc2lhbW9ub2kub3JnIGtlcm5lbDogYXRoMTBrX3BjaQo+
-IDAwMDA6MDM6MDAuMCB3bHAzczA6IHJlbmFtZWQgZnJvbSB3bGFuMAo+Cj4gSSBzYXcgdGhlIHJl
-cG9ydCB5b3UgbWVudGlvbmVkIChJJ20gc3Vic2NyaWJlZCB0byBhdGgxMGsgYW5kIHRyeSB0bwo+
-IGtlZXAgaXQgdXAgd2l0aCBpdCkuIE5vdCBiZWluZyBleHBlcnQgYXQgYWxsIEkgd2FzIG5vdCBz
-dXJlIGl0IHdhcyB0aGUKPiBzYW1lIG9yIG5vdC4gQWxzbyB0aGVyZSBzZWVtcyB0byBiZSBhIGRp
-ZmZlcmVuY2UgdGhhdCB3aXRoIGlycV9tb2RlPTEKPiBmb3IgbWUgaXQganVzdCB3b3JrcyBsaWtl
-IGJlZm9yZS4KCkknbSBxdWl0ZSBwdXp6bGVkIHdpdGggdGhlIGFib3ZlIHByaW50b3V0LiBTbyBl
-aXRoZXIgdGhlcmUncyBzb21lCndlaXJkIHJlZ3Jlc3Npb24gZWl0aGVyIGluIGRyaXZlciBvciB0
-aGUgcGNpIHN1YnN5c3RlbS4gSXQncyBnb29kIHlvdQpwb3N0ZWQgOy0pCgpKdXN0IHRvIGJlIGNs
-ZWFyOiB3ZXJlIHlvdSB1c2luZyA0LjItcmMzIGFzIGluIGZyb20gTGludXMnIHRyZWUgb3IgS2Fs
-bGUncyB0cmVlPwoKQXNraW5nIGZvciBhIGBnaXQgYmlzZWN0YCBpcyBwcm9iYWJseSBhIGJpdCBl
-eGNlc3NpdmUgLSBidXQgaXQgd291bGQKaGVscCBhIGxvdC4gSSBndWVzcyB5b3UnZCBoYXZlIHRv
-IG1hbnVhbGx5IGNoZXJyeS1waWNrIHFjYTYxNzQgaHcyIGZpeApbMV0gd2hpbGUgYmlzZWN0aW5n
-LgoKSWYgYmlzZWN0IGlzIHRvbyBtdWNoIEkgZ3Vlc3MgeW91IGNvdWxkIHRyeSByZXZlcnRpbmcg
-KGluIG9yZGVyKToKIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0
-L3RvcnZhbGRzL2xpbnV4LmdpdC9jb21taXQvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-az9pZD0wYmNiYmU2NzliNjZmZWUxYjU2ZGVmNWNiMzBiZmI0ZjYxNmIxMTI3CiBodHRwczovL2dp
-dC5rZXJuZWwub3JnL2NnaXQvbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvY29t
-bWl0L2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGs/aWQ9NzZkODcwZWQwOWFiMzQxNTQ0
-NTRiMWFkYjgyM2FlNzVmMTczYzJkMgogaHR0cHM6Ly9naXQua2VybmVsLm9yZy9jZ2l0L2xpbnV4
-L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L2NvbW1pdC9kcml2ZXJzL25ldC93aXJlbGVz
-cy9hdGgvYXRoMTBrP2lkPTc3MjU4ZDQwOWNlNDU4OTAxMDRlM2RhMTFkMDI2MTQwMmM0OWFlZTEK
-CkknbSBzaG9vdGluZyBibGluZCBoZXJlIHRob3VnaC4KCj4gWzFdIGh0dHBzOi8vZ2l0Lmtlcm5l
-bC5vcmcvY2dpdC9saW51eC9rZXJuZWwvZ2l0L3N0YWJsZS9saW51eC1zdGFibGUuZ2l0L2NvbW1p
-dC9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jP2lkPTExYTAwMmVmYmFhN2Zi
-ZDlmNmU2MTY2OTVhYjQyYWE5ZjFjYWYwNjAKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0Bs
-aXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlz
-dGluZm8vYXRoMTBrCg==
+Hi,
+
+I have the following test setup:
+- 1 interface in managed mode
+- 1 interface in monitor mode
+- attach to AP
+- start tcpdump on monitor interface
+- upload e.g. 200MB by using managed mode interface
+- check captured frames
+
+For some reason, on TX frames, I cannot see a single frame that has retry bit set 
+on frame control of 802.11 headers. For RX, retries seem to be reported normally. 
+I'd say that it is unlikely that retransmissions do not happen with 200MB payload? 
+Any ideas what could be causing this?
+
+I'm running 3.18.7 on ARM7, OpenWRT (Chaos Calmer):
+
+root@OpenWrt:/# uname -a
+Linux OpenWrt 3.18.7+ #38 SMP Sun Jun 28 03:51:01 CEST 2015 armv7l GNU/Linux
+root@OpenWrt:/# lspci
+01:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless Network Adapter
+
+Thanks,
+Jussi Haakana
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
