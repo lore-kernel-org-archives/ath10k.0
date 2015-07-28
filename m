@@ -1,15 +1,19 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-bl2on0068.outbound.protection.outlook.com ([65.55.169.68]
- helo=na01-bl2-obe.outbound.protection.outlook.com)
+Received: from tuxdriver-1-pt.tunnel.tserv13.ash1.ipv6.he.net
+ ([2001:470:7:9c9::2] helo=smtp.tuxdriver.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZK3t8-0001YN-WD
- for ath10k@lists.infradead.org; Tue, 28 Jul 2015 12:21:43 +0000
-From: Jussi Haakana <jussi.haakana@7signal.com>
-Subject: Monitor mode TX retry reporting
-Date: Tue, 28 Jul 2015 12:21:19 +0000
-Message-ID: <CY1PR0201MB07293EE8CB1375DF298F1E8EA98D0@CY1PR0201MB0729.namprd02.prod.outlook.com>
-Content-Language: en-US
+ id 1ZK68N-0003SI-2W
+ for ath10k@lists.infradead.org; Tue, 28 Jul 2015 14:45:37 +0000
+Date: Tue, 28 Jul 2015 10:31:25 -0400
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: Re: [PATCH] ath10k: remove NULL ptr deref in variable init of
+ ath10k_monitor_vdev_start
+Message-ID: <20150728143124.GB17081@tuxdriver.com>
+References: <1438024935-3946-1-git-send-email-linville@tuxdriver.com>
+ <55B70EEF.9070205@qti.qualcomm.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <55B70EEF.9070205@qti.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +26,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi,
+On Tue, Jul 28, 2015 at 10:41:11AM +0530, Vasanthakumar Thiagarajan wrote:
+> On Tuesday 28 July 2015 12:52 AM, John W. Linville wrote:
+> >In ath10k_monitor_vdev_start, chandef is initialized to NULL and then
+> >channel is immediately thereafter initialized to chandef->chan (i.e.
+> >NULL->chan).  This appears to be some sort of cut-n-paste error, since
+> >the same assignment is done later (i.e. after chandef has been properly
+> >assigned to a non-NULL value).  So, let's just remove this "brown paper
+> >bag" typo/thinko... :-)
+> >
+> >Coverity CID #1309505
+> >
+> >Signed-off-by: John W. Linville <linville@tuxdriver.com>
+> >---
+> >  drivers/net/wireless/ath/ath10k/mac.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> >diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> >index c9a7d5b5dffc..2823222dea92 100644
+> >--- a/drivers/net/wireless/ath/ath10k/mac.c
+> >+++ b/drivers/net/wireless/ath/ath10k/mac.c
+> >@@ -836,7 +836,7 @@ static inline int ath10k_vdev_setup_sync(struct ath10k *ar)
+> >  static int ath10k_monitor_vdev_start(struct ath10k *ar, int vdev_id)
+> >  {
+> >  	struct cfg80211_chan_def *chandef = NULL;
+> >-	struct ieee80211_channel *channel = chandef->chan;
+> >+	struct ieee80211_channel *channel;
+> >  	struct wmi_vdev_start_request_arg arg = {};
+> >  	int ret = 0;
+> >
+> 
+> There is a similar change integrated recently,
+> https://github.com/kvalo/ath/commit/19be9e9a7ac7e6050eab426283d2a87593cf6e82
 
-I have the following test setup:
-- 1 interface in managed mode
-- 1 interface in monitor mode
-- attach to AP
-- start tcpdump on monitor interface
-- upload e.g. 200MB by using managed mode interface
-- check captured frames
+OK.  I don't see much point in the NULL assignment for channel, but the main
+point is to avoide the chandef->chan part.
 
-For some reason, on TX frames, I cannot see a single frame that has retry bit set 
-on frame control of 802.11 headers. For RX, retries seem to be reported normally. 
-I'd say that it is unlikely that retransmissions do not happen with 200MB payload? 
-Any ideas what could be causing this?
-
-I'm running 3.18.7 on ARM7, OpenWRT (Chaos Calmer):
-
-root@OpenWrt:/# uname -a
-Linux OpenWrt 3.18.7+ #38 SMP Sun Jun 28 03:51:01 CEST 2015 armv7l GNU/Linux
-root@OpenWrt:/# lspci
-01:00.0 Network controller: Qualcomm Atheros QCA988x 802.11ac Wireless Network Adapter
-
-Thanks,
-Jussi Haakana
-
+John
+-- 
+John W. Linville		Someday the world will need a hero, and you
+linville@tuxdriver.com			might be all we have.  Be ready.
 
 _______________________________________________
 ath10k mailing list
