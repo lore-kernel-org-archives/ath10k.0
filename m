@@ -1,20 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-bl2on0063.outbound.protection.outlook.com ([65.55.169.63]
+ helo=na01-bl2-obe.outbound.protection.outlook.com)
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKLGD-0008Dc-HF
- for ath10k@lists.infradead.org; Wed, 29 Jul 2015 06:54:44 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
-References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
- <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
- <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
- <CA+BoTQkA0k1RBwzKFchcWebuWUmdoaqvaAq4BRz2o3C-GGUCog@mail.gmail.com>
- <CAMQd7ma7hehYLBf-5hUD0sViUwWGX8vy7ENXuBi8Q49F88A45Q@mail.gmail.com>
- <CA+BoTQkqttvPkk6qk6YV8SYPVnEcADfcUkLBCpjFoZBab81Byg@mail.gmail.com>
-Date: Wed, 29 Jul 2015 09:54:06 +0300
-In-Reply-To: <CA+BoTQkqttvPkk6qk6YV8SYPVnEcADfcUkLBCpjFoZBab81Byg@mail.gmail.com>
- (Michal Kazior's message of "Wed, 29 Jul 2015 07:28:19 +0200")
-Message-ID: <871tfr8ne9.fsf@kamboji.qca.qualcomm.com>
+ id 1ZKLGj-00006U-L8
+ for ath10k@lists.infradead.org; Wed, 29 Jul 2015 06:55:16 +0000
+From: Jussi Haakana <jussi.haakana@7signal.com>
+Subject: RE: Monitor mode TX retry reporting
+Date: Wed, 29 Jul 2015 06:54:49 +0000
+Message-ID: <CY1PR0201MB07292382AE1DE6A8FE19AD2CA98C0@CY1PR0201MB0729.namprd02.prod.outlook.com>
+References: <CY1PR0201MB07293EE8CB1375DF298F1E8EA98D0@CY1PR0201MB0729.namprd02.prod.outlook.com>
+ <CA+BoTQnyTxbO318M7iJe8kna7DuWfs1bc_RX1mobd1ePbVj4NQ@mail.gmail.com>
+In-Reply-To: <CA+BoTQnyTxbO318M7iJe8kna7DuWfs1bc_RX1mobd1ePbVj4NQ@mail.gmail.com>
+Content-Language: en-US
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,45 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
-Cc: Enrico Tagliavini <enrico.tagliavini@gmail.com>, linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Michal Kazior <michal.kazior@tieto.com> writes:
-
->> This wont work for bisecting. I have to setup something else. Is
->> it ok if I restrict the bisect on the ath10k tree? That has enough
->> commit already to begin with, plus I'm going to be on the road in less
->> than two weeks.
->
-> As long as you establish a working and a non-working commit id on
-> kvalo tree it should be fine I guess.
-
-And you can always limit the bisect to a certain directory, but the risk
-here is that if the regression is outside ath10k bisect won't find it.
-So you need to carefully consider is it safe to do or not. From the man
-page:
-
-"Cutting down bisection by giving more parameters to bisect start
-
-       You can further cut down the number of trials, if you know what
-       part of the tree is involved in the problem you are tracking
-       down, by specifying path parameters when issuing the bisect start
-       command:
-
-           $ git bisect start -- arch/i386 include/asm-i386"
-
-Also if you can even just narrow down the regression to a smaller set of
-patches, let's say few hundred, might make it easier to find the
-regression.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjkgSnVseSAyMDE1IGF0IDg6MjMsIE1pY2hhbCBLYXppb3IgPG1pY2hhbC5rYXppb3JAdGll
+dG8uY29tPiB3cm90ZToNCj4gT24gMjggSnVseSAyMDE1IGF0IDE0OjIxLCBKdXNzaSBIYWFrYW5h
+IDxqdXNzaS5oYWFrYW5hQDdzaWduYWwuY29tPiB3cm90ZToNCj4gPiBIaSwNCj4gPg0KPiA+IEkg
+aGF2ZSB0aGUgZm9sbG93aW5nIHRlc3Qgc2V0dXA6DQo+ID4gLSAxIGludGVyZmFjZSBpbiBtYW5h
+Z2VkIG1vZGUNCj4gPiAtIDEgaW50ZXJmYWNlIGluIG1vbml0b3IgbW9kZQ0KPiA+IC0gYXR0YWNo
+IHRvIEFQDQo+ID4gLSBzdGFydCB0Y3BkdW1wIG9uIG1vbml0b3IgaW50ZXJmYWNlDQo+ID4gLSB1
+cGxvYWQgZS5nLiAyMDBNQiBieSB1c2luZyBtYW5hZ2VkIG1vZGUgaW50ZXJmYWNlDQo+ID4gLSBj
+aGVjayBjYXB0dXJlZCBmcmFtZXMNCj4gPg0KPiA+IEZvciBzb21lIHJlYXNvbiwgb24gVFggZnJh
+bWVzLCBJIGNhbm5vdCBzZWUgYSBzaW5nbGUgZnJhbWUgdGhhdCBoYXMNCj4gcmV0cnkgYml0IHNl
+dA0KPiA+IG9uIGZyYW1lIGNvbnRyb2wgb2YgODAyLjExIGhlYWRlcnMuIEZvciBSWCwgcmV0cmll
+cyBzZWVtIHRvIGJlIHJlcG9ydGVkDQo+IG5vcm1hbGx5Lg0KPiA+IEknZCBzYXkgdGhhdCBpdCBp
+cyB1bmxpa2VseSB0aGF0IHJldHJhbnNtaXNzaW9ucyBkbyBub3QgaGFwcGVuIHdpdGgNCj4gMjAw
+TUIgcGF5bG9hZD8NCj4gPiBBbnkgaWRlYXMgd2hhdCBjb3VsZCBiZSBjYXVzaW5nIHRoaXM/DQo+
+IA0KPiBZb3UgY2FuJ3Qgc25pZmYgeW91ciBvd24gcmV0cmFuc21pc3Npb25zIGJlY2F1c2UgdGhl
+eSBhcmUgcGVyZm9ybWVkIGJ5DQo+IGRldmljZSBhbmQgdGNwZHVtcCBzZWVzIG9ubHkgYSBzaW5n
+bGUgZnJhbWUgdGhhdCB3YXMgc3VibWl0dGVkIHRocm91Z2gNCj4gdGhlIG5ldHdvcmtpbmcgc3Rh
+Y2suDQo+IA0KPiBJIGd1ZXNzIHlvdSBjb3VsZCBlbXVsYXRlIHRoaXMgYnkgcG9zdGluZyBza2J1
+ZmYgY29waWVzIGFzIFJ4IGJhc2VkIG9uDQo+IHR4IHJldHJ5IHNlcmllcyAod2hpY2ggYXJlbid0
+IGF2YWlsYWJsZSBub3cgZHVlIHRvIGF0aDEwayBmaXJtd2FyZQ0KPiBsaW1pdGF0aW9uKS4gSG93
+ZXZlciBJJ20gbm90IGF3YXJlIGlmIHRoZXJlJ3MgYW55IGRyaXZlciB0aGF0IGRvZXMNCj4gdGhh
+dC4NCg0KT2ssIHVuZGVyc3Rvb2QuIEkndmUgdmVyaWZpZWQgdGhhdCBzbmlmZmluZyBUWCByZXRy
+YW5zbWlzc2lvbnMgaXMgcG9zc2libGUgd2l0aA0KYXRoOWsgZHJpdmVyLCBidXQgaXQgc2VlbXMg
+bm90IHRvIGJlIHRoZSBjYXNlIHdpdGggYXRoMTBrLg0KDQo+IElmIHlvdSB3YW50IHRvIHNuaWZm
+IHlvdXIgY2xpZW50IHJldHJhbnNtaXNzaW9ucyB5b3UnbGwgaGF2ZSB0byB1c2UgYQ0KPiBzZXBh
+cmF0ZSBkZXZpY2UgdG8gYWN0IGFzIGEgc25pZmZlciBvciBsaXN0ZW4gb24gdGhlIG90aGVyIGVu
+ZHBvaW50DQo+IChpLmUuIEFQKS4NCj4gDQo+IA0KPiBNaWNoYcWCDQoNClRoYW5rcywNCkp1c3Np
+DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
