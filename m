@@ -1,23 +1,32 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKNGR-0003Hc-CU
- for ath10k@lists.infradead.org; Wed, 29 Jul 2015 09:03:07 +0000
-Received: by wicgb10 with SMTP id gb10so190553394wic.1
- for <ath10k@lists.infradead.org>; Wed, 29 Jul 2015 02:02:41 -0700 (PDT)
+ id 1ZKNVz-00071F-Qz
+ for ath10k@lists.infradead.org; Wed, 29 Jul 2015 09:19:08 +0000
+Received: by lbbst4 with SMTP id st4so2517666lbb.1
+ for <ath10k@lists.infradead.org>; Wed, 29 Jul 2015 02:18:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <871tfr8ne9.fsf@kamboji.qca.qualcomm.com>
-References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
- <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
- <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
- <CA+BoTQkA0k1RBwzKFchcWebuWUmdoaqvaAq4BRz2o3C-GGUCog@mail.gmail.com>
- <CAMQd7ma7hehYLBf-5hUD0sViUwWGX8vy7ENXuBi8Q49F88A45Q@mail.gmail.com>
- <CA+BoTQkqttvPkk6qk6YV8SYPVnEcADfcUkLBCpjFoZBab81Byg@mail.gmail.com>
- <871tfr8ne9.fsf@kamboji.qca.qualcomm.com>
-Date: Wed, 29 Jul 2015 11:02:40 +0200
-Message-ID: <CAMQd7mY+upL+t9q0yJ0uL_jw_STEKL+hhe1PF_D5yPwfTkcgZg@mail.gmail.com>
-Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
-From: Enrico Tagliavini <enrico.tagliavini@gmail.com>
+In-Reply-To: <CA+BoTQmNKME05Y-E=7Sy94govwR1CLa3PQL6izc4KTvnBcB=uA@mail.gmail.com>
+References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+ <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
+ <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
+ <55A44244.9000109@dd-wrt.com>
+ <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
+ <55A4E1FC.9000005@dd-wrt.com>
+ <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
+ <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
+ <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
+ <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
+ <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
+ <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
+ <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
+ <CA+BoTQnsB5qNVVzcyOR9YGA9sd4Rs+zQ-OeT2Q73YX33gu2NeQ@mail.gmail.com>
+ <CAFBinCAk3_zydcTn0HDNeAoN4LntYOM7pDwzf5_z6=j3oKF6UQ@mail.gmail.com>
+ <CA+BoTQmNKME05Y-E=7Sy94govwR1CLa3PQL6izc4KTvnBcB=uA@mail.gmail.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Wed, 29 Jul 2015 11:18:26 +0200
+Message-ID: <CAFBinCCwmhmkJgB0EvGZWGiSQXhNESatmP+txmN-7GMJ3bGNGg@mail.gmail.com>
+Subject: Re: AP mode firmware crash on QCA9880-BR4A
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +35,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-WWVhaCB0aGF0J3Mgd2hhdCBJIG1lYW50LiBNeSBpZGVhIHdhcyB0byBmaXJzdCBiaXNlY3Qgb25s
-eSB0aGUgYXRoMTBrCmRpcmVjdG9yeSwgc28gcmVzdHJpY3RpbmcgdGhlIGJpc2VjdCBvbiB0aGUg
-Y29tbWl0cyB0b3VjaGluZyBzdHVmZgp0aGVyZS4gSSBndWVzcyBpZiB0aGUgaXNzdWUgaXMgbW9y
-ZSBicm9hZCBpdCB3aWxsIGNvbWUgdXAgc29tZXdoZXJlCmVsc2UgYXMgd2VsbCwgc28gdGhpcyBp
-cyBhIGdvb2Qgc3RhcnRpbmcgcG9pbnQsIEkgaG9wZS4gVGhhbmsgeW91IGZvcgpwb2ludGluZyBp
-dCBvdXQgdGhvdWdoLCB0aGlzIHdpbGwgYWN0dWFsbHkgYmUgdGhlIGZpcnN0IHRpbWUgSSBkbyBh
-CnByb3BlciBiaXNlY3QuCgpBbHNvIGRvIHlvdSB3YW50IG1lIHRvIGJpc2VjdCBLYWxsZSdzIHNv
-dXJjZXMgb3IgTGludXMnIG1hc3Rlcj8gQnkKd2hhdCBNaWNoYcWCIHNhaWQgSSBndWVzcyBLYWxs
-ZSdzIGJ1dCBJIGFzayB0byBiZSBzdXJlLgoKQWxzbyB0byBiZSBjbGVhcjogSSdtIHVzaW5nIExp
-bnVzJyBzb3VyY2VzIGF0IHRoZSBtb21lbnQsIGFzIHByb3ZpZGVkCmJ5IEZlZG9yYSByYXdoaWRl
-LgoKRm9yIG1lIGl0J3MgdGhlIHNhbWUsIHNvIGxldCBtZSBrbm93IHdoYXQgeW91IHByZWZlciBh
-bmQgaXMgbW9yZQp1c2VmdWwgdG8gc29sdmUgdGhpcyBpc3N1ZS4KCk9uIDI5IEp1bHkgMjAxNSBh
-dCAwODo1NCwgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21tLmNvbT4gd3JvdGU6Cj4gTWlj
-aGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKPgo+Pj4gVGhpcyB3
-b250IHdvcmsgZm9yIGJpc2VjdGluZy4gSSBoYXZlIHRvIHNldHVwIHNvbWV0aGluZyBlbHNlLiBJ
-cwo+Pj4gaXQgb2sgaWYgSSByZXN0cmljdCB0aGUgYmlzZWN0IG9uIHRoZSBhdGgxMGsgdHJlZT8g
-VGhhdCBoYXMgZW5vdWdoCj4+PiBjb21taXQgYWxyZWFkeSB0byBiZWdpbiB3aXRoLCBwbHVzIEkn
-bSBnb2luZyB0byBiZSBvbiB0aGUgcm9hZCBpbiBsZXNzCj4+PiB0aGFuIHR3byB3ZWVrcy4KPj4K
-Pj4gQXMgbG9uZyBhcyB5b3UgZXN0YWJsaXNoIGEgd29ya2luZyBhbmQgYSBub24td29ya2luZyBj
-b21taXQgaWQgb24KPj4ga3ZhbG8gdHJlZSBpdCBzaG91bGQgYmUgZmluZSBJIGd1ZXNzLgo+Cj4g
-QW5kIHlvdSBjYW4gYWx3YXlzIGxpbWl0IHRoZSBiaXNlY3QgdG8gYSBjZXJ0YWluIGRpcmVjdG9y
-eSwgYnV0IHRoZSByaXNrCj4gaGVyZSBpcyB0aGF0IGlmIHRoZSByZWdyZXNzaW9uIGlzIG91dHNp
-ZGUgYXRoMTBrIGJpc2VjdCB3b24ndCBmaW5kIGl0Lgo+IFNvIHlvdSBuZWVkIHRvIGNhcmVmdWxs
-eSBjb25zaWRlciBpcyBpdCBzYWZlIHRvIGRvIG9yIG5vdC4gRnJvbSB0aGUgbWFuCj4gcGFnZToK
-Pgo+ICJDdXR0aW5nIGRvd24gYmlzZWN0aW9uIGJ5IGdpdmluZyBtb3JlIHBhcmFtZXRlcnMgdG8g
-YmlzZWN0IHN0YXJ0Cj4KPiAgICAgICAgWW91IGNhbiBmdXJ0aGVyIGN1dCBkb3duIHRoZSBudW1i
-ZXIgb2YgdHJpYWxzLCBpZiB5b3Uga25vdyB3aGF0Cj4gICAgICAgIHBhcnQgb2YgdGhlIHRyZWUg
-aXMgaW52b2x2ZWQgaW4gdGhlIHByb2JsZW0geW91IGFyZSB0cmFja2luZwo+ICAgICAgICBkb3du
-LCBieSBzcGVjaWZ5aW5nIHBhdGggcGFyYW1ldGVycyB3aGVuIGlzc3VpbmcgdGhlIGJpc2VjdCBz
-dGFydAo+ICAgICAgICBjb21tYW5kOgo+Cj4gICAgICAgICAgICAkIGdpdCBiaXNlY3Qgc3RhcnQg
-LS0gYXJjaC9pMzg2IGluY2x1ZGUvYXNtLWkzODYiCj4KPiBBbHNvIGlmIHlvdSBjYW4gZXZlbiBq
-dXN0IG5hcnJvdyBkb3duIHRoZSByZWdyZXNzaW9uIHRvIGEgc21hbGxlciBzZXQgb2YKPiBwYXRj
-aGVzLCBsZXQncyBzYXkgZmV3IGh1bmRyZWQsIG1pZ2h0IG1ha2UgaXQgZWFzaWVyIHRvIGZpbmQg
-dGhlCj4gcmVncmVzc2lvbi4KPgo+IC0tCj4gS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtA
-bGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2F0aDEwawo=
+On Wed, Jul 29, 2015 at 9:38 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> I can't get smart antenna out of my head at this point - it wasn't
+> supported in 10.1 firmware (which works with your device). However
+> 10.2 seems to report that your hardware itself isn't capable of it so
+> it shouldn't be a problem (in theory).
+>
+> I guess you could try playing with the WMI_BCN_TX_REF_DEF_ANTENNA in
+> the driver and try things like: 0x1, 0x7, 0xf, 0xff, 0xff00, 0xffff,
+> 0xff0000, 0xffffff.
+I have tested the following values (while there were NO changes in
+ath10k_wmi_event_host_swba = my patch was reverted) and it's still
+crashing with all of them:
+0x1, 0x3, 0x7, 0xf, 0xff, 0xff00, 0xffff, 0xff0000 and 0xffffff
+
+> I doubt it'll help though. I guess other management frames would crash
+> firmware as well but I don't think they do. Can you verify that by
+> running scan from any station around to see if the ath10k AP responds
+> with a Probe Response and is hence visible in station's scan results,
+> please?
+I did that with my second patch applied (that skips sending beacons)
+and WMI_BCN_TX_REF_DEF_ANTENNA = 0. In this case the AP is *not*
+visible to other devices (I checked with two android phones, since
+those are the only other 5G ready devices I have at the moment).
+
+
+Regards,
+Martin
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
