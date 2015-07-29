@@ -1,16 +1,21 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x235.google.com ([2a00:1450:400c:c05::235])
+Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKJqD-0006U5-BE
- for ath10k@lists.infradead.org; Wed, 29 Jul 2015 05:23:46 +0000
-Received: by wicgb10 with SMTP id gb10so183639927wic.1
- for <ath10k@lists.infradead.org>; Tue, 28 Jul 2015 22:23:15 -0700 (PDT)
+ id 1ZKJsI-0007mI-LR
+ for ath10k@lists.infradead.org; Wed, 29 Jul 2015 05:25:55 +0000
+Received: by wicmv11 with SMTP id mv11so203943550wic.0
+ for <ath10k@lists.infradead.org>; Tue, 28 Jul 2015 22:25:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CY1PR0201MB07293EE8CB1375DF298F1E8EA98D0@CY1PR0201MB0729.namprd02.prod.outlook.com>
-References: <CY1PR0201MB07293EE8CB1375DF298F1E8EA98D0@CY1PR0201MB0729.namprd02.prod.outlook.com>
-Date: Wed, 29 Jul 2015 07:23:15 +0200
-Message-ID: <CA+BoTQnyTxbO318M7iJe8kna7DuWfs1bc_RX1mobd1ePbVj4NQ@mail.gmail.com>
-Subject: Re: Monitor mode TX retry reporting
+In-Reply-To: <55B79BE8.6020705@gmail.com>
+References: <CAMQd7mbWC7rj8-eU7Jv21ehT8KrpC=L=xWxzDQxHEU_ePNSdUg@mail.gmail.com>
+ <CA+BoTQmd0Uoi=2MNMsDXYe1yKsYa3P8uvVzWwXoMynQGtjeD4w@mail.gmail.com>
+ <CAMQd7maioLviTaLHp+f03HafABijKD_d92K_SRO8XS51poKGqg@mail.gmail.com>
+ <CA+BoTQkA0k1RBwzKFchcWebuWUmdoaqvaAq4BRz2o3C-GGUCog@mail.gmail.com>
+ <CAMQd7ma7hehYLBf-5hUD0sViUwWGX8vy7ENXuBi8Q49F88A45Q@mail.gmail.com>
+ <55B79BE8.6020705@gmail.com>
+Date: Wed, 29 Jul 2015 07:25:33 +0200
+Message-ID: <CA+BoTQmLKUFt1ZjaGyb2z=_aY-h57LZUZffoeuqJZ=x8=Dh8eQ@mail.gmail.com>
+Subject: Re: QCA6174 hw2.1 irq_mode=0 broken on 4.2-rc3, working on 4.1.2
 From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -24,29 +29,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Jussi Haakana <jussi.haakana@7signal.com>
+To: Alexandre Maloteaux <a.maloteaux@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-T24gMjggSnVseSAyMDE1IGF0IDE0OjIxLCBKdXNzaSBIYWFrYW5hIDxqdXNzaS5oYWFrYW5hQDdz
-aWduYWwuY29tPiB3cm90ZToKPiBIaSwKPgo+IEkgaGF2ZSB0aGUgZm9sbG93aW5nIHRlc3Qgc2V0
-dXA6Cj4gLSAxIGludGVyZmFjZSBpbiBtYW5hZ2VkIG1vZGUKPiAtIDEgaW50ZXJmYWNlIGluIG1v
-bml0b3IgbW9kZQo+IC0gYXR0YWNoIHRvIEFQCj4gLSBzdGFydCB0Y3BkdW1wIG9uIG1vbml0b3Ig
-aW50ZXJmYWNlCj4gLSB1cGxvYWQgZS5nLiAyMDBNQiBieSB1c2luZyBtYW5hZ2VkIG1vZGUgaW50
-ZXJmYWNlCj4gLSBjaGVjayBjYXB0dXJlZCBmcmFtZXMKPgo+IEZvciBzb21lIHJlYXNvbiwgb24g
-VFggZnJhbWVzLCBJIGNhbm5vdCBzZWUgYSBzaW5nbGUgZnJhbWUgdGhhdCBoYXMgcmV0cnkgYml0
-IHNldAo+IG9uIGZyYW1lIGNvbnRyb2wgb2YgODAyLjExIGhlYWRlcnMuIEZvciBSWCwgcmV0cmll
-cyBzZWVtIHRvIGJlIHJlcG9ydGVkIG5vcm1hbGx5Lgo+IEknZCBzYXkgdGhhdCBpdCBpcyB1bmxp
-a2VseSB0aGF0IHJldHJhbnNtaXNzaW9ucyBkbyBub3QgaGFwcGVuIHdpdGggMjAwTUIgcGF5bG9h
-ZD8KPiBBbnkgaWRlYXMgd2hhdCBjb3VsZCBiZSBjYXVzaW5nIHRoaXM/CgpZb3UgY2FuJ3Qgc25p
-ZmYgeW91ciBvd24gcmV0cmFuc21pc3Npb25zIGJlY2F1c2UgdGhleSBhcmUgcGVyZm9ybWVkIGJ5
-CmRldmljZSBhbmQgdGNwZHVtcCBzZWVzIG9ubHkgYSBzaW5nbGUgZnJhbWUgdGhhdCB3YXMgc3Vi
-bWl0dGVkIHRocm91Z2gKdGhlIG5ldHdvcmtpbmcgc3RhY2suCgpJIGd1ZXNzIHlvdSBjb3VsZCBl
-bXVsYXRlIHRoaXMgYnkgcG9zdGluZyBza2J1ZmYgY29waWVzIGFzIFJ4IGJhc2VkIG9uCnR4IHJl
-dHJ5IHNlcmllcyAod2hpY2ggYXJlbid0IGF2YWlsYWJsZSBub3cgZHVlIHRvIGF0aDEwayBmaXJt
-d2FyZQpsaW1pdGF0aW9uKS4gSG93ZXZlciBJJ20gbm90IGF3YXJlIGlmIHRoZXJlJ3MgYW55IGRy
-aXZlciB0aGF0IGRvZXMKdGhhdC4KCklmIHlvdSB3YW50IHRvIHNuaWZmIHlvdXIgY2xpZW50IHJl
-dHJhbnNtaXNzaW9ucyB5b3UnbGwgaGF2ZSB0byB1c2UgYQpzZXBhcmF0ZSBkZXZpY2UgdG8gYWN0
-IGFzIGEgc25pZmZlciBvciBsaXN0ZW4gb24gdGhlIG90aGVyIGVuZHBvaW50CihpLmUuIEFQKS4K
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+T24gMjggSnVseSAyMDE1IGF0IDE3OjEyLCBBbGV4YW5kcmUgTWFsb3RlYXV4IDxhLm1hbG90ZWF1
+eEBnbWFpbC5jb20+IHdyb3RlOgpbLi4uXQo+IEl0IHdvcmtzIG9uIG15IGFyY2hsaW51eCBzeXN0
+ZW0gYnV0IGZpcm13YXJlIGxvYWRpbmcgdGFrZSAxIG1pbnV0ZQo+IGJldHdlZW4gZWFjaCByZXRy
+eSwgc28gaXQgdGFrZXMgMiBtaW51dGVzIHRvIGdldCB0aGUgY2FyZCB1cCBhbmQKPiBydW5uaW5n
+LiBJIGhhdmUgbm90IHlldCBmb3VuZCBhIHNvbHV0aW9uIHRvIHRoaXMgaXNzdWUuCgpHbyBhc2sg
+b24gdGhlIGFyY2ggZm9ydW0gb3IgbHVyayBmb3IgdWRldiBmaXJtd2FyZSB0aW1lb3V0cyB0aHJl
+YWQuCkl0J3Mgbm90IGVudGlyZWx5IG5ldyBhbmQgSSdtIGJldHRpbmcgdGhpcyBoYXMgYmVlbiBz
+b2x2ZWQgbWFueSB0aW1lcwphbHJlYWR5LgoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxp
+c3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hdGgxMGsK
