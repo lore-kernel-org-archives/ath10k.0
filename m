@@ -1,31 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKLx6-0005ax-Vd
- for ath10k@lists.infradead.org; Wed, 29 Jul 2015 07:39:02 +0000
-Received: by wibud3 with SMTP id ud3so208832039wib.1
- for <ath10k@lists.infradead.org>; Wed, 29 Jul 2015 00:38:37 -0700 (PDT)
+ id 1ZKMhH-00010M-31
+ for ath10k@lists.infradead.org; Wed, 29 Jul 2015 08:26:43 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: suppress 'failed to process fft' warning messages.
+References: <1437490215-11214-1-git-send-email-kevin@darbyshire-bryant.me.uk>
+Date: Wed, 29 Jul 2015 11:25:46 +0300
+In-Reply-To: <1437490215-11214-1-git-send-email-kevin@darbyshire-bryant.me.uk>
+ (Kevin Darbyshire-Bryant's message of "Tue, 21 Jul 2015 15:50:15
+ +0100")
+Message-ID: <87lhdz74l1.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAFBinCAk3_zydcTn0HDNeAoN4LntYOM7pDwzf5_z6=j3oKF6UQ@mail.gmail.com>
-References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
- <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
- <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
- <55A44244.9000109@dd-wrt.com>
- <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
- <55A4E1FC.9000005@dd-wrt.com>
- <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
- <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
- <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
- <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
- <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
- <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
- <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
- <CA+BoTQnsB5qNVVzcyOR9YGA9sd4Rs+zQ-OeT2Q73YX33gu2NeQ@mail.gmail.com>
- <CAFBinCAk3_zydcTn0HDNeAoN4LntYOM7pDwzf5_z6=j3oKF6UQ@mail.gmail.com>
-Date: Wed, 29 Jul 2015 09:38:37 +0200
-Message-ID: <CA+BoTQmNKME05Y-E=7Sy94govwR1CLa3PQL6izc4KTvnBcB=uA@mail.gmail.com>
-Subject: Re: AP mode firmware crash on QCA9880-BR4A
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -34,52 +20,44 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
+To: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-T24gMjkgSnVseSAyMDE1IGF0IDAyOjA0LCBNYXJ0aW4gQmx1bWVuc3RpbmdsCjxtYXJ0aW4uYmx1
-bWVuc3RpbmdsQGdvb2dsZW1haWwuY29tPiB3cm90ZToKPiBIaSBNaWNoYWwsCj4KPiBzb3JyeSBm
-b3IgdGhlIGRlbGF5LCBJIHdhcyB2ZXJ5IGJ1c3kgZm9yIHRoZSBwYXN0IHdlZWsuCj4gQnV0IG5v
-dyBJIGFtIGJhY2sgd2l0aCBuZXdzLgo+IFRvIGtlZXAgaXQgc2ltcGxlLCBhbGwgb2YgbXkgbmV3
-IGZpbmRpbmdzIGJlbG93IGFyZSB3aXRoIGF0aDEwawo+IGZpcm13YXJlIDEwLjIuNC43MC0yLgo+
-IFRoZSB3aXJlbGVzcyBkcml2ZXJzIHdlcmUgYWxzbyB1cGRhdGVkIGluIE9wZW5XcnQ6ICJMb2Fk
-aW5nIG1vZHVsZXMKPiBiYWNrcG9ydGVkIGZyb20gTGludXggdmVyc2lvbiBtYXN0ZXItMjAxNS0w
-Ny0yMS0wLWc0N2NkMjAzIgo+Cj4gT24gVGh1LCBKdWwgMjMsIDIwMTUgYXQgNzo1MCBBTSwgTWlj
-aGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyb3RlOgo+PiBZZXMsIHRoaXMg
-c2hvdWxkIGJlIGVub3VnaC4gWW91J2xsIHdhbnQgdG8gYWRkL2tlZXAgYSBwcmludCB0byBrbm93
-Cj4+IGhvdyBtYW55IFNXQkEgZXZlbnQgY29tZSBpbiB0aG91Z2guCj4gSSBoYXZlIHVzZWQgdGhp
-cyBwYXRjaCBbMF0gdG8gbWFrZSBhdGgxMGtfd21pX2V2ZW50X2hvc3Rfc3diYSBvbmx5IGRvCj4g
-cHJpbnRrKCIlcygpXG4iLCBfX2Z1bmNfXyk7Cj4gUmVzdWx0OiBmaXJtd2FyZSBpcyBub3QgY3Jh
-c2hpbmcgLSBrZXJuZWwgbG9nIGNhbiBiZSBzZWVuIGhlcmU6IFsxXQo+Cj4+IFBlcmhhcHMgbm90
-IHN1Ym1pdHRpbmcgYmVhY29ucyB3aWxsIHByZXZlbnQgdGhlIGNyYXNoIG9yIGl0J2xsIHBvc3Rw
-b25lIGl0IHVudGlsCj4+IGFmdGVyIG1vcmUgU1dCQSBldmVudHMgYXJlIGRlbGl2ZXJlZCB0aGFu
-IGJlZm9yZS4KPiBJIGFsc28gdHJpZWQgdGhhdCBieSAjaWYgMCdpbmcgZXZlcnl0aGluZyBzdGFy
-dGluZyBhdCAiaWYKPiAoIWFydmlmLT5iZWFjb25fYnVmKSIgdW50aWwgInRyYWNlX2F0aDEwa190
-eF9wYXlsb2FkKGFyLCBiY24tPmRhdGEsCj4gYmNuLT5sZW4pOyIuIFRoZSBwYXRjaCBmb3IgdGhp
-cyBjYW4gYmUgc2VlbiBoZXJlOiBbMl0KPiBUaGUgcmVzdWx0OiBmaXJtd2FyZSBpcyBzdGlsbCBu
-b3QgY3Jhc2hpbmcgLSBrZXJuZWwgbG9nIGNhbiBiZSBzZWVuIGhlcmU6IFszXQo+Cj4gV2l0aG91
-dCBhbnkgcGF0Y2hlcyBhdCBhbGwgKG9ubHkgYSBwcmludGsgYXQgdGhlIHN0YXJ0IG9mCj4gYXRo
-MTBrX3dtaV9ldmVudF9ob3N0X3N3YmEpLCB0aGlzIGlzIHRoZSByZXN1bHQgdGhlIHNhbWUgYXMg
-d2l0aCBvbGQKPiB3aXJlbGVzcyBkcml2ZXIgdmVyc2lvbnM6IGZpcm13YXJlIGNyYXNoZXMsIHNl
-ZSBbNV0KPgo+IExldCBtZSBrbm93IHdoYXQgdGhlIG5leHQgc3RlcHMgYXJlIC0gSSdtIHN1cmUg
-d2UgY2FuIGZpeCB0aGlzIG5hc3R5IGJ1ZyEgOi0pCgpBd2Vzb21lIHJlcG9ydCwgdGhhbmtzIQoK
-SXQncyBnb29kIHdlIG5hcnJvd2VkIHRoZSBwcm9ibGVtIGRvd24gdG8gYmVhY29uIHRyYW5zbWlz
-c2lvbi4KCkkgY2FuJ3QgZ2V0IHNtYXJ0IGFudGVubmEgb3V0IG9mIG15IGhlYWQgYXQgdGhpcyBw
-b2ludCAtIGl0IHdhc24ndApzdXBwb3J0ZWQgaW4gMTAuMSBmaXJtd2FyZSAod2hpY2ggd29ya3Mg
-d2l0aCB5b3VyIGRldmljZSkuIEhvd2V2ZXIKMTAuMiBzZWVtcyB0byByZXBvcnQgdGhhdCB5b3Vy
-IGhhcmR3YXJlIGl0c2VsZiBpc24ndCBjYXBhYmxlIG9mIGl0IHNvCml0IHNob3VsZG4ndCBiZSBh
-IHByb2JsZW0gKGluIHRoZW9yeSkuCgpJIGd1ZXNzIHlvdSBjb3VsZCB0cnkgcGxheWluZyB3aXRo
-IHRoZSBXTUlfQkNOX1RYX1JFRl9ERUZfQU5URU5OQSBpbgp0aGUgZHJpdmVyIGFuZCB0cnkgdGhp
-bmdzIGxpa2U6IDB4MSwgMHg3LCAweGYsIDB4ZmYsIDB4ZmYwMCwgMHhmZmZmLAoweGZmMDAwMCwg
-MHhmZmZmZmYuCgpJIGRvdWJ0IGl0J2xsIGhlbHAgdGhvdWdoLiBJIGd1ZXNzIG90aGVyIG1hbmFn
-ZW1lbnQgZnJhbWVzIHdvdWxkIGNyYXNoCmZpcm13YXJlIGFzIHdlbGwgYnV0IEkgZG9uJ3QgdGhp
-bmsgdGhleSBkby4gQ2FuIHlvdSB2ZXJpZnkgdGhhdCBieQpydW5uaW5nIHNjYW4gZnJvbSBhbnkg
-c3RhdGlvbiBhcm91bmQgdG8gc2VlIGlmIHRoZSBhdGgxMGsgQVAgcmVzcG9uZHMKd2l0aCBhIFBy
-b2JlIFJlc3BvbnNlIGFuZCBpcyBoZW5jZSB2aXNpYmxlIGluIHN0YXRpb24ncyBzY2FuIHJlc3Vs
-dHMsCnBsZWFzZT8KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQu
-b3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk> writes:
+
+> When using DFS channels on Ath10k, kernel log has repeated warning message
+> 'failed to process fft: -22' typically under medium/heavy traffic.
+>
+> This patch switches the warnings to driver debug (WMI events) mode only
+> thus reducing log file noise.
+>
+> DFS and spectral scan share underlying HW mechanisms and enabling one
+> (DFS) enables the other (spectral scan) as far as event reporting from
+> firmware to driver is concerned. Spectral scan events take no part in
+> processing of DFS radar pulses which are delivered as distinct events,
+> so the fft (spectral event) warning is harmless and DFS interference
+> detection/protection still occurs.
+>
+> Symptoms seen & fix tested in both debug & non-debug modes on TP-Link
+> Archer C7 v2 platform.
+>
+> Signed-off-by: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
+
+Thanks, applied.
+
+In the future please use v2, v3 to mark different versions of the patch
+so that I can easily find the latest version:
+
+https://www.kernel.org/doc/Documentation/SubmittingPatches
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
