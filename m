@@ -1,15 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZKoTT-0005No-Oy
- for ath10k@lists.infradead.org; Thu, 30 Jul 2015 14:06:21 +0000
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+ by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZKoKf-0000HK-0Y
+ for ath10k@lists.infradead.org; Thu, 30 Jul 2015 13:57:15 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: initialize msdu ext. descriptor before use
-References: <1437694326-31977-1-git-send-email-poh@qca.qualcomm.com>
-Date: Thu, 30 Jul 2015 17:05:47 +0300
-In-Reply-To: <1437694326-31977-1-git-send-email-poh@qca.qualcomm.com> (Peter
- Oh's message of "Thu, 23 Jul 2015 16:32:06 -0700")
-Message-ID: <87r3np3flw.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: Fix memory alloc failure in qca99x0 during
+ wmi svc rdy event
+References: <1437456178-7862-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Thu, 30 Jul 2015 16:56:33 +0300
+In-Reply-To: <1437456178-7862-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Tue, 21 Jul 2015 10:52:57 +0530")
+Message-ID: <87zj2d3g1a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,30 +24,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@qca.qualcomm.com>
+To: Raja Mani <rmani@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Peter Oh <poh@qca.qualcomm.com> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> Initial QCA99X0 support has a known issue with TCP Tx throughput.
-> All other path such as UDP Tx/Rx and TCP Rx meet their expectation
-> (> 900Mbps), but TCP Tx marked as low as 5Mbps when single pair is
-> used on iperf.
+> Host memory required for firmware is allocated while handling
+> wmi service ready event. Right now, wmi service ready is handled
+> in tasklet context and it calls dma_alloc_coherent() with atomic
+> flag (GFP_ATOMIC) to allocate memory in host needed for firmware.
+> The problem is, dma_alloc_coherent() with GFP_ATOMIC fails in
+> the platform (at least in AP platform) where it has less atomic
+> pool memory (< 2mb). QCA99X0 requires around 2 MB of host memory
+> for one card, having additional QCA99X0 card in the same platform
+> will require similarly amount of memory. So, it's not guaranteed that
+> all the platform will have enough atomic memory pool.
 >
-> The root cause is turned out because TSO flag is not initialized
-> properly so that firmware configures TSO in wrong way.
-> TSO flags in msdu extension descriptor is required to be reset
-> to indicate firmware there is no TSO is enabled, otherwise it
-> could act as TSO is enabled which causes huge throughput drop.
+> Fix this issue, by handling wmi service ready event in workqueue
+> context and calling dma_alloc_coherent() with GFP_KERNEL. mac80211 work
+> queue will not be ready at the time of handling wmi service ready.
+> So, it can't be used to handle wmi service ready. Also, register work
+> gets scheduled during insmod in existing ath10k_wq and waits for
+> wmi service ready to completed. Both workqueue can't be used for
+> this purpose. New auxiliary workqueue is added to handle wmi service
+> ready.
 >
-> In fact, it's enough by resetting TSO flags only to prevent the
-> unexpected behavior, but initializing whole msdu ext. descriptor
-> will help to clear uncertainty of firmware could bring on as it
-> constantly updated.
->
-> Signed-off-by: Peter Oh <poh@qca.qualcomm.com>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
-Thanks, applied.
+Thanks, both patches applied. And I fixed the sparse warning myself.
 
 -- 
 Kalle Valo
