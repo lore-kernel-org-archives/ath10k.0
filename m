@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x231.google.com ([2a00:1450:4010:c03::231])
+Received: from mail-vk0-x229.google.com ([2607:f8b0:400c:c05::229])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMBrL-0004WM-CK
- for ath10k@lists.infradead.org; Mon, 03 Aug 2015 09:16:43 +0000
-Received: by labsr2 with SMTP id sr2so7013961lab.2
- for <ath10k@lists.infradead.org>; Mon, 03 Aug 2015 02:16:13 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: reject 11b tx fragmentation configuration
-Date: Mon,  3 Aug 2015 11:16:43 +0200
-Message-Id: <1438593403-316-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1438593403-316-1-git-send-email-michal.kazior@tieto.com>
-References: <1438593403-316-1-git-send-email-michal.kazior@tieto.com>
+ id 1ZMKkB-0000kK-JF
+ for ath10k@lists.infradead.org; Mon, 03 Aug 2015 18:45:52 +0000
+Received: by vkca124 with SMTP id a124so45723621vkc.1
+ for <ath10k@lists.infradead.org>; Mon, 03 Aug 2015 11:45:29 -0700 (PDT)
+MIME-Version: 1.0
+Date: Mon, 3 Aug 2015 14:45:29 -0400
+Message-ID: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
+Subject: qca6164 support
+From: vvanpo <vvanpo@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,80 +18,67 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Even though there's a WMI enum for fragmentation
-threshold no known firmware actually implements
-it. Moreover it is not possible to rely frame
-fragmentation to mac80211 because firmware clears
-the "more fragments" bit in frame control making
-it impossible for remote devices to reassemble
-frames.
+Hi,
 
-Hence implement a dummy callback just to say
-fragmentation isn't supported. This effectively
-prevents mac80211 from doing frame fragmentation
-in software.
+I just got a Lenovo Yoga 3 11, only to find the wireless doesn't work.
 
-This fixes Tx becoming broken after setting
-fragmentation threshold.
+The PCI id is 168c:0041:17aa:3545
+I downloaded the driver (version 12.0.0.102, date 06/24/2015) from the
+Lenovo website and extracted it in Wine (as I saw someone else do from
+another thread), which resulted in the following bin files:
+eeprom_ar6320_2p1_NFA324i_5.bin
+eeprom_ar6320_2p1_NFA344i.bin
+eeprom_ar6320_2p1_NFA344i_highTX.bin
+eeprom_ar6320_2p1_NFA345i.bin
+eeprom_ar6320_2p1_NFA345i_highTX.bin
+eeprom_ar6320_2p1_NFA354xp.bin
+eeprom_ar6320_2p1_NFA355i.bin
+qca61x4_1_1_2.bin
 
-Fixes: 1010ba4c5d1c ("ath10k: unregister and remove frag_threshold callback")
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
+In the netathr10x.inf file, my device and subsystem ids correspond to
+section 'ATHR_DEV_OS63_988x_LE_NFA345_IPG.ndi', although I'm not sure
+how that relates to which bin file and what a 'section' is exactly.  I
+chose to use the NFA345i.bin file, which I symlinked
+    /lib/firmware/ath10k/QCA6174/hw2.1/board-pci-168c:0041:17aa:3545.bin
+to.
 
-Notes:
-    This somewhat depends on:
-      http://thread.gmane.org/gmane.linux.kernel.wireless.general/140549
-    
-    Without the above user will not know that the callback failed.
+I used dissect.py/assemble.py to create firmware-5.bin:
+    ./dissect.py < qca61x4_1_1_2.bin
+    ./assemble.py atheros-12.0.0.102-fw 0 fw-2.bin fw-1.bin 4 > firmware-5.bin
 
- drivers/net/wireless/ath/ath10k/mac.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+I enabled skip_otp=y.
+I compiled master at github.com/kvalo/ath, but with the modification
+    #define QCA6174_2_1_DEVICE_ID   (0x0041)
+so it would recognize my card.
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 879af9c3bd4a..e0bbb6c543c7 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -5563,6 +5563,21 @@ static int ath10k_set_rts_threshold(struct ieee80211_hw *hw, u32 value)
- 	return ret;
- }
- 
-+static int ath10k_mac_op_set_frag_threshold(struct ieee80211_hw *hw, u32 value)
-+{
-+	/* Even though there's a WMI enum for fragmentation threshold no known
-+	 * firmware actually implements it. Moreover it is not possible to rely
-+	 * frame fragmentation to mac80211 because firmware clears the "more
-+	 * fragments" bit in frame control making it impossible for remote
-+	 * devices to reassemble frames.
-+	 *
-+	 * Hence implement a dummy callback just to say fragmentation isn't
-+	 * supported. This effectively prevents mac80211 from doing frame
-+	 * fragmentation in software.
-+	 */
-+	return -EOPNOTSUPP;
-+}
-+
- static void ath10k_flush(struct ieee80211_hw *hw, struct ieee80211_vif *vif,
- 			 u32 queues, bool drop)
- {
-@@ -6405,6 +6420,7 @@ static const struct ieee80211_ops ath10k_ops = {
- 	.remain_on_channel		= ath10k_remain_on_channel,
- 	.cancel_remain_on_channel	= ath10k_cancel_remain_on_channel,
- 	.set_rts_threshold		= ath10k_set_rts_threshold,
-+	.set_frag_threshold		= ath10k_mac_op_set_frag_threshold,
- 	.flush				= ath10k_flush,
- 	.tx_last_beacon			= ath10k_tx_last_beacon,
- 	.set_antenna			= ath10k_set_antenna,
--- 
-2.1.4
+On loading the ath10k_pci module I get a 'firmware crashed!' message,
+and a firmware dump.  Sometimes the dump itself must print garbage to
+dmesg and turns my terminal into mojibake, which I think has to do
+with the features string as here:
+http://lists.infradead.org/pipermail/ath10k/2015-July/005703.html
 
+As you can probably tell I'm haphazardly shooting in the dark without
+much knowledge of whats actually going on.  Is there a way I can
+meaningfully contribute, or am I at the mercy of those with access to
+documentation on how the qualcomm firmware works?
+  Some questions:
+  - when ath10k_print_driver_info gets called, my ar->chip_id is
+printed as 0x003405ff, which should correspond to
+QCA6174_HW_2_2_CHIP_ID_REV when masked (like in
+ath10k_pci_get_num_banks).  So why is it still referred to as hw2.1
+(instead of hw2.2), and what do these revisions signify, anyway?
+  - how can I be sure I'm using the correct bin files, and is there
+any documentation on the format of these files?
+  - what would need to be changed to add support for qca6164 in ath10k?
+
+Thanks,
+Victor
 
 _______________________________________________
 ath10k mailing list
