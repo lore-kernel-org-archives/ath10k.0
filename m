@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x230.google.com ([2a00:1450:400c:c05::230])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMNWy-0005sp-M6
- for ath10k@lists.infradead.org; Mon, 03 Aug 2015 21:44:25 +0000
-Received: by wibxm9 with SMTP id xm9so131779841wib.1
- for <ath10k@lists.infradead.org>; Mon, 03 Aug 2015 14:44:02 -0700 (PDT)
+ id 1ZMUZw-0004AC-NT
+ for ath10k@lists.infradead.org; Tue, 04 Aug 2015 05:15:57 +0000
+From: Vivek Natarajan <nataraja@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: Support different txbf configuration schemes
+Date: Tue, 4 Aug 2015 10:45:11 +0530
+Message-ID: <1438665312-2768-1-git-send-email-nataraja@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
-References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
-Date: Mon, 3 Aug 2015 23:44:02 +0200
-Message-ID: <CAMQd7mb63mBBP2V2kts7Y9K5TO25vp3E1RgGsF9-FL8hgxgZ+g@mail.gmail.com>
-Subject: Re: qca6164 support
-From: Enrico Tagliavini <enrico.tagliavini@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,81 +20,135 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: vvanpo <vvanpo@gmail.com>
-Cc: ath10k@lists.infradead.org
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Hi Victor,
+qca61x4 uses the vdev param as a sole sufficient configuration
+for txbf while qca99x0 enables txbf during peer assoc by
+combining the vdev param value with peer assoc's vht capabilities
 
-I think you should have called your firmwware firmware-4.bin and not
--5.bin. In fact in the top of the file I have it says ">
-firmware-4.bin". File names matters as far as I understood. Feel free
-to check archives of this list I saw somebody talking about this
-argument not long ago.
+This patch gets the appropriate txbf configuration scheme
+before passing the wmi command to enable the same in the firmware.
 
-Good luck.
-Enrico
+Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c     |  3 +++
+ drivers/net/wireless/ath/ath10k/wmi-ops.h | 10 ++++++++++
+ drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.c     |  6 ++++++
+ drivers/net/wireless/ath/ath10k/wmi.h     |  6 ++++++
+ 5 files changed, 31 insertions(+)
 
-On 3 August 2015 at 20:45, vvanpo <vvanpo@gmail.com> wrote:
-> Hi,
->
-> I just got a Lenovo Yoga 3 11, only to find the wireless doesn't work.
->
-> The PCI id is 168c:0041:17aa:3545
-> I downloaded the driver (version 12.0.0.102, date 06/24/2015) from the
-> Lenovo website and extracted it in Wine (as I saw someone else do from
-> another thread), which resulted in the following bin files:
-> eeprom_ar6320_2p1_NFA324i_5.bin
-> eeprom_ar6320_2p1_NFA344i.bin
-> eeprom_ar6320_2p1_NFA344i_highTX.bin
-> eeprom_ar6320_2p1_NFA345i.bin
-> eeprom_ar6320_2p1_NFA345i_highTX.bin
-> eeprom_ar6320_2p1_NFA354xp.bin
-> eeprom_ar6320_2p1_NFA355i.bin
-> qca61x4_1_1_2.bin
->
-> In the netathr10x.inf file, my device and subsystem ids correspond to
-> section 'ATHR_DEV_OS63_988x_LE_NFA345_IPG.ndi', although I'm not sure
-> how that relates to which bin file and what a 'section' is exactly.  I
-> chose to use the NFA345i.bin file, which I symlinked
->     /lib/firmware/ath10k/QCA6174/hw2.1/board-pci-168c:0041:17aa:3545.bin
-> to.
->
-> I used dissect.py/assemble.py to create firmware-5.bin:
->     ./dissect.py < qca61x4_1_1_2.bin
->     ./assemble.py atheros-12.0.0.102-fw 0 fw-2.bin fw-1.bin 4 > firmware-5.bin
->
-> I enabled skip_otp=y.
-> I compiled master at github.com/kvalo/ath, but with the modification
->     #define QCA6174_2_1_DEVICE_ID   (0x0041)
-> so it would recognize my card.
->
-> On loading the ath10k_pci module I get a 'firmware crashed!' message,
-> and a firmware dump.  Sometimes the dump itself must print garbage to
-> dmesg and turns my terminal into mojibake, which I think has to do
-> with the features string as here:
-> http://lists.infradead.org/pipermail/ath10k/2015-July/005703.html
->
-> As you can probably tell I'm haphazardly shooting in the dark without
-> much knowledge of whats actually going on.  Is there a way I can
-> meaningfully contribute, or am I at the mercy of those with access to
-> documentation on how the qualcomm firmware works?
->   Some questions:
->   - when ath10k_print_driver_info gets called, my ar->chip_id is
-> printed as 0x003405ff, which should correspond to
-> QCA6174_HW_2_2_CHIP_ID_REV when masked (like in
-> ath10k_pci_get_num_banks).  So why is it still referred to as hw2.1
-> (instead of hw2.2), and what do these revisions signify, anyway?
->   - how can I be sure I'm using the correct bin files, and is there
-> any documentation on the format of these files?
->   - what would need to be changed to add support for qca6164 in ath10k?
->
-> Thanks,
-> Victor
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index acd222f..4eb29aa 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -2509,6 +2509,9 @@ static int ath10k_mac_vif_recalc_txbf(struct ath10k *ar,
+ 	u32 param;
+ 	u32 value;
+ 
++	if (ath10k_wmi_get_txbf_conf_scheme(ar) != WMI_TXBF_CONF_AFTER_ASSOC)
++		return 0;
++
+ 	if (!(ar->vht_cap_info &
+ 	      (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+ 	       IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE |
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+index 47fe2e7..2591018 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
++++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
+@@ -49,6 +49,7 @@ struct wmi_ops {
+ 			    struct wmi_roam_ev_arg *arg);
+ 	int (*pull_wow_event)(struct ath10k *ar, struct sk_buff *skb,
+ 			      struct wmi_wow_ev_arg *arg);
++	enum wmi_txbf_conf (*get_txbf_conf_scheme)(struct ath10k *ar);
+ 
+ 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
+ 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
+@@ -319,6 +320,15 @@ ath10k_wmi_pull_wow_event(struct ath10k *ar, struct sk_buff *skb,
+ 	return ar->wmi.ops->pull_wow_event(ar, skb, arg);
+ }
+ 
++static inline enum wmi_txbf_conf
++ath10k_wmi_get_txbf_conf_scheme(struct ath10k *ar)
++{
++	if (!ar->wmi.ops->get_txbf_conf_scheme)
++		return WMI_TXBF_CONF_UNSUPPORTED;
++
++	return ar->wmi.ops->get_txbf_conf_scheme(ar);
++}
++
+ static inline int
+ ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
+ {
+diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+index 567b797..357b5a2 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
++++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
+@@ -1279,6 +1279,11 @@ ath10k_wmi_tlv_op_gen_pdev_set_rd(struct ath10k *ar,
+ 	return skb;
+ }
+ 
++static enum wmi_txbf_conf ath10k_wmi_tlv_txbf_conf_scheme(struct ath10k *ar)
++{
++	return WMI_TXBF_CONF_AFTER_ASSOC;
++}
++
+ static struct sk_buff *
+ ath10k_wmi_tlv_op_gen_pdev_set_param(struct ath10k *ar, u32 param_id,
+ 				     u32 param_value)
+@@ -3408,6 +3413,7 @@ static const struct wmi_ops wmi_tlv_ops = {
+ 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
+ 	.pull_roam_ev = ath10k_wmi_tlv_op_pull_roam_ev,
+ 	.pull_wow_event = ath10k_wmi_tlv_op_pull_wow_ev,
++	.get_txbf_conf_scheme = ath10k_wmi_tlv_txbf_conf_scheme,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index e6d6b42..36b8f71 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3122,6 +3122,11 @@ static int ath10k_wmi_10_4_op_pull_swba_ev(struct ath10k *ar,
+ 	return 0;
+ }
+ 
++static enum wmi_txbf_conf ath10k_wmi_10_4_txbf_conf_scheme(struct ath10k *ar)
++{
++	return WMI_TXBF_CONF_BEFORE_ASSOC;
++}
++
+ void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_swba_ev_arg arg = {};
+@@ -6444,6 +6449,7 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
++	.get_txbf_conf_scheme = ath10k_wmi_10_4_txbf_conf_scheme,
+ 
+ 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
+ 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 0d4efc9..754cc33 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -6008,6 +6008,12 @@ struct wmi_tdls_peer_capab_arg {
+ 	u32 pref_offchan_bw;
+ };
+ 
++enum wmi_txbf_conf {
++	WMI_TXBF_CONF_UNSUPPORTED,
++	WMI_TXBF_CONF_BEFORE_ASSOC,
++	WMI_TXBF_CONF_AFTER_ASSOC,
++};
++
+ struct ath10k;
+ struct ath10k_vif;
+ struct ath10k_fw_stats_pdev;
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
