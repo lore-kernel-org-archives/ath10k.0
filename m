@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMUZw-0004AC-NT
- for ath10k@lists.infradead.org; Tue, 04 Aug 2015 05:15:57 +0000
-From: Vivek Natarajan <nataraja@qti.qualcomm.com>
-Subject: [PATCH 1/2] ath10k: Support different txbf configuration schemes
-Date: Tue, 4 Aug 2015 10:45:11 +0530
-Message-ID: <1438665312-2768-1-git-send-email-nataraja@qti.qualcomm.com>
+ id 1ZMUcO-0004NS-4Y
+ for ath10k@lists.infradead.org; Tue, 04 Aug 2015 05:18:29 +0000
+Received: by wicmv11 with SMTP id mv11so160441408wic.0
+ for <ath10k@lists.infradead.org>; Mon, 03 Aug 2015 22:18:03 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
+References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
+Date: Tue, 4 Aug 2015 07:18:03 +0200
+Message-ID: <CA+BoTQk3MDqLLwRVMvdn_8+U5k+0Ot+k0bffSOw-bhAG6LJykw@mail.gmail.com>
+Subject: Re: qca6164 support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,141 +20,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: vvanpo <vvanpo@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-qca61x4 uses the vdev param as a sole sufficient configuration
-for txbf while qca99x0 enables txbf during peer assoc by
-combining the vdev param value with peer assoc's vht capabilities
-
-This patch gets the appropriate txbf configuration scheme
-before passing the wmi command to enable the same in the firmware.
-
-Signed-off-by: Vivek Natarajan <nataraja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/mac.c     |  3 +++
- drivers/net/wireless/ath/ath10k/wmi-ops.h | 10 ++++++++++
- drivers/net/wireless/ath/ath10k/wmi-tlv.c |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.c     |  6 ++++++
- drivers/net/wireless/ath/ath10k/wmi.h     |  6 ++++++
- 5 files changed, 31 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index acd222f..4eb29aa 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -2509,6 +2509,9 @@ static int ath10k_mac_vif_recalc_txbf(struct ath10k *ar,
- 	u32 param;
- 	u32 value;
- 
-+	if (ath10k_wmi_get_txbf_conf_scheme(ar) != WMI_TXBF_CONF_AFTER_ASSOC)
-+		return 0;
-+
- 	if (!(ar->vht_cap_info &
- 	      (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
- 	       IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE |
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-ops.h b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-index 47fe2e7..2591018 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-ops.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi-ops.h
-@@ -49,6 +49,7 @@ struct wmi_ops {
- 			    struct wmi_roam_ev_arg *arg);
- 	int (*pull_wow_event)(struct ath10k *ar, struct sk_buff *skb,
- 			      struct wmi_wow_ev_arg *arg);
-+	enum wmi_txbf_conf (*get_txbf_conf_scheme)(struct ath10k *ar);
- 
- 	struct sk_buff *(*gen_pdev_suspend)(struct ath10k *ar, u32 suspend_opt);
- 	struct sk_buff *(*gen_pdev_resume)(struct ath10k *ar);
-@@ -319,6 +320,15 @@ ath10k_wmi_pull_wow_event(struct ath10k *ar, struct sk_buff *skb,
- 	return ar->wmi.ops->pull_wow_event(ar, skb, arg);
- }
- 
-+static inline enum wmi_txbf_conf
-+ath10k_wmi_get_txbf_conf_scheme(struct ath10k *ar)
-+{
-+	if (!ar->wmi.ops->get_txbf_conf_scheme)
-+		return WMI_TXBF_CONF_UNSUPPORTED;
-+
-+	return ar->wmi.ops->get_txbf_conf_scheme(ar);
-+}
-+
- static inline int
- ath10k_wmi_mgmt_tx(struct ath10k *ar, struct sk_buff *msdu)
- {
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 567b797..357b5a2 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -1279,6 +1279,11 @@ ath10k_wmi_tlv_op_gen_pdev_set_rd(struct ath10k *ar,
- 	return skb;
- }
- 
-+static enum wmi_txbf_conf ath10k_wmi_tlv_txbf_conf_scheme(struct ath10k *ar)
-+{
-+	return WMI_TXBF_CONF_AFTER_ASSOC;
-+}
-+
- static struct sk_buff *
- ath10k_wmi_tlv_op_gen_pdev_set_param(struct ath10k *ar, u32 param_id,
- 				     u32 param_value)
-@@ -3408,6 +3413,7 @@ static const struct wmi_ops wmi_tlv_ops = {
- 	.pull_fw_stats = ath10k_wmi_tlv_op_pull_fw_stats,
- 	.pull_roam_ev = ath10k_wmi_tlv_op_pull_roam_ev,
- 	.pull_wow_event = ath10k_wmi_tlv_op_pull_wow_ev,
-+	.get_txbf_conf_scheme = ath10k_wmi_tlv_txbf_conf_scheme,
- 
- 	.gen_pdev_suspend = ath10k_wmi_tlv_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_tlv_op_gen_pdev_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index e6d6b42..36b8f71 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3122,6 +3122,11 @@ static int ath10k_wmi_10_4_op_pull_swba_ev(struct ath10k *ar,
- 	return 0;
- }
- 
-+static enum wmi_txbf_conf ath10k_wmi_10_4_txbf_conf_scheme(struct ath10k *ar)
-+{
-+	return WMI_TXBF_CONF_BEFORE_ASSOC;
-+}
-+
- void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_swba_ev_arg arg = {};
-@@ -6444,6 +6449,7 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
-+	.get_txbf_conf_scheme = ath10k_wmi_10_4_txbf_conf_scheme,
- 
- 	.gen_pdev_suspend = ath10k_wmi_op_gen_pdev_suspend,
- 	.gen_pdev_resume = ath10k_wmi_op_gen_pdev_resume,
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 0d4efc9..754cc33 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -6008,6 +6008,12 @@ struct wmi_tdls_peer_capab_arg {
- 	u32 pref_offchan_bw;
- };
- 
-+enum wmi_txbf_conf {
-+	WMI_TXBF_CONF_UNSUPPORTED,
-+	WMI_TXBF_CONF_BEFORE_ASSOC,
-+	WMI_TXBF_CONF_AFTER_ASSOC,
-+};
-+
- struct ath10k;
- struct ath10k_vif;
- struct ath10k_fw_stats_pdev;
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMyBBdWd1c3QgMjAxNSBhdCAyMDo0NSwgdnZhbnBvIDx2dmFucG9AZ21haWwuY29tPiB3cm90
+ZToKPiBIaSwKPgo+IEkganVzdCBnb3QgYSBMZW5vdm8gWW9nYSAzIDExLCBvbmx5IHRvIGZpbmQg
+dGhlIHdpcmVsZXNzIGRvZXNuJ3Qgd29yay4KPgo+IFRoZSBQQ0kgaWQgaXMgMTY4YzowMDQxOjE3
+YWE6MzU0NQoKVGhlIHFjYTYxNjQgaXMgbm90IHN1cHBvcnRlZCwgeWV0LiBBcm5kIGhhcyBiZWVu
+IHRoZSBmaXJzdCBvbmUgdG8KcmVwb3J0IHRoZSBwcm9ibGVtLiBXZSB0cmllZCBhIGZldyB0aGlu
+Z3MgdG8gZ2V0IGl0IHJ1bm5pbmcgYnV0IGdhdmUKdXAgZm9yIG5vdy4gSSBkb24ndCBoYXZlIHRo
+ZSBjYXJkIHNvIGl0J3MgZGlmZmljdWx0IGZvciBtZSB0byBkbwp0cmlhbC1hbmQtZXJyb3IgdGVz
+dGluZy4KCgo+IEkgZG93bmxvYWRlZCB0aGUgZHJpdmVyICh2ZXJzaW9uIDEyLjAuMC4xMDIsIGRh
+dGUgMDYvMjQvMjAxNSkgZnJvbSB0aGUKPiBMZW5vdm8gd2Vic2l0ZSBhbmQgZXh0cmFjdGVkIGl0
+IGluIFdpbmUgKGFzIEkgc2F3IHNvbWVvbmUgZWxzZSBkbyBmcm9tCj4gYW5vdGhlciB0aHJlYWQp
+LCB3aGljaCByZXN1bHRlZCBpbiB0aGUgZm9sbG93aW5nIGJpbiBmaWxlczoKPiBlZXByb21fYXI2
+MzIwXzJwMV9ORkEzMjRpXzUuYmluCj4gZWVwcm9tX2FyNjMyMF8ycDFfTkZBMzQ0aS5iaW4KPiBl
+ZXByb21fYXI2MzIwXzJwMV9ORkEzNDRpX2hpZ2hUWC5iaW4KPiBlZXByb21fYXI2MzIwXzJwMV9O
+RkEzNDVpLmJpbgo+IGVlcHJvbV9hcjYzMjBfMnAxX05GQTM0NWlfaGlnaFRYLmJpbgo+IGVlcHJv
+bV9hcjYzMjBfMnAxX05GQTM1NHhwLmJpbgo+IGVlcHJvbV9hcjYzMjBfMnAxX05GQTM1NWkuYmlu
+Cj4gcWNhNjF4NF8xXzFfMi5iaW4KPgo+IEluIHRoZSBuZXRhdGhyMTB4LmluZiBmaWxlLCBteSBk
+ZXZpY2UgYW5kIHN1YnN5c3RlbSBpZHMgY29ycmVzcG9uZCB0bwo+IHNlY3Rpb24gJ0FUSFJfREVW
+X09TNjNfOTg4eF9MRV9ORkEzNDVfSVBHLm5kaScsIGFsdGhvdWdoIEknbSBub3Qgc3VyZQo+IGhv
+dyB0aGF0IHJlbGF0ZXMgdG8gd2hpY2ggYmluIGZpbGUgYW5kIHdoYXQgYSAnc2VjdGlvbicgaXMg
+ZXhhY3RseS4gIEkKPiBjaG9zZSB0byB1c2UgdGhlIE5GQTM0NWkuYmluIGZpbGUsIHdoaWNoIEkg
+c3ltbGlua2VkCj4gICAgIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvYm9hcmQt
+cGNpLTE2OGM6MDA0MToxN2FhOjM1NDUuYmluCj4gdG8uCj4KPiBJIHVzZWQgZGlzc2VjdC5weS9h
+c3NlbWJsZS5weSB0byBjcmVhdGUgZmlybXdhcmUtNS5iaW46Cj4gICAgIC4vZGlzc2VjdC5weSA8
+IHFjYTYxeDRfMV8xXzIuYmluCj4gICAgIC4vYXNzZW1ibGUucHkgYXRoZXJvcy0xMi4wLjAuMTAy
+LWZ3IDAgZnctMi5iaW4gZnctMS5iaW4gNCA+IGZpcm13YXJlLTUuYmluCgpMb29rcyBnb29kLgoK
+Cj4gSSBlbmFibGVkIHNraXBfb3RwPXkuCj4gSSBjb21waWxlZCBtYXN0ZXIgYXQgZ2l0aHViLmNv
+bS9rdmFsby9hdGgsIGJ1dCB3aXRoIHRoZSBtb2RpZmljYXRpb24KPiAgICAgI2RlZmluZSBRQ0E2
+MTc0XzJfMV9ERVZJQ0VfSUQgICAoMHgwMDQxKQo+IHNvIGl0IHdvdWxkIHJlY29nbml6ZSBteSBj
+YXJkLgo+IE9uIGxvYWRpbmcgdGhlIGF0aDEwa19wY2kgbW9kdWxlIEkgZ2V0IGEgJ2Zpcm13YXJl
+IGNyYXNoZWQhJyBtZXNzYWdlLAo+IGFuZCBhIGZpcm13YXJlIGR1bXAuICBTb21ldGltZXMgdGhl
+IGR1bXAgaXRzZWxmIG11c3QgcHJpbnQgZ2FyYmFnZSB0bwo+IGRtZXNnIGFuZCB0dXJucyBteSB0
+ZXJtaW5hbCBpbnRvIG1vamliYWtlLCB3aGljaCBJIHRoaW5rIGhhcyB0byBkbwo+IHdpdGggdGhl
+IGZlYXR1cmVzIHN0cmluZyBhcyBoZXJlOgo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3Bp
+cGVybWFpbC9hdGgxMGsvMjAxNS1KdWx5LzAwNTcwMy5odG1sCgpXaGVuZXZlciBmaXJtd2FyZSBj
+cmFzaGVzIHBvc3QgdGhlIHJlZ2lzdGVyIGR1bXAsIHBsZWFzZS4gSXQgaXMgdGhlbgplYXNpZXIg
+dG8gY3Jvc3MtYXNzb2NpYXRlIGNyYXNoZXMgZnJvbSBkaWZmZXJlbnQgcmVwb3J0cy4KCgo+IEFz
+IHlvdSBjYW4gcHJvYmFibHkgdGVsbCBJJ20gaGFwaGF6YXJkbHkgc2hvb3RpbmcgaW4gdGhlIGRh
+cmsgd2l0aG91dAo+IG11Y2gga25vd2xlZGdlIG9mIHdoYXRzIGFjdHVhbGx5IGdvaW5nIG9uLiAg
+SXMgdGhlcmUgYSB3YXkgSSBjYW4KPiBtZWFuaW5nZnVsbHkgY29udHJpYnV0ZSwgb3IgYW0gSSBh
+dCB0aGUgbWVyY3kgb2YgdGhvc2Ugd2l0aCBhY2Nlc3MgdG8KPiBkb2N1bWVudGF0aW9uIG9uIGhv
+dyB0aGUgcXVhbGNvbW0gZmlybXdhcmUgd29ya3M/CgpZb3UgY2FuIGVpdGhlciBzdGFydCBkaXNh
+c3NlbWJsaW5nIHRoZSB3aW5kb3dzIGRyaXZlciBhbmQvb3IKZXhwZXJpbWVudGluZyB3aXRoIGF0
+aDEwayBkcml2ZXIgdmFsdWVzIHVzZWQgZm9yIGJvb3RpbmcgdGhlIGRldmljZSBvcgpqdXN0IHdh
+aXQuLgoKCj4gICBTb21lIHF1ZXN0aW9uczoKPiAgIC0gd2hlbiBhdGgxMGtfcHJpbnRfZHJpdmVy
+X2luZm8gZ2V0cyBjYWxsZWQsIG15IGFyLT5jaGlwX2lkIGlzCj4gcHJpbnRlZCBhcyAweDAwMzQw
+NWZmLCB3aGljaCBzaG91bGQgY29ycmVzcG9uZCB0bwo+IFFDQTYxNzRfSFdfMl8yX0NISVBfSURf
+UkVWIHdoZW4gbWFza2VkIChsaWtlIGluCj4gYXRoMTBrX3BjaV9nZXRfbnVtX2JhbmtzKS4gIFNv
+IHdoeSBpcyBpdCBzdGlsbCByZWZlcnJlZCB0byBhcyBodzIuMQo+IChpbnN0ZWFkIG9mIGh3Mi4y
+KSwgYW5kIHdoYXQgZG8gdGhlc2UgcmV2aXNpb25zIHNpZ25pZnksIGFueXdheT8KCldpdGhpbiBl
+bnZpcm9ubWVudCB3aXRoIGxpbWl0ZWQgaW5mb3JtYXRpb24geW91ciBkZWNpc2lvbnMgYXJlCnN1
+Ym9wdGltYWwuIEFzIGEgcmVzdWx0IHdlIGhhdmUgImh3Mi4xIiBpbiB0aGUgZHJpdmVyIHdoaWNo
+IHJlZmVycyB0bwpodzIuMiBhcyB3ZWxsLgoKCj4gICAtIGhvdyBjYW4gSSBiZSBzdXJlIEknbSB1
+c2luZyB0aGUgY29ycmVjdCBiaW4gZmlsZXMsIGFuZCBpcyB0aGVyZQo+IGFueSBkb2N1bWVudGF0
+aW9uIG9uIHRoZSBmb3JtYXQgb2YgdGhlc2UgZmlsZXM/CgpUaGUgZm9ybWF0IGlzIGRlZmluZWQg
+aW4gdGhlIGRyaXZlciAoaHcuaCkuIFRoZXJlJ3Mgbm8gb3RoZXIKZG9jdW1lbnRhdGlvbiBJIGd1
+ZXNzLgoKCj4gICAtIHdoYXQgd291bGQgbmVlZCB0byBiZSBjaGFuZ2VkIHRvIGFkZCBzdXBwb3J0
+IGZvciBxY2E2MTY0IGluIGF0aDEwaz8KCklmIEkga25ldyB0aGUgaXQgd291bGQgaGF2ZSBiZWVu
+IHN1cHBvcnRlZCBhbHJlYWR5IDstKQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3Rz
+LmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hdGgxMGsK
