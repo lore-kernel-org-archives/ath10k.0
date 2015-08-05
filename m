@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-qg0-x22d.google.com ([2607:f8b0:400d:c04::22d])
+Received: from mail-lb0-x22c.google.com ([2a00:1450:4010:c04::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZMqqt-0000RR-Gn
- for ath10k@lists.infradead.org; Wed, 05 Aug 2015 05:02:56 +0000
-Received: by qgeh16 with SMTP id h16so22450328qge.3
- for <ath10k@lists.infradead.org>; Tue, 04 Aug 2015 22:02:34 -0700 (PDT)
-From: Victor van Poppelen <vvanpo@gmail.com>
-Subject: [PATCH] ath10k: initialize features string in
- ath10k_print_driver_info() to prevent garbled dmesg output when fw_features
- == 0
-Date: Wed,  5 Aug 2015 01:02:28 -0400
-Message-Id: <1438750948-3842-1-git-send-email-vvanpo@gmail.com>
+ id 1ZMvcg-0008GC-4S
+ for ath10k@lists.infradead.org; Wed, 05 Aug 2015 10:08:35 +0000
+Received: by lbbyj8 with SMTP id yj8so21486971lbb.0
+ for <ath10k@lists.infradead.org>; Wed, 05 Aug 2015 03:08:06 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: fix hw reconfig on wow failure
+Date: Wed,  5 Aug 2015 12:08:38 +0200
+Message-Id: <1438769318-27373-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +23,53 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Victor van Poppelen <vvanpo@gmail.com>
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
+When WoWLAN resume fails with retval 1 mac80211
+will attempt to reconfig the device in a similar
+manner when hw restart is requested. This wasn't
+handled properly and yielded call trace warnings
+and the device ended up not working.
+
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/debug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/wow.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
-index 1a33bf0..5f32924 100644
---- a/drivers/net/wireless/ath/ath10k/debug.c
-+++ b/drivers/net/wireless/ath/ath10k/debug.c
-@@ -124,7 +124,7 @@ EXPORT_SYMBOL(ath10k_info);
+diff --git a/drivers/net/wireless/ath/ath10k/wow.c b/drivers/net/wireless/ath/ath10k/wow.c
+index a68d8fd853a3..8e02b381990f 100644
+--- a/drivers/net/wireless/ath/ath10k/wow.c
++++ b/drivers/net/wireless/ath/ath10k/wow.c
+@@ -301,8 +301,26 @@ int ath10k_wow_op_resume(struct ieee80211_hw *hw)
+ 		ath10k_warn(ar, "failed to wakeup from wow: %d\n", ret);
  
- void ath10k_print_driver_info(struct ath10k *ar)
- {
--	char fw_features[128];
-+	char fw_features[128] = "";
+ exit:
++	if (ret) {
++		switch (ar->state) {
++		case ATH10K_STATE_ON:
++			ar->state = ATH10K_STATE_RESTARTING;
++			ret = 1;
++			break;
++		case ATH10K_STATE_OFF:
++		case ATH10K_STATE_RESTARTING:
++		case ATH10K_STATE_RESTARTED:
++		case ATH10K_STATE_UTF:
++		case ATH10K_STATE_WEDGED:
++			ath10k_warn(ar, "encountered unexpected device state %d on resume, cannot recover\n",
++				    ar->state);
++			ret = -EIO;
++			break;
++		}
++	}
++
+ 	mutex_unlock(&ar->conf_mutex);
+-	return ret ? 1 : 0;
++	return ret;
+ }
  
- 	ath10k_core_get_fw_features_str(ar, fw_features, sizeof(fw_features));
- 
+ int ath10k_wow_init(struct ath10k *ar)
 -- 
-2.4.3
+2.1.4
 
 
 _______________________________________________
