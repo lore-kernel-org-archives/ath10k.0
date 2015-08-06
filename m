@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNG5U-0003Es-Ph
- for ath10k@lists.infradead.org; Thu, 06 Aug 2015 07:59:41 +0000
-Subject: Re: [PATCH] ath10k: Add QCA99X0 to supported device list
-References: <1437478567-11339-1-git-send-email-vthiagar@qti.qualcomm.com>
- <55C1FFBC.7070905@openwrt.org> <55C31039.6030201@qti.qualcomm.com>
-From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <55C313D3.4080004@openwrt.org>
-Date: Thu, 6 Aug 2015 09:59:15 +0200
-MIME-Version: 1.0
-In-Reply-To: <55C31039.6030201@qti.qualcomm.com>
+ id 1ZNKZR-0006Xa-Ui
+ for ath10k@lists.infradead.org; Thu, 06 Aug 2015 12:46:54 +0000
+Received: by lbbpu9 with SMTP id pu9so14613614lbb.3
+ for <ath10k@lists.infradead.org>; Thu, 06 Aug 2015 05:46:25 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: wake up offchannel queue properly
+Date: Thu,  6 Aug 2015 14:46:54 +0200
+Message-Id: <1438865214-1651-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +17,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-On 2015-08-06 09:43, Vasanthakumar Thiagarajan wrote:
-> On Wednesday 05 August 2015 05:51 PM, Felix Fietkau wrote:
->> On 2015-07-21 13:36, Vasanthakumar Thiagarajan wrote:
->>> Add vendor/device id of QCA99X0 V2.0 to pci id table and
->>> QCA99X0_HW_2_0_CHIP_ID_REV to ath10k_pci_supp_chips[] for
->>> QCA99X0 to get detected by the driver.
->>>
->>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
->> I just tested a 99X0 card, and I'm getting this:
->>
->> [    8.742514] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
->> [    8.747173] ath10k_pci 0000:01:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
->> [   11.793314] ath10k_pci 0000:01:00.0: failed to receive initialized event from target: 00000000
->> [   11.793344] ath10k_pci 0000:01:00.0: failed to wait for target after cold reset: -110
->> [   11.800814] ath10k_pci 0000:01:00.0: failed to reset chip: -110
->> [   11.809228] ath10k_pci: probe of 0000:01:00.0 failed with error -110
->>
->> This is on an AP148 board with Linux 3.18, backports generated from
->> latest wireless-testing (2015-08-03) + all patches from kvalo's ath
->> tree.
-> 
-> Any idea about the version of AP148 that you are using?. By any chance did
-> you check if QCA988X is working on the same board?.
-No idea about the version, but QCA988X is working in the same slot.
+Once HTT Tx queue got full offchannel queue was
+stopped and never woken up again. This broke, e.g.
+P2P. This could be reproduced after running a lot
+of traffic enough to saturate 100% of the driver
+Tx queue and then trying to send offchannel
+traffic.
 
-- Felix
+Fixes: 96d828d45e16 ("ath10k: rework tx queue locking")
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index acd222f3b899..c7ff0c8a5bd4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -3002,6 +3002,8 @@ void ath10k_mac_tx_unlock(struct ath10k *ar, int reason)
+ 						   IEEE80211_IFACE_ITER_RESUME_ALL,
+ 						   ath10k_mac_tx_unlock_iter,
+ 						   ar);
++
++	ieee80211_wake_queue(ar->hw, ar->hw->offchannel_tx_hw_queue);
+ }
+ 
+ void ath10k_mac_vif_tx_lock(struct ath10k_vif *arvif, int reason)
+-- 
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
