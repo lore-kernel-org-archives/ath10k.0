@@ -1,18 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22b.google.com ([2a00:1450:400c:c05::22b])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNDpE-0004H2-Po
- for ath10k@lists.infradead.org; Thu, 06 Aug 2015 05:34:45 +0000
-Received: by wicne3 with SMTP id ne3so8104836wic.1
- for <ath10k@lists.infradead.org>; Wed, 05 Aug 2015 22:34:23 -0700 (PDT)
+ id 1ZNFqr-000677-CL
+ for ath10k@lists.infradead.org; Thu, 06 Aug 2015 07:44:33 +0000
+Message-ID: <55C31039.6030201@qti.qualcomm.com>
+Date: Thu, 6 Aug 2015 13:13:53 +0530
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+BoTQkvsrWBv8NceYuaK4mAnbg-bjzgB+voMAq7YNBcpUA8nw@mail.gmail.com>
-References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
- <CA+BoTQkvsrWBv8NceYuaK4mAnbg-bjzgB+voMAq7YNBcpUA8nw@mail.gmail.com>
-Date: Thu, 6 Aug 2015 07:34:23 +0200
-Message-ID: <CA+BoTQnvLqzTA8sthybeGTkPeEFYBkynTOGNQSdqh4SaUpqjBA@mail.gmail.com>
-Subject: Re: qca6164 support
-From: Michal Kazior <michal.kazior@tieto.com>
+Subject: Re: [PATCH] ath10k: Add QCA99X0 to supported device list
+References: <1437478567-11339-1-git-send-email-vthiagar@qti.qualcomm.com>
+ <55C1FFBC.7070905@openwrt.org>
+In-Reply-To: <55C1FFBC.7070905@openwrt.org>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +19,40 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: vvanpo <vvanpo@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: Felix Fietkau <nbd@openwrt.org>, ath10k@lists.infradead.org
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
 
-T24gNiBBdWd1c3QgMjAxNSBhdCAwNzoyMCwgTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0
-aWV0by5jb20+IHdyb3RlOgo+IE9uIDMgQXVndXN0IDIwMTUgYXQgMjA6NDUsIHZ2YW5wbyA8dnZh
-bnBvQGdtYWlsLmNvbT4gd3JvdGU6Cj4+IEhpLAo+Pgo+PiBJIGp1c3QgZ290IGEgTGVub3ZvIFlv
-Z2EgMyAxMSwgb25seSB0byBmaW5kIHRoZSB3aXJlbGVzcyBkb2Vzbid0IHdvcmsuCj4+Cj4+IFRo
-ZSBQQ0kgaWQgaXMgMTY4YzowMDQxOjE3YWE6MzU0NQo+IFsuLi5dCj4+ICAgLSB3aGF0IHdvdWxk
-IG5lZWQgdG8gYmUgY2hhbmdlZCB0byBhZGQgc3VwcG9ydCBmb3IgcWNhNjE2NCBpbiBhdGgxMGs/
-Cj4KPiBDYW4geW91IHRyeSB0aGUgZGlmZiBiZWxvdywgcGxlYXNlPyAod2FybmluZywgd2hpdGVz
-cGFjZSBkYW1hZ2UpLgo+Cj4gL21lIGNyb3NzZXMgZmluZ2Vycwo+Cj4KPiBNaWNoYcWCCj4KPgo+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL2NvcmUuYwo+IGIv
-ZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9jb3JlLmMKPiBpbmRleCAyOWQyNTQxZDg3
-ZGQuLjhjNDYzMzhhOTBkZSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgv
-YXRoMTBrL2NvcmUuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvY29y
-ZS5jCj4gQEAgLTIzMSw2ICsyMzEsMTUgQEAgc3RhdGljIGludCBhdGgxMGtfaW5pdF9jb25maWd1
-cmVfdGFyZ2V0KHN0cnVjdCBhdGgxMGsgKmFyKQo+ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0
-Owo+ICAgICAgICAgfQo+Cj4gKyAgICAgICAvKiBTb21lIGRldmljZXMsIGUuZy4gcWNhNjE2NCBu
-ZWVkcyB0aGlzIGhvc3QgaW50ZXJlc3QgZmllbGQgdG8gY29udGFpbgo+ICsgICAgICAgICogUENJ
-IERldmljZSBJRCBpbiBvcmRlciB0byBib290Lgo+ICsgICAgICAgICAqLwo+ICsgICAgICAgcmV0
-ID0gYXRoMTBrX2JtaV93cml0ZTMyKGFyLCBoaV9oY2lfdWFydF9wd3JfbWdtdF9wYXJhbXMsIGFy
-LT5kZXZfaWQpOwoKT29wcy4gVHlwbyAtIEkgbWVhbnQ6CgogICBoaV9oY2lfdWFydF9wd3JfbWdt
-dF9wYXJhbXNfZXh0Cgoobm90ZSB0aGUgIl9leHQiKQoKCk1pY2hhxYIKCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QKYXRo
-MTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hdGgxMGsK
+On Wednesday 05 August 2015 05:51 PM, Felix Fietkau wrote:
+> On 2015-07-21 13:36, Vasanthakumar Thiagarajan wrote:
+>> Add vendor/device id of QCA99X0 V2.0 to pci id table and
+>> QCA99X0_HW_2_0_CHIP_ID_REV to ath10k_pci_supp_chips[] for
+>> QCA99X0 to get detected by the driver.
+>>
+>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+> I just tested a 99X0 card, and I'm getting this:
+>
+> [    8.742514] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
+> [    8.747173] ath10k_pci 0000:01:00.0: pci irq msi interrupts 1 irq_mode 0 reset_mode 0
+> [   11.793314] ath10k_pci 0000:01:00.0: failed to receive initialized event from target: 00000000
+> [   11.793344] ath10k_pci 0000:01:00.0: failed to wait for target after cold reset: -110
+> [   11.800814] ath10k_pci 0000:01:00.0: failed to reset chip: -110
+> [   11.809228] ath10k_pci: probe of 0000:01:00.0 failed with error -110
+>
+> This is on an AP148 board with Linux 3.18, backports generated from
+> latest wireless-testing (2015-08-03) + all patches from kvalo's ath
+> tree.
+
+Any idea about the version of AP148 that you are using?. By any chance did
+you check if QCA988X is working on the same board?.
+
+Vasanth
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
