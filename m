@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x232.google.com ([2a00:1450:400c:c05::232])
+Received: from mail-wi0-x233.google.com ([2a00:1450:400c:c05::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZND3h-0002Dv-Vn
- for ath10k@lists.infradead.org; Thu, 06 Aug 2015 04:45:39 +0000
-Received: by wibhh20 with SMTP id hh20so7429123wib.0
- for <ath10k@lists.infradead.org>; Wed, 05 Aug 2015 21:45:10 -0700 (PDT)
+ id 1ZNDL8-00089G-Fo
+ for ath10k@lists.infradead.org; Thu, 06 Aug 2015 05:03:39 +0000
+Received: by wibxm9 with SMTP id xm9so7155140wib.0
+ for <ath10k@lists.infradead.org>; Wed, 05 Aug 2015 22:03:15 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALCDuF=3pR96tAD=ZZ_i1Nh88bMXdvU26sVD8i6OuKcgR3ctBQ@mail.gmail.com>
-References: <CALCDuF=3pR96tAD=ZZ_i1Nh88bMXdvU26sVD8i6OuKcgR3ctBQ@mail.gmail.com>
-Date: Thu, 6 Aug 2015 06:45:10 +0200
-Message-ID: <CALhHN=qDCehXx=56Q=UosgHATRBFdNygud8m-R0zz99QrCZOyA@mail.gmail.com>
-Subject: Re: Simultaneous hostapd and wpa_supplicant on QCA9880
-From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
+In-Reply-To: <CAAKLdA8ZY7+-0cc3uo87PhYk07NG176wCXGxNC_H=7Uq-4L+qQ@mail.gmail.com>
+References: <CAAKLdA8ZY7+-0cc3uo87PhYk07NG176wCXGxNC_H=7Uq-4L+qQ@mail.gmail.com>
+Date: Thu, 6 Aug 2015 07:03:15 +0200
+Message-ID: <CA+BoTQks1UZ8x1DiecRwO_xTPCBJSdvPE_mR_i8BHLq_VyQypg@mail.gmail.com>
+Subject: Re: qca6174 hw2.1 fw and kernel crash on 5GHz network connection
+ attempt
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,89 +21,57 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ann Lo <annlo@ieee.org>
+To: Lapo Calamandrei <calamandrei@gmail.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 5 August 2015 at 19:08, Ann Lo <annlo@ieee.org> wrote:
-> Hello,
->
-> Has anyone succeeded in running hostapd and wpa_supplicant at the same
-> time on a single QCA9880? I have not been able to. Does anyone have any
-> luck with this?
->
-> The software/firmware I use:
->
-> - Linux kernel 3.16.0-34-generic
-I think you should update your kernel - best compile code from gitub
-https://github.com/kvalo/ath
-Next you will get fresh cfg80211/mac80211/ath10k.
-
-> - firmware-2 version 10.1.467.2-1
-Single Channel Concurrency works correctly with 636 firmware - QCA9880
-- 10x fail in your case because of different iface combination.
-So, before kernel upgrade try 636 firmware.
-
-BTW:
-QCA6174 support also MCC.
-
-> - wpa_supplicant version 2.1
-> - hostapd version 2.4
->
-> Configuration:
->
-> - iw dev wlan4 interface add clientwlan type managed
-> - iw dev wlan4 interface add apwlan type __ap
-> - ip link set clientwlan address 04:f0:21:16:04:b0
-> - ip link set apwlan address 04:f0:21:16:04:b1
-> - ifconfig clientwlan up
-> - ifconfig apwlan up 10.0.0.1 netmask 255.255.255.0
-> - wpa_supplicant -iclientwlan -Dnl80211 -c wpa.test.conf
-> - hostapd -d hostapd-test.conf
-> - Both wpa_supplicant and hostapd use the same channel.
->
-> Problems:
->
-> (1) If wpa_supplicant is executed before hostapd, wpa_supplicant comes
->      up OK but hostapd fails with the following errors:
->      - nl80211: Beacon set failed: -16 (Device or resource busy)
->      - Failed to set beacon parameters
->
-> (2) If hostapd is executed before wpa_supplicant, hostapd comes up OK
->      but wpa_supplicant fails with the following errors:
->      - nl80211: send_and_recv->nl_recvmsgs failed: -33
->      - clientwlan: SME: Trying to authenticate with 00:03:07:12:34:56
-> (SSID='dd-wrt-ath1' freq=5220 MHz)
->      - clientwlan: SME: Authentication request to the driver failed
->
-> Using the same configuration files, wpa_supplicant is able to connect
-> to the remote AP if hostapd is not executed. Similarly, hostapd is able
-> to provide service to the remote client if wpa_supplicant is not executed.
-> I have also tried configurations without any security. Same errors as
-> above when running hostapd and wpa_supplicant at the same time.
->
-> I have exhausted all information I could find from the web. According
-> to this link (http://www.candelatech.com/vsta.php), there is the
-> suggestion that HW encryption cannot work with multiple virtual
-> interfaces. In one of my tests, I have disabled security altogether by
-> using "key_mgmt=NONE" in the configuration file for wpa_supplicant.
-> It is not clear why there continues to be an error "Authentication
-> request to the driver failed".
->
-> Would you provide your expert opinions on this matter if you have the
-> experience?
->
-> Thanks,
-> Ann
->
-
-BR
-Janusz
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNSBBdWd1c3QgMjAxNSBhdCAxNToyNSwgTGFwbyBDYWxhbWFuZHJlaSA8Y2FsYW1hbmRyZWlA
+Z21haWwuY29tPiB3cm90ZToKPiBIaSwKPgo+IEkgaGF2ZSBhbiBhbGllbndhcmUgMTcgcjIgd2l0
+aCBhIGZlZG9yYSAyMiBpbnN0YWxsZWQsIEknbSB1c2luZyBrdmFsbwo+IGF0aCBrZXJuZWwgbWFz
+dGVyIGJyYW5jaCBmcm9tIHRvZGF5LCBidWlsdCB3aXRoIGZlZG9yYSByYXdoaWRlCj4gNC4yLjAt
+cmM0IGtlcm5lbCBjb25maWcuIFRoZSBmaXJtd2FyZSBpcyBtYWRlIGZvbGxvd2luZyB0aGUKPiBp
+bnN0cnVjdGlvbnMgb24gdGhlIGxpc3QgYnkgdGhlIHdpbmRvd3MgZHJpdmVycy4KPiBJJ20gdXNp
+bmcgc2tpcF9vdHA9MSBvbiBhdGgxMGtfY29yZSBhbmQgaXJxX21vZGU9MSBvbiBhdGgxMGtfcGNp
+Cj4gb3RoZXJ3aXNlIEkgcnVuIGludG8gdGhlIHNhbWUgaXNzdWVzIHJlcG9ydGVkIGJ5IEVucmlj
+byBUYWdsaWF2aW5pLgo+IEV2ZXJ5dGhpbmcgd29ya3MgcmVhc29uYWJseSB3ZWxsIG9uIG15IDIu
+NEdIeiBuZXR3b3JrLCBidXQgdHJ5aW5nIHRvCj4gY29ubmVjdCB0byBteSBvdGhlciA1R2h6IEkg
+Z2V0IGEgZmlybXdhcmUgY3Jhc2ggZm9sbG93ZWQgYnkgYSBrZXJuZWwKPiBjcmFzaC4gQXR0YWNo
+ZWQgYSBkbWVzZyBvdXRwdXQsIGZlZWwgZnJlZSB0byBhc2sgYW55IGFkZGl0aW9uYWwgaW5mby4K
+ClRoZXJlJ3Mgbm8ga2VybmVsIGNyYXNoIGhlcmUuIEl0J3MganVzdCBhIHdhcm5pbmcgc3BsYXQg
+d2l0aCBjYWxsCnRyYWNlLiBUaGlzIGhhcHBlbnMgYmVjYXVzZSAtIGFwcGFyZW50bHkgLSB0aGUg
+ZGV2aWNlIGRvdWJsZS1jcmFzaGVkCmFuZCBnb3Qgd2VkZ2VkIHNvIG1hYzgwMjExIGNvbXBsYWlu
+ZWQgdmVyYm9zZWx5LgoKVGhlIGZpcm13YXJlIGNyYXNoIGl0c2VsZiBzZWVtcyB0byBiZSByZWxh
+dGVkIHRvIFR4QkYuIEknbSBndWVzc2luZwp0aGUgZmlybXdhcmUgd3JvbmdseSBhZHZlcnRpc2Vz
+IHZodCBjYXBhYmlsaXRpZXMgYW5kIGNyYXNoZXMgd2hlbgphc3NvY2lhdGluZyB0byBUeEJGIGNh
+cGFibGUgQVAuCgpBcyBhIHRlbXBvcmFyeSBtZWFzdXJlIChhbmQgY29uZmlybWF0aW9uKSB5b3Ug
+Y2FuIHRyeSB0aGUgZGlmZiBiZWxvdwood2FybmluZywgd2hpdGVzcGFjZSBkYW1hZ2VkKS4KCgpN
+aWNoYcWCCgoKCi0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsvbWFjLmMKKysr
+IGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYwpAQCAtNjczMiwyMyArNjcz
+MiwxMCBAQCBzdGF0aWMgc3RydWN0IGllZWU4MDIxMV9zdGFfdmh0X2NhcAphdGgxMGtfY3JlYXRl
+X3ZodF9jYXAoc3RydWN0IGF0aDEwayAqYXIpCiAgICAgICAgdmh0X2NhcC52aHRfc3VwcG9ydGVk
+ID0gMTsKICAgICAgICB2aHRfY2FwLmNhcCA9IGFyLT52aHRfY2FwX2luZm87CgotICAgICAgIGlm
+IChhci0+dmh0X2NhcF9pbmZvICYgKElFRUU4MDIxMV9WSFRfQ0FQX1NVX0JFQU1GT1JNRUVfQ0FQ
+QUJMRSB8Ci0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9DQVBf
+TVVfQkVBTUZPUk1FRV9DQVBBQkxFKSkgewotICAgICAgICAgICAgICAgdmFsID0gYXItPm51bV9y
+Zl9jaGFpbnMgLSAxOwotICAgICAgICAgICAgICAgdmFsIDw8PSBJRUVFODAyMTFfVkhUX0NBUF9C
+RUFNRk9STUVFX1NUU19TSElGVDsKLSAgICAgICAgICAgICAgIHZhbCAmPSBJRUVFODAyMTFfVkhU
+X0NBUF9CRUFNRk9STUVFX1NUU19NQVNLOwotCi0gICAgICAgICAgICAgICB2aHRfY2FwLmNhcCB8
+PSB2YWw7Ci0gICAgICAgfQotCi0gICAgICAgaWYgKGFyLT52aHRfY2FwX2luZm8gJiAoSUVFRTgw
+MjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FUl9DQVBBQkxFIHwKLSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9STUVSX0NBUEFCTEUpKSB7Ci0g
+ICAgICAgICAgICAgICB2YWwgPSBhci0+bnVtX3JmX2NoYWlucyAtIDE7Ci0gICAgICAgICAgICAg
+ICB2YWwgPDw9IElFRUU4MDIxMV9WSFRfQ0FQX1NPVU5ESU5HX0RJTUVOU0lPTlNfU0hJRlQ7Ci0g
+ICAgICAgICAgICAgICB2YWwgJj0gSUVFRTgwMjExX1ZIVF9DQVBfU09VTkRJTkdfRElNRU5TSU9O
+U19NQVNLOwotCi0gICAgICAgICAgICAgICB2aHRfY2FwLmNhcCB8PSB2YWw7Ci0gICAgICAgfQor
+ICAgICAgIGFyLT52aHRfY2FwX2luZm8gJj0gfihJRUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9S
+TUVFX0NBUEFCTEUgfAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhU
+X0NBUF9NVV9CRUFNRk9STUVFX0NBUEFCTEUgfAorICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBJRUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9STUVSX0NBUEFCTEUgfAorICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9STUVSX0NBUEFCTEUp
+OwoKICAgICAgICBtY3NfbWFwID0gMDsKICAgICAgICBmb3IgKGkgPSAwOyBpIDwgODsgaSsrKSB7
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsg
+bWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
