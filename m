@@ -1,17 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from arrakis.dune.hu ([78.24.191.176])
+Received: from mail-wi0-x22e.google.com ([2a00:1450:400c:c05::22e])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNTDo-0003jF-F5
- for ath10k@lists.infradead.org; Thu, 06 Aug 2015 22:01:09 +0000
-Subject: Re: [PATCH] ath10k: Add QCA99X0 to supported device list
-References: <1437478567-11339-1-git-send-email-vthiagar@qti.qualcomm.com>
- <55C1FFBC.7070905@openwrt.org> <55C31039.6030201@qti.qualcomm.com>
- <55C313D3.4080004@openwrt.org> <55C3AB2F.9030904@codeaurora.org>
-From: Felix Fietkau <nbd@openwrt.org>
-Message-ID: <55C3D905.6090207@openwrt.org>
-Date: Fri, 7 Aug 2015 00:00:37 +0200
+ id 1ZNZYY-0007Od-5A
+ for ath10k@lists.infradead.org; Fri, 07 Aug 2015 04:46:59 +0000
+Received: by wibxm9 with SMTP id xm9so46669799wib.0
+ for <ath10k@lists.infradead.org>; Thu, 06 Aug 2015 21:46:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <55C3AB2F.9030904@codeaurora.org>
+In-Reply-To: <CAAKLdA_FGUKEbynGMZ1p2bDzdb7WZZJY1H4619aJx09X+_kJQg@mail.gmail.com>
+References: <CAAKLdA_FGUKEbynGMZ1p2bDzdb7WZZJY1H4619aJx09X+_kJQg@mail.gmail.com>
+Date: Fri, 7 Aug 2015 06:46:34 +0200
+Message-ID: <CA+BoTQkF1ZNir4iapujPnCY0U7c_Bfz1XoGcwcAKri-odoud=A@mail.gmail.com>
+Subject: Re: qca6174 hw2.1 fw and kernel crash on 5GHz network connection
+ attempt
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,54 +21,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>, Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, ath10k@lists.infradead.org
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless@vger.kernel.org
+To: Lapo Calamandrei <calamandrei@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On 2015-08-06 20:45, Peter Oh wrote:
-> 
-> On 08/06/2015 12:59 AM, Felix Fietkau wrote:
->> On 2015-08-06 09:43, Vasanthakumar Thiagarajan wrote:
->>> On Wednesday 05 August 2015 05:51 PM, Felix Fietkau wrote:
->>>> On 2015-07-21 13:36, Vasanthakumar Thiagarajan wrote:
->>>>> Add vendor/device id of QCA99X0 V2.0 to pci id table and
->>>>> QCA99X0_HW_2_0_CHIP_ID_REV to ath10k_pci_supp_chips[] for
->>>>> QCA99X0 to get detected by the driver.
->>>>>
->>>>> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
->>>> I just tested a 99X0 card, and I'm getting this:
->>>>
->>>> [    8.742514] ath10k_pci 0000:01:00.0: enabling device (0140 -> 0142)
->>>> [    8.747173] ath10k_pci 0000:01:00.0: pci irq msi interrupts 1
->> irq_mode 0 reset_mode 0
->>>> [   11.793314] ath10k_pci 0000:01:00.0: failed to receive initialized
->> event from target: 00000000
->>>> [   11.793344] ath10k_pci 0000:01:00.0: failed to wait for target after
->> cold reset: -110
->>>> [   11.800814] ath10k_pci 0000:01:00.0: failed to reset chip: -110
->>>> [   11.809228] ath10k_pci: probe of 0000:01:00.0 failed with error -110
->>>>
->>>> This is on an AP148 board with Linux 3.18, backports generated from
->>>> latest wireless-testing (2015-08-03) + all patches from kvalo's ath
->>>> tree.
->>> Any idea about the version of AP148 that you are using?. By any chance
->> did
->>> you check if QCA988X is working on the same board?.
->> No idea about the version, but QCA988X is working in the same slot.
-> QCA99X0 uses a different version of firmware from QCA988X.
-> Could you verify which firmware version or file name is using?
-ath10k/QCA99X0/hw2.0/firmware-5.bin_10.4.1.00007-1 from git is
-/lib/firmware/ath10k/QCA99X0/hw2.0/firmware-5.bin on the device.
-
-However, this error shows up even before it gets to the point of loading
-the firmware.
-
-- Felix
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNiBBdWd1c3QgMjAxNSBhdCAxNjo0MiwgTGFwbyBDYWxhbWFuZHJlaSA8Y2FsYW1hbmRyZWlA
+Z21haWwuY29tPiB3cm90ZToKPiBIaSBNaWNoYWwsIGZpcnN0IG9mIGFsbCB0aGFuayB5b3UgZm9y
+IHlvdXIgdGltZS4gU28sIGxvb2tzIGxpa2UgdGhlCj4gcGF0Y2ggcHJvdmlkZWQgbWFrZXMgbm8g
+ZGlmZmVyZW5jZSBbdG8gbWVdLCBhdHRhY2hlZCB0aGUgZG1lc2cgb3V0cHV0Cj4gd2l0aCBhbmQg
+d2l0aG91dCB0aGUgcGF0Y2ggYXBwbGllZCBhZ2FpbnN0IGEgZnJlc2ggY2hlY2tvdXQuCgpUaGlz
+IGlzIHdlaXJkLiBJJ20gcHJldHR5IHN1cmUgdGhpcyBpcyBUeEJGIHJlbGF0ZWQuIENhbiB5b3Ug
+Z2V0CnRyYWNlc1sxXSB3aXRoIHRoZSBwYXRjaCBhcHBsaWVkLCBwbGVhc2U/CgpbMV06IGh0dHBz
+Oi8vd2lyZWxlc3Mud2lraS5rZXJuZWwub3JnL2VuL3VzZXJzL2RyaXZlcnMvYXRoMTBrL2RlYnVn
+I3RyYWNpbmcKCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
