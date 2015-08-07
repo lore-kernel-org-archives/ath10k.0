@@ -1,20 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
+Received: from mail-la0-x236.google.com ([2a00:1450:4010:c03::236])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZNZf6-0000sA-JP
- for ath10k@lists.infradead.org; Fri, 07 Aug 2015 04:53:45 +0000
-Received: by wicne3 with SMTP id ne3so46217736wic.1
- for <ath10k@lists.infradead.org>; Thu, 06 Aug 2015 21:53:22 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <CALiJtcodKtPDHdu4diX-jmfxWdKtAiBfQunJQMbG_eYjrm3brg@mail.gmail.com>
-References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
- <CA+BoTQkvsrWBv8NceYuaK4mAnbg-bjzgB+voMAq7YNBcpUA8nw@mail.gmail.com>
- <CA+BoTQnvLqzTA8sthybeGTkPeEFYBkynTOGNQSdqh4SaUpqjBA@mail.gmail.com>
- <CALiJtcodKtPDHdu4diX-jmfxWdKtAiBfQunJQMbG_eYjrm3brg@mail.gmail.com>
-Date: Fri, 7 Aug 2015 06:53:22 +0200
-Message-ID: <CA+BoTQ=iM_8HWy1X8D9vqqxh=grnygy+mZtC6Q=YGjaZLSQmuA@mail.gmail.com>
-Subject: Re: qca6164 support
+ id 1ZNblJ-0000CU-0c
+ for ath10k@lists.infradead.org; Fri, 07 Aug 2015 07:08:18 +0000
+Received: by labd1 with SMTP id d1so3217347lab.1
+ for <ath10k@lists.infradead.org>; Fri, 07 Aug 2015 00:07:51 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: wake up queue upon vif creation
+Date: Fri,  7 Aug 2015 09:08:21 +0200
+Message-Id: <1438931301-27081-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +17,56 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Victor van Poppelen <vvanpo@gmail.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-T24gNiBBdWd1c3QgMjAxNSBhdCAxODo1OSwgVmljdG9yIHZhbiBQb3BwZWxlbiA8dnZhbnBvQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4gU3RpbGwgZ2V0IGEgZmlybXdhcmUgY3Jhc2ggYWZ0ZXIgJ2Jvb3Qg
-aGlmIHN0YXJ0JywgYnV0IGRpZmZlcmVudAo+IGJlaGF2aW91ciB0aGlzIHRpbWUuICBIZXJlIGlz
-IHRoZSBkbWVzZyBvdXRwdXQ6Cj4KPiBbICAgIDYuMDU4Mzc5XSBhdGgxMGtfcGNpIDAwMDA6MDI6
-MDAuMDogcGNpIHByb2JlCj4gWyAgICA2LjA1ODkzM10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6
-IGJvb3QgcGNpX21lbSAweGZmZmZjOTAwMDJjMDAwMDAKPiBbICAgIDYuMDYwOTYwXSBhdGgxMGtf
-cGNpIDAwMDA6MDI6MDAuMDogcGNpIGlycSBtc2kteCBpbnRlcnJ1cHRzIDgKPiBpcnFfbW9kZSAw
-IHJlc2V0X21vZGUgMAoKQ2FuIHlvdSBsb2FkIGF0aDEwa19wY2kgd2l0aCBpcnFfbW9kZT0xIG1v
-ZHVsZSBwYXJhbWV0ZXIsIHBsZWFzZT8KClNvbWV0aGluZyBicm9rZSBpbiByZWNlbnQga2VybmVs
-IGZvciBtc2ktcmFuZ2VkIGlycXMgb24gYXRoMTBrLiBFbnJpY28KaXMgdHJ5aW5nIHRvIGJpc2Vj
-dC4KCkluIHRoZSBtZWFudGltZSBmb3JjaW5nIHNoYXJlZCBpbnRlcnJ1cHRzIGlzIHRoZSBvbmx5
-IHdvcmthcm91bmQuCgoKWy4uLl0KPiBbICAgNjcuNDU2MzM5XSBhdGgxMGtfcGNpIDAwMDA6MDI6
-MDAuMDogYm1pIGRvbmUKPiBbICAgNjcuNDU2MzY4XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-aHR0IHR4IG1heCBudW0gcGVuZGluZyB0eCAxMDU2Cj4gWyAgIDY3LjQ1NjM5Nl0gYXRoMTBrX3Bj
-aSAwMDAwOjAyOjAwLjA6IGh0dCByeCByaW5nIHNpemUgMjA0OCBmaWxsX2xldmVsIDEwMjMKPiBb
-ICAgNjcuNDU2NDAwXSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogYm9vdCBoaWYgc3RhcnQKPiBb
-ICAgNjcuNDU2NDI3XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcmVjZWl2ZWQgdW5zb2xpY2l0
-ZWQgZncgY3Jhc2ggaW50ZXJydXB0Cj4gWyAgIDY4LjQ1NjkzOV0gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IGZhaWxlZCB0byByZWNlaXZlIGNvbnRyb2wKPiByZXNwb25zZSBjb21wbGV0aW9uLCBw
-b2xsaW5nLi4KPiBbICAgNjguNDU2OTQ4XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGhp
-ZiBzZW5kIGNvbXBsZXRlIGNoZWNrCj4gWyAgIDY4LjQ1NzI1M10gYXRoMTBrX3BjaSAwMDAwOjAy
-OjAwLjA6IHBjaSBoaWYgc2VuZCBjb21wbGV0ZSBjaGVjawo+IFsgICA2OC40NTcyNjVdIGF0aDEw
-a19wY2kgMDAwMDowMjowMC4wOiBwY2kgcnggY2UgcGlwZSAxIGxlbiAyMAo+IFsgICA2OC40NTcy
-NzRdIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBwY2kgcng6IDAwMDAwMDAwOiAwMCAwMCAwYyAw
-MAo+IDAwIDAwIDAwIDAwIDAxIDAwIDAyIDAwIDAwIDA3IDE2IDAwICAuLi4uLi4uLi4uLi4uLi4u
-Cj4gWyAgIDY4LjQ1NzI4Ml0gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSByeDogMDAwMDAw
-MTA6IDAxIDAwIDAwIDAwCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgLi4u
-Lgo+IFsgICA2OC40NTcyOTldIGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBwY2kgaGlmIHNlbmQg
-Y29tcGxldGUgY2hlY2sKPiBbICAgNjguNDU3MzA2XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDog
-cGNpIGhpZiBzZW5kIGNvbXBsZXRlIGNoZWNrCj4gWyAgIDY4LjQ1NzM3MV0gYXRoMTBrX3BjaSAw
-MDAwOjAyOjAwLjA6IHBjaSBoaWYgc2VuZCBjb21wbGV0ZSBjaGVjawo+IFsgICA2OC40NTc0ODRd
-IGF0aDEwa19wY2kgMDAwMDowMjowMC4wOiBwY2kgaGlmIHNlbmQgY29tcGxldGUgY2hlY2sKPiBb
-ICAgNjguNDU3NDg5XSBhdGgxMGtfcGNpIDAwMDA6MDI6MDAuMDogcGNpIGhpZiBzZW5kIGNvbXBs
-ZXRlIGNoZWNrCj4gWyAgIDY4LjQ1NzQ5M10gYXRoMTBrX3BjaSAwMDAwOjAyOjAwLjA6IHBjaSBo
-aWYgc2VuZCBjb21wbGV0ZSBjaGVjawo+IFsgICA2OC40NTc2MDJdIGF0aDEwa19wY2kgMDAwMDow
-MjowMC4wOiBUYXJnZXQgcmVhZHkhIHRyYW5zbWl0Cj4gcmVzb3VyY2VzOiAyIHNpemU6MTc5MgoK
-VGhpcyBsb29rcyBsaWtlIGdvb2QgbmV3cyEgSFRDIENvbnRyb2wgc2VydmljZSByZXNwb25kZWQg
-d2l0aCBhCm1lc3NhZ2UgdG8gaG9zdC4gVGhpcyBtZWFucyBmaXJtd2FyZSBjb2RlIGhhcyBmaW5h
-bGx5IHJ1bi4gUHJldmlvdXNseQppdCBkaWQgbm90IHJ1biBhdCBhbGwgLSBpbnN0ZWFkIFJPTSBj
-b2RlIGNyYXNoZWQgYmVmb3JlIGV2ZW4gc3RhcnRpbmcKdGhlIHVwbG9hZGVkIGZpcm13YXJlIGJs
-b2IuCgoKTWljaGHFggoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRw
-Oi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Vif's vdev_id is used as queue number. However due
+to the tx pausing design in ath10k it was possible
+for a new interface to be created with its tx
+queue stopped (via ieee80211_stop_queues). This
+could in turn leave the interface inoperable until
+ath10k_mac_tx_unlock() was called.
+
+This problem only affected multi-vif scenarios when
+new interfaces were created some time later after
+other interfaces have been running for some time
+and had Tx queue full at some point prior.
+
+Possible manifestation of the bug was
+authentication timeout for a client vif.
+
+Fixes: 96d828d45e16 ("ath10k: rework tx queue locking")
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index acd222f3b899..03e498cb64b4 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4299,6 +4299,11 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 		}
+ 	}
+ 
++	spin_lock_bh(&ar->htt.tx_lock);
++	if (!ar->tx_paused)
++		ieee80211_wake_queue(ar->hw, arvif->vdev_id);
++	spin_unlock_bh(&ar->htt.tx_lock);
++
+ 	mutex_unlock(&ar->conf_mutex);
+ 	return 0;
+ 
+-- 
+2.1.4
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
