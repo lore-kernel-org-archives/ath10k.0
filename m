@@ -1,22 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from plane.gmane.org ([80.91.229.3])
+Received: from mail-wi0-x22c.google.com ([2a00:1450:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOf5t-0001d6-Lb
- for ath10k@lists.infradead.org; Mon, 10 Aug 2015 04:53:54 +0000
-Received: from list by plane.gmane.org with local (Exim 4.69)
- (envelope-from <gldad-ath10k@m.gmane.org>) id 1ZOf5X-00047J-1M
- for ath10k@lists.infradead.org; Mon, 10 Aug 2015 06:53:31 +0200
-Received: from 73.12.10.255 ([73.12.10.255])
- by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <ath10k@lists.infradead.org>; Mon, 10 Aug 2015 06:53:31 +0200
-Received: from twilightrook by 73.12.10.255 with local (Gmexim 0.1 (Debian))
- id 1AlnuQ-0007hv-00
- for <ath10k@lists.infradead.org>; Mon, 10 Aug 2015 06:53:31 +0200
-From: Anish Tondwalkar <twilightrook@gmail.com>
-Subject: Re: qca6164 support
-Date: Mon, 10 Aug 2015 04:53:25 +0000 (UTC)
-Message-ID: <loom.20150810T065227-358@post.gmane.org>
+ id 1ZOgNL-0004f8-V7
+ for ath10k@lists.infradead.org; Mon, 10 Aug 2015 06:16:01 +0000
+Received: by wicne3 with SMTP id ne3so122412057wic.1
+ for <ath10k@lists.infradead.org>; Sun, 09 Aug 2015 23:15:32 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <loom.20150810T055401-106@post.gmane.org>
 References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
  <CA+BoTQkvsrWBv8NceYuaK4mAnbg-bjzgB+voMAq7YNBcpUA8nw@mail.gmail.com>
  <CA+BoTQnvLqzTA8sthybeGTkPeEFYBkynTOGNQSdqh4SaUpqjBA@mail.gmail.com>
@@ -24,7 +14,10 @@ References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
  <CA+BoTQ=iM_8HWy1X8D9vqqxh=grnygy+mZtC6Q=YGjaZLSQmuA@mail.gmail.com>
  <CALiJtco-atqjBVi2jXxSFeoRQFRqu4jQu3vMmYNexkeEg6rHAQ@mail.gmail.com>
  <loom.20150810T055401-106@post.gmane.org>
-Mime-Version: 1.0
+Date: Mon, 10 Aug 2015 08:15:31 +0200
+Message-ID: <CA+BoTQ=Rga-E3HMciQKdECHF=hNqBro_Pq=H8KH5Uy4rV0m58w@mail.gmail.com>
+Subject: Re: qca6164 support
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +26,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Anish Tondwalkar <twilightrook@gmail.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Anish Tondwalkar <twilightrook <at> gmail.com> writes:
-
-> 
-> kernel 22f8a4083883eca3e8a3175315d67d2a04392466 from 
-> https://github.com/vvanpo/linux/commit 
-
-Oops, that's https://github.com/vvanpo/linux/tree/fork-ath , sorry
-
-
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTAgQXVndXN0IDIwMTUgYXQgMDY6MzYsIEFuaXNoIFRvbmR3YWxrYXIgPHR3aWxpZ2h0cm9v
+a0BnbWFpbC5jb20+IHdyb3RlOgo+IFZpY3RvciB2YW4gUG9wcGVsZW4gPHZ2YW5wbyA8YXQ+IGdt
+YWlsLmNvbT4gd3JpdGVzOgo+Cj4+Cj4+ID4gQ2FuIHlvdSBsb2FkIGF0aDEwa19wY2kgd2l0aCBp
+cnFfbW9kZT0xIG1vZHVsZSBwYXJhbWV0ZXIsIHBsZWFzZT8KPj4gPgo+PiA+IFNvbWV0aGluZyBi
+cm9rZSBpbiByZWNlbnQga2VybmVsIGZvciBtc2ktcmFuZ2VkIGlycXMgb24gYXRoMTBrLiBFbnJp
+Y28KPj4gPiBpcyB0cnlpbmcgdG8gYmlzZWN0Lgo+PiA+Cj4+ID4gSW4gdGhlIG1lYW50aW1lIGZv
+cmNpbmcgc2hhcmVkIGludGVycnVwdHMgaXMgdGhlIG9ubHkgd29ya2Fyb3VuZC4KPj4KPj4gSXQg
+d29ya3MhCj4+Cj4KPgo+IEknbSB0cnlpbmcgdGhpcyB3aXRoIGF0aDEwa19wY2kgaXJxX21vZGU9
+MSBhbmQgYXRoMTBrX2NvcmUgc2tpcF9vdHA9eSBvbgo+IGtlcm5lbCAyMmY4YTQwODM4ODNlY2Ez
+ZThhMzE3NTMxNWQ2N2QyYTA0MzkyNDY2IGZyb20KPiBodHRwczovL2dpdGh1Yi5jb20vdnZhbnBv
+L2xpbnV4L2NvbW1pdCAoSSB0aGluayB0aGF0J3MganVzdCBrdmFsby9hdGggd2l0aAo+IE1pY2hh
+xYIncyBjaGFuZ2VzKSBvbiBteSBMZW5vdm8gWjcwLTgwLiBJdCdzIG5vdCB3b3JraW5nIChkaWQg
+SSBleHRyYWN0IHRoZQo+IGZpcm13YXJlIHdyb25nPyBjYW4gc29tZW9uZSBzZW5kIG1lIHRoZSBj
+b3JyZWN0IGZ3PykKPgo+IEhlcmUncyBkbWVzZzogKEkgdGhpbmsgdGhlIGVucDJzMCBlcnJvciBh
+cmUgcHJvYmFibHkgdW5yZWxhdGVkKQo+ClsuLi5dCj4gWyAgIDYzLjA1NzYzNF0gYXRoMTBrX3Bj
+aSAwMDAwOjAzOjAwLjA6IERpcmVjdCBmaXJtd2FyZSBsb2FkIGZvcgo+IGF0aDEway9RQ0E2MTc0
+L2h3Mi4xL2JvYXJkLXBjaS0xNjhjOjAwNDE6MTdhYTozNTQ1LmJpbiBmYWlsZWQgd2l0aCBlcnJv
+ciAtMgo+IFsgICA2My4wNTc2MzddIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBGYWxsaW5nIGJh
+Y2sgdG8gdXNlciBoZWxwZXIKPiBbICAxMjMuMTAzMzE3XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
+MDogZmFpbGVkIHRvIGxvYWQgc3BlYyBib2FyZCBmaWxlLAo+IGZhbGxpbmcgYmFjayB0byBnZW5l
+cmljOiAtMTEKPiBbICAxMjUuMTQ0ODQ3XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogdW5hYmxl
+IHRvIHdyaXRlIHRvIHRoZSBkZXZpY2UKPiBbICAxMjUuMTQ0ODUxXSBhdGgxMGtfcGNpIDAwMDA6
+MDM6MDAuMDogY291bGQgbm90IHdyaXRlIG90cCAoLTExMCkKPiBbICAxMjUuMTQ0ODUzXSBhdGgx
+MGtfcGNpIDAwMDA6MDM6MDAuMDogZmFpbGVkIHRvIHJ1biBvdHA6IC0xMTAKPiBbICAxMjUuMTQ0
+ODU0XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogY291bGQgbm90IGluaXQgY29yZSAoLTExMCkK
+PiBbICAxMjUuMTQ0ODcxXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogY291bGQgbm90IHByb2Jl
+IGZ3ICgtMTEwKQoKTG9va3MgbGlrZSB5b3UndmUgYXNzZW1ibGVkIHRoZSBmaXJtd2FyZSBiaW5h
+cnkgaW5jb3JyZWN0bHkuIFRoZSBvdHAKYmluYXJ5IGlzIHRvbyBiaWcuIFlvdSBtaWdodCB3YW50
+IHRvIHRyeSB1bm9mZmljaWFsIGZ3IGJpbmFyeSBmcm9tCnRoaXMgcHVsbCByZXF1ZXN0IGluc3Rl
+YWQ6CgogICBodHRwczovL2dpdGh1Yi5jb20va3ZhbG8vYXRoMTBrLWZpcm13YXJlL3B1bGwvMgoK
+Ck1pY2hhbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+YXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlz
+dHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
