@@ -1,13 +1,34 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-pa0-x22f.google.com ([2607:f8b0:400e:c03::22f])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPBfo-0000kw-0d
- for ath10k@lists.infradead.org; Tue, 11 Aug 2015 15:41:08 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: linux-4.1.y: ath10k: fix qca61x4 hw2.1 support
-Date: Tue, 11 Aug 2015 18:40:15 +0300
-Message-ID: <878u9hsujk.fsf@kamboji.qca.qualcomm.com>
+ id 1ZPCMi-0002VK-2K
+ for ath10k@lists.infradead.org; Tue, 11 Aug 2015 16:25:29 +0000
+Received: by pabyb7 with SMTP id yb7so133432700pab.0
+ for <ath10k@lists.infradead.org>; Tue, 11 Aug 2015 09:25:06 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQnva5HOMczy-k3Y4AEDac4Tat7Vu0zOFv+cXzRfboEP7g@mail.gmail.com>
+References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
+ <CA+BoTQkvsrWBv8NceYuaK4mAnbg-bjzgB+voMAq7YNBcpUA8nw@mail.gmail.com>
+ <CA+BoTQnvLqzTA8sthybeGTkPeEFYBkynTOGNQSdqh4SaUpqjBA@mail.gmail.com>
+ <CALiJtcodKtPDHdu4diX-jmfxWdKtAiBfQunJQMbG_eYjrm3brg@mail.gmail.com>
+ <CA+BoTQ=iM_8HWy1X8D9vqqxh=grnygy+mZtC6Q=YGjaZLSQmuA@mail.gmail.com>
+ <CALiJtco-atqjBVi2jXxSFeoRQFRqu4jQu3vMmYNexkeEg6rHAQ@mail.gmail.com>
+ <loom.20150810T055401-106@post.gmane.org>
+ <CA+BoTQ=Rga-E3HMciQKdECHF=hNqBro_Pq=H8KH5Uy4rV0m58w@mail.gmail.com>
+ <CALZPV0B9sVgbUrv6DTZ6t48QyHNQM_e0hV+mUC-svAZbvJK_vg@mail.gmail.com>
+ <CA+BoTQkXnzHbmPCOd7YX7qN7mv4c3NNLZmLf3JYb_r+vA=sUvw@mail.gmail.com>
+ <CALZPV0DsQXPfq3+O-8iF4H8i1-164s2jRdvmQjMMnW-qd7reFA@mail.gmail.com>
+ <CA+BoTQmb-2arpqmxmiWoTL9OFFtU9hEsrHdCmfAsWiNzE=5C-A@mail.gmail.com>
+ <CALZPV0D6hVGgw9bO0W+uz3vCw3WqaGXwnH6SpdQ1+JjBMS6ghQ@mail.gmail.com>
+ <CA+BoTQn=09AWB-ZZNGYQo2X1CUYnnwxcROW09QgXpn9y8P_0oA@mail.gmail.com>
+ <CALZPV0CebKaJO+jRj1okMAHvcufAjY+Hz=3YU12U-3N+9HfTeQ@mail.gmail.com>
+ <CALZPV0A-zUCh9YwEvOrfiCPF8J3ED6ihOBW3J3D_zCnLAmyzWg@mail.gmail.com>
+ <CALZPV0CNE8XzV5NKjv4s+f21WguB6EOQ2WMMteAEMfJKW2caRQ@mail.gmail.com>
+ <CA+BoTQnva5HOMczy-k3Y4AEDac4Tat7Vu0zOFv+cXzRfboEP7g@mail.gmail.com>
+Date: Tue, 11 Aug 2015 12:25:06 -0400
+Message-ID: <CALZPV0CVv56SiMaYzFJT_C-q1X73iDqHNxJUu0v9nm5ZnZcV+g@mail.gmail.com>
+Subject: Re: qca6164 support
+From: Anish Tondwalkar <twilightrook@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +41,26 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: stable@vger.kernel.org
-Cc: ath10k@lists.infradead.org
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hi stable team,
+On Tue, Aug 11, 2015 at 2:00 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> Apparently it is important to have an adequate board.bin or otp.bin to
+> even boot qca6164. I suspect it's only board.bin but it'd be nice to
+> know for sure what triggers the device crash.
+>
+> Can you verify this by using firmware-X.bin from sumdog and board.bin
+> from vvanpo, and then the opposite, i.e. firmware-X.bin from vvanpo
+> and board.bin from sumdog and report which one of the two worked,
+> please?
 
-please take the commit below to linux-4.1.y stable releases. It fixes a
-long standing issue with qca61x4 hw2.1 support reported by multiple
-users. This commit is already on 4.2 release. It will not apply to 4.0
-or older, so take it only to 4.1.y branch.
-
-commit 11a002efbaa7fbd9f6e616695ab42aa9f1caf060
-Author: Michal Kazior <michal.kazior@tieto.com>
-Date:   Mon Apr 20 09:20:41 2015 +0000
-
-    ath10k: fix qca61x4 hw2.1 support
+You are correct. vvanpo board.bin + sumdog firmware-5.bin works perfectly!
 
 -- 
-Kalle Valo
+Anish
+
+Q: Why is this email two sentences or less?
+A: http://two.sentenc.es
 
 _______________________________________________
 ath10k mailing list
