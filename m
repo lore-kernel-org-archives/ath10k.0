@@ -1,28 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOwjX-0004Oy-Ou
- for ath10k@lists.infradead.org; Mon, 10 Aug 2015 23:44:01 +0000
-Message-ID: <55C93729.90100@candelatech.com>
-Date: Mon, 10 Aug 2015 16:43:37 -0700
+ id 1ZOx7A-0005Pn-KP
+ for ath10k@lists.infradead.org; Tue, 11 Aug 2015 00:08:24 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id D415E409E08
+ for <ath10k@lists.infradead.org>; Mon, 10 Aug 2015 17:08:03 -0700 (PDT)
+Message-ID: <55C93CE3.6070306@candelatech.com>
+Date: Mon, 10 Aug 2015 17:08:03 -0700
 From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: qca6164 support
-References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
- <CA+BoTQ=iM_8HWy1X8D9vqqxh=grnygy+mZtC6Q=YGjaZLSQmuA@mail.gmail.com>
- <CALiJtco-atqjBVi2jXxSFeoRQFRqu4jQu3vMmYNexkeEg6rHAQ@mail.gmail.com>
- <loom.20150810T055401-106@post.gmane.org>
- <CA+BoTQ=Rga-E3HMciQKdECHF=hNqBro_Pq=H8KH5Uy4rV0m58w@mail.gmail.com>
- <CALZPV0B9sVgbUrv6DTZ6t48QyHNQM_e0hV+mUC-svAZbvJK_vg@mail.gmail.com>
- <CA+BoTQkXnzHbmPCOd7YX7qN7mv4c3NNLZmLf3JYb_r+vA=sUvw@mail.gmail.com>
- <CALZPV0DsQXPfq3+O-8iF4H8i1-164s2jRdvmQjMMnW-qd7reFA@mail.gmail.com>
- <CA+BoTQmb-2arpqmxmiWoTL9OFFtU9hEsrHdCmfAsWiNzE=5C-A@mail.gmail.com>
- <CALZPV0D6hVGgw9bO0W+uz3vCw3WqaGXwnH6SpdQ1+JjBMS6ghQ@mail.gmail.com>
- <CA+BoTQn=09AWB-ZZNGYQo2X1CUYnnwxcROW09QgXpn9y8P_0oA@mail.gmail.com>
- <CALZPV0CebKaJO+jRj1okMAHvcufAjY+Hz=3YU12U-3N+9HfTeQ@mail.gmail.com>
- <CALZPV0A-zUCh9YwEvOrfiCPF8J3ED6ihOBW3J3D_zCnLAmyzWg@mail.gmail.com>
- <CALZPV0CNE8XzV5NKjv4s+f21WguB6EOQ2WMMteAEMfJKW2caRQ@mail.gmail.com>
-In-Reply-To: <CALZPV0CNE8XzV5NKjv4s+f21WguB6EOQ2WMMteAEMfJKW2caRQ@mail.gmail.com>
+Subject: Re: Repeatable crash of CT firmware (at least).
+References: <55C3B297.2050704@candelatech.com>
+In-Reply-To: <55C3B297.2050704@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -31,66 +23,60 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Anish Tondwalkar <twilightrook@gmail.com>
-Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>
 
-T24gMDgvMTAvMjAxNSAwNDowNSBQTSwgQW5pc2ggVG9uZHdhbGthciB3cm90ZToKPiBHb3QgaXQg
-d29ya2luZyEgU29ydCBvZiEgSSBhc2tlZCB2dmFucG8gZm9yIGhpcyBmaXJtd2FyZSwgYW5kIHdp
-dGgKPiB0aGF0IEkgY2FuIHNlZSB0aGUgd2lyZWxlc3MgZGV2aWNlIGFmdGVyIEkgYm9vdC4gQnV0
-IEkgc3RpbGwgY2FuJ3QKPiBjb25uZWN0IHRvIGFueSBuZXR3b3JrcyBvciBzZWUgdGhlbS4KPiAK
-PiBIZXJlJ3MgdGhlIGZpcm13YXJlOgo+IGh0dHBzOi8vZ2l0aHViLmNvbS9hdG9uZHdhbC9hdGgx
-MGstZmlybXdhcmUvY29tbWl0Lzg4ZmNhODVlZjU5ZDcwOGI5ODc0ZTViNzg4NTQxNmI1OGFlZjll
-ZTcKPiAKPiAKPiBbICAgNjYuMjY3MzU1XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogRGlyZWN0
-IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL1FDQTYxNzQvaHcyLjEvYm9hcmQtcGNpLTE2OGM6
-MDA0MToxN2FhOjM1NDUuYmluIGZhaWxlZCB3aXRoCj4gZXJyb3IgLTIKPiBbICAgNjYuMjY3MzU4
-XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogRmFsbGluZyBiYWNrIHRvIHVzZXIgaGVscGVyCj4g
-WyAgMTI2LjMxNTE2OV0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byBsb2FkIHNw
-ZWMgYm9hcmQKPiBmaWxlLCBmYWxsaW5nIGJhY2sgdG8gZ2VuZXJpYzogLTExCj4gWyAgMTI2LjM0
-OTExM10gVGhpcyB0aGUgcGF0Y2hlZCBrZXJuZWwgLUFuaXNoCj4gWyAgMTI3LjUxNDU2OV0gYXRo
-MTBrX3BjaSAwMDAwOjAzOjAwLjA6IHFjYTYxNzQgaHcyLjEgKDB4MDUwMTAwMDAsCj4gMHgwMDM0
-MDVmZiwgMTY4YzowMDQxOjE3YWE6MzU0NSBmYWxsYmFjaykgZncgYXRoZXJvcy0xMi4wLjAuMTAy
-LWZ3IGFwaQo+IDUgaHR0LXZlciAzLjI1IHdtaS1vcCA0IGh0dC1vcCAzIGNhbCBvdHAgbWF4LXN0
-YSAzMiByYXcgMCBod2NyeXB0byAxCj4gZmVhdHVyZXMKPiBbICAxMjcuNTE0NTc0XSBhdGgxMGtf
-cGNpIDAwMDA6MDM6MDAuMDogZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2luZyAwCj4gZGZzIDAgdGVz
-dG1vZGUgMAo+IFsgIDEyNy41OTM2OTldIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjogMHg2Ywo+IFsg
-IDEyNy41OTM3MDJdIGF0aDogRUVQUk9NIGluZGljYXRlcyB3ZSBzaG91bGQgZXhwZWN0IGEgZGly
-ZWN0IHJlZ3BhaXIgbWFwCj4gWyAgMTI3LjU5MzcwM10gYXRoOiBDb3VudHJ5IGFscGhhMiBiZWlu
-ZyB1c2VkOiAwMAo+IFsgIDEyNy41OTM3MDRdIGF0aDogUmVncGFpciB1c2VkOiAweDZjCj4gWyAg
-MTI3LjYwNTQxNF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjAgd2xwM3MwOiByZW5hbWVkIGZyb20g
-d2xhbjAKPiAKPiB+IOKdr+Kdr+KdryBzdWRvIGl3Y29uZmlnIHdscDNzMCBlc3NpZCB3YWhvbyBh
-cCBhbnkKPiB+IOKdr+Kdr+KdryBzdWRvIGl3Y29uZmlnIHdscDNzMAo+IHdscDNzMCAgICBJRUVF
-IDgwMi4xMWFiZ24gIEVTU0lEOiJ3YWhvbyIKPiAgICAgICAgICAgTW9kZTpNYW5hZ2VkICBBY2Nl
-c3MgUG9pbnQ6IE5vdC1Bc3NvY2lhdGVkICAgVHgtUG93ZXI9b2ZmCj4gICAgICAgICAgIFJldHJ5
-IHNob3J0IGxpbWl0OjcgICBSVFMgdGhyOm9mZiAgIEZyYWdtZW50IHRocjpvZmYKPiAgICAgICAg
-ICAgRW5jcnlwdGlvbiBrZXk6b2ZmCj4gICAgICAgICAgIFBvd2VyIE1hbmFnZW1lbnQ6b2ZmCj4g
-Cj4gfiDina/ina/ina8gc3VkbyBpd2NvbmZpZyB3bHAzczAgZXNzaWQgd2Fob28gYXAgYW55Cj4g
-fiDina/ina/ina8gc3VkbyBkaGNwY2Qgd2xwM3MwCj4gd2xwM3MwOiBhZGRpbmcgYWRkcmVzcyBm
-ZTgwOjoxODUxOmNkM2U6Mjc5MDplZDRmCj4gd2xwM3MwOiBzdGFydGluZyB3cGFfc3VwcGxpY2Fu
-dAo+IHdscDNzMDogZmFpbGVkIHRvIHN0YXJ0IHdwYV9zdXBwbGljYW50Cj4gd2xwM3MwOiBTdWNj
-ZXNzZnVsbHkgaW5pdGlhbGl6ZWQgd3BhX3N1cHBsaWNhbnQKPiBMaW5lIDExODI6IHVua25vd24g
-RUFQIG1ldGhvZCAnU0lNJwo+IFlvdSBtYXkgbmVlZCB0byBhZGQgc3VwcG9ydCBmb3IgdGhpcyBF
-QVAgbWV0aG9kIGR1cmluZyB3cGFfc3VwcGxpY2FudAo+IGJ1aWxkIHRpbWUgY29uZmlndXJhdGlv
-bi4KPiBTZWUgUkVBRE1FIGZvciBtb3JlIGluZm9ybWF0aW9uLgo+IExpbmUgMTE4MjogZmFpbGVk
-IHRvIHBhcnNlIGVhcCAnU0lNJy4KPiBMaW5lIDExODU6IGZhaWxlZCB0byBwYXJzZSBuZXR3b3Jr
-IGJsb2NrLgo+IExpbmUgMTE5MjogdW5rbm93biBFQVAgbWV0aG9kICdQU0snCj4gWW91IG1heSBu
-ZWVkIHRvIGFkZCBzdXBwb3J0IGZvciB0aGlzIEVBUCBtZXRob2QgZHVyaW5nIHdwYV9zdXBwbGlj
-YW50Cj4gYnVpbGQgdGltZSBjb25maWd1cmF0aW9uLgo+IFNlZSBSRUFETUUgZm9yIG1vcmUgaW5m
-b3JtYXRpb24uCj4gTGluZSAxMTkyOiBmYWlsZWQgdG8gcGFyc2UgZWFwICdQU0snLgo+IExpbmUg
-MTE5NjogZmFpbGVkIHRvIHBhcnNlIG5ldHdvcmsgYmxvY2suCj4gTGluZSAxMjI4OiB1bmtub3du
-IEVBUCBtZXRob2QgJ0lLRVYyJwo+IFlvdSBtYXkgbmVlZCB0byBhZGQgc3VwcG9ydCBmb3IgdGhp
-cyBFQVAgbWV0aG9kIGR1cmluZyB3cGFfc3VwcGxpY2FudAo+IGJ1aWxkIHRpbWUgY29uZmlndXJh
-dGlvbi4KPiBTZWUgUkVBRE1FIGZvciBtb3JlIGluZm9ybWF0aW9uLgo+IExpbmUgMTIyODogZmFp
-bGVkIHRvIHBhcnNlIGVhcCAnSUtFVjInLgo+IExpbmUgMTIzMTogZmFpbGVkIHRvIHBhcnNlIG5l
-dHdvcmsgYmxvY2suCj4gRmFpbGVkIHRvIHJlYWQgb3IgcGFyc2UgY29uZmlndXJhdGlvbiAnL2V0
-Yy93cGFfc3VwcGxpY2FudC93cGFfc3VwcGxpY2FudC5jb25mJy4KCllvdSBoYXZlIGEgYmFkIHN1
-cHBsaWNhbnQgY29uZmlnIGZpbGUuICBUaGlzIGlzIG5vdCBkaXJlY3RseSByZWxhdGVkIHRvIGFu
-eQpwcm9ibGVtcyB5b3UgbWlnaHQgYmUgaGF2aW5nIHdpdGggdGhlIGZpcm13YXJlLgoKVGhhbmtz
-LApCZW4KCi0tIApCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNvbT4KQ2FuZGVsYSBU
-ZWNobm9sb2dpZXMgSW5jICBodHRwOi8vd3d3LmNhbmRlbGF0ZWNoLmNvbQoKCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBtYWlsaW5nIGxpc3QK
-YXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hdGgxMGsK
+As an update, stock upstream kernels and multiple different official firmware versions
+crash as well.
+
+I've sent more details off to those that might be able to fix
+things.
+
+Thanks,
+Ben
+
+On 08/06/2015 12:16 PM, Ben Greear wrote:
+> In case someone has time an interest, I would be curious if upstream
+> firmware/kernels see this problem.  Unfortunately, it takes a bit of
+> setup to do this test (namely, constant tx source, and if doing this with
+> something like ath9k, then you might need a variable attenuator).
+> 
+> Possibly just a very loud constant tx source would reproduce the bug
+> as well, and possibly it would happen in AP mode, etc.
+> 
+> Channel 1, HT40
+> 
+> Configure ath10k in station mode, associate with ath10k AP,
+> start transmitting frames (about 4kpps tx, 1kpps rx in my case)
+> 
+> Add a constant-transmit noise source at around -65 db on the same channel.  This should
+> cause ath10k station (and AP) to go silent.
+> 
+> Shortly after, the station system's ath10k firmware crashes due to assert
+> in the firmware CE logic.
+> 
+> I know that a similar CE assert can happen if the host does bad things
+> with the tx descriptors, so I am suspicious that is the case here.  For instance,
+> maybe firmware is still trying to transmit the frame when host tears down
+> the station vdev??
+> 
+> Of course, this could all be due to bugs in CT firmware and/or my kernel
+> patches...
+> 
+> Thanks,
+> Ben
+> 
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
