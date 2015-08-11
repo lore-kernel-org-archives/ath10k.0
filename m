@@ -1,20 +1,31 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZOx7A-0005Pn-KP
- for ath10k@lists.infradead.org; Tue, 11 Aug 2015 00:08:24 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id D415E409E08
- for <ath10k@lists.infradead.org>; Mon, 10 Aug 2015 17:08:03 -0700 (PDT)
-Message-ID: <55C93CE3.6070306@candelatech.com>
-Date: Mon, 10 Aug 2015 17:08:03 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-pa0-x235.google.com ([2607:f8b0:400e:c03::235])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZOz0G-0005H1-J8
+ for ath10k@lists.infradead.org; Tue, 11 Aug 2015 02:09:25 +0000
+Received: by pacgr6 with SMTP id gr6so39102922pac.2
+ for <ath10k@lists.infradead.org>; Mon, 10 Aug 2015 19:09:03 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: Repeatable crash of CT firmware (at least).
-References: <55C3B297.2050704@candelatech.com>
-In-Reply-To: <55C3B297.2050704@candelatech.com>
+In-Reply-To: <55C93729.90100@candelatech.com>
+References: <CALiJtcqant1xGJTPpMpHj+zVAcY7gfN8UXy30sAdSd9QvsPJ1Q@mail.gmail.com>
+ <CA+BoTQ=iM_8HWy1X8D9vqqxh=grnygy+mZtC6Q=YGjaZLSQmuA@mail.gmail.com>
+ <CALiJtco-atqjBVi2jXxSFeoRQFRqu4jQu3vMmYNexkeEg6rHAQ@mail.gmail.com>
+ <loom.20150810T055401-106@post.gmane.org>
+ <CA+BoTQ=Rga-E3HMciQKdECHF=hNqBro_Pq=H8KH5Uy4rV0m58w@mail.gmail.com>
+ <CALZPV0B9sVgbUrv6DTZ6t48QyHNQM_e0hV+mUC-svAZbvJK_vg@mail.gmail.com>
+ <CA+BoTQkXnzHbmPCOd7YX7qN7mv4c3NNLZmLf3JYb_r+vA=sUvw@mail.gmail.com>
+ <CALZPV0DsQXPfq3+O-8iF4H8i1-164s2jRdvmQjMMnW-qd7reFA@mail.gmail.com>
+ <CA+BoTQmb-2arpqmxmiWoTL9OFFtU9hEsrHdCmfAsWiNzE=5C-A@mail.gmail.com>
+ <CALZPV0D6hVGgw9bO0W+uz3vCw3WqaGXwnH6SpdQ1+JjBMS6ghQ@mail.gmail.com>
+ <CA+BoTQn=09AWB-ZZNGYQo2X1CUYnnwxcROW09QgXpn9y8P_0oA@mail.gmail.com>
+ <CALZPV0CebKaJO+jRj1okMAHvcufAjY+Hz=3YU12U-3N+9HfTeQ@mail.gmail.com>
+ <CALZPV0A-zUCh9YwEvOrfiCPF8J3ED6ihOBW3J3D_zCnLAmyzWg@mail.gmail.com>
+ <CALZPV0CNE8XzV5NKjv4s+f21WguB6EOQ2WMMteAEMfJKW2caRQ@mail.gmail.com>
+ <55C93729.90100@candelatech.com>
+Date: Mon, 10 Aug 2015 22:09:03 -0400
+Message-ID: <CALZPV0AwdvGHMZaEnu-H174qkXMD7B0u1TEK=YTA0D1=2fZMgA@mail.gmail.com>
+Subject: Re: qca6164 support
+From: Anish Tondwalkar <twilightrook@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +34,71 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-As an update, stock upstream kernels and multiple different official firmware versions
-crash as well.
-
-I've sent more details off to those that might be able to fix
-things.
-
-Thanks,
-Ben
-
-On 08/06/2015 12:16 PM, Ben Greear wrote:
-> In case someone has time an interest, I would be curious if upstream
-> firmware/kernels see this problem.  Unfortunately, it takes a bit of
-> setup to do this test (namely, constant tx source, and if doing this with
-> something like ath9k, then you might need a variable attenuator).
-> 
-> Possibly just a very loud constant tx source would reproduce the bug
-> as well, and possibly it would happen in AP mode, etc.
-> 
-> Channel 1, HT40
-> 
-> Configure ath10k in station mode, associate with ath10k AP,
-> start transmitting frames (about 4kpps tx, 1kpps rx in my case)
-> 
-> Add a constant-transmit noise source at around -65 db on the same channel.  This should
-> cause ath10k station (and AP) to go silent.
-> 
-> Shortly after, the station system's ath10k firmware crashes due to assert
-> in the firmware CE logic.
-> 
-> I know that a similar CE assert can happen if the host does bad things
-> with the tx descriptors, so I am suspicious that is the case here.  For instance,
-> maybe firmware is still trying to transmit the frame when host tears down
-> the station vdev??
-> 
-> Of course, this could all be due to bugs in CT firmware and/or my kernel
-> patches...
-> 
-> Thanks,
-> Ben
-> 
-
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+VXBkYXRlOiBmaXJtd2FyZSB3b3JrcyBhbmQgSSBoYXZlIGludGVybmV0ISBUaGFua3MgZXZlcnlv
+bmUgKGVzcGVjaWFsbHkgTWljaGFsKSEKCk9uIE1vbiwgQXVnIDEwLCAyMDE1IGF0IDc6NDMgUE0s
+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPiBPbiAwOC8xMC8y
+MDE1IDA0OjA1IFBNLCBBbmlzaCBUb25kd2Fsa2FyIHdyb3RlOgo+PiBHb3QgaXQgd29ya2luZyEg
+U29ydCBvZiEgSSBhc2tlZCB2dmFucG8gZm9yIGhpcyBmaXJtd2FyZSwgYW5kIHdpdGgKPj4gdGhh
+dCBJIGNhbiBzZWUgdGhlIHdpcmVsZXNzIGRldmljZSBhZnRlciBJIGJvb3QuIEJ1dCBJIHN0aWxs
+IGNhbid0Cj4+IGNvbm5lY3QgdG8gYW55IG5ldHdvcmtzIG9yIHNlZSB0aGVtLgo+Pgo+PiBIZXJl
+J3MgdGhlIGZpcm13YXJlOgo+PiBodHRwczovL2dpdGh1Yi5jb20vYXRvbmR3YWwvYXRoMTBrLWZp
+cm13YXJlL2NvbW1pdC84OGZjYTg1ZWY1OWQ3MDhiOTg3NGU1Yjc4ODU0MTZiNThhZWY5ZWU3Cj4+
+Cj4+Cj4+IFsgICA2Ni4yNjczNTVdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBEaXJlY3QgZmly
+bXdhcmUgbG9hZCBmb3IKPj4gYXRoMTBrL1FDQTYxNzQvaHcyLjEvYm9hcmQtcGNpLTE2OGM6MDA0
+MToxN2FhOjM1NDUuYmluIGZhaWxlZCB3aXRoCj4+IGVycm9yIC0yCj4+IFsgICA2Ni4yNjczNThd
+IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOiBGYWxsaW5nIGJhY2sgdG8gdXNlciBoZWxwZXIKPj4g
+WyAgMTI2LjMxNTE2OV0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGZhaWxlZCB0byBsb2FkIHNw
+ZWMgYm9hcmQKPj4gZmlsZSwgZmFsbGluZyBiYWNrIHRvIGdlbmVyaWM6IC0xMQo+PiBbICAxMjYu
+MzQ5MTEzXSBUaGlzIHRoZSBwYXRjaGVkIGtlcm5lbCAtQW5pc2gKPj4gWyAgMTI3LjUxNDU2OV0g
+YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IHFjYTYxNzQgaHcyLjEgKDB4MDUwMTAwMDAsCj4+IDB4
+MDAzNDA1ZmYsIDE2OGM6MDA0MToxN2FhOjM1NDUgZmFsbGJhY2spIGZ3IGF0aGVyb3MtMTIuMC4w
+LjEwMi1mdyBhcGkKPj4gNSBodHQtdmVyIDMuMjUgd21pLW9wIDQgaHR0LW9wIDMgY2FsIG90cCBt
+YXgtc3RhIDMyIHJhdyAwIGh3Y3J5cHRvIDEKPj4gZmVhdHVyZXMKPj4gWyAgMTI3LjUxNDU3NF0g
+YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IGRlYnVnIDAgZGVidWdmcyAxIHRyYWNpbmcgMAo+PiBk
+ZnMgMCB0ZXN0bW9kZSAwCj4+IFsgIDEyNy41OTM2OTldIGF0aDogRUVQUk9NIHJlZ2RvbWFpbjog
+MHg2Ywo+PiBbICAxMjcuNTkzNzAyXSBhdGg6IEVFUFJPTSBpbmRpY2F0ZXMgd2Ugc2hvdWxkIGV4
+cGVjdCBhIGRpcmVjdCByZWdwYWlyIG1hcAo+PiBbICAxMjcuNTkzNzAzXSBhdGg6IENvdW50cnkg
+YWxwaGEyIGJlaW5nIHVzZWQ6IDAwCj4+IFsgIDEyNy41OTM3MDRdIGF0aDogUmVncGFpciB1c2Vk
+OiAweDZjCj4+IFsgIDEyNy42MDU0MTRdIGF0aDEwa19wY2kgMDAwMDowMzowMC4wIHdscDNzMDog
+cmVuYW1lZCBmcm9tIHdsYW4wCj4+Cj4+IH4g4p2v4p2v4p2vIHN1ZG8gaXdjb25maWcgd2xwM3Mw
+IGVzc2lkIHdhaG9vIGFwIGFueQo+PiB+IOKdr+Kdr+KdryBzdWRvIGl3Y29uZmlnIHdscDNzMAo+
+PiB3bHAzczAgICAgSUVFRSA4MDIuMTFhYmduICBFU1NJRDoid2Fob28iCj4+ICAgICAgICAgICBN
+b2RlOk1hbmFnZWQgIEFjY2VzcyBQb2ludDogTm90LUFzc29jaWF0ZWQgICBUeC1Qb3dlcj1vZmYK
+Pj4gICAgICAgICAgIFJldHJ5IHNob3J0IGxpbWl0OjcgICBSVFMgdGhyOm9mZiAgIEZyYWdtZW50
+IHRocjpvZmYKPj4gICAgICAgICAgIEVuY3J5cHRpb24ga2V5Om9mZgo+PiAgICAgICAgICAgUG93
+ZXIgTWFuYWdlbWVudDpvZmYKPj4KPj4gfiDina/ina/ina8gc3VkbyBpd2NvbmZpZyB3bHAzczAg
+ZXNzaWQgd2Fob28gYXAgYW55Cj4+IH4g4p2v4p2v4p2vIHN1ZG8gZGhjcGNkIHdscDNzMAo+PiB3
+bHAzczA6IGFkZGluZyBhZGRyZXNzIGZlODA6OjE4NTE6Y2QzZToyNzkwOmVkNGYKPj4gd2xwM3Mw
+OiBzdGFydGluZyB3cGFfc3VwcGxpY2FudAo+PiB3bHAzczA6IGZhaWxlZCB0byBzdGFydCB3cGFf
+c3VwcGxpY2FudAo+PiB3bHAzczA6IFN1Y2Nlc3NmdWxseSBpbml0aWFsaXplZCB3cGFfc3VwcGxp
+Y2FudAo+PiBMaW5lIDExODI6IHVua25vd24gRUFQIG1ldGhvZCAnU0lNJwo+PiBZb3UgbWF5IG5l
+ZWQgdG8gYWRkIHN1cHBvcnQgZm9yIHRoaXMgRUFQIG1ldGhvZCBkdXJpbmcgd3BhX3N1cHBsaWNh
+bnQKPj4gYnVpbGQgdGltZSBjb25maWd1cmF0aW9uLgo+PiBTZWUgUkVBRE1FIGZvciBtb3JlIGlu
+Zm9ybWF0aW9uLgo+PiBMaW5lIDExODI6IGZhaWxlZCB0byBwYXJzZSBlYXAgJ1NJTScuCj4+IExp
+bmUgMTE4NTogZmFpbGVkIHRvIHBhcnNlIG5ldHdvcmsgYmxvY2suCj4+IExpbmUgMTE5MjogdW5r
+bm93biBFQVAgbWV0aG9kICdQU0snCj4+IFlvdSBtYXkgbmVlZCB0byBhZGQgc3VwcG9ydCBmb3Ig
+dGhpcyBFQVAgbWV0aG9kIGR1cmluZyB3cGFfc3VwcGxpY2FudAo+PiBidWlsZCB0aW1lIGNvbmZp
+Z3VyYXRpb24uCj4+IFNlZSBSRUFETUUgZm9yIG1vcmUgaW5mb3JtYXRpb24uCj4+IExpbmUgMTE5
+MjogZmFpbGVkIHRvIHBhcnNlIGVhcCAnUFNLJy4KPj4gTGluZSAxMTk2OiBmYWlsZWQgdG8gcGFy
+c2UgbmV0d29yayBibG9jay4KPj4gTGluZSAxMjI4OiB1bmtub3duIEVBUCBtZXRob2QgJ0lLRVYy
+Jwo+PiBZb3UgbWF5IG5lZWQgdG8gYWRkIHN1cHBvcnQgZm9yIHRoaXMgRUFQIG1ldGhvZCBkdXJp
+bmcgd3BhX3N1cHBsaWNhbnQKPj4gYnVpbGQgdGltZSBjb25maWd1cmF0aW9uLgo+PiBTZWUgUkVB
+RE1FIGZvciBtb3JlIGluZm9ybWF0aW9uLgo+PiBMaW5lIDEyMjg6IGZhaWxlZCB0byBwYXJzZSBl
+YXAgJ0lLRVYyJy4KPj4gTGluZSAxMjMxOiBmYWlsZWQgdG8gcGFyc2UgbmV0d29yayBibG9jay4K
+Pj4gRmFpbGVkIHRvIHJlYWQgb3IgcGFyc2UgY29uZmlndXJhdGlvbiAnL2V0Yy93cGFfc3VwcGxp
+Y2FudC93cGFfc3VwcGxpY2FudC5jb25mJy4KPgo+IFlvdSBoYXZlIGEgYmFkIHN1cHBsaWNhbnQg
+Y29uZmlnIGZpbGUuICBUaGlzIGlzIG5vdCBkaXJlY3RseSByZWxhdGVkIHRvIGFueQo+IHByb2Js
+ZW1zIHlvdSBtaWdodCBiZSBoYXZpbmcgd2l0aCB0aGUgZmlybXdhcmUuCj4KPiBUaGFua3MsCj4g
+QmVuCj4KPiAtLQo+IEJlbiBHcmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPgo+IENhbmRl
+bGEgVGVjaG5vbG9naWVzIEluYyAgaHR0cDovL3d3dy5jYW5kZWxhdGVjaC5jb20KPgoKCgotLSAK
+QW5pc2gKClE6IFdoeSBpcyB0aGlzIGVtYWlsIHR3byBzZW50ZW5jZXMgb3IgbGVzcz8KQTogaHR0
+cDovL3R3by5zZW50ZW5jLmVzCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3Jn
+Cmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
