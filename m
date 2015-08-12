@@ -1,14 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPTge-0000Ze-KG
- for ath10k@lists.infradead.org; Wed, 12 Aug 2015 10:55:14 +0000
+ id 1ZPTgH-0000R8-Hk
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2015 10:54:50 +0000
 From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: Add cycle/rx_clear counters frequency to hw_params
-Date: Wed, 12 Aug 2015 16:24:05 +0530
-Message-ID: <1439376845-17245-2-git-send-email-vthiagar@qti.qualcomm.com>
-In-Reply-To: <1439376845-17245-1-git-send-email-vthiagar@qti.qualcomm.com>
-References: <1439376845-17245-1-git-send-email-vthiagar@qti.qualcomm.com>
+Subject: [PATCH 1/2] ath10k: Fix invalid survey reporting for QCA99X0
+Date: Wed, 12 Aug 2015 16:24:04 +0530
+Message-ID: <1439376845-17245-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -25,105 +23,53 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-The frequency at which cycle/rx_clear counters are running might
-change from one target type to another. QCA99X0 is running the
-counters at 150Mhz while QCA9888X and QCA6174 are running at 88Mhz.
-Add a new entry to hw_params to store the target specific frequency
-and use it in msecs conversion. This change fixes inconsistent
-channel active/busy time.
+There are three WMI_CHAN_INFO events reported per channel
+in QCA99X0 firmware. First one is a notification at the begining
+of the channel dwell time with cmd_flag as CHAN_INFO_START(cmd_flag = 0),
+second one is a notification at the end of the dwell time with cmd_flag
+CHAN_INFO_PRE_COMPLETE (cmd_flag = 2) and the third is the indication
+with CHAN_INFO_COMPLETE (cmd_flag = 1) which is the last indication for
+the channel. Since there is a new state before the completion, the handler
+is to fixed so that the counts are deducted from the ones reported with
+CHAN_INFO_START rather than the ones reported with CHAN_INFO_PRE_COMPLETE.
+Without this fix there will be lots of 0 msecs reported as active
+and busy time.
 
 Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 5 +++++
- drivers/net/wireless/ath/ath10k/core.h | 2 ++
- drivers/net/wireless/ath/ath10k/hw.c   | 4 ++--
- drivers/net/wireless/ath/ath10k/hw.h   | 3 +--
- 4 files changed, 10 insertions(+), 4 deletions(-)
+ drivers/net/wireless/ath/ath10k/wmi.c | 6 ++++--
+ drivers/net/wireless/ath/ath10k/wmi.h | 1 +
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 2551067..2efd4e4 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -53,6 +53,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.uart_pin = 7,
- 		.has_shifted_cc_wraparound = true,
- 		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
- 		.fw = {
- 			.dir = QCA988X_HW_2_0_FW_DIR,
- 			.fw = QCA988X_HW_2_0_FW_FILE,
-@@ -68,6 +69,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
- 		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
- 		.fw = {
- 			.dir = QCA6174_HW_2_1_FW_DIR,
- 			.fw = QCA6174_HW_2_1_FW_FILE,
-@@ -83,6 +85,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
- 		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
- 		.fw = {
- 			.dir = QCA6174_HW_3_0_FW_DIR,
- 			.fw = QCA6174_HW_3_0_FW_FILE,
-@@ -98,6 +101,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
- 		.uart_pin = 6,
- 		.otp_exe_param = 0,
-+		.channel_counters_freq_hz = 88000,
- 		.fw = {
- 			/* uses same binaries as hw3.0 */
- 			.dir = QCA6174_HW_3_0_FW_DIR,
-@@ -115,6 +119,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
- 		.uart_pin = 7,
- 		.otp_exe_param = 0x00000700,
- 		.continuous_frag_desc = true,
-+		.channel_counters_freq_hz = 150000,
- 		.fw = {
- 			.dir = QCA99X0_HW_2_0_FW_DIR,
- 			.fw = QCA99X0_HW_2_0_FW_FILE,
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 6a387ba..862f6d0 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -609,6 +609,8 @@ struct ath10k {
- 		 */
- 		bool continuous_frag_desc;
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index e6d6b42..38e22e0 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -2412,8 +2412,10 @@ void ath10k_wmi_event_chan_info(struct ath10k *ar, struct sk_buff *skb)
+ 		ar->ch_info_can_report_survey = true;
+ 	}
  
-+		u32 channel_counters_freq_hz;
-+
- 		struct ath10k_hw_params_fw {
- 			const char *dir;
- 			const char *fw;
-diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
-index fef7ccf..7b84d08 100644
---- a/drivers/net/wireless/ath/ath10k/hw.c
-+++ b/drivers/net/wireless/ath/ath10k/hw.c
-@@ -152,6 +152,6 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
- 	cc -= cc_prev - cc_fix;
- 	rcc -= rcc_prev;
+-	ar->survey_last_rx_clear_count = rx_clear_count;
+-	ar->survey_last_cycle_count = cycle_count;
++	if (!(cmd_flags & WMI_CHAN_INFO_FLAG_PRE_COMPLETE)) {
++		ar->survey_last_rx_clear_count = rx_clear_count;
++		ar->survey_last_cycle_count = cycle_count;
++	}
  
--	survey->time = CCNT_TO_MSEC(cc);
--	survey->time_busy = CCNT_TO_MSEC(rcc);
-+	survey->time = CCNT_TO_MSEC(ar, cc);
-+	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
- }
-diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
-index d9de4a7..23afcda 100644
---- a/drivers/net/wireless/ath/ath10k/hw.h
-+++ b/drivers/net/wireless/ath/ath10k/hw.h
-@@ -552,8 +552,7 @@ enum ath10k_hw_rate_cck {
- #define SCRATCH_3_ADDRESS			ar->regs->scratch_3_address
- #define CPU_INTR_ADDRESS			0x0010
+ exit:
+ 	spin_unlock_bh(&ar->data_lock);
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 0d4efc9..5825c5c 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -5585,6 +5585,7 @@ struct wmi_peer_sta_kickout_event {
+ } __packed;
  
--/* Cycle counters are running at 88MHz */
--#define CCNT_TO_MSEC(x) ((x) / 88000)
-+#define CCNT_TO_MSEC(ar, x) ((x) / ar->hw_params.channel_counters_freq_hz)
+ #define WMI_CHAN_INFO_FLAG_COMPLETE BIT(0)
++#define WMI_CHAN_INFO_FLAG_PRE_COMPLETE BIT(1)
  
- /* Firmware indications to the Host via SCRATCH_3 register. */
- #define FW_INDICATOR_ADDRESS			ar->regs->fw_indicator_address
+ /* Beacon filter wmi command info */
+ #define BCN_FLT_MAX_SUPPORTED_IES	256
 -- 
 1.9.1
 
