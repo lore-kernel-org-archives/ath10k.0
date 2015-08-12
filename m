@@ -1,13 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPbmy-0003OF-70
- for ath10k@lists.infradead.org; Wed, 12 Aug 2015 19:34:17 +0000
-Message-ID: <55CB9F9C.2000309@canonical.com>
-Date: Wed, 12 Aug 2015 15:33:48 -0400
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
+ id 1ZPfGm-0006M4-IQ
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2015 23:17:16 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 53F7E40AEC4
+ for <ath10k@lists.infradead.org>; Wed, 12 Aug 2015 16:16:55 -0700 (PDT)
+Message-ID: <55CBD3E6.9050202@candelatech.com>
+Date: Wed, 12 Aug 2015 16:16:54 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Subject: Re: unknown qca6164 model 0x0041
+Subject: Out of DMA space?
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +25,29 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: kvalo@qca.qualcomm.com, ath10k@lists.infradead.org
-Cc: 1436940@bugs.launchpad.net, michal.kazior@tieto.com, arnd@arndb.de
+To: ath10k <ath10k@lists.infradead.org>
 
-Hello,
+I've been reloading the ath10k modules all afternoon, debugging issues
+in my CT firmware.  I've been unloading firmware with pkts queued
+in the TX logic, and they could easily not be flushable at this piont.
 
-There are still new folks reporting this issue in the Launchpad bug
-report[0].  Has there been any progress on the firmware problem reported
-in the comment by Kalle Valo on March 26, 2015[1]?
+I just saw this...and machine hung.
 
-Thanks in advance,
+DMA: Out of SW-IOMMU space for 1984 bytes at device 0000:05:00.0
+ath10k_pci 0000:05:00.0: failed to refill htt rx ring: -12
+DMA: Out of SW-IOMMU space for 1984 bytes at device 0000:06:00.0
+ath10k_pci 0000:06:00.0: failed to refill htt rx ring: -12
+DMA: Out of SW-IOMMU space for 2048 bytes at device 0000:07:00.0
+DMA: Out of SW-IOMMU space for 16 bytes at device 0000:07:00.0
 
-Joe
+Just FYI really...I haven't seen this before.
 
-[0] http://pad.lv/1436940
-[1] http://permalink.gmane.org/gmane.linux.drivers.ath10k.devel/2057
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
