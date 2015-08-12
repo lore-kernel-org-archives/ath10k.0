@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPSn5-0000Gi-RV
- for ath10k@lists.infradead.org; Wed, 12 Aug 2015 09:57:49 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH 2/2] ath10k: handle 10.4 firmware phyerr event
-Date: Wed, 12 Aug 2015 15:26:36 +0530
-Message-ID: <1439373396-10828-2-git-send-email-rmani@qti.qualcomm.com>
-In-Reply-To: <1439373396-10828-1-git-send-email-rmani@qti.qualcomm.com>
-References: <1439373396-10828-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1ZPTge-0000Ze-KG
+ for ath10k@lists.infradead.org; Wed, 12 Aug 2015 10:55:14 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH 2/2] ath10k: Add cycle/rx_clear counters frequency to hw_params
+Date: Wed, 12 Aug 2015 16:24:05 +0530
+Message-ID: <1439376845-17245-2-git-send-email-vthiagar@qti.qualcomm.com>
+In-Reply-To: <1439376845-17245-1-git-send-email-vthiagar@qti.qualcomm.com>
+References: <1439376845-17245-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,154 +23,109 @@ Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-Header format of 10.4 firmware phyerr event is not alligned
-with pre 10.4 firmware. Introduce new wmi handlers to parse
-10.4 firmware specific phyerror event header.
+The frequency at which cycle/rx_clear counters are running might
+change from one target type to another. QCA99X0 is running the
+counters at 150Mhz while QCA9888X and QCA6174 are running at 88Mhz.
+Add a new entry to hw_params to store the target specific frequency
+and use it in msecs conversion. This change fixes inconsistent
+channel active/busy time.
 
-With changes covered in this patch, radar detection works on
-qca99x0 hw 2.0 which uses 10.4 firmware.
-
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/wmi.c | 61 +++++++++++++++++++++++++++++++++++
- drivers/net/wireless/ath/ath10k/wmi.h | 20 ++++++++++++
- 2 files changed, 81 insertions(+)
+ drivers/net/wireless/ath/ath10k/core.c | 5 +++++
+ drivers/net/wireless/ath/ath10k/core.h | 2 ++
+ drivers/net/wireless/ath/ath10k/hw.c   | 4 ++--
+ drivers/net/wireless/ath/ath10k/hw.h   | 3 +--
+ 4 files changed, 10 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 37dfa34..153fd17 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3527,6 +3527,26 @@ static int ath10k_wmi_op_pull_phyerr_ev_hdr(struct ath10k *ar,
- 	return 0;
+diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
+index 2551067..2efd4e4 100644
+--- a/drivers/net/wireless/ath/ath10k/core.c
++++ b/drivers/net/wireless/ath/ath10k/core.c
+@@ -53,6 +53,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.uart_pin = 7,
+ 		.has_shifted_cc_wraparound = true,
+ 		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
+ 		.fw = {
+ 			.dir = QCA988X_HW_2_0_FW_DIR,
+ 			.fw = QCA988X_HW_2_0_FW_FILE,
+@@ -68,6 +69,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.patch_load_addr = QCA6174_HW_2_1_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+ 		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
+ 		.fw = {
+ 			.dir = QCA6174_HW_2_1_FW_DIR,
+ 			.fw = QCA6174_HW_2_1_FW_FILE,
+@@ -83,6 +85,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+ 		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
+ 		.fw = {
+ 			.dir = QCA6174_HW_3_0_FW_DIR,
+ 			.fw = QCA6174_HW_3_0_FW_FILE,
+@@ -98,6 +101,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.patch_load_addr = QCA6174_HW_3_0_PATCH_LOAD_ADDR,
+ 		.uart_pin = 6,
+ 		.otp_exe_param = 0,
++		.channel_counters_freq_hz = 88000,
+ 		.fw = {
+ 			/* uses same binaries as hw3.0 */
+ 			.dir = QCA6174_HW_3_0_FW_DIR,
+@@ -115,6 +119,7 @@ static const struct ath10k_hw_params ath10k_hw_params_list[] = {
+ 		.uart_pin = 7,
+ 		.otp_exe_param = 0x00000700,
+ 		.continuous_frag_desc = true,
++		.channel_counters_freq_hz = 150000,
+ 		.fw = {
+ 			.dir = QCA99X0_HW_2_0_FW_DIR,
+ 			.fw = QCA99X0_HW_2_0_FW_FILE,
+diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
+index 6a387ba..862f6d0 100644
+--- a/drivers/net/wireless/ath/ath10k/core.h
++++ b/drivers/net/wireless/ath/ath10k/core.h
+@@ -609,6 +609,8 @@ struct ath10k {
+ 		 */
+ 		bool continuous_frag_desc;
+ 
++		u32 channel_counters_freq_hz;
++
+ 		struct ath10k_hw_params_fw {
+ 			const char *dir;
+ 			const char *fw;
+diff --git a/drivers/net/wireless/ath/ath10k/hw.c b/drivers/net/wireless/ath/ath10k/hw.c
+index fef7ccf..7b84d08 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.c
++++ b/drivers/net/wireless/ath/ath10k/hw.c
+@@ -152,6 +152,6 @@ void ath10k_hw_fill_survey_time(struct ath10k *ar, struct survey_info *survey,
+ 	cc -= cc_prev - cc_fix;
+ 	rcc -= rcc_prev;
+ 
+-	survey->time = CCNT_TO_MSEC(cc);
+-	survey->time_busy = CCNT_TO_MSEC(rcc);
++	survey->time = CCNT_TO_MSEC(ar, cc);
++	survey->time_busy = CCNT_TO_MSEC(ar, rcc);
  }
+diff --git a/drivers/net/wireless/ath/ath10k/hw.h b/drivers/net/wireless/ath/ath10k/hw.h
+index d9de4a7..23afcda 100644
+--- a/drivers/net/wireless/ath/ath10k/hw.h
++++ b/drivers/net/wireless/ath/ath10k/hw.h
+@@ -552,8 +552,7 @@ enum ath10k_hw_rate_cck {
+ #define SCRATCH_3_ADDRESS			ar->regs->scratch_3_address
+ #define CPU_INTR_ADDRESS			0x0010
  
-+static int ath10k_wmi_10_4_op_pull_phyerr_ev_hdr(struct ath10k *ar,
-+						 struct sk_buff *skb,
-+						 struct wmi_phyerr_hdr_arg *arg)
-+{
-+	struct wmi_10_4_phyerr_event *ev = (void *)skb->data;
-+
-+	if (skb->len < sizeof(*ev))
-+		return -EPROTO;
-+
-+	/* 10.4 firmware always reports only one phyerr */
-+	arg->num_phyerrs = 1;
-+
-+	arg->tsf_l32 = __le32_to_cpu(ev->tsf_l32);
-+	arg->tsf_u32 = __le32_to_cpu(ev->tsf_u32);
-+	arg->buf_len = skb->len;
-+	arg->phyerrs = skb->data;
-+
-+	return 0;
-+}
-+
- int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
- 				 const void *phyerr_buf,
- 				 int left_len,
-@@ -3571,6 +3591,42 @@ int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
- 	return 0;
- }
+-/* Cycle counters are running at 88MHz */
+-#define CCNT_TO_MSEC(x) ((x) / 88000)
++#define CCNT_TO_MSEC(ar, x) ((x) / ar->hw_params.channel_counters_freq_hz)
  
-+int ath10k_wmi_10_4_op_pull_phyerr_ev(struct ath10k *ar,
-+				      const void *phyerr_buf,
-+				      int left_len,
-+				      struct wmi_phyerr_ev_arg *arg)
-+{
-+	const struct wmi_10_4_phyerr_event *phyerr = phyerr_buf;
-+	int i;
-+
-+	if (left_len < sizeof(*phyerr)) {
-+		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
-+			    left_len, sizeof(*phyerr));
-+		return -EINVAL;
-+	}
-+
-+	arg->tsf_timestamp = __le32_to_cpu(phyerr->tsf_timestamp);
-+	arg->freq1 = __le16_to_cpu(phyerr->freq1);
-+	arg->freq2 = __le16_to_cpu(phyerr->freq2);
-+	arg->rssi_combined = phyerr->rssi_combined;
-+	arg->chan_width_mhz = phyerr->chan_width_mhz;
-+	arg->buf_len = __le32_to_cpu(phyerr->buf_len);
-+	arg->buf = phyerr->buf;
-+	arg->hdr_len = sizeof(*phyerr);
-+
-+	for (i = 0; i < 4; i++)
-+		arg->nf_chains[i] = __le16_to_cpu(phyerr->nf_chains[i]);
-+
-+	if (phyerr->phy_err_mask[0] & PHY_ERROR_10_4_SPECTRAL_SCAN_MASK)
-+		arg->phy_err_code = PHY_ERROR_SPECTRAL_SCAN;
-+	else if (phyerr->phy_err_mask[0] & PHY_ERROR_10_4_RADAR_MASK)
-+		arg->phy_err_code = PHY_ERROR_RADAR;
-+	else
-+		arg->phy_err_code = PHY_ERROR_UNKNOWN;
-+
-+	return 0;
-+}
-+
- void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
- {
- 	struct wmi_phyerr_hdr_arg hdr_arg = {};
-@@ -4528,6 +4584,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
- 	case WMI_10_4_CHAN_INFO_EVENTID:
- 		ath10k_wmi_event_chan_info(ar, skb);
- 		break;
-+	case WMI_10_4_PHYERR_EVENTID:
-+		ath10k_wmi_event_phyerr(ar, skb);
-+		break;
- 	case WMI_10_4_READY_EVENTID:
- 		ath10k_wmi_event_ready(ar, skb);
- 		break;
-@@ -6491,6 +6550,8 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
- 	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
- 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
-+	.pull_phyerr_hdr = ath10k_wmi_10_4_op_pull_phyerr_ev_hdr,
-+	.pull_phyerr = ath10k_wmi_10_4_op_pull_phyerr_ev,
- 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
- 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
-index 0ed3cfe..c5d10db 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.h
-+++ b/drivers/net/wireless/ath/ath10k/wmi.h
-@@ -2977,6 +2977,9 @@ struct wmi_10_4_mgmt_rx_event {
- #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
- #define PHY_ERROR_GEN_RADAR			0x05
- 
-+#define PHY_ERROR_10_4_RADAR_MASK               0x4
-+#define PHY_ERROR_10_4_SPECTRAL_SCAN_MASK       0x4000000
-+
- enum phy_err_type {
- 	PHY_ERROR_UNKNOWN,
- 	PHY_ERROR_SPECTRAL_SCAN,
-@@ -3005,6 +3008,23 @@ struct wmi_phyerr_event {
- 	struct wmi_phyerr phyerrs[0];
- } __packed;
- 
-+struct wmi_10_4_phyerr_event {
-+	__le32 tsf_l32;
-+	__le32 tsf_u32;
-+	__le16 freq1;
-+	__le16 freq2;
-+	u8 rssi_combined;
-+	u8 chan_width_mhz;
-+	u8 phy_err_code;
-+	u8 rsvd0;
-+	__le32 rssi_chains[4];
-+	__le16 nf_chains[4];
-+	__le32 phy_err_mask[2];
-+	__le32 tsf_timestamp;
-+	__le32 buf_len;
-+	u8 buf[0];
-+} __packed;
-+
- #define PHYERR_TLV_SIG				0xBB
- #define PHYERR_TLV_TAG_SEARCH_FFT_REPORT	0xFB
- #define PHYERR_TLV_TAG_RADAR_PULSE_SUMMARY	0xF8
+ /* Firmware indications to the Host via SCRATCH_3 register. */
+ #define FW_INDICATOR_ADDRESS			ar->regs->fw_indicator_address
 -- 
-1.8.1.2
+1.9.1
 
 
 _______________________________________________
