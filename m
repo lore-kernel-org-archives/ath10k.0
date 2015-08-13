@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-x22f.google.com ([2a00:1450:400c:c05::22f])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPt3k-0000DN-JL
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 14:00:45 +0000
-Received: by wijp15 with SMTP id p15so260044894wij.0
- for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 07:00:21 -0700 (PDT)
+ id 1ZPudU-0004Sy-Ol
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 15:41:45 +0000
+From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fill in wmi 10.4 command handlers for addba/delba
+ debug commands
+Date: Thu, 13 Aug 2015 21:10:54 +0530
+Message-ID: <1439480454-31214-1-git-send-email-vthiagar@qti.qualcomm.com>
 MIME-Version: 1.0
-In-Reply-To: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
-References: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 13 Aug 2015 16:00:21 +0200
-Message-ID: <CAAKLdA_TRF_NcA5csNc496SaZtatLzu6LtxYsQVKU_dso4G4gA@mail.gmail.com>
-Subject: Re: ath10k: first qca6174 hw2.1 firmware released
-From: Lapo Calamandrei <calamandrei@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +21,46 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
-Cc: ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
 
-2015-08-13 12:31 GMT+02:00 Kalle Valo <kvalo@qca.qualcomm.com>:
-> Hi,
->
-> I just pushed the first qca6174  hw2.1 firmware to ath10k-firmware.git:
->
-> https://github.com/kvalo/ath10k-firmware/commit/7f7e7dda33676ced293de477b03711199ffe5256
->
-> Please test and provide feedback.
->
-> --
-> Kalle Valo
->
+WMI 10.4 uses the same command interface as QCA988X for addba/delba
+debug wmi commands. Fill wmi_10_4_ops table with the functions used
+for QCA988X for these commands.
 
-Loads w/o skip_otp and works fine here (qca6174), except it crashes on
-5GHz network connection attempt as the one created from the window
-drivers.
+With this change, the following debugfs entries can be used to
+configure the aggregation mode and to send addba request,
+addba response and delba respectively in manual aggregation mode
+for QCA99X0 chip.
 
-Ciao
-Lapo
+/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/aggr_mode
+/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba
+/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba_resp
+/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/delba
+
+Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 36b8f71..9769936 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -6482,6 +6482,10 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
+ 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
+ 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
++	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
++	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
++	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
++	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
+ 
+ 	/* shared with 10.2 */
+ 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
+-- 
+1.9.1
+
 
 _______________________________________________
 ath10k mailing list
