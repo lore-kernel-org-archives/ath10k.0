@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPzES-0004fK-MP
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 20:36:13 +0000
-Received: by vkhl6 with SMTP id l6so22128023vkh.1
- for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 13:35:50 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZPzLv-0006lB-Ir
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 20:43:55 +0000
+Message-ID: <55CD0176.5080003@candelatech.com>
+Date: Thu, 13 Aug 2015 13:43:34 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <55521102.9020306@candelatech.com>
+Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
 References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
  <CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>
  <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
@@ -16,10 +17,8 @@ References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
  <CAJa-X945Xvn0jHQVcKn-pyYQVNpxXnqjOH_VHJv8pVwR4kFXcw@mail.gmail.com>
  <CA+BoTQmLFGAn2z=E3J1C2qfNP34v57B7-rtALUQhNXrHqJeA6Q@mail.gmail.com>
  <55521102.9020306@candelatech.com>
-Date: Thu, 13 Aug 2015 16:35:50 -0400
-Message-ID: <CAJa-X97Av+FKwy5Q3x3jnC=KPmqFt_JfsaVQ6J3bScM-SEKnYg@mail.gmail.com>
-Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
-From: s prasad <sprasad.kandregula@gmail.com>
+ <CAJa-X97Av+FKwy5Q3x3jnC=KPmqFt_JfsaVQ6J3bScM-SEKnYg@mail.gmail.com>
+In-Reply-To: <CAJa-X97Av+FKwy5Q3x3jnC=KPmqFt_JfsaVQ6J3bScM-SEKnYg@mail.gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +27,43 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
+To: s prasad <sprasad.kandregula@gmail.com>
 Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgQmVuLAoKZGlkIHlvdSBnZXQgYSBjaGFuY2UgdG8gbG9vayBpbnRvIHRoaXMgaXNzdWUoaW5q
-ZWN0aW5nIGZyYW1lcyB3aGVuCmRldmljZSBpbiBtb25pdG9yIG1vZGUpLgoKVGhhbmtzIGFuZCBS
-ZWdhcmRzLApTIFByYXNhZAoKT24gVHVlLCBNYXkgMTIsIDIwMTUgYXQgMTA6NDEgQU0sIEJlbiBH
-cmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMDUvMTIvMjAx
-NSAwMzoxNCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPj4KPj4gT24gMTIgTWF5IDIwMTUgYXQg
-MTE6MzEsIHMgcHJhc2FkIDxzcHJhc2FkLmthbmRyZWd1bGFAZ21haWwuY29tPiB3cm90ZToKPj4+
-Cj4+PiBNYXkgSSBrbm93LCBpcyB0aGlzIGZpcm13YXJlIG9yIGRyaXZlciBjb25zdHJhaW50Pwo+
-Pj4gSWYgc29tZWJvZHkgaGF2ZSBwYXRjaCBmb3IgdGhpcywgYW0gcmVhZHkgdG8gdGVzdCBpdC4K
-Pj4KPj4KPj4gU2hvcnQgYW5zd2VyOiBUaGVyZSdzIG5vdGhpbmcsIHlldC4KPj4KPj4gTG9uZyBh
-bnN3ZXI6Cj4+Cj4+ICBGcm9tIHdoYXQgSSBrbm93IG9mZmljaWFsIGZpcm13YXJlIGRvZXNuJ3Qg
-c3VwcG9ydCBpbmplY3RpbmcgcGFja2V0cwo+PiB2aWEgbW9uaXRvciB2ZGV2LiBUaGlzIGlzIGEg
-ZmlybXdhcmUgbGltaXRhdGlvbi4KPj4KPj4gQSB3YXkgYXJvdW5kIHRoaXMgbWF5IGJlIGNyZWF0
-aW5nIGFuZCB1c2luZyBhbiBhZGRpdGlvbmFsIHZkZXYsIGUuZy4KPj4gQVAuIFRoaXMgd2lsbCBi
-ZSByYXRoZXIgdWdseSBidXQgbWF5IHdvcmsuIFRoZXJlJ3Mgbm8gcGF0Y2ggZm9yIGl0Lgo+Pgo+
-PiBBbiBhbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBhc2sgQmVuIHRvIG1vZGlmeSBoaXMgQ1QtZmly
-bXdhcmUgYnJhbmNoLgo+Cj4KPiBJIGdhdmUgdGhpcyBhIGRlY2VudCB0cnkgYSBtb250aCBvciB0
-d28gYWdvLCBhbmQgaGFkIG5vIGx1Y2suICBUaGUgaGFyZHdhcmUKPiAoZnJvbSB3aGF0IEkgY2Fu
-IHRlbGwpLCBqdXN0IHdpbGwgbm90IHNlbmQgYSBmcmFtZSB0byBhbiB1bmtub3duIHBlZXIuCj4K
-PiBJIG5vdGljZWQgdGhlIG90aGVyIGRheSB0aGF0IEFOUVAgd2lsbCBub3Qgd29yayBvbiBhdGgx
-MGssIGFuZCBJIHN1c3BlY3QKPiBzaW1pbGFyIGlzc3Vlcy4uc28gSSB3aWxsIGJlIGluIHRoYXQg
-Y29kZSBhZ2Fpbi4gIE1heWJlIEknbGwgbGVhcm4KPiBob3cgdG8gdHJpY2sgaXQgaW50byBzZW5k
-aW5nIGFyYml0cmFyeSBmcmFtZXMuCj4KPiBBbGwgdGhhdCBzYWlkLCB0aGVyZSBpcyBubyB3YXkg
-dG8gc3BlY2lmeSByYXRlLWN0cmwgaW5mbyBvbiBhIHBlci1wa3QKPiBiYXNpcyB3aGVuIGluamVj
-dGluZyBmcmFtZXMsIHNvIEkgZG9uJ3Qga25vdyB3aGF0IGdvb2QgaW5qZWN0aW5nIGZyYW1lcwo+
-IG9uIGEgbWd0IGRldmljZSB3aWxsIGFjY29tcGxpc2guCj4KPiBUaGFua3MsCj4gQmVuCj4KPj4g
-QWxzbyB0aGVyZSdzIGEgcHJvYmxlbSB3aXRoIHN1Ym1pdHRpbmcgcmF3IDgwMi4xMSBmcmFtZXMg
-dG8gZmlybXdhcmUuCj4+IFRoZXJlJ3Mgc29tZSB3b3JrIG9uZ29pbmcgWzFdLgo+Pgo+PiBbMV06
-IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNS1NYXkvMDA1
-MTQ0Lmh0bWwKPj4KPj4KPj4gTWljaGHFggo+PiAtLQo+PiBUbyB1bnN1YnNjcmliZSBmcm9tIHRo
-aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtd2lyZWxlc3MiCj4+IGlu
-Cj4+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCj4+
-IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21v
-LWluZm8uaHRtbAo+Pgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
-bT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
-CgoKCi0tIApTIFByYXNhZCBLYW5kcmVndWxhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
-YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
-MTBrCg==
+On 08/13/2015 01:35 PM, s prasad wrote:
+> Hi Ben,
+> 
+> did you get a chance to look into this issue(injecting frames when
+> device in monitor mode).
+
+Injection works in a limited fashion in my latest firmware.
+
+I'd like to figure out how to pass rate-ctrl (and other info?) down to the
+firmware on a per-pkt basis..but I don't see a way yet.
+
+Probably I have to hack the htt header or something like that
+to give some extra space.  That sort of thing might allow a host-based
+rate-ctrl algorithm to be used....if someone is interested in working on
+the driver/kernel side of things for this effort let me know.
+
+I am not aware of any crashes related to monitor mode in my
+firmware..but if you can crash it, send me the crash dump and
+I'll take a look.
+
+Thanks,
+Ben
+
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
