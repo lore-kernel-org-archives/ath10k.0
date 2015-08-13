@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPudU-0004Sy-Ol
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 15:41:45 +0000
-From: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fill in wmi 10.4 command handlers for addba/delba
- debug commands
-Date: Thu, 13 Aug 2015 21:10:54 +0530
-Message-ID: <1439480454-31214-1-git-send-email-vthiagar@qti.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZPwrA-00053a-IY
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 18:04:00 +0000
+Received: from [192.168.100.236] (firewall.candelatech.com [50.251.239.81])
+ (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+ (No client certificate requested)
+ by mail2.candelatech.com (Postfix) with ESMTPSA id 04B6E40B69E
+ for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 11:03:37 -0700 (PDT)
+Message-ID: <55CCDBF9.2050205@candelatech.com>
+Date: Thu, 13 Aug 2015 11:03:37 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
+Subject: New CT firmware beta-15 available.
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,45 +25,35 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: ath10k <ath10k@lists.infradead.org>
 
-WMI 10.4 uses the same command interface as QCA988X for addba/delba
-debug wmi commands. Fill wmi_10_4_ops table with the functions used
-for QCA988X for these commands.
+I've just uploaded the latest beta-15 firmware build.
 
-With this change, the following debugfs entries can be used to
-configure the aggregation mode and to send addba request,
-addba response and delba respectively in manual aggregation mode
-for QCA99X0 chip.
+It has a few fixes related to rate-ctrl, and it can also
+transmit on a Monitor interface now.  The monitor TX packets
+are all sent out at 1Mbps encoding rate currently (though
+a better use of radiotap might give up to 6Mbps, perhaps),
+and all 3 of the MAC addresses in the ieee80211 header
+are that of the Monitor device.
 
-/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/aggr_mode
-/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba
-/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba_resp
-/sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/delba
+I think if someone cared it would be easy enough to
+make the driver add real peers to the Monitor device,
+but I'm not sure what good that would do.
 
-Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 4 ++++
- 1 file changed, 4 insertions(+)
+And, some day, maybe there could be a way to pass rate-ctrl
+info to the firmware so that you could specific particular
+rates...
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 36b8f71..9769936 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6482,6 +6482,10 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_pktlog_enable = ath10k_wmi_op_gen_pktlog_enable,
- 	.gen_pktlog_disable = ath10k_wmi_op_gen_pktlog_disable,
- 	.gen_pdev_set_quiet_mode = ath10k_wmi_op_gen_pdev_set_quiet_mode,
-+	.gen_addba_clear_resp = ath10k_wmi_op_gen_addba_clear_resp,
-+	.gen_addba_send = ath10k_wmi_op_gen_addba_send,
-+	.gen_addba_set_resp = ath10k_wmi_op_gen_addba_set_resp,
-+	.gen_delba_send = ath10k_wmi_op_gen_delba_send,
- 
- 	/* shared with 10.2 */
- 	.gen_peer_assoc = ath10k_wmi_10_2_op_gen_peer_assoc,
+The firmware has a few hacks that should let this feature work
+on an un-patched driver, I think.  I was testing on my 4.0.4
+kernel, however.
+
+Thanks,
+Ben
+
 -- 
-1.9.1
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 
 _______________________________________________
