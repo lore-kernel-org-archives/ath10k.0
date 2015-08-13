@@ -1,18 +1,25 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPwrA-00053a-IY
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 18:04:00 +0000
-Received: from [192.168.100.236] (firewall.candelatech.com [50.251.239.81])
- (using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
- (No client certificate requested)
- by mail2.candelatech.com (Postfix) with ESMTPSA id 04B6E40B69E
- for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 11:03:37 -0700 (PDT)
-Message-ID: <55CCDBF9.2050205@candelatech.com>
-Date: Thu, 13 Aug 2015 11:03:37 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-vk0-x22a.google.com ([2607:f8b0:400c:c05::22a])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZPzES-0004fK-MP
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 20:36:13 +0000
+Received: by vkhl6 with SMTP id l6so22128023vkh.1
+ for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 13:35:50 -0700 (PDT)
 MIME-Version: 1.0
-Subject: New CT firmware beta-15 available.
+In-Reply-To: <55521102.9020306@candelatech.com>
+References: <CAJa-X95EBdGASnz3KAdYz5R6w5g-a=dBy5VCZYwHp6SzQ+gUSw@mail.gmail.com>
+ <CA+BoTQkFSQe0di1vqqB5cAPKaizRkBT5cu4fA8dQ_uR_a2HdJw@mail.gmail.com>
+ <CAJa-X96spUg7+EZqH-Mv3s7OzbHzmXmcZ7uOw1KvPShexW6D_w@mail.gmail.com>
+ <CA+BoTQ=Qpws=928TZe22Ds-UO_qQJ2Om+=DW=VUNUS59o1BQAA@mail.gmail.com>
+ <CAJa-X96KPw6dY0pK1zc8UD4TdQcG0KuA3m6DSueVVyK-VPhn9g@mail.gmail.com>
+ <CA+BoTQ=bqHPrdgGVfSfdJa5vobDBRdxRwMR_wJzUj4Z9WjotoQ@mail.gmail.com>
+ <CAJa-X945Xvn0jHQVcKn-pyYQVNpxXnqjOH_VHJv8pVwR4kFXcw@mail.gmail.com>
+ <CA+BoTQmLFGAn2z=E3J1C2qfNP34v57B7-rtALUQhNXrHqJeA6Q@mail.gmail.com>
+ <55521102.9020306@candelatech.com>
+Date: Thu, 13 Aug 2015 16:35:50 -0400
+Message-ID: <CAJa-X97Av+FKwy5Q3x3jnC=KPmqFt_JfsaVQ6J3bScM-SEKnYg@mail.gmail.com>
+Subject: Re: Ath10 firmware crashing in Monitor mode(Sniffer mode)
+From: s prasad <sprasad.kandregula@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +28,48 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, linux-wireless <linux-wireless@vger.kernel.org>, Michal Kazior <michal.kazior@tieto.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-I've just uploaded the latest beta-15 firmware build.
-
-It has a few fixes related to rate-ctrl, and it can also
-transmit on a Monitor interface now.  The monitor TX packets
-are all sent out at 1Mbps encoding rate currently (though
-a better use of radiotap might give up to 6Mbps, perhaps),
-and all 3 of the MAC addresses in the ieee80211 header
-are that of the Monitor device.
-
-I think if someone cared it would be easy enough to
-make the driver add real peers to the Monitor device,
-but I'm not sure what good that would do.
-
-And, some day, maybe there could be a way to pass rate-ctrl
-info to the firmware so that you could specific particular
-rates...
-
-The firmware has a few hacks that should let this feature work
-on an un-patched driver, I think.  I was testing on my 4.0.4
-kernel, however.
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+SGkgQmVuLAoKZGlkIHlvdSBnZXQgYSBjaGFuY2UgdG8gbG9vayBpbnRvIHRoaXMgaXNzdWUoaW5q
+ZWN0aW5nIGZyYW1lcyB3aGVuCmRldmljZSBpbiBtb25pdG9yIG1vZGUpLgoKVGhhbmtzIGFuZCBS
+ZWdhcmRzLApTIFByYXNhZAoKT24gVHVlLCBNYXkgMTIsIDIwMTUgYXQgMTA6NDEgQU0sIEJlbiBH
+cmVlYXIgPGdyZWVhcmJAY2FuZGVsYXRlY2guY29tPiB3cm90ZToKPgo+Cj4gT24gMDUvMTIvMjAx
+NSAwMzoxNCBBTSwgTWljaGFsIEthemlvciB3cm90ZToKPj4KPj4gT24gMTIgTWF5IDIwMTUgYXQg
+MTE6MzEsIHMgcHJhc2FkIDxzcHJhc2FkLmthbmRyZWd1bGFAZ21haWwuY29tPiB3cm90ZToKPj4+
+Cj4+PiBNYXkgSSBrbm93LCBpcyB0aGlzIGZpcm13YXJlIG9yIGRyaXZlciBjb25zdHJhaW50Pwo+
+Pj4gSWYgc29tZWJvZHkgaGF2ZSBwYXRjaCBmb3IgdGhpcywgYW0gcmVhZHkgdG8gdGVzdCBpdC4K
+Pj4KPj4KPj4gU2hvcnQgYW5zd2VyOiBUaGVyZSdzIG5vdGhpbmcsIHlldC4KPj4KPj4gTG9uZyBh
+bnN3ZXI6Cj4+Cj4+ICBGcm9tIHdoYXQgSSBrbm93IG9mZmljaWFsIGZpcm13YXJlIGRvZXNuJ3Qg
+c3VwcG9ydCBpbmplY3RpbmcgcGFja2V0cwo+PiB2aWEgbW9uaXRvciB2ZGV2LiBUaGlzIGlzIGEg
+ZmlybXdhcmUgbGltaXRhdGlvbi4KPj4KPj4gQSB3YXkgYXJvdW5kIHRoaXMgbWF5IGJlIGNyZWF0
+aW5nIGFuZCB1c2luZyBhbiBhZGRpdGlvbmFsIHZkZXYsIGUuZy4KPj4gQVAuIFRoaXMgd2lsbCBi
+ZSByYXRoZXIgdWdseSBidXQgbWF5IHdvcmsuIFRoZXJlJ3Mgbm8gcGF0Y2ggZm9yIGl0Lgo+Pgo+
+PiBBbiBhbHRlcm5hdGl2ZSB3b3VsZCBiZSB0byBhc2sgQmVuIHRvIG1vZGlmeSBoaXMgQ1QtZmly
+bXdhcmUgYnJhbmNoLgo+Cj4KPiBJIGdhdmUgdGhpcyBhIGRlY2VudCB0cnkgYSBtb250aCBvciB0
+d28gYWdvLCBhbmQgaGFkIG5vIGx1Y2suICBUaGUgaGFyZHdhcmUKPiAoZnJvbSB3aGF0IEkgY2Fu
+IHRlbGwpLCBqdXN0IHdpbGwgbm90IHNlbmQgYSBmcmFtZSB0byBhbiB1bmtub3duIHBlZXIuCj4K
+PiBJIG5vdGljZWQgdGhlIG90aGVyIGRheSB0aGF0IEFOUVAgd2lsbCBub3Qgd29yayBvbiBhdGgx
+MGssIGFuZCBJIHN1c3BlY3QKPiBzaW1pbGFyIGlzc3Vlcy4uc28gSSB3aWxsIGJlIGluIHRoYXQg
+Y29kZSBhZ2Fpbi4gIE1heWJlIEknbGwgbGVhcm4KPiBob3cgdG8gdHJpY2sgaXQgaW50byBzZW5k
+aW5nIGFyYml0cmFyeSBmcmFtZXMuCj4KPiBBbGwgdGhhdCBzYWlkLCB0aGVyZSBpcyBubyB3YXkg
+dG8gc3BlY2lmeSByYXRlLWN0cmwgaW5mbyBvbiBhIHBlci1wa3QKPiBiYXNpcyB3aGVuIGluamVj
+dGluZyBmcmFtZXMsIHNvIEkgZG9uJ3Qga25vdyB3aGF0IGdvb2QgaW5qZWN0aW5nIGZyYW1lcwo+
+IG9uIGEgbWd0IGRldmljZSB3aWxsIGFjY29tcGxpc2guCj4KPiBUaGFua3MsCj4gQmVuCj4KPj4g
+QWxzbyB0aGVyZSdzIGEgcHJvYmxlbSB3aXRoIHN1Ym1pdHRpbmcgcmF3IDgwMi4xMSBmcmFtZXMg
+dG8gZmlybXdhcmUuCj4+IFRoZXJlJ3Mgc29tZSB3b3JrIG9uZ29pbmcgWzFdLgo+Pgo+PiBbMV06
+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9hdGgxMGsvMjAxNS1NYXkvMDA1
+MTQ0Lmh0bWwKPj4KPj4KPj4gTWljaGHFggo+PiAtLQo+PiBUbyB1bnN1YnNjcmliZSBmcm9tIHRo
+aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbGludXgtd2lyZWxlc3MiCj4+IGlu
+Cj4+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCj4+
+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21v
+LWluZm8uaHRtbAo+Pgo+Cj4gLS0KPiBCZW4gR3JlZWFyIDxncmVlYXJiQGNhbmRlbGF0ZWNoLmNv
+bT4KPiBDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cuY2FuZGVsYXRlY2guY29t
+CgoKCi0tIApTIFByYXNhZCBLYW5kcmVndWxhCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZy
+YWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRo
+MTBrCg==
