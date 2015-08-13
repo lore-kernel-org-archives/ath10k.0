@@ -1,17 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPrEM-0003ft-Ds
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 12:03:35 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: refactor phyerr event handlers
-References: <1439373396-10828-1-git-send-email-rmani@qti.qualcomm.com>
- <87si7nmnjw.fsf@kamboji.qca.qualcomm.com>
-Date: Thu, 13 Aug 2015 15:02:47 +0300
-In-Reply-To: <87si7nmnjw.fsf@kamboji.qca.qualcomm.com> (Kalle Valo's message
- of "Thu, 13 Aug 2015 14:32:19 +0300")
-Message-ID: <87oaibmm54.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ZPrLF-0007mA-EQ
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 12:10:43 +0000
+Received: by lbbsx3 with SMTP id sx3so25792108lbb.0
+ for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 05:10:19 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: split ap/ibss wep key install process
+Date: Thu, 13 Aug 2015 14:10:46 +0200
+Message-Id: <1439467846-8351-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +17,100 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Kalle Valo <kvalo@qca.qualcomm.com> writes:
+Apparently it's not safe to install both pairwise
+and groupwise keys on AP vdevs as it can cause
+traffic to stop working in some multi-vif
+(WPA+WEP) cases.
 
-> Raja Mani <rmani@qti.qualcomm.com> writes:
->
->> Existing phyerr event handlers directly uses phyerr header format
->> (ie, struct wmi_phyerr and struct wmi_phyerr_event) in the code
->> exactly on how firmware packs it. This is the problem in 10.4 fw
->> specific phyerr event handling where it uses different phyerror
->> header format. Before adding 10.4 specific handler, little bit of
->> refactor is done in existing phyerr handlers.
->>
->> Two new abstracted structures (struct wmi_phyerr_ev_hdr_arg and
->> struct wmi_phyerr_ev_arg) are introduced to remove dependency of using
->> firmware specific header format in the code. So that firmware specific
->> phyerror handlers can populate values to abstracted structures and
->> the following code can use abstracted struct for further operation.
->>
->> .pull_phyerr_hdr is added newly to pull common phyerr header info
->> like tsf, buf_len, number of phyerr packed. Existing .pull_phyerr
->> handler is changed and called to parse every sub phyerrs in the event.
->>
->> Validated these refactoring on qca988x hw2.0 using fw 10.2.4 version.
->>
->> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
->
-> Thanks, applied.
+Fixes: ce90b27128c2 ("ath10k: fix multiple key static wep with ibss")
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 44 +++++++++++++++++++++++++----------
+ 1 file changed, 32 insertions(+), 12 deletions(-)
 
-Actually I'll take it back, I dropped these as I see new warnings:
-
-drivers/net/wireless/ath/ath10k/wmi.c:3625:33: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:3627:38: warning: restricted __le32 degrades to integer
-drivers/net/wireless/ath/ath10k/wmi.c:3599:5: warning: symbol 'ath10k_wmi_10_4_op_pull_phyerr_ev' was not declared. Should it be static?
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index acd222f3b899..eabfe68a1c48 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -247,6 +247,10 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 
+ 	lockdep_assert_held(&ar->conf_mutex);
+ 
++	if (WARN_ON(arvif->vif->type != NL80211_IFTYPE_AP &&
++		    arvif->vif->type != NL80211_IFTYPE_ADHOC))
++		return -EINVAL;
++
+ 	spin_lock_bh(&ar->data_lock);
+ 	peer = ath10k_peer_find(ar, arvif->vdev_id, addr);
+ 	spin_unlock_bh(&ar->data_lock);
+@@ -258,21 +262,34 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 		if (arvif->wep_keys[i] == NULL)
+ 			continue;
+ 
+-		flags = 0;
+-		flags |= WMI_KEY_PAIRWISE;
++		switch (arvif->vif->type) {
++		case NL80211_IFTYPE_AP:
++			flags = WMI_KEY_PAIRWISE;
+ 
+-		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
+-					 addr, flags);
+-		if (ret < 0)
+-			return ret;
++			if (arvif->def_wep_key_idx == i)
++				flags |= WMI_KEY_TX_USAGE;
+ 
+-		flags = 0;
+-		flags |= WMI_KEY_GROUP;
++			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
++						 SET_KEY, addr, flags);
++			if (ret < 0)
++				return ret;
++			break;
++		case NL80211_IFTYPE_ADHOC:
++			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
++						 SET_KEY, addr,
++						 WMI_KEY_PAIRWISE);
++			if (ret < 0)
++				return ret;
+ 
+-		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
+-					 addr, flags);
+-		if (ret < 0)
+-			return ret;
++			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
++						 SET_KEY, addr, WMI_KEY_GROUP);
++			if (ret < 0)
++				return ret;
++			break;
++		default:
++			WARN_ON(1);
++			return -EINVAL;
++		}
+ 
+ 		spin_lock_bh(&ar->data_lock);
+ 		peer->keys[i] = arvif->wep_keys[i];
+@@ -287,6 +304,9 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
+ 	 *
+ 	 * FIXME: Revisit. Perhaps this can be done in a less hacky way.
+ 	 */
++	if (arvif->vif->type != NL80211_IFTYPE_ADHOC)
++		return 0;
++
+ 	if (arvif->def_wep_key_idx == -1)
+ 		return 0;
+ 
 -- 
-Kalle Valo
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
