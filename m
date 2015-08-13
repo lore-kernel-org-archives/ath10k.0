@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPqhQ-0005Sc-E2
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:29:33 +0000
+ id 1ZPqji-000773-1t
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:31:56 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: fix hw reconfig on wow failure
-References: <1438769318-27373-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 13 Aug 2015 14:29:00 +0300
-In-Reply-To: <1438769318-27373-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 5 Aug 2015 12:08:38 +0200")
-Message-ID: <871tf7o29v.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: don't remove peer that doesn't exist
+References: <1438769724-29438-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 13 Aug 2015 14:31:20 +0300
+In-Reply-To: <1438769724-29438-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 5 Aug 2015 12:15:23 +0200")
+Message-ID: <87wpwzmnlj.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -28,11 +28,14 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> When WoWLAN resume fails with retval 1 mac80211
-> will attempt to reconfig the device in a similar
-> manner when hw restart is requested. This wasn't
-> handled properly and yielded call trace warnings
-> and the device ended up not working.
+> If peer creation failed during offchannel Tx the
+> driver attempted to delete the peer nonetheless.
+> This caused the ar->num_peers counter to be
+> incorrectly decremented. This subsequently could
+> cause the counter to drop below 0 and also
+> eventually lead to firmware crash because host
+> would think there are less peer entries created in
+> firmware then there really were.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
