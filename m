@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22b.google.com ([2a00:1450:4010:c03::22b])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPrgJ-00056F-J1
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 12:32:29 +0000
-Received: by lahi9 with SMTP id i9so25078736lah.2
- for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 05:32:05 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH/RFT 1/2] ath10k: add qca6164 support
-Date: Thu, 13 Aug 2015 14:32:26 +0200
-Message-Id: <1439469147-9408-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
-References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
+ id 1ZPshx-00046t-IQ
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 13:38:14 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH v2 2/2] ath10k: handle 10.4 firmware phyerr event
+Date: Thu, 13 Aug 2015 19:07:13 +0530
+Message-ID: <1439473033-14724-2-git-send-email-rmani@qti.qualcomm.com>
+In-Reply-To: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com>
+References: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,140 +18,170 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: arnd@arndb.de, linux-wireless@vger.kernel.org, twilightrook@gmail.com, oscarrydberg@gmail.com, vvanpo@gmail.com, joseph.salisbury@canonical.com, Michal Kazior <michal.kazior@tieto.com>
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-This adds additional 0x0041 PCI Device ID
-definition to ath10k for QCA6164 which is a 1
-spatial stream sibling of the QCA6174 (which is 2
-spatial stream chip).
+Header format of 10.4 firmware phyerr event is not alligned
+with pre 10.4 firmware. Introduce new wmi handlers to parse
+10.4 firmware specific phyerror event header.
 
-The QCA6164 needs a dedicated board.bin file which
-is different than the one used for QCA6174. If the
-board.bin is wrong the device will crash early
-while trying to boot firmware. The register dump
-will look like this:
+With changes covered in this patch, radar detection works on
+qca9x0 hw 2.0 which uses 10.4 firmware.
 
- ath10k_pci 0000:02:00.0: firmware register dump:
- ath10k_pci 0000:02:00.0: [00]: 0x05010000 0x000015B3 0x000A012D 0x00955B31
- ...
-
-Note the value 0x000A012D.
-
-Special credit goes to Alan Liu
-<alanliu@qca.qualcomm.com> for providing support
-help which enabled me to come up with this patch.
-
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 ---
- drivers/net/wireless/ath/ath10k/core.c | 11 +++++++++++
- drivers/net/wireless/ath/ath10k/core.h |  1 +
- drivers/net/wireless/ath/ath10k/pci.c  | 13 +++++++++++++
- 3 files changed, 25 insertions(+)
 
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 25510679fd2e..1ea16d044645 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -231,6 +231,17 @@ static int ath10k_init_configure_target(struct ath10k *ar)
- 		return ret;
- 	}
- 
-+	/* Some devices have a special sanity check that verifies the PCI
-+	 * Device ID is written to this host interest var. It is known to be
-+	 * required to boot QCA6164.
-+	 */
-+	ret = ath10k_bmi_write32(ar, hi_hci_uart_pwr_mgmt_params_ext,
-+				 ar->dev_id);
-+	if (ret) {
-+		ath10k_err(ar, "failed to set pwr_mgmt_params: %d\n", ret);
-+		return ret;
-+	}
-+
+v2 changes:
+
+ - Fixed below sparse warnings,
+     wmi.c:3620:33: warning: restricted __le32 degrades to integer
+     wmi.c:3622:38: warning: restricted __le32 degrades to integer
+     wmi.c:3594:5: warning: symbol 'ath10k_wmi_10_4_op_pull_phyerr_ev' was not declared. Should it be static?
+
+ drivers/net/wireless/ath/ath10k/wmi.c | 64 +++++++++++++++++++++++++++++++++++
+ drivers/net/wireless/ath/ath10k/wmi.h | 20 +++++++++++
+ 2 files changed, 84 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 37dfa34..aad16eb 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3527,6 +3527,26 @@ static int ath10k_wmi_op_pull_phyerr_ev_hdr(struct ath10k *ar,
  	return 0;
  }
  
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index 6a387bac27b0..91d4409dee0b 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -554,6 +554,7 @@ struct ath10k {
- 	u8 mac_addr[ETH_ALEN];
- 
- 	enum ath10k_hw_rev hw_rev;
-+	u16 dev_id;
- 	u32 chip_id;
- 	u32 target_version;
- 	u8 fw_version_major;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index f00b251ec9ce..49a7538325e3 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -58,11 +58,13 @@ MODULE_PARM_DESC(reset_mode, "0: auto, 1: warm only (default: 0)");
- #define ATH10K_PCI_NUM_WARM_RESET_ATTEMPTS 3
- 
- #define QCA988X_2_0_DEVICE_ID	(0x003c)
-+#define QCA6164_2_1_DEVICE_ID	(0x0041)
- #define QCA6174_2_1_DEVICE_ID	(0x003e)
- #define QCA99X0_2_0_DEVICE_ID	(0x0040)
- 
- static const struct pci_device_id ath10k_pci_id_table[] = {
- 	{ PCI_VDEVICE(ATHEROS, QCA988X_2_0_DEVICE_ID) }, /* PCI-E QCA988X V2 */
-+	{ PCI_VDEVICE(ATHEROS, QCA6164_2_1_DEVICE_ID) }, /* PCI-E QCA6164 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA6174_2_1_DEVICE_ID) }, /* PCI-E QCA6174 V2.1 */
- 	{ PCI_VDEVICE(ATHEROS, QCA99X0_2_0_DEVICE_ID) }, /* PCI-E QCA99X0 V2 */
- 	{0}
-@@ -74,11 +76,19 @@ static const struct ath10k_pci_supp_chip ath10k_pci_supp_chips[] = {
- 	 * because of that.
- 	 */
- 	{ QCA988X_2_0_DEVICE_ID, QCA988X_HW_2_0_CHIP_ID_REV },
++static int ath10k_wmi_10_4_op_pull_phyerr_ev_hdr(struct ath10k *ar,
++						 struct sk_buff *skb,
++						 struct wmi_phyerr_hdr_arg *arg)
++{
++	struct wmi_10_4_phyerr_event *ev = (void *)skb->data;
 +
-+	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_2_1_CHIP_ID_REV },
-+	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_2_2_CHIP_ID_REV },
-+	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_3_0_CHIP_ID_REV },
-+	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_3_1_CHIP_ID_REV },
-+	{ QCA6164_2_1_DEVICE_ID, QCA6174_HW_3_2_CHIP_ID_REV },
++	if (skb->len < sizeof(*ev))
++		return -EPROTO;
 +
- 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_2_1_CHIP_ID_REV },
- 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_2_2_CHIP_ID_REV },
- 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_3_0_CHIP_ID_REV },
- 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_3_1_CHIP_ID_REV },
- 	{ QCA6174_2_1_DEVICE_ID, QCA6174_HW_3_2_CHIP_ID_REV },
++	/* 10.4 firmware always reports only one phyerr */
++	arg->num_phyerrs = 1;
 +
- 	{ QCA99X0_2_0_DEVICE_ID, QCA99X0_HW_2_0_CHIP_ID_REV },
- };
++	arg->tsf_l32 = __le32_to_cpu(ev->tsf_l32);
++	arg->tsf_u32 = __le32_to_cpu(ev->tsf_u32);
++	arg->buf_len = skb->len;
++	arg->phyerrs = skb->data;
++
++	return 0;
++}
++
+ int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
+ 				 const void *phyerr_buf,
+ 				 int left_len,
+@@ -3571,6 +3591,45 @@ int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
+ 	return 0;
+ }
  
-@@ -1810,6 +1820,7 @@ static int ath10k_pci_get_num_banks(struct ath10k *ar)
- 	case QCA988X_2_0_DEVICE_ID:
- 	case QCA99X0_2_0_DEVICE_ID:
- 		return 1;
-+	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
- 		switch (MS(ar->chip_id, SOC_CHIP_ID_REV)) {
- 		case QCA6174_HW_1_0_CHIP_ID_REV:
-@@ -2898,6 +2909,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	case QCA988X_2_0_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA988X;
++static int ath10k_wmi_10_4_op_pull_phyerr_ev(struct ath10k *ar,
++					     const void *phyerr_buf,
++					     int left_len,
++					     struct wmi_phyerr_ev_arg *arg)
++{
++	const struct wmi_10_4_phyerr_event *phyerr = phyerr_buf;
++	u32 phy_err_mask;
++	int i;
++
++	if (left_len < sizeof(*phyerr)) {
++		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
++			    left_len, sizeof(*phyerr));
++		return -EINVAL;
++	}
++
++	arg->tsf_timestamp = __le32_to_cpu(phyerr->tsf_timestamp);
++	arg->freq1 = __le16_to_cpu(phyerr->freq1);
++	arg->freq2 = __le16_to_cpu(phyerr->freq2);
++	arg->rssi_combined = phyerr->rssi_combined;
++	arg->chan_width_mhz = phyerr->chan_width_mhz;
++	arg->buf_len = __le32_to_cpu(phyerr->buf_len);
++	arg->buf = phyerr->buf;
++	arg->hdr_len = sizeof(*phyerr);
++
++	for (i = 0; i < 4; i++)
++		arg->nf_chains[i] = __le16_to_cpu(phyerr->nf_chains[i]);
++
++	phy_err_mask = __le32_to_cpu(phyerr->phy_err_mask[0]);
++
++	if (phy_err_mask & PHY_ERROR_10_4_SPECTRAL_SCAN_MASK)
++		arg->phy_err_code = PHY_ERROR_SPECTRAL_SCAN;
++	else if (phy_err_mask & PHY_ERROR_10_4_RADAR_MASK)
++		arg->phy_err_code = PHY_ERROR_RADAR;
++	else
++		arg->phy_err_code = PHY_ERROR_UNKNOWN;
++
++	return 0;
++}
++
+ void ath10k_wmi_event_phyerr(struct ath10k *ar, struct sk_buff *skb)
+ {
+ 	struct wmi_phyerr_hdr_arg hdr_arg = {};
+@@ -4528,6 +4587,9 @@ static void ath10k_wmi_10_4_op_rx(struct ath10k *ar, struct sk_buff *skb)
+ 	case WMI_10_4_CHAN_INFO_EVENTID:
+ 		ath10k_wmi_event_chan_info(ar, skb);
  		break;
-+	case QCA6164_2_1_DEVICE_ID:
- 	case QCA6174_2_1_DEVICE_ID:
- 		hw_rev = ATH10K_HW_QCA6174;
++	case WMI_10_4_PHYERR_EVENTID:
++		ath10k_wmi_event_phyerr(ar, skb);
++		break;
+ 	case WMI_10_4_READY_EVENTID:
+ 		ath10k_wmi_event_ready(ar, skb);
  		break;
-@@ -2922,6 +2934,7 @@ static int ath10k_pci_probe(struct pci_dev *pdev,
- 	ar_pci->pdev = pdev;
- 	ar_pci->dev = &pdev->dev;
- 	ar_pci->ar = ar;
-+	ar->dev_id = pci_dev->device;
+@@ -6491,6 +6553,8 @@ static const struct wmi_ops wmi_10_4_ops = {
+ 	.pull_vdev_start = ath10k_wmi_op_pull_vdev_start_ev,
+ 	.pull_peer_kick = ath10k_wmi_op_pull_peer_kick_ev,
+ 	.pull_swba = ath10k_wmi_10_4_op_pull_swba_ev,
++	.pull_phyerr_hdr = ath10k_wmi_10_4_op_pull_phyerr_ev_hdr,
++	.pull_phyerr = ath10k_wmi_10_4_op_pull_phyerr_ev,
+ 	.pull_svc_rdy = ath10k_wmi_main_op_pull_svc_rdy_ev,
+ 	.pull_rdy = ath10k_wmi_op_pull_rdy_ev,
  
- 	if (pdev->subsystem_vendor || pdev->subsystem_device)
- 		scnprintf(ar->spec_board_id, sizeof(ar->spec_board_id),
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.h b/drivers/net/wireless/ath/ath10k/wmi.h
+index 0ed3cfe..c5d10db 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.h
++++ b/drivers/net/wireless/ath/ath10k/wmi.h
+@@ -2977,6 +2977,9 @@ struct wmi_10_4_mgmt_rx_event {
+ #define PHY_ERROR_GEN_FALSE_RADAR_EXT		0x24
+ #define PHY_ERROR_GEN_RADAR			0x05
+ 
++#define PHY_ERROR_10_4_RADAR_MASK               0x4
++#define PHY_ERROR_10_4_SPECTRAL_SCAN_MASK       0x4000000
++
+ enum phy_err_type {
+ 	PHY_ERROR_UNKNOWN,
+ 	PHY_ERROR_SPECTRAL_SCAN,
+@@ -3005,6 +3008,23 @@ struct wmi_phyerr_event {
+ 	struct wmi_phyerr phyerrs[0];
+ } __packed;
+ 
++struct wmi_10_4_phyerr_event {
++	__le32 tsf_l32;
++	__le32 tsf_u32;
++	__le16 freq1;
++	__le16 freq2;
++	u8 rssi_combined;
++	u8 chan_width_mhz;
++	u8 phy_err_code;
++	u8 rsvd0;
++	__le32 rssi_chains[4];
++	__le16 nf_chains[4];
++	__le32 phy_err_mask[2];
++	__le32 tsf_timestamp;
++	__le32 buf_len;
++	u8 buf[0];
++} __packed;
++
+ #define PHYERR_TLV_SIG				0xBB
+ #define PHYERR_TLV_TAG_SEARCH_FFT_REPORT	0xFB
+ #define PHYERR_TLV_TAG_RADAR_PULSE_SUMMARY	0xF8
 -- 
-2.1.4
+1.8.1.2
 
 
 _______________________________________________
