@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPqji-000773-1t
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:31:56 +0000
+ id 1ZPqkt-0007IG-PM
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:33:08 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: don't remove peer that doesn't exist
-References: <1438769724-29438-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 13 Aug 2015 14:31:20 +0300
-In-Reply-To: <1438769724-29438-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 5 Aug 2015 12:15:23 +0200")
-Message-ID: <87wpwzmnlj.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH 1/2] ath10k: refactor phyerr event handlers
+References: <1439373396-10828-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Thu, 13 Aug 2015 14:32:19 +0300
+In-Reply-To: <1439373396-10828-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Wed, 12 Aug 2015 15:26:35 +0530")
+Message-ID: <87si7nmnjw.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,21 +23,31 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Raja Mani <rmani@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> If peer creation failed during offchannel Tx the
-> driver attempted to delete the peer nonetheless.
-> This caused the ar->num_peers counter to be
-> incorrectly decremented. This subsequently could
-> cause the counter to drop below 0 and also
-> eventually lead to firmware crash because host
-> would think there are less peer entries created in
-> firmware then there really were.
+> Existing phyerr event handlers directly uses phyerr header format
+> (ie, struct wmi_phyerr and struct wmi_phyerr_event) in the code
+> exactly on how firmware packs it. This is the problem in 10.4 fw
+> specific phyerr event handling where it uses different phyerror
+> header format. Before adding 10.4 specific handler, little bit of
+> refactor is done in existing phyerr handlers.
 >
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Two new abstracted structures (struct wmi_phyerr_ev_hdr_arg and
+> struct wmi_phyerr_ev_arg) are introduced to remove dependency of using
+> firmware specific header format in the code. So that firmware specific
+> phyerror handlers can populate values to abstracted structures and
+> the following code can use abstracted struct for further operation.
+>
+> .pull_phyerr_hdr is added newly to pull common phyerr header info
+> like tsf, buf_len, number of phyerr packed. Existing .pull_phyerr
+> handler is changed and called to parse every sub phyerrs in the event.
+>
+> Validated these refactoring on qca988x hw2.0 using fw 10.2.4 version.
+>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
 Thanks, applied.
 
