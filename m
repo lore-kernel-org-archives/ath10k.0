@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPqb2-0002Hx-8I
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:22:56 +0000
+ id 1ZPqhQ-0005Sc-E2
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 11:29:33 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: initialize fw_features var
-References: <1438750537-27781-1-git-send-email-michal.kazior@tieto.com>
-Date: Thu, 13 Aug 2015 14:22:27 +0300
-In-Reply-To: <1438750537-27781-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Wed, 5 Aug 2015 06:55:37 +0200")
-Message-ID: <87614jo2ks.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: fix hw reconfig on wow failure
+References: <1438769318-27373-1-git-send-email-michal.kazior@tieto.com>
+Date: Thu, 13 Aug 2015 14:29:00 +0300
+In-Reply-To: <1438769318-27373-1-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Wed, 5 Aug 2015 12:08:38 +0200")
+Message-ID: <871tf7o29v.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -19,20 +19,29 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: Michal Kazior <michal.kazior@tieto.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-TWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+IHdyaXRlczoKCj4gSWYgZmly
-bXdhcmUgZGlkIG5vdCBoYXZlIGFueSBmZWF0dXJlIGZsYWdzIHNldCB0aGUKPiB2YXIgd291bGQg
-YmUgbGVmdCB3aXRoIHZhbHVlcyBmb3VuZCBvbiB0aGUgc3RhY2sKPiAoaS5lLiBnYXJiYWdlKSB5
-aWVsZGluZyBwcmludCBzdHJpbmcgbGlrZSB0aGlzOgo+Cj4gICAoLi4uKSBmZWF0dXJlcyBceGZm
-ZmZmZmE2bTpeUlx4ZmZmZmZmZmLUglx4ZmZmZmZmYzReRQo+Cj4gRml4ZXM6IGIyN2JjNWE0MGY5
-MSAoImF0aDEwazogZHVtcCBmdyBmZWF0dXJlcyBkdXJpbmcgcHJvYmluZyIpCj4gU2lnbmVkLW9m
-Zi1ieTogTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+CgpUaGFua3MsIGFw
-cGxpZWQuCgotLSAKS2FsbGUgVmFsbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+Michal Kazior <michal.kazior@tieto.com> writes:
+
+> When WoWLAN resume fails with retval 1 mac80211
+> will attempt to reconfig the device in a similar
+> manner when hw restart is requested. This wasn't
+> handled properly and yielded call trace warnings
+> and the device ended up not working.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+
+Thanks, applied.
+
+-- 
+Kalle Valo
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
