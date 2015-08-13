@@ -1,14 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x235.google.com ([2a00:1450:4010:c04::235])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZPrLF-0007mA-EQ
- for ath10k@lists.infradead.org; Thu, 13 Aug 2015 12:10:43 +0000
-Received: by lbbsx3 with SMTP id sx3so25792108lbb.0
- for <ath10k@lists.infradead.org>; Thu, 13 Aug 2015 05:10:19 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: split ap/ibss wep key install process
-Date: Thu, 13 Aug 2015 14:10:46 +0200
-Message-Id: <1439467846-8351-1-git-send-email-michal.kazior@tieto.com>
+ id 1ZPrPM-000087-Ti
+ for ath10k@lists.infradead.org; Thu, 13 Aug 2015 12:14:57 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: initialize features string in
+ ath10k_print_driver_info() to prevent garbled dmesg output when fw_features
+ == 0
+References: <1438750948-3842-1-git-send-email-vvanpo@gmail.com>
+Date: Thu, 13 Aug 2015 15:14:26 +0300
+In-Reply-To: <1438750948-3842-1-git-send-email-vvanpo@gmail.com> (Victor van
+ Poppelen's message of "Wed, 5 Aug 2015 01:02:28 -0400")
+Message-ID: <87k2szmllp.fsf@kamboji.qca.qualcomm.com>
+MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,100 +21,39 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Victor van Poppelen <vvanpo@gmail.com>
+Cc: ath10k@lists.infradead.org
 
-Apparently it's not safe to install both pairwise
-and groupwise keys on AP vdevs as it can cause
-traffic to stop working in some multi-vif
-(WPA+WEP) cases.
+Victor van Poppelen <vvanpo@gmail.com> writes:
 
-Fixes: ce90b27128c2 ("ath10k: fix multiple key static wep with ibss")
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 44 +++++++++++++++++++++++++----------
- 1 file changed, 32 insertions(+), 12 deletions(-)
+> ---
+>  drivers/net/wireless/ath/ath10k/debug.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/debug.c b/drivers/net/wireless/ath/ath10k/debug.c
+> index 1a33bf0..5f32924 100644
+> --- a/drivers/net/wireless/ath/ath10k/debug.c
+> +++ b/drivers/net/wireless/ath/ath10k/debug.c
+> @@ -124,7 +124,7 @@ EXPORT_SYMBOL(ath10k_info);
+>  
+>  void ath10k_print_driver_info(struct ath10k *ar)
+>  {
+> -	char fw_features[128];
+> +	char fw_features[128] = "";
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index acd222f3b899..eabfe68a1c48 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -247,6 +247,10 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
- 
- 	lockdep_assert_held(&ar->conf_mutex);
- 
-+	if (WARN_ON(arvif->vif->type != NL80211_IFTYPE_AP &&
-+		    arvif->vif->type != NL80211_IFTYPE_ADHOC))
-+		return -EINVAL;
-+
- 	spin_lock_bh(&ar->data_lock);
- 	peer = ath10k_peer_find(ar, arvif->vdev_id, addr);
- 	spin_unlock_bh(&ar->data_lock);
-@@ -258,21 +262,34 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
- 		if (arvif->wep_keys[i] == NULL)
- 			continue;
- 
--		flags = 0;
--		flags |= WMI_KEY_PAIRWISE;
-+		switch (arvif->vif->type) {
-+		case NL80211_IFTYPE_AP:
-+			flags = WMI_KEY_PAIRWISE;
- 
--		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
--					 addr, flags);
--		if (ret < 0)
--			return ret;
-+			if (arvif->def_wep_key_idx == i)
-+				flags |= WMI_KEY_TX_USAGE;
- 
--		flags = 0;
--		flags |= WMI_KEY_GROUP;
-+			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
-+						 SET_KEY, addr, flags);
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		case NL80211_IFTYPE_ADHOC:
-+			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
-+						 SET_KEY, addr,
-+						 WMI_KEY_PAIRWISE);
-+			if (ret < 0)
-+				return ret;
- 
--		ret = ath10k_install_key(arvif, arvif->wep_keys[i], SET_KEY,
--					 addr, flags);
--		if (ret < 0)
--			return ret;
-+			ret = ath10k_install_key(arvif, arvif->wep_keys[i],
-+						 SET_KEY, addr, WMI_KEY_GROUP);
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		default:
-+			WARN_ON(1);
-+			return -EINVAL;
-+		}
- 
- 		spin_lock_bh(&ar->data_lock);
- 		peer->keys[i] = arvif->wep_keys[i];
-@@ -287,6 +304,9 @@ static int ath10k_install_peer_wep_keys(struct ath10k_vif *arvif,
- 	 *
- 	 * FIXME: Revisit. Perhaps this can be done in a less hacky way.
- 	 */
-+	if (arvif->vif->type != NL80211_IFTYPE_ADHOC)
-+		return 0;
-+
- 	if (arvif->def_wep_key_idx == -1)
- 		return 0;
- 
+Michal already sent a patch for this:
+
+https://github.com/kvalo/ath/commit/84e3df60f0daba5b1e7874101502d0b030afb867
+
+Also your patch was missing a Signed-off-by and commit log. Please read
+Documentation/SubmittingPatches for more info.
+
 -- 
-2.1.4
-
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
