@@ -1,15 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRLhT-0001Q3-NG
- for ath10k@lists.infradead.org; Mon, 17 Aug 2015 14:47:48 +0000
+ id 1ZRLjI-0001dj-Mu
+ for ath10k@lists.infradead.org; Mon, 17 Aug 2015 14:49:41 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH v2 1/2] ath10k: refactor phyerr event handlers
-References: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com>
-Date: Mon, 17 Aug 2015 17:47:19 +0300
-In-Reply-To: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Thu, 13 Aug 2015 19:07:12 +0530")
-Message-ID: <87egj2dlag.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: Fill in wmi 10.4 command handlers for addba/delba
+ debug commands
+References: <1439480454-31214-1-git-send-email-vthiagar@qti.qualcomm.com>
+Date: Mon, 17 Aug 2015 17:49:13 +0300
+In-Reply-To: <1439480454-31214-1-git-send-email-vthiagar@qti.qualcomm.com>
+ (Vasanthakumar Thiagarajan's message of "Thu, 13 Aug 2015 21:10:54
+ +0530")
+Message-ID: <87a8tqdl7a.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,33 +25,28 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
+To: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Raja Mani <rmani@qti.qualcomm.com> writes:
+Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com> writes:
 
-> Existing phyerr event handlers directly uses phyerr header format
-> (ie, struct wmi_phyerr and struct wmi_phyerr_event) in the code
-> exactly on how firmware packs it. This is the problem in 10.4 fw
-> specific phyerr event handling where it uses different phyerror
-> header format. Before adding 10.4 specific handler, little bit of
-> refactor is done in existing phyerr handlers.
+> WMI 10.4 uses the same command interface as QCA988X for addba/delba
+> debug wmi commands. Fill wmi_10_4_ops table with the functions used
+> for QCA988X for these commands.
 >
-> Two new abstracted structures (struct wmi_phyerr_ev_hdr_arg and
-> struct wmi_phyerr_ev_arg) are introduced to remove dependency of using
-> firmware specific header format in the code. So that firmware specific
-> phyerror handlers can populate values to abstracted structures and
-> the following code can use abstracted struct for further operation.
+> With this change, the following debugfs entries can be used to
+> configure the aggregation mode and to send addba request,
+> addba response and delba respectively in manual aggregation mode
+> for QCA99X0 chip.
 >
-> .pull_phyerr_hdr is added newly to pull common phyerr header info
-> like tsf, buf_len, number of phyerr packed. Existing .pull_phyerr
-> handler is changed and called to parse every sub phyerrs in the event.
+> /sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/aggr_mode
+> /sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba
+> /sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/addba_resp
+> /sys/kernel/debug/ieee80211/phyX/netdev:wlanX/stations/XX:XX:XX:XX:XX:XX/delba
 >
-> Validated these refactoring on qca988x hw2.0 using fw 10.2.4 version.
->
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+> Signed-off-by: Vasanthakumar Thiagarajan <vthiagar@qti.qualcomm.com>
 
-Thanks, both applied.
+Thanks, applied.
 
 -- 
 Kalle Valo
