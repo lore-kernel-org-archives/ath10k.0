@@ -1,15 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from sabertooth01.qualcomm.com ([65.197.215.72])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRLXl-0006Rl-QU
- for ath10k@lists.infradead.org; Mon, 17 Aug 2015 14:37:46 +0000
+ id 1ZRLhT-0001Q3-NG
+ for ath10k@lists.infradead.org; Mon, 17 Aug 2015 14:47:48 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: split ap/ibss wep key install process
-References: <1439467846-8351-1-git-send-email-michal.kazior@tieto.com>
-Date: Mon, 17 Aug 2015 17:37:15 +0300
-In-Reply-To: <1439467846-8351-1-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 13 Aug 2015 14:10:46 +0200")
-Message-ID: <87pp2mdlr8.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH v2 1/2] ath10k: refactor phyerr event handlers
+References: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Mon, 17 Aug 2015 17:47:19 +0300
+In-Reply-To: <1439473033-14724-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Thu, 13 Aug 2015 19:07:12 +0530")
+Message-ID: <87egj2dlag.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,20 +23,33 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
+To: Raja Mani <rmani@qti.qualcomm.com>
 Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-Michal Kazior <michal.kazior@tieto.com> writes:
+Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> Apparently it's not safe to install both pairwise
-> and groupwise keys on AP vdevs as it can cause
-> traffic to stop working in some multi-vif
-> (WPA+WEP) cases.
+> Existing phyerr event handlers directly uses phyerr header format
+> (ie, struct wmi_phyerr and struct wmi_phyerr_event) in the code
+> exactly on how firmware packs it. This is the problem in 10.4 fw
+> specific phyerr event handling where it uses different phyerror
+> header format. Before adding 10.4 specific handler, little bit of
+> refactor is done in existing phyerr handlers.
 >
-> Fixes: ce90b27128c2 ("ath10k: fix multiple key static wep with ibss")
-> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> Two new abstracted structures (struct wmi_phyerr_ev_hdr_arg and
+> struct wmi_phyerr_ev_arg) are introduced to remove dependency of using
+> firmware specific header format in the code. So that firmware specific
+> phyerror handlers can populate values to abstracted structures and
+> the following code can use abstracted struct for further operation.
+>
+> .pull_phyerr_hdr is added newly to pull common phyerr header info
+> like tsf, buf_len, number of phyerr packed. Existing .pull_phyerr
+> handler is changed and called to parse every sub phyerrs in the event.
+>
+> Validated these refactoring on qca988x hw2.0 using fw 10.2.4 version.
+>
+> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
-Thanks, applied.
+Thanks, both applied.
 
 -- 
 Kalle Valo
