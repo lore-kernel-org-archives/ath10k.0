@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from youngberry.canonical.com ([91.189.89.112])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZROLw-0007ll-5Y
- for ath10k@lists.infradead.org; Mon, 17 Aug 2015 17:37:44 +0000
-Message-ID: <55D21BCC.9080908@canonical.com>
-Date: Mon, 17 Aug 2015 13:37:16 -0400
-From: Joseph Salisbury <joseph.salisbury@canonical.com>
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRZ84-00017K-3E
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2015 05:08:09 +0000
+Received: by lalv9 with SMTP id v9so91967839lal.0
+ for <ath10k@lists.infradead.org>; Mon, 17 Aug 2015 22:07:40 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: unknown qca6164 model 0x0041
+In-Reply-To: <55D21BCC.9080908@canonical.com>
 References: <55CB9F9C.2000309@canonical.com>
  <CA+BoTQmhWxkN+d9XWA7af_R0q9FkDyfVTRLDZyvLSj=bW0fGZQ@mail.gmail.com>
  <87zj1vo4ti.fsf@kamboji.qca.qualcomm.com>
-In-Reply-To: <87zj1vo4ti.fsf@kamboji.qca.qualcomm.com>
+ <55D21BCC.9080908@canonical.com>
+Date: Tue, 18 Aug 2015 07:07:39 +0200
+Message-ID: <CA+BoTQkUps4BPV9iMNwNWyQLQ-M8hpPrFEEmNVobE1ZAMXwRyA@mail.gmail.com>
+Subject: Re: unknown qca6164 model 0x0041
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +23,45 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>, Michal Kazior <michal.kazior@tieto.com>
-Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>
+To: Joseph Salisbury <joseph.salisbury@canonical.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>
 
-On 08/13/2015 06:34 AM, Kalle Valo wrote:
-> Michal Kazior <michal.kazior@tieto.com> writes:
->
->> On 12 August 2015 at 21:33, Joseph Salisbury
->> <joseph.salisbury@canonical.com> wrote:
->>> Hello,
->>>
->>> There are still new folks reporting this issue in the Launchpad bug
->>> report[0].  Has there been any progress on the firmware problem reported
->>> in the comment by Kalle Valo on March 26, 2015[1]?
->>>
->>> Thanks in advance,
->> Thanks for pinging.
->>
->> Recently we finally found a way to boot qca6164 with unofficial
->> windows-extracted firmware images on ath10k[1]. We still don't have an
->> official firmware release for qca61x4 family for ath10k though.
-> I just pushed the firmware here:
->
-> https://github.com/kvalo/ath10k-firmware/commit/7f7e7dda33676ced293de477b03711199ffe5256
->
-> Please let me know how it works (or not). And really sorry for taking so
-> long with this.
->
-With the new files, a reporter in the bug says that he still gets the
-ath10k/QCA6174/hw2.1/firmware-4.bin errors. Does the kernel need to be
-updated for a new driver that looks for a -5 firmware?
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTcgQXVndXN0IDIwMTUgYXQgMTk6MzcsIEpvc2VwaCBTYWxpc2J1cnkKPGpvc2VwaC5zYWxp
+c2J1cnlAY2Fub25pY2FsLmNvbT4gd3JvdGU6Cj4gT24gMDgvMTMvMjAxNSAwNjozNCBBTSwgS2Fs
+bGUgVmFsbyB3cm90ZToKPj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
+IHdyaXRlczoKPj4KPj4+IE9uIDEyIEF1Z3VzdCAyMDE1IGF0IDIxOjMzLCBKb3NlcGggU2FsaXNi
+dXJ5Cj4+PiA8am9zZXBoLnNhbGlzYnVyeUBjYW5vbmljYWwuY29tPiB3cm90ZToKPj4+PiBIZWxs
+bywKPj4+Pgo+Pj4+IFRoZXJlIGFyZSBzdGlsbCBuZXcgZm9sa3MgcmVwb3J0aW5nIHRoaXMgaXNz
+dWUgaW4gdGhlIExhdW5jaHBhZCBidWcKPj4+PiByZXBvcnRbMF0uICBIYXMgdGhlcmUgYmVlbiBh
+bnkgcHJvZ3Jlc3Mgb24gdGhlIGZpcm13YXJlIHByb2JsZW0gcmVwb3J0ZWQKPj4+PiBpbiB0aGUg
+Y29tbWVudCBieSBLYWxsZSBWYWxvIG9uIE1hcmNoIDI2LCAyMDE1WzFdPwo+Pj4+Cj4+Pj4gVGhh
+bmtzIGluIGFkdmFuY2UsCj4+PiBUaGFua3MgZm9yIHBpbmdpbmcuCj4+Pgo+Pj4gUmVjZW50bHkg
+d2UgZmluYWxseSBmb3VuZCBhIHdheSB0byBib290IHFjYTYxNjQgd2l0aCB1bm9mZmljaWFsCj4+
+PiB3aW5kb3dzLWV4dHJhY3RlZCBmaXJtd2FyZSBpbWFnZXMgb24gYXRoMTBrWzFdLiBXZSBzdGls
+bCBkb24ndCBoYXZlIGFuCj4+PiBvZmZpY2lhbCBmaXJtd2FyZSByZWxlYXNlIGZvciBxY2E2MXg0
+IGZhbWlseSBmb3IgYXRoMTBrIHRob3VnaC4KPj4gSSBqdXN0IHB1c2hlZCB0aGUgZmlybXdhcmUg
+aGVyZToKPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9jb21t
+aXQvN2Y3ZTdkZGEzMzY3NmNlZDI5M2RlNDc3YjAzNzExMTk5ZmZlNTI1Ngo+Pgo+PiBQbGVhc2Ug
+bGV0IG1lIGtub3cgaG93IGl0IHdvcmtzIChvciBub3QpLiBBbmQgcmVhbGx5IHNvcnJ5IGZvciB0
+YWtpbmcgc28KPj4gbG9uZyB3aXRoIHRoaXMuCj4+Cj4gV2l0aCB0aGUgbmV3IGZpbGVzLCBhIHJl
+cG9ydGVyIGluIHRoZSBidWcgc2F5cyB0aGF0IGhlIHN0aWxsIGdldHMgdGhlCj4gYXRoMTBrL1FD
+QTYxNzQvaHcyLjEvZmlybXdhcmUtNC5iaW4gZXJyb3JzLiBEb2VzIHRoZSBrZXJuZWwgbmVlZCB0
+byBiZQo+IHVwZGF0ZWQgZm9yIGEgbmV3IGRyaXZlciB0aGF0IGxvb2tzIGZvciBhIC01IGZpcm13
+YXJlPwoKWWVzIC0gZWl0aGVyIDQuMi1yYyBvciBuZXdlciwgb3IgdXNlIEthbGxlJ3MgdHJlZVsx
+XS4KClRoZSBxY2E2MTc0IGh3Mi4xIGZpeCBoYXMgYmVlbiBwdWxsZWQgaW50byA0LjEtc3RhYmxl
+WzJdIGJ1dCBpdApkb2Vzbid0IHVuZGVyc3RhbmQgdGhlIGlnbm9yZV9vdHBfcmVzdWx0IGZpcm13
+YXJlIGZlYXR1cmUgZmxhZyBzbyBpZgp5b3UgcmVuYW1lIHRoZSBmaXJtd2FyZS01LmJpblszXSB0
+byBmaXJtd2FyZS00LmJpbiB5b3UnbGwgbmVlZCB0byBsb2FkCmF0aDEwa19jb3JlIG1vZHVsZSB3
+aXRoICJza2lwX290cD15IiBwYXJhbWV0ZXIuCgoKTWljaGHFggoKClsxXTogaHR0cHM6Ly9naXRo
+dWIuY29tL2t2YWxvL2F0aApbMl06IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9r
+ZXJuZWwvZ2l0L3N0YWJsZS9saW51eC1zdGFibGUuZ2l0L2NvbW1pdC8/aD1saW51eC00LjEueSZp
+ZD1iMjM1ZWRjZTVjYmU0ZTk3OGQ0NGQ4YzU3ZWMxNWFmYzRiYTI3ZDUwClszXTogaHR0cHM6Ly9n
+aXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9ibG9iLzdmN2U3ZGRhMzM2NzZjZWQyOTNk
+ZTQ3N2IwMzcxMTE5OWZmZTUyNTYvYXRoMTBrL1FDQTYxNzQvaHcyLjEvZmlybXdhcmUtNS5iaW4K
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
+YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
+ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
