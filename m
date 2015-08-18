@@ -1,17 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f176.google.com ([209.85.212.176])
+Received: from wolverine01.qualcomm.com ([199.106.114.254])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRdMC-0001g0-9A
- for ath10k@lists.infradead.org; Tue, 18 Aug 2015 09:39:01 +0000
-Received: by wicja10 with SMTP id ja10so102949285wic.1
- for <ath10k@lists.infradead.org>; Tue, 18 Aug 2015 02:38:38 -0700 (PDT)
-From: Sven Eckelmann <sven@open-mesh.com>
-Subject: Re: CT ath10k firmware now supports IBSS + RSN
-Date: Tue, 18 Aug 2015 11:38:33 +0200
-Message-ID: <4035168.MK6Xi4n7uL@bentobox>
-In-Reply-To: <55D1FEB2.4060205@candelatech.com>
-References: <55285D8D.6070703@candelatech.com> <1701816.PemaYpqoq5@bentobox>
- <55D1FEB2.4060205@candelatech.com>
+ id 1ZRf6r-0004x3-O0
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2015 11:31:19 +0000
+From: Kalle Valo <kvalo@qca.qualcomm.com>
+Subject: Re: [PATCH/RFT 1/2] ath10k: add qca6164 support
+References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
+ <1439469147-9408-2-git-send-email-michal.kazior@tieto.com>
+Date: Tue, 18 Aug 2015 14:30:46 +0300
+In-Reply-To: <1439469147-9408-2-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 13 Aug 2015 14:32:26 +0200")
+Message-ID: <87d1ykdeah.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -21,105 +20,46 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5744296666154022795=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>
-Cc: Marek Lindner <marek@open-mesh.com>, simon@open-mesh.com, "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: arnd@arndb.de, linux-wireless@vger.kernel.org, twilightrook@gmail.com, ath10k@lists.infradead.org, oscarrydberg@gmail.com, vvanpo@gmail.com, joseph.salisbury@canonical.com
 
+Michal Kazior <michal.kazior@tieto.com> writes:
 
---===============5744296666154022795==
-Content-Type: multipart/signed; boundary="nextPart16744776.4JOd2HK7IN"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+> This adds additional 0x0041 PCI Device ID
+> definition to ath10k for QCA6164 which is a 1
+> spatial stream sibling of the QCA6174 (which is 2
+> spatial stream chip).
+>
+> The QCA6164 needs a dedicated board.bin file which
+> is different than the one used for QCA6174. If the
+> board.bin is wrong the device will crash early
+> while trying to boot firmware. The register dump
+> will look like this:
+>
+>  ath10k_pci 0000:02:00.0: firmware register dump:
+>  ath10k_pci 0000:02:00.0: [00]: 0x05010000 0x000015B3 0x000A012D 0x00955B31
+>  ...
+>
+> Note the value 0x000A012D.
+>
+> Special credit goes to Alan Liu
+> <alanliu@qca.qualcomm.com> for providing support
+> help which enabled me to come up with this patch.
+>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
+As neither Michal nor me have QCA6174 and I'm reluctant to take untested
+patches, it would be great if someone could test this and tell us how it
+went. That way I feel safer to apply this.
 
---nextPart16744776.4JOd2HK7IN
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-On Monday 17 August 2015 08:33:06 Ben Greear wrote:
-[...]
-> >  * IBSS/RSN isn't working between ath10k<->ath10k, ath9k<->ath10k
-> >    (works well between ath9k<->ath9k)
-> >    - the ath10k device doesn't seem to send its broadcast frames
-> >      after the handshake finished (ath9k already tries to transmit
-> >      bcast frames)
-> >    - also doesn't work with firmware-2-ct-non-commercial-full-14.bin
-> >      and nohwcrypt=1
-> 
-> I believe I had ath10k to ath9k + RSN work, but I did see problems with ath10k-ath10k + RSN.
-
-Yes, this was what I was reading in a different mail and also the reason
-why I've tried to get it working for ath9k<->ath10k. But unfortunately,
-I had no success.
-
-I have also tried to use your config without the overrides and with
-overrides without any success.
-
-> I think sometimes it worked a bit, and then stopped.  Truth is, my customers
-> interested in IBSS are not doing encryption on the IBSS interface, so I have no plans to work on this
-> soon.  And, even if offered the opportunity, I'm not sure what I could do to
-> improve the problem.  Possibly someone at QCA would have ideas and might share
-> them with me...
-> 
-> 
-> >  * IBSS stops working everytime an AP interface is added to the same
-> >    PHY (it isn't importing whether it is using WPA/WPA2 or configured
-> >    as open AP)
-> >    - tested again with ath9k on the same OpenWrt version and it
-> >      working quite well with 1x IBSS + 2x AP
-> 
-> One of my customers is using AP + IBSS interface with no obvious problems
-> related to concurrency.  But, maybe they are doing things in a different
-> order.  Does it work for you if you bring up AP first and then add IBSS?
-> 
-> This is likely fixable.
-
-I had to hack a little bit of OpenWrt away but it seems that it works for
-a simple setup to first create the adhoc interface and then sometimes later
-add the AP interface.
-
-[...]
-
-Thanks for your feedback.
-
-Kind regards,
-	Sven
---nextPart16744776.4JOd2HK7IN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAABCgAGBQJV0v0cAAoJEF2HCgfBJntG+9IQAL1Qmy4DV3vpyRv1fatSFquP
-qCPTzZpb5Fn7Dr41J3HA8y2geE5jHX4UsXDlnz+i6jtkcfanXfPDjOw4RPkHeh28
-hWAlLlwgRaU+6Rm9bsPsuo2Vdf4ZkgHRToHZ56hZGwPaTvUXReNEYPL7VO0q/iJB
-+1hr54L0G+j4JCWYMGUjTahyChA2lMJFP8dxM6QOWZah/gLn3hcwYfpCAWh9fVME
-b840s6N1yjKHQb44EMe4NENxBr85zDQZNuJoooYK1/WFHmUAOo4s7GtKDGfCyQTQ
-T/PoivNcqPATTp3AsHeqVwjgcFDMzlEGk62oItoZYXSWGXX55GImsfSuBA+4JAVb
-LRho2eqn1Y4SmmkYkMK1J9AOMhn/8c+xjRiQe6jz1L+n4wsz5nyNKYsmLlqCwJnL
-9gLQKkW9toueOqIRCwTzYmighmZDGFFNlxUfwFDvKcCUGsrfoxKNIqWPnajblcCz
-m1f9TVBXNk1kxkrz0QTEkeDtE6MaBGOMI3GmcExlrIpCM0i/CnkWeGOa46cW404k
-ihMG2385i7ypoo6WLvHLPZaeOEwt713psvG/mBhpL/1lZSqNXnG0XBo+4bQ6QlUG
-1vb0vhROthcbSjh76GAUMR5cjF+51G2RWSjTQeR07+enAod0uh/HvUyKl0ksVgNb
-Ur/LDPrLTh75+FAvbeUD
-=mtom
------END PGP SIGNATURE-----
-
---nextPart16744776.4JOd2HK7IN--
-
-
-
---===============5744296666154022795==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+-- 
+Kalle Valo
 
 _______________________________________________
 ath10k mailing list
 ath10k@lists.infradead.org
 http://lists.infradead.org/mailman/listinfo/ath10k
-
---===============5744296666154022795==--
