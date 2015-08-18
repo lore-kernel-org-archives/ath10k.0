@@ -1,19 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-f172.google.com ([209.85.223.172])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRgEF-0005L3-O3
- for ath10k@lists.infradead.org; Tue, 18 Aug 2015 12:43:00 +0000
-Received: by iodb91 with SMTP id b91so186503363iod.1
- for <ath10k@lists.infradead.org>; Tue, 18 Aug 2015 05:42:37 -0700 (PDT)
-Date: Tue, 18 Aug 2015 08:42:33 -0400
-From: Bob Copeland <me@bobcopeland.com>
-Subject: Re: [PATCH 0/3] ath10k mesh support
-Message-ID: <20150818124233.GA867@localhost>
-References: <1439738757-29199-1-git-send-email-me@bobcopeland.com>
- <878u98dddv.fsf@kamboji.qca.qualcomm.com>
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZRiFp-0003ue-62
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2015 14:52:45 +0000
+Message-ID: <55D34698.50204@candelatech.com>
+Date: Tue, 18 Aug 2015 07:52:08 -0700
+From: Ben Greear <greearb@candelatech.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <878u98dddv.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: Unable to set channel above 100 with latest CT Kernel and Firmware
+References: <1439738757-29199-1-git-send-email-me@bobcopeland.com>
+ <1439738757-29199-4-git-send-email-me@bobcopeland.com>
+ <55D1C02F.4010005@tu-bs.de> <874mjwdd6y.fsf@kamboji.qca.qualcomm.com>
+In-Reply-To: <874mjwdd6y.fsf@kamboji.qca.qualcomm.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +20,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Kalle Valo <kvalo@qca.qualcomm.com>
+To: Kalle Valo <kvalo@qca.qualcomm.com>, "Harms, Hannes" <hannes.harms@tu-bs.de>
 Cc: ath10k@lists.infradead.org
 
-On Tue, Aug 18, 2015 at 02:50:20PM +0300, Kalle Valo wrote:
-> Bob Copeland <me@bobcopeland.com> writes:
-> >
-> >     if=wlan0
-> >     meship=10.10.1.10
-> >     ip link set $if down
-> >     ip addr flush $if
-> >     iw dev $if set type mp
-> >     ip link set $if up
-> >     ip addr add $meship/24 dev $if
-> >     iw dev $if set freq 5745 80 5775
-> >     iw dev $if mesh join mesh-vht
-> 
-> Can you add this example to patch 3, please? Also mention in patch 3
-> what firmware version you used to test this. Oh, but I haven't made a
-> firmware release with RAW_MODE flag set. Need to do that.
 
-Sure -- yes I guess this patch is also missing a check for the firmware
-feature flag (although it works on 10.2.4.70-2 apparently) -- will add
-once you do such a release.
 
-> > * I'm not crazy about requiring a modparam and advertising mesh interfaces
-> > that are only really usable when the modparam is set, but I'm not sure how
-> > to set rx decap mode on the fly and whether we can do that on a per-vif
-> > basis.
-> 
-> This is good enough for now, but I would prefer that we advertise mesh
-> support to user space only when the rawmode modparam is set. I guess we
-> should start building all iface_limits dynamically? But that's future
-> cleanup.
+On 08/18/2015 04:54 AM, Kalle Valo wrote:
+> "Harms, Hannes" <hannes.harms@tu-bs.de> writes:
+>
+>> I am trying to set up the latest Kernel (4.2rc6) and firmware
+>> (10.1.467-ct-14) form Candela for a 5Ghz network.
+>> Unfortunately I am not able to set channels above 100, although
+>> regulatory domain is set to DE.
+>> Maybe someone has an advice what is going wrong?
 
-I started down this path originally, but "it's complicated."  There's a
-bit of a combinatorial explosion problem since there are already 4
-different if_limits with different combinations.  I guess we could
-iterate over them and set the bits just before calling into mac80211,
-but we'd need to cast away a const or two.
+This is unlikely to be a firmware issue, as we routinely run on channel 149.
+
+Have you tried an older kernel to see if it is a regression somewhere in
+the stack/driver?
+
+Thanks,
+Ben
+
+>
+> Btw, please don't hijack threads (ie. reply to an existing thread and
+> change subject) as it confuses patchwork[1]. Instead start a new thread.
+>
+> [1] https://patchwork.kernel.org/patch/7023511/
+>
 
 -- 
-Bob Copeland %% http://bobcopeland.com/
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
 
 _______________________________________________
 ath10k mailing list
