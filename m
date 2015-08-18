@@ -1,20 +1,18 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
+Received: from mail-wi0-f176.google.com ([209.85.212.176])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZRZ84-00017K-3E
- for ath10k@lists.infradead.org; Tue, 18 Aug 2015 05:08:09 +0000
-Received: by lalv9 with SMTP id v9so91967839lal.0
- for <ath10k@lists.infradead.org>; Mon, 17 Aug 2015 22:07:40 -0700 (PDT)
+ id 1ZRdMC-0001g0-9A
+ for ath10k@lists.infradead.org; Tue, 18 Aug 2015 09:39:01 +0000
+Received: by wicja10 with SMTP id ja10so102949285wic.1
+ for <ath10k@lists.infradead.org>; Tue, 18 Aug 2015 02:38:38 -0700 (PDT)
+From: Sven Eckelmann <sven@open-mesh.com>
+Subject: Re: CT ath10k firmware now supports IBSS + RSN
+Date: Tue, 18 Aug 2015 11:38:33 +0200
+Message-ID: <4035168.MK6Xi4n7uL@bentobox>
+In-Reply-To: <55D1FEB2.4060205@candelatech.com>
+References: <55285D8D.6070703@candelatech.com> <1701816.PemaYpqoq5@bentobox>
+ <55D1FEB2.4060205@candelatech.com>
 MIME-Version: 1.0
-In-Reply-To: <55D21BCC.9080908@canonical.com>
-References: <55CB9F9C.2000309@canonical.com>
- <CA+BoTQmhWxkN+d9XWA7af_R0q9FkDyfVTRLDZyvLSj=bW0fGZQ@mail.gmail.com>
- <87zj1vo4ti.fsf@kamboji.qca.qualcomm.com>
- <55D21BCC.9080908@canonical.com>
-Date: Tue, 18 Aug 2015 07:07:39 +0200
-Message-ID: <CA+BoTQkUps4BPV9iMNwNWyQLQ-M8hpPrFEEmNVobE1ZAMXwRyA@mail.gmail.com>
-Subject: Re: unknown qca6164 model 0x0041
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +21,105 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5744296666154022795=="
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Joseph Salisbury <joseph.salisbury@canonical.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Arnd Bergmann <arnd@arndb.de>
+To: Ben Greear <greearb@candelatech.com>
+Cc: Marek Lindner <marek@open-mesh.com>, simon@open-mesh.com, "hostap@lists.shmoo.com" <hostap@lists.shmoo.com>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-T24gMTcgQXVndXN0IDIwMTUgYXQgMTk6MzcsIEpvc2VwaCBTYWxpc2J1cnkKPGpvc2VwaC5zYWxp
-c2J1cnlAY2Fub25pY2FsLmNvbT4gd3JvdGU6Cj4gT24gMDgvMTMvMjAxNSAwNjozNCBBTSwgS2Fs
-bGUgVmFsbyB3cm90ZToKPj4gTWljaGFsIEthemlvciA8bWljaGFsLmthemlvckB0aWV0by5jb20+
-IHdyaXRlczoKPj4KPj4+IE9uIDEyIEF1Z3VzdCAyMDE1IGF0IDIxOjMzLCBKb3NlcGggU2FsaXNi
-dXJ5Cj4+PiA8am9zZXBoLnNhbGlzYnVyeUBjYW5vbmljYWwuY29tPiB3cm90ZToKPj4+PiBIZWxs
-bywKPj4+Pgo+Pj4+IFRoZXJlIGFyZSBzdGlsbCBuZXcgZm9sa3MgcmVwb3J0aW5nIHRoaXMgaXNz
-dWUgaW4gdGhlIExhdW5jaHBhZCBidWcKPj4+PiByZXBvcnRbMF0uICBIYXMgdGhlcmUgYmVlbiBh
-bnkgcHJvZ3Jlc3Mgb24gdGhlIGZpcm13YXJlIHByb2JsZW0gcmVwb3J0ZWQKPj4+PiBpbiB0aGUg
-Y29tbWVudCBieSBLYWxsZSBWYWxvIG9uIE1hcmNoIDI2LCAyMDE1WzFdPwo+Pj4+Cj4+Pj4gVGhh
-bmtzIGluIGFkdmFuY2UsCj4+PiBUaGFua3MgZm9yIHBpbmdpbmcuCj4+Pgo+Pj4gUmVjZW50bHkg
-d2UgZmluYWxseSBmb3VuZCBhIHdheSB0byBib290IHFjYTYxNjQgd2l0aCB1bm9mZmljaWFsCj4+
-PiB3aW5kb3dzLWV4dHJhY3RlZCBmaXJtd2FyZSBpbWFnZXMgb24gYXRoMTBrWzFdLiBXZSBzdGls
-bCBkb24ndCBoYXZlIGFuCj4+PiBvZmZpY2lhbCBmaXJtd2FyZSByZWxlYXNlIGZvciBxY2E2MXg0
-IGZhbWlseSBmb3IgYXRoMTBrIHRob3VnaC4KPj4gSSBqdXN0IHB1c2hlZCB0aGUgZmlybXdhcmUg
-aGVyZToKPj4KPj4gaHR0cHM6Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9jb21t
-aXQvN2Y3ZTdkZGEzMzY3NmNlZDI5M2RlNDc3YjAzNzExMTk5ZmZlNTI1Ngo+Pgo+PiBQbGVhc2Ug
-bGV0IG1lIGtub3cgaG93IGl0IHdvcmtzIChvciBub3QpLiBBbmQgcmVhbGx5IHNvcnJ5IGZvciB0
-YWtpbmcgc28KPj4gbG9uZyB3aXRoIHRoaXMuCj4+Cj4gV2l0aCB0aGUgbmV3IGZpbGVzLCBhIHJl
-cG9ydGVyIGluIHRoZSBidWcgc2F5cyB0aGF0IGhlIHN0aWxsIGdldHMgdGhlCj4gYXRoMTBrL1FD
-QTYxNzQvaHcyLjEvZmlybXdhcmUtNC5iaW4gZXJyb3JzLiBEb2VzIHRoZSBrZXJuZWwgbmVlZCB0
-byBiZQo+IHVwZGF0ZWQgZm9yIGEgbmV3IGRyaXZlciB0aGF0IGxvb2tzIGZvciBhIC01IGZpcm13
-YXJlPwoKWWVzIC0gZWl0aGVyIDQuMi1yYyBvciBuZXdlciwgb3IgdXNlIEthbGxlJ3MgdHJlZVsx
-XS4KClRoZSBxY2E2MTc0IGh3Mi4xIGZpeCBoYXMgYmVlbiBwdWxsZWQgaW50byA0LjEtc3RhYmxl
-WzJdIGJ1dCBpdApkb2Vzbid0IHVuZGVyc3RhbmQgdGhlIGlnbm9yZV9vdHBfcmVzdWx0IGZpcm13
-YXJlIGZlYXR1cmUgZmxhZyBzbyBpZgp5b3UgcmVuYW1lIHRoZSBmaXJtd2FyZS01LmJpblszXSB0
-byBmaXJtd2FyZS00LmJpbiB5b3UnbGwgbmVlZCB0byBsb2FkCmF0aDEwa19jb3JlIG1vZHVsZSB3
-aXRoICJza2lwX290cD15IiBwYXJhbWV0ZXIuCgoKTWljaGHFggoKClsxXTogaHR0cHM6Ly9naXRo
-dWIuY29tL2t2YWxvL2F0aApbMl06IGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvY2dpdC9saW51eC9r
-ZXJuZWwvZ2l0L3N0YWJsZS9saW51eC1zdGFibGUuZ2l0L2NvbW1pdC8/aD1saW51eC00LjEueSZp
-ZD1iMjM1ZWRjZTVjYmU0ZTk3OGQ0NGQ4YzU3ZWMxNWFmYzRiYTI3ZDUwClszXTogaHR0cHM6Ly9n
-aXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9ibG9iLzdmN2U3ZGRhMzM2NzZjZWQyOTNk
-ZTQ3N2IwMzcxMTE5OWZmZTUyNTYvYXRoMTBrL1FDQTYxNzQvaHcyLjEvZmlybXdhcmUtNS5iaW4K
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0aDEwayBt
-YWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJh
-ZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
+
+--===============5744296666154022795==
+Content-Type: multipart/signed; boundary="nextPart16744776.4JOd2HK7IN"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+
+
+--nextPart16744776.4JOd2HK7IN
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+On Monday 17 August 2015 08:33:06 Ben Greear wrote:
+[...]
+> >  * IBSS/RSN isn't working between ath10k<->ath10k, ath9k<->ath10k
+> >    (works well between ath9k<->ath9k)
+> >    - the ath10k device doesn't seem to send its broadcast frames
+> >      after the handshake finished (ath9k already tries to transmit
+> >      bcast frames)
+> >    - also doesn't work with firmware-2-ct-non-commercial-full-14.bin
+> >      and nohwcrypt=1
+> 
+> I believe I had ath10k to ath9k + RSN work, but I did see problems with ath10k-ath10k + RSN.
+
+Yes, this was what I was reading in a different mail and also the reason
+why I've tried to get it working for ath9k<->ath10k. But unfortunately,
+I had no success.
+
+I have also tried to use your config without the overrides and with
+overrides without any success.
+
+> I think sometimes it worked a bit, and then stopped.  Truth is, my customers
+> interested in IBSS are not doing encryption on the IBSS interface, so I have no plans to work on this
+> soon.  And, even if offered the opportunity, I'm not sure what I could do to
+> improve the problem.  Possibly someone at QCA would have ideas and might share
+> them with me...
+> 
+> 
+> >  * IBSS stops working everytime an AP interface is added to the same
+> >    PHY (it isn't importing whether it is using WPA/WPA2 or configured
+> >    as open AP)
+> >    - tested again with ath9k on the same OpenWrt version and it
+> >      working quite well with 1x IBSS + 2x AP
+> 
+> One of my customers is using AP + IBSS interface with no obvious problems
+> related to concurrency.  But, maybe they are doing things in a different
+> order.  Does it work for you if you bring up AP first and then add IBSS?
+> 
+> This is likely fixable.
+
+I had to hack a little bit of OpenWrt away but it seems that it works for
+a simple setup to first create the adhoc interface and then sometimes later
+add the AP interface.
+
+[...]
+
+Thanks for your feedback.
+
+Kind regards,
+	Sven
+--nextPart16744776.4JOd2HK7IN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAABCgAGBQJV0v0cAAoJEF2HCgfBJntG+9IQAL1Qmy4DV3vpyRv1fatSFquP
+qCPTzZpb5Fn7Dr41J3HA8y2geE5jHX4UsXDlnz+i6jtkcfanXfPDjOw4RPkHeh28
+hWAlLlwgRaU+6Rm9bsPsuo2Vdf4ZkgHRToHZ56hZGwPaTvUXReNEYPL7VO0q/iJB
++1hr54L0G+j4JCWYMGUjTahyChA2lMJFP8dxM6QOWZah/gLn3hcwYfpCAWh9fVME
+b840s6N1yjKHQb44EMe4NENxBr85zDQZNuJoooYK1/WFHmUAOo4s7GtKDGfCyQTQ
+T/PoivNcqPATTp3AsHeqVwjgcFDMzlEGk62oItoZYXSWGXX55GImsfSuBA+4JAVb
+LRho2eqn1Y4SmmkYkMK1J9AOMhn/8c+xjRiQe6jz1L+n4wsz5nyNKYsmLlqCwJnL
+9gLQKkW9toueOqIRCwTzYmighmZDGFFNlxUfwFDvKcCUGsrfoxKNIqWPnajblcCz
+m1f9TVBXNk1kxkrz0QTEkeDtE6MaBGOMI3GmcExlrIpCM0i/CnkWeGOa46cW404k
+ihMG2385i7ypoo6WLvHLPZaeOEwt713psvG/mBhpL/1lZSqNXnG0XBo+4bQ6QlUG
+1vb0vhROthcbSjh76GAUMR5cjF+51G2RWSjTQeR07+enAod0uh/HvUyKl0ksVgNb
+Ur/LDPrLTh75+FAvbeUD
+=mtom
+-----END PGP SIGNATURE-----
+
+--nextPart16744776.4JOd2HK7IN--
+
+
+
+--===============5744296666154022795==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
+
+--===============5744296666154022795==--
