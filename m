@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS1ET-0002Dt-Jg
- for ath10k@lists.infradead.org; Wed, 19 Aug 2015 11:08:38 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH] ath10k: add pktlog support for 10.4 firmware
-References: <1435043155-3111-1-git-send-email-rmani@qti.qualcomm.com>
-Date: Wed, 19 Aug 2015 14:08:06 +0300
-In-Reply-To: <1435043155-3111-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Tue, 23 Jun 2015 12:35:55 +0530")
-Message-ID: <87io8ba63t.fsf@kamboji.qca.qualcomm.com>
-MIME-Version: 1.0
+ id 1ZS1F4-0002IU-N3
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2015 11:09:15 +0000
+Received: by laba3 with SMTP id a3so697752lab.1
+ for <ath10k@lists.infradead.org>; Wed, 19 Aug 2015 04:08:51 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH] ath10k: add missing mutex unlock on failpath
+Date: Wed, 19 Aug 2015 13:08:53 +0200
+Message-Id: <1439982533-26824-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +17,42 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Raja Mani <rmani@qti.qualcomm.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-Raja Mani <rmani@qti.qualcomm.com> writes:
+Kernel would complain about leaving a held lock
+after going back to userspace and would
+subsequently deadlock.
 
-> 10.4 firmware uses dedicated copy engine for pktlog transaction.
-> Whatever the data received in that dedicated copy engine will
-> have only pkt log header and followed by pktlog payload (will not
-> have htc header). In the current design, htc layer callback
-> registered with hif are acting as default receiver for all copy
-> engine. We need to change the design in a way dedicated copy
-> engine assigned for pktlog directly goes to pktlog module
-> (bypassing htc) and rest of copy engine data goes to htc layer.
-> In order to meet this, hif layer is changed to maintain copy
-> engine specific tx and rx callbacks.
->
-> Also, new firmware ie is added to get copy engine number used
-> for pktlog in the firmware. Based this, pktlog receiver callback
-> handler will be plugged into hif layer.
->
-> pktlog.c/h are newly added to have pktlog related stuff.
-> 10.4 firmware pktlog header differs from non 10.4 firmware.
-> So, new pktlog header is added for 10.4.
->
-> This patch enables pktlog to capture only TX related info on
-> 10.4 firmware. Some more effort is need to capture RX related
-> info in pktlog which is not covered in this patch.
->
-> Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+Fixes: e04cafbc38c7 ("ath10k: fix peer limit enforcement")
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+---
+ drivers/net/wireless/ath/ath10k/mac.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Like discussed privately, let's drop this now and revisit later.
-
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9bca37820848..64674c955d44 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4144,7 +4144,8 @@ static int ath10k_add_interface(struct ieee80211_hw *hw,
+ 
+ 	if (ar->num_peers >= ar->max_num_peers) {
+ 		ath10k_warn(ar, "refusing vdev creation due to insufficient peer entry resources in firmware\n");
+-		return -ENOBUFS;
++		ret = -ENOBUFS;
++		goto err;
+ 	}
+ 
+ 	if (ar->free_vdev_map == 0) {
 -- 
-Kalle Valo
+2.1.4
+
 
 _______________________________________________
 ath10k mailing list
