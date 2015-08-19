@@ -1,16 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine01.qualcomm.com ([199.106.114.254])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS0Ox-0005QS-M2
- for ath10k@lists.infradead.org; Wed, 19 Aug 2015 10:15:24 +0000
+ id 1ZS1ET-0002Dt-Jg
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2015 11:08:38 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH 1/2] ath10k: ensure pktlog disable cmd reaches fw before
- pdev suspend
-References: <1436431783-10691-1-git-send-email-rmani@qti.qualcomm.com>
-Date: Wed, 19 Aug 2015 13:14:56 +0300
-In-Reply-To: <1436431783-10691-1-git-send-email-rmani@qti.qualcomm.com> (Raja
- Mani's message of "Thu, 9 Jul 2015 14:19:42 +0530")
-Message-ID: <87twrva8kf.fsf@kamboji.qca.qualcomm.com>
+Subject: Re: [PATCH] ath10k: add pktlog support for 10.4 firmware
+References: <1435043155-3111-1-git-send-email-rmani@qti.qualcomm.com>
+Date: Wed, 19 Aug 2015 14:08:06 +0300
+In-Reply-To: <1435043155-3111-1-git-send-email-rmani@qti.qualcomm.com> (Raja
+ Mani's message of "Tue, 23 Jun 2015 12:35:55 +0530")
+Message-ID: <87io8ba63t.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,18 +28,32 @@ Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
 Raja Mani <rmani@qti.qualcomm.com> writes:
 
-> Found incorrect sequence in ath10k_core_stop() where wmi pktlog
-> disable cmd is passed from ath10k_debug_stop() to firmware
-> immediately after wmi pdev suspend cmd. Firmware will not accept
-> any wmi cmd after receiving wmi pdev suspend cmd.
+> 10.4 firmware uses dedicated copy engine for pktlog transaction.
+> Whatever the data received in that dedicated copy engine will
+> have only pkt log header and followed by pktlog payload (will not
+> have htc header). In the current design, htc layer callback
+> registered with hif are acting as default receiver for all copy
+> engine. We need to change the design in a way dedicated copy
+> engine assigned for pktlog directly goes to pktlog module
+> (bypassing htc) and rest of copy engine data goes to htc layer.
+> In order to meet this, hif layer is changed to maintain copy
+> engine specific tx and rx callbacks.
 >
-> Fix this issue in ath10k_core_stop() by moving ath10k_debug_stop()
-> just before sending pdev suspend cmd. So that pktlog disable cmd
-> will get passed before pdev suspend cmd.
+> Also, new firmware ie is added to get copy engine number used
+> for pktlog in the firmware. Based this, pktlog receiver callback
+> handler will be plugged into hif layer.
+>
+> pktlog.c/h are newly added to have pktlog related stuff.
+> 10.4 firmware pktlog header differs from non 10.4 firmware.
+> So, new pktlog header is added for 10.4.
+>
+> This patch enables pktlog to capture only TX related info on
+> 10.4 firmware. Some more effort is need to capture RX related
+> info in pktlog which is not covered in this patch.
 >
 > Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
 
-Thanks, applied.
+Like discussed privately, let's drop this now and revisit later.
 
 -- 
 Kalle Valo
