@@ -1,14 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x232.google.com ([2a00:1450:4010:c04::232])
+Received: from mail-lb0-x22d.google.com ([2a00:1450:4010:c04::22d])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZS1GQ-0003kG-8i
- for ath10k@lists.infradead.org; Wed, 19 Aug 2015 11:10:38 +0000
-Received: by lbcbn3 with SMTP id bn3so777824lbc.2
- for <ath10k@lists.infradead.org>; Wed, 19 Aug 2015 04:10:16 -0700 (PDT)
+ id 1ZS1PO-0006m4-N5
+ for ath10k@lists.infradead.org; Wed, 19 Aug 2015 11:19:55 +0000
+Received: by lbbpu9 with SMTP id pu9so905852lbb.3
+ for <ath10k@lists.infradead.org>; Wed, 19 Aug 2015 04:19:32 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <20150818190131.GA24548@mwanda>
+References: <20150818190131.GA24548@mwanda>
+Date: Wed, 19 Aug 2015 13:19:32 +0200
+Message-ID: <CA+BoTQnShiN8LGhqqnNuqO_7FpPORRasH8p8j2uU9CHTm1Rudw@mail.gmail.com>
+Subject: Re: ath10k: fix peer limit enforcement
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH] ath10k: fix dma_mapping_error() handling
-Date: Wed, 19 Aug 2015 13:10:43 +0200
-Message-Id: <1439982643-27031-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -17,117 +20,26 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-The function returns 1 when DMA mapping fails. The
-driver would return bogus values and could
-possibly confuse itself if DMA failed.
-
-Fixes: 767d34fc67af ("ath10k: remove DMA mapping wrappers")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/htc.c    | 4 +++-
- drivers/net/wireless/ath/ath10k/htt_tx.c | 8 ++++++--
- drivers/net/wireless/ath/ath10k/pci.c    | 8 ++++++--
- drivers/net/wireless/ath/ath10k/wmi.c    | 1 +
- 4 files changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/htc.c b/drivers/net/wireless/ath/ath10k/htc.c
-index 85bfa2acb801..32d9ff1b19dc 100644
---- a/drivers/net/wireless/ath/ath10k/htc.c
-+++ b/drivers/net/wireless/ath/ath10k/htc.c
-@@ -145,8 +145,10 @@ int ath10k_htc_send(struct ath10k_htc *htc,
- 	skb_cb->eid = eid;
- 	skb_cb->paddr = dma_map_single(dev, skb->data, skb->len, DMA_TO_DEVICE);
- 	ret = dma_mapping_error(dev, skb_cb->paddr);
--	if (ret)
-+	if (ret) {
-+		ret = -EIO;
- 		goto err_credits;
-+	}
- 
- 	sg_item.transfer_id = ep->eid;
- 	sg_item.transfer_context = skb;
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 704bb5e07193..43aa5e2d1b87 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -442,8 +442,10 @@ int ath10k_htt_mgmt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
- 				       DMA_TO_DEVICE);
- 	res = dma_mapping_error(dev, skb_cb->paddr);
--	if (res)
-+	if (res) {
-+		res = -EIO;
- 		goto err_free_txdesc;
-+	}
- 
- 	skb_put(txdesc, len);
- 	cmd = (struct htt_cmd *)txdesc->data;
-@@ -533,8 +535,10 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	skb_cb->paddr = dma_map_single(dev, msdu->data, msdu->len,
- 				       DMA_TO_DEVICE);
- 	res = dma_mapping_error(dev, skb_cb->paddr);
--	if (res)
-+	if (res) {
-+		res = -EIO;
- 		goto err_free_txbuf;
-+	}
- 
- 	switch (skb_cb->txmode) {
- 	case ATH10K_HW_TXRX_RAW:
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index f00b251ec9ce..826220f795c7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1667,8 +1667,10 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
- 
- 	req_paddr = dma_map_single(ar->dev, treq, req_len, DMA_TO_DEVICE);
- 	ret = dma_mapping_error(ar->dev, req_paddr);
--	if (ret)
-+	if (ret) {
-+		ret = -EIO;
- 		goto err_dma;
-+	}
- 
- 	if (resp && resp_len) {
- 		tresp = kzalloc(*resp_len, GFP_KERNEL);
-@@ -1680,8 +1682,10 @@ static int ath10k_pci_hif_exchange_bmi_msg(struct ath10k *ar,
- 		resp_paddr = dma_map_single(ar->dev, tresp, *resp_len,
- 					    DMA_FROM_DEVICE);
- 		ret = dma_mapping_error(ar->dev, resp_paddr);
--		if (ret)
-+		if (ret) {
-+			ret = EIO;
- 			goto err_req;
-+		}
- 
- 		xfer.wait_for_resp = true;
- 		xfer.resp_len = 0;
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 42c0aba04fb2..6ac016dc28f8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3238,6 +3238,7 @@ void ath10k_wmi_event_host_swba(struct ath10k *ar, struct sk_buff *skb)
- 				ath10k_warn(ar, "failed to map beacon: %d\n",
- 					    ret);
- 				dev_kfree_skb_any(bcn);
-+				ret = -EIO;
- 				goto skip;
- 			}
- 
--- 
-2.1.4
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMTggQXVndXN0IDIwMTUgYXQgMjE6MDEsIERhbiBDYXJwZW50ZXIgPGRhbi5jYXJwZW50ZXJA
+b3JhY2xlLmNvbT4gd3JvdGU6Cj4gSGVsbG8gTWljaGFsIEthemlvciwKPgo+IFRoZSBwYXRjaCBl
+MDRjYWZiYzM4Yzc6ICJhdGgxMGs6IGZpeCBwZWVyIGxpbWl0IGVuZm9yY2VtZW50IiBmcm9tIEF1
+Zwo+IDUsIDIwMTUsIGxlYWRzIHRvIHRoZSBmb2xsb3dpbmcgc3RhdGljIGNoZWNrZXIgd2Fybmlu
+ZzoKPgo+ICAgICAgICAgZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9tYWMuYzo0MzY1
+IGF0aDEwa19hZGRfaW50ZXJmYWNlKCkKPiAgICAgICAgIHdhcm46IGluY29uc2lzdGVudCByZXR1
+cm5zICdtdXRleDomYXItPmNvbmZfbXV0ZXgnLgo+ICAgICAgICAgICBMb2NrZWQgb246ICAgbGlu
+ZSA0MTI1Cj4gICAgICAgICAgIFVubG9ja2VkIG9uOiBsaW5lIDQzNDQKPiAgICAgICAgICAgICAg
+ICAgICAgICAgIGxpbmUgNDM2NQpbLi4uXQoKR3JlYXQgam9iIGZpbmRpbmcgdGhpcyBhbmQgdGhl
+IG90aGVyIG9uZSAoZG1hX21hcHBpbmdfZXJyb3IpIGFzIHdlbGwhCkkndmUganVzdCBzZW50IHBh
+dGNoZXMgdG8gZml4IHRoZW0uCgpJJ2QgbG92ZSB0byBoYXZlIHRoaXMgc29ydCBvZiBzdGF0aWMg
+YW5hbHlzaXMgaW4gbXkgdG9vbCBzZXQuIFdoYXQgZGlkCnlvdSB1c2UgKEkgaGF2ZSBhIHdlaXJk
+IGZlZWxpbmcgSSBkaWQgYXNrIGFib3V0IGl0IGF0IG9uZSBwb2ludC4uKT8KVGhhbmtzIQoKCk1p
+Y2hhxYIKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmF0
+aDEwayBtYWlsaW5nIGxpc3QKYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3Rz
+LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsK
