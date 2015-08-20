@@ -1,12 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth02.qualcomm.com ([65.197.215.38])
+Received: from mout.kundenserver.de ([212.227.126.131])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSHxB-0006bJ-VB
- for ath10k@lists.infradead.org; Thu, 20 Aug 2015 04:59:55 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Add spectral scan support for 10.4 fw
-Date: Thu, 20 Aug 2015 10:29:05 +0530
-Message-ID: <1440046745-428-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1ZSPnj-0007dW-3l
+ for ath10k@lists.infradead.org; Thu, 20 Aug 2015 13:22:40 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH/RFT 0/2] ath10k: add qca6164 support
+Date: Thu, 20 Aug 2015 15:22:11 +0200
+Message-ID: <2368480.ClS0E9V45b@wuerfel>
+In-Reply-To: <CAAay3RQ7N4CFpY3ffxc83Xh2rPDFxne9DZKi+Pay4-Z-+XQ5Bg@mail.gmail.com>
+References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
+ <CAAay3RQ7N4CFpY3ffxc83Xh2rPDFxne9DZKi+Pay4-Z-+XQ5Bg@mail.gmail.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -20,65 +23,62 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+To: Oscar Rydberg <oscarrydberg@gmail.com>
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, twilightrook@gmail.com, Michal Kazior <michal.kazior@tieto.com>, joseph.salisbury@canonical.com, vvanpo@gmail.com
 
-To enable/configure spectral scan parameters in 10.4 firmware, existing
-wmi spectral related functions can be reused. Link those functions in
-10.4 wmi ops table.
+On Tuesday 18 August 2015 11:52:45 Oscar Rydberg wrote:
+> I can confirm this patch did it for my Lenovo Yoga 3 14 with QCA6164, the
+> WLAN interface is now alive, up and running perfectly fine!
+> (After running modprobe -r ideapad-laptop that is, should anyone have
+> trouble enabling it)
+> 
+> I had tried all the board.bin files from the windows drivers before, so the
+> added sanity check seems to be what finally solved it.
 
-In addition, adjust bin size (only when size is 68 bytes) before reporting
-bin samples to user space. The background for this adjustment is that
-qca99x0 reports bin size as 68 bytes (64 bytes + 4 bytes) in report
-mode 2. First 64 bytes carries in-band tones (-32 to +31) and last 4 byte
-carries band edge detection data (+32) mainly used in radar detection
-purpose. Additional last 4 bytes are stripped to make bin size valid one.
+I hope to test it in my Yoga 3 11 (1170) in the next days. Meanwhile, what is
+the problem you see with the ideapad-laptop driver? I have recently submitted
+a couple of bug fixes for the Yoga 1170, can you try if the patch below
+fixes this for you?
 
-This bin size adjustment will happen only for qca99x0, all other chipsets
-will report proper bin sizes (64/128) without extra 4 bytes being added
-at the end. The changes are validated in qca99x0 using 10.4 firmware.
+	Arnd
+	
+commit 9d6d311add697014bdccb18d625db7e38676adbf
+Author: Arnd Bergmann <arnd@arndb.de>
+Date:   Sat Jun 13 15:13:11 2015 +0200
 
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/spectral.c | 9 +++++++++
- drivers/net/wireless/ath/ath10k/wmi.c      | 2 ++
- 2 files changed, 11 insertions(+)
+    ideapad: add rfkill whitelist entry for Yoga 3 1170
+    
+    This adds one more entry to the whitelist of machines that do not have
+    a physical rfkill switch. Unfortunately, the Yoga 3 generation seems
+    to use upper-case letters for the YOGA 3 Pro-1370, while it uses normal
+    capitalization for its Yoga 3 1170 sibling.
+    
+    In order to catch all variants of the Yoga 3, I'm now using both strings
+    as wildcards here, which should also cover the 1470 model, and possible
+    changes in the string that could happen in firmware updates.
+    
+    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-diff --git a/drivers/net/wireless/ath/ath10k/spectral.c b/drivers/net/wireless/ath/ath10k/spectral.c
-index e4219b1..4671cfb 100644
---- a/drivers/net/wireless/ath/ath10k/spectral.c
-+++ b/drivers/net/wireless/ath/ath10k/spectral.c
-@@ -73,6 +73,15 @@ int ath10k_spectral_process_fft(struct ath10k *ar,
- 	if (bin_len < 64 || bin_len > SPECTRAL_ATH10K_MAX_NUM_BINS)
- 		return -EINVAL;
- 
-+	/* qca99x0 reports bin size as 68 bytes (64 bytes + 4 bytes) in
-+	 * report mode 2. First 64 bytes carries inband tones (-32 to +31)
-+	 * and last 4 byte carries band edge detection data (+32) mainly
-+	 * used in radar detection purpose. Strip last 4 byte to make bin
-+	 * size is valid one.
-+	 */
-+	if (bin_len == 68)
-+		bin_len -= 4;
-+
- 	reg0 = __le32_to_cpu(fftr->reg0);
- 	reg1 = __le32_to_cpu(fftr->reg1);
- 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 42c0aba..5d19c87 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -6581,6 +6581,8 @@ static const struct wmi_ops wmi_10_4_ops = {
- 	.gen_vdev_down = ath10k_wmi_op_gen_vdev_down,
- 	.gen_vdev_set_param = ath10k_wmi_op_gen_vdev_set_param,
- 	.gen_vdev_install_key = ath10k_wmi_op_gen_vdev_install_key,
-+	.gen_vdev_spectral_conf = ath10k_wmi_op_gen_vdev_spectral_conf,
-+	.gen_vdev_spectral_enable = ath10k_wmi_op_gen_vdev_spectral_enable,
- 	.gen_peer_create = ath10k_wmi_op_gen_peer_create,
- 	.gen_peer_delete = ath10k_wmi_op_gen_peer_delete,
- 	.gen_peer_flush = ath10k_wmi_op_gen_peer_flush,
--- 
-1.8.1.2
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index cb7cd8d79329..8e455c1429ee 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -855,7 +855,14 @@ static const struct dmi_system_id no_hw_rfkill_list[] = {
+ 		.ident = "Lenovo Yoga 3 Pro 1370",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+-			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo YOGA 3 Pro-1370"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo YOGA 3"),
++		},
++	},
++	{
++		.ident = "Lenovo Yoga 3 1170 / 1470",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Yoga 3"),
+ 		},
+ 	},
+ 	{}
 
 
 _______________________________________________
