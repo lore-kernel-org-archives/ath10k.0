@@ -1,15 +1,12 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.126.131])
+Received: from wolverine02.qualcomm.com ([199.106.114.251])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSPnj-0007dW-3l
- for ath10k@lists.infradead.org; Thu, 20 Aug 2015 13:22:40 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH/RFT 0/2] ath10k: add qca6164 support
-Date: Thu, 20 Aug 2015 15:22:11 +0200
-Message-ID: <2368480.ClS0E9V45b@wuerfel>
-In-Reply-To: <CAAay3RQ7N4CFpY3ffxc83Xh2rPDFxne9DZKi+Pay4-Z-+XQ5Bg@mail.gmail.com>
-References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
- <CAAay3RQ7N4CFpY3ffxc83Xh2rPDFxne9DZKi+Pay4-Z-+XQ5Bg@mail.gmail.com>
+ id 1ZSm98-0003uc-OK
+ for ath10k@lists.infradead.org; Fri, 21 Aug 2015 13:14:15 +0000
+From: Raja Mani <rmani@qti.qualcomm.com>
+Subject: [PATCH] ath10k: Fix compilation warnings in wmi phyerr pull function
+Date: Fri, 21 Aug 2015 18:42:36 +0530
+Message-ID: <1440162756-4025-1-git-send-email-rmani@qti.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -23,62 +20,56 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Oscar Rydberg <oscarrydberg@gmail.com>
-Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org, twilightrook@gmail.com, Michal Kazior <michal.kazior@tieto.com>, joseph.salisbury@canonical.com, vvanpo@gmail.com
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
 
-On Tuesday 18 August 2015 11:52:45 Oscar Rydberg wrote:
-> I can confirm this patch did it for my Lenovo Yoga 3 14 with QCA6164, the
-> WLAN interface is now alive, up and running perfectly fine!
-> (After running modprobe -r ideapad-laptop that is, should anyone have
-> trouble enabling it)
-> 
-> I had tried all the board.bin files from the windows drivers before, so the
-> added sanity check seems to be what finally solved it.
+Below compilation warnings are observed in gcc version 4.8.2.
+Even though it's not seen in bit older gcc versions (for ex, 4.7.3),
+It's good to fix it by changing format specifier from %d to
+%zd in wmi pull phyerr functions.
 
-I hope to test it in my Yoga 3 11 (1170) in the next days. Meanwhile, what is
-the problem you see with the ideapad-laptop driver? I have recently submitted
-a couple of bug fixes for the Yoga 1170, can you try if the patch below
-fixes this for you?
+wmi.c: In function 'ath10k_wmi_op_pull_phyerr_ev':
+wmi.c:3567:8: warning: format '%d' expects argument of type 'int',
+              but argument 4 has type 'long unsigned int' [-Wformat=]
+              left_len, sizeof(*phyerr));
+                        ^
+wmi.c: In function 'ath10k_wmi_10_4_op_pull_phyerr_ev':
+wmi.c:3612:8: warning: format '%d' expects argument of type 'int',
+	      but argument 4 has type 'long unsigned int' [-Wformat=]
+              left_len, sizeof(*phyerr));
+                        ^
+Fixes: 991adf71a6cd ("ath10k: refactor phyerr event handlers")
+Fixes: 2b0a2e0d7c2f ("ath10k: handle 10.4 firmware phyerr event")
 
-	Arnd
-	
-commit 9d6d311add697014bdccb18d625db7e38676adbf
-Author: Arnd Bergmann <arnd@arndb.de>
-Date:   Sat Jun 13 15:13:11 2015 +0200
+Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
+---
+ drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-    ideapad: add rfkill whitelist entry for Yoga 3 1170
-    
-    This adds one more entry to the whitelist of machines that do not have
-    a physical rfkill switch. Unfortunately, the Yoga 3 generation seems
-    to use upper-case letters for the YOGA 3 Pro-1370, while it uses normal
-    capitalization for its Yoga 3 1170 sibling.
-    
-    In order to catch all variants of the Yoga 3, I'm now using both strings
-    as wildcards here, which should also cover the 1470 model, and possible
-    changes in the string that could happen in firmware updates.
-    
-    Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
-index cb7cd8d79329..8e455c1429ee 100644
---- a/drivers/platform/x86/ideapad-laptop.c
-+++ b/drivers/platform/x86/ideapad-laptop.c
-@@ -855,7 +855,14 @@ static const struct dmi_system_id no_hw_rfkill_list[] = {
- 		.ident = "Lenovo Yoga 3 Pro 1370",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
--			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo YOGA 3 Pro-1370"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo YOGA 3"),
-+		},
-+	},
-+	{
-+		.ident = "Lenovo Yoga 3 1170 / 1470",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Yoga 3"),
- 		},
- 	},
- 	{}
+diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
+index 42c0aba..fe150e8 100644
+--- a/drivers/net/wireless/ath/ath10k/wmi.c
++++ b/drivers/net/wireless/ath/ath10k/wmi.c
+@@ -3563,7 +3563,7 @@ int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
+ 	int i;
+ 
+ 	if (left_len < sizeof(*phyerr)) {
+-		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
++		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%zd)\n",
+ 			    left_len, sizeof(*phyerr));
+ 		return -EINVAL;
+ 	}
+@@ -3608,7 +3608,7 @@ static int ath10k_wmi_10_4_op_pull_phyerr_ev(struct ath10k *ar,
+ 	int i;
+ 
+ 	if (left_len < sizeof(*phyerr)) {
+-		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
++		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%zd)\n",
+ 			    left_len, sizeof(*phyerr));
+ 		return -EINVAL;
+ 	}
+-- 
+1.8.1.2
 
 
 _______________________________________________
