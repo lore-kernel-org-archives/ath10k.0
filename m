@@ -1,13 +1,36 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from wolverine02.qualcomm.com ([199.106.114.251])
+Received: from mail-lb0-x234.google.com ([2a00:1450:4010:c04::234])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZSm98-0003uc-OK
- for ath10k@lists.infradead.org; Fri, 21 Aug 2015 13:14:15 +0000
-From: Raja Mani <rmani@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Fix compilation warnings in wmi phyerr pull function
-Date: Fri, 21 Aug 2015 18:42:36 +0530
-Message-ID: <1440162756-4025-1-git-send-email-rmani@qti.qualcomm.com>
+ id 1ZTDh0-0001YO-D5
+ for ath10k@lists.infradead.org; Sat, 22 Aug 2015 18:39:03 +0000
+Received: by lbbsx3 with SMTP id sx3so60136190lbb.0
+ for <ath10k@lists.infradead.org>; Sat, 22 Aug 2015 11:38:39 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQm=oBWpLnf0o_CMotQCdjh3kLzSkTuEFUELNfLsfAs3Kw@mail.gmail.com>
+References: <CAFBinCCxWeAwpAU2Qjh3RbLX3YGxDUiVoiaTk-WEhySj6OvxFw@mail.gmail.com>
+ <CA+BoTQ=HrQjvSwy0R5YDkkPLcQOi2zwiMAL0OEL2YswAASWnZQ@mail.gmail.com>
+ <CAFBinCCymvnL5sTDJJQ6vEZZfchPPG=PeyrXzzt7cPqLJuUBMQ@mail.gmail.com>
+ <55A44244.9000109@dd-wrt.com>
+ <CA+BoTQn5rERqGT-vUKGV=Bs-rMYzx2132+BDGLTmQpWK=DJW7g@mail.gmail.com>
+ <55A4E1FC.9000005@dd-wrt.com>
+ <CA+BoTQkOeLarxTcOR=aeFoixP-41Jri72gM5MRqUQdNhbQoXOg@mail.gmail.com>
+ <CAFBinCBN53s=wHf6428iaqj9sorQCz7XbGiT+UrhWtiYvUGH7g@mail.gmail.com>
+ <CA+BoTQnhxJCt1eiUrE68PNawf5FYh96oK1o=517_UY6cE1bOjw@mail.gmail.com>
+ <CAFBinCDfZZdTBJL_WcmtTVMha94SAktOF9u2-jmUvW_eces9XA@mail.gmail.com>
+ <CAFBinCBWQrf0k0vm_J68d2QdaFqWjxtEEOoqStJAEtXNgPF+tA@mail.gmail.com>
+ <CA+BoTQkw-DUBMxN1hSC+TRPqQ8BniFytAWRupag6Lr6wqD63Pw@mail.gmail.com>
+ <CAFBinCDk_25SwWEMLSX=Nkm1_g3WB3uvkYZkr9tj=mqCsHfrbg@mail.gmail.com>
+ <CA+BoTQnsB5qNVVzcyOR9YGA9sd4Rs+zQ-OeT2Q73YX33gu2NeQ@mail.gmail.com>
+ <CAFBinCAk3_zydcTn0HDNeAoN4LntYOM7pDwzf5_z6=j3oKF6UQ@mail.gmail.com>
+ <CA+BoTQmNKME05Y-E=7Sy94govwR1CLa3PQL6izc4KTvnBcB=uA@mail.gmail.com>
+ <CAFBinCCwmhmkJgB0EvGZWGiSQXhNESatmP+txmN-7GMJ3bGNGg@mail.gmail.com>
+ <CA+BoTQkWQKMLEYFbn44uUVdXu8Hi4UHLow4NyiWpFOq1t+t+LQ@mail.gmail.com>
+ <CAFBinCBDytyYWhz7i3w1m8b-d3RDLbxWv762o4GdP5J-YzwjjA@mail.gmail.com>
+ <CA+BoTQm=oBWpLnf0o_CMotQCdjh3kLzSkTuEFUELNfLsfAs3Kw@mail.gmail.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date: Sat, 22 Aug 2015 20:38:19 +0200
+Message-ID: <CAFBinCC8JtOYK82-QamWAUqpCxcqWUhE0ASTn7QbiV7sUCCwcA@mail.gmail.com>
+Subject: Re: AP mode firmware crash on QCA9880-BR4A
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +43,22 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Raja Mani <rmani@qti.qualcomm.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Sebastian Gottschall <s.gottschall@dd-wrt.com>
 
-Below compilation warnings are observed in gcc version 4.8.2.
-Even though it's not seen in bit older gcc versions (for ex, 4.7.3),
-It's good to fix it by changing format specifier from %d to
-%zd in wmi pull phyerr functions.
+Hi Michal,
 
-wmi.c: In function 'ath10k_wmi_op_pull_phyerr_ev':
-wmi.c:3567:8: warning: format '%d' expects argument of type 'int',
-              but argument 4 has type 'long unsigned int' [-Wformat=]
-              left_len, sizeof(*phyerr));
-                        ^
-wmi.c: In function 'ath10k_wmi_10_4_op_pull_phyerr_ev':
-wmi.c:3612:8: warning: format '%d' expects argument of type 'int',
-	      but argument 4 has type 'long unsigned int' [-Wformat=]
-              left_len, sizeof(*phyerr));
-                        ^
-Fixes: 991adf71a6cd ("ath10k: refactor phyerr event handlers")
-Fixes: 2b0a2e0d7c2f ("ath10k: handle 10.4 firmware phyerr event")
+first of all I'd like to say thank you (for helping to solve this issue) :-)
 
-Signed-off-by: Raja Mani <rmani@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/wmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Aug 17, 2015 at 7:46 AM, Michal Kazior <michal.kazior@tieto.com> wrote:
+> I'm out of ideas for now. Apparently the device can Tx as it can send
+> out Probe Responses but for some reason it doesn't like beaconing..
+Is there anything else we can do? Or do we have to wait for someone
+with deeper insight into the firmware (aka a QCA employee)?
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi.c b/drivers/net/wireless/ath/ath10k/wmi.c
-index 42c0aba..fe150e8 100644
---- a/drivers/net/wireless/ath/ath10k/wmi.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi.c
-@@ -3563,7 +3563,7 @@ int ath10k_wmi_op_pull_phyerr_ev(struct ath10k *ar,
- 	int i;
- 
- 	if (left_len < sizeof(*phyerr)) {
--		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
-+		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%zd)\n",
- 			    left_len, sizeof(*phyerr));
- 		return -EINVAL;
- 	}
-@@ -3608,7 +3608,7 @@ static int ath10k_wmi_10_4_op_pull_phyerr_ev(struct ath10k *ar,
- 	int i;
- 
- 	if (left_len < sizeof(*phyerr)) {
--		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%d)\n",
-+		ath10k_warn(ar, "wrong phyerr event head len %d (need: >=%zd)\n",
- 			    left_len, sizeof(*phyerr));
- 		return -EINVAL;
- 	}
--- 
-1.8.1.2
 
+Regards,
+Martin
 
 _______________________________________________
 ath10k mailing list
