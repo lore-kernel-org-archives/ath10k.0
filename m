@@ -1,23 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from omr-a019e.mx.aol.com ([204.29.186.67] helo=omr-a019.mx.aol.com)
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
- Linux)) id 1ZTsdb-0007SD-Mj
- for ath10k@lists.infradead.org; Mon, 24 Aug 2015 14:22:16 +0000
-Received: from mtaout-mcc01.mx.aol.com (mtaout-mcc01.mx.aol.com
- [172.26.253.77])
- by omr-a019.mx.aol.com (Outbound Mail Relay) with ESMTP id AEE5F380006D
- for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 10:21:45 -0400 (EDT)
-Received: from [172.28.1.45] (dub1-vdsl.fashiondays.com [213.180.180.182])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by mtaout-mcc01.mx.aol.com (MUA/Third Party Client Interface) with ESMTPSA id
- D94DC380000A2
- for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 10:21:43 -0400 (EDT)
-Message-ID: <55DB2870.9020403@aol.pl>
-Date: Mon, 24 Aug 2015 16:21:36 +0200
-From: Jacek Kikiewicz <jaceq@aol.pl>
+Received: from mail-qk0-x232.google.com ([2607:f8b0:400d:c09::232])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZTsz0-00085A-Hp
+ for ath10k@lists.infradead.org; Mon, 24 Aug 2015 14:44:23 +0000
+Received: by qkch123 with SMTP id h123so63294778qkc.0
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 07:43:58 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Support for qca9377 ??
+In-Reply-To: <55DB2870.9020403@aol.pl>
+References: <55DB2870.9020403@aol.pl>
+Date: Mon, 24 Aug 2015 16:43:58 +0200
+Message-ID: <CACKGw+EeP9bjiT=jGyZG6oHz3T03MtiuKdRmtNiZtBFaOR+8ZA@mail.gmail.com>
+Subject: Re: Support for qca9377 ??
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +24,23 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jacek Kikiewicz <jaceq@aol.pl>
+Cc: ath10k <ath10k@lists.infradead.org>
 
-Hello,
+On 24 August 2015 at 16:21, Jacek Kikiewicz <jaceq@aol.pl> wrote:
+> Hello,
+>
+> I was wondering if support for QCA9377 is planned/possible with ath10k?
 
-I was wondering if support for QCA9377 is planned/possible with ath10k?
-It seems it's getting more popular with lower end devices / laptops and it would be nice to have.
+Yes, it's possible and there is a plan to add support for QCA9377 in
+ath10k soon.
 
-Kind regards,
-Jacek Kikiewicz
+> It seems it's getting more popular with lower end devices / laptops and it would be nice to have.
+>
+> Kind regards,
+> Jacek Kikiewicz
+
+-Bartosz
 
 _______________________________________________
 ath10k mailing list
