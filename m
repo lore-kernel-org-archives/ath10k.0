@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from netlab.snu.ac.kr ([147.47.106.80])
- by casper.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTl9D-0003AI-BT
- for ath10k@lists.infradead.org; Mon, 24 Aug 2015 06:22:24 +0000
-Received: from theoriaPC ([147.46.66.32])
- by netlab.snu.ac.kr (8.14.3/8.14.3/SuSE Linux 0.8) with ESMTP id
- t7O6LRYh020487
- for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 15:21:29 +0900
-From: "Seowoo Jang" <swjang@netlab.snu.ac.kr>
-Subject: How to access the CCA related operation
-Date: Mon, 24 Aug 2015 15:21:25 +0900
-Message-ID: <006a01d0de35$1bde70a0$539b51e0$@netlab.snu.ac.kr>
+Received: from omr-a019e.mx.aol.com ([204.29.186.67] helo=omr-a019.mx.aol.com)
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat
+ Linux)) id 1ZTsdb-0007SD-Mj
+ for ath10k@lists.infradead.org; Mon, 24 Aug 2015 14:22:16 +0000
+Received: from mtaout-mcc01.mx.aol.com (mtaout-mcc01.mx.aol.com
+ [172.26.253.77])
+ by omr-a019.mx.aol.com (Outbound Mail Relay) with ESMTP id AEE5F380006D
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 10:21:45 -0400 (EDT)
+Received: from [172.28.1.45] (dub1-vdsl.fashiondays.com [213.180.180.182])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by mtaout-mcc01.mx.aol.com (MUA/Third Party Client Interface) with ESMTPSA id
+ D94DC380000A2
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 10:21:43 -0400 (EDT)
+Message-ID: <55DB2870.9020403@aol.pl>
+Date: Mon, 24 Aug 2015 16:21:36 +0200
+From: Jacek Kikiewicz <jaceq@aol.pl>
 MIME-Version: 1.0
-Content-Language: ko
+Subject: Support for qca9377 ??
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +26,19 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 
-Hello, =
+Hello,
 
+I was wondering if support for QCA9377 is planned/possible with ath10k?
+It seems it's getting more popular with lower end devices / laptops and it would be nice to have.
 
-We are trying to evaluate our idea on 802.11ac protocol with Atheros qca9880
-/ ath10k driver. =
-
-
-We would like to be able to access/know the result of the CCA (clear channel
-assessment) operation =
-
-or the level of interference on the carrier when we need.
-
-We have dug into the driver files and concluded that the CCA related values
-are likely =
-
-in the firmware or on the registers of the hardware.
-
-And please correct us if we are thinking wrong.
-
-We would appreciate the help if someone can give us some starting points, =
-
-such as the address of the register that stores the carrier sensing values
-(CCA values) =
-
-or the result of it (whether the carrier is busy or idle), to investigate.
-
-The chipset we are using is compex WLE900VX-7AA.
-
-We are currently using Ubuntu 14.04.03 with kernel version 4.1.5, =
-
-but we can use any versions of OS and kernel if they support 802.11ac
-bandwidth.
-
-Thank you for help in advance.
-
--------------------------------
-Seowoo Jang, Ph.D.
-Ubiquitous Network Laboratory
-EECS, Seoul National University
-
-CEL=A0=A0=A0+82-10-3723-3401
-E-mail=A0swjang@netlab.snu.ac.kr
--------------------------------
-
+Kind regards,
+Jacek Kikiewicz
 
 _______________________________________________
 ath10k mailing list
