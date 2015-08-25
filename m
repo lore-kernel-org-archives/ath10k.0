@@ -1,17 +1,20 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZTwMR-0003eP-3q
- for ath10k@lists.infradead.org; Mon, 24 Aug 2015 18:20:47 +0000
-Message-ID: <55DB6067.6080900@candelatech.com>
-Date: Mon, 24 Aug 2015 11:20:23 -0700
-From: Ben Greear <greearb@candelatech.com>
+Received: from mail-lb0-x22f.google.com ([2a00:1450:4010:c04::22f])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZU6Uw-0000NP-AP
+ for ath10k@lists.infradead.org; Tue, 25 Aug 2015 05:10:15 +0000
+Received: by lbcbn3 with SMTP id bn3so92296122lbc.2
+ for <ath10k@lists.infradead.org>; Mon, 24 Aug 2015 22:09:46 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: How to access the CCA related operation
-References: <006a01d0de35$1bde70a0$539b51e0$@netlab.snu.ac.kr>
- <55DB4720.1090106@candelatech.com>
- <000001d0de92$a6028980$f2079c80$@codeaurora.org>
-In-Reply-To: <000001d0de92$a6028980$f2079c80$@codeaurora.org>
+In-Reply-To: <CAAKLdA96tdmosDQThE453un7+ZM__0E-iCtH-eujuZbeuRoe0w@mail.gmail.com>
+References: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
+ <CAAKLdA_TRF_NcA5csNc496SaZtatLzu6LtxYsQVKU_dso4G4gA@mail.gmail.com>
+ <CA+BoTQmBqqco=i5Jf2qWkFHuD-g5NzwDPdNyaoZi5XTt1h4uHg@mail.gmail.com>
+ <CAAKLdA96tdmosDQThE453un7+ZM__0E-iCtH-eujuZbeuRoe0w@mail.gmail.com>
+Date: Tue, 25 Aug 2015 07:09:46 +0200
+Message-ID: <CA+BoTQk+Cmnk=JNC8+ZFYyEovFw1=cXV2Wa6ebm2Di=VEmn3xg@mail.gmail.com>
+Subject: Re: ath10k: first qca6174 hw2.1 firmware released
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,111 +23,85 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Peter Oh <poh@codeaurora.org>, 'Seowoo Jang' <swjang@netlab.snu.ac.kr>, ath10k@lists.infradead.org
+To: Lapo Calamandrei <calamandrei@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-
-
-On 08/24/2015 10:31 AM, Peter Oh wrote:
-> There is WMI_10_x_SET_CCA_PARAMS_CMDID which to enable adaptive CCA in
-> firmware supported since 10.2.4 and all the actual operations are done in
-> firmware with registers as Ben addressed.
-> But I'm not clear how much register doc or firmware doc are opened to public
-> legally.
-
-We have found no upstream firmware that actually seems to support that SET_CCA_PARAMS,
-and I have no idea what that feature actually does since I have no firmware source
-that supports that feature.
-
-Thanks,
-Ben
-
->
-> Thanks,
-> Peter
->
-> -----Original Message-----
-> From: ath10k [mailto:ath10k-bounces@lists.infradead.org] On Behalf Of Ben
-> Greear
-> Sent: Monday, August 24, 2015 9:33 AM
-> To: Seowoo Jang; ath10k@lists.infradead.org
-> Subject: Re: How to access the CCA related operation
->
-> It is in firmware, and you cannot reliably poke it through the driver
-> read/write register API because each time the radio resets (channel change,
-> etc), it is liable to re-write the CCA registers back to default values.
->
-> There is a large list of registers with 'CCA' in the name, but I don't know
-> what they really mean, and I had hard time getting that info out of QCA.  If
-> you have any better luck, please post whatever you can share.
->
-> Thanks,
-> Ben
->
->
-> On 08/23/2015 11:21 PM, Seowoo Jang wrote:
->> Hello,
->>
->> We are trying to evaluate our idea on 802.11ac protocol with Atheros
->> qca9880 / ath10k driver.
->>
->> We would like to be able to access/know the result of the CCA (clear
->> channel
->> assessment) operation
->> or the level of interference on the carrier when we need.
->>
->> We have dug into the driver files and concluded that the CCA related
->> values are likely in the firmware or on the registers of the hardware.
->>
->> And please correct us if we are thinking wrong.
->>
->> We would appreciate the help if someone can give us some starting
->> points, such as the address of the register that stores the carrier
->> sensing values (CCA values) or the result of it (whether the carrier
->> is busy or idle), to investigate.
->>
->> The chipset we are using is compex WLE900VX-7AA.
->>
->> We are currently using Ubuntu 14.04.03 with kernel version 4.1.5, but
->> we can use any versions of OS and kernel if they support 802.11ac
->> bandwidth.
->>
->> Thank you for help in advance.
->>
->> -------------------------------
->> Seowoo Jang, Ph.D.
->> Ubiquitous Network Laboratory
->> EECS, Seoul National University
->>
->> CEL   +82-10-3723-3401
->> E-mail swjang@netlab.snu.ac.kr
->> -------------------------------
->>
->>
->> _______________________________________________
->> ath10k mailing list
->> ath10k@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/ath10k
->>
->
-> --
-> Ben Greear <greearb@candelatech.com>
-> Candela Technologies Inc  http://www.candelatech.com
->
-> _______________________________________________
-> ath10k mailing list
-> ath10k@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/ath10k
->
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjQgQXVndXN0IDIwMTUgYXQgMTg6MjYsIExhcG8gQ2FsYW1hbmRyZWkgPGNhbGFtYW5kcmVp
+QGdtYWlsLmNvbT4gd3JvdGU6Cj4gMjAxNS0wOC0xNyA3OjUyIEdNVCswMjowMCBNaWNoYWwgS2F6
+aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT46Cj4+IE9uIDEzIEF1Z3VzdCAyMDE1IGF0IDE2
+OjAwLCBMYXBvIENhbGFtYW5kcmVpIDxjYWxhbWFuZHJlaUBnbWFpbC5jb20+IHdyb3RlOgo+Pj4g
+MjAxNS0wOC0xMyAxMjozMSBHTVQrMDI6MDAgS2FsbGUgVmFsbyA8a3ZhbG9AcWNhLnF1YWxjb21t
+LmNvbT46Cj4+Pj4gSGksCj4+Pj4KPj4+PiBJIGp1c3QgcHVzaGVkIHRoZSBmaXJzdCBxY2E2MTc0
+ICBodzIuMSBmaXJtd2FyZSB0byBhdGgxMGstZmlybXdhcmUuZ2l0Ogo+Pj4+Cj4+Pj4gaHR0cHM6
+Ly9naXRodWIuY29tL2t2YWxvL2F0aDEway1maXJtd2FyZS9jb21taXQvN2Y3ZTdkZGEzMzY3NmNl
+ZDI5M2RlNDc3YjAzNzExMTk5ZmZlNTI1Ngo+Pj4+Cj4+Pj4gUGxlYXNlIHRlc3QgYW5kIHByb3Zp
+ZGUgZmVlZGJhY2suCj4+Pj4KPj4+PiAtLQo+Pj4+IEthbGxlIFZhbG8KPj4+Pgo+Pj4KPj4+IExv
+YWRzIHcvbyBza2lwX290cCBhbmQgd29ya3MgZmluZSBoZXJlIChxY2E2MTc0KSwgZXhjZXB0IGl0
+IGNyYXNoZXMgb24KPj4+IDVHSHogbmV0d29yayBjb25uZWN0aW9uIGF0dGVtcHQgYXMgdGhlIG9u
+ZSBjcmVhdGVkIGZyb20gdGhlIHdpbmRvdwo+Pj4gZHJpdmVycy4KPj4KPj4gUGFzdGUgdGhlIGNy
+YXNoIHJlZ2lzdGVyIGR1bXAgYW5kIGBpdyBsaXN0YCBvdXRwdXQsIHBsZWFzZS4KPj4KPj4KPj4g
+TWljaGHFggo+Cj4gU29ycnkgZm9yIHRoZSBsYXRlIHJlcGx5Lgo+Cj4gSGVyZSdzIHRoZSBpdyBs
+aXN0IG91dHB1dDoKWy4uLl0KPiAgICAgQmFuZCAxOgo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiAw
+eDE5ZTMKPiAgICAgICAgICAgICBSWCBMRFBDCj4gICAgICAgICAgICAgSFQyMC9IVDQwCj4gICAg
+ICAgICAgICAgU3RhdGljIFNNIFBvd2VyIFNhdmUKPiAgICAgICAgICAgICBSWCBIVDIwIFNHSQo+
+ICAgICAgICAgICAgIFJYIEhUNDAgU0dJCj4gICAgICAgICAgICAgVFggU1RCQwo+ICAgICAgICAg
+ICAgIFJYIFNUQkMgMS1zdHJlYW0KPiAgICAgICAgICAgICBNYXggQU1TRFUgbGVuZ3RoOiA3OTM1
+IGJ5dGVzCj4gICAgICAgICAgICAgRFNTUy9DQ0sgSFQ0MAo+ICAgICAgICAgTWF4aW11bSBSWCBB
+TVBEVSBsZW5ndGggNjU1MzUgYnl0ZXMgKGV4cG9uZW50OiAweDAwMykKPiAgICAgICAgIE1pbmlt
+dW0gUlggQU1QRFUgdGltZSBzcGFjaW5nOiA4IHVzZWMgKDB4MDYpCj4gICAgICAgICBIVCBUWC9S
+WCBNQ1MgcmF0ZSBpbmRleGVzIHN1cHBvcnRlZDogMC0xNQo+ICAgICAgICAgVkhUIENhcGFiaWxp
+dGllcyAoMHgzMzkwMzFiMik6Cj4gICAgICAgICAgICAgTWF4IE1QRFUgbGVuZ3RoOiAxMTQ1NAo+
+ICAgICAgICAgICAgIFN1cHBvcnRlZCBDaGFubmVsIFdpZHRoOiBuZWl0aGVyIDE2MCBub3IgODAr
+ODAKPiAgICAgICAgICAgICBSWCBMRFBDCj4gICAgICAgICAgICAgc2hvcnQgR0kgKDgwIE1IeikK
+PiAgICAgICAgICAgICBUWCBTVEJDCj4gICAgICAgICAgICAgU1UgQmVhbWZvcm1lZQo+ICAgICAg
+ICAgICAgIE1VIEJlYW1mb3JtZWUKCklzIHRoaXMgd2l0aCB0aGUgY2hhbmdlIEkgc3VnZ2VzdGVk
+IHlvdSBlYXJsaWVyPyBJIGd1ZXNzIG5vdC4gSSBkb24ndAp0aGluayB0aGlzIGZpcm13YXJlIHNo
+b3VsZCBhZHZlcnRpc2UgYmVhbWZvcm1pbmcgc3VwcG9ydC4KCkNhbiB5b3UgcmUtdHJ5IHdpdGgg
+cGF0Y2ggZnJvbQpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvYXRoMTBrLzIw
+MTUtQXVndXN0LzAwNTc3NC5odG1sLApwbGVhc2U/IElmIGl0IHN0aWxsIGRvZXNuJ3Qgd29yayBw
+bGVhc2UgcG9zdCBgaXcgbGlzdGAgYW5kIHRoZQpyZWdpc3RlciBkdW1wLgoKWW91IGNhbiBhbHNv
+IHRyeSBjb21tZW50aW5nIG91dCBjYWxscyB0byBhdGgxMGtfbWFjX3ZpZl9yZWNhbGNfdHhiZigp
+IGFzIHBsYW4gQi4KCgpbLi4uXQo+IEhlcmUncyB0aGUgcmVnaXN0ZXIgZHVtcDoKPgo+IGFnbyAy
+NCAxODoxMDowNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6
+MDM6MDAuMDoKPiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgo+IGFnbyAyNCAxODoxMDowNyBsb2Nh
+bGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDoKPiBbMDBd
+OiAweDA1MDEwMDAwIDB4MDAwMDE1QjMgMHgwMDkzOTc5NyAweDAwOTU1QjMxCj4gYWdvIDI0IDE4
+OjEwOjA3IGxvY2FsaG9zdC5sb2NhbGRvbWFpbiBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzow
+MC4wOgo+IFswNF06IDB4MDA5Mzk3OTcgMHgwMDA2MDMzMCAweDAwMDAwMDAwIDB4MDAwMDAwMDAK
+PiBhZ28gMjQgMTg6MTA6MDcgbG9jYWxob3N0LmxvY2FsZG9tYWluIGtlcm5lbDogYXRoMTBrX3Bj
+aSAwMDAwOjAzOjAwLjA6Cj4gWzA4XTogMHgwMDQxMzk4MCAweDAwMDBGRkZGIDB4MDAwMDAwMDAg
+MHgwMDAwMDAwMAo+IGFnbyAyNCAxODoxMDowNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVs
+OiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDoKPiBbMTJdOiAweDAwMDAwMDA5IDB4RkZGRkZGRkYg
+MHgwMDk2QzA5QyAweDAwOTZDMEE3Cj4gYWdvIDI0IDE4OjEwOjA3IGxvY2FsaG9zdC5sb2NhbGRv
+bWFpbiBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOgo+IFsxNl06IDB4MDA5NkJEQkMg
+MHgwMDkyODdCRCAweDAwMDAwMDAwIDB4MDA5Mjg3QkQKPiBhZ28gMjQgMTg6MTA6MDcgbG9jYWxo
+b3N0LmxvY2FsZG9tYWluIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6Cj4gWzIwXTog
+MHg0MDkzOTc5NyAweDAwNDFBNzAwIDB4MDA0MDcxMjQgMHgwMDAwMDAwMAo+IGFnbyAyNCAxODox
+MDowNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAu
+MDoKPiBbMjRdOiAweDgwOTNENkM0IDB4MDA0MUE3NjAgMHgwMDQwNTlEMCAweEMwOTM5Nzk3Cj4g
+YWdvIDI0IDE4OjEwOjA3IGxvY2FsaG9zdC5sb2NhbGRvbWFpbiBrZXJuZWw6IGF0aDEwa19wY2kg
+MDAwMDowMzowMC4wOgo+IFsyOF06IDB4ODA5NDc3N0YgMHgwMDQxQTc4MCAweDAwNDZENUQ4IDB4
+MDAwMDAwMDEKPiBhZ28gMjQgMTg6MTA6MDcgbG9jYWxob3N0LmxvY2FsZG9tYWluIGtlcm5lbDog
+YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6Cj4gWzMyXTogMHg4MDBBQTQyNyAweDAwNDFBN0IwIDB4
+MDA0NkQ1RDggMHgwMDAwMDAwMQo+IGFnbyAyNCAxODoxMDowNyBsb2NhbGhvc3QubG9jYWxkb21h
+aW4ga2VybmVsOiBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDoKPiBbMzZdOiAweDgwMEFBNThFIDB4
+MDA0MUE3RDAgMHgwMDQyNDgyNCAweDAwMDAwMDAxCj4gYWdvIDI0IDE4OjEwOjA3IGxvY2FsaG9z
+dC5sb2NhbGRvbWFpbiBrZXJuZWw6IGF0aDEwa19wY2kgMDAwMDowMzowMC4wOgo+IFs0MF06IDB4
+ODA5OTREOTAgMHgwMDQxQTdGMCAweDAwNDI0ODI0IDB4MDA0MUE4MzgKPiBhZ28gMjQgMTg6MTA6
+MDcgbG9jYWxob3N0LmxvY2FsZG9tYWluIGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6
+Cj4gWzQ0XTogMHg4MDk5NkRDNiAweDAwNDFBODIwIDB4MDA0NkY4ODggMHgwMDQxMjk4NAo+IGFn
+byAyNCAxODoxMDowNyBsb2NhbGhvc3QubG9jYWxkb21haW4ga2VybmVsOiBhdGgxMGtfcGNpIDAw
+MDA6MDM6MDAuMDoKPiBbNDhdOiAweDgwMEI0M0Y1IDB4MDA0MUE4NjAgMHgwMDQyMjJGOCAweDAw
+MDA1MDA4Cj4gYWdvIDI0IDE4OjEwOjA3IGxvY2FsaG9zdC5sb2NhbGRvbWFpbiBrZXJuZWw6IGF0
+aDEwa19wY2kgMDAwMDowMzowMC4wOgo+IFs1Ml06IDB4ODA5QTZBQ0MgMHgwMDQxQThGMCAweDAw
+NDI5MzBDIDB4MDA0MkNBMjQKPiBhZ28gMjQgMTg6MTA6MDcgbG9jYWxob3N0LmxvY2FsZG9tYWlu
+IGtlcm5lbDogYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6Cj4gWzU2XTogMHg4MDlBNjEyMCAweDAw
+NDFBOTMwIDB4MDA0MUE5NTggMHgwMDQyNzExMAoKVGhpcyBkZWZpbml0ZWx5IGxvb2tzIGxpa2Ug
+YSBjcmFzaCBvbiBUeEJGIGNvbmZpZ3VyYXRpb24uCgoKTWljaGHFggoKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgx
+MGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2F0aDEwawo=
