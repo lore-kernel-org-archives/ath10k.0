@@ -1,16 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
 Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUWit-0005N6-NC
- for ath10k@lists.infradead.org; Wed, 26 Aug 2015 09:10:24 +0000
+ id 1ZUWjn-0006h9-Dd
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2015 09:11:20 +0000
 From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH/RFT 1/2] ath10k: add qca6164 support
+Subject: Re: [PATCH/RFT 2/2] ath10k: rename qca6174 to qca61x4
 References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
- <1439469147-9408-2-git-send-email-michal.kazior@tieto.com>
-Date: Wed, 26 Aug 2015 12:09:51 +0300
-In-Reply-To: <1439469147-9408-2-git-send-email-michal.kazior@tieto.com>
- (Michal Kazior's message of "Thu, 13 Aug 2015 14:32:26 +0200")
-Message-ID: <87zj1e1km8.fsf@kamboji.qca.qualcomm.com>
+ <1439469147-9408-3-git-send-email-michal.kazior@tieto.com>
+Date: Wed, 26 Aug 2015 12:10:51 +0300
+In-Reply-To: <1439469147-9408-3-git-send-email-michal.kazior@tieto.com>
+ (Michal Kazior's message of "Thu, 13 Aug 2015 14:32:27 +0200")
+Message-ID: <87vbc21kkk.fsf@kamboji.qca.qualcomm.com>
 MIME-Version: 1.0
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
@@ -29,30 +29,18 @@ Cc: arnd@arndb.de, linux-wireless@vger.kernel.org, twilightrook@gmail.com, ath10
 
 Michal Kazior <michal.kazior@tieto.com> writes:
 
-> This adds additional 0x0041 PCI Device ID
-> definition to ath10k for QCA6164 which is a 1
-> spatial stream sibling of the QCA6174 (which is 2
-> spatial stream chip).
+> This cleans up the naming a little bit. Both
+> QCA6174 and QCA6164 are in practice the same as
+> far as driving them is concerned.
 >
-> The QCA6164 needs a dedicated board.bin file which
-> is different than the one used for QCA6174. If the
-> board.bin is wrong the device will crash early
-> while trying to boot firmware. The register dump
-> will look like this:
->
->  ath10k_pci 0000:02:00.0: firmware register dump:
->  ath10k_pci 0000:02:00.0: [00]: 0x05010000 0x000015B3 0x000A012D 0x00955B31
->  ...
->
-> Note the value 0x000A012D.
->
-> Special credit goes to Alan Liu
-> <alanliu@qca.qualcomm.com> for providing support
-> help which enabled me to come up with this patch.
+> Unfortunately firmware paths will need to stay
+> untouched, i.e. QCA6164 firmware will still be
+> looked for in QCA6174 to avoid breaking backward
+> compatibility with older /lib/firmware setups.
 >
 > Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 
-Thanks, applied.
+Based on my previous comments I'll drop this.
 
 -- 
 Kalle Valo
