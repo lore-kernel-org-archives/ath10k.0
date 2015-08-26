@@ -1,24 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x229.google.com ([2a00:1450:4010:c03::229])
+Received: from mail-vk0-x232.google.com ([2607:f8b0:400c:c05::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUXh7-00068a-Ax
- for ath10k@lists.infradead.org; Wed, 26 Aug 2015 10:12:38 +0000
-Received: by laba3 with SMTP id a3so116105416lab.1
- for <ath10k@lists.infradead.org>; Wed, 26 Aug 2015 03:12:11 -0700 (PDT)
+ id 1ZUjfx-0001hq-Fm
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2015 23:00:13 +0000
+Received: by vkfi73 with SMTP id i73so1067215vkf.2
+ for <ath10k@lists.infradead.org>; Wed, 26 Aug 2015 15:59:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAAKLdA8HUr2fmoTRE=ZdaZipqL-TthpH5r0adVyp3QNqjYtAnQ@mail.gmail.com>
-References: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
- <CAAKLdA_TRF_NcA5csNc496SaZtatLzu6LtxYsQVKU_dso4G4gA@mail.gmail.com>
- <CA+BoTQmBqqco=i5Jf2qWkFHuD-g5NzwDPdNyaoZi5XTt1h4uHg@mail.gmail.com>
- <CAAKLdA96tdmosDQThE453un7+ZM__0E-iCtH-eujuZbeuRoe0w@mail.gmail.com>
- <CA+BoTQk+Cmnk=JNC8+ZFYyEovFw1=cXV2Wa6ebm2Di=VEmn3xg@mail.gmail.com>
- <CAAKLdA-iwy-mqKniQ0=pqJcHc-9kJmWZtoRvS4BMHvyA=rBrLQ@mail.gmail.com>
- <CA+BoTQmKNL+Zruv4oh51ucgKNCUR8s2OGfr4LRD-sMUL=20kEg@mail.gmail.com>
- <CAAKLdA8HUr2fmoTRE=ZdaZipqL-TthpH5r0adVyp3QNqjYtAnQ@mail.gmail.com>
-Date: Wed, 26 Aug 2015 12:12:11 +0200
-Message-ID: <CA+BoTQnj-cLHFv1am1a5G1wkVN6bfG=SQ-a9bgMioLtnNNUk1A@mail.gmail.com>
-Subject: Re: ath10k: first qca6174 hw2.1 firmware released
-From: Michal Kazior <michal.kazior@tieto.com>
+Date: Wed, 26 Aug 2015 18:59:51 -0400
+Message-ID: <CAJa-X96RZTQ_=dG+PDxu8x_AeMAXhyKiTc7CrNO=hqhnmYAN-Q@mail.gmail.com>
+Subject: CT firmware and linux kernel patches for OpenWRT( ar71xx - Tp-Link
+ 1750AC )
+From: s prasad <sprasad.kandregula@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +19,25 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Lapo Calamandrei <calamandrei@gmail.com>
-Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMjYgQXVndXN0IDIwMTUgYXQgMTI6MDUsIExhcG8gQ2FsYW1hbmRyZWkgPGNhbGFtYW5kcmVp
-QGdtYWlsLmNvbT4gd3JvdGU6Cj4gMjAxNS0wOC0yNiA3OjAxIEdNVCswMjowMCBNaWNoYWwgS2F6
-aW9yIDxtaWNoYWwua2F6aW9yQHRpZXRvLmNvbT46Cj4+IE9uIDI1IEF1Z3VzdCAyMDE1IGF0IDE2
-OjA0LCBMYXBvIENhbGFtYW5kcmVpIDxjYWxhbWFuZHJlaUBnbWFpbC5jb20+IHdyb3RlOgo+PiBb
-Li4uXQo+Pj4gWWVwLCB0aGUgcHJldmlvdXMgY3Jhc2ggd2FzIHdpdGhvdXQgeW91ciBwYXRjaCBh
-cHBsaWVkLCB0aGUgZm9sbG93aW5nCj4+PiBpcyB3aXRoIHRoZSBwYXRjaCBhcHBsaWVkIHRob3Vn
-aC4KPj4+Cj4+PiBpdyBsaXN0IG91dHB1dDoKPj4gWy4uLl0KPj4+ICAgICBCYW5kIDI6Cj4+PiAg
-ICAgICAgIENhcGFiaWxpdGllczogMHgxOWUzCj4+PiAgICAgICAgICAgICBSWCBMRFBDCj4+PiAg
-ICAgICAgICAgICBIVDIwL0hUNDAKPj4+ICAgICAgICAgICAgIFN0YXRpYyBTTSBQb3dlciBTYXZl
-Cj4+PiAgICAgICAgICAgICBSWCBIVDIwIFNHSQo+Pj4gICAgICAgICAgICAgUlggSFQ0MCBTR0kK
-Pj4+ICAgICAgICAgICAgIFRYIFNUQkMKPj4+ICAgICAgICAgICAgIFJYIFNUQkMgMS1zdHJlYW0K
-Pj4+ICAgICAgICAgICAgIE1heCBBTVNEVSBsZW5ndGg6IDc5MzUgYnl0ZXMKPj4+ICAgICAgICAg
-ICAgIERTU1MvQ0NLIEhUNDAKPj4+ICAgICAgICAgTWF4aW11bSBSWCBBTVBEVSBsZW5ndGggNjU1
-MzUgYnl0ZXMgKGV4cG9uZW50OiAweDAwMykKPj4+ICAgICAgICAgTWluaW11bSBSWCBBTVBEVSB0
-aW1lIHNwYWNpbmc6IDggdXNlYyAoMHgwNikKPj4+ICAgICAgICAgSFQgVFgvUlggTUNTIHJhdGUg
-aW5kZXhlcyBzdXBwb3J0ZWQ6IDAtMTUKPj4+ICAgICAgICAgVkhUIENhcGFiaWxpdGllcyAoMHgz
-MzkwMTFiMik6Cj4+PiAgICAgICAgICAgICBNYXggTVBEVSBsZW5ndGg6IDExNDU0Cj4+PiAgICAg
-ICAgICAgICBTdXBwb3J0ZWQgQ2hhbm5lbCBXaWR0aDogbmVpdGhlciAxNjAgbm9yIDgwKzgwCj4+
-PiAgICAgICAgICAgICBSWCBMRFBDCj4+PiAgICAgICAgICAgICBzaG9ydCBHSSAoODAgTUh6KQo+
-Pj4gICAgICAgICAgICAgVFggU1RCQwo+Pj4gICAgICAgICAgICAgU1UgQmVhbWZvcm1lZQo+Pj4g
-ICAgICAgICAgICAgTVUgQmVhbWZvcm1lZQo+PiBbLi4uXQo+Pgo+PiBTb3JyeSwgbXkgYmFkLiBU
-aGUgZGlmZiBJIHByb3ZpZGVkIGVhcmxpZXIgd2Fzbid0IGNvcnJlY3QgKGl0IHdhcyBhCj4+IHF1
-aWNrIGhhY2staWRlYSBJIGRpZG4ndCB0ZXN0IG15c2VsZikuCj4+Cj4+IFRoZSBjb3JyZWN0IHRo
-aW5nIHRoYXQgc2hvdWxkIHdvcmsgaXM6Cj4+Cj4+IC0tLSBhL2RyaXZlcnMvbmV0L3dpcmVsZXNz
-L2F0aC9hdGgxMGsvbWFjLmMKPj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEw
-ay9tYWMuYwo+PiBAQCAtNjc5OCwyNyArNjc5OCwxNCBAQCBzdGF0aWMgc3RydWN0IGllZWU4MDIx
-MV9zdGFfdmh0X2NhcAo+PiBhdGgxMGtfY3JlYXRlX3ZodF9jYXAoc3RydWN0IGF0aDEwayAqYXIp
-Cj4+ICAgICAgICAgdTMyIHZhbDsKPj4gICAgICAgICBpbnQgaTsKPj4KPj4gKyAgICAgICBhci0+
-dmh0X2NhcF9pbmZvICY9IH4oSUVFRTgwMjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FRV9DQVBBQkxF
-IHwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9DQVBfTVVf
-QkVBTUZPUk1FRV9DQVBBQkxFIHwKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVF
-RTgwMjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FUl9DQVBBQkxFIHwKPj4gKyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9DQVBfTVVfQkVBTUZPUk1FUl9DQVBBQkxFKTsK
-Pj4gKwo+PiAgICAgICAgIHZodF9jYXAudmh0X3N1cHBvcnRlZCA9IDE7Cj4+ICAgICAgICAgdmh0
-X2NhcC5jYXAgPSBhci0+dmh0X2NhcF9pbmZvOwo+Pgo+PiAtICAgICAgIGlmIChhci0+dmh0X2Nh
-cF9pbmZvICYgKElFRUU4MDIxMV9WSFRfQ0FQX1NVX0JFQU1GT1JNRUVfQ0FQQUJMRSB8Cj4+IC0g
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9DQVBfTVVfQkVBTUZP
-Uk1FRV9DQVBBQkxFKSkgewo+PiAtICAgICAgICAgICAgICAgdmFsID0gYXItPm51bV9yZl9jaGFp
-bnMgLSAxOwo+PiAtICAgICAgICAgICAgICAgdmFsIDw8PSBJRUVFODAyMTFfVkhUX0NBUF9CRUFN
-Rk9STUVFX1NUU19TSElGVDsKPj4gLSAgICAgICAgICAgICAgIHZhbCAmPSBJRUVFODAyMTFfVkhU
-X0NBUF9CRUFNRk9STUVFX1NUU19NQVNLOwo+PiAtCj4+IC0gICAgICAgICAgICAgICB2aHRfY2Fw
-LmNhcCB8PSB2YWw7Cj4+IC0gICAgICAgfQo+PiAtCj4+IC0gICAgICAgaWYgKGFyLT52aHRfY2Fw
-X2luZm8gJiAoSUVFRTgwMjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FUl9DQVBBQkxFIHwKPj4gLSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9S
-TUVSX0NBUEFCTEUpKSB7Cj4+IC0gICAgICAgICAgICAgICB2YWwgPSBhci0+bnVtX3JmX2NoYWlu
-cyAtIDE7Cj4+IC0gICAgICAgICAgICAgICB2YWwgPDw9IElFRUU4MDIxMV9WSFRfQ0FQX1NPVU5E
-SU5HX0RJTUVOU0lPTlNfU0hJRlQ7Cj4+IC0gICAgICAgICAgICAgICB2YWwgJj0gSUVFRTgwMjEx
-X1ZIVF9DQVBfU09VTkRJTkdfRElNRU5TSU9OU19NQVNLOwo+PiAtCj4+IC0gICAgICAgICAgICAg
-ICB2aHRfY2FwLmNhcCB8PSB2YWw7Cj4+IC0gICAgICAgfQo+PiAtCj4+ICAgICAgICAgbWNzX21h
-cCA9IDA7Cj4+ICAgICAgICAgZm9yIChpID0gMDsgaSA8IDg7IGkrKykgewo+PiAgICAgICAgICAg
-ICAgICAgaWYgKGkgPCBhci0+bnVtX3JmX2NoYWlucykKPj4KPj4KPj4gTWljaGHFggo+Cj4gVGhl
-IGZpcm13YXJlIGNyYXNoIGlzIGdvbmUgbm93LCB0aGFua3MuCgpBd2Vzb21lLiBUaGFua3MgZm9y
-IHRlc3RpbmchCgoKPiBEbyB5b3UgbmVlZCBhbnkga2luZCBvZgo+IGFkZGl0aW9uYWwgdGVzdHMg
-b24gdGhpcyBodyBJIGNhbiBkbz8KCk5vLCB0aGFua3MuCgoKTWljaGHFggoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAph
-dGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2F0aDEwawo=
+Hi,
+
+Does anybody have patches for CT firmware testing using OpenWRT environment.
+I tried to create patch, however OpenWRT patches supporting only for
+kernel versions 3.18 and 4.1 at the same time CT Kernels supporting
+3.17_dev, 4.0.4 and 4.2.x. Both are miss matching.
+
+Can somebody help me if they have patches or to create patches.
+
+Thanks and Regards,
+S Prasad
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
