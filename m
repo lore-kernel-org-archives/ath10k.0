@@ -1,17 +1,22 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mout.kundenserver.de ([212.227.17.10])
+Received: from mail-la0-x232.google.com ([2a00:1450:4010:c03::232])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUIuU-0006YZ-3t
- for ath10k@lists.infradead.org; Tue, 25 Aug 2015 18:25:27 +0000
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH/RFT 0/2] ath10k: add qca6164 support
-Date: Tue, 25 Aug 2015 20:24:57 +0200
-Message-ID: <1523365.YtEF2Ft7XC@wuerfel>
-In-Reply-To: <1901727.3ECHUBE5WW@wuerfel>
-References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=STQ2jpMCjP7V=soPk=e4BMuq+3bO_F0UXK_EuJFqxfQ@mail.gmail.com>
- <1901727.3ECHUBE5WW@wuerfel>
+ id 1ZUSqj-0003Ro-44
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2015 05:02:14 +0000
+Received: by lalv9 with SMTP id v9so111669571lal.0
+ for <ath10k@lists.infradead.org>; Tue, 25 Aug 2015 22:01:48 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CAAKLdA-iwy-mqKniQ0=pqJcHc-9kJmWZtoRvS4BMHvyA=rBrLQ@mail.gmail.com>
+References: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
+ <CAAKLdA_TRF_NcA5csNc496SaZtatLzu6LtxYsQVKU_dso4G4gA@mail.gmail.com>
+ <CA+BoTQmBqqco=i5Jf2qWkFHuD-g5NzwDPdNyaoZi5XTt1h4uHg@mail.gmail.com>
+ <CAAKLdA96tdmosDQThE453un7+ZM__0E-iCtH-eujuZbeuRoe0w@mail.gmail.com>
+ <CA+BoTQk+Cmnk=JNC8+ZFYyEovFw1=cXV2Wa6ebm2Di=VEmn3xg@mail.gmail.com>
+ <CAAKLdA-iwy-mqKniQ0=pqJcHc-9kJmWZtoRvS4BMHvyA=rBrLQ@mail.gmail.com>
+Date: Wed, 26 Aug 2015 07:01:48 +0200
+Message-ID: <CA+BoTQmKNL+Zruv4oh51ucgKNCUR8s2OGfr4LRD-sMUL=20kEg@mail.gmail.com>
+Subject: Re: ath10k: first qca6174 hw2.1 firmware released
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +25,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Michal Kazior <michal.kazior@tieto.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Anish Tondwalkar <twilightrook@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Oscar Rydberg <oscarrydberg@gmail.com>, Victor van Poppelen <vvanpo@gmail.com>, Joseph Salisbury <joseph.salisbury@canonical.com>
+To: Lapo Calamandrei <calamandrei@gmail.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-On Tuesday 25 August 2015 15:47:45 Arnd Bergmann wrote:
-> On Tuesday 25 August 2015 15:09:45 Michal Kazior wrote:
-> > 
-> > This is some weird regression with MSI ranges and we still haven't
-> > figured this out.
-> > 
-> > For the time being add "irq_mode=1" parameter when loading ath10k_pci
-> > module, please.
-> 
-> Ok, that gets the device to show up without errors. I have no
-> time to test whether I can actually use it at the moment, will
-> report back later.
-
-I tested some more and everything seems fine now when using legacy
-interrupts. Thanks for all the work that went into this, I hope
-the patch can make it into 4.3.
-
-	Arnd
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMjUgQXVndXN0IDIwMTUgYXQgMTY6MDQsIExhcG8gQ2FsYW1hbmRyZWkgPGNhbGFtYW5kcmVp
+QGdtYWlsLmNvbT4gd3JvdGU6ClsuLi5dCj4gWWVwLCB0aGUgcHJldmlvdXMgY3Jhc2ggd2FzIHdp
+dGhvdXQgeW91ciBwYXRjaCBhcHBsaWVkLCB0aGUgZm9sbG93aW5nCj4gaXMgd2l0aCB0aGUgcGF0
+Y2ggYXBwbGllZCB0aG91Z2guCj4KPiBpdyBsaXN0IG91dHB1dDoKWy4uLl0KPiAgICAgQmFuZCAy
+Ogo+ICAgICAgICAgQ2FwYWJpbGl0aWVzOiAweDE5ZTMKPiAgICAgICAgICAgICBSWCBMRFBDCj4g
+ICAgICAgICAgICAgSFQyMC9IVDQwCj4gICAgICAgICAgICAgU3RhdGljIFNNIFBvd2VyIFNhdmUK
+PiAgICAgICAgICAgICBSWCBIVDIwIFNHSQo+ICAgICAgICAgICAgIFJYIEhUNDAgU0dJCj4gICAg
+ICAgICAgICAgVFggU1RCQwo+ICAgICAgICAgICAgIFJYIFNUQkMgMS1zdHJlYW0KPiAgICAgICAg
+ICAgICBNYXggQU1TRFUgbGVuZ3RoOiA3OTM1IGJ5dGVzCj4gICAgICAgICAgICAgRFNTUy9DQ0sg
+SFQ0MAo+ICAgICAgICAgTWF4aW11bSBSWCBBTVBEVSBsZW5ndGggNjU1MzUgYnl0ZXMgKGV4cG9u
+ZW50OiAweDAwMykKPiAgICAgICAgIE1pbmltdW0gUlggQU1QRFUgdGltZSBzcGFjaW5nOiA4IHVz
+ZWMgKDB4MDYpCj4gICAgICAgICBIVCBUWC9SWCBNQ1MgcmF0ZSBpbmRleGVzIHN1cHBvcnRlZDog
+MC0xNQo+ICAgICAgICAgVkhUIENhcGFiaWxpdGllcyAoMHgzMzkwMTFiMik6Cj4gICAgICAgICAg
+ICAgTWF4IE1QRFUgbGVuZ3RoOiAxMTQ1NAo+ICAgICAgICAgICAgIFN1cHBvcnRlZCBDaGFubmVs
+IFdpZHRoOiBuZWl0aGVyIDE2MCBub3IgODArODAKPiAgICAgICAgICAgICBSWCBMRFBDCj4gICAg
+ICAgICAgICAgc2hvcnQgR0kgKDgwIE1IeikKPiAgICAgICAgICAgICBUWCBTVEJDCj4gICAgICAg
+ICAgICAgU1UgQmVhbWZvcm1lZQo+ICAgICAgICAgICAgIE1VIEJlYW1mb3JtZWUKWy4uLl0KClNv
+cnJ5LCBteSBiYWQuIFRoZSBkaWZmIEkgcHJvdmlkZWQgZWFybGllciB3YXNuJ3QgY29ycmVjdCAo
+aXQgd2FzIGEKcXVpY2sgaGFjay1pZGVhIEkgZGlkbid0IHRlc3QgbXlzZWxmKS4KClRoZSBjb3Jy
+ZWN0IHRoaW5nIHRoYXQgc2hvdWxkIHdvcmsgaXM6CgotLS0gYS9kcml2ZXJzL25ldC93aXJlbGVz
+cy9hdGgvYXRoMTBrL21hYy5jCisrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+bWFjLmMKQEAgLTY3OTgsMjcgKzY3OTgsMTQgQEAgc3RhdGljIHN0cnVjdCBpZWVlODAyMTFfc3Rh
+X3ZodF9jYXAKYXRoMTBrX2NyZWF0ZV92aHRfY2FwKHN0cnVjdCBhdGgxMGsgKmFyKQogICAgICAg
+IHUzMiB2YWw7CiAgICAgICAgaW50IGk7CgorICAgICAgIGFyLT52aHRfY2FwX2luZm8gJj0gfihJ
+RUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9STUVFX0NBUEFCTEUgfAorICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9STUVFX0NBUEFCTEUgfAor
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9TVV9CRUFNRk9S
+TUVSX0NBUEFCTEUgfAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhU
+X0NBUF9NVV9CRUFNRk9STUVSX0NBUEFCTEUpOworCiAgICAgICAgdmh0X2NhcC52aHRfc3VwcG9y
+dGVkID0gMTsKICAgICAgICB2aHRfY2FwLmNhcCA9IGFyLT52aHRfY2FwX2luZm87CgotICAgICAg
+IGlmIChhci0+dmh0X2NhcF9pbmZvICYgKElFRUU4MDIxMV9WSFRfQ0FQX1NVX0JFQU1GT1JNRUVf
+Q0FQQUJMRSB8Ci0gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9D
+QVBfTVVfQkVBTUZPUk1FRV9DQVBBQkxFKSkgewotICAgICAgICAgICAgICAgdmFsID0gYXItPm51
+bV9yZl9jaGFpbnMgLSAxOwotICAgICAgICAgICAgICAgdmFsIDw8PSBJRUVFODAyMTFfVkhUX0NB
+UF9CRUFNRk9STUVFX1NUU19TSElGVDsKLSAgICAgICAgICAgICAgIHZhbCAmPSBJRUVFODAyMTFf
+VkhUX0NBUF9CRUFNRk9STUVFX1NUU19NQVNLOwotCi0gICAgICAgICAgICAgICB2aHRfY2FwLmNh
+cCB8PSB2YWw7Ci0gICAgICAgfQotCi0gICAgICAgaWYgKGFyLT52aHRfY2FwX2luZm8gJiAoSUVF
+RTgwMjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FUl9DQVBBQkxFIHwKLSAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICBJRUVFODAyMTFfVkhUX0NBUF9NVV9CRUFNRk9STUVSX0NBUEFCTEUpKSB7
+Ci0gICAgICAgICAgICAgICB2YWwgPSBhci0+bnVtX3JmX2NoYWlucyAtIDE7Ci0gICAgICAgICAg
+ICAgICB2YWwgPDw9IElFRUU4MDIxMV9WSFRfQ0FQX1NPVU5ESU5HX0RJTUVOU0lPTlNfU0hJRlQ7
+Ci0gICAgICAgICAgICAgICB2YWwgJj0gSUVFRTgwMjExX1ZIVF9DQVBfU09VTkRJTkdfRElNRU5T
+SU9OU19NQVNLOwotCi0gICAgICAgICAgICAgICB2aHRfY2FwLmNhcCB8PSB2YWw7Ci0gICAgICAg
+fQotCiAgICAgICAgbWNzX21hcCA9IDA7CiAgICAgICAgZm9yIChpID0gMDsgaSA8IDg7IGkrKykg
+ewogICAgICAgICAgICAgICAgaWYgKGkgPCBhci0+bnVtX3JmX2NoYWlucykKCgpNaWNoYcWCCgpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFp
+bGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRl
+YWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
