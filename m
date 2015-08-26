@@ -1,18 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-vk0-x22c.google.com ([2607:f8b0:400c:c05::22c])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUXGI-0003iV-Gf
- for ath10k@lists.infradead.org; Wed, 26 Aug 2015 09:44:55 +0000
-From: Kalle Valo <kvalo@qca.qualcomm.com>
-Subject: Re: [PATCH/RFT 0/2] ath10k: add qca6164 support
-References: <1439469147-9408-1-git-send-email-michal.kazior@tieto.com>
- <CA+BoTQ=STQ2jpMCjP7V=soPk=e4BMuq+3bO_F0UXK_EuJFqxfQ@mail.gmail.com>
- <1901727.3ECHUBE5WW@wuerfel> <1523365.YtEF2Ft7XC@wuerfel>
-Date: Wed, 26 Aug 2015 12:44:25 +0300
-In-Reply-To: <1523365.YtEF2Ft7XC@wuerfel> (Arnd Bergmann's message of "Tue, 25
- Aug 2015 20:24:57 +0200")
-Message-ID: <87bndu1j0m.fsf@kamboji.qca.qualcomm.com>
+ id 1ZUXaQ-00049g-Tp
+ for ath10k@lists.infradead.org; Wed, 26 Aug 2015 10:05:44 +0000
+Received: by vkfi73 with SMTP id i73so87250304vkf.2
+ for <ath10k@lists.infradead.org>; Wed, 26 Aug 2015 03:05:20 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <CA+BoTQmKNL+Zruv4oh51ucgKNCUR8s2OGfr4LRD-sMUL=20kEg@mail.gmail.com>
+References: <874mk3pjht.fsf@kamboji.qca.qualcomm.com>
+ <CAAKLdA_TRF_NcA5csNc496SaZtatLzu6LtxYsQVKU_dso4G4gA@mail.gmail.com>
+ <CA+BoTQmBqqco=i5Jf2qWkFHuD-g5NzwDPdNyaoZi5XTt1h4uHg@mail.gmail.com>
+ <CAAKLdA96tdmosDQThE453un7+ZM__0E-iCtH-eujuZbeuRoe0w@mail.gmail.com>
+ <CA+BoTQk+Cmnk=JNC8+ZFYyEovFw1=cXV2Wa6ebm2Di=VEmn3xg@mail.gmail.com>
+ <CAAKLdA-iwy-mqKniQ0=pqJcHc-9kJmWZtoRvS4BMHvyA=rBrLQ@mail.gmail.com>
+ <CA+BoTQmKNL+Zruv4oh51ucgKNCUR8s2OGfr4LRD-sMUL=20kEg@mail.gmail.com>
+Date: Wed, 26 Aug 2015 12:05:20 +0200
+Message-ID: <CAAKLdA8HUr2fmoTRE=ZdaZipqL-TthpH5r0adVyp3QNqjYtAnQ@mail.gmail.com>
+Subject: Re: ath10k: first qca6174 hw2.1 firmware released
+From: Lapo Calamandrei <calamandrei@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +26,63 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, Anish Tondwalkar <twilightrook@gmail.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>, Oscar Rydberg <oscarrydberg@gmail.com>, Michal Kazior <michal.kazior@tieto.com>, Joseph Salisbury <joseph.salisbury@canonical.com>, Victor van Poppelen <vvanpo@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
+Cc: Kalle Valo <kvalo@qca.qualcomm.com>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Arnd Bergmann <arnd@arndb.de> writes:
-
-> On Tuesday 25 August 2015 15:47:45 Arnd Bergmann wrote:
->> On Tuesday 25 August 2015 15:09:45 Michal Kazior wrote:
->> > 
->> > This is some weird regression with MSI ranges and we still haven't
->> > figured this out.
->> > 
->> > For the time being add "irq_mode=1" parameter when loading ath10k_pci
->> > module, please.
->> 
->> Ok, that gets the device to show up without errors. I have no
->> time to test whether I can actually use it at the moment, will
->> report back later.
->
-> I tested some more and everything seems fine now when using legacy
-> interrupts. Thanks for all the work that went into this, I hope
-> the patch can make it into 4.3.
-
-I'm planning to send a pull request to Dave later today so this patch
-should make it to 4.3. Sorry for taking so long to fix this.
-
--- 
-Kalle Valo
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+MjAxNS0wOC0yNiA3OjAxIEdNVCswMjowMCBNaWNoYWwgS2F6aW9yIDxtaWNoYWwua2F6aW9yQHRp
+ZXRvLmNvbT46Cj4gT24gMjUgQXVndXN0IDIwMTUgYXQgMTY6MDQsIExhcG8gQ2FsYW1hbmRyZWkg
+PGNhbGFtYW5kcmVpQGdtYWlsLmNvbT4gd3JvdGU6Cj4gWy4uLl0KPj4gWWVwLCB0aGUgcHJldmlv
+dXMgY3Jhc2ggd2FzIHdpdGhvdXQgeW91ciBwYXRjaCBhcHBsaWVkLCB0aGUgZm9sbG93aW5nCj4+
+IGlzIHdpdGggdGhlIHBhdGNoIGFwcGxpZWQgdGhvdWdoLgo+Pgo+PiBpdyBsaXN0IG91dHB1dDoK
+PiBbLi4uXQo+PiAgICAgQmFuZCAyOgo+PiAgICAgICAgIENhcGFiaWxpdGllczogMHgxOWUzCj4+
+ICAgICAgICAgICAgIFJYIExEUEMKPj4gICAgICAgICAgICAgSFQyMC9IVDQwCj4+ICAgICAgICAg
+ICAgIFN0YXRpYyBTTSBQb3dlciBTYXZlCj4+ICAgICAgICAgICAgIFJYIEhUMjAgU0dJCj4+ICAg
+ICAgICAgICAgIFJYIEhUNDAgU0dJCj4+ICAgICAgICAgICAgIFRYIFNUQkMKPj4gICAgICAgICAg
+ICAgUlggU1RCQyAxLXN0cmVhbQo+PiAgICAgICAgICAgICBNYXggQU1TRFUgbGVuZ3RoOiA3OTM1
+IGJ5dGVzCj4+ICAgICAgICAgICAgIERTU1MvQ0NLIEhUNDAKPj4gICAgICAgICBNYXhpbXVtIFJY
+IEFNUERVIGxlbmd0aCA2NTUzNSBieXRlcyAoZXhwb25lbnQ6IDB4MDAzKQo+PiAgICAgICAgIE1p
+bmltdW0gUlggQU1QRFUgdGltZSBzcGFjaW5nOiA4IHVzZWMgKDB4MDYpCj4+ICAgICAgICAgSFQg
+VFgvUlggTUNTIHJhdGUgaW5kZXhlcyBzdXBwb3J0ZWQ6IDAtMTUKPj4gICAgICAgICBWSFQgQ2Fw
+YWJpbGl0aWVzICgweDMzOTAxMWIyKToKPj4gICAgICAgICAgICAgTWF4IE1QRFUgbGVuZ3RoOiAx
+MTQ1NAo+PiAgICAgICAgICAgICBTdXBwb3J0ZWQgQ2hhbm5lbCBXaWR0aDogbmVpdGhlciAxNjAg
+bm9yIDgwKzgwCj4+ICAgICAgICAgICAgIFJYIExEUEMKPj4gICAgICAgICAgICAgc2hvcnQgR0kg
+KDgwIE1IeikKPj4gICAgICAgICAgICAgVFggU1RCQwo+PiAgICAgICAgICAgICBTVSBCZWFtZm9y
+bWVlCj4+ICAgICAgICAgICAgIE1VIEJlYW1mb3JtZWUKPiBbLi4uXQo+Cj4gU29ycnksIG15IGJh
+ZC4gVGhlIGRpZmYgSSBwcm92aWRlZCBlYXJsaWVyIHdhc24ndCBjb3JyZWN0IChpdCB3YXMgYQo+
+IHF1aWNrIGhhY2staWRlYSBJIGRpZG4ndCB0ZXN0IG15c2VsZikuCj4KPiBUaGUgY29ycmVjdCB0
+aGluZyB0aGF0IHNob3VsZCB3b3JrIGlzOgo+Cj4gLS0tIGEvZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9tYWMuYwo+ICsrKyBiL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9hdGgxMGsv
+bWFjLmMKPiBAQCAtNjc5OCwyNyArNjc5OCwxNCBAQCBzdGF0aWMgc3RydWN0IGllZWU4MDIxMV9z
+dGFfdmh0X2NhcAo+IGF0aDEwa19jcmVhdGVfdmh0X2NhcChzdHJ1Y3QgYXRoMTBrICphcikKPiAg
+ICAgICAgIHUzMiB2YWw7Cj4gICAgICAgICBpbnQgaTsKPgo+ICsgICAgICAgYXItPnZodF9jYXBf
+aW5mbyAmPSB+KElFRUU4MDIxMV9WSFRfQ0FQX1NVX0JFQU1GT1JNRUVfQ0FQQUJMRSB8Cj4gKyAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgSUVFRTgwMjExX1ZIVF9DQVBfTVVfQkVBTUZPUk1F
+RV9DQVBBQkxFIHwKPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICBJRUVFODAyMTFfVkhU
+X0NBUF9TVV9CRUFNRk9STUVSX0NBUEFCTEUgfAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIElFRUU4MDIxMV9WSFRfQ0FQX01VX0JFQU1GT1JNRVJfQ0FQQUJMRSk7Cj4gKwo+ICAgICAg
+ICAgdmh0X2NhcC52aHRfc3VwcG9ydGVkID0gMTsKPiAgICAgICAgIHZodF9jYXAuY2FwID0gYXIt
+PnZodF9jYXBfaW5mbzsKPgo+IC0gICAgICAgaWYgKGFyLT52aHRfY2FwX2luZm8gJiAoSUVFRTgw
+MjExX1ZIVF9DQVBfU1VfQkVBTUZPUk1FRV9DQVBBQkxFIHwKPiAtICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIElFRUU4MDIxMV9WSFRfQ0FQX01VX0JFQU1GT1JNRUVfQ0FQQUJMRSkpIHsK
+PiAtICAgICAgICAgICAgICAgdmFsID0gYXItPm51bV9yZl9jaGFpbnMgLSAxOwo+IC0gICAgICAg
+ICAgICAgICB2YWwgPDw9IElFRUU4MDIxMV9WSFRfQ0FQX0JFQU1GT1JNRUVfU1RTX1NISUZUOwo+
+IC0gICAgICAgICAgICAgICB2YWwgJj0gSUVFRTgwMjExX1ZIVF9DQVBfQkVBTUZPUk1FRV9TVFNf
+TUFTSzsKPiAtCj4gLSAgICAgICAgICAgICAgIHZodF9jYXAuY2FwIHw9IHZhbDsKPiAtICAgICAg
+IH0KPiAtCj4gLSAgICAgICBpZiAoYXItPnZodF9jYXBfaW5mbyAmIChJRUVFODAyMTFfVkhUX0NB
+UF9TVV9CRUFNRk9STUVSX0NBUEFCTEUgfAo+IC0gICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgSUVFRTgwMjExX1ZIVF9DQVBfTVVfQkVBTUZPUk1FUl9DQVBBQkxFKSkgewo+IC0gICAgICAg
+ICAgICAgICB2YWwgPSBhci0+bnVtX3JmX2NoYWlucyAtIDE7Cj4gLSAgICAgICAgICAgICAgIHZh
+bCA8PD0gSUVFRTgwMjExX1ZIVF9DQVBfU09VTkRJTkdfRElNRU5TSU9OU19TSElGVDsKPiAtICAg
+ICAgICAgICAgICAgdmFsICY9IElFRUU4MDIxMV9WSFRfQ0FQX1NPVU5ESU5HX0RJTUVOU0lPTlNf
+TUFTSzsKPiAtCj4gLSAgICAgICAgICAgICAgIHZodF9jYXAuY2FwIHw9IHZhbDsKPiAtICAgICAg
+IH0KPiAtCj4gICAgICAgICBtY3NfbWFwID0gMDsKPiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCA4
+OyBpKyspIHsKPiAgICAgICAgICAgICAgICAgaWYgKGkgPCBhci0+bnVtX3JmX2NoYWlucykKPgo+
+Cj4gTWljaGHFggoKVGhlIGZpcm13YXJlIGNyYXNoIGlzIGdvbmUgbm93LCB0aGFua3MuIERvIHlv
+dSBuZWVkIGFueSBraW5kIG9mCmFkZGl0aW9uYWwgdGVzdHMgb24gdGhpcyBodyBJIGNhbiBkbz8K
+CkNpYW8KTGFwbwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8v
+bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
