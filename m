@@ -1,14 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-f181.google.com ([209.85.223.181])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZUusT-00014f-5F
- for ath10k@lists.infradead.org; Thu, 27 Aug 2015 10:57:53 +0000
-Received: by iodv127 with SMTP id v127so52236810iod.3
+Received: from mail-io0-f179.google.com ([209.85.223.179])
+ by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
+ id 1ZUusU-0004Bn-PC
+ for ath10k@lists.infradead.org; Thu, 27 Aug 2015 10:57:55 +0000
+Received: by iodb91 with SMTP id b91so52103271iod.1
  for <ath10k@lists.infradead.org>; Thu, 27 Aug 2015 03:57:31 -0700 (PDT)
 From: Bob Copeland <me@bobcopeland.com>
-Subject: [PATCH 1/3] ath10k: enable monitor when OTHER_BSS requested
-Date: Thu, 27 Aug 2015 06:57:02 -0400
-Message-Id: <1440673024-13696-2-git-send-email-me@bobcopeland.com>
+Subject: [PATCH 2/3] ath10k: check for encryption before adding MIC_LEN
+Date: Thu, 27 Aug 2015 06:57:03 -0400
+Message-Id: <1440673024-13696-3-git-send-email-me@bobcopeland.com>
 In-Reply-To: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
 References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
 List-Id: <ath10k.lists.infradead.org>
@@ -27,26 +27,28 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: linux-wireless@vger.kernel.org
 Cc: Bob Copeland <me@bobcopeland.com>, ath10k@lists.infradead.org
 
-By default, ath10k restricts received frames to those matching BSSID.
-When other BSS frames are requested (e.g. in mesh mode), add an internal
-monitor device so those frames are not filtered.
+In the case of raw mode without nohwcrypt parameter, we
+should still make sure the frame is protected before
+adding MIC_LEN to avoid skb_under_panic errors.
 
 Signed-off-by: Bob Copeland <me@bobcopeland.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath10k/htt_tx.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 64674c9..7dfe37f 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -1070,6 +1070,7 @@ static bool ath10k_mac_monitor_vdev_is_needed(struct ath10k *ar)
- 		return false;
- 
- 	return ar->monitor ||
-+	       ar->filter_flags & FIF_OTHER_BSS ||
- 	       test_bit(ATH10K_CAC_RUNNING, &ar->dev_flags);
- }
+diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
+index 43aa5e2..1c2d869 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_tx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
+@@ -528,7 +528,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
+ 	     ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+ 	} else if (!skb_cb->htt.nohwcrypt &&
+-		   skb_cb->txmode == ATH10K_HW_TXRX_RAW) {
++		   skb_cb->txmode == ATH10K_HW_TXRX_RAW &&
++		   ieee80211_has_protected(hdr->frame_control)) {
+ 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
+ 	}
  
 -- 
 2.1.4
