@@ -1,16 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-f179.google.com ([209.85.223.179])
- by merlin.infradead.org with esmtps (Exim 4.85 #2 (Red Hat Linux))
- id 1ZUusU-0004Bn-PC
- for ath10k@lists.infradead.org; Thu, 27 Aug 2015 10:57:55 +0000
-Received: by iodb91 with SMTP id b91so52103271iod.1
- for <ath10k@lists.infradead.org>; Thu, 27 Aug 2015 03:57:31 -0700 (PDT)
-From: Bob Copeland <me@bobcopeland.com>
-Subject: [PATCH 2/3] ath10k: check for encryption before adding MIC_LEN
-Date: Thu, 27 Aug 2015 06:57:03 -0400
-Message-Id: <1440673024-13696-3-git-send-email-me@bobcopeland.com>
-In-Reply-To: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
-References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
+Received: from mail-la0-x234.google.com ([2a00:1450:4010:c03::234])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZUwaZ-000651-TG
+ for ath10k@lists.infradead.org; Thu, 27 Aug 2015 12:47:32 +0000
+Received: by labns7 with SMTP id ns7so11703545lab.0
+ for <ath10k@lists.infradead.org>; Thu, 27 Aug 2015 05:47:07 -0700 (PDT)
+From: Michal Kazior <michal.kazior@tieto.com>
+Subject: [PATCH 1/2] ath10k: change beamformee VHT STS capability
+Date: Thu, 27 Aug 2015 14:47:32 +0200
+Message-Id: <1440679653-20289-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +22,45 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: linux-wireless@vger.kernel.org
-Cc: Bob Copeland <me@bobcopeland.com>, ath10k@lists.infradead.org
+To: ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-In the case of raw mode without nohwcrypt parameter, we
-should still make sure the frame is protected before
-adding MIC_LEN to avoid skb_under_panic errors.
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 
-Signed-off-by: Bob Copeland <me@bobcopeland.com>
+All beamformee supporting chips have the ability to support
+VHT NDP in up to 4 STSs. Change the published beamformee
+STS cap accordingly to 3 as it should be Nsts-1.
+
+This makes it possible to actually make full use
+of. e.g. a 4SS MU-MIMO capable AP.
+
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_tx.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_tx.c b/drivers/net/wireless/ath/ath10k/htt_tx.c
-index 43aa5e2..1c2d869 100644
---- a/drivers/net/wireless/ath/ath10k/htt_tx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_tx.c
-@@ -528,7 +528,8 @@ int ath10k_htt_tx(struct ath10k_htt *htt, struct sk_buff *msdu)
- 	     ieee80211_has_protected(hdr->frame_control)) {
- 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 	} else if (!skb_cb->htt.nohwcrypt &&
--		   skb_cb->txmode == ATH10K_HW_TXRX_RAW) {
-+		   skb_cb->txmode == ATH10K_HW_TXRX_RAW &&
-+		   ieee80211_has_protected(hdr->frame_control)) {
- 		skb_put(msdu, IEEE80211_CCMP_MIC_LEN);
- 	}
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 64674c955d44..54ced30f5364 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4074,7 +4074,7 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+ 
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE))
+-		value |= SM((ar->num_rf_chains - 1), WMI_TXBF_STS_CAP_OFFSET);
++		value |= SM(3, WMI_TXBF_STS_CAP_OFFSET);
+ 
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE))
+@@ -6804,7 +6804,7 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ 
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)) {
+-		val = ar->num_rf_chains - 1;
++		val = 3;
+ 		val <<= IEEE80211_VHT_CAP_BEAMFORMEE_STS_SHIFT;
+ 		val &= IEEE80211_VHT_CAP_BEAMFORMEE_STS_MASK;
  
 -- 
 2.1.4
