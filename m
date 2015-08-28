@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-wi0-f171.google.com ([209.85.212.171])
+Received: from mail-yk0-x233.google.com ([2607:f8b0:4002:c07::233])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZVJ52-0005EX-5n
- for ath10k@lists.infradead.org; Fri, 28 Aug 2015 12:48:30 +0000
-Received: by wieo17 with SMTP id o17so14589647wie.0
- for <ath10k@lists.infradead.org>; Fri, 28 Aug 2015 05:48:04 -0700 (PDT)
-From: Sven Eckelmann <sven@open-mesh.com>
-Subject: Re: CT firmware and linux kernel patches for OpenWRT( ar71xx -
- Tp-Link 1750AC )
-Date: Fri, 28 Aug 2015 14:48:02 +0200
-Message-ID: <2249526.TmOlA3g2Uo@bentobox>
-In-Reply-To: <CAJa-X96RZTQ_=dG+PDxu8x_AeMAXhyKiTc7CrNO=hqhnmYAN-Q@mail.gmail.com>
-References: <CAJa-X96RZTQ_=dG+PDxu8x_AeMAXhyKiTc7CrNO=hqhnmYAN-Q@mail.gmail.com>
+ id 1ZVJCn-00021y-NO
+ for ath10k@lists.infradead.org; Fri, 28 Aug 2015 12:56:30 +0000
+Received: by ykft21 with SMTP id t21so13368702ykf.2
+ for <ath10k@lists.infradead.org>; Fri, 28 Aug 2015 05:56:07 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1440679653-20289-1-git-send-email-michal.kazior@tieto.com>
+References: <1440679653-20289-1-git-send-email-michal.kazior@tieto.com>
+Date: Fri, 28 Aug 2015 14:56:07 +0200
+Message-ID: <CACKGw+FU0tQ4HZ0O=AB8uo-HyNshr0zjd-Hb+4NytpzsOH4TdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ath10k: change beamformee VHT STS capability
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +24,59 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: s prasad <sprasad.kandregula@gmail.com>
+To: Michal Kazior <michal.kazior@tieto.com>
 Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k <ath10k@lists.infradead.org>
 
-On Wednesday 26 August 2015 18:59:51 s prasad wrote:
-> Does anybody have patches for CT firmware testing using OpenWRT environment.
-> I tried to create patch, however OpenWRT patches supporting only for
-> kernel versions 3.18 and 4.1 at the same time CT Kernels supporting
-> 3.17_dev, 4.0.4 and 4.2.x. Both are miss matching.
+On 27 August 2015 at 14:47, Michal Kazior <michal.kazior@tieto.com> wrote:
+> From: Bartosz Markowski <bartosz.markowski@tieto.com>
+>
+> All beamformee supporting chips have the ability to support
+> VHT NDP in up to 4 STSs. Change the published beamformee
+> STS cap accordingly to 3 as it should be Nsts-1.
+>
+> This makes it possible to actually make full use
+> of. e.g. a 4SS MU-MIMO capable AP.
+>
+> Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
+> Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
+> ---
 
-You have to patch mac80211 and not the kernel. I can give you the patchset
-I've used with OpenWrt r46435.
+Kalle, please drop this one for now. It looks like we need to discuss
+about this a bit more still.
 
-You should get it in the next minutes via private mail (I don't want to
-send it over the mailing list due to its size). It is basically the
-patchset from Ben put on top of compat-wireless 2015-06-22 [1].
+>  drivers/net/wireless/ath/ath10k/mac.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+> index 64674c955d44..54ced30f5364 100644
+> --- a/drivers/net/wireless/ath/ath10k/mac.c
+> +++ b/drivers/net/wireless/ath/ath10k/mac.c
+> @@ -4074,7 +4074,7 @@ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+>
+>         if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+>                                 IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE))
+> -               value |= SM((ar->num_rf_chains - 1), WMI_TXBF_STS_CAP_OFFSET);
+> +               value |= SM(3, WMI_TXBF_STS_CAP_OFFSET);
+>
+>         if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE |
+>                                 IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE))
+> @@ -6804,7 +6804,7 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+>
+>         if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+>                                 IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)) {
+> -               val = ar->num_rf_chains - 1;
+> +               val = 3;
+>                 val <<= IEEE80211_VHT_CAP_BEAMFORMEE_STS_SHIFT;
+>                 val &= IEEE80211_VHT_CAP_BEAMFORMEE_STS_MASK;
+>
+> --
+> 2.1.4
+>
 
-You still need extra changes to get VHT working over IBSS (iw will
-otherwise only use HT). When you only want to test it then you can
-just hardcode a channel + a channel width in iw's ibss.c.
-
-Kind regards,
-	Sven
 
 
-[1] https://dev.cloudtrax.com/git/ath10k-ibss-test.git/shortlog/refs/heads/master-20150824
-
+-- 
+Bartosz
 
 _______________________________________________
 ath10k mailing list
