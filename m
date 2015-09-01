@@ -1,17 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
- by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWg8A-0000Du-6n
- for ath10k@lists.infradead.org; Tue, 01 Sep 2015 07:37:24 +0000
-Received: by labnh1 with SMTP id nh1so61668440lab.3
- for <ath10k@lists.infradead.org>; Tue, 01 Sep 2015 00:36:55 -0700 (PDT)
+Received: from mail2.candelatech.com ([208.74.158.173])
+ by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZWt7a-0002wW-KK
+ for ath10k@lists.infradead.org; Tue, 01 Sep 2015 21:29:38 +0000
+From: Ben Greear <greearb@candelatech.com>
+Subject: CT firmware beta-15 can now tune noise-floor thresholds.
+Message-ID: <55E618AB.50902@candelatech.com>
+Date: Tue, 1 Sep 2015 14:29:15 -0700
 MIME-Version: 1.0
-In-Reply-To: <1441088612-9517-1-git-send-email-c_traja@qti.qualcomm.com>
-References: <1441088612-9517-1-git-send-email-c_traja@qti.qualcomm.com>
-Date: Tue, 1 Sep 2015 09:36:55 +0200
-Message-ID: <CA+BoTQ=VrhjJCCb9wWTQ59MJmFJjf5PAboJH=Sp00y83xB2byw@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: Disable PCI power save for QCA99X0
-From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +16,47 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
-Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
+To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
 
-T24gMSBTZXB0ZW1iZXIgMjAxNSBhdCAwODoyMywgIDxjX3RyYWphQHF0aS5xdWFsY29tbS5jb20+
-IHdyb3RlOgo+IEZyb206IFRhbWl6aCBjaGVsdmFtIDxjX3RyYWphQHF0aS5xdWFsY29tbS5jb20+
-Cj4KPiBGcmVxdWVudCBmYWlsdXJlcyBpbiB3YWtpbmcgdXAgdGhlIHRhcmdldCBpcyBvYnNlcnZl
-ZCBkdXJpbmcKPiBpbnRlcmZhY2UgKG1vc3RseSBvYnNlcnZlZCB3aXRoIEFQIGFuZCBNb25pdG9y
-IG1vZGUpIGJyaW5nIHVwCj4gb24geDg2LCB0aGlzIGZhaWx1cmVzIGxlYWQgdG8gZmlybXdhcmUg
-Y3Jhc2guIERpc2FibGluZyBQQ0kKPiBwb3dlciBzYXZlIGZpeGVzIHRoaXMgaXNzdWUuIERpc2Fi
-bGluZyBBU1BNIGFsc28gZG9lcyBub3QgaGVscCwKPiBhcyBhIHdvcmsgYXJvdW5kIGRpc2FibGUg
-UENJIHBvd2VyIHNhdmUgZm9yIFFDQTk5WDAuCj4KPiBUaGUgZm9sbG93aW5nIGtlcm5lbCBsb2cg
-aXMgc2VlbiB3aGVuIHRoaXMgaXNzdWUgaGFwcGVucwo+Cj4ga3dvcmtlci9keWluZyAoNjY3KSB1
-c2VkIGdyZWF0ZXN0IHN0YWNrIGRlcHRoOiAxMjIwOCBieXRlcyBsZWZ0Cj4gYXRoMTBrX3BjaSAw
-MDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNDAw
-NTA6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0
-IGZvciByZWFkMzIgYXQgMHgwMDA0YTAyYzogLTExMAo+IGF0aDEwa19wY2kgMDAwMDowNzowMC4w
-OiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZmZmZmZSBhdCAweDAw
-MDRhMDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRh
-cmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNGEwMzQ6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6
-MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciB3cml0ZTMyIG9mIDB4ZmZmZmY4MWYgYXQg
-MHgwMDA0YTAzNDogLTExMAo+IGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBmYWlsZWQgdG8gd2Fr
-ZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDRhMDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAw
-OjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMiBvZiAweGZmZmZmZmUx
-IGF0IDB4MDAwNGEwMmM6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRv
-IHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDA0YTQyYzogLTExMAo+IGF0aDEwa19wY2kg
-MDAwMDowNzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZm
-ZmZmZSBhdCAweDAwMDRhNDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxl
-ZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNGE0MzQ6IC0xMTAKPiBhdGgxMGtf
-cGNpIDAwMDA6MDc6MDAuMDogZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQgNDBiMzQ1ZjEtZGIzZC00
-Yjk3LWJjNTQtNjU3Mjk5NGUwMmQ1KQo+Cj4gU2lnbmVkLW9mZi1ieTogVGFtaXpoIGNoZWx2YW0g
-PGNfdHJhamFAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3Mv
-YXRoL2F0aDEway9wY2kuYyB8IDEyICsrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTIg
-aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
-dGgxMGsvcGNpLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gaW5k
-ZXggMTA0NmFiNi4uMWFiNGVlNyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
-dGgvYXRoMTBrL3BjaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
-Y2kuYwo+IEBAIC0xNjQwLDYgKzE2NDAsMTAgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3BjaV9oaWZf
-c3RvcChzdHJ1Y3QgYXRoMTBrICphcikKPiAgICAgICAgIGF0aDEwa19wY2lfc2FmZV9jaGlwX3Jl
-c2V0KGFyKTsKPgo+ICAgICAgICAgYXRoMTBrX3BjaV9pcnFfZGlzYWJsZShhcik7Cj4gKwo+ICsg
-ICAgICAgaWYgKFFDQV9SRVZfOTlYMChhcikpCj4gKyAgICAgICAgICAgICAgIGF0aDEwa19wY2lf
-c2xlZXAoYXIpOwo+ICsKClRoaXMgcmUtaW50cm9kdWNlcyBhbiBpc3N1ZSB0aGF0IHdhcyBvcmln
-aW5hbGx5IGZpeGVkIG9uY2UKMzIwZTE0YjhkYjUxICgiYXRoMTBrOiBmaXggc29tZSBwY2kgd2Fr
-ZS9zbGVlcCBpc3N1ZXMiKS4KCkUuZy4gaWYgeW91IGhhdmUgc2hhcmVkIGlycXMgYmV0d2VlbiBh
-dGgxMGsgYW5kIGFub3RoZXIgTklDIGFuZCBhdGgxMGsKaXMgcHV0IGRvd24gdGhlbiBpZiB0aGUg
-b3RoZXIgTklDIGdlbmVyYXRlcyBhbiBpbnRlcnJ1cHQgYXRoMTBrIHdpbGwKcmVhZCBvdXQgaXRz
-IGludGVycnVwdCBDU1IgYXMgMHhkZWFkYmVlZiB3aGljaCBpbiB0dXJuIHdpbGwgY29uZnVzZQp0
-aGUgZHJpdmVyIGFuZCBjb25zdW1lIHRoZSBpbnRlcnJ1cHQgcHJldmVudGluZyB0aGUgb3RoZXIg
-TklDIGRyaXZlcgpmcm9tIHdvcmtpbmcgcHJvcGVybHkuCgpBbHNvIHRoaW5rIG9mIFdvV0xBTi4K
-CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
-aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
+Here is the changelog note.  This requires a corresponding driver patch to
+enable configuring the firmware.  I tested this on my 4.0.4+ kernel.  I
+will be adding this patch to my 3.17 and 4.2 (and future) kernels as well.
+
+Should be useful for anyone trying (and failing) to pass ETSI CCA Adaptivity testing.
+
+You are more likely to cause something to be worse than better, so don't use this
+feature unless you know what you are doing and understand the consequences.
+
+This firmware also has some debugging for a case where rate-ctrl gets stuck at
+6Mbps and spews lots of dbglog messages into the logs.  This is not easy to
+reproduce, but in case someone is debugging such an issue...please send me
+full kernel logs if you detect the problem...maybe I can decode them and understand
+the problem a bit better now.  You will need to be using my kernel (patches) in order to
+get useful firmware logs, by the way.
+
+   *  Enable setting noise-floor-threshold and min-cca-power.  If set, this will over
+      ride the defaults, including eeprom (though firmware ignores these settings
+      in the eeprom anyway.)  Don't mess with this unless you understand the
+      consequences.  But, if set properly, noise-floor-threshold tweaking may fix
+      ETSI CCA adapatibility test failures.
+
+
+http://www.candelatech.com/ath10k.php
+
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
