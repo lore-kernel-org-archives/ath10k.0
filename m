@@ -1,20 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-io0-x22c.google.com ([2607:f8b0:4001:c06::22c])
+Received: from sabertooth02.qualcomm.com ([65.197.215.38])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWbqX-0002Nk-Ok
- for ath10k@lists.infradead.org; Tue, 01 Sep 2015 03:02:54 +0000
-Received: by iod35 with SMTP id 35so50861925iod.3
- for <ath10k@lists.infradead.org>; Mon, 31 Aug 2015 20:02:32 -0700 (PDT)
+ id 1ZWe2d-0000I8-Fo
+ for ath10k@lists.infradead.org; Tue, 01 Sep 2015 05:23:32 +0000
+Subject: Re: [PATCH] ath10k: Drop probe responses when too many are queued
+References: <1441019095-2364-1-git-send-email-nataraja@qti.qualcomm.com>
+ <55E48151.9080609@candelatech.com>
+From: "Natarajan, Vivekanandan" <nataraja@qti.qualcomm.com>
+Message-ID: <55E53619.5080402@qti.qualcomm.com>
+Date: Tue, 1 Sep 2015 10:52:33 +0530
 MIME-Version: 1.0
-In-Reply-To: <20150829222531.GA8604@localhost>
-References: <1440673024-13696-1-git-send-email-me@bobcopeland.com>
- <1440673024-13696-4-git-send-email-me@bobcopeland.com>
- <CAKf6xpsaygeFJyX_LKH2r82P2Xvih1GGBTAspKtCsZbBcVO9Ug@mail.gmail.com>
- <20150829222531.GA8604@localhost>
-Date: Mon, 31 Aug 2015 23:02:32 -0400
-Message-ID: <CAKf6xptqMZiqSyr3mOH_uotxa=JtHmtm2STBfDxdK5MBThaixA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ath10k: implement mesh support
-From: Jason Andryuk <jandryuk@gmail.com>
+In-Reply-To: <55E48151.9080609@candelatech.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +19,33 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Bob Copeland <me@bobcopeland.com>
-Cc: "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>, ath10k@lists.infradead.org
+To: Ben Greear <greearb@candelatech.com>, kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath10k@lists.infradead.org
 
-On Sat, Aug 29, 2015 at 6:25 PM, Bob Copeland <me@bobcopeland.com> wrote:
-> On Sat, Aug 29, 2015 at 01:11:03PM -0400, Jason Andryuk wrote:
->> Is there a reason to hide rawmode behind a modparam, or should the
->> modparam just be removed?  Just let the driver set
->> ATH10K_FLAG_RAW_MODE when ATH10K_FW_FEATURE_RAW_MODE_SUPPORT is
->> detected?
+On 8/31/2015 10:01 PM, Ben Greear wrote:
 >
-> Yes: you don't want to enable raw mode TX / RX decap in the normal
-> case because it's fairly inefficient compared to "native" wifi mode,
-> according to my understanding.  The latter doesn't support mesh framing
-> however.
 >
->> Does struct ieee80211_iface_limit need to be conditional on firmware
->> support as well or does interface_modes (below) gate use of
->> MESH_POINT?
->
-> If you advertise a combination that isn't supported by interface modes,
-> I believe you'll get a kernel warning when the wiphy is registered.
->
+> On 08/31/2015 04:04 AM, Vivek Natarajan wrote:
+>> In a noisy environment, when multiple interfaces are created,
+>> the management tx descriptors are fully occupied by the probe
+>> responses from all the interfaces. This prevents a new station
+>> from a successful association.
 >>
->> > @@ -6998,7 +7020,8 @@ int ath10k_mac_register(struct ath10k *ar)
->> >
->> >         ar->hw->wiphy->interface_modes =
->> >                 BIT(NL80211_IFTYPE_STATION) |
->> > -               BIT(NL80211_IFTYPE_AP);
->> > +               BIT(NL80211_IFTYPE_AP) |
->> > +               BIT(NL80211_IFTYPE_MESH_POINT);
->>
->> Set BIT(NL80211_IFTYPE_MESH_POINT) conditionally if ATH10K_FLAG_RAW_MODE is set?
+>> Fix this by limiting the probe responses when the specified
+>> threshold limit is reached.
 >
-> Yes, this was discussed on the ath10k mailing list and I'll probably do
-> it in a follow-up patch.  It is a little messy because it will involve
-> casting away a const somewhere.
+> Is this useful when firmware supports management-tx over HTT (instead 
+> of WMI)?
 
-Great.  Glad you've already considered all these things.
+Yes, it is applicable for HTT path.  The mgmt frames through the HTT 
+path use the tx descriptors in the firmware. This patch just prevents 
+its overuse by probe response frames.
 
--Jason
+Vivek.
 
 _______________________________________________
 ath10k mailing list
