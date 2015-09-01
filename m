@@ -1,13 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-la0-x22a.google.com ([2a00:1450:4010:c03::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWezY-00057g-5G
- for ath10k@lists.infradead.org; Tue, 01 Sep 2015 06:24:24 +0000
-From: <c_traja@qti.qualcomm.com>
-Subject: [PATCH] ath10k: Disable PCI power save for QCA99X0
-Date: Tue, 1 Sep 2015 11:53:32 +0530
-Message-ID: <1441088612-9517-1-git-send-email-c_traja@qti.qualcomm.com>
+ id 1ZWg8A-0000Du-6n
+ for ath10k@lists.infradead.org; Tue, 01 Sep 2015 07:37:24 +0000
+Received: by labnh1 with SMTP id nh1so61668440lab.3
+ for <ath10k@lists.infradead.org>; Tue, 01 Sep 2015 00:36:55 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <1441088612-9517-1-git-send-email-c_traja@qti.qualcomm.com>
+References: <1441088612-9517-1-git-send-email-c_traja@qti.qualcomm.com>
+Date: Tue, 1 Sep 2015 09:36:55 +0200
+Message-ID: <CA+BoTQ=VrhjJCCb9wWTQ59MJmFJjf5PAboJH=Sp00y83xB2byw@mail.gmail.com>
+Subject: Re: [PATCH] ath10k: Disable PCI power save for QCA99X0
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,76 +20,58 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: Tamizh chelvam <c_traja@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+To: "Raja, Tamizh Chelvam" <c_traja@qti.qualcomm.com>
+Cc: linux-wireless <linux-wireless@vger.kernel.org>, "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-From: Tamizh chelvam <c_traja@qti.qualcomm.com>
-
-Frequent failures in waking up the target is observed during
-interface (mostly observed with AP and Monitor mode) bring up
-on x86, this failures lead to firmware crash. Disabling PCI
-power save fixes this issue. Disabling ASPM also does not help,
-as a work around disable PCI power save for QCA99X0.
-
-The following kernel log is seen when this issue happens
-
-kworker/dying (667) used greatest stack depth: 12208 bytes left
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x00040050: -110
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x0004a02c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for write32 of 0xfffffffe at 0x0004a02c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x0004a034: -110
-ath10k_pci 0000:07:00.0: failed to wake target for write32 of 0xfffff81f at 0x0004a034: -110
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x0004a02c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for write32 of 0xffffffe1 at 0x0004a02c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x0004a42c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for write32 of 0xfffffffe at 0x0004a42c: -110
-ath10k_pci 0000:07:00.0: failed to wake target for read32 at 0x0004a434: -110
-ath10k_pci 0000:07:00.0: firmware crashed! (uuid 40b345f1-db3d-4b97-bc54-6572994e02d5)
-
-Signed-off-by: Tamizh chelvam <c_traja@qti.qualcomm.com>
----
- drivers/net/wireless/ath/ath10k/pci.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 1046ab6..1ab4ee7 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -1640,6 +1640,10 @@ static void ath10k_pci_hif_stop(struct ath10k *ar)
- 	ath10k_pci_safe_chip_reset(ar);
- 
- 	ath10k_pci_irq_disable(ar);
-+
-+	if (QCA_REV_99X0(ar))
-+		ath10k_pci_sleep(ar);
-+
- 	ath10k_pci_irq_sync(ar);
- 	ath10k_pci_flush(ar);
- 
-@@ -2315,6 +2319,14 @@ static int ath10k_pci_hif_power_up(struct ath10k *ar)
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT, "boot hif power up\n");
- 
-+	if (QCA_REV_99X0(ar)) {
-+		ret = ath10k_pci_wake(ar);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to wake target for qca99x0: %d\n", ret);
-+			return ret;
-+		}
-+	}
-+
- 	pcie_capability_read_word(ar_pci->pdev, PCI_EXP_LNKCTL,
- 				  &ar_pci->link_ctl);
- 	pcie_capability_write_word(ar_pci->pdev, PCI_EXP_LNKCTL,
--- 
-1.9.1
-
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gMSBTZXB0ZW1iZXIgMjAxNSBhdCAwODoyMywgIDxjX3RyYWphQHF0aS5xdWFsY29tbS5jb20+
+IHdyb3RlOgo+IEZyb206IFRhbWl6aCBjaGVsdmFtIDxjX3RyYWphQHF0aS5xdWFsY29tbS5jb20+
+Cj4KPiBGcmVxdWVudCBmYWlsdXJlcyBpbiB3YWtpbmcgdXAgdGhlIHRhcmdldCBpcyBvYnNlcnZl
+ZCBkdXJpbmcKPiBpbnRlcmZhY2UgKG1vc3RseSBvYnNlcnZlZCB3aXRoIEFQIGFuZCBNb25pdG9y
+IG1vZGUpIGJyaW5nIHVwCj4gb24geDg2LCB0aGlzIGZhaWx1cmVzIGxlYWQgdG8gZmlybXdhcmUg
+Y3Jhc2guIERpc2FibGluZyBQQ0kKPiBwb3dlciBzYXZlIGZpeGVzIHRoaXMgaXNzdWUuIERpc2Fi
+bGluZyBBU1BNIGFsc28gZG9lcyBub3QgaGVscCwKPiBhcyBhIHdvcmsgYXJvdW5kIGRpc2FibGUg
+UENJIHBvd2VyIHNhdmUgZm9yIFFDQTk5WDAuCj4KPiBUaGUgZm9sbG93aW5nIGtlcm5lbCBsb2cg
+aXMgc2VlbiB3aGVuIHRoaXMgaXNzdWUgaGFwcGVucwo+Cj4ga3dvcmtlci9keWluZyAoNjY3KSB1
+c2VkIGdyZWF0ZXN0IHN0YWNrIGRlcHRoOiAxMjIwOCBieXRlcyBsZWZ0Cj4gYXRoMTBrX3BjaSAw
+MDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNDAw
+NTA6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0
+IGZvciByZWFkMzIgYXQgMHgwMDA0YTAyYzogLTExMAo+IGF0aDEwa19wY2kgMDAwMDowNzowMC4w
+OiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZmZmZmZSBhdCAweDAw
+MDRhMDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRh
+cmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNGEwMzQ6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6
+MDAuMDogZmFpbGVkIHRvIHdha2UgdGFyZ2V0IGZvciB3cml0ZTMyIG9mIDB4ZmZmZmY4MWYgYXQg
+MHgwMDA0YTAzNDogLTExMAo+IGF0aDEwa19wY2kgMDAwMDowNzowMC4wOiBmYWlsZWQgdG8gd2Fr
+ZSB0YXJnZXQgZm9yIHJlYWQzMiBhdCAweDAwMDRhMDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAw
+OjA3OjAwLjA6IGZhaWxlZCB0byB3YWtlIHRhcmdldCBmb3Igd3JpdGUzMiBvZiAweGZmZmZmZmUx
+IGF0IDB4MDAwNGEwMmM6IC0xMTAKPiBhdGgxMGtfcGNpIDAwMDA6MDc6MDAuMDogZmFpbGVkIHRv
+IHdha2UgdGFyZ2V0IGZvciByZWFkMzIgYXQgMHgwMDA0YTQyYzogLTExMAo+IGF0aDEwa19wY2kg
+MDAwMDowNzowMC4wOiBmYWlsZWQgdG8gd2FrZSB0YXJnZXQgZm9yIHdyaXRlMzIgb2YgMHhmZmZm
+ZmZmZSBhdCAweDAwMDRhNDJjOiAtMTEwCj4gYXRoMTBrX3BjaSAwMDAwOjA3OjAwLjA6IGZhaWxl
+ZCB0byB3YWtlIHRhcmdldCBmb3IgcmVhZDMyIGF0IDB4MDAwNGE0MzQ6IC0xMTAKPiBhdGgxMGtf
+cGNpIDAwMDA6MDc6MDAuMDogZmlybXdhcmUgY3Jhc2hlZCEgKHV1aWQgNDBiMzQ1ZjEtZGIzZC00
+Yjk3LWJjNTQtNjU3Mjk5NGUwMmQ1KQo+Cj4gU2lnbmVkLW9mZi1ieTogVGFtaXpoIGNoZWx2YW0g
+PGNfdHJhamFAcXRpLnF1YWxjb21tLmNvbT4KPiAtLS0KPiAgZHJpdmVycy9uZXQvd2lyZWxlc3Mv
+YXRoL2F0aDEway9wY2kuYyB8IDEyICsrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTIg
+aW5zZXJ0aW9ucygrKQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L3dpcmVsZXNzL2F0aC9h
+dGgxMGsvcGNpLmMgYi9kcml2ZXJzL25ldC93aXJlbGVzcy9hdGgvYXRoMTBrL3BjaS5jCj4gaW5k
+ZXggMTA0NmFiNi4uMWFiNGVlNyAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL25ldC93aXJlbGVzcy9h
+dGgvYXRoMTBrL3BjaS5jCj4gKysrIGIvZHJpdmVycy9uZXQvd2lyZWxlc3MvYXRoL2F0aDEway9w
+Y2kuYwo+IEBAIC0xNjQwLDYgKzE2NDAsMTAgQEAgc3RhdGljIHZvaWQgYXRoMTBrX3BjaV9oaWZf
+c3RvcChzdHJ1Y3QgYXRoMTBrICphcikKPiAgICAgICAgIGF0aDEwa19wY2lfc2FmZV9jaGlwX3Jl
+c2V0KGFyKTsKPgo+ICAgICAgICAgYXRoMTBrX3BjaV9pcnFfZGlzYWJsZShhcik7Cj4gKwo+ICsg
+ICAgICAgaWYgKFFDQV9SRVZfOTlYMChhcikpCj4gKyAgICAgICAgICAgICAgIGF0aDEwa19wY2lf
+c2xlZXAoYXIpOwo+ICsKClRoaXMgcmUtaW50cm9kdWNlcyBhbiBpc3N1ZSB0aGF0IHdhcyBvcmln
+aW5hbGx5IGZpeGVkIG9uY2UKMzIwZTE0YjhkYjUxICgiYXRoMTBrOiBmaXggc29tZSBwY2kgd2Fr
+ZS9zbGVlcCBpc3N1ZXMiKS4KCkUuZy4gaWYgeW91IGhhdmUgc2hhcmVkIGlycXMgYmV0d2VlbiBh
+dGgxMGsgYW5kIGFub3RoZXIgTklDIGFuZCBhdGgxMGsKaXMgcHV0IGRvd24gdGhlbiBpZiB0aGUg
+b3RoZXIgTklDIGdlbmVyYXRlcyBhbiBpbnRlcnJ1cHQgYXRoMTBrIHdpbGwKcmVhZCBvdXQgaXRz
+IGludGVycnVwdCBDU1IgYXMgMHhkZWFkYmVlZiB3aGljaCBpbiB0dXJuIHdpbGwgY29uZnVzZQp0
+aGUgZHJpdmVyIGFuZCBjb25zdW1lIHRoZSBpbnRlcnJ1cHQgcHJldmVudGluZyB0aGUgb3RoZXIg
+TklDIGRyaXZlcgpmcm9tIHdvcmtpbmcgcHJvcGVybHkuCgpBbHNvIHRoaW5rIG9mIFdvV0xBTi4K
+CgpNaWNoYcWCCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEwa0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9s
+aXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vYXRoMTBrCg==
