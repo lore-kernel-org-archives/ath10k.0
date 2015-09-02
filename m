@@ -1,13 +1,14 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from sabertooth01.qualcomm.com ([65.197.215.72])
+Received: from mail-lb0-x22a.google.com ([2a00:1450:4010:c04::22a])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZX1th-0006tV-Mx
- for ath10k@lists.infradead.org; Wed, 02 Sep 2015 06:51:54 +0000
-From: <c_mpubbi@qti.qualcomm.com>
-Subject: [PATCH] ath10k: invalid mcs reported in rx descriptor
-Date: Wed, 2 Sep 2015 12:21:05 +0530
-Message-ID: <1441176665-3365-1-git-send-email-c_mpubbi@qti.qualcomm.com>
-MIME-Version: 1.0
+ id 1ZX66T-0003E9-UG
+ for ath10k@lists.infradead.org; Wed, 02 Sep 2015 11:21:23 +0000
+Received: by lbcao8 with SMTP id ao8so3979882lbc.3
+ for <ath10k@lists.infradead.org>; Wed, 02 Sep 2015 04:20:55 -0700 (PDT)
+From: Bartosz Markowski <bartosz.markowski@tieto.com>
+Subject: [PATCH 1/2] ath10k: fix beamformee VHT STS capability
+Date: Wed,  2 Sep 2015 13:20:19 +0200
+Message-Id: <1441192820-8403-1-git-send-email-bartosz.markowski@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,64 +17,82 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
-Cc: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>, linux-wireless@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org, Bartosz Markowski <bartosz.markowski@tieto.com>
 
-From: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
+The VHT STS CAP shall be reported by firmware to host, like in case of
+QCA99x0. For QCA6174 hw family this isn't set for some reason.
+So for this particular chips, let's assume it has the ability to
+support VHT NDP in up to 4 STSs (which is true by the way).
 
-Sometimes hardware reports invalid mcs index in rx descriptor
-when operating in VHT80 mode and all packets with invalid mcs
-will be eventually dropped in mac80211. This issue is observerd during
-testing on QCA99X0 chipsets.
+Change the published beamformee STS cap accordingly to 3 or to what
+the firmware reports.
 
-This patch adds a warn message for dumping the rx desc info which helps
-in analysing the issue when invalid mcs is received.
+Assumption so far, it suppose to be the num_rf_chains-1, was
+completely wrong.
 
-Signed-off-by: Manikanta Pubbisetty <c_mpubbi@qti.qualcomm.com>
+Signed-off-by: Bartosz Markowski <bartosz.markowski@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ drivers/net/wireless/ath/ath10k/mac.c | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index 1b7a043..9985772 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -697,6 +697,29 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 9bca37820848..25c20d18021a 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -4064,17 +4064,35 @@ static u32 get_nss_from_chainmask(u16 chain_mask)
+ 	return 1;
+ }
  
-+		if (mcs > 0x09) {
-+			ath10k_warn(ar, "invalid MCS received %u\n", mcs);
-+			ath10k_warn(ar, "rxd %08x mpdu start %08x %08x msdu start %08x %08x ppdu start %08x %08x %08x %08x %08x\n",
-+				    __le32_to_cpu(rxd->attention.flags),
-+				    __le32_to_cpu(rxd->mpdu_start.info0),
-+				    __le32_to_cpu(rxd->mpdu_start.info1),
-+				    __le32_to_cpu(rxd->msdu_start.common.info0),
-+				    __le32_to_cpu(rxd->msdu_start.common.info1),
-+				    rxd->ppdu_start.info0,
-+				    __le32_to_cpu(rxd->ppdu_start.info1),
-+				    __le32_to_cpu(rxd->ppdu_start.info2),
-+				    __le32_to_cpu(rxd->ppdu_start.info3),
-+				    __le32_to_cpu(rxd->ppdu_start.info4));
++static int ath10k_mac_get_vht_cap_bf_sts(struct ath10k *ar)
++{
++	int nsts = ar->vht_cap_info;
++	nsts &= IEEE80211_VHT_CAP_BEAMFORMEE_STS_MASK;
++	nsts >>= IEEE80211_VHT_CAP_BEAMFORMEE_STS_SHIFT;
 +
-+			ath10k_warn(ar, "msdu end %08x mpdu end %08x\n",
-+				    __le32_to_cpu(rxd->msdu_end.common.info0),
-+				    __le32_to_cpu(rxd->mpdu_end.info0));
++	/* If firmware does not deliver to host number of space-time
++	 * streams supported, assume it support up to 4 BF STS and return
++	 * the value for VHT CAP: nsts-1)
++	 * */
++	if (nsts == 0)
++		return 3;
 +
-+			ath10k_dbg_dump(ar, ATH10K_DBG_HTT_DUMP, NULL,
-+					"rx desc msdu payload: ",
-+					rxd->msdu_payload, 50);
-+		}
++	return nsts;
++}
 +
- 		status->rate_idx = mcs;
- 		status->vht_nss = nss;
+ static int ath10k_mac_set_txbf_conf(struct ath10k_vif *arvif)
+ {
+ 	u32 value = 0;
+ 	struct ath10k *ar = arvif->ar;
++	int nsts;
+ 
+ 	if (ath10k_wmi_get_txbf_conf_scheme(ar) != WMI_TXBF_CONF_BEFORE_ASSOC)
+ 		return 0;
+ 
++	nsts = ath10k_mac_get_vht_cap_bf_sts(ar);
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE))
+-		value |= SM((ar->num_rf_chains - 1), WMI_TXBF_STS_CAP_OFFSET);
++		value |= SM(nsts, WMI_TXBF_STS_CAP_OFFSET);
+ 
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMER_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMER_CAPABLE))
+@@ -6803,7 +6821,7 @@ static struct ieee80211_sta_vht_cap ath10k_create_vht_cap(struct ath10k *ar)
+ 
+ 	if (ar->vht_cap_info & (IEEE80211_VHT_CAP_SU_BEAMFORMEE_CAPABLE |
+ 				IEEE80211_VHT_CAP_MU_BEAMFORMEE_CAPABLE)) {
+-		val = ar->num_rf_chains - 1;
++		val = ath10k_mac_get_vht_cap_bf_sts(ar);
+ 		val <<= IEEE80211_VHT_CAP_BEAMFORMEE_STS_SHIFT;
+ 		val &= IEEE80211_VHT_CAP_BEAMFORMEE_STS_MASK;
  
 -- 
-1.9.1
+2.1.2
 
 
 _______________________________________________
