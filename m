@@ -1,13 +1,15 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail2.candelatech.com ([208.74.158.173])
- by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZWt7a-0002wW-KK
- for ath10k@lists.infradead.org; Tue, 01 Sep 2015 21:29:38 +0000
-From: Ben Greear <greearb@candelatech.com>
-Subject: CT firmware beta-15 can now tune noise-floor thresholds.
-Message-ID: <55E618AB.50902@candelatech.com>
-Date: Tue, 1 Sep 2015 14:29:15 -0700
+Received: from mail-ob0-f170.google.com ([209.85.214.170])
+ by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
+ id 1ZWwjm-0005mJ-Lo
+ for ath10k@lists.infradead.org; Wed, 02 Sep 2015 01:21:19 +0000
+Received: by obqa2 with SMTP id a2so14603715obq.3
+ for <ath10k@lists.infradead.org>; Tue, 01 Sep 2015 18:20:52 -0700 (PDT)
 MIME-Version: 1.0
+Date: Wed, 2 Sep 2015 09:20:51 +0800
+Message-ID: <CAEFj984QMQrsDPuThJCnnDj=vDFAeHwkdVT2MA0PXvhCAL2Hcw@mail.gmail.com>
+Subject: HT80 monitoring using ath10k
+From: Yeoh Chun-Yeow <yeohchunyeow@gmail.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -16,45 +18,21 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k <ath10k@lists.infradead.org>, "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+To: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Here is the changelog note.  This requires a corresponding driver patch to
-enable configuring the firmware.  I tested this on my 4.0.4+ kernel.  I
-will be adding this patch to my 3.17 and 4.2 (and future) kernels as well.
+Hi, all
 
-Should be useful for anyone trying (and failing) to pass ETSI CCA Adaptivity testing.
+Anyone has able to capture the packet sent using HT80 or even higher
+putting ath10k in monitor mode?
 
-You are more likely to cause something to be worse than better, so don't use this
-feature unless you know what you are doing and understand the consequences.
+Please let me know. Thanks
 
-This firmware also has some debugging for a case where rate-ctrl gets stuck at
-6Mbps and spews lots of dbglog messages into the logs.  This is not easy to
-reproduce, but in case someone is debugging such an issue...please send me
-full kernel logs if you detect the problem...maybe I can decode them and understand
-the problem a bit better now.  You will need to be using my kernel (patches) in order to
-get useful firmware logs, by the way.
-
-   *  Enable setting noise-floor-threshold and min-cca-power.  If set, this will over
-      ride the defaults, including eeprom (though firmware ignores these settings
-      in the eeprom anyway.)  Don't mess with this unless you understand the
-      consequences.  But, if set properly, noise-floor-threshold tweaking may fix
-      ETSI CCA adapatibility test failures.
-
-
-http://www.candelatech.com/ath10k.php
-
-
-Thanks,
-Ben
-
--- 
-Ben Greear <greearb@candelatech.com>
-Candela Technologies Inc  http://www.candelatech.com
-
+Regards,
+Chun-Yeow
 
 _______________________________________________
 ath10k mailing list
