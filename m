@@ -1,16 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
+Received: from smtp.codeaurora.org ([198.145.29.96])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXQ8Z-00016w-VY
- for ath10k@lists.infradead.org; Thu, 03 Sep 2015 08:44:52 +0000
-Received: by lbbmp1 with SMTP id mp1so20255127lbb.1
- for <ath10k@lists.infradead.org>; Thu, 03 Sep 2015 01:44:29 -0700 (PDT)
-From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 2/2] ath10k: handle IEEE80211_CHANCTX_CHANGE_WIDTH properly
-Date: Thu,  3 Sep 2015 10:44:52 +0200
-Message-Id: <1441269892-438-2-git-send-email-michal.kazior@tieto.com>
-In-Reply-To: <1441269892-438-1-git-send-email-michal.kazior@tieto.com>
-References: <1441269892-438-1-git-send-email-michal.kazior@tieto.com>
+ id 1ZXYsS-0000di-E7
+ for ath10k@lists.infradead.org; Thu, 03 Sep 2015 18:04:49 +0000
+Message-ID: <55E88BA4.7010009@codeaurora.org>
+Date: Thu, 03 Sep 2015 11:04:20 -0700
+From: Peter Oh <poh@codeaurora.org>
+MIME-Version: 1.0
+Subject: Re: [PATCH] ath: use PRI value given by spec for fixed PRI
+References: <1427475590-2198-1-git-send-email-poh@qca.qualcomm.com>
+ <55191D89.2000300@neratec.com> <55198EA4.1010101@codeaurora.org>
+ <551BC2B1.3030002@neratec.com>
+In-Reply-To: <551BC2B1.3030002@neratec.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -19,116 +20,77 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
-Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
+To: Zefir Kurtisi <zefir.kurtisi@neratec.com>, Peter Oh <poh@qca.qualcomm.com>, ath10k@lists.infradead.org
+Cc: linux-wireless@vger.kernel.org
 
-Vdevs associated with a given chanctx should be
-restarted if the bandwidth changes. Otherwise
-traffic may cease.
+Hi Zefir,
 
-This is known to fix STA CSA with bandwidths wider
-than 20MHz.
+I believe the patch below is good to be checked in since you've already 
+made change in DFS.
+Can you confirm it?
 
-Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
----
- drivers/net/wireless/ath/ath10k/mac.c | 64 +++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+Thanks,
+Peter
 
-diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 13e9d5659e96..34aff8683943 100644
---- a/drivers/net/wireless/ath/ath10k/mac.c
-+++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6352,12 +6352,52 @@ ath10k_mac_op_remove_chanctx(struct ieee80211_hw *hw,
- 	mutex_unlock(&ar->conf_mutex);
- }
- 
-+struct ath10k_mac_change_chanctx_arg {
-+	struct ieee80211_chanctx_conf *ctx;
-+	struct ieee80211_vif_chanctx_switch *vifs;
-+	int n_vifs;
-+	int next_vif;
-+};
-+
-+static void
-+ath10k_mac_change_chanctx_cnt_iter(void *data, u8 *mac,
-+				   struct ieee80211_vif *vif)
-+{
-+	struct ath10k_mac_change_chanctx_arg *arg = data;
-+
-+	if (rcu_access_pointer(vif->chanctx_conf) != arg->ctx)
-+		return;
-+
-+	arg->n_vifs++;
-+}
-+
-+static void
-+ath10k_mac_change_chanctx_fill_iter(void *data, u8 *mac,
-+				    struct ieee80211_vif *vif)
-+{
-+	struct ath10k_mac_change_chanctx_arg *arg = data;
-+	struct ieee80211_chanctx_conf *ctx;
-+
-+	ctx = rcu_access_pointer(vif->chanctx_conf);
-+	if (ctx != arg->ctx)
-+		return;
-+
-+	if (WARN_ON(arg->next_vif == arg->n_vifs))
-+		return;
-+
-+	arg->vifs[arg->next_vif].vif = vif;
-+	arg->vifs[arg->next_vif].old_ctx = ctx;
-+	arg->vifs[arg->next_vif].new_ctx = ctx;
-+	arg->next_vif++;
-+}
-+
- static void
- ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
- 			     struct ieee80211_chanctx_conf *ctx,
- 			     u32 changed)
- {
- 	struct ath10k *ar = hw->priv;
-+	struct ath10k_mac_change_chanctx_arg arg = { .ctx = ctx };
- 
- 	mutex_lock(&ar->conf_mutex);
- 
-@@ -6371,6 +6411,30 @@ ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
- 	if (WARN_ON(changed & IEEE80211_CHANCTX_CHANGE_CHANNEL))
- 		goto unlock;
- 
-+	if (changed & IEEE80211_CHANCTX_CHANGE_WIDTH) {
-+		ieee80211_iterate_active_interfaces_atomic(
-+					hw,
-+					IEEE80211_IFACE_ITER_NORMAL,
-+					ath10k_mac_change_chanctx_cnt_iter,
-+					&arg);
-+		if (arg.n_vifs == 0)
-+			goto radar;
-+
-+		arg.vifs = kcalloc(arg.n_vifs, sizeof(arg.vifs[0]),
-+				   GFP_KERNEL);
-+		if (!arg.vifs)
-+			goto radar;
-+
-+		ieee80211_iterate_active_interfaces_atomic(
-+					hw,
-+					IEEE80211_IFACE_ITER_NORMAL,
-+					ath10k_mac_change_chanctx_fill_iter,
-+					&arg);
-+		ath10k_mac_update_vif_chan(ar, arg.vifs, arg.n_vifs);
-+		kfree(arg.vifs);
-+	}
-+
-+radar:
- 	ath10k_recalc_radar_detection(ar);
- 
- 	/* FIXME: How to configure Rx chains properly? */
--- 
-2.1.4
+On 04/01/2015 03:04 AM, Zefir Kurtisi wrote:
+> On 03/30/2015 07:57 PM, Peter Oh wrote:
+>> On 03/30/2015 02:55 AM, Zefir Kurtisi wrote:
+>>> [...]
+>>> That's why I believe we need to
+>>> be very cautious when changing it to fix / improve minor issues.
+>> This patch is not for minor fix.
+>> Current DFS detector fails on Japan W53 band which requires at least 50%
+> of data
+>> traffic during DFS certificate.
+>> So this patch should apply to both of 9k and 10k.
+> That is the core of my concern: you add changes to fix FCC/JP, which at
+> the same
+> time also affects ETSI.
+>
+> Our company (and maybe others) got ath9k certified for ETSI, and any
+> potential
+> change to the detector relevant for that domain would essentially require
+> to
+> re-certify.
+>
+> There were several patches lately added to the detector that were isolated
+> to
+> specific domains (like the recent updates for FCC pattern 1) which I knew
+> won't
+> affect the ETSI detector performance, since they touched only the FCC
+> configuration but not the algorithm itself. This patch does, and that's
+> why I need
+> to point out that doing so might void certification efforts out there.
+>
+> Unfortunately, I have no good idea how to cope with it. Freezing the
+> driver at the
+> certified state is no option, since we all want to evolve. Having multiple
+> copies
+> of the detector for each regulatory domain would be an option (and
+> essentially
+> will happen since FCC/JP can't be covered by PRI detectors only), but
+> gives
+> unacceptable code duplication. Ideally we would fully separate algorithm
+> from
+> configuration and leave the algorithm untouched ever after, not sure how
+> doable,
+> though.
+>
+>
+> As for your patch at hand, I tested it for ETSI and it does not change
+> detector
+> performance, therefore (please replace 16 with PRI_TOLERANCE in the macro)
+>
+> Acked-by: Zefir Kurtisi <zefir.kurtisi@neratec.com>
+>
+> _______________________________________________
+> ath10k mailing list
+> ath10k@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/ath10k
 
 
 _______________________________________________
