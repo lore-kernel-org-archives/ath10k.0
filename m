@@ -1,14 +1,16 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail-la0-x233.google.com ([2a00:1450:4010:c03::233])
+Received: from mail-lb0-x231.google.com ([2a00:1450:4010:c04::231])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXQ8X-00015R-W3
- for ath10k@lists.infradead.org; Thu, 03 Sep 2015 08:44:50 +0000
-Received: by lagj9 with SMTP id j9so24048148lag.2
- for <ath10k@lists.infradead.org>; Thu, 03 Sep 2015 01:44:28 -0700 (PDT)
+ id 1ZXQ8Z-00016w-VY
+ for ath10k@lists.infradead.org; Thu, 03 Sep 2015 08:44:52 +0000
+Received: by lbbmp1 with SMTP id mp1so20255127lbb.1
+ for <ath10k@lists.infradead.org>; Thu, 03 Sep 2015 01:44:29 -0700 (PDT)
 From: Michal Kazior <michal.kazior@tieto.com>
-Subject: [PATCH 1/2] ath10k: split switch_vif_chanctx guts
-Date: Thu,  3 Sep 2015 10:44:51 +0200
-Message-Id: <1441269892-438-1-git-send-email-michal.kazior@tieto.com>
+Subject: [PATCH 2/2] ath10k: handle IEEE80211_CHANCTX_CHANGE_WIDTH properly
+Date: Thu,  3 Sep 2015 10:44:52 +0200
+Message-Id: <1441269892-438-2-git-send-email-michal.kazior@tieto.com>
+In-Reply-To: <1441269892-438-1-git-send-email-michal.kazior@tieto.com>
+References: <1441269892-438-1-git-send-email-michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,206 +27,106 @@ Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
 To: ath10k@lists.infradead.org
 Cc: linux-wireless@vger.kernel.org, Michal Kazior <michal.kazior@tieto.com>
 
-This is necessary to make vdev restarting logic
-reusable later.
+Vdevs associated with a given chanctx should be
+restarted if the bandwidth changes. Otherwise
+traffic may cease.
+
+This is known to fix STA CSA with bandwidths wider
+than 20MHz.
 
 Signed-off-by: Michal Kazior <michal.kazior@tieto.com>
 ---
- drivers/net/wireless/ath/ath10k/mac.c | 168 ++++++++++++++++++----------------
- 1 file changed, 89 insertions(+), 79 deletions(-)
+ drivers/net/wireless/ath/ath10k/mac.c | 64 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
 diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
-index 64674c955d44..13e9d5659e96 100644
+index 13e9d5659e96..34aff8683943 100644
 --- a/drivers/net/wireless/ath/ath10k/mac.c
 +++ b/drivers/net/wireless/ath/ath10k/mac.c
-@@ -6218,6 +6218,94 @@ ath10k_mac_update_rx_channel(struct ath10k *ar,
- 	rcu_read_unlock();
+@@ -6352,12 +6352,52 @@ ath10k_mac_op_remove_chanctx(struct ieee80211_hw *hw,
+ 	mutex_unlock(&ar->conf_mutex);
  }
  
++struct ath10k_mac_change_chanctx_arg {
++	struct ieee80211_chanctx_conf *ctx;
++	struct ieee80211_vif_chanctx_switch *vifs;
++	int n_vifs;
++	int next_vif;
++};
++
 +static void
-+ath10k_mac_update_vif_chan(struct ath10k *ar,
-+			   struct ieee80211_vif_chanctx_switch *vifs,
-+			   int n_vifs)
++ath10k_mac_change_chanctx_cnt_iter(void *data, u8 *mac,
++				   struct ieee80211_vif *vif)
 +{
-+	struct ath10k_vif *arvif;
-+	int ret;
-+	int i;
++	struct ath10k_mac_change_chanctx_arg *arg = data;
 +
-+	lockdep_assert_held(&ar->conf_mutex);
++	if (rcu_access_pointer(vif->chanctx_conf) != arg->ctx)
++		return;
 +
-+	/* First stop monitor interface. Some FW versions crash if there's a
-+	 * lone monitor interface.
-+	 */
-+	if (ar->monitor_started)
-+		ath10k_monitor_stop(ar);
-+
-+	for (i = 0; i < n_vifs; i++) {
-+		arvif = ath10k_vif_to_arvif(vifs[i].vif);
-+
-+		ath10k_dbg(ar, ATH10K_DBG_MAC,
-+			   "mac chanctx switch vdev_id %i freq %hu->%hu width %d->%d\n",
-+			   arvif->vdev_id,
-+			   vifs[i].old_ctx->def.chan->center_freq,
-+			   vifs[i].new_ctx->def.chan->center_freq,
-+			   vifs[i].old_ctx->def.width,
-+			   vifs[i].new_ctx->def.width);
-+
-+		if (WARN_ON(!arvif->is_started))
-+			continue;
-+
-+		if (WARN_ON(!arvif->is_up))
-+			continue;
-+
-+		ret = ath10k_wmi_vdev_down(ar, arvif->vdev_id);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to down vdev %d: %d\n",
-+				    arvif->vdev_id, ret);
-+			continue;
-+		}
-+	}
-+
-+	/* All relevant vdevs are downed and associated channel resources
-+	 * should be available for the channel switch now.
-+	 */
-+
-+	spin_lock_bh(&ar->data_lock);
-+	ath10k_mac_update_rx_channel(ar, NULL, vifs, n_vifs);
-+	spin_unlock_bh(&ar->data_lock);
-+
-+	for (i = 0; i < n_vifs; i++) {
-+		arvif = ath10k_vif_to_arvif(vifs[i].vif);
-+
-+		if (WARN_ON(!arvif->is_started))
-+			continue;
-+
-+		if (WARN_ON(!arvif->is_up))
-+			continue;
-+
-+		ret = ath10k_mac_setup_bcn_tmpl(arvif);
-+		if (ret)
-+			ath10k_warn(ar, "failed to update bcn tmpl during csa: %d\n",
-+				    ret);
-+
-+		ret = ath10k_mac_setup_prb_tmpl(arvif);
-+		if (ret)
-+			ath10k_warn(ar, "failed to update prb tmpl during csa: %d\n",
-+				    ret);
-+
-+		ret = ath10k_vdev_restart(arvif, &vifs[i].new_ctx->def);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to restart vdev %d: %d\n",
-+				    arvif->vdev_id, ret);
-+			continue;
-+		}
-+
-+		ret = ath10k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
-+					 arvif->bssid);
-+		if (ret) {
-+			ath10k_warn(ar, "failed to bring vdev up %d: %d\n",
-+				    arvif->vdev_id, ret);
-+			continue;
-+		}
-+	}
-+
-+	ath10k_monitor_recalc(ar);
++	arg->n_vifs++;
 +}
 +
- static int
- ath10k_mac_op_add_chanctx(struct ieee80211_hw *hw,
- 			  struct ieee80211_chanctx_conf *ctx)
-@@ -6402,91 +6490,13 @@ ath10k_mac_op_switch_vif_chanctx(struct ieee80211_hw *hw,
- 				 enum ieee80211_chanctx_switch_mode mode)
++static void
++ath10k_mac_change_chanctx_fill_iter(void *data, u8 *mac,
++				    struct ieee80211_vif *vif)
++{
++	struct ath10k_mac_change_chanctx_arg *arg = data;
++	struct ieee80211_chanctx_conf *ctx;
++
++	ctx = rcu_access_pointer(vif->chanctx_conf);
++	if (ctx != arg->ctx)
++		return;
++
++	if (WARN_ON(arg->next_vif == arg->n_vifs))
++		return;
++
++	arg->vifs[arg->next_vif].vif = vif;
++	arg->vifs[arg->next_vif].old_ctx = ctx;
++	arg->vifs[arg->next_vif].new_ctx = ctx;
++	arg->next_vif++;
++}
++
+ static void
+ ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
+ 			     struct ieee80211_chanctx_conf *ctx,
+ 			     u32 changed)
  {
  	struct ath10k *ar = hw->priv;
--	struct ath10k_vif *arvif;
--	int ret;
--	int i;
++	struct ath10k_mac_change_chanctx_arg arg = { .ctx = ctx };
  
  	mutex_lock(&ar->conf_mutex);
  
- 	ath10k_dbg(ar, ATH10K_DBG_MAC,
- 		   "mac chanctx switch n_vifs %d mode %d\n",
- 		   n_vifs, mode);
--
--	/* First stop monitor interface. Some FW versions crash if there's a
--	 * lone monitor interface.
--	 */
--	if (ar->monitor_started)
--		ath10k_monitor_stop(ar);
--
--	for (i = 0; i < n_vifs; i++) {
--		arvif = ath10k_vif_to_arvif(vifs[i].vif);
--
--		ath10k_dbg(ar, ATH10K_DBG_MAC,
--			   "mac chanctx switch vdev_id %i freq %hu->%hu width %d->%d\n",
--			   arvif->vdev_id,
--			   vifs[i].old_ctx->def.chan->center_freq,
--			   vifs[i].new_ctx->def.chan->center_freq,
--			   vifs[i].old_ctx->def.width,
--			   vifs[i].new_ctx->def.width);
--
--		if (WARN_ON(!arvif->is_started))
--			continue;
--
--		if (WARN_ON(!arvif->is_up))
--			continue;
--
--		ret = ath10k_wmi_vdev_down(ar, arvif->vdev_id);
--		if (ret) {
--			ath10k_warn(ar, "failed to down vdev %d: %d\n",
--				    arvif->vdev_id, ret);
--			continue;
--		}
--	}
--
--	/* All relevant vdevs are downed and associated channel resources
--	 * should be available for the channel switch now.
--	 */
--
--	spin_lock_bh(&ar->data_lock);
--	ath10k_mac_update_rx_channel(ar, NULL, vifs, n_vifs);
--	spin_unlock_bh(&ar->data_lock);
--
--	for (i = 0; i < n_vifs; i++) {
--		arvif = ath10k_vif_to_arvif(vifs[i].vif);
--
--		if (WARN_ON(!arvif->is_started))
--			continue;
--
--		if (WARN_ON(!arvif->is_up))
--			continue;
--
--		ret = ath10k_mac_setup_bcn_tmpl(arvif);
--		if (ret)
--			ath10k_warn(ar, "failed to update bcn tmpl during csa: %d\n",
--				    ret);
--
--		ret = ath10k_mac_setup_prb_tmpl(arvif);
--		if (ret)
--			ath10k_warn(ar, "failed to update prb tmpl during csa: %d\n",
--				    ret);
--
--		ret = ath10k_vdev_restart(arvif, &vifs[i].new_ctx->def);
--		if (ret) {
--			ath10k_warn(ar, "failed to restart vdev %d: %d\n",
--				    arvif->vdev_id, ret);
--			continue;
--		}
--
--		ret = ath10k_wmi_vdev_up(arvif->ar, arvif->vdev_id, arvif->aid,
--					 arvif->bssid);
--		if (ret) {
--			ath10k_warn(ar, "failed to bring vdev up %d: %d\n",
--				    arvif->vdev_id, ret);
--			continue;
--		}
--	}
--
--	ath10k_monitor_recalc(ar);
-+	ath10k_mac_update_vif_chan(ar, vifs, n_vifs);
+@@ -6371,6 +6411,30 @@ ath10k_mac_op_change_chanctx(struct ieee80211_hw *hw,
+ 	if (WARN_ON(changed & IEEE80211_CHANCTX_CHANGE_CHANNEL))
+ 		goto unlock;
  
- 	mutex_unlock(&ar->conf_mutex);
- 	return 0;
++	if (changed & IEEE80211_CHANCTX_CHANGE_WIDTH) {
++		ieee80211_iterate_active_interfaces_atomic(
++					hw,
++					IEEE80211_IFACE_ITER_NORMAL,
++					ath10k_mac_change_chanctx_cnt_iter,
++					&arg);
++		if (arg.n_vifs == 0)
++			goto radar;
++
++		arg.vifs = kcalloc(arg.n_vifs, sizeof(arg.vifs[0]),
++				   GFP_KERNEL);
++		if (!arg.vifs)
++			goto radar;
++
++		ieee80211_iterate_active_interfaces_atomic(
++					hw,
++					IEEE80211_IFACE_ITER_NORMAL,
++					ath10k_mac_change_chanctx_fill_iter,
++					&arg);
++		ath10k_mac_update_vif_chan(ar, arg.vifs, arg.n_vifs);
++		kfree(arg.vifs);
++	}
++
++radar:
+ 	ath10k_recalc_radar_detection(ar);
+ 
+ 	/* FIXME: How to configure Rx chains properly? */
 -- 
 2.1.4
 
