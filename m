@@ -1,18 +1,17 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from smtp-rs1-vallila2.fe.helsinki.fi ([128.214.173.75])
+Received: from mail-lb0-x230.google.com ([2a00:1450:4010:c04::230])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZXfOq-0003VT-K3
- for ath10k@lists.infradead.org; Fri, 04 Sep 2015 01:02:42 +0000
-Received: from [192.168.1.86] (104-58-201-5.lightspeed.sntcca.sbcglobal.net
- [104.58.201.5]) (authenticated bits=0)
- by smtp-rs1.it.helsinki.fi (8.14.4/8.14.4) with ESMTP id t8412CVK008951
- (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-SHA bits=128 verify=NOT)
- for <ath10k@lists.infradead.org>; Fri, 4 Sep 2015 04:02:15 +0300
-From: Susi Lehtola <jussilehtola@fedoraproject.org>
-Subject: QCA6164 in Fedora
-Message-ID: <55E8ED93.4040504@fedoraproject.org>
-Date: Thu, 3 Sep 2015 18:02:11 -0700
+ id 1ZXjF4-0000JU-QO
+ for ath10k@lists.infradead.org; Fri, 04 Sep 2015 05:08:52 +0000
+Received: by lbpo4 with SMTP id o4so5140936lbp.2
+ for <ath10k@lists.infradead.org>; Thu, 03 Sep 2015 22:08:24 -0700 (PDT)
 MIME-Version: 1.0
+In-Reply-To: <55E8ED93.4040504@fedoraproject.org>
+References: <55E8ED93.4040504@fedoraproject.org>
+Date: Fri, 4 Sep 2015 07:08:24 +0200
+Message-ID: <CA+BoTQk+Rtk=KEjeJr6bJuMYuO1-_cxnOg8oWg_t2fFBO+mqXA@mail.gmail.com>
+Subject: Re: QCA6164 in Fedora
+From: Michal Kazior <michal.kazior@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -21,94 +20,80 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Susi Lehtola <jussilehtola@fedoraproject.org>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-Hello people,
-
-
-I recently bought a Lenovo U31 laptop for work, and was surprised 
-wireless didn't work out of the box.
-
-Fortunately thanks to you the card (supposedly) works in linux, but I 
-have yet to get mine to work.
-
-I've patched the Fedora 4.1.6 kernel
-  https://bugzilla.redhat.com/attachment.cgi?id=1069561&action=diff
-to add support for the card, which I adapted from
-  https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1436940
-
-However, I'm having trouble loading the firmware. I took the firmware 
-files from
- 
-https://github.com/atondwal/ath10k-firmware/commit/88fca85ef59d708b9874e5b7885416b58aef9ee7
-and installed them into /lib/firmware/ath10k/QCA6174/hw2.1/, renaming 
-firmare-5.bin to firmware-4.bin.
-
-I also have added the necessary kernel option
-
-$ cat /etc/modprobe.d/ath10k.conf
-options ath10k_core skip_otp=y
-
-After these changes, the kernel does detect the card, but it fails to 
-load the firmware.
-
-[10967.516277] ath10k_pci 0000:03:00.0: Direct firmware load for 
-ath10k/cal-pci-0000:03:00.0.bin failed with error -2
-[10968.660851] ath10k_pci 0000:03:00.0: firmware crashed! (uuid 
-47cbe9a4-5fcd-41ae-b8ff-91e93702d083)
-[10968.660862] ath10k_pci 0000:03:00.0: qca6174 hw2.1 (0x05010000, 
-0x003405ff) fw atheros-12.0.0.102-fw api 4 htt 0.0 wmi 4 cal otp max_sta 32
-[10968.660865] ath10k_pci 0000:03:00.0: debug 0 debugfs 1 tracing 0 dfs 
-0 testmode 0
-[10968.662882] ath10k_pci 0000:03:00.0: firmware register dump:
-[10968.662884] ath10k_pci 0000:03:00.0: [00]: 0x05010000 0x000015B3 
-0x000A012D 0x00955B31
-[10968.662886] ath10k_pci 0000:03:00.0: [04]: 0x000A012D 0x00060330 
-0x00000016 0x8C605006
-[10968.662888] ath10k_pci 0000:03:00.0: [08]: 0x00000000 0x00400000 
-0x00400600 0x00000001
-[10968.662890] ath10k_pci 0000:03:00.0: [12]: 0x00000009 0x00000000 
-0x00931C61 0x00931C7D
-[10968.662892] ath10k_pci 0000:03:00.0: [16]: 0x0096BDBC 0x0097F8C6 
-0x00000000 0x00000000
-[10968.662894] ath10k_pci 0000:03:00.0: [20]: 0x400A012D 0x0040E2B0 
-0x00955A00 0x00404590
-[10968.662896] ath10k_pci 0000:03:00.0: [24]: 0x809287D9 0x0040E310 
-0x7A508BF8 0xC00A012D
-[10968.662898] ath10k_pci 0000:03:00.0: [28]: 0x809288D7 0x0040E340 
-0x00000000 0xFFF08040
-[10968.662899] ath10k_pci 0000:03:00.0: [32]: 0x809290FE 0x0040E360 
-0x00400000 0x00400600
-[10968.662901] ath10k_pci 0000:03:00.0: [36]: 0x80929205 0x0040E380 
-0x00000000 0x00400600
-[10968.662903] ath10k_pci 0000:03:00.0: [40]: 0x40928024 0x0040E3B0 
-0x0040D3D0 0x0040D3D0
-[10968.662905] ath10k_pci 0000:03:00.0: [44]: 0x00000000 0x0040E3D0 
-0x009BB001 0x00040020
-[10968.662907] ath10k_pci 0000:03:00.0: [48]: 0x00401BF0 0x00000001 
-0x00404B9C 0x00400000
-[10968.662909] ath10k_pci 0000:03:00.0: [52]: 0x40928024 0x0040E3B0 
-0x0040D3D0 0x0040D3D0
-[10968.662910] ath10k_pci 0000:03:00.0: [56]: 0x51196000 0xEAB3E3DF 
-0x36E760CE 0xE34A47DC
-[10969.660666] ath10k_pci 0000:03:00.0: failed to receive control 
-response completion, polling..
-
-The card in question is
-03:00.0 Network controller [0280]: Qualcomm Atheros Device [168c:0041] 
-(rev 20)
-
-What might be the problem?
--- 
-Susi Lehtola
-Fedora Project Contributor
-jussilehtola@fedoraproject.org
-
-_______________________________________________
-ath10k mailing list
-ath10k@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/ath10k
+T24gNCBTZXB0ZW1iZXIgMjAxNSBhdCAwMzowMiwgU3VzaSBMZWh0b2xhCjxqdXNzaWxlaHRvbGFA
+ZmVkb3JhcHJvamVjdC5vcmc+IHdyb3RlOgo+IEhlbGxvIHBlb3BsZSwKPgo+Cj4gSSByZWNlbnRs
+eSBib3VnaHQgYSBMZW5vdm8gVTMxIGxhcHRvcCBmb3Igd29yaywgYW5kIHdhcyBzdXJwcmlzZWQg
+d2lyZWxlc3MKPiBkaWRuJ3Qgd29yayBvdXQgb2YgdGhlIGJveC4KPgo+IEZvcnR1bmF0ZWx5IHRo
+YW5rcyB0byB5b3UgdGhlIGNhcmQgKHN1cHBvc2VkbHkpIHdvcmtzIGluIGxpbnV4LCBidXQgSSBo
+YXZlCj4geWV0IHRvIGdldCBtaW5lIHRvIHdvcmsuCj4KPiBJJ3ZlIHBhdGNoZWQgdGhlIEZlZG9y
+YSA0LjEuNiBrZXJuZWwKPiAgaHR0cHM6Ly9idWd6aWxsYS5yZWRoYXQuY29tL2F0dGFjaG1lbnQu
+Y2dpP2lkPTEwNjk1NjEmYWN0aW9uPWRpZmYKPiB0byBhZGQgc3VwcG9ydCBmb3IgdGhlIGNhcmQs
+IHdoaWNoIEkgYWRhcHRlZCBmcm9tCj4gIGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50
+dS8rc291cmNlL2xpbnV4LytidWcvMTQzNjk0MAo+Cj4gSG93ZXZlciwgSSdtIGhhdmluZyB0cm91
+YmxlIGxvYWRpbmcgdGhlIGZpcm13YXJlLiBJIHRvb2sgdGhlIGZpcm13YXJlIGZpbGVzCj4gZnJv
+bQo+Cj4gaHR0cHM6Ly9naXRodWIuY29tL2F0b25kd2FsL2F0aDEway1maXJtd2FyZS9jb21taXQv
+ODhmY2E4NWVmNTlkNzA4Yjk4NzRlNWI3ODg1NDE2YjU4YWVmOWVlNwo+IGFuZCBpbnN0YWxsZWQg
+dGhlbSBpbnRvIC9saWIvZmlybXdhcmUvYXRoMTBrL1FDQTYxNzQvaHcyLjEvLCByZW5hbWluZwo+
+IGZpcm1hcmUtNS5iaW4gdG8gZmlybXdhcmUtNC5iaW4uCgpGWUkgVGhpcyBpcyBhc2tpbmcgZm9y
+IHByb2JsZW1zLiBZb3UgY2FuJ3QganVzdCBnbyBhcm91bmQgcmVuYW1pbmcKZmlybXdhcmUgZmls
+ZXMgbGlrZSB0aGF0LiBUaGVyZSdzIGEgcmVhc29uIHdoeSB0aGVyZSBhcmUgZGlmZmVyZW50Cm51
+bWJlcnMgaW4gdGhlIGZpbGVuYW1lLgoKCj4KPiBJIGFsc28gaGF2ZSBhZGRlZCB0aGUgbmVjZXNz
+YXJ5IGtlcm5lbCBvcHRpb24KPgo+ICQgY2F0IC9ldGMvbW9kcHJvYmUuZC9hdGgxMGsuY29uZgo+
+IG9wdGlvbnMgYXRoMTBrX2NvcmUgc2tpcF9vdHA9eQo+Cj4gQWZ0ZXIgdGhlc2UgY2hhbmdlcywg
+dGhlIGtlcm5lbCBkb2VzIGRldGVjdCB0aGUgY2FyZCwgYnV0IGl0IGZhaWxzIHRvIGxvYWQKPiB0
+aGUgZmlybXdhcmUuCj4KPiBbMTA5NjcuNTE2Mjc3XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
+RGlyZWN0IGZpcm13YXJlIGxvYWQgZm9yCj4gYXRoMTBrL2NhbC1wY2ktMDAwMDowMzowMC4wLmJp
+biBmYWlsZWQgd2l0aCBlcnJvciAtMgo+IFsxMDk2OC42NjA4NTFdIGF0aDEwa19wY2kgMDAwMDow
+MzowMC4wOiBmaXJtd2FyZSBjcmFzaGVkISAodXVpZAo+IDQ3Y2JlOWE0LTVmY2QtNDFhZS1iOGZm
+LTkxZTkzNzAyZDA4MykKPiBbMTA5NjguNjYwODYyXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDog
+cWNhNjE3NCBodzIuMSAoMHgwNTAxMDAwMCwKPiAweDAwMzQwNWZmKSBmdyBhdGhlcm9zLTEyLjAu
+MC4xMDItZncgYXBpIDQgaHR0IDAuMCB3bWkgNCBjYWwgb3RwIG1heF9zdGEgMzIKPiBbMTA5Njgu
+NjYwODY1XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogZGVidWcgMCBkZWJ1Z2ZzIDEgdHJhY2lu
+ZyAwIGRmcyAwCj4gdGVzdG1vZGUgMAo+IFsxMDk2OC42NjI4ODJdIGF0aDEwa19wY2kgMDAwMDow
+MzowMC4wOiBmaXJtd2FyZSByZWdpc3RlciBkdW1wOgo+IFsxMDk2OC42NjI4ODRdIGF0aDEwa19w
+Y2kgMDAwMDowMzowMC4wOiBbMDBdOiAweDA1MDEwMDAwIDB4MDAwMDE1QjMKPiAweDAwMEEwMTJE
+IDB4MDA5NTVCMzEKPiBbMTA5NjguNjYyODg2XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzA0
+XTogMHgwMDBBMDEyRCAweDAwMDYwMzMwCj4gMHgwMDAwMDAxNiAweDhDNjA1MDA2Cj4gWzEwOTY4
+LjY2Mjg4OF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFswOF06IDB4MDAwMDAwMDAgMHgwMDQw
+MDAwMAo+IDB4MDA0MDA2MDAgMHgwMDAwMDAwMQo+IFsxMDk2OC42NjI4OTBdIGF0aDEwa19wY2kg
+MDAwMDowMzowMC4wOiBbMTJdOiAweDAwMDAwMDA5IDB4MDAwMDAwMDAKPiAweDAwOTMxQzYxIDB4
+MDA5MzFDN0QKPiBbMTA5NjguNjYyODkyXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzE2XTog
+MHgwMDk2QkRCQyAweDAwOTdGOEM2Cj4gMHgwMDAwMDAwMCAweDAwMDAwMDAwCj4gWzEwOTY4LjY2
+Mjg5NF0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFsyMF06IDB4NDAwQTAxMkQgMHgwMDQwRTJC
+MAo+IDB4MDA5NTVBMDAgMHgwMDQwNDU5MAo+IFsxMDk2OC42NjI4OTZdIGF0aDEwa19wY2kgMDAw
+MDowMzowMC4wOiBbMjRdOiAweDgwOTI4N0Q5IDB4MDA0MEUzMTAKPiAweDdBNTA4QkY4IDB4QzAw
+QTAxMkQKPiBbMTA5NjguNjYyODk4XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzI4XTogMHg4
+MDkyODhENyAweDAwNDBFMzQwCj4gMHgwMDAwMDAwMCAweEZGRjA4MDQwCj4gWzEwOTY4LjY2Mjg5
+OV0gYXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFszMl06IDB4ODA5MjkwRkUgMHgwMDQwRTM2MAo+
+IDB4MDA0MDAwMDAgMHgwMDQwMDYwMAo+IFsxMDk2OC42NjI5MDFdIGF0aDEwa19wY2kgMDAwMDow
+MzowMC4wOiBbMzZdOiAweDgwOTI5MjA1IDB4MDA0MEUzODAKPiAweDAwMDAwMDAwIDB4MDA0MDA2
+MDAKPiBbMTA5NjguNjYyOTAzXSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzQwXTogMHg0MDky
+ODAyNCAweDAwNDBFM0IwCj4gMHgwMDQwRDNEMCAweDAwNDBEM0QwCj4gWzEwOTY4LjY2MjkwNV0g
+YXRoMTBrX3BjaSAwMDAwOjAzOjAwLjA6IFs0NF06IDB4MDAwMDAwMDAgMHgwMDQwRTNEMAo+IDB4
+MDA5QkIwMDEgMHgwMDA0MDAyMAo+IFsxMDk2OC42NjI5MDddIGF0aDEwa19wY2kgMDAwMDowMzow
+MC4wOiBbNDhdOiAweDAwNDAxQkYwIDB4MDAwMDAwMDEKPiAweDAwNDA0QjlDIDB4MDA0MDAwMDAK
+PiBbMTA5NjguNjYyOTA5XSBhdGgxMGtfcGNpIDAwMDA6MDM6MDAuMDogWzUyXTogMHg0MDkyODAy
+NCAweDAwNDBFM0IwCj4gMHgwMDQwRDNEMCAweDAwNDBEM0QwCj4gWzEwOTY4LjY2MjkxMF0gYXRo
+MTBrX3BjaSAwMDAwOjAzOjAwLjA6IFs1Nl06IDB4NTExOTYwMDAgMHhFQUIzRTNERgo+IDB4MzZF
+NzYwQ0UgMHhFMzRBNDdEQwo+IFsxMDk2OS42NjA2NjZdIGF0aDEwa19wY2kgMDAwMDowMzowMC4w
+OiBmYWlsZWQgdG8gcmVjZWl2ZSBjb250cm9sIHJlc3BvbnNlCj4gY29tcGxldGlvbiwgcG9sbGlu
+Zy4uCj4KPiBUaGUgY2FyZCBpbiBxdWVzdGlvbiBpcwo+IDAzOjAwLjAgTmV0d29yayBjb250cm9s
+bGVyIFswMjgwXTogUXVhbGNvbW0gQXRoZXJvcyBEZXZpY2UgWzE2OGM6MDA0MV0gKHJldgo+IDIw
+KQo+Cj4gV2hhdCBtaWdodCBiZSB0aGUgcHJvYmxlbT8KCllvdSdyZSBzdXJlbHkgdXNpbmcgd3Jv
+bmcgYm9hcmQuYmluLiBUaGUgcWNhNjE2NCB3aWxsIG5vdCB3b3JrIHdpdGgKdGhlIGJvYXJkLmJp
+biBmb3IgcWNhNjE3NC4KClRoZSBib2FyZC5iaW4gcHJvYmxlbSBpcyBjdXJyZW50bHkgYmVpbmcg
+YWRkcmVzc2VkLiBJbiB0aGUgbWVhbnRpbWUKeW91IG5lZWQgdG8gZ2V0IGFuIGFkZXF1YXRlIGVl
+cHJvbV8qIGZpbGUgZnJvbSB3aW5kb3dzIGRyaXZlciBhbmQgcHV0Cml0IGFzIGh3Mi4xL2JvYXJk
+LmJpbi4gWW91J2xsIG5lZWQgdG8gbG9vayBpbnRvIC5pbmYgZmlsZSBmcm9tIHRoZQp3aW5kb3dz
+IGRyaXZlciBhbmQgb3V0cHV0IG9mIGBsc3BjaSAtdnZubmAgdG8gdW5kZXJzdGFuZCB3aGljaCBl
+ZXByb20KZmlsZSBzdWl0cyB5b3VyIGRldmljZS4KCgpNaWNoYcWCCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphdGgxMGsgbWFpbGluZyBsaXN0CmF0aDEw
+a0BsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vYXRoMTBrCg==
