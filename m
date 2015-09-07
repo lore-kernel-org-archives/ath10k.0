@@ -1,29 +1,23 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from villa.puc.rediris.es ([2001:720:418:ca00::7])
+Received: from mail-vk0-x235.google.com ([2607:f8b0:400c:c05::235])
  by bombadil.infradead.org with esmtps (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYt32-0003rv-98
- for ath10k@lists.infradead.org; Mon, 07 Sep 2015 09:49:14 +0000
-Received: from [84.88.62.208] (helo=leo)
- by villa.puc.rediris.es with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
- (Exim 4.80) (envelope-from <jbaranda@cttc.es>) id 1ZYt2X-0003Xs-UY
- for ath10k@lists.infradead.org; Mon, 07 Sep 2015 11:48:43 +0200
-Received: from [84.88.61.34] (pcjbaranda.cttc.es [84.88.61.34])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by leo (Postfix) with ESMTPSA id 4CF811FE10
- for <ath10k@lists.infradead.org>; Mon,  7 Sep 2015 11:48:37 +0200 (CEST)
-Message-ID: <55ED5D78.6090007@cttc.es>
-Date: Mon, 07 Sep 2015 11:48:40 +0200
-From: Jorge Baranda <jbaranda@cttc.es>
+ id 1ZYtZl-0006Lp-PD
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2015 10:23:02 +0000
+Received: by vkbf67 with SMTP id f67so40927239vkb.0
+ for <ath10k@lists.infradead.org>; Mon, 07 Sep 2015 03:22:38 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Setting up a VHT ad-hoc connection with ath10k
+In-Reply-To: <55ED5D78.6090007@cttc.es>
 References: <F52F175DFC537F48A43937B50B44BCA28205CDDC@EXCHANGE.mediaspot.local>
  <CALhHN=psNe5hh3GuA=z0AC6-Gy-fRTkxUe3+Pop3OMyBwPpshQ@mail.gmail.com>
  <F52F175DFC537F48A43937B50B44BCA28205DA67@EXCHANGE.mediaspot.local>
  <CALhHN=rXxHKr-8vdctszWY=yitmpDbKZDpX=omqP1OAHuQoAxw@mail.gmail.com>
  <F52F175DFC537F48A43937B50B44BCA28205DAB5@EXCHANGE.mediaspot.local>
  <CALhHN=rebT-S3x149RQDUU3QbofUV73wkkmVPuqFzJjrHyMO_A@mail.gmail.com>
-In-Reply-To: <CALhHN=rebT-S3x149RQDUU3QbofUV73wkkmVPuqFzJjrHyMO_A@mail.gmail.com>
+ <55ED5D78.6090007@cttc.es>
+Date: Mon, 7 Sep 2015 12:22:37 +0200
+Message-ID: <CALhHN=puF0RX=iSoxSH-GaEAhzb9eJbR38p7jOaXE7e3-dGDdw@mail.gmail.com>
+Subject: Re: Setting up a VHT ad-hoc connection with ath10k
+From: Janusz Dziedzic <janusz.dziedzic@tieto.com>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -32,30 +26,41 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: ath10k@lists.infradead.org
+To: Jorge Baranda <jbaranda@cttc.es>
+Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-RGVhciBhbGwsCgpSZWNlbnRseSwgSSBib3VnaHQgc29tZSBXTEU5MDBWWCBjYXJkcyBhbmQgZXF1
-aXBwZWQgc2V2ZXJhbCBjb21wdXRlcnMgCndpdGggc3VjaCBjYXJkcy4KSSB3YW50IHRvIGNoZWNr
-IHRoZSBjYXBhYmlsdGllcyBvZiB0aGVzZSBjYXJkcywgc28gSSBoYXZlIHRob3VnaHQgb2YgCmVz
-dGFibGlzaGluZyBhbiBBRC1IT0MgODAyLjExYWMgbGluayBpbiBvcmRlciB0byBkbyBzby4KSSBo
-YXZlIGJlZW4gYWJsZSB0byBlc3RhYmxpc2ggYW5kIEFELUhPQyBjb25uZWN0aW9uIGJldHdlZW4g
-dHdvIG9mIHRoZXNlIApjYXJkcywgYnV0IEkgYW0gc3VyZSBJIGFtIG5vdCBlc3RhYmxpc2hpbmcg
-YW4gODAyLjExYWMgY29ubmVjdGlvbiAKYmVjYXVzZSB0aGUgaXdsaXN0IHRvb2wgb25seSByZXBv
-cnRzIGJpdCByYXRlcyB1cCB0byA1NE1iL3MgZm9yIHRoZSAKZXN0YWJsaXNoZWQgY29ubmVjdGlv
-bi4KSSB3b3VsZCBiZSB2ZXJ5IGdyYXRlZnVsIGlmIHNvbWVvbmUgY291bGQgcHJvdmlkZSBtZSBz
-b21lIGhpbnRzIG9uIApjb25maWd1cmluZyB0aGVzZSBjYXJkcyB0byB3b3JrIHVzaW5nIHRoZSA4
-MDIuMTFhYyBhbmQgdG8gY2hlY2sgdGhhdCB0aGUgCmNvbm5lY3Rpb24gdXNpbmcgc3VjaCBwcm90
-b2NvbCBoYXMgYmVlbiBlc3RhYmxpc2hlZC4KClRoYW5rIHlvdSB2ZXJ5IG11Y2ggaW4gYWR2YW5j
-ZSBmb3IgeW91ciB0aW1lIGFuZCBhdHRlbnRpb24sCgpXaXRoIGtpbmQgcmVnYXJkcywKCi0tIApK
-b3JnZSBCYXJhbmRhClJlc2VhcmNoIEVuZ2luZWVyLCBNU2MKam9yZ2UuYmFyYW5kYUBjdHRjLmVz
-CgpDZW50cmUgVGVjbm9sw7JnaWMgZGUgVGVsZWNvbXVuaWNhY2lvbnMgZGUgQ2F0YWx1bnlhIChD
-VFRDKQpBdi4gQ2FybCBGcmllZHJpY2ggR2F1c3MsIDcKMDg4NjAgQ2FzdGVsbGRlZmVscywgQmFy
-Y2Vsb25hIChTcGFpbikKVGVsOiArMzQgOTMgNjQ1IDI5IDAwICBFeHQ6IDIxNzEKRmF4LiArMzQg
-OTMgNjQ1IDI5IDAxCnd3dy5jdHRjLmVzCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFk
-ZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEw
-awo=
+T24gNyBTZXB0ZW1iZXIgMjAxNSBhdCAxMTo0OCwgSm9yZ2UgQmFyYW5kYSA8amJhcmFuZGFAY3R0
+Yy5lcz4gd3JvdGU6Cj4gRGVhciBhbGwsCj4KPiBSZWNlbnRseSwgSSBib3VnaHQgc29tZSBXTEU5
+MDBWWCBjYXJkcyBhbmQgZXF1aXBwZWQgc2V2ZXJhbCBjb21wdXRlcnMgd2l0aAo+IHN1Y2ggY2Fy
+ZHMuCj4gSSB3YW50IHRvIGNoZWNrIHRoZSBjYXBhYmlsdGllcyBvZiB0aGVzZSBjYXJkcywgc28g
+SSBoYXZlIHRob3VnaHQgb2YKPiBlc3RhYmxpc2hpbmcgYW4gQUQtSE9DIDgwMi4xMWFjIGxpbmsg
+aW4gb3JkZXIgdG8gZG8gc28uCj4gSSBoYXZlIGJlZW4gYWJsZSB0byBlc3RhYmxpc2ggYW5kIEFE
+LUhPQyBjb25uZWN0aW9uIGJldHdlZW4gdHdvIG9mIHRoZXNlCj4gY2FyZHMsIGJ1dCBJIGFtIHN1
+cmUgSSBhbSBub3QgZXN0YWJsaXNoaW5nIGFuIDgwMi4xMWFjIGNvbm5lY3Rpb24gYmVjYXVzZQo+
+IHRoZSBpd2xpc3QgdG9vbCBvbmx5IHJlcG9ydHMgYml0IHJhdGVzIHVwIHRvIDU0TWIvcyBmb3Ig
+dGhlIGVzdGFibGlzaGVkCj4gY29ubmVjdGlvbi4KPiBJIHdvdWxkIGJlIHZlcnkgZ3JhdGVmdWwg
+aWYgc29tZW9uZSBjb3VsZCBwcm92aWRlIG1lIHNvbWUgaGludHMgb24KPiBjb25maWd1cmluZyB0
+aGVzZSBjYXJkcyB0byB3b3JrIHVzaW5nIHRoZSA4MDIuMTFhYyBhbmQgdG8gY2hlY2sgdGhhdCB0
+aGUKPiBjb25uZWN0aW9uIHVzaW5nIHN1Y2ggcHJvdG9jb2wgaGFzIGJlZW4gZXN0YWJsaXNoZWQu
+Cj4KWW91IHNob3VsZCB1c2UgNjM2IGZpcm13YXJlIGFuZCBsYXN0ZXMgd3BhX3N1cHBsaWNhbnQu
+IFdwYV9zdXBwbGljYW50CndpbGwgc2V0dXAgQUMgY29ycmVjdGx5IChpdyBkb24ndCBzdXBwb3J0
+IHRoaXMgeWV0KS4gQWZ0ZXIgY29ubmVjdGVkLApjaGVjayBpZiB5b3UgaGF2ZSBjb3JyZWN0IEJX
+ICg4ME1IeikgdXNpbmc6Cml3IHdsYW4wIGluZm8KCk5leHQgeW91IGNhbiBydW4gc29tZSB0cmFm
+ZmljIGVnLiB1c2luZyBpcGVyZiBhbmQgY2hlY2sgUlggcmF0ZSB1c2luZzoKaXcgd2xhbjAgc3Rh
+dGlvbiBkdW1wLgoKQlIKSmFudXN6Cgo+IFRoYW5rIHlvdSB2ZXJ5IG11Y2ggaW4gYWR2YW5jZSBm
+b3IgeW91ciB0aW1lIGFuZCBhdHRlbnRpb24sCj4KPiBXaXRoIGtpbmQgcmVnYXJkcywKPgo+IC0t
+Cj4gSm9yZ2UgQmFyYW5kYQo+IFJlc2VhcmNoIEVuZ2luZWVyLCBNU2MKPiBqb3JnZS5iYXJhbmRh
+QGN0dGMuZXMKPgo+IENlbnRyZSBUZWNub2zDsmdpYyBkZSBUZWxlY29tdW5pY2FjaW9ucyBkZSBD
+YXRhbHVueWEgKENUVEMpCj4gQXYuIENhcmwgRnJpZWRyaWNoIEdhdXNzLCA3Cj4gMDg4NjAgQ2Fz
+dGVsbGRlZmVscywgQmFyY2Vsb25hIChTcGFpbikKPiBUZWw6ICszNCA5MyA2NDUgMjkgMDAgRXh0
+OiAyMTcxCj4gRmF4LiArMzQgOTMgNjQ1IDI5IDAxCj4gd3d3LmN0dGMuZXMKPgo+Cj4gX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBhdGgxMGsgbWFpbGlu
+ZyBsaXN0Cj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBodHRwOi8vbGlzdHMuaW5mcmFk
+ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawoKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMu
+aW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZv
+L2F0aDEwawo=
