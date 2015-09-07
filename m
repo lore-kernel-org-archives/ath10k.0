@@ -1,12 +1,13 @@
 Return-path: <ath10k-bounces+kvalo=adurom.com@lists.infradead.org>
-Received: from mail.mediaspot.net ([185.37.180.5])
+Received: from mail2.candelatech.com ([208.74.158.173])
  by bombadil.infradead.org with esmtp (Exim 4.80.1 #2 (Red Hat Linux))
- id 1ZYyZT-0006Lv-VX
- for ath10k@lists.infradead.org; Mon, 07 Sep 2015 15:43:07 +0000
-From: Alessandro Bolletta <alessandro@mediaspot.net>
-Subject: R: IBSS-RSN support on ath10k only links
-Date: Mon, 7 Sep 2015 15:40:31 +0000
-Message-ID: <F52F175DFC537F48A43937B50B44BCA28205E3C3@EXCHANGE.mediaspot.local>
+ id 1ZYybX-0000V0-2k
+ for ath10k@lists.infradead.org; Mon, 07 Sep 2015 15:45:11 +0000
+Message-ID: <55EDB0F0.4070808@candelatech.com>
+Date: Mon, 07 Sep 2015 08:44:48 -0700
+From: Ben Greear <greearb@candelatech.com>
+MIME-Version: 1.0
+Subject: Re: R: IBSS-RSN support on ath10k only links
 References: <F52F175DFC537F48A43937B50B44BCA28205CDDC@EXCHANGE.mediaspot.local>
  <CALhHN=psNe5hh3GuA=z0AC6-Gy-fRTkxUe3+Pop3OMyBwPpshQ@mail.gmail.com>
  <F52F175DFC537F48A43937B50B44BCA28205DA67@EXCHANGE.mediaspot.local>
@@ -14,9 +15,8 @@ References: <F52F175DFC537F48A43937B50B44BCA28205CDDC@EXCHANGE.mediaspot.local>
  <F52F175DFC537F48A43937B50B44BCA28205DAB5@EXCHANGE.mediaspot.local>
  <CALhHN=rebT-S3x149RQDUU3QbofUV73wkkmVPuqFzJjrHyMO_A@mail.gmail.com>
  <55EDAF09.5000904@candelatech.com>
-In-Reply-To: <55EDAF09.5000904@candelatech.com>
-Content-Language: it-IT
-MIME-Version: 1.0
+ <F52F175DFC537F48A43937B50B44BCA28205E3C3@EXCHANGE.mediaspot.local>
+In-Reply-To: <F52F175DFC537F48A43937B50B44BCA28205E3C3@EXCHANGE.mediaspot.local>
 List-Id: <ath10k.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=unsubscribe>
@@ -25,75 +25,32 @@ List-Post: <mailto:ath10k@lists.infradead.org>
 List-Help: <mailto:ath10k-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/ath10k>,
  <mailto:ath10k-request@lists.infradead.org?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Sender: "ath10k" <ath10k-bounces@lists.infradead.org>
 Errors-To: ath10k-bounces+kvalo=adurom.com@lists.infradead.org
-To: Ben Greear <greearb@candelatech.com>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
+To: Alessandro Bolletta <alessandro@mediaspot.net>, Janusz Dziedzic <janusz.dziedzic@tieto.com>
 Cc: "ath10k@lists.infradead.org" <ath10k@lists.infradead.org>
 
-SGkgQmVuLA0KDQpJJ20gdHJ5aW5nIHRvIHJ1biB5b3VyIGZpcm13YXJlIG9uIG15IE1pa3JvdGlr
-IE5ldE1ldGFsIGRldmljZSwgd2hpY2ggZmVhdHVyZXMgYSBRQ0E5ODgyIHJhZGlvIGNhcmQsIGJ1
-dCBpdCBjYW4ndCBiZSBsb2FkZWQuDQoNCklmIHlvdSBjYW4gaGVscCBtZSBJIGNhbiBwcm92aWRl
-IHlvdSBteSBkbWVzZyBsb2cuDQoNCi0tDQpBbGVzc2FuZHJvIEJvbGxldHRhDQogDQoNCi0tLS0t
-TWVzc2FnZ2lvIG9yaWdpbmFsZS0tLS0tDQpEYTogQmVuIEdyZWVhciBbbWFpbHRvOmdyZWVhcmJA
-Y2FuZGVsYXRlY2guY29tXSANCkludmlhdG86IGx1bmVkw6wgNyBzZXR0ZW1icmUgMjAxNSAxNy4z
-Nw0KQTogSmFudXN6IER6aWVkemljIDxqYW51c3ouZHppZWR6aWNAdGlldG8uY29tPjsgQWxlc3Nh
-bmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRpYXNwb3QubmV0Pg0KQ2M6IGF0aDEwa0BsaXN0
-cy5pbmZyYWRlYWQub3JnDQpPZ2dldHRvOiBSZTogSUJTUy1SU04gc3VwcG9ydCBvbiBhdGgxMGsg
-b25seSBsaW5rcw0KDQpNeSBmaXJtd2FyZSBkb2VzIHN1cHBvcnQgSUJTUywgYW5kIGl0IGhhcyBh
-dCBsZWFzdCBzb21lIHN1cHBvcnQgZm9yIElCU1MtUlNOLg0KDQpNeSBub3RlcyBpbmRpY2F0ZSB0
-aGF0IEkgaGFkIGF0aDEwayA8LT4gYXRoOWsgSUJTUy1SU04gd29ya2luZywgYnV0IGZvciBvbmUg
-cmVhc29uIG9yIGFub3RoZXIsIEkgZGlkIG5vdCBoYXZlIGEgc3RhYmxlIGF0aDEwayA8LT4gYXRo
-MTBrIElCU1MtUlNOIGNvbm5lY3Rpb24uDQoNClRoZXJlIGFyZSBlbmNyeXB0ZWQgdmlydHVhbCBk
-ZXZpY2VzIHRoYXQgb25lIGNhbiB1c2Ugb24gdG9wIG9mIHVuLWVuY3J5cHRlZCBJQlNTIGNvbm5l
-Y3Rpb25zLCBzbyBtYXliZSB0aGF0IGlzIHRoZSBiZXN0IHNvbHV0aW9uIGluIHRoZSBtZWFudGlt
-ZS4NCg0KSSdkIGJlIGludGVyZXN0ZWQgdG8ga25vdyBpZiBzb21lb25lIGRpZCBoYXZlIGEgc3Rh
-YmxlIGF0aDEwayA8LT4gYXRoMTBrIElCU1MtUlNOIG9uIHRoZSAuNjM2IGZpcm13YXJlLg0KDQpJ
-IHdpbGwgYmUgdHJ5aW5nIHRvIGVuYWJsZSBBTVNEVSBzdXBwb3J0IG9uIElCU1Mgc29tZXRpbWUg
-c29vbiwgc28gSSdsbCBydW4gc29tZSBtb3JlIHRlc3RzIHRoZW4uDQoNClRoYW5rcywNCkJlbg0K
-DQpPbiAwOS8wNy8yMDE1IDAxOjIyIEFNLCBKYW51c3ogRHppZWR6aWMgd3JvdGU6DQo+IE9uIDcg
-U2VwdGVtYmVyIDIwMTUgYXQgMTA6MDMsIEFsZXNzYW5kcm8gQm9sbGV0dGEgDQo+IDxhbGVzc2Fu
-ZHJvQG1lZGlhc3BvdC5uZXQ+IHdyb3RlOg0KPj4gRG8geW91IGtub3cgaWYgaXMgaXQgbmVlZGVk
-IEJlbiBHcmVlYXIncyBmaXJtd2FyZSBpbiBvcmRlciB0byBydW4gSUJTUy1SU04gb3IgaXMgaXQg
-YWxzbyBzdXBwb3J0ZWQgb24gb2ZmaWNpYWwgZmlybXdhcmU/DQo+Pg0KPiBXZSB0ZXN0ZWQgdGhp
-cyBvbmx5IHdpdGggNjM2IG1haW4gZmlybXdhcmUuDQo+DQo+IEJSDQo+IEphbnVzeg0KPg0KPj4g
-QWxlc3NhbmRybw0KPj4NCj4+IC0tLS0tTWVzc2FnZ2lvIG9yaWdpbmFsZS0tLS0tDQo+PiBEYTog
-SmFudXN6IER6aWVkemljIFttYWlsdG86amFudXN6LmR6aWVkemljQHRpZXRvLmNvbV0NCj4+IElu
-dmlhdG86IGx1bmVkw6wgNyBzZXR0ZW1icmUgMjAxNSAxMC4wMw0KPj4gQTogQWxlc3NhbmRybyBC
-b2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRpYXNwb3QubmV0Pg0KPj4gQ2M6IGF0aDEwa0BsaXN0cy5p
-bmZyYWRlYWQub3JnDQo+PiBPZ2dldHRvOiBSZTogSUJTUy1SU04gc3VwcG9ydCBvbiBhdGgxMGsg
-b25seSBsaW5rcw0KPj4NCj4+IE9uIDcgU2VwdGVtYmVyIDIwMTUgYXQgMDk6NDgsIEFsZXNzYW5k
-cm8gQm9sbGV0dGEgPGFsZXNzYW5kcm9AbWVkaWFzcG90Lm5ldD4gd3JvdGU6DQo+Pj4gT2ssIGdy
-ZWF0IQ0KPj4+IENhbiB5b3UgYWxzbyB0ZWxsIG1lIGlmIGlzIGl0IGV2ZXJ5dGhpbmcgd29ya2lu
-ZyBjb3JyZWN0bHkgd2l0aCBJQlNTLVJTTiwgc3VjaCBhcyBWSFQ/DQo+Pg0KPj4gVkhUIHdhcyB3
-ZWxsIHRlc3RlZCBmb3IgSUJTUy1vcGVuLCBzbyBJIHN1c3BlY3Qgc2hvdWxkIHdva3MgZmluZSBh
-bHNvIGZvciBSU04uDQo+PiBCdXQgd2UgZGlkIG9ubHkgYmFzaWMgdGVzdHMuDQo+Pg0KPj4gQlIN
-Cj4+IEphbnVzeg0KPj4NCj4+PiBBbGVzc2FuZHJvDQo+Pj4NCj4+PiAtLS0tLU1lc3NhZ2dpbyBv
-cmlnaW5hbGUtLS0tLQ0KPj4+IERhOiBKYW51c3ogRHppZWR6aWMgW21haWx0bzpqYW51c3ouZHpp
-ZWR6aWNAdGlldG8uY29tXQ0KPj4+IEludmlhdG86IHNhYmF0byA1IHNldHRlbWJyZSAyMDE1IDIy
-LjAwDQo+Pj4gQTogQWxlc3NhbmRybyBCb2xsZXR0YSA8YWxlc3NhbmRyb0BtZWRpYXNwb3QubmV0
-Pg0KPj4+IENjOiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPj4+IE9nZ2V0dG86IFJlOiBJ
-QlNTLVJTTiBzdXBwb3J0IG9uIGF0aDEwayBvbmx5IGxpbmtzDQo+Pj4NCj4+PiBPbiA1IFNlcHRl
-bWJlciAyMDE1IGF0IDE3OjA4LCBBbGVzc2FuZHJvIEJvbGxldHRhIDxhbGVzc2FuZHJvQG1lZGlh
-c3BvdC5uZXQ+IHdyb3RlOg0KPj4+PiBIaSwNCj4+Pj4gV2hhdCBlZmZvcnRzIGNvdWxkIGJlIG5l
-ZWRlZCBpbiBvcmRlciB0byBtYWtlIElCU1MtUlNOIHdvcmtpbmcgb24gYXRoMTBrIDwtLT4gYXRo
-MTBrIGxpbmtzPyBJcyB0aGVyZSBhbnlib2R5IHdvcmtpbmcgYWN0aXZlbHkgb24gaXQ/DQo+Pj4+
-DQo+Pj4gV2UgZGlkIGJhc2ljIHRlc3RpbmcvaW1wbGVtZW50YXRpb24gdXNpbmcgYXRoMTBrL2F0
-aDlrLCB3cGFfc3VwcGxpY2FudCBhbmQgbWFpbiAoNjM2KSBmaXJtd2FyZSBhbmQgcWNhNjE3NC4N
-Cj4+PiBMYXRlc3QgY29kZSBhbHJlYWR5IGhhdmUgV0lQSFlfRkxBR19JQlNTX1JTTiBzZXQsIHNv
-IEkgZXhwZWN0IHRoaXMgDQo+Pj4gc2hvdWxkIHdvcmsuIFNvbWUgRlcgaXNzdWVzIGNvdWxkIGJl
-IHN0aWxsIHBvc3NpYmxlIDopDQo+Pj4NCj4+PiBCUg0KPj4+IEphbnVzeg0KPj4+DQo+Pj4gX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4+PiBhdGgxMGsg
-bWFpbGluZyBsaXN0DQo+Pj4gYXRoMTBrQGxpc3RzLmluZnJhZGVhZC5vcmcNCj4+PiBodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KPj4NCj4+IF9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQo+PiBhdGgxMGsgbWFp
-bGluZyBsaXN0DQo+PiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPj4gaHR0cDovL2xpc3Rz
-LmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9hdGgxMGsNCj4NCj4gX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gYXRoMTBrIG1haWxpbmcgbGlz
-dA0KPiBhdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9yZw0KPiBodHRwOi8vbGlzdHMuaW5mcmFkZWFk
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwaw0KPg0KDQotLQ0KQmVuIEdyZWVhciA8Z3JlZWFy
-YkBjYW5kZWxhdGVjaC5jb20+DQpDYW5kZWxhIFRlY2hub2xvZ2llcyBJbmMgIGh0dHA6Ly93d3cu
-Y2FuZGVsYXRlY2guY29tDQoNCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KYXRoMTBrIG1haWxpbmcgbGlzdAphdGgxMGtAbGlzdHMuaW5mcmFkZWFkLm9y
-ZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2F0aDEwawo=
+
+
+On 09/07/2015 08:40 AM, Alessandro Bolletta wrote:
+> Hi Ben,
+>
+> I'm trying to run your firmware on my Mikrotik NetMetal device, which features a QCA9882 radio card, but it can't be loaded.
+>
+> If you can help me I can provide you my dmesg log.
+
+Please do post logs..and let me know what OS and kernel version you are using.
+
+Thanks,
+Ben
+
+-- 
+Ben Greear <greearb@candelatech.com>
+Candela Technologies Inc  http://www.candelatech.com
+
+_______________________________________________
+ath10k mailing list
+ath10k@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/ath10k
